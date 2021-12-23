@@ -36,7 +36,7 @@ using namespace Sprog;
 /*protected*/ /*synchronized*/ void SprogVersionQuery::addSprogVersionListener(SprogVersionListener* l) {
     // add only if not already registered
     if (l == NULL) {
-        throw NullPointerException();
+        throw new NullPointerException();
     }
     if (!versionListeners->contains(l)) {
         versionListeners->append(l);

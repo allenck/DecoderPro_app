@@ -36,7 +36,7 @@ public:
      * @return Null if nothing by that name exists
      */
     /*public*/ NamedBean* getNamedBean(QString name)const override;
-    /*public*/ /*@Nonnull*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName)const  override/*throw (NamedBean::BadSystemNameException)*/;
+    /*public*/ /*@Nonnull*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName)const  override/*throw new (NamedBean::BadSystemNameException)*/;
 
     /*public*/ NamedBean* getBeanBySystemName(QString systemName) const override;
     /*public*/ NamedBean* getBeanByUserName(QString userName) const override;
@@ -115,7 +115,7 @@ public:
     /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) ;
     /*public*/ Turnout* getBySystemName(/*@Nonnull*/ QString systemName) const ;
     /*public*/ Turnout* getByUserName(/*@Nonnull*/ QString userName) const ;
-    /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, char typeLetter) throw (JmriException);
+    /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, char typeLetter) /*throw (JmriException)*/;
     /*public*/ void deleteBean(/*@Nonnull*/ NamedBean* s, /*@Nonnull*/ QString property) throw (PropertyVetoException) override;
     /*public*/ QString getBeanTypeHandled(bool plural) const override {return tr(plural?"Turnouts":"Turnout");}
 
@@ -136,7 +136,7 @@ private:
     QMap<QString, QVector<PropertyChangeListener*>*> namedPropertyListenerMap;// = new HashMap<>();
     QVector<VetoableChangeListener*> propertyVetoListenerList;// = new ArrayList<>();
     QMap<QString, QVector<VetoableChangeListener*>*> namedPropertyVetoListenerMap;// = new HashMap<>();
-    QString createSystemName(QString curAddress, QString prefix, QString managerType)const throw (JmriException);
+    QString createSystemName(QString curAddress, QString prefix, QString managerType)const /*throw (JmriException)*/;
     /**
      * List of names of bound properties requested to be listened to by
      * PropertyChangeListeners.

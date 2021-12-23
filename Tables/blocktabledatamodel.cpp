@@ -335,8 +335,8 @@ QVariant BlockTableDataModel::data(const QModelIndex &index, int role) const
             QString speed =  value.toString();//(VPtr<JComboBox>::asPtr( value)->getSelectedItem());
             try {
                 b->setBlockSpeed(speed);
-            } catch (JmriException ex) {
-                JOptionPane::showMessageDialog(nullptr, ex.getMessage() + "\n" + speed);
+            } catch (JmriException* ex) {
+                JOptionPane::showMessageDialog(nullptr, ex->getMessage() + "\n" + speed);
                 return false;
             }
             if (! speedList->contains(speed) && !speed.contains("Global")) { // NOI18N
@@ -656,8 +656,8 @@ void BlockTableDataModel::editButton(Block* b) {
     //We will allow the turnout manager to handle checking if the values have changed
     try {
         ((BlockManager*)InstanceManager::getDefault("BlockManager"))->setDefaultSpeed(speedValue);
-    } catch (IllegalArgumentException ex) {
-        JOptionPane::showMessageDialog(_who, ex.getMessage() + "\n" + speedValue);
+    } catch (IllegalArgumentException* ex) {
+        JOptionPane::showMessageDialog(_who, ex->getMessage() + "\n" + speedValue);
     }
 }
 
@@ -805,7 +805,7 @@ static class ImageIconRenderer extends AbstractCellEditor implements TableCellEd
         try {
             onImage = ImageIO.read(new File(onIconPath));
             offImage = ImageIO.read(new File(offIconPath));
-        } catch (IOException ex) {
+        } catch (IOException* ex) {
             log.error("error reading image from {} or {}", onIconPath, offIconPath, ex);
         }
         log.debug("Success reading images");
@@ -830,7 +830,7 @@ static class ImageIconRenderer extends AbstractCellEditor implements TableCellEd
     try {
         onImage = ImageIO::read(new File(onIconPath));
         offImage = ImageIO::read(new File(offIconPath));
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         log->error(tr("error reading image from %1 or %2").arg(onIconPath).arg(offIconPath), ex);
     }
     log->debug("Success reading images");

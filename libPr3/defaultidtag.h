@@ -12,7 +12,7 @@ public:
     /*public*/ DefaultIdTag(QString systemName, QString userName, QObject *parent = 0);
     ~DefaultIdTag() {}
     DefaultIdTag(const DefaultIdTag&): AbstractIdTag() {}
-    /*public*/ void setState(int s) throw (JmriException);
+    /*public*/ void setState(int s) /*throw (JmriException)*/;
     /*public*/ int getState() ;
     /*public*/ QDomElement store(QDomDocument doc, bool storeState) ;
     /*public*/ void load(QDomElement e);

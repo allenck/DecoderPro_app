@@ -21,7 +21,7 @@
 #if 0
         try (CSVParser parser = new CSVParser(new StringReader(ssvString), CSVFormat.DEFAULT.withQuote(null).withDelimiter(separator).withRecordSeparator(null))) {
             parser.getRecords().forEach(record -> record.forEach(item -> list.add(item)));
-        } catch (IOException ex) {
+        } catch (IOException* ex) {
             log.error("Unable to parse {}", ssvString, ex);
         }
 #endif

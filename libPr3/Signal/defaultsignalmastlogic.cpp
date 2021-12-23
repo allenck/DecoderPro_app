@@ -80,7 +80,7 @@ class RunnableThis : public Runnable
 /*public*/ DefaultSignalMastLogic::DefaultSignalMastLogic (/*@Nonnull*/ SignalMast* source, QObject */*parent*/)
 {
  if(source == nullptr)
-  throw NullPointerException(tr("source is marked @NonNull but is null."));
+  throw new NullPointerException(tr("source is marked @NonNull but is null."));
  this->source = source;
  destList =  QHash<SignalMast*, DestinationMast*>();
  pcs = new PropertyChangeSupport(this);
@@ -112,7 +112,7 @@ class RunnableThis : public Runnable
 
 /*public*/ LayoutBlock* DefaultSignalMastLogic::getProtectingBlock(/*@Nonnull*/ SignalMast* mast) {
  if(mast == nullptr)
-  throw NullPointerException(tr("dest is marked @NonNull but is null."));
+  throw new NullPointerException(tr("dest is marked @NonNull but is null."));
 
  if (!destList.contains(mast)) {
      return nullptr;
@@ -327,8 +327,8 @@ class RunnableThis : public Runnable
  {
   try {
       dest->useLayoutEditor(false);
-  } catch (JmriException e){
-      log->error("error" +e.getMessage());
+  } catch (JmriException* e){
+      log->error("error" +e->getMessage());
   }
  }
 }
@@ -342,7 +342,7 @@ class RunnableThis : public Runnable
 * @param destination Destination SignalMast.
 * 
 */
-/*public*/ void DefaultSignalMastLogic::useLayoutEditor(bool boo, SignalMast* destination) throw (JmriException)
+/*public*/ void DefaultSignalMastLogic::useLayoutEditor(bool boo, SignalMast* destination) /*throw (JmriException)*/
 {
  if(!destList.contains(destination))
  {
@@ -370,7 +370,7 @@ class RunnableThis : public Runnable
  {
   destList.value(destination)->useLayoutEditor(boo);
  }
- catch (JmriException e)
+ catch (JmriException* e)
  {
   throw e;
  }
@@ -411,7 +411,7 @@ class RunnableThis : public Runnable
             if (lBlock == nullptr) {
                 try {
                     useLayoutEditor(true, sm); // force a refind
-                } catch (JmriException ex) {
+                } catch (JmriException* ex) {
                     continue;
                 }
             }
@@ -463,14 +463,14 @@ class RunnableThis : public Runnable
 * @param blocks set false if not to use the block information gathered from the layouteditor
 * @param turnouts set false if not to use the turnout information gathered from the layouteditor
 */
-/*public*/ void DefaultSignalMastLogic::useLayoutEditorDetails(bool turnouts, bool blocks, SignalMast* destination) throw (JmriException)
+/*public*/ void DefaultSignalMastLogic::useLayoutEditorDetails(bool turnouts, bool blocks, SignalMast* destination) /*throw (JmriException)*/
 {
  if(!destList.contains(destination)){
      return;
  }
  try {
      destList.value(destination)->useLayoutEditorDetails(turnouts, blocks);
- } catch (JmriException e){
+ } catch (JmriException* e){
      throw e;
  }
 }
@@ -808,7 +808,7 @@ class RunnableThis : public Runnable
     while (en.hasNext()) {
         try{
             destList.value(en.next())->setupLayoutEditorDetails();
-        } catch (JmriException e){
+        } catch (JmriException* e){
             //Considered normal if no route is valid on the layout editor
         }
     }
@@ -1112,7 +1112,7 @@ void DefaultSignalMastLogic::setMastAppearance()
                                 float speed = 0.0f;
                                 try {
                                     speed =  (strSpeed.toFloat());
-                                }catch (NumberFormatException nx) {
+                                }catch (NumberFormatException* nx) {
                                     try{
                                         speed = static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(strSpeed);
                                     } catch (Exception ex){
@@ -2205,7 +2205,7 @@ void DestinationMast::initialise(){
 }
 
 
-void DestinationMast::useLayoutEditor(bool boo) throw (JmriException) {
+void DestinationMast::useLayoutEditor(bool boo) /*throw (JmriException)*/ {
     if(log->isDebugEnabled())
         log->debug(destination->getDisplayName() + " use called " + QVariant(boo).toString() + " " + QVariant(_useLayoutEditor).toString());
     if (_useLayoutEditor == boo)
@@ -2214,7 +2214,7 @@ void DestinationMast::useLayoutEditor(bool boo) throw (JmriException) {
     if ((boo) && (static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->routingStablised())){
         try{
             setupLayoutEditorDetails();
-        } catch (JmriException e){
+        } catch (JmriException* e){
             throw e;
             //Considered normal if there is no vlaid path using the layout editor.
         }
@@ -2227,7 +2227,7 @@ void DestinationMast::useLayoutEditor(bool boo) throw (JmriException) {
     }
 }
 
-void DestinationMast::useLayoutEditorDetails(bool turnouts, bool blocks) throw (JmriException){
+void DestinationMast::useLayoutEditorDetails(bool turnouts, bool blocks) /*throw (JmriException)*/{
     if(log->isDebugEnabled())
         log->debug(destination->getDisplayName() + " use layout editor details called " + QVariant(_useLayoutEditor).toString());
     _useLayoutEditorTurnouts=turnouts;
@@ -2235,14 +2235,14 @@ void DestinationMast::useLayoutEditorDetails(bool turnouts, bool blocks) throw (
     if((_useLayoutEditor) && (static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->routingStablised())){
         try{
             setupLayoutEditorDetails();
-        } catch (JmriException e){
+        } catch (JmriException* e){
             throw e;
             //Considered normal if there is no valid path using the layout editor.
         }
     }
 }
 
-void DestinationMast::setupLayoutEditorDetails() throw (JmriException)
+void DestinationMast::setupLayoutEditorDetails() /*throw (JmriException)*/
 {
     log->debug(tr("setupLayoutEditorDetails: useLayoutEditor=%1 disposed=%2").arg(_useLayoutEditor?"true":"false").arg( disposed?"true":"false"));
     if ((!_useLayoutEditor) || (disposed)) {
@@ -2282,11 +2282,11 @@ void DestinationMast::setupLayoutEditorDetails() throw (JmriException)
     }
     if (facingBlock == nullptr) {
         log->error("No facing block found for source mast " + dsml->getSourceMast()->getDisplayName());
-        throw JmriException("No facing block found for source mast " + dsml->getSourceMast()->getDisplayName());
+        throw new JmriException("No facing block found for source mast " + dsml->getSourceMast()->getDisplayName());
     }
     if (destinationBlock == nullptr) {
         log->error("No facing block found for destination mast " + destination->getDisplayName());
-        throw JmriException("No facing block found for destination mast " + destination->getDisplayName());
+        throw new JmriException("No facing block found for destination mast " + destination->getDisplayName());
     }
     QList<LayoutBlock*> lblks = QList<LayoutBlock*>();
     if (protectingBlock == nullptr) {
@@ -2306,7 +2306,7 @@ void DestinationMast::setupLayoutEditorDetails() throw (JmriException)
                         lBlksNamesBuf.append(lBlk->getDisplayName());
                     }
                     break;
-                } catch (JmriException ee) {
+                } catch (JmriException* ee) {
                     log->debug("path not found this time");
                 }
             }
@@ -2314,14 +2314,14 @@ void DestinationMast::setupLayoutEditorDetails() throw (JmriException)
         QString lBlksNames = lBlksNamesBuf;//new String(lBlksNamesBuf);
 
         if (protectingBlock == nullptr) {
-            throw JmriException("Path not valid, protecting block is null. Protecting block: " + pBlkNames + " not connected to " + facingBlock->getDisplayName() + ". Layout block names: " + lBlksNames);
+            throw new JmriException("Path not valid, protecting block is null. Protecting block: " + pBlkNames + " not connected to " + facingBlock->getDisplayName() + ". Layout block names: " + lBlksNames);
         }
     }
     try {
         if (!lbm->getLayoutBlockConnectivityTools()->checkValidDest(facingBlock, protectingBlock, destinationBlock, remoteProtectingBlock, LayoutBlockConnectivityTools::MASTTOMAST)) {
-            throw JmriException("Path not valid, destination check failed.");
+            throw new JmriException("Path not valid, destination check failed.");
         }
-    } catch (JmriException e) {
+    } catch (JmriException* e) {
         throw e;
     }
     if ( log->isDebugEnabled()) {
@@ -2340,7 +2340,7 @@ void DestinationMast::setupLayoutEditorDetails() throw (JmriException)
 
         try {
             lblks = lbm->getLayoutBlockConnectivityTools()->getLayoutBlocks(facingBlock, destinationBlock, protectingBlock, true, LayoutBlockConnectivityTools::MASTTOMAST);
-        } catch (JmriException ee) {
+        } catch (JmriException* ee) {
              log->error(tr("No blocks found by the layout editor for pair %1-%2").arg(dsml->source->getDisplayName()).arg(destination->getDisplayName()));
         }
         //LinkedHashMap<Block*, int> block = setupLayoutEditorTurnoutDetails(lblks);

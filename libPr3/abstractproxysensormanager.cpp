@@ -234,7 +234,7 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
  */
 //@Override
 //@CheckReturnValue
-///*public*/ /*@Nonnull*/ QString AbstractProxySensorManager::normalizeSystemName(/*@Nonnull*/ QString inputName) const /*throw (NamedBean::BadSystemNameException)*/ {
+///*public*/ /*@Nonnull*/ QString AbstractProxySensorManager::normalizeSystemName(/*@Nonnull*/ QString inputName) const /*throw new (NamedBean::BadSystemNameException)*/ {
 //    int index = matchTentative(inputName);
 //    if (index >= 0) {
 //        return getMgr(index)->normalizeSystemName(inputName);
@@ -465,7 +465,7 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
  * @return a valid system name for this connection
  * @throws JmriException if systemName cannot be created
  */
-QString AbstractProxySensorManager::createSystemName(QString curAddress, QString prefix, QString beanType) const throw (JmriException) {
+QString AbstractProxySensorManager::createSystemName(QString curAddress, QString prefix, QString beanType) const /*throw (JmriException)*/ {
     for (Manager/*<E>*/* m : mgrs) {
         if (prefix == (m->getSystemPrefix()) && beanType == (m->getNamedBeanClass())) {
             try {
@@ -483,7 +483,7 @@ QString AbstractProxySensorManager::createSystemName(QString curAddress, QString
                 else {
                     log->warn("createSystemName requested for incompatible Manager");
                 }
-            } catch (JmriException ex) {
+            } catch (JmriException* ex) {
                 throw ex;
             }
         }
@@ -492,12 +492,12 @@ QString AbstractProxySensorManager::createSystemName(QString curAddress, QString
 }
 
 //@Nonnull
-/*public*/ QString AbstractProxySensorManager::createSystemName(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) const throw (JmriException) {
+/*public*/ QString AbstractProxySensorManager::createSystemName(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) const /*throw (JmriException)*/ {
     return createSystemName(curAddress, prefix, getNamedBeanClass());
 }
 
 //@SuppressWarnings("deprecation") // user warned by actual manager class
-/*public*/ QString AbstractProxySensorManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, char typeLetter) throw (JmriException) {
+/*public*/ QString AbstractProxySensorManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, char typeLetter) /*throw (JmriException)*/ {
     for (Manager/*<E>*/* m : mgrs) {
         log->debug(tr("NextValidAddress requested for %1").arg(curAddress));
         if (prefix ==(m->getSystemPrefix()) && typeLetter == m->typeLetter()) {
@@ -512,7 +512,7 @@ QString AbstractProxySensorManager::createSystemName(QString curAddress, QString
                     default:
                         return QString();
                 }
-            } catch (JmriException ex) {
+            } catch (JmriException* ex) {
                 throw ex;
             }
         }
@@ -520,7 +520,7 @@ QString AbstractProxySensorManager::createSystemName(QString curAddress, QString
     return QString();
 }
 
-/*public*/ QString AbstractProxySensorManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting, char typeLetter) throw (JmriException) {
+/*public*/ QString AbstractProxySensorManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting, char typeLetter) /*throw (JmriException)*/ {
     for (Manager/*<E>*/* m : mgrs) {
         log->debug(tr("NextValidAddress requested for %1").arg(curAddress));
         if (prefix == (m->getSystemPrefix()) && typeLetter == m->typeLetter()) {
@@ -537,7 +537,7 @@ QString AbstractProxySensorManager::createSystemName(QString curAddress, QString
                     default:
                         return QString();
                 }
-            } catch (JmriException ex) {
+            } catch (JmriException* ex) {
                 throw ex;
             }
         }

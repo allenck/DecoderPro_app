@@ -920,7 +920,7 @@ DropButton::DropButton (NamedIcon* icon, IconAdder* parent) : JToggleButton(icon
  {
   dataFlavor = new DataFlavor(ImageIndexEditor::IconDataFlavorMime);
  }
- catch (ClassNotFoundException cnfe)
+ catch (ClassNotFoundException* cnfe)
  {
         //cnfe.printStackTrace();
  }

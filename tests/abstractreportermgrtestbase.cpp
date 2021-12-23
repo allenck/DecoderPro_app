@@ -80,7 +80,7 @@ AbstractReporterMgrTestBase::AbstractReporterMgrTestBase()
     /*public*/ void AbstractReporterMgrTestBase::testProvideFailure() {
         try {
             ((AbstractReporterManager*)l)->provideReporter("");
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
           JUnitAppender::assertErrorMessage("Invalid system name for Reporter: System name must start with \"" + ((AbstractReporterManager*)l)->getSystemNamePrefix() + "\".", __FILE__, __LINE__);
 //          throw ex;
         }

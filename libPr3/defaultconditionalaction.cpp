@@ -254,7 +254,7 @@ default:
    }
   }
  }
- catch (NumberFormatException ex)
+ catch (NumberFormatException* ex)
  {
             //Can be considered normal if the logixs are loaded prior to any other beans
  }
@@ -930,7 +930,7 @@ default:
        try {
            _actionString.toInt();
            str = str + _actionString + " " + tr("Seconds")+ ".";
-       } catch (NumberFormatException nfe) {
+       } catch (NumberFormatException* nfe) {
            str = str + _actionString + " " + tr("(Memory's Value)")
                 + " " + tr("Seconds") + ".";
        }
@@ -940,7 +940,7 @@ default:
        try {
            //int t = Integer.parseInt(_actionString);
            str = str + " " + tr("to")+ " "+ _actionString + ".";
-       } catch (NumberFormatException nfe) {
+       } catch (NumberFormatException* nfe) {
            str = str + " " + tr("to") + " " + _actionString + " "
                + tr("(Memory's Value)") + ".";
        }

@@ -779,7 +779,7 @@
                     DataFlavor toAdd = NULL;
                     try {
                         toAdd = new DataFlavor(mt);
-                    } catch (ClassNotFoundException cannotHappen) {
+                    } catch (ClassNotFoundException* cannotHappen) {
                     }
                     returnValue.add(toAdd);
                 }
@@ -809,7 +809,7 @@
                             if (df.equals(DataFlavor.plainTextFlavor)) {
                                 df = DataFlavor.plainTextFlavor;
                             }
-                        } catch (ClassNotFoundException cannotHappen) {
+                        } catch (ClassNotFoundException* cannotHappen) {
                         }
 
                         returnValue.add(df);
@@ -830,7 +830,7 @@
                 try {
                     toAdd = new DataFlavor(baseType +
                          ";class=" + encodedTextClassName);
-                } catch (ClassNotFoundException cannotHappen) {
+                } catch (ClassNotFoundException* cannotHappen) {
                 }
                 returnValue.add(toAdd);
             }

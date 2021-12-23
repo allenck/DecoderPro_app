@@ -140,7 +140,7 @@ class RunnableWithBase;
      * @throws jmri.JmriException in case of an error
      */
     /*public*/ virtual Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames)
-            throw (JmriException)=0;
+            /*throw (JmriException)*/=0;
 
     /**
      * Do a deep copy of children from the original to me.
@@ -155,7 +155,7 @@ class RunnableWithBase;
             Base* original,
             QMap<QString, QString> systemNames,
             QMap<QString, QString> userNames)
-            throw (JmriException)=0;
+            /*throw (JmriException)*/=0;
 
     /**
      * Set associated comment text.

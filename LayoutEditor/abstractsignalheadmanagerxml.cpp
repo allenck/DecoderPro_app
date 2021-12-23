@@ -129,7 +129,7 @@ AbstractSignalHeadManagerXml::~AbstractSignalHeadManagerXml()
       adapter->load(item, QDomElement());
 
   } catch (Exception e) {
-      log->error("Exception while loading "+item.tagName(),e);
+      log->error("Exception while loading "+item.tagName(),&e);
       //e.printStackTrace();
   }
  }

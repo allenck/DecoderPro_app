@@ -190,7 +190,7 @@ int AbstractColorChooserPanel::getInt(QVariant key, int defaultValue) {
          if (value instanceof String) {
              try {
                  return Integer.parseInt((String)value);
-             } catch (NumberFormatException nfe) {}
+             } catch (NumberFormatException* nfe) {}
          }
          return defaultValue;
 #endif

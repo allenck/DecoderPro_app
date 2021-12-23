@@ -38,7 +38,7 @@
         } else {
             log->error(tr("editLayoutTrack received type %1 content %2").arg(
                     layoutTrackView->metaObject()->className()).arg(layoutTrackView->objectName()),
-                    Exception("traceback"));
+                    new Exception("traceback"));
         }
         sensorList.clear();
 

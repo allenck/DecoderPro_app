@@ -139,7 +139,7 @@ AbstractNetworkConnectionConfigXml::AbstractNetworkConnectionConfigXml(QObject *
  try {
      mdnsConfig = (shared.attribute("mdnsConfigure") == ("true"));
   }
-  catch (NullPointerException ex) {  // considered normal if the attributes are not present
+  catch (NullPointerException* ex) {  // considered normal if the attributes are not present
  }
  adapter->setMdnsConfigure(mdnsConfig);
 
@@ -152,7 +152,7 @@ AbstractNetworkConnectionConfigXml::AbstractNetworkConnectionConfigXml(QObject *
       hostName = shared.attribute("address");
       // the hostname is optional when mDNS is being used.
       adapter->setHostName(hostName);
-  } catch (NullPointerException ex) {  // considered normal if the attributes are not present
+  } catch (NullPointerException* ex) {  // considered normal if the attributes are not present
   }
 
   // configure the Service Type
@@ -161,7 +161,7 @@ AbstractNetworkConnectionConfigXml::AbstractNetworkConnectionConfigXml(QObject *
       serviceType = shared.attribute("serviceType");
       // the Service Type is optional when mDNS is being used.
       adapter->setServiceType(serviceType);
-  } catch (NullPointerException ex) {  // considered normal if the attributes are not present
+  } catch (NullPointerException* ex) {  // considered normal if the attributes are not present
   }
 
   // configure the advertisement name
@@ -170,7 +170,7 @@ AbstractNetworkConnectionConfigXml::AbstractNetworkConnectionConfigXml(QObject *
       advertisementName = shared.attribute("advertisementName");
       // the Advertisement Name is optional when mDNS is being used.
       adapter->setAdvertisementName(advertisementName);
-  } catch (NullPointerException ex) {  // considered normal if the attributes are not present
+  } catch (NullPointerException* ex) {  // considered normal if the attributes are not present
   }
 
   // get the host IP and port number
@@ -188,7 +188,7 @@ AbstractNetworkConnectionConfigXml::AbstractNetworkConnectionConfigXml(QObject *
   {
       hostName = shared.attribute("address");
   }
-  catch (NullPointerException ex) {  // considered normal if the attributes are not present
+  catch (NullPointerException* ex) {  // considered normal if the attributes are not present
   }
   adapter->setHostName(hostName);
 
@@ -198,7 +198,7 @@ AbstractNetworkConnectionConfigXml::AbstractNetworkConnectionConfigXml(QObject *
   if(!ok) {
   log->warn("Could not parse port attribute");
   }
-//   catch (NullPointerException ex) {  // considered normal if the attributes are not present
+//   catch (NullPointerException* ex) {  // considered normal if the attributes are not present
 //   }
  }
 

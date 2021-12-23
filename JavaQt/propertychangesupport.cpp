@@ -66,7 +66,7 @@
  if (sourceBean == NULL) 
  {
 
-  throw NullPointerException("PropertyChangeSupport:Null Pointer (Source)");
+  throw new NullPointerException("PropertyChangeSupport:Null Pointer (Source)");
  }
  map = new PropertyChangeListenerMap();
  source = sourceBean;

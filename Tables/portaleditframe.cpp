@@ -138,7 +138,7 @@
  */
 /*public*/ void PortalEditFrame::populateFrame(Portal* p) {
     if (p == nullptr) {
-        throw IllegalArgumentException("Null OBlock object");
+        throw new IllegalArgumentException("Null OBlock object");
     }
     portalUserName->setText(p->getName());
     if (p->getFromBlockName() != nullptr) {
@@ -209,8 +209,8 @@
             }
             _portal->setToBlock(block, true);
         }
-    } catch (IllegalArgumentException ex) {
-        JOptionPane::showMessageDialog(nullptr, ex.getMessage(), tr("PortalCreateErrorTitle"), JOptionPane::ERROR_MESSAGE);
+    } catch (IllegalArgumentException* ex) {
+        JOptionPane::showMessageDialog(nullptr, ex->getMessage(), tr("PortalCreateErrorTitle"), JOptionPane::ERROR_MESSAGE);
         status(tr("Failed to add Portal %1").arg(user), true);
         return;
     }

@@ -12,7 +12,7 @@
  * <ol>
  * <li> Catches and thereby prevents exceptions from propagating upward.  No need
  *     for this everywhere in your code:
- *     try { sensor.getBean().setKnownState(Sensor.ACTIVE); } catch (JmriException ex) {}
+ *     try { sensor.getBean().setKnownState(Sensor.ACTIVE); } catch (JmriException* ex) {}
  *     We ASSUME here that you are ALWAYS passing a valid "newState".  If not,
  *     then this call is effectively a no-op (do nothing).
  * <li> Use ONLY named beans internally for proper JMRI support of renaming objects.
@@ -178,7 +178,7 @@
     //@SuppressFBWarnings(value = "DE_MIGHT_IGNORE", justification = "Let it not do anything if it fails.")
     /*public*/ void NBHSensor::setKnownState(int newState) {
         if (_mNamedBeanHandleSensor == nullptr) return;
-        try { _mNamedBeanHandleSensor->getBean()->setKnownState(newState); } catch (JmriException ex) {}
+        try { _mNamedBeanHandleSensor->getBean()->setKnownState(newState); } catch (JmriException* ex) {}
     }
 
 

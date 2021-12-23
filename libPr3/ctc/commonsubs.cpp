@@ -87,7 +87,7 @@ CommonSubs::CommonSubs(QObject *parent) : QObject(parent)
         try (CSVPrinter printer = new CSVPrinter(new StringBuilder(), CSVFormat.DEFAULT.withQuote(null).withRecordSeparator(null))) {
             printer.printRecord(entries);
             return printer.getOut().toString();
-        } catch (IOException ex) {
+        } catch (IOException* ex) {
             log.error("Unable to create CSV", ex);
             return "";
         }

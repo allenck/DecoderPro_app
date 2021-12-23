@@ -24,7 +24,7 @@ QObject(parent) {
 }
 
 /*public*/ MimeTypeParameterList::MimeTypeParameterList(QString rawdata)
-throw (MimeTypeParseException)
+//throw (MimeTypeParseException)
 {
     log = new Logger("MimeTypeParameterList");
     parameters = new QHash<QString, QString>();
@@ -93,7 +93,7 @@ throw (MimeTypeParseException)
 /**
  * A routine for parsing the parameter list out of a String.
  */
-/*protected*/ void MimeTypeParameterList::parse(QString rawdata) throw (MimeTypeParseException) {
+/*protected*/ void MimeTypeParameterList::parse(QString rawdata) /*throw (MimeTypeParseException)*/ {
     int length = rawdata.length();
     if(length > 0) {
         int currentIndex = skipWhiteSpace(rawdata, 0);
@@ -168,7 +168,7 @@ throw (MimeTypeParseException)
                                         throw new MimeTypeParseException("Encountered unterminated quoted parameter value.");
                                     }
                                 } else {
-                                    log->error("Encountered unterminated quoted parameter value.");
+                                    log->error("Encountered unterminated quoted parameter value.", nullptr);
                                     throw new MimeTypeParseException("Encountered unterminated quoted parameter value.");
                                 }
                             } else if(isTokenChar(currentChar)) {
@@ -187,8 +187,8 @@ throw (MimeTypeParseException)
                                 value = rawdata.mid(lastIndex, currentIndex-lastIndex);
                             } else {
                                 //    it ain't a value
-                                log->error("Unexpected character encountered at index " + currentIndex);
-                                throw new MimeTypeParseException("Unexpected character encountered at index " + currentIndex);
+                                log->error("Unexpected character encountered at index " + QString::number(currentIndex));
+                                throw new MimeTypeParseException("Unexpected character encountered at index " + QString::number(currentIndex));
                             }
 
                             //    now put the data into the hashtable

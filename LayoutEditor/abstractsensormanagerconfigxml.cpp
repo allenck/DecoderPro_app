@@ -154,9 +154,9 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
     tm->setDefaultSensorDebounceGoingActive(goingActive);
    }
   }
-  catch (NumberFormatException ex)
+  catch (NumberFormatException* ex)
   {
-   log->error(ex.getMessage());
+   log->error(ex->getMessage());
   }
 
   try
@@ -168,9 +168,9 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
     tm->setDefaultSensorDebounceGoingInActive(goingInActive);
    }
   }
-  catch (NumberFormatException ex)
+  catch (NumberFormatException* ex)
   {
-   log->error(ex.getMessage());
+   log->error(ex->getMessage());
   }
 
  }
@@ -223,9 +223,9 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
      s->setSensorDebounceGoingActiveTimer(active.toLong());
     }
    }
-   catch (NumberFormatException ex)
+   catch (NumberFormatException* ex)
    {
-    log->error(ex.getMessage());
+    log->error(ex->getMessage());
    }
 
    try
@@ -236,9 +236,9 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
      s->setSensorDebounceGoingInActiveTimer(inActive.toLong());
     }
    }
-   catch (NumberFormatException ex)
+   catch (NumberFormatException* ex)
    {
-    log->error(ex.getMessage());
+    log->error(ex->getMessage());
    }
   }
 

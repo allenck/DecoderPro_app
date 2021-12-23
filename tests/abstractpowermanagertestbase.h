@@ -14,16 +14,16 @@ public:
     virtual /*public*/ void setUp() =0;
 public slots:
     /*public*/ void testCreate();
-    /*public*/ void testSetPowerOn() throw (JmriException);
-    /*public*/ void testSetPowerOff() throw (JmriException);
-    /*public*/ void testSetPowerIdle() throw (JmriException);
-    /*public*/ void testStateOn() throw (JmriException);
-    /*public*/ void testStateOff() throw (JmriException);
-    /*public*/ void testStateIdle() throw (JmriException);
-    /*public*/ void testAddListener() throw (JmriException);
+    /*public*/ void testSetPowerOn() /*throw (JmriException)*/;
+    /*public*/ void testSetPowerOff() /*throw (JmriException)*/;
+    /*public*/ void testSetPowerIdle() /*throw (JmriException)*/;
+    /*public*/ void testStateOn() /*throw (JmriException)*/;
+    /*public*/ void testStateOff() /*throw (JmriException)*/;
+    /*public*/ void testStateIdle() /*throw (JmriException)*/;
+    /*public*/ void testAddListener() /*throw (JmriException)*/;
     /*public*/ void testRemoveListener();
-    /*public*/ void testDispose1() throw (JmriException);
-    /*public*/ void testDispose2() throw (JmriException);
+    /*public*/ void testDispose1() /*throw (JmriException)*/;
+    /*public*/ void testDispose2() /*throw (JmriException)*/;
     /*public*/ void testImplementsIdle();
 
 signals:

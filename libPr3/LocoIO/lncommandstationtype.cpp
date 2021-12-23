@@ -229,7 +229,7 @@
  {
   if (p->name==(name)) return p;
  }
- throw IllegalArgumentException("argument value ["+name+"] not valid");
+ throw new IllegalArgumentException("argument value ["+name+"] not valid");
 }
 
 /*static*/ /*public*/ LnCommandStationType* LnCommandStationType::getByType(LnCommandStationTypes type)
@@ -373,7 +373,7 @@
  {
   if (p->type==(type)) return p;
  }
- throw IllegalArgumentException("argument value ["+QString::number((int)type)+"] not valid");
+ throw new IllegalArgumentException("argument value ["+QString::number((int)type)+"] not valid");
 }
 /**
  * Get a new ThrottleManager of the right type for this command station.
@@ -399,9 +399,9 @@
   return new LnThrottleManager(memo);
  }
  log->error(QString("Did not find a throttle ctor for %1").arg( name));
-//    } catch (ClassNotFoundException e1) {
+//    } catch (ClassNotFoundException* e1) {
 //        log->error("Could not find class for throttle manager from type {} in enum element {}", throttleClassName, name);
-//    } catch (InstantiationException e2) {
+//    } catch (InstantiationException* e2) {
 //        log->error("Could not create throttle manager object from type {} in enum element {}", throttleClassName, name, e2);
 //    } catch (IllegalAccessException e3) {
 //        log->error("Access error creating throttle manager object from type {} in enum element {}", throttleClassName, name, e3);
@@ -432,9 +432,9 @@
   if(slotManagerClassName == "SlotManager")
    return new SlotManager(tc);
   log->error(QString("Did not find a slotmanager ctor for %1").arg(name));
-//    } catch (ClassNotFoundException e1) {
+//    } catch (ClassNotFoundException* e1) {
 //        log->error("Could not find class for slotmanager from type {} in enum element {}", slotManagerClassName, name);
-//    } catch (InstantiationException e2) {
+//    } catch (InstantiationException* e2) {
 //        log->error("Could not create slotmanager object from type {} in enum element {}", slotManagerClassName, name, e2);
 //    } catch (IllegalAccessException e3) {
 //        log->error("Access error creating slotmanager object from type {} in enum element {}", slotManagerClassName, name, e3);

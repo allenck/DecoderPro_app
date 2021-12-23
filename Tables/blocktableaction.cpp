@@ -397,7 +397,7 @@ BlockTableAction::BlockTableAction(QObject *parent) :
    QString speed =  /*(QComboBox*) value.to.getSelectedItem();*/ value.toString();
  //  try {
        b->setBlockSpeed(speed);
- //  } catch (JmriException ex) {
+ //  } catch (JmriException* ex) {
  //      JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + speed);
  //      return;
  //  }
@@ -819,7 +819,7 @@ BlockTableAction::BlockTableAction(QObject *parent) :
     //We will allow the turnout manager to handle checking if the values have changed
     try {
         ((BlockManager*)InstanceManager::getDefault("BlockManager"))->setDefaultSpeed(speedValue);
-    } catch (IllegalArgumentException ex) {
+    } catch (IllegalArgumentException* ex) {
         JOptionPane::showMessageDialog(_who, ex.getMessage() + "\n" + speedValue);
     }
 }
@@ -1081,16 +1081,16 @@ void BlockTableAction::okPressed(JActionEvent* /*e*/)
       if (blk == nullptr)
       {
          xName = uName;
-         throw IllegalArgumentException();
+         throw new IllegalArgumentException();
       }
    } else {
        blk = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->createNewBlock(sName, user);
        if (blk == nullptr) {
            xName = sName;
-           throw IllegalArgumentException();
+           throw new IllegalArgumentException();
        }
    }
-  } catch (IllegalArgumentException ex) {
+  } catch (IllegalArgumentException* ex) {
    // user input no good
    handleCreateException(xName);
    statusBar->setText(tr("Check that number/name is OK and not in use."));

@@ -45,7 +45,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
   this->setPortNamePattern();
   try {
       sharedConnections = /*JDOMUtil.toJDOMElement*/(ProfileUtils::getAuxiliaryConfiguration(profile)->getConfigurationFragment(CONNECTIONS, NAMESPACE, true));
-  } catch (NullPointerException ex)
+  } catch (NullPointerException* ex)
   {
       // Normal if this is a new profile
       log-> info("No connections configured.");
@@ -57,7 +57,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
    {
     perNodeConnections = /*JDOMUtil.toJDOMElement*/(ProfileUtils::getAuxiliaryConfiguration(profile)->getConfigurationFragment(CONNECTIONS, NAMESPACE, false));
    }
-   catch (NullPointerException ex)
+   catch (NullPointerException* ex)
    {
     // Normal if the profile has not been used on this computer
     log-> info("No local configuration found.");
@@ -148,7 +148,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
      }
     }
 
-    catch (ClassNotFoundException /*| InstantiationException | IllegalAccessException*/ ex)
+    catch (ClassNotFoundException* /*| InstantiationException | IllegalAccessException*/ ex)
     {
      log-> error(tr("Unable to create %1 for %2").arg(className).arg(shared.tagName()), ex);
      QString english = tr( "Unable to create connection \"%1\" (%2).").arg(userName).arg( systemName); // NOI18N
@@ -226,7 +226,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
  // save connections, or save an empty connections element if user removed all connections
  try {
   ProfileUtils::getAuxiliaryConfiguration(profile)->putConfigurationFragment(/*JDOMUtil.toW3CElement*/(element), shared);
- } catch (JDOMException ex) {
+ } catch (JDOMException* ex) {
      log-> error("Unable to create create XML"/*, ex*/);
  }
 }
@@ -243,7 +243,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
 {
  if (c == NULL)
  {
-  throw NullPointerException();
+  throw new NullPointerException();
  }
  if (!connections.contains(c))
  {
@@ -479,7 +479,7 @@ Logger* ProxyConnectionTypeList::log = LoggerFactory::getLogger("ProxyConnection
         if (properties.getProperty(pattern) == null) {
             try (InputStream in = ConnectionConfigManager.class.getResourceAsStream("PortNamePatterns.properties")) { // NOI18N
                 properties.load(in);
-            } catch (IOException ex) {
+            } catch (IOException* ex) {
                 log.error("Unable to read PortNamePatterns.properties", ex);
             }
         }

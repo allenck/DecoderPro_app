@@ -327,7 +327,7 @@ void LnOpsModeProgrammer::loadSV2MessageFormat(LocoNetMessage* m, int mAddress, 
         mode = m;
         notifyPropertyChange("Mode", VPtr<ProgrammingMode>::asQVariant(mode), VPtr<ProgrammingMode>::asQVariant(m));
     } else {
-        throw IllegalArgumentException("Invalid requested mode: "+m->toString());
+        throw new IllegalArgumentException("Invalid requested mode: "+m->toString());
     }
 }
 /*public*/ /*final*/ ProgrammingMode* LnOpsModeProgrammer::getMode() { return mode; }

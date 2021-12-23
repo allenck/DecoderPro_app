@@ -90,7 +90,7 @@ void WiThrottlePrefsPanel::common()
     int portNum;
     try {
         portNum = (int) port->value();
-    } catch (NumberFormatException NFE) { //  Not a number
+    } catch (NumberFormatException* NFE) { //  Not a number
         portNum = 0;
     }
     if ((portNum < 1) || (portNum > 65535)) { //  Invalid port value

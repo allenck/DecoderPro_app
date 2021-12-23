@@ -57,7 +57,7 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
         bool pass = false;
         try {
             r->addEntry(nullptr);
-        } catch (NullPointerException e) {
+        } catch (NullPointerException* e) {
             pass = true;
         }
         Assert::assertTrue("Adding nullptr entry should have caused NPE", pass,__FILE__, __LINE__);
@@ -71,7 +71,7 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
         bool pass = false;
         try {
             r->addEntry(nullptr);
-        } catch (NullPointerException e) {
+        } catch (NullPointerException* e) {
             pass = true;
         }
         Assert::assertTrue("Adding nullptr entry should have caused NPE", pass,__FILE__, __LINE__);

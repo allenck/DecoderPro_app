@@ -327,7 +327,7 @@ WebServer::~WebServer()
         )) {
             ((ContextHandlerCollection) this->server.getHandler()).addHandler(handler);
         }
-    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
+    } catch (InstantiationException* | IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
         log->error("Unable to register servlet", ex);
     }
 #endif

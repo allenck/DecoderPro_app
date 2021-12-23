@@ -728,7 +728,7 @@ static /*public*/ JScrollPane createScrollPaneForTable(JTable aTable) {
  */
 /*public*/ void JTable::setRowHeight(int rowHeight) {
     if (rowHeight <= 0) {
-        throw IllegalArgumentException("New row height less than 1");
+        throw new IllegalArgumentException("New row height less than 1");
     }
     int old = this->_rowHeight;
     this->_rowHeight = rowHeight;
@@ -784,7 +784,7 @@ static /*public*/ JScrollPane createScrollPaneForTable(JTable aTable) {
  */
 /*public*/ void JTable::setRowHeight(int row, int rowHeight) {
     if (rowHeight <= 0) {
-        throw IllegalArgumentException("New row height less than 1");
+        throw new IllegalArgumentException("New row height less than 1");
     }
     getRowModel()->setSize(row, rowHeight);
     if (sortManager != NULL) {
@@ -3547,7 +3547,7 @@ private void adjustSizes(long target, Resizable2 r, bool limitToRange) {
 {
  if (dataModel == NULL)
  {
-  throw IllegalArgumentException("Cannot set a NULL TableModel");
+  throw new IllegalArgumentException("Cannot set a NULL TableModel");
  }
  if (this->dataModel != dataModel)
  {
@@ -3611,7 +3611,7 @@ log->debug(QString("Columns about to be inserted %1 %2 ").arg(from).arg(to));
 {
  if (columnModel == NULL)
  {
-  throw IllegalArgumentException("Cannot set a NULL ColumnModel");
+  throw new IllegalArgumentException("Cannot set a NULL ColumnModel");
  }
  TableColumnModel* old = this->columnModel;
  if (columnModel != old)

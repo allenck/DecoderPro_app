@@ -108,7 +108,7 @@ throw (ClassNotFoundException)
 
 //    try {
 //        return Class.forName(className, true, systemClassLoader);
-//    } catch (ClassNotFoundException e2) {
+//    } catch (ClassNotFoundException* e2) {
 //        if (fallback != NULL) {
 //            return Class.forName(className, true, fallback);
 //        } else {
@@ -280,10 +280,10 @@ throw (ClassNotFoundException)
 
     try {
         mimeType = new MimeType(primaryType, subType, params);
-    } catch (MimeTypeParseException mtpe)
+    } catch (MimeTypeParseException* mtpe)
     {
-        log->error("MimeType Parse Exception: " + mtpe.getMessage());
-        throw  IllegalArgumentException("MimeType Parse Exception: " + mtpe.getMessage());
+        log->error("MimeType Parse Exception: " + mtpe->getMessage());
+        throw  IllegalArgumentException("MimeType Parse Exception: " + mtpe->getMessage());
     }
 
     //this->representationClass  = representationClass;
@@ -324,9 +324,9 @@ throw (ClassNotFoundException)
     }
     try {
         mimeType = new MimeType(primaryType, subType, params);
-    } catch (MimeTypeParseException mtpe) {
-        log->error("MimeType Parse Exception: " + mtpe.getMessage());
-        throw  IllegalArgumentException("MimeType Parse Exception: " + mtpe.getMessage());
+    } catch (MimeTypeParseException* mtpe) {
+        log->error("MimeType Parse Exception: " + mtpe->getMessage(), mtpe);
+        throw  IllegalArgumentException("MimeType Parse Exception: " + mtpe->getMessage());
     }
 
     //this->representationClass  = representationClass;
@@ -372,16 +372,16 @@ throw (ClassNotFoundException)
 /*public*/ DataFlavor::DataFlavor(QString mimeType, QString humanPresentableName, QObject *parent) : QObject(parent){
     //super();
     if (mimeType == "") {
-        throw  NullPointerException("mimeType");
+        throw new NullPointerException("mimeType");
     }
     try {
         initialize(mimeType, humanPresentableName, /*this->getClass().getClassLoader()*/NULL);
-    } catch (MimeTypeParseException mtpe) {
-        log->error("failed to parse:" + mimeType);
+    } catch (MimeTypeParseException* mtpe) {
+        log->error("failed to parse:" + mimeType, mtpe);
         throw  IllegalArgumentException("failed to parse:" + mimeType);
-    } catch (ClassNotFoundException cnfe) {
-        log->error("can't find specified class: " + cnfe.getMessage());
-        throw  IllegalArgumentException("can't find specified class: " + cnfe.getMessage());
+    } catch (ClassNotFoundException* cnfe) {
+        log->error("can't find specified class: " + cnfe->getMessage(), cnfe);
+        throw new IllegalArgumentException("can't find specified class: " + cnfe->getMessage());
     }
 }
 #if 0
@@ -442,13 +442,13 @@ throw (ClassNotFoundException)
 /*public*/ DataFlavor::DataFlavor(QString mimeType, QObject *parent )  throw (ClassNotFoundException) : QObject(parent) {
     //super();
     if (mimeType == "") {
-        throw NullPointerException("mimeType");
+        throw new NullPointerException("mimeType");
     }
     try {
         initialize(mimeType, "text/plain", /*this->getClass().getClassLoader()*/NULL);
-    } catch (MimeTypeParseException mtpe) {
-        log->error("failed to parse:" + mimeType);
-        throw IllegalArgumentException("failed to parse:" + mimeType);
+    } catch (MimeTypeParseException* mtpe) {
+        log->error("failed to parse:" + mimeType, mtpe);
+        throw new IllegalArgumentException("failed to parse:" + mimeType);
     }
 }
 
@@ -472,7 +472,7 @@ DataFlavor::~DataFlavor()
 *
 * @see tryToLoadClass
 */
-/*private*/ void DataFlavor::initialize(QString mimeType, QString humanPresentableName, ClassLoader* classLoader) throw (MimeTypeParseException, ClassNotFoundException)
+/*private*/ void DataFlavor::initialize(QString mimeType, QString humanPresentableName, ClassLoader* classLoader) /*throw (MimeTypeParseException, ClassNotFoundException)*/
 {
  if (mimeType == "")
  {
@@ -1142,14 +1142,14 @@ static class TextFlavorComparator
 /*public*/ bool DataFlavor::isMimeTypeEqual(QString mimeType) {
     // JCK Test DataFlavor0117: if 'mimeType' is NULL, throw NPE
     if (mimeType == NULL) {
-        throw NullPointerException("mimeType");
+        throw new NullPointerException("mimeType");
     }
     if (this->mimeType == NULL) {
         return false;
     }
     try {
         return this->mimeType->match(new MimeType(mimeType));
-    } catch (MimeTypeParseException mtpe) {
+    } catch (MimeTypeParseException* mtpe) {
         return false;
     }
 }

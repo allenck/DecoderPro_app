@@ -719,17 +719,17 @@ void NXFrame::onDestUnits()
          if(!bok) throw ParseException("parse error on block length");
         } catch (ParseException  pe) {
             len = -1.0f;
-        } catch (NullPointerException  npe) {
+        } catch (NullPointerException*  npe) {
             len = -1.0f;
         }
     }
    return len;
 }
 
-/*private*/ float NXFrame::adjustdistance(float fromSpeed, float toSpeed, float distance, BlockOrder* bo) throw (JmriException) {
+/*private*/ float NXFrame::adjustdistance(float fromSpeed, float toSpeed, float distance, BlockOrder* bo) /*throw (JmriException)*/ {
         float pathLen = getPathLength(bo);
         if (pathLen <= 0) {
-         throw JmriException(tr("Path %1 in block %2 has length zero. Cannot run NXWarrants or ramp speeds through blocks with zero length.").arg(bo->getPathName()).arg(bo->getBlock()->getDisplayName()));
+         throw new JmriException(tr("Path %1 in block %2 has length zero. Cannot run NXWarrants or ramp speeds through blocks with zero length.").arg(bo->getPathName()).arg(bo->getBlock()->getDisplayName()));
         }
         int timeIncrement = _speedUtil->getRampTimeIncrement();
         float minDist = _speedUtil->getDistanceOfSpeedChange(fromSpeed, toSpeed, timeIncrement) +.1f;
@@ -755,13 +755,13 @@ void NXFrame::onDestUnits()
          BlockOrder* bo = orders->value(i);
          float pathLen = getPathLength(bo);
          if (pathLen <= 0) {
-             throw JmriException(tr("Path %1 in block %2 has length zero. Cannot run NXWarrants or ramp speeds through blocks with zero length.").arg(bo->getPathName()).arg(bo->getBlock()->getDisplayName()));
+             throw new JmriException(tr("Path %1 in block %2 has length zero. Cannot run NXWarrants or ramp speeds through blocks with zero length.").arg(bo->getPathName()).arg(bo->getBlock()->getDisplayName()));
          }
          totalLen += pathLen;
      }
      _stopDist = adjustdistance(throttleIncrement, 0.0f, _stopDist, orders->at(0));
      totalLen += _stopDist;
- } catch (JmriException je) {
+ } catch (JmriException* je) {
      throw je;
  }
  return totalLen;
@@ -948,8 +948,8 @@ void NXFrame::onDestUnits()
     float totalLen;
     try {
         totalLen = getTotalLength();
-    } catch (JmriException je) {
-        return je.getMessage();
+    } catch (JmriException* je) {
+        return je->getMessage();
     }
 
     RampData* upRamp;

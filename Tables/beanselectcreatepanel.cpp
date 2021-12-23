@@ -194,7 +194,7 @@ void BeanSelectCreatePanel::update(){
    NamedBean* nBean = createBean();
    return nBean->getDisplayName();
   }
-  catch (JmriException e){
+  catch (JmriException* e){
    return "";
   }
  }
@@ -205,7 +205,7 @@ void BeanSelectCreatePanel::update(){
 * has been created
 */
 
-/*public*/ NamedBean* BeanSelectCreatePanel::getNamedBean() throw (JmriException)
+/*public*/ NamedBean* BeanSelectCreatePanel::getNamedBean() /*throw (JmriException)*/
 {
  if(existingItem->isChecked())
  {
@@ -213,12 +213,12 @@ void BeanSelectCreatePanel::update(){
  }
  //try {
  return createBean();
-//    } catch (JmriException e){
+//    } catch (JmriException* e){
 //        throw e;
 //    }
 }
 
-/*private*/ NamedBean* BeanSelectCreatePanel::createBean() throw (JmriException)
+/*private*/ NamedBean* BeanSelectCreatePanel::createBean() /*throw (JmriException)*/
 {
  QString prefix = /*ConnectionNameFromSystemName.getPrefixFromName((QString) prefixBox->getSelectedItem());*/ "L";
  NamedBean* nBean = NULL;
@@ -229,7 +229,7 @@ void BeanSelectCreatePanel::update(){
   {
    sName=((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->createSystemName(hardwareAddress->text(), prefix);
   }
-  catch (JmriException e)
+  catch (JmriException* e)
   {
    throw e;
   }
@@ -237,7 +237,7 @@ void BeanSelectCreatePanel::update(){
   {
    nBean = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->provideTurnout(sName);
   }
-  catch (IllegalArgumentException ex)
+  catch (IllegalArgumentException* ex)
   {
    // user input no good
    throw new JmriException("ErrorTurnoutAddFailed");
@@ -250,14 +250,14 @@ void BeanSelectCreatePanel::update(){
   {
    sName=((ProxySensorManager*)InstanceManager::sensorManagerInstance())->createSystemName(hardwareAddress->text(), prefix);
   }
-  catch (JmriException e)
+  catch (JmriException* e)
   {
    throw e;
   }
   try
   {
    nBean = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->provideSensor(sName);
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             // user input no good
             throw new JmriException("ErrorSensorAddFailed");
         }
@@ -269,7 +269,7 @@ void BeanSelectCreatePanel::update(){
         {
             try {
                 nBean = ((DefaultMemoryManager*)InstanceManager::memoryManagerInstance())->provideMemory(sName);
-            } catch (IllegalArgumentException ex) {
+            } catch (IllegalArgumentException* ex) {
                 // user input no good
                 throw new JmriException("ErrorMemoryAddFailed");
             }
@@ -277,7 +277,7 @@ void BeanSelectCreatePanel::update(){
         else if (qobject_cast<BlockManager*>(_manager->self())!=NULL) {
             try {
                 nBean = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->provideBlock(sName);
-            } catch (IllegalArgumentException ex) {
+            } catch (IllegalArgumentException* ex) {
                 // user input no good
                 throw new JmriException("ErrorBlockAddFailed");
             }

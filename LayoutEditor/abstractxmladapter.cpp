@@ -62,7 +62,7 @@ AbstractXmlAdapter::AbstractXmlAdapter(QObject *parent)
 }
 
 //@Override
-/*public*/ void AbstractXmlAdapter::load(QDomElement shared, QDomElement /*perNode*/, QObject* o) throw (JmriConfigureXmlException)
+/*public*/ void AbstractXmlAdapter::load(QDomElement shared, QDomElement /*perNode*/, QObject* o) /*throw (JmriConfigureXmlException)*/
 {
  //this->load(shared, o);
 }

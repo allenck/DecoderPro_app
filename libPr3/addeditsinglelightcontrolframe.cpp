@@ -632,7 +632,7 @@
             setUpControlType(Light::NO_CONTROL);
             break;
         default:
-            log->error("Unhandled light control type: {}", ctType);
+            log->error(tr("Unhandled light control type: %1").arg(ctType));
             break;
     }
 

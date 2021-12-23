@@ -52,7 +52,7 @@ void PowerManagerButton::common(bool fullText)
 //                } else if (powerMgr.getPower() == PowerManager.UNKNOWN) {
 //                    powerControl.offButtonPushed();
 //                }
-//            } catch (JmriException ex) {
+//            } catch (JmriException* ex) {
 //                setIcon(powerXIcon);
 //            }
 //        }
@@ -79,7 +79,7 @@ void PowerManagerButton::OnClicked()
     } else if (powerMgr->getPower() == PowerManager::UNKNOWN) {
         powerControl->offButtonPushed();
     }
-} catch (JmriException ex) {
+} catch (JmriException* ex) {
     setIcon(powerXIcon);
 }
 
@@ -138,7 +138,7 @@ void PowerManagerButton::OnClicked()
    }
   }
  }
- catch (JmriException ex)
+ catch (JmriException* ex)
  {
  setIcon(powerXIcon);
  setToolTip(tr("Layout Power state unknown. Click to turn off."));

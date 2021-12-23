@@ -24,7 +24,7 @@ private:
 
 public slots:
 protected slots:
-    /*protected*/ void performAction(Action* action) throw (JmriException) ;
+    /*protected*/ void performAction(Action* action) /*throw (JmriException)*/ ;
 };
 
 #endif // PERFORMACTIONMODEL_H

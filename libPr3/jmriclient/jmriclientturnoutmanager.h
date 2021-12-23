@@ -10,7 +10,7 @@ public:
  /*public*/ SystemConnectionMemo* getMemo();
 
  /*public*/ Turnout* createNewTurnout(QString systemName, QString userName)const override;
- /*public*/ QString createSystemName(QString curAddress, QString prefix)const throw (JmriException)override;
+ /*public*/ QString createSystemName(QString curAddress, QString prefix)const /*throw (JmriException)*/override;
  /*public*/ bool allowMultipleAdditions(QString systemName) override;
  /*public*/ QString getNamedBeanClass()const override {
      return "Turnout";

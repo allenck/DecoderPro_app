@@ -423,7 +423,7 @@
  */
 /*@Nonnull*/
 /*public*/ QList<QString> LayoutTurnoutView::getBeanReferences(QString /*pointName*/) {
-    throw IllegalArgumentException("should be called on LayoutTurnout");
+    throw new IllegalArgumentException("should be called on LayoutTurnout");
 }
 
 /*@Nonnull*/
@@ -643,7 +643,7 @@
  */
 //@Override
 //@CheckForNull
-/*public*/ LayoutTrack* LayoutTurnoutView::getConnection(HitPointType::TYPES connectionType) throw (JmriException) {
+/*public*/ LayoutTrack* LayoutTurnoutView::getConnection(HitPointType::TYPES connectionType) /*throw (JmriException)*/ {
     return turnout->getConnection(connectionType);
 }
 
@@ -651,7 +651,7 @@
  * {@inheritDoc}
  */
 //@Override
-/*public*/ void LayoutTurnoutView::setConnection(HitPointType::TYPES connectionType, /*@CheckForNull*/ LayoutTrack* o, HitPointType::TYPES type) throw (JmriException) {
+/*public*/ void LayoutTurnoutView::setConnection(HitPointType::TYPES connectionType, /*@CheckForNull*/ LayoutTrack* o, HitPointType::TYPES type) /*throw (JmriException)*/ {
     turnout->setConnection(connectionType, o, type);
 }
 

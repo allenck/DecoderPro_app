@@ -70,12 +70,12 @@
             } else {
                 try {
                     sendStatus(signalHeadName, signalHeadState);
-                } catch (IOException ex) {
+                } catch (IOException* ex) {
                     log->error("Error sending appearance", ex);
                 }
             }
         }
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log->error("Exception setting signalHead " + signalHeadName + " appearance:", ex);
     }
 }

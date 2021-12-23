@@ -220,7 +220,7 @@ return (settingRouteColor == QColor() ? false : true);
 //@Override
 /*public*/ /*DestinationPoints*/NamedBean *EntryExitPairs::getByUserName(/*@Nonnull*/ QString userName) const {
  if(userName=="")
-  throw NullPointerException(tr("userName is marked NonNull but is null"));
+  throw new NullPointerException(tr("userName is marked NonNull but is null"));
 
   for (Source* e : nxpair.values()) {
       DestinationPoints* pd = (DestinationPoints*)e->getByUserName(userName);
@@ -543,7 +543,7 @@ public List<DestinationPoints> getNamedBeanList() {
     }
    }
   }
-  catch (JmriException e) {
+  catch (JmriException* e) {
       //Can be considered normal if route is blocked
   }
  }
@@ -675,20 +675,20 @@ public List<DestinationPoints> getNamedBeanList() {
  if (source==NULL)
  {
   log->error("no source Object provided");
-  throw NullPointerException("no source Object provided");
+  throw new NullPointerException("no source Object provided");
   //return;
  }
  if(destination==NULL)
  {
   log->error("no destination Object provided");
-  throw NullPointerException("no destination Object provided");
+  throw new NullPointerException("no destination Object provided");
   //return;
  }
  PointDetails* sourcePoint = providePoint(source, panel);
  if(sourcePoint==NULL)
  {
   log->error("source point for " + source->getDisplayName() + " not created addNXDes");
-  throw NullPointerException("source point for " + source->getDisplayName() + " not created addNXDes");
+  throw new NullPointerException("source point for " + source->getDisplayName() + " not created addNXDes");
   //return;
  }
 
@@ -932,7 +932,7 @@ void EntryExitPairs::createDeletePairList(NamedBean* sensor) {
 /*public*/ QList<QString> EntryExitPairs::layoutBlockSensors(/*@Nonnull*/ LayoutBlock* layoutBlock)
 {
  if(layoutBlock==nullptr)
-  throw NullPointerException(tr("layoutBlock is marked NonNull but is null"));
+  throw new NullPointerException(tr("layoutBlock is marked NonNull but is null"));
 
  log->debug(tr("layoutBlockSensors: %1").arg(layoutBlock->getDisplayName()));
  QList<QString> blockSensors = QList<QString>();
@@ -1110,8 +1110,8 @@ if( nxpair.contains(getPointDetails(source, panel)))
         nxPoint->removeSensorList();
         try {
             nxPoint->getSensor()->setKnownState(sensorState);
-        } catch (JmriException ex){
-            log->error(ex.getMessage());
+        } catch (JmriException* ex){
+            log->error(ex->getMessage());
         }
         nxPoint->addSensorList();
     }
@@ -1303,14 +1303,14 @@ PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, QList<LayoutB
 * Discover all possible valid source and destination signalmasts past pairs
 * on all layout editor panels.
 */
-/*public*/ void EntryExitPairs::automaticallyDiscoverEntryExitPairs(LayoutEditor* editor, int interlockType) throw (JmriException)
+/*public*/ void EntryExitPairs::automaticallyDiscoverEntryExitPairs(LayoutEditor* editor, int interlockType) /*throw (JmriException)*/
 {
  //This is almost a duplicate of that in the DefaultSignalMastLogicManager
  runWhenStablised=false;
  LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
  if(!lbm->isAdvancedRoutingEnabled())
  {
-  throw JmriException("advanced routing not enabled");
+  throw new JmriException("advanced routing not enabled");
  }
  if(!lbm->routingStablised())
  {
@@ -1360,7 +1360,7 @@ PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, QList<LayoutB
     {
      automaticallyDiscoverEntryExitPairs(toUseWhenStable, interlockTypeToUseWhenStable);
     }
-    catch (JmriException je)
+    catch (JmriException* je)
     {
       //Considered normal if routing not enabled
     }

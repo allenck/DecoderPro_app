@@ -54,7 +54,7 @@ class Symbol;
      * @throws JmriException if an exception is thrown
      */
     /*public*/ virtual void createSymbols(/*Collection<? extends VariableData>*/ QSet<VariableData*> symbolDefinitions)
-            throw (JmriException)=0;
+            /*throw (JmriException)*/=0;
 
     /**
      * Add new symbols to the symbol table.
@@ -68,7 +68,7 @@ class Symbol;
     /*public*/ virtual void createSymbols(
             SymbolTable* symbolTable,
             /*Collection<? extends VariableData>*/QSet<VariableData*> symbolDefinitions)
-            throw (JmriException)=0;
+            /*throw (JmriException)*/=0;
 
     /**
      * Removes symbols from the symbol table
@@ -76,7 +76,7 @@ class Symbol;
      * @throws JmriException if an exception is thrown
      */
     /*public*/ virtual void removeSymbols(/*Collection<? extends VariableData>*/QSet<VariableData*> symbolDefinitions)
-            throw (JmriException);
+            /*throw (JmriException)*/;
 
     /**
      * Print the symbol table on a stream

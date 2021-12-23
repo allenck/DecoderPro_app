@@ -390,7 +390,7 @@ namespace Operations
      if (enabled && !autoBackup) {
          try {
  // TODO:            new AutoBackup().autoBackup();
-         } catch (IOException ex) {
+         } catch (IOException* ex) {
  // TODO            log->debug("Autobackup after setting AutoBackup flag true", ex);
          }
      }

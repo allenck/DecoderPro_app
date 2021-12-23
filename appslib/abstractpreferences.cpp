@@ -180,7 +180,7 @@ AbstractPreferences::AbstractPreferences()
 /*public*/ void AbstractPreferences::put(QString key, QString value)
 {
 // if (key.isEmpty() || value.isEmpty())
-//     throw NullPointerException();
+//     throw new NullPointerException();
  if (key.length() > MAX_KEY_LENGTH
     || value.length() > MAX_VALUE_LENGTH)
   throw  IllegalArgumentException("key ("
@@ -223,7 +223,7 @@ AbstractPreferences::AbstractPreferences()
  */
 /*public*/ QString AbstractPreferences::get(QString key, QString def) {
     if (key==NULL)
-        throw NullPointerException("Null key");
+        throw new NullPointerException("Null key");
 //    /*synchronized*/(lock) {
         if (removed)
             throw IllegalStateException("Node has been removed.");
@@ -395,7 +395,7 @@ AbstractPreferences::AbstractPreferences()
             result = value.toLong(&bOk);
         if(!bOk)
          throw NumberFormatException();
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException* e) {
         // Ignoring exception causes specified default to be returned
     }
 
@@ -510,7 +510,7 @@ AbstractPreferences::AbstractPreferences()
         if (value != NULL)
             result = (value.toFloat(&bOk));
         if(!bOk) throw NumberFormatException();
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException* e) {
         // Ignoring exception causes specified default to be returned
     }
 
@@ -567,7 +567,7 @@ AbstractPreferences::AbstractPreferences()
         if (value != NULL)
             result =(value.toDouble(&bOk));
         if(!bOk) throw NumberFormatException();
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException* e) {
         // Ignoring exception causes specified default to be returned
     }
 
@@ -932,7 +932,7 @@ AbstractPreferences::AbstractPreferences()
             try {
                 i.next()->removeNode2();
 //                i.remove();
-            } catch (BackingStoreException x) { }
+            } catch (BackingStoreException* x) { }
         }
 
         // Now we have no descendants - it's time to die!
@@ -1328,7 +1328,7 @@ AbstractPreferences::AbstractPreferences()
  *         due to a failure in the backing store, or inability to
  *         communicate with it.
  */
-/*protected*/ /*abstract*/ void AbstractPreferences::syncSpi() throw (BackingStoreException) {throw BackingStoreException();}
+/*protected*/ /*abstract*/ void AbstractPreferences::syncSpi() throw (BackingStoreException) {throw new BackingStoreException();}
 
 /**
  * Implements the <tt>flush</tt> method as per the specification in
@@ -1391,7 +1391,7 @@ AbstractPreferences::AbstractPreferences()
  *         due to a failure in the backing store, or inability to
  *         communicate with it.
  */
-/*protected*/ /*abstract*/ void AbstractPreferences::flushSpi() throw (BackingStoreException) { throw BackingStoreException();}
+/*protected*/ /*abstract*/ void AbstractPreferences::flushSpi() throw (BackingStoreException) { throw new BackingStoreException();}
 
 /**
  * Returns <tt>true</tt> iff this node (or an ancestor) has been

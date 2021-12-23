@@ -135,7 +135,7 @@ void ListedTableFrame::common()
    tabbedTableArray->append(itemModel);
    itemBeingAdded->getAAClass()->addToFrame(this);
   }
-  catch (Exception ex) {
+  catch (Exception* ex) {
    detailpanel->addWidget(errorPanel(item->getItemString())/*, item->getClassAsString()*/);
    log->error("Error when adding " + item->getClassAsString() + " to display\n", ex);
   //ex.printStackTrace();
@@ -305,7 +305,7 @@ void ListedTableFrame::buildMenus(/*final*/ LTFTabbedTableItem* item)
           }
       } catch (PrinterException e1) {
           log->warn("error printing: " + e1.getLocalizedMessage(), e1);
-      } catch (NullPointerException ex) {
+      } catch (NullPointerException* ex) {
           log->error("Trying to print returned a NPE error");
       }
 //     }
@@ -444,13 +444,13 @@ LTFTabbedTableItem::LTFTabbedTableItem(QString aaClass, QString choice, bool std
         //Class<?> cl = Class.forName(aaClass);
         java.lang.reflect.Constructor<?> co = cl.getConstructor(new Class[]{String.class});
         tableAction = (AbstractTableAction) co.newInstance(choice);
-    } catch (ClassNotFoundException e1) {
+    } catch (ClassNotFoundException* e1) {
         log->error("Not a valid class : " + aaClass);
         return;
-    } catch (NoSuchMethodException e2) {
+    } catch (NoSuchMethodException* e2) {
         log->error("Not such method : " + aaClass);
         return;
-    } catch (InstantiationException e3) {
+    } catch (InstantiationException* e3) {
         log->error("Not a valid class : " + aaClass);
         return;
     } catch (ClassCastException e4) {
@@ -596,7 +596,7 @@ void LTFTabbedTableItem::addPanelModel() {
      dataPanelLayout->addWidget(tableAction->getPanel(), 0,0); //, 0, Qt::AlignHCenter);
         //dataPanel.add(bottomBox, BorderLayout.SOUTH);
      dataPanelLayout->addWidget(bottomBox, 1,0); //, 0, Qt::AlignBottom);
-//    } catch (NullPointerException e) {
+//    } catch (NullPointerException* e) {
 //        log->error("An error occured while trying to create the table for " + itemText + " " + e.toString());
 //        e.printStackTrace();
 //    }

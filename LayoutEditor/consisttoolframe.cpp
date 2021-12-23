@@ -425,7 +425,7 @@ void ConsistToolFrame::on_isCSConsist_checked(bool)
  try {
      consistManager->delConsist(address);
  } catch (Exception ex) {
-     log->error(tr("Error deleting consist %1").arg(address->toString()), ex);
+     log->error(tr("Error deleting consist %1").arg(address->toString()), &ex);
  }
  adrSelector->reset();
  adrSelector->setEnabled(true);
@@ -434,9 +434,9 @@ void ConsistToolFrame::on_isCSConsist_checked(bool)
  {
   consistFile->writeFile(consistManager->getConsistList()->toList());
  }
- catch (IOException ex)
+ catch (IOException* ex)
  {
-  log->warn("error writing consist file: " + ex.getMessage());
+  log->warn("error writing consist file: " + ex->getMessage());
  }
  resetLocoButtonActionPerformed(/*e*/);
  canAdd();

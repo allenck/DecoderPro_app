@@ -161,7 +161,7 @@ void SprogSystemConnectionMemo::common(SprogConstants::SprogMode sm)
   case SprogConstants::SERVICE:
    break;
   default:
-   log->error("Unhandled sprogMode: {}", sprogMode);
+   log->error(tr("Unhandled sprogMode: %1").arg(sprogMode));
    break;
  }
 }

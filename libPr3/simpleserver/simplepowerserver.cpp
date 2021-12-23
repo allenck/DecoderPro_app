@@ -44,7 +44,7 @@
 }
 
 //@Override
-/*public*/ void SimplePowerServer::parseStatus(QString statusString) throw (JmriException) {
+/*public*/ void SimplePowerServer::parseStatus(QString statusString) /*throw (JmriException)*/ {
  log->debug("statusString = " + statusString);
 #if 0
     JmriServerParser p = new JmriServerParser(new java.io.StringReader(statusString));

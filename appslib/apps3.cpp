@@ -159,7 +159,7 @@
  //        QString key = e.nextElement();
  //        try {
  //            bm.addAction(key, rb.getString(key));
- //        } catch (ClassNotFoundException ex) {
+ //        } catch (ClassNotFoundException* ex) {
  //            log->error("Did not find class " + key);
  //        }
  //    }
@@ -351,18 +351,18 @@
                   QApplication::applicationName(),
                   JOptionPane::INFORMATION_MESSAGE);
          }
-     } catch (IOException ex) {
+     } catch (IOException* ex) {
          JOptionPane::showMessageDialog(sp,
-                 ex.getLocalizedMessage(),
+                 ex->getLocalizedMessage(),
                  QApplication::applicationName(),
                  JOptionPane::ERROR_MESSAGE);
-         log->error(ex.getMessage()/*, ex*/);
-     } catch (IllegalArgumentException ex) {
+         log->error(ex->getMessage()/*, ex*/);
+     } catch (IllegalArgumentException* ex) {
          JOptionPane::showMessageDialog(sp,
-                 ex.getLocalizedMessage(),
+                 ex->getLocalizedMessage(),
                  QApplication::applicationName(),
                  JOptionPane::ERROR_MESSAGE);
-         log->error(ex.getMessage()/*, ex*/);
+         log->error(ex->getMessage()/*, ex*/);
      }
     }
     try
@@ -372,7 +372,7 @@
         // Apps.setConfigFilename() does not reset the system property
         System::setProperty("org.jmri.Apps.configFilename", /*Profile::CONFIG_FILENAME*/"ProfileConfig.xml");
         log->info(tr("Starting with profile %1").arg( ProfileManager::getDefault()->getActiveProfile()->getId()));
-    } catch (IOException ex) {
-        log->info(tr("Profiles not configurable. Using fallback per-application configuration. Error: %1").arg( ex.getMessage()));
+    } catch (IOException* ex) {
+        log->info(tr("Profiles not configurable. Using fallback per-application configuration. Error: %1").arg( ex->getMessage()));
     }
 }

@@ -221,7 +221,7 @@ void AddEntryExitPairPanel::on_selectPanel_currentIndexChanged(QString)
    //connect(nxPairs->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), propertyNXListener, SLOT(propertyChange(PropertyChangeEvent*)));
    nxPairs->automaticallyDiscoverEntryExitPairs(panels->at(selectPanel->currentIndex()), typeBox->currentIndex());
   }
-  catch (JmriException e)
+  catch (JmriException* e)
   {
    nxPairs->removePropertyChangeListener(propertyNXListener);
    //disconnect(nxPairs->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertyNXListener, SLOT(propertyChange(PropertyChangeEvent*)));

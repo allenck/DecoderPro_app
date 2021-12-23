@@ -152,7 +152,7 @@ void FullBackupImportAction::common()
      fOut.close();
     }
     else
-      throw IOException(tr("error writing file %1").arg(fOut.fileName()));
+      throw new IOException(tr("error writing file %1").arg(fOut.fileName()));
     inputFile->close();
     f = zipper->goToNextFile();
     continue;
@@ -237,7 +237,7 @@ void FullBackupImportAction::common()
     // use the new roster
     Roster::getDefault()->reloadRosterFile();
    }
-   catch (JDOMException ex) {
+   catch (JDOMException* ex) {
        //ex.printStackTrace();
    }
     inputFile->close();
@@ -246,14 +246,14 @@ void FullBackupImportAction::common()
 
  } catch (FileNotFoundException ex) {
      //ex.printStackTrace();
- } catch (IOException ex) {
+ } catch (IOException* ex) {
      //ex.printStackTrace();
  }
 // finally {
 //     if (inputfile != NULL) {
 //         try {
 //             inputfile.close(); // zipper.close() is meaningless, see above, but this will do
-//         } catch (IOException ex) {
+//         } catch (IOException* ex) {
 //             ex.printStackTrace();
 //         }
 //     }

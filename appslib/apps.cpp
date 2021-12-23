@@ -214,19 +214,19 @@ bool Apps::configDeferredLoadOK = false;
              JOptionPane::INFORMATION_MESSAGE);
    }
   }
-  catch (IOException ex)
+  catch (IOException* ex)
   {
    JOptionPane::showMessageDialog(sp,
-           ex.getLocalizedMessage(),
+           ex->getLocalizedMessage(),
            QApplication::applicationName(),
            JOptionPane::ERROR_MESSAGE);
-   log->error(ex.getMessage());
-  } catch (IllegalArgumentException ex) {
+   log->error(ex->getMessage());
+  } catch (IllegalArgumentException* ex) {
    JOptionPane::showMessageDialog(sp,
-          ex.getLocalizedMessage(),
+          ex->getLocalizedMessage(),
           QApplication::applicationName(),
           JOptionPane::ERROR_MESSAGE);
-   log->error(ex.getMessage());
+   log->error(ex->getMessage());
   }
  }
  log->trace("about to try getStartingProfile");
@@ -248,7 +248,7 @@ bool Apps::configDeferredLoadOK = false;
   // rapid language set; must follow up later with full setting as part of preferences
   GuiLafPreferencesManager::setLocaleMinimally(profile);
  }
- catch (IOException ex)
+ catch (IOException* ex)
  {
    log->info("Profiles not configurable. Using fallback per-application configuration. Error: {}"/*, ex.getMessage()*/);
  }
@@ -341,7 +341,7 @@ bool Apps::configDeferredLoadOK = false;
    {
     configOK = cm->load(file, true);
    }
-   catch (JmriException e)
+   catch (JmriException* e)
    {
     log->error("Unhandled problem loading configuration", e);
     configOK = false;
@@ -629,9 +629,9 @@ void Apps::initGui() // must be called after Constructor is complete!
       result = false;
   }
  }
- catch (JmriException e)
+ catch (JmriException* e)
  {
-  log->error("Unhandled problem loading deferred configuration"+ e.getMessage());
+  log->error("Unhandled problem loading deferred configuration"+ e->getMessage());
   result = false;
  }
  log->debug(QString("end deferred load from config file, OK=") + ( result?"true":"false"));
@@ -1458,7 +1458,7 @@ static /*protected*/ void loadFile(String name) {
     if (pFile != NULL) {
         try {
             InstanceManager::configureManagerInstance().load(pFile);
-        } catch (JmriException e) {
+        } catch (JmriException* e) {
             log->error("Unhandled problem in loadFile", e);
         }
     } else {
@@ -1480,7 +1480,7 @@ static /*protected*/ void loadFile(String name) {
 /*protected*/ static void setApplication(String name) {
     try {
         jmri.Application.setApplicationName(name);
-    } catch (IllegalArgumentException ex) {
+    } catch (IllegalArgumentException* ex) {
         log->warn("Unable to set application name", ex);
     } catch (IllegalAccessException ex) {
         log->warn("Unable to set application name", ex);
@@ -1512,7 +1512,7 @@ static /*protected*/ void loadFile(String name) {
     // Set the application name
 //    try {
 //        jmri.Application.setApplicationName(name);
-//    } catch (IllegalArgumentException ex) {
+//    } catch (IllegalArgumentException* ex) {
 //        log->warn("Unable to set application name", ex);
 //    } catch (IllegalAccessException ex) {
 //        log->warn("Unable to set application name", ex);

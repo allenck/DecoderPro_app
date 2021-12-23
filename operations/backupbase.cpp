@@ -59,7 +59,7 @@ QObject(parent)
   // A root directory name for the backups must be supplied, which will be
   // from the derived class constructors.
   if (rootName == NULL) {
-      throw IllegalArgumentException("Backup root name can't be NULL"); // NOI18N
+      throw new IllegalArgumentException("Backup root name can't be NULL"); // NOI18N
   }
   _operationsRoot = new File(OperationsXml::getFileLocation(),
           OperationsXml::getOperationsDirectoryName());

@@ -34,7 +34,7 @@ public:
     /*public*/ bool isAspectDisabled(QString aspect) override;
     /*public*/ void setAllowUnLit(bool boo);
     /*public*/ bool allowUnLit();
-    /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) override;
+    /*public*/ void vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/ override;
     /*public*/ QString getBeanType() override;
     /*public*/ QString getMastType() override;
     /*public*/ void setMastType(/*@Nonnull*/ QString type) override;

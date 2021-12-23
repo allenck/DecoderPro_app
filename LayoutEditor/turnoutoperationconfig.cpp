@@ -51,7 +51,7 @@ TurnoutOperation* TurnoutOperationConfig::getOperation() { return myOperation; }
 //                config = (TurnoutOperationConfig)constrs[0].newInstance(new Object[]{op});
 //            } catch (Throwable e) { }		// too many to list!
 //        }
-//    } catch (ClassNotFoundException e) { }
+//    } catch (ClassNotFoundException* e) { }
     QString configName = op->metaObject()->className();
     if(configName == "NoFeedbackTurnoutOperation")
      config = new NoFeedbackTurnoutOperationConfig(op);

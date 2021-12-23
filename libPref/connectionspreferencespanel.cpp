@@ -360,7 +360,7 @@ void ConnectionsPreferencesPanel::addConnectionTab()
   {
    JmrixConfigPane::dispose(configPane);
   }
-  catch (NullPointerException ex)
+  catch (NullPointerException* ex)
   {
    log->error("Caught NULL Pointer Exception while removing connection tab");
   }

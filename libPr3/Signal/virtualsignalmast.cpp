@@ -72,7 +72,7 @@ void VirtualSignalMast::configureFromName(QString systemName)
         if (autoNumber > lastRef) {
             lastRef = autoNumber;
         }
-    } catch (NumberFormatException e){
+    } catch (NumberFormatException* e){
         log->warn("Auto generated SystemName "+ systemName + " is not in the correct format");
     }
     configureSignalSystemDefinition(system);

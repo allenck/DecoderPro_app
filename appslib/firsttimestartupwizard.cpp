@@ -350,8 +350,8 @@ Connect::Connect(FirstTimeStartUpWizard* wizard) { this->wizard = wizard;}
             try {
                 adp->_connect();
                 adp->configure();
-            } catch (Exception ex) {
-                wizard->log->error(ex.getLocalizedMessage(), ex);
+            } catch (Exception* ex) {
+                wizard->log->error(ex->getLocalizedMessage(), ex);
                 QCursor normalCursor = QCursor(Qt::ArrowCursor);//new Cursor(Cursor.DEFAULT_CURSOR);
                wizard-> parent->setCursor(normalCursor);
                 JOptionPane::showMessageDialog(nullptr,

@@ -193,7 +193,7 @@ AbstractPanelServlet::AbstractPanelServlet(QObject* parent) : HttpServlet(parent
     QBuffer* buf = new QBuffer(&ba);
     if(!panel->grab().save(buf, qPrintable(saveExtension)))
     {
-     throw IOException(tr("Error capturing %s").arg(name));
+     throw new IOException(tr("Error capturing %s").arg(name));
     }
     return ba;
 }

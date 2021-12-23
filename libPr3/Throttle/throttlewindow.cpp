@@ -351,7 +351,7 @@ ThrottleWindow::~ThrottleWindow()
   //    public void actionPerformed(ActionEvent e) {
   //        try {
   //            powerMgr.setPower(PowerManager.ON);
-  //        } catch (JmriException e1) {
+  //        } catch (JmriException* e1) {
   //            log.error("Error when setting power " + e1);
   //        }
   //    }
@@ -365,7 +365,7 @@ ThrottleWindow::~ThrottleWindow()
   //    public void actionPerformed(ActionEvent e) {
   //        try {
   //            powerMgr.setPower(PowerManager.OFF);
-  //        } catch (JmriException e1) {
+  //        } catch (JmriException* e1) {
   //            log.error("Error when setting power " + e1);
   //        }
   //    }

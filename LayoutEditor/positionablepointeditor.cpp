@@ -27,7 +27,7 @@
      */
     //@Override
     /*public*/ void PositionablePointEditor::editLayoutTrack(/*@Nonnull*/ LayoutTrackView *layoutTrack) {
-        log->error("no editor installed for PositionablePoint",  Exception("traceback"));
+        log->error("no editor installed for PositionablePoint", new Exception("traceback"));
     }
 
 

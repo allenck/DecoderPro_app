@@ -62,8 +62,8 @@ public:
  /*final*/ /*public*/ QString getTurnoutStateString(int turnoutState);
  /*abstract*/ virtual /*public*/ bool canRemove() =0;
  /*abstract*/ virtual /*public*/ void setObjects(/*@Nonnull*/ LayoutEditor* le) =0;
- /*abstract*/ virtual /*public*/ LayoutTrack* getConnection(HitPointType::TYPES /*connectionType*/) throw (JmriException) =0;
- /*abstract*/ virtual /*public*/ void setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) throw (JmriException) =0;
+ /*abstract*/ virtual /*public*/ LayoutTrack* getConnection(HitPointType::TYPES /*connectionType*/) /*throw (JmriException)*/ =0;
+ /*abstract*/ virtual /*public*/ void setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) /*throw (JmriException)*/ =0;
 
 // /*public*/ QPointF getCoordsCenter() const;
 // /*public*/ virtual void setCoordsCenter(/*@Nonnull*/ QPointF p) ;
@@ -86,7 +86,7 @@ public:
 // /*public*/ /*abstract*/ virtual void translateCoords(double xFactor, double yFactor);
 // /*public*/ /*abstract*/ virtual QPointF getCoordsForConnectionType(int);
 // /*public*/ /*abstract*/ virtual QRectF getBounds();
-// /*public*/ /*abstract*/ virtual void setConnection(HitPointType& connectionType, LayoutTrack* o, HitPointType& type) throw (JmriException);
+// /*public*/ /*abstract*/ virtual void setConnection(HitPointType& connectionType, LayoutTrack* o, HitPointType& type) /*throw (JmriException)*/;
  /*public*/ virtual bool isDisconnected(HitPointType::TYPES connectionType);
  /*public*/ /*abstract*/ virtual QList<HitPointType::TYPES> checkForFreeConnections();
  /*public*/ /*abstract*/ virtual bool checkForUnAssignedBlocks();

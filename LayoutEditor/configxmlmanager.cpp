@@ -118,7 +118,7 @@ void ConfigXmlManager::confirmAdapterAvailable(QObject* o)
   if (adapter!=NULL)
    try {
        Class::forName(adapter);
-   } catch (ClassNotFoundException ex) {
+   } catch (ClassNotFoundException* ex) {
        locateClassFailed(ex, adapter, o);
    } catch (NoClassDefFoundError ex) {
        locateClassFailed(ex, adapter, o);
@@ -655,17 +655,17 @@ File userPrefsFile;*/
  {
   adapter = (XmlAdapter*)Class::forName(/*adapterName(o)*/aName)->newInstance();
  }
- catch (ClassNotFoundException ex1)
+ catch (ClassNotFoundException* ex1)
  {
-  log->error(tr("Cannot load configuration adapter for ")+o->metaObject()->className()+tr(" due to ")+ex1.getMessage());
+  log->error(tr("Cannot load configuration adapter for ")+o->metaObject()->className()+tr(" due to ")+ex1->getMessage());
  }
- catch (IllegalAccessException ex2)
+ catch (IllegalAccessException* ex2)
  {
-     log->error(tr("Cannot load configuration adapter for ")+o->metaObject()->className()+tr(" due to ")+ex2.getMessage());
+     log->error(tr("Cannot load configuration adapter for ")+o->metaObject()->className()+tr(" due to ")+ex2->getMessage());
  }
- catch (InstantiationException ex3)
+ catch (InstantiationException* ex3)
  {
-     log->error(tr("Cannot load configuration adapter for ")+o->metaObject()->className()+tr(" due to ")+ex3.getMessage());
+     log->error(tr("Cannot load configuration adapter for ")+o->metaObject()->className()+tr(" due to ")+ex3->getMessage());
  }
  if(adapter != NULL && qobject_cast<XmlAdapter*>(adapter) != nullptr )
   return ((XmlAdapter*)adapter)->store(o);
@@ -708,7 +708,7 @@ File userPrefsFile;*/
  * method.
  * @return true if no problems during the load
  */
-/*public*/ bool ConfigXmlManager::load(File* fi) throw (JmriException)
+/*public*/ bool ConfigXmlManager::load(File* fi) /*throw (JmriException)*/
 {
     return load(fi, false);
 }
@@ -729,7 +729,7 @@ File userPrefsFile;*/
  * @since 2.11.2
  */
 //@Override
-/*public*/ bool ConfigXmlManager::load(File* fi, bool registerDeferred) throw (JmriException)
+/*public*/ bool ConfigXmlManager::load(File* fi, bool registerDeferred) /*throw (JmriException)*/
 {
  return this->load(FileUtil::fileToURL(fi), registerDeferred);
 }
@@ -1074,7 +1074,7 @@ File userPrefsFile;*/
 }
 
 //@Override
-/*public*/ bool ConfigXmlManager::loadDeferred(File* fi) throw (JmriException){
+/*public*/ bool ConfigXmlManager::loadDeferred(File* fi) /*throw (JmriException)*/{
     return this->loadDeferred(FileUtil::fileToURL(fi));
 }
 

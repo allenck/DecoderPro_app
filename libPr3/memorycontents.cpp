@@ -370,7 +370,7 @@ QObject(parent)
     BufferedReader fileStream;
     try {
         fileStream = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         throw new FileNotFoundException(ex.toString());
     }
 #endif

@@ -227,7 +227,7 @@ Returns the 'n' signalheaditem
 /*public*/ int DefaultSignalGroup::getHeadOffState(SignalHead* bean){
     try {
         return getHeadItem(bean)->getOffAppearance();
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         return -1;
     }
 }
@@ -235,7 +235,7 @@ Returns the 'n' signalheaditem
 /*public*/ int DefaultSignalGroup::getHeadOnState(SignalHead* bean){
     try {
         return getHeadItem(bean)->getOnAppearance();
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         return -1;
     }
 }

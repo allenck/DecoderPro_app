@@ -94,7 +94,7 @@
    /*public*/ EtchedBorder::EtchedBorder(int etchType, QWidget* parent) : AbstractBorder(parent)
    {
      if ((etchType != RAISED) && (etchType != LOWERED))
-       throw IllegalArgumentException();
+       throw new IllegalArgumentException();
 
      this->etchType = etchType;
 

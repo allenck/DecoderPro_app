@@ -205,12 +205,12 @@ clientThread = NULL;
 // handle a client.
 try {
     handleClient(inStream, outStream);
-} catch (IOException ex) {
+} catch (IOException* ex) {
     // When we get an IO exception here, we're done
     log->debug("Server Exiting");
     // Unregister with the server
     removeClient(this);
-} catch (NullPointerException ex) {
+} catch (NullPointerException* ex) {
     // When we get an IO exception here, we're done with this client
     log->debug("Client Disconnect", ex.getMessage());
     // Unregister with the server

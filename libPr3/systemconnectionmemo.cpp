@@ -288,7 +288,7 @@ void SystemConnectionMemo::addToActionList()
   {
    util->addAction(key, rb->getString(key));
   }
-  catch (ClassNotFoundException ex)
+  catch (ClassNotFoundException* ex)
   {
    log->error("Did not find class "+key);
   }
@@ -311,7 +311,7 @@ void SystemConnectionMemo::removeFromActionList()
   {
    util->removeAction(key);
   }
-  catch (ClassNotFoundException ex)
+  catch (ClassNotFoundException* ex)
   {
    log->error("Did not find class "+key);
   }

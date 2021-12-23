@@ -870,7 +870,7 @@ EditFrame(title, parent, block)
      } else {
          path->setLength(f*10);
      }
- } catch (NumberFormatException nfe) {
+ } catch (NumberFormatException* nfe) {
      f = -1.0;
  }
  if (f<0.0f)

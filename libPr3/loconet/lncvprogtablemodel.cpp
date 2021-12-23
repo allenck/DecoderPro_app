@@ -166,7 +166,7 @@
               default: // column 1
                  return r + 1;
           }
-      } catch (NullPointerException npe) {
+      } catch (NullPointerException* npe) {
         log->warn(tr("Caught NPE reading Module %1").arg(r));
         return "";
       }

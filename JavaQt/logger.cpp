@@ -22,11 +22,11 @@ Logger::Logger(const Logger & other) : QObject()
  this->bInfoEnabled = other.bInfoEnabled;
  this->name = other.name;
 }
-/*static*/ void Logger::error(QString s, QVariant ex)
-{
- LoggerBase::error(s, ex);
-}
-/*static*/ void Logger::error(QString s, Throwable ex)
+///*static*/ void Logger::error(QString s, QVariant ex)
+//{
+// LoggerBase::error(s, ex);
+//}
+/*static*/ void Logger::error(QString s, Throwable* ex)
 {
  LoggerBase::error(s, ex);
 }

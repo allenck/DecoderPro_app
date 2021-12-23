@@ -461,12 +461,12 @@
     }
 
     //@Override
-    /*public*/ Base* AbstractFemaleSocket::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) throw (JmriException) {
+    /*public*/ Base* AbstractFemaleSocket::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/ {
         throw new UnsupportedOperationException("Not supported");
     }
 
     //@Override
-    /*public*/ Base* AbstractFemaleSocket::deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) throw (JmriException) {
+    /*public*/ Base* AbstractFemaleSocket::deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/ {
         throw  UnsupportedOperationException("Not supported");
     }
 

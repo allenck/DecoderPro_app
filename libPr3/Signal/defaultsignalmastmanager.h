@@ -29,7 +29,7 @@ public:
     /*public*/ SignalMast* getByUserName(QString key) const override;
     /*public*/ QString getBeanTypeHandled(bool plural) const override;
 #if 1
-    /*public*/ void addRepeater(SignalMastRepeater* rp) throw (JmriException);
+    /*public*/ void addRepeater(SignalMastRepeater* rp) /*throw (JmriException)*/;
     /*public*/ void removeRepeater(SignalMastRepeater* rp);
     /*public*/ QList<SignalMastRepeater*>* getRepeaterList();
     /*public*/ void initialiseRepeaters();

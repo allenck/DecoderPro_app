@@ -66,7 +66,7 @@ public:
             log = new Logger("TransferableNamedBean");
             try {
                 dataFlavor = new DataFlavor(NamedBeanFlavorMime);
-            } catch (ClassNotFoundException cnfe) {
+            } catch (ClassNotFoundException* cnfe) {
 //                cnfe.printStackTrace();
             }
         }
@@ -111,7 +111,7 @@ public:
       {
        dataFlavor = new DataFlavor(MultiSensorIconAdder::NamedBeanFlavorMime);
       }
-      catch (ClassNotFoundException cnfe)
+      catch (ClassNotFoundException* cnfe)
       {
                 //cnfe.printStackT(race();
       }

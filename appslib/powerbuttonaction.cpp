@@ -55,7 +55,7 @@ void PowerButtonAction::updateLabel()
       putValue(Action::NAME, tr("Set Power Off"));
   }
   firePropertyChange(Action::NAME, "", getValue(Action::NAME));
- } catch (JmriException ex) {
+ } catch (JmriException* ex) {
      return;
  }
 }

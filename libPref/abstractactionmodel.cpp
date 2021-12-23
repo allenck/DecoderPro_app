@@ -98,7 +98,7 @@
    Class::forName(className);
    return true;
   }
-  catch (ClassNotFoundException ex)
+  catch (ClassNotFoundException* ex)
   {
    return false;
   }
@@ -130,7 +130,7 @@
 }
 
 //@Override
-/*public*/ void AbstractActionModel::performAction(QString text) throw (JmriException)
+/*public*/ void AbstractActionModel::performAction(QString text) /*throw (JmriException)*/
 {
  log->debug(tr("Invoke Action from %1").arg(className));
  try
@@ -149,17 +149,17 @@
    }
   }
   this->performAction(action);
- } catch (ClassNotFoundException ex) {
+ } catch (ClassNotFoundException* ex) {
      log->error(tr("Could not find specified class: %1").arg(className));
- } catch (IllegalAccessException ex) {
+ } catch (IllegalAccessException* ex) {
      log->error(tr("Unexpected access exception for class: %1").arg(className), ex);
-     throw JmriException(ex.getMessage());
- } catch (InstantiationException ex) {
+     throw new JmriException(ex->getMessage());
+ } catch (InstantiationException* ex) {
      log->error(tr("Could not instantiate specified class: %1").arg(className), ex);
-     throw JmriException(ex.getMessage());
- } catch (Exception ex) {
+     throw new JmriException(ex->getMessage());
+ } catch (Exception* ex) {
      log->error(tr("Error while performing startup action for class: %1").arg(className), ex);
-     throw JmriException(ex.getMessage());
+     throw new JmriException(ex->getMessage());
  }
 }
 
@@ -173,4 +173,4 @@
     this->exceptions->append(exception);
 }
 
-/*protected*/ /*abstract*/ void AbstractActionModel::performAction(Action* action) throw (JmriException) {}
+/*protected*/ /*abstract*/ void AbstractActionModel::performAction(Action* action) /*throw (JmriException)*/ {}

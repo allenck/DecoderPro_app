@@ -210,7 +210,7 @@ namespace Operations
 
     //try {
     readerSelector->setCurrentIndex(readerSelector->findText(_location->getReporter()->getDisplayName()));
-//             } catch (NULLPointerException e) {
+//             } catch (NullPointerException* e) {
 //                 // if there is no reader set, getReporter
 //                 // will return NULL, so set a blank.
 //             }

@@ -282,7 +282,7 @@ void ProfileManagerDialog::keyPressEvent(QKeyEvent *evt)
  Profile* p = new Profile(chooser->getSelectedFile());
  ProfileManager::getDefault()->addProfile(p);
 // profiles->setSelectedValue(p, true);
-//        } catch (IOException ex) {
+//        } catch (IOException* ex) {
 //            log->warn("{} is not a profile directory", chooser.getSelectedFile());
 //            // TODO: Display error dialog - selected file is not a profile directory
 //        }
@@ -377,7 +377,7 @@ void ProfileManagerDialog::timeout()
 //    try {
  p->save();
  log->info("Saving profile "+ p->getId());
-//    } catch (IOException ex) {
+//    } catch (IOException* ex) {
 //        log->error("Unable to save renamed profile: {}", ex.getMessage());
 //        JOptionPane.showMessageDialog(this,
 //                Bundle.getMessage("ProfileManagerDialog->errorRenamingProfile"),

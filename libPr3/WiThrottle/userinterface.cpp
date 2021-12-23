@@ -512,7 +512,7 @@ bool UIShutdownTask::execute()
 //        socket->close();
 //         log->debug("UI socket in ServerThread just closed");
 ////        service.stop();
-//    } catch (IOException ex) {
+//    } catch (IOException* ex) {
 //         log->error("socket in ServerThread won't close");
 //    }
     DeviceServer::instance()->closeThrottles();
@@ -542,7 +542,7 @@ bool UIShutdownTask::execute()
             } else {
                  log->debug("Published IPv6 ZeroConf service for '{}' on {}:{}", se.getService().key(), addr.getHostAddress(), port); // NOI18N
             }
-        } catch (NullPointerException | IOException ex) {
+        } catch (NullPointerException* | IOException ex) {
              log->error("Address is invalid: {}", ex.getLocalizedMessage());
             this.portLabel.setText(Inet4Address.getLocalHost().getHostName());
             this.manualPortLabel.setText(Inet4Address.getLocalHost().getHostAddress() + ":" + port); // NOI18N
@@ -596,10 +596,10 @@ bool UIShutdownTask::execute()
             if (!addr->isLoopbackAddress()) {
                 log->info(tr("Published ZeroConf service for '%1' on %2:%3").arg(se->getService()->key()).arg( addr->getHostAddress()).arg(port)); // NOI18N
             }
-        } catch (NullPointerException ex) {
-            log->error(tr("NPE in FacelessServer.servicePublished(): %1").arg(ex.getLocalizedMessage()));
-        } catch (IOException ex) {
-            log->error(tr("IOException in FacelessServer.servicePublished(): %1").arg(ex.getLocalizedMessage()));
+        } catch (NullPointerException* ex) {
+            log->error(tr("NPE in FacelessServer.servicePublished(): %1").arg(ex->getLocalizedMessage()));
+        } catch (IOException* ex) {
+            log->error(tr("IOException in FacelessServer.servicePublished(): %1").arg(ex->getLocalizedMessage()));
         }
     }
     /*public*/ QString UserInterface::getClassName()

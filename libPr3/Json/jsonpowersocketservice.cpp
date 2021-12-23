@@ -46,7 +46,7 @@
      } catch (JsonException ex) {
          this->connection->sendMessage(ex.getJsonMessage());
      }
- } catch (IOException ex) {
+ } catch (IOException* ex) {
      // do nothing - we can only silently fail at this point
  }
 }

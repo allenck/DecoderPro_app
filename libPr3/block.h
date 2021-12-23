@@ -117,7 +117,7 @@ public:
     /*public*/ void setPermissiveWorking(bool w);
     /*public*/ float getSpeedLimit();
     /*public*/ QString getBlockSpeed();
-    /*public*/ void setBlockSpeed(QString s) throw (JmriException);
+    /*public*/ void setBlockSpeed(QString s) /*throw (JmriException)*/;
     /*public*/ void setCurvature(int c);
     /*public*/ int getCurvature();
     /*public*/ void setLength(float l);  // l must be in millimeters

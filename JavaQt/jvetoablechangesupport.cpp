@@ -60,7 +60,7 @@
      */
     /*public*/ JVetoableChangeSupport::JVetoableChangeSupport(QObject* sourceBean) {
         if (sourceBean == nullptr) {
-            throw NullPointerException();
+            throw new NullPointerException();
         }
         source = sourceBean;
         map = new VetoableChangeListenerMap() ;

@@ -65,5 +65,5 @@ void SpeedometerAction::common()
 
 // never invoked, because we overrode actionPerformed above
 /*public*/ JmriPanel* SpeedometerAction::makePanel() {
-    throw IllegalArgumentException("Should not be invoked");
+    throw new IllegalArgumentException("Should not be invoked");
 }

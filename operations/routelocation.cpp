@@ -491,7 +491,7 @@ namespace Operations
          } else {
              try {
                  _trainDir = a.toInt();
-             } catch (NumberFormatException ee) {
+             } catch (NumberFormatException* ee) {
                  log->error(tr("Route location (%1) direction (%2) is unknown").arg(getName()).arg(a));
              }
          }
@@ -499,21 +499,21 @@ namespace Operations
      if ((a = e.attribute (Xml::MAX_TRAIN_LENGTH)) != NULL) {
          try {
              _maxTrainLength = a.toInt();
-         } catch (NumberFormatException ee) {
+         } catch (NumberFormatException* ee) {
              log->error(tr("Route location (%1) maximum train length (%2) isn't a valid number").arg(getName()).arg(a));
          }
      }
      if ((a = e.attribute (Xml::GRADE)) != NULL) {
          try {
              _grade = (a.toDouble());
-         } catch (NumberFormatException ee) {
+         } catch (NumberFormatException* ee) {
              log->error(tr("Route location (%1) grade ({%2) isn't a valid number").arg(getName()).arg(a));
          }
      }
      if ((a = e.attribute (Xml::MAX_CAR_MOVES)) != NULL) {
          try {
              _maxCarMoves = a.toInt();
-         } catch (NumberFormatException ee) {
+         } catch (NumberFormatException* ee) {
              log->error(tr("Route location (%1) maximum car moves (%2) isn't a valid number").arg(getName()).arg(a));
          }
      }
@@ -529,7 +529,7 @@ namespace Operations
      if ((a = e.attribute (Xml::WAIT)) != NULL) {
          try {
              _wait = a.toInt();
-         } catch (NumberFormatException ee) {
+         } catch (NumberFormatException* ee) {
              log->error(tr("Route location (%1) wait (%2) isn't a valid number").arg(getName()).arg(a));
          }
      }
@@ -539,21 +539,21 @@ namespace Operations
      if ((a = e.attribute (Xml::TRAIN_ICON_X)) != NULL) {
          try {
              _trainIconX = a.toInt();
-         } catch (NumberFormatException ee) {
+         } catch (NumberFormatException* ee) {
              log->error(tr("Route location (%1) icon x (%2) isn't a valid number").arg(getName()).arg(a));
          }
      }
      if ((a = e.attribute (Xml::TRAIN_ICON_Y)) != NULL) {
          try {
              _trainIconY = a.toInt();
-         } catch (NumberFormatException ee) {
+         } catch (NumberFormatException* ee) {
              log->error(tr("Route location (%1) icon y (%2) isn't a valid number").arg(getName()).arg(a));
          }
      }
      if ((a = e.attribute (Xml::SEQUENCE_ID)) != NULL) {
          try {
              _sequenceId = a.toInt();
-         } catch (NumberFormatException ee) {
+         } catch (NumberFormatException* ee) {
              log->error(tr("Route location (%1) sequence id %2 isn't a valid number").arg(getName()).arg(a));
          }
      }

@@ -64,7 +64,7 @@ StartupActionModelUtil::StartupActionModelUtil(QObject* parent) : Bean(parent)
    //return this->getActionName(Class::forName(className));
    return className;
   }
-  catch (ClassNotFoundException ex)
+  catch (ClassNotFoundException* ex)
   {
    log->error(tr("Did not find class \"%1\"").arg(className));
   }
@@ -85,7 +85,7 @@ StartupActionModelUtil::StartupActionModelUtil(QObject* parent) : Bean(parent)
     if (!className.isEmpty()) {
         try {
             return this->isSystemConnectionAction(Class::forName(className));
-        } catch (ClassNotFoundException ex) {
+        } catch (ClassNotFoundException* ex) {
             log->error(tr("Did not find class \"%1\"").arg(className));
         }
     }
@@ -149,7 +149,7 @@ entry.next();
  Class* clazz;
  try {
      clazz = Class::forName(strClass);
- } catch (ClassNotFoundException ex) {
+ } catch (ClassNotFoundException* ex) {
      log->error(tr("Did not find class \"%1\"").arg(strClass));
      throw ex;
  }
@@ -172,7 +172,7 @@ entry.next();
  /*Class<?>*/Class* clazz;
  try {
      clazz = Class::forName(strClass);
- } catch (ClassNotFoundException ex) {
+ } catch (ClassNotFoundException* ex) {
      log->error(tr("Did not find class \"%1\"").arg(strClass));
      throw ex;
  }
@@ -193,7 +193,7 @@ entry.next();
 //             Class<?> clazz = Class.forName(key);
 //             ActionAttributes attrs = new ActionAttributes(rb.getString(key), clazz);
 //             this->actions.put(clazz, attrs);
-//         } catch (ClassNotFoundException ex) {
+//         } catch (ClassNotFoundException* ex) {
 //             log->error(tr{"Did not find class \"%1\"").arg(key));
 //         }
 //     });
@@ -283,11 +283,11 @@ entry.next();
     actions->insert(clazz, attrs);
     if(key == "LocoNetMenuStartupAction")
      ((AbstractAction*)clazz)->setText(key);
-   } catch (ClassNotFoundException ex) {
-    log->error(tr("Did not find class \"%1\" %2").arg(key).arg(ex.getMessage()));
+   } catch (ClassNotFoundException* ex) {
+    log->error(tr("Did not find class \"%1\" %2").arg(key).arg(ex->getMessage()));
    }
-   catch(Exception ex) {
-    log->error(tr("Unable to load class \"%1\" %2").arg(key).arg(ex.getMessage()));
+   catch(Exception* ex) {
+    log->error(tr("Unable to load class \"%1\" %2").arg(key).arg(ex->getMessage()));
    }
   }
 

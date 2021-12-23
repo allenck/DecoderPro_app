@@ -410,7 +410,7 @@
     try {
         Sensor* sensor = InstanceManager::sensorManagerInstance()->provideSensor(sensorName);
         eastBoundSensorNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(sensorName, sensor);
-    } catch (IllegalArgumentException ex) {
+    } catch (IllegalArgumentException* ex) {
         eastBoundSensorNamed = nullptr;
     }
 }
@@ -440,7 +440,7 @@
     try {
         Sensor* sensor = InstanceManager::sensorManagerInstance()->provideSensor(sensorName);
         westBoundSensorNamed = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(sensorName, sensor);
-    } catch (IllegalArgumentException ex) {
+    } catch (IllegalArgumentException* ex) {
         westBoundSensorNamed = nullptr;
     }
 }
@@ -1682,7 +1682,7 @@ void PositionablePointView::updatePointBox() {
  * {@inheritDoc}
  */
 //@Override
-/*public*/ LayoutTrack* PositionablePointView::getConnection(HitPointType::TYPES connectionType) throw (JmriException) {
+/*public*/ LayoutTrack* PositionablePointView::getConnection(HitPointType::TYPES connectionType) /*throw (JmriException)*/ {
     LayoutTrack* result = nullptr;
     if (connectionType == HitPointType::POS_POINT) {
         result = getConnect1();
@@ -1693,7 +1693,7 @@ void PositionablePointView::updatePointBox() {
         QString errString = tr("%1->getConnection(%2); Invalid Connection Type").arg(
                 getName(), HitPointType::toString(connectionType)); //I18IN
         log->error(tr("will throw %1").arg(errString));
-        throw JmriException(errString);
+        throw new JmriException(errString);
     }
     return result;
 }
@@ -1702,18 +1702,18 @@ void PositionablePointView::updatePointBox() {
  * {@inheritDoc}
  */
 //@Override
-/*public*/ void PositionablePointView::setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) throw (JmriException) {
+/*public*/ void PositionablePointView::setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) /*throw (JmriException)*/ {
     if ((type != HitPointType::TRACK) && (type != HitPointType::NONE)) {
         QString errString = tr("%1->setConnection(%2, %3, %4); unexpected type").arg(
                 getName(), HitPointType::toString(connectionType), (o == nullptr) ? "null" : o->getName(), HitPointType::toString(type)); //I18IN
         log->error(tr("will throw %1").arg(errString)); //I18IN
-        throw JmriException(errString);
+        throw new JmriException(errString);
     }
     if (connectionType != HitPointType::POS_POINT) {
         QString errString = tr("%1->setConnection(%2, %3, %4); Invalid Connection Type").arg(
                 getName(), HitPointType::toString(connectionType), (o == nullptr) ? "null" : o->getName(), HitPointType::toString(type)); //I18IN
         log->error(tr("will throw %1").arg(errString)); //I18IN
-        throw JmriException(errString);
+        throw new JmriException(errString);
     }
 }
 

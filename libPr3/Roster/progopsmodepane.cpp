@@ -103,7 +103,7 @@ void ProgOpsModePane::init()
      int address = 3;
      try {
          address = mAddrField->value();
-     } catch (NumberFormatException e) {
+     } catch (NumberFormatException* e) {
          log->error(tr("loco address \"%1\" not correct").arg(mAddrField->value()));
          programmer = NULL;
      }
@@ -436,7 +436,7 @@ void ProgOpsModePane::setAddrParams()
 
  try {
      address = mAddrField->value();
- } catch (NumberFormatException e) {
+ } catch (NumberFormatException* e) {
      log->debug(tr("loco address \"%1\" not correct").arg(mAddrField->value()));
      return;
  }

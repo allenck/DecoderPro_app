@@ -83,7 +83,7 @@ XmlFile::XmlFile(QObject *parent) :
          return this->rootFromName("xml" + File::separator + name);
      }
      log->warn("Did not find file or resource " + name);
-     throw FileNotFoundException("Did not find file or resource " + name);
+     throw  new FileNotFoundException("Did not find file or resource " + name);
  }
 }
 
@@ -121,7 +121,7 @@ XmlFile::XmlFile(QObject *parent) :
  currFile = file->fileName();
  if(!file->exists())
  {
-  //throw FileNotFoundException(tr("file %1 does not exist").arg(file->fileName()));
+  //throw  new FileNotFoundException(tr("file %1 does not exist").arg(file->fileName()));
   log->error(tr("file %1 does not exist").arg(file->fileName()));
   return QDomElement();
  }

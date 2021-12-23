@@ -138,9 +138,9 @@ public:
          *                          or more than 10 next addresses in use.
          */
         //@Nonnull
-        virtual /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) throw (JmriException) {return "";}
+        virtual /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) /*throw (JmriException)*/ {return "";}
         
-        virtual QString createSystemName(QString /*curAddress*/, QString /*prefix*/) const throw (JmriException) {return "";}
+        virtual QString createSystemName(QString /*curAddress*/, QString /*prefix*/) const /*throw (JmriException)*/ {return "";}
 
         virtual long getDefaultSensorDebounceGoingActive() {return 0;}
         virtual long getDefaultSensorDebounceGoingInActive() {return 0;}

@@ -980,12 +980,12 @@ void Editor::closeEvent(QCloseEvent */*e*/)
   dispose(false);
   setCursor(Qt::ArrowCursor);
   return ed;
- } catch (ClassNotFoundException cnfe) {
-     log->error("changeView exception "+cnfe.getMessage());
- } catch (InstantiationException ie) {
-     log->error("changeView exception "+ie.getMessage());
- } catch (IllegalAccessException iae) {
-     log->error("changeView exception "+iae.getMessage());
+ } catch (ClassNotFoundException* cnfe) {
+     log->error("changeView exception "+cnfe->getMessage());
+ } catch (InstantiationException* ie) {
+     log->error("changeView exception "+ie->getMessage());
+ } catch (IllegalAccessException* iae) {
+     log->error("changeView exception "+iae->getMessage());
  }
 
  return nullptr;

@@ -103,14 +103,14 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _EXTENSION, (".jmri"))
  this->path = pathWithExt;
  // use field, not local variables (path or pathWithExt) for paths below
  if (!this->path->exists() && !this->path->mkdirs()) {
-     throw IOException("Unable to create directory " + this->path->toString()); // NOI18N
+     throw new IOException("Unable to create directory " + this->path->toString()); // NOI18N
  }
  if (!this->path->isDirectory()) {
-     throw IllegalArgumentException(path->getPath() + " is not a directory"); // NOI18N
+     throw new IllegalArgumentException(path->getPath() + " is not a directory"); // NOI18N
  }
  this->save();
  if (!Profile::isProfile(this->path)) {
-     throw IllegalArgumentException(path->getPath() + " does not contain a profile.properties file"); // NOI18N
+     throw new IllegalArgumentException(path->getPath() + " does not contain a profile.properties file"); // NOI18N
  }
 }
 

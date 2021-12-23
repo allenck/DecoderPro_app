@@ -121,7 +121,7 @@ DefaultConditionalManagerXml::DefaultConditionalManagerXml(QObject *parent) :
     bool bOk;
     ((DefaultConditionalAction*)action)->getActionString().toInt(&bOk);
         aElem.setAttribute("delay",((DefaultConditionalAction*)action)->getActionString());
-    //} catch (NumberFormatException nfe) {
+    //} catch (NumberFormatException* nfe) {
     if(!bOk)
     {
      aElem.setAttribute("delay","0");

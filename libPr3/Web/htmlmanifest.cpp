@@ -556,7 +556,7 @@ using namespace Operations;
    File* file = manifest->getFile();
    QFile f(file->getPath());
    if(!f.open(QIODevice::ReadOnly))
-    throw IOException(f.fileName());
+    throw new IOException(f.fileName());
    QTextStream is(&f);
    this->jsonManifest =  QJsonDocument::fromJson(is.readAll().toLocal8Bit()).object();
   }
@@ -586,7 +586,7 @@ using namespace Operations;
    return String::format(locale, strings->getProperty(this->resourcePrefix + "Validity"), getDate(QDateTime::fromString(this->getJsonManifest().value(JsonOperations::DATE).toString(), Qt::ISODate)));
   }
  }
- catch (NullPointerException ex)
+ catch (NullPointerException* ex)
  {
   log->warn(tr("Manifest for train %1 (id %2) does not have any validity.").arg(this->train->getIconName()).arg(this->train->getId()));
  }
@@ -594,7 +594,7 @@ using namespace Operations;
  {
   log->error("Date of JSON manifest could not be parsed as a Date.");
  }
- catch (IOException ex)
+ catch (IOException* ex)
  {
   log->error("JSON manifest could not be read.");
  }

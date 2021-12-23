@@ -476,10 +476,10 @@ void DccConsist::common(DccLocoAddress *address, AddressedProgrammerManager* apm
     try {
         decoderRoot = df->rootFromName(DecoderFile::fileLocation + df->getFileName());
     }
-    catch (JDOMException  e) {
+    catch (JDOMException*  e) {
         log->error("Exception while loading decoder XML file: " + df->getFileName(), e);
     }
-    catch (IOException e) {
+    catch (IOException* e) {
         log->error("Exception while loading decoder XML file: " + df->getFileName(), e);
     }
     // load variables from decoder tree

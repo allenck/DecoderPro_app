@@ -395,7 +395,7 @@ void TabbedTableItem::addPanelModel()
   bottomBoxLayout->insertWidget(bottomBoxIndex, comp);
   ++bottomBoxIndex;
  }
- catch (IllegalArgumentException ex)
+ catch (IllegalArgumentException* ex)
  {
   // log.error (ex.getLocalizedMessage(), ex);
  }
@@ -567,7 +567,7 @@ void AbstractTableTabAction::buildMenus(BeanTableFrame* f)
 //                }
 //            } catch (java.awt.print.PrinterException e1) {
 //                log.warn("error printing: " + e1, e1);
-//            } catch (NullPointerException ex) {
+//            } catch (NullPointerException* ex) {
 //                log.error("Trying to print returned a NPE error");
 //            }
 //        }
@@ -619,7 +619,7 @@ void AbstractTableTabAction::On_printAction_triggered()
  {
   log->warn("error printing: " + e1.getMessage());
  }
- catch (NullPointerException ex)
+ catch (NullPointerException* ex)
  {
   log->error("Trying to print returned a NPE error");
  }

@@ -39,9 +39,9 @@ class DefaultMeter : public AbstractAnalogIO, public Meter
   /*private*/ /*final*/ double _resolution;
 
  protected:
-  /*protected*/ void sendValueToLayout(double value) throw (JmriException);
+  /*protected*/ void sendValueToLayout(double value) /*throw (JmriException)*/;
   /*protected*/ bool cutOutOfBoundsValues();
-  /*public*/ void setState(int s) throw (JmriException);
+  /*public*/ void setState(int s) /*throw (JmriException)*/;
 
 };
 

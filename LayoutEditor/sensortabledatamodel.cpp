@@ -175,7 +175,7 @@ void SensorTableDataModel::common()
         int state = ((AbstractSensor*)t)->getKnownState();
         if (state==Sensor::INACTIVE) ((AbstractSensor*)t)->setKnownState(Sensor::ACTIVE);
         else ((AbstractSensor*)t)->setKnownState(Sensor::INACTIVE);
-    } catch (JmriException e) { log->warn("Error setting state: "+e.getMessage()); }
+    } catch (JmriException* e) { log->warn("Error setting state: "+e->getMessage()); }
 }
 
 /*public*/ int SensorTableDataModel::columnCount(const QModelIndex &/*parent*/) const
@@ -487,7 +487,7 @@ void SensorTableDataModel::common()
        s->setKnownState(Sensor::UNKNOWN);
        fireTableRowsUpdated(row,row);
        return true;
-   } catch (JmriException e) {
+   } catch (JmriException* e) {
        log->warn("Failed to set state to UNKNOWN: ", e);
        return false;
    }
@@ -498,7 +498,7 @@ void SensorTableDataModel::common()
         s->setKnownState(Sensor::UNKNOWN);
         fireTableRowsUpdated(row,row);
         return true;
-    } catch (JmriException e) {
+    } catch (JmriException* e) {
         log->warn("Failed to set state to UNKNOWN: ", e);
     return false;
    }
@@ -670,7 +670,7 @@ void SensorTableDataModel::common()
     try {
         onImage = ImageIO::read(new File(onIconPath));
         offImage = ImageIO::read(new File(offIconPath));
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         log->error(tr("error reading image from %1 or %2").arg(onIconPath).arg(offIconPath), ex);
     }
     log->debug("Success reading images");

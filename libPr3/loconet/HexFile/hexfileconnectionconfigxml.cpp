@@ -216,7 +216,7 @@ HexFileConnectionConfigXml::HexFileConnectionConfigXml(QObject *parent) :
     try {
         manufacturer = shared.attribute("manufacturer"); // NOI18N
         adapter->setManufacturer(manufacturer);
-    } catch (NullPointerException ex) { //Considered normal if not present
+    } catch (NullPointerException* ex) { //Considered normal if not present
 
     }
     if (adapter->getSystemConnectionMemo() != NULL) {

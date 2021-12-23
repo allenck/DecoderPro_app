@@ -88,7 +88,7 @@ namespace Operations {
      }
      //try {
          StringUtil::numberSort(lengths);
-//     } catch (NumberFormatException e) {
+//     } catch (NumberFormatException* e) {
 //         log->error("lengths are not all numeric, list:");
 //         for (int i = 0; i < lengths.length; i++) {
 //             bool ok;

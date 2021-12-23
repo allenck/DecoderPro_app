@@ -720,8 +720,8 @@ namespace Operations
 
    try {
        (new JsonManifest(_train))->build();
-   } catch (IOException ex) {
-      log->error(tr("Unable to create JSON manifest: %1").arg(ex.getLocalizedMessage()));
+   } catch (IOException* ex) {
+      log->error(tr("Unable to create JSON manifest: %1").arg(ex->getLocalizedMessage()));
        //emit buildException(ex);
         throw BuildFailedException(ex);
    }

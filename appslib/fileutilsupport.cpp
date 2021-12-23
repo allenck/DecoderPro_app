@@ -101,16 +101,16 @@ Q_GLOBAL_STATIC_WITH_ARGS(FileUtilSupport*, _instancePtr, (new FileUtilSupport()
 //  QString realPath = pathFromPortablePath(profile, path);
 //  QFileInfo info(realPath);
 //  if(!info.exists())
-//   throw FileNotFoundException(realPath);
+//   throw  new FileNotFoundException(realPath);
 //  file = new File(realPath);
 //  if(!file->exists())
-//   throw FileNotFoundException(tr("File not found: %s").arg(file->getPath()));
+//   throw  new FileNotFoundException(tr("File not found: %s").arg(file->getPath()));
 // }
-// catch (NullPointerException ex)
+// catch (NullPointerException* ex)
 // {
 //  throw  FileNotFoundException("Cannot find file at " + path);
 // }
-// catch (IOException ex)
+// catch (IOException* ex)
 // {
 //  throw  FileNotFoundException("Cannot find file at " + path);
 // }
@@ -120,7 +120,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(FileUtilSupport*, _instancePtr, (new FileUtilSupport()
   throw  FileNotFoundException("Cannot find file at " + info.filePath());
  try {
      return new File(this->pathFromPortablePath(profile, path));
- } catch (NullPointerException ex) {
+ } catch (NullPointerException* ex) {
      throw  FileNotFoundException("Cannot find file at " + path);
  }
 
@@ -180,7 +180,7 @@ public URL getURL(URI uri) {
     } catch (MalformedURLException | IllegalArgumentException ex) {
         log->warn("Unable to get URL from {}", uri.toString());
         return null;
-    } catch (NullPointerException ex) {
+    } catch (NullPointerException* ex) {
         log->warn("Unable to get URL from null object.", ex);
         return null;
     }
@@ -495,7 +495,7 @@ public URL getURL(URI uri) {
     }
 
     if (filename == nullptr) {
-        throw IllegalArgumentException("File \"" + file->toString() + "\" has a null absolute path which is not allowed");
+        throw new IllegalArgumentException("File \"" + file->toString() + "\" has a null absolute path which is not allowed");
     }
 
     // compare full path name to see if same as preferences
@@ -886,7 +886,7 @@ public URL getURL(URI uri) {
  QString old = this->programPath;
  try {
      this->programPath = (path)->getCanonicalPath() + File::separator;
- } catch (IOException ex) {
+ } catch (IOException* ex) {
      log->error("Unable to get JMRI program directory.", ex);
  }
  if ((old != NULL && old != (this->programPath))
@@ -1029,7 +1029,7 @@ public URL getURL(URI uri) {
     }
     try {
         return new JarFile(jarPath);
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         log->error("Unable to open jmri.jar", ex);
         return NULL;
     }
@@ -1061,7 +1061,7 @@ public URL getURL(URI uri) {
 /*public*/ void FileUtilSupport::rotate(/*@NonNULL*/ File* file, int max, QString extension) //throws IOException
 {
     if (max < 1) {
-        throw IllegalArgumentException();
+        throw new IllegalArgumentException();
     }
     QString name = file->getName();
     if (extension != "") {
@@ -1228,14 +1228,14 @@ public URL getURL(URI uri) {
      QFileInfo info(path);
      if(!info.exists())
      {
-      //throw FileNotFoundException(path);
+      //throw  new FileNotFoundException(path);
       QString msg = tr("can't convert '%1' to '%2'").arg(path_save).arg(path);
       //log->error(msg);
-      //throw NullPointerException(msg);  // throw IOException??
-      throw IOException(msg);
+      //throw new NullPointerException(msg);  // throw new IOException??
+      throw new IOException(msg);
      }
      return (new File(path.replace(*_separator, File::separatorChar)))->getCanonicalPath();
- } catch (IOException ex) {
+ } catch (IOException* ex) {
      //log->warn(tr("Cannot convert %1 into a usable filename.").arg(path)+ ex.getMessage());
      return "";
  }
@@ -1358,7 +1358,7 @@ public URL getURL(URI uri) {
 //        }
 //        return builder.toString();
     if(url.path() == "")
-     throw NullPointerException("invalid URL");
+     throw new NullPointerException("invalid URL");
     QFile* f = new QFile(url.path());
     if(f->open(QIODevice::ReadOnly))
     {
@@ -1367,7 +1367,7 @@ public URL getURL(URI uri) {
      return builder;
     }
  }
- catch (NullPointerException ex) {
+ catch (NullPointerException* ex) {
         return "";
  }
  return "";
@@ -1472,7 +1472,7 @@ public URL getURL(URI uri) {
    if (!ok)
    {
     log->error(tr("Could not create destination file %1 ").arg(dest->getPath()));
-    throw IOException(tr("Could not create destination file %1 ").arg(dest->getPath()));
+    throw new IOException(tr("Could not create destination file %1 ").arg(dest->getPath()));
    }
   }
  }
@@ -1483,7 +1483,7 @@ public URL getURL(URI uri) {
   f.remove();
  if(! copyRecursively(srcPath, dstPath))
  {
-  throw IOException(tr("error copying %1 to %2").arg(srcPath).arg(dstPath));
+  throw new IOException(tr("error copying %1 to %2").arg(srcPath).arg(dstPath));
  }
 }
 
@@ -1544,7 +1544,7 @@ public URL getURL(URI uri) {
   f.close();
  }
  else
-    throw IOException();
+    throw new IOException();
 }
 
 /**
@@ -1581,10 +1581,10 @@ public URL getURL(URI uri) {
         try {
             //return file->openStream();
       QFile f(path);
-      if(!f.open(QIODevice::ReadOnly)) throw IOException(f.fileName());
+      if(!f.open(QIODevice::ReadOnly)) throw new IOException(f.fileName());
       return new QTextStream(&f);
-        } catch (IOException ex) {
-            log->error(ex.getLocalizedMessage(), ex);
+        } catch (IOException* ex) {
+            log->error(ex->getLocalizedMessage(), ex);
         }
     }
     return nullptr;
@@ -1698,7 +1698,7 @@ public URL getURL(URI uri) {
     if (this->isPortableFilename(path)) {
         try {
             return this->findExternalFilename(path);
-        } catch (NullPointerException ex) {
+        } catch (NullPointerException* ex) {
             // do nothing
         }
     }
@@ -1883,7 +1883,7 @@ public URL getURL(URI uri) {
             //return file.toURL();
          return QUrl(file);
         } catch (MalformedURLException ex) {
-            log->error(ex.getLocalizedMessage(), ex);
+            log->error(ex.getLocalizedMessage(), &ex);
         }
     }
     return QUrl();

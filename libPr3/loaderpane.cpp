@@ -770,7 +770,7 @@ void LoaderPane::on_bootload_focusLost()
 //     try {
   this->setOptionsRadiobuttons(text);
 #if 0
-     } catch (NumberFormatException ex) {
+     } catch (NumberFormatException* ex) {
          JOptionPane.showMessageDialog(this,
                  tr("ErrorInvalidOptionInFile", text, "Options"),
                  tr("ErrorTitle"),
@@ -862,7 +862,7 @@ void LoaderPane::on_memoryContentsException(MemoryContentsException , QString )
           throw new NumberFormatException("Invalid Hardware Options: "
                   + (control & HW_FLAGS_MSK));
   }
-//    } catch (NumberFormatException ex) {
+//    } catch (NumberFormatException* ex) {
  }
  else
  {
@@ -1011,7 +1011,7 @@ void LoaderPane::enableDownloadVerifyButtons()
  {
 //            throw new NumberFormatException("out of range");
 //        }
-//    } catch (NumberFormatException ex) {
+//    } catch (NumberFormatException* ex) {
   log->error("sendSequence() failed due to bad Manufacturer Number value " + mfg->text());
   mfg->setForeground(Qt::red);
   //mfg->requestFocusInWindow();
@@ -1031,7 +1031,7 @@ void LoaderPane::enableDownloadVerifyButtons()
   {
 //            throw new NumberFormatException("out of range");
 //        }
-//    } catch (NumberFormatException ex) {
+//    } catch (NumberFormatException* ex) {
   log->error("sendSequence() failed due to bad Developer Number value " + developer->text());
   developer->setForeground(Qt::red);
   //developer->requestFocusInWindow();
@@ -1051,7 +1051,7 @@ void LoaderPane::enableDownloadVerifyButtons()
   {
 //            throw new NumberFormatException("out of range");
 //        }
-//    } catch (NumberFormatException ex) {
+//    } catch (NumberFormatException* ex) {
   log->error("sendSequence() failed due to bad Product Code value " + product->text());
   product->setForeground(Qt::red);
   //product->requestFocusInWindow();
@@ -1072,7 +1072,7 @@ void LoaderPane::enableDownloadVerifyButtons()
   {
 //            throw new NumberFormatException("out of range");
 //        }
-//    } catch (NumberFormatException ex) {
+//    } catch (NumberFormatException* ex) {
   log->error("sendSequence() failed due to bad Hardware Version value " + hardware->text());
   hardware->setForeground(Qt::red);
   //hardware->requestFocusInWindow();
@@ -1092,7 +1092,7 @@ void LoaderPane::enableDownloadVerifyButtons()
   {
 //            throw new NumberFormatException("out of range");
 //        }
-//    } catch (NumberFormatException ex) {
+//    } catch (NumberFormatException* ex) {
   log->error("sendSequence() failed due to bad Software Version value " + software->text());
   software->setForeground(Qt::red);
   //software->requestFocusInWindow();
@@ -1115,7 +1115,7 @@ void LoaderPane::enableDownloadVerifyButtons()
      {
 //            throw new NumberFormatException("out of range");
 //        }
-//    } catch (NumberFormatException ex) {
+//    } catch (NumberFormatException* ex) {
      log->error("sendSequence() failed due to bad Delay value " + delay->text());
      delay->setForeground(Qt::red);
      //delay->requestFocusInWindow();
@@ -1136,7 +1136,7 @@ void LoaderPane::enableDownloadVerifyButtons()
      {
 //            throw new NumberFormatException("out of range");
 //        }
-//    } catch (NumberFormatException ex) {
+//    } catch (NumberFormatException* ex) {
      log->error("sendSequence() failed due to bad EESTART value " + eestart->text());
      eestart->setForeground(Qt::red);
      //eestart->requestFocusInWindow();
@@ -1402,7 +1402,7 @@ void Sender::updateGUI(/*final*/ int value) {
 
 //    try {
  setOptionsRadiobuttons(QString::number((DO_NOT_CHECK_SOFTWARE_VERSION + REQUIRE_HARDWARE_VERSION_EXACT_MATCH)));
-//    } catch (NumberFormatException ex) {
+//    } catch (NumberFormatException* ex) {
 //        throw (new java.lang.Error("SetCheckboxes Failed to update the GUI for known-good parameters"));
 //    }
  parametersAreValid();
@@ -1488,7 +1488,7 @@ void Sender::updateGUI(/*final*/ int value) {
   //        try {
    bool bOk;
           junk = text.toInt(&bOk, 16);
-  //        } catch (NumberFormatException ex) {
+  //        } catch (NumberFormatException* ex) {
           if(!bOk)
           junk = -1;
   //        }
@@ -1530,7 +1530,7 @@ void Sender::updateGUI(/*final*/ int value) {
 //        try {
   bool bOk;
          junk = text.toInt(&bOk);
-//        } catch (NumberFormatException ex) {
+//        } catch (NumberFormatException* ex) {
   if(!bOk)
          junk = -1;
 //     }

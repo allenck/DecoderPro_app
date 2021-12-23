@@ -140,7 +140,7 @@ bool JSShutDownTask::eventFilter(QObject *watched, QEvent *event)
          serverSocket->close();
      }
     }
-    catch (IOException ex) {
+    catch (IOException* ex) {
     }
 
 //    updateServerStateListener();
@@ -373,7 +373,7 @@ void JsonClientTxHandler::sendMessage(QString msg)
 
   }
  }
-//    } catch (IOException ex) {
+//    } catch (IOException* ex) {
 //        log->error("ClientTxHandler: IO Exception");
 //    } catch (InterruptedException ex) {
 //        //Thread.currentThread().interrupt(); // retain if needed later

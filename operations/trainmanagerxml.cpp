@@ -53,7 +53,7 @@ namespace Operations
  }
 
  //@Override
- /*public*/ void TrainManagerXml::writeFile(QString name) //throw FileNotFoundException, IOException
+ /*public*/ void TrainManagerXml::writeFile(QString name) //throw  new FileNotFoundException, IOException
  {
   if (log->isDebugEnabled())
   {

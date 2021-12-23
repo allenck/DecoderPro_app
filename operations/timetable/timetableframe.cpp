@@ -546,7 +546,7 @@ namespace TimeTable
 //                                scale.setScaleRatio(newRatio);
 //                            } catch (java.lang.IllegalArgumentException
 //                                    | java.beans.PropertyVetoException ex) {
-//                                log->warn("Unable to change custom ratio: {}", ex.getMessage());  // NOI18N
+//                                log->warn("Unable to change custom ratio: {}", ex->getMessage());  // NOI18N
 //                                JOptionPane::showMessageDialog(null,
 //                                        tr("NumberFormatError", ans, "Custom ratio"),  // NOI18N
 //                                        tr("Warning"),  // NOI18N
@@ -1247,8 +1247,8 @@ namespace TimeTable
             try {
                 layout->setScale(newScale);
                 update = true;
-            } catch (IllegalArgumentException ex) {
-                exceptionList.append(ex.getMessage());
+            } catch (IllegalArgumentException* ex) {
+                exceptionList.append(ex->getMessage());
             }
         }
 
@@ -1256,8 +1256,8 @@ namespace TimeTable
             try {
                 layout->setFastClock(newFastClock);
                 update = true;
-            } catch (IllegalArgumentException ex) {
-                exceptionList.append(ex.getMessage());
+            } catch (IllegalArgumentException* ex) {
+                exceptionList.append(ex->getMessage());
             }
         }
 
@@ -1265,8 +1265,8 @@ namespace TimeTable
             try {
                 layout->setMetric(newMetric);
                 update = true;
-            } catch (IllegalArgumentException ex) {
-                exceptionList.append(ex.getMessage());
+            } catch (IllegalArgumentException* ex) {
+                exceptionList.append(ex->getMessage());
             }
         }
 
@@ -1274,8 +1274,8 @@ namespace TimeTable
             try {
                 layout->setThrottles(newThrottles);
                 update = true;
-            } catch (IllegalArgumentException ex) {
-                exceptionList.append(ex.getMessage());
+            } catch (IllegalArgumentException* ex) {
+                exceptionList.append(ex->getMessage());
             }
         }
 
@@ -1295,6 +1295,7 @@ namespace TimeTable
                      QStringList scaleMsg = keyWord.split("~");
                     msg.append(tr("- Scale %1 is not available.").arg(scaleMsg[1]));
                 } else {
+#if 0 //TODO:
                     msg.append(QString::asprintf("%n%s", (keyWord)));
                     if (keyWord == (TimeTableDataManager::THROTTLES_IN_USE)) {
                         // Add the affected trains
@@ -1306,6 +1307,7 @@ namespace TimeTable
                             }
                         }
                     }
+#endif
                 }
             }
             JOptionPane::showMessageDialog(nullptr,
@@ -1400,8 +1402,8 @@ namespace TimeTable
             try {
                 station->setDistance(newDistance);
                 update = true;
-            } catch (IllegalArgumentException ex) {
-                exceptionList.append(ex.getMessage());
+            } catch (IllegalArgumentException* ex) {
+                exceptionList.append(ex->getMessage());
             }
         }
 
@@ -1419,24 +1421,24 @@ namespace TimeTable
             try {
                 station->setStaging(newStaging);
                 update = true;
-            } catch (IllegalArgumentException ex) {
-                exceptionList.append(ex.getMessage());
+            } catch (IllegalArgumentException* ex) {
+                exceptionList.append(ex->getMessage());
             }
         }
 
         if (update) {
             setShowReminder(true);
         }
-
+#if 0 // TODO:
         // Display exceptions if necessary
         if (!exceptionList.isEmpty()) {
             QString msg = tr("--- Station Update Errors ---\n");  // NOI18N
             for (QString keyWord : exceptionList) {
                 if (keyWord.startsWith(TimeTableDataManager::TIME_OUT_OF_RANGE)) {
                     QStringList comps = keyWord.split("~");
-#if 0
-                    msg.append(tr(comps[0], comps[1], comps[2]));
+                    msg.append(comps[0], comps[1], comps[2]);
                 } else {
+
                     msg.append(QString::sprintf("%n%s", tr(keyWord)));
                     if (keyWord == (TimeTableDataManager::STAGING_IN_USE)) {
                         // Add the affected stops
@@ -1446,8 +1448,8 @@ namespace TimeTable
                                 msg.append(QString::sprintf("%n      %s, %d", train->getTrainName(), stop->getSeq()));
                             }
                         }
+
                     }
-#endif
                 }
             }
             JOptionPane::showMessageDialog(nullptr,
@@ -1455,6 +1457,7 @@ namespace TimeTable
                     tr("Warning"),  // NOI18N
                     JOptionPane::WARNING_MESSAGE);
         }
+#endif
     }
 
     /**
@@ -1500,8 +1503,8 @@ namespace TimeTable
             try {
                 schedule->setStartHour(newStartHour);
                 update = true;
-            } catch (IllegalArgumentException ex) {
-                exceptionList.append(ex.getMessage());
+            } catch (IllegalArgumentException* ex) {
+                exceptionList.append(ex->getMessage());
             }
         }
 
@@ -1509,8 +1512,8 @@ namespace TimeTable
             try {
                 schedule->setDuration(newDuration);
                 update = true;
-            } catch (IllegalArgumentException ex) {
-                exceptionList.append(ex.getMessage());
+            } catch (IllegalArgumentException* ex) {
+                exceptionList.append(ex->getMessage());
             }
         }
 
@@ -1608,8 +1611,8 @@ namespace TimeTable
             try {
                 train->setDefaultSpeed(newSpeed);
                 update = true;
-            } catch (IllegalArgumentException ex) {
-                exceptionList.append(ex.getMessage());
+            } catch (IllegalArgumentException* ex) {
+                exceptionList.append(ex->getMessage());
             }
         }
 #if 1
@@ -1617,8 +1620,8 @@ namespace TimeTable
             try {
                 train->setStartTime(newStart);
                 update = true;
-            } catch (IllegalArgumentException ex) {
-                exceptionList.append(ex.getMessage());
+            } catch (IllegalArgumentException* ex) {
+                exceptionList.append(ex->getMessage());
             }
         }
 #endif
@@ -1626,8 +1629,8 @@ namespace TimeTable
             try {
                 train->setThrottle(newThrottle);
                 update = true;
-            } catch (IllegalArgumentException ex) {
-                exceptionList.append(ex.getMessage());
+            } catch (IllegalArgumentException* ex) {
+                exceptionList.append(ex->getMessage());
             }
         }
 
@@ -1703,8 +1706,8 @@ namespace TimeTable
             try {
                 stop->setDuration(newDuration);
                 update = true;
-            } catch (IllegalArgumentException ex) {
-                exceptionList.append(ex.getMessage());
+            } catch (IllegalArgumentException* ex) {
+                exceptionList.append(ex->getMessage());
             }
         }
 
@@ -1712,8 +1715,8 @@ namespace TimeTable
             try {
                 stop->setNextSpeed(newSpeed);
                 update = true;
-            } catch (IllegalArgumentException ex) {
-                exceptionList.append(ex.getMessage());
+            } catch (IllegalArgumentException* ex) {
+                exceptionList.append(ex->getMessage());
             }
         }
 
@@ -1721,8 +1724,8 @@ namespace TimeTable
             try {
                 stop->setStagingTrack(newStagingTrack);
                 update = true;
-            } catch (IllegalArgumentException ex) {
-                exceptionList.append(ex.getMessage());
+            } catch (IllegalArgumentException* ex) {
+                exceptionList.append(ex->getMessage());
             }
         }
 
@@ -1951,7 +1954,9 @@ namespace TimeTable
         QList<QString> stopReference = QList<QString>();
         for (Stop* stop : _dataMgr->getStops(0, _curNodeId, true)) {
             TTTrain* train = _dataMgr->getTrain(stop->getTrainId());
-            QString trainSeq = QString::asprintf("%s : %d", train->getTrainName(), stop->getSeq());  // NOI18N
+            //QString trainSeq = QString::asprintf("%s : %d", train->getTrainName(), stop->getSeq());  // NOI18N
+            QString trainSeq = QString("%1 : %%2").arg(train->getTrainName()),arg( stop->getSeq());  // NOI18N
+
             stopReference.append(trainSeq);
         }
         if (!stopReference.isEmpty()) {
@@ -2272,7 +2277,7 @@ namespace TimeTable
             File* file = fileChooser->getSelectedFile();
             try {
                 (new TimeTableImport())->importSgn(_dataMgr, file);
-            } catch (IOException ex) {
+            } catch (IOException* ex) {
                 log->error("Import exception: {}", ex);  // NOI18N
                 JOptionPane::showMessageDialog(nullptr,
                         tr("The %1 import has failed.\nCheck the JMRI System Console for details."
@@ -2303,7 +2308,7 @@ namespace TimeTable
     #if 0
         try {
             feedbackList = new TimeTableCsvImport().importCsv(file);
-        } catch (IOException ex) {
+        } catch (IOException* ex) {
             log->error("Import exception: {}", ex); // NOI18N
             JOptionPane::showMessageDialog(null,
                     tr("ImportCsvFailed", "CVS"), // NOI18N
@@ -2432,7 +2437,7 @@ namespace TimeTable
             bool hasErrors;
             try {
                 hasErrors = new TimeTableCsvExport().exportCsv(file, layoutId, segmentId, scheduleId);
-            } catch (IOException ex) {
+            } catch (IOException* ex) {
                 log->error("Export exception: {}", ex);  // NOI18N
                 JOptionPane::showMessageDialog(null,
                         tr("ExportFailed"),  // NOI18N

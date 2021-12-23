@@ -152,7 +152,7 @@ namespace Operations
                      out.insert(j, route);
                      break;
                  }
-             } catch (NumberFormatException e) {
+             } catch (NumberFormatException* e) {
                  log->error("list id number isn't a number");
              }
          }

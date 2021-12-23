@@ -76,7 +76,7 @@
                         thread = createNewThread(DEFAULT_LOGIXNG_DEBUG_THREAD, tr("LogixNG_DebugThread"));
                         break;
                     default:
-                        throw IllegalArgumentException(tr("Thread ID %d does not exists").arg(threadID));
+                        throw new IllegalArgumentException(tr("Thread ID %d does not exists").arg(threadID));
                 }
             }
             return thread;

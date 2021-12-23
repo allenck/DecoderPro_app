@@ -75,7 +75,7 @@ Turnout* LnTurnoutManager::createNewTurnout(QString systemName, QString userName
   addr = systemName.mid(getSystemPrefix().length()+1).toInt(&bok);
  if(!bok)
  {
-  throw IllegalArgumentException("Can't convert "+systemName.mid(getSystemPrefix().length()+1)+" to LocoNet turnout address");
+  throw new IllegalArgumentException("Can't convert "+systemName.mid(getSystemPrefix().length()+1)+" to LocoNet turnout address");
  }
  LnTurnout* t = new LnTurnout(getSystemPrefix(), addr, throttledcontroller);
  t->setUserName(userName);

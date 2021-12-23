@@ -8,19 +8,19 @@ class PR4Adapter : public LocoBufferAdapter
  Q_OBJECT
 public:
  PR4Adapter(QObject *parent = 0);
- /*public*/ void configure();
- /*public*/ QStringList validBaudRates();
+ /*public*/ void configure()override;
+ /*public*/ QStringList validBaudRates()override;
  /*public*/ QVector<int> validBaudNumbers() override;
  /*public*/ int defaultBaudIndex() override;
  /*public*/ QStringList commandStationOptions();
  /*public*/ SystemConnectionMemo* getSystemConnectionMemo();
- /*public*/ QString className();
+ /*public*/ QString className()override;
 
 private:
  static Logger* log;
 
 protected:
- /*protected*/ void setSerialPort(SerialPort* activeSerialPort) throw (UnsupportedCommOperationException);
+ /*protected*/ void setSerialPort(SerialPort* activeSerialPort) /*throw (UnsupportedCommOperationException)*/;
 
 };
 

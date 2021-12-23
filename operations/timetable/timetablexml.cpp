@@ -27,7 +27,7 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
         File* file = x->getFile(true);
         try {
             FileUtil::rotate(file, 4, "bup");  // NOI18N
-        } catch (IOException ex) {
+        } catch (IOException* ex) {
             log->warn("Rotate failed, reverting to xml backup");  // NOI18N
             x->makeBackupFile(TimeTableXmlFile::getDefaultFileName());
         }
@@ -144,11 +144,11 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
 
         try {
             x->writeXML(file, doc);
-        } catch (FileNotFoundException ex) {
-            log->error("File not found when writing: " + ex.getMessage());  // NOI18N
+        } catch (FileNotFoundException* ex) {
+            log->error("File not found when writing: " + ex->getMessage());  // NOI18N
             return false;
-        } catch (IOException ex) {
-            log->error("IO Exception when writing: " + ex.getMessage());  // NOI18N
+        } catch (IOException* ex) {
+            log->error("IO Exception when writing: " + ex->getMessage());  // NOI18N
             return false;
         }
 
@@ -457,11 +457,11 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
                         nextSpeed, arriveTime, departTime, stagingTrack, stopNotes);
                 dataMgr->addStop(stopId, newStop);
             }
-        } catch (JDOMException ex) {
-            log->error("File invalid: " + ex.getMessage());  // NOI18N
+        } catch (JDOMException* ex) {
+            log->error("File invalid: " + ex->getMessage());  // NOI18N
             return false;
-        } catch (IOException ex) {
-            log->error("Error reading file: " + ex.getMessage());  // NOI18N
+        } catch (IOException* ex) {
+            log->error("Error reading file: " + ex->getMessage());  // NOI18N
             return false;
         }
 
@@ -503,9 +503,9 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
                  if(!QFile(demoFile->getPath()).copy(chkfile->getPath()))
                  {
                   log->error(tr("error copying %1 to %2").arg(demoFile->getPath()).arg(chkdir->getPath()));
-                    throw IOException(tr("error copying %1 to %2").arg(demoFile->getPath()).arg(chkfile->getPath()));
+                    throw new IOException(tr("error copying %1 to %2").arg(demoFile->getPath()).arg(chkfile->getPath()));
                  }
-                } catch (IOException ex) {
+                } catch (IOException* ex) {
                     TimeTableXml::log->error("Copy TimeTable demo file failed");  // NOI18N
                     return nullptr;
                 }

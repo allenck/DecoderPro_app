@@ -88,7 +88,7 @@
    {
        joss->connection->sendMessage(ex.getJsonMessage());
    }
-  } catch (IOException ex)
+  } catch (IOException* ex)
   {
    // if we get an error, de-register
    //this->train.removePropertyChangeListener(this);

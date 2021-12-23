@@ -278,7 +278,7 @@ connect(sendButton, SIGNAL(clicked()), this, SLOT(sendButtonActionPerformed()));
      bool ok;
         currentLimit = currentTextField->text().toInt(&ok);
         if(!ok) throw NumberFormatException();
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException* e) {
         JOptionPane::showMessageDialog(NULL, tr("CurrentLimitDialogString").arg(currentRange),
                 tr("SPROG Console"), JOptionPane::ERROR_MESSAGE);
         currentLimit = validLimit;
@@ -468,7 +468,7 @@ connect(sendButton, SIGNAL(clicked()), this, SLOT(sendButtonActionPerformed()));
      currentLimitFromHardware = tmpString.toInt(&ok);
      if(!ok) throw NumberFormatException();
     }
-    catch (NumberFormatException e) {
+    catch (NumberFormatException* e) {
         JOptionPane::showMessageDialog(NULL, tr("Malformed Reply for current limit"), tr("SPROG Console"), JOptionPane::ERROR_MESSAGE);
         state = State::IDLE;
         return;
@@ -503,7 +503,7 @@ connect(sendButton, SIGNAL(clicked()), this, SLOT(sendButtonActionPerformed()));
       modeWord = tmpString.toInt(&ok,16);
      if(!ok) throw NumberFormatException();
     }
-    catch (NumberFormatException e)
+    catch (NumberFormatException* e)
     {
         JOptionPane::showMessageDialog(NULL, tr("Malformed Reply for mode word"),
                 tr("SPROG Console"), JOptionPane::ERROR_MESSAGE);

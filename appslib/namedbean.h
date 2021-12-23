@@ -393,7 +393,7 @@ public:
          * @param bean The bean to be checked.
          * @return a list of NamedBeanUsageReports or an empty ArrayList.
          */
-        /*default*/ virtual QList<NamedBeanUsageReport*> getUsageReport(/*@CheckForNull*/ NamedBean* bean) { return (QList<NamedBeanUsageReport*>()); }
+        /*default*/ virtual QList<NamedBeanUsageReport*> getUsageReport(/*@CheckForNull*/ NamedBean* /*bean*/) { return (QList<NamedBeanUsageReport*>()); }
 
         /**
          * Attach a key/value pair to the
@@ -418,7 +418,7 @@ public:
      * Retrieve the complete current set of keys.
      */
     virtual QSet<QString> getPropertyKeys();
-    /*public*/ virtual void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* /*evt*/) throw (PropertyVetoException) {}
+    /*public*/ virtual void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* /*evt*/) /*throw (PropertyVetoException)*/ {}
 
 
     virtual uint hashCode() {return 0;}

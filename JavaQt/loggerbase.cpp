@@ -21,17 +21,18 @@ LoggerBase::LoggerBase(const LoggerBase & /*other*/) : QObject()
 // this->bInfoEnabled = other.bInfoEnabled;
 // this->name = other.name;
 }
-/*static*/ void LoggerBase::error(QString s, QVariant ex)
+///*static*/ void LoggerBase::error(QString s, QVariant ex)
+//{
+// qDebug() << tr("Error: ") << s << ex.toString();
+// //ConsoleInterface::instance()->sendMessage(tr("Error: ")+ s, s, new LogLevel(LogLevel::ERROR, "Error",0));
+// ConsoleInterface::instance()->sendMessage(tr("Error: ")+ s, new LoggingEvent("static", LogLevel::ERROR,s,nullptr));
+//}
+/*static*/ void LoggerBase::error(QString s, Throwable *ex)
 {
- qDebug() << tr("Error: ") << s << ex.toString();
- //ConsoleInterface::instance()->sendMessage(tr("Error: ")+ s, s, new LogLevel(LogLevel::ERROR, "Error",0));
- ConsoleInterface::instance()->sendMessage(tr("Error: ")+ s, new LoggingEvent("static", LogLevel::ERROR,s,nullptr));
-}
-/*static*/ void LoggerBase::error(QString s, Throwable ex)
-{
- qDebug() << tr("Error: ") << s << ex.getMessage();
+ if(ex)
+ qDebug() << tr("Error: ") << s << ex->getMessage();
  //ConsoleInterface::instance()->sendMessage(tr("Error: ")+ s, s, new LogLevel(LogLevel::ERROR, "Error", 0));
- ConsoleInterface::instance()->sendMessage(tr("Error: ")+ s, new LoggingEvent("static", LogLevel::ERROR,s,&ex));
+ ConsoleInterface::instance()->sendMessage(tr("Error: ")+ s, new LoggingEvent("static", LogLevel::ERROR,s,ex));
 }
 
 //bool Logger::isDebugEnabled()

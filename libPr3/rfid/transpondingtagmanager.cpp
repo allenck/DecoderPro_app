@@ -62,7 +62,7 @@
 
         // if that failed, blame it on the input arguments
         if (s == nullptr) {
-            throw IllegalArgumentException();
+            throw new IllegalArgumentException();
         }
 
         return (DefaultIdTag*)s;

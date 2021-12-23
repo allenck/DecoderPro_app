@@ -16,7 +16,7 @@ namespace Operations
    ~TrainManagerXml() {}
    TrainManagerXml(const TrainManagerXml&) : OperationsXml() {}
   /*public*/ bool isTrainFileLoaded();
-  /*public*/ void writeFile(QString name); //throw FileNotFoundException, IOException
+  /*public*/ void writeFile(QString name); //throw  new FileNotFoundException, IOException
   /*public*/ void readFile(QString name); //throw (JDOMException,IOException)
   /*public*/ File* createTrainManifestFile(QString name);
   /*public*/ File* getTrainManifestFile(QString name);

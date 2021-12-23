@@ -127,10 +127,10 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
  try
  {
   tm->enableAdvancedRouting(layoutblocks.attribute("blockrouting")=="true");
- } catch (DataConversionException e1) {
+ } catch (DataConversionException* e1) {
      log->warn("unable to convert layout block manager blockrouting attribute");
  }
- catch (NullPointerException e) {  // considered normal if the attribute is not present
+ catch (NullPointerException* e) {  // considered normal if the attribute is not present
  }
  if (layoutblocks.attribute("routingStablisedSensor") != "")
  {
@@ -138,7 +138,7 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
   {
    tm->setStabilisedSensor(layoutblocks.attribute("routingStablisedSensor"));
   }
-  catch (JmriException e) {
+  catch (JmriException* e) {
   }
  }
 
@@ -190,7 +190,7 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
    {
     sense = ((layoutblockList.at(i).toElement())).attribute("occupiedsense").toInt();
    }
-   catch (DataConversionException e)
+   catch (DataConversionException* e)
    {
     log->error("failed to convert occupiedsense attribute");
    }
@@ -202,7 +202,7 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
     {
      b->setBlockMetric((stMetric).toInt());
     }
-    catch (NumberFormatException e)
+    catch (NumberFormatException* e)
     {
      log->error("failed to convert metric attribute for block " + b->getDisplayName());
     }

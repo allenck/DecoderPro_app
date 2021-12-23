@@ -64,7 +64,7 @@ static /*public*/ void delConsist(Locale locale, DccLocoAddress address) throws 
         } else {
             throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", CONSIST, address.toString()));
         }
-    } catch (NullPointerException ex) {
+    } catch (NullPointerException* ex) {
         throw new JsonException(503, Bundle.getMessage(locale, "ErrorNoConsistManager")); // NOI18N
     }
 }
@@ -122,7 +122,7 @@ static /*public*/ JsonNode getConsist(Locale locale, DccLocoAddress address) thr
         } else {
             throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", CONSIST, address.toString()));
         }
-    } catch (NullPointerException ex) {
+    } catch (NullPointerException* ex) {
         throw new JsonException(503, Bundle.getMessage(locale, "ErrorNoConsistManager")); // NOI18N
     }
 }
@@ -145,7 +145,7 @@ static /*public*/ void putConsist(Locale locale, DccLocoAddress address, JsonNod
             InstanceManager.getDefault(jmri.ConsistManager.class).getConsist(address);
             setConsist(locale, address, data);
         }
-    } catch (NullPointerException ex) {
+    } catch (NullPointerException* ex) {
         throw new JsonException(503, Bundle.getMessage(locale, "ErrorNoConsistManager")); // NOI18N
     }
 }
@@ -165,7 +165,7 @@ static /*public*/ JsonNode getConsists(Locale locale) throws JsonException {
             root.add(getConsist(locale, address));
         }
         return root;
-    } catch (NullPointerException ex) {
+    } catch (NullPointerException* ex) {
         throw new JsonException(503, Bundle.getMessage(locale, "ErrorNoConsistManager")); // NOI18N
     }
 }
@@ -224,11 +224,11 @@ static /*public*/ void setConsist(Locale locale, DccLocoAddress address, JsonNod
             }
             try {
                 (new ConsistFile()).writeFile(InstanceManager.getDefault(jmri.ConsistManager.class).getConsistList());
-            } catch (IOException ex) {
+            } catch (IOException* ex) {
                 throw new JsonException(500, ex.getLocalizedMessage());
             }
         }
-    } catch (NullPointerException ex) {
+    } catch (NullPointerException* ex) {
         throw new JsonException(503, Bundle.getMessage(locale, "ErrorNoConsistManager")); // NOI18N
     }
 }
@@ -290,7 +290,7 @@ static /*public*/ JsonNode getLight(Locale locale, String name) throws JsonExcep
                 break;
         }
         return root;
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error("Unable to get light [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", LIGHT, name));
     }
@@ -354,7 +354,7 @@ static /*public*/ void setLight(Locale locale, String name, JsonNode data) throw
             default:
                 throw new JsonException(400, Bundle.getMessage(locale, "ErrorUnknownState", LIGHT, state));
         }
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error("Unable to get light [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", LIGHT, name));
     }
@@ -380,7 +380,7 @@ static /*public*/ void setLight(Locale locale, String name, JsonNode data) throw
         data.insert(JSON::ID, location->getId());
         data.insert(JSON::LENGTH, location->getLength());
         data.insert(JSON::COMMENT, location->getComment());
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error(tr("Unable to get location id [%1].").arg(id));
         throw new JsonException(404, tr( "Unable to access %1 %2.").arg(JSON::LOCATION).arg(id));
     }
@@ -438,7 +438,7 @@ static /*public*/ JsonNode getMemory(Locale locale, String name) throws JsonExce
         } else {
             data.insert(JSON::VALUE, memory.getValue().toString());
         }
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error("Unable to get memory [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", MEMORY, name));
     }
@@ -482,7 +482,7 @@ static /*public*/ void setMemory(Locale locale, String name, JsonNode data) thro
                 memory.setValue(data.path(VALUE).asText());
             }
         }
-    } catch (NullPointerException ex) {
+    } catch (NullPointerException* ex) {
         log->error("Unable to get memory [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", MEMORY, name));
     }
@@ -600,10 +600,10 @@ static /*public*/ JsonNode getPower(Locale locale) throws JsonException {
                 data.insert(JSON::STATE, UNKNOWN);
                 break;
         }
-    } catch (JmriException e) {
+    } catch (JmriException* e) {
         log->error("Unable to get Power state.", e);
         throw new JsonException(500, Bundle.getMessage(locale, "ErrorPower"));
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         // No PowerManager is defined; just report it as UNKNOWN
         data.insert(JSON::STATE, UNKNOWN);
     }
@@ -627,7 +627,7 @@ static /*public*/ void setPower(Locale locale, JsonNode data) throws JsonExcepti
             default:
                 throw new JsonException(400, Bundle.getMessage(locale, "ErrorUnknownState", POWER, state));
         }
-    } catch (JmriException ex) {
+    } catch (JmriException* ex) {
         throw new JsonException(500, ex);
     }
 }
@@ -685,7 +685,7 @@ static /*public*/ void setReporter(Locale locale, String name, JsonNode data) th
         } else {
             InstanceManager.getDefault(jmri.ReporterManager.class).getReporter(name).setReport(data.path(REPORT).asText());
         }
-    } catch (NullPointerException ex) {
+    } catch (NullPointerException* ex) {
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", REPORTER, name));
     }
 }
@@ -847,7 +847,7 @@ static /*public*/ JsonNode getRoute(Locale locale, String name) throws JsonExcep
         } else {
             data.insert(JSON::STATE, UNKNOWN);
         }
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error("Unable to get route [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", ROUTE, name));
     }
@@ -897,7 +897,7 @@ static /*public*/ void setRoute(Locale locale, String name, JsonNode data) throw
             default:
                 throw new JsonException(400, Bundle.getMessage(locale, "ErrorUnknownState", ROUTE, state));
         }
-    } catch (NullPointerException ex) {
+    } catch (NullPointerException* ex) {
         log->error("Unable to get route [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", ROUTE, name));
     }
@@ -929,7 +929,7 @@ static /*public*/ JsonNode getSensor(Locale locale, String name) throws JsonExce
                 data.insert(JSON::STATE, UNKNOWN);
                 break;
         }
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error("Unable to get sensor [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", SENSOR, name));
     }
@@ -982,10 +982,10 @@ static /*public*/ void setSensor(Locale locale, String name, JsonNode data) thro
             default:
                 throw new JsonException(400, Bundle.getMessage(locale, "ErrorUnknownState", SENSOR, state));
         }
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error("Unable to get sensor [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", SENSOR, name));
-    } catch (JmriException ex) {
+    } catch (JmriException* ex) {
         throw new JsonException(500, ex);
     }
 }
@@ -1009,7 +1009,7 @@ static /*public*/ JsonNode getSignalHead(Locale locale, String name) throws Json
             data.insert(JSON::STATE, signalHead.getAppearance());
         }
         data.insert(JSON::APPEARANCE_NAME, signalHead.getAppearanceName());
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error("Unable to get signalHead [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", SIGNAL_HEAD, name));
     }
@@ -1047,7 +1047,7 @@ static /*public*/ void setSignalHead(Locale locale, String name, JsonNode data) 
         } else {
             throw new JsonException(400, Bundle.getMessage(locale, "ErrorUnknownState", SIGNAL_HEAD, state));
         }
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error("Unable to get signal head [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", SIGNAL_HEAD, name));
     }
@@ -1079,7 +1079,7 @@ static /*public*/ JsonNode getSignalMast(Locale locale, String name) throws Json
         } else {
             data.insert(JSON::STATE, aspect);
         }
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error("Unable to get signalMast [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", SIGNAL_MAST, name));
     }
@@ -1110,7 +1110,7 @@ static /*public*/ void setSignalMast(Locale locale, String name, JsonNode data) 
         } else {
             throw new JsonException(400, Bundle.getMessage(locale, "ErrorUnknownState", SIGNAL_MAST, aspect));
         }
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error("Unable to get signal mast [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", SIGNAL_MAST, name));
     }
@@ -1231,7 +1231,7 @@ static /*public*/ void setTime(Locale locale, JsonNode data) throws JsonExceptio
         }
         data.insert(JSON::CABOOSE, train->getCabooseRoadAndNumber());
 root.insert(JSON::DATA, data);
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error(tr("Unable to get train id [%1].").arg(id));
         throw new JsonException(404, tr( "Unable to access %1 %2.").arg(JSON::TRAIN).arg(id));
     }
@@ -1298,7 +1298,7 @@ static /*public*/ JsonNode getTurnout(Locale locale, String name) throws JsonExc
                 data.insert(JSON::STATE, UNKNOWN);
                 break;
         }
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error("Unable to get turnout [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", TURNOUT, name));
     }
@@ -1351,7 +1351,7 @@ static /*public*/ void setTurnout(Locale locale, String name, JsonNode data) thr
             default:
                 throw new JsonException(400, Bundle.getMessage(locale, "ErrorUnknownState", TURNOUT, state));
         }
-    } catch (NullPointerException ex) {
+    } catch (NullPointerException* ex) {
         log->error("Unable to get turnout [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", TURNOUT, name));
     }

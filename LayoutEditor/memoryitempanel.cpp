@@ -171,7 +171,7 @@
         comp = this->getDragger(new DataFlavor(Editor::POSITIONABLE_FLAVOR), type, mem->sizeHint());
         comp->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
     }
-    catch (ClassNotFoundException cnfe) {
+    catch (ClassNotFoundException* cnfe) {
         //cnfe.printStackTrace();
         comp = new JPanel();
     }

@@ -28,19 +28,19 @@ public slots:
  /*public*/ void testSetGetNames();
  /*public*/ void testInvalidControlType();
  /*public*/ void testActivateNoLight();
- /*public*/ void testSingleSensorFollower() throw (JmriException);
+ /*public*/ void testSingleSensorFollower() /*throw (JmriException)*/;
  /*public*/ void testNoSensor();
  /*public*/ void testNoTurnout();
- /*public*/ void testTurnoutFollower() throw (JmriException);
+ /*public*/ void testTurnoutFollower() /*throw (JmriException)*/;
  /*public*/ void testFastClockFollowingOneControl() throw (TimebaseRateException);
  /*public*/ void testFastClockFollowingOneControlStartOn() throw (TimebaseRateException);
  /*public*/ void testFastClockFollowingTwoControls() throw (TimebaseRateException);
  /*public*/ void testFastClockFollowingTwoControlsOverlap() throw (TimebaseRateException);
- /*public*/ void testTimedSensorFollowing() throw (JmriException);
+ /*public*/ void testTimedSensorFollowing() /*throw (JmriException)*/;
  /*public*/ void testNoTimedSensor();
  /*public*/ void testTwoSensorFollowingNoSensorSet();
- /*public*/ void testTwoSensorFollowing() throw (JmriException);
- /*public*/ void testTwoSensorFollowingInactive() throw (JmriException);
+ /*public*/ void testTwoSensorFollowing() /*throw (JmriException)*/;
+ /*public*/ void testTwoSensorFollowingInactive() /*throw (JmriException)*/;
  /*public*/ void testUniqueTimes();
 
 private:

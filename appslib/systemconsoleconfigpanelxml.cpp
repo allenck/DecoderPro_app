@@ -110,8 +110,8 @@ SystemConsoleConfigPanelXml::SystemConsoleConfigPanelXml(QObject *parent) :
       SystemConsole::getInstance()->setWrapStyle(value.toInt());
   }
 
- } catch (NumberFormatException ex) {
-     Logger::error("NumberFormatException while setting System Console parameters: " + ex.getMessage());
+ } catch (NumberFormatException* ex) {
+     Logger::error("NumberFormatException while setting System Console parameters: " + ex->getMessage());
      result = false;
  }
 

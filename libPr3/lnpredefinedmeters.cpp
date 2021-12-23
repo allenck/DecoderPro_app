@@ -124,10 +124,10 @@
             }
             try {
                 newMeter->setCommandedAnalogValue(value);
-            } catch (JmriException e) {
+            } catch (JmriException* e) {
                 log->debug(tr("Exception setting %1Meter %2 to value %3: %4").arg(
                         (typeVolt?"volt":"current")).arg( // NOI18N
-                        sysName).arg(value).arg(e.getMessage()));
+                        sysName).arg(value).arg(e->getMessage()));
             }
             ((MeterManager*)InstanceManager::getDefault("MeterManager"))->Register(qobject_cast<NamedBean*>(newMeter));
             log->debug(tr("Added new %1Meter %2 with value %3").arg(
@@ -137,10 +137,10 @@
             try {
              log->debug(tr("meter %1").arg(((DefaultMeter*)m->self())->objectName()));
              ((AbstractAnalogIO*)m->self())->setCommandedAnalogValue(value);
-            } catch (JmriException e) {
+            } catch (JmriException* e) {
                 log->debug(tr("Exception setting %1Meter %2 to value %3: %4").arg(
                         (typeVolt?"volt":"current")).arg( // NOI18N
-                        sysName).arg(value).arg(e.getLocalizedMessage()));
+                        sysName).arg(value).arg(e->getLocalizedMessage()));
             }
             log->debug(tr("Updating currentMeter %1 with value %2").arg(
                     sysName).arg(value));

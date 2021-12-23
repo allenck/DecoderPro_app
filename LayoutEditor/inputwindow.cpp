@@ -433,7 +433,7 @@ void InputWindow::buttonPressed()
  {
   JmriScriptEngineManager::getDefault()->eval(area->text, JmriScriptEngineManager::getDefault()->getEngineByName((QString) languages->currentText()));
  } catch (ScriptException ex) {
-     log->error("Error executing script", ex);
+     log->error("Error executing script", &ex);
  }
 }
 

@@ -97,13 +97,13 @@ private:
     /*protected*/ void processModifierElements(QDomElement e, VariableValue* v);
     /*protected*/ bool setDefaultValue(QDomElement e, VariableValue* v);
     /*protected*/ VariableValue* processCompositeVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item);
-    /*protected*/ VariableValue* processDecVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) throw (NumberFormatException);
-    /*protected*/ VariableValue* processEnumVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) throw (NumberFormatException);
-    /*protected*/ VariableValue* processHexVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) throw (NumberFormatException) ;
+    /*protected*/ VariableValue* processDecVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) /*throw (NumberFormatException)*/;
+    /*protected*/ VariableValue* processEnumVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) /*throw (NumberFormatException)*/;
+    /*protected*/ VariableValue* processHexVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) /*throw (NumberFormatException)*/ ;
     /*protected*/ VariableValue* processLongAddressVal(QString CV, bool readOnly, bool infoOnly, bool writeOnly, QString name, QString comment, bool opsOnly, QString mask, QString item) ;
     /*protected*/ VariableValue* processShortAddressVal(QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item, QDomElement child) ;
-    /*protected*/ VariableValue* processSpeedTableVal(QDomElement child, QString CV, bool readOnly, bool infoOnly, bool writeOnly, QString name, QString comment, bool opsOnly, QString mask, QString item) throw (NumberFormatException) ;
-    /*protected*/ VariableValue* processSplitVal(QDomElement child, QString CV, bool readOnly, bool infoOnly, bool writeOnly, QString name, QString comment, bool opsOnly, QString mask, QString item) throw (NumberFormatException) ;
+    /*protected*/ VariableValue* processSpeedTableVal(QDomElement child, QString CV, bool readOnly, bool infoOnly, bool writeOnly, QString name, QString comment, bool opsOnly, QString mask, QString item) /*throw (NumberFormatException)*/ ;
+    /*protected*/ VariableValue* processSplitVal(QDomElement child, QString CV, bool readOnly, bool infoOnly, bool writeOnly, QString name, QString comment, bool opsOnly, QString mask, QString item) /*throw (NumberFormatException)*/ ;
     /*protected*/ void setButtonsReadWrite(bool readOnly, bool infoOnly, bool writeOnly, QPushButton* bw, QPushButton* br, int row);
     /*protected*/ void setToolTip(QDomElement e, VariableValue* v);
     /*protected*/ void handleENumValChildren(QDomElement e, EnumVariableValue* var);

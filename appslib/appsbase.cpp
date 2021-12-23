@@ -66,7 +66,7 @@ AppsBase::AppsBase(QObject *parent) :
 //        Application.setApplicationName(applicationName);
 //    } catch (IllegalAccessException ex) {
 //        log->error("Unable to set application name");
-//    } catch (IllegalArgumentException ex) {
+//    } catch (IllegalArgumentException* ex) {
 //        log->error("Unable to set application name");
 //    }
  QApplication::setApplicationName(applicationName);
@@ -208,15 +208,15 @@ void AppsBase::init()
     log->info(tr("Please ensure that the User Files location and Roster location are correct."));
    }
   }
-  catch (IOException ex)
+  catch (IOException* ex)
   {
    // GUI should show message here
-   log->error(tr("Profiles not configurable. Using fallback per-application configuration. Error: %1").arg(ex.getMessage()));
+   log->error(tr("Profiles not configurable. Using fallback per-application configuration. Error: %1").arg(ex->getMessage()));
   }
-  catch (IllegalArgumentException ex)
+  catch (IllegalArgumentException* ex)
   {
    // GUI should show message here
-   log->error(tr("Profiles not configurable. Using fallback per-application configuration. Error: %1").arg(ex.getMessage()));
+   log->error(tr("Profiles not configurable. Using fallback per-application configuration. Error: %1").arg(ex->getMessage()));
   }
  }
  try
@@ -241,9 +241,9 @@ void AppsBase::init()
    log->error("Profiles not configurable. Using fallback per-application configuration.");
   }
  }
- catch (IOException ex)
+ catch (IOException* ex)
  {
-  log->info(tr("Profiles not configurable. Using fallback per-application configuration. Error: %1").arg(ex.getMessage()));
+  log->info(tr("Profiles not configurable. Using fallback per-application configuration. Error: %1").arg(ex->getMessage()));
  }
 }
 
@@ -368,8 +368,8 @@ void AppsBase::init()
          log->error("Failed to get default configure manager");
          result = false;
      }
-    } catch (JmriException e) {
-        log->error("Unhandled problem loading deferred configuration: " + e.getMessage());
+    } catch (JmriException* e) {
+        log->error("Unhandled problem loading deferred configuration: " + e->getMessage());
         result = false;
     }
     if (log->isDebugEnabled()) {

@@ -885,7 +885,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
     // Create a single new Light, or the first Light of a range
     try {
         g = mgr->newLight(sName, uName);
-    } catch (IllegalArgumentException ex) {
+    } catch (IllegalArgumentException* ex) {
         // user input no good
         handleCreateException(ex, sName);
         return; // without creating
@@ -916,7 +916,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
             }
             try {
                 g = InstanceManager::lightManagerInstance()->newLight(sxName, uxName);
-            } catch (IllegalArgumentException ex) {
+            } catch (IllegalArgumentException* ex) {
                 // user input no good
 // TODO:                handleCreateException(ex, sName);
                 return; // without creating any more Lights
@@ -1492,7 +1492,7 @@ void LightTableAction::setUpControlType(QString ctype) {
                     status1->setText(tr("Number out of range in time entry, please reenter as hh:mm."));
                     error = true;
                 }
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException* e) {
                 status1->setText(tr("Bad character in time field, please reenter as hh:mm."));
                 error = true;
             }
@@ -2045,7 +2045,7 @@ QString LightTableAction::formatTime(int hour, int minute) {
  {
   onImage = ImageIO::read(new File(onIconPath));
   offImage = ImageIO::read(new File(offIconPath));
- } catch (IOException ex) {
+ } catch (IOException* ex) {
      log->error(tr("error reading image from %1 or %2").arg(onIconPath).arg(offIconPath), ex);
  }
  log->debug("Success reading images");

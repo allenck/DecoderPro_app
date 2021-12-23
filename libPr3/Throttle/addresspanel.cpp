@@ -480,7 +480,7 @@ void AddressPanel::OnSetButton_clicked()
     int cA = 0;
     try {
         cA = cre->getConsistNumber().toInt();
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException* e) {
 
     }
     if (0 < cA && cA < 128) {

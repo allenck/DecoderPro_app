@@ -571,8 +571,8 @@
      label->setIcon(icon);
      label->setName(tr("Portal"));
      panel->layout()->addWidget(label);
- } catch (ClassNotFoundException cnfe) {
-     log->error(tr("Unable to find class supporting %1").arg(Editor::POSITIONABLE_FLAVOR, cnfe.getMessage()));
+ } catch (ClassNotFoundException* cnfe) {
+     log->error(tr("Unable to find class supporting %1").arg(Editor::POSITIONABLE_FLAVOR, cnfe->getMessage()));
  }
  _dndPanel->layout()->addWidget(panel);
  return _dndPanel;

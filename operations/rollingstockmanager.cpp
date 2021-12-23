@@ -217,7 +217,7 @@ namespace Operations
             //try {
                 rsNumber = rs->getNumber().toInt();
                 rs->number = rsNumber;
-//            } catch (NumberFormatException e) {
+//            } catch (NumberFormatException* e) {
 //                // maybe rolling stock number in the format nnnn-N
 //                try {
 //                    number = rs.getNumber().split("-");
@@ -239,7 +239,7 @@ namespace Operations
 //                            out.add(k + 1, rs);
 //                            rsAdded = true;
 //                            break;
-//                        } catch (NumberFormatException e3) {
+//                        } catch (NumberFormatException* e3) {
 //                            if (numberIn.compareToIgnoreCase(numberOut) >= 0) {
 //                                out.add(k + 1, rs);
 //                                rsAdded = true;
@@ -513,7 +513,7 @@ namespace Operations
                     d = d + 1900;
                 }
                 return Integer.toString(d);
-            } catch (NumberFormatException e2) {
+            } catch (NumberFormatException* e2) {
                 log.debug("Unable to parse car built date {}", date);
             }
         }

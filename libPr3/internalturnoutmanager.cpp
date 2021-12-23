@@ -55,7 +55,7 @@ InternalTurnoutManager::InternalTurnoutManager(QObject *parent) : AbstractTurnou
     return true;
 }
 
-/*public*/ QString InternalTurnoutManager::createSystemName(QString curAddress, QString prefix) const throw (JmriException)
+/*public*/ QString InternalTurnoutManager::createSystemName(QString curAddress, QString prefix) const /*throw (JmriException)*/
 {
     return prefix+QString(typeLetter())+curAddress;
 }

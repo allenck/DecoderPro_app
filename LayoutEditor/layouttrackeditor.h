@@ -52,7 +52,7 @@ class LTE_LayoutTrackEditor : public LayoutTrackEditor
   LTE_LayoutTrackEditor(LayoutEditor* editor): LayoutTrackEditor(editor){}
   /*public*/ void editLayoutTrack(/*@Nonnull*/ LayoutTrackView* /*layoutTrack*/) override
   {
-   log->error("Not a valid LayoutTrackEditor implementation",  Exception("traceback"));
+   log->error("Not a valid LayoutTrackEditor implementation",  new Throwable("traceback"));
   }
 
 };

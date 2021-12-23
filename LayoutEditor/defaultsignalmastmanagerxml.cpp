@@ -123,7 +123,7 @@ DefaultSignalMastManagerXml::DefaultSignalMastManagerXml(QObject *parent) :
 
     loadCommon(m, e);
    }
-   catch (IllegalArgumentException ex) {
+   catch (IllegalArgumentException* ex) {
        log->warn(tr("Failed to provide SignalMast \"%1\" in load").arg(sys));
    }
   }
@@ -135,7 +135,7 @@ DefaultSignalMastManagerXml::DefaultSignalMastManagerXml(QObject *parent) :
        // and do it
        adapter->load(e, QDomElement());
    } catch (Exception ex) {
-       log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex.getMessage()), ex);
+       log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex.getMessage()), &ex);
    }
   }
  }
@@ -153,7 +153,7 @@ DefaultSignalMastManagerXml::DefaultSignalMastManagerXml(QObject *parent) :
        // and do it
        adapter->load(e, QDomElement());
    } catch (Exception ex) {
-       log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex.getMessage()), ex);
+       log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex.getMessage()), &ex);
    }
   }
  }
@@ -171,7 +171,7 @@ DefaultSignalMastManagerXml::DefaultSignalMastManagerXml(QObject *parent) :
         // and do it
         adapter->load(e, QDomElement());
     } catch (Exception ex) {
-     log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex.getMessage()), ex);
+     log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex.getMessage()), &ex);
     }
   }
  }
@@ -187,7 +187,7 @@ DefaultSignalMastManagerXml::DefaultSignalMastManagerXml(QObject *parent) :
              // and do it
              adapter->load(e, QDomElement());
          } catch (Exception ex) {
-          log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex.getMessage()), ex);
+          log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex.getMessage()), &ex);
          }
      }
  }
@@ -203,7 +203,7 @@ DefaultSignalMastManagerXml::DefaultSignalMastManagerXml(QObject *parent) :
              // and do it
              adapter->load(e, QDomElement());
          } catch (Exception ex) {
-          log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex.getMessage()), ex);
+          log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex.getMessage()), &ex);
          }
      }
  }
@@ -219,7 +219,7 @@ DefaultSignalMastManagerXml::DefaultSignalMastManagerXml(QObject *parent) :
              // and do it
              adapter->load(e, QDomElement());
          } catch (Exception ex) {
-          log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex.getMessage()), ex);
+          log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex.getMessage()), &ex);
          }
      }
  }
@@ -244,7 +244,7 @@ DefaultSignalMastManagerXml::DefaultSignalMastManagerXml(QObject *parent) :
          }
          try {
              m->addRepeater(smr);
-         } catch (JmriException ex) {
+         } catch (JmriException* ex) {
              log->error("Unable to add mast repeater " + masterName + " : " + slaveName);
          }
      }

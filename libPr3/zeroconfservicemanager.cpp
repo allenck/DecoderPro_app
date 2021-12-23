@@ -222,7 +222,7 @@ ZeroConfServiceManager::ZeroConfServiceManager(QObject *parent) : QObject(parent
                         log.debug("skipping '{}' on {}, already in serviceInfos.", service.getKey(), address.getHostAddress());
                     }
                     event = new ZeroConfServiceEvent(service, dns);
-                } catch (IOException ex) {
+                } catch (IOException* ex) {
                     log.error("Unable to publish service for '{}': {}", service.getKey(), ex.getMessage());
                     continue;
                 }
@@ -253,10 +253,10 @@ ZeroConfServiceManager::ZeroConfServiceManager(QObject *parent) : QObject(parent
                         service.getListeners().stream().forEach((listener) -> {
                             listener.serviceUnpublished(new ZeroConfServiceEvent(service, dns));
                         });
-                    } catch (NullPointerException ex) {
+                    } catch (NullPointerException* ex) {
                         log.debug("{} already unregistered from {}", service.getKey(), address);
                     }
-                } catch (IOException ex) {
+                } catch (IOException* ex) {
                     log.error("Unable to stop ZeroConfService {}. {}", service.getKey(), ex.getLocalizedMessage());
                 }
             });
@@ -292,7 +292,7 @@ ZeroConfServiceManager::ZeroConfServiceManager(QObject *parent) : QObject(parent
                 if (close) {
                     try {
                         dns.close();
-                    } catch (IOException ex) {
+                    } catch (IOException* ex) {
                         log.debug("jmdns.close() returned IOException: {}", ex.getMessage());
                     }
                 }
@@ -340,7 +340,7 @@ ZeroConfServiceManager::ZeroConfServiceManager(QObject *parent) : QObject(parent
                                 log.debug("Calling JmDNS.create({}, '{}')", address.getHostAddress(), name);
                                 try {
                                     JMDNS_SERVICES.put(address, JmDNS.create(address, name));
-                                } catch (IOException ex) {
+                                } catch (IOException* ex) {
                                     log.warn("Unable to create JmDNS with error: {}", ex.getMessage(), ex);
                                 }
                             }
@@ -472,7 +472,7 @@ ZeroConfServiceManager::ZeroConfServiceManager(QObject *parent) : QObject(parent
                     name = NodeIdentity.networkIdentity();
                     puny = null;
                 }
-            } catch (IllegalArgumentException ex) {
+            } catch (IllegalArgumentException* ex) {
                 puny = null;
             }
             if (name.length() > 1) {
@@ -569,7 +569,7 @@ ZeroConfServiceManager::ZeroConfServiceManager(QObject *parent) : QObject(parent
 //                                listener.servicePublished(new ZeroConfServiceEvent(service, dns));
 //                            });
 //                        }
-//                    } catch (IOException ex) {
+//                    } catch (IOException* ex) {
 //                        log.error(ex.getLocalizedMessage(), ex);
 //                    }
 //                });

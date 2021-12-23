@@ -374,7 +374,7 @@
      * {@inheritDoc}
      */
     //@Override
-    /*public*/ LayoutTrack* LayoutTurntableView::getConnection(HitPointType::TYPES connectionType) throw (JmriException) {
+    /*public*/ LayoutTrack* LayoutTurntableView::getConnection(HitPointType::TYPES connectionType) /*throw (JmriException)*/ {
         LayoutTrack* result = nullptr;
         if (HitPointType::isTurntableRayHitType(connectionType)) {
             result = getRayConnectIndexed(HitPointType::turntableTrackIndex(connectionType));
@@ -382,7 +382,7 @@
             QString errString = tr("#1.getCoordsForConnectionType(%2); Invalid connection type").arg(
                     getName(), HitPointType::toString(connectionType)); // NOI18N
             log->error(tr("will throw %1").arg(errString)); // NOI18N
-            throw JmriException(errString);
+            throw new JmriException(errString);
         }
         return result;
     }
@@ -391,12 +391,12 @@
      * {@inheritDoc}
      */
     //@Override
-    /*public*/ void LayoutTurntableView::setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) throw (JmriException) {
+    /*public*/ void LayoutTurntableView::setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) /*throw (JmriException)*/ {
         if ((type != HitPointType::TRACK) && (type != HitPointType::NONE)) {
             QString errString = tr("%1.setConnection(%2, %3, %4); Invalid type").arg(
                     getName(), HitPointType::toString(connectionType), (o == nullptr) ? "null" : o->getName(), HitPointType::toString(type)); // NOI18N
             log->error(tr("will throw %1").arg(errString)); // NOI18N
-            throw JmriException(errString);
+            throw new JmriException(errString);
         }
         if (HitPointType::isTurntableRayHitType(connectionType)) {
             if ((o == nullptr) || (qobject_cast<TrackSegment*>(o))) {
@@ -406,13 +406,13 @@
                         getName(), HitPointType::toString(connectionType), o->getName(),
                         HitPointType::toString(type), o->metaObject()->className()); // NOI18N
                 log->error(tr("will throw %1").arg(errString)); // NOI18N
-                throw JmriException(errString);
+                throw new JmriException(errString);
             }
         } else {
             QString errString = tr("%1.setConnection(%2, %3, %4); Invalid connection type").arg(
                     getName(), HitPointType::toString(connectionType), (o == nullptr) ? "null" : o->getName(), HitPointType::toString(type)); // NOI18N
             log->error(tr("will throw %1").arg(errString)); // NOI18N
-            throw JmriException(errString);
+            throw new JmriException(errString);
         }
     }
 

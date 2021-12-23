@@ -3169,13 +3169,13 @@ void LayoutEditor::undoMoveSelection() {
                     reLocateFlag = false;
                 }
                 positionableLabel->rotate(positionableLabel->getDegrees() + 90);
-            } catch (NullPointerException ex) {
+            } catch (NullPointerException* ex) {
             log->warn("previously-ignored NPE", ex);}
         }
         if (reLocateFlag) {
             try {
                 positionable->setLocation((int) (newTopLeft.x() - cBounds.height()), (int) newTopLeft.y());
-            } catch (NullPointerException ex) {
+            } catch (NullPointerException* ex) {
              log->warn("previously-ignored NPE", ex);
             }
         }
@@ -3186,7 +3186,7 @@ void LayoutEditor::undoMoveSelection() {
             QPointF newPoint = MathUtil::subtract(MathUtil::rotateDEG(ltv->getCoordsCenter(), lowerLeft, 90), lowerLeft);
             ltv->setCoordsCenter(newPoint);
             ltv->rotateCoords(90);
-        } catch (NullPointerException ex) {
+        } catch (NullPointerException* ex) {
          log->warn("previously-ignored NPE", ex);
         }
     }
@@ -3895,7 +3895,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
 /*public*/  QPointF LayoutEditor::getCoords(/*@Nonnull*/ LayoutTrack* trk, HitPointType::TYPES connectionType) {
  //Q_ASSERT(trk != nullptr);
  if(trk == nullptr)
-  throw NullPointerException(tr("LayoutTrack* trk is marked @NonNull but is null"));
+  throw new NullPointerException(tr("LayoutTrack* trk is marked @NonNull but is null"));
  return getCoords(getLayoutTrackView(trk), connectionType);
 }
 
@@ -4605,7 +4605,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
          removePositionablePoint(p);
      }
     }
-   } catch (JmriException e) {
+   } catch (JmriException* e) {
        log->debug("Unable to set location");
    }
    break;
@@ -4734,7 +4734,7 @@ bool LayoutEditor::isDirty() {return bDirty;}
                         if (t->getLayoutBlock() != nullptr) {
                             getLEAuxTools()->setBlockConnectivityChanged();
                         }
-                    } catch (JmriException e) {
+                    } catch (JmriException* e) {
                         log->debug("Unable to set location");
                     }
                 }
@@ -8604,7 +8604,7 @@ return l;
     LayoutTrackView* lv = trkToView.value(trk);
     if (lv == nullptr) {
         log->warn(tr("No View found for %1 class %2").arg(trk->toString(), trk->metaObject()->className()));
-        throw IllegalArgumentException(QString("No View found: ") + trk->metaObject()->className());
+        throw new IllegalArgumentException(QString("No View found: ") + trk->metaObject()->className());
     }
     return lv;
 }

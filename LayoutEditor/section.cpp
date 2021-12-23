@@ -196,7 +196,7 @@ Section::Section(QObject *parent) :
                     getReverseBlockingSensor()->setKnownState(Sensor::INACTIVE);
                 if ( (getForwardBlockingSensor()!=nullptr) && (getForwardBlockingSensor()->getState()!=Sensor::ACTIVE) )
                     getForwardBlockingSensor()->setKnownState(Sensor::ACTIVE);
-            } catch (JmriException reason) {
+            } catch (JmriException* reason) {
                 log.error ("Exception when setting Sensors for Section "+getSystemName());
             }
         }
@@ -206,7 +206,7 @@ Section::Section(QObject *parent) :
                     getForwardBlockingSensor()->setKnownState(Sensor::ACTIVE);
                 if ( (getReverseBlockingSensor()!=nullptr) && (getReverseBlockingSensor()->getState()!=Sensor::ACTIVE) )
                     getReverseBlockingSensor()->setKnownState(Sensor::ACTIVE);
-            } catch (JmriException reason) {
+            } catch (JmriException* reason) {
                 log.error ("Exception when setting Sensors for Section "+getSystemName());
             }
         }

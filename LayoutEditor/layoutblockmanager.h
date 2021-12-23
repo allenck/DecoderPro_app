@@ -74,7 +74,7 @@ public:
  */
  /*public*/ LayoutBlock* getBlockWithSensorAssigned(Sensor* s);
  void setLastRoutingChange();
- /*public*/ void setStabilisedSensor(QString pName) throw (JmriException);
+ /*public*/ void setStabilisedSensor(QString pName) /*throw (JmriException)*/;
  /*public*/ Sensor* getStabilisedSensor();
  /*public*/ NamedBeanHandle <Sensor*>* getNamedStabilisedSensor();
  /*public*/ bool routingStablised();

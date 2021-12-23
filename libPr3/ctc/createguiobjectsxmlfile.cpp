@@ -35,7 +35,7 @@
          QTextStream* s;
          f = new QFile(FileUtil::getUserFilesPath() + "ctc/GUIObjects.xml");
          if(!f->open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate))
-          throw IOException(tr("error creating %1 : %2").arg(f->fileName()).arg(f->errorString()));
+          throw new IOException(tr("error creating %1 : %2").arg(f->fileName()).arg(f->errorString()));
          QTextStream* stream = new QTextStream(f);
          printWriter = new PrintWriter(stream); // NOI18N
         }

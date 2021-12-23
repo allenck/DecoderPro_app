@@ -480,7 +480,7 @@
                 log->warn("Missing forward blocking sensor for section "+s->getSystemName());
                 numErrors ++;
             }
-        } catch (JmriException reason) {
+        } catch (JmriException* reason) {
             log->error ("Exception when initializing forward blocking Sensor for Section "+s->getSystemName());
             numErrors ++;
         }
@@ -494,7 +494,7 @@
                 log->warn("Missing reverse blocking sensor for section "+s->getSystemName());
                 numErrors ++;
             }
-        } catch (JmriException reason) {
+        } catch (JmriException* reason) {
             log->error ("Exception when initializing reverse blocking Sensor for Section "+s->getSystemName());
             numErrors ++;
         }

@@ -70,7 +70,7 @@
      * {@inheritDoc}
      */
     //@Override
-    /*public*/ LayoutTrack* LayoutSlipView::getConnection(HitPointType::TYPES connectionType) throw (JmriException) {
+    /*public*/ LayoutTrack* LayoutSlipView::getConnection(HitPointType::TYPES connectionType) /*throw (JmriException)*/ {
         return slip->getConnection(connectionType);
     }
 
@@ -78,7 +78,7 @@
      * {@inheritDoc}
      */
     //@Override
-    /*public*/ void LayoutSlipView::setConnection(HitPointType::TYPES connectionType, /*@CheckForNull*/  LayoutTrack* o, HitPointType::TYPES type) throw (JmriException) {
+    /*public*/ void LayoutSlipView::setConnection(HitPointType::TYPES connectionType, /*@CheckForNull*/  LayoutTrack* o, HitPointType::TYPES type) /*throw (JmriException)*/ {
         slip->setConnection(connectionType, o, type);
     }
 

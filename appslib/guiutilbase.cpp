@@ -297,7 +297,7 @@ QString GuiUtilBase::getLocaleAttribute(QDomElement element, QString attrName, Q
  } catch (SecurityException e) {
      log.error("security exception unable to find remoteCalls for " + obj.getClass().getName());
      createEmptyMenuItem(icon, name);
- } catch (NoSuchMethodException e) {
+ } catch (NoSuchMethodException* e) {
      log.error("No such method remoteCalls for " + obj.getClass().getName());
      return createEmptyMenuItem(icon, name);
  }
@@ -365,7 +365,7 @@ connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  if(!method.invoke(obj, Qt::DirectConnection, Q_ARG(QStringList, args)))
   Logger::error("Invoke error");
 #endif
-//        } catch (IllegalArgumentException ex) {
+//        } catch (IllegalArgumentException* ex) {
 //            System.out.println("IllegalArgument " + ex);
 //        } catch (IllegalAccessException ex) {
 //            System.out.println("IllegalAccess " + ex);

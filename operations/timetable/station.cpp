@@ -20,7 +20,7 @@ namespace TimeTable
         _dm = TimeTableDataManager::getDataManager();
 
         if (_dm->getSegment(segmentId) == nullptr) {
-            throw IllegalArgumentException(TimeTableDataManager::STATION_ADD_FAIL);
+            throw new IllegalArgumentException(TimeTableDataManager::STATION_ADD_FAIL);
         }
         _stationId = _dm->getNextId("Station");  // NOI18N
         _segmentId = segmentId;
@@ -76,7 +76,7 @@ namespace TimeTable
             int layoutId = _dm->getSegment(getSegmentId())->getLayoutId();
             _dm->calculateLayoutTrains(layoutId, false);
             _dm->calculateLayoutTrains(layoutId, true);
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             _distance = oldDistance;  // Roll back distance change
             throw ex;
         }

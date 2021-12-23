@@ -778,7 +778,7 @@ namespace Operations
        QMessageBox::critical(this, tr("Track length incorrect!"), tr("Track length must be less than %1 {%2").arg(qPow(10, Control::max_len_string_track_length_name)).arg(Setup::getLengthUnit().toLower()));
           return false;
       }
-  } catch (NumberFormatException e) {
+  } catch (NumberFormatException* e) {
       log->error("Track length not an integer");
 //         JOptionPane.showMessageDialog(this, tr("TrackMustBeNumber"), Bundle
 //                 .getMessage("ErrorTrackLength"), JOptionPane.ERROR_MESSAGE);

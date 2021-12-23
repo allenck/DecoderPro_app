@@ -99,11 +99,11 @@ Siglet(parent) {
 #endif
 //    } catch (IllegalAccessException e) {
 //        log.error("IllegalAccessException creating jython system objects", e);
-//    } catch (NoSuchMethodException e) {
+//    } catch (NoSuchMethodException* e) {
 //        log.error("NoSuchMethodException creating jython system objects", e);
-//    } catch (ClassNotFoundException e) {
+//    } catch (ClassNotFoundException* e) {
 //        log.error("ClassNotFoundException creating jython system objects", e);
-//    } catch (InstantiationException e) {
+//    } catch (InstantiationException* e) {
 //        log.error("InstantiationException creating jython system objects", e);
 //    } catch (java.lang.reflect.InvocationTargetException e) {
 //        log.error("InvocationTargetException creating jython system objects", e);

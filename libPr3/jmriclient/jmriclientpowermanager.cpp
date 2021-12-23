@@ -31,7 +31,7 @@
 
 
 //@Override
-/*public*/ void JMRIClientPowerManager::setPower(int v) throw (JmriException) {
+/*public*/ void JMRIClientPowerManager::setPower(int v) /*throw (JmriException)*/ {
     power = UNKNOWN; // while waiting for reply
     checkTC();
     if (v == ON) {
@@ -53,14 +53,14 @@
 
 // to free resources when no longer used
 //@Override
-/*public*/ void JMRIClientPowerManager::dispose() throw (JmriException) {
+/*public*/ void JMRIClientPowerManager::dispose() /*throw (JmriException)*/ {
     tc->removeJMRIClientListener((JMRIClientListener*)this);
     tc = nullptr;
 }
 
-/*private*/ void JMRIClientPowerManager::checkTC() throw (JmriException) {
+/*private*/ void JMRIClientPowerManager::checkTC() /*throw (JmriException)*/ {
     if (tc == nullptr) {
-        throw JmriException("attempt to use JMRIClientPowerManager after dispose");
+        throw new JmriException("attempt to use JMRIClientPowerManager after dispose");
     }
 }
 

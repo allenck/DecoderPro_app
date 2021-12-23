@@ -78,7 +78,7 @@
         if (qobject_cast<LevelXing*>(layoutTrack)) { return new LevelXingEditor(layoutEditor); }
         if (qobject_cast<LayoutTurntable*>(layoutTrack)) { return new LayoutTurntableEditor(layoutEditor); }
 
-        log->error(tr("makeTrackEditor did not match type of %1").arg(layoutTrack->metaObject()->className()), Exception("traceback"));
+        log->error(tr("makeTrackEditor did not match type of %1").arg(layoutTrack->metaObject()->className()), new Exception("traceback"));
         return new LTE_LayoutTrackEditor(layoutEditor);
 //        {
 //            //@Override

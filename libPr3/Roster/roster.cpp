@@ -1095,8 +1095,8 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
  this->makeBackupFile(this->getRosterIndexPath());
  try {
      roster->writeFile(this->getRosterIndexPath());
- } catch (IOException ex) {
-     log->error(tr("Exception while writing the new roster file, may not be complete: %1").arg(ex.getMessage()));
+ } catch (IOException* ex) {
+     log->error(tr("Exception while writing the new roster file, may not be complete: %1").arg(ex->getMessage()));
  }
  this->reloadRosterFile();
  log->info(tr("Roster rebuilt, stored in %1").arg(this->getRosterIndexPath()));
@@ -1158,7 +1158,7 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
      } else {
          p = FileUtil::getAbsoluteFilename(p);
          if (p == "") {
-             throw IllegalArgumentException(tr("\"%1\" is not a valid path").arg(f)); // NOI18N
+             throw new IllegalArgumentException(tr("\"%1\" is not a valid path").arg(f)); // NOI18N
          }
          if (!p.endsWith(File::separator)) {
              p = p + File::separator;

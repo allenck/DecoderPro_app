@@ -157,7 +157,7 @@ DefaultAudioManager::DefaultAudioManager(QObject *parent) :
 //         return Collections.unmodifiableSortedSet(sources);
 //     }
 //     default: {
-//         throw IllegalArgumentException();
+//         throw new IllegalArgumentException();
 //     }
 // }
  if(subType == Audio::BUFFER)
@@ -166,7 +166,7 @@ DefaultAudioManager::DefaultAudioManager(QObject *parent) :
   return QSet<NamedBean*>(listeners);
  else if(subType == Audio::SOURCE)
   return QSet<NamedBean*>(sources);
- else  throw IllegalArgumentException();
+ else  throw new IllegalArgumentException();
 }
 
 /**

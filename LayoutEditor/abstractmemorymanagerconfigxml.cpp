@@ -103,7 +103,7 @@ AbstractMemoryManagerConfigXML::~AbstractMemoryManagerConfigXML()
  */
 // /*abstract*/ /*public*/ void setStoreElementClass(QDomElement memories);
 
-/*public*/ void AbstractMemoryManagerConfigXML::load(QDomElement /*element*/, QObject* /*o*/) throw (Exception){
+/*public*/ void AbstractMemoryManagerConfigXML::load(QDomElement /*element*/, QObject* /*o*/) /*throw (Exception)*/{
     log->error("Invalid method called");
 }
 

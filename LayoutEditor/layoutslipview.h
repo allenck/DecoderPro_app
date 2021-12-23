@@ -18,8 +18,8 @@ class LayoutSlipView : public LayoutTurnoutView
   /*public*/ QString getTurnoutBName();
   /*public*/ Turnout* getTurnoutB();
   /*public*/ void setTurnoutB(/*@CheckForNull*/   QString tName);
-  /*public*/ LayoutTrack* getConnection(HitPointType::TYPES connectionType) throw (JmriException) override;
-  /*public*/ void setConnection(HitPointType::TYPES connectionType, /*@CheckForNull*/  LayoutTrack* o, HitPointType::TYPES type) throw (JmriException) override;  /*public*/ QString getDisplayName();
+  /*public*/ LayoutTrack* getConnection(HitPointType::TYPES connectionType) /*throw (JmriException)*/ override;
+  /*public*/ void setConnection(HitPointType::TYPES connectionType, /*@CheckForNull*/  LayoutTrack* o, HitPointType::TYPES type) /*throw (JmriException)*/ override;  /*public*/ QString getDisplayName();
   /*public*/ void toggleState(HitPointType::TYPES selectedPointType);
   /*public*/ QPointF getCoordsA() override;
   /*public*/ QPointF getCoordsB() override;

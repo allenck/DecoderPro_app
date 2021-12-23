@@ -25,7 +25,7 @@
 
 
 //@Override
-/*public*/ void LnPr2PowerManager::setPower(int v) throw (JmriException) {
+/*public*/ void LnPr2PowerManager::setPower(int v) /*throw (JmriException)*/ {
     power = UNKNOWN;
 
     // Instead of GPON/GPOFF, PR2 uses ops-mode writes to CV 128 for control
@@ -84,7 +84,7 @@ void LnPr2PowerManager::refresh() {
 }
 
 
-/*private*/ void LnPr2PowerManager::checkOpsProg() throw (JmriException) {
+/*private*/ void LnPr2PowerManager::checkOpsProg() /*throw (JmriException)*/ {
     if (pm == nullptr) {
         throw  JmriException("Use PR2 power manager after dispose"); // NOI18N
     }

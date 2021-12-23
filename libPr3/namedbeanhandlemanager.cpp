@@ -136,7 +136,7 @@ template<class T>
 
     if((userName.isEmpty()) || (userName==(""))){
         log.error("UserName is empty, can not update items to use UserName");
-        throw JmriException("UserName is empty, can not update items to use UserName");
+        throw new JmriException("UserName is empty, can not update items to use UserName");
     }
     renameBean(systemName, userName, bean);
 }

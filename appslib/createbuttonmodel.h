@@ -19,7 +19,7 @@ private:
     Action* action;
 
 protected slots:
-    /*protected*/ void performAction(Action* action) throw (JmriException);
+    /*protected*/ void performAction(Action* action) /*throw (JmriException)*/;
     void propertyChange(PropertyChangeEvent*);
 };
 Q_DECLARE_METATYPE(CreateButtonModel)

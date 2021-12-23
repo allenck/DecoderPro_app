@@ -833,7 +833,7 @@ void BeanSwitch::addInvert(QMenu* popup) {
              //This will update the bean reference from the systemName to the userName
              try {
                  nbhm->updateBeanFromSystemToUser(_bname);
-             } catch (JmriException ex) {
+             } catch (JmriException* ex) {
                  //We should never get an exception here as we already check that the username is not valid
              }
          }
@@ -941,8 +941,8 @@ void BeanSwitch::alternateOnClick() {
                     } else {
                         getSensor()->setKnownState(Sensor::INACTIVE);
                     }
-                } catch (JmriException reason) {
-                    log->warn(tr("Exception flipping sensor: %1").arg(reason.getMessage()));
+                } catch (JmriException* reason) {
+                    log->warn(tr("Exception flipping sensor: %1").arg(reason->getMessage()));
                 }
             }
     }
@@ -1016,7 +1016,7 @@ void BeanSwitch::alternateOnClick() {
                 // add turnout to JMRI (w/appropriate manager)
                 t = InstanceManager::turnoutManagerInstance()->provideTurnout(sName);
                 t->setUserName(user);
-            } catch (IllegalArgumentException ex) {
+            } catch (IllegalArgumentException* ex) {
                 // user input no good
                 handleCreateException(sName);
                 return; // without creating
@@ -1030,7 +1030,7 @@ void BeanSwitch::alternateOnClick() {
                 // add Sensor to JMRI (w/appropriate manager)
                 s = InstanceManager::sensorManagerInstance()->provideSensor(sName);
                 s->setUserName(user);
-            } catch (IllegalArgumentException ex) {
+            } catch (IllegalArgumentException* ex) {
                 // user input no good
                 handleCreateException(sName);
                 return; // without creating
@@ -1044,7 +1044,7 @@ void BeanSwitch::alternateOnClick() {
                 // add Light to JMRI (w/appropriate manager)
                 l = InstanceManager::lightManagerInstance()->provideLight(sName);
                 ((AbstractNamedBean*)l->self())->setUserName(user);
-            } catch (IllegalArgumentException ex) {
+            } catch (IllegalArgumentException* ex) {
                 // user input no good
                 handleCreateException(sName);
                 return; // without creating
@@ -1067,7 +1067,7 @@ void BeanSwitch::alternateOnClick() {
             } else {
                 _editor->updatePressed();
             }
-        } catch (NullPointerException npe) {
+        } catch (NullPointerException* npe) {
             handleCreateException(sName);
             // exit without updating
         }
@@ -1118,7 +1118,7 @@ void BeanSwitch::handleCreateException(QString sysName) {
         image2 = ImageIO::read(FileUtil::getFile(filepath2));
         image = image1;
     } catch (Exception ex) {
-        bs->log->error(tr("error reading image from %1 - %2").arg(filepath1).arg(filepath2), ex);
+        bs->log->error(tr("error reading image from %1 - %2").arg(filepath1).arg(filepath2), &ex);
     }
 }
 
@@ -1145,7 +1145,7 @@ void BeanSwitch::handleCreateException(QString sysName) {
 /*protected*/ void IconSwitch::setImage1(QString newImagePath) {
     try {
         image1 = ImageIO::read(new File(newImagePath));
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         bs->log->error(tr("error reading image from %1").arg(newImagePath), ex);
     }
 }

@@ -50,7 +50,7 @@ TrainCsvManifest::TrainCsvManifest()
      //fileOut = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8")),// NOI18N
 //            true); // NOI18N
   QFile f(file->getPath());
-  if(!f.open(QIODevice::WriteOnly)) throw IOException("Error opening file");
+  if(!f.open(QIODevice::WriteOnly)) throw new IOException("Error opening file");
   QTextStream os(&f);
   os.setCodec("UTF-8");
   fileOut = new PrintWriter(&os);

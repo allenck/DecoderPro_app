@@ -45,6 +45,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmargins.h>
 #include <qmenu.h>
@@ -595,11 +596,6 @@ int PythonQtShell_Logger::qt_metacall(QMetaObject::Call call, int id, void** arg
 void PythonQtWrapper_Logger::debug(Logger* theWrappedObject, QString  s) const
 {
   ( theWrappedObject->debug(s));
-}
-
-void PythonQtWrapper_Logger::static_Logger_error(QString  s, QVariant  ex)
-{
-  (Logger::error(s, ex));
 }
 
 void PythonQtWrapper_Logger::info(Logger* theWrappedObject, QString  s)
@@ -1701,7 +1697,7 @@ QString  PythonQtWrapper_Manager::static_Manager_getSystemPrefix(QString  inputN
   return (Manager::getSystemPrefix(inputName));
 }
 
-int  PythonQtWrapper_Manager::static_Manager_getSystemPrefixLength(QString  inputName) throw (NamedBean::BadSystemNameException)
+int  PythonQtWrapper_Manager::static_Manager_getSystemPrefixLength(QString  inputName)
 {
   return (Manager::getSystemPrefixLength(inputName));
 }
@@ -1791,17 +1787,17 @@ QString  PythonQtWrapper_Manager::validateNmraAccessorySystemNameFormat(Manager*
   return ( theWrappedObject->validateNmraAccessorySystemNameFormat(name, locale));
 }
 
-QString  PythonQtWrapper_Manager::validateSystemNameFormat(Manager* theWrappedObject, QString  name) const throw (NamedBean::BadSystemNameException)
+QString  PythonQtWrapper_Manager::validateSystemNameFormat(Manager* theWrappedObject, QString  name) const
 {
   return ( theWrappedObject->validateSystemNameFormat(name));
 }
 
-QString  PythonQtWrapper_Manager::validateSystemNameFormat(Manager* theWrappedObject, QString  name, QLocale  locale) const throw (NamedBean::BadSystemNameException)
+QString  PythonQtWrapper_Manager::validateSystemNameFormat(Manager* theWrappedObject, QString  name, QLocale  locale) const
 {
   return ( theWrappedObject->validateSystemNameFormat(name, locale));
 }
 
-QString  PythonQtWrapper_Manager::validateSystemNamePrefix(Manager* theWrappedObject, QString  name, QLocale  locale) const throw (NamedBean::BadSystemNameException)
+QString  PythonQtWrapper_Manager::validateSystemNamePrefix(Manager* theWrappedObject, QString  name, QLocale  locale) const
 {
   return ( theWrappedObject->validateSystemNamePrefix(name, locale));
 }
@@ -4196,7 +4192,7 @@ if (_wrapper) {
 }
   NamedBean::updateListenerRef(l0, arg__2);
 }
-void PythonQtShell_NamedBean::vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) 
+void PythonQtShell_NamedBean::vetoableChange(PropertyChangeEvent*  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -4403,7 +4399,7 @@ void PythonQtWrapper_NamedBean::updateListenerRef(NamedBean* theWrappedObject, P
   ( theWrappedObject->updateListenerRef(l, arg__2));
 }
 
-void PythonQtWrapper_NamedBean::vetoableChange(NamedBean* theWrappedObject, PropertyChangeEvent*  arg__1) throw (PropertyVetoException) 
+void PythonQtWrapper_NamedBean::vetoableChange(NamedBean* theWrappedObject, PropertyChangeEvent*  arg__1)
 {
   ( theWrappedObject->vetoableChange(arg__1));
 }
@@ -15594,7 +15590,7 @@ if (_wrapper) {
 }
   return ProxySensorManager::getNamedBeanClass();
 }
-QString  PythonQtShell_ProxySensorManager::getNextValidAddress(QString  curAddress0, QString  prefix1) throw (JmriException) 
+QString  PythonQtShell_ProxySensorManager::getNextValidAddress(QString  curAddress0, QString  prefix1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -15627,7 +15623,7 @@ if (_wrapper) {
 }
   return ProxySensorManager::getNextValidAddress(curAddress0, prefix1);
 }
-QString  PythonQtShell_ProxySensorManager::getNextValidAddress(QString  curAddress0, QString  prefix1, bool  ignoreInitialExisting2) throw (JmriException) 
+QString  PythonQtShell_ProxySensorManager::getNextValidAddress(QString  curAddress0, QString  prefix1, bool  ignoreInitialExisting2)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -16004,12 +16000,12 @@ QString  PythonQtWrapper_ProxySensorManager::getNamedBeanClass(ProxySensorManage
   return ( theWrappedObject->getNamedBeanClass());
 }
 
-QString  PythonQtWrapper_ProxySensorManager::getNextValidAddress(ProxySensorManager* theWrappedObject, QString  curAddress, QString  prefix) throw (JmriException) 
+QString  PythonQtWrapper_ProxySensorManager::getNextValidAddress(ProxySensorManager* theWrappedObject, QString  curAddress, QString  prefix)
 {
   return ( theWrappedObject->getNextValidAddress(curAddress, prefix));
 }
 
-QString  PythonQtWrapper_ProxySensorManager::getNextValidAddress(ProxySensorManager* theWrappedObject, QString  curAddress, QString  prefix, bool  ignoreInitialExisting) throw (JmriException) 
+QString  PythonQtWrapper_ProxySensorManager::getNextValidAddress(ProxySensorManager* theWrappedObject, QString  curAddress, QString  prefix, bool  ignoreInitialExisting)
 {
   return ( theWrappedObject->getNextValidAddress(curAddress, prefix, ignoreInitialExisting));
 }
@@ -16170,7 +16166,7 @@ if (_wrapper) {
 }
   return ProxyTurnoutManager::askNumControlBits(systemName0);
 }
-QString  PythonQtShell_ProxyTurnoutManager::createSystemName(QString  curAddress0, QString  prefix1) const throw (JmriException) 
+QString  PythonQtShell_ProxyTurnoutManager::createSystemName(QString  curAddress0, QString  prefix1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -16335,7 +16331,7 @@ if (_wrapper) {
 }
   return ProxyTurnoutManager::getNamedBeanClass();
 }
-QString  PythonQtShell_ProxyTurnoutManager::getNextValidAddress(QString  curAddress0, QString  prefix1) const throw (JmriException) 
+QString  PythonQtShell_ProxyTurnoutManager::getNextValidAddress(QString  curAddress0, QString  prefix1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -16698,7 +16694,7 @@ if (_wrapper) {
 }
   return ProxyTurnoutManager::provideTurnout(name0);
 }
-void PythonQtShell_ProxyTurnoutManager::setDefaultClosedSpeed(QString  speed0) const throw (JmriException) 
+void PythonQtShell_ProxyTurnoutManager::setDefaultClosedSpeed(QString  speed0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -16720,7 +16716,7 @@ if (_wrapper) {
 }
   ProxyTurnoutManager::setDefaultClosedSpeed(speed0);
 }
-void PythonQtShell_ProxyTurnoutManager::setDefaultThrownSpeed(QString  speed0) const throw (JmriException) 
+void PythonQtShell_ProxyTurnoutManager::setDefaultThrownSpeed(QString  speed0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -16774,7 +16770,7 @@ int  PythonQtWrapper_ProxyTurnoutManager::askNumControlBits(ProxyTurnoutManager*
   return ( theWrappedObject->askNumControlBits(systemName));
 }
 
-QString  PythonQtWrapper_ProxyTurnoutManager::createSystemName(ProxyTurnoutManager* theWrappedObject, QString  curAddress, QString  prefix) const throw (JmriException) 
+QString  PythonQtWrapper_ProxyTurnoutManager::createSystemName(ProxyTurnoutManager* theWrappedObject, QString  curAddress, QString  prefix) const
 {
   return ( theWrappedObject->createSystemName(curAddress, prefix));
 }
@@ -16804,7 +16800,7 @@ QString  PythonQtWrapper_ProxyTurnoutManager::getNamedBeanClass(ProxyTurnoutMana
   return ( theWrappedObject->getNamedBeanClass());
 }
 
-QString  PythonQtWrapper_ProxyTurnoutManager::getNextValidAddress(ProxyTurnoutManager* theWrappedObject, QString  curAddress, QString  prefix) const throw (JmriException) 
+QString  PythonQtWrapper_ProxyTurnoutManager::getNextValidAddress(ProxyTurnoutManager* theWrappedObject, QString  curAddress, QString  prefix) const
 {
   return ( theWrappedObject->getNextValidAddress(curAddress, prefix));
 }
@@ -16859,12 +16855,12 @@ Turnout*  PythonQtWrapper_ProxyTurnoutManager::provideTurnout(ProxyTurnoutManage
   return ( theWrappedObject->provideTurnout(name));
 }
 
-void PythonQtWrapper_ProxyTurnoutManager::setDefaultClosedSpeed(ProxyTurnoutManager* theWrappedObject, QString  speed) const throw (JmriException) 
+void PythonQtWrapper_ProxyTurnoutManager::setDefaultClosedSpeed(ProxyTurnoutManager* theWrappedObject, QString  speed) const
 {
   ( theWrappedObject->setDefaultClosedSpeed(speed));
 }
 
-void PythonQtWrapper_ProxyTurnoutManager::setDefaultThrownSpeed(ProxyTurnoutManager* theWrappedObject, QString  speed) const throw (JmriException) 
+void PythonQtWrapper_ProxyTurnoutManager::setDefaultThrownSpeed(ProxyTurnoutManager* theWrappedObject, QString  speed) const
 {
   ( theWrappedObject->setDefaultThrownSpeed(speed));
 }
@@ -17138,7 +17134,7 @@ if (_wrapper) {
 }
   return RfidSensorManager::allowMultipleAdditions(systemName0);
 }
-QString  PythonQtShell_RfidSensorManager::createSystemName(QString  curAddress0, QString  prefix1) const throw (JmriException) 
+QString  PythonQtShell_RfidSensorManager::createSystemName(QString  curAddress0, QString  prefix1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -21508,7 +21504,7 @@ if (_wrapper) {
 }
   
 }
-void PythonQtShell_Route::setUserName(QString  s0) throw (NamedBean::BadUserNameException) 
+void PythonQtShell_Route::setUserName(QString  s0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -21574,7 +21570,7 @@ if (_wrapper) {
 }
   Route::updateListenerRef(l0, newName1);
 }
-void PythonQtShell_Route::vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) 
+void PythonQtShell_Route::vetoableChange(PropertyChangeEvent*  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -23679,7 +23675,7 @@ if (_wrapper) {
 }
   
 }
-void PythonQtShell_Sensor::setUserName(QString  s0) throw (NamedBean::BadUserNameException) 
+void PythonQtShell_Sensor::setUserName(QString  s0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -23800,7 +23796,7 @@ if (_wrapper) {
 }
   Sensor::useDefaultTimerSettings(arg__1);
 }
-void PythonQtShell_Sensor::vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) 
+void PythonQtShell_Sensor::vetoableChange(PropertyChangeEvent*  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE

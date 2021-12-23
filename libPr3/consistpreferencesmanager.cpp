@@ -33,7 +33,7 @@ ConsistPreferencesManager::ConsistPreferencesManager(QObject* parent)
         preferences->putBoolean(UPDATE_CV19, this->updateCV19);
         try {
             preferences->sync();
-        } catch (BackingStoreException ex) {
+        } catch (BackingStoreException* ex) {
             log->error("Unable to save preferences.", ex);
         }
     }

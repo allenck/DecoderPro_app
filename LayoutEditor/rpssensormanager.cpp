@@ -49,7 +49,7 @@
  * {@inheritDoc}
  */
 //@Override
-/*public*/ QString RpsSensorManager::createSystemName(QString curAddress, QString prefix) const throw (JmriException) {
+/*public*/ QString RpsSensorManager::createSystemName(QString curAddress, QString prefix) const /*throw (JmriException)*/ {
     if (prefix != (getSystemPrefix())) {
         log->warn("prefix does not match memo.prefix");
         return "";

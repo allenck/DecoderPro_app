@@ -38,6 +38,6 @@
  * on the server.
  */
 //@Override
-/*public*/ QString JMRIClientSensorManager::createSystemName(QString curAddress, QString prefix) const throw (JmriException) {
+/*public*/ QString JMRIClientSensorManager::createSystemName(QString curAddress, QString prefix) const /*throw (JmriException)*/ {
     return prefix + typeLetter() + curAddress;
 }

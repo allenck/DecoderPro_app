@@ -115,7 +115,7 @@ bool AbstractSensorManager::isNumber(QString s) const
  {
   log->error("SystemName cannot be NULL. UserName was "
              +( (userName=="") ? "null" : userName));
-  throw IllegalArgumentException(QString("SystemName cannot be NULL. UserName was %1").arg(( (userName=="") ? "NULL" : userName)));
+  throw new IllegalArgumentException(QString("SystemName cannot be NULL. UserName was %1").arg(( (userName=="") ? "NULL" : userName)));
  }
 
  systemName = validateSystemNameFormat(sysName);
@@ -183,7 +183,7 @@ bool AbstractSensorManager::isNumber(QString s) const
 
 /*public*/ bool AbstractSensorManager::allowMultipleAdditions(QString systemName) { return false;  }
 
-/*public*/ QString AbstractSensorManager::createSystemName(QString curAddress, QString prefix)const throw (JmriException){
+/*public*/ QString AbstractSensorManager::createSystemName(QString curAddress, QString prefix)const /*throw (JmriException)*/{
  try
  {
   bool bOk;
@@ -191,7 +191,7 @@ bool AbstractSensorManager::isNumber(QString s) const
   //Integer.parseInt(curAddress);
   if(!bOk) throw new NumberFormatException("Hardware Address passed should be a number");
  }
- catch (NumberFormatException ex)
+ catch (NumberFormatException* ex)
  {
   log->error(tr("Hardware Address passed should be a number"));
   throw new JmriException("Hardware Address passed should be a number");
@@ -207,7 +207,7 @@ bool AbstractSensorManager::isNumber(QString s) const
 
 //        try {
  tmpSName = createSystemName(curAddress, prefix);
-//        } catch (JmriException ex) {
+//        } catch (JmriException* ex) {
 //            jmri.InstanceManager.getDefault(jmri.UserPreferencesManager.class).
 //                    showInfoMessage("Error","Unable to convert " + curAddress + " to a valid Hardware Address",""+ex, "",true, false, org.apache.log4j.Level.ERROR);
 //            return NULL;
@@ -223,7 +223,7 @@ bool AbstractSensorManager::isNumber(QString s) const
  //try {
     //iName = Integer.parseInt(curAddress);
  iName = curAddress.toInt();
-//        } catch (NumberFormatException ex) {
+//        } catch (NumberFormatException* ex) {
 //            log.error("Unable to convert " + curAddress + " Hardware Address to a number");
 //            jmri.InstanceManager.getDefault(jmri.UserPreferencesManager.class).
 //                                showInfoMessage("Error","Unable to convert " + curAddress + " to a valid Hardware Address",""+ex, "",true, false, org.apache.log4j.Level.ERROR);

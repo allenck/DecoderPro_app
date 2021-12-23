@@ -25,7 +25,7 @@ public:
     /*public*/ void   setUserName(QString s);
     /*public*/ void dispose();
     /*public*/ int getState();
-    /*public*/ void setState(int s) throw (JmriException);
+    /*public*/ void setState(int s) /*throw (JmriException)*/;
 signals:
    void propertyChange(QString propertyName, QVariant old, QVariant s);
    void propertyChange(PropertyChangeEvent*);

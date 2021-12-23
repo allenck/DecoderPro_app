@@ -48,7 +48,7 @@ ScriptOutput::ScriptOutput(QObject *parent) : QObject(parent)
             pl.start();
 #endif
         } catch (IOException e) {
-            log->error("Exception creating script output area", e);
+            log->error("Exception creating script output area", &e);
             return nullptr;
         }
     }

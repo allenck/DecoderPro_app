@@ -356,7 +356,7 @@
                     } else {
                         c = findBootstrapClassOrNull(name);
                     }
-                } catch (ClassNotFoundException e) {
+                } catch (ClassNotFoundException* e) {
                     // ClassNotFoundException thrown if class not found
                     // from the non-null parent class loader
                 }

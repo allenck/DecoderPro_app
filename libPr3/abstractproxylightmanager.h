@@ -34,7 +34,7 @@ class LIBPR3SHARED_EXPORT AbstractProxyLightManager :  public LightManager, publ
      * @return Null if nothing by that name exists
      */
     /*public*/ NamedBean* getNamedBean(QString name) const override;
-    /*public*/ /*@Nonnull*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName)  override/*throw (NamedBean::BadSystemNameException)*/;
+    /*public*/ /*@Nonnull*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName)  override/*throw new (NamedBean::BadSystemNameException)*/;
 
     /*public*/ NamedBean* getBeanBySystemName(QString systemName) const override;
     /*public*/ NamedBean* getBeanByUserName(QString userName) const  override;

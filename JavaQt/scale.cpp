@@ -104,7 +104,7 @@
      */
     /*public*/ void Scale::setScaleRatio(double newRatio) throw (IllegalArgumentException/*, PropertyVetoException*/) {
         if (newRatio < 1.0) {
-            throw IllegalArgumentException("The scale ratio is less than 1");  // NOI18N
+            throw new IllegalArgumentException("The scale ratio is less than 1");  // NOI18N
         }
 
         double oldRatio = _ratio;

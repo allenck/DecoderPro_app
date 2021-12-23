@@ -130,7 +130,7 @@ AbstractBorder::AbstractBorder(QWidget* parent) : QWidget(parent)
  */
 /*public*/ int AbstractBorder::getBaseline(QWidget c, int width, int height) {
     if (width < 0 || height < 0) {
-        throw IllegalArgumentException(
+        throw new IllegalArgumentException(
                 "Width and height must be >= 0");
     }
     return -1;

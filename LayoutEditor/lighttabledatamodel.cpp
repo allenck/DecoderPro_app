@@ -498,7 +498,7 @@
             try {
                 onImage = ImageIO.read(new File(onIconPath));
                 offImage = ImageIO.read(new File(offIconPath));
-            } catch (IOException ex) {
+            } catch (IOException* ex) {
                 log.error("error reading image from {} or {}", onIconPath, offIconPath, ex);
             }
             log.debug("Success reading images");
@@ -525,7 +525,7 @@
      {
       onImage = ImageIO::read(new File(onIconPath));
       offImage = ImageIO::read(new File(offIconPath));
-     } catch (IOException ex) {
+     } catch (IOException* ex) {
          log->error(tr("error reading image from %1 or %2").arg(onIconPath).arg(offIconPath), ex);
      }
      log->debug("Success reading images");

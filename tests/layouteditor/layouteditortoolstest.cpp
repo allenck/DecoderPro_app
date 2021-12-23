@@ -271,7 +271,7 @@ LayoutEditorToolsTest::LayoutEditorToolsTest(QObject *parent) : QObject(parent)
         layoutEditor.getLayoutTracks().add(trackSegment);
         try {
             layoutTurnout.setConnection(types[idx], trackSegment, LayoutTrack.TRACK);
-        } catch (JmriException ex) {
+        } catch (JmriException* ex) {
             Logger.getLogger(LayoutEditorToolsTest.class.getName()).log(Level.SEVERE, nullptr, ex);
         }
 

@@ -109,9 +109,9 @@ public:
 
     /*public*/ virtual void logout() throw (ServletException()) {}
 #if 0
-    /*public*/ virtual Collection<Part> getParts() throw IOException, ServletException;
+    /*public*/ virtual Collection<Part> getParts() throw new IOException, ServletException;
 
-    /*public*/ virtual Part getPart(String string) throw IOException, ServletException;
+    /*public*/ virtual Part getPart(String string) throw new IOException, ServletException;
 
     /*public*/ virtual <T extends HttpUpgradeHandler> T upgrade(Class<T> type) throws IOException, ServletException;
 #endif

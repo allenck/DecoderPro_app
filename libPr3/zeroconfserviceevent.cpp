@@ -40,7 +40,7 @@
     /*public*/ InetAddress* ZeroConfServiceEvent::getAddress() {
         try {
             return this->dns->getInetAddress();
-        } catch (IOException ex) {
+        } catch (IOException* ex) {
             log->error("Unable to get interface address.", ex);
             return nullptr;
         }

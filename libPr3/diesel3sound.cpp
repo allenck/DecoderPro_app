@@ -467,7 +467,7 @@
             //try {
                 int n = s.toInt();
                 return (n);
-//            } catch (NumberFormatException e) {
+//            } catch (NumberFormatException* e) {
 //                log->debug("Invalid integer: " + s);
 //                return (0);
 //            }
@@ -480,7 +480,7 @@
             //try {
                 float f = s.toFloat() / 100.0f;
                 return (f);
-//            } catch (NumberFormatException e) {
+//            } catch (NumberFormatException* e) {
 //                log->debug("Invalid float: " + s);
 //                return (0.0f);
 //            }

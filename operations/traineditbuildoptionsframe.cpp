@@ -892,7 +892,7 @@ JComboBox* source = (JComboBox*)ae;
       if (builtBeforeTextField->text().trimmed()!=("")) {
          builtBeforeTextField->text().trimmed().toInt();
       }
-//     } catch (NumberFormatException e) {
+//     } catch (NumberFormatException* e) {
 ////         JOptionPane.showMessageDialog(this, tr("EnterFourDigitYear"), Bundle
 ////                 ->getMessage("CanNotSave"), JOptionPane.ERROR_MESSAGE);
 //      QMessageBox::critical(this, tr("Can not save train!"), tr("Enter the built year, use 4 digits"));

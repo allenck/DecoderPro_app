@@ -784,7 +784,7 @@ class ComboBoxRenderer extends JLabel
         String key = e.nextElement();
         try {
             bm.addAction(key, tr(key));
-        } catch (ClassNotFoundException ex) {
+        } catch (ClassNotFoundException* ex) {
             log->error("Did not find class "+key);
         }
     }
@@ -803,7 +803,7 @@ class ComboBoxRenderer extends JLabel
         String key = e.nextElement();
         try {
             bm.removeAction(key);
-        } catch (ClassNotFoundException ex) {
+        } catch (ClassNotFoundException* ex) {
             log->error("Did not find class "+key);
         }
     }

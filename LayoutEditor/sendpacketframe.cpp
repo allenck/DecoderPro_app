@@ -195,7 +195,7 @@ void SendPacketFrame::startSequenceDelay() {
     int delay = 500;   // default delay if non specified, or format bad
     try {
         delay = mDelayField->at(mNextSequenceElement)->text().toInt();
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException* e) {
     }
 
     // increment to next line at completion

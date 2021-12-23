@@ -159,7 +159,7 @@ void ResizableImagePanel::common()
     if (_imagePath != NULL) {
         //try {
             image = QImage((_imagePath));
-        //} catch (IOException ex) {
+        //} catch (IOException* ex) {
             if(image.isNull())
             {
              log->error(tr("%1 is not a valid image file, exception: ").arg(_imagePath));

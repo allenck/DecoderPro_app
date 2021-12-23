@@ -182,7 +182,7 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
   QString clearoption = shared.firstChildElement("cleardown").text();
   eep->setClearDownOption(clearoption.toInt());
  }
- catch (NullPointerException e)
+ catch (NullPointerException* e)
  {
      //Considered normal if it doesn't exists
  }
@@ -276,9 +276,9 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
      {
       eep->addNXDestination(source, dest, panel, id);
      }
-     catch (NullPointerException e)
+     catch (NullPointerException* e)
      {
-      log->error(tr("An error occured while trying to add a point") + ": "+ e.getMessage());
+      log->error(tr("An error occured while trying to add a point") + ": "+ e->getMessage());
      }
      if((destinationList.at(j).toElement().attribute("uniDirection")!="") && (destinationList.at(j).toElement().attribute("uniDirection")==("no")))
      {

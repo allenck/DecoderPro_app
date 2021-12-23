@@ -397,7 +397,7 @@ void AbstractTurnout::setKnownStateToCommanded()
    return;
   }
  }
- throw IllegalArgumentException("Unexpected mode: " + mode);
+ throw new IllegalArgumentException("Unexpected mode: " + mode);
 }
 
 /*public*/ void AbstractTurnout::setFeedbackMode(int mode) throw(IllegalArgumentException) {
@@ -429,7 +429,7 @@ void AbstractTurnout::setKnownStateToCommanded()
  }
  log->error("Unexpected internal mode: "
          + QString::number(_activeFeedbackType));
- throw IllegalArgumentException("Unexpected internal mode: "
+ throw new IllegalArgumentException("Unexpected internal mode: "
          + QString::number(_activeFeedbackType));
 }
 
@@ -959,7 +959,7 @@ void AbstractTurnout::setKnownStateToCommanded()
     try {
         return speed.toFloat();
         //return Integer.parseInt(_blockSpeed);
-    }catch (NumberFormatException nx) {
+    }catch (NumberFormatException* nx) {
         //considered normal if the speed is not a number.
     }
     try
@@ -993,7 +993,7 @@ void AbstractTurnout::setKnownStateToCommanded()
 #if 0 // TODO:
         try {
             Float.parseFloat(s);
-        } catch (NumberFormatException nx) {
+        } catch (NumberFormatException* nx) {
             try{
                 jmri.implementation.SignalSpeedMap.getMap().getSpeed(s);
             } catch (Exception ex){
@@ -1019,7 +1019,7 @@ void AbstractTurnout::setKnownStateToCommanded()
     try {
         return speed.toFloat();
     }
- catch (NumberFormatException nx)
+ catch (NumberFormatException* nx)
  {
         //considered normal if the speed is not a number.
  }

@@ -24,7 +24,7 @@
      * @throws PropertyVetoException if one of listeners vetoes the property
      *                               update
      */
-    virtual void fireVetoableChange(QString propertyName, bool oldValue, bool newValue) throw (PropertyVetoException) =0;
+    virtual void fireVetoableChange(QString propertyName, bool oldValue, bool newValue) /*throw (PropertyVetoException)*/ =0;
 
     /**
      * Fire a property change. Despite being public due to limitations in Java
@@ -36,7 +36,7 @@
      * @throws PropertyVetoException if one of listeners vetoes the property
      *                               update
      */
-    virtual void fireVetoableChange(PropertyChangeEvent* event) throw (PropertyVetoException) = 0;
+    virtual void fireVetoableChange(PropertyChangeEvent* event) /*throw (PropertyVetoException)*/ = 0;
 
     /**
      * Fire a property change. Despite being public due to limitations in Java
@@ -51,7 +51,7 @@
      * @throws PropertyVetoException if one of listeners vetoes the property
      *                               update
      */
-    virtual void fireVetoableChange(QString propertyName, int oldValue, int newValue) throw (PropertyVetoException) = 0;
+    virtual void fireVetoableChange(QString propertyName, int oldValue, int newValue) /*throw (PropertyVetoException)*/ = 0;
 
     /**
      * Fire a property change. Despite being public due to limitations in Java
@@ -66,7 +66,7 @@
      * @throws PropertyVetoException if one of listeners vetoes the property
      *                               update
      */
-    virtual void fireVetoableChange(QString propertyName, QVariant oldValue, QVariant newValue) throw (PropertyVetoException) = 0;
+    virtual void fireVetoableChange(QString propertyName, QVariant oldValue, QVariant newValue) /*throw (PropertyVetoException)*/ = 0;
 
 };
 Q_DECLARE_INTERFACE(VetoableChangeFirer, "VetoableChangeFirer")

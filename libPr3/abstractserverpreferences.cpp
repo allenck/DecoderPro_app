@@ -19,7 +19,7 @@
             log->info("No preferences exist.");
             migrate = true;
         }
-    } catch (BackingStoreException ex) {
+    } catch (BackingStoreException* ex) {
         log->info("No preferences file exists.");
         migrate = true;
     }
@@ -35,7 +35,7 @@
         try {
             log->info(tr("Migrating from old preferences in %1 to new format in %2.").arg(fileName).arg(FileUtil::getAbsoluteFilename("profile:profile")));
             sharedPreferences->sync();
-        } catch (BackingStoreException ex) {
+        } catch (BackingStoreException* ex) {
             log->error("Unable to write preferences.", ex);
         }
     }

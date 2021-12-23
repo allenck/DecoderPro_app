@@ -71,7 +71,7 @@ void TurnoutController::handleMessage(QString message) {
                 log->warn("Message \"" + message + "\" unknown.");
             }
         }
-    } catch (NullPointerException exb) {
+    } catch (NullPointerException* exb) {
         log->warn("Message \"" + message + "\" does not match a turnout.");
     }
 }

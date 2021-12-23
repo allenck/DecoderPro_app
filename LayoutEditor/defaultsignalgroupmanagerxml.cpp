@@ -231,7 +231,7 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
       {
        state = signalTurnoutList.at(k).toElement().attribute("state").toInt();
       }
-      catch (DataConversionException ex)
+      catch (DataConversionException* ex)
       {
        log->warn("invalid state attribute value");
       }
@@ -250,7 +250,7 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
       {
        state = signalSensorList.at(k).toElement().attribute("state").toInt();
       }
-      catch (DataConversionException ex)
+      catch (DataConversionException* ex)
       {
        log->warn("invalid style attribute value");
       }

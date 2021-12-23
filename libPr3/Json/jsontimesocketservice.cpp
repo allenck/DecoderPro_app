@@ -52,7 +52,7 @@
         } catch (JsonException ex) {
             this->connection->sendMessage(ex.getJsonMessage());
         }
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         // do nothing - the client has dropped off and a ping failure will
         // clean up the connection if its not already being torn down
     }

@@ -244,8 +244,8 @@ void WarrantManagerXml::loadTrain(QDomElement elem, Warrant* warrant)
      int address = 0;
      try {
         address = elem.attribute("dccAddress").toInt();
-     } catch (DataConversionException dce) {
-         log->error(dce.getMessage()+ " in Warrant "+warrant->getDisplayName());
+     } catch (DataConversionException* dce) {
+         log->error(dce->getMessage()+ " in Warrant "+warrant->getDisplayName());
      }
      bool isLong = true;
      if (elem.attribute("dccType") != "") {
@@ -312,7 +312,7 @@ ThrottleSetting* WarrantManagerXml::loadThrottleCommand(QDomElement elem)
     long time = 0;
     try {
         time = elem.attribute("time").toLong();
-    } catch (DataConversionException dce) {}
+    } catch (DataConversionException* dce) {}
 
     QString attr = elem.attribute("command");
     QString command = "";

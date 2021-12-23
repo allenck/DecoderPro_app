@@ -42,7 +42,7 @@ ExternalLinkContentViewerUI::ExternalLinkContentViewerUI(QObject *parent) : QObj
     super.hyperlinkUpdate(he);
 }
 #endif
-/*public*/ /*static*/ void ExternalLinkContentViewerUI::activateURL(QUrl u) //throw IOException, URISyntaxException
+/*public*/ /*static*/ void ExternalLinkContentViewerUI::activateURL(QUrl u) //throw new IOException, URISyntaxException
 {
     if (u.scheme().toLower() == ("mailto") || u.scheme().toLower() == ("http")
             || u.scheme().toLower() == ("ftp")) {

@@ -49,7 +49,7 @@ using namespace Sprog;
 /*public*/ /*synchronized*/ void SprogTrafficController::addSprogListener(SprogListener* l) {
     // add only if not already registered
     if (l == NULL) {
-        throw NullPointerException();
+        throw new NullPointerException();
     }
     if (!cmdListeners.contains(l)) {
         cmdListeners.append(l);

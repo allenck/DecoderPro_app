@@ -213,7 +213,7 @@ void SensorTableAction::createPressed()
  {
 //        try {
   numberOfSensors = numberToAddSpinner->value();
-//        } catch (NumberFormatException ex) {
+//        } catch (NumberFormatException* ex) {
 //            log.error("Unable to convert " + numberToAdd.getText() + " to a number");
 //            jmri.InstanceManager.getDefault(jmri.UserPreferencesManager.class).
 //                            showInfoMessage("Error","Number to Sensors to Add must be a number!",""+ex, "",true, false, org.apache.log4j.Level.ERROR);
@@ -252,10 +252,10 @@ void SensorTableAction::createPressed()
   {
    curAddress = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getNextValidAddress(curAddress, sensorPrefix);
   }
-  catch (JmriException ex)
+  catch (JmriException* ex)
   {
    ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->
-                 showErrorMessage("Error", "Unable to convert '" + curAddress + "' to a valid Hardware Address",  ex.getMessage(), "", true, false);
+                 showErrorMessage("Error", "Unable to convert '" + curAddress + "' to a valid Hardware Address",  ex->getMessage(), "", true, false);
    return;
   }
   if (curAddress == "")
@@ -269,7 +269,7 @@ void SensorTableAction::createPressed()
  Sensor* s = nullptr;
  try {
      s = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->provideSensor(sName);
- } catch (IllegalArgumentException ex) {
+ } catch (IllegalArgumentException* ex) {
      // user input no good
      handleCreateException(sName);
      // Show error message in statusBar
@@ -374,14 +374,14 @@ void SensorTableAction::handleCreateException(QString sysName) {
 //    try {
         long goingActive = activeField->text().toLong();
         ((ProxySensorManager*)sensorManager)->setDefaultSensorDebounceGoingActive(goingActive);
-//    } catch (NumberFormatException ex) {
+//    } catch (NumberFormatException* ex) {
 //        JOptionPane.showMessageDialog(_who, tr("SensorDebounceActError")+"\n" + activeField.getText(), "Input Error", JOptionPane.ERROR_MESSAGE);
 //    }
 
 //    try {
         long goingInActive = inActiveField->text().toLong();
         sensorManager->setDefaultSensorDebounceGoingInActive(goingInActive);
-//    } catch (NumberFormatException ex) {
+//    } catch (NumberFormatException* ex) {
 //        JOptionPane.showMessageDialog(_who, tr("SensorDebounceActError")+"\n" + inActiveField.getText(), "Input Error", JOptionPane.ERROR_MESSAGE);
 //    }
     m->fireTableDataChanged();

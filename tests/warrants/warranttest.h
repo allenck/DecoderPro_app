@@ -33,7 +33,7 @@ public slots:
  /*public*/ void testSetRouteUsingViaOrders();
  /*public*/ void testSetRoute();
  /*public*/ void setThrottleCommands();
- /*public*/ void testWarrant() throw (JmriException);
+ /*public*/ void testWarrant() /*throw (JmriException)*/;
 
 protected:
  /*protected*/ OBlockManager* _OBlockMgr;

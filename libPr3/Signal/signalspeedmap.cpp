@@ -137,7 +137,7 @@ void SignalSpeedMap::loadMap()
    else if(sval== "PERCENTTHROTTLE")
           _interpretation = PERCENT_THROTTLE;
    else
-     throw JDOMException("invalid content for interpretation: " + sval);
+     throw new JDOMException("invalid content for interpretation: " + sval);
 
   log->debug(tr("_interpretation= %1").arg(_interpretation));
 
@@ -147,7 +147,7 @@ void SignalSpeedMap::loadMap()
       _sStepDelay = e.text().toInt(&bok);
   if(!bok)
   {
-      throw JDOMException("invalid content for msPerIncrement: " + e.text());
+      throw new JDOMException("invalid content for msPerIncrement: " + e.text());
   }
   if (_sStepDelay < 200)
   {
@@ -227,7 +227,7 @@ void SignalSpeedMap::loadMap()
 /**
 * @return speed from SignalHead Appearance name
 */
-/*public*/ QString SignalSpeedMap::getAppearanceSpeed(QString name) throw (NumberFormatException) {
+/*public*/ QString SignalSpeedMap::getAppearanceSpeed(QString name) /*throw (NumberFormatException)*/ {
     if (log->isDebugEnabled()) log->debug("getAppearanceSpeed Appearance= "+name+
                                         ", speed="+_headTable->value(name));
     return _headTable->value(name);
@@ -255,7 +255,7 @@ void SignalSpeedMap::loadMap()
   // not a valid aspect
   log->warn("attempting to set invalid speed: "+name);
   //java.util.Enumeration<String> e = _table->keys();
-  throw IllegalArgumentException("attempting to get speed from invalid name: \""+name + "\"");
+  throw new IllegalArgumentException("attempting to get speed from invalid name: \""+name + "\"");
  }
  float speed = _table->value(name);
  if (speed==0)

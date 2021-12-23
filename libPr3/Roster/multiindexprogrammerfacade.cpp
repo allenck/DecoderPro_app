@@ -248,7 +248,7 @@ bool MultiIndexProgrammerFacade::useCachePiSi() {
     // test for only one!
     if (_usingProgrammer != NULL && _usingProgrammer != p) {
         if (log->isInfoEnabled()) log->info(QString("programmer already in use by ") +QString(_usingProgrammer->self()->metaObject()->className()));
-        throw ProgrammerException("programmer in use");
+        throw new ProgrammerException("programmer in use");
     }
     else {
         _usingProgrammer = p;
@@ -304,7 +304,7 @@ bool MultiIndexProgrammerFacade::useCachePiSi() {
              try {
                  state = ProgState::PROGRAMMING;
                  prog->readCV(_cv, (ProgListener*)this);
-             } catch (ProgrammerException e) {
+             } catch (ProgrammerException* e) {
                  log->error("Exception doing final read", e);
              }
          } else {
@@ -313,7 +313,7 @@ bool MultiIndexProgrammerFacade::useCachePiSi() {
                  valueSI = -1;
                  state = ProgState::FINISHREAD;
                  prog->writeCV(indexSI, tempSI, (ProgListener*)this);
-             } catch (ProgrammerException e) {
+             } catch (ProgrammerException* e) {
                  log->error("Exception doing write SI for read", e);
              }
          }
@@ -323,7 +323,7 @@ bool MultiIndexProgrammerFacade::useCachePiSi() {
              try {
                  state = ProgState::PROGRAMMING;
                  prog->writeCV(_cv, _val, (ProgListener*)this);
-             } catch (ProgrammerException e) {
+             } catch (ProgrammerException* e) {
                  log->error("Exception doing final write", e);
              }
          } else {
@@ -332,7 +332,7 @@ bool MultiIndexProgrammerFacade::useCachePiSi() {
                  valueSI = -1;
                  state = ProgState::FINISHWRITE;
                  prog->writeCV(indexSI, tempSI, (ProgListener*)this);
-             } catch (ProgrammerException e) {
+             } catch (ProgrammerException* e) {
                  log->error("Exception doing write SI for write", e);
              }
          }
@@ -342,7 +342,7 @@ bool MultiIndexProgrammerFacade::useCachePiSi() {
              try {
                  state = ProgState::PROGRAMMING;
                  prog->confirmCV(_cv, _val, (ProgListener*)this);
-             } catch (ProgrammerException e) {
+             } catch (ProgrammerException* e) {
                  log->error("Exception doing final confirm", e);
              }
          } else {
@@ -351,7 +351,7 @@ bool MultiIndexProgrammerFacade::useCachePiSi() {
                  valueSI = -1;
                  state = ProgState::FINISHCONFIRM;
                  prog->writeCV(indexSI, tempSI, (ProgListener*)this);
-             } catch (ProgrammerException e) {
+             } catch (ProgrammerException* e) {
                  log->error("Exception doing write SI for write", e);
              }
          }

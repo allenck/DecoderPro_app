@@ -76,7 +76,7 @@
                 } catch (JsonException ex) {
                     jlss->connection->sendMessage(ex.getJsonMessage());
                 }
-            } catch (IOException ex) {
+            } catch (IOException* ex) {
                 // if we get an error, de-register
           ((AbstractNamedBean*)light->self())->removePropertyChangeListener(this);
           //disconnect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

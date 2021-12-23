@@ -81,7 +81,7 @@
         try {
             newInstance->initComponents();
         } catch (Exception ex) {
-            log->error("Unable to initilize Warrant Table Frame", ex);
+            log->error("Unable to initilize Warrant Table Frame", &ex);
         }
         return newInstance;
     }//);
@@ -369,7 +369,7 @@ void WarrantTableFrame::on_nxButtonClicked()
     try {
         f->initComponents();
         f->concatenate(startW, endW);
-    } catch (Exception ex ) { log->error("error making CreateWarrantFrame", ex);}
+    } catch (Exception ex ) { log->error("error making CreateWarrantFrame", &ex);}
     f->setVisible(true);
     if (_concatDialog!=NULL) {
         _concatDialog->close();

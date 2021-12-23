@@ -8,7 +8,7 @@ class RpsReporterManager : public AbstractReporterManager
 public:
  RpsReporterManager(RpsSystemConnectionMemo* memo, QObject* parent = 0);
  /*public*/ SystemConnectionMemo* getMemo() const override;
- /*public*/ QString createSystemName(QString curAddress, QString prefix) throw (JmriException);
+ /*public*/ QString createSystemName(QString curAddress, QString prefix) /*throw (JmriException)*/;
  /*public*/ QString validateSystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale);
  /*public*/ RpsReporterManager::NameValidity validSystemNameFormat(/*@Nonnull*/ QString systemName);
  /*public*/ QString getEntryToolTip();

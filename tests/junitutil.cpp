@@ -526,7 +526,7 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
          qApp->processEvents();
         }
         return;
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log->error("Exception in waitFor condition.", ex);
         return;
     }
@@ -657,7 +657,7 @@ static /*public*/ void setBeanState(NamedBean bean, int state) {
                 () -> {
                     try {
                         bean.setState(state);
-                    } catch (JmriException e) {
+                    } catch (JmriException* e) {
                         log.error("Threw exception while setting state: ", e);
                     }
                 }
@@ -997,7 +997,7 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
     RosterConfigManager* manager = new RosterConfigManager();
     try {
         manager->initialize(ProfileManager::getDefault()->getActiveProfile());
-    } catch (InitializationException ex) {
+    } catch (InitializationException* ex) {
         log->error("Failed to initialize RosterConfigManager", ex);
     }
     InstanceManager::setDefault("RosterConfigManager", manager);
@@ -1068,10 +1068,10 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
     } catch (FileNotFoundException ex) {
         log->error(tr("Settings directory \"%1\" does not exist").arg(FileUtil::SETTINGS));
     }
-    catch (IOException  ex) {
+    catch (IOException*  ex) {
         log->error("Unable to create profile", ex);
     }
-    catch ( IllegalArgumentException ex) {
+    catch ( IllegalArgumentException* ex) {
         log->error("Unable to create profile", ex);
     }
 }

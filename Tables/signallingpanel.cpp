@@ -295,8 +295,8 @@ void SignallingPanel::common(SignalMast* source, SignalMast* dest, JFrame* frame
          if ((sml != nullptr) && (destMast != nullptr)) {
              try {
                  sml->useLayoutEditor(useLayoutEditor->isChecked(), destMast);
-             } catch (JmriException je) {
-                 JOptionPane::showMessageDialog(nullptr, je.toString());
+             } catch (JmriException* je) {
+                 JOptionPane::showMessageDialog(nullptr, je->toString());
              }
              try {
                  valid = ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(VPtr<LayoutBlock>::asPtr(sourceMastBox->currentData()),
@@ -304,7 +304,7 @@ void SignallingPanel::common(SignalMast* source, SignalMast* dest, JFrame* frame
                  if (!valid) {
                      JOptionPane::showMessageDialog(nullptr, tr("The Destination Mast is not directly reachable from the Source Mast"));
                  }
-             } catch (JmriException je) {
+             } catch (JmriException* je) {
                  JOptionPane::showMessageDialog(nullptr, tr("It has not been possible to validate the path between the two Signal Masts"));
              }
          }
@@ -593,7 +593,7 @@ void SignallingPanel::on_destMastBox_currentSelectionChanged(int)
    if(!valid)
     JOptionPane::showMessageDialog(NULL, tr("The Destination Mast is not directly reachable from the source Mast"));
   }
-  catch (JmriException je)
+  catch (JmriException* je)
   {
    JOptionPane::showMessageDialog(NULL, tr("It has not been possible to validate the path between the two SignalMasts"));
   }
@@ -653,9 +653,9 @@ void SignallingPanel::on_useLayoutEditor_toggled(bool)
    {
     ((DefaultSignalMastLogic*)sml)->useLayoutEditor(useLayoutEditor->isChecked(), destMast);
    }
-   catch (JmriException je)
+   catch (JmriException* je)
    {
-    JOptionPane::showMessageDialog(NULL, je.toString());
+    JOptionPane::showMessageDialog(NULL, je->toString());
    }
    try
    {
@@ -666,7 +666,7 @@ void SignallingPanel::on_useLayoutEditor_toggled(bool)
      JOptionPane::showMessageDialog(NULL, tr("The Destination Mast is not directly reachable from the source Mast"));
     }
    }
-   catch (JmriException je)
+   catch (JmriException* je)
    {
     JOptionPane::showMessageDialog(NULL, tr("It has not been possible to validate the path between the two Signal Masts"));
    }
@@ -1047,10 +1047,10 @@ void SignallingPanel::updatePressed(/*ActionEvent e*/)
    return;
   }
  }
- catch (JmriException je)
+ catch (JmriException* je)
   {
    //JOptionPane.showMessageDialog(NULL,  tr("WarningUnabletoValidate"));
-   QMessageBox::critical(this, tr("Error"), je.getMessage());
+   QMessageBox::critical(this, tr("Error"), je->getMessage());
 
   }
  }
@@ -1076,10 +1076,10 @@ void SignallingPanel::updatePressed(/*ActionEvent e*/)
  {
   ((DefaultSignalMastLogic*)sml)->useLayoutEditor(useLayoutEditor->isChecked(), destMast);
  }
- catch (JmriException je)
+ catch (JmriException* je)
  {
   //JOptionPane.showMessageDialog(NULL, je.toString());
-  QMessageBox::critical(this, tr("Error"), je.getMessage());
+  QMessageBox::critical(this, tr("Error"), je->getMessage());
 
   layouteditorgen=false;
  }
@@ -1091,12 +1091,12 @@ void SignallingPanel::updatePressed(/*ActionEvent e*/)
    ((DefaultSignalMastLogic*)sml)->useLayoutEditorDetails(useLayoutEditorTurnout->isChecked(), useLayoutEditorBlock->isChecked(), destMast);
   }
  }
- catch (JmriException ji)
+ catch (JmriException* ji)
  {
   if (layouteditorgen)
   {
    //JOptionPane.showMessageDialog(NULL, ji.toString());
-   QMessageBox::critical(this, tr("Error"), ji.getMessage());
+   QMessageBox::critical(this, tr("Error"), ji->getMessage());
 
   }
  }

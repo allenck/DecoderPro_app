@@ -23,7 +23,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ Base* AbstractBase::deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) throw (JmriException) {
+    /*public*/ Base* AbstractBase::deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/ {
         for (int i=0; i < original->getChildCount(); i++) {
             // Copy the name of the socket.
             // Ignore duplicate errors since these errors might happen temporary in this loop.

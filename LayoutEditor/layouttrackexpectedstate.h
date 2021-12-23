@@ -17,8 +17,8 @@ public:
  /*public*/ T getObject() ;
  /*public*/ bool canRemove() {return  false;}
  /*public*/ void setObjects(LayoutEditor* le) {}
- /*public*/ LayoutTrack* getConnection(HitPointType::TYPES type) throw (JmriException){return nullptr;}
- /*public*/ void setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) throw (JmriException) {}
+ /*public*/ LayoutTrack* getConnection(HitPointType::TYPES type) /*throw (JmriException)*/{return nullptr;}
+ /*public*/ void setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) /*throw (JmriException)*/ {}
 
 private:
  /*private*/ /*final*/ T layoutTrack;

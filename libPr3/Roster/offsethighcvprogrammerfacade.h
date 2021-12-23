@@ -9,8 +9,8 @@ class OffsetHighCvProgrammerFacade : public AbstractProgrammerFacade, public Pro
   Q_INTERFACES(ProgListener)
 public:
  /*public*/ OffsetHighCvProgrammerFacade(Programmer* prog, QString top, QString addrCV, QString cvFactor, QString modulo, QObject* parent = 0);
- /*public*/ void writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
- /*public*/ void readCV(QString CV, ProgListener* p) throw (ProgrammerException);
+ /*public*/ void writeCV(QString CV, int val, ProgListener* p) /*throw (ProgrammerException)*/;
+ /*public*/ void readCV(QString CV, ProgListener* p) /*throw (ProgrammerException)*/;
  /*public*/ bool getCanRead();
  /*public*/ bool getCanRead(QString addr);
  /*public*/ bool getCanWrite();
@@ -41,7 +41,7 @@ private:
  ProgState state;// = ProgState::NOTPROGRAMMING;
 
 protected:
- /*protected*/ void useProgrammer(ProgListener* p) throw (ProgrammerException);
+ /*protected*/ void useProgrammer(ProgListener* p) /*throw (ProgrammerException)*/;
 
 };
 

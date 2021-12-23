@@ -22,7 +22,7 @@ public:
     /*public*/ void setEnabled(bool enabled);
     /*public*/ void refresh();
     /*public*/ QString getDisplayName();
-    /*public*/ NamedBean* getNamedBean() throw (JmriException);
+    /*public*/ NamedBean* getNamedBean() /*throw (JmriException)*/;
     /*public*/ void setReference(QString ref);
     /*public*/ void setDefaultNamedBean(NamedBean* nBean);
     /*public*/ void dispose();
@@ -45,7 +45,7 @@ private:
     ManagerComboBox* prefixBox = new ManagerComboBox();
     UserPreferencesManager* p;
     QString systemSelectionCombo;// = this.getClass().getName()+".SystemSelected";
-    /*private*/ NamedBean* createBean() throw (JmriException);
+    /*private*/ NamedBean* createBean() /*throw (JmriException)*/;
 
 };
 

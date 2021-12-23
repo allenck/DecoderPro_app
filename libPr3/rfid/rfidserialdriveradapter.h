@@ -29,7 +29,7 @@ protected:
  /*protected*/ QStringList validSpeeds;// = new String[]{"(automatic)"};
  /*protected*/ QVector<int> validSpeedValues;// = new int[]{9600};
  /*protected*/ QString selectedSpeed;// = validSpeeds[0];
- /*protected*/ void setSerialPort() throw (UnsupportedCommOperationException);
+ /*protected*/ void setSerialPort() /*throw (UnsupportedCommOperationException)*/;
 
 };
 

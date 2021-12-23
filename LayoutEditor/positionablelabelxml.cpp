@@ -221,7 +221,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
     icon->setRotation(rotation, l);
    }
 //  }
-//  catch (DataConversionException e) {}
+//  catch (DataConversionException* e) {}
 
   if (name==("yes"))
   {
@@ -402,7 +402,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
   //if(!bOk) throw new DataConversionException();
   util->setMargin(margin);
 //  }
-//  catch (DataConversionException e)
+//  catch (DataConversionException* e)
   if(!bOk)
   {
    log->warn("Could not parse margin attribute!");
@@ -457,7 +457,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
  if (element.attribute("id") != "") {
      try {
          l->setId(element.attribute("id"));
-     } catch (Positionable::DuplicateIdException e) {
+     } catch (Positionable::DuplicateIdException* e) {
          throw  JmriConfigureXmlException("Positionable id is not unique", e);
      }
  }
@@ -586,7 +586,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
     }
    }
   //}
-  //catch (DataConversionException dce) {}
+  //catch (DataConversionException* dce) {}
  }
  return icon;
 }

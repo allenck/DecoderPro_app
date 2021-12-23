@@ -399,7 +399,7 @@ namespace Operations
                 if(!bok)
                  throw NumberFormatException();
             }
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException* e) {
             JOptionPane::showMessageDialog(this, tr("Optional Year Modeled"),
                     tr("Can not accept number"), JOptionPane::ERROR_MESSAGE);
             return;
@@ -416,7 +416,7 @@ namespace Operations
             AutoBackup* backup = new AutoBackup();
             try {
                 backup->autoBackup();
-            } catch (IOException ex) {
+            } catch (IOException* ex) {
 #if 0
                 UnexpectedExceptionContext context = new UnexpectedExceptionContext(ex,
                         "Auto backup before changing Car types"); // NOI18N

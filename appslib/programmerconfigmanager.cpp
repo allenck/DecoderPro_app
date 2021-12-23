@@ -80,7 +80,7 @@ ProgrammerConfigManager::ProgrammerConfigManager()
     preferences->putBoolean(SHOW_CV_NUMBERS, this->showCvNumbers);
 //    try {
         preferences->sync();
-//    } catch (BackingStoreException ex) {
+//    } catch (BackingStoreException* ex) {
 //        log.error("Unable to save preferences.", ex);
 //    }
 }

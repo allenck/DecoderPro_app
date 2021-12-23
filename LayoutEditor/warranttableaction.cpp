@@ -1038,7 +1038,7 @@ void WarrantTableAction::on_createWarrant_triggered()
  {
   f->initComponents();
   f->concatenate(startW, endW);
- } catch (Exception ex ) { log->error("error making CreateWarrantFrame", ex);}
+ } catch (Exception ex ) { log->error("error making CreateWarrantFrame", &ex);}
  f->setVisible(true);
 }
 #if 0

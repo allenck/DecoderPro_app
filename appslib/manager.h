@@ -416,24 +416,24 @@ public:
       */
      //@CheckReturnValue
      static /*public*/
-     int getSystemPrefixLength(/*@Nonnull*/ QString inputName) throw (NamedBean::BadSystemNameException);
+     int getSystemPrefixLength(/*@Nonnull*/ QString inputName) /*throw (NamedBean::BadSystemNameException)*/;
      /*public*/ static QString getSystemPrefix(/*@Nonnull*/ QString inputName);
 
      /**
-          * Indicate whether a system-prefix is one of the legacy non-parsable ones
-          * that are being removed during the JMRI 4.11 cycle.
-          * @deprecated to make sure we remember to remove this post-4.11
-          * @since 4.11.2
-          * @return true if a legacy prefix, hence non-parsable
-          */
-         //@Deprecated
+      * Indicate whether a system-prefix is one of the legacy non-parsable ones
+      * that are being removed during the JMRI 4.11 cycle.
+      * @deprecated to make sure we remember to remove this post-4.11
+      * @since 4.11.2
+      * @return true if a legacy prefix, hence non-parsable
+      */
+     //@Deprecated
      QT_DEPRECATED
-         //@SuppressWarnings("fallthrough")
-         //@SuppressFBWarnings(value = "SF_SWITCH_FALLTHROUGH", justification="intentional to make code more readable")
-         //@CheckReturnValue
-         /*public*/ static bool isLegacySystemPrefix(/*@Nonnull*/ QString prefix);
+     //@SuppressWarnings("fallthrough")
+     //@SuppressFBWarnings(value = "SF_SWITCH_FALLTHROUGH", justification="intentional to make code more readable")
+     //@CheckReturnValue
+     /*public*/ static bool isLegacySystemPrefix(/*@Nonnull*/ QString prefix);
 
-         //@Deprecated
+     //@Deprecated
      /**
       * If the argument starts with one of the legacy prefixes, detect that and
       * indicate its length.
@@ -449,9 +449,9 @@ public:
      //@CheckReturnValue
      /*public*/ static int startsWithLegacySystemPrefix(/*@Nonnull*/ QString prefix);
      virtual /*public*/ QString getEntryToolTip() {return "";}
-     /*public*/ /*default*/ QString validateSystemNameFormat(/*@Nonnull*/ QString name) const throw (NamedBean::BadSystemNameException);
-     /*public*/ /*default*/ QString validateSystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) const throw (NamedBean::BadSystemNameException);
-     /*public*/ /*default*/ QString validateSystemNamePrefix(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) const throw (NamedBean::BadSystemNameException);
+     /*public*/ /*default*/ QString validateSystemNameFormat(/*@Nonnull*/ QString name) const /*throw (NamedBean::BadSystemNameException)*/;
+     /*public*/ /*default*/ QString validateSystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) const /*throw (NamedBean::BadSystemNameException)*/;
+     /*public*/ /*default*/ QString validateSystemNamePrefix(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) const /*throw (NamedBean::BadSystemNameException)*/;
      /*public*/ /*default*/ QString validateTrimmedSystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale);
      /*public*/ /*default*/ QString validateUppercaseTrimmedSystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale);
      /*public*/ /*default*/ QString validateIntegerSystemNameFormat(/*@Nonnull*/ QString name, int min, int max, /*@Nonnull*/ QLocale locale);

@@ -110,8 +110,8 @@ public:
     /*public*/ bool isDisconnected(HitPointType::TYPES connectionType)override;
     /*public*/ bool isMainline()override;
 //    /*public*/ QPointF getCoordsForConnectionType(int connectionType)override;
-    /*public*/ LayoutTrack* getConnection(HitPointType::TYPES connectionType) throw (JmriException)override;
-    /*public*/ void setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) throw (JmriException) override;
+    /*public*/ LayoutTrack* getConnection(HitPointType::TYPES connectionType) /*throw (JmriException)*/override;
+    /*public*/ void setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) /*throw (JmriException)*/ override;
     /*public*/ bool replaceTrackConnection(/*@Nullable*/ TrackSegment* oldTrack,/* @Nullable */TrackSegment* newTrack);
     /*public*/ QList<HitPointType::TYPES> checkForFreeConnections()override;
     /*public*/ bool checkForUnAssignedBlocks()override;

@@ -591,7 +591,7 @@ void OBlockTableModel::initTempRow()
     int state = 0;
     try {
         state = Integer.valueOf( value);
-    } catch (NumberFormatException nfe) {
+    } catch (NumberFormatException* nfe) {
     }
     if (state < 0) {
         state = -state;

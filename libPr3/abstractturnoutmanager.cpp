@@ -104,7 +104,7 @@ Turnout* AbstractTurnoutManager::newTurnout(QString systemName, QString userName
  {
   log->error(tr("Invalid system name for turnout: %1 needed %2%3 followed by a suffix").arg(
                       systemName).arg(getSystemPrefix()).arg(typeLetter()));
-  throw IllegalArgumentException("Invalid system name for turnout: " + systemName
+  throw new IllegalArgumentException("Invalid system name for turnout: " + systemName
                                  + " needed " + getSystemPrefix() + typeLetter());
  }
 
@@ -129,7 +129,7 @@ Turnout* AbstractTurnoutManager::newTurnout(QString systemName, QString userName
  // if that failed, blame it on the input arguments
  if(t == nullptr)
  {
-  throw IllegalArgumentException(tr("Unable to create turnout from %1").arg(systemName));
+  throw new IllegalArgumentException(tr("Unable to create turnout from %1").arg(systemName));
  }
 
  // Some implementations of createNewTurnout() register the new bean,
@@ -141,14 +141,14 @@ Turnout* AbstractTurnoutManager::newTurnout(QString systemName, QString userName
 
  try {
      t->setStraightSpeed("Global");
- } catch (JmriException ex) {
-     log->error(ex.toString());
+ } catch (JmriException* ex) {
+     log->error(ex->toString());
  }
 
  try {
      t->setDivergingSpeed("Global");
- } catch (JmriException ex) {
-     log->error(ex.toString());
+ } catch (JmriException* ex) {
+     log->error(ex->toString());
  }
  return t;
 }
@@ -249,7 +249,7 @@ QString AbstractTurnoutManager::createSystemName(QString curAddress, QString pre
         //Integer.parseInt(curAddress);
     int i = curAddress.toInt();
     Q_UNUSED(i);
-    } catch (NumberFormatException *ex)
+    } catch (NumberFormatException* *ex)
     {
      log->warn(tr("Hardware Address passed should be a number, was %1").arg(curAddress));
      throw  JmriException("Hardware Address passed should be a number");
@@ -265,7 +265,7 @@ QString AbstractTurnoutManager::getNextValidAddress(QString curAddress, QString 
  try {
      tmpSName = createSystemName(curAddress, prefix);
  }
- catch (JmriException *ex)
+ catch (JmriException* *ex)
  {
   static_cast<UserPreferencesManager*>(InstanceManager::getDefault("UserPreferencesManager"))->showErrorMessage(tr("Error"),tr("Unable to convert %1 to a valid Hardware Address %2").arg(curAddress),nullptr, "", true, false);
   return nullptr;
@@ -336,7 +336,7 @@ void AbstractTurnoutManager::setDefaultClosedSpeed(QString speed) const //throws
    }
    catch (Exception ex)
    {
-    throw JmriException("Value of requested turnout default closed speed is not valid");
+    throw new JmriException("Value of requested turnout default closed speed is not valid");
    }
   }
  }

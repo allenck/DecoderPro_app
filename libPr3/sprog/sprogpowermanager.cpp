@@ -26,7 +26,7 @@ using namespace Sprog;
 
 
 //@Override
-/*public*/ void SprogPowerManager::setPower(int v) throw (JmriException)
+/*public*/ void SprogPowerManager::setPower(int v) /*throw (JmriException)*/
 {
  power = UNKNOWN; // while waiting for reply
  checkTC();
@@ -72,12 +72,12 @@ using namespace Sprog;
  * Free resources when no longer used.
  */
 //@Override
-/*public*/ void SprogPowerManager::dispose() throw (JmriException) {
+/*public*/ void SprogPowerManager::dispose() /*throw (JmriException)*/ {
     trafficController->removeSprogListener((SprogListener*)this);
     trafficController = NULL;
 }
 
-/*private*/ void SprogPowerManager::checkTC() throw (JmriException) {
+/*private*/ void SprogPowerManager::checkTC() /*throw (JmriException)*/ {
     if (trafficController == NULL) {
         throw new JmriException("attempt to use SprogPowerManager after dispose");
     }

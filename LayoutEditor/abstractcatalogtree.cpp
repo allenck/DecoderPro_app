@@ -187,7 +187,7 @@ AbstractCatalogTree::~AbstractCatalogTree()
 
 /*public*/ int AbstractCatalogTree::getState(){ return 0; }
 
-/*public*/ void AbstractCatalogTree::setState(int s) throw (JmriException){}
+/*public*/ void AbstractCatalogTree::setState(int s) /*throw (JmriException)*/{}
 
 /*private*/ /*final*/ /*static*/ Logger* AbstractCatalogTree::log = LoggerFactory::getLogger("AbstractCatalogTree");
 

@@ -52,7 +52,7 @@ StartupPauseModel::StartupPauseModel(QObject* parent) :AbstractStartupModel(pare
 }
 
 //@Override
-/*public*/ void StartupPauseModel::performAction(QString) throw (JmriException) {
+/*public*/ void StartupPauseModel::performAction(QString) /*throw (JmriException)*/ {
     if (delay > 0) {
         log->info(tr("Pausing startup actions processing for %1 seconds.").arg(delay));
         try {

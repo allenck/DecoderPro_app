@@ -62,7 +62,7 @@
    return;
   }
  }
- catch (Exception e)
+ catch (Exception* e)
  {
   log->error("exception reading programmer file: "+filename, e);
   // provide traceback too

@@ -1640,9 +1640,9 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         /*@CheckForNull*/ LayoutEditor* panel)
 {
  if(nb == nullptr)
-  throw NullPointerException("nb is marked @nonnull but is null");
+  throw new NullPointerException("nb is marked @nonnull but is null");
  if(panel == nullptr)
-  throw NullPointerException("panel is marked @nonnull but is null");
+  throw new NullPointerException("panel is marked @nonnull but is null");
 
  if (static_cast<SignalHead*>(nb)) {
      return getProtectedBlock((SignalHead*) nb, panel);
@@ -1661,9 +1661,9 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         /*@CheckForNull*/ NamedBean* nb,
         /*@CheckForNull*/ LayoutEditor* panel) {
  if(nb == nullptr)
-  throw NullPointerException("nb is marked @nonnull but is null");
+  throw new NullPointerException("nb is marked @nonnull but is null");
 // if(panel == nullptr)
-//  throw NullPointerException("panel is marked @nonnull but is null");
+//  throw new NullPointerException("panel is marked @nonnull but is null");
 
  QList<LayoutBlock*> ret = QList<LayoutBlock*>();
 
@@ -1690,9 +1690,9 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         /*@CheckForNull*/ LayoutEditor* panel)
 {
  if(bean == nullptr)
-  throw NullPointerException("bean is marked @nonnull but is null");
+  throw new NullPointerException("bean is marked @nonnull but is null");
 // if(panel == nullptr)
-//  throw NullPointerException("panel is marked @nonnull but is null");
+//  throw new NullPointerException("panel is marked @nonnull but is null");
 
  if (panel == nullptr)
  {
@@ -1718,9 +1718,9 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         /*@CheckForNull*/ LayoutEditor* panel)
 {
  if(bean == nullptr)
-  throw NullPointerException("bean is marked @nonnull but is null");
+  throw new NullPointerException("bean is marked @nonnull but is null");
  if(panel == nullptr)
-  throw NullPointerException("panel is marked @nonnull but is null");
+  throw new NullPointerException("panel is marked @nonnull but is null");
 
  QList<LayoutBlock*> protectingBlocks = QList<LayoutBlock*>();
 
@@ -1840,9 +1840,9 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         /*@CheckForNull*/ Sensor* sensor, /*@CheckForNull*/ LayoutEditor* panel)
 {
  if(sensor == nullptr)
-  throw NullPointerException("sensor is marked @nonnull but is null");
+  throw new NullPointerException("sensor is marked @nonnull but is null");
  if(panel == nullptr)
-  throw NullPointerException("panel is marked @nonnull but is null");
+  throw new NullPointerException("panel is marked @nonnull but is null");
 
  QList<LayoutBlock*> proBlocks = getProtectingBlocksByBean(sensor, panel);
 
@@ -1857,9 +1857,9 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         /*@CheckForNull*/ Sensor* sensor, /*@CheckForNull*/ LayoutEditor* panel)
 {
  if(sensor == nullptr)
-  throw NullPointerException("sensor is marked @nonnull but is null");
+  throw new NullPointerException("sensor is marked @nonnull but is null");
  if(panel == nullptr)
-  throw NullPointerException("panel is marked @nonnull but is null");
+  throw new NullPointerException("panel is marked @nonnull but is null");
 
  return getProtectingBlocksByBean(sensor, panel);
 }
@@ -1987,7 +1987,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         LayoutEditor* panel)
 {
  if(bean == nullptr)
-  throw NullPointerException("bean is marked @Nonnull but is null");
+  throw new NullPointerException("bean is marked @Nonnull but is null");
 
  if (panel == nullptr)
  {
@@ -2286,7 +2286,7 @@ void LayoutBlockManager::setLastRoutingChange()
   {
    namedStabilisedIndicator->getBean()->setState(Sensor::INACTIVE);
   }
-  catch (JmriException ex)
+  catch (JmriException* ex)
   {
    log.debug("Error setting stability indicator sensor");
   }
@@ -2361,7 +2361,7 @@ void MyRunnable::run()
   QThread::currentThread()->exit(0);
   self->checking=false;
  }
- catch (JmriException ex)
+ catch (JmriException* ex)
  {
   log->debug("Error setting stability indicator sensor");
  }
@@ -2376,7 +2376,7 @@ void LayoutBlockManager::passPropertyChange(PropertyChangeEvent *e)
 * Assign a sensor to the routing protocol, that changes state dependant upon
 * if the routing protocol has stabilised or is under going a change.
 */
-/*public*/ void LayoutBlockManager::setStabilisedSensor(QString pName) throw (JmriException)
+/*public*/ void LayoutBlockManager::setStabilisedSensor(QString pName) /*throw (JmriException)*/
 {
  if (InstanceManager::sensorManagerInstance()!=NULL)
  {
@@ -2397,7 +2397,7 @@ void LayoutBlockManager::passPropertyChange(PropertyChangeEvent *e)
    else
     sensor->setState(Sensor::INACTIVE);
   }
-  catch (JmriException ex)
+  catch (JmriException* ex)
   {
    log.error("Error setting stablilty indicator sensor");
   }

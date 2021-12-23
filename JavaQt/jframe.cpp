@@ -219,7 +219,7 @@ void JFrame::dispose()
  //deleteLater();
   _closed = true;
  if(!_windowClosing)
-  log->error(tr("dispose() called but window isn't closing!"));
+  log->error(tr("dispose() called but window isn't closing!"), nullptr);
 }
 
 JPanel* JFrame:: getContentPane(bool addLayout)
@@ -342,7 +342,7 @@ QString JFrame::title() { return _title;}
         operation != HIDE_ON_CLOSE &&
         operation != DISPOSE_ON_CLOSE &&
         operation != EXIT_ON_CLOSE) {
-        throw IllegalArgumentException("defaultCloseOperation must be one of: DO_NOTHING_ON_CLOSE, HIDE_ON_CLOSE, DISPOSE_ON_CLOSE, or EXIT_ON_CLOSE");
+        throw new IllegalArgumentException("defaultCloseOperation must be one of: DO_NOTHING_ON_CLOSE, HIDE_ON_CLOSE, DISPOSE_ON_CLOSE, or EXIT_ON_CLOSE");
     }
     if (this->defaultCloseOperation != operation) {
 //        if (operation == EXIT_ON_CLOSE) {

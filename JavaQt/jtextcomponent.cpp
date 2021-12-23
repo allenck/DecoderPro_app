@@ -1167,7 +1167,7 @@ private static Boolean isProcessInputMethodEventOverridden(Class<?> klass) {
         Method m = klass.getDeclaredMethod("processInputMethodEvent",
                                            classes);
         retValue = Boolean.TRUE;
-    } catch (NoSuchMethodException nsme) {
+    } catch (NoSuchMethodException* nsme) {
         retValue = Boolean.FALSE;
     }
     overrideMap.put(klass.getName(), retValue);

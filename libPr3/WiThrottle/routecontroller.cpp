@@ -68,7 +68,7 @@ void RouteController::handleMessage(QString message) {
                 log->warn(tr("Message \"") + message + "\" does not match a route.");
             }
         }
-    } catch (NullPointerException exb) {
+    } catch (NullPointerException* exb) {
         log->warn(tr("Message \"") + message + "\" does not match a route.");
     }
 }
@@ -131,7 +131,7 @@ void RouteController::handleMessage(QString message) {
             try {
                 Sensor* routeAligned = InstanceManager::sensorManagerInstance()->provideSensor(turnoutsAlignedSensor);
                 list.append(routeAligned->getKnownState());
-            } catch (IllegalArgumentException ex) {
+            } catch (IllegalArgumentException* ex) {
                 log->warn(tr("Failed to provide turnoutsAlignedSensor \"%1\" in sendList").arg(turnoutsAlignedSensor));
             }
         }

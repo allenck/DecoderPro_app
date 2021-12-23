@@ -219,7 +219,7 @@ void AbstractSignalMast::configureAspectTable(QString signalSystemName, QString 
     return _allowUnLit;
 }
 
-/*public*/ void AbstractSignalMast::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException)
+/*public*/ void AbstractSignalMast::vetoableChange(PropertyChangeEvent* /*evt*/) /*throw (PropertyVetoException)*/
 {
 }
 

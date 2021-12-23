@@ -1824,7 +1824,7 @@ namespace Operations {
        bool bok;
              calendar->set(Calendar::YEAR, (Setup::getYearModeled().trimmed()).toInt(&bok));
              if(!bok) throw NumberFormatException();
-         } catch (NumberFormatException e) {
+         } catch (NumberFormatException* e) {
              return Setup::getYearModeled();
          }
      }
@@ -1884,7 +1884,7 @@ namespace Operations {
   if (isModelYear && !Setup::getYearModeled()==(Setup::NONE)) {
       try {
           calendar.set(Calendar.YEAR, Integer.parseInt(Setup::getYearModeled().trimmed()));
-      } catch (NumberFormatException e) {
+      } catch (NumberFormatException* e) {
           return Setup::getYearModeled();
       }
   }
@@ -1927,7 +1927,7 @@ namespace Operations {
                  dateToDouble += 60 * 12;
              }
          }
-     } catch (NumberFormatException e) {
+     } catch (NumberFormatException* e) {
          log->error("Not able to convert date: " + date + " to double");
      }
      // log->debug("Double: "+dateToDouble);

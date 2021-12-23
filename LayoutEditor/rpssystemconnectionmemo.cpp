@@ -183,7 +183,7 @@
             double z = (coord[2].toDouble());
             log->debug(tr("succes converting systemName point %1 to %2,%3,%4").arg(i).arg(x).arg(y).arg(z));
             // valid, continue
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException* e) {
             return Manager::NameValidity::INVALID;
         }
     }

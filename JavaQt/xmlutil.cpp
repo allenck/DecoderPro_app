@@ -685,7 +685,7 @@
 
         try {
             magic[(i / 2) - 1] = (byte) Integer.parseInt(g, 16);
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException* ex) {
             throw new IOException(ex.getLocalizedMessage());
         }
     }

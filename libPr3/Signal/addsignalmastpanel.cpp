@@ -287,7 +287,7 @@ void AddSignalMastPanel::selection(QString view) {
    mastBoxPassive = false;
    if (mapTypeToName.value(mast->getMastType()) == nullptr ) {
        log->error(tr("About to set mast to null, which shouldn't happen. mast.getMastType() is %1").arg(mast->getMastType()),
-                Exception("Traceback Exception")); // NOI18N
+                new Exception("Traceback Exception")); // NOI18N
    }
    log->trace(tr("set mastBox to \"%1\" from \"%2\"").arg( mapTypeToName.value(mast->getMastType())).arg(mast->getMastType())); // NOI18N
    mastBox->setCurrentText(mapTypeToName.value(mast->getMastType()));
@@ -522,7 +522,7 @@ void AddSignalMastPanel::okPressed()
 
  // get and validate entered global information
  if ( (mastBox->currentIndex() < 0) || ( mastFiles.value(mastBox->currentIndex()) == nullptr) ) {
-     issueDialogFailMessage( RuntimeException("There's something wrong with the mast type selection"));
+     issueDialogFailMessage( new RuntimeException("There's something wrong with the mast type selection"));
      return;
  }
  QString mastname = mastFiles.value(mastBox->currentIndex())->getName();
@@ -539,7 +539,7 @@ void AddSignalMastPanel::okPressed()
  // ask top-most pane to make a signal
  try {
      success = currentPane->createMast(sigsysname,mastname,user);
- } catch (RuntimeException ex) {
+ } catch (RuntimeException* ex) {
      issueDialogFailMessage(ex);
      return; // without clearing panel, so user can try again
  }
@@ -558,11 +558,11 @@ int AddSignalMastPanel::issueNoUserNameGiven() {
                 JOptionPane::YES_NO_OPTION);
     }
 
-void AddSignalMastPanel::issueDialogFailMessage(RuntimeException ex) {
+void AddSignalMastPanel::issueDialogFailMessage(RuntimeException* ex) {
 // This is intrinsically swing, so pop a dialog
 log->error("Failed during createMast", ex); // NOI18N
 JOptionPane::showMessageDialog(this,
-    tr("Failed during createMast %1").arg(ex.getMessage()), // NOI18N
+    tr("Failed during createMast %1").arg(ex->getMessage()), // NOI18N
     tr("Create Failed"),  // title of box // NOI18N
     JOptionPane::ERROR_MESSAGE);
 }

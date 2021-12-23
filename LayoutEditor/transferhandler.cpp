@@ -1095,7 +1095,7 @@ TransferHandler::TransferHandler(QObject *parent) :
             String mimeType = DataFlavor.javaJVMLocalObjectMimeType + ";class=" + propertyType.getName();
             try {
                 flavors[0] = new DataFlavor(mimeType);
-            } catch (ClassNotFoundException cnfe) {
+            } catch (ClassNotFoundException* cnfe) {
                 flavors = new DataFlavor[0];
             }
             return flavors;

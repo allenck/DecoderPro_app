@@ -287,7 +287,7 @@ HelpUtil::HelpUtil(QObject *parent) :
 #ifdef Q_OS_WIN
      try {
          openWindowsFile(f);
-     } catch (JmriException e) {
+     } catch (JmriException* e) {
          log->error(tr("unable to show help page %1 in Windows due to:").arg(ref), e);
      }
      return;
@@ -328,7 +328,7 @@ HelpUtil::HelpUtil(QObject *parent) :
     return stubLocation + "stub.html";
 }
 
-/*public*/ /*static*/ void HelpUtil::openWindowsFile(File* file) throw (JmriException) {
+/*public*/ /*static*/ void HelpUtil::openWindowsFile(File* file) /*throw (JmriException)*/ {
 #if 1
     try {
 //        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN))
@@ -340,7 +340,7 @@ HelpUtil::HelpUtil(QObject *parent) :
 //            throw  JmriException(tr(
 //                    "Failed to connect to browser. java.awt.Desktop in Windows doesn't suppport Action.OPEN"));
 //        }
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         throw  JmriException(
                 QString("Failed to connect to browser. Error loading help file %1").arg(file->getPath())/*, ex*/);
     }
@@ -352,13 +352,13 @@ HelpUtil::HelpUtil(QObject *parent) :
     try {
         HelpUtil::openWebPage(url);
         result = true;
-    } catch (JmriException e) {
+    } catch (JmriException* e) {
         log->warn(tr("unable to show help page %1 due to:").arg(ref), e);
     }
     return result;
 }
 
-/*public*/ /*static*/ void HelpUtil::openWebPage(QString url) throw (JmriException) {
+/*public*/ /*static*/ void HelpUtil::openWebPage(QString url) /*throw (JmriException)*/ {
 #if 0
     try {
         URI uri = new URI(url);

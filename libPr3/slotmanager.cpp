@@ -1403,7 +1403,7 @@ LocoNetSystemConnectionMemo* SlotManager::getSystemConnectionMemo()
   // regular integer address for DCC form
   bool bok;
   int CV = cvNum.toInt(&bok);
-  if(!bok) throw IllegalArgumentException();
+  if(!bok) throw new IllegalArgumentException();
 
   lopsa = 0;
   hopsa = 0;

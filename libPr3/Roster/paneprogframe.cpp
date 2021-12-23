@@ -370,7 +370,7 @@ PaneProgFrame::~PaneProgFrame()
    decoderRoot = df->rootFromName(FileUtil::findURL(DecoderFile::fileLocation+ df->getFileName(),slist).path());
    }
  }
- catch (Exception e)
+ catch (Exception* e)
  {
   log->error("Exception while loading decoder XML file: "+df->getFileName(), e);
  }
@@ -463,7 +463,7 @@ PaneProgFrame::~PaneProgFrame()
  {
   QFileInfo info(filename);
   if(!info.exists())
-   throw FileNotFoundException(tr("Programming file %1 not found").arg(filename));
+   throw  new FileNotFoundException(tr("Programming file %1 not found").arg(filename));
   QFileInfo local(FileUtil::getUserFilesPath()+ File::separator + "programmers" + File::separator +
                                           info.fileName());
   if(local.exists() && (local.fileTime(QFileDevice::FileModificationTime) > info.fileTime(QFileDevice::FileModificationTime))) // see if a local, expanded copy esists.
@@ -525,7 +525,7 @@ PaneProgFrame::~PaneProgFrame()
   }// load programmer config from programmer tree
   readConfig(programmerRoot, r);
  }
- catch (Exception e)
+ catch (Exception* e)
  {
   log->error("exception reading programmer file: "+filename, e);
   // provide traceback too

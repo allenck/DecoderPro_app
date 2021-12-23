@@ -72,7 +72,7 @@
         try {
            Reporter* reporter = static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->provideReporter(reporterName);
            sendReport(reporterName, reporter->getCurrentReport());
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             log->warn(tr("Failed to provide Reporter \"%1\" in parseStatus").arg(reporterName));
         }
     }

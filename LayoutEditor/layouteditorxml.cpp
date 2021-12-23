@@ -205,7 +205,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
              panel.appendChild(e);
          }
      } catch (Exception ex) {
-         log->error(tr("Error storing layout item: %1").arg(item->metaObject()->className()), ex);
+         log->error(tr("Error storing layout item: %1").arg(item->metaObject()->className()), &ex);
      }
  }
 
@@ -238,35 +238,35 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  try
  {
   bool ok;
-  x = shared.attribute("x").toInt(&ok); if(!ok) throw DataConversionException();
-  y = shared.attribute("y").toInt(&ok); if(!ok) throw DataConversionException();
+  x = shared.attribute("x").toInt(&ok); if(!ok) throw new DataConversionException();
+  y = shared.attribute("y").toInt(&ok); if(!ok) throw new DataConversionException();
   // For compatibility with previous versions, try and see if height and width tags are contained in the file
   if ((a = shared.attribute("height")) != "") {
-      windowHeight = a.toInt(&ok); if(!ok) throw DataConversionException();
+      windowHeight = a.toInt(&ok); if(!ok) throw new DataConversionException();
       panelHeight = windowHeight - 60;
   }
   if ((a = shared.attribute("width")) != "") {
-      windowWidth = a.toInt(&ok); if(!ok) throw DataConversionException();
+      windowWidth = a.toInt(&ok); if(!ok) throw new DataConversionException();
       panelWidth = windowWidth - 18;
   }
   // For files created by the new version, retrieve window and panel sizes
   if ((a = shared.attribute("windowheight")) != "") {
-      windowHeight = a.toInt(&ok); if(!ok) throw DataConversionException();
+      windowHeight = a.toInt(&ok); if(!ok) throw new DataConversionException();
   }
   if ((a = shared.attribute("windowwidth")) != "") {
-      windowWidth = a.toInt(&ok); if(!ok) throw DataConversionException();
+      windowWidth = a.toInt(&ok); if(!ok) throw new DataConversionException();
   }
   if ((a = shared.attribute("panelheight")) != "") {
-      panelHeight = a.toInt(&ok); if(!ok) throw DataConversionException();
+      panelHeight = a.toInt(&ok); if(!ok) throw new DataConversionException();
   }
   if ((a = shared.attribute("panelwidth")) != "") {
-      panelWidth = a.toInt(&ok); if(!ok) throw DataConversionException();
+      panelWidth = a.toInt(&ok); if(!ok) throw new DataConversionException();
   }
 
   mainlinetrackwidth = shared.attribute("mainlinetrackwidth").toInt();
   sidetrackwidth = shared.attribute("sidetrackwidth").toInt();
  }
- catch (DataConversionException e)
+ catch (DataConversionException* e)
  {
      log->error("failed to convert LayoutEditor's attribute");
      result = false;
@@ -396,10 +396,10 @@ if ((a = shared.attribute("turnoutcirclesize")) != "")
  try {
      panel->setTurnoutDrawUnselectedLeg(shared.attribute("turnoutdrawunselectedleg")=="true");
  }
- catch (DataConversionException e) {
+ catch (DataConversionException* e) {
      log->warn("unable to convert turnoutdrawunselectedleg attribute");
  }
- catch (NullPointerException e) {  // considered normal if the attribute is not present
+ catch (NullPointerException* e) {  // considered normal if the attribute is not present
  }
 
  // turnout size parameters
@@ -509,57 +509,57 @@ if ((a = shared.attribute("turnoutcirclesize")) != "")
 
  try {
      panel->setDrawGrid(getBooleanValue(shared.attribute("drawgrid")));
- } catch (DataConversionException e) {
+ } catch (DataConversionException* e) {
      log->warn("unable to convert drawgrid attribute");
- } catch (NullPointerException e) {  // considered normal if the attribute is not present
+ } catch (NullPointerException* e) {  // considered normal if the attribute is not present
      log->debug("missing drawgrid attribute");
  }
 
  try {
      panel->setSnapOnAdd(getBooleanValue(shared.attribute("snaponadd")));
- } catch (DataConversionException e) {
+ } catch (DataConversionException* e) {
      log->warn("unable to convert snaponadd attribute");
- } catch (NullPointerException e) {  // considered normal if the attribute is not present
+ } catch (NullPointerException* e) {  // considered normal if the attribute is not present
      log->debug("missing snaponadd attribute");
  }
 
  try {
      panel->setSnapOnMove(getBooleanValue(shared.attribute("snaponmove")));
- } catch (DataConversionException e) {
+ } catch (DataConversionException* e) {
      log->warn("unable to convert snaponmove attribute");
- } catch (NullPointerException e) {  // considered normal if the attribute is not present
+ } catch (NullPointerException* e) {  // considered normal if the attribute is not present
      log->debug("missing snaponmove attribute");
  }
 
  try {
      panel->setTurnoutCircles(getBooleanValue(shared.attribute("turnoutcircles")));
- } catch (DataConversionException e) {
+ } catch (DataConversionException* e) {
      log->warn("unable to convert turnoutcircles attribute");
- } catch (NullPointerException e) {  // considered normal if the attribute is not present
+ } catch (NullPointerException* e) {  // considered normal if the attribute is not present
      log->debug("missing turnoutcircles attribute");
  }
 
  try {
      panel->setTooltipsNotEdit(getBooleanValue(shared.attribute("tooltipsnotedit")));
- } catch (DataConversionException e) {
+ } catch (DataConversionException* e) {
      log->warn("unable to convert tooltipsnotedit attribute");
- } catch (NullPointerException e) {  // considered normal if the attribute is not present
+ } catch (NullPointerException* e) {  // considered normal if the attribute is not present
      log->debug("missing tooltipsnotedit attribute");
  }
 
  try {
      panel->setAutoBlockAssignment(getBooleanValue(shared.attribute("autoblkgenerate")));
- } catch (DataConversionException e) {
+ } catch (DataConversionException* e) {
      log->warn("unable to convert autoblkgenerate attribute");
- } catch (NullPointerException e) {  // considered normal if the attribute is not present
+ } catch (NullPointerException* e) {  // considered normal if the attribute is not present
      log->debug("missing autoblkgenerate attribute");
  }
 
  try {
      panel->setTooltipsInEdit(getBooleanValue(shared.attribute("tooltipsinedit")));
- } catch (DataConversionException e) {
+ } catch (DataConversionException* e) {
      log->warn("unable to convert tooltipsinedit attribute");
- } catch (NullPointerException e) {  // considered normal if the attribute is not present
+ } catch (NullPointerException* e) {  // considered normal if the attribute is not present
      log->debug("missing tooltipsinedit attribute");
  }
 
@@ -593,16 +593,16 @@ if ((a = shared.attribute("turnoutcirclesize")) != "")
  try {
   bool bok;
      int red = shared.attribute("redBackground").toInt(&bok);
-     if(!bok) throw DataConversionException();
+     if(!bok) throw new DataConversionException();
      int blue = shared.attribute("blueBackground").toInt(&bok);
-     if(!bok) throw DataConversionException();
+     if(!bok) throw new DataConversionException();
      int green = shared.attribute("greenBackground").toInt(&bok);
-     if(!bok) throw DataConversionException();
+     if(!bok) throw new DataConversionException();
      panel->setDefaultBackgroundColor(ColorUtil::colorToString( QColor(red, green, blue)));
      panel->setBackgroundColor( QColor(red, green, blue));
- } catch (DataConversionException e) {
+ } catch (DataConversionException* e) {
      log->warn("Could not parse color attributes!");
- } catch (NullPointerException e) {  // considered normal if the attributes are not present
+ } catch (NullPointerException* e) {  // considered normal if the attributes are not present
  }
  if (shared.attribute("useDirectTurnoutControl") != nullptr)
  {
@@ -659,9 +659,9 @@ if ((a = shared.attribute("turnoutcirclesize")) != "")
     }
    }
   }
-  catch (ClassNotFoundException e)
+  catch (ClassNotFoundException* e)
   {
-   log->error("Exception while loading " + item.tagName() + ":" + e.getMessage());
+   log->error("Exception while loading " + item.tagName() + ":" + e->getMessage());
    result = false;
          //e.printStackTrace();
   }
@@ -675,23 +675,23 @@ if ((a = shared.attribute("turnoutcirclesize")) != "")
  try {
      // set first since other attribute use this setting
      panel->setAllEditable(getBooleanValue(shared.attribute("editable")));
- } catch (DataConversionException e) {
+ } catch (DataConversionException* e) {
      log->warn("unable to convert editable attribute");
- } catch (NullPointerException e) {  // considered normal if the attribute is not present
+ } catch (NullPointerException* e) {  // considered normal if the attribute is not present
      log->debug("missing editable attribute");
  }
  try {
      panel->setShowHelpBar(getBooleanValue(shared.attribute("showhelpbar")));
- } catch (DataConversionException e) {
+ } catch (DataConversionException* e) {
      log->warn("unable to convert showhelpbar attribute");
- } catch (NullPointerException e) {  // considered normal if the attribute is not present
+ } catch (NullPointerException* e) {  // considered normal if the attribute is not present
      log->debug("missing showhelpbar attribute");
  }
  try {
      panel->setAntialiasingOn(getBooleanValue(shared.attribute("antialiasing")));
- } catch (DataConversionException e) {
+ } catch (DataConversionException* e) {
      log->warn("unable to convert antialiasing attribute");
- } catch (NullPointerException e) {  // considered normal if the attribute is not present
+ } catch (NullPointerException* e) {  // considered normal if the attribute is not present
      log->debug("missing antialiasing attribute");
  }
 
@@ -700,9 +700,9 @@ if ((a = shared.attribute("turnoutcirclesize")) != "")
  try {
      bool value = getBooleanValue(shared.attribute("sliders"));
      slValue = value ? "both" : "none";
- } catch (DataConversionException e) {
+ } catch (DataConversionException* e) {
      log->warn("unable to convert sliders attribute");
- } catch (NullPointerException e) {  // considered normal if the attribute is not present
+ } catch (NullPointerException* e) {  // considered normal if the attribute is not present
      log->debug("missing sliders attribute");
  }
  if ((a = shared.attribute("scrollable")) != "") {
@@ -738,9 +738,9 @@ if ((a = shared.attribute("turnoutcirclesize")) != "")
           DispatcherFrame* df = (DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame");
           df->loadAtStartup();
       }
-  } catch (DataConversionException e) {
+  } catch (DataConversionException* e) {
       log->warn("unable to convert openDispatcher attribute");
-  } catch (NullPointerException e) {  // considered normal if the attribute is not present
+  } catch (NullPointerException* e) {  // considered normal if the attribute is not present
       log->debug("missing openDispatcher attribute");
   }
  }
@@ -758,5 +758,5 @@ if ((a = shared.attribute("turnoutcirclesize")) != "")
   return true;
  if(txt == "no" || txt == "false" )
   return false;
- throw DataConversionException();
+ throw new DataConversionException();
 }

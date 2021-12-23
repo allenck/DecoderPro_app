@@ -223,7 +223,7 @@
 //      qDebug() << "class not found: " << className;
 //      if(className == "AbstractProxyManagerXml" || className == "AbstractTurnoutManagerXml")
 //       qDebug() << "stop";
-      throw ClassNotFoundException(tr("metatype class '%1' not found").arg(className));
+      throw new ClassNotFoundException(tr("metatype class '%1' not found").arg(className));
     }
 }
 
@@ -388,7 +388,7 @@
                             }
                         });
                 cachedConstructor = c;
-            } catch (NoSuchMethodException e) {
+            } catch (NoSuchMethodException* e) {
                 throw (InstantiationException)
                     new InstantiationException(getName()).initCause(e);
             }

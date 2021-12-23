@@ -319,7 +319,7 @@ return routes;
   try
   {
    r = tm->provideRoute(sysName, userName);
-  } catch (IllegalArgumentException ex) {
+  } catch (IllegalArgumentException* ex) {
       log->error(tr("failed to create Route: %1").arg(sysName));
       return;
   }

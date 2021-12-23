@@ -454,8 +454,8 @@ void PointDetails::cancelNXButtonTimeOut(){
         removeSensorList();
         try {
             ((AbstractSensor*)getSensor())->setKnownState(sensorState);
-        } catch (JmriException ex){
-            log->error(ex.getMessage());
+        } catch (JmriException* ex){
+            log->error(ex->getMessage());
         }
         addSensorList();
     }

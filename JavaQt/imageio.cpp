@@ -627,7 +627,7 @@
                 ImageWriterSpi.class.getMethod("getFileSuffixes");
             writerMIMETypesMethod =
                 ImageWriterSpi.class.getMethod("getMIMETypes");
-        } catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException* e) {
             e.printStackTrace();
         }
     }
@@ -985,7 +985,7 @@
         try {
             writerSpiClass = Class.forName(writerNames[0], true,
                                            ClassLoader.getSystemClassLoader());
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException* e) {
             return null;
         }
 
@@ -1065,7 +1065,7 @@
         try {
             readerSpiClass = Class.forName(readerNames[0], true,
                                            ClassLoader.getSystemClassLoader());
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException* e) {
             return null;
         }
 
@@ -1247,7 +1247,7 @@
      */
     /*public*/ /*static*/ BufferedImage* ImageIO::read(File* input) /*throws IOException*/ {
         if (input == nullptr) {
-            throw IllegalArgumentException("input == null!");
+            throw new IllegalArgumentException("input == null!");
         }
         if (!input->canRead()) {
          log->error(tr("Can't read input file! %1").arg(input->getPath()));
@@ -1264,7 +1264,7 @@
 //        }
         QFile f(input->getPath());
         if(!f.exists())
-         throw FileNotFoundException();
+         throw  new FileNotFoundException();
         BufferedImage* bi = new BufferedImage();
         bi->load(input->getPath());
 

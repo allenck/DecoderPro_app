@@ -2842,7 +2842,7 @@ if (roads.length() == 0) {
  void Train::on_error(QString title, QString msg)
  {
   emit error(title,msg);
-  log->error(title, QVariant(msg));
+  log->error(title, new Throwable(msg));
  }
 
  /**
@@ -2991,8 +2991,8 @@ if (roads.length() == 0) {
 
    try {
        (new JsonManifest(this))->build();
-   } catch (IOException ex) {
-       log->error(tr("Unable to create JSON manifest %1").arg(ex.getLocalizedMessage()));
+   } catch (IOException* ex) {
+       log->error(tr("Unable to create JSON manifest %1").arg(ex->getLocalizedMessage()));
    }
    if (Setup::isGenerateCsvManifestEnabled()) {
        new TrainCsvManifest(this);
@@ -3071,8 +3071,8 @@ if (roads.length() == 0) {
          new TrainManifest(this);
          try {
              (new JsonManifest(this))->build();
-         } catch (IOException ex) {
-             log->error(tr("Unable to create JSON manifest %1").arg(ex.getLocalizedMessage()));
+         } catch (IOException* ex) {
+             log->error(tr("Unable to create JSON manifest %1").arg(ex->getLocalizedMessage()));
          }
          if (Setup::isGenerateCsvManifestEnabled()) {
              new TrainCsvManifest(this);

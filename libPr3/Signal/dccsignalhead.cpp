@@ -89,7 +89,7 @@ void DccSignalHead::configureHead(QString sys) {
     // also depending on how you view the NRMA spec, 1 - 2044 or 1 - 2048
     if (dccSignalDecoderAddress < NmraPacket::accIdLowLimit || dccSignalDecoderAddress > NmraPacket::accIdAltHighLimit) {
         log->error("SignalHead decoder address out of range: " + QString::number(dccSignalDecoderAddress));
-        throw IllegalArgumentException("SignalHead decoder address out of range: " + QString::number(dccSignalDecoderAddress));
+        throw new IllegalArgumentException("SignalHead decoder address out of range: " + QString::number(dccSignalDecoderAddress));
     }
 }
 

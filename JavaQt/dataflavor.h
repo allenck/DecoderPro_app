@@ -65,7 +65,7 @@ private:
     static /*private*/ DataFlavor* createConstant(QObject* rc, QString prn);
     static /*private*/ DataFlavor* createConstant(QString mt, QString prn);
     /*private*/ DataFlavor(QString primaryType, QString subType, MimeTypeParameterList* params, QObject* representationClass, QString humanPresentableName, QObject *parent = 0);
-    /*private*/ void initialize(QString mimeType, QString humanPresentableName, ClassLoader* classLoader) throw (MimeTypeParseException, ClassNotFoundException);
+    /*private*/ void initialize(QString mimeType, QString humanPresentableName, ClassLoader* classLoader) /*throw (MimeTypeParseException, ClassNotFoundException)*/;
     /*private*/ QString paramString();
 protected:
     /*protected*/ /*final*/ static QObject* tryToLoadClass(QString className,

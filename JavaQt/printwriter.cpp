@@ -153,7 +153,7 @@
      QFile* file = new QFile(fileName);
      if(!file->open(QIODevice::WriteOnly|QIODevice::Truncate|QIODevice::Text))
      {
-      throw FileNotFoundException("not opened:"+fileName + " " + file->errorString());
+      throw  new FileNotFoundException("not opened:"+fileName + " " + file->errorString());
      }
      psOut = new QTextStream(file);
      autoFlush = false;

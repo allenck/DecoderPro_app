@@ -72,7 +72,7 @@
         try {
             Sensor* sensor = InstanceManager::sensorManagerInstance()->provideSensor(sensorName);
             sendStatus(sensorName, sensor->getKnownState());
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             log->warn(tr("Failed to provide Sensor \"%1\" in sendStatus").arg(sensorName));
         }
     }

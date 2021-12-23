@@ -927,9 +927,9 @@ void SpeedometerFrame::stopSensor2_propertyChange(PropertyChangeEvent *)
  catch (FileNotFoundException ex)
  {
   log->error("File not found when writing: " + ex.getMessage());
- } catch (IOException ex)
+ } catch (IOException* ex)
  {
-  log->error("IO Exception when writing: " + ex.getMessage());
+  log->error("IO Exception when writing: " + ex->getMessage());
  }
 
  log->debug("...done");
@@ -1027,10 +1027,10 @@ void SpeedometerFrame::stopSensor2_propertyChange(PropertyChangeEvent *)
     }
    }
   }
- } catch (JDOMException ex) {
-     log->error("File invalid: " + ex.getMessage());
- } catch (IOException ex) {
-     log->error("Error reading file: " + ex.getMessage());
+ } catch (JDOMException* ex) {
+     log->error("File invalid: " + ex->getMessage());
+ } catch (IOException* ex) {
+     log->error("Error reading file: " + ex->getMessage());
  }
 
  log->debug("...done");

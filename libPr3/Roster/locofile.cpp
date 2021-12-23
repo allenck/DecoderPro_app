@@ -284,7 +284,7 @@ LocoFile::LocoFile(QObject *parent) :
         writeXML(file, doc);
 
     }
-    catch (IOException ex) {
+    catch (IOException* ex) {
         log->error("IOException"/*, ex*/);
     }
 }

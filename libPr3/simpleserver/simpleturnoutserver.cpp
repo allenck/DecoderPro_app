@@ -71,7 +71,7 @@
         try {
             sendStatus(statusString.mid(index),
                 InstanceManager::turnoutManagerInstance()->provideTurnout(statusString.mid(index).toUpper())->getKnownState());
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             log->warn(tr("Failed to provide Turnout \"%1\" in parseStatus").arg(statusString.mid(index).toUpper()));
         }
     }

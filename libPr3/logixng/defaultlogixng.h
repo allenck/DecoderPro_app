@@ -20,7 +20,7 @@ class DefaultLogixNG : public AbstractNamedBean, public LogixNG
   /*public*/ Base* getParent() override;
   /*public*/ void setParent(Base* parent) override;
   /*public*/ QString getBeanType() override;
-  /*public*/ void setState(int s) throw (JmriException) override;
+  /*public*/ void setState(int s) /*throw (JmriException)*/ override;
   /*public*/ int getState() override;
   /*public*/ QString getShortDescription(QLocale locale)override;
   /*public*/ QString getLongDescription(QLocale locale)override;

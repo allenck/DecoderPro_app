@@ -33,7 +33,7 @@ AwtWindowProperties::AwtWindowProperties(QObject *parent) : QObject(parent)
             {
              QFile* f = new QFile(file->getPath());
              if(!f->open(QIODevice::ReadOnly))
-              throw IOException(tr("%1 not open").arg(filename));
+              throw new IOException(tr("%1 not open").arg(filename));
              QTextStream* bufferedReader = new QTextStream(f);
                 _mProperties->load(bufferedReader);
             }
@@ -49,7 +49,7 @@ AwtWindowProperties::AwtWindowProperties(QObject *parent) : QObject(parent)
             {
              QFile* f = new QFile(file->getPath());
              if(!f->open(QIODevice::WriteOnly))
-              throw IOException(tr("%1 not open").arg(_mFilename));
+              throw new IOException(tr("%1 not open").arg(_mFilename));
              QTextStream* bufferedWriter = new QTextStream(f);
                 _mProperties->store(bufferedWriter, "All Ant Windows Properties");           // NOI18N
             }

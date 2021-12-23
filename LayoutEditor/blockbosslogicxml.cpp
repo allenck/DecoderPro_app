@@ -378,9 +378,9 @@ QDomElement BlockBossLogicXml::storeSensor(QString name)
     bb->setComment(c);
    }
 
-  } catch (DataConversionException e)
+  } catch (DataConversionException* e)
   {
-   log->warn("error reading blocks from file"+e.getMessage());
+   log->warn("error reading blocks from file"+e->getMessage());
    result = false;
   }
   catch (IllegalArgumentException e)
@@ -393,7 +393,7 @@ QDomElement BlockBossLogicXml::storeSensor(QString name)
     bb->retain();
     bb->start();
    }
-   catch (NullPointerException e)
+   catch (NullPointerException* e)
    {
     log->error("An error occured trying to start the signal logic " + bb->getDrivenSignal());
     result = false;

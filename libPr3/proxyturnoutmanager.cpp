@@ -245,7 +245,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
     return ((TurnoutManager*)getMgr(0))->allowMultipleAdditions(systemName);
 }
 
-/*public*/ QString ProxyTurnoutManager::createSystemName(QString curAddress, QString prefix)const throw (JmriException)
+/*public*/ QString ProxyTurnoutManager::createSystemName(QString curAddress, QString prefix)const /*throw (JmriException)*/
 {
  for (int i=0; i<nMgrs(); i++)
  {
@@ -255,7 +255,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
    {
     return ((AbstractTurnoutManager*)getMgr(i))->createSystemName(curAddress, prefix);
    }
-   catch (JmriException ex)
+   catch (JmriException* ex)
    {
     throw ex;
    }
@@ -264,7 +264,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
  throw new JmriException("Turnout Manager could not be found for System Prefix " + prefix);
 }
 
-/*public*/ QString ProxyTurnoutManager::getNextValidAddress(QString curAddress, QString prefix) const throw (JmriException)
+/*public*/ QString ProxyTurnoutManager::getNextValidAddress(QString curAddress, QString prefix) const /*throw (JmriException)*/
 {
  for (int i=0; i<nMgrs(); i++)
  {
@@ -274,7 +274,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
    {
     return ((AbstractTurnoutManager*)getMgr(i))->getNextValidAddress(curAddress, prefix);
    }
-   catch (JmriException ex)
+   catch (JmriException* ex)
    {
     throw ex;
    }
@@ -283,23 +283,23 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
  return NULL;
 }
 
-/*public*/ void ProxyTurnoutManager::setDefaultClosedSpeed(QString speed) const throw (JmriException) {
+/*public*/ void ProxyTurnoutManager::setDefaultClosedSpeed(QString speed) const /*throw (JmriException)*/ {
     for (int i=0; i<nMgrs(); i++) {
         try {
             ((AbstractTurnoutManager*)getMgr(i))->setDefaultClosedSpeed(speed);
-        } catch (JmriException ex) {
-            log.error(ex.toString());
+        } catch (JmriException* ex) {
+            log.error(ex->toString());
             throw ex;
         }
     }
 }
 
-/*public*/ void ProxyTurnoutManager::setDefaultThrownSpeed(QString speed) const throw (JmriException){
+/*public*/ void ProxyTurnoutManager::setDefaultThrownSpeed(QString speed) const /*throw (JmriException)*/{
     for (int i=0; i<nMgrs(); i++) {
         try {
             ((AbstractTurnoutManager*)getMgr(i))->setDefaultThrownSpeed(speed);
-        } catch (JmriException ex) {
-            log.error(ex.toString());
+        } catch (JmriException* ex) {
+            log.error(ex->toString());
             throw ex;
         }
     }

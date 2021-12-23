@@ -54,7 +54,7 @@ FileLocationsPreferences::FileLocationsPreferences()
           //QString message = "ScriptsIsNotDir"; // NOI18N
           scripts = FileUtil::getAbsoluteFilename(scripts);
           if(!QDir(scripts).exists())
-           throw FileNotFoundException(scripts);
+           throw  new FileNotFoundException(scripts);
           throw  InitializationException(tr("Scripts location \"%1\" is not a directory.").arg(scripts), QString("Scripts location \"%1\" is not a directory.").arg(scripts),NULL);
       }
   } catch (FileNotFoundException ex) {
@@ -76,7 +76,7 @@ FileLocationsPreferences::FileLocationsPreferences()
        //QString message = "ScriptsIsNotDir"; // NOI18N
        jmriprogram = FileUtil::getAbsoluteFilename(jmriprogram);
        if(!QDir(jmriprogram).exists())
-        throw FileNotFoundException(jmriprogram);
+        throw  new FileNotFoundException(jmriprogram);
        throw InitializationException(tr("JmriProgram location \"%1\" is not a directory.").arg(jmriprogram), QString("JmriProgram location \"%1\" is not a directory.").arg(jmriprogram),NULL);
    }
   }

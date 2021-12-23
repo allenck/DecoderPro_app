@@ -207,7 +207,7 @@
 }
 
 //@Override
-/*public*/ bool JmriConfigurationManager::load(File* file)  throw (JmriException)
+/*public*/ bool JmriConfigurationManager::load(File* file)  /*throw (JmriException)*/
 {
     return this->load(file, false);
 }
@@ -309,7 +309,7 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
  catch (/*URISyntax*/Exception ex)
  {
      log->error(tr("Unable to get File* for %1").arg(file.toDisplayString()));
-     throw JmriException(ex.getMessage()+ex.getLocalizedMessage());
+     throw new JmriException(ex.getMessage()+ex.getLocalizedMessage());
  }
  // make this url the default "Store Panels..." file
  JFileChooser* ufc = StoreXmlUserAction::getUserFileChooser();
@@ -435,7 +435,7 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
 }
 
 //@Override
-/*public*/ bool JmriConfigurationManager::loadDeferred(File* file)  throw (JmriException)
+/*public*/ bool JmriConfigurationManager::loadDeferred(File* file)  /*throw (JmriException)*/
 {
     return this->legacy->loadDeferred(file);
 }

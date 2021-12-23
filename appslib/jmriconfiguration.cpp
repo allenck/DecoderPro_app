@@ -172,7 +172,7 @@ JmriConfiguration::JmriConfiguration() : AuxiliaryConfiguration() {
   }
 //      }
  }
- catch (IOException ex)
+ catch (IOException* ex)
  {
   log->error(tr("Cannot write %1").arg(file->getPath()));
 //  }
@@ -228,9 +228,9 @@ JmriConfiguration::JmriConfiguration() : AuxiliaryConfiguration() {
      return true;
     }
    }
-   catch (IOException ex) //| SAXException | DOMException ex)
+   catch (IOException* ex) //| SAXException | DOMException ex)
    {
-    log->error(tr("Cannot remove %1 from %2").arg(elementName).arg(file->toString()).arg(ex.getMessage()));
+    log->error(tr("Cannot remove %1 from %2").arg(elementName).arg(file->toString()).arg(ex->getMessage()));
    }
   }
 #endif
@@ -251,7 +251,7 @@ JmriConfiguration::JmriConfiguration() : AuxiliaryConfiguration() {
    } else {
        this->setPrivateBackedUp(true);
    }
-  } catch (IOException ex) {
+  } catch (IOException* ex) {
    log->error(tr("Error backing up %1").arg(file->toString()/*, ex*/));
   }
  }

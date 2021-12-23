@@ -615,7 +615,7 @@ void JLabel::init()
         return key;
     }
     else {
-        throw IllegalArgumentException(message);
+        throw new IllegalArgumentException(message);
     }
 }
 

@@ -29,11 +29,11 @@
         try {
             readFile(getDefaultIdTagFileName());
         }
-        catch (JDOMException ex) {
-            log->error(tr("Exception during IdTag file reading: %1").arg(ex.getMessage()));
+        catch (JDOMException* ex) {
+            log->error(tr("Exception during IdTag file reading: %1").arg(ex->getMessage()));
         }
-        catch ( IOException ex) {
-         log->error(tr("Exception during IdTag file reading: %1").arg(ex.getMessage()));
+        catch ( IOException* ex) {
+         log->error(tr("Exception during IdTag file reading: %1").arg(ex->getMessage()));
         }
     }
 
@@ -70,8 +70,8 @@
            } else {
               file = new File(fileName);
            }
-       } catch (IOException ex) {
-          log->error(tr("Exception while creating IdTag file, may not be complete: %1").arg(ex.getMessage()));
+       } catch (IOException* ex) {
+          log->error(tr("Exception while creating IdTag file, may not be complete: %1").arg(ex->getMessage()));
        }
        return file;
    }

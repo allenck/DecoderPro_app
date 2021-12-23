@@ -322,7 +322,7 @@
         if (l.size() > 0) {
             try {
                 _dccAddress = l.at(0)->getDccLocoAddress();
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException* e) {
                 return false;
             }
         } else {
@@ -334,7 +334,7 @@
             try {
                 int num = numId.toInt();
                 _dccAddress = new DccLocoAddress(num, isLong);
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException* e) {
                 return false;
             }
         }
@@ -392,7 +392,7 @@
                 _dccAddress = new DccLocoAddress(num, isLong);
                 _trainId = _dccAddress->toString();
            }
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException* e) {
             _dccAddress = nullptr;
             return false;
         }
@@ -424,7 +424,7 @@
 /*public*/ QString Warrant::setThrottleFactor(QString sFactor) {
     try {
         _throttleFactor =sFactor.toFloat();
-    } catch (NumberFormatException nfe) {
+    } catch (NumberFormatException* nfe) {
         return tr("Throttle adjustment factor must be a decimal number.");
     }
     return nullptr;
@@ -691,7 +691,7 @@
             break;
         default:
             log->error(tr("Unknown speed interpretation %1").arg(speedMap->getInterpretation()));
-            throw IllegalArgumentException("Unknown speed interpretation " + QString::number(speedMap->getInterpretation()));
+            throw new IllegalArgumentException("Unknown speed interpretation " + QString::number(speedMap->getInterpretation()));
     }
     return tr("%1 (%2%3)").arg(speedType).arg(qRound(speed)).arg(units);
 }

@@ -281,12 +281,12 @@
                         try {
                          bool ok;
                             index = (value.attribute("index")).toInt(&ok);
-                            if(!ok) throw DataConversionException();
+                            if(!ok) throw new DataConversionException();
                             x = (value.attribute("x")).toFloat(&ok);
-                            if(!ok) throw DataConversionException();
+                            if(!ok) throw new DataConversionException();
                             y = (value.attribute("y")).toFloat(&ok);
-                            if(!ok) throw DataConversionException();
-                        } catch (DataConversionException e) {
+                            if(!ok) throw new DataConversionException();
+                        } catch (DataConversionException* e) {
                             log->error("failed to convert controlpoint coordinates or index attributes");
                         }
                         lv->setBezierControlPoint(QPointF(x, y), index);
@@ -558,7 +558,7 @@
                         QString a =  decorationElement.attribute("value");
                         QString eValue = (a != "") ? a : "";
                         decorations.insert(eName, eValue);
-                    } catch (NullPointerException e) {  // considered normal if the attribute is not present
+                    } catch (NullPointerException* e) {  // considered normal if the attribute is not present
                     }
                 }
             }

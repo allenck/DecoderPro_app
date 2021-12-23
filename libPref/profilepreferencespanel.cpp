@@ -383,7 +383,7 @@
 //        try {
   ProfileManager::getDefault()->addSearchPath(/*chooser.getSelectedFile()*/new File(dir));
 // TODO:  searchPaths->setSelectedValue(chooser.getSelectedFile(), true);
-//        } catch (IOException ex) {
+//        } catch (IOException* ex) {
 //            log.warn("Unable to write profiles while adding search path {}", chooser.getSelectedFile().getPath(), ex);
 //            JOptionPane.showMessageDialog(this,
 //                    tr("ProfilePreferencesPanel.btnAddSearchPath.errorMessage",
@@ -403,7 +403,7 @@
   File* path = new File(value.toString());
 //        try {
             ProfileManager::getDefault()->removeSearchPath(path);
-//        } catch (IOException ex) {
+//        } catch (IOException* ex) {
 //            log.warn("Unable to write profiles while removing search path {}", path.getPath(), ex);
 //            JOptionPane.showMessageDialog(this,
 //                    tr("ProfilePreferencesPanel.btnRemoveSearchPath.errorMessage", path.getPath(), ex.getLocalizedMessage()),
@@ -509,7 +509,7 @@
 //                    JOptionPane.INFORMATION_MESSAGE);
       QMessageBox::information(this, tr("Profile exported"), tr("Profile \"%1\" exported to %2.").arg(p->getName()).arg( chooser->getSelectedFile()->getName()));
   }
-  catch (JDOMException ex)
+  catch (JDOMException* ex)
   {
       log->warn(tr("Unable to export profile \"%1\" to %2").arg(p->getName()).arg(chooser->getSelectedFile()->getPath()/*, ex*/));
 //      JOptionPane.showMessageDialog(this,
@@ -519,7 +519,7 @@
 //                      ex.getLocalizedMessage()),
 //              tr("ProfilePreferencesPanel.btnExportProfile.errorTitle"),
 //              JOptionPane.ERROR_MESSAGE);
-      QMessageBox::critical(this, tr("Error exporting profile"), tr("Unable to export profile {0} to {1}.\n{2}\nSee logs for more details.").arg(p->getName()).arg(chooser->getSelectedFile()->getPath()).arg( ex.getLocalizedMessage()));
+      QMessageBox::critical(this, tr("Error exporting profile"), tr("Unable to export profile %1 to %2.\n%3\nSee logs for more details.").arg(p->getName()).arg(chooser->getSelectedFile()->getPath()).arg( ex->getLocalizedMessage()));
   }
  }
 #endif
@@ -530,7 +530,7 @@
         Profile* p = ProfileManager::getDefault()->getProfiles(profilesTbl->currentIndex().row());
         ProfileManager::getDefault()->setNextActiveProfile(p);
         ProfileManager::getDefault()->saveActiveProfile(p, ProfileManager::getDefault()->isAutoStartActiveProfile());
-//    } catch (IOException ex) {
+//    } catch (IOException* ex) {
 //        log.error("Unable to save profile preferences", ex);
 //        JOptionPane.showMessageDialog(this, "Usable to save profile preferences.\n" + ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 //    }
@@ -611,7 +611,7 @@
   ProfileManager::getDefault()->addProfile(p);
   int index = ProfileManager::getDefault()->getAllProfiles().indexOf(p);
 //  profilesTbl->setRowSelectionInterval(index, index);
-//  } catch (IOException ex) {
+//  } catch (IOException* ex) {
 //    log.warn("{} is not a profile directory", chooser.getSelectedFile());
 //    JOptionPane.showMessageDialog(this,
 //            tr("ProfilePreferencesPanel.btnOpenExistingProfile.errorMessage", chooser.getSelectedFile().getPath()),
@@ -625,7 +625,7 @@
     ProfileManager::getDefault()->setAutoStartActiveProfile(this->chkStartWithActiveProfile->isChecked());
 //    try {
         ProfileManager::getDefault()->saveActiveProfile();
-//    } catch (IOException ex) {
+//    } catch (IOException* ex) {
 //        log.error("Unable to save active profile.", ex);
 //    }
 }

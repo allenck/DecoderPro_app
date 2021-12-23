@@ -196,7 +196,7 @@ JmriPreferencesProvider::JmriPreferencesProvider(File* path, bool shared)
   {
    this->root->sync();
   }
-  catch (BackingStoreException ex)
+  catch (BackingStoreException* ex)
   {
    log->error("Unable to read preferences", ex);
   }
@@ -281,7 +281,7 @@ File* JmriPreferencesProvider::getPreferencesFile()
           log->debug("Starting profile with new private preferences.");
       }
      }
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         log->debug("Copying existing private configuration failed.");
     }
    }
@@ -329,7 +329,7 @@ File* JmriPreferencesProvider::getPreferencesFile()
  {
   sync();
  }
- catch (BackingStoreException e)
+ catch (BackingStoreException* e)
  {
   log->error(tr("Unable to sync on creation of node %1").arg(name), e);
  }
@@ -342,7 +342,7 @@ File* JmriPreferencesProvider::getPreferencesFile()
  try
  {
   flush();
- } catch (BackingStoreException e)
+ } catch (BackingStoreException* e)
  {
   log->error(tr("Unable to flush after putting %1").arg(key), e);
  }
@@ -361,7 +361,7 @@ File* JmriPreferencesProvider::getPreferencesFile()
  {
  flush();
  }
- catch (BackingStoreException e) {
+ catch (BackingStoreException* e) {
      log->error(tr("Unable to flush after removing %1").arg(key), e);
  }
 }
@@ -425,7 +425,7 @@ return QStringList(children->keys());
    QTextStream* fis = new QTextStream(f);
    p->load(fis);
   }
-  else throw IOException();
+  else throw new IOException();
 
   QString* sb = new QString();
   getPath(sb);
@@ -447,7 +447,7 @@ return QStringList(children->keys());
    }
   }
  } catch (IOException e) {
-     throw BackingStoreException(e.getMessage());
+     throw new BackingStoreException(e.getMessage());
  }
 // }
 }

@@ -211,8 +211,8 @@
         LayoutTurnout::TurnoutType type = LayoutTurnout::TurnoutType::NONE;
         bool ok;
         try {
-            x = element.attribute("xcen").toFloat(&ok); if(!ok) throw DataConversionException();;
-            y = element.attribute("ycen").toFloat(&ok); if(!ok) throw DataConversionException();;
+            x = element.attribute("xcen").toFloat(&ok); if(!ok) throw new DataConversionException();;
+            y = element.attribute("ycen").toFloat(&ok); if(!ok) throw new DataConversionException();;
             //type = tTypeEnumMap->inputFromAttribute(element.attribute("type"));
             QMetaEnum mett = QMetaEnum::fromType<LayoutTurnout::TurnoutType>();
             QString ts = element.attribute("type");
@@ -220,18 +220,18 @@
             if(!ok)
             {
              type  = (LayoutTurnout::TurnoutType)ts.toInt(&ok);
-             if(!ok) throw DataConversionException();
+             if(!ok) throw new DataConversionException();
             }
-        } catch (DataConversionException e) {
+        } catch (DataConversionException* e) {
             log->error("failed to convert layoutturnout attribute");
         }
 
         int version = 1;
         try {
             if (element.attribute("ver", "1") != nullptr) {
-                version = element.attribute("ver").toInt(&ok); if(!ok) throw DataConversionException();;
+                version = element.attribute("ver").toInt(&ok); if(!ok) throw new DataConversionException();;
             }
-        } catch (DataConversionException e) {
+        } catch (DataConversionException* e) {
             log->error("failed to convert layoutturnout version attribute");
         }
 
@@ -316,9 +316,9 @@
             l->setSecondTurnout(a);
             try {
                 l->setSecondTurnoutInverted(element.attribute("secondturnoutinverted")=="true");
-            } catch (DataConversionException e1) {
+            } catch (DataConversionException* e1) {
                 log->warn("unable to convert layout turnout secondturnoutinverted attribute");
-            } catch (NullPointerException e) {  // considered normal if the attribute is not present
+            } catch (NullPointerException* e) {  // considered normal if the attribute is not present
             }
         }
 
@@ -403,64 +403,64 @@
         if (a != nullptr) {
             int continuing = Turnout::CLOSED;
             try {
-                continuing = element.attribute("continuing").toInt(&ok); if(!ok) throw DataConversionException();;
-            } catch (DataConversionException e) {
+                continuing = element.attribute("continuing").toInt(&ok); if(!ok) throw new DataConversionException();;
+            } catch (DataConversionException* e) {
                 log->error("failed to convert continuingsense attribute");
             }
             l->setContinuingSense(continuing);
         }
         try {
             l->setDisabled(element.attribute("disabled")=="true");
-        } catch (DataConversionException e1) {
+        } catch (DataConversionException* e1) {
             log->warn("unable to convert layout turnout disabled attribute");
-        } catch (NullPointerException e) {  // considered normal if the attribute is not present
+        } catch (NullPointerException* e) {  // considered normal if the attribute is not present
         }
         try {
             l->setDisableWhenOccupied(element.attribute("disableWhenOccupied")=="true");
-        } catch (DataConversionException e1) {
+        } catch (DataConversionException* e1) {
             log->warn("unable to convert layout turnout disableWhenOccupied attribute");
-        } catch (NullPointerException e) {  // considered normal if the attribute is not present
+        } catch (NullPointerException* e) {  // considered normal if the attribute is not present
         }
         try {
             lv->setHidden(element.attribute("hidden")== "true");
-        } catch (DataConversionException e1) {
+        } catch (DataConversionException* e1) {
             log->warn("unable to convert layout turnout hidden attribute");
-        } catch (NullPointerException e) {  // considered normal if the attribute is not present
+        } catch (NullPointerException* e) {  // considered normal if the attribute is not present
         }
 
         if (version == 2) {
             try {
-                x = element.attribute("xa").toFloat(&ok); if(!ok) throw DataConversionException();;
-                y = element.attribute("ya").toFloat(&ok); if(!ok) throw DataConversionException();;
+                x = element.attribute("xa").toFloat(&ok); if(!ok) throw new DataConversionException();;
+                y = element.attribute("ya").toFloat(&ok); if(!ok) throw new DataConversionException();;
                 lv->setCoordsA(QPointF(x, y));
-            } catch (DataConversionException e) {
+            } catch (DataConversionException* e) {
                 log->error("failed to convert layoutturnout b coords attribute");
-            } catch (NullPointerException e) {
+            } catch (NullPointerException* e) {
                 //can be ignored as panel file may not support method
             }
         }
         try {
-            x = element.attribute("xb").toFloat(&ok); if(!ok) throw DataConversionException();;
-            y = element.attribute("yb").toFloat(&ok); if(!ok) throw DataConversionException();;
+            x = element.attribute("xb").toFloat(&ok); if(!ok) throw new DataConversionException();;
+            y = element.attribute("yb").toFloat(&ok); if(!ok) throw new DataConversionException();;
             lv->setCoordsB(QPointF(x, y));
-        } catch (DataConversionException e) {
+        } catch (DataConversionException* e) {
             log->error("failed to convert layoutturnout b coords attribute");
         }
         try {
-            x = element.attribute("xc").toFloat(&ok); if(!ok) throw DataConversionException();;
-            y = element.attribute("yc").toFloat(&ok); if(!ok) throw DataConversionException();;
+            x = element.attribute("xc").toFloat(&ok); if(!ok) throw new DataConversionException();;
+            y = element.attribute("yc").toFloat(&ok); if(!ok) throw new DataConversionException();;
             lv->setCoordsC(QPointF(x, y));
-        } catch (DataConversionException e) {
+        } catch (DataConversionException* e) {
             log->error("failed to convert layoutturnout c coords attribute");
         }
         if (version == 2) {
             try {
-                x = element.attribute("xd").toFloat(&ok); if(!ok) throw DataConversionException();;
-                y = element.attribute("yd").toFloat(&ok); if(!ok) throw DataConversionException();;
+                x = element.attribute("xd").toFloat(&ok); if(!ok) throw new DataConversionException();;
+                y = element.attribute("yd").toFloat(&ok); if(!ok) throw new DataConversionException();;
                 lv->setCoordsD(QPointF(x, y));
-            } catch (DataConversionException e) {
+            } catch (DataConversionException* e) {
                 log->error("failed to convert layoutturnout c coords attribute");
-            } catch (NullPointerException e) {
+            } catch (NullPointerException* e) {
                 //can be ignored as panel file may not support method
             }
         }

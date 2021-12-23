@@ -694,7 +694,7 @@
         if (retVal == JFileChooser::APPROVE_OPTION) {
             try {
                 soundFile->setText(soundChooser->getSelectedFile()->getCanonicalPath());
-            } catch (IOException e) {
+            } catch (IOException* e) {
                 log->error("exception setting sound file: ", e);
             }
         }
@@ -713,7 +713,7 @@
         if (retVal == JFileChooser::APPROVE_OPTION) {
             try {
                 scriptFile->setText(scriptChooser->getSelectedFile()->getCanonicalPath());
-            } catch (IOException e) {
+            } catch (IOException* e) {
                 log->error("exception setting script file: ", e);
             }
         }
@@ -869,7 +869,7 @@
             try {
                 sName = routeManager->makeSystemName(sName);
                 g = routeManager->provideRoute(sName, uName);
-            } catch (IllegalArgumentException ex) {
+            } catch (IllegalArgumentException* ex) {
                 g = nullptr; // for later check:
             }
         }

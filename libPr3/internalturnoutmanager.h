@@ -13,7 +13,7 @@ public:
  /*public*/ InternalTurnoutManager(InternalSystemConnectionMemo* memo, QObject* parent = nullptr);
  /*public*/ SystemConnectionMemo* getMemo() const override;
  /*public*/ bool allowMultipleAdditions(QString systemName) override;
- /*public*/ QString createSystemName(QString curAddress, QString prefix) const throw (JmriException) override;
+ /*public*/ QString createSystemName(QString curAddress, QString prefix) const /*throw (JmriException)*/ override;
  /*public*/ QStringList getValidOperationTypes() override;
  /*public*/ QString getEntryToolTip() override;
  /*public*/ QString getNamedBeanClass()const override {

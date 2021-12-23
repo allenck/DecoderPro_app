@@ -369,7 +369,7 @@ bool ConditionalListEdit::validateTimeReference(int actionType, QString ref) {
         if(!ok) throw NumberFormatException();
         return rslt;
         // return true if ref is decimal within allowed range
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException* e) {
         QString memRef = ref;
         if (ref.length() > 1 && ref.at(0) == '@') {
             memRef = ref.mid(1);
@@ -391,7 +391,7 @@ bool ConditionalListEdit::validateTimeReference(int actionType, QString ref) {
                 bool ok;
                 validateTime(actionType,  m->getValue().toFloat(&ok));
                 if(!ok) throw NumberFormatException();
-            } catch (NumberFormatException ex) {
+            } catch (NumberFormatException* ex) {
                 JOptionPane::showMessageDialog(
                         NULL, tr("Memory variable \"%1\" currently does not contain a numeric value.\nWhen triggered the action cannot be performed until this value is corrected!").arg(memRef), tr("Warning"), JOptionPane::WARNING_MESSAGE);   // NOI18N
             }
@@ -1351,13 +1351,13 @@ void ConditionalListEdit::cancelConditionalPressed(JActionEvent* /*e*/) {
     }
     try {
         ((DefaultLogix*)_curLogix)->activateLogix();
-    } catch (NumberFormatException nfe) {
-        if (log->isDebugEnabled()) log->error("NumberFormatException on activation of Logix "+nfe.getMessage());
+    } catch (NumberFormatException* nfe) {
+        if (log->isDebugEnabled()) log->error("NumberFormatException on activation of Logix "+nfe->getMessage());
         //nfe.printStackTrace();
 //        javax.swing.JOptionPane.showMessageDialog(editLogixFrame,
 //                tr("Error4")+nfe.toString()+tr("Error7"),
 //                tr("ErrorTitle"), javax.swing.JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(_editLogixFrame, tr("Error"), tr("The following error occurred when activating this Logix.")+nfe.getMessage()+tr("Please correct the reference or delete the offending Conditional or Logix."));
+        QMessageBox::critical(_editLogixFrame, tr("Error"), tr("The following error occurred when activating this Logix.")+nfe->getMessage()+tr("Please correct the reference or delete the offending Conditional or Logix."));
     }
     // when user uses the escape key and returns to editing, interaction with
     // window closing event create strange environment
@@ -3903,10 +3903,10 @@ void ConditionalListEdit::setFileLocation(JActionEvent* e)
   // set selected file location in data string
   try {
       _longActionString->setText(FileUtil::getPortableFilename(currentChooser->getSelectedFile()->getCanonicalPath()));
-  } catch (IOException ex)
+  } catch (IOException* ex)
   {
    if ( log->isDebugEnabled()) {
-        log->error("exception setting file location: " + ex.getMessage());  // NOI18N
+        log->error("exception setting file location: " + ex->getMessage());  // NOI18N
    }
    _longActionString->setText("");
   }

@@ -358,8 +358,8 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
  // write it out
  try {
      index->writeFile(DECODER_INDEX_FILE_NAME, ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile")), &sbox);
- } catch (IOException ex) {
-     log->error(tr("Error writing new decoder index file: %1").arg(ex.getMessage()));
+ } catch (IOException* ex) {
+     log->error(tr("Error writing new decoder index file: %1").arg(ex->getMessage()));
  }
 }
 

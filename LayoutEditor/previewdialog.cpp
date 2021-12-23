@@ -444,7 +444,7 @@ class MemoryExceptionHandler implements Thread.UncaughtExceptionHandler {
                     //modeless is for ImageEditor dragging
                     try {
                         image = new DragJLabel(new DataFlavor(ImageIndexEditor::IconDataFlavorMime));
-                    } catch (ClassNotFoundException cnfe) {
+                    } catch (ClassNotFoundException* cnfe) {
                         //cnfe.printStackTrace();
                         image = new DragJLabel(NULL);
                     }

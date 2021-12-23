@@ -35,7 +35,7 @@
 }
 
 //@Override
-/*public*/ bool StartupPauseModelXml::load(QDomElement shared, QDomElement perNode) throw (JmriException) {
+/*public*/ bool StartupPauseModelXml::load(QDomElement shared, QDomElement perNode) /*throw (JmriException)*/ {
     bool result = false;
     StartupPauseModel* model = new StartupPauseModel();
     int delay = 0;

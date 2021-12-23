@@ -203,7 +203,7 @@ FileOutputStream::FileOutputStream()
 //            security.checkWrite(name);
 //        }
         if (name.isEmpty()) {
-            throw NullPointerException();
+            throw new NullPointerException();
         }
 //        this.fd = new FileDescriptor();
         this->append = append;

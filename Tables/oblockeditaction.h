@@ -168,8 +168,8 @@ class OBTSaveItemAction3 : public AbstractAction
       QString speed = (QString) act->speedField->getSelectedItem();
       try {
           ((Block*)act->bean)->setBlockSpeed(speed);
-      } catch (JmriException ex) {
-          JOptionPane::showMessageDialog(nullptr, ex.getMessage() + "\n" + speed);
+      } catch (JmriException* ex) {
+          JOptionPane::showMessageDialog(nullptr, ex->getMessage() + "\n" + speed);
           return;
       }
       if (!act->speedList.contains(speed) && !speed.contains("Global")) {

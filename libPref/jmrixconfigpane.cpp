@@ -225,15 +225,15 @@
      //classConnectionList[n++] = config;
      classConnectionList.replace(n++,config);
     }
-    catch (NullPointerException e)
+    catch (NullPointerException* e)
     {
      Logger::error(QString("Attempt to load %1 failed.").arg(className));
     }
-//    catch (ClassNotFoundException | InstantiationException | IllegalAccessException e)
+//    catch (ClassNotFoundException* | InstantiationException | IllegalAccessException e)
 //    {
 //     log->debug("Attempt to load {} failed: {}.", className, e);
 //    }
-    catch (ClassNotFoundException e)
+    catch (ClassNotFoundException* e)
     {
      Logger::error(QString("Attempt to load %1 failed.").arg(className));
     }
@@ -344,21 +344,21 @@ void JmrixConfigPane::On_modeBox_currentIndexChanged(int ix)
      modeBox->setCurrentIndex(1);
     }
    }
-   catch (NullPointerException e)
+   catch (NullPointerException* e)
    {
-     log->warn(tr("Attempt to load %1 failed: %2").arg(classConnectionNameList1).arg(e.getMessage()));
+     log->warn(tr("Attempt to load %1 failed: %2").arg(classConnectionNameList1).arg(e->getMessage()));
    }
-   catch (ClassNotFoundException  e)
+   catch (ClassNotFoundException*  e)
    {
-     log->warn(tr("Attempt to load %1 failed: %2").arg(classConnectionNameList1).arg(e.getMessage()));
+     log->warn(tr("Attempt to load %1 failed: %2").arg(classConnectionNameList1).arg(e->getMessage()));
    }
-   catch (InstantiationException  e)
+   catch (InstantiationException*  e)
    {
-     log->warn(tr("Attempt to load %1 failed: %2").arg(classConnectionNameList1).arg(e.getMessage()));
+     log->warn(tr("Attempt to load %1 failed: %2").arg(classConnectionNameList1).arg(e->getMessage()));
    }
-   catch (IllegalAccessException e)
+   catch (IllegalAccessException* e)
    {
-     log->warn(tr("Attempt to load %1 failed: %2").arg(classConnectionNameList1).arg(e.getMessage()));
+     log->warn(tr("Attempt to load %1 failed: %2").arg(classConnectionNameList1).arg(e->getMessage()));
    }
   }
   if (p->getComboBoxLastSelection(manuBox->currentText()) != NULL)

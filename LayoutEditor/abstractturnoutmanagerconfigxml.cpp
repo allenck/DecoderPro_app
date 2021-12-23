@@ -230,9 +230,9 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
    }
   }
  }
- catch (JmriException ex)
+ catch (JmriException* ex)
  {
-  log->error(ex.getMessage());
+  log->error(ex->getMessage());
  }
 
  try
@@ -246,9 +246,9 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
    }
   }
  }
- catch (JmriException ex)
+ catch (JmriException* ex)
  {
-  log->error(ex.getMessage());
+  log->error(ex->getMessage());
  }
 
  for (int i=0; i<turnoutList.size(); i++)
@@ -305,7 +305,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
    {
     ((AbstractTurnout*)t)->provideFirstFeedbackSensor(a);
    }
-   catch (JmriException e)
+   catch (JmriException* e)
    {
     result = false;
    }
@@ -317,7 +317,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
    {
     ((AbstractTurnout*)t)->provideSecondFeedbackSensor(a);
    }
-   catch (JmriException e)
+   catch (JmriException* e)
    {
     result = false;
    }
@@ -445,9 +445,9 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
     }
    }
   }
-  catch (JmriException ex)
+  catch (JmriException* ex)
   {
-    log->error(ex.toString());
+    log->error(ex->toString());
   }
 
   try
@@ -462,9 +462,9 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
     }
    }
   }
-  catch (JmriException ex)
+  catch (JmriException* ex)
   {
-   log->error(ex.toString());
+   log->error(ex->toString());
   }
  }
  return result;

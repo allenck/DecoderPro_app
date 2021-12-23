@@ -7,7 +7,7 @@ class LnPr2PowerManager : public LnPowerManager
 {
 public:
  /*public*/ LnPr2PowerManager(LocoNetSystemConnectionMemo* memo, QObject* parent = nullptr);
- /*public*/ void setPower(int v) throw (JmriException);
+ /*public*/ void setPower(int v) /*throw (JmriException)*/;
  /*public*/ void message(LocoNetMessage* m);
 
 public slots:
@@ -20,7 +20,7 @@ private:
  SlotManager* sm;
  LnTrafficController* tc;
  LocoNetSystemConnectionMemo* memo;
- /*private*/ void checkOpsProg() throw (JmriException);
+ /*private*/ void checkOpsProg() /*throw (JmriException)*/;
 
 };
 

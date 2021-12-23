@@ -79,7 +79,7 @@ this->jtss = jtss;
     jtss->connection->sendMessage(ex.getJsonMessage());
    }
   }
-  catch (IOException ex)
+  catch (IOException* ex)
   {
    // if we get an error, de-register
    //turnout->removePropertyChangeListener(this);

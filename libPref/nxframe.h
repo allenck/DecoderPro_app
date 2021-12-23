@@ -100,7 +100,7 @@ private:
  /*private*/ QString makeCommands(Warrant* w);
  /*private*/ QPushButton* getButton(QString text);
  /*private*/ WarrantPreferences* updatePreferences();
- /*private*/ float adjustdistance(float fromSpeed, float toSpeed, float distance, BlockOrder *bo) throw (JmriException);
+ /*private*/ float adjustdistance(float fromSpeed, float toSpeed, float distance, BlockOrder *bo) /*throw (JmriException)*/;
  /*private*/ void updateAutoRunPanel();
 
 protected:

@@ -254,7 +254,7 @@ static final ResourceBundle rb = ResourceBundle
     // get decoder address
     try {
         _address = (_activeTrain->getDccAddress()).toInt();
-    } catch (NumberFormatException ex) {
+    } catch (NumberFormatException* ex) {
        log->warn(tr("invalid dcc address '%1' for %2").arg(_activeTrain->getDccAddress()).arg(_activeTrain->getTrainName()));
         return false;
     }
@@ -784,7 +784,7 @@ static final ResourceBundle rb = ResourceBundle
             if (aspectSpeedStr != NULL) {
                 try {
                     speed = aspectSpeedStr.toFloat();
-                } catch (NumberFormatException nx) {
+                } catch (NumberFormatException* nx) {
                     try {
                         speed = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(aspectSpeedStr);
 //                       log->trace("{}: Signal {} speed from map for {} is {}", _activeTrain->getTrainName(), _controllingSignalMast->getDisplayName(), aspectSpeedStr, speed);

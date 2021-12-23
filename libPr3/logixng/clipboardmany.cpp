@@ -159,7 +159,7 @@
     }
 
     //@Override
-    /*public*/ void ClipboardMany::setState(int s) throw (JmriException) {
+    /*public*/ void ClipboardMany::setState(int s) /*throw (JmriException)*/ {
         throw  UnsupportedOperationException("Not supported");
     }
 
@@ -189,7 +189,7 @@
     }
 
     //@Override
-    /*public*/ Base* ClipboardMany::deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) throw (JmriException) {
+    /*public*/ Base* ClipboardMany::deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/ {
         throw  UnsupportedOperationException("Not supported");
     }
 

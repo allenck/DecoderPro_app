@@ -89,8 +89,8 @@ void LoadXmlConfigAction::common()
     }
     currentFile = "";
    }
-  } catch (JmriException e) {
-         log->error("Unhandled problem in loadFile: " + e.getMessage());
+  } catch (JmriException* e) {
+         log->error("Unhandled problem in loadFile: " + e->getMessage());
   }
  }
  else

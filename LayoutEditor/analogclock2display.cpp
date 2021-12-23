@@ -508,7 +508,7 @@ void AnalogClock2Display::cleanup() {
         }
 #endif
     } catch (IOException t) {
-        log->error("Error handling link", t);
+        log->error("Error handling link", &t);
     }
 #if 0
     catch (URISyntaxException t) {

@@ -87,7 +87,7 @@ DefaultUserMessagePreferencesXml::DefaultUserMessagePreferencesXml(QObject *pare
     int value = 0x00;
     try {
      value = multiItem.at(x).toElement().attribute("value").toInt();
-    } catch (DataConversionException e)
+    } catch (DataConversionException* e)
     {
      log->error("failed to convert positional attribute");
     }

@@ -224,7 +224,7 @@ void LayoutSlip::init()
 }
 
 //@Override
-/*public*/ LayoutTrack *LayoutSlip::getConnection(HitPointType::TYPES location) throw (JmriException) {
+/*public*/ LayoutTrack *LayoutSlip::getConnection(HitPointType::TYPES location) /*throw (JmriException)*/ {
     switch (location) {
         case HitPointType::SLIP_A:
             return connectA;
@@ -243,11 +243,11 @@ void LayoutSlip::init()
 }
 
 //@Override
-/*public*/ void LayoutSlip::setConnection(HitPointType::TYPES location, LayoutTrack* o, HitPointType::TYPES type) throw (JmriException) {
+/*public*/ void LayoutSlip::setConnection(HitPointType::TYPES location, LayoutTrack* o, HitPointType::TYPES type) /*throw (JmriException)*/ {
     if ((type != HitPointType::TRACK) && (type != HitPointType::NONE)) {
      QMetaEnum metaEnum = QMetaEnum::fromType<HitPointType::TYPES>();
         log.error(QString("unexpected type of connection to layoutturnout - ") + metaEnum.valueToKey(type));
-        throw JmriException(QString("unexpected type of connection to layoutturnout - ") + metaEnum.valueToKey(type));
+        throw new JmriException(QString("unexpected type of connection to layoutturnout - ") + metaEnum.valueToKey(type));
     }
     switch (location) {
         case HitPointType::SLIP_A:
@@ -265,7 +265,7 @@ void LayoutSlip::init()
         default:
      QMetaEnum metaEnum = QMetaEnum::fromType<HitPointType::TYPES>();
             log.error(QString("Invalid Point Type ") + metaEnum.valueToKey(location)); //I18IN
-            throw JmriException("Invalid Point");
+            throw new JmriException("Invalid Point");
     }
 }
 
@@ -1293,7 +1293,7 @@ double LayoutSlip::round (double x) {
    {
     boundaryBetween->replace(0,((TrackSegment*)connectA)->getLayoutBlock()->getDisplayName()+ " - " + block->getDisplayName());
    }
-   catch (NullPointerException e)
+   catch (NullPointerException* e)
    {
     //Can be considered normal if tracksegement hasn't yet been allocated a block
     log.debug("TrackSegement at connection A doesn't contain a layout block");
@@ -1307,7 +1307,7 @@ double LayoutSlip::round (double x) {
    {
     boundaryBetween->replace(2,((TrackSegment*)connectC)->getLayoutBlock()->getDisplayName()+ " - " + block->getDisplayName());
    }
-   catch (NullPointerException e)
+   catch (NullPointerException* e)
    {
     //Can be considered normal if tracksegement hasn't yet been allocated a block
     log.debug("TrackSegement at connection C doesn't contain a layout block");
@@ -1321,7 +1321,7 @@ double LayoutSlip::round (double x) {
    {
      boundaryBetween->replace(1,((TrackSegment*)connectB)->getLayoutBlock()->getDisplayName()+ " - " + block->getDisplayName());
    }
-   catch (NullPointerException e)
+   catch (NullPointerException* e)
    {
     //Can be considered normal if tracksegement hasn't yet been allocated a block
     log.debug("TrackSegement at connection B doesn't contain a layout block");
@@ -1336,7 +1336,7 @@ double LayoutSlip::round (double x) {
    {
     boundaryBetween->replace(3,((TrackSegment*)connectD)->getLayoutBlock()->getDisplayName()+ " - " + block->getDisplayName());
    }
-   catch (NullPointerException e)
+   catch (NullPointerException* e)
    {
     //Can be considered normal if tracksegement hasn't yet been allocated a block
     log.debug("TrackSegement at connection D doesn't contain a layout block");

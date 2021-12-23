@@ -141,7 +141,7 @@
                 return;
             }
         }
-        throw IllegalArgumentException("Invalid index");
+        throw new IllegalArgumentException("Invalid index");
     }
 
     /**

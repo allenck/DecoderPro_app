@@ -84,7 +84,7 @@ LayoutShapeXml::LayoutShapeXml(QObject* parent)
         LayoutShapeType::TYPES type = LayoutShapeType::eOpen;
         try {
             type = LayoutShapeType::getName(element.attribute("type"));
-        } catch (NullPointerException e) {
+        } catch (NullPointerException* e) {
             log->error("Layout Shape type attribute not found.");
         }
 
@@ -145,7 +145,7 @@ LayoutShapeXml::LayoutShapeXml(QObject* parent)
                         LayoutShapePointType::TYPES pointType = LayoutShapePointType::eStraight;
                         try {
                             pointType = LayoutShapePointType::getName(relem.attribute("type"));
-                        } catch (NullPointerException e) {
+                        } catch (NullPointerException* e) {
                             log->error("Layout Shape Point #" + QString::number(i) + "type attribute not found.");
                         }
                         double x = 0.0;
@@ -153,10 +153,10 @@ LayoutShapeXml::LayoutShapeXml(QObject* parent)
                         try {
                          bool bok;
                             x = (relem.attribute("x")).toFloat(&bok);
-                            if(!bok) throw DataConversionException();
+                            if(!bok) throw new DataConversionException();
                             y = (relem.attribute("y")).toFloat(&bok);
-                            if(!bok) throw DataConversionException();
-                        } catch (DataConversionException e) {
+                            if(!bok) throw new DataConversionException();
+                        } catch (DataConversionException* e) {
                             log->error("failed to convert Layout Shape point #" + QString::number(i) + "coordinates attributes");
                         }
                         s->addPoint(pointType,  QPointF(x, y));

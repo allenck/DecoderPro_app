@@ -965,7 +965,7 @@ void  ServerRxHandler::on_textMessageReceived(QString msg)
 {
  try {
      clientSocket->close();
- } catch (IOException ex1) {
+ } catch (IOException* ex1) {
      log->error("close, which closing clientSocket", ex1);
  }
 }

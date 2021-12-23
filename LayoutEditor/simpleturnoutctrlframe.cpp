@@ -222,7 +222,7 @@ JmriJFrame(parent)
     } catch (IllegalArgumentException ex1) {
         invalidTurnout(adrTextField->text(), ex1);
     } catch (Exception ex2) {
-        log->error("exception during closeButtonActionPerformed", ex2);
+        log->error("exception during closeButtonActionPerformed", &ex2);
         nowStateLabel->setText("ERROR");
         nowFeedbackLabel->setText("<unknown>");
     }
@@ -257,7 +257,7 @@ JmriJFrame(parent)
     } catch (IllegalArgumentException ex1) {
         invalidTurnout(adrTextField->text(), ex1);
     } catch (Exception ex2) {
-        log->error("exception during throwButtonActionPerformed", ex2);
+        log->error("exception during throwButtonActionPerformed", &ex2);
         nowStateLabel->setText("ERROR");
         nowFeedbackLabel->setText("<unknown>");
     }
@@ -291,7 +291,7 @@ JmriJFrame(parent)
     } catch (IllegalArgumentException ex1) {
         invalidTurnout(adrTextField->text(), ex1);
     } catch (Exception ex2) {
-        log->error("exception during lockButtonActionPerformed", ex2);
+        log->error("exception during lockButtonActionPerformed", &ex2);
         nowStateLabel->setText("ERROR");
         nowFeedbackLabel->setText("<unknown>");
     }
@@ -326,7 +326,7 @@ JmriJFrame(parent)
     } catch (IllegalArgumentException ex1) {
         invalidTurnout(adrTextField->text(), ex1);
     } catch (Exception ex2) {
-        log->error("exception during lockPushButtonActionPerformed", ex2);
+        log->error("exception during lockPushButtonActionPerformed", &ex2);
         nowStateLabel->setText("ERROR");
         nowFeedbackLabel->setText("<unknown>");
     }

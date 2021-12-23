@@ -61,7 +61,7 @@
      bool bok;
         addr = element.firstChildElement("number").text().toInt(&bok);
         if(!bok) throw NumberFormatException();
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException* e) {
         return NULL;
     }
     QString protocol = element.firstChildElement("protocol").text();

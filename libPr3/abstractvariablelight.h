@@ -23,13 +23,13 @@ public:
     /*public*/ bool isTransitioning() override;
     /*public*/ double getCurrentIntensity() override;
     /*public*/ double getTargetIntensity() override;
-    /*public*/ void setCommandedAnalogValue(double value) throw (JmriException) override;
+    /*public*/ void setCommandedAnalogValue(double value) /*throw (JmriException)*/ override;
     /*public*/ double getMinIntensity() override;
     /*public*/ void setMinIntensity(double intensity) override;
     /*public*/ double getMaxIntensity() override;
     /*public*/ void setMaxIntensity(double intensity) override;
     /*public*/ double getState(double v);
-    /*public*/ void setState(double newState) throw (JmriException) override;
+    /*public*/ void setState(double newState) /*throw (JmriException)*/ override;
     /*public*/ double getResolution() override;
     /*public*/ double getCommandedAnalogValue() override;
     /*public*/ double getMin() override;

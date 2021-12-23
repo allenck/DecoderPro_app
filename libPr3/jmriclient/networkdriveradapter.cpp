@@ -95,7 +95,7 @@
              + "." + tr("local.");
      setHostAddress(mdnsClient->getServiceOnHost(serviceType,
              qualifiedHostName)->getHostAddresses().at(0));
- } catch (NullPointerException npe) {
+ } catch (NullPointerException* npe) {
      // if there is no hostname set, use the service name (which can't
      // be changed) to find the service.
      QString qualifiedServiceName = tr("My JMRI Railroad")

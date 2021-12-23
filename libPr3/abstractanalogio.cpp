@@ -63,12 +63,12 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ void AbstractAnalogIO::setCommandedAnalogValue(double value) throw (JmriException) {
+    /*public*/ void AbstractAnalogIO::setCommandedAnalogValue(double value) /*throw (JmriException)*/ {
         if (value == /*Double.NEGATIVE_INFINITY*/-INFINITY) {
             throw  IllegalArgumentException("value is negative infinity");
         }
         if (value == /*Double.POSITIVE_INFINITY*/INFINITY) {
-            throw IllegalArgumentException("value is positive infinity");
+            throw new IllegalArgumentException("value is positive infinity");
         }
         if (/*Double.isNaN(value)*/value == NAN) {
             throw  IllegalArgumentException("value is not-a-number");
@@ -124,7 +124,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ void AbstractAnalogIO::setState(double value) throw (JmriException) {
+    /*public*/ void AbstractAnalogIO::setState(double value) /*throw (JmriException)*/ {
         setCommandedAnalogValue(value);
     }
 

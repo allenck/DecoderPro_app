@@ -46,7 +46,7 @@
 //                buf.append("\n");
 //            }
 //            t = buf.toString();
-//        } catch (IOException ex) {
+//        } catch (IOException* ex) {
 //            t = "JMRI is distributed under a license. For license information, see the JMRI website http://jmri.org";
 //        }
         while(!is->atEnd())

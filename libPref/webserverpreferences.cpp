@@ -102,7 +102,7 @@
             log->info("No Webserver preferences exist.");
             migrate = true;
         }
-    } catch (BackingStoreException ex) {
+    } catch (BackingStoreException* ex) {
         log->info("No preferences file exists.");
         migrate = true;
     }
@@ -122,8 +122,8 @@
         try {
             log->info(tr("Migrating from old Webserver preferences in %1 to new format in %2.").arg(fileName).arg(FileUtil::getAbsoluteFilename("profile:profile")));
             sharedPreferences->sync();
-        } catch (BackingStoreException ex) {
-            log->error("Unable to write WebServer preferences." + ex.getMessage());
+        } catch (BackingStoreException* ex) {
+            log->error("Unable to write WebServer preferences." + ex->getMessage());
         }
     }
 }
@@ -190,7 +190,7 @@ void WebServerPreferences::common()
     }
    }
   }
- } catch (BackingStoreException ex)
+ } catch (BackingStoreException* ex)
  {
      // this is expected if sharedPreferences have not been written previously,
      // so do nothing.
@@ -206,16 +206,16 @@ void WebServerPreferences::common()
  if (a != NULL) {
      try {
          setClickDelay(a.toInt());
-     } catch (DataConversionException e) {
-         log->debug(e.getLocalizedMessage() + e.getMessage());
+     } catch (DataConversionException* e) {
+         log->debug(e->getLocalizedMessage() + e->getMessage());
      }
  }
  a = child.attribute(REFRESH_DELAY);
  if (a != NULL) {
      try {
          setRefreshDelay(a.toInt());
-     } catch (DataConversionException e) {
-         log->debug(e.getLocalizedMessage() + e.getMessage());
+     } catch (DataConversionException* e) {
+         log->debug(e->getLocalizedMessage() + e->getMessage());
      }
  }
  a = child.attribute(USE_AJAX);
@@ -239,9 +239,9 @@ void WebServerPreferences::common()
  {
   try {
       setPort(a.toInt());
-  } catch (DataConversionException ex) {
+  } catch (DataConversionException* ex) {
       setPort(12080);
-      log->error("Unable to read port. Setting to default value."+ ex.getMessage());
+      log->error("Unable to read port. Setting to default value."+ ex->getMessage());
   }
  }
  a = child.attribute(RAILROAD_NAME);
@@ -368,7 +368,7 @@ void WebServerPreferences::common()
   sharedPreferences->sync();
   setIsDirty(false);  //  Resets only when stored
  }
- catch (BackingStoreException ex) {
+ catch (BackingStoreException* ex) {
   log->error("Exception while saving web server preferences", ex);
  }
 }

@@ -164,7 +164,7 @@ void FileInputStream::common(File * file)
    // open0(name);
  QFile f(name);
  if(!f.open(QIODevice::ReadOnly))
-   throw FileNotFoundException();
+   throw  new FileNotFoundException();
 }
 
 /**

@@ -61,7 +61,7 @@
     /*public*/ VetoableChangeSupport::VetoableChangeSupport(QObject* sourceBean, QObject* parent)
       : PropertyChangeSupport(sourceBean, parent) {
         if (sourceBean == nullptr) {
-            throw NullPointerException();
+            throw new NullPointerException();
         }
     }
 
@@ -148,7 +148,7 @@
      * @param newValue      the new value of the property
      * @throws PropertyVetoException if one of listeners vetoes the property update
      */
-    /*public*/ void VetoableChangeSupport::fireVetoableChange(QString propertyName, bool oldValue, bool newValue) throw (PropertyVetoException){
+    /*public*/ void VetoableChangeSupport::fireVetoableChange(QString propertyName, bool oldValue, bool newValue) /*throw (PropertyVetoException)*/{
      vetoableChangeSupport->fireVetoableChange(propertyName, oldValue, newValue);
     }
 
@@ -156,7 +156,7 @@
      * {@inheritDoc}
      */
     //@Override
-    /*public*/ void VetoableChangeSupport::fireVetoableChange(PropertyChangeEvent* event) throw (PropertyVetoException) {
+    /*public*/ void VetoableChangeSupport::fireVetoableChange(PropertyChangeEvent* event) /*throw (PropertyVetoException)*/ {
         vetoableChangeSupport->fireVetoableChange(event);
     }
 
@@ -164,7 +164,7 @@
      * {@inheritDoc}
      */
     //@Override
-    /*public*/ void VetoableChangeSupport::fireVetoableChange(QString propertyName, int oldValue, int newValue) throw (PropertyVetoException) {
+    /*public*/ void VetoableChangeSupport::fireVetoableChange(QString propertyName, int oldValue, int newValue) /*throw (PropertyVetoException)*/ {
         vetoableChangeSupport->fireVetoableChange(propertyName, oldValue, newValue);
     }
 
@@ -172,7 +172,7 @@
      * {@inheritDoc}
      */
     //@Override
-    /*public*/ void VetoableChangeSupport::fireVetoableChange(QString propertyName, QVariant oldValue, QVariant newValue) throw (PropertyVetoException) {
+    /*public*/ void VetoableChangeSupport::fireVetoableChange(QString propertyName, QVariant oldValue, QVariant newValue) /*throw (PropertyVetoException)*/ {
         vetoableChangeSupport->fireVetoableChange(propertyName, oldValue, newValue);
     }
 

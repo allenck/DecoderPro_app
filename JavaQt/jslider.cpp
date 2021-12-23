@@ -87,7 +87,7 @@ void JSlider::common(Qt::Orientation orientation)
  case Qt::Horizontal:
    break;
  default:
-   throw IllegalArgumentException("orientation must be one of: VERTICAL, HORIZONTAL");
+   throw new IllegalArgumentException("orientation must be one of: VERTICAL, HORIZONTAL");
  }
 }
 /**

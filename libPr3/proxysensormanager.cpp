@@ -122,7 +122,7 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxySensorMan
  return ((SensorManager*) getManagerOrDefault(systemName))->allowMultipleAdditions(systemName);
 }
 
-///*public*/ QString ProxySensorManager::createSystemName(QString curAddress, QString prefix) const throw (JmriException)
+///*public*/ QString ProxySensorManager::createSystemName(QString curAddress, QString prefix) const /*throw (JmriException)*/
 //{
 // for (int i=0; i<nMgrs(); i++)
 // {
@@ -131,7 +131,7 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxySensorMan
 //   try
 //   {
 //    return ((AbstractSensorManager*)getMgr(i))->createSystemName(curAddress, prefix);
-//   } catch (JmriException ex)
+//   } catch (JmriException* ex)
 //   {
 //    log.error(ex.toString());
 //    throw ex;
@@ -143,13 +143,13 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxySensorMan
 
 //@SuppressWarnings("deprecation") // user warned by actual manager class
 //@Override
-/*public*/ QString ProxySensorManager::getNextValidAddress(QString curAddress, QString prefix) throw (JmriException)
+/*public*/ QString ProxySensorManager::getNextValidAddress(QString curAddress, QString prefix) /*throw (JmriException)*/
 {
  return getNextValidAddress(curAddress, prefix, typeLetter());
 }
 
 //@Override
-/*public*/ QString ProxySensorManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) throw (JmriException) {
+/*public*/ QString ProxySensorManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) /*throw (JmriException)*/ {
     return AbstractProxySensorManager::getNextValidAddress(curAddress, prefix, ignoreInitialExisting, typeLetter());
 }
 /**

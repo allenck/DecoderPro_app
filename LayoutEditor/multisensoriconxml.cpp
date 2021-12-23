@@ -74,7 +74,7 @@ MultiSensorIconXml::MultiSensorIconXml(QObject *parent) :
  {
   rotation = element.attribute("rotate").toInt();
  }
- catch (DataConversionException e)
+ catch (DataConversionException* e)
  {    }
  catch ( NullPointerException e)
  {  // considered normal if the attributes are not present
@@ -152,7 +152,7 @@ MultiSensorIconXml::MultiSensorIconXml(QObject *parent) :
       }
      }
     }
-    catch (DataConversionException dce) {}
+    catch (DataConversionException* dce) {}
    }
    else
    {

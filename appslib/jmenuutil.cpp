@@ -229,7 +229,7 @@
     } catch (SecurityException e) {
         log.error("security exception unable to find remoteCalls for " + context.getClass().getName());
         return;
-    } catch (NoSuchMethodException e) {
+    } catch (NoSuchMethodException* e) {
         log.error("No such method remoteCalls for " + context.getClass().getName());
         return;
     }
@@ -247,7 +247,7 @@
                     }
                 }
             });
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             System.out.println("IllegalArgument " + ex);
         } catch (IllegalAccessException ex) {
             System.out.println("IllegalAccess " + ex);

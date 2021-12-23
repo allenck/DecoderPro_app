@@ -65,7 +65,7 @@ void BlockPathTableModel::common()
  }
 //    try {
 //        _block->removePropertyChangeListener(this);
-//    } catch (NullPointerException npe) { // OK when block is removed
+//    } catch (NullPointerException* npe) { // OK when block is removed
 //    }
  disconnect(_block->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }

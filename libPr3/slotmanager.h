@@ -477,7 +477,7 @@ public:
       try {
           sm->sendReadSlot(slotNumber);
       } catch (Exception e) {
-          sm->log->error("Exception occurred sendReadSlotDelayed:", e);
+          sm->log->error("Exception occurred sendReadSlotDelayed:", &e);
       }
   }
 };

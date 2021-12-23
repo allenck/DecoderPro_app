@@ -326,7 +326,7 @@
 }
 
 //@Override
-/*public*/ LayoutTrack* TrackSegmentView::getConnection(HitPointType::TYPES connectionType) throw (JmriException) {
+/*public*/ LayoutTrack* TrackSegmentView::getConnection(HitPointType::TYPES connectionType) /*throw (JmriException)*/ {
     return trackSegment->getConnection(connectionType);
 }
 
@@ -338,7 +338,7 @@
  */
 // only implemented here to suppress "does not override abstract method " error in compiler
 //@Override
-/*public*/ void TrackSegmentView::setConnection(HitPointType::TYPES connectionType, /*@CheckForNull*/ LayoutTrack* o, HitPointType::TYPES type) throw (JmriException) {
+/*public*/ void TrackSegmentView::setConnection(HitPointType::TYPES connectionType, /*@CheckForNull*/ LayoutTrack* o, HitPointType::TYPES type) /*throw (JmriException)*/ {
 }
 
 /*public*/ int TrackSegmentView::getNumberOfBezierControlPoints() {

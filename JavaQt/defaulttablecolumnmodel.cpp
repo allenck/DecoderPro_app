@@ -76,7 +76,7 @@ QObject((QObject*)parent)
 {
  if (aColumn == NULL)
  {
-  throw IllegalArgumentException("Object is NULL");
+  throw new IllegalArgumentException("Object is NULL");
  }
 
  tableColumns.append(aColumn);

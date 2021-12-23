@@ -41,7 +41,7 @@ QTextStream* bufferedReader;
 
 //            fileReader = new FileReader(file);
 //            bufferedReader = new BufferedReader(fileReader);
-        if(!f.open(QIODevice::ReadOnly)) throw IOException(tr("File not found: ") + file->toString());
+        if(!f.open(QIODevice::ReadOnly)) throw new IOException(tr("File not found: ") + file->toString());
         bufferedReader = new QTextStream(&f);
 
         while ((line = bufferedReader->readLine()) != NULL)

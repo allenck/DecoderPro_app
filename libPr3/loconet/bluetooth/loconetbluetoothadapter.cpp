@@ -36,7 +36,7 @@
                 portNameVector.add(device.getFriendlyName(false));
             }
         }
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         log->error("Unable to use bluetooth device", ex);
     }
 #endif

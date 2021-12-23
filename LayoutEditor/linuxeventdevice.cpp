@@ -504,7 +504,7 @@ LinuxEventDevice::LinuxEventDevice()
     // </editor-fold>
 }
 #if 0
-/*private*/ static /*final*/ /*native*/ int nUploadRumbleEffect(long l, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) throw IOException;
+/*private*/ static /*final*/ /*native*/ int nUploadRumbleEffect(long l, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) throw new IOException;
 #endif
 /*public*/ /*final*/ /*synchronized*/ int LinuxEventDevice::uploadConstantEffect(int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10) throw (IOException) {
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">
@@ -1039,7 +1039,7 @@ LinuxEventDevice::LinuxEventDevice()
     // </editor-fold>
 }
 
-/*protected*/ void /*final*/ize() throw IOException {
+/*protected*/ void /*final*/ize() throw new IOException {
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">
     /* 0: aload_0
      * 1: invokevirtual net/java/games/input/LinuxEventDevice.close:()V

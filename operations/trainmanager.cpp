@@ -1018,7 +1018,7 @@ namespace Operations
                  for (int i = 0; i < widths.length(); i++) {
                      try {
                    _tableColumnWidths.replace(i, widths.at(i).toInt());
-                     } catch (NumberFormatException ee) {
+                     } catch (NumberFormatException* ee) {
                          log->error("Number format exception when reading trains column widths");
                      }
                  }
@@ -1060,7 +1060,7 @@ namespace Operations
                      try {
                          //_tableScheduleColumnWidths[i] = Integer.parseInt(widths[i]);
                    temp.replace(i, widths.at(i).toInt());
-                     } catch (NumberFormatException ee) {
+                     } catch (NumberFormatException* ee) {
                          log->error("Number format exception when reading trains column widths");
                      }
                  }

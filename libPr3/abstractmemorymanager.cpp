@@ -55,7 +55,7 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
     if (systemName == NULL){
         log.error("SystemName cannot be NULL. UserName was "
                 +( (userName==NULL) ? "NULL" : userName));
-        throw IllegalArgumentException("SystemName cannot be NULL. UserName was "
+        throw new IllegalArgumentException("SystemName cannot be NULL. UserName was "
                 +( (userName==NULL) ? "NULL" : userName));
     }
     // return existing if there is one
@@ -77,7 +77,7 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
     s = createNewMemory(systemName, userName);
 
     // if that failed, blame it on the input arguements
-    if (s == NULL) throw IllegalArgumentException();
+    if (s == NULL) throw new IllegalArgumentException();
 
     // save in the maps
     Register(s);
@@ -96,7 +96,7 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
             {
                 lastAutoMemoryRef = autoNumber;
             }
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException* e){
             log.warn("Auto generated SystemName "+ systemName + " is not in the correct format");
         }
     }

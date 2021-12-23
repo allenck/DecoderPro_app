@@ -45,7 +45,7 @@
     }
 
     //@Override
-    /*public*/ void DefaultLogixNG::setState(int s) throw (JmriException) {
+    /*public*/ void DefaultLogixNG::setState(int s) /*throw (JmriException)*/ {
         log->warn("Unexpected call to setState in DefaultLogixNG.");  // NOI18N
     }
 

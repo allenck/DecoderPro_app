@@ -90,7 +90,7 @@ using namespace Operations;
   stream << QJsonDocument(root).toJson();
   f.close();
  }
- else throw IOException("error writing file:" + file->getPath());
+ else throw new IOException("error writing file:" + file->getPath());
 #endif
 }
 

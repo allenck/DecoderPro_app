@@ -176,7 +176,7 @@ bool InstallDecoderURLAction::copyfile(QUrl* from, File* toFile, QWidget* who) {
   if(oFile->open(QIODevice::WriteOnly))
    out = new QTextStream(oFile);
   if(out == NULL)
-   throw IOException(tr("output file = \"%1\"").arg(path));
+   throw new IOException(tr("output file = \"%1\"").arg(path));
 
 //  QByteArray buf =  QByteArray(1024,0);
 //  int len;
@@ -243,7 +243,7 @@ bool InstallDecoderURLAction::checkFile(QUrl* url, QWidget* who)
    XmlFile* xf = new XmlFile();
    f = new QFile(url->path());
    if(!f->exists())
-    throw FileNotFoundException(tr("File not found: ") + f->fileName());
+    throw  new FileNotFoundException(tr("File not found: ") + f->fileName());
    root = xf->rootFromFile(f);
   }
   else

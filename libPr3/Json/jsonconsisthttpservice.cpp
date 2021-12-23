@@ -104,8 +104,8 @@
     }
     try {
         (new ConsistFile())->writeFile(this->manager->getConsistList()->toList());
-    } catch (IOException ex) {
-        throw JsonException(500, ex.getLocalizedMessage());
+    } catch (IOException* ex) {
+        throw JsonException(500, ex->getLocalizedMessage());
     }
     return this->getConsist(locale, address);
 }

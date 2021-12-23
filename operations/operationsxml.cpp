@@ -47,7 +47,7 @@ OperationsXml::OperationsXml(QObject *parent) :
 {
     try {
         readFile(getDefaultOperationsFilename());
-    } catch (Exception e) {
+    } catch (Exception* e) {
         Logger::error("Exception during operations file reading", e);
     }
 }

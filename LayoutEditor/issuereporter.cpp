@@ -217,7 +217,7 @@
                 typeOptionsPanel->layout()->removeWidget(bugReportPanel);
                 break;
             default:
-                log->error(tr("Unexpected selected index %1 for issue type").arg(typeCB->currentIndex()),  IllegalArgumentException());
+                log->error(tr("Unexpected selected index %1 for issue type").arg(typeCB->currentIndex()),  new IllegalArgumentException());
         }
     }
 

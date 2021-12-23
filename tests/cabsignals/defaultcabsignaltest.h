@@ -22,8 +22,8 @@ signals:
 public slots:
  /*public*/ void testCTor();
  /*public*/ void testSetBlock();
- /*public*/ void testSignalSequence() throw (JmriException);
-// /*public*/ void DefaultCabSignalTest::testSignalSequenceIdTag() throw (JmriException);
+ /*public*/ void testSignalSequence() /*throw (JmriException)*/;
+// /*public*/ void DefaultCabSignalTest::testSignalSequenceIdTag() /*throw (JmriException)*/;
 
 private:
  static Logger* log;
@@ -31,7 +31,7 @@ private:
 
 protected:
  DefaultCabSignal* cs = nullptr;
- /*protected*/ void runSequence(QVariant initialBlockContents) throw (JmriException);
+ /*protected*/ void runSequence(QVariant initialBlockContents) /*throw (JmriException)*/;
  /*protected*/ void checkBlock(CabSignal* lcs,QString currentBlock,QString nextBlock,QString mastName);
 
 };

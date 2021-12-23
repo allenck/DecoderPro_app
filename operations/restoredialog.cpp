@@ -231,7 +231,7 @@ namespace Operations
          Apps::handleRestart();
 //     } // These may need to be enhanced to show the backup store being used,
 //       // auto or default.
-//     catch (IOException ex) {
+//     catch (IOException* ex) {
 //         ExceptionContext context = new ExceptionContext(ex, tr("RestoreDialog.restoring")
 //                 + " " + setName, "Hint about checking valid names, etc."); // NOI18N
 //         new ExceptionDisplayFrame(context);

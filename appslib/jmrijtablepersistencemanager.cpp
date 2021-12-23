@@ -356,7 +356,7 @@ JmriJTablePersistenceManager::JmriJTablePersistenceManager() :JTablePersistenceM
   }
  }
      }//);
-//    } catch (NullPointerException ex) {
+//    } catch (NullPointerException* ex) {
 //        log.info("Table preferences not found.\nThis is expected on the first time the \"{}\" profile is used on this computer.",
 //                ProfileManager.getDefault().getActiveProfile().getName());
 //    }
@@ -424,7 +424,7 @@ JmriJTablePersistenceManager::JmriJTablePersistenceManager() :JTablePersistenceM
  try {
      ProfileUtils::getUserInterfaceConfiguration(ProfileManager::getDefault()->getActiveProfile())
              ->putConfigurationFragment(/*JDOMUtil.toW3CElement*/(element), false);
- } catch (JDOMException ex) {
+ } catch (JDOMException* ex) {
      log->error("Unable to save user preferences"/*, ex*/);
  }
  this->dirty = false;

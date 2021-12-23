@@ -95,15 +95,15 @@ void ActiveSystemsMenu::common()
      try {
          return (QMenu*) Class::forName(className)->newInstance();
      }
- catch (ClassNotFoundException  e) {
+ catch (ClassNotFoundException*  e) {
          log->error(tr("Could not load class %1").arg(className), e);
          return NULL;
      }
- catch ( InstantiationException  e) {
+ catch ( InstantiationException*  e) {
          log->error(tr("Could not load class %1").arg(className), e);
          return NULL;
      }
- catch ( IllegalAccessException e) {
+ catch ( IllegalAccessException* e) {
          log->error(tr("Could not load class %1").arg(className), e);
          return NULL;
      }

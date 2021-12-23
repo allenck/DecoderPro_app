@@ -129,7 +129,7 @@
         localPreferences->putBoolean(USE_LOOPBACK, useLoopback);
         try {
             localPreferences->sync();
-        } catch (BackingStoreException ex) {
+        } catch (BackingStoreException* ex) {
             log->error("Unable to save preferences", ex);
         }
         // remove errant preferences elsewhere
@@ -142,7 +142,7 @@
             Preferences* privatePreferences = ProfileUtils::getPreferences(profile, this->getClass(), false);
             privatePreferences->remove(IPv4);
             privatePreferences->remove(IPv6);
-        } catch (IllegalStateException ex) {
+        } catch (IllegalStateException* ex) {
             log->error("Unable to remove no-longer-use preferences", ex);
         }
     }

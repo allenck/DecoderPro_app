@@ -526,16 +526,16 @@ log->debug("-------------  IL  ------------");
  if (!(file.exists()))
  {
   log->debug(tr("no %1 file found").arg(fileName));
-  throw IOException(tr("no %1 file found").arg(fileName));
+  throw new IOException(tr("no %1 file found").arg(fileName));
  }
  doc = QDomDocument();
  if(!file.open(QFile::ReadOnly | QFile::Text))
-  throw IOException("open error " + file.errorString());
+  throw new IOException("open error " + file.errorString());
   if(!doc.setContent(&file))
   {
    qDebug() << tr("Error parsing file %1 ").arg(file.fileName());
    file.close();
-   throw IOException("Parse error");
+   throw new IOException("Parse error");
   }
   file.close();
 
@@ -545,7 +545,7 @@ log->debug("-------------  IL  ------------");
  if (root.isNull())
  {
   log->error("file exists, but could not be read");
-  throw IOException(" root?");
+  throw new IOException(" root?");
  }
  QDomNodeList objects = doc.elementsByTagName("object");
  for(int i=0; i < objects.count(); i++)

@@ -284,7 +284,7 @@ void ReportContext::addProperty(QString prop) {
                 for (QString address : service->serviceInfo()->getHostAddresses()) {
                     addString(" Address:" + address + "   ");
                 }
-            } catch (NullPointerException ex) {
+            } catch (NullPointerException* ex) {
                 addString(" Address: [unknown due to NPE]");
             }
             addString(" Port: " + QString::number(service->serviceInfo()->getPort()) + "   ");
@@ -294,7 +294,7 @@ void ReportContext::addProperty(QString prop) {
                 for (QString url : service->serviceInfo()->getURLs()) {
                     addString(" URL: " + url + "   ");
                 }
-            } catch (NullPointerException ex) {
+            } catch (NullPointerException* ex) {
                 addString(" URL: [unknown due to NPE]");
             }
             addString(tr(" Published: ") + (service->isPublished() ? "yes" : "no"));

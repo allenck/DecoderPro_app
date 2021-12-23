@@ -64,7 +64,7 @@ namespace TimeTable
         try {
             _dm->calculateTrain(_trainId, false);
             _dm->calculateTrain(_trainId, true);
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             _stationId = oldDStationId;  // Roll back station change
             throw ex;
         }
@@ -92,7 +92,7 @@ namespace TimeTable
         try {
             _dm->calculateTrain(_trainId, false);
             _dm->calculateTrain(_trainId, true);
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             _duration = oldDuration;  // Roll back duration change
             throw ex;
         }
@@ -112,7 +112,7 @@ namespace TimeTable
         try {
             _dm->calculateTrain(_trainId, false);
             _dm->calculateTrain(_trainId, true);
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             _nextSpeed = oldNextSpeed;  // Roll back next speed change
             throw ex;
         }
@@ -141,7 +141,7 @@ namespace TimeTable
     /*public*/ void Stop::setStagingTrack(int newStagingTrack) {
         Station* station = _dm->getStation(_stationId);
         if (newStagingTrack < 0 || newStagingTrack > station->getStaging()) {
-            throw IllegalArgumentException(TimeTableDataManager::STAGING_RANGE);
+            throw new IllegalArgumentException(TimeTableDataManager::STAGING_RANGE);
         }
 
         _stagingTrack = newStagingTrack;

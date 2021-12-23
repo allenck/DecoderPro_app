@@ -36,8 +36,8 @@ class LayoutTrackView : public QObject
   /*final*/ /*protected*/ QPointF rotatePoint(/*@Nonnull*/ QPointF p, double sineRot, double cosineRot);
   virtual /*abstract*/ /*public*/ QPointF getCoordsForConnectionType(HitPointType::TYPES connectionType) = 0;
   virtual /*abstract*/ /*public*/ QRectF getBounds() = 0;
-  virtual /*abstract*/ /*public*/ LayoutTrack* getConnection(HitPointType::TYPES connectionType) throw (JmriException) = 0;
-  virtual /*abstract*/ /*public*/ void setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) throw (JmriException) = 0;
+  virtual /*abstract*/ /*public*/ LayoutTrack* getConnection(HitPointType::TYPES connectionType) /*throw (JmriException)*/ = 0;
+  virtual /*abstract*/ /*public*/ void setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) /*throw (JmriException)*/ = 0;
   virtual /*public*/ bool isDisconnected(HitPointType::TYPES connectionType);
   virtual /*abstract*/ /*public*/ QList<HitPointType::TYPES> checkForFreeConnections() = 0;
   virtual /*abstract*/ /*public*/ bool checkForUnAssignedBlocks() = 0;

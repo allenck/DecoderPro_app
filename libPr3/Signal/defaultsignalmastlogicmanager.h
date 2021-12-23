@@ -51,8 +51,8 @@ public:
     /*public*/ void deregister(NamedBean* n)const override;
     /*public*/ long getSignalLogicDelay() override;
     /*public*/ void setSignalLogicDelay(long l)override;
-    /*public*/ void discoverSignallingDest(SignalMast* source, LayoutEditor* layout) throw (JmriException) override;
-    /*public*/ void automaticallyDiscoverSignallingPairs() throw (JmriException) override;
+    /*public*/ void discoverSignallingDest(SignalMast* source, LayoutEditor* layout) /*throw (JmriException)*/ override;
+    /*public*/ void automaticallyDiscoverSignallingPairs() /*throw (JmriException)*/ override;
     /*public*/ void generateSection();
     QObject* self() override{return (QObject*)this;}
     /*public*/ QString getBeanTypeHandled(bool plural) const override;
@@ -109,7 +109,7 @@ public slots:
      try
      {
             dsmlm->automaticallyDiscoverSignallingPairs();
-     } catch (JmriException je)
+     } catch (JmriException* je)
      {
          //Considered normal if routing not enabled
      }

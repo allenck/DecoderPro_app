@@ -318,8 +318,8 @@
 
         _path->setLength((float) lengthSpinner->getValue() * (cm->isChecked() ? 10.0f : 25.4f)); // stored in mm
         _block->setMetricUnits(cm->isChecked());
-    } catch (IllegalArgumentException ex) {
-        JOptionPane::showMessageDialog(this, ex.getMessage(),  tr("Path Create Error"), JOptionPane::ERROR_MESSAGE);
+    } catch (IllegalArgumentException* ex) {
+        JOptionPane::showMessageDialog(this, ex->getMessage(),  tr("Path Create Error"), JOptionPane::ERROR_MESSAGE);
         status( tr("Failed to add Path on Portal %1").arg(user), true);
         return;
     }

@@ -326,7 +326,7 @@ void IdTagTableAction::okPressed(ActionEvent* /*e*/) {
     //try {
         if(((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->newIdTag(sName, user)== NULL)
 //      ((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->newIdTag(sName, user);
-//    } catch (IllegalArgumentException ex) {
+//    } catch (IllegalArgumentException* ex) {
         {
         // user input no good
         handleCreateException(sName);

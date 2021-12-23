@@ -115,7 +115,7 @@
                 log->info(tr("Copying from old node \"%1\" to new node \"%2\"").arg(oldPath->toString()).arg(newPath->toString()));
                 FileUtil::copy(oldPath, newPath);
                 return true;
-            } catch (IOException ex) {
+            } catch (IOException* ex) {
                 log->warn(tr("Failed copying \"%1\" to \"%2\"").arg(oldPath->toString()).arg(newPath->toString()));
             }
         }

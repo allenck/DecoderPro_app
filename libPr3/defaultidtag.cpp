@@ -78,13 +78,13 @@ void DefaultIdTag::init()
 /*private*/ void DefaultIdTag::setCurrentState(int state) {
     try {
         setState(state);
-    } catch (JmriException ex) {
+    } catch (JmriException* ex) {
         log.warn("Problem setting state of IdTag " + getSystemName());
     }
 }
 
 //@Override
-/*public*/ void DefaultIdTag::setState(int s) throw (JmriException) {
+/*public*/ void DefaultIdTag::setState(int s) /*throw (JmriException)*/ {
     this->_currentState = s;
 }
 

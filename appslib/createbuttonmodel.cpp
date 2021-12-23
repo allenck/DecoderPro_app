@@ -31,7 +31,7 @@ CreateButtonModel::CreateButtonModel(QObject *parent) :
 //}
 
 //@Override
-/*protected*/ void CreateButtonModel::performAction(Action* action) throw (JmriException)
+/*protected*/ void CreateButtonModel::performAction(Action* action) /*throw (JmriException)*/
 {
  this->action = action;
  b = new QPushButton(action->text());

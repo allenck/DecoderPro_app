@@ -221,9 +221,9 @@ default:
   {
    programmer->readCV(cv, (ProgListener*)this);
   }
-  catch (ProgrammerException ex)
+  catch (ProgrammerException* ex)
   {
-   statusUpdate(ex.getMessage());
+   statusUpdate(ex->getMessage());
   }
  }
 }
@@ -241,8 +241,8 @@ default:
   try
   {
    programmer->writeCV(cv, value, (ProgListener*)this);
-  } catch (ProgrammerException ex) {
-      statusUpdate(ex.getMessage());
+  } catch (ProgrammerException* ex) {
+      statusUpdate(ex->getMessage());
   }
  }
 }

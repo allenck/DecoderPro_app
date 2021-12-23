@@ -248,7 +248,7 @@ int File::getPrefixLength() {
 
  if (inpathname.isNull())
  {
-  throw NullPointerException();
+  throw new NullPointerException();
  }
  this->path = inpathname; //fs.normalize(pathname);
  this->prefixLength = getParent().length(); /*fs.prefixLength(this.path);*/
@@ -2212,15 +2212,15 @@ int File::getPrefixLength() {
 /*public*/ bool File::renameTo(File* dest)
 {
  if (dest == nullptr) {
-  throw NullPointerException();
+  throw new NullPointerException();
  }
  if(dest->exists())
-  throw IOException(tr("backup file %1 exists").arg(dest->getPath()));
+  throw new IOException(tr("backup file %1 exists").arg(dest->getPath()));
  QFile qFile(getPath());
  bool bRslt  = qFile.rename(dest->getPath());
  if(!bRslt)
  {
-  throw IOException(tr("backup of %1 to %2 failed: %3").arg(getPath()).arg(dest->fileName()).arg(qFile.errorString()));
+  throw new IOException(tr("backup of %1 to %2 failed: %3").arg(getPath()).arg(dest->fileName()).arg(qFile.errorString()));
  }
  return bRslt;
 }

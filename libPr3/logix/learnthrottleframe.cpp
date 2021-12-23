@@ -172,8 +172,8 @@
          connect(powerOn, &QAction::triggered, [=]{
                  try {
                      powerMgr->setPower(PowerManager::ON);
-                 } catch (JmriException e1) {
-                     log->error(tr("Error when setting power %1").arg(e1.getMessage()));
+                 } catch (JmriException* e1) {
+                     log->error(tr("Error when setting power %1").arg(e1->getMessage()));
                  }
          });
 
@@ -186,8 +186,8 @@
          connect(powerOff, &QAction::triggered, [=]{
                  try {
                      powerMgr->setPower(PowerManager::OFF);
-                 } catch (JmriException e1) {
-                     log->error(tr("Error when setting power %1").arg(e1.getMessage()));
+                 } catch (JmriException* e1) {
+                     log->error(tr("Error when setting power %1").arg(e1->getMessage()));
                  }
 //             }
          });

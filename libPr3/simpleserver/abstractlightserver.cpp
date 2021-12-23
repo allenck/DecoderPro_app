@@ -69,7 +69,7 @@
             // and set state to OFF
             light->setState(Light::OFF);
         }
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log->error("light off", ex);
     }
 }
@@ -88,7 +88,7 @@
             // and set state to ON
             light->setState(Light::ON);
         }
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log->error("light on", ex);
     }
 }

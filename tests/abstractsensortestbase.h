@@ -26,19 +26,19 @@ public:
 
 public slots:
     /*public*/ void testCreate();
-    /*public*/ void testAddListener() throw (JmriException);
+    /*public*/ void testAddListener() /*throw (JmriException)*/;
     /*public*/ void testRemoveListener();
-    /*public*/ void testDispose() throw (JmriException);
-    /*public*/ void testCommandInactive() throw (JmriException);
-    /*public*/ void testCommandActive() throw (JmriException);
-    /*public*/ void testInvertAfterInactive() throw (JmriException) ;
-    /*public*/ void testInvertAfterActive() throw (JmriException);
-    /*public*/ void testDebounceSettings() throw (JmriException) ;
-    /*public*/ void testDebounce() throw (JmriException);
+    /*public*/ void testDispose() /*throw (JmriException)*/;
+    /*public*/ void testCommandInactive() /*throw (JmriException)*/;
+    /*public*/ void testCommandActive() /*throw (JmriException)*/;
+    /*public*/ void testInvertAfterInactive() /*throw (JmriException)*/ ;
+    /*public*/ void testInvertAfterActive() /*throw (JmriException)*/;
+    /*public*/ void testDebounceSettings() /*throw (JmriException)*/ ;
+    /*public*/ void testDebounce() /*throw (JmriException)*/;
     /*public*/ void testGetPullResistance();
     /*public*/ void testGetBeanType();
     /*public*/ void testSensorStatusRequest();
-    /*public*/ void testSensor() throw (JmriException);
+    /*public*/ void testSensor() /*throw (JmriException)*/;
 signals:
 
 public slots:

@@ -106,7 +106,7 @@ private:
     void issueWarningUserName(QString nam);
     void issueWarningUserNameAsSystem(QString nam);
     int issueNoUserNameGiven();
-    void issueDialogFailMessage(RuntimeException ex);
+    void issueDialogFailMessage(RuntimeException *ex);
     void clearPanel();
 
 protected:

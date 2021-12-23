@@ -44,7 +44,7 @@ public:
     /*public*/ Block* getByDisplayName(QString key);
 //    static BlockManager* _instance;// = NULL;
 //    static /*public*/ BlockManager* instance();
-    /*public*/ void setDefaultSpeed(QString speed) throw (JmriException);
+    /*public*/ void setDefaultSpeed(QString speed) /*throw (JmriException)*/;
     /*public*/ QString getDefaultSpeed();
     /*public*/ QString getBeanTypeHandled(bool plural) const override;
     /*public*/ QList<Block*> getBlocksOccupiedByRosterEntry(/*@Nonnull*/ RosterEntry* re);

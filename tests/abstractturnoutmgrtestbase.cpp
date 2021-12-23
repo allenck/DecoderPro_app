@@ -57,7 +57,7 @@ AbstractTurnoutMgrTestBase::AbstractTurnoutMgrTestBase(QObject *parent) : Abstra
     /*public*/ void AbstractTurnoutMgrTestBase::testProvideFailure() {
         try {
             l->provideTurnout("");
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
           JUnitAppender::assertErrorMessage("Invalid system name for Turnout: System name must start with \"" + l->getSystemNamePrefix() + "\".", __FILE__, __LINE__);
 //          throw ex;
         }

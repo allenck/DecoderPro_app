@@ -37,7 +37,7 @@ LayoutPanelServlet::LayoutPanelServlet()
  {
   LayoutEditor* editor = (LayoutEditor*) getEditor(name);
   if(editor == NULL)
-   throw NullPointerException(tr("editor not found for %1").arg(name));
+   throw new NullPointerException(tr("editor not found for %1").arg(name));
   QDomElement panel = doc.createElement("panel");
   doc.appendChild(panel);
 
@@ -91,10 +91,10 @@ LayoutPanelServlet::LayoutPanelServlet()
       try
       {
        if(sub->getNamedBean() == NULL)
-        throw NullPointerException();
+        throw new NullPointerException();
        e.setAttribute(JSON::ID, sub->getNamedBean()->getSystemName());
       }
-      catch (NullPointerException ex)
+      catch (NullPointerException* ex)
       {
        if (sub->getNamedBean() == NULL)
        {
@@ -109,9 +109,9 @@ LayoutPanelServlet::LayoutPanelServlet()
       panel.appendChild(e);
      }
     }
-    catch (Exception ex)
+    catch (Exception* ex)
     {
-     log->error("Error storing panel element: " + ex.getMessage(), ex);
+     log->error("Error storing panel element: " + ex->getMessage(), ex);
     }
    }
   }
@@ -299,7 +299,7 @@ LayoutPanelServlet::LayoutPanelServlet()
 
   return text;
  }
- catch (NullPointerException ex)
+ catch (NullPointerException* ex)
  {
   log->warn("Requested Layout panel [" + name + "] does not exist.");
   return QString("ERROR Requested panel [" + name + "] does not exist.").toLatin1();

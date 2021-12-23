@@ -83,20 +83,20 @@ class AbstractMaleSocket : public QObject, public MaleSocket
   /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override;
   /*public*/ BaseManager/*<? extends NamedBean>*/* getManager()override;
   /*public*/ /*final*/ Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames)
-          throw (JmriException)override;
-  /*public*/ /*final*/ Base* deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) throw (JmriException);
+          /*throw (JmriException)*/override;
+  /*public*/ /*final*/ Base* deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/;
   /*public*/ /*final*/ void dispose()override;
   /*public*/ MaleSocket::ErrorHandlingType::TYPES getErrorHandlingType()override;
   /*public*/ void setErrorHandlingType(ErrorHandlingType::TYPES errorHandlingType)override;
-  /*public*/ void handleError(Base* item, QString message, JmriException *e, Logger* log) throw (JmriException);
+  /*public*/ void handleError(Base* item, QString message, JmriException *e, Logger* log) /*throw (JmriException)*/;
   /*public*/ void handleError(
           Base* item,
           QString message,
           QList<QString> messageList,
           JmriException* e,
           Logger* log)
-          throw (JmriException);
-  /*public*/ void handleError(Base* item, QString message, RuntimeException* e, Logger* log) throw (JmriException);
+          /*throw (JmriException)*/;
+  /*public*/ void handleError(Base* item, QString message, RuntimeException* e, Logger* log) /*throw (JmriException)*/;
   /*public*/ void getListenerRefsIncludingChildren(QList<QString> list)override;
   /*public*/ QString toString()override;
 

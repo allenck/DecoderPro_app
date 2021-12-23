@@ -146,7 +146,7 @@ SignalMastIconXml::SignalMastIconXml(QObject *parent) :
    l->setClickMode(attr.toInt(&bok));
   }
 // }
-//catch (DataConversionException e) {
+//catch (DataConversionException* e) {
   if(!bok)
   {
   log->error("Failed on clickmode attribute: "/*+e.getMessage()*/);
@@ -158,7 +158,7 @@ SignalMastIconXml::SignalMastIconXml(QObject *parent) :
   {
       l->setLitMode(attr=="true"?true:false);
   }
-// } catch (DataConversionException e) {
+// } catch (DataConversionException* e) {
 //     log->error("Failed on litmode attribute: "+e.getMessage());
 // }
 

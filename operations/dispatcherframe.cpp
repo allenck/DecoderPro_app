@@ -2491,7 +2491,7 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
     {
         try {
             fastClockSensor->setState(Sensor::ACTIVE);
-        } catch (JmriException reason) {
+        } catch (JmriException* reason) {
             log->error("Exception when setting fast clock sensor");
         }
     }

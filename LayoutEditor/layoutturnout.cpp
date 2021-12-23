@@ -1008,7 +1008,7 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t,  LayoutEdit
 /*public*/ SignalMast *LayoutTurnout::getSignalDMast() const
 {
  if(signalDMastNamed== nullptr)
-  throw NullPointerException();
+  throw new NullPointerException();
  return signalDMastNamed->getBean();
 }
 /*public*/ void LayoutTurnout::setSignalDMast(QString signalMast)
@@ -1382,7 +1382,7 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t,  LayoutEdit
 /*public*/ void LayoutTurnout::setDisableWhenOccupied(bool state) {disableWhenOccupied = state;}
 /*public*/ bool LayoutTurnout::isDisabledWhenOccupied() {return disableWhenOccupied;}
 
-/*public*/ LayoutTrack *LayoutTurnout::getConnection(HitPointType::TYPES location) throw (JmriException)
+/*public*/ LayoutTrack *LayoutTurnout::getConnection(HitPointType::TYPES location) /*throw (JmriException)*/
 {
  switch (location)
  {
@@ -1401,14 +1401,14 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t,  LayoutEdit
  throw new JmriException("Invalid Point");
 }
 
-/*public*/ void LayoutTurnout::setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) throw (JmriException)
+/*public*/ void LayoutTurnout::setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) /*throw (JmriException)*/
 {
  QMetaEnum metaEnum = QMetaEnum::fromType<HitPointType::TYPES>();
     if ((type != HitPointType::TRACK) && (type != HitPointType::NONE)) {
      QString errString = tr("%1.setConnection(%2, %3, %4); unexpected type").arg(
                          getName(), metaEnum.valueToKey((int)connectionType), (o == nullptr) ? "null" : o->getName(), metaEnum.valueToKey(type),  "traceback"); // I18IN
                  log->error(tr("will throw %1").arg(errString));
-                 throw JmriException(errString);    }
+                 throw new JmriException(errString);    }
     switch (connectionType) {
         case HitPointType::TURNOUT_A:
             connectA = o;
@@ -1424,7 +1424,7 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t,  LayoutEdit
             break;
         default:
             log->error("Invalid Point Type " + QString::number(connectionType)); //I18IN
-            throw JmriException("Invalid Point");
+            throw new JmriException("Invalid Point");
     }
 }
 
@@ -3142,7 +3142,7 @@ boundaryBetween = QVector<QString>(4);
      {
       boundaryBetween.replace(0,aLBlock->getDisplayName()+ " - " + block->getDisplayName());
      }
-     catch (NullPointerException e)
+     catch (NullPointerException* e)
      {
       //Can be considered normal if tracksegement hasn't yet been allocated a block
       log->debug("TrackSegement at connection A doesn't contain a layout block");
@@ -3160,7 +3160,7 @@ boundaryBetween = QVector<QString>(4);
      {
       boundaryBetween.replace(1,bLBlock->getDisplayName()+ " - " + block->getDisplayName());
      }
-     catch (NullPointerException e)
+     catch (NullPointerException* e)
      {
       //Can be considered normal if tracksegement hasn't yet been allocated a block
       log->debug("TrackSegement at connection B doesn't contain a layout block");
@@ -3181,7 +3181,7 @@ boundaryBetween = QVector<QString>(4);
       }
       else
 //     }
-//     catch (NullPointerException e)
+//     catch (NullPointerException* e)
      {
       //Can be considered normal if tracksegement hasn't yet been allocated a block
       log->debug("TrackSegment at connection C doesn't contain a layout block");
@@ -3227,7 +3227,7 @@ boundaryBetween = QVector<QString>(4);
       if(blockB !=nullptr)
       boundaryBetween.replace(0,block->getDisplayName()+ " - " + blockB->getDisplayName());
 //     }
-//     catch (NullPointerException e)
+//     catch (NullPointerException* e)
 //     {
       else
       //Can be considered normal if tracksegement hasn't yet been allocated a block
@@ -3247,7 +3247,7 @@ boundaryBetween = QVector<QString>(4);
      {
       boundaryBetween.replace(1,bLBlock->getDisplayName()+ " - " + blockB->getDisplayName());
      }
-     catch (NullPointerException e)
+     catch (NullPointerException* e)
      {
       //Can be considered normal if track segment hasn't yet been allocated a block
       log->debug("TrackSegement at connection B doesn't contain a layout block");
@@ -3261,7 +3261,7 @@ boundaryBetween = QVector<QString>(4);
       if(blockB!= nullptr)
        boundaryBetween.replace(1,blockB->getDisplayName()+ " - " + block->getDisplayName());
 //     }
-//     catch (NullPointerException e)
+//     catch (NullPointerException* e)
 //     {
       else
       //Can be considered normal if tracksegement hasn't yet been allocated a block
@@ -3279,7 +3279,7 @@ boundaryBetween = QVector<QString>(4);
      {
       boundaryBetween.replace(2,cLBlock->getDisplayName()+ " - " + blockC->getDisplayName());
      }
-     catch (NullPointerException e)
+     catch (NullPointerException* e)
      {
       //Can be considered normal if tracksegement hasn't yet been allocated a block
       log->debug("TrackSegement at connection C doesn't contain a layout block");
@@ -3292,7 +3292,7 @@ boundaryBetween = QVector<QString>(4);
      {
       boundaryBetween.replace(2,blockC->getDisplayName()+ " - " + blockD->getDisplayName());
      }
-     catch (NullPointerException e)
+     catch (NullPointerException* e)
      {
       //Can be considered normal if tracksegement hasn't yet been allocated a block
       log->debug("TrackSegement at connection A doesn't contain a layout block");
@@ -3309,7 +3309,7 @@ boundaryBetween = QVector<QString>(4);
      {
       boundaryBetween.replace(3,dLBlock->getDisplayName()+ " - " + blockD->getDisplayName());
      }
-     catch (NullPointerException e)
+     catch (NullPointerException* e)
      {
       //Can be considered normal if tracksegement hasn't yet been allocated a block
       log->debug("TrackSegement at connection C doesn't contain a layout block");
@@ -3322,7 +3322,7 @@ boundaryBetween = QVector<QString>(4);
      {
       boundaryBetween.replace(3,blockD->getDisplayName()+ " - " + blockC->getDisplayName());
      }
-     catch (NullPointerException e)
+     catch (NullPointerException* e)
      {
       //Can be considered normal if tracksegement hasn't yet been allocated a block
       log->debug("TrackSegement at connection A doesn't contain a layout block");

@@ -294,17 +294,17 @@ FeedbackSaveItemListener::FeedbackSaveItemListener(TurnoutEditAction *act)
  {
   t->provideFirstFeedbackSensor(act->sensorFeedBack1Field->getSelectedDisplayName());
  }
- catch (JmriException ex)
+ catch (JmriException* ex)
  {
      //JOptionPane.showMessageDialog(NULL, ex.toString());
-  QMessageBox::information(NULL, tr("Information"), ex.getMessage());
+  QMessageBox::information(NULL, tr("Information"), ex->getMessage());
  }
  try
  {
   t->provideSecondFeedbackSensor(act->sensorFeedBack2Field->getSelectedDisplayName());
- } catch (JmriException ex) {
+ } catch (JmriException* ex) {
 //     JOptionPane.showMessageDialog(NULL, ex.toString());
-  QMessageBox::information(NULL, tr("Information"), ex.getMessage());
+  QMessageBox::information(NULL, tr("Information"), ex->getMessage());
  }
  if (act->config->isEnabled())
  {
@@ -691,7 +691,7 @@ SpeedSaveItemListener::SpeedSaveItemListener(TurnoutEditAction *act)
   if ((!act->speedListClosed.contains(speed)) && !speed.contains("Global")) {
       act->speedListClosed.append(speed);
   }
- } catch (JmriException ex)
+ } catch (JmriException* ex)
  {
 //     JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + speed);
  }
@@ -701,7 +701,7 @@ SpeedSaveItemListener::SpeedSaveItemListener(TurnoutEditAction *act)
      if ((!act->speedListThrown.contains(speed)) && !speed.contains("Global")) {
          act->speedListThrown.append(speed);
      }
- } catch (JmriException ex) {
+ } catch (JmriException* ex) {
 //     JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + speed);
  }
 }

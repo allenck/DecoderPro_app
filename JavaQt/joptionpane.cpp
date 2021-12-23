@@ -1287,7 +1287,7 @@ if(options.count() >0)
             method.invoke(dialog, (Object[])NULL);
         }
     } catch (IllegalAccessException ex) {
-    } catch (IllegalArgumentException ex) {
+    } catch (IllegalArgumentException* ex) {
     } catch (InvocationTargetException ex) {
     }
 
@@ -1440,7 +1440,7 @@ if(options.count() >0)
             method.invoke(dialog, (Object[])NULL);
         }
     } catch (IllegalAccessException ex) {
-    } catch (IllegalArgumentException ex) {
+    } catch (IllegalArgumentException* ex) {
     } catch (InvocationTargetException ex) {
     }
 
@@ -1525,7 +1525,7 @@ if(options.count() >0)
                     method.invoke(iFrame, (Object[])NULL);
                 }
             } catch (IllegalAccessException ex) {
-            } catch (IllegalArgumentException ex) {
+            } catch (IllegalArgumentException* ex) {
             } catch (InvocationTargetException ex) {
             }
 
@@ -2473,7 +2473,7 @@ QWidget* JOptionPane::layoutPane(JDialog* dialog)
 /*public*/ void JOptionPane::setValidator(QValidator* val)
 {
  if(!getWantsInput())
-  throw IllegalArgumentException(tr("can't set validator if not wanting input"));
+  throw new IllegalArgumentException(tr("can't set validator if not wanting input"));
  f->setValidator(val);
 }
 
@@ -2706,7 +2706,7 @@ private static class ModalPrivilegedAction implements PrivilegedAction<Method> {
         Method method = NULL;
         try {
             method = clazz.getDeclaredMethod(methodName, (Class[])NULL);
-        } catch (NoSuchMethodException ex) {
+        } catch (NoSuchMethodException* ex) {
         }
         if (method != NULL) {
             method.setAccessible(true);

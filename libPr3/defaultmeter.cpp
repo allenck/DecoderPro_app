@@ -49,7 +49,7 @@
      * Override this if the meter can send value to the layout.
      */
     //@Override
-    /*protected*/ void DefaultMeter::sendValueToLayout(double value) throw (JmriException) {
+    /*protected*/ void DefaultMeter::sendValueToLayout(double value) /*throw (JmriException)*/ {
         // Do nothing
     }
 
@@ -61,7 +61,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ void DefaultMeter::setState(int s) throw (JmriException) {
+    /*public*/ void DefaultMeter::setState(int s) /*throw (JmriException)*/ {
         throw UnsupportedOperationException("Not supported.");
     }
 

@@ -464,7 +464,7 @@ VTQualifierAdder::VTQualifierAdder(VariableValue *v) { this->v = v;}
     }
 }
 
-/*protected*/ VariableValue* VariableTableModel::processDecVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) throw (NumberFormatException) {
+/*protected*/ VariableValue* VariableTableModel::processDecVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) /*throw (NumberFormatException)*/ {
     VariableValue* v;
     QString a;
     int minVal = 0;
@@ -480,7 +480,7 @@ VTQualifierAdder::VTQualifierAdder(VariableValue *v) { this->v = v;}
 }
 
 
-/*protected*/ VariableValue* VariableTableModel::processEnumVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) throw (NumberFormatException)
+/*protected*/ VariableValue* VariableTableModel::processEnumVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) /*throw (NumberFormatException)*/
 {
  int count = 0;
  //IteratorIterable<Content> iterator = child.getDescendants();
@@ -541,7 +541,7 @@ VTQualifierAdder::VTQualifierAdder(VariableValue *v) { this->v = v;}
      log->debug("element processed");
  }
 }
-/*protected*/ VariableValue* VariableTableModel::processHexVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) throw (NumberFormatException) {
+/*protected*/ VariableValue* VariableTableModel::processHexVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) /*throw (NumberFormatException)*/ {
     VariableValue* v;
     QString a;
     int minVal = 0;
@@ -575,7 +575,7 @@ VTQualifierAdder::VTQualifierAdder(VariableValue *v) { this->v = v;}
     for (int k = 0; k < l.size(); k++) {
         try {
             v1->setModifiedCV(l.at(k).toElement().attribute("cv"));
-        } catch (DataConversionException e1) {
+        } catch (DataConversionException* e1) {
             log->error("invalid cv attribute in short address element of decoder file");
         }
     }
@@ -585,7 +585,7 @@ VTQualifierAdder::VTQualifierAdder(VariableValue *v) { this->v = v;}
 /*protected*/ VariableValue* VariableTableModel::processSpeedTableVal(QDomElement child, QString CV, bool readOnly,
                                                                       bool infoOnly, bool writeOnly, QString name,
                                                                       QString comment, bool opsOnly, QString mask,
-                                                                      QString item) throw (NumberFormatException)
+                                                                      QString item) /*throw (NumberFormatException)*/
 {
  VariableValue* v;
  QString a;
@@ -608,7 +608,7 @@ VTQualifierAdder::VTQualifierAdder(VariableValue *v) { this->v = v;}
    entries = entriesAttr.toInt();
   }
  }
- catch (DataConversionException e1)
+ catch (DataConversionException* e1)
  {
  }
  QString ESUAttr = child.attribute("mfx");
@@ -624,7 +624,7 @@ VTQualifierAdder::VTQualifierAdder(VariableValue *v) { this->v = v;}
     mfxFlag = false;
   }
  }
- catch (DataConversionException e1)
+ catch (DataConversionException* e1)
  {
  }
  // ensure all CVs exist
@@ -641,7 +641,7 @@ VTQualifierAdder::VTQualifierAdder(VariableValue *v) { this->v = v;}
  return v;
 }
 
-/*protected*/ VariableValue* VariableTableModel::processSplitVal(QDomElement child, QString CV, bool readOnly, bool infoOnly, bool writeOnly, QString name, QString comment, bool opsOnly, QString mask, QString item) throw (NumberFormatException) {
+/*protected*/ VariableValue* VariableTableModel::processSplitVal(QDomElement child, QString CV, bool readOnly, bool infoOnly, bool writeOnly, QString name, QString comment, bool opsOnly, QString mask, QString item) /*throw (NumberFormatException)*/ {
     VariableValue* v;
     QString a;
     int minVal = 0;

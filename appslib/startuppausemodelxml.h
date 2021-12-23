@@ -11,7 +11,7 @@ public:
  StartupPauseModelXml(const StartupPauseModelXml&) : AbstractXmlAdapter() {}
  /*public*/ QDomElement store(QObject* o);
  /*public*/ bool loadDeferred() ;
- /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (JmriException);
+ /*public*/ bool load(QDomElement shared, QDomElement perNode) /*throw (JmriException)*/;
  /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
 
 private:

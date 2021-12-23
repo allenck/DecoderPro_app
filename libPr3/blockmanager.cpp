@@ -134,7 +134,7 @@ static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->V
 
 /*public*/ Block* BlockManager::provideBlock(QString name) const  {
  if (name.isEmpty()) {
-     throw IllegalArgumentException("Could not create block, no name supplied");
+     throw new IllegalArgumentException("Could not create block, no name supplied");
  }
  Block* b = getBlock(name);
  if (b != nullptr) {
@@ -147,7 +147,7 @@ static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->V
      b = createNewBlock(name);
  }
  if (b == nullptr) {
-     throw IllegalArgumentException("Could not create block \"" + name + "\"");
+     throw new IllegalArgumentException("Could not create block \"" + name + "\"");
  }
  return b;
 }
@@ -188,7 +188,7 @@ static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->V
 
 
 //    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="NP_NULL_PARAM_DEREF", justification="We are validating user input however the value is stored in its original format")
-/*public*/ void BlockManager::setDefaultSpeed(QString speed) throw (JmriException)
+/*public*/ void BlockManager::setDefaultSpeed(QString speed) /*throw (JmriException)*/
 {
     if(speed==NULL)
         throw new JmriException("Value of requested default thrown speed can not be NULL");
@@ -200,7 +200,7 @@ static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->V
         bool bOk = false;
         float f = speed.toFloat(&bOk);
         if(!bOk) throw new NumberFormatException();
-    } catch (NumberFormatException nx) {
+    } catch (NumberFormatException* nx) {
         try{
  // TODO:           jmri.implementation.SignalSpeedMap.getMap().getSpeed(speed);
         } catch (Exception ex){
@@ -305,7 +305,7 @@ QCompleter* BlockManager::getCompleter(QString text)
             if (pm->getPower() == PowerManager::ON) {
                 lastTimeLayoutPowerOn = /*Instant::now()*/ QDateTime::currentDateTimeUtc().toMSecsSinceEpoch();
             }
-        } catch (JmriException  xe) {
+        } catch (JmriException*  xe) {
             // do nothing
         }
      catch (NoSuchMethodError xe)

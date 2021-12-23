@@ -79,7 +79,7 @@
                 } catch (JsonException ex) {
                     jsss->connection->sendMessage(ex.getJsonMessage());
                 }
-            } catch (IOException ex) {
+            } catch (IOException* ex) {
                 // if we get an error, de-register
                 //sensor->removePropertyChangeListener(this);
           disconnect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)));

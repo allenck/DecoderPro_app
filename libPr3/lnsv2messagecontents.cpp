@@ -122,7 +122,7 @@
         log->debug("interpreting a LocoNet message - may be an SV2 message");  // NOI18N
         if (!isSupportedSv2Message(m)) {
             log->debug("interpreting a LocoNet message is NOT an SV2 message");   // NOI18N
-            throw IllegalArgumentException("LocoNet message is not an SV2 message"); // NOI18N
+            throw new IllegalArgumentException("LocoNet message is not an SV2 message"); // NOI18N
         }
         src = m->getElement(SV2_SRC_ELEMENT_INDEX);
         int svx1 = m->getElement(SV2_SVX1_ELEMENT_INDEX);

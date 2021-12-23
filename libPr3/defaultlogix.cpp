@@ -1058,7 +1058,7 @@ public void getStateVariableList(ArrayList <ConditionalVariable> varList, ArrayL
    nb->removePropertyChangeListener(listener);
    return;
   }
- } catch (Exception ex) {
+ } catch (Exception* ex) {
      log->error(tr("Bad name for listener on \"%1\": ").arg(listener->getDevName()), ex);  // NOI18N
  }
  log->error(tr("Bad name for ") + msg + " listener on \"" + listener->getDevName()  // NOI18N

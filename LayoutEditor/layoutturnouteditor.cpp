@@ -39,7 +39,7 @@
          this->layoutTurnoutView = (LayoutTurnoutView*) layoutTrackView;
          this->layoutTurnout = this->layoutTurnoutView->getLayoutTurnout();
         } else {
-            log->error(tr("editLayoutTrack called with wrong type %1").arg(layoutTurnout->getName()),  Exception("traceback"));
+            log->error(tr("editLayoutTrack called with wrong type %1").arg(layoutTurnout->getName()), new Exception("traceback"));
         }
         sensorList.clear();
 

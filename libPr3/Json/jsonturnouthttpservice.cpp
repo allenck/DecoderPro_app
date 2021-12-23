@@ -79,7 +79,7 @@
 /*public*/ QJsonValue JsonTurnoutHttpService::doPut(QString type, QString name, QJsonObject data, QLocale locale) throw (JsonException) {
     try {
         ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->provideTurnout(name);
-    } catch (IllegalArgumentException ex) {
+    } catch (IllegalArgumentException* ex) {
         throw  JsonException(500, tr("Unable to access %1 %2.").arg(JSON::TURNOUT).arg(name));
     }
     return this->doPost(type, name, data, locale);

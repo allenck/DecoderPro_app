@@ -304,7 +304,7 @@ bool varFontSize = false;
 }
 
 void DccLocoAddressSelector::reportError(QString msg) {
-    log->error(msg,  ("traceback"));
+    log->error(msg,  new Throwable("traceback"));
 }
 
 /*

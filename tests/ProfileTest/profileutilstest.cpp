@@ -44,17 +44,17 @@ ProfileUtilsTest::ProfileUtilsTest(QObject *parent) : QObject(parent)
             source = new Profile("source", dir->getName(), dir);
             dir = folder->newFolder("dest");
             destination = new Profile("destination", dir->getName(), dir);
-        } catch (IOException ex) {
+        } catch (IOException* ex) {
             // skip test if unable to create temporary profiles
             Assert::fail("Unable to create temporary profiles",__FILE__, __LINE__);
             return;
         }
         try {
             ProfileUtils::copy(source, destination);
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             Assert::fail("Unable to copy profiles with IllegalArgumentException.",__FILE__, __LINE__);
             return;
-        } catch (IOException ex) {
+        } catch (IOException* ex) {
             log->error("Failure copying profiles", ex);
             Assert::fail("Unable to copy profiles with IOException.",__FILE__, __LINE__);
             return;
@@ -79,7 +79,7 @@ ProfileUtilsTest::ProfileUtilsTest(QObject *parent) : QObject(parent)
             destination = new Profile("destination", dir->getName(), dir);
             // Should cause copy() to throw IllegalArgumentException
             ProfileManager::getDefault()->setActiveProfile(destination);
-        } catch (IOException ex) {
+        } catch (IOException* ex) {
             // skip test if unable to create temporary profiles
             Assert::fail("Unable to create temporary profiles",__FILE__, __LINE__);
             return;
@@ -87,9 +87,9 @@ ProfileUtilsTest::ProfileUtilsTest(QObject *parent) : QObject(parent)
         try {
             // Should throw IllegalArgumentException
             ProfileUtils::copy(source, destination);
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             // This exception is expected and throwing it passes the test
-        } catch (IOException ex) {
+        } catch (IOException* ex) {
             log->error("Failure copying profiles", ex);
             Assert::fail("Unable to copy profiles with IOException.",__FILE__, __LINE__);
         }

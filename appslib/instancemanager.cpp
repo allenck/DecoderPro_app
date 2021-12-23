@@ -348,7 +348,7 @@ void InstanceManager::deregister(QObject* item, QString type)
  {
   QString msg = "Required nonnull default for " + type + " does not exist.";
   log->warn(msg);
-  throw NullPointerException(msg);
+  throw new NullPointerException(msg);
  }
  else
  {
@@ -418,15 +418,15 @@ void InstanceManager::deregister(QObject* item, QString type)
   setInitializationState(type, InitializationState::STARTED);
   if (working == InitializationState::STARTED)
   {
-   log->error(tr("Proceeding to initialize %1 while already in initialization").arg(type),  Exception("Thread \"" + QThread::currentThread()->objectName() + "\""));
-   log->error(tr("    Prior initialization:"), *except);
+   log->error(tr("Proceeding to initialize %1 while already in initialization").arg(type),  new Exception("Thread \"" + QThread::currentThread()->objectName() + "\""));
+   log->error(tr("    Prior initialization:"), except);
    if (traceFileActive) {
        traceFilePrint("*** Already in process ***");
    }
   }
   else if (working == InitializationState::DONE)
   {
-   log->error(tr("Proceeding to initialize %1 but initialization is marked as complete").arg(type),  Exception("Thread \"" + QThread::currentThread()->objectName() + "\""));
+   log->error(tr("Proceeding to initialize %1 but initialization is marked as complete").arg(type), new Exception("Thread \"" + QThread::currentThread()->objectName() + "\""));
   }
 
   // see if can autocreate
@@ -449,17 +449,17 @@ void InstanceManager::deregister(QObject* item, QString type)
      if(!QMetaObject::invokeMethod(obj1, "initialize", Qt::AutoConnection))
      {
          Logger::error(tr("invoke method 'initialize' failed for %1").arg(obj1->metaObject()->className()));
-         throw NoSuchMethodException("no such method initialize");
+         throw new NoSuchMethodException("no such method initialize");
      }
     }
    }
-   catch (NoSuchMethodException ex)
+   catch (NoSuchMethodException* ex)
    {
     log->error(tr("Exception creating auto-default object for %1").arg(type/*.getName()*/), ex);
     setInitializationState(type, InitializationState::FAILED);
     return nullptr;
    }
-   catch (ClassNotFoundException ex)
+   catch (ClassNotFoundException* ex)
    {
     log->error(tr("Exception creating auto-default object for %1").arg(type/*.getName()*/), ex);
     setInitializationState(type, InitializationState::FAILED);

@@ -398,13 +398,13 @@ qSort(defStrings.begin(), defStrings.end());
     //We will allow the turnout manager to handle checking if the values have changed
     try {
         turnoutManager->setDefaultThrownSpeed(thrownValue);
-    } catch (JmriException ex) {
+    } catch (JmriException* ex) {
 //        JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + thrownValue);
     }
 
     try {
         turnoutManager->setDefaultClosedSpeed(closedValue);
-    } catch (JmriException ex) {
+    } catch (JmriException* ex) {
 //        JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + closedValue);
     }
 }
@@ -688,10 +688,10 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
   {
    curAddress = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getNextValidAddress(curAddress, prefix);
   }
-  catch (JmriException ex)
+  catch (JmriException* ex)
   {
    ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->
-                   showErrorMessage("Error","Unable to convert '" + curAddress + "' to a valid Hardware Address",""+ex.getMessage(), "",true, false);
+                   showErrorMessage("Error","Unable to convert '" + curAddress + "' to a valid Hardware Address",""+ex->getMessage(), "",true, false);
    // directly add to statusBar (but never called?)
    statusBarLabel->setText(tr("Error Converting HW address %1").arg(curAddress));
    statusBarLabel->setStyleSheet("QLabel { color: red}");
@@ -773,7 +773,7 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
    {
     t = ((ProxyTurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->provideTurnout(sName);
    }
-   catch (IllegalArgumentException ex)
+   catch (IllegalArgumentException* ex)
    {
     // user input no good
     handleCreateException(sName);

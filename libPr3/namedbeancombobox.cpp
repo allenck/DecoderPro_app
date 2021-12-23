@@ -346,7 +346,7 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
         item = manager->getNamedBean(name);
     }
     if (item == nullptr && !allowNull) {
-        throw IllegalArgumentException();
+        throw new IllegalArgumentException();
     }
     setSelectedItem(item);
 }
@@ -535,7 +535,7 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
                                         try {
                                             // ignore output, only interested in exceptions
                                             manager.validateSystemNameFormat(text);
-                                        } catch (IllegalArgumentException ex) {
+                                        } catch (IllegalArgumentException* ex) {
                                             return new Validation(Validation.Type.DANGER,
                                                     getInvalidNameFormatMessage(manager.getBeanTypeHandled(), text,
                                                             ex.getLocalizedMessage()),

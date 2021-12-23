@@ -135,7 +135,7 @@ void SignalHeadSignalMast::configureHeads(QStringList parts, int start)
     foreach (NamedBeanHandle<SignalHead*>* h , *heads) {
         try {
             ((DefaultSignalHead*)h->getBean())->setHeld(state);
-        } catch (NullPointerException ex){
+        } catch (NullPointerException* ex){
             log->error("NPE caused when trying to set Held due to missing signal head in mast " + getDisplayName());
         }
     }
@@ -148,7 +148,7 @@ void SignalHeadSignalMast::configureHeads(QStringList parts, int start)
     foreach (NamedBeanHandle<SignalHead*>* h , *heads) {
         try {
             ((DefaultSignalHead*)h->getBean())->setLit(state);
-        }  catch (NullPointerException ex){
+        }  catch (NullPointerException* ex){
             log->error("NPE caused when trying to set Dark due to missing signal head in mast " + getDisplayName());
         }
     }

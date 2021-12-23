@@ -752,7 +752,7 @@ bool ConditionalEditBase::validateIntensityReference(int actionType, QString int
     }
     try {
         return validateIntensity((intReference).toInt());
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException* e) {
         QString intRef = intReference;
         if (intReference.length() > 1 && intReference.at(0) == '@') {
             intRef = intRef.mid(1);
@@ -772,7 +772,7 @@ bool ConditionalEditBase::validateIntensityReference(int actionType, QString int
                     throw new NumberFormatException();
                 }
                 validateIntensity( m->getValue().toInt());
-            } catch (NumberFormatException ex) {
+            } catch (NumberFormatException* ex) {
                 JOptionPane::showMessageDialog(
                         NULL,tr("Memory variable \"%1\" currently does not contain a numeric value.\nWhen triggered the action cannot be performed until this value is corrected!").arg(intReference), tr("Warning"), JOptionPane::WARNING_MESSAGE); // NOI18N
             }
@@ -817,7 +817,7 @@ bool ConditionalEditBase::validateTimeReference(int actionType, QString ref) {
     try {
         return validateTime(actionType, Float.valueOf(ref).floatValue());
         // return true if ref is decimal within allowed range
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException* e) {
         String memRef = ref;
         if (ref.length() > 1 && ref.charAt(0) == '@') {
             memRef = ref.substring(1);
@@ -837,7 +837,7 @@ bool ConditionalEditBase::validateTimeReference(int actionType, QString ref) {
                     throw new NumberFormatException();
                 }
                 validateTime(actionType, Float.valueOf((String) m.getValue()).floatValue());
-            } catch (NumberFormatException ex) {
+            } catch (NumberFormatException* ex) {
                 JOptionPane::showMessageDialog(
                         NULL, java.text.MessageFormat.format(tr("Error24"), // NOI18N
                                 memRef), tr("WarningTitle"), JOptionPane::WARNING_MESSAGE);   // NOI18N
@@ -1055,7 +1055,7 @@ QString ConditionalEditBase::validateSignalMastReference(QString name) {
         }
         try {
             h = ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(name);
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             h = NULL; // tested below
         }
     }
@@ -1366,7 +1366,7 @@ int ConditionalEditBase::parseTime(QString s) {
             if ((nMin < 0) || (nMin > 59)) {
                 error = true;
             }
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException* e) {
             error = true;
         }
     }

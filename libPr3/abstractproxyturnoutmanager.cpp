@@ -225,7 +225,7 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  */
 //@Override
 //@CheckReturnValue
-/*public*/ /*@Nonnull*/ QString AbstractProxyTurnoutManager::normalizeSystemName(/*@Nonnull*/ QString inputName) const /*throw (NamedBean::BadSystemNameException)*/ {
+/*public*/ /*@Nonnull*/ QString AbstractProxyTurnoutManager::normalizeSystemName(/*@Nonnull*/ QString inputName) const /*throw new (NamedBean::BadSystemNameException)*/ {
     int index = matchTentative(inputName);
     if (index >= 0) {
         return getMgr(index)->normalizeSystemName(inputName);
@@ -452,7 +452,7 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  * @return a valid system name for this connection
  * @throws JmriException if systemName cannot be created
  */
-QString AbstractProxyTurnoutManager::createSystemName(QString curAddress, QString prefix, QString managerType)const throw (JmriException)
+QString AbstractProxyTurnoutManager::createSystemName(QString curAddress, QString prefix, QString managerType)const /*throw (JmriException)*/
 {
  for (Manager* m : mgrs)
  {
@@ -465,7 +465,7 @@ QString AbstractProxyTurnoutManager::createSystemName(QString curAddress, QStrin
        } else {
            log->warn("createSystemName requested for incompatible Manager");
        }
-   } catch (JmriException ex) {
+   } catch (JmriException* ex) {
        throw ex;
    }
   }
@@ -473,7 +473,7 @@ QString AbstractProxyTurnoutManager::createSystemName(QString curAddress, QStrin
  throw Exception("Manager could not be found for System Prefix " + prefix);
 }
 
-/*public*/ QString AbstractProxyTurnoutManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, char typeLetter) throw (JmriException) {
+/*public*/ QString AbstractProxyTurnoutManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, char typeLetter) /*throw (JmriException)*/ {
     for (Manager* m : mgrs) {
         log->debug(tr("NextValidAddress requested for %1").arg(curAddress));
         if (prefix == (m->getSystemPrefix()) && typeLetter == m->typeLetter()) {
@@ -488,7 +488,7 @@ QString AbstractProxyTurnoutManager::createSystemName(QString curAddress, QStrin
                     default:
                         return QString();
                 }
-            } catch (JmriException ex) {
+            } catch (JmriException* ex) {
                 throw ex;
             }
         }

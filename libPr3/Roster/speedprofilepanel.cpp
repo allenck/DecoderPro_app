@@ -1024,7 +1024,7 @@ LayoutBlock* BlockSensorComboBox::getBlock()
                     // fall out
                     break;
             }
-            } catch (NumberFormatException nfe) {
+            } catch (NumberFormatException* nfe) {
                 SpeedProfilePanel::log->error(tr("SpeedTableModel (%1, %2) value=%3").arg(row).arg(index.column()).arg(value.toString()));
             }
             return false;

@@ -248,7 +248,7 @@ Box::Box(QWidget *parent) :
 /*public*/ void Box::setLayout(QLayout* /*l*/)
 {
     //throw new AWTError("Illegal request");
- Logger::error("Illegal request to set Box layout");
+ Logger::error("Illegal request to set Box layout", nullptr);
 }
 #if 0
 /**

@@ -246,7 +246,7 @@ void ManagerDefaultSelector::removeConnectionAsDefault(QString removedName)
      log->debug(tr("Loaded default %1 for %2").arg(connection).arg(cls));
     }
    }
-  } catch (BackingStoreException ex) {
+  } catch (BackingStoreException* ex) {
       log->info("Unable to read preferences for Default Selector.");
   }
   InitializationException* ex = this->configure();
@@ -274,7 +274,7 @@ void ManagerDefaultSelector::removeConnectionAsDefault(QString removedName)
   }//);
   settings->sync();
  }
- catch (BackingStoreException ex)
+ catch (BackingStoreException* ex)
  {
   log->error("Unable to save preferences for Default Selector.", ex);
  }
@@ -302,7 +302,7 @@ void ManagerDefaultSelector::removeConnectionAsDefault(QString removedName)
  {
   return Class::forName(name/*.replace('-', '.')*/)->metaObject()->className();
  }
- catch (ClassNotFoundException ex)
+ catch (ClassNotFoundException* ex)
  {
   log->error(tr("Could not find class for %1").arg(name));
   return  NULL;

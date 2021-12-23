@@ -114,7 +114,7 @@
     else if (sval==("FLASHYELLOW")) ival = SignalHead::FLASHYELLOW;
     else if (sval==("FLASHRED")) ival = SignalHead::FLASHRED;
     else if (sval==("DARK")) ival = SignalHead::DARK;
-    else throw JDOMException("invalid content: "+sval);
+    else throw new JDOMException("invalid content: "+sval);
 
     appearances->replace(j, ival);
    }
@@ -144,12 +144,12 @@
   loadSpecificMap(signalSystemName, aspectMapName, map, root);
   loadAspectRelationMap(signalSystemName, aspectMapName, map, root);
  }
- catch (IOException e)
+ catch (IOException* e)
  {
   log->error("error reading file \""+file->fileName(), e);
   return NULL;
  }
- catch (JDOMException e)
+ catch (JDOMException* e)
  {
   log->error("error parsing file \""+file->fileName(), e);
   return NULL;
@@ -205,7 +205,7 @@
  try {
         appearance = root.firstChildElement("specificappearances").firstChildElement(child).firstChildElement("aspect").text();
         SMmap->specificMaps->insert(aspectType, appearance);
-    } catch (NullPointerException e){
+    } catch (NullPointerException* e){
         log->debug("appearance not configured");
         return;
     }
@@ -230,7 +230,7 @@
         } else {
             loadImageMaps(img, name, SMmap);
         }
-    } catch (NullPointerException e){
+    } catch (NullPointerException* e){
         //Considered Normal if held aspect uses default signal appearance
     }
 }
@@ -258,7 +258,7 @@
   }
 
  }
- catch (NullPointerException e)
+ catch (NullPointerException* e)
  {
   log->debug("appearance not configured");
   return;
@@ -282,7 +282,7 @@
         if(value==NULL){
             value = getProperty(aspect, "imagelink");
         }
-    } catch (NullPointerException e){
+    } catch (NullPointerException* e){
         /* Can be considered normal for situations where a specific aspect
         has been asked for but it hasn't yet been loaded or configured */
         value = "";

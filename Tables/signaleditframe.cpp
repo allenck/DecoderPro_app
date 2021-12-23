@@ -243,7 +243,7 @@
      */
     /*public*/ void SignalEditFrame::populateFrame(SignalTableModel::SignalRow* sr) {
         if (sr == nullptr) {
-            throw IllegalArgumentException("Null Signal object");
+            throw new IllegalArgumentException("Null Signal object");
         }
         status(tr("To change this %1, make changes above, then click [%2].").arg(sr->getSignal()->getDisplayName()).arg(
                 tr("OK")), false);

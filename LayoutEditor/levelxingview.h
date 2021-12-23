@@ -56,8 +56,8 @@ class LevelXingView : public LayoutTrackView
   /*public*/ QString getSensorDName();
   /*public*/ Sensor* getSensorD();
   /*public*/ void setSensorDName(QString sensorName);
-  /*public*/ LayoutTrack* getConnection(HitPointType::TYPES connectionType) throw (JmriException) override;
-  /*public*/ void setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) throw (JmriException) override;
+  /*public*/ LayoutTrack* getConnection(HitPointType::TYPES connectionType) /*throw (JmriException)*/ override;
+  /*public*/ void setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) /*throw (JmriException)*/ override;
   /*public*/ LayoutTrack* getConnectA();
   /*public*/ LayoutTrack* getConnectB();
   /*public*/ LayoutTrack* getConnectC();

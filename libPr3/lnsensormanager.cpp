@@ -138,7 +138,7 @@ Sensor* LnSensorManager::createNewSensor(QString systemName, QString userName)
  if(defaultSensorState!=Sensor::UNKNOWN){
      try {
          s->setKnownState(defaultSensorState);
-     } catch (JmriException e) { log.warn("Error setting state: "+e.getMessage()); }
+     } catch (JmriException* e) { log.warn("Error setting state: "+e->getMessage()); }
  }
  return (Sensor*)s;
 }
@@ -223,14 +223,14 @@ QString LnSensorManager::createSystemName(QString curAddress, QString prefix) //
         } else {
             try {
                 board = curAddress.mid(0,seperator).toInt();
-            } catch (NumberFormatException ex) {
+            } catch (NumberFormatException* ex) {
                 log.error("Unable to convert " + curAddress + " into the cab and channel format of nn:xx");
                 throw new JmriException("Hardware Address passed should be a number");
             }
         }
         try {
             channel = curAddress.mid(seperator+1).toInt();
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException* ex) {
             log.error("Unable to convert " + curAddress + " into the cab and channel format of nn:xx");
             throw new JmriException("Hardware Address passed should be a number");
         }
@@ -243,7 +243,7 @@ QString LnSensorManager::createSystemName(QString curAddress, QString prefix) //
         //Entered in using the old format
         try {
             iName = curAddress.toInt();
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException* ex) {
             log.error("Unable to convert " + curAddress + " Hardware Address to a number");
             throw new JmriException("Hardware Address passed should be a number");
         }
@@ -260,12 +260,12 @@ QString LnSensorManager::getNextValidAddress(QString curAddress, QString prefix)
 
     try {
         tmpSName = createSystemName(curAddress, prefix);
-    } catch (JmriException ex) {
+    } catch (JmriException* ex) {
 #if 1 // TODO:
         ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->
-                showInfoMessage(tr("Error"), "Unable to convert " + curAddress + " to a valid Hardware Address", ex.getMessage(), QString(), true, false);
+                showInfoMessage(tr("Error"), "Unable to convert " + curAddress + " to a valid Hardware Address", ex->getMessage(), QString(), true, false);
 #endif
-        return NULL;
+        return QString();
     }
 
     //Check to determine if the systemName is in use, return NULL if it is,

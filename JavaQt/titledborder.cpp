@@ -447,7 +447,7 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
             this->titlePosition = titlePosition;
             break;
         default:
-            throw IllegalArgumentException(QString::number(titlePosition) +
+            throw new IllegalArgumentException(QString::number(titlePosition) +
                     " is not a valid title position.");
     }
 }
@@ -467,7 +467,7 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
             this->titleJustification = titleJustification;
             break;
         default:
-            throw IllegalArgumentException(QString::number(titleJustification) +
+            throw new IllegalArgumentException(QString::number(titleJustification) +
                     " is not a valid title justification.");
     }
 }

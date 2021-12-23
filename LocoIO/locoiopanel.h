@@ -20,7 +20,7 @@ public:
  Q_INVOKABLE explicit LocoIOPanel(QWidget *parent = 0);
  ~LocoIOPanel() {}
  LocoIOPanel(const LocoIOPanel&) : LnPanel() {}
- /*public*/ void initComponents(LocoNetSystemConnectionMemo* memo);
+ /*public*/ void initComponents(LocoNetSystemConnectionMemo* memo)override;
  /*public*/ QString getHelpTarget() override;
  /*public*/ QString getTitle() override;
  /*public*/ void dispose() override;

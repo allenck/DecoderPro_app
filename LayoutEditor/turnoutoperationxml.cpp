@@ -55,7 +55,7 @@ TurnoutOperationXml::TurnoutOperationXml(QObject *parent) :
 //    }
 //   }
 //  }
-//  catch (ClassNotFoundException e1)
+//  catch (ClassNotFoundException* e1)
 //  {
 //   log.error("while creating TurnoutOperation", e1);
 //   return NULL;
@@ -65,7 +65,7 @@ TurnoutOperationXml::TurnoutOperationXml(QObject *parent) :
 //   log.error("while creating CommonTurnoutOperation", e2);
 //   return NULL;
 //  }
-//  catch (InstantiationException e3)
+//  catch (InstantiationException* e3)
 //  {
 //   log.error("while creating TurnoutOperation", e3);
 //   return NULL;

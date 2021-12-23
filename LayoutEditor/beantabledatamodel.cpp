@@ -378,7 +378,7 @@ void BeanTableDataModel::setManager(AbstractManager *) {}
      try
      {
       nbMan->updateBeanFromSystemToUser(nBean);
-     } catch (JmriException ex) {
+     } catch (JmriException* ex) {
             //We should never get an exception here as we already check that the username is not valid
      }
      break;
@@ -1110,7 +1110,7 @@ void BeanTableDataModel::On_renameBean_triggered()
     {
      nbMan->updateBeanFromSystemToUser(nBean);
     }
-    catch (JmriException ex)
+    catch (JmriException* ex)
     {
      //We should never get an exception here as we already check that the username is not valid
     }
@@ -1197,7 +1197,7 @@ void BeanTableDataModel::On_removeName_triggered()
     {
      nbMan->updateBeanFromSystemToUser(newNameBean);
     }
-    catch (JmriException ex)
+    catch (JmriException* ex)
     {
      //We should never get an exception here as we already check that the username is not valid
     }
@@ -1481,7 +1481,7 @@ void BeanTableDataModel::onColumnSelected(QObject* obj)
 //        model->get();  // called to get errors
     }
     catch (InterruptedException e) {
-        model->log->error("Exception while deleting bean", e);
+        model->log->error("Exception while deleting bean", &e);
     }
 // catch (ExecutionException e) {
 //     model->log->error("Exception while deleting bean", e);

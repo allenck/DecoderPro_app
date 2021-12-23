@@ -1347,8 +1347,8 @@ void AbstractThrottle::stopClock() {
     int value = (int) qCeil((steps - 1) * speed);
     if (value < 0) {
         // if we get here, something is wrong and needs to be reported.
-        Exception ex =  Exception("Error calculating speed. Please send logs to the JMRI developers.");
-        log->error(ex.getMessage(), ex);
+        Exception* ex = new Exception("Error calculating speed. Please send logs to the JMRI developers.");
+        log->error(ex->getMessage(), ex);
         return 1;
     } else if (value >= steps) {
         return steps; // maximum possible speed

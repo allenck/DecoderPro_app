@@ -36,7 +36,7 @@ public:
 
      /*public*/ bool allowMultipleAdditions(QString systemName) override;
 
-    /*public*/ QString createSystemName(QString curAddress, QString prefix)const throw (JmriException) override;
+    /*public*/ QString createSystemName(QString curAddress, QString prefix)const /*throw (JmriException)*/ override;
     /*public*/ Sensor* newSensor(QString sysName, QString userName) override;
     /*public*/ QString getBeanTypeHandled(bool plural) const override;
     /*public*/ QString getNamedBeanClass() const override;

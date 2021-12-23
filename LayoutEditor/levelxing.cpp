@@ -608,7 +608,7 @@
     }
 }
 
-/*public*/ LayoutTrack *LevelXing::getConnection(HitPointType::TYPES location) throw (JmriException)
+/*public*/ LayoutTrack *LevelXing::getConnection(HitPointType::TYPES location) /*throw (JmriException)*/
 {
     switch (location) {
         case HitPointType::LEVEL_XING_A:
@@ -624,14 +624,14 @@
     }
     QMetaEnum metaEnum = QMetaEnum::fromType<HitPointType::TYPES>();
     log.error(QString("Invalid Point Type ") + metaEnum.valueToKey((int)location)); //I18IN
-    throw JmriException("Invalid Point");
+    throw new JmriException("Invalid Point");
 }
 
-/*public*/ void LevelXing::setConnection(HitPointType::TYPES location, LayoutTrack* o, HitPointType::TYPES type) throw (JmriException) {
+/*public*/ void LevelXing::setConnection(HitPointType::TYPES location, LayoutTrack* o, HitPointType::TYPES type) /*throw (JmriException)*/ {
     if ((type != HitPointType::TRACK) && (type != HitPointType::NONE)) {
      QMetaEnum metaEnum = QMetaEnum::fromType<HitPointType::TYPES>();
         log.error(QString("unexpected type of connection to layoutturnout - ") + metaEnum.valueToKey((int)type));
-        throw JmriException(QString("unexpected type of connection to layoutturnout - ") + metaEnum.valueToKey((int)type));
+        throw new JmriException(QString("unexpected type of connection to layoutturnout - ") + metaEnum.valueToKey((int)type));
     }
     switch (location) {
         case HitPointType::LEVEL_XING_A:
@@ -648,7 +648,7 @@
             break;
         default:
             log.error("Invalid Point Type " + QString::number(location)); //I18IN
-            throw JmriException("Invalid Point");
+            throw new JmriException("Invalid Point");
     }
 }
 
@@ -1629,7 +1629,7 @@ double LevelXing::round (double x) {
      {
       try {
           boundaryBetween->replace(2,(((TrackSegment*)connectC)->getLayoutBlock()->getDisplayName()+ " - " + blockAC->getDisplayName()));
-      } catch (NullPointerException *e){
+      } catch (NullPointerException* *e){
           //Can be considered normal if tracksegement hasn't yet been allocated a block
           log.debug("TrackSegement at connection C doesn't contain a layout block");
       }

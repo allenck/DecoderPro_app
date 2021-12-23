@@ -98,7 +98,7 @@ DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
     return tr(plural ? "SignalMasts" : "SignalMast");
 }
 #if 1
-/*public*/ void DefaultSignalMastManager::addRepeater(SignalMastRepeater* rp) throw (JmriException){
+/*public*/ void DefaultSignalMastManager::addRepeater(SignalMastRepeater* rp) /*throw (JmriException)*/{
     foreach(SignalMastRepeater* rpeat, *repeaterList)
     {
         if(rpeat->getMasterMast()==rp->getMasterMast() &&

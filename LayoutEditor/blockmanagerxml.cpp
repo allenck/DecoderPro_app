@@ -217,7 +217,7 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
 }
 
 //@Override
-/*public*/ void BlockManagerXml::load(QDomElement element, QObject* o) throw (Exception)
+/*public*/ void BlockManagerXml::load(QDomElement element, QObject* o) /*throw (Exception)*/
 {
     log->error("Invalid method called");
 }
@@ -231,7 +231,7 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
  * @return true if successful
  */
 //@SuppressWarnings("unchecked")
-/*public*/ bool BlockManagerXml::load(QDomElement sharedBlocks, QDomElement /*perNodeBlocks*/) throw (JmriConfigureXmlException)
+/*public*/ bool BlockManagerXml::load(QDomElement sharedBlocks, QDomElement /*perNodeBlocks*/)
 {
  bool result = true;
  try
@@ -245,9 +245,9 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
    }
   }
  }
- catch (IllegalArgumentException ex)
+ catch (IllegalArgumentException* ex)
  {
-  log->error(ex.getMessage());
+  log->error(ex->getMessage());
  }
 
  QDomNodeList list = sharedBlocks.elementsByTagName("block");
@@ -279,7 +279,7 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
  * @param element QDomElement holding one block
  */
 //@SuppressWarnings("unchecked")
-/*public*/ void BlockManagerXml::loadBlock(QDomElement element, bool contentsFlag) throw (JmriConfigureXmlException)
+/*public*/ void BlockManagerXml::loadBlock(QDomElement element, bool contentsFlag) /*throw (JmriConfigureXmlException)*/
 {
  QString sysName = getSystemName(element);
  QString userName = getUserName(element);
@@ -318,9 +318,9 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
             block->setBlockSpeed(speed);
         }
     }
- } catch (JmriException ex)
+ } catch (JmriException* ex)
  {
-    log->error(ex.getMessage());
+    log->error(ex->getMessage());
  }
  if(!element.firstChildElement("permissive").isNull()){
     bool permissive = false;
@@ -370,7 +370,7 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
      block->setReporter(reporter);
      block->setReportingCurrent(reporters.at(0).toElement().attribute("useCurrent")==("yes"));
     }
-    catch (IllegalArgumentException ex) {
+    catch (IllegalArgumentException* ex) {
         log->warn(tr("failed to create Reporter \"%1\" during Block load").arg(name));
     }
  }
@@ -405,7 +405,7 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
  * @param element QDomElement containing path information
  */
 //@SuppressWarnings("unchecked")
-/*public*/ bool BlockManagerXml::loadPath(Block* block, QDomElement element) throw (JmriConfigureXmlException)
+/*public*/ bool BlockManagerXml::loadPath(Block* block, QDomElement element) /*throw (JmriConfigureXmlException)*/
 {
  // load individual path
  int toDir = 0;
@@ -413,13 +413,13 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
  bool bok;
  try {
         toDir = element.attribute("todir").toInt(&bok);
-        if(!bok) throw DataConversionException();
+        if(!bok) throw new DataConversionException();
         fromDir = element.attribute("fromdir").toInt(&bok);
-        if(!bok) throw DataConversionException();
+        if(!bok) throw new DataConversionException();
 
-    } catch (DataConversionException e) {
+    } catch (DataConversionException* e) {
         log->error("Could not parse path attribute");
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
      handleException("Block Path entry in file missing required attribute",
           QString(), block->getSystemName(), block->getUserName(), new Exception());
     }
@@ -472,7 +472,7 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
   BeanSetting* bs = new BeanSetting(t, name, setting);
   path->addSetting(bs);
  }
- catch (IllegalArgumentException ex)
+ catch (IllegalArgumentException* ex)
  {
    log->warn(tr("failed to create Turnout \"%1\" during Block load").arg(name));
  }

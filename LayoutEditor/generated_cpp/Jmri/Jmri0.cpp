@@ -42,6 +42,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -1829,7 +1830,7 @@ if (_wrapper) {
 }
   AbstractNamedBean::setState(arg__1);
 }
-void PythonQtShell_AbstractNamedBean::setUserName(QString  s0) throw (NamedBean::BadUserNameException) 
+void PythonQtShell_AbstractNamedBean::setUserName(QString  s0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -1895,7 +1896,7 @@ if (_wrapper) {
 }
   AbstractNamedBean::updateListenerRef(l0, newName1);
 }
-void PythonQtShell_AbstractNamedBean::vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) 
+void PythonQtShell_AbstractNamedBean::vetoableChange(PropertyChangeEvent*  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -5553,7 +5554,7 @@ if (_wrapper) {
 }
   AbstractSensor::setUseDefaultTimerSettings(boo0);
 }
-void PythonQtShell_AbstractSensor::setUserName(QString  s0) throw (NamedBean::BadUserNameException) 
+void PythonQtShell_AbstractSensor::setUserName(QString  s0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -5674,7 +5675,7 @@ if (_wrapper) {
 }
   AbstractSensor::useDefaultTimerSettings(boo0);
 }
-void PythonQtShell_AbstractSensor::vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) 
+void PythonQtShell_AbstractSensor::vetoableChange(PropertyChangeEvent*  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -5808,7 +5809,7 @@ if (_wrapper) {
 }
   return AbstractSensorManager::createNewSensor(arg__1, arg__2);
 }
-QString  PythonQtShell_AbstractSensorManager::createSystemName(QString  curAddress0, QString  prefix1) const throw (JmriException) 
+QString  PythonQtShell_AbstractSensorManager::createSystemName(QString  curAddress0, QString  prefix1) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -12733,7 +12734,7 @@ if (_wrapper) {
 }
   Audio::setState(arg__1);
 }
-void PythonQtShell_Audio::setUserName(QString  s0) throw (NamedBean::BadUserNameException) 
+void PythonQtShell_Audio::setUserName(QString  s0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -12854,7 +12855,7 @@ if (_wrapper) {
 }
   Audio::updateListenerRef(l0, newName1);
 }
-void PythonQtShell_Audio::vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) 
+void PythonQtShell_Audio::vetoableChange(PropertyChangeEvent*  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -14371,7 +14372,7 @@ if (_wrapper) {
 }
   AudioBuffer::setURL(arg__1);
 }
-void PythonQtShell_AudioBuffer::setUserName(QString  s0) throw (NamedBean::BadUserNameException) 
+void PythonQtShell_AudioBuffer::setUserName(QString  s0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -14492,7 +14493,7 @@ if (_wrapper) {
 }
   AudioBuffer::updateListenerRef(l0, newName1);
 }
-void PythonQtShell_AudioBuffer::vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) 
+void PythonQtShell_AudioBuffer::vetoableChange(PropertyChangeEvent*  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -16042,7 +16043,7 @@ if (_wrapper) {
 }
   AudioListener::setState(arg__1);
 }
-void PythonQtShell_AudioListener::setUserName(QString  s0) throw (NamedBean::BadUserNameException) 
+void PythonQtShell_AudioListener::setUserName(QString  s0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -16185,7 +16186,7 @@ if (_wrapper) {
 }
   AudioListener::updateListenerRef(l0, newName1);
 }
-void PythonQtShell_AudioListener::vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) 
+void PythonQtShell_AudioListener::vetoableChange(PropertyChangeEvent*  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -19108,7 +19109,7 @@ if (_wrapper) {
 }
   AudioSource::setState(arg__1);
 }
-void PythonQtShell_AudioSource::setUserName(QString  s0) throw (NamedBean::BadUserNameException) 
+void PythonQtShell_AudioSource::setUserName(QString  s0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -19350,7 +19351,7 @@ if (_wrapper) {
 }
   AudioSource::updateListenerRef(l0, newName1);
 }
-void PythonQtShell_AudioSource::vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) 
+void PythonQtShell_AudioSource::vetoableChange(PropertyChangeEvent*  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -24555,7 +24556,7 @@ if (_wrapper) {
 }
   Block::setState(v0);
 }
-void PythonQtShell_Block::setUserName(QString  s0) throw (NamedBean::BadUserNameException) 
+void PythonQtShell_Block::setUserName(QString  s0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -24643,7 +24644,7 @@ if (_wrapper) {
 }
   Block::updateListenerRef(l0, newName1);
 }
-void PythonQtShell_Block::vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) 
+void PythonQtShell_Block::vetoableChange(PropertyChangeEvent*  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -24807,7 +24808,7 @@ void PythonQtWrapper_Block::setAllocated(Block* theWrappedObject, bool  boo)
   ( theWrappedObject->setAllocated(boo));
 }
 
-void PythonQtWrapper_Block::setBlockSpeed(Block* theWrappedObject, QString  s) throw (JmriException)
+void PythonQtWrapper_Block::setBlockSpeed(Block* theWrappedObject, QString  s)
 {
   ( theWrappedObject->setBlockSpeed(s));
 }
@@ -25212,7 +25213,7 @@ QObject*  PythonQtWrapper_BlockManager::self(BlockManager* theWrappedObject)
   return ( theWrappedObject->self());
 }
 
-void PythonQtWrapper_BlockManager::setDefaultSpeed(BlockManager* theWrappedObject, QString  speed) throw (JmriException)
+void PythonQtWrapper_BlockManager::setDefaultSpeed(BlockManager* theWrappedObject, QString  speed)
 {
   ( theWrappedObject->setDefaultSpeed(speed));
 }

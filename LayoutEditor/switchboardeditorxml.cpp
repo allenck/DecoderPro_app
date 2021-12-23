@@ -101,14 +101,14 @@
     try {
      bool ok;
         x = shared.attribute("x").toInt(&ok);
-        if(!ok) throw DataConversionException();
+        if(!ok) throw new DataConversionException();
         y = shared.attribute("y").toInt(&ok);
-        if(!ok) throw DataConversionException();
+        if(!ok) throw new DataConversionException();
         height = shared.attribute("height").toInt(&ok);
-        if(!ok) throw DataConversionException();
+        if(!ok) throw new DataConversionException();
         width = shared.attribute("width").toInt(&ok);
-        if(!ok) throw DataConversionException();
-    } catch (DataConversionException e) {
+        if(!ok) throw new DataConversionException();
+    } catch (DataConversionException* e) {
         log->error("failed to convert Switchboard's attribute");
         result = false;
     }
@@ -199,10 +199,10 @@
     try {
      bool ok;
         rangemin = shared.attribute("rangemin").toInt(&ok);
-        if(!ok) throw DataConversionException();
+        if(!ok) throw new DataConversionException();
         rangemax = shared.attribute("rangemax").toInt(&ok);
-        if(!ok) throw DataConversionException();
-    } catch (DataConversionException e) {
+        if(!ok) throw new DataConversionException();
+    } catch (DataConversionException* e) {
         log->error("failed to convert Switchboard's range");
         result = false;
     }
@@ -221,8 +221,8 @@
     try {
       bool ok;
         columns = shared.attribute("columns").toInt(&ok);
-        if(!ok) throw DataConversionException();
-    } catch (DataConversionException e) {
+        if(!ok) throw new DataConversionException();
+    } catch (DataConversionException* e) {
         log->error("failed to convert Switchboard's column count");
         result = false;
     }
@@ -237,16 +237,16 @@
     try {
       bool ok;
         int red = shared.attribute("redBackground").toInt(&ok);
-        if(!ok) throw DataConversionException();
+        if(!ok) throw new DataConversionException();
         int blue = shared.attribute("blueBackground").toInt(&ok);
-        if(!ok) throw DataConversionException();
+        if(!ok) throw new DataConversionException();
         int green = shared.attribute("greenBackground").toInt(&ok);
         // panel.setBackground(new Color(red, green, blue));
-        if(!ok) throw DataConversionException();
+        if(!ok) throw new DataConversionException();
          panel->setDefaultBackgroundColor( QColor(red, green, blue));
-    } catch (DataConversionException e) {
+    } catch (DataConversionException* e) {
         log->warn("Could not parse color attributes!");
-    } catch (NullPointerException e) {  // considered normal if the attributes are not present
+    } catch (NullPointerException* e) {  // considered normal if the attributes are not present
     }
     //set the (global) editor display widgets to their flag settings
      panel->initView();
@@ -266,11 +266,16 @@
                 result = false;
             }
         }
-        catch (ClassNotFoundException e) //| InstantiationException | IllegalAccessException
+        catch (ClassNotFoundException* e) //| InstantiationException | IllegalAccessException
 //                | jmri.configurexml.JmriConfigureXmlException
 //                | RuntimeException e)
         {
             log->error(tr("Exception while loading %1").arg(adapterName), e);
+            result = false;
+        }
+        catch (Exception* ex)
+        {
+            log->error(tr("Exception while loading %1").arg(adapterName), ex);
             result = false;
         }
     }

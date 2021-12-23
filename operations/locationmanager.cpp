@@ -186,7 +186,7 @@ PropertyChangeSupport(this, parent)
                      out.insert(j, location);
                      break;
                  }
-             } catch (NumberFormatException e) {
+             } catch (NumberFormatException* e) {
                  log->debug("list id number isn't a number");
              }
          }

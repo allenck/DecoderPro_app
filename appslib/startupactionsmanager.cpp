@@ -119,7 +119,7 @@
    {
     startup = /*JDOMUtil.toJDOMElement*/(ProfileUtils::getAuxiliaryConfiguration(profile)->getConfigurationFragment(STARTUP, NAMESPACE, true));
    }
-   catch (NullPointerException ex)
+   catch (NullPointerException* ex)
    {
     log->debug("Reading element from version 2.9.6 namespace...");
     startup = /*JDOMUtil.toJDOMElement*/(ProfileUtils::getAuxiliaryConfiguration(profile)->getConfigurationFragment(STARTUP, NAMESPACE_OLD, true));
@@ -147,21 +147,21 @@
      log->debug(tr("Creating %1 %2 adapter %3...").arg(type).arg(name).arg(adapter));
      ((XmlAdapter*) Class::forName(adapter/*)newInstance()*/))->load(action, QDomElement()); // no perNode preferences
     }
-    catch (ClassNotFoundException /*| InstantiationException | IllegalAccessException*/ ex)
+    catch (ClassNotFoundException* /*| InstantiationException | IllegalAccessException*/ ex)
     {
-     log->error(tr("Unable to create %1 for %2").arg(adapter).arg(action.tagName()) + ex.getMessage());
+     log->error(tr("Unable to create %1 for %2").arg(adapter).arg(action.tagName()) + ex->getMessage());
      this->addInitializationException(profile, new InitializationException(tr(/*Locale.ENGLISH, */"Unable to create loader \"%1\" for Startup Action class \"%2\".").arg(adapter).arg(name),
              tr("Unable to create loader \"%1\" for Startup Action class \"%2\".").arg(adapter).arg(name),NULL)); // NOI18N
     }
-    catch (Exception ex)
+    catch (Exception* ex)
     {
-     log->error(tr("Unable to load %1 into %2").arg(action.tagName()).arg(adapter) + ex.getMessage());
+     log->error(tr("Unable to load %1 into %2").arg(action.tagName()).arg(adapter) + ex->getMessage());
      this->addInitializationException(profile, new InitializationException(tr(/*Locale.ENGLISH, */"Unable to load Startup action \"%1\" using \"%3\".").arg(adapter).arg(name),
              tr("Unable to load Startup action \"%2\" using \"%1\".").arg(adapter).arg(name),NULL)); // NOI18N
     }
    }
   }
-  catch (NullPointerException ex)
+  catch (NullPointerException* ex)
   {
    // ignore - this indicates migration has not occured
    log->debug("No element to read");
@@ -175,9 +175,9 @@
     {
      action->performAction(action->getTitle());
     }
-    catch (JmriException ex)
+    catch (JmriException* ex)
     {
-     this->addInitializationException(profile, &ex);
+     this->addInitializationException(profile, ex);
     }
    }//);
   }
@@ -268,7 +268,7 @@ void StartupActionsManager::loadPreferencesmanagers()
     requires->insert("GuiLafPreferencesManager");
     return requires;
 }
-#if 1
+
 //@Override
 /*public*/ /*synchronized*/ void StartupActionsManager::savePreferences(Profile* profile)
 {
@@ -296,11 +296,11 @@ void StartupActionsManager::loadPreferencesmanagers()
  {
      ProfileUtils::getAuxiliaryConfiguration(profile)->putConfigurationFragment(/*JDOMUtil.toW3CElement*/(element), true);
      this->_isDirty = false;
- } catch (JDOMException ex) {
-     log->error("Unable to create create XML"+ ex.getMessage());
+ } catch (JDOMException* ex) {
+     log->error("Unable to create create XML"+ ex->getMessage());
  }
 }
-#endif
+
 /*public*/ QList<StartupModel*>* StartupActionsManager::getActions() {
     return this->actions; //.toArray(new StartupModel[this->actions->size()]);
 }

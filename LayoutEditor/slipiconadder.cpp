@@ -421,7 +421,7 @@ SlipIconAdder::~SlipIconAdder()
      try {
 //      rowPanel->layout()->addWidget(Box.createRigidArea(dim));
       cnt++;
-     } catch (NullPointerException npe) { /* never */}
+     } catch (NullPointerException* npe) { /* never */}
     }
     if (rowPanel != NULL)
     {
@@ -602,7 +602,7 @@ public:
   try {
    dataFlavor = new DataFlavor(SlipIconAdder::NamedBeanFlavorMime);
   }
-  catch (ClassNotFoundException cnfe)
+  catch (ClassNotFoundException* cnfe)
   {
    //         cnfe.printStackTrace();
   }

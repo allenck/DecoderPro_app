@@ -240,7 +240,7 @@ controllerListeners = NULL;
 
                 setMomentary.invoke(t, data);
 
-            } catch (NoSuchMethodException ea) {
+            } catch (NoSuchMethodException* ea) {
                 log->warn(ea.getLocalizedMessage(), ea);
             } catch (IllegalAccessException eb) {
                 log->warn(eb.getLocalizedMessage(), eb);
@@ -298,7 +298,7 @@ controllerListeners = NULL;
             message.append(getF.invoke(t, (Object[]) NULL));
         }
 
-    } catch (NoSuchMethodException ea) {
+    } catch (NoSuchMethodException* ea) {
         log->warn(ea.getLocalizedMessage(), ea);
         return;
     } catch (IllegalAccessException eb) {
@@ -389,7 +389,7 @@ controllerListeners = NULL;
     handleMomentary(inPackage.mid(1));
    else if(c == 'q')      //v>=2.0
     handleRequest(inPackage.mid(1));
-  } catch (NullPointerException e)
+  } catch (NullPointerException* e)
   {
    log->warn("No throttle frame to receive: " + inPackage);
    return false;
@@ -505,7 +505,7 @@ controllerListeners = NULL;
             throttle->setSpeedSetting(0);
             addressRelease();
         }
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->warn("No throttle to shutdown");
     }
     clearLeadLoco();
@@ -624,13 +624,13 @@ controllerListeners = NULL;
     throw IllegalAccessException(tr("class %1 not found").arg(className));
    QString mName = "getF" + receivedFunction;
    int methodIndex = obj->metaObject()->indexOfMethod(QMetaObject::normalizedSignature(mName.toLocal8Bit()));
-   if(methodIndex <0 ) throw NoSuchMethodException(tr("%1::%2() not found").arg(className).arg(mName));
+   if(methodIndex <0 ) throw new NoSuchMethodException(tr("%1::%2() not found").arg(className).arg(mName));
    QMetaMethod getF = obj->metaObject()->method(methodIndex);
 //            Class<?> partypes[] = {Boolean.TYPE};
 //            Method setF = functionThrottle.getClass().getMethod("setF" + receivedFunction, partypes);
    mName = "setf"+receivedFunction;
    methodIndex = obj->metaObject()->indexOfMethod(QMetaObject::normalizedSignature(mName.toLocal8Bit()));
-   if(methodIndex <0 ) throw NoSuchMethodException(tr("%1::%2() not found").arg(className).arg(mName));
+   if(methodIndex <0 ) throw new NoSuchMethodException(tr("%1::%2() not found").arg(className).arg(mName));
 
    QMetaMethod setF = obj->metaObject()->method(methodIndex);
    if(!setF.invoke(obj, Qt::DirectConnection,  Q_ARG(bool, state)))
@@ -653,17 +653,17 @@ controllerListeners = NULL;
     }
 
   }
-  catch (NoSuchMethodException ea)
+  catch (NoSuchMethodException* ea)
   {
-   log->warn(ea.getLocalizedMessage());
+   log->warn(ea->getLocalizedMessage());
   }
-  catch (IllegalAccessException eb)
+  catch (IllegalAccessException* eb)
   {
-   log->warn(eb.getLocalizedMessage());
+   log->warn(eb->getLocalizedMessage());
   }
-  catch (InvocationTargetException ec)
+  catch (InvocationTargetException* ec)
   {
-   log->warn(ec.getLocalizedMessage());
+   log->warn(ec->getLocalizedMessage());
   }
 #endif
  }
@@ -696,13 +696,13 @@ controllerListeners = NULL;
     throw IllegalAccessException(tr("class %1 not found").arg(className));
    QString mName = "getF" + receivedFunction + "Momentary";
    int methodIndex = obj->metaObject()->indexOfMethod(QMetaObject::normalizedSignature(mName.toLocal8Bit()));
-   if(methodIndex <0 ) throw NoSuchMethodException(tr("%1::%2() not found").arg(className).arg(mName));
+   if(methodIndex <0 ) throw new NoSuchMethodException(tr("%1::%2() not found").arg(className).arg(mName));
    QMetaMethod getFMom = obj->metaObject()->method(methodIndex);
 //            Class<?> partypes[] = {Boolean.TYPE};
       //Method setF = functionThrottle.getClass().getMethod("setF" + receivedFunction, partypes);
    mName = "setF"+receivedFunction+ "Momentary";
    methodIndex = obj->metaObject()->indexOfMethod(QMetaObject::normalizedSignature(mName.toLocal8Bit()));
-   if(methodIndex <0 ) throw NoSuchMethodException(tr("%1::%2() not found").arg(className).arg(mName));
+   if(methodIndex <0 ) throw new NoSuchMethodException(tr("%1::%2() not found").arg(className).arg(mName));
 
    QMetaMethod setFMom = obj->metaObject()->method(methodIndex);
    bool state;
@@ -722,12 +722,12 @@ controllerListeners = NULL;
     }
    }
 
-   } catch (NoSuchMethodException ea) {
-       log->warn(ea.getLocalizedMessage());
-   } catch (IllegalAccessException eb) {
-       log->warn(eb.getLocalizedMessage());
-   } catch (InvocationTargetException ec) {
-       log->warn(ec.getLocalizedMessage());
+   } catch (NoSuchMethodException* ea) {
+       log->warn(ea->getLocalizedMessage());
+   } catch (IllegalAccessException* eb) {
+       log->warn(eb->getLocalizedMessage());
+   } catch (InvocationTargetException* ec) {
+       log->warn(ec->getLocalizedMessage());
    }
 #endif
  }
@@ -756,7 +756,7 @@ controllerListeners = NULL;
 
         setF.invoke(throttle, data);
 
-    } catch (NoSuchMethodException ea) {
+    } catch (NoSuchMethodException* ea) {
         log->warn(ea.getLocalizedMessage(), ea);
     } catch (IllegalAccessException eb) {
         log->warn(eb.getLocalizedMessage(), eb);
@@ -793,7 +793,7 @@ controllerListeners = NULL;
 
         setF.invoke(throttle, data);
 
-    } catch (NoSuchMethodException ea) {
+    } catch (NoSuchMethodException* ea) {
         log->warn(ea.getLocalizedMessage(), ea);
     } catch (IllegalAccessException eb) {
         log->warn(eb.getLocalizedMessage(), eb);

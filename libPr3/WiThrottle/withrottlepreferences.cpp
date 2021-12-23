@@ -63,8 +63,8 @@ void WiThrottlePreferences::common()
         try {
             setEStopDelay(a.toInt());
             this->asLoadedEStopDelay = this->getEStopDelay();
-        } catch (NumberFormatException e) {
-            log->debug(e.getLocalizedMessage());
+        } catch (NumberFormatException* e) {
+            log->debug(e->getLocalizedMessage());
         }
     }
     if ((a = child.attribute("isUseMomF2")) != NULL) {
@@ -74,7 +74,7 @@ void WiThrottlePreferences::common()
     if ((a = child.attribute("getPort")) != NULL) {
         try {
             setPort(a.toInt());
-        } catch (DataConversionException ex) {
+        } catch (DataConversionException* ex) {
             log->error(tr("Port %1 is invalid.").arg(a));
         }
         this->asLoadedPort = this->getPort();

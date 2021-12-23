@@ -133,8 +133,8 @@ public:
 // /*public*/  void setRayCoordsIndexed(double x, double y, int index);
 // /*public*/ void setRayCoordsIndexed(QPointF point, int index);
  ///*public*/ QPointF getCoordsForConnectionType(int locationType);
- /*public*/ LayoutTrack* getConnection(HitPointType::TYPES connectionType) throw (JmriException) override;
- /*public*/ void setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) throw (JmriException) override;
+ /*public*/ LayoutTrack* getConnection(HitPointType::TYPES connectionType) /*throw (JmriException)*/ override;
+ /*public*/ void setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) /*throw (JmriException)*/ override;
  /*public*/  bool isMainlineIndexed(int index);
  /*public*/  bool isMainlineOrdered(int i);
  /*public*/  bool isTurnoutControlled();

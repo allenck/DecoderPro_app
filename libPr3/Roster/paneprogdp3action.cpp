@@ -266,7 +266,7 @@ if (p == NULL) {
 } else {
     try {
         p->readCV(cv, (ProgListener*)this);
-    } catch (ProgrammerException ex) {
+    } catch (ProgrammerException* ex) {
         //statusUpdate(""+ex);
     }
 }
@@ -333,7 +333,7 @@ if (p == NULL) {
   {
    decoderRoot = decoderFile->rootFromName(DecoderFile::fileLocation+decoderFile->getFileName());
   } 
-  catch (Exception e)
+  catch (Exception* e)
   { 
    log->error("Exception while loading decoder XML file: "+decoderFile->getFileName(), e); return;
   } // NOI18N
@@ -402,7 +402,7 @@ if (p == NULL) {
   f->pack();
   return;
  }
- catch (Exception e)
+ catch (Exception* e)
  {
   log->error("exception reading programmer file: ", e); // NOI18N
  }
@@ -412,7 +412,7 @@ void PaneProgDp3Action::On_saveBasicRoster()
  try{
      log->debug("saveBasicRoster button pressed, calls saveRosterEntry");
      saveRosterEntry();
- } catch (JmriException ex){
+ } catch (JmriException* ex){
      return;
  }
 }
@@ -756,8 +756,8 @@ void ThisProgPane::On_readAllButton_clicked(bool bSelected)
    } else {
        try{
            pane->saveRosterEntry();
-       } catch (JmriException ex){
-           log->warn(tr("Exception while saving roster entry") + ex.getMessage()); // NOI18N
+       } catch (JmriException* ex){
+           log->warn(tr("Exception while saving roster entry") + ex->getMessage()); // NOI18N
            return;
        }
    }

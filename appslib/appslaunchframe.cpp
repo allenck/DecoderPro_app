@@ -265,7 +265,7 @@
         // use as main help menu
         menuBar->addMenu(helpMenu);
 
-    } catch (Throwable e3) {
+    } catch (Throwable* e3) {
         log->error("Unexpected error creating help.", e3);
     }
 

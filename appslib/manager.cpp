@@ -36,11 +36,11 @@
 //@Nonnull
 // /*public*/ QString Manager::getBeanTypeHandled(bool /*plural*/) const { return "??";}
 
-/*static*/ /*public*/ int Manager::getSystemPrefixLength(/*@Nonnull*/ QString inputName) throw (NamedBean::BadSystemNameException)
+/*static*/ /*public*/ int Manager::getSystemPrefixLength(/*@Nonnull*/ QString inputName) /*throw new (NamedBean::BadSystemNameException)*/
 {
-    if (inputName.isEmpty()) throw NamedBean::BadSystemNameException();
+    if (inputName.isEmpty()) throw new NamedBean::BadSystemNameException();
     //if (! Character.isLetter(inputName.charAt(0))) throw new NamedBean.BadSystemNameException();
-    if(!inputName.at(0).isLetter()) throw NamedBean::BadSystemNameException();
+    if(!inputName.at(0).isLetter()) throw new NamedBean::BadSystemNameException();
 
     // As a very special case, check for legacy prefixs - to be removed
     // This is also quite a bit slower than the tuned implementation below
@@ -150,7 +150,7 @@
  *                                      messages in the default locale
  */
 //@Nonnull
-/*public*/ /*default*/ QString Manager::validateSystemNameFormat(/*@Nonnull*/ QString name) const throw (NamedBean::BadSystemNameException)
+/*public*/ /*default*/ QString Manager::validateSystemNameFormat(/*@Nonnull*/ QString name) const /*throw (NamedBean::BadSystemNameException)*/
 {
     return validateSystemNameFormat(name, /*Locale.getDefault()*/QLocale());
 }
@@ -178,7 +178,7 @@
  * @throws BadSystemNameException if provided name is an invalid format
  */
 //@Nonnull
-/*public*/ /*default*/ QString Manager::validateSystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) const throw (NamedBean::BadSystemNameException)
+/*public*/ /*default*/ QString Manager::validateSystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) const /*throw (NamedBean::BadSystemNameException)*/
 {
     return validateSystemNamePrefix(name, locale);
 }
@@ -199,13 +199,13 @@
  * @throws BadSystemNameException if provided name is an invalid format
  */
 //@Nonnull
-/*public*/ /*default*/ QString Manager::validateSystemNamePrefix(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) const throw (NamedBean::BadSystemNameException) {
+/*public*/ /*default*/ QString Manager::validateSystemNamePrefix(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) const /*throw (NamedBean::BadSystemNameException)*/ {
     QString prefix = getSystemNamePrefix();
     if (name == (prefix)) {
-        throw NamedBean::BadSystemNameException(locale, QString("System name \"%1\" is missing suffix.").arg(name),name);
+        throw new NamedBean::BadSystemNameException(locale, QString("System name \"%1\" is missing suffix.").arg(name),name);
     }
     if (!name.startsWith(prefix)) {
-        throw NamedBean::BadSystemNameException(locale, QString("System name '%1' must start with \"%2\".").arg(name, prefix),prefix);
+        throw new NamedBean::BadSystemNameException(locale, QString("System name '%1' must start with \"%2\".").arg(name, prefix),prefix);
     }
     return name;
 }
@@ -231,7 +231,7 @@
     QString prefix = getSystemNamePrefix();
     QString suffix = name.mid(prefix.length());
     if (suffix !=(suffix.trimmed())) {
-        throw NamedBean::BadSystemNameException(locale, QString("System name \"%1\" contains trailing white space characters, but should not.").arg(name),name, prefix);
+        throw new NamedBean::BadSystemNameException(locale, QString("System name \"%1\" contains trailing white space characters, but should not.").arg(name),name, prefix);
     }
     return name;
 }
@@ -257,7 +257,7 @@
     QString prefix = getSystemNamePrefix();
     QString suffix = name.mid(prefix.length());
     if (suffix != (suffix.toUpper())) {
-        throw NamedBean::BadSystemNameException(locale, QString("System name \"%1\" contains lowercase characters, but must be all uppercase.").arg(name), name, prefix);
+        throw new NamedBean::BadSystemNameException(locale, QString("System name \"%1\" contains lowercase characters, but must be all uppercase.").arg(name), name, prefix);
     }
     return name;
 }
@@ -286,12 +286,12 @@
     try {
         int number = (suffix.toInt());
         if (number < min) {
-            throw NamedBean::BadSystemNameException(locale, QString("Number in \"%1\" must be greater than or equal to %2.").arg(name).arg(min), name, QString::number(min));
+            throw new NamedBean::BadSystemNameException(locale, QString("Number in \"%1\" must be greater than or equal to %2.").arg(name).arg(min), name, QString::number(min));
         } else if (number > max) {
-            throw NamedBean::BadSystemNameException(locale, QString("Number in \"%1\" must be less than or equal to %2.").arg(name).arg(max), name, QString::number(max));
+            throw new NamedBean::BadSystemNameException(locale, QString("Number in \"%1\" must be less than or equal to %2.").arg(name).arg(max), name, QString::number(max));
         }
-    } catch (NumberFormatException ex) {
-        throw NamedBean::BadSystemNameException(locale, QString("\"%1\" must be an integer after \"%2\".").arg(name).arg(prefix), name, prefix);
+    } catch (NumberFormatException* ex) {
+        throw new NamedBean::BadSystemNameException(locale, QString("\"%1\" must be an integer after \"%2\".").arg(name).arg(prefix), name, prefix);
     }
     return name;
 }

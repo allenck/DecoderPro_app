@@ -15,7 +15,7 @@ public:
  /*public*/ bool isValid();
  /*public*/ int getDelay();
  /*public*/ void setDelay(int delay);
- /*public*/ void performAction(QString) throw (JmriException);
+ /*public*/ void performAction(QString) /*throw (JmriException)*/;
 
 private:
  /*private*/ int delay;// = -1; // default to invalid duration

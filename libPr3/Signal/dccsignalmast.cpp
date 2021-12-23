@@ -78,7 +78,7 @@ void DccSignalMast::common()
  QStringList parts = systemName.split(":");
  if (parts.length() < 3) {
      log->error("SignalMast system name needs at least three parts: " + systemName);
-     throw IllegalArgumentException("System name needs at least three parts: " + systemName);
+     throw new IllegalArgumentException("System name needs at least three parts: " + systemName);
  }
  if (!parts[0].endsWith(mastType))
  {
@@ -116,7 +116,7 @@ void DccSignalMast::common()
  //try {
  bool bok;
      dccSignalDecoderAddress = tmp.toInt(&bok);
- //} catch (NumberFormatException e) {
+ //} catch (NumberFormatException* e) {
      if(!bok)
      {
      log->warn("DCC accessory address SystemName " + systemName + " is not in the correct format");

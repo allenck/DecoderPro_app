@@ -48,7 +48,7 @@ public:
      * Discover all possible valid source and destination signalmasts past pairs
      * on all layout editor panels.
      */
-    /*public*/ virtual void automaticallyDiscoverSignallingPairs() throw (JmriException) = 0;
+    /*public*/ virtual void automaticallyDiscoverSignallingPairs() /*throw (JmriException)*/ = 0;
 
     /**
      * Discover valid destination signalmasts for a given source signal on a
@@ -56,7 +56,7 @@ public:
      * @param source Source SignalMast
      * @param layout Layout Editor panel to check.
      */
-    /*public*/ virtual void discoverSignallingDest(SignalMast* source, LayoutEditor* layout) throw (JmriException) = 0;
+    /*public*/ virtual void discoverSignallingDest(SignalMast* source, LayoutEditor* layout) /*throw (JmriException)*/ = 0;
 
     /*public*/ virtual void dispose() = 0;
 

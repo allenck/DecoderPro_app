@@ -1503,7 +1503,7 @@ void PositionablePoint::updatePointBox() {
  * {@inheritDoc}
  */
 //@Override
-/*public*/ LayoutTrack* PositionablePoint::getConnection(HitPointType::TYPES connectionType) throw (JmriException) {
+/*public*/ LayoutTrack* PositionablePoint::getConnection(HitPointType::TYPES connectionType) /*throw (JmriException)*/ {
     LayoutTrack* result = nullptr;
     if (connectionType == HitPointType::POS_POINT) {
         result = getConnect1();
@@ -1512,7 +1512,7 @@ void PositionablePoint::updatePointBox() {
         }
     } else {
         log->error("Invalid connection type " + QString::number(connectionType)); //I18IN
-        throw JmriException("Invalid Point");
+        throw new JmriException("Invalid Point");
     }
     return result;
 }
@@ -1521,15 +1521,15 @@ void PositionablePoint::updatePointBox() {
  * {@inheritDoc}
  */
 //@Override
-/*public*/ void PositionablePoint::setConnection(HitPointType::TYPES connectionType, LayoutTrack *o, HitPointType::TYPES type) throw (JmriException) {
+/*public*/ void PositionablePoint::setConnection(HitPointType::TYPES connectionType, LayoutTrack *o, HitPointType::TYPES type) /*throw (JmriException)*/ {
 
     if ((type != HitPointType::TRACK) && (type != HitPointType::NONE)) {
         log->error(QString("unexpected type of connection to positionable point - ") + HitPointType::toString(type));
-        throw JmriException(QString("unexpected type of connection to positionable point - ") + HitPointType::toString(type));
+        throw new JmriException(QString("unexpected type of connection to positionable point - ") + HitPointType::toString(type));
     }
     if (connectionType != HitPointType::POS_POINT) {
         log->error(QString("Invalid Connection Type ") + HitPointType::toString(connectionType)); //I18IN
-        throw JmriException(QString("Invalid Connection Type ") + HitPointType::toString(connectionType));
+        throw new JmriException(QString("Invalid Connection Type ") + HitPointType::toString(connectionType));
     }
 }
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(PositionablePoint.class.getName());

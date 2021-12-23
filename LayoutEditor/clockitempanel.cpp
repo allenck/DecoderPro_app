@@ -80,7 +80,7 @@
       ((JLabel*)label)->setIcon(icon);
       label->setName(borderName);
       panel->layout()->addWidget(label);
-  } catch (ClassNotFoundException cnfe) {
+  } catch (ClassNotFoundException* cnfe) {
 //         cnfe.printStackTrace();
   }
   _iconPanel->layout()->addWidget(panel);

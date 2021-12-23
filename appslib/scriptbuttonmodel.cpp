@@ -33,7 +33,7 @@ ScriptButtonModel::ScriptButtonModel()
 }
 
 //@Override
-/*public*/ void ScriptButtonModel::performAction(QString) throw (JmriException) {
+/*public*/ void ScriptButtonModel::performAction(QString) /*throw (JmriException)*/ {
     if (Apps::buttonSpace() != NULL) {
         QPushButton* b = new QPushButton((new ScriptButtonAction(this))->text());
         Apps::buttonSpace()->layout()->addWidget(b);
@@ -56,7 +56,7 @@ ScriptButtonModel::ScriptButtonModel()
     /*public*/ void ScriptButtonAction::actionPerformed(ActionEvent* /*e*/) {
         try {
             JmriScriptEngineManager::getDefault()->eval(model->getScript());
-        } catch (/*ScriptException | */IOException ex) {
+        } catch (/*ScriptException | */IOException* ex) {
             model->log->error(tr("Unable to run script %1.").arg(model->getScript()->toString()), ex);
         }
     }

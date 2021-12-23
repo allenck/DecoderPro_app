@@ -117,8 +117,8 @@
                 ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesListPanel()->setXml(tlp);
             }
         }
-    } catch (JDOMException ex) {
-        log->warn("Loading Throttles exception" + ex.getMessage());
+    } catch (JDOMException* ex) {
+        log->warn("Loading Throttles exception" + ex->getMessage());
         return false;
     }
     return true;

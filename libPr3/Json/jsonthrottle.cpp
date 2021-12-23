@@ -111,7 +111,7 @@
  {
   try {
       address = Roster::getDefault()->getEntryForId(data.value(JSON::ID).toString())->getDccLocoAddress();
-  } catch (NullPointerException ex) {
+  } catch (NullPointerException* ex) {
       log->warn(tr("Roster entry \"%1\" does not exist.").arg(data.value(JSON::ID).toString()));
       throw JsonException(HttpServletResponse::SC_NOT_FOUND, tr(/*locale,*/ "Unable to create throttle for roster entry %1. Perhaps it does not exist?").arg( data.value(JSON::ID).toString())); // NOI18N
   }
@@ -327,13 +327,13 @@
 /*public*/ void JsonThrottle::sendMessage(QJsonObject data, JsonThrottleSocketService* server) {
     try {
         server->sendMessage(this, data);
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         this->close(server, false);
-        log->warn(tr("Unable to send message, closing connection: %1").arg(ex.getMessage()));
+        log->warn(tr("Unable to send message, closing connection: %1").arg(ex->getMessage()));
         try {
             server->getConnection()->close();
-        } catch (IOException e1) {
-            log->warn("Unable to close connection." + e1.getMessage());
+        } catch (IOException* e1) {
+            log->warn("Unable to close connection." + e1->getMessage());
         }
     }
 }

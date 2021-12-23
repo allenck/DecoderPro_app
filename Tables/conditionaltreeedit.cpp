@@ -3905,7 +3905,7 @@ connect(_actionSetButton, SIGNAL(clicked(bool)), this, SLOT(on_actionSetButton_c
              break;
 
          default:
-             log->error("Unhandled type: {}", itemType);  // NOI18N
+             log->error(tr("Unhandled type: %1").arg(itemType));  // NOI18N
              break;
      }
      _actionOptionBox->setCurrentIndex(_curAction->getOption() - 1);

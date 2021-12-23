@@ -50,9 +50,9 @@ void ConsistDataModel::initTable(JTable* consistTable) {
 {
  try
  {
-  if(_consist == nullptr) throw NullPointerException();
+  if(_consist == nullptr) throw new NullPointerException();
   return (_consist->getConsistList().size());
- } catch (NullPointerException e) {
+ } catch (NullPointerException* e) {
      return (0);
  }
 }

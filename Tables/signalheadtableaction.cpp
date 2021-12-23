@@ -2357,7 +2357,7 @@ void ukAspectChange(boolean edit){
 // {
  t =  (Turnout*) bp->getNamedBean();
 // }
- //catch (JmriException ex)
+ //catch (JmriException* ex)
  if(t == nullptr)
  {
   log->warn("skipping creation of turnout not found for " + reference);

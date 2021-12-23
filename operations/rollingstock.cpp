@@ -902,7 +902,7 @@ IdTagPropertyChangeListener::IdTagPropertyChangeListener(RollingStock* parent) {
       DefaultIdTag* tag = ((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->getIdTag(id.toUpper());
          if(log->isDebugEnabled()) log->debug(tr("Tag %1 Found").arg(tag->toString()));
          setIdTag(tag);
-     } catch (NullPointerException e) {
+     } catch (NullPointerException* e) {
          log->error(tr("Tag %1 Not Found").arg(id));
      }
  }
@@ -1252,7 +1252,7 @@ return "";
      if ((a = e.attribute (Xml::MOVES)) != NULL) {
          try {
              _moves = a.toInt();
-         } catch (NumberFormatException nfe) {
+         } catch (NumberFormatException* nfe) {
              log->error(tr("Move count (%1) for rollingstock (%2) isn't a valid number!").arg(a).arg(toString()));
          }
      }

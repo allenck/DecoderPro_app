@@ -336,8 +336,8 @@ public:
  /*public*/ void setAdditionalViewPopUpMenu(QMenu* popup);
  /*public*/ int getVersion() ;
  /*public*/ void setVersion(int v);
- /*public*/ LayoutTrack* getConnection(HitPointType::TYPES location) throw (JmriException) override;
-/*public*/ void setConnection(HitPointType::TYPES location, LayoutTrack *o, HitPointType::TYPES type) throw (JmriException) override;
+ /*public*/ LayoutTrack* getConnection(HitPointType::TYPES location) /*throw (JmriException)*/ override;
+/*public*/ void setConnection(HitPointType::TYPES location, LayoutTrack *o, HitPointType::TYPES type) /*throw (JmriException)*/ override;
 // /*public*/ QPointF getCoordsForConnectionType(int connectionType) override;
 // /*public*/ QRectF getBounds() override;
  /*public*/ QList<HitPointType::TYPES> checkForFreeConnections() override;

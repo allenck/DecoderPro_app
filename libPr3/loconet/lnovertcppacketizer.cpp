@@ -89,7 +89,7 @@
  if(p->getSocket())
   p->getSocket()->waitForConnected();
  else
-  throw IOException(tr("no socket"));
+  throw new IOException(tr("no socket"));
 
  xmtHandler = new LnTcpXmtHandler(this);
  rcvHandler = new LnTcpRcvHandler(this);

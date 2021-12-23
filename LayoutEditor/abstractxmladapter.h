@@ -22,8 +22,8 @@ public:
     virtual void setDoc(QDomDocument doc);
     /*public*/ bool load(QDomElement e) throw (Exception) override;
     /*public*/ bool load(QDomElement shared, QDomElement perNode) override; //throws Exception
-    /*public*/ void load(QDomElement shared, QDomElement perNode, QObject* o) throw (JmriConfigureXmlException) override;
-    /*public*/ QDomElement store(/*@Nonnull*/ QObject* o, bool shared);
+    /*public*/ void load(QDomElement shared, QDomElement perNode, QObject* o) /*throw (JmriConfigureXmlException)*/ override;
+    /*public*/ QDomElement store(/*@Nonnull*/ QObject* o, bool shared)override;
     /*public*/ void setExceptionHandler(ErrorHandler* errorHandler);
     /*public*/ ErrorHandler* getExceptionHandler();
     /*final*/ /*public*/ bool getAttributeBooleanValue(/*@Nonnull*/ QDomElement element, /*@Nonnull*/ QString name, bool def) ;

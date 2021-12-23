@@ -458,7 +458,7 @@ bool systemNameComparator(LRouteElement* e1, LRouteElement* e2)
     return ch1.mid(numDigit1, ch1.length()-numDigit1) < ch2.mid(numDigit2, ch2.length()-numDigit2);
    }
   }
-  catch (NumberFormatException nfe)
+  catch (NumberFormatException* nfe)
   {
     return o1.compare(o2);
   }

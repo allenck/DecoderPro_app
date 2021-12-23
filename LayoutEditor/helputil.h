@@ -44,9 +44,9 @@ public:
     static /*public*/ HelpBroker* getGlobalHelpBroker();
     static /*public*/ JMenuItem* getHelpAction(/*final*/ QString name, /*final*/ QIcon icon, /*final*/ QString id);
     /*public*/ static QString createStubFile(QString helpKey, QString locale) throw (IOException);
-    /*public*/ static void openWindowsFile(File* file) throw (JmriException);
+    /*public*/ static void openWindowsFile(File* file) /*throw (JmriException)*/;
     /*public*/ static bool showWebPage(QString ref, QString url);
-    /*public*/ static void openWebPage(QString url) throw (JmriException);
+    /*public*/ static void openWebPage(QString url) /*throw (JmriException)*/;
 
 signals:
 

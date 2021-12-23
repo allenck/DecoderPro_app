@@ -143,7 +143,7 @@ JmriLocalEntityResolver::JmriLocalEntityResolver()
                  if(f->open(QIODevice::ReadOnly))
                  return new InputSource(new QTextStream(f));
                  else
-                  throw FileNotFoundException();
+                  throw  new FileNotFoundException();
                 } catch (FileNotFoundException e2) {
                     log->error("did not find direct entity file: " + source);
                     return NULL;

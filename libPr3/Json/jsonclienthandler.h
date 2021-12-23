@@ -27,8 +27,8 @@ private:
  /*private*/ /*final*/ JsonConnection* connection;
  /*private*/ /*final*/ QMap<QString, QSet<JsonSocketService*>*>* services;// = new HashMap<>();
  /*private*/ static /*final*/ Logger* log;// = LoggerFactory.getLogger(JsonClientHandler.class);
- /*private*/ void sendErrorMessage(int code, QString message) throw (IOException);
- /*private*/ void sendErrorMessage(JsonException ex) throw (IOException);
+ /*private*/ void sendErrorMessage(int code, QString message) /*throw (IOException)*/;
+ /*private*/ void sendErrorMessage(JsonException *ex) /*throw (IOException)*/;
 
 };
 

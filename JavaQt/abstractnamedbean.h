@@ -53,7 +53,7 @@ public:
 
     /*public*/ QString getSystemName() const override ;
     /*public*/ QString getUserName() const override;
-    /*public*/ void setUserName(QString s) throw (NamedBean::BadUserNameException)  override;
+    /*public*/ void setUserName(QString s) /*throw (NamedBean::BadUserNameException) */ override;
     /*public*/ void dispose() override;
     /*public*/ void setProperty(QString key, QVariant value) override;
     /*public*/ QVariant getProperty(QString key) override;
@@ -64,7 +64,7 @@ public:
     /*public*/ QString describeState(int state) override;
     Q_INVOKABLE /*public*/ bool equals(NamedBean* obj) override;
     /*public*/ int compareSystemNameSuffix(/*@Nonnull*/ QString suffix1, /*@Nonnull*/ QString suffix2, /*@Nonnull*/ NamedBean* n) override;
-    /*public*/ void vetoableChange(PropertyChangeEvent* /*evt*/) throw (PropertyVetoException) override;
+    /*public*/ void vetoableChange(PropertyChangeEvent* /*evt*/) /*throw (PropertyVetoException)*/ override;
     /*public*/ uint hashCode() override { return qHash(mSystemName, qGlobalQHashSeed());}
     inline bool operator ==(const AbstractNamedBean &e2)
     {

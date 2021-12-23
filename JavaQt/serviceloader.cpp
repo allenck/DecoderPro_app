@@ -364,7 +364,7 @@ template<typename S>
         Class<?> c = null;
         try {
             c = Class.forName(cn, false, loader);
-        } catch (ClassNotFoundException x) {
+        } catch (ClassNotFoundException* x) {
             fail(service,
                  "Provider " + cn + " not found");
         }

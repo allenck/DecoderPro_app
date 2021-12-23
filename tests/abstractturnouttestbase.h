@@ -24,14 +24,14 @@ public:
     /*public*/ void testDispose();
     /*public*/ void testCommandClosed() throw (InterruptedException) ;
     /*public*/ void testCommandThrown() throw (InterruptedException);
-    /*public*/ void testRequestUpdate() throw (JmriException);
+    /*public*/ void testRequestUpdate() /*throw (JmriException)*/;
     /*public*/ void testGetAndSetInverted();
     /*public*/ void testInvertedCommandClosed() throw (InterruptedException);
     /*public*/ void testInvertedCommandThrown() throw (InterruptedException) ;
-    /*public*/ void testProvideFirstFeedbackSensor() throw (JmriException);
-    /*public*/ void testProvideSecondFeedbackSensor() throw (JmriException);
-    /*public*/ void testOneSensorFeedback() throw (JmriException);
-    /*public*/ void testTwoSensorFeedback() throw (JmriException);
+    /*public*/ void testProvideFirstFeedbackSensor() /*throw (JmriException)*/;
+    /*public*/ void testProvideSecondFeedbackSensor() /*throw (JmriException)*/;
+    /*public*/ void testOneSensorFeedback() /*throw (JmriException)*/;
+    /*public*/ void testTwoSensorFeedback() /*throw (JmriException)*/;
     /*public*/ void testDirectFeedback() throw (Exception);
     /*public*/ void testGetBeanType();
 

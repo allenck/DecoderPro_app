@@ -121,7 +121,7 @@ ColorPanel::ColorPanel(ColorModel* model) : JPanel()
         this->x = (this->z != 0) ? 0 : 1;
 //        getParent().repaint();
 //    }
-//    catch (NumberFormatException exception) {
+//    catch (NumberFormatException* exception) {
 //    }
 }
 

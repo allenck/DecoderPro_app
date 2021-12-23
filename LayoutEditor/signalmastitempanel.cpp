@@ -105,7 +105,7 @@ void SignalMastItemPanel::init(ActionListener* doneAction, QMap<QString, NamedIc
     try {
         label = getDragger(new DataFlavor(Editor::POSITIONABLE_FLAVOR));
         label->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
-    } catch (ClassNotFoundException cnfe) {
+    } catch (ClassNotFoundException* cnfe) {
 //        cnfe.printStackTrace();
         label = new JLabel();
     }
@@ -175,7 +175,7 @@ void SignalMastItemPanel::_showIconsButton_clicked()
 
     try {
         _mast = static_cast<SignalMastManager*>( InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(bean->getDisplayName());
-    } catch (IllegalArgumentException ex) {
+    } catch (IllegalArgumentException* ex) {
         log->error(tr("getIconMap: No SignalMast called %1").arg(bean->getDisplayName()));
         _iconMastMap = nullptr;
         return;

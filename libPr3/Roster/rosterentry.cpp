@@ -676,7 +676,7 @@ void RosterEntry::init()
      return "";
     }
     if (fn < 0 || fn > MAXSOUNDNUM) {
-        throw IllegalArgumentException("number out of range: " + QString::number(fn));
+        throw new IllegalArgumentException("number out of range: " + QString::number(fn));
     }
     return soundLabels[fn];
 }
@@ -735,7 +735,7 @@ void RosterEntry::init()
 /*public*/ bool RosterEntry::getFunctionLockable(int fn) {
     if (functionLockables.isEmpty()) return true;
     if (fn <0 || fn >MAXFNNUM)
-        throw IllegalArgumentException("number out of range: "+QString::number(fn));
+        throw new IllegalArgumentException("number out of range: "+QString::number(fn));
  return functionLockables.value(fn);
 }
 
@@ -1068,7 +1068,7 @@ void RosterEntry::init()
         }
 
         LocoFile::loadCvModel(mRootElement.firstChildElement("locomotive"), cvModel, getDecoderFamily());
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log->error("Error reading roster entry", ex);
         try {
             JOptionPane::showMessageDialog(nullptr,

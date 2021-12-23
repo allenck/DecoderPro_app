@@ -223,7 +223,7 @@ void LnTcpServer::on_newConnection()
       serverSocket->close();
   }
  }
- catch (IOException ex) {
+ catch (IOException* ex) {
  }
 
  updateServerStateListener();
@@ -319,7 +319,7 @@ class ClientListener implements Runnable {
                 addClient(new ClientRxHandler(remoteAddress, newClientConnection));
             }
             serverSocket.close();
-        } catch (IOException ex) {
+        } catch (IOException* ex) {
             if (ex.toString().indexOf("socket closed") == -1) {
                 log->error("Server: IO Exception: ", ex);
             }

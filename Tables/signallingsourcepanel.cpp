@@ -187,9 +187,9 @@ void SignallingSourcePanel::discoverPressed(/*ActionEvent e*/)
    {
        ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->discoverSignallingDest(sourceMast, layout->at(i));
    }
-   catch (JmriException ex) {
+   catch (JmriException* ex) {
        signalMastLogicFrame->setVisible(false);
-       JOptionPane::showMessageDialog(NULL, ex.toString());
+       JOptionPane::showMessageDialog(NULL, ex->toString());
    }
   }
  }

@@ -747,9 +747,9 @@ void SensorIcon::updateSensor()
   try
   {
    ((AbstractSensor*)getSensor())->setKnownState(Sensor::INACTIVE);
-  } catch (JmriException reason)
+  } catch (JmriException* reason)
   {
-   log->warn("Exception setting momentary sensor: "+reason.toString());
+   log->warn("Exception setting momentary sensor: "+reason->toString());
   }
  }
  //super.doMouseReleased(e);
@@ -773,9 +773,9 @@ void SensorIcon::updateSensor()
     else
         ((AbstractSensor*)getSensor())->setKnownState(Sensor::INACTIVE);
     qDebug() << tr("sensor %1 state set to %2 (%3)" ).arg(getSensor()->getDisplayName()).arg(((AbstractSensor*)getSensor())->getKnownState()).arg(((AbstractSensor*)getSensor())->getStateName(((AbstractSensor*)getSensor())->getKnownState()));
-   } catch (JmriException reason)
+   } catch (JmriException* reason)
    {
-    log->warn("Exception flipping sensor: "+reason.toString());
+    log->warn("Exception flipping sensor: "+reason->toString());
    }
   }
  }

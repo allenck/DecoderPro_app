@@ -113,10 +113,10 @@ public:
   */
  /*public*/ QStringList getValidOperationTypes() override;
  /*public*/ bool allowMultipleAdditions(QString systemName) override;
- /*public*/ QString createSystemName(QString curAddress, QString prefix)const throw (JmriException) override;
- /*public*/ QString getNextValidAddress(QString curAddress, QString prefix)const throw (JmriException) override;
- /*public*/ void setDefaultClosedSpeed(QString speed)const throw (JmriException) override;
- /*public*/ void setDefaultThrownSpeed(QString speed)const throw (JmriException) override;
+ /*public*/ QString createSystemName(QString curAddress, QString prefix)const /*throw (JmriException)*/ override;
+ /*public*/ QString getNextValidAddress(QString curAddress, QString prefix)const /*throw (JmriException)*/ override;
+ /*public*/ void setDefaultClosedSpeed(QString speed)const /*throw (JmriException)*/ override;
+ /*public*/ void setDefaultThrownSpeed(QString speed)const /*throw (JmriException)*/ override;
  /*public*/ QString getDefaultThrownSpeed()const override;
  /*public*/ QString getDefaultClosedSpeed()const override;
  /*public*/ int getXMLOrder() const  override;

@@ -975,7 +975,7 @@ int LineReader::readLine() //throws IOException
  * @since 1.5
  */
 /*public*/ /*synchronized*/ void Properties::loadFromXML(QTextStream* in)
-//    throw IOException, InvalidPropertiesFormatException
+//    throw new IOException, InvalidPropertiesFormatException
 {
     XmlSupport::load(this, /*Objects.requireNonNULL*/(in));
 //    in.close();
@@ -1290,7 +1290,7 @@ private static XmlPropertiesProvider loadProviderFromProperty(ClassLoader cl) {
     try {
         Class<?> c = Class.forName(cn, true, cl);
         return (XmlPropertiesProvider)c.newInstance();
-    } catch (ClassNotFoundException |
+    } catch (ClassNotFoundException* |
              IllegalAccessException |
              InstantiationException x) {
         throw new ServiceConfigurationError(NULL, x);

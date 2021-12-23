@@ -104,7 +104,7 @@ void SprogSerialDriverAdapter::common()
 #if 0
      try {
          activeSerialPort->setSerialPortParams(baudRate, SerialPort::DATABITS_8, SerialPort::STOPBITS_1, SerialPort::PARITY_NONE);
-     } catch (UnsupportedCommOperationException e) {
+     } catch (UnsupportedCommOperationException* e) {
          log->error(tr("Cannot set serial parameters on port %1: %2").arg(portName).arg(e.getMessage()));
          return "Cannot set serial parameters on port " + portName + ": " + e.getMessage();
      }
@@ -200,9 +200,9 @@ void SprogSerialDriverAdapter::common()
  {
   return handlePortNotFound(p, portName, log);
  }
- catch (IOException ex) {
+ catch (IOException* ex) {
      log->error(tr("Unexpected exception while opening port %1").arg(portName), ex);
-     return "Unexpected error while opening port " + portName + ": " + ex.getMessage();
+     return "Unexpected error while opening port " + portName + ": " + ex->getMessage();
  }
  return ""; // indicates OK return
 
@@ -216,7 +216,7 @@ void SprogSerialDriverAdapter::bytesWritten(qint64 bytes)
 /*public*/ void SprogSerialDriverAdapter::setHandshake(QSerialPort::FlowControl mode) {
     try {
         activeSerialPort->setFlowControl(mode);
-    } catch (UnsupportedCommOperationException ex) {
+    } catch (UnsupportedCommOperationException* ex) {
         log->error("Unexpected exception while setting COM port handshake mode,", ex);
     }
 }
@@ -281,8 +281,8 @@ void SprogSerialDriverAdapter::bytesWritten(qint64 bytes)
   try
   {
       this->getSystemConnectionMemo()->getPowerManager()->setPower(PowerManager::ON);
-  } catch (JmriException e) {
-      log->error(e.toString());
+  } catch (JmriException* e) {
+      log->error(e->toString());
   }
  }
 }

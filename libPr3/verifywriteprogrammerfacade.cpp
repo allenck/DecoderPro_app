@@ -104,7 +104,7 @@
                 state = ProgState::FINISHREAD;
                 try {
                     prog->readCV(_cv, (ProgListener*)this);
-                } catch (ProgrammerException e) {
+                } catch (ProgrammerException* e) {
                     // pass abort up
                     _usingProgrammer = NULL; // done
                     state = ProgState::NOTPROGRAMMING;

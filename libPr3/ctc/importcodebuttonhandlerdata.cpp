@@ -81,7 +81,7 @@
          //(BufferedReader bufferedReader = new BufferedReader(new FileReader(filename)))
          QFile* f = new QFile(filename);
          if(!f->open(QIODevice::ReadOnly | QIODevice::Text))
-          throw IOException(tr(" %1 open err: %2").arg(filename).arg(f->errorString()));
+          throw new IOException(tr(" %1 open err: %2").arg(filename).arg(f->errorString()));
          QTextStream* bufferedReader = new QTextStream(f);
             QString aLine;
             while (!(aLine = bufferedReader->readLine()).contains(FILE_VERSION_STRING)) {}   // Skip to the line IF it exists.

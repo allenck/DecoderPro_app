@@ -284,7 +284,7 @@
         if (articleField->text() != ("")) {
             try {
                 art = inDomain(articleField->text(), 9999);
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException* e) {
                 // fine, will do broadcast all
             }
         }
@@ -345,7 +345,7 @@
                 moduleProgRunning = -1;
                 articleField->setEnabled(true);
                 addressField->setEnabled(true);
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException* e) {
                 statusText1->setText(tr("Enter an number in the Article Nr. field"));
                 modProgButton->setSelected(true);
             }
@@ -362,7 +362,7 @@
                 articleField->setEnabled(false);
                 addressField->setEnabled(false); // lock address field to prevent accidentally changing it
 
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException* e) {
                 log->error("invalid entry, must be number");
             }
         }
@@ -385,7 +385,7 @@
                 adr = inDomain(addressField->text(), 65535); // used as address for reply
                 cv = inDomain(cvField->text(), 9999); // decimal entry
                 memo->getLnTrafficController()->sendLocoNetMessage(LncvMessageContents::createCvReadRequest(art, adr, cv));
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException* e) {
                 log->error("invalid entry, must be number");
             }
         } else {
@@ -421,7 +421,7 @@
                 writeConfirmed = false;
                 memo->getLnTrafficController()->sendLocoNetMessage(LncvMessageContents::createCvWriteRequest(art, cv, val));
                 valueField->setBackground(/*Qt::ORANGE*/QColor(255, 127,0));
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException* e) {
                 log->error("invalid entry, must be number");
             }
         } else {

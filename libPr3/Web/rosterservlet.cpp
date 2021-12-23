@@ -332,7 +332,7 @@ RosterServlet::RosterServlet() : HttpServlet()
    // don't know what to do
    response->sendError(HttpServletResponse::SC_BAD_REQUEST);
   }
- } catch (NullPointerException ex)
+ } catch (NullPointerException* ex)
  {
   // triggered by instanciating a File with NULL path
   // this would happen when an image or icon is requested for a

@@ -1304,7 +1304,7 @@ if (types.length() == 0) {
        && (y = e.attribute(Xml::SOUTH_TRAIN_ICON_Y)) != "") {
           setTrainIconSouth(QPoint(x.toInt(), y.toInt()));
       }
-//       } catch (NumberFormatException nfe) {
+//       } catch (NumberFormatException* nfe) {
 //          log->error("Train icon coordinates aren't vaild for location {}", getName());
 //       }
    if ((a = e.attribute(Xml::COMMENT)) != "") {

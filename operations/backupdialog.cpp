@@ -199,7 +199,7 @@ namespace Operations
          backup->backupFilesToSetName(setName);
          //dispose();
          close();
-//     } catch (IOException ex) {
+//     } catch (IOException* ex) {
 //         ExceptionContext context = new ExceptionContext(
 //                 ex,
 //                 tr("BackupDialog.BackingUp") + " " + setName,

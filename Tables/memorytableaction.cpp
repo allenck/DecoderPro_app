@@ -305,7 +305,7 @@ void MemoryTableAction::okPressed(JActionEvent* /*e*/) {
                    return;
                }
             }
-//        } catch (IllegalArgumentException ex) {
+//        } catch (IllegalArgumentException* ex) {
 //            // user input no good
 //            handleCreateException(sName);
 //            return; // without creating

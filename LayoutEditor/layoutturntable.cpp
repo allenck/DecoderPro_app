@@ -475,14 +475,14 @@
  * {@inheritDoc}
  */
 //@Override
-/*public*/ LayoutTrack* LayoutTurntable::getConnection(HitPointType::TYPES connectionType) throw (JmriException) {
+/*public*/ LayoutTrack* LayoutTurntable::getConnection(HitPointType::TYPES connectionType) /*throw (JmriException)*/ {
     LayoutTrack* result = nullptr;
     if (HitPointType::isTurntableRayHitType(connectionType)) {
         result = getRayConnectIndexed(HitPointType::turntableTrackIndex(connectionType));
     } else {
      QMetaEnum metaEnum = QMetaEnum::fromType<HitPointType::TYPES>();
         log->error(QString("Invalid Turntable connection type ") + metaEnum.valueToKey(connectionType)); // NOI18N
-        throw JmriException("Invalid Point");
+        throw new JmriException("Invalid Point");
     }
     return result;
 }
@@ -491,11 +491,11 @@
  * {@inheritDoc}
  */
 //@Override
-/*public*/ void LayoutTurntable::setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) throw (JmriException) {
+/*public*/ void LayoutTurntable::setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) /*throw (JmriException)*/ {
     if ((type != HitPointType::TRACK) && (type != HitPointType::NONE)) {
      QMetaEnum metaEnum = QMetaEnum::fromType<HitPointType::TYPES>();
         log->error(QString("unexpected type of connection to LevelXing - ") + metaEnum.valueToKey(type));
-        throw JmriException(QString("unexpected type of connection to LevelXing) - ") + metaEnum.valueToKey(type));
+        throw new JmriException(QString("unexpected type of connection to LevelXing) - ") + metaEnum.valueToKey(type));
     }
     if (HitPointType::isTurntableRayHitType(connectionType)) {
      if ((o == nullptr) || (qobject_cast<TrackSegment*>(o))) {
@@ -506,14 +506,14 @@
                  getName(), metaEnum.valueToKey(connectionType), o->getName(),
                  metaEnum.valueToKey(type), o->metaObject()->className()); // NOI18N
          log->error(tr("will throw %1").arg(errString)); // NOI18N
-         throw JmriException(errString);
+         throw new JmriException(errString);
      }
  } else {
      QMetaEnum metaEnum = QMetaEnum::fromType<HitPointType::TYPES>();
      QString errString = tr("%1.setConnection(%2, %3, %4); Invalid connection type").arg(
              getName(), metaEnum.valueToKey(connectionType), (o == nullptr) ? "null" : o->getName(), metaEnum.valueToKey(type)); // NOI18N
      log->error(tr("will throw %1").arg(errString)); // NOI18N
-     throw JmriException(errString);
+     throw new JmriException(errString);
  }
 }
 

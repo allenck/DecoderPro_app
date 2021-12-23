@@ -500,9 +500,9 @@ void FunctionButton::init()
    this->setSelectedIconPath(e.attribute("selectedIconPath"));
   updateLnF();
  }
- catch (DataConversionException ex)
+ catch (DataConversionException* ex)
  {
-  log->error("DataConverstionException in setXml: "+ex.msg);
+  log->error("DataConverstionException in setXml: "+ex->msg);
  }
 }
 

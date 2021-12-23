@@ -637,10 +637,10 @@
    if(QMetaObject::invokeMethod(cl, "getClassDescription", Qt::DirectConnection, Q_RETURN_ARG(QString, desc)))
       classDesFound = true;
    else
-    throw NoSuchMethodException(tr("method %1 not found for class %2").arg("getClassDescription").arg(strClass));
+    throw new NoSuchMethodException(tr("method %1 not found for class %2").arg("getClassDescription").arg(strClass));
 //  } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NullPointerException | ExceptionInInitializerError | NoSuchMethodException ex) {
    }
-   else throw NoSuchMethodException(tr("method %1 not found for class %2").arg("getClassDescription").arg(strClass));
+   else throw new NoSuchMethodException(tr("method %1 not found for class %2").arg("getClassDescription").arg(strClass));
   }
   catch(NoSuchMethodException ex)
   {
@@ -676,9 +676,9 @@
     if(QMetaObject::invokeMethod(cl, "setMessagePreferencesDetails", Qt::DirectConnection))
       classSetFound = true;
      else
-      throw NoSuchMethodException(tr("method %1 not found for class %2").arg("setMessagePreferencesDetails").arg(strClass));
+      throw new NoSuchMethodException(tr("method %1 not found for class %2").arg("setMessagePreferencesDetails").arg(strClass));
    }
-    else throw NoSuchMethodException(tr("method %1 not found for class %2").arg("setMessagePreferencesDetails").arg(strClass));
+    else throw new NoSuchMethodException(tr("method %1 not found for class %2").arg("setMessagePreferencesDetails").arg(strClass));
 
 //  } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NullPointerException | ExceptionInInitializerError | NoSuchMethodException ex) {
   }
@@ -696,12 +696,12 @@
 //      }
 //  }
 
-    } catch (ClassNotFoundException ex) {
+    } catch (ClassNotFoundException* ex) {
         log->warn(tr("class name \"%1\" cannot be found, perhaps an expected plugin is missing?").arg(strClass));
   }
 //     catch (IllegalAccessException ex) {
 //        log->error("unable to access class \"{}\"", strClass, ex);
-//    } catch (InstantiationException ex) {
+//    } catch (InstantiationException* ex) {
 //        log->error("unable to get a class name \"{}\"", strClass, ex);
 //    }
 }
@@ -717,7 +717,7 @@
          t = (QObject*)cl->newInstance();
      }
      //catch (IllegalArgumentException | NullPointerException | ExceptionInInitializerError | NoSuchMethodException | java.lang.reflect.InvocationTargetException ex)
-     catch(InvocationTargetException ex)
+     catch(InvocationTargetException* ex)
      {
          log->error(tr("setClassDescription(%1) failed in newInstance").arg(strClass), ex);
          //return;
@@ -735,7 +735,7 @@
          if(QMetaObject::invokeMethod(t, "getClassDescription", Qt::DirectConnection, Q_RETURN_ARG(QString, desc)))
           classDesFound = true;
          else
-          throw NoSuchMethodException(tr("method %1 not found for class %2").arg("getClassDescription").arg(strClass));
+          throw new NoSuchMethodException(tr("method %1 not found for class %2").arg("getClassDescription").arg(strClass));
      }
      //catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NullPointerException | ExceptionInInitializerError | NoSuchMethodException ex)
      catch(NoSuchMethodException ex)
@@ -771,7 +771,7 @@
       if(QMetaObject::invokeMethod(t, "setMessagePreferencesDetails", Qt::DirectConnection))
          classSetFound = true;
       else
-       throw NoSuchMethodException(tr("method %1 not found for class %2").arg("setMessagePreferencesDetails").arg(strClass));
+       throw new NoSuchMethodException(tr("method %1 not found for class %2").arg("setMessagePreferencesDetails").arg(strClass));
 
      }
      //catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NullPointerException | ExceptionInInitializerError | NoSuchMethodException ex)
@@ -791,11 +791,11 @@
          }
      }
  #endif
- } catch (ClassNotFoundException ex) {
+ } catch (ClassNotFoundException* ex) {
      log->warn(tr("class name \"%1\" cannot be found, perhaps an expected plugin is missing?").arg(strClass));
- } catch (IllegalAccessException ex) {
+ } catch (IllegalAccessException* ex) {
      log->error(tr("unable to access class \"%1\"").arg(strClass), ex);
- } catch (InstantiationException ex) {
+ } catch (InstantiationException* ex) {
      log->error(tr("unable to get a class name \"%1\"").arg(strClass), ex);
  }
 }
@@ -1091,7 +1091,7 @@
  } catch (FileNotFoundException ex) {
      // ignore - this only means that sharedConfig does not exist.
  }
- catch (IOException ex) {
+ catch (IOException* ex) {
     // ignore - this only means that sharedConfig does not exist.
  }
  if (perNodeConfig != nullptr)
@@ -1114,9 +1114,9 @@
    ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->load(file, true);
    this->allowSave = true;
    this->savePreferences(); // write new preferences format immediately
-//                } catch (JmriException e) {
+//                } catch (JmriException* e) {
 //                    log->error("Unhandled problem loading configuration: " + e);
-//                } catch (NullPointerException e) {
+//                } catch (NullPointerException* e) {
 //                    log->error("NPE when trying to load user pref " + file);
 //                }
   } else {
@@ -1341,17 +1341,17 @@
     if (window.attribute("locX") != "" && window.attribute("locX") != "")
     {
      double x = window.attribute("locX").toDouble(&ok);
-     if(!ok) throw DataConversionException();
+     if(!ok) throw new DataConversionException();
      double y = window.attribute("locY").toDouble(&ok);
-     if(!ok) throw DataConversionException();
+     if(!ok) throw new DataConversionException();
      this->setWindowLocation(reference, QPoint((int) x, (int) y));
     }
     if (window.attribute("width") != "" && window.attribute("height") != "")
     {
      double width = window.attribute("width").toDouble(&ok);
-     if(!ok) throw DataConversionException();
+     if(!ok) throw new DataConversionException();
      double height = window.attribute("height").toDouble(&ok);
-     if(!ok) throw DataConversionException();
+     if(!ok) throw new DataConversionException();
      this->setWindowSize(reference, QSize((int) width, (int) height));
     }
    }
@@ -1386,12 +1386,12 @@
         //Object value = ctor.newInstance(new Object[]{property.getChild("value").getText()});
         QString value;
         QMetaObject::invokeMethod(ctor, QMetaObject::normalizedSignature(property.firstChildElement("value").text().toLatin1()),Qt::DirectConnection,Q_ARG(QString, value));
-        if(value.isEmpty()) throw NullPointerException();
+        if(value.isEmpty()) throw new NullPointerException();
         log->debug(tr("Setting property %1 for %2 to %3").arg(key).arg(reference).arg(value));
         this->setProperty(reference, key, value);
        }
-       else throw NoSuchMethodException();
-//      catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)
+       else throw new NoSuchMethodException();
+//      catch (ClassNotFoundException* | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)
       }
      }
      catch( ClassNotFoundException ex)
@@ -1402,7 +1402,7 @@
      {
        log->error(tr("Unable to retrieve property \"%1\" for window \"%2\"").arg(key).arg(reference));
      }
-     catch (NullPointerException ex)
+     catch (NullPointerException* ex)
      {
       // NULL properties do not get set
       log->debug(tr("Property \"%1\" for window \"%2\" is NULL").arg(key).arg(reference));
@@ -1440,7 +1440,7 @@
          window.setAttribute("locX", entry.value()->getLocation().x());
          window.setAttribute("locY", entry.value()->getLocation().y());
      }
-     catch (NullPointerException ex) {
+     catch (NullPointerException* ex) {
          // Expected if the location has not been set or the window is open
      }
     }
@@ -1453,7 +1453,7 @@
                 window.setAttribute("width", (width));
                 window.setAttribute("height", (height));
             }
-        } catch (NullPointerException ex) {
+        } catch (NullPointerException* ex) {
             // Expected if the size has not been set or the window is open
         }
     }
@@ -1523,7 +1523,7 @@
     if(log->isDebugEnabled()) log->trace(tr("Saving %1 element.").arg(element.tagName()));
     try {
         ProfileUtils::getUserInterfaceConfiguration(ProfileManager::getDefault()->getActiveProfile())->putConfigurationFragment(/*JDOMUtil.toW3CElement*/(element), false);
-    } catch (JDOMException ex) {
+    } catch (JDOMException* ex) {
         log->error("Unable to save user preferences"/*, ex*/);
     }
 

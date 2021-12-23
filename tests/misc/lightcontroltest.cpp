@@ -180,7 +180,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
 }
 
 //@Test
-/*public*/ void LightControlTest::testSingleSensorFollower() throw (JmriException) {
+/*public*/ void LightControlTest::testSingleSensorFollower() /*throw (JmriException)*/ {
 
     l = ((LightManager*)InstanceManager::getDefault("LightManager"))->provideLight("L1");
     Sensor* s = ((SensorManager*)InstanceManager::getDefault("SensorManager"))->provideSensor("S2");
@@ -264,7 +264,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
 }
 
 //@Test
-/*public*/ void LightControlTest::testTurnoutFollower() throw (JmriException) {
+/*public*/ void LightControlTest::testTurnoutFollower() /*throw (JmriException)*/ {
 
     l = ((LightManager*)InstanceManager::getDefault("LightManager"))->provideLight("L1");
     Turnout* t = ((TurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->provideTurnout("T1");
@@ -578,7 +578,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
 }
 
 //@Test
-/*public*/ void LightControlTest::testTimedSensorFollowing() throw (JmriException) {
+/*public*/ void LightControlTest::testTimedSensorFollowing() /*throw (JmriException)*/ {
 
     l = ((LightManager*)InstanceManager::getDefault("LightManager"))->provideLight("L1");
     Sensor* s = ((SensorManager*)InstanceManager::getDefault("SensorManager"))->provideSensor("S2");
@@ -713,7 +713,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
 }
 
 //@Test
-/*public*/ void LightControlTest::testTwoSensorFollowing() throw (JmriException) {
+/*public*/ void LightControlTest::testTwoSensorFollowing() /*throw (JmriException)*/ {
 
     l = ((LightManager*)InstanceManager::getDefault("LightManager"))->provideLight("L1");
     Sensor* sOne = ((SensorManager*)InstanceManager::getDefault("SensorManager"))->provideSensor("S1");
@@ -783,7 +783,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
 }
 
 //@Test
-/*public*/ void LightControlTest::testTwoSensorFollowingInactive() throw (JmriException) {
+/*public*/ void LightControlTest::testTwoSensorFollowingInactive() /*throw (JmriException)*/ {
 
     l = ((LightManager*)InstanceManager::getDefault("LightManager"))->provideLight("L1");
     Sensor* sOne = ((SensorManager*)InstanceManager::getDefault("SensorManager"))->provideSensor("S1");

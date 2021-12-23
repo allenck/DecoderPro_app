@@ -97,7 +97,7 @@ void XmlFileValidateAction::common()
           stream = new QTextStream(f);
          }
          else {
-          throw FileNotFoundException(tr("%1 not found").arg(f->fileName()));
+          throw  new FileNotFoundException(tr("%1 not found").arg(f->fileName()));
          }
 
             SAXBuilder builder = new SAXBuilder("org.apache.xerces.parsers.SAXParser", false);

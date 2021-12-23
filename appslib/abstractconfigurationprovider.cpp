@@ -49,7 +49,7 @@
         if (!ProfileUtils::copyPrivateContentToCurrentIdentity(project)) {
             log->debug("Starting profile with new private configuration.");
         }
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         log->debug("Copying existing private configuration failed.");
     }
    }

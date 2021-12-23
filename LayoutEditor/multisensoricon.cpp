@@ -491,8 +491,8 @@ void MultiSensorIcon::updateSensor()
     try {
         ((AbstractSensor*)entries->at(next)->namedSensor->getBean())->setKnownState(Sensor::ACTIVE);
         if (drop >= 0 && drop != next) ((AbstractSensor*)entries->at(drop)->namedSensor->getBean())->setKnownState(Sensor::INACTIVE);
-    } catch (JmriException ex) {
-        log->error("Click failed to set sensor: "+ex.getMessage());
+    } catch (JmriException* ex) {
+        log->error("Click failed to set sensor: "+ex->getMessage());
     }
 }
 

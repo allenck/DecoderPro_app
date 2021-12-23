@@ -93,7 +93,7 @@ MeterFrameTest::MeterFrameTest(QObject *parent) : JmriJFrameTestBase(parent)
 //        ThreadingUtil.runOnLayout(() -> {
             try {
                 r.run();
-            } catch (JmriException e) {
+            } catch (JmriException* e) {
                 throw RuntimeException(e);
             }
 //        });

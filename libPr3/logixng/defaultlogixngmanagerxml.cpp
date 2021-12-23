@@ -243,7 +243,7 @@
         Class/*<?>*/* clazz;
         try {
             clazz = Class::forName(className);
-        } catch (ClassNotFoundException ex) {
+        } catch (ClassNotFoundException* ex) {
             log->error("cannot load class " + className, ex);
             return;
         }
@@ -251,7 +251,7 @@
         Constructor<?> c;
         try {
             c = clazz->getConstructor();
-        } catch (NoSuchMethodException | SecurityException ex) {
+        } catch (NoSuchMethodException* | SecurityException ex) {
             log->error("cannot create constructor", ex);
             return;
         }
@@ -274,7 +274,7 @@
             if (! ((DefaultClipboard)tm.getClipboard()).replaceClipboardItems(anyMany, errors)) {
                 for (String s : errors) log.error(s);
             }
-        } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+        } catch (InstantiationException* | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             log.error("cannot create object", ex);
         }
 #endif

@@ -129,7 +129,7 @@ NmraPacketTest::NmraPacketTest(QObject *parent) : QObject(parent)
     try {
         NmraPacket::accDecoderPkt(addr, 0, 0);
         Assert::fail("Expected IllegalArgumentException not thrown", __FILE__, __LINE__);
-    } catch (IllegalArgumentException ex) {
+    } catch (IllegalArgumentException* ex) {
         threw = true;
     }
 //    finally {

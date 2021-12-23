@@ -539,7 +539,7 @@ FunctionPanel::~FunctionPanel()
 
    functionButton.at(i)->setState(state); // reset button state
 //   }
-//   catch (NoSuchMethodException ex1)
+//   catch (NoSuchMethodException* ex1)
 //   {
 //    log->warn("Exception in notifyThrottleFound: " + ex1);
 //   } catch (IllegalAccessException ex2) {

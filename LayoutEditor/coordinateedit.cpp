@@ -1063,7 +1063,7 @@ void CoordinateEdit::on_scaleCancel_clicked()
                 pp->setId(t);
                 pp->updateSize();
                 dispose();
-            } catch (Positionable::DuplicateIdException ignore) {
+            } catch (Positionable::DuplicateIdException* ignore) {
                 JOptionPane::showMessageDialog(editor,
                         tr("Id is not unique"),
                         tr("Error"),
@@ -1074,7 +1074,7 @@ void CoordinateEdit::on_scaleCancel_clicked()
                 pp->setId("");
                 pp->updateSize();
                 dispose();
-            } catch (Positionable::DuplicateIdException ex) {
+            } catch (Positionable::DuplicateIdException* ex) {
                 // This should never happen
                 log->error("Positionable.setId(null) has thrown DuplicateIdException", ex);
             }

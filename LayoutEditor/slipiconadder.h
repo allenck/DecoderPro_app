@@ -73,7 +73,7 @@ public:
        try {
         dataFlavor = new DataFlavor(MultiSensorIconAdder::NamedBeanFlavorMime);
        }
-       catch (ClassNotFoundException cnfe)
+       catch (ClassNotFoundException* cnfe)
        {
         //cnfe.printStackTrace();
        }

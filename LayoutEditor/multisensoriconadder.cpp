@@ -225,7 +225,7 @@ void MultiSensorIconAdder::setMultiIcon(QList <MultiSensorIcon::Entry*>* icons)
   //rowPanel->layout()->addWidget(Box.createRigidArea(dim));
   cnt++;
   }
-  catch (NullPointerException npe) { /* never */}
+  catch (NullPointerException* npe) { /* never */}
  }
  if (rowPanel != NULL)
  {

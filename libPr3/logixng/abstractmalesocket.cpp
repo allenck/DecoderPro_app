@@ -519,7 +519,7 @@
 
     //@Override
     /*public*/ /*final*/ Base* AbstractMaleSocket::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames)
-            throw (JmriException) {
+            /*throw (JmriException)*/ {
 
         MaleSocket* maleSocket = (MaleSocket*)getObject()->getDeepCopy(systemNames, userNames);
 
@@ -542,7 +542,7 @@
     }
 
     //@Override
-    /*public*/ /*final*/ Base* AbstractMaleSocket::deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) throw (JmriException) {
+    /*public*/ /*final*/ Base* AbstractMaleSocket::deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/ {
         getObject()->deepCopyChildren(original, systemNames, userNames);
         return this;
     }
@@ -581,7 +581,7 @@
         }
     }
 
-    /*public*/ void AbstractMaleSocket::handleError(Base* item, QString message, JmriException* e, Logger* log) throw (JmriException) {
+    /*public*/ void AbstractMaleSocket::handleError(Base* item, QString message, JmriException* e, Logger* log) /*throw (JmriException)*/ {
 
         // Always throw AbortConditionalNGExecutionException exceptions
         if (!_catchAbortExecution && (static_cast<AbortConditionalNGExecutionException*>(e))) throw *e;
@@ -628,7 +628,7 @@
             QList<QString> messageList,
             JmriException* e,
             Logger* log)
-            throw (JmriException) {
+            /*throw (JmriException)*/ {
 
         ErrorHandlingType::TYPES errorHandlingType = getErrorHandlingType();
         if (errorHandlingType == ErrorHandlingType::Default) {
@@ -666,7 +666,7 @@
         }
     }
 
-    /*public*/ void AbstractMaleSocket::handleError(Base* item, QString message, RuntimeException* e, Logger* log) throw (JmriException) {
+    /*public*/ void AbstractMaleSocket::handleError(Base* item, QString message, RuntimeException* e, Logger* log) /*throw (JmriException)*/ {
 
         ErrorHandlingType::TYPES errorHandlingType = getErrorHandlingType();
         if (errorHandlingType == ErrorHandlingType::Default) {

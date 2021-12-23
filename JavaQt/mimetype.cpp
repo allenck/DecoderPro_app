@@ -38,7 +38,7 @@ MimeType::MimeType(QObject *parent) :
  * @param rawdata text used to initialize the <code>MimeType</code>
  * @throws NullPointerException if <code>rawdata</code> is null
  */
-/*public*/ MimeType::MimeType(QString rawdata,QObject *parent) throw (MimeTypeParseException) {
+/*public*/ MimeType::MimeType(QString rawdata,QObject *parent) /*throw (MimeTypeParseException)*/ {
     parse(rawdata);
 }
 
@@ -65,15 +65,15 @@ MimeType::MimeType(QObject *parent) :
  * @throws NullPointerException if either <code>primary</code>,
  *         <code>sub</code> or <code>mtpl</code> is null
  */
-/*public*/ MimeType::MimeType(QString primary, QString sub, MimeTypeParameterList* mtpl,QObject *parent) throw
-(MimeTypeParseException) {
-if(mtpl == NULL)
-    mtpl = new MimeTypeParameterList();
+/*public*/ MimeType::MimeType(QString primary, QString sub, MimeTypeParameterList* mtpl,QObject *parent) /*throw
+(MimeTypeParseException)*/: QObject(parent) {
+    if(mtpl == NULL)
+       mtpl = new MimeTypeParameterList();
     //    check to see if primary is valid
     if(isValidToken(primary)) {
         primaryType = primary.toLower();
     } else {
-        log->error(tr("Primary type is invalid. %1").arg(primaryType));
+        log->error(tr("Primary type is invalid. %1").arg(primaryType), nullptr);
         throw new MimeTypeParseException("Primary type is invalid.");
     }
 
@@ -81,7 +81,7 @@ if(mtpl == NULL)
     if(isValidToken(sub)) {
         subType = sub.toLower();
     } else {
-        log->error("Sub type is invalid.");
+        log->error("Sub type is invalid.", nullptr);
         throw new MimeTypeParseException("Sub type is invalid.");
     }
 
@@ -127,18 +127,18 @@ if(qobject_cast<MimeType*>(thatObject)== NULL)
  *
  * @throws NullPointerException if <code>rawdata</code> is null
  */
-/*private*/ void MimeType::parse(QString rawdata) throw (MimeTypeParseException) {
+/*private*/ void MimeType::parse(QString rawdata) /*throw (MimeTypeParseException)*/ {
     int slashIndex = rawdata.indexOf('/');
     int semIndex = rawdata.indexOf(';');
     if((slashIndex < 0) && (semIndex < 0)) {
         //    neither character is present, so treat it
         //    as an error
-        log->error("Unable to find a sub type.");
+        log->error("Unable to find a sub type.", nullptr);
         throw new MimeTypeParseException("Unable to find a sub type.");
     } else if((slashIndex < 0) && (semIndex >= 0)) {
         //    we have a ';' (and therefore a parameter list),
         //    but no '/' indicating a sub type is present
-        log->error("Unable to find a sub type.");
+        log->error("Unable to find a sub type.", nullptr);
         throw new MimeTypeParseException("Unable to find a sub type.");
     } else if((slashIndex >= 0) && (semIndex < 0)) {
         //    we have a primary and sub type but no parameter list
@@ -165,13 +165,13 @@ MimeTypeParameterList(rawdata.mid(semIndex));
 
     //    check to see if primary is valid
     if(!isValidToken(primaryType)) {
-     log->error(tr("Primary type is invalid. %1").arg(primaryType));
+     log->error(tr("Primary type is invalid. %1").arg(primaryType), nullptr);
         throw new MimeTypeParseException("Primary type is invalid.");
     }
 
     //    check to see if sub is valid
     if(!isValidToken(subType)) {
-        log->error("Sub type is invalid.");
+        log->error("Sub type is invalid.", nullptr);
         throw new MimeTypeParseException("Sub type is invalid.");
     }
 }
@@ -272,7 +272,7 @@ MimeTypeParameterList(rawdata.mid(semIndex));
  *    <code>false</code>; if <code>rawdata</code> is
  *    <code>null</code>, returns <code>false</code>
  */
-/*public*/ bool MimeType::match(QString rawdata) throw (MimeTypeParseException) {
+/*public*/ bool MimeType::match(QString rawdata) /*throw (MimeTypeParseException)*/ {
 if (rawdata == "")
         return false;
     return match(new MimeType(rawdata));

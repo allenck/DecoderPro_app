@@ -117,7 +117,7 @@ JsonRosterEntryListener::JsonRosterEntryListener( JsonRosterSocketService* jrss)
             jrss->log->debug(tr("Triggering change on %1 (%2 => %3)").arg(evt->getPropertyName()).arg( evt->getOldValue().toString()).arg(evt->getNewValue().toString()));
             jrss->connection->sendMessage(jrss->service->getRosterEntry(jrss->connection->getLocale(), (RosterEntry*) evt->getSource()));
         }
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         jrss->onClose();
     }
 }
@@ -164,7 +164,7 @@ JsonRosterListener::JsonRosterListener(JsonRosterSocketService* jrss)
             // catch all events other than SAVED
             jrss->connection->sendMessage(jrss->service->getRoster(jrss->connection->getLocale(), root));
         }
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         jrss->onClose();
     }
 }

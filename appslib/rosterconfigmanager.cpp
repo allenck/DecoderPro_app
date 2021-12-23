@@ -73,7 +73,7 @@ void RosterConfigManager::propertyChange(PropertyChangeEvent* evt)
   {
    this->setDirectory(profile, preferences->get(DIRECTORY, this->getDirectory()));
   }
-  catch (IllegalArgumentException ex)
+  catch (IllegalArgumentException* ex)
   {
    this->setInitialized(profile, true);
    throw InitializationException(
@@ -94,7 +94,7 @@ void RosterConfigManager::propertyChange(PropertyChangeEvent* evt)
     preferences->put(DEFAULT_OWNER, this->getDefaultOwner());
     try {
         preferences->sync();
-    } catch (BackingStoreException ex) {
+    } catch (BackingStoreException* ex) {
         log->error("Unable to save preferences", ex);
     }
 }

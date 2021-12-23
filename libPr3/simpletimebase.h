@@ -57,7 +57,7 @@ public:
     /*public*/ void addMinuteChangeListener(PropertyChangeListener* l) override;
     /*public*/ void removeMinuteChangeListener(PropertyChangeListener* l) override;
     /*public*/ QVector<PropertyChangeListener *> getMinuteChangeListeners() override;
-    /*public*/ void setState(int s) throw (JmriException) override;
+    /*public*/ void setState(int s) /*throw (JmriException)*/ override;
     /*public*/ int getState() override;
     PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
     /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;

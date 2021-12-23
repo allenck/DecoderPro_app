@@ -1526,11 +1526,11 @@ class InetAddress implements java.io.Serializable {
                       new GetPropertyAction("impl.prefix", ""));
         try {
             impl = Class.forName("java.net." + prefix + implName).newInstance();
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException* e) {
             System.err.println("Class not found: java.net." + prefix +
                                implName + ":\ncheck impl.prefix property " +
                                "in your properties file.");
-        } catch (InstantiationException e) {
+        } catch (InstantiationException* e) {
             System.err.println("Could not instantiate: java.net." + prefix +
                                implName + ":\ncheck impl.prefix property " +
                                "in your properties file.");

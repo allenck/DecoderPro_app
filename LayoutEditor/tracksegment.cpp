@@ -411,9 +411,9 @@ TrackSegment::getLayoutBlock()
  */
 // only implemented here to suppress "does not override abstract method " error in compiler
 //@Override
-/*public*/ LayoutTrack* TrackSegment::getConnection(HitPointType::TYPES /*connectionType*/) throw (JmriException) {
+/*public*/ LayoutTrack* TrackSegment::getConnection(HitPointType::TYPES /*connectionType*/) /*throw (JmriException)*/ {
     // nothing to see here, move along
- throw JmriException("Use getConnect1() or getConnect2() instead.");
+ throw new JmriException("Use getConnect1() or getConnect2() instead.");
 }
 
 /**
@@ -424,9 +424,9 @@ TrackSegment::getLayoutBlock()
  */
 // only implemented here to suppress "does not override abstract method " error in compiler
 //@Override
-/*public*/ void TrackSegment::setConnection(HitPointType::TYPES /*connectionType*/, /*@Nullable*/ LayoutTrack* /*o*/, HitPointType::TYPES /*type*/) throw (JmriException) {
+/*public*/ void TrackSegment::setConnection(HitPointType::TYPES /*connectionType*/, /*@Nullable*/ LayoutTrack* /*o*/, HitPointType::TYPES /*type*/) /*throw (JmriException)*/ {
     // nothing to see here, move along
- throw JmriException("Use setConnect1() or setConnect2() instead.");
+ throw new JmriException("Use setConnect1() or setConnect2() instead.");
 }
 
 /*public*/ void TrackSegment::setConnect1(/*@CheckForNull*/ LayoutTrack* o, HitPointType::TYPES type) {

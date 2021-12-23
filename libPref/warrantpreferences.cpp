@@ -56,7 +56,7 @@ WarrantPreferences::WarrantPreferences(QObject *parent) :
       preferences->initialize(ProfileManager::getDefault()->getActiveProfile());
   }
   catch (InitializationException ex) {
-      Logger::error("Error initializing default WarrantPreferences", ex);
+      Logger::error("Error initializing default WarrantPreferences", &ex);
   }
  }//);
  return preferences;

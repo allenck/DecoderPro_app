@@ -187,7 +187,7 @@ void EditableResizableImagePanel::on_removeAction()
             try {
                 FileUtil::createDirectory(dest->getParentFile()->getPath());
                 FileUtil::copy(files[0], dest);
-            } catch (IOException ex) {
+            } catch (IOException* ex) {
                 log->error("filesDropped: error while copying new file, using original file");
                 dest = files.at(0);
             }

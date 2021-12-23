@@ -52,7 +52,7 @@ using namespace Sprog;
   // Create an input reader based on the file, so we can read its data.
   //in = new FileInputStream(file);
   QFile f(file->getPath());
-  if(!f.open(QIODevice::ReadOnly)) throw IOException();
+  if(!f.open(QIODevice::ReadOnly)) throw new IOException();
   in = new QDataStream(&f);
   //buffIn = new BufferedInputStream(in);
   address = 999999;
@@ -75,7 +75,7 @@ using namespace Sprog;
 //        out = new FileOutputStream(file);
 //        buffOut = new BufferedOutputStream(out);
      QFile f(file->getPath());
-     if(!f.open(QIODevice::WriteOnly)) throw IOException();
+     if(!f.open(QIODevice::WriteOnly)) throw new IOException();
      out = new QDataStream(&f);
         return true;
     } catch (IOException e) {

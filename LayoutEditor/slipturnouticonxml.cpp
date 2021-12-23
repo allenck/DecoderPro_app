@@ -118,7 +118,7 @@ QDomElement SlipTurnoutIconXml::storeIcon(QString elemName, NamedIcon* icon, QSt
  {
   QString a = element.attribute("rotate");
   rotation = a.toInt();
- } catch (DataConversionException e)
+ } catch (DataConversionException* e)
  {}
  catch ( NullPointerException e)
  {  // considered normal if the attributes are not present

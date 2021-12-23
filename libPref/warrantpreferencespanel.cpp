@@ -102,7 +102,7 @@
  //            try {
  //                float incr = float.parsefloat(text);
  //                showdialog = (incr<0.002f || incr>0.2f);
- //            } catch (NumberFormatException nfe) {
+ //            } catch (NumberFormatException* nfe) {
  //                showdialog = true;
  //            }
  //            if (showdialog) {

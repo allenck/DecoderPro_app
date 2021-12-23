@@ -89,7 +89,7 @@
 //        }
 //    } catch (URISyntaxException ex) {
 //        streaming = false;
-//    } catch (IOException ex) {
+//    } catch (IOException* ex) {
 //        log->error(tr("Unable to open %1").arg(url->toDisplayString()));
 //    } catch (LineUnavailableException ex) {
 //        log->error("Unable to provide audio playback", ex);
@@ -371,7 +371,7 @@
         if (streamingSensor != nullptr) {
             try {
                 streamingSensor->setState(mode);
-            } catch (JmriException ex) {
+            } catch (JmriException* ex) {
                 log->error(tr("Exception while setting ISSOUNDSTREAMING sensor %1 to %2").arg(streamingSensor->getDisplayName()).arg(mode));
             }
         }

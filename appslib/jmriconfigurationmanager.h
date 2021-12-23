@@ -35,11 +35,11 @@ public:
  /*public*/ void storeUserPrefs(File* file) override;
  /*public*/ bool storeConfig(File* file) override;
  /*public*/ bool storeUser(File* file) override;
- /*public*/ bool load(File* file)  throw (JmriException) override;
+ /*public*/ bool load(File* file)  /*throw (JmriException)*/ override;
  /*public*/ bool load( QUrl file)  throw (JmriConfigureXmlException) override;
  /*public*/ bool load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException) override;
  /*public*/ bool load( QUrl file, bool registerDeferred)  throw (JmriConfigureXmlException) override;
- /*public*/ bool loadDeferred(File* file)  throw (JmriException) override;
+ /*public*/ bool loadDeferred(File* file)  /*throw (JmriException)*/ override;
  /*public*/ bool loadDeferred( QUrl file)  throw (JmriConfigureXmlException) override;
  /*public*/ QUrl find(QString filename) override;
  /*public*/ bool makeBackup(File* file)const override;

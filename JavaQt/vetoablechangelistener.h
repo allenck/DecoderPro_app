@@ -14,7 +14,7 @@ public:
  QObject* self() {return (QObject*)this;}
 
 public slots:
- virtual void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException);
+ virtual void vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/;
 };
 
 Q_DECLARE_INTERFACE(VetoableChangeListener, "VetoableChangeListener")

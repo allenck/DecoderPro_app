@@ -36,7 +36,7 @@ public:
     /*public*/ bool checkSpeed(QString name);
     /*public*/ QString getAspectSpeed(QString aspect, SignalSystem* system);
     /*public*/ QString getAspectExitSpeed(QString aspect, SignalSystem* system);
-    /*public*/ QString getAppearanceSpeed(QString name) throw (NumberFormatException);
+    /*public*/ QString getAppearanceSpeed(QString name) /*throw (NumberFormatException)*/;
     /*public*/ QVector<QString> getValidSpeedNames();
     /*public*/ float getSpeed(QString name);
     /*public*/ QString getNamedSpeed(float speed);

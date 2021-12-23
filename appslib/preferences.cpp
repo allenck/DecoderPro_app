@@ -1025,7 +1025,7 @@
  *         communicate with it.
  * @see    #sync()
  */
-/*public*/ /*abstract*/ void Preferences::flush()  throw (BackingStoreException) {throw BackingStoreException();}
+/*public*/ /*abstract*/ void Preferences::flush()  throw (BackingStoreException) {throw new BackingStoreException();}
 
 /**
  * Ensures that future reads from this preference node and its
@@ -1044,7 +1044,7 @@
  */
 /*public*/ /*abstract*/ void Preferences::sync() throw (BackingStoreException)
 {
- throw BackingStoreException();}
+ throw new BackingStoreException();}
 ;
 
 /**

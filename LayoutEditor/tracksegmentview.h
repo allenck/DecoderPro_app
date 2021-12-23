@@ -37,8 +37,8 @@ class TrackSegmentView : public LayoutTrackView
   /*public*/ LayoutBlock* getLayoutBlock();
   /*public*/ QString getConnect1Name();
   /*public*/ QString getConnect2Name();
-  /*public*/ LayoutTrack* getConnection(HitPointType::TYPES connectionType) throw (JmriException) override;
-  /*public*/ void setConnection(HitPointType::TYPES connectionType, /*@CheckForNull*/ LayoutTrack* o, HitPointType::TYPES type) throw (JmriException);
+  /*public*/ LayoutTrack* getConnection(HitPointType::TYPES connectionType) /*throw (JmriException)*/ override;
+  /*public*/ void setConnection(HitPointType::TYPES connectionType, /*@CheckForNull*/ LayoutTrack* o, HitPointType::TYPES type) /*throw (JmriException)*/;
   /*public*/ int getNumberOfBezierControlPoints();
   /*public*/ QPointF getBezierControlPoint(int index);
   /*public*/ void setBezierControlPoint(/*@CheckForNull*/ QPointF p, int index);

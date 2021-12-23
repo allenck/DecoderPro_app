@@ -160,7 +160,7 @@ void LoadVSDFileAction::common()
      } catch (java.io.IOException ioe) {
      log->warn("IO Error auto-loading VSD File: " + (f==NULL?"(NULL)":f.getAbsolutePath()) + " ", ioe);
      return(false);
-     } catch (NullPointerException npe) {
+     } catch (NullPointerException* npe) {
      log->warn("NP Error auto-loading VSD File: FP = " + fp, npe);
      return(false);
      }

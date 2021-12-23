@@ -27,11 +27,11 @@ SensorTurnoutOperationXml::SensorTurnoutOperationXml(QObject *parent) :
         return CommonTurnoutOperationXml::loadOne(e,
                 NoFeedbackTurnoutOperation::getDefaultIntervalStatic(),
                 NoFeedbackTurnoutOperation::getDefaultMaxTriesStatic());
-    } catch (ClassNotFoundException e1) {
+    } catch (ClassNotFoundException* e1) {
         log->error("while creating NoFeedbackTurnoutOperation", e1);
         return NULL;
     }
-//    catch (NoSuchMethodException e2) {
+//    catch (NoSuchMethodException* e2) {
 //        log->error("while creating NoFeedbackTurnoutOperation", e2.getMessage());
 //        return null;
 //    }

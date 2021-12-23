@@ -448,7 +448,7 @@
             ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->queueScanOfAllocationRequests();
             try {
                 at->getDelaySensor()->setKnownState(Sensor::INACTIVE);
-            } catch (JmriException ex) {
+            } catch (JmriException* ex) {
                 at->log->error("Error reseting start sensor back to in active");
             }
         }
@@ -498,7 +498,7 @@
             ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->queueScanOfAllocationRequests();
             try {
                 at->getRestartSensor()->setKnownState(Sensor::INACTIVE);
-            } catch (JmriException ex) {
+            } catch (JmriException* ex) {
                 at->log->error("Error reseting start sensor back to in active");
             }
         }

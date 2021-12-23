@@ -133,7 +133,7 @@
     // never invoked, because we overrode actionPerformed above
     //@Override
     /*public*/ JmriPanel* CheckForUpdateAction::makePanel() {
-        throw IllegalArgumentException("Should not be invoked");
+        throw new IllegalArgumentException("Should not be invoked");
     }
 
     /*private*/ /*final*/ /*static*/ Logger* CheckForUpdateAction::log = LoggerFactory::getLogger("CheckForUpdateAction");

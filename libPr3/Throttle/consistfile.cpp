@@ -44,7 +44,7 @@
         try {
             int number = Integer.parseInt(cnumber.getValue());
             consistAddress = new DccLocoAddress(number, isCLong.getValue().equals("yes"));
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException* e) {
             log->debug("Consist number not an integer");
             return;
         }
@@ -252,7 +252,7 @@
     // create root element
 #if 1
  if(consistList->isEmpty())
-  throw IOException("consist list is empty!");
+  throw new IOException("consist list is empty!");
  QDomDocument doc = QDomDocument();
     QDomElement root = doc.createElement("consist-roster-config");
     //QDomDocument doc = newDocument(root, dtdLocation + "consist-roster-config.dtd");

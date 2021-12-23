@@ -294,7 +294,7 @@ XTableColumnModel::XTableColumnModel(JTable *parent) :
 {
  if (identifier == QVariant())
  {
-  throw IllegalArgumentException("Identifier is NULL");
+  throw new IllegalArgumentException("Identifier is NULL");
  }
 
  QVector<TableColumn*> columns = getColumnList(onlyVisible);

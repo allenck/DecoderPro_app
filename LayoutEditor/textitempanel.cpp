@@ -105,7 +105,7 @@
             DnDConstants.ACTION_COPY, this);
     try {
         dataFlavor = new DataFlavor(Editor.POSITIONABLE_FLAVOR);
-    } catch (ClassNotFoundException cnfe) {
+    } catch (ClassNotFoundException* cnfe) {
         log.error("Unable to find class supporting {}", Editor.POSITIONABLE_FLAVOR, cnfe);
     }
 #endif

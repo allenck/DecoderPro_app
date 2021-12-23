@@ -35,7 +35,7 @@
         this->layoutSlipView = (LayoutSlipView*) layoutTrackView;
         this->layoutSlip = this->layoutSlipView->getSlip();
     } else {
-        log->error(tr("editLayoutTrack called with wrong type %1").arg(layoutTrackView->getName()),  Exception("traceback"));
+        log->error(tr("editLayoutTrack called with wrong type %1").arg(layoutTrackView->getName()), new Exception("traceback"));
     }
         sensorList.clear();
 

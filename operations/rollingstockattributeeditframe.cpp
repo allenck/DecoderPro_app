@@ -205,7 +205,7 @@ namespace Operations
                 if(!ok) throw NumberFormatException();
                 int feet = (int) (inches * Setup::getScaleRatio() / 12);
                 addItem = QString::number(feet);
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException* e) {
                 JOptionPane::showMessageDialog(this, tr("Can not convert from inches to feet"),
                         tr("Rolling Stock length incorrect!"), JOptionPane::ERROR_MESSAGE);
                 return FAILED;
@@ -219,7 +219,7 @@ namespace Operations
                 if(!ok) throw NumberFormatException();
                 int meter = (int) (cm * Setup::getScaleRatio() / 100);
                 addItem = QString::number(meter);
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException* e) {
                 JOptionPane::showMessageDialog(this, tr("Can not convert from cm to meters"),
                         tr("Rolling Stock length incorrect!"), JOptionPane::ERROR_MESSAGE);
                 return FAILED;
@@ -241,7 +241,7 @@ namespace Operations
                         JOptionPane::ERROR_MESSAGE);
                 return FAILED;
             }
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException* e) {
             log->error(tr("length (%1) is not an integer").arg(addItem));
             return FAILED;
         }

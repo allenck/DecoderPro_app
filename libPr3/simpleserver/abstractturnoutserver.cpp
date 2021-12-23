@@ -74,7 +74,7 @@
             // and set commanded state to CLOSED
             turnout->setCommandedState(Turnout::CLOSED);
         }
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         log->error("Error closing turnout", ex);
     }
 }
@@ -99,7 +99,7 @@
             // and set commanded state to THROWN
             turnout->setCommandedState(Turnout::THROWN);
         }
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         log->error("Error throwing turnout", ex);
     }
 }

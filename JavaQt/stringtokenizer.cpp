@@ -199,7 +199,7 @@
  */
 /*private*/ int StringTokenizer::skipDelimiters(int startPos) {
     if (delimiters == "")
-        throw NullPointerException();
+        throw new NullPointerException();
 
     int position = startPos;
     while (!retDelims && position < maxPosition) {

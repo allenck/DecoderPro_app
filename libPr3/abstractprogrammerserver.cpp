@@ -50,7 +50,7 @@
         try {
             p->setMode(mode); // need to check if mode is available
             p->writeCV(QString::number(CV), value, this);
-        } catch (ProgrammerException ex) {
+        } catch (ProgrammerException* ex) {
             //Send failure Status.
             try {
                 sendNotAvailableStatus();

@@ -180,7 +180,7 @@ class Positionable //: public QLabel
      */
      /*public*/ virtual PositionablePopupUtil* getPopupUtility() {return NULL;}
      /*public*/ virtual void setPopupUtility(PositionablePopupUtil* /*tu*/) {}
-     /*public*/ virtual NamedBean* getNamedBean() {throw NullPointerException();}
+     /*public*/ virtual NamedBean* getNamedBean() {throw new NullPointerException();}
      // Mouse-handling events.  See
      // Editor class for more information on how these are used.
      /*public*/ virtual void doMousePressed(QGraphicsSceneMouseEvent* /*event*/) {}

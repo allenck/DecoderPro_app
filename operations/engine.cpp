@@ -165,7 +165,7 @@ namespace Operations
              RollingStock::setLength(length); // adjust track lengths
          }
          return length;
-     } catch (NullPointerException npe) {
+     } catch (NullPointerException* npe) {
          log->debug(tr("NPE setting length for Engine (%1)").arg(toString()));
      }
      return NONE;
@@ -221,7 +221,7 @@ namespace Operations
 /*public*/ bool Engine::isBunit() {
     try {
         return engineModels->isModelBunit(getModel());
-    } catch (NullPointerException npe) {
+    } catch (NullPointerException* npe) {
         log->debug(tr("NPE getting is B unit for Engine (%1)").arg(toString()));
     }
     return false;

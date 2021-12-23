@@ -83,7 +83,7 @@ AnalogClock2DisplayXml::~AnalogClock2DisplayXml()
  if (element.attribute("id") != "") {
   try {
       l->setId(element.attribute("id"));
-  } catch (Positionable::DuplicateIdException e) {
+  } catch (Positionable::DuplicateIdException* e) {
       throw  JmriConfigureXmlException("Positionable id is not unique", e);
   }
  }
@@ -97,7 +97,7 @@ AnalogClock2DisplayXml::~AnalogClock2DisplayXml()
    if(!bOk1) bOk = false;
  }
 //    }
-//  catch (DataConversionException e) {
+//  catch (DataConversionException* e) {
  if(!bOk)
  {
   log->error("failed to convert positional attribute");

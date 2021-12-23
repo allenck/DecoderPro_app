@@ -236,9 +236,9 @@ bool UsbTreeModel0::loadSystem() {
      QString name = dBusConn.name();
      QDBusReply<QStringList> reply = dBusConn.interface()->registeredServiceNames();
      if(!reply.isValid())
-      throw IOException("No Dbus interfaces available");
+      throw new IOException("No Dbus interfaces available");
      if(!reply.value().contains("org.example.TestServer"))
-      throw IOException("Required Dbus server available");
+      throw new IOException("Required Dbus server available");
      QDBusInterface* interface = new QDBusInterface("org.example.TestServer","/org/example/TestObject","org.example.TestInterface",dBusConn);
      int deviceCount;
      QDBusReply<int> reply2 = interface->call(QLatin1String("DeviceCount"));

@@ -187,8 +187,8 @@ class LayoutTurnoutView : public LayoutTrackView
   /*public*/ bool isDisabled();
   /*public*/ void setDisableWhenOccupied(bool state);
   /*public*/ bool isDisabledWhenOccupied();
-  /*public*/ LayoutTrack* getConnection(HitPointType::TYPES connectionType) throw (JmriException) override;
-  /*public*/ void setConnection(HitPointType::TYPES connectionType, /*@CheckForNull*/ LayoutTrack* o, HitPointType::TYPES type) throw (JmriException) override;
+  /*public*/ LayoutTrack* getConnection(HitPointType::TYPES connectionType) /*throw (JmriException)*/ override;
+  /*public*/ void setConnection(HitPointType::TYPES connectionType, /*@CheckForNull*/ LayoutTrack* o, HitPointType::TYPES type) /*throw (JmriException)*/ override;
   /*public*/ void setConnectA(/*@CheckForNull*/ LayoutTrack* o, HitPointType::TYPES type);
   /*public*/ void setConnectB(/*@CheckForNull*/ LayoutTrack* o, HitPointType::TYPES type);
   /*public*/ void setConnectC(/*@CheckForNull*/ LayoutTrack* o, HitPointType::TYPES type);

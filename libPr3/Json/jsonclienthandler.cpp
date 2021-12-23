@@ -235,9 +235,9 @@ QString type = root.value(JSON::TYPE).toString();
       this->connection->close();
   }
 #endif
- } catch (JmriException je) {
-     this->sendErrorMessage(500, tr("Unsupported operation attempted: %1.").arg( je.getLocalizedMessage()));
- } catch (JsonException je) {
+ } catch (JmriException* je) {
+     this->sendErrorMessage(500, tr("Unsupported operation attempted: %1.").arg( je->getLocalizedMessage()));
+ } catch (JsonException* je) {
      this->sendErrorMessage(je);
  }
 }
@@ -255,11 +255,11 @@ QString type = root.value(JSON::TYPE).toString();
     this->onMessage(HELLO_MSG);
 }
 
-/*private*/ void JsonClientHandler::sendErrorMessage(int code, QString message) throw (IOException) {
-    JsonException ex =  JsonException(code, message);
+/*private*/ void JsonClientHandler::sendErrorMessage(int code, QString message) /*throw (IOException)*/ {
+    JsonException* ex = new JsonException(code, message);
     this->sendErrorMessage(ex);
 }
 
-/*private*/ void JsonClientHandler::sendErrorMessage(JsonException ex) throw (IOException) {
-    this->connection->sendMessage(ex.getJsonMessage());
+/*private*/ void JsonClientHandler::sendErrorMessage(JsonException* ex) /*throw (IOException)*/ {
+    this->connection->sendMessage(ex->getJsonMessage());
 }

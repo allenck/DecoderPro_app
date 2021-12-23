@@ -110,7 +110,7 @@
 /*public*/ QJsonValue JsonRosterHttpService::getRosterEntry(QLocale locale, QString id) throw (JsonException) {
     try {
         return this->getRosterEntry(locale, Roster::getDefault()->getEntryForId(id));
-    } catch (NullPointerException ex) {
+    } catch (NullPointerException* ex) {
         throw JsonException(HttpServletResponse::SC_NOT_FOUND, tr("Object type %1 named %2 not found.").arg(JsonRoster::ROSTER_ENTRY).arg(id));
     }
 }

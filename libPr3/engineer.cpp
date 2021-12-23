@@ -316,9 +316,9 @@ Engineer::Engineer(Warrant* warrant, DccThrottle* throttle, QObject *parent) : Q
 //              });
     }
    }
-   catch (NumberFormatException nfe)
+   catch (NumberFormatException* nfe)
    {
-       log->error(tr("Command failed! %1 %2").arg(ts->toString()).arg(nfe.toString()));
+       log->error(tr("Command failed! %1 %2").arg(ts->toString()).arg(nfe->toString()));
    }
   }
   et = QDateTime::currentMSecsSinceEpoch()-et; //System.currentTimeMillis() - et;
@@ -1258,7 +1258,7 @@ ThrottleRamp* Engineer::getRamp() {
             break;
         default:
             log->error("Function value " + QString::number(cmdNum )+ " out of range");
-            throw IllegalArgumentException("Function Value " + QString::number(cmdNum) + " out of range");
+            throw new IllegalArgumentException("Function Value " + QString::number(cmdNum) + " out of range");
     }
 }
 
@@ -1353,7 +1353,7 @@ ThrottleRamp* Engineer::getRamp() {
             break;
         default:
             log->error("Function value " + QString::number(cmdNum) + " out of range");
-            throw IllegalArgumentException("Function Value " + QString::number(cmdNum) + " out of range");
+            throw new IllegalArgumentException("Function Value " + QString::number(cmdNum) + " out of range");
     }
 }
 
@@ -1371,7 +1371,7 @@ ThrottleRamp* Engineer::getRamp() {
                 s->setKnownState(Sensor::INACTIVE);
             }
             _warrant->fireRunStatus("SensorSetCommand", act, s->getDisplayName());
-        } catch (JmriException e) {
+        } catch (JmriException* e) {
             log->warn("Exception setting sensor " + sensorName + " in action");
         }
     } else {

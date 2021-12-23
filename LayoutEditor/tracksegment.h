@@ -225,8 +225,8 @@ public:
 //    /*public*/ void setCentreSeg(QPointF p);
 //    /*public*/ void reCheckBlockBoundary()const override;
 //    /*public*/ QPointF getCoordsForConnectionType(int connectionType);
-    /*public*/ LayoutTrack* getConnection(HitPointType::TYPES connectionType) throw (JmriException) override;
-    /*public*/ void setConnection(HitPointType::TYPES connectionType, /*@Nullable*/ LayoutTrack* o, HitPointType::TYPES type) throw (JmriException) override;
+    /*public*/ LayoutTrack* getConnection(HitPointType::TYPES connectionType) /*throw (JmriException)*/ override;
+    /*public*/ void setConnection(HitPointType::TYPES connectionType, /*@Nullable*/ LayoutTrack* o, HitPointType::TYPES type) /*throw (JmriException)*/ override;
     /*public*/ void setConnect1(/*@CheckForNull*/ LayoutTrack* o, HitPointType::TYPES type);
     /*public*/ void setConnect2(/*@CheckForNull*/ LayoutTrack* o, HitPointType::TYPES type);
 //    /*public*/ int getNumberOfBezierControlPoints();

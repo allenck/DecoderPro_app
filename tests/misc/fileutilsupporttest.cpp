@@ -218,7 +218,7 @@ FileUtilSupportTest::FileUtilSupportTest(QObject *parent) : QObject(parent)
                 dl.add(s.next());
             }
             s.close();
-        } catch (IOException ex) {
+        } catch (IOException* ex) {
             instance->_delete(dest);
             fail("Unable to copy");
         }

@@ -205,7 +205,7 @@ void ClientRxHandler::on_readyRead()
 //   }
 //  }
  }
-//    } catch (IOException ex) {
+//    } catch (IOException* ex) {
 //        log->debug("ClientRxHandler: IO Exception: ", ex);
 //    }
  //LnTrafficController.instance().removeLocoNetListener(~0, this);
@@ -231,7 +231,7 @@ void ClientRxHandler::on_readyRead()
 {
  try {
      clientSocket->close();
- } catch (IOException ex1) {
+ } catch (IOException* ex1) {
      log->error("close, which closing clientSocket", ex1);
  }
 }
@@ -371,7 +371,7 @@ void ClientTxHandler::sendMessage(LocoNetMessage * msg)
 
   }
  }
-//    } catch (IOException ex) {
+//    } catch (IOException* ex) {
 //        log->error("ClientTxHandler: IO Exception");
 //    } catch (InterruptedException ex) {
 //        //Thread.currentThread().interrupt(); // retain if needed later

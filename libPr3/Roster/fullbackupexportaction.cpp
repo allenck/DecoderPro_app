@@ -128,7 +128,7 @@ void FullBackupExportAction::common()
  catch (FileNotFoundException ex)
  {
 //        ex.printStackTrace();
- } catch (IOException ex)
+ } catch (IOException* ex)
  {
 //        ex.printStackTrace();
  }
@@ -139,7 +139,7 @@ void FullBackupExportAction::common()
 
 //         try {
 //             zipper.close();
-//         } catch (IOException ex) {
+//         } catch (IOException* ex) {
 //             ex.printStackTrace();
 //         }
 //     }

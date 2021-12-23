@@ -238,7 +238,7 @@
             try {
                 // now create it
                 currentMast = (SignalHeadSignalMast*)static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(name);
-            } catch (IllegalArgumentException ex) {
+            } catch (IllegalArgumentException* ex) {
                 // user input no good
                 handleCreateException(name);
                 return false; // without creating

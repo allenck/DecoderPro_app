@@ -135,7 +135,7 @@ QString AbstractReporterManager::getNextValidAddress(QString curAddress, QString
  int iName = 0;
 //        try {
 //            iName = Integer.parseInt(curAddress);
-//        } catch (NumberFormatException ex) {
+//        } catch (NumberFormatException* ex) {
 //            log->error("Unable to convert " + curAddress + " Hardware Address to a number");
 //            jmri.InstanceManager.getDefault(jmri.UserPreferencesManager.class).
 //                                showInfoMessage("Error","Unable to convert " + curAddress + " to a valid Hardware Address",""+ex, "",true, false, org.apache.log4j.Level.ERROR);

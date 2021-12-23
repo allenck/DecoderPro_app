@@ -887,7 +887,7 @@ XmitWorker::XmitWorker(AbstractMRTrafficController* amrtc)
         nchars = istream->readRawData(temp, 1);
         if (nchars== -1) {
             // No more bytes can be read from the channel
-            throw IOException("Connection not terminated normally");
+            throw new IOException("Connection not terminated normally");
         }
         rcvBuffer->append(temp);
         if (nchars>0) return rcvBuffer->at(0);

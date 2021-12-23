@@ -63,7 +63,7 @@ CommonTurnoutOperationXml::CommonTurnoutOperationXml(QObject *parent) :
     // constructor takes care of enrolling the new operation
 //    try {
 //        result = (TurnoutOperation)constr.newInstance(new Object[]{name, Integer.valueOf(interval), Integer.valueOf(maxTries)});
-//    } catch (InstantiationException e1) {
+//    } catch (InstantiationException* e1) {
 //        log.error("while creating CommonTurnoutOperation", e1);
 //        return NULL;
 //    } catch (IllegalAccessException e2) {

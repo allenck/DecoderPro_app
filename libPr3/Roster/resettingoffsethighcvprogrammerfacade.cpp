@@ -129,7 +129,7 @@
             try {
                 state = ProgState::RESET;
                 prog->readCV(""+(_cv % modulo), (ProgListener*)this);
-            } catch (ProgrammerException e) {
+            } catch (ProgrammerException* e) {
                 log->error("Exception doing final read", e);
             }
             break;
@@ -137,7 +137,7 @@
             try {
                 state = ProgState::RESET;
                 prog->writeCV(""+(_cv % modulo), _val, (ProgListener*)this);
-            } catch (ProgrammerException e) {
+            } catch (ProgrammerException* e) {
                 log->error("Exception doing final write", e);
             }
             break;
@@ -145,7 +145,7 @@
             try {
                 state = ProgState::PROGRAMMING;
                 prog->writeCV(addrCV, 0, (ProgListener*)this);
-            } catch (ProgrammerException e) {
+            } catch (ProgrammerException* e) {
                 log->error("Exception doing reset write", e);
             }
             break;

@@ -67,7 +67,7 @@
      *                                  Double.NEGATIVE_INFINITY or
      *                                  Double.POSITIVE_INFINITY
      */
-  virtual /*public*/ void setCommandedAnalogValue(double value) throw (JmriException) {}
+  virtual /*public*/ void setCommandedAnalogValue(double value) /*throw (JmriException)*/ {}
 
     /**
      * Query the commanded value. This is a bound parameter, so you can also
@@ -106,7 +106,7 @@
      * @throws JmriException general error when setting the state fails
      */
     //@InvokeOnLayoutThread
-    virtual /*public*/ void setState(double value) throw (JmriException) =0;
+    virtual /*public*/ void setState(double value) /*throw (JmriException)*/ =0;
 
     /**
      * Provide generic access to internal state.

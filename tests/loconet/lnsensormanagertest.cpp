@@ -100,7 +100,7 @@ LnSensorManagerTest::LnSensorManagerTest()
     QString s = "";
     try {
         s = l->createSystemName("3:5", "L");
-    } catch (JmriException e) {
+    } catch (JmriException* e) {
         excep = true;
     }
     Assert::assertEquals("no exception during createSystemName for arguments '3:5', 'L'", false, excep, __FILE__, __LINE__);

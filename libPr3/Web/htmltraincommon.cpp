@@ -36,14 +36,14 @@ namespace Operations
   if(!f.open(QIODevice::ReadOnly))
   {
    log->error(tr("file not found %1").arg(f.fileName()));
-   throw FileNotFoundException("file not found %1" + f.fileName());
+   throw  new FileNotFoundException("file not found %1" + f.fileName());
   }
   QTextStream is(&f);
 //        is = new FileInputStream(Bundle.getMessage(locale, "ManifestStrings.properties"));
   strings->load(&is);
   f.close();
  }
- catch (IOException ex)
+ catch (IOException* ex)
  {
 //        if (is != NULL) {
   f.close();

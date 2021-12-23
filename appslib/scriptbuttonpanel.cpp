@@ -107,7 +107,7 @@
     if (this->chooser->showOpenDialog(parent) == JFileChooser::APPROVE_OPTION) {
         try {
             this->script->setText(this->chooser->getSelectedFile()->getCanonicalPath());
-        } catch (IOException ex) {
+        } catch (IOException* ex) {
             log->error(tr("File %1 does not exist.").arg(this->chooser->getSelectedFile()->toString()));
         }
     }

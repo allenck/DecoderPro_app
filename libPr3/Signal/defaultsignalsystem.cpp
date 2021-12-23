@@ -132,7 +132,7 @@
                 float aspectSpeed = 0.0f;
                 try {
                     aspectSpeed = speed.toFloat();
-                }catch (NumberFormatException nx) {
+                }catch (NumberFormatException* nx) {
                     try{
                         aspectSpeed = static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(speed);
                     } catch (Exception ex){

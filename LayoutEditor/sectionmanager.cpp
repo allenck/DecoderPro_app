@@ -115,7 +115,7 @@ Section* SectionManager::createNewSection(QString systemName, QString userName)
             if (autoNumber > lastAutoSectionRef) {
                 lastAutoSectionRef = autoNumber;
             }
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException* e){
             log.warn("Auto generated SystemName "+ systemName + " is not in the correct format");
         }
     }

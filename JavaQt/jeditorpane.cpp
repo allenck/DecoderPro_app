@@ -998,7 +998,7 @@ private void setCharsetFromContentTypeParameters(QString paramlist) {
     catch (IndexOutOfBoundsException e) {
         // malformed parameter list, use charset we have
     }
-    catch (NullPointerException e) {
+    catch (NullPointerException* e) {
         // malformed parameter list, use charset we have
     }
     catch (Exception e) {

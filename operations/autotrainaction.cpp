@@ -468,14 +468,14 @@ static final ResourceBundle rb = ResourceBundle
                 if (s->getKnownState() == Sensor::ACTIVE) {
                     try {
                         s->setState(Sensor::INACTIVE);
-                    } catch (JmriException reason) {
-                        log->error("Exception when toggling Sensor " + tsa->getStringWhat() + " Inactive - " + reason.getMessage());
+                    } catch (JmriException* reason) {
+                        log->error("Exception when toggling Sensor " + tsa->getStringWhat() + " Inactive - " + reason->getMessage());
                     }
                 }
                 try {
                     s->setState(Sensor::ACTIVE);
-                } catch (JmriException reason) {
-                    log->error("Exception when setting Sensor " + tsa->getStringWhat() + " Active - " + reason.getMessage());
+                } catch (JmriException* reason) {
+                    log->error("Exception when setting Sensor " + tsa->getStringWhat() + " Active - " + reason->getMessage());
                 }
             } else if ((tsa->getStringWhat() != NULL) && (tsa->getStringWhat() != (""))) {
                 log->error("Could not find Sensor " + tsa->getStringWhat());
@@ -490,14 +490,14 @@ static final ResourceBundle rb = ResourceBundle
                 if (s->getKnownState() == Sensor::ACTIVE) {
                     try {
                         s->setState(Sensor::ACTIVE);
-                    } catch (JmriException reason) {
-                        log->error("Exception when toggling Sensor " + tsa->getStringWhat() + " Active - " + reason.getMessage());
+                    } catch (JmriException* reason) {
+                        log->error("Exception when toggling Sensor " + tsa->getStringWhat() + " Active - " + reason->getMessage());
                     }
                 }
                 try {
                     s->setState(Sensor::INACTIVE);
-                } catch (JmriException reason) {
-                    log->error("Exception when setting Sensor " + tsa->getStringWhat() + " Inactive - " + reason.getMessage());
+                } catch (JmriException* reason) {
+                    log->error("Exception when setting Sensor " + tsa->getStringWhat() + " Inactive - " + reason->getMessage());
                 }
             } else if ((tsa->getStringWhat() != NULL) && (tsa->getStringWhat() != (""))) {
                 log->error("Could not find Sensor " + tsa->getStringWhat());

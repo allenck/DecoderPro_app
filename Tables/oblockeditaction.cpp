@@ -263,7 +263,7 @@
 //                QString speed = (QString) speedField.getSelectedItem();
 //                try {
 //                    bean->setBlockSpeed(speed);
-//                } catch (JmriException ex) {
+//                } catch (JmriException* ex) {
 //                    JOptionPane.showMessageDialog(null, ex.getMessage() + "\n" + speed);
 //                    return;
 //                }

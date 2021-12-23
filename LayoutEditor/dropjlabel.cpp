@@ -41,7 +41,7 @@ void DropJLabel::init(NamedIcon* icon)
  {
   _dataFlavor = new DataFlavor(ImageIndexEditor::IconDataFlavorMime);
  }
- catch (ClassNotFoundException cnfe)
+ catch (ClassNotFoundException* cnfe)
  {
 //        cnfe.printStackTrace();
  }

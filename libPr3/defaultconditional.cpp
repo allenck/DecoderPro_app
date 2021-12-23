@@ -429,7 +429,7 @@ bool DefaultConditional::wantsToTrigger(PropertyChangeEvent* evt) {
 * bitmap of the variable indices used.
 */
 DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariable*>* variableList)
-throw (JmriException)
+/*throw (JmriException)*/
 {
 
     // for simplicity, we force the string to upper case before scanning
@@ -454,7 +454,7 @@ throw (JmriException)
 //            try {
                 k = s.mid(i+1, i+3).toInt();
                 i += 2;
-//            } catch (NumberFormatException nfe) {
+//            } catch (NumberFormatException* nfe) {
 //                k = Integer.parseInt(String.valueOf(s.charAt(++i)));
 //            } catch (IndexOutOfBoundsException ioob) {
 //                k = Integer.parseInt(String.valueOf(s.charAt(++i)));
@@ -478,7 +478,7 @@ throw (JmriException)
 //                try {
                     k = s.mid(i+1, i+3).toInt();
                     i += 2;
-//                } catch (NumberFormatException nfe) {
+//                } catch (NumberFormatException* nfe) {
 //                    k = Integer.parseInt(String.valueOf(s.charAt(++i)));
 //                } catch (IndexOutOfBoundsException ioob) {
 //                    k = Integer.parseInt(String.valueOf(s.charAt(++i)));
@@ -496,7 +496,7 @@ throw (JmriException)
             }
             leftArg = !leftArg;
         } else {
-            throw JmriException(
+            throw new JmriException(
                 tr("Unexpected operator or characters. < %1 >").arg (s ));
         }
     }
@@ -525,7 +525,7 @@ throw (JmriException)
 //                    try {
                         k = s.mid(i+1, i+3).toInt();
                         i += 2;
-//                    } catch (NumberFormatException nfe) {
+//                    } catch (NumberFormatException* nfe) {
 //                        k = Integer.parseInt(String.valueOf(s.charAt(++i)));
 //                    } catch (IndexOutOfBoundsException ioob) {
 //                        k = Integer.parseInt(String.valueOf(s.charAt(++i)));
@@ -550,7 +550,7 @@ throw (JmriException)
 //                        try {
                             k = s.mid(i+1, i+3).toInt();
                             i += 2;
-//                        } catch (NumberFormatException nfe) {
+//                        } catch (NumberFormatException* nfe) {
 //                            k = Integer.parseInt(String.valueOf(s.charAt(++i)));
 //                        } catch (IndexOutOfBoundsException ioob) {
 //                            k = Integer.parseInt(String.valueOf(s.charAt(++i)));
@@ -846,7 +846,7 @@ throw (JmriException)
           sn->setKnownState(act);
           actionCount++;
       }
-      catch (JmriException e)
+      catch (JmriException* e)
       {
           log->warn("Exception setting sensor "+devName+" in action");
       }
@@ -1037,7 +1037,7 @@ throw (JmriException)
         if (sound == nullptr) {
             try {
                 sound = new Sound(path);
-            } catch (NullPointerException ex) {
+            } catch (NullPointerException* ex) {
                 errorList.append("invalid path to sound: " + path);  // NOI18N
             }
         }
@@ -1139,7 +1139,7 @@ throw (JmriException)
          // and execute
          try {
              JmriScriptEngineManager::getDefault()->eval(getActionString(action), JmriScriptEngineManager::getDefault()->getEngine(JmriScriptEngineManager::PYTHON));
-         } catch (ScriptException ex) {
+         } catch (ScriptException* ex) {
              log->error(tr("Error executing script:"), ex);  // NOI18N
          }
          actionCount++;
@@ -1561,7 +1561,7 @@ int DefaultConditional::getIntegerValue(ConditionalAction* action) {
     //try {
     bool bOk;
     time = sNumber.toInt(&bOk);
-//    } catch (NumberFormatException e) {
+//    } catch (NumberFormatException* e) {
     if(!bOk)
     {
      Memory* mem = getMemory(sNumber);
@@ -1577,7 +1577,7 @@ int DefaultConditional::getIntegerValue(ConditionalAction* action) {
       //try {
       bool bOk;
       time = mem->getValue().toInt(&bOk);
-//            } catch (NumberFormatException ex) {
+//            } catch (NumberFormatException* ex) {
       if(!bOk)
       {
                 log->error("invalid action number variable from memory, \""+
@@ -1698,7 +1698,7 @@ int DefaultConditional::getIntegerValue(ConditionalAction* action) {
             try {
                 sn->setKnownState(action->getActionData());
             }
-            catch (JmriException e) {
+            catch (JmriException* e) {
                 dc->log->warn("Exception setting delayed sensor "+action->getDeviceName()+" in action");
             }
         }

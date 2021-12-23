@@ -476,7 +476,7 @@ void JColorChooser::stateChanged(ChangeEvent* evt)
         }
     }
     if (containedAt == -1) {
-        throw IllegalArgumentException("chooser panel not in this chooser");
+        throw new IllegalArgumentException("chooser panel not in this chooser");
     }
 
     QVector<AbstractColorChooserPanel*>* newArray = new QVector<AbstractColorChooserPanel*>(chooserPanels->length()-1);

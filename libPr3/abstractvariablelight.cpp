@@ -435,7 +435,7 @@ void AbstractVariableLight::init()
 }
 
 //@Override
-/*public*/ void AbstractVariableLight::setCommandedAnalogValue(double value) throw (JmriException) {
+/*public*/ void AbstractVariableLight::setCommandedAnalogValue(double value) /*throw (JmriException)*/ {
     int origState = mState;
     double origCurrent = mCurrentIntensity;
 
@@ -555,7 +555,7 @@ void AbstractVariableLight::init()
         throw  IllegalArgumentException("Illegal intensity value: " + QString::number(intensity));
     }
     if (intensity <= mMinIntensity) {
-        throw IllegalArgumentException("Requested intensity " + QString::number(intensity) + " must be higher than minIntensity " + QString::number(mMinIntensity));
+        throw new IllegalArgumentException("Requested intensity " + QString::number(intensity) + " must be higher than minIntensity " + QString::number(mMinIntensity));
     }
 
     double oldValue = mMaxIntensity;
@@ -574,7 +574,7 @@ void AbstractVariableLight::init()
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ void AbstractVariableLight::setState(double newState) throw (JmriException) {
+/*public*/ void AbstractVariableLight::setState(double newState) /*throw (JmriException)*/ {
     setCommandedAnalogValue(newState);
 }
 

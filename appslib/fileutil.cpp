@@ -467,7 +467,7 @@ FileUtil::FileUtil(QObject *parent) :
       QTextStream* stream = new QTextStream(f);
       return stream;
      }
-//        } catch (IOException ex) {
+//        } catch (IOException* ex) {
 //            log.error(ex.getLocalizedMessage(), ex);
 //        }
     }
@@ -653,7 +653,7 @@ FileUtil::FileUtil(QObject *parent) :
         }
         try {
             return new JarFile(jarPath);
-        } catch (IOException ex) {
+        } catch (IOException* ex) {
             log.error("Unable to open jmri.jar", ex);
             return NULL;
         }

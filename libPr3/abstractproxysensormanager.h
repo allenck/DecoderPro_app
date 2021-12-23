@@ -36,7 +36,7 @@ public:
      * @return Null if nothing by that name exists
      */
     /*public*/ NamedBean* getNamedBean(QString name) const override;
-//    /*public*/ /*@Nonnull*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName)const override /*throw (NamedBean::BadSystemNameException)*/;
+//    /*public*/ /*@Nonnull*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName)const override /*throw new (NamedBean::BadSystemNameException)*/;
 
 //    /*public*/ NamedBean* getBeanBySystemName(QString systemName) const override;
 //    /*public*/ NamedBean* getBeanByUserName(QString userName) const override;
@@ -124,9 +124,9 @@ public:
     /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) override;
     /*public*/ Sensor *getBySystemName(/*@Nonnull */ QString systemName) const override;
     /*public*/ Sensor* getByUserName(/*@Nonnull*/ QString userName) const override;
-    /*public*/ QString createSystemName(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) const throw (JmriException);
-    /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, char typeLetter) throw (JmriException);
-    /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting, char typeLetter) throw (JmriException);
+    /*public*/ QString createSystemName(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) const /*throw (JmriException)*/;
+    /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, char typeLetter) /*throw (JmriException)*/;
+    /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting, char typeLetter) /*throw (JmriException)*/;
     /*public*/ void deleteBean(/*@Nonnull*/ NamedBean* s, /*@Nonnull*/ QString property) throw (PropertyVetoException) override;
 
 signals:
@@ -151,7 +151,7 @@ private:
      * PropertyChangeListeners.
      */
     /*private*/ /*final*/ QList<QString> boundPropertyNames = QList<QString>();
-    QString createSystemName(QString curAddress, QString prefix, QString beanType) const throw (JmriException);
+    QString createSystemName(QString curAddress, QString prefix, QString beanType) const /*throw (JmriException)*/;
     /*private*/ AbstractManager *createSystemManager(/*@Nonnull*/ QString systemPrefix) const;
 
 protected:

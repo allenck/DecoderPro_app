@@ -322,7 +322,7 @@ public class LnPacketizerStrict extends LnPacketizer {
                                     if (waitCount > 49) {
                                         try {
                                             log.warn("Retry Send for Lost Response Count[{}]", reTryCount); // NOI18N
-                                        } catch (NullPointerException npe) {
+                                        } catch (NullPointerException* npe) {
                                             log.warn("Retry Send for waitingOnLack null?  Count[{}]", reTryCount); // NOI18N
                                         }
                                         if (reTryCount < 5) {

@@ -102,8 +102,8 @@
         bool ok;
         QString ts;
         try {
-            x = element.attribute("x").toFloat(&ok); if(!ok) throw DataConversionException();
-            y = element.attribute("y").toFloat(&ok); if(!ok) throw DataConversionException();
+            x = element.attribute("x").toFloat(&ok); if(!ok) throw new DataConversionException();
+            y = element.attribute("y").toFloat(&ok); if(!ok) throw new DataConversionException();
             //type = pTypeEnumMap->inputFromAttribute(element.attribute("type"));
             QMetaEnum metaEnum = QMetaEnum::fromType<PositionablePoint::PointType>();
             type = (PositionablePoint::PointType)metaEnum.keyToValue((ts =element.attribute("type")).toLocal8Bit(), &ok);
@@ -113,9 +113,9 @@
              if(ok)
               type = (PositionablePoint::PointType)i;
              else
-              throw DataConversionException("invalid pointValue + ts");
+              throw new DataConversionException("invalid pointValue + ts");
             }
-        } catch (DataConversionException e) {
+        } catch (DataConversionException* e) {
             log->error("failed to convert positionablepoint attribute", e);
         }
 

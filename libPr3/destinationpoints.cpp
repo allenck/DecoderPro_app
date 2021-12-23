@@ -820,13 +820,13 @@ void DestinationPoints::cancelClearInterlock(int cancelClear)
     if(src->getStart()->getBlock()->getSensor()!=NULL)
      src->getStart()->getBlock()->getSensor()->setState(Sensor::INACTIVE);
     }
-   catch (NullPointerException e)
+   catch (NullPointerException* e)
    {
-    log->error("error in clear route A " + e.getMessage());
+    log->error("error in clear route A " + e->getMessage());
    }
-   catch (JmriException e)
+   catch (JmriException* e)
    {
-    log->error("error in clear route A " + e.getMessage());
+    log->error("error in clear route A " + e->getMessage());
    }
    if (log->isDebugEnabled())
    {
@@ -853,14 +853,14 @@ void DestinationPoints::cancelClearInterlock(int cancelClear)
       routeDetails.at(i-1)->getOccupancySensor()->setState(Sensor::INACTIVE); //was getBlock().getSensor()
      routeDetails.at(i-1)->getBlock()->goingInactive();
     }
-     catch (NullPointerException e)
+     catch (NullPointerException* e)
      {
-      log->error("error in clear route b " + e.getMessage());
+      log->error("error in clear route b " + e->getMessage());
       //e.printStackTrace();
      }
-     catch (JmriException e)
+     catch (JmriException* e)
      {
-      log->error("error in clear route b " + e.getMessage());
+      log->error("error in clear route b " + e->getMessage());
      }
     }
     try{
@@ -872,17 +872,17 @@ void DestinationPoints::cancelClearInterlock(int cancelClear)
      if(routeDetails.at(routeDetails.size()-2)->getOccupancySensor()!=NULL)
       routeDetails.at(routeDetails.size()-2)->getOccupancySensor()->setState(Sensor::INACTIVE);
      }
-    catch (NullPointerException e)
+    catch (NullPointerException* e)
     {
-     log->error("error in clear route c " +e.getMessage());
+     log->error("error in clear route c " +e->getMessage());
     }
-    catch (ArrayIndexOutOfBoundsException e)
+    catch (ArrayIndexOutOfBoundsException* e)
     {
-     log->error("error in clear route c " +e.getMessage());
+     log->error("error in clear route c " +e->getMessage());
     }
-    catch (JmriException e)
+    catch (JmriException* e)
     {
-     log->error("error in clear route c " +e.getMessage());
+     log->error("error in clear route c " +e->getMessage());
     }
    }
   }
@@ -996,8 +996,8 @@ public:
                  QString errorMessage = "";
                  try {
                      blocks = static_cast<LayoutBlockManager*>( InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->getLayoutBlocks(startlBlock, destinationLBlock, protectLBlock, false, 0x00/*jmri.jmrit.display.layoutEditor.LayoutBlockManager.MASTTOMAST*/);
-                 } catch (Exception e) {
-                     errorMessage = e.getMessage();
+                 } catch (Exception* e) {
+                     errorMessage = e->getMessage();
                      //can be considered normal if no free route is found
                  }
                  BestPath* toadd = new BestPath(startlBlock, protectLBlock, destinationLBlock, blocks);
@@ -1031,8 +1031,8 @@ public:
                              QString errorMessage = "";
                              try {
                                  blocks = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->getLayoutBlocks(startlBlock, destinationLBlock, protectLBlock, false, 0x00/*jmri.jmrit.display.layoutEditor.LayoutBlockManager.MASTTOMAST*/);
-                             } catch (Exception e) {
-                                 errorMessage = e.getMessage();
+                             } catch (Exception* e) {
+                                 errorMessage = e->getMessage();
                                  //can be considered normal if no free route is found
                              }
                              BestPath* toadd = new BestPath(startlBlock, protectLBlock, destinationLBlock, blocks);
@@ -1052,9 +1052,9 @@ public:
                          QString errorMessage = "";
                          try {
                           blocks = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->getLayoutBlocks(startlBlock, destinationLBlock, protectLBlock, false, LayoutBlockConnectivityTools::NONE);
-                         } catch (Exception e) {
+                         } catch (Exception* e) {
                              //can be considered normal if no free route is found
-                             errorMessage = e.getMessage();
+                             errorMessage = e->getMessage();
                          }
                          BestPath* toadd = new BestPath(startlBlock, protectLBlock, destinationLBlock, blocks);
                          toadd->setErrorMessage(errorMessage);
@@ -1064,18 +1064,18 @@ public:
                          QString errorMessage = "";
                          try {
                              blocks = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->getLayoutBlocks(startlBlock, destinationLBlock, protectLBlock, false, LayoutBlockConnectivityTools::NONE);
-                         } catch (Exception e) {
+                         } catch (Exception* e) {
                              //can be considered normal if no free route is found
-                             errorMessage = e.getMessage();
+                             errorMessage = e->getMessage();
                          }
                          BestPath* toadd = new BestPath(startlBlock, protectLBlock, destinationLBlock, blocks);
                          toadd->setErrorMessage(errorMessage);
                          pathList.append(toadd);
                      }
-                 } catch (JmriException ex) {
-                     log->error("Exception " + ex.getMessage());  // NOI18N
+                 } catch (JmriException* ex) {
+                     log->error("Exception " + ex->getMessage());  // NOI18N
                      if (showMessage) {
-                         JOptionPane::showMessageDialog(nullptr, ex.getMessage());
+                         JOptionPane::showMessageDialog(nullptr, ex->getMessage());
                      }
                      src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
                      point->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);

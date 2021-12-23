@@ -35,17 +35,17 @@ RpsReporterManager::RpsReporterManager(RpsSystemConnectionMemo* memo, QObject* p
 }
 
 //@Override
-/*public*/ QString RpsReporterManager::createSystemName(QString curAddress, QString prefix) throw (JmriException) {
+/*public*/ QString RpsReporterManager::createSystemName(QString curAddress, QString prefix) /*throw (JmriException)*/ {
     if (prefix != (getSystemPrefix())) {
         log->warn("prefix does not match memo.prefix");
-        throw JmriException("Unable to convert " + curAddress + ", Prefix does not match");
+        throw new JmriException("Unable to convert " + curAddress + ", Prefix does not match");
     }
     QString sys = getSystemPrefix() + typeLetter() + curAddress;
     // first, check validity
     try {
         validSystemNameFormat(sys);
     } catch (IllegalArgumentException e) {
-        throw JmriException(e.getMessage());
+        throw new JmriException(e.getMessage());
     }
     return sys;
 }

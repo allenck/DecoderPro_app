@@ -97,7 +97,7 @@ AbstractConnectionConfigXml::AbstractConnectionConfigXml(QObject *parent)  : Abs
 
     try {
         adapter->setManufacturer(perNode.attribute("manufacturer"));
-    } catch (NullPointerException ex) { //Considered normal if not present
+    } catch (NullPointerException* ex) { //Considered normal if not present
 
     }
 

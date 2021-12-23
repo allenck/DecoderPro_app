@@ -41,7 +41,7 @@
 // Handle a request to change state by sending a formatted packet
 // to the server.
 //@Override
-/*public*/ void JMRIClientSensor::setKnownState(int s) throw (JmriException) {
+/*public*/ void JMRIClientSensor::setKnownState(int s) /*throw (JmriException)*/ {
     // sort out states
     if ((s & Sensor::ACTIVE) != 0) {
         // first look for the double case, which we can't handle

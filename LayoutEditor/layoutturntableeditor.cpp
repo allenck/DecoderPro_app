@@ -36,7 +36,7 @@
         if (qobject_cast<LayoutTurntable*>(layoutTrack) ) {
             this->layoutTurntable = (LayoutTurntable*) layoutTrack;
         } else {
-            log->error(tr("editLayoutTrack called with wrong type %1").arg(layoutTrack->metaObject()->className()),  Exception("traceback"));
+            log->error(tr("editLayoutTrack called with wrong type %1").arg(layoutTrack->metaObject()->className()), new  Exception("traceback"));
         }
         sensorList.clear();
 

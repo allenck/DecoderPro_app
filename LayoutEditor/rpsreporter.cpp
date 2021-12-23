@@ -125,7 +125,7 @@ void RpsReporter::notifyArriving(int id) {
             int id = (rep).toInt();
 //            int addr = RPS::Engine::instance().getTransmitter(id).getAddress();
 //            return (new DccLocoAddress(addr, LocoAddress::Protocol::DCC));
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException* e) {
             return (NULL);
         }
     } else {
@@ -172,9 +172,9 @@ void RpsReporter::notifyArriving(int id) {
             int id = (s).toInt();
 //            QVector3D v = RPS::Engine::instance()->getTransmitter(id)->getLastMeasurement()->getVector();
 //            return (new PhysicalLocation(QVector3D(v)));
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException* e) {
             return (NULL);
-        } catch (NullPointerException e) {
+        } catch (NullPointerException* e) {
             return (NULL);
         }
     } else {

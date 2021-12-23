@@ -58,8 +58,8 @@ public:
  // null implementation to satisfy the SensorManager interface
  /*public*/ void updateAll()const override;
  /*public*/ bool allowMultipleAdditions(QString systemName) override;
- ///*public*/ QString createSystemName(QString curAddress, QString prefix)const throw (JmriException) override;
- /*public*/ QString getNextValidAddress(QString curAddress, QString prefix) throw (JmriException) override;
+ ///*public*/ QString createSystemName(QString curAddress, QString prefix)const /*throw (JmriException)*/ override;
+ /*public*/ QString getNextValidAddress(QString curAddress, QString prefix) /*throw (JmriException)*/ override;
  /*public*/ long getDefaultSensorDebounceGoingActive() override;
  /*public*/ long getDefaultSensorDebounceGoingInActive() override;
  /*public*/ void setDefaultSensorDebounceGoingActive(long timer) override;
@@ -72,7 +72,7 @@ public:
  /*public*/ QString getEntryToolTip() override;
  /*public*/ bool isPullResistanceConfigurable() override;
 /*public*/ QString toString() override{return "ProxySensorManager";}
- /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) throw (JmriException) override;
+ /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) /*throw (JmriException)*/ override;
 
  signals:
  void propertyChange(PropertyChangeEvent *e) override;

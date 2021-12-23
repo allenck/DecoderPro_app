@@ -60,6 +60,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -14360,7 +14361,7 @@ void PythonQtWrapper_LayoutBlockManager::setLastRoutingChange(LayoutBlockManager
   ( theWrappedObject->setLastRoutingChange());
 }
 
-void PythonQtWrapper_LayoutBlockManager::setStabilisedSensor(LayoutBlockManager* theWrappedObject, QString  pName) throw (JmriException)
+void PythonQtWrapper_LayoutBlockManager::setStabilisedSensor(LayoutBlockManager* theWrappedObject, QString  pName)
 {
   ( theWrappedObject->setStabilisedSensor(pName));
 }
@@ -22071,7 +22072,7 @@ if (_wrapper) {
 }
   LnSensor::setUseDefaultTimerSettings(boo0);
 }
-void PythonQtShell_LnSensor::setUserName(QString  s0) throw (NamedBean::BadUserNameException) 
+void PythonQtShell_LnSensor::setUserName(QString  s0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -22192,7 +22193,7 @@ if (_wrapper) {
 }
   LnSensor::useDefaultTimerSettings(boo0);
 }
-void PythonQtShell_LnSensor::vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) 
+void PythonQtShell_LnSensor::vetoableChange(PropertyChangeEvent*  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE

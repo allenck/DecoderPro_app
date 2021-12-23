@@ -15,7 +15,7 @@
  */
 // /*public*/ class PR4Adapter extends LocoBufferAdapter {
 
-/*public*/ PR4Adapter::PR4Adapter(QObject* parent)
+/*public*/ PR4Adapter::PR4Adapter(QObject* /*parent*/)
 : LocoBufferAdapter(new PR4SystemConnectionMemo){
     //super(new PR4SystemConnectionMemo());
 
@@ -32,8 +32,8 @@
  * @param activeSerialPort  the port to be configured
  */
 //@Override
-/*protected*/ void PR4Adapter::setSerialPort(SerialPort* activeSerialPort) throw (UnsupportedCommOperationException) {
-    // find the baud rate value, configure comm options
+/*protected*/ void PR4Adapter::setSerialPort(SerialPort* activeSerialPort) /*throw (UnsupportedCommOperationException)*/ {
+//     find the baud rate value, configure comm options
     int baud = currentBaudNumber(mBaudRate);
     activeSerialPort->setSerialPortParams(baud, SerialPort::DATABITS_8,
             SerialPort::STOPBITS_1, SerialPort::PARITY_NONE);

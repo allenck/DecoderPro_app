@@ -67,7 +67,7 @@ private:
     protected:
     /*protected*/ QList <ConditionalAction*>* _actionList;// = new ArrayList<ConditionalAction>();
     DataPair* parseCalculate(QString s, QList <ConditionalVariable*>* variableList)
-    throw (JmriException);
+    /*throw (JmriException)*/;
     friend class TimeTurnout;
     friend class TimeSensor;
     friend class ErrorDialog;

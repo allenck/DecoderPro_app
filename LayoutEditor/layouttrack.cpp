@@ -116,7 +116,7 @@
  * @return the LayoutTrack connected at the specified connection type
  * @throws JmriException - if the connectionType is invalid
  */
-// /*abstract*/ /*public*/ LayoutTrack* getConnection(HitPointType* connectionType) throw (JmriException);
+// /*abstract*/ /*public*/ LayoutTrack* getConnection(HitPointType* connectionType) /*throw (JmriException)*/;
 
 /**
  * set the LayoutTrack connected at the specified connection type
@@ -126,7 +126,7 @@
  * @param type           where on the LayoutTrack we are connected
  * @throws JmriException - if connectionType or type are invalid
  */
-// /*abstract*/ /*public*/ void setConnection(HitPointType* connectionType, LayoutTrack* o, HitPointType* type) throw (JmriException);
+// /*abstract*/ /*public*/ void setConnection(HitPointType* connectionType, LayoutTrack* o, HitPointType* type) /*throw (JmriException)*/;
 
 /**
  * abstract method... subclasses should implement _IF_ they need to recheck
@@ -162,7 +162,7 @@
     if (HitPointType::isConnectionHitType(connectionType)) {
         try {
             result = (nullptr == getConnection(connectionType));
-        } catch (JmriException e) {
+        } catch (JmriException* e) {
             // this should never happen because isConnectionType() above would have caught an invalid connectionType.
         }
     }

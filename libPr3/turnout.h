@@ -297,8 +297,8 @@ public:
          * sensors have been provided.
          */
         //virtual void provideFirstFeedbackSensor(NamedBeanHandle<Sensor>* /*s*/) {}
-        virtual void provideFirstFeedbackSensor(QString /*pName*/) throw (JmriException) {}
-        virtual void provideSecondFeedbackSensor(QString /*pName*/) throw (JmriException) {}
+        virtual void provideFirstFeedbackSensor(QString /*pName*/) /*throw (JmriException)*/ {}
+        virtual void provideSecondFeedbackSensor(QString /*pName*/) /*throw (JmriException)*/ {}
 
 
         /**
@@ -501,12 +501,12 @@ public:
         virtual float getDivergingLimit() {return 0;}
 
         virtual QString getDivergingSpeed() {return "";}
-        virtual void setDivergingSpeed(QString /*s*/) const throw (JmriException) {}
+        virtual void setDivergingSpeed(QString /*s*/) const /*throw (JmriException)*/ {}
 
         virtual float getStraightLimit()  {return 0;}
 
         virtual QString getStraightSpeed() {return "";}
-        virtual void setStraightSpeed(QString /*s*/) const  throw (JmriException) {}
+        virtual void setStraightSpeed(QString /*s*/) const  /*throw (JmriException)*/ {}
         /**
          * Check if this Turnout can follow the state of another Turnout.
          *

@@ -363,16 +363,16 @@ void OBlockTableAction::createObPressed(/*ActionEvent e*/) {
                 oblk = oblockManager->createNewOBlock(uName);
                 if (oblk == nullptr) {
                     xName = uName;
-                    throw IllegalArgumentException();
+                    throw new IllegalArgumentException();
                 }
             } else {
                 oblk = oblockManager->createNewOBlock(sName, uName);
                 if (oblk == nullptr) {
                     xName = sName;
-                    throw IllegalArgumentException();
+                    throw new IllegalArgumentException();
                 }
             }
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             // uName input no good
             handleCreateException(xName);
             errorMessage = tr("ErrorAddFailedCheck");

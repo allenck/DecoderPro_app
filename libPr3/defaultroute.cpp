@@ -767,7 +767,7 @@ void DefaultRoute::init()
             } else {
                 ((AbstractSensor*)getTurnoutsAlgdSensor())->setKnownState(Sensor::INACTIVE);
             }
-        } catch (JmriException ex) {
+        } catch (JmriException* ex) {
                 log->warn("Exception setting sensor "+getTurnoutsAlignedSensor()+" in route");
         }
     }
@@ -1111,7 +1111,7 @@ void OutputTurnout::removeListener()
    {
     try {
         (new Sound(r->getOutputSoundName()))->play();
-    } catch (NullPointerException ex) {
+    } catch (NullPointerException* ex) {
         log->error(tr("Cannot find file %1").arg(r->getOutputSoundName()));
     }
    }
@@ -1137,7 +1137,7 @@ void OutputTurnout::removeListener()
   {
    ((AbstractSensor*)t)->setKnownState(state);
   }
-  catch (JmriException e)
+  catch (JmriException* e)
   {
    log->warn("Exception setting sensor "+t->getSystemName()+" in route");
   }

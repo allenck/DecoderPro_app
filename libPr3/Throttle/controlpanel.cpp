@@ -1540,10 +1540,10 @@ void ControlPanel::on_menu_requested()
     try {
      bool bok;
         this->setSpeedController(e.attribute("displaySpeedSlider").toInt());
-     if(!bok) throw DataConversionException();
-    } catch (DataConversionException ex) {
-        log->error("DataConversionException in setXml: " + ex.getMessage());
-    } catch (Exception em) {
+     if(!bok) throw new DataConversionException();
+    } catch (DataConversionException* ex) {
+        log->error("DataConversionException in setXml: " + ex->getMessage());
+    } catch (Exception* em) {
         // in this case, recover by displaying the speed slider.
         this->setSpeedController(SLIDERDISPLAY);
     }
@@ -1556,9 +1556,9 @@ void ControlPanel::on_menu_requested()
        trackSlider = true;
       else if(tsAtt == "false")
        trackSlider = false;
-      else throw DataConversionException();
+      else throw new DataConversionException();
      }
-     catch (DataConversionException ex) {
+     catch (DataConversionException* ex) {
       trackSlider = trackSliderDefault;
      }
     } else {
@@ -1571,9 +1571,9 @@ void ControlPanel::on_menu_requested()
      {
       bool bok;
       trackSliderMinInterval = tsmiAtt.toLong(&bok);
-      if(!bok) throw DataConversionException();
+      if(!bok) throw new DataConversionException();
      }
-     catch (DataConversionException ex) {
+     catch (DataConversionException* ex) {
          trackSliderMinInterval = trackSliderMinIntervalDefault;
      }
      if (trackSliderMinInterval < trackSliderMinIntervalMin)

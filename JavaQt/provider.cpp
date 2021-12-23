@@ -1595,7 +1595,7 @@
                     classRef = new WeakReference<Class<?>>(clazz);
                 }
                 return clazz;
-            } catch (ClassNotFoundException e) {
+            } catch (ClassNotFoundException* e) {
                 throw new NoSuchAlgorithmException
                     ("class configured for " + type + " (provider: " +
                     provider.getName() + ") cannot be found.", e);
@@ -1616,7 +1616,7 @@
                     Class<?>[] empty = {};
                     Constructor<?> con = clazz.getConstructor(empty);
                     return con.newInstance();
-                } catch (NoSuchMethodException e) {
+                } catch (NoSuchMethodException* e) {
                     throw new NoSuchAlgorithmException("No /*public*/ no-arg "
                         + "constructor found in class " + className);
                 }
@@ -1736,7 +1736,7 @@
         /*private*/ Class<?> getKeyClass(String name) {
             try {
                 return Class.forName(name);
-            } catch (ClassNotFoundException e) {
+            } catch (ClassNotFoundException* e) {
                 // ignore
             }
             try {
@@ -1744,7 +1744,7 @@
                 if (cl != null) {
                     return cl.loadClass(name);
                 }
-            } catch (ClassNotFoundException e) {
+            } catch (ClassNotFoundException* e) {
                 // ignore
             }
             return null;

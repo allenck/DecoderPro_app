@@ -30,7 +30,7 @@ namespace TimeTable
    if(f->open(QFile::ReadOnly)) {
        in = new QTextStream(f);
    }
-   else throw FileNotFoundException();
+   else throw  new FileNotFoundException();
 
    //bufferedReader = new BufferedReader(fileReader);
 

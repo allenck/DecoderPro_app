@@ -221,7 +221,7 @@ AbstractProxyLightManager::AbstractProxyLightManager(QObject *parent)
  */
 //@Override
 //@CheckReturnValue
-/*public*/ /*@Nonnull*/ QString AbstractProxyLightManager::normalizeSystemName(/*@Nonnull*/ QString inputName) /*throw (NamedBean::BadSystemNameException)*/ {
+/*public*/ /*@Nonnull*/ QString AbstractProxyLightManager::normalizeSystemName(/*@Nonnull*/ QString inputName) /*throw new (NamedBean::BadSystemNameException)*/ {
     int index = matchTentative(inputName);
     if (index >= 0) {
         return getMgr(index)->normalizeSystemName(inputName);

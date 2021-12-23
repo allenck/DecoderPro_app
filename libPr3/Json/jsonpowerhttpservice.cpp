@@ -35,10 +35,10 @@
                 data.insert(JSON::STATE, JSON::UNKNOWN);
                 break;
         }
-    } catch (JmriException e) {
+    } catch (JmriException* e) {
         log->error("Unable to get Power state.", e);
         throw  JsonException(500, tr("Error accessing power status."));
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         // No PowerManager is defined; just report it as UNKNOWN
         data.insert(JSON::STATE, JSON::UNKNOWN);
     }
@@ -64,8 +64,8 @@
             default:
                 throw  JsonException(HttpServletResponse::SC_BAD_REQUEST, tr("Attempting to set object type %1 to unknown state %2.").arg(JSON::POWER).arg(state));
         }
-    } catch (JmriException ex) {
-        throw  JsonException(HttpServletResponse::SC_INTERNAL_SERVER_ERROR, ex.getMessage());
+    } catch (JmriException* ex) {
+        throw  JsonException(HttpServletResponse::SC_INTERNAL_SERVER_ERROR, ex->getMessage());
     }
     return this->doGet(type, name, locale).toObject();
 }

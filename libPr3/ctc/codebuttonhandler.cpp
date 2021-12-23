@@ -47,7 +47,7 @@ CodeButtonHandler::CodeButtonHandler(QObject *parent) : QObject(parent)
         Sensor* returnValue = InstanceManager::sensorManagerInstance()->newSensor("IS:PRECONDITIONING_ENABLED", nullptr); // NOI18N
         int knownState = returnValue->getKnownState();
         if (Sensor::ACTIVE != knownState && Sensor::INACTIVE != knownState) {
-            try {returnValue->setKnownState(Sensor::INACTIVE); } catch (JmriException ex) {
+            try {returnValue->setKnownState(Sensor::INACTIVE); } catch (JmriException* ex) {
                 LoggerFactory::getLogger("CodeButtonHandler")->debug("Sensor problem, preconditioning won't work.");          // NOI18N
             }
         }

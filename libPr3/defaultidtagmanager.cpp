@@ -197,7 +197,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
  emit newIdTagCreated((DefaultIdTag*)s);
 
  // if that failed, blame it on the input arguements
- if (s == NULL) throw IllegalArgumentException();
+ if (s == NULL) throw new IllegalArgumentException();
 
  return s;
 }
@@ -412,9 +412,9 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
    file->open(QIODevice::WriteOnly);
   }
  }
- catch (IOException ex)
+ catch (IOException* ex)
  {
-  log->error("Exception while creating IdTag file, may not be complete: " + ex.getMessage());
+  log->error("Exception while creating IdTag file, may not be complete: " + ex->getMessage());
  }
  return file;
 }

@@ -99,7 +99,7 @@ BlockValueFile::BlockValueFile(QObject *parent) :
         dd = a.toInt(&bOk);
         if(!bOk) throw new DataConversionException();
        }
-       catch (DataConversionException e)
+       catch (DataConversionException* e)
        {
         log->error("failed to convert direction attribute");
        }

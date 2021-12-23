@@ -9,7 +9,7 @@ PerformActionModel::PerformActionModel(QObject *parent) :
 }
 
 //@Override
-/*protected*/ void PerformActionModel::performAction(Action* action) throw (JmriException)
+/*protected*/ void PerformActionModel::performAction(Action* action) /*throw (JmriException)*/
 {
  QString prefs = QString("prefs");
  JActionEvent* event = new JActionEvent((QObject*)&prefs, 0, ""); // TODO:

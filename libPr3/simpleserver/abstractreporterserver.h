@@ -57,7 +57,7 @@ public slots:
             QString now;
             try {
                 now = e->getNewValue().toString();
-            } catch (NullPointerException npe) {
+            } catch (NullPointerException* npe) {
                 // current report is null, which is expected.
                 now = nullptr;
             }

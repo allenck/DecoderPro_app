@@ -144,7 +144,7 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
  if (s == NULL)
  {
   log->error("cannot create new light "+systemName);
-  throw IllegalArgumentException("cannot create new light "+systemName);
+  throw new IllegalArgumentException("cannot create new light "+systemName);
  }
  // save in the maps
  Register(static_cast<NamedBean*>(s->self()));

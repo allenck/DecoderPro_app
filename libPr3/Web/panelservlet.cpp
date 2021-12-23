@@ -38,7 +38,7 @@ PanelServlet::PanelServlet() : AbstractPanelServlet()
  {
   PanelEditor* editor = (PanelEditor*) getEditor(name);
   if(editor == NULL)
-   throw NullPointerException(tr("No Editor %1 found").arg(name));
+   throw new NullPointerException(tr("No Editor %1 found").arg(name));
 
   QDomElement panel = doc.createElement("panel");
 
@@ -81,9 +81,9 @@ PanelServlet::PanelServlet() : AbstractPanelServlet()
       {
        NamedBean* namedBean = sub->getNamedBean();
        if(namedBean == NULL)
-        throw NullPointerException();
+        throw new NullPointerException();
        e.setAttribute(JSON::ID, sub->getNamedBean()->getSystemName());
-      } catch (NullPointerException ex)
+      } catch (NullPointerException* ex)
       {
        if (sub->getNamedBean() == NULL)
        {
@@ -97,7 +97,7 @@ PanelServlet::PanelServlet() : AbstractPanelServlet()
       panel.appendChild(e);
      }
     }
-    catch (Exception ex)
+    catch (Exception* ex)
     {
      log->error(tr("Error storing panel element: "), ex);
     }
@@ -113,7 +113,7 @@ PanelServlet::PanelServlet() : AbstractPanelServlet()
  // return out.outputString(doc);
   return doc.toByteArray();
  }
- catch (NullPointerException ex)
+ catch (NullPointerException* ex)
  {
   log->warn("Requested Panel [" + name + "] does not exist.");
   return QString("ERROR Requested panel [" + name + "] does not exist.").toLatin1();
@@ -128,7 +128,7 @@ PanelServlet::PanelServlet() : AbstractPanelServlet()
  {
   PanelEditor* editor = (PanelEditor*) getEditor(name);
   if(editor == NULL)
-   throw NullPointerException(tr("editor not found for %1").arg(name));
+   throw new NullPointerException(tr("editor not found for %1").arg(name));
 
   QJsonObject root = QJsonObject(); //this.mapper.createObjectNode();
   QJsonObject panel = QJsonObject();//root.putObject("panel");
@@ -161,7 +161,7 @@ PanelServlet::PanelServlet() : AbstractPanelServlet()
         // I tried using JavaBean Introspection to simply build the contents using Jackson Databindings,
         // but when a panel element has a reference to the panel or to itself as a property, this leads
         // to infinite recursion
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log->error("Error storing panel element: " , ex);
     }
   }
@@ -171,7 +171,7 @@ PanelServlet::PanelServlet() : AbstractPanelServlet()
   qDebug() << QJsonDocument(root).toJson();
   return QString(QJsonDocument(root).toJson());
  }
- catch (NullPointerException ex)
+ catch (NullPointerException* ex)
  {
   log->warn("Requested Panel [" + name + "] does not exist.");
   return "ERROR Requested panel [" + name + "] does not exist.";
@@ -183,8 +183,8 @@ PanelServlet::PanelServlet() : AbstractPanelServlet()
 //        log->error("Error mapping JSON", e);
 //        return "ERROR " + e.getLocalizedMessage();
 //    }
- catch (IOException e) {
+ catch (IOException* e) {
      log->error("IOException", e);
-     return "ERROR " + e.getLocalizedMessage();
+     return "ERROR " + e->getLocalizedMessage();
  }
 }

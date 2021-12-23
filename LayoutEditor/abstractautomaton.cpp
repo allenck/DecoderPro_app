@@ -893,8 +893,8 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
 //                }
 //            }
 //        });
-    } catch (ProgrammerException e) {
-        log->warn("Exception during writeServiceModeCV: "+e.getMessage());
+    } catch (ProgrammerException* e) {
+        log->warn("Exception during writeServiceModeCV: "+e->getMessage());
         return false;
     }
     // wait for the result
@@ -927,8 +927,8 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
 //                }
 //            }
 //        });
-    } catch (ProgrammerException e) {
-        log->warn("Exception during writeServiceModeCV: "+e.getMessage());
+    } catch (ProgrammerException* e) {
+        log->warn("Exception during writeServiceModeCV: "+e->getMessage());
         return -1;
     }
     // wait for the result
@@ -959,8 +959,8 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
 //                }
 //            }
 //        });
-    } catch (ProgrammerException e) {
-        log->warn("Exception during writeServiceModeCV: "+e.getMessage());
+    } catch (ProgrammerException* e) {
+        log->warn("Exception during writeServiceModeCV: "+e->getMessage());
         return false;
     }
     // wait for the result

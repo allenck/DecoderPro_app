@@ -85,7 +85,7 @@ void LocoBufferAdapter::common()
 //        // try to set it for LocoNet via LocoBuffer
 //        try {
 //            setSerialPort(activeSerialPort);
-//        } catch (UnsupportedCommOperationException e) {
+//        } catch (UnsupportedCommOperationException* e) {
 //            log->error("Cannot set serial parameters on port "+portName+": "+e.getMessage());
 //            return "Cannot set serial parameters on port "+portName+": "+e.getMessage();
 //        }
@@ -235,10 +235,10 @@ void LocoBufferAdapter::common()
   //if (!opened)
    setSerialPort(activeSerialPort);
  }
- catch (UnsupportedCommOperationException e)
+ catch (UnsupportedCommOperationException* e)
  {
-  log->error("Cannot set serial parameters on port "+portName+": "+e.getMessage());
-  emit error( "Cannot set serial parameters on port "+portName+": "+e.getMessage());
+  log->error("Cannot set serial parameters on port "+portName+": "+e->getMessage());
+  emit error( "Cannot set serial parameters on port "+portName+": "+e->getMessage());
   return "";
  }
 //    // set timeout

@@ -383,7 +383,7 @@
         int depth = _maxBlocks;
         try {
             depth = _searchDepth->text().toInt();
-        } catch (NumberFormatException nfe) {
+        } catch (NumberFormatException* nfe) {
             depth = _maxBlocks;
         }
 //        _routeFinder = new RouteFinder(this, _originBlockOrder, _destBlockOrder,
@@ -597,7 +597,7 @@ void WarrantFrame::on_throttleFactorBoxLeave()
  // Transient variable, just verify it is a float.
  //            try {
  //                Float.parseFloat(_throttleFactorBox.getText());
- //            } catch (NumberFormatException nfe) {
+ //            } catch (NumberFormatException* nfe) {
  //                JOptionPane.showMessageDialog(NULL, tr("MustBeFloat"),
  //                        tr("WarningTitle"), JOptionPane.WARNING_MESSAGE);
  //                _throttleFactorBox.setText("1.0");
@@ -1845,7 +1845,7 @@ if(role == Qt::EditRole || role == Qt::DisplayRole)
            msg =  tr("%1 is not a valid Elapsed Time.").arg(value.toString());
        }
        ts->setTime(time);
-   } catch (NumberFormatException nfe) {
+   } catch (NumberFormatException* nfe) {
        msg = tr("%1 is not a valid Elapsed Time.").arg(value.toString());
    }
    break;
@@ -1975,7 +1975,7 @@ if(role == Qt::EditRole || role == Qt::DisplayRole)
              try {
                  int num = value.toInt();
                  ts->setValue(value.toString());
-             } catch (NumberFormatException nfe) {
+             } catch (NumberFormatException* nfe) {
                  msg  =tr("\"%1\" is an invalid value for Command \"%2\".").arg(value.toString()).arg(cmd);
              }
          }

@@ -70,7 +70,7 @@
             log->debug("about to set reporter State");
             reporter->setReport(r);
         }
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log->error("set reporter report", ex);
     }
 }

@@ -64,7 +64,7 @@ sprogVersion = "";
             major = sprogVersion.mid(sprogVersion.indexOf(".")
                     - 1, sprogVersion.indexOf(".")).toInt(&ok);
             if(!ok) throw NumberFormatException();
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException* e) {
             log->error("Cannot parse SPROG major version number");
         }
     }
@@ -84,7 +84,7 @@ sprogVersion = "";
             minor = sprogVersion.mid(sprogVersion.indexOf(".")
                     + 1, sprogVersion.indexOf(".") + 2).toInt(&ok);
             if(!ok) throw NumberFormatException();
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException* e) {
             log->error("Cannot parse SPROG minor version number");
         }
     }

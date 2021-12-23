@@ -309,7 +309,7 @@ QString TurnoutAspectPanel::getTurnoutName() {
 NamedBean* TurnoutAspectPanel::getTurnout() {
     try {
         return beanBox->getNamedBean();
-    } catch (JmriException ex) {
+    } catch (JmriException* ex) {
         pane->log->warn("skipping creation of turnout");
         return nullptr;
     }

@@ -61,13 +61,13 @@ public:
   /*public*/ void disconnected(FemaleSocket* socket)override;
   /*public*/ QString getShortDescription(QLocale locale)override;
   /*public*/ QString getLongDescription(QLocale locale) override;
-  /*public*/ void setState(int s) throw (JmriException)override;
+  /*public*/ void setState(int s) /*throw (JmriException)*/override;
   /*public*/ int getState()override;
   /*public*/ QString getBeanType()override;
   /*public*/ Base* getParent();
   /*public*/ void setParent(Base* parent)override;
   /*public*/ Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) throw  (JmriException)override;
-  /*public*/ Base* deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) throw (JmriException)override;
+  /*public*/ Base* deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/override;
   /*public*/ void registerListenersForThisClass() override;
   /*public*/ void unregisterListenersForThisClass()override;
   /*public*/ void disposeMe()override;

@@ -76,7 +76,7 @@ layoutBlocks = new QMap<QString, LayoutBlockListener*>();
                 } catch (JsonException ex) {
                     jlbss->connection->sendMessage(ex.getJsonMessage());
                 }
-            } catch (IOException ex) {
+            } catch (IOException* ex) {
                 // if we get an error, de-register
                 //layoutBlock.removePropertyChangeListener(this);
              disconnect(layoutBlock->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

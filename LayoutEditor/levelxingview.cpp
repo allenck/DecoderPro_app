@@ -216,7 +216,7 @@
      * {@inheritDoc}
      */
     //@Override
-    /*public*/ LayoutTrack* LevelXingView::getConnection(HitPointType::TYPES connectionType) throw (JmriException) {
+    /*public*/ LayoutTrack* LevelXingView::getConnection(HitPointType::TYPES connectionType) /*throw (JmriException)*/ {
         return xing->getConnection(connectionType);
     }
 
@@ -224,7 +224,7 @@
      * {@inheritDoc}
      */
     //@Override
-    /*public*/ void LevelXingView::setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) throw (JmriException) {
+    /*public*/ void LevelXingView::setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) /*throw (JmriException)*/ {
         xing->setConnection(connectionType, o, type);
     }
 

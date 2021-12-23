@@ -212,7 +212,7 @@ void ConsistController::handleMessage(QString message) {
         if (message.at(0) == 'F') {   //  program CV 21 & 22 'F'unctions
             setConsistCVs(message);
         }
-    } catch (NullPointerException exb) {
+    } catch (NullPointerException* exb) {
         log->warn("Message \"" + message + "\" does not match a consist command.");
     }
 }
@@ -256,7 +256,7 @@ void ConsistController::handleMessage(QString message) {
 
         }
 
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->warn("reorderConsist error for message: " + message);
         return;
     }
@@ -283,14 +283,14 @@ void ConsistController::handleMessage(QString message) {
             }
             consist->remove(loco);
         }
-    } catch (NullPointerException noCon) {
+    } catch (NullPointerException* noCon) {
         log->warn("Consist: " + header.at(1) + " not found. Cannot delete.");
         return;
     }
 
     try {
         manager->delConsist(stringToDcc(header.at(1)));
-    } catch (NullPointerException noCon) {
+    } catch (NullPointerException* noCon) {
         log->warn("Consist: " + header.at(1) + " not found. Cannot delete.");
         return;
     }
@@ -326,7 +326,7 @@ void ConsistController::handleMessage(QString message) {
             }
         }
 
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->warn("addLoco error for message: " + message);
         return;
     }
@@ -366,7 +366,7 @@ void ConsistController::handleMessage(QString message) {
                 log->debug("Remove loco: " + loco->toString() + ", from consist: " + headerData.at(1));
             }
         }
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->warn("removeLoco error for message: " + message);
         return;
     }
@@ -411,7 +411,7 @@ void ConsistController::handleMessage(QString message) {
             return;
         }
 
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->warn("setConsistCVs error for message: " + message);
 
         return;
@@ -427,10 +427,10 @@ void ConsistController::handleMessage(QString message) {
             int CVValue = CVData.at(1).toInt();
             try {
                 pom->writeCV(CVData.at(0), CVValue, (ProgListener*)this);
-            } catch (ProgrammerException e) {
+            } catch (ProgrammerException* e) {
             }
-        } catch (NumberFormatException nfe) {
-            log->warn("Error in setting CVs: " + nfe.getMessage());
+        } catch (NumberFormatException* nfe) {
+            log->warn("Error in setting CVs: " + nfe->getMessage());
         }
     }
     ((DefaultProgrammerManager*)InstanceManager::getDefault("AddressedProgrammerManager"))->releaseAddressedProgrammer(pom);

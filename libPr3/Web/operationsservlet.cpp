@@ -221,7 +221,7 @@ OperationsServlet::OperationsServlet() : HttpServlet()
      //QJsonObject manifest = this->mapper.readTree(new JsonManifest(train).getFile());
      File* file = Operations::JsonManifest(train).getFile();
      QFile f(file->getPath());
-     if(!f.open(QIODevice::ReadOnly)) throw FileNotFoundException(f.fileName());
+     if(!f.open(QIODevice::ReadOnly)) throw  new FileNotFoundException(f.fileName());
      QTextStream is(&f);
      QJsonObject manifest = QJsonDocument::fromBinaryData(is.readAll().toLocal8Bit()).object();
      if (manifest.value(JSON::IMAGE).isString())

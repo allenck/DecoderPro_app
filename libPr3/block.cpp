@@ -362,7 +362,7 @@ QString Block::getStateString()
  // It is rather unpleasant that the following needs to be done in a try-catch, but exceptions have been observed
  try {
      firePropertyChange("state", old, _current);
- } catch (Exception e) {
+ } catch (Exception* e) {
      log->error(getDisplayName()+" got exception during fireProperTyChange("+old+","+QString::number(_current)+") in thread "+
              /*Thread.currentThread().getName()+" "+Thread.currentThread().getId()+*/": ", e);
  }
@@ -497,7 +497,7 @@ QString Block::getStateString()
  {
   return /*new*/ /*Float(speed)*/speed.toFloat();
  }
- catch (NumberFormatException nx)
+ catch (NumberFormatException* nx)
  {
         //considered normal if the speed is not a number.
  }
@@ -519,7 +519,7 @@ QString Block::getStateString()
  return _blockSpeed;
 }
 
- /*public*/ void Block::setBlockSpeed(QString s) throw (JmriException)
+ /*public*/ void Block::setBlockSpeed(QString s) /*throw (JmriException)*/
 {
  if((s==NULL) || (_blockSpeed==(s)))
   return;
@@ -540,7 +540,7 @@ QString Block::getStateString()
      log->error(tr("Block %1 has invalid speed '%2'").arg(getDisplayName()).arg(s));
    }
    //  }
-//  catch (NumberFormatException nx)
+//  catch (NumberFormatException* nx)
 //  {
 //   try
 //   {

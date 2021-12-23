@@ -54,8 +54,8 @@ ScaleConfigXML::ScaleConfigXML(QObject *parent) : QObject(parent)
         } catch (FileNotFoundException ex) {
             log->error("File not found when writing: " + ex.getMessage());  // NOI18N
             return false;
-        } catch (IOException ex) {
-            log->error("IO Exception when writing: " + ex.getMessage());  // NOI18N
+        } catch (IOException* ex) {
+            log->error("IO Exception when writing: " + ex->getMessage());  // NOI18N
             return false;
         }
 
@@ -95,11 +95,11 @@ ScaleConfigXML::ScaleConfigXML(QObject *parent) : QObject(parent)
                 ScaleManager::addScale(scaleName, userName, scaleRatio);
             }
 
-        } catch (JDOMException ex) {
-            log->error("File invalid: " + ex.getMessage());  // NOI18N
+        } catch (JDOMException* ex) {
+            log->error("File invalid: " + ex->getMessage());  // NOI18N
             return false;
-        } catch (IOException ex) {
-            log->error("Error reading file: " + ex.getMessage());  // NOI18N
+        } catch (IOException* ex) {
+            log->error("Error reading file: " + ex->getMessage());  // NOI18N
             return false;
         }
 
@@ -129,7 +129,7 @@ ScaleConfigXML::ScaleConfigXML(QObject *parent) : QObject(parent)
             } else {
                 try {
                     FileUtil::rotate(file, 4, "bup");  // NOI18N
-                } catch (IOException ex) {
+                } catch (IOException* ex) {
                      ScaleConfigXML::log->warn("Rotate failed, reverting to xml backup");  // NOI18N
                     makeBackupFile(getStoreFileName());
                 }

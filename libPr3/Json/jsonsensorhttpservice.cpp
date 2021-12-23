@@ -82,8 +82,8 @@
             else
                 throw  JsonException(400, tr("Attempting to set object type %1 to unknown state %2.").arg(JSON::SENSOR).arg(state));
 //        }
-    } catch (JmriException ex) {
-        throw JsonException(500, ex.getMessage());
+    } catch (JmriException* ex) {
+        throw new JsonException(500, ex->getMessage());
     }
     return this->doGet(type, name, locale).toObject();
 }
@@ -93,7 +93,7 @@
     try {
         ((ProxySensorManager*)InstanceManager::getDefault("SensorManager"))->provideSensor(name);
     } catch (Exception ex) {
-        throw  JsonException(500, tr("ErrorCreatingObject %1 %2").arg(JSON::SENSOR).arg(name));
+        throw new JsonException(500, tr("ErrorCreatingObject %1 %2").arg(JSON::SENSOR).arg(name));
     }
     return this->doPost(type, name, data, locale);
 }

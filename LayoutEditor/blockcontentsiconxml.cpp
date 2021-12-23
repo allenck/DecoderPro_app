@@ -145,10 +145,10 @@
     try {
     bool bok;
         x = element.attribute("x").toInt(&bok);
-        if(!bok) throw DataConversionException();
+        if(!bok) throw new DataConversionException();
         y = element.attribute("y").toInt(&bok);
-        if(!bok) throw DataConversionException();
-    } catch (DataConversionException e) {
+        if(!bok) throw new DataConversionException();
+    } catch (DataConversionException* e) {
         log->error("failed to convert positional attribute");
     }
     l->setOriginalLocation(x, y);

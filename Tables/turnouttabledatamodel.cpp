@@ -512,9 +512,9 @@ TurnoutTableDataModel::TurnoutTableDataModel()
     {
      t->provideFirstFeedbackSensor(value.toString());
     }
-    catch (JmriException e)
+    catch (JmriException* e)
     {
-     JOptionPane::showMessageDialog(NULL, e.toString());
+     JOptionPane::showMessageDialog(NULL, e->toString());
     }
     fireTableRowsUpdated(row, row);
     return true;
@@ -525,9 +525,9 @@ TurnoutTableDataModel::TurnoutTableDataModel()
     {
      t->provideSecondFeedbackSensor(value.toString());
     }
-    catch (JmriException e)
+    catch (JmriException* e)
     {
-     JOptionPane::showMessageDialog(NULL, e.toString());
+     JOptionPane::showMessageDialog(NULL, e->toString());
     }
    fireTableRowsUpdated(row,row);
    return true;
@@ -603,7 +603,7 @@ TurnoutTableDataModel::TurnoutTableDataModel()
 //        QString speed = ((JComboBox*)value)->currentText();
 //        try {
      t->setStraightSpeed(value.toString());
-//        } catch (JmriException ex) {
+//        } catch (JmriException* ex) {
 //            //JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + speed);
 //            QMessageBox::warning(NULL, tr("Warning"), ex.getMessage()+ "\n" + speed);
 //            return;
@@ -625,7 +625,7 @@ TurnoutTableDataModel::TurnoutTableDataModel()
 //    {
      t->setDivergingSpeed(value.toString());
 //    }
-//    catch (JmriException ex)
+//    catch (JmriException* ex)
 //    {
 //     //JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + speed);
 //        QMessageBox::warning(NULL, tr("Warning"), ex.getMessage()+ "\n" + speed);
@@ -865,7 +865,7 @@ this->table = table;
 //@Override
 /*public*/ JTable* TurnoutTableDataModel::makeJTable(/*@Nonnull*/ QString name, /*@Nonnull*/ TableModel* model, /*@CheckForNull*/ RowSorter/*<? extends TableModel>*/* sorter) {
  if (!(qobject_cast<TurnoutTableDataModel*>(model))){
-     throw IllegalArgumentException("Model is not a TurnoutTableDataModel");
+     throw new IllegalArgumentException("Model is not a TurnoutTableDataModel");
  }
  //return configureJTable(name, new /*TurnoutTableJTable*/TTJTable((TurnoutTableDataModel*)model), sorter);
 return configureJTable(name, new /*TurnoutTableJTable*/JTable((TurnoutTableDataModel*)model), sorter);}
@@ -1077,7 +1077,7 @@ QWidget* TTComboBoxDelegate::createEditor(QWidget *parent, const QStyleOptionVie
  if (t == NULL)
  {
   TurnoutTableAction::log->debug("error NULL turnout!");
-  throw NullPointerException();
+  throw new NullPointerException();
  }
  switch(index.column())
  {
@@ -1246,7 +1246,7 @@ TableCellEditor* TTJTable::getEditor(int row, int column) {
     try {
         onImage = ImageIO::read(new File(onIconPath));
         offImage = ImageIO::read(new File(offIconPath));
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         log->error(tr("error reading image from %1 or %2").arg(onIconPath).arg(offIconPath), ex);
     }
     log->debug("Success reading images");

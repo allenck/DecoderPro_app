@@ -2162,7 +2162,7 @@ void DuplicateActionListener::actionPerformed(JActionEvent *)
         _positionableDataFlavor = new DataFlavor(POSITIONABLE_FLAVOR);
         _namedIconDataFlavor = new DataFlavor(ImageIndexEditor::IconDataFlavorMime);
         _positionableListDataFlavor = new DataFlavor(POSITIONABLE_LIST_FLAVOR);
-    } catch (ClassNotFoundException cnfe) {
+    } catch (ClassNotFoundException* cnfe) {
 //        cnfe.printStackTrace();
     }
 //    new DropTarget(this, DnDConstants.ACTION_COPY_OR_MOVE, this);
@@ -2270,7 +2270,7 @@ static /*protected*/ class PositionableListDnD implements Transferable {
         _sourceEditor = source;
         try {
             _dataFlavor = new DataFlavor(POSITIONABLE_LIST_FLAVOR);
-        } catch (ClassNotFoundException cnfe) {
+        } catch (ClassNotFoundException* cnfe) {
             cnfe.printStackTrace();
         }
     }

@@ -62,8 +62,8 @@ class PositionablePointView : public LayoutTrackView
   /*public*/ JPanel* getLinkPanel();
   /*public*/ void updateLink();
   /*public*/ QPointF getCoordsForConnectionType(HitPointType::TYPES connectionType) override;
-  /*public*/ LayoutTrack* getConnection(HitPointType::TYPES connectionType) throw (JmriException) override;
-  /*public*/ void setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) throw (JmriException) override;
+  /*public*/ LayoutTrack* getConnection(HitPointType::TYPES connectionType) /*throw (JmriException)*/ override;
+  /*public*/ void setConnection(HitPointType::TYPES connectionType, LayoutTrack* o, HitPointType::TYPES type) /*throw (JmriException)*/ override;
   /*public*/ bool isDisconnected(HitPointType::TYPES connectionType) override;
   /*public*/ void reCheckBlockBoundary() override;
   /*protected*/ QList<LayoutConnectivity*> getLayoutConnectivity() override;

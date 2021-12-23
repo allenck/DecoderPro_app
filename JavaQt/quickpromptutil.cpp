@@ -83,7 +83,7 @@ QuickPromptUtil::QuickPromptUtil(QObject *parent) : QObject(parent)
 //    int newValue = promptForData(parentComponent, message, title, oldValue, validator, (val) -> {
 //        try {
 //            return Integer.valueOf(Integer.parseInt(val));
-//        } catch (NumberFormatException ex) {
+//        } catch (NumberFormatException* ex) {
 //            // original exception ignored; wrong message.
 //            throw new NumberFormatException(Bundle.getMessage("InputDialogNotNumber"));
 //        }
@@ -126,7 +126,7 @@ QuickPromptUtil::QuickPromptUtil(QObject *parent) : QObject(parent)
 //        int newValue = promptForData(parentComponent, message, title, oldValue, validator, (val) -> {
 //            try {
 //                return Integer.valueOf(Integer.parseInt(val));
-//            } catch (NumberFormatException ex) {
+//            } catch (NumberFormatException* ex) {
 //                // original exception ignored; wrong message.
 //                throw new NumberFormatException(Bundle.getMessage("InputDialogNotNumber"));
 //            }
@@ -216,7 +216,7 @@ static /*public*/ float promptForFloat(Component parentComponent, String message
     if (newValue != null) {
         try {
             result = Float.parseFloat(newValue);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException* e) {
             result = oldValue;
         }
     }
@@ -237,7 +237,7 @@ static /*public*/ double promptForDouble(Component parentComponent, String messa
     if (newValue != null) {
         try {
             result = Double.parseDouble(newValue);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException* e) {
             result = oldValue;
         }
     }

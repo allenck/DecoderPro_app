@@ -131,7 +131,7 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
  preferences->putInt(SHOW_TOOL_TIP_TIME, this->getToolTipDismissDelay());
  try {
      preferences->sync();
- } catch (BackingStoreException ex) {
+ } catch (BackingStoreException* ex) {
      log->error("Unable to save preferences->", ex);
  }
  this->setDirty(false);
@@ -359,7 +359,7 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
             log->debug("Apply look and feel \"{}\" ({})", this->lookAndFeel, lafClassName);
             try {
                 UIManager.setLookAndFeel(lafClassName);
-            } catch (ClassNotFoundException ex) {
+            } catch (ClassNotFoundException* ex) {
                 log->error("Could not find look and feel \"{}\".", this->lookAndFeel);
             } catch (IllegalAccessException | InstantiationException ex) {
                 log->error("Could not load look and feel \"{}\".", this->lookAndFeel);

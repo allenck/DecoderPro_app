@@ -172,8 +172,8 @@ public:
     /*public*/ void setTurnoutStates(int state, QString turnStateA, QString turnStateB);
     //Internal call to update the state of the slip depending upon the turnout states.
     /*public*/ QVector<QString>* getBlockBoundaries();
-    /*public*/ LayoutTrack* getConnection(HitPointType::TYPES location) throw (JmriException) override;
-    /*public*/ void setConnection(HitPointType::TYPES location, LayoutTrack *o, HitPointType::TYPES type) throw (JmriException) override;
+    /*public*/ LayoutTrack* getConnection(HitPointType::TYPES location) /*throw (JmriException)*/ override;
+    /*public*/ void setConnection(HitPointType::TYPES location, LayoutTrack *o, HitPointType::TYPES type) /*throw (JmriException)*/ override;
     /*public*/ void drawSlipCircles(EditScene* g2);
 //    /*public*/ QPointF getCoordsForConnectionType(int connectionType) override;
     /*public*/ void toggleState(HitPointType::TYPES);

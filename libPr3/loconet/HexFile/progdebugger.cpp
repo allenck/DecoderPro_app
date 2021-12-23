@@ -275,7 +275,7 @@ void ProgDebugger::PDRunnable3::run()
         mode = m;
         notifyPropertyChange("Mode", VPtr<ProgrammingMode>::asQVariant(oldMode), VPtr<ProgrammingMode>::asQVariant(m));
     } else {
-        throw IllegalArgumentException("Invalid requested mode: "+m->getStandardName());
+        throw new IllegalArgumentException("Invalid requested mode: "+m->getStandardName());
     }
 }
 /*public*/ /*final*/ ProgrammingMode* ProgDebugger::getMode() { return mode; }

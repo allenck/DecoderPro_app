@@ -217,8 +217,8 @@
     {
         try {
             ((DefaultSignalMastLogic*)sml)->useLayoutEditor(false, mast);
-        } catch (JmriException e){
-            log->error("Error occured while trying to disable layout editor use " + e.getMessage());
+        } catch (JmriException* e){
+            log->error("Error occured while trying to disable layout editor use " + e->getMessage());
         }
     }
 }
@@ -319,7 +319,7 @@
 * @param source Source SignalMast
 * @param layout Layout Editor panel to check.
 */
-/*public*/ void DefaultSignalMastLogicManager::discoverSignallingDest(SignalMast* source, LayoutEditor* layout) throw (JmriException)
+/*public*/ void DefaultSignalMastLogicManager::discoverSignallingDest(SignalMast* source, LayoutEditor* layout) /*throw (JmriException)*/
 {
  firePropertyChange("autoSignalMastGenerateStart", QVariant(), QVariant(source->getDisplayName()));
 
@@ -339,7 +339,7 @@
  {
   validPaths.insert((NamedBean*)source, lbm->getLayoutBlockConnectivityTools()->discoverPairDest(source, layout, "SignalMast", LayoutBlockConnectivityTools::MASTTOMAST));
  }
- catch (JmriException e)
+ catch (JmriException* e)
  {
    throw e;
  }
@@ -364,10 +364,10 @@
      ((DefaultSignalMastLogic*)sml)->useLayoutEditorDetails(true, true, (SignalMast*)validDestMast.at(i));
      ((DefaultSignalMastLogic*)sml)->useLayoutEditor(true, (SignalMast*)validDestMast.value(i));
     }
-    catch (JmriException e)
+    catch (JmriException* e)
     {
      //log.debug("We shouldn't get an exception here");
-     log->error("Exception found " + e.getMessage());
+     log->error("Exception found " + e->getMessage());
      throw e;
     }
    }
@@ -381,12 +381,12 @@
 * on all layout editor panels.
 */
 
-/*public*/ void DefaultSignalMastLogicManager::automaticallyDiscoverSignallingPairs() throw (JmriException)
+/*public*/ void DefaultSignalMastLogicManager::automaticallyDiscoverSignallingPairs() /*throw (JmriException)*/
 {
  runWhenStablised=false;
  LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
  if(!lbm->isAdvancedRoutingEnabled()){
-  throw JmriException("advanced routing not enabled");
+  throw new JmriException("advanced routing not enabled");
  }
  if(!lbm->routingStablised()){
   runWhenStablised=true;
@@ -414,9 +414,9 @@
      ((DefaultSignalMastLogic*)sml)->setDestinationMast((SignalMast*)validDestMast.value(i));
      ((DefaultSignalMastLogic*)sml)->useLayoutEditorDetails(true, true, (SignalMast*)validDestMast.value(i));
      ((DefaultSignalMastLogic*)sml)->useLayoutEditor(true, (SignalMast*)validDestMast.value(i));
-    } catch (JmriException ex){
+    } catch (JmriException* ex){
      //log.debug("we shouldn't get an exception here!");
-     log->debug(ex.getMessage());
+     log->debug(ex->getMessage());
     }
    }
   }

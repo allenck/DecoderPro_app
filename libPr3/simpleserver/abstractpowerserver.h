@@ -16,11 +16,11 @@ public:
  /*public*/ void setOffStatus();
  /*public*/ void dispose();
 
- /*abstract*/ virtual /*public*/ void sendStatus(int /*Status*/) throw (IOException) {}
+ /*abstract*/ virtual /*public*/ void sendStatus(int /*Status*/) /*throw (IOException)*/ {}
 
- /*abstract*/ virtual /*public*/ void sendErrorStatus() throw (IOException) {}
+ /*abstract*/ virtual /*public*/ void sendErrorStatus() /*throw (IOException)*/ {}
 
- /*abstract*/ virtual /*public*/ void parseStatus(QString /*statusString*/) throw (JmriException, IOException) {}
+ /*abstract*/ virtual /*public*/ void parseStatus(QString /*statusString*/) /*throw (JmriException, IOException)*/ {}
 
 signals:
 

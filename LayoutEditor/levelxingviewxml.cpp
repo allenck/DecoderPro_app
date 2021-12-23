@@ -129,10 +129,10 @@
         bool ok;
         try{
             x = element.attribute("xcen").toFloat(&ok);
-            if(!ok)throw DataConversionException();
+            if(!ok)throw new DataConversionException();
             y = element.attribute("ycen").toFloat(&ok);
-            if(!ok)throw DataConversionException();
-        } catch (DataConversionException e) {
+            if(!ok)throw new DataConversionException();
+        } catch (DataConversionException* e) {
             log->error("failed to convert levelxing center  attribute");
         }
 
@@ -184,30 +184,30 @@
 
         try {
             x = element.attribute("xa").toFloat(&ok);
-            if(!ok)throw DataConversionException();
+            if(!ok)throw new DataConversionException();
             y = element.attribute("ya").toFloat(&ok);
-            if(!ok)throw DataConversionException();
-        } catch (DataConversionException e) {
+            if(!ok)throw new DataConversionException();
+        } catch (DataConversionException* e) {
             log->error("failed to convert levelxing a coords attribute");
         }
         lv->setCoordsA( QPointF(x, y));
 
         try {
             x = element.attribute("xb").toFloat(&ok);
-            if(!ok)throw DataConversionException();
+            if(!ok)throw new DataConversionException();
             y = element.attribute("yb").toFloat(&ok);
-            if(!ok)throw DataConversionException();
-        } catch (DataConversionException e) {
+            if(!ok)throw new DataConversionException();
+        } catch (DataConversionException* e) {
             log->error("failed to convert levelxing b coords attribute");
         }
         lv->setCoordsB( QPointF(x, y));
 
         try {
             lv->setHidden(element.attribute("hidden") == "true");
-            if(!ok)throw DataConversionException();
-        } catch (DataConversionException e1) {
+            if(!ok)throw new DataConversionException();
+        } catch (DataConversionException* e1) {
             log->warn("unable to convert levelxing hidden attribute");
-        } catch (NullPointerException e) {  // considered normal if the attribute is not present
+        } catch (NullPointerException* e) {  // considered normal if the attribute is not present
         }
 
         if (element.firstChildElement("signalAMast") != QDomElement()) {

@@ -53,7 +53,7 @@ void PathTurnoutTableModel::common()
         }
         try {
             _path->getBlock()->removePropertyChangeListener((PropertyChangeListener*)this);
-        } catch (NullPointerException npe) { // OK when block is removed
+        } catch (NullPointerException* npe) { // OK when block is removed
     }
 }
 

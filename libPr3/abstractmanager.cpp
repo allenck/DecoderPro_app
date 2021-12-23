@@ -105,9 +105,9 @@ AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : 
 /*public*/ QString AbstractManager::makeSystemName(/*@Nonnull*/ QString s, bool logErrors, QLocale locale) const {
     try {
         return Manager::makeSystemName(s, logErrors, locale);
-    } catch (IllegalArgumentException ex) {
+    } catch (IllegalArgumentException* ex) {
         if (logErrors || log->isTraceEnabled()) {
-            log->error(tr("Invalid system name for %1: %2").arg(getBeanTypeHandled()).arg(ex.getMessage()));
+            log->error(tr("Invalid system name for %1: %2").arg(getBeanTypeHandled(),ex->getMessage()),ex);
         }
         throw ex;
     }
@@ -267,7 +267,7 @@ NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
   QString systemName = s->getSystemName();
   //Q_ASSERT(!systemName.isEmpty());
   if(systemName.isEmpty())
-    throw NullPointerException();
+    throw new NullPointerException();
   NamedBean* existingBean = getBeanBySystemName(systemName);
   if (existingBean != nullptr)
   {
@@ -276,7 +276,7 @@ NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
        log->debug(tr("the named bean is registered twice: %1").arg(systemName));
    }
    else {
-       log->error(tr("systemName is already registered: %1").arg(systemName));
+       log->error(tr("systemName is already registered: %1").arg(systemName),nullptr);
        throw  NamedBean::DuplicateSystemNameException("systemName is already registered: " + systemName);
    }
   }
@@ -670,26 +670,26 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
         for (VetoableChangeListener* vc : vetoableChangeSupport->getVetoableChangeListeners()) {
             try {
                 vc->vetoableChange(evt);
-            } catch (PropertyVetoException e) {
-                if (e.getPropertyChangeEvent()->getPropertyName() == ("DoNotDelete")) { // NOI18N
-                    log->info(e.getMessage());
+            } catch (PropertyVetoException* e) {
+                if (e->getPropertyChangeEvent()->getPropertyName() == ("DoNotDelete")) { // NOI18N
+                    log->info(e->getMessage());
                     throw e;
                 }
-                message.append(e.getMessage()).append("<hr>"); // NOI18N
+                message.append(e->getMessage()).append("<hr>"); // NOI18N
             }
         }
-        throw PropertyVetoException(message/*.toString()*/, evt);
+        throw new PropertyVetoException(message/*.toString()*/, evt);
     } else {
         try {
             vetoableChangeSupport->fireVetoableChange(evt);
-        } catch (PropertyVetoException e) {
-            log->error("Change vetoed.", e);
+        } catch (PropertyVetoException* *e) {
+            log->error("Change vetoed.", *e);
         }
     }
 }
 //@Override
 //@OverridingMethodsMustInvokeSuper
-/*public*/ void AbstractManager::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException)
+/*public*/ void AbstractManager::vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/
 {
 #if 1 // TODO:
  if ("CanDelete" == (evt->getPropertyName())) { //IN18N
@@ -863,7 +863,7 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
  * @return full system name with system prefix, type letter and hardware address.
  * @throws JmriException if unable to create a system name.
  */
-/*public*/ QString AbstractManager::createSystemName(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) throw (JmriException) {
+/*public*/ QString AbstractManager::createSystemName(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) /*throw (JmriException)*/ {
     return prefix + typeLetter() + curAddress;
 }
 
@@ -873,7 +873,7 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
  * @return unchanged if is numeric string.
  * @throws JmriException if not numeric.
  */
-/*protected*/ QString AbstractManager::checkNumeric(/*@Nonnull*/ QString curAddress) throw (JmriException) {
+/*protected*/ QString AbstractManager::checkNumeric(/*@Nonnull*/ QString curAddress) /*throw (JmriException)*/ {
     bool ok;
         curAddress.toInt(&ok);
     if(!ok) {
@@ -895,7 +895,7 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
  */
 //@Nonnull
 //@Deprecated
-/*public*/ /*final*/ QString AbstractManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) throw (JmriException) {
+/*public*/ /*final*/ QString AbstractManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) /*throw (JmriException)*/ {
     //jmri.util.LoggingUtil.deprecationWarning(log, "getNextValidAddress");
     return getNextValidAddress(curAddress, prefix, false);
 }
@@ -914,7 +914,7 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
  *                          or more than 10 next addresses in use.
  */
 //@Nonnull
-/*public*/ QString AbstractManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) throw (JmriException) {
+/*public*/ QString AbstractManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) /*throw (JmriException)*/ {
     log->debug(tr("getNextValid for address %1").arg(curAddress));
     QString testAddr;
     NamedBean* bean;
@@ -929,11 +929,11 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
         testAddr = testAddr.mid(getSystemNamePrefix().length());
         getIncrement(testAddr, increment);
     }
-    catch ( NamedBean::BadSystemNameException ex){
-        throw  JmriException(ex.getMessage());
+    catch ( NamedBean::BadSystemNameException* ex){
+        throw new JmriException(ex->getMessage());
     }
-    catch (JmriException ex ){
-        throw JmriException(ex.getMessage());
+    catch (JmriException* ex ){
+        throw new JmriException(ex->getMessage());
     }
     if (bean == nullptr && !ignoreInitialExisting) {
         log->debug(tr("address %1 not in use").arg(curAddress));
@@ -946,7 +946,7 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
             return testAddr;
         }
     }
-    throw  JmriException(tr("10 %1 starting at %2 up to %3 already in use.").arg(getBeanTypeHandled(true)).arg(curAddress).arg(testAddr));
+    throw new JmriException(tr("10 %1 starting at %2 up to %3 already in use.").arg(getBeanTypeHandled(true)).arg(curAddress).arg(testAddr));
 }
 
 /**
@@ -960,7 +960,7 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
  * @throws JmriException if unable to increment the address.
  */
 //@Nonnull
-/*protected*/ QString AbstractManager::getIncrement(QString curAddress, int increment) throw (JmriException) {
+/*protected*/ QString AbstractManager::getIncrement(QString curAddress, int increment) /*throw (JmriException)*/ {
     return getIncrementFromExistingNumber(curAddress,increment);
 }
 
@@ -973,7 +973,7 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
  * @throws JmriException if unable to increment the address.
  */
 //@Nonnull
-/*protected*/ QString AbstractManager::getIncrementFromExistingNumber(QString curAddress, int increment) throw (JmriException) {
+/*protected*/ QString AbstractManager::getIncrementFromExistingNumber(QString curAddress, int increment) /*throw (JmriException)*/ {
     QString newIncrement = StringUtil::incrementLastNumberInString(curAddress, increment);
     if (newIncrement=="") {
         throw  JmriException("No existing number found when incrementing " + curAddress);

@@ -182,8 +182,8 @@ SectionManagerXml::SectionManagerXml(QObject *parent) :
      try {
          x = sctm->createNewSection(sysName, userName);
      }
-     catch (IllegalArgumentException ex){
-         log->error(tr("Unable to create Section %1 %2").arg(sysName,ex.getMessage()));
+     catch (IllegalArgumentException* ex){
+         log->error(tr("Unable to create Section %1 %2").arg(sysName,ex->getMessage()));
          continue;
      }
      // load common part

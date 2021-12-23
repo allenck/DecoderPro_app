@@ -54,16 +54,16 @@ public:
     /*public*/ /*final*/const static int HOPCOUNT = 0x00;
     /*public*/ /*final*/const static int METRIC = 0x01;
     /*public*/ /*final*/const static int DISTANCE = 0x02;
-    /*public*/ bool checkValidDest(LayoutBlock* currentBlock, LayoutBlock* nextBlock, LayoutBlock* destBlock, LayoutBlock* destProBlock, int pathMethod) throw (JmriException);
+    /*public*/ bool checkValidDest(LayoutBlock* currentBlock, LayoutBlock* nextBlock, LayoutBlock* destBlock, LayoutBlock* destProBlock, int pathMethod) /*throw (JmriException)*/;
     /*public*/ QList<NamedBean*> getBeansInPath(QList<LayoutBlock*> blocklist, LayoutEditor* panel, QString T);
-    /*public*/ bool checkValidDest(NamedBean* sourceBean, NamedBean* destBean, int pathMethod) throw (JmriException);
-    /*public*/ bool checkValidDest(LayoutBlock* currentBlock, LayoutBlock* nextBlock, LayoutBlock* destBlock, QList<LayoutBlock*> destBlockn1, int pathMethod) throw (JmriException);
-    /*public*/ bool checkValidDest(LayoutBlock* facing, LayoutBlock* protecting, FacingProtecting* dest, int pathMethod) throw (JmriException);
-    /*public*/ QList<LayoutBlock*> getLayoutBlocks(NamedBean* sourceBean, NamedBean* destBean, bool validateOnly, int pathMethod) throw (JmriException);
-    /*public*/ QList<LayoutBlock*> getLayoutBlocks(LayoutBlock* sourceLayoutBlock, LayoutBlock* destinationLayoutBlock, LayoutBlock* protectingLayoutBlock, bool validateOnly, int pathMethod) throw (JmriException);
+    /*public*/ bool checkValidDest(NamedBean* sourceBean, NamedBean* destBean, int pathMethod) /*throw (JmriException)*/;
+    /*public*/ bool checkValidDest(LayoutBlock* currentBlock, LayoutBlock* nextBlock, LayoutBlock* destBlock, QList<LayoutBlock*> destBlockn1, int pathMethod) /*throw (JmriException)*/;
+    /*public*/ bool checkValidDest(LayoutBlock* facing, LayoutBlock* protecting, FacingProtecting* dest, int pathMethod) /*throw (JmriException)*/;
+    /*public*/ QList<LayoutBlock*> getLayoutBlocks(NamedBean* sourceBean, NamedBean* destBean, bool validateOnly, int pathMethod) /*throw (JmriException)*/;
+    /*public*/ QList<LayoutBlock*> getLayoutBlocks(LayoutBlock* sourceLayoutBlock, LayoutBlock* destinationLayoutBlock, LayoutBlock* protectingLayoutBlock, bool validateOnly, int pathMethod) /*throw (JmriException)*/;
     /*public*/ QHash<NamedBean*, QList<NamedBean*> > discoverValidBeanPairs(LayoutEditor* editor, QString T, int pathMethod);
-    /*public*/ QList<NamedBean*> discoverPairDest(NamedBean* source, LayoutEditor* editor, QString T, int pathMethod) throw (JmriException);
-    QList<NamedBean*> discoverPairDest(NamedBean* source, LayoutBlock* lProtecting, LayoutBlock* lFacing, QList<FacingProtecting*> blockList, int pathMethod) throw (JmriException);
+    /*public*/ QList<NamedBean*> discoverPairDest(NamedBean* source, LayoutEditor* editor, QString T, int pathMethod) /*throw (JmriException)*/;
+    QList<NamedBean*> discoverPairDest(NamedBean* source, LayoutBlock* lProtecting, LayoutBlock* lFacing, QList<FacingProtecting*> blockList, int pathMethod) /*throw (JmriException)*/;
     QList<FacingProtecting*> generateBlocksWithBeans(LayoutEditor* editor, QString T);
 
 private:

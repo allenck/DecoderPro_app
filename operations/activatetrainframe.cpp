@@ -712,7 +712,7 @@ transitsFromSpecificBlock = false;
         int address = -1;
         try {
             address = dccAddress.toInt();
-        } catch (NumberFormatException ex) {
+        } catch (NumberFormatException* ex) {
             JOptionPane::showMessageDialog(initiateFrame, tr("Error23"),
                     tr("Error"), JOptionPane::ERROR_MESSAGE);
             log->error("Conversion exception in dccAddress field");

@@ -153,7 +153,7 @@ SignalMastIcon::SignalMastIcon(QWidget* parent) :
   try
   {
    n = new NamedIcon(s, s);
-  } catch (NullPointerException e)
+  } catch (NullPointerException* e)
   {
       JOptionPane::showMessageDialog(nullptr, tr("Unable to load %1 icon\n%2\nfor Signal Mast %3").arg(aspect).arg(s, getNameString()), tr("Error with Icons"), JOptionPane::ERROR_MESSAGE);
       log->error(tr("Unable to load %1 icon\n%2\nfor Signal Mast %3").arg(aspect).arg(s).arg(getNameString()));

@@ -74,8 +74,8 @@
         }
         try {
             return (Class::forName(getExpectedContextClassName())->isAssignableFrom(mContext->metaObject()->className()));
-        } catch (ClassNotFoundException e) {
-            log->error(tr("Class %1 not found.").arg(getExpectedContextClassName(), e.getMessage()));
+        } catch (ClassNotFoundException* e) {
+            log->error(tr("Class %1 not found.").arg(getExpectedContextClassName(), e->getMessage()));
         }
         return false;
     }

@@ -456,7 +456,7 @@ void FileDrop::common(PrintStream* out, Component* c, Border* dragBorder, bool r
         }
 
         return list.toArray(new File[list.size()]);
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         log(out, "FileDrop: IOException");
     }
     return new File[0];

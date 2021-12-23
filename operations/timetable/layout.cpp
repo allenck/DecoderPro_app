@@ -102,7 +102,7 @@ namespace TimeTable
         try {
             // Update the smile/skm which includes stop recalcs
             setScaleMK();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             _scale = oldScale;  // roll back scale and ratio
             _ratio = oldRatio;
             setScaleMK();
@@ -131,7 +131,7 @@ namespace TimeTable
         try {
             // Update the smile/skm which includes stop recalcs
             setScaleMK();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             _fastClock = oldClock;  // roll back
             setScaleMK();
             throw ex;
@@ -150,7 +150,7 @@ namespace TimeTable
      */
     /*public*/ void Layout::setThrottles(int newThrottles) {
         if (newThrottles < 0) {
-            throw IllegalArgumentException(TimeTableDataManager::THROTTLES_LT_0);
+            throw new IllegalArgumentException(TimeTableDataManager::THROTTLES_LT_0);
         }
         for (TTSchedule* schedule : _dm->getSchedules(_layoutId, true)) {
             for (TTTrain* train : _dm->getTrains(schedule->getScheduleId(), 0, true)) {
@@ -178,7 +178,7 @@ namespace TimeTable
         try {
             // Update the smile/skm which includes stop recalcs
             setScaleMK();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             _metric = oldMetric;  // roll back
             setScaleMK();
             throw ex;
@@ -212,7 +212,7 @@ namespace TimeTable
         try {
             // Update the smile/skm which includes stop recalcs
             setScaleMK();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             // Roll back the ratio change
             _ratio = oldRatio;
             setScaleMK();

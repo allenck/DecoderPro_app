@@ -127,7 +127,7 @@
             }
         }
 
-    } catch (NoSuchMethodException ea) {
+    } catch (NoSuchMethodException* ea) {
         log->warn(ea.getLocalizedMessage(), ea);
         return;
     } catch (IllegalAccessException eb) {
@@ -190,7 +190,7 @@
             }
         }
 
-    } catch (NoSuchMethodException ea) {
+    } catch (NoSuchMethodException* ea) {
         log->warn(ea.getLocalizedMessage(), ea);
         return;
     } catch (IllegalAccessException eb) {

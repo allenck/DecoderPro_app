@@ -27,10 +27,10 @@ RawTurnoutOperationXml::RawTurnoutOperationXml(QObject *parent) :
         return CommonTurnoutOperationXml::loadOne(e, myOpClass.getConstructor(new Class[]{String.class, int.class, int.class}),
                     RawTurnoutOperation::getDefaultIntervalStatic(),
                     RawTurnoutOperation::getDefaultMaxTriesStatic());
-        } catch (ClassNotFoundException e1) {
+        } catch (ClassNotFoundException* e1) {
             log.error("while creating NoFeedbackTurnoutOperation", e1);
             return null;
-        } catch (NoSuchMethodException e2) {
+        } catch (NoSuchMethodException* e2) {
             log.error("while creating NoFeedbackTurnoutOperation", e2);
             return null;
         }

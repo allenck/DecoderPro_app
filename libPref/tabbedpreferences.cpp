@@ -265,7 +265,7 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
        this->addPreferencesPanel(qobject_cast<PreferencesPanel*>(panel));
    }
   }
-  //catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+  //catch (ClassNotFoundException* | InstantiationException | IllegalAccessException e) {
   catch(ClassNotFoundException e)
   {
     log->error("Unable to add preferences class (" + className + ")"/*, e*/);

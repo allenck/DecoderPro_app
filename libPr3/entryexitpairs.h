@@ -193,7 +193,7 @@ public:
 //    java.beans.PropertyChangeSupport pcs = new java.beans.PropertyChangeSupport(this);
     /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) ;
     /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) ;
-    /*public*/ void automaticallyDiscoverEntryExitPairs(LayoutEditor* editor, int interlockType) throw (JmriException);
+    /*public*/ void automaticallyDiscoverEntryExitPairs(LayoutEditor* editor, int interlockType) /*throw (JmriException)*/;
     /*public*/ int getSettingTimer();
     /*public*/ void setSettingTimer(int i);
     /*public*/ bool useDifferentColorWhenSetting();

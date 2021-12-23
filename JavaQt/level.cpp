@@ -303,7 +303,7 @@ Level::Level(QObject *parent) :
         }
         // Create a new Level.
         return new Level(name, x);
-    } catch (NumberFormatException ex) {
+    } catch (NumberFormatException* ex) {
         // Not an integer.
         // Drop through.
     }

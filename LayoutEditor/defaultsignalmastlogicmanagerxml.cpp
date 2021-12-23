@@ -254,7 +254,7 @@ DefaultSignalMastLogicManagerXml::DefaultSignalMastLogicManagerXml(QObject *pare
      QString logicDelay = signalMastLogic.firstChildElement("logicDelay").text();
      ((DefaultSignalMastLogicManager*)smlm->self())->setSignalLogicDelay((logicDelay.toLong()));
  }
- catch (NullPointerException e){
+ catch (NullPointerException* e){
      //Considered normal if it doesn't exists
  }
  bool loadOk = true;
@@ -313,7 +313,7 @@ DefaultSignalMastLogicManagerXml::DefaultSignalMastLogicManagerXml(QObject *pare
      {
       ((DefaultSignalMastLogic*)logic)->useLayoutEditorDetails(useLayoutEditorTurnout, useLayoutEditorBlock, dest);
      }
-     catch (JmriException ex)
+     catch (JmriException* ex)
      {
 
      }
@@ -327,7 +327,7 @@ DefaultSignalMastLogicManagerXml::DefaultSignalMastLogicManagerXml(QObject *pare
        else
         ((DefaultSignalMastLogic*)logic)->useLayoutEditor(false, dest);
       }
-      catch (JmriException e)
+      catch (JmriException* e)
       {
        //Considered normal if layout editor hasn't yet been set up.
       }

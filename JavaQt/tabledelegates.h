@@ -297,7 +297,7 @@ public:
         {
          bool ok;
          comboBox->setCurrentIndex(value.toInt(&ok));
-         if(!ok) throw IllegalArgumentException();
+         if(!ok) throw new IllegalArgumentException();
         }
         else
          comboBox->setCurrentText(value.toString());

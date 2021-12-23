@@ -575,7 +575,7 @@ void BeanEditAction::formatTextAreaAsLabel(JTextPane* pane)
     {
      nbMan->updateBeanFromSystemToUser(nBean);
     }
-    catch (JmriException ex)
+    catch (JmriException* ex)
     {
      //We should never get an exception here as we already check that the username is not valid
     }

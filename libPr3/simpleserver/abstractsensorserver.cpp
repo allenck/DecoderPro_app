@@ -75,7 +75,7 @@
                 }
             }
         }
-    } catch (JmriException ex) {
+    } catch (JmriException* ex) {
         log->error("set sensor active", ex);
     }
 }
@@ -119,8 +119,8 @@
                 }
             }
         }
-    } catch (JmriException ex) {
-        log->error("set sensor inactive" + ex.getMessage());
+    } catch (JmriException* ex) {
+        log->error("set sensor inactive" + ex->getMessage());
     }
 }
 

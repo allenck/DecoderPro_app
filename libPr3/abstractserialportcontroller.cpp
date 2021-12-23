@@ -238,7 +238,7 @@ QString AbstractSerialPortController::getOptionState(QString option)
         if (flow != SerialPort::FLOWCONTROL_NONE) {
             serialPort->setFlowControlMode(flow);
         }
-    } catch (UnsupportedCommOperationException e) {
+    } catch (UnsupportedCommOperationException* e) {
         log->warn("Could not set flow control, ignoring");
     }
     if (flow!=SerialPort::FLOWCONTROL_RTSCTS_OUT) serialPort->setRTS(rts);  // not connected in some serial ports and adapters

@@ -45,7 +45,7 @@ AbstractSensorTestBase::AbstractSensorTestBase(QObject *parent) : QObject(parent
 }
 
 //@Test
-/*public*/ void AbstractSensorTestBase::testAddListener() throw (JmriException)
+/*public*/ void AbstractSensorTestBase::testAddListener() /*throw (JmriException)*/
 {
   ListenO2* listen;
 
@@ -70,14 +70,14 @@ AbstractSensorTestBase::AbstractSensorTestBase(QObject *parent) : QObject(parent
 }
 
 //@Test
-/*public*/ void AbstractSensorTestBase::testDispose() throw (JmriException) {
+/*public*/ void AbstractSensorTestBase::testDispose() /*throw (JmriException)*/ {
     t->setState(Sensor::ACTIVE);  	// in case registration with TrafficController is deferred to after first use
     t->dispose();
     Assert::assertEquals("controller listeners remaining", 0, numListeners(), __FILE__, __LINE__);
 }
 
 //@Test
-/*public*/ void AbstractSensorTestBase::testCommandInactive() throw (JmriException) {
+/*public*/ void AbstractSensorTestBase::testCommandInactive() /*throw (JmriException)*/ {
     t->setState(Sensor::INACTIVE);
     // check
     Assert::assertEquals("state 1", Sensor::INACTIVE, t->getState(), __FILE__, __LINE__);
@@ -85,7 +85,7 @@ AbstractSensorTestBase::AbstractSensorTestBase(QObject *parent) : QObject(parent
 }
 
 //@Test
-/*public*/ void AbstractSensorTestBase::testCommandActive() throw (JmriException) {
+/*public*/ void AbstractSensorTestBase::testCommandActive() /*throw (JmriException)*/ {
     t->setState(Sensor::ACTIVE);
     // check
     Assert::assertEquals("state 1", Sensor::ACTIVE, t->getState(), __FILE__, __LINE__);
@@ -93,7 +93,7 @@ AbstractSensorTestBase::AbstractSensorTestBase(QObject *parent) : QObject(parent
 }
 
 //@Test
-/*public*/ void AbstractSensorTestBase::testInvertAfterInactive() throw (JmriException) {
+/*public*/ void AbstractSensorTestBase::testInvertAfterInactive() /*throw (JmriException)*/ {
     Assume::assumeTrue(t->canInvert());
     t->setState(Sensor::INACTIVE);
     t->setInverted(true);
@@ -103,7 +103,7 @@ AbstractSensorTestBase::AbstractSensorTestBase(QObject *parent) : QObject(parent
 }
 
 //@Test
-/*public*/ void AbstractSensorTestBase::testInvertAfterActive() throw (JmriException) {
+/*public*/ void AbstractSensorTestBase::testInvertAfterActive() /*throw (JmriException)*/ {
     Assume::assumeTrue(t->canInvert());
     t->setState(Sensor::ACTIVE);
     t->setInverted(true);
@@ -113,7 +113,7 @@ AbstractSensorTestBase::AbstractSensorTestBase(QObject *parent) : QObject(parent
 }
 
 //@Test
-/*public*/ void AbstractSensorTestBase::testDebounceSettings() throw (JmriException) {
+/*public*/ void AbstractSensorTestBase::testDebounceSettings() /*throw (JmriException)*/ {
     t->setSensorDebounceGoingActiveTimer(81L);
     Assert::assertEquals("timer", 81L, t->getSensorDebounceGoingActiveTimer(), __FILE__, __LINE__);
 
@@ -126,7 +126,7 @@ AbstractSensorTestBase::AbstractSensorTestBase(QObject *parent) : QObject(parent
 }
 
 //@Test
-/*public*/ void AbstractSensorTestBase::testDebounce() throw (JmriException) {
+/*public*/ void AbstractSensorTestBase::testDebounce() /*throw (JmriException)*/ {
     t->setSensorDebounceGoingActiveTimer(81L);
     Assert::assertEquals("timer", 81L, t->getSensorDebounceGoingActiveTimer(), __FILE__, __LINE__);
 
@@ -170,7 +170,7 @@ AbstractSensorTestBase::AbstractSensorTestBase(QObject *parent) : QObject(parent
 
 // Test the Sensor interface
 //@Test
-/*public*/ void AbstractSensorTestBase::testSensor() throw (JmriException) {
+/*public*/ void AbstractSensorTestBase::testSensor() /*throw (JmriException)*/ {
     t->setState(Sensor::ON);
     //jmri.util.JUnitUtil.waitFor(()->{return t->getState() == Sensor::ON;}, "state = ON");
     ReleaseUntilO9* r09 = new ReleaseUntilO9(Sensor::ON, this);

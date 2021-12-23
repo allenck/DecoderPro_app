@@ -124,9 +124,9 @@ public:
     QObject* self() override{return (QObject*)this;}
     QString getNamedBeanClass() const override{return "AbstractManager";}
     int getXMLOrder() const override {return 0;}
-    /*public*/ QString createSystemName(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) throw (JmriException);
-    QT_DEPRECATED/*public*/ /*final*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) throw (JmriException);
-    QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) throw (JmriException);
+    /*public*/ QString createSystemName(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) /*throw (JmriException)*/;
+    QT_DEPRECATED/*public*/ /*final*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) /*throw (JmriException)*/;
+    QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) /*throw (JmriException)*/;
     /*public*/ NamedBean *getBySystemName(/*@Nonnull*/ QString systemName) const override;
     /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString userName) const override;
 
@@ -140,15 +140,15 @@ signals:
     void notifyIntervalRemoved(ManagerDataEvent* e);
 
 public slots:
-    virtual void propertyChange(PropertyChangeEvent* e);
-    /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) ;
+    virtual void propertyChange(PropertyChangeEvent* e)override;
+    /*public*/ void vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException) */ override;
 
 protected:
     /*protected*/void registerSelf();
     /*protected*/ void registerUserName(NamedBean* s)const;
     /*protected*/ void fireDataListenersAdded(int start, int end, NamedBean* changedBean);
     /*protected*/ void fireDataListenersRemoved(int start, int end, NamedBean* changedBean);
-    /*protected*/ QString checkNumeric(/*@Nonnull*/ QString curAddress) throw (JmriException);
+    /*protected*/ QString checkNumeric(/*@Nonnull*/ QString curAddress) /*throw (JmriException)*/;
 
 private:
     mutable QSet<NamedBean*> _beans;
@@ -208,8 +208,8 @@ QT_DEPRECATED NamedBean* getInstanceByUserName(QString userName);
 /*protected Hashtable*/mutable QMap<QString, NamedBean*>* _tuser; // = new Hashtable<String, NamedBean>();   // stores known Turnout instances by user name
 /*protected*/ /*final*/ QMap<QString, bool> silencedProperties = QMap<QString, bool>();
 /*protected*/ /*final*/ QSet<QString> silenceableProperties = QSet<QString>();
-/*protected*/ QString getIncrement(QString curAddress, int increment) throw (JmriException);
-/*protected*/ QString getIncrementFromExistingNumber(QString curAddress, int increment) throw (JmriException);
+/*protected*/ QString getIncrement(QString curAddress, int increment) /*throw (JmriException)*/;
+/*protected*/ QString getIncrementFromExistingNumber(QString curAddress, int increment) /*throw (JmriException)*/;
 
 protected slots:
 

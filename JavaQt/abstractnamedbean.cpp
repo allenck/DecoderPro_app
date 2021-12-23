@@ -258,7 +258,7 @@ QString AbstractNamedBean::getDisplayName()
 
 //@Override
 //@OverridingMethodsMustInvokeSuper
-/*public*/ void AbstractNamedBean::setUserName(QString s) throw (NamedBean::BadUserNameException) {
+/*public*/ void AbstractNamedBean::setUserName(QString s) /*throw (NamedBean::BadUserNameException)*/ {
     QString old = mUserName;
     mUserName = NamedBean::normalizeUserName(s);
     firePropertyChange("UserName", old, mUserName);
@@ -314,7 +314,7 @@ QString AbstractNamedBean::getDisplayName()
 }
 
 //@Override
-/*public*/ void AbstractNamedBean::vetoableChange(PropertyChangeEvent* /*evt*/) throw (PropertyVetoException)
+/*public*/ void AbstractNamedBean::vetoableChange(PropertyChangeEvent* /*evt*/) /*throw (PropertyVetoException)*/
 {
 }
 

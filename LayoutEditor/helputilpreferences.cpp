@@ -49,7 +49,7 @@
                     }
                 }
             }
-        } catch (BackingStoreException ex) {
+        } catch (BackingStoreException* ex) {
             // this is expected if sharedPreferences have not been written previously,
             // so do nothing.
         }

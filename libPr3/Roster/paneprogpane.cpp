@@ -2004,7 +2004,7 @@ MyQualifierAdder::MyQualifierAdder(JLabel *l, PaneProgPane *self) : QualifierAdd
   {
    log->error("Unable to set constraint \""+attribName+". IllegalAccessException error thrown.");
   }
-  catch (NumberFormatException ex)
+  catch (NumberFormatException* ex)
   {
 #if 0
    try
@@ -2037,7 +2037,7 @@ MyQualifierAdder::MyQualifierAdder(JLabel *l, PaneProgPane *self) : QualifierAdd
   {
    log->error("Unable to set constraint \""+attribName+". IllegalAccessException error thrown.");
   }
-  catch (NumberFormatException ex)
+  catch (NumberFormatException* ex)
   {
    log->error("Invalid value \""+attribRawValue+"\" for attribute \""+attribName+"\"");
   }
@@ -2062,7 +2062,7 @@ MyQualifierAdder::MyQualifierAdder(JLabel *l, PaneProgPane *self) : QualifierAdd
    {
     log->error("Unable to set constraint \""+attribName+". IllegalAccessException error thrown.");
    }
-   catch (NumberFormatException ex)
+   catch (NumberFormatException* ex)
    {
     log->error("Invalid value \""+attribRawValue+"\" for attribute \""+attribName+"\"");
     log->error("Value should be four integers of the form \"top,left,bottom,right\"");

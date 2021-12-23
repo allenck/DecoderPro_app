@@ -28,12 +28,12 @@ public:
   /*public*/ void removeVetoableChangeListener(VetoableChangeListener* listener)override;
   /*public*/ void removeVetoableChangeListener(/*@CheckForNull*/ QString propertyName, /*@CheckForNull*/ VetoableChangeListener* listener)override;
 
-  /*public*/ void fireVetoableChange(QString propertyName, bool oldValue, bool newValue) throw (PropertyVetoException) override;
-  /*public*/ void fireVetoableChange(PropertyChangeEvent* event) throw (PropertyVetoException) override;
-  /*public*/ void fireVetoableChange(QString propertyName, int oldValue, int newValue) throw (PropertyVetoException) override;
-  /*public*/ void fireVetoableChange(QString propertyName, QVariant oldValue, QVariant newValue) throw (PropertyVetoException) override;
+  /*public*/ void fireVetoableChange(QString propertyName, bool oldValue, bool newValue) /*throw (PropertyVetoException)*/ override;
+  /*public*/ void fireVetoableChange(PropertyChangeEvent* event) /*throw (PropertyVetoException)*/ override;
+  /*public*/ void fireVetoableChange(QString propertyName, int oldValue, int newValue) /*throw (PropertyVetoException)*/ override;
+  /*public*/ void fireVetoableChange(QString propertyName, QVariant oldValue, QVariant newValue) /*throw (PropertyVetoException)*/ override;
 
-  QObject* self() {return (QObject*)this;}
+  QObject* self() override{return (QObject*)this;}
 signals:
 
 public slots:

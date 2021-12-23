@@ -21,15 +21,15 @@ bool XInclude::copyXml(QUrl *in, File* toFile, QWidget* who)
  {
   QFile* fin = new QFile(in->path());
   if(!fin->exists())
-   throw IOException(tr("input file \"%1\" not found").arg(in->path()));
+   throw new IOException(tr("input file \"%1\" not found").arg(in->path()));
   if(!fin->open(QIODevice::ReadOnly))
-   throw IOException(tr("input file \"%1\" can not be opened").arg(in->path()));
+   throw new IOException(tr("input file \"%1\" can not be opened").arg(in->path()));
   reader->setDevice(fin);
 
   FileUtil::createDirectory(toFile->getParent());
 
   QFile* fout = new QFile(toFile->getPath());
-  if(!fout->open(QIODevice::WriteOnly)) throw IOException(tr("File \"%1\" cannot be opened").arg(toFile->getPath()));
+  if(!fout->open(QIODevice::WriteOnly)) throw new IOException(tr("File \"%1\" cannot be opened").arg(toFile->getPath()));
   writer->setDevice(fout);
   writer->setAutoFormatting(true);
   writer->setAutoFormattingIndent(2);
@@ -211,7 +211,7 @@ bool XInclude::processInclude(QUrl* href)
  timer.start(10000);
  loop.exec();
  if(!timer.isActive())
-  throw IOException(tr("failure reading %1").arg(href->path()));
+  throw new IOException(tr("failure reading %1").arg(href->path()));
  return true;
 }
 
@@ -221,7 +221,7 @@ void XInclude::fileDownloaded(QNetworkReply* pReply)
   //emit a signal
   pReply->deleteLater();
   if(m_DownloadedData.isEmpty())
-   throw IOException(tr("Failure reading %1; empty file returned").arg(href->path()));
+   throw new IOException(tr("Failure reading %1; empty file returned").arg(href->path()));
 //  qDebug() << m_DownloadedData;
   //emit downloaded();
   QXmlStreamReader* reader = new QXmlStreamReader(m_DownloadedData);

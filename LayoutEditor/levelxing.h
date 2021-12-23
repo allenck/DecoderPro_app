@@ -132,8 +132,8 @@ public:
     /*public*/ void setSignalCMast(QString signalMast);
     /*public*/ SignalMast* getSignalDMast();
     /*public*/ void setSignalDMast(QString signalMast);
-    /*public*/ LayoutTrack* getConnection(HitPointType::TYPES location) throw (JmriException)override;
-    /*public*/ void setConnection(HitPointType::TYPES location, LayoutTrack *o, HitPointType::TYPES type) throw (JmriException)override;
+    /*public*/ LayoutTrack* getConnection(HitPointType::TYPES location) /*throw (JmriException)*/override;
+    /*public*/ void setConnection(HitPointType::TYPES location, LayoutTrack *o, HitPointType::TYPES type) /*throw (JmriException)*/override;
     // /*public*/ QPointF getCoordsForConnectionType(int connectionType)override;
     ///*public*/ QRectF getBounds()override;
     /*public*/ Sensor* getSensorA();

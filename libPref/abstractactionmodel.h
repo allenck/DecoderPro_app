@@ -25,7 +25,7 @@ public:
     /*public*/ bool isSystemConnectionAction();
     /*public*/ bool isValid();
     /*public*/ QString toString();
- /*public*/ void performAction(QString) throw (JmriException);
+ /*public*/ void performAction(QString) /*throw (JmriException)*/;
  /*public*/ QList<Exception>* getExceptions();
  /*public*/ void addException(Exception exception);
 
@@ -43,7 +43,7 @@ private:
  QString title;
 
 protected:
-    /*protected*/ /*abstract*/ virtual void performAction(Action* action) throw (JmriException);
+    /*protected*/ /*abstract*/ virtual void performAction(Action* action) /*throw (JmriException)*/;
  friend class AbstractActionPanel;
  friend class PerformActionModel;
 };

@@ -74,6 +74,7 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
+#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -1461,7 +1462,7 @@ void delete_LayoutBlockManager(LayoutBlockManager* obj) { delete obj; }
    bool  isAssignableFromType(LayoutBlockManager* theWrappedObject);
    bool  routingStablised(LayoutBlockManager* theWrappedObject);
    void setLastRoutingChange(LayoutBlockManager* theWrappedObject);
-   void setStabilisedSensor(LayoutBlockManager* theWrappedObject, QString  pName) throw (JmriException);
+   void setStabilisedSensor(LayoutBlockManager* theWrappedObject, QString  pName);
    void turnOffWarning(LayoutBlockManager* theWrappedObject);
    char  typeLetter(LayoutBlockManager* theWrappedObject) const;
    char  py_q_typeLetter(LayoutBlockManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_LayoutBlockManager*)theWrappedObject)->py_q_typeLetter());}
@@ -2559,12 +2560,12 @@ virtual void setSensorDebounceGoingActiveTimer(long  time) const;
 virtual void setSensorDebounceGoingInActiveTimer(long  time);
 virtual void setState(int  s);
 virtual void setUseDefaultTimerSettings(bool  boo);
-virtual void setUserName(QString  s) throw (NamedBean::BadUserNameException) ;
+virtual void setUserName(QString  s);
 virtual void timerEvent(QTimerEvent*  event);
 virtual void updateListenerRef(PropertyChangeListener*  l, QString  newName);
 virtual bool  useDefaultTimerSettings();
 virtual void useDefaultTimerSettings(bool  boo);
-virtual void vetoableChange(PropertyChangeEvent*  arg__1) throw (PropertyVetoException) ;
+virtual void vetoableChange(PropertyChangeEvent*  arg__1);
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);

@@ -67,7 +67,7 @@ void MatrixSignalMast::common()
  QStringList parts = systemName.split(":");
  if (parts.length() < 3) {
      log->error("SignalMast system name needs at least three parts: " + systemName);
-     throw IllegalArgumentException("System name needs at least three parts: " + systemName);
+     throw new IllegalArgumentException("System name needs at least three parts: " + systemName);
  }
  if (parts[0] != (mastType)) {
      log->warn("SignalMast system name should start with " + mastType + " but is " + systemName);
@@ -238,7 +238,7 @@ void MatrixSignalMast::common()
     if (colNum > 0 && colNum <= outputsToBeans.size()) {
         return outputsToBeans.value(key)->getBean();
     }
-    log->error("Trying to read bean for output {} which has not been configured", colNum);
+    log->error(tr("Trying to read bean for output %1 which has not been configured").arg(colNum));
     return nullptr;
 }
 
@@ -439,7 +439,7 @@ bool MatrixSignalMast::isTurnoutUsed(Turnout* t) {
     lastRef = newVal;
 }
 //@Override
-/*public*/ void MatrixSignalMast::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException)
+/*public*/ void MatrixSignalMast::vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/
 {
 
     if ("CanDelete"==(evt->getPropertyName())) { //NOI18N

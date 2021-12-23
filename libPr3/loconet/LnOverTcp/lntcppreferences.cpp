@@ -47,7 +47,7 @@
             log->debug("No LocoNetOverTCP preferences exist.");
             migrate = true;
         }
-    } catch (BackingStoreException ex) {
+    } catch (BackingStoreException* ex) {
         log->debug("No preferences file exists.");
         migrate = true;
     }
@@ -64,12 +64,12 @@
          bool ok;
             settings->load(stream);
             this->port = settings->getProperty(PORT_NUMBER_KEY, QString::number(this->getPort())).toInt(&ok);
-            if(!ok) throw IOException();
+            if(!ok) throw new IOException();
             this->setIsDirty(true);
         } catch (FileNotFoundException ex) {
             log->debug("old preferences file not found");
-        } catch (IOException ex) {
-            log->debug("exception reading old preferences file" + ex.getMessage());
+        } catch (IOException* ex) {
+            log->debug("exception reading old preferences file" + ex->getMessage());
         }
     }
 }
@@ -80,7 +80,7 @@
     try {
         sharedPreferences->sync();
         setIsDirty(false);  //  Resets only when stored
-    } catch (BackingStoreException ex) {
+    } catch (BackingStoreException* ex) {
         log->error("Exception while saving web server preferences", ex);
     }
 }

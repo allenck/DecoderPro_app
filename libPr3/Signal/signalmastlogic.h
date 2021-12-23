@@ -327,7 +327,7 @@ public:
      * @param destination Destination SignalMast.
      *
      */
-    /*public*/ virtual void useLayoutEditor(bool boo, SignalMast* destination) throw (JmriException) = 0;
+    /*public*/ virtual void useLayoutEditor(bool boo, SignalMast* destination) /*throw (JmriException)*/ = 0;
 
     /**
      * Query if we are using the layout editor panels to build the signal mast
@@ -355,7 +355,7 @@ public:
      * @param blocks set false if not to use the block information gathered from the layouteditor
      * @param turnouts set false if not to use the turnout information gathered from the layouteditor
      */
-    /*public*/ virtual void useLayoutEditorDetails(bool turnouts, bool blocks, SignalMast* destination) throw (JmriException) = 0;
+    /*public*/ virtual void useLayoutEditorDetails(bool turnouts, bool blocks, SignalMast* destination) /*throw (JmriException)*/ = 0;
 
     /**
      * Query if we are using the layout editor turnout information in the

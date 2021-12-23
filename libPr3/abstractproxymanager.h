@@ -63,57 +63,57 @@ class LIBPR3SHARED_EXPORT AbstractProxyManager :  public AbstractManager
      * @return requested NamedBean object (never null)
      */
     /*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
-    /*public*/ void dispose();
+    /*public*/ void dispose()override;
     /**
      * Remember a NamedBean Object created outside the manager.
      * <P>
      * Forwards the register request to the matching system
      */
-    /*public*/ void Register(NamedBean* s);
+    /*public*/ void Register(NamedBean* s)const override;
     /**
      * Forget a NamedBean Object created outside the manager.
      * <P>
      * Forwards the deregister request to the matching system
      */
-    /*public*/ void deregister(NamedBean* s);
-    /*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
-    /*public synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
+    /*public*/ void deregister(NamedBean* s)const override;
+    /*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l)override;
+    /*public synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l)override;
     /**
      * @return The system-specific prefix letter for the primary implementation
      */
-    /*public*/ QString getSystemPrefix();
+    /*public*/ QString getSystemPrefix()const override;
     /**
      * @return The type letter for turnouts
      */
-    /*public*/ char typeLetter();
+    /*public*/ char typeLetter()const override;
     /**
      * @return A system name from a user input, typically a number,
      * from the primary system.
      */
-    /*public*/ QString makeSystemName(QString s);
-    /*public*/ QStringList getSystemNameArray();
+    /*public*/ QString makeSystemName(QString s)const override;
+    /*public*/ QStringList getSystemNameArray()override;
     /**
      * Get a list of all system names.
      */
-    /*public*/ virtual QStringList getSystemNameList();
+    /*public*/ virtual QStringList getSystemNameList()override;
     /*public*/ virtual QStringList getUserNameList();
-    QT_DEPRECATED/*public*/ QList<NamedBean*>* getNamedBeanList() ;
-    QT_DEPRECATED /*public*/ QStringList getSystemNameAddedOrderList();
-    /*public*/ /*SortedSet<E>*/QSet<NamedBean*> getNamedBeanSet();
-    /*public*/ void addDataListener(/*ManagerDataListener<E>*/QObject* e);
-    /*public*/ void removeDataListener(/*ManagerDataListener<E>*/QObject* e);
+    QT_DEPRECATED/*public*/ QList<NamedBean*>* getNamedBeanList() override;
+    QT_DEPRECATED /*public*/ QStringList getSystemNameAddedOrderList()override;
+    /*public*/ /*SortedSet<E>*/QSet<NamedBean*> getNamedBeanSet()override;
+    /*public*/ void addDataListener(/*ManagerDataListener<E>*/QObject* e)override;
+    /*public*/ void removeDataListener(/*ManagerDataListener<E>*/QObject* e)override;
     /*public*/ void setDataListenerMute(bool m);
-    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener);
-    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners();
-    /*public*/ QVector<PropertyChangeListener *> getPropertyChangeListeners(QString propertyName);
-    /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener);
-    /*public*/ int getObjectCount();
-    /*public*/ /*synchronized*/ void addVetoableChangeListener(VetoableChangeListener* l);
-    /*public*/ /*synchronized*/ void removeVetoableChangeListener(VetoableChangeListener* l);
-    /*public*/ void addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
-    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners();
-    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName);
-    /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
+    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener)override;
+    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners()override;
+    /*public*/ QVector<PropertyChangeListener *> getPropertyChangeListeners(QString propertyName)override;
+    /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener)override;
+    /*public*/ int getObjectCount()override;
+    /*public*/ /*synchronized*/ void addVetoableChangeListener(VetoableChangeListener* l)override;
+    /*public*/ /*synchronized*/ void removeVetoableChangeListener(VetoableChangeListener* l)override;
+    /*public*/ void addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener)override;
+    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners()override;
+    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName)override;
+    /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener)override;
 
 signals:
     //virtual void propertyChange(PropertyChangeEvent *e);
@@ -122,7 +122,7 @@ signals:
  void notifyIntervalRemoved(ManagerDataEvent* e);
 
 public slots:
-    virtual void propertyChange(PropertyChangeEvent *e);
+    virtual void propertyChange(PropertyChangeEvent *e)override;
     /*public*/ void contentsChanged(ManagerDataEvent/*<E>*/* e);
     /*public*/ void intervalAdded(ManagerDataEvent/*<E>*/* e);
     /*public*/ void intervalRemoved(ManagerDataEvent/*<E>*/* e);

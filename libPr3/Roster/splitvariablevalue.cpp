@@ -232,7 +232,7 @@ QVector<int> SplitVariableValue::getCvValsFromTextField() {
     long newEntry;  // entered value
     try{
         newEntry = getValueFromText(_textField->text());
-    } catch (NumberFormatException ex) {
+    } catch (NumberFormatException* ex) {
         newEntry = 0;
     }
 
@@ -372,7 +372,7 @@ void SplitVariableValue::updatedTextField()
     long oldVal;
     try {
         oldVal = (getValueFromText(_textField->text()) - mOffset) / mFactor;
-    } catch (NumberFormatException ex) {
+    } catch (NumberFormatException* ex) {
         oldVal = -999;
     }
     logit->debug(tr("Variable=%1; setValue with new value %2 old value %3").arg(_name).arg(value).arg(oldVal));
