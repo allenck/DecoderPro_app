@@ -85,7 +85,7 @@ protected:
  /*protected*/ Manager/*<Block>*/* getManager();
 
 protected slots:
- /*protected*/ void addPressed(JActionEvent * /*e*/);
+ /*protected*/ void addPressed(JActionEvent * /*e*/)override;
  /*protected*/ QString getClassName() override;
 
 friend class BlockTableDataModel;

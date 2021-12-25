@@ -46,7 +46,7 @@ protected:
     /*protected*/ QString getClassName() override;
 
 protected slots:
-    /*protected*/ void addPressed() override;
+    /*protected*/ void addPressed(JActionEvent* e=0) override;
     void cancelPressed(JActionEvent* e = 0);
     void okPressed(JActionEvent* e = 0);
 

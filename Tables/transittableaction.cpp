@@ -400,7 +400,7 @@ TransitTableDataModel::TransitTableDataModel(TransitTableAction* act)
  * Responds to the Add... button and the Edit buttons in Transit Table
  */
 //@Override
-/*protected*/ void TransitTableAction::addPressed(/*ActionEvent* e*/) {
+/*protected*/ void TransitTableAction::addPressed(JActionEvent *e) {
     editMode = false;
     duplicateMode = false;
     if ((sectionManager->getSystemNameList().size()) > 0) {

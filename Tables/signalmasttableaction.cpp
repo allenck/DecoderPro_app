@@ -76,7 +76,7 @@ void SMTBeanTableFrame::extras() {
 }
 
 //@Override
-/*protected*/ void SignalMastTableAction::addPressed(/*JActionEvent* *e*/) {
+/*protected*/ void SignalMastTableAction::addPressed(JActionEvent *e) {
     if (addFrame == NULL) {
         addFrame = new AddSignalMastJFrame();
     } else {

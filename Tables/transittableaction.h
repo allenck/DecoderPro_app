@@ -185,7 +185,7 @@ protected:
    /*protected*/ QString getClassName()override;
 
 protected slots:
-   /*protected*/ void addPressed(/*ActionEvent *e*/)override;
+   /*protected*/ void addPressed(JActionEvent* e=0)override;
    void On_whenBox_currentIndexChanged();
    void On_whatBox_currentIndexChanged();
 

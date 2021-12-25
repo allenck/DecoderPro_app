@@ -169,7 +169,7 @@ protected:
  /*protected*/ QString helpTarget() override;
  /*protected*/ /*BeanTableFrame*/ JmriJFrame* f;
 protected slots:
- /*protected*/ void addPressed(/*ActionEvent* e = 0*/) override;
+ /*protected*/ void addPressed(JActionEvent* e=0) override;
 
  friend class SGBeanTableDataModel;
  friend class ATSignalMastAppearanceModel;

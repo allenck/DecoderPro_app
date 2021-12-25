@@ -286,7 +286,7 @@ void IdTagBeanTableDataModel::configureTable(JTable *table)
 
 
 //@Override
-/*protected*/ void IdTagTableAction::addPressed(/*ActionEvent* e*/) {
+/*protected*/ void IdTagTableAction::addPressed(JActionEvent *e) {
     if (addFrame == NULL) {
         addFrame = new JmriJFrameX(tr("Add Id Tag"), false, true);
         addFrame->addHelpMenu("package.jmri.jmrit.beantable.IdTagAddEdit", true);

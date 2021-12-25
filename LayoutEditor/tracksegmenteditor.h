@@ -94,7 +94,7 @@ class TSE_windowListener : public WindowListener
   TrackSegmentEditor* editor;
  public:
   TSE_windowListener(TrackSegmentEditor* editor) { this->editor = editor;}
-  /*public*/ void windowClosing(QCloseEvent* e) {
+  /*public*/ void windowClosing(QCloseEvent* /*e*/) {
       editor->editTrackSegmentCancelPressed();
   }
 };

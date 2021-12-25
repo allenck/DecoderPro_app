@@ -177,7 +177,7 @@ return "package.jmri.jmrit.beantable.MemoryTable";
 }
 
 //@Override
-/*protected*/ void MemoryTableAction::addPressed(/*JActionEvent * e*/)
+/*protected*/ void MemoryTableAction::addPressed(JActionEvent *e)
 {
  p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
  if (addFrame == NULL) {

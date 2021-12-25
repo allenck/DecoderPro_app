@@ -251,9 +251,12 @@
     //@InvokeOnGuiThread
     /*private*/ void TrackSegmentEditor::editTrackSegmentCancelPressed(/*ActionEvent a*/) {
         editTrackSegmentOpen = false;
-        editTrackSegmentFrame->setVisible(false);
-        editTrackSegmentFrame->dispose();
-        editTrackSegmentFrame = nullptr;
+        if(editTrackSegmentFrame)
+        {
+         editTrackSegmentFrame->setVisible(false);
+         editTrackSegmentFrame->dispose();
+         editTrackSegmentFrame = nullptr;
+        }
         if (editTrackSegmentNeedsRedraw) {
             layoutEditor->setDirty();
             layoutEditor->redrawPanel();

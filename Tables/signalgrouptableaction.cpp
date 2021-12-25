@@ -394,7 +394,7 @@ void SignalGroupTableAction::setSignalStateBox(int mode, QComboBox* box) {
 }
 
 //@Override
-/*protected*/ void SignalGroupTableAction::addPressed(/*ActionEvent* e*/)
+/*protected*/ void SignalGroupTableAction::addPressed(JActionEvent *e)
 {
     /*if (editMode) {
         cancelEdit();
