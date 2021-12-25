@@ -14,7 +14,7 @@ public:
  explicit ConsistToolFrameTest(QObject *parent = nullptr);
  //@Rule
  /*public*/ TemporaryFolder* folder;// = new TemporaryFolder();
- Q_INVOKABLE /*public*/ void setUp() throw (IOException);
+ Q_INVOKABLE /*public*/ void setUp() /*throw (IOException)*/;
  Q_INVOKABLE /*public*/ void tearDown();
 
 signals:

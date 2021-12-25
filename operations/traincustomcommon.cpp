@@ -74,7 +74,7 @@ TrainCustomCommon::TrainCustomCommon(QObject *parent) : QObject(parent)
     try {
         FileUtil::appendTextToFile(csvNamesFile, csvFile->getAbsolutePath());
 
-    } catch (IOException e) {
+    } catch (IOException* e) {
 //        e.printStackTrace();
     }
 }
@@ -120,7 +120,7 @@ TrainCustomCommon::TrainCustomCommon(QObject *parent) : QObject(parent)
         try {
             process = Runtime.getRuntime().exec(cmd, NULL,
                     OperationsManager.getInstance().getFile(getDirectoryName()));
-        } catch (IOException e) {
+        } catch (IOException* e) {
             e.printStackTrace();
         }
     } else {
@@ -128,7 +128,7 @@ TrainCustomCommon::TrainCustomCommon(QObject *parent) : QObject(parent)
         try {
             process = Runtime.getRuntime().exec(cmd, NULL,
                     OperationsManager.getInstance().getFile(getDirectoryName()));
-        } catch (IOException e) {
+        } catch (IOException* e) {
             e.printStackTrace();
         }
     }

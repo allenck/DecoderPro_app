@@ -296,11 +296,11 @@ JTextField* CvValue::getTableEntry() {
   {
    mProgrammer->readCV(_num, (ProgListener*)this);
   }
-  catch (Exception e)
+  catch (Exception* e)
   {
-   if (status != NULL) status->setText(tr("Exception during CV read: %1").arg(e.getMessage()));
+   if (status != NULL) status->setText(tr("Exception during CV read: %1").arg(e->getMessage()));
 
-   log->warn("Exception during CV read: "+e.getMessage());
+   log->warn("Exception during CV read: "+e->getMessage());
    setBusy(false);
   }
  }
@@ -325,9 +325,9 @@ JTextField* CvValue::getTableEntry() {
         _confirm = true;
         try {
             ((SlotManager*)mProgrammer)->confirmCV(_num, _value, (ProgListener*)this);
-        } catch (Exception e) {
-            if (status != NULL) status->setText(tr("Exception during CV confirm: %1").arg(e.getMessage()));
-            log->warn("Exception during CV read: "+e.getMessage());
+        } catch (Exception* e) {
+            if (status != NULL) status->setText(tr("Exception during CV confirm: %1").arg(e->getMessage()));
+            log->warn("Exception during CV read: "+e->getMessage());
             setBusy(false);
         }
     } else {
@@ -353,11 +353,11 @@ JTextField* CvValue::getTableEntry() {
   setState(UNKNOWN);
   ((SlotManager*)mProgrammer)->writeCV(_num, _value, (ProgListener*)this);
   }
-  catch (Exception e)
+  catch (Exception* e)
   {
    setState(UNKNOWN);
-   if (status != NULL) status->setText(tr("Exception during CV write: %1").arg(e.getMessage()));
-   log->warn("Exception during CV write: "+e.getMessage());
+   if (status != NULL) status->setText(tr("Exception during CV write: %1").arg(e->getMessage()));
+   log->warn("Exception during CV write: "+e->getMessage());
    setBusy(false);
   }
  }

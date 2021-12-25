@@ -74,7 +74,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -2304,7 +2303,7 @@ virtual void _connect();
 virtual void autoConfigure();
 virtual void childEvent(QChildEvent*  event);
 virtual QString  className();
-virtual void closeConnection() throw( Exception);
+virtual void closeConnection();
 virtual void configure();
 virtual void configureBaudRate(QString  rate);
 virtual void configureOption1(QString  value);
@@ -2521,7 +2520,7 @@ virtual int  compareTo(NamedBean*  n2);
 virtual void customEvent(QEvent*  event);
 virtual QString  describeState(int  state);
 virtual void dispose();
-virtual bool  equals(NamedBean*  obj);
+virtual bool  equals(QObject*  obj);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual QString  getBeanType();
@@ -2620,8 +2619,7 @@ virtual int  getXMLOrder() const;
 virtual bool  isPullResistanceConfigurable();
 virtual Sensor*  newSensor(QString  sysName, QString  userName);
 virtual QString  normalizeSystemName(QString  sysName) const;
-virtual Sensor*  provide(QString  name) throw (IllegalArgumentException)
-;
+virtual Sensor*  provide(QString  name);
 virtual Sensor*  provideSensor(QString  name);
 virtual QObject*  self();
 virtual void setDefaultSensorDebounceGoingActive(long  timer);
@@ -2771,8 +2769,8 @@ virtual bool  isCanFollow();
 virtual bool  isConsistentState();
 virtual bool  isFollowingCommandedState();
 virtual void propertyChange(PropertyChangeEvent*  evt);
-virtual void provideFirstFeedbackSensor(QString  pName) throw(JmriException) ;
-virtual void provideSecondFeedbackSensor(QString  pName) throw(JmriException) ;
+virtual void provideFirstFeedbackSensor(QString  pName);
+virtual void provideSecondFeedbackSensor(QString  pName);
 virtual void requestUpdateFromLayout();
 virtual QObject*  self();
 virtual void setBinaryOutput(bool  state);
@@ -2780,9 +2778,9 @@ virtual void setCommandedState(int  s);
 virtual void setCommandedStateAtInterval(int  s);
 virtual void setControlType(int  num);
 virtual void setDecoderName(QString  decoderName);
-virtual void setDivergingSpeed(QString  s) const throw(JmriException) ;
-virtual void setFeedbackMode(QString  mode) throw(IllegalArgumentException) ;
-virtual void setFeedbackMode(int  mode) throw(IllegalArgumentException) ;
+virtual void setDivergingSpeed(QString  s) const;
+virtual void setFeedbackMode(QString  mode);
+virtual void setFeedbackMode(int  mode);
 virtual void setFollowingCommandedState(bool  following);
 virtual void setInhibitOperation(bool  io);
 virtual void setInitialKnownStateFromFeedback();
@@ -2793,10 +2791,10 @@ virtual void setLocked(int  turnoutLockout, bool  locked);
 virtual void setNumberOutputBits(int  num);
 virtual void setReportLocked(bool  reportLocked);
 virtual void setState(int  s);
-virtual void setStraightSpeed(QString  s) const throw(JmriException) ;
+virtual void setStraightSpeed(QString  s) const;
 virtual void setTurnoutOperation(TurnoutOperation*  toper);
 virtual void turnoutPushbuttonLockout(bool  _pushButtonLockout);
-virtual void vetoableChange(PropertyChangeEvent*  evt) throw (PropertyVetoException);
+virtual void vetoableChange(PropertyChangeEvent*  evt);
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -2865,7 +2863,7 @@ virtual int  getXMLOrder() const;
 virtual bool  isControlTypeSupported(QString  systemName);
 virtual bool  isNumControlBitsSupported(QString  systemName);
 virtual Turnout*  newTurnout(QString  systemName, QString  userName) const;
-virtual Turnout*  provide(QString  name) const throw (IllegalArgumentException) ;
+virtual Turnout*  provide(QString  name) const;
 virtual Turnout*  provideTurnout(QString  name) const;
 virtual void setDefaultClosedSpeed(QString  speed) const;
 virtual void setDefaultThrownSpeed(QString  speed) const;

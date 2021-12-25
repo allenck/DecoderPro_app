@@ -129,7 +129,7 @@ public:
     /*public*/ void runWarrant(int mode);
     virtual /*public*/ QString setRoute(bool show, QList<BlockOrder*>* orders);
     /*public*/ void dispose()override;
-    Q_INVOKABLE /*public*/ bool equals(NamedBean* obj)override;
+    Q_INVOKABLE /*public*/ bool equals(QObject *obj);
     /*public*/ uint hashCode()override;
     /*public*/QObject* self() override {return (QObject*)this;}
     /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean) override;
@@ -281,6 +281,7 @@ friend class WarrantTest;
 friend class ThrottleRamp;
 friend class AllocateBlocks;
 friend class LearnSpeedPanel;
+friend class SCTrainRunner;
 };
 
 class BlockSpeedInfo

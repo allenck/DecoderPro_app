@@ -92,7 +92,7 @@
 /*public*/ QJsonObject JsonSensorHttpService::doPut(QString type, QString name, QJsonObject data, QLocale locale) throw (JsonException) {
     try {
         ((ProxySensorManager*)InstanceManager::getDefault("SensorManager"))->provideSensor(name);
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         throw new JsonException(500, tr("ErrorCreatingObject %1 %2").arg(JSON::SENSOR).arg(name));
     }
     return this->doPost(type, name, data, locale);

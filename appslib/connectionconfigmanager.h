@@ -23,10 +23,10 @@ public:
  /*public*/ /*final*/ static QString USER_NAME;// = "userName"; // NOI18N
  /*public*/ /*final*/ static QString SYSTEM_NAME;// = "systemPrefix"; // NOI18N
  /*public*/ /*final*/ static QString MANUFACTURER;// = "manufacturer"; // NOI18N
- /*public*/ void initialize(Profile* profile)throw (InitializationException);
+ /*public*/ void initialize(Profile* profile)/*throw (InitializationException)*/;
  /*public*/ QSet<QString>* getRequires() override;
  /*public*/ void savePreferences(Profile* profile)override;
- /*public*/ bool add(/*@Nonnull*/ ConnectionConfig* c) throw (NullPointerException);
+ /*public*/ bool add(/*@Nonnull*/ ConnectionConfig* c) /*throw (NullPointerException)*/;
  /*public*/ bool remove(/*@NonNULL*/ ConnectionConfig* c);
  /*public*/ QVector<ConnectionConfig*> getConnections();
  /*public*/ ConnectionConfig* getConnections(int index);

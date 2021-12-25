@@ -394,7 +394,7 @@ public:
                           scale.setScaleRatio(newRatio);
                       } catch (java.lang.IllegalArgumentException
                               | java.beans.PropertyVetoException ex) {
-                          log->warn("Unable to change custom ratio: {}", ex.getMessage());  // NOI18N
+                          log->warn("Unable to change custom ratio: {}", ex->getMessage());  // NOI18N
                           JOptionPane::showMessageDialog(null,
                                   tr("NumberFormatError", ans, "Custom ratio"),  // NOI18N
                                   tr("Warning"),  // NOI18N

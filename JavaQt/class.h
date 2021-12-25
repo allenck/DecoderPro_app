@@ -15,7 +15,7 @@ public:
  /*public*/ static Class* forName(QString className);
  /*public*/ bool isInstance(QObject* obj);
  /*public*/ QString getCanonicalName();
- /*public*/ Class* newInstance() throw (InstantiationException, IllegalAccessException);
+ /*public*/ Class* newInstance() /*throw (InstantiationException, IllegalAccessException)*/;
  /*public*/ /*native*/ bool isAssignableFrom(QString cls);
  ///*pubic*/ QString className();
  /*public*/ static bool isAssignableFrom(QString clazz, QString type);

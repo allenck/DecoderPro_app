@@ -112,7 +112,7 @@ public:
     // Serialization magic to prevent "doppelgangers".
     // This is a performance optimization.
 //    /*private*/ Object readResolve() ;
-    /*public*/ static /*synchronized*/ Level* parse(QString name) throw (IllegalArgumentException) ;
+    /*public*/ static /*synchronized*/ Level* parse(QString name) /*throw (IllegalArgumentException)*/ ;
     /*public*/ bool equals(QObject* ox);
     /*public*/ int hashCode();
 

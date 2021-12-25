@@ -340,7 +340,7 @@ QObject((QObject*)parent)
 {
  if (newModel == NULL)
  {
-  throw  IllegalArgumentException("Cannot set a NULL SelectionModel");
+  throw new IllegalArgumentException("Cannot set a NULL SelectionModel");
  }
 
  ListSelectionModel* oldModel = selectionModel;

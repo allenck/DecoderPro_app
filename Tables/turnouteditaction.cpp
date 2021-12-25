@@ -625,7 +625,7 @@ BeanItemPanel* TurnoutEditAction::speed()
 //                    speedListClosed.add(speed);
 //                }
 //            } catch (jmri.JmriException ex) {
-//                JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + speed);
+//                JOptionPane.showMessageDialog(NULL, ex->getMessage() + "\n" + speed);
 //            }
 //            speed =  thrownSpeedBox.getSelectedItem();
 //            try {
@@ -634,7 +634,7 @@ BeanItemPanel* TurnoutEditAction::speed()
 //                    speedListThrown.add(speed);
 //                }
 //            } catch (jmri.JmriException ex) {
-//                JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + speed);
+//                JOptionPane.showMessageDialog(NULL, ex->getMessage() + "\n" + speed);
 //            }
 //        }
 //    });
@@ -693,7 +693,7 @@ SpeedSaveItemListener::SpeedSaveItemListener(TurnoutEditAction *act)
   }
  } catch (JmriException* ex)
  {
-//     JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + speed);
+//     JOptionPane.showMessageDialog(NULL, ex->getMessage() + "\n" + speed);
  }
  speed =  act->thrownSpeedBox->currentText();
  try {
@@ -702,7 +702,7 @@ SpeedSaveItemListener::SpeedSaveItemListener(TurnoutEditAction *act)
          act->speedListThrown.append(speed);
      }
  } catch (JmriException* ex) {
-//     JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + speed);
+//     JOptionPane.showMessageDialog(NULL, ex->getMessage() + "\n" + speed);
  }
 }
 SpeedResetItemListener::SpeedResetItemListener(TurnoutEditAction *act)

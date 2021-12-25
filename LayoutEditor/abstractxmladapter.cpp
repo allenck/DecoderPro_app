@@ -136,14 +136,14 @@ AbstractXmlAdapter::AbstractXmlAdapter(QObject *parent)
         if ( val == ("yes") || val == ("true") ) return true;  // non-externalized strings
         if ( val == ("no") || val == ("false") ) return false;
         return def;
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log->debug("caught exception", ex);
         ErrorMemo* em = new ErrorMemo(this,
                                         "getAttributeBooleanValue threw exception",
                                         "element: "+element.tagName(),
                                         "attribute: "+name,
                                         "value: "+val,
-                                        &ex);
+                                        ex);
         getExceptionHandler()->handle(em);
         return def;
     }

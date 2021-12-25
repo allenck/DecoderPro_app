@@ -375,7 +375,7 @@ void RosterEntryO1::warnShortLong(QString s) {
 }
 
 //@Test
-/*public*/ void RosterEntryTest::testEnsureFilenameExistsOld() throw (IOException) {
+/*public*/ void RosterEntryTest::testEnsureFilenameExistsOld() /*throw (IOException)*/ {
     FileUtil::createDirectory(Roster::getDefault()->getRosterFilesLocation());
     RosterEntry* r = new RosterEntry();
     Assert::assertEquals("initial filename ", "", r->getFileName(),__FILE__, __LINE__);

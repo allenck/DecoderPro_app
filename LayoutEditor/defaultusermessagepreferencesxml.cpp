@@ -184,7 +184,7 @@ DefaultUserMessagePreferencesXml::DefaultUserMessagePreferencesXml(QObject *pare
 
                     // store
                     p.setProperty(strClass, key, value);
-                } catch (Exception ex) {
+                } catch (Exception* ex) {
                     log.error("Error loading properties", ex);
                 }
 #else

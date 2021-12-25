@@ -59,7 +59,7 @@ ProfileTest::ProfileTest(QObject *parent) : QObject(parent)
 * @throws java.io.IOException on any unanticipated errors setting up test
 */
 //@Test
-/*public*/ void ProfileTest::testSave() throw (IOException) {
+/*public*/ void ProfileTest::testSave() /*throw (IOException)*/ {
     File* profileFolder = new File(folder->newFolder(Profile::PROFILE), "test");
     Profile* instance = new Profile("test", "test", profileFolder);
     instance->setName("saved");

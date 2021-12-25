@@ -11,10 +11,10 @@ class JsonServlet : public WebSocketServlet
 {
 public:
  JsonServlet(QObject* parent = 0);
- /*public*/ void init() throw (ServletException);
+ /*public*/ void init() /*throw (ServletException)*/override;
  /*public*/ void destroy();
  /*public*/ void configure(WebSocketServletFactory* factory);
- /*public*/ void sendError(HttpServletResponse* response, int code, QString message) throw (IOException);
+ /*public*/ void sendError(HttpServletResponse* response, int code, QString message) /*throw (IOException)*/;
 
 private:
  /*private*/ /*transient*/ ObjectMapper mapper;
@@ -22,10 +22,10 @@ private:
  /*private*/ static /*final*/ Logger* log;// = LoggerFactory.getLogger(JsonServlet.class);
 
 protected:
- /*protected*/ void doGet(/*final*/ HttpServletRequest* request, HttpServletResponse* response) throw (IOException);
- /*protected*/ void doPost(HttpServletRequest* request, HttpServletResponse* response) throw (IOException);
- /*protected*/ void doPut(HttpServletRequest* request, HttpServletResponse* response) throw (IOException);
- /*protected*/ void doDelete(HttpServletRequest* request, HttpServletResponse* response) throw (ServletException, IOException);
+ /*protected*/ void doGet(/*final*/ HttpServletRequest* request, HttpServletResponse* response) /*throw (IOException)*/;
+ /*protected*/ void doPost(HttpServletRequest* request, HttpServletResponse* response) /*throw (IOException)*/;
+ /*protected*/ void doPut(HttpServletRequest* request, HttpServletResponse* response) /*throw (IOException)*/;
+ /*protected*/ void doDelete(HttpServletRequest* request, HttpServletResponse* response) /*throw (ServletException, IOException)*/;
 friend class RequestHandler;
 };
 

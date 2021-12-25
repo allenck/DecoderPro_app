@@ -30,7 +30,7 @@ public:
      * If name is null, return a list of all objects for the given type, if
      * appropriate.
      *
-     * This method should throw a 500 Internal Server Error if type is not
+     * This method should throw new a 500 Internal Server Error if type is not
      * recognized.
      *
      * @param type   the type of the requested object
@@ -40,12 +40,12 @@ public:
      * @throws jmri.server.json.JsonException if the named object does not exist
      *                                        or other error occurs
      */
-    /*public*/ /*abstract*/ virtual QJsonValue doGet(QString /*type*/, QString /*name*/, QLocale /*locale*/) throw (JsonException) { return QJsonValue();}
+    /*public*/ /*abstract*/ virtual QJsonValue doGet(QString /*type*/, QString /*name*/, QLocale /*locale*/) /*throw (JsonException)*/ { return QJsonValue();}
 
     /**
      * Respond to an HTTP POST request for the requested name.
      *
-     * This method should throw a 400 Invalid Request error if the named object
+     * This method should throw new a 400 Invalid Request error if the named object
      * does not exist.
      *
      * @param type   the type of the requested object
@@ -58,12 +58,12 @@ public:
      * @throws jmri.server.json.JsonException if the named object does not exist
      *                                        or other error occurs
      */
-    /*public*/ /*abstract*/ virtual QJsonObject doPost(QString /*type*/, QString /*name*/, QJsonObject /*data*/, QLocale /*locale*/) throw (JsonException) {return QJsonObject();}
+    /*public*/ /*abstract*/ virtual QJsonObject doPost(QString /*type*/, QString /*name*/, QJsonObject /*data*/, QLocale /*locale*/) /*throw (JsonException)*/ {return QJsonObject();}
 
     /**
      * Respond to an HTTP PUT request for the requested name.
      *
-     * Throw an HTTP 405 Method Not Allowed exception if new objects of the type
+     * throw new an HTTP 405 Method Not Allowed exception if new objects of the type
      * are not intended to be addable.
      *
      * @param type   the type of the requested object
@@ -75,17 +75,17 @@ public:
      * @throws jmri.server.json.JsonException if the method is not allowed or
      *                                        other error occurs
      */
-    /*public*/ QJsonObject doPut(QString type, QString /*name*/, QJsonObject /*data*/, QLocale /*locale*/) throw (JsonException)    {
-        throw  JsonException(HttpServletResponse::SC_METHOD_NOT_ALLOWED, QString("Putting %1 is not allowed.").arg(type));
+    /*public*/ QJsonObject doPut(QString type, QString /*name*/, QJsonObject /*data*/, QLocale /*locale*/) /*throw (JsonException)*/    {
+        throw new  JsonException(HttpServletResponse::SC_METHOD_NOT_ALLOWED, QString("Putting %1 is not allowed.").arg(type));
     }
 
     /**
      * Respond to an HTTP DELETE request for the requested name.
      *
-     * Throw an HTTP 405 Method Not Allowed exception if the object is not
+     * throw new an HTTP 405 Method Not Allowed exception if the object is not
      * intended to be removable.
      *
-     * Do not throw an error if the requested object does not exist.
+     * Do not throw new an error if the requested object does not exist.
      *
      * @param type   the type of the deleted object
      * @param name   the name of the deleted object
@@ -93,8 +93,8 @@ public:
      * @throws jmri.server.json.JsonException if this method is not allowed or
      *                                        other error occurs
      */
-    /*public*/ void doDelete(QString type, QString /*name*/, QLocale /*locale*/) throw (JsonException) {
-        throw JsonException(HttpServletResponse::SC_METHOD_NOT_ALLOWED, QString("Deleting %1 is not allowed.").arg(type));
+    /*public*/ void doDelete(QString type, QString /*name*/, QLocale /*locale*/) /*throw (JsonException)*/ {
+        throw new JsonException(HttpServletResponse::SC_METHOD_NOT_ALLOWED, QString("Deleting %1 is not allowed.").arg(type));
     }
 
     /**
@@ -103,7 +103,7 @@ public:
      * This is called by the {@link jmri.web.servlet.json.JsonServlet} to handle
      * get requests for a type, but no name. Some services that can't return a
      * list may prefer to return a single object instead of a list in this case,
-     * while other services may simply throw a 400 Bad Request JsonException in
+     * while other services may simply throw new a 400 Bad Request JsonException in
      * this case.
      *
      * @param type   the type of the requested list
@@ -112,6 +112,6 @@ public:
      * @throws jmri.server.json.JsonException may be thrown by concrete
      *                                        implementations
      */
-    /*public*/ /*abstract*/ virtual QJsonValue doGetList(QString /*type*/, QLocale /*locale*/) throw (JsonException) {return QJsonValue();}
+    /*public*/ /*abstract*/ virtual QJsonValue doGetList(QString /*type*/, QLocale /*locale*/) /*throw (JsonException)*/ {return QJsonValue();}
 };
 #endif // JSONHTTPSERVICE_H

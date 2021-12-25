@@ -11,7 +11,7 @@ class PreferencesManager : public JmriServiceProviderInterface
  Q_OBJECT
 public:
  PreferencesManager(QObject* parent = 0);
- /*public*/ virtual void initialize(/*@Nonnull*/ Profile* profile) throw (InitializationException);
+ /*public*/ virtual void initialize(/*@Nonnull*/ Profile* profile) /*throw (InitializationException)*/;
  /*public*/ virtual bool isInitialized(/*@Nonnull*/ Profile* profile);
  /*public*/ virtual bool isInitializedWithExceptions(/*@Nonnull */Profile* profile);
  virtual QList<Exception*>* getInitializationExceptions(/*@Nonnull */Profile* profile);

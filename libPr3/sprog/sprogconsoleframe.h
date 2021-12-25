@@ -19,7 +19,7 @@ namespace Sprog
   /*public*/ bool isFirmwareUnlockPossible();
   /*public*/ bool isZTCModePossible();
   /*public*/ void dispose();
-  /*public*/ void initComponents() throw (Exception);
+  /*public*/ void initComponents() /*throw (Exception)*/override;
   /*public*/ QString getClassName();
 
  public slots:

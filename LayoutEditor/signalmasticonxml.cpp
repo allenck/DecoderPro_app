@@ -149,7 +149,7 @@ SignalMastIconXml::SignalMastIconXml(QObject *parent) :
 //catch (DataConversionException* e) {
   if(!bok)
   {
-  log->error("Failed on clickmode attribute: "/*+e.getMessage()*/);
+  log->error("Failed on clickmode attribute: "/*+e->getMessage()*/);
   }
 
 // try {
@@ -159,7 +159,7 @@ SignalMastIconXml::SignalMastIconXml(QObject *parent) :
       l->setLitMode(attr=="true"?true:false);
   }
 // } catch (DataConversionException* e) {
-//     log->error("Failed on litmode attribute: "+e.getMessage());
+//     log->error("Failed on litmode attribute: "+e->getMessage());
 // }
 
  // load individual item's option settings after editor has set its global settings

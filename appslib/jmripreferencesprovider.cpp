@@ -446,8 +446,8 @@ return QStringList(children->keys());
     }
    }
   }
- } catch (IOException e) {
-     throw new BackingStoreException(e.getMessage());
+ } catch (IOException* e) {
+     throw new BackingStoreException(e->getMessage());
  }
 // }
 }
@@ -546,8 +546,8 @@ return QStringList(children->keys());
    QTextStream* fos = new QTextStream(fo);
    p->store(fos, "JMRI Preferences version " + Version::name());
   }
- } catch (IOException e) {
-     throw new BackingStoreException(e.getMessage());
+ } catch (IOException* e) {
+     throw new BackingStoreException(e->getMessage());
  }
 // }
 }

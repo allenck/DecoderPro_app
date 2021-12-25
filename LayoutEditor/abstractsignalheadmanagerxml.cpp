@@ -60,9 +60,9 @@ AbstractSignalHeadManagerXml::~AbstractSignalHeadManagerXml()
       if (!e.isNull())
        signalheads.appendChild(e);
      }
-     catch (Exception ex)
+     catch (Exception* ex)
      {
-      log->error("Error storing signalhead: "+ex.getMessage());
+      log->error("Error storing signalhead: "+ex->getMessage());
                //e.printStackTrace();
      }
     }
@@ -128,8 +128,8 @@ AbstractSignalHeadManagerXml::~AbstractSignalHeadManagerXml()
       // and do it
       adapter->load(item, QDomElement());
 
-  } catch (Exception e) {
-      log->error("Exception while loading "+item.tagName(),&e);
+  } catch (Exception* e) {
+      log->error("Exception while loading "+item.tagName(),e);
       //e.printStackTrace();
   }
  }

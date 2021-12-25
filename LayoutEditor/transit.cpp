@@ -545,7 +545,7 @@
         NamedBean* nb =  VPtr<NamedBean>::asPtr(evt->getOldValue());
         if (static_cast<Section*>(nb)) {
             if (containsSection((Section*) nb)) {
-                throw  PropertyVetoException(tr("Is in use with Transit %1").arg(getDisplayName()), evt);
+                throw new PropertyVetoException(tr("Is in use with Transit %1").arg(getDisplayName()), evt);
             }
         }
     }

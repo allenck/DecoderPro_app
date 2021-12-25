@@ -85,7 +85,7 @@ public:
 private:
  static /*final*/ long serialVersionUID;// = 3491141966387921974L;
 // /*private*/ void readObject(ObjectInputStream s) throw new IOException, ClassNotFoundException;
-// /*private*/ void writeObject(ObjectOutputStream s) throw (IOException);
+// /*private*/ void writeObject(ObjectOutputStream s) /*throw (IOException)*/;
 // /*private*/ QObject* readResolve(); // throw (ObjectStreamException);
  QString sArg;
  int intLevel;

@@ -370,8 +370,8 @@
         w->write(s, 0, s.length());
         w->writeBorders();
         w->write(s, 0, s.length());
-    } catch (IOException e) {
-        log->warn("error during printing: " + e.getMessage());
+    } catch (IOException* e) {
+        log->warn("error during printing: " + e->getMessage());
     }
 
 }

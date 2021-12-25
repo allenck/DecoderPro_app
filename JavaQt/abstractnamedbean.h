@@ -62,7 +62,7 @@ public:
     PropertyChangeSupport* pcs = nullptr;
     /*public*/ void removeProperty(QString key) override;
     /*public*/ QString describeState(int state) override;
-    Q_INVOKABLE /*public*/ bool equals(NamedBean* obj) override;
+    Q_INVOKABLE /*public*/ bool equals(QObject* obj) override;
     /*public*/ int compareSystemNameSuffix(/*@Nonnull*/ QString suffix1, /*@Nonnull*/ QString suffix2, /*@Nonnull*/ NamedBean* n) override;
     /*public*/ void vetoableChange(PropertyChangeEvent* /*evt*/) /*throw (PropertyVetoException)*/ override;
     /*public*/ uint hashCode() override { return qHash(mSystemName, qGlobalQHashSeed());}

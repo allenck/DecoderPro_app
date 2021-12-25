@@ -42,9 +42,9 @@ class NBHSensor : public QObject
   /*private*/ static Sensor* getSafeExistingJMRISensor(QString module, QString userIdentifier, QString parameter, QString sensor);
   /*private*/ static Sensor* getSafeOptionalJMRISensor(QString module, QString userIdentifier, QString parameter, QString sensor);
   /*private*/ static Sensor* getSafeInternalSensor(QString module, QString userIdentifier, QString parameter, QString sensor);
-  /*private*/ static Sensor* getExistingJMRISensor(QString module, QString userIdentifier, QString parameter, QString sensor) throw (CTCException);
-  /*private*/ static Sensor* getOptionalJMRISensor(QString module, QString userIdentifier, QString parameter, QString sensor) throw (CTCException);
-  /*private*/ static Sensor* getInternalSensor(QString module, QString userIdentifier, QString parameter, QString sensor) throw (CTCException);
+  /*private*/ static Sensor* getExistingJMRISensor(QString module, QString userIdentifier, QString parameter, QString sensor) /*throw (CTCException)*/;
+  /*private*/ static Sensor* getOptionalJMRISensor(QString module, QString userIdentifier, QString parameter, QString sensor) /*throw (CTCException)*/;
+  /*private*/ static Sensor* getInternalSensor(QString module, QString userIdentifier, QString parameter, QString sensor) /*throw (CTCException)*/;
 
 };
 

@@ -327,7 +327,7 @@
           sharedEtchedBorder = new EtchedBorder();
             return sharedEtchedBorder;
         default:
-            throw  IllegalArgumentException("type must be one of EtchedBorder.RAISED or EtchedBorder.LOWERED");
+            throw new IllegalArgumentException("type must be one of EtchedBorder.RAISED or EtchedBorder.LOWERED");
         }
     }
 

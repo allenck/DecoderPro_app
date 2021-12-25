@@ -212,9 +212,9 @@ DefaultAudioManager::DefaultAudioManager(QObject *parent) :
    if(s != nullptr)
     Register(s);
   }
-  catch (AudioException ex)
+  catch (AudioException* ex)
   {
-   log->error("Error creating Default Audio Listener: " + ex.getMessage());
+   log->error("Error creating Default Audio Listener: " + ex->getMessage());
   }
 
   // Finally, create and register a shutdown task to ensure clean exit

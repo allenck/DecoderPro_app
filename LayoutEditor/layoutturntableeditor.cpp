@@ -325,7 +325,7 @@
                 public void focusLost(FocusEvent e) {
                     try {
                         Float.parseFloat(rayAngleTextField.getText());
-                    } catch (Exception ex) {
+                    } catch (Exception* ex) {
                         JOptionPane.showMessageDialog(editLayoutTurntableFrame, Bundle.getMessage("EntryError") + ": " // NOI18N
                                 + ex + Bundle.getMessage("TryAgain"), Bundle.getMessage("ErrorTitle"), // NOI18N
                                 JOptionPane.ERROR_MESSAGE);

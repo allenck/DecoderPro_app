@@ -554,7 +554,7 @@ void read(InputStream in, Document doc) throws IOException {
             new InputStreamReader(in);
         kit.read(r, doc, 0);
     } catch (BadLocationException e) {
-        throw new IOException(e.getMessage());
+        throw new IOException(e->getMessage());
     } catch (ChangedCharSetException changedCharSetException) {
         QString charSetSpec = changedCharSetException.getCharSetSpec();
         if (changedCharSetException.keyEqualsCharSet()) {
@@ -564,7 +564,7 @@ void read(InputStream in, Document doc) throws IOException {
         }
         try {
             in.reset();
-        } catch (IOException exception) {
+        } catch (IOException* exception) {
             //mark was invalidated
             in.close();
             URL url = (URL)doc.getProperty(Document.StreamDescriptionProperty);
@@ -655,7 +655,7 @@ class PageLoader extends SwingWorker<URL, Object> {
                 SwingUtilities.invokeLater(callScrollToReference);
             }
             pageLoaded = true;
-        } catch (IOException ioe) {
+        } catch (IOException* ioe) {
             UIManager.getLookAndFeel().provideErrorFeedback(JEditorPane.this);
         } finally {
             if (pageLoaded) {
@@ -1001,7 +1001,7 @@ private void setCharsetFromContentTypeParameters(QString paramlist) {
     catch (NullPointerException* e) {
         // malformed parameter list, use charset we have
     }
-    catch (Exception e) {
+    catch (Exception* e) {
         // malformed parameter list, use charset we have; but complain
         System.err.println("JEditorPane.getCharsetFromContentTypeParameters failed on: " + paramlist);
         e.printStackTrace();
@@ -1400,7 +1400,7 @@ private static void loadDefaultKitsIfNecessary() {
         Reader r = new StringReader(t);
         EditorKit kit = getEditorKit();
         kit.read(r, doc, 0);
-    } catch (IOException ioe) {
+    } catch (IOException* ioe) {
         UIManager.getLookAndFeel().provideErrorFeedback(JEditorPane.this);
     } catch (BadLocationException ble) {
         UIManager.getLookAndFeel().provideErrorFeedback(JEditorPane.this);
@@ -1424,7 +1424,7 @@ private static void loadDefaultKitsIfNecessary() {
         StringWriter buf = new StringWriter();
         write(buf);
         txt = buf.toString();
-    } catch (IOException ioe) {
+    } catch (IOException* ioe) {
         txt = null;
     }
     return txt;

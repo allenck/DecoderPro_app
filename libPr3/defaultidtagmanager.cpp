@@ -97,7 +97,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 /*public*/ char DefaultIdTagManager::typeLetter() const { return 'D'; }
 
 //@Override
-/*public*/ DefaultIdTag* DefaultIdTagManager::provide(QString name) throw (IllegalArgumentException) {
+/*public*/ DefaultIdTag* DefaultIdTagManager::provide(QString name)  {
     return provideIdTag(name);
 }
 
@@ -224,7 +224,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
     IdTagManagerXml::instance()->setDirty(true);
 }
 
-/*public*/ void DefaultIdTagManager::writeIdTagDetails()  //throw (IOException)
+/*public*/ void DefaultIdTagManager::writeIdTagDetails()  ///*throw (IOException)*/
 {
     IdTagManagerXml::instance()->store();
     log->debug("...done writing IdTag details");
@@ -347,14 +347,14 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
    _loaded = true;
    setDirty(false);
   }
-  catch (Exception ex)
+  catch (Exception* ex)
   {
-   log->error("Exception during IdTag file reading: " + ex.getMessage());
+   log->error("Exception during IdTag file reading: " + ex->getMessage());
   }
  }
 }
 
-/*protected*/ void IdTagManagerXml::store() //throw (IOException)
+/*protected*/ void IdTagManagerXml::store() ///*throw (IOException)*/
 {
  if (_dirty)
  {
@@ -365,9 +365,9 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
   try {
    writeFile(getDefaultIdTagFileName());
   }
-  catch (FileNotFoundException ex)
+  catch (FileNotFoundException* ex)
   {
-   log->error(tr("File not found while writing IdTag file, may not be complete: ") + ex.getMessage());
+   log->error(tr("File not found while writing IdTag file, may not be complete: ") + ex->getMessage());
   }
  }
  else

@@ -76,7 +76,7 @@ namespace Operations
      // Fix this later....... UGH!!
      try {
          backup->backupFilesToDirectory(directory);
-     } catch (Exception ex) {
+     } catch (Exception* ex) {
   }
  }
 #if 0

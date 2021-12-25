@@ -458,7 +458,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
      try {
          l->setId(element.attribute("id"));
      } catch (Positionable::DuplicateIdException* e) {
-         throw  JmriConfigureXmlException("Positionable id is not unique", e);
+         throw new JmriConfigureXmlException("Positionable id is not unique", e);
      }
  }
  QString a = element.attribute("forcecontroloff");

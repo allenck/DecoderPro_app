@@ -107,7 +107,7 @@
  * @param rootQName       qualified name of root element. e.g.
  *                        <code>myroot</code> or <code>ns:myroot</code>
  * @param namespaceURI    URI of root element namespace or <code>null</code>
- * @param doctypePublicID /*public*/ ID of DOCTYPE or <code>null</code>
+ * @param doctypePublicID public ID of DOCTYPE or <code>null</code>
  * @param doctypeSystemID system ID of DOCTYPE or <code>null</code> if no
  *                        DOCTYPE required and doctypePublicID is also
  *                        <code>null</code>
@@ -230,7 +230,7 @@
  * </pre>
  *
  * <p>
- * Now the default system entity catalog will resolve the /*public*/ ID to the
+ * Now the default system entity catalog will resolve the public ID to the
  * local copy in your module, not the network copy. Additionally, anyone who
  * mounts the "NetBeans Catalog" in the XML Entity Catalogs node in the
  * Runtime tab will be able to use your local copy of the DTD automatically,
@@ -492,7 +492,7 @@
     });
     try {
         v.validate(new DOMSource(fixupAttrs(data)));
-    } catch (IOException x) {
+    } catch (IOException* x) {
         assert false : x;
     }
     if (error[0] != null) {
@@ -686,7 +686,7 @@
         try {
             magic[(i / 2) - 1] = (byte) Integer.parseInt(g, 16);
         } catch (NumberFormatException* ex) {
-            throw new IOException(ex.getLocalizedMessage());
+            throw new IOException(ex->getLocalizedMessage());
         }
     }
 

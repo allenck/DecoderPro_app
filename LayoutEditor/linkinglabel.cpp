@@ -101,8 +101,8 @@ LinkingLabel::LinkingLabel(QWidget *parent) : PositionableLabel((Positionable*)p
   } else if (url.length() > 0) {
 //      ExternalLinkContentViewerUI.activateURL(new java.net.URL(url));
   }
- } catch (IOException /*| URISyntaxException*/ t) {
-     log->error("Error handling link", &t);
+ } catch (IOException* /*| URISyntaxException*/ t) {
+     log->error("Error handling link", t);
  }
  PositionableLabel::doMouseClicked(event);
 }

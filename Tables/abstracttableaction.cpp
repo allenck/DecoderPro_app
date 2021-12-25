@@ -345,10 +345,10 @@ void ATABeanTableFrame::extras()
  * @param curAddress address as entered in Add new... pane address field
  * @param ex the exception that occurred
  */
-/*protected*/ void AbstractTableAction::displayHwError(QString curAddress, Exception ex) {
+/*protected*/ void AbstractTableAction::displayHwError(QString curAddress, Exception* ex) {
     ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->
             showErrorMessage(tr("Error"),
-                    tr("Unable to convert \"%1\" to a valid Hardware Address.").arg(curAddress),"" + ex.getMessage(),"",
+                    tr("Unable to convert \"%1\" to a valid Hardware Address.").arg(curAddress),"" + ex->getMessage(),"",
                     true,false);
 }
 

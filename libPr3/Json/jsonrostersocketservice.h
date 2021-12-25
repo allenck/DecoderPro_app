@@ -35,8 +35,8 @@ class JsonRosterSocketService : public JsonSocketService
 public:
  /*public*/ JsonRosterSocketService(JsonConnection* connection, QObject* parent = 0);
  /*public*/ void listen();
- /*public*/ void onMessage(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException);
- /*public*/ void onList(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException);
+ /*public*/ void onMessage(QString type, QJsonObject data, QLocale locale) /*throw (IOException, JmriException, JsonException)*/;
+ /*public*/ void onList(QString type, QJsonObject data, QLocale locale) /*throw (IOException, JmriException, JsonException)*/;
  /*public*/ void onClose();
 
 private:

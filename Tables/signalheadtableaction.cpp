@@ -1029,7 +1029,7 @@ bool SignalHeadTableAction::checkBeforeCreating(QString sysName)
   sysName.mid(sysName.indexOf("$")+1, sysName.length()).toInt(&bOK);
   if(!bOK)
   {
-//        } catch (Exception ex){
+//        } catch (Exception* ex){
 //            String msg = java.text.MessageFormat.format(AbstractTableAction.rb
 //                    .getString("ShouldBeNumber"), new Object[] { "Hardware Address" });
 //            JOptionPane.showMessageDialog(addFrame, msg,

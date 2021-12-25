@@ -84,8 +84,8 @@ public:
  /*public*/ /*abstract*/ virtual QString getPropertyString(/*final*/ QString name);
  /*public*/ /*abstract*/ virtual QStringListIterator getPropertyNames();
  /*public*/ /*abstract*/ virtual QString getNiceTextString();
- /*public*/ /*abstract*/ virtual void setText(/*final*/ QByteArray text) throw (IllegalStateException);
- /*public*/ /*abstract*/ virtual void setText(/*final*/ QMap<QString, QVariant> props) throw (IllegalStateException);
+ /*public*/ /*abstract*/ virtual void setText(/*final*/ QByteArray text) /*throw (IllegalStateException)*/;
+ /*public*/ /*abstract*/ virtual void setText(/*final*/ QMap<QString, QVariant> props) /*throw (IllegalStateException)*/;
  /*public*/ /*abstract*/ virtual bool isPersistent();
  /*public*/ /*abstract*/ virtual QString getDomain();
  /*public*/ /*abstract*/ virtual QString getProtocol();

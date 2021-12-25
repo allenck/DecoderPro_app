@@ -63,7 +63,7 @@ void RosterConfigManager::propertyChange(PropertyChangeEvent* evt)
 }
 
 //@Override
-/*public*/ void RosterConfigManager::initialize(Profile* profile) throw (InitializationException)
+/*public*/ void RosterConfigManager::initialize(Profile* profile) /*throw new (InitializationException)*/
 {
  if (!this->isInitialized(profile))
  {
@@ -76,9 +76,9 @@ void RosterConfigManager::propertyChange(PropertyChangeEvent* evt)
   catch (IllegalArgumentException* ex)
   {
    this->setInitialized(profile, true);
-   throw InitializationException(
+   throw new InitializationException(
 //                    Bundle.getMessage(Locale.ENGLISH, "IllegalRosterLocation", preferences.get(DIRECTORY, this->getDirectory())),
-//                    ex.getMessage(),
+//                    ex->getMessage(),
 //                    ex);
    tr("\"%1\" is not a valid path").arg(preferences->get(DIRECTORY, this->getDirectory())),QString("\"%1\" is not a valid path").arg(preferences->get(DIRECTORY, this->getDirectory())), NULL);
   }
@@ -190,12 +190,12 @@ void RosterConfigManager::propertyChange(PropertyChangeEvent* evt)
  {
   if (!FileUtil::getFile(directory)->isDirectory()) 
   {
-   throw  IllegalArgumentException(tr("\"%1\" is not a valid path").arg(directory)); // NOI18N
+   throw new  IllegalArgumentException(tr("\"%1\" is not a valid path").arg(directory)); // NOI18N
   }
  } 
- catch (FileNotFoundException ex) 
+ catch (FileNotFoundException* ex) 
  { // thrown by getFile() if directory does not exist
-  throw  IllegalArgumentException(tr("\"%1\" is not a valid path").arg(directory)); // NOI18N
+  throw new  IllegalArgumentException(tr("\"%1\" is not a valid path").arg(directory)); // NOI18N
  }
  if (directory != (FileUtil::PREFERENCES)) {
      directory = FileUtil::getAbsoluteFilename(directory);

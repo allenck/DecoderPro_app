@@ -479,10 +479,10 @@ void AudioSourceFrame::okPressed(JActionEvent* /*e*/)
 
   this->setHidden(true);
  }
- catch (AudioException ex)
+ catch (AudioException* ex)
  {
-//        JOptionPane.showMessageDialog(NULL, ex.getMessage(), tr("AudioCreateErrorTitle"), JOptionPane.ERROR_MESSAGE);
-QMessageBox::critical(NULL, tr("Error creating Audio object"), ex.getMessage());
+//        JOptionPane.showMessageDialog(NULL, ex->getMessage(), tr("AudioCreateErrorTitle"), JOptionPane.ERROR_MESSAGE);
+QMessageBox::critical(NULL, tr("Error creating Audio object"), ex->getMessage());
  }
 }
 /*public*/ QString AudioSourceFrame::getClassName()

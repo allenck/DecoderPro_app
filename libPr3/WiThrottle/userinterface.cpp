@@ -325,7 +325,7 @@ void UserInterface::on_serverStateChanged(DeviceServer */*s*/)
 #if 0
  try {	//Create socket on available port
      socket = new ServerSocket(socketPort);
- } catch (IOException e1) {
+ } catch (IOException* e1) {
      log->error("New ServerSocket Failed during /*static*/)");
      return;
  }
@@ -359,7 +359,7 @@ void UserInterface::on_serverStateChanged(DeviceServer */*s*/)
    dThread->setObjectName("WiThrottleUIDeviceServer"); // NOI18N
     log->debug("Starting WiThrottleUIDeviceServer thread");
    dThread->start();
-  } catch (IOException e3)
+  } catch (IOException* e3)
   {
    if (isListen)
    {
@@ -543,12 +543,12 @@ bool UIShutdownTask::execute()
                  log->debug("Published IPv6 ZeroConf service for '{}' on {}:{}", se.getService().key(), addr.getHostAddress(), port); // NOI18N
             }
         } catch (NullPointerException* | IOException ex) {
-             log->error("Address is invalid: {}", ex.getLocalizedMessage());
+             log->error("Address is invalid: {}", ex->getLocalizedMessage());
             this.portLabel.setText(Inet4Address.getLocalHost().getHostName());
             this.manualPortLabel.setText(Inet4Address.getLocalHost().getHostAddress() + ":" + port); // NOI18N
         }
     } catch (UnknownHostException ex) {
-         log->error("Failed to determine this system's IP address: {}", ex.getLocalizedMessage());
+         log->error("Failed to determine this system's IP address: {}", ex->getLocalizedMessage());
         this.portLabel.setText(tr("LabelUnknown")); // NOI18N
         this.manualPortLabel.setText(NULL);
     }

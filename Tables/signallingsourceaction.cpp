@@ -52,9 +52,9 @@ void SignallingSourceAction::init()
  {
   f->initComponents(source);
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
-  log->error("Exception: "+ex.getMessage());
+  log->error("Exception: "+ex->getMessage());
   //ex.printStackTrace();
  }
  f->setVisible(true);

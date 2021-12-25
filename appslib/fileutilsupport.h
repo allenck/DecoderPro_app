@@ -78,13 +78,13 @@ public:
  /*public*/ void rotate(/*@NonNULL*/ File* file, int max, QString extension);// //throws IOException
  /*public*/ static FileUtilSupport* getDefault();
  /*public*/ QStringList* findProgramPath();
- /*public*/ QString readURL(QUrl url) throw (IOException);
+ /*public*/ QString readURL(QUrl url) /*throw (IOException)*/;
  /*public*/ QString sanitizeFilename(QString name);
  /*public*/ void createDirectory(QString path);
  /*public*/ void createDirectory(File* dir);
  /*public*/ bool _delete(File* path);
- /*public*/ void copy(File* source, File* dest) throw (IOException);
- /*public*/ void appendTextToFile(File* file, QString text) throw (IOException);
+ /*public*/ void copy(File* source, File* dest) /*throw (IOException)*/;
+ /*public*/ void appendTextToFile(File* file, QString text) /*throw (IOException)*/;
  /*public*/ QTextStream* findInputStream(/*@Nonnull*/ QString path, /*@Nonnull*/ FileUtil::Location locations);
  /*public*/ QTextStream* findInputStream(/*@Nonnull*/ QString path, /*@Nonnull*/ FileUtil::Location locations, /*@Nonnull*/ QStringList searchPaths);
  /*public*/ QString findURI(/*@Nonnull*/ QString path, /*@Nonnull*/ FileUtil::Location locations, /*@Nonnull*/ QStringList searchPaths);

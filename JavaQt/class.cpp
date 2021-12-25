@@ -356,7 +356,7 @@
     //@CallerSensitive
     //template<class T>
     /*public*/ Class* Class::newInstance()
-        throw (InstantiationException, IllegalAccessException)
+//        throw new (InstantiationException, IllegalAccessException)
     {
 #if 0
         if (System.getSecurityManager() != null) {
@@ -389,7 +389,7 @@
                         });
                 cachedConstructor = c;
             } catch (NoSuchMethodException* e) {
-                throw (InstantiationException)
+                throw new (InstantiationException)
                     new InstantiationException(getName()).initCause(e);
             }
         }
@@ -417,7 +417,7 @@
         {
           QString msg = tr("Constructor may need Q_INVOKABLE %1").arg(metaObject()->className());
           log->error(msg);
-          throw InvocationTargetException(msg);
+          throw new InvocationTargetException(msg);
           //return this;
         }
         return clazz;
@@ -521,7 +521,7 @@
       } while( metaObject != NULL);
       return false;
      }
-     catch(ClassNotFoundException)
+     catch(ClassNotFoundException *)
      {
       return false;
      }
@@ -732,7 +732,7 @@
 
     // Initialized in JVM not by /*private*/ constructor
     // This field is filtered from reflection access, i.e. getDeclaredField
-    // will throw NoSuchFieldException
+    // will throw new NoSuchFieldException
     /*private*/ final ClassLoader classLoader;
 
     /**
@@ -2372,7 +2372,7 @@
 
     /*
      * Check if client is allowed to access members.  If access is denied,
-     * throw a SecurityException.
+     * throw new a SecurityException.
      *
      * This method also enforces package access.
      *
@@ -2401,7 +2401,7 @@
     /*
      * Checks if a client loaded in ClassLoader ccl is allowed to access this
      * class under the current package access policy. If access is denied,
-     * throw a SecurityException.
+     * throw new a SecurityException.
      */
     /*private*/ void checkPackageAccess(final ClassLoader ccl, boolean checkProxyInterfaces) {
         final SecurityManager s = System.getSecurityManager();

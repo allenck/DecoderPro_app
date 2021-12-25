@@ -65,8 +65,8 @@
 //        {
 //            log->debug("Invalid event value. " + cce);
 //        }
-        catch (IndexOutOfBoundsException oob) {
-            log->debug("Invalid event name. " + oob.getMessage());
+        catch (IndexOutOfBoundsException* oob) {
+            log->debug("Invalid event name. " + oob->getMessage());
         }
 
         foreach (ControllerInterface* listener, *controllerListeners) {
@@ -128,13 +128,13 @@
         }
 
     } catch (NoSuchMethodException* ea) {
-        log->warn(ea.getLocalizedMessage(), ea);
+        log->warn(ea->getLocalizedMessage(), ea);
         return;
     } catch (IllegalAccessException eb) {
-        log->warn(eb.getLocalizedMessage(), eb);
+        log->warn(eb->getLocalizedMessage(), eb);
         return;
     } catch (InvocationTargetException ec) {
-        log->warn(ec.getLocalizedMessage(), ec);
+        log->warn(ec->getLocalizedMessage(), ec);
         return;
     }
 #endif
@@ -191,13 +191,13 @@
         }
 
     } catch (NoSuchMethodException* ea) {
-        log->warn(ea.getLocalizedMessage(), ea);
+        log->warn(ea->getLocalizedMessage(), ea);
         return;
     } catch (IllegalAccessException eb) {
-        log->warn(eb.getLocalizedMessage(), eb);
+        log->warn(eb->getLocalizedMessage(), eb);
         return;
     } catch (InvocationTargetException ec) {
-        log->warn(ec.getLocalizedMessage(), ec);
+        log->warn(ec->getLocalizedMessage(), ec);
         return;
     }
 #endif

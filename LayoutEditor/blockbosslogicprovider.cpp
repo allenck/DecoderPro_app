@@ -27,7 +27,7 @@
         SignalHead* signalHead = signalHeadManager->getSignalHead(signalName);
         if (signalHead == nullptr) {
             log->error(tr("SignalHead %1 doesn't exist, BlockBossLogic.getExisting(\"%2\") cannot continue").arg(signalName).arg(signalName));
-            throw  IllegalArgumentException("Requested signal head doesn't exist");
+            throw new IllegalArgumentException("Requested signal head doesn't exist");
         }
         return provide(signalHead);
     }
@@ -35,7 +35,7 @@
     /*public*/ BlockBossLogic* BlockBossLogicProvider::provide(/*@Nonnull*/ SignalHead* signalHead){
         if (signalHead == nullptr) {
             log->error("BlockBossLogic requested for null signal head.");
-            throw  IllegalArgumentException("BlockBossLogic Requested for null signal head.");
+            throw new IllegalArgumentException("BlockBossLogic Requested for null signal head.");
         }
         //return headToBlockBossLogicMap->computeIfAbsent(signalHead,o -> new BlockBossLogic(o.getDisplayName()));
         if(!headToBlockBossLogicMap->contains(signalHead))

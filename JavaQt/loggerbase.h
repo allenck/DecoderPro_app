@@ -17,14 +17,14 @@ public:
 // static void error(QString s, QVariant ex = QVariant());
  static void error(QString s, Throwable *thrbl = nullptr);
  static void warn(QString name, QString s);
- static void warn(QString name,QString s, Throwable ex);
+ static void warn(QString name, QString s, Throwable *ex);
  static void info(QString name,QString s);
  static void trace(QString name,QString s);
 // bool isDebugEnabled();
 // bool isInfoEnabled();
 // bool isTraceEnabled();
  static void debug(QString name,QString s);
- static void debug(QString name,QString s, Throwable throwable);
+ static void debug(QString name, QString s, Throwable *throwable);
 // void setDebugEnabled(bool bState);
 // void setInfoEnabled(bool bState);
  static void sendError(QString name,QString s);

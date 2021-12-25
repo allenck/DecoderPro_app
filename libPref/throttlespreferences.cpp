@@ -31,13 +31,13 @@ void ThrottlesPreferences::common()
  {
   root = prefs->rootFromFile(file);
  }
- catch (FileNotFoundException e2)
+ catch (FileNotFoundException* e2)
  {
   log->info("Did not find throttle preferences file.  This is normal if you haven't saved the preferences before");
   root = QDomElement();
  }
- catch (Exception e) {
-  log->error("Exception while loading throttles preferences: " + e.getMessage());
+ catch (Exception* e) {
+  log->error("Exception while loading throttles preferences: " + e->getMessage());
   root = QDomElement();
  }
  if (!root.isNull())
@@ -169,8 +169,8 @@ void ThrottlesPreferences::init()
         //if (!file-createNewFile()) // create file, check result
         if(!file->open(QIODevice::ReadWrite))
             log->error("createNewFile failed");
-    } catch (Exception exp) {
-        log->error("Exception while writing the new throttles preferences file, may not be complete: "+exp.getMessage());
+    } catch (Exception* exp) {
+        log->error("Exception while writing the new throttles preferences file, may not be complete: "+exp->getMessage());
     }
 
     try {
@@ -192,8 +192,8 @@ void ThrottlesPreferences::init()
         root.appendChild( store() );
         xf->writeXML(file, doc);
     }
-    catch (Exception ex){
-        log->warn("Exception in storing throttles preferences xml: "+ex.getMessage());
+    catch (Exception* ex){
+        log->warn("Exception in storing throttles preferences xml: "+ex->getMessage());
     }
 }
 

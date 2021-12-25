@@ -34,9 +34,9 @@
  {
   f->initComponents(panel);
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
-  Logger::error("Exception: " + ex.getMessage());
+  Logger::error("Exception: " + ex->getMessage());
   //ex.printStackTrace();
  }
   f->setVisible(true);

@@ -358,7 +358,7 @@ void ProfileManagerDialog::timeout()
  * @throws IOException
  * @see ProfileManager#getStartingProfile()
  */
-/*public*/ /*static*/ Profile* ProfileManagerDialog::getStartingProfile(JFrame* f) throw (IOException)
+/*public*/ /*static*/ Profile* ProfileManagerDialog::getStartingProfile(JFrame* f) /*throw (IOException)*/
 {
  if (ProfileManager::getStartingProfile() == nullptr
   || (System::getProperty(/*ProfileManager::SYSTEM_PROPERTY*/"org.jmri.profile") == "" && !ProfileManager::getDefault()->isAutoStartActiveProfile()))
@@ -378,7 +378,7 @@ void ProfileManagerDialog::timeout()
  p->save();
  log->info("Saving profile "+ p->getId());
 //    } catch (IOException* ex) {
-//        log->error("Unable to save renamed profile: {}", ex.getMessage());
+//        log->error("Unable to save renamed profile: {}", ex->getMessage());
 //        JOptionPane.showMessageDialog(this,
 //                Bundle.getMessage("ProfileManagerDialog->errorRenamingProfile"),
 //                Bundle.getMessage("ProfileManagerDialog->errorRenamingProfileTitle"),

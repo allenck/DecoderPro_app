@@ -16,7 +16,7 @@
 }
 
 //@Override
-/*public*/ QJsonValue JsonRosterHttpService::doGet(QString type, QString name, QLocale locale) throw (JsonException)
+/*public*/ QJsonValue JsonRosterHttpService::doGet(QString type, QString name, QLocale locale) /*throw (JsonException)*/
 {
  if(type == JsonRoster::ROSTER)
  {
@@ -41,23 +41,23 @@
  }
  else
  {
-  throw JsonException(HttpServletResponse::SC_INTERNAL_SERVER_ERROR, tr("Error Unknown Type %1").arg(type));
+  throw new JsonException(HttpServletResponse::SC_INTERNAL_SERVER_ERROR, tr("Error Unknown Type %1").arg(type));
  }
 }
 
 //@Override
-/*public*/ QJsonObject JsonRosterHttpService::doPost(QString type, QString /*name*/, QJsonObject /*data*/, QLocale /*locale*/) throw (JsonException)
+/*public*/ QJsonObject JsonRosterHttpService::doPost(QString type, QString /*name*/, QJsonObject /*data*/, QLocale /*locale*/) /*throw (JsonException)*/
 {
  if (!(type== JsonRoster::ROSTER ||
             type ==  JsonRoster::ROSTER_ENTRY ||
        type ==  JsonRoster::ROSTER_GROUP ||
             type==  JsonRoster::ROSTER_GROUPS ))
-  throw JsonException(HttpServletResponse::SC_INTERNAL_SERVER_ERROR, tr("Error Unknown Type %1").arg(type));
- throw JsonException(HttpServletResponse::SC_METHOD_NOT_ALLOWED, tr("Posting %1 is not allowed.").arg(type));
+  throw new JsonException(HttpServletResponse::SC_INTERNAL_SERVER_ERROR, tr("Error Unknown Type %1").arg(type));
+ throw new JsonException(HttpServletResponse::SC_METHOD_NOT_ALLOWED, tr("Posting %1 is not allowed.").arg(type));
 }
 
 //@Override
-/*public*/ QJsonValue JsonRosterHttpService::doGetList(QString type, QLocale locale) throw (JsonException)
+/*public*/ QJsonValue JsonRosterHttpService::doGetList(QString type, QLocale locale) /*throw (JsonException)*/
 {
  if (type  ==
       JsonRoster::ROSTER || type == JsonRoster::ROSTER_ENTRY)
@@ -68,7 +68,7 @@
   return QJsonValue(this->getRosterGroups(locale));
  }else
  {
-  throw JsonException(HttpServletResponse::SC_INTERNAL_SERVER_ERROR, tr("Error Unknown Type %1").arg(type));
+  throw new JsonException(HttpServletResponse::SC_INTERNAL_SERVER_ERROR, tr("Error Unknown Type %1").arg(type));
  }
 }
 
@@ -107,11 +107,11 @@
  * @throws jmri.server.json.JsonException If no roster entry exists for the
  *                                        given id
  */
-/*public*/ QJsonValue JsonRosterHttpService::getRosterEntry(QLocale locale, QString id) throw (JsonException) {
+/*public*/ QJsonValue JsonRosterHttpService::getRosterEntry(QLocale locale, QString id) /*throw (JsonException)*/ {
     try {
         return this->getRosterEntry(locale, Roster::getDefault()->getEntryForId(id));
     } catch (NullPointerException* ex) {
-        throw JsonException(HttpServletResponse::SC_NOT_FOUND, tr("Object type %1 named %2 not found.").arg(JsonRoster::ROSTER_ENTRY).arg(id));
+        throw new JsonException(HttpServletResponse::SC_NOT_FOUND, tr("Object type %1 named %2 not found.").arg(JsonRoster::ROSTER_ENTRY).arg(id));
     }
 }
 
@@ -193,7 +193,7 @@
  return root;
 }
 
-/*public*/ QJsonArray JsonRosterHttpService::getRosterGroups(QLocale locale) throw (JsonException)
+/*public*/ QJsonArray JsonRosterHttpService::getRosterGroups(QLocale locale) /*throw (JsonException)*/
 {
  //QJsonObject root = mapper.createArrayNode();
  QJsonArray root = QJsonArray();
@@ -205,7 +205,7 @@
  return root;
 }
 
-/*public*/ QJsonObject JsonRosterHttpService::getRosterGroup(QLocale locale, QString name) throw (JsonException)
+/*public*/ QJsonObject JsonRosterHttpService::getRosterGroup(QLocale locale, QString name) /*throw (JsonException)*/
 {
  int size = Roster::getDefault()->getEntriesInGroup(name).size();
  if (size != 0 || name == NULL || name.isEmpty() || name == (Roster::ALLENTRIES))
@@ -221,7 +221,7 @@
  }
  else
  {
-  throw JsonException(HttpServletResponse::SC_NOT_FOUND, tr("Object type %1 named %2 not found.").arg(JsonRoster::ROSTER_GROUP).arg(name));
+  throw new JsonException(HttpServletResponse::SC_NOT_FOUND, tr("Object type %1 named %2 not found.").arg(JsonRoster::ROSTER_GROUP).arg(name));
  }
 }
 

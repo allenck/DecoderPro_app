@@ -124,7 +124,7 @@ public:
     /*public*/ float getLengthMm(); // return length in millimeters
     /*public*/ float getLengthCm();  // return length in centimeters
     /*public*/ float getLengthIn();  // return length in inches
-    /*public*/ bool equals(NamedBean* obj)override;
+    /*public*/ bool equals(QObject* obj)override;
 
 //    /** Handle change in sensor state.
 //     * <P>

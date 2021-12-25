@@ -439,7 +439,7 @@ bool MatrixSignalMast::isTurnoutUsed(Turnout* t) {
     lastRef = newVal;
 }
 //@Override
-/*public*/ void MatrixSignalMast::vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/
+/*public*/ void MatrixSignalMast::vetoableChange(PropertyChangeEvent* evt) /*throw new (PropertyVetoException)*/
 {
 
     if ("CanDelete"==(evt->getPropertyName())) { //NOI18N
@@ -448,7 +448,7 @@ bool MatrixSignalMast::isTurnoutUsed(Turnout* t) {
         {
             if (isTurnoutUsed(VPtr<Turnout>::asPtr(evt->getOldValue()))) {
                 PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
-                throw PropertyVetoException(tr("Turnout is in use by SignalMast \"%1\"").arg( getDisplayName()), e);
+                throw new PropertyVetoException(tr("Turnout is in use by SignalMast \"%1\"").arg( getDisplayName()), e);
             }
         }
     }

@@ -66,7 +66,7 @@
 //        /*public*/ void actionPerformed(ActionEvent event) {
 //            try {
 //                Desktop.getDesktop().open(new File(user));
-//            } catch (IOException e) {
+//            } catch (IOException* e) {
 //                XmlFileLocationAction.log.error("Error when opening user files location: " + e);
 //            } catch (UnsupportedOperationException e) {
 //                XmlFileLocationAction.log.error("Error when opening user files location: " + e);

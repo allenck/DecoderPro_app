@@ -19,7 +19,7 @@ class AbstractMonFrame : public JmriJFrame
 public:
     explicit AbstractMonFrame(QWidget *parent = 0);
     /*public*/ void dispose();
-    /*public*/ void initComponents() throw (Exception);
+    /*public*/ void initComponents() /*throw (Exception)*/;
     /*public*/ void nextLine(QString line, QString raw);
 
 signals:

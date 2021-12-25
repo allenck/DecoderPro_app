@@ -36,7 +36,7 @@ public:
     /*public*/ void registerUserPrefs(QObject* o) override;
     /*public*/ void deregister(QObject* o) override;
     /*public*/ static QString adapterName(QObject* o);
-    void locateClassFailed(Throwable ex, QString adapterName, QObject* o);
+    void locateClassFailed(Throwable *ex, QString adapterName, QObject* o);
     /*public*/ bool storeAll(File* file) const override;
     /*public*/ void storePrefs()  override;
     /*public*/ void storePrefs(File* file)  override;

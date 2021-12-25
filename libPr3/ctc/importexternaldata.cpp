@@ -74,8 +74,8 @@
     ImportCodeButtonHandlerData::preprocessingUpgradeSelf(fullName);     // WHOLE FILE operations FIRST.
     try {
         convertClassNameReferences(CTC_FILE_NAME);   // Change the class references
-    } catch (Exception ex) {
-        log->error(tr("Exception occurred converting the class names in CTCSystem.xml: ex = %1").arg(ex.getMessage()));
+    } catch (Exception* ex) {
+        log->error(tr("Exception occurred converting the class names in CTCSystem.xml: ex = %1").arg(ex->getMessage()));
         return false;
     }
 
@@ -86,7 +86,7 @@
 //                _mImportCodeButtonHandlerDataArrayList = (QList<ImportCodeButtonHandlerData*>) xmlDecoder.readObject(); // Type safety: Unchecked cast from Object to ArrayList<>
      _mImportCodeButtonHandlerDataArrayList = readFile(fullName);
      //            }
-    } catch (IOException e) {
+    } catch (IOException* e) {
         log->debug(tr("Unable to read $1").arg(CTC_FILE_NAME), e); // debug because missing file is not error
     }
     if (_mImportOtherData == nullptr) {
@@ -111,12 +111,12 @@
     QTextStream* bufferedReader;// = new BufferedReader(new FileReader(CTCFiles::getFullName(fileName)));
     QFile* f = new QFile(CTCFiles::getFullName(fileName));
     if(!f->open(QIODevice::ReadOnly))
-     throw Exception(tr("error openng %1 %2").arg(f->fileName()).arg(f->errorString()));
+     throw new Exception(tr("error openng %1 %2").arg(f->fileName()).arg(f->errorString()));
     bufferedReader = new QTextStream(f);
     QTextStream* bufferedWriter;// = new BufferedWriter(new FileWriter(CTCFiles::getFullName(temporaryFilename)));
     QFile* fo = new QFile(CTCFiles::getFullName(temporaryFilename));
     if(!fo->open(QIODevice::WriteOnly))
-     throw Exception(tr("error openng %1 %2").arg(fo->fileName()).arg(fo->errorString()));
+     throw new Exception(tr("error openng %1 %2").arg(fo->fileName()).arg(fo->errorString()));
     bufferedWriter = new QTextStream(fo);
     QString aLine = QString();
     while ((aLine = bufferedReader->readLine()) != "") { // Not EOF:
@@ -133,7 +133,7 @@
     log->debug(tr("convertClassNameReferences: errors = %1").arg(errors));
  }
 
-/*static*/ /*private*/ void ImportExternalData::writeLine(QTextStream* bufferedWriter, QString aLine) throw (IOException) {
+/*static*/ /*private*/ void ImportExternalData::writeLine(QTextStream* bufferedWriter, QString aLine) /*throw (IOException)*/ {
     //bufferedWriter.write(aLine); bufferedWriter.newLine();
  *bufferedWriter << aLine;
  *bufferedWriter << "\n";
@@ -265,8 +265,8 @@ log->debug("-------------  IL  ------------");
 //                 fields.forEach(field -> {
 //                     try {
 //                         log->info("    CBHD: fld = {}, type = {}, val = {}", field.getName(), field.getType(), field.get(cbhd));
-//                     } catch (Exception ex) {
-//                         log->info("    CBHD list exception: {}", ex.getMessage());
+//                     } catch (Exception* ex) {
+//                         log->info("    CBHD list exception: {}", ex->getMessage());
 //                     }
 //                 });
 }
@@ -313,8 +313,8 @@ log->debug("-------------  IL  ------------");
 //         fields.forEach(field -> {
 //             try {
 //                 log->info("    OtherData: fld = {}, type = {}, val = {}", field.getName(), field.getType(), field.get(_mImportOtherData));
-//             } catch (Exception ex) {
-//                 log->info("    OtherData list exception: {}", ex.getMessage());
+//             } catch (Exception* ex) {
+//                 log->info("    OtherData list exception: {}", ex->getMessage());
 //             }
 //         });
 }

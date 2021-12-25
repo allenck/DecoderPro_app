@@ -48,7 +48,7 @@ public:
      * get an input stream to the remote data
      */
 
-    virtual Transferable* getTransferable() throw (InvalidDnDOperationException){return NULL;}
+    virtual Transferable* getTransferable() /*throw (InvalidDnDOperationException)*/{return NULL;}
 
     /**
      * @return if the DragSource Transferable is in the same JVM as the Target

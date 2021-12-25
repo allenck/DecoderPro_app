@@ -83,7 +83,7 @@ class DIFInitializer : public AbstractInstanceInitializer
          log->debug("DecoderIndexFile creating instance");
          try {
              instance->readFile(defaultDecoderIndexFilename());
-         } catch (IOException | JDOMException e) {
+         } catch (IOException* | JDOMException e) {
              log->error("Exception during decoder index reading: ", e);
          }
          // see if needs to be updated
@@ -92,11 +92,11 @@ class DIFInitializer : public AbstractInstanceInitializer
                  try {
                      instance = new DecoderIndexFile();
                      instance.readFile(defaultDecoderIndexFilename());
-                 } catch (IOException | JDOMException e) {
+                 } catch (IOException* | JDOMException e) {
                      log.error("Exception during decoder index reload: ", e);
                  }
              }
-         } catch (IOException | JDOMException e) {
+         } catch (IOException* | JDOMException e) {
              log.error("Exception during decoder index update: ", e);
          }
          log.debug("DecoderIndexFile returns instance {}", instance);

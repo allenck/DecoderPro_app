@@ -38,8 +38,8 @@ OperationsXml::OperationsXml(QObject *parent) :
  {
      writeFile(getDefaultOperationsFilename());
  }
- catch (Exception e) {
-     Logger::error("Exception while writing operation file, may not be complete: " + e.getMessage());
+ catch (Exception* e) {
+     Logger::error("Exception while writing operation file, may not be complete: " + e->getMessage());
  }
 }
 
@@ -84,9 +84,9 @@ OperationsXml::OperationsXml(QObject *parent) :
    file = new File(fullPathName);
   }
  }
- catch (Exception e)
+ catch (Exception* e)
  {
-  Logger::error("Exception while creating operations file, may not be complete: " + e.getMessage());
+  Logger::error("Exception while creating operations file, may not be complete: " + e->getMessage());
  }
  return file;
 }

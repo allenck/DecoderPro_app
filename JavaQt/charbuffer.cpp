@@ -125,7 +125,7 @@ CharBuffer::CharBuffer(int mark, int pos, int lim, int cap, QObject* parent) : B
  */
 /*public*/ /*static*/ CharBuffer* CharBuffer::allocate(int capacity) {
     if (capacity < 0)
-        throw  IllegalArgumentException();
+        throw new IllegalArgumentException();
 //    return new HeapCharBuffer(capacity, capacity);
     return NULL;
 }
@@ -208,7 +208,7 @@ CharBuffer::CharBuffer(int mark, int pos, int lim, int cap, QObject* parent) : B
  * @throws ReadOnlyBufferException if target is a read only buffer
  * @since 1.5
  */
-/*public*/ int CharBuffer::read(CharBuffer* target) throw (IOException) {
+/*public*/ int CharBuffer::read(CharBuffer* target) /*throw (IOException)*/ {
     // Determine the number of bytes n that can be transferred
     int targetRemaining = target->remaining();
     int _remaining = remaining();
@@ -223,7 +223,7 @@ CharBuffer::CharBuffer(int mark, int pos, int lim, int cap, QObject* parent) : B
         if (n > 0)
             target->put(this);
     }
-    catch (Exception ex)
+    catch (Exception* ex)
     {
 
     }
@@ -562,9 +562,9 @@ abstract char getUnchecked(int index);   // package-private
  */
 /*public*/ CharBuffer* CharBuffer::put(CharBuffer* src) {
     if (src == this)
-        throw  IllegalArgumentException();
+        throw new IllegalArgumentException();
     if (isReadOnly())
-        throw  ReadOnlyBufferException();
+        throw new ReadOnlyBufferException();
     int n = src->remaining();
     if (n > remaining())
         throw new BufferOverflowException();

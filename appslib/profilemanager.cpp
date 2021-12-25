@@ -558,7 +558,7 @@ void ProfileManager::common(File* catalog)
     Profile* p = new Profile(pp);
     this->addProfile(p);
    }
-   catch (FileNotFoundException ex)
+   catch (FileNotFoundException* ex)
    {
     File* fp = new File(path);
     log->info(tr("Cataloged profile \"%1\" not in expected location\nSearching for it in %2").arg( e.attribute(/*Profile::ID*/ "id")).arg(fp->getParentFile()->toString()));
@@ -605,7 +605,7 @@ void ProfileManager::common(File* catalog)
  }
 }
 
-/*private*/ void ProfileManager::writeProfiles() throw (IOException)
+/*private*/ void ProfileManager::writeProfiles() /*throw (IOException)*/
 {
  if (!(File(FileUtil::getPreferencesPath()).canWrite()))
  {

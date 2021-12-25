@@ -185,11 +185,11 @@ AbstractAutomaton::~AbstractAutomaton()
  }
 // catch (/*ThreadDeath*/Exception e1)
 // {
-//  log->debug("Received ThreadDeath, likely due to stop(): "+e1.getMessage() +" "+ e1.getMessage());
+//  log->debug("Received ThreadDeath, likely due to stop(): "+e1->getMessage() +" "+ e1->getMessage());
 // }
- catch (Exception e2)
+ catch (Exception* e2)
  {
-  log->warn("Exception ends AbstractAutomaton thread: "+e2.getMessage() + " "+ e2.getMessage());
+  log->warn("Exception ends AbstractAutomaton thread: "+e2->getMessage() + " "+ e2->getMessage());
  }
 }
 void AbstractAutomaton::threadTerminated()
@@ -215,9 +215,9 @@ void AbstractAutomaton::threadTerminated()
  {
   currentThread->exit();
  }
- catch (/*ThreadDeath*/Exception e)
+ catch (/*ThreadDeath*/Exception* e)
  {
-  log->error(e.getMessage());
+  log->error(e->getMessage());
  }
  currentThread = NULL;
  done();

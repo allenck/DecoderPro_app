@@ -241,12 +241,12 @@ controllerListeners = NULL;
                 setMomentary.invoke(t, data);
 
             } catch (NoSuchMethodException* ea) {
-                log->warn(ea.getLocalizedMessage(), ea);
+                log->warn(ea->getLocalizedMessage(), ea);
             } catch (IllegalAccessException eb) {
-                log->warn(eb.getLocalizedMessage(), eb);
+                log->warn(eb->getLocalizedMessage(), eb);
          }
 //             catch (InvocationTargetException ec) {
-//                log->warn(ec.getLocalizedMessage(), ec);
+//                log->warn(ec->getLocalizedMessage(), ec);
 //            }
 #endif
         }
@@ -299,13 +299,13 @@ controllerListeners = NULL;
         }
 
     } catch (NoSuchMethodException* ea) {
-        log->warn(ea.getLocalizedMessage(), ea);
+        log->warn(ea->getLocalizedMessage(), ea);
         return;
     } catch (IllegalAccessException eb) {
-        log->warn(eb.getLocalizedMessage(), eb);
+        log->warn(eb->getLocalizedMessage(), eb);
         return;
     } catch (java.lang.reflect.InvocationTargetException ec) {
-        log->warn(ec.getLocalizedMessage(), ec);
+        log->warn(ec->getLocalizedMessage(), ec);
         return;
     }
 #endif
@@ -621,7 +621,7 @@ controllerListeners = NULL;
 #endif
    }
    else
-    throw IllegalAccessException(tr("class %1 not found").arg(className));
+    throw new IllegalAccessException(tr("class %1 not found").arg(className));
    QString mName = "getF" + receivedFunction;
    int methodIndex = obj->metaObject()->indexOfMethod(QMetaObject::normalizedSignature(mName.toLocal8Bit()));
    if(methodIndex <0 ) throw new NoSuchMethodException(tr("%1::%2() not found").arg(className).arg(mName));
@@ -634,11 +634,11 @@ controllerListeners = NULL;
 
    QMetaMethod setF = obj->metaObject()->method(methodIndex);
    if(!setF.invoke(obj, Qt::DirectConnection,  Q_ARG(bool, state)))
-    throw InvocationTargetException(tr("%1::%2() failed").arg(className).arg(mName));
+    throw new InvocationTargetException(tr("%1::%2() failed").arg(className).arg(mName));
 
 //            state = (Boolean) getF.invoke(functionThrottle, (Object[]) NULL);
    if(!getF.invoke(obj, Qt::DirectConnection, Q_RETURN_ARG(bool,state)))
-    throw InvocationTargetException(tr("%1::%2() failed").arg(className).arg(mName));
+    throw new InvocationTargetException(tr("%1::%2() failed").arg(className).arg(mName));
 
 
 //            Object data[] = {Boolean.valueOf(!state)};
@@ -693,7 +693,7 @@ controllerListeners = NULL;
 #endif
    }
    else
-    throw IllegalAccessException(tr("class %1 not found").arg(className));
+    throw new IllegalAccessException(tr("class %1 not found").arg(className));
    QString mName = "getF" + receivedFunction + "Momentary";
    int methodIndex = obj->metaObject()->indexOfMethod(QMetaObject::normalizedSignature(mName.toLocal8Bit()));
    if(methodIndex <0 ) throw new NoSuchMethodException(tr("%1::%2() not found").arg(className).arg(mName));
@@ -708,14 +708,14 @@ controllerListeners = NULL;
    bool state;
    //   if ((Boolean) getFMom.invoke(functionThrottle, (Object[]) NULL)) {
    if(!getFMom.invoke(obj, Qt::DirectConnection, Q_RETURN_ARG(bool, state)))
-    throw InvocationTargetException(tr("%1").arg(mName));
+    throw new InvocationTargetException(tr("%1").arg(mName));
 //                Object data[] = {Boolean.valueOf(false)};
    if(state)
    {
 
     //setF.invoke(functionThrottle, data);
     if(!setFMom.invoke(obj, Qt::DirectConnection, Q_ARG(bool, state)))
-     throw InvocationTargetException("error doing setF" + receivedFunction+"Momentary");
+     throw new InvocationTargetException("error doing setF" + receivedFunction+"Momentary");
     if (log->isDebugEnabled())
     {
      log->debug(QString("Throttle: ") + functionThrottle->getLocoAddress()->toString() + ", Momentary Function: " + receivedFunction + ", set false");
@@ -757,11 +757,11 @@ controllerListeners = NULL;
         setF.invoke(throttle, data);
 
     } catch (NoSuchMethodException* ea) {
-        log->warn(ea.getLocalizedMessage(), ea);
+        log->warn(ea->getLocalizedMessage(), ea);
     } catch (IllegalAccessException eb) {
-        log->warn(eb.getLocalizedMessage(), eb);
+        log->warn(eb->getLocalizedMessage(), eb);
     } catch (java.lang.reflect.InvocationTargetException ec) {
-        log->warn(ec.getLocalizedMessage(), ec);
+        log->warn(ec->getLocalizedMessage(), ec);
     }
 #endif
 }
@@ -794,11 +794,11 @@ controllerListeners = NULL;
         setF.invoke(throttle, data);
 
     } catch (NoSuchMethodException* ea) {
-        log->warn(ea.getLocalizedMessage(), ea);
+        log->warn(ea->getLocalizedMessage(), ea);
     } catch (IllegalAccessException eb) {
-        log->warn(eb.getLocalizedMessage(), eb);
+        log->warn(eb->getLocalizedMessage(), eb);
     } catch (java.lang.reflect.InvocationTargetException ec) {
-        log->warn(ec.getLocalizedMessage(), ec);
+        log->warn(ec->getLocalizedMessage(), ec);
     }
 #endif
 }

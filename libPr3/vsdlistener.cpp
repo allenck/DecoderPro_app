@@ -96,7 +96,7 @@ QObject(parent) {
     // Set position here
 }
 
-/*public*/ void VSDListener::setPosition(PhysicalLocation* p) {
+/*public*/ void VSDListener::setPosition(PhysicalLocation* /*p*/) {
     if (_location == NULL) {
         _location = new ListeningSpot();
     }

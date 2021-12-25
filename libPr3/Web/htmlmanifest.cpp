@@ -22,7 +22,7 @@ using namespace Operations;
 
 /*private*/ /*final*/ /*static*/ Logger* HtmlManifest::log = LoggerFactory::getLogger("HtmlManifest");
 
-/*public*/ HtmlManifest::HtmlManifest(QLocale locale, Operations::Train* train, QObject* parent) throw (IOException) : HtmlTrainCommon(locale, train, parent){
+/*public*/ HtmlManifest::HtmlManifest(QLocale locale, Operations::Train* train, QObject* parent) /*throw (IOException)*/ : HtmlTrainCommon(locale, train, parent){
     //super(locale, train);
     this->mapper = ObjectMapper();
     this->resourcePrefix = "Manifest";
@@ -30,7 +30,7 @@ using namespace Operations;
 
 // TODO cache the results so a quick check that if the JsonManifest file is not
 // newer than the Html manifest, the cached copy is returned instead.
-/*public*/ QString HtmlManifest::getLocations() throw (IOException)
+/*public*/ QString HtmlManifest::getLocations() /*throw (IOException)*/
 {
  // build manifest from JSON manifest
  if (this->getJsonManifest().isEmpty()) {
@@ -545,7 +545,7 @@ using namespace Operations;
     return car.value(JSON::UTILITY). toBool();
 }
 
-/*protected*/ QJsonObject HtmlManifest::getJsonManifest() throw (IOException)
+/*protected*/ QJsonObject HtmlManifest::getJsonManifest() /*throw (IOException)*/
 {
  if (this->jsonManifest.isEmpty())
  {
@@ -560,7 +560,7 @@ using namespace Operations;
    QTextStream is(&f);
    this->jsonManifest =  QJsonDocument::fromJson(is.readAll().toLocal8Bit()).object();
   }
-  catch (IOException e)
+  catch (IOException* e)
   {
    log->error(tr("Json manifest file not found for train (%1)").arg(this->train->getName()));
    throw e;

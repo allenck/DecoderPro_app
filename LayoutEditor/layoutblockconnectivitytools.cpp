@@ -401,7 +401,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
         LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
         if (!lbm->isAdvancedRoutingEnabled()){
             log->info("Advanced routing has not been enabled therefore we cannot use this function");
-            throw  JmriException("Advanced routing has not been enabled therefore we cannot use this function");
+            throw new JmriException("Advanced routing has not been enabled therefore we cannot use this function");
         }
 
         int directionOfTravel = sourceLayoutBlock->getNeighbourDirection(protectingLayoutBlock);
@@ -422,12 +422,12 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
             } else {
                 lastErrorMessage = "Block we are protecting is already occupied or reserved";
                 log->debug(lastErrorMessage);
-                throw  JmriException(lastErrorMessage);
+                throw new JmriException(lastErrorMessage);
             }
             if (!canLBlockBeUsed(destinationLayoutBlock)){
                 lastErrorMessage = "Destination Block is already occupied or reserved";
                 log->debug(lastErrorMessage);
-                throw  JmriException(lastErrorMessage);
+                throw new JmriException(lastErrorMessage);
             }
         } else {
             blocksInRoute.append(new BlocksTested(protectingLayoutBlock));
@@ -721,7 +721,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
      LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
      if(!lbm->isAdvancedRoutingEnabled())
      {
-      throw  JmriException("advanced routing not enabled");
+      throw new JmriException("advanced routing not enabled");
      }
      if(!lbm->routingStablised())
      {

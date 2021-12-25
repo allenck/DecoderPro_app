@@ -26,7 +26,7 @@ public:
     /*public*/ QString getBaseType();
     /*public*/ bool match(MimeType* type);
     /*public*/ bool match(QString rawdata) /*throw (MimeTypeParseException)*/;
-//    /*public*/ void writeExternal(ObjectOutput out) throw (IOException) ;
+//    /*public*/ void writeExternal(ObjectOutput out) /*throw (IOException)*/ ;
 //    /*public*/ void readExternal(ObjectInput in) throw (IOException,
 //ClassNotFoundException);
     /*public*/ QObject* clone();

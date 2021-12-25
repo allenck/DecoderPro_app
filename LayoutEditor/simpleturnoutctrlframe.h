@@ -52,7 +52,7 @@ private:
     /*private*/ static /*final*/ QString UNLOCKED;// = "Normal";
     /*private*/ void updateTurnoutStatusFields();
     Logger* log;
-    void invalidTurnout(QString name, Exception ex);
+    void invalidTurnout(QString name, Exception *ex);
 private slots:
     void on_adrTextField_textEdited(QString);
     void on_adrTextField_editingFinished();

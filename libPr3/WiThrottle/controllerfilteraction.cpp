@@ -35,7 +35,7 @@
     try {
         frame->initComponents();
         frame->setVisible(true);
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log->error("Could not create Route & Turnout Filter frame");
     }
 

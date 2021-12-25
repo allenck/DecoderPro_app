@@ -14,7 +14,7 @@ class ProfileUtils : public QObject
 public:
  //explicit ProfileUtils(QObject *parent = 0);
  /*public*/ static void copy(Profile* source, Profile* destination) throw (IllegalArgumentException, IOException );
- /*public*/ static bool copyPrivateContentToCurrentIdentity(/*@Nonnull*/ Profile* profile) throw (IOException);
+ /*public*/ static bool copyPrivateContentToCurrentIdentity(/*@Nonnull*/ Profile* profile) /*throw (IOException)*/;
  /*public*/ static AuxiliaryConfiguration* getAuxiliaryConfiguration(Profile* project);
  /*public*/ static AuxiliaryConfiguration* getUserInterfaceConfiguration(Profile* project);
  /*public*/ static Preferences* getPreferences(Profile* project, QString clazz, bool shared);

@@ -29,7 +29,7 @@ Q_INTERFACES(PropertyChangeListener)
     /*public*/ QString getValString(int row);
     /*public*/ CvValue* getCvByRow(int row) const;
     /*public*/ CvValue* getCvByNumber(QString number);
-    /*public*/ QVariant data(const QModelIndex &index, int role) const;
+    /*public*/ QVariant data(const QModelIndex &index, int role) const override;
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     /*public*/ void addCV(QString s, bool readOnly, bool infoOnly, bool writeOnly) ;
     /*public*/ bool decoderDirty();
@@ -37,7 +37,8 @@ Q_INTERFACES(PropertyChangeListener)
     void configureTable(JTable*);
     /*public*/ QMap<QString, CvValue*>* allCvMap();
     /*public*/ void resetDecoderDirty(int newStatus);
-QObject* self() override {(QObject*)this;}
+    QObject* self() override {return (QObject*)this;}
+
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 

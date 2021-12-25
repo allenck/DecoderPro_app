@@ -124,8 +124,8 @@
     QString prefix = getSystemNamePrefix();
     // the one special case that is not caught by validation here
     if (name.trimmed().isEmpty()) { // In Java 9+ use name.isBlank() instead
-        //throw NamedBean::BadSystemNameException(locale, "InvalidSystemNameInvalidPrefix", prefix);
-     throw NamedBean::BadSystemNameException(locale, QString("System name must start with \"%1\".").arg(prefix), name, prefix);
+        //throw new NamedBean::BadSystemNameException(locale, "InvalidSystemNameInvalidPrefix", prefix);
+     throw new NamedBean::BadSystemNameException(locale, QString("System name must start with \"%1\".").arg(prefix), name, prefix);
     }
     return validateSystemNameFormat(name.startsWith(prefix) ? name : prefix + name, locale);
 }
@@ -150,7 +150,7 @@
  *                                      messages in the default locale
  */
 //@Nonnull
-/*public*/ /*default*/ QString Manager::validateSystemNameFormat(/*@Nonnull*/ QString name) const /*throw (NamedBean::BadSystemNameException)*/
+/*public*/ /*default*/ QString Manager::validateSystemNameFormat(/*@Nonnull*/ QString name) const /*throw new (NamedBean::BadSystemNameException)*/
 {
     return validateSystemNameFormat(name, /*Locale.getDefault()*/QLocale());
 }
@@ -168,7 +168,7 @@
  * {@link #validSystemNameFormat(java.lang.String)}, however they must
  * provide an actionable message in the thrown exception if that method does
  * not return {@link NameValidity#VALID}. Implementations of
- * this method <em>must not</em> throw an exception, log an error, or
+ * this method <em>must not</em> throw new an exception, log an error, or
  * otherwise disrupt the user.
  *
  * @param name      the system name to validate
@@ -178,7 +178,7 @@
  * @throws BadSystemNameException if provided name is an invalid format
  */
 //@Nonnull
-/*public*/ /*default*/ QString Manager::validateSystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) const /*throw (NamedBean::BadSystemNameException)*/
+/*public*/ /*default*/ QString Manager::validateSystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) const /*throw new (NamedBean::BadSystemNameException)*/
 {
     return validateSystemNamePrefix(name, locale);
 }
@@ -199,7 +199,7 @@
  * @throws BadSystemNameException if provided name is an invalid format
  */
 //@Nonnull
-/*public*/ /*default*/ QString Manager::validateSystemNamePrefix(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) const /*throw (NamedBean::BadSystemNameException)*/ {
+/*public*/ /*default*/ QString Manager::validateSystemNamePrefix(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) const /*throw new (NamedBean::BadSystemNameException)*/ {
     QString prefix = getSystemNamePrefix();
     if (name == (prefix)) {
         throw new NamedBean::BadSystemNameException(locale, QString("System name \"%1\" is missing suffix.").arg(name),name);
@@ -515,7 +515,7 @@
     }
     /**
      * Test if parameter is a properly formatted system name. Implementations of
-     * this method <em>must not</em> throw an exception, log an error, or
+     * this method <em>must not</em> throw new an exception, log an error, or
      * otherwise disrupt the user.
      *
      * @since 4.9.5, although similar methods existed previously in lower-level

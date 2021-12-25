@@ -719,8 +719,8 @@ ThrottleRamp* Engineer::getRamp() {
                     waitForClear.notify_all();
                     QString name =  _waitSensor->getDisplayName();    // save name, _waitSensor will be null 'eventually'
                     _warrant->fireRunStatus("SensorWaitCommand", "", name);
-                } catch (InterruptedException ie) {
-                    log->error("Engineer interrupted at _waitForSensor " + ie.getMessage());
+                } catch (InterruptedException* ie) {
+                    log->error("Engineer interrupted at _waitForSensor " + ie->getMessage());
                     _warrant->debugInfo();
                     //Thread.currentThread().interrupt();
                     thread()->quit();
@@ -891,7 +891,7 @@ ThrottleRamp* Engineer::getRamp() {
 //        ThreadingUtil.runOnLayoutEventually(() -> { // delay until current warrant can complete
             //WarrantTableFrame::getDefault()->setStatusText(m, c, true);
         if(!QMetaObject::invokeMethod(WarrantTableFrame::getDefault(), "setStatusTest", Qt::AutoConnection, Q_ARG(QString, m), Q_ARG(QColor, c), Q_ARG(bool, true)))
-         throw InvocationTargetException();
+         throw new InvocationTargetException();
 //        });
         emit finished();
     }

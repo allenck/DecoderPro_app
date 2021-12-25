@@ -1560,7 +1560,7 @@ private void installDefaultTransferHandlerIfNecessary() {
         kit.read(in, doc, 0);
         setDocument(doc);
     } catch (BadLocationException e) {
-        throw new IOException(e.getMessage());
+        throw new IOException(e->getMessage());
     }
 }
 
@@ -1577,7 +1577,7 @@ private void installDefaultTransferHandlerIfNecessary() {
     try {
         getUI().getEditorKit(this).write(out, doc, 0, doc.getLength());
     } catch (BadLocationException e) {
-        throw new IOException(e.getMessage());
+        throw new IOException(e->getMessage());
     }
 }
 
@@ -1703,7 +1703,7 @@ private void installDefaultTransferHandlerIfNecessary() {
             Document doc = getDocument();
             txt = doc.getText(p0, p1 - p0);
         } catch (BadLocationException e) {
-            throw new IllegalArgumentException(e.getMessage());
+            throw new IllegalArgumentException(e->getMessage());
         }
     }
     return txt;
@@ -3130,7 +3130,7 @@ implements AccessibleText, CaretListener, DocumentListener,
                 Document doc = JTextComponent.this.getDocument();
                 txt = doc.getText(p0, p1 - p0);
             } catch (BadLocationException e) {
-                throw new IllegalArgumentException(e.getMessage());
+                throw new IllegalArgumentException(e->getMessage());
             }
         }
         return txt;
@@ -3934,7 +3934,7 @@ static class DefaultTransferHandler extends TransferHandler implements
                     ((JTextComponent)comp).replaceSelection(data);
                     return true;
                 } catch (UnsupportedFlavorException ufe) {
-                } catch (IOException ioe) {
+                } catch (IOException* ioe) {
                 }
             }
         }

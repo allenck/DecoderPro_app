@@ -44,20 +44,20 @@ JsonConnection::JsonConnection(QObject* parent) : JmriConnection(parent)
  * @param message the object or array to send as a message
  * @throws java.io.IOException if unable to send the message
  */
-/*public*/ void JsonConnection::sendMessage(QJsonObject message) throw (IOException)
+/*public*/ void JsonConnection::sendMessage(QJsonObject message) /*throw (IOException)*/
 {
  //JmriConnection::sendMessage(this->getObjectMapper().writeValueAsString(message));
  QJsonDocument doc = QJsonDocument(message);
  JmriConnection::sendMessage(doc.toJson(QJsonDocument::Compact));
 }
 
-/*public*/ void JsonConnection::sendMessage(QJsonArray message) throw (IOException)
+/*public*/ void JsonConnection::sendMessage(QJsonArray message) /*throw (IOException)*/
 {
  //JmriConnection::sendMessage(this->getObjectMapper().writeValueAsString(message));
  QJsonDocument doc = QJsonDocument(message);
  JmriConnection::sendMessage(doc.toJson(QJsonDocument::Compact));
 }
-/*public*/ void JsonConnection::sendMessage(QJsonValue message) throw (IOException)
+/*public*/ void JsonConnection::sendMessage(QJsonValue message) /*throw (IOException)*/
 {
  //JmriConnection::sendMessage(this->getObjectMapper().writeValueAsString(message));
  QJsonDocument doc;

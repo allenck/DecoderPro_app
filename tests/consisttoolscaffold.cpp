@@ -124,17 +124,17 @@ void DeleteWithDismiss::process()
    (new JButtonOperator(jdo,tr("Yes")))->push();
    break;
   }
-  catch(Exception e)
+  catch(Exception* e)
   {
    // do nothing
-   qDebug() << e.getMessage();
+   qDebug() << e->getMessage();
   }
   if((QDateTime::currentMSecsSinceEpoch() - start) < 200)
   {
    qApp->processEvents();
    continue;
   }
-  throw Exception("Dialog never ran");
+  throw new Exception("Dialog never ran");
  }
  qDebug() << "finish DeleteWithDismiss";
 

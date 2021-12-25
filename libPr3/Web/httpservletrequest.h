@@ -120,7 +120,7 @@ public:
     QMap<QString, QStringList*>* getParameterMap();
     QString getParameter(QString);
     QLocale getLocale();
-    QTextStream* getReader() throw (IOException)
+    QTextStream* getReader() /*throw (IOException)*/
     {
      QByteArray ba = req->getBody();
      QTextStream* stream = new QTextStream(&ba, QIODevice::ReadOnly);

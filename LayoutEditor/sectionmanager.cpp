@@ -111,7 +111,7 @@ Section* SectionManager::createNewSection(QString systemName, QString userName)
         try {
             bool bOk=false;
             int autoNumber = systemName.mid(8).toInt(&bOk);
-            if(!bOk )throw NumberFormatException();
+            if(!bOk )throw new NumberFormatException();
             if (autoNumber > lastAutoSectionRef) {
                 lastAutoSectionRef = autoNumber;
             }
@@ -269,7 +269,7 @@ Section* SectionManager::createNewSection(QString userName) {
  return "Section";
 }
 
-//void SectionManager::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException){
+//void SectionManager::vetoableChange(PropertyChangeEvent* evt) throw new (PropertyVetoException){
 
 //}
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(SectionManager.class.getName());

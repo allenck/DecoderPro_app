@@ -255,7 +255,7 @@ public:
     /*public*/ void setSectionType(int type);
     /*public*/ int getSectionType();
     /*public*/ QString getBeanType()  override;
-    /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) override;
+    /*public*/ void vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/ override;
     /*public*/ Block* getLastBlock();
   /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean)override;
     QObject* self() override {return (QObject*)this;}

@@ -215,6 +215,7 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
  */
 //@Override
 /*public*/ NamedBean* NamedBeanComboBox::getSelectedItem() {
+    int index = currentIndex();
     QString txt = currentText();
     QVariant var = currentData();
     NamedBean* item = VPtr<NamedBean>::asPtr(currentData());
@@ -538,7 +539,7 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
                                         } catch (IllegalArgumentException* ex) {
                                             return new Validation(Validation.Type.DANGER,
                                                     getInvalidNameFormatMessage(manager.getBeanTypeHandled(), text,
-                                                            ex.getLocalizedMessage()),
+                                                            ex->getLocalizedMessage()),
                                                     preferences);
                                         }
                                         return new Validation(Validation.Type.INFORMATION,

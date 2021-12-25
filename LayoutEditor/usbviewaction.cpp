@@ -30,8 +30,8 @@
     // create and display
     try {
         (new UsbView())->setVisible(true);
-    } catch (UnsatisfiedLinkError ex) {
-        log->error(ex.getMessage());
+    } catch (UnsatisfiedLinkError* ex) {
+        log->error(ex->getMessage());
         JOptionPane::showMessageDialog(NULL, "Unable to find the libusb-win32 package.\nFor more details on how to installed it please check http://www.jmri.org/install/USB.shtml");
     }
 }

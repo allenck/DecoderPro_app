@@ -112,7 +112,8 @@ class ReleaseUntilO14 : public ReleaseUntil
     PaneProgPane* progPane;
 public:
     ReleaseUntilO14(PaneProgPane* progPane) {this->progPane = progPane;}
-    bool ready() throw (Exception) override
+    bool ready() /*throw (Exception)*/
+ override
     {
      return (!progPane->isBusy());
     }

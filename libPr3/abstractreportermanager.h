@@ -19,7 +19,7 @@ public:
     NamedBean* getByUserName(QString key) const override;
     /*public*/ QString getBeanTypeHandled(bool plural) const override;
     Reporter* getByDisplayName(QString key)const override;
-    Reporter* newReporter(QString systemName, QString userName)const throw(IllegalArgumentException)override;
+    Reporter* newReporter(QString systemName, QString userName)const /*throw(IllegalArgumentException)*/override;
     /**
     * A temporary method that determines if it is possible to add a range
     * of turnouts in numerical order eg 10 to 30

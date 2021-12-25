@@ -73,15 +73,15 @@ void XmlFileValidateAction::common()
     try {
         xmlfile->setValidate(XmlFile::Validate::CheckDtdThenSchema);
         readFile(file);
-    } catch (Exception ex) {
-        showFailResults(_who, ex.getMessage());
+    } catch (Exception* ex) {
+        showFailResults(_who, ex->getMessage());
         return;
     }
 #if 0
     try {
         XmlFile::verify = true;
         readFile(file);
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         // because of XInclude, we're doing this
         // again to validate the entire file
         // without losing the error message
@@ -119,7 +119,7 @@ void XmlFileValidateAction::common()
         QString out;// = new StringWriter();
         try {
             outputter.output(doc, out);
-        } catch (IOException ex2) {
+        } catch (IOException* ex2) {
             showFailResults(_who, "Err(4): " + ex2);
             return;
         }

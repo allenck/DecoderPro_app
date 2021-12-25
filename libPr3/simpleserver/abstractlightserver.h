@@ -13,8 +13,8 @@ class AbstractLightServer : public QObject
  Q_OBJECT
 public:
  explicit AbstractLightServer(QObject *parent = nullptr);
- /*abstract*/ virtual /*public*/ void sendStatus(QString /*lightName*/, int /*Status*/) throw (IOException) {}
- /*abstract*/ virtual /*public*/ void sendErrorStatus(QString lightName) throw (IOException) {}
+ /*abstract*/ virtual /*public*/ void sendStatus(QString /*lightName*/, int /*Status*/) /*throw (IOException)*/ {}
+ /*abstract*/ virtual /*public*/ void sendErrorStatus(QString lightName) /*throw (IOException)*/ {}
  /*abstract*/ virtual /*public*/ void parseStatus(QString /*statusString*/) throw (JmriException, IOException) {}
  /*public*/ Light* initLight(QString lightName)  throw (IllegalArgumentException);
  /*public*/ void lightOff(QString lightName);
@@ -57,7 +57,7 @@ public slots:
             int now = ( e->getNewValue()).toInt();
             try {
                 asl->sendStatus(name, now);
-            } catch (IOException ie) {
+            } catch (IOException* ie) {
                 asl->log->debug("Error Sending Status");
                 // if we get an error, de-register
                 ((AbstractNamedBean*)light->self())->removePropertyChangeListener(this);

@@ -10,8 +10,8 @@ class FileOutputStream : public QTextStream
 public:
  FileOutputStream();
  /*public*/ FileOutputStream(File* file, bool append = false) throw (FileNotFoundException);
- /*public*/ void write(int b) throw (IOException);
- /*public*/ void close() throw (IOException);
+ /*public*/ void write(int b) /*throw (IOException)*/;
+ /*public*/ void close() /*throw (IOException)*/;
 
 private:
  bool append = false;
@@ -19,7 +19,7 @@ private:
      throw (FileNotFoundException);
  QFile* qf;
  bool isOpen;
- /*private*/ /*native*/ void write(int b, bool append) throw (IOException);
+ /*private*/ /*native*/ void write(int b, bool append) /*throw (IOException)*/;
 
 };
 

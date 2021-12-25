@@ -19,7 +19,7 @@ public:
      */
     /*public*/ Reporter* getReporter(QString name) const override;
     /*public*/ Reporter* provideReporter(QString sName) override;
-    /*public*/ Reporter* provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException) override;
+    /*public*/ Reporter* provide(/*@Nonnull*/ QString name) /*throw (IllegalArgumentException)*/ override;
     /**
      * Locate an instance based on a system name.  Returns null if no
      * instance already exists.

@@ -220,7 +220,7 @@ static Protocol getByPeopleName(QString pName) {
       if (this->getProtocol() != other->getProtocol()) return false;
        return true;
      }
-     catch (std::exception e)
+     catch (std::exception* e)
      { return false; }
     }
 

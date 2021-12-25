@@ -73,7 +73,7 @@ class ReleaseUntilWT1 : public ReleaseUntil
  WarrantTest* test;
 public:
  ReleaseUntilWT1(WarrantTest* test) {this->test = test;}
- bool ready() throw (Exception)
+ bool ready() /*throw (Exception)*/
  {
   QString m = test->warrant->getRunningMessage();
   return m.endsWith("Cmd #2.") || m.endsWith("Cmd #3.");
@@ -86,7 +86,7 @@ class ReleaseUntilWT2 : public ReleaseUntil
  WarrantTest* test;
 public:
  ReleaseUntilWT2(WarrantTest* test) {this->test = test;}
- bool ready() throw (Exception)
+ bool ready() /*throw (Exception)*/
  {
   QString m = test->warrant->getRunningMessage();
   return m == "Idle";

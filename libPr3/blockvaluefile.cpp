@@ -117,7 +117,7 @@ BlockValueFile::BlockValueFile(QObject *parent) :
  *  If there are no defined Blocks, no file is written.
  *  If none of the defined Blocks have values, no file is written.
  */
-/*public*/ void BlockValueFile::writeBlockValues() throw (IOException)
+/*public*/ void BlockValueFile::writeBlockValues() /*throw (IOException)*/
 {
  log->debug("entered writeBlockValues");
  QStringList blocks = blockManager->getSystemNameList();
@@ -189,9 +189,9 @@ BlockValueFile::BlockValueFile(QObject *parent) :
     // write content to file
     writeXML(findFile(defaultFileName),doc);
    }
-   catch (IOException ioe)
+   catch (IOException* ioe)
    {
-    log->error("IO Exception "+ioe.getMessage());
+    log->error("IO Exception "+ioe->getMessage());
     throw (ioe);
    }
  }

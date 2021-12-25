@@ -47,8 +47,8 @@ void SignallingAction::init()
     try {
         f->initComponents(source, dest);
         }
-    catch (Exception ex) {
-        log->error("Exception: "+ex.getMessage());
+    catch (Exception* ex) {
+        log->error("Exception: "+ex->getMessage());
         //ex.printStackTrace();
         }
     f->setVisible(true);

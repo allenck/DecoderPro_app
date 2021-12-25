@@ -376,8 +376,8 @@ bool NceConsistRoster::isDirty() {return dirty;}
     makeBackupFile(defaultNceConsistRosterFilename());
     try {
         writeFile(defaultNceConsistRosterFilename());
-    } catch (Exception e) {
-        Logger::error("Exception while writing the new ConsistRoster file, may not be complete: "+e.getMessage());
+    } catch (Exception* e) {
+        Logger::error("Exception while writing the new ConsistRoster file, may not be complete: "+e->getMessage());
     }
 }
 
@@ -392,8 +392,8 @@ bool NceConsistRoster::isDirty() {return dirty;}
     // and read new
     try {
         readFile(defaultNceConsistRosterFilename());
-    } catch (Exception e) {
-        log->error("Exception during ConsistRoster reading: "+e.getMessage());
+    } catch (Exception* e) {
+        log->error("Exception during ConsistRoster reading: "+e->getMessage());
     }
 }
 
@@ -450,11 +450,11 @@ bool NceConsistRoster::isDirty() {return dirty;}
      try
      {
             readFile(defaultNceConsistRosterFilename());
-     } catch (IOException  e) {
-      log->error(tr("Exception during ConsistRoster reading: %1").arg(e.getMessage()));
+     } catch (IOException*  e) {
+      log->error(tr("Exception during ConsistRoster reading: %1").arg(e->getMessage()));
      }
-     catch ( JDOMException e) {
-      log->error(tr("Exception during ConsistRoster reading: %1").arg(e.getMessage()));
+     catch ( JDOMException* e) {
+      log->error(tr("Exception during ConsistRoster reading: %1").arg(e->getMessage()));
     }
   }
 }

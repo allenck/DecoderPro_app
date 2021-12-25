@@ -46,7 +46,7 @@ void SendPacketAction::common()
     SendPacketFrame* f = new SendPacketFrame();
     try {
         f->initComponents();
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         Logger::error("Exception: " /*+ ex.toString()*/);
     }
     f->setVisible(true);

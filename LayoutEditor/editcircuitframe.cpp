@@ -542,7 +542,7 @@ void EditCircuitFrame::closePickList() {
 ////        JOptionPane.showMessageDialog(this, java.text.MessageFormat.format(
 ////                        tr("sensorFail"), sensorName, t.toString()),
 ////                        tr("noSensor"), JOptionPane.INFORMATION_MESSAGE);
-//        QMessageBox::information(this, tr("No Detection Sensor"), tr("Sensor failed for \"%1\" due to %2.").arg(sensorName).arg(t.getMessage()));
+//        QMessageBox::information(this, tr("No Detection Sensor"), tr("Sensor failed for \"%1\" due to %2.").arg(sensorName).arg(t->getMessage()));
 //    }
 //    return NULL;
 //}

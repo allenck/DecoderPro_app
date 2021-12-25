@@ -9,9 +9,9 @@ class OpsModeDelayedProgrammerFacade : public AbstractProgrammerFacade, public P
   Q_INTERFACES(ProgListener)
 public:
  /*public*/ OpsModeDelayedProgrammerFacade(Programmer* prog, int writeDelay, QObject* parent = 0);
- /*public*/ /*synchronized*/ void writeCV(QString cv, int val, ProgListener* p) throw (ProgrammerException);
- /*public*/ /*synchronized*/ void readCV(QString cv, ProgListener* p) throw (ProgrammerException) ;
- /*public*/ /*synchronized*/ void confirmCV(QString cv, int val, ProgListener* p) throw (ProgrammerException);
+ /*public*/ /*synchronized*/ void writeCV(QString cv, int val, ProgListener* p) /*throw (ProgrammerException)*/;
+ /*public*/ /*synchronized*/ void readCV(QString cv, ProgListener* p)  ;
+ /*public*/ /*synchronized*/ void confirmCV(QString cv, int val, ProgListener* p) /*throw (ProgrammerException)*/;
  /*public*/ QObject* self() {return (QObject*)this;}
 
 public slots:
@@ -34,7 +34,7 @@ private:
  ProgState state;// = ProgState::NOTPROGRAMMING;
 
 protected:
- /*protected*/ /*synchronized*/ void useProgrammer(ProgListener* p) throw (ProgrammerException);
+ /*protected*/ /*synchronized*/ void useProgrammer(ProgListener* p) /*throw (ProgrammerException)*/;
 
  friend class OPSMDelayWorker;
 };

@@ -44,7 +44,7 @@ void Logger::debug(QString s) const
 {
  LoggerBase::debug(name, s);
 }
-void Logger::debug(QString s, Throwable throwable)
+void Logger::debug(QString s, Throwable* throwable)
 {
  LoggerBase::debug(name, s, throwable);
 }
@@ -54,7 +54,7 @@ void Logger::warn(QString s) const
  LoggerBase::warn(name, s);
 }
 
-void Logger::warn(QString s, Throwable ex)
+void Logger::warn(QString s, Throwable* ex)
 {
  LoggerBase::warn(name, s, ex);
 }

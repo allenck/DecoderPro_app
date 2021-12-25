@@ -26,5 +26,5 @@
     // never invoked, because we overrode actionPerformed above
     //@Override
     /*public*/ JmriPanel* AboutAction::makePanel() {
-        throw  IllegalArgumentException("Should not be invoked");
+        throw new IllegalArgumentException("Should not be invoked");
     }

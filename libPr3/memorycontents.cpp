@@ -759,14 +759,14 @@ QObject(parent)
   }
  }
 //}
-//catch (IOException e) {
+//catch (IOException* e) {
 // log->error("Exception reading file", e);
 //} // NOI18N
 //finally {
 // try {
      //fileStream.close();
  inFile.close();
-// } catch (IOException e2) {
+// } catch (IOException* e2) {
 //     log->error("Exception closing file", e2);
 // } // NOI18N
 //}
@@ -1034,7 +1034,7 @@ QObject(parent)
  //return pageArray[currentPage][location % PAGESIZE] != DEFAULT_MEM_VALUE;
  QVector<int>* largeArray = pageArray->at(currentPage);
  return largeArray->at(location % PAGESIZE) != DEFAULT_MEM_VALUE;
-//    } catch (Exception e) {
+//    } catch (Exception* e) {
 //        log->error("error in locationInUse " + currentPage + " " + location, e); // NOI18N
 //        return false;
 //    }
@@ -1065,7 +1065,7 @@ QObject(parent)
   //return pageArray[currentPage][location % PAGESIZE];
  QVector<int>* largeArray = pageArray->at(currentPage);
  return largeArray->at(location % PAGESIZE);
-//    } catch (Exception e) {
+//    } catch (Exception* e) {
 //        log->error("Error in getLocation(0x" // NOI18N
 //                + Integer.toHexString(location)
 //                + "); computed (current page 0x" // NOI18N

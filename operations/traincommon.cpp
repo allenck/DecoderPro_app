@@ -1823,7 +1823,7 @@ namespace Operations {
          try {
        bool bok;
              calendar->set(Calendar::YEAR, (Setup::getYearModeled().trimmed()).toInt(&bok));
-             if(!bok) throw NumberFormatException();
+             if(!bok) throw new NumberFormatException();
          } catch (NumberFormatException* e) {
              return Setup::getYearModeled();
          }

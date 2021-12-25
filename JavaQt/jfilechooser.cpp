@@ -97,7 +97,7 @@ void JFileChooser::common()
   */
  /*public*/ /*static*/ /*final*/ int JFileChooser::ERROR_OPTION = -1;
 
-/** Instruction to display only files. */  /*public*/ static /*final*/ int FILES_ONLY = 0;
+/** Instruction to display only files. */
 /*public*/ /*static*/ /*final*/ QString JFileChooser::CANCEL_SELECTION = "CancelSelection";
 ///*public*/ /*static*/ /*final*/ QString JFileChooser::APPROVE_SELECTION = "ApproveSelection";
 /*public*/ /*static*/ /*final*/ QString JFileChooser::APPROVE_BUTTON_TEXT_CHANGED_PROPERTY = "ApproveButtonTextChangedProperty";

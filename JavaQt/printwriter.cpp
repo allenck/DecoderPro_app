@@ -279,7 +279,7 @@
     }
 #endif
     /** Checks to make sure that the stream has not been closed */
-    /*private*/ void PrintWriter::ensureOpen() throw (IOException) {
+    /*private*/ void PrintWriter::ensureOpen() /*throw (IOException)*/ {
         if (out == NULL)
             throw new IOException("Stream closed");
     }
@@ -295,7 +295,7 @@
                 out->flush();
             }
         }
-        catch (IOException x) {
+        catch (IOException* x) {
             trouble = true;
         }
     }
@@ -306,7 +306,7 @@
      *
      * @see #checkError()
      */
-    /*public*/ void PrintWriter::close() throw (IOException) {
+    /*public*/ void PrintWriter::close() /*throw (IOException)*/ {
         try {
 //            /*synchronized (lock)*/ {
 //                if (out == nullptr)
@@ -316,7 +316,7 @@
 //            }
           psOut->device()->close();
         }
-        catch (IOException x) {
+        catch (IOException* x) {
             trouble = true;
         }
     }
@@ -384,7 +384,7 @@
         catch (InterruptedIOException x) {
             Thread.currentThread().interrupt();
         }
-        catch (IOException x) {
+        catch (IOException* x) {
             trouble = true;
         }
     }
@@ -405,7 +405,7 @@
         catch (InterruptedIOException x) {
             Thread.currentThread().interrupt();
         }
-        catch (IOException x) {
+        catch (IOException* x) {
             trouble = true;
         }
     }
@@ -435,7 +435,7 @@
         catch (InterruptedIOException x) {
             Thread.currentThread().interrupt();
         }
-        catch (IOException x) {
+        catch (IOException* x) {
             trouble = true;
         }
     }
@@ -467,7 +467,7 @@
 //        catch (InterruptedIOException x) {
 //            Thread.currentThread().interrupt();
 //        }
-        catch (IOException x) {
+        catch (IOException* x) {
             trouble = true;
         }
      }
@@ -894,7 +894,7 @@
             }
         } catch (InterruptedIOException x) {
             Thread.currentThread().interrupt();
-        } catch (IOException x) {
+        } catch (IOException* x) {
             trouble = true;
         }
         return this;
@@ -953,7 +953,7 @@
             }
         } catch (InterruptedIOException x) {
             Thread.currentThread().interrupt();
-        } catch (IOException x) {
+        } catch (IOException* x) {
             trouble = true;
         }
         return this;

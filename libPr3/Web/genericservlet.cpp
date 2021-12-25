@@ -235,7 +235,7 @@ return "";
  *
  */
 
-/*public*/ void GenericServlet::init(ServletConfig* config) throw (ServletException) {
+/*public*/ void GenericServlet::init(ServletConfig* config) /*throw (ServletException)*/ {
 this->config = config;
 //this->init();
 }
@@ -261,7 +261,7 @@ this->config = config;
  *
  */
 
-/*public*/ void GenericServlet::init() throw (ServletException) {
+/*public*/ void GenericServlet::init() /*throw (ServletException)*/ {
 
 }
 
@@ -332,7 +332,7 @@ getServletContext()->log(getServletName() + ": " + message, t);
  */
 
 /*public*/ /*abstract*/ void GenericServlet::service(ServletRequest* /*req*/, ServletResponse* /*res*/)
-throw (ServletException, IOException) {}
+/*throw (ServletException, IOException)*/ {}
 
 
 

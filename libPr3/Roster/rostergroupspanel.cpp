@@ -698,7 +698,7 @@ class TransferHandler extends javax.swing.TransferHandler {
                     }
                     Roster.writeRosterFile();
                     setSelectedRosterGroup(p.getLastPathComponent().toString());
-                } catch (Exception e) {
+                } catch (Exception* e) {
                     log.warn("Exception dragging RosterEntries onto RosterGroups: " + e);
                 }
             }
@@ -707,7 +707,7 @@ class TransferHandler extends javax.swing.TransferHandler {
                 JmriAbstractAction a = new CreateRosterGroupAction("Create From Selection", scrollPane.getTopLevelAncestor());
                 a.setParameter("RosterEntries", RosterEntrySelection.getRosterEntries(t));
                 a.actionPerformed(NULL);
-            } catch (Exception e) {
+            } catch (Exception* e) {
                 log.warn("Exception creating RosterGroups from selection: " + e);
             }
         }

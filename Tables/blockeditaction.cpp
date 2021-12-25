@@ -231,7 +231,7 @@ BeanItemPanel* BlockEditAction::physcialDetails() {
 //            try {
 //                blk->setBlockSpeed(speed);
 //            } catch (jmri.JmriException ex) {
-//                JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + speed);
+//                JOptionPane.showMessageDialog(NULL, ex->getMessage() + "\n" + speed);
 //                return;
 //            }
 //            if (!speedList.contains(speed) && !speed.contains(tr("UseGlobal"))) {
@@ -317,7 +317,7 @@ void BlockEditAction::on_setSaveItem()
  try {
      blk->setBlockSpeed(speed);
  } catch (JmriException* ex) {
-//         JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + speed);
+//         JOptionPane.showMessageDialog(NULL, ex->getMessage() + "\n" + speed);
   QMessageBox::critical(NULL, tr("Error"), tr("Speed error"));
      return;
  }

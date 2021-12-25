@@ -164,7 +164,7 @@ void FileInputStream::common(File * file)
    // open0(name);
  QFile f(name);
  if(!f.open(QIODevice::ReadOnly))
-   throw  new FileNotFoundException();
+   throw new FileNotFoundException();
 }
 
 /**
@@ -175,14 +175,14 @@ void FileInputStream::common(File * file)
  *             file is reached.
  * @exception  IOException  if an I/O error occurs.
  */
-/*public*/ QChar FileInputStream::read() throw (IOException) {
+/*public*/ QChar FileInputStream::read() /*throw (IOException)*/ {
 // if(this->atEnd())
 //  return -1;
 
     return read0();
 }
 
-/*private*/ /*native*/ int FileInputStream::read0() throw (IOException)
+/*private*/ /*native*/ int FileInputStream::read0() /*throw (IOException)*/
 {
  char* buf = new char[2];
  if(this->readRawData(buf, 1) < 0)
@@ -294,7 +294,7 @@ void FileInputStream::common(File * file)
  * @revised 1.4
  * @spec JSR-51
  */
-/*public*/ void FileInputStream::close() throw (IOException) {
+/*public*/ void FileInputStream::close() /*throw (IOException)*/ {
 #if 0
     synchronized (closeLock) {
         if (closed) {

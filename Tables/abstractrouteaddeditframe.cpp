@@ -575,7 +575,7 @@
 
         if (result < 0) {
             log->warn(tr("unexpected mode string in sensorMode: %1").arg(mode));
-            throw  IllegalArgumentException();
+            throw new IllegalArgumentException();
         }
         return result;
     }
@@ -591,7 +591,7 @@
 
         if (result < 0) {
             log->warn(tr("unexpected mode string in turnoutMode: %1").arg(mode));
-            throw  IllegalArgumentException();
+            throw new IllegalArgumentException();
         }
         return result;
     }

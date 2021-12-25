@@ -15,7 +15,7 @@ class ComboBoxModel //: public ListModel
        * @param anItem the list object to select or <code>null</code>
        *        to clear the selection
        */
-  virtual void setSelectedItem(QString anItem) {}
+  virtual void setSelectedItem(QString /*anItem*/) {}
 
       /**
        * Returns the selected item

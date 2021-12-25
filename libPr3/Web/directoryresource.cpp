@@ -23,7 +23,7 @@
 
 //@Override
 /*public*/ QString DirectoryResource::getListHTML(QString _base, bool parent)
-        throw (IOException) {
+        /*throw (IOException)*/ {
      QString base = resource->getResourceString();
      base = URIUtil::canonicalPath(base);
 

@@ -32,14 +32,14 @@ public:
     /*public*/ virtual DefaultIdTag *newIdTag(QString systemName, QString userName)override;
     /*public*/ void Register(NamedBean* s) const override;
     /*public*/ void deregister(NamedBean* s)  const override;
-    /*public*/ virtual void writeIdTagDetails() ;// throw (IOException);
+    /*public*/ virtual void writeIdTagDetails() ;// /*throw (IOException)*/;
     /*public*/ virtual void readIdTagDetails();
     /*public*/ void setStateStored(bool state)override;
     /*public*/ bool isStateStored()override;
     /*public*/ void setFastClockUsed(bool fastClock)override;
     /*public*/ bool isFastClockUsed()override;
     /*public*/ QList<IdTag*>* getTagsForReporter(Reporter* reporter, long threshold)override;
-    /*public*/ DefaultIdTag *provide(QString name) throw (IllegalArgumentException)override;
+    /*public*/ DefaultIdTag *provide(QString name) /*throw (IllegalArgumentException)*/override;
  /*public*/ QString getNamedBeanClass()const override {
      return "IdTag";
  }
@@ -119,9 +119,9 @@ class DefaultIdTagShutdownTask : public AbstractShutDownTask
 //      ((DefaultIdTagManager*)InstanceManager::getDefault("IdTagManager"))->writeIdTagDetails();
       //new jmri.managers.DefaultIdTagManager().writeIdTagDetails();
 //     }
-//     catch (IOException ioe)
+//     catch (IOException* ioe)
 //     {
-//      log.error("Exception writing IdTags: "+ioe.getMessage());
+//      log.error("Exception writing IdTags: "+ioe->getMessage());
 //     }
 
      // continue shutdown

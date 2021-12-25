@@ -207,8 +207,8 @@ DefaultCatalogTreeManager::DefaultCatalogTreeManager(QObject *parent) :
     try {
          DefaultCatalogTreeManagerXml().writeCatalogTrees();
         indexChanged(false);
-    } catch (IOException ioe) {
-        log->error("Exception writing CatalogTrees: ", &ioe);
+    } catch (IOException* ioe) {
+        log->error("Exception writing CatalogTrees: ", ioe);
     }
 }
 

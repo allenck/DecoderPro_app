@@ -1236,7 +1236,7 @@ public URL getURL(URI uri) {
      }
      return (new File(path.replace(*_separator, File::separatorChar)))->getCanonicalPath();
  } catch (IOException* ex) {
-     //log->warn(tr("Cannot convert %1 into a usable filename.").arg(path)+ ex.getMessage());
+     //log->warn(tr("Cannot convert %1 into a usable filename.").arg(path)+ ex->getMessage());
      return "";
  }
 }
@@ -1345,7 +1345,7 @@ public URL getURL(URI uri) {
  * @return The contents of the file.
  * @throws java.io.IOException if the URL cannot be read
  */
-/*public*/ QString FileUtilSupport::readURL(QUrl url) throw (IOException) {
+/*public*/ QString FileUtilSupport::readURL(QUrl url) /*throw (IOException)*/ {
     try {
         QString builder;
 //        try (InputStreamReader in = new InputStreamReader(url.openStream(), StandardCharsets.UTF_8);
@@ -1451,7 +1451,7 @@ public URL getURL(URI uri) {
  * @param dest   must be the file or directory, not the containing directory
  * @throws java.io.IOException if file cannot be copied
  */
-/*public*/ void FileUtilSupport::copy(File* source, File* dest) throw (IOException)
+/*public*/ void FileUtilSupport::copy(File* source, File* dest) /*throw (IOException)*/
 {
  if (!source->exists()) {
      log->error(tr("Attempting to copy non-existant file: %1").arg(source->getPath()));
@@ -1524,7 +1524,7 @@ public URL getURL(URI uri) {
  * @param text Text to append
  * @throws java.io.IOException if file cannot be written to
  */
-/*public*/ void FileUtilSupport::appendTextToFile(File* file, QString text) throw (IOException)
+/*public*/ void FileUtilSupport::appendTextToFile(File* file, QString text) /*throw (IOException)*/
 {
 //    try (PrintWriter pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file, true), StandardCharsets.UTF_8))) {
 //        pw.println(text);
@@ -1882,8 +1882,8 @@ public URL getURL(URI uri) {
         try {
             //return file.toURL();
          return QUrl(file);
-        } catch (MalformedURLException ex) {
-            log->error(ex.getLocalizedMessage(), &ex);
+        } catch (MalformedURLException* ex) {
+            log->error(ex->getLocalizedMessage(), ex);
         }
     }
     return QUrl();

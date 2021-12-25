@@ -55,10 +55,10 @@
             bool entriesInLeftRightTrafficSignalsList = !signalListLeftRight.isEmpty();
             bool entriesInRightLeftTrafficSignalsList = !signalListRightLeft.isEmpty();
 
-            if (leftTrafficDirection && !entriesInRightLeftTrafficSignalsList) { throw  CTCException("SignalDirectionIndicators", userIdentifier, tr("invalid combination"), tr("Left sensor exists but no entries in right to left signals.")); }     // NOI18N
-            if (rightTrafficDirection && !entriesInLeftRightTrafficSignalsList) { throw  CTCException("SignalDirectionIndicators", userIdentifier, tr("invalid combination"), tr("Right sensor exists but no entries in left to right signals.")); }    // NOI18N
-            if (!leftTrafficDirection && entriesInRightLeftTrafficSignalsList) { throw  CTCException("SignalDirectionIndicators", userIdentifier, tr("invalid combination"), tr("leftSensor is not specified, but there are entry(s) in right to left signals.")); }      // NOI18N
-            if (!rightTrafficDirection && entriesInLeftRightTrafficSignalsList) { throw  CTCException("SignalDirectionIndicators", userIdentifier, tr("invalid combination"), tr("rightSensor is not specified, but there are entry(s) in left to right signals.")); }    // NOI18N
+            if (leftTrafficDirection && !entriesInRightLeftTrafficSignalsList) { throw new  CTCException("SignalDirectionIndicators", userIdentifier, tr("invalid combination"), tr("Left sensor exists but no entries in right to left signals.")); }     // NOI18N
+            if (rightTrafficDirection && !entriesInLeftRightTrafficSignalsList) { throw new  CTCException("SignalDirectionIndicators", userIdentifier, tr("invalid combination"), tr("Right sensor exists but no entries in left to right signals.")); }    // NOI18N
+            if (!leftTrafficDirection && entriesInRightLeftTrafficSignalsList) { throw new  CTCException("SignalDirectionIndicators", userIdentifier, tr("invalid combination"), tr("leftSensor is not specified, but there are entry(s) in right to left signals.")); }      // NOI18N
+            if (!rightTrafficDirection && entriesInLeftRightTrafficSignalsList) { throw new  CTCException("SignalDirectionIndicators", userIdentifier, tr("invalid combination"), tr("rightSensor is not specified, but there are entry(s) in left to right signals.")); }    // NOI18N
 
             for (NBHSignal* signal : signalListLeftRight) {
                 new SignalHeadPropertyChangeListenerMaintainer(signal); // Lazy, constructor does EVERYTHING and leaves a bread crumb trail to this object.
@@ -190,9 +190,9 @@
         _mRequestedDirectionObserver->setRequestedDirection(direction);
     }
 
-    /*private*/ void SignalDirectionIndicators::addSignal(QString userIdentifier, NBHSignal* signal) throw (CTCException) {
+    /*private*/ void SignalDirectionIndicators::addSignal(QString userIdentifier, NBHSignal* signal) /*throw new (CTCException)*/ {
     _mSignalsUsed.insert(signal);
-        if (!_mSignalsUsed.contains(signal)) { throw CTCException("SignalDirectionIndicators", userIdentifier, signal->getHandleName(), tr("SignalDirectionIndicatorsDuplicateHomeSignal")); }    // NOI18N
+        if (!_mSignalsUsed.contains(signal)) { throw new CTCException("SignalDirectionIndicators", userIdentifier, signal->getHandleName(), tr("SignalDirectionIndicatorsDuplicateHomeSignal")); }    // NOI18N
     }
 
     /*private*/ void SignalDirectionIndicators::setSignalsHeldTo(int direction) {

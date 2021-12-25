@@ -50,7 +50,7 @@ AudioUtil::AudioUtil(QObject *parent) :
         try {
             ALut.alutLoadWAVFile(stream, format, data, size, freq, loop);
         } catch (ALException e) {
-            log->warn("Error loading JoalAudioBuffer: " + e.getMessage());
+            log->warn("Error loading JoalAudioBuffer: " + e->getMessage());
             return NULL ;
         }
 

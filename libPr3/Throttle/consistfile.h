@@ -14,8 +14,8 @@ public:
  ConsistFile();
  /*public*/ void readFile() throw (JDOMException, IOException);
  /*public*/ void readFile(QString fileName) throw (JDOMException, IOException);
- /*public*/ void writeFile(QList<DccLocoAddress*>* consistList) throw (IOException);
- /*public*/ void writeFile(QList<DccLocoAddress *> *consistList, QString fileName) throw (IOException);
+ /*public*/ void writeFile(QList<DccLocoAddress*>* consistList) /*throw (IOException)*/;
+ /*public*/ void writeFile(QList<DccLocoAddress *> *consistList, QString fileName) /*throw (IOException)*/;
  static /*public*/ QString getFileLocation();
  static /*public*/ void setFileLocation(QString loc);
  /*public*/ static QString defaultConsistFilename();

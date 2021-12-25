@@ -686,9 +686,9 @@ bool DefaultTableModel::setData(const QModelIndex &index, const QVariant &value,
  */
 /*public*/ void DefaultTableModel::setValueAt(QVariant aValue, int row, int column) {
     if(column < 0 || column > getColumnCount())
-        throw ArrayIndexOutOfBoundsException("invalid column");
+        throw new ArrayIndexOutOfBoundsException("invalid column");
     if(row < 0 || row > getRowCount())
-        throw ArrayIndexOutOfBoundsException("invalid row");
+        throw new ArrayIndexOutOfBoundsException("invalid row");
     QVariant v = dataVector->at(row * getColumnCount()+ column);
     dataVector->replace(row * getColumnCount()+ column, aValue);
     fireTableCellUpdated(row, column);

@@ -29,7 +29,7 @@ private:
  /*private*/ /*final*/ /*transient*/ Inet6AddressHolder* holder6;
  /*private*/ static /*final*/ long FIELDS_OFFSET;
 // /*private*/ static /*final*/ sun.misc.Unsafe UNSAFE;
- /*private*/ void initif(QString hostName,QByteArray addr, QNetworkInterface nif) throw (UnknownHostException);
+ /*private*/ void initif(QString hostName,QByteArray addr, QNetworkInterface nif) /*throw (UnknownHostException)*/;
  /*private*/ /*final*/ static int INT16SZ;// = 2;
  static QString numericToTextFormat(QByteArray src);
 
@@ -71,7 +71,7 @@ Q_OBJECT
 
     void setAddr(QByteArray addr) ;
     void init(QByteArray addr, int scope_id);
-    void init(QByteArray addr, QNetworkInterface nif) throw (UnknownHostException);
+    void init(QByteArray addr, QNetworkInterface nif) /*throw (UnknownHostException)*/;
     QString getHostAddress();
     /*public*/ bool equals(QObject* o);
     /*public*/ int hashCode();

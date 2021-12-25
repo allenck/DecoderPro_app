@@ -90,7 +90,7 @@ public:
                 if (result == 0) {
                     for (int i = 0; i < chunkLength1; i++) {
                         //result = chunk1.at(i) - chunk2.at(i);
-                        bool b;
+//                        bool b;
                         result = 0;
                         if(chunk1.at(i) != chunk2.at(i))
                         {

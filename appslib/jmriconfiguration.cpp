@@ -48,7 +48,7 @@ JmriConfiguration::JmriConfiguration() : AuxiliaryConfiguration() {
 //                        Element root = XMLUtil.parse(input, false, true, NULL, NULL).getDocumentElement();
 //                        return XMLUtil.findElement(root, elementName, namespace);
 //                    }
-//                } catch (IOException | SAXException | IllegalArgumentException ex) {
+//                } catch (IOException* | SAXException | IllegalArgumentException ex) {
 //                    log->warn("Cannot parse {}", file, ex);
 //                }
    QDomDocument doc;// =  QDomDocument(stream->readAll());
@@ -99,7 +99,7 @@ JmriConfiguration::JmriConfiguration() : AuxiliaryConfiguration() {
 //                        input.setSystemId(file.toURI().toURL().toString());
 //                        doc = XMLUtil.parse(input, false, true, NULL, NULL);
 //                    }
-//                } catch (IOException | SAXException ex) {
+//                } catch (IOException* | SAXException ex) {
 //                    log->warn("Cannot parse {}", file, ex);
 //                }
    //QDomDocument* doc = new QDomDocument(stream->readAll());

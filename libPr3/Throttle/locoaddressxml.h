@@ -13,7 +13,7 @@ public:
  /*public*/ QDomElement store(QObject* o);
  /*public*/ bool load(QDomElement shared, QDomElement perNode);
  /*public*/ LocoAddress* getAddress(QDomElement element);
- /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
+ /*public*/ void load(QDomElement element, QObject* o) /*throw (Exception)*/;
 
 private:
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("DccLocoAddressXml");

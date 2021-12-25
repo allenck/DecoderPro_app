@@ -312,10 +312,10 @@ HitPointType::HitPointType(QObject *parent) : QObject(parent)
     /*protected*/ int HitPointType::turntableTrackIndex() {
         int result = this->/*ordinal()*/type() - HitPointType::TURNTABLE_RAY_0/*.ordinal()*/;
         if (result < 0) {
-            throw  IllegalArgumentException(this->toString() + "is not a valid TURNTABLE_RAY");
+            throw new IllegalArgumentException(this->toString() + "is not a valid TURNTABLE_RAY");
         }
         if (result > 63) {
-            throw  IllegalArgumentException(this->toString() + "is not a valid TURNTABLE_RAY");
+            throw new IllegalArgumentException(this->toString() + "is not a valid TURNTABLE_RAY");
         }
         return result;
     }
@@ -324,10 +324,10 @@ HitPointType::HitPointType(QObject *parent) : QObject(parent)
     int result = type - HitPointType::TURNTABLE_RAY_0/*.ordinal()*/;
     QMetaEnum metaEnum = QMetaEnum::fromType<HitPointType::TYPES>();
     if (result < 0) {
-        throw  IllegalArgumentException(QString(metaEnum.valueToKey(type)) + "is not a valid TURNTABLE_RAY");
+        throw new IllegalArgumentException(QString(metaEnum.valueToKey(type)) + "is not a valid TURNTABLE_RAY");
     }
     if (result > 63) {
-        throw  IllegalArgumentException(QString(metaEnum.valueToKey(type)) + "is not a valid TURNTABLE_RAY");
+        throw new IllegalArgumentException(QString(metaEnum.valueToKey(type)) + "is not a valid TURNTABLE_RAY");
     }
     return result;
 }
@@ -346,7 +346,7 @@ HitPointType::HitPointType(QObject *parent) : QObject(parent)
      */
     /*protected*/ /*static*/ HitPointType::TYPES HitPointType::turntableTrackIndexedValue(int i) {
         if (i < 0 || i > 63) {
-            throw  IllegalArgumentException(QString::number(i) + "is not a valid TURNTABLE_RAY index");
+            throw new IllegalArgumentException(QString::number(i) + "is not a valid TURNTABLE_RAY index");
         }
         //return HitPointType::values()[(TURNTABLE_RAY_0.ordinal() + i)];
         (int)TURNTABLE_RAY_0 + i;
@@ -384,10 +384,10 @@ HitPointType::HitPointType(QObject *parent) : QObject(parent)
         QMetaEnum metaEnum = QMetaEnum::fromType<HitPointType::TYPES>();
 
         if (result < 0) {
-            throw  IllegalArgumentException(QString(metaEnum.valueToKey(type)) + "is not a valid SHAPE_POINT");
+            throw new IllegalArgumentException(QString(metaEnum.valueToKey(type)) + "is not a valid SHAPE_POINT");
         }
         if (result > 9) {
-            throw  IllegalArgumentException(QString(metaEnum.valueToKey(type)) + "is not a valid SHAPE_POINT");
+            throw new IllegalArgumentException(QString(metaEnum.valueToKey(type)) + "is not a valid SHAPE_POINT");
         }
         return result;
     }
@@ -405,7 +405,7 @@ HitPointType::HitPointType(QObject *parent) : QObject(parent)
      */
     /*protected*/ /*static*/ int HitPointType::shapePointIndexedValue(int i) {
         if (i < 0 || i > 9) {
-            throw  IllegalArgumentException(QString::number(i) + "is not a valid SHAPE_POINT index");
+            throw new IllegalArgumentException(QString::number(i) + "is not a valid SHAPE_POINT index");
         }
 //        return HitPointType::values()[(SHAPE_POINT_0.ordinal() + i)];
         return SHAPE_POINT_0 +i;
@@ -451,10 +451,10 @@ HitPointType::HitPointType(QObject *parent) : QObject(parent)
 //    /*protected*/ int HitPointType::bezierPointIndex() {
 //        int result = this.ordinal() - HitPointType::BEZIER_CONTROL_POINT_0.ordinal();
 //        if (result < 0) {
-//            throw  IllegalArgumentException(this.toString() + "is not a valid BEZIER_CONTROL_POINT");
+//            throw new IllegalArgumentException(this.toString() + "is not a valid BEZIER_CONTROL_POINT");
 //        }
 //        if (result > 8) {
-//            throw  IllegalArgumentException(this.toString() + "is not a valid BEZIER_CONTROL_POINT");
+//            throw new IllegalArgumentException(this.toString() + "is not a valid BEZIER_CONTROL_POINT");
 //        }
 //        return result;
 //    }
@@ -462,10 +462,10 @@ HitPointType::HitPointType(QObject *parent) : QObject(parent)
     /*public*/ /*static*/ int HitPointType::bezierPointIndex(HitPointType::TYPES t) {
         int result = t - /*HitPointType::*/BEZIER_CONTROL_POINT_0;
         if (result < 0) {
-            throw  IllegalArgumentException(HitPointType::toString(t) + "is not a valid BEZIER_CONTROL_POINT");
+            throw new IllegalArgumentException(HitPointType::toString(t) + "is not a valid BEZIER_CONTROL_POINT");
         }
         if (result > 8) {
-            throw  IllegalArgumentException(HitPointType::toString(t) + "is not a valid BEZIER_CONTROL_POINT");
+            throw new IllegalArgumentException(HitPointType::toString(t) + "is not a valid BEZIER_CONTROL_POINT");
         }
         return result;
     }
@@ -483,7 +483,7 @@ HitPointType::HitPointType(QObject *parent) : QObject(parent)
      */
     /*protected*/ /*static*/ int HitPointType::bezierPointIndexedValue(int i) {
         if (i < 0 || i > 8) {
-            throw  IllegalArgumentException(QString::number(i) + "is not a valid BEZIER_CONTROL_POINT index");
+            throw new IllegalArgumentException(QString::number(i) + "is not a valid BEZIER_CONTROL_POINT index");
         }
         //return HitPointType::values()[(BEZIER_CONTROL_POINT_0/*.ordinal()*/ + i)];
         return BEZIER_CONTROL_POINT_0 + i;

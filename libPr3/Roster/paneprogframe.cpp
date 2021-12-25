@@ -251,21 +251,21 @@ PaneProgFrame::~PaneProgFrame()
 // try
 // {
  pID = aModelElement.attribute("productID", "");
-//    } catch (Exception ex){
+//    } catch (Exception* ex){
 //        pID = NULL;
 //    }
 
  QString modelName;
 //    try {
  modelName = aModelElement.attribute("model", "");
-//    } catch (Exception ex){
+//    } catch (Exception* ex){
 //        modelName = NULL;
 //    }
 
  QString familyName;
 //    try {
  familyName = aRosterEntry->getDecoderFamily();
-//    } catch (Exception ex){
+//    } catch (Exception* ex){
 //        familyName = NULL;
 //    }
  return DecoderFile::isIncluded(e, pID, modelName, familyName, extraIncludes, extraExcludes);

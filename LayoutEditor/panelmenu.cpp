@@ -325,7 +325,7 @@ void PanelMenu::menuSelected()
      return true;
     }
    }
-   catch(Exception e){
+   catch(Exception* e){
   }
  }
  return false;
@@ -347,7 +347,7 @@ void PanelMenu::menuSelected()
     }
    }
   }
-  catch(Exception e)
+  catch(Exception* e)
   {
   }
  }
@@ -372,7 +372,7 @@ void PanelMenu::menuSelected()
    lePanelsList->append(le);
   }
 //  }
-//  catch(Exception e)
+//  catch(Exception* e)
 //  {
 //  }
  }

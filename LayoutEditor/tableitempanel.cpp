@@ -199,11 +199,11 @@ void TableItemPanel::cancelPressed(/*ActionEvent e*/) {
    }
 //            _addTableDialog->dispose();
   }
-  catch(IllegalArgumentException ex)
+  catch(IllegalArgumentException* ex)
   {
-//            JOptionPane.showMessageDialog(_paletteFrame, ex.getMessage(),
+//            JOptionPane.showMessageDialog(_paletteFrame, ex->getMessage(),
 //                    ItemPalette.rb.getString("warnTitle"), JOptionPane.WARNING_MESSAGE);
-   QMessageBox::warning(_paletteFrame, tr("Warning"), ex.getMessage());
+   QMessageBox::warning(_paletteFrame, tr("Warning"), ex->getMessage());
   }
  }
  _sysNametext->setText("");

@@ -158,7 +158,7 @@
 //        /*public*/  void run() {
 //            try {
 //                DecoderIndexFile::instance();
-//            } catch (Exception ex) {
+//            } catch (Exception* ex) {
 //                log->error("Error in trying to initialize decoder index file " + ex.toString());
 //            }
 //        }
@@ -182,7 +182,7 @@ void LoadDecoders::process()
 {
     try {
         InstanceManager::getDefault("DecoderIndexFile");
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         ((DecoderPro3*)parent())->log->error(tr("Error in trying to initialize decoder index file %1").arg(ex.toString()));
     }
 

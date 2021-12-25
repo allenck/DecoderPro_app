@@ -3132,7 +3132,7 @@ namespace Operations
          // TODO:
 //         try {
 //             keys[i] = tr(keys[i]);
-//         } catch (Exception e) {
+//         } catch (Exception* e) {
 //             log->debug("Key {}: ({}) not found", i, keys[i]);
 //         }
 

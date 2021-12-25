@@ -452,7 +452,7 @@
 
 #endif
     /** Check to make sure that the stream has not been closed */
-    /*private*/ void PrintStream::ensureOpen() throw (IOException) {
+    /*private*/ void PrintStream::ensureOpen() /*throw (IOException)*/ {
         if (out == nullptr)
             throw new IOException("Stream closed");
     }
@@ -482,7 +482,7 @@
 
             }
 
-            catch (IOException x) {
+            catch (IOException* x) {
 
                 trouble = true;
 
@@ -524,7 +524,7 @@
 
                 }
 
-                catch (IOException x) {
+                catch (IOException* x) {
 
                     trouble = true;
 
@@ -709,7 +709,7 @@
 
         }
 
-        catch (IOException x) {
+        catch (IOException* x) {
 
             trouble = true;
 
@@ -770,7 +770,7 @@
 
         }
 
-        catch (IOException x) {
+        catch (IOException* x) {
 
             trouble = true;
 
@@ -824,7 +824,7 @@
 
         }
 
-        catch (IOException x) {
+        catch (IOException* x) {
 
             trouble = true;
 
@@ -849,7 +849,7 @@
 //        catch (InterruptedIOException x) {
 //            Thread.currentThread().interrupt();
 //        }
-        catch (IOException x) {
+        catch (IOException* x) {
             trouble = true;
         }
     }
@@ -870,7 +870,7 @@
 //        catch (InterruptedIOException x) {
 //            Thread.currentThread().interrupt();
 //        }
-        catch (IOException x) {
+        catch (IOException* x) {
             trouble = true;
         }
     }
@@ -1640,7 +1640,7 @@
 
             Thread.currentThread().interrupt();
 
-        } catch (IOException x) {
+        } catch (IOException* x) {
 
             trouble = true;
 
@@ -1753,7 +1753,7 @@
 
             Thread.currentThread().interrupt();
 
-        } catch (IOException x) {
+        } catch (IOException* x) {
 
             trouble = true;
 

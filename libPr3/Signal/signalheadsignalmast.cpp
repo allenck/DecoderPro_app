@@ -176,7 +176,7 @@ void SignalHeadSignalMast::configureHeads(QStringList parts, int start)
         if(map->getProperty(aspect, "delay")!=NULL){
             delay = map->getProperty(aspect, "delay").toInt();
         }
-    } catch (Exception e){
+    } catch (Exception* e){
         log->debug("No delay set");
         //can be considered normal if does not exists or is invalid
     }

@@ -91,7 +91,7 @@ namespace Operations
   //try {
       //in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8")); // NOI18N
   in =new QTextStream(qFile);
-//     } catch (FileNotFoundException e) {
+//     } catch (FileNotFoundException* e) {
 //         Logger::error("Build file doesn't exist");
 //         writer->close();
 //         return;
@@ -122,7 +122,7 @@ namespace Operations
     log->debug(tr("read line of length %2: %1").arg(line).arg(line.length()));
    }
 
-   catch (IOException e)
+   catch (IOException* e)
    {
     log->debug("Print read failed");
     break;
@@ -222,7 +222,7 @@ namespace Operations
       writer->write(c, line + NEW_LINE);
       continue;
      }
-     catch (IOException e)
+     catch (IOException* e)
      {
       log->debug("Print write color failed");
       break;
@@ -233,7 +233,7 @@ namespace Operations
    {
     writer->write(line + NEW_LINE);
    }
-   catch (IOException e)
+   catch (IOException* e)
    {
     log->debug("Print write failed");
     break;
@@ -242,7 +242,7 @@ namespace Operations
   // and force completion of the printing
   try {
       in->device()-> close();
-  } catch (IOException e) {
+  } catch (IOException* e) {
       log->debug("Print close failed");
   }
   writer->close();
@@ -268,7 +268,7 @@ namespace Operations
   }
       //in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8")); // NOI18N
   in = new QTextStream(qFile);
-//     } catch (FileNotFoundException e) {
+//     } catch (FileNotFoundException* e) {
 //      Logger::error(tr("Build '%1'file doesn't exist").arg(file->getPath()));
 //         return;
 //     }
@@ -289,11 +289,11 @@ namespace Operations
 //         out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(
 //                 new FileOutputStream(buildReport), "UTF-8")), true); // NOI18N
   out = new PrintWriter(new QTextStream(qFile));
-//     } catch (IOException e) {
+//     } catch (IOException* e) {
 //         Logger::error("Can not create build report file");
 //         try {
 //             in.close();
-//         } catch (IOException ee) {
+//         } catch (IOException* ee) {
 //         }
       return;
 //  }
@@ -309,7 +309,7 @@ namespace Operations
               continue;
           }
           out->println(line); // indent lines for each level
-      } catch (IOException e) {
+      } catch (IOException* e) {
 //          log->debug("Print read failed");
           break;
       }
@@ -317,7 +317,7 @@ namespace Operations
   // and force completion of the printing
   try {
       in->device()-> close();
-  } catch (IOException e) {
+  } catch (IOException* e) {
 //      log->debug("Close failed");
   }
   out->close();
@@ -411,13 +411,13 @@ namespace Operations
      if (desktop.isSupported(java.awt.Desktop.Action.EDIT)) {
          try {
              desktop.edit(file);
-         } catch (IOException e) {
+         } catch (IOException* e) {
              e.printStackTrace();
          }
      } else if (desktop.isSupported(java.awt.Desktop.Action.OPEN)) {
          try {
              desktop.open(file);
-         } catch (IOException e) {
+         } catch (IOException* e) {
              e.printStackTrace();
          }
      } else {

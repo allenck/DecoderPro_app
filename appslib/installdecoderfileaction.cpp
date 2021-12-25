@@ -75,7 +75,7 @@ QUrl* InstallDecoderFileAction::pickURL(QWidget* who)
         }
         try {
             return new QUrl("file:" + file->getCanonicalPath());
-        } catch (Exception e) {
+        } catch (Exception* e) {
             log->error("Unexpected exception in new URL: " /*+ e*/);
             return NULL;
         }

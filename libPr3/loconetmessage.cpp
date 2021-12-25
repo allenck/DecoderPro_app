@@ -19,7 +19,7 @@ LocoNetMessage::LocoNetMessage(int len, QObject *parent) :
 /*public*/ LocoNetMessage::LocoNetMessage(LocoNetMessage* original) {
 //    Objects.requireNonNull(original,
  if(original == nullptr)
-    throw Exception( "Unable to create message by copying a null message"); // NOI18N
+    throw new Exception( "Unable to create message by copying a null message"); // NOI18N
 
     _nDataChars = original->getNumDataElements();
     _dataChars = QVector<int>(_nDataChars);

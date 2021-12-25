@@ -55,7 +55,7 @@ JsonServlet::JsonServlet(QObject* parent) : WebSocketServlet()
 /*private*/ /*static*/ /*final*/ Logger* JsonServlet::log = LoggerFactory::getLogger("JsonServlet");
 
 //@Override
-/*public*/ void JsonServlet::init() throw (ServletException)
+/*public*/ void JsonServlet::init() /*throw  (ServletException)*/
 {
  WebSocketServlet::init();
 
@@ -118,11 +118,11 @@ JsonServlet::JsonServlet(QObject* parent) : WebSocketServlet()
  *                 the client has made of the servlet
  * @param response an HttpServletResponse object that contains the response
  *                 the servlet sends to the client
- * @throw java.io.IOException if an input or output error is detected when
+ * @throw new java.io.IOException if an input or output error is detected when
  *                             the servlet handles the GET request
  */
 //@Override
-/*protected*/ void JsonServlet::doGet(/*final*/ HttpServletRequest* request, HttpServletResponse* response) throw (IOException)
+/*protected*/ void JsonServlet::doGet(/*final*/ HttpServletRequest* request, HttpServletResponse* response) /*throw new (IOException)*/
 {
  response->setStatus(HttpServletResponse::SC_OK);
  response->setHeader("Connection", "Keep-Alive"); // NOI18N
@@ -197,7 +197,7 @@ JsonServlet::JsonServlet(QObject* parent) : WebSocketServlet()
     if (reply == QJsonObject())
     {
      log->warn(tr("Type %1 unknown.").arg(type));
-     throw  JsonException(HttpServletResponse::SC_NOT_FOUND, tr(/*request->getLocale(), */"Unknown object type %1 was requested.").arg(type));
+     throw new  JsonException(HttpServletResponse::SC_NOT_FOUND, tr(/*request->getLocale(), */"Unknown object type %1 was requested.").arg(type));
     }
    }
    else
@@ -218,7 +218,7 @@ JsonServlet::JsonServlet(QObject* parent) : WebSocketServlet()
      {
       case 0:
        if (exception != NULL) {
-           throw exception;
+           throw  exception;
        }
        reply = array;
        break;
@@ -233,7 +233,7 @@ JsonServlet::JsonServlet(QObject* parent) : WebSocketServlet()
     if (reply == QJsonValue())
     {
      log->warn(tr("Requested type '%1' unknown.").arg(type));
-     throw  JsonException(HttpServletResponse::SC_NOT_FOUND, tr(/*request->getLocale(),*/ "Unknown object type %1 was requested.").arg(type));
+     throw new  JsonException(HttpServletResponse::SC_NOT_FOUND, tr(/*request->getLocale(),*/ "Unknown object type %1 was requested.").arg(type));
     }
    }
   } catch (JsonException ex) {
@@ -276,7 +276,7 @@ JsonServlet::JsonServlet(QObject* parent) : WebSocketServlet()
 }
 
 //@Override
-/*protected*/ void JsonServlet::doPost(HttpServletRequest* request, HttpServletResponse* response) throw (IOException)
+/*protected*/ void JsonServlet::doPost(HttpServletRequest* request, HttpServletResponse* response) /*throw new (IOException)*/
 {
  response->setStatus(HttpServletResponse::SC_OK);
  response->setContentType(ServletUtil::UTF8_APPLICATION_JSON);
@@ -351,15 +351,15 @@ JsonServlet::JsonServlet(QObject* parent) : WebSocketServlet()
        }
        if (reply == QJsonObject()) {
            log->warn(tr("Type %1 unknown.").arg(type));
-           throw  JsonException(HttpServletResponse::SC_NOT_FOUND, tr(/*request->getLocale(),*/ "Unknown object type %1 was requested.").arg(type));
+           throw new  JsonException(HttpServletResponse::SC_NOT_FOUND, tr(/*request->getLocale(),*/ "Unknown object type %1 was requested.").arg(type));
        }
    } else {
        log->error("Name must be defined.");
-       throw JsonException(HttpServletResponse::SC_BAD_REQUEST, "Name must be defined."); // Need to I18N
+       throw new JsonException(HttpServletResponse::SC_BAD_REQUEST, "Name must be defined."); // Need to I18N
    }
   } else {
       log->warn("Type not specified.");
-      throw JsonException(HttpServletResponse::SC_BAD_REQUEST, "Type must be specified."); // Need to I18N
+      throw new JsonException(HttpServletResponse::SC_BAD_REQUEST, "Type must be specified."); // Need to I18N
   }
  } catch (JsonException ex) {
      reply = ex.getJsonMessage();
@@ -373,7 +373,7 @@ JsonServlet::JsonServlet(QObject* parent) : WebSocketServlet()
 }
 
 //@Override
-/*protected*/ void JsonServlet::doPut(HttpServletRequest* request, HttpServletResponse* response) throw (IOException) {
+/*protected*/ void JsonServlet::doPut(HttpServletRequest* request, HttpServletResponse* response) /*throw new (IOException)*/ {
     response->setStatus(HttpServletResponse::SC_OK);
     response->setContentType(ServletUtil::UTF8_APPLICATION_JSON);
     response->setHeader("Connection", "Keep-Alive"); // NOI18N
@@ -391,7 +391,7 @@ JsonServlet::JsonServlet(QObject* parent) : WebSocketServlet()
                 data = data.value(JSON::DATA).toObject();
             }
         } else {
-            throw JsonException(HttpServletResponse::SC_BAD_REQUEST, "PUT request must be a JSON object"); // need to I18N
+            throw new JsonException(HttpServletResponse::SC_BAD_REQUEST, "PUT request must be a JSON object"); // need to I18N
         }
         if (type != NULL) {
             // for historical reasons, set the name to POWER on a power request
@@ -428,18 +428,18 @@ JsonServlet::JsonServlet(QObject* parent) : WebSocketServlet()
                 }
                 if (reply == QJsonValue()) {
                     // not a creatable item
-                    throw JsonException(HttpServletResponse::SC_BAD_REQUEST, type + " is not a creatable type"); // need to I18N
+                    throw new JsonException(HttpServletResponse::SC_BAD_REQUEST, type + " is not a creatable type"); // need to I18N
                 }
             } else {
                 log->warn(tr("Type %1 unknown.").arg(type));
-                throw  JsonException(HttpServletResponse::SC_NOT_FOUND, tr(/*request->getLocale(),*/ "Unknown object type %1 was requested.").arg(type));
+                throw new  JsonException(HttpServletResponse::SC_NOT_FOUND, tr(/*request->getLocale(),*/ "Unknown object type %1 was requested.").arg(type));
             }
         } else {
             log->warn("Type not specified.");
-            throw  JsonException(HttpServletResponse::SC_BAD_REQUEST, "Type must be specified."); // Need to I18N
+            throw new  JsonException(HttpServletResponse::SC_BAD_REQUEST, "Type must be specified."); // Need to I18N
         }
-    } catch (JsonException ex) {
-        reply = ex.getJsonMessage();
+    } catch (JsonException* ex) {
+        reply = ex->getJsonMessage();
     }
     int code = reply.toObject().value(JSON::DATA).toObject().value(JSON::CODE).toInt(HttpServletResponse::SC_OK); // use HTTP error codes when possible
     if (code == HttpServletResponse::SC_OK) {
@@ -450,7 +450,7 @@ JsonServlet::JsonServlet(QObject* parent) : WebSocketServlet()
 }
 
 //@Override
-/*protected*/ void JsonServlet::doDelete(HttpServletRequest* request, HttpServletResponse* response) throw (ServletException, IOException) {
+/*protected*/ void JsonServlet::doDelete(HttpServletRequest* request, HttpServletResponse* response) /*throw (ServletException, IOException)*/ {
     response->setStatus(HttpServletResponse::SC_OK);
     response->setContentType(ServletUtil::UTF8_APPLICATION_JSON);
     response->setHeader("Connection", "Keep-Alive"); // NOI18N
@@ -463,14 +463,14 @@ JsonServlet::JsonServlet(QObject* parent) : WebSocketServlet()
     try {
         if (type != NULL) {
             if (name == NULL) {
-                throw JsonException(HttpServletResponse::SC_BAD_REQUEST, "name must be specified"); // need to I18N
+                throw new JsonException(HttpServletResponse::SC_BAD_REQUEST, "name must be specified"); // need to I18N
             }
             foreach (JsonHttpService* service, *this->services->value(type)) {
                 service->doDelete(type, name, request->getLocale());
             }
         } else {
             log->warn("Type not specified.");
-            throw JsonException(HttpServletResponse::SC_BAD_REQUEST, "Type must be specified."); // Need to I18N
+            throw new JsonException(HttpServletResponse::SC_BAD_REQUEST, "Type must be specified."); // Need to I18N
         }
     } catch (JsonException ex) {
         reply = ex.getJsonMessage();
@@ -482,7 +482,7 @@ JsonServlet::JsonServlet(QObject* parent) : WebSocketServlet()
     }
 }
 
-/*public*/ void JsonServlet::sendError(HttpServletResponse* response, int code, QString message) throw (IOException) {
+/*public*/ void JsonServlet::sendError(HttpServletResponse* response, int code, QString message) /*throw new (IOException)*/ {
     response->setStatus(code);
     //response->getWriter().write(message);
     response->resp->write(message.toLocal8Bit());

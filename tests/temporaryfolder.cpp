@@ -106,7 +106,7 @@
         // </editor-fold>
     }
 #endif
-    /*public*/ File* TemporaryFolder::newFolder(QString folder) throw (IOException) {
+    /*public*/ File* TemporaryFolder::newFolder(QString folder) /*throw (IOException)*/ {
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
         /* 0: aload_0
          * 1: iconst_1
@@ -217,7 +217,7 @@
         // </editor-fold>
     }
 #endif
-    /*public*/ File* TemporaryFolder::newFolder() throw (IOException) {
+    /*public*/ File* TemporaryFolder::newFolder() /*throw (IOException)*/ {
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
         /* 0: aload_0
          * 1: aload_0

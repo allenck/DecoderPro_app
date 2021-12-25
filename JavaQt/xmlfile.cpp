@@ -61,7 +61,7 @@ XmlFile::XmlFile(QObject *parent) :
  * @throws java.io.FileNotFoundException
  * @return NULL if not found, else root element of located file
      */
-/*public*/ QDomElement XmlFile::rootFromName(QString name) throw (JDOMException)
+/*public*/ QDomElement XmlFile::rootFromName(QString name) /*throw (JDOMException)*/
 {
  currFile = name;
  QFile* fp = new QFile(name);
@@ -111,7 +111,7 @@ XmlFile::XmlFile(QObject *parent) :
  return rootFromFile(new QFile(file->getAbsolutePath()));
 }
 
-/*public*/ QDomElement XmlFile::rootFromFile(QFile* file) throw (JDOMException)
+/*public*/ QDomElement XmlFile::rootFromFile(QFile* file) /*throw (JDOMException)*/
 {
  QFileInfo info(file->fileName());
  if (log && log->isDebugEnabled())
@@ -121,7 +121,7 @@ XmlFile::XmlFile(QObject *parent) :
  currFile = file->fileName();
  if(!file->exists())
  {
-  //throw  new FileNotFoundException(tr("file %1 does not exist").arg(file->fileName()));
+  throw  new FileNotFoundException(tr("file %1 does not exist").arg(file->fileName()));
   log->error(tr("file %1 does not exist").arg(file->fileName()));
   return QDomElement();
  }
@@ -175,7 +175,7 @@ XmlFile::XmlFile(QObject *parent) :
  * @return root element from the file. This should never be NULL, as an
  * exception should be thrown if anything goes wrong.
  */
-/*public*/ QDomElement XmlFile::rootFromURL(QUrl* url) throw (JDOMException)
+/*public*/ QDomElement XmlFile::rootFromURL(QUrl* url) /*throw (JDOMException)*/
 {
  if (log->isDebugEnabled())
  {
@@ -228,7 +228,7 @@ XmlFile::XmlFile(QObject *parent) :
  *
  * @since 3.1.5
  */
-///*protected*/ QDomElement XmlFile::getRoot(bool verify, InputStreamReader reader) throw (JDOMException)
+///*protected*/ QDomElement XmlFile::getRoot(bool verify, InputStreamReader reader) /*throw (JDOMException)*/
 //{
 //    if (log->isDebugEnabled()) {
 //        log->debug("getRoot from reader with encoding " + reader.getEncoding());
@@ -238,7 +238,7 @@ XmlFile::XmlFile(QObject *parent) :
 //    // find root
 //    return doc.getRootElement();
 //}
-/*public*/ void XmlFile::writeXML(File* file, QDomDocument doc) throw (FileNotFoundException)
+/*public*/ void XmlFile::writeXML(File* file, QDomDocument doc)
 {
  writeXML(new QFile(file->getPath()), doc);
 }
@@ -251,7 +251,7 @@ XmlFile::XmlFile(QObject *parent) :
  * @param file File to be created.
  * @param doc Document to be written out. This should never be NULL.
  */
-/*public*/ void XmlFile::writeXML(QFile* file, QDomDocument doc) const throw (FileNotFoundException)
+/*public*/ void XmlFile::writeXML(QFile* file, QDomDocument doc) const
 {
  QFileInfo info(file->fileName());
  // ensure parent directory exists
@@ -745,7 +745,7 @@ XmlFile::XmlFile(QObject *parent) :
         // parse namespaces, including the noNamespaceSchema
         builder.setFeature("http://xml.org/sax/features/namespaces", true);
 
-    } catch (Exception e) {
+    } catch (Exception* e) {
         log->warn("Could not set schema validation feature: " + e);
     }
     return builder;

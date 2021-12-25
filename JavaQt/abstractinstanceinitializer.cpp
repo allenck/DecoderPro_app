@@ -14,7 +14,7 @@ AbstractInstanceInitializer::AbstractInstanceInitializer()
  * {@inheritDoc }
  */
 //@Override
-/*public*/ /*<T>*/ QObject* AbstractInstanceInitializer::getDefault(/*Class<T>*/QString type) const throw (IllegalArgumentException) {
+/*public*/ /*<T>*/ QObject* AbstractInstanceInitializer::getDefault(/*Class<T>*/QString /*type*/) const /*throw (IllegalArgumentException)*/ {
     throw /*new*/ IllegalArgumentException();
 }
 

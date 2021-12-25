@@ -111,7 +111,7 @@
  * @param string the message
  * @throws java.io.IOException if communications with the client is broken
  */
-/*public*/ void JsonClientHandler::onMessage(QString string) throw (IOException)
+/*public*/ void JsonClientHandler::onMessage(QString string) /*throw (IOException)*/
 {
     log->debug(tr("Received from client: %1").arg(string));
 
@@ -119,9 +119,9 @@
         //this->onMessage(this->connection->getObjectMapper().readTree(string));
      QJsonDocument jdoc = QJsonDocument::fromJson(string.toUtf8());
      this->onMessage(jdoc.object());
-    } catch (JsonProcessingException pe) {
-        log->warn(tr("Exception processing \"%1\"\n%2").arg(string).arg(pe.getMessage()));
-        this->sendErrorMessage(500, tr( "Unable to process JSON message with error: %1.").arg( pe.getLocalizedMessage()));
+    } catch (JsonProcessingException* pe) {
+        log->warn(tr("Exception processing \"%1\"\n%2").arg(string).arg(pe->getMessage()));
+        this->sendErrorMessage(500, tr( "Unable to process JSON message with error: %1.").arg( pe->getLocalizedMessage()));
     }
 }
 
@@ -134,7 +134,7 @@
  * @throws java.io.IOException if communications is broken with the client.
  * @see #onMessage(java.lang.String)
  */
-/*public*/ void JsonClientHandler::onMessage(/*JsonNode*/QJsonObject root) throw (IOException) {
+/*public*/ void JsonClientHandler::onMessage(/*JsonNode*/QJsonObject root) /*throw (IOException)*/ {
  try
  {
   //QString type = root.path(JSON::TYPE).asText();
@@ -251,7 +251,7 @@ QString type = root.value(JSON::TYPE).toString();
  * the parameter {@link #HELLO_MSG} instead
  */
 //@Deprecated
-/*public*/ void JsonClientHandler::sendHello(int /*heartbeat*/) throw (IOException) {
+/*public*/ void JsonClientHandler::sendHello(int /*heartbeat*/) /*throw (IOException)*/ {
     this->onMessage(HELLO_MSG);
 }
 

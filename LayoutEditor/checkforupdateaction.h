@@ -16,7 +16,7 @@ class CheckForUpdateAction : public JmriAbstractAction
   /*public*/ void actionPerformed(JActionEvent* ev)override;
 
  private:
-  /*@Nonnull*/  QString getNumber(/*@Nonnull*/  /*BufferedReader*/QTextStream* reader) throw (IOException);
+  /*@Nonnull*/  QString getNumber(/*@Nonnull*/  /*BufferedReader*/QTextStream* reader) /*throw (IOException)*/;
   static Logger* log;
 };
 

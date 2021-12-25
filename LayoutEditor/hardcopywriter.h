@@ -58,11 +58,11 @@ public:
     /*public*/ void setTextColor(QColor c);
     /*public*/ void increaseLineSpacing(int percent);
     /*public*/ void setFontName(QString name);
-    /*public*/ void close() throw (IOException);
+    /*public*/ void close() /*throw (IOException)*/;
     /*public*/ void dispose();
     /*public*/ void write(QMainWindow* jW);
-    /*public*/ void write(QColor c, QString s) throw (IOException);
-    /*public*/ void flush() throw (IOException);
+    /*public*/ void write(QColor c, QString s) /*throw (IOException)*/;
+    /*public*/ void flush() /*throw (IOException)*/;
     /*public*/ void writeHtml(QString str);
     bool isCancelled();
 

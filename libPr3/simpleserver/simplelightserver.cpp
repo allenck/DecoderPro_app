@@ -25,7 +25,7 @@
      * Protocol Specific Abstract Functions
      */
     //@Override
-    /*public*/ void SimpleLightServer::sendStatus(QString lightName, int Status) throw (IOException) {
+    /*public*/ void SimpleLightServer::sendStatus(QString lightName, int Status) /*throw (IOException)*/ {
         if (Status == Light::ON) {
             this->sendMessage("LIGHT " + lightName + " ON\n");
         } else if (Status == Light::OFF) {
@@ -37,7 +37,7 @@
     }
 
     //@Override
-    /*public*/ void SimpleLightServer::sendErrorStatus(QString lightName) throw (IOException) {
+    /*public*/ void SimpleLightServer::sendErrorStatus(QString lightName) /*throw (IOException)*/ {
         this->sendMessage("LIGHT ERROR\n");
     }
 
@@ -60,7 +60,7 @@
         }
     }
 
-    /*private*/ void SimpleLightServer::sendMessage(QString message) throw (IOException) {
+    /*private*/ void SimpleLightServer::sendMessage(QString message) /*throw (IOException)*/ {
         if (this->output != nullptr) {
             this->output->writeBytes(message.toLocal8Bit(), message.length());
         } else {

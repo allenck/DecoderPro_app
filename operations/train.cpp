@@ -2881,7 +2881,7 @@ if (roads.length() == 0) {
       for (QString scriptPathname : scripts) {
           try {
               JmriScriptEngineManager->getDefault().runScript(new File(jmri.util.FileUtil->getExternalFilename(scriptPathname)));
-          } catch (Exception e) {
+          } catch (Exception* e) {
               log->error("Problem with script: {}", scriptPathname);
           }
       }

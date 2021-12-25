@@ -65,13 +65,13 @@
         return nullptr;
     }
 //  turnout is NOT optional and cannot be null.  Raises Exception in ALL error cases.
-    /*static*/ /*private*/ Turnout* NBHTurnout::getExistingJMRITurnout(QString module, QString userIdentifier, QString parameter, QString turnout) throw (CTCException) {
+    /*static*/ /*private*/ Turnout* NBHTurnout::getExistingJMRITurnout(QString module, QString userIdentifier, QString parameter, QString turnout) /*throw new (CTCException)*/ {
         if (!ProjectsCommonSubs::isNullOrEmptyString(turnout)) {
             // Cannot use a constant Instance manager reference due to the dynamic nature of tests.
             Turnout* returnValue = ((TurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->getTurnout(turnout);
             if (returnValue == nullptr) { throw new CTCException(module, userIdentifier, parameter, tr("Turnout does not exist:") + " " + turnout); }    // NOI18N
             return returnValue;
-        } else { throw CTCException(module, userIdentifier, parameter, tr("Required turnout missing")); }    // NOI18N
+        } else { throw new CTCException(module, userIdentifier, parameter, tr("Required turnout missing")); }    // NOI18N
     }
 
     /*public*/ int NBHTurnout::getKnownState() {

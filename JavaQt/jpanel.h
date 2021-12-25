@@ -4,6 +4,7 @@
 #include "border.h"
 #include "flowlayout.h"
 #include "jcomponent.h"
+#include "propertychangesupport.h"
 
 class JPanel : public QFrame, public JComponent
 {
@@ -30,12 +31,16 @@ public:
  /*public*/ void setFont(QFont f) override{QFrame::setFont(f);}
  /*public*/ QWidget* jself() override{return (QWidget*)this;}
  /*public*/ void setEnabled(bool b ) override {QWidget::setEnabled(b);}
+
+ /*public*/ void addPropertyChangeListener(PropertyChangeListener* pl);
+
 private:
  Border* border = nullptr;
 
  void paintEvent(QPaintEvent *evt)override;
  QLayout* findParentLayout(QWidget* w);
  QLayout* findParentLayout(QWidget* w, QLayout* topLevelLayout);
+ PropertyChangeSupport* pcs = new PropertyChangeSupport(this);
 
 };
 #endif // JPANEL_H

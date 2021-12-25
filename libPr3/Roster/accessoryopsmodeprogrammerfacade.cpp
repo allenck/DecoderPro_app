@@ -94,7 +94,7 @@
 
 
 // programming interface
-/*synchronized*/ /*public*/ void AccessoryOpsModeProgrammerFacade::writeCV(QString cv, int val, ProgListener* p) throw (ProgrammerException)
+/*synchronized*/ /*public*/ void AccessoryOpsModeProgrammerFacade::writeCV(QString cv, int val, ProgListener* p) /*throw (ProgrammerException)*/
 {
  _val = val;
  useProgrammer(p);
@@ -186,19 +186,19 @@ void DelayWorker::process()
      try {
          //Thread.sleep(_delay);
    SleeperThread::msleep(facade->_delay);
-     } catch (InterruptedException ie) {
-         facade->log->error(tr("Interrupted while sleeping %1").arg(ie.getMessage()));
+     } catch (InterruptedException* ie) {
+         facade->log->error(tr("Interrupted while sleeping %1").arg(ie->getMessage()));
      }
  }
  facade->log->debug(tr("            delay elapsed for cv=%1, value=%2").arg(cv).arg(val));
  facade->programmingOpReply(val, ProgListener::OK);
  emit finished();
 }
-/*synchronized*/ /*public*/ void AccessoryOpsModeProgrammerFacade::confirmCV(QString cv, int val, ProgListener* p) throw (ProgrammerException) {
+/*synchronized*/ /*public*/ void AccessoryOpsModeProgrammerFacade::confirmCV(QString cv, int val, ProgListener* p) /*throw (ProgrammerException)*/ {
     readCV(cv, p);
 }
 
-/*synchronized*/ /*public*/ void AccessoryOpsModeProgrammerFacade::readCV(QString cv, ProgListener* p) throw (ProgrammerException) {
+/*synchronized*/ /*public*/ void AccessoryOpsModeProgrammerFacade::readCV(QString cv, ProgListener* p) /*throw new (ProgrammerException)*/ {
     useProgrammer(p);
     state = PROGRAMMING;
     prog->readCV(cv, (ProgListener*)this);
@@ -206,11 +206,11 @@ void DelayWorker::process()
 
 
 // internal method to remember who's using the programmer
-/*protected*/ void AccessoryOpsModeProgrammerFacade::useProgrammer(ProgListener* p) throw (ProgrammerException) {
+/*protected*/ void AccessoryOpsModeProgrammerFacade::useProgrammer(ProgListener* p) /*throw (ProgrammerException)*/ {
     // test for only one!
     if (_usingProgrammer != NULL && _usingProgrammer != p) {
         if (log->isInfoEnabled()) log->info("programmer already in use by "+QString(_usingProgrammer->self()->metaObject()->className()));
-        throw ProgrammerException("programmer in use");
+        throw new ProgrammerException("programmer in use");
     }
     else {
         _usingProgrammer = p;

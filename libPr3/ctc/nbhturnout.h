@@ -38,7 +38,7 @@ class NBHTurnout : public QObject
       /*private*/ /*final*/ bool _mFeedbackDifferent;
       /*private*/ /*final*/ QList<PropertyChangeListener*> _mArrayListOfPropertyChangeListeners = QList<PropertyChangeListener*>();
   /*private*/ static Turnout* getSafeExistingJMRITurnout(QString module, QString userIdentifier, QString parameter, QString turnout);
-  static /*private*/ Turnout* getExistingJMRITurnout(QString module, QString userIdentifier, QString parameter, QString turnout) throw (CTCException);
+  static /*private*/ Turnout* getExistingJMRITurnout(QString module, QString userIdentifier, QString parameter, QString turnout) /*throw (CTCException)*/;
 
 };
 

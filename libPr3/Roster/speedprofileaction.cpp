@@ -48,7 +48,7 @@ void SpeedProfileAction::common()
  SpeedProfileFrame* f = new SpeedProfileFrame();
 //    try {
      f->initComponents();
-//    } catch (Exception ex) {
+//    } catch (Exception* ex) {
 //        log.error("Exception: " + ex.toString());
 //        ex.printStackTrace();
 //    }

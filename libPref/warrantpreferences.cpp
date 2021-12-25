@@ -77,11 +77,11 @@ WarrantPreferences::WarrantPreferences(QObject *parent) :
    root = QDomElement();
   }
  }
- catch (FileNotFoundException ea) {
+ catch (FileNotFoundException* ea) {
      log->debug("Could not find Warrant preferences file.  Normal if preferences have not been saved before.");
      root = QDomElement();
- }catch (Exception eb) {
-     log->error("Exception while loading warrant preferences: " + eb.getMessage());
+ }catch (Exception* eb) {
+     log->error("Exception while loading warrant preferences: " + eb->getMessage());
      root = QDomElement();
  }
  if (!root.isNull())
@@ -272,7 +272,7 @@ WarrantPreferences::WarrantPreferences(QObject *parent) :
   }
   if (file->createNewFile()) log->debug("Creating new warrant prefs file: "+_fileName);
  }
- catch (Exception ea)
+ catch (Exception* ea)
  {
   Logger::error("Could not create warrant preferences file at "+_fileName+". "/*+ea*/);
  }
@@ -291,7 +291,7 @@ WarrantPreferences::WarrantPreferences(QObject *parent) :
    xmlFile->writeXML(file, doc);
   }
  }
- catch (Exception eb)
+ catch (Exception* eb)
  {
   log->warn("Exception in storing warrant xml: "/*+eb*/);
  }
@@ -354,7 +354,7 @@ WarrantPreferences::WarrantPreferences(QObject *parent) :
   rampPrefs.appendChild(step);
   prefs.appendChild(rampPrefs);
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
   log->warn("Exception in storing warrant xml: ");
   //ex.printStackTrace();

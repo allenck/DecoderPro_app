@@ -57,7 +57,7 @@ protected:
     /*protected*/ void configureManagerComboBox(ManagerComboBox/*<E>*/* comboBox, Manager/*<E>*/* manager,
                                                 /*Class<? extends Manager<E>>*/QString managerClass);
     /*protected*/ void removePrefixBoxListener(ManagerComboBox/*<E>*/* prefixBox);
-    /*protected*/ void displayHwError(QString curAddress, Exception ex);
+    /*protected*/ void displayHwError(QString curAddress, Exception *ex);
     virtual /*protected*/ void configureTable(JTable* table);
     virtual /*protected*/ void columnsVisibleUpdated(QVector<bool> colsVisible);
 

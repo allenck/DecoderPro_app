@@ -259,7 +259,7 @@ protected void setInitialAlignment() {
     File defaultFile = new File(PositionFile.defaultFilename());
     try {
         loadAlignment(defaultFile);
-    } catch (Exception e) {
+    } catch (Exception* e) {
         log->debug("load exception" + e);
         // load dummy values
         setDefaultAlignment();
@@ -313,7 +313,7 @@ void loadInitialTransmitters() {
             Transmitter t = new Transmitter(r.getId(), false, address, r.isLongAddress());
             t.setRosterName(r.getId());
             transmitters.add(t);
-        } catch (Exception e) {
+        } catch (Exception* e) {
             // just skip this entry
             if (r != NULL) {
                 log->warn("Skip roster entry: " + r.getId());
@@ -326,7 +326,7 @@ void loadInitialTransmitters() {
     // load the polling status, custom IDs, etc, from file if possible
     try {
         loadPollConfig(new File(PollingFile.defaultFilename()));
-    } catch (Exception e) {
+    } catch (Exception* e) {
         e.printStackTrace();
     }
 }

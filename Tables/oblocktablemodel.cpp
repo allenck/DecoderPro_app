@@ -491,7 +491,7 @@ void OBlockTableModel::initTempRow()
               block->setReporter(rep);
               block->setReportingCurrent(tempRow[REPORT_CURRENTCOL]==(tr("Current")));
           }
-      } catch (Exception ex) {
+      } catch (Exception* ex) {
           log->error("No Reporter named \"" + tempRow[REPORTERCOL] + "\" found. threw exception: " /*+ ex*/);
       }
       if (rep == NULL) {
@@ -656,7 +656,7 @@ void OBlockTableModel::initTempRow()
         err = block->setErrorSensor( value.toString());
         fireTableRowsUpdated(row, row);
     }
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log->error("getSensor(" +  value.toString() + ") threw exception: " /*+ ex*/);
     }
     if (err) {
@@ -676,7 +676,7 @@ void OBlockTableModel::initTempRow()
             block->setReporter(rep);
             fireTableRowsUpdated(row, row);
         }
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log->error("No Reporter named \"" +  value.toString() + "\" found. threw exception: " /*+ ex*/);
     }
     if (rep == NULL) {
@@ -824,8 +824,8 @@ void OBlockTableModel::initTempRow()
                  ok = block->setErrorSensor(value.toString());
                  fireTableRowsUpdated(row, row);
              }
-         } catch (Exception ex) {
-             log->error(tr("getSensor(%1) threw exception: %2").arg(value.toString()).arg(ex.getMessage()));
+         } catch (Exception* ex) {
+             log->error(tr("getSensor(%1) threw exception: %2").arg(value.toString()).arg(ex->getMessage()));
          }
          if (!ok) {
              JOptionPane::showMessageDialog(nullptr, tr("There is no Sensor named \"%1\".").arg(value.toString()),
@@ -843,8 +843,8 @@ void OBlockTableModel::initTempRow()
                  block->setReporter(rep);
                  fireTableRowsUpdated(row, row);
              }
-         } catch (Exception ex) {
-             log->error(tr("No Reporter named \"%1\" found. threw exception: %2").arg(value.toString()).arg(ex.getMessage()));
+         } catch (Exception* ex) {
+             log->error(tr("No Reporter named \"%1\" found. threw exception: %2").arg(value.toString()).arg(ex->getMessage()));
          }
          if (rep == nullptr) {
              JOptionPane::showMessageDialog(nullptr, tr("There is no Reporter named \"%1\.").arg(tempRow[REPORTERCOL]),

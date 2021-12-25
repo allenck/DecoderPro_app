@@ -344,7 +344,7 @@ bool DecoderFile::isProductIDok(QDomElement e, QString extraInclude, QString ext
        continue;
    // if not correct productID, skip
    if (!isProductIDok(e, extraInclude, extraExclude)) continue;
-  } catch (Exception ex) {
+  } catch (Exception* ex) {
       log->warn("Problem parsing minFn or minOut in decoder file, variable "
                +e.attribute("item")+" exception: "/*+ex*/);
   }
@@ -368,18 +368,18 @@ bool DecoderFile::isProductIDok(QDomElement e, QString extraInclude, QString ext
          if (getNumFunctions() >= 0 && e.attribute("minFn") != NULL
              && getNumFunctions() < (e.attribute("minFn")).toInt(&bOk) )
              continue;
-         if(!bOk) throw Exception();
+         if(!bOk) throw new Exception();
          // if its associated with an inconsistent number of outputs,
          // skip creating it
          if (getNumOutputs() >= 0 && e.attribute("minOut") != NULL
              && getNumOutputs() < (e.attribute("minOut")).toInt(&bOk) )
              continue;
-         if(!bOk) throw Exception();
+         if(!bOk) throw new Exception();
          // if not correct productID, skip
          if (!isProductIDok(e, extraInclude, extraExclude)) continue;
-     } catch (Exception ex) {
+     } catch (Exception* ex) {
          log->warn("Problem parsing minFn or minOut in decoder file, variable "
-                  +e.attribute("item")+" exception: "+ex.getMessage());
+                  +e.attribute("item")+" exception: "+ex->getMessage());
      }
      // load each row
      variableModel->setConstant(e);
@@ -406,7 +406,7 @@ bool DecoderFile::isProductIDok(QDomElement e, QString extraInclude, QString ext
     log->debug("skip due to num functions");
     continue;
    }
-   if(!bOk) throw Exception();
+   if(!bOk) throw new Exception();
    // if its associated with an inconsistent number of outputs,
    // skip creating it
    if (getNumOutputs() >= 0 && e.attribute("minOut") != NULL
@@ -415,11 +415,11 @@ bool DecoderFile::isProductIDok(QDomElement e, QString extraInclude, QString ext
        log->debug("skip due to num outputs");
        continue;
    }
-   if(!bOk) throw Exception();
+   if(!bOk) throw new Exception();
   }
-  catch (Exception ex) {
+  catch (Exception* ex) {
    log->warn("Problem parsing minFn or minOut in decoder file, variable "
-            +e.attribute("item")+" exception: "+ex.getMessage());
+            +e.attribute("item")+" exception: "+ex->getMessage());
   }
 
  }

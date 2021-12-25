@@ -81,7 +81,7 @@ void PowerButtonAction::updateLabel()
   } else {
       p->setPower(PowerManager::OFF);
   }
- } catch (Exception ex) {
+ } catch (Exception* ex) {
      return;
  }
  updateLabel();

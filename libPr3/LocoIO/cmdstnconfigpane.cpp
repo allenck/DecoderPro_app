@@ -115,7 +115,7 @@ CmdStnConfigPane::CmdStnConfigPane(QWidget *parent) :
   LabelTop = rb->getString("LabelTop");
   read = rb->getString("ButtonRead");
   write = rb->getString("ButtonWrite");
-// catch (Exception e)
+// catch (Exception* e)
 // {
 //  log->error("Failed to load values from /"+name+"/ properties");
 // }

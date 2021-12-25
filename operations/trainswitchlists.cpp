@@ -85,7 +85,7 @@ namespace Operations
      }
 
      QTextStream* stream =  new QTextStream(qFile);
-//     } catch (IOException e) {
+//     } catch (IOException* e) {
 //         log->error("Can not open switchlist file: {}", file.getName());
 //         return;
 //     }
@@ -399,7 +399,7 @@ namespace Operations
 
 //     } catch (IllegalArgumentException e) {
 //         newLine(fileOut, QString(tr("ERROR! Window \"%1\" has an illegal argument. %2").arg(
-//                 tr("Edit Switch List Text")).arg(e.getLocalizedMessage()));
+//                 tr("Edit Switch List Text")).arg(e->getLocalizedMessage()));
 //         newLine(fileOut, messageFormatText);
 //         //e.printStackTrace();
 //     }

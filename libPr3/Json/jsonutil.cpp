@@ -225,7 +225,7 @@ static /*public*/ void setConsist(Locale locale, DccLocoAddress address, JsonNod
             try {
                 (new ConsistFile()).writeFile(InstanceManager.getDefault(jmri.ConsistManager.class).getConsistList());
             } catch (IOException* ex) {
-                throw new JsonException(500, ex.getLocalizedMessage());
+                throw new JsonException(500, ex->getLocalizedMessage());
             }
         }
     } catch (NullPointerException* ex) {
@@ -319,7 +319,7 @@ static /*public*/ JsonNode getLights(Locale locale) throws JsonException {
 static /*public*/ void putLight(Locale locale, String name, JsonNode data) throws JsonException {
     try {
         InstanceManager.lightManagerInstance().provideLight(name);
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         throw new JsonException(500, Bundle.getMessage(locale, "ErrorCreatingObject", LIGHT, name));
     }
     setLight(locale, name, data);
@@ -454,7 +454,7 @@ static /*public*/ JsonNode getMemory(Locale locale, String name) throws JsonExce
 static /*public*/ void putMemory(Locale locale, String name, JsonNode data) throws JsonException {
     try {
         InstanceManager.memoryManagerInstance().provideMemory(name);
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         throw new JsonException(500, Bundle.getMessage(locale, "ErrorCreatingObject", MEMORY, name));
     }
     setMemory(locale, name, data);
@@ -665,7 +665,7 @@ static /*public*/ JsonNode getReporters(Locale locale) {
 static /*public*/ void putReporter(Locale locale, String name, JsonNode data) throws JsonException {
     try {
         InstanceManager.getDefault(jmri.ReporterManager.class).provideReporter(name);
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         throw new JsonException(500, Bundle.getMessage(locale, "ErrorCreatingObject", REPORTER, name));
     }
     setReporter(locale, name, data);
@@ -949,7 +949,7 @@ static /*public*/ JsonNode getSensors(Locale locale) throws JsonException {
 static /*public*/ void putSensor(Locale locale, String name, JsonNode data) throws JsonException {
     try {
         InstanceManager.sensorManagerInstance().provideSensor(name);
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         throw new JsonException(500, Bundle.getMessage(locale, "ErrorCreatingObject", TURNOUT, name));
     }
     setSensor(locale, name, data);
@@ -1318,7 +1318,7 @@ static /*public*/ JsonNode getTurnouts(Locale locale) throws JsonException {
 static /*public*/ void putTurnout(Locale locale, String name, JsonNode data) throws JsonException {
     try {
         InstanceManager.turnoutManagerInstance().provideTurnout(name);
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         throw new JsonException(500, Bundle.getMessage(locale, "ErrorCreatingObject", TURNOUT, name));
     }
     setTurnout(locale, name, data);

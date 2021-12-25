@@ -110,7 +110,7 @@ void JmriConnection::common()
  * @param message message to send
  * @throws IOException if problem sending message
  */
-/*public*/ void JmriConnection::sendMessage(QString message) throw (IOException) {
+/*public*/ void JmriConnection::sendMessage(QString message) /*throw (IOException)*/ {
     if (this->dataOutputStream != NULL) {
         //this->dataOutputStream->writeBytes(message);
      *dataOutputStream << message;
@@ -126,8 +126,8 @@ void JmriConnection::common()
             this->session.getRemote().sendString(message, new WriteCallback() {
                 @Override
                 /*public*/ void writeFailed(Throwable thrwbl) {
-                    log.error("Exception \"{}\" sending {}", thrwbl.getMessage(), message);
-                    JmriConnection.this->getSession().close(StatusCode.NO_CODE, thrwbl.getMessage());
+                    log.error("Exception \"{}\" sending {}", thrwbl->getMessage(), message);
+                    JmriConnection.this->getSession().close(StatusCode.NO_CODE, thrwbl->getMessage());
                 }
 
                 @Override
@@ -155,7 +155,7 @@ void JmriConnection::common()
  *
  * @throws IOException if problem closing connection
  */
-/*public*/ void JmriConnection::close() throw (IOException) {
+/*public*/ void JmriConnection::close() /*throw (IOException)*/ {
     if (this->dataOutputStream != NULL) {
         //this->dataOutputStream->close();
      this->dataOutputStream->device()->close();

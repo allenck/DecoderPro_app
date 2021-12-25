@@ -66,9 +66,9 @@ SignalHeadSignalMastXml::SignalHeadSignalMastXml(QObject *parent) :
  {
   m = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(sys);
  }
- catch (Exception e)
+ catch (Exception* e)
  {
-  log->error("An error occured while trying to create the signal '"+sys+"' " + e.getMessage());
+  log->error("An error occured while trying to create the signal '"+sys+"' " + e->getMessage());
   return false;
  }
  if (!getUserName(element).isNull())

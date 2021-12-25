@@ -117,7 +117,8 @@ class ReleaseUntil01 : public ReleaseUntil
     SlotManagerTest* smt;
 public:
     ReleaseUntil01(SlotManagerTest* smt) {this->smt = smt;}
-    bool ready() throw (Exception) {return smt->startedLongTimer;}
+    bool ready() /*throw (Exception)*/
+ {return smt->startedLongTimer;}
 };
 
 class ReleaseUntil02 : public ReleaseUntil
@@ -126,7 +127,8 @@ class ReleaseUntil02 : public ReleaseUntil
     SlotManagerTest* smt;
 public:
     ReleaseUntil02(SlotManagerTest* smt) {this->smt = smt;}
-    bool ready() throw (Exception)
+    bool ready() /*throw (Exception)*/
+
     {
      return (smt->value == 35);
     }
@@ -138,7 +140,8 @@ class ReleaseUntil03 : public ReleaseUntil
     SlotManagerTest* smt;
 public:
     ReleaseUntil03(SlotManagerTest* smt) {this->smt = smt;}
-    bool ready() throw (Exception) {return smt->startedShortTimer;}
+    bool ready() /*throw (Exception)*/
+ {return smt->startedShortTimer;}
 };
 
 class ReleaseUntil04 : public ReleaseUntil
@@ -147,7 +150,8 @@ class ReleaseUntil04 : public ReleaseUntil
     SlotManagerTest* smt;
 public:
     ReleaseUntil04(SlotManagerTest* smt) {this->smt = smt;}
-    bool ready() throw (Exception) {return smt->value == -1;}
+    bool ready() /*throw (Exception)*/
+ {return smt->value == -1;}
 };
 
 #endif // SLOTMANAGERTEST_H

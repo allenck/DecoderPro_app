@@ -59,7 +59,7 @@ ProxyReporterManager::ProxyReporterManager(QObject *parent) :
 
 //@Override
 /** {@inheritDoc} */
-/*public*/ Reporter* ProxyReporterManager::provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException) { return provideReporter(name); }
+/*public*/ Reporter* ProxyReporterManager::provide(/*@Nonnull*/ QString name) /*throw (IllegalArgumentException) */{ return provideReporter(name); }
 
 /**
  * Locate an instance based on a system name.  Returns NULL if no

@@ -707,7 +707,7 @@ void SpeedometerFrame::stopSensor2_propertyChange(PropertyChangeEvent *)
         if (s == NULL) {
             throw new Exception();
         }
-    } catch (Exception e) {
+    } catch (Exception* e) {
         // couldn't locate the sensor, that's an error
         log->error("Start sensor invalid: " + startSensor->text());
         if (warn) {
@@ -728,7 +728,7 @@ void SpeedometerFrame::stopSensor2_propertyChange(PropertyChangeEvent *)
         if (s == NULL) {
             throw new Exception();
         }
-    } catch (Exception e) {
+    } catch (Exception* e) {
         // couldn't locate the sensor, that's an error
         log->error("Stop 1 sensor invalid : " + stopSensor1->text());
         if (warn) {
@@ -767,7 +767,7 @@ void SpeedometerFrame::stopSensor2_propertyChange(PropertyChangeEvent *)
             if (s == NULL) {
                 throw new Exception();
             }
-        } catch (Exception e) {
+        } catch (Exception* e) {
             // couldn't locate the sensor, that's an error
             log->error("Stop 2 sensor invalid: " + stopSensor2->text());
             if (warn) {
@@ -924,9 +924,9 @@ void SpeedometerFrame::stopSensor2_propertyChange(PropertyChangeEvent *)
  {
   x->writeXML(file, doc);
  }
- catch (FileNotFoundException ex)
+ catch (FileNotFoundException* ex)
  {
-  log->error("File not found when writing: " + ex.getMessage());
+  log->error("File not found when writing: " + ex->getMessage());
  } catch (IOException* ex)
  {
   log->error("IO Exception when writing: " + ex->getMessage());

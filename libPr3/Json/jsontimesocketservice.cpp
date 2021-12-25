@@ -18,7 +18,7 @@
 }
 
 //@Override
-/*public*/ void JsonTimeSocketService::onMessage(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException) {
+/*public*/ void JsonTimeSocketService::onMessage(QString type, QJsonObject data, QLocale locale) /*throw new (IOException, JmriException, JsonException)*/ {
     if (!this->listening) {
         Timebase* manager = (Timebase*)InstanceManager::getDefault("Timebase");
         manager->addMinuteChangeListener((PropertyChangeListener*)this);
@@ -30,8 +30,8 @@
 }
 
 //@Override
-/*public*/ void JsonTimeSocketService::onList(QString type, QJsonObject /*data*/, QLocale /*locale*/) throw (JsonException) {
-    throw JsonException(HttpServletResponse::SC_BAD_REQUEST, tr(/*locale,*/ "{0} cannot be listed.").arg(type));
+/*public*/ void JsonTimeSocketService::onList(QString type, QJsonObject /*data*/, QLocale /*locale*/) /*throw new (JsonException)*/ {
+    throw new JsonException(HttpServletResponse::SC_BAD_REQUEST, tr(/*locale,*/ "{0} cannot be listed.").arg(type));
 }
 
 //@Override

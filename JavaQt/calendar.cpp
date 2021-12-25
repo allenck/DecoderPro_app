@@ -2430,7 +2430,7 @@
                     firstDayOfWeek == that.firstDayOfWeek &&
                     minimalDaysInFirstWeek == that.minimalDaysInFirstWeek &&
                     zone.equals(that.zone);
-            } catch (Exception e) {
+            } catch (Exception* e) {
                 // Note: GregorianCalendar.computeTime throws
                 // IllegalArgumentException if the ERA value is invalid
                 // even it's in lenient mode.
@@ -3332,7 +3332,7 @@
                     if (e instanceof RuntimeException) {
                         throw (RuntimeException) e;
                     } else if (e instanceof IOException) {
-                        throw (IOException) e;
+                        /*throw (IOException)*/ e;
                     } else if (e instanceof ClassNotFoundException) {
                         throw (ClassNotFoundException) e;
                     }

@@ -14,7 +14,7 @@ class JAVAQTSHARED_EXPORT Profile : public QObject
 public:
  /*public*/ static /*final*/ QString EXTENSION;// = ".jmri"; // NOI18N
 
-    Profile(File* path, QObject *parent = 0) throw (IOException);
+    Profile(File* path, QObject *parent = 0) /*throw (IOException)*/;
     /*public*/ Profile(QString name, QString id, File* path, QObject *parent = 0) throw (IOException, IllegalArgumentException);
     /*public*/ QString getName();
     /*public*/ void setName(QString name);
@@ -63,8 +63,8 @@ protected:
     /*protected*/ static /*final*/ QString ID;// = "id"; // NOI18N
     /*protected*/ static /*final*/ QString NAME;// = "name"; // NOI18N
     /*protected*/ static /*final*/ QString PATH;// = "path"; // NOI18N
-    /*protected*/ Profile(/*@Nonnull*/ File* path, /*@Nonnull*/ QString id, bool isReadable, QObject* parent = 0) throw (IOException);
-    /*protected*/ /*final*/ void save() throw (IOException);
+    /*protected*/ Profile(/*@Nonnull*/ File* path, /*@Nonnull*/ QString id, bool isReadable, QObject* parent = 0) /*throw (IOException)*/;
+    /*protected*/ /*final*/ void save() /*throw (IOException)*/;
     /*protected*/ /*final*/ void setNameInConstructor(QString name);
 
  friend class ProfileManager;

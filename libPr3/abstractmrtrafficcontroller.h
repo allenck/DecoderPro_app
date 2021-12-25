@@ -42,7 +42,7 @@ public:
     /*public*/ virtual void disconnectPort(AbstractPortController* p);
     /*public*/ virtual bool portReadyToSend(AbstractPortController* p) throw (Exception);
     /*public*/ virtual void receiveLoop();
-    /*public*/ virtual void handleOneIncomingReply() throw (IOException);
+    /*public*/ virtual void handleOneIncomingReply() /*throw (IOException)*/;
     /*public*/ AbstractMRListener* getLastSender();
 
     
@@ -137,8 +137,8 @@ protected:
  /*protected*/ bool xmtException = false;
  /*synchronized*/ /*protected*/ virtual void forwardToPort(AbstractMRMessage* m, AbstractMRListener* reply);
  /*protected*/ virtual void connectionWarn() ;
- /*protected*/ virtual void portWarn(Exception e);
- /*protected*/ virtual void portWarnTCP(Exception e);
+ /*protected*/ virtual void portWarn(Exception *e);
+ /*protected*/ virtual void portWarnTCP(Exception* e);
  QThread* xmtThread = nullptr;
  /*protected*/ Runnable* xmtRunnable = nullptr;
  QThread* rcvThread;// = NULL;
@@ -149,12 +149,12 @@ protected:
  /*protected*/ bool rcvException = false;
 
  /*protected*/ int maxRcvExceptionCount;// = 100;
- /*protected*/ virtual void reportReceiveLoopException(Exception e);
+ /*protected*/ virtual void reportReceiveLoopException(Exception *e);
  /*abstract*/ /*protected*/ virtual AbstractMRReply* newReply(){return NULL;}
  /*abstract*/ /*protected*/ virtual bool endOfMessage(AbstractMRReply* /*r*/) {return false;}
- /*protected*/ virtual void waitForStartOfReply(QDataStream* istream) throw (IOException);
- /*protected*/ char readByteProtected(QDataStream* istream) throw (IOException);
- /*protected*/ virtual void loadChars(AbstractMRReply* msg, QDataStream* istream) throw (IOException);
+ /*protected*/ virtual void waitForStartOfReply(QDataStream* istream) /*throw (IOException)*/;
+ /*protected*/ char readByteProtected(QDataStream* istream) /*throw (IOException)*/;
+ /*protected*/ virtual void loadChars(AbstractMRReply* msg, QDataStream* istream) /*throw (IOException)*/;
  /*protected*/ virtual bool canReceive();
  /*protected*/ /*final*/ virtual void finalize() throw (Throwable);
  /*protected*/ virtual void terminate();

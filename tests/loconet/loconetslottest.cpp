@@ -914,8 +914,8 @@ LocoNetSlotTest::LocoNetSlotTest(QObject *parent) : QObject(parent)
         m->setElement(6, i);
         try {
             s->setSlot(m);
-        } catch (LocoNetException e) {
-            Assert::fail("unexpected exception " + e.getMessage(),__FILE__, __LINE__);
+        } catch (LocoNetException* e) {
+            Assert::fail("unexpected exception " + e->getMessage(),__FILE__, __LINE__);
         }
         Assert::assertEquals("F0 value from LocoNet Message, loop "+i,((i & 0x10)== 0x10), s->isF0(), __FILE__, __LINE__);
         Assert::assertEquals("F1 value from LocoNet Message, loop "+i,((i & 0x01)== 0x01), s->isF1(), __FILE__, __LINE__);
@@ -933,8 +933,8 @@ LocoNetSlotTest::LocoNetSlotTest(QObject *parent) : QObject(parent)
         m->setElement(10, i);
         try {
             s->setSlot(m);
-        } catch (LocoNetException e) {
-            Assert::fail("unexpected exception " + e.getMessage(),__FILE__, __LINE__);
+        } catch (LocoNetException* e) {
+            Assert::fail("unexpected exception " + e->getMessage(),__FILE__, __LINE__);
         }
         Assert::assertFalse ("F0 value from LocoNet Message, loop "+i, s->isF0(), __FILE__, __LINE__);
         Assert::assertFalse ("F1 value from LocoNet Message, loop "+i, s->isF1(), __FILE__, __LINE__);

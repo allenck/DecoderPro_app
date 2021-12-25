@@ -208,7 +208,7 @@
      * @param f Dispatcher instance.
      * @throws java.io.IOException Thrown if dispatcher option file not found
      */
-    /*public*/ void OptionsFile::writeDispatcherOptions(DispatcherFrame* f) //throw (IOException)
+    /*public*/ void OptionsFile::writeDispatcherOptions(DispatcherFrame* f) ///*throw (IOException)*/
     {
         log->debug(tr("Saving Dispatcher options to file %1").arg(defaultFileName));
         dispatcher = f;
@@ -270,8 +270,8 @@
             }
             // write content to file
             writeXML(findFile(defaultFileName), doc);
-        } catch (IOException ioe) {
-            log->error(tr("IO Exception %1").arg(ioe.getMessage()));
+        } catch (IOException* ioe) {
+            log->error(tr("IO Exception %1").arg(ioe->getMessage()));
             throw (ioe);
         }
 #endif

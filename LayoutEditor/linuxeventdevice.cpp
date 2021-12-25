@@ -8,7 +8,7 @@ LinuxEventDevice::LinuxEventDevice()
 }
 // /*final*/ class LinuxEventDevice implements LinuxDevice {
 
-/*public*/ LinuxEventDevice::LinuxEventDevice(QString filename, QObject* parent) throw (IOException) : LinuxDevice(parent)
+/*public*/ LinuxEventDevice::LinuxEventDevice(QString filename, QObject* parent) /*throw (IOException)*/ : LinuxDevice(parent)
 {
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">
     /* 0: aload_0
@@ -82,7 +82,7 @@ LinuxEventDevice::LinuxEventDevice()
  rumblers = new QVector<Rumbler*>();
 }
 #if 0
-/*private*/ static /*final*/ /*native*/ long nOpen(QString string, bool bln) throw (IOException);
+/*private*/ static /*final*/ /*native*/ long nOpen(QString string, bool bln) /*throw (IOException)*/;
 #endif
 /*public*/ /*final*/ Usb::Controller::Type LinuxEventDevice::getType() {
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">
@@ -484,7 +484,7 @@ LinuxEventDevice::LinuxEventDevice()
  return rumblers;
 }
 
-/*public*/ /*final*/ /*synchronized*/ int LinuxEventDevice::uploadRumbleEffect(int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) throw (IOException) {
+/*public*/ /*final*/ /*synchronized*/ int LinuxEventDevice::uploadRumbleEffect(int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) /*throw (IOException)*/ {
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">
     /* 0: aload_0
      * 1: invokespecial net/java/games/input/LinuxEventDevice.checkClosed:()V
@@ -506,7 +506,7 @@ LinuxEventDevice::LinuxEventDevice()
 #if 0
 /*private*/ static /*final*/ /*native*/ int nUploadRumbleEffect(long l, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) throw new IOException;
 #endif
-/*public*/ /*final*/ /*synchronized*/ int LinuxEventDevice::uploadConstantEffect(int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10) throw (IOException) {
+/*public*/ /*final*/ /*synchronized*/ int LinuxEventDevice::uploadConstantEffect(int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10) /*throw (IOException)*/ {
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">
     /* 0: aload_0
      * 1: invokespecial net/java/games/input/LinuxEventDevice.checkClosed:()V
@@ -990,7 +990,7 @@ LinuxEventDevice::LinuxEventDevice()
     // </editor-fold>
 }
 
-/*private*/ /*final*/ QString getDeviceName() throw (IOException) {
+/*private*/ /*final*/ QString getDeviceName() /*throw (IOException)*/ {
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">
     /* 0: aload_0
      * 1: getfield      net/java/games/input/LinuxEventDevice.fd:J
@@ -1022,7 +1022,7 @@ LinuxEventDevice::LinuxEventDevice()
     // </editor-fold>
 }
 
-/*private*/ static /*final*/ native void nClose(long l) throw (IOException);
+/*private*/ static /*final*/ native void nClose(long l) /*throw (IOException)*/;
 
 /*private*/ /*final*/ void checkClosed() throws IOException {
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">

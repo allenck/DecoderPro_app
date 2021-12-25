@@ -130,7 +130,7 @@ template<class T>
 }
 
 //template<class T>
-/*public*/ void NamedBeanHandleManager::updateBeanFromSystemToUser(NamedBean* bean) throw(JmriException){
+/*public*/ void NamedBeanHandleManager::updateBeanFromSystemToUser(NamedBean* bean) /*throw(JmriException)*/{
     QString userName = bean->getUserName();
     QString systemName = bean->getSystemName();
 
@@ -207,36 +207,36 @@ template<class T>
 //        @Override
 //template<class T>
 /*public*/ char NamedBeanHandleManager::systemLetter() {
-    throw UnsupportedOperationException("Not supported yet.");
+    throw new UnsupportedOperationException("Not supported yet.");
 }
 
 //template<class T>
 /*public*/ QString NamedBeanHandleManager::getSystemPrefix() const{
-    throw UnsupportedOperationException("Not supported yet.");
+    throw new UnsupportedOperationException("Not supported yet.");
 }
 
 //template<class T>
 /*public*/ char NamedBeanHandleManager::typeLetter()const{
-    throw UnsupportedOperationException("Not supported yet.");
+    throw new UnsupportedOperationException("Not supported yet.");
 }
 
 //        @Override
 //template<class T>
 /*public*/ QString NamedBeanHandleManager::makeSystemName(QString /*s*/) const {
-    throw  UnsupportedOperationException("Not supported yet.");
+    throw new  UnsupportedOperationException("Not supported yet.");
 }
 
 //        @Override
 //template<class T>
 /*public*/ QStringList NamedBeanHandleManager::getSystemNameArray() {
-    throw UnsupportedOperationException("Not supported yet.");
+    throw new UnsupportedOperationException("Not supported yet.");
 }
 
 //        @Override
 //template<class T>
 /*public*/ QStringList NamedBeanHandleManager::getSystemNameList()
 {
-    throw UnsupportedOperationException("Not supported yet.");
+    throw new UnsupportedOperationException("Not supported yet.");
 }
 
 //        @Override
@@ -253,23 +253,23 @@ template<class T>
 
 //        @Override
 //template<class T>
-/*protected*/ void NamedBeanHandleManager::firePropertyChange(QString p, QVariant old, QVariant n) { pcs->firePropertyChange(p,old,n);}
+/*protected*/ void NamedBeanHandleManager::firePropertyChange(QString p, QVariant old, QVariant n)const { pcs->firePropertyChange(p,old,n);}
 
 //        @Override
 //template<class T>
 /*public*/ void NamedBeanHandleManager::Register(NamedBean* /*n*/) const {
-    throw UnsupportedOperationException("Not supported yet.");
+    throw new UnsupportedOperationException("Not supported yet.");
 }
 
 //        @Override
 //template<class T>
 /*public*/ void NamedBeanHandleManager::deregister(NamedBean* /*n*/)const {
-    throw UnsupportedOperationException("Not supported yet.");
+    throw new  UnsupportedOperationException("Not supported yet.");
 }
 
 //template<class T>
 /*public*/ int NamedBeanHandleManager::getXMLOrder()const {
-    throw UnsupportedOperationException("Not supported yet.");
+    throw new UnsupportedOperationException("Not supported yet.");
 }
 
 //@Override

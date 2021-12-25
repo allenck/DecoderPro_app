@@ -113,16 +113,16 @@ void SignalSpeedMap::loadMap()
     try {
         loadRoot(xf->rootFromURL(&path));
     }
-    catch (FileNotFoundException e)
+    catch (FileNotFoundException* e)
     {
      log->warn(tr("signalSpeeds file (%1) doesn't exist in XmlFile search path.").arg(path.toString()));
         throw  IllegalArgumentException("signalSpeeds file (" + path.toDisplayString() + ") doesn't exist in XmlFile search path.");
     }
-    catch (JDOMException  e) {
-     log->error(tr("error reading file \"%1\" due to: %2").arg(path.toDisplayString().arg(e.getMessage())));
+    catch (JDOMException*  e) {
+     log->error(tr("error reading file \"%1\" due to: %2").arg(path.toDisplayString().arg(e->getMessage())));
     }
-    catch (IOException e) {
-     log->error(tr("error reading file \"%1\" due to: %2").arg(path.toDisplayString().arg(e.getMessage())));
+    catch (IOException* e) {
+     log->error(tr("error reading file \"%1\" due to: %2").arg(path.toDisplayString().arg(e->getMessage())));
     }
 
 }
@@ -197,9 +197,9 @@ void SignalSpeedMap::loadMap()
       }
   }
  }
- catch (JDOMException e)
+ catch (JDOMException* e)
  {
-  log->error(tr("error reading speed map elements due to: %1").arg(e.getMessage()));
+  log->error(tr("error reading speed map elements due to: %1").arg(e->getMessage()));
  }
 }
 

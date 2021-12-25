@@ -120,7 +120,7 @@ void ConfigXmlManager::confirmAdapterAvailable(QObject* o)
        Class::forName(adapter);
    } catch (ClassNotFoundException* ex) {
        locateClassFailed(ex, adapter, o);
-   } catch (NoClassDefFoundError ex) {
+   } catch (NoClassDefFoundError* ex) {
        locateClassFailed(ex, adapter, o);
    }
  }
@@ -342,8 +342,8 @@ void ConfigXmlManager::confirmAdapterAvailable(QObject* o)
  * Handle failure to load adapter class. Although only a
  * one-liner in this class, it is a separate member to facilitate testing.
  */
-void ConfigXmlManager::locateClassFailed(Throwable ex, QString adapterName, QObject* /*o*/) {
-    log->warn(ex.getMessage()+" could not load adapter class "+adapterName);
+void ConfigXmlManager::locateClassFailed(Throwable* ex, QString adapterName, QObject* /*o*/) {
+    log->warn(ex->getMessage()+" could not load adapter class "+adapterName);
     //if (log->isDebugEnabled()) ex.printStackTrace();
 }
 
@@ -405,9 +405,9 @@ void ConfigXmlManager::locateClassFailed(Throwable ex, QString adapterName, QObj
     QDomElement e = elementFromObject(o);
     if (!e.isNull())
      root.appendChild(e);
-  } catch (Exception e) {
+  } catch (Exception* e) {
       storingErrorEncountered (nullptr, "storing to file", Level::_ERROR,
-                                "Unknown error (Exception)", "","",&e);
+                                "Unknown error (Exception)", "","",e);
       result = false;
   }
  }
@@ -426,11 +426,11 @@ void ConfigXmlManager::locateClassFailed(Throwable ex, QString adapterName, QObj
    if (!e.isNull())
     root.appendChild(e);
   }
-  catch (Exception e)
+  catch (Exception* e)
   {
    result = false;
    storingErrorEncountered (((XmlAdapter*)o), "storing to file", Level::_ERROR,
-                                      "Unknown error (Exception)", NULL,NULL,&e);
+                                      "Unknown error (Exception)", NULL,NULL,e);
   }
  }
  return result;
@@ -448,11 +448,11 @@ void ConfigXmlManager::locateClassFailed(Throwable ex, QString adapterName, QObj
    if (!e.isNull())
     root.appendChild(e);
   }
-  catch (Exception e)
+  catch (Exception* e)
   {
    result = false;
    storingErrorEncountered ((XmlAdapter*)o, "storing to file", Level::_ERROR,
-                                      "Unknown error (Exception)", NULL,NULL,&e);
+                                      "Unknown error (Exception)", NULL,NULL,e);
   }
  }
  return result;
@@ -496,16 +496,16 @@ void ConfigXmlManager::locateClassFailed(Throwable ex, QString adapterName, QObj
 
   writeXML(new QFile(file->getPath()), doc);
  }
- catch (FileNotFoundException ex3)
+ catch (FileNotFoundException* ex3)
  {
-  storingErrorEncountered (nullptr, "storing to file "+file->getPath(), Level::_ERROR, "File not found " + file->getPath(), NULL,NULL,&ex3);
-  log->error("FileNotFound error writing file: "+ex3.getMessage());
+  storingErrorEncountered (nullptr, "storing to file "+file->getPath(), Level::_ERROR, "File not found " + file->getPath(), NULL,NULL,ex3);
+  log->error("FileNotFound error writing file: "+ex3->getMessage());
   return false;
  }
- catch (IOException ex2)
+ catch (IOException* ex2)
  {
-  storingErrorEncountered (NULL, "storing to file "+file->getPath(), Level::_ERROR, "IO error writing file " + file->getPath(), NULL,NULL,&ex2);
-  log->error("IO error writing file: "+ex2.getMessage());
+  storingErrorEncountered (NULL, "storing to file "+file->getPath(), Level::_ERROR, "IO error writing file " + file->getPath(), NULL,NULL,ex2);
+  log->error("IO error writing file: "+ex2->getMessage());
   return false;
  }
  return true;
@@ -987,10 +987,10 @@ File userPrefsFile;*/
      }
 //     qApp->processEvents();
     }
-    catch (Exception e)
+    catch (Exception* e)
     {
      creationErrorEncountered(adapter, "load(" + url.toString() + ")",
-                 "Unexpected error (Exception)", nullptr, nullptr, &e);
+                 "Unexpected error (Exception)", nullptr, nullptr, e);
 
          result = false;  // keep going, but return false to signal problem
     }
@@ -1008,37 +1008,37 @@ File userPrefsFile;*/
                         "Unexpected error (IllegalArgumentException)", nullptr, nullptr, &e);
        result = false;  // keep going, but return false to signal problem
   }
-  catch (FileNotFoundException e1)
+  catch (FileNotFoundException* e1)
   {
         // this returns false to indicate un-success, but not enough
         // of an error to require a message
         creationErrorEncountered(nullptr, "opening file " + url.path(),
-                "File not found", nullptr, nullptr, &e1);
+                "File not found", nullptr, nullptr, e1);
         result = false;
   }
-  catch (JDOMException e)
+  catch (JDOMException* e)
   {
         creationErrorEncountered(nullptr, "parsing file " + url.path(),
-                "Parse error", nullptr, nullptr, &e);
+                "Parse error", nullptr, nullptr, e);
         result = false;
   }
-  catch (Exception e)
+  catch (Exception* e)
   {
         creationErrorEncountered(nullptr, "loading from file " + url.path(),
-                "Unknown error (Exception)", nullptr, nullptr, &e);
+                "Unknown error (Exception)", nullptr, nullptr, e);
         result = false;
   }
-  catch (Throwable et)
+  catch (Throwable* et)
   {
    creationErrorEncountered(adapter, "in load(" + url.path() + ")",
-                       "Unexpected error (Throwable)", nullptr, nullptr, &et);
+                       "Unexpected error (Throwable)", nullptr, nullptr, et);
 
    result = false;  // keep going, but return false to signal problem
   }
-  catch (CTCException e)
+  catch (CTCException* e)
   {
         creationErrorEncountered(nullptr, "loading from file " + url.path(),
-                "Unknown error (Exception)", nullptr, nullptr, &e);
+                "Unknown error (Exception)", nullptr, nullptr, e);
         result = false;
   }
   /*finally */
@@ -1117,16 +1117,16 @@ File userPrefsFile;*/
     if (!loadStatus)
      result = false;
    }
-   catch (Exception e)
+   catch (Exception* e)
    {
     creationErrorEncountered(adapter, "deferred load(" + url.path() + ")",
-                                         "Unexpected error (Exception)", NULL, NULL, &e);
+                                         "Unexpected error (Exception)", NULL, NULL, e);
     result = false;  // keep going, but return false to signal problem
    }
-   catch (Throwable et)
+   catch (Throwable* et)
    {
     creationErrorEncountered(adapter, "in deferred load(" + url.path() + ")",
-                        "Unexpected error (Throwable)", NULL, NULL, &et);
+                        "Unexpected error (Throwable)", NULL, NULL, et);
     result = false;  // keep going, but return false to signal problem
    }
   }

@@ -561,7 +561,7 @@
  * @return true if the connection for this connection type is free
  */
 /*public*/ bool LayoutTrackView::isDisconnected(HitPointType::TYPES connectionType) {
-    throw  IllegalArgumentException("should have called in Object instead of View (temporary)");
+    throw new IllegalArgumentException("should have called in Object instead of View (temporary)");
 }
 
 /**

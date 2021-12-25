@@ -69,7 +69,7 @@
     }
 
     //@Override
-    /*public*/ void TranspondingTagManager::writeIdTagDetails() throw (IOException) {
+    /*public*/ void TranspondingTagManager::writeIdTagDetails() /*throw (IOException)*/ {
         if (this->dirty) {
             (new DefaultIdTagManagerXml(this,"TranspondingIdTags.xml"))->store();  //NOI18N
             this->dirty = false;

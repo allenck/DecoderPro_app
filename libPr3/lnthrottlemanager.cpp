@@ -69,7 +69,7 @@ bool LnThrottleManager::singleUse() { return false; }
       try {
          // queue this request for later.
          requestList.append(new ThrottleRequest(address,control));
-      } catch(InterruptedException ie){
+      } catch(InterruptedException* ie){
          log->error("Interrupted while trying to store throttle request");
          requestOutstanding = false;
          return;
@@ -93,7 +93,7 @@ bool LnThrottleManager::singleUse() { return false; }
       try {
          ThrottleRequest* tr = requestList.first();
          processThrottleSetupRequest(tr->getAddress(),tr->getControl());
-      } catch(InterruptedException ie){
+      } catch(InterruptedException* ie){
          log->error("Interrupted while trying to process process throttle request");
          requestOutstanding = false;
          return;

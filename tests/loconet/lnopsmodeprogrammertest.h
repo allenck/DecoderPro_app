@@ -54,7 +54,8 @@ class ReleaseUntil05 : public ReleaseUntil
     LnOpsModeProgrammerTest* lompt;
 public:
     ReleaseUntil05(LnOpsModeProgrammerTest* lompt) {this->lompt = lompt;}
-    bool ready() throw (Exception) {return lompt->pl->getRcvdInvoked() == 1;}
+    bool ready() /*throw (Exception)*/
+ {return lompt->pl->getRcvdInvoked() == 1;}
 };
 
 #endif // LNOPSMODEPROGRAMMERTEST_H

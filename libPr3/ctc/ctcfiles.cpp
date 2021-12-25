@@ -57,8 +57,8 @@
         try {
 //            if (Files.copy(sourceFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING) == null) return false;
          return(QFile::copy(sourceFile->getPath(), destFile->getPath()));
-        } catch(IOException ex) {
-            log->error(tr("Copy file %1 to %2 failed, exception: ").arg(sourceFileName).arg(destFileName)/*, ex.getMessage()*/);
+        } catch(IOException* ex) {
+            log->error(tr("Copy file %1 to %2 failed, exception: ").arg(sourceFileName).arg(destFileName)/*, ex->getMessage()*/);
             return false;
         }
         return true;
@@ -74,7 +74,7 @@
         try {
 //            if (Files.move(oldFile.toPath(), oldFile.toPath().resolveSibling(newFileName), StandardCopyOption.REPLACE_EXISTING) == null) return false;
          return(QFile::rename(oldFile->getPath(), newFile->getPath()));
-        } catch(IOException ex) {
+        } catch(IOException* ex) {
             log->error(tr("Rename file %1 to %2 failed, exception: ").arg(oldFileName).arg(newFileName/*, ex*/));
             return false;
         }

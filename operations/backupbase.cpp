@@ -71,12 +71,12 @@ QObject(parent)
       bool ok = _backupRoot->mkdirs();
       if (!ok) {
        Logger::error("Unable to make directory:" + _backupRoot->getAbsolutePath());
-       throw RuntimeException("Unable to make directory: " // NOI18N
+       throw new RuntimeException("Unable to make directory: " // NOI18N
                   + _backupRoot->getAbsolutePath());
       }
   }
 
-  // We maybe want to check if it failed and throw an exception.
+  // We maybe want to check if it failed and throw new an exception.
  }
 
  /**
@@ -165,7 +165,7 @@ QObject(parent)
          if (file->exists()) {
              return true;
          }
-     } catch (Exception e) {
+     } catch (Exception* e) {
          log->error("Exception during backup set directory exists check");
      }
      return false;
@@ -220,7 +220,7 @@ QObject(parent)
      // See how many Operations files we have. If they are all there, carry
      // on, if there are none, just return, any other number MAY be an error,
      // so just log it.
-     // We can't throw an exception, as this CAN be a valid state.
+     // We can't throw new an exception, as this CAN be a valid state.
      // There is no way to tell if a missing file is an error or not the way
      // the files are created.
 
@@ -240,7 +240,7 @@ QObject(parent)
 
      // Ensure destination directory exists
      if (!destDir->exists()) {
-         // Note that mkdirs does NOT throw an exception on error.
+         // Note that mkdirs does NOT throw new an exception on error.
          // It will return false if the directory already exists.
          bool result = destDir->mkdirs();
 
@@ -270,7 +270,7 @@ QObject(parent)
 
      }
 #if 1
-     // Throw a test exception, if we have one.
+     // throw new a test exception, if we have one.
      if (testException != NULL) {
          //testException->fillInStackTrace();
          throw testException;
@@ -367,7 +367,7 @@ QObject(parent)
      }
 
      // If we get here, we have tried all 100 variants without success. This
-     // should probably throw an exception, but for now it just returns the
+     // should probably throw new an exception, but for now it just returns the
      // last file name tried.
      return fullName;
  }
@@ -398,7 +398,7 @@ QObject(parent)
          if (!file->_delete()) {
              log->debug("file not deleted");
          }
-         // TODO This should probably throw an exception if a delete fails.
+         // TODO This should probably throw new an exception if a delete fails.
      }
  }
 
@@ -474,7 +474,7 @@ QObject(parent)
              while ((len = source.read(buffer)) > 0) {
                  dest.write(buffer, 0, len);
              }
-         } catch (Exception ex) {
+         } catch (Exception* ex) {
              if (source != NULL) {
                  source.close();
              }

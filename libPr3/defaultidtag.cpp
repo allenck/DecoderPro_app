@@ -153,9 +153,9 @@ void DefaultIdTag::init()
    {
     this->_whenLastSeen = QDateTime::fromString(e.firstChildElement("whenLastSeen").text()); //NOI18N
    }
-   catch (ParseException ex)
+   catch (ParseException* ex)
    {
-    log.warn("Error parsing when last seen: " + ex.getMessage());
+    log.warn("Error parsing when last seen: " + ex->getMessage());
    }
   }
   if (!e.firstChildElement("rosterid").isNull()) //NOI18N

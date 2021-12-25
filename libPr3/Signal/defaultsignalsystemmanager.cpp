@@ -134,8 +134,8 @@ SignalSystem* DefaultSignalSystemManager::makeBean(QString name) {
    DefaultSignalSystem* s = new DefaultSignalSystem(name);
    loadBean(s, root);
    return s;
-  } catch (Exception e) {
-   log->error("Could not parse aspect file \""+filename+"\" due to: "+e.getMessage());
+  } catch (Exception* e) {
+   log->error("Could not parse aspect file \""+filename+"\" due to: "+e->getMessage());
   }
  }
 
@@ -153,8 +153,8 @@ SignalSystem* DefaultSignalSystemManager::makeBean(QString name) {
    DefaultSignalSystem* s = new DefaultSignalSystem(name);
    loadBean(s, root);
    return s;
-  } catch (Exception e) {
-   log->error("Could not parse aspect file \""+filename+"\" due to: "+e.getMessage());
+  } catch (Exception* e) {
+   log->error("Could not parse aspect file \""+filename+"\" due to: "+e->getMessage());
   }
  }
 

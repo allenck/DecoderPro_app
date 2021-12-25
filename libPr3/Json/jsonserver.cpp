@@ -63,8 +63,8 @@ void JsonServer::common()
 //        /*public*/ boolean execute() {
 //            try {
 //                JsonServer.this->stop();
-//            } catch (Exception ex) {
-//                log.warn("ERROR shutting down JSON Server: {}" + ex.getMessage());
+//            } catch (Exception* ex) {
+//                log.warn("ERROR shutting down JSON Server: {}" + ex->getMessage());
 //                log.debug("Details follow: ", ex);
 //            }
 //            return true;
@@ -88,9 +88,9 @@ bool JSShutDownTask::eventFilter(QObject *watched, QEvent *event)
 {
  try {
      js->stop();
- } catch (Exception ex) {
-     js->log->warn("ERROR shutting down JSON Server: {}" + ex.getMessage());
-     js->log->debug("Details follow: " + ex.getMessage());
+ } catch (Exception* ex) {
+     js->log->warn("ERROR shutting down JSON Server: {}" + ex->getMessage());
+     js->log->debug("Details follow: " + ex->getMessage());
  }
  return true;
 }
@@ -99,9 +99,9 @@ bool JSShutDownTask::eventFilter(QObject *watched, QEvent *event)
 {
   try {
       js->stop();
-  } catch (Exception ex) {
-      js->log->warn(tr("ERROR shutting down JSON Server: %1").arg(ex.getMessage()));
-      js->log->debug("Details follow: " + ex.getMessage());
+  } catch (Exception* ex) {
+      js->log->warn(tr("ERROR shutting down JSON Server: %1").arg(ex->getMessage()));
+      js->log->debug("Details follow: " + ex->getMessage());
   }
   return true;
 
@@ -181,7 +181,7 @@ void JsonServer::error(QZeroConf::error_t e)
 #if 0
 // Handle communication to a client through inStream and outStream
 //@Override
-/*public*/ void JsonServer::handleClient(QDataStream* inStream, QDataStream* outStream) throw (IOException)
+/*public*/ void JsonServer::handleClient(QDataStream* inStream, QDataStream* outStream) /*throw (IOException)*/
 {
 
     ObjectReader reader = this->mapper.reader();
@@ -194,7 +194,7 @@ void JsonServer::error(QZeroConf::error_t e)
         try {
             handler->onMessage(reader.readTree(inStream));
             // Read the command from the client
-        } catch (IOException e) {
+        } catch (IOException* e) {
             // attempt to close the connection and throw the exception
             handler->dispose();
             throw e;
@@ -209,7 +209,7 @@ void JsonServer::error(QZeroConf::error_t e)
 #endif
 
 //@Override
-/*public*/ void JsonServer::stopClient(QTextStream* inStream, QTextStream* outStream) throw (IOException) {
+/*public*/ void JsonServer::stopClient(QTextStream* inStream, QTextStream* outStream) /*throw (IOException)*/ {
 #if 0
     outStream.writeBytes(this->mapper.writeValueAsString(this->mapper.createObjectNode().put(TYPE, GOODBYE)));
     try {

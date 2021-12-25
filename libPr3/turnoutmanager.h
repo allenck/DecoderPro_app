@@ -29,7 +29,7 @@ public:
      virtual Turnout* provideTurnout(QString /*name*/)const {return NULL;}
     /** {@inheritDoc} */ // from ProvidinManager
      //@Override
-     virtual /*default*/ /*public*/ Turnout* provide(/*@Nonnull*/ QString name)const throw (IllegalArgumentException) { return provideTurnout(name); }
+     virtual /*default*/ /*public*/ Turnout* provide(/*@Nonnull*/ QString name)const /*throw (IllegalArgumentException)*/ { return provideTurnout(name); }
 
 
         /**
@@ -188,7 +188,7 @@ public:
          *
          * @param newInterval the new Output Interval in Milliseconds
          */
-        virtual /*public*/ void setOutputInterval(int newInterval) {}
+        virtual /*public*/ void setOutputInterval(int /*newInterval*/) {}
 
         /**
          * Get end time of latest OutputInterval, calculated from the current time.

@@ -90,7 +90,7 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
         }
         catch (IllegalArgumentException* ex) {
             JUnitAppender::assertErrorMessage("Invalid system name for Sensor: System name must start with \"" + l->getSystemNamePrefix() + "\".", __FILE__, __LINE__);
-//            throw ex;
+//            throw new ex;
         }
     }
 

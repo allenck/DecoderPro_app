@@ -1668,7 +1668,7 @@ if (panel == NULL)
 //                        /*public*/  void focusLost(FocusEvent e) {
 //                            try {
 //                                Float.parseFloat(angle.getText());
-//                            } catch (Exception ex) {
+//                            } catch (Exception* ex) {
 //                                JOptionPane.showMessageDialog(editTurntableFrame, tr("EntryError") + ": "
 //                                        + ex + tr("TryAgain"), tr("Error"),
 //                                        JOptionPane.ERROR_MESSAGE);

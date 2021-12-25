@@ -35,7 +35,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
 /*private*/ /*final*/ /*static*/ Logger* ConnectionConfigManager::log = LoggerFactory::getLogger("ConnectionConfigManager");
 
 //@Override
-/*public*/ void ConnectionConfigManager::initialize(Profile* profile) throw (InitializationException)
+/*public*/ void ConnectionConfigManager::initialize(Profile* profile) /*throw new (InitializationException)*/
 {
  if (!isInitialized(profile))
  {
@@ -155,7 +155,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
      QString localized = tr( "Unable to create connection \"%1\" (%2).").arg(userName).arg( systemName); // NOI18N
      this->addInitializationException(profile, new HasConnectionButUnableToConnectException(english, localized, NULL));
     }
-    catch (Exception ex)
+    catch (Exception* ex)
     {
      log-> error(tr("Unable to load %1 into %2").arg(shared.tagName()).arg(className)/*, ex*/);
 //              QString english = Bundle.getMessage(Locale.ENGLISH, "ErrorSingleConnection", userName, systemName); // NOI18N
@@ -176,7 +176,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
    {
     throw (HasConnectionButUnableToConnectException*) exceptions->at(0);
    } else {
-       throw HasConnectionButUnableToConnectException(exceptions->at(0));
+       throw new HasConnectionButUnableToConnectException(exceptions->at(0));
    }
 #endif
   }
@@ -186,7 +186,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
 //      QString localized = Bundle.getMessage("ErrorMultipleConnections"); // NOI18N
    QString english = tr("Unable to create connection \"%1\" (%2).");
    QString localized = tr("Unable to create connection \"%1\" (%2).");
-      throw  HasConnectionButUnableToConnectException(english, localized, nullptr);
+      throw new  HasConnectionButUnableToConnectException(english, localized, nullptr);
   }
 
   log-> debug("Initialized...");
@@ -239,7 +239,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
  * @return true if c was added, false otherwise
  * @throws NullPointerException if c is NULL
  */
-/*public*/ bool ConnectionConfigManager::add(/*@NonNULL*/ ConnectionConfig* c) throw (NullPointerException)
+/*public*/ bool ConnectionConfigManager::add(/*@NonNULL*/ ConnectionConfig* c) /*throw (NullPointerException)*/
 {
  if (c == NULL)
  {

@@ -506,16 +506,16 @@ void RosterEntry::init()
  * @param date the string to parse into a date
  * @throws ParseException if the date cannot be parsed
  */
-/*public*/ void RosterEntry::setDateModified(/*@Nonnull*/ QString date) throw (ParseException) {
+/*public*/ void RosterEntry::setDateModified(/*@Nonnull*/ QString date) /*throw (ParseException) */{
  QDateTime dt;
  try
  {
   // parse using ISO 8601 date format(s)
   dt = QDateTime::fromString(date, Qt::ISODate);
-  if(!dt.isValid()) throw ParseException(tr("error parsing date '%1'").arg(date));
+  if(!dt.isValid()) throw new ParseException(tr("error parsing date '%1'").arg(date));
   this->setDateModified(dt);
  }
- catch (ParseException ex)
+ catch (ParseException* ex)
  {
   log->debug(tr("ParseException in setDateModified ISO attempt: \"%1\"").arg(date));
   // next, try parse using defaults since thats how it was saved if saved
@@ -524,28 +524,28 @@ void RosterEntry::init()
 
    //setDateModified(DateFormat.getDateTimeInstance().parse(date));
    dt = QDateTime::fromString(date, Qt::TextDate);
-   if(!dt.isValid()) throw ParseException(tr("error parsing date '%1'").arg(date));
+   if(!dt.isValid()) throw new ParseException(tr("error parsing date '%1'").arg(date));
    this->setDateModified(dt);
-  } catch (ParseException ex2) {
+  } catch (ParseException* ex2) {
       // then try with a specific format to handle e.g. "Apr 1, 2016 9:13:36 AM"
       //DateFormat customFmt = new SimpleDateFormat("MMM dd, yyyy hh:mm:ss a");
       try {
           //setDateModified(customFmt.parse(date));
        dt = QDateTime::fromString(date, "MMM dd, yyyy hh:mm:ss a");
-       if(!dt.isValid()) throw ParseException(tr("error parsing date '%1'").arg(date));
+       if(!dt.isValid()) throw new ParseException(tr("error parsing date '%1'").arg(date));
        this->setDateModified(dt);
 
-      } catch (ParseException ex3) {
+      } catch (ParseException* ex3) {
           // then try with a specific format to handle e.g. "01-Oct-2016 9:13:36"
 //          customFmt = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss");
 //          setDateModified(customFmt.parse(date));
        dt = QDateTime::fromString(date, "dd-MMM-yyyy hh:mm:ss");
-       if(!dt.isValid()) throw ParseException(tr("error parsing date '%1'").arg(date));
+       if(!dt.isValid()) throw new ParseException(tr("error parsing date '%1'").arg(date));
        this->setDateModified(dt);
       }
   }
  }
- catch (IllegalArgumentException ex2)
+ catch (IllegalArgumentException* ex2)
  {
   // warn that there's perhaps something wrong with the classpath
   log->error("IllegalArgumentException in RosterEntry.setDateModified - this may indicate a problem with the classpath, specifically multiple copies of the 'jackson` library. See release notes" );
@@ -553,7 +553,7 @@ void RosterEntry::init()
   // by earlier versions of JMRI
   //this->setDateModified(DateFormat.getDateTimeInstance().parse(date));
   dt = QDateTime::fromString(date, Qt::TextDate);
-  if(!dt.isValid()) throw ParseException(tr("error parsing date '%1'").arg(date));
+  if(!dt.isValid()) throw new ParseException(tr("error parsing date '%1'").arg(date));
   this->setDateModified(dt);
  }
 }
@@ -571,7 +571,7 @@ void RosterEntry::init()
  {
   this->setDateModified(s);
  }
- catch (ParseException ex) {
+ catch (ParseException* ex) {
      log->warn(tr("Unable to parse \"%1\" as a date in roster entry \"%2\".").arg(s).arg(getId()));
      // property change is fired by setDateModified if s parses as a date
      firePropertyChange(RosterEntry::DATE_UPDATED, old, s);
@@ -969,7 +969,7 @@ void RosterEntry::init()
     // read in the content
     try {
         mRootElement = df->rootFromName(fullFilename);
-    } catch (Exception e) { log->error("Exception while loading loco XML file: "+getFileName()+" exception: "+e.getMessage()); }
+    } catch (Exception* e) { log->error("Exception while loading loco XML file: "+getFileName()+" exception: "+e->getMessage()); }
 
     try {
         QFile* f = new QFile(fullFilename);
@@ -979,11 +979,11 @@ void RosterEntry::init()
         // and finally write the file
         df->writeFile(f, mRootElement, this->store(QDomDocument("Roster") ));
 
-    } catch (Exception e) {
+    } catch (Exception* e) {
         log->error("error during locomotive file output"/*, e*/);
 //        try {
 //            JOptionPane.showMessageDialog(NULL,
-//                    ResourceBundle.getBundle("jmri.jmrit.roster.JmritRosterBundle").getQString("ErrorSavingText")+"\n"+e.getMessage(),
+//                    ResourceBundle.getBundle("jmri.jmrit.roster.JmritRosterBundle").getQString("ErrorSavingText")+"\n"+e->getMessage(),
 //                    ResourceBundle.getBundle("jmri.jmrit.roster.JmritRosterBundle").getQString("ErrorSavingTitle"),
 //                    JOptionPane.ERROR_MESSAGE);
 //        } catch (HeadlessException he) {
@@ -1021,11 +1021,11 @@ void RosterEntry::init()
         // and finally write the file
         df->writeFile(f, cvModel, /*iCvModel,*/ variableModel, this);
 
-    } catch (Exception e) {
+    } catch (Exception* e) {
         log->error("error during locomotive file output"/*, e*/);
 //        try {
 //            JOptionPane.showMessageDialog(NULL,
-//                    ResourceBundle.getBundle("jmri.jmrit.roster.JmritRosterBundle").getString("ErrorSavingText")+"\n"+e.getMessage(),
+//                    ResourceBundle.getBundle("jmri.jmrit.roster.JmritRosterBundle").getString("ErrorSavingText")+"\n"+e->getMessage(),
 //                    ResourceBundle.getBundle("jmri.jmrit.roster.JmritRosterBundle").getString("ErrorSavingTitle"),
 //                    JOptionPane.ERROR_MESSAGE);
 //        } catch (HeadlessException he) {
@@ -1075,7 +1075,7 @@ void RosterEntry::init()
                     tr("An error occurred while trying to read the roster index file: "),
                     tr("Error Reading Roster Index"),
                     JOptionPane::ERROR_MESSAGE);
-        } catch (HeadlessException he) {
+        } catch (HeadlessException* he) {
             // silently ignore inability to display dialog
         }
     }
@@ -1268,9 +1268,9 @@ if (!(_decoderFamily==("")))
    w->write(newLine,0,1);
   }
  }
- catch (IOException e)
+ catch (IOException* e)
  {
-  log->error("Error printing RosterEntry: "+e.getMessage());
+  log->error("Error printing RosterEntry: "+e->getMessage());
  }
 }
 
@@ -1298,9 +1298,9 @@ if (!(_decoderFamily==("")))
    k++;
   }
  }
- catch (IOException e)
+ catch (IOException* e)
  {
-  log->error("Error printing RosterEntry: "+e.getMessage());
+  log->error("Error printing RosterEntry: "+e->getMessage());
  }
  return k;
 }
@@ -1392,7 +1392,7 @@ if (!(_decoderFamily==("")))
     LocoFile* lf = new LocoFile();  // used as a temporary
     try {
         mRootElement = lf->rootFromName(LocoFile::getFileLocation()+getFileName());
-    } catch (Exception e) { log->error(tr("Exception while loading loco XML file: ")+getFileName()+tr(" exception: ")+e.getMessage()); }
+    } catch (Exception* e) { log->error(tr("Exception while loading loco XML file: ")+getFileName()+tr(" exception: ")+e->getMessage()); }
 }
 
 /**
@@ -1403,7 +1403,7 @@ if (!(_decoderFamily==("")))
  * @throws JDOMException if unable to parse file
  * @throws IOException   if unable to read file
  */
-/*public*/ /*static*/ RosterEntry* RosterEntry::fromFile(/*@Nonnull*/ File* file) throw (JDOMException, IOException) {
+/*public*/ /*static*/ RosterEntry* RosterEntry::fromFile(/*@Nonnull*/ File* file) /*throw (JDOMException, IOException) */{
     QDomElement loco = ((new LocoFile()))->rootFromFile(file).firstChildElement("locomotive");
     if (loco.isNull()) {
         throw new JDOMException("missing expected element");
@@ -1483,7 +1483,7 @@ if (!(_decoderFamily==("")))
      _imageFilePath = FileUtil::getAbsoluteFilename(a);
     }
    }
-   catch (FileNotFoundException ex)
+   catch (FileNotFoundException* ex)
    {
     if(a.contains(":"))
      a = a.mid(a.indexOf(":")+1);
@@ -1497,7 +1497,7 @@ if (!(_decoderFamily==("")))
      if(p != "" && FileUtil::getFile(p)->isFile())
       _imageFilePath = p;
     }
-    catch (FileNotFoundException ex1)
+    catch (FileNotFoundException* ex1)
     {
         _imageFilePath = "";
     }
@@ -1511,9 +1511,9 @@ if (!(_decoderFamily==("")))
     {
         _iconFilePath = FileUtil::getAbsoluteFilename(a);
     }
-   } catch (FileNotFoundException ex)
+   } catch (FileNotFoundException* ex)
    {
-    log->info(tr("iconFilePath invalid %1").arg(ex.getMessage()));
+    log->info(tr("iconFilePath invalid %1").arg(ex->getMessage()));
     if(a.contains(":"))
      a = a.mid(a.indexOf(":")+1);
     try
@@ -1526,7 +1526,7 @@ if (!(_decoderFamily==("")))
     if(p != "" && FileUtil::getFile(p)->isFile())
      _imageFilePath = p;
     }
-    catch (FileNotFoundException ex1)
+    catch (FileNotFoundException* ex1)
     {
      _iconFilePath = "";
     }

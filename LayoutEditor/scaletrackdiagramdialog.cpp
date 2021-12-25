@@ -158,7 +158,7 @@ public:
         xTranslation = newText.toFloat(&bok);
     if(!bok) {
      NumberFormatException e("x not valid floating point");
-        showEntryErrorDialog(scaleTrackDiagramFrame, e);
+        showEntryErrorDialog(scaleTrackDiagramFrame, &e);
         return;
     }
 
@@ -168,7 +168,7 @@ public:
         yTranslation = newText.toFloat(&bok);
     if(!bok) {
      NumberFormatException e("y not valid floating point");
-        showEntryErrorDialog(scaleTrackDiagramFrame, e);
+        showEntryErrorDialog(scaleTrackDiagramFrame, &e);
         return;
     }
 
@@ -178,7 +178,7 @@ public:
         xFactor = newText.toFloat(&bok);
      if(!bok) {
          NumberFormatException e("x factor not valid floating point");
-        showEntryErrorDialog(scaleTrackDiagramFrame, e);
+        showEntryErrorDialog(scaleTrackDiagramFrame, &e);
         return;
     }
 
@@ -188,7 +188,7 @@ public:
         yFactor =newText.toFloat(&bok);
         if(!bok) {
          NumberFormatException e("y factor not valid floating point");
-        showEntryErrorDialog(scaleTrackDiagramFrame, e);
+        showEntryErrorDialog(scaleTrackDiagramFrame, &e);
         return;
     }
 
@@ -241,10 +241,10 @@ public:
  *                        numeric types, but that the string does not have
  *                        the appropriate format.
  */
-/*private*/ void ScaleTrackDiagramDialog::showEntryErrorDialog(QWidget* parentComponent, NumberFormatException e) {
+/*private*/ void ScaleTrackDiagramDialog::showEntryErrorDialog(QWidget* parentComponent, NumberFormatException* e) {
     JOptionPane::showMessageDialog(parentComponent,
             QString("%1: %2 %3").arg(tr("Error in entry")).arg(
-                    e.getMessage()).arg(tr("Please reenter or Cancel.")),
+                    e->getMessage()).arg(tr("Please reenter or Cancel.")),
             tr("ErrorTitle"),
             JOptionPane::ERROR_MESSAGE);
 }

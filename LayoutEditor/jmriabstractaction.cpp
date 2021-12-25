@@ -111,9 +111,9 @@ void JmriAbstractAction::common()
   try
   {
    cache = makePanel();
-  } catch (Exception ex)
+  } catch (Exception* ex)
   {
-Logger::error("Exception creating panel: " + ex.getMessage());
+Logger::error("Exception creating panel: " + ex->getMessage());
    return;
   }
   if (cache == nullptr)

@@ -110,7 +110,7 @@
         if (fileName != NULL) {
             try {
                 this->openFile(fileName);
-            } catch (FileNotFoundException ex) {
+            } catch (FileNotFoundException* ex) {
                 migrate = false;
             }
         } else {
@@ -324,11 +324,11 @@ void WebServerPreferences::common()
     QDomElement root;
     try {
         root = prefsXml->rootFromFile(file);
-    } catch (FileNotFoundException ex) {
+    } catch (FileNotFoundException* ex) {
         log->debug("Could not find Web Server preferences file. Normal if preferences have not been saved before.");
         throw ex;
-    } catch (IOException /*| JDOMException*/ ex) {
-        log->error("Exception while loading web server preferences: " + ex.getMessage());
+    } catch (IOException* /*| JDOMException*/ ex) {
+        log->error("Exception while loading web server preferences: " + ex->getMessage());
         root = QDomElement();
     }
     if (root != QDomElement()) {

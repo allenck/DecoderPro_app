@@ -52,10 +52,10 @@ LnNamedPaneAction::LnNamedPaneAction(QObject *parent) :
  //try {
  ((LnPanelInterface*) p)->initComponents(memo);
 //     return p;
-// } catch (Exception ex) {
+// } catch (Exception* ex) {
  if(p == nullptr)
  {
-  log->warn("could not init pane class: " + paneClass /*+ " due to:" + ex.getMessage()*/);
+  log->warn("could not init pane class: " + paneClass /*+ " due to:" + ex->getMessage()*/);
      //ex.printStackTrace();
  }
 

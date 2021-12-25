@@ -191,9 +191,9 @@ LayoutPanelServlet::LayoutPanelServlet()
 //         panel.appendChild(e);
 //     }
 //    }
-//    catch (Exception e)
+//    catch (Exception* e)
 //    {
-//     log->error("Error storing panel levelxing element: " + e.getMessage());
+//     log->error("Error storing panel levelxing element: " + e->getMessage());
 //    }
 //   }
 //  }
@@ -210,8 +210,8 @@ LayoutPanelServlet::LayoutPanelServlet()
 //        if (e != QDomElement()) {
 //            panel.appendChild(e);
 //        }
-//    } catch (Exception e) {
-//        log->error("Error storing panel layoutturnout element: " + e.getMessage());
+//    } catch (Exception* e) {
+//        log->error("Error storing panel layoutturnout element: " + e->getMessage());
 //    }
 //   }
 //  }
@@ -231,9 +231,9 @@ LayoutPanelServlet::LayoutPanelServlet()
 //         panel.appendChild(e);
 //     }
 //    }
-//    catch (Exception e)
+//    catch (Exception* e)
 //    {
-//     log->error("Error storing panel tracksegment element: " + e.getMessage());
+//     log->error("Error storing panel tracksegment element: " + e->getMessage());
 //    }
 //   }
 //  }
@@ -253,9 +253,9 @@ LayoutPanelServlet::LayoutPanelServlet()
 //      panel.appendChild(e);
 //     }
 //    }
-//    catch (Exception e)
+//    catch (Exception* e)
 //    {
-//     log->error("Error storing panel layoutSlip element: " + e.getMessage());
+//     log->error("Error storing panel layoutSlip element: " + e->getMessage());
 //    }
 //   }
 //  }
@@ -275,9 +275,9 @@ LayoutPanelServlet::LayoutPanelServlet()
 //      panel.appendChild(e);
 //     }
 //    }
-//    catch (Exception e)
+//    catch (Exception* e)
 //    {
-//     log->error("Error storing panel turntable element: " + e.getMessage());
+//     log->error("Error storing panel turntable element: " + e->getMessage());
 //    }
 //   }
 //  }

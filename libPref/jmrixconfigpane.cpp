@@ -60,7 +60,7 @@
  {
     ConnectionConfigManager*  ccm = static_cast<ConnectionConfigManager*>(InstanceManager::getDefault("ConnectionConfigManager"));
     if(ccm->getConnections(index) == 0)
-        throw IndexOutOfBoundsException();
+        throw new IndexOutOfBoundsException();
      c = ((ConnectionConfigManager*)InstanceManager::getDefault("ConnectionConfigManager"))->getConnections(index);
      log->debug(tr("connection %1 is %2").arg(index).arg(c->metaObject()->className()));
  } catch (IndexOutOfBoundsException ex) {
@@ -104,8 +104,8 @@
     if (confPane->ccCurrent != NULL) {
         try {
             confPane->ccCurrent->dispose();
-        } catch (Exception ex) {
-            log->error("Error Occured while disposing connection "+ ex.getMessage());
+        } catch (Exception* ex) {
+            log->error("Error Occured while disposing connection "+ ex->getMessage());
         }
     }
     ConfigureManager* cmOD = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");

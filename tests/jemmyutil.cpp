@@ -146,7 +146,7 @@ JemmyUtil::JemmyUtil(QObject *parent) : QObject(parent)
          if(b->text() == buttonName)
          {
           if(!QMetaObject::invokeMethod(b, "click", Qt::AutoConnection))
-           throw Exception(tr("Button '%1'click failed").arg(b->text()));
+           throw new Exception(tr("Button '%1'click failed").arg(b->text()));
           bRunning = false;
           break;
          }

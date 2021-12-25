@@ -1026,7 +1026,7 @@ DecoderTreeNode*  InvisibleTreeModel::getRoot() {return rootItem;}
         return super.getChildAt(index);
     }
     if (children == NULL) {
-        throw ArrayIndexOutOfBoundsException("node has no children");
+        throw new ArrayIndexOutOfBoundsException("node has no children");
     }
 
     int realIndex = -1;
@@ -1043,7 +1043,7 @@ DecoderTreeNode*  InvisibleTreeModel::getRoot() {return rootItem;}
         }
     }
 
-    throw  ArrayIndexOutOfBoundsException("index unmatched");
+    throw new  ArrayIndexOutOfBoundsException("index unmatched");
     //return (TreeNode)children.elementAt(index);
 }
 

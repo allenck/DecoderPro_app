@@ -524,7 +524,7 @@ void JUnitAppender::superappend(LoggingEvent* l) {
     String tmsg = StringUtils.deleteWhitespace(msg);
 
     LoggingEvent evt = list.remove(0);
-    while (!StringUtils.deleteWhitespace(evt.getMessage().toString()).startsWith(tmsg)) {
+    while (!StringUtils.deleteWhitespace(evt->getMessage().toString()).startsWith(tmsg)) {
         if (list.isEmpty()) {
             return null; // normal to not find it
         }

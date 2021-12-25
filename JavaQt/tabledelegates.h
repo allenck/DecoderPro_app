@@ -20,7 +20,7 @@ class ButtonRenderer : public QStyledItemDelegate, public TableCellEditor, publi
 public:
     ButtonRenderer(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
     QObject* self() {return (QObject*)this;}
-    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const{
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &/*option*/, const QModelIndex &index) const{
         JButton* editor;
        #if QT_VERSION < 0x050000
         if(index.data().canConvert<QString>())
@@ -35,19 +35,20 @@ public:
         }
         return editor;
     }
-    void setEditorData(QWidget *editor, const QModelIndex &index) const
+    void setEditorData(QWidget */*editor*/, const QModelIndex &index) const
     {
-        JButton *button = static_cast<JButton*>(editor);
+//        JButton *button = static_cast<JButton*>(editor);
         int value = index.model()->data(index, Qt::EditRole).toUInt();
+        Q_UNUSED(value)
 
     }
-    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+    void setModelData(QWidget */*editor*/, QAbstractItemModel *model, const QModelIndex &index) const
     {
-        JButton *button = static_cast<JButton*>(editor);
+//        JButton *button = static_cast<JButton*>(editor);
         model->setData(index, QVariant(), Qt::EditRole);
         QApplication::beep();
     }
-    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
+    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/*index*/) const
     {
         editor->setGeometry(option.rect);
    }
@@ -58,9 +59,9 @@ class ToggleButtonRenderer : public QStyledItemDelegate, public TableCellEditor,
     Q_OBJECT
     Q_INTERFACES(TableCellEditor TableCellRenderer )
 public:
-    ToggleButtonRenderer(QString sq, QString s2, QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
+    ToggleButtonRenderer(QString /*sq*/, QString /*s2*/, QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
     QObject* self() {return (QObject*)this;}
-    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &/*option*/, const QModelIndex &index) const
     {
         JToggleButton* editor;
        #if QT_VERSION < 0x050000
@@ -76,17 +77,18 @@ public:
         }
         return editor;
     }
-    void setEditorData(QWidget *editor, const QModelIndex &index) const
+    void setEditorData(QWidget */*editor*/, const QModelIndex &index) const
     {
-        JToggleButton *button = static_cast<JToggleButton*>(editor);
+//        JToggleButton *button = static_cast<JToggleButton*>(editor);
         int value = index.model()->data(index, Qt::EditRole).toUInt();
+        Q_UNUSED(value)
     }
-    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+    void setModelData(QWidget */*editor*/, QAbstractItemModel *model, const QModelIndex &index) const
     {
-        JToggleButton *button = static_cast<JToggleButton*>(editor);
+//        JToggleButton *button = static_cast<JToggleButton*>(editor);
         model->setData(index, QVariant(), Qt::EditRole);
     }
-    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
+    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/*index*/) const
     {
         editor->setGeometry(option.rect);
     }
@@ -99,27 +101,27 @@ class ValueRenderer : public QStyledItemDelegate, public TableCellEditor, public
  public:
      ValueRenderer(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
      QObject* self() {return (QObject*)this;}
-     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
+     QWidget *createEditor(QWidget */*parent*/, const QStyleOptionViewItem &/*option*/, const QModelIndex &index) const
      {
          QWidget* editor = VPtr<QWidget>::asPtr(index.model()->data(index, Qt::DisplayRole));
          return editor;
      }
-     void setEditorData(QWidget *editor, const QModelIndex &index) const{
+     void setEditorData(QWidget */*editor*/, const QModelIndex &/*index*/) const{
 //         JComboBox *comboBox = static_cast<JComboBox*>(editor);
 //         QString value = index.model()->data(index, Qt::DisplayRole).toString();
 //         comboBox->setCurrentText(value);
      }
-     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+     void setModelData(QWidget */*editor*/, QAbstractItemModel */*model*/, const QModelIndex &/*index*/) const
      {
 //         JComboBox *comboBox = static_cast<JComboBox*>(editor);
 //         model->setData(index, comboBox->currentText(), Qt::EditRole);
      }
 
-     void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const{
+     void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/*index*/) const{
          editor->setGeometry(option.rect);
      }
 
-     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &/*index*/) const
      {
       //bool state = index.data().toString() == this->on;
       QWidget* widget = new QWidget();
@@ -138,7 +140,7 @@ class ButtonEditor : public QStyledItemDelegate, public TableCellEditor, public 
 public:
     ButtonEditor(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
     QObject* self() {return (QObject*)this;}
-    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &/*option*/, const QModelIndex &index) const
     {
     QPushButton* editor;
    #if QT_VERSION < 0x050000
@@ -158,16 +160,18 @@ public:
     {
      QPushButton *button = static_cast<QPushButton*>(editor);
      int value = index.model()->data(index, Qt::EditRole).toUInt();
+     Q_UNUSED(value)
      button->setText(index.data().toString());
     }
 
     void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
     {
         QPushButton *button = static_cast<QPushButton*>(editor);
+        Q_UNUSED(button)
         model->setData(index, QVariant(), Qt::EditRole);
         QApplication::beep();
     }
-    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
+    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/*index*/) const
     {
      editor->setGeometry(option.rect);
     }
@@ -202,7 +206,7 @@ public:
         this->on = on;
         this->off = off;
     }
-    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &/*option*/, const QModelIndex &index) const
     {
         ToggleButton* editor;
         bool state;
@@ -228,6 +232,7 @@ public:
     {
         ToggleButton *button = static_cast<ToggleButton*>(editor);
         int value = index.model()->data(index, Qt::EditRole).toUInt();
+        Q_UNUSED(value)
         if(button->isChecked())
          button->setText(this->on);
         else
@@ -244,7 +249,7 @@ public:
         model->setData(index, button->isChecked(), Qt::EditRole);
     }
 
-    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const{
+    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/*index*/) const{
         editor->setGeometry(option.rect);
     }
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
@@ -278,7 +283,7 @@ public:
      this->isInt = isInt;
     }
 
-    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
+    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &/*option*/, const QModelIndex &/*index*/) const
     {
 //     QVariant v = index.model()->data(index, Qt::DisplayRole);
      JComboBox* editor;
@@ -312,7 +317,7 @@ public:
          model->setData(index, comboBox->currentText());
     }
 
-    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const{
+    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/*index*/) const{
         editor->setGeometry(option.rect);
     }
 

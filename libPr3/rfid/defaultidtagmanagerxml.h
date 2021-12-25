@@ -9,7 +9,7 @@ class DefaultIdTagManagerXml : public XmlFile
 public:
  /*public*/ DefaultIdTagManagerXml(TranspondingTagManager* tagMan, QString baseFileName, QObject* parent= nullptr);
  /*public*/ void load();
- /*public*/ void store() throw (IOException);
+ /*public*/ void store() /*throw (IOException)*/;
  /*public*/ QString getDefaultIdTagFileName();
  /*public*/ QString getIdTagDirectoryName();
  /*public*/ QString getIdTagFileName();

@@ -149,7 +149,7 @@
     return Manager::CTCDATA;
 }
 
-/*public*/ void CtcManager::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) {
+/*public*/ void CtcManager::vetoableChange(PropertyChangeEvent* evt) /*throw new (PropertyVetoException)*/ {
     NamedBean* nb =  VPtr<NamedBean>::asPtr(evt->getOldValue());
     bool found = false;
     if ("CanDelete" == (evt->getPropertyName())) { // NOI18N
@@ -192,7 +192,7 @@
 
         if (found) {
             PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());  // NOI18N
-            throw PropertyVetoException(tr("%1 is in use by CTC").arg(nb->getBeanType()), e);   // NOI18N
+            throw new PropertyVetoException(tr("%1 is in use by CTC").arg(nb->getBeanType()), e);   // NOI18N
         }
     }
 }

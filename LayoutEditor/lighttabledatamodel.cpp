@@ -289,8 +289,8 @@
                         double intensity = ( value.toDouble());
                         l->setCommandedState( intensity > 0.5 ? Light::ON : Light::OFF);
                     }
-                } catch (IllegalArgumentException e1) {
-                    JOptionPane::showMessageDialog(nullptr,  e1.getMessage());
+                } catch (IllegalArgumentException* e1) {
+                    JOptionPane::showMessageDialog(nullptr,  e1->getMessage());
                 }
                 fireTableRowsUpdated(mindex.row(), mindex.row());
                 return true;

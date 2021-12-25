@@ -58,7 +58,7 @@ void OperationsManager::initialize()
      try {
          AutoBackup* backup = new AutoBackup();
          backup->autoBackup();
-     } catch (Exception ex) {
+     } catch (Exception* ex) {
          log->debug("Auto backup after enabling Auto Backup flag."/*, ex*/);
      }
  }
@@ -140,7 +140,7 @@ void OperationsManager::initialize()
     //            /*public*/ bool execute() {
     //                try {
     //                    OperationsXml::save();
-    //                } catch (Exception ex) {
+    //                } catch (Exception* ex) {
     //                    log->warn("Error saving operations state: {}", ex);
     //                    log->debug("Details follow: ", ex);
     //                }

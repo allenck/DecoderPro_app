@@ -9,7 +9,7 @@ namespace  Operations {
 class HtmlTrainCommon : public TrainCommon
 {
 public:
- /*public*/ HtmlTrainCommon(QLocale locale, Operations::Train* train, QObject* parent = 0) throw (IOException);
+ /*public*/ HtmlTrainCommon(QLocale locale, Operations::Train* train, QObject* parent = 0) /*throw (IOException)*/;
  /*public*/ QString pickupUtilityCars(QList<Operations::Car*>* carList, Operations::Car* car,  bool isManifest);
  /*public*/ QString pickupEngine(Engine* engine);
  /*public*/ QString dropEngine(Engine* engine);

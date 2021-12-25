@@ -83,12 +83,12 @@ SystemNameValidator::SystemNameValidator(QObject *parent) : JInputValidator(null
                     } else {
                         manager->makeSystemName(text, false);
                     }
-                } catch (NamedBean::BadSystemNameException ex) {
+                } catch (NamedBean::BadSystemNameException* ex) {
                     if (manager->validSystemNameFormat(text) == Manager::NameValidity::VALID_AS_PREFIX_ONLY) {
                         return new Validation(Validation::Type::WARNING, tr("<html>\"%1\" is an incomplete system name for a %2.<br><br>%3</html>").arg(text, manager->getBeanTypeHandled(),
                                 trimHtmlTags(getToolTipText())), preferences);
                     }
-                    return new Validation(Validation::Type::DANGER, tr("<html>{0}<br><br>{1}</html>").arg(ex.getMessage(), trimHtmlTags(getToolTipText())), preferences);
+                    return new Validation(Validation::Type::DANGER, tr("<html>{0}<br><br>{1}</html>").arg(ex->getMessage(), trimHtmlTags(getToolTipText())), preferences);
                 }
                 return new Validation(Validation::Type::SUCCESS, getToolTipText(), preferences);
             }
@@ -143,7 +143,7 @@ SystemNameValidator::SystemNameValidator(QObject *parent) : JInputValidator(null
 //                     trimHtmlTags(getToolTipText())), preferences);
           return QValidator::Intermediate;
          }
-         //return new Validation(Validation::Type::DANGER, tr("<html>{0}<br><br>{1}</html>").arg(ex.getMessage(), trimHtmlTags(getToolTipText())), preferences);
+         //return new Validation(Validation::Type::DANGER, tr("<html>{0}<br><br>{1}</html>").arg(ex->getMessage(), trimHtmlTags(getToolTipText())), preferences);
          return QValidator::Invalid;
      }
      //return new Validation(Validation::Type::SUCCESS, getToolTipText(), preferences);

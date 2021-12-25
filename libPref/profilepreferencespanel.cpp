@@ -388,7 +388,7 @@
 //            JOptionPane.showMessageDialog(this,
 //                    tr("ProfilePreferencesPanel.btnAddSearchPath.errorMessage",
 //                            chooser.getSelectedFile().getPath(),
-//                            ex.getLocalizedMessage()),
+//                            ex->getLocalizedMessage()),
 //                    tr("ProfilePreferencesPanel.btnAddSearchPath.errorTitle"),
 //                    JOptionPane.ERROR_MESSAGE);
 //        }
@@ -406,7 +406,7 @@
 //        } catch (IOException* ex) {
 //            log.warn("Unable to write profiles while removing search path {}", path.getPath(), ex);
 //            JOptionPane.showMessageDialog(this,
-//                    tr("ProfilePreferencesPanel.btnRemoveSearchPath.errorMessage", path.getPath(), ex.getLocalizedMessage()),
+//                    tr("ProfilePreferencesPanel.btnRemoveSearchPath.errorMessage", path.getPath(), ex->getLocalizedMessage()),
 //                    tr("ProfilePreferencesPanel.btnRemoveSearchPath.errorTitle"),
 //                    JOptionPane.ERROR_MESSAGE);
 //        }
@@ -516,7 +516,7 @@
 //              tr("ProfilePreferencesPanel.btnExportProfile.errorMessage",
 //                      p->getName(),
 //                      chooser->getSelectedFile()->getPath(),
-//                      ex.getLocalizedMessage()),
+//                      ex->getLocalizedMessage()),
 //              tr("ProfilePreferencesPanel.btnExportProfile.errorTitle"),
 //              JOptionPane.ERROR_MESSAGE);
       QMessageBox::critical(this, tr("Error exporting profile"), tr("Unable to export profile %1 to %2.\n%3\nSee logs for more details.").arg(p->getName()).arg(chooser->getSelectedFile()->getPath()).arg( ex->getLocalizedMessage()));
@@ -532,7 +532,7 @@
         ProfileManager::getDefault()->saveActiveProfile(p, ProfileManager::getDefault()->isAutoStartActiveProfile());
 //    } catch (IOException* ex) {
 //        log.error("Unable to save profile preferences", ex);
-//        JOptionPane.showMessageDialog(this, "Usable to save profile preferences.\n" + ex.getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+//        JOptionPane.showMessageDialog(this, "Usable to save profile preferences.\n" + ex->getLocalizedMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 //    }
 }
 

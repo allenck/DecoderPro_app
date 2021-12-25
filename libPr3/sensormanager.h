@@ -49,7 +49,7 @@ public:
         virtual  Sensor* provideSensor(QString /*name*/) { return NULL;}
         //@Override
         /** {@inheritDoc} */
-        virtual /*default*/ /*public*/ Sensor* provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException)
+        virtual /*default*/ /*public*/ Sensor* provide(/*@Nonnull*/ QString name) /*throw (IllegalArgumentException)*/
         { return provideSensor(name); }
 
 
@@ -138,7 +138,7 @@ public:
          *                          or more than 10 next addresses in use.
          */
         //@Nonnull
-        virtual /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) /*throw (JmriException)*/ {return "";}
+        virtual /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString /*curAddress*/, /*@Nonnull*/ QString /*prefix*/, bool /*ignoreInitialExisting*/) /*throw (JmriException)*/ {return "";}
         
         virtual QString createSystemName(QString /*curAddress*/, QString /*prefix*/) const /*throw (JmriException)*/ {return "";}
 

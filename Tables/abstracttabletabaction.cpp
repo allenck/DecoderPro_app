@@ -183,9 +183,9 @@ void AbstractTableTabAction::actionPerformed(JActionEvent */*e*/)
  {
   tabbedTableArray.at(dataTabs->currentIndex())->getAAClass()->addToFrame(f);
  }
- catch (ArrayIndexOutOfBoundsException ex)
+ catch (ArrayIndexOutOfBoundsException* ex)
  {
-  log->error(ex.getMessage() + " in add to Frame "  + QString::number(dataTabs->currentIndex()) + " " + QString::number(dataTabs->currentIndex()));
+  log->error(ex->getMessage() + " in add to Frame "  + QString::number(dataTabs->currentIndex()) + " " + QString::number(dataTabs->currentIndex()));
  }
 }
 
@@ -195,9 +195,9 @@ void AbstractTableTabAction::actionPerformed(JActionEvent */*e*/)
  {
   tabbedTableArray.at(dataTabs->currentIndex())->getAAClass()->setMenuBar(f);
  }
- catch (ArrayIndexOutOfBoundsException ex)
+ catch (ArrayIndexOutOfBoundsException* ex)
  {
-  log->error(ex.getMessage()  + " in add to Menu " + QString::number(dataTabs->currentIndex()) + " " + QString::number(dataTabs->currentIndex()));
+  log->error(ex->getMessage()  + " in add to Menu " + QString::number(dataTabs->currentIndex()) + " " + QString::number(dataTabs->currentIndex()));
  }
 }
 
@@ -217,9 +217,9 @@ void AbstractTableTabAction::actionPerformed(JActionEvent */*e*/)
  {
   tabbedTableArray.at(dataTabs->currentIndex())->getDataTable()->print(mode, headerFormat, footerFormat);
  }
- catch (PrinterException e1)
+ catch (PrinterException* e1)
  {
-  log->warn("error printing: "+e1.getMessage() + e1.getMessage());
+  log->warn("error printing: "+e1->getMessage() + e1->getMessage());
  }
  catch ( NullPointerException ex)
  {
@@ -397,7 +397,7 @@ void TabbedTableItem::addPanelModel()
  }
  catch (IllegalArgumentException* ex)
  {
-  // log.error (ex.getLocalizedMessage(), ex);
+  // log.error (ex->getLocalizedMessage(), ex);
  }
 }
 /**
@@ -592,9 +592,9 @@ void AbstractTableTabAction::buildMenus(BeanTableFrame* f)
   item->getAAClass()->setMenuBar(f);
   f->addHelpMenu(item->getAAClass()->helpTarget(), true);
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
-  log->error("Error when trying to set menu bar for " + /*item->getClassAsString()*/ QString(item->metaObject()->className())+ "\n" + ex.getMessage());
+  log->error("Error when trying to set menu bar for " + /*item->getClassAsString()*/ QString(item->metaObject()->className())+ "\n" + ex->getMessage());
  }
 // this.revalidate();
 }
@@ -615,9 +615,9 @@ void AbstractTableTabAction::On_printAction_triggered()
   {
    item->getAAClass()->print(JTable::FIT_WIDTH, nullptr, footerFormat);
   }
- } catch (PrinterException e1)
+ } catch (PrinterException* e1)
  {
-  log->warn("error printing: " + e1.getMessage());
+  log->warn("error printing: " + e1->getMessage());
  }
  catch (NullPointerException* ex)
  {

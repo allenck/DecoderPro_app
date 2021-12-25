@@ -91,19 +91,19 @@ void JmriNamedPaneAction::common()
   p->adjustSize();
   return p;
  }
- catch(ClassNotFoundException ex)
+ catch(ClassNotFoundException* ex)
  {
   log->warn("could not load pane class: " + paneClass);
   //ex.printStackTrace();
   return nullptr;
  }
- catch(IllegalAccessException ex)
+ catch(IllegalAccessException* ex)
  {
   log->warn("could not load pane class: " + paneClass);
   //ex.printStackTrace();
   return nullptr;
  }
- catch(InstantiationException ex)
+ catch(InstantiationException* ex)
  {
   log->warn("could not load pane class: " + paneClass);
   //ex.printStackTrace();

@@ -11,10 +11,10 @@ class ServerSocket : public QObject
 public:
  explicit ServerSocket(QTcpSocket* impl, QObject *parent = 0);
  /*public*/ int getLocalPort();
- /*public*/ ServerSocket(QObject *parent = 0) throw (IOException);
- /*public*/ ServerSocket(int port, QObject *parent = 0) throw (IOException);
+ /*public*/ ServerSocket(QObject *parent = 0) /*throw (IOException)*/;
+ /*public*/ ServerSocket(int port, QObject *parent = 0) /*throw (IOException)*/;
  /*public*/ bool isBound();
- /*public*/ void close() throw (IOException);
+ /*public*/ void close() /*throw (IOException)*/;
  /*public*/ bool isClosed();
 
 signals:

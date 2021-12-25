@@ -469,8 +469,8 @@
 //                 fields.forEach(field -> {
 //                     try {
 //                          log-> info("    CBHD: fld = {}, type = {}, val = {}", field.getName(), field.getType(), field.get(cbhd));
-//                     } catch (Exception ex) {
-//                          log-> info("    CBHD list exception: {}", ex.getMessage());
+//                     } catch (Exception* ex) {
+//                          log-> info("    CBHD list exception: {}", ex->getMessage());
 //                     }
 //                 });
             }
@@ -511,8 +511,8 @@
 //             fields.forEach(field -> {
 //                 try {
 //                      log-> info("    ProgramProperties: fld = {}, val = {}", field.getName(), field.get(pp));
-//                 } catch (Exception ex) {
-//                      log-> info("    ProgramProperties list exception: {}", ex.getMessage());
+//                 } catch (Exception* ex) {
+//                      log-> info("    ProgramProperties list exception: {}", ex->getMessage());
 //                 }
 //             });
     }
@@ -567,8 +567,8 @@
 //         fields.forEach(field -> {
 //             try {
 //                  log-> info("    OtherData: fld = {}, type = {}, val = {}", field.getName(), field.getType(), field.get(od));
-//             } catch (Exception ex) {
-//                  log-> info("    OtherData list exception: {}", ex.getMessage());
+//             } catch (Exception* ex) {
+//                  log-> info("    OtherData list exception: {}", ex->getMessage());
 //             }
 //         });
     }

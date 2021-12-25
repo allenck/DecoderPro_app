@@ -120,7 +120,7 @@ QuickPromptUtil::QuickPromptUtil(QObject *parent) : QObject(parent)
      * @return the updated value, or the original one.
      */
     /*public*/ /*static*/ int QuickPromptUtil::promptForInteger(Component* parentComponent, /*@Nonnull*/ QString message, /*@Nonnull*/ QString title,
-                                           int oldValue, /*@CheckForNull*/ Predicate<int> validator) {
+                                           int oldValue, /*@CheckForNull*/ Predicate<int> /*validator*/) {
         int result = oldValue;
         int newValue = 0;
 //        int newValue = promptForData(parentComponent, message, title, oldValue, validator, (val) -> {

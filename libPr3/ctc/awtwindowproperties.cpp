@@ -37,7 +37,7 @@ AwtWindowProperties::AwtWindowProperties(QObject *parent) : QObject(parent)
              QTextStream* bufferedReader = new QTextStream(f);
                 _mProperties->load(bufferedReader);
             }
-        } catch (IOException e) {}
+        } catch (IOException* e) {}
         setWindowState(window, windowName);
     }
 
@@ -53,7 +53,7 @@ AwtWindowProperties::AwtWindowProperties(QObject *parent) : QObject(parent)
              QTextStream* bufferedWriter = new QTextStream(f);
                 _mProperties->store(bufferedWriter, "All Ant Windows Properties");           // NOI18N
             }
-        } catch (IOException e) {}
+        } catch (IOException* e) {}
     }
 
     /*public*/ /*final*/ void AwtWindowProperties::setWindowState(JFrame* window, QString windowName) {

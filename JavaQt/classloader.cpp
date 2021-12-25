@@ -1251,7 +1251,7 @@
         URL url = getResource(name);
         try {
             return url != null ? url.openStream() : null;
-        } catch (IOException e) {
+        } catch (IOException* e) {
             return null;
         }
     }
@@ -1273,7 +1273,7 @@
         URL url = getSystemResource(name);
         try {
             return url != null ? url.openStream() : null;
-        } catch (IOException e) {
+        } catch (IOException* e) {
             return null;
         }
     }
@@ -1829,7 +1829,7 @@
             }
             try {
                 name = file.getCanonicalPath();
-            } catch (IOException e) {
+            } catch (IOException* e) {
                 return false;
             }
         }

@@ -95,9 +95,9 @@ class RunnableThis : public Runnable
   if(source->getAspect()=="")
     source->setAspect(stopAspect);
  }
- catch(Exception ex)
+ catch(Exception* ex)
  {
-  log->error(tr("Error while creating Signal Logic %1").arg(ex.getMessage()));
+  log->error(tr("Error while creating Signal Logic %1").arg(ex->getMessage()));
  }
 
 }
@@ -1115,7 +1115,7 @@ void DefaultSignalMastLogic::setMastAppearance()
                                 }catch (NumberFormatException* nx) {
                                     try{
                                         speed = static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(strSpeed);
-                                    } catch (Exception ex){
+                                    } catch (Exception* ex){
                                         //Considered Normal if the speed does not appear in the map
                                     }
                                 }

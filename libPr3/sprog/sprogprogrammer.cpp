@@ -102,10 +102,10 @@ using namespace Sprog;
   startLongTimer();
   controller()->sendSprogMessage(progTaskStart(getMode(), val, CV), (SprogListener*)this);
  }
- catch (Exception e)
+ catch (Exception* e)
  {
   // program op failed, go straight to end
-  log->error("program operation failed, exception " + e.getMessage());
+  log->error("program operation failed, exception " + e->getMessage());
   progState = NOTPROGRAMMING;
  }
 }

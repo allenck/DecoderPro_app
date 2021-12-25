@@ -334,7 +334,7 @@ qSort(defStrings.begin(), defStrings.end());
  for (int i=0; i<defStrings.size(); ++i) {
   try {
       strings.insert(i+2,defStrings.at(i));
-  } catch(ArrayIndexOutOfBoundsException obe){
+  } catch(ArrayIndexOutOfBoundsException* obe){
    // just catch it
   }
  }
@@ -399,13 +399,13 @@ qSort(defStrings.begin(), defStrings.end());
     try {
         turnoutManager->setDefaultThrownSpeed(thrownValue);
     } catch (JmriException* ex) {
-//        JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + thrownValue);
+//        JOptionPane.showMessageDialog(NULL, ex->getMessage() + "\n" + thrownValue);
     }
 
     try {
         turnoutManager->setDefaultClosedSpeed(closedValue);
     } catch (JmriException* ex) {
-//        JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + closedValue);
+//        JOptionPane.showMessageDialog(NULL, ex->getMessage() + "\n" + closedValue);
     }
 }
 

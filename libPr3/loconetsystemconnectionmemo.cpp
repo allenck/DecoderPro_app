@@ -101,7 +101,7 @@ LocoNetSystemConnectionMemo::~LocoNetSystemConnectionMemo()
  */
 /*public*/ SlotManager* LocoNetSystemConnectionMemo::getSlotManager() {
     if (sm == nullptr) {
-        log->debug("slot manager is null, but there should always be a valid SlotManager",  Exception("Traceback"));
+        log->debug("slot manager is null, but there should always be a valid SlotManager",  new Exception("Traceback"));
     }
     return sm;
 }

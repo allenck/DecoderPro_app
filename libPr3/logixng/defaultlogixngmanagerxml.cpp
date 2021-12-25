@@ -84,8 +84,8 @@
                     if (e != QDomElement()) {
                         elemClipboard.appendChild(e);
                     }
-                } catch (Exception e) {
-                    log->error(tr("Error storing action: %1").arg(e.getMessage()), e);
+                } catch (Exception* e) {
+                    log->error(tr("Error storing action: %1").arg(e->getMessage()), e);
                 }
             }
             logixNGs.appendChild(elemClipboard);

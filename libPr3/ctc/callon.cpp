@@ -100,7 +100,7 @@ You should probably use "YELLOW" in that case!
             NBHSignal* signal = callOnData->_mExternalSignal;
             QString trafficDirection = callOnData->_mSignalFacingDirection;
             if (trafficDirection != (tr("LEFTTRAFFIC")) && trafficDirection != (tr("RIGHTTRAFFIC"))) {  // NOI18N
-                throw  CTCException("CallOn", userIdentifier, "groupingString", callOnData->toString() + " not " +("LEFTTRAFFIC") + " or " + ("RIGHTTRAFFIC") + ".");   // NOI18N
+                throw new  CTCException("CallOn", userIdentifier, "groupingString", callOnData->toString() + " not " +("LEFTTRAFFIC") + " or " + ("RIGHTTRAFFIC") + ".");   // NOI18N
             }
             SwitchIndicatorsRoute* route = new SwitchIndicatorsRoute(callOnData->_mSwitchIndicators);
             if (_mSignalHeadSelected) {
@@ -109,7 +109,7 @@ You should probably use "YELLOW" in that case!
                 int validStateNamesIndex = arrayFind(validStateNames, convertFromForeignLanguageColor(callOnData->_mSignalAspectToDisplay));
                 // TODO use non-localized validStateNKeys instead of localized validStateNames
                 if (validStateNamesIndex == -1) { // Not found:
-                    throw CTCException("CallOn", userIdentifier, "groupingString", callOnData->toString() + " " + tr("not valid aspect indication for this signal."));   // NOI18N
+                    throw new CTCException("CallOn", userIdentifier, "groupingString", callOnData->toString() + " " + tr("not valid aspect indication for this signal."));   // NOI18N
                 }
                 NBHSensor* calledOnExternalSensor = callOnData->_mCalledOnExternalSensor;
                 QVector<int> correspondingValidStates = signal->getValidStates();   // I ASSUME it's a correlated 1 for 1 with "getValidStateNames", via tests it seems to be.

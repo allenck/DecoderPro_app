@@ -22,14 +22,14 @@ MyFileInputStream::MyFileInputStream(File* file, QObject *parent) : QObject(pare
  *             file is reached.
  * @exception  IOException  if an I/O error occurs.
  */
-/*public*/ char MyFileInputStream::read() throw (IOException) {
+/*public*/ char MyFileInputStream::read() /*throw (IOException)*/ {
 // if(this->atEnd())
 //  return -1;
 
     return read0();
 }
 
-/*private*/ /*native*/ int MyFileInputStream::read0() throw (IOException)
+/*private*/ /*native*/ int MyFileInputStream::read0() /*throw (IOException)*/
 {
  char* buf = new char[2];
  if(stream->readRawData(buf, 1) < 0)
@@ -49,7 +49,7 @@ MyFileInputStream::MyFileInputStream(File* file, QObject *parent) : QObject(pare
  * @revised 1.4
  * @spec JSR-51
  */
-/*public*/ void MyFileInputStream::close() throw (IOException) {
+/*public*/ void MyFileInputStream::close() /*throw (IOException)*/ {
  if(f->isOpen())
   f->close();
  stream = nullptr;

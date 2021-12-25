@@ -17,7 +17,7 @@ public:
     OptionsFile(const OptionsFile&): XmlFile() {}
     /*public*/ static void setDefaultFileName(QString testLocation) ;
     /*public*/ void readDispatcherOptions(DispatcherFrame* f);// throw (JDOMException, IOException);
-    /*public*/ void writeDispatcherOptions(DispatcherFrame* f);// throw (IOException);
+    /*public*/ void writeDispatcherOptions(DispatcherFrame* f);// /*throw (IOException)*/;
 
 private:
     /*private*/ static QString defaultFileName;// = FileUtil.getUserFilesPath() + "dispatcheroptions.xml";

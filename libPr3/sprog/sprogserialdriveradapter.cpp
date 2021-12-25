@@ -90,10 +90,10 @@ void SprogSerialDriverAdapter::common()
   try
   {
    //activeSerialPort = (SerialPort) portID.open(appName, 2000);  // name of program, msec to wait
-   if(inf.isBusy()) throw PortInUseException(portName);
+   if(inf.isBusy()) throw new PortInUseException(portName);
    log->info(tr("Manufacturer %1, Vendor id: %2 : Product id: %3").arg(inf.manufacturer()).arg(inf.vendorIdentifier(),0,16).arg(inf.productIdentifier(),0,16));
   }
-  catch (PortInUseException p) {
+  catch (PortInUseException* p) {
       return handlePortBusy(p, portName, log);
   }
 
@@ -105,8 +105,8 @@ void SprogSerialDriverAdapter::common()
      try {
          activeSerialPort->setSerialPortParams(baudRate, SerialPort::DATABITS_8, SerialPort::STOPBITS_1, SerialPort::PARITY_NONE);
      } catch (UnsupportedCommOperationException* e) {
-         log->error(tr("Cannot set serial parameters on port %1: %2").arg(portName).arg(e.getMessage()));
-         return "Cannot set serial parameters on port " + portName + ": " + e.getMessage();
+         log->error(tr("Cannot set serial parameters on port %1: %2").arg(portName).arg(e->getMessage()));
+         return "Cannot set serial parameters on port " + portName + ": " + e->getMessage();
      }
      activeSerialPort->setFlowControlMode(SerialPort::FLOWCONTROL_NONE);
 #else
@@ -121,9 +121,9 @@ void SprogSerialDriverAdapter::common()
      {
       log->error(tr("error opening comm port '%1': %2").arg(portName).arg(activeSerialPort->errorString()));
       if(activeSerialPort->error() == QSerialPort::SerialPortError::DeviceNotFoundError)
-       throw NoSuchPortException(portName);
+       throw new NoSuchPortException(portName);
       if(activeSerialPort->error() == QSerialPort::PermissionError)
-       throw PortInUseException();
+       throw new PortInUseException();
       return activeSerialPort->errorString();
      }
 
@@ -240,8 +240,8 @@ void SprogSerialDriverAdapter::bytesWritten(qint64 bytes)
     try {
         return new QDataStream(activeSerialPort);
      //return serialStream; //activeSerialPort->getOutputStream();
-    } catch (IOException e) {
-        log->error("getOutputStream exception: " + e.getMessage());
+    } catch (IOException* e) {
+        log->error("getOutputStream exception: " + e->getMessage());
     }
     return NULL;
 }
@@ -349,14 +349,14 @@ void SprogSerialDriverAdapter::writeData(QByteArray bytes)
  try
  {
   int bytesWritten = serialStream->writeRawData(bytes.constData(), bytes.length());
-  if(bytesWritten!=bytes.length()) throw Exception(tr("%1 bytes not written").arg(bytes.length()));
+  if(bytesWritten!=bytes.length()) throw new Exception(tr("%1 bytes not written").arg(bytes.length()));
 
     log->debug(tr("sendSprogMessage %1 bytes written to ostream").arg(bytesWritten));
 
   }
-  catch (Exception e)
+  catch (Exception* e)
  {
-  log->warn("sendMessage: Exception: " + e.getMessage());
+  log->warn("sendMessage: Exception: " + e->getMessage());
  }
 }
 

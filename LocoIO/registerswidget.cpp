@@ -143,12 +143,15 @@ void RegistersWidget::OnIOComplete(QList<int>*)
  case 15:
   iState = 16;
   data->writeValues(channel+1 +16);
+  break;
  case 16:
   iState = 17;
   data->writeValues(channel+2 +16);
+  break;
  case 17:
   iState = 18;
   data->writeX2Values(channel+1 );
+  break;
  case 18:
   iState = 19;
   data->writeX2Values(channel+2 );
@@ -601,8 +604,8 @@ void RegistersWidget::setPortType(portType type)
    ui->edVal2->setReadOnly(true);
    ui->btnEditVal->setEnabled(false);
        //ui->btnEditVal->setVisible(false);
-   break;
    }
+   break;
  default:
   ui->btnWrite->setEnabled(true);
   ui->edAddr->setReadOnly(false);

@@ -669,7 +669,7 @@ void LoaderPane::on_bootload_focusLost()
   }
   else
   {
-   log->error(/*f.getLocalizedMessage()*/ tr("file name %1 not found").arg(file->getPath()));
+   log->error(/*f->getLocalizedMessage()*/ tr("file name %1 not found").arg(file->getPath()));
 
 //     JOptionPane.showMessageDialog(this, tr("ErrorFileNotFound"),
 //             tr("ErrorTitle"),
@@ -681,47 +681,47 @@ void LoaderPane::on_bootload_focusLost()
   }
  }
 //  catch (MemoryContents.MemoryFileRecordLengthException f) {
-//     log->error(f.getLocalizedMessage());
+//     log->error(f->getLocalizedMessage());
 //     status->setText(tr("ErrorFileContentsError"));
 //     this.disableDownloadVerifyButtons();
 //     return;
 // } catch (MemoryContents.MemoryFileChecksumException f) {
-//     log->error(f.getLocalizedMessage());
+//     log->error(f->getLocalizedMessage());
 //     status->setText(tr("ErrorFileContentsError"));
 //     this.disableDownloadVerifyButtons();
 //     return;
 // } catch (MemoryContents.MemoryFileUnknownRecordType f) {
-//     log->error(f.getLocalizedMessage());
+//     log->error(f->getLocalizedMessage());
 //     status->setText(tr("ErrorFileContentsError"));
 //     this.disableDownloadVerifyButtons();
 //     return;
 // } catch (MemoryContents.MemoryFileRecordContentException f) {
-//     log->error(f.getLocalizedMessage());
+//     log->error(f->getLocalizedMessage());
 //     status->setText(tr("ErrorFileContentsError"));
 //     this.disableDownloadVerifyButtons();
 //     return;
 // } catch (MemoryContents.MemoryFileAddressingRangeException f) {
-//     log->error(f.getLocalizedMessage());
+//     log->error(f->getLocalizedMessage());
 //     status->setText(tr("ErrorFileContentsError"));
 //     this.disableDownloadVerifyButtons();
 //     return;
 // } catch (MemoryContents.MemoryFileNoDataRecordsException f) {
-//     log->error(f.getLocalizedMessage());
+//     log->error(f->getLocalizedMessage());
 //     status->setText(tr("ErrorFileContentsError"));
 //     this.disableDownloadVerifyButtons();
 //     return;
 // } catch (MemoryContents.MemoryFileNoEOFRecordException f) {
-//     log->error(f.getLocalizedMessage());
+//     log->error(f->getLocalizedMessage());
 //     status->setText(tr("ErrorFileContentsError"));
 //     this.disableDownloadVerifyButtons();
 //     return;
 // } catch (MemoryContents.MemoryFileRecordFoundAfterEOFRecord f) {
-//     log->error(f.getLocalizedMessage());
+//     log->error(f->getLocalizedMessage());
 //     status->setText(tr("ErrorFileContentsError"));
 //     this.disableDownloadVerifyButtons();
 //     return;
-// } catch (IOException e) {
-//     log->error(e.getLocalizedMessage());
+// } catch (IOException* e) {
+//     log->error(e->getLocalizedMessage());
 //     status->setText(tr("ErrorFileReadError"));
 //     this.disableDownloadVerifyButtons();
 //     return;
@@ -867,7 +867,7 @@ void LoaderPane::on_memoryContentsException(MemoryContentsException , QString )
  else
  {
   log->error("Invalid Option value: " + text);
-  //throw new NumberFormatException(ex.getLocalizedMessage());
+  //throw new NumberFormatException(ex->getLocalizedMessage());
  }
 }
 

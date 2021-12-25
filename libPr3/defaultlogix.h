@@ -31,7 +31,7 @@ public:
 signals:
 
 public slots:
- /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException);
+ /*public*/ void vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/;
 
 private:
     /**

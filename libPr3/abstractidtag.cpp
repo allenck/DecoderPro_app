@@ -90,7 +90,7 @@ void AbstractIdTag::init()
                 return m->getSystemPrefix();
             }
         }
-        throw BadSystemNameException();
+        throw new BadSystemNameException();
     }
 //@Override
 /*public*/ Reporter* AbstractIdTag::getWhereLastSeen() {

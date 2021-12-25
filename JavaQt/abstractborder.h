@@ -17,10 +17,10 @@ public:
  /*public*/ virtual QRect getInteriorRectangle(QWidget* c, int x, int y, int width, int height);
  /*public*/ static QRect getInteriorRectangle(QWidget* c, Border* b, int x, int y, int width, int height);
  /*public*/ virtual int getBaseline(QWidget c, int width, int height);
- void virtual adjustLayout(QLayout* layout) {} // subclasses can adjust layout
+ void virtual adjustLayout(QLayout* /*layout*/) {} // subclasses can adjust layout
 
 private:
- \
+
 protected:
 };
 

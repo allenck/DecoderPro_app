@@ -29,7 +29,7 @@
  * Protocol Specific Abstract Functions
  */
 ////@Override
-/*public*/ void SimpleSensorServer::sendStatus(QString sensorName, int Status) throw (IOException) {
+/*public*/ void SimpleSensorServer::sendStatus(QString sensorName, int Status) /*throw (IOException)*/ {
     addSensorToList(sensorName);
 
     if (Status == Sensor::INACTIVE) {
@@ -42,7 +42,7 @@
 }
 
 //@Override
-/*public*/ void SimpleSensorServer::sendErrorStatus(QString sensorName) throw (IOException) {
+/*public*/ void SimpleSensorServer::sendErrorStatus(QString sensorName) /*throw (IOException)*/ {
     this->sendMessage("SENSOR ERROR\n");
 }
 
@@ -78,7 +78,7 @@
     }
 }
 
-/*private*/ void SimpleSensorServer::sendMessage(QString message) throw (IOException) {
+/*private*/ void SimpleSensorServer::sendMessage(QString message) /*throw (IOException)*/ {
     if (this->output != nullptr) {
         this->output->writeBytes(message.toLocal8Bit(), message.length());
     } else {

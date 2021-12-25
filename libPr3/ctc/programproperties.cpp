@@ -114,11 +114,11 @@
             _mCodeButtonDelayTime = Integer.parseInt(properties.getProperty(NO_CODE_BUTTON_DELAY_TIME_IN_MILLISECONDS, NO_CODE_BUTTON_DELAY_TIME_IN_MILLISECONDS_DEFAULT));
 #endif
         }
-        catch (IOException e ) {
-            log->error(tr("ProgramProperties: %1").arg(e.getMessage()));
+        catch (IOException* e ) {
+            log->error(tr("ProgramProperties: %1").arg(e->getMessage()));
         }
-        catch ( NumberFormatException e) {
-         log->error(tr("ProgramProperties: %1").arg(e.getMessage()));
+        catch ( NumberFormatException* e) {
+         log->error(tr("ProgramProperties: %1").arg(e->getMessage()));
         }
     }
     /*private*/ /*static*/ Logger* ProgramProperties::log = LoggerFactory::getLogger("ProgramProperties");

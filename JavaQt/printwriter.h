@@ -19,7 +19,7 @@ public:
  /*public*/ void flush();
  /*public*/ void print(const QString s);
  /*public*/ void println(const QString x);
- /*public*/ void close() throw (IOException) override;
+ /*public*/ void close() /*throw (IOException)*/ override;
 
 private:
  //void common(Writer* out, bool AutoFlush);
@@ -35,7 +35,7 @@ private:
   */
  /*private*/ /*final*/ QString lineSeparator = "\n";
  /*private*/ void newLine();
- /*private*/ void ensureOpen() throw (IOException);
+ /*private*/ void ensureOpen() /*throw (IOException)*/;
 
 protected:
  /**

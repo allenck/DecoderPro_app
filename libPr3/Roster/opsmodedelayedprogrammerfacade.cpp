@@ -49,7 +49,7 @@
 
 // programming interface
 //@Override
-/*public*/ /*synchronized*/ void OpsModeDelayedProgrammerFacade::writeCV(QString cv, int val, ProgListener* p) throw (ProgrammerException) {
+/*public*/ /*synchronized*/ void OpsModeDelayedProgrammerFacade::writeCV(QString cv, int val, ProgListener* p) /*throw (ProgrammerException)*/ {
     log->debug(tr("writeCV entry: ProgListener p is %1").arg(p->self()->metaObject()->className()));
     useProgrammer(p);
     state = ProgState::WRITECOMMANDSENT;
@@ -57,14 +57,14 @@
 }
 
 //@Override
-/*public*/ /*synchronized*/ void OpsModeDelayedProgrammerFacade::readCV(QString cv, ProgListener* p) throw (ProgrammerException) {
+/*public*/ /*synchronized*/ void OpsModeDelayedProgrammerFacade::readCV(QString cv, ProgListener* p) /*throw  (ProgrammerException)*/ {
     useProgrammer(p);
     state = ProgState::READCOMMANDSENT;
     prog->readCV(cv, (ProgListener*)this);
 }
 
 //@Override
-/*public*/ /*synchronized*/ void OpsModeDelayedProgrammerFacade::confirmCV(QString cv, int val, ProgListener* p) throw (ProgrammerException) {
+/*public*/ /*synchronized*/ void OpsModeDelayedProgrammerFacade::confirmCV(QString cv, int val, ProgListener* p) /*throw (ProgrammerException)*/ {
     useProgrammer(p);
     state = ProgState::READCOMMANDSENT;
     prog->confirmCV(cv, val, (ProgListener*)this);
@@ -78,7 +78,7 @@
  * @param p the programmer
  * @throws ProgrammerException if p is already in use
  */
-/*protected*/ /*synchronized*/ void OpsModeDelayedProgrammerFacade::useProgrammer(ProgListener* p) throw (ProgrammerException) {
+/*protected*/ /*synchronized*/ void OpsModeDelayedProgrammerFacade::useProgrammer(ProgListener* p) /*throw (ProgrammerException)*/ {
     // test for only one!
     if(_usingProgrammer)
      log->debug(tr("useProgrammer entry: _usingProgrammer is %1").arg(_usingProgrammer->self()->metaObject()->className()));
@@ -87,7 +87,7 @@
         if (log->isInfoEnabled()) {
             log->info(tr("programmer already in use by ") + _usingProgrammer->self()->metaObject()->className());
         }
-        throw ProgrammerException("programmer in use");
+        throw new ProgrammerException("programmer in use");
     } else
     {
         _usingProgrammer = p;
@@ -177,8 +177,8 @@ void OPSMDelayWorker::process()
      try {
          //Thread.sleep(_delay);
       SleeperThread::msleep(facade->_delay);
-     } catch (InterruptedException ie) {
-         facade->log->error(tr("Interrupted while sleeping %1").arg(ie.getMessage()));
+     } catch (InterruptedException* ie) {
+         facade->log->error(tr("Interrupted while sleeping %1").arg(ie->getMessage()));
      }
  }
  // the programmingOpReply handler might send an immediate reply, so

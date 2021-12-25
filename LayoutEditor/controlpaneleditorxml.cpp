@@ -101,9 +101,9 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
     QDomElement e = ConfigXmlManager::elementFromObject(sub->self());
     if (!e.isNull()) panel.appendChild(e);
    }
-   catch (Exception e)
+   catch (Exception* e)
    {
-    log->error("Error storing panel element: "+e.getMessage());
+    log->error("Error storing panel element: "+e->getMessage());
                 //e.printStackTrace();
    }
   }
@@ -361,9 +361,9 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
     }
    }
   }
-  catch (Exception e)
+  catch (Exception* e)
   {
-   log->error("Exception while loading "+item.tagName()+":"+e.getMessage());
+   log->error("Exception while loading "+item.tagName()+":"+e->getMessage());
    result = false;
    //e.printStackTrace();
   }

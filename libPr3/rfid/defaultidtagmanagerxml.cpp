@@ -37,14 +37,14 @@
         }
     }
 
-    /*public*/ void DefaultIdTagManagerXml::store() throw (IOException) {
+    /*public*/ void DefaultIdTagManagerXml::store() /*throw (IOException)*/ {
             log->debug("Storing...");
             log->debug(tr("Using file: %1").arg(getDefaultIdTagFileName()));
             createFile(getDefaultIdTagFileName(), true);
             try {
                 writeFile(getDefaultIdTagFileName());
-            } catch (FileNotFoundException ex) {
-                log->error(tr("File not found while writing IdTag file, may not be complete: %1").arg( ex.getMessage()));
+            } catch (FileNotFoundException* ex) {
+                log->error(tr("File not found while writing IdTag file, may not be complete: %1").arg( ex->getMessage()));
             }
     }
 

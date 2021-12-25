@@ -257,7 +257,7 @@ void PaneProgPane::ctorContinue() // continue ctor after subclasses are built.
        case 4:
         msg = tr("to hide empty tabs, uncheck Preferences -> Roster -> Programmer -> Show empty tabs.");
        default:
-        throw MissingResourceException();
+        throw new MissingResourceException();
         break;
        }
        if (msg.isEmpty()) {
@@ -2363,7 +2363,7 @@ void PaneProgPane::pickFnMapPanel(QWidget* c, GridBagLayout* g, GridBagConstrain
       extFnsESU = a.toLower() != ("no");
   }
  }
- catch (Exception ex) {
+ catch (Exception* ex) {
   log->error("error handling decoder's extFnsESU value");
  }
  if (extFnsESU)
@@ -2999,7 +2999,7 @@ QWidget* PaneProgPane::getRep(int i, QString format) {
 
   // handle special cases
  }
- catch (IOException e) { log->warn("error during printing: "+e.getMessage());
+ catch (IOException* e) { log->warn("error during printing: "+e->getMessage());
  }
 #endif
 }

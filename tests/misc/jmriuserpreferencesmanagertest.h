@@ -90,8 +90,8 @@ public slots:
  /*public*/ void testGetClassName();
  /*public*/ void testGetClassPreferences();
  /*public*/ void testGetPreferencesSize();
- /*public*/ void testReadUserPreferences() throw (IOException);
- /*public*/ void testSaveElement() throw (IOException);
+ /*public*/ void testReadUserPreferences() /*throw (IOException)*/;
+ /*public*/ void testSaveElement() /*throw (IOException)*/;
 private:
  static Logger* log;
  /*private*/ /*final*/ QString strClass;// = JmriUserPreferencesManagerTest.class.getName();
@@ -142,6 +142,7 @@ class JUPMReleaseUntil : public ReleaseUntil
  JUPMListener* l;
 public:
  JUPMReleaseUntil(JUPMListener* l) {this->l = l;}
- bool ready() throw (Exception) {return l->event != nullptr && l->event->getPropertyName() == (UserPreferencesManager::PREFERENCES_UPDATED);}
+ bool ready() /*throw (Exception)*/
+ {return l->event != nullptr && l->event->getPropertyName() == (UserPreferencesManager::PREFERENCES_UPDATED);}
 };
 #endif // JMRIUSERPREFERENCESMANAGERTEST_H

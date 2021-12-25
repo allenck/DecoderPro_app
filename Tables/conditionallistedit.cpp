@@ -366,7 +366,7 @@ bool ConditionalListEdit::validateTimeReference(int actionType, QString ref) {
     try {
      bool ok;
         bool rslt = validateTime(actionType, ref.toFloat(&ok));
-        if(!ok) throw NumberFormatException();
+        if(!ok) throw new NumberFormatException();
         return rslt;
         // return true if ref is decimal within allowed range
     } catch (NumberFormatException* e) {
@@ -386,11 +386,11 @@ bool ConditionalListEdit::validateTimeReference(int actionType, QString ref) {
             }
             try {
                 if (m == NULL || m->getValue() == QVariant()) {
-                    throw  NumberFormatException();
+                    throw new  NumberFormatException();
                 }
                 bool ok;
                 validateTime(actionType,  m->getValue().toFloat(&ok));
-                if(!ok) throw NumberFormatException();
+                if(!ok) throw new NumberFormatException();
             } catch (NumberFormatException* ex) {
                 JOptionPane::showMessageDialog(
                         NULL, tr("Memory variable \"%1\" currently does not contain a numeric value.\nWhen triggered the action cannot be performed until this value is corrected!").arg(memRef), tr("Warning"), JOptionPane::WARNING_MESSAGE);   // NOI18N

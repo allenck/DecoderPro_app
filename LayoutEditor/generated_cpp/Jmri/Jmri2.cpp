@@ -45,7 +45,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmargins.h>
 #include <qmenu.h>
@@ -698,7 +697,7 @@ if (_wrapper) {
 }
   Manager::addDataListener(e0);
 }
-void PythonQtShell_Manager::deleteBean(NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException) 
+void PythonQtShell_Manager::deleteBean(NamedBean*  arg__1, QString  arg__2)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -1592,7 +1591,7 @@ void PythonQtWrapper_Manager::addDataListener(Manager* theWrappedObject, QObject
   ( theWrappedObject->addDataListener(e));
 }
 
-void PythonQtWrapper_Manager::deleteBean(Manager* theWrappedObject, NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException) 
+void PythonQtWrapper_Manager::deleteBean(Manager* theWrappedObject, NamedBean*  arg__1, QString  arg__2)
 {
   ( theWrappedObject->deleteBean(arg__1, arg__2));
 }
@@ -3433,7 +3432,7 @@ if (_wrapper) {
 }
   NamedBean::dispose();
 }
-bool  PythonQtShell_NamedBean::equals(NamedBean*  obj0)
+bool  PythonQtShell_NamedBean::equals(QObject*  obj0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -3441,7 +3440,7 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("equals");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"bool" , "NamedBean*"};
+      static const char* argumentList[] ={"bool" , "QObject*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       bool returnValue{};
       void* args[2] = {NULL, (void*)&obj0};
@@ -4279,7 +4278,7 @@ void PythonQtWrapper_NamedBean::dispose(NamedBean* theWrappedObject)
   ( theWrappedObject->dispose());
 }
 
-bool  PythonQtWrapper_NamedBean::equals(NamedBean* theWrappedObject, NamedBean*  obj)
+bool  PythonQtWrapper_NamedBean::equals(NamedBean* theWrappedObject, QObject*  obj)
 {
   return ( theWrappedObject->equals(obj));
 }
@@ -16628,7 +16627,7 @@ if (_wrapper) {
 }
   return ProxyTurnoutManager::newTurnout(systemName0, userName1);
 }
-Turnout*  PythonQtShell_ProxyTurnoutManager::provide(QString  name0) const throw (IllegalArgumentException) 
+Turnout*  PythonQtShell_ProxyTurnoutManager::provide(QString  name0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -16738,6 +16737,39 @@ if (_wrapper) {
 }
   ProxyTurnoutManager::setDefaultThrownSpeed(speed0);
 }
+QString  PythonQtShell_ProxyTurnoutManager::toString()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("toString");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QString returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("toString", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return ProxyTurnoutManager::toString();
+}
 ProxyTurnoutManager* PythonQtWrapper_ProxyTurnoutManager::new_ProxyTurnoutManager(QObject*  parent)
 { 
 return new PythonQtShell_ProxyTurnoutManager(parent); }
@@ -16845,7 +16877,7 @@ Turnout*  PythonQtWrapper_ProxyTurnoutManager::newTurnout(ProxyTurnoutManager* t
   return ( theWrappedObject->newTurnout(systemName, userName));
 }
 
-Turnout*  PythonQtWrapper_ProxyTurnoutManager::provide(ProxyTurnoutManager* theWrappedObject, QString  name) const throw (IllegalArgumentException) 
+Turnout*  PythonQtWrapper_ProxyTurnoutManager::provide(ProxyTurnoutManager* theWrappedObject, QString  name) const
 {
   return ( theWrappedObject->provide(name));
 }
@@ -17585,8 +17617,7 @@ if (_wrapper) {
 }
   return RfidSensorManager::normalizeSystemName(sysName0);
 }
-Sensor*  PythonQtShell_RfidSensorManager::provide(QString  name0) throw (IllegalArgumentException)
-
+Sensor*  PythonQtShell_RfidSensorManager::provide(QString  name0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -18597,7 +18628,7 @@ void PythonQtWrapper_RosterEntry::setDateModified(RosterEntry* theWrappedObject,
   ( theWrappedObject->setDateModified(date));
 }
 
-void PythonQtWrapper_RosterEntry::setDateModified(RosterEntry* theWrappedObject, QString  date) throw (ParseException) 
+void PythonQtWrapper_RosterEntry::setDateModified(RosterEntry* theWrappedObject, QString  date)
 {
   ( theWrappedObject->setDateModified(date));
 }
@@ -19546,7 +19577,7 @@ if (_wrapper) {
 }
   Route::dispose();
 }
-bool  PythonQtShell_Route::equals(NamedBean*  obj0)
+bool  PythonQtShell_Route::equals(QObject*  obj0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -19554,7 +19585,7 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("equals");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"bool" , "NamedBean*"};
+      static const char* argumentList[] ={"bool" , "QObject*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       bool returnValue{};
       void* args[2] = {NULL, (void*)&obj0};
@@ -22069,7 +22100,7 @@ if (_wrapper) {
 }
   return RouteManager::newRoute(arg__1);
 }
-Route*  PythonQtShell_RouteManager::provide(QString  name0) throw (IllegalArgumentException)
+Route*  PythonQtShell_RouteManager::provide(QString  name0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -22224,7 +22255,7 @@ Route*  PythonQtWrapper_RouteManager::newRoute(RouteManager* theWrappedObject, Q
   return ( theWrappedObject->newRoute(arg__1));
 }
 
-Route*  PythonQtWrapper_RouteManager::provide(RouteManager* theWrappedObject, QString  name) throw (IllegalArgumentException)
+Route*  PythonQtWrapper_RouteManager::provide(RouteManager* theWrappedObject, QString  name)
 {
   return ( theWrappedObject->provide(name));
 }
@@ -22531,7 +22562,7 @@ if (_wrapper) {
 }
   Sensor::dispose();
 }
-bool  PythonQtShell_Sensor::equals(NamedBean*  obj0)
+bool  PythonQtShell_Sensor::equals(QObject*  obj0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -22539,7 +22570,7 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("equals");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"bool" , "NamedBean*"};
+      static const char* argumentList[] ={"bool" , "QObject*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       bool returnValue{};
       void* args[2] = {NULL, (void*)&obj0};

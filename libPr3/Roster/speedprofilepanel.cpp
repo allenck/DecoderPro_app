@@ -241,7 +241,7 @@ void SpeedProfilePanel::setupProfile()
  {
 //        try {
   sensorA = new SensorDetails((Sensor*) sensorAPanel->getNamedBean());
-//        } catch (Exception e) {
+//        } catch (Exception* e) {
   if(sensorA == NULL)
   {
    //JOptionPane.showMessageDialog(NULL, tr("ErrorSensorNotFound", "Start"));
@@ -255,7 +255,7 @@ void SpeedProfilePanel::setupProfile()
   Sensor* tmpSen = NULL;
 //        try {
   tmpSen = (Sensor*) sensorAPanel->getNamedBean();
-//        } catch (Exception e) {
+//        } catch (Exception* e) {
   if(tmpSen == NULL)
   {
 //            JOptionPane.showMessageDialog(NULL, tr("ErrorSensorNotFound", "Start"));
@@ -273,7 +273,7 @@ void SpeedProfilePanel::setupProfile()
  {
 //        try {
   sensorB = new SensorDetails((Sensor*) sensorBPanel->getNamedBean());
-//        } catch (Exception e) {
+//        } catch (Exception* e) {
   if(sensorB == NULL)
   {
 //            JOptionPane.showMessageDialog(NULL, tr("ErrorSensorNotFound", "Finish"));
@@ -287,7 +287,7 @@ void SpeedProfilePanel::setupProfile()
   Sensor* tmpSen = NULL;
 //        try {
   tmpSen = (Sensor*) sensorBPanel->getNamedBean();
-//        } catch (Exception e) {
+//        } catch (Exception* e) {
   if(tmpSen == NULL)
   {
             //JOptionPane.showMessageDialog(NULL, tr("ErrorSensorNotFound", "Finish"));
@@ -305,7 +305,7 @@ void SpeedProfilePanel::setupProfile()
  {
 //        try {
   middleBlockSensor = new SensorDetails((Sensor*) sensorCPanel->getNamedBean());
-//        } catch (Exception e) {
+//        } catch (Exception* e) {
   if(middleBlockSensor == NULL)
   {
 //            JOptionPane.showMessageDialog(NULL, tr("ErrorSensorNotFound", "Block"));
@@ -319,7 +319,7 @@ void SpeedProfilePanel::setupProfile()
   Sensor* tmpSen = NULL;
 //        try {
   tmpSen = (Sensor*) sensorCPanel->getNamedBean();
-//        } catch (Exception e) {
+//        } catch (Exception* e) {
   if(tmpSen == NULL)
   {
 //            JOptionPane.showMessageDialog(NULL, tr("ErrorSensorNotFound", "Block"));
@@ -726,7 +726,7 @@ void SpeedProfilePanel::on_testButton_clicked()
  //try {
  bool bOk;
  int s =speedStepFrom->text().toInt(&bOk);
-// } catch (Exception e) {
+// } catch (Exception* e) {
  if(!bOk || s == 0 || s > finishSpeedStep )
  {
      //JOptionPane.showMessageDialog(NULL, tr("ErrorSpeedStep"));
@@ -1014,11 +1014,11 @@ LayoutBlock* BlockSensorComboBox::getBlock()
             {
                 case FORWARD_SPEED_COL:
                     entry.value()->setForwardSpeed(value.toFloat(&bok));
-                    if(!bok) throw NumberFormatException();
+                    if(!bok) throw new NumberFormatException();
                     return true;
                 case REVERSE_SPEED_COL:
                     entry.value()->setReverseSpeed(value.toFloat(&bok));
-                    if(!bok) throw NumberFormatException();
+                    if(!bok) throw new NumberFormatException();
                     return true;
                 default:
                     // fall out

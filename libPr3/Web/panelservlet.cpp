@@ -178,10 +178,10 @@ PanelServlet::PanelServlet() : AbstractPanelServlet()
  }
 //    catch (JsonGenerationException e) {
 //        log->error("Error generating JSON", e);
-//        return "ERROR " + e.getLocalizedMessage();
+//        return "ERROR " + e->getLocalizedMessage();
 //    } catch (JsonMappingException e) {
 //        log->error("Error mapping JSON", e);
-//        return "ERROR " + e.getLocalizedMessage();
+//        return "ERROR " + e->getLocalizedMessage();
 //    }
  catch (IOException* e) {
      log->error("IOException", e);

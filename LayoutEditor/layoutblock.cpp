@@ -185,7 +185,7 @@ long LayoutBlock::time=0;
      QString s;
      while (true) {
          if (jmriblknum > 50000) {
-             throw IndexOutOfBoundsException("Run away prevented while trying to create a block");
+             throw new IndexOutOfBoundsException("Run away prevented while trying to create a block");
          }
          s = "IB" + QString::number(jmriblknum);
          jmriblknum++;

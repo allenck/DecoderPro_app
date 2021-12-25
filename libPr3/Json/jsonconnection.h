@@ -11,9 +11,9 @@ public:
  /*public*/ JsonConnection(QWebSocket* connection, QObject* parent = 0);
  /*public*/ JsonConnection(DataOutputStream* output, QObject* parent = 0) ;
  /*public*/ ObjectMapper getObjectMapper() ;
- /*public*/ void sendMessage(QJsonObject message) throw (IOException);
- /*public*/ void sendMessage(QJsonArray message) throw (IOException);
- /*public*/ void sendMessage(QJsonValue message) throw (IOException);
+ /*public*/ void sendMessage(QJsonObject message) /*throw (IOException)*/;
+ /*public*/ void sendMessage(QJsonArray message) /*throw (IOException)*/;
+ /*public*/ void sendMessage(QJsonValue message) /*throw (IOException)*/;
 
 
 private:

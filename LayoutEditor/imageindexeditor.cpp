@@ -245,7 +245,7 @@ ShutDownManager* sdm;
         indexChanged(false);
     }
     //catch (org.jdom.JDOMException jde) { log->error("Exception writing CatalogTrees: "+jde); }
-    catch (IOException ioe) { log->error("Exception writing CatalogTrees: "+ioe.getMessage()); }
+    catch (IOException* ioe) { log->error("Exception writing CatalogTrees: "+ioe->getMessage()); }
 }
 
 /*private*/ QWidget* ImageIndexEditor::makeCatalogPanel() {

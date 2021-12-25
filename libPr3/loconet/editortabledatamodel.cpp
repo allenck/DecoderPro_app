@@ -288,8 +288,8 @@ void EditorTableDataModel::replWavButtonPressed(QVariant value, int row, int col
     WavBuffer* buff;
     try {
         buff = new WavBuffer(/*chooser.getSelectedFile()*/new File(fName));
-    } catch (Exception e) {
-        log->error("Exception loading file: " + e.getMessage());
+    } catch (Exception* e) {
+        log->error("Exception loading file: " + e->getMessage());
         return;
     }
     // store to memory
@@ -562,9 +562,9 @@ try {
    lineString = "\n";
    w->write(lineString);
    lineString = "";
-  } catch (IOException e)
+  } catch (IOException* e)
   {
-   log->warn("error during printing: " + e.getMessage());
+   log->warn("error during printing: " + e->getMessage());
   }
  }
 }

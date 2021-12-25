@@ -111,14 +111,14 @@
   decoderRoot = d->rootFromName(DecoderFile::fileLocation+d->getFileName());
 
  }
- catch (JDOMException exj)
+ catch (JDOMException* exj)
  {
-  log->error("could not parse "+d->getFileName()+": "+exj.getMessage());
+  log->error("could not parse "+d->getFileName()+": "+exj->getMessage());
   return;
  }
- catch (IOException exj)
+ catch (IOException* exj)
  {
-  log->error("could not read "+d->getFileName()+": "+exj.getMessage());
+  log->error("could not read "+d->getFileName()+": "+exj->getMessage());
   return;
  }
 
@@ -299,9 +299,9 @@ void PrintRosterEntry::On_ok_clicked()
    w->write(s,0,s.length());
   }
  }
- catch (IOException e)
+ catch (IOException* e)
  {
-  log->warn("error during printing: "+e.getMessage());
+  log->warn("error during printing: "+e->getMessage());
  }
  _rosterEntry->printEntry(w);
  w->setFontWeight(QFont::Normal);

@@ -97,7 +97,7 @@ using namespace Sprog;
 // Ignore unsynchronized access to state
 //@Override
 
-/*public*/ void SprogConsoleFrame::initComponents() throw (Exception)
+/*public*/ void SprogConsoleFrame::initComponents() /*throw (Exception)*/
 {
  //SprogMessage msg;
  AbstractMonFrame::initComponents();
@@ -277,7 +277,7 @@ connect(sendButton, SIGNAL(clicked()), this, SLOT(sendButtonActionPerformed()));
     try {
      bool ok;
         currentLimit = currentTextField->text().toInt(&ok);
-        if(!ok) throw NumberFormatException();
+        if(!ok) throw new NumberFormatException();
     } catch (NumberFormatException* e) {
         JOptionPane::showMessageDialog(NULL, tr("CurrentLimitDialogString").arg(currentRange),
                 tr("SPROG Console"), JOptionPane::ERROR_MESSAGE);
@@ -466,7 +466,7 @@ connect(sendButton, SIGNAL(clicked()), this, SLOT(sendButtonActionPerformed()));
     {
      bool ok;
      currentLimitFromHardware = tmpString.toInt(&ok);
-     if(!ok) throw NumberFormatException();
+     if(!ok) throw new NumberFormatException();
     }
     catch (NumberFormatException* e) {
         JOptionPane::showMessageDialog(NULL, tr("Malformed Reply for current limit"), tr("SPROG Console"), JOptionPane::ERROR_MESSAGE);
@@ -501,7 +501,7 @@ connect(sendButton, SIGNAL(clicked()), this, SLOT(sendButtonActionPerformed()));
     {
      bool ok;
       modeWord = tmpString.toInt(&ok,16);
-     if(!ok) throw NumberFormatException();
+     if(!ok) throw new NumberFormatException();
     }
     catch (NumberFormatException* e)
     {

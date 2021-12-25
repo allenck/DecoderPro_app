@@ -436,8 +436,8 @@ void JColorChooser::common(ColorSelectionModel* model)
  */
 /*public*/ void JColorChooser::addChooserPanel( AbstractColorChooserPanel* panel )
 {
- if(panel == nullptr)
-  return;
+  if(panel == nullptr)
+   return;
 
   QVector<AbstractColorChooserPanel*>* old = chooserPanels;
   QVector<AbstractColorChooserPanel*>* newPanels = new QVector<AbstractColorChooserPanel*>(old->length()+1);

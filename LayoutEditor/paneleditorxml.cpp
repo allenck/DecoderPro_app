@@ -87,9 +87,9 @@ PanelEditorXml::PanelEditorXml(QObject* parent) :
     if (!e.isNull())
      panel.appendChild(e);
    }
-   catch (Exception e)
+   catch (Exception* e)
    {
-    log->error("Error storing panel element: "+e.getMessage());
+    log->error("Error storing panel element: "+e->getMessage());
     //e.printStackTrace();
    }
   }
@@ -305,9 +305,9 @@ PanelEditorXml::PanelEditorXml(QObject* parent) :
        result = false;
       }
      }
-     catch (Exception e)
+     catch (Exception* e)
      {
-      log->error("Exception while loading "+item.tagName()+":"+e.getMessage());
+      log->error("Exception while loading "+item.tagName()+":"+e->getMessage());
       result = false;
       //e.printStackTrace();
      }

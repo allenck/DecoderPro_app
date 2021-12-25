@@ -1289,8 +1289,8 @@ void LogixTableAction::createPressed(ActionEvent* /*e*/)
      Logix* x = NULL;
      try {
          x = (Logix*)_logixManager->getBySystemName(sName);
-         if(x == NULL) throw Exception();
-     } catch (Exception ex) {
+         if(x == NULL) throw new Exception();
+     } catch (Exception* ex) {
          // user input no good
          handleCreateException(sName);
          return; // without creating
@@ -2148,8 +2148,8 @@ void LogixTableAction::saveBrowserPressed() {
         // ADD Logix Header inforation first
         FileUtil::appendTextToFile(file, tStr);
         FileUtil::appendTextToFile(file, textContent->toPlainText());
-    } catch (IOException e) {
-        log->error(tr("Unable to write browser content to '%1', exception: '%2'").arg(file->toString()).arg(e.getMessage()));  // NOI18N
+    } catch (IOException* e) {
+        log->error(tr("Unable to write browser content to '%1', exception: '%2'").arg(file->toString()).arg(e->getMessage()));  // NOI18N
     }
 }
 

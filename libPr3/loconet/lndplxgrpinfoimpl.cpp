@@ -246,13 +246,13 @@
      * @throws jmri.jmrix.loconet.LocoNetException if sGroupName is not a valid
      *                                             Duplex Group Name
      */
-    /*public*/ /*static*/ /*final*/ LocoNetMessage* LnDplxGrpInfoImpl::createSetUr92GroupNamePacket(QString sGroupName) throw (LocoNetException) {
+    /*public*/ /*static*/ /*final*/ LocoNetMessage* LnDplxGrpInfoImpl::createSetUr92GroupNamePacket(QString sGroupName) /*throw (LocoNetException)*/ {
         int gr_msb1 = 0;
         int gr_msb2 = 0;
         int i;
 
         if (validateGroupName(sGroupName) == false) {
-            throw LocoNetException("Invalid Duplex Group Name - must be exactly 8 characters"); // NOI18N
+            throw new LocoNetException("Invalid Duplex Group Name - must be exactly 8 characters"); // NOI18N
         }
 
         // format packet
@@ -313,11 +313,11 @@
      * @throws jmri.jmrix.loconet.LocoNetException if sGroupName is not a valid
      *                                             Duplex Group Name
      */
-    /*public*/ /*static*/ /*final*/ LocoNetMessage* LnDplxGrpInfoImpl::createSetUr92GroupChannelPacket(int iChannelNumber) throw (LocoNetException) {
+    /*public*/ /*static*/ /*final*/ LocoNetMessage* LnDplxGrpInfoImpl::createSetUr92GroupChannelPacket(int iChannelNumber) /*throw (LocoNetException)*/ {
         int i;
 
         if (validateGroupChannel(iChannelNumber) == false) {
-            throw  LocoNetException("Invalid Duplex Group Channel - must be between 11 and 26, inclusive"); // NOI18N
+            throw new  LocoNetException("Invalid Duplex Group Channel - must be between 11 and 26, inclusive"); // NOI18N
         }
 
         // format packet
@@ -349,7 +349,7 @@
      * @return The packet which writes the Group Password to the UR92 device(s)
      * @throws jmri.jmrix.loconet.LocoNetException in case of invalid sGrooupPassword
      */
-    /*public*/ /*static*/ /*final*/ LocoNetMessage* LnDplxGrpInfoImpl::createSetUr92GroupPasswordPacket(QString sGroupPassword) throw (LocoNetException) {
+    /*public*/ /*static*/ /*final*/ LocoNetMessage* LnDplxGrpInfoImpl::createSetUr92GroupPasswordPacket(QString sGroupPassword) /*throw (LocoNetException)*/ {
 
         int gr_p1 = sGroupPassword.toUpper().at(0).toLatin1();
         int gr_p2 = sGroupPassword.toUpper().at(1).toLatin1();
@@ -359,9 +359,9 @@
 
         if (validateGroupPassword(sGroupPassword) == false) {
             if (isPasswordLimitedToNumbers() == true) {
-                throw LocoNetException("Invalid Duplex Group Password - must be a 4 digit number between 0000 and 9999, inclusive"); // NOI18N
+                throw new LocoNetException("Invalid Duplex Group Password - must be a 4 digit number between 0000 and 9999, inclusive"); // NOI18N
             } else {
-                throw LocoNetException("Invalid Duplex Group Password - must be a 4 character value using only digits, 'A', 'B', and/or 'C'"); // NOI18N
+                throw new LocoNetException("Invalid Duplex Group Password - must be a 4 character value using only digits, 'A', 'B', and/or 'C'"); // NOI18N
             }
         }
 
@@ -402,7 +402,7 @@
      * @return The packet which writes the Group ID Number to the UR92 device(s)
      * @throws jmri.jmrix.loconet.LocoNetException when an invalid id is provided
      */
-    /*public*/ /*static*/ /*final*/ LocoNetMessage* LnDplxGrpInfoImpl::createSetUr92GroupIDPacket(QString s) throw (LocoNetException) {
+    /*public*/ /*static*/ /*final*/ LocoNetMessage* LnDplxGrpInfoImpl::createSetUr92GroupIDPacket(QString s) /*throw (LocoNetException)*/ {
         //int gr_id = int.parseInt(s, 10);
         int gr_id = s.toInt();
 
@@ -424,9 +424,9 @@
             return m;
         } else {
             /* in case param s encodes something other than a valid Duplex
-             * ID number, throw an exception.
+             * ID number, throw new an exception.
              */
-            throw LocoNetException("Illegal Duplex Group ID number"); // NOI18N
+            throw new LocoNetException("Illegal Duplex Group ID number"); // NOI18N
         }
     }
 
@@ -874,7 +874,7 @@
      * @throws jmri.jmrix.loconet.LocoNetException if dgn is not a valid Duplex
      *                                             Group Name.
      */
-    /*public*/ void LnDplxGrpInfoImpl::setDuplexGroupName(QString dgn) throw (LocoNetException) {
+    /*public*/ void LnDplxGrpInfoImpl::setDuplexGroupName(QString dgn) /*throw (LocoNetException)*/ {
         memo->getLnTrafficController()->sendLocoNetMessage(
                 createSetUr92GroupNamePacket(
                         dgn));
@@ -887,7 +887,7 @@
      * @throws jmri.jmrix.loconet.LocoNetException if dgc is not a valid Duplex
      *                                             Group Channel number.
      */
-    /*public*/ void LnDplxGrpInfoImpl::setDuplexGroupChannel(int dgc) throw (LocoNetException) {
+    /*public*/ void LnDplxGrpInfoImpl::setDuplexGroupChannel(int dgc) /*throw (LocoNetException)*/ {
         memo->getLnTrafficController()->sendLocoNetMessage(createSetUr92GroupChannelPacket(
                 dgc));
     }
@@ -899,7 +899,7 @@
      * @throws jmri.jmrix.loconet.LocoNetException if dgp is not a valid Duplex
      *                                             Group Password.
      */
-    /*public*/ void LnDplxGrpInfoImpl::setDuplexGroupPassword(QString dgp) throw (LocoNetException) {
+    /*public*/ void LnDplxGrpInfoImpl::setDuplexGroupPassword(QString dgp) /*throw (LocoNetException)*/ {
         memo->getLnTrafficController()->sendLocoNetMessage(createSetUr92GroupPasswordPacket(
                 dgp));
     }
@@ -911,7 +911,7 @@
      * @throws jmri.jmrix.loconet.LocoNetException if dgi is not a valid Duplex
      *                                             Group Id.
      */
-    /*public*/ void LnDplxGrpInfoImpl::setDuplexGroupId(QString dgi) throw (LocoNetException) {
+    /*public*/ void LnDplxGrpInfoImpl::setDuplexGroupId(QString dgi) /*throw (LocoNetException)*/ {
         memo->getLnTrafficController()->sendLocoNetMessage(createSetUr92GroupIDPacket(
                 dgi));
     }

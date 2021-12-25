@@ -9,7 +9,7 @@ class TranspondingTagManager : public DefaultIdTagManager
 public:
  TranspondingTagManager(QObject* parent = nullptr);
  /*public*/ DefaultIdTag* newIdTag(/*@Nonnull*/ QString systemName, /*@CheckForNull*/ QString userName) override;
- /*public*/ void writeIdTagDetails() throw (IOException)override;
+ /*public*/ void writeIdTagDetails() /*throw (IOException)*/override;
  /*public*/ void readIdTagDetails()override;
  /*public*/ QString getNamedBeanClass()const override {
      return "TranspondingTag";

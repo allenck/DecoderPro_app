@@ -234,7 +234,7 @@ Logger* log = new Logger("PDRunnable2");
 //            ProgListener* l = m;
 //            /*public*/ void run() {
 //                // log->debug("read CV reply - start sleep");
-//                // try { Thread.sleep(100); } catch (Exception e) {}
+//                // try { Thread.sleep(100); } catch (Exception* e) {}
 //                log->debug("read CV reply");
 //                l.programmingOpReply(retval, 0); }  // 0 is OK status
 //        };
@@ -252,7 +252,7 @@ void ProgDebugger::PDRunnable3::run()
     Logger* log = new Logger("PDRunnable3");
 
     // log->debug("read CV reply - start sleep");
-    // try { Thread.sleep(100); } catch (Exception e) {}
+    // try { Thread.sleep(100); } catch (Exception* e) {}
     log->debug("read CV reply");
     if(qobject_cast<AbstractProgrammerFacade*>(l->self()))
     {

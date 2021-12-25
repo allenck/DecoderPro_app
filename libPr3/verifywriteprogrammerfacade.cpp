@@ -18,7 +18,7 @@
 
 // programming interface
 //@Override
-/*synchronized*/ /*public*/ void VerifyWriteProgrammerFacade::writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException) {
+/*synchronized*/ /*public*/ void VerifyWriteProgrammerFacade::writeCV(QString CV, int val, ProgListener* p) /*throw (ProgrammerException)*/ {
     _val = val;
     _cv = CV;
     useProgrammer(p);
@@ -29,7 +29,7 @@
 }
 
 //@Override
-/*synchronized*/ /*public*/ void VerifyWriteProgrammerFacade::readCV(QString CV, ProgListener* p) throw (ProgrammerException) {
+/*synchronized*/ /*public*/ void VerifyWriteProgrammerFacade::readCV(QString CV, ProgListener* p) /*throw (ProgrammerException)*/ {
     _cv = CV;
     useProgrammer(p);
 
@@ -53,11 +53,11 @@
 
 
 // internal method to remember who's using the programmer
-/*protected*/ void VerifyWriteProgrammerFacade::useProgrammer(ProgListener* p) throw (ProgrammerException) {
+/*protected*/ void VerifyWriteProgrammerFacade::useProgrammer(ProgListener* p) /*throw (ProgrammerException)*/ {
     // test for only one!
     if (_usingProgrammer != NULL && _usingProgrammer != p) {
         log->info(tr("programmer already in use by %1").arg(_usingProgrammer->self()->metaObject()->className()));
-        throw ProgrammerException("programmer in use");
+        throw new ProgrammerException("programmer in use");
     } else {
         _usingProgrammer = p;
     }

@@ -211,7 +211,7 @@
                 Class.forName(factoryName, false,
                               ClassLoader.getSystemClassLoader())
                 .newInstance();
-        } catch (Exception ex) {
+        } catch (Exception* ex) {
             try {
                 // workaround for javaws, plugin,
                 // load factory class using non-system classloader
@@ -224,7 +224,7 @@
                                   Thread.currentThread()
                                   .getContextClassLoader())
                     .newInstance();
-            } catch (Exception e) {
+            } catch (Exception* e) {
                 throw new InternalError(
                     "Can't instantiate Preferences factory "
                     + factoryName, e);
@@ -273,7 +273,7 @@
         return (PreferencesFactory)
             Class.forName(platformFactory, false,
                           Preferences.class.getClassLoader()).newInstance();
-    } catch (Exception e) {
+    } catch (Exception* e) {
         throw new InternalError(
             "Can't instantiate platform default Preferences factory "
             + platformFactory, e);
@@ -1025,7 +1025,7 @@
  *         communicate with it.
  * @see    #sync()
  */
-/*public*/ /*abstract*/ void Preferences::flush()  throw (BackingStoreException) {throw new BackingStoreException();}
+/*public*/ /*abstract*/ void Preferences::flush()   {throw new BackingStoreException();}
 
 /**
  * Ensures that future reads from this preference node and its
@@ -1042,7 +1042,7 @@
  *         removed with the {@link #removeNode()} method.
  * @see    #flush()
  */
-/*public*/ /*abstract*/ void Preferences::sync() throw (BackingStoreException)
+/*public*/ /*abstract*/ void Preferences::sync() /*throw (BackingStoreException)*/
 {
  throw new BackingStoreException();}
 ;

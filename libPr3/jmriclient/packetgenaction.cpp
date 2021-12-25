@@ -30,8 +30,8 @@
     PacketGenFrame* f = new PacketGenFrame();
     try {
         f->initComponents();
-    } catch (Exception ex) {
-        log->error("Exception: " + ex.getMessage());
+    } catch (Exception* ex) {
+        log->error("Exception: " + ex->getMessage());
     }
 
     // connect to the traffic controller

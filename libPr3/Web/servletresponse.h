@@ -14,9 +14,9 @@ public:
 
     /*public*/ virtual  QString getContentType() {return "";}
 
-    /*public*/ virtual  ServletOutputStream* getOutputStream() throw (IOException) {return NULL;}
+    /*public*/ virtual  ServletOutputStream* getOutputStream() /*throw (IOException)*/ {return NULL;}
 
-    /*public*/ virtual  PrintWriter* getWriter() throw (IOException) {return NULL;}
+    /*public*/ virtual  PrintWriter* getWriter() /*throw (IOException)*/ {return NULL;}
 
     /*public*/ virtual  void setCharacterEncoding(QString /*string*/) {}
 
@@ -30,7 +30,7 @@ public:
 
     /*public*/ virtual  int getBufferSize() {return 0;}
 
-    /*public*/ virtual  void flushBuffer() throw (IOException) {}
+    /*public*/ virtual  void flushBuffer() /*throw (IOException)*/ {}
 
     /*public*/ virtual  void resetBuffer() {}
 

@@ -29,23 +29,23 @@ class SignalDirectionIndicators : public SignalDirectionIndicatorsInterface
                                       Fleeting* fleetingObject, SignalDirectionIndicatorsInterface* parent);
 
   /*public*/ static void resetSignalsUsed();// { _mSignalsUsed.clear(); }
-  QObject* self() {return (QObject*)this;}
-  /*public*/ void setCodeButtonHandler(CodeButtonHandler* codeButtonHandler);
-  /*public*/ void removeAllListeners();
-  /*public*/ bool isNonfunctionalObject();
-  /*public*/ void setPresentSignalDirectionLever(int presentSignalDirectionLever);
-  /*public*/ bool isRunningTime();
-  /*public*/ void osSectionBecameOccupied();
-  /*public*/ void codeButtonPressed(int requestedDirection, bool requestedChangeInSignalDirection);
-  /*public*/ void startCodingTime();
-  /*public*/ bool signalsNormal();
-  /*public*/ bool signalsNormalOrOutOfCorrespondence();
-  /*public*/ int getPresentDirection();
-  /*public*/ bool inCorrespondence();
-  /*public*/ void forceAllSignalsToHeld();
-  /*public*/ int getSignalsInTheFieldDirection();
-  /*public*/ void setSignalDirectionIndicatorsToOUTOFCORRESPONDENCE();
-  /*public*/ void setRequestedDirection(int direction);
+  QObject* self() override{return (QObject*)this;}
+  /*public*/ void setCodeButtonHandler(CodeButtonHandler* codeButtonHandler)override;
+  /*public*/ void removeAllListeners()override;
+  /*public*/ bool isNonfunctionalObject()override;
+  /*public*/ void setPresentSignalDirectionLever(int presentSignalDirectionLever)override;
+  /*public*/ bool isRunningTime()override;
+  /*public*/ void osSectionBecameOccupied()override;
+  /*public*/ void codeButtonPressed(int requestedDirection, bool requestedChangeInSignalDirection)override;
+  /*public*/ void startCodingTime()override;
+  /*public*/ bool signalsNormal()override;
+  /*public*/ bool signalsNormalOrOutOfCorrespondence()override;
+  /*public*/ int getPresentDirection()override;
+  /*public*/ bool inCorrespondence()override;
+  /*public*/ void forceAllSignalsToHeld()override;
+  /*public*/ int getSignalsInTheFieldDirection()override;
+  /*public*/ void setSignalDirectionIndicatorsToOUTOFCORRESPONDENCE()override;
+  /*public*/ void setRequestedDirection(int direction)override;
 
  signals:
 
@@ -97,7 +97,7 @@ class SignalDirectionIndicators : public SignalDirectionIndicatorsInterface
   /*private*/ void handleSignalChange(PropertyChangeEvent* e);
   /*private*/ bool changedToUniversalRed(PropertyChangeEvent* e);
   /*private*/ void possiblyUpdateSignalIndicationSensors();
-  /*private*/ void addSignal(QString userIdentifier, NBHSignal* signal) throw (CTCException);
+  /*private*/ void addSignal(QString userIdentifier, NBHSignal* signal) /*throw (CTCException)*/;
 //  /*private*/ void SensorSensorsetSignalDirectionIndicatorsToFieldSignalsState();
 //  /*private*/ void SensorSensorsetSignalDirectionIndicatorsToDirection(int direction);
 

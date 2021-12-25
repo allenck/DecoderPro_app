@@ -55,22 +55,22 @@ public:
  virtual bool isRestartRequired() {return false;}
 
  //This should probably throwing an exception
- virtual bool setUserName(QString name) {return false;}
+ virtual bool setUserName(QString /*name*/) {return false;}
  virtual int getOutputInterval() {return 0;}
  virtual int getDefaultOutputInterval() {return 0;}
-    virtual void setOutputInterval(int newInterval) {}
+    virtual void setOutputInterval(int /*newInterval*/) {}
 
  /**
   * Does this connection provide a manager of this type?
   */
- virtual bool provides(QString c) {return false;}
+ virtual bool provides(QString /*c*/) {return false;}
  /**
   * Does this connection provide a manager of this type?
   */
- virtual Manager* get(QString T) {return nullptr;}
+ virtual Manager* get(QString /*type*/) {return nullptr;}
     virtual void dispose() {}
  virtual bool getDisabled() {return false;}
-    virtual void setDisabled(bool disabled)  {}
+    virtual void setDisabled(bool /*disabled*/)  {}
  //static SystemConnectionMemo* instance();
 // static void addPropertyChangeListener(PropertyChangeListener* l);
 // static void removePropertyChangeListener(PropertyChangeListener* l);

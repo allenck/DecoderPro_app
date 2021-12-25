@@ -239,7 +239,7 @@ void LayoutSlip::init()
     }
     QMetaEnum metaEnum = QMetaEnum::fromType<HitPointType::TYPES>();
     log.error(QString("Invalid Point Type ") + metaEnum.valueToKey( location)); //I18IN
-    throw  JmriException("Invalid Point");
+    throw new JmriException("Invalid Point");
 }
 
 //@Override
@@ -1248,7 +1248,7 @@ double LayoutSlip::round (double x) {
 //      rot = newAngle.toDouble(&bOk);
 //      if(!bOk) throw new Exception;
 //     }
-//     catch (Exception e)
+//     catch (Exception* e)
 //     {
 //   //   JOptionPane.showMessageDialog(layoutEditor,tr("Error3")+
 //   //            " "+e,tr("Error"),JOptionPane.ERROR_MESSAGE);

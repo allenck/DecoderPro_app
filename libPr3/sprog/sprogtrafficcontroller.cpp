@@ -122,9 +122,9 @@ using namespace Sprog;
     }
    }
   }
-  catch (Exception e)
+  catch (Exception* e)
   {
-      log->warn(tr("notify: During dispatch to %1\nException %2").arg(listener->metaObject()->className()).arg(e.getMessage()));
+      log->warn(tr("notify: During dispatch to %1\nException %2").arg(listener->metaObject()->className()).arg(e->getMessage()));
   }
  }
  // forward to the last listener who sent a message
@@ -144,8 +144,8 @@ using namespace Sprog;
                 listener->notifyReply(r);
             }
 
-        } catch (Exception e) {
-            log->warn(tr("notify: During dispatch to %1\nException %2").arg(listener->metaObject()->className()).arg(e.getMessage()));
+        } catch (Exception* e) {
+            log->warn(tr("notify: During dispatch to %1\nException %2").arg(listener->metaObject()->className()).arg(e->getMessage()));
         }
     }
     // forward to the last listener who sent a message
@@ -175,9 +175,9 @@ using namespace Sprog;
     disconnect(this, SIGNAL(on_notifyReply(SprogReply*)), listener, SLOT(notifyReply(SprogReply*)));
    }
   }
-  catch (Exception e)
+  catch (Exception* e)
   {
-   log->warn(tr("notify: During dispatch to %1\nException: %2").arg(listener->metaObject()->className()).arg(e.getMessage()));
+   log->warn(tr("notify: During dispatch to %1\nException: %2").arg(listener->metaObject()->className()).arg(e->getMessage()));
   }
  }
 
@@ -215,8 +215,8 @@ using namespace Sprog;
 //            myTC->log->warn("sendMessage: no connection established");
 //        }
 #if 0
-    } catch (Exception e) {
-        myTC->log->warn("sendMessage: Exception: " + e.getMessage());
+    } catch (Exception* e) {
+        myTC->log->warn("sendMessage: Exception: " + e->getMessage());
     }
 #endif
 
@@ -444,9 +444,9 @@ bool SprogTrafficController::endReply(SprogReply* msg) {
    istream->device()->read(&char1,1);
    this->reply->setElement(i, char1);
   }
-  catch (Exception e)
+  catch (Exception* e)
   {
-   log->warn(tr("Exception in DATA_AVAILABLE state: %1").arg(e.getMessage()));
+   log->warn(tr("Exception in DATA_AVAILABLE state: %1").arg(e->getMessage()));
   }
   if (endReply(this->reply))
   {

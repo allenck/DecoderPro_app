@@ -810,7 +810,7 @@ static class SpeedSetting {
  {
   setOverRunTimeForward(e.firstChildElement("overRunTimeForward").text().toFloat());
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
   log->error("Over run Error For " + _re->getId());
  }
@@ -818,7 +818,7 @@ static class SpeedSetting {
  {
   setOverRunTimeReverse(e.firstChildElement("overRunTimeReverse").text().toFloat());
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
   log->error("Over Run Error Rev " + _re->getId());
  }
@@ -833,7 +833,7 @@ static class SpeedSetting {
    QString forward = spd.firstChildElement("forward").text();
    QString reverse = spd.firstChildElement("reverse").text();
    setSpeed(step.toInt(), forward.toFloat(), reverse.toFloat());
-  } catch (Exception ex)
+  } catch (Exception* ex)
   {
    log->error("Not loaded");
   }

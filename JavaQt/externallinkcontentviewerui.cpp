@@ -35,7 +35,7 @@ ExternalLinkContentViewerUI::ExternalLinkContentViewerUI(QObject *parent) : QObj
             log.debug("event has URL {}", he.getURL());
             URL u = he.getURL();
             activateURL(u);
-        } catch (IOException | URISyntaxException t) {
+        } catch (IOException* | URISyntaxException t) {
             log.error("Error processing request", t);
         }
     }

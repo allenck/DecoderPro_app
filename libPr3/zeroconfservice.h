@@ -74,7 +74,7 @@ private:
 //         ZeroConfService.class,
 //         false);
  /*private*/ static void stopAll(/*final*/ bool close);
- /*private*/ ServiceInfo* addServiceInfo(JmDNS* DNS) throw (IOException);
+ /*private*/ ServiceInfo* addServiceInfo(JmDNS* DNS) /*throw (IOException)*/;
  QString currentType;
 
  protected:

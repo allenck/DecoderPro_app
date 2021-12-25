@@ -109,14 +109,14 @@ public:
     QT_DEPRECATED/*public*/ QList<NamedBean*>* getNamedBeanList()  override;
     QT_DEPRECATED /*public*/ QStringList getSystemNameAddedOrderList() override;
     /*public*/ /*SortedSet<E>*/QSet<NamedBean*> getNamedBeanSet() override;
-    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) ;
-    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners();
+    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
+    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners()override;
     /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName) override;
-    /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) ;
-    /*public*/ Turnout* getBySystemName(/*@Nonnull*/ QString systemName) const ;
-    /*public*/ Turnout* getByUserName(/*@Nonnull*/ QString userName) const ;
+    /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
+    /*public*/ Turnout* getBySystemName(/*@Nonnull*/ QString systemName) const override;
+    /*public*/ Turnout* getByUserName(/*@Nonnull*/ QString userName) const override;
     /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, char typeLetter) /*throw (JmriException)*/;
-    /*public*/ void deleteBean(/*@Nonnull*/ NamedBean* s, /*@Nonnull*/ QString property) throw (PropertyVetoException) override;
+    /*public*/ void deleteBean(/*@Nonnull*/ NamedBean* s, /*@Nonnull*/ QString property) /*throw (PropertyVetoException)*/ override;
     /*public*/ QString getBeanTypeHandled(bool plural) const override {return tr(plural?"Turnouts":"Turnout");}
 
 signals:

@@ -294,7 +294,7 @@
             Conditional c;
             try {
                 c = conditionalManager.createNewConditional(cSystemName, cUserName);
-            } catch (Exception ex) {
+            } catch (Exception* ex) {
                 // throw without creating any
                 throw new IllegalArgumentException("user input no good");
             }
@@ -338,7 +338,7 @@
             Conditional c;
             try {
                 c = conditionalManager.createNewConditional(cSystemName, cUserName);
-            } catch (Exception ex) {
+            } catch (Exception* ex) {
                 // throw without creating any
                 throw new IllegalArgumentException("user input no good");
             }

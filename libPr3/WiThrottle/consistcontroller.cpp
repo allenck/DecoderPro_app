@@ -38,8 +38,8 @@
             file = new ConsistFile();
             try {
                 file->readFile();
-            } catch (Exception e) {
-                log->warn("error reading consist file: " + e.getMessage());
+            } catch (Exception* e) {
+                log->warn("error reading consist file: " + e->getMessage());
             }
         }
         isValid = true;
@@ -382,7 +382,7 @@ void ConsistController::handleMessage(QString message) {
         } else {
             file->writeFile(manager->getConsistList()->toList());
         }
-    } catch (IOException e) {
+    } catch (IOException* e) {
         log->warn("Consist file could not be written!");
     }
 #endif

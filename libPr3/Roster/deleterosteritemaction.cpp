@@ -144,9 +144,9 @@
     { // delete file and check success
      log->error("failed to delete file \"" + fullFilename + "\"");
     }
-   } catch (Exception ex)
+   } catch (Exception* ex)
    {
-    log->error("error during locomotive file output: " + ex.getMessage());
+    log->error("error during locomotive file output: " + ex->getMessage());
    }
   }
  }

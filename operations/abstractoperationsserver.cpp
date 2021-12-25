@@ -340,7 +340,7 @@ namespace Operations
      /*public*/ void TrainListener::propertyChange(PropertyChangeEvent* e) {
          try {
              parent->sendFullStatus(this->train);
-         } catch (IOException ie) {
+         } catch (IOException* ie) {
              log->debug("Error Sending Status");
              // if we get an error, de-register
              //this->train.removePropertyChangeListener(this);

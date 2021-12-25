@@ -244,7 +244,7 @@ namespace Operations
 #if 0
          try {
              JmriScriptEngineManager.getDefault().runScript(new File(jmri.util.FileUtil.getExternalFilename(scriptPathName)));
-         } catch (Exception e) {
+         } catch (Exception* e) {
              log->error("Problem with script: {}", scriptPathName);
          }
 #endif
@@ -280,7 +280,7 @@ namespace Operations
 #if 0 // TODO:
          try {
              JmriScriptEngineManager.getDefault().runScript(new File(jmri.util.FileUtil.getExternalFilename(scriptPathName)));
-         } catch (Exception e) {
+         } catch (Exception* e) {
              log->error("Problem with script: {}", scriptPathName);
          }
 #endif

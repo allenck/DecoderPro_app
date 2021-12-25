@@ -19,7 +19,7 @@ namespace TimeTable
   Q_OBJECT
  public:
   explicit TimeTableImport(QObject *parent = nullptr);
-  /*public*/ void importSgn(TimeTableDataManager* dm, File* file) throw (IOException);
+  /*public*/ void importSgn(TimeTableDataManager* dm, File* file) /*throw (IOException)*/;
 
  signals:
 

@@ -1160,12 +1160,12 @@ Document* JTextField::getDocument()
  disconnect(this, SIGNAL(focusLost(FocusEvent*)), l, SLOT(focusLost(FocusEvent*)));
 }
 
-/*private*/ void JTextField::focusInEvent(QFocusEvent* e)
+/*private*/ void JTextField::focusInEvent(QFocusEvent* /*e*/)
 {
  emit focusGained(new FocusEvent());
 }
 
-/*private*/ void JTextField::focusOutEvent(QFocusEvent* e)
+/*private*/ void JTextField::focusOutEvent(QFocusEvent* /*e*/)
 {
  emit focusLost(new FocusEvent());
 }

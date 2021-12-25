@@ -202,7 +202,7 @@ namespace Operations
             try {
              bool ok;
                 double inches = addItem.toDouble(&ok);
-                if(!ok) throw NumberFormatException();
+                if(!ok) throw new NumberFormatException();
                 int feet = (int) (inches * Setup::getScaleRatio() / 12);
                 addItem = QString::number(feet);
             } catch (NumberFormatException* e) {
@@ -216,7 +216,7 @@ namespace Operations
             try {
              bool ok;
                 double cm = addItem.toDouble(&ok);
-                if(!ok) throw NumberFormatException();
+                if(!ok) throw new NumberFormatException();
                 int meter = (int) (cm * Setup::getScaleRatio() / 100);
                 addItem = QString::number(meter);
             } catch (NumberFormatException* e) {
@@ -229,7 +229,7 @@ namespace Operations
         try {
          bool ok;
             int length = addItem.toInt(&ok);
-            if(!ok) throw NumberFormatException();
+            if(!ok) throw new NumberFormatException();
             if (length < 0) {
                 log->error(tr("length (%1) has to be a positive number").arg(addItem));
                 return FAILED;

@@ -279,12 +279,12 @@ SpeedUtil::SpeedUtil(QObject *parent) : QObject(parent)
         } catch (NullPointerException* npe) {
             return;
         }
-        catch (IOException  eb) {
-            log->error("Exception while loading warrant preferences: " + eb.getMessage());
+        catch (IOException*  eb) {
+            log->error("Exception while loading warrant preferences: " + eb->getMessage());
             return;
         }
-        catch ( JDOMException eb) {
-            log->error("Exception while loading warrant preferences: " + eb.getMessage());
+        catch ( JDOMException* eb) {
+            log->error("Exception while loading warrant preferences: " + eb->getMessage());
             return;
         }
         if (root.isNull()) {

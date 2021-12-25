@@ -37,7 +37,7 @@ RosterTestUtil::RosterTestUtil(QObject *parent) : QObject(parent)
  * @return a roster with entries.
  * @throws java.io.IOException if unable to create a test roster
  */
-/*public*/ /*static*/ Roster* RosterTestUtil::createTestRoster(File* rosterDir, QString rosterFileName) throw (IOException) {
+/*public*/ /*static*/ Roster* RosterTestUtil::createTestRoster(File* rosterDir, QString rosterFileName) /*throw (IOException)*/ {
     FileUtil::createDirectory(rosterDir);
 
     // create a roster with known contents

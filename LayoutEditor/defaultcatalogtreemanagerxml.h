@@ -17,7 +17,7 @@ public:
     /*public*/ void storeNode(QDomElement parent, CatalogTreeNode* node);
     /*public*/ QDomElement store(QObject* o);
     /*public*/ void readCatalogTrees();
-    /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
+    /*public*/ void load(QDomElement element, QObject* o) /*throw (Exception)*/;
     /*public*/ bool load(QDomElement catalogTrees);
     /*public*/ void loadCatalogTrees(QDomElement catalogTrees);
     /*public*/ void loadNode(QDomElement element, CatalogTreeNode* parent, DefaultTreeModel* model);

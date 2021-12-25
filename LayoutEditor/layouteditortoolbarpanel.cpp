@@ -469,7 +469,7 @@ LayoutEditorToolBarPanel::LayoutEditorToolBarPanel(LayoutEditor *layoutEditor, Q
     layoutEditor->setupComboBox(blockContentsComboBox, true, false, false);
     blockContentsComboBox->setToolTip(tr("Select to add a Block label when next clicking with shift down."));
 //        blockContentsComboBox.addActionListener((ActionEvent event) -> {
-    connect(blockContentsComboBox, &NamedBeanComboBox::currentIndexChanged, [=]{
+    connect(blockContentsComboBox, &NamedBeanComboBox::currentTextChanged, [=]{
         //use the "Extra" color to highlight the selected block
         if (layoutEditor->highlightSelectedBlockFlag) {
             layoutEditor->highlightBlockInComboBox(blockContentsComboBox);

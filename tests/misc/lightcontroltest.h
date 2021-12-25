@@ -71,7 +71,8 @@ class ReleaseUntilO15 : public ReleaseUntil
  LightControlTest* test;
 public:
  ReleaseUntilO15(LightControlTest* test) {this->test = test;}
- bool ready() throw (Exception) { return test->_listenerkicks == 6;}
+ bool ready() /*throw (Exception)*/
+ { return test->_listenerkicks == 6;}
 };
 
 class ReleaseUntilO16 : public ReleaseUntil
@@ -80,6 +81,7 @@ class ReleaseUntilO16 : public ReleaseUntil
  LightControlTest* test;
 public:
  ReleaseUntilO16(LightControlTest* test) {this->test = test;}
- bool ready() throw (Exception) { return Light::OFF == test->l->getState();}
+ bool ready() /*throw (Exception)*/
+ { return Light::OFF == test->l->getState();}
 };
 #endif // LIGHTCONTROLTEST_H

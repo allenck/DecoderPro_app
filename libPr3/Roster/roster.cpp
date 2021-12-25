@@ -223,7 +223,7 @@ Roster* Roster::getRoster(/*@CheckForNull*/ Profile* profile) {
 /*public*/ void Roster::addEntry(RosterEntry* e)
 {
  if(e == nullptr)
-  throw (NullPointerException("Roster is null"));
+  throw new NullPointerException("Roster is null");
  if (log->isDebugEnabled()) log->debug("Add entry "+e->getFileName());
  /*synchronized (_list)*/ {
   QMutexLocker locker(&mutex);
@@ -334,7 +334,7 @@ Roster* Roster::getRoster(/*@CheckForNull*/ Profile* profile) {
  */
 /*public*/ RosterEntry* Roster::getEntry(int i ) {
  if(i < 0 || i >= _list->size())
-  throw IndexOutOfBoundsException(tr("index %1 out of range").arg(i));
+  throw new IndexOutOfBoundsException(tr("index %1 out of range").arg(i));
  return _list->at(i);
 }
 /**
@@ -685,7 +685,7 @@ Roster* Roster::getRoster(/*@CheckForNull*/ Profile* profile) {
  * @throws FileNotFoundException
  * @throws IOException
  */
-void Roster::writeFile(QString name) //throw (FileNotFoundException, IOException)
+void Roster::writeFile(QString name) //throw new (FileNotFoundException, IOException)
 {
     if (log->isDebugEnabled()) log->debug("writeFile "+name);
     // This is taken in large part from "Java and XML" page 368
@@ -709,7 +709,7 @@ void Roster::writeFile(QString name) //throw (FileNotFoundException, IOException
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="SBSC_USE_STRINGBUFFER_CONCATENATION")
 // Only used occasionally, so inefficient QString processing not really a problem
 // though it would be good to fix it if you're working in this area
-void Roster::writeFile (QFile* file) //throw (IOException)
+void Roster::writeFile (QFile* file) ///*throw new (IOException)*/
 {
  // create root element
  QDomDocument doc = QDomDocument("roster-config");
@@ -928,7 +928,7 @@ void Roster::writeFile (QFile* file) //throw (IOException)
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="SBSC_USE_STRINGBUFFER_CONCATENATION")
 // Only used occasionally, so inefficient QString processing not really a problem
 // though it would be good to fix it if you're working in this area
-bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOException {
+bool Roster::readFile(QString name) //throw new org.jdom.JDOMException, java.io.IOException {
 {
  QFile file(name);
  // roster exists?
@@ -1057,11 +1057,11 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
  {
   Roster::getDefault()->writeFile(this->getRosterIndexPath());
  }
- catch (Exception e) {
-        log->error("Exception while writing the new roster file, may not be complete: "+e.getMessage());
+ catch (Exception* e) {
+        log->error("Exception while writing the new roster file, may not be complete: "+e->getMessage());
 //        try {
   JOptionPane::showMessageDialog(NULL,
-          tr("Exception while writing the new roster file, may not be complete")+"\n"+e.getMessage(),
+          tr("Exception while writing the new roster file, may not be complete")+"\n"+e->getMessage(),
           tr("Error saving Roster"),
           JOptionPane::ERROR_MESSAGE);
         }
@@ -1087,8 +1087,8 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
           re->setFileName(fileName);
           roster->addEntry(re);
       }
-  } catch (JDOMException /*| IOException*/ ex) {
-   log->error(tr("Exception while loading loco XML file: %1 execption: %2").arg(fileName).arg(ex.getMessage()));
+  } catch (JDOMException* /*| IOException*/ ex) {
+   log->error(tr("Exception while loading loco XML file: %1 execption: %2").arg(fileName).arg(ex->getMessage()));
   }
  }
 
@@ -1115,9 +1115,9 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
  {
   this->readFile(this->getRosterIndexPath());
  }
- catch (Exception e)
+ catch (Exception* e)
  {
-  log->error("Exception during roster reading: "+e.getMessage());
+  log->error("Exception during roster reading: "+e->getMessage());
  }
 }
 

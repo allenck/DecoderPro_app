@@ -217,10 +217,10 @@ AbstractNetworkConnectionConfigXml::AbstractNetworkConnectionConfigXml(QObject *
   }
   ((PortAdapter*)this->adapter)->_connect();
  }
- catch (Exception ex) {
+ catch (Exception* ex) {
      ConfigXmlManager::creationErrorEncountered(
              NULL, "opening connection",
-             ex.getMessage(),
+             ex->getMessage(),
              NULL, NULL, NULL
      );
      return false;

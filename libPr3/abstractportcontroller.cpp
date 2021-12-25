@@ -284,7 +284,7 @@ log->debug("update manufacturer from \""+manufacturerName+"\" to \""+manufacture
  * while opening the connection.
  */
  //@SuppressFBWarnings(value = "SR_NOT_CHECKED", justification = "skipping all, don't care what skip() returns")
- /*protected*/ void AbstractPortController::purgeStream(/*@Nonnull*/ QDataStream* serialStream) //throw (IOException)
+ /*protected*/ void AbstractPortController::purgeStream(/*@Nonnull*/ QDataStream* serialStream) ///*throw (IOException)*/
 {
 #if 0
     int count = serialStream->available();

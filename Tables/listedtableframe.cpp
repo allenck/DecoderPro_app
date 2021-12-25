@@ -232,7 +232,7 @@ for (int x = 0; x < tabbedTableArray->size(); x++)
             currTableIndex = x;
             return;
         }
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log->error("An error occurred in the goto list for " + selection);
     }
  }
@@ -303,8 +303,8 @@ void ListedTableFrame::buildMenus(/*final*/ LTFTabbedTableItem* item)
           } else {
               item->getAAClass()->print(JTable::PrintMode::FIT_WIDTH, QString(), footerFormat);
           }
-      } catch (PrinterException e1) {
-          log->warn("error printing: " + e1.getLocalizedMessage(), e1);
+      } catch (PrinterException* e1) {
+          log->warn("error printing: " + e1->getLocalizedMessage(), e1);
       } catch (NullPointerException* ex) {
           log->error("Trying to print returned a NPE error");
       }
@@ -332,7 +332,7 @@ void ListedTableFrame::buildMenus(/*final*/ LTFTabbedTableItem* item)
     try {
         item->getAAClass()->setMenuBar(this);
         this->addHelpMenu(item->getAAClass()->helpTarget(), true);
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log->error("Error when trying to set menu bar for " + item->getClassAsString() + "\n" /*+ ex*/);
     }
     this->update();
@@ -456,7 +456,7 @@ LTFTabbedTableItem::LTFTabbedTableItem(QString aaClass, QString choice, bool std
     } catch (ClassCastException e4) {
         log->error("Not part of the abstractTableActions : " + aaClass);
         return;
-    } catch (Exception e) {
+    } catch (Exception* e) {
         log->error("Exception " + e.toString());
         return;
     }
@@ -713,7 +713,7 @@ ActionJList::ActionJList(int index, BeanTableFrame* f) {
         if (p2 != NULL) {
             clickDelay = ((Integer) p2).intValue();
         }
-    } catch (Exception e2) {
+    } catch (Exception* e2) {
         log->error("Error parsing DesktopProperty awt_multiclick_time to set double click interval ", e2.toString());
     }
     try {
@@ -721,7 +721,7 @@ ActionJList::ActionJList(int index, BeanTableFrame* f) {
         if (p2 != NULL) {
             clickDelay = ((Integer) p2).intValue();
         }
-    } catch (Exception e1) {
+    } catch (Exception* e1) {
         log->error("Error parsing DesktopProperty awt.multiClickInterval to set double click interval ", e1.toString());
     }
 #endif
@@ -842,8 +842,8 @@ void ActionJList::selectListItem(int index) {
     try {
         item->getAAClass()->setFrame(frame);
         ((ListedTableFrame*)frame)->buildMenus(item);
-    } catch (Exception ex) {
-        log->error(ex.getLocalizedMessage()/*, ex*/);
+    } catch (Exception* ex) {
+        log->error(ex->getLocalizedMessage()/*, ex*/);
     }
     ((ListedTableFrame*)frame)->list->ensureIndexIsVisible(index);
     ((ListedTableFrame*)frame)->list->setSelectedIndex(index);

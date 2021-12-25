@@ -52,7 +52,7 @@ namespace Operations
       //fileOut = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8")), // NOI18N
 //      true);
   fileOut = new PrintWriter(stream, true);
-//  } catch (IOException e) {
+//  } catch (IOException* e) {
 //      log->error("Can not open train manifest file: " + file.getName());
 //      return;
 //  }
@@ -295,7 +295,7 @@ namespace Operations
   addCarsLocationUnknown(fileOut, IS_MANIFEST);
 //  } catch (IllegalArgumentException e) {
 //      newLine(fileOut, tr(Bundle.getMessage("ErrorIllegalArgument")).arg(
-//              Bundle.getMessage("TitleManifestText"), e.getLocalizedMessage()}));
+//              Bundle.getMessage("TitleManifestText"), e->getLocalizedMessage()}));
 //      newLine(fileOut, messageFormatText);
 //      e.printStackTrace();
 //  }

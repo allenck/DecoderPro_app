@@ -89,7 +89,7 @@
         itr = sl.iterator();
     } catch (ServiceConfigurationError err) {
         System.err.println("Can't find ScriptEngineFactory providers: " +
-                      err.getMessage());
+                      err->getMessage());
         if (DEBUG) {
             err.printStackTrace();
         }
@@ -106,7 +106,7 @@
                 engineSpis.add(fact);
             } catch (ServiceConfigurationError err) {
                 System.err.println("ScriptEngineManager providers.next(): "
-                             + err.getMessage());
+                             + err->getMessage());
                 if (DEBUG) {
                     err.printStackTrace();
                 }
@@ -116,7 +116,7 @@
         }
     } catch (ServiceConfigurationError err) {
         System.err.println("ScriptEngineManager providers.hasNext(): "
-                        + err.getMessage());
+                        + err->getMessage());
         if (DEBUG) {
             err.printStackTrace();
         }
@@ -210,7 +210,7 @@
       ScriptEngine* engine = spi->getScriptEngine();
       engine->setBindings(getBindings(), ScriptContext::GLOBAL_SCOPE);
       return engine;
-//     } catch (Exception exp) {
+//     } catch (Exception* exp) {
 //         if (DEBUG) exp.printStackTrace();
 //     }
  }
@@ -219,7 +219,7 @@
      QStringList names = QStringList();
      //try {
          names = spi->getNames();
-//     } catch (Exception exp) {
+//     } catch (Exception* exp) {
 //         if (DEBUG) exp.printStackTrace();
 //     }
 
@@ -230,7 +230,7 @@
                      ScriptEngine* engine = spi->getScriptEngine();
                      engine->setBindings(getBindings(), ScriptContext::GLOBAL_SCOPE);
                      return engine;
-//                 } catch (Exception exp) {
+//                 } catch (Exception* exp) {
 //                     if (DEBUG) exp.printStackTrace();
 //                 }
              }
@@ -261,7 +261,7 @@
             ScriptEngine engine = spi.getScriptEngine();
             engine.setBindings(getBindings(), ScriptContext.GLOBAL_SCOPE);
             return engine;
-        } catch (Exception exp) {
+        } catch (Exception* exp) {
             if (DEBUG) exp.printStackTrace();
         }
     }
@@ -270,7 +270,7 @@
         List<String> exts = NULL;
         try {
             exts = spi.getExtensions();
-        } catch (Exception exp) {
+        } catch (Exception* exp) {
             if (DEBUG) exp.printStackTrace();
         }
         if (exts == NULL) continue;
@@ -280,7 +280,7 @@
                     ScriptEngine engine = spi.getScriptEngine();
                     engine.setBindings(getBindings(), ScriptContext.GLOBAL_SCOPE);
                     return engine;
-                } catch (Exception exp) {
+                } catch (Exception* exp) {
                     if (DEBUG) exp.printStackTrace();
                 }
             }
@@ -309,7 +309,7 @@
             ScriptEngine engine = spi.getScriptEngine();
             engine.setBindings(getBindings(), ScriptContext.GLOBAL_SCOPE);
             return engine;
-        } catch (Exception exp) {
+        } catch (Exception* exp) {
             if (DEBUG) exp.printStackTrace();
         }
     }
@@ -318,7 +318,7 @@
         List<String> types = NULL;
         try {
             types = spi.getMimeTypes();
-        } catch (Exception exp) {
+        } catch (Exception* exp) {
             if (DEBUG) exp.printStackTrace();
         }
         if (types == NULL) continue;
@@ -328,7 +328,7 @@
                     ScriptEngine engine = spi.getScriptEngine();
                     engine.setBindings(getBindings(), ScriptContext.GLOBAL_SCOPE);
                     return engine;
-                } catch (Exception exp) {
+                } catch (Exception* exp) {
                     if (DEBUG) exp.printStackTrace();
                 }
             }

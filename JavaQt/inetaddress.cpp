@@ -416,7 +416,7 @@ class InetAddress implements java.io.Serializable {
      * @throws  IllegalArgumentException if {@code timeout} is negative.
      * @since 1.5
      */
-    /*public*/ bool InetAddress::isReachable(int timeout) throw (IOException) {
+    /*public*/ bool InetAddress::isReachable(int timeout) /*throw (IOException)*/ {
         return isReachable(QNetworkInterface(), 0 , timeout);
     }
 
@@ -452,11 +452,11 @@ class InetAddress implements java.io.Serializable {
      * @since 1.5
      */
     /*public*/ bool InetAddress::isReachable(QNetworkInterface netif, int ttl,
-                               int timeout) throw (IOException) {
+                               int timeout) /*throw (IOException)*/ {
         if (ttl < 0)
-            throw  IllegalArgumentException("ttl can't be negative");
+            throw new IllegalArgumentException("ttl can't be negative");
         if (timeout < 0)
-            throw  IllegalArgumentException("timeout can't be negative");
+            throw new IllegalArgumentException("timeout can't be negative");
 
         //return impl.isReachable(this, timeout, netif, ttl);
     QStringList parameters;
@@ -926,7 +926,7 @@ class InetAddress implements java.io.Serializable {
                                         +nsd.getProviderName())) {
                                     try {
                                         return nsd.createNameService();
-                                    } catch (Exception e) {
+                                    } catch (Exception* e) {
                                         e.printStackTrace();
                                         System.err.println(
                                             "Cannot create name service:"
@@ -1480,7 +1480,7 @@ class InetAddress implements java.io.Serializable {
                         // Rethrow with a more informative error message.
                         UnknownHostException uhe2 =
                             new UnknownHostException(local + ": " +
-                                                     uhe.getMessage());
+                                                     uhe->getMessage());
                         uhe2.initCause(uhe);
                         throw uhe2;
                     }
@@ -1543,7 +1543,7 @@ class InetAddress implements java.io.Serializable {
         if (impl == null) {
             try {
                 impl = Class.forName(implName).newInstance();
-            } catch (Exception e) {
+            } catch (Exception* e) {
                 throw new Error("System property impl.prefix incorrect");
             }
         }

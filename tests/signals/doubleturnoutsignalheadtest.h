@@ -42,7 +42,8 @@ class WaitForChange : public ReleaseUntil
  DoubleTurnoutSignalHeadTest* test;
 public:
  WaitForChange(DoubleTurnoutSignalHeadTest* test) {this->test = test;}
- bool ready() throw (Exception){return test->l->propertyChanged;}
+ bool ready() /*throw (Exception)*/
+{return test->l->propertyChanged;}
 };
 
 #endif // DOUBLETURNOUTSIGNALHEADTEST_H

@@ -64,16 +64,16 @@
         } catch (MalformedURLException e) {
             log->error("Unexpected failure in URL parsing", e);
             return;
-        } catch (FileNotFoundException e) {
-            log->debug(tr("Unable to get version info from web%1").arg(e.getMessage()));
-        } catch (IOException e) {
-            log->debug(tr("Unexpected failure during reading%1").arg(e.getMessage()));
+        } catch (FileNotFoundException* e) {
+            log->debug(tr("Unable to get version info from web%1").arg(e->getMessage()));
+        } catch (IOException* e) {
+            log->debug(tr("Unexpected failure during reading%1").arg(e->getMessage()));
         } /*finally*/ {
             try {
                 if (in != nullptr) {
                     in.close();
                 }
-            } catch (IOException e1) {
+            } catch (IOException* e1) {
                 log->error("Exception closing input stream", e1);
             }
         }
@@ -96,7 +96,7 @@
                     Desktop.getDesktop().browse(new URI("http://jmri.org/download"));
                 } catch (URISyntaxException e) {
                     log->error("Invalid page requested", e);
-                } catch (IOException e) {
+                } catch (IOException* e) {
                     log->error("Could no load page", e);
                 }
 //            }
@@ -123,7 +123,7 @@
 
     }
 
-    /*@Nonnull*/  QString getNumber(/*@Nonnull*/  /*BufferedReader*/QTextStream* reader) throw (IOException) {
+    /*@Nonnull*/  QString getNumber(/*@Nonnull*/  /*BufferedReader*/QTextStream* reader) /*throw (IOException)*/ {
         reader->readLine();  // skip a line
         QString line = reader->readLine();
         if (line == "") return "";

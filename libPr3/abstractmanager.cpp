@@ -663,7 +663,7 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
  */
 //@OverridingMethodsMustInvokeSuper
 //@Override
-/*public*/ void AbstractManager::fireVetoableChange(QString p, QVariant old, QVariant n) throw (PropertyVetoException) {
+/*public*/ void AbstractManager::fireVetoableChange(QString p, QVariant old, QVariant n) /*throw (PropertyVetoException)*/ {
     PropertyChangeEvent* evt = new PropertyChangeEvent(this, p, old, n);
     if (p == ("CanDelete")) { // NOI18N
         QString message;// = new StringBuilder();
@@ -700,13 +700,13 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
      for (NamedBean* nb : _beans) {
          try {
              nb->vetoableChange(evt);
-         } catch (PropertyVetoException e) {
-             if (e.getPropertyChangeEvent()->getPropertyName() == ("DoNotDelete")) { //IN18N
+         } catch (PropertyVetoException* e) {
+             if (e->getPropertyChangeEvent()->getPropertyName() == ("DoNotDelete")) { //IN18N
                  throw e;
              }
              found = true;
              message.append("<li>")
-                     .append(e.getMessage())
+                     .append(e->getMessage())
                      .append("</li>");
          }
      }

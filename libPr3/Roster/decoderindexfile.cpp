@@ -591,9 +591,9 @@ void DecoderIndexFile::readFamily(QDomElement family)
    family.setAttribute("file",files->at(i));
    familyList.appendChild(family);
   }
-  catch (JDOMException exj) {log->error(tr("could not parse ")+files->at(i)+": "+exj.getMessage());}
-  catch (FileNotFoundException exj) {log->error("could not read "+files->at(i)+": "+exj.getMessage());}
-  catch (Exception exj) {log->error(tr("other exception while dealing with ")+files->at(i)+": "+exj.getMessage());}
+  catch (JDOMException* exj) {log->error(tr("could not parse ")+files->at(i)+": "+exj->getMessage());}
+  catch (FileNotFoundException* exj) {log->error("could not read "+files->at(i)+": "+exj->getMessage());}
+  catch (Exception* exj) {log->error(tr("other exception while dealing with ")+files->at(i)+": "+exj->getMessage());}
  }
 
  index.appendChild(mfgList);

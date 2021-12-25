@@ -77,8 +77,8 @@ public:
     /*public*/ int getValidFeedbackTypes() override;
     //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP") // OK until Java 1.6 allows return of //cheap array copy
     /*public*/ QVector<QString> getValidFeedbackNames() override;
-    /*public*/ void setFeedbackMode(QString mode) throw(IllegalArgumentException) override;
-    /*public*/ void setFeedbackMode(int mode) throw(IllegalArgumentException) override;
+    /*public*/ void setFeedbackMode(QString mode) /*throw(IllegalArgumentException)*/ override;
+    /*public*/ void setFeedbackMode(int mode) /*throw(IllegalArgumentException)*/ override;
     /*public*/ int getFeedbackMode() override;
     /*public*/ QString getFeedbackModeName() override;
     /*public*/ void requestUpdateFromLayout() override;
@@ -136,11 +136,11 @@ public:
     /*public*/ void setTurnoutOperation(TurnoutOperation* toper) override;
     /*public*/ bool getInhibitOperation() override;
     /*public*/ void setInhibitOperation(bool io) override;
-    /*public*/ void provideFirstFeedbackSensor(QString pName) throw(JmriException) override;
+    /*public*/ void provideFirstFeedbackSensor(QString pName) /*throw(JmriException)*/ override;
     /*public*/ void provideFirstFeedbackNamedSensor(NamedBeanHandle<Sensor*>* s);
     /*public*/ Sensor* getFirstSensor() override;
     /*public*/ NamedBeanHandle <Sensor*>* getFirstNamedSensor() override;
-    /*public*/ void provideSecondFeedbackSensor(QString pName) throw(JmriException) override;
+    /*public*/ void provideSecondFeedbackSensor(QString pName) /*throw(JmriException)*/ override;
     /*public*/ void provideSecondFeedbackNamedSensor(NamedBeanHandle<Sensor*>* s);
     /*public*/ Sensor* getSecondSensor() override;
     /*public*/ NamedBeanHandle <Sensor*>* getSecondNamedSensor() override;
@@ -154,10 +154,10 @@ public:
     /*public*/ void dispose() override;
     /*public*/ float getDivergingLimit() override;
     /*public*/ QString getDivergingSpeed() override;
-    /*public*/ void setDivergingSpeed(QString s) const throw(JmriException) override;
+    /*public*/ void setDivergingSpeed(QString s) const /*throw(JmriException) */override;
     /*public*/ float getStraightLimit() override;
     /*public*/ QString getStraightSpeed() override;
-    /*public*/ void setStraightSpeed(QString s)const  throw(JmriException) override;
+    /*public*/ void setStraightSpeed(QString s)const  /*throw(JmriException)*/ override;
     QObject* self() override{return (QObject*)this;}
     /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean)override;
     /*public*/ bool isCanFollow()override;
@@ -167,7 +167,7 @@ public:
     /*public*/ bool isFollowingCommandedState()override;
     /*public*/ void setFollowingCommandedState(bool following)override;
     //void propertyChange(PropertyChangeEvent *);
-    /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException)override;
+    /*public*/ void vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/override;
 
 public slots:
     void propertyChange(PropertyChangeEvent *evt) override;
@@ -305,7 +305,7 @@ class IntervalCheck : public QObject
        SleeperThread::msleep(qMax(0ULL, LocalDateTime::now()->until(at->nextWait, LocalDateTime::ChronoUnit::MILLIS))); // nextWait might have passed in the meantime
        at->log->debug(tr("back from sleep, forward on %1").arg(LocalDateTime::now()->toString()));
        at->setCommandedState(s);
-   } catch (InterruptedException ex) {
+   } catch (InterruptedException* ex) {
        at->log->debug(tr("setCommandedStateAtInterval(s) interrupted at %1").arg(LocalDateTime::now()->toString()));
 //       Thread.currentThread().interrupt(); // retain if needed later
        emit finished();

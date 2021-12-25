@@ -49,7 +49,7 @@
         try {
          bool ok;
             float f = len.toFloat(&ok);
-            if(!ok) throw NumberFormatException();
+            if(!ok) throw new NumberFormatException();
             if (_units->isChecked()) {
                 _lengthField->setText(QString::number(f / 2.54f));
                 _units->setText("in");

@@ -24,9 +24,9 @@
 }
 
 //@Override
-/*public*/ QJsonValue JsonConsistHttpService::doGet(QString /*type*/, QString name, QLocale locale) throw (JsonException) {
+/*public*/ QJsonValue JsonConsistHttpService::doGet(QString /*type*/, QString name, QLocale locale) /*throw (JsonException)*/ {
     if (!this->manager->isConsistManager()) {
-        throw JsonException(503, tr( "ErrorNoConsistManager")); // NOI18N
+        throw new JsonException(503, tr( "ErrorNoConsistManager")); // NOI18N
     }
     return this->getConsist(locale, JsonUtilHttpService::addressForString(name));
 }
@@ -50,21 +50,21 @@
  * </ul>
  *
  * @param type   the JSON message type
- * @param locale the locale to throw exceptions in
+ * @param locale the locale to throw new exceptions in
  * @param name   the consist address, ignored if data contains an
  *               {@value jmri.server.json.JSON#ADDRESS} and
  *               {@value jmri.server.json.JSON#IS_LONG_ADDRESS} nodes
  * @param data   the consist as a JsonObject
  * @return the JSON representation of the Consist
- * @throw jmri.server.json.JsonException if there is no consist manager
+ * @throw new jmri.server.json.JsonException if there is no consist manager
  *                                        (code 503), the consist does not
  *                                        exist (code 404), or the consist
  *                                        cannot be saved (code 500).
  */
 //@Override
-/*public*/ QJsonObject JsonConsistHttpService::doPost(QString /*type*/, QString name, QJsonObject data, QLocale locale) throw (JsonException) {
+/*public*/ QJsonObject JsonConsistHttpService::doPost(QString /*type*/, QString name, QJsonObject data, QLocale locale) /*throw (JsonException)*/ {
     if (!this->manager->isConsistManager()) {
-        throw JsonException(503, tr( "ErrorNoConsistManager")); // NOI18N
+        throw new JsonException(503, tr( "ErrorNoConsistManager")); // NOI18N
     }
     DccLocoAddress* address;
     if (data.value(JSON::ADDRESS).isDouble()) {
@@ -73,7 +73,7 @@
         address = JsonUtilHttpService::addressForString(data.value(JSON::ADDRESS).toString());
     }
     if (!this->manager->getConsistList()->contains(address)) {
-        throw JsonException(404, tr( "Unable to access %1 %2.").arg(JSON::CONSIST).arg(name));
+        throw new JsonException(404, tr( "Unable to access %1 %2.").arg(JSON::CONSIST).arg(name));
     }
     Consist* consist = this->manager->getConsist(address);
     if (data.value(JSON::ID).isString()) {
@@ -105,15 +105,15 @@
     try {
         (new ConsistFile())->writeFile(this->manager->getConsistList()->toList());
     } catch (IOException* ex) {
-        throw JsonException(500, ex->getLocalizedMessage());
+        throw new JsonException(500, ex->getLocalizedMessage());
     }
     return this->getConsist(locale, address);
 }
 
 //@Override
-/*public*/ QJsonObject JsonConsistHttpService::doPut(QString type, QString name, QJsonObject data, QLocale locale) throw (JsonException) {
+/*public*/ QJsonObject JsonConsistHttpService::doPut(QString type, QString name, QJsonObject data, QLocale locale) /*throw (JsonException)*/ {
     if (!this->manager->isConsistManager()) {
-        throw JsonException(503, tr( "ErrorNoConsistManager")); // NOI18N
+        throw new JsonException(503, tr( "ErrorNoConsistManager")); // NOI18N
     }
     DccLocoAddress* address;
     if (data.value(JSON::ADDRESS).isDouble()) {
@@ -126,20 +126,20 @@
 }
 
 //@Override
-/*public*/ void JsonConsistHttpService::doDelete(QString /*type*/, QString name, QLocale /*locale*/) throw (JsonException) {
+/*public*/ void JsonConsistHttpService::doDelete(QString /*type*/, QString name, QLocale /*locale*/) /*throw (JsonException)*/ {
     if (!this->manager->isConsistManager()) {
-        throw JsonException(503, tr( "ErrorNoConsistManager")); // NOI18N
+        throw new JsonException(503, tr( "ErrorNoConsistManager")); // NOI18N
     }
     if (!this->manager->getConsistList()->contains(JsonUtilHttpService::addressForString(name))) {
-        throw JsonException(404, tr( "Unable to access %1 %2.").arg(JSON::CONSIST).arg(name)); // NOI18N
+        throw new JsonException(404, tr( "Unable to access %1 %2.").arg(JSON::CONSIST).arg(name)); // NOI18N
     }
     this->manager->delConsist(JsonUtilHttpService::addressForString(name));
 }
 
 //@Override
-/*public*/ QJsonValue JsonConsistHttpService::doGetList(QString type, QLocale locale) throw (JsonException) {
+/*public*/ QJsonValue JsonConsistHttpService::doGetList(QString type, QLocale locale) /*throw (JsonException)*/ {
     if (!this->manager->isConsistManager()) {
-        throw JsonException(503, tr( "ErrorNoConsistManager")); // NOI18N
+        throw new JsonException(503, tr( "ErrorNoConsistManager")); // NOI18N
     }
     QJsonArray root = QJsonArray();//mapper.createArrayNode();
     foreach (DccLocoAddress* address, *this->manager->getConsistList()->toList()) {
@@ -170,13 +170,13 @@
  * </ul>
  * </ul>
  *
- * @param locale  The locale to throw exceptions in.
+ * @param locale  The locale to throw new exceptions in.
  * @param address The address of the consist to get.
  * @return The JSON representation of the consist->
- * @throw JsonException This exception has code 404 if the consist does not
+ * @throw new JsonException This exception has code 404 if the consist does not
  *                       exist.
  */
-/*public*/ QJsonObject JsonConsistHttpService::getConsist(QLocale locale, DccLocoAddress* address) throw (JsonException) {
+/*public*/ QJsonObject JsonConsistHttpService::getConsist(QLocale locale, DccLocoAddress* address) /*throw (JsonException)*/ {
     if (this->manager->getConsistList()->contains(address)) {
         QJsonObject root = QJsonObject();//mapper.createObjectNode();
         root.insert(JSON::TYPE, JSON::CONSIST);
@@ -203,6 +203,6 @@
         root.insert(JSON::DATA, data);
         return root;
     } else {
-        throw JsonException(404, tr( "Unable to access %1 %2.").arg(JSON::CONSIST).arg(address->toString())); // NOI18N
+        throw new JsonException(404, tr( "Unable to access %1 %2.").arg(JSON::CONSIST).arg(address->toString())); // NOI18N
     }
 }

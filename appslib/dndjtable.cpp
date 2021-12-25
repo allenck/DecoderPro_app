@@ -68,7 +68,7 @@ Point getDropPoint() {
             } catch (UnsupportedFlavorException ufe) {
                 log.warn("DnDJTable.importData: at table " + getName() + " e= " + ufe);
                 return false;
-            } catch (IOException ioe) {
+            } catch (IOException* ioe) {
                 log.warn("DnDJTable.importData: at table " + getName() + " e= " + ioe);
                 return false;
             }
@@ -128,7 +128,7 @@ Point getDropPoint() {
             log.warn("TransferHandler.importData: supported DataFlavors not avaialable at table from "
                     + tr.getClass().getName());
         }
-    } catch (IOException ioe) {
+    } catch (IOException* ioe) {
         log.warn("caught IOException", ioe);
     } catch (UnsupportedFlavorException ufe) {
         log.warn("caught UnsupportedFlavorException", ufe);
@@ -342,7 +342,7 @@ class DnDHandler extends TransferHandler {
             }
         } catch (UnsupportedFlavorException ufe) {
             log.warn("DnDHandler.importData: at table e= " + ufe);
-        } catch (IOException ioe) {
+        } catch (IOException* ioe) {
             log.warn("DnDHandler.importData: at table e= " + ioe);
         }
         return false;

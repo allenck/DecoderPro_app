@@ -16,8 +16,8 @@ public:
  /*public*/ QString getUserName();
  /*public*/ double getScaleRatio();
  /*public*/ double getScaleFactor();
- /*public*/ void setUserName(/*@Nonnull*/ QString newName) throw (IllegalArgumentException/*, PropertyVetoException*/);
- /*public*/ void setScaleRatio(double newRatio) throw (IllegalArgumentException/*, PropertyVetoException*/);
+ /*public*/ void setUserName(/*@Nonnull*/ QString newName) /*throw (IllegalArgumentException, PropertyVetoException)*/;
+ /*public*/ void setScaleRatio(double newRatio) /*throw (IllegalArgumentException, PropertyVetoException)*/;
  /*public*/ QString toString();
 
 signals:

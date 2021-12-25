@@ -93,7 +93,7 @@
                 fileVersion = aLine.mid(0, aLine.indexOf(LESS_THAN_SIGN)).toInt();
             }
             f->close();
-        } catch (IOException /*| NumberFormatException | NullPointerException*/ e) {}
+        } catch (IOException* /*| NumberFormatException | NullPointerException*/ e) {}
         if (fileVersion < 0) return;    // Safety: Nothing found, ignore it (though we should have found and parsed it!)
         switch (fileVersion) {
             case 4:
@@ -139,7 +139,7 @@
                 oldFile.delete();                   // Delete existing old file.
                 (new File(temporaryFilename)).renameTo(oldFile);    // Rename temporary filename to proper /*final*/ file.
             }
-        } catch (IOException e) {}  // Any other error(s) just cleans up:
+        } catch (IOException* e) {}  // Any other error(s) just cleans up:
         (new File(temporaryFilename)).delete();        // If we get here, just clean up.
 #endif
     }
@@ -177,7 +177,7 @@
                 oldFile.delete();                   // Delete existing old file.
                 (new File(temporaryFilename)).renameTo(oldFile);    // Rename temporary filename to proper /*final*/ file.
             }
-        } catch (IOException e) {}  // Any other error(s) just cleans up:
+        } catch (IOException* e) {}  // Any other error(s) just cleans up:
         (new File(temporaryFilename)).delete();        // If we get here, just clean up.
 #endif
     }
@@ -190,7 +190,7 @@
 */
     /*private*/ /*final*/ /*static*/ QString ImportCodeButtonHandlerData::INT_START_STRING = "<int>"; // NOI18N
     /*private*/ /*final*/ /*static*/ QString ImportCodeButtonHandlerData::INT_END_STRING = "</int>";  // NOI18N
-    /*static*/ /*private*/ QString ImportCodeButtonHandlerData::checkFileVersion(QTextStream* bufferedReader, QTextStream* bufferedWriter, QString aLine, QString oldVersion, QString newVersion) throw (IOException) {
+    /*static*/ /*private*/ QString ImportCodeButtonHandlerData::checkFileVersion(QTextStream* bufferedReader, QTextStream* bufferedWriter, QString aLine, QString oldVersion, QString newVersion) /*throw (IOException)*/ {
         if (aLine.contains(FILE_VERSION_STRING)) {
             writeLine(bufferedWriter, aLine);
             writeLine(bufferedWriter, bufferedReader->readLine());   // Ignore <void method="set">
@@ -213,7 +213,7 @@
 
     /*private*/ /*final*/ /*static*/ QString ImportCodeButtonHandlerData::STRING_START_STRING = "<string>";   // NOI18N
     /*private*/ /*final*/ /*static*/ QString ImportCodeButtonHandlerData::STRING_END_STRING = "</string>";    // NOI18N
-    /*static*/ /*private*/ QString ImportCodeButtonHandlerData::checkForRefactor(QTextStream* bufferedWriter, QString aLine, QString oldName, QString newName) throw (IOException) {
+    /*static*/ /*private*/ QString ImportCodeButtonHandlerData::checkForRefactor(QTextStream* bufferedWriter, QString aLine, QString oldName, QString newName) /*throw (IOException)*/ {
         int intStart = aLine.indexOf(STRING_START_STRING + oldName + STRING_END_STRING);
         if (intStart >= 0) { // Found, replace:
             //writeLine(bufferedWriter, aLine.substring(0, intStart) + STRING_START_STRING + newName + STRING_END_STRING);
@@ -223,7 +223,7 @@
         return aLine;
     }
 
-    /*static*/ /*private*/ QString ImportCodeButtonHandlerData::checkForMultipleSemiColons(QTextStream* bufferedWriter, QString aLine) throw (IOException) {
+    /*static*/ /*private*/ QString ImportCodeButtonHandlerData::checkForMultipleSemiColons(QTextStream* bufferedWriter, QString aLine) /*throw (IOException)*/ {
         int intStart = aLine.indexOf(STRING_START_STRING);
         int intEnd = aLine.indexOf(STRING_END_STRING);
         if (intStart >=0 && intEnd >=0 && intStart < intEnd) { // Insure a line we might look at:
@@ -239,6 +239,6 @@
     }
 
 
-    /*static*/ /*private*/ void ImportCodeButtonHandlerData::writeLine(QTextStream* bufferedWriter, QString aLine) throw (IOException) {
+    /*static*/ /*private*/ void ImportCodeButtonHandlerData::writeLine(QTextStream* bufferedWriter, QString aLine) /*throw (IOException)*/ {
         *bufferedWriter << aLine; *bufferedWriter << "\n"/*newLine()*/;
     }

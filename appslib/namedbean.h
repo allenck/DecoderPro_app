@@ -465,7 +465,7 @@ public:
     //@CheckReturnValue
     /*public*/ virtual /*default*/ int compareTo(/*@Nonnull*/ NamedBean* n2);
 
-    /*public*/ virtual bool equals(NamedBean *obj);
+    /*public*/ virtual bool equals(QObject *obj);
 
     /**
      * Compare the suffix of this NamedBean's name with the

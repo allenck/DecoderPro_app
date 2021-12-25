@@ -102,7 +102,7 @@ namespace Operations
    s = name + TAB + rl->getDepartureTime() + TAB + rl->getComment() + NEW_LINE;
    writer->write(s);
   }
-//     } catch (IOException we) {
+//     } catch (IOException* we) {
 //         log.error("Error printing route");
 //     }
  }

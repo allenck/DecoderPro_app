@@ -119,7 +119,7 @@
      Validation validation = sysAddressValidator.getValidation();
      Validation.Type type = validation.getType();
      addButton.setEnabled(type != Validation.Type.WARNING && type != Validation.Type.DANGER);
-     setStatusBarText(validation.getMessage());
+     setStatusBarText(validation->getMessage());
  });
 #endif
  sysAddressValidator->setManager(prefixBox->getSelectedItem());

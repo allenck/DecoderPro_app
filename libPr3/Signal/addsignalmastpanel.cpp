@@ -376,13 +376,13 @@ void AddSignalMastPanel::loadMastDefinitions()
   else {
    log->error("Unexpected null list of signal definition files"); // NOI18N
   }
- } catch (JDOMException e)
+ } catch (JDOMException* e)
  {
   mastBox->addItem("Failed to create definition, did you select a system?");
-  log->warn("in loadMastDefinitions"+ e.getMessage());
- } catch (IOException e) {
+  log->warn("in loadMastDefinitions"+ e->getMessage());
+ } catch (IOException* e) {
   mastBox->addItem("Failed to read definition, did you select a system?");
-  log->warn("in loadMastDefinitions" + e.getMessage());
+  log->warn("in loadMastDefinitions" + e->getMessage());
  }
 
  try
@@ -427,11 +427,11 @@ void AddSignalMastPanel::loadMastDefinitions()
      log->warn("No mast definition files found");
     }
   }
- } catch (JDOMException e) {
-        log->warn("in loadMastDefinitions"+ e.getMessage());
- } catch (IOException e) {
+ } catch (JDOMException* e) {
+        log->warn("in loadMastDefinitions"+ e->getMessage());
+ } catch (IOException* e) {
         //Can be considered normal
-        log->warn("in loadMastDefinitions"+ e.getMessage());
+        log->warn("in loadMastDefinitions"+ e->getMessage());
  }
 //    mastBox->addItemListener(new ItemListener(){
 //        /*public*/ void itemStateChanged(ItemEvent e) {

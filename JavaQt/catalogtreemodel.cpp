@@ -23,7 +23,7 @@
  */
 // /*public*/ class CatalogTreeModel extends DefaultTreeModel implements InstanceManagerAutoDefault {
 
-/*public*/ CatalogTreeModel::CatalogTreeModel(QObject* parent) : DefaultTreeModel(new DefaultMutableTreeNode("Root"))
+/*public*/ CatalogTreeModel::CatalogTreeModel(QObject* parent) : DefaultTreeModel(new DefaultMutableTreeNode("Root"),parent)
 {
  if(fileRoot == nullptr)
   fileRoot = FileUtil::getUserFilesPath() + "resources";

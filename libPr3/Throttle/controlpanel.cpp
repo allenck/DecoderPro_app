@@ -1611,7 +1611,7 @@ void ControlPanel::on_menu_requested()
    QByteArray member = QMetaObject::normalizedSignature(QString("get"+switchSliderFunction).toLocal8Bit());
 
    int methodIndex = _throttle->self()->metaObject()->indexOfMethod(member);
-//   if(methodIndex < 0) throw Exception("invalid switchslider function "+ switchSliderFunction);
+//   if(methodIndex < 0) throw new Exception("invalid switchslider function "+ switchSliderFunction);
 
 //            bool state = (Boolean) getter.invoke(throttle, (Object[]) null);
    bool state;
@@ -1623,11 +1623,11 @@ void ControlPanel::on_menu_requested()
         setSpeedController(SLIDERDISPLAY);
     }
    }
-   else throw Exception(QString("error invoking method ") + member);
+   else throw new Exception(QString("error invoking method ") + member);
   }
-  catch (Exception ex)
+  catch (Exception* ex)
   {
-   log->debug("Exception in setSwitchSliderFunction: " + ex.getMessage() + " while looking for function " + switchSliderFunction);
+   log->debug("Exception in setSwitchSliderFunction: " + ex->getMessage() + " while looking for function " + switchSliderFunction);
   }
  }
 }

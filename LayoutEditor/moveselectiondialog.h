@@ -29,7 +29,7 @@ class MoveSelectionDialog : public QObject
   /*private*/ QPushButton* moveSelectionCancel;
 
   LayoutEditor* layoutEditor;
-  /*private*/ void showEntryErrorDialog(QWidget* parentComponent, NumberFormatException e);
+  /*private*/ void showEntryErrorDialog(QWidget* parentComponent, NumberFormatException *e);
 
  private slots:
   /*private*/ void moveSelectionDonePressed(/*@Nonnull ActionEvent event*/);

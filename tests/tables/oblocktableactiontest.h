@@ -37,7 +37,8 @@ class OBTWaitFor : public ReleaseUntil
   QThread* remove;
  public:
   OBTWaitFor( QThread* remove){ this->remove = remove;}
-  bool ready() throw (Exception)
+  bool ready() /*throw (Exception)*/
+
   {
    return !(remove->isRunning()/*isAlive()*/);
   }

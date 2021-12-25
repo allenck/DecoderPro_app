@@ -44,7 +44,7 @@ AbstractProgrammerTest::AbstractProgrammerTest() : ProgrammerTestBase()
                     abstractprogrammer->registerFromCV(cv1 = 7), __FILE__, __LINE__);
             Assert::assertEquals("test CV 8", 8,
                     abstractprogrammer->registerFromCV(cv1 = 8), __FILE__, __LINE__);
-        } catch (Exception e) {
+        } catch (Exception* e) {
             Assert::fail("unexpected exception while cv = " + cv1, __FILE__, __LINE__);
         }
 
@@ -56,7 +56,7 @@ AbstractProgrammerTest::AbstractProgrammerTest() : ProgrammerTestBase()
             try {
                 abstractprogrammer->registerFromCV(cv1); // should assert
                 Assert::fail("did not throw as expected for cv = " + cv1, __FILE__, __LINE__);
-            } catch (Exception e) {
+            } catch (Exception* e) {
                 JUnitAppender::assertWarnMessage("Unhandled register from cv:  "+QString::number(cv1));
             }
         }

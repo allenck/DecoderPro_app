@@ -305,7 +305,7 @@ public:
       *                                          delete to be aborted (see
       *                                          above).
       */
-      virtual /*public*/ void deleteBean(/*@Nonnull*/ NamedBean* /*n*/, /*@Nonnull*/ QString /*property*/) throw (PropertyVetoException) {}
+      virtual /*public*/ void deleteBean(/*@Nonnull*/ NamedBean* /*n*/, /*@Nonnull*/ QString /*property*/) /*throw (PropertyVetoException)*/ {}
 
       virtual /*default*/ /*public*/ QList<NamedBeanPropertyDescriptor*> getKnownBeanProperties();
 

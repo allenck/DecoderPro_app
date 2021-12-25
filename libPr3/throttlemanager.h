@@ -47,7 +47,7 @@
      *         be made; false may be returned if a the throttle is already in
      *         use
      */
-  virtual bool requestThrottle(BasicRosterEntry* re, ThrottleListener* l, bool canHandleDecisions){return false;}
+  virtual bool requestThrottle(BasicRosterEntry* /*re*/, ThrottleListener* /*l*/, bool /*canHandleDecisions*/){return false;}
 
 
     /**
@@ -65,7 +65,7 @@
      *         be made; false may be returned if a the throttle is already in
      *         use
      */
-    virtual bool requestThrottle(int address, ThrottleListener* l){return false;}
+    virtual bool requestThrottle(int /*address*/, ThrottleListener* /*l*/){return false;}
 
     /**
      * Request a throttle, given a decoder address. When the decoder address is
@@ -85,7 +85,7 @@
      *         be made; false may be returned if a the throttle is already in
      *         use
      */
-    virtual bool requestThrottle(int address, ThrottleListener* l, bool canHandleDecisions) {return false;}
+    virtual bool requestThrottle(int /*address*/, ThrottleListener* /*l*/, bool /*canHandleDecisions*/) {return false;}
 
     /**
      * Request a throttle, given a decoder address and whether it is a long or
@@ -102,7 +102,7 @@
      *         be made; false may be returned if a the throttle is already in
      *         use
      */
-    virtual bool requestThrottle(int address, bool isLong, ThrottleListener* l, bool canHandleDecisions){return false;}
+    virtual bool requestThrottle(int /*address*/, bool /*isLong*/, ThrottleListener* /*l*/, bool /*canHandleDecisions*/){return false;}
 
     /**
      * Request a throttle, given a LocoAddress. When the address is
@@ -117,7 +117,7 @@
      *         be made; false may be returned if a the throttle is already in
      *         use
      */
-    virtual bool requestThrottle(LocoAddress* address, ThrottleListener* l, bool canHandleDecisions){return false;}
+    virtual bool requestThrottle(LocoAddress* /*address*/, ThrottleListener* /*l*/, bool /*canHandleDecisions*/){return false;}
 
     /**
      * Cancel a request for a throttle.
@@ -167,7 +167,7 @@
      * @param l  ThrottleListener requesting the throttle steal occur.
      * @param decision from the ThrottleListener, STEAL or SHARE.
      */
-  virtual void responseThrottleDecision(int address, ThrottleListener* l, ThrottleListener::DecisionType decision) {}
+  virtual void responseThrottleDecision(int /*address*/, ThrottleListener* /*l*/, ThrottleListener::DecisionType /*decision*/) {}
 
     /**
      * Steal or Share a requested throttle.
@@ -180,7 +180,7 @@
      * @param l  ThrottleListener requesting the throttle steal occur.
      * @param decision from the ThrottleListener, STEAL or SHARE.
      */
-  virtual void responseThrottleDecision(int address, bool isLong, ThrottleListener* l, ThrottleListener::DecisionType decision) {}
+  virtual void responseThrottleDecision(int /*address*/, bool /*isLong*/, ThrottleListener* /*l*/, ThrottleListener::DecisionType /*decision*/) {}
 
     /**
      * Steal or Share a requested throttle.
@@ -190,7 +190,7 @@
      * @param decision from the ThrottleListener, STEAL or SHARE.
      * @since 4.9.2
      */
-  virtual void responseThrottleDecision(LocoAddress* address, ThrottleListener* l, ThrottleListener::DecisionType decision){}
+  virtual void responseThrottleDecision(LocoAddress* /*address*/, ThrottleListener* /*l*/, ThrottleListener::DecisionType /*decision*/){}
 
     /**
      * Test if the Silent Steal Throttles preference option should be enabled.
@@ -219,7 +219,7 @@
      * @param address address number to test
      * @return true if address can be long; false otherwise
      */
-  virtual bool canBeLongAddress(int address) {return false;}
+  virtual bool canBeLongAddress(int /*address*/) {return false;}
 
     /**
      * Test if a specific number is a valid short address on this system.
@@ -227,7 +227,7 @@
      * @param address address number to test
      * @return true if address can be short; false otherwise
      */
-  virtual bool canBeShortAddress(int address) {return false;}
+  virtual bool canBeShortAddress(int /*address*/) {return false;}
 
     /**
      * Test if ambiguous addresses (short vs long) are not allowed on this
@@ -287,7 +287,7 @@
      * @param protocol the control protocol
      * @return the address, possibly as a protocol-specific subclass
      */
-    virtual LocoAddress* getAddress(QString value, LocoAddress::Protocol protocol){return nullptr;}
+    virtual LocoAddress* getAddress(QString /*value*/, LocoAddress::Protocol /*protocol*/){return nullptr;}
 
     /**
      * Get the supported speed modes.
@@ -325,21 +325,21 @@
      * @param addressIsLong true if long address.
      * @return true, its still required, false its not.
      */
-    virtual bool addressStillRequired(int address, bool addressIsLong){return false;}
+    virtual bool addressStillRequired(int /*address*/, bool /*addressIsLong*/){return false;}
 
     /**
      *
      * @param address Loco number to test
      * @return true, its still required, false its not.
      */
-    virtual bool addressStillRequired(int address) {return false;}
+    virtual bool addressStillRequired(int /*address*/) {return false;}
 
     /**
      *
      * @param re roster entry to test
      * @return true, its still required, false its not.
      */
-  virtual bool addressStillRequired(BasicRosterEntry* re) {return false;}
+  virtual bool addressStillRequired(BasicRosterEntry* /*re*/) {return false;}
 
     /**
      * The specified Throttle Listener has finished using a given throttle and
@@ -431,7 +431,7 @@
      * @param la LocoAddress of the loco you want the throttle usage count for.
      * @return number of throttles for this address, or 0 if throttle does not exist
      */
-    virtual int getThrottleUsageCount(LocoAddress* la){return 0;}
+    virtual int getThrottleUsageCount(LocoAddress* /*la*/){return 0;}
 
      /**
      * Get the number of Throttles sharing the throttle for a ddcaddress.
@@ -440,7 +440,7 @@
      * @param isLongAddress indicates whether the address is long or not.
      * @return number of throttles for this address, or 0 if throttle does not exist
      */
-     virtual int getThrottleUsageCount(int address, bool isLongAddress){return 0;}
+     virtual int getThrottleUsageCount(int /*address*/, bool /*isLongAddress*/){return 0;}
 
     /**
      * Get the number of Throttles sharing the throttle for a ddcaddress.
@@ -448,7 +448,7 @@
      * @param address number of the loco you want the throttle usage count for.
      * @return number of throttles for this address, or 0 if throttle does not exist
      */
-    virtual int getThrottleUsageCount(int address){return 0;}
+    virtual int getThrottleUsageCount(int /*address*/){return 0;}
 
     /**
      * Get the number of Throttles sharing the throttle for a ddcaddress.
@@ -456,7 +456,7 @@
      * @param re BasicRosterEntry of the loco you want the throttle usage count for.
      * @return number of throttles for this address, or 0 if throttle does not exist
      */
-  virtual int getThrottleUsageCount(BasicRosterEntry* re) {return 0;}
+  virtual int getThrottleUsageCount(BasicRosterEntry* /*re*/) {return 0;}
 
     /**
      * Allow to cleanly release the traffic controller in ThrottleManager Tests

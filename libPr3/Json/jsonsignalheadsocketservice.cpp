@@ -86,7 +86,7 @@ this->jshss = jshss;
    {
     jshss->connection->sendMessage(ex.getJsonMessage());
    }
-  } catch (IOException ie)
+  } catch (IOException* ie)
   {
    // if we get an error, de-register
    //signalHead.removePropertyChangeListener(this);

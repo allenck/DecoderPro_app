@@ -285,8 +285,8 @@ QWidget* AppsLaunchPane::_buttonSpace = NULL;
         } else if (current!=(value)) {
          log->warn(tr("JMRI property %1 already set to %2, skipping reset to %3").arg(key).arg(current).arg(value));
         }
-    } catch (Exception e) {
-  log->error(tr("Unable to set JMRI property %1 to %2 due to exception %3").arg(key).arg(value).arg(e.getMessage()));
+    } catch (Exception* e) {
+  log->error(tr("Unable to set JMRI property %1 to %2 due to exception %3").arg(key).arg(value).arg(e->getMessage()));
     }
 }
 

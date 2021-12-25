@@ -125,7 +125,7 @@ void FullBackupExportAction::common()
   zipper->close();
 
  }
- catch (FileNotFoundException ex)
+ catch (FileNotFoundException* ex)
  {
 //        ex.printStackTrace();
  } catch (IOException* ex)

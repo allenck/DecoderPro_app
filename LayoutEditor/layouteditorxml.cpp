@@ -129,8 +129,8 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
      if (!e .isNull()) {
          panel.appendChild(e);
      }
- } catch (Exception e) {
-     log->error("Error storing contents element: " + e.getMessage());
+ } catch (Exception* e) {
+     log->error("Error storing contents element: " + e->getMessage());
  }
 
  // note: moving zoom attribute into per-window user preference
@@ -151,9 +151,9 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
      panel.appendChild(e);
     }
    }
-   catch (Exception e)
+   catch (Exception* e)
    {
-    log->error("Error storing panel contents element: " + e.getMessage());
+    log->error("Error storing panel contents element: " + e->getMessage());
    }
   }
   else
@@ -204,8 +204,8 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
          if (e != QDomElement()) {
              panel.appendChild(e);
          }
-     } catch (Exception ex) {
-         log->error(tr("Error storing layout item: %1").arg(item->metaObject()->className()), &ex);
+     } catch (Exception* ex) {
+         log->error(tr("Error storing layout item: %1").arg(item->metaObject()->className()), ex);
      }
  }
 
@@ -280,9 +280,9 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
   try
   {
    xScale = a.toFloat(&bok);
-   if(!bok) throw Exception();
+   if(!bok) throw new Exception();
   }
-  catch (Exception e)
+  catch (Exception* e)
   {
    log->error("failed to convert to float - " + a);
    result = false;
@@ -294,9 +294,9 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
   try
   {
    yScale = a.toFloat(&bok);
-   if(!bok) throw Exception();
+   if(!bok) throw new Exception();
   }
-  catch (Exception e)
+  catch (Exception* e)
   {
    log->error("failed to convert to float - " + a);
    result = false;
@@ -411,7 +411,7 @@ if ((a = shared.attribute("turnoutcirclesize")) != "")
   {
    sz = a.toFloat();
    panel->setTurnoutBX(sz);
-  } catch (Exception e)
+  } catch (Exception* e)
   {
    log->error("failed to convert to float - " + a);
    result = false;
@@ -422,7 +422,7 @@ if ((a = shared.attribute("turnoutcirclesize")) != "")
      try {
          sz = a.toFloat();
          panel->setTurnoutCX(sz);
-     } catch (Exception e) {
+     } catch (Exception* e) {
          log->error("failed to convert to float - " + a);
          result = false;
      }
@@ -432,7 +432,7 @@ if ((a = shared.attribute("turnoutcirclesize")) != "")
      try {
          sz = a.toFloat();;
          panel->setTurnoutWid(sz);
-     } catch (Exception e) {
+     } catch (Exception* e) {
          log->error("failed to convert to float - " + a);
          result = false;
      }
@@ -442,7 +442,7 @@ if ((a = shared.attribute("turnoutcirclesize")) != "")
      try {
          sz = a.toFloat();;
          panel->setXOverLong(sz);
-     } catch (Exception e) {
+     } catch (Exception* e) {
          log->error("failed to convert to float - " + a);
          result = false;
      }
@@ -452,7 +452,7 @@ if ((a = shared.attribute("turnoutcirclesize")) != "")
      try {
          sz = a.toFloat();;
          panel->setXOverHWid(sz);
-     } catch (Exception e) {
+     } catch (Exception* e) {
          log->error("failed to convert to float - " + a);
          result = false;
      }
@@ -462,7 +462,7 @@ if ((a = shared.attribute("turnoutcirclesize")) != "")
      try {
          sz = a.toFloat();;
          panel->setXOverShort(sz);
-     } catch (Exception e) {
+     } catch (Exception* e) {
          log->error("failed to convert to float - " + a);
          result = false;
      }
@@ -631,7 +631,7 @@ if ((a = shared.attribute("turnoutcirclesize")) != "")
     id = item.attribute("name");
     log->debug("Load " + id + " for [" + panel->getName() + "] via " + adapterName);
    }
-   catch (Exception e) {
+   catch (Exception* e) {
    }
   }
   try

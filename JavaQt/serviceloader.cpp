@@ -278,13 +278,13 @@ template<typename S>
         r = new BufferedReader(new InputStreamReader(in, "utf-8"));
         int lc = 1;
         while ((lc = parseLine(service, u, r, lc, names)) >= 0);
-    } catch (IOException x) {
+    } catch (IOException* x) {
         fail(service, "Error reading configuration file", x);
     } finally {
         try {
             if (r != null) r.close();
             if (in != null) in.close();
-        } catch (IOException y) {
+        } catch (IOException* y) {
             fail(service, "Error closing configuration file", y);
         }
     }
@@ -328,7 +328,7 @@ template<typename S>
                 else
                     configs = loader->getResources(fullName);
 #endif
-            } catch (IOException x) {
+            } catch (IOException* x) {
                 fail(service, "Error locating configuration files", x);
             }
         }

@@ -1471,7 +1471,7 @@
      */
      //@Override
      /*public*/ void LevelXingView::setAllLayoutBlocks(LayoutBlock* layoutBlock) {
-        throw  IllegalArgumentException("should have called Object instead of View temporary");
+        throw new IllegalArgumentException("should have called Object instead of View temporary");
 //         setLayoutBlockAC(layoutBlock);
 //         setLayoutBlockBD(layoutBlock);
      }

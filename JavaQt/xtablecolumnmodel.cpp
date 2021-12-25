@@ -215,7 +215,7 @@ XTableColumnModel::XTableColumnModel(JTable *parent) :
 /*public*/ void XTableColumnModel::moveColumn(int columnIndex, int newIndex, bool onlyVisible) {
     if ((columnIndex < 0) || (columnIndex >= getColumnCount(onlyVisible))
             || (newIndex < 0) || (newIndex >= getColumnCount(onlyVisible))) {
-        throw  IllegalArgumentException("moveColumn() - Index out of range");
+        throw new IllegalArgumentException("moveColumn() - Index out of range");
     }
 
     if (onlyVisible) {

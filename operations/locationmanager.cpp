@@ -88,7 +88,7 @@ PropertyChangeSupport(this, parent)
        try {
           if (location->getReporter()==(r))
               return location;
-} catch(NullPointerException npe) {
+} catch(NullPointerException* npe) {
           // it's valid for a reporter to be NULL (no reporter
           // at a given location.
        }

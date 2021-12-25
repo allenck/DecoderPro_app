@@ -788,7 +788,7 @@ static final ResourceBundle rb = ResourceBundle
                     try {
                         speed = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(aspectSpeedStr);
 //                       log->trace("{}: Signal {} speed from map for {} is {}", _activeTrain->getTrainName(), _controllingSignalMast->getDisplayName(), aspectSpeedStr, speed);
-                    } catch (Exception ex) {
+                    } catch (Exception* ex) {
                         //Considered Normal if the speed does not appear in the map
 //                       log->trace("{}: Speed not found {}", _activeTrain->getTrainName(), aspectSpeedStr);
                     }
@@ -1352,8 +1352,8 @@ static final ResourceBundle rb = ResourceBundle
                 } else {
                     waitNow = false;
                 }
-            } catch (InterruptedException e) {
-               aat->log->error("InterruptedException while watiting to stop for pause - " + e.getMessage());
+            } catch (InterruptedException* e) {
+               aat->log->error("InterruptedException while watiting to stop for pause - " + e->getMessage());
                 waitNow = false;
                 keepGoing = false;
             }
@@ -1379,8 +1379,8 @@ static final ResourceBundle rb = ResourceBundle
                     if (_fastMinutes <= 0) {
                         waitNow = false;
                     }
-                } catch (InterruptedException e) {
-                   aat->log->error("InterruptedException while waiting when paused - " + e.getLocalizedMessage());
+                } catch (InterruptedException* e) {
+                   aat->log->error("InterruptedException while waiting when paused - " + e->getLocalizedMessage());
                     keepGoing = false;
                 }
             }

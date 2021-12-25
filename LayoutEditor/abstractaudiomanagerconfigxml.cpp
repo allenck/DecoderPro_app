@@ -373,9 +373,9 @@ AbstractAudioManagerConfigXML::AbstractAudioManagerConfigXML(QObject *parent) :
    }
 
   }
-  catch (AudioException ex)
+  catch (AudioException* ex)
   {
-   log->error("Error loading AudioBuffer (" + sysName + "): " + ex.getMessage());
+   log->error("Error loading AudioBuffer (" + sysName + "): " + ex->getMessage());
   }
  }
  loadedObjects += audioList.size();
@@ -491,8 +491,8 @@ AbstractAudioManagerConfigXML::AbstractAudioManagerConfigXML(QObject *parent) :
     as->setPositionRelative(ce.text()==("yes"));
    }
 
-  } catch (AudioException ex) {
-   log->error("Error loading AudioSource (" + sysName + "): " + ex.getMessage());
+  } catch (AudioException* ex) {
+   log->error("Error loading AudioSource (" + sysName + "): " + ex->getMessage());
   }
  }
  loadedObjects += audioList.size();
@@ -564,8 +564,8 @@ AbstractAudioManagerConfigXML::AbstractAudioManagerConfigXML(QObject *parent) :
      al->setMetersPerUnit(((ce.text().toFloat())));
     }
 
-   } catch (AudioException ex) {
-    log->error("Error loading AudioListener (" + sysName + "): " + ex.getMessage());
+   } catch (AudioException* ex) {
+    log->error("Error loading AudioListener (" + sysName + "): " + ex->getMessage());
    }
   }
   QString a;

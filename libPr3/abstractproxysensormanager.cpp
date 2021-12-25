@@ -291,7 +291,7 @@ AbstractProxySensorManager::AbstractProxySensorManager(QObject *parent)
 /*public*/ Sensor* AbstractProxySensorManager::getBySystemName(/*@Nonnull */ QString systemName) const {
  Manager/*<E>*/* m = getManager(systemName);
          if (m == nullptr) {
-             log->debug("getBySystemName did not find manager from name {}, defer to default manager", systemName);
+             log->debug(tr("getBySystemName did not find manager from name %1, defer to default manager").arg(systemName));
              m = getDefaultManager();
          }
          return (Sensor*)((AbstractManager*)m->self())->getBySystemName(systemName);
@@ -547,7 +547,7 @@ QString AbstractProxySensorManager::createSystemName(QString curAddress, QString
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ void AbstractProxySensorManager::deleteBean(/*@Nonnull*/ NamedBean* s, /*@Nonnull*/ QString property) throw (PropertyVetoException) {
+/*public*/ void AbstractProxySensorManager::deleteBean(/*@Nonnull*/ NamedBean* s, /*@Nonnull*/ QString property)  {
     Manager/*<E>*/* m = getManager(s->getSystemName());
     if (m != nullptr) {
         m->deleteBean(s, property);
@@ -953,7 +953,7 @@ void AbstractProxySensorManager::propertyChange(PropertyChangeEvent *e)
  * @return an existing or new NamedBean
  * @throws IllegalArgumentException if name is not usable in a bean
  */
-/*protected*/ NamedBean* AbstractProxySensorManager::provideNamedBean(QString name) throw (IllegalArgumentException) {
+/*protected*/ NamedBean* AbstractProxySensorManager::provideNamedBean(QString name) /*throw (IllegalArgumentException) */{
     // make sure internal present
     initInternal();
 

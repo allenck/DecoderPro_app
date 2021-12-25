@@ -119,8 +119,8 @@ using namespace Sprog;
         try {
             mode |= (((PowerManager*)InstanceManager::getDefault("PowerManager"))->getPower() == SprogPowerManager::ON)
                     ? SprogConstants::POWER_BIT : 0;
-        } catch (Exception e) {
-            log->error("Exception from InstanceManager.getDefault(jmri.PowerManager.class): " + e.getMessage());
+        } catch (Exception* e) {
+            log->error("Exception from InstanceManager.getDefault(jmri.PowerManager.class): " + e->getMessage());
         }
         if (log->isDebugEnabled()) {
             log->debug("Speed Step Mode Change to Mode: " +SpeedStepMode(Mode).name

@@ -79,8 +79,8 @@ public slots:
 private:
     Logger* log;
     void common();
-//    /*private*/ void writeObject(ObjectOutputStream s) throw (IOException) ;
-//    /*private*/ void readObject(ObjectInputStream s) throw (IOException), (ClassNotFoundException);
+//    /*private*/ void writeObject(ObjectOutputStream s) /*throw (IOException)*/ ;
+//    /*private*/ void readObject(ObjectInputStream s) /*throw (IOException)*/, (ClassNotFoundException);
 
 protected:
     /** this node's parent, or null if this node has no parent */

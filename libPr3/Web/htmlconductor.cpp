@@ -21,12 +21,12 @@ using namespace Operations;
 
 /*private*/ /*final*/ /*static*/ Logger* HtmlConductor::log = LoggerFactory::getLogger("HtmlConductor");
 
-/*public*/ HtmlConductor::HtmlConductor(QLocale locale, Operations::Train* train, QObject* parent) throw (IOException): HtmlTrainCommon(locale, train, parent){
+/*public*/ HtmlConductor::HtmlConductor(QLocale locale, Operations::Train* train, QObject* parent) /*throw (IOException)*/: HtmlTrainCommon(locale, train, parent){
     //super(locale, train);
     this->resourcePrefix = "Conductor";  // NOI18N
 }
 #if 1
-/*public*/ QString HtmlConductor::getLocation() throw (IOException)
+/*public*/ QString HtmlConductor::getLocation() /*throw (IOException)*/
 {
  Operations::RouteLocation* location = train->getCurrentLocation();
  if (location == NULL)

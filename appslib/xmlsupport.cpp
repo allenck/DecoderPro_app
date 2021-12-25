@@ -239,7 +239,7 @@ XmlSupport::XmlSupport(QObject *parent) : QObject(parent)
  * Write XML document to the specified output stream.
  */
 /*private*/ /*static*/ /*final*/ void XmlSupport::writeDoc(QDomDocument doc, QTextStream* out)
-    throw (IOException)
+    /*throw (IOException)*/
 {
 #if 0
     try {

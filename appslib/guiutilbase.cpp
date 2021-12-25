@@ -240,10 +240,10 @@ GuiUtilBase::GuiUtilBase(QObject *parent) :
    setParameters(act, parameters);
    return (Action*)act;
   }
-  catch (Exception ex)
+  catch (Exception* ex)
   {
    log.warn("could not load toolbar adapter class: " + child.firstChildElement("panel").text()
-              + " due to " + ex.getMessage());
+              + " due to " + ex->getMessage());
    return createEmptyMenuItem(icon, name);
   }
  }
@@ -453,7 +453,7 @@ GUAbstractAction::GUAbstractAction(QString name, QIcon* icon)
 //    try {
 //        return new XmlFile() {
 //        }.rootFromName(name);
-//    } catch (Exception e) {
+//    } catch (Exception* e) {
 //        log.error("Could not parse file \"" + name + "\" due to: " + e);
 //        return NULL;
 //    }

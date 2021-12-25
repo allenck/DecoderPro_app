@@ -236,7 +236,7 @@ namespace Operations
 //                 + " " + setName, "Hint about checking valid names, etc."); // NOI18N
 //         new ExceptionDisplayFrame(context);
 
-//     } catch (Exception ex) {
+//     } catch (Exception* ex) {
 //         log.error("Doing restore from " + setName, ex);
 
 //         UnexpectedExceptionContext context = new UnexpectedExceptionContext(ex,

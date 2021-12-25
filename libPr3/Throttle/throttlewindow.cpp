@@ -646,7 +646,7 @@ void ThrottleWindow::OnFileMenuLoad()
                      }
                  }
              }
-         } catch (Exception ex) {
+         } catch (Exception* ex) {
              log.debug("Got exception (no panic) "+ex);
          }
      }
@@ -655,14 +655,14 @@ void ThrottleWindow::OnFileMenuLoad()
      setXml(conf);
   }
  }
- catch (FileNotFoundException ex)
+ catch (FileNotFoundException* ex)
  {
 //           if (log->isDebugEnabled())
-  log->debug("Loading throttle exception: " + ex.getMessage());
+  log->debug("Loading throttle exception: " + ex->getMessage());
  }
- catch (Exception ex) {
+ catch (Exception* ex) {
      if (log->isDebugEnabled())
-         log->debug("Loading throttle exception: " + ex.getMessage());
+         log->debug("Loading throttle exception: " + ex->getMessage());
  }
 
 //    	checkPosition();
@@ -711,8 +711,8 @@ void ThrottleWindow::OnFileMenuLoad()
           log->error("could not make parent directory");
   if (!file->createNewFile()) // create file, check success
       log->error("createNewFile failed");
- } catch (Exception exp) {
-     log->error("Exception while writing the throttle file, may not be complete: "+exp.getMessage());
+ } catch (Exception* exp) {
+     log->error("Exception while writing the throttle file, may not be complete: "+exp->getMessage());
  }
 
  try {
@@ -749,8 +749,8 @@ void ThrottleWindow::OnFileMenuLoad()
      xf->writeXML(file, doc);
      setLastUsedSaveFile(sfile);
  }
- catch (Exception ex){
-     log->warn("Exception while storing throttle xml: "+ex.getMessage());
+ catch (Exception* ex){
+     log->warn("Exception while storing throttle xml: "+ex->getMessage());
  }
 #endif
 }
@@ -1114,8 +1114,8 @@ void ThrottleWindow::on_address_released(LocoAddress *)
                      elt.appendChild(je);
                  }
 
-             } catch (Exception ex) {
-                 log->debug("Got exception (no panic) " + ex.getMessage());
+             } catch (Exception* ex) {
+                 log->debug("Got exception (no panic) " + ex->getMessage());
              }
          }
      }
@@ -1193,8 +1193,8 @@ void ThrottleWindow::on_address_released(LocoAddress *)
                      elt.appendChild(je);
                  }
 
-             } catch (Exception ex) {
-                 log->debug("Got exception (no panic) " + ex.getMessage());
+             } catch (Exception* ex) {
+                 log->debug("Got exception (no panic) " + ex->getMessage());
              }
          }
      }
@@ -1299,7 +1299,7 @@ void ThrottleWindow::on_address_released(LocoAddress *)
       {
           setTransparentBackground((QWidget*) comp);
       }
-     } catch (Exception e) {
+     } catch (Exception* e) {
          // Do nothing, just go on
      }
     }
@@ -1328,7 +1328,7 @@ void ThrottleWindow::on_address_released(LocoAddress *)
             {
                 setTransparent((QWidget*) comp, transparency);
             }
-        } catch (Exception e) {
+        } catch (Exception* e) {
             // Do nothing, just go on
         }
     }

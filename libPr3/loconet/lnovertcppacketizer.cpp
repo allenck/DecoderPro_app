@@ -313,7 +313,7 @@ void LnTcpRcvHandler::on_ReadyRead()
 //         return;
 //     } // normally, we don't catch the unnamed Exception, but in this
 //     // permanently running loop it seems wise.
-//     catch (Exception e) {
+//     catch (Exception* e) {
 //         log->warn("run: unexpected Exception: " + e);
 //     }
   }
@@ -418,7 +418,7 @@ void LnTcpXmtHandler::sendMessage(LocoNetMessage *msg)
   // no stream connected
   log->warn("sendLocoNetMessage: no connection established");
  }
-//   } catch (IOException e) {
+//   } catch (IOException* e) {
 //       log->warn("sendLocoNetMessage: IOException: " + e.toString());
 //   }
 //     } catch (NoSuchElementException e) {

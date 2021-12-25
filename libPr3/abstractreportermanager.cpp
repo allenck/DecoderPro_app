@@ -68,14 +68,14 @@ if (retv == nullptr) {
 return(retv);
 }
 
-Reporter* AbstractReporterManager::newReporter(QString systemName, QString userName) const throw(IllegalArgumentException) {
+Reporter* AbstractReporterManager::newReporter(QString systemName, QString userName) const /*throw(IllegalArgumentException)*/ {
  if (log->isDebugEnabled()) log->debug(tr("new Reporter:")
                                         +( (systemName==NULL) ? "NULL" : systemName)
                                         +";"+( (userName==NULL) ? "NULL" : userName));
     if (systemName == NULL){
         log->error("SystemName cannot be NULL. UserName was "
                 +( (userName==NULL) ? "NULL" : userName));
-        throw  IllegalArgumentException("SystemName cannot be NULL. UserName was "
+        throw new IllegalArgumentException("SystemName cannot be NULL. UserName was "
                 +( (userName==NULL) ? "NULL" : userName));
     }
     // return existing if there is one

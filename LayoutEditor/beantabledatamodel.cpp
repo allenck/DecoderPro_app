@@ -169,9 +169,9 @@ void BeanTableDataModel::setManager(AbstractManager *) {}
     fireTableRowsUpdated(row, row);
     fireTableDataChanged();
    }
-   catch (Exception ex)
+   catch (Exception* ex)
    {
-    log->error(ex.getMessage());
+    log->error(ex->getMessage());
    }
   }
  }
@@ -849,8 +849,8 @@ void BeanTableDataModel::OnButtonClicked(QObject* o)
    w->write(QColor(Qt::black),lineString);
    lineString = "";
   }
-  catch (IOException e)
-  { log->warn("error during printing: "+e.getMessage());}
+  catch (IOException* e)
+  { log->warn("error during printing: "+e->getMessage());}
  }
 }
 
@@ -1363,16 +1363,16 @@ void BeanTableDataModel::onColumnSelected(QObject* obj)
     QString message;// = new StringBuilder();
     try {
         model->getManager()->deleteBean(t, "CanDelete");  // NOI18N
-    } catch (PropertyVetoException e) {
-        if (e.getPropertyChangeEvent()->getPropertyName() ==("DoNotDelete")) { // NOI18N
-            model->log->warn(e.getMessage());
-            tr("%1 %2 Can not be deleted\n%3").arg(t->getBeanType(), t->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME), e.getMessage());
+    } catch (PropertyVetoException* e) {
+        if (e->getPropertyChangeEvent()->getPropertyName() ==("DoNotDelete")) { // NOI18N
+            model->log->warn(e->getMessage());
+            tr("%1 %2 Can not be deleted\n%3").arg(t->getBeanType(), t->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME), e->getMessage());
             JOptionPane::showMessageDialog(nullptr, message,
                     tr("Warning"),
                     JOptionPane::ERROR_MESSAGE);
             return nullptr;
         }
-        message.append(e.getMessage());
+        message.append(e->getMessage());
     }
     int count = t->getListenerRefs()->size();
     model->log->debug(tr("Delete with %1").arg(count));
@@ -1572,7 +1572,7 @@ class TableHeaderListener extends MouseAdapter {
     p->setTableColumnPreferences(beantableref, columnName, index, tc->getPreferredWidth(), /*tmodel->getSortingStatus(tc->getModelIndex())*/true, !tcm->isColumnVisible(tc));
    }
   }
-  catch (Exception e)
+  catch (Exception* e)
   {
    log->warn("unable to store settings for table column " + tc->getHeaderValue().toString());
    //e.printStackTrace();

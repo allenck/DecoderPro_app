@@ -329,7 +329,7 @@ LocoFile::LocoFile(QObject *parent) :
   addDefaultInfo(pRootElement);
   writeXML(pFile, doc);
  }
-    catch (Exception ex) {
+    catch (Exception* ex) {
         // need to trace this one back
 //        ex.printStackTrace();
     }
@@ -378,7 +378,7 @@ LocoFile::LocoFile(QObject *parent) :
 
         writeXML(pFile, doc);
     }
-    catch (Exception ex) {
+    catch (Exception* ex) {
         // need to trace this one back
 //        ex.printStackTrace();
     }

@@ -56,7 +56,8 @@ class ReleaseUntil_dcst1 : public ReleaseUntil
  DefaultCabSignalTest* test;
 public:
  ReleaseUntil_dcst1(DefaultCabSignalTest* test) {this->test = test;}
-  bool ready() throw (Exception)
+  bool ready() /*throw (Exception)*/
+
  {
   return InstanceManager::sensorManagerInstance()->provideSensor("IS_ROUTING_DONE")->getKnownState() == Sensor::ACTIVE;
  }
@@ -68,7 +69,8 @@ class ReleaseUntil_dcst2 : public ReleaseUntil
  DefaultCabSignal* lcs;
 public:
  ReleaseUntil_dcst2(CabSignal* lcs, DefaultCabSignalTest* test) {this->test = test;}
-  bool ready() throw (Exception)
+  bool ready() /*throw (Exception)*/
+
  {
   return "Clear" == (lcs->getNextMast()->getAspect());
  }

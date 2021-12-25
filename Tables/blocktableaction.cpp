@@ -398,7 +398,7 @@ BlockTableAction::BlockTableAction(QObject *parent) :
  //  try {
        b->setBlockSpeed(speed);
  //  } catch (JmriException* ex) {
- //      JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + speed);
+ //      JOptionPane.showMessageDialog(NULL, ex->getMessage() + "\n" + speed);
  //      return;
  //  }
    if (!speedList.contains(speed) && !speed.contains("Global"))
@@ -820,7 +820,7 @@ BlockTableAction::BlockTableAction(QObject *parent) :
     try {
         ((BlockManager*)InstanceManager::getDefault("BlockManager"))->setDefaultSpeed(speedValue);
     } catch (IllegalArgumentException* ex) {
-        JOptionPane::showMessageDialog(_who, ex.getMessage() + "\n" + speedValue);
+        JOptionPane::showMessageDialog(_who, ex->getMessage() + "\n" + speedValue);
     }
 }
 

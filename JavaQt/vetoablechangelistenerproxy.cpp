@@ -42,7 +42,7 @@
     * @throws PropertyVetoException if the change is vetoed by the listener
     */
    /*public*/ void VetoableChangeListenerProxy::vetoableChange(PropertyChangeEvent* event)
-     throw (PropertyVetoException)
+
    {
      // Note: Sun does not filter, under the assumption that since
      // VetoableChangeSupport unwraps proxys, this method should never be

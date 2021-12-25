@@ -79,7 +79,7 @@ void MySlider::setLabelTable(QVector<QLabel*> labelTable)
  {
   if(this->labelTable.count()== labelTable.count())
    return;
-  throw Exception("MySlider layout has changed");
+  throw new Exception("MySlider layout has changed");
  }
  layoutWidget();
 }

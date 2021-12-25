@@ -20,7 +20,6 @@
 #include <qdom.h>
 #include <qevent.h>
 #include <qfile.h>
-#include <qlist.h>
 #include <qmetaobject.h>
 #include <qobject.h>
 #include <qstringlist.h>
@@ -358,7 +357,7 @@ if (_wrapper) {
 }
   return SensorManager::getNextValidAddress(arg__1, arg__2);
 }
-QString  PythonQtShell_SensorManager::getNextValidAddress(QString  curAddress0, QString  prefix1, bool  ignoreInitialExisting2)
+QString  PythonQtShell_SensorManager::getNextValidAddress(QString  arg__1, QString  arg__2, bool  arg__3)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -369,7 +368,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"QString" , "QString" , "QString" , "bool"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
       QString returnValue{};
-      void* args[4] = {NULL, (void*)&curAddress0, (void*)&prefix1, (void*)&ignoreInitialExisting2};
+      void* args[4] = {NULL, (void*)&arg__1, (void*)&arg__2, (void*)&arg__3};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -389,7 +388,7 @@ if (_wrapper) {
     }
   }
 }
-  return SensorManager::getNextValidAddress(curAddress0, prefix1, ignoreInitialExisting2);
+  return SensorManager::getNextValidAddress(arg__1, arg__2, arg__3);
 }
 Sensor*  PythonQtShell_SensorManager::getSensor(QString  arg__1) const
 {
@@ -490,8 +489,7 @@ if (_wrapper) {
 }
   return SensorManager::newSensor(arg__1, arg__2);
 }
-Sensor*  PythonQtShell_SensorManager::provide(QString  name0) throw (IllegalArgumentException)
-
+Sensor*  PythonQtShell_SensorManager::provide(QString  name0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -760,9 +758,9 @@ QString  PythonQtWrapper_SensorManager::getNextValidAddress(SensorManager* theWr
   return ( theWrappedObject->getNextValidAddress(arg__1, arg__2));
 }
 
-QString  PythonQtWrapper_SensorManager::getNextValidAddress(SensorManager* theWrappedObject, QString  curAddress, QString  prefix, bool  ignoreInitialExisting)
+QString  PythonQtWrapper_SensorManager::getNextValidAddress(SensorManager* theWrappedObject, QString  arg__1, QString  arg__2, bool  arg__3)
 {
-  return ( theWrappedObject->getNextValidAddress(curAddress, prefix, ignoreInitialExisting));
+  return ( theWrappedObject->getNextValidAddress(arg__1, arg__2, arg__3));
 }
 
 Sensor*  PythonQtWrapper_SensorManager::getSensor(SensorManager* theWrappedObject, QString  arg__1) const
@@ -780,8 +778,7 @@ Sensor*  PythonQtWrapper_SensorManager::newSensor(SensorManager* theWrappedObjec
   return ( theWrappedObject->newSensor(arg__1, arg__2));
 }
 
-Sensor*  PythonQtWrapper_SensorManager::provide(SensorManager* theWrappedObject, QString  name) throw (IllegalArgumentException)
-
+Sensor*  PythonQtWrapper_SensorManager::provide(SensorManager* theWrappedObject, QString  name)
 {
   return ( theWrappedObject->provide(name));
 }
@@ -2816,7 +2813,7 @@ PythonQtShell_ShutDownTask::~PythonQtShell_ShutDownTask() {
   PythonQtPrivate* priv = PythonQt::priv();
   if (priv) { priv->shellClassDeleted(this); }
 }
-bool  PythonQtShell_ShutDownTask::call() throw (Exception) 
+bool  PythonQtShell_ShutDownTask::call()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -3185,7 +3182,7 @@ int PythonQtShell_ShutDownTask::qt_metacall(QMetaObject::Call call, int id, void
   int result = ShutDownTask::qt_metacall(call, id, args);
   return result >= 0 ? PythonQt::priv()->handleMetaCall(this, _wrapper, call, id, args) : result;
 }
-bool  PythonQtWrapper_ShutDownTask::call(ShutDownTask* theWrappedObject) throw (Exception) 
+bool  PythonQtWrapper_ShutDownTask::call(ShutDownTask* theWrappedObject)
 {
   return ( theWrappedObject->call());
 }
@@ -3889,7 +3886,7 @@ if (_wrapper) {
 }
   SystemConnectionMemo::dispose();
 }
-Manager*  PythonQtShell_SystemConnectionMemo::get(QString  T0)
+Manager*  PythonQtShell_SystemConnectionMemo::get(QString  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -3900,7 +3897,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"Manager*" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       Manager* returnValue{};
-      void* args[2] = {NULL, (void*)&T0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -3920,7 +3917,7 @@ if (_wrapper) {
     }
   }
 }
-  return SystemConnectionMemo::get(T0);
+  return SystemConnectionMemo::get(arg__1);
 }
 int  PythonQtShell_SystemConnectionMemo::getDefaultOutputInterval()
 {
@@ -4153,7 +4150,7 @@ if (_wrapper) {
 }
   return SystemConnectionMemo::isRestartRequired();
 }
-bool  PythonQtShell_SystemConnectionMemo::provides(QString  c0)
+bool  PythonQtShell_SystemConnectionMemo::provides(QString  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -4164,7 +4161,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"bool" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       bool returnValue{};
-      void* args[2] = {NULL, (void*)&c0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -4184,7 +4181,7 @@ if (_wrapper) {
     }
   }
 }
-  return SystemConnectionMemo::provides(c0);
+  return SystemConnectionMemo::provides(arg__1);
 }
 QObject*  PythonQtShell_SystemConnectionMemo::self()
 {
@@ -4219,7 +4216,7 @@ if (_wrapper) {
 }
   return SystemConnectionMemo::self();
 }
-void PythonQtShell_SystemConnectionMemo::setDisabled(bool  disabled0)
+void PythonQtShell_SystemConnectionMemo::setDisabled(bool  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -4229,7 +4226,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "bool"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&disabled0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -4239,9 +4236,9 @@ if (_wrapper) {
     }
   }
 }
-  SystemConnectionMemo::setDisabled(disabled0);
+  SystemConnectionMemo::setDisabled(arg__1);
 }
-void PythonQtShell_SystemConnectionMemo::setOutputInterval(int  newInterval0)
+void PythonQtShell_SystemConnectionMemo::setOutputInterval(int  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -4251,7 +4248,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "int"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&newInterval0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -4261,9 +4258,9 @@ if (_wrapper) {
     }
   }
 }
-  SystemConnectionMemo::setOutputInterval(newInterval0);
+  SystemConnectionMemo::setOutputInterval(arg__1);
 }
-bool  PythonQtShell_SystemConnectionMemo::setUserName(QString  name0)
+bool  PythonQtShell_SystemConnectionMemo::setUserName(QString  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -4274,7 +4271,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"bool" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       bool returnValue{};
-      void* args[2] = {NULL, (void*)&name0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -4294,7 +4291,7 @@ if (_wrapper) {
     }
   }
 }
-  return SystemConnectionMemo::setUserName(name0);
+  return SystemConnectionMemo::setUserName(arg__1);
 }
 SystemConnectionMemo* PythonQtWrapper_SystemConnectionMemo::new_SystemConnectionMemo(QObject*  parent)
 { 
@@ -4327,9 +4324,9 @@ void PythonQtWrapper_SystemConnectionMemo::dispose(SystemConnectionMemo* theWrap
   ( theWrappedObject->dispose());
 }
 
-Manager*  PythonQtWrapper_SystemConnectionMemo::get(SystemConnectionMemo* theWrappedObject, QString  T)
+Manager*  PythonQtWrapper_SystemConnectionMemo::get(SystemConnectionMemo* theWrappedObject, QString  arg__1)
 {
-  return ( theWrappedObject->get(T));
+  return ( theWrappedObject->get(arg__1));
 }
 
 int  PythonQtWrapper_SystemConnectionMemo::getDefaultOutputInterval(SystemConnectionMemo* theWrappedObject)
@@ -4367,9 +4364,9 @@ bool  PythonQtWrapper_SystemConnectionMemo::isRestartRequired(SystemConnectionMe
   return ( theWrappedObject->isRestartRequired());
 }
 
-bool  PythonQtWrapper_SystemConnectionMemo::provides(SystemConnectionMemo* theWrappedObject, QString  c)
+bool  PythonQtWrapper_SystemConnectionMemo::provides(SystemConnectionMemo* theWrappedObject, QString  arg__1)
 {
-  return ( theWrappedObject->provides(c));
+  return ( theWrappedObject->provides(arg__1));
 }
 
 QObject*  PythonQtWrapper_SystemConnectionMemo::self(SystemConnectionMemo* theWrappedObject)
@@ -4377,19 +4374,19 @@ QObject*  PythonQtWrapper_SystemConnectionMemo::self(SystemConnectionMemo* theWr
   return ( theWrappedObject->self());
 }
 
-void PythonQtWrapper_SystemConnectionMemo::setDisabled(SystemConnectionMemo* theWrappedObject, bool  disabled)
+void PythonQtWrapper_SystemConnectionMemo::setDisabled(SystemConnectionMemo* theWrappedObject, bool  arg__1)
 {
-  ( theWrappedObject->setDisabled(disabled));
+  ( theWrappedObject->setDisabled(arg__1));
 }
 
-void PythonQtWrapper_SystemConnectionMemo::setOutputInterval(SystemConnectionMemo* theWrappedObject, int  newInterval)
+void PythonQtWrapper_SystemConnectionMemo::setOutputInterval(SystemConnectionMemo* theWrappedObject, int  arg__1)
 {
-  ( theWrappedObject->setOutputInterval(newInterval));
+  ( theWrappedObject->setOutputInterval(arg__1));
 }
 
-bool  PythonQtWrapper_SystemConnectionMemo::setUserName(SystemConnectionMemo* theWrappedObject, QString  name)
+bool  PythonQtWrapper_SystemConnectionMemo::setUserName(SystemConnectionMemo* theWrappedObject, QString  arg__1)
 {
-  return ( theWrappedObject->setUserName(name));
+  return ( theWrappedObject->setUserName(arg__1));
 }
 
 
@@ -7213,7 +7210,7 @@ if (_wrapper) {
 }
   return Throttle::getF9Momentary();
 }
-bool  PythonQtShell_Throttle::getFunction(int  functionNum0)
+bool  PythonQtShell_Throttle::getFunction(int  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -7224,7 +7221,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"bool" , "int"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       bool returnValue{};
-      void* args[2] = {NULL, (void*)&functionNum0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -7244,9 +7241,9 @@ if (_wrapper) {
     }
   }
 }
-  return Throttle::getFunction(functionNum0);
+  return Throttle::getFunction(arg__1);
 }
-bool  PythonQtShell_Throttle::getFunctionMomentary(int  fN0)
+bool  PythonQtShell_Throttle::getFunctionMomentary(int  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -7257,7 +7254,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"bool" , "int"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       bool returnValue{};
-      void* args[2] = {NULL, (void*)&fN0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -7277,7 +7274,7 @@ if (_wrapper) {
     }
   }
 }
-  return Throttle::getFunctionMomentary(fN0);
+  return Throttle::getFunctionMomentary(arg__1);
 }
 QVector<bool >  PythonQtShell_Throttle::getFunctions()
 {
@@ -8819,7 +8816,7 @@ if (_wrapper) {
 }
   Throttle::setF9Momentary(arg__1);
 }
-void PythonQtShell_Throttle::setFunction(int  functionNum0, bool  newState1)
+void PythonQtShell_Throttle::setFunction(int  arg__1, bool  arg__2)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -8829,7 +8826,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "int" , "bool"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
-      void* args[3] = {NULL, (void*)&functionNum0, (void*)&newState1};
+      void* args[3] = {NULL, (void*)&arg__1, (void*)&arg__2};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -8839,9 +8836,9 @@ if (_wrapper) {
     }
   }
 }
-  Throttle::setFunction(functionNum0, newState1);
+  Throttle::setFunction(arg__1, arg__2);
 }
-void PythonQtShell_Throttle::setFunctionMomentary(int  momFuncNum0, bool  state1)
+void PythonQtShell_Throttle::setFunctionMomentary(int  arg__1, bool  arg__2)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -8851,7 +8848,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "int" , "bool"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
-      void* args[3] = {NULL, (void*)&momFuncNum0, (void*)&state1};
+      void* args[3] = {NULL, (void*)&arg__1, (void*)&arg__2};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -8861,7 +8858,7 @@ if (_wrapper) {
     }
   }
 }
-  Throttle::setFunctionMomentary(momFuncNum0, state1);
+  Throttle::setFunctionMomentary(arg__1, arg__2);
 }
 void PythonQtShell_Throttle::setIsForward(bool  arg__1)
 {
@@ -8929,7 +8926,7 @@ if (_wrapper) {
 }
   Throttle::setSpeedSetting(arg__1);
 }
-void PythonQtShell_Throttle::setSpeedSetting(float  speed0, bool  allowDuplicates1, bool  allowDuplicatesOnStop2)
+void PythonQtShell_Throttle::setSpeedSetting(float  arg__1, bool  arg__2, bool  arg__3)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -8939,7 +8936,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "float" , "bool" , "bool"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
-      void* args[4] = {NULL, (void*)&speed0, (void*)&allowDuplicates1, (void*)&allowDuplicatesOnStop2};
+      void* args[4] = {NULL, (void*)&arg__1, (void*)&arg__2, (void*)&arg__3};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -8949,9 +8946,9 @@ if (_wrapper) {
     }
   }
 }
-  Throttle::setSpeedSetting(speed0, allowDuplicates1, allowDuplicatesOnStop2);
+  Throttle::setSpeedSetting(arg__1, arg__2, arg__3);
 }
-void PythonQtShell_Throttle::setSpeedSettingAgain(float  speed0)
+void PythonQtShell_Throttle::setSpeedSettingAgain(float  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -8961,7 +8958,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "float"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&speed0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -8971,7 +8968,7 @@ if (_wrapper) {
     }
   }
 }
-  Throttle::setSpeedSettingAgain(speed0);
+  Throttle::setSpeedSettingAgain(arg__1);
 }
 Throttle* PythonQtWrapper_Throttle::new_Throttle()
 { 
@@ -9267,14 +9264,14 @@ bool  PythonQtWrapper_Throttle::getF9Momentary(Throttle* theWrappedObject)
   return ( theWrappedObject->getF9Momentary());
 }
 
-bool  PythonQtWrapper_Throttle::getFunction(Throttle* theWrappedObject, int  functionNum)
+bool  PythonQtWrapper_Throttle::getFunction(Throttle* theWrappedObject, int  arg__1)
 {
-  return ( theWrappedObject->getFunction(functionNum));
+  return ( theWrappedObject->getFunction(arg__1));
 }
 
-bool  PythonQtWrapper_Throttle::getFunctionMomentary(Throttle* theWrappedObject, int  fN)
+bool  PythonQtWrapper_Throttle::getFunctionMomentary(Throttle* theWrappedObject, int  arg__1)
 {
-  return ( theWrappedObject->getFunctionMomentary(fN));
+  return ( theWrappedObject->getFunctionMomentary(arg__1));
 }
 
 QString  PythonQtWrapper_Throttle::static_Throttle_getFunctionMomentaryString(int  momentFunctionNum)
@@ -9617,14 +9614,14 @@ void PythonQtWrapper_Throttle::setF9Momentary(Throttle* theWrappedObject, bool  
   ( theWrappedObject->setF9Momentary(arg__1));
 }
 
-void PythonQtWrapper_Throttle::setFunction(Throttle* theWrappedObject, int  functionNum, bool  newState)
+void PythonQtWrapper_Throttle::setFunction(Throttle* theWrappedObject, int  arg__1, bool  arg__2)
 {
-  ( theWrappedObject->setFunction(functionNum, newState));
+  ( theWrappedObject->setFunction(arg__1, arg__2));
 }
 
-void PythonQtWrapper_Throttle::setFunctionMomentary(Throttle* theWrappedObject, int  momFuncNum, bool  state)
+void PythonQtWrapper_Throttle::setFunctionMomentary(Throttle* theWrappedObject, int  arg__1, bool  arg__2)
 {
-  ( theWrappedObject->setFunctionMomentary(momFuncNum, state));
+  ( theWrappedObject->setFunctionMomentary(arg__1, arg__2));
 }
 
 void PythonQtWrapper_Throttle::setIsForward(Throttle* theWrappedObject, bool  arg__1)
@@ -9642,14 +9639,14 @@ void PythonQtWrapper_Throttle::setSpeedSetting(Throttle* theWrappedObject, float
   ( theWrappedObject->setSpeedSetting(arg__1));
 }
 
-void PythonQtWrapper_Throttle::setSpeedSetting(Throttle* theWrappedObject, float  speed, bool  allowDuplicates, bool  allowDuplicatesOnStop)
+void PythonQtWrapper_Throttle::setSpeedSetting(Throttle* theWrappedObject, float  arg__1, bool  arg__2, bool  arg__3)
 {
-  ( theWrappedObject->setSpeedSetting(speed, allowDuplicates, allowDuplicatesOnStop));
+  ( theWrappedObject->setSpeedSetting(arg__1, arg__2, arg__3));
 }
 
-void PythonQtWrapper_Throttle::setSpeedSettingAgain(Throttle* theWrappedObject, float  speed)
+void PythonQtWrapper_Throttle::setSpeedSettingAgain(Throttle* theWrappedObject, float  arg__1)
 {
-  ( theWrappedObject->setSpeedSettingAgain(speed));
+  ( theWrappedObject->setSpeedSettingAgain(arg__1));
 }
 
 
@@ -9999,7 +9996,7 @@ if (_wrapper) {
 }
   Turnout::enableLockOperation(arg__1, arg__2);
 }
-bool  PythonQtShell_Turnout::equals(NamedBean*  obj0)
+bool  PythonQtShell_Turnout::equals(QObject*  obj0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -10007,7 +10004,7 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("equals");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"bool" , "NamedBean*"};
+      static const char* argumentList[] ={"bool" , "QObject*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       bool returnValue{};
       void* args[2] = {NULL, (void*)&obj0};
@@ -13040,7 +13037,7 @@ if (_wrapper) {
 }
   return 0;
 }
-Turnout*  PythonQtShell_TurnoutManager::provide(QString  name0) const throw (IllegalArgumentException) 
+Turnout*  PythonQtShell_TurnoutManager::provide(QString  name0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -13150,7 +13147,7 @@ if (_wrapper) {
 }
   TurnoutManager::setDefaultThrownSpeed(arg__1);
 }
-void PythonQtShell_TurnoutManager::setOutputInterval(int  newInterval0)
+void PythonQtShell_TurnoutManager::setOutputInterval(int  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -13160,7 +13157,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "int"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&newInterval0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -13170,7 +13167,7 @@ if (_wrapper) {
     }
   }
 }
-  TurnoutManager::setOutputInterval(newInterval0);
+  TurnoutManager::setOutputInterval(arg__1);
 }
 QString  PythonQtShell_TurnoutManager::toString()
 {
@@ -13307,7 +13304,7 @@ Turnout*  PythonQtWrapper_TurnoutManager::newTurnout(TurnoutManager* theWrappedO
   return ( theWrappedObject->newTurnout(arg__1, arg__2));
 }
 
-Turnout*  PythonQtWrapper_TurnoutManager::provide(TurnoutManager* theWrappedObject, QString  name) const throw (IllegalArgumentException) 
+Turnout*  PythonQtWrapper_TurnoutManager::provide(TurnoutManager* theWrappedObject, QString  name) const
 {
   return ( theWrappedObject->provide(name));
 }
@@ -13332,9 +13329,9 @@ void PythonQtWrapper_TurnoutManager::setDefaultThrownSpeed(TurnoutManager* theWr
   ( theWrappedObject->setDefaultThrownSpeed(arg__1));
 }
 
-void PythonQtWrapper_TurnoutManager::setOutputInterval(TurnoutManager* theWrappedObject, int  newInterval)
+void PythonQtWrapper_TurnoutManager::setOutputInterval(TurnoutManager* theWrappedObject, int  arg__1)
 {
-  ( theWrappedObject->setOutputInterval(newInterval));
+  ( theWrappedObject->setOutputInterval(arg__1));
 }
 
 QString  PythonQtWrapper_TurnoutManager::toString(TurnoutManager* theWrappedObject)
@@ -15388,7 +15385,7 @@ void PythonQtWrapper_XmlFile::revertBackupFile(XmlFile* theWrappedObject, QStrin
   ( theWrappedObject->revertBackupFile(name));
 }
 
-QDomElement  PythonQtWrapper_XmlFile::rootFromFile(XmlFile* theWrappedObject, QFile*  file) throw (JDOMException)
+QDomElement  PythonQtWrapper_XmlFile::rootFromFile(XmlFile* theWrappedObject, QFile*  file)
 {
   return ( theWrappedObject->rootFromFile(file));
 }
@@ -15398,12 +15395,12 @@ QDomElement  PythonQtWrapper_XmlFile::rootFromInputStream(XmlFile* theWrappedObj
   return ( theWrappedObject->rootFromInputStream(stream));
 }
 
-QDomElement  PythonQtWrapper_XmlFile::rootFromName(XmlFile* theWrappedObject, QString  name) throw (JDOMException)
+QDomElement  PythonQtWrapper_XmlFile::rootFromName(XmlFile* theWrappedObject, QString  name)
 {
   return ( theWrappedObject->rootFromName(name));
 }
 
-QDomElement  PythonQtWrapper_XmlFile::rootFromURL(XmlFile* theWrappedObject, QUrl*  url) throw (JDOMException)
+QDomElement  PythonQtWrapper_XmlFile::rootFromURL(XmlFile* theWrappedObject, QUrl*  url)
 {
   return ( theWrappedObject->rootFromURL(url));
 }
@@ -15428,7 +15425,7 @@ void PythonQtWrapper_XmlFile::setValidate(XmlFile* theWrappedObject, XmlFile::Va
   ( theWrappedObject->setValidate(v));
 }
 
-void PythonQtWrapper_XmlFile::writeXML(XmlFile* theWrappedObject, QFile*  file, QDomDocument  doc) const throw (FileNotFoundException)
+void PythonQtWrapper_XmlFile::writeXML(XmlFile* theWrappedObject, QFile*  file, QDomDocument  doc) const
 {
   ( theWrappedObject->writeXML(file, doc));
 }

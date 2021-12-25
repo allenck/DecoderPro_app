@@ -225,7 +225,7 @@ namespace Operations
 //                    rs.number = rsNumber;
 //                    // two possible exceptions, ArrayIndexOutOfBoundsException on split, and NumberFormatException on
 //                    // parseInt
-//                } catch (Exception e2) {
+//                } catch (Exception* e2) {
 //                    rs.number = notInteger;
 //                    // sort alphanumeric numbers at the end of the out list
 //                    String numberIn = rs.getNumber();

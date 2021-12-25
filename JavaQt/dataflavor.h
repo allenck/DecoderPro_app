@@ -21,7 +21,7 @@ public:
  /*public*/ static /*final*/ QString javaRemoteObjectMimeType;// = "application/x-java-remote-object";
  /*public*/ DataFlavor(QObject* representationClass, QString humanPresentableName, QObject *parent = 0);
  /*public*/ DataFlavor(QString mimeType, QString humanPresentableName, QObject *parent = 0);
- /*public*/ DataFlavor(QString mimeType, QObject *parent = 0 ) throw (ClassNotFoundException);
+ /*public*/ DataFlavor(QString mimeType, QObject *parent = 0 ) /*throw (ClassNotFoundException)*/;
  ~DataFlavor();
  /*public*/ QString toString();
  /*public*/ static /*final*/ DataFlavor* getTextPlainUnicodeFlavor();
@@ -70,7 +70,7 @@ private:
 protected:
     /*protected*/ /*final*/ static QObject* tryToLoadClass(QString className,
                                                    ClassLoader* fallback = NULL)
-    throw (ClassNotFoundException);
+    /*throw (ClassNotFoundException)*/;
     static Logger* log;
 };
 

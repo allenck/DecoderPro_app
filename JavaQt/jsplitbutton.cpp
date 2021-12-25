@@ -524,7 +524,7 @@ void JSplitButton::common()
  * @param event  the <code>ActionEvent</code> object
  * @see EventListenerList
  */
-/*private*/ void JSplitButton::fireSplitbuttonClicked(JActionEvent* event) {
+/*private*/ void JSplitButton::fireSplitbuttonClicked(JActionEvent* /*event*/) {
  JActionEvent* e = nullptr;
 #if 0
     // Guaranteed to return a non-null array

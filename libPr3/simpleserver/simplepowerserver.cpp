@@ -28,7 +28,7 @@
  * Protocol Specific Abstract Functions
  */
 //@Override
-/*public*/ void SimplePowerServer::sendStatus(int Status) throw (IOException) {
+/*public*/ void SimplePowerServer::sendStatus(int Status) /*throw (IOException)*/ {
     if (Status == PowerManager::ON) {
         this->sendStatus("POWER ON\n");
     } else if (Status == PowerManager::OFF) {
@@ -39,7 +39,7 @@
 }
 
 //@Override
-/*public*/ void SimplePowerServer::sendErrorStatus() throw (IOException) {
+/*public*/ void SimplePowerServer::sendErrorStatus() /*throw (IOException)*/ {
     this->sendStatus("POWER ERROR\n");
 }
 
@@ -56,10 +56,10 @@
           if(v.getOutputString() != null ){
              sendStatus(v.getOutputString());
           }
-       } catch(ParseException pe){
+       } catch(ParseException* pe){
           sendErrorStatus();
        }
-    } catch(IOException ioe) {
+    } catch(IOException* ioe) {
       // we should check to see if there is an
     }
 #endif
@@ -81,7 +81,7 @@
     }
 }
 
-/*public*/ void SimplePowerServer::sendStatus(QString status) throw (IOException) {
+/*public*/ void SimplePowerServer::sendStatus(QString status) /*throw (IOException)*/ {
     if (this->output != nullptr) {
         this->output->writeBytes(status.toLocal8Bit(), status.length());
     } else {

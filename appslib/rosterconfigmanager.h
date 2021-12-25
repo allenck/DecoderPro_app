@@ -16,7 +16,7 @@ public:
  RosterConfigManager(const RosterConfigManager&): AbstractPreferencesManager() {}
  /*public*/ static /*final*/ QString DIRECTORY;// = "directory";
  /*public*/ static /*final*/ QString DEFAULT_OWNER;// = "defaultOwner";
- /*public*/ void initialize(Profile* profile)throw (InitializationException) override;
+ /*public*/ void initialize(Profile* profile)/*throw (InitializationException)*/ override;
  /*public*/ void savePreferences(Profile* profile) override;
  /*public*/ /*Set<Class<? extends PreferencesManager>>*/ QSet<QString>* getRequires() override;
  /*public*/ QString getDefaultOwner();

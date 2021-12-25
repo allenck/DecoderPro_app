@@ -17,7 +17,7 @@ LocoNetSlot::LocoNetSlot(int slotNum, QObject *parent) :
   * @throws LocoNetException if the slot does not have an easily-found
   * slot number
   */
- /*public*/ LocoNetSlot::LocoNetSlot(LocoNetMessage* l, QObject *parent) throw (LocoNetException) : QObject(parent){
+ /*public*/ LocoNetSlot::LocoNetSlot(LocoNetMessage* l, QObject *parent) /*throw (LocoNetException)*/ : QObject(parent){
  common(0);
      // TODO: Consider limiting the types of LocoNet message which can be
      // used to construct the object to only LocoNet slot write or slot
@@ -721,7 +721,7 @@ void LocoNetSlot::common(int slotNum)
 // methods to interact with LocoNet
 //@SuppressWarnings("fallthrough")
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="SF_SWITCH_FALLTHROUGH")
-void LocoNetSlot::setSlot(LocoNetMessage* l) throw (LocoNetException)
+void LocoNetSlot::setSlot(LocoNetMessage* l) /*throw (LocoNetException)*/
 { // exception if message can't be parsed
     // sort out valid messages, handle
     switch (l->getOpCode()) {
@@ -822,7 +822,7 @@ void LocoNetSlot::setSlot(LocoNetMessage* l) throw (LocoNetException)
     default:
     {
      log->debug( tr("message can't be parsed op code 0x%1").arg(l->getOpCode(),0,16 ));
-     throw LocoNetException("message can't be parsed");
+     throw new LocoNetException("message can't be parsed");
     }
  }
 }

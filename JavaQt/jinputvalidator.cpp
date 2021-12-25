@@ -7,7 +7,7 @@
  common(component, true, true, nullptr);
 }
 
-void JInputValidator::common(JComponent* component, bool onInput, bool isVerifying, /*@Nonnull*/ JInputValidatorPreferences *preferences)
+void JInputValidator::common(JComponent* component, bool /*onInput*/, bool isVerifying, /*@Nonnull*/ JInputValidatorPreferences *preferences)
 {
  this->component = component;
  originalBorder = this->component->getBorder();

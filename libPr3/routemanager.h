@@ -79,7 +79,7 @@ public:
      */
     virtual void deleteRoute(Route* /*r*/) {}
 
-    virtual /*public*/ Route* provide(QString name) throw (IllegalArgumentException)=0;
+    virtual /*public*/ Route* provide(QString name) /*throw (IllegalArgumentException)*/=0;
  QObject* self() override{return (QObject*)this;}
  QString getNamedBeanClass() const override{return "RouteManager";}
 

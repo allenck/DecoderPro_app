@@ -243,7 +243,7 @@ protected void addImpl(Component comp, Object constraints, int index) {
       components.append(static_cast<QWidget*>(obj));
     }
     if(n < 0 || n >= components.count())
-        throw  ArrayIndexOutOfBoundsException("No such child: " + QString::number(n));
+        throw new ArrayIndexOutOfBoundsException("No such child: " + QString::number(n));
         return components.at(n);
 //    } catch (IndexOutOfBoundsException z) {
 //        throw new ArrayIndexOutOfBoundsException("No such child: " + QString::number(n));

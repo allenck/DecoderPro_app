@@ -6,7 +6,7 @@ HttpServletResponse::HttpServletResponse(stefanfrings::HttpResponse* resp)
  this->resp = resp;
 }
 
-PrintWriter* HttpServletResponse::getWriter() throw (IOException)
+PrintWriter* HttpServletResponse::getWriter() /*throw (IOException)*/
 {
 // QTextStream* out = new QTextStream(resp->socket);
 // PrintWriter* writer = new PrintWriter(out);

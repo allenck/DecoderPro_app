@@ -83,7 +83,7 @@ private:
     Logger* log;
     void profileNameChange(Profile* profile, QString oldName);
     /*private*/ void readProfiles() throw (JDOMException, IOException);
-    /*private*/ void writeProfiles() throw (IOException);
+    /*private*/ void writeProfiles() /*throw (IOException)*/;
     /*private*/ void findProfiles();
     /*private*/ void findProfiles(File* searchPath);
     QuaZip* zip;

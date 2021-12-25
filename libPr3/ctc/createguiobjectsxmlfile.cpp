@@ -39,8 +39,8 @@
          QTextStream* stream = new QTextStream(f);
          printWriter = new PrintWriter(stream); // NOI18N
         }
-        catch (IOException e) {
-            log->debug(tr("PrintWriter* exception: %1").arg(e.getMessage()));
+        catch (IOException* e) {
+            log->debug(tr("PrintWriter* exception: %1").arg(e->getMessage()));
             return;
         }
 

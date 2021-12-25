@@ -20,7 +20,7 @@
      } catch (JmriException* ex) {
      try {
      sendErrorStatus();
-     } catch (IOException ie) {
+     } catch (IOException* ie) {
      } catch (java.lang.NullPointerException je) {
      }
      } catch(IOException ie2) {
@@ -40,7 +40,7 @@
       try {
           sendErrorStatus();
       }
-      catch (IOException ie) {
+      catch (IOException* ie) {
       }
       return false;
   }
@@ -60,7 +60,7 @@
             log->error("Exception trying to turn power on " + e->getMessage());
             try {
                 sendErrorStatus();
-            } catch (IOException ie) {
+            } catch (IOException* ie) {
             }
         }
     }
@@ -74,7 +74,7 @@
             log->error("Exception trying to turn power off " + e->getMessage());
             try {
                 sendErrorStatus();
-            } catch (IOException ie) {
+            } catch (IOException* ie) {
             }
         }
     }
@@ -93,11 +93,11 @@
   {
    sendErrorStatus();
   }
-  catch (IOException ie)
+  catch (IOException* ie)
   {
   }
  }
- catch (IOException ie2)
+ catch (IOException* ie2)
  {
  }
 }

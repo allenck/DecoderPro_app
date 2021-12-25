@@ -44,7 +44,7 @@
    * @throws Exception if there is an exception
    */
   //@Override
-  /*public*/ virtual bool call() throw (Exception) {return false;}
+  /*public*/ virtual bool call() /*throw (Exception)*/ {return false;}
 
   /**
      * Take the necessary action.

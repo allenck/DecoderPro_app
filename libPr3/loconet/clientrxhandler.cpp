@@ -98,7 +98,7 @@
 
  //try {
   clientSocket->close();
-  //} catch (IOException ex1) {
+  //} catch (IOException* ex1) {
   //}
 
  LnTcpServer::getDefault()->removeClient(this);
@@ -220,7 +220,7 @@ void ClientRxHandler::on_readyRead()
 
 // //try {
 //  clientSocket->close();
-//  //} catch (IOException ex1) {
+//  //} catch (IOException* ex1) {
 //  //}
 
 // Server::getInstance()->removeClient(this);

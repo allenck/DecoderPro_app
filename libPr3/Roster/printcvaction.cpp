@@ -61,9 +61,9 @@
    w->write(s,0,s.length());
   }
  }
- catch (IOException e)
+ catch (IOException* e)
  {
-  log->warn("error during printing: "+e.getMessage());
+  log->warn("error during printing: "+e->getMessage());
  }
  mRoster->printEntry(w);
  w->setFontStyle(QFont::StyleNormal);
@@ -196,7 +196,7 @@
   s=" \n";
   writer->write(s, 0, s.length());
  }
- catch (IOException ex1)
+ catch (IOException* ex1)
  {
   log->error("IO exception while printing");
   return;

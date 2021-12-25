@@ -47,8 +47,8 @@ public:
  /*public*/ /*abstract*/ virtual QString absolutePath();
  /*public*/ /*abstract*/ virtual bool isUserNode();
  /*public*/ /*abstract*/ virtual QString toString();
- /*public*/ /*abstract*/ virtual void flush() throw (BackingStoreException);
- /*public*/ /*abstract*/ virtual void sync() throw (BackingStoreException);
+ /*public*/ /*abstract*/ virtual void flush() /*throw (BackingStoreException)*/;
+ /*public*/ /*abstract*/ virtual void sync() /*throw (BackingStoreException)*/;
  /*public*/ /*abstract*/ virtual void addPreferenceChangeListener(
      PreferenceChangeListener* pcl);
  /*public*/ /*abstract*/ virtual void removePreferenceChangeListener(

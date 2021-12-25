@@ -126,7 +126,7 @@ LnTurnout::LnTurnout(QString prefix, int number, LocoNetInterface* controller, Q
             public void run() {
                 try {
                     sendSetOffMessage(state);
-                } catch (Exception e) {
+                } catch (Exception* e) {
                     log->error("Exception occured while sending delayed off to turnout: "+e);
                 }
             }
@@ -151,8 +151,8 @@ LnTurnoutTimerTask::LnTurnoutTimerTask(int state, LnTurnout* turnout)
 {
     try {
         turnout->sendSetOffMessage(state);
-    } catch (Exception e) {
-        turnout->log->error("Exception occured while sending delayed off to turnout: "+e.getMessage());
+    } catch (Exception* e) {
+        turnout->log->error("Exception occured while sending delayed off to turnout: "+e->getMessage());
     }
 }
 void LnTurnout::meterTimerTimeout()

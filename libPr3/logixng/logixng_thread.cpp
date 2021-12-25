@@ -43,11 +43,11 @@
             }
 
             if (_threads.contains(threadID)) {
-                throw  IllegalArgumentException(tr("Thread ID %1 already exists").arg(threadID));
+                throw new  IllegalArgumentException(tr("Thread ID %1 already exists").arg(threadID));
             }
 
             if (_threadNames.contains(name)) {
-                throw  IllegalArgumentException(tr("Thread name %s already exists").arg(name));
+                throw new  IllegalArgumentException(tr("Thread name %s already exists").arg(name));
             }
             LogixNG_Thread* thread = new LogixNG_Thread(threadID, name);
             _threads.insert(threadID, thread);
@@ -88,7 +88,7 @@
             for (LogixNG_Thread* t : _threads.values()) {
                 if (name == (t->_name)) return t->_threadID;
             }
-            throw  IllegalArgumentException(tr("Thread name \"%s\" does not exists").arg(name));
+            throw new  IllegalArgumentException(tr("Thread name \"%s\" does not exists").arg(name));
         }
     }
 
@@ -96,9 +96,9 @@
         /*synchronized (LogixNG_Thread.class)*/ {
             LogixNG_Thread* aThread = _threads.value(thread->_threadID);
 
-            if (aThread == nullptr) throw  IllegalArgumentException("Thread does not exists");
-            if (aThread != thread) throw  IllegalArgumentException("Thread ID does not match");
-            if (aThread->_threadInUse) throw  IllegalArgumentException("Thread is in use");
+            if (aThread == nullptr) throw new  IllegalArgumentException("Thread does not exists");
+            if (aThread != thread) throw new  IllegalArgumentException("Thread ID does not match");
+            if (aThread->_threadInUse) throw new  IllegalArgumentException("Thread is in use");
 
             _threads.remove(thread->_threadID);
             _threadNames.remove(thread->_name);
@@ -158,7 +158,7 @@
 
         /*synchronized (LogixNG_Thread.class)*/ {
             if (_threadNames.contains(name)) {
-                throw  IllegalArgumentException(tr("Thread name %s already exists").arg(name));
+                throw new  IllegalArgumentException(tr("Thread name %s already exists").arg(name));
             }
             _threadNames.remove(_name);
             _threadNames.insert(name, this);
@@ -274,7 +274,7 @@
             timer->start();
             return timer;
         } else {
-            throw  RuntimeException("LogixNG thread not started");
+            throw new  RuntimeException("LogixNG thread not started");
         }
     }
 
@@ -328,10 +328,10 @@
                 try {
                     _logixNGThread->join(0);
                 } catch (InterruptedException e) {
-                    throw RuntimeException("stopLogixNGThread() was interrupted");
+                    throw new RuntimeException("stopLogixNGThread() was interrupted");
                 }
                 if (_logixNGThread->getState() != Thread.State.TERMINATED) {
-                    throw RuntimeException("Could not stop logixNGThread. Current state: "+_logixNGThread.getState().name());
+                    throw new RuntimeException("Could not stop logixNGThread. Current state: "+_logixNGThread.getState().name());
                 }
 #endif
                 _threads.remove(_threadID);
@@ -360,7 +360,7 @@
                 }
             }
             if (aThreadIsRunning) {
-                throw  RuntimeException("logixNGThread is running");
+                throw new  RuntimeException("logixNGThread is running");
             }
         }
     }

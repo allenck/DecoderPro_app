@@ -47,7 +47,7 @@
         try {
             //activeSerialPort = (SerialPort*) portID.open(appName, 2000);  // name of program, msec to wait
             activeSerialPort->open(portName, QIODevice::ReadWrite);
-        } catch (PortInUseException p) {
+        } catch (PortInUseException* p) {
             return handlePortBusy(p, portName, log);
         }
         // try to set it for serial
@@ -62,7 +62,7 @@
 //        try {
 //            log->debug(tr("Serial framing was observed as: %1 %2").arg(activeSerialPort->isReceiveFramingEnabled()).arg(
 //                    activeSerialPort->getReceiveFramingByte())); // NOI18N
-//        } catch (Exception ef) {
+//        } catch (Exception* ef) {
 //            log->debug(tr("failed to set serial framing: %1").arg(ef)); // NOI18N
 //        }
 
@@ -262,8 +262,8 @@
     try {
         //return new QDataStream(*activeSerialPort->getOutputStream());
      return activeSerialPort->getOutputStream();
-    } catch (IOException e) {
-        log->error(tr("getOutputStream exception: %1").arg(e.getMessage()));
+    } catch (IOException* e) {
+        log->error(tr("getOutputStream exception: %1").arg(e->getMessage()));
     }
     return nullptr;
 }

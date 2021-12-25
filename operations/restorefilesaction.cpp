@@ -99,7 +99,7 @@ namespace Operations
 
       Apps::handleRestart();
 
-//  } catch (Exception ex) {
+//  } catch (Exception* ex) {
 //      ExceptionContext context = new ExceptionContext(ex,
 //              tr("RestoreDialog.restore.files"),
 //              tr("RestoreDialog.makeSure"));

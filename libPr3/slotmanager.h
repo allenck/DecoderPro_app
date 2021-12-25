@@ -254,13 +254,13 @@ public:
      * @param longAddr true if a long address, false if short address
      * @throws ProgrammerException
      */
-    void readCVOpsMode(QString CVname, ProgListener* p, int addr, bool longAddr) throw(ProgrammerException);
+    void readCVOpsMode(QString CVname, ProgListener* p, int addr, bool longAddr) /*throw(ProgrammerException)*/;
     void doRead(int CV, ProgListener* p, int progByte) throw(ProgrammerException);
     QString getUserName();
     QString getSystemPrefix();
     LocoNetSystemConnectionMemo* getSystemConnectionMemo();
-    /*public*/ void readCV(QString CV, ProgListener* p) throw (ProgrammerException);
-    /*public*/ void confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
+    /*public*/ void readCV(QString CV, ProgListener* p) /*throw (ProgrammerException)*/;
+    /*public*/ void confirmCV(QString CV, int val, ProgListener* p) ;
     /*public*/ QList<QString> getSupportedModes();
     /*public*/ Programmer::WriteConfirmMode getWriteConfirmMode(QString addr);
     /*public*/ void setTranspondingAvailable(bool val);
@@ -476,8 +476,8 @@ public:
   /*public*/ void run() {
       try {
           sm->sendReadSlot(slotNumber);
-      } catch (Exception e) {
-          sm->log->error("Exception occurred sendReadSlotDelayed:", &e);
+      } catch (Exception* e) {
+          sm->log->error("Exception occurred sendReadSlotDelayed:", e);
       }
   }
 };

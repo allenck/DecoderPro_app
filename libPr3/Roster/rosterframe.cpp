@@ -1118,9 +1118,9 @@ void RosterFrame::on_actionDelete_Loco_triggered()
     }
 
    }
-   catch (Exception ex)
+   catch (Exception* ex)
    {
-    log->error("error during locomotive file output: " + ex.msg);
+    log->error("error during locomotive file output: " + ex->msg);
    }
   }
  }
@@ -1650,7 +1650,7 @@ void RosterFrame::saveWindowDetails()
          String columnName = (String) tc.getHeaderValue();
          int index = tcm.getColumnIndex(tc.getIdentifier(), false);
          p.setTableColumnPreferences(rostertableref, columnName, index, tc.getPreferredWidth(), rtable.getModel().getSortingStatus(tc.getModelIndex()), !tcm.isColumnVisible(tc));
-     } catch (Exception e) {
+     } catch (Exception* e) {
          log.warn("unable to store settings for table column " + tc.getHeaderValue(), e);
      }
  }

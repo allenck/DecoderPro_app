@@ -22,7 +22,7 @@ class LIBPREFSHARED_EXPORT ProfileManagerDialog : public JDialog
 public:
     //explicit ProfileManagerDialog(QWidget *parent = 0);
     /*public*/ ProfileManagerDialog(JFrame* parent, bool modal);
-    /*public*/ static Profile* getStartingProfile(JFrame* f) throw (IOException);
+    /*public*/ static Profile* getStartingProfile(JFrame* f) /*throw (IOException)*/;
 
 signals:
 

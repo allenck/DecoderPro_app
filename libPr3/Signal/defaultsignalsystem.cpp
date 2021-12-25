@@ -135,7 +135,7 @@
                 }catch (NumberFormatException* nx) {
                     try{
                         aspectSpeed = static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(speed);
-                    } catch (Exception ex){
+                    } catch (Exception* ex){
                         //Considered Normal if the speed does not appear in the map
                     }
                 }

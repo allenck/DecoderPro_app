@@ -49,7 +49,7 @@ public:
     /*public*/ QString getBeanTypeHandled(bool plural) const override;
     /*public*/ QList<Block*> getBlocksOccupiedByRosterEntry(/*@Nonnull*/ RosterEntry* re);
     QCompleter* getCompleter(QString text);
-    virtual /*public*/ Block* provide(QString name) const throw (IllegalArgumentException) ;
+    virtual /*public*/ Block* provide(QString name) const /*throw (IllegalArgumentException)*/ ;
     /*public*/ qint64 timeSinceLastLayoutPowerOn()const;
     /*public*/ /*final*/ ShutDownTask* shutDownTask = new AbstractShutDownTask("Writing Blocks");
     QObject* self() override {return (QObject*)this;}
@@ -59,7 +59,7 @@ signals:
 
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e) override;
-//    /*public*/ void vetoableChange(PropertyChangeEvent* e) throw (PropertyVetoException) override;
+//    /*public*/ void vetoableChange(PropertyChangeEvent* e) /*throw (PropertyVetoException)*/ override;
 private:
  /*private*/ bool saveBlockPath;// = true;
     DecimalFormat* paddedNumber;// =  DecimalFormat("0000");

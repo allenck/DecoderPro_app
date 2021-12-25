@@ -122,7 +122,7 @@ BeanTableFrame::BeanTableFrame(QWidget *parent) :
 //                    MessageFormat footerFormat = new MessageFormat(getTitle()+" page {0,number}");
    QString footerFormat = getTitle() + " page {0,number}";
    dataTable->print(JTable::PrintMode::FIT_WIDTH , QString(), footerFormat);
-  } catch (PrinterException e1) {
+  } catch (PrinterException* e1) {
       log->warn("error printing: ",e1);
   }
 //            }

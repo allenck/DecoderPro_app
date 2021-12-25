@@ -67,7 +67,7 @@ namespace Operations
            printTrain(writer, train);
           }
          }
-     } catch (IOException e1) {
+     } catch (IOException* e1) {
          log->error("Exception in print train details");
      }
 
@@ -102,7 +102,7 @@ namespace Operations
     writer->write(s, 0, s.length());
    }
   }
-//     } catch (IOException we) {
+//     } catch (IOException* we) {
 //         log->error("Error printing trains summary");
 //     }
  }

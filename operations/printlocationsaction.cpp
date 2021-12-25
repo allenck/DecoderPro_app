@@ -139,7 +139,7 @@ namespace Operations
          {
              writer->close();
          }
-//     } catch (IOException we) {
+//     } catch (IOException* we) {
 //         log->error("Error printing PrintLocationAction: " + we);
 //     }
  }
@@ -553,7 +553,7 @@ namespace Operations
              writer->write(getPickUpTrains(track));
              writer->write(getDestinations(track));
              writer->write(getSchedule(track));
-//         } catch (IOException we) {
+//         } catch (IOException* we) {
 //             log->error("Error printing PrintLocationAction: " + we);
 //         }
      }

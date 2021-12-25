@@ -584,7 +584,7 @@
     /*public*/ void AbstractMaleSocket::handleError(Base* item, QString message, JmriException* e, Logger* log) /*throw (JmriException)*/ {
 
         // Always throw AbortConditionalNGExecutionException exceptions
-        if (!_catchAbortExecution && (static_cast<AbortConditionalNGExecutionException*>(e))) throw *e;
+        if (!_catchAbortExecution && (static_cast<AbortConditionalNGExecutionException*>(e))) throw e;
 
         ErrorHandlingType::TYPES errorHandlingType = getErrorHandlingType();
         if (errorHandlingType == ErrorHandlingType::Default) {

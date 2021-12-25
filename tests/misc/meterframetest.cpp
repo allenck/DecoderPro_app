@@ -94,7 +94,7 @@ MeterFrameTest::MeterFrameTest(QObject *parent) : JmriJFrameTestBase(parent)
             try {
                 r.run();
             } catch (JmriException* e) {
-                throw RuntimeException(e);
+                throw new RuntimeException(e);
             }
 //        });
     }

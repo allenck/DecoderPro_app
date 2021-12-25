@@ -86,7 +86,7 @@ void Model::setInitialModel() {
     /*         File defaultFile = new File(PositionFile.defaultFilename()); */
     /*         try { */
     /*             loadAlignment(defaultFile); */
-    /*         } catch (Exception e) { */
+    /*         } catch (Exception* e) { */
     /*             log.debug("load exception"+e); */
     /*             // load dummy values */
     /*             setReceiverCount(2); */

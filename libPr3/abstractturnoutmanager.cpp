@@ -334,7 +334,7 @@ void AbstractTurnoutManager::setDefaultClosedSpeed(QString speed) const //throws
    {
     static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(speed);
    }
-   catch (Exception ex)
+   catch (Exception* ex)
    {
     throw new JmriException("Value of requested turnout default closed speed is not valid");
    }
@@ -367,7 +367,7 @@ void AbstractTurnoutManager::setDefaultThrownSpeed(QString speed) const// throws
   {
    try{
        static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(speed);
-   } catch (Exception ex){
+   } catch (Exception* ex){
        throw  JmriException("Value of requested turnout default thrown speed is not valid");
    }
   }

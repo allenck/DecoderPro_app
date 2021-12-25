@@ -78,7 +78,7 @@ LocoIconXml::LocoIconXml(QObject* parent) :
 //  }
 //  catch ( Exception e)
 //  {
-//   log->error("failed to get loco text attribute ex= "+e.getMessage());
+//   log->error("failed to get loco text attribute ex= "+e->getMessage());
 //  }
   if(textName.isEmpty() || textName == "error")
   {
@@ -91,9 +91,9 @@ LocoIconXml::LocoIconXml(QObject* parent) :
 //  {
    name = element.attribute("icon");
 //  }
-//  catch (Exception e)
+//  catch (Exception* e)
 //  {
-//   log->error("failed to get icon attribute ex= "+e.getMessage());
+//   log->error("failed to get icon attribute ex= "+e->getMessage());
 //  }
   if(name.isEmpty()) log->error("failed to get icon attribute");
   if (name==("yes"))
@@ -126,9 +126,9 @@ LocoIconXml::LocoIconXml(QObject* parent) :
    l->setDockingLocation(x, y);
 //           l.dock();
   }
-  catch (Exception e)
+  catch (Exception* e)
   {
-   log->warn("failed to get docking location= "+e.getMessage());
+   log->warn("failed to get docking location= "+e->getMessage());
   }
 
   QString rosterId = NULL;
@@ -138,9 +138,9 @@ LocoIconXml::LocoIconXml(QObject* parent) :
    RosterEntry* entry = Roster::getDefault()->entryFromTitle(rosterId);
    l->setRosterEntry(entry);
   }
-  catch (Exception e)
+  catch (Exception* e)
   {
-   log->debug("no roster entry for "+rosterId+", ex= "+e.getMessage());
+   log->debug("no roster entry for "+rosterId+", ex= "+e->getMessage());
   }
 //  ed->putLocoIcon(l, textName);
   // load individual item's option settings after editor has set its global settings

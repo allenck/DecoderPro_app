@@ -60,7 +60,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -18225,7 +18224,7 @@ if (_wrapper) {
 }
   return LnPortController::className();
 }
-void PythonQtShell_LnPortController::closeConnection() throw( Exception)
+void PythonQtShell_LnPortController::closeConnection()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -20928,7 +20927,7 @@ if (_wrapper) {
 }
   LnSensor::dispose();
 }
-bool  PythonQtShell_LnSensor::equals(NamedBean*  obj0)
+bool  PythonQtShell_LnSensor::equals(QObject*  obj0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -20936,7 +20935,7 @@ if (_wrapper) {
     static PyObject* name = PyString_FromString("equals");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
-      static const char* argumentList[] ={"bool" , "NamedBean*"};
+      static const char* argumentList[] ={"bool" , "QObject*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
       bool returnValue{};
       void* args[2] = {NULL, (void*)&obj0};
@@ -22797,8 +22796,7 @@ if (_wrapper) {
 }
   return LnSensorManager::normalizeSystemName(sysName0);
 }
-Sensor*  PythonQtShell_LnSensorManager::provide(QString  name0) throw (IllegalArgumentException)
-
+Sensor*  PythonQtShell_LnSensorManager::provide(QString  name0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -24488,7 +24486,7 @@ if (_wrapper) {
 }
   LnTurnout::propertyChange(evt0);
 }
-void PythonQtShell_LnTurnout::provideFirstFeedbackSensor(QString  pName0) throw(JmriException) 
+void PythonQtShell_LnTurnout::provideFirstFeedbackSensor(QString  pName0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -24510,7 +24508,7 @@ if (_wrapper) {
 }
   LnTurnout::provideFirstFeedbackSensor(pName0);
 }
-void PythonQtShell_LnTurnout::provideSecondFeedbackSensor(QString  pName0) throw(JmriException) 
+void PythonQtShell_LnTurnout::provideSecondFeedbackSensor(QString  pName0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -24697,7 +24695,7 @@ if (_wrapper) {
 }
   LnTurnout::setDecoderName(decoderName0);
 }
-void PythonQtShell_LnTurnout::setDivergingSpeed(QString  s0) const throw(JmriException) 
+void PythonQtShell_LnTurnout::setDivergingSpeed(QString  s0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -24719,7 +24717,7 @@ if (_wrapper) {
 }
   LnTurnout::setDivergingSpeed(s0);
 }
-void PythonQtShell_LnTurnout::setFeedbackMode(QString  mode0) throw(IllegalArgumentException) 
+void PythonQtShell_LnTurnout::setFeedbackMode(QString  mode0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -24741,7 +24739,7 @@ if (_wrapper) {
 }
   LnTurnout::setFeedbackMode(mode0);
 }
-void PythonQtShell_LnTurnout::setFeedbackMode(int  mode0) throw(IllegalArgumentException) 
+void PythonQtShell_LnTurnout::setFeedbackMode(int  mode0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -24983,7 +24981,7 @@ if (_wrapper) {
 }
   LnTurnout::setState(s0);
 }
-void PythonQtShell_LnTurnout::setStraightSpeed(QString  s0) const throw(JmriException) 
+void PythonQtShell_LnTurnout::setStraightSpeed(QString  s0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -25049,7 +25047,7 @@ if (_wrapper) {
 }
   LnTurnout::turnoutPushbuttonLockout(_pushButtonLockout0);
 }
-void PythonQtShell_LnTurnout::vetoableChange(PropertyChangeEvent*  evt0) throw (PropertyVetoException)
+void PythonQtShell_LnTurnout::vetoableChange(PropertyChangeEvent*  evt0)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -25867,7 +25865,7 @@ if (_wrapper) {
 }
   return LnTurnoutManager::newTurnout(systemName0, userName1);
 }
-Turnout*  PythonQtShell_LnTurnoutManager::provide(QString  name0) const throw (IllegalArgumentException) 
+Turnout*  PythonQtShell_LnTurnoutManager::provide(QString  name0) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE

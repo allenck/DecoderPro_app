@@ -79,7 +79,7 @@
             JOptionPane::YES_NO_OPTION,
             JOptionPane::QUESTION_MESSAGE/*, QIcon(), NULL, NULL*/);
     if(retval != 0)
-     throw Exception("Testing terminated");
+     throw new Exception("Testing terminated");
     return;
 }
 

@@ -114,7 +114,7 @@ ColorUtil::ColorUtil()
      else if(string == ColorTrack)
             return "";
     log->error("unknown color text '" + string + "' sent to stringToColor");
-    throw  IllegalArgumentException("unknown color text '" + string + "'");
+    throw new IllegalArgumentException("unknown color text '" + string + "'");
 }
 
 /**

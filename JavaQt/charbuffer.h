@@ -23,7 +23,7 @@ public:
  /*public*/ static CharBuffer* allocate(int capacity);
  /*public*/ static CharBuffer* wrap(QByteArray array, int offset, int length);
  /*public*/ static CharBuffer* wrap(QByteArray array);
- /*public*/ int read(CharBuffer* target) throw (IOException);
+ /*public*/ int read(CharBuffer* target) /*throw (IOException)*/;
 
  /*public*/ CharBuffer* put(CharBuffer* src);
  /*public*/ CharBuffer* put(QByteArray src, int offset, int length);

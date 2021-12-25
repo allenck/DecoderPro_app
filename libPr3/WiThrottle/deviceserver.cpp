@@ -36,7 +36,7 @@
 /*public*/ /*static*/ DeviceServer* DeviceServer::instance()
 {
  if(_instance == NULL)
-  throw Exception("Server not created!");
+  throw new Exception("Server not created!");
  return _instance;
 }
 
@@ -191,7 +191,7 @@ void DeviceServer::on_newConnection()
         }
         out = new QTextStream(device);//new PrintStream(device.getOutputStream(), true, "UTF8");
 
-    } catch (IOException e) {
+    } catch (IOException* e) {
         log->error("Stream creation failed (DeviceServer)");
         return;
     }
@@ -447,7 +447,7 @@ void DeviceServer::handleMessage(QString msg)
    }
 
   }
-  catch (IOException exa)
+  catch (IOException* exa)
   {
    consecutiveErrors += 1;
    log->warn(tr("readLine from device '%1' failed, consecutive error # %2").arg(getName()).arg( consecutiveErrors));
@@ -544,7 +544,7 @@ void DeviceServer::handleMessage(QString msg)
                 log->debug(tr("device socket ") + getName() + device->peerAddress().toString() + " closed.");
             }
         }
-    } catch (IOException e) {
+    } catch (IOException* e) {
         if (log->isDebugEnabled()) {
             log->error(tr("device socket ") + getName() + device->peerAddress().toString() + " close failed with IOException.");
         }
@@ -917,7 +917,7 @@ void TimerTask1::run()
 
  //try {
   clientSocket->close();
-  //} catch (IOException ex1) {
+  //} catch (IOException* ex1) {
   //}
 
  //DeviceServer::getInstance()->removeClient(this);

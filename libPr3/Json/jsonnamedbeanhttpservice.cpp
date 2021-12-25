@@ -25,11 +25,11 @@
  * @throws JsonException if the bean is null
  */
 //@Nonnull
-/*protected*/ QJsonObject JsonNamedBeanHttpService::getNamedBean(NamedBean* bean, /*@Nonnull*/ QString name, /*@Nonnull*/ QString type, /*@Nonnull*/ QLocale /*locale*/) throw (JsonException)
+/*protected*/ QJsonObject JsonNamedBeanHttpService::getNamedBean(NamedBean* bean, /*@Nonnull*/ QString name, /*@Nonnull*/ QString type, /*@Nonnull*/ QLocale /*locale*/) /*throw (JsonException)*/
 {
  if (bean == NULL)
  {
-     throw JsonException(404, tr("Unable to access %1 %2.").arg(type).arg(name));
+     throw new JsonException(404, tr("Unable to access %1 %2.").arg(type).arg(name));
  }
 
  QJsonObject root = QJsonObject();//mapper.createObjectNode();
@@ -84,9 +84,9 @@
  * @param locale the locale used for any error messages
  * @throws JsonException if the bean is null
  */
-/*protected*/ void JsonNamedBeanHttpService::postNamedBean(NamedBean* bean, /*@Nonnull*/ QJsonObject data, /*@Nonnull*/ QString name, /*@Nonnull*/ QString type, /*@Nonnull*/ QLocale /*locale*/) throw (JsonException) {
+/*protected*/ void JsonNamedBeanHttpService::postNamedBean(NamedBean* bean, /*@Nonnull*/ QJsonObject data, /*@Nonnull*/ QString name, /*@Nonnull*/ QString type, /*@Nonnull*/ QLocale /*locale*/) /*throw (JsonException)*/ {
     if (bean == NULL) {
-        throw JsonException(404, tr("Unable to access %1 %2.").arg(type).arg(name));
+        throw new JsonException(404, tr("Unable to access %1 %2.").arg(type).arg(name));
     }
     if (data.value(JSON::USERNAME).isString()) {
         bean->setUserName(data.value(JSON::USERNAME).toString());

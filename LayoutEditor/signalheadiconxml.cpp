@@ -263,7 +263,7 @@
 // }
  if(!bok)
  {
-  log->error("Failed on clickmode attribute: "/*+e.getMessage()*/);
+  log->error("Failed on clickmode attribute: "/*+e->getMessage()*/);
  }
 
  try

@@ -41,7 +41,7 @@
         if (p == nullptr) {
             try {
                 sendNotAvailableStatus();
-            } catch (IOException ioe) {
+            } catch (IOException* ioe) {
                 // Connection Terminated?
             }
             return;
@@ -54,7 +54,7 @@
             //Send failure Status.
             try {
                 sendNotAvailableStatus();
-            } catch (IOException ioe) {
+            } catch (IOException* ioe) {
                 // Connection Terminated?
             }
         }
@@ -64,7 +64,7 @@
         if (p == nullptr || !(p->getCanRead())) {
             try {
                 sendNotAvailableStatus();
-            } catch (IOException ioe) {
+            } catch (IOException* ioe) {
                 // Connection Terminated?
             }
             return;
@@ -77,7 +77,7 @@
             //Send failure Status.
             try {
                 sendNotAvailableStatus();
-            } catch (IOException ioe) {
+            } catch (IOException* ioe) {
                 // Connection Terminated?
             }
         }
@@ -98,7 +98,7 @@
         }
         try {
             sendStatus(lastCV, value, status);
-        } catch (IOException ioe) {
+        } catch (IOException* ioe) {
             // Connection Terminated?
             if (log->isDebugEnabled()) {
                 log->debug("Exception while sending reply");

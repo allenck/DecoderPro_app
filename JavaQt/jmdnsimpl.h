@@ -12,7 +12,7 @@ class JmDNSImpl : public JmDNS
 {
  Q_OBJECT
 public:
- /*public*/ JmDNSImpl(InetAddress* address, QString name) throw (IOException);
+ /*public*/ JmDNSImpl(InetAddress* address, QString name) /*throw (IOException)*/;
 
  /*public*/ enum Operation {
      Remove, Update, Add, RegisterServiceType, Noop
@@ -20,11 +20,11 @@ public:
  /*public*/ QString getName();
  /*public*/ QString getHostName();
  /*public*/ QHostInfo getLocalHost();
- /*public*/ InetAddress* getInetAddress() throw (IOException);
+ /*public*/ InetAddress* getInetAddress() /*throw (IOException)*/;
  /*public*/ bool isClosing();
  /*public*/ bool isClosed();
 
- /*public*/ void registerService(ServiceInfo* infoAbstract) throw (IOException);
+ /*public*/ void registerService(ServiceInfo* infoAbstract) /*throw (IOException)*/;
  /*public*/ void unregisterService(ServiceInfo* infoAbstract);
  /*public*/ void close();
 

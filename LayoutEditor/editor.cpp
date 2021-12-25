@@ -4019,7 +4019,7 @@ abstract public void mouseExited(MouseEvent event);
   {
    clazz = Class::forName(type);
   }
-  catch(ClassNotFoundException ex)
+  catch(ClassNotFoundException* ex)
   {
    continue;
   }
@@ -4194,7 +4194,7 @@ void UrlErrorDialog::cancelButton_clicked()
             message.append("<br>");
             message.append(tr("These items and references will be removed.")); //IN18N
             message.append("<br>");
-            throw PropertyVetoException(message, evt);
+            throw new PropertyVetoException(message, evt);
         }
     } else if ("DoDelete" == (evt->getPropertyName())) { //IN18N
         QList<Positionable*> toDelete = QList<Positionable*>();

@@ -9,6 +9,7 @@
 #include "loggerfactory.h"
 #include "signalspeedmap.h"
 #include "vptr.h"
+#include "signalspeedmap.h"
 
 AbstractTurnout::AbstractTurnout(QObject *parent) :
     Turnout(parent)
@@ -387,7 +388,7 @@ void AbstractTurnout::setKnownStateToCommanded()
     return _validFeedbackNames;
 }
 
-/*public*/ void AbstractTurnout::setFeedbackMode(QString mode) throw(IllegalArgumentException)
+/*public*/ void AbstractTurnout::setFeedbackMode(QString mode) /*throw(IllegalArgumentException)*/
 {
  for (int i = 0; i < _validFeedbackNames.length(); i++)
  {
@@ -400,7 +401,7 @@ void AbstractTurnout::setKnownStateToCommanded()
  throw new IllegalArgumentException("Unexpected mode: " + mode);
 }
 
-/*public*/ void AbstractTurnout::setFeedbackMode(int mode) throw(IllegalArgumentException) {
+/*public*/ void AbstractTurnout::setFeedbackMode(int mode) /*throw(IllegalArgumentException)*/ {
     // check for error - following removed the low bit from mode
     int test = mode & (mode - 1);
     if (test != 0)
@@ -679,7 +680,7 @@ void AbstractTurnout::setKnownStateToCommanded()
 }
 
 
-/*public*/ void AbstractTurnout::provideFirstFeedbackSensor(QString pName) throw(JmriException)
+/*public*/ void AbstractTurnout::provideFirstFeedbackSensor(QString pName) /*throw(JmriException)*/
 {
  if (InstanceManager::sensorManagerInstance()!=NULL)
  {
@@ -739,7 +740,7 @@ void AbstractTurnout::setKnownStateToCommanded()
     return _firstNamedSensor;
 }
 
-/*public*/ void AbstractTurnout::provideSecondFeedbackSensor(QString pName) throw(JmriException)
+/*public*/ void AbstractTurnout::provideSecondFeedbackSensor(QString pName) /*throw(JmriException)*/
 {
 
  if (InstanceManager::sensorManagerInstance()!=NULL)
@@ -966,7 +967,7 @@ void AbstractTurnout::setKnownStateToCommanded()
     {
       return static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(speed);
     }
-    catch (Exception ex) {
+    catch (Exception* ex) {
       return -1;
     }
 }
@@ -980,7 +981,7 @@ void AbstractTurnout::setKnownStateToCommanded()
     return _divergeSpeed;
 }
 
-/*public*/ void AbstractTurnout::setDivergingSpeed(QString s) const throw(JmriException) {
+/*public*/ void AbstractTurnout::setDivergingSpeed(QString s) const /*throw(JmriException)*/ {
     if(s.isEmpty())
         throw new JmriException("Value of requested turnout thrown speed can not be NULL");
     if(_divergeSpeed==(s))
@@ -990,17 +991,16 @@ void AbstractTurnout::setKnownStateToCommanded()
     else if (s.contains("Block"))
         s="Block";
     else {
-#if 0 // TODO:
-        try {
-            Float.parseFloat(s);
-        } catch (NumberFormatException* nx) {
+
+        bool ok;
+            s.toFloat(&ok);
+        if(!ok) {
             try{
-                jmri.implementation.SignalSpeedMap.getMap().getSpeed(s);
-            } catch (Exception ex){
+             ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(s);
+            } catch (Exception* ex){
                 throw new JmriException("Value of requested block speed is not valid");
             }
         }
-#endif
     }
     QString oldSpeed = _divergeSpeed;
     _divergeSpeed=s;
@@ -1027,7 +1027,7 @@ void AbstractTurnout::setKnownStateToCommanded()
  {
     return static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(speed);
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
   return -1;
  }
@@ -1041,7 +1041,7 @@ void AbstractTurnout::setKnownStateToCommanded()
     return _straightSpeed;
 }
 
-/*public*/ void AbstractTurnout::setStraightSpeed(QString s) const throw(JmriException)
+/*public*/ void AbstractTurnout::setStraightSpeed(QString s) const /*throw(JmriException)*/
 {
     if(s==NULL)
         throw new JmriException("Value of requested turnout straight speed can not be NULL");
@@ -1060,8 +1060,8 @@ if(!bok)
 {
  try{
     static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(s);
-      } catch (Exception ex){
-          throw  JmriException("Value of requested turnout straight speed is not valid");
+      } catch (Exception* ex){
+          throw new JmriException("Value of requested turnout straight speed is not valid");
       }
      }
 #endif
@@ -1073,12 +1073,12 @@ if(!bok)
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ void AbstractTurnout::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) {
+/*public*/ void AbstractTurnout::vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/ {
     if ("CanDelete" ==(evt->getPropertyName())) { // NOI18N
         QVariant old = evt->getOldValue();
         if (old == VPtr<Sensor>::asQVariant(getFirstSensor()) || old == VPtr<Sensor>::asQVariant(getSecondSensor()) || old ==VPtr<Turnout>::asQVariant(leadingTurnout)) {
             PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
-            throw PropertyVetoException(tr("Sensor is in use by Turnout \"%1\" for feedback").arg(getDisplayName()), e); // NOI18N
+            throw new PropertyVetoException(tr("Sensor is in use by Turnout \"%1\" for feedback").arg(getDisplayName()), e); // NOI18N
         }
     }
 }

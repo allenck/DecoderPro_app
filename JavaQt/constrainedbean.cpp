@@ -20,9 +20,9 @@ ConstrainedBean::ConstrainedBean(QObject *parent) : Bean(parent)
         try {
             this->fireVetoableChange(key, getProperty(key), value);
             Bean::setProperty(key, value);
-        } catch (PropertyVetoException ex) {
+        } catch (PropertyVetoException* ex) {
             // use the logger for the implementing class instead of a logger for ConstrainedBean
-            LoggerFactory::getLogger(this->getClass())->warn(tr("Property %1 change vetoed.").arg(key).arg(ex.getMessage()));
+            LoggerFactory::getLogger(this->getClass())->warn(tr("Property %1 change vetoed.").arg(key).arg(ex->getMessage()));
             // fire a property change that does not have the new value to indicate
             // to any other listeners that the property was "reset" back to its
             // orginal value as a result of the veto
@@ -35,9 +35,9 @@ ConstrainedBean::ConstrainedBean(QObject *parent) : Bean(parent)
         try {
             this->fireVetoableChange(new IndexedPropertyChangeEvent(this, key, this->getIndexedProperty(key, index), value, index));
             Bean::setIndexedProperty(key, index, value);
-        } catch (PropertyVetoException ex) {
+        } catch (PropertyVetoException* ex) {
             // use the logger for the implementing class instead of a logger for ConstrainedBean
-            LoggerFactory::getLogger(this->getClass())->warn(tr("Property %1 change vetoed.").arg(key).arg(ex.getMessage()));
+            LoggerFactory::getLogger(this->getClass())->warn(tr("Property %1 change vetoed.").arg(key).arg(ex->getMessage()));
             // fire a property change that does not have the new value to indicate
             // to any other listeners that the property was "reset" back to its
             // orginal value as a result of the veto
@@ -86,7 +86,7 @@ ConstrainedBean::ConstrainedBean(QObject *parent) : Bean(parent)
      * @param event {@link PropertyChangeEvent} to be fired
      * @throws PropertyVetoException if property update vetoed
      */
-    /*public*/ void ConstrainedBean::fireVetoableChange(PropertyChangeEvent* event) throw (PropertyVetoException) {
+    /*public*/ void ConstrainedBean::fireVetoableChange(PropertyChangeEvent* event)  {
         this->vetoableChangeSupport->fireVetoableChange(event);
     }
 
@@ -103,7 +103,7 @@ ConstrainedBean::ConstrainedBean(QObject *parent) : Bean(parent)
      * @param newValue     new value of the property
      * @throws PropertyVetoException if property update vetoed
      */
-    /*public*/ void ConstrainedBean::fireVetoableChange(QString propertyName, QVariant oldValue, QVariant newValue) throw (PropertyVetoException) {
+    /*public*/ void ConstrainedBean::fireVetoableChange(QString propertyName, QVariant oldValue, QVariant newValue)  {
         this->vetoableChangeSupport->fireVetoableChange(propertyName, oldValue, newValue);
     }
 
@@ -120,7 +120,7 @@ ConstrainedBean::ConstrainedBean(QObject *parent) : Bean(parent)
      * @param newValue     new value of the property
      * @throws PropertyVetoException if property update vetoed
      */
-    /*public*/ void ConstrainedBean::fireVetoableChange(QString propertyName, int oldValue, int newValue) throw (PropertyVetoException) {
+    /*public*/ void ConstrainedBean::fireVetoableChange(QString propertyName, int oldValue, int newValue)  {
         this->vetoableChangeSupport->fireVetoableChange(propertyName, oldValue, newValue);
     }
 
@@ -137,6 +137,6 @@ ConstrainedBean::ConstrainedBean(QObject *parent) : Bean(parent)
      * @param newValue     new value of the property
      * @throws PropertyVetoException if property update vetoed
      */
-    /*public*/ void ConstrainedBean::fireVetoableChange(QString propertyName, bool oldValue, bool newValue) throw (PropertyVetoException) {
+    /*public*/ void ConstrainedBean::fireVetoableChange(QString propertyName, bool oldValue, bool newValue)  {
         this->vetoableChangeSupport->fireVetoableChange(propertyName, oldValue, newValue);
     }

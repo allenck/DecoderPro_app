@@ -180,7 +180,9 @@ const QString JToggleButton::uiClassID = "ToggleButtonUI";
     // initialize
 //    init(text, icon);
     init();
+    setSelected(selected);
 }
+
 void JToggleButton::init()
 {
  setCheckable(true);

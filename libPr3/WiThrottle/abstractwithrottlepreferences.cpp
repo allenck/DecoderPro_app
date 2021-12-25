@@ -21,11 +21,11 @@ AbstractWiThrottlePreferences::AbstractWiThrottlePreferences(QObject *parent) :
     QDomElement root;
     try {
         root = prefsXml->rootFromFile(file);
-    } catch (FileNotFoundException ea) {
+    } catch (FileNotFoundException* ea) {
         log->info("Could not find WiThrottle preferences file.  Normal if preferences have not been saved before.");
         root = QDomElement();
-    } catch (Exception eb) {
-        Logger::error("Exception while loading throttles preferences: " + eb.getMessage());
+    } catch (Exception* eb) {
+        Logger::error("Exception while loading throttles preferences: " + eb->getMessage());
         root = QDomElement();
     }
     if (root != QDomElement()) {
@@ -56,7 +56,7 @@ AbstractWiThrottlePreferences::AbstractWiThrottlePreferences(QObject *parent) :
         if (file->createNewFile()) {
             log->debug("Creating new WiThrottle prefs file: " + fileName);
         }
-    } catch (Exception ea) {
+    } catch (Exception* ea) {
         Logger::error("Could not create WiThrottle preferences file.");
     }
 
@@ -66,8 +66,8 @@ AbstractWiThrottlePreferences::AbstractWiThrottlePreferences(QObject *parent) :
         //QDomDocument doc = XmlFile.newDocument(root);
         root.appendChild(store());
         xmlFile->writeXML(file, doc);
-    } catch (Exception eb) {
-        log->warn("Exception in storing WiThrottle xml: " + eb.getMessage());
+    } catch (Exception* eb) {
+        log->warn("Exception in storing WiThrottle xml: " + eb->getMessage());
     }
 }
 

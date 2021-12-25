@@ -11,7 +11,7 @@
 
 /*private*/ /*static*/ /*final*/ Logger* AbstractReporterServer::log = LoggerFactory::getLogger("AbstractReporterServer");
 
-/*public*/ AbstractReporterServer::AbstractReporterServer(QObject* parent) {
+/*public*/ AbstractReporterServer::AbstractReporterServer(QObject* parent) : QObject(parent){
     reporters = QMap<QString, ARSReporterListener*>();
 }
 

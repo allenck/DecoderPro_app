@@ -56,7 +56,7 @@ namespace Operations
           }
       }
       writeFile(defaultOperationsFilename());
-  } catch (Exception e) {
+  } catch (Exception* e) {
       log->error("Exception while writing the new CSV operations file, may not be complete: " /*+ e*/);
   }
  }
@@ -84,7 +84,7 @@ namespace Operations
      stream->setCodec("UTF-8");
      fileOut = new PrintWriter(stream);
 //         true); // NOI18N
-//     } catch (IOException e) {
+//     } catch (IOException* e) {
 //         log->error("Can not open export cars CSV file: " + file.getName());
 //         return;
 //     }

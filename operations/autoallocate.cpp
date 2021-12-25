@@ -235,8 +235,8 @@
                 }
             }
 #endif
-        } catch (Exception e) {
-            log->warn("scanAllocationRequestList - maybe the allocationrequest was removed due to a terminating train??"+e.toString());
+        } catch (Exception* e) {
+            log->warn("scanAllocationRequestList - maybe the allocationrequest was removed due to a terminating train??"+e->toString());
             continue;
         }
     }
@@ -1171,7 +1171,7 @@
             log->error(tr("%1: ActiveTrain has no occupied Section. Halting immediately to avoid runaway.").arg(at->getTrainName()));
             at->getAutoActiveTrain()->getAutoEngineer()->setHalt(true);
         } else {
-            log->debug("{}: ActiveTrain has no occupied Section, running in Manual mode.", at->getTrainName());
+            log->debug(tr("%1: ActiveTrain has no occupied Section, running in Manual mode.").arg(at->getTrainName()));
         }
     } else {
         curSection = temSection;

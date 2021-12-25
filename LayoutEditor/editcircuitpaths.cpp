@@ -263,7 +263,7 @@ EditFrame(title, parent, block)
  OPath* path = VPtr<OPath>::asPtr(_pathList->getSelectedValue());
  if (log->isDebugEnabled()) {
      log->debug(tr("valueChanged from _currentPath \"%1\" to path \"%2\"").arg(
-             (_currentPath==nullptr?"null":_currentPath->getName())), (path==nullptr?"null":path->getName()));
+             _currentPath==nullptr?"null":_currentPath->getName())), (path==nullptr?"null":path->getName());
  }
  QString msg = checkForSavePath();
  if (msg.length() > 0) {

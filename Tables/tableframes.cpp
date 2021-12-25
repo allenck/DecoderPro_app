@@ -237,8 +237,8 @@
             QString footerFormat = QString(getTitle() + " page {0,number}");
             oBlockTable->print(JTable::PrintMode::FIT_WIDTH, headerFormat, footerFormat);
 #endif
-        } catch (PrinterException e1) {
-            log->warn(tr("error printing: %1").arg(e1.getMessage()), e1);
+        } catch (PrinterException* e1) {
+            log->warn(tr("error printing: %1").arg(e1->getMessage()), e1);
         }
     });
     printItem = new QAction(tr("Print Portal Table"),this);
@@ -251,8 +251,8 @@
             QString footerFormat = QString(getTitle() + " page {0,number}");
             portalTable->print(JTable::PrintMode::FIT_WIDTH, headerFormat, footerFormat);
 #endif
-        } catch (PrinterException e1) {
-            log->warn(tr("error printing: %1").arg(e1.getMessage()), e1);
+        } catch (PrinterException* e1) {
+            log->warn(tr("error printing: %1").arg(e1->getMessage()), e1);
         }
     });
     printItem = new QAction(tr("Print Signal Table"), this);
@@ -265,8 +265,8 @@
             QString footerFormat = QString(getTitle() + " page {0,number}");
             signalTable->print(JTable::PrintMode::FIT_WIDTH, headerFormat, footerFormat);
 #endif
-        } catch (PrinterException e1) {
-      log->warn(tr("error printing: %1").arg(e1.getMessage()), e1);
+        } catch (PrinterException* e1) {
+      log->warn(tr("error printing: %1").arg(e1->getMessage()), e1);
         }
     });
     printItem = new QAction(tr("PrintXRef"));
@@ -279,8 +279,8 @@
             QString footerFormat = QString(getTitle() + " page {0,number}");
             blockPortalTable->print(JTable::PrintMode::FIT_WIDTH, headerFormat, footerFormat);
 #endif
-        } catch (PrinterException e1) {
-      log->warn(tr("error printing: %1").arg(e1.getMessage()), e1);
+        } catch (PrinterException* e1) {
+      log->warn(tr("error printing: %1").arg(e1->getMessage()), e1);
         }
     });
     return print;
@@ -1037,8 +1037,8 @@ void TableFrames::addCloseListener(JmriJFrame* desktop) {
         frame->setVisible(true);
         try {
             frame->setIcon(false);
-        } catch (PropertyVetoException pve) {
-            log->warn(tr("BlockPath Table Frame for \"%1\" vetoed setIcon %2").arg(blockSystemName).arg(pve.getMessage()));
+        } catch (PropertyVetoException* pve) {
+            log->warn(tr("BlockPath Table Frame for \"%1\" vetoed setIcon %2").arg(blockSystemName).arg(pve->getMessage()));
         }
     }
     frame->moveToFront();
@@ -1349,8 +1349,8 @@ void TableFrames::addCloseListener(JmriJFrame* desktop) {
         frame->setVisible(true);
         try {
             frame->setIcon(false);
-        } catch (PropertyVetoException pve) {
-            log->warn(tr("PathTurnout Table Frame for \"%1\" vetoed setIcon %2").arg(pathTurnoutName).arg(pve.getMessage()));
+        } catch (PropertyVetoException* pve) {
+            log->warn(tr("PathTurnout Table Frame for \"%1\" vetoed setIcon %2").arg(pathTurnoutName).arg(pve->getMessage()));
         }
     }
     frame->moveToFront();

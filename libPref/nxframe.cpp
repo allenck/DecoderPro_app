@@ -716,7 +716,7 @@ void NXFrame::onDestUnits()
             //len = NumberFormat.getNumberInstance().parse(sLen).floatValue();
          bool bok;
          len = sLen.toFloat(&bok);
-         if(!bok) throw ParseException("parse error on block length");
+         if(!bok) throw new ParseException("parse error on block length");
         } catch (ParseException  pe) {
             len = -1.0f;
         } catch (NullPointerException*  npe) {
@@ -726,7 +726,7 @@ void NXFrame::onDestUnits()
    return len;
 }
 
-/*private*/ float NXFrame::adjustdistance(float fromSpeed, float toSpeed, float distance, BlockOrder* bo) /*throw (JmriException)*/ {
+/*private*/ float NXFrame::adjustdistance(float fromSpeed, float toSpeed, float distance, BlockOrder* bo) /*throw new (JmriException)*/ {
         float pathLen = getPathLength(bo);
         if (pathLen <= 0) {
          throw new JmriException(tr("Path %1 in block %2 has length zero. Cannot run NXWarrants or ramp speeds through blocks with zero length.").arg(bo->getPathName()).arg(bo->getBlock()->getDisplayName()));

@@ -134,7 +134,7 @@
  * serve as separators between tokens.
  * <p>
  * Note that if <tt>delim</tt> is <tt>null</tt>, this constructor does
- * not throw an exception. However, trying to invoke other methods on the
+ * not throw new an exception. However, trying to invoke other methods on the
  * resulting <tt>StringTokenizer</tt> may result in a
  * <tt>NullPointerException</tt>.
  *
@@ -165,7 +165,7 @@
  * be treated as tokens.
  * <p>
  * Note that if <tt>delim</tt> is <tt>null</tt>, this constructor does
- * not throw an exception. However, trying to invoke other methods on the
+ * not throw new an exception. However, trying to invoke other methods on the
  * resulting <tt>StringTokenizer</tt> may result in a
  * <tt>NullPointerException</tt>.
  *
@@ -319,7 +319,7 @@
     {
      QString msg = tr("StringTokenizer: no such element(%1) in %2 ").arg(currentPosition).arg(str);
 
-//     throw NoSuchElementException(msg);
+     throw new NoSuchElementException(msg);
      Logger::error(msg);
      return "";
 

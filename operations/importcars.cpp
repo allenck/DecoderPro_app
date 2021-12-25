@@ -136,7 +136,7 @@ namespace Operations
    lineNumber->setText(tr("LineNumber") + " " + QString::number(++lineNum));
    try {
        line = in->readLine();
-   } catch (IOException e) {
+   } catch (IOException* e) {
        break;
    }
 
@@ -883,7 +883,7 @@ namespace Operations
      // in.close();
    in->device()->close();
   }
-  catch (IOException e)
+  catch (IOException* e)
   {
   }
 

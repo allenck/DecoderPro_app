@@ -12,7 +12,7 @@ public:
 class ServletOutputStream : public QTextStream
 {
 public:
- /*public*/ void print(QString s) throw (IOException);
+ /*public*/ void print(QString s) /*throw (IOException)*/;
 
 protected:
  ServletOutputStream();

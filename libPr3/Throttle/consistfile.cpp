@@ -238,7 +238,7 @@
  * Write all consists to the default file name
  *
  */
-/*public*/ void ConsistFile::writeFile(QList<DccLocoAddress *>* consistList) throw (IOException) {
+/*public*/ void ConsistFile::writeFile(QList<DccLocoAddress *>* consistList) /*throw (IOException)*/ {
     writeFile(consistList, defaultConsistFilename());
 }
 
@@ -248,7 +248,7 @@
  * @param consistList an ArrayList of consists to write
  * @param fileName    - with location and file type
  */
-/*public*/ void ConsistFile::writeFile(QList<DccLocoAddress *>* consistList, QString fileName) throw (IOException) {
+/*public*/ void ConsistFile::writeFile(QList<DccLocoAddress *>* consistList, QString fileName) /*throw (IOException)*/ {
     // create root element
 #if 1
  if(consistList->isEmpty())
@@ -292,8 +292,8 @@
             }
         }
         writeXML(findFile(fileName), doc);
-    } catch (IOException ioe) {
-        log->error("IO Exception " + ioe.getMessage());
+    } catch (IOException* ioe) {
+        log->error("IO Exception " + ioe->getMessage());
         throw (ioe);
     }
 #endif
@@ -334,7 +334,7 @@
         evt->getPropertyName()== (RosterConfigManager::DIRECTORY)) {
         try {
             this->writeFile(consistMan->getConsistList()->toList());
-        } catch (IOException ioe) {
+        } catch (IOException* ioe) {
             log->error("Unable to write consist information to new consist folder");
         }
     }

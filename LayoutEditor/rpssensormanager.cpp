@@ -41,7 +41,7 @@
        Distributor::instance()->addMeasurementListener(r);
        return r;
 //   } catch(StringIndexOutOfBoundsException sioe){
-//     throw  IllegalArgumentException("Invalid System Name: " + systemName);
+//     throw new IllegalArgumentException("Invalid System Name: " + systemName);
 //   }
 }
 
@@ -59,7 +59,7 @@
     try {
         validSystemNameFormat(sys);
     } catch (IllegalArgumentException e) {
-        throw  JmriException(e.toString());
+        throw new JmriException(e.toString());
     }
     return sys;
 }

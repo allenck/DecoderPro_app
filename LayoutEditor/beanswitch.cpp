@@ -1117,8 +1117,8 @@ void BeanSwitch::handleCreateException(QString sysName) {
 
         image2 = ImageIO::read(FileUtil::getFile(filepath2));
         image = image1;
-    } catch (Exception ex) {
-        bs->log->error(tr("error reading image from %1 - %2").arg(filepath1).arg(filepath2), &ex);
+    } catch (Exception* ex) {
+        bs->log->error(tr("error reading image from %1 - %2").arg(filepath1).arg(filepath2), ex);
     }
 }
 

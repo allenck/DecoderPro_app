@@ -1045,7 +1045,7 @@ ReporterPickModel::ReporterPickModel (QObject *parent) : PickListModel(parent)
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ NamedBean* BlockPickModel::addBean(QString name) throw (IllegalArgumentException) {
+    /*public*/ NamedBean* BlockPickModel::addBean(QString name) /*throw (IllegalArgumentException)*/ {
         return manager->provideBlock(name);
     }
 
@@ -1065,7 +1065,7 @@ ReporterPickModel::ReporterPickModel (QObject *parent) : PickListModel(parent)
 /*public*/ AbstractManager *ReporterPickModel::getManager() {
     return manager;
 }
-/*public*/ NamedBean* ReporterPickModel::getBySystemName(QString name) {
+/*public*/ NamedBean* ReporterPickModel::getBySystemName(QString name) const {
     return ((AbstractReporterManager*)manager)->getBySystemName(name);
 }
 /*public*/ NamedBean* ReporterPickModel::addBean(QString name) {
@@ -1110,7 +1110,7 @@ LightPickModel::LightPickModel (QObject *parent) : PickListModel(parent)
 /*public*/ AbstractManager* LightPickModel::getManager() {
     return manager;
 }
-/*public*/ NamedBean* LightPickModel::getBySystemName(QString name) {
+/*public*/ NamedBean* LightPickModel::getBySystemName(QString name) const{
     return (NamedBean*)((AbstractLightManager*)manager)->getBySystemName(name);
 }
 /*public*/ NamedBean* LightPickModel::addBean(QString name) {
@@ -1151,7 +1151,7 @@ OBlockPickModel::OBlockPickModel (QObject *parent) : PickListModel(parent)
 /*public*/ AbstractManager* OBlockPickModel::getManager() {
     return manager;
 }
-/*public*/ NamedBean* OBlockPickModel::getBySystemName(QString name) {
+/*public*/ NamedBean* OBlockPickModel::getBySystemName(QString name) const {
     return (NamedBean*)manager->getBySystemName(name);
 }
 /*public*/ NamedBean* OBlockPickModel::addBean(QString name) {
@@ -1176,7 +1176,7 @@ WarrantPickModel::WarrantPickModel (QObject *parent) : PickListModel(parent)
 /*public*/ AbstractManager* WarrantPickModel::getManager() {
     return manager;
 }
-/*public*/ NamedBean* WarrantPickModel::getBySystemName(QString name) {
+/*public*/ NamedBean* WarrantPickModel::getBySystemName(QString name)const{
     return (NamedBean*)manager->getBySystemName(name);
 }
 /*public*/ NamedBean* WarrantPickModel::addBean(QString name) {
@@ -1199,7 +1199,7 @@ ConditionalPickModel::ConditionalPickModel (QObject* parent) : PickListModel(par
 /*public*/ AbstractManager* ConditionalPickModel::getManager() {
     return manager;
 }
-/*public*/ NamedBean* ConditionalPickModel::getBySystemName(QString name) {
+/*public*/ NamedBean* ConditionalPickModel::getBySystemName(QString name) const{
     return ((DefaultConditionalManager*)manager)->getBySystemName(name);
 }
 /*public*/ NamedBean* ConditionalPickModel::addBean(QString name) {
@@ -1242,7 +1242,7 @@ EntryExitPickModel::EntryExitPickModel (QObject* parent): PickListModel(parent) 
 /*public*/ AbstractManager* EntryExitPickModel::getManager() {
     return (AbstractManager*)manager;
 }
-/*public*/ NamedBean* EntryExitPickModel::getBySystemName(QString name) {
+/*public*/ NamedBean* EntryExitPickModel::getBySystemName(QString name) const {
     return (NamedBean*)manager->getBySystemName(name);
 }
 
@@ -1280,7 +1280,7 @@ LogixPickModel::LogixPickModel (QObject* parent): PickListModel(parent) {
 /*public*/ AbstractManager* LogixPickModel::getManager() {
     return manager;
 }
-/*public*/ NamedBean* LogixPickModel::getBySystemName(QString name) {
+/*public*/ NamedBean* LogixPickModel::getBySystemName(QString name)const {
     return (NamedBean*)manager->getBySystemName(name);
 }
 

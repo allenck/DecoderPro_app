@@ -172,9 +172,9 @@ void  AudioListenerFrame::applyPressed(JActionEvent* /*e*/)
 
   this->setHidden(true);
  }
- catch (AudioException ex)
+ catch (AudioException* ex)
  {
-  JOptionPane::showMessageDialog(nullptr, ex.getMessage(), tr("Error creating Audio object"), JOptionPane::ERROR_MESSAGE);
+  JOptionPane::showMessageDialog(nullptr, ex->getMessage(), tr("Error creating Audio object"), JOptionPane::ERROR_MESSAGE);
  }
 }
 

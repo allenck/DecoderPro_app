@@ -272,7 +272,7 @@ AbstractProxyTurnoutManager::AbstractProxyTurnoutManager(QObject *parent)
  * @return an existing or new NamedBean
  * @throws IllegalArgumentException if name is not usable in a bean
  */
-/*protected*/ NamedBean* AbstractProxyTurnoutManager::provideNamedBean(QString name) throw IllegalArgumentException {
+/*protected*/ NamedBean* AbstractProxyTurnoutManager::provideNamedBean(QString name) /*throw IllegalArgumentException*/ {
     // make sure internal present
     initInternal();
 
@@ -470,7 +470,7 @@ QString AbstractProxyTurnoutManager::createSystemName(QString curAddress, QStrin
    }
   }
  }
- throw Exception("Manager could not be found for System Prefix " + prefix);
+ throw new Exception("Manager could not be found for System Prefix " + prefix);
 }
 
 /*public*/ QString AbstractProxyTurnoutManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, char typeLetter) /*throw (JmriException)*/ {
@@ -498,11 +498,11 @@ QString AbstractProxyTurnoutManager::createSystemName(QString curAddress, QStrin
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ void AbstractProxyTurnoutManager::deleteBean(/*@Nonnull*/ NamedBean* s, /*@Nonnull*/ QString property) throw (PropertyVetoException) {
+/*public*/ void AbstractProxyTurnoutManager::deleteBean(/*@Nonnull*/ NamedBean* s, /*@Nonnull*/ QString property)  {
     QString systemName = s->getSystemName();
     try {
         getMgr(match(systemName))->deleteBean(s, property);
-    } catch (PropertyVetoException e) {
+    } catch (PropertyVetoException* e) {
         throw e;
     }
 }

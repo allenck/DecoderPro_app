@@ -85,8 +85,8 @@ GuiLafConfigPaneXml::GuiLafConfigPaneXml(QObject *parent) :
                 updateLookAndFeel(name, className);
             } else
                 log->debug("skip updateLAF as already has className=="+className);
-        } catch (Exception ex) {
-            log->error("Exception while setting GUI look & feel: "+ex.getMessage());
+        } catch (Exception* ex) {
+            log->error("Exception while setting GUI look & feel: "+ex->getMessage());
             result = false;
         }
     }
@@ -157,7 +157,7 @@ GuiLafConfigPaneXml::GuiLafConfigPaneXml(QObject *parent) :
 #if 0
         UIManager.setLookAndFeel(className);
 #endif
-//    } catch (Exception e) {
+//    } catch (Exception* e) {
 //        QString errMsg = "The " + name + " look-and-feel ";
 //        if (e instanceof UnsupportedLookAndFeelException){
 //            errMsg += "is not supported on this platform.";

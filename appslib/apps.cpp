@@ -250,7 +250,7 @@ bool Apps::configDeferredLoadOK = false;
  }
  catch (IOException* ex)
  {
-   log->info("Profiles not configurable. Using fallback per-application configuration. Error: {}"/*, ex.getMessage()*/);
+   log->info("Profiles not configurable. Using fallback per-application configuration. Error: {}"/*, ex->getMessage()*/);
  }
 
  // install a Preferences Action Factory.
@@ -311,7 +311,7 @@ bool Apps::configDeferredLoadOK = false;
     sharedConfig = NULL;
    }
   }
-  catch (FileNotFoundException ex) {
+  catch (FileNotFoundException* ex) {
    // ignore - sharedConfig will remain null in this case
   }
   // load config file if it exists
@@ -392,9 +392,9 @@ bool Apps::configDeferredLoadOK = false;
    //sleep(_sleep);
    SleeperThread::msleep(_sleep);
   }
-  catch (InterruptedException e)
+  catch (InterruptedException* e)
   {
-   log->error(e.getMessage());
+   log->error(e->getMessage());
   }
  }
 
@@ -412,7 +412,7 @@ bool Apps::configDeferredLoadOK = false;
    //Thread.sleep(1000);
   SleeperThread::msleep(1000);
 //        } catch (InterruptedException e) {
-//            log->error(e.getLocalizedMessage(), e);
+//            log->error(e->getLocalizedMessage(), e);
 //        }
  }
 
@@ -440,7 +440,7 @@ bool Apps::configDeferredLoadOK = false;
 //     }
 //    });
 //   }
-//   catch (Exception ex)
+//   catch (Exception* ex)
 //   {
 //    log->error("Exception creating system console frame", ex);
 //   }
@@ -480,8 +480,8 @@ bool Apps::configDeferredLoadOK = false;
 //        /*public*/ void run() {
 //            try {
 //                InstanceManager::tabbedPreferencesInstance().init();
-//            } catch (Exception ex) {
-//                log->error("Error trying to setup preferences {}", ex.getLocalizedMessage(), ex);
+//            } catch (Exception* ex) {
+//                log->error("Error trying to setup preferences {}", ex->getLocalizedMessage(), ex);
 //            }
 //        }
 //    };
@@ -496,7 +496,7 @@ bool Apps::configDeferredLoadOK = false;
 //        /*public*/ void run() {
 //            try {
 //                DecoderIndexFile.instance();
-//            } catch (Exception ex) {
+//            } catch (Exception* ex) {
 //                log->error("Error in trying to initialize decoder index file {}", ex.toString());
 //            }
 //        }
@@ -511,7 +511,7 @@ bool Apps::configDeferredLoadOK = false;
             /*public*/ void run() {
                 try {
                     PythonInterp.getPythonInterpreter();
-                } catch (Exception ex) {
+                } catch (Exception* ex) {
                     log->error("Error in trying to initialize python interpreter {}", ex.toString());
                 }
             }
@@ -599,8 +599,8 @@ void Apps::initGui() // must be called after Constructor is complete!
 /*public*/ void Apps::Run1::run() {
     try {
         ((TabbedPreferences*)InstanceManager::getDefault("TabbedPreferences"))->init();
-    } catch (Exception ex) {
-        Logger::error("Error trying to setup preferences {}"+ ex.getMessage());
+    } catch (Exception* ex) {
+        Logger::error("Error trying to setup preferences {}"+ ex->getMessage());
     }
 }
 /*public*/ void Apps::Run2::run()
@@ -609,9 +609,9 @@ void Apps::initGui() // must be called after Constructor is complete!
  {
   (DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile");
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
-  Logger::error("Error in trying to initialize decoder index file {}"+ ex.getMessage());
+  Logger::error("Error in trying to initialize decoder index file {}"+ ex->getMessage());
  }
 }
 
@@ -1188,8 +1188,8 @@ void Apps::On_handleQuit()
         } else if (current != (value)) {
             log->warn(tr("JMRI property %1 already set to %2, skipping reset to %3").arg(key).arg(current).arg(value));
         }
-    } catch (Exception e) {
-        log->error(tr("Unable to set JMRI property %1 to %2 due to execption %3").arg(key).arg(value).arg(e.getMessage()));
+    } catch (Exception* e) {
+        log->error(tr("Unable to set JMRI property %1 to %2 due to execption %3").arg(key).arg(value).arg(e->getMessage()));
     }
 }
 
@@ -1571,7 +1571,7 @@ bool Apps::MyAbstractShutDownTask::execute()
     try {
         new BlockValueFile().writeBlockValues();
     } //catch (org.jdom2.JDOMException jde) { log->error("Exception writing blocks: {}", jde); }
-    catch (IOException ioe) {
+    catch (IOException* ioe) {
         log->error("Exception writing blocks: {}", ioe);
     }
 
@@ -1594,9 +1594,9 @@ bool WriteBlocksShutdownTask::execute()
   BlockValueFile* f = new BlockValueFile();
   f->writeBlockValues();
  } //catch (org.jdom2.JDOMException jde) { log->error("Exception writing blocks: {}", jde); }
- catch (IOException ioe)
+ catch (IOException* ioe)
  {
-  log->error(tr("Exception writing blocks: %1").arg(ioe.getMessage()));
+  log->error(tr("Exception writing blocks: %1").arg(ioe->getMessage()));
  }
 
 // continue shutdown

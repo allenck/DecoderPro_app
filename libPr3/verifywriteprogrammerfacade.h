@@ -9,8 +9,8 @@ class VerifyWriteProgrammerFacade : public AbstractProgrammerFacade, public Prog
   Q_INTERFACES(ProgListener)
 public:
  /*public*/ VerifyWriteProgrammerFacade(Programmer* prog, QObject* parent = 0);
- /*synchronized*/ /*public*/ void writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
- /*synchronized*/ /*public*/ void readCV(QString CV, ProgListener* p) throw (ProgrammerException);
+ /*synchronized*/ /*public*/ void writeCV(QString CV, int val, ProgListener* p) /*throw (ProgrammerException)*/;
+ /*synchronized*/ /*public*/ void readCV(QString CV, ProgListener* p) /*throw (ProgrammerException)*/;
  /*public*/ Programmer::WriteConfirmMode getWriteConfirmMode(QString addr);
  /*public*/ QObject* self() {return (QObject*)this;}
 
@@ -45,7 +45,7 @@ ProgState state;// = ProgState.NOTPROGRAMMING;
 ProgListener* temp;// = _usingProgrammer;
 
 protected:
- /*protected*/ void useProgrammer(ProgListener* p) throw (ProgrammerException);
+ /*protected*/ void useProgrammer(ProgListener* p) /*throw (ProgrammerException)*/;
 
 };
 

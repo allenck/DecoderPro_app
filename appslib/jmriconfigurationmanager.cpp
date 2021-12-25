@@ -306,10 +306,10 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
    return this->initializationExceptions->isEmpty();
   }
  }
- catch (/*URISyntax*/Exception ex)
+ catch (/*URISyntax*/Exception* ex)
  {
      log->error(tr("Unable to get File* for %1").arg(file.toDisplayString()));
-     throw new JmriException(ex.getMessage()+ex.getLocalizedMessage());
+     throw new JmriException(ex->getMessage()+ex->getLocalizedMessage());
  }
  // make this url the default "Store Panels..." file
  JFileChooser* ufc = StoreXmlUserAction::getUserFileChooser();
@@ -475,7 +475,7 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
   try {
       provider->initialize(profile);
   }
-  catch (InitializationException ex)
+  catch (InitializationException* ex)
   {
    // log all initialization exceptions, but only retain for GUI display the
    // first initialization exception for a provider
@@ -483,13 +483,13 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
    bool bPut = this->initializationExceptions->contains(provider);
    if(!bPut)
    {
-    InitializationException* newException = new InitializationException(ex.getMessage(), ex.getLocalizedMessage(), nullptr);
+    InitializationException* newException = new InitializationException(ex->getMessage(), ex->getLocalizedMessage(), nullptr);
     this->initializationExceptions->insert((PreferencesManager*)provider, newException);
    }
-   log->error(tr("Exception initializing %1: %2").arg(provider->metaObject()->className()).arg(ex.getMessage()));
+   log->error(tr("Exception initializing %1: %2").arg(provider->metaObject()->className()).arg(ex->getMessage()));
    if (bPut)
    {
-       log->error(tr("Additional exception initializing %1: %1").arg(provider->metaObject()->className()).arg(ex.getMessage()));
+       log->error(tr("Additional exception initializing %1: %1").arg(provider->metaObject()->className()).arg(ex->getMessage()));
    }
   }
   this->initialized->append(provider);

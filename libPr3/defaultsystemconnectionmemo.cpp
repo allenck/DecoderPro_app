@@ -212,7 +212,7 @@ if(!log)
     if(object instanceof Disposable) {
         try {
             ((Disposable)object).dispose();
-        } catch (Exception e) {
+        } catch (Exception* e) {
             log.warn("Exception while disposing object of type {} in memo of type {}.", c.getName(), this.getClass().getName(), e);
         }
     }

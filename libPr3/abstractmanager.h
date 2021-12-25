@@ -202,7 +202,7 @@ QT_DEPRECATED NamedBean* getInstanceByUserName(QString userName);
 //void firePropertyChange(QString p, QVariant old, QVariant n) const;
 //void fireIndexedPropertyChange(QString p, int pos, QVariant old, QVariant n) const;
 
-/*protected*/ void fireVetoableChange(QString p, QVariant old, QVariant n) throw (PropertyVetoException)override;
+/*protected*/ void fireVetoableChange(QString p, QVariant old, QVariant n) /*throw (PropertyVetoException)*/override;
 /*protected*/ void handleUserNameUniqueness(NamedBean* s) const;
 /*protected Hashtable*/mutable QMap<QString, NamedBean*>* _tsys; // = new Hashtable<String, NamedBean>();   // stores known Turnout instances by system name
 /*protected Hashtable*/mutable QMap<QString, NamedBean*>* _tuser; // = new Hashtable<String, NamedBean>();   // stores known Turnout instances by user name

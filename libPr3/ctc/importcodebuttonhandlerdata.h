@@ -136,12 +136,12 @@ class ImportCodeButtonHandlerData : public QObject
   static /*private*/ void upgradeVersion5FileTo6(QString filename);
   /*private*/ /*final*/ static QString INT_START_STRING;// = "<int>"; // NOI18N
   /*private*/ /*final*/ static QString INT_END_STRING;// = "</int>";  // NOI18N
-  static /*private*/ QString checkFileVersion(QTextStream* bufferedReader, QTextStream* bufferedWriter, QString aLine, QString oldVersion, QString newVersion) throw (IOException);
+  static /*private*/ QString checkFileVersion(QTextStream* bufferedReader, QTextStream* bufferedWriter, QString aLine, QString oldVersion, QString newVersion) /*throw (IOException)*/;
    /*private*/ /*final*/ static QString STRING_START_STRING;// = "<string>";   // NOI18N
    /*private*/ /*final*/ static QString STRING_END_STRING;// = "</string>";    // NOI18N
-   static /*private*/ QString checkForRefactor(QTextStream* bufferedWriter, QString aLine, QString oldName, QString newName) throw (IOException);
-   static /*private*/ QString checkForMultipleSemiColons(QTextStream* bufferedWriter, QString aLine) throw (IOException);
-   static /*private*/ void writeLine(QTextStream* bufferedWriter, QString aLine) throw (IOException);
+   static /*private*/ QString checkForRefactor(QTextStream* bufferedWriter, QString aLine, QString oldName, QString newName) /*throw (IOException)*/;
+   static /*private*/ QString checkForMultipleSemiColons(QTextStream* bufferedWriter, QString aLine) /*throw (IOException)*/;
+   static /*private*/ void writeLine(QTextStream* bufferedWriter, QString aLine) /*throw (IOException)*/;
 
 };
 

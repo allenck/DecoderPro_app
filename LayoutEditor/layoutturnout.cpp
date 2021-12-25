@@ -6244,7 +6244,7 @@ void LayoutTurnout::remove()
 //   rot = newAngle.toDouble(&bOk);
 //   if(!bOk) throw new Exception;
 //  }
-//  catch (Exception e)
+//  catch (Exception* e)
 //  {
 ////   JOptionPane.showMessageDialog(layoutEditor,tr("Error3")+
 ////            " "+e,tr("Error"),JOptionPane.ERROR_MESSAGE);

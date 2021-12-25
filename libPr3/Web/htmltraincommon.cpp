@@ -25,7 +25,7 @@ namespace Operations
 
 /*static*/ /*private*/ /*final*/ Logger* HtmlTrainCommon::log = LoggerFactory::getLogger("HtmlTrainCommon");
 
-/*public*/ HtmlTrainCommon::HtmlTrainCommon(QLocale locale, Operations::Train* train, QObject* parent) throw (IOException)  : TrainCommon(parent)
+/*public*/ HtmlTrainCommon::HtmlTrainCommon(QLocale locale, Operations::Train* train, QObject* parent) /*throw (IOException)*/  : TrainCommon(parent)
 {
  this->locale = locale;
  this->train = train;

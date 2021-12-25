@@ -51,12 +51,12 @@ Component::Component(QWidget *parent) :  JPanel(parent)
         try {
             dropTarget->setComponent(this);
             if (peer != NULL) dropTarget->addNotify((ComponentPeer*)peer);
-        } catch (IllegalArgumentException iae) {
+        } catch (IllegalArgumentException* iae) {
             if (old != NULL) {
                 try {
                     old->setComponent(this);
                     if (peer != NULL) dropTarget->addNotify((ComponentPeer*)peer);
-                } catch (IllegalArgumentException iae1) {
+                } catch (IllegalArgumentException* iae1) {
                     // ignore it!
                 }
             }

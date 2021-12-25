@@ -789,9 +789,9 @@ void BlockBossFrame::okPressed()  // SLOT[]
    return;
   }
  }
- catch (Exception e)
+ catch (Exception* e)
  {
-  log->error("An error occured creating the boss logic " + e.getMessage());
+  log->error(tr("An error occured creating the boss logic ") + e->getMessage());
     //JOptionPane.showMessageDialog(this,"An error occured creating the Simple Signal Logic\nPlease check the console log for more information");
   QMessageBox::critical(this, tr("Error"), tr("An error occured creating the Simple Signal Logic\nPlease check the console log for more information"));
  }

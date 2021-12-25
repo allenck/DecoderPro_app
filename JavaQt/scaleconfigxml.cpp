@@ -51,8 +51,8 @@ ScaleConfigXML::ScaleConfigXML(QObject *parent) : QObject(parent)
 
         try {
             x->writeXML(file, doc);
-        } catch (FileNotFoundException ex) {
-            log->error("File not found when writing: " + ex.getMessage());  // NOI18N
+        } catch (FileNotFoundException* ex) {
+            log->error("File not found when writing: " + ex->getMessage());  // NOI18N
             return false;
         } catch (IOException* ex) {
             log->error("IO Exception when writing: " + ex->getMessage());  // NOI18N

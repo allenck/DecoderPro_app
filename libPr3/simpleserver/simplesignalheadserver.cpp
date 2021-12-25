@@ -22,13 +22,13 @@
      * Protocol Specific Abstract Functions
      */
     //@Override
-    /*public*/ void SimpleSignalHeadServer::sendStatus(QString signalHeadName, int Status) throw (IOException) {
+    /*public*/ void SimpleSignalHeadServer::sendStatus(QString signalHeadName, int Status) /*throw (IOException)*/ {
         this->addSignalHeadToList(signalHeadName);
         this->sendMessage("SIGNALHEAD " + signalHeadName + " " + this->nameForAppearance(Status) + "\n");
     }
 
     //@Override
-    /*public*/ void SimpleSignalHeadServer::sendErrorStatus(QString signalHeadName) throw (IOException) {
+    /*public*/ void SimpleSignalHeadServer::sendErrorStatus(QString signalHeadName) /*throw (IOException)*/ {
         this->sendMessage("SIGNALHEAD ERROR\n");
     }
 
@@ -47,7 +47,7 @@
         }
     }
 
-     /*private*/ void SimpleSignalHeadServer::sendMessage(QString message) throw (IOException) {
+     /*private*/ void SimpleSignalHeadServer::sendMessage(QString message) /*throw (IOException)*/ {
         if (this->output != nullptr) {
             this->output->writeBytes(message.toLocal8Bit().data(),message.length());
         } else {

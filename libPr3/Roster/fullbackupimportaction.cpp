@@ -244,7 +244,7 @@ void FullBackupImportAction::common()
     f = zipper->goToNextFile();
   }
 
- } catch (FileNotFoundException ex) {
+ } catch (FileNotFoundException* ex) {
      //ex.printStackTrace();
  } catch (IOException* ex) {
      //ex.printStackTrace();

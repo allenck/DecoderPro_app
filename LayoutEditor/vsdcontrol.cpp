@@ -59,7 +59,7 @@
  * Constructor
  */
 /*public*/ VSDControl::VSDControl(QWidget *parent) :
-  QFrame(parent) {
+  JPanel(parent) {
     //super();
  common();
  initComponents("");
@@ -71,7 +71,7 @@
  * @param title (String) : Window title
  */
 /*public*/ VSDControl::VSDControl(QString title, QWidget *parent) :
-  QFrame(parent) {
+  JPanel(parent) {
    // super();
     address = title;
     config = new VSDConfig();
@@ -80,7 +80,7 @@
 }
 
 /*public*/ VSDControl::VSDControl(VSDConfig* c, QWidget *parent)
- : QFrame(parent)
+ : JPanel(parent)
 {
     //super();
     config = c;

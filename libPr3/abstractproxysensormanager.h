@@ -127,7 +127,7 @@ public:
     /*public*/ QString createSystemName(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) const /*throw (JmriException)*/;
     /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, char typeLetter) /*throw (JmriException)*/;
     /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting, char typeLetter) /*throw (JmriException)*/;
-    /*public*/ void deleteBean(/*@Nonnull*/ NamedBean* s, /*@Nonnull*/ QString property) throw (PropertyVetoException) override;
+    /*public*/ void deleteBean(/*@Nonnull*/ NamedBean* s, /*@Nonnull*/ QString property) /*throw (PropertyVetoException)*/ override;
 
 signals:
     //virtual void propertyChange(PropertyChangeEvent *e);
@@ -198,7 +198,7 @@ protected:
     /*protected*/ void updateOrderList();
     /*protected*/ void recomputeNamedBeanSet();
     /*protected*/ Manager/*<E>*/* getManager(/*@Nonnull*/ QString systemName) const;
-    /*protected*/ /*E*/NamedBean *provideNamedBean(QString name) throw (IllegalArgumentException);
+    /*protected*/ /*E*/NamedBean *provideNamedBean(QString name) /*throw (IllegalArgumentException)*/;
     /*protected*/ virtual NamedBean* makeBean(Manager/*<E>*/* manager, QString systemName, QString userName) = 0;
     /*protected*/ Manager/*<E>*/* getManagerOrDefault(/*@Nonnull*/ QString systemName);
     /*protected*/ AbstractManager *createSystemManager(/*@Nonnull*/ SystemConnectionMemo* memo) const;

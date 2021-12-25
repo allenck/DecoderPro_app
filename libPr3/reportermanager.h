@@ -67,7 +67,7 @@ public:
 
         //@Override
         /** {@inheritDoc} */
-        virtual /*default*/ /*public*/ Reporter* provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException)
+        virtual /*default*/ /*public*/ Reporter* provide(/*@Nonnull*/ QString name) /*throw (IllegalArgumentException)*/
         { return provideReporter(name); }
 
         /**

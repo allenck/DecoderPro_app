@@ -32,7 +32,7 @@ PreferencesManager::PreferencesManager(QObject *parent) : JmriServiceProviderInt
  * provider is not repeatedly initialized.
  *
  */
-/*public*/ void PreferencesManager::initialize(/*@Nonnull*/ Profile* /*profile*/) throw (InitializationException) {}
+/*public*/ void PreferencesManager::initialize(/*@Nonnull*/ Profile* /*profile*/) /*throw (InitializationException)*/ {}
 
 /**
  * Test if the PreferencesManager is initialized for the provided Profile.

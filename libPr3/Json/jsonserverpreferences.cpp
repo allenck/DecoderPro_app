@@ -46,7 +46,7 @@
         if (fileName != NULL) {
             try {
                 this->openFile(fileName);
-            } catch (FileNotFoundException ex) {
+            } catch (FileNotFoundException* ex) {
                 migrate = false;
             }
         } else {
@@ -129,11 +129,11 @@ void JsonServerPreferences::common()
     QDomElement root;
     try {
         root = prefsXml->rootFromFile(file);
-    } catch (FileNotFoundException ea) {
+    } catch (FileNotFoundException* ea) {
         log->info("Could not find JSON Server preferences file.  Normal if preferences have not been saved before.");
         throw ea;
-    } catch (IOException /*| JDOMException*/ eb) {
-        log->error(tr("Exception while loading JSON server preferences: %1").arg(eb.getLocalizedMessage()));
+    } catch (IOException* /*| JDOMException*/ eb) {
+        log->error(tr("Exception while loading JSON server preferences: %1").arg(eb->getLocalizedMessage()));
         root = QDomElement();
     }
     if (root != QDomElement()) {

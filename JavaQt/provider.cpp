@@ -1567,7 +1567,7 @@
                     ("Error constructing implementation (algorithm: "
                     + algorithm + ", provider: " + provider.getName()
                     + ", class: " + className + ")", e.getCause());
-            } catch (Exception e) {
+            } catch (Exception* e) {
                 throw new NoSuchAlgorithmException
                     ("Error constructing implementation (algorithm: "
                     + algorithm + ", provider: " + provider.getName()

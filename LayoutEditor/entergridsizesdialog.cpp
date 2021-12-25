@@ -103,7 +103,7 @@
         bool ok;
             siz = newGridSize.toFloat(&ok);
         if(!ok) {
-            showEntryErrorDialog(enterGridSizesFrame, NumberFormatException());
+            showEntryErrorDialog(enterGridSizesFrame, new NumberFormatException());
             return;
         }
 
@@ -126,7 +126,7 @@
 
             siz = newGridSize.toFloat(&ok);
         if(!ok) {
-            showEntryErrorDialog(enterGridSizesFrame, NumberFormatException());
+            showEntryErrorDialog(enterGridSizesFrame, new NumberFormatException());
             return;
         }
 
@@ -169,10 +169,10 @@
      *                        numeric types, but that the string does not have
      *                        the appropriate format.
      */
-    /*private*/ void EnterGridSizesDialog::showEntryErrorDialog(QWidget* parentComponent, NumberFormatException e) {
+    /*private*/ void EnterGridSizesDialog::showEntryErrorDialog(QWidget* parentComponent, NumberFormatException* e) {
         JOptionPane::showMessageDialog(parentComponent,
                 tr("%1: %2 %3").arg(tr("Error in entry")).arg(
-                        e.getMessage()).arg(tr("Please reenter or Cancel.")),
+                        e->getMessage()).arg(tr("Please reenter or Cancel.")),
                 tr("Error"),
                 JOptionPane::ERROR_MESSAGE);
     }

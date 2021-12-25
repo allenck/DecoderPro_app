@@ -85,7 +85,7 @@ HexFileConnectionConfigXml::HexFileConnectionConfigXml(QObject *parent) :
   {
    f->initComponents();
   }
-  catch (Exception ex)
+  catch (Exception* ex)
   {
    //log.error("starting HexFileFrame exception: "+ex.toString());
   }
@@ -185,7 +185,7 @@ HexFileConnectionConfigXml::HexFileConnectionConfigXml(QObject *parent) :
         f->setAdapter((LnHexFilePort*) adapter);
         try {
             f->initComponents();
-        } catch (Exception ex) {
+        } catch (Exception* ex) {
             //log.error("starting HexFileFrame exception: "+ex.toString());
         }
         f->pack();

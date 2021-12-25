@@ -585,7 +585,7 @@ private void configureEnclosingScrollPaneUI() {
                 try {
                     corner = (Component) UIManager.get(
                             "Table.scrollPaneCornerComponent");
-                } catch (Exception e) {
+                } catch (Exception* e) {
                     // just ignore and don't set corner
                 }
                 scrollPane.setCorner(JScrollPane.UPPER_TRAILING_CORNER,
@@ -875,7 +875,7 @@ static /*public*/ JScrollPane createScrollPaneForTable(JTable aTable) {
  */
 /*public*/ void JTable::setGridColor(QColor gridColor) {
     if (!gridColor.isValid()) {
-        throw  IllegalArgumentException("New color is NULL");
+        throw new  IllegalArgumentException("New color is NULL");
     }
     QColor old = this->gridColor;
     this->gridColor = gridColor;
@@ -3671,7 +3671,7 @@ log->debug(QString("Columns about to be inserted %1 %2 ").arg(from).arg(to));
 {
  if (newModel == NULL)
  {
-  throw  IllegalArgumentException("Cannot set a NULL SelectionModel");
+  throw new  IllegalArgumentException("Cannot set a NULL SelectionModel");
  }
  if(!qobject_cast<DefaultListSelectionModel*>(newModel))
  {
@@ -5407,7 +5407,7 @@ static class GenericEditor extends DefaultCellEditor {
             SwingUtilities2.checkAccess(constructor.getModifiers());
             value = constructor.newInstance(new Object[]{s});
         }
-        catch (Exception e) {
+        catch (Exception* e) {
             ((JComponent)getComponent()).setBorder(new LineBorder(Color.red));
             return false;
         }
@@ -5432,7 +5432,7 @@ static class GenericEditor extends DefaultCellEditor {
             SwingUtilities2.checkAccess(type.getModifiers());
             constructor = type.getConstructor(argTypes);
         }
-        catch (Exception e) {
+        catch (Exception* e) {
             return NULL;
         }
         return super.getTableCellEditorComponent(table, value, isSelected, row, column);
@@ -6160,17 +6160,17 @@ class CellEditorRemover implements PropertyChangeListener {
  {
   if (showPrintDialog)
   {
-   throw HeadlessException("Can't show print dialog.");
+   throw new HeadlessException("Can't show print dialog.");
   }
 
   if (interactive)
   {
-   throw HeadlessException("Can't run interactively.");
+   throw new HeadlessException("Can't run interactively.");
   }
  }
 #if 0
     // Get a PrinterJob.
-    // Do this before anything with side-effects since it may throw a
+    // Do this before anything with side-effects since it may throw new a
     // security exception - in which case we don't want to do anything else.
     /*final*/ PrinterJob job = PrinterJob.getPrinterJob();
 
@@ -6272,11 +6272,11 @@ class CellEditorRemover implements PropertyChangeListener {
         if (pe instanceof PrinterAbortException) {
             return false;
         } else if (pe instanceof PrinterException) {
-            throw (PrinterException)pe;
+            throw new (PrinterException)pe;
         } else if (pe instanceof RuntimeException) {
-            throw (RuntimeException)pe;
+            throw new (RuntimeException)pe;
         } else if (pe instanceof Error) {
-            throw (Error)pe;
+            throw new (Error)pe;
         }
 
         // can not happen
@@ -6475,14 +6475,14 @@ private class ThreadSafePrintable implements Printable {
                 }
             }
 
-            // if the delegate threw a throwable, rethrow it here
+            // if the delegate threw a throwable, rethrow new it here
             if (retThrowable != NULL) {
                 if (retThrowable instanceof PrinterException) {
-                    throw (PrinterException)retThrowable;
+                    throw new (PrinterException)retThrowable;
                 } else if (retThrowable instanceof RuntimeException) {
-                    throw (RuntimeException)retThrowable;
+                    throw new (RuntimeException)retThrowable;
                 } else if (retThrowable instanceof Error) {
-                    throw (Error)retThrowable;
+                    throw new (Error)retThrowable;
                 }
 
                 // can not happen

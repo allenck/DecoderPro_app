@@ -203,7 +203,7 @@ static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->V
     } catch (NumberFormatException* nx) {
         try{
  // TODO:           jmri.implementation.SignalSpeedMap.getMap().getSpeed(speed);
-        } catch (Exception ex){
+        } catch (Exception* ex){
             throw new JmriException("Value of requested default block speed is not valid");
         }
     }
@@ -350,7 +350,7 @@ QCompleter* BlockManager::getCompleter(QString text)
 //}
 
 //@Override
-/*public*/ Block* BlockManager::provide(QString name) const throw (IllegalArgumentException) {
+/*public*/ Block* BlockManager::provide(QString name) const /*throw (IllegalArgumentException)*/ {
     return provideBlock(name);
 }
 /*private*/ /*static*/ /*final*/ Logger* BlockManager::log = LoggerFactory::getLogger("BlockManager");

@@ -54,7 +54,7 @@ TrainCsvManifest::TrainCsvManifest()
   QTextStream os(&f);
   os.setCodec("UTF-8");
   fileOut = new PrintWriter(&os);
- } catch (IOException e) {
+ } catch (IOException* e) {
      log->error(tr("Can not open CSV manifest file: %1").arg(file->getName()));
      return;
  }

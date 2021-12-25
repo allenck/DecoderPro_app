@@ -35,6 +35,7 @@
 #include "file.h"
 #include "printwriter.h"
 #include <QDesktopServices>
+#include <QPushButton>
 
 /* static private*/ HelpUtil* HelpUtil::thisMenu = NULL;
 HelpBroker*  HelpUtil::globalHelpBroker = NULL;
@@ -208,17 +209,19 @@ HelpUtil::HelpUtil(QObject *parent) :
 
 // https://coderanch.com/how-to/javadoc/javahelp-2.0_05/javax/help/HelpBroker.html#enableHelpOnButton(java.awt.Component,%20java.lang.String,%20javax.help.HelpSet)
 /*public*/ /*static*/ void HelpUtil::enableHelpOnButton(QWidget* comp, QString id) {
-#if 0 // TODO
+#if 1 // TODO
     if (qobject_cast<QAbstractButton*>(comp)) {
-        ((javax.swing.AbstractButton) comp).addActionListener((ignore) -> {
+//        ((QAbstractButton*) comp).addActionListener((ignore) -> {
+     connect((QAbstractButton*)comp, &QAbstractButton::clicked, [=]{
             displayHelpRef(id);
         });
-    } else if (comp instanceof java.awt.Button) {
-        ((java.awt.Button) comp).addActionListener((ignore) -> {
+    } else if (qobject_cast<QPushButton*>(comp)) {
+//        ((QPushButton*) comp)->addActionListener((ignore) -> {
+     connect((QPushButton*) comp, &QPushButton::clicked, [=]{
             displayHelpRef(id);
         });
     } else {
-        throw  IllegalArgumentException("comp is not a javax.swing.AbstractButton or a java.awt.Button");
+        throw new IllegalArgumentException("comp is not a javax.swing.AbstractButton or a java.awt.Button");
     }
 #endif
 }
@@ -269,7 +272,7 @@ HelpUtil::HelpUtil(QObject *parent) :
  QString fileName = "";
  try {
      fileName = HelpUtil::createStubFile(ref, localeStr);
- } catch (IOException iox) {
+ } catch (IOException* iox) {
      log->error(tr("Unable to create the stub file for \"%1\" ").arg(ref));
      JOptionPane::showMessageDialog(nullptr, tr("Unable to create the stub file for \"%1\"").arg(ref),
              tr("Help Stub File Error"), JOptionPane::ERROR_MESSAGE);
@@ -298,7 +301,7 @@ HelpUtil::HelpUtil(QObject *parent) :
 
 }
 
-/*public*/ /*static*/ QString HelpUtil::createStubFile(QString helpKey, QString locale) throw (IOException) {
+/*public*/ /*static*/ QString HelpUtil::createStubFile(QString helpKey, QString locale) /*throw (IOException)*/ {
     QString stubLocation = FileUtil::getPreferencesPath() + "jmrihelp/";
     FileUtil::createDirectory(stubLocation);
     log->debug(tr("---- stub location: %1").arg(stubLocation));
@@ -337,11 +340,11 @@ HelpUtil::HelpUtil(QObject *parent) :
          QDesktopServices::openUrl(file->getPath());
 
 //        } else {
-//            throw  JmriException(tr(
+//            throw new JmriException(tr(
 //                    "Failed to connect to browser. java.awt.Desktop in Windows doesn't suppport Action.OPEN"));
 //        }
     } catch (IOException* ex) {
-        throw  JmriException(
+        throw new JmriException(
                 QString("Failed to connect to browser. Error loading help file %1").arg(file->getPath())/*, ex*/);
     }
 #endif
@@ -378,16 +381,16 @@ HelpUtil::HelpUtil(QObject *parent) :
             throw new JmriException(String
                     .format("Failed to connect to web page. java.awt.Desktop doesn't suppport Action.BROWSE"));
         }
-    } catch (IOException  e) {
-        throw  JmriException(
-                tr("Failed to connect to web page. Exception thrown: %1").arg(e.getMessage()), e);
+    } catch (IOException*  e) {
+        throw new JmriException(
+                tr("Failed to connect to web page. Exception thrown: %1").arg(e->getMessage()), e);
     }catch ( URISyntaxException e) {
-  throw  JmriException(
-          tr("Failed to connect to web page. Exception thrown: %1").arg(e.getMessage()), e);
+  throw new JmriException(
+          tr("Failed to connect to web page. Exception thrown: %1").arg(e->getMessage()), e);
 }
 #else
  if(!QDesktopServices::openUrl(url))
-  throw  JmriException(
+  throw new JmriException(
           tr("Failed to connect to web page %1.").arg(url));
 
 #endif
@@ -430,7 +433,7 @@ HelpUtil::HelpUtil(QObject *parent) :
     log.error("Help classes not found, help system omitted");
     return false;
    }
-   catch (Exception e2)
+   catch (Exception* e2)
    {
     log.error("HelpSet "+helpsetName+" not found, help system omitted");
     return false;

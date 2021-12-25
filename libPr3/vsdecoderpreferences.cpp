@@ -69,7 +69,7 @@ void VSDecoderPreferences::common()
 //        } catch (java.io.FileNotFoundException e2) {
 //            log->info("Did not find VSDecoder preferences file.  This is normal if you haven't save the preferences before");
 //            root = null;
-//        } catch (Exception e) {
+//        } catch (Exception* e) {
 //            log->error("Exception while loading VSDecoder preferences: " + e);
 //            root = QDomElement();
 //        }
@@ -189,7 +189,7 @@ void VSDecoderPreferences::common()
         {
             log->error("createNewFile failed");
         }
-    } catch (Exception exp) {
+    } catch (Exception* exp) {
         log->error("Exception while writing the new VSDecoder preferences file, may not be complete: " /*+ exp*/);
     }
     doc = xf->doc;
@@ -206,7 +206,7 @@ void VSDecoderPreferences::common()
          doc.addContent(0,p);*/
         root.appendChild(store());
         xf->writeXML(file, doc);
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log->warn("Exception in storing vsdecoder preferences xml: " /*+ ex*/);
     }
 }

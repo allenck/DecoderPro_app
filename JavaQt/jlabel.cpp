@@ -1731,13 +1731,15 @@ QColor JLabel::getForeground()
  QPalette p = palette();
  QString ss = styleSheet();
  c = p.color(QPalette::Foreground);
- if(ss == "")
-   return c;
+// if(ss == "")
+//   return c;
+ return c;
 }
 
 /*public*/ void JLabel::setForeground(QColor c){
  setStyleSheet(tr("QLabel{color: rgb(%1,%2,%3);}").arg(c.red()).arg(c.green()).arg(c.blue()));
 }
+
 /*public*/ QFont JLabel::getFont()
 {
  return font();

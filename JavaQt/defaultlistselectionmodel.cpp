@@ -3,7 +3,7 @@
 #include "listselectionevent.h"
 #include <QSortFilterProxyModel>
 
-DefaultListSelectionModel::DefaultListSelectionModel(QObject *parent) :
+DefaultListSelectionModel::DefaultListSelectionModel(QObject */*parent*/) :
     QItemSelectionModel()
 {
  selectionMode = MULTIPLE_INTERVAL_SELECTION;
@@ -68,7 +68,7 @@ DefaultListSelectionModel::DefaultListSelectionModel(QObject *parent) :
             this->selectionMode = selectionMode;
             break;
         default:
-            throw  IllegalArgumentException("invalid selectionMode");
+            throw new IllegalArgumentException("invalid selectionMode");
         }
     }
 
@@ -687,7 +687,7 @@ DefaultListSelectionModel::DefaultListSelectionModel(QObject *parent) :
      *    both (a) implement the Cloneable interface and (b) define a
      *    <code>clone</code> method.
      */
-/*public*/ QObject* DefaultListSelectionModel::clone() throw (CloneNotSupportedException) {
+/*public*/ QObject* DefaultListSelectionModel::clone() /*throw (CloneNotSupportedException)*/ {
 #if 0
         DefaultListSelectionModel* clone = (DefaultListSelectionModel*)super.clone();
         clone->value = (BitSet*)value->clone();

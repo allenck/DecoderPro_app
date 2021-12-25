@@ -468,7 +468,7 @@ FileUtil::FileUtil(QObject *parent) :
       return stream;
      }
 //        } catch (IOException* ex) {
-//            log.error(ex.getLocalizedMessage(), ex);
+//            log.error(ex->getLocalizedMessage(), ex);
 //        }
     }
     return NULL;
@@ -706,7 +706,7 @@ FileUtil::FileUtil(QObject *parent) :
   * @return The contents of the file.
   * @throws java.io.IOException if the file cannot be read
   */
- /*public*/ /*static*/ QString FileUtil::readFile(File* file) //throw (IOException)
+ /*public*/ /*static*/ QString FileUtil::readFile(File* file) ///*throw (IOException)*/
     {
      return FileUtil::readURL(FileUtil::fileToURL(file));
  }
@@ -718,7 +718,7 @@ FileUtil::FileUtil(QObject *parent) :
   * @return The contents of the file.
   * @throws java.io.IOException if the URL cannot be read
   */
- /*public*/ /*static*/ QString FileUtil::readURL(QUrl url) //throw (IOException)
+ /*public*/ /*static*/ QString FileUtil::readURL(QUrl url) ///*throw (IOException)*/
     {
      return FileUtilSupport::getDefault()->readURL(url);
  }
@@ -769,7 +769,7 @@ FileUtil::FileUtil(QObject *parent) :
  * @param dest must be the file, not the destination directory.
  * @throws IOException
  */
-/*public*/ /*static*/ void FileUtil::copy(File* source, File* dest) //throw (IOException)
+/*public*/ /*static*/ void FileUtil::copy(File* source, File* dest) ///*throw (IOException)*/
 {
  FileUtilSupport::getDefault()->copy(source, dest);
 }
@@ -782,7 +782,7 @@ FileUtil::FileUtil(QObject *parent) :
  * @param text Text to append
  * @throws java.io.IOException if file cannot be written to
  */
-/*public*/ /*static*/ void FileUtil::appendTextToFile(File* file, QString text) //throw (IOException)
+/*public*/ /*static*/ void FileUtil::appendTextToFile(File* file, QString text) ///*throw (IOException)*/
 {
  FileUtilSupport::getDefault()->appendTextToFile(file, text);
 }
@@ -810,7 +810,7 @@ FileUtil::FileUtil(QObject *parent) :
  * java.lang.String)
  * @see jmri.util.FileUtilSupport#backup(java.io.File)
  */
-/*public*/ /*static*/ void FileUtil::rotate(/*@Nonnull*/ File* file, int max, /*@CheckForNull*/ QString extension) //throw (IOException)
+/*public*/ /*static*/ void FileUtil::rotate(/*@Nonnull*/ File* file, int max, /*@CheckForNull*/ QString extension) ///*throw (IOException)*/
     {
     FileUtilSupport::getDefault()->rotate(file, max, extension);
 }

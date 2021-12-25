@@ -13,7 +13,7 @@ public:
 
 private:
  /*private*/ /*final*/ StreamEncoder* se;
- void flushBuffer() throw (IOException);
+ void flushBuffer() /*throw (IOException)*/;
 
  friend class PrintStream;
 };

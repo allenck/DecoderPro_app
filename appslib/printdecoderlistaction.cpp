@@ -91,8 +91,8 @@ void PrintDecoderListAction::printEntry(DecoderFile* d, HardcopyWriter* w) {
     try {
         QString s = "\n                       " + d->getModel();
         w->write(s, 0, s.length());
-    } catch (IOException e) {
-        log->error("Error printing: " + e.getMessage());
+    } catch (IOException* e) {
+        log->error("Error printing: " + e->getMessage());
     }
 }
 
@@ -100,8 +100,8 @@ void PrintDecoderListAction::printMfg(DecoderFile* d, HardcopyWriter* w) {
     try {
         QString s = "\n\n" + d->getMfg();
         w->write(s, 0, s.length());
-    } catch (IOException e) {
-        log->error("Error printing: " + e.getMessage());
+    } catch (IOException* e) {
+        log->error("Error printing: " + e->getMessage());
     }
 }
 
@@ -109,7 +109,7 @@ void PrintDecoderListAction::printFamily(DecoderFile* d, HardcopyWriter* w) {
     try {
         QString s = "\n           " + d->getFamily();
         w->write(s, 0, s.length());
-    } catch (IOException e) {
-        log->error("Error printing: " + e.getMessage());
+    } catch (IOException* e) {
+        log->error("Error printing: " + e->getMessage());
     }
 }

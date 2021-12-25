@@ -43,7 +43,7 @@
     * @throws PropertyVetoException if the change is vetoed by the listener
     */
    /*public*/ void vetoableChange(PropertyChangeEvent* event)
-     throw (PropertyVetoException);
+    /* throw (PropertyVetoException)*/;
 
    /**
     * Gets the name of the property this proxy is filtering on.

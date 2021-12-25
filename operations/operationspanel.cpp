@@ -265,7 +265,7 @@ namespace Operations
      String tableref = getWindowFrameRef() + ":table"; // NOI18N
      try {
          sorter = (TableSorter) table.getModel();
-     } catch (Exception e) {
+     } catch (Exception* e) {
          log->debug("table " + tableref + " doesn't use sorter");
      }
 
@@ -376,7 +376,7 @@ namespace Operations
      QSortFilterProxyModel* sorter = NULL;
      //try {
          sorter = (QSortFilterProxyModel*) table->model();
-//     } catch (Exception e) {
+//     } catch (Exception* e) {
 //         log->debug("table doesn't use sorter");
 //     }
      if (sorter == NULL) {

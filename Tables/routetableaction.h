@@ -11,7 +11,7 @@ class RouteTableAction : AbstractTableAction
   ~RouteTableAction() {}
   RouteTableAction(const RouteTableAction&) : AbstractTableAction() {}
   /*public*/ void setMessagePreferencesDetails() override;
-  /*public*/ QString getClassDescription() override;
+  Q_INVOKABLE/*public*/ QString getClassDescription() override;
 
  private:
 

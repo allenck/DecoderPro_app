@@ -143,7 +143,7 @@ public:
          * Get a list of all Memory objects' system names.
          */
  //virtual QStringList getSystemNameList();
- virtual /*public*/ Memory* provide(QString /*name*/) const throw (IllegalArgumentException) {return nullptr;}
+ virtual /*public*/ Memory* provide(QString /*name*/) const /*throw (IllegalArgumentException)*/ {return nullptr;}
 
 signals:
     

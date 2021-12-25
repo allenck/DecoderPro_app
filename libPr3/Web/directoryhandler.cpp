@@ -39,7 +39,7 @@
 }
 
 //@Override
-/*protected*/ void DirectoryHandler::doDirectory(HttpServletRequest* request, HttpServletResponse* response, Resource* resource) throw (IOException) {
+/*protected*/ void DirectoryHandler::doDirectory(HttpServletRequest* request, HttpServletResponse* response, Resource* resource) /*throw (IOException)*/ {
     if (this->isDirectoriesListed()) {
         response->setStatus(HttpServletResponse::SC_OK);
         response->setContentType(ServletUtil::UTF8_TEXT_HTML);

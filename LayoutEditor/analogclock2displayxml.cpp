@@ -84,7 +84,7 @@ AnalogClock2DisplayXml::~AnalogClock2DisplayXml()
   try {
       l->setId(element.attribute("id"));
   } catch (Positionable::DuplicateIdException* e) {
-      throw  JmriConfigureXmlException("Positionable id is not unique", e);
+      throw new JmriConfigureXmlException("Positionable id is not unique", e);
   }
  }
  x = element.attribute("x").toInt(&bOk1);

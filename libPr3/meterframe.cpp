@@ -78,7 +78,7 @@
         currentMeters = QList<Meter*>();
 
         /*MeterManager**/ mm = (MeterManager*)InstanceManager::getNullableDefault("MeterManager");
-        if (mm == nullptr) throw RuntimeException("No meter manager exists");
+        if (mm == nullptr) throw new RuntimeException("No meter manager exists");
 
         addAllMeters();
 

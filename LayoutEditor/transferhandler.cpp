@@ -820,7 +820,7 @@ TransferHandler::TransferHandler(QObject *parent) :
                     Object[] args = { value };
                     MethodUtil.invoke(writer, comp, args);
                     return true;
-                } catch (Exception ex) {
+                } catch (Exception* ex) {
                     System.err.println("Invocation failed");
                     // invocation code
                 }
@@ -1138,7 +1138,7 @@ TransferHandler::TransferHandler(QObject *parent) :
             Object value = null;
             try {
                 value = MethodUtil.invoke(reader, component, (Object[])null);
-            } catch (Exception ex) {
+            } catch (Exception* ex) {
                 throw new IOException("Property read failed: " + property.getName());
             }
             return value;

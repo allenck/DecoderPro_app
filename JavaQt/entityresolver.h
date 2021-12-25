@@ -109,8 +109,8 @@ public:
      *            or Reader for the InputSource.
      * @see org.xml.sax.InputSource
      */
-    /*public*/ /*abstract*/ virtual InputSource* resolveEntity (QString publicId,
-                                               QString systemId)
-        throw (SAXException, IOException) {return NULL;}
+    /*public*/ /*abstract*/ virtual InputSource* resolveEntity (QString /*publicId*/,
+                                               QString /*systemId*/)
+        /*throw (SAXException, IOException)*/ {return NULL;}
 };
 #endif // ENTITYRESOLVER_H

@@ -275,20 +275,20 @@
     DataPair* dp = parseCalculate(QString(ch), _variableList);
     result = dp->result;
    }
-   catch ( NumberFormatException nfe)
+   catch ( NumberFormatException* nfe)
    {
     result = false;
-    log->error(getDisplayName()+" parseCalculation error antecedent= "+_antecedent+ ", ex= " + nfe.getMessage());
+    log->error(getDisplayName()+" parseCalculation error antecedent= "+_antecedent+ ", ex= " + nfe->getMessage());
    }
-   catch ( IndexOutOfBoundsException ioob)
+   catch ( IndexOutOfBoundsException* ioob)
    {
     result = false;
-    log->error(getDisplayName()+" parseCalculation error antecedent= "+_antecedent+ ", ex= " + ioob.getMessage());
+    log->error(getDisplayName()+" parseCalculation error antecedent= "+_antecedent+ ", ex= " + ioob->getMessage());
    }
-   catch ( JmriException je)
+   catch ( JmriException* je)
    {
     result = false;
-    log->error(getDisplayName()+" parseCalculation error antecedent= "+_antecedent+ ", ex= " + je.getMessage());
+    log->error(getDisplayName()+" parseCalculation error antecedent= "+_antecedent+ ", ex= " + je->getMessage());
    }
    break;
   }
@@ -406,12 +406,12 @@ bool DefaultConditional::wantsToTrigger(PropertyChangeEvent* evt) {
 //                                        Integer.valueOf(index+1) });
             return tr("Antecedent parsing error: All %1 rows must be used.  Row %1 is missing.").arg(variableList->size()).arg(index+1);
         }
-    } catch ( NumberFormatException nfe) {
-        return tr("ParseError6") + nfe.getMessage();
-    } catch ( IndexOutOfBoundsException ioob) {
-        return tr("ParseError6") + ioob.getMessage();
-    }  catch ( JmriException je) {
-        return tr("ParseError6") + je.getMessage();
+    } catch ( NumberFormatException* nfe) {
+        return tr("ParseError6") + nfe->getMessage();
+    } catch ( IndexOutOfBoundsException* ioob) {
+        return tr("ParseError6") + ioob->getMessage();
+    }  catch ( JmriException* je) {
+        return tr("ParseError6") + je->getMessage();
     }
     return nullptr;
 }

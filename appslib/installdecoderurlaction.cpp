@@ -188,20 +188,20 @@ bool InstallDecoderURLAction::copyfile(QUrl* from, File* toFile, QWidget* who) {
    QString buf = in->readAll();
    *out << buf;
    out->flush();
-   if(out->status() != QTextStream::Ok) throw Exception(tr("write error"));
+   if(out->status() != QTextStream::Ok) throw new Exception(tr("write error"));
   }
   // done - finally cleans up
  }
- catch (FileNotFoundException ex)
+ catch (FileNotFoundException* ex)
  {
-  //log->debug("" + ex.getMessage());
+  //log->debug("" + ex->getMessage());
   //JOptionPane.showMessageDialog(who, tr("CopyError1"));
   QMessageBox::critical(who, tr("Error"), tr("File couldn't be copied"));
   return false;
  }
- catch (IOException e)
+ catch (IOException* e)
  {
-  //log->debug("" + e.getMessage());
+  //log->debug("" + e->getMessage());
   //JOptionPane.showMessageDialog(who, tr("CopyError2"));
   QMessageBox::critical(who, tr("Error"), tr("Error while copying file"));
   return false;
@@ -211,15 +211,15 @@ bool InstallDecoderURLAction::copyfile(QUrl* from, File* toFile, QWidget* who) {
 //      if (in != NULL) {
 //          in->close();
 //      }
-//  } catch (IOException e1) {
-//      log->error("exception closing in stream", e1.getMessage());
+//  } catch (IOException* e1) {
+//      log->error("exception closing in stream", e1->getMessage());
 //  }
 //  try {
 //      if (out != NULL) {
 //          out->close();
 //      }
-//  } catch (IOException e2) {
-//      log->error("exception closing out stream", e2.getMessage());
+//  } catch (IOException* e2) {
+//      log->error("exception closing out stream", e2->getMessage());
 //  }
 // }
 
@@ -260,16 +260,16 @@ bool InstallDecoderURLAction::checkFile(QUrl* url, QWidget* who)
       //JOptionPane.showMessageDialog(who, tr("WrongContent"));
 //   QMessageBox::critical(who, tr("Error"), tr("The file doesn't contain a decoder definition."));
 //      return false;
-   throw Exception(tr("File \"%1\" does not contain a decoder definition").arg(f->fileName()));
+   throw new Exception(tr("File \"%1\" does not contain a decoder definition").arg(f->fileName()));
   }
   return true;
 
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
-  log->debug( ex.getMessage());
+  log->debug( ex->getMessage());
   //JOptionPane.showMessageDialog(who, tr("ParseError"));
-  QMessageBox::critical(who, tr("Error"), tr("The file doesn't contain valid XML.") + " " + ex.getMessage());
+  QMessageBox::critical(who, tr("Error"), tr("The file doesn't contain valid XML.") + " " + ex->getMessage());
   return false;
  }
 }

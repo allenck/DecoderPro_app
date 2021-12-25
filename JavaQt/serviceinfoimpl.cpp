@@ -62,7 +62,7 @@
         }
 QString ServiceInfoState::toString() {return "";}
         //@Override
-        /*protected*/ void ServiceInfoState::setTask(DNSTask* task) {
+        /*protected*/ void ServiceInfoState::setTask(DNSTask* /*task*/) {
             //super.setTask(task);
 #if 0
             if ((this->_task == nullptr) && _info->needTextAnnouncing()) {
@@ -84,7 +84,7 @@ QString ServiceInfoState::toString() {return "";}
 #endif
         }
         //@Override
-        /*public*/ void ServiceInfoState::setDns(JmDNSImpl* dns) {
+        /*public*/ void ServiceInfoState::setDns(JmDNSImpl* /*dns*/) {
             //super.setDns(dns);
         }
 //    };
@@ -109,8 +109,8 @@ QString ServiceInfoState::toString() {return "";}
 //            ByteArrayOutputStream out = new ByteArrayOutputStream(text.length());
 //            writeUTF(out, text);
 //            this->_text = out.toByteArray();
-//        } catch (IOException e) {
-//            throw  RuntimeException("unexpected exception: " + e);
+//        } catch (IOException* e) {
+//            throw new RuntimeException("unexpected exception: " + e);
 //        }
         this->_text = text.toUtf8();
     }
@@ -160,7 +160,7 @@ QString ServiceInfoState::toString() {return "";}
 //            writeUTF(out, text);
 //            this->_text = out.toByteArray();
         this->_text = text.toUtf8();
-//        } catch (IOException e) {
+//        } catch (IOException* e) {
 //            throw new RuntimeException("unexpected exception: " + e);
 //        }
     }
@@ -814,9 +814,9 @@ QString ServiceInfoState::toString() {return "";}
                         off += len;
                     }
                 }
-            } catch (Exception exception) {
+            } catch (Exception* exception) {
                 // We should get better logging.
-//                logger->log(Level::WARNING, "Malformed TXT Field " + exception.getMessage());
+//                logger->log(Level::WARNING, "Malformed TXT Field " + exception->getMessage());
             }
             this->_props = properties;
         }
@@ -1151,7 +1151,7 @@ QString ServiceInfoState::toString() {return "";}
      * {@inheritDoc}
      */
     //@Override
-    /*public*/ void ServiceInfoImpl::setText(QByteArray text) throw (IllegalStateException) {
+    /*public*/ void ServiceInfoImpl::setText(QByteArray text)  {
         /*synchronized (this)*/ {
             this->_text = text;
             this->_props = QMap<QString, QByteArray>();
@@ -1162,7 +1162,7 @@ QString ServiceInfoState::toString() {return "";}
      * {@inheritDoc}
      */
     //@Override
-    /*public*/ void ServiceInfoImpl::setText(QMap<QString, QVariant> props) throw (IllegalStateException) {
+    /*public*/ void ServiceInfoImpl::setText(QMap<QString, QVariant> props)  {
         this->setText(textFromProperties(props));
     }
     /**
@@ -1207,11 +1207,11 @@ QString ServiceInfoState::toString() {return "";}
 //                        }
                      out2.append(val.toByteArray());
                     } else {
-                        throw  IllegalArgumentException("invalid property value: " + val.toString());
+                        throw new IllegalArgumentException("invalid property value: " + val.toString());
                     }
                     QByteArray data = out2; //.toByteArray();
                     if (data.length() > 255) {
-                        throw  IOException("Cannot have individual values larger that 255 chars. Offending value: " + key + (!val.isNull() ? "" : "=" + val.toString()));
+                        throw new IOException("Cannot have individual values larger that 255 chars. Offending value: " + key + (!val.isNull() ? "" : "=" + val.toString()));
                     }
 //                    out.write((byte) data.length);
 //                    out.write(data, 0, data.length);
@@ -1219,7 +1219,7 @@ QString ServiceInfoState::toString() {return "";}
                     out.append( data);
                 }
                 text = out;//out.toByteArray();
-//            } catch (IOException e) {
+//            } catch (IOException* e) {
 //                throw RuntimeException("unexpected exception: " + e);
 //            }
 #endif

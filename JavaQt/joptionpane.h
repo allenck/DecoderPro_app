@@ -161,17 +161,17 @@ public:
  /*public*/ bool getWantsInput();
  /*public*/ void selectInitialValue();
  /*public*/ static int showConfirmDialog(QWidget* parentComponent,
-     QVariant message) throw (HeadlessException);
+     QVariant message) /*throw (HeadlessException)*/;
  /*public*/ static int showConfirmDialog(QWidget* parentComponent,
      QVariant message, QString title, int optionType)
-     throw (HeadlessException);
+     /*throw (HeadlessException)*/;
  /*public*/ static int showConfirmDialog(QWidget* parentComponent,
      QVariant message, QString title, int optionType, int messageType)
-     throw (HeadlessException);
+     /*throw (HeadlessException)*/;
  /*public*/ static int showConfirmDialog(QWidget* parentComponent,
      QVariant message, QString title, int optionType,
-     int messageType, QIcon icon) throw (HeadlessException);
- static QWidget* getWindowForComponent(QWidget* parentComponent) throw (HeadlessException);
+     int messageType, QIcon icon) /*throw (HeadlessException)*/;
+ static QWidget* getWindowForComponent(QWidget* parentComponent) /*throw (HeadlessException)*/;
  /*public*/ JDialog* createDialog(QWidget* parentComponent, QString title);
  /*public*/ JDialog* createDialog(QString title);
  /*public*/ void setValidator(QValidator* val);

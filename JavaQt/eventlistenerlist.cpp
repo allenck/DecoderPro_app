@@ -174,7 +174,7 @@ EventListenerList::EventListenerList(QObject *parent) :
         return;
     }
     //if (!t->isInstance(l))
-    QObject* obj = l->self();
+    //QObject* obj = l->self();
     if(QString(l->self()->metaObject()->superClass()->className()) != t )
     {
      log->warn("Listener " + QString(l->self()->metaObject()->className()) +

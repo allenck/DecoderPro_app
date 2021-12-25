@@ -643,7 +643,7 @@ void SlotManager::respondToAddrRequest(LocoNetMessage* m, int i)
 //        public void run() {
 //            try {
 //                sendReadSlot(slotNumber);
-//            } catch (Exception e) {
+//            } catch (Exception* e) {
 //                log.error("Exception occurred sendReadSlotDelayed:", e);
 //            }
 //        }
@@ -917,7 +917,7 @@ void SlotManager::writeCV(QString cvNum, int val, ProgListener* p) throw(Program
              || getMode()->equals(ProgrammingMode::ADDRESSMODE)) {
          pcmd = pcmd | 0x10;
      } else {
-         throw ProgrammerException("mode not supported"); // NOI18N
+         throw new ProgrammerException("mode not supported"); // NOI18N
      }
 
      doWrite(CV, val, p, pcmd);
@@ -959,7 +959,7 @@ void SlotManager::confirmCVOpsMode(int CV, int val, ProgListener* p,
  * @throws jmri.ProgrammerException if an unsupported programming mode is exercised
  */
 //@Override
-/*public*/ void SlotManager::confirmCV(QString CVname, int val, ProgListener* p) throw (ProgrammerException) {
+/*public*/ void SlotManager::confirmCV(QString CVname, int val, ProgListener* p) /*throw (ProgrammerException)*/ {
     int CV = CVname.toInt();
     lopsa = 0;
     hopsa = 0;
@@ -997,7 +997,7 @@ void SlotManager::confirmCVOpsMode(int CV, int val, ProgListener* p,
             || getMode()->equals(ProgrammingMode::ADDRESSMODE)) {
         pcmd = pcmd | 0x10;
     } else {
-        throw ProgrammerException("mode not supported"); // NOI18N
+        throw new ProgrammerException("mode not supported"); // NOI18N
     }
 
     doConfirm(CV, val, p, pcmd);
@@ -1030,7 +1030,7 @@ void SlotManager::doConfirm(int CV, int val, ProgListener* p,
  * @param longAddr true if a long address, false if short address
  * @throws ProgrammerException
  */
-void SlotManager::readCVOpsMode(QString CVname, ProgListener* p, int addr, bool longAddr) throw(ProgrammerException)
+void SlotManager::readCVOpsMode(QString CVname, ProgListener* p, int addr, bool longAddr) /*throw(ProgrammerException)*/
 {
  Q_UNUSED(longAddr)
     /*final*/ int CV = CVname.toInt();
@@ -1066,7 +1066,7 @@ void SlotManager::useProgrammer(ProgListener* p) // throws jmri.ProgrammerExcept
  {
   if (log->isInfoEnabled())
    log->info(QString("programmer already in use by %1").arg(_usingProgrammer->self()->objectName()));
-  throw ProgrammerException("programmer in use");
+  throw new ProgrammerException("programmer in use");
  }
  else
  {
@@ -1371,7 +1371,7 @@ LocoNetSystemConnectionMemo* SlotManager::getSystemConnectionMemo()
  * @throws jmri.ProgrammerException if an unsupported programming mode is exercised
  */
 //@Override
-/*public*/ void SlotManager::readCV(QString cvNum, ProgListener* p) throw (ProgrammerException)
+/*public*/ void SlotManager::readCV(QString cvNum, ProgListener* p) /*throw (ProgrammerException)*/
 {
  log->debug(tr("readCV(string): cvNum=%1 mode=%2").arg(cvNum).arg(getMode()->toString()));
  if (getMode()->equals(csOpSwProgrammingMode))
@@ -1418,7 +1418,7 @@ LocoNetSystemConnectionMemo* SlotManager::getSystemConnectionMemo()
           || getMode()->equals(ProgrammingMode::ADDRESSMODE)) {
       pcmd = pcmd | 0x10;
   } else {
-      throw ProgrammerException("mode not supported"); // NOI18N
+      throw new ProgrammerException("mode not supported"); // NOI18N
   }
 
   doRead(CV, p, pcmd);

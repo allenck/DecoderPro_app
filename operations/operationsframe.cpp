@@ -234,7 +234,7 @@ namespace Operations
   QString tableref = getWindowFrameRef() + ":table"; // NOI18N
   try {
       sorter = (QSortFilterProxyModel*) table->model();
-  } catch (Exception e) {
+  } catch (Exception* e) {
       log->debug("table " + tableref + " doesn't use sorter");
   }
 #if 0 // TODO:
@@ -304,7 +304,7 @@ namespace Operations
   try
   {
       sorter = (QSortFilterProxyModel*) table->getModel();
-  } catch (Exception e) {
+  } catch (Exception* e) {
       log->debug("table " + tableref + " doesn't use sorter");
   }
   // bubble sort

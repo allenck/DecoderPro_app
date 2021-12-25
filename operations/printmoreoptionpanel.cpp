@@ -117,7 +117,7 @@ namespace Operations
          Setup::setTab1length(tab1TextField->text().toInt());
          Setup::setTab2length(tab2TextField->text().toInt());
          Setup::setTab3length(tab3TextField->text().toInt());
-//     } catch (Exception e) {
+//     } catch (Exception* e) {
 //         log.error("Tab wasn't a number");
 //     }
 
@@ -133,7 +133,7 @@ namespace Operations
          return (Setup::getTab1Length() != tab1TextField->text().toInt()
                  || Setup::getTab2Length() != tab2TextField->text().toInt()
                  || Setup::getTab3Length() != tab3TextField->text().toInt());
-//     } catch (Exception e) {
+//     } catch (Exception* e) {
 //         log->error("Tab wasn't a number");
 //     }
      return true;

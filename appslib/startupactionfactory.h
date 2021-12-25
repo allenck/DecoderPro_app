@@ -30,7 +30,7 @@ public:
      *                                  factory
      */
     //@Nonnull
-   virtual QString getTitle(/*@Nonnull*/ /*Class<?>*/QString /*clazz*/) throw (IllegalArgumentException) {return "";}
+   virtual QString getTitle(/*@Nonnull*/ /*Class<?>*/QString /*clazz*/) /*throw (IllegalArgumentException)*/ {return "";}
 
     /**
      * Get the title for the given class.
@@ -42,7 +42,7 @@ public:
      *                                  factory
      */
     //@Nonnull
-    virtual QString getTitle(/*@Nonnull*/ /*Class<?>*/QString /*clazz*/, /*@Nonnull*/ QLocale /*locale*/) throw (IllegalArgumentException) {return "";}
+    virtual QString getTitle(/*@Nonnull*/ /*Class<?>*/QString /*clazz*/, /*@Nonnull*/ QLocale /*locale*/) /*throw (IllegalArgumentException)*/ {return "";}
 
     /**
      * Get the classes this factory supports.
@@ -65,7 +65,7 @@ public:
      *                                  factory
      */
     //@Nonnull
-    virtual QStringList getOverriddenClasses(/*@Nonnull*/ /*Class<?>*/QString /*clazz*/) throw (IllegalArgumentException) {return QStringList();}
+    virtual QStringList getOverriddenClasses(/*@Nonnull*/ /*Class<?>*/QString /*clazz*/) /*throw (IllegalArgumentException)*/ {return QStringList();}
 
  virtual void initialize() {}
 };

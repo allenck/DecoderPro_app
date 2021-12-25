@@ -26,9 +26,9 @@ void SprogMessageTestAction::actionPerformed()
      JUnitUtil::runTests(smt, testList);
 
     }
-    catch (AssertionError er)
+    catch (AssertionError* er)
     {
-        JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
+        JOptionPane::showMessageDialog(nullptr, er->getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
     }
 }
 Logger* SprogMessageTestAction::log = LoggerFactory::getLogger("SprogMessageTestAction");

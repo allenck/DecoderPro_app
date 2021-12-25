@@ -58,7 +58,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -256,7 +255,7 @@ virtual int  compareTo(NamedBean*  n2);
 virtual void customEvent(QEvent*  event);
 virtual QString  describeState(int  state);
 virtual void dispose();
-virtual bool  equals(NamedBean*  obj);
+virtual bool  equals(QObject*  obj);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual QString  getBeanType();
@@ -301,7 +300,7 @@ inline void py_q_addPropertyChangeListener(QString  propertyName, PropertyChange
 inline int  py_q_compareSystemNameSuffix(QString  suffix1, QString  suffix2, NamedBean*  n) { return AbstractNamedBean::compareSystemNameSuffix(suffix1, suffix2, n); }
 inline QString  py_q_describeState(int  state) { return AbstractNamedBean::describeState(state); }
 inline void py_q_dispose() { AbstractNamedBean::dispose(); }
-inline bool  py_q_equals(NamedBean*  obj) { return AbstractNamedBean::equals(obj); }
+inline bool  py_q_equals(QObject*  obj) { return AbstractNamedBean::equals(obj); }
 inline QString  py_q_getComment() { return AbstractNamedBean::getComment(); }
 inline QString  py_q_getDisplayName() { return AbstractNamedBean::getDisplayName(); }
 inline QString  py_q_getFullyFormattedDisplayName() { return AbstractNamedBean::getFullyFormattedDisplayName(); }
@@ -341,7 +340,7 @@ void delete_AbstractNamedBean(AbstractNamedBean* obj) { delete obj; }
    int  py_q_compareSystemNameSuffix(AbstractNamedBean* theWrappedObject, QString  suffix1, QString  suffix2, NamedBean*  n){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_compareSystemNameSuffix(suffix1, suffix2, n));}
    QString  py_q_describeState(AbstractNamedBean* theWrappedObject, int  state){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_describeState(state));}
    void py_q_dispose(AbstractNamedBean* theWrappedObject){  (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_dispose());}
-   bool  py_q_equals(AbstractNamedBean* theWrappedObject, NamedBean*  obj){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_equals(obj));}
+   bool  py_q_equals(AbstractNamedBean* theWrappedObject, QObject*  obj){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_equals(obj));}
    void firePropertyChange(AbstractNamedBean* theWrappedObject, QString  p, QVariant  old, QVariant  n) const;
    QString  py_q_getComment(AbstractNamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getComment());}
    QString  py_q_getDisplayName(AbstractNamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractNamedBean*)theWrappedObject)->py_q_getDisplayName());}
@@ -655,7 +654,7 @@ virtual int  compareTo(NamedBean*  n2);
 virtual void customEvent(QEvent*  event);
 virtual QString  describeState(int  state);
 virtual void dispose();
-virtual bool  equals(NamedBean*  obj);
+virtual bool  equals(QObject*  obj);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual QString  getBeanType();
@@ -788,8 +787,7 @@ virtual int  getXMLOrder() const;
 virtual bool  isPullResistanceConfigurable();
 virtual Sensor*  newSensor(QString  sysName, QString  userName);
 virtual QString  normalizeSystemName(QString  sysName) const;
-virtual Sensor*  provide(QString  name) throw (IllegalArgumentException)
-;
+virtual Sensor*  provide(QString  name);
 virtual Sensor*  provideSensor(QString  name);
 virtual QObject*  self();
 virtual void setDefaultSensorDebounceGoingActive(long  timer);
@@ -880,7 +878,7 @@ virtual void _connect();
 virtual void autoConfigure();
 virtual void childEvent(QChildEvent*  event);
 virtual QString  className();
-virtual void closeConnection() throw( Exception);
+virtual void closeConnection();
 virtual void configure();
 virtual void configureBaudRate(QString  rate);
 virtual void configureOption1(QString  value);
@@ -944,10 +942,10 @@ virtual QStringList  validBaudRates();
 
 class PythonQtPublicPromoter_AbstractSerialPortController : public AbstractSerialPortController
 { public:
-inline void promoted_closeConnection() throw( Exception) { this->closeConnection(); }
+inline void promoted_closeConnection() { this->closeConnection(); }
 inline void promoted_resetupConnection() { this->resetupConnection(); }
 inline void py_q__connect() { AbstractSerialPortController::_connect(); }
-inline void py_q_closeConnection() throw( Exception) { AbstractSerialPortController::closeConnection(); }
+inline void py_q_closeConnection() { AbstractSerialPortController::closeConnection(); }
 inline void py_q_configureBaudRate(QString  rate) { AbstractSerialPortController::configureBaudRate(rate); }
 inline int  py_q_currentBaudNumber(QString  currentBaudRate) { return AbstractSerialPortController::currentBaudNumber(currentBaudRate); }
 inline void py_q_dispose() { AbstractSerialPortController::dispose(); }
@@ -970,8 +968,8 @@ public slots:
 AbstractSerialPortController* new_AbstractSerialPortController(SystemConnectionMemo*  connectionMemo, QObject*  parent = 0);
 void delete_AbstractSerialPortController(AbstractSerialPortController* obj) { delete obj; } 
    void py_q__connect(AbstractSerialPortController* theWrappedObject){  (((PythonQtPublicPromoter_AbstractSerialPortController*)theWrappedObject)->py_q__connect());}
-   void closeConnection(AbstractSerialPortController* theWrappedObject) throw( Exception);
-   void py_q_closeConnection(AbstractSerialPortController* theWrappedObject) throw( Exception){  (((PythonQtPublicPromoter_AbstractSerialPortController*)theWrappedObject)->py_q_closeConnection());}
+   void closeConnection(AbstractSerialPortController* theWrappedObject);
+   void py_q_closeConnection(AbstractSerialPortController* theWrappedObject){  (((PythonQtPublicPromoter_AbstractSerialPortController*)theWrappedObject)->py_q_closeConnection());}
    void py_q_configureBaudRate(AbstractSerialPortController* theWrappedObject, QString  rate){  (((PythonQtPublicPromoter_AbstractSerialPortController*)theWrappedObject)->py_q_configureBaudRate(rate));}
    int  currentBaudNumber(AbstractSerialPortController* theWrappedObject, QString  currentBaudRate);
    int  py_q_currentBaudNumber(AbstractSerialPortController* theWrappedObject, QString  currentBaudRate){  return (((PythonQtPublicPromoter_AbstractSerialPortController*)theWrappedObject)->py_q_currentBaudNumber(currentBaudRate));}
@@ -1002,7 +1000,7 @@ public:
 
    ~PythonQtShell_AbstractShutDownTask();
 
-virtual bool  call() throw (Exception) ;
+virtual bool  call();
 virtual void childEvent(QChildEvent*  event);
 virtual void customEvent(QEvent*  event);
 virtual bool  event(QEvent*  event);
@@ -1082,8 +1080,8 @@ virtual bool  isCanFollow();
 virtual bool  isConsistentState();
 virtual bool  isFollowingCommandedState();
 virtual void propertyChange(PropertyChangeEvent*  evt);
-virtual void provideFirstFeedbackSensor(QString  pName) throw(JmriException) ;
-virtual void provideSecondFeedbackSensor(QString  pName) throw(JmriException) ;
+virtual void provideFirstFeedbackSensor(QString  pName);
+virtual void provideSecondFeedbackSensor(QString  pName);
 virtual void requestUpdateFromLayout();
 virtual QObject*  self();
 virtual void setBinaryOutput(bool  state);
@@ -1091,9 +1089,9 @@ virtual void setCommandedState(int  s);
 virtual void setCommandedStateAtInterval(int  s);
 virtual void setControlType(int  num);
 virtual void setDecoderName(QString  decoderName);
-virtual void setDivergingSpeed(QString  s) const throw(JmriException) ;
-virtual void setFeedbackMode(QString  mode) throw(IllegalArgumentException) ;
-virtual void setFeedbackMode(int  mode) throw(IllegalArgumentException) ;
+virtual void setDivergingSpeed(QString  s) const;
+virtual void setFeedbackMode(QString  mode);
+virtual void setFeedbackMode(int  mode);
 virtual void setFollowingCommandedState(bool  following);
 virtual void setInhibitOperation(bool  io);
 virtual void setInitialKnownStateFromFeedback();
@@ -1104,10 +1102,10 @@ virtual void setLocked(int  turnoutLockout, bool  locked);
 virtual void setNumberOutputBits(int  num);
 virtual void setReportLocked(bool  reportLocked);
 virtual void setState(int  s);
-virtual void setStraightSpeed(QString  s) const throw(JmriException) ;
+virtual void setStraightSpeed(QString  s) const;
 virtual void setTurnoutOperation(TurnoutOperation*  toper);
 virtual void turnoutPushbuttonLockout(bool  locked);
-virtual void vetoableChange(PropertyChangeEvent*  evt) throw (PropertyVetoException);
+virtual void vetoableChange(PropertyChangeEvent*  evt);
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -1160,8 +1158,8 @@ inline bool  py_q_isCanFollow() { return AbstractTurnout::isCanFollow(); }
 inline bool  py_q_isConsistentState() { return AbstractTurnout::isConsistentState(); }
 inline bool  py_q_isFollowingCommandedState() { return AbstractTurnout::isFollowingCommandedState(); }
 inline void py_q_propertyChange(PropertyChangeEvent*  evt) { AbstractTurnout::propertyChange(evt); }
-inline void py_q_provideFirstFeedbackSensor(QString  pName) throw(JmriException)  { AbstractTurnout::provideFirstFeedbackSensor(pName); }
-inline void py_q_provideSecondFeedbackSensor(QString  pName) throw(JmriException)  { AbstractTurnout::provideSecondFeedbackSensor(pName); }
+inline void py_q_provideFirstFeedbackSensor(QString  pName) { AbstractTurnout::provideFirstFeedbackSensor(pName); }
+inline void py_q_provideSecondFeedbackSensor(QString  pName) { AbstractTurnout::provideSecondFeedbackSensor(pName); }
 inline void py_q_requestUpdateFromLayout() { AbstractTurnout::requestUpdateFromLayout(); }
 inline QObject*  py_q_self() { return AbstractTurnout::self(); }
 inline void py_q_setBinaryOutput(bool  state) { AbstractTurnout::setBinaryOutput(state); }
@@ -1169,9 +1167,9 @@ inline void py_q_setCommandedState(int  s) { AbstractTurnout::setCommandedState(
 inline void py_q_setCommandedStateAtInterval(int  s) { AbstractTurnout::setCommandedStateAtInterval(s); }
 inline void py_q_setControlType(int  num) { AbstractTurnout::setControlType(num); }
 inline void py_q_setDecoderName(QString  decoderName) { AbstractTurnout::setDecoderName(decoderName); }
-inline void py_q_setDivergingSpeed(QString  s) const throw(JmriException)  { AbstractTurnout::setDivergingSpeed(s); }
-inline void py_q_setFeedbackMode(QString  mode) throw(IllegalArgumentException)  { AbstractTurnout::setFeedbackMode(mode); }
-inline void py_q_setFeedbackMode(int  mode) throw(IllegalArgumentException)  { AbstractTurnout::setFeedbackMode(mode); }
+inline void py_q_setDivergingSpeed(QString  s) const { AbstractTurnout::setDivergingSpeed(s); }
+inline void py_q_setFeedbackMode(QString  mode) { AbstractTurnout::setFeedbackMode(mode); }
+inline void py_q_setFeedbackMode(int  mode) { AbstractTurnout::setFeedbackMode(mode); }
 inline void py_q_setFollowingCommandedState(bool  following) { AbstractTurnout::setFollowingCommandedState(following); }
 inline void py_q_setInhibitOperation(bool  io) { AbstractTurnout::setInhibitOperation(io); }
 inline void py_q_setInitialKnownStateFromFeedback() { AbstractTurnout::setInitialKnownStateFromFeedback(); }
@@ -1182,10 +1180,10 @@ inline void py_q_setLocked(int  turnoutLockout, bool  locked) { AbstractTurnout:
 inline void py_q_setNumberOutputBits(int  num) { AbstractTurnout::setNumberOutputBits(num); }
 inline void py_q_setReportLocked(bool  reportLocked) { AbstractTurnout::setReportLocked(reportLocked); }
 inline void py_q_setState(int  s) { AbstractTurnout::setState(s); }
-inline void py_q_setStraightSpeed(QString  s) const throw(JmriException)  { AbstractTurnout::setStraightSpeed(s); }
+inline void py_q_setStraightSpeed(QString  s) const { AbstractTurnout::setStraightSpeed(s); }
 inline void py_q_setTurnoutOperation(TurnoutOperation*  toper) { AbstractTurnout::setTurnoutOperation(toper); }
 inline void py_q_turnoutPushbuttonLockout(bool  locked) { AbstractTurnout::turnoutPushbuttonLockout(locked); }
-inline void py_q_vetoableChange(PropertyChangeEvent*  evt) throw (PropertyVetoException) { AbstractTurnout::vetoableChange(evt); }
+inline void py_q_vetoableChange(PropertyChangeEvent*  evt) { AbstractTurnout::vetoableChange(evt); }
 };
 
 class PythonQtWrapper_AbstractTurnout : public QObject
@@ -1269,10 +1267,10 @@ void delete_AbstractTurnout(AbstractTurnout* obj) { delete obj; }
    void newKnownState(AbstractTurnout* theWrappedObject, int  s);
    void operationPropertyChange(AbstractTurnout* theWrappedObject, PropertyChangeEvent*  evt);
    void py_q_propertyChange(AbstractTurnout* theWrappedObject, PropertyChangeEvent*  evt){  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_propertyChange(evt));}
-   void provideFirstFeedbackSensor(AbstractTurnout* theWrappedObject, QString  pName) throw(JmriException) ;
-   void py_q_provideFirstFeedbackSensor(AbstractTurnout* theWrappedObject, QString  pName) throw(JmriException) {  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_provideFirstFeedbackSensor(pName));}
-   void provideSecondFeedbackSensor(AbstractTurnout* theWrappedObject, QString  pName) throw(JmriException) ;
-   void py_q_provideSecondFeedbackSensor(AbstractTurnout* theWrappedObject, QString  pName) throw(JmriException) {  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_provideSecondFeedbackSensor(pName));}
+   void provideFirstFeedbackSensor(AbstractTurnout* theWrappedObject, QString  pName);
+   void py_q_provideFirstFeedbackSensor(AbstractTurnout* theWrappedObject, QString  pName){  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_provideFirstFeedbackSensor(pName));}
+   void provideSecondFeedbackSensor(AbstractTurnout* theWrappedObject, QString  pName);
+   void py_q_provideSecondFeedbackSensor(AbstractTurnout* theWrappedObject, QString  pName){  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_provideSecondFeedbackSensor(pName));}
    void requestUpdateFromLayout(AbstractTurnout* theWrappedObject);
    void py_q_requestUpdateFromLayout(AbstractTurnout* theWrappedObject){  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_requestUpdateFromLayout());}
    QObject*  self(AbstractTurnout* theWrappedObject);
@@ -1288,12 +1286,12 @@ void delete_AbstractTurnout(AbstractTurnout* obj) { delete obj; }
    void py_q_setControlType(AbstractTurnout* theWrappedObject, int  num){  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_setControlType(num));}
    void setDecoderName(AbstractTurnout* theWrappedObject, QString  decoderName);
    void py_q_setDecoderName(AbstractTurnout* theWrappedObject, QString  decoderName){  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_setDecoderName(decoderName));}
-   void setDivergingSpeed(AbstractTurnout* theWrappedObject, QString  s) const throw(JmriException) ;
-   void py_q_setDivergingSpeed(AbstractTurnout* theWrappedObject, QString  s) const throw(JmriException) {  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_setDivergingSpeed(s));}
-   void setFeedbackMode(AbstractTurnout* theWrappedObject, QString  mode) throw(IllegalArgumentException) ;
-   void py_q_setFeedbackMode(AbstractTurnout* theWrappedObject, QString  mode) throw(IllegalArgumentException) {  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_setFeedbackMode(mode));}
-   void setFeedbackMode(AbstractTurnout* theWrappedObject, int  mode) throw(IllegalArgumentException) ;
-   void py_q_setFeedbackMode(AbstractTurnout* theWrappedObject, int  mode) throw(IllegalArgumentException) {  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_setFeedbackMode(mode));}
+   void setDivergingSpeed(AbstractTurnout* theWrappedObject, QString  s) const;
+   void py_q_setDivergingSpeed(AbstractTurnout* theWrappedObject, QString  s) const{  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_setDivergingSpeed(s));}
+   void setFeedbackMode(AbstractTurnout* theWrappedObject, QString  mode);
+   void py_q_setFeedbackMode(AbstractTurnout* theWrappedObject, QString  mode){  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_setFeedbackMode(mode));}
+   void setFeedbackMode(AbstractTurnout* theWrappedObject, int  mode);
+   void py_q_setFeedbackMode(AbstractTurnout* theWrappedObject, int  mode){  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_setFeedbackMode(mode));}
    void setFollowingCommandedState(AbstractTurnout* theWrappedObject, bool  following);
    void py_q_setFollowingCommandedState(AbstractTurnout* theWrappedObject, bool  following){  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_setFollowingCommandedState(following));}
    void setInhibitOperation(AbstractTurnout* theWrappedObject, bool  io);
@@ -1315,15 +1313,15 @@ void delete_AbstractTurnout(AbstractTurnout* obj) { delete obj; }
    void py_q_setReportLocked(AbstractTurnout* theWrappedObject, bool  reportLocked){  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_setReportLocked(reportLocked));}
    void setState(AbstractTurnout* theWrappedObject, int  s);
    void py_q_setState(AbstractTurnout* theWrappedObject, int  s){  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_setState(s));}
-   void setStraightSpeed(AbstractTurnout* theWrappedObject, QString  s) const throw(JmriException) ;
-   void py_q_setStraightSpeed(AbstractTurnout* theWrappedObject, QString  s) const throw(JmriException) {  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_setStraightSpeed(s));}
+   void setStraightSpeed(AbstractTurnout* theWrappedObject, QString  s) const;
+   void py_q_setStraightSpeed(AbstractTurnout* theWrappedObject, QString  s) const{  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_setStraightSpeed(s));}
    void setTurnoutOperation(AbstractTurnout* theWrappedObject, TurnoutOperation*  toper);
    void py_q_setTurnoutOperation(AbstractTurnout* theWrappedObject, TurnoutOperation*  toper){  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_setTurnoutOperation(toper));}
    void turnoutPushbuttonLockout(AbstractTurnout* theWrappedObject);
    void turnoutPushbuttonLockout(AbstractTurnout* theWrappedObject, bool  locked);
    void py_q_turnoutPushbuttonLockout(AbstractTurnout* theWrappedObject, bool  locked){  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_turnoutPushbuttonLockout(locked));}
-   void vetoableChange(AbstractTurnout* theWrappedObject, PropertyChangeEvent*  evt) throw (PropertyVetoException);
-   void py_q_vetoableChange(AbstractTurnout* theWrappedObject, PropertyChangeEvent*  evt) throw (PropertyVetoException){  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_vetoableChange(evt));}
+   void vetoableChange(AbstractTurnout* theWrappedObject, PropertyChangeEvent*  evt);
+   void py_q_vetoableChange(AbstractTurnout* theWrappedObject, PropertyChangeEvent*  evt){  (((PythonQtPublicPromoter_AbstractTurnout*)theWrappedObject)->py_q_vetoableChange(evt));}
 };
 
 
@@ -1359,7 +1357,7 @@ virtual int  getXMLOrder() const;
 virtual bool  isControlTypeSupported(QString  systemName);
 virtual bool  isNumControlBitsSupported(QString  systemName);
 virtual Turnout*  newTurnout(QString  systemName, QString  userName) const;
-virtual Turnout*  provide(QString  name) const throw (IllegalArgumentException) ;
+virtual Turnout*  provide(QString  name) const;
 virtual Turnout*  provideTurnout(QString  name) const;
 virtual void setDefaultClosedSpeed(QString  speed) const;
 virtual void setDefaultThrownSpeed(QString  speed) const;
@@ -1468,7 +1466,7 @@ virtual int  compareTo(NamedBean*  n2);
 virtual void customEvent(QEvent*  event);
 virtual QString  describeState(int  state);
 virtual void dispose();
-virtual bool  equals(NamedBean*  obj);
+virtual bool  equals(QObject*  obj);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual QString  getBeanType();
@@ -1551,7 +1549,7 @@ virtual int  compareTo(NamedBean*  n2);
 virtual void customEvent(QEvent*  event);
 virtual QString  describeState(int  state);
 virtual void dispose();
-virtual bool  equals(NamedBean*  obj);
+virtual bool  equals(QObject*  obj);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual QString  getBeanType();
@@ -1682,7 +1680,7 @@ virtual int  compareTo(NamedBean*  n2);
 virtual void customEvent(QEvent*  event);
 virtual QString  describeState(int  state);
 virtual void dispose();
-virtual bool  equals(NamedBean*  obj);
+virtual bool  equals(QObject*  obj);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual QString  getBeanType();
@@ -1893,7 +1891,7 @@ virtual int  compareTo(NamedBean*  n2);
 virtual void customEvent(QEvent*  event);
 virtual QString  describeState(int  state);
 virtual void dispose();
-virtual bool  equals(NamedBean*  obj);
+virtual bool  equals(QObject*  obj);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual void fadeIn();
@@ -2645,7 +2643,7 @@ virtual int  compareTo(NamedBean*  n2);
 virtual void customEvent(QEvent*  event);
 virtual QString  describeState(int  state);
 virtual void dispose();
-virtual bool  equals(NamedBean*  obj);
+virtual bool  equals(QObject*  obj);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual QString  getBeanType();
@@ -2688,7 +2686,7 @@ virtual void vetoableChange(PropertyChangeEvent*  arg__1);
 
 class PythonQtPublicPromoter_Block : public Block
 { public:
-inline bool  py_q_equals(NamedBean*  obj) { return Block::equals(obj); }
+inline bool  py_q_equals(QObject*  obj) { return Block::equals(obj); }
 inline QString  py_q_getBeanType() { return Block::getBeanType(); }
 inline int  py_q_getState() { return Block::getState(); }
 inline void py_q_goingActive() { Block::goingActive(); }
@@ -2708,7 +2706,7 @@ Block* new_Block(QString  systemName, QString  userName = "", QObject*  parent =
 void delete_Block(Block* obj) { delete obj; } 
    void addBlockDenyList(Block* theWrappedObject, Block*  blk);
    void addBlockDenyList(Block* theWrappedObject, QString  pName);
-   bool  py_q_equals(Block* theWrappedObject, NamedBean*  obj){  return (((PythonQtPublicPromoter_Block*)theWrappedObject)->py_q_equals(obj));}
+   bool  py_q_equals(Block* theWrappedObject, QObject*  obj){  return (((PythonQtPublicPromoter_Block*)theWrappedObject)->py_q_equals(obj));}
    QString  py_q_getBeanType(Block* theWrappedObject){  return (((PythonQtPublicPromoter_Block*)theWrappedObject)->py_q_getBeanType());}
    QString  getBlockSpeed(Block* theWrappedObject);
    int  getCurvature(Block* theWrappedObject);
@@ -2770,7 +2768,7 @@ virtual QString  getNamedBeanClass() const;
 virtual QString  getSystemPrefix() const;
 virtual int  getXMLOrder() const;
 virtual void propertyChange(PropertyChangeEvent*  e);
-virtual Block*  provide(QString  name) const throw (IllegalArgumentException) ;
+virtual Block*  provide(QString  name) const;
 virtual QObject*  self();
 virtual char  typeLetter() const;
 
@@ -2786,7 +2784,7 @@ inline QString  py_q_getNamedBeanClass() const { return BlockManager::getNamedBe
 inline QString  py_q_getSystemPrefix() const { return BlockManager::getSystemPrefix(); }
 inline int  py_q_getXMLOrder() const { return BlockManager::getXMLOrder(); }
 inline void py_q_propertyChange(PropertyChangeEvent*  e) { BlockManager::propertyChange(e); }
-inline Block*  py_q_provide(QString  name) const throw (IllegalArgumentException)  { return BlockManager::provide(name); }
+inline Block*  py_q_provide(QString  name) const { return BlockManager::provide(name); }
 inline QObject*  py_q_self() { return BlockManager::self(); }
 inline char  py_q_typeLetter() const { return BlockManager::typeLetter(); }
 };
@@ -2815,8 +2813,8 @@ void delete_BlockManager(BlockManager* obj) { delete obj; }
    int  py_q_getXMLOrder(BlockManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_BlockManager*)theWrappedObject)->py_q_getXMLOrder());}
    bool  isSavedPathInfo(BlockManager* theWrappedObject);
    void py_q_propertyChange(BlockManager* theWrappedObject, PropertyChangeEvent*  e){  (((PythonQtPublicPromoter_BlockManager*)theWrappedObject)->py_q_propertyChange(e));}
-   Block*  provide(BlockManager* theWrappedObject, QString  name) const throw (IllegalArgumentException) ;
-   Block*  py_q_provide(BlockManager* theWrappedObject, QString  name) const throw (IllegalArgumentException) {  return (((PythonQtPublicPromoter_BlockManager*)theWrappedObject)->py_q_provide(name));}
+   Block*  provide(BlockManager* theWrappedObject, QString  name) const;
+   Block*  py_q_provide(BlockManager* theWrappedObject, QString  name) const{  return (((PythonQtPublicPromoter_BlockManager*)theWrappedObject)->py_q_provide(name));}
    Block*  provideBlock(BlockManager* theWrappedObject, QString  name) const;
    QObject*  self(BlockManager* theWrappedObject);
    QObject*  py_q_self(BlockManager* theWrappedObject){  return (((PythonQtPublicPromoter_BlockManager*)theWrappedObject)->py_q_self());}
@@ -3108,8 +3106,8 @@ virtual bool  getF8();
 virtual bool  getF8Momentary();
 virtual bool  getF9();
 virtual bool  getF9Momentary();
-virtual bool  getFunction(int  functionNum);
-virtual bool  getFunctionMomentary(int  fN);
+virtual bool  getFunction(int  arg__1);
+virtual bool  getFunctionMomentary(int  arg__1);
 virtual QVector<bool >  getFunctions();
 virtual QVector<bool >  getFunctionsMomentary();
 virtual bool  getIsForward();
@@ -3177,13 +3175,13 @@ virtual void setF8(bool  arg__1);
 virtual void setF8Momentary(bool  arg__1);
 virtual void setF9(bool  arg__1);
 virtual void setF9Momentary(bool  arg__1);
-virtual void setFunction(int  functionNum, bool  newState);
-virtual void setFunctionMomentary(int  momFuncNum, bool  state);
+virtual void setFunction(int  arg__1, bool  arg__2);
+virtual void setFunctionMomentary(int  arg__1, bool  arg__2);
 virtual void setIsForward(bool  arg__1);
 virtual void setRosterEntry(BasicRosterEntry*  arg__1);
 virtual void setSpeedSetting(float  arg__1);
-virtual void setSpeedSetting(float  speed, bool  allowDuplicates, bool  allowDuplicatesOnStop);
-virtual void setSpeedSettingAgain(float  speed);
+virtual void setSpeedSetting(float  arg__1, bool  arg__2, bool  arg__3);
+virtual void setSpeedSettingAgain(float  arg__1);
 
   PythonQtInstanceWrapper* _wrapper; 
 };

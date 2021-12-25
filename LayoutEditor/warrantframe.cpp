@@ -1621,7 +1621,7 @@ endResetModel();
  try {
      f->initComponents();
      f->concatenate(_saveWarrant, NULL);
- } catch (Exception ex) {
+ } catch (Exception* ex) {
      log->error("error making CreateWarrantFrame"/*, ex*/);
  }
  dispose();
@@ -1872,7 +1872,7 @@ if(role == Qt::EditRole || role == Qt::DisplayRole)
                  } else {
                      ts->setCommand(cmd);
                  }
-             } catch (Exception e) {
+             } catch (Exception* e) {
                  msg = tr("Function Keys are labeled from F0 to F28. ");
              }
          } else if (cmd.startsWith("LOCKF")) {
@@ -1883,7 +1883,7 @@ if(role == Qt::EditRole || role == Qt::DisplayRole)
                  } else {
                      ts->setCommand(cmd);
                  }
-             } catch (Exception e) {
+             } catch (Exception* e) {
                  msg = tr("Function Key Locks (to non-momentary) are labeled from LockF0 to LockF28.");
              }
          } else if ("NOOP"==(cmd)) {
@@ -1916,7 +1916,7 @@ if(role == Qt::EditRole || role == Qt::DisplayRole)
                  if (speed < 0.0f || 1.0f < speed) {
                      msg = tr("Speed must be a number from 0.0 to 1.0");
                  }
-             } catch (Exception e) {
+             } catch (Exception* e) {
                  msg = tr("Speed must be a number from 0.0 to 1.0");
              }
              ts->setValue(value.toString());
@@ -1938,7 +1938,7 @@ if(role == Qt::EditRole || role == Qt::DisplayRole)
                          break;
                  }
                  msg = tr("StepMode must be 14, 27, 28, or 128.");
-             } catch (Exception e) {
+             } catch (Exception* e) {
                  msg = tr("Invalid Number");
              }
              ts->setValue(QString::number(stepMode));
@@ -1946,21 +1946,21 @@ if(role == Qt::EditRole || role == Qt::DisplayRole)
           {
 //                try {
 //                    Boolean.parseBoolean(value.totring());
-//                } catch (Exception e) {
+//                } catch (Exception* e) {
 //                    msg = tr("invalid Boolean.  Please enter true or false.");
 //                }
              ts->setValue(value.toString());
          } else if (cmd.startsWith("F")) {
 //                try {
 //                    Boolean.parseBoolean(value.totring());
-//                } catch (Exception e) {
+//                } catch (Exception* e) {
 //                    msg = tr("invalidBoolean");
 //                }
              ts->setValue(value.toString());
          } else if (cmd.startsWith("LOCKF")) {
 //                try {
 //                    Boolean.parseBoolean(value.totring());
-//                } catch (Exception e) {
+//                } catch (Exception* e) {
 //                    msg = tr("invalidBoolean");
 //                }
              ts->setValue(value.toString());
@@ -2004,8 +2004,8 @@ if(role == Qt::EditRole || role == Qt::DisplayRole)
               } else {
                   msg = tr("Sensor \"%1\" not found.").arg(value.toString());
               }
-          } catch (Exception ex) {
-              msg = tr("Sensor \"%1\" not found.").arg(value.toString()) + ex.getMessage();
+          } catch (Exception* ex) {
+              msg = tr("Sensor \"%1\" not found.").arg(value.toString()) + ex->getMessage();
           }
       }
       else if ("NOOP" == (cmd))
@@ -2023,8 +2023,8 @@ if(role == Qt::EditRole || role == Qt::DisplayRole)
            } else {
                msg = tr("Warrant \"%1\" not found.").arg(value.toString());
            }
-       } catch (Exception ex) {
-           msg = tr("Warrant \"%1\" not found.").arg(value.toString()) + ex.getMessage();
+       } catch (Exception* ex) {
+           msg = tr("Warrant \"%1\" not found.").arg(value.toString()) + ex->getMessage();
        }
       }
       else {

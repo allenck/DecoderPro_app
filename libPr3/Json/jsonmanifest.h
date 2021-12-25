@@ -14,7 +14,7 @@ public:
  //JsonManifest(QObject* parent = 0);
  /*public*/ JsonManifest(Train* train, QObject* parent = 0);
  /*public*/ File* getFile();
- /*public*/ void build() throw (IOException);
+ /*public*/ void build() /*throw (IOException)*/;
  /*public*/ QJsonArray getLocations();
 
 private:

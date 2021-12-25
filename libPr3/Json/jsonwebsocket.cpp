@@ -29,8 +29,8 @@ JsonWebSocket::JsonWebSocket(QObject *parent) : QObject(parent)
 //            /*public*/ boolean execute() {
 //                try {
 //                    JsonWebSocket.this->getConnection().sendMessage(JsonWebSocket.this->getConnection().getObjectMapper().createObjectNode().put(JSON.TYPE, JSON.GOODBYE));
-//                } catch (IOException e) {
-//                    log->warn("Unable to send goodbye while closing socket.\nError was {}", e.getMessage());
+//                } catch (IOException* e) {
+//                    log->warn("Unable to send goodbye while closing socket.\nError was {}", e->getMessage());
 //                }
 //                JsonWebSocket.this->getConnection().getSession().close();
 //                return true;
@@ -39,8 +39,8 @@ JsonWebSocket::JsonWebSocket(QObject *parent) : QObject(parent)
         shutDownTask = new JWSShutdownTask("Close open web socket", this);
         log->debug("Sending hello");
         this->handler->onMessage(JsonClientHandler::HELLO_MSG);
-    } catch (IOException e) {
-        log->warn(tr("Error opening WebSocket:\n%1").arg(e.getMessage()));
+    } catch (IOException* e) {
+        log->warn(tr("Error opening WebSocket:\n%1").arg(e->getMessage()));
         sn->close();
     }
     ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->_register(this->shutDownTask);
@@ -56,8 +56,8 @@ JWSShutdownTask::JWSShutdownTask(QString text, JsonWebSocket *jws) : QuietShutDo
   QJsonObject obj = QJsonObject();
   obj.insert(JSON::TYPE, JSON::GOODBYE);
         jws->getConnection()->sendMessage(QJsonValue(obj));
-    } catch (IOException e) {
-        jws->log->warn(tr("Unable to send goodbye while closing socket.\nError was %1").arg(e.getMessage()));
+    } catch (IOException* e) {
+        jws->log->warn(tr("Unable to send goodbye while closing socket.\nError was %1").arg(e->getMessage()));
     }
     jws->getConnection()->getSocket()->close();
     return true;

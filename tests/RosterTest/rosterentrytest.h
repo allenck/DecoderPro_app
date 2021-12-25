@@ -28,7 +28,7 @@ public slots:
     /*public*/ void testXmlLoadStore();
     /*public*/ void testXmlFunctionLabelsLoadStore();
     /*public*/ void testEnsureFilenameExistsNew();
-    /*public*/ void testEnsureFilenameExistsOld() throw (IOException);
+    /*public*/ void testEnsureFilenameExistsOld() /*throw (IOException)*/;
     /*public*/ void testNoAttribute();
     /*public*/ void testOneAttribute();
     /*public*/ void testReplaceAttribute();

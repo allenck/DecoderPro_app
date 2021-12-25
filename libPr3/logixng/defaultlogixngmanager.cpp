@@ -66,7 +66,7 @@
      */
     //@Override
     /*public*/ LogixNG* DefaultLogixNGManager::createLogixNG(QString systemName, QString userName)
-            throw (IllegalArgumentException) {
+            throw new (IllegalArgumentException) {
 
         // Check that LogixNG does not already exist
         LogixNG* x;
@@ -82,7 +82,7 @@
         }
         // Check if system name is valid
         if (this->validSystemNameFormat(systemName) != NameValidity::VALID) {
-            throw  IllegalArgumentException("SystemName " + systemName + " is not in the correct format");
+            throw new  IllegalArgumentException("SystemName " + systemName + " is not in the correct format");
         }
         // LogixNG does not exist, create a new LogixNG
         x = new DefaultLogixNG(systemName, userName);
@@ -96,7 +96,7 @@
     }
 
     //@Override
-    /*public*/ LogixNG* DefaultLogixNGManager::createLogixNG(QString userName) throw (IllegalArgumentException) {
+    /*public*/ LogixNG* DefaultLogixNGManager::createLogixNG(QString userName) throw new (IllegalArgumentException) {
         return createLogixNG(LogixNG_Manager::getAutoSystemName(), userName);
     }
 
@@ -305,7 +305,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/ void setLoadDisabled(bool s) {
-        throw UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /** {@inheritDoc} */
@@ -381,10 +381,10 @@
 
     /**
      * Inform all registered listeners of a vetoable change.If the propertyName
-     * is "CanDelete" ALL listeners with an interest in the bean will throw an
+     * is "CanDelete" ALL listeners with an interest in the bean will throw new an
      * exception, which is recorded returned back to the invoking method, so
      * that it can be presented back to the user.However if a listener decides
-     * that the bean can not be deleted then it should throw an exception with
+     * that the bean can not be deleted then it should throw new an exception with
      * a property name of "DoNotDelete", this is thrown back up to the user and
      * the delete process should be aborted.
      *
@@ -396,7 +396,7 @@
      *                                          delete to be aborted (see above)
      */
     //@OverridingMethodsMustInvokeSuper
-    /*public*/ void DefaultLogixNGManager::fireVetoableChange(QString p, QVariant old) throw (PropertyVetoException) {
+    /*public*/ void DefaultLogixNGManager::fireVetoableChange(QString p, QVariant old) throw new (PropertyVetoException) {
         PropertyChangeEvent* evt = new PropertyChangeEvent(this, p, old, QVariant());
         for (VetoableChangeListener* vc : vetoableChangeSupport->getVetoableChangeListeners()) {
             vc->vetoableChange(evt);
@@ -406,7 +406,7 @@
     /** {@inheritDoc} */
     //@Override
 //    @OverridingMethodsMustInvokeSuper
-    /*public*/ /*final*/ void DefaultLogixNGManager::deleteBean(/*@Nonnull*/ /*LogixNG*/ NamedBean* nb, /*@Nonnull*/  QString property) throw (PropertyVetoException) {
+    /*public*/ /*final*/ void DefaultLogixNGManager::deleteBean(/*@Nonnull*/ /*LogixNG*/ NamedBean* nb, /*@Nonnull*/  QString property) throw new (PropertyVetoException) {
      LogixNG*  logixNG =  (LogixNG*)nb;
      for (int i=0; i < logixNG->getNumConditionalNGs(); i++) {
             ConditionalNG* child = logixNG->getConditionalNG(i);

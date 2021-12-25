@@ -43,13 +43,13 @@
 }
 
 //@Override
-/*public*/ void JsonRosterSocketService::onMessage(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException)
+/*public*/ void JsonRosterSocketService::onMessage(QString type, QJsonObject data, QLocale locale) /*throw new (IOException, JmriException, JsonException)*/
 {
  QString method = data.value(JSON::METHOD).toString();
  if (method== JSON::DELETE)
-   throw  JsonException(HttpServletResponse::SC_METHOD_NOT_ALLOWED, tr("Deleting %1 is not allowed.").arg(type));
+   throw new  JsonException(HttpServletResponse::SC_METHOD_NOT_ALLOWED, tr("Deleting %1 is not allowed.").arg(type));
  else if (method== JSON::POST || method == JSON::PUT)
-         throw JsonException(HttpServletResponse::SC_NOT_IMPLEMENTED, tr("Method %1 not implemented for type %2.").arg(method).arg(type));
+         throw new JsonException(HttpServletResponse::SC_NOT_IMPLEMENTED, tr("Method %1 not implemented for type %2.").arg(method).arg(type));
  else if (method== JSON::GET)
  {
   if(type == JsonRoster::ROSTER)
@@ -69,14 +69,14 @@
    this->connection->sendMessage(this->service->getRosterGroups(locale));}
   else
   {
-   throw JsonException(HttpServletResponse::SC_INTERNAL_SERVER_ERROR, tr("Unknown object type %1 was requested.").arg(type));
+   throw new JsonException(HttpServletResponse::SC_INTERNAL_SERVER_ERROR, tr("Unknown object type %1 was requested.").arg(type));
   }
  }
  this->listen();
 }
 
 //@Override
-/*public*/ void JsonRosterSocketService::onList(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException) {
+/*public*/ void JsonRosterSocketService::onList(QString type, QJsonObject data, QLocale locale) /*throw new (IOException, JmriException, JsonException)*/ {
     this->connection->sendMessage(service->doGetList(type, locale));
     this->listen();
 }

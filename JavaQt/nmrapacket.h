@@ -75,7 +75,7 @@ public:
     static /*public*/ int extractAddressNumber(QByteArray packet);
     static /*public*/ int extractInstruction(QByteArray packet);
     static /*public*/ QString format(QByteArray p);
-    static /*public*/ QString toString(QByteArray p) throw (IllegalArgumentException);
+    static /*public*/ QString toString(QByteArray p) /*throw (IllegalArgumentException)*/;
 
 private:
     static Logger* log;// = LoggerFactory:.getLogger("NmraPacket");

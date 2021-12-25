@@ -74,7 +74,7 @@ if (i < 1) {
 /*public*/ int AbstractMRMessage::getOpCode() {
     try {
         return _dataChars[0];
-    } catch(ArrayIndexOutOfBoundsException e) {
+    } catch(ArrayIndexOutOfBoundsException* e) {
         return 0;
     }
 }

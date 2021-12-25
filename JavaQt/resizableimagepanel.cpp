@@ -251,7 +251,7 @@ void ResizableImagePanel::common()
 
 //override paintComponent
 //@Override
-/*protected*/ void ResizableImagePanel::paintEvent(QPaintEvent* e)
+/*protected*/ void ResizableImagePanel::paintEvent(QPaintEvent* /*e*/)
 {
  QPainter painter;
  painter.begin(this);
@@ -291,8 +291,8 @@ void ResizableImagePanel::common()
           && ((size().width() != image.width()) || (size().height() != image.height()))) {
       int newW = (int) size().width();
       int newH = (int) size().height();
-      int new0x = 0;
-      int new0y = 0;
+//      int new0x = 0;
+//      int new0y = 0;
       log->debug(tr("Actually resizing image %1 from %4x%%5 to %2x%3").arg(this->getImagePath()).arg(newW).arg(newH).arg(image.width()).arg(image.height()));
 #if 0
       scaledImage = new QImage(newW, newH, image.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : image.getType());

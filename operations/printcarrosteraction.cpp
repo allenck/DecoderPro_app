@@ -237,7 +237,7 @@ namespace Operations
 
          // and force completion of the printing
          writer->close();
-//     } catch (IOException we) {
+//     } catch (IOException* we) {
 //         log.error("Error printing car roster");
 //     }
  }

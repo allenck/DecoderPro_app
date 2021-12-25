@@ -223,7 +223,7 @@ ZeroConfServiceManager::ZeroConfServiceManager(QObject *parent) : QObject(parent
                     }
                     event = new ZeroConfServiceEvent(service, dns);
                 } catch (IOException* ex) {
-                    log.error("Unable to publish service for '{}': {}", service.getKey(), ex.getMessage());
+                    log.error("Unable to publish service for '{}': {}", service.getKey(), ex->getMessage());
                     continue;
                 }
                 service.getListeners().stream().forEach((listener) -> {
@@ -257,7 +257,7 @@ ZeroConfServiceManager::ZeroConfServiceManager(QObject *parent) : QObject(parent
                         log.debug("{} already unregistered from {}", service.getKey(), address);
                     }
                 } catch (IOException* ex) {
-                    log.error("Unable to stop ZeroConfService {}. {}", service.getKey(), ex.getLocalizedMessage());
+                    log.error("Unable to stop ZeroConfService {}. {}", service.getKey(), ex->getLocalizedMessage());
                 }
             });
             services.remove(service.getKey());
@@ -293,7 +293,7 @@ ZeroConfServiceManager::ZeroConfServiceManager(QObject *parent) : QObject(parent
                     try {
                         dns.close();
                     } catch (IOException* ex) {
-                        log.debug("jmdns.close() returned IOException: {}", ex.getMessage());
+                        log.debug("jmdns.close() returned IOException: {}", ex->getMessage());
                     }
                 }
                 nsLatch.countDown();
@@ -341,7 +341,7 @@ ZeroConfServiceManager::ZeroConfServiceManager(QObject *parent) : QObject(parent
                                 try {
                                     JMDNS_SERVICES.put(address, JmDNS.create(address, name));
                                 } catch (IOException* ex) {
-                                    log.warn("Unable to create JmDNS with error: {}", ex.getMessage(), ex);
+                                    log.warn("Unable to create JmDNS with error: {}", ex->getMessage(), ex);
                                 }
                             }
                         }
@@ -570,7 +570,7 @@ ZeroConfServiceManager::ZeroConfServiceManager(QObject *parent) : QObject(parent
 //                            });
 //                        }
 //                    } catch (IOException* ex) {
-//                        log.error(ex.getLocalizedMessage(), ex);
+//                        log.error(ex->getLocalizedMessage(), ex);
 //                    }
 //                });
         //for(QZeroConfService* service : QZeroConfService::)

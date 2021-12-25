@@ -232,7 +232,7 @@ public:
      * @param r PullResistance value to use.
      */
     //@InvokeOnLayoutThread
-    /*public*/ virtual void setPullResistance(PullResistance::PULLRESISTANCE r) {}
+    /*public*/ virtual void setPullResistance(PullResistance::PULLRESISTANCE /*r*/) {}
 
     /**
      * Get the pull resistance

@@ -26,8 +26,8 @@ public:
     int registerFromCV(int cv); // throws ProgrammerException
     /*public synchronized */virtual void addPropertyChangeListener(PropertyChangeListener* l);
     /*public synchronized*/ virtual void removePropertyChangeListener(PropertyChangeListener* l);
-//    /*public*/ void writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
-    /*public*/ virtual void readCV(QString /*CV*/, ProgListener* /*p*/) throw (ProgrammerException) {}
+//    /*public*/ void writeCV(QString CV, int val, ProgListener* p) /*throw (ProgrammerException)*/;
+    /*public*/ virtual void readCV(QString /*CV*/, ProgListener* /*p*/) /*throw (ProgrammerException)*/ {}
 //    /*public*/ void confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
     /*public*/ bool getCanRead();
     /*public*/ bool getCanRead(QString addr);

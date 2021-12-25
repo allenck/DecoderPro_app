@@ -26,8 +26,8 @@
 //            this->manager.requestUpdateFromLayout();
 //            try {
 //                (new ConsistFile()).readFile();
-//            } catch (JDOMException | IOException ex) {
-//                log.warn("Error reading consist file {} due to {}", ConsistFile.defaultConsistFilename(), ex.getMessage());
+//            } catch (JDOMException* | IOException ex) {
+//                log.warn("Error reading consist file {} due to {}", ConsistFile.defaultConsistFilename(), ex->getMessage());
 //            }
 //        }
 //    });
@@ -41,11 +41,11 @@
         try {
             (new ConsistFile())->readFile();
         }
-     catch (JDOMException ex ) {
-            log->warn(tr("Error reading consist file %1 due to %2").arg( ConsistFile::defaultConsistFilename()).arg(ex.getMessage()));
+     catch (JDOMException* ex ) {
+            log->warn(tr("Error reading consist file %1 due to %2").arg( ConsistFile::defaultConsistFilename()).arg(ex->getMessage()));
         }
-     catch ( IOException ex) {
-            log->warn(tr("Error reading consist file %1 due to %2").arg( ConsistFile::defaultConsistFilename()).arg(ex.getMessage()));
+     catch ( IOException* ex) {
+            log->warn(tr("Error reading consist file %1 due to %2").arg( ConsistFile::defaultConsistFilename()).arg(ex->getMessage()));
         }
 
     }
@@ -144,11 +144,11 @@ void JsonConsistManager::propertyChange(PropertyChangeEvent* evt)
   this->manager->requestUpdateFromLayout();
   try {
       (new ConsistFile())->readFile();
-  } catch (JDOMException  ex) {
-      log->warn(tr("Error reading consist file %1 due to %2").arg(ConsistFile::defaultConsistFilename()).arg(ex.getMessage()));
+  } catch (JDOMException*  ex) {
+      log->warn(tr("Error reading consist file %1 due to %2").arg(ConsistFile::defaultConsistFilename()).arg(ex->getMessage()));
   }
-  catch ( IOException ex) {
-        log->warn(tr("Error reading consist file %1 due to %2").arg(ConsistFile::defaultConsistFilename()).arg(ex.getMessage()));
+  catch ( IOException* ex) {
+        log->warn(tr("Error reading consist file %1 due to %2").arg(ConsistFile::defaultConsistFilename()).arg(ex->getMessage()));
     }
  }
 }

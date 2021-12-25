@@ -122,7 +122,7 @@ Siglet(parent) {
     try {
         // execute the handle routine in the jython
         exec.invoke(interp, new Object[]{"setOutput()"});
-    } catch (Exception e) {
+    } catch (Exception* e) {
         log->error("Exception invoking jython command: " + e);
         //e.printStackTrace();
     }

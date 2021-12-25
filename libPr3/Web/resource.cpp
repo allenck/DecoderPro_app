@@ -104,7 +104,7 @@ Resource::__defaultUseCaches = true;
                 FileResource fileResource= new FileResource(url);
                 return fileResource;
             }
-            catch(Exception e)
+            catch(Exception* e)
             {
                 LOG.warn(e.toString());
                 LOG.debug(Log.EXCEPTION,e);
@@ -134,7 +134,7 @@ Resource::__defaultUseCaches = true;
      * @return A Resource object.
      */
     /*public*/ /*static*/ Resource* Resource::newResource(QString resource)
-        throw (MalformedURLException)
+//        throw  (MalformedURLException)
     {
      stringResource = resource;
         return newResource(resource, __defaultUseCaches);
@@ -148,7 +148,7 @@ Resource::__defaultUseCaches = true;
      * @throws MalformedURLException Problem accessing URI
      */
     /*public*/ /*static*/ Resource* Resource::newResource(QString resource, bool /*useCaches*/)
-        throw (MalformedURLException)
+//        throw new (MalformedURLException)
     {
         QUrl url;
         try
@@ -156,7 +156,7 @@ Resource::__defaultUseCaches = true;
             // Try to format as a URL?
             url =  QUrl(resource);
             if(!url.isValid())
-             throw MalformedURLException(tr("invalid url %s").arg(resource));
+             throw new MalformedURLException(tr("invalid url %s").arg(resource));
         }
         catch(MalformedURLException e)
         {
@@ -177,13 +177,13 @@ Resource::__defaultUseCaches = true;
                 catch(Exception e2)
                 {
                     LOG.debug(Log.EXCEPTION,e2);
-                    throw e;
+                    throw new e;
                 }
             }
             else
             {
                 LOG.warn("Bad Resource: "+resource);
-                throw e;
+                throw new e;
             }
 #endif
         }
@@ -359,7 +359,7 @@ Resource::__defaultUseCaches = true;
         {
             return getURL().toURI();
         }
-        catch(Exception e)
+        catch(Exception* e)
         {
             throw new RuntimeException(e);
         }
@@ -440,7 +440,7 @@ Resource::__defaultUseCaches = true;
         {
             return addPath(path);
         }
-        catch(Exception e)
+        catch(Exception* e)
         {
             LOG.debug(e);
             return null;
@@ -484,7 +484,7 @@ Resource::__defaultUseCaches = true;
      * @return String of HTML
      */
     /*public*/ QString Resource::getListHTML(QString base, bool parent)
-        throw (IOException)
+        /*throw new (IOException)*/
     {
         //base=URIUtil.canonicalPath(base);
 
@@ -665,7 +665,7 @@ Resource::__defaultUseCaches = true;
             b.append('"');
             return b.toString();
         }
-        catch (IOException e)
+        catch (IOException* e)
         {
             throw new RuntimeException(e);
         }
@@ -693,7 +693,7 @@ Resource::__defaultUseCaches = true;
             }
             return deep;
         }
-        catch(Exception e)
+        catch(Exception* e)
         {
             throw new IllegalStateException(e);
         }

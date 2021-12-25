@@ -242,13 +242,13 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
  {
   BlockValueFile().readBlockValues();
  }
- catch (JDOMException jde)
+ catch (JDOMException* jde)
  {
-  log.error("JDOM Exception when retreiving block values "+jde.getMessage());
+  log.error("JDOM Exception when retreiving block values "+jde->getMessage());
  }
- catch (IOException ioe)
+ catch (IOException* ioe)
  {
-  log.error("I/O Exception when retreiving block values "+ioe.getMessage());
+  log.error("I/O Exception when retreiving block values "+ioe->getMessage());
  }
 #endif
  // special tests for getFacingSignalHead method - comment out next three lines unless using LayoutEditorTests

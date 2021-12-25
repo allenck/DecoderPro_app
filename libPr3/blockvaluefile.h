@@ -10,7 +10,7 @@ class LIBPR3SHARED_EXPORT BlockValueFile : public XmlFile
 public:
     explicit BlockValueFile(QObject *parent = 0);
     /*public*/ void readBlockValues() throw (JDOMException, IOException);
-    /*public*/ void writeBlockValues() throw (IOException);
+    /*public*/ void writeBlockValues() /*throw (IOException)*/;
 
 signals:
 

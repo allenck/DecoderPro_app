@@ -340,7 +340,7 @@ JmriJFrame(parent)
          // and set commanded state to CLOSED
          light->setState(Light::OFF);
      }
- } catch (Exception ex) {
+ } catch (Exception* ex) {
      log->error(tr("offButtonActionPerformed, exception: ") /*+ ex.toString()*/);
      nowStateTextField->setText("ERROR");
  }
@@ -352,8 +352,8 @@ JmriJFrame(parent)
         try {
             // and set commanded state to ON
             light->setState(Light::OFF);
-        } catch (Exception ex) {
-            log->error(tr("%1%2").arg( tr("Error").arg(ex.getMessage())));
+        } catch (Exception* ex) {
+            log->error(tr("%1%2").arg( tr("Error").arg(ex->getMessage())));
             nowStateTextField->setText(tr("Error"));
         }
 #endif
@@ -390,7 +390,7 @@ JmriJFrame(parent)
    light->setState(Light::ON);
   }
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
   log->error(tr("LightErrorOnButtonException") /*+ ex.toString()*/);
   nowStateTextField->setText("ERROR");
@@ -403,8 +403,8 @@ JmriJFrame(parent)
   try {
       // and set commanded state to ON
       light->setState(Light::ON);
-  } catch (Exception ex) {
-      log->error(tr("%1%2").arg( tr("Error").arg(ex.getMessage())));
+  } catch (Exception* ex) {
+      log->error(tr("%1%2").arg( tr("Error").arg(ex->getMessage())));
       nowStateTextField->setText(tr("Error"));
   }
 #endif
@@ -438,7 +438,7 @@ JmriJFrame(parent)
    light->setTargetIntensity(intensityTextField->text().trimmed().toDouble() / 100);
   }
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
      log->error(tr("intensityButtonActionPerformed, exception: ")/* + ex.toString()*/);
      nowStateTextField->setText("ERROR");
@@ -472,7 +472,7 @@ JmriJFrame(parent)
             light->setTransitionTime(time);
             updateLightStatusFields(false);
         }
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log->error(tr("LightErrorApplyButtonException") /*+ ex.toString()*/);
         nowStateTextField->setText("ERROR");
     }
@@ -505,7 +505,7 @@ JmriJFrame(parent)
    updateLightStatusFields(true);
   }
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
      log->error(tr("statusButtonActionPerformed, exception: ") /*+ ex.toString()*/);
      nowStateTextField->setText("ERROR");
@@ -527,7 +527,7 @@ JmriJFrame(parent)
 //				light->PropertyChangeSupport::addPropertyChangeListener(this);
 //
 //			}
-//		} catch (Exception ex) {
+//		} catch (Exception* ex) {
 //			log->error("LockButtonActionPerformed, exception: "
 //							+ ex.toString());
 //			nowStateTextField->setText("ERROR");
@@ -548,7 +548,7 @@ JmriJFrame(parent)
 //				light->PropertyChangeSupport::addPropertyChangeListener(this);
 //
 //			}
-//		} catch (Exception ex) {
+//		} catch (Exception* ex) {
 //			log->error("LockPushButtonActionPerformed, exception: "
 //							+ ex.toString());
 //			nowStateTextField->setText("ERROR");

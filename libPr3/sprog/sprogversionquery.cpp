@@ -112,8 +112,8 @@ using namespace Sprog;
       disconnect(this, SIGNAL(do_notifyVersion(SprogVersion*)), listener, SLOT(notifyVersion(SprogVersion*)));
 
             versionListeners->removeOne(listener);
-        } catch (Exception e) {
-            log->warn(QString("notify: During dispatch to ") + QString(listener->metaObject()->className()) + "\nException " + e.getMessage());
+        } catch (Exception* e) {
+            log->warn(QString("notify: During dispatch to ") + QString(listener->metaObject()->className()) + "\nException " + e->getMessage());
         }
     }
 

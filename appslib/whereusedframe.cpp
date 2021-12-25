@@ -282,8 +282,8 @@
         // Create the file content
         try {
             FileUtil::appendTextToFile(file, _textArea->toHtml());
-        } catch (IOException e) {
-            log->error(tr("Unable to write where used content to '%1', exception: '%2'").arg(file->getName()).arg( e.getMessage()));  // NOI18N
+        } catch (IOException* e) {
+            log->error(tr("Unable to write where used content to '%1', exception: '%2'").arg(file->getName()).arg( e->getMessage()));  // NOI18N
         }
     }
 

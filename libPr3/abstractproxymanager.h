@@ -29,11 +29,11 @@ class LIBPR3SHARED_EXPORT AbstractProxyManager :  public AbstractManager
      * @param name
      * @return Null if nothing by that name exists
      */
-    virtual /*public*/ NamedBean* getNamedBean(QString name);
-    /*public*/ /*@Nonnull*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName) /*throw (NamedBean::BadSystemNameException)*/;
+    virtual /*public*/ NamedBean* getNamedBean(QString name)const override;
+    /*public*/ /*@Nonnull*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName) const/*throw (NamedBean::BadSystemNameException)*/override;
 
-    virtual /*public*/ NamedBean* getBeanBySystemName(QString systemName);
-    virtual /*public*/ NamedBean* getBeanByUserName(QString userName);
+    virtual /*public*/ NamedBean* getBeanBySystemName(QString systemName)const override;
+    virtual /*public*/ NamedBean* getBeanByUserName(QString userName)const override;
     /**
      * Return an instance with the specified system and user names.
      * Note that two calls with the same arguments will get the same instance;

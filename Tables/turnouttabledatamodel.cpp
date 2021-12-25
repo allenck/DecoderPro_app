@@ -604,8 +604,8 @@ TurnoutTableDataModel::TurnoutTableDataModel()
 //        try {
      t->setStraightSpeed(value.toString());
 //        } catch (JmriException* ex) {
-//            //JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + speed);
-//            QMessageBox::warning(NULL, tr("Warning"), ex.getMessage()+ "\n" + speed);
+//            //JOptionPane.showMessageDialog(NULL, ex->getMessage() + "\n" + speed);
+//            QMessageBox::warning(NULL, tr("Warning"), ex->getMessage()+ "\n" + speed);
 //            return;
 //        }
      QString speed = value.toString();
@@ -627,8 +627,8 @@ TurnoutTableDataModel::TurnoutTableDataModel()
 //    }
 //    catch (JmriException* ex)
 //    {
-//     //JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + speed);
-//        QMessageBox::warning(NULL, tr("Warning"), ex.getMessage()+ "\n" + speed);
+//     //JOptionPane.showMessageDialog(NULL, ex->getMessage() + "\n" + speed);
+//        QMessageBox::warning(NULL, tr("Warning"), ex->getMessage()+ "\n" + speed);
 //     return false;
 //    }
      QString speed = value.toString();

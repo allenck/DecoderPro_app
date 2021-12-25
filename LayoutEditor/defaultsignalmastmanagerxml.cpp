@@ -134,8 +134,8 @@ DefaultSignalMastManagerXml::DefaultSignalMastManagerXml(QObject *parent) :
        XmlAdapter* adapter = (XmlAdapter*) Class::forName(adapterName)->newInstance();
        // and do it
        adapter->load(e, QDomElement());
-   } catch (Exception ex) {
-       log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex.getMessage()), &ex);
+   } catch (Exception* ex) {
+       log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex->getMessage()), ex);
    }
   }
  }
@@ -152,8 +152,8 @@ DefaultSignalMastManagerXml::DefaultSignalMastManagerXml(QObject *parent) :
        XmlAdapter* adapter = (XmlAdapter*) Class::forName(adapterName)->newInstance();
        // and do it
        adapter->load(e, QDomElement());
-   } catch (Exception ex) {
-       log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex.getMessage()), &ex);
+   } catch (Exception* ex) {
+       log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex->getMessage()), ex);
    }
   }
  }
@@ -170,8 +170,8 @@ DefaultSignalMastManagerXml::DefaultSignalMastManagerXml(QObject *parent) :
         XmlAdapter* adapter = (XmlAdapter*) Class::forName(adapterName)->newInstance();
         // and do it
         adapter->load(e, QDomElement());
-    } catch (Exception ex) {
-     log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex.getMessage()), &ex);
+    } catch (Exception* ex) {
+     log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex->getMessage()), ex);
     }
   }
  }
@@ -186,8 +186,8 @@ DefaultSignalMastManagerXml::DefaultSignalMastManagerXml(QObject *parent) :
              XmlAdapter* adapter = (XmlAdapter*) Class::forName(adapterName)->newInstance();
              // and do it
              adapter->load(e, QDomElement());
-         } catch (Exception ex) {
-          log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex.getMessage()), &ex);
+         } catch (Exception* ex) {
+          log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex->getMessage()), ex);
          }
      }
  }
@@ -202,8 +202,8 @@ DefaultSignalMastManagerXml::DefaultSignalMastManagerXml(QObject *parent) :
              XmlAdapter* adapter = (XmlAdapter*) Class::forName(adapterName)->newInstance();
              // and do it
              adapter->load(e, QDomElement());
-         } catch (Exception ex) {
-          log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex.getMessage()), &ex);
+         } catch (Exception* ex) {
+          log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex->getMessage()), ex);
          }
      }
  }
@@ -218,8 +218,8 @@ DefaultSignalMastManagerXml::DefaultSignalMastManagerXml(QObject *parent) :
              XmlAdapter* adapter = (XmlAdapter*) Class::forName(adapterName)->newInstance();
              // and do it
              adapter->load(e, QDomElement());
-         } catch (Exception ex) {
-          log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex.getMessage()), &ex);
+         } catch (Exception* ex) {
+          log->error(tr("Exception while loading %1: %2").arg(e.tagName()).arg(ex->getMessage()), ex);
          }
      }
  }

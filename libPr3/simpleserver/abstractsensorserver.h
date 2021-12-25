@@ -13,9 +13,9 @@ class AbstractSensorServer : public QObject
  Q_OBJECT
 public:
  explicit AbstractSensorServer(QObject *parent = nullptr);
- /*abstract*/ virtual /*public*/ void sendStatus(QString sensor, int Status) throw (IOException) {}
+ /*abstract*/ virtual /*public*/ void sendStatus(QString sensor, int Status) /*throw (IOException)*/ {}
 
- /*abstract*/ virtual /*public*/ void sendErrorStatus(QString sensor) throw (IOException) {}
+ /*abstract*/ virtual /*public*/ void sendErrorStatus(QString sensor) /*throw (IOException)*/ {}
 
  /*abstract*/ virtual /*public*/ void parseStatus(QString statusString) throw (JmriException, IOException) {}
  /*public*/ Sensor* initSensor(QString sensorName) throw (IllegalArgumentException);

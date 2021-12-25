@@ -31,7 +31,7 @@
  * Protocol Specific Abstract Functions
  */
 //@Override
-/*public*/ void SimpleReporterServer::sendReport(QString reporterName, QVariant r) throw (IOException) {
+/*public*/ void SimpleReporterServer::sendReport(QString reporterName, QVariant r) /*throw (IOException)*/ {
     addReporterToList(reporterName);
     if (r != QVariant()) {
 //        if (r instanceof jmri.Reportable )
@@ -48,7 +48,7 @@
 }
 
 //@Override
-/*public*/ void SimpleReporterServer::sendErrorStatus(QString reporterName) throw (IOException) {
+/*public*/ void SimpleReporterServer::sendErrorStatus(QString reporterName) /*throw (IOException)*/ {
     this->sendMessage("REPORTER ERROR\n");
 }
 
@@ -78,7 +78,7 @@
     }
 }
 
-/*private*/ void SimpleReporterServer::sendMessage(QString message) throw (IOException) {
+/*private*/ void SimpleReporterServer::sendMessage(QString message) /*throw (IOException)*/ {
     if (this->output != nullptr) {
         this->output->writeBytes(message.toLocal8Bit().data(), message.length());
     } else {

@@ -330,7 +330,7 @@ QString AbstractNamedBean::getDisplayName()
  *         {@code false} otherwise.
  */
 //@Override
-/*public*/ bool AbstractNamedBean::equals(NamedBean* obj)
+/*public*/ bool AbstractNamedBean::equals(QObject* obj)
 {
  if (obj == this) return true;  // for efficiency
  if (obj == nullptr) return false; // by contract

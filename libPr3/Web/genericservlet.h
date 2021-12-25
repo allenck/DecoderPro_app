@@ -12,18 +12,18 @@ public:
  /*public*/ virtual void destroy();
  /*public*/ virtual QString getInitParameter(QString name);
  /*public*/ virtual QStringListIterator getInitParameterNames();
- /*public*/ virtual ServletConfig* getServletConfig();
+ /*public*/ ServletConfig* getServletConfig()override;
  /*public*/ virtual ServletContext* getServletContext();
  /*public*/ virtual QString getServletInfo() ;
- /*public*/ void init(ServletConfig* config) throw (ServletException);
+ /*public*/ void init(ServletConfig* config) /*throw (ServletException)*/override;
  /*public*/ virtual void log(QString msg) ;
  /*public*/ virtual void log(QString message, Throwable t);
  /*public*/ /*abstract*/virtual void service(ServletRequest* req, ServletResponse* res)
- throw (ServletException, IOException);
+ /*throw (ServletException, IOException)*/override;
  /*public*/ virtual QString getServletName();
 
-public slots:
- /*public*/ virtual void init() throw (ServletException);
+//public slots:
+ /*public*/ virtual void init() /*throw (ServletException)*/;
 
 private:
  /*private*/ /*transient*/ ServletConfig* config;

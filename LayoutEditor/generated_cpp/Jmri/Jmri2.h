@@ -54,7 +54,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmargins.h>
 #include <qmenu.h>
@@ -265,7 +264,7 @@ public:
 
 virtual void Register(NamedBean*  arg__1) const;
 virtual void addDataListener(QObject*  e);
-virtual void deleteBean(NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException) ;
+virtual void deleteBean(NamedBean*  arg__1, QString  arg__2);
 virtual void deregister(NamedBean*  arg__1) const;
 virtual void dispose();
 virtual NamedBean*  getBeanBySystemName(QString  arg__1) const;
@@ -301,7 +300,7 @@ class PythonQtPublicPromoter_Manager : public Manager
 { public:
 inline void py_q_Register(NamedBean*  arg__1) const { Manager::Register(arg__1); }
 inline void py_q_addDataListener(QObject*  e) { Manager::addDataListener(e); }
-inline void py_q_deleteBean(NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException)  { Manager::deleteBean(arg__1, arg__2); }
+inline void py_q_deleteBean(NamedBean*  arg__1, QString  arg__2) { Manager::deleteBean(arg__1, arg__2); }
 inline void py_q_deregister(NamedBean*  arg__1) const { this->deregister(arg__1); }
 inline void py_q_dispose() { Manager::dispose(); }
 inline NamedBean*  py_q_getBeanBySystemName(QString  arg__1) const { return Manager::getBeanBySystemName(arg__1); }
@@ -344,8 +343,8 @@ void delete_Manager(Manager* obj) { delete obj; }
    void py_q_Register(Manager* theWrappedObject, NamedBean*  arg__1) const{  (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_Register(arg__1));}
    void addDataListener(Manager* theWrappedObject, QObject*  e);
    void py_q_addDataListener(Manager* theWrappedObject, QObject*  e){  (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_addDataListener(e));}
-   void deleteBean(Manager* theWrappedObject, NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException) ;
-   void py_q_deleteBean(Manager* theWrappedObject, NamedBean*  arg__1, QString  arg__2) throw (PropertyVetoException) {  (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_deleteBean(arg__1, arg__2));}
+   void deleteBean(Manager* theWrappedObject, NamedBean*  arg__1, QString  arg__2);
+   void py_q_deleteBean(Manager* theWrappedObject, NamedBean*  arg__1, QString  arg__2){  (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_deleteBean(arg__1, arg__2));}
    void deregister(Manager* theWrappedObject, NamedBean*  arg__1) const;
    void py_q_deregister(Manager* theWrappedObject, NamedBean*  arg__1) const{  (((PythonQtPublicPromoter_Manager*)theWrappedObject)->py_q_deregister(arg__1));}
    void dispose(Manager* theWrappedObject);
@@ -555,7 +554,7 @@ virtual int  compareTo(NamedBean*  n2);
 virtual void customEvent(QEvent*  event);
 virtual QString  describeState(int  arg__1);
 virtual void dispose();
-virtual bool  equals(NamedBean*  obj);
+virtual bool  equals(QObject*  obj);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual QString  getBeanType();
@@ -598,7 +597,7 @@ inline int  py_q_compareSystemNameSuffix(QString  suffix1, QString  suffix2, Nam
 inline int  py_q_compareTo(NamedBean*  n2) { return NamedBean::compareTo(n2); }
 inline QString  py_q_describeState(int  arg__1) { return NamedBean::describeState(arg__1); }
 inline void py_q_dispose() { NamedBean::dispose(); }
-inline bool  py_q_equals(NamedBean*  obj) { return NamedBean::equals(obj); }
+inline bool  py_q_equals(QObject*  obj) { return NamedBean::equals(obj); }
 inline QString  py_q_getBeanType() { return NamedBean::getBeanType(); }
 inline QString  py_q_getComment() { return NamedBean::getComment(); }
 inline QString  py_q_getDisplayName() { return NamedBean::getDisplayName(); }
@@ -651,8 +650,8 @@ void delete_NamedBean(NamedBean* obj) { delete obj; }
    QString  py_q_describeState(NamedBean* theWrappedObject, int  arg__1){  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_describeState(arg__1));}
    void dispose(NamedBean* theWrappedObject);
    void py_q_dispose(NamedBean* theWrappedObject){  (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_dispose());}
-   bool  equals(NamedBean* theWrappedObject, NamedBean*  obj);
-   bool  py_q_equals(NamedBean* theWrappedObject, NamedBean*  obj){  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_equals(obj));}
+   bool  equals(NamedBean* theWrappedObject, QObject*  obj);
+   bool  py_q_equals(NamedBean* theWrappedObject, QObject*  obj){  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_equals(obj));}
    QString  getBeanType(NamedBean* theWrappedObject);
    QString  py_q_getBeanType(NamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_getBeanType());}
    QString  getComment(NamedBean* theWrappedObject);
@@ -2315,10 +2314,11 @@ virtual bool  isControlTypeSupported(QString  systemName);
 virtual bool  isNumControlBitsSupported(QString  systemName);
 virtual NamedBean*  makeBean(int  i, QString  systemName, QString  userName) const;
 virtual Turnout*  newTurnout(QString  systemName, QString  userName) const;
-virtual Turnout*  provide(QString  name) const throw (IllegalArgumentException) ;
+virtual Turnout*  provide(QString  name) const;
 virtual Turnout*  provideTurnout(QString  name) const;
 virtual void setDefaultClosedSpeed(QString  speed) const;
 virtual void setDefaultThrownSpeed(QString  speed) const;
+virtual QString  toString();
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -2345,10 +2345,11 @@ inline bool  py_q_isControlTypeSupported(QString  systemName) { return ProxyTurn
 inline bool  py_q_isNumControlBitsSupported(QString  systemName) { return ProxyTurnoutManager::isNumControlBitsSupported(systemName); }
 inline NamedBean*  py_q_makeBean(int  i, QString  systemName, QString  userName) const { return ProxyTurnoutManager::makeBean(i, systemName, userName); }
 inline Turnout*  py_q_newTurnout(QString  systemName, QString  userName) const { return ProxyTurnoutManager::newTurnout(systemName, userName); }
-inline Turnout*  py_q_provide(QString  name) const throw (IllegalArgumentException)  { return ProxyTurnoutManager::provide(name); }
+inline Turnout*  py_q_provide(QString  name) const { return ProxyTurnoutManager::provide(name); }
 inline Turnout*  py_q_provideTurnout(QString  name) const { return ProxyTurnoutManager::provideTurnout(name); }
 inline void py_q_setDefaultClosedSpeed(QString  speed) const { ProxyTurnoutManager::setDefaultClosedSpeed(speed); }
 inline void py_q_setDefaultThrownSpeed(QString  speed) const { ProxyTurnoutManager::setDefaultThrownSpeed(speed); }
+inline QString  py_q_toString() { return ProxyTurnoutManager::toString(); }
 };
 
 class PythonQtWrapper_ProxyTurnoutManager : public QObject
@@ -2392,8 +2393,8 @@ void delete_ProxyTurnoutManager(ProxyTurnoutManager* obj) { delete obj; }
    NamedBean*  py_q_makeBean(ProxyTurnoutManager* theWrappedObject, int  i, QString  systemName, QString  userName) const{  return (((PythonQtPublicPromoter_ProxyTurnoutManager*)theWrappedObject)->py_q_makeBean(i, systemName, userName));}
    Turnout*  newTurnout(ProxyTurnoutManager* theWrappedObject, QString  systemName, QString  userName) const;
    Turnout*  py_q_newTurnout(ProxyTurnoutManager* theWrappedObject, QString  systemName, QString  userName) const{  return (((PythonQtPublicPromoter_ProxyTurnoutManager*)theWrappedObject)->py_q_newTurnout(systemName, userName));}
-   Turnout*  provide(ProxyTurnoutManager* theWrappedObject, QString  name) const throw (IllegalArgumentException) ;
-   Turnout*  py_q_provide(ProxyTurnoutManager* theWrappedObject, QString  name) const throw (IllegalArgumentException) {  return (((PythonQtPublicPromoter_ProxyTurnoutManager*)theWrappedObject)->py_q_provide(name));}
+   Turnout*  provide(ProxyTurnoutManager* theWrappedObject, QString  name) const;
+   Turnout*  py_q_provide(ProxyTurnoutManager* theWrappedObject, QString  name) const{  return (((PythonQtPublicPromoter_ProxyTurnoutManager*)theWrappedObject)->py_q_provide(name));}
    Turnout*  provideTurnout(ProxyTurnoutManager* theWrappedObject, QString  name) const;
    Turnout*  py_q_provideTurnout(ProxyTurnoutManager* theWrappedObject, QString  name) const{  return (((PythonQtPublicPromoter_ProxyTurnoutManager*)theWrappedObject)->py_q_provideTurnout(name));}
    void setDefaultClosedSpeed(ProxyTurnoutManager* theWrappedObject, QString  speed) const;
@@ -2401,6 +2402,7 @@ void delete_ProxyTurnoutManager(ProxyTurnoutManager* obj) { delete obj; }
    void setDefaultThrownSpeed(ProxyTurnoutManager* theWrappedObject, QString  speed) const;
    void py_q_setDefaultThrownSpeed(ProxyTurnoutManager* theWrappedObject, QString  speed) const{  (((PythonQtPublicPromoter_ProxyTurnoutManager*)theWrappedObject)->py_q_setDefaultThrownSpeed(speed));}
    QString  toString(ProxyTurnoutManager* theWrappedObject);
+   QString  py_q_toString(ProxyTurnoutManager* theWrappedObject){  return (((PythonQtPublicPromoter_ProxyTurnoutManager*)theWrappedObject)->py_q_toString());}
     QString py_toString(ProxyTurnoutManager*);
 };
 
@@ -2483,8 +2485,7 @@ virtual int  getXMLOrder() const;
 virtual bool  isPullResistanceConfigurable();
 virtual Sensor*  newSensor(QString  sysName, QString  userName);
 virtual QString  normalizeSystemName(QString  sysName) const;
-virtual Sensor*  provide(QString  name) throw (IllegalArgumentException)
-;
+virtual Sensor*  provide(QString  name);
 virtual Sensor*  provideSensor(QString  name);
 virtual QObject*  self();
 virtual void setDefaultSensorDebounceGoingActive(long  timer);
@@ -2716,7 +2717,7 @@ void delete_RosterEntry(RosterEntry* obj) { delete obj; }
    void removePropertyChangeListener(RosterEntry* theWrappedObject, PropertyChangeListener*  l);
    void setComment(RosterEntry* theWrappedObject, QString  s);
    void setDateModified(RosterEntry* theWrappedObject, QDateTime  date);
-   void setDateModified(RosterEntry* theWrappedObject, QString  date) throw (ParseException) ;
+   void setDateModified(RosterEntry* theWrappedObject, QString  date);
    void setDateUpdated(RosterEntry* theWrappedObject, QString  s);
    void setDccAddress(RosterEntry* theWrappedObject, QString  s);
    void setDecoderComment(RosterEntry* theWrappedObject, QString  s);
@@ -2826,7 +2827,7 @@ virtual void customEvent(QEvent*  event);
 virtual void deActivateRoute();
 virtual QString  describeState(int  state);
 virtual void dispose();
-virtual bool  equals(NamedBean*  obj);
+virtual bool  equals(QObject*  obj);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual QString  getBeanType();
@@ -3082,7 +3083,7 @@ virtual Route*  getByUserName(QString  arg__1) const;
 virtual QString  getNamedBeanClass() const;
 virtual Route*  getRoute(QString  arg__1);
 virtual Route*  newRoute(QString  arg__1);
-virtual Route*  provide(QString  name) throw (IllegalArgumentException);
+virtual Route*  provide(QString  name);
 virtual Route*  provideRoute(QString  arg__1, QString  arg__2) const;
 virtual QObject*  self();
 
@@ -3100,7 +3101,7 @@ inline Route*  py_q_getByUserName(QString  arg__1) const { return this->getByUse
 inline QString  py_q_getNamedBeanClass() const { return RouteManager::getNamedBeanClass(); }
 inline Route*  py_q_getRoute(QString  arg__1) { return RouteManager::getRoute(arg__1); }
 inline Route*  py_q_newRoute(QString  arg__1) { return RouteManager::newRoute(arg__1); }
-inline Route*  py_q_provide(QString  name) throw (IllegalArgumentException) { return this->provide(name); }
+inline Route*  py_q_provide(QString  name) { return this->provide(name); }
 inline Route*  py_q_provideRoute(QString  arg__1, QString  arg__2) const { return RouteManager::provideRoute(arg__1, arg__2); }
 inline QObject*  py_q_self() { return RouteManager::self(); }
 };
@@ -3126,8 +3127,8 @@ void delete_RouteManager(RouteManager* obj) { delete obj; }
    Route*  py_q_getRoute(RouteManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_getRoute(arg__1));}
    Route*  newRoute(RouteManager* theWrappedObject, QString  arg__1);
    Route*  py_q_newRoute(RouteManager* theWrappedObject, QString  arg__1){  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_newRoute(arg__1));}
-   Route*  provide(RouteManager* theWrappedObject, QString  name) throw (IllegalArgumentException);
-   Route*  py_q_provide(RouteManager* theWrappedObject, QString  name) throw (IllegalArgumentException){  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_provide(name));}
+   Route*  provide(RouteManager* theWrappedObject, QString  name);
+   Route*  py_q_provide(RouteManager* theWrappedObject, QString  name){  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_provide(name));}
    Route*  provideRoute(RouteManager* theWrappedObject, QString  arg__1, QString  arg__2) const;
    Route*  py_q_provideRoute(RouteManager* theWrappedObject, QString  arg__1, QString  arg__2) const{  return (((PythonQtPublicPromoter_RouteManager*)theWrappedObject)->py_q_provideRoute(arg__1, arg__2));}
    QObject*  self(RouteManager* theWrappedObject);
@@ -3158,7 +3159,7 @@ virtual int  compareTo(NamedBean*  n2);
 virtual void customEvent(QEvent*  event);
 virtual QString  describeState(int  state);
 virtual void dispose();
-virtual bool  equals(NamedBean*  obj);
+virtual bool  equals(QObject*  obj);
 virtual bool  event(QEvent*  event);
 virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual QString  getBeanType();

@@ -181,7 +181,7 @@ tr("Flashing Lunar");
 {
  return validStateNames;
 }
-/*public*/ void AbstractSignalHead::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException)
+/*public*/ void AbstractSignalHead::vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/
 {
  if ("CanDelete"==(evt->getPropertyName()))
  { //IN18N
@@ -189,7 +189,7 @@ tr("Flashing Lunar");
   {
    Logger::error(tr("Turnout is in use by SignalHead \"%1\"").arg(getDisplayName()));
    PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
-   throw  PropertyVetoException(tr("Turnout is in use by Signal Head \"%1\"").arg( getDisplayName()), e); //IN18N
+   throw new PropertyVetoException(tr("Turnout is in use by Signal Head \"%1\"").arg( getDisplayName()), e); //IN18N
   }
  }
  else if ("DoDelete"==(evt->getPropertyName()))

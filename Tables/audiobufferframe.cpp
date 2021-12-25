@@ -297,7 +297,7 @@ void AudioBufferFrame::browsePressed(JActionEvent* /*e*/)
 //                    WaveFileReader wfr = new WaveFileReader(FileUtil.getExternalFilename(fileName));
 //                    JOptionPane.showMessageDialog(NULL, wfr.toString(), wfr.toString(), JOptionPane.INFORMATION_MESSAGE);
 //                } catch (AudioException ex) {
-//                    JOptionPane.showMessageDialog(NULL, ex.getMessage(), tr("TitleReadError"), JOptionPane.ERROR_MESSAGE);
+//                    JOptionPane.showMessageDialog(NULL, ex->getMessage(), tr("TitleReadError"), JOptionPane.ERROR_MESSAGE);
 //                }
         }
     }
@@ -353,7 +353,7 @@ void AudioBufferFrame::okPressed(JActionEvent* /*e*/)
    this->setHidden(true);
  } catch (AudioException ex)
  {
-//   JOptionPane.showMessageDialog(NULL, ex.getMessage(), rb.getString("AudioCreateErrorTitle"), JOptionPane.ERROR_MESSAGE);
+//   JOptionPane.showMessageDialog(NULL, ex->getMessage(), rb.getString("AudioCreateErrorTitle"), JOptionPane.ERROR_MESSAGE);
  }
 }
 /*public*/ QString AudioBufferFrame::getClassName()

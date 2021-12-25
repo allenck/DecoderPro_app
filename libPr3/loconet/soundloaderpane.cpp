@@ -213,12 +213,12 @@ void SoundLoaderPane::doRead()
 
      file->read();
 
-// } catch (FileNotFoundException f) {
+// } catch (FileNotFoundException* f) {
 //     JOptionPane.showMessageDialog(this, tr("ErrorFileNotFound"),
 //             tr("ErrorTitle"),
 //             JOptionPane.ERROR_MESSAGE);
 //     return;
-// } catch (IOException f) {
+// } catch (IOException* f) {
 //     JOptionPane.showMessageDialog(this, tr("ErrorIOError"),
 //             tr("ErrorTitle"),
 //             JOptionPane.ERROR_MESSAGE);

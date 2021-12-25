@@ -150,7 +150,7 @@
  */
 
 /*protected*/ void HttpServlet::doGet(HttpServletRequest* req, HttpServletResponse* resp)
-throw (ServletException, IOException)
+//throw (ServletException, IOException)
 {
  QString protocol = req->getProtocol();
  QString msg = tr("http.method_get_not_supported");
@@ -234,7 +234,7 @@ throw (ServletException, IOException)
  */
 
 /*protected*/ void HttpServlet::doHead(HttpServletRequest* req, HttpServletResponse* resp)
-throw (ServletException, IOException)
+//throw (ServletException, IOException)
 {
 #if 0
 NoBodyResponse* response = new NoBodyResponse(resp, this);
@@ -311,7 +311,7 @@ response->setContentLength();
  */
 
 /*protected*/ void HttpServlet::doPost(HttpServletRequest* req, HttpServletResponse* resp)
-throw (ServletException, IOException)
+//throw (ServletException, IOException)
 {
  QString protocol = req->getProtocol();
  QString msg = tr("http.method_post_not_supported");
@@ -374,7 +374,7 @@ throw (ServletException, IOException)
  */
 
 /*protected*/ void HttpServlet::doPut(HttpServletRequest* req, HttpServletResponse* resp)
-throw (ServletException, IOException)
+//throw (ServletException, IOException)
 {
 QString protocol = req->getProtocol();
 QString msg = tr("http.method_put_not_supported");
@@ -428,7 +428,7 @@ if (protocol.endsWith("1.1")) {
  */
 
 /*protected*/ void HttpServlet::doDelete(HttpServletRequest* req, HttpServletResponse* resp)
-throw (ServletException, IOException)
+//throw (ServletException, IOException)
 {
  QString protocol = req->getProtocol();
  QString msg = tr("http.method_delete_not_supported");
@@ -533,7 +533,7 @@ throw (ServletException, IOException)
  */
 
 /*protected*/ void HttpServlet::doOptions(HttpServletRequest* /*req*/, HttpServletResponse* resp)
-throw (ServletException, IOException)
+//throw (ServletException, IOException)
 {
  QList<QMetaMethod> methods = getAllDeclaredMethods(this->metaObject()->className());
 
@@ -619,7 +619,7 @@ throw (ServletException, IOException)
  */
 
 /*protected*/ void HttpServlet::doTrace(HttpServletRequest* req, HttpServletResponse* resp)
-throw (ServletException, IOException)
+//throw (ServletException, IOException)
 {
 
  int responseLength;
@@ -687,7 +687,7 @@ throw (ServletException, IOException)
  */
 #if 1
 /*protected*/ void HttpServlet::service(HttpServletRequest* req, HttpServletResponse* resp)
-throw (ServletException, IOException)
+//throw (ServletException, IOException)
 {
  QString method = req->getMethod();
 
@@ -797,7 +797,7 @@ if (lastModified >= 0)
  */
 
 /*public*/ void HttpServlet::service(ServletRequest* req, ServletResponse* res)
-throw (ServletException, IOException)
+//throw (ServletException, IOException)
 {
  HttpServletRequest*	request;
  HttpServletResponse*	response;
@@ -817,7 +817,7 @@ throw (ServletException, IOException)
  }
 
 /*protected*/ /*virtual*/ void HttpServlet::doList(HttpServletRequest* req, HttpServletResponse* resp)
-throw (ServletException, IOException) {}
+/*throw (ServletException, IOException)*/ {}
 
 
 
@@ -873,7 +873,7 @@ didSetContentLength = true;
    /*public*/ QString NoBodyResponse::getContentType()
      { return resp->getContentType(); }
 
-   /*public*/ ServletOutputStream* NoBodyResponse::getOutputStream() throw (IOException)
+   /*public*/ ServletOutputStream* NoBodyResponse::getOutputStream() /*throw (IOException)*/
      { return /*noBody*/ NULL; }
 
    /*public*/ QString NoBodyResponse::getCharacterEncoding()
@@ -911,7 +911,7 @@ return writer;
    /*public*/ bool NoBodyResponse::isCommitted()
      { return resp->isCommitted(); }
 
-   /*public*/ void NoBodyResponse::flushBuffer() throw (IOException)
+   /*public*/ void NoBodyResponse::flushBuffer() /*throw (IOException)*/
      { resp->flushBuffer(); }
 
    /*public*/ void NoBodyResponse::setLocale(QLocale loc)
@@ -945,13 +945,13 @@ return writer;
    /*public*/ void NoBodyResponse::setDateHeader(QString name, long date)
      { resp->setDateHeader(name, date); }
 
-   /*public*/ void NoBodyResponse::sendError(int sc, QString msg) throw (IOException)
+   /*public*/ void NoBodyResponse::sendError(int sc, QString msg) /*throw (IOException)*/
      { resp->sendError(sc, msg); }
 
-   /*public*/ void NoBodyResponse::sendError(int sc) throw (IOException)
+   /*public*/ void NoBodyResponse::sendError(int sc) /*throw (IOException)*/
      { resp->sendError(sc); }
 
-   /*public*/ void NoBodyResponse::sendRedirect(QString location) throw (IOException)
+   /*public*/ void NoBodyResponse::sendRedirect(QString location) /*throw (IOException)*/
      { resp->sendRedirect(location); }
 
    /*public*/ QString NoBodyResponse::encodeURL(QString url)
@@ -1019,7 +1019,7 @@ contentLength++;
    }
 
 /*public*/ void NoBodyOutputStream::write(QByteArray buf, int offset, int len)
-throw (IOException)
+/*throw (IOException)*/
 {
  if (len >= 0)
  {

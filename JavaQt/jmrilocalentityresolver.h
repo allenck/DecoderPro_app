@@ -8,7 +8,7 @@ class JmriLocalEntityResolver : public EntityResolver
  Q_OBJECT
 public:
  JmriLocalEntityResolver();
- /*public*/ InputSource* resolveEntity(QString /*public*/Id, QString systemId) throw (SAXException, IOException);
+ /*public*/ InputSource* resolveEntity(QString /*public*/Id, QString systemId) /*throw (SAXException, IOException)*/;
 
 private:
  Logger* log;

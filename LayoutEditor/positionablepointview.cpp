@@ -1972,7 +1972,7 @@ void PositionablePointView::updatePointBox() {
                         }
                     }
                 } else {    // (#3)
-                    log->debug("*New block (''{}'') trackNameSets", blk2);
+                    log->debug(tr("*New block (''%1'') trackNameSets").arg(blk2));
                     trackNameSets = new QList<QSet<QString>*>();
                     blockNamesTotrackNameSetsMap.insert(blk2, trackNameSets);
                 }

@@ -182,7 +182,7 @@ PolygonAction* PolygonAction::init(PositionablePolygon* p) {
        pt = getInversePoint(x, y);
    if(pt == QPoint())
    {
-       log->error("Can't locate Hit Rectangles "/* + nte.getMessage()*/);
+       log->error("Can't locate Hit Rectangles "/* + nte->getMessage()*/);
        return;
    }
    for (int i = 0; i < _vertexHandles->size(); i++)
@@ -211,7 +211,7 @@ PolygonAction* PolygonAction::init(PositionablePolygon* p) {
    /*        		try {
     pt = getInversePoint(event.getX()-_lastX, event.getY()-_lastY);
     } catch (java.awt.geom.NoninvertibleTransformException nte) {
-    log.error("Can't locate Hit Rectangles "+nte.getMessage());
+    log.error("Can't locate Hit Rectangles "+nte->getMessage());
     return false;
     }*/
    QRect rect = _vertexHandles->at(_hitIndex);

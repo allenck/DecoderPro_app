@@ -1753,7 +1753,7 @@
 //                try {
 //                    javax.swing.SwingUtilities.invokeAndWait(allocateBlocks);
 //                }
-//                catch (Exception e) {
+//                catch (Exception* e) {
 //                    e.printStackTrace();
 //                }
 //            }
@@ -1799,7 +1799,7 @@
         //javax.swing.SwingUtilities.invokeAndWait(allocateBlocks);
      QMetaObject::invokeMethod(allocateBlocks, "run", Qt::QueuedConnection);
     }
-    catch (Exception e) {
+    catch (Exception* e) {
 //        e.printStackTrace();
     }
 }
@@ -3098,7 +3098,7 @@ bool CommandDelay::doNotCancel(QString speedType, long startWait, int endBlockId
  *         {@code false} otherwise.
  */
 //@Override
-/*public*/ bool Warrant::equals(NamedBean* obj) {
+/*public*/ bool Warrant::equals(QObject* obj) {
     if (obj == nullptr) return false; // by contract
 
     if (static_cast< Warrant*>(obj)) {  // NamedBeans are not equal to things of other types

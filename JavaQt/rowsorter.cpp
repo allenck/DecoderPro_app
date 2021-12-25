@@ -342,10 +342,10 @@ void fireRowSorterChanged(RowSorterEvent event) {
      *         <code>null</code>
      */
     /*public*/ SortKey::SortKey(int column, SortOrder sortOrder) {
-//        if (sortOrder == NULL) {
-//            throw  IllegalArgumentException(
-//                    "sort order must be non-null");
-//        }
+        if (sortOrder == NULL) {
+            throw new IllegalArgumentException(
+                    "sort order must be non-null");
+        }
         this->column = column;
         this->sortOrder = sortOrder;
     }

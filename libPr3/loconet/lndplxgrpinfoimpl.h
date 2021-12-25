@@ -23,10 +23,10 @@ class LnDplxGrpInfoImpl : public QObject, public JComponent, public LocoNetListe
   /*public*/ static /*final*/ bool validateGroupChannel(int iGroupChannel);
   /*public*/ static /*final*/ bool validateGroupID(int iGroupId);
   /*public*/ static /*final*/ LocoNetMessage* createUr92GroupIdentityQueryPacket();
-  /*public*/ static /*final*/ LocoNetMessage *createSetUr92GroupNamePacket(QString sGroupName) throw (LocoNetException);
-  /*public*/ static /*final*/ LocoNetMessage *createSetUr92GroupChannelPacket(int iChannelNumber) throw (LocoNetException);
-  /*public*/ static /*final*/ LocoNetMessage* createSetUr92GroupPasswordPacket(QString sGroupPassword) throw (LocoNetException);
-  /*public*/ static /*final*/ LocoNetMessage* createSetUr92GroupIDPacket(QString s) throw (LocoNetException);
+  /*public*/ static /*final*/ LocoNetMessage *createSetUr92GroupNamePacket(QString sGroupName) /*throw (LocoNetException)*/;
+  /*public*/ static /*final*/ LocoNetMessage *createSetUr92GroupChannelPacket(int iChannelNumber) /*throw (LocoNetException)*/;
+  /*public*/ static /*final*/ LocoNetMessage* createSetUr92GroupPasswordPacket(QString sGroupPassword) /*throw (LocoNetException)*/;
+  /*public*/ static /*final*/ LocoNetMessage* createSetUr92GroupIDPacket(QString s) /*throw (LocoNetException)*/;
   /*public*/ static /*final*/ bool isDuplexGroupMessage(LocoNetMessage* m);
   /*public*/ static /*final*/ DuplexGroupMessageType getDuplexGroupIdentityMessageType(LocoNetMessage* m);
   /*public*/ static QString extractDuplexGroupName(LocoNetMessage* m);
@@ -39,10 +39,10 @@ class LnDplxGrpInfoImpl : public QObject, public JComponent, public LocoNetListe
   /*public*/ QString getFetchedDuplexGroupPassword();
   /*public*/ QString getFetchedDuplexGroupId();
   /*public*/ void queryDuplexGroupIdentity();
-  /*public*/ void setDuplexGroupName(QString dgn) throw (LocoNetException);
-  /*public*/ void setDuplexGroupChannel(int dgc) throw (LocoNetException);
-  /*public*/ void setDuplexGroupPassword(QString dgp) throw (LocoNetException);
-  /*public*/ void setDuplexGroupId(QString dgi) throw (LocoNetException);
+  /*public*/ void setDuplexGroupName(QString dgn) /*throw (LocoNetException)*/;
+  /*public*/ void setDuplexGroupChannel(int dgc) /*throw (LocoNetException)*/;
+  /*public*/ void setDuplexGroupPassword(QString dgp) /*throw (LocoNetException)*/;
+  /*public*/ void setDuplexGroupId(QString dgi) /*throw (LocoNetException)*/;
   /*public*/ void countUr92sAndQueryDuplexIdentityInfo();
   /*public*/ static /*final*/ LocoNetMessage* createUr92GroupNameReportPacket(
           QString dupName,

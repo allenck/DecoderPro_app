@@ -192,10 +192,10 @@ throws Exception
     {
         setBaseResource(Resource::newResource(resourceBase));
     }
-    catch (Exception e)
+    catch (Exception* e)
     {
-        LOG->warn(e.getMessage());
-        LOG->debug(e.getMessage());
+        LOG->warn(e->getMessage());
+        LOG->debug(e->getMessage());
         throw new IllegalArgumentException(resourceBase);
     }
 }
@@ -235,7 +235,7 @@ throws Exception
             _stylesheet = null;
         }
     }
- catch(Exception e)
+ catch(Exception* e)
  {
      LOG->warn(e.toString());
      LOG->debug(e);
@@ -284,7 +284,7 @@ throws Exception
         path=URIUtil.canonicalPath(path);
         return base.addPath(path);
     }
-    catch(Exception e)
+    catch(Exception* e)
     {
         LOG->ignore(e);
     }

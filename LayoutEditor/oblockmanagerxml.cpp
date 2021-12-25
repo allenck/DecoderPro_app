@@ -359,7 +359,7 @@ void OBlockManagerXml::loadBlock(QDomElement elem)
    {
     block->setReporter(rep);
    }
-  } catch (Exception ex) {
+  } catch (Exception* ex) {
       log->error("No Reporter named \"" + name + "\" found. threw exception: " /*+ ex*/);
   }
   if (reporter.attribute("reportCurrent") != NULL) {
@@ -379,7 +379,7 @@ void OBlockManagerXml::loadBlock(QDomElement elem)
      //try {
   block->setBlockSpeed(elem.attribute("speedNotch"));
 //            } catch (jmri.JmriException ex) {
-//                JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + elem.attribute("speedNotch"));
+//                JOptionPane.showMessageDialog(NULL, ex->getMessage() + "\n" + elem.attribute("speedNotch"));
 //            }
  }
 

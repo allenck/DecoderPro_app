@@ -143,27 +143,27 @@
     }
 
 //  sensor is NOT optional and cannot be null.  Raises Exception in ALL error cases.
-    /*private*/ /*static*/ Sensor* NBHSensor::getExistingJMRISensor(QString module, QString userIdentifier, QString parameter, QString sensor) throw (CTCException) {
+    /*private*/ /*static*/ Sensor* NBHSensor::getExistingJMRISensor(QString module, QString userIdentifier, QString parameter, QString sensor) /*throw new (CTCException)*/ {
         if (!ProjectsCommonSubs::isNullOrEmptyString(sensor)) {
             // Cannot use a constant Instance manager reference due to the dynamic nature of tests.
             Sensor* returnValue = ((SensorManager*)InstanceManager::getDefault("SensorManager"))->getSensor(sensor);
-            if (returnValue == nullptr) { throw  CTCException(module, userIdentifier, parameter, tr("Sensor does not exist:") + " " + sensor); }  // NOI18N
+            if (returnValue == nullptr) { throw new  CTCException(module, userIdentifier, parameter, tr("Sensor does not exist:") + " " + sensor); }  // NOI18N
             return returnValue;
-        } else { throw CTCException(module, userIdentifier, parameter, tr("Required sensor missing")); }  // NOI18N
+        } else { throw new CTCException(module, userIdentifier, parameter, tr("Required sensor missing")); }  // NOI18N
     }
 
 //  sensor is optional, but must exist if given.  Raises Exception in ALL error cases.
-    /*private*/ /*static*/ Sensor* NBHSensor::getOptionalJMRISensor(QString module, QString userIdentifier, QString parameter, QString sensor) throw (CTCException) {
+    /*private*/ /*static*/ Sensor* NBHSensor::getOptionalJMRISensor(QString module, QString userIdentifier, QString parameter, QString sensor) /*throw new (CTCException) */{
         if (!ProjectsCommonSubs::isNullOrEmptyString(sensor)) {
             // Cannot use a constant Instance manager reference due to the dynamic nature of tests.
             Sensor* returnValue = ((SensorManager*)InstanceManager::getDefault("SensorManager"))->getSensor(sensor);
-            if (returnValue == nullptr) { throw  CTCException(module, userIdentifier, parameter, tr("Sensor does not exist") + " " + sensor); }  // NOI18N
+            if (returnValue == nullptr) { throw new  CTCException(module, userIdentifier, parameter, tr("Sensor does not exist") + " " + sensor); }  // NOI18N
             return returnValue;
         } else { return nullptr; }
     }
 
 // Special case for CTC internal sensors.  These are not always predefined so the provide() method is used.
-    /*private*/ /*static*/ Sensor* NBHSensor::getInternalSensor(QString module, QString userIdentifier, QString parameter, QString sensor) throw (CTCException) {
+    /*private*/ /*static*/ Sensor* NBHSensor::getInternalSensor(QString module, QString userIdentifier, QString parameter, QString sensor) /*throw new (CTCException)*/ {
         if (!ProjectsCommonSubs::isNullOrEmptyString(sensor)) {
             // Cannot use a constant Instance manager reference due to the dynamic nature of tests.
             return ((SensorManager*)InstanceManager::getDefault("SensorManager"))->provide(sensor);

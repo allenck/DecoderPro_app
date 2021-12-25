@@ -864,6 +864,7 @@ void LocoIOData::readWriteNext()
     writeAllServo();
     break;
    }
+   break;
   case 2:
    readWriteState =3;
    writeSV7D();
@@ -1556,7 +1557,7 @@ void LocoIOData::readWriteNext()
       int val2 = m->getElement(2);
       // calculate address from val's, save result, mark as done
       // INPUT_REP's use val2's OPC_SW_REQ_DIR bit as LSB...'
-      setAddr(i, ((val2 & 0x0F) << 5) * 256 + ((val1 & 0x7f) << 1)
+      setAddr(i, (((val2 & 0x0F) << 5) * 256 + ((val1 & 0x7f) << 1))
               | (((val2 & LnConstants::OPC_SW_REQ_DIR) == LnConstants::OPC_SW_REQ_DIR) ? 0x01 : 0x00));
       capture[i] = false;
      }
@@ -1834,7 +1835,7 @@ void LocoIOData::readWriteNext()
     {
      if(getSV(i) == 0xd8)
      {
-      int v = getSV(i);
+      getSV(i);
      }
      setSV(i,sv[i] & 0xFF, ssLightYellow);
     }

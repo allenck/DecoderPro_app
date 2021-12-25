@@ -175,7 +175,7 @@ public:
      * @return state of initialisation
      */
     /*public*/ virtual bool isInitialised() {return false;}
-    virtual /*public*/ DefaultIdTag* provide(QString name) throw (IllegalArgumentException) =0;
+    virtual /*public*/ DefaultIdTag* provide(QString name) /*throw (IllegalArgumentException)*/ =0;
 
  friend class IdTagManagerXml;
 };

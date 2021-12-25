@@ -19,9 +19,9 @@ void ProfileUtilsTestAction::actionPerformed()
          << "testCopyToActive";
         JUnitUtil::runTests(put, testList);
     }
-    catch (AssertionError er)
+    catch (AssertionError* er)
     {
-        JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
+        JOptionPane::showMessageDialog(nullptr, er->getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
     }
 }
 Logger* ProfileUtilsTestAction::log = LoggerFactory::getLogger("ProfileUtilsTestAction");

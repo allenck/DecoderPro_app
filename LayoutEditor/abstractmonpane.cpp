@@ -167,7 +167,7 @@ AbstractMonPane::~AbstractMonPane()
  {
   filterField->setText(p->getProperty(filterFieldCheck, filterFieldCheck).toString());  //restore prev values
  }
- catch (Exception e1) {  //leave blank if previous value not retrieved
+ catch (Exception* e1) {  //leave blank if previous value not retrieved
  }
  //automatically uppercase input in filterField, and only accept spaces and valid hex characters
 //    ((AbstractDocument) filterField.getDocument()).setDocumentFilter(new DocumentFilter() {
@@ -592,7 +592,7 @@ void AMPRunnable::run()
         // start logging
         try {
             logStream = new PrintStream (new FileOutputStream(logFileChooser.getSelectedFile()));
-        } catch (Exception ex) {
+        } catch (Exception* ex) {
             log->error("exception "+ex);
         }
     }

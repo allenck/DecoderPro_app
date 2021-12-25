@@ -122,21 +122,21 @@ public:
  /*public*/ int getXMLOrder() const  override;
  QCompleter* getCompleter(QString text);
  /*public*/ Turnout* provideTurnout(QString name) const override;
- /*public*/ Turnout* provide(QString name) const throw (IllegalArgumentException) override;
+ /*public*/ Turnout* provide(QString name) const /*throw (IllegalArgumentException)*/ override;
  /*public*/ QString getNamedBeanClass()const override {
      return "Turnout";
  }
- /*public*/ QString toString() {return "ProxyTurnoutManager";}
+ /*public*/ QString toString()override {return "ProxyTurnoutManager";}
 public slots:
 
 
 signals:
- void propertyChange(PropertyChangeEvent *e);
+ void propertyChange(PropertyChangeEvent *e)override;
 private:
  Logger log;
 protected:
- virtual /*protected*/ AbstractManager* makeInternalManager() const ;
- virtual/*protected*/ NamedBean* makeBean(int i, QString systemName, QString userName) const;
+ virtual /*protected*/ AbstractManager* makeInternalManager() const override;
+ virtual/*protected*/ NamedBean* makeBean(int i, QString systemName, QString userName) const override;
  ///*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
 
  friend class AbstractProxyManager;

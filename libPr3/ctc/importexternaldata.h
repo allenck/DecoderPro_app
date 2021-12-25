@@ -41,7 +41,7 @@ class ImportExternalData : public XmlFile
   /*private*/ static /*final*/ QString SAVED_PREFIX;// = "V1_Save_";              // NOI18N
   static Logger* log;
   static /*private*/ void convertClassNameReferences(QString fileName) throw (Exception);
-  static /*private*/ void writeLine(QTextStream* bufferedWriter, QString aLine) throw (IOException);
+  static /*private*/ void writeLine(QTextStream* bufferedWriter, QString aLine) /*throw (IOException)*/;
   static void doDataLoading();
   static void loadCodeButtonHandlerData(ImportCodeButtonHandlerData* oldCBHD);
   static void loadOtherData();

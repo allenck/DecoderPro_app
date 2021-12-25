@@ -79,7 +79,7 @@
                                         } else {
                                             throw new IOException("Could not establish a two-way communication");
                                         }
-                                    } catch (IOException IOe) {
+                                    } catch (IOException* IOe) {
                                         exception[0] = IOe;
                                     }
                                 }
@@ -124,10 +124,10 @@
         }
     } catch (BluetoothStateException BSe) {
         log.error("Exception when using bluetooth");
-        return BSe.getLocalizedMessage();
-    } catch (IOException IOe) {
+        return BSe->getLocalizedMessage();
+    } catch (IOException* IOe) {
         log.error("Unknown IOException when establishing connection to " + portName);
-        return IOe.getLocalizedMessage();
+        return IOe->getLocalizedMessage();
     }
 #endif
     if (!opened) {

@@ -59,7 +59,7 @@ RosterServlet::RosterServlet() : HttpServlet()
  * @throws java.io.IOException if communications is cut with client
  */
 //@Override
-/*protected*/ void RosterServlet::doGet(HttpServletRequest* request, HttpServletResponse* response) throw (IOException)
+/*protected*/ void RosterServlet::doGet(HttpServletRequest* request, HttpServletResponse* response) /*throw (IOException)*/
 {
  if ( request->getRequestURI() == ("/prefs/roster.xml"))
  { // NOI18N
@@ -106,7 +106,7 @@ RosterServlet::RosterServlet() : HttpServlet()
  * javax.servlet.http.HttpServletResponse)
  */
 //@Override
-/*protected*/ void RosterServlet::doPost(HttpServletRequest* request, HttpServletResponse* response) throw (IOException) {
+/*protected*/ void RosterServlet::doPost(HttpServletRequest* request, HttpServletResponse* response) /*throw (IOException)*/ {
     this->doGet(request, response);
 }
 
@@ -131,7 +131,7 @@ RosterServlet::RosterServlet() : HttpServlet()
  * @param group    The group name
  * @throws java.io.IOException if communications is cut with client
  */
-/*protected*/ void RosterServlet::doGroup(HttpServletRequest* request, HttpServletResponse* response, QString group) throw (IOException)
+/*protected*/ void RosterServlet::doGroup(HttpServletRequest* request, HttpServletResponse* response, QString group) /*throw (IOException)*/
 {
  log->debug(tr("(Getting group %1").arg(group));
  QJsonObject data;
@@ -180,7 +180,7 @@ RosterServlet::RosterServlet() : HttpServlet()
  * @param response servlet response
  * @throws java.io.IOException if communications is cut with client
  */
-/*protected*/ void RosterServlet::doList(HttpServletRequest* request, HttpServletResponse* response) throw (IOException)
+/*protected*/ void RosterServlet::doList(HttpServletRequest* request, HttpServletResponse* response) /*throw (IOException)*/
 {
  QJsonObject data;
  if ( request->getContentType() != NULL &&  request->getContentType().contains(ServletUtil::UTF8_APPLICATION_JSON))
@@ -241,7 +241,7 @@ RosterServlet::RosterServlet() : HttpServlet()
  * @param response servlet response
  * @throws java.io.IOException if communications is cut with client
  */
-/*protected*/ void RosterServlet::doEntry(HttpServletRequest* request, HttpServletResponse* response) throw (IOException)
+/*protected*/ void RosterServlet::doEntry(HttpServletRequest* request, HttpServletResponse* response) /*throw (IOException)*/
 {
  QStringList pathInfo =  request->getPathInfo().mid(1).split("/");
  int idOffset = 0;
@@ -353,7 +353,7 @@ RosterServlet::RosterServlet() : HttpServlet()
  *                 {@link jmri.jmrit.roster.Roster#getEntriesMatchingCriteria(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)}.
  * @throws java.io.IOException if communications is cut with client
  */
-/*protected*/ void RosterServlet::doRoster(HttpServletRequest* request, HttpServletResponse* response, QJsonObject filter) throw (IOException)
+/*protected*/ void RosterServlet::doRoster(HttpServletRequest* request, HttpServletResponse* response, QJsonObject filter) /*throw (IOException)*/
 {
  ServletUtil::getInstance()->setNonCachingHeaders(response);
 //    log->debug(tr("Getting roster with filter %1").arg(QJsonDocument(filter).toJson()));
@@ -511,7 +511,7 @@ RosterServlet::RosterServlet() : HttpServlet()
  * @param response sends a PNG image or a 403 Not Found error.
  * @throws java.io.IOException if communications is cut with client
  */
-void RosterServlet::doImage(HttpServletRequest* request, HttpServletResponse* response, File* file) throw (IOException) {
+void RosterServlet::doImage(HttpServletRequest* request, HttpServletResponse* response, File* file) /*throw (IOException)*/ {
 #if 1
     QImage image;
     //try {

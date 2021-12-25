@@ -61,7 +61,7 @@
   if(!consistTable.contains(addrIn))
    consistTable.insert(addrIn, consist);
   else
-   throw Exception("already present");
+   throw new Exception("already present");
  }
  bool ConsistTable::remove(DccLocoAddress* addrIn)
  {

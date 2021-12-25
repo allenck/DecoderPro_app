@@ -593,7 +593,7 @@
  * @see java.awt.GraphicsEnvironment#isHeadless
  */
 /*public*/ /*static*/ int JOptionPane::showConfirmDialog(QWidget* parentComponent,
-    QVariant message) throw (HeadlessException)
+    QVariant message) /*throw (HeadlessException)*/
 {
     return showConfirmDialog(parentComponent, message,
                              /*UIManager.getString*/("OptionPane.titleText"),
@@ -623,7 +623,7 @@
  */
 /*public*/ /*static*/ int JOptionPane::showConfirmDialog(QWidget* parentComponent,
     QVariant message, QString title, int optionType)
-    throw (HeadlessException) {
+    /*throw (HeadlessException)*/ {
     return showConfirmDialog(parentComponent, message, title, optionType,
                              QUESTION_MESSAGE);
 }
@@ -662,7 +662,7 @@
  */
 /*public*/ /*static*/ int JOptionPane::showConfirmDialog(QWidget* parentComponent,
     QVariant message, QString title, int optionType, int messageType)
-    throw (HeadlessException) {
+    /*throw (HeadlessException)*/ {
     return showConfirmDialog(parentComponent, message, title, optionType,
                             messageType, QIcon());
 }
@@ -700,7 +700,7 @@
  */
 /*public*/ /*static*/ int JOptionPane::showConfirmDialog(QWidget* parentComponent,
     QVariant message, QString title, int optionType,
-    int messageType, QIcon icon) throw (HeadlessException) {
+    int messageType, QIcon icon)  {
     return showOptionDialog(parentComponent, message, title, optionType,
                             messageType, icon, QList<QVariant>(), QVariant());
 }
@@ -790,8 +790,8 @@
  //dialog->show();
  int rslt = dialog->exec();
  //dialog->/*dispose*/close();
-if(options.count() >0)
- return rslt;
+ if(options.count() >0)
+  return rslt;
  QVariant selectedValue = pane->getValue();
 
  if(selectedValue == QVariant())
@@ -1614,7 +1614,7 @@ if(options.count() >0)
  * @see java.awt.GraphicsEnvironment#isHeadless
  */
 /*static*/ QWidget* JOptionPane::getWindowForComponent(QWidget* parentComponent)
-    throw (HeadlessException) {
+     {
 //    if (parentComponent == NULL)
 //        return getRootFrame();
 //    if (parentComponent instanceof Frame || parentComponent instanceof Dialog)

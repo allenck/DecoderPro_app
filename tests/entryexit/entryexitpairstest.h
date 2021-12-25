@@ -51,7 +51,8 @@ class ReleaseUntil_EEPT1 : public ReleaseUntil
 public:
  ReleaseUntil_EEPT1(EntryExitPairsTest* test) {this->test = test;}
 
- bool ready() throw (Exception) { return test->lbm->getLayoutBlock("B-Alpha-Main")->getUseExtraColor(); }
+ bool ready() /*throw (Exception)*/
+ { return test->lbm->getLayoutBlock("B-Alpha-Main")->getUseExtraColor(); }
 };
 
 class ReleaseUntil_EEPT2 : public ReleaseUntil

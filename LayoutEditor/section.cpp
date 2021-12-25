@@ -2389,7 +2389,7 @@ void Section::propertyChange(PropertyChangeEvent* e)
     return tr("Section");
 }
 
-/*public*/ void Section::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException)
+/*public*/ void Section::vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/
 {
     if ("CanDelete" == (evt->getPropertyName())) { //IN18N
         NamedBean* nb = (NamedBean*) VPtr<NamedBean*>::asPtr( evt->getOldValue());
@@ -2398,19 +2398,19 @@ void Section::propertyChange(PropertyChangeEvent* e)
         {
             if (nb == (getForwardBlockingSensor())) {
                 PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
-                //throw new java.beans.PropertyVetoException(Bundle.getMessage("VetoBlockingSensor", nb.getBeanType(), Bundle.getMessage("Forward"), Bundle.getMessage("Blocking"), getDisplayName()), e); //IN18N
+                throw new PropertyVetoException(tr("Is in use as a %2 %3 %1 in Section %4").arg(nb->getBeanType(), tr("Forward"), tr("Blocking"), getDisplayName()), e); //IN18N
             }
             if (nb == (getForwardStoppingSensor())) {
                 PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
-                //throw new java.beans.PropertyVetoException(Bundle.getMessage("VetoBlockingSensor", nb.getBeanType(), Bundle.getMessage("Forward"), Bundle.getMessage("Stopping"), getDisplayName()), e);
+                throw new PropertyVetoException(tr("Is in use as a %2 %3 %1 in Section %4").arg(nb->getBeanType(), tr("Forward"), tr("Stopping"), getDisplayName()), e);
             }
             if (nb == (getReverseBlockingSensor())) {
              PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
-                //throw new java.beans.PropertyVetoException(Bundle.getMessage("VetoBlockingSensor", nb.getBeanType(), Bundle.getMessage("Reverse"), Bundle.getMessage("Blocking"), getDisplayName()), e);
+                throw new PropertyVetoException(tr("Is in use as a %2 %3 %1 in Section %4").arg(nb->getBeanType(), tr("Reverse"), tr("Blocking"), getDisplayName()), e);
             }
             if (nb == (getReverseStoppingSensor())) {
                 PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
-                //throw new java.beans.PropertyVetoException(Bundle.getMessage("VetoBlockingSensor", nb.getBeanType(), Bundle.getMessage("Reverse"), Bundle.getMessage("Stopping"), getDisplayName()), e);
+                throw new PropertyVetoException(tr("Is in use as a %2 %3 %1 in Section %4").arg(nb->getBeanType(), tr("Reverse"), tr("Stopping"), getDisplayName()), e);
             }
         }
         //if (nb instanceof Block) {
@@ -2418,7 +2418,7 @@ void Section::propertyChange(PropertyChangeEvent* e)
         {
             if (getBlockList()->contains((Block*)nb)) {
                 PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
-                throw  PropertyVetoException(tr("Block is in use with Section \"%1\"").arg( getDisplayName()), e);
+                throw new PropertyVetoException(tr("Block is in use with Section \"%1\"").arg( getDisplayName()), e);
             }
         }
     } else if ("DoDelete" == (evt->getPropertyName())) { //IN18N

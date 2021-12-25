@@ -911,7 +911,7 @@ JmriUserPreferencesManagerTest::JmriUserPreferencesManagerTest(QObject *parent) 
 }
 
 //@Test
-/*public*/ void JmriUserPreferencesManagerTest::testReadUserPreferences() throw (IOException) {
+/*public*/ void JmriUserPreferencesManagerTest::testReadUserPreferences() /*throw (IOException)*/ {
     JUnitUtil::resetProfileManager(new NullProfile(folder->newFolder(Profile::PROFILE)));
     QPoint location = QPoint(69, 96);
     QSize windowSize = QSize(100, 200);
@@ -955,7 +955,7 @@ JmriUserPreferencesManagerTest::JmriUserPreferencesManagerTest(QObject *parent) 
 }
 
 //@Test
-/*public*/ void JmriUserPreferencesManagerTest::testSaveElement() throw (IOException) {
+/*public*/ void JmriUserPreferencesManagerTest::testSaveElement() /*throw (IOException)*/ {
     JUnitUtil::resetProfileManager(new NullProfile(folder->newFolder(Profile::PROFILE)));
     QPoint location = QPoint(69, 96);
     QSize windowSize = QSize(100, 200);

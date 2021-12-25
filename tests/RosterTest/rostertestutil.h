@@ -15,7 +15,7 @@ class RosterTestUtil : public QObject
     Q_OBJECT
 public:
     explicit RosterTestUtil(QObject *parent = nullptr);
-    /*public*/ static Roster* createTestRoster(File* rosterDir, QString rosterFileName) throw (IOException);
+    /*public*/ static Roster* createTestRoster(File* rosterDir, QString rosterFileName) /*throw (IOException)*/;
     /*public*/ static void loadDecoderFromLoco(RosterEntry* r, VariableTableModel* varTable);
 
 signals:

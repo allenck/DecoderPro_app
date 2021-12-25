@@ -215,7 +215,7 @@
    resultsField->setText("programming...");
    p->readCV(getNewAddr(), (ProgListener*)this);
 //            } catch (ProgrammerException* ex) {
-//                resultsField->setText("" + ex.getMessage());
+//                resultsField->setText("" + ex->getMessage());
 //                readButton->setChecked(false);
 //            }
   }
@@ -248,7 +248,7 @@ void SimpleProgFrame::On_read_programmerException(QString txt)
   connect(p, SIGNAL(programmerException(QString)), this, SLOT(On_write_programmerException(QString)));
   p->writeCV(getNewAddr(),getNewVal(), (ProgListener*)this);
 //        } catch (ProgrammerException* ex) {
-//            resultsField->setText(""+ex.getMessage());
+//            resultsField->setText(""+ex->getMessage());
 //            writeButton->setSelected(false);
 //        }
  }

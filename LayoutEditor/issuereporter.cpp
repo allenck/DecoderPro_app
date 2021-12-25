@@ -281,10 +281,10 @@
                 }
             }
 
-        } catch (IOException | URISyntaxException ex) {
+        } catch (IOException* | URISyntaxException ex) {
             log.error("Unable to report issue", ex);
             JOptionPane.showMessageDialog(this,
-                    tr("IssueReporter.error.message", ex.getLocalizedMessage()),
+                    tr("IssueReporter.error.message", ex->getLocalizedMessage()),
                     tr("IssueReporter.error.title"),
                     JOptionPane.ERROR_MESSAGE);
         } catch (IssueReport414Exception ex) {

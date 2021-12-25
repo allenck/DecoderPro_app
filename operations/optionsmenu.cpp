@@ -400,8 +400,8 @@
 /*private*/ void OptionsMenu::saveRequested() {
     try {
         ((OptionsFile*)InstanceManager::getDefault("OptionsFile"))->writeDispatcherOptions(dispatcher);
-    } catch (IOException ioe) {
-        log->error("Exception writing Dispatcher options: " + ioe.getMessage());
+    } catch (IOException* ioe) {
+        log->error("Exception writing Dispatcher options: " + ioe->getMessage());
     }
 }
 

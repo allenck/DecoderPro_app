@@ -169,9 +169,9 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
         // individual tests can turn off as needed
         Log4JUtil.setDeprecatedLogging(true);
 #endif
-    } catch (Throwable e) {
+    } catch (Throwable* e) {
 //        System.err.println("Could not start JUnitAppender, but test continues:\n" + e);
-        qDebug() << "Could not start JUnitAppender, but test continues:\n" + e.getMessage();
+        qDebug() << "Could not start JUnitAppender, but test continues:\n" + e->getMessage();
     }
 
     // clear the backlog and reset the UnexpectedMessageFlags so that
@@ -402,9 +402,9 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
 
   Assert::fail("\"" + name + "\" did not occur in time", file, line);
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
-  Assert::fail("Exception while waiting for \"" + name + "\" " + ex.getMessage(), file, line);
+  Assert::fail("Exception while waiting for \"" + name + "\" " + ex->getMessage(), file, line);
  }
 }
 
@@ -429,9 +429,9 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
 
   Assert::fail("\"" + name + "\" did not occur in time", file, line);
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
-  Assert::fail("Exception while waiting for \"" + name + "\" " + ex.getMessage(), file, line);
+  Assert::fail("Exception while waiting for \"" + name + "\" " + ex->getMessage(), file, line);
  }
 }
 /**
@@ -471,7 +471,7 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
             }
         }
         return false;
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log.error("Exception in waitFor condition.", ex);
         return false;
     }
@@ -487,8 +487,8 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
         }
 
         Assert::fail("did not occur in time", file, line);
-    } catch (Exception ex) {
-        Assert::fail("Exception while waiting for  " + ex.getMessage(), file, line);
+    } catch (Exception* ex) {
+        Assert::fail("Exception while waiting for  " + ex->getMessage(), file, line);
     }
 
 }
@@ -571,8 +571,8 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
             qApp->processEvents();
         }
         Assert::fail("\"" + name + "\" did not occur in time", file, line);
-    } catch (Exception ex) {
-        Assert::fail("Exception while waiting for \"" + name + "\" " + ex.getMessage(), file, line);
+    } catch (Exception* ex) {
+        Assert::fail("Exception while waiting for \"" + name + "\" " + ex->getMessage(), file, line);
     }
 }
 #if 0
@@ -612,7 +612,7 @@ static /*public*/ bool fasterWaitFor(ReleaseUntil condition) {
             }
         }
         return false;
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log.error("Exception in waitFor condition.", ex);
         return false;
     }
@@ -1065,7 +1065,7 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
     try {
         Profile* profile = new NullProfile("TestProfile", "00000000", FileUtil::getFile(FileUtil::SETTINGS));
         resetProfileManager(profile);
-    } catch (FileNotFoundException ex) {
+    } catch (FileNotFoundException* ex) {
         log->error(tr("Settings directory \"%1\" does not exist").arg(FileUtil::SETTINGS));
     }
     catch (IOException*  ex) {
@@ -1420,19 +1420,19 @@ static void checkThreads() {
    testClassName = testName;
    log->info(tr("begin '%1'").arg(testName));
    if(!QMetaObject::invokeMethod(test, "setUp", Qt::DirectConnection))
-    throw Exception(tr("can't invoke 'setup' method when running test '%1").arg(testName));
+    throw new Exception(tr("can't invoke 'setup' method when running test '%1").arg(testName));
    if(!QMetaObject::invokeMethod(test, testName.toLocal8Bit(), Qt::DirectConnection))
-    throw Exception(tr("can't invoke '%1' method when running test ").arg(testName));
+    throw new Exception(tr("can't invoke '%1' method when running test ").arg(testName));
    log->info(tr("end '%1'").arg(testName));
    if(!QMetaObject::invokeMethod(test, "tearDown", Qt::DirectConnection))
-    throw Exception(tr("can't invoke 'tearDown' method when running test '%1").arg(testName));
+    throw new Exception(tr("can't invoke 'tearDown' method when running test '%1").arg(testName));
   }
   log->info(tr("Tests complete!"));
  }
- catch(Exception ex)
+ catch(Exception* ex)
  {
   JOptionPane::showMessageDialog(nullptr, tr("Unhandled exception while running test '%1'\n%2")
-     .arg(testClassName).arg(ex.getMessage()), "Unhandled Exception",  JOptionPane::WARNING_MESSAGE);
+     .arg(testClassName).arg(ex->getMessage()), "Unhandled Exception",  JOptionPane::WARNING_MESSAGE);
  }
 }
 /*private*/ /*final*/ /*static*/ Logger* JUnitUtil::log = LoggerFactory::getLogger("JUnitUtil");

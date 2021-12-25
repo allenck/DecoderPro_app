@@ -5,6 +5,7 @@
 #include <QMap>
 #include <QStringList>
 #include "libPr3_global.h"
+#include "propertychangelistener.h"
 
 class VSDManagerListener;
 class LocoAddress;
@@ -22,9 +23,10 @@ class VSDecoderManagerThread;
 class VSDListener;
 class VSDecoder;
 class NamedBeanHandleManager;
-class LIBPR3SHARED_EXPORT VSDecoderManager : public QObject
+class LIBPR3SHARED_EXPORT VSDecoderManager : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
  explicit VSDecoderManager(QObject *parent = 0);
  ~VSDecoderManager() {}
@@ -52,6 +54,8 @@ public:
  /*public*/ void setDecoderPositionByAddr(LocoAddress* a, PhysicalLocation* l);
  /*public*/ void addEventListener(VSDManagerListener* listener);
  /*public*/ void removeEventListener(VSDManagerListener* listener);
+
+ QObject* self() override {return (QObject*)this;}
 
 signals:
  void fireEvent(VSDManagerEvent*);

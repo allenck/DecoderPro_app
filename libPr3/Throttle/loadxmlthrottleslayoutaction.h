@@ -12,7 +12,7 @@ class LoadXmlThrottlesLayoutAction : public AbstractAction
 public:
  /*public*/ LoadXmlThrottlesLayoutAction(QString s, QObject* parent);
  /*public*/ LoadXmlThrottlesLayoutAction(QObject* parent);
- /*public*/ bool loadThrottlesLayout(File* f) throw (IOException);
+ /*public*/ bool loadThrottlesLayout(File* f) /*throw (IOException)*/;
 
 public slots:
  /*public*/ void actionPerformed(/*ActionEvent e*/);

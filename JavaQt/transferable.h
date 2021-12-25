@@ -50,7 +50,7 @@ virtual /*public*/ bool isDataFlavorSupported(DataFlavor* /*flavor*/) {return fa
  * @exception UnsupportedFlavorException if the requested data flavor is
  *              not supported.
  */
-    /*public*/ QVariant getTransferData(DataFlavor* /*flavor*/) throw (UnsupportedFlavorException, IOException) {return QVariant();}
+    /*public*/ QVariant getTransferData(DataFlavor* /*flavor*/) /*throw (UnsupportedFlavorException, IOException)*/ {return QVariant();}
 
 };
 #endif // TRANSFERABLE_H

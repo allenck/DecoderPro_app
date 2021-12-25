@@ -219,7 +219,7 @@ public slots:
 public:
     BlockPickModel();
     /*public*/ AbstractManager *getManager();
-    /*public*/ NamedBean* addBean(QString name) throw (IllegalArgumentException);
+    /*public*/ NamedBean* addBean(QString name) /*throw (IllegalArgumentException)*/;
     /*public*/ NamedBean* addBean(QString sysName, QString userName);
     /*public*/ bool canAddBean();
 };
@@ -229,13 +229,13 @@ class ReporterPickModel : public PickListModel {
     ReporterManager* manager;
 public:
     ReporterPickModel (QObject *parent = 0);
-    /*public*/ AbstractManager* getManager();
-    /*public*/ NamedBean* getBySystemName(QString name);
-    /*public*/ NamedBean* addBean(QString name);
-    /*public*/ NamedBean* addBean(QString sysName, QString userName);
-    /*public*/ bool canAddBean();
+    /*public*/ AbstractManager* getManager()override;
+    /*public*/ NamedBean* getBySystemName(QString name)const override;
+    /*public*/ NamedBean* addBean(QString name)override;
+    /*public*/ NamedBean* addBean(QString sysName, QString userName)override;
+    /*public*/ bool canAddBean()override;
 public slots:
-    void tableClicked(QModelIndex index);
+    void tableClicked(QModelIndex index)override;
     void newReporterCreated(NamedBean *t);
 };
 
@@ -244,13 +244,13 @@ class LightPickModel : public PickListModel {
     LightManager* manager;
 public:
     LightPickModel (QObject *parent = 0);
-    /*public*/ AbstractManager *getManager();
-    /*public*/ NamedBean* getBySystemName(QString name);
-    /*public*/ NamedBean* addBean(QString name);
-    /*public*/ NamedBean* addBean(QString sysName, QString userName);
-    /*public*/ bool canAddBean();
+    /*public*/ AbstractManager *getManager()override;
+    /*public*/ NamedBean* getBySystemName(QString name) const override;
+    /*public*/ NamedBean* addBean(QString name)override;
+    /*public*/ NamedBean* addBean(QString sysName, QString userName)override;
+    /*public*/ bool canAddBean()override;
 public slots:
-    void tableClicked(QModelIndex index);
+    void tableClicked(QModelIndex index)override;
     void newLightCreated(NamedBean*);
 };
 #if 1
@@ -260,11 +260,11 @@ class OBlockPickModel : public PickListModel
 public:
     OBlockManager* manager;
     OBlockPickModel (QObject *parent = 0);
-    /*public*/ AbstractManager *getManager();
-    /*public*/ NamedBean* getBySystemName(QString name) ;
-    /*public*/ NamedBean* addBean(QString name);
-    /*public*/ NamedBean* addBean(QString sysName, QString userName);
-    /*public*/ bool canAddBean();
+    /*public*/ AbstractManager *getManager()override;
+    /*public*/ NamedBean* getBySystemName(QString name) const override;
+    /*public*/ NamedBean* addBean(QString name)override;
+    /*public*/ NamedBean* addBean(QString sysName, QString userName)override;
+    /*public*/ bool canAddBean()override;
 };
 
 class WarrantPickModel : public PickListModel {
@@ -272,11 +272,11 @@ class WarrantPickModel : public PickListModel {
 public:
     WarrantManager* manager;
     WarrantPickModel (QObject *parent = 0);
-    /*public*/ AbstractManager *getManager();
-    /*public*/ NamedBean* getBySystemName(QString name);
-    /*public*/ NamedBean* addBean(QString name);
-    /*public*/ NamedBean* addBean(QString sysName, QString userName);
-    /*public*/ bool canAddBean();
+    /*public*/ AbstractManager *getManager()override;
+    /*public*/ NamedBean* getBySystemName(QString name) const override;
+    /*public*/ NamedBean* addBean(QString name)override;
+    /*public*/ NamedBean* addBean(QString sysName, QString userName)override;
+    /*public*/ bool canAddBean()override;
 };
 #endif
 class ConditionalPickModel : public PickListModel {
@@ -284,11 +284,11 @@ class ConditionalPickModel : public PickListModel {
 public:
     ConditionalManager* manager;
     ConditionalPickModel (QObject *parent = 0) ;
-    /*public*/ AbstractManager *getManager();
-    /*public*/ NamedBean* getBySystemName(QString name);
-    /*public*/ NamedBean* addBean(QString name) ;
-    /*public*/ NamedBean* addBean(QString sysName, QString userName);
-    /*public*/ bool canAddBean();
+    /*public*/ AbstractManager *getManager()override;
+    /*public*/ NamedBean* getBySystemName(QString name)const override ;
+    /*public*/ NamedBean* addBean(QString name) override;
+    /*public*/ NamedBean* addBean(QString sysName, QString userName)override;
+    /*public*/ bool canAddBean()override;
 #if 0
     /*public*/ JTable makePickTable() {
         JTable table = super.makePickTable();
@@ -318,12 +318,12 @@ public:
 
     EntryExitPairs* manager;
     EntryExitPickModel (QObject *parent = 0);
-    /*public*/ AbstractManager *getManager();
-    /*public*/ NamedBean* getBySystemName(QString name);
-    /*public*/ NamedBean* addBean(QString name);
-    /*public*/ NamedBean* addBean(QString sysName, QString userName);
-    /*public*/ bool canAddBean();
-    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    /*public*/ AbstractManager *getManager()override;
+    /*public*/ NamedBean* getBySystemName(QString name) const override;
+    /*public*/ NamedBean* addBean(QString name)override;
+    /*public*/ NamedBean* addBean(QString sysName, QString userName)override;
+    /*public*/ bool canAddBean()override;
+    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 };
 
 class LogixPickModel : public PickListModel {
@@ -332,12 +332,12 @@ public:
 
     LogixManager* manager;
     LogixPickModel (QObject *parent = 0);
-    /*public*/ AbstractManager *getManager();
-    /*public*/ NamedBean* getBySystemName(QString name);
-    /*public*/ NamedBean* addBean(QString name);
-    /*public*/ NamedBean* addBean(QString sysName, QString userName);
-    /*public*/ bool canAddBean();
-    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    /*public*/ AbstractManager *getManager()override;
+    /*public*/ NamedBean* getBySystemName(QString name)const override;
+    /*public*/ NamedBean* addBean(QString name)override;
+    /*public*/ NamedBean* addBean(QString sysName, QString userName)override;
+    /*public*/ bool canAddBean()override;
+    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 };
 
 #endif // PICKLISTMODEL_H

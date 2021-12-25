@@ -223,7 +223,7 @@ bool UsbTreeModel0::loadSystem() {
     try {
         ca = ControllerEnvironment.getDefaultEnvironment().getControllers();
         log->debug("Found " + ca.length + " controllers");
-    } catch (Exception ex) { // this is probably ClassNotFoundException, but that's not part of the interface
+    } catch (Exception* ex) { // this is probably ClassNotFoundException, but that's not part of the interface
         // could not load some component(s)
         log->debug("Found no controllers, handled Exception", ex);
         ca = NULL;

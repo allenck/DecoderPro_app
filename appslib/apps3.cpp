@@ -130,8 +130,8 @@
 //        SwingHelpUtilities.setContentViewerUI("jmri.util.ExternalLinkContentViewerUI");
 
         // help items are set in the various Tree/Menu/Toolbar constructors
-    } catch (Throwable e3) {
-        Logger::error("Unexpected error creating help: " + e3.getMessage());
+    } catch (Throwable* e3) {
+        Logger::error("Unexpected error creating help: " + e3->getMessage());
     }
 }
 

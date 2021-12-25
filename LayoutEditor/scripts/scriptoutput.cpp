@@ -47,8 +47,8 @@ ScriptOutput::ScriptOutput(QObject *parent) : QObject(parent)
             PipeListener pl = new PipeListener(pr, output);
             pl.start();
 #endif
-        } catch (IOException e) {
-            log->error("Exception creating script output area", &e);
+        } catch (IOException* e) {
+            log->error("Exception creating script output area", e);
             return nullptr;
         }
     }

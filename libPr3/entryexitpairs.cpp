@@ -252,7 +252,7 @@ return (settingRouteColor == QColor() ? false : true);
 #if 0
 //@Deprecated
 /*public*/ char EntryExitPairs::systemLetter()const {
-    throw  UnsupportedOperationException("Not supported yet.");
+    throw new  UnsupportedOperationException("Not supported yet.");
 }
 #endif
 /** {@inheritDoc} */
@@ -266,13 +266,13 @@ return (settingRouteColor == QColor() ? false : true);
 }
 
 /*public*/ char EntryExitPairs::typeLetter() const {
-    throw  UnsupportedOperationException("Not supported yet.");
+    throw new  UnsupportedOperationException("Not supported yet.");
 }
 
 //@Override
 //@Nonnull
 /*public*/ QString EntryExitPairs::makeSystemName(QString /*s*/)const {
-    throw UnsupportedOperationException("Not supported yet.");
+    throw new UnsupportedOperationException("Not supported yet.");
 }
 
 /** {@inheritDoc} */
@@ -329,11 +329,11 @@ public List<DestinationPoints> getNamedBeanList() {
 }
 
 /*public*/ void EntryExitPairs::Register(/*@Nonnull*/ NamedBean* /*n*/)const {
-    throw  UnsupportedOperationException("Not supported yet.");
+    throw new  UnsupportedOperationException("Not supported yet.");
 }
 
 /*public*/ void EntryExitPairs::deregister(/*@Nonnull*/NamedBean* /*n*/)const {
-    throw  UnsupportedOperationException("Not supported yet.");
+    throw new  UnsupportedOperationException("Not supported yet.");
 }
 
 /*public*/ void EntryExitPairs::setClearDownOption(int i){
@@ -1303,7 +1303,7 @@ PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, QList<LayoutB
 * Discover all possible valid source and destination signalmasts past pairs
 * on all layout editor panels.
 */
-/*public*/ void EntryExitPairs::automaticallyDiscoverEntryExitPairs(LayoutEditor* editor, int interlockType) /*throw (JmriException)*/
+/*public*/ void EntryExitPairs::automaticallyDiscoverEntryExitPairs(LayoutEditor* editor, int interlockType) /*throw new (JmriException)*/
 {
  //This is almost a duplicate of that in the DefaultSignalMastLogicManager
  runWhenStablised=false;
@@ -1369,7 +1369,7 @@ PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, QList<LayoutB
  }
 }
 
-/*public*/ void EntryExitPairs::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) {
+/*public*/ void EntryExitPairs::vetoableChange(PropertyChangeEvent* /*evt*/) /*throw new (PropertyVetoException)*/ {
 
 }
 
@@ -1426,7 +1426,7 @@ PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, QList<LayoutB
 }
 
 //@Override
-/*public*/ void EntryExitPairs::deleteBean(DestinationPoints* bean, QString property) throw (PropertyVetoException) {
+/*public*/ void EntryExitPairs::deleteBean(DestinationPoints* bean, QString property) /*throw (PropertyVetoException)*/ {
 
 }
 

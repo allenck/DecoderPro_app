@@ -1,7 +1,7 @@
 #ifndef VSDCONTROL_H
 #define VSDCONTROL_H
 
-#include <QFrame>
+#include "jpanel.h"
 #include "liblayouteditor_global.h"
 #include "propertychangelistener.h"
 
@@ -15,7 +15,7 @@ class SoundEvent;
 class QPushButton;
 class QLabel;
 class VSDConfig;
-class LIBLAYOUTEDITORSHARED_EXPORT VSDControl : public QFrame, public PropertyChangeListener
+class LIBLAYOUTEDITORSHARED_EXPORT VSDControl : public JPanel, public PropertyChangeListener
 {
  Q_OBJECT
   Q_INTERFACES(PropertyChangeListener)

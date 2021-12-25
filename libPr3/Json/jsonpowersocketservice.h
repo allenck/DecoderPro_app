@@ -11,11 +11,11 @@ class JsonPowerSocketService : public JsonSocketService, public PropertyChangeLi
 Q_INTERFACES(PropertyChangeListener)
  public:
  /*public*/ JsonPowerSocketService(JsonConnection* connection, QObject* parent = 0);
- /*public*/ void onMessage(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException)  override;
- /*public*/ void onList(QString type, QJsonObject data, QLocale locale) throw (JsonException) override;
+ /*public*/ void onMessage(QString type, QJsonObject data, QLocale locale) /*throw (IOException, JmriException, JsonException)*/  override;
+ /*public*/ void onList(QString type, QJsonObject data, QLocale locale) /*throw (JsonException)*/ override;
  /*public*/ void onClose() override;
 
-  QObject* self() override {(QObject*)this;}
+  QObject* self() override {return (QObject*)this;}
 public slots:
  /*public*/ void propertyChange(PropertyChangeEvent* evt) override;
 

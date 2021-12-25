@@ -74,8 +74,8 @@
     }
     try {
         loadThrottlesLayout(fileChooser->getSelectedFile());
-    } catch (IOException e1) {
-        log->warn("Exception while reading file" + e1.getMessage());
+    } catch (IOException* e1) {
+        log->warn("Exception while reading file" + e1->getMessage());
     }
 }
 
@@ -86,7 +86,7 @@
  * @param f The XML file containing throttles.
  */
 //@SuppressWarnings("unchecked")
-/*public*/ bool LoadXmlThrottlesLayoutAction::loadThrottlesLayout(File* f) throw (IOException) {
+/*public*/ bool LoadXmlThrottlesLayoutAction::loadThrottlesLayout(File* f) /*throw (IOException)*/ {
     try {
         //ThrottlePrefs prefs = new ThrottlePrefs();
   XmlFile* prefs = new XmlFile();

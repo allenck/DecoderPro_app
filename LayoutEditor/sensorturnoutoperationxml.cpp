@@ -32,7 +32,7 @@ SensorTurnoutOperationXml::SensorTurnoutOperationXml(QObject *parent) :
         return NULL;
     }
 //    catch (NoSuchMethodException* e2) {
-//        log->error("while creating NoFeedbackTurnoutOperation", e2.getMessage());
+//        log->error("while creating NoFeedbackTurnoutOperation", e2->getMessage());
 //        return null;
 //    }
 }

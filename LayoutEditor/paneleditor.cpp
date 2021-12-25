@@ -1591,8 +1591,8 @@ protected void addItemPopUp(final ComboBoxItem item, JMenu menu){
                 adapter = (XmlAdapter*)Class::forName(className)->newInstance();
                 QDomElement el = adapter->store(copied->self());
                 adapter->load(el, this);
-            } catch (Exception ex) {
-                log->debug(ex.getMessage());
+            } catch (Exception* ex) {
+                log->debug(ex->getMessage());
             }
             /*We remove the original item from the list, so we end up with
             just the new items selected and allow the items to be moved around */

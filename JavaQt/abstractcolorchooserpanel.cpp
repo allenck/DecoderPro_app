@@ -104,7 +104,7 @@
  *
  * @param enclosingChooser the chooser from which the panel is to be removed
  */
-/*public*/ void AbstractColorChooserPanel::uninstallChooserPanel(JColorChooser* enclosingChooser) {
+/*public*/ void AbstractColorChooserPanel::uninstallChooserPanel(JColorChooser* /*enclosingChooser*/) {
  chooser->removePropertyChangeListener("enabled", enabledListener);
          chooser = nullptr;
 }
@@ -154,8 +154,9 @@ void AbstractColorChooserPanel::setSelectedColor(QColor color) {
  */
 //@BeanProperty(description
 //        = "Sets the transparency of a color selection on or off.")
-/*public*/ void AbstractColorChooserPanel::setColorTransparencySelectionEnabled(bool b){
+/*public*/ void AbstractColorChooserPanel::setColorTransparencySelectionEnabled(bool /*b*/){
 }
+
 /**
  * Gets whether color chooser panel allows to select the transparency
  * (alpha value) of a color.
@@ -180,7 +181,7 @@ void AbstractColorChooserPanel::setSelectedColor(QColor color) {
  *                     or is not an Integer
  * @return the int
  */
-int AbstractColorChooserPanel::getInt(QVariant key, int defaultValue) {
+int AbstractColorChooserPanel::getInt(QVariant /*key*/, int /*defaultValue*/) {
 #if 0
  Object value = UIManager.get(key, getLocale());
 
@@ -194,6 +195,7 @@ int AbstractColorChooserPanel::getInt(QVariant key, int defaultValue) {
          }
          return defaultValue;
 #endif
+         return 0;
 }
 
 /*public*/ QString AbstractColorChooserPanel::toString()

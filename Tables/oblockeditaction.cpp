@@ -264,7 +264,7 @@
 //                try {
 //                    bean->setBlockSpeed(speed);
 //                } catch (JmriException* ex) {
-//                    JOptionPane.showMessageDialog(null, ex.getMessage() + "\n" + speed);
+//                    JOptionPane.showMessageDialog(null, ex->getMessage() + "\n" + speed);
 //                    return;
 //                }
 //                if (!speedList.contains(speed) && !speed.contains("Global")) {

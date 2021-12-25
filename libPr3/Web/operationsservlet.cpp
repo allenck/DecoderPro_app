@@ -97,7 +97,7 @@ OperationsServlet::OperationsServlet() : HttpServlet()
     }
 }
 
-/*protected*/ void OperationsServlet::processTrains(HttpServletRequest* request, HttpServletResponse* response) throw (IOException)
+/*protected*/ void OperationsServlet::processTrains(HttpServletRequest* request, HttpServletResponse* response) /*throw (IOException)*/
 {
 #if 1
  if (JSON::_JSON == (request->getParameter("format")))
@@ -186,7 +186,7 @@ OperationsServlet::OperationsServlet() : HttpServlet()
 #endif
 }
 
-/*private*/ void OperationsServlet::processManifest(QString id, HttpServletRequest* request, HttpServletResponse* response) throw (IOException)
+/*private*/ void OperationsServlet::processManifest(QString id, HttpServletRequest* request, HttpServletResponse* response) /*throw (IOException)*/
 {
  Operations::Train* train = ((Operations::TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainById(id);
  log->debug(tr("train id=%1 name=%2 %3").arg(id).arg(train->getName()).arg(train->getDescription()));
@@ -269,7 +269,7 @@ OperationsServlet::OperationsServlet() : HttpServlet()
 #endif
 }
 
-/*private*/ void OperationsServlet::processConductor(QString id, HttpServletRequest* request, HttpServletResponse* response) throw (IOException)
+/*private*/ void OperationsServlet::processConductor(QString id, HttpServletRequest* request, HttpServletResponse* response) /*throw (IOException)*/
 {
  Operations::Train* train = ((Operations::TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainById(id);
  QJsonObject data;

@@ -92,7 +92,7 @@ public:
             QString id, QString group, QString developerID,
                 QString manufacturerID, QString productID);
     void writeFile(QString name); // throw (FileNotFoundException, IOException);
-    void writeFile (QFile* file); //throw (IOException);
+    void writeFile (QFile* file); ///*throw (IOException)*/;
     static QString _rosterGroupPrefix;// = "RosterGroup:";
     /*public*/ static QString getRosterGroupName(QString rosterGroup);
     /*public*/ static QString getRosterGroupProperty(QString name);

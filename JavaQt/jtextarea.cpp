@@ -493,7 +493,7 @@ void JTextArea::setTabSize(int size) { setTabStopWidth(size);}
         try {
             doc.insertString(pos, str, NULL);
         } catch (BadLocationException e) {
-            throw new IllegalArgumentException(e.getMessage());
+            throw new IllegalArgumentException(e->getMessage());
         }
     }
 }
@@ -556,7 +556,7 @@ void JTextArea::setTabSize(int size) { setTabStopWidth(size);}
                 doc.insertString(start, str, NULL);
             }
         } catch (BadLocationException e) {
-            throw new IllegalArgumentException(e.getMessage());
+            throw new IllegalArgumentException(e->getMessage());
         }
     }
 }

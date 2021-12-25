@@ -152,7 +152,7 @@ public:
     /*public*/ void setURL(QString s);
     /*public*/ QString getURL();
     /*public*/ void setDateModified(/*@Nonnull*/ QDateTime date);
-    /*public*/ void setDateModified(/*@Nonnull*/ QString date) throw (ParseException) ;
+    /*public*/ void setDateModified(/*@Nonnull*/ QString date) /*throw (ParseException)*/ ;
     /*public*/ QDateTime getDateModified();
     QT_DEPRECATED /*public*/ void setDateUpdated(QString s);
     /*public*/ QString getDateUpdated();
@@ -184,7 +184,7 @@ public:
     /*public*/ static void setDefaultOwner(QString n);
     /*public*/ QList<RosterGroup*> getGroups();
     /*public*/ QList<RosterGroup*> getGroups(Roster* roster);
-    /*public*/ static RosterEntry* fromFile(/*@Nonnull*/ File* file) throw (JDOMException, IOException);
+    /*public*/ static RosterEntry* fromFile(/*@Nonnull*/ File* file) /*throw (JDOMException, IOException)*/;
     /*public*/ QString getDisplayName();
 
 

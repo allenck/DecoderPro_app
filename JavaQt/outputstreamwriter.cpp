@@ -186,7 +186,7 @@
      * the byte stream itself.  This method is non-private only so that it may
      * be invoked by PrintStream.
      */
-    void OutputStreamWriter::flushBuffer() throw (IOException) {
+    void OutputStreamWriter::flushBuffer() /*throw (IOException)*/ {
 //        se->flushBuffer();
     }
 #if 0
@@ -221,7 +221,7 @@
      *
      * @exception  IOException  If an I/O error occurs
      */
-    /*public*/ void OutputStreamWriter::write(QString str, int off, int len) throw (IOException) {
+    /*public*/ void OutputStreamWriter::write(QString str, int off, int len) /*throw (IOException)*/ {
         se.write(str, off, len);
     }
 

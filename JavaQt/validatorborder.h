@@ -26,7 +26,7 @@ class VBAbstractBorder : public AbstractBorder
    * {@inheritDoc}
    */
   //@Override
-  /*public*/ void paintBorder(QWidget* c, /*@Nonnull Graphics g,*/ int x, int y, int width, int height)
+  /*public*/ void paintBorder(QWidget* c, /*@Nonnull Graphics g,*/ int x, int y, int width, int /*height*/)
   {
    QPainter g(c);
    Insets* insets = border->outsideBorder->getBorderInsets(c);

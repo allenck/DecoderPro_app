@@ -230,7 +230,7 @@ setDirtyAndFirePropertyChange(LENGTH_CHANGED_PROPERTY, old, length);
 /*public*/ int RollingStock::getLengthInteger() {
   //try {
 return getLength().toInt();
-//     } catch (Exception e) {
+//     } catch (Exception* e) {
 //         log->error("Rolling stock ({}) length ({}) is not valid ", toString(), getLength());
 //     }
   return 0;
@@ -293,7 +293,7 @@ return getLength().toInt();
      double weight = 0;
      try {
          weight = getWeight().toDouble();
-     } catch (Exception e) {
+     } catch (Exception* e) {
          // log->debug("Weight not set for rolling stock ("+toString()+")");
      }
      return QString::number((int) (weight * Setup::getScaleTonRatio()));
@@ -304,7 +304,7 @@ return getLength().toInt();
      try {
          // get loaded weight
          weightTons = getWeightTons().toInt();
-     } catch (Exception e) {
+     } catch (Exception* e) {
          log->debug(tr("Rolling stock (%1) weight not set").arg(toString()));
      }
      return weightTons;

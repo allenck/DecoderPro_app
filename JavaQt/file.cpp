@@ -293,7 +293,7 @@ int File::getPrefixLength() {
 
  if (child.isNull())
  {
-  throw  NullPointerException();
+  throw new NullPointerException();
  }
  if (parent != "")
  {
@@ -352,7 +352,7 @@ int File::getPrefixLength() {
  prefixLength = 0;
  if (child.isNull())
  {
-  throw  NullPointerException();
+  throw new NullPointerException();
  }
  if (parent != NULL)
  {
@@ -626,7 +626,7 @@ int File::getPrefixLength() {
 /*public*/ QString File::getCanonicalPath() /*throws IOException*/
 {
  if (isInvalid()) {
-     throw  IOException("Invalid file path");
+     throw new IOException("Invalid file path");
  }
 //    return fs.canonicalize(fs.resolve(this));
  QDir dir(path);
@@ -1414,7 +1414,7 @@ int File::getPrefixLength() {
     File* canonFile = NULL;
     try {
         canonFile = getCanonicalFile();
-    } catch (IOException e) {
+    } catch (IOException* e) {
         return false;
     }
 

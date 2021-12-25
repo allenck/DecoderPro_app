@@ -72,21 +72,21 @@
     /** {@inheritDoc} */
     //@Override
     //@OverridingMethodsMustInvokeSuper
-    /*public*/ void DefaultVariableLightManager::Register(/*@Nonnull*/ VariableLight* s) {
-        throw  UnsupportedOperationException("Not supported. Use LightManager.register() instead");
+    /*public*/ void DefaultVariableLightManager::Register(/*@Nonnull*/ VariableLight* /*s*/) {
+        throw new UnsupportedOperationException("Not supported. Use LightManager.register() instead");
     }
 
     /** {@inheritDoc} */
     //@Override
     //@OverridingMethodsMustInvokeSuper
-    /*public*/ void DefaultVariableLightManager::deregister(/*@Nonnull*/ NamedBean *s) const {
-        throw  UnsupportedOperationException("Not supported. Use LightManager.deregister() instead");
+    /*public*/ void DefaultVariableLightManager::deregister(/*@Nonnull*/ NamedBean */*s*/) const {
+        throw new UnsupportedOperationException("Not supported. Use LightManager.deregister() instead");
     }
 
     /** {@inheritDoc} */
     //@Override
     //@OverridingMethodsMustInvokeSuper
-    /*public*/ void DefaultVariableLightManager::deleteBean(/*@Nonnull*/ VariableLight* n, /*@Nonnull*/ QString property) {
+    /*public*/ void DefaultVariableLightManager::deleteBean(/*@Nonnull*/ VariableLight* n, /*@Nonnull*/ QString /*property*/) {
         throw new UnsupportedOperationException("Not supported. Use LightManager.deleteBean() instead");
     }
 

@@ -24,8 +24,8 @@ using namespace Sprog;
     SprogPacketGenFrame* f = new SprogPacketGenFrame(_memo);
     try {
         f->initComponents();
-    } catch (Exception ex) {
-        log->error("Exception: " + ex.getMessage());
+    } catch (Exception* ex) {
+        log->error("Exception: " + ex->getMessage());
     }
     f->setVisible(true);
 }

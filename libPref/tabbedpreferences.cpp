@@ -266,11 +266,11 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
    }
   }
   //catch (ClassNotFoundException* | InstantiationException | IllegalAccessException e) {
-  catch(ClassNotFoundException e)
+  catch(ClassNotFoundException* e)
   {
     log->error("Unable to add preferences class (" + className + ")"/*, e*/);
   }
-  catch(InstantiationException e)
+  catch(InstantiationException* e)
   {
     log->error("Unable to add preferences class (" + className + ")"/*, e*/);
   }

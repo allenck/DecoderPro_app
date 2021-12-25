@@ -15,13 +15,13 @@ public:
  explicit JsonClientHandler(JsonConnection* connection, QObject *parent = 0);
  /*public*/ static /*final*/ QString HELLO_MSG;// = "{\"" + JSON.TYPE + "\":\"" + JSON.HELLO + "\"}";
  /*public*/ void dispose();
- /*public*/ void sendHello(int heartbeat) throw (IOException);
+ /*public*/ void sendHello(int heartbeat) /*throw (IOException)*/;
 
 signals:
 
 public slots:
- /*public*/ void onMessage(QString string) throw (IOException);
- /*public*/ void onMessage(/*JsonNode*/QJsonObject root) throw (IOException);
+ /*public*/ void onMessage(QString string) /*throw (IOException)*/;
+ /*public*/ void onMessage(/*JsonNode*/QJsonObject root) /*throw (IOException)*/;
 
 private:
  /*private*/ /*final*/ JsonConnection* connection;

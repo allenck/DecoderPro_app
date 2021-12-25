@@ -60,7 +60,7 @@ AbstractProvidingReporterManagerTestBase::AbstractProvidingReporterManagerTestBa
             e1 = (Reporter*)m->provide(s1);
             e2 = (Reporter*)m->provide(s2);
         } catch (
-                IllegalArgumentException /*|
+                IllegalArgumentException* /*|
                 com.pi4j.io.gpio.exception.GpioPinExistsException |
                 NullPointerException |
                 ArrayIndexOutOfBoundsException*/ ex) {
@@ -106,8 +106,8 @@ AbstractProvidingReporterManagerTestBase::AbstractProvidingReporterManagerTestBa
             // This should fail with an DuplicateSystemNameException.
             ((ReporterManager*)l)->Register(e2);
             Assert::fail("Expected exception not thrown", __FILE__, __LINE__);
-        } catch (NamedBean::DuplicateSystemNameException ex) {
-            Assert::assertEquals("exception message is correct", expectedMessage, ex.getMessage(), __FILE__, __LINE__);
+        } catch (NamedBean::DuplicateSystemNameException* ex) {
+            Assert::assertEquals("exception message is correct", expectedMessage, ex->getMessage(), __FILE__, __LINE__);
             JUnitAppender::assertErrorMessage(expectedMessage, __FILE__, __LINE__);
         }
 

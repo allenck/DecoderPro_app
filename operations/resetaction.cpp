@@ -65,7 +65,7 @@ namespace Operations
          QMessageBox::information(NULL, tr("Reset successful!"), tr("You must restart JMRI to complete the reset"));
          Apps::handleRestart();
 
-//     } catch (Exception ex) {
+//     } catch (Exception* ex) {
 //         UnexpectedExceptionContext context = new UnexpectedExceptionContext(ex,
 //                 "Deleting Operations files"); // NOI18N
 //         new ExceptionDisplayFrame(context);

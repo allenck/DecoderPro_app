@@ -1297,7 +1297,7 @@ void AbstractThrottle::stopClock() {
   currentDuration = currentDurationString.toInt(&bOk);
   if(!bOk) //throw new Exception();
 // }
-// catch (Exception e)
+// catch (Exception* e)
  {
   log->warn("current stored duration is not a valid number \"" + currentDurationString +" \"");
  }

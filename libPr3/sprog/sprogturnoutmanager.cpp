@@ -55,8 +55,8 @@ using namespace Sprog;
     try {
      bool ok;
         num = (systemName.mid(getSystemPrefix().length() + 1)).toInt(&ok);
-        if(!ok) throw Exception();
-    } catch (Exception e) {
+        if(!ok) throw new Exception();
+    } catch (Exception* e) {
         log->debug(tr("invalid character in number field of system name: %1").arg(systemName));
         return (0);
     }

@@ -519,7 +519,7 @@ void LTBeanTableDataModel::doDelete(NamedBean* bean) {
             Validation* validation = hardwareAddressValidator->getValidation();
             Validation::Type type = validation.getType();
             create.setEnabled(type != Validation.Type.WARNING && type != Validation.Type.DANGER);
-            QString message = validation.getMessage();
+            QString message = validation->getMessage();
             if (message == "") {
                 status1->setText("");
             } else {
@@ -1504,7 +1504,7 @@ void LightTableAction::setUpControlType(QString ctype) {
                     status1->setText(tr("Number out of range in time entry, please reenter as hh:mm."));
                     error = true;
                 }
-            } catch (Exception e) {
+            } catch (Exception* e) {
                 status1->setText(tr("Bad character in time field, please reenter as hh:mm."));
                 error = true;
             }
@@ -1521,7 +1521,7 @@ void LightTableAction::setUpControlType(QString ctype) {
                     status1->setText(tr("Number out of range in time entry, please reenter as hh:mm."));
                     error = true;
                 }
-            } catch (Exception e) {
+            } catch (Exception* e) {
                 status1->setText(tr("Bad character in time field, please reenter as hh:mm."));
                 error = true;
             }
@@ -1533,7 +1533,7 @@ void LightTableAction::setUpControlType(QString ctype) {
                     status1->setText(tr("Number out of range in time entry, please reenter as hh:mm."));
                     error = true;
                 }
-            } catch (Exception e) {
+            } catch (Exception* e) {
                 status1->setText(tr("Bad character in time field, please reenter as hh:mm."));
                 error = true;
             }

@@ -63,8 +63,8 @@ public:
 
     // create a specific slot
     //public LocoNetSlot(int slotNum)  { slot = slotNum;}
-    LocoNetSlot(LocoNetMessage* l, QObject *parent = 0)  throw (LocoNetException);
-    void setSlot(LocoNetMessage* l) throw (LocoNetException);
+    LocoNetSlot(LocoNetMessage* l, QObject *parent = 0)  ;
+    void setSlot(LocoNetMessage* l) /*throw (LocoNetException)*/;
     /**
      * Load functions 9 through 28 from loconet "Set Direct"
      * message.

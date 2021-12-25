@@ -208,10 +208,10 @@ void ReportContext::addProperty(QString prop) {
                         + " " + gd.getDefaultConfiguration().toString());
             }
         } catch (HeadlessException ex) {
-            addString("Exception getting device bounds " + ex.getMessage());
+            addString("Exception getting device bounds " + ex->getMessage());
         }
     } catch (HeadlessException ex) {
-        addString("Exception getting max window bounds " + ex.getMessage());
+        addString("Exception getting max window bounds " + ex->getMessage());
     }
     // Return the insets using a custom class
     // which should return the correct values under
@@ -221,7 +221,7 @@ void ReportContext::addProperty(QString prop) {
         addString("JmriInsets t:" + jmriInsets.top + ", b:" + jmriInsets.bottom
                 + "; l:" + jmriInsets.left + ", r:" + jmriInsets.right);
     } catch (Throwable ex) {
-        addString("Exception getting JmriInsets" + ex.getMessage());
+        addString("Exception getting JmriInsets" + ex->getMessage());
     }
 #endif
 }

@@ -61,7 +61,7 @@ using namespace Operations;
  return ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->getManifestFile(trainName, JSON::_JSON);
 }
 
-/*public*/ void JsonManifest::build() throw (IOException)
+/*public*/ void JsonManifest::build() /*throw (IOException)*/
 {
  QJsonObject root = QJsonObject();//this->mapper.createQJsonObject();
  if (this->train->getRailroadName() != (Train::NONE)) {

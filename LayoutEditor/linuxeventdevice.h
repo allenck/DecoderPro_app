@@ -11,10 +11,10 @@ class LinuxEventDevice : public LinuxDevice
 {
 public:
  LinuxEventDevice();
- /*public*/ LinuxEventDevice(QString filename, QObject* parent=0) throw (IOException);
+ /*public*/ LinuxEventDevice(QString filename, QObject* parent=0) /*throw (IOException)*/;
  /*public*/ /*final*/ Usb::Controller::Type getType();
- /*public*/ /*final*/ /*synchronized*/ int uploadRumbleEffect(int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) throw (IOException);
- /*public*/ /*final*/ /*synchronized*/ int uploadConstantEffect(int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10) throw (IOException);
+ /*public*/ /*final*/ /*synchronized*/ int uploadRumbleEffect(int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) /*throw (IOException)*/;
+ /*public*/ /*final*/ /*synchronized*/ int uploadConstantEffect(int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10) /*throw (IOException)*/;
  /*public*/ /*final*/ QVector<Rumbler*>* getRumblers();
 
 private:

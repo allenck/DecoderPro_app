@@ -187,7 +187,7 @@ namespace Operations
         if (old!=(weight)) {
            setDirtyAndFirePropertyChange("Engine Weight Tons", old, weight); // NOI18N
         }
-     } catch(NullPointerException npe) {
+     } catch(NullPointerException* npe) {
         // this failed, was the model set?
         log->debug(tr("NPE setting Weight Tons for Engine (%1)").arg(toString()));
      }
@@ -200,7 +200,7 @@ namespace Operations
         if (weight == NULL) {
             weight = NONE;
         }
-    } catch(NullPointerException npe){
+    } catch(NullPointerException* npe){
        log->debug(tr("NPE getting Weight Tons for Engine (%1)").arg(toString()));
        weight = NONE;
     }

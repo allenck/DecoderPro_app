@@ -176,7 +176,7 @@ public slots:
     }
     void interrupted()
     {
-     throw InterruptedException();
+     throw new InterruptedException();
     }
 signals:
     void finished();

@@ -28,9 +28,9 @@ void MatrixSignalMastTestAction::actionPerformed()
 
      JUnitUtil::runTests(test, testList);
     }
-    catch (AssertionError er)
+    catch (AssertionError* er)
     {
-        JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
+        JOptionPane::showMessageDialog(nullptr, er->getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
     }
 }
 Logger* MatrixSignalMastTestAction::log = LoggerFactory::getLogger("MatrixSignalMastTestAction");

@@ -50,9 +50,9 @@ void LoggerBase::debug(QString name,QString s)
  qDebug() << tr("%1: Debug: %2").arg(name).arg(s);
 }
 
-void LoggerBase::debug(QString name,QString s, Throwable throwable)
+void LoggerBase::debug(QString name,QString s, Throwable* throwable)
 {
- qDebug() << tr("%1: Debug: %2 %3").arg(name).arg(s).arg(throwable.getMessage());
+ qDebug() << tr("%1: Debug: %2 %3").arg(name).arg(s).arg(throwable->getMessage());
 }
 
 
@@ -63,11 +63,11 @@ void LoggerBase::warn(QString name,QString s)
  ConsoleInterface::instance()->sendMessage(tr("Warning: ")+ s, new LoggingEvent(name, LogLevel::WARN,s,nullptr));
 }
 
-void LoggerBase::warn(QString name,QString s, Throwable ex)
+void LoggerBase::warn(QString name,QString s, Throwable* ex)
 {
- qDebug() << tr("%1: Warning: %2 %3").arg(name).arg(s).arg(ex.getMessage());
+ qDebug() << tr("%1: Warning: %2 %3").arg(name).arg(s).arg(ex->getMessage());
  //ConsoleInterface::instance()->sendMessage(tr("Warning: ")+ s, s, new LogLevel(LogLevel::WARN, "Warning",0));
- ConsoleInterface::instance()->sendMessage(tr("Warning: ")+ s + " " + ex.getMessage() , new LoggingEvent(name, LogLevel::WARN,s,nullptr));
+ ConsoleInterface::instance()->sendMessage(tr("Warning: ")+ s + " " + ex->getMessage() , new LoggingEvent(name, LogLevel::WARN,s,nullptr));
 }
 
 

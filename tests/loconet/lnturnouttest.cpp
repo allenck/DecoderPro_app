@@ -110,8 +110,8 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
         // set Turnout::CLOSED
         try {
             t->setCommandedState(Turnout::CLOSED);
-        } catch (Exception e) {
-            log->error("TO exception: " + e.getMessage());
+        } catch (Exception* e) {
+            log->error("TO exception: " + e->getMessage());
         }
         Assert::assertTrue(lnis->outbound.at(0)
                 ->toString().toUpper() == ("B0 14 30 00"), __FILE__, __LINE__);  // Turnout::CLOSED loconet message
@@ -136,8 +136,8 @@ LnTurnoutTest::LnTurnoutTest(QObject *parent)
         try {
             t->setProperty(LnTurnoutManager::BYPASSBUSHBYBITKEY, true);
             t->setCommandedState(Turnout::THROWN);
-        } catch (Exception e) {
-            log->error("TO exception: " + e.getMessage());
+        } catch (Exception* e) {
+            log->error("TO exception: " + e->getMessage());
         }
         Assert::assertTrue(lnis->outbound.at(0)
                 ->toString().toUpper() == ("B0 14 10 00"), __FILE__, __LINE__);  // thrown loconet message

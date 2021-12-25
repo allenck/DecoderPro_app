@@ -397,7 +397,7 @@ namespace Operations
             if (!yearTextField->text().trimmed().isEmpty()) {
                 yearTextField->text().trimmed().toInt(&bok);
                 if(!bok)
-                 throw NumberFormatException();
+                 throw new NumberFormatException();
             }
         } catch (NumberFormatException* e) {
             JOptionPane::showMessageDialog(this, tr("Optional Year Modeled"),

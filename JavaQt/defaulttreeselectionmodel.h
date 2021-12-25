@@ -37,7 +37,7 @@ public:
  /*public*/ /*synchronized*/ void removePropertyChangeListener( PropertyChangeListener* listener);
  /*public*/ QVector<PropertyChangeListener *> getPropertyChangeListeners();
  /*public*/ QString toString();
- /*public*/ QObject* clone() throw (CloneNotSupportedException);
+ /*public*/ QObject* clone() /*throw (CloneNotSupportedException)*/;
 // template<class T>
 // /*public*/ /*<T extends EventListener>*/ QVector<T*> getListeners(QString listenerType);
  /*public*/ TreePath* getLeadSelectionPath();

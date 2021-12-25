@@ -48,7 +48,7 @@ protected:
 /**
  * Always use flow control, not considered a user-settable option
  */
- void setSerialPort(SerialPort* activeSerialPort) throw(UnsupportedCommOperationException);
+ void setSerialPort(SerialPort* activeSerialPort) /*throw(UnsupportedCommOperationException)*/;
 
 };
 

@@ -84,7 +84,7 @@ FileUtilSupportTest::FileUtilSupportTest(QObject *parent) : QObject(parent)
 
     // tests of external to internal mapping
     //@Test
-    /*public*/ void FileUtilSupportTest::testGetpfPreferenceF() throw (IOException) {
+    /*public*/ void FileUtilSupportTest::testGetpfPreferenceF() /*throw (IOException)*/ {
         File* f = new File(instance->getUserFilesPath() + "non-existant-file-foo");
         QString name = instance->getPortableFilename(f);
         Assert::assertEquals("preference:non-existant-file-foo", name, __FILE__, __LINE__);
@@ -97,21 +97,21 @@ FileUtilSupportTest::FileUtilSupportTest(QObject *parent) : QObject(parent)
     }
 
     //@Test
-    /*public*/ void FileUtilSupportTest::testGetpfResourceF() throw (IOException) {
+    /*public*/ void FileUtilSupportTest::testGetpfResourceF() /*throw (IOException)*/ {
         File* f = new File(instance->getUserFilesPath() + "resources" + File::separator + "non-existant-file-foo");
         QString name = instance->getPortableFilename(f);
         Assert::assertEquals("preference:resources/non-existant-file-foo", name, __FILE__, __LINE__);
     }
 
     //@Test
-    /*public*/ void FileUtilSupportTest::testGetpfPrefF() throw (IOException) {
+    /*public*/ void FileUtilSupportTest::testGetpfPrefF() /*throw (IOException)*/ {
         File* f = new File(instance->getUserFilesPath() + "resources" + File::separator + "non-existant-file-foo");
         QString name = instance->getPortableFilename(f);
         Assert::assertEquals("preference:resources/non-existant-file-foo", name, __FILE__, __LINE__);
     }
 
     //@Test
-    /*public*/ void FileUtilSupportTest::testGetpfProgramF() throw (IOException) {
+    /*public*/ void FileUtilSupportTest::testGetpfProgramF() /*throw (IOException)*/ {
         File* f = new File("resources" + File::separator + "non-existant-file-foo");
         QString name = instance->getPortableFilename(f);
         Assert::assertEquals("program:resources/non-existant-file-foo", name, __FILE__, __LINE__);
@@ -139,7 +139,7 @@ FileUtilSupportTest::FileUtilSupportTest(QObject *parent) : QObject(parent)
     }
 
     //@Test
-    /*public*/ void FileUtilSupportTest::testGetpfHomeF() throw (IOException) {
+    /*public*/ void FileUtilSupportTest::testGetpfHomeF() /*throw (IOException)*/ {
         File* f = new File(System::getProperty("user.home") + File::separator + "resources" + File::separator + "non-existant-file-foo");
         QString name = instance->getPortableFilename(f);
         Assert::assertEquals("home:resources/non-existant-file-foo", name, __FILE__, __LINE__);
@@ -157,14 +157,14 @@ FileUtilSupportTest::FileUtilSupportTest(QObject *parent) : QObject(parent)
 
     // program: prefix with relative path, convert to relative in system-specific form
     //@Test
-    /*public*/ void FileUtilSupportTest::testGAFProgRel() throw (IOException) {
+    /*public*/ void FileUtilSupportTest::testGAFProgRel() /*throw (IOException)*/ {
         QString name = instance->getAbsoluteFilename(FileUtil::PROGRAM + "jython");
         Assert::assertEquals((new File("jython"))->getCanonicalPath(), name, __FILE__, __LINE__);
     }
 
     // program: prefix with absolute path, convert to absolute in system-specific form
     //@Test
-    /*public*/ void FileUtilSupportTest::testGAFProgAbs() throw (IOException) {
+    /*public*/ void FileUtilSupportTest::testGAFProgAbs() /*throw (IOException)*/ {
         File* f = new File("resources/non-existant-file-foo");
         QString name = instance->getAbsoluteFilename(FileUtil::PROGRAM + f->getAbsolutePath());
         Assert::assertEquals(f->getCanonicalPath(), name, __FILE__, __LINE__);
@@ -172,14 +172,14 @@ FileUtilSupportTest::FileUtilSupportTest(QObject *parent) : QObject(parent)
 
     // preference: prefix with relative path, convert to absolute in system-specific form
     //@Test
-    /*public*/ void FileUtilSupportTest::testGAFPrefRel() throw (IOException) {
+    /*public*/ void FileUtilSupportTest::testGAFPrefRel() /*throw (IOException)*/ {
         QString name = instance->getAbsoluteFilename(FileUtil::PREFERENCES + "non-existant-file-foo");
         Assert::assertEquals((new File(instance->getUserFilesPath() + "non-existant-file-foo"))->getCanonicalPath(), name, __FILE__, __LINE__);
     }
 
     // preference: prefix with absolute path, convert to absolute in system-specific form
     //@Test
-    /*public*/ void FileUtilSupportTest::testGAFPrefAbs() throw (IOException) {
+    /*public*/ void FileUtilSupportTest::testGAFPrefAbs() /*throw (IOException)*/ {
         File* f = new File("resources/non-existant-file-foo");
         QString name = instance->getAbsoluteFilename(FileUtil::PREFERENCES + f->getAbsolutePath());
         Assert::assertEquals(f->getCanonicalPath(), name, __FILE__, __LINE__);
@@ -187,14 +187,14 @@ FileUtilSupportTest::FileUtilSupportTest(QObject *parent) : QObject(parent)
 
     // home: prefix with relative path, convert to absolute in system-specific form
     //@Test
-    /*public*/ void FileUtilSupportTest::testGAFHomeRel() throw (IOException) {
+    /*public*/ void FileUtilSupportTest::testGAFHomeRel() /*throw (IOException)*/ {
         QString name = instance->getAbsoluteFilename(FileUtil::HOME + "non-existant-file-foo");
         Assert::assertEquals((new File(System::getProperty("user.home") + File::separator + "non-existant-file-foo"))->getCanonicalPath(), name, __FILE__, __LINE__);
     }
 
     // home: prefix with absolute path, convert to absolute in system-specific form
     //@Test
-    /*public*/ void FileUtilSupportTest::testGAFHomeAbs() throw (IOException) {
+    /*public*/ void FileUtilSupportTest::testGAFHomeAbs() /*throw (IOException)*/ {
         File* f = new File("resources/non-existant-file-foo");
         QString name = instance->getAbsoluteFilename(FileUtil::HOME + f->getAbsolutePath());
         Assert::assertEquals(f->getCanonicalPath(), name, __FILE__, __LINE__);
@@ -240,7 +240,7 @@ FileUtilSupportTest::FileUtilSupportTest(QObject *parent) : QObject(parent)
     }
 
     //@Test
-    /*public*/ void FileUtilSupportTest::testDeleteFile() throw (IOException) {
+    /*public*/ void FileUtilSupportTest::testDeleteFile() /*throw (IOException)*/ {
         File* file = File::createTempFile("FileUtilTest", null);
         instance->copy(instance->getFile(instance->getAbsoluteFilename("program:default.lcf")), file);
         instance->_delete(file);
@@ -248,7 +248,7 @@ FileUtilSupportTest::FileUtilSupportTest(QObject *parent) : QObject(parent)
     }
 
     //@Test
-    /*public*/ void FileUtilSupportTest::testAppendTextToFile() throw (IOException) {
+    /*public*/ void FileUtilSupportTest::testAppendTextToFile() /*throw (IOException)*/ {
         File* File* = File::createTempFile("FileUtilTest", null);
         QString text = "jmri.util.FileUtil#appendTextToFile";
         instance->appendTextToFile(file, text);

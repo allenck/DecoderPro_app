@@ -28,7 +28,7 @@ JmriLocalEntityResolver::JmriLocalEntityResolver()
 // /*public*/ class JmriLocalEntityResolver implements EntityResolver {
 
     //@Override
-/*public*/ InputSource* JmriLocalEntityResolver::resolveEntity(QString /*public*/Id, QString systemId) throw (SAXException, IOException)
+/*public*/ InputSource* JmriLocalEntityResolver::resolveEntity(QString /*public*/Id, QString systemId) /*throw (SAXException, IOException)*/
 {
     log->trace(tr("-- got entity request %1").arg(systemId));
 
@@ -144,7 +144,7 @@ JmriLocalEntityResolver::JmriLocalEntityResolver()
                  return new InputSource(new QTextStream(f));
                  else
                   throw  new FileNotFoundException();
-                } catch (FileNotFoundException e2) {
+                } catch (FileNotFoundException* e2) {
                     log->error("did not find direct entity file: " + source);
                     return NULL;
                 }
@@ -156,10 +156,10 @@ JmriLocalEntityResolver::JmriLocalEntityResolver()
         }
     }
 //    catch (URISyntaxException e1) {
-//        log->warn(e1.getLocalizedMessage(), e1);
+//        log->warn(e1->getLocalizedMessage(), e1);
 //        return NULL;
 //    }
-    catch (NoClassDefFoundError e2) { // working on an old version of java, go with default quietly
+    catch (NoClassDefFoundError* e2) { // working on an old version of java, go with default quietly
         if (!toldYouOnce) {
             log->info("Falling back to default resolver due to JVM version");
         }

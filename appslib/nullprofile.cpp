@@ -26,7 +26,7 @@
      * @param path The Profile's directory
      * @throws java.io.IOException If path is not readable
      */
-    /*public*/ NullProfile::NullProfile(/*@Nonnull*/ File* path, QObject* parent) throw (IOException) : Profile(path, false,parent) {
+    /*public*/ NullProfile::NullProfile(/*@Nonnull*/ File* path, QObject* parent) /*throw (IOException)*/ : Profile(path, false,parent) {
         //super(path, false);
     }
 
@@ -38,7 +38,7 @@
      * @param id   The Profile's id
      * @throws java.io.IOException If path is not readable
      */
-    /*public*/ NullProfile::NullProfile(/*@Nonnull*/ File* path, /*@Nonnull*/ QString id, QObject* parent) throw (IOException)
+    /*public*/ NullProfile::NullProfile(/*@Nonnull*/ File* path, /*@Nonnull*/ QString id, QObject* parent) /*throw (IOException)*/
     : Profile(path, id,false, parent)
     {
         //super(path, id, false);

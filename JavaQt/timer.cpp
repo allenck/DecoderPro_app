@@ -49,7 +49,7 @@ Timer::Timer(QObject *parent) : QTimer(parent)
 
 /*public*/ bool Timer::stop() {
  QTimer::stop();
- throw InterruptedException();
+ throw new InterruptedException();
 }
 
 /*public*/ bool Timer::isRunning()

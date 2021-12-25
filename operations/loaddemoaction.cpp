@@ -71,7 +71,7 @@ namespace Operations
       QMessageBox::information(NULL, tr("Demo load successful!"), tr("You must restart JMRI to complete the load demo operation"));
       Apps::handleRestart();
 
- // } catch (Exception ex) {
+ // } catch (Exception* ex) {
  //     ExceptionContext context = new ExceptionContext(ex, Bundle.getMessage("LoadingDemoFiles"),
  //             Bundle.getMessage("LoadingDemoMakeSure"));
  //     new ExceptionDisplayFrame(context);

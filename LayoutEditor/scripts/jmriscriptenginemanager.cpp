@@ -311,7 +311,7 @@
 /*public*/ void JmriScriptEngineManager::runScript(File* file) {
     //try {
         this->eval(file);
-//    } catch (FileNotFoundException ex) {
+//    } catch (FileNotFoundException* ex) {
 //        log->error("File {} not found.", file);
 //    } catch (IOException* ex) {
 //        log->error("Exception working with file {}", file);

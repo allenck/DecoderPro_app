@@ -60,7 +60,7 @@ template<class T>
 /*public*/ void moveBean(NamedBean* oldBean, NamedBean* newBean, QString name);
 
 /*public*/ void updateBeanFromUserToSystem(NamedBean* bean);
-/*public*/ void updateBeanFromSystemToUser(NamedBean* bean) throw(JmriException);
+/*public*/ void updateBeanFromSystemToUser(NamedBean* bean) /*throw(JmriException)*/;
 // <typename T>
 //template<class T>
 /*public*/ bool inUse(QString name, NamedBean* bean);
@@ -105,7 +105,7 @@ Logger log;
 QList<QObject* >*  namedBeanHandles;// = new ArrayList<NamedBeanHandle>();
 protected:
 /*protected*/ void registerSelf();
-/*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);
+/*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n) const override;
 
 };
 Q_DECLARE_METATYPE(NamedBeanHandleManager)

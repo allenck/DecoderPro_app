@@ -101,7 +101,7 @@
  try
  {
   if(order < 0 || order >= _conditionalSystemNames->count())
-   throw IndexOutOfBoundsException("invalid order");
+   throw new IndexOutOfBoundsException("invalid order");
   return _conditionalSystemNames->at(order);
  }
  catch (IndexOutOfBoundsException ioob)
@@ -1281,7 +1281,7 @@ ArrayList <String[]> loopGremlins = NULL;
     return;
 }
 //@Override
-/*public*/ void DefaultLogix::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException)
+/*public*/ void DefaultLogix::vetoableChange(PropertyChangeEvent* evt) /*throw  (PropertyVetoException)*/
 {
  if ("CanDelete" == (evt->getPropertyName()))
  {   // NOI18N
@@ -1290,7 +1290,7 @@ ArrayList <String[]> loopGremlins = NULL;
   {
    if (nb->equals(listener->getBean())) {
        PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());  // NOI18N
-       throw PropertyVetoException(tr("%1 is in use by Logix \"%2\" as a Trigger").arg(nb->getBeanType()).arg(getDisplayName()), e);   // NOI18N
+       throw new PropertyVetoException(tr("%1 is in use by Logix \"%2\" as a Trigger").arg(nb->getBeanType()).arg(getDisplayName()), e);   // NOI18N
    }
   }
 
@@ -1307,7 +1307,7 @@ ArrayList <String[]> loopGremlins = NULL;
      if (nb->equals(ca->getBean()))
      {
       PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());  // NOI18N
-      throw PropertyVetoException(tr("%1 is in use by Logix \"%2\" as a Trigger").arg(nb->getBeanType()).arg(getDisplayName()), e);   // NOI18N
+      throw new PropertyVetoException(tr("%1 is in use by Logix \"%2\" as a Trigger").arg(nb->getBeanType()).arg(getDisplayName()), e);   // NOI18N
      }
     }
     for (ConditionalVariable* v : *c->getCopyOfStateVariables())
@@ -1315,7 +1315,7 @@ ArrayList <String[]> loopGremlins = NULL;
      if (nb->equals(v->getBean()) || nb->equals(v->getNamedBeanData()))
      {
       PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());  // NOI18N
-      throw PropertyVetoException(tr("%1 is in use by Logix \"%2\" as a Trigger").arg(nb->getBeanType()).arg(getDisplayName()), e);   // NOI18N
+      throw new PropertyVetoException(tr("%1 is in use by Logix \"%2\" as a Trigger").arg(nb->getBeanType()).arg(getDisplayName()), e);   // NOI18N
      }
     }
    }

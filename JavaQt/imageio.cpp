@@ -309,7 +309,7 @@
                     return spi.createInputStreamInstance(input,
                                                          usecache,
                                                          getCacheDirectory());
-                } catch (IOException e) {
+                } catch (IOException* e) {
                     throw new IIOException("Can't create cache file!", e);
                 }
             }
@@ -371,7 +371,7 @@
                     return spi.createOutputStreamInstance(output,
                                                           usecache,
                                                           getCacheDirectory());
-                } catch (IOException e) {
+                } catch (IOException* e) {
                     throw new IIOException("Can't create cache file!", e);
                 }
             }
@@ -479,7 +479,7 @@
             try {
                 spi = (ImageReaderSpi)iter.next();
                 return spi.createReaderInstance();
-            } catch (IOException e) {
+            } catch (IOException* e) {
                 // Deregister the spi in this case, but only as
                 // an ImageReaderSpi
                 theRegistry.deregisterServiceProvider(spi, ImageReaderSpi.class);
@@ -522,7 +522,7 @@
                 }
 
                 return canDecode;
-            } catch (IOException e) {
+            } catch (IOException* e) {
                 return false;
             }
         }
@@ -563,7 +563,7 @@
         /*public*/ boolean filter(Object elt) {
             try {
                 return contains((String[])method.invoke(elt), name);
-            } catch (Exception e) {
+            } catch (Exception* e) {
                 return false;
             }
         }
@@ -793,7 +793,7 @@
             try {
                 spi = (ImageWriterSpi)iter.next();
                 return spi.createWriterInstance();
-            } catch (IOException e) {
+            } catch (IOException* e) {
                 // Deregister the spi in this case, but only as a writerSpi
                 theRegistry.deregisterServiceProvider(spi, ImageWriterSpi.class);
             }
@@ -997,7 +997,7 @@
 
         try {
             return writerSpi.createWriterInstance();
-        } catch (IOException e) {
+        } catch (IOException* e) {
             // Deregister the spi in this case, but only as a writerSpi
             theRegistry.deregisterServiceProvider(writerSpi,
                                                   ImageWriterSpi.class);
@@ -1077,7 +1077,7 @@
 
         try {
             return readerSpi.createReaderInstance();
-        } catch (IOException e) {
+        } catch (IOException* e) {
             // Deregister the spi in this case, but only as a readerSpi
             theRegistry.deregisterServiceProvider(readerSpi,
                                                   ImageReaderSpi.class);
@@ -1251,7 +1251,7 @@
         }
         if (!input->canRead()) {
          log->error(tr("Can't read input file! %1").arg(input->getPath()));
-            throw IIOException("Can't read input file!");
+            throw new IIOException("Can't read input file!");
         }
 
 //        ImageInputStream stream = createImageInputStream(input);
@@ -1350,7 +1350,7 @@
         InputStream istream = null;
         try {
             istream = input.openStream();
-        } catch (IOException e) {
+        } catch (IOException* e) {
             throw new IIOException("Can't get input stream from URL!", e);
         }
         ImageInputStream stream = createImageInputStream(istream);
@@ -1487,7 +1487,7 @@
         try {
             output.delete();
             stream = createImageOutputStream(output);
-        } catch (IOException e) {
+        } catch (IOException* e) {
             throw new IIOException("Can't create output stream!", e);
         }
 
@@ -1529,7 +1529,7 @@
         ImageOutputStream stream = null;
         try {
             stream = createImageOutputStream(output);
-        } catch (IOException e) {
+        } catch (IOException* e) {
             throw new IIOException("Can't create output stream!", e);
         }
 

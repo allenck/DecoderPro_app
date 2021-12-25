@@ -642,9 +642,9 @@
    }
    else throw new NoSuchMethodException(tr("method %1 not found for class %2").arg("getClassDescription").arg(strClass));
   }
-  catch(NoSuchMethodException ex)
+  catch(NoSuchMethodException* ex)
   {
-   log->debug(ex.getMessage());
+   log->debug(ex->getMessage());
    classDesFound = false;
   }
 //  if (!classDesFound)
@@ -684,7 +684,7 @@
   }
   catch(NoSuchMethodException ex)
   {
-      log->debug(ex.getMessage()); // *TableAction.setMessagePreferencesDetails() method is routinely not present in multiple classes
+      log->debug(ex->getMessage()); // *TableAction.setMessagePreferencesDetails() method is routinely not present in multiple classes
       classSetFound = false;
   }
 //  if (!classSetFound) {
@@ -738,10 +738,10 @@
           throw new NoSuchMethodException(tr("method %1 not found for class %2").arg("getClassDescription").arg(strClass));
      }
      //catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NullPointerException | ExceptionInInitializerError | NoSuchMethodException ex)
-     catch(NoSuchMethodException ex)
+     catch(NoSuchMethodException* ex)
      {
       if(log->isDebugEnabled())
-         log->debug(tr("Unable to call declared method \"getClassDescription\" with exception %1").arg(ex.toString()));
+         log->debug(tr("Unable to call declared method \"getClassDescription\" with exception %1").arg(ex->toString()));
       classDesFound = false;
       return;
      }
@@ -775,10 +775,10 @@
 
      }
      //catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NullPointerException | ExceptionInInitializerError | NoSuchMethodException ex)
-     catch(NoSuchMethodException ex)
+     catch(NoSuchMethodException* ex)
      {
          // TableAction.setMessagePreferencesDetails() method is routinely not present in multiple classes
-         log->debug(tr("Unable to call declared method \"setMessagePreferencesDetails\" with exception %1").arg(ex.toString()));
+         log->debug(tr("Unable to call declared method \"setMessagePreferencesDetails\" with exception %1").arg(ex->toString()));
          classSetFound = false;
      }
 #if 0
@@ -1088,7 +1088,7 @@
      if (!perNodeConfig->canRead()) {
          perNodeConfig = nullptr;
      }
- } catch (FileNotFoundException ex) {
+ } catch (FileNotFoundException* ex) {
      // ignore - this only means that sharedConfig does not exist.
  }
  catch (IOException* ex) {
@@ -1123,7 +1123,7 @@
       // if we got here, there is no saved user preferences
       log->info("No saved user preferences file");
   }
-        } catch (FileNotFoundException ex) {
+        } catch (FileNotFoundException* ex) {
             // ignore - this only means that UserPrefsProfileConfig.xml does not exist.
         }
  }
@@ -1355,7 +1355,7 @@
      this->setWindowSize(reference, QSize((int) width, (int) height));
     }
    }
-   catch(DataConversionException ex)
+   catch(DataConversionException* ex)
    {
     log->error(tr("Unable to read dimensions of window \"%1\"").arg(reference));
    }
@@ -1394,11 +1394,11 @@
 //      catch (ClassNotFoundException* | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)
       }
      }
-     catch( ClassNotFoundException ex)
+     catch( ClassNotFoundException* ex)
      {
        log->error(tr("Unable to retrieve property \"%1\" for window \"%2\"").arg(key).arg(reference));
      }
-     catch( NoSuchMethodException ex)
+     catch( NoSuchMethodException* ex)
      {
        log->error(tr("Unable to retrieve property \"%1\" for window \"%2\"").arg(key).arg(reference));
      }
@@ -1596,9 +1596,9 @@
     /*public*/ QString ClassPreferences::getPreferenceName(int n) {
         try {
          if(n >= preferenceList->size())
-          throw IndexOutOfBoundsException();
+          throw new IndexOutOfBoundsException();
             return preferenceList->value(n)->getItem();
-        } catch (IndexOutOfBoundsException ioob) {
+        } catch (IndexOutOfBoundsException* ioob) {
             return QString();
         }
     }

@@ -70,7 +70,8 @@ class LNIPLI_ReleaseUntil : public ReleaseUntil
   LnIplImplementationTest* test;
  public:
   LNIPLI_ReleaseUntil(LnIplImplementationTest* test) {this->test = test;}
-  bool ready() throw (Exception)
+  bool ready() /*throw (Exception)*/
+
   {
    return test->propChangeFlag == true;
   }

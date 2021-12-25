@@ -186,7 +186,7 @@ this->rumblers = rumblers;
     // </editor-fold>
 }
 
-/*protected*/ void AbstractController::setDeviceEventQueueSize(int size) throw (IOException)
+/*protected*/ void AbstractController::setDeviceEventQueueSize(int size) /*throw (IOException)*/
 {
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">
     /* 0: return
@@ -203,9 +203,9 @@ this->rumblers = rumblers;
     // </editor-fold>
 }
 
-/*protected*/ /*abstract*/ bool AbstractController::getNextDeviceEvent(Event* event) throw (IOException) {return false;}
+/*protected*/ /*abstract*/ bool AbstractController::getNextDeviceEvent(Event* event) /*throw (IOException)*/ {return false;}
 
-/*protected*/ void AbstractController::pollDevice() throw (IOException) {
+/*protected*/ void AbstractController::pollDevice() /*throw (IOException)*/ {
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">
     /* 0: return
      *  */

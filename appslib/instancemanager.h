@@ -286,7 +286,7 @@ public:
  /*public*/ /*synchronized*/ static void resetInstanceManager() {
      try {
          instanceManager = new InstanceManager();
-     } catch (Exception e) {
+     } catch (Exception* e) {
          instanceManager->log->error("can't create new InstanceManager");
      }
  }

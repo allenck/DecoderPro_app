@@ -54,7 +54,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _EXTENSION, (".jmri"))
  * @param path The Profile's directory
  * @throws IOException
  */
-/*public*/ Profile::Profile(File* path, QObject* parent) throw (IOException)
+/*public*/ Profile::Profile(File* path, QObject* parent) /*throw (IOException)*/
  : QObject(parent)
 {
  common(path,  true);
@@ -94,9 +94,9 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _EXTENSION, (".jmri"))
      throw  IllegalArgumentException(path->toString() + " contains a profile in a subdirectory."); // NOI18N
  }
  if (Profile::inProfile(path) || Profile::inProfile(pathWithExt)) {
-     if (Profile::inProfile(path)) log->warn(tr("Exception: Path %1 is within an existing profile.").arg(path->toString()),  Exception("traceback")); // NOI18N
-     if (Profile::inProfile(pathWithExt)) log->warn(tr("Exception: pathWithExt %1 is within an existing profile.").arg(pathWithExt->toString()),  Exception("traceback")); // NOI18N
-     throw  IllegalArgumentException(path->toString() + " is within an existing profile."); // NOI18N
+     if (Profile::inProfile(path)) log->warn(tr("Exception: Path %1 is within an existing profile.").arg(path->toString()), new Exception("traceback")); // NOI18N
+     if (Profile::inProfile(pathWithExt)) log->warn(tr("Exception: pathWithExt %1 is within an existing profile.").arg(pathWithExt->toString()), new Exception("traceback")); // NOI18N
+     throw new IllegalArgumentException(path->toString() + " is within an existing profile."); // NOI18N
  }
  this->name = name;
  this->id = id + "." + ProfileManager::createUniqueId();
@@ -151,12 +151,12 @@ void Profile::common(File *path, bool isReadable)
  }
 }
 
-/*protected*/ Profile::Profile(/*@Nonnull*/ File* path, /*@Nonnull*/ QString id, bool isReadable, QObject* parent) throw (IOException) : QObject(parent)
+/*protected*/ Profile::Profile(/*@Nonnull*/ File* path, /*@Nonnull*/ QString id, bool isReadable, QObject* parent) /*throw (IOException)*/ : QObject(parent)
 {
  common(path, isReadable);
 }
 
-/*protected*/ /*final*/ void Profile::save() throw (IOException)
+/*protected*/ /*final*/ void Profile::save() /*throw (IOException)*/
 {
     ProfileProperties* p = new ProfileProperties(this);
     p->put(*_NAME, this->name, true);

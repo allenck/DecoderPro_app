@@ -135,7 +135,7 @@ JmriColorChooserPanel::JmriColorChooserPanel(QWidget *parent) : AbstractColorCho
  * @param stdcolor If true, the color name is used otherwise the RGB values.
  * @return a button item with the listener.
  */
-QPushButton* JmriColorChooserPanel::createColorButton(QColor color, bool stdcolor) {
+QPushButton* JmriColorChooserPanel::createColorButton(QColor color, bool /*stdcolor*/) {
 #if 0
     BufferedImage* image = new BufferedImage(40, 15,
             BufferedImage::TYPE_INT_ARGB);
@@ -217,8 +217,9 @@ QColor JmriColorChooserPanel::getForeground()
  QPalette p = palette();
  QString ss = styleSheet();
  c = p.color(QPalette::Foreground);
- if(ss == "")
-   return c;
+// if(ss == "")
+//   return c;
+ return c;
 }
 
 

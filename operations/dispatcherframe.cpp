@@ -294,10 +294,10 @@ void DispatcherFrame::initializeOptions() {
     optionsRead = true;
     try {
         ((OptionsFile*)InstanceManager::getDefault("OptionsFile"))->readDispatcherOptions(this);
-    } catch (JDOMException jde) {
-        log->error("JDOM Exception when retreiving dispatcher options " + jde.getMessage());
-    } catch (IOException ioe) {
-        log->error("I/O Exception when retreiving dispatcher options " + ioe.getMessage());
+    } catch (JDOMException* jde) {
+        log->error("JDOM Exception when retreiving dispatcher options " + jde->getMessage());
+    } catch (IOException* ioe) {
+        log->error("I/O Exception when retreiving dispatcher options " + ioe->getMessage());
     }
 #endif
 }
@@ -1390,7 +1390,7 @@ void DispatcherFrame::allocateNextRequested(int index) {
             if (at == allocatedSections->at(k - 1)->getActiveTrain()) {
                 releaseAllocatedSection(allocatedSections->at(k - 1), true);
             }
-//        } catch (Exception e) {
+//        } catch (Exception* e) {
 //            log->warn("releaseAllocatedSection failed - maybe the AllocatedSection was removed due to a terminating train??",e.toString());
 //            continue;
 //        }
@@ -2124,8 +2124,8 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
                         }
                     }
                 }
-            } catch (Exception e) {
-                log->warn("checkAutoRelease failed  - maybe the AllocatedSection was removed due to a terminating train?? "+e.toString());
+            } catch (Exception* e) {
+                log->warn("checkAutoRelease failed  - maybe the AllocatedSection was removed due to a terminating train?? "+e->toString());
                 continue;
             }
         }

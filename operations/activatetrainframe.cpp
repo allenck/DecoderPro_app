@@ -1001,10 +1001,10 @@ transitsFromSpecificBlock = false;
                 // process the information just read
                 trainInfoToDialog(info);
             }
-        } catch (IOException ioe) {
-            log->error("IO Exception when reading train info file " + ioe.getMessage());
-        } catch (JDOMException jde) {
-            log->error("JDOM Exception when reading train info file " + jde.getMessage());
+        } catch (IOException* ioe) {
+            log->error("IO Exception when reading train info file " + ioe->getMessage());
+        } catch (JDOMException* jde) {
+            log->error("JDOM Exception when reading train info file " + jde->getMessage());
         }
     }
     handleDelayStartClick(/*NULL*/);
@@ -1055,8 +1055,8 @@ transitsFromSpecificBlock = false;
     } //catch (org.jdom2.JDOMException jde) {
     //	log.error("JDOM exception writing Train Info: "+jde);
     //}
-    catch (IOException ioe) {
-        log->error("IO exception writing Train Info: " + ioe.getMessage());
+    catch (IOException* ioe) {
+        log->error("IO exception writing Train Info: " + ioe->getMessage());
     }
 }
 

@@ -288,7 +288,7 @@ void EditWarrantActionListener::on_editWarrantMapper(QString cmd)
 //    {
 //     WarrantTableAction::getInstance()->_tableFrame->initComponents();
 //    }
-//    catch (Exception ex ) {/*bogus*/ }
+//    catch (Exception* ex ) {/*bogus*/ }
 //   }
 //   else
 //   {
@@ -302,7 +302,7 @@ void EditWarrantActionListener::on_editWarrantMapper(QString cmd)
 //    try
 //   {
 //    f->initComponents();
-//   } catch (Exception ex ) {/*bogus*/ }
+//   } catch (Exception* ex ) {/*bogus*/ }
 //   f->setVisible(true);
 //  }
 //  WarrantTableAction::getInstance()->initPathPortalCheck();
@@ -1038,7 +1038,7 @@ void WarrantTableAction::on_createWarrant_triggered()
  {
   f->initComponents();
   f->concatenate(startW, endW);
- } catch (Exception ex ) { log->error("error making CreateWarrantFrame", &ex);}
+ } catch (Exception* ex ) { log->error("error making CreateWarrantFrame", ex);}
  f->setVisible(true);
 }
 #if 0

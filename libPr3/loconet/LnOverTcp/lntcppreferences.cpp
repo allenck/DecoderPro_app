@@ -66,7 +66,7 @@
             this->port = settings->getProperty(PORT_NUMBER_KEY, QString::number(this->getPort())).toInt(&ok);
             if(!ok) throw new IOException();
             this->setIsDirty(true);
-        } catch (FileNotFoundException ex) {
+        } catch (FileNotFoundException* ex) {
             log->debug("old preferences file not found");
         } catch (IOException* ex) {
             log->debug("exception reading old preferences file" + ex->getMessage());

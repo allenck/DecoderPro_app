@@ -306,7 +306,7 @@ entry.next();
      ActionAttributes* attrs = new ActionAttributes(clazz, (Class*)factory);
      this->actions->insert(clazz, attrs);
     }
-    catch (FileNotFoundException ex)
+    catch (FileNotFoundException* ex)
     {
      log->error(tr("Did not find class \"%1\"").arg(clazz));
     }

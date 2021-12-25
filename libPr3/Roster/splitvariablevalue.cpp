@@ -173,7 +173,7 @@
 /*public*/ void SplitVariableValue::stepTwoActions() {
     if (currentOffset > bitCount) {
         QString eol = System::getProperty("line.separator");
-        throw Error(
+        throw new Error(
                 "Decoder File parsing error:"
                 + eol + "The Decoder Definition File specified \"" + _cvNum
                 + "\" for variable \"" + _name + "\". This expands to:"
@@ -518,7 +518,7 @@ int SplitVariableValue::priorityValue(int state) {
      if (_progState == IDLE) { // State machine is idle, so "Busy" transition is the result of a CV update by another source.
          // The source would be a Read/Write from either the CVs pane or another Variable with one or more overlapping CV(s).
          // It is definitely not an error condition, but needs to be ignored by this variable's state machine.
-         logit->debug("Variable={}; Busy goes false with state IDLE", _name);
+         logit->debug(tr("Variable=%1; Busy goes false with state IDLE").arg(_name));
      } else if (_progState >= READING_FIRST) {   // reading CVs
          if ((cvList.at(qAbs(_progState) - 1)->thisCV)->getState() == READ) {   // was the last read successful?
              retry = 0;

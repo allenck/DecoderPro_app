@@ -70,11 +70,11 @@
      * @throws IllegalArgumentException The supplied name is a duplicate.
      * @throws PropertyVetoException The user name change was vetoed.
      */
-    /*public*/ void Scale::setUserName(/*@Nonnull*/ QString newName) throw (IllegalArgumentException/*, PropertyVetoException*/) {
+    /*public*/ void Scale::setUserName(/*@Nonnull*/ QString newName) /*throw (IllegalArgumentException, PropertyVetoException)*/ {
         for (Scale* scale : ScaleManager::getScales()) {
             if (scale->getUserName() == (newName)) {
                 if (scale->getScaleName() !=(_name)) {
-                    throw  IllegalArgumentException("Duplicate scale user name");  // NOI18N
+                    throw new IllegalArgumentException("Duplicate scale user name");  // NOI18N
                 }
             }
         }
@@ -84,10 +84,10 @@
 #if 1
         try {
             fireVetoableChange("ScaleUserName", oldName, newName);  // NOI18N
-        } catch (PropertyVetoException ex) {
+        } catch (PropertyVetoException* ex) {
             // Roll back change
             log->warn(tr("The user name change for %1 scale to %2 was rejected: Reason: %3").arg(  // NOI18N
-                     _name).arg(_userName).arg(ex.getMessage()));
+                     _name).arg(_userName).arg(ex->getMessage()));
             _userName = oldName;
             throw ex;  // Notify caller
         }
@@ -102,7 +102,7 @@
      * @throws IllegalArgumentException The new ratio is less than 1.
      * @throws PropertyVetoException The ratio change was vetoed.
      */
-    /*public*/ void Scale::setScaleRatio(double newRatio) throw (IllegalArgumentException/*, PropertyVetoException*/) {
+    /*public*/ void Scale::setScaleRatio(double newRatio) /*throw (IllegalArgumentException, PropertyVetoException) */{
         if (newRatio < 1.0) {
             throw new IllegalArgumentException("The scale ratio is less than 1");  // NOI18N
         }
@@ -110,18 +110,18 @@
         double oldRatio = _ratio;
         _ratio = newRatio;
         _factor = 1.0 / _ratio;
-#if 0
+#if 1
         try {
-            fireVetoableChange("ScaleRatio", oldRatio, newRatio);  // NOI18N
-        } catch (PropertyVetoException ex) {
+            fireVetoableChange("ScaleRatio", QVariant(oldRatio), QVariant(newRatio));  // NOI18N
+        } catch (PropertyVetoException* ex) {
             // Roll back change
-            log.warn("The ratio change for {} scale to {} was rejected: Reason: {}",  // NOI18N
-                     _name, _ratio, ex.getMessage());
+            log->warn(tr("The ratio change for %1 scale to %2 was rejected: Reason: %3").arg(  // NOI18N
+                     _name).arg(_ratio).arg(ex->getMessage()));
             _ratio = oldRatio;
             _factor = 1.0 / oldRatio;
             throw ex;  // Notify caller
         }
-        jmri.configurexml.ScaleConfigXML.doStore();
+        ScaleConfigXML::doStore();
 #endif
     }
 

@@ -44,8 +44,8 @@ RpsReporterManager::RpsReporterManager(RpsSystemConnectionMemo* memo, QObject* p
     // first, check validity
     try {
         validSystemNameFormat(sys);
-    } catch (IllegalArgumentException e) {
-        throw new JmriException(e.getMessage());
+    } catch (IllegalArgumentException* e) {
+        throw new JmriException(e->getMessage());
     }
     return sys;
 }

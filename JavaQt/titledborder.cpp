@@ -526,13 +526,13 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
  */
 /*public*/ int TitledBorder::getBaseline(QWidget* c, int width, int height) {
     if (c == NULL) {
-        throw  NullPointerException("Must supply non-NULL component");
+        throw new NullPointerException("Must supply non-NULL component");
     }
     if (width < 0) {
-        throw  IllegalArgumentException("Width must be >= 0");
+        throw new IllegalArgumentException("Width must be >= 0");
     }
     if (height < 0) {
-        throw  IllegalArgumentException("Height must be >= 0");
+        throw new IllegalArgumentException("Height must be >= 0");
     }
     Border* border = getBorder();
     QString title = getTitle();

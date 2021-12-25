@@ -92,7 +92,7 @@
  * @return true if an existing identity is copied, false otherwise
  * @throws IOException if unable to a copy an existing identity
  */
-/*public*/ /*static*/ bool ProfileUtils::copyPrivateContentToCurrentIdentity(/*@Nonnull*/ Profile* profile) throw (IOException) {
+/*public*/ /*static*/ bool ProfileUtils::copyPrivateContentToCurrentIdentity(/*@Nonnull*/ Profile* profile) /*throw (IOException)*/ {
     QString uniqueId = "-" + profile->getUniqueId();
     File* newPath = new File(new File(profile->getPath(), Profile::PROFILE), NodeIdentity::storageIdentity(profile));
     if (!newPath->exists()) {

@@ -271,7 +271,7 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
 
                 // Validate layoutId
                 if (!checkLayoutIds.contains(layoutId)) {
-                    log->warn("Segment {} layout id not found", segmentName);  // NOI18N
+                    log->warn(tr("Segment %1 layout id not found").arg(segmentName));  // NOI18N
                     continue;
                 }
 
@@ -346,7 +346,7 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
 
                 // Validate layoutId
                 if (!checkLayoutIds.contains(layoutId)) {
-                    log->warn("Schdule {} layout id not found", scheduleName);  // NOI18N
+                    log->warn(tr("Schedule %1 layout id not found").arg(scheduleName));  // NOI18N
                     continue;
                 }
 

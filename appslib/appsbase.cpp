@@ -125,7 +125,7 @@ void AppsBase::init()
             /*public*/ void run() {
                 try {
                     InstanceManager::tabbedPreferencesInstance().init();
-                } catch (Exception ex) {
+                } catch (Exception* ex) {
                     log->error(ex.toString());
                 }
             }
@@ -141,7 +141,7 @@ void AppsBase::init()
             /*public*/ void run() {
                 try {
                     PythonInterp.getPythonInterpreter();
-                } catch (Exception ex) {
+                } catch (Exception* ex) {
                     log->error("Error in trying to initialize python interpreter " + ex.toString());
                 }
             }
@@ -283,7 +283,7 @@ void AppsBase::init()
      if (!sharedConfig->canRead()) {
          sharedConfig = nullptr;
      }
- } catch (FileNotFoundException ex) {
+ } catch (FileNotFoundException* ex) {
      // ignore - this only means that sharedConfig does not exist.
  }
  if (sharedConfig != nullptr) {
@@ -328,7 +328,7 @@ void AppsBase::init()
    log->debug(tr("end load config file ") + file->getName() + ", OK=" + (configOK?"true":"false"));
   }
  }
- catch (Exception e)
+ catch (Exception* e)
  {
   configOK = false;
  }
@@ -347,7 +347,7 @@ void AppsBase::init()
 //                    configDeferredLoadOK = doDeferredLoad(file);
 //                }
 //            });
-//        } catch (Exception ex) {
+//        } catch (Exception* ex) {
 //            log->error("Exception creating system console frame: " + ex);
 //        }
 //    }
@@ -419,8 +419,8 @@ WriteBlocksShutDownTask::WriteBlocksShutDownTask(QString text, AppsBase *base) :
     try {
         (new BlockValueFile())->writeBlockValues();
     } //catch (org.jdom2.JDOMException jde) { log->error("Exception writing blocks: "+jde); }
-    catch (IOException ioe) {
-        Logger::error("Exception writing blocks: " + ioe.getMessage());
+    catch (IOException* ioe) {
+        Logger::error("Exception writing blocks: " + ioe->getMessage());
     }
 
     // continue shutdown
@@ -508,10 +508,10 @@ WriteBlocksShutDownTask::WriteBlocksShutDownTask(QString text, AppsBase *base) :
               + ", skipping reset to " + value);
   }
  }
- catch (Exception e)
+ catch (Exception* e)
  {
   Logger::error("Unable to set JMRI property " + key + " to " + value
-                + "due to exception: " + e.getMessage());
+                + "due to exception: " + e->getMessage());
  }
 #endif
 }
@@ -525,7 +525,7 @@ WriteBlocksShutDownTask::WriteBlocksShutDownTask(QString text, AppsBase *base) :
     log->debug("Start handleQuit");
     try {
         return ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->shutdown();
-    } catch (Exception e) {
+    } catch (Exception* e) {
         log->error("Continuing after error in handleQuit");
     }
     return false;
@@ -539,7 +539,7 @@ WriteBlocksShutDownTask::WriteBlocksShutDownTask(QString text, AppsBase *base) :
     log->debug("Start handleRestart");
     try {
         return ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->restart();
-    } catch (Exception e) {
+    } catch (Exception* e) {
         log->error("Continuing after error in handleRestart");
     }
     return false;

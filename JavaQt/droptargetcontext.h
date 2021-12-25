@@ -19,7 +19,7 @@ public:
     /*public*/ Component* getComponent();
     /*public*/ void addNotify(DropTargetContextPeer* dtcp);
     /*public*/ void removeNotify();
-    /*public*/ void dropComplete(bool success) throw (InvalidDnDOperationException);
+    /*public*/ void dropComplete(bool success) /*throw (InvalidDnDOperationException)*/;
     DropTargetContextPeer* getDropTargetContextPeer();
 
 signals:
@@ -52,7 +52,7 @@ protected:
     /*protected*/ QVector<DataFlavor*>* getCurrentDataFlavors();
     /*protected*/ QList<DataFlavor*> getCurrentDataFlavorsAsList();
     /*protected*/ bool isDataFlavorSupported(DataFlavor* df);
-    /*protected*/ Transferable* getTransferable() throw (InvalidDnDOperationException);
+    /*protected*/ Transferable* getTransferable() /*throw (InvalidDnDOperationException)*/;
     /*protected*/ Transferable* createTransferableProxy(Transferable* t, bool local);
 
     friend class DropTarget;

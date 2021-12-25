@@ -105,8 +105,8 @@ namespace TimeTable
                 }
             }
             writeFile(defaultOperationsFilename());
-        } catch (IOException e) {
-            log->error("Exception while writing the new CSV operations file, may not be complete: " + e.getMessage());
+        } catch (IOException* e) {
+            log->error("Exception while writing the new CSV operations file, may not be complete: " + e->getMessage());
         }
 #endif
     }
@@ -136,7 +136,7 @@ namespace TimeTable
 
             fileOut.flush();
             fileOut.close();
-        } catch (IOException e) {
+        } catch (IOException* e) {
             log.error("Can not open export timetable CSV file: " + file.getName());
             JOptionPane.showMessageDialog(null,
                     MessageFormat.format(Bundle.getMessage("ExportedTimetableToFile"),

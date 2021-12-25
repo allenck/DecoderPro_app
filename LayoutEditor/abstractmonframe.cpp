@@ -75,7 +75,7 @@
     logFileChooser = new JFileChooser(FileUtil::getUserFilesPath());
 }
 
-/*public*/ void AbstractMonFrame::initComponents() throw (Exception)
+/*public*/ void AbstractMonFrame::initComponents() /*throw (Exception)*/
 {
 
     p = (UserPreferencesManager*) InstanceManager::getDefault("UserPreferencesManager");
@@ -425,8 +425,8 @@ void AMFWorker::process()
         // start logging
         try {
 //            logStream = new PrintStream (new FileOutputStream(logFileChooser->getSelectedFile()));
-        } catch (Exception ex) {
-            log->error("exception "+ex.getMessage());
+        } catch (Exception* ex) {
+            log->error("exception "+ex->getMessage());
         }
     }
 }

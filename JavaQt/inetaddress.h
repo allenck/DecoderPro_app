@@ -25,9 +25,9 @@ public:
  /*public*/ bool isMCLinkLocal();
  /*public*/ bool isMCSiteLocal();
  /*public*/ bool isMCOrgLocal();
- /*public*/ bool isReachable(int timeout) throw (IOException);
+ /*public*/ bool isReachable(int timeout) /*throw (IOException)*/;
  /*public*/ bool isReachable(QNetworkInterface netif, int ttl,
-                            int timeout) throw (IOException) ;
+                            int timeout) /*throw (IOException)*/ ;
  /*public*/ QString getHostName();
  QString getHostName(bool check);
  /*public*/ QString getCanonicalHostName();

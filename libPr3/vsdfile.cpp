@@ -158,7 +158,7 @@ void VSDFile::common()
 //                }
 //            }
 //            rv = getInputStream(this.getEntry(name));
-//        } catch (IOException e) {
+//        } catch (IOException* e) {
 //            log->error("IOException caught " + e);
 //            rv = NULL;
 //        } catch (NullPointerException* ne) {
@@ -214,7 +214,7 @@ void VSDFile::common()
         } catch (NullPointerException* e) {
             log->warn("Null pointer exception", e);
             return (NULL);
-        } catch (IOException e) {
+        } catch (IOException* e) {
             log->warn("IO exception", e);
             return (NULL);
         }

@@ -388,7 +388,7 @@ void HardcopyWriter::On_close_clicked()
  *            the String
  * @throws IOException
  */
-/*public*/ void HardcopyWriter::write(QColor c, QString s) throw (IOException)
+/*public*/ void HardcopyWriter::write(QColor c, QString s) /*throw (IOException)*/
 {
  if (page != NULL)
  {
@@ -405,11 +405,11 @@ void HardcopyWriter::On_close_clicked()
   }
 }
 
-/*public*/ void HardcopyWriter::flush() throw (IOException) {
+/*public*/ void HardcopyWriter::flush() /*throw (IOException)*/ {
 }
 #endif
 /** method modified by Dennis Miller to add preview capability */
-/*public*/ void HardcopyWriter::close() throw (IOException)
+/*public*/ void HardcopyWriter::close() /*throw (IOException)*/
 {
 //    synchronized (this.lock) {
  if (isPreview)
@@ -446,7 +446,7 @@ void HardcopyWriter::On_close_clicked()
 //        try {
 //            font = new Font(fontName, style, fontsize);
 //            fontStyle = style;
-//        } catch (Exception e) {
+//        } catch (Exception* e) {
 //            font = current;
 //        }
 //        // if a page is pending, set the new font, else newpage() will
@@ -507,7 +507,7 @@ void HardcopyWriter::setFontWeight(QFont::Weight w)
   chars_per_line = width / charwidth;
   lines_per_page = height / lineheight;
  }
- catch (Exception e)
+ catch (Exception* e)
  {
   font = current;
  }

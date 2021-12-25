@@ -214,7 +214,7 @@ namespace Operations
 //                 ex, tr("BackupDialog.BackingUp") + " " + setName);
 
 //         new ExceptionDisplayFrame(context);
-//     } catch (Exception ex) {
+//     } catch (Exception* ex) {
 //         // ex.printStackTrace();
 //         log.error("Doing backup...", ex);
 

@@ -553,7 +553,7 @@ LayoutEditor::~LayoutEditor()
             try {
                 code = field.getInt(null);
             } catch (IllegalAccessException | IllegalArgumentException e) {
-                // exceptions make me throw up...
+                // exceptions make me throw new up...
             }
 
             String key = name.substring(3);
@@ -1411,7 +1411,7 @@ LayoutEditor::~LayoutEditor()
 
     // confirm that panel hasn't already been loaded
     if (this != ((EditorManager*)(InstanceManager::getDefault("EditorManager")))->get(name)) {
-        log->warn("File contains a panel with the same name ({}) as an existing panel", name);
+        log->warn(tr("File contains a panel with the same name (%1) as an existing panel").arg(name));
     }
 //    setFocusable(true);
 //    addKeyListener(this);
@@ -1488,8 +1488,8 @@ LayoutEditor::~LayoutEditor()
          _targetPanel->remove(layoutEditorComponent);
          _targetPanel->append(layoutEditorComponent, (3));
          _targetPanel->moveToFront(layoutEditorComponent);
-     } catch (Exception e) {
-         log->warn(tr("paintTargetPanelBefore: Exception %1").arg(e.getMessage()));
+     } catch (Exception* e) {
+         log->warn(tr("paintTargetPanelBefore: Exception %1").arg(e->getMessage()));
      }
  }
 #endif
@@ -5839,7 +5839,7 @@ PositionablePointView* pv = new PositionablePointView(o, currentPoint, this);
    rot = s.toDouble(&bOk);
    if(!bOk) throw new Exception();
   }
-  catch (Exception e)
+  catch (Exception* e)
   {
 //            JOptionPane.showMessageDialog(this, rb.getQString("Error3")+" "+
 //                    e,rb.getQString("Error"),JOptionPane.ERROR_MESSAGE);
@@ -5946,7 +5946,7 @@ PositionablePointView* pv = new PositionablePointView(o, currentPoint, this);
   {
    bool bOk = false;
    rot = /*Double.parseDouble(s)*/ s.toDouble(&bOk);
-   if(!bOk) throw NumberFormatException();
+   if(!bOk) throw new NumberFormatException();
   }
   catch (NumberFormatException* e)
   {
@@ -6123,7 +6123,7 @@ PositionablePointView* pv = new PositionablePointView(o, currentPoint, this);
      }
 
      // Only check for the second turnout if the type is a double cross over
-     // otherwise the second turnout is used to throw an additional turnout at
+     // otherwise the second turnout is used to throw new an additional turnout at
      // the same time.
      if (lt->getTurnoutType() >= LayoutTurnout::DOUBLE_XOVER) {
          t = lt->getSecondTurnout();
@@ -8587,7 +8587,7 @@ return l;
 
 /**
  * Read-only access to the list of LayoutTrackView family objects. The
- * returned list will throw UnsupportedOperationException if you attempt to
+ * returned list will throw new UnsupportedOperationException if you attempt to
  * modify it.
  *
  * @return unmodifiable copy of track views.
@@ -8614,14 +8614,14 @@ return l;
     LayoutTrackView* lv = trkToView.value(xing);
     if (lv == nullptr) {
         log->warn(tr("No View found for %1 class %2").arg(xing->toString(), xing->metaObject()->className()));
-        throw  IllegalArgumentException(QString("No View found: ") + xing->metaObject()->className());
+        throw new IllegalArgumentException(QString("No View found: ") + xing->metaObject()->className());
     }
     if (qobject_cast<LevelXingView*>(lv)) {
         return (LevelXingView*) lv;
     } else {
         log->error(tr("wrong type %1 %2 found %3").arg(xing->toString(), xing->metaObject()->className(), lv->getName()));
     }
-    throw  IllegalArgumentException(QString("Wrong type: ") + xing->metaObject()->className());
+    throw new IllegalArgumentException(QString("Wrong type: ") + xing->metaObject()->className());
 }
 
 // temporary
@@ -8629,14 +8629,14 @@ return l;
     LayoutTrackView* lv = trkToView.value(to);
     if (lv == nullptr) {
         log->warn(tr("No View found for %1 class %2").arg(to->getId(), to->metaObject()->className()));
-        throw  IllegalArgumentException(QString("No View found: ") + toString());
+        throw new IllegalArgumentException(QString("No View found: ") + toString());
     }
     if (qobject_cast< LayoutTurnoutView*>(lv)) {
         return (LayoutTurnoutView*) lv;
     } else {
         log->error(tr("wrong type %1 %2 found %3").arg(to->toString(), to->metaObject()->className(), lv->getName()));
     }
-    throw  IllegalArgumentException(QString("Wrong type: ") + to->metaObject()->className());
+    throw new IllegalArgumentException(QString("Wrong type: ") + to->metaObject()->className());
 }
 
 // temporary
@@ -8644,14 +8644,14 @@ return l;
     LayoutTrackView* lv = trkToView.value(to);
     if (lv == nullptr) {
         log->warn(tr("No View found for %1 class %2").arg(to->toString(), to->metaObject()->className()));
-        throw  IllegalArgumentException(QString("No matching View found: ") + to->getName());
+        throw new IllegalArgumentException(QString("No matching View found: ") + to->getName());
     }
     if (qobject_cast<LayoutTurntableView*>(lv)) {
         return (LayoutTurntableView*) lv;
     } else {
         log->error(tr("wrong type %1 %2 found %3").arg(to->toString(), to->metaObject()->className(), lv->getName()));
     }
-    throw  IllegalArgumentException(QString("Wrong type: ") + to->metaObject()->className());
+    throw new IllegalArgumentException(QString("Wrong type: ") + to->metaObject()->className());
 }
 
 // temporary
@@ -8659,14 +8659,14 @@ return l;
     LayoutTrackView* lv = trkToView.value(to);
     if (lv == nullptr) {
         log->warn(tr("No View found for %1 class %2").arg(to->toString(), to->metaObject()->className()));
-        throw  IllegalArgumentException(QString("No matching View found: ") + to->toString());
+        throw new IllegalArgumentException(QString("No matching View found: ") + to->toString());
     }
     if (qobject_cast<LayoutSlipView*>(lv)) {
         return (LayoutSlipView*) lv;
     } else {
      log->error(tr("wrong type %1 %2 found %3").arg(to->toString(), to->metaObject()->className(), lv->getName()));
     }
-    throw  IllegalArgumentException(QString("Wrong type: ") + to->metaObject()->className());
+    throw new IllegalArgumentException(QString("Wrong type: ") + to->metaObject()->className());
 }
 
 // temporary
@@ -8674,14 +8674,14 @@ return l;
     LayoutTrackView* lv = trkToView.value(to);
     if (lv == nullptr) {
      log->warn(tr("No View found for %1 class %2").arg(to->toString(), to->metaObject()->className()));
-        throw  IllegalArgumentException(QString("No matching View found: ") + to->toString());
+        throw new IllegalArgumentException(QString("No matching View found: ") + to->toString());
     }
     if (qobject_cast<TrackSegmentView*>(lv)) {
         return (TrackSegmentView*) lv;
     } else {
      log->error(tr("wrong type %1 %2 found %3").arg(to->toString(), to->metaObject()->className(), lv->getName()));
     }
-    throw  IllegalArgumentException(QString("Wrong type: ") + to->metaObject()->className());
+    throw new IllegalArgumentException(QString("Wrong type: ") + to->metaObject()->className());
 }
 
 // temporary
@@ -8689,14 +8689,14 @@ return l;
     LayoutTrackView* lv = trkToView.value((LayoutTrack*)to);
     if (lv == nullptr) {
      log->warn(tr("No View found for %1 class %2").arg(((LayoutTrack*)to)->toString(), to->metaObject()->className()));
-        throw  IllegalArgumentException(QString("No matching View found: ") + ((LayoutTrack*)to)->toString());
+        throw new IllegalArgumentException(QString("No matching View found: ") + ((LayoutTrack*)to)->toString());
     }
     if (qobject_cast< PositionablePointView*>(lv)) {
         return (PositionablePointView*) lv;
     } else {
      log->error(tr("wrong type %1 %2 found %3").arg(((LayoutTrack*)to)->toString(), ((LayoutTrack*)to)->metaObject()->className(), lv->getName()));
     }
-    throw  IllegalArgumentException(QString("Wrong type: ") + to->metaObject()->className());
+    throw new IllegalArgumentException(QString("Wrong type: ") + to->metaObject()->className());
 }
 
 /**
@@ -8922,7 +8922,7 @@ QString LayoutEditor::toString() {
 //@Override
 /*public*/ void LayoutEditor::vetoableChange(
         /*@Nonnull*/ PropertyChangeEvent* evt)
-//        throw (PropertyVetoException)
+//        throw new (PropertyVetoException)
 {
  NamedBean* nb = (NamedBean*) VPtr<NamedBean>::asPtr(evt->getOldValue());
 
@@ -9075,7 +9075,7 @@ QString LayoutEditor::toString() {
      if (found) {
          message.append("</ul>");
          message.append(tr("VetoReferencesWillBeRemoved")); // NOI18N
-         throw  PropertyVetoException(message/*.toString()*/, evt);
+         throw new PropertyVetoException(message/*.toString()*/, evt);
      }
  } else if ("DoDelete" == (evt->getPropertyName())) { // NOI18N
      if (static_cast<SignalHead*>(nb)) {

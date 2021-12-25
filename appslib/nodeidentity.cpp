@@ -145,8 +145,8 @@
     this->saveIdentity();
    }
   }
-  catch (/*JDOMException |*/ IOException ex) {
-      log->error(tr("Unable to read node identities: %1").arg( ex.getLocalizedMessage()));
+  catch (/*JDOMException |*/ IOException* ex) {
+      log->error(tr("Unable to read node identities: %1").arg( ex->getLocalizedMessage()));
       this->getNetworkIdentity(true);
   }
  }
@@ -274,7 +274,7 @@
 //            }
 //        }
 //    } catch (SocketException ex) {
-//        log.error("Error accessing interface: {}", ex.getLocalizedMessage(), ex);
+//        log.error("Error accessing interface: {}", ex->getLocalizedMessage(), ex);
 //    }
   QList<QNetworkInterface> addresses = QNetworkInterface::allInterfaces();
   foreach(QNetworkInterface nic, addresses)
@@ -447,7 +447,7 @@
 //        }
 //    } catch (UnknownHostException ex) {
 //        this->identity = WebServerPreferences.getDefault().getRailRoadName().replaceAll("[^A-Za-z0-9 ]", "-"); // NOI18N
-//        log->error("Cannot get host address or name {}", ex.getLocalizedMessage());
+//        log->error("Cannot get host address or name {}", ex->getLocalizedMessage());
 //        log->error("Using {} as a fallback.", this->identity);
 //    }
     if (save) {
@@ -529,7 +529,7 @@
 //             .setTextMode(Format.TextMode.PRESERVE));
 //     fmt.output(doc, w);
 // } catch (IOException* ex) {
-//     log.error("Unable to store node identities: {}", ex.getLocalizedMessage());
+//     log.error("Unable to store node identities: {}", ex->getLocalizedMessage());
 // }
  XmlFile* xmlFile = new XmlFile();
  xmlFile->writeXML(this->identityFile(), doc);

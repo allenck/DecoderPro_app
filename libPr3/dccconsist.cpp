@@ -82,7 +82,7 @@ void DccConsist::common(DccLocoAddress *address, AddressedProgrammerManager* apm
   {
    remove(loco);
   }
-  catch (Exception ex)
+  catch (Exception* ex)
   {
    log->error("Error removing loco: " + loco->toString() + " from consist: " + consistAddress->toString());
   }
@@ -267,7 +267,7 @@ void DccConsist::common(DccLocoAddress *address, AddressedProgrammerManager* apm
   {
    opsProg->writeCV("19",consistAddress->getNumber(), (ProgListener*)this);
   }
-  catch(ProgrammerException e)
+  catch(ProgrammerException* e)
   {
    // Don't do anything with this yet
   }
@@ -278,7 +278,7 @@ void DccConsist::common(DccLocoAddress *address, AddressedProgrammerManager* apm
   {
    opsProg->writeCV("19",consistAddress->getNumber() + 128 ,(ProgListener*)this);
   }
-  catch(ProgrammerException e)
+  catch(ProgrammerException* e)
   {
    // Don't do anything with this yet
   }
@@ -305,9 +305,9 @@ void DccConsist::common(DccLocoAddress *address, AddressedProgrammerManager* apm
  try
  {
   if(opsProg == nullptr)
-   throw ProgrammerException("No Addressed Programmer!");
+   throw new ProgrammerException("No Addressed Programmer!");
   opsProg->writeCV("19",0,(ProgListener*)this);
- } catch(ProgrammerException e) {
+ } catch(ProgrammerException* e) {
      // Don't do anything with this yet
   return;
  }

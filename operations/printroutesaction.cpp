@@ -52,7 +52,7 @@ namespace Operations
           if (i != routes.size() - 1) {
               writer->write(QString(FORM_FEED));
           }
-//         } catch (IOException e1) {
+//         } catch (IOException* e1) {
 //             log.error("Exception in print routes");
 //         }
   }

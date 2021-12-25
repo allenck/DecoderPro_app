@@ -65,7 +65,7 @@
 /*public*/ QJsonObject JsonMemoryHttpService::doPut(QString type, QString name, QJsonObject data, QLocale locale) throw (JsonException) {
     try {
         InstanceManager::memoryManagerInstance()->provideMemory(name);
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         throw  JsonException(500, tr(/*locale,*/ "ErrorCreatingObject %1 %2").arg(JSON::MEMORY).arg( name));
     }
     return this->doPost(type, name, data, locale);

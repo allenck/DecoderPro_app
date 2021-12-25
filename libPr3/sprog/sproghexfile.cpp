@@ -58,7 +58,7 @@ using namespace Sprog;
   address = 999999;
   //line = new StringBuffer("");
   return true;
- } catch (IOException e) {
+ } catch (IOException* e) {
      return false;
  }
 }
@@ -78,7 +78,7 @@ using namespace Sprog;
      if(!f.open(QIODevice::WriteOnly)) throw new IOException();
      out = new QDataStream(&f);
         return true;
-    } catch (IOException e) {
+    } catch (IOException* e) {
         return false;
     }
 }
@@ -98,7 +98,7 @@ using namespace Sprog;
             out->device()->close();
         }
         name = "";
-    } catch (IOException e) {
+    } catch (IOException* e) {
 
     }
 }
@@ -165,11 +165,11 @@ using namespace Sprog;
             //return new int[]{-1};
             return QVector<int>(0,-1);
         }
-    } catch (IOException e) {
+    } catch (IOException* e) {
         JOptionPane::showMessageDialog(this, tr("I/O Error reading hex file!"),
                 tr("Error"), JOptionPane::ERROR_MESSAGE);
         if (log->isDebugEnabled()) {
-            log->debug("I/O Error reading hex file!" + e.getMessage());
+            log->debug("I/O Error reading hex file!" + e->getMessage());
         }
     }
     // length of data
@@ -239,10 +239,10 @@ using namespace Sprog;
             log->error(tr("Format Error! Invalid hex digit at line %1").arg(lineNo));
             b = 16;
         }
-    } catch (IOException e) {
+    } catch (IOException* e) {
         JOptionPane::showMessageDialog(this, tr("I/O Error reading hex file!"),
                 tr("Error"), JOptionPane::ERROR_MESSAGE);
-        log->error("I/O Error reading hex file!"+ e.getMessage());
+        log->error("I/O Error reading hex file!"+ e->getMessage());
     }
     return (char) b;
 }
@@ -386,7 +386,7 @@ using namespace Sprog;
         writeHexByte((char) checksum);
         //buffOut.write('\n');
         *out << '\n';
-    } catch (IOException e) {
+    } catch (IOException* e) {
 
     }
 }
@@ -420,7 +420,7 @@ using namespace Sprog;
             //out->write(b + 0x30);
          *out << (quint8)(b + 0x30);
         }
-    } catch (IOException e) {
+    } catch (IOException* e) {
     }
 }
 /*public*/ QString SprogHexFile::getClassName()
