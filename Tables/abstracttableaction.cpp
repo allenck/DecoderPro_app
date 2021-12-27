@@ -272,7 +272,7 @@ void ATABeanTableFrame::extras()
 */
 /*public*/ void AbstractTableAction::print(JTable::PrintMode /*mode*/, QString /*headerFormat*/, QString /*footerFormat*/){ log->error("Caught here");}
 
-/*protected*/ /*abstract*/ void AbstractTableAction::addPressed(JActionEvent* e) {}
+/*protected*/ /*abstract*/ void AbstractTableAction::addPressed() {}
 
 /**
  * Configure the combo box listing managers.

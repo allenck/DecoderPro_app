@@ -40,7 +40,7 @@ private slots:
     /*protected*/ QString helpTarget() override ;
 
     protected slots:
-    /*protected*/ void addPressed(JActionEvent* e=0)override;
+    /*protected*/ void addPressed(/*JActionEvent *e = 0*/)override;
 
 friend class SmlBeanTableDataModel;
 };

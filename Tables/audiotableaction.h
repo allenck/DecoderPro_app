@@ -58,7 +58,7 @@ protected:
  /*protected*/ QString helpTarget()override;
 
 protected slots:
- /*protected*/ void addPressed(JActionEvent* e=0) override;
+ /*protected*/ void addPressed(/*e e = 0*/) override;
  /*protected*/ void editAudio(Audio* a);
  /*protected*/ QString getClassName()override;
 

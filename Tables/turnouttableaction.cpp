@@ -202,7 +202,7 @@ void TurnoutTableAction::common()
     return "package.jmri.jmrit.beantable.TurnoutTable";
 }
 
-/*protected*/ void TurnoutTableAction::addPressed(JActionEvent* e)
+/*protected*/ void TurnoutTableAction::addPressed()
 {
  //p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
 
@@ -840,7 +840,7 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
  addFrame = nullptr;
 }
 
-/*private*/ void TurnoutTableAction::canAddRange(JActionEvent * /*e*/){
+/*private*/ void TurnoutTableAction::canAddRange(ActionEvent* /*e*/){
     rangeBox->setEnabled(false);
     rangeBox->setChecked(false);
     connectionChoice = prefixBox->currentText(); // store in Field for CheckedTextField

@@ -6,6 +6,8 @@
 #include "abstracttablemodel.h"
 #include "abstracttableaction.h"
 #include "libtables_global.h"
+#include "jcheckbox.h"
+#include "namedbeancombobox.h"
 
 class QSignalMapper;
 class QSignalMapper;
@@ -14,7 +16,6 @@ class JActionEvent;
 class QButtonGroup;
 class QRadioButton;
 class QLabel;
-class JmriBeanComboBox;
 class ATSignalMastAppearanceModel;
 class QScrollArea;
 class SignalGroupSignalHeadModel;
@@ -37,6 +38,7 @@ public:
     int signalStateFromBox(QComboBox* box);
     void setSignalStateBox(int mode, QComboBox* box);
     SGBeanTableDataModel* model();
+
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
     /*public*/ void on_allButton_clicked(ActionEvent* e = 0);
@@ -69,9 +71,12 @@ private:
     /*private*/ static QVector<QString> signalStates;// =  QStringList() {tr("StateSignalHeadDark"), tr("StateSignalHeadRed"), tr("StateSignalHeadYellow"), tr("StateSignalHeadGreen"), tr("StateSignalHeadLunar")};
 /*private*/ static QVector<int> signalStatesValues;// =  QList<int>() {SignalHead::DARK, SignalHead::RED, SignalHead::YELLOW, SignalHead::GREEN, SignalHead::LUNAR};
 
-    Logger* log;
+    static Logger* log;
     JTextField* _systemName;// = new JTextField(10);
     JTextField* _userName;// = new JTextField(22);
+    JCheckBox* _autoSystemName = new JCheckBox(tr("Automatically generate System Name"));
+    QString systemNameAuto = "jmri.jmrit.eantable.SignalGroupTableAction.AutoSystemName";
+    UserPreferencesManager* pref;
 
     JmriJFrame* addFrame;// = NULL;
 
@@ -82,7 +87,7 @@ private:
     QScrollArea* _SignalAppearanceScrollPane;
 
     //JTextField mainSignal = new JTextField(30);
-    JmriBeanComboBox* mainSignal;
+    NamedBeanComboBox* mainSignalComboBox;
 
     QButtonGroup* selGroup;// = NULL;
     QRadioButton* allButton;// = NULL;
@@ -101,9 +106,9 @@ private:
 
     SignalGroup* curSignalGroup;// = NULL;
     bool SignalGroupDirty;// = false;  // true to fire reminder to save work
-    bool editMode;// = false;
+    bool inEditMode;// = false;
 
-    /*private*/ /*static*/ class SignalGroupSignal
+    /*private*/ /*static*/ class SignalGroupSignalHead
     {
 
         //String _sysName=NULL;
@@ -111,7 +116,7 @@ private:
      SignalHead* _signal;// = NULL;
      bool _included;
     public:
-        SignalGroupSignal(QString sysName, QString userName);
+        SignalGroupSignalHead(QString sysName, QString userName);
         SignalHead* getBean();
         QString getSysName();
         QString getUserName();
@@ -143,11 +148,14 @@ private:
         QString _aspect;
 
     };
-    /*private*/ QList <SignalGroupSignal*> _signalList;        // array of all Sensorsy
-    /*private*/ QList <SignalGroupSignal*> _includedSignalList;
 
-    /*private*/ QList <SignalMastAspect*> _mastAppearancesList;        // array of all Sensorsy
-    /*private*/ QList <SignalMastAspect*> _includedMastAspectsList;
+
+    /*private*/ QList <SignalGroupSignalHead*>* _signalHeadsList;        // array of all Sensorsy
+    /*private*/ QList <SignalGroupSignalHead*>* _includedSignalHeadsList;
+
+    /*private*/ QList <SignalMastAspect*>* _mastAspectsList;        // array of all Sensorsy
+    /*private*/ QList <SignalMastAspect*>* _includedMastAspectsList;
+
  //SGBeanTableDataModel* m;
  void setColumnToHoldButton(JTable* table, int column, QPushButton* sample);
  void initializeIncludedList();
@@ -169,7 +177,7 @@ protected:
  /*protected*/ QString helpTarget() override;
  /*protected*/ /*BeanTableFrame*/ JmriJFrame* f;
 protected slots:
- /*protected*/ void addPressed(JActionEvent* e=0) override;
+ /*protected*/ void addPressed(/*ActionEvent* e = 0*/) override;
 
  friend class SGBeanTableDataModel;
  friend class ATSignalMastAppearanceModel;

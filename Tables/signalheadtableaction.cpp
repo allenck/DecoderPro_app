@@ -551,7 +551,7 @@ void SignalHeadTableAction::setUkSignalType(QComboBox* box, QString val){
  * changed.
  */
 //@Override
-/*protected*/ void SignalHeadTableAction::addPressed(JActionEvent *e)
+/*protected*/ void SignalHeadTableAction::addPressed(/*ActionEvent* e*/)
 {
  if (addFrame==nullptr)
  {

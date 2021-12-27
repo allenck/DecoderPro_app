@@ -178,7 +178,7 @@ void AudioTableAction::common()
 }
 
 //@Override
-/*protected*/ void AudioTableAction::addPressed(JActionEvent *e)
+/*protected*/ void AudioTableAction::addPressed(/*ActionEvent* e*/)
 {
  log->warn("This should not have happened");
 }

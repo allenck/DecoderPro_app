@@ -62,7 +62,7 @@
 
 
     //@Override
-    /*protected*/ void RouteTableAction::addPressed(JActionEvent *e) {
+    /*protected*/ void RouteTableAction::addPressed(/*ActionEvent e*/) {
 
         /*final*/ JmriJFrame* addFrame = new RouteAddFrame();
         // display the window

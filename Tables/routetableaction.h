@@ -19,7 +19,7 @@ class RouteTableAction : AbstractTableAction
   /*protected*/ void createModel() override;
   /*protected*/ void setTitle() override;
   /*protected*/ QString helpTarget() override;
-  /*protected*/ void addPressed(JActionEvent* e =0) override;
+  /*protected*/ void addPressed(/*ActionEvent e*/) override;
   /*protected*/ QString getClassName() override;
 
 };

@@ -2670,7 +2670,7 @@ void TrackSegmentView::changeType(int choice) {
 //@Override
 /*protected*/ void TrackSegmentView::drawDecorations(EditScene* g2) {
 
-//    log->trace(tr("TrackSegmentView: drawDecorations arrowStyle %1").arg(arrowStyle));
+    log->trace(tr("TrackSegmentView: drawDecorations arrowStyle %1").arg(arrowStyle));
     QGraphicsItemGroup* itemGroup = new QGraphicsItemGroup();
     invalidateItem(g2, decorationItems);
 

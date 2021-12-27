@@ -950,7 +950,7 @@ void BlockTableDataModel::editButton(Block* b)
     return "package.jmri.jmrit.beantable.BlockTable";
 }
 
-//@Override
+
 /*protected*/ void BlockTableAction::addPressed(JActionEvent* /*e*/)
 {
  pref = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");

@@ -32,7 +32,7 @@ public:
     Q_INVOKABLE /*public*/ SignalHeadTableAction(QString s, QObject *parent);
     ~SignalHeadTableAction() {}
     SignalHeadTableAction(const SignalHeadTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
-    /*protected*/ void addPressed(JActionEvent* e=0)override;
+    /*protected*/ void addPressed(/*ActionEvent* e=0*/)override;
     /*public*/ void setEnabled(bool newValue) override;
     /*public*/ void dispose() override;
     Q_INVOKABLE /*public*/ QString getClassDescription() override;
