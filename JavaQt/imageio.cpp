@@ -1250,8 +1250,8 @@
             throw new IllegalArgumentException("input == null!");
         }
         if (!input->canRead()) {
-         log->error(tr("Can't read input file! %1").arg(input->getPath()));
-            throw new IIOException("Can't read input file!");
+         log->error(tr("Can't read input file! [%1]").arg(input->getPath()));
+            throw new IIOException(tr("Can't read input file! [%1]").arg(input->getPath()));
         }
 
 //        ImageInputStream stream = createImageInputStream(input);

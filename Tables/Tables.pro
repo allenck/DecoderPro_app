@@ -32,6 +32,7 @@ SOURCES +=  slotmonitor.cpp \
     idtagtabledatamodel.cpp \
     jmribeancombobox.cpp \
     dialogsignalgroupstablewidget.cpp \
+    lighttabledatamodel.cpp \
     logixtableaction.cpp \
     #defaultconditionalaction.cpp \
     memorytabledatamodel.cpp \
@@ -130,6 +131,7 @@ HEADERS += libtables_global.h \
     blockcurvaturejcombobox.h \
     blocktabledatamodel.h \
     idtagtabledatamodel.h \
+    lighttabledatamodel.h \
     memorytabledatamodel.h \
     reportertabledatamodel.h \
     slotmonitor.h \

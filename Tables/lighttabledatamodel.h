@@ -61,6 +61,7 @@ class LightTableDataModel : public BeanTableDataModel
  protected slots:
   /*protected*/ bool matchPropertyName(PropertyChangeEvent* e) override;
 
+  friend class LightTableAction;
 };
 
 #endif // LIGHTTABLEDATAMODEL_H

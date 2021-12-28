@@ -150,7 +150,9 @@ void LightTableAction::common()
  //_graphicState = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState();
 
  //m = new LTBeanTableDataModel(this);
- m = new LightTableDataModel(lightManager);
+ //m = new LightTableDataModel(lightManager);
+ m = new LightTableDataModel();
+ m->setManager(lightManager);
 }
 #if 0
 LTBeanTableDataModel::LTBeanTableDataModel(LightTableAction* lta)

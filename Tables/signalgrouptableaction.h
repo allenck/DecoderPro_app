@@ -8,6 +8,7 @@
 #include "libtables_global.h"
 #include "jcheckbox.h"
 #include "namedbeancombobox.h"
+#include "jlabel.h"
 
 class QSignalMapper;
 class QSignalMapper;
@@ -15,8 +16,7 @@ class WindowMaker;
 class JActionEvent;
 class QButtonGroup;
 class QRadioButton;
-class QLabel;
-class ATSignalMastAppearanceModel;
+class SignalMastAspectModel;
 class QScrollArea;
 class SignalGroupSignalHeadModel;
 class JTextField;
@@ -49,11 +49,13 @@ public slots:
     void on_updateButton_clicked();
     void On_mainSignal_currentIndexChanged();
     void signalEditPressed(int row);
+    void cancelPressed(JActionEvent* /*e*/ =0) ;
+    void createPressed(JActionEvent* /*e*/=0);
 
 private:
     void common();
     QString name;
-    void setEnabled(bool b);
+    void setEnabled(bool b)override;
     bool bEnabled;
     /*private*/ bool showAll;// = true;   // false indicates show only included Turnouts
 
@@ -69,7 +71,7 @@ private:
 //                                            tr("On State"), tr("Off State"), tr("Edit")};
 
     /*private*/ static QVector<QString> signalStates;// =  QStringList() {tr("StateSignalHeadDark"), tr("StateSignalHeadRed"), tr("StateSignalHeadYellow"), tr("StateSignalHeadGreen"), tr("StateSignalHeadLunar")};
-/*private*/ static QVector<int> signalStatesValues;// =  QList<int>() {SignalHead::DARK, SignalHead::RED, SignalHead::YELLOW, SignalHead::GREEN, SignalHead::LUNAR};
+    /*private*/ static QVector<int> signalStatesValues;// =  QList<int>() {SignalHead::DARK, SignalHead::RED, SignalHead::YELLOW, SignalHead::GREEN, SignalHead::LUNAR};
 
     static Logger* log;
     JTextField* _systemName;// = new JTextField(10);
@@ -80,10 +82,10 @@ private:
 
     JmriJFrame* addFrame;// = NULL;
 
-    SignalGroupSignalHeadModel* _signalGroupSignalModel;
-    QScrollArea* _SignalGroupSignalScrollPane;
+    SignalGroupSignalHeadModel* _signalGroupHeadModel;
+    QScrollArea* _SignalGroupHeadScrollPane;
 
-    ATSignalMastAppearanceModel* _AppearanceModel;
+    SignalMastAspectModel* _aspectModel;
     QScrollArea* _SignalAppearanceScrollPane;
 
     //JTextField mainSignal = new JTextField(30);
@@ -93,12 +95,22 @@ private:
     QRadioButton* allButton;// = NULL;
     QRadioButton* includedButton;// = NULL;
 
-    QLabel* nameLabel;// = new QLabel("SignalGroup System Name:");
-    QLabel* userLabel;// = new QLabel("SignalGroup User Name:");
-    QLabel* fixedSystemName;// = new QLabel("xxxxxxxxxxx");
+    JLabel* nameLabel = new JLabel("SignalGroup System Name:");
+    JLabel* userLabel = new JLabel("SignalGroup User Name:");
+    JLabel* fixedSystemName = new JLabel("xxxxxxxxxxx");
 
-    QPushButton* deleteButton;// = new QPushButton("Delete SignalGroup");
-    QPushButton* updateButton;// = new QPushButton("Done");
+    JButton* deleteButton = new JButton(tr("Delete ").arg(tr("SignalGroup")));
+    JButton* createButton = new JButton(tr("Create"));
+    JButton* updateButton = new JButton(tr("Apply"));
+    JButton* cancelButton = new JButton(tr("Cancel"));
+
+    static /*final*/ QString createInst;// = tr("SignalGroupAddStatusInitial1", tr("ButtonCreate")); // I18N to include original button name in help string
+    static /*final*/ QString updateInst;// = tr("SignalGroupAddStatusInitial3", tr("ButtonApply"));
+    static /*final*/ QString cancelInst;// = tr("SignalGroupAddStatusInitial4", tr("ButtonCancel"));
+
+    JLabel* status1 = new JLabel(createInst);
+    JLabel* status2 = new JLabel(cancelInst);
+
 
     QWidget*  p2xs;// = NULL;   // SignalHead list table
     QWidget*  p2xsi;// = NULL;   // SignalHead list table
@@ -166,7 +178,9 @@ private:
  SignalGroup* checkNamesOK();
  void finishUpdate();
  JmriJFrame* signalEditFrame;// = NULL;
- int setSignalInformation(SignalGroup* g);
+ void cancelEdit();
+ int setHeadInformation(SignalGroup* g);
+ void autoSystemName();
 
 private slots:
 
@@ -180,7 +194,7 @@ protected slots:
  /*protected*/ void addPressed(/*ActionEvent* e = 0*/) override;
 
  friend class SGBeanTableDataModel;
- friend class ATSignalMastAppearanceModel;
+ friend class SignalMastAspectModel;
  friend class SignalGroupSignalHeadModel;
  friend class SignalGroupOutputModel;
  friend class SignalGroupsWidget;
@@ -227,12 +241,12 @@ protected:
  friend class WindowMaker;
 };
 
-/*public*/ class ATSignalMastAppearanceModel : public AbstractTableModel //implements PropertyChangeListener
+/*public*/ class SignalMastAspectModel : public AbstractTableModel //implements PropertyChangeListener
 {
     Q_OBJECT
     SignalGroupTableAction* act;
 public:
-    ATSignalMastAppearanceModel(SignalGroupTableAction* act);
+    SignalMastAspectModel(SignalGroupTableAction* act);
     /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     /*public*/ void dispose();
     /*public*/ int columnCount(const QModelIndex &parent) const;

@@ -25,7 +25,7 @@
 }
 
 /*protected*/ QString LightTableTabAction::getClassName() {
-    return "LightTableAction";
+    return "jmri.jmrit.beantable.LightTableAction";
 }
 
 /*protected*/ AbstractTableAction* LightTableTabAction::getNewTableAction(QString choice) {

@@ -90,8 +90,9 @@ AbstractTableTabAction::~AbstractTableTabAction()
  }
 // dataTabs.addChangeListener(new ChangeListener() {
 //        /*public*/ void stateChanged(ChangeEvent evt) {
+// connect(dataTabs, &QTabWidget::currentChanged, [=]{
 //            setMenuBar(f);
-//        }
+////        }
 //    });
  dataPanelLayout->addWidget(dataTabs,0,0); //,/* BorderLayout.CENTER*/0, Qt::AlignCenter);
  init = true;

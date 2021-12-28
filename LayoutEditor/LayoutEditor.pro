@@ -147,7 +147,6 @@ SOURCES += \
     layoutconnectivity.cpp \
     levelxingviewxml.cpp \
     licenseaction.cpp \
-    lighttabledatamodel.cpp \
     positionablepointviewxml.cpp \
     tracknode.cpp \
     tracksegment.cpp \
@@ -620,7 +619,6 @@ HEADERS += liblayouteditor_global.h \
     layoutconnectivity.h \
     levelxingviewxml.h \
     licenseaction.h \
-    lighttabledatamodel.h \
     positionablepointviewxml.h \
     tracksegment.h \
     tracknode.h \
