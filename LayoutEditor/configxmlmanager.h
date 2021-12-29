@@ -62,7 +62,6 @@ public:
             Throwable *exception);
     static /*public*/ void storingErrorEncountered(XmlAdapter* adapter,
             QString operation,
-            Level* level,
             QString description,
             QString systemName,
             QString userName,

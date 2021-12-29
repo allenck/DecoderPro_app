@@ -47,6 +47,7 @@ public slots:
     void typeChanged();
     void okPressed(JActionEvent* e = nullptr);
     void cancelPressed(JActionEvent*  e = nullptr);
+    /*private*/ void cancelNewPressed(JActionEvent*  e = nullptr);
     void updatePressed(JActionEvent* e = nullptr);
     //void on_editMenuWindow_aboutToShow();
     //void on_addMenuWindow_aboutToShow();
@@ -134,8 +135,8 @@ private:
 
   QStringList ukSignalAspects;// = QStringList << "2" <<"3" <<"4";
   QStringList ukSignalType;// = QStringList() << "Home" << "Distant";
-  QComboBox* prefixBox;// = new QComboBox();
-  QLabel* prefixBoxLabel;// = new QLabel("System : ");
+  QComboBox* prefixBox = new QComboBox();
+  QLabel* prefixBoxLabel = new QLabel("System : ");
   QLabel* vtLabel;// = new QLabel("");
   /*private*/ /*final*/ Border* blackline = BorderFactory::createLineBorder(Qt::black);
   /*private*/ TitledBorder* v1Border = BorderFactory::createTitledBorder(blackline);
@@ -161,6 +162,7 @@ private:
   void editSignal(SignalHead* head);
   void makeEditSignalWindow();
   QMenu* addWindowMenu;
+  void ukAspectChange(bool edit);
 
 
   // variables for edit of Signal Heads
@@ -245,6 +247,7 @@ private:
   /*private*/ void setTurnoutStateInBox(QComboBox* box, int state, QList<int> iTurnoutStates);
   int signalheadTypeFromBox(QComboBox* box);
   void setSignalheadTypeInBox (QComboBox* box, int state, QList<int>iSignalheadTypes);
+  void handleMergSignalDriverOkPressed();
 
 protected:
  /*protected*/ Turnout* getTurnoutFromPanel(BeanSelectCreatePanel* bp, QString reference);

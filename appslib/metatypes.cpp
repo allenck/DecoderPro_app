@@ -357,6 +357,7 @@
 #include "paneopsprogaction.h"
 #include "systemconsoleaction.h"
 #include "tabbedpreferencesprofileaction.h"
+#include "mergsd2signalheadxml.h"
 
 bool Metatypes::done = false;
 
@@ -728,5 +729,6 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<PaneOpsProgAction>("PaneOpsProgAction");
  qRegisterMetaType<SystemConsoleAction>("SystemConsoleAction");
  qRegisterMetaType<TabbedPreferencesProfileAction>("TabbedPreferencesProfileAction");
+ qRegisterMetaType<MergSD2SignalHeadXml>("MergSD2SignalHeadXml");
  Metatypes::done = true;
 }

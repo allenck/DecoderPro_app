@@ -406,8 +406,8 @@ void ConfigXmlManager::locateClassFailed(Throwable* ex, QString adapterName, QOb
     if (!e.isNull())
      root.appendChild(e);
   } catch (Exception* e) {
-      storingErrorEncountered (nullptr, "storing to file", Level::_ERROR,
-                                "Unknown error (Exception)", "","",e);
+    storingErrorEncountered(nullptr, "storing to file in addConfigStore",
+                            "Exception thrown", "", "", e);
       result = false;
   }
  }
@@ -429,7 +429,7 @@ void ConfigXmlManager::locateClassFailed(Throwable* ex, QString adapterName, QOb
   catch (Exception* e)
   {
    result = false;
-   storingErrorEncountered (((XmlAdapter*)o), "storing to file", Level::_ERROR,
+   storingErrorEncountered (((XmlAdapter*)o), "storing to file",
                                       "Unknown error (Exception)", NULL,NULL,e);
   }
  }
@@ -451,7 +451,7 @@ void ConfigXmlManager::locateClassFailed(Throwable* ex, QString adapterName, QOb
   catch (Exception* e)
   {
    result = false;
-   storingErrorEncountered ((XmlAdapter*)o, "storing to file", Level::_ERROR,
+   storingErrorEncountered ((XmlAdapter*)o, "storing to file",
                                       "Unknown error (Exception)", NULL,NULL,e);
   }
  }
@@ -498,13 +498,13 @@ void ConfigXmlManager::locateClassFailed(Throwable* ex, QString adapterName, QOb
  }
  catch (FileNotFoundException* ex3)
  {
-  storingErrorEncountered (nullptr, "storing to file "+file->getPath(), Level::_ERROR, "File not found " + file->getPath(), NULL,NULL,ex3);
+  storingErrorEncountered (nullptr, "storing to file "+file->getPath(), "File not found " + file->getPath(), NULL,NULL,ex3);
   log->error("FileNotFound error writing file: "+ex3->getMessage());
   return false;
  }
  catch (IOException* ex2)
  {
-  storingErrorEncountered (NULL, "storing to file "+file->getPath(), Level::_ERROR, "IO error writing file " + file->getPath(), NULL,NULL,ex2);
+  storingErrorEncountered (NULL, "storing to file "+file->getPath(), "IO error writing file " + file->getPath(), NULL,NULL,ex2);
   log->error("IO error writing file: "+ex2->getMessage());
   return false;
  }
@@ -1025,7 +1025,7 @@ File userPrefsFile;*/
   catch (Exception* e)
   {
         creationErrorEncountered(nullptr, "loading from file " + url.path(),
-                "Unknown error (Exception)", nullptr, nullptr, e);
+                "Unknown error (Exception)", "", "", e);
         result = false;
   }
   catch (Throwable* et)
@@ -1229,7 +1229,6 @@ void ConfigXmlManager::locateFileFailed(QString f) {
 /*static*/ /*public*/ void ConfigXmlManager::storingErrorEncountered (
             XmlAdapter* adapter,
             QString operation,
-            Level* /*level*/,
             QString description,
             QString systemName,
             QString userName,

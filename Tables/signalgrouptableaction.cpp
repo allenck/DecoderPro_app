@@ -417,7 +417,7 @@ void SignalGroupTableAction::setSignalStateBox(int mode, QComboBox* box) {
  }
 
  //inEditMode = true;
- _mastAspectsList = nullptr;
+ _mastAspectsList=QList<SignalMastAspect*>();
 
  SignalHeadManager* shm = (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager");
  _signalHeadsList = new QList<SignalGroupSignalHead*>();
@@ -796,12 +796,12 @@ void SignalGroupTableAction::setColumnToHoldButton(JTable* /*table*/, int /*colu
  */
 void SignalGroupTableAction::initializeIncludedList()
 {
- _includedMastAspectsList =  new  QList<SignalMastAspect*>();
- for (int i=0; i<_mastAspectsList->size();i++)
+ _includedMastAspectsList =  QList<SignalMastAspect*>();
+ for (int i=0; i<_mastAspectsList.size();i++)
  {
-  if (_mastAspectsList->at(i)->isIncluded())
+  if (_mastAspectsList.at(i)->isIncluded())
   {
-   _includedMastAspectsList->append(_mastAspectsList->at(i));
+   _includedMastAspectsList.append(_mastAspectsList.at(i));
   }
 
  }
@@ -936,8 +936,8 @@ int SignalGroupTableAction::setHeadInformation(SignalGroup* g) {
 
 void SignalGroupTableAction::setMastAspectInformation(SignalGroup* g) {
     ((DefaultSignalGroup*)g)->clearSignalMastAspect();
-    for (int x = 0; x<_includedMastAspectsList->size(); x++) {
-        ((DefaultSignalGroup*)g)->addSignalMastAspect(_includedMastAspectsList->at(x)->getAspect());
+    for (int x = 0; x<_includedMastAspectsList.size(); x++) {
+        ((DefaultSignalGroup*)g)->addSignalMastAspect(_includedMastAspectsList.at(x)->getAspect());
     }
 }
 
@@ -963,10 +963,10 @@ void SignalGroupTableAction::setValidSignalAspects()
    return;
  QVector<QString> appear = sh->getValidAspects();
 
- _mastAspectsList = new QList <SignalMastAspect*> (/*appear.size()*/);
+ _mastAspectsList = QList <SignalMastAspect*> (/*appear.size()*/);
  for(int i = 0; i<appear.size(); i++)
  {
-  _mastAspectsList->append(new SignalMastAspect(appear.at(i)));
+  _mastAspectsList.append(new SignalMastAspect(appear.at(i)));
  }
  _aspectModel->fireTableDataChanged();
 }
@@ -1019,10 +1019,10 @@ void SignalGroupTableAction::editPressed(ActionEvent* /*e*/) {
     SignalMast* sh = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(((DefaultSignalGroup*)g)->getSignalMastName());
     QVector<QString> appear = sh->getValidAspects();
 
-    _mastAspectsList = new QList <SignalMastAspect*> (/*appear.size()*/);
+    _mastAspectsList = QList <SignalMastAspect*> (/*appear.size()*/);
 
     for(int i = 0; i<appear.size(); i++){
-        _mastAspectsList->append(new SignalMastAspect(appear.at(i)));
+        _mastAspectsList.append(new SignalMastAspect(appear.at(i)));
     }
 
     fixedSystemName->setText(sName);
@@ -1052,8 +1052,8 @@ void SignalGroupTableAction::editPressed(ActionEvent* /*e*/) {
     //_SignalGroupSignalScrollPane.getVerticalScrollBar().setValue(setRow*ROW_HEIGHT);
     _signalGroupHeadModel->fireTableDataChanged();
 
-    for (int i=0; i<_mastAspectsList->size(); i++){
-        SignalMastAspect* appearance = _mastAspectsList->at(i);
+    for (int i=0; i<_mastAspectsList.size(); i++){
+        SignalMastAspect* appearance = _mastAspectsList.at(i);
         QString app = appearance->getAspect();
         if (g->isSignalMastAspectIncluded(app)){
             appearance->setIncluded(true);
@@ -1127,8 +1127,9 @@ void SignalGroupTableAction::finishUpdate() {
     for (int i=_signalHeadsList->size()-1; i>=0; i--) {
         _signalHeadsList->at(i)->setIncluded(false);
     }
-    for (int i=_mastAspectsList->size()-1; i>=0; i--) {
-        _mastAspectsList->at(i)->setIncluded(false);
+
+    for (int i=_mastAspectsList.size()-1; i>=0; i--) {
+        _mastAspectsList.at(i)->setIncluded(false);
     }
    // mainSignal.setText("");
     curSignalGroup=NULL;
@@ -1192,12 +1193,12 @@ SignalMastAspectModel::SignalMastAspectModel(SignalGroupTableAction *act)
 
 /*public*/ int SignalMastAspectModel::rowCount(const QModelIndex &/*parent*/) const
 {
-        if (!act->_mastAspectsList || act->_mastAspectsList->isEmpty())
+        if (/*!act->_mastAspectsList ||*/ act->_mastAspectsList.isEmpty())
             return 0;
         if (act->showAll)
-            return act->_mastAspectsList->size();
+            return act->_mastAspectsList.size();
         else
-            return act->_includedMastAspectsList->size();
+            return act->_includedMastAspectsList.size();
     }
 
 /*public*/ QVariant  SignalMastAspectModel::data (const QModelIndex &index, int role) const
@@ -1206,7 +1207,7 @@ SignalMastAspectModel::SignalMastAspectModel(SignalGroupTableAction *act)
  int c = index.column();
  if(role == Qt::DisplayRole)
  {
-  QList <SignalGroupTableAction::SignalMastAspect*>* appearList = new QList <SignalGroupTableAction::SignalMastAspect*>();
+  QList <SignalGroupTableAction::SignalMastAspect*> appearList = QList <SignalGroupTableAction::SignalMastAspect*>();
   if (act->showAll)
   {
    appearList = act->_mastAspectsList;
@@ -1216,7 +1217,7 @@ SignalMastAspectModel::SignalMastAspectModel(SignalGroupTableAction *act)
    appearList = act->_includedMastAspectsList;
   }
   // some error checking
-  if (r >= appearList->size())
+  if (r >= appearList.size())
   {
    act->log->debug("row is greater than turnout list size");
    return QVariant();
@@ -1226,14 +1227,14 @@ SignalMastAspectModel::SignalMastAspectModel(SignalGroupTableAction *act)
 //            case INCLUDE_COLUMN:
 //                return Boolean.valueOf(appearList.get(r).isIncluded());
    case APPEAR_COLUMN:  // slot number
-     return appearList->at(r)->getAspect();
+     return appearList.at(r)->getAspect();
     default:
       return QVariant();
   }
  }
  if(role == Qt::CheckStateRole)
  {
-  QList <SignalGroupTableAction::SignalMastAspect*>* appearList = new QList <SignalGroupTableAction::SignalMastAspect*>();
+  QList <SignalGroupTableAction::SignalMastAspect*> appearList =  QList <SignalGroupTableAction::SignalMastAspect*>();
   if (act->showAll)
   {
    appearList = act->_mastAspectsList;
@@ -1244,7 +1245,7 @@ SignalMastAspectModel::SignalMastAspectModel(SignalGroupTableAction *act)
   }
   if(c == INCLUDE_COLUMN)
   {
-   if (appearList->at(r)->isIncluded())
+   if (appearList.at(r)->isIncluded())
     return  Qt::Checked;
    else
     return Qt::Unchecked;
@@ -1258,7 +1259,7 @@ SignalMastAspectModel::SignalMastAspectModel(SignalGroupTableAction *act)
  int r = index.row();
  int c = index.column();
 
- QList <SignalGroupTableAction::SignalMastAspect*>* appearList = new  QList <SignalGroupTableAction::SignalMastAspect*>();
+ QList <SignalGroupTableAction::SignalMastAspect*> appearList =  QList <SignalGroupTableAction::SignalMastAspect*>();
   if (act->showAll)
   {
    appearList = act->_mastAspectsList;
@@ -1272,14 +1273,14 @@ SignalMastAspectModel::SignalMastAspectModel(SignalGroupTableAction *act)
    case INCLUDE_COLUMN:
     if(role == Qt::CheckStateRole)
     {
-     appearList->at(r)->setIncluded(value.toBool());
+     appearList.at(r)->setIncluded(value.toBool());
      return true;
     }
     break;
    case APPEAR_COLUMN:
     if(role == Qt::EditRole)
     {
-     appearList->at(r)->setAspect(value.toString());
+     appearList.at(r)->setAspect(value.toString());
     break;
    default: break;
   }

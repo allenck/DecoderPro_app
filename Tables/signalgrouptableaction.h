@@ -165,8 +165,8 @@ private:
     /*private*/ QList <SignalGroupSignalHead*>* _signalHeadsList;        // array of all Sensorsy
     /*private*/ QList <SignalGroupSignalHead*>* _includedSignalHeadsList;
 
-    /*private*/ QList <SignalMastAspect*>* _mastAspectsList;        // array of all Sensorsy
-    /*private*/ QList <SignalMastAspect*>* _includedMastAspectsList;
+    /*private*/ QList <SignalMastAspect*> _mastAspectsList;        // array of all Sensorsy
+    /*private*/ QList <SignalMastAspect*> _includedMastAspectsList;
 
  //SGBeanTableDataModel* m;
  void setColumnToHoldButton(JTable* table, int column, QPushButton* sample);
@@ -241,9 +241,10 @@ protected:
  friend class WindowMaker;
 };
 
-/*public*/ class SignalMastAspectModel : public AbstractTableModel //implements PropertyChangeListener
+/*public*/ class SignalMastAspectModel : public AbstractTableModel, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
     SignalGroupTableAction* act;
 public:
     SignalMastAspectModel(SignalGroupTableAction* act);
@@ -260,6 +261,8 @@ public:
     /*public*/ int rowCount(const QModelIndex &parent) const;
     /*public*/ QVariant data(const QModelIndex &index, int role) const;
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
+    /*public*/ QObject* self() override{return (QObject*)this;}
+
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
 
@@ -267,9 +270,10 @@ public slots:
 /**
  * Base table model for selecting outputs
  */
-/*public*/ /*abstract*/ class SignalGroupOutputModel : public AbstractTableModel //implements PropertyChangeListener
+/*public*/ /*abstract*/ class SignalGroupOutputModel : public AbstractTableModel, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
     SignalGroupTableAction *act;
 public:
     enum COLUMNS
@@ -281,12 +285,14 @@ public:
     };
 
     SignalGroupOutputModel(SignalGroupTableAction *act);
-    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    /*public*/ int columnCount(const QModelIndex &parent) const;
-    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
+    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+    /*public*/ int columnCount(const QModelIndex &parent) const override;
+    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
+    /*public*/ QObject* self() override{return (QObject*)this;}
+
     friend class SignalGroupSignalHeadModel;
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 };
 

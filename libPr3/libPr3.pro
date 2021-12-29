@@ -128,6 +128,10 @@ DEFINES += USE_THREAD
 ENABLE_LOGIXNG = "N" # change to "Y" to compile LogixNG modules
 SOURCES += \
  #abstractproxymanager.cpp \
+ Signal/lsdecsignalhead.cpp \
+ Signal/lsdecsignalheadxml.cpp \
+ Signal/mergsd2signalhead.cpp \
+ Signal/mergsd2signalheadxml.cpp \
  addeditsinglelightcontrolframe.cpp \
  defaultlightcontrol.cpp \
 # direct/defaultthrottle.cpp \
@@ -1144,6 +1148,10 @@ equals(ENABLE_LOGIXNG, "Y") {
     SOURCES +=
  }
 HEADERS += \
+ Signal/lsdecsignalhead.h \
+ Signal/lsdecsignalheadxml.h \
+ Signal/mergsd2signalhead.h \
+ Signal/mergsd2signalheadxml.h \
  addeditsinglelightcontrolframe.h \
  defaultlightcontrol.h \
  digitalio.h \

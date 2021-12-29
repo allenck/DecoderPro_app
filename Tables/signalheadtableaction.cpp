@@ -9,7 +9,7 @@
 #include <QScrollArea>
 #include <QMainWindow>
 #include <QFrame>
-#include "QMessageBox"
+#include "joptionpane.h"
 #include "Signal/se8csignalhead.h"
 #include "stringutil.h"
 #include "Signal/singleturnoutsignalhead.h"
@@ -33,6 +33,9 @@
 #include "jlabel.h"
 #include "loggerfactory.h"
 #include "borderlayout.h"
+#include "slotmanager.h"
+#include "lsdecsignalhead.h"
+#include "mergsd2signalhead.h"
 
 SignalHeadTableAction::SignalHeadTableAction(QObject *parent) :
     AbstractTableAction(tr("Signal Head"), parent)
@@ -59,7 +62,6 @@ SignalHeadTableAction::SignalHeadTableAction(QObject *parent) :
 /*public*/ SignalHeadTableAction::SignalHeadTableAction(QString s, QObject *parent) : AbstractTableAction(s, parent)
 {
  //super(s);
- log = new Logger("SignalHeadTableAction");
  nbhm = (NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager");
  // disable ourself if there is no primary Signal Head manager available
  if(InstanceManager::getDefault("SignalHeadManager")==nullptr)
@@ -535,12 +537,19 @@ void SignalHeadTableAction::setUkSignalType(QComboBox* box, QString val){
  if (addFrame==nullptr)
  {
   QObjectList* list = InstanceManager::getList("CommandStation");
-#if 0
+#if 1
   foreach(QObject* obj, *list){
       if(obj!=NULL){
-          CommandStation* station = (CommandStation*) obj;
-          QString user_name = station->getUserName();
-           prefixBox->addItem(user_name);
+       if(qobject_cast<SlotManager*>(obj))
+       {
+        SlotManager* station = (SlotManager*)obj;
+        QString user_name = station->getUserName();
+         prefixBox->addItem(user_name);
+         continue;
+       }
+       CommandStation* station = (CommandStation*) obj;
+       QString user_name = station->getUserName();
+       prefixBox->addItem(user_name);
       }
   }
 #endif
@@ -699,9 +708,13 @@ void SignalHeadTableAction::setUkSignalType(QComboBox* box, QString val){
     //addFrame.getContentPane().add(scrollPane, BorderLayout.CENTER);
   contentPaneLayout->addWidget(scrollPane, 1, Qt::AlignCenter);//BorderLayout::Center);
 
+  // buttons at bottom of panel
   QWidget* panelBottom = new QWidget();
   panelBottom->setLayout(new FlowLayout(panelBottom/*, BoxLayout.Y_AXIS*/));
-
+  // Cancel button
+  JButton* cancelNew = new JButton(tr("Cancel"));
+  panelBottom->layout()->addWidget(cancelNew);
+  connect(cancelNew, &JButton::clicked, [=]{cancelNewPressed();});
   QPushButton* ok;
   panelBottom->layout()->addWidget(ok = new QPushButton(tr("OK")));
 //        ok.addActionListener(new ActionListener() {
@@ -770,28 +783,28 @@ void SignalHeadTableAction::typeChanged()
   handleSE8cTypeChanged();
  }
  else
-#if 0
+#if 1
  if (grapevine ==(typeBox->currentText()))
  {  //Need to see how this works with username
   systemNameLabel->setText(tr("System Name:"));
-         systemNameLabel->setVisible(true);
-         systemName->setVisible(true);
-        userNameLabel->setText(tr("User Name:"));
-        userNameLabel->setVisible(true);
-        userName->setVisible(true);
+  systemNameLabel->setVisible(true);
+  systemNameTextField->setVisible(true);
+  userNameLabel->setText(tr("User Name:"));
+  userNameLabel->setVisible(true);
+  userNameTextField->setVisible(true);
  } else
  if (acelaAspect ==(typeBox->currentText()))
  {
-        userNameLabel->setText(tr("User Name:"));
-        userNameLabel->setVisible(true);
-        userName->setVisible(true);
-        //v1Label->setText(tr("Signalhead Number:"));
-        v1Border->setTitle(tr("Signalhead Number:"));
-        v1Panel->setVisible(true);
-         ato1->setVisible(true);
-        vtLabel->setText(tr("LabelAspectType"));
-        vtLabel->setVisible(true);
-        stBox->setVisible(true);
+  userNameLabel->setText(tr("User Name:"));
+  userNameLabel->setVisible(true);
+  userNameTextField->setVisible(true);
+  //v1Label->setText(tr("Signalhead Number:"));
+  v1Border->setTitle(tr("Signalhead Number:"));
+  v1Panel->setVisible(true);
+  ato1TextField->setVisible(true);
+  vtLabel->setText(tr("LabelAspectType"));
+  vtLabel->setVisible(true);
+  stBox->setVisible(true);
  } else
 #endif
  if (quadOutput ==(typeBox->currentText()))
@@ -862,18 +875,18 @@ void SignalHeadTableAction::typeChanged()
   if (singleTurnout ==(typeBox->currentText()))
   {
    systemNameLabel->setText(tr("System Name:"));
-         systemNameLabel->setVisible(true);
-         systemNameTextField->setVisible(true);
-        userNameLabel->setText(tr("User Name:"));
-        v1Border->setTitle(tr("Green output number:"));
-        v1Panel->setVisible(true);
-        to1->setVisible(true);
-        v2Border->setTitle(tr("Turnout Thrown Appearance"));
-        v2Panel->setVisible(true);
-        s2aBox->setVisible(true);
-        v3Border->setTitle(tr("Turnout Closed Appearance"));
-        s3aBox->setVisible(true);
-        v3Panel->setVisible(true);
+   systemNameLabel->setVisible(true);
+   systemNameTextField->setVisible(true);
+   userNameLabel->setText(tr("User Name:"));
+   v1Border->setTitle(tr("Green output number:"));
+   v1Panel->setVisible(true);
+   to1->setVisible(true);
+   v2Border->setTitle(tr("Turnout Thrown Appearance"));
+   v2Panel->setVisible(true);
+   s2aBox->setVisible(true);
+   v3Border->setTitle(tr("Turnout Closed Appearance"));
+   s3aBox->setVisible(true);
+   v3Panel->setVisible(true);
   } else
   if (virtualHead ==(typeBox->currentText()))
   {
@@ -882,12 +895,11 @@ void SignalHeadTableAction::typeChanged()
          systemNameTextField->setVisible(true);
         userNameLabel->setText(tr("User Name:"));
   } else
-#if 0 // Acela not implemented
   if (lsDec ==(typeBox->currentText()))
   {
          systemNameLabel->setText(tr("System Name:"));
          systemNameLabel->setVisible(true);
-         systemName->setVisible(true);
+         systemNameTextField->setVisible(true);
         userNameLabel->setText(tr("User Name:"));
         v1Border->setTitle(tr("Green output number:"));
         v1Panel->setVisible(true);
@@ -919,9 +931,7 @@ void SignalHeadTableAction::typeChanged()
         to7->setVisible(true);
         s7Box->setVisible(true);
     }
-  else
-#endif
-    if (dccSignalDecoder ==(typeBox->currentText())) {
+  else if (dccSignalDecoder ==(typeBox->currentText())) {
           // systemNameLabel->setText(tr("System Name:"));
            systemNameLabel->setText("Hardware Address");
            systemNameLabel->setVisible(true);
@@ -930,12 +940,11 @@ void SignalHeadTableAction::typeChanged()
            prefixBoxLabel->setVisible(true);
           userNameLabel->setText(tr("LabelUserName"));
     }
-#if 0
     else
     if (mergSignalDriver ==(typeBox->currentText())) {
          systemNameLabel->setText(tr("System Name:"));
          systemNameLabel->setVisible(true);
-         systemName->setVisible(true);
+         systemNameTextField->setVisible(true);
         userNameLabel->setText(tr("User Name:"));
         v1Border->setTitle("Aspects");
         v1Panel->setVisible(true);
@@ -957,7 +966,6 @@ void SignalHeadTableAction::typeChanged()
         connect(msaBox, SIGNAL(currentIndexChanged(int)), this, SLOT());
 
  }
-#endif
     else
  log->error(tr("Unexpected type in typeChanged: ")+typeBox->currentText());
 
@@ -976,22 +984,18 @@ bool SignalHeadTableAction::checkBeforeCreating(QString sysName)
   if(!bOK)
   {
 //        } catch (Exception* ex){
-//            String msg = java.text.MessageFormat.format(AbstractTableAction.rb
-//                    .getString("ShouldBeNumber"), new Object[] { "Hardware Address" });
-//            JOptionPane.showMessageDialog(addFrame, msg,
-//                    AbstractTableAction.tr("WarningTitle"), JOptionPane.ERROR_MESSAGE);
-   QMessageBox::warning(0, tr("Warning"), tr("Value entered into \"%1\" must be a whole number").arg("Hardware Address"));
+   QString msg = tr("Value entered into \"%1\" must be a whole number").arg("Hardware Address");
+   JOptionPane::showMessageDialog(addFrame, msg,
+           tr("WarningTitle"), JOptionPane::ERROR_MESSAGE);
     return false;
   }
  }
  else {
         sName = sysName.toUpper();
         if ( (sName.length()<3) || (sName.mid(1,1) !=("H")) ) {
-//            String msg = java.text.MessageFormat.format(AbstractTableAction.rb
-//                    .getString("InvalidSignalSystemName"), new Object[] { sName });
-//            JOptionPane.showMessageDialog(addFrame, msg,
-//                    AbstractTableAction.tr("WarningTitle"), JOptionPane.ERROR_MESSAGE);
-            QMessageBox::warning(0, tr("Warning"), tr("Cannot add signal head because \" %1 \" is not a valid system name, for example, LH5, GH88, IH41.").arg(sName));
+          QString msg = tr("Cannot add signal head because \" %1 \" is not a valid system name, for example, LH5, GH88, IH41.").arg(sName);
+            JOptionPane::showMessageDialog(addFrame, msg,
+                    tr("WarningTitle"), JOptionPane::ERROR_MESSAGE);
             return false;
         }
     }
@@ -1002,24 +1006,20 @@ bool SignalHeadTableAction::checkBeforeCreating(QString sysName)
         //Need to check that the Systemname doesn't already exists as a UserName
         NamedBean* nB = static_cast<AbstractSignalHeadManager*>( InstanceManager::getDefault("SignalHeadManager"))->getByUserName(sName);
         if (nB!=nullptr){
-//            log->error("System name is not unique " + sName + " It already exists as a User name");
-//            String msg = java.text.MessageFormat.format(AbstractTableAction.rb
-//                    .getString(""), new Object[] { ("" + sName) });
-//            JOptionPane.showMessageDialog(editFrame, msg,
-//                        AbstractTableAction.tr("WarningTitle"),
-//                            JOptionPane.ERROR_MESSAGE);
-            QMessageBox::warning(0, tr("Warning"), tr("User Name \" %1 \" has already been used as a User Name.").arg(sName));
+            log->error("System name is not unique " + sName + " It already exists as a User name");
+            QString msg = tr("User Name \" %1 \" has already been used as a User Name.").arg(sName) ;
+            JOptionPane::showMessageDialog(editFrame, msg,
+                        tr("WarningTitle"),
+                            JOptionPane::ERROR_MESSAGE);
             return false;
         }
         return true;
     }
     // inform the user if signal head already exists, and return false so creation can be bypassed
-//    log->warn("Attempt to create signal with duplicate system name "+sName);
-//    String msg = java.text.MessageFormat.format(AbstractTableAction.rb
-//                .getString("DuplicateSignalSystemName"), new Object[] { sName });
-//    JOptionPane.showMessageDialog(addFrame, msg,
-//            AbstractTableAction.tr("WarningTitle"), JOptionPane.ERROR_MESSAGE);
-    QMessageBox::warning(0, tr("Warning"), tr("Cannot add because \" %1 \" already exists. To replace an existing signal head, delete it first.").arg(sName));
+    log->warn("Attempt to create signal with duplicate system name "+sName);
+    QString msg =  tr("Cannot add because \" %1 \" already exists. To replace an existing signal head, delete it first.").arg(sName);
+    JOptionPane::showMessageDialog(addFrame, msg,
+            tr("Warning"), JOptionPane::ERROR_MESSAGE);
     return false;
 }
 /*public*/ bool SignalHeadTableAction::checkIntegerOnly(QString s) {
@@ -1034,11 +1034,9 @@ bool SignalHeadTableAction::checkBeforeCreating(QString sysName)
 }
 void SignalHeadTableAction::addTurnoutMessage(QString s1, QString s2) {
     log->warn("Could not provide turnout "+s2);
-//    QString msg = java.text.MessageFormat.format(AbstractTableAction.rb
-//                .getString("AddNoTurnout"), new Object[] { s1, s2 });
-//    JOptionPane.showMessageDialog(addFrame, msg,
-//            AbstractTableAction.tr("WarningTitle"), JOptionPane.ERROR_MESSAGE);
-    QMessageBox::warning(0, tr("Warning"), tr("Cannot add signal head because could not provide \" %1 \" - \" %2 \".").arg(s1).arg(s2));
+    QString msg = tr("Cannot add signal head because could not provide \" %1 \" - \" %2 \".").arg(s1).arg(s2);
+    JOptionPane::showMessageDialog(addFrame, msg,
+            tr("WarningTitle"), JOptionPane::ERROR_MESSAGE);
 }
 
 //@TODO We could do with checking the to make sure that the user has entered a turnout into a turnout field if it has been presented. Otherwise an error is recorded in the console window
@@ -1073,9 +1071,8 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
    else
    {
     QString msg = tr("Skipping creation of acela signal head because \" %1 \" is not a number or does not start with LT .").arg( ato1->text() );
-//                JOptionPane.showMessageDialog(addFrame, msg,
-//                    AbstractTableAction.tr("WarningTitle"), JOptionPane.ERROR_MESSAGE);
-    QMessageBox::warning(addFrame, tr("Warning"), msg);
+                JOptionPane.showMessageDialog(addFrame, msg,
+                    AbstractTableAction.tr("Warning"), JOptionPane::ERROR_MESSAGE);
     return;
    }
   }
@@ -1109,7 +1106,6 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
                 sh->setOutputSignalHeadType(headnumber, AcelaNode::UKNOWN); break;  // default to triple
   }
  }
-
  else if (grapevine ==(typeBox->currentText()))
  {
   // the turnout field must hold a GH system name
@@ -1265,18 +1261,18 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
    static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
   }
  }
-#if 0 // LsDec, merg not implemented.
+#if 1 // LsDec, merg not implemented.
  else if (lsDec ==(typeBox->currentText()))
  {
-  if (checkBeforeCreating( systemName->text()))
+  if (checkBeforeCreating( systemNameTextField->text()))
   {
-   Turnout* t1 = getTurnoutFromPanel(to1, "SignalHead:" +  systemName->text() + ":Green");
-   Turnout* t2 = getTurnoutFromPanel(to2, "SignalHead:" +  systemName->text() + ":Yellow");
-   Turnout* t3 = getTurnoutFromPanel(to3, "SignalHead:" +  systemName->text() + ":Red");
-   Turnout* t4 = getTurnoutFromPanel(to4, "SignalHead:" +  systemName->text() + ":FlashGreen");
-   Turnout* t5 = getTurnoutFromPanel(to5, "SignalHead:" +  systemName->text() + ":FlashYellow");
-   Turnout* t6 = getTurnoutFromPanel(to6, "SignalHead:" +  systemName->text() + ":FlashRed");
-   Turnout* t7 = getTurnoutFromPanel(to7, "SignalHead:" +  systemName->text() + ":Dark");
+   Turnout* t1 = getTurnoutFromPanel(to1, "SignalHead:" +  systemNameTextField->text() + ":Green");
+   Turnout* t2 = getTurnoutFromPanel(to2, "SignalHead:" +  systemNameTextField->text() + ":Yellow");
+   Turnout* t3 = getTurnoutFromPanel(to3, "SignalHead:" +  systemNameTextField->text() + ":Red");
+   Turnout* t4 = getTurnoutFromPanel(to4, "SignalHead:" +  systemNameTextField->text() + ":FlashGreen");
+   Turnout* t5 = getTurnoutFromPanel(to5, "SignalHead:" +  systemNameTextField->text() + ":FlashYellow");
+   Turnout* t6 = getTurnoutFromPanel(to6, "SignalHead:" +  systemNameTextField->text() + ":FlashRed");
+   Turnout* t7 = getTurnoutFromPanel(to7, "SignalHead:" +  systemNameTextField->text() + ":Dark");
 
    int s1 = turnoutStateFromBox(s1Box);
    int s2 = turnoutStateFromBox(s2Box);
@@ -1295,12 +1291,12 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
    if (t7==nullptr) addTurnoutMessage(v7Panel->getTitle(), to7->getDisplayName());
    if (t7==nullptr || t6==nullptr || t5==nullptr || t4==nullptr || t3==nullptr || t2==nullptr || t1==nullptr)
    {
-    log->warn("skipping creation of signal "+ systemName->text()+" due to error");
+    log->warn("skipping creation of signal "+ systemNameTextField->text()+" due to error");
     return;
    }
 
-   s = (SignalHead*)new LsDecSignalHead( systemName->text(), nbhm->getNamedBeanHandle(t1->getDisplayName(),t1), s1, nbhm->getNamedBeanHandle(t2->getDisplayName(),t2), s2, nbhm->getNamedBeanHandle(t3->getDisplayName(),t3), s3, nbhm->getNamedBeanHandle(t4->getDisplayName(),t4), s4, nbhm->getNamedBeanHandle(t5->getDisplayName(),t5), s5, nbhm->getNamedBeanHandle(t6->getDisplayName(),t6), s6, nbhm->getNamedBeanHandle(t7->getDisplayName(),t7), s7);
-   s.setUserName(userName.->text()());
+   s = (SignalHead*)new LsDecSignalHead( systemNameTextField->text(), nbhm->getNamedBeanHandle(t1->getDisplayName(),t1), s1, nbhm->getNamedBeanHandle(t2->getDisplayName(),t2), s2, nbhm->getNamedBeanHandle(t3->getDisplayName(),t3), s3, nbhm->getNamedBeanHandle(t4->getDisplayName(),t4), s4, nbhm->getNamedBeanHandle(t5->getDisplayName(),t5), s5, nbhm->getNamedBeanHandle(t6->getDisplayName(),t6), s6, nbhm->getNamedBeanHandle(t7->getDisplayName(),t7), s7);
+   s->setUserName(userNameTextField->text());
    static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
   }
  }
@@ -1345,11 +1341,9 @@ void SignalHeadTableAction::handleSE8cOkPressed() {
         static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
     } else {
         // couldn't create turnouts, error
-//        QString msg = java.text.MessageFormat.format(AbstractTableAction.rb
-//            .getString("se8c4SkippingCreation"), new Object[] { to1->getDisplayName() });
-//        JOptionPane.showMessageDialog(addFrame, msg,
-//            AbstractTableAction.tr("Warning"), JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(0, tr("Warning"), tr("Skipping creation of se8c4 signal head because \"%1\" is neither a number nor a valid Turnout name.").arg(to1->getDisplayName()));
+        QString msg = tr("Skipping creation of se8c4 signal head because \"%1\" is neither a number nor a valid Turnout name.").arg(to1->getDisplayName());
+        JOptionPane::showMessageDialog(addFrame, msg,
+            tr("Warning"), JOptionPane::ERROR_MESSAGE);
         return;
     }
 }
@@ -1382,52 +1376,52 @@ void SignalHeadTableAction::handleSE8cEditSignal() {
 void SignalHeadTableAction::handleSE8cUpdatePressed() {
     // user name handled by common code; notthing else to change
 }
-#if 0
+#if 1
 //@SuppressWarnings("fallthrough")
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="SF_SWITCH_FALLTHROUGH")
-void handleMergSignalDriverOkPressed() {
-    SignalHead s;
+void SignalHeadTableAction::handleMergSignalDriverOkPressed() {
+    SignalHead* s;
     // Adding Merg Signal Driver.
-    Turnout t3 = nullptr;
-    Turnout t2 = nullptr;
-    Turnout t1 = nullptr;
-    NamedBeanHandle <Turnout> nbt1 = nullptr;
-    NamedBeanHandle <Turnout> nbt2 = nullptr;
-    NamedBeanHandle <Turnout> nbt3 = nullptr;
-    if (checkBeforeCreating( systemName->text())) {
+    Turnout* t3 = nullptr;
+    Turnout* t2 = nullptr;
+    Turnout* t1 = nullptr;
+    NamedBeanHandle<Turnout*>* nbt1 = nullptr;
+    NamedBeanHandle<Turnout*>* nbt2 = nullptr;
+    NamedBeanHandle<Turnout*>* nbt3 = nullptr;
+    if (checkBeforeCreating( systemNameTextField->text())) {
         switch(ukSignalAspectsFromBox(msaBox)){
-            case 4: t3 = getTurnoutFromPanel(to5, "SignalHead:" +  systemName->text() + ":Input3");
+            case 4: t3 = getTurnoutFromPanel(to5, "SignalHead:" +  systemNameTextField->text() + ":Input3");
                     if (t3==nullptr) {
                         addTurnoutMessage(v5Panel->getTitle(), to5->getDisplayName());
-                        log->warn("skipping creation of signal "+ systemName->text()+" due to error");
+                        log->warn("skipping creation of signal "+ systemNameTextField->text()+" due to error");
                         return;
                     } else
                         nbt3 = nbhm->getNamedBeanHandle(to5->getDisplayName(),t3);
 
                     // fall through
-            case 3: t2 = getTurnoutFromPanel(to4, "SignalHead:" +  systemName->text() + ":Input2");
+            case 3: t2 = getTurnoutFromPanel(to4, "SignalHead:" +  systemNameTextField->text() + ":Input2");
                     if (t2==nullptr) {
                         addTurnoutMessage(v4Panel->getTitle(), to4->getDisplayName());
-                        log->warn("skipping creation of signal "+ systemName->text()+" due to error");
+                        log->warn("skipping creation of signal "+ systemNameTextField->text()+" due to error");
                         return;
                     } else
                         nbt2 = nbhm->getNamedBeanHandle(to4->getDisplayName(),t2);
                     // fall through
-            case 2: t1 = getTurnoutFromPanel(to3, "SignalHead:" +  systemName->text() + ":Input1");
+            case 2: t1 = getTurnoutFromPanel(to3, "SignalHead:" +  systemNameTextField->text() + ":Input1");
                     if (t1==nullptr) {
                         addTurnoutMessage(v3Panel->getTitle(), to3->getDisplayName());
-                        log->warn("skipping creation of signal "+ systemName->text()+" due to error");
+                        log->warn("skipping creation of signal "+ systemNameTextField->text()+" due to error");
                         return;
                     } else
                         nbt1 = nbhm->getNamedBeanHandle(to3->getDisplayName(),t1);
             default: break;
         }
-        boolean home;
+        bool home;
         if(ukSignalTypeFromBox(mstBox) ==("Distant")) home=false;
         else home=true;
 
-        s = new jmri.implementation.MergSD2SignalHead( systemName->text(), ukSignalAspectsFromBox(msaBox), nbt1, nbt2, nbt3, false, home);
-        s.setUserName(userName.->text()());
+        s = new MergSD2SignalHead( systemNameTextField->text(), ukSignalAspectsFromBox(msaBox), nbt1, nbt2, nbt3, false, home);
+        s->setUserName(userNameTextField->text());
         static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
 
     }
@@ -1464,12 +1458,10 @@ void SignalHeadTableAction::makeEditSignalWindow()
   }
   else
   {
-//            log->error("Attempt to edit two signal heads at the same time-"+editSysName+"-and-"+eSName+"-");
-//            QString msg = java.text.MessageFormat.format(AbstractTableAction.rb
-//                            .getString("WarningEdit"), new Object[] { editSysName, eSName });
-//            JOptionPane.showMessageDialog(editFrame, msg,
-//                        AbstractTableAction.tr("WarningTitle"), JOptionPane.ERROR_MESSAGE);
-   QMessageBox::warning(0, tr("Warning"), tr("Attempt to edit two signal heads at the same time-")+editSysName+tr("-and-")+eSName+"-");
+   log->error("Attempt to edit two signal heads at the same time-"+editSysName+"-and-"+eSName+"-");
+   QString msg = tr("Attempt to edit two signal heads at the same time-")+editSysName+tr("-and-")+eSName+"-";
+   JOptionPane::showMessageDialog(editFrame, msg,
+               tr("Warning"), JOptionPane::ERROR_MESSAGE);
    editFrame->setVisible(true);
    return;
   }
@@ -1599,6 +1591,7 @@ void SignalHeadTableAction::makeEditSignalWindow()
     QScrollArea* scrollPane = new QScrollArea(panelCentre);
     editFrame->centralWidget()->layout()->addWidget(scrollPane/*, BorderLayout.CENTER*/);
 
+    // buttons at bottom of panel
     QWidget* panelBottom = new QWidget();
     //panelBottom->setLayout(new QVBoxLayout(panelBottom/*, BoxLayout.Y_AXIS*/));
     panelBottom->setLayout(new FlowLayout);
@@ -1673,55 +1666,52 @@ void SignalHeadTableAction::makeEditSignalWindow()
     emsaBox->setVisible(false);
     // determine class name of signal head and initialize this class of signal
     className = curS->metaObject()->className();
-#if 0
     if (className ==("jmri.implementation.QuadOutputSignalHead"))
     {
         signalType->setText(quadOutput);
-        eSystemNameLabel->setText(tr("LabelSystemName"));
-        eSysNameLabel->setText(curS.getSystemName());
-        eUserNameLabel->setText(tr("LabelUserName"));
-        eUserName->setText(curS.getUserName());
+        eSystemNameLabel->setText(tr("System Name:"));
+        eSysNameLabel->setText(curS->getSystemName());
+        eUserNameLabel->setText(tr("User Name:"));
+        eUserName->setText(curS->getUserName());
         ev1Border->setTitle(tr("Green output number:"));
         ev1Panel->setVisible(true);
         eto1->setVisible(true);
-        et1 = ((TripleTurnoutSignalHead*)curS).getGreen().getBean();
-        eto1.setDefaultNamedBean(et1);
+        et1 = ((TripleTurnoutSignalHead*)curS)->getGreen()->getBean();
+        eto1->setDefaultNamedBean(et1);
 
         ev2Border->setTitle(tr("Yellow output number:"));
         ev2Panel->setVisible(true);
         eto2->setVisible(true);
-        eto2->setDefaultNamedBean(((TripleTurnoutSignalHead*)curS).getYellow().getBean());
+        eto2->setDefaultNamedBean(((TripleTurnoutSignalHead*)curS)->getYellow()->getBean());
         ev3Border->setTitle(tr("Red output number:"));
         ev3Panel->setVisible(true);
         eto3->setVisible(true);
-        eto3->setDefaultNamedBean(((TripleTurnoutSignalHead*)curS).getRed().getBean());
-        ev4Border->setTitle(tr("LabelLunarTurnoutNumber"));
+        eto3->setDefaultNamedBean(((TripleTurnoutSignalHead*)curS)->getRed()->getBean());
+        ev4Border->setTitle(tr("Lunar output "));
         ev4Panel->setVisible(true);
         eto4->setVisible(true);
-        eto4->setDefaultNamedBean(((QuadOutputSignalHead)curS).getLunar().getBean());
+        eto4->setDefaultNamedBean(((QuadOutputSignalHead*)curS)->getLunar()->getBean());
     }
     else if (className ==("jmri.implementation.TripleTurnoutSignalHead")) {
         signalType->setText(tripleTurnout);
-        eSystemNameLabel->setText(tr("LabelSystemName"));
-        eSysNameLabel->setText(curS.getSystemName());
-        eUserNameLabel->setText(tr("LabelUserName"));
-        eUserName->setText(curS.getUserName());
+        eSystemNameLabel->setText(tr("System Name:"));
+        eSysNameLabel->setText(curS->getSystemName());
+        eUserNameLabel->setText(tr("User Name:"));
+        eUserName->setText(curS->getUserName());
         ev1Border->setTitle(tr("Green output number:"));
-        ev1 Panel->setVisible(true);
+        ev1Panel->setVisible(true);
         eto1->setVisible(true);
-        eto1.setDefaultNamedBean(((TripleTurnoutSignalHead*)curS).getGreen().getBean());
+        eto1->setDefaultNamedBean(((TripleTurnoutSignalHead*)curS)->getGreen()->getBean());
         ev2Border->setTitle(tr("Yellow output number:"));
-        ev2 Panel->setVisible(true);
+        ev2Panel->setVisible(true);
         eto2->setVisible(true);
-        eto2.setDefaultNamedBean(((TripleTurnoutSignalHead*)curS).getYellow().getBean());
+        eto2->setDefaultNamedBean(((TripleTurnoutSignalHead*)curS)->getYellow()->getBean());
         ev3Border->setTitle(tr("Red output number:"));
-        ev3 Panel->setVisible(true);
+        ev3Panel->setVisible(true);
         eto3->setVisible(true);
-        eto3.setDefaultNamedBean(((TripleTurnoutSignalHead*)curS).getRed().getBean());
+        eto3->setDefaultNamedBean(((TripleTurnoutSignalHead*)curS)->getRed()->getBean());
     }
-    else
-#endif
-    if (className ==("DoubleTurnoutSignalHead")) {
+    else if (className ==("DoubleTurnoutSignalHead")) {
         signalType->setText(doubleTurnout);
         eSystemNameLabel->setText(tr("System Name:"));
         eSysNameLabel->setText(curS->getSystemName());
@@ -1764,59 +1754,61 @@ void SignalHeadTableAction::makeEditSignalWindow()
         eUserNameLabel->setText(tr("User Name"));
         eUserName->setText(curS->getUserName());
     }
-#if 0
+#if 1
     else if (className ==("jmri.implementation.LsDecSignalHead")) {
         signalType->setText(lsDec);
         eSystemNameLabel->setText(tr("LabelSystemName"));
-        eSysNameLabel->setText(curS.getSystemName());
+        eSysNameLabel->setText(curS->getSystemName());
         eUserNameLabel->setText(tr("LabelUserName"));
-        eUserName->setText(curS.getUserName());
+        eUserName->setText(curS->getUserName());
         ev1Border->setTitle(tr("Green output number:"));
-        ev1 Panel->setVisible(true);
+        ev1Panel->setVisible(true);
         eto1->setVisible(true);
-        eto1.setDefaultNamedBean(((jmri.implementation.LsDecSignalHead)curS).getGreen().getBean());
-        es1 Box->setVisible(true);
-        setTurnoutStateInBox(es1Box, ((jmri.implementation.LsDecSignalHead)curS).getGreenState(), turnoutStateValues);
+        eto1->setDefaultNamedBean(((LsDecSignalHead*)curS)->getGreen()->getBean());
+        es1Box->setVisible(true);
+        setTurnoutStateInBox(es1Box, ((LsDecSignalHead*)curS)->getGreenState(), turnoutStateValues);
         ev2Border->setTitle(tr("Yellow output number:"));
-        ev2 Panel->setVisible(true);
+        ev2Panel->setVisible(true);
         eto2->setVisible(true);
-        eto2.setDefaultNamedBean(((jmri.implementation.LsDecSignalHead)curS).getYellow().getBean());
-        es2 Box->setVisible(true);
-        setTurnoutStateInBox(es2Box, ((jmri.implementation.LsDecSignalHead)curS).getYellowState(), turnoutStateValues);
+        eto2->setDefaultNamedBean(((LsDecSignalHead*)curS)->getYellow()->getBean());
+        es2Box->setVisible(true);
+        setTurnoutStateInBox(es2Box, ((LsDecSignalHead*)curS)->getYellowState(), turnoutStateValues);
         ev3Border->setTitle(tr("Red output number:"));
-        ev3 Panel->setVisible(true);
+        ev3Panel->setVisible(true);
         eto3->setVisible(true);
-        eto3.setDefaultNamedBean(((jmri.implementation.LsDecSignalHead)curS).getRed().getBean());
-        es3 Box->setVisible(true);
-        setTurnoutStateInBox(es3Box, ((jmri.implementation.LsDecSignalHead)curS).getRedState(), turnoutStateValues);
+        eto3->setDefaultNamedBean(((LsDecSignalHead*)curS)->getRed()->getBean());
+        es3Box->setVisible(true);
+        setTurnoutStateInBox(es3Box, ((LsDecSignalHead*)curS)->getRedState(), turnoutStateValues);
         ev4Border->setTitle(tr("LabelFlashGreenTurnoutNumber"));
-        ev4 Panel->setVisible(true);
+        ev4Panel->setVisible(true);
         eto4->setVisible(true);
-        eto4.setDefaultNamedBean(((jmri.implementation.LsDecSignalHead)curS).getFlashGreen().getBean());
-        es4 Box->setVisible(true);
-        setTurnoutStateInBox(es4Box, ((jmri.implementation.LsDecSignalHead)curS).getFlashGreenState(), turnoutStateValues);
+        eto4->setDefaultNamedBean(((LsDecSignalHead*)curS)->getFlashGreen()->getBean());
+        es4Box->setVisible(true);
+        setTurnoutStateInBox(es4Box, ((LsDecSignalHead*)curS)->getFlashGreenState(), turnoutStateValues);
         ev5Border->setTitle(tr("LabelFlashYellowTurnoutNumber"));
-        ev5 Panel->setVisible(true);
+        ev5Panel->setVisible(true);
         eto5->setVisible(true);
-        eto5.setDefaultNamedBean(((jmri.implementation.LsDecSignalHead)curS).getFlashYellow().getBean());
-        es5 Box->setVisible(true);
-        setTurnoutStateInBox(es5Box, ((jmri.implementation.LsDecSignalHead)curS).getFlashYellowState(), turnoutStateValues);
+        eto5->setDefaultNamedBean(((LsDecSignalHead*)curS)->getFlashYellow()->getBean());
+        es5Box->setVisible(true);
+        setTurnoutStateInBox(es5Box, ((LsDecSignalHead*)curS)->getFlashYellowState(), turnoutStateValues);
         ev6Border->setTitle(tr("LabelFlashRedTurnoutNumber"));
-        ev6 Panel->setVisible(true);
+        ev6Panel->setVisible(true);
         eto6->setVisible(true);
-        eto6.setDefaultNamedBean(((jmri.implementation.LsDecSignalHead)curS).getFlashRed().getBean());
-        es6 Box->setVisible(true);
-        setTurnoutStateInBox(es6Box, ((jmri.implementation.LsDecSignalHead)curS).getFlashRedState(), turnoutStateValues);
+        eto6->setDefaultNamedBean(((LsDecSignalHead*)curS)->getFlashRed()->getBean());
+        es6Box->setVisible(true);
+        setTurnoutStateInBox(es6Box, ((LsDecSignalHead*)curS)->getFlashRedState(), turnoutStateValues);
         ev7Border->setTitle(tr("LabelDarkTurnoutNumber"));
-        ev7 Panel->setVisible(true);
+        ev7Panel->setVisible(true);
         eto7->setVisible(true);
-        eto7.setDefaultNamedBean(((jmri.implementation.LsDecSignalHead)curS).getDark().getBean());
-        es7 Box->setVisible(true);
-        setTurnoutStateInBox(es7Box, ((jmri.implementation.LsDecSignalHead)curS).getDarkState(), turnoutStateValues);
+        eto7->setDefaultNamedBean(((LsDecSignalHead*)curS)->getDark()->getBean());
+        es7Box->setVisible(true);
+        setTurnoutStateInBox(es7Box, ((LsDecSignalHead*)curS)->getDarkState(), turnoutStateValues);
     }
+#endif
     else if (className ==("jmri.implementation.SE8cSignalHead")) {
         handleSE8cEditSignal();
     }
+#if 0
     else if (className ==("jmri.jmrix.grapevine.SerialSignalHead")) {
         signalType->setText(grapevine);
         eSystemNameLabel->setText(tr("LabelSystemName"));
@@ -1882,17 +1874,17 @@ void SignalHeadTableAction::makeEditSignalWindow()
         ev3Border->setTitle("Input1");
         ev3 Panel->setVisible(true);
         eto3->setVisible(true);
-        eto3.setDefaultNamedBean(((jmri.implementation.MergSD2SignalHead)curS).getInput1().getBean());
+        eto3.setDefaultNamedBean(((jmri.implementation.MergSD2SignalHead)curS).getInput1()->getBean());
         ev4Border->setTitle("Input2");
         ev4 Panel->setVisible(true);
         eto4->setVisible(true);
         if(((jmri.implementation.MergSD2SignalHead)curS).getInput2()!=nullptr)
-            eto4.setDefaultNamedBean(((jmri.implementation.MergSD2SignalHead)curS).getInput2().getBean());
+            eto4.setDefaultNamedBean(((jmri.implementation.MergSD2SignalHead)curS).getInput2()->getBean());
         ev5Border->setTitle("Input3");
         ev5 Panel->setVisible(true);
         eto5->setVisible(true);
         if(((jmri.implementation.MergSD2SignalHead)curS).getInput3()!=nullptr)
-            eto5.setDefaultNamedBean(((jmri.implementation.MergSD2SignalHead)curS).getInput3().getBean());
+            eto5.setDefaultNamedBean(((jmri.implementation.MergSD2SignalHead)curS).getInput3()->getBean());
         emsa Box->addActionListener(new ActionListener() {
             /*public*/ void actionPerformed(ActionEvent e) {
                 ukAspectChange(true);
@@ -1912,6 +1904,13 @@ void SignalHeadTableAction::cancelPressed(JActionEvent * /*e*/) {
     editingHead = false;
 }
 
+
+/*private*/ void SignalHeadTableAction::cancelNewPressed(JActionEvent* /*e*/) {
+    addFrame->setVisible(false);
+    addFrame->dispose();
+    addFrame = nullptr;
+}
+
 //@SuppressWarnings("fallthrough")
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="SF_SWITCH_FALLTHROUGH")
 void SignalHeadTableAction::updatePressed(JActionEvent* /*e*/) {
@@ -1923,7 +1922,7 @@ void SignalHeadTableAction::updatePressed(JActionEvent* /*e*/) {
         else
             return;
     }
-#if 1
+
     // update according to class of signal head
     if (className ==("QuadOutputSignalHead")) {
         Turnout* t1 = updateTurnoutFromPanel(eto1, "SignalHead:" + eSysNameLabel->text() + ":Green", ((QuadOutputSignalHead*)curS)->getGreen()->getBean(), ev1Panel->getTitle());
@@ -1998,72 +1997,70 @@ void SignalHeadTableAction::updatePressed(JActionEvent* /*e*/) {
         ((SingleTurnoutSignalHead*)curS)->setOnAppearance(signalStateFromBox(es2aBox));
         ((SingleTurnoutSignalHead*)curS)->setOffAppearance(signalStateFromBox(es3aBox));
     }
-#if 0
     else if (className ==("LsDecSignalHead")) {
-        Turnout* t1 = updateTurnoutFromPanel(eto1, "SignalHead:" + eSysNameLabel->text()() + ":Green", ((LsDecSignalHead)curS).getGreen().getBean(), ev1Panel->getTitle());
+        Turnout* t1 = updateTurnoutFromPanel(eto1, "SignalHead:" + eSysNameLabel->text()+ ":Green", ((LsDecSignalHead*)curS)->getGreen()->getBean(), ev1Panel->getTitle());
         if (t1==NULL) {
             return;
         }
         else {
-            ((jmri.implementation.LsDecSignalHead)curS).setGreen(nbhm->getNamedBeanHandle(eto1->getDisplayName(),t1));
-            ((jmri.implementation.LsDecSignalHead)curS).setGreenState(turnoutStateFromBox(es1Box));
+            ((LsDecSignalHead*)curS)->setGreen(nbhm->getNamedBeanHandle(eto1->getDisplayName(),t1));
+            ((LsDecSignalHead*)curS)->setGreenState(turnoutStateFromBox(es1Box));
         }
 
-        Turnout t2 = updateTurnoutFromPanel(eto2, "SignalHead:" + eSysNameLabel.->text()() + ":Yellow", ((jmri.implementation.LsDecSignalHead)curS).getYellow().getBean(), ev2Panel->getTitle());
+        Turnout* t2 = updateTurnoutFromPanel(eto2, "SignalHead:" + eSysNameLabel->text()+ ":Yellow", ((LsDecSignalHead*)curS)->getYellow()->getBean(), ev2Panel->getTitle());
         if (t2==NULL) {
             return;
         }
         else {
-            ((jmri.implementation.LsDecSignalHead)curS).setYellow(nbhm->getNamedBeanHandle(eto2->getDisplayName(),t2));
-            ((jmri.implementation.LsDecSignalHead)curS).setYellowState(turnoutStateFromBox(es2Box));
+            ((LsDecSignalHead*)curS)->setYellow(nbhm->getNamedBeanHandle(eto2->getDisplayName(),t2));
+            ((LsDecSignalHead*)curS)->setYellowState(turnoutStateFromBox(es2Box));
         }
 
-        Turnout t3 = updateTurnoutFromPanel(eto3, "SignalHead:" + eSysNameLabel.->text()() + ":Red", ((jmri.implementation.LsDecSignalHead)curS).getRed().getBean(), ev3Panel->getTitle());
+        Turnout* t3 = updateTurnoutFromPanel(eto3, "SignalHead:" + eSysNameLabel->text()+ ":Red", ((LsDecSignalHead*)curS)->getRed()->getBean(), ev3Panel->getTitle());
         if (t3==NULL) {
             return;
         }
         else {
-            ((jmri.implementation.LsDecSignalHead)curS).setRed(nbhm->getNamedBeanHandle(eto3->getDisplayName(),t3));
-            ((jmri.implementation.LsDecSignalHead)curS).setRedState(turnoutStateFromBox(es3Box));
+            ((LsDecSignalHead*)curS)->setRed(nbhm->getNamedBeanHandle(eto3->getDisplayName(),t3));
+            ((LsDecSignalHead*)curS)->setRedState(turnoutStateFromBox(es3Box));
         }
 
-        Turnout t4 = updateTurnoutFromPanel(eto4, "SignalHead:" + eSysNameLabel.->text()() + ":FlashGreen", ((jmri.implementation.LsDecSignalHead)curS).getFlashGreen().getBean(), ev4Panel->getTitle());
+        Turnout* t4 = updateTurnoutFromPanel(eto4, "SignalHead:" + eSysNameLabel->text()+ ":FlashGreen", ((LsDecSignalHead*)curS)->getFlashGreen()->getBean(), ev4Panel->getTitle());
         if (t4==NULL) {
             return;
         }
         else {
-            ((jmri.implementation.LsDecSignalHead)curS).setFlashGreen(nbhm->getNamedBeanHandle(eto4->getDisplayName(),t4));
-            ((jmri.implementation.LsDecSignalHead)curS).setFlashGreenState(turnoutStateFromBox(es4Box));
+            ((LsDecSignalHead*)curS)->setFlashGreen(nbhm->getNamedBeanHandle(eto4->getDisplayName(),t4));
+            ((LsDecSignalHead*)curS)->setFlashGreenState(turnoutStateFromBox(es4Box));
         }
 
-        Turnout t5 = updateTurnoutFromPanel(eto5, "SignalHead:" + eSysNameLabel.->text()() + ":FlashYellow", ((jmri.implementation.LsDecSignalHead)curS).getFlashYellow().getBean(), ev5Panel->getTitle());
+        Turnout* t5 = updateTurnoutFromPanel(eto5, "SignalHead:" + eSysNameLabel->text()+ ":FlashYellow", ((LsDecSignalHead*)curS)->getFlashYellow()->getBean(), ev5Panel->getTitle());
         if (t5==NULL) {
             return;
         }
         else {
-            ((jmri.implementation.LsDecSignalHead)curS).setFlashYellow(nbhm->getNamedBeanHandle(eto5->getDisplayName(),t5));
-            ((jmri.implementation.LsDecSignalHead)curS).setFlashYellowState(turnoutStateFromBox(es5Box));
+            ((LsDecSignalHead*)curS)->setFlashYellow(nbhm->getNamedBeanHandle(eto5->getDisplayName(),t5));
+            ((LsDecSignalHead*)curS)->setFlashYellowState(turnoutStateFromBox(es5Box));
         }
 
-        Turnout t6 = updateTurnoutFromPanel(eto6, "SignalHead:" + eSysNameLabel.->text()() + ":FlashRed", ((jmri.implementation.LsDecSignalHead)curS).getFlashRed().getBean(), ev6Panel->getTitle());
+        Turnout* t6 = updateTurnoutFromPanel(eto6, "SignalHead:" + eSysNameLabel->text()+ ":FlashRed", ((LsDecSignalHead*)curS)->getFlashRed()->getBean(), ev6Panel->getTitle());
         if (t6==NULL) {
             return;
         }
         else {
-            ((jmri.implementation.LsDecSignalHead)curS).setFlashRed(nbhm->getNamedBeanHandle(eto6->getDisplayName(),t6));
-            ((jmri.implementation.LsDecSignalHead)curS).setFlashRedState(turnoutStateFromBox(es6Box));
+            ((LsDecSignalHead*)curS)->setFlashRed(nbhm->getNamedBeanHandle(eto6->getDisplayName(),t6));
+            ((LsDecSignalHead*)curS)->setFlashRedState(turnoutStateFromBox(es6Box));
         }
 
-        Turnout t7 = updateTurnoutFromPanel(eto7, "SignalHead:" + eSysNameLabel.->text()() + ":Dark", ((jmri.implementation.LsDecSignalHead)curS).getDark().getBean(), ev7Panel->getTitle());
+        Turnout* t7 = updateTurnoutFromPanel(eto7, "SignalHead:" + eSysNameLabel->text()+ ":Dark", ((LsDecSignalHead*)curS)->getDark()->getBean(), ev7Panel->getTitle());
         if (t7==NULL) {
             return;
         }
         else {
-            ((jmri.implementation.LsDecSignalHead)curS).setDark(nbhm->getNamedBeanHandle(eto7->getDisplayName(),t7));
-            ((jmri.implementation.LsDecSignalHead)curS).setDarkState(turnoutStateFromBox(es7Box));
+            ((LsDecSignalHead*)curS)->setDark(nbhm->getNamedBeanHandle(eto7->getDisplayName(),t7));
+            ((LsDecSignalHead*)curS)->setDarkState(turnoutStateFromBox(es7Box));
         }
     }
-#endif
     else if (className ==("SE8cSignalHead")) {
         handleSE8cUpdatePressed();
     }
@@ -2095,37 +2092,46 @@ void SignalHeadTableAction::updatePressed(JActionEvent* /*e*/) {
 //          setSignalheadTypeInBox(estBox, tNode.getOutputSignalHeadType(headnumber), signalheadTypeValues);
 //          ((jmri.AcelaSignalHead)curS).setDarkState(signalheadTypeFromBox(estBox));
     }
+#endif
     else if (className ==("jmri.implementation.MergSD2SignalHead")){
         switch(ukSignalAspectsFromBox(emsaBox)){
-            case 4: Turnout t3 = updateTurnoutFromPanel(eto5, "SignalHead:" + eSysNameLabel.->text()() + ":Input3", ((jmri.implementation.MergSD2SignalHead)curS).getInput3().getBean(), ev5Panel->getTitle());
+            case 4:
+        {
+         Turnout* t3 = updateTurnoutFromPanel(eto5, "SignalHead:" + eSysNameLabel->text()+ ":Input3", ((MergSD2SignalHead*)curS)->getInput3()->getBean(), ev5Panel->getTitle());
                     if (t3==nullptr) {
                         return;
                         }
-                    else ((jmri.implementation.MergSD2SignalHead)curS).setInput3(nbhm->getNamedBeanHandle(eto5->getDisplayName(),t3));
+                    else ((MergSD2SignalHead*)curS)->setInput3(nbhm->getNamedBeanHandle(eto5->getDisplayName(),t3));
+        }
                     // fall through
-            case 3: Turnout t2 = updateTurnoutFromPanel(eto4, "SignalHead:" + eSysNameLabel.->text()() + ":Input2", ((jmri.implementation.MergSD2SignalHead)curS).getInput2().getBean(), ev4Panel->getTitle());
+        case 3:
+        {
+         Turnout* t2 = updateTurnoutFromPanel(eto4, "SignalHead:" + eSysNameLabel->text()+ ":Input2", ((MergSD2SignalHead*)curS)->getInput2()->getBean(), ev4Panel->getTitle());
                     if (t2==nullptr) {
                         return;
                         }
-                    else ((jmri.implementation.MergSD2SignalHead)curS).setInput2(nbhm->getNamedBeanHandle(eto4->getDisplayName(),t2));
-                    // fall through
-            case 2: Turnout t1 = updateTurnoutFromPanel(eto3, "SignalHead:" + eSysNameLabel.->text()() + ":Input1", ((jmri.implementation.MergSD2SignalHead)curS).getInput1().getBean(), ev3Panel->getTitle());
+                    else ((MergSD2SignalHead*)curS)->setInput2(nbhm->getNamedBeanHandle(eto4->getDisplayName(),t2));
+         }
+         // fall through
+            case 2:
+        {
+         Turnout* t1 = updateTurnoutFromPanel(eto3, "SignalHead:" + eSysNameLabel->text()+ ":Input1", ((MergSD2SignalHead*)curS)->getInput1()->getBean(), ev3Panel->getTitle());
                     if (t1==nullptr) {
                         return;
                         }
-                    else ((jmri.implementation.MergSD2SignalHead)curS).setInput1(nbhm->getNamedBeanHandle(eto3->getDisplayName(),t1));
-                    ((jmri.implementation.MergSD2SignalHead)curS).setAspects(ukSignalAspectsFromBox(emsaBox));
-                    if(ukSignalTypeFromBox(emstBox)=="Distant") ((jmri.implementation.MergSD2SignalHead)curS).setHome(false);
-                    else ((jmri.implementation.MergSD2SignalHead)curS).setHome(true);
+                    else ((MergSD2SignalHead*)curS)->setInput1(nbhm->getNamedBeanHandle(eto3->getDisplayName(),t1));
+                    ((MergSD2SignalHead*)curS)->setAspects(ukSignalAspectsFromBox(emsaBox));
+                    if(ukSignalTypeFromBox(emstBox)=="Distant") ((MergSD2SignalHead*)curS)->setHome(false);
+                    else ((MergSD2SignalHead*)curS)->setHome(true);
+        }
             default: break;
         }
         //Need to add the code here for update!
     }
-#endif
     else {
         log->error("Internal error - cannot update signal of type "+className);
     }
-#endif
+
     // successful
     editFrame->setVisible(false);
     editingHead = false;
@@ -2139,24 +2145,20 @@ bool SignalHeadTableAction::checkUserName(QString nam)
         NamedBean* nB = static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getByUserName(nam);
         if (nB != nullptr) {
             log->error("User name is not unique " + nam);
-//            QString msg = java.text.MessageFormat.format(AbstractTableAction.rb
-//                                                         .getString("WarningUserName"), new Object[] { ("" + nam) });
-//            JOptionPane.showMessageDialog(editFrame, msg,
-//                                          AbstractTableAction.tr("WarningTitle"),
-//                                          JOptionPane.ERROR_MESSAGE);
-            QMessageBox::critical(0, tr("Warning"), tr("User Name \" %1 \" has already been used.").arg(nam));
+            QString msg = tr("User Name \" %1 \" has already been used.").arg(nam);
+            JOptionPane::showMessageDialog(editFrame, msg,
+                                          tr("Warning"),
+                                          JOptionPane::ERROR_MESSAGE);
             return false;
         }
         //Check to ensure that the username doesn't exist as a systemname.
         nB = static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(nam);
         if (nB!=nullptr){
             log->error("User name is not unique " + nam + " It already exists as a System name");
-//            String msg = java.text.MessageFormat.format(AbstractTableAction.rb
-//                    .getString("WarningUserNameAsSystem"), new Object[] { ("" + nam) });
-//            JOptionPane.showMessageDialog(editFrame, msg,
-//                        AbstractTableAction.tr("WarningTitle"),
-//                            JOptionPane.ERROR_MESSAGE);
-            QMessageBox::critical(0, tr("Warning"), tr("User Name \" %1 \" has already been used as a System Name.").arg(nam));
+            QString msg = tr("User Name \" %1 \" has already been used as a System Name.").arg(nam);
+            JOptionPane::showMessageDialog(editFrame, msg,
+                        tr("Warning"),
+                            JOptionPane::ERROR_MESSAGE);
             return false;
         }
     }
@@ -2167,72 +2169,71 @@ bool SignalHeadTableAction::checkUserName(QString nam)
 void SignalHeadTableAction::noTurnoutMessage(QString s1, QString s2) {
     log->warn("Could not provide turnout "+s2);
     QString msg = tr("Could not provide \" %1 \" - \" %2 \".").arg(s1).arg(s2);
-//    JOptionPane.showMessageDialog(editFrame, msg,
-//            AbstractTableAction.tr("WarningTitle"), JOptionPane.ERROR_MESSAGE);
-    QMessageBox::warning(editFrame, tr("Warning"), msg);
+    JOptionPane::showMessageDialog(editFrame, msg,
+            tr("Warning"), JOptionPane::ERROR_MESSAGE);
 }
-#if 0
-void ukAspectChange(boolean edit){
+
+void SignalHeadTableAction::ukAspectChange(bool edit){
     if(edit){
         switch (ukSignalAspectsFromBox(emsaBox)){
-            case 2 : ev4 Panel->setVisible(false);
+            case 2 : ev4Panel->setVisible(false);
                      eto4->setVisible(false);
-                     ev5 Panel->setVisible(false);
+                     ev5Panel->setVisible(false);
                      eto5->setVisible(false);
-                     ev2 Panel->setVisible(true);
-                     emst Box->setVisible(true);
+                     ev2Panel->setVisible(true);
+                     emstBox->setVisible(true);
                      break;
-            case 3 : ev4 Panel->setVisible(true);
+            case 3 : ev4Panel->setVisible(true);
                      eto4->setVisible(true);
-                     ev5 Panel->setVisible(false);
+                     ev5Panel->setVisible(false);
                      eto5->setVisible(false);
-                     ev2 Panel->setVisible(false);
-                     emst Box->setVisible(false);
+                     ev2Panel->setVisible(false);
+                     emstBox->setVisible(false);
                      setUkSignalType(emstBox, "Home");
                      break;
-            case 4 : ev4 Panel->setVisible(true);
+            case 4 : ev4Panel->setVisible(true);
                      eto4->setVisible(true);
-                     ev5 Panel->setVisible(true);
+                     ev5Panel->setVisible(true);
                      eto5->setVisible(true);
-                     ev2 Panel->setVisible(false);
-                     emst Box->setVisible(false);
+                     ev2Panel->setVisible(false);
+                     emstBox->setVisible(false);
                      break;
             default: break;
         }
-        editFrame.pack();
+        editFrame->pack();
 
     } else {
         switch (ukSignalAspectsFromBox(msaBox)){
-            case 2 : v4 Panel->setVisible(false);
+            case 2 : v4Panel->setVisible(false);
                      to4->setVisible(false);
-                     v5 Panel->setVisible(false);
+                     v5Panel->setVisible(false);
                      to5->setVisible(false);
-                     v2 Panel->setVisible(true);
-                     mst Box->setVisible(true);
+                     v2Panel->setVisible(true);
+                     mstBox->setVisible(true);
                      break;
-            case 3 : v4 Panel->setVisible(true);
+            case 3 : v4Panel->setVisible(true);
                      to4->setVisible(true);
-                     v5 Panel->setVisible(false);
+                     v5Panel->setVisible(false);
                      to5->setVisible(false);
-                     v2 Panel->setVisible(false);
-                     mst Box->setVisible(false);
+                     v2Panel->setVisible(false);
+                     mstBox->setVisible(false);
                      setUkSignalType(mstBox, "Home");
                      break;
-            case 4 : v4 Panel->setVisible(true);
+            case 4 : v4Panel->setVisible(true);
                      to4->setVisible(true);
-                     v5 Panel->setVisible(true);
+                     v5Panel->setVisible(true);
                      to5->setVisible(true);
-                     v2 Panel->setVisible(false);
-                     mst Box->setVisible(false);
+                     v2Panel->setVisible(false);
+                     mstBox->setVisible(false);
                      setUkSignalType(mstBox, "Home");
                      break;
             default: break;
         }
-        addFrame.pack();
+        addFrame->pack();
     }
 
 }
-#endif
+
 /*public*/ void SignalHeadTableAction::dispose(){
     if (to1!=nullptr)
         to1->dispose();
