@@ -115,7 +115,7 @@ protected:
     /*protected*/ void columnsVisibleUpdated(QVector<bool> colsVisible) override;
 
 protected slots:
-    /*protected*/ void addPressed(/*ActionEvent* e = 0*/) override;
+    /*protected*/ void addPressed(JActionEvent* e = 0) override;
     /*private*/ void canAddRange(ActionEvent* e = 0);
  friend class CBActionListener;
  friend class RangeListener;

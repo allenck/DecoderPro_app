@@ -202,7 +202,7 @@ void TurnoutTableAction::common()
     return "package.jmri.jmrit.beantable.TurnoutTable";
 }
 
-/*protected*/ void TurnoutTableAction::addPressed()
+/*protected*/ void TurnoutTableAction::addPressed(JActionEvent */*e*/)
 {
  //p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
 

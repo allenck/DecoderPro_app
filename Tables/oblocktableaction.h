@@ -91,11 +91,11 @@ private:
      /*protected*/ void createModel() override; // Tabbed
      /*protected*/ void setTitle()override;
      /*protected*/ QString getClassName() override;
-     /*protected*/ QString helpTarget();
+     /*protected*/ QString helpTarget()override;
 
 
  protected slots:
-     /*protected*/ void addPressed(/*ActionJEvent* e = 0*/) override;
+     /*protected*/ void addPressed(JActionEvent *e = 0) override;
      /*protected*/ void addOBlockPressed(ActionEvent* e = 0);
      void addSignalPressed(ActionEvent* e =0);
      void addPortalPressed(ActionEvent* e =0);

@@ -4,6 +4,7 @@
 #include "jcomponent.h"
 #include "spinnermodel.h"
 #include "focuslistener.h"
+#include "spinnernumbermodel.h"
 
 class ChangeEvent;
 class JSpinner : public QSpinBox, public JComponent

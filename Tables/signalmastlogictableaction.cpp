@@ -553,7 +553,7 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
      return "package.jmri.jmrit.beantable.SignalMastLogicTable";// NOI18N
  }
 
- /*protected*/ void SignalMastLogicTableAction::addPressed() {
+ /*protected*/ void SignalMastLogicTableAction::addPressed(JActionEvent *) {
      sigLog->setMast(NULL, NULL);
      sigLog->actionPerformed(/*e*/);
  }

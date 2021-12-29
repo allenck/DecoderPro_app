@@ -180,8 +180,10 @@ virtual QString  getBeanTypeHandled(bool  plural) const;
 virtual NamedBean*  getBySystemName(QString  name) const;
 virtual NamedBean*  getByUserName(QString  key) const;
 virtual QString  getEntryToolTip();
+virtual QString  getNamedBeanClass() const;
 virtual int  getXMLOrder() const;
 virtual QString  normalizeSystemName(QString  systemName);
+virtual QObject*  self();
 virtual bool  supportsVariableLights(QString  systemName);
 virtual char  typeLetter() const;
 virtual bool  validSystemNameConfig(QString  arg__1) const;
@@ -200,8 +202,10 @@ inline QString  py_q_getBeanTypeHandled(bool  plural) const { return AbstractLig
 inline NamedBean*  py_q_getBySystemName(QString  name) const { return AbstractLightManager::getBySystemName(name); }
 inline NamedBean*  py_q_getByUserName(QString  key) const { return AbstractLightManager::getByUserName(key); }
 inline QString  py_q_getEntryToolTip() { return AbstractLightManager::getEntryToolTip(); }
+inline QString  py_q_getNamedBeanClass() const { return AbstractLightManager::getNamedBeanClass(); }
 inline int  py_q_getXMLOrder() const { return AbstractLightManager::getXMLOrder(); }
 inline QString  py_q_normalizeSystemName(QString  systemName) { return AbstractLightManager::normalizeSystemName(systemName); }
+inline QObject*  py_q_self() { return AbstractLightManager::self(); }
 inline bool  py_q_supportsVariableLights(QString  systemName) { return AbstractLightManager::supportsVariableLights(systemName); }
 inline char  py_q_typeLetter() const { return AbstractLightManager::typeLetter(); }
 };
@@ -221,11 +225,11 @@ void delete_AbstractLightManager(AbstractLightManager* obj) { delete obj; }
    NamedBean*  py_q_getByUserName(AbstractLightManager* theWrappedObject, QString  key) const{  return (((PythonQtPublicPromoter_AbstractLightManager*)theWrappedObject)->py_q_getByUserName(key));}
    QString  getEntryToolTip(AbstractLightManager* theWrappedObject);
    QString  py_q_getEntryToolTip(AbstractLightManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractLightManager*)theWrappedObject)->py_q_getEntryToolTip());}
-   QString  getNamedBeanClass(AbstractLightManager* theWrappedObject) const;
+   QString  py_q_getNamedBeanClass(AbstractLightManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_AbstractLightManager*)theWrappedObject)->py_q_getNamedBeanClass());}
    int  getXMLOrder(AbstractLightManager* theWrappedObject) const;
    int  py_q_getXMLOrder(AbstractLightManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_AbstractLightManager*)theWrappedObject)->py_q_getXMLOrder());}
    QString  py_q_normalizeSystemName(AbstractLightManager* theWrappedObject, QString  systemName){  return (((PythonQtPublicPromoter_AbstractLightManager*)theWrappedObject)->py_q_normalizeSystemName(systemName));}
-   QObject*  self(AbstractLightManager* theWrappedObject);
+   QObject*  py_q_self(AbstractLightManager* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractLightManager*)theWrappedObject)->py_q_self());}
    bool  py_q_supportsVariableLights(AbstractLightManager* theWrappedObject, QString  systemName){  return (((PythonQtPublicPromoter_AbstractLightManager*)theWrappedObject)->py_q_supportsVariableLights(systemName));}
    char  typeLetter(AbstractLightManager* theWrappedObject) const;
    char  py_q_typeLetter(AbstractLightManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_AbstractLightManager*)theWrappedObject)->py_q_typeLetter());}
@@ -2840,6 +2844,7 @@ public:
 
 virtual QString  getSystemPrefix();
 virtual QString  getUserName();
+virtual QObject*  self();
 virtual bool  sendPacket(QByteArray  arg__1, int  arg__2);
 
   PythonQtInstanceWrapper* _wrapper; 
@@ -2847,9 +2852,10 @@ virtual bool  sendPacket(QByteArray  arg__1, int  arg__2);
 
 class PythonQtPublicPromoter_CommandStation : public CommandStation
 { public:
-inline QString  py_q_getSystemPrefix() { return CommandStation::getSystemPrefix(); }
-inline QString  py_q_getUserName() { return CommandStation::getUserName(); }
-inline bool  py_q_sendPacket(QByteArray  arg__1, int  arg__2) { return CommandStation::sendPacket(arg__1, arg__2); }
+inline QString  py_q_getSystemPrefix() { return this->getSystemPrefix(); }
+inline QString  py_q_getUserName() { return this->getUserName(); }
+inline QObject*  py_q_self() { return this->self(); }
+inline bool  py_q_sendPacket(QByteArray  arg__1, int  arg__2) { return this->sendPacket(arg__1, arg__2); }
 };
 
 class PythonQtWrapper_CommandStation : public QObject
@@ -2862,6 +2868,8 @@ void delete_CommandStation(CommandStation* obj) { delete obj; }
    QString  py_q_getSystemPrefix(CommandStation* theWrappedObject){  return (((PythonQtPublicPromoter_CommandStation*)theWrappedObject)->py_q_getSystemPrefix());}
    QString  getUserName(CommandStation* theWrappedObject);
    QString  py_q_getUserName(CommandStation* theWrappedObject){  return (((PythonQtPublicPromoter_CommandStation*)theWrappedObject)->py_q_getUserName());}
+   QObject*  self(CommandStation* theWrappedObject);
+   QObject*  py_q_self(CommandStation* theWrappedObject){  return (((PythonQtPublicPromoter_CommandStation*)theWrappedObject)->py_q_self());}
    bool  sendPacket(CommandStation* theWrappedObject, QByteArray  arg__1, int  arg__2);
    bool  py_q_sendPacket(CommandStation* theWrappedObject, QByteArray  arg__1, int  arg__2){  return (((PythonQtPublicPromoter_CommandStation*)theWrappedObject)->py_q_sendPacket(arg__1, arg__2));}
 };

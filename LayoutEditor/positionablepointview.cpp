@@ -1741,8 +1741,8 @@ void PositionablePointView::updatePointBox() {
  * This type of track has none, so this method is empty.
  */
 //@Override
-/*protected*/ void PositionablePointView::drawDecorations(EditScene* g2) {
-    log->trace("PositionablePointView::drawDecorations");
+/*protected*/ void PositionablePointView::drawDecorations(EditScene* /*g2*/) {
+//    log->trace("PositionablePointView::drawDecorations");
 }
 
 /**
@@ -1751,7 +1751,7 @@ void PositionablePointView::updatePointBox() {
 //@Override
 /*protected*/ void PositionablePointView::draw1(EditScene* /*g2*/, bool /*isMain*/, bool /*isBlock*/) {
     //nothing to do here... move along...
-    log->trace("PositionablePointView::draw1");
+//    log->trace("PositionablePointView::draw1");
 }   // draw1
 
 /**

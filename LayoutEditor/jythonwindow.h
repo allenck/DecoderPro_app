@@ -53,13 +53,14 @@ protected:
  /*protected*/ QCheckBox* alwaysOnTopCheckBox;// = new JCheckBox();
  friend class JWWindowListener;
 };
+
 class JWWindowListener : public WindowListener
 {
  Q_OBJECT
  JythonWindow* parent;
 public:
  JWWindowListener(JythonWindow* parent);
- void windowClosing(QCloseEvent *e);
+ void windowClosing(QCloseEvent *e)override;
 };
 
 #endif // JYTHONWINDOW_H

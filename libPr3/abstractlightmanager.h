@@ -111,12 +111,12 @@ public:
     /*public*/ bool allowMultipleAdditions(QString systemName) override;
     /*public*/ QString getBeanTypeHandled(bool plural)const override;
     /*public*/ QString getEntryToolTip() override;
-  QObject* self() {return (QObject*)this;}
-  QString getNamedBeanClass() const {return "AbstractLightManager";}
+  QObject* self() override{return (QObject*)this;}
+  QString getNamedBeanClass() const override {return "AbstractLightManager";}
 
 
 signals:
- void newLightCreated(AbstractLightManager*,Light*);
+ //void newLightCreated(AbstractLightManager*,Light*);
 
 public slots:
 private:

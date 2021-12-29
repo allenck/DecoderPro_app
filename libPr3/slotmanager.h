@@ -259,16 +259,17 @@ public:
     QString getUserName();
     QString getSystemPrefix();
     LocoNetSystemConnectionMemo* getSystemConnectionMemo();
-    /*public*/ void readCV(QString CV, ProgListener* p) /*throw (ProgrammerException)*/;
-    /*public*/ void confirmCV(QString CV, int val, ProgListener* p) ;
-    /*public*/ QList<QString> getSupportedModes();
-    /*public*/ Programmer::WriteConfirmMode getWriteConfirmMode(QString addr);
+    /*public*/ void readCV(QString CV, ProgListener* p) /*throw (ProgrammerException)*/override;
+    /*public*/ void confirmCV(QString CV, int val, ProgListener* p) override;
+    /*public*/ QList<QString> getSupportedModes()override;
+    /*public*/ Programmer::WriteConfirmMode getWriteConfirmMode(QString addr)override;
     /*public*/ void setTranspondingAvailable(bool val);
     /*public*/ bool getTranspondingAvailable();
 
     ///*default*/ /*public*/ void notifyProgListenerEnd(ProgListener* p, int value, int status);
-    /*public*/ QObject* self() {return (QObject*)this;}
+    /*public*/ QObject* self() override{return (QObject*)this;}
     /*public*/ void dispose();
+
 
 signals:
     void changedSlot(LocoNetSlot* s);

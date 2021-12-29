@@ -673,7 +673,7 @@ if (_wrapper) {
     }
   }
 }
-  Manager::Register(arg__1);
+  
 }
 void PythonQtShell_Manager::addDataListener(QObject*  e0)
 {

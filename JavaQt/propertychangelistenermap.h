@@ -10,7 +10,7 @@ class PropertyChangeListenerMap : public ChangeListenerMap<PropertyChangeListene
 public:
     explicit PropertyChangeListenerMap();
     /*public final */PropertyChangeListener* extract(PropertyChangeListener* listener);
-    QObject* self() {return (QObject*)this;}
+    QObject* self() override {return (QObject*)this;}
 signals:
     
 public slots:

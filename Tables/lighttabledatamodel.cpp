@@ -11,6 +11,7 @@
 #include "imageio.h"
 #include "file.h"
 #include "fileutil.h"
+#include "proxylightmanager.h"
 
 /**
  * Data model for a Light Table.
@@ -50,9 +51,9 @@
      */
     //@Nonnull
     //@Override
-    /*public*/ AbstractManager/*<Light>*/* LightTableDataModel::getManager() {
+    /*public*/ AbstractManager *LightTableDataModel::getManager(){
         if (lightManager == nullptr) {
-            lightManager = (LightManager*)InstanceManager::getDefault("LightManager");
+            lightManager = (ProxyLightManager*)InstanceManager::getDefault("LightManager");
         }
         return lightManager;
     }
@@ -205,13 +206,17 @@
      Light* l = (Light*)getBySystemName(sysNameList.at(mindex.row()));
      if(role == Qt::DisplayRole)
      {
-        if (col == EDITCOL) {
+      switch(col)
+      {
+        case EDITCOL:
             return tr("Edit");
-        } else if (col == INTENSITYCOL) {
-            //return Double.valueOf(((Light) getBySystemName((String) getValueAt(row, SYSNAMECOL))).getTargetIntensity());
-            return  l->getTargetIntensity();
-        }
-        else if(col == CONTROLCOL)
+        case INTENSITYCOL:
+         if (qobject_cast<VariableLight*>(l)) {
+             return ((VariableLight*)l)->getTargetIntensity();
+         } else {
+             return 0.0;
+         }
+       case CONTROLCOL:
         {
          QString sb;// = new StringBuilder();
          for (LightControl* lc : l->getLightControlList())
@@ -220,8 +225,10 @@
              sb.append(" ");
          }
          return sb/*.toString()*/;
-
         }
+       default:
+        break;
+      }
      }
      if(role == Qt::CheckStateRole)
      {
@@ -273,38 +280,38 @@
             return false;
         }
         switch (mindex.column()) {
-            case EDITCOL:
-                // Use separate Runnable so window is created on top
+         case EDITCOL:
+             // Use separate Runnable so window is created on top
 //                javax.swing.SwingUtilities.invokeLater(() -> {
-                    editButton(l);
+                 editButton(l);
 //                });
-                return true;
-            case INTENSITYCOL:
-                // alternate
-                try {
-                    if (static_cast<VariableLight*>(l)) {
-                        double intensity = qMax(0., qMin(1.0,  value.toDouble()));
-                        ((VariableLight*)l)->setTargetIntensity(intensity);
-                    } else {
-                        double intensity = ( value.toDouble());
-                        l->setCommandedState( intensity > 0.5 ? Light::ON : Light::OFF);
-                    }
-                } catch (IllegalArgumentException* e1) {
-                    JOptionPane::showMessageDialog(nullptr,  e1->getMessage());
-                }
-                fireTableRowsUpdated(mindex.row(), mindex.row());
-                return true;
-            case ENABLECOL:
-                l->setEnabled(!l->getEnabled());
-                fireTableRowsUpdated(mindex.row(), mindex.row());
-                return true;
-            case VALUECOL:
-                clickOn((NamedBean*)l);
-                fireTableRowsUpdated(mindex.row(), mindex.row());
-                return true;
-            default:
-                //super.setValueAt(value, row, col);
-                break;
+             return true;
+         case INTENSITYCOL:
+             // alternate
+             try {
+                 if (static_cast<VariableLight*>(l)) {
+                     double intensity = qMax(0., qMin(1.0,  value.toDouble()));
+                     ((VariableLight*)l)->setTargetIntensity(intensity);
+                 } else {
+                     double intensity = ( value.toDouble());
+                     l->setCommandedState( intensity > 0.5 ? Light::ON : Light::OFF);
+                 }
+             } catch (IllegalArgumentException* e1) {
+                 JOptionPane::showMessageDialog(nullptr,  e1->getMessage());
+             }
+             fireTableRowsUpdated(mindex.row(), mindex.row());
+             return true;
+         case ENABLECOL:
+             l->setEnabled(!l->getEnabled());
+             fireTableRowsUpdated(mindex.row(), mindex.row());
+             return true;
+         case VALUECOL:
+             clickOn((NamedBean*)l);
+             fireTableRowsUpdated(mindex.row(), mindex.row());
+             return true;
+         default:
+             //super.setValueAt(value, row, col);
+             break;
         }
         return BeanTableDataModel::setData(mindex, value, role);
     }
@@ -328,7 +335,7 @@
 
     // all properties update for now
     //@Override
-    /*protected*/ bool LightTableDataModel::matchPropertyName(PropertyChangeEvent* e) {
+    /*protected*/ bool LightTableDataModel::matchPropertyName(PropertyChangeEvent* /*e*/) {
         return true;
     }
 
@@ -345,7 +352,7 @@
      */
     //@Override
     /*public*/ NamedBean* LightTableDataModel::getByUserName(/*@Nonnull*/ QString name)  {
-        return ((LightManager*)InstanceManager::getDefault("LightManager"))->getByUserName(name);
+        return ((ProxyLightManager*)InstanceManager::getDefault("LightManager"))->getByUserName(name);
     }
 
     /**

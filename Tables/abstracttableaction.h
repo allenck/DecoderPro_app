@@ -62,7 +62,7 @@ protected:
     virtual /*protected*/ void columnsVisibleUpdated(QVector<bool> colsVisible);
 
   protected slots:
-    virtual /*protected*/ /*abstract*/ void addPressed(/*JActionEvent* e = 0*/);
+    virtual /*protected*/ /*abstract*/ void addPressed(JActionEvent* /*e*/ = 0);
 friend class TabbedTableItem;
 friend class ATABeanTableFrame;
 friend class AbstractTableTabAction;

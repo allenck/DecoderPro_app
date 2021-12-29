@@ -1,5 +1,4 @@
 #include "jspinner.h"
-#include "spinnernumbermodel.h"
 #include "changeevent.h"
 #include "changelistener.h"
 

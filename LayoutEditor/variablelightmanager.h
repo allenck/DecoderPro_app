@@ -5,7 +5,8 @@
 
 /*public*/ /*interface*/class  VariableLightManager : public Manager/*<VariableLight>*/
 {
-
+  Q_INTERFACES(Manager)
+ public:
     /** {@inheritDoc} */
     //@Override
     virtual /*public*/ void dispose()=0;
@@ -19,7 +20,7 @@
 //    @CheckReturnValue
 //    @CheckForNull
 //    @Override
-//    virtual/*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString s) =0;
+    virtual/*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString s)const =0;
 
     /**
      * Locate a VariableLight by its system name.
@@ -30,7 +31,7 @@
 //    @CheckReturnValue
 //    @CheckForNull
 //    @Override
-    virtual /*public*/ VariableLight* getBySystemName(/*@Nonnull*/ QString s)=0;
+    virtual /*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString s) const =0;
 
 };
 Q_DECLARE_INTERFACE(VariableLightManager, "VariableLightManager")

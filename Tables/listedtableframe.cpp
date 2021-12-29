@@ -85,7 +85,7 @@ void ListedTableFrame::common()
    once when first loaded*/
   addTable("jmri.jmrit.beantable.TurnoutTableTabAction", tr("Turnout Table"), false);
   addTable("jmri.jmrit.beantable.SensorTableTabAction", tr("Sensor Table"), false);
-  //addTable("jmri.jmrit.beantable.LightTableTabAction", tr("Light Table"), false);
+  addTable("jmri.jmrit.beantable.LightTableTabAction", tr("Light Table"), false);
   addTable("jmri.jmrit.beantable.SignalHeadTableAction", tr("Signal Table"), true);
   addTable("jmri.jmrit.beantable.SignalMastTableAction", tr("Signal Mast Table"), true);
   addTable("jmri.jmrit.beantable.SignalGroupTableAction", tr("Signal Group Table"), true);

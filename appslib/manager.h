@@ -316,7 +316,7 @@ public:
       * The non-system-specific SignalHeadManagers
       * use this method extensively.
       */
-     virtual void Register(NamedBean* /*n*/) const {}
+     virtual void Register(NamedBean* /*n*/) const =0;
 
      /**
       * Forget a NamedBean Object created outside the manager.

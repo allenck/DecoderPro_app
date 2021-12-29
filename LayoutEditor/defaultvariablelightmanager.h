@@ -18,13 +18,13 @@ class DefaultVariableLightManager : public AbstractLightManager, public Variable
   /*public*/ char typeLetter() const override;
   /*public*/ QString getBeanTypeHandled(bool plural)const override;
   /*public*/ /*Class<VariableLight>*/ QString getNamedBeanClass()const override;
-  /*public*/ void Register(/*@Nonnull*/ VariableLight* s);
+  /*public*/ void Register(/*@Nonnull*/ NamedBean* s)const override;
   /*public*/ void deregister(/*@Nonnull*/ NamedBean* s)const override;
-  /*public*/ void deleteBean(/*@Nonnull*/ VariableLight* n, /*@Nonnull*/ QString property) ;
+  /*public*/ void deleteBean(/*@Nonnull*/ NamedBean* n, /*@Nonnull*/ QString property) override;
 
   QObject* self() override {return this;}
   /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString s) const override;
-  /*public*/ VariableLight* getBySystemName(/*@Nonnull*/ QString s);
+  /*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString s)const override;
   /*public*/ SystemConnectionMemo* getMemo() const override;
  public slots:
   //@Override

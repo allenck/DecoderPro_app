@@ -48,6 +48,8 @@ class CommandStationO2 : public QObject, public CommandStation {
     /*public*/ QString getSystemPrefix() {
         return "I";
     }
+ /*public*/ QObject* self() override{return (QObject*)this;}
+
 };
 
 #endif // DCCSIGNALMASTADDPANETEST_H

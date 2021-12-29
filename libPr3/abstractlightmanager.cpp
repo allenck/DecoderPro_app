@@ -148,7 +148,7 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
  }
  // save in the maps
  Register(static_cast<NamedBean*>(s->self()));
- emit newLightCreated(this, s);
+ //emit newLightCreated(this, s);
  return s;
 }
 

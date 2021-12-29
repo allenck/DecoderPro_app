@@ -42,7 +42,7 @@ protected:
     /*protected*/ IdTagManager* tagManager = (IdTagManager*)InstanceManager::getDefault("IdTagManager");
 
 protected slots:
-    /*protected*/ void addPressed() override;
+    /*protected*/ void addPressed(JActionEvent* =0) override;
 
  friend class IdTagBeanTableDataModel;
  friend class StateStoredActionListener;

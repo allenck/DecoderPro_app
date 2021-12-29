@@ -54,6 +54,8 @@ class CommandStationO1 : public QObject, public CommandStation
     /*public*/ QString getSystemPrefix() {
         return "I";
     }
+ /*public*/ QObject* self() override{return (QObject*)this;}
+
 };
 
 #endif // DCCSIGNALHEADTEST_H

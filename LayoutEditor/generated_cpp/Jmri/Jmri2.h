@@ -298,7 +298,7 @@ virtual Manager::NameValidity  validSystemNameFormat(QString  arg__1) const;
 
 class PythonQtPublicPromoter_Manager : public Manager
 { public:
-inline void py_q_Register(NamedBean*  arg__1) const { Manager::Register(arg__1); }
+inline void py_q_Register(NamedBean*  arg__1) const { this->Register(arg__1); }
 inline void py_q_addDataListener(QObject*  e) { Manager::addDataListener(e); }
 inline void py_q_deleteBean(NamedBean*  arg__1, QString  arg__2) { Manager::deleteBean(arg__1, arg__2); }
 inline void py_q_deregister(NamedBean*  arg__1) const { this->deregister(arg__1); }

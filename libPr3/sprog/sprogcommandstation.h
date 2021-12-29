@@ -21,8 +21,8 @@ namespace Sprog
   SprogCommandStation(SprogTrafficController* controller, QObject* parent= 0);
 
   /*public*/ void setSystemConnectionMemo(SprogSystemConnectionMemo* memo);
-  /*public*/ QString getUserName();
-  /*public*/ bool sendPacket(QByteArray packet, int repeats);
+  /*public*/ QString getUserName()override;
+  /*public*/ bool sendPacket(QByteArray packet, int repeats)override;
   /*public*/ SprogSlot* slot(const int i);
   /*public*/ int getInUseCount();
   /*public*/ bool isBusy();
@@ -51,9 +51,9 @@ namespace Sprog
   /*public*/ /*final*/ SprogCommandStation* instance();
   /*public*/ /*synchronized*/ void addSlotListener(SprogSlotListener* l);
   /*public*/ /*synchronized*/ void removeSlotListener(SprogSlotListener* l);
-  /*public*/ QString getSystemPrefix();
+  /*public*/ QString getSystemPrefix()override;
 
-
+  QObject* self() override {return (QObject*)this;}
  signals:
   void notifyChangedSlot(SprogSlot*);
   void finished();

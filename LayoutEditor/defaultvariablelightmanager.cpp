@@ -72,7 +72,7 @@
     /** {@inheritDoc} */
     //@Override
     //@OverridingMethodsMustInvokeSuper
-    /*public*/ void DefaultVariableLightManager::Register(/*@Nonnull*/ VariableLight* /*s*/) {
+    /*public*/ void DefaultVariableLightManager::Register(/*@Nonnull*/ NamedBean* /*s*/) const{
         throw new UnsupportedOperationException("Not supported. Use LightManager.register() instead");
     }
 
@@ -86,7 +86,7 @@
     /** {@inheritDoc} */
     //@Override
     //@OverridingMethodsMustInvokeSuper
-    /*public*/ void DefaultVariableLightManager::deleteBean(/*@Nonnull*/ VariableLight* n, /*@Nonnull*/ QString /*property*/) {
+    /*public*/ void DefaultVariableLightManager::deleteBean(/*@Nonnull*/ NamedBean* n, /*@Nonnull*/ QString /*property*/) {
         throw new UnsupportedOperationException("Not supported. Use LightManager.deleteBean() instead");
     }
 
@@ -115,9 +115,9 @@
      return (VariableLight*)AbstractLightManager::getByUserName(s);
     }
 
-    /*public*/ VariableLight* DefaultVariableLightManager::getBySystemName(/*@Nonnull*/ QString s)
+    /*public*/ NamedBean* DefaultVariableLightManager::getBySystemName(/*@Nonnull*/ QString s) const
     {
-     return (VariableLight*)AbstractLightManager::getBySystemName(s);
+     return AbstractLightManager::getBySystemName(s);
     }
 
     /*public*/ SystemConnectionMemo* DefaultVariableLightManager::getMemo() const
