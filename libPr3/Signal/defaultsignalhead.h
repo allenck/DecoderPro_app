@@ -37,8 +37,8 @@ protected:
      */
     /*protected*/ bool mFlashOn;// = true;
     QTimer* timer;// = NULL;
-    /*protected*/ void startFlash();
-    /*protected*/ void stopFlash();
+    /*protected*/ virtual void startFlash();
+    /*protected*/ virtual void stopFlash();
     bool isTurnoutUsed(Turnout* t);
     /*protected*/ void appearanceSetsFlashTimer(int newAppearance);
 

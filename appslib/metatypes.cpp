@@ -358,6 +358,7 @@
 #include "systemconsoleaction.h"
 #include "tabbedpreferencesprofileaction.h"
 #include "mergsd2signalheadxml.h"
+#include "acelasignalheadxml.h"
 
 bool Metatypes::done = false;
 
@@ -730,5 +731,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<SystemConsoleAction>("SystemConsoleAction");
  qRegisterMetaType<TabbedPreferencesProfileAction>("TabbedPreferencesProfileAction");
  qRegisterMetaType<MergSD2SignalHeadXml>("MergSD2SignalHeadXml");
+ qRegisterMetaType<AcelaSignalHeadXml>("AcelaSignalHeadXml");
+
  Metatypes::done = true;
 }

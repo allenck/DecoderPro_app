@@ -36,6 +36,10 @@
 #include "slotmanager.h"
 #include "lsdecsignalhead.h"
 #include "mergsd2signalhead.h"
+#include "acelasignalhead.h"
+#include "acelanode.h"
+#include "acelaaddress.h"
+#include "acelasystemconnectionmemo.h"
 
 SignalHeadTableAction::SignalHeadTableAction(QObject *parent) :
     AbstractTableAction(tr("Signal Head"), parent)
@@ -116,8 +120,8 @@ SignalHeadTableAction::SignalHeadTableAction(QObject *parent) :
                                            AcelaNode::BPOLAR, AcelaNode::WIGWAG;*/ 1 << 2 << 3 << 4;
  ukSignalAspects = QStringList() << "1" << "2" <<"3" << "4";
  ukSignalType = QStringList() << "Home" << "Distant";
- prefixBox = new QComboBox();
- prefixBoxLabel = new QLabel("System : ");
+ //prefixBox = new QComboBox();
+ //prefixBoxLabel = new QLabel("System : ");
  vtLabel = new QLabel("");
  defaultFlow = new FlowLayout();
  s1Box = new QComboBox(/*turnoutStates*/);
@@ -461,7 +465,7 @@ void SignalHeadTableAction::setSignalStateInBox (QComboBox* box, int state) {
                                 break;
         case SignalHead::FLASHGREEN : box->setCurrentIndex(8);
                                 break;
-        default : log->error("unexpected Signal state value: "+state);
+        default : log->error("unexpected Signal state value: "+QString::number(state));
     }
 
     /*if (state==iSignalStates[0]) box->setCurrentIndex(0);
@@ -538,19 +542,20 @@ void SignalHeadTableAction::setUkSignalType(QComboBox* box, QString val){
  {
   QObjectList* list = InstanceManager::getList("CommandStation");
 #if 1
-  foreach(QObject* obj, *list){
-      if(obj!=NULL){
-       if(qobject_cast<SlotManager*>(obj))
-       {
-        SlotManager* station = (SlotManager*)obj;
-        QString user_name = station->getUserName();
-         prefixBox->addItem(user_name);
-         continue;
-       }
-       CommandStation* station = (CommandStation*) obj;
-       QString user_name = station->getUserName();
-       prefixBox->addItem(user_name);
-      }
+  foreach(QObject* obj, *list)
+  {
+    if(obj!=NULL){
+     if(qobject_cast<SlotManager*>(obj))
+     {
+      SlotManager* station = (SlotManager*)obj;
+      QString user_name = station->getUserName();
+      prefixBox->addItem(user_name);
+      continue;
+     }
+     CommandStation* station = (CommandStation*) obj;
+     QString user_name = station->getUserName();
+     prefixBox->addItem(user_name);
+    }
   }
 #endif
   dccSignalPanel();
@@ -960,10 +965,10 @@ void SignalHeadTableAction::typeChanged()
         v5Border->setTitle("Input3");
 //        msaBox->addActionListener(new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent e) {
-//                ukAspectChange(false);
+        connect(msaBox, &QComboBox::currentTextChanged, [=]{
+                ukAspectChange(false);
 //            }
-//        });
-        connect(msaBox, SIGNAL(currentIndexChanged(int)), this, SLOT());
+        });
 
  }
     else
@@ -1049,11 +1054,10 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
  {
   handleSE8cOkPressed();
  }
-#if 0 // Acela, grapevine not implemented
  else if (acelaAspect ==(typeBox->currentText()))
  {
-  QString inputusername = userName->text();
-  QString inputsysname =  ato1->text().toUpper();
+  QString inputusername = userNameTextField->text();
+  QString inputsysname =  ato1TextField->text().toUpper();
   int headnumber;
   //int aspecttype;
 
@@ -1070,9 +1074,9 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
     headnumber = inputsysname.toInt();
    else
    {
-    QString msg = tr("Skipping creation of acela signal head because \" %1 \" is not a number or does not start with LT .").arg( ato1->text() );
-                JOptionPane.showMessageDialog(addFrame, msg,
-                    AbstractTableAction.tr("Warning"), JOptionPane::ERROR_MESSAGE);
+    QString msg = tr("Skipping creation of acela signal head because \" %1 \" is not a number or does not start with LT .").arg( ato1TextField->text() );
+    JOptionPane::showMessageDialog(addFrame, msg,
+        tr("Warning"), JOptionPane::ERROR_MESSAGE);
     return;
    }
   }
@@ -1082,18 +1086,19 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
   {
    if (inputusername.length() == 0)
    {
-    s = new AcelaSignalHead("AH"+QString::number(headnumber));
+    s = new AcelaSignalHead("AH"+QString::number(headnumber),(AcelaSystemConnectionMemo*) InstanceManager::getDefault("AcelaSystemConnectionMemo"));
    }
    else
    {
-    s = new AcelaSignalHead("AH"+QString::number(headnumber), inputusername);
+    s = new AcelaSignalHead("AH"+QString::number(headnumber), inputusername,(AcelaSystemConnectionMemo*)InstanceManager::getDefault("AcelaSystemConnectionMemo"));
    }
    static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
   }
 
   int st = signalheadTypeFromBox(stBox);
   //This bit returns NULL i think, will need to check through
-  AcelaNode* sh = AcelaAddress::getNodeFromSystemName("AH"+headnumber);
+  AcelaNode* sh = AcelaAddress::getNodeFromSystemName("AH"+QString::number(headnumber),(AcelaSystemConnectionMemo*) InstanceManager::getDefault("AcelaSystemConnectionMemo"));
+
   switch (st)
   {
   case 1: sh->setOutputSignalHeadType(headnumber, AcelaNode::DOUBLE);
@@ -1102,26 +1107,26 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
   case 3: sh->setOutputSignalHeadType(headnumber, AcelaNode::BPOLAR); break;
   case 4: sh->setOutputSignalHeadType(headnumber, AcelaNode::WIGWAG); break;
   default:
-   log->warn("Unexpected Acela Aspect type: "+st);
+   log->warn("Unexpected Acela Aspect type: "+QString::number(st));
                 sh->setOutputSignalHeadType(headnumber, AcelaNode::UKNOWN); break;  // default to triple
   }
  }
+#if 0
  else if (grapevine ==(typeBox->currentText()))
  {
   // the turnout field must hold a GH system name
-  if ( systemName->text().length() == 0)
+  if ( systemNameTextField->text().length() == 0)
   {
    log->warn("must supply a signalhead number (i.e. GH23)");
    return;
   }
-  QString inputsysname =  systemName->text().toUpper();
-  if (!inputsysname.mid(0,2) ==("GH"))
+  QString inputsysname =  systemNameTextField->text().toUpper();
+  if (inputsysname.mid(0,2) !=("GH"))
   {
    log->warn("skipping creation of signal, "+inputsysname+" does not start with GH");
    QString msg = tr("Skipping creation of Grapvine signal head  because \" %1 \" does not start with GH.").arg( inputsysname );
-//            JOptionPane.showMessageDialog(addFrame, msg,
-//                AbstractTableAction.tr("WarningTitle"), JOptionPane.ERROR_MESSAGE);
-   QMessageBox::warning(addFrame, tr("Warning"), msg);
+   JOptionPane::showMessageDialog(addFrame, msg,
+       tr("Warning"), JOptionPane::ERROR_MESSAGE);
    return;
   }
   if (checkBeforeCreating(inputsysname))
@@ -1261,7 +1266,6 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
    static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
   }
  }
-#if 1 // LsDec, merg not implemented.
  else if (lsDec ==(typeBox->currentText()))
  {
   if (checkBeforeCreating( systemNameTextField->text()))
@@ -1300,7 +1304,6 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
    static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
   }
  }
-#endif
  else if (dccSignalDecoder ==(typeBox->currentText()))
   {
    QString systemNameText = ConnectionNameFromSystemName::getPrefixFromName(prefixBox->currentText());
@@ -1316,12 +1319,10 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
     static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
    }
   }
-#if 0
   else if (mergSignalDriver ==(typeBox->currentText()))
   {
    handleMergSignalDriverOkPressed();
   }
-#endif
   else log->error("Unexpected type: "+typeBox->currentText());
 }
 
@@ -1907,8 +1908,8 @@ void SignalHeadTableAction::cancelPressed(JActionEvent * /*e*/) {
 
 /*private*/ void SignalHeadTableAction::cancelNewPressed(JActionEvent* /*e*/) {
     addFrame->setVisible(false);
-    addFrame->dispose();
-    addFrame = nullptr;
+//    addFrame->dispose();
+//    addFrame = nullptr;
 }
 
 //@SuppressWarnings("fallthrough")
@@ -2263,7 +2264,7 @@ void SignalHeadTableAction::ukAspectChange(bool edit){
         eto6->dispose();
     if (eto1!=nullptr)
         eto7->dispose();
-    //super.dispose();
+    AbstractTableAction::dispose();
 }
 
 /*protected*/ Turnout* SignalHeadTableAction::updateTurnoutFromPanel(BeanSelectCreatePanel* bp, QString reference, Turnout* oldTurnout, QString title)

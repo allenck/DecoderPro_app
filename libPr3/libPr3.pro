@@ -128,10 +128,22 @@ DEFINES += USE_THREAD
 ENABLE_LOGIXNG = "N" # change to "Y" to compile LogixNG modules
 SOURCES += \
  #abstractproxymanager.cpp \
+ Signal/abstractmrnodetrafficcontroller.cpp \
+ Signal/abstractnode.cpp \
+ Signal/acelaaddress.cpp \
+ Signal/acelaconnectiontypelist.cpp \
+ Signal/acelanode.cpp \
+ Signal/acelareply.cpp \
+ Signal/acelasignalhead.cpp \
+ Signal/acelasystemconnectionmemo.cpp \
+ Signal/acelatrafficcontroller.cpp \
  Signal/lsdecsignalhead.cpp \
  Signal/lsdecsignalheadxml.cpp \
  Signal/mergsd2signalhead.cpp \
  Signal/mergsd2signalheadxml.cpp \
+ #Signal/serialsignalhead.cpp \
+ acelamessage.cpp \
+ acelasignalheadxml.cpp \
  addeditsinglelightcontrolframe.cpp \
  defaultlightcontrol.cpp \
 # direct/defaultthrottle.cpp \
@@ -1148,10 +1160,23 @@ equals(ENABLE_LOGIXNG, "Y") {
     SOURCES +=
  }
 HEADERS += \
+ Signal/abstractmrnodetrafficcontroller.h \
+ Signal/abstractnode.h \
+ Signal/acelaaddress.h \
+ Signal/acelaconnectiontypelist.h \
+ Signal/acelalistener.h \
+ Signal/acelamessage.h \
+ Signal/acelanode.h \
+ Signal/acelareply.h \
+ Signal/acelasignalhead.h \
+ Signal/acelasystemconnectionmemo.h \
+ Signal/acelatrafficcontroller.h \
  Signal/lsdecsignalhead.h \
  Signal/lsdecsignalheadxml.h \
  Signal/mergsd2signalhead.h \
  Signal/mergsd2signalheadxml.h \
+ #Signal/serialsignalhead.h \
+ acelasignalheadxml.h \
  addeditsinglelightcontrolframe.h \
  defaultlightcontrol.h \
  digitalio.h \

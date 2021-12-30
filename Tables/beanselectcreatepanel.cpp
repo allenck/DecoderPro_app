@@ -311,7 +311,7 @@ void BeanSelectCreatePanel::update(){
 }
 
 /*public*/ void BeanSelectCreatePanel::dispose(){
-    //existingCombo->dispose();
+    existingCombo->dispose();
 }
 
 

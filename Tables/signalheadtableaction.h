@@ -135,7 +135,7 @@ private:
 
   QStringList ukSignalAspects;// = QStringList << "2" <<"3" <<"4";
   QStringList ukSignalType;// = QStringList() << "Home" << "Distant";
-  QComboBox* prefixBox = new QComboBox();
+  JComboBox* prefixBox = new JComboBox();
   QLabel* prefixBoxLabel = new QLabel("System : ");
   QLabel* vtLabel;// = new QLabel("");
   /*private*/ /*final*/ Border* blackline = BorderFactory::createLineBorder(Qt::black);
