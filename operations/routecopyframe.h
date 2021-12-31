@@ -2,6 +2,7 @@
 #define ROUTECOPYFRAME_H
 
 #include "operationsframe.h"
+#include "route.h"
 
 class JTextField;
 class QLabel;
@@ -12,7 +13,7 @@ namespace Operations
  {
   Q_OBJECT
  public:
-  RouteCopyFrame(QWidget* parent = 0);
+  RouteCopyFrame(Route* route, QWidget* parent = 0);
   /*public*/ void setRouteName(QString routeName);
   /*public*/ void dispose();
   /*public*/ QString getClassName();

@@ -5,6 +5,8 @@
 #include "routemanager.h"
 #include "route.h"
 #include "instancemanager.h"
+#include "actionevent.h"
+
 namespace Operations
 {
  /**
@@ -21,8 +23,8 @@ namespace Operations
  //private static final long serialVersionUID = 6083754676592916495L;
  /*private*/ /*static*/ /*final*/ char PrintRoutesAction::FORM_FEED = '\f';
 
- /*public*/ PrintRoutesAction::PrintRoutesAction(QString actionName, bool preview, QObject* parent)
-  : PrintRouteAction(actionName, preview, NULL,parent)
+ /*public*/ PrintRoutesAction::PrintRoutesAction(bool isPreview, QObject* parent)
+  : PrintRouteAction(isPreview, nullptr, parent)
  {
  log = new Logger("PrintRoutesAction");
  mFrame = new JFrame();
@@ -30,7 +32,7 @@ namespace Operations
  //connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed())); not necessary, done by PrintRouteAction
  }
 
- /*public*/ void PrintRoutesAction::actionPerformed(ActionEvent* /*e*/)
+ /*public*/ void PrintRoutesAction::actionPerformed(JActionEvent*)
  {
   log->debug("Print all routes");
   // obtain a HardcopyWriter to do this

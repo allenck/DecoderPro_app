@@ -92,10 +92,10 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   QMenuBar* menuBar = new QMenuBar();
   QMenu* toolMenu = new QMenu(tr("Tools"));
 
-  toolMenu->addAction(new RouteCopyAction(tr("Copy Route"),this));
-  toolMenu->addAction(new SetTrainIconPositionAction(tr("Set Train Icons Coordinates"),this));
-  toolMenu->addAction(new PrintRoutesAction(tr("Print"), false,this));
-  toolMenu->addAction(new PrintRoutesAction(tr("Preview"), true,this));
+  toolMenu->addAction(new RouteCopyAction(this));
+  toolMenu->addAction(new SetTrainIconPositionAction(this));
+  toolMenu->addAction(new PrintRoutesAction(false,this));
+  toolMenu->addAction(new PrintRoutesAction( true,this));
   menuBar->addMenu(toolMenu);
   menuBar->addMenu(new OperationsMenu());
   setMenuBar(menuBar);

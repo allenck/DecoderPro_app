@@ -6,13 +6,14 @@
 #include "javaqt_global.h"
 #include "propertychangelistener.h"
 #include "eventlistenerlist.h"
-
+#include "listselectionlistener.h"
 class AbstractTableModel;
 class TableColumnModelEvent;
 class PropertyChangeEvent;
-class JAVAQTSHARED_EXPORT DefaultTableColumnModel : public QObject, public TableColumnModel, public PropertyChangeListener
+class JAVAQTSHARED_EXPORT DefaultTableColumnModel : public QObject, public TableColumnModel,
+  public PropertyChangeListener, public ListSelectionListener
 {
- Q_INTERFACES(PropertyChangeListener TableColumnModel)
+ Q_INTERFACES(PropertyChangeListener TableColumnModel ListSelectionListener)
  Q_OBJECT
 public:
  explicit DefaultTableColumnModel(JTable *parent);

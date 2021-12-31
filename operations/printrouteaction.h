@@ -12,7 +12,7 @@ namespace Operations
  {
   Q_OBJECT
  public:
-  /*public*/ PrintRouteAction(QString actionName, bool preview, Route* route, QObject* parent);
+  /*public*/ PrintRouteAction(bool isPreview, Route* route, QObject* parent);
  public slots:
   /*public*/ void actionPerformed(ActionEvent* e = 0);
 

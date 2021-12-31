@@ -78,9 +78,10 @@ public slots:
 
 };
 
-class ListSelectionListener1 : public ListSelectionListener
+class ListSelectionListener1 : public QObject, public ListSelectionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ListSelectionListener)
  JmriConfigurationManager* mgr;
  QAction * copyMenuItem;
 public:

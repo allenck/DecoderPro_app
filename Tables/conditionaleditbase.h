@@ -149,8 +149,9 @@ public slots:
     virtual void logixEventOccurred();
 };
 
-class PickSingleListener : public ListSelectionListener {
+class PickSingleListener : public QObject, public ListSelectionListener {
  Q_OBJECT
+  Q_INTERFACES(ListSelectionListener)
  JTextField* saveTextField;
  int saveItemType;          // Current table type
  ConditionalEditBase* base;

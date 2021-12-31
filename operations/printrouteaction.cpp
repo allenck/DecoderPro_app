@@ -28,12 +28,12 @@ namespace Operations
  /*static*/ /*final*/ QString PrintRouteAction::TAB = "\t"; // NOI18N
  /*private*/ /*static*/ /*final*/ int PrintRouteAction::MAX_NAME_LENGTH = Control::max_len_string_location_name - 5;
 
- /*public*/ PrintRouteAction::PrintRouteAction(QString actionName, bool preview, Route* route, QObject* parent)
-    : AbstractAction(actionName, parent)
+ /*public*/ PrintRouteAction::PrintRouteAction(bool isPreview, Route* route, QObject* parent)
+    : AbstractAction(isPreview?tr("Preview"):tr("Print"), parent)
 {
      //super(actionName);
      mFrame = new JFrame();
-     isPreview = preview;
+     isPreview = isPreview;
      this->route = route;
      connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
  }

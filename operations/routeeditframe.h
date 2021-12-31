@@ -1,6 +1,7 @@
 #ifndef ROUTEEDITFRAME_H
 #define ROUTEEDITFRAME_H
 #include "operationsframe.h"
+#include <QMenu>
 
 class JComboBox;
 class QGroupBox;
@@ -80,6 +81,8 @@ namespace Operations
   /*private*/ void saveRoute();
   /*private*/ bool checkName(QString s);
   /*private*/ void reportRouteExists(QString s);
+  QMenu* toolMenu = new QMenu(tr("Tools"));
+  /*private*/ void loadToolMenu();
 
  };
 }

@@ -121,9 +121,10 @@ class FrmCO_windowListener : public WindowAdapter
   }
 };
 
-class FrmCO_listSelectionListener : public ListSelectionListener
+class FrmCO_listSelectionListener : public QObject, public ListSelectionListener
 {
  Q_OBJECT
+  Q_INTERFACES(ListSelectionListener)
  FrmCO* dlg;
 public:
  FrmCO_listSelectionListener(FrmCO* dlg) {this->dlg = dlg;}

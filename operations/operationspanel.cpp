@@ -80,6 +80,13 @@ namespace Operations
 
  /*protected*/ void OperationsPanel::addItem(JPanel* p, QWidget* c, int x, int y)
  {
+  if(!p->layout())
+   throw new NullPointerException(tr("Jpanel is missing layout!"));
+  else
+  {
+   if(!qobject_cast<GridBagLayout*>(p->layout()))
+    throw new IllegalArgumentException(tr("Jpanel is missing Gridbag layout!"));
+  }
   GridBagConstraints gc = GridBagConstraints();
   gc.gridx = x;
   gc.gridy = y;

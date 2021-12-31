@@ -3,6 +3,7 @@
 
 #include "abstracttablemodel.h"
 #include <QStyledItemDelegate>
+#include "propertychangelistener.h"
 
 class HtmlTextEdit;
 class JDialog;
@@ -13,9 +14,10 @@ namespace Operations
  class RouteLocation;
  class Route;
  class RouteEditFrame;
- class RouteEditTableModel : public AbstractTableModel
+ class RouteEditTableModel : public AbstractTableModel, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   RouteEditTableModel(QObject* parent = 0);
   // Defines the columns
@@ -42,21 +44,22 @@ namespace Operations
   };
   /*public*/ void setWait(bool showWait);
   /*public*/ void dispose();
-  /*public*/ int rowCount(const QModelIndex &parent) const;
-  /*public*/ int columnCount(const QModelIndex &parent) const;
-  /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-  /*public*/ QString getColumnClass(int col);
-  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
-  /*public*/ QVariant data(const QModelIndex &index, int role) const;
+  /*public*/ int rowCount(const QModelIndex &parent) const override;
+  /*public*/ int columnCount(const QModelIndex &parent) const override;
+  /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+  /*public*/ QString getColumnClass(int col) const override;
+  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
+  /*public*/ QVariant data(const QModelIndex &index, int role) const override;
   /*public*/ int getLastTrainDirection();
   /*public*/ int getLastMaxTrainMoves();
   /*public*/ int getLastMaxTrainLength();
-  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
-  /*public*/ int getRowCount() {return rowCount(QModelIndex());}
-  /*public*/ int getColumnCount() {return columnCount(QModelIndex());}
+  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+  /*public*/ int getRowCount() const override{return rowCount(QModelIndex());}
+  /*public*/ int getColumnCount() const override{return columnCount(QModelIndex());}
 
+  QObject* self() override {return (QObject*)this;}
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
   void on_okayButton_clicked();
   void on_cancelButton_clicked();
 

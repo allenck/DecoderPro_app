@@ -134,9 +134,10 @@ class FTR_WindowListener : public WindowAdapter
   }
 };
 
-class FTR_ListSelectionListener : public ListSelectionListener
+class FTR_ListSelectionListener : public QObject, public ListSelectionListener
 {
   Q_OBJECT
+  Q_INTERFACES(ListSelectionListener)
   FrmTRL_Rules* rules;
  public:
   FTR_ListSelectionListener(FrmTRL_Rules* rules) {this->rules = rules;}

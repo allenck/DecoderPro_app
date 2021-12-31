@@ -39,8 +39,8 @@ namespace Operations {
   /*public*/ void store(QDomElement root, QDomDocument doc);
   /*public*/ Route* copyRoute(Route* route, QString routeName, bool invert);
   Q_INVOKABLE /*public*/ void initialize() override;
-  virtual /*public*/ Route* provide(QString /*name*/) throw (IllegalArgumentException) {return nullptr;};
-  QObject* self() {return (QObject*)this;}
+  //virtual /*public*/ Route* provide(QString /*name*/)const  /*throw (IllegalArgumentException)*/ =0;
+  //QObject* self() {return (QObject*)this;}
   QString getNamedBeanClass() const {return "RouteManager";}
 
  signals:

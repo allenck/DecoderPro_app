@@ -33,6 +33,8 @@
 #include "printrouteaction.h"
 #include "instancemanager.h"
 #include "borderfactory.h"
+#include "routeblockingordereditframeaction.h"
+#include "route.h"
 
 namespace Operations
 {
@@ -108,8 +110,8 @@ namespace Operations
      // Set up the jtable in a Scroll Pane..
      routePane = new JPanel();
      //routePane->setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-     routePane->setBorder(BorderFactory::createTitledBorder(""));
      QVBoxLayout* routePaneLayout = new QVBoxLayout(routePane);
+     routePane->setBorder(BorderFactory::createTitledBorder(""));
      routePaneLayout->addWidget(routeTable);
 
      if (_route != NULL) {
@@ -228,12 +230,7 @@ namespace Operations
 
      // build menu
      QMenuBar* menuBar = new QMenuBar();
-     QMenu* toolMenu = new QMenu(tr("Tools"));
-
-     toolMenu->addAction(new RouteCopyAction(tr("Copy Route"), routeName ,this));
-     toolMenu->addAction(new SetTrainIconRouteAction(tr("Set Train Icons Coordinates for this Route"), routeName,this));
-     toolMenu->addAction(new PrintRouteAction(tr("Print"), false, _route,this));
-     toolMenu->addAction(new PrintRouteAction(tr("Preview"), true, _route,this));
+     loadToolMenu();
      menuBar->addMenu(toolMenu);
      setMenuBar(menuBar);
      addHelpMenu("package.jmri.jmrit.operations.Operations_EditRoute", true); // NOI18N
@@ -243,6 +240,15 @@ namespace Operations
      connect(((LocationManager*)InstanceManager::getDefault("LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      // set frame size and route for display
      initMinimumSize(QSize(Control::panelWidth700, Control::panelHeight400));
+ }
+
+ /*private*/ void RouteEditFrame::loadToolMenu() {
+  toolMenu->addAction(new RouteBlockingOrderEditFrameAction(_route,this));
+  toolMenu->addAction(new RouteCopyAction(_route,this));
+  toolMenu->addAction(new SetTrainIconRouteAction(_route,this));
+  toolMenu->addSeparator();
+  toolMenu->addAction(new PrintRouteAction(false, _route,this));
+  toolMenu->addAction(new PrintRouteAction(true, _route,this));
  }
 
  // Save, Delete, Add

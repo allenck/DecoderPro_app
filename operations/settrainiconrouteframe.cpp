@@ -29,7 +29,7 @@ namespace Operations
  //private static final long serialVersionUID = 3933825267912834479L;
 
 
- /*public*/ SetTrainIconRouteFrame::SetTrainIconRouteFrame(QString routeName, QWidget* parent)
+ /*public*/ SetTrainIconRouteFrame::SetTrainIconRouteFrame(Route* route, QWidget* parent)
  : OperationsFrame(tr("Train Icon"),parent)
  {
   //super(tr("MenuSetTrainIcon"));
@@ -72,13 +72,11 @@ namespace Operations
   _routeIndex = 0;
   _tIon = NULL;
 
-  // create route
-  if (routeName == NULL) {
+  if (route == nullptr) {
       return;
   }
-  _route = ((RouteManager*)InstanceManager::getDefault("RouteManager"))->getRouteByName(routeName);
-  //_route.addPropertyChangeListener(this);
-  connect(_route->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  _route = route;
+  _route->addPropertyChangeListener(this);
 
   // general GUI config
   //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
@@ -250,15 +248,13 @@ namespace Operations
      }
 
      if (_rl != NULL) {
-         //_rl->removePropertyChangeListener(this);
-         disconnect(_rl->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         _rl->removePropertyChangeListener(this);
      }
      if (_routeList->size() > 0) {
          _rl = _routeList->at(_routeIndex);
      }
      if (_rl != NULL) {
-         //_rl->PropertyChangeSupport::addPropertyChangeListener(this);
-      connect(_rl->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         _rl->addPropertyChangeListener(this);
          loadSpinners(_rl);
          routeLocationName->setText(_rl->getName());
      }
@@ -267,12 +263,10 @@ namespace Operations
 
  /*private*/ void SetTrainIconRouteFrame::updateTrainIconCoordinates() {
      if (_rl != NULL) {
-         //_rl->removePropertyChangeListener(this);
-      disconnect(_rl->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         _rl->removePropertyChangeListener(this);
          _rl->setTrainIconX( spinTrainIconX->value());
          _rl->setTrainIconY( spinTrainIconY->value());
-         //_rl->PropertyChangeSupport::addPropertyChangeListener(this);
-         connect(_rl->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         _rl->PropertyChangeSupport::addPropertyChangeListener(this);
      }
  }
 

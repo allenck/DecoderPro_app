@@ -41,6 +41,7 @@ SOURCES += javaqt.cpp \
     jframe.cpp \
     jinputvalidator.cpp \
     jinputvalidatorpreferences.cpp \
+    jscrollpane.cpp \
     jtextpane.cpp \
     jvetoablechangesupport.cpp \
     loggerfactory.cpp \
@@ -289,6 +290,7 @@ HEADERS += javaqt.h\
  jframe.h \
  jinputvalidator.h \
  jinputvalidatorpreferences.h \
+ jscrollpane.h \
     jtextarea.h \
     jseparator.h \
     abstractaction.h \

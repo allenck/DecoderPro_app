@@ -9,9 +9,9 @@ namespace Operations
  {
   Q_OBJECT
  public:
-     SetTrainIconPositionAction(QString s, QObject* parent);
+     SetTrainIconPositionAction( QObject* parent);
  public slots:
-     /*public*/ void actionPerformed(ActionEvent* e = 0);
+     /*public*/ void actionPerformed(JActionEvent* e = 0);
 
  private:
      SetTrainIconPositionFrame* f;// = NULL;

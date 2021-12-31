@@ -160,9 +160,10 @@ class FrmMain_windowListener : public WindowAdapter
   }
 };
 
-class FrmMain_listSelectionListener : public ListSelectionListener
+class FrmMain_listSelectionListener : public QObject, public ListSelectionListener
 {
   Q_OBJECT
+  Q_INTERFACES(ListSelectionListener)
   FrmMainForm* form;
  public:
   FrmMain_listSelectionListener(FrmMainForm* form) {this->form = form;}

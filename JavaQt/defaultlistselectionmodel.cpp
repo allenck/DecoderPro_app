@@ -86,7 +86,7 @@ DefaultListSelectionModel::DefaultListSelectionModel(QObject */*parent*/) :
     /*public*/ void DefaultListSelectionModel::addListSelectionListener(ListSelectionListener* l) {
         //listenerList.append("ListSelectionListener", l);
      listenerList.append(l);
-     connect(this, SIGNAL(listSelectionChanged(ListSelectionEvent*)), l, SLOT(valueChanged(ListSelectionEvent*)));
+     connect(this, SIGNAL(listSelectionChanged(ListSelectionEvent*)), l->self(), SLOT(valueChanged(ListSelectionEvent*)));
     }
 
     /** {@inheritDoc} */

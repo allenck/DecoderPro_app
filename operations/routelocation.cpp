@@ -80,7 +80,6 @@ namespace Operations
   _trainWeight = 0; // total car weight departing this location
   _trainLength = 0; // train length departing this location
   _location = NULL;
-  pcs = new PropertyChangeSupport(this);
  }
 
  // for combo boxes
@@ -121,6 +120,14 @@ namespace Operations
  /*public*/ void RouteLocation::setSequenceId(int sequence) {
      // property change not needed
      _sequenceId = sequence;
+ }
+
+ /*public*/ int RouteLocation::getBlockingOrder() {
+         return _blockingOrder;
+ }
+
+ /*public*/ void RouteLocation::setBlockingOrder(int order) {
+     _blockingOrder = order;
  }
 
  /*public*/ void RouteLocation::setComment(QString comment) {
@@ -608,17 +615,8 @@ QDomElement e = doc.createElement(Xml::LOCATION);
      }
  }
 
-#if 0
- /*public*/ synchronized void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.addPropertyChangeListener(l);
- }
-
- /*public*/ synchronized void removePropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.removePropertyChangeListener(l);
- }
-#endif
  /*protected*/ void RouteLocation::firePropertyChange(QString p, QVariant old, QVariant n) {
-     pcs->firePropertyChange(p, old, n);
+     firePropertyChange(p, old, n);
  }
 
  /*protected*/ void RouteLocation::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {

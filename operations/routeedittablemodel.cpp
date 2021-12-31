@@ -67,8 +67,7 @@ namespace Operations
   routeList = _route->getLocationsBySequenceList();
   // and add them back in
   foreach (RouteLocation* rl, *routeList) {
-      //rl->PropertyChangeSupport::addPropertyChangeListener(this);
-   connect(rl->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      rl->addPropertyChangeListener(this);
   }
  }
 
@@ -78,8 +77,7 @@ namespace Operations
      _table = table;
      _route = route;
      if (_route != NULL) {
-         //_route.addPropertyChangeListener(this);
-      connect(_route->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         _route->addPropertyChangeListener(this);
      }
      initTable(table);
  }
@@ -233,7 +231,7 @@ namespace Operations
   return QVariant();
  }
 
- /*public*/ QString RouteEditTableModel::getColumnClass(int col) {
+ /*public*/ QString RouteEditTableModel::getColumnClass(int col) const {
      switch (col) {
          case ID_COLUMN:
              return "String";
@@ -767,8 +765,7 @@ namespace Operations
 
  /*private*/ void RouteEditTableModel::removePropertyChangeRouteLocations() {
      foreach (RouteLocation* rl, *routeList) {
-         //rl->removePropertyChangeListener(this);
-      disconnect(rl->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         rl->removePropertyChangeListener(this);
      }
  }
 
@@ -778,8 +775,7 @@ namespace Operations
      }
      removePropertyChangeRouteLocations();
      if (_route != NULL) {
-         //_route.removePropertyChangeListener(this);
-      disconnect(_route->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         _route->removePropertyChangeListener(this);
      }
      routeList->clear();
      fireTableDataChanged();

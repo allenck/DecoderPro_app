@@ -85,7 +85,7 @@ namespace Operations
         return;
     }
 
-    ((RouteManager*)InstanceManager::getDefault("RouteManager"))->load(root);
+    ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"))->load(root);
 
     // clear dirty bit
     setDirty(false);

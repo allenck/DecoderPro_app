@@ -13,9 +13,9 @@ public:
  /*public*/ void setAllColumnsVisible();
  /*public*/ TableColumn* getColumnByModelIndex(int modelColumnIndex);
  /*public*/ bool isColumnVisible(TableColumn* aColumn);
- /*public*/ void addColumn(TableColumn* column);
- /*public*/ void removeColumn(TableColumn* column);
- /*public*/ void moveColumn(int oldIndex, int newIndex);
+ /*public*/ void addColumn(TableColumn* column)override;
+ /*public*/ void removeColumn(TableColumn* column)override;
+ /*public*/ void moveColumn(int oldIndex, int newIndex)override;
  /*public*/ void moveColumn(int columnIndex, int newIndex, bool onlyVisible);
  /*public*/ int getColumnCount(bool onlyVisible);
  /*public*/ QListIterator<TableColumn*> getColumns(bool onlyVisible);
@@ -35,7 +35,7 @@ protected:
   * Array of TableColumn objects in this model. Holds all column objects,
   * regardless of their visibility
   */
- /*protected*/ QVector<TableColumn*> allTableColumns;// = new Vector<TableColumn>();
+ /*protected*/ QVector<TableColumn*> allTableColumns = QVector<TableColumn*>();
 
 };
 

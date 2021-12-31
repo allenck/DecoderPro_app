@@ -11,13 +11,14 @@ namespace Operations
  class RouteManager;
  class Route;
  class RouteLocation;
- class APPSLIBSHARED_EXPORT SetTrainIconRouteFrame : public OperationsFrame
+ class APPSLIBSHARED_EXPORT SetTrainIconRouteFrame : public OperationsFrame, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
-  SetTrainIconRouteFrame(QString routeName, QWidget* parent = 0);
+  SetTrainIconRouteFrame(Route* route, QWidget* parent = 0);
   /*public*/ QString getClassName();
-
+  QObject* self() override {return (QObject*)this;}
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e);
   /*public*/ void buttonActionPerformed(QWidget* ae);

@@ -32,7 +32,7 @@ namespace Operations
  //private static final long serialVersionUID = 4478401682355496019L;
 
 
- /*public*/ RouteCopyFrame::RouteCopyFrame(QWidget* parent) : OperationsFrame(tr("Copy Route"),parent) {
+ /*public*/ RouteCopyFrame::RouteCopyFrame(Route* route, QWidget* parent) : OperationsFrame(tr("Copy Route"),parent) {
      //super(tr("TitleRouteCopy"));
  log = new Logger("RouteCopyFrame");
  routeManager = ((RouteManager*)InstanceManager::getDefault("RouteManager"));
@@ -83,6 +83,9 @@ namespace Operations
 
   // setup buttons
   addButtonAction(copyButton);
+
+  routeBox->setSelectedItem(route->getName());
+
  }
 
  /*public*/ void RouteCopyFrame::setRouteName(QString routeName) {

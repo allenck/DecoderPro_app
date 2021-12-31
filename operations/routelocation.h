@@ -44,10 +44,11 @@ namespace Operations
   /*public*/ QString toString();
   /*public*/ QString getId() ;
   /*public*/ QString getName();
-  PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
   /*public*/ Location* getLocation() ;
   /*public*/ int getSequenceId();
   /*public*/ void setSequenceId(int sequence) ;
+  /*public*/ int getBlockingOrder();
+  /*public*/ void setBlockingOrder(int order);
   /*public*/ void setComment(QString comment);
   /*public*/ QString getComment();
   /*public*/ void setCommentColor(QColor color);
@@ -122,6 +123,7 @@ namespace Operations
   /*protected*/ QString _departureTime; //=NONE; // departure time from this location
   /*protected*/ int _trainIconX; //=0; // the x & y coordinates for the train icon
   /*protected*/ int _trainIconY; //=0;
+  /*protected*/ int _blockingOrder = 0;
   /*protected*/ QString _comment; //=NONE;
 
   /*protected*/ int _carMoves; //=0; // number of moves at this location

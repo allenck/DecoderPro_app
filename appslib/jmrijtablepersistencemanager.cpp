@@ -171,7 +171,7 @@ JmriJTablePersistenceManager::JmriJTablePersistenceManager() :JTablePersistenceM
     RowSorter* sorter = table->getRowSorter();
 #endif
     //bool isXModel = model instanceof XTableColumnModel;
-    bool isXModel = static_cast<XTableColumnModel*>(model) != NULL;
+    bool isXModel = qobject_cast<XTableColumnModel*>(model->self()) != NULL;
 
 //    QListIterator<TableColumn*> e = QListIterator<TableColumn*>();
 //    if (isXModel) {

@@ -17,21 +17,16 @@ namespace Operations
   */
  //private static final long serialVersionUID = -8588935081117079361L;
 
- /*public*/ RouteCopyAction::RouteCopyAction(QString s, QObject* parent)
-   : AbstractAction(s,parent)
- {
-     //super(s);
- common();
- }
+ /*public*/ RouteCopyAction::RouteCopyAction(QObject* parent) : AbstractAction(tr("Copy"), parent){
+         //super(Bundle.getMessage("MenuItemCopy"));
+  common();
+}
 
-
- /*public*/ RouteCopyAction::RouteCopyAction(QString s, QString routeName,  QObject* parent)
- : AbstractAction(s,parent)
- {
-     //super(s);
-     common();
-     this->routeName = routeName;
- }
+/*public*/ RouteCopyAction::RouteCopyAction(Route* route, QObject* parent) : AbstractAction(tr("Copy"), parent){
+    //this();
+  common();
+    _route = route;
+}
 
 void RouteCopyAction::common()
 {
@@ -44,7 +39,7 @@ void RouteCopyAction::common()
      // create a copy route frame
 
      if (f == NULL || !f->isVisible()) {
-         f = new RouteCopyFrame();
+         f = new RouteCopyFrame(_route);
      }
      if (routeName != NULL) {
          f->setRouteName(routeName);

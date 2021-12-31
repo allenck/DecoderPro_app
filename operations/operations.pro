@@ -85,6 +85,9 @@ SOURCES += \
  operationssettingsframe.cpp \
  operationssettingspanel.cpp \
  rollingstockeditframe.cpp \
+    routeblockingordereditframe.cpp \
+ routeblockingordereditframeaction.cpp \
+    routeblockingorderedittablemodel.cpp \
         trainmanifesttext.cpp \
         operationsxml.cpp \
         trainswitchlisttext.cpp \
@@ -387,6 +390,9 @@ HEADERS += \
  operationssettingspanel.h \
         operationsxml.h \
  rollingstockeditframe.h \
+    routeblockingordereditframe.h \
+ routeblockingordereditframeaction.h \
+    routeblockingorderedittablemodel.h \
         trainswitchlisttext.h \
         routemanagerxml.h \
         routemanager.h \
