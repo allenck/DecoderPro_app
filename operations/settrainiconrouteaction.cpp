@@ -1,5 +1,6 @@
 #include "settrainiconrouteaction.h"
 #include "settrainiconrouteframe.h"
+
 namespace Operations
 {
 /**
@@ -34,13 +35,13 @@ namespace Operations
 
  void SetTrainIconRouteAction::common(Route* route)
  {
-  f = NULL;
+  f = QPointer<SetTrainIconRouteFrame>();
   routeName = "";
   this->_route = route;
   connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void SetTrainIconRouteAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void SetTrainIconRouteAction::actionPerformed(JActionEvent * /*e*/) {
      // create a copy route frame
 
      if (f == NULL || !f->isVisible()) {

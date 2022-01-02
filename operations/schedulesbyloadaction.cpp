@@ -1,5 +1,4 @@
 #include "schedulesbyloadaction.h"
-#include "schedulesbyloadframe.h"
 
 namespace Operations
 {
@@ -22,7 +21,7 @@ namespace Operations
      connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void SchedulesByLoadAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void SchedulesByLoadAction::actionPerformed(JActionEvent * /*e*/) {
      if (_slf != NULL) {
          _slf->dispose();
      }

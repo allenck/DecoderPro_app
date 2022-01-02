@@ -298,15 +298,6 @@ namespace Operations
      }
  }
 
-#if 0
- /*public*/ synchronized void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.addPropertyChangeListener(l);
- }
-
- /*public*/ synchronized void removePropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.removePropertyChangeListener(l);
- }
-#endif
  /*protected*/ void RouteManager::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      ((Operations::RouteManagerXml*)InstanceManager::getDefault("RouteManagerXml"))->setDirty(true);
      firePropertyChange(p, old, n);

@@ -10,6 +10,7 @@ class QDomDocument;
 class QDomElement;
 namespace Operations
 {
+ class Division;
  class Train;
  class Route;
  class Schedule;
@@ -106,6 +107,8 @@ public:
  /*public*/ Location* getLocation();
  /*public*/ void setName(QString name);
  /*public*/ QString getName() ;
+ /*public*/ Division* getDivision();
+ /*public*/ QString getDivisionName();
  /*public*/ QString getTrackType() ;
  /*public*/ void setTrackType(QString type);
  /*public*/ QString getTrackTypeName();
@@ -134,6 +137,7 @@ public:
  /*public*/ void setTrainDirections(int direction);
  /*public*/ int getTrainDirections();
  /*public*/ QString getRoadOption();
+  /*public*/ QString getRoadOptionString();
  /*public*/ void setRoadOption(QString option);
  /*public*/ QStringList getRoadNames();
  /*public*/ int getIgnoreUsedLengthPercentage();
@@ -160,6 +164,7 @@ public:
  /*public*/ QStringList getLoadNames() ;
  /*public*/ bool addLoadName(QString load);
  /*public*/ QString getLoadOption();
+ /*public*/ QString getLoadOptionString();
  /*public*/ void setLoadOption(QString option);
  /*public*/ Track* getAlternateTrack();
  /*public*/ Pool* getPool();
@@ -182,6 +187,7 @@ public:
  /*public*/ bool shipsLoad(QString load, QString type);
  /*public*/ QString getDropOption();
  /*public*/ QString getShipLoadOption();
+ /*public*/ QString getShipLoadOptionString();
  /*public*/ int getDestinationListSize();
  /*public*/ bool isAlternate();
  /*public*/ void setDropOption(QString option);
@@ -219,6 +225,7 @@ public:
  /*public*/ int getScheduleCount();
  /*public*/ void setScheduleCount(int count);
  /*public*/ int getScheduleMode();
+ /*public*/ QString getScheduleModeName();
  /*public*/ QString checkScheduleValid();
  /*public*/ bool acceptsLoadName(QString load);
  /*public*/ bool acceptsLoad(QString load, QString type);

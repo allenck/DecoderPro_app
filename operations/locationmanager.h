@@ -47,6 +47,7 @@ namespace Operations
   /*public*/ void replaceLoad(QString type, QString oldLoadName,QString newLoadName);
   /*public*/ int getMaxLocationNameLength() ;
   /*public*/ int getMaxTrackNameLength();
+  /*public*/ void resetNameLengths();
   /*public*/ int getMaxLocationAndTrackNameLength();
   /*public*/ QList<Track*> getTracks(QString type);
   /*public*/ QList<Track*> getTracksByMoves(QString type);

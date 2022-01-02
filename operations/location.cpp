@@ -21,6 +21,8 @@
 #include "locationmanagerxml.h"
 #include "carload.h"
 #include "vptr.h"
+#include "division.h"
+
 
 //Location::Location(QObject *parent) :
 //  QObject(parent)
@@ -71,6 +73,8 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString Location::POOL_LENGTH_CHANGED_PROPERTY = "poolLengthChanged"; // NOI18N
  /*public*/ /*static*/ /*final*/ QString Location::SWITCHLIST_COMMENT_CHANGED_PROPERTY = "switchListComment";// NOI18N
  /*public*/ /*static*/ /*final*/ QString Location::TRACK_BLOCKING_ORDER_CHANGED_PROPERTY = "locationTrackBlockingOrder";// NOI18N
+ /*public*/ /*static*/ /*final*/ QString Location::LOCATION_DIVISION_PROPERTY = "homeDivisionChange"; // NOI18N
+
 
  /*public*/ Location::Location(QString id, QString name,QObject *parent)
   : PropertyChangeSupport(this, parent) {
@@ -621,6 +625,31 @@ namespace Operations
      return _dropRS;
  }
 
+ /*public*/ void Location::setDivision(Division* division) {
+     Division* old = _division;
+     _division = division;
+     if (old != _division) {
+         setDirtyAndFirePropertyChange(LOCATION_DIVISION_PROPERTY, VPtr<Division>::asQVariant(old),  VPtr<Division>::asQVariant(division));
+     }
+ }
+
+ /*public*/ Division* Location::getDivision() {
+     return _division;
+ }
+
+ /*public*/QString Location::getDivisionName() {
+     if (getDivision() != nullptr) {
+         return getDivision()->getName();
+     }
+     return NONE;
+ }
+
+ /*public*/ QString Location::getDivisionId() {
+     if (getDivision() != nullptr) {
+         return getDivision()->getId();
+     }
+     return NONE;
+ }
  /*public*/ void Location::setComment(QString comment) {
      QString old = _comment;
      _comment = comment;
@@ -837,7 +866,7 @@ if (types.length() == 0) {
 *            Track.STAGING
 * @return list of tracks ordered by name for this location
 */
-/*public*/ QList<Track*> Location::getTrackByNameList(QString type)
+/*public*/ QList<Track*> Location::getTracksByNameList(QString type)
 {
   QList<Track*> out = QList<Track*>();
 
@@ -917,7 +946,7 @@ if (types.length() == 0) {
   */
  /*public*/ QList<Track*> Location::getTracksByBlockingOrderList(QString type) {
      QList<Track*> orderList = QList<Track*>();
-     foreach (Track* track, getTrackByNameList(type)) {
+     foreach (Track* track, getTracksByNameList(type)) {
          bool trackAdded = false;
          for (int j = 0; j < orderList.size(); j++) {
              if (track->getBlockingOrder() < orderList.at(j)->getBlockingOrder()) {
@@ -1008,7 +1037,7 @@ if (types.length() == 0) {
  {
   box->clear();
   box->addItem("");
-  QList<Track*> tracks = getTrackByNameList(NULL);
+  QList<Track*> tracks = getTracksByNameList(NULL);
   foreach (Track* track, tracks)
   {
    box->addItem(track->toString(), VPtr<Track>::asQVariant(track));
@@ -1029,7 +1058,7 @@ if (types.length() == 0) {
      if (!filter || rs == (NULL)) {
          return;
      }
-     QList<Track*> tracks = getTrackByNameList(NULL);
+     QList<Track*> tracks = getTracksByNameList(NULL);
      foreach (Track* track, tracks) {
          QString status = "";
          if (destination) {

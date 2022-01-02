@@ -258,7 +258,7 @@ using namespace Operations;
     QString builder;// = new StringBuilder();
     RouteLocation* location = train->getCurrentLocation();
     QList<Car*>* carList = ((CarManager*)InstanceManager::getDefault("CarManager"))->getByTrainDestinationList(train);
-    QList<Track*> tracks = location->getLocation()->getTrackByNameList(NULL);
+    QList<Track*> tracks = location->getLocation()->getTracksByNameList(NULL);
     QStringList trackNames = QStringList();
     QStringList pickedUp = QStringList();
     this->clearUtilityCarTypes();
@@ -298,7 +298,7 @@ using namespace Operations;
     QString builder;// = new StringBuilder();
     Operations::RouteLocation* location = train->getCurrentLocation();
     QList<Operations::Car*>* carList = ((CarManager*)InstanceManager::getDefault("CarManager"))->getByTrainDestinationList(train);
-    QList<Operations::Track*> tracks = location->getLocation()->getTrackByNameList(NULL);
+    QList<Operations::Track*> tracks = location->getLocation()->getTracksByNameList(NULL);
     QStringList trackNames = QStringList();
     QStringList dropped = QStringList();
     for (Operations::Track* track : tracks) {

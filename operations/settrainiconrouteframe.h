@@ -17,12 +17,14 @@ namespace Operations
    Q_INTERFACES(PropertyChangeListener)
  public:
   SetTrainIconRouteFrame(Route* route, QWidget* parent = 0);
-  /*public*/ QString getClassName();
+  ~SetTrainIconRouteFrame() {}
+  SetTrainIconRouteFrame(const SetTrainIconRouteFrame&) : OperationsFrame() {}
+  /*public*/ QString getClassName()override;
   QObject* self() override {return (QObject*)this;}
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
-  /*public*/ void buttonActionPerformed(QWidget* ae);
-  /*public*/ void spinnerChangeEvent(QWidget* ae);
+  /*public*/ void propertyChange(PropertyChangeEvent* e)override;
+  /*public*/ void buttonActionPerformed(QWidget* ae)override;
+  /*public*/ void spinnerChangeEvent(QWidget* ae)override;
 
  private:
   RouteManager* routeManager;//= RouteManager.instance();
@@ -69,4 +71,6 @@ namespace Operations
 
  };
 }
+//Q_DECLARE_METATYPE(Operations::SetTrainIconRouteFrame)
+
 #endif // SETTRAINICONROUTEFRAME_H

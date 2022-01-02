@@ -162,7 +162,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
              continue;
          addItemLeft(locationsPanel, new QLabel(location->getName()), 0, x++);
          // now look for a spur with a schedule
-         foreach (Track* spur, location->getTrackByNameList(Track::SPUR)) {
+         foreach (Track* spur, location->getTracksByNameList(Track::SPUR)) {
              Schedule* sch = spur->getSchedule();
              if (sch == NULL) {
                  continue;

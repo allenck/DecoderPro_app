@@ -21,10 +21,12 @@ namespace Operations
      : AbstractAction(s, parent)
  {
    //super(s);
+  common();
  }
 
  /*public*/ ShowCarsByLocationAction::ShowCarsByLocationAction(bool showAllCars, QString locationName, QString trackName, QObject* parent) : AbstractAction(tr("Show Cars"), parent) {
      //this(Bundle.getMessage("MenuItemShowCars"));
+  common();
      this->showAllCars = showAllCars;
      this->locationName = locationName;
      this->trackName = trackName;
@@ -38,7 +40,7 @@ void ShowCarsByLocationAction::common()
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
- /*public*/ void ShowCarsByLocationAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void ShowCarsByLocationAction::actionPerformed(JActionEvent * /*e*/) {
      // create a car table frame
      new CarsTableFrame(showAllCars, locationName, trackName);
  }

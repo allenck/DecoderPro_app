@@ -121,15 +121,15 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   // Set up the control panel
   // row 1
   JPanel* cp1 = new JPanel();
-  cp1->setBorder(BorderFactory::createTitledBorder(tr("Sort by")));
   QHBoxLayout* cp1Layout = new QHBoxLayout(cp1);
+  cp1->setBorder(BorderFactory::createTitledBorder(tr("Sort by")));
   cp1Layout->addWidget(sortByNumber);
   cp1Layout->addWidget(sortByRoad);
   cp1Layout->addWidget(sortByType);
 
   JPanel* clp = new JPanel();
-  clp->setBorder(BorderFactory::createTitledBorder(""));
   QHBoxLayout* clpLayout = new QHBoxLayout(clp);
+  clp->setBorder(BorderFactory::createTitledBorder(""));
   clpLayout->addWidget(sortByColor);
   clpLayout->addWidget(sortByLoad);
   cp1Layout->addWidget(clp);
@@ -137,8 +137,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   cp1Layout->addWidget(sortByLocation);
 
   JPanel* destp = new JPanel();
-  destp->setBorder(BorderFactory::createTitledBorder(""));
   QHBoxLayout* destpLayout = new QHBoxLayout(destp);
+  destp->setBorder(BorderFactory::createTitledBorder(""));
   destpLayout->addWidget(sortByDestination);
   destpLayout->addWidget(sortByFinalDestination);
   destpLayout->addWidget(sortByRwe);
@@ -146,8 +146,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   cp1Layout->addWidget(sortByTrain);
 
   JPanel* movep = new JPanel();
-  movep->setBorder(BorderFactory::createTitledBorder(""));
   QHBoxLayout* movepLayout = new QHBoxLayout(movep);
+  movep->setBorder(BorderFactory::createTitledBorder(""));
   movepLayout->addWidget(sortByMoves);
   movepLayout->addWidget(sortByBuilt);
   movepLayout->addWidget(sortByOwner);
@@ -181,8 +181,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   cp2Layout->addWidget(cp2Add);
 
   JPanel* cp2Find = new JPanel();
-  cp2Find->setBorder(BorderFactory::createTitledBorder(""));
   FlowLayout * cp2FindLayout = new FlowLayout(cp2Find);
+  cp2Find->setBorder(BorderFactory::createTitledBorder(""));
   findButton->setToolTip(tr("Find car by road number. Asterisk \"*\" = wild card."));
   findCarTextBox->setToolTip(tr("Find car by road number. Asterisk \"*\" = wild card."));
   cp2FindLayout->addWidget(findButton);
@@ -190,8 +190,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   cp2Layout->addWidget(cp2Find);
 
   JPanel* cp2Save = new JPanel();
-  cp2Save->setBorder(BorderFactory::createTitledBorder(""));
   FlowLayout* cp2SaveLayout = new FlowLayout(cp2Save);
+  cp2Save->setBorder(BorderFactory::createTitledBorder(""));
   cp2SaveLayout->addWidget(saveButton);
   cp2Layout->addWidget(cp2Save);
 

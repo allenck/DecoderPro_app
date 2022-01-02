@@ -12,6 +12,7 @@ class PhysicalLocation;
 class QComboBox;
 class Reporter;
 namespace Operations {
+ class Division;
  class RollingStock;
  class Pool;
  class Track;
@@ -58,6 +59,7 @@ namespace Operations {
   /*public*/ static /*final*/ QString POOL_LENGTH_CHANGED_PROPERTY; //="poolLengthChanged"; // NOI18N
   /*public*/ static /*final*/ QString SWITCHLIST_COMMENT_CHANGED_PROPERTY; //="switchListComment";// NOI18N
   /*public*/ static /*final*/ QString TRACK_BLOCKING_ORDER_CHANGED_PROPERTY; //="locationTrackBlockingOrder";// NOI18N
+  /*public*/ static /*final*/ QString LOCATION_DIVISION_PROPERTY;// = "homeDivisionChange"; // NOI18N
   /*public*/ QString getId();
   /*public*/ void setName(QString name) ;
   /*public*/ QString toString() ;
@@ -117,7 +119,7 @@ namespace Operations {
   /*public*/ Track* getTrackById(QString id);
   /*public*/ Reporter* getReporter();
   /*public*/ void updateComboBox(QComboBox* box);
-  /*public*/ QList<Track*> getTrackByNameList(QString type);
+  /*public*/ QList<Track*> getTracksByNameList(QString type);
   /*public*/ QList<Track*> getTrackByIdList();
   /*public*/ QStringList getTrackIdsByIdList();
   /*public*/ void dispose();
@@ -135,6 +137,10 @@ namespace Operations {
   /*public*/ bool hasTrackType(QString trackType);
   /*public*/ int getPickupRS();
   /*public*/ int getDropRS();
+  /*public*/ void setDivision(Division* division);
+  /*public*/ Division* getDivision();
+  /*public*/ QString getDivisionName();
+  /*public*/ QString getDivisionId();
   /*public*/ bool hasPools();
   /*public*/ int getNumberOfTracks();
   /*public*/ void setTrainDirections(int direction);
@@ -189,6 +195,7 @@ namespace Operations {
   /*protected*/ int _trainDir; //=EAST + WEST + NORTH + SOUTH; // train direction served by this location
   /*protected*/ int _length; //=0; // length of all tracks at this location
   /*protected*/ int _usedLength; //=0; // length of track filled by cars and engines
+
   /*protected*/ QString _comment; //=NONE;
   /*protected*/ QString _switchListComment; //=NONE; // optional switch list comment
   /*protected*/ bool _switchList; //=true; // when true print switchlist for this location
@@ -202,6 +209,7 @@ namespace Operations {
   /*protected*/ QHash<QString, Track*> _trackHashTable; //=new Hashtable<QString, Track>();
   /*protected*/ PhysicalLocation* _physicalLocation; //=new PhysicalLocation();
   /*protected*/ QStringList _listTypes; //=new ArrayList<String>();
+  /*protected*/ Division* _division = nullptr;
 
   // IdTag reader associated with this location.
   /*protected*/ Reporter* reader; //=null;

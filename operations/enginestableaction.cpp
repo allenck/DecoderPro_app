@@ -34,7 +34,7 @@ void EnginesTableAction::common()
 {
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
-    /*public*/ void EnginesTableAction::actionPerformed(ActionEvent* /*e*/) {
+    /*public*/ void EnginesTableAction::actionPerformed(JActionEvent * /*e*/) {
         // create a engine table frame
         new Operations::EnginesTableFrame();
     }

@@ -1,5 +1,5 @@
 #include "deletecarrosteraction.h"
-#include <QMessageBox>
+#include "joptionpane.h"
 #include "carstableframe.h"
 #include "carstablemodel.h"
 #include "track.h"
@@ -43,13 +43,12 @@ namespace Operations
  }
 
  //@Override
- /*public*/ void DeleteCarRosterAction::actionPerformed(ActionEvent* ae)
+ /*public*/ void DeleteCarRosterAction::actionPerformed(JActionEvent* /*ae*/)
  {
   if (_carsTableFrame->carsTableModel->trackName == NULL)
   {
-//         if (JOptionPane.showConfirmDialog(NULL, tr("carSureDelete"),
-//                 tr("carDeleteAll"), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-   if(QMessageBox::question(NULL, tr("Delete all cars?"), tr("Are you sure you want to delete all the cars in your roster?"),QMessageBox::Ok | QMessageBox::Cancel )== QMessageBox::Ok)
+   if (JOptionPane::showConfirmDialog(NULL,  tr("Are you sure you want to delete all the cars in your roster?"),
+             tr("Delete all cars?"), JOptionPane::OK_CANCEL_OPTION) == JOptionPane::OK_OPTION)
    {
     log->debug("removing all cars from roster");
     ((CarManager*)InstanceManager::getDefault("CarManager"))->deleteAll();
@@ -57,10 +56,8 @@ namespace Operations
   }
   else
   {
-//         if (JOptionPane.showConfirmDialog(NULL, MessageFormat.format(tr("carDeleteCarsTrack"),
-//                 new Object[]{_carsTableFrame.carsTableModel.trackName}),
-//                 tr("carDeleteAll"), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-   if(QMessageBox::question(NULL, tr("Delete all cars?"), tr("Are you sure you want to delete all the cars on track %1?").arg(_carsTableFrame->carsTableModel->trackName),QMessageBox::Ok | QMessageBox::Cancel )== QMessageBox::Ok)
+ if (JOptionPane::showConfirmDialog(NULL, tr("Are you sure you want to delete all the cars on track %1?").arg(_carsTableFrame->carsTableModel->trackName),
+                 tr("Delete all cars?"), JOptionPane::OK_CANCEL_OPTION) == JOptionPane::OK_OPTION)
    {
     foreach (RollingStock* car, *_carsTableFrame->carsTableModel->getSelectedCarList())
     {
@@ -69,4 +66,4 @@ namespace Operations
    }
   }
  }
-}
+} // Operations namespace

@@ -8,7 +8,6 @@
 #include "jtable.h"
 #include "tablecolumn.h"
 #include "xtablecolumnmodel.h"
-#include "routeeditframe.h"
 #include "pushbuttondelegate.h"
 #include "instancemanager.h"
 
@@ -68,8 +67,7 @@ namespace Operations
      }
      // and add them back in
      foreach (Route* route, sysList) {
-         //route.addPropertyChangeListener(this);
-      connect(route->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         route->addPropertyChangeListener(this);
      }
  }
 
@@ -245,8 +243,7 @@ namespace Operations
  /*private*/ /*synchronized*/ void RoutesTableModel::removePropertyChangeRoutes() {
      if (!sysList.isEmpty()) {
          foreach (Route* route, sysList) {
-             //route.removePropertyChangeListener(this);
-          disconnect(route->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+             route->removePropertyChangeListener(this);
          }
      }
  }

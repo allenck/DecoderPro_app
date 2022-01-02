@@ -71,7 +71,7 @@ namespace Operations
      //super();
   log = new Logger("TrackEditFrame");
   trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
-  routeManager = ((RouteManager*)InstanceManager::getDefault("RouteManager"));
+  routeManager = ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"));
 
   _location = NULL;
   _track = NULL;

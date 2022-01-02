@@ -45,7 +45,7 @@ namespace Operations
 //         log.debug("Print cancelled");
 //         return;
 //     }
-  QList<Route*> routes = ((RouteManager*)InstanceManager::getDefault("RouteManager"))->getRoutesByNameList();
+  QList<Route*> routes = ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"))->getRoutesByNameList();
   for (int i = 0; i < routes.size(); i++) {
       Route* route = routes.at(i);
       //try {

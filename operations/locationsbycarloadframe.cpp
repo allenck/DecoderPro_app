@@ -235,7 +235,7 @@ namespace Operations
          connect(location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          QLabel* locationName = new QLabel(location->getName());
          addItemLeft(pLocations, locationName, 0, x++);
-         QList<Track*> tracks = location->getTrackByNameList(NULL);
+         QList<Track*> tracks = location->getTracksByNameList(NULL);
          foreach (Track* track, tracks)
          {
              //track->PropertyChangeSupport::addPropertyChangeListener(this);

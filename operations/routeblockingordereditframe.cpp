@@ -39,7 +39,7 @@ namespace Operations {
     _route = route;
 
     // load managers
-    routeManager = (RouteManager*)InstanceManager::getDefault("RouteManager");
+    routeManager = (RouteManager*)InstanceManager::getDefault("Operations::RouteManager");
 
     // Set up the jtable in a Scroll Pane..
     //routePane = new JScrollPane(routeTable);

@@ -33,13 +33,13 @@ namespace Operations
 {
      //super(actionName);
      mFrame = new JFrame();
-     isPreview = isPreview;
+     this->isPreview = isPreview;
      this->route = route;
      connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
  }
 
 
- /*public*/ void PrintRouteAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void PrintRouteAction::actionPerformed(JActionEvent * /*e*/) {
      if (route == NULL) {
          return;
      }

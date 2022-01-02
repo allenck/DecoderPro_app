@@ -37,7 +37,7 @@ namespace Operations
  }
 
 
- /*public*/ void ScheduleCopyAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void ScheduleCopyAction::actionPerformed(JActionEvent * /*e*/) {
      // create a copy track frame
      if (f == NULL || !f->isVisible()) {
          f = new ScheduleCopyFrame(schedule);

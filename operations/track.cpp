@@ -28,6 +28,7 @@
 #include "trainschedule.h"
 #include "trainschedulemanager.h"
 #include "instancemanager.h"
+#include "division.h"
 
 //Track::Track(QObject *parent) :
 //  QObject(parent)
@@ -150,6 +151,7 @@ namespace Operations
   _id = id;
 
  }
+
  void Track::common()
  {
   log = new Logger("Track");
@@ -289,17 +291,27 @@ namespace Operations
  }
 
  /*public*/ void Track::setName(QString name) {
-     QString old = _name;
-     _name = name;
-     if (old!=(name)) {
-         setDirtyAndFirePropertyChange(NAME_CHANGED_PROPERTY, old, name);
+         QString old = _name;
+         _name = name;
+         if (old!=(name)) {
+             ((LocationManager*)InstanceManager::getDefault("LocationManager"))->resetNameLengths(); // recalculate max track name length
+                                                                                   // for manifests
+             setDirtyAndFirePropertyChange(NAME_CHANGED_PROPERTY, old, name);
+         }
      }
- }
 
- /*public*/ QString Track::getName() {
-     return _name;
- }
+  /*public*/ QString Track::getName() {
+      return _name;
+  }
 
+  /*public*/ Division* Track::getDivision() {
+      return getLocation()->getDivision();
+  }
+
+
+ /*public*/ QString Track::getDivisionName() {
+     return getLocation()->getDivisionName();
+ }
  /**
   * Gets the track type
   *
@@ -464,6 +476,13 @@ namespace Operations
  /*public*/ int Track::getScheduleMode() {
      return _mode;
  }
+
+ /*public*/ QString Track::getScheduleModeName() {
+    if (getScheduleMode() == Track::MATCH) {
+        return tr("Match");
+    }
+    return tr("Sequential");
+}
 
  /*public*/ void Track::setAlternateTrack(Track* track) {
      Track* oldTrack = _location->getTrackById(_alternateTrackId);
@@ -814,6 +833,17 @@ if (types.length() == 0) {
  /*public*/ QString Track::getRoadOption() {
      return _roadOption;
  }
+ /*public*/ QString Track::getRoadOptionString() {
+         QString s;
+         if (getRoadOption() ==(Track::INCLUDE_ROADS)) {
+             s = tr("Accept Only") + " " + QString::number(getRoadNames().length()) + " " + tr("Roads");
+         } else if (getRoadOption() ==(Track::EXCLUDE_ROADS)) {
+             s = tr("Exclude") + " " + QString::number(getRoadNames().length()) + " " + tr("Roads");
+         } else {
+             s = tr("Track accepts all railways");
+         }
+         return s;
+     }
 
  /**
   * Set the road option for this track.
@@ -890,6 +920,17 @@ if (roads.length() == 0) {
      return _loadOption;
  }
 
+ /*public*/ QString Track::getLoadOptionString() {
+         QString s;
+         if (getLoadOption() == (Track::INCLUDE_LOADS)) {
+             s = tr("Accept Only") + " " + QString::number(getLoadNames().length())+ " " + tr("Loads");
+         } else if (getLoadOption() == (Track::EXCLUDE_LOADS)) {
+             s = tr("Exclude") + " " + QString::number(getLoadNames().length()) + " " + tr("Loads");
+         } else {
+             s = tr("Track accepts all loads");
+         }
+         return s;
+     }
  /**
   * Set how this track deals with receiving car loads
   *
@@ -1011,6 +1052,17 @@ if (loads.length() == 0) {
      return _shipLoadOption;
  }
 
+ /*public*/ QString Track::getShipLoadOptionString() {
+         QString s;
+         if (getShipLoadOption() ==(Track::INCLUDE_LOADS)) {
+             s = tr("Ship 0nly") + " " + QString::number(getShipLoadNames().length()) + " " + tr("Loads");
+         } else if (getShipLoadOption() ==(Track::EXCLUDE_LOADS)) {
+             s = tr("Exclude") + " " +QString::number( getShipLoadNames().length()) + " " + tr("Loads");
+         } else {
+             s = tr("ShipAll");
+         }
+         return s;
+     }
  /**
   * Set how this track deals with shipping car loads
   *

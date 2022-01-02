@@ -265,7 +265,7 @@ TrainCsvCommon::TrainCsvCommon()
 /*protected*/ void TrainCsvCommon::printTrackComments(PrintWriter* fileOut, RouteLocation* rl, QList<Car*>* carList) {
     Location* location = rl->getLocation();
     if (location != NULL) {
-        QList<Track*> tracks = location->getTrackByNameList(NULL);
+        QList<Track*> tracks = location->getTracksByNameList(NULL);
         for (Track* track : tracks) {
             // any pick ups or set outs to this track?
             bool pickup = false;

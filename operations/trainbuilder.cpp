@@ -839,7 +839,7 @@ namespace Operations
   */
  /*private*/ Track* TrainBuilder::PromptToStagingDialog()
  {
-    QList<Track*> tracksIn = _terminateLocation->getTrackByNameList(NULL);
+    QList<Track*> tracksIn = _terminateLocation->getTracksByNameList(NULL);
      QList<Track*> validTracks = QList<Track*>();
      // only show valid tracks
      foreach (Track* track, tracksIn)
@@ -3999,7 +3999,7 @@ namespace Operations
              // no staging track assigned, start track search
          } else {
              // first report if there are any alternate tracks
-             foreach (Track* track, testDestination->getTrackByNameList(NULL)) {
+             foreach (Track* track, testDestination->getTracksByNameList(NULL)) {
                  if (track->isAlternate()) {
                      addLine(_buildReport, SEVEN, tr("Can''t send (%1) directly to alternate %2 (%3)").arg(
                              car->toString()).arg(track->getTrackTypeName()).arg(track->getName()));

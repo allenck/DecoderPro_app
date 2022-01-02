@@ -199,7 +199,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
              addItemWidth(pRoute, locText, 2, 1, y++);
              continue;
          }
-         QList<Track*> tracks = location->getTrackByNameList(NULL);
+         QList<Track*> tracks = location->getTracksByNameList(NULL);
          foreach (Track* track, tracks) {
              // show the car's track if there's a track destination restriction
              if (_car != NULL && _car->getTrack() != NULL && !_car->getTrack()->acceptsDestination(location)

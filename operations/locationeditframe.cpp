@@ -46,6 +46,7 @@
 #include "showtrainsservinglocationaction.h"
 #include "locationtrackblockingorderaction.h"
 #include "borderfactory.h"
+#include "setphysicallocationaction.h"
 
 //LocationEditFrame::LocationEditFrame()
 //{
@@ -353,9 +354,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   toolMenu->addAction(new ShowCarsByLocationAction(false, locationName, NULL,this));
   toolMenu->addAction(new PrintLocationsAction(tr("Print"), false, location,this));
   toolMenu->addAction(new PrintLocationsAction(tr("Preview"), true, location,this));
-#if 0
+#if 1
   if (Setup::isVsdPhysicalLocationEnabled()) {
-      toolMenu->addAction(new SetPhysicalLocationAction(tr("MenuSetPhysicalLocation"), _location));
+      toolMenu->addAction(new SetPhysicalLocationAction( _location));
   }
 #endif
   menuBar->addMenu(toolMenu);

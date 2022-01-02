@@ -54,7 +54,7 @@ namespace Operations
   // first, remove listeners from the individual objects
   removePropertyChangeTracks();
 
-  tracksList = _location->getTrackByNameList(_trackType);
+  tracksList = _location->getTracksByNameList(_trackType);
   // and add them back in
   foreach (Track* track, tracksList)
   {

@@ -275,7 +275,7 @@ namespace Operations
    cb->setChecked(locAcceptsType);
    addItemLeft(pLocations, cb, 0, x++);
    i1++;
-   QList<Track*> tracks = loc->getTrackByNameList(NULL);
+   QList<Track*> tracks = loc->getTracksByNameList(NULL);
    foreach (Track* track, tracks)
    {
     //track.addPropertyChangeListener(this);

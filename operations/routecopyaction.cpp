@@ -1,5 +1,4 @@
 #include "routecopyaction.h"
-#include "routecopyframe.h"
 
 namespace Operations
 {
@@ -35,7 +34,7 @@ void RouteCopyAction::common()
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
- /*public*/ void RouteCopyAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void RouteCopyAction::actionPerformed(JActionEvent * /*e*/) {
      // create a copy route frame
 
      if (f == NULL || !f->isVisible()) {

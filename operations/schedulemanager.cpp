@@ -322,12 +322,12 @@ namespace Operations
   // search all spurs for that use schedule
   foreach (Location* location, ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationsByNameList())
   {
-   foreach (Track* spur, location->getTrackByNameList(Track::SPUR))
+   foreach (Track* spur, location->getTracksByNameList(Track::SPUR))
    {
     if (spur->getScheduleId()==(schedule->getId()))
     {
      LocationTrackPair* ltp = new LocationTrackPair(location, spur);
-     box->addItem(ltp->toString(), VPtr<LocationTrackPair>::asQVariant(ltp));
+     box->addItem(ltp->toString(), VPtr<Operations::LocationTrackPair>::asQVariant(ltp));
     }
    }
   }

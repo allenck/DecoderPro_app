@@ -35,7 +35,7 @@ namespace Operations
  /*public*/ RouteCopyFrame::RouteCopyFrame(Route* route, QWidget* parent) : OperationsFrame(tr("Copy Route"),parent) {
      //super(tr("TitleRouteCopy"));
  log = new Logger("RouteCopyFrame");
- routeManager = ((RouteManager*)InstanceManager::getDefault("RouteManager"));
+ routeManager = ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"));
 
   // labels
   textCopyRoute = new QLabel(tr("Copy Route"));

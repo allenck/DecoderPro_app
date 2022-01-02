@@ -106,8 +106,8 @@ namespace Operations
   // Set up the control panel
   // row 1
   JPanel* cp1 = new JPanel();
-  cp1->setBorder(BorderFactory::createTitledBorder(tr("Sort By")));
   FlowLayout * cp1Layout = new FlowLayout(cp1);
+  cp1->setBorder(BorderFactory::createTitledBorder(tr("Sort By")));
   cp1Layout->addWidget(sortByNumber);
   cp1Layout->addWidget(sortByRoad);
   cp1Layout->addWidget(sortByModel);
@@ -148,8 +148,8 @@ namespace Operations
   cp2Layout->addWidget(cp2Add);
 
   JPanel* cp2Find = new JPanel();
-  cp2Find->setBorder(BorderFactory::createTitledBorder(""));
   FlowLayout* cp2FindLayout = new FlowLayout(cp2Find);
+  cp2Find->setBorder(BorderFactory::createTitledBorder(""));
   findButton->setToolTip(tr("Find locomotive by road number. Asterisk \"*\" = wild card."));
   findEngineTextBox->setToolTip(tr("Find locomotive by road number. Asterisk \"*\" = wild card."));
   cp2FindLayout->addWidget(findButton);
@@ -157,8 +157,8 @@ namespace Operations
   cp2Layout->addWidget(cp2Find);
 
   JPanel* cp2Save = new JPanel();
-  cp2Save->setBorder(BorderFactory::createTitledBorder(""));
   FlowLayout* cp2SaveLayout = new FlowLayout(cp2Save);
+  cp2Save->setBorder(BorderFactory::createTitledBorder(""));
   cp2SaveLayout->addWidget(saveButton);
   cp2Layout->addWidget(cp2Save);
 

@@ -29,7 +29,7 @@ namespace Operations
     }
 
 
-    /*public*/ void CarAttributeAction::actionPerformed(ActionEvent* ae) {
+    /*public*/ void CarAttributeAction::actionPerformed(JActionEvent *ae) {
         log->debug("Show attribute quanity");
         caef->toggleShowQuanity();
     }

@@ -54,6 +54,7 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
+#include <qlist.h>
 #include <qlocale.h>
 #include <qmargins.h>
 #include <qmenu.h>
@@ -164,6 +165,7 @@ public:
 
    ~PythonQtShell_LocoNetSystemConnectionMemo();
 
+virtual void _register();
 virtual void dispose();
 virtual LnSensorManager*  getSensorManager();
 virtual bool  provides(QString  type);
@@ -175,6 +177,7 @@ virtual bool  provides(QString  type);
 
 class PythonQtPublicPromoter_LocoNetSystemConnectionMemo : public LocoNetSystemConnectionMemo
 { public:
+inline void py_q__register() { LocoNetSystemConnectionMemo::_register(); }
 inline void py_q_dispose() { LocoNetSystemConnectionMemo::dispose(); }
 inline LnSensorManager*  py_q_getSensorManager() { return LocoNetSystemConnectionMemo::getSensorManager(); }
 inline bool  py_q_provides(QString  type) { return LocoNetSystemConnectionMemo::provides(type); }
@@ -188,6 +191,7 @@ LocoNetSystemConnectionMemo* new_LocoNetSystemConnectionMemo(QObject*  parent = 
 LocoNetSystemConnectionMemo* new_LocoNetSystemConnectionMemo(QString  prefix, QString  name);
 void delete_LocoNetSystemConnectionMemo(LocoNetSystemConnectionMemo* obj) { delete obj; } 
    void _register(LocoNetSystemConnectionMemo* theWrappedObject);
+   void py_q__register(LocoNetSystemConnectionMemo* theWrappedObject){  (((PythonQtPublicPromoter_LocoNetSystemConnectionMemo*)theWrappedObject)->py_q__register());}
    void configureCommandStation(LocoNetSystemConnectionMemo* theWrappedObject, LnCommandStationType*  type, bool  mTurnoutNoRetry, bool  mTurnoutExtraSpace, bool  mTranspondingAvailable);
    void configureManagers(LocoNetSystemConnectionMemo* theWrappedObject);
    void dispose(LocoNetSystemConnectionMemo* theWrappedObject);

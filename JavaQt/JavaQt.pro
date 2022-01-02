@@ -36,6 +36,8 @@ isEmpty( PROJ_DIR ) {
 
 SOURCES += javaqt.cpp \
     classmigration.cpp \
+    csvformat.cpp \
+    csvprinter.cpp \
     filesystemview.cpp \
     jeditorpane.cpp \
     jframe.cpp \
@@ -62,6 +64,8 @@ SOURCES += javaqt.cpp \
     dataflavor.cpp \
     exceptions.cpp \
     #systemtype.cpp \
+    physicallocation.cpp \
+    physicallocationpanel.cpp \
     thread.cpp \
     tristatejcheckbox.cpp \
     validation.cpp \
@@ -281,6 +285,8 @@ SOURCES += javaqt.cpp \
 
 HEADERS += javaqt.h\
  classmigration.h \
+ csvformat.h \
+ csvprinter.h \
  filesystemview.h \
         javaqt_global.h \
     calendar.h \
@@ -299,6 +305,8 @@ HEADERS += javaqt.h\
     logger.h \
     gridbagconstraints.h \
     insets.h \
+ physicallocation.h \
+ physicallocationpanel.h \
  preferNumericComparator.h \
  #systemtype.h \
  thread.h \

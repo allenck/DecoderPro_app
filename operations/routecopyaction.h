@@ -3,9 +3,11 @@
 
 #include "abstractaction.h"
 #include "route.h"
+#include <QPointer>
+#include "routecopyframe.h"
+
 namespace Operations
 {
- class RouteCopyFrame;
  class RouteCopyAction : public AbstractAction
  {
   Q_OBJECT
@@ -14,10 +16,10 @@ namespace Operations
   /*public*/ RouteCopyAction(Route* route,  QObject* parent);
 
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e = 0);
+  /*public*/ void actionPerformed(JActionEvent* e = 0);
  private:
   Route* _route = nullptr;
-  RouteCopyFrame* f;// = null;
+  QPointer<RouteCopyFrame> f = nullptr;
   void common();
   QString routeName;
 

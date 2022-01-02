@@ -368,7 +368,7 @@ XmlFile::XmlFile(QObject *parent) :
  */
 /*public*/ void XmlFile::makeBackupFile(QString name) const
 {
- QFile* file = findFile(name)->toQfile();
+ File * file = findFile(name);
  if (file == NULL)
  {
   log->info("No " + name + " file to backup");
@@ -378,15 +378,15 @@ XmlFile::XmlFile(QObject *parent) :
   QFileInfo info(file->fileName());
 
   QString backupName = backupFileName(info.absoluteFilePath());
-  QFile* backupFile = findFile(backupName)->toQfile();
+  File* backupFile = findFile(backupName);
   if (backupFile != NULL)
   {
-   if (backupFile->remove())
+   if (backupFile->toQfile()->remove())
    {
     log->debug("deleted backup file " + backupName);
    }
   }
-  if (file->rename(backupName))
+  if (file->toQfile()->rename(backupName))
   {
    log->debug("created new backup file " + backupName);
   }

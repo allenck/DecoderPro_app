@@ -13,7 +13,7 @@ namespace Operations
 ///*public*/ class LocationTrackPair {
 
 
- /*public*/ LocationTrackPair::LocationTrackPair(Location* location, Track* track) {
+ /*public*/ LocationTrackPair::LocationTrackPair(Location* location, Track* track) : QObject() {
      _location = location;
      _track = track;
  }

@@ -11,7 +11,7 @@ namespace Operations
  public:
   AlternateTrackAction(TrackEditFrame* tef);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e = 0);
+  /*public*/ void actionPerformed(JActionEvent* e = 0);
 
  private:
   /*private*/ TrackEditFrame* _tef;

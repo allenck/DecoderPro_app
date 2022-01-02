@@ -78,6 +78,9 @@ HEADERS += \
 }
 
 SOURCES += \
+ division.cpp \
+ exportlocations.cpp \
+ exportlocationsrosteraction.cpp \
  metatypes.cpp \
         operations.cpp \
         operationsmenu.cpp \
@@ -88,6 +91,8 @@ SOURCES += \
     routeblockingordereditframe.cpp \
  routeblockingordereditframeaction.cpp \
     routeblockingorderedittablemodel.cpp \
+ setphysicallocationaction.cpp \
+ setphysicallocationframe.cpp \
         trainmanifesttext.cpp \
         operationsxml.cpp \
         trainswitchlisttext.cpp \
@@ -381,6 +386,9 @@ SOURCES += \
     taskallocaterelease.cpp
 
 HEADERS += \
+ division.h \
+ exportlocations.h \
+ exportlocationsrosteraction.h \
  metatypes.h \
         operations.h \
         operations_global.h \
@@ -393,6 +401,8 @@ HEADERS += \
     routeblockingordereditframe.h \
  routeblockingordereditframeaction.h \
     routeblockingorderedittablemodel.h \
+ setphysicallocationaction.h \
+ setphysicallocationframe.h \
         trainswitchlisttext.h \
         routemanagerxml.h \
         routemanager.h \

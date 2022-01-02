@@ -1,5 +1,4 @@
 #include "cardeleteattributeaction.h"
-#include "carattributeeditframe.h"
 #include "logger.h"
 
 //CarDeleteAttributeAction::CarDeleteAttributeAction()
@@ -25,7 +24,7 @@ namespace Operations
  }
 
 
- /*public*/ void CarDeleteAttributeAction::actionPerformed(ActionEvent* ae) {
+ /*public*/ void CarDeleteAttributeAction::actionPerformed(JActionEvent *ae) {
      log->debug("Delete unused attributes");
      caef->deleteUnusedAttributes();
  }

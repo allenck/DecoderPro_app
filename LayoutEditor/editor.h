@@ -20,6 +20,7 @@
 #include <QPointer>
 #include <QPen>
 #include "displayframe.h"
+#include <QPointer>
 
 /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean);
 

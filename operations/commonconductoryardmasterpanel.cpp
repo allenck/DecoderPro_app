@@ -477,7 +477,7 @@ namespace Operations
       setLabelFont(header);
       pMoves->layout()->addWidget(header);
   }
-  QList<Track*> tracks = rl->getLocation()->getTrackByNameList(NULL);
+  QList<Track*> tracks = rl->getLocation()->getTracksByNameList(NULL);
   QList<RouteLocation*>* routeList = _train->getRoute()->getLocationsBySequenceList();
   QList<Car*>* carList = carManager->getByTrainDestinationList(_train);
   foreach (Track* track, tracks)

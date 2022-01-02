@@ -58,7 +58,7 @@ namespace Operations
     root.appendChild(p);
     doc.appendChild(root);
 
-    ((RouteManager*)InstanceManager::getDefault("RouteManager"))->store(root, doc);
+    ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"))->store(root, doc);
 
     writeXML(file, doc);
 

@@ -217,7 +217,6 @@ SOURCES += \
     internalsensormanager.cpp \
     internalturnoutmanager.cpp \
     abstractmemory.cpp \
-    physicallocation.cpp \
     defaultmemorymanager.cpp \
     abstractmemorymanager.cpp \
     defaultmemory.cpp \
@@ -1266,7 +1265,6 @@ HEADERS += \
     sensor.h \
     abstractmemory.h \
     physicallocationreporter.h \
-    physicallocation.h \
     initializer.h \
     defaultmemorymanager.h \
     abstractmemorymanager.h \

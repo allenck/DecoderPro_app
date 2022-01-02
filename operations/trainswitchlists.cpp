@@ -334,7 +334,7 @@ namespace Operations
              foreach (Location* loc, locationManager->getLocationsByNameList()) {
                  if (splitString(loc->getName())!=(splitString(location->getName())))
                      continue;
-                 foreach (Track* track, loc->getTrackByNameList(NULL)) {
+                 foreach (Track* track, loc->getTracksByNameList(NULL)) {
                      if (trackName==(splitString(track->getName())))
                          continue;
                      QString trainName = "";

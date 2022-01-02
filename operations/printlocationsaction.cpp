@@ -88,7 +88,7 @@ namespace Operations
 
  }
 
- /*public*/ void PrintLocationsAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void PrintLocationsAction::actionPerformed(JActionEvent * /*e*/) {
      if (lpof == NULL) {
          lpof = new LocationPrintOptionFrame(this);
      } else {
@@ -175,7 +175,7 @@ namespace Operations
          usedLength += location->getUsedLength();
          numberRS += location->getNumberRS();
 
-         QList<Track*> yards = location->getTrackByNameList(Track::YARD);
+         QList<Track*> yards = location->getTracksByNameList(Track::YARD);
          if (yards.size() > 0) {
              // header
              writer->write(SPACE + tr("YardName") + NEW_LINE);
@@ -186,7 +186,7 @@ namespace Operations
              }
          }
 
-         QList<Track*> spurs = location->getTrackByNameList(Track::SPUR);
+         QList<Track*> spurs = location->getTracksByNameList(Track::SPUR);
          if (spurs.size() > 0) {
              // header
              writer->write(SPACE + tr("SpurName") + NEW_LINE);
@@ -197,7 +197,7 @@ namespace Operations
              }
          }
 
-         QList<Track*> interchanges = location->getTrackByNameList(Track::INTERCHANGE);
+         QList<Track*> interchanges = location->getTracksByNameList(Track::INTERCHANGE);
          if (interchanges.size() > 0) {
              // header
              writer->write(SPACE + tr("InterchangeName") + NEW_LINE);
@@ -208,7 +208,7 @@ namespace Operations
              }
          }
 
-         QList<Track*> stagingTracks = location->getTrackByNameList(Track::STAGING);
+         QList<Track*> stagingTracks = location->getTracksByNameList(Track::STAGING);
          if (stagingTracks.size() > 0) {
              // header
              writer->write(SPACE + tr("StagingName") + NEW_LINE);
@@ -255,7 +255,7 @@ namespace Operations
              if (_location != NULL && location != _location) {
                  continue;
              }
-             QList<Track*> spurs = location->getTrackByNameList(Track::SPUR);
+             QList<Track*> spurs = location->getTracksByNameList(Track::SPUR);
              foreach (Track* spur, spurs) {
                  if (spur->getScheduleId()==(schedule->getId())) {
                      // pad out schedule name
@@ -321,7 +321,7 @@ namespace Operations
          writer->write(s);
          s = SPACE + location->getComment() + NEW_LINE;
          writer->write(s);
-         foreach (Track* track, location->getTrackByNameList(NULL)) {
+         foreach (Track* track, location->getTracksByNameList(NULL)) {
              if (track->getComment()!=(Track::NONE) || track->getCommentBoth()!=(Track::NONE) || track->getCommentPickup()!=(Track::NONE)
                      || track->getCommentSetout()!=(Track::NONE)) {
                  s = SPACE + track->getName() + NEW_LINE;
@@ -374,28 +374,28 @@ namespace Operations
          s = getLocationTypes(location);
          writer->write(s);
 
-         QList<Track*> yards = location->getTrackByNameList(Track::YARD);
+         QList<Track*> yards = location->getTracksByNameList(Track::YARD);
          if (yards.size() > 0) {
              s = SPACE + tr("YardName") + NEW_LINE;
              writer->write(s);
              printTrackInfo(location, yards);
          }
 
-         QList<Track*> spurs = location->getTrackByNameList(Track::SPUR);
+         QList<Track*> spurs = location->getTracksByNameList(Track::SPUR);
          if (spurs.size() > 0) {
              s = SPACE + tr("SpurName") + NEW_LINE;
              writer->write(s);
              printTrackInfo(location, spurs);
          }
 
-         QList<Track*> interchanges = location->getTrackByNameList(Track::INTERCHANGE);
+         QList<Track*> interchanges = location->getTracksByNameList(Track::INTERCHANGE);
          if (interchanges.size() > 0) {
              s = SPACE + tr("InterchangeName") + NEW_LINE;
              writer->write(s);
              printTrackInfo(location, interchanges);
          }
 
-         QList<Track*> stagings = location->getTrackByNameList(Track::STAGING);
+         QList<Track*> stagings = location->getTracksByNameList(Track::STAGING);
          if (stagings.size() > 0) {
              s = SPACE + tr("StagingName") + NEW_LINE;
              writer->write(s);
@@ -495,7 +495,7 @@ namespace Operations
          if (_location != NULL && location != _location) {
              continue;
          }
-         QList<Track*> tracks = location->getTrackByNameList(trackType);
+         QList<Track*> tracks = location->getTracksByNameList(trackType);
          foreach (Track* track, tracks) {
              if (track->acceptsTypeName(carType)) {
                  trackLength = trackLength + track->getLength();
@@ -771,7 +771,7 @@ namespace Operations
          }
          buf = QString(TAB + TAB + routeType + NEW_LINE + TAB + TAB);
          foreach(QString id, ids) {
-             Route* route = ((RouteManager*)InstanceManager::getDefault("RouteManager"))->getRouteById(id);
+             Route* route = ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"))->getRouteById(id);
              if (route == NULL) {
                  log->info("Could not find a route for id: " + id + " location (" + track->getLocation()->getName()
                          + ") track (" + track->getName() + ")"); // NOI18N
@@ -825,7 +825,7 @@ namespace Operations
          }
          buf = QString(TAB + TAB + routeType + NEW_LINE + TAB + TAB);
          foreach(QString id, ids) {
-             Route* route = ((RouteManager*)InstanceManager::getDefault("RouteManager"))->getRouteById(id);
+             Route* route = ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"))->getRouteById(id);
              if (route == NULL) {
                  log->info("Could not find a route for id: " + id + " location (" + track->getLocation()->getName()
                          + ") track (" + track->getName() + ")"); // NOI18N
@@ -972,4 +972,4 @@ namespace Operations
   return "jmri.jmrit.operations.locations.tools.LocationPrintOptionFrame";
  }
 
-}
+} // Operations namespace

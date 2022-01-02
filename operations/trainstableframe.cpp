@@ -154,8 +154,8 @@ namespace Operations
 
 
   JPanel* options = new JPanel();
-  options->setBorder(BorderFactory::createTitledBorder(tr("Options")));
   options->setLayout(new FlowLayout);
+  options->setBorder(BorderFactory::createTitledBorder(tr("Options")));
   options->layout()->addWidget(showAllBox);
   options->layout()->addWidget(buildMsgBox);
   options->layout()->addWidget(buildReportBox);
@@ -164,8 +164,8 @@ namespace Operations
   options->layout()->addWidget(runFileBox);
 
   JPanel* action = new JPanel();
-  action->setBorder(BorderFactory::createTitledBorder(tr("Action")));
   action->setLayout(new FlowLayout);
+  action->setBorder(BorderFactory::createTitledBorder(tr("Action")));
   action->layout()->addWidget(moveRB);
   action->layout()->addWidget(conductorRB);
   action->layout()->addWidget(terminateRB);
@@ -196,8 +196,8 @@ namespace Operations
 
   // row 2
   JPanel* addTrain = new JPanel();
-  addTrain->setBorder(BorderFactory::createTitledBorder(""));
   addTrain->setLayout(new QHBoxLayout);
+  addTrain->setBorder(BorderFactory::createTitledBorder(""));
   addTrain->layout()->addWidget(numTrains);
   addTrain->layout()->addWidget(textTrains);
   addTrain->layout()->addWidget(textSep1);
@@ -206,8 +206,8 @@ namespace Operations
   numTrains->setText(QString::number(trainManager->getNumEntries()));
 
   JPanel* select = new JPanel();
-  select->setBorder(BorderFactory::createTitledBorder(""));
   select->setLayout(new QHBoxLayout);
+  select->setBorder(BorderFactory::createTitledBorder(""));
   select->layout()->addWidget(buildButton);
   select->layout()->addWidget(printButton);
   select->layout()->addWidget(openFileButton);

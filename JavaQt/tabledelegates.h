@@ -271,7 +271,7 @@ class JComboBoxEditor : public QStyledItemDelegate, public TableCellEditor, publ
     Q_OBJECT
     Q_INTERFACES(TableCellEditor TableCellRenderer )
     QStringList values = QStringList();
-    bool isInt;
+    bool isInt = false;
 public:
     JComboBoxEditor(QObject* parent = nullptr) : QStyledItemDelegate(parent) {}
     JComboBoxEditor(bool isInt, QObject* parent = nullptr) : QStyledItemDelegate(parent) {this->isInt = isInt;}

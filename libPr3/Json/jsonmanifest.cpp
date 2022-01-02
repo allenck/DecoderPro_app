@@ -246,7 +246,7 @@ using namespace Operations;
  QJsonObject comments = QJsonObject();//this->mapper.createQJsonObject();
  if (routeLocation->getLocation() != NULL)
  {
-  QList<Track*> tracks = routeLocation->getLocation()->getTrackByNameList(NULL);
+  QList<Track*> tracks = routeLocation->getLocation()->getTracksByNameList(NULL);
   for (Track* track : tracks)
   {
    QJsonObject jsonTrack = QJsonObject();//this->mapper.createQJsonObject();

@@ -52,7 +52,7 @@ public:
  LocoNetSystemConnectionMemo(QObject* parent=0);
  /*public*/ LocoNetSystemConnectionMemo(/*@Nonnull*/ QString prefix, /*@Nonnull*/ QString name);
  ~LocoNetSystemConnectionMemo();
- /*public*/ void _register();
+ /*public*/ void _register()override;
 
  /**
   * Provides access to the TrafficController for this

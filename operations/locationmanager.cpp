@@ -224,7 +224,7 @@ PropertyChangeSupport(this, parent)
      QList<Location*> sortList = getList();
      QList<Track*> trackList = QList<Track*>();
      foreach (Location* location, sortList) {
-         QList<Track*> tracks = location->getTrackByNameList(type);
+         QList<Track*> tracks = location->getTracksByNameList(type);
          foreach (Track* track, tracks) {
              trackList.append(track);
          }
@@ -343,7 +343,11 @@ PropertyChangeSupport(this, parent)
      calculateMaxNameLengths();
      return _maxTrackNameLength;
  }
-
+ /*public*/ void LocationManager::resetNameLengths() {
+     _maxLocationNameLength = 0;
+     _maxTrackNameLength = 0;
+     _maxLocationAndTrackNameLength = 0;
+ }
  /*public*/ int LocationManager::getMaxLocationAndTrackNameLength() {
      calculateMaxNameLengths();
      return _maxLocationAndTrackNameLength;

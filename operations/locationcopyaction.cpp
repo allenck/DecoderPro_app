@@ -17,7 +17,7 @@ namespace Operations
  }
 
 
- /*public*/ void LocationCopyAction::actionPerformed(ActionEvent* /*e*/)
+ /*public*/ void LocationCopyAction::actionPerformed(JActionEvent* /*e*/)
  {
      // create a copy track frame
      if (f == NULL || !f->isVisible()) {

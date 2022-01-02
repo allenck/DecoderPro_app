@@ -15,7 +15,7 @@
 #include "propertychangeevent.h"
 #include "routelocation.h"
 #include "routemanagerxml.h"
-#include <QMessageBox>
+#include "joptionpane.h"
 #include "panelmenu.h"
 #include "editor.h"
 #include "instancemanager.h"
@@ -34,12 +34,12 @@ namespace Operations
  {
   //super(tr("MenuSetTrainIcon"));
   log = new Logger("SetTrainIconRouteFrame");
-  value = QMessageBox::No; //JOptionPane.NO_OPTION;
+  value = JOptionPane::NO_OPTION;
   FORWARD = 1;
   BACK = -1;
   NONE = 0;
 
-  routeManager = ((RouteManager*)InstanceManager::getDefault("RouteManager"));
+  routeManager = ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"));
 
   // labels
   textX = new JLabel("   X  ");
@@ -89,8 +89,8 @@ namespace Operations
 
   // Set up the panels
   JPanel* pRoute = new JPanel();
-  pRoute->setBorder(BorderFactory::createTitledBorder(tr("Route") + " " + _route->getName()));
   pRoute->setLayout(new GridBagLayout());
+  pRoute->setBorder(BorderFactory::createTitledBorder(tr("Route") + " " + _route->getName()));
   addItem(pRoute, previousButton, 0, 0);
   addItem(pRoute, routeLocationName, 1, 0);
   addItem(pRoute, nextButton, 2, 0);
@@ -149,13 +149,10 @@ namespace Operations
          placeTestIcons();
      }
      if (source == applyButton) {
-         if (value != QMessageBox::Yes) {
-//             value = JOptionPane.showConfirmDialog(NULL, MessageFormat.format(Bundle
-//                     .getMessage("UpdateTrainIconRoute"), new Object[]{_route.getName()}), Bundle
-//                     .getMessage("DoYouWantThisRoute"), JOptionPane.YES_NO_OPTION);
-          value = QMessageBox::question(NULL, tr("Do you want to update this route?"), tr("Update train icon coordinates for route \"%1\"?").arg(_route->getName()), QMessageBox::Yes | QMessageBox::No);
+         if (value != JOptionPane::YES_OPTION) {
+          value = JOptionPane::showConfirmDialog(NULL, tr("Update train icon coordinates for route \"%1\"?").arg(_route->getName()), tr("Do you want to update this route?"), JOptionPane::YES_NO_OPTION);
          }
-         if (value == QMessageBox::Yes) {
+         if (value == JOptionPane::YES_OPTION) {
              saveButton->setEnabled(true);
          }
          updateTrainIconCoordinates();
@@ -188,18 +185,17 @@ namespace Operations
  /*private*/ void SetTrainIconRouteFrame::placeTestIcons() {
      Editor* editor = ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->getEditorByName(Setup::getPanelName());
      if (editor == NULL) {
-//         JOptionPane.showMessageDialog(this, MessageFormat.format(tr("LoadPanel"),
-//                 new Object[]{Setup.getPanelName()}), tr("PanelNotFound"),
-//                 JOptionPane.ERROR_MESSAGE);
-      QMessageBox::critical(this, tr("Panel not found!"), tr("You need to load panel \"%1\"").arg(Setup::getPanelName()));
-     } else {
+         JOptionPane::showMessageDialog(this, tr("You need to load panel \"%1\"").arg(Setup::getPanelName()), tr("Panel not found!"),
+                 JOptionPane::ERROR_MESSAGE);
+    } else {
          if (_tIon != NULL) {
              _tIon->remove();
          }
          // icon
          _tIon = editor->addTrainIcon(_rl->getName());
-// TODO:        _tIon->getTooltip().setText(_route->getName());
-//         _tIon->getTooltip().setBackgroundColor(QColor(Qt::white));
+//         _tIon->getToolTip().setText(_route->getName());
+         _tIon->setToolTip(_route->getName());
+//         _tIon->getToolTip().setBackgroundColor(QColor(Qt::white));
          _tIon->setLocation(_rl->getTrainIconX(), _rl->getTrainIconY());
          setTrainIconNameAndColor();
          addIconListener(_tIon);

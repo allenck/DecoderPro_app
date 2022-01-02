@@ -225,7 +225,7 @@ namespace Operations {
       printSetoutHeader = true;
       printLocalMoveHeader = true;
   }
-  QList<Track*> tracks = rl->getLocation()->getTrackByNameList(NULL);
+  QList<Track*> tracks = rl->getLocation()->getTracksByNameList(NULL);
   QStringList trackNames = QStringList();
   clearUtilityCarTypes(); // list utility cars by quantity
   foreach (Track* track, tracks) {
@@ -344,7 +344,7 @@ namespace Operations {
  {
   index = 0;
   int lineLength = getLineLength(isManifest);
-  QList<Track*> tracks = rl->getLocation()->getTrackByNameList(NULL);
+  QList<Track*> tracks = rl->getLocation()->getTracksByNameList(NULL);
   QStringList trackNames = QStringList();
   clearUtilityCarTypes(); // list utility cars by quantity
   if (printHeader) {
@@ -429,7 +429,7 @@ namespace Operations {
          QList<RouteLocation*>* routeList, RouteLocation* rl, bool printHeader, bool isManifest) {
      index = 0;
      int lineLength = getLineLength(isManifest);
-     QList<Track*> tracks = rl->getLocation()->getTrackByNameList(NULL);
+     QList<Track*> tracks = rl->getLocation()->getTracksByNameList(NULL);
      QStringList trackNames = QStringList();
      doneCars.clear();
      clearUtilityCarTypes(); // list utility cars by quantity
@@ -502,7 +502,7 @@ namespace Operations {
  /*protected*/ void TrainCommon::printTrackComments(PrintWriter* file, RouteLocation* rl, QList<Car*>* carList, bool isManifest) {
      Location* location = rl->getLocation();
      if (location != NULL) {
-         QList<Track*> tracks = location->getTrackByNameList(NULL);
+         QList<Track*> tracks = location->getTracksByNameList(NULL);
          foreach (Track* track, tracks) {
              // any pick ups or set outs to this track?
              bool pickup = false;

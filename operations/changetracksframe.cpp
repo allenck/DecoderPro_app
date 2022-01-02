@@ -102,7 +102,7 @@ JButton* source = (JButton*)ae;
 
  /*private*/ void ChangeTracksFrame::changeTracks(QString type) {
      log->debug(tr("change tracks to %1").arg(type));
-     QList<Track*> tracks = _location->getTrackByNameList(NULL);
+     QList<Track*> tracks = _location->getTracksByNameList(NULL);
      foreach (Track* track, tracks) {
          track->setTrackType(type);
      }

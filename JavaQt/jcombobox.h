@@ -45,7 +45,8 @@ public:
  /*public*/ QVariant getItemAt(int i);
  /*public*/ void clear();
  /*public*/ QVariant currentData();
- /*public*/ void addItem(QString text, const QVariant &data = QVariant());
+ /*public*/ QVariant itemData(int i);
+ /*public*/ void addItem(QString text, QVariant data = QVariant());
 // /*public*/ void  addItem(QString text) {QComboBox::addItem(text);}
 signals:
  void itemStateChanged(ItemEvent* e);

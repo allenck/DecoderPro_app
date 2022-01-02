@@ -97,8 +97,6 @@ void HardcopyWriter::common()
  charnum = 0, linenum = 0;
  charoffset = 0;
  previewToolBar = new QToolBar();
-// headermetrics = NULL;
-// metrics = NULL;
  previewImage = new QImage();
  cancelled = false;
 }
@@ -281,7 +279,7 @@ void HardcopyWriter::On_close_clicked()
  // enable/disable the previous/next buttons as appropriate
  previousButton->setEnabled(true);
  nextButton->setEnabled(true);
- if (pagenum == pageImages.size())
+ if (pagenum >= pageImages.size())
   nextButton->setEnabled(false);
  if (pagenum == 1)
   previousButton->setEnabled(false);
@@ -630,6 +628,9 @@ void HardcopyWriter::setFontWeight(QFont::Weight w)
  {
   page->setFont(headerfont);
   page->drawText(x0, headery, jobname);
+
+  if(headermetrics)
+   throw new IOException("null headermetrics in hardcopywriter");
 
   QString s = "- " + QString::number(pagenum) + " -"; // print page number centered
   int w = headermetrics->width(s);

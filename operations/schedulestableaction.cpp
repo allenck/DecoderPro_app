@@ -1,5 +1,4 @@
 #include "schedulestableaction.h"
-#include "schedulestableframe.h"
 
 namespace Operations
 {
@@ -24,7 +23,7 @@ namespace Operations
   connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void SchedulesTableAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void SchedulesTableAction::actionPerformed(JActionEvent * /*e*/) {
      // create a schedule table frame
      if (f == NULL || !f->isVisible()) {
          f = new SchedulesTableFrame();

@@ -343,11 +343,12 @@ namespace Operations
      Schedule* sch = sysList.at(row);
      JComboBox* box = scheduleManager->getSpursByScheduleComboBox(sch);
      for (int i = 0; i < box->count(); i++) {
-         LocationTrackPair* ltp = (LocationTrackPair*) VPtr<LocationTrackPair>::asPtr(box->itemData(i));
-         QString status = ltp->getTrack()->checkScheduleValid();
-         if (status!=(Track::SCHEDULE_OKAY)) {
-             return tr("Error");
-         }
+      QVariant v = box->itemData(i);
+      LocationTrackPair* ltp = (LocationTrackPair*) VPtr<Operations::LocationTrackPair>::asPtr(v);
+      QString status = ltp->getTrack()->checkScheduleValid();
+      if (status!=(Track::SCHEDULE_OKAY)) {
+          return tr("Error");
+      }
      }
      return tr("Okay");
  }

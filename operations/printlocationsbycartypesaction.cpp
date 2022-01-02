@@ -77,7 +77,7 @@ namespace Operations
                   s = TAB + location->getName() + NEW_LINE;
                   writer->write(s);
                   // tracks
-                  QList<Track*> tracks = location->getTrackByNameList(NULL);
+                  QList<Track*> tracks = location->getTracksByNameList(NULL);
                   foreach (Track* track, tracks) {
                       if (track->acceptsTypeName(type)) {
                           s = TAB + TAB + TAB + track->getName() + NEW_LINE;

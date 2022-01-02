@@ -14,7 +14,7 @@ namespace Operations
  public:
   /*public*/ PrintRouteAction(bool isPreview, Route* route, QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e = 0);
+  /*public*/ void actionPerformed(JActionEvent* e = 0)override;
 
  private:
   /*private*/ QString truncate(QString string);

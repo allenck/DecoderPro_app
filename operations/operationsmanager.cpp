@@ -49,7 +49,7 @@ void OperationsManager::initialize()
  ((EngineManager*)InstanceManager::getDefault("EngineManager"));
  ((TrainManager*)InstanceManager::getDefault("TrainManager"));
  ((LocationManager*)InstanceManager::getDefault("LocationManager"));
- ((Operations::RouteManager*)InstanceManager::getDefault("RouteManager"));
+ ((Operations::RouteManager*)InstanceManager::getDefault("Operations::RouteManager"));
  ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"));
  (TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager");
  this->setShutDownTask(this->getDefaultShutDownTask());

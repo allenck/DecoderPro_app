@@ -3545,7 +3545,7 @@ if (roads.length() == 0) {
      QDomElement eRoute = e.firstChildElement(Xml::ROUTE);
      if (!eRoute.isNull()) {
          if ((a = eRoute.attribute(Xml::ID)) != NULL) {
-             setRoute(((RouteManager*)InstanceManager::getDefault("RouteManager"))->getRouteById(a));
+             setRoute(((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"))->getRouteById(a));
          }
          if (eRoute.firstChildElement(Xml::SKIPS) != QDomElement()) {
              //@SuppressWarnings("unchecked")
@@ -3563,9 +3563,9 @@ if (roads.length() == 0) {
          // old format
          // try and first get the route by id then by name
          if ((a = e.attribute(Xml::ROUTE_ID)) != NULL) {
-             setRoute(((RouteManager*)InstanceManager::getDefault("RouteManager"))->getRouteById(a));
+             setRoute(((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"))->getRouteById(a));
          } else if ((a = e.attribute(Xml::ROUTE)) != NULL) {
-             setRoute(((RouteManager*)InstanceManager::getDefault("RouteManager"))->getRouteByName(a));
+             setRoute(((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"))->getRouteByName(a));
          }
          if ((a = e.attribute(Xml::SKIP)) != NULL) {
              QString locationIds = a;

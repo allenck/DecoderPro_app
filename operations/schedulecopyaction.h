@@ -2,9 +2,11 @@
 #define SCHEDULECOPYACTION_H
 
 #include "abstractaction.h"
+#include "schedulecopyframe.h"
+#include <QPointer>
+
 namespace Operations
 {
- class ScheduleCopyFrame;
  class Schedule;
  class ScheduleCopyAction : public AbstractAction
  {
@@ -13,10 +15,10 @@ namespace Operations
   ScheduleCopyAction(QObject* parent);
   /*public*/ ScheduleCopyAction(Schedule* schedule, QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e = 0);
+  /*public*/ void actionPerformed(JActionEvent* e = 0);
  private:
   Schedule* schedule;// = null;
-  ScheduleCopyFrame* f;// = null;
+  QPointer<ScheduleCopyFrame> f = nullptr;
 
  };
 }

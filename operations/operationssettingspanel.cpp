@@ -515,7 +515,7 @@ namespace Operations
         }
         if (maxLength < Setup::getMaxTrainLength()) {
             QString sb;// = new StringBuilder();
-            QList<Route*> routes = ((RouteManager*)InstanceManager::getDefault("RouteManager"))->getRoutesByNameList();
+            QList<Route*> routes = ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"))->getRoutesByNameList();
             int count = 0;
             for (Route* route : routes) {
                 foreach (RouteLocation* rl , *route->getLocationsBySequenceList()) {

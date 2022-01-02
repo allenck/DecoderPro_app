@@ -130,7 +130,7 @@ namespace Operations
   // combo boxes
    hourBox = new JComboBox();
    minuteBox = new JComboBox();
-   routeBox = ((RouteManager*)InstanceManager::getDefault("RouteManager"))->getComboBox();
+   routeBox = ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"))->getComboBox();
    roadCabooseBox = new JComboBox();
    roadEngineBox = new JComboBox();
    modelEngineBox = ((EngineModels*)InstanceManager::getDefault("EngineModels"))->getComboBox();

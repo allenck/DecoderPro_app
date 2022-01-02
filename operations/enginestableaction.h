@@ -11,7 +11,7 @@ public:
  /*public*/ EnginesTableAction(QString s, QObject *parent) ;
  /*public*/ EnginesTableAction(QObject *parent);
 public slots:
- /*public*/ void actionPerformed(ActionEvent* e = 0);
+ /*public*/ void actionPerformed(JActionEvent* e = 0);
 
 signals:
 

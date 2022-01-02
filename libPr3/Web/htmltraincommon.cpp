@@ -279,7 +279,7 @@ namespace Operations
 /*protected*/ QString HtmlTrainCommon::getTrackComments(RouteLocation* location, QList<Car*>* cars) {
     QString builder;// = new StringBuilder();
     if (location->getLocation() != NULL) {
-        QList<Track*> tracks = location->getLocation()->getTrackByNameList(NULL);
+        QList<Track*> tracks = location->getLocation()->getTracksByNameList(NULL);
         for (Track* track : tracks) {
             // any pick ups or set outs to this track?
              bool pickup = false;

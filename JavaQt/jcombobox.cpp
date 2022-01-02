@@ -2,6 +2,7 @@
 #include "eventobject.h"
 #include "itemlistener.h"
 #include "itemevent.h"
+#include "exceptions.h"
 
 JComboBox::JComboBox(QWidget* parent) : QComboBox(parent)
 {
@@ -121,11 +122,22 @@ void JComboBox::currentIndexChanged(int)
  return map.value(QComboBox::currentText());
 }
 
-/*public*/ void JComboBox::addItem(QString text, const QVariant &data)
+/*public*/ QVariant JComboBox::itemData(int index)
+{
+ if(index >= QComboBox::count())
+  throw new IndexOutOfBoundsException();
+ QVariant v = QComboBox::itemData(index);
+ if(v.isValid())
+  return v;
+ return map.value(itemText(index));
+}
+
+
+/*public*/ void JComboBox::addItem(QString text,  QVariant data)
 {
  if(data.isValid())
  {
   map.insert(text, data);
  }
- QComboBox::addItem(text/*, data*/);
+ QComboBox::addItem(text, data);
 }
