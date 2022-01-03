@@ -95,7 +95,7 @@ namespace Operations
      _track = track;
 
      // load managers
-     manager = ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"));
+     manager = ((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"));
      managerXml = ((LocationManagerXml*)InstanceManager::getDefault("LocationManagerXml"));
 
      // Set up the jtable in a Scroll Pane..
@@ -341,7 +341,7 @@ namespace Operations
 //     }
      if (_track != NULL ) {
          if (_track->getScheduleId()!=(_schedule->getId())) {
-             ((LocationManager*)InstanceManager::getDefault("LocationManager"))->resetMoves();
+             ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->resetMoves();
          }
          _track->setScheduleId(_schedule->getId());
          if (sequentialRadioButton->isChecked()) {

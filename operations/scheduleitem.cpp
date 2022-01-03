@@ -335,7 +335,7 @@ namespace Operations
          _ship = a;
      }
      if ((a = e.attribute(Xml::DESTINATION_ID)) != NULL) {
-         _destination = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationById(a);
+         _destination = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationById(a);
      }
      if ((a = e.attribute(Xml::DEST_TRACK_ID)) != NULL && _destination != NULL) {
          _trackDestination = _destination->getTrackById(a);

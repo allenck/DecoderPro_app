@@ -52,7 +52,7 @@ namespace Operations
         // general GUI config
  setObjectName("EnginesTableFrame");
  log = new Logger("EnginesTableFrame");
-  engineManager = ((EngineManager*)InstanceManager::getDefault("EngineManager"));
+  engineManager = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"));
   // labels
   numEngines = new QLabel();
   textEngines = new QLabel();

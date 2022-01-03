@@ -85,11 +85,9 @@ LinkingLabel::LinkingLabel(QWidget *parent) : PositionableLabel((Positionable*)p
 //           @Override
 //           /*public*/ void run() {
                //if frame was minimized, restore
-#if 0 // TODO:
                if (jframe->getExtendedState() == JFrame::ICONIFIED) {
                    jframe->setExtendedState(JFrame::NORMAL);
                }
-#endif
                //bring the frame to the foreground
                jframe->toFront();
                jframe->update();

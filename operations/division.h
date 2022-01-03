@@ -20,7 +20,7 @@ namespace Operations {
    /*public*/ void setComment(QString comment);
    /*public*/ QString getComment();
    /*public*/ Division(QDomElement e);
-   /*public*/ QDomElement store();
+   /*public*/ QDomElement store(QDomDocument doc);
 
   private:
    static Logger* log;

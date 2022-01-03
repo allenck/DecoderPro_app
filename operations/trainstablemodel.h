@@ -3,12 +3,13 @@
 #include "abstracttablemodel.h"
 #include "appslib_global.h"
 #include <QColor>
+#include "trainconductorframe.h"
+#include <QPointer>
 
 class Logger;
 class PropertyChangeEvent;
 namespace Operations
 {
- class TrainConductorFrame;
  class RouteEditFrame;
  class TrainEditFrame;
  class Train;
@@ -75,7 +76,7 @@ public slots:
   /*private*/ bool _showAll;// = true;
   QList<Train*> sysList;// = null;
   JTable* _table;// = null;
-  TrainsTableFrame* _frame;// = null;
+  QPointer<TrainsTableFrame> _frame;// = null;
   /*private*/ /*synchronized*/ void removePropertyChangeTrains() ;
   /*private*/ /*synchronized*/ void addPropertyChangeTrains();
   void initTable();

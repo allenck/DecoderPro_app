@@ -234,7 +234,7 @@ void AcelaNode::common(int address, int type, AcelaTrafficController *tc)
  * Used to help linear address search.
  * @param endingAddress end output address for range.
  */
-/*public*/  void setEndingOutputAddress(int endingAddress) {
+/*public*/  void AcelaNode::setEndingOutputAddress(int endingAddress) {
     endingOutputAddress = endingAddress;
 }
 

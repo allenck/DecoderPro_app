@@ -50,9 +50,9 @@ namespace Operations
  /*public*/ TrainsScheduleTableFrame::TrainsScheduleTableFrame(QWidget* parent) : OperationsFrame(parent)
  {
   log = new Logger("TrainsScheduleTableFrame");
-  trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
-  scheduleManager = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"));
-  locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
+  trainManager = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"));
+  scheduleManager = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"));
+  locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
 
   trainsScheduleModel = new TrainsScheduleTableModel();
   trainsScheduleTable = new JTable(trainsScheduleModel);
@@ -318,7 +318,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*private*/ void TrainsScheduleTableFrame::updateCheckboxes(bool selected) {
-     TrainSchedule* ts = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(getSelectedScheduleId());
+     TrainSchedule* ts = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(getSelectedScheduleId());
      if (ts != NULL) {
          foreach (Train* train, trainManager->getTrainsByIdList()) {
              if (selected) {
@@ -331,7 +331,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*private*/ void TrainsScheduleTableFrame::applySchedule() {
-     TrainSchedule* ts = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(getSelectedScheduleId());
+     TrainSchedule* ts = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(getSelectedScheduleId());
      if (ts != NULL) {
          foreach (Train* train, trainManager->getTrainsByIdList()) {
              train->setBuildEnabled(ts->containsTrainId(train->getId()));
@@ -403,12 +403,12 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
              trainSwitchLists->buildSwitchList(location);
              // // print or print changes
              if (Setup::isSwitchListRealTime() && location->getStatus()!=(Location::PRINTED)) {
-                 trainSwitchLists->printSwitchList(location, ((TrainManager*)InstanceManager::getDefault("TrainManager"))->isPrintPreviewEnabled());
+                 trainSwitchLists->printSwitchList(location, ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->isPrintPreviewEnabled());
              }
          }
      }
      // set trains switch lists printed
-     ((TrainManager*)InstanceManager::getDefault("TrainManager"))->setTrainsSwitchListStatus(Train::PRINTED);
+     ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->setTrainsSwitchListStatus(Train::PRINTED);
  }
 
  /*private*/ void TrainsScheduleTableFrame::updateSwitchListButton() {

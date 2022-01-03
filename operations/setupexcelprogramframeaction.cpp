@@ -1,5 +1,4 @@
 #include "setupexcelprogramframeaction.h"
-#include "setupexcelprogrammanifestframe.h"
 
 using namespace Operations;
 /**
@@ -19,12 +18,12 @@ using namespace Operations;
 
 
 //@Override
-/*public*/ void SetupExcelProgramFrameAction::actionPerformed(ActionEvent* /*e*/) {
+/*public*/ void SetupExcelProgramFrameAction::actionPerformed(JActionEvent* /*e*/) {
     // create a train scripts frame
     if (f != NULL && f->isVisible()) {
         f->dispose();
     }
     f = new SetupExcelProgramManifestFrame();
     f->initComponents();
-//    f->setExtendedState(Frame::NORMAL);
+    f->setExtendedState(JFrame::NORMAL);
 }

@@ -35,7 +35,7 @@ namespace Operations
  /*public*/ TrainsScriptFrame::TrainsScriptFrame(QWidget* parent)  : OperationsFrame(parent){
      //super();
  log = new Logger("TrainsScriptFrame");
-     trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
+     trainManager = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"));
 
      // script panels
      pStartUpScript = new JPanel();

@@ -18,7 +18,7 @@ namespace Operations {
  class ExportLocations : public XmlFile
  {
   public:
-   explicit ExportLocations(QObject *parent = nullptr);
+   explicit ExportLocations(QObject *parent = nullptr) {}
    /*public*/  void writeOperationsLocationFile();
    /*public*/  static QString defaultOperationsFilename();
    /*public*/  static void setOperationsFileName(QString name);
@@ -40,7 +40,7 @@ namespace Operations {
    Q_OBJECT
    ExportLocations* el;
   public:
-   EL_CSVPrinter(QTextStream* w, CSVFormat* f, ExportLocations* el);
+   EL_CSVPrinter(QTextStream* w, CSVFormat* f, ExportLocations* el) : CSVPrinter(w, f) {this->el = el;}
  };
 } // namespace Operations
 

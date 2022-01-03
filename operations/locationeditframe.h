@@ -3,6 +3,10 @@
 #include "operationsframe.h"
 #include "appslib_global.h"
 #include "propertychangelistener.h"
+#include "divisionmanager.h"
+#include "instancemanager.h"
+#include "jcolorchooser.h"
+#include "jbutton.h"
 
 class QGroupBox;
 class JTextArea;
@@ -70,6 +74,7 @@ namespace Operations
   JButton* clearButton;// = new JButton(Bundle.getMessage("Clear"));
   JButton* setButton;//= new JButton(Bundle.getMessage("Select"));
   JButton* autoSelectButton;// = new JButton(Bundle.getMessage("AutoSelect"));
+  JButton* editDivisionButton = new JButton(tr("Edit"));
   JButton* saveLocationButton;// = new JButton(Bundle.getMessage("SaveLocation"));
   JButton* deleteLocationButton;// = new JButton(Bundle.getMessage("DeleteLocation"));
   JButton* addLocationButton;// = new JButton(Bundle.getMessage("AddLocation"));
@@ -123,9 +128,16 @@ namespace Operations
   /*private*/ void autoSelectCheckboxes();
   /*private*/ void loadTypes(QStringList types);
   LocationsByCarTypeFrame* lctf;// = NULL;
+  JColorChooser* commentColorChooser = new JColorChooser();
+  /*private*/ void setDivisionButtonText();
 
  private slots:
   /*private*/ void checkBoxActionTrainPerformed(QWidget* ae);
+
+ protected:
+  /*protected*/ JComboBox/*<Division>*/* divisionComboBox = ((DivisionManager*)InstanceManager::getDefault("Operations::DivisionManager"))->getComboBox();
+  /*protected*/ void updateDivisionComboBox();
+
 
 friend class LocationsTableModel;
 friend class ChangeTracksFrame;

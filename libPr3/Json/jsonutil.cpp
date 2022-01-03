@@ -37,7 +37,7 @@ JsonUtil::JsonUtil(ObjectMapper mapper, QObject *parent) : QObject(parent)
 /*static*/ /*public*/ QJsonObject JsonUtil::getCar(QLocale locale, QString id) {
     QJsonObject root = QJsonObject();//mapper.createObjectNode();
     root.insert(JSON::TYPE, JSON::CAR);
-    root.insert(JSON::DATA, JsonUtil::getCar(((Operations::CarManager*)InstanceManager::getDefault("CarManager"))->getById(id)));
+    root.insert(JSON::DATA, JsonUtil::getCar(((Operations::CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getById(id)));
     return root;
 }
 #if 0
@@ -244,7 +244,7 @@ static /*public*/ void setConsist(Locale locale, DccLocoAddress address, JsonNod
 /*static*/ /*public*/ QJsonObject JsonUtil::getEngine(QLocale locale, QString id) {
     QJsonObject root = QJsonObject();//mapper.createObjectNode();
     root.insert(JSON::TYPE, JSON::ENGINE);
-    root.insert(JSON::DATA, JsonUtil::getEngine(((Operations::EngineManager*)InstanceManager::getDefault("EngineManager"))->getById(id)));
+    root.insert(JSON::DATA, JsonUtil::getEngine(((Operations::EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getById(id)));
     return root;
 }
 #if 0
@@ -375,7 +375,7 @@ static /*public*/ void setLight(Locale locale, String name, JsonNode data) throw
     //ObjectNode data = root.putObject(DATA);
     QJsonObject data = QJsonObject();
     try {
-        Operations::Location* location = ((Operations::LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationById(id);
+        Operations::Location* location = ((Operations::LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationById(id);
         data.insert(JSON::NAME, location->getName());
         data.insert(JSON::ID, location->getId());
         data.insert(JSON::LENGTH, location->getLength());
@@ -398,7 +398,7 @@ static /*public*/ void setLight(Locale locale, String name, JsonNode data) throw
 //@Deprecated
 /*static*/ /*public*/ QJsonArray JsonUtil::getLocations(QLocale locale) throw (JsonException) {
     QJsonArray root = QJsonArray();//mapper.createArrayNode();
-    for (Operations::Location* location : ((Operations::LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationsByIdList()) {
+    for (Operations::Location* location : ((Operations::LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationsByIdList()) {
         root.append(getLocation(locale, location->getId()));
     }
     return root;
@@ -1200,7 +1200,7 @@ static /*public*/ void setTime(Locale locale, JsonNode data) throws JsonExceptio
     //ObjectNode data = root.putObject(JSON::DATA);
     QJsonObject data = QJsonObject();
     try {
-        Operations::Train* train = ((Operations::TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainById(id);
+        Operations::Train* train = ((Operations::TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainById(id);
         data.insert(JSON::NAME, train->getName());
         data.insert(JSON::ICON_NAME, train->getIconName());
         data.insert(JSON::ID, train->getId());
@@ -1240,7 +1240,7 @@ root.insert(JSON::DATA, data);
 
 /*static*/ /*public*/ QJsonArray JsonUtil::getTrains(QLocale locale) throw (JsonException) {
     QJsonArray root = QJsonArray();//mapper.createArrayNode();
-    for (Operations::Train* train : ((Operations::TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainsByNameList()) {
+    for (Operations::Train* train : ((Operations::TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainsByNameList()) {
         root.append(getTrain(locale, train->getId()));
     }
     return root;
@@ -1372,7 +1372,7 @@ static /*public*/ JsonNode getUnknown(Locale locale, String type) {
 #endif
 /*static*/ /*private*/ QJsonArray JsonUtil::getCarsForTrain(QLocale locale, Operations::Train* train) {
     QJsonArray clan = QJsonArray();//mapper.createArrayNode();
-    Operations::CarManager* carManager = ((Operations::CarManager*)InstanceManager::getDefault("CarManager"));
+    Operations::CarManager* carManager = ((Operations::CarManager*)InstanceManager::getDefault("Operations::CarManager"));
     QList<Operations::Car*>* carList = carManager->getByTrainDestinationList(train);
     foreach (Operations::Car* car, *carList) {
         clan.append(getCar(locale, car->getId()).value(JSON::DATA)); //add each car's data to the carList array
@@ -1382,7 +1382,7 @@ static /*public*/ JsonNode getUnknown(Locale locale, String type) {
 
 /*static*/ /*private*/ QJsonArray JsonUtil::getEnginesForTrain(QLocale locale, Operations::Train* train) {
     QJsonArray elan = QJsonArray();//mapper.createArrayNode();
-    Operations::EngineManager* engineManager = ((Operations::EngineManager*)InstanceManager::getDefault("EngineManager"));
+    Operations::EngineManager* engineManager = ((Operations::EngineManager*)InstanceManager::getDefault("Operations::EngineManager"));
     QList<Operations::Engine*>* engineList = engineManager->getByTrainBlockingList(train);
     foreach (Operations::Engine* engine, *engineList) {
         elan.append(getEngine(locale, engine->getId()).value(JSON::DATA)); //add each engine's data to the engineList array

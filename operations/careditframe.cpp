@@ -61,9 +61,9 @@ namespace Operations
  {
      //super();
   setObjectName("CarEditFrame");
-  carManager = ((CarManager*)InstanceManager::getDefault("CarManager"));
-  managerXml = ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml"));
-  locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
+  carManager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
+  managerXml = ((CarManagerXml*)InstanceManager::getDefault("Operations::CarManagerXml"));
+  locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
   log = new Logger("CarEditFrame");
 
   textWeightOz = new QLabel(tr("Road"));

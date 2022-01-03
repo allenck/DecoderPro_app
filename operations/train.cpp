@@ -456,7 +456,7 @@ _roadList = QStringList();
      if (routeLocation == getTrainDepartsRouteLocation())
          return minutes;
      // add any work at this location
-     foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("CarManager"))->getList(this)) {
+     foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getList(this)) {
          if (rs->getRouteLocation() == routeLocation && rs->getTrackName()!=(RollingStock::NONE)) {
              minutes += Setup::getSwitchTime();
          }
@@ -1881,7 +1881,7 @@ if (roads.length() == 0) {
   */
  /*public*/ int Train::getNumberCarsWorked() {
      int count = 0;
-     foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("CarManager"))->getList(this)) {
+     foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getList(this)) {
          if (rs->getRouteLocation() != NULL) {
              count++;
          }
@@ -1926,7 +1926,7 @@ if (roads.length() == 0) {
      Route* route = getRoute();
      if (route != NULL) {
          foreach (RouteLocation* rl, *route->getLocationsBySequenceList()) {
-             foreach (RollingStock* rs,* ((CarManager*)InstanceManager::getDefault("CarManager"))->getList(this)) {
+             foreach (RollingStock* rs,* ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getList(this)) {
                  Car* car = (Car*) rs;
                  if (car->getRouteLocation() == rl) {
                      number++;
@@ -1955,7 +1955,7 @@ if (roads.length() == 0) {
      Route* route = getRoute();
      if (route != NULL) {
          foreach (RouteLocation* rl, *route->getLocationsBySequenceList()) {
-             foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("CarManager"))->getList(this)) {
+             foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getList(this)) {
                  Car* car = (Car*) rs;
                  if (car->getLoadType()!=(CarLoad::LOAD_TYPE_EMPTY)) {
                      continue;
@@ -1996,7 +1996,7 @@ if (roads.length() == 0) {
      Route* route = getRoute();
      if (route != NULL) {
          foreach (RouteLocation* rl, *route->getLocationsBySequenceList()) {
-             foreach (RollingStock* rs, *((EngineManager*)InstanceManager::getDefault("EngineManager"))->getList(this)) {
+             foreach (RollingStock* rs, *((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getList(this)) {
                  Engine* eng = (Engine*) rs;
                  if (eng->getRouteLocation() == rl) {
                      length += eng->getTotalLength();
@@ -2005,7 +2005,7 @@ if (roads.length() == 0) {
                      length += -eng->getTotalLength();
                  }
              }
-             foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("CarManager"))->getList(this)) {
+             foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getList(this)) {
                  Car* car = (Car*) rs;
                  if (car->getRouteLocation() == rl) {
                      length += car->getTotalLength();
@@ -2036,7 +2036,7 @@ if (roads.length() == 0) {
      Route* route = getRoute();
      if (route != NULL) {
          foreach (RouteLocation* rl, *route->getLocationsBySequenceList()) {
-             foreach (RollingStock* rs, *((EngineManager*)InstanceManager::getDefault("EngineManager"))->getList(this)) {
+             foreach (RollingStock* rs, *((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getList(this)) {
                  Engine* eng = (Engine*) rs;
                  if (eng->getRouteLocation() == rl) {
                      weight += eng->getAdjustedWeightTons();
@@ -2045,7 +2045,7 @@ if (roads.length() == 0) {
                      weight += -eng->getAdjustedWeightTons();
                  }
              }
-             foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("CarManager"))->getList(this)) {
+             foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getList(this)) {
                  Car* car = (Car*) rs;
                  if (car->getRouteLocation() == rl) {
                      weight += car->getAdjustedWeightTons();
@@ -2073,7 +2073,7 @@ if (roads.length() == 0) {
      Route* route = getRoute();
      if (route != NULL) {
          foreach (RouteLocation* rl, *route->getLocationsBySequenceList()) {
-             foreach (RollingStock* rs, *((EngineManager*)InstanceManager::getDefault("EngineManager"))->getList(this)) {
+             foreach (RollingStock* rs, *((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getList(this)) {
                  Engine* eng = (Engine*) rs;
                  if (eng->getRouteLocation() == rl) {
                      hp += eng->getHpInteger();
@@ -2099,7 +2099,7 @@ if (roads.length() == 0) {
  /*public*/ QString Train::getCabooseRoadAndNumber() {
      QString cabooseRoadNumber = NONE;
      RouteLocation* rl = getCurrentLocation();
-     QList<RollingStock*>* cars = ((CarManager*)InstanceManager::getDefault("CarManager"))->getByTrainList(this);
+     QList<RollingStock*>* cars = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getByTrainList(this);
      foreach (RollingStock* rs, *cars) {
          Car* car = (Car*) rs;
          if (car->getRouteLocation() == rl && car->getRouteDestination() != rl && car->isCaboose()) {
@@ -2906,7 +2906,7 @@ if (roads.length() == 0) {
  }
 
  /*public*/ void Train::printBuildReport() {
-     bool isPreview = (((TrainManager*)InstanceManager::getDefault("TrainManager"))->isPrintPreviewEnabled() || Setup
+     bool isPreview = (((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->isPrintPreviewEnabled() || Setup
              ::isBuildReportAlwaysPreviewEnabled());
      printBuildReport(isPreview);
  }
@@ -2967,7 +2967,7 @@ if (roads.length() == 0) {
  {
   if (isBuilt())
   {
-   bool isPreview = ((TrainManager*)InstanceManager::getDefault("TrainManager"))->isPrintPreviewEnabled();
+   bool isPreview = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->isPrintPreviewEnabled();
    printManifest(isPreview);
   }
   else
@@ -3019,7 +3019,7 @@ if (roads.length() == 0) {
   } else if (Setup::getManifestLogoURL()!=(Setup::NONE)) {
       logoURL = FileUtil::getExternalFilename(Setup::getManifestLogoURL());
   }
-  Location* departs = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationByName(getTrainDepartsName());
+  Location* departs = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationByName(getTrainDepartsName());
   QString printerName = Location::NONE;
   if (departs != NULL)
   {
@@ -3313,7 +3313,7 @@ if (roads.length() == 0) {
  */
  /*public*/ Engine* Train::getLeadEngine() {
   if (_leadEngine ==NULL&& _leadEngineId!=(NONE)) {
-      _leadEngine = ((EngineManager*)InstanceManager::getDefault("EngineManager"))->getById(_leadEngineId);
+      _leadEngine = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getById(_leadEngineId);
   }
   return _leadEngine;
  }
@@ -3852,7 +3852,7 @@ if (roads.length() == 0) {
              _leg3End = _route->getLocationById(a);
          }
          if ((a = e.attribute(Xml::DEPARTURE_TRACK)) != NULL) {
-             Location* location = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationByName(getTrainDepartsName());
+             Location* location = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationByName(getTrainDepartsName());
              if (location != NULL) {
                  _departureTrack = location->getTrackById(a);
              } else {
@@ -3860,7 +3860,7 @@ if (roads.length() == 0) {
              }
          }
          if ((a = e.attribute(Xml::TERMINATION_TRACK)) != NULL) {
-             Location* location = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationByName(getTrainTerminatesName());
+             Location* location = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationByName(getTrainTerminatesName());
              if (location != NULL) {
                  _terminationTrack = location->getTrackById(a);
              } else {

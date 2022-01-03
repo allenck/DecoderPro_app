@@ -94,8 +94,7 @@ namespace Operations {
       *
       * @return Contents in a JDOM Element
       */
-      /*public*/ QDomElement Division::store() {
-         QDomDocument doc;
+      /*public*/ QDomElement Division::store(QDomDocument doc) {
          QDomElement e = doc.createElement(Xml::DIVISION);
          e.setAttribute(Xml::ID, getId());
          e.setAttribute(Xml::NAME, getName());

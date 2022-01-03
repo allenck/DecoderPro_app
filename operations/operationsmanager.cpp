@@ -45,13 +45,13 @@ void OperationsManager::initialize()
  // ensure the default instance of all operations managers
  // are initialized by calling their instance() methods
  // Is there a different, more optimal order for this?
- ((CarManager*)InstanceManager::getDefault("CarManager"));
- ((EngineManager*)InstanceManager::getDefault("EngineManager"));
- ((TrainManager*)InstanceManager::getDefault("TrainManager"));
- ((LocationManager*)InstanceManager::getDefault("LocationManager"));
+ ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
+ ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"));
+ ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
+ ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
  ((Operations::RouteManager*)InstanceManager::getDefault("Operations::RouteManager"));
- ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"));
- (TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager");
+ ((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"));
+ (TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager");
  this->setShutDownTask(this->getDefaultShutDownTask());
  // auto backup?
  if (Setup::isAutoBackupEnabled()) {

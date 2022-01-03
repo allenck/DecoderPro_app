@@ -828,7 +828,19 @@ if (types.length() == 0) {
      }
      return out;
  }
-
+ /**
+  * Gets a unsorted list of the tracks at this location.
+  *
+  * @return tracks at this location.
+  */
+ /*public*/ QList<Track*> Location::getTracksList() {
+     QList<Track*> out = QList<Track*>();
+     QListIterator<Track*> en (_trackHashTable.values());
+     while (en.hasNext()) {
+         out.append(en.next());
+     }
+     return out;
+ }
  /**
   * Gets a sorted by id list of tracks for this location.
   *
@@ -1564,6 +1576,13 @@ if (types.length() == 0) {
   */
  /*public*/ Reporter* Location::getReporter() {
      return reader;
+ }
+
+ /*public*/ QString Location::getReporterName() {
+     if (getReporter() != nullptr) {
+         return getReporter()->getDisplayName();
+     }
+     return "";
  }
 
  /*private*/ void Location::replaceRoad(QString oldRoad, QString newRoad) {

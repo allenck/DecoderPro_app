@@ -88,7 +88,7 @@ namespace Operations
 //         return;
 //     }
 
-     CarManager* manager = ((CarManager*)InstanceManager::getDefault("CarManager"));
+     CarManager* manager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
      QList<RollingStock*>* carList = manager->getByNumberList();
      QString line = "";
      // check for delimiter in the following car fields

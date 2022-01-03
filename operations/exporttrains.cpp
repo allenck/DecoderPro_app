@@ -102,7 +102,7 @@ namespace Operations
 
      int count = 0;
 
-     foreach (Train* train, ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainsByTimeList()) {
+     foreach (Train* train, ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainsByTimeList()) {
          if (!train->isBuildEnabled())
              continue;
          count++;
@@ -127,7 +127,7 @@ namespace Operations
              del + tr("Attributes");
      fileOut->println(header);
 
-     foreach (Train* train, ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainsByTimeList()) {
+     foreach (Train* train, ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainsByTimeList()) {
          if (!train->isBuildEnabled())
              continue;
 

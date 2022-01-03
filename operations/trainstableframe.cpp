@@ -81,9 +81,9 @@ namespace Operations
   log = new Logger("TrainsTableFrame");
   carManagerXml = ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml")); // load cars
   engineManagerXml = ((EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml")); // load engines
-  trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
+  trainManager = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"));
   trainManagerXml = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"));
-  locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
+  locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
 
   // labels
   numTrains = new QLabel();
@@ -552,7 +552,7 @@ namespace Operations
 
  /*private*/ void TrainsTableFrame::updateTitle() {
      QString title = tr("Trains Table");
-     TrainSchedule* sch = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(trainManager->getTrainScheduleActiveId());
+     TrainSchedule* sch = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(trainManager->getTrainScheduleActiveId());
      if (sch != NULL) {
          title = title + " (" + sch->getName() + ")";
      }

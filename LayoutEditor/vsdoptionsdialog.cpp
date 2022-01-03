@@ -68,7 +68,7 @@
     QLabel* x = new QLabel();
     x->setText(tr("Select Train"));
     thisLayout->addWidget(x);
-    opsTrainComboBox = ((Operations::TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainComboBox();
+    opsTrainComboBox = ((Operations::TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainComboBox();
     thisLayout->addWidget(opsTrainComboBox);
 
     QPushButton* closeButton = new QPushButton(tr("OK"));

@@ -2,6 +2,8 @@
 #define EDITCARTYPEACTION_H
 #include "abstractaction.h"
 #include "appslib_global.h"
+#include "carattributeeditframe.h"
+#include <QPointer>
 
 namespace Operations
 {
@@ -15,7 +17,7 @@ namespace Operations
   /*public*/ void actionPerformed(ActionEvent* e = 0);
 
  private:
-  CarAttributeEditFrame* f;// = null;
+  QPointer<CarAttributeEditFrame> f;// = null;
 
  };
 }

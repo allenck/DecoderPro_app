@@ -51,7 +51,7 @@ namespace Operations
              tr("Delete all cars?"), JOptionPane::OK_CANCEL_OPTION) == JOptionPane::OK_OPTION)
    {
     log->debug("removing all cars from roster");
-    ((CarManager*)InstanceManager::getDefault("CarManager"))->deleteAll();
+    ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->deleteAll();
    }
   }
   else
@@ -61,7 +61,7 @@ namespace Operations
    {
     foreach (RollingStock* car, *_carsTableFrame->carsTableModel->getSelectedCarList())
     {
-     ((CarManager*)InstanceManager::getDefault("CarManager"))->deregister(car);
+     ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->deregister(car);
     }
    }
   }

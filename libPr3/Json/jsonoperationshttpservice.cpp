@@ -71,8 +71,8 @@
 
 /*public*/ QJsonArray JsonOperationsHttpService::getCars(QLocale locale) {
     QJsonArray root = QJsonArray(); //mapper.createArrayNode();
-    //Operations::((CarManager*)InstanceManager::getDefault("CarManager")).getByIdList().forEach((rs) ->
-    foreach (Operations::RollingStock* rs, *((Operations::CarManager*)InstanceManager::getDefault("CarManager"))->getByIdList()) {
+    //Operations::((CarManager*)InstanceManager::getDefault("Operations::CarManager")).getByIdList().forEach((rs) ->
+    foreach (Operations::RollingStock* rs, *((Operations::CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getByIdList()) {
 
         root.append(JsonUtil::getCar(locale, rs->getId()));
     }//);
@@ -82,7 +82,7 @@
 /*public*/ QJsonArray JsonOperationsHttpService::getEngines(QLocale locale) {
     QJsonArray root = QJsonArray();//mapper.createArrayNode();
     //Operations::EngineManager::instance()->getByIdList().forEach((rs) ->
-    foreach(Operations::RollingStock* rs, *((Operations::EngineManager*)InstanceManager::getDefault("EngineManager"))->getByIdList())
+    foreach(Operations::RollingStock* rs, *((Operations::EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getByIdList())
     {
         root.append(JsonUtil::getEngine(locale, rs->getId()));
     }//);
@@ -91,7 +91,7 @@
 
 /*public*/ QJsonArray JsonOperationsHttpService::getLocations(QLocale locale) throw (JsonException) {
     QJsonArray root = QJsonArray(); //mapper.createArrayNode();
-    foreach (Operations::Location* location, ((Operations::LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationsByIdList()) {
+    foreach (Operations::Location* location, ((Operations::LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationsByIdList()) {
         root.append(JsonUtil::getLocation(locale, location->getId()));
     }
     return root;
@@ -114,7 +114,7 @@
  */
 /*public*/ void JsonOperationsHttpService::setTrain(QLocale locale, QString id, QJsonObject data) throw (JsonException)
 {
- Operations::Train* train = ((Operations::TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainById(id);
+ Operations::Train* train = ((Operations::TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainById(id);
  if (!data.value(JSON::LOCATION).isUndefined())
  {
   QString location = data.value(JSON::LOCATION).toString();

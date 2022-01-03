@@ -5,6 +5,7 @@
 #include "logger.h"
 #include "schedulemanager.h"
 #include "instancemanager.h"
+#include "divisionmanager.h"
 
 //LocationManagerXml::LocationManagerXml(QObject *parent) :
 //  OperationsXml(parent)
@@ -60,9 +61,9 @@ OperationsXml(parent)
      root.appendChild(p);
      doc.appendChild(root);
 
-
-     ((LocationManager*)InstanceManager::getDefault("LocationManager"))->store(root, doc);
-     ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->store(root, doc);
+     ((DivisionManager*)InstanceManager::getDefault("Operations::DivisionManager"))->store(root, doc);
+     ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->store(root, doc);
+     ((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"))->store(root, doc);
 
      writeXML(file, doc);
 
@@ -89,8 +90,9 @@ OperationsXml(parent)
          return;
      }
 
-     ((LocationManager*)InstanceManager::getDefault("LocationManager"))->load(root);
-     ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->load(root);
+     ((DivisionManager*)InstanceManager::getDefault("Operations::DivisionManager"))->load(root);
+     ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->load(root);
+     ((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"))->load(root);
 
      setDirty(false);
      log->debug("Locations have been loaded!");

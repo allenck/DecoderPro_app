@@ -23,6 +23,6 @@ namespace Operations
  }
 
  /*public*/ void SchedulesResetHitsAction::actionPerformed(ActionEvent* /*e*/) {
-     ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->resetHitCounts();
+     ((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"))->resetHitCounts();
  }
 }

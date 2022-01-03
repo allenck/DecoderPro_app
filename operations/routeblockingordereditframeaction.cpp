@@ -1,5 +1,4 @@
 #include "routeblockingordereditframeaction.h"
-#include "routeblockingordereditframe.h"
 
 namespace Operations {
 
@@ -30,7 +29,7 @@ namespace Operations {
          if (f == nullptr || !f->isVisible()) {
              f = new RouteBlockingOrderEditFrame(_route);
          }
-//         f->setExtendedState(JFrame::NORMAL);
+         f->setExtendedState(JFrame::NORMAL);
          f->setVisible(true); // this also brings the frame into focus
      }
 

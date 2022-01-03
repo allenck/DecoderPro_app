@@ -302,7 +302,7 @@ TrainCsvCommon::TrainCsvCommon()
 }
 
 /*protected*/ void TrainCsvCommon::listCarsLocationUnknown(PrintWriter* fileOut) {
-    QList<Car*>* cars = ((CarManager*)InstanceManager::getDefault("CarManager"))->getCarsLocationUnknown();
+    QList<Car*>* cars = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getCarsLocationUnknown();
     if (cars->size() == 0) {
         return; // no cars to search for!
     }

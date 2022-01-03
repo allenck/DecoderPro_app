@@ -26,7 +26,7 @@ namespace Operations
  /*public*/ PrintTrainsAction::PrintTrainsAction(QString actionName, JFrame* mframe, bool preview, JFrame* frame)
      : PrintTrainAction(actionName, mframe, preview, frame)
  {
-     trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
+     trainManager = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"));
      connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 

@@ -47,7 +47,7 @@ namespace Operations
 
   restoreButton = new JButton(tr("Restore"));
 
-  trainScheduleManager = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"));     // the following code sets the frame's initial state
+  trainScheduleManager = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"));     // the following code sets the frame's initial state
 
   //getContentPane().setLayout(new GridBagLayout());
   QBoxLayout* thisLayout = new QVBoxLayout(getContentPane());

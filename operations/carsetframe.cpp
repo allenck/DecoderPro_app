@@ -62,13 +62,13 @@ namespace Operations
   setObjectName("CarSetFrame");
   editActive = false;
   f = NULL;
-  carManager = ((CarManager*)InstanceManager::getDefault("CarManager"));
+  carManager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
 
   askKernelChange = true;
-  destReturnWhenEmptyBox = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getComboBox();
+  destReturnWhenEmptyBox = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getComboBox();
   trackReturnWhenEmptyBox = new JComboBox();
-  loadReturnWhenEmptyBox = ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getComboBox();
-  loadComboBox =((CarLoads*)InstanceManager::getDefault("CarLoads"))->getComboBox();
+  loadReturnWhenEmptyBox = ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getComboBox();
+  loadComboBox =((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getComboBox();
   kernelComboBox = carManager->getKernelComboBox();
 
   // buttons

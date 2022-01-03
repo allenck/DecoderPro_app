@@ -310,7 +310,7 @@ namespace Operations
 {
  if (Operations::Setup::isPrintTimetableNameEnabled()) {
      return String::format(locale, strings->getProperty("ManifestValidityWithSchedule"), getDate(true),
-             ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(train->getId())->toString());
+             ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(train->getId())->toString());
  } else {
      return String::format(locale, strings->getProperty("ManifestValidity"), getDate(true));
  }

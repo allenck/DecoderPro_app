@@ -224,7 +224,7 @@ namespace Operations
 
  /*private*/ void RouteManager::copyRouteLocation(Route* newRoute, RouteLocation* rl, RouteLocation* rlNext, bool invert)
  {
-     Location* loc = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationByName(rl->getName());
+     Location* loc = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationByName(rl->getName());
      RouteLocation* rlNew = newRoute->addLocation(loc);
      // now copy the route location objects we want
      rlNew->setMaxCarMoves(rl->getMaxCarMoves());

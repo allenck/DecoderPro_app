@@ -122,7 +122,7 @@ namespace Operations
    delete item;
   }
   int y = 0;
-  foreach (Train* train, ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainsByNameList())
+  foreach (Train* train, ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainsByNameList())
   {
    Route* route = train->getRoute();
    if (route == NULL) {
@@ -245,9 +245,9 @@ namespace Operations
 
  /*public*/ void ShowTrainsServingLocationFrame::addPropertyChangeAllTrains()
  {
-  //((TrainManager*)InstanceManager::getDefault("TrainManager")).addPropertyChangeListener(this);
-  connect(((TrainManager*)InstanceManager::getDefault("TrainManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     foreach (Train* train, ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainsByNameList()) {
+  //((TrainManager*)InstanceManager::getDefault("OperationsTrainManager")).addPropertyChangeListener(this);
+  connect(((TrainManager*)InstanceManager::getDefault("OperationsTrainManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     foreach (Train* train, ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainsByNameList()) {
          //train.addPropertyChangeListener(this);
       connect(train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
@@ -255,8 +255,8 @@ namespace Operations
 
  /*public*/ void ShowTrainsServingLocationFrame::removePropertyChangeAllTrains() {
      //TrainManager.instance().removePropertyChangeListener(this);
- disconnect(((TrainManager*)InstanceManager::getDefault("TrainManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     foreach (Train* train, ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainsByNameList()) {
+ disconnect(((TrainManager*)InstanceManager::getDefault("OperationsTrainManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     foreach (Train* train, ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainsByNameList()) {
          //train.removePropertyChangeListener(this);
       disconnect(train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          if (train->getRoute() != NULL) {

@@ -2,7 +2,6 @@
 #include "location.h"
 #include "control.h"
 #include "locationmanager.h"
-#include "jbutton.h"
 #include <QCheckBox>
 #include <QScrollArea>
 #include <QRadioButton>
@@ -47,6 +46,9 @@
 #include "locationtrackblockingorderaction.h"
 #include "borderfactory.h"
 #include "setphysicallocationaction.h"
+#include "traincommon.h"
+#include "division.h"
+
 
 //LocationEditFrame::LocationEditFrame()
 //{
@@ -84,7 +86,7 @@ namespace Operations
   interchangeTable = new JTable(interchangeModel);
   stagingModel = new StagingTableModel();
   stagingTable = new JTable(stagingModel);
-  locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
+  locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
 
   _location = NULL;
   checkBoxes =  QList<QCheckBox*>();
@@ -176,6 +178,7 @@ namespace Operations
    enableButtons(true);
    locationNameTextField->setText(_location->getName());
    commentTextArea->setText(_location->getComment());
+   divisionComboBox->setSelectedItem(_location->getDivision()->getName());
    yardModel->initTable(yardTable, location);
    spurModel->initTable(spurTable, location);
    interchangeModel->initTable(interchangeTable, location);
@@ -254,6 +257,14 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
   p1Layout->addWidget(pName);
   p1Layout->addWidget(directionPanel);
+
+  // division field
+  JPanel* pDivision = new JPanel();
+  pDivision->setLayout(new GridBagLayout());
+  pDivision->setBorder(BorderFactory::createTitledBorder(tr("Division")));
+  addItem(pDivision, divisionComboBox, 2, 0);
+  addItem(pDivision, editDivisionButton, 3, 0);
+  setDivisionButtonText();
 
   // row 5
   updateCheckboxes();
@@ -508,27 +519,32 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*private*/ void LocationEditFrame::saveLocation() {
-     if (!checkName(tr("save"))) {
-         return;
-     }
-     _location->setName(locationNameTextField->text());
-     _location->setComment(commentTextArea->toPlainText());
-     if (Setup::isRfidEnabled() &&
-             readerSelector->currentText() != NULL &&
-             ( readerSelector->currentText())!=(""))
-     {
-      _location->setReporter(
-                 ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))
-                         ->getReporter( readerSelector->currentText()));
-     } else if (Setup::isRfidEnabled() &&
-             readerSelector->currentText() != NULL &&
-             ( readerSelector->currentText())==(""))
-     {
-      _location->setReporter(NULL);
-     }
-     setLocationOps();
-     // save location file
-     OperationsXml::save();
+  if (!checkName(tr("save"))) {
+   return;
+  }
+#if 0
+  // stop table editing so "Moves" are properly saved
+  if (spurTable->isEditing()) {
+     spurTable->getCellEditor().stopCellEditing();
+  }
+  if (yardTable->isEditing()) {
+     yardTable.getCellEditor().stopCellEditing();
+  }
+  if (interchangeTable->isEditing()) {
+     interchangeTable.getCellEditor().stopCellEditing();
+  }
+  if (stagingTable->isEditing()) {
+     stagingTable.getCellEditor().stopCellEditing();
+  }
+#endif
+  _location->setName(locationNameTextField->text());
+  _location->setComment(TrainCommon::formatColorString(commentTextArea->toHtml(), commentColorChooser->getColor()));
+  _location->setDivision((Division*) VPtr<Division>::asPtr(divisionComboBox->getSelectedItem()));
+  if (Setup::isRfidEnabled() && readerSelector != nullptr) {
+     _location->setReporter(VPtr<Reporter>::asPtr(readerSelector->getSelectedItem()));
+  }
+  // save location file
+  OperationsXml::save();
  }
 
  /**
@@ -691,6 +707,12 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      update();
  }
 
+ /*protected*/ void LocationEditFrame::updateDivisionComboBox() {
+     ((DivisionManager*)InstanceManager::getDefault("Operations::DivisionManager"))->updateComboBox(divisionComboBox);
+     if (_location != nullptr) {
+         divisionComboBox->setSelectedItem(_location->getDivision()->getName());
+     }
+ }
 
  /*private*/ void LocationEditFrame::loadTypes(QStringList types)
 {
@@ -815,6 +837,14 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      westCheckBox->setChecked((_location->getTrainDirections() & Location::WEST) > 0);
  }
 
+ /*private*/ void LocationEditFrame::setDivisionButtonText() {
+     if (divisionComboBox->getSelectedItem() == "") {
+         editDivisionButton->setText(tr("Add"));
+     } else {
+         editDivisionButton->setText(("Edit"));
+     }
+ }
+
  /*public*/ void LocationEditFrame::dispose() {
      if (_location != NULL) {
          //_location->removePropertyChangeListener(this);
@@ -845,6 +875,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
              || e->getPropertyName()==(EngineTypes::ENGINETYPES_CHANGED_PROPERTY)
              || e->getPropertyName()==(Location::TYPES_CHANGED_PROPERTY)) {
          updateCheckboxes();
+     }
+     if (e->getPropertyName()==(DivisionManager::LISTLENGTH_CHANGED_PROPERTY)) {
+         updateDivisionComboBox();
      }
  }
  /*public*/ QString LocationEditFrame::getClassName()

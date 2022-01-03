@@ -23,7 +23,7 @@
 
 /*private*/ JComboBox* getComboBox(Operations::Schedule* schedule, Operations::SchedulesTableModel* model)
 {
- JComboBox* box = ((Operations::ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->getSpursByScheduleComboBox(schedule);
+ JComboBox* box = ((Operations::ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"))->getSpursByScheduleComboBox(schedule);
  return box;
 }
 
@@ -56,7 +56,7 @@ namespace Operations
   log = new Logger("SchedulesTableModel");
   comboSelect = QHash<Schedule*, QString>();
 
-  scheduleManager = ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"));
+  scheduleManager = ((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"));
   //scheduleManager.addPropertyChangeListener(this);
   connect(scheduleManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   updateList();
@@ -397,14 +397,14 @@ namespace Operations
 
  /*private*/ void SchedulesTableModel::addPropertyChangeTracks() {
      // only spurs have schedules
-     foreach (Track* track, ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getTracks(Track::SPUR)) {
+     foreach (Track* track, ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getTracks(Track::SPUR)) {
          track->PropertyChangeSupport::addPropertyChangeListener(this);
      }
 
  }
 
  /*private*/ void SchedulesTableModel::removePropertyChangeTracks() {
-     foreach (Track* track, ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getTracks(Track::SPUR)) {
+     foreach (Track* track, ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getTracks(Track::SPUR)) {
          track->removePropertyChangeListener(this);
      }
  }
@@ -488,7 +488,7 @@ namespace Operations
   {
    Schedule* schedule = model->sysList.at(index.row());
    //editor = new JComboBox(box(si, this->model));
-   JComboBox* b = ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->getSpursByScheduleComboBox(schedule);
+   JComboBox* b = ((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"))->getSpursByScheduleComboBox(schedule);
    editor = new JComboBox(parent);
    for(int i=0; i < b->count(); i++)
    {

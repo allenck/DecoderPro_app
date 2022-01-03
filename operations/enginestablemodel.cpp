@@ -47,7 +47,7 @@ namespace Operations
   log = new Logger("EngineTableModel");
   _enginesTableColumnWidths = QList<int>() << 60 << 60 << 65 << 50 << 65 << 35 << 75 << 190 << 190 << 65 << 50 << 65 << 70;
   showMoveCol = SHOWMOVES;
-  engineManager = (EngineManager*)InstanceManager::getDefault("EngineManager"); // There is only one manager
+  engineManager = (EngineManager*)InstanceManager::getDefault("Operations::EngineManager"); // There is only one manager
 
 
   //manager->PropertyChangeSupport::addPropertyChangeListener(this);

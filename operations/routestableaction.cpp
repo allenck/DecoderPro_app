@@ -1,5 +1,4 @@
 #include "routestableaction.h"
-#include "routestableframe.h"
 
 namespace Operations
 {
@@ -34,7 +33,7 @@ namespace Operations
   connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
  }
 
- /*static*/ RoutesTableFrame* RoutesTableAction::f = NULL;
+ /*static*/ QPointer<RoutesTableFrame> RoutesTableAction::f = NULL;
 
  //@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
  /*public*/ void RoutesTableAction::actionPerformed(ActionEvent* /*e*/)
@@ -44,7 +43,7 @@ namespace Operations
   if (f == NULL || !f->isVisible()) {
       f = new RoutesTableFrame();
   }
-  //f.setExtendedState(Frame.NORMAL);
+  f->setExtendedState(JFrame::NORMAL);
   f->setVisible(true);	// this also brings the frame into focus
 
  }

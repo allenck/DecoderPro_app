@@ -50,7 +50,7 @@ namespace Operations
 {
  setObjectName("EngineAttributeEditFrame");
  log = new Logger("EngineAttributeEditFrame");
- engineManager = ((EngineManager*)InstanceManager::getDefault("EngineManager"));
+ engineManager = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"));
 }
 
 

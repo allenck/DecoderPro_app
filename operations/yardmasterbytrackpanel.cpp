@@ -424,7 +424,7 @@ void YardmasterByTrackPanel::common()
                                 TrainCommon::padAndTruncateString(car->getTypeName().split("-")[0], ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getMaxNameLength()),
                                 TrainCommon::padAndTruncateString(car->getLength() + TrainCommon::LENGTHABV, Control::max_len_string_length_name)).arg(
                                 TrainCommon::padAndTruncateString(car->getLoadName(),((CarLoads*) InstanceManager::getDefault("CarLoads"))->getMaxNameLength()).arg(
-                                TrainCommon::padAndTruncateString(_track->getName(),((LocationManager*) InstanceManager::getDefault("LocationManager"))->getMaxTrackNameLength()).arg(
+                                TrainCommon::padAndTruncateString(_track->getName(),((LocationManager*) InstanceManager::getDefault("Operations::LocationManager"))->getMaxTrackNameLength()).arg(
                                 TrainCommon::padAndTruncateString(car->getColor(),((CarColors*) InstanceManager::getDefault("CarColors"))->getMaxNameLength()))));
 
             }

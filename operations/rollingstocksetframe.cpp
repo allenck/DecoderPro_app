@@ -71,8 +71,8 @@ void RollingStockSetFrame::common()
 {
  log = new Logger("RollingStockSetFrame");
  setObjectName("RollingStockSetFrame");
- locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
- trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
+ locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
+ trainManager = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"));
  _disableComboBoxUpdate = false;
 
  // labels
@@ -84,13 +84,13 @@ void RollingStockSetFrame::common()
  ignoreAllButton = new JButton(tr("IgnoreAll"));
 
  // combo boxes
- locationBox = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getComboBox();
+ locationBox = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getComboBox();
  trackLocationBox = new JComboBox();
- destinationBox = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getComboBox();
+ destinationBox = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getComboBox();
  trackDestinationBox = new JComboBox();
- finalDestinationBox = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getComboBox();
+ finalDestinationBox = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getComboBox();
  finalDestTrackBox = new JComboBox();
- trainBox = ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainComboBox();
+ trainBox = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainComboBox();
 
  // check boxes
  autoTrackCheckBox = new QCheckBox(tr("Auto"));
@@ -272,8 +272,8 @@ void RollingStockSetFrame::common()
      ignoreTrainCheckBox->setToolTip(tr("When checked, ignore this set of fields during change"));
 
      // get notified if combo box gets modified
-     //((LocationManager*)InstanceManager::getDefault("LocationManager")).addPropertyChangeListener(this);
-     connect(((LocationManager*)InstanceManager::getDefault("LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")).addPropertyChangeListener(this);
+     connect(((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      // get notified if train combo box gets modified
      //trainManager.addPropertyChangeListener(this);
      connect(trainManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -838,7 +838,7 @@ void RollingStockSetFrame::common()
       _rs->removePropertyChangeListener(this);
      }
      //LocationManager.instance().removePropertyChangeListener(this);
-     disconnect(((LocationManager*)InstanceManager::getDefault("LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      //trainManager.removePropertyChangeListener(this);
      disconnect(trainManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

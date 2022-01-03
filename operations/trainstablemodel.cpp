@@ -11,7 +11,6 @@
 #include "logger.h"
 #include "pushbuttondelegate.h"
 #include "traineditframe.h"
-#include "trainconductorframe.h"
 #include "routeeditframe.h"
 #include <QMessageBox>
 #include <QPen>
@@ -41,7 +40,7 @@ namespace Operations
      //super();
   SORTBYTIME = 2;
   SORTBYID = 7;
- trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager")); // There is only one manager
+ trainManager = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager")); // There is only one manager
  _sort = SORTBYTIME;
  _showAll = true;
  tef = NULL;
@@ -586,7 +585,7 @@ namespace Operations
       f = new TrainConductorFrame(train);
       _trainConductorHashTable.insert(train->getId(), f);
   } else {
-      //f.setExtendedState(Frame.NORMAL);
+      f->setExtendedState(JFrame::NORMAL);
   }
   f->setVisible(true); // this also brings the frame into focus
 //         }

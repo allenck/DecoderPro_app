@@ -2,6 +2,8 @@
 #define LOCATIONSTABLEACTION_H
 #include "abstractaction.h"
 #include "appslib_global.h"
+#include "locationstableframe.h"
+#include <QPointer>
 
 namespace Operations
 {
@@ -11,11 +13,11 @@ namespace Operations
   Q_OBJECT
  public:
   LocationsTableAction(QObject* parent);
-  static LocationsTableFrame* f;// = null;
+  static QPointer<LocationsTableFrame> f;// = null;
   /*public*/ LocationsTableAction(QString s, QObject* parent);
 
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e = 0);
+  /*public*/ void actionPerformed(JActionEvent *e = 0);
  private:
   void common();
  };

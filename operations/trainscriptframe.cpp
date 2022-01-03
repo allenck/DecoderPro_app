@@ -111,7 +111,7 @@ namespace Operations
   _train = parent->_train;
 
   // load managers
-  manager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
+  manager = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"));
   managerXml = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"));
 
   //getContentPane()->setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));

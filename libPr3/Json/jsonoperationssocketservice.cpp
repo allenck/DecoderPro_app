@@ -36,7 +36,7 @@
    TrainListener* listener;
       this->trains.insert(id, listener = new TrainListener(id, this));
 //         Operations::TrainManager::instance()->getTrainById(id).addPropertyChangeListener(this->trains.get(id));
-   connect(((Operations::TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainById(id)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)) );
+   connect(((Operations::TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainById(id)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)) );
   }
  }
  else
@@ -68,7 +68,7 @@
 
 /*protected*/ TrainListener::TrainListener(QString id, JsonOperationsSocketService* joss)
 {
- this->train = ((Operations::TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainById(id);
+ this->train = ((Operations::TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainById(id);
  this->joss = joss;
 }
 

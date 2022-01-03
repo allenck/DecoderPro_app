@@ -58,7 +58,7 @@ namespace Operations
 
 // /*public*/ /*static*/ /*synchronized*/ ScheduleManager* ScheduleManager::instance()
 // {
-//  return static_cast<ScheduleManager*>(InstanceManager::getDefault("ScheduleManager"));
+//  return static_cast<ScheduleManager*>(InstanceManager::getDefault("Operations::ScheduleManager"));
 // }
 
  /*public*/ void ScheduleManager::dispose() {
@@ -320,7 +320,7 @@ namespace Operations
 {
   JComboBox* box = new JComboBox();
   // search all spurs for that use schedule
-  foreach (Location* location, ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationsByNameList())
+  foreach (Location* location, ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationsByNameList())
   {
    foreach (Track* spur, location->getTracksByNameList(Track::SPUR))
    {

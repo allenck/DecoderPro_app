@@ -3,6 +3,7 @@
 #include "abstractaction.h"
 #include "location.h"
 #include "yardmasterbytrackframe.h"
+#include <QPointer>
 
 namespace Operations {
 
@@ -24,7 +25,7 @@ private:
  void common();
  Location* _location;
 
- YardmasterByTrackFrame* f;// = null;
+ QPointer<YardmasterByTrackFrame> f;// = null;
 
 };
 }

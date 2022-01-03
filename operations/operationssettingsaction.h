@@ -3,6 +3,7 @@
 
 #include <abstractaction.h>
 #include "operationssettingsframe.h"
+#include <QPointer>
 
 namespace Operations
 {
@@ -15,7 +16,7 @@ namespace Operations
    /*public*/ void actionPerformed(JActionEvent* e =0)override;
 
   private:
-   static OperationsSettingsFrame* operationsSettingsFrame;// = nullptr;
+   static QPointer<OperationsSettingsFrame> operationsSettingsFrame;// = nullptr;
 
  };
 }

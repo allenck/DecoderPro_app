@@ -2,6 +2,9 @@
 #define EDITSWITCHLISTTEXTACTION_H
 
 #include "abstractaction.h"
+#include "editswitchlisttextframe.h"
+#include <QPointer>
+
 namespace Operations
 {
  class EditSwitchListTextFrame;
@@ -12,10 +15,10 @@ namespace Operations
   EditSwitchListTextAction(QObject* parent);
   EditSwitchListTextAction(QString s, QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e = 0);
+  /*public*/ void actionPerformed(JActionEvent* e = 0)override;
   void common();
  private:
-  EditSwitchListTextFrame* f;// = null;
+  QPointer<EditSwitchListTextFrame> f;// = null;
 
  };
 }

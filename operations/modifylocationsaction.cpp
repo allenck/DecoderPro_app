@@ -1,5 +1,4 @@
 #include "modifylocationsaction.h"
-#include "locationsbycartypeframe.h"
 
 namespace Operations
 {
@@ -37,13 +36,13 @@ namespace Operations
 
 
 
- /*public*/ void ModifyLocationsAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void ModifyLocationsAction::actionPerformed(JActionEvent * /*e*/) {
      // create a frame
      if (f == NULL || !f->isVisible()) {
          f = new LocationsByCarTypeFrame();
          f->initComponents(l);
      }
-     //f.setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setVisible(true);	// this also brings the frame into focus
  }
 }

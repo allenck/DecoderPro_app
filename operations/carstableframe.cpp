@@ -58,7 +58,7 @@ namespace Operations
  {
   setObjectName("CarsTableFrame");
   log = new Logger("CarsTableFrame");
-  carManager = ((CarManager*)InstanceManager::getDefault("CarManager"));
+  carManager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
   setStatusBar(new QStatusBar());
   statusBar()->setSizeGripEnabled(true);
 
@@ -158,7 +158,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
       movepLayout->addWidget(sortByRfid);
   }
 
-     if (((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->numEntries() > 0) {
+     if (((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"))->numEntries() > 0) {
          movepLayout->addWidget(sortByWait);
          movepLayout->addWidget(sortByPickup);
      }
@@ -428,7 +428,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 #endif
  /*private*/ void CarsTableFrame::updateNumCars() {
-     QString totalNumber = QString::number(((CarManager*)InstanceManager::getDefault("CarManager"))->getNumEntries());
+     QString totalNumber = QString::number(((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getNumEntries());
      if (showAllCars) {
          numCars->setText(totalNumber);
          return;

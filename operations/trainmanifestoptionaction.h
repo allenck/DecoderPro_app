@@ -2,6 +2,10 @@
 #define TRAINMANIFESTOPTIONACTION_H
 
 #include "abstractaction.h"
+#include "trainmanifestoptionframe.h"
+#include <QPointer>
+#include "traineditframe.h"
+
 namespace Operations
 {
  class TrainManifestOptionFrame;
@@ -12,11 +16,11 @@ namespace Operations
  public:
   TrainManifestOptionAction(QString s, TrainEditFrame* frame);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e = 0);
+  /*public*/ void actionPerformed(JActionEvent* e = 0);
 
  private:
-  TrainManifestOptionFrame* f;// = null;
-  TrainEditFrame* frame;// = null;
+  QPointer<TrainManifestOptionFrame> f;// = null;
+  QPointer<TrainEditFrame> frame;// = null;
 
  };
 }

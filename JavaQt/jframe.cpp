@@ -509,6 +509,125 @@ void JFrame::setAlwaysOnTop(bool checked)
 void JFrame::hideEvent(QHideEvent *)
 {
  //qDebug() << "hide";
+ setExtendedState(JFrame::ICONIFIED);
+}
+
+void JFrame::showEvent(QShowEvent *)
+{
+ //qDebug() << "hide";
+ setExtendedState(JFrame::NORMAL);
+}
+
+/*public*/ void JFrame::setState(int state)
+{
+  int current_state = getExtendedState ();
+
+  if (state == NORMAL
+     && (current_state & ICONIFIED) != 0)
+   setExtendedState(current_state | ICONIFIED);
+
+  if (state == ICONIFIED
+      && (current_state & ~ICONIFIED) == 0)
+   setExtendedState(current_state & ~ICONIFIED);
+ }
+
+ /*public*/ int JFrame::getState()
+ {
+   return (getExtendedState() & ICONIFIED) != 0 ? ICONIFIED : NORMAL;
+ }
+
+ /**
+  * @since 1.4
+  */
+ /*public*/ void JFrame::setExtendedState(int state)
+ {
+//  if (getToolkit().isFrameStateSupported(state))
+//  {
+      this->state = state;
+//      FramePeer p = (FramePeer) peer;
+//      if (p != nullptr)
+//         p->setState(state);
+//  }
+ }
+
+ /**
+  * @since 1.4
+  */
+ /*public*/ int JFrame::getExtendedState()
+ {
+//  FramePeer p = (FramePeer) peer;
+//  if (p != null)
+//     state = p.getState();
+ Qt::WindowStates  ws = windowState();
+  if(ws & Qt::WindowMinimized )
+   state = ICONIFIED;
+  if(ws & Qt::WindowMaximized)
+   state = MAXIMIZED_BOTH;
+  else
+   state = NORMAL;
+
+  return state;
+ }
+
+/**
+ * Returns a debugging string describing this window.
+ *
+ * @return a debugging string describing this window
+ */
+ /*protected*/ QString JFrame::paramString()
+ {
+  QString title = getTitle();
+
+  QString resizable = "";
+  if (isResizable ())
+   resizable = ",resizable";
+
+  QString state = "";
+  switch (getState ())
+  {
+   case NORMAL:
+    state = ",normal";
+      break;
+    case ICONIFIED:
+      state = ",iconified";
+      break;
+    case MAXIMIZED_BOTH:
+     state = ",maximized-both";
+      break;
+    case MAXIMIZED_HORIZ:
+      state = ",maximized-horiz";
+      break;
+    case MAXIMIZED_VERT:
+      state = ",maximized-vert";
+      break;
+    }
+  QString name = QString(metaObject()->className());
+  return /*super.paramString ()*/"param: " +name + ",title=" + title + resizable + state;
+}
+
+/**
+ * Tests whether or not this frame is resizable.  This will be
+ * <code>true</code> by default.
+ *
+ * @return <code>true</code> if this frame is resizable, <code>false</code>
+ *         otherwise
+ */
+/*public*/ bool JFrame::isResizable()
+{
+  return resizable;
+}
+
+/**
+ * Sets the resizability of this frame to the specified value.
+ *
+ * @param resizable <code>true</code> to make the frame resizable,
+ * <code>false</code> to make it non-resizable
+ */
+/*public*/ /*synchronized*/ void JFrame::setResizable(bool resizable)
+{
+  this->resizable = resizable;
+//  if (peer != null)
+//    ((FramePeer) peer).setResizable(resizable);
 }
 #if 0
 //@Override

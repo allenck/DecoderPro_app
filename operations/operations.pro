@@ -79,6 +79,7 @@ HEADERS += \
 
 SOURCES += \
  division.cpp \
+ divisionmanager.cpp \
  exportlocations.cpp \
  exportlocationsrosteraction.cpp \
  metatypes.cpp \
@@ -387,6 +388,7 @@ SOURCES += \
 
 HEADERS += \
  division.h \
+ divisionmanager.h \
  exportlocations.h \
  exportlocationsrosteraction.h \
  metatypes.h \

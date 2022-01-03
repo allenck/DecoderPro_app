@@ -194,7 +194,7 @@ void TurnoutTableAction::common()
 }
 
 /*protected*/ void TurnoutTableAction::setTitle() {
-    f->setTitle(f->tr("Turnout Table"));
+    f->setTitle(tr("Turnout Table"));
 }
 
 //@Override

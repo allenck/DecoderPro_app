@@ -1,5 +1,4 @@
 #include "editswitchlisttextaction.h"
-#include "editswitchlisttextframe.h"
 
 namespace Operations
 {
@@ -37,13 +36,13 @@ namespace Operations
 connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void EditSwitchListTextAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void EditSwitchListTextAction::actionPerformed(JActionEvent* /*e*/) {
      // create a settings frame
      if (f == NULL || !f->isVisible()) {
          f = new EditSwitchListTextFrame();
          f->initComponents();
      }
-     //f.setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setVisible(true);	// this also brings the frame into focus
  }
 

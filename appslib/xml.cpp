@@ -25,6 +25,7 @@ Xml::Xml() {}
     /*static final*/ QString Xml::_FALSE = "false"; // NOI18N
     /*static final*/ QString Xml::LOAD = "load"; // NOI18N
     /*static final*/ QString Xml::DIVISION = "division"; // NOI18N
+    /*static final*/ QString Xml::DIVISIONS = "divisions"; // NOI18N
 
 // LocationManager.java
 /*static*/ /*final*/ QString Xml::LOCATIONS = "locations"; // NOI18N

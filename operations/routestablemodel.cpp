@@ -41,8 +41,8 @@ namespace Operations
      manager = ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"));
      //manager.addPropertyChangeListener(this);
      connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //((LocationManager*)InstanceManager::getDefault("LocationManager")).addPropertyChangeListener(this);
-     connect(((LocationManager*)InstanceManager::getDefault("LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")).addPropertyChangeListener(this);
+     connect(((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      updateList();
  }
 
@@ -259,8 +259,8 @@ namespace Operations
 
      //manager.removePropertyChangeListener(this);
      disconnect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //((LocationManager*)InstanceManager::getDefault("LocationManager")).removePropertyChangeListener(this);
-     disconnect(((LocationManager*)InstanceManager::getDefault("LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")).removePropertyChangeListener(this);
+     disconnect(((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      removePropertyChangeRoutes();
  }
 

@@ -58,8 +58,8 @@ namespace Operations {
           CSVPrinter* fileOut = new EL_CSVPrinter(stream,
              CSVFormat::DEFAULT, this);//
 
-         // create header
-         fileOut->printRecord(QVariantList {tr("Location"),
+          // create header
+          fileOut->printRecord(QVariantList {tr("Location"),
                  tr("Track"),
                  tr("Type"),
                  tr("Length"),
@@ -215,7 +215,7 @@ namespace Operations {
                           track->getName(),
                           track->getTrackTypeName(),
                           track->getLength(),
-                          track->getDivision()->toString(),
+                          track->getDivisionName(),
                           trainDirections,
                           rollingStockNames,
                           track->getServiceOrder(),

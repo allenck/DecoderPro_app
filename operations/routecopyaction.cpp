@@ -43,7 +43,7 @@ void RouteCopyAction::common()
      if (routeName != NULL) {
          f->setRouteName(routeName);
      }
-     //f.setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setVisible(true);	// this also brings the frame into focus
  }
 }

@@ -60,7 +60,7 @@ namespace Operations
    /*public*/ JComboBox* ownerComboBox = ((CarOwners*)InstanceManager::getDefault("CarOwners"))->getComboBox();
    /*public*/ JComboBox* groupComboBox;
    /*public*/ JComboBox* modelComboBox; // for engines
-   /*public*/ JComboBox/*<Location>*/* locationBox = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getComboBox();
+   /*public*/ JComboBox/*<Location>*/* locationBox = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getComboBox();
    /*public*/ JComboBox/*<Track>*/* trackLocationBox = new JComboBox();
 
    /*public*/ NamedBeanComboBox/*<IdTag>*/* rfidComboBox;
@@ -96,7 +96,7 @@ namespace Operations
    /*protected*/ static /*final*/ bool IS_SAVE;// = true;
    /*protected*/ RollingStock* _rs;
 
-   /*protected*/ LocationManager* locationManager = (LocationManager*)InstanceManager::getDefault("LocationManager");
+   /*protected*/ LocationManager* locationManager = (LocationManager*)InstanceManager::getDefault("Operations::LocationManager");
    /*protected*/ virtual RollingStockAttribute* getTypeManager() = 0;
 
    /*abstract*/ virtual /*protected*/ RollingStockAttribute* getLengthManager() = 0;

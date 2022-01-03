@@ -1,6 +1,8 @@
 #ifndef PRINTMOREOPTIONACTION_H
 #define PRINTMOREOPTIONACTION_H
 #include "abstractaction.h"
+#include "printmoreoptionframe.h"
+#include <QPointer>
 
 namespace Operations
 {
@@ -12,10 +14,10 @@ namespace Operations
   PrintMoreOptionAction(QObject* parent);
  /*public*/ PrintMoreOptionAction(QString s,QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e = 0);
+  /*public*/ void actionPerformed(JActionEvent* e = 0);
 private:
   void common();
-  PrintMoreOptionFrame* f;
+  QPointer<PrintMoreOptionFrame> f;
  };
 }
 #endif // PRINTMOREOPTIONACTION_H

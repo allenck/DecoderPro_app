@@ -2,6 +2,8 @@
 #define LOCATIONTRACKBLOCKINGORDERACTION_H
 
 #include "abstractaction.h"
+#include "locationtrackblockingorderframe.h"
+#include <QPointer>
 namespace Operations
 {
  class Location;
@@ -17,7 +19,7 @@ namespace Operations
  private:
   Location* _location;
 
-  LocationTrackBlockingOrderFrame* _frame;// = null;
+  QPointer<LocationTrackBlockingOrderFrame> _frame;// = null;
   void common();
 
  };

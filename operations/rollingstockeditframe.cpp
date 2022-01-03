@@ -603,7 +603,7 @@ namespace Operations
          }
          if (e->getPropertyName() == (LocationManager::LISTLENGTH_CHANGED_PROPERTY) ||
                  e->getPropertyName() == (RollingStock::TRACK_CHANGED_PROPERTY)) {
-             ((LocationManager*)InstanceManager::getDefault("LocationManager"))->updateComboBox(locationBox);
+             ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->updateComboBox(locationBox);
              updateTrackLocationBox();
              if (_rs != nullptr && _rs->getLocation() != nullptr) {
                  locationBox->setSelectedItem(_rs->getLocation()->getName());

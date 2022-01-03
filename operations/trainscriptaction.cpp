@@ -1,6 +1,4 @@
 #include "trainscriptaction.h"
-#include "trainscriptframe.h"
-#include "traineditframe.h"
 
 namespace Operations
 {
@@ -35,7 +33,7 @@ namespace Operations
      f = new TrainScriptFrame();
      f->move(frame->pos());
      f->initComponents(frame);
-     //f.setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setTitle(tr("Scripts"));
  }
 }

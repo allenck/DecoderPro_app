@@ -22,9 +22,9 @@
 using namespace Operations;
 TrainCsvManifest::TrainCsvManifest()
 {
- engineManager = ((EngineManager*)InstanceManager::getDefault("EngineManager"));
- carManager = ((CarManager*)InstanceManager::getDefault("CarManager"));
- locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
+ engineManager = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"));
+ carManager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
+ locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
 
 }
 /**
@@ -207,7 +207,7 @@ TrainCsvManifest::TrainCsvManifest()
    }
   }
   // car holds
-  QList<RollingStock*>* rsByLocation = ((CarManager*)InstanceManager::getDefault("CarManager"))->getByLocationList();
+  QList<RollingStock*>* rsByLocation = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getByLocationList();
   QList<Car*> cList = QList<Car*>();
   for (RollingStock* rs : *rsByLocation) {
       if (rs->getLocation() == rl->getLocation() && rs->getRouteLocation() == NULL && rs->getTrack() != NULL) {

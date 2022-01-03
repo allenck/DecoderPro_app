@@ -421,15 +421,15 @@ PropertyChangeSupport(this, parent)
 #endif
  /*protected*/ void LocationManager::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      // set dirty
-     ((LocationManagerXml*)InstanceManager::getDefault("LocationManagerXml"))->setDirty(true);
+     ((LocationManagerXml*)InstanceManager::getDefault("Operations::LocationManagerXml"))->setDirty(true);
      firePropertyChange(p, old, n);
  }
 
 //@Override
 /*public*/ void LocationManager::initialize()
 {
- InstanceManager::getDefault("OperationsSetupXml"); // load setup
- InstanceManager::getDefault("LocationManagerXml"); // load locations
+ InstanceManager::getDefault("Operations::OperationsSetupXml"); // load setup
+ InstanceManager::getDefault("Operations::LocationManagerXml"); // load locations
 }
 
 }

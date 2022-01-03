@@ -49,7 +49,7 @@ namespace Operations
  void ScheduleCopyFrame::common(Schedule* schedule)
  {
   log = new Logger("ScheduleCopyFrame");
-  scheduleManager = ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"));
+  scheduleManager = ((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"));
 
   // text field
   scheduleNameTextField = new JTextField(Control::max_len_string_location_name);

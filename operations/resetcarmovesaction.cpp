@@ -25,7 +25,7 @@ namespace Operations
  {
      //super(actionName);
   log = new Logger("ResetCarMoves");
-  manager = ((CarManager*)InstanceManager::getDefault("CarManager"));
+  manager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
   connect(this, SIGNAL(triggered()),this, SLOT(actionPerformed()));
  }
 

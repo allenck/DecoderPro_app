@@ -48,6 +48,8 @@ public:
  /*public*/ QVariant itemData(int i);
  /*public*/ void addItem(QString text, QVariant data = QVariant());
 // /*public*/ void  addItem(QString text) {QComboBox::addItem(text);}
+ /*public*/ bool isSelected();
+
 signals:
  void itemStateChanged(ItemEvent* e);
  /*public*/ void focusGained(FocusEvent* fe);

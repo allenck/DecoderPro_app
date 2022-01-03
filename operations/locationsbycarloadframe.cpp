@@ -75,7 +75,7 @@ namespace Operations
  /*public*/ void LocationsByCarLoadFrame::initComponents()
  {
   // load managers
-  locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
+  locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
 
   // general GUI config
   //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));

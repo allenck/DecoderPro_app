@@ -1,5 +1,4 @@
 #include "trainsscheduleaction.h"
-#include "trainsscheduletableframe.h"
 
 namespace Operations
 {
@@ -25,12 +24,12 @@ namespace Operations
  }
 
 
- /*public*/ void TrainsScheduleAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void TrainsScheduleAction::actionPerformed(JActionEvent* /*e*/) {
      // create a frame
      if (f == NULL || !f->isVisible()) {
          f = new TrainsScheduleTableFrame();
      }
-     //f.setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setVisible(true);	// this also brings the frame into focus
  }
 }

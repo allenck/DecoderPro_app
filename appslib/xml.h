@@ -21,6 +21,7 @@ class APPSLIBSHARED_EXPORT Xml
      static /*final*/ QString _FALSE;// "false"; // NOI18N
      static /*final*/ QString LOAD;// = "load"; // NOI18N
      static /*final*/ QString DIVISION;// = "division"; // NOI18N
+     static /*final*/ QString DIVISIONS;// = "divisions"; // NOI18N
 
 
      // LocationManager.java

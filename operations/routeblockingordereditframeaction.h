@@ -2,6 +2,8 @@
 #define OPERATIONS_ROUTEBLOCKINGORDEREDITFRAMEACTION_H
 
 #include <abstractaction.h>
+#include "routeblockingordereditframe.h"
+#include <QPointer>
 
 namespace Operations {
 
@@ -18,7 +20,7 @@ namespace Operations {
 
   private:
    Route* _route;
-   RouteBlockingOrderEditFrame* f = nullptr;
+   QPointer<RouteBlockingOrderEditFrame> f = nullptr;
 
  };
 

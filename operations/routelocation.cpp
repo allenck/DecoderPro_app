@@ -428,7 +428,7 @@ namespace Operations
 * Coordinates are dependent on the train's departure direction.
 */
 /*public*/ void RouteLocation::setTrainIconCoordinates() {
- Location* l = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationByName(getName());
+ Location* l = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationByName(getName());
  if ((getTrainDirection() & Location::EAST) > 0) {
   setTrainIconX(l->getTrainIconEast().x());
   setTrainIconY(l->getTrainIconEast().y());
@@ -476,14 +476,14 @@ namespace Operations
      }
      if ((a = e.attribute (Xml::LOCATION_ID)) != NULL) {
          _locationId = a;
-         _location = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationById(a);
+         _location = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationById(a);
          if (_location != NULL)
          {
           _location->PropertyChangeSupport::addPropertyChangeListener(this);
          }
      } // old way of storing a route location
      else if ((a = e.attribute (Xml::NAME)) != NULL) {
-         _location = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationByName(a);
+         _location = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationByName(a);
          if (_location != NULL) {
           _location->PropertyChangeSupport::addPropertyChangeListener(this);
          }

@@ -40,12 +40,12 @@ namespace Operations
   connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void TrainCopyAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void TrainCopyAction::actionPerformed(JActionEvent* /*e*/) {
      // create a copy train frame
      if (f == NULL || !f->isVisible()) {
          f = new TrainCopyFrame(_train);
      }
-     //f.setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setVisible(true); // this also brings the frame into focus
  }
 }

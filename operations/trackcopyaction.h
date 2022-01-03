@@ -14,12 +14,12 @@ namespace Operations
   Q_OBJECT
  public:
    /*public*/ TrackCopyAction(QObject* parent);
-  TrackCopyAction(LocationEditFrame* parent);
+  TrackCopyAction(LocationEditFrame* lef, QObject* parent);
  public slots:
   /*public*/ void actionPerformed(JActionEvent* /*e*/ = 0);
 
  private:
-  /*private*/ QPointer<LocationEditFrame> _lef;
+  /*private*/ LocationEditFrame* _lef;
   QPointer<TrackCopyFrame> f;// = null;
 
  };

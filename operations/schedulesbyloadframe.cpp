@@ -48,7 +48,7 @@ namespace Operations
  allLoadsCheckBox = new QCheckBox(tr("All Loads"));
 
  // managers'
- locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
+ locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
 
      // the following code sets the frame's initial state
      //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
@@ -193,8 +193,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
                      // create string Receive(type, delivery, road, load)
                      QString s = si->getTypeName();
                      if (si->getSetoutTrainScheduleId()!=(ScheduleItem::NONE)
-                             && ((Operations::TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(si->getSetoutTrainScheduleId()) != NULL) {
-                         s = s  + ", " + ((Operations::TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(si->getSetoutTrainScheduleId())->getName();
+                             && ((Operations::TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(si->getSetoutTrainScheduleId()) != NULL) {
+                         s = s  + ", " + ((Operations::TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(si->getSetoutTrainScheduleId())->getName();
                      } else {
                          s = s + ",";
                      }
@@ -208,8 +208,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
                      // create string Ship(load, pickup)
                      s = "";
                      if (si->getPickupTrainScheduleId()!=(ScheduleItem::NONE)
-                             && ((Operations::TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(si->getPickupTrainScheduleId()) != NULL) {
-                         s = ", "+ ((Operations::TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(si->getPickupTrainScheduleId())->getName();
+                             && ((Operations::TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(si->getPickupTrainScheduleId()) != NULL) {
+                         s = ", "+ ((Operations::TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(si->getPickupTrainScheduleId())->getName();
                      }
                      addItemLeft(locationsPanel, new QLabel(tr("Ship") +
                              " (" + si->getShipLoadName() + s + ")"), 3, x++);

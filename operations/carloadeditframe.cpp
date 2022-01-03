@@ -316,15 +316,15 @@ namespace Operations
 
  /*private*/ void CarLoadEditFrame::replaceLoad(QString type, QString oldLoad, QString newLoad) {
      // adjust all cars
-     ((CarManager*)InstanceManager::getDefault("CarManager"))->replaceLoad(type, oldLoad, newLoad);
+     ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->replaceLoad(type, oldLoad, newLoad);
      // now adjust schedules
 
-     ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->replaceLoad(type, oldLoad, newLoad);
+     ((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"))->replaceLoad(type, oldLoad, newLoad);
 
      // now adjust trains
-     ((TrainManager*)InstanceManager::getDefault("TrainManager"))->replaceLoad(type, oldLoad, newLoad);
+     ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->replaceLoad(type, oldLoad, newLoad);
      // now adjust tracks
-     ((LocationManager*)InstanceManager::getDefault("LocationManager"))->replaceLoad(type, oldLoad, newLoad);
+     ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->replaceLoad(type, oldLoad, newLoad);
  }
 
 /*private*/ void CarLoadEditFrame::loadComboboxes() {
@@ -350,7 +350,7 @@ namespace Operations
      }
      int number = 0;
      QString item =  loadComboBox->currentText();
-     foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("CarManager"))->getList()) {
+     foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getList()) {
          Car* car = (Car*) rs;
          if (car->getLoadName()==(item)) {
              number++;

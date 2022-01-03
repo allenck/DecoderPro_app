@@ -1,5 +1,4 @@
 #include "settrainiconrouteaction.h"
-#include "settrainiconrouteframe.h"
 
 namespace Operations
 {
@@ -47,7 +46,7 @@ namespace Operations
      if (f == NULL || !f->isVisible()) {
          f = new SetTrainIconRouteFrame(_route);
      }
-     //f.setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setVisible(true);	// this also brings the frame into focus
 
  }

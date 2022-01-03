@@ -46,7 +46,7 @@ namespace Operations
    : OperationsFrame(parent)
   {
    log = new Logger("LocationCopyFrame");
-   locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
+   locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
 
    // text field
    locationNameTextField = new JTextField(Control::max_len_string_location_name);
@@ -234,8 +234,8 @@ namespace Operations
  }
 
  /*protected*/ void LocationCopyFrame::moveRollingStock(Track* fromTrack, Track* toTrack) {
-     moveRollingStock(fromTrack, toTrack, ((CarManager*)InstanceManager::getDefault("CarManager")));
-     moveRollingStock(fromTrack, toTrack, ((EngineManager*)InstanceManager::getDefault("EngineManager")));
+     moveRollingStock(fromTrack, toTrack, ((CarManager*)InstanceManager::getDefault("Operations::CarManager")));
+     moveRollingStock(fromTrack, toTrack, ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager")));
  }
 
  /*private*/ void LocationCopyFrame::moveRollingStock(Track* fromTrack, Track* toTrack, RollingStockManager* manager) {

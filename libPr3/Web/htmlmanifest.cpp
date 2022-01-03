@@ -579,7 +579,7 @@ using namespace Operations;
    return String::format(locale, strings->getProperty(this->resourcePrefix + "ValidityWithSchedule"),
 //              getDate((new ISO8601DateFormat()).parse(this->getJsonManifest().value(JsonOperations::DATE).toString())),
                 getDate(QDateTime::fromString(this->getJsonManifest().value(JsonOperations::DATE).toString(),Qt::ISODate)),
-              ((Operations::TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(train->getId())->toString());
+              ((Operations::TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(train->getId())->toString());
   }
   else
   {

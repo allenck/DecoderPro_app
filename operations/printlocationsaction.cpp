@@ -249,7 +249,7 @@ namespace Operations
      QString s = padOutString(tr("Schedules"), MAX_NAME_LENGTH) + " " + tr("Location")
              + " - " + tr("SpurName") + NEW_LINE;
      writer->write(s);
-     QList<Schedule*> schedules = ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->getSchedulesByNameList();
+     QList<Schedule*> schedules = ((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"))->getSchedulesByNameList();
      foreach (Schedule* schedule, schedules) {
          foreach (Location* location, locations) {
              if (_location != NULL && location != _location) {
@@ -410,7 +410,7 @@ namespace Operations
 
  /*private*/ void PrintLocationsAction::printAnalysisSelected() //throws IOException
  {
-     CarManager* carManager = ((CarManager*)InstanceManager::getDefault("CarManager"));
+     CarManager* carManager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
      QList<Location*> locations = manager->getLocationsByNameList();
      QList<RollingStock*>* cars = carManager->getByLocationList();
      QStringList carTypes = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames();
@@ -752,7 +752,7 @@ namespace Operations
          }
          buf = QString(TAB + TAB + trainType + NEW_LINE + TAB + TAB);
          foreach (QString id, ids) {
-             Train* train = ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainById(id);
+             Train* train = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainById(id);
              if (train == NULL) {
                  log->info("Could not find a train for id: " + id + " track (" + track->getName() + ")");
                  continue;
@@ -806,7 +806,7 @@ namespace Operations
          }
          buf = QString(TAB + TAB + trainType + NEW_LINE + TAB + TAB);
          foreach(QString id, ids) {
-             Train* train = ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainById(id);
+             Train* train = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainById(id);
              if (train == NULL) {
                  log->info("Could not find a train for id: " + id + " track (" + track->getName() + ")");
                  continue;
@@ -854,7 +854,7 @@ namespace Operations
              + tr("Destinations") + ":";
      if (track->getDestinationOption()==(Track::EXCLUDE_DESTINATIONS)) {
          op = tr("Exclude") + " "
-                 + QString::number(((LocationManager*)InstanceManager::getDefault("LocationManager"))->getNumberOfLocations() - track->getDestinationListSize()) + " "
+                 + QString::number(((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getNumberOfLocations() - track->getDestinationListSize()) + " "
                  + tr("Destinations") + ":";
      }
      QString buf = QString(TAB + TAB + op + NEW_LINE + TAB + TAB);

@@ -1,5 +1,4 @@
 #include "trainstablesetcoloraction.h"
-#include "trainstablesetcolorframe.h"
 #include "train.h"
 
 namespace Operations
@@ -45,7 +44,7 @@ namespace Operations
      if (f == NULL || !f->isVisible()) {
          f = new TrainsTableSetColorFrame(_train);
      }
-     //f.setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setVisible(true); // this also brings the frame into focus
  }
 }

@@ -2,6 +2,9 @@
 #define TRAINSBYCARTYPEACTION_H
 
 #include "abstractaction.h"
+#include "trainsbycartypeframe.h"
+#include <QPointer>
+
 namespace Operations
 {
  class TrainsByCarTypeFrame;
@@ -15,7 +18,7 @@ namespace Operations
   /*public*/ void actionPerformed(ActionEvent* e = 0);
 
  private:
-  TrainsByCarTypeFrame* f;// = null;
+  QPointer<TrainsByCarTypeFrame> f;// = null;
 
  };
 }

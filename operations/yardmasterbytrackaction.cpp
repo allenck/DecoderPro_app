@@ -45,6 +45,6 @@ void YardmasterByTrackAction::common()
     if (f == NULL || !f->isVisible()) {
         f = new YardmasterByTrackFrame(_location);
     }
-//    f->setExtendedState(Frame::NORMAL);
+    f->setExtendedState(JFrame::NORMAL);
     f->setVisible(true); // this also brings the frame into focus
 }

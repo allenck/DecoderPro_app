@@ -1,6 +1,8 @@
 #ifndef SETTRAINICONPOSITIONACTION_H
 #define SETTRAINICONPOSITIONACTION_H
 #include "abstractaction.h"
+#include "settrainiconpositionframe.h"
+#include <QPointer>
 
 namespace Operations
 {
@@ -14,7 +16,7 @@ namespace Operations
      /*public*/ void actionPerformed(JActionEvent* e = 0);
 
  private:
-     SetTrainIconPositionFrame* f;// = NULL;
+     QPointer<SetTrainIconPositionFrame> f;// = NULL;
 
  };
 }

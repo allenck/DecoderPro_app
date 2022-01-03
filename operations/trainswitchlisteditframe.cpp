@@ -43,7 +43,7 @@ namespace Operations
     : OperationsFrame(tr("SwitchLists"), parent)
  {
   //super(tr("TitleSwitchLists"));
-  locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
+  locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
   locationCheckBoxes = QList<QCheckBox*>();
   locationComboBoxes = QList<JComboBox*>();
   locationPanelCheckBoxes = new JPanel();
@@ -263,7 +263,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          }
      }
      // set trains switch lists unknown, any built trains should remain on the switch lists
-     ((TrainManager*)InstanceManager::getDefault("TrainManager"))->setTrainsSwitchListStatus(Train::UNKNOWN);
+     ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->setTrainsSwitchListStatus(Train::UNKNOWN);
  }
 
  // save printer selection
@@ -322,7 +322,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          }
      }
      // set trains switch lists printed
-     ((TrainManager*)InstanceManager::getDefault("TrainManager"))->setTrainsSwitchListStatus(Train::PRINTED);
+     ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->setTrainsSwitchListStatus(Train::PRINTED);
  }
 
  /*private*/ void TrainSwitchListEditFrame::selectCheckboxes(bool enable) {
@@ -458,7 +458,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      TrainCustomSwitchList.process();
 #endif
      // set trains switch lists printed
-     ((TrainManager*)InstanceManager::getDefault("TrainManager"))->setTrainsSwitchListStatus(Train::PRINTED);
+     ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->setTrainsSwitchListStatus(Train::PRINTED);
  }
 
  /*private*/ void TrainSwitchListEditFrame::enableSaveButton(bool enable) {

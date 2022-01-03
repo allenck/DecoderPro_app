@@ -71,7 +71,7 @@ namespace Operations
 
  /*public*/ void EngineEditFrame::initComponents()
  {
-  groupComboBox = ((EngineManager*)InstanceManager::getDefault("EngineManager"))->getConsistComboBox();
+  groupComboBox = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getConsistComboBox();
   modelComboBox = engineModels->getComboBox();
 
   RollingStockEditFrame::initComponents();

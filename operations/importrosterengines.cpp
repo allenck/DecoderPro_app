@@ -26,7 +26,7 @@ namespace Operations
 
  ImportRosterEngines::ImportRosterEngines(QObject *parent) : QObject(parent)
  {
-  manager = ((EngineManager*)InstanceManager::getDefault("EngineManager"));
+  manager = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"));
   log = new Logger("ImportRosterEngines");
 //  textEngine = new QLabel();
 //  textId = new QLabel();

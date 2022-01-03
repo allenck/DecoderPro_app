@@ -49,6 +49,15 @@ public:
     EXIT_ON_CLOSE = 3
  };
  Q_ENUM(ACTIONS)
+ enum STATES
+ {
+  NORMAL =0,
+  ICONIFIED =1,
+  MAXIMIZED_HORIZ = 2,
+  MAXIMIZED_VERT = 4,
+  MAXIMIZED_BOTH = 6
+ };
+ Q_ENUM(STATES)
     //virtual /*public*/ void windowClosing(QCloseEvent* e);
 
     explicit JFrame(QWidget *parent = nullptr);
@@ -104,6 +113,12 @@ public:
     /*public*/ void removePropertyChangeListener(PropertyChangeListener*);
     /*public*/ void firePropertyChange(QString, QVariant, QVariant);
     /*public*/ void firePropertyChange(QString pName, QObject* _old, QObject* _new);
+    /*public*/ void setState(int state);
+    /*public*/ int getState();
+    /*public*/ void setExtendedState(int s);
+    /*public*/ int getExtendedState();
+    /*public*/ bool isResizable();
+    /*public*/ /*synchronized*/ void setResizable(bool resizable);
 
 signals:
     void propertyChange(PropertyChangeEvent*);
@@ -115,13 +130,15 @@ private:
  Logger* log;
  QString _title;
  int defaultCloseOperation;
- void closeEvent(QCloseEvent *);
+ int state;
+ bool resizable = true;
+ void closeEvent(QCloseEvent *)override;
  //void resizeEvent(QResizeEvent *);
- void hideEvent(QHideEvent *);
  //void moveEvent(QMoveEvent*);
  Border* _border = nullptr;
  bool _windowClosing = false;
  PropertyChangeSupport* pcs = new PropertyChangeSupport(this);
+ //Qt::WindowStates QWindowStateChangeEvent();
 
 protected:
     /*protected*/ void frameInit();
@@ -129,6 +146,10 @@ protected:
  //virtual void handleModified() {}
 // /*protected*/ bool reuseFrameSavedPosition;// = true;
 // /*protected*/ bool reuseFrameSavedSized;// = true;
+ /*protected*/ QString paramString();
+ void hideEvent(QHideEvent *)override;
+ void showEvent(QShowEvent*) override;
+
  friend class ControlPanelEditorXml;
 };
 Q_DECLARE_METATYPE(JFrame)

@@ -41,7 +41,7 @@ namespace Operations
 : AbstractTableModel(parent)
  {
      //super();
-  manager = ((CarManager*)InstanceManager::getDefault("CarManager")); // There is only one manager
+  manager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager")); // There is only one manager
  _sort = SORTBY_NUMBER;
   sysList = NULL;
   cef = NULL;

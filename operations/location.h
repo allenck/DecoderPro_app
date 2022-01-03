@@ -118,6 +118,7 @@ namespace Operations {
   /*public*/ void deleteDropRS();
   /*public*/ Track* getTrackById(QString id);
   /*public*/ Reporter* getReporter();
+  /*public*/ QString getReporterName();
   /*public*/ void updateComboBox(QComboBox* box);
   /*public*/ QList<Track*> getTracksByNameList(QString type);
   /*public*/ QList<Track*> getTrackByIdList();
@@ -164,6 +165,7 @@ namespace Operations {
   {
      return this->_name == e1.getName();
   }
+  /*public*/ QList<Track*> getTracksList();
 
  signals:
 

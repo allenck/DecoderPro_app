@@ -56,9 +56,9 @@ namespace Operations
   _location = NULL;
   _train = NULL;
 
-  trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
-  engManager = ((EngineManager*)InstanceManager::getDefault("EngineManager"));
-  carManager = ((CarManager*)InstanceManager::getDefault("CarManager"));
+  trainManager = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"));
+  engManager = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"));
+  carManager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
   trainCommon = new TrainCommon();
 
   // labels
@@ -359,7 +359,7 @@ namespace Operations
      csf->loadCar(car);
      // csf->setTitle(tr("TitleCarSet"));
      csf->setVisible(true);
-     //csf->setExtendedState(Frame.NORMAL);
+     csf->setExtendedState(JFrame::NORMAL);
  }
 
  // action for set button for an engine, opens the set engine window

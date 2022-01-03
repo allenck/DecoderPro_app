@@ -64,9 +64,9 @@ namespace Operations {
  /*public*/ /*static*/ /*final*/ bool TrainCommon::IS_TWO_COLUMN_TRACK = true;
  TrainCommon::TrainCommon(QObject *parent) : QObject(parent)
  {
-  carManager = ((CarManager*)InstanceManager::getDefault("CarManager"));
-  engineManager = ((EngineManager*)InstanceManager::getDefault("EngineManager"));
-  locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
+  carManager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
+  engineManager = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"));
+  locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
   cars = 0;
   emptyCars = 0;
   log = new Logger("TrainCommon");
@@ -1274,10 +1274,10 @@ namespace Operations {
   * @return true if the train has work at the location
   */
  /*public*/ /*static*/  bool TrainCommon::isThereWorkAtLocation(Train* train, Location* location) {
-     if (isThereWorkAtLocation(train, location, ((CarManager*)InstanceManager::getDefault("CarManager"))->getList(train))) {
+     if (isThereWorkAtLocation(train, location, ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getList(train))) {
          return true;
      }
-     if (isThereWorkAtLocation(train, location, ((EngineManager*)InstanceManager::getDefault("EngineManager"))->getList(train))) {
+     if (isThereWorkAtLocation(train, location, ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getList(train))) {
          return true;
      }
      return false;
@@ -1296,7 +1296,7 @@ namespace Operations {
  }
 
  /*protected*/ void TrainCommon::addCarsLocationUnknown(PrintWriter* file, bool isManifest) {
-     CarManager* carManager = ((CarManager*)InstanceManager::getDefault("CarManager"));
+     CarManager* carManager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
      QList<Car*>* cars = carManager->getCarsLocationUnknown();
      if (cars->size() == 0) {
          return; // no cars to search for!

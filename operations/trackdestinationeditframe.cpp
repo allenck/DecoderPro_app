@@ -54,7 +54,7 @@ namespace Operations
  log = new Logger("TrackDestinationEditFrame");
       _track = NULL;
 
-      locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
+      locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
 
      // panels
      pControls = new JPanel();
@@ -473,7 +473,7 @@ namespace Operations
                          }
                          // is there a car with this road?
                          bool foundCar = false;
-                         foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("CarManager"))->getList()) {
+                         foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getList()) {
                              if (rs->getTypeName()==(type) && rs->getRoadName()==(road)) {
                                  foundCar = true;
                                  break;

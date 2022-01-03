@@ -1,5 +1,4 @@
 #include "locationstableaction.h"
-#include "locationstableframe.h"
 
 //LocationsTableAction::LocationsTableAction()
 //{
@@ -32,16 +31,16 @@ namespace Operations
  common();
  }
 
- /*static*/ LocationsTableFrame* LocationsTableAction::f = NULL;
+ /*static*/ QPointer<LocationsTableFrame> LocationsTableAction::f = NULL;
 
  //@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
- /*NULL*/ void LocationsTableAction::actionPerformed(ActionEvent* /*e*/) {
+ /*NULL*/ void LocationsTableAction::actionPerformed(JActionEvent* /*e*/) {
      // create a location table frame
 
      if (f == NULL || !f->isVisible()) {
          f = new LocationsTableFrame();
      }
-     //f->setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setVisible(true);	// this also brings the frame into focus
 
  }

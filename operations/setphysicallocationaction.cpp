@@ -21,7 +21,7 @@ namespace Operations
      if (f == nullptr || !f->isVisible()) {
          f = new SetPhysicalLocationFrame(_location);
      }
-//     f->setExtendedState(JFrame::NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setVisible(true); // this also brings the frame into focus
  }
 } // namespace Operations

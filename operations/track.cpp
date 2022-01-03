@@ -294,7 +294,7 @@ namespace Operations
          QString old = _name;
          _name = name;
          if (old!=(name)) {
-             ((LocationManager*)InstanceManager::getDefault("LocationManager"))->resetNameLengths(); // recalculate max track name length
+             ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->resetNameLengths(); // recalculate max track name length
                                                                                    // for manifests
              setDirtyAndFirePropertyChange(NAME_CHANGED_PROPERTY, old, name);
          }
@@ -1549,7 +1549,7 @@ if (loads.length() == 0) {
      if (getScheduleId()==(NONE)) {
          return NULL;
      }
-     Schedule* schedule = ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->getScheduleById(getScheduleId());
+     Schedule* schedule = ((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"))->getScheduleById(getScheduleId());
      if (schedule == NULL) {
          log->error("No schedule for id: " + getScheduleId());
      }
@@ -1563,7 +1563,7 @@ if (loads.length() == 0) {
      }
      // old code only stored schedule name, so create id if needed.
      if (_scheduleId==(NONE) && _scheduleName!=(NONE)) {
-         Schedule* schedule = ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->getScheduleByName(_scheduleName);
+         Schedule* schedule = ((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"))->getScheduleByName(_scheduleName);
          if (schedule == NULL) {
              log->error("No schedule for name: " + _scheduleName);
          } else {
@@ -1577,7 +1577,7 @@ if (loads.length() == 0) {
      QString old = _scheduleId;
      _scheduleId = id;
      if (old!=(id)) {
-         Schedule* schedule = ((ScheduleManager*)InstanceManager::getDefault("ScheduleManager"))->getScheduleById(id);
+         Schedule* schedule = ((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"))->getScheduleById(id);
          if (schedule == NULL) {
              _scheduleName = NONE;
          } else {
@@ -1710,13 +1710,13 @@ if (loads.length() == 0) {
   {
    // check train schedules
    if (si->getSetoutTrainScheduleId()!=(ScheduleItem::NONE)
-           && ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(si->getSetoutTrainScheduleId()) == NULL)
+           && ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(si->getSetoutTrainScheduleId()) == NULL)
    {
        status = (tr("Not Valid <%1>").arg(si->getSetoutTrainScheduleId()));
        break;
    }
    if (si->getPickupTrainScheduleId()!=(ScheduleItem::NONE)
-           && ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(si->getPickupTrainScheduleId()) == NULL)
+           && ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(si->getPickupTrainScheduleId()) == NULL)
    {
        status = (tr("Not Valid <%1>").arg(si->getPickupTrainScheduleId()));
        break;
@@ -1732,7 +1732,7 @@ if (loads.length() == 0) {
    // check roads, accepted by track, valid road, and there's at least one car with that road
    if (si->getRoadName()!=(ScheduleItem::NONE)
            && (!acceptsRoadName(si->getRoadName()) || !((CarRoads*)InstanceManager::getDefault("CarRoads"))->containsName(si->getRoadName()) ||
-               ((CarManager*)InstanceManager::getDefault("CarManager"))->getByTypeAndRoad(si->getTypeName(), si->getRoadName()) == NULL)) {
+               ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getByTypeAndRoad(si->getTypeName(), si->getRoadName()) == NULL)) {
        status = (tr("Not Valid <%1>").arg(si->getRoadName()));
        break;
    }
@@ -1750,7 +1750,7 @@ if (loads.length() == 0) {
    }
    // check destination
    if (si->getDestination() != NULL
-           && (!si->getDestination()->acceptsTypeName(si->getTypeName()) || ((LocationManager*)InstanceManager::getDefault("LocationManager"))
+           && (!si->getDestination()->acceptsTypeName(si->getTypeName()) || ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))
            ->getLocationById(si->getDestination()->getId()) == NULL)) {
        status = tr("Not Valid <%1>").arg(si->getDestination()->toString());
        break;
@@ -1867,8 +1867,8 @@ if (loads.length() == 0) {
 
  /*private*/ QString Track::checkScheduleItem(ScheduleItem* si, Car* car) {
      if (si->getSetoutTrainScheduleId()!=(ScheduleItem::NONE)
-             && ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainScheduleActiveId()!=(si->getSetoutTrainScheduleId())) {
-         TrainSchedule* sch = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(si->getSetoutTrainScheduleId());
+             && ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainScheduleActiveId()!=(si->getSetoutTrainScheduleId())) {
+         TrainSchedule* sch = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(si->getSetoutTrainScheduleId());
          if (sch != NULL) {
              return SCHEDULE + " (" + getScheduleName() + ") " + tr("requestCarOnly") + " ("
                      + sch->getName() + ")";
@@ -1961,7 +1961,7 @@ if (loads.length() == 0) {
   log->debug(tr("Destination track (%1) has schedule (%2) item id (%3) mode: %4 (%5)").arg(getName()).arg(getScheduleName()).arg(
           getScheduleItemId()).arg(getScheduleMode()).arg(getScheduleMode() == SEQUENTIAL ? "Sequential" : "Match")); // NOI18N
   if (currentSi != NULL
-          && (currentSi->getSetoutTrainScheduleId()==(ScheduleItem::NONE) || ((TrainManager*)InstanceManager::getDefault("TrainManager"))
+          && (currentSi->getSetoutTrainScheduleId()==(ScheduleItem::NONE) || ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))
           ->getTrainScheduleActiveId()==(currentSi->getSetoutTrainScheduleId()))
           && car->getTypeName()==(currentSi->getTypeName())
           && (currentSi->getRoadName()==(ScheduleItem::NONE) || car->getRoadName()==(
@@ -1979,12 +1979,12 @@ if (loads.length() == 0) {
       // build return message
       QString timetableName = "";
       QString currentTimetableName = "";
-      TrainSchedule* sch = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(
-              ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainScheduleActiveId());
+      TrainSchedule* sch = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(
+              ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainScheduleActiveId());
       if (sch != NULL) {
           timetableName = sch->getName();
       }
-      sch = ((TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(currentSi->getSetoutTrainScheduleId());
+      sch = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(currentSi->getSetoutTrainScheduleId());
       if (sch != NULL) {
           currentTimetableName = sch->getName();
       }
@@ -2797,7 +2797,7 @@ if (loads.length() == 0) {
              QDomElement destinations = QDomElement();
              destinations.setTagName(Xml::DESTINATIONS);
              foreach (QString id, destIds) {
-                 Location* loc = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationById(id);
+                 Location* loc = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationById(id);
                  if (loc != NULL) {
                      QDomElement destination = QDomElement();
                      destination.setTagName(Xml::DESTINATION);

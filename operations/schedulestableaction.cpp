@@ -28,7 +28,7 @@ namespace Operations
      if (f == NULL || !f->isVisible()) {
          f = new SchedulesTableFrame();
      }
-     //f.setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setVisible(true);	// this also brings the frame into focus
  }
 }

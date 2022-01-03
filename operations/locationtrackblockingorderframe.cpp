@@ -41,7 +41,7 @@ namespace Operations
      trackTable = new JTable(trackModel);
      //trackPane = new QScrollArea(/*trackTable*/);
 
-     locationManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
+     locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
 
      _location = NULL;
 
@@ -118,7 +118,7 @@ namespace Operations
 //         }
          _location->resequnceTracksByBlockingOrder();
          // recreate all train manifests
-         ((TrainManager*)InstanceManager::getDefault("TrainManager"))->setTrainsModified();
+         ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->setTrainsModified();
          // save location file
          OperationsXml::save();
          if (Setup::isCloseWindowOnSaveEnabled()) {

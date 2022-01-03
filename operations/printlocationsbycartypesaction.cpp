@@ -37,7 +37,7 @@ namespace Operations
 {
   //super(actionName);
  log = new Logger("PrintLocationsByCarTypesAction");
- locManager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
+ locManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
 
   mFrame = frame;
   isPreview = preview;

@@ -5,6 +5,7 @@
 
 class JynstrumentPopupMenu : public Menu
 {
+    Q_OBJECT
 public:
  /*public*/ JynstrumentPopupMenu(Jynstrument* it);
 

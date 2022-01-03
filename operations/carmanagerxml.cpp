@@ -76,7 +76,7 @@ namespace Operations
      ((CarLengths*)InstanceManager::getDefault("CarLengths"))->store(root, doc);
      ((CarOwners*)InstanceManager::getDefault("CarOwners"))->store(root, doc);
      ((CarLoads*)InstanceManager::getDefault("CarLoads"))->store(root, doc);
-     ((CarManager*)InstanceManager::getDefault("CarManager"))->store(root, doc);
+     ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->store(root, doc);
 
      writeXML(file, doc);
 
@@ -109,7 +109,7 @@ namespace Operations
      ((CarLengths*)InstanceManager::getDefault("CarLengths"))->load(root);
      ((CarOwners*)InstanceManager::getDefault("CarOwners"))->load(root);
      ((CarLoads*)InstanceManager::getDefault("CarLoads"))->load(root);
-     ((CarManager*)InstanceManager::getDefault("CarManager"))->load(root);
+     ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->load(root);
 
      log->debug("Cars have been loaded!");
 //        RollingStockLogger.instance().enableCarLogging(Setup.isCarLoggerEnabled());

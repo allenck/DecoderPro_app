@@ -82,7 +82,7 @@ namespace Operations
  /*public*/ void LocationsByCarTypeFrame::initComponents(QString carType) {
 
      // load managers
-     manager = ((LocationManager*)InstanceManager::getDefault("LocationManager"));
+     manager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
 
      // general GUI config
      //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));

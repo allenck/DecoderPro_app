@@ -68,7 +68,7 @@ namespace Operations
  {
   setObjectName("CarAttributeEditFrame");
   log = new Logger("CarAttributeEditFrame");
-  carManager = ((CarManager*)InstanceManager::getDefault("CarManager"));
+  carManager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
  }
 
 
@@ -261,7 +261,7 @@ namespace Operations
        if (number == 0 && deleteUnused) {
            // need to check if an engine is using the road name
            if (_attribute == (ROAD)) {
-               for (RollingStock* rs : *((EngineManager*)InstanceManager::getDefault("EngineManager"))->getList()) {
+               for (RollingStock* rs : *((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getList()) {
                    if (rs->getRoadName() == (item)) {
                        log->info(tr("Engine (%1 %2) is assigned road name (%3)").arg(rs->getRoadName()).arg(rs->getNumber()).arg(item)); // NOI18N
                        return;
@@ -270,7 +270,7 @@ namespace Operations
            }
            // need to check if an engine is using the road name
            if (_attribute == (OWNER)) {
-               for (RollingStock* rs : *((EngineManager*)InstanceManager::getDefault("EngineManager"))->getList()) {
+               for (RollingStock* rs : *((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getList()) {
                    if (rs->getOwner() == (item)) {
                        log->info(tr("Engine (%1 %2) is assigned owner name (%3)").arg(rs->getRoadName()).arg(rs->getNumber()).arg(item)); // NOI18N
                        return;

@@ -2,6 +2,9 @@
 #define TRAINCOPYACTION_H
 
 #include "abstractaction.h"
+#include "traincopyframe.h"
+#include <QPointer>
+
 namespace Operations
 {
  class Train;
@@ -12,10 +15,10 @@ namespace Operations
   TrainCopyAction(QString s, QObject* parent);
   TrainCopyAction(QString, Train*, QObject*);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e = 0);
+  /*public*/ void actionPerformed(JActionEvent *e = 0);
 
  private:
-  TrainCopyFrame* f;// = null;
+  QPointer<TrainCopyFrame> f;// = null;
   void common();
   Train* _train;// = null;
  };

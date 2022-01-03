@@ -3,10 +3,7 @@
 #include <QVBoxLayout>
 #include "locationmanager.h"
 #include "locationeditframe.h"
-#include "jtextfield.h"
-#include "jbutton.h"
 #include "jcombobox.h"
-#include "control.h"
 #include <QCheckBox>
 #include "propertychangeevent.h"
 #include "gridbaglayout.h"
@@ -14,6 +11,11 @@
 #include "vptr.h"
 #include "instancemanager.h"
 #include "borderfactory.h"
+#include "joptionpane.h"
+#include "operationsxml.h"
+#include "track.h"
+#include "carmanager.h"
+#include "enginemanager.h"
 
 namespace Operations
  {
@@ -34,32 +36,19 @@ namespace Operations
 
  // remember state of checkboxes during a session
  /*static*/ bool TrackCopyFrame::sameName = false;
- /*static*/ bool TrackCopyFrame::moveRollingStock = false;
+ /*static*/ bool TrackCopyFrame::_moveRollingStock = false;
  /*static*/ bool TrackCopyFrame::deleteTrack = false;
 
- /*public*/ TrackCopyFrame::TrackCopyFrame(LocationEditFrame* lef)
-     : OperationsFrame(lef)
+ /*public*/ TrackCopyFrame::TrackCopyFrame(LocationEditFrame* lef, QWidget* parent)
+     : OperationsFrame(parent)
  {
- log = new Logger("TrackCopyFrame");
-  // text field
-  trackNameTextField = new JTextField(Control::max_len_string_track_name);
-
-  // major buttons
-  copyButton = new JButton(tr("Copy"));
-  saveButton = new JButton(tr("Save"));
-
   // combo boxes
-  locationBox = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getComboBox();
+  locationBox = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getComboBox();
   trackBox = new JComboBox();
 
-  // checkboxes
-  sameNameCheckBox = new QCheckBox(tr("SameName"));
-  moveRollingStockCheckBox = new QCheckBox(tr("Move Rolling Stock to New Track"));
-  deleteTrackCheckBox = new QCheckBox(tr("Delete Copied Track"));
-
-
-
-     _location = lef->_location;
+  if (lef != nullptr) {
+      _destination = lef->_location;
+  }
 
      // general GUI config
      //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
@@ -73,11 +62,11 @@ namespace Operations
      addItem(pName, trackNameTextField, 0, 0);
 
      // row 2
-     JPanel* pCopy = new JPanel();
-     pCopy->setLayout(new GridBagLayout());
-     pCopy->setBorder(BorderFactory::createTitledBorder(tr("Select track to copy")));
-     addItem(pCopy, locationBox, 0, 0);
-     addItem(pCopy, trackBox, 1, 0);
+     JPanel* pCopyTo = new JPanel();
+     pCopyTo->setLayout(new GridBagLayout());
+     pCopyTo->setBorder(BorderFactory::createTitledBorder(tr("Select track to copy")));
+     addItem(pCopyTo, locationBox, 0, 0);
+     addItem(pCopyTo, trackBox, 1, 0);
 
      // row 3
      JPanel* pOptions = new JPanel();
@@ -94,7 +83,7 @@ namespace Operations
      addItem(pButton, saveButton, 1, 0);
 
      thisLayout->addWidget(pName);
-     thisLayout->addWidget(pCopy);
+     thisLayout->addWidget(pCopyTo);
      thisLayout->addWidget(pOptions);
      thisLayout->addWidget(pButton);
 
@@ -103,13 +92,13 @@ namespace Operations
 
      // set the checkbox states
      sameNameCheckBox->setChecked(sameName);
-     moveRollingStockCheckBox->setChecked(moveRollingStock);
+     moveRollingStockCheckBox->setChecked(_moveRollingStock);
      deleteTrackCheckBox->setChecked(deleteTrack);
      deleteTrackCheckBox->setEnabled(moveRollingStockCheckBox->isChecked());
 
      // get notified if combo box gets modified
-     //((LocationManager*)InstanceManager::getDefault("LocationManager")).addPropertyChangeListener(this);
-     connect(((LocationManager*)InstanceManager::getDefault("LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")).addPropertyChangeListener(this);
+     connect(((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      // add help menu to window
      addHelpMenu("package.jmri.jmrit.operations.Operations_Locations", true); // NOI18N
@@ -117,13 +106,14 @@ namespace Operations
      adjustSize();
      setMinimumSize(QSize(Control::panelWidth400, Control::panelHeight400));
 
-     if (_location != NULL) {
-         setTitle(tr("Copy Track to (%1)").arg(_location->getName()));
-         _location->PropertyChangeSupport::addPropertyChangeListener(this);
+     if (_destination != nullptr) {
+         setTitle(tr("Copy Track").arg(_destination->getName()));
+         pCopyTo->setVisible(false);
+         _destination->addPropertyChangeListener(this);
      } else {
+         setTitle(tr("Copy Track"));
          copyButton->setEnabled(false);
      }
-
      // setup buttons
      addButtonAction(copyButton);
      addButtonAction(saveButton);
@@ -159,122 +149,118 @@ namespace Operations
          trackNameTextField->setText(trackBox->currentText());
      }
  }
-#if 0
+
  //@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
- /*protected*/ void buttonActionPerformed(ActionEvent* ae) {
-     if (source == copyButton) {
+ /*protected*/ void TrackCopyFrame::buttonActionPerformed(QWidget* ae) {
+     if (ae == copyButton) {
          log->debug("copy track button activated");
          if (!checkName()) {
              return;
          }
-         if (trackBox.getSelectedItem() == null || trackBox.getSelectedItem()==(Location.NONE) || _location == null) {
+         if (trackBox->getSelectedItem() == "" || trackBox->getSelectedItem()==(Location::NONE) || _destination == nullptr) {
              // tell user that they need to select a track to copy
-             JOptionPane.showMessageDialog(this, tr("SelectLocationAndTrack"), Bundle
-                     .getMessage("SelectTrackToCopy"), JOptionPane.INFORMATION_MESSAGE);
+             JOptionPane::showMessageDialog(this, tr("You must select the location and track you wish to copy"),
+                     tr("Select Track to Copy"), JOptionPane::INFORMATION_MESSAGE);
              return;
          }
-         Track* fromTrack = (Track) trackBox.getSelectedItem();
-         if (moveRollingStockCheckBox.isSelected() && fromTrack.getPickupRS() > 0) {
-             JOptionPane.showMessageDialog(this, MessageFormat.format(tr("FoundRollingStockPickUp"),
-                     new Object[]{fromTrack.getPickupRS()}), MessageFormat.format(Bundle
-                             .getMessage("TrainsServicingTrack"), new Object[]{fromTrack.getName()}),
-                     JOptionPane.WARNING_MESSAGE);
+         Track* fromTrack = VPtr<Track>::asPtr(trackBox->currentData());
+         if (moveRollingStockCheckBox->isSelected() && fromTrack->getPickupRS() > 0) {
+             JOptionPane::showMessageDialog(this, tr("Found %1 rolling stock scheduled for pick up by a train").arg(fromTrack->getPickupRS()),
+                                            tr("Trains are servicing track (%1)!").arg(fromTrack->getName()),
+                     JOptionPane::WARNING_MESSAGE);
              return; // failed
          }
-         if (moveRollingStockCheckBox.isSelected() && fromTrack.getDropRS() > 0) {
-             JOptionPane.showMessageDialog(this, MessageFormat.format(tr("FoundRollingStockDrop"),
-                     new Object[]{fromTrack.getDropRS()}), MessageFormat.format(Bundle
-                             .getMessage("TrainsServicingTrack"), new Object[]{fromTrack.getName()}),
-                     JOptionPane.WARNING_MESSAGE);
+         if (moveRollingStockCheckBox->isSelected() && fromTrack->getDropRS() > 0) {
+             JOptionPane::showMessageDialog(this, tr("Found %1 rolling stock scheduled for set out by a train").arg(
+                     fromTrack->getDropRS()), tr("Trains are servicing track (%1)!").arg(fromTrack->getName()),
+                     JOptionPane::WARNING_MESSAGE);
              return; // failed
          }
          // only copy tracks that are okay with the location
-         if (fromTrack.getTrackType()==(Track.STAGING) ^ _location.isStaging()) {
-             JOptionPane.showMessageDialog(this, MessageFormat.format(tr("TrackTypeWrong"),
-                     new Object[]{fromTrack.getTrackType(), _location.getName()}), MessageFormat.format(Bundle
-                             .getMessage("CanNotCopy"), new Object[]{fromTrack.getName()}), JOptionPane.ERROR_MESSAGE);
+         if (fromTrack->getTrackType()==(Track::STAGING) ^ _destination->isStaging()) {
+             JOptionPane::showMessageDialog(this, tr("Track type (%1) is not allowed at location (%2)").arg(
+                     fromTrack->getTrackType(), _destination->getName()), tr("Can not Copy Track (%1)").arg(fromTrack->getName()),
+                                            JOptionPane::ERROR_MESSAGE);
              return;
          }
-         Track toTrack = fromTrack.copyTrack(trackNameTextField.getText(), _location);
-         if (moveRollingStockCheckBox.isSelected()) {
+         Track* toTrack = fromTrack->copyTrack(trackNameTextField->text(), _destination);
+         if (moveRollingStockCheckBox->isSelected()) {
              // move rolling stock
              moveRollingStock(fromTrack, toTrack);
-             if (deleteTrackCheckBox.isSelected()) {
-                 fromTrack.getLocation().deleteTrack(fromTrack);
+             if (deleteTrackCheckBox->isSelected()) {
+                 fromTrack->getLocation()->deleteTrack(fromTrack);
              }
          }
      }
-     if (source == saveButton) {
+     if (ae == saveButton) {
          log->debug("save track button activated");
          // save checkbox states
-         sameName = sameNameCheckBox.isSelected();
-         moveRollingStock = moveRollingStockCheckBox.isSelected();
-         deleteTrack = deleteTrackCheckBox.isSelected();
+         sameName = sameNameCheckBox->isSelected();
+         _moveRollingStock = moveRollingStockCheckBox->isSelected();
+         deleteTrack = deleteTrackCheckBox->isSelected();
          // save location file
-         OperationsXml.save();
+         OperationsXml::save();
      }
  }
 
- /*protected*/ void checkBoxActionPerformed(java.awt.event.ActionEvent ae) {
-     if (source == sameNameCheckBox) {
+ /*protected*/ void TrackCopyFrame::checkBoxActionPerformed(QWidget* ae) {
+     if (ae == sameNameCheckBox) {
          updateTrackName();
      }
-     if (source == moveRollingStockCheckBox) {
-         deleteTrackCheckBox.setEnabled(moveRollingStockCheckBox.isSelected());
-         deleteTrackCheckBox.setSelected(false);
+     if (ae == moveRollingStockCheckBox) {
+         deleteTrackCheckBox->setEnabled(moveRollingStockCheckBox->isSelected());
+         deleteTrackCheckBox->setSelected(false);
      }
  }
-#endif
+
  /*protected*/ void TrackCopyFrame::updateComboBoxes() {
      log->debug("update location combobox");
-     ((LocationManager*)InstanceManager::getDefault("LocationManager"))->updateComboBox(locationBox);
+     ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->updateComboBox(locationBox);
  }
-#if 0
+
  /**
   *
   * @return true if name entered and isn't too long
   */
- /*protected*/ bool checkName() {
-     if (trackNameTextField.getText().trim()==("")) {
-         JOptionPane.showMessageDialog(this, tr("MustEnterName"), MessageFormat.format(Bundle
-                 .getMessage("CanNotTrack"), new Object[]{tr("Copy")}), JOptionPane.ERROR_MESSAGE);
+ /*protected*/ bool TrackCopyFrame::checkName() {
+     if (trackNameTextField->text().trimmed()==("")) {
+         JOptionPane::showMessageDialog(this, tr("Enter a name"), tr("Can not %1 Track!").arg(tr("Copy")), JOptionPane::ERROR_MESSAGE);
          return false;
      }
-     if (trackNameTextField.getText().length() > Control.max_len_string_track_name) {
-         JOptionPane.showMessageDialog(this, MessageFormat.format(tr("TrackNameLengthMax"),
-                 new Object[]{Integer.toString(Control.max_len_string_track_name + 1)}), MessageFormat.format(Bundle
-                         .getMessage("CanNotTrack"), new Object[]{tr("Copy")}), JOptionPane.ERROR_MESSAGE);
+     if (trackNameTextField->text().length() > Control::max_len_string_track_name) {
+         JOptionPane::showMessageDialog(this,tr("Track name must be less than %1 characters").arg(Control::max_len_string_track_name + 1),
+           tr("Can not %1 Track!").arg(tr("Copy")), JOptionPane::ERROR_MESSAGE);
          return false;
      }
      // check to see if track already exists
-     if (_location == null) {
+     if (_destination == nullptr) {
          return false;
      }
-     Track check = _location.getTrackByName(trackNameTextField.getText(), null);
-     if (check != null) {
-         JOptionPane.showMessageDialog(this, tr("TrackAlreadyExists"), MessageFormat.format(Bundle
-                 .getMessage("CanNotTrack"), new Object[]{tr("Copy")}), JOptionPane.ERROR_MESSAGE);
+     Track* check = _destination->getTrackByName(trackNameTextField->text(), nullptr);
+     if (check != nullptr) {
+         JOptionPane::showMessageDialog(this, tr("Track with this name already exists"),
+                                        tr("Can not %1 Track!").arg( tr("Copy")), JOptionPane::ERROR_MESSAGE);
          return false;
      }
      return true;
  }
 
- /*protected*/ void moveRollingStock(Track fromTrack, Track toTrack) {
-     moveRollingStock(fromTrack, toTrack, CarManager.instance());
-     moveRollingStock(fromTrack, toTrack, EngineManager.instance());
+ /*protected*/ void TrackCopyFrame::moveRollingStock(Track* fromTrack, Track* toTrack) {
+     moveRollingStock(fromTrack, toTrack, (CarManager*)InstanceManager::getDefault("Operations::CarManager"));
+     moveRollingStock(fromTrack, toTrack, (EngineManager*)InstanceManager::getDefault("Operations::EngineManager"));
  }
 
- private void moveRollingStock(Track fromTrack, Track toTrack, RollingStockManager manager) {
-     for (RollingStock rs : manager.getByIdList()) {
-         if (rs.getTrack() == fromTrack) {
-             rs.setLocation(toTrack.getLocation(), toTrack, true);
+ /*private*/ void TrackCopyFrame::moveRollingStock(Track* fromTrack, Track* toTrack, RollingStockManager* manager) {
+     for (RollingStock* rs : *manager->getByIdList()) {
+         if (rs->getTrack() == fromTrack) {
+             rs->setLocation(toTrack->getLocation(), toTrack, true);
          }
      }
  }
-#endif
+
  /*public*/ void TrackCopyFrame::dispose() {
-     //((LocationManager*)InstanceManager::getDefault("LocationManager")).removePropertyChangeListener(this);
- disconnect(((LocationManager*)InstanceManager::getDefault("LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")).removePropertyChangeListener(this);
+ disconnect(((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      if (_location != NULL) {
       _location->removePropertyChangeListener(this);
      }

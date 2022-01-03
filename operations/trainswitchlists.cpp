@@ -44,7 +44,7 @@ namespace Operations
  TrainSwitchLists::TrainSwitchLists(QObject* parent) : TrainCommon(parent)
  {
   messageFormatText = ""; // the text being formated in case there's an exception
-  trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
+  trainManager = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"));
   log = new Logger("TrainSwitchLists");
  }
  /**
@@ -105,7 +105,7 @@ namespace Operations
          QString valid = QString(messageFormatText = TrainManifestText::getStringValid()).arg(
                  getDate(true));
          if (Setup::isPrintTimetableNameEnabled()) {
-             TrainSchedule* sch = ((Operations::TrainScheduleManager*)InstanceManager::getDefault("TrainScheduleManager"))->getScheduleById(
+             TrainSchedule* sch = ((Operations::TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(
                      trainManager->getTrainScheduleActiveId());
              if (sch != NULL) {
                  valid = valid + " (" + sch->getName() + ")";

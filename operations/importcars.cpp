@@ -51,7 +51,7 @@ namespace Operations
  ImportCars::ImportCars() : ImportRollingStock()
  {
   log = new Logger("ImportCars");
-  manager = ((CarManager*)InstanceManager::getDefault("CarManager"));
+  manager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
 
   weightResults = QMessageBox::No; // Automatically calculate weight for car if weight entry is not
   // found
@@ -484,14 +484,14 @@ namespace Operations
        QMessageBox::critical(NULL, tr("Car attribute must be %1 characters or less").arg(Control::max_len_string_track_name), tr(""));
        break;
       }
-      Location* location = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationByName(carLocation);
+      Location* location = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationByName(carLocation);
       Track* track = NULL;
       if (location == NULL && carLocation!=(""))
       {
        if (autoCreateLocations)
        {
         log->debug(tr("Create location (%1)").arg(carLocation));
-        location = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->newLocation(carLocation);
+        location = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->newLocation(carLocation);
        }
        else
        {
@@ -505,7 +505,7 @@ namespace Operations
         int results = QMessageBox::question(NULL, tr("Location does not exist!"), tr("Do you want to create location (%1)?").arg(carLocation), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
         if (results == QMessageBox::Yes) {
             log->debug(tr("Create location (%1)").arg(carLocation));
-            location = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->newLocation(carLocation);
+            location = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->newLocation(carLocation);
             if (askAutoCreateLocations) {
 //                results = JOptionPane.showConfirmDialog(NULL, Bundle
 //                        .getMessage("DoYouWantToAutoCreateLoc"),

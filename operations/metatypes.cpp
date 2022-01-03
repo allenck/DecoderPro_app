@@ -25,6 +25,7 @@
 #include "schedulemanager.h"
 #include "operationsmanager.h"
 #include "carroads.h"
+#include "divisionmanager.h"
 //#include "defaultthrottlemanager.h"
 
 namespace Operations
@@ -60,7 +61,7 @@ int id;
   qRegisterMetaType<LocationManagerXml>("LocationManagerXml");
   qRegisterMetaType<ScheduleManager>("ScheduleManager");
   qRegisterMetaType<OperationsManager>("OperationsManager");
-  //qRegisterMetaType<DefaultThrottleManager>("DefaultThrottleManager");
+  qRegisterMetaType<DivisionManager>("DivisionManager");
 
   Metatypes::done = true;
  }

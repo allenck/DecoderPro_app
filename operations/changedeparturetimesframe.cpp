@@ -82,7 +82,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  JButton* source = (JButton*)ae;
      if (source == changeButton) {
          log->debug("change button activated");
-         TrainManager* trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
+         TrainManager* trainManager = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"));
          QList<Train*> trains = trainManager->getTrainsByIdList();
          foreach (Train* train, trains) {
              train->setDepartureTime(adjustHour(train->getDepartureTimeHour()), train->getDepartureTimeMinute());

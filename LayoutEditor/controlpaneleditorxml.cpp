@@ -237,7 +237,7 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
  if ((a = shared.attribute("state"))!=NULL) {
   bool bOk;
       int xState = a.toInt(&bOk);
-//            panel->setExtendedState(xState);
+            panel->setExtendedState(xState);
   if(!bOk) {
       log->error("failed to convert ControlPanelEditor's extended State");
       result = false;

@@ -41,7 +41,7 @@ namespace Operations
      //super();
  log = new Logger("ShowCarsInTrainFrame");
      _train = NULL;
-     carManager = ((CarManager*)InstanceManager::getDefault("CarManager"));
+     carManager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
      trainCommon = new TrainCommon();
 
      // labels

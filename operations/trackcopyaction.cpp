@@ -1,5 +1,4 @@
 #include "trackcopyaction.h"
-#include "locationeditframe.h"
 
 namespace Operations
 {
@@ -9,8 +8,8 @@ namespace Operations
 
  }
 
- /*public*/ TrackCopyAction::TrackCopyAction(LocationEditFrame* lef)
-    : AbstractAction(tr("Copy Track"),lef)
+ /*public*/ TrackCopyAction::TrackCopyAction(LocationEditFrame* lef, QObject* parent)
+    : AbstractAction(tr("Copy Track"),parent)
  {
      //super(Bundle.getMessage("MenuItemCopyTrack"));
      _lef = lef;
@@ -23,7 +22,7 @@ namespace Operations
      if (f == NULL || !f->isVisible()) {
          f = new TrackCopyFrame(_lef);
      }
-     //f.setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setVisible(true);	// this also brings the frame into focus
  }
 }

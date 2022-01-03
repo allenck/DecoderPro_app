@@ -1,5 +1,4 @@
 #include "editmanifesttextaction.h"
-#include "editmanifesttextframe.h"
 
 namespace Operations
 {
@@ -35,13 +34,13 @@ common();
  f = NULL;
 }
 
- /*public*/ void EditManifestTextAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void EditManifestTextAction::actionPerformed(JActionEvent* /*e*/) {
      // create a settings frame
      if (f == NULL || !f->isVisible()) {
          f = new EditManifestTextFrame();
          f->initComponents();
      }
-     //f.setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setVisible(true);	// this also brings the frame into focus
  }
 

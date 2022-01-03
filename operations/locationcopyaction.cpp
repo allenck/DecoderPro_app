@@ -1,5 +1,4 @@
 #include "locationcopyaction.h"
-#include "locationcopyframe.h"
 
 namespace Operations
 {
@@ -23,7 +22,7 @@ namespace Operations
      if (f == NULL || !f->isVisible()) {
          f = new LocationCopyFrame();
      }
-     //f.setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setVisible(true);	// this also brings the frame into focus
  }
 }

@@ -444,7 +444,7 @@ return out;
          }
      }
      // check to see if this route is used by a train
-     foreach (Train* train, ((TrainManager*)InstanceManager::getDefault("TrainManager"))->getTrainsByIdList()) {
+     foreach (Train* train, ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainsByIdList()) {
          if (train->getRoute() == this) {
              return OKAY;
          }

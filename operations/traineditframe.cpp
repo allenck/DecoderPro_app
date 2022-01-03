@@ -168,8 +168,8 @@ namespace Operations
   _train = train;
 
   // load managers
-  trainManager = ((TrainManager*)InstanceManager::getDefault("TrainManager"));
-  routeManager = ((RouteManager*)InstanceManager::getDefault("RouteManager"));
+  trainManager = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"));
+  routeManager = ((RouteManager*)InstanceManager::getDefault("OperationsRouteManager"));
   children = QList<JmriJFrame*>();
 
   //getContentPane()->setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
@@ -453,7 +453,7 @@ namespace Operations
   //EngineModels.instance().addPropertyChangeListener(this);
   connect(((EngineModels*)InstanceManager::getDefault("EngineModels")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //LocationManager.instance().addPropertyChangeListener(this);
-  connect(((LocationManager*)InstanceManager::getDefault("LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
   packFrame();
  }
@@ -668,7 +668,7 @@ namespace Operations
      if (numEnginesBox->currentText()==("0") || road==(NONE) || model!=(NONE)) {
          return true;
      }
-     foreach (RollingStock* rs, *((EngineManager*)InstanceManager::getDefault("EngineManager"))->getList()) {
+     foreach (RollingStock* rs, *((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getList()) {
          if (!_train->acceptsTypeName(rs->getTypeName())) {
              continue;
          }
@@ -925,9 +925,9 @@ namespace Operations
   roadCabooseBox->setEnabled(true);
   QStringList roads;
   if (cabooseRadioButton->isChecked()) {
-      roads = ((CarManager*)InstanceManager::getDefault("CarManager"))->getCabooseRoadNames();
+      roads = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getCabooseRoadNames();
   } else {
-      roads = ((CarManager*)InstanceManager::getDefault("CarManager"))->getFredRoadNames();
+      roads = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getFredRoadNames();
   }
 //     for (String road : roads) {
 //         roadCabooseBox.addItem(road);
@@ -945,7 +945,7 @@ namespace Operations
      }
      roadEngineBox->clear();
      roadEngineBox->addItem(NONE);
-     QStringList roads = ((EngineManager*)InstanceManager::getDefault("EngineManager"))->getEngineRoadNames(engineModel);
+     QStringList roads = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getEngineRoadNames(engineModel);
 //     for (String roadName : roads) {
 //         roadEngineBox.addItem(roadName);
 //     }
@@ -1017,7 +1017,7 @@ namespace Operations
     checkBox->setText(rl->toString());
     checkBox->setText(rl->getId());
     addItemLeft(locationPanelCheckBoxes, checkBox, 0, y++);
-    Location* loc = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationByName(rl->getName());
+    Location* loc = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationByName(rl->getName());
     // does the location exist?
     if (loc != NULL)
     {
@@ -1141,7 +1141,7 @@ namespace Operations
 
  /*public*/ void TrainEditFrame::dispose() {
 //     LocationManager.instance().removePropertyChangeListener(this);
- disconnect(((LocationManager*)InstanceManager::getDefault("LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     EngineTypes.instance().removePropertyChangeListener(this);
  disconnect(((EngineTypes*)InstanceManager::getDefault("EngineTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     EngineModels.instance().removePropertyChangeListener(this);
@@ -1166,7 +1166,7 @@ namespace Operations
           disconnect(route, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              QList<RouteLocation*>* routeList = route->getLocationsBySequenceList();
              for (int i = 0; i < routeList->size(); i++) {
-                 Location* loc = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getLocationByName(routeList->at(i)->getName());
+                 Location* loc = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationByName(routeList->at(i)->getName());
                  if (loc != NULL) {
                      //loc.removePropertyChangeListener(this);
                   disconnect(loc, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

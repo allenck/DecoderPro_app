@@ -38,7 +38,7 @@ namespace Operations
    : AbstractAction(actionName, pWho)
  {
      //super(actionName);
-     manager = ((CarManager*)InstanceManager::getDefault("CarManager"));
+     manager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
 
      isPreview = preview;
      connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));

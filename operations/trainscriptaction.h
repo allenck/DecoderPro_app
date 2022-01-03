@@ -2,6 +2,10 @@
 #define TRAINSCRIPTACTION_H
 
 #include "abstractaction.h"
+#include "trainscriptframe.h"
+#include "traineditframe.h"
+#include <QPointer>
+
 namespace Operations
 {
  class TrainScriptFrame;
@@ -13,8 +17,8 @@ namespace Operations
  public slots:
   /*public*/ void actionPerformed(ActionEvent* e = 0);
  private:
-  TrainScriptFrame* f;// = null;
-  TrainEditFrame* frame;	// the parent frame that is launching the TrainScriptFrame.
+  QPointer<TrainScriptFrame> f;// = null;
+  QPointer<TrainEditFrame> frame;	// the parent frame that is launching the TrainScriptFrame.
 
  };
 }

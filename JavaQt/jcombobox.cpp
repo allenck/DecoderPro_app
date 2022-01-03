@@ -141,3 +141,8 @@ void JComboBox::currentIndexChanged(int)
  }
  QComboBox::addItem(text, data);
 }
+
+/*public*/ bool JComboBox::isSelected()
+{
+ return  (currentIndex() >= -1);
+}

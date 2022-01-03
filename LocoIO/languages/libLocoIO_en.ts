@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.1" language="en_US">
 <context>
     <name>AddressPortDefinitionWidget</name>
     <message>
@@ -45,6 +45,32 @@
     </message>
 </context>
 <context>
+    <name>Booster7Widget</name>
+    <message>
+        <location filename="../booster7widget.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>BoosterButtons</name>
+    <message>
+        <location filename="../boosterbuttons.ui" line="14"/>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../boosterbuttons.ui" line="29"/>
+        <source>GO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../boosterbuttons.ui" line="45"/>
+        <source>STOP</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>BoosterInputWidget</name>
     <message>
         <location filename="../boosterinputwidget.ui" line="14"/>
@@ -52,7 +78,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../boosterinputwidget.ui" line="52"/>
+        <location filename="../boosterinputwidget.ui" line="61"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Block detection active high.  Generate an OPC_INPUT_REP (0xB2) message.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -65,28 +91,23 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../boosteroutputwidget.ui" line="61"/>
+        <location filename="../boosteroutputwidget.ui" line="194"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;sans-serif&apos;; font-size:15px;&quot;&gt;The relays will NOT be switched on with a fixed contact output = ON if one or both feedback are not been available or an OPC_GPOFF (0x82) or OPC_IDLE (0x85) command is received&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../boosteroutputwidget.ui" line="197"/>
         <source>On</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../boosteroutputwidget.ui" line="80"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Push button on at power up.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <location filename="../boosteroutputwidget.ui" line="228"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Push button on at power up &lt;span style=&quot; font-family:&apos;sans-serif&apos;; font-size:15px;&quot;&gt;and when receiving an input signal, will switch on the output.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../boosteroutputwidget.ui" line="90"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Push button off at power up.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../boosteroutputwidget.ui" line="100"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Second output on at power up.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../boosteroutputwidget.ui" line="110"/>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Second output off at power up. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <location filename="../boosteroutputwidget.ui" line="244"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Push button off at power up. Booster will have to be switched on by a command.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -98,18 +119,23 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../boosterpanel.ui" line="31"/>
+        <location filename="../boosterpanel.ui" line="37"/>
         <source>5 = Feedback of Booster input</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../boosterpanel.ui" line="38"/>
+        <location filename="../boosterpanel.ui" line="44"/>
         <source>6 = Feedback of Booster output</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../boosterpanel.ui" line="45"/>
+        <location filename="../boosterpanel.ui" line="51"/>
         <source>7 = On-Off Booster output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../boosterpanel.ui" line="102"/>
+        <source>Booster OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -432,29 +458,29 @@
 <context>
     <name>LocoIOData</name>
     <message>
-        <location filename="../locoiodata.cpp" line="629"/>
-        <location filename="../locoiodata.cpp" line="646"/>
-        <location filename="../locoiodata.cpp" line="662"/>
+        <location filename="../locoiodata.cpp" line="653"/>
+        <location filename="../locoiodata.cpp" line="670"/>
+        <location filename="../locoiodata.cpp" line="687"/>
         <source>read channel %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodata.cpp" line="1071"/>
+        <location filename="../locoiodata.cpp" line="1103"/>
         <source>read %1 expecting %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodata.cpp" line="1146"/>
+        <location filename="../locoiodata.cpp" line="1184"/>
         <source>Could not find mode! &apos;%1&apos; SV=%2 V1=%3 V2=%4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodata.cpp" line="1477"/>
+        <location filename="../locoiodata.cpp" line="1516"/>
         <source>... decoded address (</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodata.cpp" line="2327"/>
+        <location filename="../locoiodata.cpp" line="2605"/>
         <source>sendWriteCommand to addr: %1/%2 SV: %3(0x%4) data: %5(%6)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -467,188 +493,188 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="33"/>
+        <location filename="../locoiodialog.ui" line="404"/>
         <source>Current address: 0x51/1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="42"/>
+        <location filename="../locoiodialog.ui" line="255"/>
         <source>Extra Op Codes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="59"/>
+        <location filename="../locoiodialog.ui" line="281"/>
         <source>1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="66"/>
+        <location filename="../locoiodialog.ui" line="288"/>
         <source>2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="83"/>
+        <location filename="../locoiodialog.ui" line="315"/>
         <source>Special Ports</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="93"/>
+        <location filename="../locoiodialog.ui" line="325"/>
         <source>Servo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="100"/>
+        <location filename="../locoiodialog.ui" line="332"/>
         <source>4 Position Servo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="117"/>
+        <location filename="../locoiodialog.ui" line="369"/>
         <source>Firmware:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="124"/>
-        <location filename="../locoiodialog.ui" line="138"/>
+        <location filename="../locoiodialog.ui" line="376"/>
+        <location filename="../locoiodialog.ui" line="390"/>
         <source>&lt;unknown&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="131"/>
+        <location filename="../locoiodialog.ui" line="383"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;LocoBuffer:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="147"/>
+        <location filename="../locoiodialog.ui" line="177"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Find the addresses of all LocoIo, LocoBooster and LocoServo modules currently connected to LocoNet.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="150"/>
+        <location filename="../locoiodialog.ui" line="180"/>
         <source>Probe</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="157"/>
+        <location filename="../locoiodialog.ui" line="351"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Read all the configuration variables for the selected module address. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="160"/>
+        <location filename="../locoiodialog.ui" line="354"/>
         <source>Read All</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="167"/>
+        <location filename="../locoiodialog.ui" line="143"/>
         <source>Capture</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="174"/>
+        <location filename="../locoiodialog.ui" line="133"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Save all configuration settings for a module.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="177"/>
+        <location filename="../locoiodialog.ui" line="136"/>
         <source>Save Module</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="189"/>
+        <location filename="../locoiodialog.ui" line="51"/>
         <source>inputStatus by Power ON and GPON</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="196"/>
+        <location filename="../locoiodialog.ui" line="58"/>
         <source>Check All Inputs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="203"/>
+        <location filename="../locoiodialog.ui" line="65"/>
         <source>Check Block and Point Feedbacks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="210"/>
+        <location filename="../locoiodialog.ui" line="72"/>
         <source>Check Block Feedbacks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="217"/>
+        <location filename="../locoiodialog.ui" line="79"/>
         <source>Set jumper JP1 for this module</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="231"/>
+        <location filename="../locoiodialog.ui" line="93"/>
         <source>Fix code for PBs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="238"/>
+        <location filename="../locoiodialog.ui" line="100"/>
         <source>Alt code for PBs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="252"/>
+        <location filename="../locoiodialog.ui" line="155"/>
         <source>Display values in hex</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="262"/>
+        <location filename="../locoiodialog.ui" line="165"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Check to allow editing of configuration, Value 1 and Value 2 CVs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="265"/>
+        <location filename="../locoiodialog.ui" line="168"/>
         <source>Allow edits</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="274"/>
+        <location filename="../locoiodialog.ui" line="300"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set default values for all the CV&apos;s in the module. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="277"/>
+        <location filename="../locoiodialog.ui" line="303"/>
         <source>Set Defaults</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="284"/>
+        <location filename="../locoiodialog.ui" line="187"/>
         <source>Write all</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="291"/>
+        <location filename="../locoiodialog.ui" line="341"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Restore a previously saved set of configuration settings for a module.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="294"/>
+        <location filename="../locoiodialog.ui" line="344"/>
         <source>Restore module</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="309"/>
+        <location filename="../locoiodialog.ui" line="36"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400; font-style:normal;&quot;&gt;Change the address of a module. &lt;/span&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;Warning! If the old address is 00/00, this command will set the address of all LocoIO, LocoBooster and LocoServo modules currently connected to the Loconet!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="312"/>
+        <location filename="../locoiodialog.ui" line="39"/>
         <source>Change Address</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="319"/>
+        <location filename="../locoiodialog.ui" line="248"/>
         <source>Hide</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="329"/>
+        <location filename="../locoiodialog.ui" line="241"/>
         <source>status</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.ui" line="382"/>
+        <location filename="../locoiodialog.ui" line="111"/>
         <source>New Unit Address:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -656,90 +682,427 @@
         <location filename="../locoiodialog.cpp" line="33"/>
         <location filename="../locoiodialog.cpp" line="34"/>
         <location filename="../locoiodialog.cpp" line="35"/>
-        <location filename="../locoiodialog.cpp" line="1195"/>
-        <location filename="../locoiodialog.cpp" line="1196"/>
-        <location filename="../locoiodialog.cpp" line="1197"/>
+        <location filename="../locoiodialog.cpp" line="1201"/>
+        <location filename="../locoiodialog.cpp" line="1202"/>
+        <location filename="../locoiodialog.cpp" line="1203"/>
         <source>Port Definition</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../locoiodialog.cpp" line="74"/>
-        <location filename="../locoiodialog.cpp" line="500"/>
-        <location filename="../locoiodialog.cpp" line="759"/>
-        <location filename="../locoiodialog.cpp" line="895"/>
-        <location filename="../locoiodialog.cpp" line="900"/>
-        <location filename="../locoiodialog.cpp" line="1092"/>
+        <location filename="../locoiodialog.cpp" line="503"/>
+        <location filename="../locoiodialog.cpp" line="762"/>
+        <location filename="../locoiodialog.cpp" line="898"/>
+        <location filename="../locoiodialog.cpp" line="903"/>
+        <location filename="../locoiodialog.cpp" line="1098"/>
         <source>Current address: 0x%1/%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.cpp" line="453"/>
+        <location filename="../locoiodialog.cpp" line="456"/>
         <source>Only a LocoBuffer can use address 0x80</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.cpp" line="460"/>
-        <location filename="../locoiodialog.cpp" line="461"/>
+        <location filename="../locoiodialog.cpp" line="463"/>
+        <location filename="../locoiodialog.cpp" line="464"/>
         <source>subAddress must be [1..126], was %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.cpp" line="461"/>
+        <location filename="../locoiodialog.cpp" line="464"/>
         <source>Invalid subAddress</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.cpp" line="470"/>
-        <location filename="../locoiodialog.cpp" line="481"/>
-        <location filename="../locoiodialog.cpp" line="1061"/>
+        <location filename="../locoiodialog.cpp" line="473"/>
+        <location filename="../locoiodialog.cpp" line="484"/>
+        <location filename="../locoiodialog.cpp" line="1067"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.cpp" line="470"/>
+        <location filename="../locoiodialog.cpp" line="473"/>
         <source>This will set the address of all attached LocoIO, LocoServo and LocoBooster boards</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.cpp" line="481"/>
+        <location filename="../locoiodialog.cpp" line="484"/>
         <source>This will change the address of %1 board 0x%2/%3 to 0x%4/%5</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.cpp" line="498"/>
-        <location filename="../locoiodialog.cpp" line="757"/>
+        <location filename="../locoiodialog.cpp" line="501"/>
+        <location filename="../locoiodialog.cpp" line="760"/>
         <source>New Unit Address 0x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.cpp" line="504"/>
-        <location filename="../locoiodialog.cpp" line="763"/>
+        <location filename="../locoiodialog.cpp" line="507"/>
+        <location filename="../locoiodialog.cpp" line="766"/>
         <source>New Unit Address</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.cpp" line="506"/>
-        <location filename="../locoiodialog.cpp" line="765"/>
+        <location filename="../locoiodialog.cpp" line="509"/>
+        <location filename="../locoiodialog.cpp" line="768"/>
         <source>Current address: %1/%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.cpp" line="896"/>
+        <location filename="../locoiodialog.cpp" line="899"/>
         <source>Current address: 0x</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.cpp" line="901"/>
+        <location filename="../locoiodialog.cpp" line="904"/>
         <source>Current address:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.cpp" line="1061"/>
+        <location filename="../locoiodialog.cpp" line="1067"/>
         <source>Cv values have been changed and not written. Do you want to change your changes?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodialog.cpp" line="1094"/>
+        <location filename="../locoiodialog.cpp" line="1100"/>
+        <source>Current address: 0%1/%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LocoIOFrame</name>
+    <message>
+        <location filename="../locoioframe.ui" line="19"/>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="70"/>
+        <source>Module Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="85"/>
+        <source>Special Ports</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="102"/>
+        <source>Extra Opcode 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="117"/>
+        <source>Extra Opcode 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="135"/>
+        <source>inputStatus by Power ON and GPON</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="142"/>
+        <source>Check All Inputs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="149"/>
+        <source>Check Block and Point Feedbacks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="156"/>
+        <source>Check Block Feedbacks</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="163"/>
+        <source>Set jumper JP1 for this module</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="178"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Check to allow editing of configuration, Value 1 and Value 2 CVs.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="181"/>
+        <location filename="../locoioframe.cpp" line="157"/>
+        <source>Allow edits</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="188"/>
+        <source>Display values in hex</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="202"/>
+        <source>Firmware:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="209"/>
+        <location filename="../locoioframe.ui" line="223"/>
+        <source>&lt;unknown&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="216"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;LocoBuffer:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="234"/>
+        <source>Fix code for Pushbuttons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="241"/>
+        <source>Alternating code for Pushbuttons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="250"/>
+        <source>4 Position Servo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="267"/>
+        <location filename="../locoioframe.ui" line="427"/>
+        <location filename="../locoioframe.cpp" line="949"/>
+        <location filename="../locoioframe.cpp" line="957"/>
+        <location filename="../locoioframe.cpp" line="970"/>
+        <location filename="../locoioframe.cpp" line="978"/>
+        <source>Address</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="302"/>
+        <location filename="../locoioframe.ui" line="465"/>
+        <source>/</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="343"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Read SV0+1+2&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="346"/>
+        <source>R</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="359"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Read all the configuration variables for the selected module address. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="362"/>
+        <source>Read All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="381"/>
+        <source>Pic version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="506"/>
+        <source>W</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="513"/>
+        <source>Write all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="528"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clear all SV registers&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="531"/>
+        <source>Clear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="544"/>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;!!! Initialize PIC !!!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="547"/>
+        <source>Init</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.ui" line="559"/>
+        <source>status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="44"/>
+        <location filename="../locoioframe.cpp" line="45"/>
+        <location filename="../locoioframe.cpp" line="46"/>
+        <location filename="../locoioframe.cpp" line="1527"/>
+        <location filename="../locoioframe.cpp" line="1528"/>
+        <location filename="../locoioframe.cpp" line="1529"/>
+        <source>Port Definition</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="148"/>
+        <source>Save Module...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="149"/>
+        <source>Save the configuration for this module so it can be restored later.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="150"/>
+        <source>Restore Module</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="151"/>
+        <source>Probe Modules</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="152"/>
+        <source>Capture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="153"/>
+        <source>Set defaults</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="154"/>
+        <source>Display values in hex.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="166"/>
+        <source>File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="179"/>
+        <source>Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="561"/>
+        <source>Only a LocoBuffer can use address 0x80</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="568"/>
+        <location filename="../locoioframe.cpp" line="569"/>
+        <source>subAddress must be [1..126], was %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="569"/>
+        <source>Invalid subAddress</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="580"/>
+        <location filename="../locoioframe.cpp" line="591"/>
+        <location filename="../locoioframe.cpp" line="1387"/>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="580"/>
+        <source>This will set the address of all attached LocoIO, LocoServo and LocoBooster boards</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="591"/>
+        <source>This will change the address of %1 board 0x%2/%3 to 0x%4/%5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="609"/>
+        <source>New Unit Address 0x</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="611"/>
+        <location filename="../locoioframe.cpp" line="1119"/>
+        <location filename="../locoioframe.cpp" line="1124"/>
+        <location filename="../locoioframe.cpp" line="1419"/>
+        <source>Current address: 0x%1/%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="621"/>
+        <source>New Unit Address</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="623"/>
+        <source>Current address: %1/%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="691"/>
+        <source>PIC Initialization</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="698"/>
+        <source>This is an initialization of the SV registers in a not or bad programm EPROM in PIC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="704"/>
+        <source>Init PIC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="706"/>
+        <source>Do NOT connect other LocoHDL modules on the Loconet during initialization</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="713"/>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="715"/>
+        <source>All LocoHdlModules connected to the LocoBuffer or Intellibox will be set to the base address of 81 abd Sub-Address 1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="1120"/>
+        <source>Current address: 0x</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="1125"/>
+        <source>Current address:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="1387"/>
+        <source>Cv values have been changed and not written. Do you want to change your changes?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../locoioframe.cpp" line="1421"/>
         <source>Current address: 0%1/%2</source>
         <translation type="unfinished"></translation>
     </message>
@@ -961,12 +1324,12 @@
 <context>
     <name>LocoIOModules</name>
     <message>
-        <location filename="../locoiomodules.cpp" line="24"/>
+        <location filename="../locoiomodules.cpp" line="25"/>
         <source>No LocoIO modules detected!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiomodules.cpp" line="161"/>
+        <location filename="../locoiomodules.cpp" line="162"/>
         <source>Configure LocoIO module 0x%1/0x%2 %6 %3</source>
         <translation type="unfinished"></translation>
     </message>
@@ -979,17 +1342,17 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiopanel.cpp" line="277"/>
+        <location filename="../locoiopanel.cpp" line="278"/>
         <source>Warning Global operation!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiopanel.cpp" line="277"/>
+        <location filename="../locoiopanel.cpp" line="278"/>
         <source>This will set the address of all attached LocoIO boards</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiopanel.cpp" line="304"/>
+        <location filename="../locoiopanel.cpp" line="305"/>
         <source>subAddress must be [1..126]</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1168,14 +1531,14 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../registerswidget.cpp" line="417"/>
-        <location filename="../registerswidget.cpp" line="632"/>
+        <location filename="../registerswidget.cpp" line="420"/>
+        <location filename="../registerswidget.cpp" line="635"/>
         <source>Servo, pos1 = %1, pos2=%2, speed=%3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../registerswidget.cpp" line="419"/>
-        <location filename="../registerswidget.cpp" line="634"/>
+        <location filename="../registerswidget.cpp" line="422"/>
+        <location filename="../registerswidget.cpp" line="637"/>
         <source>Alternating Servo, pos1 = %1, pos2=%2, speed=%3</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1183,40 +1546,40 @@
 <context>
     <name>ResponseCheck</name>
     <message>
-        <location filename="../locoiodata.cpp" line="2382"/>
-        <location filename="../locoiodata.cpp" line="2397"/>
+        <location filename="../locoiodata.cpp" line="2660"/>
+        <location filename="../locoiodata.cpp" line="2675"/>
         <source>broadcast</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodata.cpp" line="2384"/>
+        <location filename="../locoiodata.cpp" line="2662"/>
         <source>Query SV</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodata.cpp" line="2384"/>
+        <location filename="../locoiodata.cpp" line="2662"/>
         <source>Write SV</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodata.cpp" line="2385"/>
-        <location filename="../locoiodata.cpp" line="2413"/>
+        <location filename="../locoiodata.cpp" line="2663"/>
+        <location filename="../locoiodata.cpp" line="2691"/>
         <source> Firmware rev </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodata.cpp" line="2400"/>
+        <location filename="../locoiodata.cpp" line="2678"/>
         <source>Query</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodata.cpp" line="2400"/>
-        <location filename="../locoiodata.cpp" line="2401"/>
+        <location filename="../locoiodata.cpp" line="2678"/>
+        <location filename="../locoiodata.cpp" line="2679"/>
         <source>Write</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../locoiodata.cpp" line="2401"/>
+        <location filename="../locoiodata.cpp" line="2679"/>
         <source>Report</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1461,7 +1824,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../specialport.ui" line="220"/>
+        <location filename="../specialport.ui" line="229"/>
         <source>I
 D
 L
@@ -1470,7 +1833,7 @@ E
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../specialport.ui" line="265"/>
+        <location filename="../specialport.ui" line="277"/>
         <source>S
 T
 A

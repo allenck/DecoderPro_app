@@ -58,7 +58,7 @@ namespace Operations
   /*public*/ void comboBoxActionPerformed(QWidget* ae) override;
 
  private:
-  EngineManager* engineManager = (EngineManager*)InstanceManager::getDefault("EngineManager");
+  EngineManager* engineManager = (EngineManager*)InstanceManager::getDefault("Operations::EngineManager");
   EngineManagerXml* managerXml = (EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml");
   EngineModels* engineModels = (EngineModels*)InstanceManager::getDefault("EngineModels");
 

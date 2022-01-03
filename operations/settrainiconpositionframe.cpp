@@ -65,7 +65,7 @@ namespace Operations
      saveButton = new JButton(tr("Save"));
 
      // combo boxes
-     locationBox = ((LocationManager*)InstanceManager::getDefault("LocationManager"))->getComboBox();
+     locationBox = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getComboBox();
 
      //Spinners
      spinTrainIconEastX = new QSpinBox(/*new SpinnerNumberModel(0, 0, 10000, 1)*/);
