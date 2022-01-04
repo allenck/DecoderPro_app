@@ -108,7 +108,7 @@ void RollingStock::common()
   }
 }
 
-/*public*/ QString RollingStock::getNumber() {
+/*public*/ QString RollingStock::getNumber() const {
   return _number;
 }
 
@@ -120,7 +120,7 @@ void RollingStock::common()
   }
 }
 
-/*public*/QString RollingStock::getRoadName() {
+/*public*/QString RollingStock::getRoadName() const {
   return _road;
 }
 
@@ -144,7 +144,7 @@ void RollingStock::common()
   }
 }
 
-/*public*/ QString RollingStock::getTypeName() {
+/*public*/ QString RollingStock::getTypeName()const{
   return _type;
 }
 
@@ -218,7 +218,7 @@ return getLength().toInt();
   }
 }
 
-/*public*/ QString RollingStock::getColor() {
+/*public*/ QString RollingStock::getColor() const {
   return _color;
 }
 
@@ -292,7 +292,7 @@ return getLength().toInt();
      }
  }
 
- /*public*/ QString RollingStock::getBuilt() {
+ /*public*/ QString RollingStock::getBuilt() const {
      return _built;
  }
 
@@ -301,7 +301,7 @@ return getLength().toInt();
   * @return location unknown symbol, out of service symbol, or none if car
   *         okay
   */
- /*public*/ QString RollingStock::getStatus() {
+ /*public*/ QString RollingStock::getStatus() const {
      return (isLocationUnknown() ? "<?> " : (isOutOfService() ? "<O> " : NONE)); // NOI18N
  }
 
@@ -315,7 +315,7 @@ return getLength().toInt();
   *
   * @return empty string if rolling stock isn't on layout
   */
- /*public*/ QString RollingStock::getLocationName() {
+ /*public*/ QString RollingStock::getLocationName() const {
      if (_location != NULL) {
          return  _location->getName();
      }
@@ -357,7 +357,7 @@ return getLength().toInt();
   *
   * @return empty string if rolling stock isn't on a track
   */
- /*public*/ QString RollingStock::getTrackName()
+ /*public*/ QString RollingStock::getTrackName() const
  {
      if (_trackLocation != NULL) {
          return  _trackLocation->getName();
@@ -606,7 +606,7 @@ return getLength().toInt();
   _destination = destination;
 }
 
-/*public*/ QString RollingStock::getDestinationName() {
+/*public*/ QString RollingStock::getDestinationName() const {
   if (_destination != NULL) {
       return _destination->getName();
   }
@@ -638,7 +638,7 @@ return getLength().toInt();
   return _trackDestination;
 }
 
-/*public*/ QString RollingStock::getDestinationTrackName() {
+/*public*/ QString RollingStock::getDestinationTrackName() const{
   if (_trackDestination != NULL) {
       return _trackDestination->getName();
   }
@@ -700,7 +700,7 @@ return getLength().toInt();
   }
 }
 
-/*public*/ int RollingStock::getMoves() {
+/*public*/ int RollingStock::getMoves() const {
   return _moves;
 }
  /**
@@ -723,11 +723,11 @@ return getLength().toInt();
          setDirtyAndFirePropertyChange(TRAIN_CHANGED_PROPERTY, VPtr<Train>::asQVariant(old), VPtr<Train>::asQVariant(train));
      }
  }
- /*public*/ Train* RollingStock::getTrain() {
+ /*public*/ Train* RollingStock::getTrain() const {
      return _train;
  }
 
- /*public*/ QString RollingStock::getTrainName() {
+ /*public*/ QString RollingStock::getTrainName() const {
      if (getTrain() != NULL) {
          return getTrain()->getName();
      }
@@ -780,7 +780,7 @@ return getLength().toInt();
   _routeId = id;
 }
 
-/*public*/ QString RollingStock::getValue() {
+/*public*/ QString RollingStock::getValue() const {
   return _value;
 }
 
@@ -799,7 +799,7 @@ return getLength().toInt();
  }
 
 
- /*public*/ QString RollingStock::getRfid() {
+ /*public*/ QString RollingStock::getRfid() const {
      return _rfid;
  }
 
@@ -922,7 +922,7 @@ return "";
   *
   * @return date
   */
- /*public*/ QDateTime RollingStock::getLastMoveDate() {
+ /*public*/ QDateTime RollingStock::getLastMoveDate() const{
      return _lastDate;
  }
 
@@ -1071,7 +1071,7 @@ return "";
      }
  }
 
- /*public*/ int RollingStock::getBlocking() {
+ /*public*/ int RollingStock::getBlocking() const {
      return _blocking;
  }
 
@@ -1114,7 +1114,7 @@ return "";
      }
  }
 
- /*public*/ QString RollingStock::getOwner() {
+ /*public*/ QString RollingStock::getOwner() const {
      return _owner;
  }
 
@@ -1136,7 +1136,7 @@ return "";
   *
   * @return true when car's location is unknown
   */
- /*public*/ bool RollingStock::isLocationUnknown() {
+ /*public*/ bool RollingStock::isLocationUnknown() const {
      return _locationUnknown;
  }
 
@@ -1160,7 +1160,7 @@ return "";
   *
   * @return true when rolling stock is out of service
   */
- /*public*/ bool RollingStock::isOutOfService() {
+ /*public*/ bool RollingStock::isOutOfService() const{
      return _outOfService;
  }
 

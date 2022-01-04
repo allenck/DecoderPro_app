@@ -64,7 +64,13 @@ setProperty("InstanceManagerAutoInitialize", "true");
          _register(engine);
      }
      return engine;
- }
+    }
+
+    //@Override
+     /*public*/ void EngineManager::deregister(RollingStock* engine) {
+         RollingStockManager::deregister(engine);
+         ((EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml"))->setDirty(true);
+     }
 
     /**
      * Creates a new consist if needed
@@ -163,7 +169,7 @@ setProperty("InstanceManagerAutoInitialize", "true");
      * @return list of engines ordered by engine model
      */
 /*public*/ QList<RollingStock*>* EngineManager::getByModelList() {
-    return getByList(getByRoadNameList(), BY_MODEL);
+    return getByList(getByRoadNameList(), SORTBY::BY_MODEL);
 }
 
 /**
@@ -179,10 +185,10 @@ setProperty("InstanceManagerAutoInitialize", "true");
         return getByList(getByModelList(), BY_HP);
     }
 
-    // The special sort options for engines
-    /*private*/ /*static*/ /*final*/ int EngineManager::BY_MODEL = 4;
-    /*private*/ /*static*/ /*final*/ int EngineManager::BY_CONSIST = 5;
-    /*private*/ /*static*/ /*final*/ int EngineManager::BY_HP = 13;
+//    // The special sort options for engines
+//    /*private*/ /*static*/ /*final*/ int EngineManager::BY_MODEL = 4;
+//    /*private*/ /*static*/ /*final*/ int EngineManager::BY_CONSIST = 5;
+//    /*private*/ /*static*/ /*final*/ int EngineManager::BY_HP = 13;
 #if 0
     // add engine options to sort comparator
     //@Override
@@ -200,6 +206,37 @@ setProperty("InstanceManagerAutoInitialize", "true");
     }
 
 #endif
+
+ /*public*/ void EngineManager::sortOut(QList<RollingStock*>* out, SORTBY attribute){
+  switch (attribute)
+  {
+   case BY_MODEL:
+   case BY_CONSIST:
+   case BY_HP:
+    break;
+   default:
+    return RollingStockManager::sortOut(out, attribute);
+  }
+
+  auto property = attribute;
+  auto sortRuleLambda = [property] (RollingStock const* e1, RollingStock const* e2) -> bool
+  {
+   switch(property) {
+   case BY_MODEL:
+       return (((Engine*) e1)->getModel().compare(((Engine*) e2)->getModel(), Qt::CaseInsensitive)) < 0;
+   case BY_CONSIST:
+       return  (((Engine*) e1)->getConsistName().compare(((Engine*) e2)->getConsistName(), Qt::CaseInsensitive)) < 0;
+   case BY_HP:
+       return  (((Engine*) e1)->getHpInteger() - ((Engine*) e2)->getHpInteger());
+   default:
+    return (e1->getRoadName() + e1->getNumber()).compare( (e2->getRoadName() +
+            e2->getNumber()),Qt::CaseInsensitive) < 0;
+
+   }
+  };
+  std::sort ( out->begin(), out->end(), sortRuleLambda);
+ }
+
     /**
      * return a list available engines (no assigned train) engines are ordered
      * least recently moved to most recently moved.

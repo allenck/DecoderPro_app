@@ -25,6 +25,7 @@ namespace Operations
   /*public*/ Engine* getById(QString id);
   /*public*/ Engine* getByRoadAndNumber(QString engineRoad, QString engineNumber) ;
   /*public*/ RollingStock* newRS(QString engineRoad, QString engineNumber)override;
+  /*public*/ void deregister(RollingStock* engine)override;
   /*public*/ Consist* newConsist(QString name);
   /*public*/ void deleteConsist(QString name);
   /*public*/ Consist* getConsistByName(QString name);
@@ -43,6 +44,7 @@ namespace Operations
   /*public*/ int getConsistMaxNameLength();
   /*public*/ QList<Engine*> getAvailableTrainList(Train* train);
   Q_INVOKABLE  /*public*/ void initialize() override;
+  /*public*/ void sortOut(QList<RollingStock*>*, SORTBY attribute)override;
 
  signals:
 
@@ -55,9 +57,12 @@ namespace Operations
   /*private*/ static EngineManager* _instance;// = null;
   Logger* log;
   // The special sort options for engines
-  /*private*/ static /*final*/ int BY_MODEL;// = 4;
-  /*private*/ static /*final*/ int BY_CONSIST;// = 5;
-  /*private*/ static /*final*/ int BY_HP;// = 13;
+//  enum SORTBY
+//  {
+//   BY_MODEL = 4,
+//   BY_CONSIST = 5,
+//   BY_HP = 13
+//  };
   /*private*/ QList<Engine*>* castListToEngine(QList<RollingStock*>* list);
 
  protected:

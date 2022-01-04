@@ -353,10 +353,9 @@ namespace Operations
      // set column preferred widths
      if (!_frame.loadTableDetails(_table)) {
 #endif
-         // load defaults, xml file data not found
          // Cars frame table column widths, starts with Select column and ends with Edit
-         QList<int> tableColumnWidths = QList<int>() << 60 << 60 << 60 << 65 << 35 << 75 << 75 << 75 << 65 << 190 << 190 << 190 << 190 << 65 << 50 << 50 << 50 << 50 << 50
-             << 50 << 50 << 50 << 65 << 70;
+         QList<int> tableColumnWidths = QList<int> { 60, 60, 60, 65, 35, 75, 75, 75, 75, 65, 190, 190, 140, 190, 190, 190, 190,
+           190, 65, 50, 50, 50, 50, 100, 50, 100, 100, 65, 70 };
          for (int i = 0; i < tcm->getColumnCount(false); i++)
          {
           tcm->getColumn(i)->setPreferredWidth(tableColumnWidths[i]);
@@ -493,13 +492,13 @@ namespace Operations
  {
   int row = index.row();
   int col = index.column();
-    if (row >= carList->size()) {
-        return "ERROR row " + row; // NOI18N
-    }
-    Car* car = (Car*) carList->at(row);
-    if (car == NULL) {
-        return "ERROR car unknown " + row; // NOI18N
-    }
+  if (row >= carList->size()) {
+      return "ERROR row " + QString::number(row); // NOI18N
+  }
+  Car* car = (Car*) carList->at(row);
+  if (car == NULL) {
+      return "ERROR car unknown " + QString::number(row); // NOI18N
+  }
   if(role == Qt::CheckStateRole)
   {
    if(col == SELECT_COLUMN)
@@ -558,11 +557,11 @@ namespace Operations
          }
          case RFID_WHERE_LAST_SEEN_COLUMN: {
              return car->getWhereLastSeenName() +
-                             (car->getTrackLastSeenName() ==(Engine::NONE) ? "" : " (" + car->getTrackLastSeenName() + ")");
-             }
-             case RFID_WHEN_LAST_SEEN_COLUMN: {
-                 return car->getWhenLastSeenDate();
-             }
+                         (car->getTrackLastSeenName() ==(Engine::NONE) ? "" : " (" + car->getTrackLastSeenName() + ")");
+         }
+         case RFID_WHEN_LAST_SEEN_COLUMN: {
+             return car->getWhenLastSeenDate();
+         }
          case DESTINATION_COLUMN:
          case FINAL_DESTINATION_COLUMN: {
              QString s = "";
@@ -587,6 +586,7 @@ namespace Operations
              return car->getReturnWhenLoadedLoadName();
          case DIVISION_COLUMN:
              return car->getDivisionName();
+         case TRAIN_COLUMN:
              // if train was manually set by user add an asterisk
              if (car->getTrain() != NULL && car->getRouteLocation() == NULL) {
                  return car->getTrainName() + "*";
@@ -613,7 +613,7 @@ namespace Operations
          case EDIT_COLUMN:
              return tr("Edit");
          default:
-             return "unknown " + col; // NOI18N
+             return "unknown " + QString::number(col); // NOI18N
      }
   }
   return QVariant();
