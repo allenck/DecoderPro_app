@@ -13,6 +13,7 @@
 #include "propertychangesupport.h"
 #include "train.h"
 #include "instancemanager.h"
+#include "consistmanager.h"
 
 //Engine::Engine(QObject *parent) :
 //  RollingStock(parent)
@@ -330,7 +331,7 @@ namespace Operations
          setBunit(a == (Xml::_TRUE));
      }
      if ((a = e.attribute (Xml::CONSIST)) != NULL) {
-         Consist* c = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getConsistByName(a);
+         Consist* c = ((ConsistManager*)InstanceManager::getDefault("Operations::ConsistManager"))->getConsistByName(a);
          if (c != NULL) {
              setConsist(c);
              if ((a = e.attribute (Xml::LEAD_CONSIST)) != NULL && a==(Xml::_TRUE)) {

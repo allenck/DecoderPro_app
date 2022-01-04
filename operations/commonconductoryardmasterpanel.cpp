@@ -366,7 +366,7 @@ namespace Operations
  /*public*/ void CommonConductorYardmasterPanel::engineSetButtonActionPerfomed(QWidget* ae) {
   QString name = ((JButton*) ae)->objectName();
      log->debug(tr("Set button for loco %1").arg(name));
-     Engine* eng = engManager->getById(name);
+     Engine* eng = (Engine*)engManager->getById(name);
      if (esf != nullptr) {
          esf->dispose();
      }

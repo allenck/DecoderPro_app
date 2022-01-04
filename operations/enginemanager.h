@@ -22,14 +22,14 @@ namespace Operations
   ~EngineManager() {}
   EngineManager(const EngineManager&) : RollingStockManager() {}
   /*public*/ static /*final*/ QString CONSISTLISTLENGTH_CHANGED_PROPERTY;// = "ConsistListLength"; // NOI18N
-  /*public*/ Engine* getById(QString id);
-  /*public*/ Engine* getByRoadAndNumber(QString engineRoad, QString engineNumber) ;
+//  /*public*/ Engine* getById(QString id);
+//  /*public*/ Engine* getByRoadAndNumber(QString engineRoad, QString engineNumber) ;
   /*public*/ RollingStock* newRS(QString engineRoad, QString engineNumber)override;
   /*public*/ void deregister(RollingStock* engine)override;
-  /*public*/ Consist* newConsist(QString name);
-  /*public*/ void deleteConsist(QString name);
-  /*public*/ Consist* getConsistByName(QString name);
-  /*public*/ void replaceConsistName(QString oldName, QString newName);
+//  /*public*/ Consist* newConsist(QString name);
+//  /*public*/ void deleteConsist(QString name);
+//  /*public*/ Consist* getConsistByName(QString name);
+//  /*public*/ void replaceConsistName(QString oldName, QString newName);
   /*public*/ void load(QDomElement  root);
   /*public*/ void store(QDomElement  root, QDomDocument doc);
   /*public*/ QStringList getConsistNameList();
@@ -40,7 +40,7 @@ namespace Operations
   /*public*/ void updateConsistComboBox(JComboBox* box);
   /*public*/ QList<Engine*>* getByTrainBlockingList(Train* train);
   /*public*/ QStringList getEngineRoadNames(QString model);
-  /*public*/ void dispose();
+//  /*public*/ void dispose();
   /*public*/ int getConsistMaxNameLength();
   /*public*/ QList<Engine*> getAvailableTrainList(Train* train);
   Q_INVOKABLE  /*public*/ void initialize() override;

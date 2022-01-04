@@ -67,7 +67,7 @@ namespace Operations
                  road = road.mid(0, Control::max_len_string_attibute);
              }
              textId= (road + " " + re->getRoadNumber());
-             Engine* engine = manager->getByRoadAndNumber(road, re->getRoadNumber());
+             Engine* engine = (Engine*)manager->getByRoadAndNumber(road, re->getRoadNumber());
              if (engine == NULL) {
                  engine = (Engine*)manager->newRS(road, re->getRoadNumber());
                  QString model = re->getModel();

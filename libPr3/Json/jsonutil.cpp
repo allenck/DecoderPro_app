@@ -13,6 +13,7 @@
 #include "track.h"
 #include "traincommon.h"
 #include "instancemanager.h"
+#include "../operations/engine.h"
 
 JsonUtil::JsonUtil(ObjectMapper mapper, QObject *parent) : QObject(parent)
 {
@@ -244,7 +245,7 @@ static /*public*/ void setConsist(Locale locale, DccLocoAddress address, JsonNod
 /*static*/ /*public*/ QJsonObject JsonUtil::getEngine(QLocale locale, QString id) {
     QJsonObject root = QJsonObject();//mapper.createObjectNode();
     root.insert(JSON::TYPE, JSON::ENGINE);
-    root.insert(JSON::DATA, JsonUtil::getEngine(((Operations::EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getById(id)));
+    root.insert(JSON::DATA, JsonUtil::getEngine((Operations::Engine*)((Operations::EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getById(id)));
     return root;
 }
 #if 0

@@ -36,6 +36,7 @@
 #include "loggerfactory.h"
 #include "gridbaglayout.h"
 #include "borderfactory.h"
+#include "consistmanager.h"
 
 //EditEnginesFrame::EditEnginesFrame(QWidget *parent) :
 //  OperationsFrame(parent)
@@ -202,8 +203,8 @@ namespace Operations
 /*protected*/ bool EngineEditFrame::check(RollingStock* engine) {
  // check to see if engine with road and number already exists
  Engine* existingEngine =
-         engineManager->getByRoadAndNumber(/*(String)*/ roadComboBox->getSelectedItem(), roadNumberTextField
-                 ->text());
+   (Engine*)engineManager->getByRoadAndNumber( roadComboBox->getSelectedItem(),
+                   roadNumberTextField->text());
  if (existingEngine != nullptr) {
      if (engine == nullptr || existingEngine->getId() != (engine->getId())) {
          JOptionPane::showMessageDialog(this, tr("Locomotive with this road name and number already exists!"), tr("Can not update locomotive!"), JOptionPane::ERROR_MESSAGE);
@@ -224,7 +225,7 @@ namespace Operations
          engine->setConsist(nullptr);
          engine->setBlocking(Engine::DEFAULT_BLOCKING_ORDER);
      } else if (engine->getConsistName() != (groupComboBox->getSelectedItem())) {
-         engine->setConsist(engineManager->getConsistByName(/*(String)*/ groupComboBox->getSelectedItem()));
+         engine->setConsist(((ConsistManager*)InstanceManager::getDefault("Operations::ConsistManager"))->getConsistByName(/*(String)*/ groupComboBox->getSelectedItem()));
          if (engine->getConsist() != nullptr) {
              engine->setBlocking(engine->getConsist()->getSize());
              blockingTextField->setText(QString::number(engine->getBlocking()));
@@ -247,7 +248,7 @@ namespace Operations
 
  //@Override
  /*protected*/ void EngineEditFrame::_delete() {
-     Engine* engine = engineManager->getByRoadAndNumber(/*(String)*/ roadComboBox->getSelectedItem(), roadNumberTextField
+     Engine* engine = (Engine*)engineManager->getByRoadAndNumber(/*(String)*/ roadComboBox->getSelectedItem(), roadNumberTextField
              ->text());
      if (engine != nullptr) {
          engineManager->deregister(engine);

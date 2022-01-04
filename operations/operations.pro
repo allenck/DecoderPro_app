@@ -78,6 +78,7 @@ HEADERS += \
 }
 
 SOURCES += \
+ consistmanager.cpp \
  division.cpp \
  divisionmanager.cpp \
  exportlocations.cpp \
@@ -389,6 +390,7 @@ SOURCES += \
     taskallocaterelease.cpp
 
 HEADERS += \
+ consistmanager.h \
  division.h \
  divisionmanager.h \
  exportlocations.h \

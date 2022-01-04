@@ -18,6 +18,7 @@
 #include "setup.h"
 #include "carowners.h"
 #include "instancemanager.h"
+#include "consistmanager.h"
 
 //EngineAttributeEditFrame::EngineAttributeEditFrame(QWidget *parent) :
 //  OperationsFrame(parent)
@@ -86,7 +87,7 @@ namespace Operations
          ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->deleteName(deleteItem);
      }
      if (_attribute == (CONSIST)) {
-         engineManager->deleteConsist(deleteItem);
+         ((ConsistManager*)InstanceManager::getDefault("Operations::ConsistManager"))->deleteConsist(deleteItem);
      }
  }
 
@@ -107,7 +108,7 @@ namespace Operations
              }
          }
          if (_attribute == (CONSIST)) {
-             engineManager->newConsist(addItem);
+             ((ConsistManager*)InstanceManager::getDefault("Operations::ConsistManager"))->newConsist(addItem);
          }
      }
 
@@ -139,7 +140,7 @@ namespace Operations
              ((EngineModels*)InstanceManager::getDefault("EngineModels"))->replaceName(oldItem, newItem);
          }
          if (_attribute == (CONSIST)) {
-             engineManager->replaceConsistName(oldItem, newItem);
+            ((ConsistManager*)InstanceManager::getDefault("Operations::ConsistManager"))->replaceConsistName(oldItem, newItem);
          }
          if (_attribute == (TYPE)) {
              ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->replaceName(oldItem, newItem);

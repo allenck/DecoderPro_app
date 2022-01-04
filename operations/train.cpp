@@ -3313,7 +3313,7 @@ if (roads.length() == 0) {
  */
  /*public*/ Engine* Train::getLeadEngine() {
   if (_leadEngine ==NULL&& _leadEngineId!=(NONE)) {
-      _leadEngine = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getById(_leadEngineId);
+      _leadEngine = (Engine*)((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getById(_leadEngineId);
   }
   return _leadEngine;
  }
