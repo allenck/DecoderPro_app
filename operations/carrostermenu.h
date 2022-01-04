@@ -2,7 +2,7 @@
 #define CARROSTERMENU_H
 #include <QMenu>
 #include "appslib_global.h"
-
+#include "carstableframe.h"
 namespace Operations
 {
  class APPSLIBSHARED_EXPORT CarRosterMenu : public QMenu
@@ -31,7 +31,7 @@ namespace Operations
    */
    ENTRYMENU = 3
   };
-  /*public*/ CarRosterMenu(QString pMenuName, MENUTYPES pMenuType, QWidget* pWho);
+  /*public*/ CarRosterMenu(QString pMenuName, MENUTYPES pMenuType, CarsTableFrame* pWho);
  private:
  };
 }

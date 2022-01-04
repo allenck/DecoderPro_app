@@ -40,22 +40,24 @@ namespace Operations
   SORTBY_OWNER = 11,
   SORTBY_RFID = 12,
   SORTBY_RWE = 13, // return when empty
-  SORTBY_FINALDESTINATION = 14,
-  SORTBY_VALUE = 15,
-  SORTBY_WAIT = 16,
-  SORTBY_PICKUP = 17,
-  SORTBY_LAST = 18
+  SORTBY_RWL = 14,
+  SORTBY_DIVISION = 15,
+  SORTBY_FINALDESTINATION = 16,
+  SORTBY_VALUE = 17,
+  SORTBY_WAIT = 18,
+  SORTBY_PICKUP = 19,
+  SORTBY_LAST = 20
   };
 
-  /*public*/ int rowCount(const QModelIndex &parent) const;
-  /*public*/ int columnCount(const QModelIndex &parent) const;
-  /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
-  /*public*/ QVariant data(const QModelIndex &index, int role) const;
+  /*public*/ int rowCount(const QModelIndex &parent) const override;
+  /*public*/ int columnCount(const QModelIndex &parent) const override;
+  /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
+  /*public*/ QVariant data(const QModelIndex &index, int role) const override;
   void initTable(JTable* table, CarsTableFrame* frame);
   /*public*/ void toggleSelectVisible();
-  /*public*/ QList<RollingStock*>* getSelectedCarList();
-  /*public*/ QList<RollingStock*>* getCarList(int sort);
+  /*public*/ QList<Car *> *getSelectedCarList();
+  /*public*/ QList<Car *> *getCarList(int sort);
   /*public*/ void setSort(int sort);
   /*public*/ QString getSortByName();
   /*public*/ QString getSortByName(int sort);
@@ -84,29 +86,35 @@ namespace Operations
   LENGTH_COLUMN = 4,
   LOAD_COLUMN = 5,
   RWE_LOAD_COLUMN = 6,
-  COLOR_COLUMN = 7,
-  KERNEL_COLUMN = 8,
-  LOCATION_COLUMN = 9,
-  DESTINATION_COLUMN = 10,
-  FINAL_DESTINATION_COLUMN = 11,
-  RWE_COLUMN = 12,
-  TRAIN_COLUMN = 13,
-  MOVES_COLUMN = 14,
-  BUILT_COLUMN = 15,
-  OWNER_COLUMN = 16,
-  VALUE_COLUMN = 17,
-  RFID_COLUMN = 18,
-  WAIT_COLUMN = 19,
-  PICKUP_COLUMN = 20,
-  LAST_COLUMN = 21,
-  SET_COLUMN = 22,
-  EDIT_COLUMN = 23,
+  RWL_LOAD_COLUMN =7,
+  COLOR_COLUMN = 8,
+  KERNEL_COLUMN = 9,
+  LOCATION_COLUMN = 10,
+  RFID_WHERE_LAST_SEEN_COLUMN = 11,
+  RFID_WHEN_LAST_SEEN_COLUMN = 12,
+  DESTINATION_COLUMN = 13,
+  FINAL_DESTINATION_COLUMN = 14,
+  RWE_DESTINATION_COLUMN = 15,
+  RWL_DESTINATION_COLUMN = 16,
+  DIVISION_COLUMN = 17,
+  TRAIN_COLUMN = 18,
+  MOVES_COLUMN = 19,
+  BUILT_COLUMN = 20,
+  OWNER_COLUMN = 21,
+  VALUE_COLUMN = 22,
+  RFID_COLUMN = 23,
+  WAIT_COLUMN = 24,
+  PICKUP_COLUMN = 25,
+  LAST_COLUMN = 26,
+  SET_COLUMN = 27,
+  EDIT_COLUMN = 28,
 
-  HIGHESTCOLUMN  = 24// = EDIT_COLUMN + 1;
+  HIGHESTCOLUMN  = EDIT_COLUMN + 1
   };
   /*private*/ int _sort;// = SORTBY_NUMBER;
 
-  QList<RollingStock*>* sysList;// = null; // list of cars
+  //QList<RollingStock*>* sysList;// = null; // list of cars
+  QList<Car*>* carList = nullptr; // list of cars
   bool showAllCars;// = true; // when true show all cars
   QString locationName;// = null; // only show cars with this location
   QString trackName;// = null; // only show cars with this track

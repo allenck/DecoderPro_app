@@ -33,7 +33,7 @@ namespace Operations
 
  /*public*/ TrainCopyFrame::TrainCopyFrame(Train* train, QWidget* parent) : OperationsFrame(parent){
  log = new Logger("TrainCopyFrame");
- trainManager = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"));
+ trainManager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
 
  // labels
  // text field
@@ -43,7 +43,7 @@ namespace Operations
  copyButton = new JButton(tr("Copy"));
 
  // combo boxes
- trainBox = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainComboBox();
+ trainBox = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainComboBox();
      // general GUI config
 
      //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));

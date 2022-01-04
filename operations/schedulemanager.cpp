@@ -41,7 +41,7 @@ namespace Operations
   //CarTypes::instance().addPropertyChangeListener(this);
   connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarRoads::instance().addPropertyChangeListener(this);
-  connect(((CarRoads*)InstanceManager::getDefault("CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((CarRoads*)InstanceManager::getDefault("Operations::CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   _id = 0;
   // stores known Schedule instances by id
   _scheduleHashTable = QHash<QString, Schedule*>();
@@ -397,8 +397,8 @@ namespace Operations
  /*public*/ void ScheduleManager::initialize() {
      //InstanceManager::getDefault("CarTypes").addPropertyChangeListener(this);
  connect(static_cast<CarTypes*>(InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //InstanceManager::getDefault("CarRoads").addPropertyChangeListener(this);
- connect(static_cast<CarRoads*>(InstanceManager::getDefault("CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //InstanceManager::getDefault("Operations::CarRoads").addPropertyChangeListener(this);
+ connect(static_cast<CarRoads*>(InstanceManager::getDefault("Operations::CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
  }
 }

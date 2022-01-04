@@ -26,7 +26,7 @@
 #include "operationsmanager.h"
 #include "carroads.h"
 #include "divisionmanager.h"
-//#include "defaultthrottlemanager.h"
+#include "kernelmanager.h"
 
 namespace Operations
 {
@@ -39,7 +39,7 @@ int id;
   id = qRegisterMetaType<RouteManagerXml>("RouteManagerXml");
   qRegisterMetaType<CarColors>("CarColors");
   qRegisterMetaType<CarLengths>("CarLengths");
-  qRegisterMetaType<CarLoads>("CarLoads");
+  qRegisterMetaType<CarLoads>("Operations::CarLoads");
   qRegisterMetaType<CarRoads>("CarRoads");
   qRegisterMetaType<EngineLengths>("EngineLengths");
   qRegisterMetaType<EngineModels>("EngineModels");
@@ -62,6 +62,7 @@ int id;
   qRegisterMetaType<ScheduleManager>("ScheduleManager");
   qRegisterMetaType<OperationsManager>("OperationsManager");
   qRegisterMetaType<DivisionManager>("DivisionManager");
+  qRegisterMetaType<KernelManager>("KernelManager");
 
   Metatypes::done = true;
  }

@@ -40,7 +40,7 @@ namespace Operations
      //super();
   SORTBYTIME = 2;
   SORTBYID = 7;
- trainManager = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager")); // There is only one manager
+ trainManager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager")); // There is only one manager
  _sort = SORTBYTIME;
  _showAll = true;
  tef = NULL;

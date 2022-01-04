@@ -81,7 +81,7 @@ namespace Operations
   log = new Logger("TrainsTableFrame");
   carManagerXml = ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml")); // load cars
   engineManagerXml = ((EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml")); // load engines
-  trainManager = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"));
+  trainManager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
   trainManagerXml = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"));
   locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
 

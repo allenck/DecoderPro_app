@@ -20,6 +20,9 @@
 #include <QtXml>
 #include "carcolors.h"
 #include "carowners.h"
+#include "division.h"
+#include "loggerfactory.h"
+//#include "simpledateformat.h
 
 //RollingStock::RollingStock(QObject *parent) :
 //  QObject(parent)
@@ -80,44 +83,7 @@ common();
 }
 void RollingStock::common()
 {
-log = new Logger("RollingStocK");
-setObjectName("RollingStock");
-locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
-_id = NONE;
-_number = NONE;
-_road = NONE;
-_type = NONE;
-_length = NONE;
-_color = NONE;
-_weight = DEFAULT_WEIGHT;
-_weightTons = DEFAULT_WEIGHT;
-_built = NONE;
-_owner = NONE;
-_comment = NONE;
-_routeId = NONE; // saved route for interchange tracks
-_rfid = NONE;
-_value = NONE;
-_last = NONE;
-_lastDate = QDateTime();
-_locationUnknown = false;
-_outOfService = false;
-_selected = false;
-
-_location = NULL;
-_trackLocation= NULL;
-_destination = NULL;
-_trackDestination = NULL;
-_train = NULL;
-_routeLocation = NULL;
-_routeDestination = NULL;
-_moves = 0;
-_lastLocationId = LOCATION_UNKNOWN; // the rollingstock's last location id
-_blocking = 0;
-number = 0; // used by rolling stock manager for sort by number
-_lengthChange = false; // used for loco length change
-verboseStore = false;
-_tag = NULL;
-_tagListener = NULL;
+ setObjectName("RollingStock");
 }
 
 /*public*/ /*static*/ QString RollingStock::createId(QString road, QString number) {
@@ -686,6 +652,31 @@ return getLength().toInt();
   return NONE;
 }
 
+/*public*/ void RollingStock::setDivision(Division* division) {
+    Division* old = _division;
+    _division = division;
+    if (old != _division) {
+        setDirtyAndFirePropertyChange("homeDivisionChange", VPtr<Division>::asQVariant(old), VPtr<Division>::asQVariant(division));
+    }
+}
+
+/*public*/ Division* RollingStock::getDivision() {
+    return _division;
+}
+
+/*public*/ QString RollingStock::getDivisionName() {
+    if (getDivision() != nullptr) {
+        return getDivision()->getName();
+    }
+    return NONE;
+}
+
+/*public*/ QString RollingStock::getDivisionId() {
+    if (getDivision() != nullptr) {
+        return getDivision()->getId();
+    }
+    return NONE;
+}
 /**
 * Used to block cars from staging
 *
@@ -988,6 +979,75 @@ return "";
      }
 #endif
  }
+ /*public*/ QString RollingStock::getWhereLastSeenName() {
+     if (getWhereLastSeen() != nullptr) {
+         return getWhereLastSeen()->getName();
+     }
+     return NONE;
+ }
+
+ /*public*/ Location* RollingStock::getWhereLastSeen() {
+     if (_tag == nullptr) {
+         return nullptr;
+     }
+     Reporter* r = _tag->getWhereLastSeen();
+     Track* t = locationManager->getTrackByReporter(r);
+     if (t != nullptr) {
+         return t->getLocation();
+     }
+     // the reader isn't associated with a track, return
+     // the location it is associated with, which might be null.
+     return locationManager->getLocationByReporter(r);
+ }
+
+ /*public*/ Track* RollingStock::getTrackLastSeen() {
+     if (_tag == nullptr) {
+         // there isn't a tag associated with this piece of rolling stock.
+         return nullptr;
+     }
+     Reporter* r = _tag->getWhereLastSeen();
+     if (r == nullptr) {
+         // there is a tag associated with this piece
+         // of rolling stock, but no reporter has seen it (or it was reset).
+         return nullptr;
+     }
+     // this return value will be null, if there isn't an associated track
+     // for the last reporter.
+     return locationManager->getTrackByReporter(r);
+ }
+
+ /*public*/ QString RollingStock::getTrackLastSeenName() {
+     // let getTrackLastSeen() find the track, if it exists.
+     Track* t = getTrackLastSeen();
+     if (t != nullptr) {
+         // if there is a track, return the name.
+         return t->getName();
+     }
+     // otherwise, there is no track to return the name of.
+     return NONE;
+ }
+
+ /*public*/ QDateTime RollingStock::getWhenLastSeen() {
+     if (_tag == nullptr) {
+         return QDateTime(); // never seen, so no date.
+     }
+     return _tag->getWhenLastSeen();
+ }
+
+ /**
+  * Provides the last date when this rolling stock was moved, or was reset from a
+  * built train, as a string.
+  *
+  * @return date
+  */
+ /*public*/ QString RollingStock::getWhenLastSeenDate() {
+     if (getWhenLastSeen() == QDateTime()) {
+         return NONE; // return an empty string for the default date.
+     }
+//     SimpleDateFormat* format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss"); // NOI18N
+//     return format.format(getWhenLastSeen());
+     return getWhenLastSeen().toString();
+ }
 
  /**
   * Sets the last date when this rolling stock was moved, or was reset from a
@@ -1174,11 +1234,11 @@ return "";
      setDestination(NULL, NULL);
      setLocation(NULL, NULL);
      //CarRoads::instance().removePropertyChangeListener(this);
-     disconnect(((CarRoads*)InstanceManager::getDefault("CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarRoads*)InstanceManager::getDefault("Operations::CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //        CarOwners.instance().removePropertyChangeListener(this);
-     disconnect(((CarOwners*)InstanceManager::getDefault("CarOwners")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarOwners*)InstanceManager::getDefault("Operations::CarOwners")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //        CarColors.instance().removePropertyChangeListener(this);
-     disconnect(((CarColors*)InstanceManager::getDefault("CarColors")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarColors*)InstanceManager::getDefault("Operations::CarColors")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      if (_tag != NULL) {
          //_tag.removePropertyChangeListener(_tagListener);
       disconnect(((AbstractIdTag*)_tag->self()), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -1260,9 +1320,9 @@ return "";
          _lastLocationId = a;
      }
      if ((a = e.attribute (Xml::TRAIN_ID)) != NULL) {
-         setTrain(((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainById(a));
+         setTrain(((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainById(a));
      } else if ((a = e.attribute (Xml::TRAIN)) != NULL) {
-         setTrain(((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainByName(a));
+         setTrain(((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainByName(a));
      }
     if (getTrain() != NULL && getTrain()->getRoute() != NULL &&
              (a = e.attribute (Xml::ROUTE_LOCATION_ID)) != NULL) {
@@ -1394,12 +1454,9 @@ return "";
  }
 
  /*private*/ void RollingStock::addPropertyChangeListeners() {
-     //CarRoads.instance().addPropertyChangeListener(this);
-  connect(((CarRoads*)InstanceManager::getDefault("CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  //        CarOwners.instance().addPropertyChangeListener(this);
-  connect(((CarOwners*)InstanceManager::getDefault("CarOwners")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  //        CarColors.instance().addPropertyChangeListener(this);
-  connect(((CarOwners*)InstanceManager::getDefault("CarOwners")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->addPropertyChangeListener(this);
+ ((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->addPropertyChangeListener(this);
+ ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->addPropertyChangeListener(this);
  }
 
  // rolling stock listens for changes in a location name or if a location is deleted
@@ -1411,7 +1468,7 @@ return "";
   if (e->getPropertyName()==(Location::NAME_CHANGED_PROPERTY)) {
       if (log->isDebugEnabled()) {
        log->debug(tr("Property change for rolling stock: (%1) property name: (%2) old: (%3) new: (%4)").arg(
-                  e->toString()).arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e->getNewValue().toString()));
+                  e->toString()).arg(e->getPropertyName()).arg(e->getOldValue().toString(),e->getNewValue().toString()));
       }
       setDirtyAndFirePropertyChange(e->getPropertyName(), e->getOldValue(), e->getNewValue());
   }
@@ -1502,5 +1559,5 @@ return "";
  {
   firePropertyChange(p, old, n);
  }
-
-} // end namespace
+ /*private*/ /*final*/ /*static*/ Logger* RollingStock::log = LoggerFactory::getLogger("RollingStock");
+} // end namespace Operations

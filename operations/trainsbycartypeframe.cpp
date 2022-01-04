@@ -53,7 +53,7 @@ namespace Operations
  /*public*/ void TrainsByCarTypeFrame::initComponents(QString carType) {
 
      // load managers
-     manager = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"));
+     manager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
 
      // general GUI config
      //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));

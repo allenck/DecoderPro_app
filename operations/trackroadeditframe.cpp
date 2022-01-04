@@ -65,7 +65,7 @@ namespace Operations
   roadNameExclude = new QRadioButton(tr("Exclude"));
 
   // combo box
-  comboBoxRoads = ((CarRoads*)InstanceManager::getDefault("CarRoads"))->getComboBox();
+  comboBoxRoads = ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->getComboBox();
 
   // labels
   trackName = new QLabel();
@@ -79,7 +79,7 @@ namespace Operations
      // property changes
      // listen for car road name changes
      //CarRoads::instance().addPropertyChangeListener(this);
-     connect(((CarRoads*)InstanceManager::getDefault("CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(((CarRoads*)InstanceManager::getDefault("Operations::CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      // the following code sets the frame's initial state
      //getContentPane()->setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
@@ -249,7 +249,7 @@ namespace Operations
 
  /*private*/ void TrackRoadEditFrame::updateRoadComboBox()
  {
-  ((CarRoads*)InstanceManager::getDefault("CarRoads"))->updateComboBox(comboBoxRoads);
+  ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->updateComboBox(comboBoxRoads);
  }
 
  /*private*/ void TrackRoadEditFrame::updateRoadNames()
@@ -333,7 +333,7 @@ namespace Operations
       disconnect(_track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
      //CarRoads.instance().removePropertyChangeListener(this);
-     disconnect(((CarRoads*)InstanceManager::getDefault("CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarRoads*)InstanceManager::getDefault("Operations::CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      OperationsFrame::dispose();
  }
 

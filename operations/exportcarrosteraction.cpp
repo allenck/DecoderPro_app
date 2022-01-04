@@ -1,5 +1,6 @@
 #include "exportcarrosteraction.h"
 #include "exportcars.h"
+#include "carstablemodel.h"
 
 namespace Operations
 {
@@ -16,15 +17,16 @@ namespace Operations
   */
  //private static final long serialVersionUID = 4463124347780716468L;
 
- /*public*/ ExportCarRosterAction::ExportCarRosterAction(QString actionName, QWidget* frame)
-    : AbstractAction(actionName, (QObject*)frame)
+ /*public*/ ExportCarRosterAction::ExportCarRosterAction(CarsTableFrame* carsTableFrame)
+    : AbstractAction(tr("Export"), (QObject*)carsTableFrame)
  {
      //super(actionName);
+  _carsTableFrame = carsTableFrame;
   connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void ExportCarRosterAction::actionPerformed(ActionEvent* ae) {
-     ExportCars* ex = new ExportCars();
-     ex->writeOperationsCarFile();
+ /*public*/ void ExportCarRosterAction::actionPerformed(JActionEvent* /*ae*/) {
+  ExportCars* exportCars = new ExportCars(*_carsTableFrame->carsTableModel->getSelectedCarList());
+          exportCars->writeOperationsCarFile();
  }
 }

@@ -16,6 +16,7 @@
 #include <QList>
 #include "pushbuttondelegate.h"
 #include "instancemanager.h"
+#include "engine.h"
 
 namespace Operations
 {
@@ -43,7 +44,7 @@ namespace Operations
      //super();
   manager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager")); // There is only one manager
  _sort = SORTBY_NUMBER;
-  sysList = NULL;
+  //sysList = NULL;
   cef = NULL;
   csf = NULL;
   _roadNumber = "";
@@ -70,7 +71,7 @@ namespace Operations
      } else if (sort == SORTBY_DESTINATION || sort == SORTBY_FINALDESTINATION || sort == SORTBY_RWE) {
          tcm->setColumnVisible(tcm->getColumnByModelIndex(DESTINATION_COLUMN), sort == SORTBY_DESTINATION);
          tcm->setColumnVisible(tcm->getColumnByModelIndex(FINAL_DESTINATION_COLUMN), sort == SORTBY_FINALDESTINATION);
-         tcm->setColumnVisible(tcm->getColumnByModelIndex(RWE_COLUMN), sort == SORTBY_RWE);
+         tcm->setColumnVisible(tcm->getColumnByModelIndex(RWE_LOAD_COLUMN), sort == SORTBY_RWE);
          tcm->setColumnVisible(tcm->getColumnByModelIndex(RWE_LOAD_COLUMN), sort == SORTBY_RWE);
          tcm->setColumnVisible(tcm->getColumnByModelIndex(LOAD_COLUMN), sort != SORTBY_RWE);
          if (sort == SORTBY_RWE) {
@@ -150,7 +151,7 @@ namespace Operations
  }
 
  /*public*/ void CarsTableModel::resetCheckboxes() {
-     foreach (RollingStock* car, *sysList) {
+     foreach (RollingStock* car, *carList) {
          car->setSelected(false);
      }
  }
@@ -163,7 +164,7 @@ namespace Operations
   * @return -1 if not found, table row number if found
   */
  /*public*/ int CarsTableModel::findCarByRoadNumber(QString roadNumber) {
-     if (sysList != NULL)
+     if (carList != NULL)
      {
          if (roadNumber!=(_roadNumber)) {
              return getIndex(0, roadNumber);
@@ -178,8 +179,8 @@ namespace Operations
  }
 
  /*private*/ int CarsTableModel::getIndex(int start, QString roadNumber) {
-     for (int index = start; index < sysList->size(); index++) {
-         Car* c = (Car*) sysList->at(index);
+     for (int index = start; index < carList->size(); index++) {
+         Car* c = (Car*) carList->at(index);
          if (c != NULL) {
              QStringList number = c->getNumber().split("-");
              // check for wild card '*'
@@ -209,23 +210,23 @@ namespace Operations
  }
 
  /*public*/ Car* CarsTableModel::getCarAtIndex(int index) {
-     return (Car*) sysList->at(index);
+     return (Car*) carList->at(index);
  }
 
  /*synchronized*/ void CarsTableModel::updateList()
 {
   // first, remove listeners from the individual objects
   removePropertyChangeCars();
-  sysList = getSelectedCarList();
+  carList = getSelectedCarList();
   // and add listeners back in
   addPropertyChangeCars();
  }
 
- /*public*/ QList<RollingStock*>* CarsTableModel::getSelectedCarList() {
+ /*public*/ QList<Car*>* CarsTableModel::getSelectedCarList() {
      return getCarList(_sort);
  }
 
- /*public*/ QList<RollingStock*>* CarsTableModel::getCarList(int sort) {
+ /*public*/ QList<Car*>* CarsTableModel::getCarList(int sort) {
      QList<RollingStock*>* list;
      switch (sort) {
          case SORTBY_NUMBER:
@@ -291,7 +292,13 @@ namespace Operations
 
      }
      filterList(list);
-     return list;
+     QList<Car*>* carlist= new QList<Car*>();
+     foreach(RollingStock* rs, *list)
+     {
+      if(qobject_cast<Car*>(rs))
+       carlist->append((Car*)rs);
+     }
+     return carlist;
  }
 
  /*private*/ void CarsTableModel::filterList(QList<RollingStock*>* list) {
@@ -378,7 +385,7 @@ namespace Operations
  }
 
  /*public*/ int CarsTableModel::rowCount(const QModelIndex &parent) const {
-     return sysList->size();
+     return carList->size();
  }
 
  /*public*/ int CarsTableModel::columnCount(const QModelIndex &parent) const {
@@ -408,14 +415,22 @@ namespace Operations
              return tr("Kernel");
          case LOCATION_COLUMN:
              return tr("Location");
+         case RFID_WHERE_LAST_SEEN_COLUMN:
+             return tr("WhereLastSeen");
+         case RFID_WHEN_LAST_SEEN_COLUMN:
+             return tr("WhenLastSeen");
          case DESTINATION_COLUMN:
              return tr("Destination");
          case FINAL_DESTINATION_COLUMN:
              return tr("FinalDestination");
-         case RWE_COLUMN:
-             return tr("ReturnWhenEmpty");
          case RWE_LOAD_COLUMN:
              return tr("RWELoad");
+         case RWL_DESTINATION_COLUMN:
+             return tr("RWLLocation");
+         case RWL_LOAD_COLUMN:
+             return tr("RWLLoad");
+         case DIVISION_COLUMN:
+             return tr("Home Division");
          case TRAIN_COLUMN:
              return tr("Train");
          case MOVES_COLUMN:
@@ -478,10 +493,10 @@ namespace Operations
  {
   int row = index.row();
   int col = index.column();
-    if (row >= sysList->size()) {
+    if (row >= carList->size()) {
         return "ERROR row " + row; // NOI18N
     }
-    Car* car = (Car*) sysList->at(row);
+    Car* car = (Car*) carList->at(row);
     if (car == NULL) {
         return "ERROR car unknown " + row; // NOI18N
     }
@@ -541,6 +556,13 @@ namespace Operations
              }
              return car->getStatus();
          }
+         case RFID_WHERE_LAST_SEEN_COLUMN: {
+             return car->getWhereLastSeenName() +
+                             (car->getTrackLastSeenName() ==(Engine::NONE) ? "" : " (" + car->getTrackLastSeenName() + ")");
+             }
+             case RFID_WHEN_LAST_SEEN_COLUMN: {
+                 return car->getWhenLastSeenDate();
+             }
          case DESTINATION_COLUMN:
          case FINAL_DESTINATION_COLUMN: {
              QString s = "";
@@ -555,17 +577,21 @@ namespace Operations
              }
              return s;
          }
-         case RWE_COLUMN:
+         case RWE_DESTINATION_COLUMN:
              return car->getReturnWhenEmptyDestName();
          case RWE_LOAD_COLUMN:
              return car->getReturnWhenEmptyLoadName();
-         case TRAIN_COLUMN: {
+         case RWL_DESTINATION_COLUMN:
+             return car->getReturnWhenLoadedDestName();
+         case RWL_LOAD_COLUMN:
+             return car->getReturnWhenLoadedLoadName();
+         case DIVISION_COLUMN:
+             return car->getDivisionName();
              // if train was manually set by user add an asterisk
              if (car->getTrain() != NULL && car->getRouteLocation() == NULL) {
                  return car->getTrainName() + "*";
              }
              return car->getTrainName();
-         }
          case MOVES_COLUMN:
              return car->getMoves();
          case BUILT_COLUMN:
@@ -596,7 +622,7 @@ namespace Operations
 
  /*public*/ bool CarsTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
  {
-  Car* car = (Car*) sysList->at(index.row());
+  Car* car = (Car*) carList->at(index.row());
   if(role == Qt::CheckStateRole)
   {
    if(index.column() == SELECT_COLUMN)
@@ -732,7 +758,7 @@ namespace Operations
   else if (QString(e->getSource()->metaObject()->className()) ==("Car"))
   {
    Car* car = (Car*) e->getSource();
-   int row = sysList->indexOf(car);
+   int row = carList->indexOf(car);
    if (Control::SHOW_PROPERTY)
    {
     log->debug(tr("Update car table row: %1").arg(row));

@@ -54,6 +54,7 @@ namespace Operations {
          if(!qf->open(QIODevice::Truncate|QIODevice::WriteOnly ))
           throw new IOException(tr("Can't open foroutput: %s").arg(qf->fileName()));
          QTextStream* stream = new QTextStream(qf);
+
          try {
           CSVPrinter* fileOut = new EL_CSVPrinter(stream,
              CSVFormat::DEFAULT, this);//

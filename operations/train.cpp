@@ -2906,7 +2906,7 @@ if (roads.length() == 0) {
  }
 
  /*public*/ void Train::printBuildReport() {
-     bool isPreview = (((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->isPrintPreviewEnabled() || Setup
+     bool isPreview = (((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->isPrintPreviewEnabled() || Setup
              ::isBuildReportAlwaysPreviewEnabled());
      printBuildReport(isPreview);
  }
@@ -2967,7 +2967,7 @@ if (roads.length() == 0) {
  {
   if (isBuilt())
   {
-   bool isPreview = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->isPrintPreviewEnabled();
+   bool isPreview = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->isPrintPreviewEnabled();
    printManifest(isPreview);
   }
   else
@@ -3489,13 +3489,13 @@ if (roads.length() == 0) {
          //getRoute().removePropertyChangeListener(this);
      }
      //CarRoads.instance().removePropertyChangeListener(this);
-     disconnect(((CarRoads*)InstanceManager::getDefault("CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarRoads*)InstanceManager::getDefault("Operations::CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes.instance().removePropertyChangeListener(this);
      disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //EngineTypes.instance().removePropertyChangeListener(this);
      disconnect(((EngineTypes*)InstanceManager::getDefault("EngineTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //        CarOwners.instance().removePropertyChangeListener(this);
-     disconnect(((CarOwners*)InstanceManager::getDefault("CarOwners")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarOwners*)InstanceManager::getDefault("Operations::CarOwners")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //        EngineModels.instance().removePropertyChangeListener(this);
      disconnect(((EngineModels*)InstanceManager::getDefault("EngineModels")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
@@ -3932,13 +3932,13 @@ if (roads.length() == 0) {
  /*private*/ void Train::addPropertyChangeListerners()
 {
   //CarRoads.instance().addPropertyChangeListener(this);
- connect(((CarRoads*)InstanceManager::getDefault("CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(((CarRoads*)InstanceManager::getDefault("Operations::CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarTypes.instance().addPropertyChangeListener(this);
  connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //EngineTypes.instance().addPropertyChangeListener(this);
  connect(((EngineTypes*)InstanceManager::getDefault("EngineTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarOwners.instance().addPropertyChangeListener(this);
- connect(((CarOwners*)InstanceManager::getDefault("CarOwners")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(((CarOwners*)InstanceManager::getDefault("Operations::CarOwners")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //EngineModels.instance().addPropertyChangeListener(this);
   connect(((EngineModels*)InstanceManager::getDefault("EngineModels")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 

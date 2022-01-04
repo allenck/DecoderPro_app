@@ -82,6 +82,7 @@ SOURCES += \
  divisionmanager.cpp \
  exportlocations.cpp \
  exportlocationsrosteraction.cpp \
+ kernelmanager.cpp \
  metatypes.cpp \
         operations.cpp \
         operationsmenu.cpp \
@@ -89,6 +90,7 @@ SOURCES += \
  operationssettingsframe.cpp \
  operationssettingspanel.cpp \
  rollingstockeditframe.cpp \
+ rollingstockgroupmanager.cpp \
     routeblockingordereditframe.cpp \
  routeblockingordereditframeaction.cpp \
     routeblockingorderedittablemodel.cpp \
@@ -391,6 +393,7 @@ HEADERS += \
  divisionmanager.h \
  exportlocations.h \
  exportlocationsrosteraction.h \
+ kernelmanager.h \
  metatypes.h \
         operations.h \
         operations_global.h \
@@ -400,6 +403,7 @@ HEADERS += \
  operationssettingspanel.h \
         operationsxml.h \
  rollingstockeditframe.h \
+ rollingstockgroupmanager.h \
     routeblockingordereditframe.h \
  routeblockingordereditframeaction.h \
     routeblockingorderedittablemodel.h \

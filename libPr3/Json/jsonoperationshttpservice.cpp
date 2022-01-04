@@ -114,7 +114,7 @@
  */
 /*public*/ void JsonOperationsHttpService::setTrain(QLocale locale, QString id, QJsonObject data) throw (JsonException)
 {
- Operations::Train* train = ((Operations::TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainById(id);
+ Operations::Train* train = ((Operations::TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainById(id);
  if (!data.value(JSON::LOCATION).isUndefined())
  {
   QString location = data.value(JSON::LOCATION).toString();

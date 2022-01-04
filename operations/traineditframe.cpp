@@ -168,7 +168,7 @@ namespace Operations
   _train = train;
 
   // load managers
-  trainManager = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"));
+  trainManager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
   routeManager = ((RouteManager*)InstanceManager::getDefault("OperationsRouteManager"));
   children = QList<JmriJFrame*>();
 
@@ -447,7 +447,7 @@ namespace Operations
   //CarTypes::instance().addPropertyChangeListener(this);
   connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarRoads.instance().addPropertyChangeListener(this);
-  connect(((CarRoads*)InstanceManager::getDefault("CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((CarRoads*)InstanceManager::getDefault("Operations::CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //EngineTypes.instance().addPropertyChangeListener(this);
   connect(((EngineTypes*)InstanceManager::getDefault("EngineTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //EngineModels.instance().addPropertyChangeListener(this);
@@ -1149,7 +1149,7 @@ namespace Operations
 //     CarTypes::instance().removePropertyChangeListener(this);
  disconnect(((EngineTypes*)InstanceManager::getDefault("EngineTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     CarRoads.instance().removePropertyChangeListener(this);
- disconnect(((CarRoads*)InstanceManager::getDefault("CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(((CarRoads*)InstanceManager::getDefault("Operations::CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     routeManager.removePropertyChangeListener(this);
  disconnect(routeManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      foreach (JmriJFrame* frame, children)

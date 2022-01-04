@@ -69,7 +69,7 @@ namespace Operations
               SleeperThread::sleep(60);
              } catch (InterruptedException e) {
              }
-             if (((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->isAnyTrainBuilding()) {
+             if (((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->isAnyTrainBuilding()) {
                  log->debug("Detected trains being built");
                  continue;
              }

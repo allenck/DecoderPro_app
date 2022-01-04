@@ -43,7 +43,7 @@ OperationsXml::OperationsXml(QObject *parent) :
  }
 }
 
-/*protected*/ void OperationsXml::load() throw (Exception)
+/*protected*/ void OperationsXml::load() /*throw (Exception)*/
 {
     try {
         readFile(getDefaultOperationsFilename());

@@ -74,7 +74,7 @@ namespace Operations
   // text field
   // combo boxes
   comboBoxTypes = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getComboBox();
-  comboBoxLoads = ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getComboBox(NULL);
+  comboBoxLoads = ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getComboBox(NULL);
  }
 
  /*public*/ void TrainLoadOptionsFrame::initComponents(TrainEditFrame* parent)
@@ -201,7 +201,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   //CarTypes::instance().addPropertyChangeListener(this);
   connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarLoads.instance().addPropertyChangeListener(this);
-  connect(((CarLoads*)InstanceManager::getDefault("CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   loadAndTypeCheckBox->setChecked(loadAndType);
 
   initMinimumSize(QSize(Control::panelWidth600, Control::panelHeight400));
@@ -356,14 +356,14 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  /*private*/ void TrainLoadOptionsFrame::updateLoadComboBoxes() {
      QString carType =  comboBoxTypes->currentText();
-     ((CarLoads*)InstanceManager::getDefault("CarLoads"))->updateComboBox(carType, comboBoxLoads);
+     ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->updateComboBox(carType, comboBoxLoads);
  }
 
  /*public*/ void TrainLoadOptionsFrame::dispose() {
      //CarTypes.instance().removePropertyChangeListener(this);
  disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarLoads.instance().removePropertyChangeListener(this);
- disconnect(((CarLoads*)InstanceManager::getDefault("CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      if (_train != NULL) {
          //_train->removePropertyChangeListener(this);
       disconnect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

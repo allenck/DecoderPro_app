@@ -419,13 +419,13 @@ void YardmasterByTrackPanel::common()
                 text = TrainSwitchListText::getStringHoldCar().split(QRegExp("\\{"))[0] + s.trimmed();
             } else {
                 text = TrainSwitchListText::getStringHoldCar().arg(
-                        TrainCommon::padAndTruncateString(car->getRoadName(),((CarRoads*) InstanceManager::getDefault("CarRoads"))->getMaxNameLength())).arg(
+                        TrainCommon::padAndTruncateString(car->getRoadName(),((CarRoads*) InstanceManager::getDefault("Operations::CarRoads"))->getMaxNameLength())).arg(
                                 TrainCommon::padAndTruncateString(TrainCommon::splitString(car->getNumber()), Control::max_len_string_print_road_number)).arg(
                                 TrainCommon::padAndTruncateString(car->getTypeName().split("-")[0], ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getMaxNameLength()),
                                 TrainCommon::padAndTruncateString(car->getLength() + TrainCommon::LENGTHABV, Control::max_len_string_length_name)).arg(
-                                TrainCommon::padAndTruncateString(car->getLoadName(),((CarLoads*) InstanceManager::getDefault("CarLoads"))->getMaxNameLength()).arg(
+                                TrainCommon::padAndTruncateString(car->getLoadName(),((CarLoads*) InstanceManager::getDefault("Operations::CarLoads"))->getMaxNameLength()).arg(
                                 TrainCommon::padAndTruncateString(_track->getName(),((LocationManager*) InstanceManager::getDefault("Operations::LocationManager"))->getMaxTrackNameLength()).arg(
-                                TrainCommon::padAndTruncateString(car->getColor(),((CarColors*) InstanceManager::getDefault("CarColors"))->getMaxNameLength()))));
+                                TrainCommon::padAndTruncateString(car->getColor(),((CarColors*) InstanceManager::getDefault("Operations::CarColors"))->getMaxNameLength()))));
 
             }
             QCheckBox* checkBox = new QCheckBox(text);

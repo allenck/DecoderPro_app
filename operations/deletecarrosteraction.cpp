@@ -19,12 +19,7 @@ namespace Operations
  ///*public*/ class DeleteCarRosterAction extends AbstractAction {
 
 
- /*public*/ DeleteCarRosterAction::DeleteCarRosterAction(QString actionName, QWidget* frame)
- : AbstractAction(actionName, frame)
- {
-  //super(actionName);
-  common();
- }
+
 
  /*public*/ DeleteCarRosterAction::DeleteCarRosterAction(CarsTableFrame* carsTableFrame)
     : AbstractAction(carsTableFrame->carsTableModel->trackName==""?tr("Delete"):tr("Delete cars on track"), carsTableFrame)
@@ -59,9 +54,9 @@ namespace Operations
  if (JOptionPane::showConfirmDialog(NULL, tr("Are you sure you want to delete all the cars on track %1?").arg(_carsTableFrame->carsTableModel->trackName),
                  tr("Delete all cars?"), JOptionPane::OK_CANCEL_OPTION) == JOptionPane::OK_OPTION)
    {
-    foreach (RollingStock* car, *_carsTableFrame->carsTableModel->getSelectedCarList())
+    foreach (Car* car, *_carsTableFrame->carsTableModel->getSelectedCarList())
     {
-     ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->deregister(car);
+     ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->deregister((RollingStock*)car);
     }
    }
   }

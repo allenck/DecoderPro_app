@@ -274,11 +274,11 @@ namespace Operations
          _rs = rs;
 
          // engines and cars share the same road database
-         if (!((CarRoads*)InstanceManager::getDefault("CarRoads"))->containsName(rs->getRoadName())) {
+         if (!((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->containsName(rs->getRoadName())) {
              if (JOptionPane::showConfirmDialog(this,
                      tr("Road name \"%1\" does not exist in your roster, add?").arg(rs->getRoadName() ),
                      tr("Add road name?"), JOptionPane::YES_NO_OPTION) == JOptionPane::YES_OPTION) {
-                 ((CarRoads*)InstanceManager::getDefault("CarRoads"))->addName(rs->getRoadName());
+                 ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->addName(rs->getRoadName());
              }
          }
          roadComboBox->setSelectedItem(rs->getRoadName());
@@ -313,11 +313,11 @@ namespace Operations
          builtTextField->setText(rs->getBuilt());
 
          // Engines and cars share the owner database
-         if (!((CarOwners*)InstanceManager::getDefault("CarOwners"))->containsName(rs->getOwner())) {
+         if (!((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->containsName(rs->getOwner())) {
              if (JOptionPane::showConfirmDialog(this,
                      tr("Owner \"%1\" does not exist in your roster, add?").arg(rs->getOwner() ),
                      tr("Add Owner?"), JOptionPane::YES_NO_OPTION) == JOptionPane::YES_OPTION) {
-                 ((CarOwners*)InstanceManager::getDefault("CarOwners"))->addName(rs->getOwner());
+                 ((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->addName(rs->getOwner());
              }
          }
          ownerComboBox->setSelectedItem(rs->getOwner());
@@ -565,25 +565,25 @@ namespace Operations
      }
 
      /*protected*/ void RollingStockEditFrame::addPropertyChangeListeners() {
-         ((CarRoads*)InstanceManager::getDefault("CarRoads"))->PropertyChangeSupport::addPropertyChangeListener(this);
+         ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->PropertyChangeSupport::addPropertyChangeListener(this);
          getTypeManager()->PropertyChangeSupport::addPropertyChangeListener(this);
          getLengthManager()->PropertyChangeSupport::addPropertyChangeListener(this);
-         ((CarOwners*)InstanceManager::getDefault("CarOwners"))->PropertyChangeSupport::addPropertyChangeListener(this);
+         ((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->PropertyChangeSupport::addPropertyChangeListener(this);
          locationManager->PropertyChangeSupport::addPropertyChangeListener(this);
      }
 
      /*protected*/ void RollingStockEditFrame::removePropertyChangeListeners() {
-         ((CarRoads*)InstanceManager::getDefault("CarRoads"))->removePropertyChangeListener(this);
+         ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->removePropertyChangeListener(this);
          getTypeManager()->removePropertyChangeListener(this);
          getLengthManager()->removePropertyChangeListener(this);
-         ((CarOwners*)InstanceManager::getDefault("CarOwners"))->removePropertyChangeListener(this);
+         ((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->removePropertyChangeListener(this);
          locationManager->removePropertyChangeListener(this);
      }
 
      //@Override
      /*public*/ void RollingStockEditFrame::propertyChange(PropertyChangeEvent* e) {
          if (e->getPropertyName() == (CarRoads::CARROADS_CHANGED_PROPERTY)) {
-             ((CarRoads*)InstanceManager::getDefault("CarRoads"))->updateComboBox(roadComboBox);
+             ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->updateComboBox(roadComboBox);
              if (_rs != nullptr) {
                  roadComboBox->setSelectedItem(_rs->getRoadName());
              }
@@ -596,7 +596,7 @@ namespace Operations
              }
          }
          if (e->getPropertyName() == (CarOwners::CAROWNERS_CHANGED_PROPERTY)) {
-             ((CarOwners*)InstanceManager::getDefault("CarOwners"))->updateComboBox(ownerComboBox);
+             ((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->updateComboBox(ownerComboBox);
              if (_rs != nullptr) {
                  ownerComboBox->setSelectedItem(_rs->getOwner());
              }

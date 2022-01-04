@@ -36,6 +36,7 @@
 #include "carloadeditframe.h"
 #include "rollingstockeditframe.h"
 #include "borderfactory.h"
+#include "kernelmanager.h"
 
 namespace Operations
 {
@@ -62,7 +63,7 @@ namespace Operations
      //super();
   setObjectName("CarEditFrame");
   carManager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
-  managerXml = ((CarManagerXml*)InstanceManager::getDefault("Operations::CarManagerXml"));
+  managerXml = ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml"));
   locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
   log = new Logger("CarEditFrame");
 
@@ -103,14 +104,14 @@ namespace Operations
   valueTextField = new JTextField(8);
 
   // combo boxes
-  roadComboBox = ((CarRoads*)InstanceManager::getDefault("CarRoads"))->getComboBox();
+  roadComboBox = ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->getComboBox();
   typeComboBox = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getComboBox();
-  colorComboBox = ((CarColors*)InstanceManager::getDefault("CarColors"))->getComboBox();
+  colorComboBox = ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->getComboBox();
   lengthComboBox = ((CarLengths*)InstanceManager::getDefault("CarLengths"))->getComboBox();
   ownerComboBox = new JComboBox(); //.instance().getComboBox();
   locationBox = locationManager->getComboBox();
   trackLocationBox = new JComboBox();
-  loadComboBox = ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getComboBox();
+  loadComboBox = ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getComboBox();
   kernelComboBox = carManager->getKernelComboBox();
   rfidComboBox = new JComboBox();
 
@@ -164,7 +165,7 @@ namespace Operations
   // Layout the panel by rows
   // row 1
   JPanel* pRoad = new JPanel();
-  //pRoad.setLayout(new GridBagLayout());
+  pRoad->setLayout(new GridBagLayout());
   pRoad->setBorder(BorderFactory::createTitledBorder(tr("Road")));
   addItem(pRoad, roadComboBox, 1, 0);
   addItem(pRoad, editRoadButton, 2, 0);
@@ -172,7 +173,7 @@ namespace Operations
 
   // row 2
   JPanel* pRoadNumber = new JPanel();
-  //pRoadNumber.setLayout(new GridBagLayout());
+  pRoadNumber->setLayout(new GridBagLayout());
   pRoadNumber->setBorder(BorderFactory::createTitledBorder(tr("Road Number")));
   addItem(pRoadNumber, roadNumberTextField, 1, 0);
   addItem(pRoadNumber, clearRoadNumberButton, 2, 0);
@@ -180,7 +181,7 @@ namespace Operations
 
   // row 3
   JPanel* pType = new JPanel();
-  //pType.setLayout(new GridBagLayout());
+  pType->setLayout(new GridBagLayout());
   pType->setBorder(BorderFactory::createTitledBorder(tr("Type")));
   addItem(pType, typeComboBox, 0, 0);
   addItem(pType, editTypeButton, 2, 0);
@@ -192,7 +193,7 @@ namespace Operations
   pPanelLayout->addWidget(pType);
 
   // row 3a
-  //pBlocking.setLayout(new GridBagLayout());
+  pBlocking->setLayout(new GridBagLayout());
   pBlocking->setBorder(BorderFactory::createTitledBorder(tr("Passenger Car Blocking Order")));
   addItem(pBlocking, blockingTextField, 0, 0);
   blockingTextField->setText("0");
@@ -201,7 +202,7 @@ namespace Operations
 
   // row 4
   JPanel* pLength = new JPanel();
-  //pLength.setLayout(new GridBagLayout());
+  pLength->setLayout(new GridBagLayout());
   pLength->setBorder(BorderFactory::createTitledBorder(tr("Length")));
   addItem(pLength, lengthComboBox, 1, 0);
   addItem(pLength, editLengthButton, 2, 0);
@@ -210,7 +211,7 @@ namespace Operations
   // row 5
   // row 7
   JPanel* pWeight = new JPanel();
-  //pWeight.setLayout(new GridBagLayout());
+  pWeight->setLayout(new GridBagLayout());
   pWeight->setBorder(BorderFactory::createTitledBorder(tr("Weight")));
   addItem(pWeight, textWeightOz, 0, 0);
   addItem(pWeight, weightTextField, 1, 0);
@@ -222,7 +223,7 @@ namespace Operations
 
   // row 11
   JPanel* pLocation = new JPanel();
-//     pLocation.setLayout(new GridBagLayout());
+  pLocation->setLayout(new GridBagLayout());
   pLocation->setBorder(BorderFactory::createTitledBorder(tr("Location and Track")));
   addItem(pLocation, locationBox, 1, 0);
   addItem(pLocation, trackLocationBox, 2, 0);
@@ -231,9 +232,8 @@ namespace Operations
 
   // optional panel
   JPanel* pOptional = new JPanel();
-  pOptional->setBorder(BorderFactory::createTitledBorder(tr("Optional")));
   QVBoxLayout* pOptionalLayout1 = new QVBoxLayout(pOptional);
-  //pOptional.setLayout(new BoxLayout(pOptional, BoxLayout.Y_AXIS));
+  pOptional->setBorder(BorderFactory::createTitledBorder(tr("Optional")));
   QScrollArea* optionPane = new QScrollArea(/*pOptional*/);
   pOptionalLayout1->addWidget(optionPane);
   QWidget* scrollWidget = new QWidget;
@@ -245,7 +245,7 @@ namespace Operations
 
   // row 12
   JPanel* pColor = new JPanel();
-  //pColor.setLayout(new GridBagLayout());
+  pColor->setLayout(new GridBagLayout());
   pColor->setBorder(BorderFactory::createTitledBorder(tr("Color")));
   addItem(pColor, colorComboBox, 1, 0);
   addItem(pColor, editColorButton, 2, 0);
@@ -253,16 +253,15 @@ namespace Operations
 
   // row 13
   JPanel* pLoad = new JPanel();
-//     pLoad.setLayout(new GridBagLayout());
-  pLoad->setBorder(BorderFactory::createTitledBorder(tr("Load")));
   pLoad->setLayout(new GridBagLayout);
+  pLoad->setBorder(BorderFactory::createTitledBorder(tr("Load")));
   addItem(pLoad, loadComboBox, 1, 0);
   addItem(pLoad, editLoadButton, 2, 0);
   pOptionalLayout->addWidget(pLoad);
 
   // row 15
   JPanel* pKernel = new JPanel();
-//     pKernel.setLayout(new GridBagLayout());
+  pKernel->setLayout(new GridBagLayout());
   pKernel->setBorder(BorderFactory::createTitledBorder(tr("Kernel")));
   addItem(pKernel, kernelComboBox, 1, 0);
   addItem(pKernel, editKernelButton, 2, 0);
@@ -270,14 +269,14 @@ namespace Operations
 
   // row 17
   JPanel* pBuilt = new JPanel();
-//     pBuilt.setLayout(new GridBagLayout());
+  pBuilt->setLayout(new GridBagLayout());
   pBuilt->setBorder(BorderFactory::createTitledBorder(tr("Built")));
   addItem(pBuilt, builtTextField, 1, 0);
   pOptionalLayout->addWidget(pBuilt);
 
   // row 19
   JPanel* pOwner = new JPanel();
-//     pOwner.setLayout(new GridBagLayout());
+  pOwner->setLayout(new GridBagLayout());
   pOwner->setBorder(BorderFactory::createTitledBorder(tr("Owner")));
   addItem(pOwner, ownerComboBox, 1, 0);
   addItem(pOwner, editOwnerButton, 2, 0);
@@ -287,7 +286,7 @@ namespace Operations
   if (Setup::isValueEnabled())
   {
    JPanel* pValue = new JPanel();
-//         pValue.setLayout(new GridBagLayout());
+   pValue->setLayout(new GridBagLayout());
    pValue->setBorder(BorderFactory::createTitledBorder(Setup::getValueLabel()));
    addItem(pValue, valueTextField, 1, 0);
    pOptionalLayout->addWidget(pValue);
@@ -297,7 +296,7 @@ namespace Operations
   if (Setup::isRfidEnabled())
   {
    JPanel* pRfid = new JPanel();
-//         pRfid.setLayout(new GridBagLayout());
+   pRfid->setLayout(new GridBagLayout());
    pRfid->setBorder(BorderFactory::createTitledBorder(Setup::getRfidLabel()));
    addItem(pRfid, rfidComboBox, 1, 0);
    rfidComboBox->addItem("", VPtr<IdTag>::asQVariant(NULL));
@@ -312,14 +311,14 @@ namespace Operations
 
   // row 24
   JPanel* pComment = new JPanel();
-//     pComment.setLayout(new GridBagLayout());
+  pComment->setLayout(new GridBagLayout());
   pComment->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
   addItem(pComment, commentTextField, 1, 0);
   pOptionalLayout->addWidget(pComment);
 
   // button panel
   JPanel* pButtons = new JPanel();
-  //pButtons.setLayout(new GridBagLayout());
+  pButtons->setLayout(new GridBagLayout());
   addItem(pButtons, deleteButton, 0, 25);
   addItem(pButtons, addButton, 1, 25);
   addItem(pButtons, saveButton, 3, 25);
@@ -384,12 +383,12 @@ namespace Operations
  /*public*/ void CarEditFrame::load(Car* car) {
      _car = car;
 
-     if (!((CarRoads*)InstanceManager::getDefault("CarRoads"))->containsName(car->getRoadName())) {
+     if (!((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->containsName(car->getRoadName())) {
 //         if (JOptionPane.showConfirmDialog(this, tr("roadNameNotExist"),
 //                 new Object[]{car.getRoadName()}), tr("carAddRoad"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
       if(QMessageBox::question(this, tr("Add road name?"), tr("Road name \"%1\" does not exist in your roster, add?").arg(car->getRoadName()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
       {
-             ((CarRoads*)InstanceManager::getDefault("CarRoads"))->addName(car->getRoadName());
+             ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->addName(car->getRoadName());
          }
      }
      roadComboBox->setCurrentIndex(roadComboBox->findText(car->getRoadName()));
@@ -416,12 +415,12 @@ namespace Operations
      }
      lengthComboBox->setCurrentIndex(lengthComboBox->findText(car->getLength()));
 
-     if (!((CarColors*)InstanceManager::getDefault("CarColors"))->containsName(car->getColor())) {
+     if (!((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->containsName(car->getColor())) {
 //         if (JOptionPane.showConfirmDialog(this, tr("colorNameNotExist"),
 //                 new Object[]{car.getColor()}), tr("carAddColor"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
       if(QMessageBox::question(this, tr("Add car color?"), tr("Color \"%1\" does not exist in your roster, add?").arg(car->getColor()), QMessageBox::Yes | QMessageBox::No)== QMessageBox::Yes)
       {
-             ((CarColors*)InstanceManager::getDefault("CarColors"))->addName(car->getColor());
+             ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->addName(car->getColor());
          }
      }
 
@@ -442,27 +441,27 @@ namespace Operations
 
      builtTextField->setText(car->getBuilt());
 
-     if (!((CarOwners*)InstanceManager::getDefault("CarOwners"))->containsName(car->getOwner())) {
+     if (!((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->containsName(car->getOwner())) {
 //         if (JOptionPane.showConfirmDialog(this, tr("ownerNameNotExist"),
 //                 new Object[]{car.getOwner()}), tr("addOwner"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
       if(QMessageBox::question(this, tr("Add owner?"), tr("Owner \"%1\" does not exist in your roster, add?").arg(car->getOwner()), QMessageBox::Yes | QMessageBox::No)== QMessageBox::Yes)
       {
-       ((CarOwners*)InstanceManager::getDefault("CarOwners"))->addName(car->getOwner());
+       ((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->addName(car->getOwner());
       }
      }
      ownerComboBox->setCurrentIndex(ownerComboBox->findText(car->getOwner()));
 
-     if (!((CarLoads*)InstanceManager::getDefault("CarLoads"))->containsName(car->getTypeName(), car->getLoadName())) {
+     if (!((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->containsName(car->getTypeName(), car->getLoadName())) {
 //         if (JOptionPane.showConfirmDialog(this, tr("loadNameNotExist"),
 //                 new Object[]{car.getLoadName()}), tr("addLoad"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
       if(QMessageBox::question(this, tr("Add load?"), tr("Load \"%1\" does not exist in your roster, add?").arg(car->getLoadName()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
       {
-             ((CarLoads*)InstanceManager::getDefault("CarLoads"))->addName(car->getTypeName(), car->getLoadName());
+             ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->addName(car->getTypeName(), car->getLoadName());
          }
      }
      // listen for changes in car load
      car->PropertyChangeSupport::addPropertyChangeListener(this);
-     ((CarLoads*)InstanceManager::getDefault("CarLoads"))->updateComboBox(car->getTypeName(), loadComboBox);
+     ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->updateComboBox(car->getTypeName(), loadComboBox);
      loadComboBox->setCurrentIndex(loadComboBox->findText(car->getLoadName()));
 
      kernelComboBox->setCurrentIndex(kernelComboBox->findText(car->getKernelName()));
@@ -482,7 +481,7 @@ namespace Operations
  JComboBox* source = (JComboBox*)ae;
      if (source == typeComboBox && typeComboBox->currentText() != NULL) {
          log->debug("Type comboBox sees change, update car loads");
-         ((CarLoads*)InstanceManager::getDefault("CarLoads"))->updateComboBox( typeComboBox->currentText(), loadComboBox);
+         ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->updateComboBox( typeComboBox->currentText(), loadComboBox);
          // turnout off auto for location tracks
          autoTrackCheckBox->setChecked(false);
          autoTrackCheckBox->setEnabled(false);
@@ -773,7 +772,7 @@ namespace Operations
       // go through the entire list and change the loads for all cars
       foreach (Car* car, cars)
       {
-       if (((CarLoads*)InstanceManager::getDefault("CarLoads"))->containsName(car->getTypeName(), _car->getLoadName())) {
+       if (((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->containsName(car->getTypeName(), _car->getLoadName())) {
            car->setLoadName(_car->getLoadName());
        }
       }
@@ -907,15 +906,16 @@ namespace Operations
 
  //@Override
  /*protected*/ void CarEditFrame::addPropertyChangeListeners() {
-     ((CarLoads*)InstanceManager::getDefault("CarLoads"))->PropertyChangeSupport::addPropertyChangeListener(this);
-     ((CarColors*)InstanceManager::getDefault("CarColors"))->PropertyChangeSupport::addPropertyChangeListener(this);
+     ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->PropertyChangeSupport::addPropertyChangeListener(this);
+     ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->PropertyChangeSupport::addPropertyChangeListener(this);
      carManager->PropertyChangeSupport::addPropertyChangeListener(this);
      RollingStockEditFrame::addPropertyChangeListeners();
  }
  /*private*/ void CarEditFrame::removePropertyChangeListeners()
  {
-  ((CarLoads*)InstanceManager::getDefault("CarLoads"))->removePropertyChangeListener(this);
-  ((CarColors*)InstanceManager::getDefault("CarColors"))->removePropertyChangeListener(this);
+  ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->removePropertyChangeListener(this);
+  ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->removePropertyChangeListener(this);
+  ((KernelManager*)InstanceManager::getDefault("KernelManager"))->removePropertyChangeListener(this);
   carManager->removePropertyChangeListener(this);
   if (_rs != nullptr) {
       _rs->removePropertyChangeListener(this);
@@ -937,7 +937,7 @@ namespace Operations
          }
      }
      if (e->getPropertyName()==(CarColors::CARCOLORS_CHANGED_PROPERTY)) {
-         ((CarColors*)InstanceManager::getDefault("CarColors"))->updateComboBox(colorComboBox);
+         ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->updateComboBox(colorComboBox);
          if (_car != NULL) {
              colorComboBox->setCurrentIndex(colorComboBox->findText(_car->getColor()));
          }
@@ -959,7 +959,7 @@ namespace Operations
      }
      if (e->getPropertyName()==(CarLoads::LOAD_CHANGED_PROPERTY)) {
          if (_car != NULL) {
-             ((CarLoads*)InstanceManager::getDefault("CarLoads"))->updateComboBox(typeComboBox->currentText(), loadComboBox);
+             ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->updateComboBox(typeComboBox->currentText(), loadComboBox);
              loadComboBox->setCurrentIndex(loadComboBox->findText(_car->getLoadName()));
          }
      }

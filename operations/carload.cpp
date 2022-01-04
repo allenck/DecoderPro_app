@@ -44,7 +44,7 @@ namespace Operations
  /*public*/ void CarLoad::setName(QString name)
  {
   _name = name;
-  if (name==(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName())) {
+  if (name==(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultEmptyName())) {
       setLoadType(LOAD_TYPE_EMPTY);
   }
  }

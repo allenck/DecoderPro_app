@@ -39,6 +39,7 @@ namespace Operations
   /*public*/ void _register(Location* location);
   //PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
   /*public*/ Location* getLocationByReporter(Reporter* r);
+  /*public*/ Track* getTrackByReporter(Reporter* r);
   /*public*/ Location* newLocation(QString name);
   /*public*/ JComboBox* getComboBox();
   /*public*/ void updateComboBox(JComboBox *box);

@@ -868,7 +868,7 @@ transitsFromSpecificBlock = false;
 //        trainSelectBox->addActionListener(trainSelectBoxListener);
     } else if (_TrainsFromTrains) {
         // initialize free trains from operations
-        QList<Operations::Train*> trains = ((Operations::TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainsByNameList();
+        QList<Operations::Train*> trains = ((Operations::TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainsByNameList();
         if (trains.size() > 0) {
             for (int i = 0; i < trains.size(); i++) {
                 Operations::Train* t = trains.at(i);

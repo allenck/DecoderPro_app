@@ -115,9 +115,9 @@ namespace Operations
   cp1Layout->addWidget(sortByLocation);
   cp1Layout->addWidget(sortByDestination);
   cp1Layout->addWidget(sortByTrain);
-  QFrame* movep = new QFrame();
-  //movep.setBorder(BorderFactory.createTitledBorder(""));
+  JPanel* movep = new JPanel();
   FlowLayout * movepLayout = new FlowLayout(movep);
+  movep->setBorder(BorderFactory::createTitledBorder(""));
   movepLayout->addWidget(sortByMoves);
   movepLayout->addWidget(sortByBuilt);
   movepLayout->addWidget(sortByOwner);
@@ -127,6 +127,7 @@ namespace Operations
   if (Setup::isRfidEnabled()) {
       movepLayout->addWidget(sortByRfid);
   }
+  movepLayout->addWidget(sortByDcc);
   movepLayout->addWidget(sortByLast);
   cp1Layout->addWidget(movep);
 
@@ -198,6 +199,7 @@ namespace Operations
   addRadioButtonAction(sortByOwner);
   addRadioButtonAction(sortByValue);
   addRadioButtonAction(sortByRfid);
+  addRadioButtonAction(sortByDcc);
   addRadioButtonAction(sortByLast);
 
   group->addButton(sortByNumber);
@@ -212,7 +214,10 @@ namespace Operations
   group->addButton(sortByOwner);
   group->addButton(sortByValue);
   group->addButton(sortByRfid);
+  group->addButton(sortByDcc);
   group->addButton(sortByLast);
+
+  sortByDcc->setToolTip(tr("Loco DCC Address from JMRI Roster"));
 
   // build menu
   QMenuBar* menuBar = new QMenuBar();
@@ -275,6 +280,10 @@ namespace Operations
   if (source == sortByLast) {
       enginesModel->setSort(EnginesTableModel::SORTBYLAST);
   }
+  if (source == sortByDcc) {
+      enginesModel->setSort(EnginesTableModel::SORTBY_DCC_ADDRESS);
+  }
+
   // clear any sorts by column
   clearTableSort(enginesTable);
  }

@@ -86,7 +86,7 @@ namespace Operations
   root.appendChild(p);
   doc.appendChild(root);
 
-  ((Operations::TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->store(root, doc);
+  ((Operations::TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->store(root, doc);
   ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->store(root, doc);
 
   writeXML(file, doc);
@@ -115,16 +115,16 @@ namespace Operations
       return;
   }
 
-  ((Operations::TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->load(root);
+  ((Operations::TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->load(root);
 //    TrainScheduleManager.instance().load(root);
 
   fileLoaded = true; // set flag trains are loaded
 
   // now load train icons on panels
-  ((Operations::TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->loadTrainIcons();
+  ((Operations::TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->loadTrainIcons();
 
   // loading complete run startup scripts
-  ((Operations::TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->runStartUpScripts();
+  ((Operations::TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->runStartUpScripts();
 
   log->debug("Trains have been loaded!");
 //    Operations::TrainLogger::instance().enableTrainLogging(Setup.isTrainLoggerEnabled());

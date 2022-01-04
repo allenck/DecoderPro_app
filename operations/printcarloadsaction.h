@@ -9,10 +9,10 @@ namespace Operations
  {
   Q_OBJECT
   public:
-  /*public*/ PrintCarLoadsAction(QString actionName, bool preview, QWidget* pWho);
+  /*public*/ PrintCarLoadsAction(bool preview, QWidget* pWho);
 
   public slots:
-  /*public*/ void actionPerformed(ActionEvent* e = 0);
+  /*public*/ void actionPerformed(JActionEvent* e = 0)override;
 
  private:
   CarManager* manager;// = CarManager.instance();

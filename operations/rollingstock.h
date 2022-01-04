@@ -6,6 +6,7 @@
 #include "propertychangelistener.h"
 #include "appslib_global.h"
 #include "propertychangesupport.h"
+#include "instancemanager.h"
 
 class DefaultIdTag;
 class PropertyChangeEvent;
@@ -14,6 +15,7 @@ class Logger;
 class QDate;
 namespace Operations
 {
+ class Division;
  class LocationManager;
  class Track;
  class Train;
@@ -74,6 +76,10 @@ namespace Operations
   /*public*/ QString getDestinationTrackName() ;
   /*public*/ QString getDestinationTrackId();
   /*public*/ Track* getTrack();
+  /*public*/ void setDivision(Division* division);
+  /*public*/ Division* getDivision();
+  /*public*/ QString getDivisionName();
+  /*public*/ QString getDivisionId();
   /*public*/ void setLastLocationId(QString id) ;
   /*public*/ QString getLastLocationId();
   /*public*/ QString setDestination(Location* destination, Track* track);
@@ -108,12 +114,18 @@ namespace Operations
   /*public*/ bool isOutOfService() ;
   /*public*/ void setSelected(bool selected);
   /*public*/ Q_DECL_DEPRECATED void setLastDate(QString date);
+  /*public*/ QString getWhereLastSeenName() ;
+  /*public*/ Location* getWhereLastSeen();
+  /*public*/ Track* getTrackLastSeen();
+  /*public*/ QString getTrackLastSeenName();
+  /*public*/ QDateTime getWhenLastSeen();
+  /*public*/ QString getWhenLastSeenDate();
+  /*public*/ QString getLastDate();
   /*public*/ void setValue(QString value);
   /*public*/ QString getRfid();
   /*public*/ DefaultIdTag* getIdTag();
   /*public*/ void setIdTag(DefaultIdTag *tag);
   /*public*/ void setRfid(QString id);
-  /*public*/ QString getLastDate();
   /*public*/ QDateTime getLastMoveDate() ;
   /*public*/ void setColor(QString color);
   /*public*/ QString getColor();
@@ -131,7 +143,8 @@ namespace Operations
   /*public*/ void dispose();
   /*public*/ Q_DECL_DEPRECATED QString getType();
   /*public*/ void setLength(QString length);
-   QObject* self() override {return (QObject*)this; }
+
+  QObject* self() override {return (QObject*)this; }
 
  signals:
 
@@ -140,8 +153,9 @@ namespace Operations
 
  private:
   void common();
-  LocationManager* locationManager;// = LocationManager.instance();
-  Logger* log;
+  LocationManager* locationManager = (LocationManager*)InstanceManager::getDefault("Operations::LocationManager");
+
+  static Logger* log;
   bool verboseStore;// = false;
   /*private*/QString rsTestDestination(Location* destination, Track* track);
   /*private*/ DefaultIdTag* _tag;// = NULL;
@@ -152,40 +166,42 @@ namespace Operations
  protected:
   /*protected*/ virtual void setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n);
   /*protected*/ static /*final*/ QString DEFAULT_WEIGHT;// = "0";
-  /*protected*/ QString _id; //=NONE;
-  /*protected*/ QString _number; //=NONE;
-  /*protected*/ QString _road; //=NONE;
-  /*protected*/ QString _type; //=NONE;
-  /*protected*/ QString _length; //=NONE;
-  /*protected*/ QString _color; //=NONE;
-  /*protected*/ QString _weight; //=DEFAULT_WEIGHT;
-  /*protected*/ QString _weightTons; //=DEFAULT_WEIGHT;
-  /*protected*/ QString _built; //=NONE;
-  /*protected*/ QString _owner; //=NONE;
-  /*protected*/ QString _comment; //=NONE;
-  /*protected*/ QString _routeId; //=NONE; // saved route for interchange tracks
-  /*protected*/ QString _rfid; //=NONE;
-  /*protected*/ QString _value; //=NONE;
-  /*protected*/ QString _last; //=NONE;
-  /*protected*/ QDateTime _lastDate; //=null;
-  /*protected*/ bool _locationUnknown; //=false;
-  /*protected*/ bool _outOfService; //=false;
-  /*protected*/ bool _selected; //=false;
+  /*protected*/ QString _id=NONE;
+  /*protected*/ QString _number=NONE;
+  /*protected*/ QString _road=NONE;
+  /*protected*/ QString _type=NONE;
+  /*protected*/ QString _length=NONE;
+  /*protected*/ QString _color=NONE;
+  /*protected*/ QString _weight=DEFAULT_WEIGHT;
+  /*protected*/ QString _weightTons=DEFAULT_WEIGHT;
+  /*protected*/ QString _built=NONE;
+  /*protected*/ QString _owner=NONE;
+  /*protected*/ QString _comment=NONE;
+  /*protected*/ QString _routeId=NONE; // saved route for interchange tracks
+  /*protected*/ QString _rfid=NONE;
+  /*protected*/ QString _value=NONE;
+  /*protected*/ QString _last=NONE;
+  /*protected*/ QDateTime _lastDate=QDateTime();
+  /*protected*/ bool _locationUnknown=false;
+  /*protected*/ bool _outOfService=false;
+  /*protected*/ bool _selected=false;
 
-  /*protected*/ Location* _location; //=null;
-  /*protected*/ Track* _trackLocation; //=null;
-  /*protected*/ Location* _destination; //=null;
-  /*protected*/ Track* _trackDestination; //=null;
-  /*protected*/ Train* _train; //=null;
-  /*protected*/ RouteLocation* _routeLocation; //=null;
-  /*protected*/ RouteLocation* _routeDestination; //=null;
-  /*protected*/ int _moves; //=0;
-  /*protected*/ QString _lastLocationId; //=LOCATION_UNKNOWN; // the rollingstock's last location id
-  /*protected*/ int _blocking; //=0;
+  /*protected*/ Location* _location=nullptr;
+  /*protected*/ Track* _trackLocation=nullptr;
+  /*protected*/ Location* _destination=nullptr;
+  /*protected*/ Track* _trackDestination=nullptr;
+  /*protected*/ Train* _train=nullptr;
+  /*protected*/ RouteLocation* _routeLocation = nullptr;
+  /*protected*/ RouteLocation* _routeDestination =nullptr;
+  /*protected*/ Division* _division = nullptr;
+  /*protected*/ int _moves=0;
+  /*protected*/ QString _lastLocationId=LOCATION_UNKNOWN; // the rollingstock's last location id
+  /*protected*/ int _blocking=0;
   /*protected*/ int number;// = 0; // used by rolling stock manager for sort by number
   /*protected*/ bool _lengthChange;// = false; // used for loco length change
   /*protected*/ QDomElement store(QDomElement e);
   /*protected*/ void moveRollingStock(RouteLocation* old, RouteLocation* next);
+
  friend class IdTagPropertyChangeListener;
  friend class RollingStockManager;
  };

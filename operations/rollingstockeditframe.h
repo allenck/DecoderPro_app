@@ -54,10 +54,10 @@ namespace Operations
 //           JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
    // combo boxes
-   /*public*/ JComboBox* roadComboBox = ((CarRoads*)InstanceManager::getDefault("CarRoads"))->getComboBox();
+   /*public*/ JComboBox* roadComboBox = ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->getComboBox();
    /*public*/ JComboBox* typeComboBox;// = getTypeManager()->getComboBox();
    /*public*/ JComboBox* lengthComboBox;// = getLengthManager()->getComboBox();
-   /*public*/ JComboBox* ownerComboBox = ((CarOwners*)InstanceManager::getDefault("CarOwners"))->getComboBox();
+   /*public*/ JComboBox* ownerComboBox = ((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->getComboBox();
    /*public*/ JComboBox* groupComboBox;
    /*public*/ JComboBox* modelComboBox; // for engines
    /*public*/ JComboBox/*<Location>*/* locationBox = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getComboBox();

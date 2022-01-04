@@ -5,6 +5,7 @@
 #include "logger.h"
 #include "propertychangesupport.h"
 #include "appslib_global.h"
+#include "reporter.h"
 
 class QDomDocument;
 class QDomElement;
@@ -101,6 +102,8 @@ public:
  /*public*/ static /*final*/ QString SERVICE_ORDER_CHANGED_PROPERTY; //="trackServiceOrder"; // NOI18N
  /*public*/ static /*final*/ QString ALTERNATE_TRACK_CHANGED_PROPERTY; //="trackAlternate"; // NOI18N
  /*public*/ static /*final*/ QString TRACK_BLOCKING_ORDER_CHANGED_PROPERTY; //="trackBlockingOrder"; // NOI18N
+ /*public*/ static /*final*/ QString TRACK_REPORTER_PROPERTY;// = "trackReporterChange"; // NOI18N
+
  /*public*/ Track* copyTrack(QString newName, Location* newLocation) ;
  /*public*/ QString toString() ;
  /*public*/ QString getId() ;
@@ -251,6 +254,9 @@ public:
  /*public*/ bool isSpaceAvailable(Car* car);
  /*public*/ QString checkSchedule(Car* car);
  /*public*/ QString scheduleNext(Car* car);
+  /*public*/ void setReporter(Reporter* r);
+  /*public*/ Reporter* getReporter();
+  /*public*/ QString getReporterName();
 
 signals:
 
@@ -340,6 +346,10 @@ protected:
  /*protected*/ Pool* _pool;// = null;
  /*protected*/ int _minimumLength;// = 0;
  /*protected*/ void setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n);
+
+ // IdTag reader associated with this track.
+ /*protected*/ Reporter* _reader = nullptr;
+
  friend class RollingStock;
  friend class Pool;
  friend class Car;

@@ -47,7 +47,7 @@ namespace Operations
  {
   log = new Logger("CarEditFrame");
   setObjectName("CarEditFrame");
-  carLoads = ((CarLoads*)InstanceManager::getDefault("CarLoads"));
+  carLoads = ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"));
 
   // labels
   textSep = new QLabel();
@@ -168,8 +168,8 @@ namespace Operations
   QMenuBar* menuBar = new QMenuBar();
   QMenu* toolMenu = new QMenu(tr("Tools"));
   toolMenu->addAction(new CarLoadAttributeAction(tr("CarQuanity"), this));
-  toolMenu->addAction(new PrintCarLoadsAction(tr("Preview"), true, this));
-  toolMenu->addAction(new PrintCarLoadsAction(tr("Print"), false, this));
+  toolMenu->addAction(new PrintCarLoadsAction(true, this));
+  toolMenu->addAction(new PrintCarLoadsAction(false, this));
 
   menuBar->addMenu(toolMenu);
   setMenuBar(menuBar);
@@ -365,7 +365,7 @@ namespace Operations
         int ix = loadTypeComboBox->findText(loadType);
         loadTypeComboBox->setCurrentIndex(ix);
         if (loadName != NULL
-                && (loadName==(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName()) || loadName==(((CarLoads*)InstanceManager::getDefault("CarLoads"))
+                && (loadName==(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultEmptyName()) || loadName==(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))
                         ->getDefaultLoadName()))) {
             loadTypeComboBox->setEnabled(false);
         } else {

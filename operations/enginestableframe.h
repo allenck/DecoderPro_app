@@ -3,10 +3,11 @@
 
 #include "operationsframe.h"
 #include "propertychangelistener.h"
+#include <QRadioButton>
+
 class JActionEvent;
 class QButtonGroup;
 class QLabel;
-class QRadioButton;
 class QSortFilterProxyModel;
 class JButton;
 class JTextField;
@@ -60,6 +61,8 @@ namespace Operations
   QRadioButton* sortByOwner; //=new JRadioButton(Bundle.getMessage("Owner"));
   QRadioButton* sortByValue; //=new JRadioButton(Setup.getValueLabel());
   QRadioButton* sortByRfid; //=new JRadioButton(Setup.getRfidLabel());
+  QRadioButton* sortByDcc = new QRadioButton(tr("DCC Address"));
+
   QRadioButton* sortByLast; //=new JRadioButton(Bundle.getMessage("Last"));
   QButtonGroup* group; //=new ButtonGroup();
 

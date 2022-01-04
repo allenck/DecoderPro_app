@@ -71,7 +71,7 @@ namespace Operations
   if (Setup::isPrintTimetableNameEnabled())
   {
    TrainSchedule* sch = ((Operations::TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(
-           ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainScheduleActiveId());
+           ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainScheduleActiveId());
    if (sch != NULL)
    {
     valid = valid + " (" + sch->getName() + ")";

@@ -206,7 +206,7 @@ namespace Operations
     carBuilt = "";
     carLocation = "";
     carTrack = "";
-    carLoad = ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName();
+    carLoad = ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultEmptyName();
     carKernel = "";
     carMoves = 0;
     carValue = "";
@@ -631,12 +631,12 @@ namespace Operations
       }
 
       // add new roads
-      if (!((CarRoads*)InstanceManager::getDefault("CarRoads"))->containsName(carRoad))
+      if (!((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->containsName(carRoad))
       {
        if (autoCreateRoads)
        {
            log->debug(tr("add car road %1").arg(carRoad));
-           ((CarRoads*)InstanceManager::getDefault("CarRoads"))->addName(carRoad);
+           ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->addName(carRoad);
        }
       }
 
@@ -651,22 +651,22 @@ namespace Operations
       }
 
       // add new colors
-      if (!((CarColors*)InstanceManager::getDefault("CarColors"))->containsName(carColor))
+      if (!((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->containsName(carColor))
       {
        if (autoCreateColors)
        {
         log->debug(tr("add car color %1").arg(carColor));
-        ((CarColors*)InstanceManager::getDefault("CarColors"))->addName(carColor);
+        ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->addName(carColor);
        }
       }
 
       // add new owners
-      if (!((CarOwners*)InstanceManager::getDefault("CarOwners"))->containsName(carOwner))
+      if (!((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->containsName(carOwner))
       {
        if (autoCreateOwners)
        {
         log->debug(tr("add car owner %1").arg(carOwner));
-        ((CarOwners*)InstanceManager::getDefault("CarOwners"))->addName(carOwner);
+        ((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->addName(carOwner);
        }
       }
 

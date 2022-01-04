@@ -752,7 +752,7 @@ namespace Operations
          }
          buf = QString(TAB + TAB + trainType + NEW_LINE + TAB + TAB);
          foreach (QString id, ids) {
-             Train* train = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainById(id);
+             Train* train = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainById(id);
              if (train == NULL) {
                  log->info("Could not find a train for id: " + id + " track (" + track->getName() + ")");
                  continue;
@@ -806,7 +806,7 @@ namespace Operations
          }
          buf = QString(TAB + TAB + trainType + NEW_LINE + TAB + TAB);
          foreach(QString id, ids) {
-             Train* train = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainById(id);
+             Train* train = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainById(id);
              if (train == NULL) {
                  log->info("Could not find a train for id: " + id + " track (" + track->getName() + ")");
                  continue;

@@ -136,13 +136,13 @@ namespace Operations
   builtBeforeTextField->setValidator(new QIntValidator(1800,2050));
 
   // combo boxes
-  ownerBox = ((CarOwners*)InstanceManager::getDefault("CarOwners"))->getComboBox();
+  ownerBox = ((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->getComboBox();
 
   // train requirements 1st set
   routePickup1Box = new JComboBox();
   routeDrop1Box = new JComboBox();
   roadCaboose1Box = new JComboBox();
-  roadEngine1Box = ((CarRoads*)InstanceManager::getDefault("CarRoads"))->getComboBox();
+  roadEngine1Box = ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->getComboBox();
   modelEngine1Box = ((EngineModels*)InstanceManager::getDefault("EngineModels"))->getComboBox();
   numEngines1Box = new JComboBox();
 
@@ -150,7 +150,7 @@ namespace Operations
   routePickup2Box = new JComboBox();
   routeDrop2Box = new JComboBox();
   roadCaboose2Box = new JComboBox();
-  roadEngine2Box = ((CarRoads*)InstanceManager::getDefault("CarRoads"))->getComboBox();
+  roadEngine2Box = ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->getComboBox();
   modelEngine2Box = ((EngineModels*)InstanceManager::getDefault("EngineModels"))->getComboBox();
   numEngines2Box = new JComboBox();
 }
@@ -458,8 +458,8 @@ namespace Operations
   updateTrainRequires2Option();
 
   // get notified if car owners or engine models gets modified
-  //((CarOwners*)InstanceManager::getDefault("CarOwners")).addPropertyChangeListener(this);
-  connect(((CarOwners*)InstanceManager::getDefault("CarOwners")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //((CarOwners*)InstanceManager::getDefault("Operations::CarOwners")).addPropertyChangeListener(this);
+  connect(((CarOwners*)InstanceManager::getDefault("Operations::CarOwners")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //((EngineModels*)InstanceManager::getDefault("EngineModels"))->PropertyChangeSupport::addPropertyChangeListener(this);
   connect(((EngineModels*)InstanceManager::getDefault("EngineModels")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
@@ -936,7 +936,7 @@ JComboBox* source = (JComboBox*)ae;
 }
 
 /*private*/ void TrainEditBuildOptionsFrame::updateOwnerComboBoxes() {
-  ((CarOwners*)InstanceManager::getDefault("CarOwners"))->updateComboBox(ownerBox);
+  ((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->updateComboBox(ownerBox);
 }
 
 // update caboose road box based on radio selection
@@ -1048,8 +1048,8 @@ while ( ( item = engine1caboose->layout()->takeAt( 0 ) ) != NULL )
  */
  /*public*/ void TrainEditBuildOptionsFrame::dispose()
  {
-    //((CarOwners*)InstanceManager::getDefault("CarOwners"))->removePropertyChangeListener(this);
-  disconnect(((CarOwners*)InstanceManager::getDefault("CarOwners")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    //((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->removePropertyChangeListener(this);
+  disconnect(((CarOwners*)InstanceManager::getDefault("Operations::CarOwners")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     //((EngineModels*)InstanceManager::getDefault("EngineModels")).removePropertyChangeListener(this);
   disconnect(((EngineModels*)InstanceManager::getDefault("EngineModels")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   if (_train != NULL) {

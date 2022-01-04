@@ -367,7 +367,7 @@ namespace Operations
                  return false; // done
              }
              // now check road names
-             checkRoads: foreach (QString road, ((CarRoads*)InstanceManager::getDefault("CarRoads"))->getNames())
+             checkRoads: foreach (QString road, ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->getNames())
              {
               if (!_track->acceptsRoadName(road))
               {
@@ -401,7 +401,7 @@ namespace Operations
                  if (!_track->acceptsTypeName(type)) {
                      continue;
                  }
-                 QList<QString> loads = ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getNames(type);
+                 QList<QString> loads = ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getNames(type);
                  checkLoads: foreach (QString load, loads) {
                      if (!_track->acceptsLoadName(load)) {
                          continue;
@@ -462,12 +462,12 @@ namespace Operations
                  if (!_track->acceptsTypeName(type)) {
                      continue;
                  }
-                 QStringList loads = ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getNames(type);
+                 QStringList loads = ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getNames(type);
                  foreach (QString load, loads) {
                      if (!_track->acceptsLoad(load, type)) {
                          continue;
                      }
-                     foreach (QString road, ((CarRoads*)InstanceManager::getDefault("CarRoads"))->getNames()) {
+                     foreach (QString road, ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->getNames()) {
                          if (!_track->acceptsRoadName(road)) {
                              continue;
                          }

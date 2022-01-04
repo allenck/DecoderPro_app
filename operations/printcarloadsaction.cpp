@@ -34,13 +34,13 @@ namespace Operations
   /*static*/ /*final*/ QString CarLoadPrintOption::NEW_LINE;// = "\n"; // NOI18N
 
 
- /*public*/ PrintCarLoadsAction::PrintCarLoadsAction(QString actionName, bool preview, QWidget* pWho)
-   : AbstractAction(actionName, pWho)
+ /*public*/ PrintCarLoadsAction::PrintCarLoadsAction(bool isPreview, QWidget* pWho)
+   : AbstractAction(isPreview?"Print":"Preview", pWho)
  {
      //super(actionName);
      manager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
 
-     isPreview = preview;
+     this->isPreview = isPreview;
      connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
  }
 
@@ -48,7 +48,7 @@ namespace Operations
   * Frame hosting the printing
   */
 
- /*public*/ void PrintCarLoadsAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void PrintCarLoadsAction::actionPerformed(JActionEvent * /*e*/) {
      new CarLoadPrintOption(this);
  }
 
@@ -73,10 +73,10 @@ namespace Operations
 
          // Loop through the Roster, printing as needed
          QStringList carTypes = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames();
-         QHash<QString, QList<CarLoad*>*>* list = ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getList();
+         QHash<QString, QList<CarLoad*>*>* list = ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getList();
          //try {
              QString s = tr("Type") + TAB
-                     + parent->tabString(tr("Load"), ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getMaxNameLength() + 1)
+                     + parent->tabString(tr("Load"), ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getMaxNameLength() + 1)
                      + tr("Type") + "  " + tr("Priority") + "  "
                      + tr("Load Pick Up Car Message") + "   " + tr("Load Set Out Car Message")
                      + NEW_LINE;
@@ -89,8 +89,8 @@ namespace Operations
                  bool printType = true;
                  foreach (CarLoad* carLoad, *carLoads) {
                      // don't print out default load or empty
-                     if ((carLoad->getName()==(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName()) || carLoad->getName()
-                             ==(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultLoadName()))
+                     if ((carLoad->getName()==(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultEmptyName()) || carLoad->getName()
+                             ==(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultLoadName()))
                              && carLoad->getPickupComment()==(CarLoad::NONE)
                              && carLoad->getDropComment()==(CarLoad::NONE)
                              && carLoad->getPriority()==(CarLoad::PRIORITY_LOW)) {
@@ -102,7 +102,7 @@ namespace Operations
                          printType = false;
                      }
                      QString buf = "";//new StringBuffer(TAB);
-                     buf.append(parent->tabString(carLoad->getName(), ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getMaxNameLength() + 1));
+                     buf.append(parent->tabString(carLoad->getName(), ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getMaxNameLength() + 1));
                      buf.append(parent->tabString(carLoad->getLoadType(), 6)); // load or empty
                      buf.append(parent->tabString(carLoad->getPriority(), 5)); // low or high
                      buf.append(parent->tabString(carLoad->getPickupComment(), 27));

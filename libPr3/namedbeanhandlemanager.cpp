@@ -2,7 +2,6 @@
 #include "propertychangesupport.h"
 #include "abstractnamedbean.h"
 
-//template<class T>
 NamedBeanHandleManager::NamedBeanHandleManager(QObject *parent) :
     AbstractNamedBeanHandleManager(parent)
 {

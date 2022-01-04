@@ -463,7 +463,7 @@ namespace Operations
   // log->debug("getRoadComboBox for ScheduleItem "+si->getType());
   QComboBox* cb = new QComboBox();
   cb->addItem(ScheduleItem::NONE);
-  foreach (QString roadName, ((CarRoads*)InstanceManager::getDefault("CarRoads"))->getNames())
+  foreach (QString roadName, ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->getNames())
   {
    if (getTrack()->acceptsRoadName(roadName))
    {
@@ -486,7 +486,7 @@ namespace Operations
 
  /*private*/ QComboBox* ScheduleTableModel::getLoadComboBox(ScheduleItem* si) {
      // log->debug("getLoadComboBox for ScheduleItem "+si->getType());
-     QComboBox* cb = ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getSelectComboBox(si->getTypeName());
+     QComboBox* cb = ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getSelectComboBox(si->getTypeName());
      filterLoads(si, cb); // remove loads not accepted by this track
      cb->setCurrentIndex(cb->findText(si->getReceiveLoadName()));
      if (cb->currentText()!=(si->getReceiveLoadName())) {
@@ -516,7 +516,7 @@ namespace Operations
 
  /*private*/ QComboBox* ScheduleTableModel::getShipComboBox(ScheduleItem* si) {
      // log->debug("getShipComboBox for ScheduleItem "+si->getType());
-     QComboBox* cb = ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getSelectComboBox(si->getTypeName());
+     QComboBox* cb = ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getSelectComboBox(si->getTypeName());
      cb->setCurrentIndex(cb->findText(si->getShipLoadName()));
      if (cb->currentText()!=(si->getShipLoadName())) {
          QString notValid = tr("Not Valid <%1>").arg(si->getShipLoadName());

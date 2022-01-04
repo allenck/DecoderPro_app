@@ -3,6 +3,8 @@
 #include "rollingstock.h"
 #include <QtXml>
 #include "appslib_global.h"
+#include "carloads.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -22,12 +24,16 @@ namespace Operations
   /*public*/ static /*final*/ QString PASSENGER_EXTENSION;// =Bundle.getMessage("(P)");
   /*public*/ static /*final*/ QString UTILITY_EXTENSION;// =Bundle.getMessage("(U)");
   /*public*/ static /*final*/ QString HAZARDOUS_EXTENSION;// =Bundle.getMessage("(H)");
+
   /*public*/ static /*final*/ QString LOAD_CHANGED_PROPERTY; //="Car load changed"; // NOI18N property change descriptions
+  /*public*/ static /*final*/ QString RWE_LOAD_CHANGED_PROPERTY;// = "Car RWE load changed"; // NOI18N
+  /*public*/ static /*final*/ QString RWL_LOAD_CHANGED_PROPERTY;// = "Car RWL load changed"; // NOI18N
   /*public*/ static /*final*/ QString WAIT_CHANGED_PROPERTY; //="Car wait changed"; // NOI18N
   /*public*/ static /*final*/ QString NEXT_WAIT_CHANGED_PROPERTY; //="Car next wait changed"; // NOI18N
   /*public*/ static /*final*/ QString FINAL_DESTINATION_CHANGED_PROPERTY; //="Car final destination changed"; // NOI18N
   /*public*/ static /*final*/ QString FINAL_DESTINATION_TRACK_CHANGED_PROPERTY; //="Car final destination track changed"; // NOI18N
   /*public*/ static /*final*/ QString RETURN_WHEN_EMPTY_CHANGED_PROPERTY; //="Car return when empty changed"; // NOI18N
+  /*public*/ static /*final*/ QString RETURN_WHEN_LOADED_CHANGED_PROPERTY;// = "Car return when loaded changed"; // NOI18N
   /*public*/ static /*final*/ QString SCHEDULE_ID_CHANGED_PROPERTY; //="car schedule id changed"; // NOI18N
   /*public*/ static /*final*/ QString KERNEL_NAME_CHANGED_PROPERTY; //="kernel name changed"; // NOI18N
   /*public*/ void setHazardous(bool hazardous);
@@ -59,6 +65,8 @@ namespace Operations
   /*public*/ QString getLoadName();
   /*public*/ void setReturnWhenEmptyLoadName(QString load);
   /*public*/ QString getReturnWhenEmptyLoadName();
+  /*public*/ void setReturnWhenLoadedLoadName(QString load);
+  /*public*/ QString getReturnWhenLoadedLoadName();
   /*public*/ QString getLoadPriority() ;
   /*public*/ QString getLoadType();
   /*public*/ QString getPickupComment();
@@ -66,6 +74,13 @@ namespace Operations
   /*public*/ void setLoadGeneratedFromStaging(bool fromStaging);
   /*public*/ bool isLoadGeneratedFromStaging();
   /*public*/ QString getReturnWhenEmptyDestName();
+  /*public*/ void setReturnWhenLoadedDestination(Location* destination);
+  /*public*/ Location* getReturnWhenLoadedDestination();
+  /*public*/ QString getReturnWhenLoadedDestinationName();
+  /*public*/ QString getReturnWhenLoadedDestName();
+  /*public*/ void setReturnWhenLoadedDestTrack(Track* track);
+  /*public*/ Track* getReturnWhenLoadedDestTrack();
+  /*public*/ QString getReturnWhenLoadedDestTrackName();
   /*public*/ int getWait();
   /*public*/ QString getPickupScheduleName();
   /*public*/ Location* getReturnWhenEmptyDestination();
@@ -92,6 +107,7 @@ namespace Operations
   /*public*/ void setReturnWhenEmptyDestination(Location* destination);
   /*public*/ void setReturnWhenEmptyDestTrack(Track* track);
   /*public*/ void updateLoad();
+  /*public*/ QString getTypeExtensions();
   /*public*/ void reset();
   /*public*/ QString testDestination(Location* destination, Track* track)override;
   /*public*/ void loadNext(Track* destTrack);
@@ -103,41 +119,46 @@ public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
  private:
-  Logger* log;
+  static Logger* log;
   void common();
-  CarLoads* carLoads;// = CarLoads::instance();
+  CarLoads* carLoads = (CarLoads*)InstanceManager::getDefault("Operations::CarLoads");
   bool loaded;
   /*private*/ void addPropertyChangeListeners();
   /*private*/ void setLoadEmpty();
   /*private*/ void setReturnWhenEmpty();
 
  protected:
-  /*protected*/ bool _passenger; //=false;
-  /*protected*/ bool _hazardous; //=false;
-  /*protected*/ bool _caboose; //=false;
-  /*protected*/ bool _fred; //=false;
-  /*protected*/ bool _utility; //=false;
-  /*protected*/ bool _loadGeneratedByStaging; //=false;
-  /*protected*/ Kernel* _kernel; //=null;
-  /*protected*/ QString _loadName; //=carLoads.getDefaultEmptyName();
-  /*protected*/ int _wait; //=0;
+  /*protected*/ bool _passenger=false;
+  /*protected*/ bool _hazardous=false;
+  /*protected*/ bool _caboose=false;
+  /*protected*/ bool _fred=false;
+  /*protected*/ bool _utility=false;
+  /*protected*/ bool _loadGeneratedByStaging=false;
+  /*protected*/ Kernel* _kernel=nullptr;
+  /*protected*/ QString _loadName=carLoads->getDefaultEmptyName();
+  /*protected*/ int _wait=0;
 
-  /*protected*/ Location* _rweDestination; //=null; // return when empty destination
-  /*protected*/ Track* _rweDestTrack; //=null; // return when empty track
-  /*protected*/ QString _rweLoadName; //=carLoads.getDefaultEmptyName();
+  /*protected*/ Location* _rweDestination=nullptr; // return when empty destination
+  /*protected*/ Track* _rweDestTrack=nullptr; // return when empty track
+  /*protected*/ QString _rweLoadName=carLoads->getDefaultEmptyName();
+
+  /*protected*/ Location* _rwlDestination = nullptr; // return when loaded destination
+  /*protected*/ Track* _rwlDestTrack = nullptr; // return when loaded track
+  /*protected*/ QString _rwlLoadName = carLoads->getDefaultLoadName();
 
   // schedule items
-  /*protected*/ QString _scheduleId; //=NONE; // the schedule id assigned to this car
-  /*protected*/ QString _nextLoadName; //=NONE; // next load by schedule
-  /*protected*/ int _nextWait; //=0; // next wait by schedule
-  /*protected*/ Location* _finalDestination; //=null; // final destination by schedule or router
-  /*protected*/ Track* _finalDestTrack; //=null; // final track by schedule or router
-  /*protected*/ Location* _previousFinalDestination; //=null; // previous final destination (for train resets)
-  /*protected*/ Track* _previousFinalDestTrack; //=null; // previous final track (for train resets)
-  /*protected*/ QString _previousScheduleId; //=NONE; // previous schedule id (for train resets)
-  /*protected*/ QString _pickupScheduleId; //=NONE;
-  /*protected*/ QString _nextPickupScheduleId; //=NONE; // when the car needs to be pulled
-  /*protected*/ void setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n);
+  /*protected*/ QString _scheduleId=NONE; // the schedule id assigned to this car
+  /*protected*/ QString _nextLoadName=NONE; // next load by schedule
+  /*protected*/ int _nextWait=0; // next wait by schedule
+  /*protected*/ Location* _finalDestination=nullptr; // final destination by schedule or router
+  /*protected*/ Track* _finalDestTrack=nullptr; // final track by schedule or router
+  /*protected*/ Location* _previousFinalDestination=nullptr; // previous final destination (for train resets)
+  /*protected*/ Track* _previousFinalDestTrack=nullptr; // previous final track (for train resets)
+  /*protected*/ QString _previousScheduleId=NONE; // previous schedule id (for train resets)
+  /*protected*/ QString _pickupScheduleId=NONE;
+  /*protected*/ QString _nextPickupScheduleId=NONE; // when the car needs to be pulled
+  /*protected*/ void setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n)override;
+  /*protected*/ bool isRwlEnabled();
 
  };
 }

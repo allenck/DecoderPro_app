@@ -96,7 +96,25 @@ PropertyChangeSupport(this, parent)
      return NULL;
  }
 
-
+ /**
+  * Request a track associated with a given reporter.
+  *
+  * @param r Reporter object associated with desired location.
+  * @return requested Location object or null if none exists
+  */
+ /*public*/ Track* LocationManager::getTrackByReporter(Reporter* r) {
+     for (Track* track : getTracks(nullptr)) {
+         try {
+             if (track->getReporter() == (r)) {
+                 return track;
+             }
+         } catch (NullPointerException* npe) {
+             // it's valid for a reporter to be null (no reporter
+             // at a given location.
+         }
+     }
+     return nullptr;
+ }
  /**
   * Finds an existing location or creates a new location if needed requires
   * location's name creates a unique id for this location

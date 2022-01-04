@@ -40,7 +40,7 @@ private:
  /*private*/ static QString fileLocation;// = FileUtil.getUserFilesPath();
  Logger* log;
 protected:
- /*protected*/ void load() throw (Exception);
+ /*protected*/ void load() /*throw (Exception)*/;
  /*protected*/ File* createFile(QString fullPathName, bool backupFile);
  /*protected*/ virtual void writeFile(QString filename);// throw (FileNotFoundException, IOException);
  friend class CarManagerXml;

@@ -72,7 +72,7 @@ QGridLayout* g = new QGridLayout(this);
     QHBoxLayout* xLayout = new QHBoxLayout(x);
     x->setText("Operations Train: ");
     g->addWidget(x, 0, 0, 0, 0);
-    opsTrainComboBox = ((Operations::TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainComboBox();
+    opsTrainComboBox = ((Operations::TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainComboBox();
     g->addWidget(opsTrainComboBox,0,1,0,0);
 //        opsTrainComboBox.addActionListener(new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent e) {

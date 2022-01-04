@@ -21,20 +21,21 @@ namespace Operations
   explicit EnginesTableModel(QObject *parent = 0);
  enum SORTOPTIONS
  {
-   SORTBYNUMBER = 1,
-   SORTBYROAD = 2,
-   SORTBYMODEL = 3,
-   SORTBYLOCATION = 4,
-   SORTBYDESTINATION = 5,
-   SORTBYTRAIN = 6,
-   SORTBYMOVES = 7,
-   SORTBYCONSIST = 8,
-   SORTBYBUILT = 9,
-   SORTBYOWNER = 10,
-   SORTBYVALUE = 11,
-   SORTBYRFID = 12,
-   SORTBYLAST = 13,
-   SORTBYHP = 14
+   SORTBYNUMBER = 0,
+   SORTBYROAD = 1,
+   SORTBYMODEL = 2,
+   SORTBYLOCATION = 3,
+   SORTBYDESTINATION = 4,
+   SORTBYTRAIN = 5,
+   SORTBYMOVES = 6,
+   SORTBYCONSIST = 7,
+   SORTBYBUILT = 8,
+   SORTBYOWNER = 9,
+   SORTBYVALUE = 10,
+   SORTBYRFID = 11,
+   SORTBYLAST = 12,
+   SORTBYHP = 13,
+   SORTBY_DCC_ADDRESS = 14
  };
  /*public*/ QList<RollingStock*>* getSelectedEngineList();
  /*public*/ int rowCount(const QModelIndex &parent) const override;

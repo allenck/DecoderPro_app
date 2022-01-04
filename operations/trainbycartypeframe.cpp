@@ -53,7 +53,7 @@ namespace Operations
 
      // radio buttons
      // combo boxes
-     trainsComboBox = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainComboBox();
+     trainsComboBox = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainComboBox();
      typeComboBox = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getComboBox();
      carsComboBox = new JComboBox();
  }
@@ -338,7 +338,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          // check to see if schedule timetable allows delivery
          if (attribute==(TIMETABLE)
                  && si->getTypeName()==(carType)
-                 && (si->getSetoutTrainScheduleId()==("") || ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainScheduleActiveId()
+                 && (si->getSetoutTrainScheduleId()==("") || ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainScheduleActiveId()
                  ==(si->getSetoutTrainScheduleId()))) {
              return true;
          }
@@ -348,7 +348,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
                  && (si->getReceiveLoadName()==(ScheduleItem::NONE) || car == NULL || si->getReceiveLoadName()==(
                          car->getLoadName()))
                  && (si->getRoadName()==(ScheduleItem::NONE) || car == NULL || si->getRoadName()==(car->getRoadName()))
-                 && (si->getSetoutTrainScheduleId()==(ScheduleItem::NONE) || ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainScheduleActiveId()
+                 && (si->getSetoutTrainScheduleId()==(ScheduleItem::NONE) || ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainScheduleActiveId()
                  ==(si->getSetoutTrainScheduleId()))) {
              return true;
          }

@@ -11,7 +11,9 @@
 #include "carloads.h"
 #include "carload.h"
 #include "locationmanager.h"
-#include "instancemanager.h"
+#include "carlengths.h"
+#include "loggerfactory.h"
+#include "kernelmanager.h"
 
 //Car::Car()
 //{
@@ -35,11 +37,14 @@ namespace Operations
     /*public static final*/ QString Car::UTILITY_EXTENSION = tr("(U)");
     /*public static final*/ QString Car::HAZARDOUS_EXTENSION = tr("(H)");
     /*public*/ /*static*/  /*final*/ QString Car::LOAD_CHANGED_PROPERTY = "Car load changed"; // NOI18N property change descriptions
+    /*public*/ /*static*/  /*final*/ QString Car::RWE_LOAD_CHANGED_PROPERTY = "Car RWE load changed"; // NOI18N
+    /*public*/ /*static*/  /*final*/ QString Car::RWL_LOAD_CHANGED_PROPERTY = "Car RWL load changed"; // NOI18N
     /*public*/ /*static*/  /*final*/ QString Car::WAIT_CHANGED_PROPERTY = "Car wait changed"; // NOI18N
     /*public*/ /*static*/  /*final*/ QString Car::NEXT_WAIT_CHANGED_PROPERTY = "Car next wait changed"; // NOI18N
     /*public*/ /*static*/  /*final*/ QString Car::FINAL_DESTINATION_CHANGED_PROPERTY = "Car final destination changed"; // NOI18N
     /*public*/ /*static*/  /*final*/ QString Car::FINAL_DESTINATION_TRACK_CHANGED_PROPERTY = "Car final destination track changed"; // NOI18N
     /*public*/ /*static*/  /*final*/ QString Car::RETURN_WHEN_EMPTY_CHANGED_PROPERTY = "Car return when empty changed"; // NOI18N
+    /*public*/ /*static*/  /*final*/ QString Car::RETURN_WHEN_LOADED_CHANGED_PROPERTY = "Car return when loaded changed"; // NOI18N
     /*public*/ /*static*/  /*final*/ QString Car::SCHEDULE_ID_CHANGED_PROPERTY = "car schedule id changed"; // NOI18N
     /*public*/ /*static*/  /*final*/ QString Car::KERNEL_NAME_CHANGED_PROPERTY = "kernel name changed"; // NOI18N
 
@@ -47,50 +52,22 @@ namespace Operations
      : RollingStock(parent)
     {
         //super();
-     common();
+        common();
         loaded = true;
     }
 
     /*public*/ Car::Car(QString road, QString number,QObject* parent)
      : RollingStock(road, number, parent) {
         //super(road, number);
- common();
+        common();
         loaded = true;
         log->debug(tr("New car (%1 %2)").arg(road).arg(number));
 //        addPropertyChangeListeners();
     }
     void Car::common()
     {
-     log = new Logger("Car");
      setObjectName("Car");
 
-     _passenger = false;
-     _hazardous = false;
-     _caboose = false;
-     _fred = false;
-     _utility = false;
-     _loadGeneratedByStaging = false;
-     _kernel = NULL;
-     _loadName = "empty"; //carLoads.getDefaultEmptyName();
-     _wait = 0;
-
-     _rweDestination = NULL; // return when empty destination
-     _rweDestTrack = NULL; // return when empty track
-     _rweLoadName = "empty"; //carLoads::getDefaultEmptyName();
-
-     // schedule items
-     _scheduleId = NONE; // the schedule id assigned to this car
-     _nextLoadName = NONE; // next load by schedule
-     _nextWait = 0; // next wait by schedule
-      _finalDestination = NULL; // final destination by schedule or router
-      _finalDestTrack = NULL; // final track by schedule or router
-      _previousFinalDestination = NULL; // previous final destination (for train resets)
-     _previousFinalDestTrack = NULL; // previous final track (for train resets)
-      _previousScheduleId = NONE; // previous schedule id (for train resets)
-      _pickupScheduleId = NONE;
-     _nextPickupScheduleId = NONE; // when the car needs to be pulled
-
-     carLoads = ((CarLoads*)InstanceManager::getDefault("CarLoads"));
 
     }
 
@@ -99,12 +76,16 @@ namespace Operations
        car->setBuilt(_built);
        car->setColor(_color);
        car->setLength(_length);
-//       car->setLoadName(_loadName);
-//       car->setReturnWhenEmptyLoadName(_rweLoadName);
+       car->setLoadName(getLoadName());
+       car->setReturnWhenEmptyLoadName(getReturnWhenEmptyLoadName());
+       car->setReturnWhenLoadedLoadName(getReturnWhenLoadedLoadName());
        car->setNumber(_number);
        car->setOwner(_owner);
        car->setRoadName(_road);
        car->setTypeName(_type);
+       car->setCaboose(isCaboose());
+       car->setFred(hasFred());
+       car->setPassenger(isPassenger());
        car->loaded=true;
         return car;
     }
@@ -156,19 +137,7 @@ namespace Operations
     /*public*/ QString Car::getLoadName() {
         return _loadName;
     }
-#if 0
-    @Deprecated
-    // saved for scripts
-    /*public*/ void setLoad(String load) {
-        setLoadName(load);
-    }
 
-    @Deprecated
-    // saved for scripts
-    /*public*/ String getLoad() {
-        return getLoadName();
-    }
-#endif
     /*public*/ void Car::setReturnWhenEmptyLoadName(QString load) {
         QString old = _rweLoadName;
         _rweLoadName = load;
@@ -179,6 +148,18 @@ namespace Operations
 
     /*public*/ QString Car::getReturnWhenEmptyLoadName() {
         return _rweLoadName;
+    }
+
+    /*public*/ void Car::setReturnWhenLoadedLoadName(QString load) {
+        QString old = _rwlLoadName;
+        _rwlLoadName = load;
+        if (old !=(load)) {
+            setDirtyAndFirePropertyChange(RWL_LOAD_CHANGED_PROPERTY, old, load);
+        }
+    }
+
+    /*public*/ QString Car::getReturnWhenLoadedLoadName() {
+        return _rwlLoadName;
     }
 
     /**
@@ -496,6 +477,69 @@ namespace Operations
         }
     }
 
+    /*public*/ void Car::setReturnWhenLoadedDestination(Location* destination) {
+        Location* old = _rwlDestination;
+        _rwlDestination = destination;
+        if ((old != nullptr && old !=(destination)) || (destination != nullptr && destination != (old))) {
+            setDirtyAndFirePropertyChange(RETURN_WHEN_LOADED_CHANGED_PROPERTY, QVariant(), QVariant());
+        }
+    }
+
+    /*public*/ Location* Car::getReturnWhenLoadedDestination() {
+        return _rwlDestination;
+    }
+
+    /*public*/ QString Car::getReturnWhenLoadedDestinationName() {
+        if (getReturnWhenLoadedDestination() != nullptr) {
+            return getReturnWhenLoadedDestination()->getName();
+        } else {
+            return NONE;
+        }
+    }
+
+    /*public*/ void Car::setReturnWhenLoadedDestTrack(Track* track) {
+        Track* old = _rwlDestTrack;
+        _rwlDestTrack = track;
+        if ((old != nullptr && old != (track)) || (track != nullptr && track != (old))) {
+            setDirtyAndFirePropertyChange(RETURN_WHEN_LOADED_CHANGED_PROPERTY, 0, 0);
+        }
+
+    }
+
+    /*public*/ Track* Car::getReturnWhenLoadedDestTrack() {
+        return _rwlDestTrack;
+    }
+
+    /*public*/ QString Car::getReturnWhenLoadedDestTrackName() {
+        if (getReturnWhenLoadedDestTrack() != nullptr) {
+            return getReturnWhenLoadedDestTrack()->getName();
+        } else {
+            return NONE;
+        }
+    }
+
+    /*public*/ QString Car::getReturnWhenLoadedDestName() {
+        if (getReturnWhenLoadedDestination() != nullptr) {
+            return getReturnWhenLoadedDestinationName() + "(" + getReturnWhenLoadedDestTrackName() + ")";
+        } else {
+            return NONE;
+        }
+    }
+
+    /**
+     * Used to determine is car has been given a Return When Loaded (RWL) address or
+     * custom load
+     *
+     * @return true if car has RWL
+     */
+    /*protected*/ bool Car::isRwlEnabled() {
+        if (getReturnWhenLoadedLoadName() != (carLoads->getDefaultLoadName()) ||
+                getReturnWhenLoadedDestName() != (NONE)) {
+            return true;
+        }
+        return false;
+    }
+
     /*public*/ void Car::setCaboose(bool caboose) {
         bool old = _caboose;
         _caboose = caboose;
@@ -736,6 +780,26 @@ namespace Operations
         }
     }
 
+    /*public*/ QString Car::getTypeExtensions() {
+        QString buf;// = new StringBuffer();
+        if (isCaboose()) {
+            buf.append(EXTENSION_REGEX + CABOOSE_EXTENSION);
+        }
+        if (hasFred()) {
+            buf.append(EXTENSION_REGEX + FRED_EXTENSION);
+        }
+        if (isPassenger()) {
+            buf.append(EXTENSION_REGEX + PASSENGER_EXTENSION + EXTENSION_REGEX + getBlocking());
+        }
+        if (isUtility()) {
+            buf.append(EXTENSION_REGEX + UTILITY_EXTENSION);
+        }
+        if (isHazardous()) {
+            buf.append(EXTENSION_REGEX + HAZARDOUS_EXTENSION);
+        }
+        return buf;
+    }
+
     /*public*/ void Car::reset() {
         setScheduleItemId(getPreviousScheduleId()); // revert to previous
         setNextLoadName(NONE);
@@ -744,7 +808,7 @@ namespace Operations
         setFinalDestinationTrack(getPreviousFinalDestinationTrack()); // revert to previous
         if (isLoadGeneratedFromStaging()) {
             setLoadGeneratedFromStaging(false);
-            setLoadName(((CarLoads*)InstanceManager::getDefault("CarLoads"))->getDefaultEmptyName());
+            setLoadName(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultEmptyName());
         }
 
         RollingStock::reset();
@@ -791,7 +855,7 @@ namespace Operations
             _utility = a==(Xml::_TRUE);
         }
         if ((a = e.attribute(Xml::KERNEL)) != NULL) {
-            Kernel* k = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getKernelByName(a);
+            Kernel* k = ((KernelManager*)InstanceManager::getDefault("KernelManager"))->getKernelByName(a);
             if (k != NULL) {
                 setKernel(k);
                 if ((a = e.attribute(Xml::LEAD_KERNEL)) != NULL && a==(Xml::_TRUE)) {
@@ -968,10 +1032,8 @@ namespace Operations
     }
 
     /*private*/ void Car::addPropertyChangeListeners() {
-        //CarTypes.instance().addPropertyChangeListener(this);
-     connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-
-//        CarLengths.instance().addPropertyChangeListener(this);
+     ((CarTypes*)InstanceManager::getDefault("CarTypes"))->addPropertyChangeListener(this);
+     ((CarLengths*)InstanceManager::getDefault("CarLengths"))->addPropertyChangeListener(this);
     }
 
     /*public*/ void Car::propertyChange(PropertyChangeEvent* e)
@@ -987,17 +1049,17 @@ namespace Operations
                 setTypeName( e->getNewValue().toString());
             }
         }
-#if 0
-        if (e->getPropertyName()==(CarLengths.CARLENGTHS_NAME_CHANGED_PROPERTY)) {
+
+        if (e->getPropertyName()==(CarLengths::CARLENGTHS_NAME_CHANGED_PROPERTY)) {
             if (e->getOldValue()==(getLength())) {
                 if (log->isDebugEnabled()) {
-                    log->debug("Car ({}) sees length name change old: ({}) new: ({})", toString(), e->getOldValue(), e
-                            .getNewValue()); // NOI18N
+                    log->debug(tr("Car (%1) sees length name change old: (%2) new: (%3)").arg(toString(), e->getOldValue().toString(), e
+                            ->getNewValue().toString())); // NOI18N
                 }
-                setLength((String) e->getNewValue());
+                setLength( e->getNewValue().toString());
             }
         }
-#endif
+
         if (e->getPropertyName()==(Location::DISPOSE_CHANGED_PROPERTY)) {
             if (e->getSource() == _finalDestination) {
                 if (log->isDebugEnabled()) {
@@ -1015,4 +1077,6 @@ namespace Operations
             }
         }
     }
+    /*private*/ /*final*/ /*static*/ Logger* Car::log = LoggerFactory::getLogger("Car");
+
 }

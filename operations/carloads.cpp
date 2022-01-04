@@ -38,7 +38,7 @@ namespace Operations
   list = new QHash<QString, QList<CarLoad*>*>();
   _emptyName = tr("E");
   _loadName = tr("L");
-  log = new Logger("CarLoads");
+  log = new Logger("Operations::CarLoads");
   setProperty("InstanceManagerAutoDefault", "yes");
 
  }

@@ -56,7 +56,7 @@ namespace Operations
   _location = NULL;
   _train = NULL;
 
-  trainManager = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"));
+  trainManager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
   engManager = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"));
   carManager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
   trainCommon = new TrainCommon();

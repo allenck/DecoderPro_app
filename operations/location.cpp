@@ -1260,7 +1260,7 @@ if (types.length() == 0) {
          deleteTrack(track);
      }
      ((CarTypes*)InstanceManager::getDefault("CarTypes"))->removePropertyChangeListener(this);
-     ((CarRoads*)InstanceManager::getDefault("CarRoads"))->removePropertyChangeListener(this);
+     ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->removePropertyChangeListener(this);
      ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->removePropertyChangeListener(this);
      // Change name in case object is still in use, for example Schedules
      setName(tr("NotValid %1").arg(getName()));
@@ -1269,7 +1269,7 @@ if (types.length() == 0) {
 
  /*private*/ void Location::addPropertyChangeListeners() {
      ((CarTypes*)InstanceManager::getDefault("CarTypes"))->PropertyChangeSupport::addPropertyChangeListener(this);
-     ((CarRoads*)InstanceManager::getDefault("CarRoads"))->PropertyChangeSupport::addPropertyChangeListener(this);
+     ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->PropertyChangeSupport::addPropertyChangeListener(this);
      ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->PropertyChangeSupport::addPropertyChangeListener(this);
  }
 

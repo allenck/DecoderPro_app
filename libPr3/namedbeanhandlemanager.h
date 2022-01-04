@@ -6,10 +6,7 @@
 #include "namedbeanhandle.h"
 #include <QList>
 #include "javaqt_global.h"
-//template <typename T> class NamedBeanhandle;
-//template <class T>
 #include "instancemanagerautodefault.h"
-
 
 class JAVAQTSHARED_EXPORT NamedBeanHandleManager:  public AbstractNamedBeanHandleManager, public InstanceManagerAutoDefault
 {

@@ -330,7 +330,7 @@ namespace Operations
 
  /*private*/ void YardmasterPanel::addTrainListeners() {
      log->debug("Adding train listerners");
-     QList<Train*> trains = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainsByIdList();
+     QList<Train*> trains = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainsByIdList();
 //     trains.stream().forEach((train) -> {
 //         Train::addPropertyChangeListener(this);
 //     });
@@ -341,7 +341,7 @@ namespace Operations
 
      // listen for new trains being added
      //TrainManager::instance().addPropertyChangeListener(this);
-     connect(((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->pcs,SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->pcs,SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 #if 0
  private void removeTrainListeners() {

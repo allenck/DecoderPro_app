@@ -44,7 +44,7 @@ namespace Operations
  TrainSwitchLists::TrainSwitchLists(QObject* parent) : TrainCommon(parent)
  {
   messageFormatText = ""; // the text being formated in case there's an exception
-  trainManager = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"));
+  trainManager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
   log = new Logger("TrainSwitchLists");
  }
  /**
@@ -365,13 +365,13 @@ namespace Operations
                                  }
                              } else {
                                  newLine(fileOut, QString(messageFormatText = TrainSwitchListText::getStringHoldCar()).arg(
-                                         padAndTruncateString(car->getRoadName(), ((CarRoads*)InstanceManager::getDefault("CarRoads"))->getMaxNameLength())).arg(
+                                         padAndTruncateString(car->getRoadName(), ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->getMaxNameLength())).arg(
                                                  padAndTruncateString(car->getNumber(), Control::max_len_string_print_road_number)).arg(
                                                  padAndTruncateString(car->getTypeName().split("-")[0], ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getMaxNameLength())).arg(
                                                  padAndTruncateString(car->getLength() + LENGTHABV, Control::max_len_string_length_name)).arg(
-                                                 padAndTruncateString(car->getLoadName(), ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getMaxNameLength())).arg(
+                                                 padAndTruncateString(car->getLoadName(), ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getMaxNameLength())).arg(
                                                  padAndTruncateString(trackName, locationManager->getMaxTrackNameLength())).arg(
-                                                 padAndTruncateString(car->getColor(), ((CarColors*)InstanceManager::getDefault("CarColors"))->getMaxNameLength())));
+                                                 padAndTruncateString(car->getColor(), ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->getMaxNameLength())));
                              }
                          }
                      }

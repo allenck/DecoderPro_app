@@ -34,7 +34,7 @@
 #include "instancemanager.h"
 #include "joptionpane.h"
 #include "borderfactory.h"
-
+#include "printcarloadsaction.h"
 //CarsTableFrame::CarsTableFrame()
 //{
 
@@ -142,6 +142,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   destpLayout->addWidget(sortByDestination);
   destpLayout->addWidget(sortByFinalDestination);
   destpLayout->addWidget(sortByRwe);
+  destpLayout->addWidget(sortByRwl);
+  destpLayout->addWidget(sortByDivision);
   cp1Layout->addWidget(destp);
   cp1Layout->addWidget(sortByTrain);
 
@@ -229,6 +231,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   addRadioButtonAction(sortByDestination);
   addRadioButtonAction(sortByFinalDestination);
   addRadioButtonAction(sortByRwe);
+  addRadioButtonAction(sortByRwl);
+  addRadioButtonAction(sortByDivision);
   addRadioButtonAction(sortByTrain);
   addRadioButtonAction(sortByMoves);
   addRadioButtonAction(sortByBuilt);
@@ -249,6 +253,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   group->addButton(sortByDestination);
   group->addButton(sortByFinalDestination);
   group->addButton(sortByRwe);
+  group->addButton(sortByRwl);
+  group->addButton(sortByDivision);
   group->addButton(sortByTrain);
   group->addButton(sortByMoves);
   group->addButton(sortByBuilt);
@@ -280,6 +286,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      toolMenu->addAction(new ResetCheckboxesCarsTableAction(carsTableModel,this));
      toolMenu->addAction(new ModifyLocationsAction(this));
      toolMenu->addAction(new TrainsByCarTypeAction(this));
+     toolMenu->addAction(new PrintCarLoadsAction(true, this));
+     toolMenu->addAction(new PrintCarLoadsAction(false,this));
      toolMenu->addAction(new CarsSetFrameAction(carsTable,this));
 
      menuBar->addMenu(toolMenu);
@@ -330,6 +338,12 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      if (source == sortByRwe) {
          carsTableModel->setSort(CarsTableModel::SORTBY_RWE);
      }
+     if (source == sortByRwl) {
+         carsTableModel->setSort(CarsTableModel::SORTBY_RWL);
+     }
+     if (source == sortByDivision) {
+         carsTableModel->setSort(CarsTableModel::SORTBY_DIVISION);
+     }
      if (source == sortByTrain) {
          carsTableModel->setSort(CarsTableModel::SORTBY_TRAIN);
      }
@@ -361,8 +375,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      clearTableSort(carsTable);
  }
 
- /*public*/ QList<RollingStock*>* CarsTableFrame::getSortByList() {
-     return carsTableModel->sysList;
+ /*public*/ QList<Car*>* CarsTableFrame::getSortByList() {
+     return carsTableModel->carList;
  }
 
 

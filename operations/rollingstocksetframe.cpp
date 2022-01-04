@@ -72,7 +72,7 @@ void RollingStockSetFrame::common()
  log = new Logger("RollingStockSetFrame");
  setObjectName("RollingStockSetFrame");
  locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
- trainManager = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"));
+ trainManager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
  _disableComboBoxUpdate = false;
 
  // labels
@@ -90,7 +90,7 @@ void RollingStockSetFrame::common()
  trackDestinationBox = new JComboBox();
  finalDestinationBox = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getComboBox();
  finalDestTrackBox = new JComboBox();
- trainBox = ((TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainComboBox();
+ trainBox = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainComboBox();
 
  // check boxes
  autoTrackCheckBox = new QCheckBox(tr("Auto"));

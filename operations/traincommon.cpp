@@ -323,7 +323,7 @@ namespace Operations {
               }
               dropCars = true;
               cars--;
-              if (((CarLoads*)InstanceManager::getDefault("CarLoads"))->getLoadType(car->getTypeName(), car->getLoadName())==(
+              if (((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getLoadType(car->getTypeName(), car->getLoadName())==(
                       CarLoad::LOAD_TYPE_EMPTY)) {
                   emptyCars--;
               }
@@ -1336,8 +1336,8 @@ namespace Operations {
  {
   if (attribute==(Setup::LOAD)) {
       return ((car->isCaboose() && !Setup::isPrintCabooseLoadEnabled()) || (car->isPassenger() && !Setup::isPrintPassengerLoadEnabled()))
-              ? padAndTruncateString("", ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getMaxNameLength() + 1) : " "
-                      + padAndTruncateString(car->getLoadName(), ((CarLoads*)InstanceManager::getDefault("CarLoads"))->getMaxNameLength());
+              ? padAndTruncateString("", ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getMaxNameLength() + 1) : " "
+                      + padAndTruncateString(car->getLoadName(), ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getMaxNameLength());
   } else if (attribute==(Setup::HAZARDOUS)) {
       return (car->isHazardous() ? " " + Setup::getHazardousMsg() : padAndTruncateString("", Setup
               ::getHazardousMsg().length() + 1));
@@ -1405,7 +1405,7 @@ namespace Operations {
       return " " + padAndTruncateString(splitString(rs->getNumber()), Control::max_len_string_print_road_number);
   } else if (attribute==(Setup::ROAD)) {
       QStringList road = rs->getRoadName().split("-"); // second half of string can be anything
-      return " " + padAndTruncateString(road[0], ((CarRoads*)InstanceManager::getDefault("CarRoads"))->getMaxNameLength());
+      return " " + padAndTruncateString(road[0], ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->getMaxNameLength());
   } else if (attribute==(Setup::TYPE)) {
       QStringList type = rs->getTypeName().split("-"); // second half of string can be anything
       return " " + padAndTruncateString(type[0], ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getMaxNameLength());
@@ -1414,7 +1414,7 @@ namespace Operations {
   }
 
   else if (attribute==(Setup::COLOR)) {
-      return " " + padAndTruncateString(rs->getColor(), ((CarColors*)InstanceManager::getDefault("CarColors"))->getMaxNameLength());
+      return " " + padAndTruncateString(rs->getColor(), ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->getMaxNameLength());
   }
   else if (((attribute==(Setup::LOCATION)) && (isPickup || isLocal))
           || (attribute==(Setup::TRACK) && isPickup))
@@ -1484,7 +1484,7 @@ namespace Operations {
   }
   else if (attribute==(Setup::OWNER))
   {
-      return " " + padAndTruncateString(rs->getOwner(), ((CarOwners*)InstanceManager::getDefault("CarOwners"))->getMaxNameLength());
+      return " " + padAndTruncateString(rs->getOwner(), ((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->getMaxNameLength());
   }
   else if (attribute==(Setup::COMMENT))
   {
@@ -1500,9 +1500,9 @@ namespace Operations {
               + padAndTruncateString("", Control::max_len_string_print_road_number
                       - (UTILITY_CAR_COUNT_FIELD_SIZE + 1));
   } else if (attribute==(Setup::NO_ROAD)) {
-      return " " + padAndTruncateString("", ((CarRoads*)InstanceManager::getDefault("CarRoads"))->getMaxNameLength());
+      return " " + padAndTruncateString("", ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->getMaxNameLength());
   } else if (attribute==(Setup::NO_COLOR)) {
-      return " " + padAndTruncateString("", ((CarColors*)InstanceManager::getDefault("CarColors"))->getMaxNameLength());
+      return " " + padAndTruncateString("", ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->getMaxNameLength());
   } // there are four truncated manifest attributes
   else if (attribute==(Setup::NO_DEST_TRACK))
   {
@@ -1685,7 +1685,7 @@ namespace Operations {
        continue;
    }
    if (attribute==(Setup::ROAD)) {
-       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Road(), ((CarRoads*)InstanceManager::getDefault("CarRoads"))
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Road(), ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))
                ->getMaxNameLength())
                + " ");
    } else if (attribute==(Setup::NUMBER) && !isEngine) {
@@ -1715,15 +1715,15 @@ namespace Operations {
    } else if (attribute==(Setup::KERNEL_SIZE)) {
        buf.append("   "); // assume kernel size is 99 or less
    } else if (attribute==(Setup::LOAD)) {
-       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Load(), ((CarLoads*)InstanceManager::getDefault("CarLoads"))
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Load(), ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))
                ->getMaxNameLength())
                + " ");
    } else if (attribute==(Setup::COLOR)) {
-       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Color(), ((CarColors*)InstanceManager::getDefault("CarColors"))
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Color(), ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))
                ->getMaxNameLength())
                + " ");
    } else if (attribute==(Setup::OWNER)) {
-       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Owner(), ((CarOwners*)InstanceManager::getDefault("CarOwners"))
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Owner(), ((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))
                ->getMaxNameLength())
                + " ");
    } else if (attribute==(Setup::LENGTH)) {

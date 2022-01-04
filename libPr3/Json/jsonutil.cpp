@@ -1200,7 +1200,7 @@ static /*public*/ void setTime(Locale locale, JsonNode data) throws JsonExceptio
     //ObjectNode data = root.putObject(JSON::DATA);
     QJsonObject data = QJsonObject();
     try {
-        Operations::Train* train = ((Operations::TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainById(id);
+        Operations::Train* train = ((Operations::TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainById(id);
         data.insert(JSON::NAME, train->getName());
         data.insert(JSON::ICON_NAME, train->getIconName());
         data.insert(JSON::ID, train->getId());
@@ -1240,7 +1240,7 @@ root.insert(JSON::DATA, data);
 
 /*static*/ /*public*/ QJsonArray JsonUtil::getTrains(QLocale locale) throw (JsonException) {
     QJsonArray root = QJsonArray();//mapper.createArrayNode();
-    for (Operations::Train* train : ((Operations::TrainManager*)InstanceManager::getDefault("OperationsTrainManager"))->getTrainsByNameList()) {
+    for (Operations::Train* train : ((Operations::TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainsByNameList()) {
         root.append(getTrain(locale, train->getId()));
     }
     return root;
