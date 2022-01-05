@@ -313,6 +313,22 @@ namespace Operations
  /*public*/ QString Track::getDivisionName() {
      return getLocation()->getDivisionName();
  }
+
+ /*public*/ bool Track::isSpur() {
+         return getTrackType()==(Track::SPUR);
+     }
+ /*public*/ bool Track::isYard() {
+         return getTrackType() == (Track::YARD);
+ }
+
+ /*public*/ bool Track::isInterchange() {
+     return getTrackType()==(Track::INTERCHANGE);
+ }
+
+ /*public*/ bool Track::isStaging() {
+     return getTrackType()==(Track::STAGING);
+ }
+
  /**
   * Gets the track type
   *

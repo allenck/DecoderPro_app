@@ -72,6 +72,41 @@ PropertyChangeSupport(this, parent)
  }
 
  /**
+  * Used to determine if a division name has been assigned to a location
+  * @return true if a location has a division name
+  */
+ /*public*/ bool LocationManager::hasDivisions() {
+     for (Location* location : getList()) {
+         if (location->getDivision() != nullptr) {
+             return true;
+         }
+     }
+     return false;
+ }
+
+ /*public*/ bool LocationManager::hasWork() {
+     for (Location* location : getList()) {
+         if (location->hasWork()) {
+             return true;
+         }
+     }
+     return false;
+ }
+
+ /**
+  * Used to determine if a reporter has been assigned to a location
+  * @return true if a location has a RFID reporter
+  */
+ /*public*/ bool LocationManager::hasReporters() {
+     for (Location* location : getList()) {
+         if (location->getReporter() != nullptr) {
+             return true;
+         }
+     }
+     return false;
+ }
+
+ /**
   * Request a location associated with a given reporter.
   *
   * @param r Reporter object associated with desired location.

@@ -53,6 +53,7 @@ namespace Operations
   /*public*/ void deregister(Train* train);
   /*public*/ void loadTrainIcons();
   /*public*/ QList<Train*> getTrainsByIdList();
+   /*public*/ void resetBuildFailedTrains();
   /*public*/ void load(QDomElement root);
   /*public*/ void store(QDomElement root, QDomDocument doc);
   /*public*/ QStringList getStartUpScripts() ;

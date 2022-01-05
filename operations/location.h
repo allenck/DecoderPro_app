@@ -59,11 +59,20 @@ namespace Operations {
   /*public*/ static /*final*/ QString POOL_LENGTH_CHANGED_PROPERTY; //="poolLengthChanged"; // NOI18N
   /*public*/ static /*final*/ QString SWITCHLIST_COMMENT_CHANGED_PROPERTY; //="switchListComment";// NOI18N
   /*public*/ static /*final*/ QString TRACK_BLOCKING_ORDER_CHANGED_PROPERTY; //="locationTrackBlockingOrder";// NOI18N
+  /*public*/ static /*final*/ QString LOCATION_REPORTER_PROPERTY;// = "locationReporterChange"; // NOI18N
   /*public*/ static /*final*/ QString LOCATION_DIVISION_PROPERTY;// = "homeDivisionChange"; // NOI18N
   /*public*/ QString getId();
   /*public*/ void setName(QString name) ;
   /*public*/ QString toString() ;
   /*public*/ QString getName() const;
+  /*public*/ Division* getDivision();
+   /*public*/ QString getDivisionName();
+  /*public*/ QString getDivisionId();
+   /*public*/ bool isSpur();
+   /*public*/ bool isYard();
+   /*public*/ bool isInterchange();
+   /*public*/ bool isStaging();
+  /*public*/ QString getTrackType();
   /*public*/ void copyLocation(Location* newLocation) ;
   /*public*/ void copyTracksLocation(Location* location);
   /*public*/ PhysicalLocation* getPhysicalLocation();
@@ -74,7 +83,6 @@ namespace Operations {
   /*public*/ int getUsedLength();
   /*public*/ void setLocationOps(int ops);
   /*public*/ int getLocationOps();
-  /*public*/ bool isStaging();
   /*public*/ void setComment(QString comment) ;
   /*public*/ QString getComment() ;
   /*public*/ void setSwitchListComment(QString comment);
@@ -117,8 +125,6 @@ namespace Operations {
   /*public*/ void addDropRS();
   /*public*/ void deleteDropRS();
   /*public*/ Track* getTrackById(QString id);
-  /*public*/ Reporter* getReporter();
-  /*public*/ QString getReporterName();
   /*public*/ void updateComboBox(QComboBox* box);
   /*public*/ QList<Track*> getTracksByNameList(QString type);
   /*public*/ QList<Track*> getTrackByIdList();
@@ -139,9 +145,6 @@ namespace Operations {
   /*public*/ int getPickupRS();
   /*public*/ int getDropRS();
   /*public*/ void setDivision(Division* division);
-  /*public*/ Division* getDivision();
-  /*public*/ QString getDivisionName();
-  /*public*/ QString getDivisionId();
   /*public*/ bool hasPools();
   /*public*/ int getNumberOfTracks();
   /*public*/ void setTrainDirections(int direction);
@@ -151,6 +154,12 @@ namespace Operations {
   /*public*/ bool hasRoadRestrications();
   /*public*/ bool hasDestinationRestrications();
   /*public*/ bool hasAlternateTracks();
+  /*public*/ bool hasOrderRestrictions();
+  /*public*/ bool hasSchedules();
+  /*public*/ bool hasWork();
+  /*public*/ bool hasReporters();
+  /*public*/ Reporter* getReporter();
+  /*public*/ QString getReporterName();
   /*public*/ QList<Track*> getTrackByMovesList(QString type);
   /*public*/ void setSwitchListState(int state);
   /*public*/ void updatePoolComboBox(QComboBox* box);
@@ -187,14 +196,14 @@ namespace Operations {
  protected:
   /*protected*/ QString _id; //=NONE;
   /*protected*/ QString _name; //=NONE;
-  /*protected*/ int _IdNumber; //=0;
+  /*protected*/ int _IdNumber = 0;
   /*protected*/ int _numberRS; //=0; // number of cars and engines (total rolling stock)
   /*protected*/ int _numberCars; //=0; // number of cars
   /*protected*/ int _numberEngines; //=0; // number of engines
   /*protected*/ int _pickupRS; //=0;
   /*protected*/ int _dropRS; //=0;
+  /*protected*/ int _trainDir = EAST + WEST + NORTH + SOUTH; // train direction served by this track
   /*protected*/ int _locationOps; //=NORMAL; // type of operations at this location
-  /*protected*/ int _trainDir; //=EAST + WEST + NORTH + SOUTH; // train direction served by this location
   /*protected*/ int _length; //=0; // length of all tracks at this location
   /*protected*/ int _usedLength; //=0; // length of track filled by cars and engines
 
@@ -214,7 +223,7 @@ namespace Operations {
   /*protected*/ Division* _division = nullptr;
 
   // IdTag reader associated with this location.
-  /*protected*/ Reporter* reader; //=null;
+  /*protected*/ Reporter* _reader =nullptr;
 
   // Pool
   /*protected*/ int _idPoolNumber; //=0;

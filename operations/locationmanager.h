@@ -37,6 +37,9 @@ namespace Operations
   /*public*/ QList<Location*> getLocationsByIdList();
   /*public*/ QList<Location*> getList();
   /*public*/ void _register(Location* location);
+   /*public*/ bool hasDivisions();
+   /*public*/ bool hasWork();
+   /*public*/ bool hasReporters();
   /*public*/ Location* getLocationByReporter(Reporter* r);
   /*public*/ Track* getTrackByReporter(Reporter* r);
   /*public*/ Location* newLocation(QString name);

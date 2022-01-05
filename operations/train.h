@@ -317,6 +317,7 @@ namespace Operations
   /*public*/ bool setTrainIconCoordinates();
   /*public*/ File* createCSVManifestFile();
   /*public*/ bool runFile();
+  /*public*/ bool isBuildFailed();
 
  signals:
   void error(QString, QString);

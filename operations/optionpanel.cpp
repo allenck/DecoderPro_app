@@ -16,6 +16,8 @@
 #include "instancemanager.h"
 #include "jpanel.h"
 #include "borderfactory.h"
+#include "joptionpane.h"
+#include "locationmanager.h"
 
 namespace Operations
 {
@@ -134,6 +136,7 @@ namespace Operations
   JPanel* pBuild = new JPanel();
   pBuild->setLayout(new GridBagLayout); //(pBuild, BoxLayout.Y_AXIS));
   pBuild->setBorder(BorderFactory::createTitledBorder(tr("Build Options")));
+
   JPanel* pOpt = new JPanel();
   pOpt->setLayout(new GridBagLayout());
 
@@ -150,8 +153,7 @@ namespace Operations
   // Switcher Service
   JPanel* pSwitcher = new JPanel();
   pSwitcher->setLayout(new GridBagLayout());
-     pSwitcher->setBorder(BorderFactory
-             ::createTitledBorder(tr("Switcher Service")));
+  pSwitcher->setBorder(BorderFactory::createTitledBorder(tr("Switcher Service")));
 
   addItemLeft(pSwitcher, localInterchangeCheckBox, 1, 1);
   addItemLeft(pSwitcher, localSpurCheckBox, 1, 2);
@@ -168,6 +170,7 @@ namespace Operations
   addItemLeft(pStaging, stagingTurnCheckBox, 1, 6);
   addItemLeft(pStaging, promptFromTrackStagingCheckBox, 1, 7);
   addItemLeft(pStaging, promptToTrackStagingCheckBox, 1, 8);
+  addItemLeft(pStaging, tryNormalStagingCheckBox, 1, 9);
   addItemLeft(pBuild, pStaging, 1, 3);
 
   // Router panel
@@ -216,10 +219,10 @@ namespace Operations
   panel->layout()->addWidget(pLogger);
   panel->layout()->addWidget(pCustom);
   panel->layout()->addWidget(pOption);
-  panel->layout()->addWidget(pControl);
 
   panelPane->setWidget(panel);
   layout()->addWidget(panelPane);
+  panel->layout()->addWidget(pControl);
 
   // setup buttons
   addButtonAction(saveButton);
@@ -233,13 +236,11 @@ namespace Operations
 
   // check boxes
   addCheckBoxAction(routerCheckBox);
+  addCheckBoxAction(routerRestrictBox);
   setRouterCheckBoxesEnabled();
 
   setBuildOption();
-
-  // disable staging option if normal mode
-  stagingAvailCheckBox->setEnabled(buildAggressive->isChecked());
-  numberPassesComboBox->setEnabled(buildAggressive->isChecked());
+  enableComponents();
 
   initMinimumSize();
  }
@@ -264,13 +265,16 @@ namespace Operations
   // can't change the build option if there are trains built
   if (((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->isAnyTrainBuilt()) {
       setBuildOption(); // restore the correct setting
-//         JOptionPane.showMessageDialog(this, tr("CanNotChangeBuild"), Bundle
-//                 .getMessage("MustTerminateOrReset"), JOptionPane.ERROR_MESSAGE);
-      QMessageBox::critical(this, tr("Must terminate or reset all trains"), tr("Can not change build option when there is a built train!"));
+         JOptionPane::showMessageDialog(this, tr("Can not change build option when there is a built train!"),  tr("Must terminate or reset all trains"), JOptionPane::ERROR_MESSAGE);
   }
-  // disable staging option if normal mode
-  stagingAvailCheckBox->setEnabled(buildAggressive->isChecked());
-  numberPassesComboBox->setEnabled(buildAggressive->isChecked());
+  enableComponents();
+  // Special case where there are train build failures that created work.
+  // Track reserve needs to cleaned up by reseting build failed trains
+  if (buildAggressive->isChecked() != Setup::isBuildAggressive() &&
+          ((LocationManager*)InstanceManager::getDefault("OperationsManager::LocationManager"))->hasWork() )
+  {
+      ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->resetBuildFailedTrains();
+  }
  }
 
  // Save button

@@ -112,6 +112,10 @@ public:
  /*public*/ QString getName() ;
  /*public*/ Division* getDivision();
  /*public*/ QString getDivisionName();
+  /*public*/ bool isSpur();
+  /*public*/ bool isYard();
+  /*public*/ bool isInterchange();
+  /*public*/ bool isStaging();
  /*public*/ QString getTrackType() ;
  /*public*/ void setTrackType(QString type);
  /*public*/ QString getTrackTypeName();

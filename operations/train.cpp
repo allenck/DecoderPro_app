@@ -2942,6 +2942,16 @@ if (roads.length() == 0) {
   *
   * @return true if train build failed.
   */
+ /*public*/ bool Train::isBuildFailed() {
+     return _buildFailed;
+ }
+
+ /**
+  * Returns true if the train build failed. Note that returning false doesn't
+  * mean the build was successful.
+  *
+  * @return true if train build failed.
+  */
  /*public*/ bool Train::getBuildFailed() {
      return _buildFailed;
  }

@@ -1052,6 +1052,13 @@ namespace Operations
      return status;
  }
 
+ /*public*/ void TrainManager::resetBuildFailedTrains() {
+         for (Train* train : getList()) {
+             if (train->isBuildFailed())
+                 train->reset();
+         }
+     }
+
  /*public*/ void TrainManager::load(QDomElement root)
      {
       if (!root.firstChildElement(Xml::OPTIONS).isNull())

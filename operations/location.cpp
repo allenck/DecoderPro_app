@@ -73,6 +73,7 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString Location::POOL_LENGTH_CHANGED_PROPERTY = "poolLengthChanged"; // NOI18N
  /*public*/ /*static*/ /*final*/ QString Location::SWITCHLIST_COMMENT_CHANGED_PROPERTY = "switchListComment";// NOI18N
  /*public*/ /*static*/ /*final*/ QString Location::TRACK_BLOCKING_ORDER_CHANGED_PROPERTY = "locationTrackBlockingOrder";// NOI18N
+ /*public*/ /*static*/ /*final*/ QString Location::LOCATION_REPORTER_PROPERTY = "locationReporterChange"; // NOI18N
  /*public*/ /*static*/ /*final*/ QString Location::LOCATION_DIVISION_PROPERTY = "homeDivisionChange"; // NOI18N
 
 
@@ -94,7 +95,6 @@ namespace Operations
      addPropertyChangeListeners();
      _id = NONE;
      _name = NONE;
-     _IdNumber = 0;
      _numberRS = 0; // number of cars and engines (total rolling stock)
      _numberCars = 0; // number of cars
      _numberEngines = 0; // number of engines
@@ -118,8 +118,6 @@ namespace Operations
      _physicalLocation = new PhysicalLocation();
      _listTypes = QStringList();
 
-     // IdTag reader associated with this location.
-     reader = NULL;
 
      // Pool
      _idPoolNumber = 0;
@@ -150,6 +148,19 @@ namespace Operations
 
  /*public*/ QString Location::getName() const{
      return _name;
+ }
+
+
+ /*public*/ bool Location::isSpur() {
+     return getTrackType()==(Track::SPUR);
+ }
+
+ /*public*/ bool Location::isYard() {
+     return getTrackType()==(Track::YARD);
+ }
+
+ /*public*/ bool Location::isInterchange() {
+     return getTrackType()==(Track::INTERCHANGE);
  }
 
  /**
@@ -1254,6 +1265,66 @@ if (types.length() == 0) {
      return false;
  }
 
+ /*public*/ bool Location::hasOrderRestrictions() {
+     for (Track* track : getTracksList()) {
+         if (track->getServiceOrder()!=(Track::NORMAL)) {
+             return true;
+         }
+     }
+     return false;
+ }
+
+ /*public*/ bool Location::hasSchedules() {
+     for (Track* track : getTracksList()) {
+         if (track->isSpur() && track->getSchedule() != nullptr) {
+             return true;
+         }
+     }
+     return false;
+ }
+
+ /*public*/ bool Location::hasWork() {
+     return (getDropRS() != 0 || getPickupRS() != 0);
+ }
+
+ /*public*/ bool Location::hasReporters() {
+     for (Track* track : getTracksList()) {
+         if (track->getReporter() != nullptr) {
+             return true;
+         }
+     }
+     return false;
+ }
+
+ /*
+  * set the jmri.Reporter object associated with this location.
+  *
+  * @param reader jmri.Reporter object.
+  */
+ /*public*/ void Location::setReporter(Reporter* r) {
+  Reporter* old = _reader;
+   _reader = r;
+   if (old != r) {
+       setDirtyAndFirePropertyChange(LOCATION_REPORTER_PROPERTY, VPtr<Reporter>::asQVariant(old), VPtr<Reporter>::asQVariant(r));
+   }
+ }
+
+ /*
+ * get the jmri.Reporter object associated with this location.
+ *
+ * @return jmri.Reporter object.
+ */
+ /*public*/ Reporter* Location::getReporter() {
+   return _reader;
+ }
+
+ /*public*/ QString Location::getReporterName() {
+   if (getReporter() != nullptr) {
+       return getReporter()->getDisplayName();
+   }
+   return "";
+ }
+
  /*public*/ void Location::dispose() {
      QList<Track*> tracks = getTrackList();
      foreach (Track* track, tracks) {
@@ -1465,8 +1536,8 @@ if (types.length() == 0) {
          e.setAttribute(Xml::SOUTH_TRAIN_ICON_X, QString::number(getTrainIconSouth().x()));
          e.setAttribute(Xml::SOUTH_TRAIN_ICON_Y, QString::number(getTrainIconSouth().y()));
      }
-     if (reader != (NULL)) {
-         e.setAttribute(Xml::READER, reader->getDisplayName());
+     if (_reader != (NULL)) {
+         e.setAttribute(Xml::READER, _reader->getDisplayName());
      }
      // build list of rolling stock types for this location
      QStringList types = getTypeNames();
@@ -1558,31 +1629,6 @@ if (types.length() == 0) {
          }
          deleteTypeName(oldType);
      }
- }
-
- /*
-  * set the jmri.Reporter object associated with this location.
-  *
-  * @param reader jmri.Reporter object.
-  */
- /*protected*/ void Location::setReporter(Reporter* r) {
-     reader = r;
- }
-
- /*
-  * get the jmri.Reporter object associated with this location.
-  *
-  * @return jmri.Reporter object.
-  */
- /*public*/ Reporter* Location::getReporter() {
-     return reader;
- }
-
- /*public*/ QString Location::getReporterName() {
-     if (getReporter() != nullptr) {
-         return getReporter()->getDisplayName();
-     }
-     return "";
  }
 
  /*private*/ void Location::replaceRoad(QString oldRoad, QString newRoad) {
