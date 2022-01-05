@@ -174,8 +174,8 @@ namespace Operations
          pLoad->setVisible(false);
 
          // for engines
-         pOptional->layout()->addWidget(pHp);
-         pHp->setVisible(false);
+         pOptional->layout()->addWidget(pPower);
+         pPower->setVisible(false);
 
          // row 10
          pGroup->setLayout(new GridBagLayout());

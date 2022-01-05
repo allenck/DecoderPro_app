@@ -27,6 +27,7 @@
 #include "carroads.h"
 #include "divisionmanager.h"
 #include "kernelmanager.h"
+#include "consistmanager.h"
 
 namespace Operations
 {
@@ -63,6 +64,7 @@ int id;
   qRegisterMetaType<OperationsManager>("OperationsManager");
   qRegisterMetaType<DivisionManager>("DivisionManager");
   qRegisterMetaType<KernelManager>("KernelManager");
+  qRegisterMetaType<ConsistManager>("ConsistManager");
 
   Metatypes::done = true;
  }

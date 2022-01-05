@@ -64,7 +64,6 @@ namespace Operations
 #endif
       addAction(importRosterAction);
 #if 0
-      add(importAction);
       add(exportAction);
       add(deleteAction);
       add(resetMovesAction);

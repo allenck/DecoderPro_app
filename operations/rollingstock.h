@@ -24,7 +24,7 @@ namespace Operations
  class APPSLIBSHARED_EXPORT RollingStock : public PropertyChangeSupport, public PropertyChangeListener
  {
   Q_OBJECT
-   Q_INTERFACES(PropertyChangeListener)
+  Q_INTERFACES(PropertyChangeListener)
  public:
   //explicit RollingStock(QObject *parent = 0);
   /*public*/ static /*final*/ QString NONE;// = "";

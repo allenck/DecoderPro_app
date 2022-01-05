@@ -31,6 +31,7 @@ namespace Operations
 
  /*public*/ /*static*/ /*final*/ int Engine::NCE_REAR_BLOCK_NUMBER = 8;
  /*public*/ /*static*/ /*final*/ int Engine::B_UNIT_BLOCKING = 10; // block B Units after NCE Consists
+ /*public*/ /*static*/ /*final*/ QString Engine::HP_CHANGED_PROPERTY = "hp"; // NOI18N
 
  /*public*/ Engine::Engine(QString road, QString number, QObject *parent) :
    RollingStock(road, number, parent)
@@ -104,7 +105,7 @@ namespace Operations
      QString old = getHp();
      engineModels->setModelHorsepower(getModel(), hp);
      if (old!=(hp)) {
-         setDirtyAndFirePropertyChange("hp", old, hp); // NOI18N
+         setDirtyAndFirePropertyChange(HP_CHANGED_PROPERTY, old, hp); // NOI18N
      }
  }
 
@@ -327,10 +328,10 @@ namespace Operations
      if ((a = e.attribute (Xml::WEIGHT_TONS)) != NULL) {
          setWeightTons(a);
      }
-     if ((a = e.attribute(Xml::B_UNIT)) != NULL) {
+     if ((a = e.attribute(Xml::B_UNIT)) != "") {
          setBunit(a == (Xml::_TRUE));
      }
-     if ((a = e.attribute (Xml::CONSIST)) != NULL) {
+     if ((a = e.attribute (Xml::CONSIST)) != "") {
          Consist* c = ((ConsistManager*)InstanceManager::getDefault("Operations::ConsistManager"))->getConsistByName(a);
          if (c != NULL) {
              setConsist(c);

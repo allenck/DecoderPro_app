@@ -39,6 +39,7 @@ namespace Operations
   /*public*/ void dispose();
   /*public*/ static /*final*/ int NCE_REAR_BLOCK_NUMBER;// = 8;
   /*public*/ static /*final*/ int B_UNIT_BLOCKING;// = 10; // block B Units after NCE Consists
+  /*public*/ static /*final*/ QString HP_CHANGED_PROPERTY;// = "hp"; // NOI18N
   /*public*/ void setBunit(bool bUnit) ;
   /*public*/ bool isBunit();
 
@@ -55,7 +56,7 @@ namespace Operations
   EngineModels* engineModels;// = EngineModels::instance();
   Logger* log;
   /*private*/ void addPropertyChangeListeners();
-  bool verboseStore;// = false;
+  bool verboseStore = false;
 
  protected:
   /*protected*/ void setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n);

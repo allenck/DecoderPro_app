@@ -42,8 +42,8 @@ namespace Operations
   _roadNumber = "";
   _index = 0;
   sysList = NULL;
- eef = NULL;
-  esf = NULL;
+ engineEditFrame = NULL;
+  engineSetFrame = NULL;
   log = new Logger("EngineTableModel");
   _enginesTableColumnWidths = QList<int>() << 60 << 60 << 65 << 50 << 65 << 35 << 75 << 190 << 190 << 65 << 50 << 65 << 70;
   showMoveCol = SHOWMOVES;
@@ -422,29 +422,29 @@ QList<RollingStock*>* list = new QList<RollingStock*>();
      switch (col) {
          case SET_COLUMN:
              log->debug("Set engine location");
-             if (esf != NULL) {
-                 esf->dispose();
+             if (engineSetFrame != NULL) {
+                 engineSetFrame->dispose();
              }
              // use invokeLater so new window appears on top
 //             SwingUtilities.invokeLater(new Runnable() {
 //                 /*public*/ void run() {
-                     esf = new EngineSetFrame();
-                     esf->initComponents();
-                     esf->loadEngine(engine);
+                     engineSetFrame = new EngineSetFrame();
+                     engineSetFrame->initComponents();
+                     engineSetFrame->loadEngine(engine);
 //                 }
 //             });
              break;
          case EDIT_COLUMN:
              log->debug("Edit engine");
-             if (eef != NULL) {
-                 eef->dispose();
+             if (engineEditFrame != NULL) {
+                 engineEditFrame->dispose();
              }
              // use invokeLater so new window appears on top
 //             SwingUtilities.invokeLater(new Runnable() {
 //                 /*public*/ void run() {
-                     eef = new EngineEditFrame();
-                     eef->initComponents();
-                     eef->load(engine);
+                     engineEditFrame = new EngineEditFrame();
+                     engineEditFrame->initComponents();
+                     engineEditFrame->load(engine);
 //                 }
 //             });
              break;
@@ -480,12 +480,12 @@ QList<RollingStock*>* list = new QList<RollingStock*>();
      engineManager->removePropertyChangeListener(this);
      removePropertyChangeEngines();
 
-     if (esf != NULL) {
-         esf->dispose();
+     if (engineSetFrame != NULL) {
+         engineSetFrame->dispose();
      }
 
-     if (eef != NULL) {
-         eef->dispose();
+     if (engineEditFrame != NULL) {
+         engineEditFrame->dispose();
      }
  }
 
@@ -510,12 +510,14 @@ QList<RollingStock*>* list = new QList<RollingStock*>();
              || e->getPropertyName()==(EngineManager::CONSISTLISTLENGTH_CHANGED_PROPERTY)) {
          updateList();
          fireTableDataChanged();
-     } // Engine lengths are based on model, so multiple changes
+     }
+     // Engine lengths are based on model, so multiple changes
      else if (e->getPropertyName()==(Engine::LENGTH_CHANGED_PROPERTY)
-             || e->getPropertyName()==(Engine::TYPE_CHANGED_PROPERTY)) {
+             || e->getPropertyName()==(Engine::TYPE_CHANGED_PROPERTY)
+             || e->getPropertyName()==(Engine::HP_CHANGED_PROPERTY)) {
          fireTableDataChanged();
      } // must be a engine change
-                   else if (e->getSource()->metaObject()->className()==("Engine")) {
+     else if (QString(e->getSource()->metaObject()->className())==("Engine")) {
          Engine* engine = (Engine*) e->getSource();
          int row = sysList->indexOf(engine);
          if (Control::SHOW_PROPERTY) {

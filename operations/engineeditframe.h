@@ -67,7 +67,9 @@ namespace Operations
   JCheckBox* bUnitCheckBox = new JCheckBox(tr("B Unit"));
 
   JTextField* hpTextField = new JTextField(8);
+  JTextField* teTextField = new JTextField(8);
 
+  /*private*/ static /*final*/ QString SPEED;// = "25"; // MPH for tractive effort to HP conversion
   EngineAttributeEditFrame* engineAttributeEditFrame = nullptr;
 
   static Logger* log;

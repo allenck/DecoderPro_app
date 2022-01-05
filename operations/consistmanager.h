@@ -14,6 +14,8 @@ namespace Operations {
    Q_INTERFACES(InstanceManagerAutoDefault)
   public:
    explicit ConsistManager(QObject *parent = nullptr);
+   ~ConsistManager() {}
+   ConsistManager(const ConsistManager&) : RollingStockGroupManager() {}
    /*public*/  Consist* newConsist(QString name);
    /*public*/  void deleteConsist(QString name);
    /*public*/  Consist* getConsistByName(QString name) ;
@@ -28,7 +30,7 @@ namespace Operations {
    /*protected*/ void setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n);
 
  };
-
 } // namespace Operations
+Q_DECLARE_METATYPE(Operations::ConsistManager)
 
 #endif // OPERATIONS_CONSISTMANAGER_H

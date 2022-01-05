@@ -64,6 +64,8 @@ namespace Operations
  /*public static final*/ QString EngineEditFrame::OWNER = tr("Owner");
  /*public static final*/ QString EngineEditFrame::CONSIST = tr("Consist");
 
+ /*private*/ /*static*/ /*final*/ QString EngineEditFrame::SPEED = "25"; // MPH for tractive effort to HP conversion
+
  /*public*/ EngineEditFrame::EngineEditFrame(QWidget *parent) :
   RollingStockEditFrame(tr("Edit Engine"), parent)
  {
@@ -72,7 +74,7 @@ namespace Operations
 
  /*public*/ void EngineEditFrame::initComponents()
  {
-  groupComboBox = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getConsistComboBox();
+  groupComboBox = ((ConsistManager*)InstanceManager::getDefault("Operations::ConsistManager"))->getComboBox();
   modelComboBox = engineModels->getComboBox();
 
   RollingStockEditFrame::initComponents();
@@ -109,6 +111,15 @@ namespace Operations
   pHp->setBorder(BorderFactory::createTitledBorder(tr("Hp")));
   addItem(pHp, hpTextField, 0, 0);
   pHp->setVisible(true);
+  JPanel* pTe = new JPanel();
+  pTe->setLayout(new GridBagLayout());
+  pTe->setBorder(BorderFactory::createTitledBorder(tr("Tractive Effort")));
+  addItem(pTe, teTextField, 0, 0);
+  pPower->layout()->addWidget(pHp);
+  pPower->layout()->addWidget(pTe);
+  pPower->setVisible(true);
+
+  teTextField->setToolTip(tr("Converts Tractive Effort (lbf) to Horse Power at %1 MPH. Press Save to convert.").arg( SPEED ));
 
   pGroup->setBorder(BorderFactory::createTitledBorder(tr("Consist")));
 
@@ -322,8 +333,8 @@ namespace Operations
           modelComboBox->setSelectedItem(((Engine*) _rs)->getModel());
       }
   }
-  if (e->getPropertyName() == (EngineManager::CONSISTLISTLENGTH_CHANGED_PROPERTY)) {
-      engineManager->updateConsistComboBox(groupComboBox);
+  if (e->getPropertyName() == (ConsistManager::LISTLENGTH_CHANGED_PROPERTY)) {
+   ((ConsistManager*)InstanceManager::getDefault("Operations::ConsistManager"))->updateComboBox(groupComboBox);
       if (_rs != nullptr) {
           groupComboBox->setSelectedItem(((Engine*) _rs)->getConsistName());
       }

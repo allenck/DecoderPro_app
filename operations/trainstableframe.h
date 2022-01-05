@@ -22,7 +22,7 @@ namespace Operations
  class APPSLIBSHARED_EXPORT TrainsTableFrame : public OperationsFrame, public PropertyChangeListener
  {
   Q_OBJECT
-   Q_INTERFACES(PropertyChangeListener)
+  Q_INTERFACES(PropertyChangeListener)
  public:
   TrainsTableFrame(QWidget* parent = 0);
   /*public*/ static /*final*/ QString MOVE;//= Bundle.getMessage("Move");
@@ -97,8 +97,8 @@ namespace Operations
 
  protected:
   /*protected*/ QString getSortBy();
-  /*protected*/ void handleModified();
-  /*protected*/ void storeValues();
+  /*protected*/ void handleModified()override;
+  /*protected*/ void storeValues()override;
 
  friend class PrintTrainsAction;
  };

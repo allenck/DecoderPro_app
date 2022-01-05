@@ -11,6 +11,7 @@
 #include "instancemanager.h"
 //#include "locationmanager.h"
 #include "operationssetupxml.h"
+#include "consistmanager.h"
 
 //EngineManagerXml::EngineManagerXml(QObject *parent) :
 //  OperationsXml(parent)
@@ -100,6 +101,7 @@ namespace Operations
      ((EngineModels*)InstanceManager::getDefault("EngineModels"))->load(root);
      ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->load(root);
      ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->load(root);
+     ((ConsistManager*)InstanceManager::getDefault("Operations::ConsistManager"))->load(root);
      ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->load(root);
 
      log->debug("Engines have been loaded!");

@@ -28,6 +28,7 @@
 #include "instancemanager.h"
 #include "propertychangelistener.h"
 #include "borderfactory.h"
+#include "nceconsistengineaction.h"
 
 namespace Operations
 {
@@ -223,7 +224,7 @@ namespace Operations
   QMenuBar* menuBar = new QMenuBar();
   QMenu* toolMenu = new QMenu(tr("Tools"));
   toolMenu->addMenu(new EngineRosterMenu(tr("Engine Roster"), EngineRosterMenu::MAINMENU, this));
-//        toolMenu.add(new NceConsistEngineAction(tr("MenuItemNceSync"), this));
+  toolMenu->addAction(new NceConsistEngineAction(this));
   menuBar->addMenu(toolMenu);
   menuBar->addMenu(new OperationsMenu());
   setMenuBar(menuBar);

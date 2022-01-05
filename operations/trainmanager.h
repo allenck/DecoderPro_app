@@ -116,7 +116,7 @@ namespace Operations
   /*public*/ void propertyChange(PropertyChangeEvent* e);
 
  private:
-  Logger* log;
+  static Logger* log;
   /*private*/ static /*final*/ QString NONE;// = "";
   // Train frame attributes
   /*private*/ QString _trainAction;// = TrainsTableFrame.MOVE; // Trains frame table button action

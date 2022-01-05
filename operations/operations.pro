@@ -85,6 +85,7 @@ SOURCES += \
  exportlocationsrosteraction.cpp \
  kernelmanager.cpp \
  metatypes.cpp \
+ nceconsistengineaction.cpp \
         operations.cpp \
         operationsmenu.cpp \
  operationssettingsaction.cpp \
@@ -397,6 +398,7 @@ HEADERS += \
  exportlocationsrosteraction.h \
  kernelmanager.h \
  metatypes.h \
+ nceconsistengineaction.h \
         operations.h \
         operations_global.h \
         operationsmenu.h \

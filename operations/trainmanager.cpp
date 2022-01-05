@@ -19,6 +19,9 @@
 #include <QThread>
 #include "car.h"
 #include "instancemanager.h"
+#include "loggerfactory.h"
+#include "traincustommanifest.h"
+//#include "TrainCustomSwitchList.h"
 
 //TrainManager::TrainManager(QObject *parent) :
 //  QObject(parent)
@@ -52,7 +55,6 @@ namespace Operations
  /*public*/ TrainManager::TrainManager(QObject *parent) :
  PropertyChangeSupport(this, parent)
  {
-  log = new Logger("TrainManager");
   setObjectName("TrainManager");
   // Train frame attributes
   _trainAction = TrainsTableFrame::MOVE; // Trains frame table button action
@@ -983,8 +985,8 @@ namespace Operations
       if (root.firstChildElement(Xml::OPTIONS) != QDomElement())
       {
          QDomElement options = root.firstChildElement(Xml::OPTIONS);
-//            TrainCustomManifest.load(options);
-//            TrainCustomSwitchList.load(options);
+         ((TrainCustomManifest*)InstanceManager::getDefault("TrainCustomManifest"))->load(options);
+//         ((TrainCustomSwitchList*)InstanceManager::getDefault("TrainCustomSwitchList"))->load(options);
          QDomElement e = options.firstChildElement(Xml::TRAIN_OPTIONS);
          QString a;
          if (e != QDomElement()) {
@@ -1195,4 +1197,5 @@ namespace Operations
      static_cast<OperationsSetupXml*>(InstanceManager::getDefault("OperationsSetupXml")); // load setup
      static_cast<TrainManagerXml*>(InstanceManager::getDefault("TrainManagerXml")); // load trains
  }
+  /*private*/ /*final*/ /*static*/ Logger* TrainManager::log = LoggerFactory::getLogger("TrainManager");
 } // end namespace

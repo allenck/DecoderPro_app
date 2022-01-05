@@ -36,8 +36,8 @@ namespace Operations
   /*public*/ QList<RollingStock*>* getByModelList() ;
   /*public*/ QList<RollingStock*>* getByConsistList();
   /*public*/ QList<RollingStock*>* getByHpList();
-  /*public*/ JComboBox* getConsistComboBox();
-  /*public*/ void updateConsistComboBox(JComboBox* box);
+//  /*public*/ JComboBox* getConsistComboBox();
+//  /*public*/ void updateConsistComboBox(JComboBox* box);
   /*public*/ QList<Engine*>* getByTrainBlockingList(Train* train);
   /*public*/ QStringList getEngineRoadNames(QString model);
 //  /*public*/ void dispose();

@@ -10,7 +10,7 @@
 //#include <QtZeroConf/qzeroconf.h>
 #include "zeroconfservice.h"
 #include "clientrxhandler.h"
-
+#include "propertychangelistener.h"
 
 class LnTcpPreferences;
 class QZeroConf;
@@ -20,9 +20,10 @@ class ServerListner;
 class ClientRxHandler;
 
 class LocoNetSystemConnectionMemo;
-class LnTcpServer : public QTcpServer
+class LnTcpServer : public QTcpServer, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
  explicit LnTcpServer(LocoNetSystemConnectionMemo *memo, QObject *parent = 0);
  /*public*/ bool isEnabled();
@@ -35,7 +36,7 @@ public:
  /*public*/ int getPort();
  /*public*/ static /*synchronized*/ LnTcpServer* getDefault();
 
-
+  QObject* self() override { return (QObject*)this;}
 signals:
  void serverStateChanged(LnTcpServer*);
  void error(QAbstractSocket::SocketError);
@@ -43,12 +44,12 @@ signals:
 
 public slots:
  void on_newConnection();
- void propertyChange(PropertyChangeEvent*);
+ void propertyChange(PropertyChangeEvent*)override;
  void servicePublished();
  void error(QZeroConf::error_t);
 
 private:
- static LnTcpServer* self;
+ static LnTcpServer* lntcpserver;
  QLinkedList<ClientRxHandler*>* clients = new QLinkedList<ClientRxHandler*>();
  QThread* socketListener = nullptr;
  QTcpServer* serverSocket = nullptr;

@@ -97,8 +97,8 @@ namespace Operations
  EnginesTableFrame* _frame;
  /*synchronized*/ void updateList();
  /*private*/ void removePropertyChangeEngines();
- EngineEditFrame* eef;// = NULL;
- EngineSetFrame* esf;// = NULL;
+ EngineEditFrame* engineEditFrame;// = NULL;
+ EngineSetFrame* engineSetFrame;// = NULL;
  Logger* log;
  // Engines frame table column widths (12), starts with Number column and ends with Edit
  /*private*/ QList<int> _enginesTableColumnWidths;// = {60, 60, 65, 50, 65, 35, 75, 190, 190, 65, 50, 65, 70};

@@ -166,8 +166,9 @@ namespace Operations
              ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
          }
          if (_attribute ==(CONSIST)) {
-             comboBox = engineManager->getConsistComboBox();
-             engineManager->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
+          comboBox = ((ConsistManager*)InstanceManager::getDefault("Operations::ConsistManager"))->getComboBox();
+             ((ConsistManager*)InstanceManager::getDefault("Operations::ConsistManager"))->addPropertyChangeListener(this);
+
          }
      }
 
@@ -196,8 +197,8 @@ namespace Operations
          if (e->getPropertyName() == (EngineLengths::ENGINELENGTHS_CHANGED_PROPERTY)) {
              ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->updateComboBox(comboBox);
          }
-         if (e->getPropertyName() == (EngineManager::CONSISTLISTLENGTH_CHANGED_PROPERTY)) {
-             engineManager->updateConsistComboBox(comboBox);
+         if (e->getPropertyName() == (ConsistManager::LISTLENGTH_CHANGED_PROPERTY)) {
+          ((ConsistManager*)InstanceManager::getDefault("Operations::ConsistManager"))->updateComboBox(comboBox);
          }
      }
 

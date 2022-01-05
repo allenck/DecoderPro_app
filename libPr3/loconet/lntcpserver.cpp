@@ -15,7 +15,7 @@
 //  QObject(parent)
 //{
 //}
-LnTcpServer* LnTcpServer::self = nullptr;
+LnTcpServer* LnTcpServer::lntcpserver = nullptr;
 /*static*/ /*final*/ QString LnTcpServer::AUTO_START_KEY = "AutoStart";
 /*static*/ /*final*/ QString LnTcpServer::PORT_NUMBER_KEY = "PortNumber";
 /*static*/ /*final*/ QString LnTcpServer::SETTINGS_FILE_NAME = "LocoNetOverTcpSettings.ini";

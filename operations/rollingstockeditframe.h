@@ -77,6 +77,7 @@ namespace Operations
 
    // panels for engine edit
    /*public*/ JPanel* pModel = new JPanel();
+   /*public*/ JPanel* pPower = new JPanel();
    /*public*/ JPanel* pHp = new JPanel();
    /*public*/ void initComponents() override;
    /*public*/ void dispose() override;
