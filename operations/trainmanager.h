@@ -39,6 +39,7 @@ namespace Operations
   /*public*/ static /*final*/ QString ACTIVE_TRAIN_SCHEDULE_ID;// = "ActiveTrainScheduleId"; // NOI18N
   /*public*/ static /*final*/ QString ROW_COLOR_NAME_CHANGED_PROPERTY;// = "TrainsRowColorChange"; // NOI18N
   /*public*/ static /*final*/ QString TRAINS_BUILT_CHANGED_PROPERTY;// = "TrainsBuiltChange"; // NOI18N
+   /*public*/ static /*final*/ QString TRAINS_SHOW_FULL_NAME_PROPERTY;// = "TrainsShowFullName"; // NOI18N
   /*public*/ int getNumEntries();
   /*public*/ bool isBuildMessagesEnabled();
   /*public*/ void setBuildMessagesEnabled(bool enable);
@@ -59,18 +60,18 @@ namespace Operations
   /*public*/ void addShutDownScript(QString pathname);
   /*public*/ void deleteShutDownScript(QString pathname);
   /*public*/ QStringList getShutDownScripts();
-  PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
+  //PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
   /*public*/ void updateTrainComboBox(JComboBox* box, Car* car);
   /*public*/ int numEntries();
   /*public*/ QList<Train*> getTrainsArrivingThisLocationList(Location* location);
   /*public*/ QList<Train*> getTrainsByTimeList();
-  /*public*/ QString getTrainsFrameTrainAction();
+//  /*public*/ QString getTrainsFrameTrainAction();
   /*public*/ bool isBuildReportEnabled();
   /*public*/ bool isPrintPreviewEnabled();
   /*public*/ bool isOpenFileEnabled();
   /*public*/ void setOpenFileEnabled(bool enable);
   /*public*/ bool isRunFileEnabled();
-  /*public*/ QList<int> getTrainsFrameTableColumnWidths();
+//  /*public*/ QList<int> getTrainsFrameTableColumnWidths();
   /*public*/ void replaceLoad(QString type, QString oldLoadName, QString newLoadName);
   /*public*/ bool isAnyTrainBuilt();
  /*public*/ bool isAnyTrainBuilding();
@@ -78,7 +79,7 @@ namespace Operations
   /*public*/ void setBuildReportEnabled(bool enable);
   /*public*/ void setRunFileEnabled(bool enable);
   /*public*/ void setPrintPreviewEnabled(bool enable);
-  /*public*/ void setTrainsFrameTrainAction(QString action);
+//  /*public*/ void setTrainsFrameTrainAction(QString action);
   /*public*/ void runShutDownScripts();
   /*public*/ void dispose();
   /*public*/ bool isRowColorManual();
@@ -93,7 +94,7 @@ namespace Operations
   /*public*/ void setRowColorNameForTerminated(QString colorName);
   /*public*/ JComboBox* getRowColorComboBox();
   /*public*/ Train* copyTrain(Train* train, QString trainName);
-  /*public*/ QString getTrainScheduleActiveId();
+//  /*public*/ QString getTrainScheduleActiveId();
   /*public*/ bool printSelectedTrains(QList<Train*> trains);
   /*public*/ void setTrainsSwitchListStatus(QString status);
   /*public*/ void setTrainsModified();
@@ -104,10 +105,19 @@ namespace Operations
   /*public*/ QList<Train*> getTrainsByStatusList();
   /*public*/ Train* getTrainForCar(Car* car, PrintWriter* buildReport) ;
   /*public*/ Train* getTrainForCar(Car* car, Train* excludeTrain, PrintWriter* buildReport);
-  /*public*/ QList<int> getTrainScheduleFrameTableColumnWidths();
-  /*public*/ void setTrainSecheduleActiveId(QString id);
+//  /*public*/ QList<int> getTrainScheduleFrameTableColumnWidths();
+//  /*public*/ void setTrainSecheduleActiveId(QString id);
   /*public*/ void addStartUpScript(QString pathname) ;
   /*public*/ void deleteStartUpScript(QString pathname);
+   /*public*/ bool isShowLocationHyphenNameEnabled();
+   /*public*/ void setShowLocationHyphenNameEnabled(bool enable);
+   /*public*/ QString getTrainsFrameTrainAction();
+   /*public*/ void setTrainsFrameTrainAction(QString action);
+   /*public*/ bool isBuiltRestricted();
+   /*public*/ bool isLoadRestricted();
+   /*public*/ bool isRoadRestricted();
+   /*public*/ bool isOwnerRestricted();
+
   Q_INVOKABLE /*public*/ void initialize();
 
  signals:
@@ -125,6 +135,9 @@ namespace Operations
   /*private*/ bool _printPreview;// = false; // when true, preview train manifest
   /*private*/ bool _openFile;// = false; // when true, open CSV file manifest
   /*private*/ bool _runFile;// = false; // when true, run CSV file manifest
+
+  // Conductor attributes
+  /*private*/ bool _showLocationHyphenName = false;
 
   // Trains window row colors
   /*private*/ bool _rowColorManual;// = true; // when true train colors are manually assigned;// = NONE; // row color when train is built

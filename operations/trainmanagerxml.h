@@ -3,21 +3,21 @@
 #include "operationsxml.h"
 #include "appslib_global.h"
 #include "instancemanagerautodefault.h"
-
+#include "instancemanagerautoinitialize.h"
 
 namespace Operations
 {
- class APPSLIBSHARED_EXPORT TrainManagerXml : public OperationsXml, public InstanceManagerAutoDefault
+ class APPSLIBSHARED_EXPORT TrainManagerXml : public OperationsXml, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize
  {
   Q_OBJECT
-   Q_INTERFACES(InstanceManagerAutoDefault)
+   Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize)
  public:
   Q_INVOKABLE explicit TrainManagerXml(QObject *parent = 0);
    ~TrainManagerXml() {}
    TrainManagerXml(const TrainManagerXml&) : OperationsXml() {}
   /*public*/ bool isTrainFileLoaded();
-  /*public*/ void writeFile(QString name); //throw  new FileNotFoundException, IOException
-  /*public*/ void readFile(QString name); //throw (JDOMException,IOException)
+  /*public*/ void writeFile(QString name) override; //throw  new FileNotFoundException, IOException
+  /*public*/ void readFile(QString name) override; //throw (JDOMException,IOException)
   /*public*/ File* createTrainManifestFile(QString name);
   /*public*/ File* getTrainManifestFile(QString name);
   /*public*/ File* createTrainBuildReportFile(QString name);
@@ -31,8 +31,8 @@ namespace Operations
   /*private*/ QString getDefaultCsvSwitchListName(QString name);
   /*public*/ void createDefaultCsvSwitchListDirectory();
   /*public*/ void setTrainSwitchListName(QString name);
-  /*public*/ void setOperationsFileName(QString name) ;
-  /*public*/ QString getOperationsFileName();
+  /*public*/ void setOperationsFileName(QString name)  override;
+  /*public*/ QString getOperationsFileName() override;
   /*public*/ void dispose();
   /*public*/ File* getTrainCsvManifestFile(QString name);
   /*public*/ File* createTrainCsvManifestFile(QString name);
@@ -54,7 +54,7 @@ namespace Operations
   /*private*/ QString fileType;// = ").txt"; // NOI18N
   /*private*/ QString fileTypeCsv;// = ").csv"; // NOI18N
 //  /*private*/ static TrainManagerXml* _instance;// = null;
-  Logger* log;
+  static Logger* log;
   // the directories under operations
   /*private*/ static /*final*/ QString BUILD_STATUS;// = "buildstatus"; // NOI18N
   /*private*/ static /*final*/ QString MANIFESTS;// = "manifests"; // NOI18N
@@ -70,7 +70,7 @@ namespace Operations
 //          + OperationsXml::getOperationsDirectoryName() + File::separator + CSV_MANIFESTS + File.separator;
   /*private*/ QString getDefaultManifestFilename(QString name, QString ext);
 
-
+  friend class TrainCustomSwitchList;
  };
 }
 Q_DECLARE_METATYPE(Operations::TrainManagerXml)

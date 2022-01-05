@@ -16,7 +16,9 @@ namespace Operations
    Q_INTERFACES(InstanceManagerAutoDefault)
 
  public:
-  explicit Setup(QObject *parent = 0);
+  Q_INVOKABLE explicit Setup(QObject *parent = 0);
+   ~Setup() {}
+   Setup(const Setup&): PropertyChangeSupport(this) {}
   /*public*/ static bool isMainMenuEnabled();
   /*public*/ static void setMainMenuEnabled(bool enabled);
   /*public*/ static bool isCloseWindowOnSaveEnabled();
@@ -55,16 +57,23 @@ namespace Operations
   /*public*/ static void setLocalYardMovesEnabled(bool enabled) ;
   /*public*/ static bool isLocalSpurMovesEnabled() ;
   /*public*/ static void setLocalSpurMovesEnabled(bool enabled) ;
+   /*public*/ static bool isStagingTrainCheckEnabled();
   /*public*/ static bool isTrainIntoStagingCheckEnabled() ;
   /*public*/ static void setTrainIntoStagingCheckEnabled(bool enabled);
   /*public*/ static bool isStagingTrackImmediatelyAvail() ;
   /*public*/ static void setStagingTrackImmediatelyAvail(bool enabled);
+   /*public*/ static bool isStagingAllowReturnEnabled();
+   /*public*/ static void setStagingAllowReturnEnabled(bool enabled);
+   /*public*/ static bool isStagingPromptFromEnabled();
+   /*public*/ static void setStagingPromptFromEnabled(bool enabled);
+   /*public*/ static bool isStagingPromptToEnabled();
+   /*public*/ static void setStagingPromptToEnabled(bool enabled);
+   /*public*/ static bool isStagingTryNormalBuildEnabled();
+   /*public*/ static void setStagingTryNormalBuildEnabled(bool enabled);
   /*public*/ static bool isAllowReturnToStagingEnabled() ;
   /*public*/ static void setAllowReturnToStagingEnabled(bool enabled) ;
   /*public*/ static bool isPromptFromStagingEnabled() ;
-  /*public*/ static void setPromptFromStagingEnabled(bool enabled);
   /*public*/ static bool isPromptToStagingEnabled() ;
-  /*public*/ static void setPromptToStagingEnabled(bool enabled) ;
   /*public*/ static bool isGenerateCsvManifestEnabled();
   /*public*/ static void setGenerateCsvManifestEnabled(bool enabled);
   /*public*/ static bool isGenerateCsvSwitchListEnabled();
@@ -187,6 +196,7 @@ namespace Operations
   /*public*/ static void setEngineLoggerEnabled(bool enable);
   /*public*/ static bool isTrainLoggerEnabled() ;
   /*public*/ static void setTrainLoggerEnabled(bool enable);
+  /*public*/ static bool isSaveTrainManifestsEnabled();
   /*public*/ static QString  getPickupEnginePrefix();
   /*public*/ static void setPickupEnginePrefix(QString  prefix);
   /*public*/ static QString  getDropEnginePrefix() ;
@@ -376,6 +386,10 @@ namespace Operations
   /*public*/ static /*final*/ QString SWITCH_LIST_CSV_PROPERTY_CHANGE;// = "setupSwitchListCSVChange"; //  NOI18N
   /*public*/ static /*final*/ QString MANIFEST_CSV_PROPERTY_CHANGE;// = "setupManifestCSVChange"; //  NOI18N
   /*public*/ static /*final*/ QString REAL_TIME_PROPERTY_CHANGE;// = "setupSwitchListRealTime"; //  NOI18N
+  /*public*/ static /*final*/ QString SHOW_TRACK_MOVES_PROPERTY_CHANGE;// = "setupShowTrackMoves"; // NOI18N
+  /*public*/ static /*final*/ QString SAVE_TRAIN_MANIFEST_PROPERTY_CHANGE;// = "saveTrainManifestChange"; // NOI18N
+  /*public*/ static /*final*/ QString ALLOW_CARS_TO_RETURN_PROPERTY_CHANGE;// = "allowCarsToReturnChange"; // NOI18N
+  /*public*/ static /*final*/ QString TRAIN_DIRECTION_PROPERTY_CHANGE;// = "setupTrainDirectionChange"; // NOI18N
   /*public*/ static QDomElement store();
   enum SCALE
   {
@@ -392,6 +406,7 @@ namespace Operations
    G_SCALE =  11 // NMRA #1
   };
   /*public*/ static void setDoc(QDomDocument doc);
+  /*public*/ static Setup* getDefault();
 
  signals:
 
@@ -457,35 +472,35 @@ namespace Operations
   /*private*/ static /*final*/ QStringList engineAttributes;// {ROAD, NUMBER, TYPE, MODEL, LENGTH, CONSIST, OWNER, TRACK,
  //         LOCATION, DESTINATION, COMMENT};
 
-  /*private*/ static int scale;// HO_SCALE; // Default scale
-  /*private*/ static int ratio;// HO_RATIO;
-  /*private*/ static int ratioTons;// HO_RATIO_TONS;
-  /*private*/ static int initWeight;// HO_INITIAL_WEIGHT;
-  /*private*/ static int addWeight;// HO_ADD_WEIGHT;
-  /*private*/ static QString railroadName;// NONE;
-  /*private*/ static int traindir;// EAST + WEST + NORTH + SOUTH;
-  /*private*/ static int maxTrainLength;// 1000; // maximum train length
-  /*private*/ static int maxEngineSize;// 6; // maximum number of engines that can be assigned to a train
-  /*private*/ static int horsePowerPerTon;// 1; // Horsepower per ton
-  /*private*/ static int carMoves;// 5; // default number of moves when creating a route
-  /*private*/ static QString carTypes;// DESCRIPTIVE;
-  /*private*/ static QString ownerName;// NONE;
-  /*private*/ static QString fontName;// MONOSPACED;
-  /*private*/ static int manifestFontSize;// 10;
-  /*private*/ static int buildReportFontSize;// 10;
-  /*private*/ static QString manifestOrientation;// PORTRAIT;
-  /*private*/ static QString switchListOrientation;// PORTRAIT;
-  /*private*/ static QString pickupColor;// BLACK;
-  /*private*/ static QString dropColor;// BLACK;
-  /*private*/ static QString localColor;// BLACK;
-  /*private*/ static  QStringList pickupEngineMessageFormat;// {ROAD, NUMBER, BLANK, MODEL, BLANK, BLANK, LOCATION, COMMENT};
-  /*private*/ static  QStringList dropEngineMessageFormat;// {ROAD, NUMBER, BLANK, MODEL, BLANK, BLANK, DESTINATION, COMMENT};
-  /*private*/ static  QStringList pickupManifestMessageFormat;// {ROAD, NUMBER, TYPE, LENGTH, COLOR, LOAD, HAZARDOUS, LOCATION,
- //         COMMENT, PICKUP_COMMENT};
-  /*private*/ static  QStringList dropManifestMessageFormat;// {ROAD, NUMBER, TYPE, LENGTH, COLOR, LOAD, HAZARDOUS, DESTINATION,
- //         COMMENT, DROP_COMMENT};
-  /*private*/ static  QStringList localManifestMessageFormat;// {ROAD, NUMBER, TYPE, LENGTH, COLOR, LOAD, HAZARDOUS, LOCATION,
- //         DESTINATION, COMMENT};
+  /*private*/  int scale = HO_SCALE; // Default scale
+  /*private*/  int ratio = HO_RATIO;
+  /*private*/  int ratioTons = HO_RATIO_TONS;
+  /*private*/  int initWeight = HO_INITIAL_WEIGHT;
+  /*private*/  int addWeight = HO_ADD_WEIGHT;
+  /*private*/  QString railroadName = NONE;
+  /*private*/  int traindir = EAST + WEST + NORTH + SOUTH;
+  /*private*/  int maxTrainLength = 1000; // maximum train length
+  /*private*/  int maxEngineSize = 6; // maximum number of engines that can be assigned to a train
+  /*private*/  int horsePowerPerTon = 1; // Horsepower per ton
+  /*private*/  int carMoves = 5; // default number of moves when creating a route
+  /*private*/  QString carTypes = DESCRIPTIVE;
+  /*private*/  QString ownerName = NONE;
+  /*private*/  QString fontName = MONOSPACED;
+  /*private*/  int manifestFontSize = 10;
+  /*private*/  int buildReportFontSize = 10;
+  /*private*/  QString manifestOrientation = PORTRAIT;
+  /*private*/  QString switchListOrientation = PORTRAIT;
+  /*private*/  QString pickupColor = BLACK;
+  /*private*/  QString dropColor = BLACK;
+  /*private*/  QString localColor = BLACK;
+  /*private*/   QStringList pickupEngineMessageFormat = {ROAD, NUMBER, BLANK, MODEL, BLANK, BLANK, LOCATION, COMMENT};
+  /*private*/   QStringList dropEngineMessageFormat = {ROAD, NUMBER, BLANK, MODEL, BLANK, BLANK, DESTINATION, COMMENT};
+  /*private*/   QStringList pickupManifestMessageFormat = {ROAD, NUMBER, TYPE, LENGTH, COLOR, LOAD, HAZARDOUS, LOCATION,
+          COMMENT, PICKUP_COMMENT};
+  /*private*/  QStringList dropManifestMessageFormat = {ROAD, NUMBER, TYPE, LENGTH, COLOR, LOAD, HAZARDOUS, DESTINATION,
+          COMMENT, DROP_COMMENT};
+  /*private*/  QStringList localManifestMessageFormat = {ROAD, NUMBER, TYPE, LENGTH, COLOR, LOAD, HAZARDOUS, LOCATION,
+          DESTINATION, COMMENT};
   /*private*/ static  QStringList pickupSwitchListMessageFormat;// {ROAD, NUMBER, TYPE, LENGTH, COLOR, LOAD, HAZARDOUS,
  //         LOCATION, COMMENT, PICKUP_COMMENT};
   /*private*/ static  QStringList dropSwitchListMessageFormat;// {ROAD, NUMBER, TYPE, LENGTH, COLOR, LOAD, HAZARDOUS,
@@ -569,10 +584,12 @@ namespace Operations
   /*private*/ static bool allowLocalSpurMoves;// false; // when true local spur to spur moves are allowed
 
   /*private*/ static bool trainIntoStagingCheck;// true; // staging track must accept train's rolling stock types and roads
-  /*private*/ static bool trackImmediatelyAvail;// false; // when true staging track is available for other trains
-  /*private*/ static bool allowCarsReturnStaging;// false; // allow cars on a turn to return to staging if necessary (prevent build failure)
+  /*private*/ bool trackImmediatelyAvail;// false; // when true staging track is available for other trains
+  /*private*/ bool allowCarsReturnStaging = false; // allow cars on a turn to return to staging if necessary (prevent
+
   /*private*/ static bool promptFromStaging;// false; // prompt user to specify which departure staging track to use
   /*private*/ static bool promptToStaging;// false; // prompt user to specify which arrival staging track to use
+  /*private*/ bool tryNormalModeStaging = true; // try normal build if route length failure using aggressive
 
   /*private*/ static bool generateCsvManifest;// false; // when true generate csv manifest
   /*private*/ static bool generateCsvSwitchList;// false; // when true generate csv switch list
@@ -606,4 +623,5 @@ namespace Operations
   friend class OperationsSetupXml;
  };
 }
+Q_DECLARE_METATYPE(Operations::Setup)
 #endif // SETUP_H

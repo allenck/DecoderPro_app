@@ -275,8 +275,7 @@ void RollingStockSetFrame::common()
      //((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")).addPropertyChangeListener(this);
      connect(((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      // get notified if train combo box gets modified
-     //trainManager.addPropertyChangeListener(this);
-     connect(trainManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     trainManager->addPropertyChangeListener(this);
 
      setMinimumSize(QSize(Control::panelWidth500, Control::panelHeight500));
  }

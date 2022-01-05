@@ -326,6 +326,9 @@ class APPSLIBSHARED_EXPORT Xml
                  static /*final*/ QString START_UP; //="startUp"; // NOI18N
                  static /*final*/ QString SHUT_DOWN; //="shutDown"; // NOI18N
 
+                 static /*final*/ QString CONDUCTOR_OPTIONS;// = "conductorOptions"; // NOI18N
+                 static /*final*/ QString SHOW_HYPHEN_NAME;// = "showHyphenName"; // NOI18N
+
                  static /*final*/ QString ROW_COLOR_OPTIONS; //="rowColorOptions"; // NOI18N
                  static /*final*/ QString ROW_COLOR_MANUAL; //="rowColorManual"; // NOI18N
                  static /*final*/ QString ROW_COLOR_BUILT; //="rowColorBuilt"; // NOI18N
@@ -569,7 +572,7 @@ static /*final*/ QString ITEM;// = "item"; // NOI18N
           // TrainSchedule.java
           //static /*final*/ QString SCHEDULE = "schedule"; // NOI18N
           static /*final*/ QString TRAIN_IDS;// = "trainIds"; // NOI18N
-static /*final*/ QString ROW_COLOR;// = "rowColor";  // NOI18N};
+          static /*final*/ QString ROW_COLOR;// = "rowColor";  // NOI18N};
 
 // TrainManifestText.java
     static /*final*/ QString MANIFEST_TEXT_STRINGS;//= "manifestTextStrings"; // NOI18N
@@ -617,5 +620,8 @@ static /*final*/ QString ROW_COLOR;// = "rowColor";  // NOI18N};
 
     static /*final*/ QString SWITCH_LIST_TRACK;// = "switchListTrack";
     static /*final*/ QString HOLD_CAR;// = "holdCar";
+
+    // SwitchListCreator
+    static /*final*/ QString SWITCHLIST_CREATOR;// = "switchlistCreator"; // NOI18N
 };
 #endif // XML_H

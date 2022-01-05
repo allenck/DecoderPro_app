@@ -24,6 +24,7 @@
 #include "rollingstock.h"
 #include "instancemanager.h"
 #include "borderfactory.h"
+#include "trainschedulemanager.h"
 
 namespace Operations
 {
@@ -338,7 +339,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          // check to see if schedule timetable allows delivery
          if (attribute==(TIMETABLE)
                  && si->getTypeName()==(carType)
-                 && (si->getSetoutTrainScheduleId()==("") || ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainScheduleActiveId()
+                 && (si->getSetoutTrainScheduleId()==("") || ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainScheduleActiveId()
                  ==(si->getSetoutTrainScheduleId()))) {
              return true;
          }
@@ -348,7 +349,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
                  && (si->getReceiveLoadName()==(ScheduleItem::NONE) || car == NULL || si->getReceiveLoadName()==(
                          car->getLoadName()))
                  && (si->getRoadName()==(ScheduleItem::NONE) || car == NULL || si->getRoadName()==(car->getRoadName()))
-                 && (si->getSetoutTrainScheduleId()==(ScheduleItem::NONE) || ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainScheduleActiveId()
+                 && (si->getSetoutTrainScheduleId()==(ScheduleItem::NONE) || ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getTrainScheduleActiveId()
                  ==(si->getSetoutTrainScheduleId()))) {
              return true;
          }

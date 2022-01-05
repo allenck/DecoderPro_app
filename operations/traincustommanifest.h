@@ -5,8 +5,6 @@
 
 namespace  Operations
 {
-
-
  class TrainCustomManifest : public TrainCustomCommon, public InstanceManagerAutoDefault
  {
    Q_OBJECT

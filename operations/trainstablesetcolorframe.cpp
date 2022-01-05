@@ -145,8 +145,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      makePanelsVisible();
 
-     //trainManager->PropertyChangeSupport::addPropertyChangeListener(this);
-     connect(trainManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     trainManager->PropertyChangeSupport::addPropertyChangeListener(this);
  }
 
  /*public*/ void TrainsTableSetColorFrame::buttonActionPerformed(QWidget* ae) {
@@ -206,8 +205,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*public*/ void TrainsTableSetColorFrame::dispose() {
-     //trainManager->removePropertyChangeListener(this);
- disconnect(trainManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     trainManager->removePropertyChangeListener(this);
      OperationsFrame::dispose();
  }
 /*public*/ QString TrainsTableSetColorFrame::getClassName()

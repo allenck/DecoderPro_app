@@ -98,6 +98,7 @@ SOURCES += \
     routeblockingorderedittablemodel.cpp \
  setphysicallocationaction.cpp \
  setphysicallocationframe.cpp \
+ traincustomswitchlist.cpp \
         trainmanifesttext.cpp \
         operationsxml.cpp \
         trainswitchlisttext.cpp \
@@ -413,6 +414,7 @@ HEADERS += \
     routeblockingorderedittablemodel.h \
  setphysicallocationaction.h \
  setphysicallocationframe.h \
+ traincustomswitchlist.h \
         trainswitchlisttext.h \
         routemanagerxml.h \
         routemanager.h \

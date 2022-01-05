@@ -219,6 +219,17 @@ namespace Operations
  }
 
  /**
+  * Load the table width, position, and sorting status from the user
+  * preferences file.
+  *
+  * @param table The table to be adjusted.
+  *
+  */
+ /*public*/ void OperationsFrame::loadTableDetails(JTable* table) {
+//     this->getContentPane()->loadTableDetails(table);
+ }
+
+ /**
   * Saves the table's width, position, and sorting status in the user
   * preferences file
   *
@@ -283,23 +294,6 @@ namespace Operations
 #endif
  }
 
- /**
-  * Loads the table's width, position, and sorting status from the user
-  * preferences file.
-  *
-  * @param table The table to be adjusted.
-  * @return true if table has been adjusted by saved xml file.
-  */
- /*public*/ bool OperationsFrame::loadTableDetails(JTable* table)
- {
-//  UserPreferencesManager* p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
-//  QSortFilterProxyModel* sorter = NULL;
-//  QString tableref = getWindowFrameRef() + ":table"; // NOI18N
-//  if (p == NULL || p->getTablesColumnList(tableref).isEmpty()) {
-//      return false;
-  return ((OperationsPanel*) this->getContentPane())->loadTableDetails(table);
-
-  }
 #if 0
   try
   {

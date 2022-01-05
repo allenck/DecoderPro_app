@@ -3611,7 +3611,7 @@ if (roads.length() == 0) {
          _roadOption = a;
      }
      // new way of reading car roads using elements
-     if (e.firstChildElement(Xml::CAR_ROADS) != QDomElement()) {
+     if (!e.firstChildElement(Xml::CAR_ROADS).isNull()) {
          //@SuppressWarnings("unchecked")
          QDomNodeList carRoads = e.firstChildElement(Xml::CAR_ROADS).elementsByTagName(Xml::CAR_ROAD);
          QVector<QString> roads = QVector<QString>(carRoads.size());

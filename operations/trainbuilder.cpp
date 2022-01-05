@@ -1630,7 +1630,7 @@ namespace Operations
                  continue;
              }
              if (car->getPickupScheduleId()!=(Car::NONE)) {
-                 if (car->getPickupScheduleId()==(((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainScheduleActiveId())) {
+                 if (car->getPickupScheduleId()==(((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getTrainScheduleActiveId())) {
                      car->setPickupScheduleId(Car::NONE);
                  } else {
                      TrainSchedule* sch = ((Operations::TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(car->getPickupScheduleId());
@@ -3477,11 +3477,11 @@ namespace Operations
          return NULL;
      }
      if (si->getSetoutTrainScheduleId()!=(ScheduleItem::NONE)
-             && ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainScheduleActiveId()!=(si->getSetoutTrainScheduleId())) {
+             && ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getTrainScheduleActiveId()!=(si->getSetoutTrainScheduleId())) {
         log->debug("Schedule item isn't active");
          // build the status message
          TrainSchedule* aSch = ((Operations::TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(
-                 ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainScheduleActiveId());
+                 ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getTrainScheduleActiveId());
          TrainSchedule* tSch = ((Operations::TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(si->getSetoutTrainScheduleId());
          QString aName = "";
          QString tName = "";

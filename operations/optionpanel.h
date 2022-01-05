@@ -2,6 +2,7 @@
 #define OPTIONPANEL_H
 
 #include "operationspreferencespanel.h"
+#include "jcheckbox.h"
 
 class JTextField;
 namespace Operations
@@ -30,32 +31,34 @@ namespace Operations
   QRadioButton* buildAggressive;//= new JRadioButton(Bundle.getMessage("Aggressive"));
 
   // check boxes
-  QCheckBox* routerCheckBox;//= new JCheckBox(Bundle.getMessage("EnableCarRouting"));
-  QCheckBox* routerYardCheckBox;//= new JCheckBox(Bundle.getMessage("EnableCarRoutingYard"));
-  QCheckBox* routerStagingCheckBox;//= new JCheckBox(Bundle.getMessage("EnableCarRoutingStaging"));
-  QCheckBox* routerAllTrainsBox;//= new JCheckBox(Bundle.getMessage("AllTrains"));
-  QCheckBox* routerRestrictBox;//= new JCheckBox(Bundle.getMessage("EnableTrackDestinationRestrications"));
+  JCheckBox* routerCheckBox = new JCheckBox("Car Routing");
+  JCheckBox* routerYardCheckBox = new JCheckBox(tr("Enable Car Routing via Yards"));
+  JCheckBox* routerStagingCheckBox = new JCheckBox(tr("Enable Car Routing through Staging"));
+  JCheckBox* routerAllTrainsBox  = new JCheckBox(tr("Use all Trains when Routing"));
+  JCheckBox* routerRestrictBox= new JCheckBox(tr("Enable Track Destination Restrictions when Routing"));
 
-  QCheckBox* valueCheckBox;//= new JCheckBox(Bundle.getMessage("EnableValue"));
-  QCheckBox* rfidCheckBox;//= new JCheckBox(Bundle.getMessage("EnableRfid"));
-  QCheckBox* carLoggerCheckBox;//= new JCheckBox(Bundle.getMessage("EnableCarLogging"));
-  QCheckBox* engineLoggerCheckBox;//= new JCheckBox(Bundle.getMessage("EnableEngineLogging"));
-  QCheckBox* trainLoggerCheckBox;//= new JCheckBox(Bundle.getMessage("EnableTrainLogging"));
+  JCheckBox* valueCheckBox= new JCheckBox(tr("Enable Value Fields"));
+  JCheckBox* rfidCheckBox;//= new JCheckBox(Bundle.getMessage("EnableRfid"));
+  JCheckBox* carLoggerCheckBox;//= new JCheckBox(Bundle.getMessage("EnableCarLogging"));
+  JCheckBox* engineLoggerCheckBox;//= new JCheckBox(Bundle.getMessage("EnableEngineLogging"));
+  JCheckBox* trainLoggerCheckBox;//= new JCheckBox(Bundle.getMessage("EnableTrainLogging"));
 
-  QCheckBox* localInterchangeCheckBox;//= new JCheckBox(Bundle.getMessage("AllowLocalInterchange"));
-  QCheckBox* localSpurCheckBox;//= new JCheckBox(Bundle.getMessage("AllowLocalSpur"));
-  QCheckBox* localYardCheckBox;//= new JCheckBox(Bundle.getMessage("AllowLocalYard"));
+  JCheckBox* localInterchangeCheckBox;//= new JCheckBox(Bundle.getMessage("AllowLocalInterchange"));
+  JCheckBox* localSpurCheckBox;//= new JCheckBox(Bundle.getMessage("AllowLocalSpur"));
+  JCheckBox* localYardCheckBox;//= new JCheckBox(Bundle.getMessage("AllowLocalYard"));
 
-  QCheckBox* trainIntoStagingCheckBox;//= new JCheckBox(Bundle.getMessage("TrainIntoStaging"));
-  QCheckBox* stagingAvailCheckBox;//= new JCheckBox(Bundle.getMessage("StagingAvailable"));
-  QCheckBox* stagingTurnCheckBox;//= new JCheckBox(Bundle.getMessage("AllowCarsToReturn"));
-  QCheckBox* promptFromTrackStagingCheckBox;//= new JCheckBox(Bundle.getMessage("PromptFromStaging"));
-  QCheckBox* promptToTrackStagingCheckBox;//= new JCheckBox(Bundle.getMessage("PromptToStaging"));
+  JCheckBox* trainIntoStagingCheckBox;//= new JCheckBox(Bundle.getMessage("TrainIntoStaging"));
+  JCheckBox* stagingAvailCheckBox;//= new JCheckBox(Bundle.getMessage("StagingAvailable"));
+  JCheckBox* stagingTurnCheckBox;//= new JCheckBox(Bundle.getMessage("AllowCarsToReturn"));
+  JCheckBox* promptFromTrackStagingCheckBox;//= new JCheckBox(Bundle.getMessage("PromptFromStaging"));
+  JCheckBox* promptToTrackStagingCheckBox;//= new JCheckBox(Bundle.getMessage("PromptToStaging"));
+  JCheckBox* tryNormalStagingCheckBox = new JCheckBox(tr("Try Normal Mode if Build Failure from Staging"));
 
-  QCheckBox* generateCvsManifestCheckBox;//= new JCheckBox(Bundle.getMessage("GenerateCsvManifest"));
-  QCheckBox* generateCvsSwitchListCheckBox;//= new JCheckBox(Bundle.getMessage("GenerateCsvSwitchList"));
+  JCheckBox* generateCvsManifestCheckBox;//= new JCheckBox(Bundle.getMessage("GenerateCsvManifest"));
+  JCheckBox* generateCvsSwitchListCheckBox;//= new JCheckBox(Bundle.getMessage("GenerateCsvSwitchList"));
 
-  QCheckBox* enableVsdCheckBox;//= new JCheckBox(Bundle.getMessage("EnableVSD"));
+  JCheckBox* enableVsdCheckBox;//= new JCheckBox(Bundle.getMessage("EnableVSD"));
+  JCheckBox* saveTrainManifestCheckBox = new JCheckBox(tr("Save Manifests"));
 
   // text field
   JTextField* rfidTextField;//= new JTextField(10);
@@ -66,6 +69,8 @@ namespace Operations
   /*private*/ void setBuildOption();
   Logger* log;
   /*private*/ void setRouterCheckBoxesEnabled();
+  /*private*/ void enableComponents();
+
  protected slots:
   /*protected*/ void checkBoxActionPerformed(QWidget* ae);
 

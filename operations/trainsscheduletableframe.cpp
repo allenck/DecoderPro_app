@@ -26,6 +26,7 @@
 #include "control.h"
 #include "instancemanager.h"
 #include "borderfactory.h"
+#include "trainschedulemanager.h"
 
 namespace Operations
 {
@@ -51,7 +52,7 @@ namespace Operations
  {
   log = new Logger("TrainsScheduleTableFrame");
   trainManager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
-  scheduleManager = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"));
+  trainScheduleManager = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"));
   locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
 
   trainsScheduleModel = new TrainsScheduleTableModel();
@@ -211,10 +212,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      //addHorizontalScrollBarKludgeFix(controlPane, controlPanel);
 
     // Setup.addPropertyChangeListener(this);
-     //trainManager.addPropertyChangeListener(this);
-     connect(trainManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //scheduleManager.addPropertyChangeListener(this);
-     connect(scheduleManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     trainManager->addPropertyChangeListener(this);
+     trainScheduleManager->addPropertyChangeListener(this);
      addPropertyChangeLocations();
      addPropertyChangeTrainSchedules();
  }
@@ -262,10 +261,10 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      if (source == terminateButton) {
          trainManager->terminateSelectedTrains(getSortByList());
      }
-     if (source == activateButton) {
-         trainManager->setTrainSecheduleActiveId(getSelectedScheduleId());
-         activateButton->setEnabled(false);
-     }
+//     if (source == activateButton) {
+//         trainManager->setTrainSecheduleActiveId(getSelectedScheduleId());
+//         activateButton->setEnabled(false);
+//     }
      if (source == saveButton) {
          storeValues();
          if (Setup::isCloseWindowOnSaveEnabled()) {
@@ -298,7 +297,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   {
    QString columnName = trainsScheduleTable->model()->headerData(i, Qt::Horizontal,Qt::DisplayRole).toString();
    log->debug(tr("Column name: %1").arg(columnName));
-   TrainSchedule* ts = scheduleManager->getScheduleByName(columnName);
+   TrainSchedule* ts = trainScheduleManager->getScheduleByName(columnName);
    if (ts != NULL)
    {
     QRadioButton* b = new QRadioButton();
@@ -307,7 +306,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
     schedule->layout()->addWidget(b);
     schGroup->addButton(b);
     addRadioButtonAction(b);
-    if (b->objectName()==(trainManager->getTrainScheduleActiveId()))
+    if (b->objectName()==(trainScheduleManager->getTrainScheduleActiveId()))
     {
      b->setChecked(true);
      enableButtons(true);
@@ -361,10 +360,10 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      switchListsButton->setEnabled(enable);
      terminateButton->setEnabled(enable);
 
-     log->debug(tr("Selected id: %1, Active id:%2").arg(getSelectedScheduleId()).arg(trainManager->getTrainScheduleActiveId()));
+     log->debug(tr("Selected id: %1, Active id:%2").arg(getSelectedScheduleId()).arg(trainScheduleManager->getTrainScheduleActiveId()));
 
      activateButton->setEnabled(getSelectedScheduleId() != NULL
-             && getSelectedScheduleId()!=(trainManager->getTrainScheduleActiveId()));
+             && getSelectedScheduleId()!=(trainScheduleManager->getTrainScheduleActiveId()));
  }
 
  /*private*/ QList<Train*> TrainsScheduleTableFrame::getSortByList() {
@@ -433,10 +432,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  /*public*/ void TrainsScheduleTableFrame::dispose() {
      //Setup.removePropertyChangeListener(this);
-     //trainManager.removePropertyChangeListener(this);
- disconnect(trainManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //scheduleManager.removePropertyChangeListener(this);
- disconnect(scheduleManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     trainManager->removePropertyChangeListener(this);
+     trainScheduleManager->removePropertyChangeListener(this);
      removePropertyChangeTrainSchedules();
      removePropertyChangeLocations();
      trainsScheduleModel->dispose();
@@ -456,7 +453,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*private*/ void TrainsScheduleTableFrame::addPropertyChangeTrainSchedules() {
-     QList<TrainSchedule*> trainSchedules = scheduleManager->getSchedulesByIdList();
+     QList<TrainSchedule*> trainSchedules = trainScheduleManager->getSchedulesByIdList();
      foreach (TrainSchedule* ts, trainSchedules) {
          //ts.addPropertyChangeListener(this);
       connect(ts->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -464,7 +461,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*private*/ void TrainsScheduleTableFrame::removePropertyChangeTrainSchedules() {
-     QList<TrainSchedule*> trainSchedules = scheduleManager->getSchedulesByIdList();
+     QList<TrainSchedule*> trainSchedules = trainScheduleManager->getSchedulesByIdList();
      foreach (TrainSchedule* ts, trainSchedules) {
          //ts.removePropertyChangeListener(this);
          disconnect(ts->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

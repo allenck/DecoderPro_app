@@ -9,6 +9,7 @@
 #include "trainschedule.h"
 #include "trainsscheduletableframe.h"
 #include "instancemanager.h"
+#include "xtablecolumnmodel.h"
 
 namespace Operations
 {
@@ -34,8 +35,7 @@ namespace Operations
  _frame = NULL;
   sysList = QList<Train*>();
 
-     //trainManager.addPropertyChangeListener(this);
-  connect(trainManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     trainManager->addPropertyChangeListener(this);
      //scheduleManager.addPropertyChangeListener(this);
   connect(scheduleManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      updateList();
@@ -93,24 +93,19 @@ namespace Operations
   if (_table == NULL) {
       return;
   }
-  // Install the button handlers
-  TableColumnModel* tcm = _table->getColumnModel();
-  //_table.setDefaultRenderer(Boolean.class, new EnablingCheckboxRenderer());
+  // Save table column order
+  XTableColumnModel* tcm = new XTableColumnModel(_table);
+  _table->setColumnModel(tcm);
+  _table->createDefaultColumnsFromModel();
 
-  if (!_frame->loadTableDetails(_table))
-  {
-   // set column preferred widths, note that columns can be deleted
-   QList<int> widths = trainManager->getTrainScheduleFrameTableColumnWidths();
-   int numCol = widths.length();
-   if (widths.length() > columnCount(QModelIndex())) {
-       numCol = columnCount(QModelIndex());
-   }
-   for (int i = 0; i < numCol; i++) {
-       tcm->getColumn(i)->setPreferredWidth(widths[i]);
-   }
+  // Install the button handlers
+  //_table->setDefaultRenderer("Boolean", new EnablingCheckboxRenderer());
+
+  // set column preferred widths
+  for (int i = 0; i < tableScheduleColumnWidths.length(); i++) {
+      tcm->getColumn(i)->setPreferredWidth(tableScheduleColumnWidths[i]);
   }
-  // have to shut off autoResizeMode to get horizontal scroll to work (JavaSwing p 541)
-  //_table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+  _frame->loadTableDetails(_table);
  }
 
  /*public*/ /*synchronized*/ int TrainsScheduleTableModel::rowCount(const QModelIndex &parent) const {
@@ -331,9 +326,8 @@ namespace Operations
      if (log->isDebugEnabled()) {
          log->debug("dispose");
      }
-     //trainManager.removePropertyChangeListener(this);
-     disconnect(trainManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //scheduleManager.removePropertyChangeListener(this);
+     trainManager->removePropertyChangeListener(this);
+     scheduleManager->removePropertyChangeListener(this);
      disconnect(scheduleManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      removePropertyChangeTrains();
      removePropertyChangeTrainSchedules();

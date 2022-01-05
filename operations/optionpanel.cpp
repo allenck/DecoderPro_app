@@ -1,7 +1,6 @@
 #include "optionpanel.h"
 #include "setup.h"
 #include <QPushButton>
-#include <QCheckBox>
 #include <QButtonGroup>
 #include "jcombobox.h"
 #include <QBoxLayout>
@@ -45,32 +44,28 @@ namespace Operations
  buildAggressive = new QRadioButton(tr("Aggressive"));
 
  // check boxes
- routerCheckBox = new QCheckBox(tr("Enable Car Routing"));
- routerYardCheckBox = new QCheckBox(tr("Enable Car Routing via Yards"));
- routerStagingCheckBox = new QCheckBox(tr("Enable Car Routing through Staging"));
- routerAllTrainsBox = new QCheckBox(tr("Use all Trains when Routing"));
- routerRestrictBox = new QCheckBox(tr("Enable Track Destination Restrictions when Routing"));
 
- valueCheckBox = new QCheckBox(tr("Enable Value Fields"));
- rfidCheckBox = new QCheckBox(tr("Identification Tag Fields"));
- carLoggerCheckBox = new QCheckBox(tr("Enable Car Logging"));
- engineLoggerCheckBox = new QCheckBox(tr("Enable Engine Logging"));
- trainLoggerCheckBox = new QCheckBox(tr("Enable Train Logging"));
+ valueCheckBox = new JCheckBox(tr("Enable Value Fields"));
+ rfidCheckBox = new JCheckBox(tr("Identification Tag Fields"));
+ carLoggerCheckBox = new JCheckBox(tr("Enable Car Logging"));
+ engineLoggerCheckBox = new JCheckBox(tr("Enable Engine Logging"));
+ trainLoggerCheckBox = new JCheckBox(tr("Enable Train Logging"));
 
- localInterchangeCheckBox = new QCheckBox(tr("Allow Local Classification/Interchange to C/I Moves"));
- localSpurCheckBox = new QCheckBox(tr("Allow Local Spur to Spur Moves"));
- localYardCheckBox = new QCheckBox(tr("Allow Local Yard to Yard Moves"));
+ localInterchangeCheckBox = new JCheckBox(tr("Allow Local Classification/Interchange to C/I Moves"));
+ localSpurCheckBox = new JCheckBox(tr("Allow Local Spur to Spur Moves"));
+ localYardCheckBox = new JCheckBox(tr("Allow Local Yard to Yard Moves"));
 
- trainIntoStagingCheckBox = new QCheckBox(tr("Enable Type, Road and Load Restrictions into Staging"));
- stagingAvailCheckBox = new QCheckBox(tr("Make departure track available after train is built"));
- stagingTurnCheckBox = new QCheckBox(tr("Allow cars to return to staging"));
- promptFromTrackStagingCheckBox = new QCheckBox(tr("Prompt for Departure Track from Staging"));
- promptToTrackStagingCheckBox = new QCheckBox(tr("Prompt for Arrival Track into Staging"));
+ trainIntoStagingCheckBox = new JCheckBox(tr("Enable Type, Road and Load Restrictions into Staging"));
+ stagingAvailCheckBox = new JCheckBox(tr("Make departure track available after train is built"));
+ stagingTurnCheckBox = new JCheckBox(tr("Allow cars to return to staging"));
+ promptFromTrackStagingCheckBox = new JCheckBox(tr("Prompt for Departure Track from Staging"));
+ promptToTrackStagingCheckBox = new JCheckBox(tr("Prompt for Arrival Track into Staging"));
+ tryNormalStagingCheckBox->setChecked(Setup::isStagingTryNormalBuildEnabled());
 
- generateCvsManifestCheckBox = new QCheckBox(tr("Generate CSV Manifest"));
- generateCvsSwitchListCheckBox = new QCheckBox(tr("Generate CSV Switch List"));
+ generateCvsManifestCheckBox = new JCheckBox(tr("Generate CSV Manifest"));
+ generateCvsSwitchListCheckBox = new JCheckBox(tr("Generate CSV Switch List"));
 
- enableVsdCheckBox = new QCheckBox(tr("Enable physical locations for Virtual Sound Decoder"));
+ enableVsdCheckBox = new JCheckBox(tr("Enable physical locations for Virtual Sound Decoder"));
 
  // text field
  rfidTextField = new JTextField(10);
@@ -83,12 +78,15 @@ namespace Operations
   localInterchangeCheckBox->setChecked(Setup::isLocalInterchangeMovesEnabled());
   localSpurCheckBox->setChecked(Setup::isLocalSpurMovesEnabled());
   localYardCheckBox->setChecked(Setup::isLocalYardMovesEnabled());
+
   // staging options
   trainIntoStagingCheckBox->setChecked(Setup::isTrainIntoStagingCheckEnabled());
   stagingAvailCheckBox->setChecked(Setup::isStagingTrackImmediatelyAvail());
   stagingTurnCheckBox->setChecked(Setup::isAllowReturnToStagingEnabled());
   promptToTrackStagingCheckBox->setChecked(Setup::isPromptToStagingEnabled());
   promptFromTrackStagingCheckBox->setChecked(Setup::isPromptFromStagingEnabled());
+  tryNormalStagingCheckBox->setChecked(Setup::isStagingTryNormalBuildEnabled());
+
   // router
   routerCheckBox->setChecked(Setup::isCarRoutingEnabled());
   routerYardCheckBox->setChecked(Setup::isCarRoutingViaYardsEnabled());
@@ -99,6 +97,8 @@ namespace Operations
   carLoggerCheckBox->setChecked(Setup::isCarLoggerEnabled());
   engineLoggerCheckBox->setChecked(Setup::isEngineLoggerEnabled());
   trainLoggerCheckBox->setChecked(Setup::isTrainLoggerEnabled());
+  // save manifests
+  saveTrainManifestCheckBox->setChecked(Setup::isSaveTrainManifestsEnabled());
 
   generateCvsManifestCheckBox->setChecked(Setup::isGenerateCsvManifestEnabled());
   generateCvsSwitchListCheckBox->setChecked(Setup::isGenerateCsvSwitchListEnabled());
@@ -199,6 +199,7 @@ namespace Operations
   JPanel* pOption = new JPanel();
   pOption->setLayout(new GridBagLayout());
   pOption->setBorder(BorderFactory::createTitledBorder(tr("Options")));
+  addItemLeft(pOption, saveTrainManifestCheckBox, 1, 1);
   addItemLeft(pOption, valueCheckBox, 1, 2);
   addItemLeft(pOption, valueTextField, 2, 2);
   addItemLeft(pOption, rfidCheckBox, 1, 3);
@@ -249,6 +250,13 @@ namespace Operations
   buildAggressive->setChecked(Setup::isBuildAggressive());
  }
 
+ /*private*/ void OptionPanel::enableComponents() {
+     // disable staging option if normal mode
+     stagingAvailCheckBox->setEnabled(buildAggressive->isChecked());
+     numberPassesComboBox->setEnabled(buildAggressive->isChecked());
+     tryNormalStagingCheckBox->setEnabled(buildAggressive->isChecked());
+ }
+
  //@Override
  /*public*/ void OptionPanel::radioButtonActionPerformed(QWidget* ae)
  {
@@ -283,7 +291,7 @@ namespace Operations
  //@Override
  /*protected*/ void OptionPanel::checkBoxActionPerformed(QWidget* ae)
  {
-  if ((QCheckBox*)ae == routerCheckBox)
+  if ((JCheckBox*)ae == routerCheckBox)
   {
    setRouterCheckBoxesEnabled();
   }
@@ -322,8 +330,10 @@ namespace Operations
   Setup::setTrainIntoStagingCheckEnabled(trainIntoStagingCheckBox->isChecked());
   Setup::setStagingTrackImmediatelyAvail(stagingAvailCheckBox->isChecked());
   Setup::setAllowReturnToStagingEnabled(stagingTurnCheckBox->isChecked());
-  Setup::setPromptFromStagingEnabled(promptFromTrackStagingCheckBox->isChecked());
-  Setup::setPromptToStagingEnabled(promptToTrackStagingCheckBox->isChecked());
+  Setup::setStagingPromptFromEnabled(promptFromTrackStagingCheckBox->isChecked());
+  Setup::setStagingPromptToEnabled(promptToTrackStagingCheckBox->isChecked());
+  Setup::setStagingTryNormalBuildEnabled(tryNormalStagingCheckBox->isSelected());
+
   // Car routing enabled?
   Setup::setCarRoutingEnabled(routerCheckBox->isChecked());
   Setup::setCarRoutingViaYardsEnabled(routerYardCheckBox->isChecked());
@@ -350,37 +360,45 @@ namespace Operations
  //@Override
  /*public*/ bool OptionPanel::isDirty()
  {
-  return ( // build option
-          Setup::isBuildAggressive() != buildAggressive->isChecked()
-          || Setup::getNumberPasses() != (int) numberPassesComboBox->currentData().toInt()
-          // Local moves?
-          || Setup::isLocalInterchangeMovesEnabled() != localInterchangeCheckBox->isChecked()
-          || Setup::isLocalSpurMovesEnabled() != localSpurCheckBox->isChecked()
-          || Setup::isLocalYardMovesEnabled() != localYardCheckBox->isChecked()
-          // Staging options
-          || Setup::isTrainIntoStagingCheckEnabled() != trainIntoStagingCheckBox->isChecked()
-          || Setup::isStagingTrackImmediatelyAvail() != stagingAvailCheckBox->isChecked()
-          || Setup::isAllowReturnToStagingEnabled() != stagingTurnCheckBox->isChecked()
-          || Setup::isPromptFromStagingEnabled() != promptFromTrackStagingCheckBox->isChecked()
-          || Setup::isPromptToStagingEnabled() != promptToTrackStagingCheckBox->isChecked()
-          // Car routing enabled?
-          || Setup::isCarRoutingEnabled() != routerCheckBox->isChecked()
-          || Setup::isCarRoutingViaYardsEnabled() != routerYardCheckBox->isChecked()
-          || Setup::isCarRoutingViaStagingEnabled() != routerStagingCheckBox->isChecked()
-          || Setup::isOnlyActiveTrainsEnabled() != !routerAllTrainsBox->isChecked()
-          || Setup::isCheckCarDestinationEnabled() != routerRestrictBox->isChecked()
-          // Options
-          || Setup::isGenerateCsvManifestEnabled() != generateCvsManifestCheckBox->isChecked()
-          || Setup::isGenerateCsvSwitchListEnabled() != generateCvsSwitchListCheckBox->isChecked()
-          || Setup::isValueEnabled() != valueCheckBox->isChecked()
-          || Setup::getValueLabel()!=(valueTextField->text())
-          || Setup::isRfidEnabled() != rfidCheckBox->isChecked()
-          || Setup::getRfidLabel()!=(rfidTextField->text())
-          // Logging enabled?
-          || Setup::isEngineLoggerEnabled() != engineLoggerCheckBox->isChecked()
-          || Setup::isCarLoggerEnabled() != carLoggerCheckBox->isChecked()
-          || Setup::isTrainLoggerEnabled() != trainLoggerCheckBox->isChecked()
-          // VSD
-          || Setup::isVsdPhysicalLocationEnabled() != enableVsdCheckBox->isChecked());
+  return !( // build option
+   Setup::isBuildAggressive() == buildAggressive->isChecked() &&
+    Setup::getNumberPasses() == (int) numberPassesComboBox->currentText().toInt()
+    // Local moves?
+    &&
+    Setup::isLocalInterchangeMovesEnabled() == localInterchangeCheckBox->isSelected() &&
+    Setup::isLocalSpurMovesEnabled() == localSpurCheckBox->isSelected() &&
+    Setup::isLocalYardMovesEnabled() == localYardCheckBox->isSelected()
+    // Staging options
+    &&
+    Setup::isStagingTrainCheckEnabled() == trainIntoStagingCheckBox->isSelected() &&
+    Setup::isStagingTrackImmediatelyAvail() == stagingAvailCheckBox->isSelected() &&
+    Setup::isStagingAllowReturnEnabled() == stagingTurnCheckBox->isSelected() &&
+    Setup::isStagingPromptFromEnabled() == promptFromTrackStagingCheckBox->isSelected() &&
+    Setup::isStagingPromptToEnabled() == promptToTrackStagingCheckBox->isSelected() &&
+    Setup::isStagingTryNormalBuildEnabled() == tryNormalStagingCheckBox->isSelected()
+    // Car routing enabled?
+    &&
+    Setup::isCarRoutingEnabled() == routerCheckBox->isSelected() &&
+    Setup::isCarRoutingViaYardsEnabled() == routerYardCheckBox->isSelected() &&
+    Setup::isCarRoutingViaStagingEnabled() == routerStagingCheckBox->isSelected() &&
+    Setup::isOnlyActiveTrainsEnabled() == !routerAllTrainsBox->isSelected() &&
+    Setup::isCheckCarDestinationEnabled() == routerRestrictBox->isSelected()
+    // Options
+    &&
+    Setup::isGenerateCsvManifestEnabled() == generateCvsManifestCheckBox->isSelected() &&
+    Setup::isGenerateCsvSwitchListEnabled() == generateCvsSwitchListCheckBox->isSelected() &&
+    Setup::isValueEnabled() == valueCheckBox->isSelected() &&
+    Setup::getValueLabel() ==(valueTextField->text()) &&
+    Setup::isRfidEnabled() == rfidCheckBox->isSelected() &&
+    Setup::getRfidLabel() == (rfidTextField->text()) &&
+    Setup::isSaveTrainManifestsEnabled() == saveTrainManifestCheckBox->isSelected()
+    // Logging enabled?
+    &&
+    Setup::isEngineLoggerEnabled() == engineLoggerCheckBox->isSelected() &&
+    Setup::isCarLoggerEnabled() == carLoggerCheckBox->isSelected() &&
+    Setup::isTrainLoggerEnabled() == trainLoggerCheckBox->isSelected()
+    // VSD
+    &&
+    Setup::isVsdPhysicalLocationEnabled() == enableVsdCheckBox->isSelected());
+  }
  }
-}

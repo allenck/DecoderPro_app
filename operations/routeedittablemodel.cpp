@@ -154,9 +154,9 @@ namespace Operations
 
  /*private*/ void RouteEditTableModel::setPreferredWidths(JTable* table) {
      // set column preferred widths
-     if (_frame->loadTableDetails(table)) {
-         return; // done
-     }
+//     if (_frame->loadTableDetails(table)) {
+//         return; // done
+//     }
      table->getColumnModel()->getColumn(ID_COLUMN)->setPreferredWidth(40);
      table->getColumnModel()->getColumn(NAME_COLUMN)->setPreferredWidth(150);
      table->getColumnModel()->getColumn(TRAIN_DIRECTION_COLUMN)->setPreferredWidth(95);

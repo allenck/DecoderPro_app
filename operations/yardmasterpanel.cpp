@@ -340,8 +340,7 @@ namespace Operations
      }
 
      // listen for new trains being added
-     //TrainManager::instance().addPropertyChangeListener(this);
-     connect(((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->pcs,SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->addPropertyChangeListener(this);
  }
 #if 0
  private void removeTrainListeners() {

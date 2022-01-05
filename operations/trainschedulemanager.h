@@ -22,11 +22,13 @@ namespace Operations
    Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize)
 
  public:
+   /*public*/ static /*final*/ QString NONE;// = "";
   Q_INVOKABLE explicit TrainScheduleManager(QObject *parent = 0);
    ~TrainScheduleManager() {}
    TrainScheduleManager(const TrainScheduleManager&) : PropertyChangeSupport(this) {}
    PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
   /*public*/ static /*final*/ QString LISTLENGTH_CHANGED_PROPERTY;// = "trainScheduleListLength"; // NOI18N
+   /*public*/ static /*final*/ QString SCHEDULE_ID_CHANGED_PROPERTY;// = "ActiveTrainScheduleId"; // NOI18N
   /*public*/ void dispose();
   /*public*/ int numEntries();
   /*public*/ TrainSchedule* getScheduleByName(QString name);
@@ -42,6 +44,10 @@ namespace Operations
   /*public*/ void store(QDomElement root, QDomDocument doc);
   /*public*/ void load(QDomElement root);
   /*public*/ void createDefaultSchedules();
+   /*public*/ void setTrainScheduleActiveId(QString id);
+   /*public*/ QString getTrainScheduleActiveId();
+   /*public*/ TrainSchedule* getActiveSchedule();
+
   Q_INVOKABLE     /*public*/ void initialize();
 
  signals:
@@ -54,6 +60,7 @@ namespace Operations
 //  /*private*/ static TrainScheduleManager* _instance;// = null;
   /*private*/ int _id;// = 0;
   /*private*/ QList<TrainSchedule*> getList();
+  /*private*/ QString _trainScheduleActiveId = NONE;
 
  protected:
   // stores known TrainSchedule instances by id

@@ -2,7 +2,7 @@
 #define TRAINSSCHEDULETABLEMODEL_H
 
 #include "abstracttablemodel.h"
-
+#include "propertychangelistener.h"
 class Logger;
 class JTable;
 class PropertyChangeEvent;
@@ -13,8 +13,10 @@ namespace Operations
  class Train;
  class TrainManager;
  class TrainScheduleManager;
- class TrainsScheduleTableModel : public AbstractTableModel
+ class TrainsScheduleTableModel : public AbstractTableModel, public PropertyChangeListener
  {
+   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   TrainsScheduleTableModel(QObject* parent = 0);
   /*public*/ void dispose();
@@ -30,9 +32,10 @@ namespace Operations
   /*public*/ TrainSchedule* getSchedule(int col) const;
   void initTable(JTable* table, TrainsScheduleTableFrame* frame);
 
+  QObject* self() override {return (QObject*)this;}
 
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
  private:
   TrainManager* trainManager;// = TrainManager.instance();
@@ -67,6 +70,10 @@ namespace Operations
   /*private*/ void addPropertyChangeTrainSchedules();
   /*private*/ /*synchronized*/ void removePropertyChangeTrains();
   /*private*/ /*synchronized*/ void addPropertyChangeTrains();
+
+  // only the first three columns of the table have defaults
+  /*private*/ /*final*/ QList<int> tableScheduleColumnWidths = {50, 70, 120};
+
   friend class TrainsScheduleTableFrame;
  };
 }

@@ -1867,12 +1867,23 @@ if (loads.length() == 0) {
  }
 
  /*private*/ QString Track::checkScheduleItem(ScheduleItem* si, Car* car) {
-     if (si->getSetoutTrainScheduleId()!=(ScheduleItem::NONE)
-             && ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainScheduleActiveId()!=(si->getSetoutTrainScheduleId())) {
-         TrainSchedule* sch = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(si->getSetoutTrainScheduleId());
-         if (sch != NULL) {
-             return SCHEDULE + " (" + getScheduleName() + ") " + tr("requestCarOnly") + " ("
-                     + sch->getName() + ")";
+ // if car is already assigned to this schedule item allow it to be dropped off
+     // on the wrong day (car arrived late)
+     if (car->getScheduleItemId()!=(si->getId()) &&
+             si->getSetoutTrainScheduleId()!=(ScheduleItem::NONE) &&
+             ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getTrainScheduleActiveId()
+                     !=(si->getSetoutTrainScheduleId())) {
+         TrainSchedule* trainSch = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))
+                 ->getScheduleById(si->getSetoutTrainScheduleId());
+         if (trainSch != nullptr) {
+             return SCHEDULE +
+                     " (" +
+                     getScheduleName() +
+                     ") " +
+                     tr("requests car only on") +
+                     " (" +
+                     trainSch->getName() +
+                     ")";
          }
      }
      // Check for correct car type, road, load
@@ -1962,7 +1973,8 @@ if (loads.length() == 0) {
   log->debug(tr("Destination track (%1) has schedule (%2) item id (%3) mode: %4 (%5)").arg(getName()).arg(getScheduleName()).arg(
           getScheduleItemId()).arg(getScheduleMode()).arg(getScheduleMode() == SEQUENTIAL ? "Sequential" : "Match")); // NOI18N
   if (currentSi != NULL
-          && (currentSi->getSetoutTrainScheduleId()==(ScheduleItem::NONE) || ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))
+          && (currentSi->getSetoutTrainScheduleId()==(ScheduleItem::NONE) ||
+              ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))
           ->getTrainScheduleActiveId()==(currentSi->getSetoutTrainScheduleId()))
           && car->getTypeName()==(currentSi->getTypeName())
           && (currentSi->getRoadName()==(ScheduleItem::NONE) || car->getRoadName()==(
@@ -1981,7 +1993,7 @@ if (loads.length() == 0) {
       QString timetableName = "";
       QString currentTimetableName = "";
       TrainSchedule* sch = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(
-              ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainScheduleActiveId());
+              ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getTrainScheduleActiveId());
       if (sch != NULL) {
           timetableName = sch->getName();
       }

@@ -34,7 +34,7 @@ namespace Operations
  private:
   Logger* log;
   TrainManager* trainManager;// TrainManager.instance();
-  TrainScheduleManager* scheduleManager;// TrainScheduleManager.instance();
+  TrainScheduleManager* trainScheduleManager;// TrainScheduleManager.instance();
   LocationManager* locationManager;// LocationManager.instance();
 
   TrainsScheduleTableModel* trainsScheduleModel;// new TrainsScheduleTableModel();

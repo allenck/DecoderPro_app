@@ -7,6 +7,8 @@
 #include "trainschedulemanager.h"
 #include "operationsmanager.h"
 #include "instancemanager.h"
+//#include "automationmanager.h"
+#include "loggerfactory.h"
 
 //TrainManagerXml::TrainManagerXml(QObject *parent) :
 //  OperationsXml(parent)
@@ -35,7 +37,6 @@ namespace Operations
   OperationsXml(parent)
  {
   fileLoaded = false;
-  log = new Logger("TrainManagerXml");
   log->setDebugEnabled(true);
   operationsFileName = "OperationsTrainRoster.xml";// NOI18N
   buildReportFileName = tr("train") + " (";
@@ -116,9 +117,10 @@ namespace Operations
   }
 
   ((Operations::TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->load(root);
-//    TrainScheduleManager.instance().load(root);
+  ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->load(root);
 
   fileLoaded = true; // set flag trains are loaded
+//  ((AutomationManager*)InstanceManager::getDefault("AutomationManager"))->load(root);
 
   // now load train icons on panels
   ((Operations::TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->loadTrainIcons();
@@ -128,6 +130,13 @@ namespace Operations
 
   log->debug("Trains have been loaded!");
 //    Operations::TrainLogger::instance().enableTrainLogging(Setup.isTrainLoggerEnabled());
+
+  for (Train* train : ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainsByIdList()) {
+      if (train->getStatusCode() == Train::CODE_BUILDING) {
+          log->warn(tr("Reseting train %1, was building when saved").arg(train->getName()));
+          train->reset();
+      }
+  }
   setDirty(false); // clear dirty flag
  }
 
@@ -256,6 +265,8 @@ namespace Operations
     /*public*/ void TrainManagerXml::dispose(){
 //        _instance = NULL;
     }
+
+ /*private*/ /*final*/ /*static*/ Logger* TrainManagerXml::log = LoggerFactory::getLogger("TrainManagerXml");
 
     /*public*/ void TrainManagerXml::initialize()
     {

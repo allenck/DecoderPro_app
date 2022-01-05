@@ -17,7 +17,7 @@
 namespace Operations
 {
  Setup::Setup(QObject *parent) :
-   PropertyChangeSupport(parent)
+   PropertyChangeSupport(this, parent)
  {
   setProperty("InstanceManagerAutoDefault", "yes");
 
@@ -197,42 +197,6 @@ namespace Operations
    << Setup:: LENGTH << Setup:: CONSIST << Setup:: OWNER << Setup:: TRACK
    << Setup::LOCATION << Setup:: DESTINATION << Setup:: COMMENT;
 
- /*private*//*static*/int Setup::scale = Setup::HO_SCALE; // Default scale
- /*private*//*static*/int Setup::ratio = Setup::HO_RATIO;
- /*private*//*static*/int Setup::ratioTons = Setup::HO_RATIO_TONS;
- /*private*//*static*/int Setup::initWeight = Setup::HO_INITIAL_WEIGHT;
- /*private*//*static*/int Setup::addWeight = Setup::HO_ADD_WEIGHT;
- /*private*//*static*/QString Setup::railroadName = Setup::NONE;
- /*private*//*static*/int Setup::traindir = Setup::EAST + Setup::WEST + Setup::NORTH + Setup::SOUTH;
- /*private*//*static*/int Setup::maxTrainLength = 1000; // maximum train length
- /*private*//*static*/int Setup::maxEngineSize = 6; // maximum number of engines that can be assigned to a train
- /*private*//*static*/int Setup::horsePowerPerTon = 1; // Horsepower per ton
- /*private*//*static*/int Setup::carMoves = 5; // default number of moves when creating a route
- /*private*//*static*/QString Setup::carTypes = Setup::DESCRIPTIVE;
- /*private*//*static*/QString Setup::ownerName = Setup::NONE;
- /*private*//*static*/QString Setup::fontName = Setup::MONOSPACED;
- /*private*//*static*/int Setup::manifestFontSize = 10;
- /*private*//*static*/int Setup::buildReportFontSize = 10;
- /*private*//*static*/QString Setup::manifestOrientation = Setup::PORTRAIT;
- /*private*//*static*/QString Setup::switchListOrientation = Setup::PORTRAIT;
- /*private*//*static*/QString Setup::pickupColor = Setup::BLACK;
- /*private*//*static*/QString Setup::dropColor = Setup::BLACK;
- /*private*//*static*/QString Setup::localColor = Setup::BLACK;
- /*private*//*static*/QStringList Setup::pickupEngineMessageFormat = QStringList()
-   << Setup::ROAD << Setup:: NUMBER << Setup:: BLANK << Setup:: MODEL
-   << Setup:: BLANK << Setup:: BLANK << Setup:: LOCATION << Setup:: COMMENT;
- /*private*//*static*/QStringList Setup::dropEngineMessageFormat = QStringList() << Setup::ROAD << Setup:: NUMBER << Setup:: BLANK << Setup:: MODEL << Setup:: BLANK << Setup:: BLANK << Setup:: DESTINATION << Setup:: COMMENT;
- /*private*//*static*/QStringList Setup::pickupManifestMessageFormat = QStringList()
-   << Setup::ROAD << Setup:: NUMBER << Setup:: TYPE << Setup:: LENGTH
-   << Setup::COLOR << Setup:: LOAD << Setup:: HAZARDOUS << Setup:: LOCATION
-   << Setup::COMMENT << Setup:: PICKUP_COMMENT;
- /*private*//*static*/QStringList Setup::dropManifestMessageFormat = QStringList()
-   << Setup::ROAD << Setup:: NUMBER << Setup:: TYPE << Setup:: LENGTH
-   << Setup:: COLOR << Setup:: LOAD << Setup:: HAZARDOUS << Setup:: DESTINATION
-   << Setup::COMMENT << Setup:: DROP_COMMENT;
- /*private*//*static*/QStringList Setup::localManifestMessageFormat = QStringList()
-   << Setup::ROAD << Setup:: NUMBER << Setup:: TYPE << Setup:: LENGTH
-   << Setup:: COLOR << Setup:: LOAD << Setup:: HAZARDOUS << Setup:: LOCATION << Setup:: DESTINATION << Setup:: COMMENT;
  /*private*//*static*/QStringList Setup::pickupSwitchListMessageFormat = QStringList()
    << Setup::ROAD << Setup:: NUMBER << Setup:: TYPE << Setup:: LENGTH
    << Setup:: COLOR << Setup:: LOAD << Setup:: HAZARDOUS << Setup::LOCATION
@@ -314,6 +278,7 @@ namespace Operations
  /*private*//*static*/bool Setup::carLogger = false; // when true car logger is enabled
  /*private*//*static*/bool Setup::engineLogger = false; // when true engine logger is enabled
  /*private*//*static*/bool Setup::trainLogger = false; // when true train logger is enabled
+ /*private*/ bool saveTrainManifests = false; // when true save previous train manifest
 
  /*private*//*static*/bool Setup::aggressiveBuild = false; // when true subtract car length from track reserve length
  /*private*//*static*/int Setup::numberPasses = 2; // the number of passes in train builder
@@ -322,10 +287,9 @@ namespace Operations
  /*private*//*static*/bool Setup::allowLocalSpurMoves = false; // when true local spur to spur moves are allowed
 
  /*private*//*static*/bool Setup::trainIntoStagingCheck = true; // staging track must accept train's rolling stock types and roads
- /*private*//*static*/bool Setup::trackImmediatelyAvail = false; // when true staging track is available for other trains
- /*private*//*static*/bool Setup::allowCarsReturnStaging = false; // allow cars on a turn to return to staging if necessary (prevent build failure)
  /*private*//*static*/bool Setup::promptFromStaging = false; // prompt user to specify which departure staging track to use
  /*private*//*static*/bool Setup::promptToStaging = false; // prompt user to specify which arrival staging track to use
+ /*private*/ bool tryNormalModeStaging = true; // try normal build if route length failure using aggressive
 
  /*private*//*static*/bool Setup::generateCsvManifest = false; // when true generate csv manifest
  /*private*//*static*/bool Setup::generateCsvSwitchList = false; // when true generate csv switch list
@@ -347,6 +311,10 @@ namespace Operations
  /*public*/  /*static final*/ QString Setup::SWITCH_LIST_CSV_PROPERTY_CHANGE = "setupSwitchListCSVChange"; //  NOI18N
  /*public*/  /*static final*/ QString Setup::MANIFEST_CSV_PROPERTY_CHANGE = "setupManifestCSVChange"; //  NOI18N
  /*public*/  /*static final*/ QString Setup::REAL_TIME_PROPERTY_CHANGE = "setupSwitchListRealTime"; //  NOI18N
+ /*public*/ /*static*/ /*final*/ QString Setup::SHOW_TRACK_MOVES_PROPERTY_CHANGE = "setupShowTrackMoves"; // NOI18N
+ /*public*/ /*static*/ /*final*/ QString Setup::SAVE_TRAIN_MANIFEST_PROPERTY_CHANGE = "saveTrainManifestChange"; // NOI18N
+ /*public*/ /*static*/ /*final*/ QString Setup::ALLOW_CARS_TO_RETURN_PROPERTY_CHANGE = "allowCarsToReturnChange"; // NOI18N
+ /*public*/ /*static*/ /*final*/ QString Setup::TRAIN_DIRECTION_PROPERTY_CHANGE = "setupTrainDirectionChange"; // NOI18N
 
  /*public*//*static*/bool Setup::isMainMenuEnabled()
  {
@@ -518,6 +486,10 @@ namespace Operations
      allowLocalSpurMoves = enabled;
  }
 
+ /*public*/ /*static*/ bool Setup::isStagingTrainCheckEnabled() {
+        return getDefault()->trainIntoStagingCheck;
+    }
+
  /*public*//*static*/bool Setup::isTrainIntoStagingCheckEnabled() {
      return trainIntoStagingCheck;
  }
@@ -527,35 +499,68 @@ namespace Operations
  }
 
  /*public*//*static*/bool Setup::isStagingTrackImmediatelyAvail() {
-     return trackImmediatelyAvail;
+     return getDefault()->trackImmediatelyAvail;
  }
 
  /*public*//*static*/void Setup::setStagingTrackImmediatelyAvail(bool enabled) {
-     trackImmediatelyAvail = enabled;
+     getDefault()->trackImmediatelyAvail = enabled;
+ }
+
+ /**
+  * allow cars to return to the same staging location if no other options
+  * (tracks) are available. Also available on a per train basis.
+  *
+  * @return true if cars are allowed to depart and return to same staging
+  *         location
+  */
+ /*public*/ /*static*/ bool Setup::isStagingAllowReturnEnabled() {
+     return getDefault()->allowCarsReturnStaging;
+ }
+
+ /*public*/ /*static*/ void Setup::setStagingAllowReturnEnabled(bool enabled) {
+     bool old = getDefault()->allowCarsReturnStaging;
+     getDefault()->allowCarsReturnStaging = enabled;
+     setDirtyAndFirePropertyChange(ALLOW_CARS_TO_RETURN_PROPERTY_CHANGE, old, enabled);
+ }
+
+ /*public*/ /*static*/ bool Setup::isStagingPromptFromEnabled() {
+     return getDefault()->promptFromStaging;
+ }
+
+ /*public*/ /*static*/ void Setup::setStagingPromptFromEnabled(bool enabled) {
+     getDefault()->promptFromStaging = enabled;
+ }
+
+ /*public*/ /*static*/ bool Setup::isStagingPromptToEnabled() {
+     return getDefault()->promptToStaging;
+ }
+
+ /*public*/ /*static*/ void Setup::setStagingPromptToEnabled(bool enabled) {
+     getDefault()->promptToStaging = enabled;
+ }
+
+ /*public*/ /*static*/ bool Setup::isStagingTryNormalBuildEnabled() {
+     return getDefault()->tryNormalModeStaging;
+ }
+
+ /*public*/ /*static*/ void Setup::setStagingTryNormalBuildEnabled(bool enabled) {
+     getDefault()->tryNormalModeStaging = enabled;
  }
 
  /*public*//*static*/bool Setup::isAllowReturnToStagingEnabled() {
-     return allowCarsReturnStaging;
+     return getDefault()->allowCarsReturnStaging;
  }
 
  /*public*//*static*/void Setup::setAllowReturnToStagingEnabled(bool enabled) {
-     allowCarsReturnStaging = enabled;
+     getDefault()->allowCarsReturnStaging = enabled;
  }
 
  /*public*//*static*/bool Setup::isPromptFromStagingEnabled() {
      return promptFromStaging;
  }
 
- /*public*//*static*/void Setup::setPromptFromStagingEnabled(bool enabled) {
-     promptFromStaging = enabled;
- }
-
  /*public*//*static*/bool Setup::isPromptToStagingEnabled() {
      return promptToStaging;
- }
-
- /*public*//*static*/void Setup::setPromptToStagingEnabled(bool enabled) {
-     promptToStaging = enabled;
  }
 
  /*public*//*static*/bool Setup::isGenerateCsvManifestEnabled() {
@@ -594,16 +599,16 @@ namespace Operations
  #endif
  /*public*//*static*/QString Setup::getRailroadName()
  {
-  if (railroadName == NULL)
+  if (getDefault()->railroadName == NULL)
   {
    return ((WebServerPreferences*)InstanceManager::getDefault("WebServerPreferences"))->getRailroadName();
   }
-  return railroadName;
+  return getDefault()->railroadName;
  }
 
  /*public*//*static*/void Setup::setRailroadName(QString name) {
-     QString old = railroadName;
-     railroadName = name;
+     QString old = getDefault()->railroadName;
+     getDefault()->railroadName = name;
      setDirtyAndFirePropertyChange("Railroad Name Change", old, name); // NOI18N
  }
 
@@ -624,43 +629,43 @@ namespace Operations
  }
 
  /*public*//*static*/void Setup::setTrainDirection(int direction) {
-     traindir = direction;
+     getDefault()->traindir = direction;
  }
 
  /*public*//*static*/int Setup::getTrainDirection() {
-     return traindir;
+     return getDefault()->traindir;
  }
 
  /*public*//*static*/void Setup::setMaxTrainLength(int length) {
-     maxTrainLength = length;
+     getDefault()->maxTrainLength = length;
  }
 
  /*public*//*static*/int Setup::getMaxTrainLength() {
-     return maxTrainLength;
+     return getDefault()->maxTrainLength;
  }
 
  /*public*//*static*/void Setup::setMaxNumberEngines(int value) {
-     maxEngineSize = value;
+     getDefault()->maxEngineSize = value;
  }
 
  /*public*//*static*/int Setup::getMaxNumberEngines() {
-     return maxEngineSize;
+     return getDefault()->maxEngineSize;
  }
 
  /*public*//*static*/void Setup::setHorsePowerPerTon(int value) {
-     horsePowerPerTon = value;
+     getDefault()->horsePowerPerTon = value;
  }
 
  /*public*//*static*/int Setup::getHorsePowerPerTon() {
-     return horsePowerPerTon;
+     return getDefault()->horsePowerPerTon;
  }
 
  /*public*//*static*/void Setup::setCarMoves(int moves) {
-     carMoves = moves;
+     getDefault()->carMoves = moves;
  }
 
  /*public*//*static*/int Setup::getCarMoves() {
-     return carMoves;
+     return getDefault()->carMoves;
  }
 
  /*public*//*static*/QString Setup::getPanelName() {
@@ -689,11 +694,11 @@ namespace Operations
  }
 
  /*public*//*static*/QString Setup::getCarTypes() {
-     return carTypes;
+     return getDefault()->carTypes;
  }
 
  /*public*//*static*/void Setup::setCarTypes(QString types) {
-     carTypes = types;
+     getDefault()->carTypes = types;
  }
 
  /*public*//*static*/void Setup::setTrainIconCordEnabled(bool enable) {
@@ -987,47 +992,47 @@ namespace Operations
  }
 
  /*public*//*static*/QString Setup::getFontName() {
-     return fontName;
+     return getDefault()->fontName;
  }
 
  /*public*//*static*/void Setup::setFontName(QString name) {
-     fontName = name;
+     getDefault()->fontName = name;
  }
 
  /*public*//*static*/int Setup::getManifestFontSize() {
-     return manifestFontSize;
+     return getDefault()->manifestFontSize;
  }
 
  /*public*//*static*/void Setup::setManifestFontSize(int size) {
-     manifestFontSize = size;
+     getDefault()->manifestFontSize = size;
  }
 
  /*public*//*static*/int Setup::getBuildReportFontSize() {
-     return buildReportFontSize;
+     return getDefault()->buildReportFontSize;
  }
 
  /*public*//*static*/void Setup::setBuildReportFontSize(int size) {
-     buildReportFontSize = size;
+     getDefault()->buildReportFontSize = size;
  }
 
  /*public*//*static*/QString Setup::getManifestOrientation() {
-     return manifestOrientation;
+     return getDefault()->manifestOrientation;
  }
 
  /*public*//*static*/void Setup::setManifestOrientation(QString orientation) {
-     manifestOrientation = orientation;
+     getDefault()->manifestOrientation = orientation;
  }
 
  /*public*//*static*/QString Setup::getSwitchListOrientation() {
      if (isSwitchListFormatSameAsManifest()) {
-         return manifestOrientation;
+         return getDefault()->manifestOrientation;
      } else {
-         return switchListOrientation;
+         return getDefault()->switchListOrientation;
      }
  }
 
  /*public*//*static*/void Setup::setSwitchListOrientation(QString orientation) {
-     switchListOrientation = orientation;
+     getDefault()->switchListOrientation = orientation;
  }
 
  /*public*//*static*/bool Setup::isTabEnabled() {
@@ -1093,8 +1098,12 @@ namespace Operations
  }
 
  /*public*//*static*/void Setup::setTrainLoggerEnabled(bool enable) {
-     trainLogger = enable;
- // TODO:    TrainLogger.instance().enableTrainLogging(enable);
+  getDefault()->trainLogger = enable;
+//  ((TrainLogger*)InstanceManager::getDefault("TrainLogger"))->enableTrainLogging(enable);
+ }
+
+ /*public*/ /*static*/ bool Setup::isSaveTrainManifestsEnabled() {
+     return saveTrainManifests;
  }
 
  /*public*//*static*/QString Setup::getPickupEnginePrefix() {
@@ -1214,22 +1223,22 @@ namespace Operations
 
  /*public*//*static*/QStringList Setup::getPickupEngineMessageFormat() {
      //return pickupEngineMessageFormat.clone();
-  return QStringList(pickupEngineMessageFormat);
+  return QStringList(getDefault()->pickupEngineMessageFormat);
  }
 
  //@edu.umd.cs.findbugs.annotations.SuppressFBWarnings("EI_EXPOSE_STATIC_REP2")
  /*public*//*static*/void Setup::setPickupEngineMessageFormat(QStringList format) {
-  pickupEngineMessageFormat = format;
+  getDefault()->pickupEngineMessageFormat = format;
  }
 
  /*public*//*static*/QStringList Setup::getDropEngineMessageFormat() {
      //return dropEngineMessageFormat.clone();
-  return QStringList(dropEngineMessageFormat);
+  return QStringList(getDefault()->dropEngineMessageFormat);
  }
 
  //@edu.umd.cs.findbugs.annotations.SuppressFBWarnings("EI_EXPOSE_STATIC_REP2")
  /*public*//*static*/void Setup::setDropEngineMessageFormat(QStringList format) {
-     dropEngineMessageFormat = format;
+     getDefault()->dropEngineMessageFormat = format;
  }
 
  /*public*//*static*/QStringList Setup::getCarAttributes() {
@@ -1239,32 +1248,32 @@ namespace Operations
 
  /*public*//*static*/QStringList Setup::getPickupManifestMessageFormat() {
      //return pickupManifestMessageFormat.clone();
-  return QStringList(pickupManifestMessageFormat);
+  return QStringList(getDefault()->pickupManifestMessageFormat);
  }
 
  //@edu.umd.cs.findbugs.annotations.SuppressFBWarnings("EI_EXPOSE_STATIC_REP2")
  /*public*//*static*/void Setup::setPickupManifestMessageFormat(QStringList format) {
-     pickupManifestMessageFormat = format;
+     getDefault()->pickupManifestMessageFormat = format;
  }
 
  /*public*//*static*/QStringList Setup::getDropManifestMessageFormat() {
      //return dropManifestMessageFormat.clone();
-  return QStringList(dropManifestMessageFormat);
+  return QStringList(getDefault()->dropManifestMessageFormat);
  }
 
  //@edu.umd.cs.findbugs.annotations.SuppressFBWarnings("EI_EXPOSE_STATIC_REP2")
  /*public*//*static*/void Setup::setDropManifestMessageFormat(QStringList format) {
-     dropManifestMessageFormat = format;
+     getDefault()->dropManifestMessageFormat = format;
  }
 
  /*public*//*static*/QStringList Setup::getLocalManifestMessageFormat() {
      //return localManifestMessageFormat.clone();
-  return QStringList(localManifestMessageFormat);
+  return QStringList(getDefault()->localManifestMessageFormat);
  }
 
  //@edu.umd.cs.findbugs.annotations.SuppressFBWarnings("EI_EXPOSE_STATIC_REP2")
  /*public*//*static*/void Setup::setLocalManifestMessageFormat(QStringList format) {
-     localManifestMessageFormat = format;
+     getDefault()->localManifestMessageFormat = format;
  }
 
  /*public*//*static*/QStringList Setup::getMissingCarMessageFormat() {
@@ -1283,7 +1292,7 @@ namespace Operations
   if (isSwitchListFormatSameAsManifest())
   {
       //return pickupManifestMessageFormat.clone();
-   return QStringList(pickupManifestMessageFormat);
+   return QStringList(getDefault()->pickupManifestMessageFormat);
   }
   else
   {
@@ -1300,7 +1309,7 @@ namespace Operations
  /*public*//*static*/QStringList Setup::getDropSwitchListMessageFormat() {
      if (isSwitchListFormatSameAsManifest()) {
          //return dropManifestMessageFormat.clone();
-      return QStringList(dropManifestMessageFormat);
+      return QStringList(getDefault()->dropManifestMessageFormat);
      } else {
          //return dropSwitchListMessageFormat.clone();
       return QStringList(dropSwitchListMessageFormat);
@@ -1315,10 +1324,10 @@ namespace Operations
  /*public*//*static*/QStringList Setup::getLocalSwitchListMessageFormat() {
      if (isSwitchListFormatSameAsManifest()) {
          //return localManifestMessageFormat.clone();
-      return QStringList(localManifestMessageFormat);
+      return QStringList(getDefault()->localManifestMessageFormat);
      } else {
          //return localSwitchListMessageFormat.clone();
-         return QStringList(localManifestMessageFormat);
+         return QStringList(getDefault()->localManifestMessageFormat);
      }
  }
 
@@ -1451,39 +1460,39 @@ namespace Operations
  }
 
  /*public*//*static*/QString Setup::getDropTextColor() {
-     return dropColor;
+     return getDefault()->dropColor;
  }
 
  /*public*//*static*/void Setup::setDropTextColor(QString color) {
-     dropColor = color;
+     getDefault()->dropColor = color;
  }
 
  /*public*//*static*/QString Setup::getPickupTextColor() {
-     return pickupColor;
+     return getDefault()->pickupColor;
  }
 
  /*public*//*static*/void Setup::setPickupTextColor(QString color) {
-     pickupColor = color;
+     getDefault()->pickupColor = color;
  }
 
  /*public*//*static*/QString Setup::getLocalTextColor() {
-     return localColor;
+     return getDefault()->localColor;
  }
 
  /*public*//*static*/void Setup::setLocalTextColor(QString color) {
-     localColor = color;
+     getDefault()->localColor = color;
  }
 
  /*public*//*static*/QColor Setup::getPickupColor() {
-     return getColor(pickupColor);
+     return getColor(getDefault()->pickupColor);
  }
 
  /*public*//*static*/QColor Setup::getDropColor() {
-     return getColor(dropColor);
+     return getColor(getDefault()->dropColor);
  }
 
  /*public*//*static*/QColor Setup::getLocalColor() {
-     return getColor(localColor);
+     return getColor(getDefault()->localColor);
  }
 
  /*public*//*static*/QColor Setup::getColor(QString colorName) {
@@ -1529,113 +1538,113 @@ namespace Operations
  }
 
  /*public*//*static*/QString Setup::getOwnerName() {
-     return ownerName;
+     return getDefault()->ownerName;
  }
 
  /*public*//*static*/void Setup::setOwnerName(QString name) {
-     ownerName = name;
+     getDefault()->ownerName = name;
  }
 
  /*public*//*static*/int Setup::getScaleRatio() {
-     if (scale == 0) {
+     if (getDefault()->scale == 0) {
          Logger::error("Scale not set");
      }
-     return ratio;
+     return getDefault()->ratio;
  }
 
  /*public*//*static*/int Setup::getScaleTonRatio() {
-     if (scale == 0) {
+     if (getDefault()->scale == 0) {
          Logger::error("Scale not set");
      }
-     return ratioTons;
+     return getDefault()->ratioTons;
  }
 
  /*public*//*static*/int Setup::getInitalWeight() {
-     if (scale == 0) {
+     if (getDefault()->scale == 0) {
          Logger::error("Scale not set");
      }
-     return initWeight;
+     return getDefault()->initWeight;
  }
 
  /*public*//*static*/int Setup::getAddWeight() {
-     if (scale == 0) {
+     if (getDefault()->scale == 0) {
          Logger::error("Scale not set");
      }
-     return addWeight;
+     return getDefault()->addWeight;
  }
 
  /*public*//*static*/int Setup::getScale() {
-     return scale;
+     return getDefault()->scale;
  }
 
  /*public*//*static*/void Setup::setScale(int s) {
-     scale = s;
-     switch (scale) {
+     getDefault()->scale = s;
+     switch (getDefault()->scale) {
          case Z_SCALE:
-             ratio = Z_RATIO;
-             initWeight = Z_INITIAL_WEIGHT;
-             addWeight = Z_ADD_WEIGHT;
-             ratioTons = Z_RATIO_TONS;
+             getDefault()->ratio = Z_RATIO;
+             getDefault()->initWeight = Z_INITIAL_WEIGHT;
+             getDefault()->addWeight = Z_ADD_WEIGHT;
+             getDefault()->ratioTons = Z_RATIO_TONS;
              break;
          case N_SCALE:
-             ratio = N_RATIO;
-             initWeight = N_INITIAL_WEIGHT;
-             addWeight = N_ADD_WEIGHT;
-             ratioTons = N_RATIO_TONS;
+             getDefault()->ratio = N_RATIO;
+             getDefault()->initWeight = N_INITIAL_WEIGHT;
+             getDefault()->addWeight = N_ADD_WEIGHT;
+             getDefault()->ratioTons = N_RATIO_TONS;
              break;
          case TT_SCALE:
-             ratio = TT_RATIO;
-             initWeight = TT_INITIAL_WEIGHT;
-             addWeight = TT_ADD_WEIGHT;
-             ratioTons = TT_RATIO_TONS;
+             getDefault()->ratio = TT_RATIO;
+             getDefault()->initWeight = TT_INITIAL_WEIGHT;
+             getDefault()->addWeight = TT_ADD_WEIGHT;
+             getDefault()->ratioTons = TT_RATIO_TONS;
              break;
          case HOn3_SCALE:
-             ratio = HO_RATIO;
-             initWeight = HOn3_INITIAL_WEIGHT;
-             addWeight = HOn3_ADD_WEIGHT;
-             ratioTons = HOn3_RATIO_TONS;
+             getDefault()->ratio = HO_RATIO;
+             getDefault()->initWeight = HOn3_INITIAL_WEIGHT;
+             getDefault()->addWeight = HOn3_ADD_WEIGHT;
+             getDefault()->ratioTons = HOn3_RATIO_TONS;
              break;
          case OO_SCALE:
-             ratio = OO_RATIO;
-             initWeight = OO_INITIAL_WEIGHT;
-             addWeight = OO_ADD_WEIGHT;
-             ratioTons = OO_RATIO_TONS;
+             getDefault()->ratio = OO_RATIO;
+             getDefault()->initWeight = OO_INITIAL_WEIGHT;
+             getDefault()->addWeight = OO_ADD_WEIGHT;
+             getDefault()->ratioTons = OO_RATIO_TONS;
              break;
          case HO_SCALE:
-             ratio = HO_RATIO;
-             initWeight = HO_INITIAL_WEIGHT;
-             addWeight = HO_ADD_WEIGHT;
-             ratioTons = HO_RATIO_TONS;
+             getDefault()->ratio = HO_RATIO;
+             getDefault()->initWeight = HO_INITIAL_WEIGHT;
+             getDefault()->addWeight = HO_ADD_WEIGHT;
+             getDefault()->ratioTons = HO_RATIO_TONS;
              break;
          case Sn3_SCALE:
-             ratio = S_RATIO;
-             initWeight = Sn3_INITIAL_WEIGHT;
-             addWeight = Sn3_ADD_WEIGHT;
-             ratioTons = Sn3_RATIO_TONS;
+             getDefault()->ratio = S_RATIO;
+             getDefault()->initWeight = Sn3_INITIAL_WEIGHT;
+             getDefault()->addWeight = Sn3_ADD_WEIGHT;
+             getDefault()->ratioTons = Sn3_RATIO_TONS;
              break;
          case S_SCALE:
-             ratio = S_RATIO;
-             initWeight = S_INITIAL_WEIGHT;
-             addWeight = S_ADD_WEIGHT;
-             ratioTons = S_RATIO_TONS;
+             getDefault()->ratio = S_RATIO;
+             getDefault()->initWeight = S_INITIAL_WEIGHT;
+             getDefault()->addWeight = S_ADD_WEIGHT;
+             getDefault()->ratioTons = S_RATIO_TONS;
              break;
          case On3_SCALE:
-             ratio = O_RATIO;
-             initWeight = On3_INITIAL_WEIGHT;
-             addWeight = On3_ADD_WEIGHT;
-             ratioTons = On3_RATIO_TONS;
+             getDefault()->ratio = O_RATIO;
+             getDefault()->initWeight = On3_INITIAL_WEIGHT;
+             getDefault()->addWeight = On3_ADD_WEIGHT;
+             getDefault()->ratioTons = On3_RATIO_TONS;
              break;
          case O_SCALE:
-             ratio = O_RATIO;
-             initWeight = O_INITIAL_WEIGHT;
-             addWeight = O_ADD_WEIGHT;
-             ratioTons = O_RATIO_TONS;
+             getDefault()->ratio = O_RATIO;
+             getDefault()->initWeight = O_INITIAL_WEIGHT;
+             getDefault()->addWeight = O_ADD_WEIGHT;
+             getDefault()->ratioTons = O_RATIO_TONS;
              break;
          case G_SCALE:
-             ratio = G_RATIO;
-             initWeight = G_INITIAL_WEIGHT;
-             addWeight = G_ADD_WEIGHT;
-             ratioTons = G_RATIO_TONS;
+             getDefault()->ratio = G_RATIO;
+             getDefault()->initWeight = G_INITIAL_WEIGHT;
+             getDefault()->addWeight = G_ADD_WEIGHT;
+             getDefault()->ratioTons = G_RATIO_TONS;
              break;
          default:
              Logger::error("Unknown scale");
@@ -1730,16 +1739,16 @@ namespace Operations
   */
  /*public*//*static*/QVector<QString> Setup::getTrainDirectionList() {
      QVector<QString> directions =  QVector<QString>();
-     if ((traindir & EAST) > 0) {
+     if ((getDefault()->traindir & EAST) > 0) {
          directions.append(EAST_DIR);
      }
-     if ((traindir & WEST) > 0) {
+     if ((getDefault()->traindir & WEST) > 0) {
          directions.append(WEST_DIR);
      }
-     if ((traindir & NORTH) > 0) {
+     if ((getDefault()->traindir & NORTH) > 0) {
          directions.append(NORTH_DIR);
      }
-     if ((traindir & SOUTH) > 0) {
+     if ((getDefault()->traindir & SOUTH) > 0) {
          directions.append(SOUTH_DIR);
      }
      return directions;
@@ -2063,7 +2072,7 @@ namespace Operations
          if (log->isDebugEnabled()) {
              log->debug(tr("railroadName: %1").arg(name));
          }
-         railroadName = name; // don't set the dirty bit
+         getDefault()->railroadName = name; // don't set the dirty bit
      }
 
      if ((operations.firstChildElement(Xml::SETUP) != QDomElement())
@@ -2800,14 +2809,14 @@ namespace Operations
              if (log->isDebugEnabled()) {
                  log->debug("promptStagingEnabled: " + enable);
              }
-             setPromptFromStagingEnabled(enable==(Xml::_TRUE));
+             setStagingPromptFromEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::BUILD_OPTIONS).attribute(Xml::PROMPT_TO_STAGING_ENABLED)) != NULL) {
              QString enable = a;
              if (log->isDebugEnabled()) {
                  log->debug("promptToStagingEnabled: " + enable);
              }
-             setPromptToStagingEnabled(enable==(Xml::_TRUE));
+             setStagingPromptToEnabled(enable==(Xml::_TRUE));
          }
          if ((a = operations.firstChildElement(Xml::BUILD_OPTIONS).attribute(Xml::GENERATE_CSV_MANIFEST)) != NULL) {
              QString enable = a;
@@ -3171,7 +3180,9 @@ namespace Operations
      }
  #endif
  }
- ///*static*/ PropertyChangeSupport* Setup::pcs = new PropertyChangeSupport("Setup");
+ /*public*/ /*static*/ Setup* Setup::getDefault() {
+         return (Setup*)InstanceManager::getDefault("Operations::Setup");
+ }
 
  #if 0
 

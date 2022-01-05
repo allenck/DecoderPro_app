@@ -28,6 +28,9 @@
 #include "divisionmanager.h"
 #include "kernelmanager.h"
 #include "consistmanager.h"
+#include "traincustomswitchlist.h"
+#include "traincustommanifest.h"
+#include "setup.h"
 
 namespace Operations
 {
@@ -65,7 +68,9 @@ int id;
   qRegisterMetaType<DivisionManager>("DivisionManager");
   qRegisterMetaType<KernelManager>("KernelManager");
   qRegisterMetaType<ConsistManager>("ConsistManager");
-
+  qRegisterMetaType<TrainCustomSwitchList>("TrainCustomSwitchList");
+  qRegisterMetaType<TrainCustomManifest>("TrainCustomManifest");
+  qRegisterMetaType<Setup>("Setup");
   Metatypes::done = true;
  }
 }

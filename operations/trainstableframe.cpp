@@ -323,8 +323,7 @@ namespace Operations
   //addHorizontalScrollBarKludgeFix(controlPane, controlPanel);
 
   // listen for timetable changes
-  //trainManager.addPropertyChangeListener(this);
-  connect(trainManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+  trainManager->addPropertyChangeListener(this);
   //SetupaddPropertyChangeListener(this);
   // listen for location switch list changes
   addPropertyChangeLocations();
@@ -483,7 +482,7 @@ namespace Operations
  {
   QList<Train*> sysList;
   QString sortBy = getSortBy();
-  if (sortBy==(TrainsTableModel::IDCOLUMNNAME)) {
+  if (sortBy==(TrainsTableModel::ID_COLUMN)) {
       sysList = trainManager->getTrainsByIdList();
   } else if (sortBy==(TrainsTableModel::TIMECOLUMNNAME)) {
       sysList = trainManager->getTrainsByTimeList();
@@ -552,7 +551,7 @@ namespace Operations
 
  /*private*/ void TrainsTableFrame::updateTitle() {
      QString title = tr("Trains Table");
-     TrainSchedule* sch = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(trainManager->getTrainScheduleActiveId());
+     TrainSchedule* sch = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getActiveSchedule();
      if (sch != NULL) {
          title = title + " (" + sch->getName() + ")";
      }
@@ -603,8 +602,7 @@ namespace Operations
       */
      trainsModel->dispose();
      trainManager->runShutDownScripts();
-     //trainManager.removePropertyChangeListener(this);
-     disconnect(trainManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     trainManager->removePropertyChangeListener(this);
      //Setup.removePropertyChangeListener(this);
      removePropertyChangeLocations();
      OperationsFrame::dispose();

@@ -11,9 +11,10 @@ namespace Operations
  class TrainManager;
  class LocationManager;
  class TrainListener;
- class AbstractOperationsServer : public QObject
+ class AbstractOperationsServer : public QObject, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   explicit AbstractOperationsServer(QObject *parent = 0);
   /*public*/ /*abstract*/ virtual void sendTrainList();
@@ -34,6 +35,8 @@ namespace Operations
   /*abstract*/ /*public*/ virtual void sendMessage(QList<QString> contents); //throws IOException;
   /*abstract*/ /*public*/ virtual void sendErrorStatus(QString errorStatus); //throws IOException;
   /*abstract*/ /*public*/ virtual void parseStatus(QString statusString); //throws JmriException, IOException;
+
+   QObject* self() override {return (QObject*)this;}
 
  signals:
 

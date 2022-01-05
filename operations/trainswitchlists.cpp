@@ -105,8 +105,7 @@ namespace Operations
          QString valid = QString(messageFormatText = TrainManifestText::getStringValid()).arg(
                  getDate(true));
          if (Setup::isPrintTimetableNameEnabled()) {
-             TrainSchedule* sch = ((Operations::TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(
-                     trainManager->getTrainScheduleActiveId());
+              TrainSchedule* sch = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getActiveSchedule();
              if (sch != NULL) {
                  valid = valid + " (" + sch->getName() + ")";
              }

@@ -135,9 +135,9 @@ namespace Operations
  }
 #if 1
  /*private*/ void ScheduleTableModel::setPreferredWidths(JTable* table) {
-     if (_frame->loadTableDetails(table)) {
-         return; // done
-     }
+//     if (_frame->loadTableDetails(table)) {
+//         return; // done
+//     }
      log->debug("Setting preferred widths");
      // set column preferred widths
      table->getColumnModel()->getColumn(ID_COLUMN)->setPreferredWidth(35);

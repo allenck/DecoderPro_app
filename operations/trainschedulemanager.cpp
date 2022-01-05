@@ -25,7 +25,10 @@ namespace Operations
  */
 ///*public*/ class TrainScheduleManager implements java.beans.PropertyChangeListener {
 
+ /*public*/ /*static*/ /*final*/ QString TrainScheduleManager::NONE = "";
+
  /*public*/ /*static*/ /*final*/ QString TrainScheduleManager::LISTLENGTH_CHANGED_PROPERTY = "trainScheduleListLength"; // NOI18N
+ /*public*/ /*static*/ /*final*/ QString TrainScheduleManager::SCHEDULE_ID_CHANGED_PROPERTY = "ActiveTrainScheduleId"; // NOI18N
 
  /*public*/ TrainScheduleManager::TrainScheduleManager(QObject* parent) : PropertyChangeSupport(this, parent) {
   log = new Logger("TrainScheduleManger");
@@ -48,6 +51,27 @@ namespace Operations
   */
  /*public*/ int TrainScheduleManager::numEntries() {
      return _scheduleHashTable.size();
+ }
+
+ /**
+  * Sets the selected schedule id
+  *
+  * @param id Selected schedule id
+  */
+ /*public*/ void TrainScheduleManager::setTrainScheduleActiveId(QString id) {
+     QString old = _trainScheduleActiveId;
+     _trainScheduleActiveId = id;
+     if (old!=(id)) {
+         setDirtyAndFirePropertyChange(SCHEDULE_ID_CHANGED_PROPERTY, old, id);
+     }
+ }
+
+ /*public*/ QString TrainScheduleManager::getTrainScheduleActiveId() {
+     return _trainScheduleActiveId;
+ }
+
+ /*public*/ TrainSchedule* TrainScheduleManager::getActiveSchedule() {
+     return getScheduleById(getTrainScheduleActiveId());
  }
 
  /**

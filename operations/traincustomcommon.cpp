@@ -10,9 +10,10 @@
 
 using namespace Operations;
 
-TrainCustomCommon::TrainCustomCommon(QObject *parent) : QObject(parent)
+TrainCustomCommon::TrainCustomCommon(QString dirName, QString xmlElement, QObject *parent) : QObject(parent)
 {
-
+ directoryName = dirName;
+ this->xmlElement = xmlElement;
 }
 ///*public*/ abstract class TrainCustomCommon {
 
@@ -34,9 +35,12 @@ TrainCustomCommon::TrainCustomCommon(QObject *parent) : QObject(parent)
     csvNamesFileName = name;
 }
 
-/*abstract*/ /*public*/ QString TrainCustomCommon::getDirectoryName() {return "";}
+/*abstract*/ /*public*/ QString TrainCustomCommon::getDirectoryName() {
+ return directoryName;}
 
-/*abstract*/ /*public*/ void TrainCustomCommon::setDirectoryName(QString name) {}
+/*abstract*/ /*public*/ void TrainCustomCommon::setDirectoryName(QString name) {
+ directoryName = name;
+}
 
 /*public*/ int TrainCustomCommon::getFileCount() {
     return fileCount;
@@ -207,8 +211,9 @@ TrainCustomCommon::TrainCustomCommon(QObject *parent) : QObject(parent)
     return file.exists();
 }
 #endif
-/*public*/ void TrainCustomCommon::load(QDomElement mc)
+/*public*/ void TrainCustomCommon::load(QDomElement options)
 {
+ QDomElement mc = options.firstChildElement(xmlElement);
  if (!mc.isNull())
  {
   QString a;

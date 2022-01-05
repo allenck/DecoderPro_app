@@ -37,7 +37,6 @@ namespace Operations
   /*public*/ QList<Location*> getLocationsByIdList();
   /*public*/ QList<Location*> getList();
   /*public*/ void _register(Location* location);
-  //PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
   /*public*/ Location* getLocationByReporter(Reporter* r);
   /*public*/ Track* getTrackByReporter(Reporter* r);
   /*public*/ Location* newLocation(QString name);
@@ -59,17 +58,16 @@ namespace Operations
 
  public slots:
  private:
-  /*private*/ static LocationManager* _instance;// = null;
-  /*private*/ int _id;// = 0;
-  Logger* log;
+  /*private*/ int _id = 0;
+  static Logger* log;
   /*private*/ void calculateMaxNameLengths();
 
  protected:
-  /*protected*/ QHash<QString, Location*> _locationHashTable;// = new Hashtable<String, Location>();
+  /*protected*/ QHash<QString, Location*> _locationHashTable = QHash<QString, Location*>();
   /*protected*/ void setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n);
-  /*protected*/ int _maxLocationNameLength;// = 0;
-  /*protected*/ int _maxTrackNameLength;// = 0;
-  /*protected*/ int _maxLocationAndTrackNameLength;// = 0;
+  /*protected*/ int _maxLocationNameLength = 0;
+  /*protected*/ int _maxTrackNameLength = 0;
+  /*protected*/ int _maxLocationAndTrackNameLength = 0;
 
  };
 }

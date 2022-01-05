@@ -30,7 +30,7 @@ namespace Operations
   /*public*/ void initComponents() override;
   /*public*/ void initMinimumSize();
   /*public*/ void initMinimumSize(QSize dimension);
-  /*public*/ bool loadTableDetails(JTable* table);
+  /*public*/ void loadTableDetails(JTable* table);
   /*public*/ void dispose()override;
 
  private:
@@ -56,7 +56,7 @@ protected:
   /*protected*/ void addItem(QWidget *c, int x, int y);
 //  /*protected*/ void addItemLeft(QWidget* c, int x, int y);
 //  /*protected*/ void addItemWidth(QWidget* c, int width, int x, int y);
-  /*protected*/ void storeValues();
+  /*protected*/ void storeValues()override;
 
   protected slots:
   /*protected*/ virtual void comboBoxActionPerformed(QWidget* ae);

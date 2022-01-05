@@ -11,6 +11,7 @@
 #include "carload.h"
 #include "traincommon.h"
 #include "instancemanager.h"
+#include "loggerfactory.h"
 
 //LocationManager::LocationManager(QObject *parent) :
 //  QObject(parent)
@@ -33,13 +34,6 @@ namespace Operations
  /*public*/ LocationManager::LocationManager(QObject *parent) :
 PropertyChangeSupport(this, parent)
  {
-  _id = 0;
-  log = new Logger("LocationManager");
-  _locationHashTable = QHash<QString, Location*>();
-  //pcs = new PropertyChangeSupport(this);
-  _maxLocationNameLength = 0;
-   _maxTrackNameLength = 0;
-   _maxLocationAndTrackNameLength = 0;
    setProperty("InstanceManagerAutoDefault", "true");
    setProperty("InstanceManagerAutoInitialize", "true");
  }
@@ -444,11 +438,13 @@ PropertyChangeSupport(this, parent)
  }
 
 //@Override
-/*public*/ void LocationManager::initialize()
-{
- InstanceManager::getDefault("Operations::OperationsSetupXml"); // load setup
- InstanceManager::getDefault("Operations::LocationManagerXml"); // load locations
-}
+ /*public*/ void LocationManager::initialize()
+ {
+  InstanceManager::getDefault("Operations::OperationsSetupXml"); // load setup
+  InstanceManager::getDefault("Operations::LocationManagerXml"); // load locations
+ }
+
+ /*private*/ /*final*/ /*static*/ Logger* LocationManager::log = LoggerFactory::getLogger("LocationManager");
 
 }
 
