@@ -38,6 +38,8 @@ SOURCES += javaqt.cpp \
     classmigration.cpp \
     csvformat.cpp \
     csvprinter.cpp \
+    exceptioncontext.cpp \
+    exceptiondisplayframe.cpp \
     filesystemview.cpp \
     jeditorpane.cpp \
     jframe.cpp \
@@ -68,6 +70,7 @@ SOURCES += javaqt.cpp \
     physicallocationpanel.cpp \
     thread.cpp \
     tristatejcheckbox.cpp \
+    unexpectedexceptioncontext.cpp \
     validation.cpp \
     validatorborder.cpp \
     xmlfile.cpp \
@@ -287,6 +290,8 @@ HEADERS += javaqt.h\
  classmigration.h \
  csvformat.h \
  csvprinter.h \
+ exceptioncontext.h \
+ exceptiondisplayframe.h \
  filesystemview.h \
         javaqt_global.h \
     calendar.h \
@@ -311,6 +316,7 @@ HEADERS += javaqt.h\
  #systemtype.h \
  thread.h \
  tristatejcheckbox.h \
+ unexpectedexceptioncontext.h \
  validation.h \
  validatorborder.h \
  vetoablechangefirer.h \

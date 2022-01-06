@@ -41,7 +41,7 @@ namespace Operations
   /*public*/ QList<Engine*>* getByTrainBlockingList(Train* train);
   /*public*/ QStringList getEngineRoadNames(QString model);
 //  /*public*/ void dispose();
-  /*public*/ int getConsistMaxNameLength();
+//  /*public*/ int getConsistMaxNameLength();
   /*public*/ QList<Engine*> getAvailableTrainList(Train* train);
   Q_INVOKABLE  /*public*/ void initialize() override;
   /*public*/ void sortOut(QList<RollingStock*>*, SORTBY attribute)override;

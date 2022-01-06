@@ -31,11 +31,8 @@
 #include "calendar.h"
 #include "instancemanager.h"
 #include "colorutil.h"
+#include "consistmanager.h"
 
-//TrainCommon::TrainCommon(QObject *parent) :
-//  QObject(parent)
-//{
-//}
 namespace Operations {
 /**
  * Common routines for trains
@@ -1327,7 +1324,7 @@ namespace Operations {
          return " " + padAndTruncateString(engine->getModel(), ((EngineModels*)InstanceManager::getDefault("EngineModels"))->getMaxNameLength());
      }
      if (attribute==(Setup::CONSIST)) {
-         return " " + padAndTruncateString(engine->getConsistName(), engineManager->getConsistMaxNameLength());
+         return " " + padAndTruncateString(engine->getConsistName(), ((ConsistManager*)InstanceManager::getDefault("Operations::ConsistManager"))->getMaxNameLength());
      }
      return getRollingStockAttribute(engine, attribute, isPickup, false);
  }
@@ -1705,8 +1702,7 @@ namespace Operations {
                                        ((EngineModels*)InstanceManager::getDefault("EngineModels"))->getMaxNameLength())
                + " ");
    } else if (attribute==(Setup::CONSIST)) {
-       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Consist(), engineManager
-               ->getConsistMaxNameLength())
+       buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Consist(), ((ConsistManager*)InstanceManager::getDefault("Operations::ConsistManager"))->getMaxNameLength())
                + " ");
    } else if (attribute==(Setup::KERNEL)) {
        buf.append(padAndTruncateString(TrainManifestHeaderText::getStringHeader_Kernel(), carManager

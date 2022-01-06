@@ -241,7 +241,7 @@ namespace Operations
   */
  /*public*/ void ScheduleManager::updateComboBox(JComboBox* box) {
      box->clear();
-     box->addItem(NULL);
+     box->addItem("");
      foreach (Schedule* schedule, getSchedulesByNameList()) {
          box->addItem(schedule->toString(), VPtr<Schedule>::asQVariant(schedule));
      }

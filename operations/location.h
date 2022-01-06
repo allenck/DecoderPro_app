@@ -68,10 +68,10 @@ namespace Operations {
   /*public*/ Division* getDivision();
    /*public*/ QString getDivisionName();
   /*public*/ QString getDivisionId();
-   /*public*/ bool isSpur();
-   /*public*/ bool isYard();
-   /*public*/ bool isInterchange();
-   /*public*/ bool isStaging();
+//   /*public*/ bool isSpur();
+//   /*public*/ bool isYard();
+//   /*public*/ bool isInterchange();
+  /*public*/ bool isStaging();
   /*public*/ QString getTrackType();
   /*public*/ void copyLocation(Location* newLocation) ;
   /*public*/ void copyTracksLocation(Location* location);

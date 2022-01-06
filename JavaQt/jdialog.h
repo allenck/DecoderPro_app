@@ -14,6 +14,8 @@ public:
     /*public*/ JDialog(QWidget* owner, bool modal);
     /*public*/ JDialog(QWidget* owner, QString title, bool modal);
     /*public*/ ~JDialog();
+    /*public*/ enum ModalityType {
+      MODELESS, DOCUMENT_MODAL, APPLICATION_MODAL, TOOLKIT_MODAL};
 
     static /*public*/ JDialog* findDialog(QString title);
     /**
@@ -65,6 +67,7 @@ public:
     void addWindowListener(WindowListener* l);
     void setLocationRelativeTo(QWidget*) {}
     virtual void dispose();
+    /*public*/ void setContentPane(QWidget* pane);
 
 signals:
 

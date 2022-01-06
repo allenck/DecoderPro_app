@@ -42,13 +42,13 @@ namespace Operations
  //private static final long serialVersionUID = -5894248098711372139L;
 
 
- /*public*/ TrainByCarTypeFrame::TrainByCarTypeFrame(QWidget* parent)
+ /*public*/ TrainByCarTypeFrame::TrainByCarTypeFrame(Train *train, QWidget* parent)
      : OperationsFrame(parent)
  {
      //super();
  log = new Logger("TrainByCarTypeFrame");
  locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
-
+ _train = train;
 // panels
  pRoute = new JPanel();
 
@@ -367,7 +367,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      carsComboBox->clear();
      QString carType =  typeComboBox->currentText();
      // load car combobox
-     carsComboBox->addItem(NULL);
+     carsComboBox->addItem("");
      QList<RollingStock*>* cars = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getByTypeList(carType);
      foreach (RollingStock* rs, *cars) {
          Car* car = (Car*) rs;

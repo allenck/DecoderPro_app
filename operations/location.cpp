@@ -151,17 +151,17 @@ namespace Operations
  }
 
 
- /*public*/ bool Location::isSpur() {
-     return getTrackType()==(Track::SPUR);
- }
+// /*public*/ bool Location::isSpur() {
+//     return getTrackType()==(Track::SPUR);
+// }
 
- /*public*/ bool Location::isYard() {
-     return getTrackType()==(Track::YARD);
- }
+// /*public*/ bool Location::isYard() {
+//     return getTrackType()==(Track::YARD);
+// }
 
- /*public*/ bool Location::isInterchange() {
-     return getTrackType()==(Track::INTERCHANGE);
- }
+// /*public*/ bool Location::isInterchange() {
+//     return getTrackType()==(Track::INTERCHANGE);
+// }
 
  /**
   * Makes a copy of this location.
@@ -280,7 +280,7 @@ namespace Operations
   * @return true if location is setup as staging
   */
  /*public*/ bool Location::isStaging() {
-     return getLocationOps() == STAGING;
+     return hasTrackType(Track::STAGING);
  }
 
  /**

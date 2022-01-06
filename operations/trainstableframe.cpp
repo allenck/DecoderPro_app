@@ -297,7 +297,7 @@ namespace Operations
   toolMenu->addAction(new PrintOptionAction(this));
   toolMenu->addAction(new BuildReportOptionAction(this));
   toolMenu->addAction(new TrainsByCarTypeAction(tr("Modify Trains by Car Type"),this));
-  toolMenu->addAction(new TrainByCarTypeAction(tr("Show Car Types"), NULL, this));
+  toolMenu->addAction(new TrainByCarTypeAction(NULL, this));
   toolMenu->addAction(new ChangeDepartureTimesAction(tr("Change Departure Time"),this));
   toolMenu->addAction(new TrainsTableSetColorAction(this));
   toolMenu->addAction(new TrainsScheduleAction(tr("TimeTable"),this));

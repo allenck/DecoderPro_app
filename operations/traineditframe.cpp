@@ -410,7 +410,7 @@ namespace Operations
       toolMenu->addAction(new TrainCopyAction(tr("Copy Train"), _train, this));
   }
   toolMenu->addAction(new TrainScriptAction(tr("Scripts"), this));
-  toolMenu->addAction(new TrainByCarTypeAction(tr("Show Car Types"), _train, this));
+  toolMenu->addAction(new TrainByCarTypeAction(_train, this));
   if (_train != NULL) {
       toolMenu->addAction(new TrainConductorAction(tr("Train Conductor"), _train, this));
   }

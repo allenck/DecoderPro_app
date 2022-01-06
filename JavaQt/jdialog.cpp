@@ -1536,6 +1536,12 @@ void JDialog::closeEvent(QCloseEvent* e)
  }
 }
 
+/*public*/ void JDialog::setContentPane(QWidget* pane)
+{
+ if(!layout())
+  setLayout(new QVBoxLayout());
+ layout()->addWidget(pane);
+}
 void JDialog::dispose()
 {
  dialogList.removeOne(this);

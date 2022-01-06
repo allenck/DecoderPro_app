@@ -307,7 +307,7 @@ namespace Operations
      QVariant selectedItem = trainComboBox->currentData();
      trainComboBox->setVisible(false); // used as a flag to ignore updates
      trainComboBox->clear();
-     trainComboBox->addItem(NULL);
+     trainComboBox->addItem("");
      if (_location != NULL) {
          QList<Train*> trains = trainManager->getTrainsArrivingThisLocationList(_location);
 //         trains.stream().filter((train) -> (TrainCommon::isThereWorkAtLocation(train, _location))).forEach(

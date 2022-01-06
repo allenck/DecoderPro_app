@@ -611,7 +611,7 @@ void Apps::initGui() // must be called after Constructor is complete!
  }
  catch (Exception* ex)
  {
-  Logger::error("Error in trying to initialize decoder index file {}"+ ex->getMessage());
+  Logger::error("Error in trying to initialize decoder index file "+ ex->getMessage());
  }
 }
 

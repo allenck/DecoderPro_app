@@ -3,6 +3,7 @@
 #include "itemlistener.h"
 #include "itemevent.h"
 #include "exceptions.h"
+#include "vptr.h"
 
 JComboBox::JComboBox(QWidget* parent) : QComboBox(parent)
 {
@@ -141,6 +142,37 @@ void JComboBox::currentIndexChanged(int)
  }
  QComboBox::addItem(text, data);
 }
+
+/*public*/ void JComboBox::addItem(QVariant t)
+{
+ if(t.canConvert<QString>())
+  QComboBox::addItem(t.toString());
+    else
+ {
+  QObject* o = VPtr<QObject>::asPtr(t);
+  if(o)
+  {
+   QString text;
+   if(!QMetaObject::invokeMethod(o, "toString", Qt::DirectConnection, Q_RETURN_ARG(QString, text)))
+   {
+    throw new IllegalArgumentException("Invalid QVariant parameter for JComboBox; class has no 'toString' method");
+   }
+   else {
+     addItem(text, t);
+    }
+  }
+ }
+}
+
+
+/*public*/ void JComboBox::setSelectedItem(QVariant t)
+{
+ if(t.canConvert<QString>())
+  QComboBox::setCurrentText(t.toString());
+    else
+  QComboBox::setCurrentIndex(QComboBox::findData(t));
+}
+
 
 /*public*/ bool JComboBox::isSelected()
 {

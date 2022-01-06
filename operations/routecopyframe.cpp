@@ -84,7 +84,8 @@ namespace Operations
   // setup buttons
   addButtonAction(copyButton);
 
-  routeBox->setSelectedItem(route->getName());
+  QVariant rv = VPtr<Route>::asQVariant(route);
+  routeBox->setSelectedItem(rv);
 
  }
 

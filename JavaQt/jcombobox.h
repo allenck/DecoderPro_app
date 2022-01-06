@@ -39,15 +39,16 @@ public:
  /*public*/ QString getSelectedItem() {return currentText();}
  /*public*/ int getSelectedIndex() {return currentIndex();}
  /*public*/ void setSelectedIndex(int i){setCurrentIndex(i);}
- /*public*/ virtual void setSelectedItem(QString t) {setCurrentText(t);}
+ /*public*/ virtual void setSelectedItem(QVariant t);// {setCurrentText(t);}
  /*public*/ int getItemCount() {return count();}
  /*public*/ QStringList itemList();
  /*public*/ QVariant getItemAt(int i);
  /*public*/ void clear();
  /*public*/ QVariant currentData();
  /*public*/ QVariant itemData(int i);
- /*public*/ void addItem(QString text, QVariant data = QVariant());
+ /*public*/ void addItem(QString text, QVariant data/* = QVariant()*/);
 // /*public*/ void  addItem(QString text) {QComboBox::addItem(text);}
+ /*public*/ void addItem(QVariant t);
  /*public*/ bool isSelected();
 
 signals:

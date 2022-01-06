@@ -9,7 +9,8 @@
 #include "autobackup.h"
 #include "backupset.h"
 #include "box.h"
-#include <QMessageBox>
+#include "joptionpane.h"
+
 
 namespace Operations
 {
@@ -28,7 +29,7 @@ namespace Operations
      // For now we only support Autobackups, but this can be updated later if
      // needed.
      backup = new AutoBackup();
-  contentPanel = new QWidget();
+     contentPanel = new QWidget();
      initComponents();
  }
 
@@ -38,7 +39,7 @@ namespace Operations
 //      setModal(true);
       setTitle(tr("Manage Backup Sets"));
       //setBounds(100, 100, 461, 431);
-      resize(461, 431);
+//      resize(461, 431);
 //      BorderLayout borderLayout = new BorderLayout();
 //      borderLayout.setVgap(5);
 //      borderLayout.setHgap(5);
@@ -68,7 +69,7 @@ namespace Operations
           gbc_scrollPane->fill = GridBagConstraints::BOTH;
           gbc_scrollPane->gridx = 0;
           gbc_scrollPane->gridy = 1;
-          gbl_contentPanel->addWidget(scrollPane, *gbc_scrollPane);
+//          gbl_contentPanel->addWidget(scrollPane, *gbc_scrollPane);
           {
               setList =  new JList(); //<BackupSet*>();
               //setList->setVisibleRowCount(20);
@@ -97,7 +98,8 @@ namespace Operations
 
               connect(setList, SIGNAL(clicked(QModelIndex)), this, SLOT(updateButtonStates()));
               //scrollPane.setViewportView(setList);
-              scrollPane->setWidget(setList);
+              //scrollPane->setWidget(setList);
+              gbl_contentPanel->addWidget(setList, *gbc_scrollPane);
           }
       }
       {
@@ -201,10 +203,9 @@ namespace Operations
   if (selectedSets.size() > 0)
   {
    // Make sure OK to delete backups
-//          int result = JOptionPane.showConfirmDialog(this, String.format(tr("ManageBackupsDialog.aboutToDelete"), selectedSets.size()),
-//                  tr("ManageBackupsDialog.deletingBackupSets"), JOptionPane.OK_CANCEL_OPTION);
-   int result = QMessageBox::question(this, tr("Deleting Backup Sets"), tr("You are about to delete %1 Backup Sets. OK to delete them?").arg(selectedSets.size()), QMessageBox::Ok | QMessageBox::Cancel);
-   if (result == QMessageBox::Ok)
+   int result = JOptionPane::showConfirmDialog(this, tr("You are about to delete %1 Backup Sets. OK to delete them?").arg(selectedSets.size()),
+           tr("Deleting Backup Sets"), JOptionPane::OK_CANCEL_OPTION);
+   if (result == JOptionPane::OK_OPTION)
    {
            //for (BackupSet set : selectedSets) {
     foreach (QModelIndex mi, selectedSets)

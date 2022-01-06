@@ -175,7 +175,7 @@ namespace Operations
 
  /*public*/ JComboBox* RouteManager::getComboBox() {
      JComboBox* box = new JComboBox();
-     box->addItem(NULL);
+     box->addItem("");
      QList<Route*> routes = getRoutesByNameList();
      foreach (Route* route, routes) {
          box->addItem(route->getName(), VPtr<Route>::asQVariant(route));
@@ -185,7 +185,7 @@ namespace Operations
 
  /*public*/ void RouteManager::updateComboBox(JComboBox* box) {
      box->clear();
-     box->addItem(NULL);
+     box->addItem("");
      QList<Route*> routes = getRoutesByNameList();
      foreach (Route* route, routes) {
          box->addItem(route->getName(), VPtr<Route>::asQVariant(route));

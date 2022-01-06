@@ -9,9 +9,9 @@ namespace Operations
  {
   Q_OBJECT
  public:
-  TrainByCarTypeAction(QString s, Train* train,QObject* parent);
+  TrainByCarTypeAction(Train* train, QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* /*e*/);
+  /*public*/ void actionPerformed(JActionEvent* /*e*/);
 
  private:
   Train* _train;

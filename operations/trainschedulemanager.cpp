@@ -223,7 +223,7 @@ namespace Operations
   */
  /*public*/ JComboBox* TrainScheduleManager::getSelectComboBox() {
      JComboBox* box = new JComboBox();
-     box->addItem(NULL);
+     box->addItem("");
      foreach (TrainSchedule* sch, getSchedulesByIdList()) {
          box->addItem(sch->toString(), VPtr<TrainSchedule>::asQVariant(sch));
      }

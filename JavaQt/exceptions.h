@@ -71,6 +71,7 @@ public:
      return str;
     }
     Throwable* cause;
+    Throwable* getCause() {return cause;}
 };
 
 class Exception : public Throwable

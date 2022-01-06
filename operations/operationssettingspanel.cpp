@@ -24,6 +24,8 @@
 #include "routemanager.h"
 #include "route.h"
 #include "restoredialog.h"
+#include "unexpectedexceptioncontext.h"
+#include "exceptiondisplayframe.h"
 
 /**
  * Frame for user edit of operation parameters
@@ -417,10 +419,10 @@ namespace Operations
             try {
                 backup->autoBackup();
             } catch (IOException* ex) {
-#if 0
-                UnexpectedExceptionContext context = new UnexpectedExceptionContext(ex,
-                        "Auto backup before changing Car types"); // NOI18N
-                new ExceptionDisplayFrame(context, nullptr)->setVisible(true);
+#if 1
+                UnexpectedExceptionContext* context = new UnexpectedExceptionContext(ex,
+                        "Auto backup before changing Car types", this); // NOI18N
+                (new ExceptionDisplayFrame(context, this))->setVisible(true);
 #endif
             }
 

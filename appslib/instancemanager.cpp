@@ -356,6 +356,7 @@ void InstanceManager::deregister(QObject* item, QString type)
    o->setObjectName(o->metaObject()->className());
  }
  return o;
+ //return QObject::qt_metacast(type);
 }
 
 /*static*/ /*public*/ AudioManager* InstanceManager::AudioManagerInstance()
