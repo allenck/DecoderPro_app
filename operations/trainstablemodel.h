@@ -52,7 +52,7 @@ namespace Operations
   /*public*/ bool isShowAll();
   /*public*/ int rowCount(const QModelIndex &parent) const override;
   /*public*/ int columnCount(const QModelIndex &parent) const override;
-  /*public*/ QVariant data(const QModelIndex &index, int role) const;
+  /*public*/ QVariant data(const QModelIndex &index, int role) const override;
   /*public*/ static /*final*/ QString IDCOLUMNNAME;//= r("Id");
   /*public*/ static /*final*/ QString TIMECOLUMNNAME;//= r("Time");
   /*public*/ static /*final*/ QString BUILDBOXCOLUMNNAME;//= r("Build");
@@ -90,16 +90,16 @@ public slots:
   /*private*/ /*synchronized*/ void removePropertyChangeTrains() ;
   /*private*/ /*synchronized*/ void addPropertyChangeTrains();
   void initTable();
-  TrainEditFrame* tef;// = NULL;
+  QPointer<TrainEditFrame> tef;// = NULL;
   /*private*/ /*synchronized*/ void updateList();
   Logger* log;
-  RouteEditFrame* ref;// = NULL;
+  //QPointer<RouteEditFrame> ref;// = NULL;
   /*private*/ /*synchronized*/ void editTrain(int row);
   /*private*/ static QHash<QString, TrainConductorFrame*> _trainConductorHashTable;// = new Hashtable<String, TrainConductorFrame>();
   /*private*/ /*synchronized*/ void actionTrain(int row);
   /*private*/ bool checkDepartureTrack(Train* train);
   /*private*/ void launchConductor(Train* train);
-  /*private*/ /*synchronized*/ void editRoute(int row);
+  ///*private*/ /*synchronized*/ void editRoute(int row);
   QThread* buildThread;
   /*private*/ /*synchronized*/ void buildTrain(int row);
   QList<QColor> darkColors;// = {Color.BLACK, Color.BLUE, Color.GRAY, Color.RED, Color.MAGENTA};

@@ -169,7 +169,7 @@ namespace Operations
 
   // load managers
   trainManager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
-  routeManager = ((RouteManager*)InstanceManager::getDefault("OperationsRouteManager"));
+  routeManager = ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"));
   children = QList<JmriJFrame*>();
 
   //getContentPane()->setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
@@ -324,8 +324,8 @@ namespace Operations
   // row 13 comment
   JPanel* pC = new JPanel();
   pC->setObjectName("pC");
-  pC->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
   pC->setLayout(new GridBagLayout());
+  pC->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
   addItem(pC, /*commentScroller*/commentTextArea, 1, 0);
 
   // adjust text area width based on window size

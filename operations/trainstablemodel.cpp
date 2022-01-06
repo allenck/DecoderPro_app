@@ -45,7 +45,7 @@ namespace Operations
  _showAll = true;
  tef = NULL;
  log = new Logger("TrainsTableModel");
- ref = NULL;
+ //ref = NULL;
  buildThread = NULL;
  darkColors = QList<QColor>() << Qt::black << Qt::blue<< Qt::gray <<  Qt::red << Qt::magenta;
 
@@ -115,19 +115,19 @@ namespace Operations
   // Install the button handlers
   TableColumnModel* tcm = _table->getColumnModel();
 #if 0
-     ButtonRenderer buttonRenderer = new ButtonRenderer();
-     TableCellEditor buttonEditor = new ButtonEditor(new javax.swing.JButton());
+     ButtonRenderer* buttonRenderer = new ButtonRenderer();
+     TableCellEditor* buttonEditor = new ButtonEditor(new javax.swing.JButton());
      tcm.getColumn(EDITCOLUMN).setCellRenderer(buttonRenderer);
      tcm.getColumn(EDITCOLUMN).setCellEditor(buttonEditor);
      tcm.getColumn(ACTIONCOLUMN).setCellRenderer(buttonRenderer);
-     tcm.getColumn(ACTIONCOLUMN).setCellEditor(buttonEditor);
+     tcm->getColumn(ACTION_COLUMN)->setCellEditor(buttonEditor);
      tcm.getColumn(BUILDCOLUMN).setCellRenderer(buttonRenderer);
      tcm.getColumn(BUILDCOLUMN).setCellEditor(buttonEditor);
      _table.setDefaultRenderer(bool.class, new EnablingCheckboxRenderer());
 #endif
-  _table->setItemDelegateForColumn(EDIT_COLUMN, new MyDelegate());
-  _table->setItemDelegateForColumn(ACTION_COLUMN, new MyDelegate());
-  _table->setItemDelegateForColumn(BUILD_COLUMN, new MyDelegate());
+  _table->setItemDelegateForColumn(EDIT_COLUMN, new PushButtonDelegate());
+  _table->setItemDelegateForColumn(ACTION_COLUMN, new PushButtonDelegate());
+  _table->setItemDelegateForColumn(BUILD_COLUMN, new PushButtonDelegate());
 
   // set column preferred widths
   for (int i = 0; i < tcm->getColumnCount(); i++) {
@@ -398,7 +398,7 @@ namespace Operations
      return "E " + QString::number(number); // NOI18N
  }
 
- /*public*/ bool TrainsTableModel::setData(const QModelIndex &index, const QVariant &value, int role) \
+ /*public*/ bool TrainsTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
  {
   int col = index.column();
   int row = index.row();
@@ -411,9 +411,6 @@ namespace Operations
         break;
     case BUILD_COLUMN:
         buildTrain(row);
-        break;
-    case ROUTE_COLUMN:
-        editRoute(row);
         break;
     case ACTION_COLUMN:
         actionTrain(row);
@@ -463,20 +460,20 @@ namespace Operations
  }
 
 
- /*private*/ /*synchronized*/ void TrainsTableModel::editRoute(int row) {
-     if (ref != NULL) {
-         ref->dispose();
-     }
-     // use invokeLater so new window appears on top
-//     SwingUtilities.invokeLater(new Runnable() {
-//         /*public*/ void run() {
-             ref = new RouteEditFrame();
-             Train* train = sysList.at(row);
-             log->debug("Edit route for train (" + train->getName() + ")");
-             ref->initComponents(train->getRoute(), train);
-//         }
-//     });
- }
+// /*private*/ /*synchronized*/ void TrainsTableModel::editRoute(int row) {
+//     if (ref != NULL) {
+//         ref->dispose();
+//     }
+//     // use invokeLater so new window appears on top
+////     SwingUtilities.invokeLater(new Runnable() {
+////         /*public*/ void run() {
+//             ref = new RouteEditFrame();
+//             Train* train = sysList.at(row);
+//             log->debug("Edit route for train (" + train->getName() + ")");
+//             ref->initComponents(train->getRoute(), train);
+////         }
+////     });
+// }
 #if 1
 
  /*private*/ /*synchronized*/ void TrainsTableModel::buildTrain(int row)

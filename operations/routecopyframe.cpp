@@ -51,7 +51,7 @@ namespace Operations
   copyButton = new JButton(tr("Copy"));
 
   // combo boxes
-  routeBox = ((RouteManager*)InstanceManager::getDefault("OperationsRouteManager"))->getComboBox();
+  routeBox = ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"))->getComboBox();
   // general GUI config
 
   //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
