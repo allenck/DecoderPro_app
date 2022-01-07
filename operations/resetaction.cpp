@@ -2,9 +2,12 @@
 #include "operationsxml.h"
 #include "operationsmanager.h"
 #include "apps.h"
-#include <QMessageBox>
+#include "joptionpane.h"
 #include "autobackup.h"
 #include "instancemanager.h"
+#include "exceptiondisplayframe.h"
+#include "unexpectedexceptioncontext.h"
+
 namespace Operations
 {
  /**
@@ -31,25 +34,23 @@ namespace Operations
  /*public*/ void ResetAction::actionPerformed(JActionEvent* ) {
      // check to see if files are dirty
      if (OperationsXml::areFilesDirty()) {
-//         if (JOptionPane.showConfirmDialog(null, Bundle.getMessage("OperationsFilesModified"),
-//                 Bundle.getMessage("SaveOperationFiles"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-      if(QMessageBox::question(NULL, tr("Save operation files?"), tr("Operations files have been modified, do you want to save them?"),QMessageBox::Yes | QMessageBox::No)== QMessageBox::Yes)
-      {
+       if (JOptionPane::showConfirmDialog(nullptr, tr("Operations files have been modified, do you want to save them?"),
+               tr("Save operation files?"), JOptionPane::YES_NO_OPTION) == JOptionPane::YES_OPTION)
+       {
              OperationsXml::save();
-         }
+       }
      }
 
-//     int results = JOptionPane.showConfirmDialog(null, Bundle.getMessage("AreYouSureDeleteAll"),
-//             Bundle.getMessage("ResetOperations"), JOptionPane.OK_CANCEL_OPTION);
-//     if (results != JOptionPane.OK_OPTION) {
-     if(QMessageBox::question(NULL, tr("Reset Databases"), tr("Are you sure you want to delete all operation files and databases?"),QMessageBox::Ok | QMessageBox::Cancel)!=QMessageBox::Ok)
+     int results = JOptionPane::showConfirmDialog(nullptr, tr("Are you sure you want to delete all operation files and databases?"),
+             tr("Reset Databases"), JOptionPane::OK_CANCEL_OPTION);
+     if (results != JOptionPane::OK_OPTION)
      {
          return;
      }
 
      AutoBackup* backup = new AutoBackup();
 
-     //try {
+     try {
          backup->autoBackup();
 
          // now delete the operations files
@@ -60,16 +61,15 @@ namespace Operations
          // otherwise it is normal to not have the task running
          ((Operations::OperationsManager*)InstanceManager::getDefault("Operations::OperationsManager"))->setShutDownTask(NULL);
 
-//         JOptionPane.showMessageDialog(null, Bundle.getMessage("YouMustRestartAfterReset"),
-//                 Bundle.getMessage("ResetSuccessful"), JOptionPane.INFORMATION_MESSAGE);
-         QMessageBox::information(NULL, tr("Reset successful!"), tr("You must restart JMRI to complete the reset"));
+         JOptionPane::showMessageDialog(nullptr, tr("You must restart JMRI to complete the reset"),
+                 tr("Reset successful!"), JOptionPane::INFORMATION_MESSAGE);
          Apps::handleRestart();
 
-//     } catch (Exception* ex) {
-//         UnexpectedExceptionContext context = new UnexpectedExceptionContext(ex,
-//                 "Deleting Operations files"); // NOI18N
-//         new ExceptionDisplayFrame(context);
-//     }
+     } catch (Exception* ex) {
+         UnexpectedExceptionContext* context = new UnexpectedExceptionContext(ex,
+                 "Deleting Operations files",this); // NOI18N
+         new ExceptionDisplayFrame(context);
+     }
  }
 
 }

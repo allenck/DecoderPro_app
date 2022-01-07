@@ -932,7 +932,7 @@ void Apps::On_handleQuit()
 #endif
 /*protected*/ void Apps::helpMenu(QMenuBar* menuBar, WindowInterface* wi)
 {
- //try {
+ try {
 
 
  // create menu and standard items
@@ -944,9 +944,9 @@ void Apps::On_handleQuit()
  // use as main help menu
  menuBar->addMenu(helpMenu);
 
-//    } catch (Throwable e3) {
-//        log->error("Unexpected error creating help.", e3);
-//    }
+    } catch (Throwable* e3) {
+        log->error("Unexpected error creating help.", e3);
+    }
 
 }
 

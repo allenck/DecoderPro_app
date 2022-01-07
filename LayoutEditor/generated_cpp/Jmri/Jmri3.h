@@ -18,7 +18,6 @@
 #include <qdom.h>
 #include <qevent.h>
 #include <qfile.h>
-#include <qlist.h>
 #include <qmetaobject.h>
 #include <qobject.h>
 #include <qstringlist.h>

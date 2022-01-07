@@ -42,7 +42,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -4009,7 +4008,7 @@ if (_wrapper) {
 }
   return AbstractReporterManager::getByUserName(key0);
 }
-QString  PythonQtShell_AbstractReporterManager::getNextValidAddress(QString  curAddress0, QString  prefix1) const
+QString  PythonQtShell_AbstractReporterManager::getNextValidAddress(QString  arg__1, QString  arg__2) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -4020,7 +4019,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"QString" , "QString" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
       QString returnValue{};
-      void* args[3] = {NULL, (void*)&curAddress0, (void*)&prefix1};
+      void* args[3] = {NULL, (void*)&arg__1, (void*)&arg__2};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -4040,7 +4039,40 @@ if (_wrapper) {
     }
   }
 }
-  return AbstractReporterManager::getNextValidAddress(curAddress0, prefix1);
+  return AbstractReporterManager::getNextValidAddress(arg__1, arg__2);
+}
+QString  PythonQtShell_AbstractReporterManager::getNextValidAddress(QString  curAddress0, QString  prefix1, bool  ignoreInitialExisting2)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getNextValidAddress");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString" , "QString" , "QString" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
+      QString returnValue{};
+      void* args[4] = {NULL, (void*)&curAddress0, (void*)&prefix1, (void*)&ignoreInitialExisting2};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getNextValidAddress", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return QString();
 }
 QStringList  PythonQtShell_AbstractReporterManager::getSystemNameList() const
 {
@@ -22422,6 +22454,28 @@ if (_wrapper) {
 }
   return BeanTableFrame::heightForWidth(arg__1);
 }
+void PythonQtShell_BeanTableFrame::hideEvent(QHideEvent*  arg__1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("hideEvent");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QHideEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&arg__1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  BeanTableFrame::hideEvent(arg__1);
+}
 void PythonQtShell_BeanTableFrame::initComponents()
 {
 if (_wrapper) {
@@ -23181,7 +23235,7 @@ if (_wrapper) {
 }
   return BeanTableFrame::sharedPainter();
 }
-void PythonQtShell_BeanTableFrame::showEvent(QShowEvent*  event0)
+void PythonQtShell_BeanTableFrame::showEvent(QShowEvent*  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -23191,7 +23245,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "QShowEvent*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&event0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -23201,7 +23255,7 @@ if (_wrapper) {
     }
   }
 }
-  BeanTableFrame::showEvent(event0);
+  BeanTableFrame::showEvent(arg__1);
 }
 QSize  PythonQtShell_BeanTableFrame::sizeHint() const
 {

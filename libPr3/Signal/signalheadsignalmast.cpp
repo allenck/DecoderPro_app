@@ -224,10 +224,10 @@ void SignalHeadSignalMast::configureHeads(QStringList parts, int start)
         Runnable1* r = new Runnable1(thrDelayedSet, thrDelay, this);
         QThread* thr = new QThread(r);
         thr->setObjectName(getDisplayName() + " delayed set appearance");
-        //try{
+//        try{
             thr->start();
-//        } catch (IllegalThreadStateException ex){
-//            log->error(ex.toQString());
+//        } catch (IllegalThreadStateException* ex){
+//            log->error(ex.toString());
 //        }
     }
     return;

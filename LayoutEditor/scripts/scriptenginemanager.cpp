@@ -217,11 +217,11 @@
 
  foreach (ScriptEngineFactory* spi, engineSpis) {
      QStringList names = QStringList();
-     //try {
+     try {
          names = spi->getNames();
-//     } catch (Exception* exp) {
+     } catch (Exception* exp) {
 //         if (DEBUG) exp.printStackTrace();
-//     }
+     }
 
      if (names != QStringList()) {
          foreach (QString name, names) {

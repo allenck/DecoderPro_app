@@ -299,11 +299,11 @@ QWidget(parent) {
     fc->setFileSelectionMode(JFileChooser::DIRECTORIES_ONLY);
     int rv = fc->showOpenDialog(this);
     if (rv == JFileChooser::APPROVE_OPTION) {
-        //try {
+        try {
             tfDefaultVSDFilePath->setText(fc->getSelectedFile()->getCanonicalPath());
-//        } catch (java.io.IOException e) {
-//            // do nothing.
-//        }
+        } catch (IOException* e) {
+            // do nothing.
+        }
     }
 }
 

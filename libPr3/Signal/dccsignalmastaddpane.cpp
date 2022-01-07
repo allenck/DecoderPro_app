@@ -203,7 +203,6 @@
 
 /*static*/ bool DccSignalMastAddPane::validateAspectId(/*@Nonnull*/ QString strAspect) {
     int aspect;
-    //try {
      bool bok;
         aspect = (strAspect.trimmed().toInt(&bok));
     if(!bok)

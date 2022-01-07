@@ -211,11 +211,11 @@ void BeanSelectCreatePanel::update(){
  {
   return existingCombo->getSelectedItem();
  }
- //try {
+ try {
  return createBean();
-//    } catch (JmriException* e){
-//        throw e;
-//    }
+    } catch (JmriException* e){
+        throw e;
+    }
 }
 
 /*private*/ NamedBean* BeanSelectCreatePanel::createBean() /*throw (JmriException)*/

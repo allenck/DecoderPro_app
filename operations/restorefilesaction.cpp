@@ -8,6 +8,7 @@
 #include "operationsmanager.h"
 #include "defaultbackup.h"
 #include "instancemanager.h"
+#include "exceptiondisplayframe.h"
 
 namespace Operations
 {
@@ -77,7 +78,7 @@ namespace Operations
   // now backup files
   AutoBackup* autoBackup = new AutoBackup();
 
-  //try {
+  try {
       autoBackup->autoBackup();
 
       File* directory = fc->getSelectedFile();
@@ -99,12 +100,12 @@ namespace Operations
 
       Apps::handleRestart();
 
-//  } catch (Exception* ex) {
-//      ExceptionContext context = new ExceptionContext(ex,
-//              tr("RestoreDialog.restore.files"),
-//              tr("RestoreDialog.makeSure"));
-//      new ExceptionDisplayFrame(context);
-//  }
+  } catch (Exception* ex) {
+      ExceptionContext* context = new ExceptionContext(ex,
+              tr("RestoreDialog.restore.files"),
+              tr("RestoreDialog.makeSure"));
+      new ExceptionDisplayFrame(context);
+  }
  }
 #if 0
  /*private*/ static class fileFilter extends javax.swing.filechooser.FileFilter {

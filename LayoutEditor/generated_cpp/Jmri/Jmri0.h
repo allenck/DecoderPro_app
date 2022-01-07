@@ -58,7 +58,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
 #include <qmargins.h>
@@ -595,7 +594,8 @@ virtual bool  allowMultipleAdditions(QString  systemName) const;
 virtual QString  getBeanTypeHandled(bool  plural) const;
 virtual NamedBean*  getBySystemName(QString  name) const;
 virtual NamedBean*  getByUserName(QString  key) const;
-virtual QString  getNextValidAddress(QString  curAddress, QString  prefix) const;
+virtual QString  getNextValidAddress(QString  arg__1, QString  arg__2) const;
+virtual QString  getNextValidAddress(QString  curAddress, QString  prefix, bool  ignoreInitialExisting);
 virtual QStringList  getSystemNameList() const;
 virtual int  getXMLOrder() const;
 virtual char  typeLetter() const;
@@ -611,7 +611,6 @@ inline bool  py_q_allowMultipleAdditions(QString  systemName) const { return Abs
 inline QString  py_q_getBeanTypeHandled(bool  plural) const { return AbstractReporterManager::getBeanTypeHandled(plural); }
 inline NamedBean*  py_q_getBySystemName(QString  name) const { return AbstractReporterManager::getBySystemName(name); }
 inline NamedBean*  py_q_getByUserName(QString  key) const { return AbstractReporterManager::getByUserName(key); }
-inline QString  py_q_getNextValidAddress(QString  curAddress, QString  prefix) const { return AbstractReporterManager::getNextValidAddress(curAddress, prefix); }
 inline int  py_q_getXMLOrder() const { return AbstractReporterManager::getXMLOrder(); }
 inline char  py_q_typeLetter() const { return AbstractReporterManager::typeLetter(); }
 };
@@ -627,7 +626,6 @@ void delete_AbstractReporterManager(AbstractReporterManager* obj) { delete obj; 
    QString  py_q_getBeanTypeHandled(AbstractReporterManager* theWrappedObject, bool  plural) const{  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_getBeanTypeHandled(plural));}
    NamedBean*  py_q_getBySystemName(AbstractReporterManager* theWrappedObject, QString  name) const{  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_getBySystemName(name));}
    NamedBean*  py_q_getByUserName(AbstractReporterManager* theWrappedObject, QString  key) const{  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_getByUserName(key));}
-   QString  py_q_getNextValidAddress(AbstractReporterManager* theWrappedObject, QString  curAddress, QString  prefix) const{  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_getNextValidAddress(curAddress, prefix));}
    int  getXMLOrder(AbstractReporterManager* theWrappedObject) const;
    int  py_q_getXMLOrder(AbstractReporterManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_AbstractReporterManager*)theWrappedObject)->py_q_getXMLOrder());}
    char  typeLetter(AbstractReporterManager* theWrappedObject) const;
@@ -2521,6 +2519,7 @@ virtual QString  getTitle();
 virtual void handleModified();
 virtual bool  hasHeightForWidth() const;
 virtual int  heightForWidth(int  arg__1) const;
+virtual void hideEvent(QHideEvent*  arg__1);
 virtual void initComponents();
 virtual void initPainter(QPainter*  painter) const;
 virtual void inputMethodEvent(QInputMethodEvent*  arg__1);
@@ -2551,7 +2550,7 @@ virtual void setOpaque(bool  arg__1);
 virtual void setTitle(QString  _title);
 virtual void setVisible(bool  visible);
 virtual QPainter*  sharedPainter() const;
-virtual void showEvent(QShowEvent*  event);
+virtual void showEvent(QShowEvent*  arg__1);
 virtual QSize  sizeHint() const;
 virtual void storeValues();
 virtual void tabletEvent(QTabletEvent*  event);

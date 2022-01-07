@@ -60,7 +60,6 @@
 #include <qlayout.h>
 #include <qlayoutitem.h>
 #include <qline.h>
-#include <qlist.h>
 #include <qlistview.h>
 #include <qlocale.h>
 #include <qmainwindow.h>
@@ -3014,6 +3013,28 @@ if (_wrapper) {
 }
   return JFrame::heightForWidth(arg__1);
 }
+void PythonQtShell_JFrame::hideEvent(QHideEvent*  arg__1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("hideEvent");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QHideEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&arg__1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  JFrame::hideEvent(arg__1);
+}
 void PythonQtShell_JFrame::initPainter(QPainter*  painter0) const
 {
 if (_wrapper) {
@@ -3751,7 +3772,7 @@ if (_wrapper) {
 }
   return JFrame::sharedPainter();
 }
-void PythonQtShell_JFrame::showEvent(QShowEvent*  event0)
+void PythonQtShell_JFrame::showEvent(QShowEvent*  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -3761,7 +3782,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "QShowEvent*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&event0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -3771,7 +3792,7 @@ if (_wrapper) {
     }
   }
 }
-  JFrame::showEvent(event0);
+  JFrame::showEvent(arg__1);
 }
 QSize  PythonQtShell_JFrame::sizeHint() const
 {
@@ -3947,6 +3968,11 @@ QColor  PythonQtWrapper_JFrame::getBackground(JFrame* theWrappedObject)
   return ( theWrappedObject->getBackground());
 }
 
+int  PythonQtWrapper_JFrame::getExtendedState(JFrame* theWrappedObject)
+{
+  return ( theWrappedObject->getExtendedState());
+}
+
 QFont  PythonQtWrapper_JFrame::getFont(JFrame* theWrappedObject)
 {
   return ( theWrappedObject->getFont());
@@ -3977,6 +4003,11 @@ QSize  PythonQtWrapper_JFrame::getPreferredSize(JFrame* theWrappedObject)
   return ( theWrappedObject->getPreferredSize());
 }
 
+int  PythonQtWrapper_JFrame::getState(JFrame* theWrappedObject)
+{
+  return ( theWrappedObject->getState());
+}
+
 QString  PythonQtWrapper_JFrame::getTitle(JFrame* theWrappedObject)
 {
   return ( theWrappedObject->getTitle());
@@ -3997,6 +4028,11 @@ bool  PythonQtWrapper_JFrame::isOpaque(JFrame* theWrappedObject)
   return ( theWrappedObject->isOpaque());
 }
 
+bool  PythonQtWrapper_JFrame::isResizable(JFrame* theWrappedObject)
+{
+  return ( theWrappedObject->isResizable());
+}
+
 QWidget*  PythonQtWrapper_JFrame::jself(JFrame* theWrappedObject)
 {
   return ( theWrappedObject->jself());
@@ -4010,6 +4046,11 @@ void PythonQtWrapper_JFrame::languageChange(JFrame* theWrappedObject)
 void PythonQtWrapper_JFrame::pack(JFrame* theWrappedObject)
 {
   ( theWrappedObject->pack());
+}
+
+QString  PythonQtWrapper_JFrame::paramString(JFrame* theWrappedObject)
+{
+  return ( ((PythonQtPublicPromoter_JFrame*)theWrappedObject)->promoted_paramString());
 }
 
 void PythonQtWrapper_JFrame::reSizeToFitOnScreen(JFrame* theWrappedObject)
@@ -4052,6 +4093,11 @@ void PythonQtWrapper_JFrame::setDefaultCloseOperation(JFrame* theWrappedObject, 
   ( theWrappedObject->setDefaultCloseOperation(operation));
 }
 
+void PythonQtWrapper_JFrame::setExtendedState(JFrame* theWrappedObject, int  s)
+{
+  ( theWrappedObject->setExtendedState(s));
+}
+
 void PythonQtWrapper_JFrame::setLocation(JFrame* theWrappedObject, QPoint  p)
 {
   ( theWrappedObject->setLocation(p));
@@ -4070,6 +4116,16 @@ void PythonQtWrapper_JFrame::setMenuBar(JFrame* theWrappedObject, QMenuBar*  men
 void PythonQtWrapper_JFrame::setOpaque(JFrame* theWrappedObject, bool  arg__1)
 {
   ( theWrappedObject->setOpaque(arg__1));
+}
+
+void PythonQtWrapper_JFrame::setResizable(JFrame* theWrappedObject, bool  resizable)
+{
+  ( theWrappedObject->setResizable(resizable));
+}
+
+void PythonQtWrapper_JFrame::setState(JFrame* theWrappedObject, int  state)
+{
+  ( theWrappedObject->setState(state));
 }
 
 void PythonQtWrapper_JFrame::setTitle(JFrame* theWrappedObject, QString  _title)
@@ -12944,6 +13000,28 @@ if (_wrapper) {
 }
   return JmriJFrame::heightForWidth(arg__1);
 }
+void PythonQtShell_JmriJFrame::hideEvent(QHideEvent*  arg__1)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("hideEvent");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"" , "QHideEvent*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
+      void* args[2] = {NULL, (void*)&arg__1};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  JmriJFrame::hideEvent(arg__1);
+}
 void PythonQtShell_JmriJFrame::initComponents()
 {
 if (_wrapper) {
@@ -13703,7 +13781,7 @@ if (_wrapper) {
 }
   return JmriJFrame::sharedPainter();
 }
-void PythonQtShell_JmriJFrame::showEvent(QShowEvent*  event0)
+void PythonQtShell_JmriJFrame::showEvent(QShowEvent*  arg__1)
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -13713,7 +13791,7 @@ if (_wrapper) {
     if (obj) {
       static const char* argumentList[] ={"" , "QShowEvent*"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(2, argumentList);
-      void* args[2] = {NULL, (void*)&event0};
+      void* args[2] = {NULL, (void*)&arg__1};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) { Py_DECREF(result); } 
       Py_DECREF(obj);
@@ -13723,7 +13801,7 @@ if (_wrapper) {
     }
   }
 }
-  JmriJFrame::showEvent(event0);
+  JmriJFrame::showEvent(arg__1);
 }
 QSize  PythonQtShell_JmriJFrame::sizeHint() const
 {
@@ -20423,7 +20501,7 @@ if (_wrapper) {
 }
   return LnReporterManager::getNamedBeanClass();
 }
-QString  PythonQtShell_LnReporterManager::getNextValidAddress(QString  curAddress0, QString  prefix1) const
+QString  PythonQtShell_LnReporterManager::getNextValidAddress(QString  arg__1, QString  arg__2) const
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
@@ -20434,7 +20512,7 @@ if (_wrapper) {
       static const char* argumentList[] ={"QString" , "QString" , "QString"};
       static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(3, argumentList);
       QString returnValue{};
-      void* args[3] = {NULL, (void*)&curAddress0, (void*)&prefix1};
+      void* args[3] = {NULL, (void*)&arg__1, (void*)&arg__2};
       PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
       if (result) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
@@ -20454,7 +20532,40 @@ if (_wrapper) {
     }
   }
 }
-  return LnReporterManager::getNextValidAddress(curAddress0, prefix1);
+  return LnReporterManager::getNextValidAddress(arg__1, arg__2);
+}
+QString  PythonQtShell_LnReporterManager::getNextValidAddress(QString  curAddress0, QString  prefix1, bool  ignoreInitialExisting2)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getNextValidAddress");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString" , "QString" , "QString" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
+      QString returnValue{};
+      void* args[4] = {NULL, (void*)&curAddress0, (void*)&prefix1, (void*)&ignoreInitialExisting2};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getNextValidAddress", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return QString();
 }
 QStringList  PythonQtShell_LnReporterManager::getSystemNameList() const
 {

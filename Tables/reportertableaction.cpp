@@ -237,7 +237,7 @@ RtBeanTableDataModel::RtBeanTableDataModel(ReporterTableAction* act)
     return "package.jmri.jmrit.beantable.ReporterTable";
 }
 
-/*protected*/ void ReporterTableAction::addPressed(ActionEvent* /*e*/) {
+/*protected*/ void ReporterTableAction::addPressed(JActionEvent* /*e*/) {
 #if 1
     pref = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
     if (addFrame == NULL) {
@@ -343,14 +343,24 @@ void ReporterTableAction::createPressed(ActionEvent* /*e*/)
  QString errorMessage = "";
  for (int x = 0; x < numberOfReporters; x++)
  {
-  curAddress = ((ProxyReporterManager*)reporterManager)->getNextValidAddress(curAddress, reporterPrefix);
+  try {
+  curAddress = reporterManager->getNextValidAddress(curAddress, reporterPrefix, false);
+  }
+  catch (Exception* ex) {
+    displayHwError(curAddress, ex);
+    // directly add to statusBarLabel (but never called?)
+    statusBarLabel->setText(tr("Unable to convert \"%1\" to a valid Hardware Address.").arg(curAddress));
+    statusBarLabel->setForeground(Qt::red);
+    return;
+  }
+#if 0
   if (curAddress == "") {
    log->debug("Error converting HW or getNextValidAddress");
    errorMessage = (tr("Requested Turnout(s) were not created. Check your entry against pattern (see ToolTip)."));
    statusBarLabel->setStyleSheet("QEditLine {color: red}");
    // The next address returned an error, therefore we stop this attempt and go to the next address.
   }
-
+#endif
   // Compose the proposed system name from parts:
   rName = reporterPrefix + reporterManager->typeLetter() + curAddress;
   Reporter* r = nullptr;

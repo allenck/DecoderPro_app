@@ -723,10 +723,8 @@ void SpeedProfilePanel::on_cancelButton_clicked()
 void SpeedProfilePanel::on_testButton_clicked()
 {
  //Should also test that the step is no greater than those available on the throttle.
- //try {
  bool bOk;
  int s =speedStepFrom->text().toInt(&bOk);
-// } catch (Exception* e) {
  if(!bOk || s == 0 || s > finishSpeedStep )
  {
      //JOptionPane.showMessageDialog(NULL, tr("ErrorSpeedStep"));

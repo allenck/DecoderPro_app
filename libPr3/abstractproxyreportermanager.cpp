@@ -397,9 +397,9 @@ AbstractProxyReporterManager::AbstractProxyReporterManager(QObject *parent)
   Manager* mgr = getMgr(i);
 #ifdef QT_DEBUG
   QString pfx = ((AbstractManager*)mgr)->getSystemPrefix();
-  char tl = ((AbstractProxyReporterManager*)mgr)->typeLetter();
+  char tl = mgr->typeLetter();
 #endif
-  if ( systemname.startsWith(((AbstractManager*)mgr)->getSystemPrefix()+((AbstractProxyReporterManager*)mgr)->typeLetter()))
+  if ( systemname.startsWith(((AbstractManager*)mgr)->getSystemPrefix()+((AbstractManager*)mgr)->typeLetter()))
   {
    return i;
   }

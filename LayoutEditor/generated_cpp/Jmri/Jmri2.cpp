@@ -45,7 +45,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmargins.h>
 #include <qmenu.h>
@@ -17064,6 +17063,39 @@ if (_wrapper) {
 }
   return ReporterManager::getNextValidAddress(arg__1, arg__2);
 }
+QString  PythonQtShell_ReporterManager::getNextValidAddress(QString  curAddress0, QString  prefix1, bool  ignoreInitialExisting2)
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("getNextValidAddress");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QString" , "QString" , "QString" , "bool"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(4, argumentList);
+      QString returnValue{};
+      void* args[4] = {NULL, (void*)&curAddress0, (void*)&prefix1, (void*)&ignoreInitialExisting2};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("getNextValidAddress", methodInfo, result);
+          } else {
+            returnValue = *((QString*)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return QString();
+}
 QStringList  PythonQtShell_ReporterManager::getSystemNameList() const
 {
 if (_wrapper) {
@@ -17132,6 +17164,11 @@ NamedBean*  PythonQtWrapper_ReporterManager::getByUserName(ReporterManager* theW
 QString  PythonQtWrapper_ReporterManager::getNextValidAddress(ReporterManager* theWrappedObject, QString  arg__1, QString  arg__2) const
 {
   return ( theWrappedObject->getNextValidAddress(arg__1, arg__2));
+}
+
+QString  PythonQtWrapper_ReporterManager::getNextValidAddress(ReporterManager* theWrappedObject, QString  curAddress, QString  prefix, bool  ignoreInitialExisting)
+{
+  return ( theWrappedObject->getNextValidAddress(curAddress, prefix, ignoreInitialExisting));
 }
 
 QStringList  PythonQtWrapper_ReporterManager::getSystemNameList(ReporterManager* theWrappedObject) const

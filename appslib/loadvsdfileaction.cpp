@@ -2,9 +2,10 @@
 #include "jfilechooser.h"
 #include "vsdecodermanager.h"
 #include "vsdfile.h"
-#include <QMessageBox>
+#include "joptionpane.h"
 #include "vsdecoderpreferences.h"
 #include "file.h"
+#include "loggerfactory.h"
 
 //LoadVsDFileAction::LoadVsDFileAction(QObject *parent) :
 //  AbstractAction(parent)
@@ -43,7 +44,6 @@ common();
 
 void LoadVSDFileAction::common()
 {
- log = new Logger("LoadVsDFileAction");
  fileChooser = NULL;
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
@@ -56,7 +56,7 @@ void LoadVSDFileAction::common()
  *
  * @param e The event causing the action.
  */
-/*public*/ void LoadVSDFileAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void LoadVSDFileAction::actionPerformed(JActionEvent* /*e*/)
 {
  if (fileChooser == NULL)
  {
@@ -88,19 +88,19 @@ void LoadVSDFileAction::common()
  loadVSDFile(fileChooser->getSelectedFile());
 
  // Store the last used directory
- //try {
+ try {
      last_path = fileChooser->getCurrentDirectory()->getCanonicalPath();
-//    } catch (java.io.IOException err) {
-//        log->debug("Error getting current directory: " + err);
-//        last_path = VSDecoderManager.instance().getVSDecoderPreferences().getDefaultVSDFilePath();
-//    }
+    } catch (IOException* err) {
+        log->debug("Error getting current directory: ",  err);
+        last_path = VSDecoderManager::instance()->getVSDecoderPreferences()->getDefaultVSDFilePath();
+    }
 }
 
 /*public*/ /*static*/ bool LoadVSDFileAction::loadVSDFile(File* f)
 {
  VSDFile* vsdfile;
  // Create a VSD (zip) file.
- //try {
+ try {
   vsdfile = new VSDFile(f);
   Logger* log = new Logger("LoadVSDFileAction");
   log->debug("VSD File name = " + vsdfile->getName());
@@ -113,26 +113,27 @@ void LoadVSDFileAction::common()
 
   if (!vsdfile->isInitialized())
   {
-//            JOptionPane.showMessageDialog(NULL, vsdfile.getStatusMessage(),
-//                    rb.getString("VSDFileError"), JOptionPane.ERROR_MESSAGE);
-   QMessageBox::critical(NULL, tr("Error Loading VSD File"), vsdfile->getStatusMessage());
+    JOptionPane::showMessageDialog(NULL, vsdfile->getStatusMessage(),
+            tr("Error Loading VSD File"), JOptionPane::ERROR_MESSAGE);
   }
 
   return (vsdfile->isInitialized());
 
-//    } catch (java.util.zip.ZipException ze) {
+   }
+//  catch (ZipException* ze) {
 //        log->error("ZipException opening file " + f.toString(), ze);
 //        return (false);
-//    } catch (java.io.IOException ze) {
-//        log->error("IOException opening file " + f.toString(), ze);
-//        return (false);
 //    }
+    catch (IOException* ze) {
+        log->error("IOException opening file " + f->toString(), ze);
+        return (false);
+    }
 }
 
 /*public*/ /*static*/ bool LoadVSDFileAction::loadVSDFile(QString fp) {
     VSDFile* vsdfile;
 
-    //try {
+    try {
         // Create a VSD (zip) file.
         vsdfile = new VSDFile(fp);
         Logger* log = new Logger("LoadVSDFileAction");
@@ -141,16 +142,18 @@ void LoadVSDFileAction::common()
             VSDecoderManager::instance()->loadProfiles(vsdfile);
         }
         // Cleanup and close files.
-// TODO:        vsdfile->close();
+        vsdfile->close();
 
         return (vsdfile->isInitialized());
-//    } catch (java.util.zip.ZipException ze) {
+    }
+//    catch (ZipException* ze) {
 //        log->error("ZipException opening file " + fp, ze);
 //        return (false);
-//    } catch (java.io.IOException ze) {
-//        log->error("IOException opening file " + fp, ze);
-//        return (false);
 //    }
+    catch (IOException* ze) {
+        log->error("IOException opening file " + fp, ze);
+        return (false);
+    }
 
     /*
      File f = NULL;
@@ -166,3 +169,5 @@ void LoadVSDFileAction::common()
      }
      */
     }
+
+ /*private*/ /*static*/ /*final*/ Logger* LoadVSDFileAction::log = LoggerFactory::getLogger("LoadVSDFileAction");

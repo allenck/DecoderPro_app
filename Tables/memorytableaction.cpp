@@ -291,7 +291,7 @@ void MemoryTableAction::okPressed(JActionEvent* /*e*/) {
                 sName = b;
             }
         }
-        //try {
+        try {
             if (autoSystemNameBox->isChecked()) {
                 if(InstanceManager::memoryManagerInstance()->newMemory(user) == NULL)
                 {
@@ -305,11 +305,11 @@ void MemoryTableAction::okPressed(JActionEvent* /*e*/) {
                    return;
                }
             }
-//        } catch (IllegalArgumentException* ex) {
-//            // user input no good
-//            handleCreateException(sName);
-//            return; // without creating
-//        }
+        } catch (IllegalArgumentException* ex) {
+            // user input no good
+            handleCreateException(sName);
+            return; // without creating
+        }
     }
     p->setSimplePreferenceState(systemNameAuto, autoSystemNameBox->isChecked());
 }

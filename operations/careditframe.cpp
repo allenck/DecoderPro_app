@@ -26,7 +26,7 @@
 #include "idtagmanager.h"
 #include "carattributeeditframe.h"
 #include "joptionpane.h"
-#include <QMessageBox>
+#include "joptionpane.h"
 #include "kernel.h"
 #include "gridbaglayout.h"
 #include "carlengths.h"
@@ -384,44 +384,40 @@ namespace Operations
      _car = car;
 
      if (!((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->containsName(car->getRoadName())) {
-//         if (JOptionPane.showConfirmDialog(this, tr("roadNameNotExist"),
-//                 new Object[]{car.getRoadName()}), tr("carAddRoad"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-      if(QMessageBox::question(this, tr("Add road name?"), tr("Road name \"%1\" does not exist in your roster, add?").arg(car->getRoadName()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+      if (JOptionPane::showConfirmDialog(this, tr("Road name \"%1\" does not exist in your roster, add?").arg(car->getRoadName()),
+                                        tr("Add road name?"), JOptionPane::YES_NO_OPTION) == JOptionPane::YES_OPTION)
       {
-             ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->addName(car->getRoadName());
-         }
+          ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->addName(car->getRoadName());
+      }
      }
      roadComboBox->setCurrentIndex(roadComboBox->findText(car->getRoadName()));
 
      roadNumberTextField->setText(car->getNumber());
 
      if (!((CarTypes*)InstanceManager::getDefault("CarTypes"))->containsName(car->getTypeName())) {
-//         if (JOptionPane.showConfirmDialog(this, tr("typeNameNotExist"),
-//                 new Object[]{car.getTypeName()}), tr("carAddType"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-      if(QMessageBox::question(this, tr("Add car type?"), tr("Type \"%1\" does not exist in your roster, add?").arg(car->getTypeName()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+      if (JOptionPane::showConfirmDialog(this, tr("Type \"%1\" does not exist in your roster, add?").arg(car->getTypeName()),
+               tr("Add car type?"), JOptionPane::YES_NO_OPTION) == JOptionPane::YES_OPTION)
       {
-             ((CarTypes*)InstanceManager::getDefault("CarTypes"))->addName(car->getTypeName());
-         }
+          ((CarTypes*)InstanceManager::getDefault("CarTypes"))->addName(car->getTypeName());
+      }
      }
      typeComboBox->setCurrentIndex(typeComboBox->findText(car->getTypeName()));
 
      if (!((CarLengths*)InstanceManager::getDefault("CarLengths"))->containsName(car->getLength())) {
-//         if (JOptionPane.showConfirmDialog(this, tr("lengthNameNotExist"),
-//                 new Object[]{car.getLength()}), tr("carAddLength"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-      if(QMessageBox::question(this, tr("Add car length?"), tr("Length \"%1\" does not exist in your roster, add?").arg(car->getLength()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+      if (JOptionPane::showConfirmDialog(this, tr("Length \"%1\" does not exist in your roster, add?").arg(car->getLength()), tr("Add car length?"),
+                                         JOptionPane::YES_NO_OPTION) == JOptionPane::YES_OPTION)
       {
-             ((CarLengths*)InstanceManager::getDefault("CarLengths"))->addName(car->getLength());
-         }
+          ((CarLengths*)InstanceManager::getDefault("CarLengths"))->addName(car->getLength());
+      }
      }
      lengthComboBox->setCurrentIndex(lengthComboBox->findText(car->getLength()));
 
      if (!((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->containsName(car->getColor())) {
-//         if (JOptionPane.showConfirmDialog(this, tr("colorNameNotExist"),
-//                 new Object[]{car.getColor()}), tr("carAddColor"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-      if(QMessageBox::question(this, tr("Add car color?"), tr("Color \"%1\" does not exist in your roster, add?").arg(car->getColor()), QMessageBox::Yes | QMessageBox::No)== QMessageBox::Yes)
+      if (JOptionPane::showConfirmDialog(this, tr("Color \"%1\" does not exist in your roster, add?").arg(car->getColor()), tr("Add car color?"),
+                                         JOptionPane::YES_NO_OPTION) == JOptionPane::YES_OPTION)
       {
-             ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->addName(car->getColor());
-         }
+          ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->addName(car->getColor());
+      }
      }
 
      colorComboBox->setCurrentIndex(colorComboBox->findText(car->getColor()));
@@ -442,9 +438,8 @@ namespace Operations
      builtTextField->setText(car->getBuilt());
 
      if (!((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->containsName(car->getOwner())) {
-//         if (JOptionPane.showConfirmDialog(this, tr("ownerNameNotExist"),
-//                 new Object[]{car.getOwner()}), tr("addOwner"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-      if(QMessageBox::question(this, tr("Add owner?"), tr("Owner \"%1\" does not exist in your roster, add?").arg(car->getOwner()), QMessageBox::Yes | QMessageBox::No)== QMessageBox::Yes)
+      if (JOptionPane::showConfirmDialog(this, tr("Owner \"%1\" does not exist in your roster, add?").arg(car->getOwner()),
+                                         tr("Add owner?"), JOptionPane::YES_NO_OPTION) == JOptionPane::YES_OPTION)
       {
        ((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->addName(car->getOwner());
       }
@@ -452,12 +447,11 @@ namespace Operations
      ownerComboBox->setCurrentIndex(ownerComboBox->findText(car->getOwner()));
 
      if (!((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->containsName(car->getTypeName(), car->getLoadName())) {
-//         if (JOptionPane.showConfirmDialog(this, tr("loadNameNotExist"),
-//                 new Object[]{car.getLoadName()}), tr("addLoad"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-      if(QMessageBox::question(this, tr("Add load?"), tr("Load \"%1\" does not exist in your roster, add?").arg(car->getLoadName()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+      if (JOptionPane::showConfirmDialog(this, tr("Load \"%1\" does not exist in your roster, add?").arg(car->getLoadName()), tr("Add load?"),
+                                         JOptionPane::YES_NO_OPTION) == JOptionPane::YES_OPTION)
       {
-             ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->addName(car->getTypeName(), car->getLoadName());
-         }
+          ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->addName(car->getTypeName(), car->getLoadName());
+      }
      }
      // listen for changes in car load
      car->PropertyChangeSupport::addPropertyChangeListener(this);
@@ -601,9 +595,8 @@ namespace Operations
    weightTonsTextField->setText(QString::number(tons));
    if(!ok)
    {
-//             JOptionPane.showMessageDialog(this, tr("carLengthMustBe"), Bundle
-//                     .getMessage("carWeigthCanNot"), JOptionPane.ERROR_MESSAGE);
-    QMessageBox::critical(this, tr("Can not calculate car weight!"), tr("Car length must be a number in feet"));
+    JOptionPane::showMessageDialog(this, tr("Car length must be a number in feet"),
+      tr("Can not calculate car weight!"), JOptionPane::ERROR_MESSAGE);
    }
   }
  }
@@ -636,13 +629,11 @@ namespace Operations
 
   // ask if all cars of this type should be passenger
   if (isSave && _car->isPassenger() ^ passengerCheckBox->isChecked()) {
-//         if (JOptionPane.showConfirmDialog(this, passengerCheckBox->isChecked() ? Bundle
-//                 .getMessage("carModifyTypePassenger") : tr("carRemoveTypePassenger"),
-//                 new Object[]{_car->getTypeName()}), tr("carModifyAllType"),
-//                 new Object[]{_car->getTypeName()}), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-   QString msg = passengerCheckBox->isChecked() ? tr("Change all of your cars of type %1 to passenger?").arg(_car->getTypeName()) : tr("Remove passenger from all of your car of type %1?").arg(_car->getTypeName());
+   QString msg = passengerCheckBox->isChecked() ? tr("Change all of your cars of type %1 to passenger?").
+                                                  arg(_car->getTypeName()) : tr("Remove passenger from all of your car of type %1?").arg(_car->getTypeName());
                                                   //                 new Object[]{_car->getTypeName()}), tr("carModifyAllType"
-   if(QMessageBox::question(this, tr("Modify all cars of type %1?").arg(_car->getTypeName()), msg, QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+   if (JOptionPane::showConfirmDialog(this, msg, tr("Modify all cars of type %1?").arg(_car->getTypeName()),
+                                     JOptionPane::YES_NO_OPTION) == JOptionPane::YES_OPTION)
    {
           // go through the entire list and change the passenger setting
           // for all cars of this type
@@ -668,10 +659,9 @@ namespace Operations
   }
   // ask if blocking order should be the same
   if (isSave && _car->getKernel() == NULL && passengerCheckBox->isChecked() && _car->getBlocking() != blocking) {
-//         if (JOptionPane.showConfirmDialog(this, tr("carChangeBlocking"),
-//                 new Object[]{blocking, _car->getTypeName()}), Bundle
-//                 .getMessage("carModifyAllType"), new Object[]{_car->getTypeName()}), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-   if(QMessageBox::question(this, tr("Modify all cars of type %1?").arg(_car->getTypeName()), tr("Change passenger car order blocking to %1 for all of your %2 cars?").arg(blocking).arg(_car->getTypeName()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+   if (JOptionPane::showConfirmDialog(this, tr("Change passenger car order blocking to %1 for all of your %2 cars?").arg(blocking).arg(_car->getTypeName()),
+                                     tr("Modify all cars of type %1?").arg(_car->getTypeName()),
+                                      JOptionPane::YES_NO_OPTION) == JOptionPane::YES_OPTION)
    {
        // go through the entire list and change the passenger setting
        // for all cars of this type
@@ -686,12 +676,9 @@ namespace Operations
   _car->setBlocking(blocking);
   // ask if all cars of this type should be caboose
   if (isSave && _car->isCaboose() ^ cabooseCheckBox->isChecked()) {
-//         if (JOptionPane.showConfirmDialog(this, cabooseCheckBox->isChecked() ? Bundle
-//                 .getMessage("carModifyTypeCaboose") : tr("carRemoveTypeCaboose"),
-//                 new Object[]{_car->getTypeName()}), tr("carModifyAllType"),
-//                 new Object[]{_car->getTypeName()}), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
    QString msg = cabooseCheckBox->isChecked() ? tr("Change all of your cars of type %1 to caboose?").arg(_car->getTypeName()) : tr("Remove caboose from all of your car of type %1?").arg(_car->getTypeName());
-   if(QMessageBox::question(this, tr("Modify all cars of type %1?").arg(_car->getTypeName()), msg, QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+   if (JOptionPane::showConfirmDialog(this, msg, tr("Modify all cars of type %1?").arg(_car->getTypeName()),
+                                      JOptionPane::YES_NO_OPTION) == JOptionPane::YES_OPTION)
    {
           // go through the entire list and change the caboose setting for all cars of this type
           foreach (RollingStock* rs, *carManager->getList()) {
@@ -705,12 +692,9 @@ namespace Operations
   _car->setCaboose(cabooseCheckBox->isChecked());
   // ask if all cars of this type should be utility
   if (isSave && _car->isUtility() ^ utilityCheckBox->isChecked()) {
-//         if (JOptionPane.showConfirmDialog(this, utilityCheckBox->isChecked() ? Bundle
-//                 .getMessage("carModifyTypeUtility") : tr("carRemoveTypeUtility"),
-//                 new Object[]{_car->getTypeName()}), tr("carModifyAllType"),
-//                 new Object[]{_car->getTypeName()}), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
    QString msg = utilityCheckBox->isChecked() ? tr("Change all of your cars of type %1 to utility?").arg(_car->getTypeName()) : tr("Remove utility from all of your car of type %1?").arg(_car->getTypeName());
-   if(QMessageBox::question(this, tr("Modify all cars of type %1?").arg(_car->getTypeName()), msg, QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+   if (JOptionPane::showConfirmDialog(this, msg, tr("Modify all cars of type %1?").arg(_car->getTypeName()),
+       JOptionPane::YES_NO_OPTION) == JOptionPane::YES_OPTION)
    {
           // go through the entire list and change the utility for all cars of this type
           foreach (RollingStock* rs, *carManager->getList()) {
@@ -764,10 +748,9 @@ namespace Operations
    {
     QList<Car*> cars = _car->getKernel()->getCars();
     if (cars.size() > 1) {
-//                 if (JOptionPane.showConfirmDialog(this, tr("carInKernel"),
-//                         new Object[]{_car->toString()}), tr("carPartKernel"),
-//                         new Object[]{_car->getKernelName()}), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-     if(QMessageBox::question(this, tr("Car is part of kernel (%1)").arg(_car->getKernelName()), tr("Car (%1) is part of a kernel, do you want the other cars to also have the same settings?").arg(_car->toString()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+     if (JOptionPane::showConfirmDialog(this, tr("Car (%1) is part of a kernel, do you want the other cars to also have the same settings?").arg(_car->toString()),
+                                        tr("Car is part of kernel (%1)").arg(_car->getKernelName()),
+                                        JOptionPane::YES_NO_OPTION) == JOptionPane::YES_OPTION)
      {
       // go through the entire list and change the loads for all cars
       foreach (Car* car, cars)
@@ -794,9 +777,8 @@ namespace Operations
   blockingTextField->setText(QString::number(_car->getBlocking()));
 
   if (locationBox->currentText() != NULL && trackLocationBox->currentText() == NULL) {
-//         JOptionPane.showMessageDialog(this, tr("rsFullySelect"), Bundle
-//                 .getMessage("rsCanNotLoc"), JOptionPane.ERROR_MESSAGE);
-   QMessageBox::information(this, tr("Can not update car location"), tr("To place a car, you must select the car's location and track"));
+   JOptionPane::showMessageDialog(this, tr("To place a car, you must select the car's location and track"),
+                                  tr("Can not update car location"), JOptionPane::ERROR_MESSAGE);
   }
   else
   {
@@ -811,11 +793,9 @@ namespace Operations
      QList<Car*> cars = _car->getKernel()->getCars();
      if (cars.size() > 1)
      {
-//                     if (JOptionPane.showConfirmDialog(this, Bundle
-//                             .getMessage("carInKernel"), new Object[]{_car->toString()}), MessageFormat
-//                             .format(tr("carPartKernel"), new Object[]{_car->getKernelName()}),
-//                             JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-      if(QMessageBox::question(this, tr("Car is part of kernel (%1)").arg(_car->getKernelName()), tr("Car (%1) is part of a kernel, do you want the other cars to also have the same settings?").arg(_car->toString()), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+      if (JOptionPane::showConfirmDialog(this, tr("Car (%1) is part of a kernel, do you want the other cars to also have the same settings?").arg(_car->toString()),
+              tr("Car is part of kernel (%1)").arg(_car->getKernelName()),
+              JOptionPane::YES_NO_OPTION) == JOptionPane::YES_OPTION)
       {
        // go through the entire list and change the location for all cars
        foreach (Car* car, cars) {
@@ -848,17 +828,14 @@ namespace Operations
                  ->itemData(trackLocationBox->currentIndex())));
          if (status!=(Track::OKAY)) {
              log->debug(tr("Can't set car's location because of %1").arg(status));
-//             JOptionPane.showMessageDialog(this, tr("rsCanNotLocMsg"),
-//                     new Object[]{car.toString(), status}), tr("rsCanNotLoc"),
-//                     JOptionPane.ERROR_MESSAGE);
-           QMessageBox::critical(this, tr("Can not update car location"), tr("Can't set car (%1) location and track due to {%2").arg(_car->toString()).arg(status));
+           JOptionPane::showMessageDialog(this, tr("Can't set car (%1) location and track due to %2").arg(_car->toString()).arg(status),
+             tr("Can not update car location"),
+                   JOptionPane::ERROR_MESSAGE);
              // does the user want to force the rolling stock to this track?
-//             int results = JOptionPane.showOptionDialog(this, tr("rsForce"),
-//                     new Object[]{car.toString(), (Track) trackLocationBox->currentText()}), MessageFormat
-//                     .format(tr("rsOverride"), new Object[]{status}), JOptionPane.YES_NO_OPTION,
-//                     JOptionPane.QUESTION_MESSAGE, NULL, NULL, NULL);
-           int results =QMessageBox::question(this, tr("Do you want to override track''s %1?").arg(status), tr("Do you want to force car (%1) to track (%2)?").arg(car->toString()).arg(trackLocationBox->currentText()), QMessageBox::Yes | QMessageBox::No);
-             if (results == QMessageBox::Yes)
+           int results = JOptionPane::showOptionDialog(this, tr("Do you want to force car (%1) to track (%2)?").arg(car->toString()).arg(trackLocationBox->currentText()),
+                          tr("Do you want to override track''s %1?").arg(status), JOptionPane::YES_NO_OPTION,
+                   JOptionPane::QUESTION_MESSAGE/*, NULL, NULL, NULL*/);
+             if (results == JOptionPane::YES_OPTION)
              {
                  log->debug("Force rolling stock to track");
                  car->setLocation(VPtr<Location>::asPtr(locationBox->itemData(locationBox->currentIndex())), VPtr<Track>::asPtr(trackLocationBox

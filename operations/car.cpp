@@ -233,7 +233,6 @@ namespace Operations
             return weight;
         }
         // .9 tons/foot for caboose and passenger cars
-        //try {
         bool ok;
             weight = QString::number((int) getLength().toDouble(&ok) * .9);
         if(!ok){
@@ -248,7 +247,6 @@ namespace Operations
      */
     /*public*/ int Car::getAdjustedWeightTons() {
         int weightTons = 0;
-        //try {
         bool ok;
             // get loaded weight
             weightTons = getWeightTons().toInt(&ok);
@@ -874,7 +872,6 @@ namespace Operations
         }
 
         if ((a = e.attribute(Xml::WAIT)) != NULL) {
-            //try {
          bool ok;
                 _wait = a.toInt(&ok);
             if(!ok) {
@@ -891,7 +888,6 @@ namespace Operations
             _nextLoadName = a;
         }
         if ((a = e.attribute(Xml::NEXT_WAIT)) != NULL) {
-            //try {
             bool ok;
                 _nextWait = a.toInt(&ok);
             if(!ok) {

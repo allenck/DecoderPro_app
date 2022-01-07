@@ -85,17 +85,17 @@ void PowerPane::setStatus()
  // Check to see if the Power Manager has a current status
  if(mgrOK())
  {
-  //try {
-  if (listening->getPower()==PowerManager::ON) onOffStatus->setText(tr("On"));
-  else if (listening->getPower()==PowerManager::OFF) onOffStatus->setText(tr("Off"));
-  else if (listening->getPower()==PowerManager::UNKNOWN) onOffStatus->setText(tr("Unknown"));
-  else {
-    onOffStatus->setText(tr("Unknown"));
-    log->error("Unexpected state value: +"+selectMenu->getManager()->getPower());
-}
-//        } catch (JmriException* ex) {
-//                onOffStatus.setText(tr("StatusUnknown"));
-//        }
+  try {
+   if (listening->getPower()==PowerManager::ON) onOffStatus->setText(tr("On"));
+   else if (listening->getPower()==PowerManager::OFF) onOffStatus->setText(tr("Off"));
+   else if (listening->getPower()==PowerManager::UNKNOWN) onOffStatus->setText(tr("Unknown"));
+   else {
+     onOffStatus->setText(tr("Unknown"));
+     log->error("Unexpected state value: +"+selectMenu->getManager()->getPower());
+ }
+        } catch (JmriException* ex) {
+                onOffStatus->setText(tr("Unknown"));
+        }
     }
 }
 
@@ -130,11 +130,11 @@ void PowerPane::managerChanged() {
 /*public*/ void PowerPane::onButtonPushed()
 {
  if (mgrOK())
-  //try {
+  try {
   selectMenu->getManager()->setPower(PowerManager::ON);
-//        } catch (JmriException* e) {
-//            log.error("Exception trying to turn power on " +e);
-//        }
+  } catch (JmriException* e) {
+      log->error("Exception trying to turn power on ",e);
+  }
 }
 
 /*public*/ void PowerPane::offButtonPushed()

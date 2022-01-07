@@ -548,11 +548,11 @@ void JmriBeanComboBox::updateComboBox(QString inSelect)
     QString comboBoxText = NamedBean::normalizeUserName(currentText());
     if (comboBoxText != "") {
 
-        //try user name
+        // try user name
         result = uDaManager->getBeanByUserName(comboBoxText);
 
         if (nullptr == result) {
-            //try system name
+            // try system name
             //note: don't use getBeanBySystemName here
             //throws an IllegalArgumentException if text is invalid
             result = uDaManager->getNamedBean(comboBoxText);

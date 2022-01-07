@@ -15,6 +15,7 @@ public:
  ZipFile(QString name, QObject* parent = 0);
  /*public*/ ZipFile(File* file,int mode, QObject* parent = 0);
  /*public*/QString getName();
+ /*public*/void  close();
 
 signals:
 

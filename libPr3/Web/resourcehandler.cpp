@@ -361,7 +361,7 @@ throws Exception
     {
         if(!HttpMethod.HEAD.is(request.getMethod()))
         {
-            //try another handler
+            // try another handler
             super.handle(target, baseRequest, request, response);
             return;
         }

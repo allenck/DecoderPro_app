@@ -41,6 +41,14 @@ Reporter* AbstractReporterManager::getReporter(QString name) const {
 
     return (Reporter*)getBySystemName(name);
 }
+
+/** {@inheritDoc} */
+//@Override
+//@Nonnull
+/*public*/ QString AbstractReporterManager::getBeanTypeHandled(bool plural) const{
+    return tr(plural ? "Reporters" : "Reporter");
+}
+
 #if 1
 NamedBean *AbstractReporterManager::getBySystemName(QString name) const
 {
@@ -52,10 +60,6 @@ NamedBean *AbstractReporterManager::getByUserName(QString key) const{
 }
 #endif
 /** {@inheritDoc} */
-//@Override
-/*public*/ QString AbstractReporterManager::getBeanTypeHandled(bool plural) const {
-    return (plural ? tr("Reporters") : tr("Reporter"));
-}
 
 Reporter* AbstractReporterManager::getByDisplayName(QString key) const {
 // First try to find it in the user list.
@@ -120,7 +124,7 @@ Reporter* AbstractReporterManager::newReporter(QString systemName, QString userN
 **/
 
 bool AbstractReporterManager::allowMultipleAdditions(QString systemName) const { return false;  }
-
+#if 1
 QString AbstractReporterManager::getNextValidAddress(QString curAddress, QString prefix) const
 {
  //If the hardware address past does not already exist then this can
@@ -170,6 +174,7 @@ QString AbstractReporterManager::getNextValidAddress(QString curAddress, QString
   return QString("%1").arg(iName);
  }
 }
+#endif
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractReporterManager.class.getName());
 // Utility method to create a concrete AbstractReporter
 ///*private*/ Reporter* AbstractReporterManager::createNewReporter(QString systemName, QString userName)

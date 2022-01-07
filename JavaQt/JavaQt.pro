@@ -70,6 +70,7 @@ SOURCES += javaqt.cpp \
     physicallocationpanel.cpp \
     thread.cpp \
     tristatejcheckbox.cpp \
+    uncheckedioexception.cpp \
     unexpectedexceptioncontext.cpp \
     validation.cpp \
     validatorborder.cpp \
@@ -316,6 +317,7 @@ HEADERS += javaqt.h\
  #systemtype.h \
  thread.h \
  tristatejcheckbox.h \
+ uncheckedioexception.h \
  unexpectedexceptioncontext.h \
  validation.h \
  validatorborder.h \

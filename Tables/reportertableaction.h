@@ -72,7 +72,7 @@ protected:
     void handleCreateException(QString sysName);
 
 protected slots:
-    /*protected*/ void addPressed(ActionEvent* e = 0);
+    /*protected*/ void addPressed(JActionEvent* e = 0)override;
 
  friend class RtBeanTableDataModel;
  friend class RTACreateListener;

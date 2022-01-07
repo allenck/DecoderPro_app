@@ -6,6 +6,7 @@
 #include "oblockmanager.h"
 #include "portalmanager.h"
 #include "warranttableaction.h"
+#include "joptionpane.h"
 
 OBlockManagerXml::OBlockManagerXml(QObject *parent) :
     AbstractXmlAdapter(parent)
@@ -376,11 +377,11 @@ void OBlockManagerXml::loadBlock(QDomElement elem)
  }
  if (elem.attribute("speedNotch") != NULL)
  {
-     //try {
+     try {
   block->setBlockSpeed(elem.attribute("speedNotch"));
-//            } catch (jmri.JmriException ex) {
-//                JOptionPane.showMessageDialog(NULL, ex->getMessage() + "\n" + elem.attribute("speedNotch"));
-//            }
+  } catch (Exception* ex) {
+      JOptionPane::showMessageDialog(NULL, ex->getMessage() + "\n" + elem.attribute("speedNotch"));
+  }
  }
 
  QDomNodeList portals = elem.elementsByTagName("portal");

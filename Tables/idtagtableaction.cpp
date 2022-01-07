@@ -323,10 +323,10 @@ void IdTagTableAction::okPressed(ActionEvent* /*e*/) {
 //        String tag = tagID.getText();
 //        if (tag.equals("")) tag=NULL;
     QString sName = sysName->text();
-    //try {
+    try {
         if(((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->newIdTag(sName, user)== NULL)
-//      ((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->newIdTag(sName, user);
-//    } catch (IllegalArgumentException* ex) {
+      ((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->newIdTag(sName, user);
+    } catch (IllegalArgumentException* ex)
         {
         // user input no good
         handleCreateException(sName);

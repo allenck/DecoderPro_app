@@ -329,11 +329,11 @@ SHBeanTableDataModel::SHBeanTableDataModel(SignalHeadTableAction *self) : BeanTa
     SignalHead* s =(SignalHead*)static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(name);
     if (s==nullptr) return "<lost>"; // if due to race condition, the device is going away
     QString val = "";
-    //try {
+    try {
         val = s->getAppearanceName();
-//    } catch (java.lang.ArrayIndexOutOfBoundsException e) {
-//        log->error(e);
-//    }
+    } catch (ArrayIndexOutOfBoundsException* e) {
+        log->error(e->getMessage(), e);
+    }
 
     if (val != nullptr) return val;
     else return "Unexpected NULL value";

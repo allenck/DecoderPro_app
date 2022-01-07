@@ -113,10 +113,8 @@ void DccSignalMast::common()
 
  //QString tmp = parts[2].mid(parts[2].indexOf("(") + 1, parts[2].indexOf(")"));
  QString tmp = parts[2].mid(parts[2].indexOf("(") + 1, parts[2].indexOf(")")-parts[2].indexOf("(")-1);
- //try {
  bool bok;
      dccSignalDecoderAddress = tmp.toInt(&bok);
- //} catch (NumberFormatException* e) {
      if(!bok)
      {
      log->warn("DCC accessory address SystemName " + systemName + " is not in the correct format");

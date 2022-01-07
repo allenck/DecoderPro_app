@@ -1,5 +1,8 @@
 #include "rawturnoutoperationxml.h"
 #include "rawturnoutoperation.h"
+#include "exceptions.h"
+#include "loggerfactory.h"
+#include "class.h"
 
 RawTurnoutOperationXml::RawTurnoutOperationXml(QObject *parent) :
     CommonTurnoutOperationXml(parent)
@@ -21,19 +24,20 @@ RawTurnoutOperationXml::RawTurnoutOperationXml(QObject *parent) :
 /*public*/ TurnoutOperation* RawTurnoutOperationXml::loadOne(QDomElement e)
 {
  //try {
-      //Class<?> myOpClass = Class.forName("jmri.RawTurnoutOperation");
-    RawTurnoutOperation* myOpClass = new RawTurnoutOperation();
+     RawTurnoutOperation* myOpClass = (RawTurnoutOperation*)Class::forName("RawTurnoutOperation");
+    //RawTurnoutOperation* myOpClass = new RawTurnoutOperation();
 #if 0 // TODO:
-        return CommonTurnoutOperationXml::loadOne(e, myOpClass.getConstructor(new Class[]{String.class, int.class, int.class}),
+        return CommonTurnoutOperationXml::loadOne(e, myOpClass->getConstructor(new Class[]{"String", "int", "int"}),
                     RawTurnoutOperation::getDefaultIntervalStatic(),
                     RawTurnoutOperation::getDefaultMaxTriesStatic());
         } catch (ClassNotFoundException* e1) {
-            log.error("while creating NoFeedbackTurnoutOperation", e1);
-            return null;
+            log->error("while creating NoFeedbackTurnoutOperation", e1);
+            return nullptr;
         } catch (NoSuchMethodException* e2) {
-            log.error("while creating NoFeedbackTurnoutOperation", e2);
-            return null;
+            log->error("while creating NoFeedbackTurnoutOperation", e2);
+            return nullptr;
         }
 #endif
     return (TurnoutOperation*)myOpClass;
     }
+/*private*/ /*final*/ /*static*/ Logger* RawTurnoutOperationXml::log = LoggerFactory::getLogger("RawTurnoutOperationXml");

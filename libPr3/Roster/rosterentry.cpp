@@ -1576,7 +1576,6 @@ if (!(_decoderFamily==("")))
     ThrottleManager* tf = InstanceManager::throttleManagerInstance();
     int address =0;
     bool bOk;
-    //try {
     address = _dccAddress.toInt(&bOk);
     if(!bOk) { address = 3;}  // ignore, accepting the default value
     if (tf!=NULL && tf->canBeLongAddress(address) && !tf->canBeShortAddress(address))

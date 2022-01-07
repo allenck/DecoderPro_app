@@ -2,6 +2,7 @@
 #include <QVariant>
 #include "exceptions.h"
 #include "csvprinter.h"
+#include "uncheckedioexception.h"
 
 /**
  * Creates a customized CSV format.
@@ -207,12 +208,12 @@
 }
 
 /*private*/ void CSVFormat::append(/*final*/ QChar c, /*final*/ QTextStream* appendable) /*throws IOException*/ {
-    //try {
+    try {
         //appendable.append(c);
     *appendable << c;
-    //} catch (final IOException e) {
-    //    throw new UncheckedIOException(e);
-    //}
+    } catch (/*final*/ IOException* e) {
+        throw new UncheckedIOException(e);
+    }
 }
 /*private*/ void CSVFormat::append(/*final*/ QString csq, /*final*/ QTextStream* appendable) /*throws IOException*/ {
 //       try {

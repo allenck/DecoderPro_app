@@ -85,13 +85,13 @@
     double x = 0.0;
     double y = 0.0;
     double radius = 25.0;
-    //try {
+    bool ok;
         x = element.attribute("xcen").toFloat();
         y = element.attribute("ycen").toFloat();
-        radius = element.attribute("radius").toFloat();
-//    } catch (org.jdom2.DataConversionException e) {
-//        log->error("failed to convert layoutturntable center or radius attributes");
-//    }
+        radius = element.attribute("radius").toFloat(&ok);
+    if(!ok) {
+        log->error("failed to convert layoutturntable center or radius attributes");
+    }
     // create the new LayoutTurntable
     LayoutTurntable* l = new LayoutTurntable(name,  p);
     l->setRadius(radius);
@@ -111,12 +111,13 @@
             double angle = 0.0;
             int index = 0;
             QDomElement relem = rayTrackList.at(i).toElement();
-            //try {
-                angle = (relem.attribute("angle")).toFloat();
-                index = (relem.attribute("index")).toInt();
-//            } catch (org.jdom2.DataConversionException e) {
-//                log->error("failed to convert ray track angle or index attributes");
-//            }
+            try {
+             bool ok;
+                angle = (relem.attribute("angle")).toFloat(&ok); if(!ok) throw new DataConversionException();
+                index = (relem.attribute("index")).toInt(&ok); if(!ok) throw new DataConversionException();
+            } catch (DataConversionException* e) {
+                log->error("failed to convert ray track angle or index attributes");
+            }
             QString connectName = "";
             QString a = relem.attribute("connectname");
             if (a != NULL) {

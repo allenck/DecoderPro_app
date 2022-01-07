@@ -309,15 +309,15 @@
  * @param file the script to run.
  */
 /*public*/ void JmriScriptEngineManager::runScript(File* file) {
-    //try {
+    try {
         this->eval(file);
-//    } catch (FileNotFoundException* ex) {
-//        log->error("File {} not found.", file);
-//    } catch (IOException* ex) {
-//        log->error("Exception working with file {}", file);
-//    } catch (ScriptException ex) {
-//        log->error("Error in script {}.", file, ex);
-//    }
+    } catch (FileNotFoundException* ex) {
+        log->error(tr("File %1 not found.").arg(file->toString()));
+    } catch (IOException* ex) {
+        log->error(tr("Exception working with file %1").arg(file->toString()));
+    } catch (ScriptException* ex) {
+        log->error(tr("Error in script %1.").arg(file->toString()), ex);
+    }
 
 }
 #if 0

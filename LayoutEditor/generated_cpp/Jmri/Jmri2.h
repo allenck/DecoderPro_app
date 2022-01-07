@@ -54,7 +54,6 @@
 #include <qicon.h>
 #include <qkeysequence.h>
 #include <qlayout.h>
-#include <qlist.h>
 #include <qlocale.h>
 #include <qmargins.h>
 #include <qmenu.h>
@@ -2425,6 +2424,7 @@ virtual bool  allowMultipleAdditions(QString  arg__1) const;
 virtual NamedBean*  getBySystemName(QString  arg__1) const;
 virtual NamedBean*  getByUserName(QString  arg__1) const;
 virtual QString  getNextValidAddress(QString  arg__1, QString  arg__2) const;
+virtual QString  getNextValidAddress(QString  curAddress, QString  prefix, bool  ignoreInitialExisting);
 virtual QStringList  getSystemNameList() const;
 
   const QMetaObject* metaObject() const;
@@ -2438,6 +2438,7 @@ inline bool  py_q_allowMultipleAdditions(QString  arg__1) const { return Reporte
 inline NamedBean*  py_q_getBySystemName(QString  arg__1) const { return ReporterManager::getBySystemName(arg__1); }
 inline NamedBean*  py_q_getByUserName(QString  arg__1) const { return ReporterManager::getByUserName(arg__1); }
 inline QString  py_q_getNextValidAddress(QString  arg__1, QString  arg__2) const { return ReporterManager::getNextValidAddress(arg__1, arg__2); }
+inline QString  py_q_getNextValidAddress(QString  curAddress, QString  prefix, bool  ignoreInitialExisting) { return this->getNextValidAddress(curAddress, prefix, ignoreInitialExisting); }
 inline QStringList  py_q_getSystemNameList() const { return ReporterManager::getSystemNameList(); }
 };
 
@@ -2455,6 +2456,8 @@ void delete_ReporterManager(ReporterManager* obj) { delete obj; }
    NamedBean*  py_q_getByUserName(ReporterManager* theWrappedObject, QString  arg__1) const{  return (((PythonQtPublicPromoter_ReporterManager*)theWrappedObject)->py_q_getByUserName(arg__1));}
    QString  getNextValidAddress(ReporterManager* theWrappedObject, QString  arg__1, QString  arg__2) const;
    QString  py_q_getNextValidAddress(ReporterManager* theWrappedObject, QString  arg__1, QString  arg__2) const{  return (((PythonQtPublicPromoter_ReporterManager*)theWrappedObject)->py_q_getNextValidAddress(arg__1, arg__2));}
+   QString  getNextValidAddress(ReporterManager* theWrappedObject, QString  curAddress, QString  prefix, bool  ignoreInitialExisting);
+   QString  py_q_getNextValidAddress(ReporterManager* theWrappedObject, QString  curAddress, QString  prefix, bool  ignoreInitialExisting){  return (((PythonQtPublicPromoter_ReporterManager*)theWrappedObject)->py_q_getNextValidAddress(curAddress, prefix, ignoreInitialExisting));}
    QStringList  getSystemNameList(ReporterManager* theWrappedObject) const;
    QStringList  py_q_getSystemNameList(ReporterManager* theWrappedObject) const{  return (((PythonQtPublicPromoter_ReporterManager*)theWrappedObject)->py_q_getSystemNameList());}
    QObject*  self(ReporterManager* theWrappedObject);

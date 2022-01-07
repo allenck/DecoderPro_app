@@ -17,11 +17,9 @@
 #include "operationsmanager.h"
 #include "apps.h"
 #include "instancemanager.h"
+#include "exceptiondisplayframe.h"
+#include "unexpectedexceptioncontext.h"
 
-//RestoreDialog::RestoreDialog(QWidget *parent) :
-//  JDialog(parent)
-//{
-//}
 namespace Operations
 {
  // /*public*/ class RestoreDialog extends JDialog {
@@ -204,7 +202,7 @@ namespace Operations
      }
 
      // first backup the users data in case they forgot
-     //try {
+     try {
          AutoBackup* _auto = new AutoBackup();
          _auto->autoBackup();
 
@@ -229,21 +227,21 @@ namespace Operations
          close();
 
          Apps::handleRestart();
-//     } // These may need to be enhanced to show the backup store being used,
-//       // auto or default.
-//     catch (IOException* ex) {
-//         ExceptionContext context = new ExceptionContext(ex, tr("RestoreDialog.restoring")
-//                 + " " + setName, "Hint about checking valid names, etc."); // NOI18N
-//         new ExceptionDisplayFrame(context);
+     } // These may need to be enhanced to show the backup store being used,
+       // auto or default.
+     catch (IOException* ex) {
+         ExceptionContext* context = new ExceptionContext(ex, tr("RestoreDialog.restoring")
+                 + " " + setName, "Hint about checking valid names, etc."); // NOI18N
+         new ExceptionDisplayFrame(context);
 
-//     } catch (Exception* ex) {
-//         log.error("Doing restore from " + setName, ex);
+     } catch (Exception* ex) {
+         log->error("Doing restore from " + setName, ex);
 
-//         UnexpectedExceptionContext context = new UnexpectedExceptionContext(ex,
-//                 tr("RestoreDialog.restoring") + " " + setName);
+         UnexpectedExceptionContext* context = new UnexpectedExceptionContext(ex,
+                 tr("RestoreDialog.restoring") + " " + setName, this);
 
-//         new ExceptionDisplayFrame(context);
-//     }
+         new ExceptionDisplayFrame(context);
+     }
  }
 
  /**

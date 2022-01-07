@@ -82,7 +82,7 @@ void OpSessionLog::writeHeader(QString fileName)
  *_outBuff << "\n";
  *_outBuff << "\t\t\t";
  //SimpleDateFormat dateFormatter = new SimpleDateFormat("EEEE, MMMM d, yyyy");
-*_outBuff << QDateTime::currentDateTime().toString("EEEE, MMMM, d, yyyy");
+ *_outBuff << QDateTime::currentDateTime().toString("EEEE, MMMM, d, yyyy");
  *_outBuff<< "\n";
  *_outBuff<< "\n";
  writeLn(tr("startLog"));
