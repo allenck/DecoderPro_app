@@ -1201,7 +1201,7 @@ void doAction(Object obj) {
             _warrant->setTrainName(trainName);
         }
         _startTime = System.currentTimeMillis();
-        _warrant->PropertyChangeSupport::addPropertyChangeListener(this);
+        _warrant->SwingPropertyChangeSupport::addPropertyChangeListener(this);
        msg = _warrant->setRunMode(Warrant::MODE_LEARN, _locoAddress, _learnThrottle,
                                       _throttleCommands, _runBlind.isSelected());
     }

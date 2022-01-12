@@ -63,9 +63,10 @@
      _manager->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
  }
  updateNameList();
- initTempRow();
- AbstractManager* mgr = (AbstractManager*)getManager()->self();
- connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ if(!_tabbed)
+  initTempRow();
+ //Manager* mgr = (Manager*)getManager()->self();
+ //connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 void OBlockTableModel::addHeaderListener(JTable* table)
@@ -89,7 +90,7 @@ void OBlockTableModel::initTempRow()
 }
 
 //@Override
-/*public*/ AbstractManager *OBlockTableModel::getManager() {
+/*public*/ Manager *OBlockTableModel::getManager() {
  _manager = (OBlockManager*)InstanceManager::getDefault("OBlockManager");
  return _manager;
 }
@@ -903,10 +904,10 @@ void OBlockTableModel::initTempRow()
 
 /*private*/ /*static*/ bool OBlockTableModel::sensorExists(QString name)
 {
- Sensor* sensor = ((ProxySensorManager*) InstanceManager::sensorManagerInstance())->getByUserName(name);
+ Sensor* sensor = (Sensor*)((ProxySensorManager*) InstanceManager::sensorManagerInstance())->AbstractProxyManager::getByUserName(name);
  if (sensor == NULL)
  {
-  sensor = ((ProxySensorManager*) InstanceManager::sensorManagerInstance())->getBySystemName(name);
+  sensor = (Sensor*)((ProxySensorManager*) InstanceManager::sensorManagerInstance())->AbstractProxyManager::getBySystemName(name);
  }
  return (sensor != NULL);
 }
@@ -959,7 +960,7 @@ void OBlockTableModel::deleteBean(OBlock* bean)
  if (log->isDebugEnabled())
  {
      log->debug("Delete with " + QString::number(count) + " remaining listener");
-     //java.beans.PropertyChangeSupport pcs = new java.beans.PropertyChangeSupport(bean);
+     //java.beans.SwingPropertyChangeSupport pcs = new java.beans.SwingPropertyChangeSupport(bean);
      QVector<PropertyChangeListener*> listener = ((AbstractNamedBean*) bean)->getPropertyChangeListeners();
      for (int i = 0; i < listener.length(); i++) {
          log->debug(QString::number(i) + ") " + QString(listener.at(i)->self()->metaObject()->className()));

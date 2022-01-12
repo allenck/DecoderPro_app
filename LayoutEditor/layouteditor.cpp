@@ -6293,7 +6293,7 @@ PositionablePointView* pv = new PositionablePointView(o, currentPoint, this);
                             JOptionPane::PLAIN_MESSAGE);
                     if (blkUserName != "" && !blkUserName.isEmpty()) {
                         // Verify the user name
-                        Block* checkDuplicate = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->getByUserName(blkUserName);
+                        Block* checkDuplicate = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getByUserName(blkUserName);
                         if (checkDuplicate != nullptr) {
                             JOptionPane::showMessageDialog(getTargetFrame(),
                                     tr("User name %1 is already assigned to a block.").arg(blkUserName),

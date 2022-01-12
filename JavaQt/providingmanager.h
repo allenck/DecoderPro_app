@@ -11,9 +11,9 @@
  * @author Bob Jacobsen Copyright (C) 2003
  */
 
-class  ProvidingManager// /*<E extends NamedBean>*/ : public Manager
+class  ProvidingManager : public Manager
 {
-
+  Q_INTERFACES(Manager)
     /**
      * Get an existing instance via user name, then system name; if no matching instance is found, create a
      * new NameBean from the system name.
@@ -39,7 +39,7 @@ class  ProvidingManager// /*<E extends NamedBean>*/ : public Manager
      *                                  be parsed.
      */
     //@Nonnull
-    /*public*/ virtual NamedBean* provide(/*@Nonnull*/ QString name) const throw (IllegalArgumentException);
+  /*public*/ virtual NamedBean* provide(/*@Nonnull*/ QString name) const /*throw (IllegalArgumentException)*/{return nullptr;}
  friend class AbstractProvidingTurnoutManagerTestBase;
 };
 Q_DECLARE_INTERFACE(ProvidingManager, "ProvidingManager")

@@ -17,7 +17,9 @@
  * @see ConnectionConfig
  * @see java.util.ServiceLoader
  */
-/*public*/ /*interface*/class  ConnectionTypeList : public  JmriServiceProviderInterface {
+/*public*/ /*interface*/class  ConnectionTypeList : public QObject, public  JmriServiceProviderInterface {
+  Q_OBJECT
+  Q_INTERFACES(JmriServiceProviderInterface)
 public:
     /**
      * Get a list of classes that can configure a layout connection for the

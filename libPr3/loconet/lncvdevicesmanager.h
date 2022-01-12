@@ -2,7 +2,7 @@
 #define LNCVDEVICESMANAGER_H
 
 #include <QObject>
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 
 class ProgrammingTool;
 class LncvDevice;
@@ -10,7 +10,7 @@ class LocoNetMessage;
 class LncvDevices;
 class Logger;
 class LocoNetSystemConnectionMemo;
-class LncvDevicesManager : public PropertyChangeSupport
+class LncvDevicesManager : public SwingPropertyChangeSupport
 {
   Q_OBJECT
   //Q_INTERFACES(PropertyChangeListener)

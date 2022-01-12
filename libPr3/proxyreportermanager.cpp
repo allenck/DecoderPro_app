@@ -5,10 +5,10 @@
 #include "internalsystemconnectionmemo.h"
 
 ProxyReporterManager::ProxyReporterManager(QObject *parent) :
-    AbstractProxyReporterManager(parent)
+    QObject(parent)
 {
  setObjectName("ProxyReporterManager");
- registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
+// registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
 
 }
 
@@ -21,17 +21,15 @@ ProxyReporterManager::ProxyReporterManager(QObject *parent) :
  */
 //public class ProxyReporterManager extends AbstractProxyManager implements ReporterManager {
 
-
-//    public ProxyReporterManager() {
-//    	super();
-//    }
-    /*protected*/ AbstractManager *ProxyReporterManager::makeInternalManager() const
+//@Override
+/*protected*/ AbstractManager *ProxyReporterManager::makeInternalManager()
 {
-        return ((InternalSystemConnectionMemo*) InstanceManager::getDefault("InternalSystemConnectionMemo"))->getReporterManager();
-    }
-    /*public*/ int ProxyReporterManager::getXMLOrder() const{
-        return Manager::REPORTERS;
-    }
+        return (AbstractManager*)((InternalSystemConnectionMemo*) InstanceManager::getDefault("InternalSystemConnectionMemo"))->getReporterManager();
+}
+
+/*public*/ int ProxyReporterManager::getXMLOrder() const{
+    return Manager::REPORTERS;
+}
 
 /**
  * Locate via user name, then system name if needed.
@@ -39,56 +37,56 @@ ProxyReporterManager::ProxyReporterManager(QObject *parent) :
  * @param name
  * @return Null if nothing by that name exists
  */
-/*public*/ Reporter* ProxyReporterManager::getReporter(QString name) const
+/*public*/ Reporter* ProxyReporterManager::getReporter(QString name)
 {
  //return dynamic_cast<Reporter*>(/*super.*/AbstractProxyManager::getNamedBean(name));
- return (Reporter*)AbstractProxyReporterManager::getNamedBean(name);
+ return (Reporter*)AbstractProxyManager::getNamedBean(name);
 }
 
-/*protected*/ NamedBean* ProxyReporterManager::makeBean(int i, QString systemName, QString userName) const
-{
- AbstractReporterManager* mgr = (AbstractReporterManager*)getMgr(i);
- return mgr->newReporter(systemName, userName);
+//@Override
+//@Nonnull
+/*protected*/ NamedBean* ProxyReporterManager::makeBean(Manager/*<Reporter>*/* manager, QString systemName, QString userName) /*throws IllegalArgumentException*/ {
+    return ((ReporterManager*) manager)->newReporter(systemName, userName);
 }
 
 /*public*/ Reporter* ProxyReporterManager::provideReporter(QString sName)
 {
 //return dynamic_cast<Reporter*>( /*super.*/AbstractProxyManager::provideNamedBean(sName));
-    return (Reporter*)AbstractProxyReporterManager::provideNamedBean(sName);
+    return (Reporter*)AbstractProvidingProxyManager::provideNamedBean(sName);
 }
 
 //@Override
 /** {@inheritDoc} */
 /*public*/ Reporter* ProxyReporterManager::provide(/*@Nonnull*/ QString name) /*throw (IllegalArgumentException) */{ return provideReporter(name); }
 
-/**
- * Locate an instance based on a system name.  Returns NULL if no
- * instance already exists.
- * @return requested Reporter object or NULL if none exists
- */
-/*public*/ Reporter* ProxyReporterManager::getBySystemName(QString sName) const {
-    //return dynamic_cast<Reporter*>( /*super.*/AbstractProxyManager::getBeanBySystemName(sName));
-return (Reporter*)AbstractProxyReporterManager::getBeanBySystemName(sName);
-}
+///**
+// * Locate an instance based on a system name.  Returns NULL if no
+// * instance already exists.
+// * @return requested Reporter object or NULL if none exists
+// */
+///*public*/ Reporter* ProxyReporterManager::getBySystemName(QString sName) const {
+//    //return dynamic_cast<Reporter*>( /*super.*/AbstractProxyManager::getBeanBySystemName(sName));
+//return (Reporter*)AbstractProvidingProxyManager::getBeanBySystemName(sName);
+//}
 
-/**
- * Locate an instance based on a user name.  Returns NULL if no
- * instance already exists.
- * @return requested Reporter object or NULL if none exists
- */
-/*public*/ Reporter* ProxyReporterManager::getByUserName(QString userName) const {
-    return dynamic_cast<Reporter*>( /*super.*/AbstractProxyReporterManager::getBeanByUserName(userName));
-}
+///**
+// * Locate an instance based on a user name.  Returns NULL if no
+// * instance already exists.
+// * @return requested Reporter object or NULL if none exists
+// */
+///*public*/ Reporter* ProxyReporterManager::getByUserName(QString userName) const {
+//    return dynamic_cast<Reporter*>( /*super.*/AbstractProxyReporterManager::getBeanByUserName(userName));
+//}
 
-/*public*/ Reporter* ProxyReporterManager::getByDisplayName(QString key) const {
+/*public*/ Reporter* ProxyReporterManager::getByDisplayName(QString key)  {
 // First try to find it in the user list.
 // If that fails, look it up in the system list
-Reporter* retv = this->getByUserName(key);
+NamedBean* retv = AbstractProxyManager::getByUserName(key);
 if (retv == NULL) {
-    retv = this->getBySystemName(key);
+    retv = AbstractProxyManager::getBySystemName(key);
 }
 // If it's not in the system list, go ahead and return NULL
-return(retv);
+return(Reporter*)retv;
 }
 
 /**
@@ -119,45 +117,42 @@ return(retv);
  * be looking them up.
  * @return requested Reporter object (never NULL)
  */
-/*public*/ Reporter* ProxyReporterManager::newReporter(QString systemName, QString userName) const
+/*public*/ Reporter* ProxyReporterManager::newReporter(QString systemName, QString userName)
 {
  NamedBean* bean = newNamedBean(systemName, userName);
     //return dynamic_cast<Reporter*>( bean);
  return (Reporter*) bean;
 }
 
-/*public*/ bool ProxyReporterManager::allowMultipleAdditions(QString systemName) const {
-    int i = matchTentative(systemName);
-    if (i >= 0)
-        return ((ReporterManager*)getMgr(i))->allowMultipleAdditions(systemName);
-    return ((ReporterManager*)getMgr(0))->allowMultipleAdditions(systemName);
+/*public*/ bool ProxyReporterManager::allowMultipleAdditions(QString systemName)  {
+ return ((ReporterManager*) getManagerOrDefault(systemName))->allowMultipleAdditions(systemName);
 }
 
-/*public*/ QString ProxyReporterManager::getNextValidAddress(QString curAddress, QString prefix) const
+/*public*/ QString ProxyReporterManager::getNextValidAddress(QString curAddress, QString prefix)
 {
-    for (int i=0; i<nMgrs(); i++)
-    {
-        if ( prefix == ( ((ProxyReporterManager*)getMgr(i))->getSystemPrefix()) )
-        {
-            //System.out.println((TurnoutManager)getMgr(i))
-            return ((ReporterManager*)getMgr(i))->getNextValidAddress(curAddress, prefix);
-        }
-    }
-    return NULL;
+ return AbstractProxyManager::getNextValidAddress(curAddress, prefix, AbstractProxyManager::typeLetter());
 }
 
-    // initialize logging
-    //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ProxyReporterManager.class.getName());
-/*public*/ NamedBean* ProxyReporterManager::newNamedBean(QString systemName, QString userName)const {
-    // if the systemName is specified, find that system
-    int i = matchTentative(systemName);
-    if (i >= 0)
-        return makeBean(i, systemName, userName);
-
-    // did not find a manager, allow it to default to the primary
-    log.debug("Did not find manager for system name "+systemName+", delegate to primary");
-    return makeBean(1, systemName, userName);
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ QString ProxyReporterManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) /*throws jmri.JmriException*/ {
+    return AbstractProxyManager::getNextValidAddress(curAddress, prefix, ignoreInitialExisting, AbstractProxyManager::typeLetter());
 }
+
+// initialize logging
+//static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ProxyReporterManager.class.getName());
+///*public*/ NamedBean* ProxyReporterManager::newNamedBean(QString systemName, QString userName)const {
+//    // if the systemName is specified, find that system
+//    int i = matchTentative(systemName);
+//    if (i >= 0)
+//        return makeBean(i, systemName, userName);
+
+//    // did not find a manager, allow it to default to the primary
+//    log.debug("Did not find manager for system name "+systemName+", delegate to primary");
+//    return makeBean(1, systemName, userName);
+//}
 
 /**
  * {@inheritDoc}

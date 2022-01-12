@@ -23,8 +23,8 @@ class DefaultSystemConnectionMemo : /*public Bean,*/ public SystemConnectionMemo
   /*public*/ void setDisabled(bool disabled) override;
 //  /*public*/ /*abstract*/virtual <B extends NamedBean> Comparator<B> getNamedBeanComparator(Class<B> type);
   /*public*/ StartupActionFactory* getActionFactory();
-  /*public*/ bool isDirty() override;
-  /*public*/ bool isRestartRequired() override;
+  /*public*/ bool isDirty()const override;
+  /*public*/ bool isRestartRequired()const override;
   /*public*/ ConsistManager* getConsistManager();
   /*public*/ void setConsistManager(ConsistManager* c);
   /*public*/ /*<T>*/ void store(/*@Nonnull*/ Manager *item, /*@Nonnull Class<T>*/QString type);

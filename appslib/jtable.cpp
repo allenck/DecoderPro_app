@@ -6548,7 +6548,7 @@ AccessibleExtendedTable {
      */
     /*protected*/ AccessibleJTable() {
         super();
-        jt->PropertyChangeSupport::addPropertyChangeListener(this);
+        jt->SwingPropertyChangeSupport::addPropertyChangeListener(this);
         jt->getSelectionModel().addListSelectionListener(this);
         TableColumnModel tcm = jt->getColumnModel();
         tcm.addColumnModelListener(this);

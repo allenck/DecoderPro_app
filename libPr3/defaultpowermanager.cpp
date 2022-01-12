@@ -1,6 +1,6 @@
 #include "defaultpowermanager.h"
 #include "propertychangelistener.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 
 //DefaultPowerManager::DefaultPowerManager()
 //{

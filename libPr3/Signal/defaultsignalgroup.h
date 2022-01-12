@@ -88,7 +88,7 @@ private:
     /*private*/ bool enabled;//=true;
 Logger* log;
 QList <SignalHeadItem*> _signalHeadItem;// = new QList<SignalHeadItem>();
-PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+SwingPropertyChangeSupport* pcs;// = new SwingPropertyChangeSupport(this, nullptr);
 /*private*/ SignalHeadItem* getHeadItem(QString name);
 /*private*/ SignalHeadItem* getHeadItem(NamedBean* bean);
 /*private*/ void resetHeads();

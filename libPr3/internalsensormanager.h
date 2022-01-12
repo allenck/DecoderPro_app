@@ -19,7 +19,7 @@ public:
     /*public*/ bool allowMultipleAdditions(QString systemName) override;
     /*public*/ QString getNextValidAddress(QString curAddress, QString prefix) override;
     // /*public*/ QString getSystemPrefix();
-     /*public*/ SystemConnectionMemo* getMemo() const override;
+     /*public*/ SystemConnectionMemo* getMemo() override;
     /*public*/ QString getEntryToolTip() override;
     /*public*/ QString getNamedBeanClass()const override {
         return "Sensor";

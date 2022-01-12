@@ -12,8 +12,8 @@ class LIBPR3SHARED_EXPORT DefaultLogixManager : public LogixManager
 public:
     explicit DefaultLogixManager(QObject *parent = 0);
     int getXMLOrder() const override;
-    /*public*/ QString getSystemPrefix()const  override;
-    /*public*/ char typeLetter()const   override;
+    /*public*/ QString getSystemPrefix()  override;
+    /*public*/ QChar typeLetter()   override;
     /*public*/ Logix* createNewLogix(QString systemName, QString userName) override;
     /*public*/ Logix* createNewLogix(QString userName) override;
     /*public*/ void deleteLogix(Logix* x) override;
@@ -26,6 +26,8 @@ public:
     QT_DEPRECATED static /*public*/ DefaultLogixManager* instance();
     /*public*/ QString getBeanTypeHandled(bool plural) const override;
     /*public*/ QString getNamedBeanClass()const override ;
+
+    QObject* self() override {return (QObject*)this;}
 
 signals:
 

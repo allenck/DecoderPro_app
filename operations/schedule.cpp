@@ -1,6 +1,6 @@
 #include "schedule.h"
 #include "propertychangeevent.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "control.h"
 #include "logger.h"
 #include "locationmanagerxml.h"
@@ -34,7 +34,7 @@ namespace Operations
  void Schedule:: common()
  {
   log = new Logger("Schedule");
-  pcs = new PropertyChangeSupport(this);
+  pcs = new SwingPropertyChangeSupport(this, nullptr);
   _comment = "";
 
  // stores ScheduleItems for this schedule
@@ -109,7 +109,7 @@ namespace Operations
 
      setDirtyAndFirePropertyChange(LISTCHANGE_CHANGED_PROPERTY, old, (_scheduleHashTable.size()));
      // listen for set out and pick up changes to forward
-     //si->PropertyChangeSupport::addPropertyChangeListener(this);
+     //si->SwingPropertyChangeSupport::addPropertyChangeListener(this);
      connect(si->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      return si;
  }

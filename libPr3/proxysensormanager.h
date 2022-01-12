@@ -1,18 +1,21 @@
 #ifndef PROXYSENSORMANAGER_H
 #define PROXYSENSORMANAGER_H
-#include "abstractproxysensormanager.h"
+#include "sensormanager.h"
 #include <QString>
 #include "exceptions.h"
 //#include "internalsensormanager.h"
 //#include <QDebug>
 #include <QCompleter>
+#include "abstractprovidingproxymanager.h"
 
-class ProxySensorManager : public AbstractProxySensorManager/*, public SensorManager*/
+
+class ProxySensorManager : public QObject, public AbstractProvidingProxyManager, public SensorManager
 {
  Q_OBJECT
+  Q_INTERFACES(AbstractProvidingProxyManager SensorManager)
 public:
  ProxySensorManager(QObject* parent = nullptr);
- /*public*/ Sensor* getSensor(QString name) const override;
+ /*public*/ Sensor* getSensor(QString name)  override;
  /*public*/ Sensor* provideSensor(QString sName) override;
  /**
   * Locate an instance based on a system name.  Returns null if no
@@ -74,6 +77,8 @@ public:
 /*public*/ QString toString() override{return "ProxySensorManager";}
  /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) /*throw (JmriException)*/ override;
 
+ QObject* self() override {return (QObject*)this;}
+
  signals:
  void propertyChange(PropertyChangeEvent *e) override;
  //void newSensorCreated(AbstractSensorManager*,Sensor*);
@@ -83,7 +88,7 @@ private:
 
 protected:
  ///*private*/ AbstractManager* getInternal();
- virtual /*protected*/ AbstractManager* makeInternalManager() const;
+ virtual /*protected*/ AbstractManager* makeInternalManager();
  virtual /*protected*/ Sensor* makeBean(Manager *, QString systemName, QString userName);
  // /*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
  // /*protected*/ NamedBean* provideNamedBean(QString name);

@@ -102,7 +102,7 @@ friend class CompositeVariableValue;
 friend class ComboRadioButtons;
 friend class ComboCheckBox;
 friend class VarComboBox;
-friend class PropertyChangeSupport;
+friend class SwingPropertyChangeSupport;
 };
 
 
@@ -127,7 +127,7 @@ public:
  // get the original color right
  setBackground(_var->getBackground());
  // listen for changes to original state
- //_var->PropertyChangeSupport::addPropertyChangeListener(_l);
+ //_var->SwingPropertyChangeSupport::addPropertyChangeListener(_l);
  _var->addPropertyChangeListener((PropertyChangeListener*)this);
  connect(_var, SIGNAL(valueChanged(int)), this, SLOT(originalPropertyChanged()));
 }

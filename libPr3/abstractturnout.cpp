@@ -626,7 +626,7 @@ void AbstractTurnout::setKnownStateToCommanded()
 }
 
 /*protected*/ void AbstractTurnout::operationPropertyChange(PropertyChangeEvent* evt) {
-    if ((PropertyChangeSupport*)evt->getSource() == myTurnoutOperation)
+    if ((SwingPropertyChangeSupport*)evt->getSource() == myTurnoutOperation)
     {
         if (((TurnoutOperation*) evt->getSource())->isDeleted()) {
             setTurnoutOperation(NULL);

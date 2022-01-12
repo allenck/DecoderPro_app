@@ -60,7 +60,7 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
   e2.appendChild(doc.createTextNode(QString::number(((AbstractSensorManager*)tm)->getDefaultSensorDebounceGoingInActive())));
   sensors.appendChild(elem);
  }
- QStringListIterator iter(((AbstractSensorManager*)tm)->getSystemNameList());
+ QStringListIterator iter(((SensorManager*)tm)->getSystemNameList());
 
  // don't return an element if there are not sensors to include
  if (!iter.hasNext()) return QDomElement();

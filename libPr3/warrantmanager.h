@@ -18,12 +18,12 @@ public:
     ~WarrantManager() {}
     WarrantManager(const WarrantManager&) : AbstractManager() {}
     /*public*/ int getXMLOrder()const override;
-    /*public*/ QString getSystemPrefix()const override;
-    /*public*/ char typeLetter() const override;
+    /*public*/ QString getSystemPrefix() override;
+    /*public*/ QChar typeLetter() override;
     /*public*/ Warrant* createNewWarrant(QString systemName, QString userName, bool SCWa, long TTP);
     /*public*/ Warrant* getWarrant(QString name);
-    /*public*/ NamedBean* getBySystemName(QString name)const ;
-    /*public*/ NamedBean* getByUserName(QString key)const ;
+    /*public*/ NamedBean* getBySystemName(QString name) override;
+    /*public*/ NamedBean* getByUserName(QString key) override;
     /*public*/ Warrant* provideWarrant(QString name) ;
     /*public*/ bool isAssignableFromType() {return true;}
     /*public*/ QString getNamedBeanClass()const override {
@@ -31,7 +31,8 @@ public:
     }
     /*public*/ static WarrantManager* getDefault();
     /*public*/ QString getBeanTypeHandled(bool plural) const override;
-    QObject* self() {return (QObject*)this;}
+
+    QObject* self() override{return (QObject*)this;}
 
 signals:
  void propertyChange(PropertyChangeEvent *e);

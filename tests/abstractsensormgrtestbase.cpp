@@ -31,7 +31,7 @@ AbstractSensorMgrTestBase::AbstractSensorMgrTestBase(QObject *parent) : Abstract
     // test creation - real work is in the setup() routine
     //@Test
     /*public*/ void AbstractSensorMgrTestBase::testCreate() {
-       Assert::assertNotNull("Sensor Manager Exists",l, __FILE__, __LINE__);
+       Assert::assertNotNull("Sensor Manager Exists",l->self(), __FILE__, __LINE__);
     }
 
     //@Test

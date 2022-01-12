@@ -7,10 +7,10 @@ class JMRIClientLightManager : public AbstractLightManager
 {
 public:
  JMRIClientLightManager(JMRIClientSystemConnectionMemo* memo, QObject* parent = nullptr );
- /*public*/ QString getSystemPrefix()const override;
+ /*public*/ QString getSystemPrefix() override;
  /*public*/ Light* createNewLight(QString systemName, QString userName)override;
- /*public*/ NameValidity validSystemNameFormat(QString systemName)const override;
- /*public*/ bool validSystemNameConfig(QString systemName)const override;
+ /*public*/ NameValidity validSystemNameFormat(QString systemName) override;
+ /*public*/ bool validSystemNameConfig(QString systemName) override;
  /*public*/ QString getNamedBeanClass()const override {
      return "Light";
  }

@@ -21,14 +21,14 @@ using namespace Sprog;
 }
 
 //@Override
-/*public*/ QString SprogTurnoutManager::getSystemPrefix() const{
+/*public*/ QString SprogTurnoutManager::getSystemPrefix(){
     return _memo->getSystemPrefix();
 }
 
 // Sprog-specific methods
 
 //@Override
-/*public*/ Turnout* SprogTurnoutManager::createNewTurnout(QString systemName, QString userName)const {
+/*public*/ Turnout* SprogTurnoutManager::createNewTurnout(QString systemName, QString userName) {
     int addr = (systemName.mid(getSystemPrefix().length() + 1)).toInt(); // multi char prefix
     Turnout* t;
     if (_memo->getSprogMode() == SprogConstants::SprogMode::OPS ) {
@@ -43,7 +43,7 @@ using namespace Sprog;
 /**
  * Get the bit address from the system name.
  */
-/*public*/ int SprogTurnoutManager::getBitFromSystemName(QString systemName)const {
+/*public*/ int SprogTurnoutManager::getBitFromSystemName(QString systemName) {
     // validate the System Name leader characters
     if (!systemName.startsWith(getSystemPrefix() + "T")) {
         // here if an illegal sprog turnout system name
@@ -76,7 +76,7 @@ using namespace Sprog;
  * @return 'true' if system name has a valid format, else returns 'false'
  */
 //@Override
-/*public*/ Manager::NameValidity SprogTurnoutManager::validSystemNameFormat(QString systemName) const
+/*public*/ Manager::NameValidity SprogTurnoutManager::validSystemNameFormat(QString systemName)
 {
     return (getBitFromSystemName(systemName) != 0) ? NameValidity::VALID : NameValidity::INVALID;
 }

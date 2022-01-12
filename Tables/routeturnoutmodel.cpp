@@ -21,7 +21,7 @@
 
     RouteTurnoutModel::RouteTurnoutModel(AbstractRouteAddEditFrame* routeAddFrame, QObject* parent) : RouteOutputModel(parent){
         this->routeAddFrame = routeAddFrame;
-        InstanceManager::turnoutManagerInstance()->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
+        InstanceManager::turnoutManagerInstance()->addPropertyChangeListener((PropertyChangeListener*)this);
     }
 
     //@Override

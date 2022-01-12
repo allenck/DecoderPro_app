@@ -112,12 +112,12 @@
 
     //@Override
     /*public*/ /*final*/ void AbstractMaleSocket::addPropertyChangeListener(PropertyChangeListener* l, QString name, QString listenerRef) {
-        _object->PropertyChangeSupport::addPropertyChangeListener(l, name, listenerRef);
+        _object->SwingPropertyChangeSupport::addPropertyChangeListener(l, name, listenerRef);
     }
 
     //@Override
     /*public*/ /*final*/ void AbstractMaleSocket::addPropertyChangeListener(QString propertyName, PropertyChangeListener* l, QString name, QString listenerRef) {
-        _object->PropertyChangeSupport::addPropertyChangeListener(propertyName, l, name, listenerRef);
+        _object->SwingPropertyChangeSupport::addPropertyChangeListener(propertyName, l, name, listenerRef);
     }
 
     //@Override

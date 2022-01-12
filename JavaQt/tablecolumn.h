@@ -5,7 +5,7 @@
 #include <QVariant>
 #include "javaqt_global.h"
 #include "propertychangelistener.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "tabledelegates.h"
 
 class PropertyChangeEvent;
@@ -56,7 +56,7 @@ private:
   * <code>changeSupport</code> field describes them.
   */
 // /*private*/ SwingPropertyChangeSupport changeSupport;
- PropertyChangeSupport* changeSupport = nullptr;
+ SwingPropertyChangeSupport* changeSupport = nullptr;
 
  void common();
  /*private*/ void firePropertyChange(QString propertyName, QVariant oldValue, QVariant newValue);

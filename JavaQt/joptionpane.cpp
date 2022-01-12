@@ -1824,7 +1824,7 @@ private static /*final*/ Object sharedFrameKey = JOptionPane.class;
 void JOptionPane::common(QVariant message, int messageType, int optionType, QIcon icon, QList<QVariant> options, QVariant initialValue)
 {
  setObjectName("JOptionPane");
- changeSupport = new PropertyChangeSupport(this);
+ changeSupport = new SwingPropertyChangeSupport(this, nullptr);
  wantsInput = false;
     this->message = message;
     this->options = options;
@@ -1926,7 +1926,7 @@ void JOptionPane::common(QVariant message, int messageType, int optionType, QIco
  */
 /*protected*/ void JOptionPane::firePropertyChange(QString propertyName,
                                   QVariant oldValue, QVariant newValue) {
-//    PropertyChangeSupport changeSupport;
+//    SwingPropertyChangeSupport changeSupport;
 //    synchronized (getObjectLock()) {
 //        changeSupport = this.changeSupport;
 //    }

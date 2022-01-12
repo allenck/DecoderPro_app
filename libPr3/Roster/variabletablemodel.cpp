@@ -367,7 +367,7 @@ VTQualifierAdder::VTQualifierAdder(VariableValue *v) { this->v = v;}
  return new ValueQualifier(v, var, value.toInt(), relation);
 }
 /*protected*/ void VTQualifierAdder::addListener(PropertyChangeListener* qc) {
-//    v->PropertyChangeSupport::addPropertyChangeListener(qc);
+//    v->SwingPropertyChangeSupport::addPropertyChangeListener(qc);
 //    connect(v, SIGNAL(notifyPropertyChange(PropertyChangeEvent*)), this, SLOT());
 }
 

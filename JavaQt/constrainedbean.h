@@ -26,7 +26,7 @@ public:
  /*public*/ void fireVetoableChange(QString propertyName, bool oldValue, bool newValue) /*throw (PropertyVetoException)*/ ;
 
 protected:
- /*protected*/ /*final*/ VetoableChangeSupport* vetoableChangeSupport = new VetoableChangeSupport(this);
+ /*protected*/ /*final*/ JVetoableChangeSupport* vetoableChangeSupport = new JVetoableChangeSupport(this);
 
 };
 

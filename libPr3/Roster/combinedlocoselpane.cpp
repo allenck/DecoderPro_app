@@ -187,7 +187,7 @@ bool CombinedLocoSelPane::isDecoderSelected() {
  pane2aLayout->addWidget(new QLabel(tr("Use locomotive settings for:")));
  //locoBox->setNonSelectedItem(tr("<none - new loco>"));
  locoBox->setCurrentIndex(0);
- //Roster::getDefault()->PropertyChangeSupport::addPropertyChangeListener(this);
+ //Roster::getDefault()->SwingPropertyChangeSupport::addPropertyChangeListener(this);
  connect(Roster::getDefault(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  pane2aLayout->addWidget(locoBox);
  locoBox->setVisible(true);

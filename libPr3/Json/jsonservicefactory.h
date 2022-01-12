@@ -6,10 +6,12 @@
 class JsonSocketService;
 class JsonConnection;
 class JsonHttpService;
-class /*interface*/ JsonServiceFactory : public JmriServiceProviderInterface
+class /*interface*/ JsonServiceFactory : public QObject, public JmriServiceProviderInterface
 {
+  Q_OBJECT
+  Q_INTERFACES(JmriServiceProviderInterface)
 public:
- JsonServiceFactory(QObject* parent = 0) : JmriServiceProviderInterface(parent) {}
+ JsonServiceFactory(QObject* parent = 0) : QObject(parent) {}
  /**
   * Get the service type(s) for services created by this factory respond to.
   *

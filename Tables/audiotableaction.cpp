@@ -377,7 +377,7 @@ void AudioTableSourceThread::run()
  this->act = act;
  log = new Logger("AudioTableDataModel");
  this->subType = subType;
- //getManager()->PropertyChangeSupport::addPropertyChangeListener(this);
+ //getManager()->SwingPropertyChangeSupport::addPropertyChangeListener(this);
 AbstractManager* mgr = (AbstractManager*)getManager();
 connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  updateSpecificNameList(subType);
@@ -431,7 +431,7 @@ public void AudioTableDataModel::setDisplayDeleteMsg(int boo) { ((UserPreference
  // and add them back in
  for (int i = 0; i < sysNameList.size(); i++)
  {
-  //getBySystemName(sysNameList.at(i))->PropertyChangeSupport::addPropertyChangeListener(this);
+  //getBySystemName(sysNameList.at(i))->SwingPropertyChangeSupport::addPropertyChangeListener(this);
   Audio* a = (Audio*)getBySystemName(sysNameList.at(i));
   connect(a->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }

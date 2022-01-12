@@ -3,11 +3,11 @@
 
 #include <QObject>
 #include <QHash>
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "instancemanagerautodefault.h"
 #include "instancemanagerautoinitialize.h"
 
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class PropertyChangeEvent;
 class QDomDocument;
 class QDomElement;
@@ -16,7 +16,7 @@ class Logger;
 namespace Operations
 {
  class TrainSchedule;
- class TrainScheduleManager : public PropertyChangeSupport, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize
+ class TrainScheduleManager : public SwingPropertyChangeSupport, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize
  {
   Q_OBJECT
    Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize)
@@ -25,8 +25,8 @@ namespace Operations
    /*public*/ static /*final*/ QString NONE;// = "";
   Q_INVOKABLE explicit TrainScheduleManager(QObject *parent = 0);
    ~TrainScheduleManager() {}
-   TrainScheduleManager(const TrainScheduleManager&) : PropertyChangeSupport(this) {}
-   PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
+   TrainScheduleManager(const TrainScheduleManager&) : SwingPropertyChangeSupport(this, this) {}
+   SwingPropertyChangeSupport* pcs;// = new java.beans.SwingPropertyChangeSupport(this,this);
   /*public*/ static /*final*/ QString LISTLENGTH_CHANGED_PROPERTY;// = "trainScheduleListLength"; // NOI18N
    /*public*/ static /*final*/ QString SCHEDULE_ID_CHANGED_PROPERTY;// = "ActiveTrainScheduleId"; // NOI18N
   /*public*/ void dispose();

@@ -7,7 +7,7 @@
 #include "rollingstock.h"
 #include "comparatort.h"
 
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class PropertyChangeListener;
 namespace Operations
 {

@@ -69,11 +69,27 @@
  */
 //@CheckReturnValue
 //@Nonnull
+//static
+/**
+ * Provides the system prefix of the given system name.
+ * <p>
+ * This is a common operation across JMRI, as the system prefix can be
+ * parsed out without knowledge of the type of NamedBean involved.
+ *
+ * @param inputName System name to provide the prefix
+ * @throws NamedBean.BadSystemNameException If the inputName can't be
+ *                                          converted to normalized form
+ * @return The system-prefix part of the system name in standard normalized
+ *         form
+ */
+//@CheckReturnValue
+//@Nonnull
 /*public*/ /*static*/ QString Manager::getSystemPrefix(/*@Nonnull*/ QString inputName) {
     return inputName.mid(0, getSystemPrefixLength(inputName));
 }
 
-/*public*/ /*default*/ QString Manager::makeSystemName(/*@Nonnull*/ QString name) const {
+
+/*public*/ /*default*/ QString Manager::makeSystemName(/*@Nonnull*/ QString name)  {
         return makeSystemName(name, true);
 }
 
@@ -96,7 +112,7 @@
  * @throws BadSystemNameException if a valid name can't be created
  */
 //@Nonnull
-/*public*/ /*default*/ QString Manager::makeSystemName(/*@Nonnull*/ QString name, bool logErrors) const {
+/*public*/ /*default*/ QString Manager::makeSystemName(/*@Nonnull*/ QString name, bool logErrors) {
     return makeSystemName(name, logErrors, QLocale());
 }
 
@@ -120,7 +136,7 @@
  * @throws BadSystemNameException if a valid name can't be created
  */
 //@Nonnull
-/*public*/ /*default*/ QString Manager::makeSystemName(/*@Nonnull*/ QString name, bool /*logErrors*/, QLocale locale) const {
+/*public*/ /*default*/ QString Manager::makeSystemName(/*@Nonnull*/ QString name, bool /*logErrors*/, QLocale locale) {
     QString prefix = getSystemNamePrefix();
     // the one special case that is not caught by validation here
     if (name.trimmed().isEmpty()) { // In Java 9+ use name.isBlank() instead
@@ -150,7 +166,7 @@
  *                                      messages in the default locale
  */
 //@Nonnull
-/*public*/ /*default*/ QString Manager::validateSystemNameFormat(/*@Nonnull*/ QString name) const /*throw new (NamedBean::BadSystemNameException)*/
+/*public*/ /*default*/ QString Manager::validateSystemNameFormat(/*@Nonnull*/ QString name) /*throw new (NamedBean::BadSystemNameException)*/
 {
     return validateSystemNameFormat(name, /*Locale.getDefault()*/QLocale());
 }
@@ -178,7 +194,7 @@
  * @throws BadSystemNameException if provided name is an invalid format
  */
 //@Nonnull
-/*public*/ /*default*/ QString Manager::validateSystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) const /*throw new (NamedBean::BadSystemNameException)*/
+/*public*/ /*default*/ QString Manager::validateSystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) /*throw new (NamedBean::BadSystemNameException)*/
 {
     return validateSystemNamePrefix(name, locale);
 }
@@ -199,7 +215,7 @@
  * @throws BadSystemNameException if provided name is an invalid format
  */
 //@Nonnull
-/*public*/ /*default*/ QString Manager::validateSystemNamePrefix(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) const /*throw new (NamedBean::BadSystemNameException)*/ {
+/*public*/ /*default*/ QString Manager::validateSystemNamePrefix(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) /*throw new (NamedBean::BadSystemNameException)*/ {
     QString prefix = getSystemNamePrefix();
     if (name == (prefix)) {
         throw new NamedBean::BadSystemNameException(locale, QString("System name \"%1\" is missing suffix.").arg(name),name);
@@ -492,14 +508,14 @@
      *
      * @param e the data listener to add
      */
-     /*public*/ void Manager::addDataListener(/*ManagerDataListener<E>*/QObject* /*e*/) {}
+//     /*public*/ void Manager::addDataListener(ManagerDataListener/*<E>*/* /*e*/) {}
 
     /**
      * Unregister a previously-added {@link ManagerDataListener}.
      *
      * @param e the data listener to remove
      */
-    /*public*/ void Manager::removeDataListener(/*ManagerDataListener<E>*/QObject* /*e*/) {}
+//    /*public*/ void Manager::removeDataListener(/*ManagerDataListener<E>*/QObject* /*e*/) {}
 
     /**
      * Temporarily suppress DataListener notifications.
@@ -525,7 +541,7 @@
      */
     //@CheckReturnValue
     //@OverrideMustInvoke
-    /*public*/ /*default*/ Manager::NameValidity Manager::validSystemNameFormat(/*@Nonnull*/ QString systemName)const {
+    /*public*/ /*default*/ Manager::NameValidity Manager::validSystemNameFormat(/*@Nonnull*/ QString systemName) {
         QString prefix = getSystemNamePrefix();
         if (prefix ==(systemName)) {
             return NameValidity::VALID_AS_PREFIX_ONLY;

@@ -18,7 +18,7 @@ class SignalMast;
 class LayoutEditor;
 class LayoutBlock;
 class DestinationMast;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class PropertyDestinationMastListener;
 class PropertySourceMastListener;
 class NamedBeanSetting;
@@ -139,7 +139,7 @@ private:
 
     bool disposing = false;
     static Logger* log;
-    //PropertyChangeSupport* pcs;// = new jPropertyChangeSupport(this);
+    //SwingPropertyChangeSupport* pcs;// = new jSwingPropertyChangeSupport(this,this);
     /*volatile*/ bool inWait = false;
     QThread* thr;// = NULL;
     /*synchronized*/ void setSignalAppearance();

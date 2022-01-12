@@ -1,5 +1,5 @@
 #include "train.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "route.h"
 #include "setup.h"
 #include "trainmanagerxml.h"
@@ -155,7 +155,7 @@ void Train::common()
 {
 setObjectName("Train");
 log = new Logger("Train");
-pcs = new PropertyChangeSupport(this);
+pcs = new SwingPropertyChangeSupport(this, nullptr);
 _skipLocationsList = QStringList();
 _trainIconRl = NULL; // saves the icon current route location
 _trainIcon = NULL;

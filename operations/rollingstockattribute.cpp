@@ -3,7 +3,7 @@
 #include "stringutil.h"
 #include "jcombobox.h"
 #include "logger.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include <QtXml>
 #include "control.h"
 #include "xml.h"
@@ -25,7 +25,7 @@ namespace Operations {
  /*protected*/ /*static*/ /*final*/ int RollingStockAttribute::MIN_NAME_LENGTH = 4;
 
  /*public*/ RollingStockAttribute::RollingStockAttribute(QObject *parent) :
-  PropertyChangeSupport(this, parent)
+  SwingPropertyChangeSupport(this, parent)
  {
   list = QStringList();
   maxNameLength = 0;

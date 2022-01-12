@@ -1,4 +1,4 @@
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "indexedpropertychangeevent.h"
 #include "exceptions.h"
 #include <QDebug>
@@ -54,23 +54,23 @@
 //public class PropertyChangeSupport implements Serializable {
 
 
-/**
- * Constructs a <code>PropertyChangeSupport</code> object.
- *
- * @param sourceBean  The bean to be given as the source for any events.
- */
-/*public*/ PropertyChangeSupport::PropertyChangeSupport(QObject* sourceBean, QObject *parent)
- : QObject(parent)
-{
- this->parent = parent;
- if (sourceBean == NULL) 
- {
+///**
+// * Constructs a <code>PropertyChangeSupport</code> object.
+// *
+// * @param sourceBean  The bean to be given as the source for any events.
+// */
+///*public*/ PropertyChangeSupport::PropertyChangeSupport(QObject* sourceBean, QObject *parent)
+// : QObject(parent)
+//{
+// this->parent = parent;
+// if (sourceBean == NULL)
+// {
 
-  throw new NullPointerException("PropertyChangeSupport:Null Pointer (Source)");
- }
- map = new PropertyChangeListenerMap();
- source = sourceBean;
-}
+//  throw new NullPointerException("PropertyChangeSupport:Null Pointer (Source)");
+// }
+// map = new PropertyChangeListenerMap();
+// source = sourceBean;
+//}
 
 /**
  * Add a PropertyChangeListener to the listener list.
@@ -176,8 +176,9 @@
  *         empty array if no listeners have been added
  * @since 1.4
  */
-/*public*/ QVector<PropertyChangeListener*> PropertyChangeSupport::getPropertyChangeListeners() {
-    return this->map->getListeners();
+/*public*/ QVector<PropertyChangeListener*> PropertyChangeSupport::getPropertyChangeListeners() const{
+ return propertyChangeSupport->getPropertyChangeListeners();
+
 }
 
 /**
@@ -249,7 +250,7 @@
  * @since 1.4
  */
 /*public*/ QVector<PropertyChangeListener*> PropertyChangeSupport::getPropertyChangeListeners(QString propertyName) {
-    return this->map->getListeners(propertyName);
+    return propertyChangeSupport->getPropertyChangeListeners(propertyName);
 }
 
 /**

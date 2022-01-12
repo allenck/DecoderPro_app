@@ -108,7 +108,7 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
  init();
 }
  //We have to set a manager first off, but this gets replaced.
- /*protected*/ AbstractManager *SmlBeanTableDataModel::getManager() {
+ /*protected*/ Manager *SmlBeanTableDataModel::getManager() {
      return ( AbstractManager*)InstanceManager::getDefault("SignalMastLogicManager");
  }
 

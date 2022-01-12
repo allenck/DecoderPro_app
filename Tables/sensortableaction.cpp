@@ -523,7 +523,7 @@ void DefaultStateActionListener::actionPerformed(JActionEvent */*e*/)
 /*public*/ void SensorTableAction::addToPanel(AbstractTableTabAction* f) {
  QString connectionName = sensorManager->getMemo()->getUserName();
 
- if (QString(sensorManager->metaObject()->className()).contains("ProxySensorManager")) {
+ if (QString(sensorManager->self()->metaObject()->className()).contains("ProxySensorManager")) {
      connectionName = "All";
  }
  f->addToBottomBox(showDebounceBox, connectionName);
@@ -605,7 +605,7 @@ QValidator::State STAValidator::validate(QString& s, int& pos) const
 // }
  bool validFormat = false;
  // try {
- validFormat = static_cast<LightManager*>(InstanceManager::getDefault("LightManager"))->validSystemNameFormat(prefix + "L" + value) == Manager::NameValidity::VALID;
+ validFormat = qobject_cast<LightManager*>(InstanceManager::getDefault("LightManager"))->validSystemNameFormat(prefix + "L" + value) == Manager::NameValidity::VALID;
  // } catch (jmri.JmriException e) {
  // use it for the status bar?
  // }

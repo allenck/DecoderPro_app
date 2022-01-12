@@ -3,22 +3,24 @@
 
 #include <QObject>
 #include "manager.h"
+#include "propertychangelistener.h"
 
 class PropertyChangeEvent;
 class ProxySensorManager;
-class ProxySensorManagerTest : public QObject
+class ProxySensorManagerTest : public QObject, public Manager::ManagerDataListener/*<Sensor>*/, public PropertyChangeListener
 {
  Q_OBJECT
+    Q_INTERFACES(Manager::ManagerDataListener PropertyChangeListener)
 public:
  explicit ProxySensorManagerTest(QObject *parent = nullptr);
  Q_INVOKABLE /*public*/ void setUp();
  Q_INVOKABLE /*public*/ void tearDown();
 
-
+    QObject* self() override {return (QObject*)this;}
 signals:
 
 public slots:
- /*public*/ void propertyChange(PropertyChangeEvent* e);
+ /*public*/ void propertyChange(PropertyChangeEvent* e)override;
 
  /*public*/ void testDispose();
  /*public*/ void testPutGetJ();

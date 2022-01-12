@@ -11,10 +11,10 @@ class ControlSensor;
 class OutputSensor;
 class OutputTurnout;
 class InstanceManager;
-class LIBPR3SHARED_EXPORT DefaultRoute : /*public AbstractNamedBean,*/ public Route
+class LIBPR3SHARED_EXPORT DefaultRoute : public Route, public VetoableChangeListener
 {
     Q_OBJECT
-  //Q_INTERFACES(Route)
+  Q_INTERFACES(VetoableChangeListener)
 public:
     //explicit DefaultRoute(QObject *parent = 0);
     /*public*/ DefaultRoute(QString systemName, QString userName,QObject *parent = 0) ;

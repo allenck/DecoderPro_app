@@ -4,7 +4,7 @@
 #include "profileutils.h"
 #include <QSet>
 #include "logger.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "language.h"
 #include "exceptions.h"
 #include "loggerfactory.h"

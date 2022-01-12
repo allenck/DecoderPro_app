@@ -1,6 +1,6 @@
 #include "trainschedule.h"
 #include "logger.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "trainmanagerxml.h"
 #include <QtXml>
 #include "control.h"
@@ -33,7 +33,7 @@ namespace Operations
 //      _name = NONE;
       _comment = NONE;
      _trainIds = QStringList();
-     pcs = new PropertyChangeSupport(this);
+     pcs = new SwingPropertyChangeSupport(this, nullptr);
 
      _name = name;
      _id = id;

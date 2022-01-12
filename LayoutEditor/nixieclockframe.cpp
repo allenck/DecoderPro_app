@@ -73,7 +73,7 @@
  aspect =  (4.5*24.)/32.;
 
  // listen for changes to the timebase parameters
-// ((SimpleTimebase*)clock)->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
+// ((SimpleTimebase*)clock)->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
  connect(clock, SIGNAL(minuteTick()), this, SLOT(update()));
 
 

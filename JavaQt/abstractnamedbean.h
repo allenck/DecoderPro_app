@@ -2,7 +2,7 @@
 #define ABSTRACTNAMEDBEAN_H
 #include "namedbean.h"
 #include "logger.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include <QSet>
 #include "javaqt_global.h"
 #include "exceptions.h"
@@ -38,7 +38,7 @@ public:
     /*public synchronized*/  void removePropertyChangeListener(PropertyChangeListener* listener) override;
     /*public*/ /*synchronized*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
     /*public*/ /*synchronized*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
-    /*public synchronized*/ QVector<PropertyChangeListener*> getPropertyChangeListeners()override;
+    /*public synchronized*/ QVector<PropertyChangeListener*> getPropertyChangeListeners() const override;
     /*public synchronized*/  QVector<PropertyChangeListener*> getPropertyChangeListeners(QString name)override;
     /* This allows a meaning full list of places where the bean is in use!*/
     /*public synchronized*/  QList<QString>* getListenerRefs() override;
@@ -59,7 +59,7 @@ public:
     /*public*/ QVariant getProperty(QString key) override;
 
     /*public java.util.*/QSet<QString> getPropertyKeys() override;
-    PropertyChangeSupport* pcs = nullptr;
+    SwingPropertyChangeSupport* pcs = nullptr;
     /*public*/ void removeProperty(QString key) override;
     /*public*/ QString describeState(int state) override;
     Q_INVOKABLE /*public*/ bool equals(QObject* obj) override;
@@ -98,9 +98,9 @@ private:
  //						Object newValue)
  // _once_ if anything has changed state
 
- // since we can't do a "super(this)" in the ctor to inherit from PropertyChangeSupport, we'll
+ // since we can't do a "super(this)" in the ctor to inherit from SwingPropertyChangeSupport, we'll
  // reflect to it
- //PropertyChangeSupport* pcs;
+ //SwingPropertyChangeSupport* pcs;
  QHash<PropertyChangeListener*, QString>* _register;
  QHash<PropertyChangeListener*, QString>* listenerRefs;
  //QObject* parent;

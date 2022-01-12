@@ -31,13 +31,13 @@
  * @author B. Milhaupt Copyright (c) 2020
  */
 
-// /*public*/ class LncvDevicesManager extends PropertyChangeSupport
+// /*public*/ class LncvDevicesManager extends SwingPropertyChangeSupport
 //        implements LocoNetListener {
 ///*private*/ List<Integer> readLncvAddressList;
 ///*private*/ java.util.TimerTask delayTask = null;
 ///*private*/ volatile boolean waitingForDiscoveryReplies;
 
-/*public*/ LncvDevicesManager::LncvDevicesManager(LocoNetSystemConnectionMemo* memo, QObject *parent) : PropertyChangeSupport(memo,parent) {
+/*public*/ LncvDevicesManager::LncvDevicesManager(LocoNetSystemConnectionMemo* memo, QObject *parent) : SwingPropertyChangeSupport(memo,parent) {
     this->memo = memo;
     if (memo->getLnTrafficController() != nullptr) {
         memo->getLnTrafficController()->addLocoNetListener(~0, (LocoNetListener*)this);
@@ -209,7 +209,7 @@
 
 ///*public*/ void LncvDevicesManager::addPropertyChangeListener(PropertyChangeListener* l)
 //{
-// pcs->PropertyChangeSupport::addPropertyChangeListener(l);
+// pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 //}
 
 ///*public*/ void LncvDevicesManager::removePropertyChangeListener(PropertyChangeListener* l){

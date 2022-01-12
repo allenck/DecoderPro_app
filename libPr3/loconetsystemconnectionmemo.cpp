@@ -554,7 +554,7 @@ ResourceBundle* LocoNetSystemConnectionMemo::getActionModelResourceBundle()
         InstanceManager::deregister(turnoutManager, "LnTurnoutManager");
     }
     if (lightManager != nullptr) {
-        lightManager->dispose();
+        lightManager->AbstractManager::dispose();
         InstanceManager::deregister(lightManager, "LnLightManager");
     }
     if (sensorManager != nullptr) {

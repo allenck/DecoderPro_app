@@ -47,7 +47,7 @@
  _text = false;
  setLevel(Editor::SIGNALS);
 
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
 }
 
 /*public*/ Positionable* SignalHeadIcon::deepClone()
@@ -746,7 +746,7 @@ void SignalHeadIcon::updateSignal()
 
 void SignalHeadIcon::addPropertyChangeListener(PropertyChangeListener * /*l*/)
 {
- //pcs->PropertyChangeSupport::addPropertyChangeListener(l);
+ //pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 
 }
 void SignalHeadIcon::removePropertyChangeListener(PropertyChangeListener */*l*/)

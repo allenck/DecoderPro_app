@@ -32,7 +32,7 @@ class LayoutTurntableEditor : public LayoutTrackEditor
   /*private*/ /*final*/ JTextField* editLayoutTurntableRadiusTextField = new JTextField(8);
   /*private*/ /*final*/ JTextField* editLayoutTurntableAngleTextField = new JTextField(8);
   /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* editLayoutTurntableBlockNameComboBox = new NamedBeanComboBox(
-           (BlockManager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+           (Manager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
   /*private*/ QPushButton* editLayoutTurntableSegmentEditBlockButton;
 
   /*private*/ JPanel* editLayoutTurntableRayPanel;

@@ -1,19 +1,22 @@
 #ifndef PROXYMETERMANAGER_H
 #define PROXYMETERMANAGER_H
-#include "abstractproxymetermanager.h"
+#include "abstractproxymanager.h"
+#include "metermanager.h"
+
 #include <QList>
 
 class Manager;
-class ProxyMeterManager : public AbstractProxyMeterManager
+class ProxyMeterManager : public QObject, public AbstractProxyManager, public MeterManager
 {
   Q_OBJECT
+  Q_INTERFACES(AbstractProxyManager MeterManager)
  public:
   ProxyMeterManager(QObject *parent = 0);
   /*public*/ int getXMLOrder() const override;
   /*public*/ QString getBeanTypeHandled(bool plural);
   /*public*/ QString getNamedBeanClass();
-  /*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString systemName) const override;
-  /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString userName) const override;
+  /*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString systemName) override;
+  /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString userName) override;
   /*public*/ void dispose()override;
   /*public*/ QString getNamedBeanClass() const override {return "jmri.managers.ProxyMeterManager";}
   QObject* self() override{return (QObject*)this;}
@@ -29,8 +32,8 @@ class ProxyMeterManager : public AbstractProxyMeterManager
 
 
  protected:
-  /*protected*/ ProxyMeterManager* makeInternalManager() const override;
-  /*protected*/ MeterManager* createSystemManager(/*@Nonnull*/ SystemConnectionMemo* memo) const override;
+  /*protected*/ Manager* makeInternalManager()  override;
+  /*protected*/ Manager *createSystemManager(/*@Nonnull*/ SystemConnectionMemo* memo)  override;
 
 };
 

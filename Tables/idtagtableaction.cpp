@@ -91,7 +91,7 @@ IdTagBeanTableDataModel::IdTagBeanTableDataModel(IdTagTableAction *act)
 }
 
 //@Override
-/*public*/ AbstractManager* IdTagBeanTableDataModel::getManager() {
+/*public*/ Manager* IdTagBeanTableDataModel::getManager() {
     IdTagManager* m = (IdTagManager*)InstanceManager::getDefault("IdTagManager");
     if (!m->isInitialised()) {
         m->init();
@@ -403,7 +403,7 @@ void FastClockUsedActionListener::actionPerformed(JActionEvent *)
 //@Override
 /*public*/ void IdTagTableAction::addToPanel(AbstractTableTabAction* f) {
     QString connectionName = tagManager->getMemo()->getUserName();
-    if (qobject_cast<ProxyIdTagManager*>(tagManager)) {
+    if (qobject_cast<ProxyIdTagManager*>(tagManager->self())) {
         connectionName = "All";
     }
 //    else if (connectionName == nullptr && (tagManager instanceof DefaultRailComManager)) {

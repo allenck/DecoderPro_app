@@ -35,7 +35,7 @@
     }
 
     void RouteOutputModel::dispose() {
-        InstanceManager::turnoutManagerInstance()->PropertyChangeSupport::removePropertyChangeListener((PropertyChangeListener*)this);
+        InstanceManager::turnoutManagerInstance()->removePropertyChangeListener((PropertyChangeListener*)this);
     }
 
     //@Override

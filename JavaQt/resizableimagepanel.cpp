@@ -1,6 +1,6 @@
 #include "resizableimagepanel.h"
 #include "logger.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include <QPainter>
 #include <QVBoxLayout>
 
@@ -21,7 +21,7 @@ void ResizableImagePanel::common()
   setBackground(BackGroundColor);
   setVisible(true);
   log = new Logger("ResizableImagePanel");
-  pcs = new PropertyChangeSupport(this);
+  pcs = new SwingPropertyChangeSupport(this, nullptr);
 
   //setLayout(new QVBoxLayout);
 }

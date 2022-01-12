@@ -14,7 +14,7 @@
 ///*public*/ class ProxyIdTagManager extends AbstractProxyManager<IdTag>
 //        implements IdTagManager {
 
-    /*public*/ ProxyIdTagManager::ProxyIdTagManager(QObject* parent) : AbstractProxyIdTagManager(parent){
+    /*public*/ ProxyIdTagManager::ProxyIdTagManager(QObject* parent) : QObject(parent){
         //super();
     }
 
@@ -24,7 +24,7 @@
     }
 
     //@Override
-    /*public*/ void ProxyIdTagManager::init() {
+    /*public*/ void ProxyIdTagManager::init()  {
         if (!isInitialised()) {
             getDefaultManager();
         }
@@ -36,7 +36,7 @@
     }
 
     //@Override
-    /*protected*/ AbstractManager* ProxyIdTagManager::makeInternalManager() const {
+    /*protected*/ AbstractManager* ProxyIdTagManager::makeInternalManager()  {
         // since this really is an internal tracking mechanisim,
         // build the new manager and add it here.
         DefaultIdTagManager* tagMan = new DefaultIdTagManager(InstanceManager::getDefault("InternalSystemConnectionMemo"));
@@ -51,19 +51,21 @@
      */
     //@Override
     /*public*/ DefaultIdTag *ProxyIdTagManager::getIdTag(QString name) {
-        return (DefaultIdTag*)AbstractProxyIdTagManager::getNamedBean(name);
+     init();
+     return (DefaultIdTag *)AbstractProxyManager::getNamedBean(name);
     }
 
     //@Override
-    /*protected*/ NamedBean *ProxyIdTagManager::makeBean(int i, QString systemName, QString userName) {
-        return (NamedBean*)((IdTagManager*) getMgr(i))->newIdTag(systemName, userName);
+    /*protected*/ NamedBean *ProxyIdTagManager::makeBean(Manager *m, QString systemName, QString userName) {
+     init();
+     return ((IdTagManager*) m->self())->newIdTag(systemName, userName);
     }
 
     //@Override
     /**
      * {@inheritDoc}
      */
-    /*public*/ DefaultIdTag *ProxyIdTagManager::provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException) {
+    /*public*/ DefaultIdTag *ProxyIdTagManager::provide(/*@Nonnull*/ QString name) /*throw (IllegalArgumentException)*/ {
         return provideIdTag(name);
     }
 
@@ -77,7 +79,7 @@
      */
     //@Override
     /*public*/ DefaultIdTag *ProxyIdTagManager::provideIdTag(QString name) throw (IllegalArgumentException) {
-        return (DefaultIdTag*)AbstractProxyIdTagManager::provideNamedBean(name);
+        return (DefaultIdTag*)provideNamedBean(name);
     }
 
     /**
@@ -87,8 +89,8 @@
      * @return requested IdTag object or null if none exists
      */
     //@Override
-    /*public*/ NamedBean *ProxyIdTagManager::getBySystemName(QString systemName) const {
-        return AbstractProxyIdTagManager::getBeanBySystemName(systemName);
+    /*public*/ DefaultIdTag *ProxyIdTagManager::getBySystemName(QString systemName) const {
+        return (DefaultIdTag *)AbstractProxyManager::getBeanBySystemName(systemName);
     }
 
     /**
@@ -99,7 +101,7 @@
      */
     //@Override
     /*public*/ NamedBean *ProxyIdTagManager::getByUserName(QString userName) const {
-        return AbstractProxyIdTagManager::getBeanByUserName(userName);
+        return AbstractProxyManager::getBeanByUserName(userName);
     }
 
     /**
@@ -137,7 +139,7 @@
 
     //@Override
     /*public*/ DefaultIdTag* ProxyIdTagManager::getByTagID(QString tagID) {
-        return (DefaultIdTag*)getBySystemName(makeSystemName(tagID));
+        return (DefaultIdTag*)getBySystemName(AbstractProxyManager::makeSystemName(tagID));
     }
 
     /**

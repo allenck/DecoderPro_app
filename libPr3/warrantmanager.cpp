@@ -55,8 +55,8 @@ WarrantManager::WarrantManager(QObject *parent) :
     return Manager::WARRANTS;
 }
 
-/*public*/ QString WarrantManager::getSystemPrefix()const { return "I"; }
-/*public*/ char WarrantManager::typeLetter()const { return 'W'; }
+/*public*/ QString WarrantManager::getSystemPrefix() { return "I"; }
+/*public*/ QChar WarrantManager::typeLetter() { return 'W'; }
 
 /**
  * Method to create a new Warrant if it does not exist Returns null if a
@@ -108,13 +108,13 @@ WarrantManager::WarrantManager(QObject *parent) :
     return (Warrant*)getBySystemName(name);
 }
 
-/*public*/ NamedBean *WarrantManager::getBySystemName(QString name) const {
+/*public*/ NamedBean *WarrantManager::getBySystemName(QString name) {
     if (name==NULL || name.trimmed().length()==0) { return NULL; }
     QString key = name.toUpper();
     return (NamedBean*)_tsys->value(key);
 }
 
-/*public*/ NamedBean *WarrantManager::getByUserName(QString key) const{
+/*public*/ NamedBean *WarrantManager::getByUserName(QString key){
     if (key==NULL || key.trimmed().length()==0) { return NULL; }
     return (NamedBean*)_tuser->value(key);
 }

@@ -34,7 +34,7 @@ private slots:
 //    void eStopControlAction(int);
 //    void freeControlAction(int);
 
-    friend class PropertyChangeSupport;
+    friend class SwingPropertyChangeSupport;
     friend class SlotManager;
 };
 

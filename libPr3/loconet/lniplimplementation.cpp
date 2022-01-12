@@ -98,7 +98,7 @@
         waitingForIplReply = false;
         // connect to the LnTrafficController
         connect(memo->getLnTrafficController());
-        pcs = new PropertyChangeSupport(this);
+        pcs = new SwingPropertyChangeSupport(this, nullptr);
 
 //        swingTmrIplQuery = new Timer(LnDplxGrpInfoImplConstants.IPL_QUERY_DELAY, new ActionListener() {
 //            @Override

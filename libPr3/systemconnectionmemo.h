@@ -7,7 +7,7 @@
 #include "logger.h"
 #include "propertychangelistener.h"
 #include "libPr3_global.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "bean.h"
 /**
  * Lightweight abstract class to denote that a system is active,
@@ -41,7 +41,7 @@ public:
   * Provides access to the system prefix string.
   * This was previously called the "System letter"
   */
-    virtual QString getSystemPrefix() const {return QString();}
+    virtual QString getSystemPrefix() const  {return QString();}
  //This should probably throwing an exception
     //virtual bool setSystemPrefix(QString systemPrefix) {return false;}
     virtual QString getUserName()const {return QString();}
@@ -50,9 +50,9 @@ public:
    *
    * @return true if changed since loaded
    */
-    virtual bool isDirty() {return false;}
+    virtual bool isDirty() const {return false;}
 
- virtual bool isRestartRequired() {return false;}
+ virtual bool isRestartRequired() const {return false;}
 
  //This should probably throwing an exception
  virtual bool setUserName(QString /*name*/) {return false;}
@@ -94,7 +94,7 @@ private:
 // /*private*/ QString userNameAsLoaded;
 
  protected:
-// PropertyChangeSupport* propertyChangeSupport = nullptr;
+// SwingPropertyChangeSupport* SwingPropertyChangeSupport = nullptr;
 
 // /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("SystemConnectionMemo");
  //const static bool initialised = false;

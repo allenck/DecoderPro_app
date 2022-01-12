@@ -1,5 +1,5 @@
 #include "rollingstockmanager.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "rollingstock.h"
 #include <QVariant>
 #include "stringutil.h"

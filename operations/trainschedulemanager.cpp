@@ -1,13 +1,13 @@
 #include "trainschedulemanager.h"
 #include "control.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "trainmanagerxml.h"
 #include "trainschedule.h"
 #include "jcombobox.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include "xml.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "vptr.h"
 #include "propertychangeevent.h"
 #include "instancemanager.h"
@@ -30,12 +30,12 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString TrainScheduleManager::LISTLENGTH_CHANGED_PROPERTY = "trainScheduleListLength"; // NOI18N
  /*public*/ /*static*/ /*final*/ QString TrainScheduleManager::SCHEDULE_ID_CHANGED_PROPERTY = "ActiveTrainScheduleId"; // NOI18N
 
- /*public*/ TrainScheduleManager::TrainScheduleManager(QObject* parent) : PropertyChangeSupport(this, parent) {
+ /*public*/ TrainScheduleManager::TrainScheduleManager(QObject* parent) : SwingPropertyChangeSupport(this, parent) {
   log = new Logger("TrainScheduleManger");
   setObjectName("TrainScheduleManager");
   _id = 0;
   _scheduleHashTable = QHash<QString, TrainSchedule*>();
-  pcs = new PropertyChangeSupport(this);
+  pcs = new SwingPropertyChangeSupport(this, nullptr);
   setProperty("InstanceManagerAutoDefault", "true");
   setProperty("InstanceManagerAutoInitialize", "true");
 

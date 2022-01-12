@@ -4,7 +4,7 @@
 #include "appslib_global.h"
 
 class JComboBox;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class JTextField;
 class QLabel;
 class QPushButton;

@@ -130,7 +130,7 @@ void AbstractAction::common()
 {
  enabled = true;
  arrayTable = NULL;
- changeSupport = new PropertyChangeSupport(this);
+ changeSupport = new SwingPropertyChangeSupport(this, this);
 }
 
 /**
@@ -280,9 +280,9 @@ void AbstractAction::common()
  */
 /*public*/  /*synchronized*/ void AbstractAction::addPropertyChangeListener(PropertyChangeListener* listener) {
     if (changeSupport == NULL) {
-        changeSupport = new PropertyChangeSupport(this);
+        changeSupport = new SwingPropertyChangeSupport(this, this);
     }
-    changeSupport->PropertyChangeSupport::addPropertyChangeListener(listener);
+    changeSupport->SwingPropertyChangeSupport::addPropertyChangeListener(listener);
 // connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 

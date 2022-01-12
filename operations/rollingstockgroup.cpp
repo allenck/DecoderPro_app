@@ -1,6 +1,6 @@
 #include "rollingstockgroup.h"
 #include "rollingstock.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 
 //RollingStockGroup::RollingStockGroup(QObject *parent) :
 //  QObject(parent)
@@ -20,7 +20,7 @@ namespace Operations
     QObject(parent)
 {
  _name = name;
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
  log = new Logger("RollingStockGroup");
 
  }

@@ -45,7 +45,7 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString Route::ERROR = tr("Error");
 
  /*public*/ Route::Route(QString id, QString name, QObject *parent):
-                  PropertyChangeSupport(this, parent)
+                  SwingPropertyChangeSupport(this, parent)
  {
   common();
   log->debug(tr("New route (%1) id: %2").arg(name).arg(id));
@@ -474,7 +474,7 @@ return out;
   *
   * @param e Consist XML element
   */
- /*public*/ Route::Route(QDomElement e) : PropertyChangeSupport(this)
+ /*public*/ Route::Route(QDomElement e) : SwingPropertyChangeSupport(this,this)
  {
   common();
   // if (log->isDebugEnabled()) log->debug("ctor from element "+e);

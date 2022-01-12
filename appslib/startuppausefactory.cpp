@@ -9,7 +9,7 @@
 
 StartupPauseFactory::StartupPauseFactory() : StartupModelFactory()
 {
- setObjectName("StartupPauseFactory");
+ self()->setObjectName("StartupPauseFactory");
 }
 /**
  * Factory for {@link apps.startup.StartupPauseModel} objects.

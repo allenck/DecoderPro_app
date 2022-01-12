@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QColor>
 #include <QDomDocument>
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "logger.h"
 #include "propertychangeevent.h"
 #include <QDomElement>
@@ -142,7 +142,7 @@ namespace Operations
   /*public*/ QString getTableRowColorName();
   /*public*/ void setTableRowColorName(QString colorName);
   /*public*/ QColor getTableRowColor();
-  PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+  SwingPropertyChangeSupport* pcs;// = new SwingPropertyChangeSupport(this, nullptr);
   /*public*/ QDomElement store(QDomDocument doc);
   /*public*/ QString getLeadEngineNumber();
   /*public*/ void setRoute(Route* route);

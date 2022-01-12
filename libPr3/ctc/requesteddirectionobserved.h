@@ -2,7 +2,7 @@
 #define REQUESTEDDIRECTIONOBSERVED_H
 
 #include <QObject>
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 
 class RequestedDirectionObserved : public QObject
 {
@@ -20,7 +20,7 @@ class RequestedDirectionObserved : public QObject
 
  private:
   /*private*/ int _mRequestedDirection;
-  /*private*/ /*final*/ PropertyChangeSupport*_mPropertyChangeSupport = new PropertyChangeSupport(this);
+  /*private*/ /*final*/ SwingPropertyChangeSupport*_mSwingPropertyChangeSupport = new SwingPropertyChangeSupport(this, nullptr);
   /*private*/ /*final*/ static QString PROPERTY;// = "RequestedDirection";  // NOI18N  NEVER pass "null" for propertyName, there is a bug relating to this (for safety!)
 
 };

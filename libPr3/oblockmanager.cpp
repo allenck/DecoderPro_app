@@ -48,8 +48,8 @@ OBlockManager::OBlockManager(QObject *parent) :
     return Manager::OBLOCKS;
 }
 
-/*public*/ QString OBlockManager::getSystemPrefix() const { return "O"; }
-/*public*/ char OBlockManager::typeLetter()const { return 'B'; }
+/*public*/ QString OBlockManager::getSystemPrefix() { return "O"; }
+/*public*/ QChar OBlockManager::typeLetter() { return 'B'; }
 
 /**
  * Method to create a new OBlock if it does not exist
@@ -110,16 +110,16 @@ OBlockManager::OBlockManager(QObject *parent) :
     return (OBlock*)_tsys->value(key);
 }
 
-/*public*/ NamedBean *OBlockManager::getByUserName(QString key)const  {
+/*public*/ NamedBean *OBlockManager::getByUserName(QString key)  {
     if (key==NULL || key.trimmed().length()==0) { return NULL; }
     return (OBlock*)_tuser->value(key);
 }
 //@Override
-/*public*/ OBlock* OBlockManager::provide(QString name) const throw (IllegalArgumentException) {
+/*public*/ OBlock* OBlockManager::provide(QString name)  /*throw (IllegalArgumentException)*/ {
     return provideOBlock(name);
 }
 
-/*public*/ OBlock* OBlockManager::provideOBlock(QString name) const{
+/*public*/ OBlock* OBlockManager::provideOBlock(QString name) {
     if (name==NULL || name.length()==0) { return NULL; }
     OBlock* ob = (OBlock*)getByUserName(name);
     if (ob==NULL) {

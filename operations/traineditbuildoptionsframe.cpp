@@ -446,7 +446,7 @@ namespace Operations
           }
       }
       // listen for train changes
-      //_train->PropertyChangeSupport::addPropertyChangeListener(this);
+      //_train->SwingPropertyChangeSupport::addPropertyChangeListener(this);
       connect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   } else {
       enableButtons(false);
@@ -460,7 +460,7 @@ namespace Operations
   // get notified if car owners or engine models gets modified
   //((CarOwners*)InstanceManager::getDefault("Operations::CarOwners")).addPropertyChangeListener(this);
   connect(((CarOwners*)InstanceManager::getDefault("Operations::CarOwners")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  //((EngineModels*)InstanceManager::getDefault("EngineModels"))->PropertyChangeSupport::addPropertyChangeListener(this);
+  //((EngineModels*)InstanceManager::getDefault("EngineModels"))->SwingPropertyChangeSupport::addPropertyChangeListener(this);
   connect(((EngineModels*)InstanceManager::getDefault("EngineModels")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
   initMinimumSize();

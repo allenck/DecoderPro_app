@@ -59,6 +59,7 @@ public:
     {
      return Manager::SIGNALGROUPS;
     }
+    QObject* self() override{return (QObject*)this;}
 
 };
 Q_DECLARE_METATYPE(SignalGroupManager)

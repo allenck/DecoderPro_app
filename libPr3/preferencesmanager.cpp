@@ -19,7 +19,7 @@ class Exception;
  */
 ///*public*/ interface PreferencesManager extends JmriServiceProviderInterface {
 
-PreferencesManager::PreferencesManager(QObject *parent) : JmriServiceProviderInterface(parent) {}
+// PreferencesManager::PreferencesManager(QObject *parent) : QObject(parent) {}
 
 /**
  * Initialize the PreferencesManager with preferences associated with the

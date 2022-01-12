@@ -333,7 +333,7 @@ public void setDisplayDeleteMsg(int boo) { ((DefaultUserMessagePreferences*)Inst
  */
 /*protected*/ void SectionTableAction::addPressed() {
     editMode = false;
-    if ((blockManager->getSystemNameList().size()) > 0) {
+    if ((blockManager->AbstractManager::getSystemNameList().size()) > 0) {
         addEditPressed();
     }
     else {
@@ -930,7 +930,7 @@ void SectionTableAction::addBlockPressed() {
 }
 /*private*/ void SectionTableAction::initializeBlockCombo()
 {
- QStringList allBlocks = (QStringList)blockManager->getSystemNameList();
+ QStringList allBlocks = (QStringList)blockManager->AbstractManager::getSystemNameList();
  blockBox->clear();
  for (int j=blockBoxList.size(); j>0; j--) blockBoxList.removeAt(j-1);
  if (blockList.size()==0)
@@ -939,7 +939,7 @@ void SectionTableAction::addBlockPressed() {
   for (int i=0; i<allBlocks.size(); i++)
   {
    QString bName = allBlocks.at(i);
-   Block* b = (Block*)blockManager->getBySystemName(bName);
+   Block* b = (Block*)blockManager->AbstractManager::getBySystemName(bName);
    if (b!=NULL)
    {
     if ( (b->getUserName()!=NULL) && (b->getUserName()!=("")) )
@@ -955,7 +955,7 @@ void SectionTableAction::addBlockPressed() {
   for (int i=0; i<allBlocks.size(); i++)
   {
    QString bName = allBlocks.at(i);
-   Block* b = (Block*)blockManager->getBySystemName(bName);
+   Block* b = (Block*)blockManager->AbstractManager::getBySystemName(bName);
    if (b!=NULL)
    {
     if ( (!inSection(b)) && connected(b,endBlock) )

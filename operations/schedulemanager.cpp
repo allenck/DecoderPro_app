@@ -1,5 +1,5 @@
 #include "schedulemanager.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "propertychangeevent.h"
 #include "cartypes.h"
 #include "carroads.h"
@@ -34,7 +34,7 @@ namespace Operations
    : QObject(parent)
  {
   log = new Logger("ScheduleManager");
-  pcs = new PropertyChangeSupport(this);
+  pcs = new SwingPropertyChangeSupport(this, nullptr);
   setProperty("InstanceManagerAutoDefault", "yes");
 
 

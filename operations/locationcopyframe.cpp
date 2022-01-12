@@ -109,7 +109,7 @@ namespace Operations
   deleteTrackCheckBox->setEnabled(moveRollingStockCheckBox->isChecked());
 
   // get notified if combo box gets modified
-  locationManager->PropertyChangeSupport::addPropertyChangeListener(this);
+  locationManager->SwingPropertyChangeSupport::addPropertyChangeListener(this);
 
   // add help menu to window
   addHelpMenu("package.jmri.jmrit.operations.Operations_Locations", true); // NOI18N

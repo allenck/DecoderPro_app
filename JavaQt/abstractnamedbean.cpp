@@ -17,7 +17,7 @@ void AbstractNamedBean::common(QString sys, QString user/*, QObject *parent*/)
  parameters = NULL;
  _register = new QHash<PropertyChangeListener*, QString>();
  listenerRefs = new QHash<PropertyChangeListener*, QString>();
- pcs = new PropertyChangeSupport(/*(QObject*)*/this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
 }
 
 /**
@@ -102,7 +102,7 @@ QString AbstractNamedBean::getDisplayName()
                                                                           const QString beanRef,
                                                                           QString listenerRef)
 {
- pcs->PropertyChangeSupport::addPropertyChangeListener(l);
+ pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
  //connect(this->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),l, SLOT(propertyChange(PropertyChangeEvent*)));
  if(beanRef!=NULL)
      _register->insert(l, beanRef);
@@ -118,7 +118,7 @@ QString AbstractNamedBean::getDisplayName()
                                                        QString beanRef, QString listenerRef)
 {
  //QPointer<PropertyChangeListener> listener = (PropertyChangeListener*)l->self();
-    pcs->PropertyChangeSupport::addPropertyChangeListener(propertyName, /*listener*/l);
+    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(propertyName, /*listener*/l);
     if (beanRef != "") {
         _register->insert(l, beanRef);
     }
@@ -131,21 +131,21 @@ QString AbstractNamedBean::getDisplayName()
 //@OverridingMethodsMustInvokeSuper
 /*public synchronized*/ void AbstractNamedBean::addPropertyChangeListener(PropertyChangeListener* l)
 {
- pcs->PropertyChangeSupport::addPropertyChangeListener(l);
+ pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
  //connect(this->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),l, SLOT(propertyChange(PropertyChangeEvent*)), Qt::DirectConnection);
 }
 
 //@Override
 //@OverridingMethodsMustInvokeSuper
 /*public*/ /*synchronized*/ void AbstractNamedBean::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-    pcs->PropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
+    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
 }
 
 ////@Override
 ////@OverridingMethodsMustInvokeSuper
 ///*public*/ /*synchronized*/ void AbstractNamedBean::addPropertyChangeListener(QString propertyName,
 //                                                                              PropertyChangeListener* listener) {
-//    pcs->PropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
+//    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
 //}
 
 /*public synchronized*/ void AbstractNamedBean::removePropertyChangeListener(PropertyChangeListener* listener)
@@ -238,7 +238,7 @@ QString AbstractNamedBean::getDisplayName()
     return pcs->getPropertyChangeListeners().length();
 }
 
-/*public synchronized*/ QVector<PropertyChangeListener*> AbstractNamedBean::getPropertyChangeListeners() {
+/*public synchronized*/ QVector<PropertyChangeListener*> AbstractNamedBean::getPropertyChangeListeners() const {
     return pcs->getPropertyChangeListeners();
 }
 

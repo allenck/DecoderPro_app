@@ -20,7 +20,7 @@ IdTagManagerXml* IdTagManagerXml::_instance = NULL;
 
 
 DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
-    IdTagManager(parent)
+    AbstractManager(parent)
 {
  log = new Logger(this->metaObject()->className());
  log->setDebugEnabled(true);
@@ -53,7 +53,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 }
 
 //@Override
-/*public*/ void DefaultIdTagManager::init() const
+/*public*/ void DefaultIdTagManager::init()
 {
  log->debug("init called");
  if (!_initialised && !_loading )
@@ -94,7 +94,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 /*protected*/ void DefaultIdTagManager::registerSelf() {}
 
 //@Override
-/*public*/ char DefaultIdTagManager::typeLetter() const { return 'D'; }
+/*public*/ QChar DefaultIdTagManager::typeLetter()  { return 'D'; }
 
 //@Override
 /*public*/ DefaultIdTag* DefaultIdTagManager::provide(QString name)  {
@@ -102,7 +102,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 }
 
 //@Override
-/*public*/ QString DefaultIdTagManager::getSystemPrefix() const { return "I"; }
+/*public*/ QString DefaultIdTagManager::getSystemPrefix() { return "I"; }
 
 //@Override
 /*public*/ DefaultIdTag* DefaultIdTagManager::provideIdTag(QString name) {
@@ -112,14 +112,14 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
     if (name.startsWith(getSystemPrefix()+typeLetter()))
         return newIdTag(name, QString());
     else
-        return newIdTag(makeSystemName(name), QString());
+        return newIdTag(AbstractManager::makeSystemName(name), QString());
 }
 
 //@Override
 /*public*/ DefaultIdTag* DefaultIdTagManager::getIdTag(QString name) {
     if (!_initialised && !_loading) init();
 
-    NamedBean* t = getBySystemName(makeSystemName(name));
+    NamedBean* t = getBySystemName(AbstractManager::makeSystemName(name));
     if (t!=NULL) return (DefaultIdTag*)t;
 
     t = getByUserName(name);
@@ -129,13 +129,13 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 }
 
 //@Override
-/*public*/ NamedBean* DefaultIdTagManager::getBySystemName(QString name) const {
+/*public*/ NamedBean* DefaultIdTagManager::getBySystemName(QString name) {
     if (!_initialised && !_loading) init();
     return (NamedBean*)_tsys->value(name);
 }
 
 //@Override
-/*public*/ NamedBean *DefaultIdTagManager::getByUserName(QString key)const {
+/*public*/ NamedBean *DefaultIdTagManager::getByUserName(QString key) {
     if (!_initialised && !_loading) init();
     return (NamedBean*)_tuser->value(key);
 }
@@ -143,7 +143,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 //@Override
 /*public*/ DefaultIdTag *DefaultIdTagManager::getByTagID(QString tagID) {
     if (!_initialised && !_loading) init();
-    return (DefaultIdTag*)getBySystemName(makeSystemName(tagID));
+    return (DefaultIdTag *)getBySystemName(AbstractManager::makeSystemName(tagID));
 }
 
 /*protected*/ NamedBean* DefaultIdTagManager::createNewIdTag(QString systemName, QString userName) {
@@ -203,7 +203,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 }
 
 //@Override
-/*public*/ void DefaultIdTagManager::Register(NamedBean* s) const
+/*public*/ void DefaultIdTagManager::Register(NamedBean* s)
 {
  //super.register(s);
  AbstractManager::Register(s);
@@ -211,7 +211,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 }
 
 //@Override
-/*public*/ void DefaultIdTagManager::deregister(NamedBean* s) const{
+/*public*/ void DefaultIdTagManager::deregister(NamedBean* s) {
     //super.deregister(s);
     AbstractManager::deregister(s);
     IdTagManagerXml::instance()->setDirty(true);
@@ -463,7 +463,7 @@ doc.appendChild(root);
 
    // Loop through RfidTags
    root.appendChild(values = doc.createElement("idtags")); // NOI18N
-   QStringList idTagList = manager->getSystemNameList();
+   QStringList idTagList = manager->AbstractManager::getSystemNameList();
    for (int i=0; i<idTagList.size(); i++)
    {
     IdTag* t = (IdTag*)manager->getBySystemName(idTagList.at(i));

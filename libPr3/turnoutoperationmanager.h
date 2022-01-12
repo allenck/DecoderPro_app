@@ -68,7 +68,7 @@ private:
  /*private*/ static TurnoutOperationManager* theInstance;
  QMutex mutex;
  /*private*/ void updateTypes(TurnoutOperation* op);
- PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+ SwingPropertyChangeSupport* pcs;// = new SwingPropertyChangeSupport(this, nullptr);
  static TurnoutOperationManager* getDefault();
 
 protected:

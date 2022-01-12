@@ -5,7 +5,7 @@
 #include "appslib_global.h"
 
 class Logger;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 namespace Operations
 {
  class Track;

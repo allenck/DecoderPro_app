@@ -188,24 +188,24 @@ void SignalGroupSubTableAction::editSignal(SignalGroup* g, QString signal)
  _systemName->setVisible(true);
 
  TurnoutManager* tm = InstanceManager::turnoutManagerInstance();
- QStringList systemNameList = ((ProxyTurnoutManager*)tm)->getSystemNameList();
+ QStringList systemNameList = ((ProxyTurnoutManager*)tm)->AbstractProxyManager::getSystemNameList();
 _turnoutList =  QList <SignalGroupTurnout*> (/*systemNameList.size()*/);
  QStringListIterator iter(systemNameList);
  while (iter.hasNext())
  {
   QString systemName = iter.next();
-  QString userName = ((ProxyTurnoutManager*)tm)->getBySystemName(systemName)->getUserName();
+  QString userName = ((ProxyTurnoutManager*)tm)->AbstractProxyManager::getBySystemName(systemName)->getUserName();
   _turnoutList.append(new SignalGroupTurnout(systemName, userName));
  }
 
  SensorManager* sm = InstanceManager::sensorManagerInstance();
- systemNameList = ((ProxySensorManager*)sm)->getSystemNameList();
+ systemNameList = ((ProxySensorManager*)sm)->AbstractProxyManager::getSystemNameList();
  _sensorList = QList <SignalGroupSensor*> (/*systemNameList.size()*/);
  iter = QStringListIterator(systemNameList);
  while (iter.hasNext())
  {
   QString systemName = iter.next();
-  QString userName = ((ProxySensorManager*)sm)->getBySystemName(systemName)->getUserName();
+  QString userName = ((ProxySensorManager*)sm)->AbstractProxyManager::getBySystemName(systemName)->getUserName();
   _sensorList.append(new SignalGroupSensor(systemName, userName));
  }
  initializeIncludedList();
@@ -642,7 +642,7 @@ void SignalGroupSubTableAction::setColumnToHoldButton(QTableView* /*table*/, int
         }
 
         /*public*/ void SGSTASignalGroupOutputModel::dispose() {
-            ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->removePropertyChangeListener((PropertyChangeListener*)this);
+            ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->AbstractProxyManager::removePropertyChangeListener((PropertyChangeListener*)this);
         }
 
 /*public*/ QVariant SGSTASignalGroupOutputModel::headerData(int section, Qt::Orientation orientation, int role) const

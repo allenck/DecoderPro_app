@@ -5,7 +5,7 @@
 AbstractPowerManager::AbstractPowerManager(SystemConnectionMemo * memo, QObject *parent) :
     PowerManager(parent)
 {
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
  this->userName = memo->getUserName();
 }
 //public AbstractPowerManager(jmri.jmrix.SystemConnectionMemo memo) {
@@ -18,7 +18,7 @@ QString AbstractPowerManager::getUserName() { return userName; }
 void AbstractPowerManager::addPropertyChangeListener(PropertyChangeListener* l)
 {
  QMutexLocker locker(&mutex);
- pcs->PropertyChangeSupport::addPropertyChangeListener(l);
+ pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 }
 void AbstractPowerManager::firePropertyChange(QString p, QVariant old, QVariant n)
 {  pcs->firePropertyChange(p,old,n);}

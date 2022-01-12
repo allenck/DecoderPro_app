@@ -403,11 +403,15 @@ void VSDecoderManager::fireMyEvent(VSDManagerEvent* evt) {
 
 /*protected*/ void VSDecoderManager::registerReporterListeners() {
     // Walk through the list of reporters
-    foreach (QString sysName, static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->getSystemNameList()) {
+    foreach (QString sysName, qobject_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->getSystemNameList()) {
         registerReporterListener(sysName);
     }
-    foreach (QString sysname, static_cast<BlockManager*>(InstanceManager::getDefault("BlockManager"))->getSystemNameList()) {
-        registerBeanListener(static_cast<BlockManager*>(InstanceManager::getDefault("BlockManager")), sysname);
+    QSet<NamedBean*> blockSet = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getNamedBeanSet();
+    for (NamedBean* nb : blockSet) {
+     Block* b = (Block*)nb;
+        if (b != nullptr) {
+            registerBeanListener(((Manager*)InstanceManager::getDefault("BlockManager")), b->getSystemName());
+        }
     }
 }
 
@@ -422,7 +426,7 @@ void VSDecoderManager::fireMyEvent(VSDManagerEvent* evt) {
     //	    reporterManagerPropertyChange(event);
     //	}
     //   });
-    ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
+    ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->addPropertyChangeListener((PropertyChangeListener*)this);
 
     // Now, the Reporter Table might already be loaded and filled out, so we need to get all the Reporters and list them.
     // And add ourselves as a listener to them.
@@ -433,10 +437,10 @@ void VSDecoderManager::fireMyEvent(VSDManagerEvent* evt) {
         }
     }
 
-    QSet<NamedBean*> blockSet = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getNamedBeanSet();
+    QSet<NamedBean*> blockSet = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getNamedBeanSet();
     for (NamedBean* b : blockSet) {
         if (b != nullptr) {
-            registerBeanListener((BlockManager*)InstanceManager::getDefault("BlockManager"), ((NamedBean*)b)->getSystemName());
+            registerBeanListener((Manager*)InstanceManager::getDefault("BlockManager"), ((NamedBean*)b)->getSystemName());
         }
     }
 }

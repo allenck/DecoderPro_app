@@ -57,7 +57,7 @@ DefaultAudioManager::DefaultAudioManager(QObject *parent) :
 }
 
 //@Override
-/*public*/ QString DefaultAudioManager::getSystemPrefix() const {
+/*public*/ QString DefaultAudioManager::getSystemPrefix() {
     return "I";
 }
 
@@ -256,7 +256,7 @@ bool AudioShutDownTask::doAction()
 }
 
 //@Override
-/*public*/ void DefaultAudioManager::deregister(NamedBean* s)const {
+/*public*/ void DefaultAudioManager::deregister(NamedBean* s) {
     AbstractAudioManager::deregister(s);
     // Decrement the relevant Audio object counter
 //    switch (((Audio*) s)->getSubType()) {

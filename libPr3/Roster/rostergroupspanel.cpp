@@ -12,7 +12,7 @@
 #include "roster.h"
 #include "defaultmutabletreenode.h"
 #include "defaulttreemodel.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "flowlayout.h"
 #include <QToolButton>
 #include "createrostergroupaction.h"
@@ -79,7 +79,7 @@
  newWindowMenuItemAction = NULL;
  groupsMenu = NULL;
  allEntriesMenu = NULL;
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
  //this->scrollPane = new QScrollArea(/*getTree()*/);
 //    this.scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     setGroupsMenu(defaultMenu(GROUPS_MENU));

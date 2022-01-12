@@ -44,7 +44,7 @@
 /*protected*/ void DefaultSignalSystemManager::registerSelf() {}
 
 /*public*/ QString DefaultSignalSystemManager::getSystemPrefix() { return "I"; }
-/*public*/ char DefaultSignalSystemManager::typeLetter() { return 'F'; }
+/*public*/ QChar DefaultSignalSystemManager::typeLetter() { return 'F'; }
 
 /*public*/ SignalSystem* DefaultSignalSystemManager::getSystem(QString name) {
     SignalSystem* t = getByUserName(name);

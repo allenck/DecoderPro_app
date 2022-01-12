@@ -406,10 +406,10 @@ bool NceConsistRoster::isDirty() {return dirty;}
 /*public*/ /*static*/ void NceConsistRoster::setNceConsistRosterFileName(QString name) { NceConsistRosterFileName = name; }
 /*private*/ /*static*/ QString NceConsistRoster::NceConsistRosterFileName = "ConsistRoster.xml";
 
-// since we can't do a "super(this)" in the ctor to inherit from PropertyChangeSupport, we'll
+// since we can't do a "super(this)" in the ctor to inherit from SwingPropertyChangeSupport, we'll
 // reflect to it.
 // Note that dispose() doesn't act on these.  Its not clear whether it should...
-//java.beans.PropertyChangeSupport pcs = new java.beans.PropertyChangeSupport(this);
+//java.beans.SwingPropertyChangeSupport pcs = new java.beans.SwingPropertyChangeSupport(this,this);
 
 ///*public*/ synchronized void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
 //    pcs.addPropertyChangeListener(l);

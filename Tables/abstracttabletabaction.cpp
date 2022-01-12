@@ -65,7 +65,7 @@ AbstractTableTabAction::~AbstractTableTabAction()
  if(qobject_cast<ProxyManager*>(getManager()->self())!= nullptr)
  {
   ProxyManager* proxy = qobject_cast<ProxyManager*>(getManager()->self());
-  QList<AbstractManager*> managerList = proxy->getDisplayOrderManagerList();
+  QList<Manager*> managerList = proxy->getDisplayOrderManagerList();
   AbstractTableAction* a = getNewTableAction("All");
   Q_UNUSED(a);
   tabbedTableArray.append(new TabbedTableItem("All", true, getManager(), getNewTableAction("All")));

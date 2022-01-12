@@ -4,7 +4,7 @@
 #include <QObject>
 //#include "rosterentry.h"
 #include <QtXml/QDomDocument>
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "logger.h"
 #include <QVector>
 #include "xmlfile.h"
@@ -153,7 +153,7 @@ public:
     static const QString schemaVersion;// = "";
     /*public*/ QMap<QString, RosterGroup*> getRosterGroups();
     /*public*/ void rosterGroupRenamed(QString oldName, QString newName);
-    PropertyChangeSupport* pcs = new PropertyChangeSupport(this);
+    SwingPropertyChangeSupport* pcs = new SwingPropertyChangeSupport(this, nullptr);
     /*public*/ void addRosterGroup(RosterGroup* rg);
     /*public*/ void addRosterGroup(QString str);
     /*public*/ QString getRosterFilesLocation();

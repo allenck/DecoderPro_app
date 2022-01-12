@@ -67,11 +67,11 @@ void JInputValidator::common(JComponent* component, bool /*onInput*/, bool isVer
  return new Validation(Validation::Type::NONE, getToolTipText(), preferences);    }
 
 /*public*/ void JInputValidator::addPropertyChangeListener(PropertyChangeListener* listener) {
-    pcs->PropertyChangeSupport::addPropertyChangeListener(listener);
+    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(listener);
 }
 
 /*public*/ void JInputValidator::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-    pcs->PropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
+    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
 }
 
 /*public*/ void JInputValidator::removePropertyChangeListener(PropertyChangeListener* listener) {
@@ -90,7 +90,7 @@ void JInputValidator::common(JComponent* component, bool /*onInput*/, bool isVer
     return pcs->getPropertyChangeListeners(propertyName);
 }
 
-/*protected*/ PropertyChangeSupport* JInputValidator::getPropertyChangeSupport() {
+/*protected*/ SwingPropertyChangeSupport* JInputValidator::getSwingPropertyChangeSupport() {
 return pcs;
 }
 

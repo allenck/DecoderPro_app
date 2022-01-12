@@ -10,7 +10,7 @@
 #include "gridbaglayout.h"
 #include <QScrollArea>
 //#include "panecontainer.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "qualifieradder.h"
 #include "libPr3_global.h"
 #include "fnmappanel.h"
@@ -122,7 +122,7 @@ private:
   /*private*/ int retry = 0;
   /*private*/ QWidget* addDccAddressPanel(QDomElement e);
   bool print = false;
-  PropertyChangeSupport* changeSupport = new PropertyChangeSupport(this);
+  SwingPropertyChangeSupport* changeSupport = new SwingPropertyChangeSupport(this, nullptr);
   static /*final*/ QString LAST_GRIDX;// = "last_gridx";
   static /*final*/ QString LAST_GRIDY;// = "last_gridy";
   void setCvListFromTable();

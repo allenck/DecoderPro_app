@@ -22,7 +22,7 @@
 /*public*/ ProfileListModel::ProfileListModel(QObject *parent) :
     AbstractListModel(parent)
 {
-//ProfileManager::getDefault()->PropertyChangeSupport::addPropertyChangeListener(ProfileManager::PROFILES, new PropertyChangeListener());
+//ProfileManager::getDefault()->SwingPropertyChangeSupport::addPropertyChangeListener(ProfileManager::PROFILES, new PropertyChangeListener());
 //{
 //        @Override
 //        /*public*/ void propertyChange(PropertyChangeEvent evt) {

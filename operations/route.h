@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QHash>
 #include "logger.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include <QtXml>
 #include "appslib_global.h"
 
@@ -13,7 +13,7 @@ namespace Operations
 {
  class Location;
  class RouteLocation;
- class APPSLIBSHARED_EXPORT Route : public PropertyChangeSupport, public PropertyChangeListener
+ class APPSLIBSHARED_EXPORT Route : public SwingPropertyChangeSupport, public PropertyChangeListener
  {
   Q_OBJECT
      Q_INTERFACES(PropertyChangeListener)

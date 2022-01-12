@@ -167,9 +167,9 @@
       setNamedSensor(nullptr);
       ret = true;
   } else {
-      sensor = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getByUserName(pName);
+      sensor = (Sensor*)((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::getByUserName(pName);
       if (sensor == nullptr) {
-          sensor = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getBySystemName(pName);
+          sensor = (Sensor*)((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::getBySystemName(pName);
       }
       if (sensor == nullptr) {
           if (log->isDebugEnabled()) {
@@ -198,7 +198,7 @@
   _namedSensor = s;
 
   if (_namedSensor != nullptr) {
-//      getSensor()->PropertyChangeSupport::addPropertyChangeListener(_sensorListener = (PropertyChangeEvent e) -> {
+//      getSensor()->SwingPropertyChangeSupport::addPropertyChangeListener(_sensorListener = (PropertyChangeEvent e) -> {
 //          handleSensorChange(e);
 //      }, s.getName(), "Block Sensor " + getDisplayName());
 //      _current = getSensor()->getState();
@@ -247,7 +247,7 @@ void BlockSensorListener::propertyChange(PropertyChangeEvent* e)
  if (_reporter != NULL)
  {
   // attach listener
- // _reporter->PropertyChangeSupport::addPropertyChangeListener(_reporterListener = new PropertyChangeListener());
+ // _reporter->SwingPropertyChangeSupport::addPropertyChangeListener(_reporterListener = new PropertyChangeListener());
 
 // #if 0
 //  {

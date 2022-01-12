@@ -380,7 +380,7 @@ private:
     /*private*/ bool _debug = false;
     /*private*/ bool _loadFailed = false;
     bool bDirty = false;
-    PropertyChangeSupport* pcs = new PropertyChangeSupport(this);
+    SwingPropertyChangeSupport* pcs = new SwingPropertyChangeSupport(this, nullptr);
 
     bool showCloseInfoMessage = true;	//display info message when closing panel
     void commonInit();

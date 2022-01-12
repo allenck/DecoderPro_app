@@ -11,7 +11,7 @@ QColor AbstractValue::COLOR_DIFF = QColor(Qt::red);
 AbstractValue::AbstractValue(QObject *parent) :
     QObject(parent)
 {
- prop = new PropertyChangeSupport(this);
+ prop = new SwingPropertyChangeSupport(this, nullptr);
 // COLOR_UNKNOWN = QColor(Qt::red);
 // COLOR_EDITED  = QColor(255,170,0);
 // COLOR_READ     = QColor();
@@ -89,7 +89,7 @@ AbstractValue::AbstractValue(QObject *parent) :
 
 /*public*/ void AbstractValue::addPropertyChangeListener(PropertyChangeListener* p)
 {
- prop->PropertyChangeSupport::addPropertyChangeListener(p);
+ prop->SwingPropertyChangeSupport::addPropertyChangeListener(p);
 }
 
 /*public*/ void AbstractValue::removePropertyChangeListener(PropertyChangeListener* p)

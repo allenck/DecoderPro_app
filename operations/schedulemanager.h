@@ -12,7 +12,7 @@ class QDomDocument;
 class QDomElement;
 class JComboBox;
 class Logger;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class PropertyChangeEvent;
 namespace Operations
 {
@@ -25,7 +25,7 @@ namespace Operations
   Q_INVOKABLE explicit ScheduleManager(QObject *parent = 0);
    ~ScheduleManager() {}
    ScheduleManager(const ScheduleManager&) : QObject() {}
-  PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
+  SwingPropertyChangeSupport* pcs;// = new java.beans.SwingPropertyChangeSupport(this,this);
   /*public*/ static /*final*/ QString LISTLENGTH_CHANGED_PROPERTY;// = "scheduleListLength"; // NOI18N
 //  /*public*/ static /*synchronized*/ ScheduleManager* instance();
   /*public*/ void dispose();

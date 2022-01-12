@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include "timer.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "jcomponent.h"
 #include "loconetlistener.h"
 #include "duplexgroupmessagetype.h"
@@ -100,7 +100,7 @@ class LnDplxGrpInfoImpl : public QObject, public JComponent, public LocoNetListe
   /*private*/ QString acceptedGroupChannel;
   /*private*/ QString acceptedGroupPassword;
   /*private*/ QString acceptedGroupId;
-  PropertyChangeSupport* pcs = new PropertyChangeSupport(this);
+  SwingPropertyChangeSupport* pcs = new SwingPropertyChangeSupport(this, nullptr);
   LnDplxGrpInfoImpl* thisone;
   /*private*/ void invalidateDataAndQueryDuplexInfo();
   /*private*/ void invalidateDuplexGroupIdentityInfo();

@@ -73,10 +73,10 @@
 //template<class T>
 void /*public*/ BeanTableDataModel::init() // SLOT
 {
- AbstractManager* manager = getManager();
+ Manager* manager = getManager();
  if(manager != NULL)
  {
-  manager->VetoableChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
+  manager->addPropertyChangeListener((PropertyChangeListener*)this);
   updateNameList();
 //  connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -107,10 +107,10 @@ BeanTableDataModel::~BeanTableDataModel()
 //abstract public String getValue(String systemName);
 
 //template<class T>
-AbstractManager* BeanTableDataModel::getManager() {return NULL;}
+Manager *BeanTableDataModel::getManager() {return NULL;}
 
 //template<class T>
-void BeanTableDataModel::setManager(AbstractManager *) {}
+void BeanTableDataModel::setManager(Manager *) {}
 
 /*protected*/ /*synchronized*/ void BeanTableDataModel::updateNameList()
 {
@@ -707,7 +707,7 @@ void BeanTableDataModel::OnButtonClicked(QObject* o)
 
 /*synchronized*/ /*public*/ void BeanTableDataModel::dispose()
 {
- ((AbstractManager*)getManager()->self())->VetoableChangeSupport::removePropertyChangeListener((PropertyChangeListener*)this);
+ ((AbstractManager*)getManager())->VetoableChangeSupport::removePropertyChangeListener((PropertyChangeListener*)this);
  if (!sysNameList.isEmpty())
  {
   for (int i = 0; i< sysNameList.size(); i++)

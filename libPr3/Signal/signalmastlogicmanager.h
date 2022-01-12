@@ -3,7 +3,7 @@
 #include "abstractmanager.h"
 #include "exceptions.h"
 #include "libPr3_global.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 
 /**
  *
@@ -108,7 +108,7 @@ public:
     /*public*/ virtual bool isSignalMastUsed(SignalMast* mast) = 0;
 
     /*public*/ virtual void setSignalLogicDelay(long l) = 0;
-    //PropertyChangeSupport* pcs;
+    //SwingPropertyChangeSupport* pcs;
     /**
      * Iterate over the signal masts setting up direction Section sensors.
      * @return error count

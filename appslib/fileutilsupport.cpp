@@ -19,7 +19,7 @@
 
 /**
  * Support the {@link jmri.util.FileUtil } static API while providing
- * {@link java.beans.PropertyChangeSupport} for listening to changes in the
+ * {@link java.beans.SwingPropertyChangeSupport} for listening to changes in the
  * paths.
  *
  * @author Randall Wood (C) 2015

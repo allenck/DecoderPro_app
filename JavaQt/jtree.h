@@ -21,7 +21,7 @@ public:
 
 //class EmptySelectionModel;
 class TreeSelectionListener;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class TreeSelectionModel;
 class TreeModel;
 class JAVAQTSHARED_EXPORT JTree : public QTreeView //, public TreeSelectionListener, public TreeExpansionListener
@@ -74,7 +74,7 @@ public:
  /*public*/ /*final*/ static QString        ANCHOR_SELECTION_PATH_PROPERTY;// = "anchorSelectionPath";
  /** Bound property name for expands selected paths property
   * @since 1.3 */
- /*public*/ /*final*/ static QString        EXPANDS_SELECTED_PATHS_PROPERTY;// = "expandsSelectedPaths";PropertyChangeSupport* pcs;
+ /*public*/ /*final*/ static QString        EXPANDS_SELECTED_PATHS_PROPERTY;// = "expandsSelectedPaths";SwingPropertyChangeSupport* pcs;
 
  /*public*/ void setSelectionPath(TreePath* path);
  /*public*/ void addTreeSelectionListener(TreeSelectionListener* tsl);
@@ -114,7 +114,7 @@ private:
  TreeModel* tree;
  TreeSelectionModel* selectionModel;
  //TreeSelectionListener* _TSL; // note: only one listener supported at this time.
- PropertyChangeSupport* pcs;
+ SwingPropertyChangeSupport* pcs;
  /*private*/ static int                TEMP_STACK_SIZE;// = 11;
 
  /**

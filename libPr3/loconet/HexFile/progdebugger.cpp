@@ -1,6 +1,6 @@
 #include "progdebugger.h"
 #include "defaultprogrammermanager.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include <QTimer>
 #include "programmingmode.h"
 #include "rosterentry.h"
@@ -55,7 +55,7 @@ void ProgDebugger::common()
    */
   writeLimit = 256;
   readLimit = 256;
-  propertyChangeSupport = new PropertyChangeSupport(this);
+  propertyChangeSupport = new SwingPropertyChangeSupport(this, nullptr);
 }
 
 /*public*/ int ProgDebugger::lastWrite() { return _lastWriteVal; }
@@ -336,7 +336,7 @@ void ProgDebugger::PDRunnable3::run()
  * @param listener The PropertyChangeListener to be added
  */
 /*public*/ void ProgDebugger::addPropertyChangeListener(PropertyChangeListener* listener) {
-    propertyChangeSupport->PropertyChangeSupport::addPropertyChangeListener(listener);
+    propertyChangeSupport->SwingPropertyChangeSupport::addPropertyChangeListener(listener);
 }
 
 /*public*/ void ProgDebugger::removePropertyChangeListener(PropertyChangeListener* listener) {

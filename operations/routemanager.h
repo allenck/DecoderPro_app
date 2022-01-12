@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QHash>
 #include "logger.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include <QtXml>
 #include "appslib_global.h"
 #include "instancemanagerautodefault.h"
@@ -14,16 +14,16 @@ class JComboBox;
 namespace Operations {
  class RouteLocation;
  class Route;
- class APPSLIBSHARED_EXPORT RouteManager : public PropertyChangeSupport, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize
+ class APPSLIBSHARED_EXPORT RouteManager : public SwingPropertyChangeSupport, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize
  {
   Q_OBJECT
   Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize)
  public:
   Q_INVOKABLE explicit RouteManager(QObject *parent = 0);
    ~RouteManager() {}
-   RouteManager(const RouteManager&) : PropertyChangeSupport(nullptr) {}
+   RouteManager(const RouteManager&) : SwingPropertyChangeSupport(nullptr, nullptr) {}
   /*public*/ static /*final*/ QString LISTLENGTH_CHANGED_PROPERTY;// = "routesListLengthChanged"; // NOI18N
-  //PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+  //SwingPropertyChangeSupport* pcs;// = new SwingPropertyChangeSupport(this, nullptr);
   /*public*/ void dispose();
   /*public*/ Route* getRouteByName(QString name);
   /*public*/ Route* getRouteById(QString id);

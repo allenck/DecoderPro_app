@@ -455,7 +455,7 @@ qSort(defStrings.begin(), defStrings.end());
 /*public*/ void TurnoutTableAction::addToPanel(AbstractTableTabAction* f)
 {
  QString connectionName = turnoutManager->getMemo()->getUserName();
- if (QString(turnoutManager->metaObject()->className()).contains("ProxyTurnoutManager")) {
+ if (QString(turnoutManager->self()->metaObject()->className()).contains("ProxyTurnoutManager")) {
      connectionName = "All"; // NOI18N
  }
  initCheckBoxes();
@@ -710,7 +710,7 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
   sName=prefix+InstanceManager::turnoutManagerInstance()->typeLetter()+curAddress;
   QString testSN = prefix+"L"+curAddress;
   Light* testLight = (Light*)((ProxyLightManager*)InstanceManager::lightManagerInstance())->
-          getBySystemName(testSN);
+          AbstractProxyManager::getBySystemName(testSN);
   if (testLight != NULL)
   {
    // Address is already used as a Light
@@ -848,10 +848,10 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
         // Tab All or first time opening, use default tooltip
         connectionChoice = "TBD";
     }
-    if (QString(turnoutManager->metaObject()->className()).contains("ProxyTurnoutManager"))
+    if (QString(turnoutManager->self()->metaObject()->className()).contains("ProxyTurnoutManager"))
     {
         ProxyTurnoutManager* proxy = (ProxyTurnoutManager*) turnoutManager;
-        QList<AbstractManager*> managerList = proxy->getManagerList();
+        QList<Manager*> managerList = proxy->getManagerList();
         QString systemPrefix = ConnectionNameFromSystemName::getPrefixFromName( connectionChoice);
         for(int x = 0; x<managerList.size(); x++){
             TurnoutManager* mgr = (TurnoutManager*) managerList.at(x);
@@ -974,7 +974,7 @@ QValidator::State TTAValidator::validate(QString& s, int& pos) const
 // }
  bool validFormat = false;
  // try {
- validFormat = static_cast<LightManager*>(InstanceManager::getDefault("LightManager"))->validSystemNameFormat(prefix + "L" + value) == Manager::NameValidity::VALID;
+ validFormat = qobject_cast<LightManager*>(InstanceManager::getDefault("LightManager"))->validSystemNameFormat(prefix + "L" + value) == Manager::NameValidity::VALID;
  // } catch (jmri.JmriException e) {
  // use it for the status bar?
  // }

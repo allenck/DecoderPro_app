@@ -3,7 +3,7 @@
 
 #include "abstractmanager.h"
 #include "liblayouteditor_global.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "instancemanagerautodefault.h"
 #include "propertychangelistener.h"
 
@@ -20,8 +20,8 @@ public:
  /*public*/ Portal* getPortal(int idx);
  /*public*/ int getIndexOf(Portal* portal);
  /*public*/ int getXMLOrder()const override;
- /*public*/ QString getSystemPrefix() const override;
- /*public*/ char typeLetter() const override;
+ /*public*/ QString getSystemPrefix()  override;
+ /*public*/ QChar typeLetter() override;
  /*public*/ Portal* createNewPortal(QString sName);
  /*public*/ QString generateSystemName();
  /*public*/ Portal* getPortal(QString name);
@@ -43,7 +43,7 @@ public slots:
 private:
  /*private*/ static int _nextSName;// = 1;
  static PortalManager* _instance;// = NULL;
- /*private*/ PropertyChangeSupport* pcs = new PropertyChangeSupport(this);
+ /*private*/ SwingPropertyChangeSupport* pcs = new SwingPropertyChangeSupport(this, nullptr);
  /*private*/ QList<Portal*> _nameList =QList<Portal*>();          // stores Portal in loaded order
  /*private*/ QMap<QString, Portal*> _portalMap = QMap<QString, Portal*>(); // stores portal by current name
  /*private*/ int _nextIndex = 1;

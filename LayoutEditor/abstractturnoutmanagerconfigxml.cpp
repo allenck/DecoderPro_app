@@ -51,7 +51,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
   TurnoutOperationManagerXml* tomx = new TurnoutOperationManagerXml();
   QDomElement opElem = tomx->store((TurnoutOperationManager*)InstanceManager::getDefault("TurnoutOperationManager"));
   turnouts.appendChild(opElem);
-  QStringListIterator iter(((AbstractTurnoutManager*)tm)->getSystemNameList());
+  QStringListIterator iter(((TurnoutManager*)tm)->getSystemNameList());
 
   // don't return an element if there are not turnouts to include
   if (!iter.hasNext()) return QDomElement();
@@ -263,7 +263,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
   }
   QString userName = getUserName(elem);
   if (log->isDebugEnabled()) log->debug("create turnout: ("+sysName+")("+(userName==nullptr?"<nullptr>":userName)+")");
-  Turnout* t = (Turnout*)tm->getBySystemName(sysName);
+  Turnout* t = ((TurnoutManager*)tm)->getBySystemName(sysName);
   if (t==nullptr)
   {
    t = tm->newTurnout(sysName, userName);

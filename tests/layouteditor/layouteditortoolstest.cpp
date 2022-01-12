@@ -621,7 +621,7 @@ LayoutEditorToolsTest::LayoutEditorToolsTest(QObject *parent) : QObject(parent)
             }
             //sensors = InstanceManager.getDefault(SensorManager.class).getNamedBeanSet().stream().collect(Collectors.toList());
             sensors = QList<Sensor*>();
-            foreach (NamedBean* b, ((ProxySensorManager*)InstanceManager::getDefault("SensorManager"))->getNamedBeanSet()) {
+            foreach (NamedBean* b, ((ProxySensorManager*)InstanceManager::getDefault("SensorManager"))->AbstractProxyManager::getNamedBeanSet()) {
              sensors.append((Sensor*)b);
             }
 
@@ -660,7 +660,7 @@ LayoutEditorToolsTest::LayoutEditorToolsTest(QObject *parent) : QObject(parent)
              b->dispose();
             }
             //sensors.stream().forEach(Sensor::dispose);
-            foreach (NamedBean* b, ((ProxySensorManager*)InstanceManager::getDefault("SensorManager"))->getNamedBeanSet())
+            foreach (NamedBean* b, ((ProxySensorManager*)InstanceManager::getDefault("SensorManager"))->AbstractProxyManager::getNamedBeanSet())
             {
              b->dispose();
             }

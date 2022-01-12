@@ -6,7 +6,7 @@
 #include "namedbeanhandle.h"
 
 class AllocationRequest;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class Transit;
 class RosterEntry;
 class Block;
@@ -222,7 +222,7 @@ private:
  bool _holdAllocation;// = false;
 
  // Property Change Support
- PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+ SwingPropertyChangeSupport* pcs;// = new SwingPropertyChangeSupport(this, nullptr);
  /*private*/ QString getSectionName(Section* sc);
  /*private*/ void refreshPanel();
  /*private*/ bool connected(Block* b1, Block* b2);

@@ -1284,9 +1284,9 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t,  LayoutEdit
  Turnout* turnout = nullptr;
  if (!turnoutName.isNull() && !turnoutName.isEmpty())
  {
-  Manager* mgr = InstanceManager::turnoutManagerInstance();
+  Manager* mgr = (Manager*)InstanceManager::turnoutManagerInstance();
   QStringList sysNames = mgr->getSystemNameList();
-   turnout = ((ProxyTurnoutManager*)mgr)->getTurnout(turnoutName);
+   turnout = ((TurnoutManager*)mgr)->getTurnout(turnoutName);
  }
  if (turnout!=nullptr)
  {
@@ -2410,20 +2410,20 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t,  LayoutEdit
 #if 0
  if (namedTurnout!=nullptr)
  {
-  //namedTurnout->getBean()->PropertyChangeSupport::addPropertyChangeListener(mTurnoutListener =
+  //namedTurnout->getBean()->SwingPropertyChangeSupport::addPropertyChangeListener(mTurnoutListener =
 //          new PropertyChangeListener(), namedTurnout->getName(),"Layout Editor Turnout");
 //        {
 //            /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
 //                layoutEditor.redrawPanel();
 //            }
 //        }, namedTurnout.getName(), "Layout Editor Turnout");
-  namedTurnout->getBean()->PropertyChangeSupport::addPropertyChangeListener(mTurnoutListener = new MTurnoutListener(this), namedTurnout->getName(), "Layout Editor Turnout");
+  namedTurnout->getBean()->SwingPropertyChangeSupport::addPropertyChangeListener(mTurnoutListener = new MTurnoutListener(this), namedTurnout->getName(), "Layout Editor Turnout");
 //  AbstractTurnout* t = (AbstractTurnout*)namedTurnout->getBean();
 //  connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(redrawPanel()));
  }
  if (secondNamedTurnout!=nullptr)
  {
-  secondNamedTurnout->getBean()->PropertyChangeSupport::addPropertyChangeListener(mTurnoutListener, secondNamedTurnout->getName(), "Layout Editor Turnout");
+  secondNamedTurnout->getBean()->SwingPropertyChangeSupport::addPropertyChangeListener(mTurnoutListener, secondNamedTurnout->getName(), "Layout Editor Turnout");
 //  connect(secondNamedTurnout->getBean()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(redrawPanel()));
  }
 #else
@@ -2450,7 +2450,7 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t,  LayoutEdit
 //             namedTurnout.getName(),
 //             "Layout Editor Turnout"
 //     );
-  //namedTurnout->getBean()->PropertyChangeSupport::addPropertyChangeListener(mTurnoutListener = new MTurnoutListener(this), namedTurnout->getName(),  "Layout Editor Turnout");
+  //namedTurnout->getBean()->SwingPropertyChangeSupport::addPropertyChangeListener(mTurnoutListener = new MTurnoutListener(this), namedTurnout->getName(),  "Layout Editor Turnout");
   namedTurnout->getBean()->addPropertyChangeListener((PropertyChangeListener*)this);
  }
  if (secondNamedTurnout != nullptr) {

@@ -166,7 +166,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
 /*static*/ QString WhereUsedCollectors::checkBlocks(NamedBean* bean) {
     QString sb; // = new StringBuilder();
     //InstanceManager.getDefault(BlockManager.class).getNamedBeanSet().forEach((block) -> {
-    foreach(NamedBean* nb, ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getNamedBeanSet())
+    foreach(NamedBean* nb, ((Manager*)InstanceManager::getDefault("BlockManager"))->getNamedBeanSet())
     {
      Block* block = (Block*)nb;
         //block.getUsageReport(bean).forEach((report) -> {

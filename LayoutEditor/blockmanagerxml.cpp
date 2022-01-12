@@ -4,7 +4,7 @@
 #include "instancemanager.h"
 #include "level.h"
 #include "path.h"
-
+#include "abstractblockmanager.h"
 BlockManagerXml::BlockManagerXml(QObject *parent) :
     AbstractMemoryManagerConfigXML(parent)
 {
@@ -59,7 +59,7 @@ BlockManagerXml::~BlockManagerXml()
  BlockManager* bm = (BlockManager*) o;
  if (bm!=NULL)
  {
-  QStringListIterator iter( bm->getSystemNameList());
+  QStringListIterator iter( ((AbstractManager*)bm)->getSystemNameList());
 
   // don't return an element if there are not blocks to include
   if (!iter.hasNext()) return QDomElement();
@@ -71,7 +71,7 @@ BlockManagerXml::~BlockManagerXml()
   {
    QString sname = iter.next();
    if (sname==NULL) log->error("System name NULL during store");
-   Block* b = (Block*)bm->getBySystemName(sname);
+   Block* b = (Block*)((AbstractManager*)bm)->getBySystemName(sname);
    // the following NULL check is to catch a NULL pointer exception that sometimes was found to happen
    if (b==NULL) log->error("Null block during store - sname = "+sname);
    QDomElement elem = doc.createElement("block");
@@ -97,12 +97,12 @@ BlockManagerXml::~BlockManagerXml()
   }
 
   // write out again with contents
-  iter = QStringListIterator(bm->getSystemNameList());
+  iter = QStringListIterator(((AbstractManager*)bm)->getSystemNameList());
   while (iter.hasNext())
   {
    QString sname = iter.next();
    if (sname==NULL) log->error("System name NULL during store");
-   Block* b = (Block*)bm->getBySystemName(sname);
+   Block* b = (Block*)((AbstractManager*)bm)->getBySystemName(sname);
    // the following NULL check is to catch a NULL pointer exception that sometimes was found to happen
    if (b==NULL)
    {
@@ -254,7 +254,7 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
  if (log->isDebugEnabled())
   log->debug("Found "+QString::number(list.size())+" objects");
 
- ((BlockManager*)InstanceManager::getDefault("BlockManager"))->setPropertyChangesSilenced("beans", true);
+ ((AbstractBlockManager*)InstanceManager::getDefault("BlockManager"))->setPropertyChangesSilenced("beans", true);
  // first pass don't load full contents (just create all the blocks)
  for (int i=0; i<list.size(); i++)
  {
@@ -268,7 +268,7 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
   QDomElement block = list.at(i).toElement();
      loadBlock(block, true);
  }
- ((BlockManager*)InstanceManager::getDefault("BlockManager"))->setPropertyChangesSilenced("beans", false);
+ ((AbstractBlockManager*)InstanceManager::getDefault("BlockManager"))->setPropertyChangesSilenced("beans", false);
 
  return result;
 }

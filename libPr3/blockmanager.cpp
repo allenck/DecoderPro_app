@@ -9,36 +9,6 @@
 #include "limits.h"
 #include "loggerfactory.h"
 
-///*static*/ BlockManager* BlockManager::_instance = NULL;
-
-BlockManager::BlockManager(QObject *parent) :
-    AbstractBlockManager(parent)
-{
- setObjectName("BlockManager");
- setProperty("JavaClassName", "jmri.BlockManager");
- setProperty("InstanceManagerAutoDefault", "true");
-
- registerSelf();
- saveBlockPath = true;
- lastAutoBlockRef = 0;
- defaultSpeed = "Normal";
- paddedNumber = new DecimalFormat("0000");
-
- static_cast<SensorManager*>(InstanceManager::getDefault("SensorManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
- //connect(InstanceManager::sensorManagerInstance()->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
-
-static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
- //connect(static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
- //InstanceManager.getList(PowerManager.class).forEach((pm) -> {
- foreach(QObject* pm, *InstanceManager::getList("PowerManager"))
- {
-     //static_cast<PowerManager*>(pm)->PropertyChangeSupport::addPropertyChangeListener(this);
-  //connect(static_cast<PowerManager*>(pm)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
- }//);
- powerManagerChangeName = InstanceManager::getListPropertyName("PowerManager");
- InstanceManager::addPropertyChangeListener((PropertyChangeListener*)this);
- //connect(InstanceManager::getDefault(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-}
 /**
  * Basic Implementation of a BlockManager.
  * <P>
@@ -67,16 +37,43 @@ static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->V
 ///*public*/ class BlockManager extends AbstractManager
 //    implements java.beans.PropertyChangeListener {
 
-//    /*public*/ BlockManager() {
-//        super();
-//    }
+BlockManager::BlockManager(QObject *parent) :
+    AbstractManager(parent)
+{
+ setObjectName("BlockManager");
+ setProperty("JavaClassName", "jmri.BlockManager");
+ setProperty("InstanceManagerAutoDefault", "true");
+
+ registerSelf();
+ saveBlockPath = true;
+ lastAutoBlockRef = 0;
+ defaultSpeed = "Normal";
+ paddedNumber = new DecimalFormat("0000");
+
+ ((SensorManager*)InstanceManager::getDefault("SensorManager"))->addVetoableChangeListener(this);
+ ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->addVetoableChangeListener(this);
+ //InstanceManager.getList("PowerManager").forEach(pm -> pm.addPropertyChangeListener(this));
+ for(QObject* obj : *InstanceManager::getList("PowerManager"))
+ {
+  ((PowerManager*)obj)->addPropertyChangeListener(this);
+ }
+ powerManagerChangeName = InstanceManager::getListPropertyName("PowerManager");
+ InstanceManager::addPropertyChangeListener(this);
+ ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->_register(shutDownTask);
+}
+
+    //@Override
+    /*public*/ void BlockManager::dispose() {
+        AbstractManager::dispose();
+//        ((BlockManager*)InstanceManager::getDefault("BlockManager"))->deregister(shutDownTask);
+    }
 
     /*public*/ int BlockManager::getXMLOrder()const{
         return Manager::BLOCKS;
     }
 
-    /*public*/ QString BlockManager::getSystemPrefix()const { return "I"; }
-    /*public*/ char BlockManager::typeLetter() const { return 'B'; }
+    /*public*/ QString BlockManager::getSystemPrefix() { return "I"; }
+    /*public*/ QChar BlockManager::typeLetter()   { return 'B'; }
 
     //@Override
     /*public*/ QString BlockManager::getNamedBeanClass()const {
@@ -99,16 +96,16 @@ static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->V
  *   Returns NULL if a Block with the same systemName or userName
  *       already exists, or if there is trouble creating a new Block.
  */
-/*public*/ Block* BlockManager::createNewBlock(QString systemName, QString userName) const
+/*public*/ Block* BlockManager::createNewBlock(QString systemName, QString userName)
 {
  // Check that Block does not already exist
  Block* r ;
  if (!userName.isNull() && !userName.isEmpty())
  {
-  r = (Block*)getByUserName(userName);
+  r = (Block*)AbstractManager::getByUserName(userName);
   if (r!=NULL) return NULL;
  }
- r = (Block*)getBySystemName(systemName);
+ r = (Block*)AbstractManager::getBySystemName(systemName);
  if (r!=NULL) return NULL;
  // Block does not exist, create a new Block
  QString sName = systemName.toUpper();
@@ -116,7 +113,7 @@ static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->V
 
  updateAutoNumber(systemName);
  // save in the maps
- Register(r);
+ AbstractManager::Register(r);
  try
  {
   r->setBlockSpeed("Global");
@@ -128,11 +125,11 @@ static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->V
  return r;
 }
 
-/*public*/ Block* BlockManager::createNewBlock(QString userName) const{
+/*public*/ Block* BlockManager::createNewBlock(QString userName) {
  return createNewBlock(getAutoSystemName(), userName);
 }
 
-/*public*/ Block* BlockManager::provideBlock(QString name) const  {
+/*public*/ Block* BlockManager::provideBlock(QString name)  {
  if (name.isEmpty()) {
      throw new IllegalArgumentException("Could not create block, no name supplied");
  }
@@ -141,7 +138,7 @@ static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->V
      return b;
  }
 
- if (name.startsWith(getSystemNamePrefix())) {
+ if (name.startsWith(AbstractManager::getSystemNamePrefix())) {
      b = createNewBlock(name, QString());
  } else {
      b = createNewBlock(name);
@@ -158,10 +155,10 @@ static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->V
  *      name is a User Name.  If this fails looks up assuming
  *      that name is a System Name.  If both fail, returns NULL.
  */
-/*public*/ Block* BlockManager::getBlock(QString name) const{
-    Block* r = (Block*)getByUserName(name);
+/*public*/ Block* BlockManager::getBlock(QString name) {
+    Block* r = (Block*)AbstractManager::getByUserName(name);
     if (r!=NULL) return r;
-    return (Block*)getBySystemName(name);
+    return (Block*)AbstractManager::getBySystemName(name);
 }
 #if 0
 /*public*/ Block *BlockManager::getBySystemName(QString name) const {
@@ -177,10 +174,10 @@ static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->V
 {
  // First try to find it in the user list.
  // If that fails, look it up in the system list
- Block* retv = (Block*)this->getByUserName(key);
+ Block* retv = (Block*)this->AbstractManager::getByUserName(key);
  if (retv == NULL)
  {
-     retv = (Block*)this->getBySystemName(key);
+     retv = (Block*)this->AbstractManager::getBySystemName(key);
  }
  // If it's not in the system list, go ahead and return NULL
  return (retv);
@@ -247,7 +244,7 @@ static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->V
 /*public*/ QList<Block*> BlockManager::getBlocksOccupiedByRosterEntry(/*@Nonnull*/ RosterEntry* re) {
     QList<Block*> blockList = QList<Block*>();
     //getNamedBeanSet().stream().forEach(b ->
-    foreach(NamedBean* b, getNamedBeanSet())
+    foreach(NamedBean* b, AbstractManager::getNamedBeanSet())
     {
         if (b != nullptr) {
             QVariant val = ((Block*)b)->getValue();
@@ -267,11 +264,11 @@ QCompleter* BlockManager::getCompleter(QString text)
 {
  if(text.length()>2)
  {
-  QStringList nameList = getSystemNameList();
+  QStringList nameList = AbstractManager::getSystemNameList();
   QStringList completerList;
   foreach(QString systemName, nameList)
   {
-   Block* b = (Block*)getBySystemName(systemName);
+   Block* b = (Block*)AbstractManager::getBySystemName(systemName);
    if(b->getUserName().startsWith(text))
     completerList.append(b->getUserName());
   }
@@ -350,7 +347,34 @@ QCompleter* BlockManager::getCompleter(QString text)
 //}
 
 //@Override
-/*public*/ Block* BlockManager::provide(QString name) const /*throw (IllegalArgumentException)*/ {
+/*public*/ NamedBean *BlockManager::provide(QString name)  /*throw (IllegalArgumentException)*/ {
     return provideBlock(name);
 }
+#if 1
+// try to resolve these:
+/*public*/ SystemConnectionMemo*  BlockManager::getMemo()
+{
+ return AbstractManager::getMemo();
+}
+/*public*/ NamedBean* BlockManager::getNamedBean(QString s)
+{
+ return AbstractManager::getNamedBean(s);
+}
+/*public*/ void BlockManager::Register(NamedBean* b)
+{
+ AbstractManager::Register(b);
+}
+/*public*/ void BlockManager::deregister(NamedBean* b)
+{
+ AbstractManager::deregister(b);
+}
+/*public*/ void BlockManager::addDataListener(Manager::ManagerDataListener* l)
+{
+ AbstractManager::addDataListener(l);
+}
+/*public*/ void BlockManager::removeDataListener(Manager::ManagerDataListener* l)
+{
+ AbstractManager::removeDataListener(l);
+}
+#endif
 /*private*/ /*static*/ /*final*/ Logger* BlockManager::log = LoggerFactory::getLogger("BlockManager");

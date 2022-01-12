@@ -13,7 +13,7 @@ ConnectionStatus::ConnectionStatus(QObject *parent) :
     QObject(parent)
 {
  log = new Logger("ConnectionStatus");
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
  setObjectName("ConnectionStatus");
  portStatus = QHash<ConnectionKey*, QString>();
 
@@ -158,7 +158,7 @@ ConnectionStatus::ConnectionStatus(QObject *parent) :
 
 /*public*/ /*synchronized*/ void ConnectionStatus::addPropertyChangeListener(PropertyChangeListener* l)
 {
- pcs->PropertyChangeSupport::addPropertyChangeListener(l);
+ pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
  //connect(pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l->self(), SLOT(propertyChange(PropertyChangeEvent*)));
 }
 

@@ -2,7 +2,7 @@
 #include "treemodel.h"
 #include "treeselectionmodel.h"
 #include "treeselectionevent.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "defaultmutabletreenode.h"
 #include "vptr.h"
 #include <QDebug>
@@ -75,7 +75,7 @@ void JTree::common()
  selectionModel = new DefaultTreeSelectionModel();
  tree = NULL;
  rootVisible = true;
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
  expandedStack =  QStack<QStack<TreePath*> >();
  expandedState = QHash<TreePath*, bool>();
  listenerList = new EventListenerList();

@@ -8,7 +8,7 @@ class QDomDocument;
 class QDomElement;
 class Logger;
 class QStringList;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class PropertyChangeEvent;
 namespace Operations
 {
@@ -17,7 +17,7 @@ namespace Operations
   Q_OBJECT
  public:
   /*public*/ TrainSchedule(QString id, QString name, QObject *parent = 0);
-  PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
+  SwingPropertyChangeSupport* pcs;// = new java.beans.SwingPropertyChangeSupport(this,this);
   /*public*/ QString NONE;// = "";
   /*public*/ static /*final*/ QString NAME_CHANGED_PROPERTY;// = "trainScheduleName"; // NOI18N
   /*public*/ static /*final*/ QString SCHEDULE_CHANGED_PROPERTY;// = "trainScheduleChanged"; // NOI18N

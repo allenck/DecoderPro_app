@@ -236,7 +236,7 @@ public slots:
 private:
  QHash<QString,QObjectList*> managerLists;
  /*private*/ /*final*/ QMap</*Class<?>*/QString, QObject*> initializers;// = new HashMap<>();
- PropertyChangeSupport* pcs;
+ SwingPropertyChangeSupport* pcs;
  /*private*/ /*final*/ QMap</*Class<?>*/QString, StateHolder*> initState;// = new HashMap<>();
  //Logger* log;
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("InstanceManager");

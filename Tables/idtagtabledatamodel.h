@@ -17,7 +17,7 @@ class IdTagTableDataModel : public BeanTableDataModel
   };
   explicit IdTagTableDataModel(Manager/*<IdTag>*/* mgr, QObject *parent = nullptr);
   /*public*/ QString getValue(QString name) override;
-  /*public*/ /*Manager<IdTag>*/AbstractManager* getManager()override;
+  /*public*/ /*Manager<IdTag>*/Manager *getManager()override;
   /*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString name) const override;
   /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString name) override;
   /*public*/ void clickOn(NamedBean* t)override;
@@ -36,7 +36,7 @@ class IdTagTableDataModel : public BeanTableDataModel
   /*private*/ IdTagManager* tagManager;
 
  protected:
-  /*protected*/ /*final*/ void setManager(/*Manager<IdTag>*/AbstractManager* mgr) override;
+  /*protected*/ /*final*/ void setManager(/*Manager<IdTag>*/Manager *mgr) override;
   /*protected*/ bool matchPropertyName(PropertyChangeEvent* e) override;
   /*protected*/ QString getMasterClassName() override;
 

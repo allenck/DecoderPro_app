@@ -90,7 +90,7 @@
          cbhd->_mSIDI_RightLeftTrafficSignals->append(ctcManager->getNBHSignal("Left-M"));
          cbhd->_mSIDI_RightLeftTrafficSignals->append(ctcManager->getNBHSignal("Left-S"));
          ProxySensorManager* sensorManager = (ProxySensorManager*)InstanceManager::sensorManagerInstance();
-         QList<NamedBean*>* list = sensorManager->getNamedBeanList();
+         QList<NamedBean*>* list = sensorManager->AbstractProxyManager::getNamedBeanList();
          NamedBeanHandleManager* namedBeanHandleManager = (NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager");
          foreach (NamedBean* b, *list) {
           Sensor* s = (Sensor*)b;

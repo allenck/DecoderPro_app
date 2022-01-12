@@ -11,6 +11,7 @@ public:
  /*public*/ /*Class<? extends StartupModel>*/QString getModelClass();
  /*public*/ StartupModel* newModel();
  /*public*/ QString getDescription();
+  QObject* self() override {return (QObject*)this;}
 
 protected:
  //@Override

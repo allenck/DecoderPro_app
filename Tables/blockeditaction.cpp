@@ -72,7 +72,7 @@ BlockEditAction::BlockEditAction(QObject *parent) :
 }
 
 /*public*/ NamedBean* BlockEditAction::getByUserName(QString name) {
- return (NamedBean*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->getByUserName(name);
+ return (NamedBean*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getByUserName(name);
 }
 
 

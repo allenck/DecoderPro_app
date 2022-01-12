@@ -7,7 +7,7 @@ namespace Operations {
   *
   * @author Daniel Boudreau Copyright (C) 2021
   */
- // /*public*/  abstract class RollingStockGroupManager extends PropertyChangeSupport {
+ // /*public*/  abstract class RollingStockGroupManager extends SwingPropertyChangeSupport {
 
  /*public*/  /*static*/ /*final*/ QString RollingStockGroupManager::NONE = "";
 
@@ -15,7 +15,7 @@ namespace Operations {
  /*public*/  /*static*/ /*final*/ QString RollingStockGroupManager::LISTLENGTH_CHANGED_PROPERTY = "GroupListLengthChanged"; // NOI18N
 
  /*public*/  RollingStockGroupManager::RollingStockGroupManager(QObject *parent )
-  : PropertyChangeSupport(this, parent) {
+  : SwingPropertyChangeSupport(this, parent) {
  }
 
  /**

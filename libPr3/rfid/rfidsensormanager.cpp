@@ -37,7 +37,7 @@ RfidSensorManager::RfidSensorManager(QObject *parent) :
 //@Override
 /*public*/ void RfidSensorManager::dispose() {
     //super.dispose();
- AbstractSensorManager::dispose();
+ dispose();
 }
 
 //    /*public*/ Sensor createNewSensor(String systemName, String userName) {

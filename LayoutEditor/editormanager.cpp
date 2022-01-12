@@ -109,7 +109,7 @@ void EditorManager::notifyStoreNeeded() {
 //    if(it)
 //    {
 //        fireIndexedPropertyChange(EDITORS, set.size(), QVariant(), VPtr<Editor>::asQVariant(editor));
-//        editor->PropertyChangeSupport::addPropertyChangeListener(TITLE, this);
+//        editor->SwingPropertyChangeSupport::addPropertyChangeListener(TITLE, this);
 //    }
 }
 

@@ -33,7 +33,7 @@
         //pane->initComponents(memo);
         lncvdm = memo->getLncvDevicesManager();
         _roster = Roster::getDefault();
-        lncvdm->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
+        lncvdm->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
     }
 
     /*public*/ void LncvProgTableModel::initTable(JTable* lncvModulesTable) {

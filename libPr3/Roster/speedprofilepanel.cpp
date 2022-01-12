@@ -849,7 +849,7 @@ BlockSensorComboBox::BlockSensorComboBox(QWidget* parent) : QComboBox(parent)
 }
 Sensor* BlockSensorComboBox::getNamedBean()
 {
- return ((ProxySensorManager*) InstanceManager::sensorManagerInstance())->getBySystemName(this->currentText());
+ return (Sensor*)((ProxySensorManager*) InstanceManager::sensorManagerInstance())->AbstractProxyManager::getBySystemName(this->currentText());
 }
 LayoutBlock* BlockSensorComboBox::getBlock()
 {

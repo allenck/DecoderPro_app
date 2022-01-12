@@ -93,7 +93,7 @@ BlockTableAction::BlockTableAction(QObject *parent) :
 //@Nonnull
 //@Override
 /*protected*/ Manager/*<Block>*/* BlockTableAction::getManager() {
-    return (BlockManager*)InstanceManager::getDefault("BlockManager");
+    return (Manager*)InstanceManager::getDefault("BlockManager");
 }
 #if 0
 /*public*/ BlockTableDataModel::BlockTableDataModel(QCheckBox* inchBox, BlockTableAction* blockTableAction)
@@ -107,7 +107,7 @@ BlockTableAction::BlockTableAction(QObject *parent) :
  beanTypeChar = 'S'; // for Sensor
  onIconPath = rootPath + beanTypeChar + "-on-s.png";
  offIconPath = rootPath + beanTypeChar + "-off-s.png";
- ((BlockManager*)InstanceManager::getDefault("BlockManager"))->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
+ ((BlockManager*)InstanceManager::getDefault("BlockManager"))->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
 
 
  loadIcons();
@@ -680,8 +680,8 @@ BlockTableAction::BlockTableAction(QObject *parent) :
  setColumnToHoldButton(table, EDITCOL);
  setColumnToHoldButton(table, DELETECOL);
 
- InstanceManager::sensorManagerInstance()->PropertyChangeSupport::addPropertyChangeListener(/*QPointer<PropertyChangeListener>*/((PropertyChangeListener*)this));
- ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
+ InstanceManager::sensorManagerInstance()->SwingPropertyChangeSupport::addPropertyChangeListener(/*QPointer<PropertyChangeListener>*/((PropertyChangeListener*)this));
+ ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
  configStateColumn(table);
  BeanTableDataModel::configureTable(table);
 }
@@ -1024,7 +1024,7 @@ void BlockTableAction::okPressed(JActionEvent* /*e*/)
  QString system = "";
 
  if (!_autoSystemNameCheckBox->isChecked()) {
-     system = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->makeSystemName(sysName->text());
+     system = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::makeSystemName(sysName->text());
  }
  QString sName = system; // keep result separate to prevent recursive manipulation
  // initial check for empty entry using the raw name
@@ -1050,7 +1050,7 @@ void BlockTableAction::okPressed(JActionEvent* /*e*/)
     while (true) {
      system = nextName(system);
      // log.warn("Trying " + system);
-     Block* blk = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBySystemName(system);
+     Block* blk = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getBySystemName(system);
      if (blk == nullptr) {
          sName = system;
          break;
@@ -1064,7 +1064,7 @@ void BlockTableAction::okPressed(JActionEvent* /*e*/)
     {
      user = nextName(user);
      //log.warn("Trying " + user);
-     Block* blk = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->getByUserName(user);
+     Block* blk = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getByUserName(user);
      if (blk == nullptr) {
          uName = user;
          break;

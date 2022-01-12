@@ -2,7 +2,7 @@
 #define LOCATION_H
 
 #include <QObject>
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include <QPoint>
 #include "physicallocation.h"
 #include <QtXml>
@@ -16,15 +16,15 @@ namespace Operations {
  class RollingStock;
  class Pool;
  class Track;
- class APPSLIBSHARED_EXPORT Location : public PropertyChangeSupport, public PropertyChangeListener
+ class APPSLIBSHARED_EXPORT Location : public SwingPropertyChangeSupport, public PropertyChangeListener
  {
   Q_OBJECT
   Q_INTERFACES(PropertyChangeListener)
  public:
-  explicit Location(QObject *parent = 0) : PropertyChangeSupport(this, parent){}
+  explicit Location(QObject *parent = 0) : SwingPropertyChangeSupport(this, parent){}
   /*public*/ Location(QString id, QString name,QObject *parent = 0);
   ~Location() {}
-  Location(const Location&) : PropertyChangeSupport(this, nullptr){}
+  Location(const Location&) : SwingPropertyChangeSupport(this, nullptr){}
   /*public*/ static /*final*/ QString NONE;// = "";
   /*public*/ static /*final*/ int NORMAL; //=1; // types of track allowed at this location
   /*public*/ static /*final*/ int STAGING; //=2; // staging only

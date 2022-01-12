@@ -8,7 +8,7 @@ class JActionEvent;
 class JTextField;
 class QPushButton;
 class QLabel;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 namespace Operations
 {
  class CarManager;

@@ -3,7 +3,7 @@
 #include "abstractpowermanager.h"
 #include "internalsystemconnectionmemo.h"
 
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class DefaultPowerManager : public AbstractPowerManager
 {
 public:

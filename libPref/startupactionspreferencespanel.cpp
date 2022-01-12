@@ -49,7 +49,7 @@ bool compareItems(QObject* o1, QObject* o2)
  foreach(StartupModelFactory* factory, factories->values())
  {
   QAction* item = new QAction(factory->getActionText(),this);
-  mapper->setMapping(item, factory);
+  mapper->setMapping(item, factory->self());
 //        item.addActionListener((ActionEvent e) -> {
 //            StartupModel model = factory.newModel();
 //            factory.editModel(model, this->getTopLevelAncestor());

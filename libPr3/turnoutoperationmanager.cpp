@@ -14,7 +14,7 @@ TurnoutOperationManager::TurnoutOperationManager(QObject *parent) :
 // log->setDebugEnabled(true);
  turnoutOperations = new QMap<QString,TurnoutOperation*>();
  operationTypes = new QLinkedList<TurnoutOperation*>(); // array of the defining instances of each class, held in order of appearance
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
  setProperty("InstanceManagerAutoDefault", "yes");
 
 }
@@ -336,7 +336,7 @@ TurnoutOperationManager::TurnoutOperationManager(QObject *parent) :
  */
 /*public synchronized*/ void TurnoutOperationManager::addPropertyChangeListener(PropertyChangeListener* l)
 {
- pcs->PropertyChangeSupport::addPropertyChangeListener(l);
+ pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 }
 /*public synchronized */void TurnoutOperationManager::removePropertyChangeListener(PropertyChangeListener* l)
 {

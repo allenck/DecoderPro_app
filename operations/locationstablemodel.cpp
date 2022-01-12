@@ -62,7 +62,7 @@ namespace Operations
      }
      // and add them back in
      foreach (Location* loc, locationsList) {
-      loc->PropertyChangeSupport::addPropertyChangeListener(this);
+      loc->SwingPropertyChangeSupport::addPropertyChangeListener(this);
      }
  }
 

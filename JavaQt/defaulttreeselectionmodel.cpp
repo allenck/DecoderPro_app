@@ -1,6 +1,6 @@
 #include "defaulttreeselectionmodel.h"
 #include <QHash>
-#include <propertychangesupport.h>
+#include "swingpropertychangesupport.h"
 #include "bitset.h"
 #include <rowmapper.h>
 #include "eventlistenerlist.h"
@@ -786,9 +786,9 @@
 /*public*/ /*synchronized*/ void DefaultTreeSelectionModel::addPropertyChangeListener(
                             PropertyChangeListener* listener) {
     if (changeSupport == nullptr) {
-        changeSupport = new PropertyChangeSupport(this);
+        changeSupport = new SwingPropertyChangeSupport(this, nullptr);
     }
-    changeSupport->PropertyChangeSupport::addPropertyChangeListener(listener);
+    changeSupport->SwingPropertyChangeSupport::addPropertyChangeListener(listener);
 }
 
 /**

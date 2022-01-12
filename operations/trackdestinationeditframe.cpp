@@ -160,7 +160,7 @@ namespace Operations
 
      // load fields and enable buttons
      if (_track != NULL) {
-      _track->PropertyChangeSupport::addPropertyChangeListener(this);
+      _track->SwingPropertyChangeSupport::addPropertyChangeListener(this);
          trackName->setText(_track->getName());
          enableButtons(true);
      } else {
@@ -169,7 +169,7 @@ namespace Operations
 
      updateDestinations();
 
-     //locationManager->PropertyChangeSupport::addPropertyChangeListener(this);
+     //locationManager->SwingPropertyChangeSupport::addPropertyChangeListener(this);
      connect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      // build menu

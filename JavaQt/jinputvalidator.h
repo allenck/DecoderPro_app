@@ -3,7 +3,7 @@
 
 #include "inputverifier.h"
 #include "validation.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "jinputvalidatorpreferences.h"
 #include "border.h"
 #include "jcomponent.h"
@@ -29,7 +29,7 @@ class JInputValidator : public InputVerifier
   void common(JComponent* component, bool onInput, bool isVerifying, /*@Nonnull*/ JInputValidatorPreferences* preferences);
   /*private*/ /*final*/ Border* originalBorder = nullptr;
   /*private*/ QString originalToolTipText = "";
-  /*private*/ /*final*/ PropertyChangeSupport* pcs = new PropertyChangeSupport(this);
+  /*private*/ /*final*/ SwingPropertyChangeSupport* pcs = new SwingPropertyChangeSupport(this, nullptr);
   /*private*/ Validation* validation = nullptr;
   /*private*/ Validation* oldValidation = nullptr;
   /*private*/ /*final*/ JInputValidatorPreferences* preferences = nullptr;
@@ -39,7 +39,7 @@ class JInputValidator : public InputVerifier
 
  protected:
   /*protected*/ /*final*/ QString trimHtmlTags(/*@Nullable */QString string);
-  /*protected*/ PropertyChangeSupport* getPropertyChangeSupport();
+  /*protected*/ SwingPropertyChangeSupport* getSwingPropertyChangeSupport();
   /*protected*/ JComponent* getComponent();
   virtual /*protected*/ /*abstract*/ Validation* getValidation(JComponent* input, JInputValidatorPreferences* preferences) =0;
 

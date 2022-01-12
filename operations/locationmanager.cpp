@@ -4,7 +4,7 @@
 #include "location.h"
 #include "logger.h"
 #include "xml.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "jcombobox.h"
 #include "rosterentry.h"
 #include "track.h"
@@ -32,7 +32,7 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString LocationManager::LISTLENGTH_CHANGED_PROPERTY = "locationsListLength"; // NOI18N
 
  /*public*/ LocationManager::LocationManager(QObject *parent) :
-PropertyChangeSupport(this, parent)
+SwingPropertyChangeSupport(this, parent)
  {
    setProperty("InstanceManagerAutoDefault", "true");
    setProperty("InstanceManagerAutoInitialize", "true");

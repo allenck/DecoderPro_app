@@ -21,13 +21,13 @@ RpsReporterManager::RpsReporterManager(RpsSystemConnectionMemo* memo, QObject* p
  * {@inheritDoc}
  */
 //@Override
-/*public*/ SystemConnectionMemo *RpsReporterManager::getMemo() const {
+/*public*/ SystemConnectionMemo *RpsReporterManager::getMemo() {
     return  memo;
 }
 
 
 //@Override
-/*protected*/ Reporter* RpsReporterManager::createNewReporter(QString systemName, QString userName) const {
+/*protected*/ Reporter* RpsReporterManager::createNewReporter(QString systemName, QString userName)  {
     RpsReporter* r = new RpsReporter(systemName, userName);
     //Distributor::instance()->addMeasurementListener(r);
     connect(Distributor::instance(), SIGNAL(newMeasurement(Measurement*)), r, SLOT(notify(Measurement*)));
@@ -36,11 +36,11 @@ RpsReporterManager::RpsReporterManager(RpsSystemConnectionMemo* memo, QObject* p
 
 //@Override
 /*public*/ QString RpsReporterManager::createSystemName(QString curAddress, QString prefix) /*throw (JmriException)*/ {
-    if (prefix != (getSystemPrefix())) {
+    if (prefix != (AbstractManager::getSystemPrefix())) {
         log->warn("prefix does not match memo.prefix");
         throw new JmriException("Unable to convert " + curAddress + ", Prefix does not match");
     }
-    QString sys = getSystemPrefix() + typeLetter() + curAddress;
+    QString sys = AbstractManager::getSystemPrefix() + typeLetter() + curAddress;
     // first, check validity
     try {
         validSystemNameFormat(sys);
@@ -56,7 +56,7 @@ RpsReporterManager::RpsReporterManager(RpsSystemConnectionMemo* memo, QObject* p
 //@Override
 //@Nonnull
 /*public*/ QString RpsReporterManager::validateSystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) {
-    return ((RpsSystemConnectionMemo*) getMemo())->validateSystemNameFormat(name, this, locale);
+    return ((RpsSystemConnectionMemo*) getMemo())->validateSystemNameFormat(name, (AbstractManager*)this, locale);
 }
 
 /**

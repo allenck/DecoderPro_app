@@ -11,7 +11,7 @@
 #include "control.h"
 #include "jcombobox.h"
 #include "vptr.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "instancemanager.h"
 #include "borderfactory.h"
 

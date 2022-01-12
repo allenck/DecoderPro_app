@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QMap>
 #include "propertychangelistener.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 
 class LayoutBlock;
 class LayoutEditor;
@@ -76,7 +76,7 @@ private:
     /*transient*/ PointDetails* pd = nullptr;
 
     EntryExitPairs* manager;// = InstanceManager::getDefault("EntryExitPairs");
-    PropertyChangeSupport* pcs;
+    SwingPropertyChangeSupport* pcs;
 
     //Using Object here rather than sourceSensor, working on the basis that it might
     //one day be possible to have a signal icon selectable on a panel and

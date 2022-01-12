@@ -32,6 +32,8 @@ public:
  /*public*/ StartupModelFactory* getFactories(/*Class<? extends StartupModel>*/QString model);
  /*public*/ void initialize(Profile* profile) throw (InitializationException);
 
+ QObject* self() override {return (QObject*)this;}
+
 signals:
  void propertyChange(PropertyChangeEvent *);
 

@@ -128,7 +128,7 @@ BeanItemPanel* LightEditAction::lightIntensityPanel() {
 /*private*/ QString LightEditAction::getBeanManagerSystemUserName(){
     //Manager<Light> lm = InstanceManager.getDefault(LightManager.class);
  LightManager* lm = (LightManager*)InstanceManager::getDefault("LightManager");
-    if (qobject_cast<ProxyManager*>(lm)){
+    if (qobject_cast<ProxyManager*>(lm->self())){
         ProxyLightManager* plm = (ProxyLightManager*)lm;
         for (Manager* m : plm->getManagerList()) {
             if (m->getBySystemName(bean->getSystemName())!=nullptr) {

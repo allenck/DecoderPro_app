@@ -78,7 +78,7 @@ namespace Operations
 
 
  /*public*/ Location::Location(QString id, QString name,QObject *parent)
-  : PropertyChangeSupport(this, parent) {
+  : SwingPropertyChangeSupport(this, parent) {
   common();
   if(log->isDebugEnabled()) log->debug(tr("New location (%1) id: %2").arg(name).arg(id));
   _name = name;
@@ -773,7 +773,7 @@ if (types.length() == 0) {
      setDirtyAndFirePropertyChange(TRACK_LISTLENGTH_CHANGED_PROPERTY, old, (_trackHashTable
              .size()));
      // listen for name and state changes to forward
-     //track->PropertyChangeSupport::addPropertyChangeListener(this);
+     //track->SwingPropertyChangeSupport::addPropertyChangeListener(this);
      connect(track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 
@@ -1339,9 +1339,9 @@ if (types.length() == 0) {
  }
 
  /*private*/ void Location::addPropertyChangeListeners() {
-     ((CarTypes*)InstanceManager::getDefault("CarTypes"))->PropertyChangeSupport::addPropertyChangeListener(this);
-     ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->PropertyChangeSupport::addPropertyChangeListener(this);
-     ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->PropertyChangeSupport::addPropertyChangeListener(this);
+     ((CarTypes*)InstanceManager::getDefault("CarTypes"))->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+     ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+     ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->SwingPropertyChangeSupport::addPropertyChangeListener(this);
  }
 
  /**
@@ -1350,7 +1350,7 @@ if (types.length() == 0) {
   *
   * @param e Consist XML element
   */
- /*public*/ Location::Location(QDomElement e, QObject* parent) :PropertyChangeSupport(this, parent)
+ /*public*/ Location::Location(QDomElement e, QObject* parent) :SwingPropertyChangeSupport(this, parent)
  {
   common();
   // if (log.isDebugEnabled())log->debug("ctor from element "+e);

@@ -90,7 +90,7 @@ public:
     RtBeanTableDataModel(ReporterTableAction* act);
     /*public*/ static /*final*/ int LASTREPORTCOL;// = NUMCOLUMN;
     /*public*/ QString getValue(QString name) const;
-    /*public*/ AbstractManager* getManager();
+    /*public*/ Manager *getManager();
     /*public*/ NamedBean* getBySystemName(QString name) const;
     /*public*/ NamedBean* getByUserName(QString name);
     /*public*/ void clickOn(NamedBean* t);

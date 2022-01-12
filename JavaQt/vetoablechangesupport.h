@@ -16,11 +16,11 @@ class VetoableChangeListener;
 class PropertyChangeEvent;
 class VetoableChangeSupport : public PropertyChangeSupport, public VetoableChangeProvider, public VetoableChangeFirer
 {
- Q_OBJECT
-  Q_INTERFACES(VetoableChangeProvider VetoableChangeFirer)
+ //Q_OBJECT
+  Q_INTERFACES(PropertyChangeSupport VetoableChangeProvider VetoableChangeFirer PropertyChangeProvider)
 
 public:
-  explicit VetoableChangeSupport(QObject *source, QObject* parent=nullptr);
+  //explicit VetoableChangeSupport(QObject *source, QObject* parent=nullptr);
   /*public*/ void addVetoableChangeListener(VetoableChangeListener* listener) override;
   /*public*/ void addVetoableChangeListener(/*@CheckForNull*/ QString propertyName,/* @CheckForNull*/ VetoableChangeListener* listener) override;
   /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners() override;
@@ -43,9 +43,8 @@ private:
  /**
   * Provide a {@link java.beans.VetoableChangeSupport} helper.
   */
- /*protected*/ /*final*/ JVetoableChangeSupport* vetoableChangeSupport = new JVetoableChangeSupport(this);
+ /*protected*/ /*final*/ JVetoableChangeSupport* vetoableChangeSupport = new JVetoableChangeSupport(this->self());
 };
 
-
-
+Q_DECLARE_INTERFACE(VetoableChangeSupport, "VetoableChangeSupport")
 #endif // VETOABLECHANGESUPPORT_H

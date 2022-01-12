@@ -39,8 +39,8 @@ DefaultSignalGroupManager::DefaultSignalGroupManager(InternalSystemConnectionMem
     return Manager::SIGNALGROUPS;
 }
 
-/*public*/ QString DefaultSignalGroupManager::getSystemPrefix() const { return "I"; }
-/*public*/ char DefaultSignalGroupManager::typeLetter() const { return 'F'; }
+/*public*/ QString DefaultSignalGroupManager::getSystemPrefix() { return "I"; }
+/*public*/ QChar DefaultSignalGroupManager::typeLetter()  { return 'F'; }
 
 /*public*/ SignalGroup* DefaultSignalGroupManager::getSignalGroup(QString name) {
     SignalGroup* t = getByUserName(name);

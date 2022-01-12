@@ -679,7 +679,7 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
  {
   PropertyChangeListener* l = (PropertyChangeListener*)this;
   listeners.replace(i, l);
-  //mInputs.at(i)->PropertyChangeSupport::addPropertyChangeListener(l);
+  //mInputs.at(i)->SwingPropertyChangeSupport::addPropertyChangeListener(l);
   if(static_cast<AbstractSensor*>(mInputs.at(i))!= NULL)
   {
    AbstractSensor* sensor = (AbstractSensor*)mInputs.at(i);

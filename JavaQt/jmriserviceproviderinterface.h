@@ -1,6 +1,6 @@
 #ifndef JMRISERVICEPROVIDERINTERFACE_H
 #define JMRISERVICEPROVIDERINTERFACE_H
-#include "bean.h"
+#include <QtCore>
 /**
  * Implementing or extending interfaces are available as Java Service Provider
  * Interfaces (SPI) within JMRI applications.
@@ -10,9 +10,10 @@
  *
  * @author Randall Wood (C) 2016
  */
-/*public*/ /*interface*/ class JmriServiceProviderInterface : public Bean
+/*public*/ /*interface*/ class JmriServiceProviderInterface //: public Bean
 {
 public:
- JmriServiceProviderInterface(QObject* parent = 0) : Bean(parent) {}
+ //JmriServiceProviderInterface(QObject* parent = 0) : Bean(parent) {}
 };
+Q_DECLARE_INTERFACE(JmriServiceProviderInterface, "JmriServiceProviderInterface")
 #endif // JMRISERVICEPROVIDERINTERFACE_H

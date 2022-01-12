@@ -796,7 +796,7 @@ void DefaultRoute::init()
     Turnout* ctl = getCtlTurnout();
     if (ctl!=nullptr)
     {
-//        getCtlTurnout()->PropertyChangeSupport::addPropertyChangeListener(mTurnoutListener =
+//        getCtlTurnout()->SwingPropertyChangeSupport::addPropertyChangeListener(mTurnoutListener =
 //                                        new PropertyChangeListener());
 //        {
 //                /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {

@@ -36,6 +36,8 @@ public:
  /*public*/ QString getConnectionManufacturer(/*@NonNULL*/ QString connectionType);
  /*public*/ QStringList getConnectionManufacturers(/*@NonNULL*/ QString connectionType);
 
+ QObject* self() override {return (QObject*)this;}
+
 private:
  /*private*/ /*final*/ QList<ConnectionConfig*> connections;// = new QList<ConnectionConfig*>();
  /*private*/ /*final*/ QString NAMESPACE;// = "http://jmri.org/xml/schema/auxiliary-configuration/connections-2-9-6.xsd"; // NOI18N

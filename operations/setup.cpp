@@ -8,7 +8,7 @@
 #include "appslib_global.h"
 #include "autosave.h"
 #include "trainmanagerxml.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "abstractoperationsserver.h"
 #include <QTextEdit>
 #include "instancemanager.h"
@@ -17,7 +17,7 @@
 namespace Operations
 {
  Setup::Setup(QObject *parent) :
-   PropertyChangeSupport(this, parent)
+   SwingPropertyChangeSupport(this, parent)
  {
   setProperty("InstanceManagerAutoDefault", "yes");
 

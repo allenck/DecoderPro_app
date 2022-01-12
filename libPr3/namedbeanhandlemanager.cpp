@@ -1,12 +1,12 @@
 #include "namedbeanhandlemanager.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "abstractnamedbean.h"
 
 NamedBeanHandleManager::NamedBeanHandleManager(QObject *parent) :
     AbstractNamedBeanHandleManager(parent)
 {
     namedBeanHandles = new QList<QObject*>();
-    pcs = new PropertyChangeSupport(this);
+    pcs = new SwingPropertyChangeSupport(this, nullptr);
     registerSelf();
     setProperty("InstanceManagerAutoDefault", "yes");
 
@@ -210,18 +210,18 @@ template<class T>
 }
 
 //template<class T>
-/*public*/ QString NamedBeanHandleManager::getSystemPrefix() const{
+/*public*/ QString NamedBeanHandleManager::getSystemPrefix() {
     throw new UnsupportedOperationException("Not supported yet.");
 }
 
 //template<class T>
-/*public*/ char NamedBeanHandleManager::typeLetter()const{
+/*public*/ QChar NamedBeanHandleManager::typeLetter(){
     throw new UnsupportedOperationException("Not supported yet.");
 }
 
 //        @Override
 //template<class T>
-/*public*/ QString NamedBeanHandleManager::makeSystemName(QString /*s*/) const {
+/*public*/ QString NamedBeanHandleManager::makeSystemName(QString /*s*/) {
     throw new  UnsupportedOperationException("Not supported yet.");
 }
 
@@ -241,7 +241,7 @@ template<class T>
 //        @Override
 //template<class T>
 ///*public synchronized*/ void NamedBeanHandleManager::addPropertyChangeListener(PropertyChangeListener* l) {
-//    pcs->PropertyChangeSupport::addPropertyChangeListener(l);
+//    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 //}
 
 //        @Override
@@ -256,13 +256,13 @@ template<class T>
 
 //        @Override
 //template<class T>
-/*public*/ void NamedBeanHandleManager::Register(NamedBean* /*n*/) const {
+/*public*/ void NamedBeanHandleManager::Register(NamedBean* /*n*/) {
     throw new UnsupportedOperationException("Not supported yet.");
 }
 
 //        @Override
 //template<class T>
-/*public*/ void NamedBeanHandleManager::deregister(NamedBean* /*n*/)const {
+/*public*/ void NamedBeanHandleManager::deregister(NamedBean* /*n*/) {
     throw new  UnsupportedOperationException("Not supported yet.");
 }
 

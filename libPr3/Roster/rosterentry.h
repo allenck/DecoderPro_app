@@ -9,7 +9,7 @@
 #include <QDir>
 #include <QtXml>
 #include "dcclocoaddress.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "Roster/cvtablemodel.h"
 #include "Roster/locofile.h"
 #include "basicrosterentry.h"
@@ -202,7 +202,7 @@ private:
      * RosterEntry.
      */
     /*private*/ QDomElement mRootElement;// = NULL;
-    PropertyChangeSupport* pcs;
+    SwingPropertyChangeSupport* pcs;
     int openCounter;// =0;
     QMutex mutex;
     /*private*/ int blanks;//=0;

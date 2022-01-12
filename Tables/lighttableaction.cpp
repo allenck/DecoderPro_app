@@ -70,7 +70,7 @@
 void LightTableAction::common()
 {
  setObjectName("LightTableAction");
- lightManager = static_cast<LightManager*>(InstanceManager::getNullableDefault("LightManager"));
+ lightManager = qobject_cast<LightManager*>(InstanceManager::getNullableDefault("LightManager"));
  oneDigit = new DecimalFormat("0");
  oneDotTwoDigit = new DecimalFormat("0.00");
  addFrame = nullptr;
@@ -516,7 +516,7 @@ void LTBeanTableDataModel::doDelete(NamedBean* bean) {
         //prefixBox.addActionListener((evt) -> hardwareAddressValidator.setManager(prefixBox.getSelectedItem()));
         connect(prefixBox, &ManagerComboBox::currentIndexChanged, [=]{hardwareAddressValidator->setManager(prefixBox->getSelectedItem());});
 #if 0
-        hardwareAddressValidator->PropertyChangeSupport::addPropertyChangeListener("validation", /*(evt) ->*/&SystemNameValidator::prop
+        hardwareAddressValidator->SwingPropertyChangeSupport::addPropertyChangeListener("validation", /*(evt) ->*/&SystemNameValidator::prop
         { // NOI18N
             Validation* validation = hardwareAddressValidator->getValidation();
             Validation::Type type = validation.getType();
@@ -743,7 +743,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
         uName = "";   // a blank field means no user name
     }
     // Does System Name have a valid format
-    if (static_cast<LightManager*>(InstanceManager::getDefault("LightManager"))->validSystemNameFormat(suName)!= Manager::NameValidity::VALID) {
+    if (qobject_cast<LightManager*>(InstanceManager::getDefault("LightManager"))->validSystemNameFormat(suName)!= Manager::NameValidity::VALID) {
         // Invalid System Name format
         log->warn("Invalid Light system name format entered: " + suName);
         status1->setText(tr("Error: System Name has an invalid format."));
@@ -755,9 +755,9 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
     }
     // Format is valid, normalize it
     ProxyLightManager* mgr= static_cast<ProxyLightManager*> (InstanceManager::getDefault("LightManager"));
-    QString sName = mgr->normalizeSystemName(suName);
+    QString sName = mgr->AbstractProxyManager::normalizeSystemName(suName);
     // check if a Light with this name already exists
-    Light* g = (Light*)mgr->getBySystemName(sName);
+    Light* g = (Light*)mgr->AbstractProxyManager::getBySystemName(sName);
     if (g != NULL) {
         // Light already exists
         status1->setText(tr("Error: an element with this System Name already exists."));
@@ -807,7 +807,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
     // check if requested Light uses the same address as a Turnout
     QString testSN = turnoutPrefix + curAddress;
     Turnout* testT = (Turnout*)((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->
-            getBySystemName(testSN);
+            AbstractProxyManager::getBySystemName(testSN);
     if (testT != nullptr) {
         // Address is already used as a Turnout
          log->warn("Requested Light " + sName + " uses same address as Turnout " + testT->getDisplayName());
@@ -863,7 +863,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
         QString testAdd = "";
         for (int i = 0; i < numberOfLights; i++) {
             testAdd = lightPrefix + add;
-            if (mgr->getBySystemName(testAdd) != NULL) {
+            if (mgr->AbstractProxyManager::getBySystemName(testAdd) != NULL) {
                 status1->setText(tr("Error: Requested range of hardware addresses is not free."));
                 status2->setVisible(true);
                 addFrame->adjustSize();
@@ -872,7 +872,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
                 return;
             }
             testAdd = turnoutPrefix + add;
-            if (((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getBySystemName(testAdd) != NULL) {
+            if (((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->AbstractProxyManager::getBySystemName(testAdd) != NULL) {
                 status1->setText(tr("Error: Requested range of hardware addresses is not free."));
                 status2->setVisible(true);
                 addFrame->adjustSize();
@@ -2082,7 +2082,7 @@ QValidator::State LTAValidator::validate(QString &s, int &pos) const
  } else {
      bool validFormat = false;
          // try {
-         validFormat = static_cast<LightManager*>(InstanceManager::getDefault("LightManager"))->validSystemNameFormat(prefix + "L" + value) == Manager::NameValidity::VALID;
+         validFormat = qobject_cast<LightManager*>(InstanceManager::getDefault("LightManager"))->validSystemNameFormat(prefix + "L" + value) == Manager::NameValidity::VALID;
          // } catch (jmri.JmriException e) {
          // use it for the status bar?
          // }

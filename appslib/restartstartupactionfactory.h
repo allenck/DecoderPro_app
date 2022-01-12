@@ -11,6 +11,8 @@ public:
  RestartStartupActionFactory(const RestartStartupActionFactory&) : AbstractStartupActionFactory() {}
  /*public*/ QString getTitle(/*Class<?> */QString clazz, QLocale locale) throw (IllegalArgumentException) ;
  /*public*/ QStringList getActionClasses();
+ QObject* self() override {return (QObject*)this;}
+
 };
 Q_DECLARE_METATYPE(RestartStartupActionFactory)
 #endif // RESTARTSTARTUPACTIONFACTORY_H

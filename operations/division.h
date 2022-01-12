@@ -1,12 +1,12 @@
 #ifndef OPERATIONS_DIVISION_H
 #define OPERATIONS_DIVISION_H
 
-#include <propertychangesupport.h>
+#include "swingpropertychangesupport.h"
 #include <QtXml>
 
 class Logger;
 namespace Operations {
- class Division :public PropertyChangeSupport
+ class Division :public SwingPropertyChangeSupport
  {
    Q_OBJECT
   public:

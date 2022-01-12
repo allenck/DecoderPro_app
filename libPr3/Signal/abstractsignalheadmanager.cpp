@@ -37,7 +37,7 @@ AbstractSignalHeadManager::AbstractSignalHeadManager(QObject *parent) :
 }
 
 ///*public*/ QString AbstractSignalHeadManager::getSystemPrefix() const { return "I"; }
-/*public*/ char AbstractSignalHeadManager::typeLetter() const { return 'H'; }
+/*public*/ QChar AbstractSignalHeadManager::typeLetter() { return 'H'; }
 
 /*public*/ SignalHead* AbstractSignalHeadManager::getSignalHead(QString name)
 {
@@ -65,7 +65,7 @@ AbstractSignalHeadManager::AbstractSignalHeadManager(QObject *parent) :
  return (SignalHead*)_tuser->value(key);
 }
 #endif
-void AbstractSignalHeadManager::Register(NamedBean *s) const
+void AbstractSignalHeadManager::Register(NamedBean *s)
 {
  AbstractManager::Register(s);
 // emit newSignalHeadCreated((AbstractSignalHead*)s);

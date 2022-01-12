@@ -12,7 +12,7 @@ class JFCFileDialog;
 class FileSystemView;
 class Logger;
 class File;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class QFileDialog;
 class JAVAQTSHARED_EXPORT JFileChooser : public QObject
 {
@@ -91,7 +91,7 @@ public slots:
 private:
  int dialogType;
  JFCFileDialog* dialog = nullptr;
- PropertyChangeSupport* pcs = nullptr;
+ SwingPropertyChangeSupport* pcs = nullptr;
  int returnValue;
  File* selectedFile = nullptr;
  QStringList files;

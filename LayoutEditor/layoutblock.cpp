@@ -147,7 +147,7 @@ long LayoutBlock::time=0;
  routes = new QVector<Routes*>();
  listeners = new QVector<PropertyChangeListener*>();
 
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
 
  blockName = uName;
  lbSystemName = sName;
@@ -176,7 +176,7 @@ long LayoutBlock::time=0;
  block = nullptr;   // assume failure (pessimist!)
  QString userName = getUserName();
  if (!(userName.isNull()) && !userName.isEmpty()) {
-     block =(Block*) ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getByUserName(userName);
+     block =(Block*) ((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getByUserName(userName);
  }
 
  if (block == nullptr) {
@@ -191,7 +191,7 @@ long LayoutBlock::time=0;
          jmriblknum++;
 
          // Find an unused system name
-         block = (Block*)bm->getBySystemName(s);
+         block = (Block*)bm->AbstractManager::getBySystemName(s);
          if (block != nullptr) {
              log->debug(tr("System name is already used: %1").arg(s));
              continue;
@@ -205,8 +205,8 @@ long LayoutBlock::time=0;
          }
 
          // Verify registration
-         Block* testGet = bm->getBySystemName(s);
-         if ( testGet!=nullptr && bm->getNamedBeanSet().contains(testGet) ) {
+         Block* testGet = (Block*)bm->AbstractManager::getBySystemName(s);
+         if ( testGet!=nullptr && bm->AbstractManager::getNamedBeanSet().contains(testGet) ) {
              log->debug(tr("Block is valid: %1").arg(s));
              break;
          }
@@ -2833,7 +2833,7 @@ bool LayoutBlock::isValidNeighbour(Block* blk){
  if (!listeners->contains(l))
  {
   listeners->append(l);
-  pcs->PropertyChangeSupport::addPropertyChangeListener(l);
+  pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
  }
 }
 //@Override
@@ -3780,7 +3780,7 @@ int LayoutBlock::getRouteIndex(Routes* r){
  length = len;
  validCurrentRoute = block->checkIsRouteOnValidThroughPath(this);
  firePropertyChange("length", QVariant(), QVariant());
-//    destBlock->PropertyChangeSupport::addPropertyChangeListener(this);
+//    destBlock->SwingPropertyChangeSupport::addPropertyChangeListener(this);
 // connect(destBlock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
 // connect(destBlock->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
 

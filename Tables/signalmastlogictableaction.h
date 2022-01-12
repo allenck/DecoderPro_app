@@ -94,7 +94,7 @@ private:
     QList<SignalMastLogic*> source;// = getManager().getSignalMastLogicList();
 
 protected:
-    /*protected*/ AbstractManager* getManager() override;
+    /*protected*/ Manager *getManager() override;
     /*protected*/ QString getMasterClassName() override;
     /*protected*/ void configDeleteColumn(JTable* table)override;
     /*protected*/ /*synchronized*/ void updateNameList()override;

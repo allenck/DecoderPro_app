@@ -17,9 +17,10 @@ class AMRTRcvHandler;
 class AbstractMRListener;
 class AbstractMRMessage;
 class AbstractMRReply;
-class AbstractMRTrafficController : public RfidInterface
+class AbstractMRTrafficController : public QObject, public RfidInterface
 {
     Q_OBJECT
+  Q_INTERFACES(RfidInterface)
 public:
     //explicit AbstractMRTrafficController(QObject *parent = 0);
     /*public*/ AbstractMRTrafficController(QObject *parent = 0);

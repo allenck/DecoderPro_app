@@ -38,6 +38,7 @@
 #include <QFile>
 #include <QUrl>
 #include "loggerfactory.h"
+#include "signalmastaddpane.h"
 
 //AddSignalMastPanel::AddSignalMastPanel(QWidget *parent) :
 //    QWidget(parent)
@@ -97,7 +98,7 @@ void AddSignalMastPanel::init()
  // get the list of possible signal types (as shown by panes)
  // SignalMastAddPane::SignalMastAddPaneProvider::getInstancesCollection().forEach(
  //     (provider)->
- foreach(SignalMastAddPane::SignalMastAddPaneProvider* provider, SignalMastAddPane::SignalMastAddPaneProvider::getInstancesCollection())
+ foreach(SignalMastAddPaneProvider* provider, SignalMastAddPaneProvider::getInstancesCollection())
  {
   if (provider->isAvailable()) {
       panes.append(provider->getNewPane());

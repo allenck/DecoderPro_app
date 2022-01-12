@@ -75,7 +75,7 @@ ThrottlesTableModel::ThrottlesTableModel(QObject *parent) :
 
 /*public*/ void ThrottlesTableModel::notifyAddressThrottleFound(DccThrottle* throttle) {
     fireTableDataChanged();
-    //throttle->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
+    //throttle->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
     connect((AbstractThrottle*)throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
 }

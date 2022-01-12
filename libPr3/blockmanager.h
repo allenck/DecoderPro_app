@@ -1,7 +1,6 @@
 ﻿#ifndef BLOCKMANAGER_H
 #define BLOCKMANAGER_H
 
-#include "abstractblockmanager.h"
 #include "block.h"
 #include "exceptions.h"
 #include <QCompleter>
@@ -9,19 +8,22 @@
 #include "abstractshutdowntask.h"
 #include "instancemanagerautodefault.h"
 #include "propertyvetoexception.h"
+#include "providingmanager.h"
+#include "abstractmanager.h"
 
 class RosterEntry;
-class LIBPR3SHARED_EXPORT BlockManager : public AbstractBlockManager, public InstanceManagerAutoDefault
+class LIBPR3SHARED_EXPORT BlockManager : public AbstractManager, public ProvidingManager, public InstanceManagerAutoDefault
 {
     Q_OBJECT
-  Q_INTERFACES(InstanceManagerAutoDefault )
+  Q_INTERFACES(ProvidingManager InstanceManagerAutoDefault )
 public:
     Q_INVOKABLE explicit BlockManager(QObject *parent = 0);
     ~BlockManager() {}
-    BlockManager(const BlockManager&) : AbstractBlockManager() {}
+    BlockManager(const BlockManager&) : AbstractManager() {}
+    /*public*/ void dispose() override;
     /*public*/ int getXMLOrder() const override;
-    /*public*/ QString getSystemPrefix() const override;
-    /*public*/ char typeLetter() const override;
+    /*public*/ QString getSystemPrefix()  override;
+    /*public*/ QChar typeLetter() override;
     /*public*/ QString getNamedBeanClass()const override;
     /*public*/ bool isSavedPathInfo();
     /*public*/ void setSavedPathInfo(bool save);
@@ -30,17 +32,17 @@ public:
      *   Returns NULL if a Block with the same systemName or userName
      *       already exists, or if there is trouble creating a new Block.
      */
-    /*public*/ Block* createNewBlock(QString systemName, QString userName) const;
-    /*public*/ Block* createNewBlock(QString userName) const;
-    /*public*/ Block* provideBlock(QString name)const;
+    /*public*/ Block* createNewBlock(QString systemName, QString userName);
+    /*public*/ Block* createNewBlock(QString userName);
+    /*public*/ Block* provideBlock(QString name);
     /**
      * Method to get an existing Block.  First looks up assuming that
      *      name is a User Name.  If this fails looks up assuming
      *      that name is a System Name.  If both fail, returns NULL.
      */
-    /*public*/ Block* getBlock(QString name)const;
+    /*public*/ Block* getBlock(QString name);
 //    /*public*/ Block *getBySystemName(QString name) const;
-//    /*public*/ Block* getByUserName(QString key) const;
+//    /*public*/ Block* getByUserName(QString key)  override;
     /*public*/ Block* getByDisplayName(QString key);
 //    static BlockManager* _instance;// = NULL;
 //    static /*public*/ BlockManager* instance();
@@ -49,10 +51,18 @@ public:
     /*public*/ QString getBeanTypeHandled(bool plural) const override;
     /*public*/ QList<Block*> getBlocksOccupiedByRosterEntry(/*@Nonnull*/ RosterEntry* re);
     QCompleter* getCompleter(QString text);
-    virtual /*public*/ Block* provide(QString name) const /*throw (IllegalArgumentException)*/ ;
+    virtual /*public*/ NamedBean* provide(QString name) /*throw (IllegalArgumentException)*/ ;
     /*public*/ qint64 timeSinceLastLayoutPowerOn()const;
     /*public*/ /*final*/ ShutDownTask* shutDownTask = new AbstractShutDownTask("Writing Blocks");
     QObject* self() override {return (QObject*)this;}
+
+    /*public*/ SystemConnectionMemo* getMemo() override;
+    /*public*/ NamedBean* getNamedBean(QString s)  override;
+    /*public*/ void Register(NamedBean*)  override;
+    /*public*/ void deregister(NamedBean*)override;
+    /*public*/ void addDataListener(Manager::ManagerDataListener*)override;
+    /*public*/ void removeDataListener(Manager::ManagerDataListener*)override;
+
 
 signals:
     //void propertyChange(PropertyChangeEvent *e);
@@ -70,7 +80,7 @@ private:
  QString powerManagerChangeName;
  /*private*/ /*Instant*/qint64 lastTimeLayoutPowerOn; // the most recent time any power manager had a power ON event
 
- friend class PropertyChangeSupport;
+ friend class SwingPropertyChangeSupport;
 };
 Q_DECLARE_METATYPE(BlockManager)
 #endif // BLOCKMANAGER_H

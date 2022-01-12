@@ -57,7 +57,7 @@
         log->warn("requested getValue(null)");
         return "(no name)";
     }
-    Block* b = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBySystemName(name);
+    Block* b = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getBySystemName(name);
     if (b == nullptr) {
         log->debug(tr("requested getValue(\"%1\"), Block doesn't exist").arg(name));
         return "(no Block)";
@@ -82,12 +82,12 @@
 
 //@Override
 /*public*/ NamedBean* BlockTableDataModel::getBySystemName(/*@Nonnull*/ QString name) const {
-    return (NamedBean*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBeanBySystemName(name);
+    return (NamedBean*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getBeanBySystemName(name);
 }
 
 //@Override
 /*public*/ NamedBean* BlockTableDataModel::getByUserName(/*@Nonnull*/ QString name) {
-    return ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getByUserName(name);
+    return ((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getByUserName(name);
 }
 
 //@Override
@@ -510,8 +510,8 @@ QVariant BlockTableDataModel::data(const QModelIndex &index, int role) const
 
 //@Override
 /*public*/ void BlockTableDataModel::configureTable(JTable* table) {
-    InstanceManager::sensorManagerInstance()->PropertyChangeSupport::addPropertyChangeListener(this);
-    ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->PropertyChangeSupport::addPropertyChangeListener(this);
+    InstanceManager::sensorManagerInstance()->addPropertyChangeListener(this);
+    ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->addPropertyChangeListener(this);
     configStateColumn(table);
     configureColumnDelegates(table);
     BeanTableDataModel::configureTable(table);
@@ -663,8 +663,8 @@ void BlockTableDataModel::editButton(Block* b) {
 
 //@Override
 /*synchronized*/ /*public*/ void BlockTableDataModel::dispose() {
-    ((SensorManager*)InstanceManager::getDefault("SensorManager"))->PropertyChangeSupport::removePropertyChangeListener(this);
-    ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->PropertyChangeSupport::removePropertyChangeListener(this);
+    ((SensorManager*)InstanceManager::getDefault("SensorManager"))->removePropertyChangeListener(this);
+    ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->removePropertyChangeListener(this);
     BeanTableDataModel::dispose();
 }
 

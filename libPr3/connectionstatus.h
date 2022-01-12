@@ -5,7 +5,7 @@
 #include <QMutex>
 #include "logger.h"
 #include <QStringList>
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "libPr3_global.h"
 #include <QPair>
 
@@ -29,7 +29,7 @@ public:
     /*public*/ /*synchronized*/ bool isConnectionOk(QString systemName, /*@Nonnull*/QString portName);
     /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
     /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
-    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+    SwingPropertyChangeSupport* pcs;// = new SwingPropertyChangeSupport(this, nullptr);
 
 signals:
 

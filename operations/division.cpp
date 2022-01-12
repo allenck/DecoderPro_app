@@ -12,14 +12,14 @@ namespace Operations {
   *
   * @author Daniel Boudreau Copyright (C) 2021
   */
-  // /*public*/ class Division extends PropertyChangeSupport implements Identifiable {
+  // /*public*/ class Division extends SwingPropertyChangeSupport implements Identifiable {
 
       /*public*/ /*static*/ /*final*/ QString Division::NONE = "";
 
 
       /*public*/ /*static*/ /*final*/ QString Division::NAME_CHANGED_PROPERTY = "divisionName"; // NOI18N
 
-      /*public*/ Division::Division(QString id, QString name, QObject* parent) : PropertyChangeSupport(parent){
+      /*public*/ Division::Division(QString id, QString name, QObject* parent) : SwingPropertyChangeSupport(parent, this){
          log->debug(tr("New division (%1) id: %2").arg(name, id));
          _name = name;
          _id = id;
@@ -73,7 +73,7 @@ namespace Operations {
       * @param e Consist XML element
       */
      //@SuppressWarnings("deprecation") // until there's a replacement for convertFromXmlComment()
-      /*public*/ Division::Division(QDomElement e) : PropertyChangeSupport(this){
+      /*public*/ Division::Division(QDomElement e) : SwingPropertyChangeSupport(this,this){
          QString a;
          if ((a = e.attribute(Xml::ID)) != "") {
              _id = a;

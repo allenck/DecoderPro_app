@@ -2,7 +2,7 @@
 #include "vptr.h"
 #include "loggerfactory.h"
 //#include "namedbeanusernamecomparator.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "abstractmanager.h"
 #include "algorithm"
 
@@ -76,8 +76,8 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
     NamedBeanEditor namedBeanEditor = new NamedBeanEditor(getEditor());
     setEditor(namedBeanEditor);
 #endif
-    ((PropertyChangeSupport*)this->manager->self())->PropertyChangeSupport::addPropertyChangeListener("beans", managerListener);
-    ((PropertyChangeSupport*)this->manager->self())->PropertyChangeSupport::addPropertyChangeListener("DisplayListName", managerListener);
+    ((SwingPropertyChangeSupport*)this->manager->self())->SwingPropertyChangeSupport::addPropertyChangeListener("beans", managerListener);
+    ((SwingPropertyChangeSupport*)this->manager->self())->SwingPropertyChangeSupport::addPropertyChangeListener("DisplayListName", managerListener);
     sort();
 }
 
@@ -105,8 +105,8 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
     NamedBeanEditor namedBeanEditor = new NamedBeanEditor(getEditor());
     setEditor(namedBeanEditor);
 #endif
-    ((PropertyChangeSupport*)((AbstractManager*)this->manager->self()))->PropertyChangeSupport::addPropertyChangeListener("beans", managerListener);
-    ((PropertyChangeSupport*)((AbstractManager*)this->manager->self()))->PropertyChangeSupport::addPropertyChangeListener("DisplayListName", managerListener);
+    ((SwingPropertyChangeSupport*)((AbstractManager*)this->manager->self()))->SwingPropertyChangeSupport::addPropertyChangeListener("beans", managerListener);
+    ((SwingPropertyChangeSupport*)((AbstractManager*)this->manager->self()))->SwingPropertyChangeSupport::addPropertyChangeListener("DisplayListName", managerListener);
     sort();
     setSelectedItem(selection);
 }
@@ -137,8 +137,8 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
     NamedBeanEditor namedBeanEditor = new NamedBeanEditor(getEditor());
     setEditor(namedBeanEditor);
 #endif
-    ((PropertyChangeSupport*)this->manager->self())->PropertyChangeSupport::addPropertyChangeListener("beans", managerListener);
-    ((PropertyChangeSupport*)this->manager->self())->PropertyChangeSupport::addPropertyChangeListener("DisplayListName", managerListener);
+    ((SwingPropertyChangeSupport*)this->manager->self())->SwingPropertyChangeSupport::addPropertyChangeListener("beans", managerListener);
+    ((SwingPropertyChangeSupport*)this->manager->self())->SwingPropertyChangeSupport::addPropertyChangeListener("DisplayListName", managerListener);
     sort();
     setSelectedItem(selection);
 }
@@ -353,8 +353,8 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
 }
 
 /*public*/ void NamedBeanComboBox::dispose() {
-    ((PropertyChangeSupport*)this->manager->self())->removePropertyChangeListener("beans", managerListener);
-    ((PropertyChangeSupport*)this->manager->self())->removePropertyChangeListener("DisplayListName", managerListener);
+    ((SwingPropertyChangeSupport*)this->manager->self())->removePropertyChangeListener("beans", managerListener);
+    ((SwingPropertyChangeSupport*)this->manager->self())->removePropertyChangeListener("DisplayListName", managerListener);
 }
 
 /*private*/ void NamedBeanComboBox::sort() {
@@ -397,8 +397,8 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
 /*public*/ void NamedBeanComboBox::setManager(Manager* manager)
 {
  this->manager = manager;
- ((PropertyChangeSupport*)this->manager->self())->PropertyChangeSupport::addPropertyChangeListener("beans", managerListener);
- ((PropertyChangeSupport*)this->manager->self())->PropertyChangeSupport::addPropertyChangeListener("DisplayListName", managerListener);
+ ((SwingPropertyChangeSupport*)this->manager->self())->SwingPropertyChangeSupport::addPropertyChangeListener("beans", managerListener);
+ ((SwingPropertyChangeSupport*)this->manager->self())->SwingPropertyChangeSupport::addPropertyChangeListener("DisplayListName", managerListener);
  sort();
 
 }

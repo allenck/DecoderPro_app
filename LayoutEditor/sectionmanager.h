@@ -20,7 +20,7 @@ public:
     SectionManager(const SectionManager&) : AbstractSectionManager() {}
     int getXMLOrder() const override;
     //QString getSystemPrefix();
-    char typeLetter() const override;
+    QChar typeLetter() override;
     /*public*/ QString getBeanTypeHandled(bool plural) const override;
     /*public*/ QString getNamedBeanClass() const override;
 

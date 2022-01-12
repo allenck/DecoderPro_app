@@ -1,6 +1,6 @@
 #include "enginestablemodel.h"
 #include "enginemanager.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "control.h"
 #include "engine.h"
 #include "enginestableframe.h"
@@ -50,7 +50,7 @@ namespace Operations
   engineManager = (EngineManager*)InstanceManager::getDefault("Operations::EngineManager"); // There is only one manager
 
 
-  //manager->PropertyChangeSupport::addPropertyChangeListener(this);
+  //manager->SwingPropertyChangeSupport::addPropertyChangeListener(this);
   connect(engineManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   updateList();
  }
@@ -145,7 +145,7 @@ namespace Operations
      sysList = getSelectedEngineList();
      // and add listeners back in
      foreach (RollingStock* rs, *sysList) {
-      rs->PropertyChangeSupport::addPropertyChangeListener(this);
+      rs->SwingPropertyChangeSupport::addPropertyChangeListener(this);
      }
  }
 

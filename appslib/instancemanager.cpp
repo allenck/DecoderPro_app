@@ -124,7 +124,7 @@ InstanceManager::InstanceManager(QObject *parent) :
  initializers.insert("JmriUserPreferencesManager", new JmriUserPreferencesManager());
 // initializers.insert("WebServerPreferencesInstanceInitializer", new WebServerPreferencesInstanceInitializer());
 #endif
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
  initState = QMap</*Class<?>*/QString, StateHolder*>();
 
  //root = this;
@@ -641,7 +641,7 @@ void InstanceManager::deregister(QObject* item, QString type)
  * @param l The listener to add
  */
 /*public*/ /*static*/ /*synchronized*/ void InstanceManager::addPropertyChangeListener(PropertyChangeListener* l) {
-    getDefault()->pcs->PropertyChangeSupport::addPropertyChangeListener(l);
+    getDefault()->pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 }
 
 /**
@@ -651,7 +651,7 @@ void InstanceManager::deregister(QObject* item, QString type)
  * @param l            The listener to add
  */
 /*public*/ /*static*/ /*synchronized*/ void InstanceManager::addPropertyChangeListener(QString propertyName, PropertyChangeListener* l) {
-    getDefault()->pcs->PropertyChangeSupport::addPropertyChangeListener(propertyName, l);
+    getDefault()->pcs->SwingPropertyChangeSupport::addPropertyChangeListener(propertyName, l);
 }
 
 
@@ -718,8 +718,8 @@ MemoryManager* InstanceManager::memoryManagerInstance()
 void InstanceManager::setSensorManager(SensorManager* p)
 {
  log->debug(" setSensorManager");
- SensorManager* apm = static_cast<SensorManager*>(getDefault("SensorManager"));
- if (qobject_cast<AbstractProxySensorManager*>(apm)!= nullptr) { // <?> due to type erasure
+ SensorManager* apm = (SensorManager*)getDefault("SensorManager");
+ if (qobject_cast<AbstractProxyManager*>(apm->self())!= nullptr) { // <?> due to type erasure
      ((ProxySensorManager*) apm)->addManager(p);
  } else {
      log->error("Incorrect setup: SensorManager default isn't an AbstractProxyManager<Sensor>");
@@ -753,7 +753,7 @@ void InstanceManager::setSensorManager(SensorManager* p)
     log->debug(" setMeterManager");
 #if 1
     MeterManager* apm = (ProxyMeterManager*)getDefault("MeterManager");
-    if (qobject_cast<ProxyManager*>(apm)) { // <?> due to type erasure
+    if (qobject_cast<ProxyManager*>(apm->self())) { // <?> due to type erasure
         ((ProxyMeterManager/*<Meter*>*/*) apm)->addManager(p);
     } else {
         log->error("Incorrect setup: MeterManager default isn't an AbstractProxyManager<Meter>");
@@ -767,8 +767,8 @@ void InstanceManager::setSensorManager(SensorManager* p)
 // store(p, TurnoutManager.class)
 void InstanceManager::setTurnoutManager(TurnoutManager* p) {
  log->debug(" setTurnoutManager");
- TurnoutManager* apm = static_cast<TurnoutManager*>(getDefault("TurnoutManager"));
- if (qobject_cast<AbstractProxyTurnoutManager*>(apm) != nullptr) { // <?> due to type erasure
+ TurnoutManager* apm = qobject_cast<TurnoutManager*>(getDefault("TurnoutManager"));
+ if (qobject_cast<AbstractProxyManager*>(apm->self()) != nullptr) { // <?> due to type erasure
      ((ProxyTurnoutManager*) apm)->addManager(p);
  } else {
      log->error("Incorrect setup: TurnoutManager default isn't an AbstractProxyTurnoutManager<Turnout>");
@@ -782,7 +782,7 @@ void InstanceManager::setTurnoutManager(TurnoutManager* p) {
 
 void InstanceManager::setLightManager(LightManager* p) {
  log->debug(" setLightManager");
- ((AbstractProxyLightManager*) getDefault("LightManager"))->addManager(p);
+ ((AbstractProxyManager*) getDefault("LightManager"))->addManager(p);
  //store(p, LightManager.class);
 }
 
@@ -793,7 +793,7 @@ void InstanceManager::setThrottleManager(ThrottleManager* p)
 
 void InstanceManager::setReporterManager(ReporterManager* p) {
  log->debug(" setReporterManager");
-   ((AbstractProxyReporterManager*) getDefault("ReporterManager"))->addManager(p);
+   ((AbstractProxyManager*) getDefault("ReporterManager"))->addManager(p);
    //store(p, ReporterManager.class);
 }
 

@@ -41,7 +41,7 @@ class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
     };
 
     TurnoutTableDataModel();
-    /*public*/ TurnoutTableDataModel(AbstractManager *mgr);
+    /*public*/ TurnoutTableDataModel(Manager *mgr);
     /*public*/ int columnCount(const QModelIndex &parent) const override;
     /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
     /*public*/ QString getColumnClass(int col) const override;
@@ -50,7 +50,7 @@ class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
     /*public*/ QVariant data(const QModelIndex &index, int role) const override;
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     /*public*/ QString getValue(QString name) const override;
-    /*public*/ AbstractManager* getManager() override;
+    /*public*/ Manager* getManager() override;
     /*public*/ NamedBean* getBySystemName(QString name) const override;
     /*public*/ NamedBean* getByUserName(QString name) override;
     /*public*/ void clickOn(NamedBean* t) override;
@@ -115,7 +115,7 @@ class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
     /*protected*/ JComboBox* makeAutomationBox(Turnout* t) const;
     /*protected*/ void setTurnoutOperation(Turnout* t, JComboBox* cb) const;
     /*protected*/ JButton* editButton();
-    /*protected*/ /*final*/ void setManager(/*@Nonnull*/ AbstractManager* manager)override;
+    /*protected*/ /*final*/ void setManager(/*@Nonnull*/ Manager* manager)override;
 
  protected slots:
 

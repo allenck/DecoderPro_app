@@ -165,7 +165,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      }
 
      setTitle(tr("Show Car Types") + " " + _train->getName());
-     //_train->PropertyChangeSupport::addPropertyChangeListener(this);
+     //_train->SwingPropertyChangeSupport::addPropertyChangeListener(this);
      connect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      setTitle(tr("Show Car Types") + " " + _train->getName());
      log->debug(tr("update locations served by train (%1)").arg(_train->getName()));
@@ -179,7 +179,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      _car = NULL;
      if (carsComboBox->currentText() != NULL) {
          _car = (Car*) VPtr<Car>::asPtr(carsComboBox->currentData());
-         //_car->PropertyChangeSupport::addPropertyChangeListener(this);
+         //_car->SwingPropertyChangeSupport::addPropertyChangeListener(this);
          connect(_car, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
      Route* route = _train->getRoute();
@@ -398,7 +398,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          //loc.addPropertyChangeListener(this);
       connect(loc, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          foreach (Track* track, loc->getTrackList()) {
-             //track->PropertyChangeSupport::addPropertyChangeListener(this);
+             //track->SwingPropertyChangeSupport::addPropertyChangeListener(this);
           connect(track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              Schedule* schedule = track->getSchedule();
              if (schedule != NULL) {

@@ -431,14 +431,14 @@ QWidget* SignallingPanel::buildBlocksPanel()
  blockPanel->setLayout(blockPanelLayout = new QVBoxLayout(blockPanel/*, BoxLayout.Y_AXIS*/));
 
  BlockManager* bm = ((BlockManager*)InstanceManager::getDefault("BlockManager"));
- QStringList systemNameList = bm->getSystemNameList();
+ QStringList systemNameList = bm->AbstractManager::getSystemNameList();
  _manualBlockList =  QList<ManualBlockList*> (); //systemNameList.size());
  QStringListIterator iter(systemNameList);
  while (iter.hasNext())
  {
   QString systemName = iter.next();
   //String userName = bm.getBySystemName(systemName).getUserName();
-  _manualBlockList.append(new ManualBlockList((Block*)bm->getBySystemName(systemName),this));
+  _manualBlockList.append(new ManualBlockList((Block*)bm->AbstractManager::getBySystemName(systemName),this));
  }
 
  if ((sml!=NULL) && (destMast!=NULL))
@@ -682,12 +682,12 @@ QWidget* SignallingPanel::buildTurnoutPanel(){
     turnoutPanel->setLayout(new QVBoxLayout(turnoutPanel/*, BoxLayout.Y_AXIS*/));
 
     TurnoutManager* bm = InstanceManager::turnoutManagerInstance();
-    QStringList systemNameList = ((ProxyTurnoutManager*)bm)->getSystemNameList();
+    QStringList systemNameList = ((ProxyTurnoutManager*)bm)->AbstractProxyManager::getSystemNameList();
     _manualTurnoutList =  QList <ManualTurnoutList*> (); //systemNameList.size());
     QStringListIterator iter(systemNameList);
     while (iter.hasNext()) {
         QString systemName = iter.next();
-        QString userName = ((ProxyTurnoutManager*)bm)->getBySystemName(systemName)->getUserName();
+        QString userName = ((ProxyTurnoutManager*)bm)->AbstractProxyManager::getBySystemName(systemName)->getUserName();
         _manualTurnoutList.append(new ManualTurnoutList(systemName, userName,this));
     }
 
@@ -831,12 +831,12 @@ QWidget* SignallingPanel::buildSensorPanel(){
     sensorPanel->setLayout(new QVBoxLayout(sensorPanel/*, BoxLayout.Y_AXIS*/));
 
     SensorManager* bm = InstanceManager::sensorManagerInstance();
-    QStringList systemNameList = ((ProxySensorManager*)bm)->getSystemNameList();
+    QStringList systemNameList = ((ProxySensorManager*)bm)->AbstractProxyManager::getSystemNameList();
     _manualSensorList =  QList <ManualSensorList*> (); //systemNameList.size());
     QStringListIterator iter (systemNameList);
     while (iter.hasNext()) {
         QString systemName = iter.next();
-        QString userName = ((ProxySensorManager*)bm)->getBySystemName(systemName)->getUserName();
+        QString userName = ((ProxySensorManager*)bm)->AbstractProxyManager::getBySystemName(systemName)->getUserName();
         _manualSensorList.append(new ManualSensorList(systemName, userName, this));
     }
 
@@ -1646,14 +1646,14 @@ void SignallingPanel::editDetails(){
          if(qobject_cast<BlockManager*>(e->getSource()))
          {
           BlockManager* bm = ((BlockManager*)InstanceManager::getDefault("BlockManager"));
-          QStringList systemNameList = bm->getSystemNameList();
+          QStringList systemNameList = bm->AbstractManager::getSystemNameList();
           signallingPanel->_manualBlockList =  QList<ManualBlockList*> (); //systemNameList.size());
           QStringListIterator iter(systemNameList);
           while (iter.hasNext())
           {
            QString systemName = iter.next();
            //String userName = bm.getBySystemName(systemName).getUserName();
-           signallingPanel->_manualBlockList.append(new ManualBlockList((Block*)bm->getBySystemName(systemName),signallingPanel));
+           signallingPanel->_manualBlockList.append(new ManualBlockList((Block*)bm->AbstractManager::getBySystemName(systemName),signallingPanel));
           }
           signallingPanel->initializeIncludedList();
           fireTableDataChanged();
@@ -1661,12 +1661,12 @@ void SignallingPanel::editDetails(){
          else if(qobject_cast<SensorManager*>(e->getSource()))
          {
           SensorManager* bm = InstanceManager::sensorManagerInstance();
-          QStringList systemNameList = ((ProxySensorManager*)bm)->getSystemNameList();
+          QStringList systemNameList = ((ProxySensorManager*)bm)->AbstractProxyManager::getSystemNameList();
           signallingPanel->_manualSensorList =  QList <ManualSensorList*> (); //systemNameList.size());
           QStringListIterator iter (systemNameList);
           while (iter.hasNext()) {
               QString systemName = iter.next();
-              QString userName = ((ProxySensorManager*)bm)->getBySystemName(systemName)->getUserName();
+              QString userName = ((ProxySensorManager*)bm)->AbstractProxyManager::getBySystemName(systemName)->getUserName();
               signallingPanel->_manualSensorList.append(new ManualSensorList(systemName, userName, signallingPanel));
           }
           signallingPanel->initializeIncludedList();
@@ -1675,12 +1675,12 @@ void SignallingPanel::editDetails(){
          else if(qobject_cast<TurnoutManager*>(e->getSource()))
          {
           TurnoutManager* bm = InstanceManager::turnoutManagerInstance();
-          QStringList systemNameList = ((ProxyTurnoutManager*)bm)->getSystemNameList();
+          QStringList systemNameList = ((ProxyTurnoutManager*)bm)->AbstractProxyManager::getSystemNameList();
           signallingPanel->_manualTurnoutList =  QList <ManualTurnoutList*> (); //systemNameList.size());
           QStringListIterator iter(systemNameList);
           while (iter.hasNext()) {
               QString systemName = iter.next();
-              QString userName = ((ProxyTurnoutManager*)bm)->getBySystemName(systemName)->getUserName();
+              QString userName = ((ProxyTurnoutManager*)bm)->AbstractProxyManager::getBySystemName(systemName)->getUserName();
               signallingPanel->_manualTurnoutList.append(new ManualTurnoutList(systemName, userName,signallingPanel));
           }
           signallingPanel->initializeIncludedList();
@@ -1703,7 +1703,7 @@ void SignallingPanel::editDetails(){
     }
 
     /*public*/ void SPTableModel::dispose() {
-        InstanceManager::turnoutManagerInstance()->PropertyChangeSupport::removePropertyChangeListener(this);
+        InstanceManager::turnoutManagerInstance()->removePropertyChangeListener(this);
     }
 
     /*public*/ QVariant SPTableModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -2242,7 +2242,7 @@ void SignallingPanel::editDetails(){
     {
      if (signallingPanel->sml!=NULL)
      {
-//            ((DefaultSignalMastLogic*)sml)->PropertyChangeSupport::addPropertyChangeListener(this);
+//            ((DefaultSignalMastLogic*)sml)->SwingPropertyChangeSupport::addPropertyChangeListener(this);
       DefaultSignalMastLogic* l = (DefaultSignalMastLogic*)signallingPanel->sml;
       connect(l, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
@@ -2305,7 +2305,7 @@ void SignallingPanel::editDetails(){
      //this->self = self;
      if (this->signallingPanel->sml!=NULL)
      {
-      //((DefaultSignalMastLogic*)sml)->PropertyChangeSupport::addPropertyChangeListener(this);
+      //((DefaultSignalMastLogic*)sml)->SwingPropertyChangeSupport::addPropertyChangeListener(this);
       DefaultSignalMastLogic* l = (DefaultSignalMastLogic*)this->signallingPanel->sml;
       connect(l, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }

@@ -58,17 +58,17 @@ void SensorTableDataModel::common()
  //super();
  common();
  senManager = manager;
- ProxySensorManager* proxy = nullptr;
- AbstractSensorManager* mgr = nullptr;
- if(qobject_cast<ProxySensorManager*>(senManager) != nullptr)
+ SensorManager* proxy = nullptr;
+ AbstractManager* mgr = nullptr;
+ if(qobject_cast<SensorManager*>(senManager->self()) != nullptr)
  {
-  proxy = (ProxySensorManager*)(senManager);
+  proxy = (ProxySensorManager*)(senManager->self());
   proxy->removePropertyChangeListener((PropertyChangeListener*) this);
   //disconnect(proxy->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  else
  {
-  mgr = static_cast<AbstractSensorManager*>(senManager);
+  mgr = static_cast<AbstractManager*>(senManager->self());
   mgr->PropertyChangeSupport::removePropertyChangeListener((PropertyChangeListener*) this);
   //disconnect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
@@ -91,12 +91,12 @@ void SensorTableDataModel::common()
   }
  }
  senManager = (SensorManager*)manager;
-// getManager()->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
+// getManager()->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
 // //ProxySensorManager* mgr = (ProxySensorManager*)getManager();
 // connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  if(proxy != nullptr)
  {
-  proxy->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*) this);
+  proxy->addPropertyChangeListener((PropertyChangeListener*) this);
   //connect(proxy->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  if(mgr != nullptr)
@@ -115,8 +115,8 @@ void SensorTableDataModel::common()
 /*public*/ QString SensorTableDataModel::getValue(QString name) const
 {
  Sensor* sen;
- if(qobject_cast<ProxySensorManager*>(senManager)!= nullptr)
-  sen = ((ProxySensorManager*)senManager)->getBySystemName(name);
+ if(qobject_cast<SensorManager*>(senManager->self())!= nullptr)
+  sen = (Sensor*)((SensorManager*)senManager->self())->getBySystemName(name);
  else
   sen = (Sensor*)senManager->getBeanBySystemName(name);
  int val = sen->getKnownState();
@@ -128,11 +128,11 @@ void SensorTableDataModel::common()
  default: return "Unexpected value: "+QString::number(val);
  }
 }
-/*protected*/ void SensorTableDataModel::setManager(AbstractManager *manager)
+/*protected*/ void SensorTableDataModel::setManager(Manager *manager)
 {
- //((AbstractManager*)getManager())->removePropertyChangeListener((PropertyChangeListener*)this);
- ProxySensorManager* mgr = (ProxySensorManager*)getManager();
- disconnect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ ((AbstractManager*)getManager())->PropertyChangeSupport::removePropertyChangeListener((PropertyChangeListener*)this);
+// ProxySensorManager* mgr = (ProxySensorManager*)getManager();
+// disconnect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  if (!sysNameList.isEmpty())
  {
   for (int i = 0; i< sysNameList.size(); i++)
@@ -148,7 +148,7 @@ void SensorTableDataModel::common()
   }
  }
  senManager = (SensorManager*)manager;
- ((AbstractManager*)getManager()->self())->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
+ ((AbstractManager*)getManager())->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
  //ProxySensorManager* mgr = (ProxySensorManager*)getManager();
  //connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  updateNameList();
@@ -157,16 +157,18 @@ void SensorTableDataModel::common()
 {
  if (senManager==nullptr)
   senManager= InstanceManager::sensorManagerInstance();
- return senManager;
+ return (AbstractManager*)senManager;
 }
 /*protected*/ NamedBean* SensorTableDataModel::getBySystemName(QString name) const
 {
- if(qobject_cast<ProxySensorManager*>(senManager) != nullptr)
-  return ((ProxySensorManager*)senManager)->getBySystemName(name);
+ if(qobject_cast<AbstractManager*>(senManager->self()) != nullptr)
+  return ((AbstractManager*)senManager->self())->getBySystemName(name);
  else
   return ((SensorManager*)senManager)->getBySystemName(name);
 }
-/*protected*/ NamedBean* SensorTableDataModel::getByUserName(QString name) { return ((ProxySensorManager*)senManager)->getByUserName(name);}
+/*protected*/ NamedBean* SensorTableDataModel::getByUserName(QString name) {
+ return ((AbstractProxyManager*)senManager->self())->getByUserName(name);
+}
 
 /*protected*/ QString SensorTableDataModel::getMasterClassName() { return getClassName(); }
 /*protected*/ void SensorTableDataModel::clickOn(NamedBean* t)
@@ -305,8 +307,8 @@ void SensorTableDataModel::common()
 {
  QString name = sysNameList.at(index.row());
  AbstractSensor* s;
- if(qobject_cast<ProxySensorManager*>(senManager) != 0)
-  s = (AbstractSensor*)((ProxySensorManager*)senManager)->getBySystemName(name);
+ if(qobject_cast<AbstractManager*>(senManager->self()) != 0)
+  s = (AbstractSensor*)((AbstractManager*)senManager->self())->getBySystemName(name);
  else
   s = (AbstractSensor*)((AbstractSensorManager*)senManager)->getBySystemName(name);
 
@@ -414,10 +416,10 @@ void SensorTableDataModel::common()
  }
  QString name = sysNameList.at(row);
  Sensor* s;
- if(qobject_cast<ProxySensorManager*>(senManager) != nullptr)
-  s = ((ProxySensorManager*)senManager)->getBySystemName(name);
+ if(qobject_cast<AbstractManager*>(senManager->self()) != nullptr)
+  s = (Sensor*)((AbstractManager*)senManager->self())->getBySystemName(name);
  else
-  s = ((ProxySensorManager*)senManager)->getBySystemName(name);
+  s = (Sensor*)((AbstractManager*)senManager->self())->getBySystemName(name);
 
  if (s == nullptr)
  {

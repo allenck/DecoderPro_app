@@ -79,7 +79,7 @@
 //  }
   if(pp == NULL)
    continue;
-  InstanceManager::store(pp, "PreferencesManager");
+  InstanceManager::store(pp->self(), "PreferencesManager");
  }
 #endif
  Profile* profile = ProfileManager::getDefault()->getActiveProfile();
@@ -103,7 +103,7 @@
  }
     if(qobject_cast<PreferencesManager*>(o) != NULL)
     {
-        InstanceManager::store((PreferencesManager*) o, "PreferencesManager");
+        InstanceManager::store(/*(PreferencesManager*)*/ o, "PreferencesManager");
     }
     this->legacy->registerPref(o);
 }
@@ -460,7 +460,7 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
 {
  if (!provider->isInitialized(profile) && !provider->isInitializedWithExceptions(profile))
  {
-  log->debug(tr("Initializing provider %1").arg(provider->metaObject()->className()));
+  log->debug(tr("Initializing provider %1").arg(provider->self()->metaObject()->className()));
 //        foreach (QString extends PreferencesManager> c : provider.getRequires()) {
 //            InstanceManager.getList(c).stream().forEach((p) -> {
 //                this.initializeProvider(p, profile);
@@ -486,14 +486,14 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
     InitializationException* newException = new InitializationException(ex->getMessage(), ex->getLocalizedMessage(), nullptr);
     this->initializationExceptions->insert((PreferencesManager*)provider, newException);
    }
-   log->error(tr("Exception initializing %1: %2").arg(provider->metaObject()->className()).arg(ex->getMessage()));
+   log->error(tr("Exception initializing %1: %2").arg(provider->self()->metaObject()->className()).arg(ex->getMessage()));
    if (bPut)
    {
-       log->error(tr("Additional exception initializing %1: %1").arg(provider->metaObject()->className()).arg(ex->getMessage()));
+       log->error(tr("Additional exception initializing %1: %1").arg(provider->self()->metaObject()->className()).arg(ex->getMessage()));
    }
   }
   this->initialized->append(provider);
-  log->debug(tr("Initialized provider %1").arg(provider->metaObject()->className()));
+  log->debug(tr("Initialized provider %1").arg(provider->self()->metaObject()->className()));
  }
 }
 

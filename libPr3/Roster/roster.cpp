@@ -80,7 +80,7 @@ Roster::Roster(QObject *parent) :
 {
  setObjectName("Roster");
  _list = new QList<RosterEntry*>();
- //pcs = new PropertyChangeSupport(this);
+ //pcs = new SwingPropertyChangeSupport(this, nullptr);
  //schemaVersion = "";
  defaultRosterGroup = "";
  rosterGroups = QMap<QString, RosterGroup*>();
@@ -1195,11 +1195,11 @@ bool Roster::readFile(QString name) //throw new org.jdom.JDOMException, java.io.
 //@Override
 /*public*/ /*synchronized*/ void Roster::addPropertyChangeListener(PropertyChangeListener* l)
 {
-    pcs->PropertyChangeSupport::addPropertyChangeListener(l);
+    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 }
 
 /*public*/ /*synchronized*/ void Roster::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-    pcs->PropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
+    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
 }
 
 /*protected*/ void Roster::firePropertyChange(QString p, QVariant old, QVariant n) {

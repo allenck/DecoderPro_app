@@ -90,7 +90,7 @@ public:
      * @param storeState Determine if the state of this IdTag should be stored
      * @return Element with IdTag contents
      */
-    /*public*/ virtual QDomElement store(bool /*storeState*/) {return QDomElement();}
+    /*public*/ virtual QDomElement store(QDomDocument doc, bool /*storeState*/) {return QDomElement();}
 
     /**
      * Load contents of IdTag object from an XML element

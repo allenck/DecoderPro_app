@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include "logger.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "appslib_global.h"
 #include <QColor>
 
@@ -13,7 +13,7 @@ namespace Operations
 {
  class  Setup;
  class Location;
- class APPSLIBSHARED_EXPORT RouteLocation : public PropertyChangeSupport, public PropertyChangeListener
+ class APPSLIBSHARED_EXPORT RouteLocation : public SwingPropertyChangeSupport, public PropertyChangeListener
  {
   Q_OBJECT
    Q_INTERFACES(PropertyChangeListener)

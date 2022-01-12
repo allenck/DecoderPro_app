@@ -248,7 +248,7 @@ void BeanSelectCreatePanel::update(){
   QString sName = "";
   try
   {
-   sName=((ProxySensorManager*)InstanceManager::sensorManagerInstance())->createSystemName(hardwareAddress->text(), prefix);
+   sName=((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::createSystemName(hardwareAddress->text(), prefix);
   }
   catch (JmriException* e)
   {

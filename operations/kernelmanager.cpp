@@ -127,7 +127,7 @@ namespace Operations {
      /*protected*/ void KernelManager::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
          // Set dirty
          ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml"))->setDirty(true);
-         PropertyChangeSupport::firePropertyChange(p, old, n);
+         SwingPropertyChangeSupport::firePropertyChange(p, old, n);
      }
 
      /*private*/ /*final*/ /*static*/ Logger* KernelManager::log = LoggerFactory::getLogger("KernelManager");

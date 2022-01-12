@@ -86,7 +86,7 @@
 //@Override
 /*public*/ QJsonValue JsonLightHttpService::doGetList(QString type, QLocale locale) /*throw (JsonException)*/ {
     QJsonArray root = QJsonArray(); //this->mapper.createArrayNode();
-    foreach (QString name, ((ProxyLightManager*)InstanceManager::getDefault("LightManager"))->getSystemNameList()) {
+    foreach (QString name, ((ProxyLightManager*)InstanceManager::getDefault("LightManager"))->AbstractProxyManager::getSystemNameList()) {
         root.append(this->doGet(JSON::LIGHT, name, locale));
     }
     return root;

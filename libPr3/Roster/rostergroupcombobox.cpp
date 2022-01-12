@@ -37,7 +37,7 @@ void RosterGroupComboBox::common(Roster* roster, QString selection)
  this->parent = parent;
  allEntriesEnabled = true;
  update(selection);
- //    roster->PropertyChangeSupport::addPropertyChangeListener(new PropertyChangeListener()
+ //    roster->SwingPropertyChangeSupport::addPropertyChangeListener(new PropertyChangeListener()
  //    {
 
  //        @Override

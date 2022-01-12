@@ -31,6 +31,7 @@ public:
  /*public*/ bool isDoConfirmRead() ;
  /*public*/ void setDoConfirmRead(bool doConfirmRead);
 
+ QObject* self() override {return (QObject*)this;}
 
 private:
  Logger* log;

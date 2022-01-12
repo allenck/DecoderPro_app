@@ -12,13 +12,13 @@ public:
     /*public*/ DefaultIdTag(QString systemName, QString userName, QObject *parent = 0);
     ~DefaultIdTag() {}
     DefaultIdTag(const DefaultIdTag&): AbstractIdTag() {}
-    /*public*/ void setState(int s) /*throw (JmriException)*/;
-    /*public*/ int getState() ;
-    /*public*/ QDomElement store(QDomDocument doc, bool storeState) ;
-    /*public*/ void load(QDomElement e);
-    /*public*/ /*final*/ void setWhereLastSeen(Reporter* r);
+    /*public*/ void setState(int s) override/*throw (JmriException)*/;
+    /*public*/ int getState() override;
+    /*public*/ void load(QDomElement e)override;
+    /*public*/ /*final*/ void setWhereLastSeen(Reporter* r)override;
     void setRosterId(int id);
     int rosterId();
+    /*public*/ QDomElement store(QDomDocument doc, bool storeState);
 
 signals:
     //void propertyChange(DefaultIdTag* tag, QString propertyName, QObject* o, QObject* n);

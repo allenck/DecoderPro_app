@@ -1,6 +1,6 @@
 #ifndef IDTAGMANAGER_H
 #define IDTAGMANAGER_H
-#include "abstractmanager.h"
+#include "providingmanager.h"
 #include "defaultidtag.h"
 /**
  * Locate an IdTag object representing a specific IdTag.
@@ -41,11 +41,13 @@
  * @see         jmri.InstanceManager
  * @since       2.11.4
  */
-/*public*/ /*interface*/class IdTagManager : public AbstractManager {
- Q_OBJECT
+/*public*/ /*interface*/class IdTagManager : public ProvidingManager
+{
+ //
+  Q_INTERFACES(ProvidingManager)
 public:
-     IdTagManager(QObject* parent = 0) : AbstractManager(parent) {}
-     IdTagManager(SystemConnectionMemo* memo, QObject *parent = nullptr) : AbstractManager(memo,parent) {}
+//     IdTagManager(QObject* parent = 0) : AbstractManager(parent) {}
+//     IdTagManager(SystemConnectionMemo* memo, QObject *parent = nullptr) : AbstractManager(memo,parent) {}
 
     /**
      * Locate via tag ID, then user name, and finally
@@ -168,16 +170,16 @@ public:
     /**
      * Perform initialisation
      */
-    /*public*/ virtual void init() const {}
+    /*public*/ virtual void init()  {}
 
     /**
      * Determines if the manager has been initialised
      * @return state of initialisation
      */
-    /*public*/ virtual bool isInitialised() {return false;}
+    /*public*/ virtual bool isInitialised()  {return false;}
     virtual /*public*/ DefaultIdTag* provide(QString name) /*throw (IllegalArgumentException)*/ =0;
 
  friend class IdTagManagerXml;
 };
-//Q_DECLARE_INTERFACE(IdTagManager, "IdTagManager")
+Q_DECLARE_INTERFACE(IdTagManager, "IdTagManager")
 #endif // IDTAGMANAGER_H

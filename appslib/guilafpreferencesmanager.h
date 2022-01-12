@@ -2,12 +2,16 @@
 #define GUILAFPREFERENCESANAGER_H
 #include "preferencesmanager.h"
 #include <QLocale>
+#include "bean.h"
+#include "instancemanagerautodefault.h"
 
 class Exception ;
 class InitializationException;
 class Logger;
-class GuiLafPreferencesManager : public PreferencesManager
+class GuiLafPreferencesManager : public Bean, public PreferencesManager, public InstanceManagerAutoDefault
 {
+  Q_OBJECT
+  Q_INTERFACES(PreferencesManager InstanceManagerAutoDefault)
 public:
  Q_INVOKABLE GuiLafPreferencesManager();
  ~GuiLafPreferencesManager() {}
@@ -57,6 +61,7 @@ public:
  /*public*/ bool isOblockEditTabbed();
  /*public*/ void setOblockEditTabbed(bool tabbed);
  /*public*/ static void setLocaleMinimally(Profile* profile);
+ QObject* self() override {return (QObject*)this;}
 
 private:
  static Logger* log;

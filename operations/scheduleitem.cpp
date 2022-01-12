@@ -1,5 +1,5 @@
 #include "scheduleitem.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "control.h"
 #include "propertychangeevent.h"
 #include "logger.h"
@@ -47,7 +47,7 @@ namespace Operations
  void ScheduleItem::common()
  {
   log = new Logger("ScheduleItem");
-  pcs = new PropertyChangeSupport(this);
+  pcs = new SwingPropertyChangeSupport(this, nullptr);
    _id = NONE;
   _sequenceId = 0; // used to determine order in schedule
    _random = NONE; // used to determine if random set out is needed

@@ -233,8 +233,9 @@ private:
  * Provides hooks so that menus of available meters may be updated "on-the-fly"
  * as new meters are created and/or old meters are disposed of.
  */
-/*private*/ /*static*/ class BeanListListener : public ManagerDataListener/*<Meter>*/ {
+/*private*/ /*static*/ class BeanListListener : public QObject, public Manager::ManagerDataListener/*<Meter>*/ {
  Q_OBJECT
+  Q_INTERFACES(Manager::ManagerDataListener)
     /*private*/ BeanListListener(MeterFrame* mf) {
         this->mf = mf;
     }

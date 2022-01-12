@@ -594,7 +594,7 @@ void setOff(int i) {
 }
 #if 0
 // handle outgoing parameter notification
-java.beans.PropertyChangeSupport prop = new java.beans.PropertyChangeSupport(this);
+java.beans.SwingPropertyChangeSupport prop = new java.beans.SwingPropertyChangeSupport(this,this);
 
 /*public*/ void removePropertyChangeListener(java.beans.PropertyChangeListener p) {
     prop.removePropertyChangeListener(p);

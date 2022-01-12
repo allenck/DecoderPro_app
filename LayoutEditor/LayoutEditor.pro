@@ -266,7 +266,6 @@ SOURCES += \
     multisensoricon.cpp \
     multisensoriconxml.cpp \
     multisensoriconframe.cpp \
-    multisensoriconwidget.cpp \
     sensorentrywidget.cpp \
     droppushbutton.cpp \
     sensorlineedit.cpp \
@@ -742,7 +741,6 @@ HEADERS += liblayouteditor_global.h \
     multisensoricon.h \
     multisensoriconxml.h \
     multisensoriconframe.h \
-    multisensoriconwidget.h \
     sensorentrywidget.h \
     droppushbutton.h \
     sensorlineedit.h \
@@ -1078,7 +1076,6 @@ FORMS    += \
     editlevelxingdlg.ui \
     paneleditor.ui \
     addpaneleditordialog.ui \
-    multisensoriconwidget.ui \
     sensorentrywidget.ui \
     itempalettewidget.ui \
     form.ui \

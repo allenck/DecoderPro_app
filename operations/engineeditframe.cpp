@@ -12,7 +12,7 @@
 #include <QGridLayout>
 #include <QScrollArea>
 #include "propertychangeevent.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "engineattributeeditframe.h"
 #include "engine.h"
 #include <QPushButton>
@@ -300,8 +300,8 @@ namespace Operations
 
  //@Override
  /*protected*/ void EngineEditFrame::addPropertyChangeListeners() {
-     engineModels->PropertyChangeSupport::addPropertyChangeListener(this);
-     engineManager->PropertyChangeSupport::addPropertyChangeListener(this);
+     engineModels->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+     engineManager->SwingPropertyChangeSupport::addPropertyChangeListener(this);
      RollingStockEditFrame::addPropertyChangeListeners();
  }
 

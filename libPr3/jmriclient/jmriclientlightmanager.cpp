@@ -20,7 +20,7 @@
     }
 
     //@Override
-    /*public*/ QString JMRIClientLightManager::getSystemPrefix() const{
+    /*public*/ QString JMRIClientLightManager::getSystemPrefix(){
         return prefix;
     }
 
@@ -38,7 +38,7 @@
      * name has a valid format, else returns 'false'
      */
     //@Override
-    /*public*/ Manager::NameValidity JMRIClientLightManager::validSystemNameFormat(QString systemName) const {
+    /*public*/ Manager::NameValidity JMRIClientLightManager::validSystemNameFormat(QString systemName)  {
         return ((systemName.startsWith(prefix + "l")
                 || systemName.startsWith(prefix + "L"))
                 && (systemName.mid(prefix.length()+ 1).toInt()) > 0) ? NameValidity::VALID : NameValidity::INVALID;
@@ -51,6 +51,6 @@
      * Abstract Light class
      */
     //@Override
-    /*public*/ bool JMRIClientLightManager::validSystemNameConfig(QString /*systemName*/) const {
+    /*public*/ bool JMRIClientLightManager::validSystemNameConfig(QString /*systemName*/) {
         return (true);
     }

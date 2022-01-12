@@ -14,7 +14,7 @@
 #include "jcombobox.h"
 #include <QLabel>
 #include "jbutton.h"
-#include <propertychangesupport.h>
+#include "swingpropertychangesupport.h"
 #include "locationmanager.h"
 #include "trainmanager.h"
 #include "vptr.h"

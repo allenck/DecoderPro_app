@@ -54,12 +54,12 @@ void LnReporterManager::dispose()
 //super.dispose();
 }
 
-Reporter* LnReporterManager::createNewReporter(QString systemName, QString userName) const
+Reporter* LnReporterManager::createNewReporter(QString systemName, QString userName)
 {
  Reporter* t;
 //        int addr = Integer.valueOf(systemName.substring(prefix.length()+1)).intValue();
- int addr = QString(systemName.mid(getSystemPrefix().length()+1)).toInt();
- t = (Reporter*)(new LnReporter(addr, tc, getSystemPrefix()));
+ int addr = QString(systemName.mid(AbstractManager::getSystemPrefix().length()+1)).toInt();
+ t = (Reporter*)(new LnReporter(addr, tc, AbstractManager::getSystemPrefix()));
  t->setUserName(userName);
  t->addPropertyChangeListener((PropertyChangeListener*)this);
  connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -73,9 +73,9 @@ Reporter* LnReporterManager::createNewReporter(QString systemName, QString userN
  * @param systemName the system name
  * @return the bit address
  */
-/*public*/ int LnReporterManager::getBitFromSystemName(QString systemName)const {
+/*public*/ int LnReporterManager::getBitFromSystemName(QString systemName) {
     // validate the system Name leader characters
-    if ((!systemName.startsWith(getSystemPrefix())) || (!systemName.startsWith(getSystemPrefix() + "R"))) {
+    if ((!systemName.startsWith(AbstractManager::getSystemPrefix())) || (!systemName.startsWith(AbstractManager::getSystemPrefix() + "R"))) {
         // here if an illegal LocoNet Reporter system name
         log.error(tr("invalid character in header field of loconet reporter system name: %1").arg(systemName));
         return (0);
@@ -84,7 +84,7 @@ Reporter* LnReporterManager::createNewReporter(QString systemName, QString userN
     int num;
     bool bok;
         num = systemName.mid(
-                getSystemPrefix().length() + 1, systemName.length()).toInt(&bok);
+                AbstractManager::getSystemPrefix().length() + 1, systemName.length()).toInt(&bok);
     if(!bok) {
         log.warn(tr("invalid character in number field of system name: %1").arg(systemName));
         return (0);
@@ -106,7 +106,7 @@ Reporter* LnReporterManager::createNewReporter(QString systemName, QString userN
  * @return VALID if system name has a valid format; otherwise return INVALID
  */
 //@Override
-/*public*/ Manager::NameValidity LnReporterManager::validSystemNameFormat(QString systemName) const {
+/*public*/ Manager::NameValidity LnReporterManager::validSystemNameFormat(QString systemName)  {
     return (getBitFromSystemName(systemName) != 0) ? NameValidity::VALID : NameValidity::INVALID;
 }
 
@@ -115,7 +115,7 @@ Reporter* LnReporterManager::createNewReporter(QString systemName, QString userN
  */
 //@Override
 /*public*/ QString LnReporterManager::validateSystemNameFormat(QString systemName, QLocale locale) {
-    return validateIntegerSystemNameFormat(systemName, 1, 4096, locale);
+    return AbstractManager::validateIntegerSystemNameFormat(systemName, 1, 4096, locale);
 }
 
 //@Override
@@ -151,7 +151,7 @@ void LnReporterManager::message(LocoNetMessage* l)
           return;
   }
   log.debug(tr("Reporter[%1]").arg(addr));
-  LnReporter* r = (LnReporter*) provideReporter(getSystemNamePrefix() + QString::number(addr)); // NOI18N
+  LnReporter* r = (LnReporter*) provideReporter(AbstractManager::getSystemNamePrefix() + QString::number(addr)); // NOI18N
   r->messageFromManager(l); // make sure it got the message
 }
 

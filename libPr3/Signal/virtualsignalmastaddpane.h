@@ -8,6 +8,7 @@ class VirtualSignalMast;
 class QCheckBox;
 class VirtualSignalMastAddPane : public SignalMastAddPane
 {
+ Q_OBJECT
 public:
  VirtualSignalMastAddPane(QWidget* parent = nullptr);
  /*@Nonnull*/ /*public*/ QString getPaneName() override;
@@ -31,8 +32,11 @@ private:
 
 
 };
-/*static*/ /*public*/ class VirtualSignalMastAddPaneProvider : public SignalMastAddPane::SignalMastAddPaneProvider
+
+/*static*/ /*public*/ class VirtualSignalMastAddPaneProvider :  public SignalMastAddPaneProvider
 {
+  Q_OBJECT
+  Q_INTERFACES(SignalMastAddPaneProvider)
 public:
 
     /*@Nonnull*/ /*public*/ QString getPaneName()  override;

@@ -145,7 +145,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      makePanelsVisible();
 
-     trainManager->PropertyChangeSupport::addPropertyChangeListener(this);
+     trainManager->addPropertyChangeListener(this);
  }
 
  /*public*/ void TrainsTableSetColorFrame::buttonActionPerformed(QWidget* ae) {

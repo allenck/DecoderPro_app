@@ -46,11 +46,11 @@ InternalLightManager::InternalLightManager(InternalSystemConnectionMemo* memo, Q
  * {@inheritDoc}
  */
 //@Override
-/*public*/ SystemConnectionMemo* InternalLightManager::getMemo() const {
+/*public*/ SystemConnectionMemo* InternalLightManager::getMemo()  {
     return  memo;
 }
 
-/*public*/ bool InternalLightManager::validSystemNameConfig(QString /*systemName*/) const {
+/*public*/ bool InternalLightManager::validSystemNameConfig(QString /*systemName*/) {
     return true;
 }
 

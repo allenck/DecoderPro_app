@@ -16,7 +16,7 @@
      * @param memo the system connection
      */
     /*public*/ DefaultVariableLightManager::DefaultVariableLightManager(SystemConnectionMemo* memo, QObject* parent)
-     : AbstractLightManager(memo, parent){
+     : AbstractManager(memo, parent){
         //super(memo);
     }
 
@@ -26,11 +26,11 @@
      */
     /*public*/ DefaultVariableLightManager* DefaultVariableLightManager::init() {
         LightManager* lm = (LightManager*)InstanceManager::getDefault("LightManager");
-       PropertyChangeSupport::addPropertyChangeListener("beans", this);
-        for (NamedBean* nb : lm->getNamedBeanSet()) {
+       ((AbstractManager*)lm->self())->PropertyChangeSupport::addPropertyChangeListener("beans", this);
+        for (NamedBean* nb : ((AbstractManager*)lm->self())->getNamedBeanSet()) {
          Light* l = (Light*)nb;
             if (qobject_cast<VariableLight*>(l->self())) {
-                AbstractLightManager::Register((VariableLight*) l);
+                Register((VariableLight*) l);
             }
         }
         return this;
@@ -39,7 +39,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/ void DefaultVariableLightManager::dispose() {
-        AbstractLightManager::dispose();
+        dispose();
     }
 
     /** {@inheritDoc} */
@@ -50,7 +50,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ char DefaultVariableLightManager::typeLetter() const{
+    /*public*/ QChar DefaultVariableLightManager::typeLetter(){
         return 'L';
     }
 
@@ -72,14 +72,14 @@
     /** {@inheritDoc} */
     //@Override
     //@OverridingMethodsMustInvokeSuper
-    /*public*/ void DefaultVariableLightManager::Register(/*@Nonnull*/ NamedBean* /*s*/) const{
+    /*public*/ void DefaultVariableLightManager::Register(/*@Nonnull*/ NamedBean* /*s*/){
         throw new UnsupportedOperationException("Not supported. Use LightManager.register() instead");
     }
 
     /** {@inheritDoc} */
     //@Override
     //@OverridingMethodsMustInvokeSuper
-    /*public*/ void DefaultVariableLightManager::deregister(/*@Nonnull*/ NamedBean */*s*/) const {
+    /*public*/ void DefaultVariableLightManager::deregister(/*@Nonnull*/ NamedBean */*s*/)  {
         throw new UnsupportedOperationException("Not supported. Use LightManager.deregister() instead");
     }
 
@@ -92,35 +92,35 @@
 
     //@Override
     /*public*/ void DefaultVariableLightManager::propertyChange(PropertyChangeEvent* e) {
-        AbstractLightManager::propertyChange(e);
+        propertyChange(e);
 
         if ("beans" == (e->getPropertyName())) {
 
             // A NamedBean is added
             if (e->getNewValue() != QVariant()
                     && (qobject_cast<VariableLight*>(VPtr<VariableLight>::asPtr(e->getNewValue())))) {
-                AbstractLightManager::Register(VPtr<VariableLight>::asPtr(e->getNewValue()));
+                Register(VPtr<VariableLight>::asPtr(e->getNewValue()));
             }
 
             // A NamedBean is removed
             if (e->getOldValue() != QVariant()
                     && (qobject_cast<VariableLight*>(VPtr<VariableLight>::asPtr(e->getOldValue())))) {
-                AbstractLightManager::deregister((VariableLight*) VPtr<VariableLight>::asPtr(e->getOldValue()));
+                deregister((VariableLight*) VPtr<VariableLight>::asPtr(e->getOldValue()));
             }
         }
     }
 
     /*public*/ NamedBean* DefaultVariableLightManager::getByUserName(/*@Nonnull*/ QString s) const
     {
-     return (VariableLight*)AbstractLightManager::getByUserName(s);
+     return (VariableLight*)getByUserName(s);
     }
 
     /*public*/ NamedBean* DefaultVariableLightManager::getBySystemName(/*@Nonnull*/ QString s) const
     {
-     return AbstractLightManager::getBySystemName(s);
+     return getBySystemName(s);
     }
 
-    /*public*/ SystemConnectionMemo* DefaultVariableLightManager::getMemo() const
+    /*public*/ SystemConnectionMemo* DefaultVariableLightManager::getMemo()
     {
      return  memo;
     }

@@ -29,7 +29,7 @@ LnSensorManagerTest::LnSensorManagerTest()
 
 //@Test
 /*public*/ void LnSensorManagerTest::testLnSensorCreate() {
-    Assert::assertNotNull("exists", l, __FILE__, __LINE__);
+    Assert::assertNotNull("exists", l->self(), __FILE__, __LINE__);
 }
 
 //@Test

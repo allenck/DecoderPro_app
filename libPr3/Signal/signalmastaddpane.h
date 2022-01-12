@@ -19,18 +19,6 @@ public:
                          QString username);
  /*@Nonnull*/ /*abstract*/virtual  /*public*/ QString getPaneName();
 
- /*static*/ /*public*/ /*abstract*/ class SignalMastAddPaneProvider : public  JmriServiceProviderInterface
- {
-     public:
-     /*public*/ bool isAvailable();
-     /*@Nonnull*/ /*abstract*/ virtual /*public*/ QString getPaneName();
-     /*@Nonnull*/ /*abstract*/ virtual /*public*/ SignalMastAddPane* getNewPane();
-     /*final*/ static /*public*/ QMap<QString, SignalMastAddPaneProvider*>* getInstancesMap();
-     /*final*/ static /*public*/ QList<SignalMastAddPaneProvider*> getInstancesCollection();
-     /*final*/ static /*public*/ void loadInstances();
- private:
-     static /*volatile*/ QMap<QString, SignalMastAddPaneProvider*>* instanceMap;// = nullptr;
- };
 
 
 
@@ -43,5 +31,20 @@ protected:
 
 };
 
+/*static*/ /*public*/ /*abstract*/ class SignalMastAddPaneProvider : public QObject, public  JmriServiceProviderInterface
+{
+  Q_OBJECT
+  Q_INTERFACES(JmriServiceProviderInterface)
+    public:
+    /*public*/ bool isAvailable();
+    /*@Nonnull*/ /*abstract*/ virtual /*public*/ QString getPaneName();
+    /*@Nonnull*/ /*abstract*/ virtual /*public*/ SignalMastAddPane* getNewPane();
+    /*final*/ static /*public*/ QMap<QString, SignalMastAddPaneProvider*>* getInstancesMap();
+    /*final*/ static /*public*/ QList<SignalMastAddPaneProvider*> getInstancesCollection();
+    /*final*/ static /*public*/ void loadInstances();
+private:
+    static /*volatile*/ QMap<QString, SignalMastAddPaneProvider*>* instanceMap;// = nullptr;
+};
 
+Q_DECLARE_INTERFACE(SignalMastAddPaneProvider, "SignalMastAddPaneProvider")
 #endif // SIGNALMASTADDPANE_H

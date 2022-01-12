@@ -52,7 +52,7 @@ void CreateEditBlock::on_blockEditDone_clicked()
   bool bOk;
   int iAddr = newName.toInt(&bOk);
   if(bOk && iAddr > 0)
-      newName = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->createSystemName(newName, "I");
+      newName = ((AbstractProxyManager*)InstanceManager::sensorManagerInstance())->createSystemName(newName, "I");
   if (layoutBlock->validateSensor(newName,/*this*/editor)==NULL)
   {
    // invalid sensor entered

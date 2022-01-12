@@ -29,6 +29,7 @@ public:
  /*public*/ static /*final*/ QString APPEARANCES;// = "appearances"; // NOI18N
 
  /*public*/ void savePreferences(Profile* profile);
+    QObject* self() override {return (QObject*)this;}
 
  ~WarrantPreferences() {}
  WarrantPreferences(const WarrantPreferences&) : AbstractPreferencesManager() {}

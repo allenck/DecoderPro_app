@@ -3,7 +3,7 @@
 #include "trainmanagerxml.h"
 #include "train.h"
 #include "control.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "jcombobox.h"
 #include "rosterentry.h"
 #include <QStringList>
@@ -54,7 +54,7 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString TrainManager::TRAINS_SHOW_FULL_NAME_PROPERTY = "TrainsShowFullName"; // NOI18N
 
  /*public*/ TrainManager::TrainManager(QObject *parent) :
- PropertyChangeSupport(this, parent)
+ QObject(parent)
  {
   setObjectName("TrainManager");
   // Train frame attributes
@@ -87,7 +87,7 @@ namespace Operations
   _id = 0; // train ids
   // stores known Train instances by id
   _trainHashTable = QMap<QString, Train*>();
-  //pcs = new PropertyChangeSupport(this);
+  //pcs = new SwingPropertyChangeSupport(this, nullptr);
 
 
  }

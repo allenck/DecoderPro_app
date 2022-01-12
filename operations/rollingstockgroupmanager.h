@@ -1,13 +1,13 @@
 #ifndef OPERATIONS_ROLLINGSTOCKGROUPMANAGER_H
 #define OPERATIONS_ROLLINGSTOCKGROUPMANAGER_H
 
-#include <propertychangesupport.h>
+#include "swingpropertychangesupport.h"
 #include "rollingstockgroup.h"
 #include "jcombobox.h"
 
 namespace Operations {
 
- class RollingStockGroupManager : public PropertyChangeSupport
+ class RollingStockGroupManager : public SwingPropertyChangeSupport
  {
   public:
    explicit RollingStockGroupManager(QObject *parent = nullptr);

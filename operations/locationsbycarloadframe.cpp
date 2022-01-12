@@ -231,14 +231,14 @@ namespace Operations
          if (_location != NULL && _location != location) {
              continue;
          }
-         //location->PropertyChangeSupport::addPropertyChangeListener(this);
+         //location->SwingPropertyChangeSupport::addPropertyChangeListener(this);
          connect(location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          QLabel* locationName = new QLabel(location->getName());
          addItemLeft(pLocations, locationName, 0, x++);
          QList<Track*> tracks = location->getTracksByNameList(NULL);
          foreach (Track* track, tracks)
          {
-             //track->PropertyChangeSupport::addPropertyChangeListener(this);
+             //track->SwingPropertyChangeSupport::addPropertyChangeListener(this);
           connect(track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              QCheckBox* cb = new QCheckBox(track->getName());
              cb->setObjectName(track->getId() + "-" + "r");

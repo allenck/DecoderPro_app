@@ -17,7 +17,7 @@ SectionManager::SectionManager(QObject *parent) :
  registerSelf();
  setProperty("InstanceManagerAutoDefault", "yes");
 
- ((SensorManager*)InstanceManager::getDefault("SensorManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
+ ((SensorManager*)InstanceManager::getDefault("SensorManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
  ((BlockManager*)InstanceManager::getDefault("BlockManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
 
 }
@@ -61,7 +61,7 @@ int SectionManager::getXMLOrder() const{
 }
 
 //QString SectionManager::getSystemPrefix() { return "I"; }
-char SectionManager::typeLetter()const  { return 'Y'; }
+QChar SectionManager::typeLetter()  { return 'Y'; }
 
 //@Override
 /*public*/ QString getNamedBeanClass() {

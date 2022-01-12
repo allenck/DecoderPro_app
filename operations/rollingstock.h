@@ -5,7 +5,7 @@
 #include <QDate>
 #include "propertychangelistener.h"
 #include "appslib_global.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "instancemanager.h"
 
 class DefaultIdTag;
@@ -21,7 +21,7 @@ namespace Operations
  class Train;
  class RouteLocation;
  class Location;
- class APPSLIBSHARED_EXPORT RollingStock : public PropertyChangeSupport, public PropertyChangeListener
+ class APPSLIBSHARED_EXPORT RollingStock : public SwingPropertyChangeSupport, public PropertyChangeListener
  {
   Q_OBJECT
   Q_INTERFACES(PropertyChangeListener)

@@ -56,7 +56,7 @@ namespace Operations
   this->locationName = locationName;
   this->trackName = trackName;
 
-  manager->PropertyChangeSupport::addPropertyChangeListener(this);
+  manager->SwingPropertyChangeSupport::addPropertyChangeListener(this);
   updateList();
  }
 
@@ -731,7 +731,7 @@ namespace Operations
  {
   foreach (RollingStock* car, *manager->getList())
   {
-   car->PropertyChangeSupport::addPropertyChangeListener(this);
+   car->SwingPropertyChangeSupport::addPropertyChangeListener(this);
   }
  }
 

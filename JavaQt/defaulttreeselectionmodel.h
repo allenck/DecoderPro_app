@@ -5,7 +5,7 @@
 #include "defaultlistselectionmodel.h"
 
 class EventListenerList;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class RowMapper;
 class JAVAQTSHARED_EXPORT DefaultTreeSelectionModel : public TreeSelectionModel
 {
@@ -54,7 +54,7 @@ private:
 protected:
 
  /** Used to messaged registered listeners. */
- /*protected*/ PropertyChangeSupport*     changeSupport = nullptr;
+ /*protected*/ SwingPropertyChangeSupport*     changeSupport = nullptr;
 
  /** Paths that are currently selected.  Will be null if nothing is
    * currently selected. */

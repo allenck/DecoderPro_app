@@ -9,7 +9,7 @@
 #include "logger.h"
 #include "vptr.h"
 #include "trainschedule.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "propertychangeevent.h"
 #include "instancemanager.h"
 

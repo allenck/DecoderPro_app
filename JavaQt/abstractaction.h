@@ -3,7 +3,7 @@
 #include "action.h"
 #include "javaqt_global.h"
 #include "propertychangelistener.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 
 //class SwingPropertyChangeSupport;
 class PropertyChangeEvent;
@@ -51,7 +51,7 @@ private:
   * If any <code>PropertyChangeListeners</code> have been registered, the
   * <code>changeSupport</code> field describes them.
   */
- /*protected*/  PropertyChangeSupport* changeSupport;
+ /*protected*/  SwingPropertyChangeSupport* changeSupport = nullptr;
  void common();
  QString _class;
 

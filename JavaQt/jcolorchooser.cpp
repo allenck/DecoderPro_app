@@ -226,7 +226,7 @@ void JColorChooser::common(ColorSelectionModel* model)
  selectionModel = model;
 // updateUI();
  dragEnabled = false;
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
 
  setLayout(new QVBoxLayout());
 
@@ -836,7 +836,7 @@ static class DisposeOnClose extends ComponentAdapter implements Serializable{
 
 void JColorChooser::addPropertyChangeListener(QString propertyName, PropertyChangeListener *listener)
 {
- pcs->PropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
+ pcs->SwingPropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
 }
 
 void JColorChooser::removePropertyChangeListener(QString propertyName, PropertyChangeListener *listener)

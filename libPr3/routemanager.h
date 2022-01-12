@@ -43,7 +43,7 @@ public:
      *   Returns null if a Route with the same systemName or userName
      *       already exists, or if there is trouble creating a new Route.
      */
- /*public*/ virtual Route* provideRoute(QString /*systemName*/, QString /*userName*/) const {return nullptr;}
+ /*public*/ virtual Route* provideRoute(QString /*systemName*/, QString /*userName*/)  {return nullptr;}
 
     /**
      * For use with User GUI, to allow the auto generation of systemNames,

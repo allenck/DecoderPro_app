@@ -4,7 +4,7 @@
 #include "border.h"
 #include "flowlayout.h"
 #include "jcomponent.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 
 class JPanel : public QFrame, public JComponent
 {
@@ -40,7 +40,7 @@ private:
  void paintEvent(QPaintEvent *evt)override;
  QLayout* findParentLayout(QWidget* w);
  QLayout* findParentLayout(QWidget* w, QLayout* topLevelLayout);
- PropertyChangeSupport* pcs = new PropertyChangeSupport(this);
+ SwingPropertyChangeSupport* pcs = new SwingPropertyChangeSupport(this, nullptr);
 
 };
 #endif // JPANEL_H

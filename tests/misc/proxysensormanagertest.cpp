@@ -6,7 +6,7 @@
 #include "junitappender.h"
 #include "internalsystemconnectionmemo.h"
 #include "internalsensormanager.h"
-
+#include "abstractsensormanager.h"
 ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent)
 {
 
@@ -21,7 +21,7 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
 
     //@Test
     /*public*/ void ProxySensorManagerTest::testDispose() {
-        l->dispose();  // all we're really doing here is making sure the method exists
+        l->AbstractProxyManager::dispose();  // all we're really doing here is making sure the method exists
     }
 
     //@Test
@@ -30,26 +30,26 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
         Sensor* tj = l->newSensor("JS1", "mine");
         // check
         Assert::assertTrue("real object returned ", tj != nullptr, __FILE__, __LINE__);
-        Assert::assertTrue("user name correct ", tj == l->getByUserName("mine"), __FILE__, __LINE__);
-        Assert::assertTrue("system name correct ", tj == l->getBySystemName("JS1"), __FILE__, __LINE__);
+        Assert::assertTrue("user name correct ", tj == l->AbstractProxyManager::getByUserName("mine"), __FILE__, __LINE__);
+        Assert::assertTrue("system name correct ", tj == l->AbstractProxyManager::getBySystemName("JS1"), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void ProxySensorManagerTest::testSensorNameCase() {
-        Assert::assertEquals(0, l->getObjectCount(), __FILE__, __LINE__);
+        Assert::assertEquals(0, l->AbstractProxyManager::getObjectCount(), __FILE__, __LINE__);
         // create
         Sensor* t = l->provideSensor("IS:XYZ");
         Assert::assertNotEquals(t, l->provideSensor("IS:xyz"), __FILE__, __LINE__);  // upper case and lower case are different objects
         // check
         Assert::assertTrue("real object returned ", t != nullptr, __FILE__, __LINE__);
         Assert::assertEquals("IS:XYZ", t->getSystemName(), __FILE__, __LINE__);  // we force upper
-        Assert::assertTrue("system name correct ", t == l->getBySystemName("IS:XYZ"), __FILE__, __LINE__);
-        Assert::assertEquals(2, l->getObjectCount(), __FILE__, __LINE__);
-        Assert::assertEquals(2, l->getNamedBeanSet().size(), __FILE__, __LINE__);
+        Assert::assertTrue("system name correct ", t == l->AbstractProxyManager::getBySystemName("IS:XYZ"), __FILE__, __LINE__);
+        Assert::assertEquals(2, l->AbstractProxyManager::getObjectCount(), __FILE__, __LINE__);
+        Assert::assertEquals(2, l->AbstractProxyManager::getNamedBeanSet().size(), __FILE__, __LINE__);
         // test providing same name as existing Sensor* does not create new sensor
         l->provideSensor("IS:XYZ");
-        Assert::assertEquals(2, l->getObjectCount(), __FILE__, __LINE__);
-        Assert::assertEquals(2, l->getNamedBeanSet().size(), __FILE__, __LINE__);
+        Assert::assertEquals(2, l->AbstractProxyManager::getObjectCount(), __FILE__, __LINE__);
+        Assert::assertEquals(2, l->AbstractProxyManager::getNamedBeanSet().size(), __FILE__, __LINE__);
     }
 
     //@Test
@@ -58,8 +58,8 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
         Sensor* ti = l->newSensor("IS1", "mine");
         // check
         Assert::assertTrue("real object returned ", ti != nullptr, __FILE__, __LINE__);
-        Assert::assertTrue("user name correct ", ti == l->getByUserName("mine"), __FILE__, __LINE__);
-        Assert::assertTrue("system name correct ", ti == l->getBySystemName("IS1"), __FILE__, __LINE__);
+        Assert::assertTrue("user name correct ", ti == l->AbstractProxyManager::getByUserName("mine"), __FILE__, __LINE__);
+        Assert::assertTrue("system name correct ", ti == l->AbstractProxyManager::getBySystemName("IS1"), __FILE__, __LINE__);
     }
 
     //@Test
@@ -68,8 +68,8 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
         Sensor* tk = l->newSensor("KS1", "mine");
         // check
         Assert::assertTrue("real object returned ", tk != nullptr, __FILE__, __LINE__);
-        Assert::assertTrue("user name correct ", tk == l->getByUserName("mine"), __FILE__, __LINE__);
-        Assert::assertTrue("system name correct ", tk == l->getBySystemName("KS1"), __FILE__, __LINE__);
+        Assert::assertTrue("user name correct ", tk == l->AbstractProxyManager::getByUserName("mine"), __FILE__, __LINE__);
+        Assert::assertTrue("system name correct ", tk == l->AbstractProxyManager::getBySystemName("KS1"), __FILE__, __LINE__);
     }
 
     //@Test
@@ -79,7 +79,7 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
         // check
         Assert::assertTrue("real object returned", t != nullptr, __FILE__, __LINE__);
         Assert::assertEquals("system name correct", "JS9", t->getSystemName(), __FILE__, __LINE__);
-        Assert::assertEquals("can find by name", t, l->getBySystemName("JS9"), __FILE__, __LINE__);
+        Assert::assertEquals("can find by name", t, l->AbstractProxyManager::getBySystemName("JS9"), __FILE__, __LINE__);
     }
 
     //@Test(expected=IllegalArgumentException.class)
@@ -89,7 +89,7 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
             Assert::fail("didn't throw", __FILE__, __LINE__);
         }
         catch (IllegalArgumentException* ex) {
-            JUnitAppender::assertErrorMessage("Invalid system name for Sensor: System name must start with \"" + l->getSystemNamePrefix() + "\".", __FILE__, __LINE__);
+            JUnitAppender::assertErrorMessage("Invalid system name for Sensor: System name must start with \"" + l->AbstractProxyManager::getSystemNamePrefix() + "\".", __FILE__, __LINE__);
 //            throw new ex;
         }
     }
@@ -99,8 +99,8 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
         // test that you always get the same representation
         Sensor* t1 = l->newSensor("JS1", "mine");
         Assert::assertTrue("t1 real object returned ", t1 != nullptr, __FILE__, __LINE__);
-        Assert::assertEquals("same by user ", t1, l->getByUserName("mine"), __FILE__, __LINE__);
-        Assert::assertEquals("same by system ", t1, l->getBySystemName("JS1"), __FILE__, __LINE__);
+        Assert::assertEquals("same by user ", t1, l->AbstractProxyManager::getBySystemName("mine"), __FILE__, __LINE__);
+        Assert::assertEquals("same by system ", t1, l->AbstractProxyManager::getBySystemName("JS1"), __FILE__, __LINE__);
 
         Sensor* t2 = l->newSensor("JS1", "mine");
         Assert::assertTrue("t2 real object returned ", t2 != nullptr, __FILE__, __LINE__);
@@ -111,8 +111,8 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
     //@Test
     /*public*/ void ProxySensorManagerTest::testMisses() {
         // try to get nonexistant objects
-        Assert::assertTrue(nullptr == l->getByUserName("foo"), __FILE__, __LINE__);
-        Assert::assertTrue(nullptr == l->getBySystemName("bar"), __FILE__, __LINE__);
+        Assert::assertTrue(nullptr == l->AbstractProxyManager::getBySystemName("foo"), __FILE__, __LINE__);
+        Assert::assertTrue(nullptr == l->AbstractProxyManager::getBySystemName("bar"), __FILE__, __LINE__);
     }
 
     //@Test
@@ -120,7 +120,7 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
         Sensor* t = l->provideSensor("JS1ABC");  // internal will always accept that name
         QString name = t->getSystemName();
 
-        int prefixLength = l->getSystemPrefix().length()+1;     // 1 for type letter
+        int prefixLength = l->AbstractProxyManager::getSystemPrefix().length()+1;     // 1 for type letter
         QString lowerName = name.mid(0,prefixLength)+name.mid(prefixLength, name.length()).toLower();
 
         Assert::assertNotEquals(t, l->getSensor(lowerName), __FILE__, __LINE__);
@@ -132,9 +132,9 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
         Sensor* t1 = l->newSensor("JS1", "before");
         Assert::assertNotNull("t1 real object ", t1, __FILE__, __LINE__);
         t1->setUserName("after");
-        Sensor* t2 = l->getByUserName("after");
+        Sensor* t2 = (Sensor*)l->AbstractProxyManager::getBySystemName("after");
         Assert::assertEquals("same object", t1, t2, __FILE__, __LINE__);
-        Assert::assertEquals("no old object", nullptr, l->getByUserName("before"), __FILE__, __LINE__);
+        Assert::assertEquals("no old object", nullptr, l->AbstractProxyManager::getBySystemName("before"), __FILE__, __LINE__);
     }
 
     //@Test
@@ -181,7 +181,7 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
         Sensor* s1 = l->provideSensor("IS1");
         s1->setUserName("Sensor* 1");
 
-        l->addDataListener(this);
+        l->AbstractProxyManager::addDataListener((Manager::ManagerDataListener*)this);
         l->PropertyChangeSupport::addPropertyChangeListener("length", (PropertyChangeListener*)this);
         l->PropertyChangeSupport::addPropertyChangeListener("DisplayListName", (PropertyChangeListener*)this);
 
@@ -203,7 +203,7 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
         Assert::assertEquals("type 1", Manager::ManagerDataEvent::INTERVAL_ADDED, lastType, __FILE__, __LINE__);
         Assert::assertEquals("start == end 1", lastEvent0, lastEvent1, __FILE__, __LINE__);
         Assert::assertEquals("index 1", 1, lastEvent0, __FILE__, __LINE__);
-        Assert::assertEquals("content at index 1", s2, l->getNamedBeanList()->value(lastEvent0), __FILE__, __LINE__);
+        Assert::assertEquals("content at index 1", s2, l->AbstractProxyManager::getNamedBeanList()->value(lastEvent0), __FILE__, __LINE__);
 
         // add an item
         Sensor* s3 = l->newSensor("IS3", "Sensor* 3");
@@ -218,10 +218,13 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
         Assert::assertEquals("type 2", Manager::ManagerDataEvent::INTERVAL_ADDED, lastType, __FILE__, __LINE__);
         Assert::assertEquals("start == end 2", lastEvent0, lastEvent1, __FILE__, __LINE__);
         Assert::assertEquals("index 2", 2, lastEvent0, __FILE__, __LINE__);
-        Assert::assertEquals("content at index 2", s3, l->getNamedBeanList()->value(lastEvent0), __FILE__, __LINE__);
+        Assert::assertEquals("content at index 2", s3, l->AbstractProxyManager::getNamedBeanList()->value(lastEvent0), __FILE__, __LINE__);
 
         // can add a manager and still get notifications
-        l->addManager(new InternalSensorManager(new InternalSystemConnectionMemo("Z", "Zulu")));
+#if 0
+        Manager* ism = new InternalSensorManager(new InternalSystemConnectionMemo("Z", "Zulu"));
+        l->addManager((new InternalSensorManager(new InternalSystemConnectionMemo("Z", "Zulu"))));
+#endif
         Sensor* s4 = l->provideSensor("ZS2");
 
         // property listener should have been immediately invoked
@@ -234,7 +237,7 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
         Assert::assertEquals("type 2", Manager::ManagerDataEvent::INTERVAL_ADDED, lastType, __FILE__, __LINE__);
         Assert::assertEquals("start == end 2", lastEvent0, lastEvent1, __FILE__, __LINE__);
         Assert::assertEquals("index 3", 3, lastEvent0, __FILE__, __LINE__);
-        Assert::assertEquals("content at added index", s4, l->getNamedBeanList()->value(lastEvent0), __FILE__, __LINE__);
+        Assert::assertEquals("content at added index", s4, l->AbstractProxyManager::getNamedBeanList()->value(lastEvent0), __FILE__, __LINE__);
 
 
     }
@@ -247,10 +250,10 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
         Sensor* s2 = l->provideSensor("IS2");
         l->provideSensor("IS3");
 
-        l->addDataListener(this);
-        QList<NamedBean*>* tlist = l->getNamedBeanList();
+        l->AbstractProxyManager::addDataListener(this);
+        QList<NamedBean*>* tlist = l->AbstractProxyManager::getNamedBeanList();
 
-        l->deregister(s2);
+        l->AbstractProxyManager::deregister(s2);
 
         // listener should have been immediately invoked
         Assert::assertEquals("events", 1, events, __FILE__, __LINE__);
@@ -272,10 +275,10 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
         Sensor* s2 = l->provideSensor("JS2");
         l->provideSensor("JS3");
 
-        l->addDataListener(this);
-        QList<NamedBean*>* tlist = l->getNamedBeanList();
+        l->AbstractProxyManager::addDataListener(this);
+        QList<NamedBean*>* tlist = l->AbstractProxyManager::getNamedBeanList();
 
-        l->deregister(s2);
+        l->AbstractProxyManager::deregister(s2);
 
         // listener should have been immediately invoked
         Assert::assertEquals("events", 1, events, __FILE__, __LINE__);
@@ -288,29 +291,29 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
 
     //@Test
     /*public*/ void ProxySensorManagerTest::testGetObjectCount() {
-        Assert::assertEquals(0, l->getObjectCount(), __FILE__, __LINE__);
+        Assert::assertEquals(0, l->AbstractProxyManager::getObjectCount(), __FILE__, __LINE__);
 
         l->provideSensor("IS10");
-        Assert::assertEquals(1, l->getObjectCount(), __FILE__, __LINE__);
+        Assert::assertEquals(1, l->AbstractProxyManager::getObjectCount(), __FILE__, __LINE__);
 
         l->provideSensor("JS1");
-        Assert::assertEquals(2, l->getObjectCount(), __FILE__, __LINE__);
+        Assert::assertEquals(2, l->AbstractProxyManager::getObjectCount(), __FILE__, __LINE__);
 
         l->provideSensor("IS11");
-        Assert::assertEquals(3, l->getObjectCount(), __FILE__, __LINE__);
+        Assert::assertEquals(3, l->AbstractProxyManager::getObjectCount(), __FILE__, __LINE__);
 
         Sensor* s2 = l->provideSensor("JS2");
         l->provideSensor("JS3");
-        Assert::assertEquals(5, l->getObjectCount(), __FILE__, __LINE__);
+        Assert::assertEquals(5, l->AbstractProxyManager::getObjectCount(), __FILE__, __LINE__);
 
-        l->deregister(s2);
-        Assert::assertEquals(4, l->getObjectCount(), __FILE__, __LINE__);
+        l->AbstractProxyManager::deregister(s2);
+        Assert::assertEquals(4, l->AbstractProxyManager::getObjectCount(), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void ProxySensorManagerTest::testRemoveTrackingJMute() {
 
-        l->setDataListenerMute(true);
+        l->AbstractProxyManager::setDataListenerMute(true);
 
         l->provideSensor("IS10");
         l->provideSensor("IS11");
@@ -320,15 +323,15 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
         Sensor* s2 = l->provideSensor("JS2");
         l->provideSensor("JS3");
 
-        l->addDataListener(this);
+        l->AbstractProxyManager::addDataListener(this);
 
-        l->deregister(s2);
+        l->AbstractProxyManager::deregister(s2);
 
         // listener should have not been invoked
         Assert::assertEquals("events", 0, events, __FILE__, __LINE__);
 
         // unmute and get notification
-        l->setDataListenerMute(false);
+        l->AbstractProxyManager::setDataListenerMute(false);
         Assert::assertEquals("events", 1, events, __FILE__, __LINE__);
         Assert::assertEquals("last call", "Changed", lastCall, __FILE__, __LINE__);
         Assert::assertEquals("type", Manager::ManagerDataEvent::CONTENTS_CHANGED, lastType, __FILE__, __LINE__);
@@ -341,10 +344,10 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
         Sensor* s4 = l->provideSensor("IS4");
         Sensor* s2 = l->provideSensor("IS2");
 
-        QList<QString> sortedList = l->getSystemNameList();
-        QList<NamedBean*>* beanList = l->getNamedBeanList();
-        QSet<NamedBean*> beanSet = l->getNamedBeanSet();
-        QStringList sortedArray = l->getSystemNameArray();
+        QList<QString> sortedList = l->AbstractProxyManager::getSystemNameList();
+        QList<NamedBean*>* beanList = l->AbstractProxyManager::getNamedBeanList();
+        QSet<NamedBean*> beanSet = l->AbstractProxyManager::getNamedBeanSet();
+        QStringList sortedArray = l->AbstractProxyManager::getSystemNameArray();
         JUnitAppender::suppressWarnMessage("Manager#getSystemNameArray() is deprecated", __FILE__, __LINE__);
 
         Assert::assertEquals("sorted list length", 2, sortedList.size(), __FILE__, __LINE__);
@@ -389,10 +392,10 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
         Assert::assertEquals("sorted array 2nd", "IS4", sortedArray[1], __FILE__, __LINE__);
 
         // update and test update
-        sortedList = l->getSystemNameList();
-        beanList = l->getNamedBeanList();
-        beanSet = l->getNamedBeanSet();
-        sortedArray = l->getSystemNameArray();
+        sortedList = l->AbstractProxyManager::getSystemNameList();
+        beanList = l->AbstractProxyManager::getNamedBeanList();
+        beanSet = l->AbstractProxyManager::getNamedBeanSet();
+        sortedArray = l->AbstractProxyManager::getSystemNameArray();
         JUnitAppender::suppressWarnMessage("Manager#getSystemNameArray() is deprecated", __FILE__, __LINE__);
 
         Assert::assertEquals("sorted list length", 4, sortedList.size(), __FILE__, __LINE__);
@@ -427,9 +430,9 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
         Sensor* s1 = l->provideSensor("IS1");
         l->provideSensor("IS2");
 
-        QList<QString> nameList = l->getSystemNameList();
-        QList<NamedBean*>* beanList = l->getNamedBeanList();
-        QSet<NamedBean*> beanSet = l->getNamedBeanSet();
+        QList<QString> nameList = l->AbstractProxyManager::getSystemNameList();
+        QList<NamedBean*>* beanList = l->AbstractProxyManager::getNamedBeanList();
+        QSet<NamedBean*> beanSet = l->AbstractProxyManager::getNamedBeanSet();
 
         try {
             nameList.append("Foo");
@@ -510,10 +513,11 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
         // create and register the manager object
         l = new ProxySensorManager();
         // initially has three systems: IS, JS, KS
+#if 0
         l->addManager(new InternalSensorManager(new InternalSystemConnectionMemo("J", "Juliet")));
         l->addManager(new InternalSensorManager(new InternalSystemConnectionMemo("I", "India"))); // not in alpha order to make it exciting
         l->addManager(new InternalSensorManager(new InternalSystemConnectionMemo("K", "Kilo")));
-
+#endif
         InstanceManager::setSensorManager((SensorManager*)l);
 
         propertyListenerCount = 0;

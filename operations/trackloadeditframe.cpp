@@ -274,7 +274,7 @@ namespace Operations
   // load fields and enable buttons
   if (_track != NULL)
   {
-   //_track->PropertyChangeSupport::addPropertyChangeListener(this);
+   //_track->SwingPropertyChangeSupport::addPropertyChangeListener(this);
    trackName->setText(_track->getName());
    // only show ship loads for staging tracks
    paneShipLoadControls->setVisible(_track->getTrackType()==(Track::STAGING));

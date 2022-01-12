@@ -16,15 +16,14 @@
  * this interface.
  *
  * This interface defines all public methods of
- * {@link java.beans.PropertyChangeSupport} except the methods to fire
+ * {@link java.beans.SwingPropertyChangeSupport} except the methods to fire
  * PropertyChangeEvents.
  *
  * @author Randall Wood
  */
 /*public*/ /*interface*/class PropertyChangeProvider //: public QObject
 {
-//Q_OBJECT
-public:
+ public:
     /**
      * Add a {@link java.beans.PropertyChangeListener} to the listener list.
      *
@@ -47,7 +46,7 @@ public:
      * @return An array of PropertyChangeListeners.
      */
     //@Nonnull
-    /*public*/ virtual QVector<PropertyChangeListener*> getPropertyChangeListeners() {return QVector<PropertyChangeListener*>();}
+  /*public*/ virtual QVector<PropertyChangeListener*> getPropertyChangeListeners() const {return QVector<PropertyChangeListener*>();}
 
     /**
      * Get all {@link java.beans.PropertyChangeListener}s currently listening to

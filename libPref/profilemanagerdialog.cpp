@@ -51,20 +51,20 @@
  // super(parent, modal);
  initComponents();
 
-// ProfileManager::getDefault()->PropertyChangeSupport::addPropertyChangeListener(ProfileManager::ACTIVE_PROFILE, (PropertyChangeEvent evt) -> {
+// ProfileManager::getDefault()->SwingPropertyChangeSupport::addPropertyChangeListener(ProfileManager::ACTIVE_PROFILE, (PropertyChangeEvent evt) -> {
 //             profiles.setSelectedValue(ProfileManager.getDefault().getActiveProfile(), true);
 //             profiles.ensureIndexIsVisible(profiles.getSelectedIndex());
 //             profiles.repaint();
 //         });
 #if 0 //TODO: must be done after construcor and sub-class are built!
- ProfileManager::getDefault()->PropertyChangeSupport::addPropertyChangeListener(ProfileManager::ACTIVE_PROFILE, new PMDPropertyChangeListener1(this));
+ ProfileManager::getDefault()->SwingPropertyChangeSupport::addPropertyChangeListener(ProfileManager::ACTIVE_PROFILE, new PMDPropertyChangeListener1(this));
 
  //         ProfileManager.getDefault().addPropertyChangeListener(Profile.NAME, (PropertyChangeEvent evt) -> {
 //             if (evt.getSource().getClass().equals(Profile.class) && evt.getPropertyName().equals(Profile.NAME)) {
 //                 profileNameChanged(((Profile) evt.getSource()));
 //             }
 //         });
- ProfileManager::getDefault()->PropertyChangeSupport::addPropertyChangeListener(ProfileManager::ACTIVE_PROFILE, new PMDPropertyChangeListener2(this));
+ ProfileManager::getDefault()->SwingPropertyChangeSupport::addPropertyChangeListener(ProfileManager::ACTIVE_PROFILE, new PMDPropertyChangeListener2(this));
 #endif
 //    this.jScrollPane1.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
 

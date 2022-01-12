@@ -33,7 +33,7 @@
     nxButtonState = EntryExitPairs::NXBUTTONINACTIVE;
     extendedtime = false;
     log = new Logger("PointDetails");
-    pcs = new PropertyChangeSupport(this);
+    pcs = new SwingPropertyChangeSupport(this, nullptr);
     nxButtonListener = new NxButtonListener(this);//new PropertyChangeListener(this);
 
     this->facing=facing;
@@ -834,7 +834,7 @@ NamedBean* PointDetails::getSignal(){
 }
 
 /*public*/ /*synchronized*/ void PointDetails::addPropertyChangeListener(PropertyChangeListener* l) {
-    pcs->PropertyChangeSupport::addPropertyChangeListener(l);
+    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 }
 /*public*/ /*synchronized*/ void PointDetails::removePropertyChangeListener(PropertyChangeListener* l) {
     pcs->removePropertyChangeListener(l);

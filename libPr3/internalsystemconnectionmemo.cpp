@@ -108,11 +108,11 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
 
 /*public*/ InternalSensorManager* InternalSystemConnectionMemo::getSensorManager()
 {
- InternalSensorManager* sensorManager = (InternalSensorManager*) classObjectMap.value("SensorManager");
+ InternalSensorManager* sensorManager = (InternalSensorManager*) classObjectMap.value("SensorManager")->self();
  if (sensorManager == nullptr) {
      log->debug(tr("Create InternalSensorManager \"%1\" by request").arg(getSystemPrefix()));
      sensorManager = new InternalSensorManager(this);
-     store(sensorManager, "SensorManager");
+     store((Manager*)sensorManager->self(), "SensorManager");
      // special due to ProxyManager support
      InstanceManager::setSensorManager(sensorManager);
  }
@@ -121,7 +121,7 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
 
 /*public*/ InternalLightManager* InternalSystemConnectionMemo::getLightManager()
 {
- InternalLightManager* lightManager = (InternalLightManager*) classObjectMap.value("LightManager");
+ InternalLightManager* lightManager = (InternalLightManager*) classObjectMap.value("LightManager")->self();
  if (lightManager == nullptr)
  {
      log->debug("Create InternalLightManager by request");
@@ -133,11 +133,11 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
 }
 
 /*public*/ InternalReporterManager* InternalSystemConnectionMemo::getReporterManager() {
- InternalReporterManager* reporterManager = (InternalReporterManager*) classObjectMap.value("ReporterManager");
+ InternalReporterManager* reporterManager = (InternalReporterManager*) classObjectMap.value("ReporterManager")->self();
     if (reporterManager == nullptr) {
         log->debug("Create InternalReporterManager by request");
         reporterManager = new InternalReporterManager(this);
-        store(reporterManager, "ReporterManager");
+        store((Manager*)reporterManager->self(), "ReporterManager");
         // special due to ProxyManager support
         InstanceManager::setReporterManager(reporterManager);
     }
@@ -145,11 +145,11 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
 }
 
 /*public*/ InternalTurnoutManager* InternalSystemConnectionMemo::getTurnoutManager() {
- InternalTurnoutManager* turnoutManager = (InternalTurnoutManager*) classObjectMap.value("TurnoutManager");
+ InternalTurnoutManager* turnoutManager = (InternalTurnoutManager*) classObjectMap.value("TurnoutManager")->self();
  if (turnoutManager == nullptr) {
      log->debug(tr("Create InternalTurnoutManager \"%1\" by request").arg(getSystemPrefix()));
      turnoutManager = new InternalTurnoutManager(this);
-     store(turnoutManager, "TurnoutManager");
+     store((Manager*)turnoutManager->self(), "TurnoutManager");
      // special due to ProxyManager support
      InstanceManager::setTurnoutManager(turnoutManager);
     }
@@ -157,7 +157,7 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
 }
 
 /*public*/ InternalMeterManager* InternalSystemConnectionMemo::getMeterManager() {
-    InternalMeterManager* meterManager = (InternalMeterManager*) classObjectMap.value("MeterManager");
+    InternalMeterManager* meterManager = (InternalMeterManager*) classObjectMap.value("MeterManager")->self();
     if (meterManager == nullptr) {
         log->debug(tr("Create InternalMeterManager %1 by request").arg(getSystemPrefix()));
         meterManager = new InternalMeterManager(this);
@@ -267,16 +267,16 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
     if (!configured) configureManagers();
 
     if (type == ("SensorManager")) {
-     return (Manager*) getSensorManager();
+     return (Manager*) getSensorManager()->self();
  }
  if (type == ("LightManager")) {
-     return (Manager*) getLightManager();
+     return (Manager*) getLightManager()->self();
  }
  if (type == ("ReporterManager")) {
-     return (Manager*) getReporterManager();
+     return (Manager*) getReporterManager()->self();
  }
  if (type == ("TurnoutManager")) {
-     return (Manager*) getTurnoutManager();
+     return (Manager*) getTurnoutManager()->self();
  }
 
  if (!defaultInstanceType) {

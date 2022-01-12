@@ -63,11 +63,11 @@ namespace Operations
          // TODO the following two property changes could be moved to ScheduleItem
          // covers the cases where destination or track is deleted
          if (si->getDestination() != NULL ) {
-             si->getDestination()->PropertyChangeSupport::addPropertyChangeListener(this);
+             si->getDestination()->SwingPropertyChangeSupport::addPropertyChangeListener(this);
 
          }
          if (si->getDestinationTrack() != NULL ) {
-          si->getDestinationTrack()->PropertyChangeSupport::addPropertyChangeListener(this);
+          si->getDestinationTrack()->SwingPropertyChangeSupport::addPropertyChangeListener(this);
          }
      }
  }
@@ -85,8 +85,8 @@ namespace Operations
          //_schedule.addPropertyChangeListener(this);
       connect(_schedule->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
-     _location->PropertyChangeSupport::addPropertyChangeListener(this);
-     _track->PropertyChangeSupport::addPropertyChangeListener(this);
+     _location->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+     _track->SwingPropertyChangeSupport::addPropertyChangeListener(this);
      initTable(table);
  }
 

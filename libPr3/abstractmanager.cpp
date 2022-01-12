@@ -1,7 +1,7 @@
 #include "abstractmanager.h"
 #include <QStringList>
 #include "instancemanager.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "configxmlmanager.h"
 #include "abstractcatalogtree.h"
 #include "systemnamecomparator.h"
@@ -20,7 +20,7 @@
  * @author      Bob Jacobsen Copyright (C) 2003
  * @version	$Revision: 19272 $
  */
-AbstractManager::AbstractManager(QObject *parent) : VetoableChangeSupport(this, parent)
+AbstractManager::AbstractManager(QObject *parent) : QObject( parent)
 {
   Q_UNUSED(parent);
   log = new Logger("AbstractManager");
@@ -30,10 +30,10 @@ AbstractManager::AbstractManager(QObject *parent) : VetoableChangeSupport(this, 
  //registerSelf(); // ACK this fumction must be called by the subclass in order to work!
  lastAutoNamedBeanRef = QAtomicInteger<int>(0);
  silenceableProperties.insert("beans");
- listeners = QList<QObject*>();
+ listeners = QList<Manager::ManagerDataListener*>();
 }
 
-AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : VetoableChangeSupport(this, parent)
+AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : QObject( parent)
 {
   Q_UNUSED(parent);
  this->memo = memo;
@@ -45,7 +45,7 @@ AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : 
  //registerSelf(); // ACK this fumction must be called by the subclass in order to work!
  lastAutoNamedBeanRef = QAtomicInteger<int>(0);
  silenceableProperties.insert("beans");
- listeners = QList<QObject*>();
+ listeners = QList<Manager::ManagerDataListener*>();
 
 }
 
@@ -83,7 +83,7 @@ AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : 
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ SystemConnectionMemo* AbstractManager::getMemo() const {
+/*public*/ SystemConnectionMemo* AbstractManager::getMemo() {
     return memo;
 }
 
@@ -102,7 +102,7 @@ AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : 
 /** {@inheritDoc} */
 //@Override
 //@Nonnull
-/*public*/ QString AbstractManager::makeSystemName(/*@Nonnull*/ QString s, bool logErrors, QLocale locale) const {
+/*public*/ QString AbstractManager::makeSystemName(/*@Nonnull*/ QString s, bool logErrors, QLocale locale) {
     try {
         return Manager::makeSystemName(s, logErrors, locale);
     } catch (IllegalArgumentException* ex) {
@@ -113,28 +113,15 @@ AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : 
     }
 }
 
-//    /**
-//     * Provide access to deprecated method temporarilly
-//     * @deprecated 2.9.5 Use getSystemPrefix
-//     */
-//    @Deprecated
-//    public char systemLetter() {
-//        return getSystemPrefix().charAt(0);
-//    }
-
-// abstract methods to be extended by subclasses
-// to free resources when no longer used
-void AbstractManager::dispose()
-{
-    if (((ConfigureManager*)InstanceManager::getOptionalDefault("ConfigureManager"))!= nullptr)
-        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->deregister((QObject*)this);
-    _tsys = new QMap<QString, NamedBean*>();   // stores known Turnout instances by system name
-    _tuser = new QMap<QString, NamedBean*>();   // stores known Turnout instances by user name
-
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ void AbstractManager::dispose() {
+    ConfigureManager* cm = (ConfigureManager*)InstanceManager::getOptionalDefault("ConfigureManager");
+    if(cm) cm->deregister(this);
     _beans.clear();
     _tsys->clear();
     _tuser->clear();
-
 }
 
 
@@ -165,14 +152,14 @@ NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ NamedBean* AbstractManager::getBySystemName(/*@Nonnull*/ QString systemName) const {
+/*public*/ NamedBean* AbstractManager::getBySystemName(/*@Nonnull*/ QString systemName) {
     return (NamedBean*)_tsys->value(systemName);
 }
 
 /** {@inheritDoc} */
 //@Override
 //@CheckForNull
-/*public*/ NamedBean* AbstractManager::getByUserName(/*@Nonnull*/ QString userName) const{
+/*public*/ NamedBean* AbstractManager::getByUserName(/*@Nonnull*/ QString userName) {
     QString normalizedUserName = NamedBean::normalizeUserName(userName);
     return normalizedUserName != nullptr ? _tuser->value(normalizedUserName) : nullptr;
 }
@@ -216,7 +203,7 @@ NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
      * @param name System Name of the required NamedBean
      * @return requested NamedBean object or NULL if none exists
      */
-    /*public*/ NamedBean* AbstractManager::getNamedBean(QString name) const{
+    /*public*/ NamedBean* AbstractManager::getNamedBean(QString name){
         NamedBean* b = getBeanByUserName(name);
         if(b!=NULL) return b;
         return getBeanBySystemName(name);
@@ -228,7 +215,7 @@ NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
  * The non-system-specific SignalHeadManagers
  * use this method extensively.
  */
-/*public*/ void AbstractManager::Register(NamedBean* s) const
+/*public*/ void AbstractManager::Register(NamedBean* s)
 {
 #if 0
  QString systemName;
@@ -252,7 +239,7 @@ NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
  if (userName != NULL) _tuser->insert(userName, s);
  firePropertyChange("length", QVariant(), /*Integer.valueOf*/(_tsys->size()));
  // listen for name and state changes to forward
- s->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this, QString(""), QString("Manager"));
+ s->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this, QString(""), QString("Manager"));
  
  if(qobject_cast<TreeModel*>(s) != NULL)
  {
@@ -385,7 +372,7 @@ NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
  * The non-system-specific RouteManager
  * uses this method.
  */
-/*public*/ void AbstractManager::deregister(NamedBean* s)const{
+/*public*/ void AbstractManager::deregister(NamedBean* s){
  int position = getPosition(s);
  // clear caches
 // cachedSystemNameArray = null;
@@ -534,7 +521,7 @@ QStringList AbstractManager::AbstractManager::getUserNameList()
 
 ///*public synchronized */void AbstractManager::addPropertyChangeListener(PropertyChangeListener* l)
 //{
-// pcs->PropertyChangeSupport::addPropertyChangeListener(l);
+// pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 // //connect(l, SIGNAL(signalPropertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //}
 
@@ -546,7 +533,7 @@ QStringList AbstractManager::AbstractManager::getUserNameList()
 //@Override
 //@OverridingMethodsMustInvokeSuper
 ///*public*/ void AbstractManager::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-//    pcs->PropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
+//    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
 //}
 
 ///*public*/ QVector<PropertyChangeListener *> AbstractManager::getPropertyChangeListeners()
@@ -573,7 +560,7 @@ QStringList AbstractManager::AbstractManager::getUserNameList()
 
 //void AbstractManager::fireIndexedPropertyChange(QString p, int pos, QVariant old, QVariant n) const
 //{
-// PropertyChangeSupport::fireIndexedPropertyChange(p,pos,old,n);
+// SwingPropertyChangeSupport::fireIndexedPropertyChange(p,pos,old,n);
 //}
 
 QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
@@ -737,7 +724,7 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
  *         not perform more specific validation to be considered valid.
  */
 //@Override
-/*public*/ AbstractManager::NameValidity AbstractManager::validSystemNameFormat(QString systemName) const {
+/*public*/ AbstractManager::NameValidity AbstractManager::validSystemNameFormat(QString systemName)  {
  if (getSystemNamePrefix() == (systemName)) {
      return NameValidity::VALID_AS_PREFIX_ONLY;
  }
@@ -751,7 +738,7 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
  * for four managers that have arbitrary prefixes.
  */
 //@Override
-/*public*/ /*final*/ QString AbstractManager::getSystemPrefix() const {
+/*public*/ /*final*/ QString AbstractManager::getSystemPrefix() {
    QString prefix =  memo->getSystemPrefix();
    return prefix.mid(0,1); // ACK hack to fiz incorrect prefix
 }
@@ -789,13 +776,13 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ void AbstractManager::addDataListener(/*ManagerDataListener<E>*/QObject* e) {
+/*public*/ void AbstractManager::addDataListener(ManagerDataListener/*<E>*/* e) {
     if (e != nullptr) listeners.append(e);
 }
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ void AbstractManager::removeDataListener(/*ManagerDataListener<E>*/QObject* e) {
+/*public*/ void AbstractManager::removeDataListener(ManagerDataListener/*<E>*/* e) {
     if (e != nullptr) listeners.removeOne(e);
 }
 
@@ -830,7 +817,7 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
     emit notifyIntervalRemoved(e);
 }
 
-/*public*/ void AbstractManager::updateAutoNumber(QString systemName) const{
+/*public*/ void AbstractManager::updateAutoNumber(QString systemName) {
     /* The following keeps track of the last created auto system name.
      currently we do not reuse numbers, although there is nothing to stop the
      user from manually recreating them */
@@ -846,7 +833,7 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
     }
 }
 
-/*public*/ QString AbstractManager::getAutoSystemName() const{
+/*public*/ QString AbstractManager::getAutoSystemName() {
     //int nextAutoBlockRef = lastAutoNamedBeanRef.fetchAndAddAcquire(1);//   .incrementAndGet();
     int nextAutoBlockRef = lastAutoNamedBeanRef++;
     QString b = QString(getSystemNamePrefix() + ":AUTO:");

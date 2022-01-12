@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include "abstractnamedbean.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 //#include "rfid/reportervariant.h"
 
 class ReporterVariant;
@@ -94,7 +94,7 @@ public:
          *
          */
         virtual int getState()  {return 0;}
- //PropertyChangeSupport* pcs;
+ //SwingPropertyChangeSupport* pcs;
 
 signals:
     //void propertyChange(PropertyChangeEvent*);

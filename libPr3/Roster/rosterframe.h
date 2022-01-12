@@ -51,7 +51,7 @@ public:
     QString getTitle() override;
 //    void propertyChange(PropertyChangeEvent*);
     //static int openWindowInstances;// = 0;
-//    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+//    SwingPropertyChangeSupport* pcs;// = new SwingPropertyChangeSupport(this, nullptr);
     static QList<RosterFrame*> frameInstances;// = new ArrayList<RosterFrame>();
     /*public*/ QMenuBar* getMenu();
     /*public*/ void setAllowQuit(bool allowQuit);
@@ -204,7 +204,7 @@ protected slots:
  friend class PwrListener;
  friend class MyIdentifyLoco;
  friend class RosterEntryUpdateListener;
- friend class PropertyChangeSupport;
+ friend class SwingPropertyChangeSupport;
  friend class DefaultFilePropertyChangeListener;
 };
 

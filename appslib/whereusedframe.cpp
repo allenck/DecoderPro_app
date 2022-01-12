@@ -324,7 +324,7 @@
                 nameBox = new NamedBeanComboBox/*<OBlock>*/((OBlockManager*)InstanceManager::getDefault("OBlockManager"));
                 break;
             case ItemType::BLOCK:
-                nameBox = new NamedBeanComboBox/*<Block>*/((BlockManager*)InstanceManager::getDefault("BlockManager"));
+                nameBox = new NamedBeanComboBox/*<Block>*/((Manager*)InstanceManager::getDefault("BlockManager"));
                 break;
             case ItemType::SECTION:
                 nameBox = new NamedBeanComboBox/*<Section>*/((SectionManager*)InstanceManager::getDefault("SectionManager"));

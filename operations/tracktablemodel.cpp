@@ -58,7 +58,7 @@ namespace Operations
   // and add them back in
   foreach (Track* track, tracksList)
   {
-   track->PropertyChangeSupport::addPropertyChangeListener(this);
+   track->SwingPropertyChangeSupport::addPropertyChangeListener(this);
   }
   if (_location->hasPools() && !_showPoolColumn)
   {
@@ -78,7 +78,7 @@ namespace Operations
   }
   if (_location != NULL)
   {
-   _location->PropertyChangeSupport::addPropertyChangeListener(this);
+   _location->SwingPropertyChangeSupport::addPropertyChangeListener(this);
   }
   initTable();
   // have to shut off autoResizeMode to get horizontal scroll to work (JavaSwing p 541)

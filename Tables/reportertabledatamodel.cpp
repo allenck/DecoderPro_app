@@ -45,11 +45,11 @@
      * {@inheritDoc}
      */
     //@Override
-    /*public*/ /*final*/ void ReporterTableDataModel::setManager(/*Manager<Reporter>*/AbstractManager* rm) {
-        if (!(qobject_cast<ReporterManager*>(rm))) {
+    /*public*/ /*final*/ void ReporterTableDataModel::setManager(/*Manager<Reporter>*/Manager *rm) {
+        if (!(qobject_cast<ReporterManager*>(rm->self()))) {
             return;
         }
-        getManager()->PropertyChangeSupport::removePropertyChangeListener(this);
+        getManager()->removePropertyChangeListener(this);
         if (!sysNameList.isEmpty()) {
             for (int i = 0; i < sysNameList.size(); i++) {
                 // if object has been deleted, it's not here; ignore it
@@ -60,7 +60,7 @@
             }
         }
         reporterManager = (ReporterManager*) rm;
-        getManager()->PropertyChangeSupport::addPropertyChangeListener(this);
+        getManager()->addPropertyChangeListener(this);
         updateNameList();
     }
 
@@ -68,7 +68,7 @@
      * {@inheritDoc}
      */
     //@Override
-    /*public*/ AbstractManager* ReporterTableDataModel::getManager() {
+    /*public*/ Manager *ReporterTableDataModel::getManager() {
         return ( reporterManager == nullptr ? (ProxyReporterManager*)InstanceManager::getDefault("ReporterManager"): reporterManager);
     }
 
@@ -77,7 +77,7 @@
      */
     //@Override
     /*public*/ NamedBean* ReporterTableDataModel::getBySystemName(/*@Nonnull*/ QString name) const{
-        return ((ProxyReporterManager*)reporterManager)->getBySystemName(name);
+        return ((ProxyReporterManager*)reporterManager)->AbstractProxyManager::getBySystemName(name);
     }
 
     /**
@@ -85,7 +85,7 @@
      */
     //@Override
     /*public*/ Reporter* ReporterTableDataModel::getByUserName(/*@Nonnull*/ QString name) {
-        return ((ProxyReporterManager*)getManager())->getByUserName(name);
+        return (Reporter*)((ProxyReporterManager*)getManager()->self())->AbstractProxyManager::getByUserName(name);
     }
 
     /**

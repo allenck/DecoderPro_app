@@ -183,7 +183,7 @@ namespace Operations
    spurModel->initTable(spurTable, location);
    interchangeModel->initTable(interchangeTable, location);
    stagingModel->initTable(stagingTable, location);
-   //_location->PropertyChangeSupport::addPropertyChangeListener(this);
+   //_location->SwingPropertyChangeSupport::addPropertyChangeListener(this);
    connect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    locationName = _location->getName();
    if (_location->getLocationOps() == Location::NORMAL)
@@ -344,7 +344,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   addCheckBoxTrainAction(westCheckBox);
 
   // add property listeners
-  //((CarTypes*)InstanceManager::getDefault("CarTypes"))->PropertyChangeSupport::addPropertyChangeListener(this);
+  //((CarTypes*)InstanceManager::getDefault("CarTypes"))->SwingPropertyChangeSupport::addPropertyChangeListener(this);
   connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //EngineTypes.instance().addPropertyChangeListener(this);
   connect(((EngineTypes*)InstanceManager::getDefault("EngineTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -789,7 +789,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      } else {
          _location->deleteTypeName(b->text());
      }
-     //_location->PropertyChangeSupport::addPropertyChangeListener(this);
+     //_location->SwingPropertyChangeSupport::addPropertyChangeListener(this);
      connect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 

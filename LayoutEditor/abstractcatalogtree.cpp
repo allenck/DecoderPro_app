@@ -104,9 +104,9 @@ AbstractCatalogTree::~AbstractCatalogTree()
                         Object newValue)
  _once_ if anything has changed state
 
-// since we can't do a "super(this)" in the ctor to inherit from PropertyChangeSupport, we'll
+// since we can't do a "super(this)" in the ctor to inherit from SwingPropertyChangeSupport, we'll
 // reflect to it
-//java.beans.PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+//java.beans.SwingPropertyChangeSupport pcs = new SwingPropertyChangeSupport(this, nullptr);
 
 ///*public*/ synchronized void addPropertyChangeListener(PropertyChangeListener l) {
 //    pcs.addPropertyChangeListener(l);

@@ -3,7 +3,7 @@
 #include "internalsystemconnectionmemo.h"
 #include "instancemanager.h"
 #include "defaultmeter.h"
-
+#include "abstractmetermanager.h"
 /**
  * Implementation of a MeterManager that can serve as a proxy for multiple
  * system-specific implementations.
@@ -15,7 +15,7 @@
 ///*public*/ class ProxyMeterManager extends AbstractProxyManager<Meter>
 //        implements MeterManager {
 
-    ProxyMeterManager::ProxyMeterManager(QObject *parent) : AbstractProxyMeterManager(parent)
+    ProxyMeterManager::ProxyMeterManager(QObject *parent) : QObject(parent)
     {
      setObjectName("ProxyMeterManager");
     }
@@ -27,8 +27,8 @@
     }
 
     //@Override
-    /*protected*/ ProxyMeterManager* ProxyMeterManager::makeInternalManager() const {
-        return (ProxyMeterManager*)((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"))->getMeterManager();
+    /*protected*/ Manager *ProxyMeterManager::makeInternalManager() {
+     return (Manager*)((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"))->getMeterManager();
     }
 
     //@Override
@@ -49,10 +49,10 @@
     //@Override
     //@CheckReturnValue
     //@CheckForNull
-    /*public*/ NamedBean* ProxyMeterManager::getBySystemName(/*@Nonnull*/ QString systemName) const {
-        NamedBean* meter = AbstractProxyMeterManager::getBySystemName(systemName);
+    /*public*/ NamedBean* ProxyMeterManager::getBySystemName(/*@Nonnull*/ QString systemName)   {
+        NamedBean* meter = AbstractProxyManager::getBySystemName(systemName);
         if (meter == nullptr) {
-            meter = ((AbstractMeterManager*) initInternal())->getBySystemName(systemName);
+            meter =  initInternal()->getBySystemName(systemName);
         }
         return meter;
     }
@@ -60,10 +60,10 @@
     /** {@inheritDoc} */
     //@Override
     //@CheckForNull
-    /*public*/ NamedBean* ProxyMeterManager::getByUserName(/*@Nonnull*/ QString userName) const {
-        NamedBean* meter = AbstractProxyMeterManager::getByUserName(userName);
+    /*public*/ NamedBean* ProxyMeterManager::getByUserName(/*@Nonnull*/ QString userName)  {
+        NamedBean* meter = AbstractProxyManager::getByUserName(userName);
         if (meter == nullptr) {
-            meter = ((AbstractMeterManager*)initInternal())->getByUserName(userName);
+            meter = initInternal()->getByUserName(userName);
         }
         return meter;
     }
@@ -76,7 +76,7 @@
      * @return the new manager or null if it's not possible to create the manager
      */
     //@Override
-    /*protected*/ MeterManager* ProxyMeterManager::createSystemManager(/*@Nonnull*/ SystemConnectionMemo* memo) const {
+    /*protected*/ Manager* ProxyMeterManager::createSystemManager(/*@Nonnull*/ SystemConnectionMemo* memo)  {
         MeterManager* m = new AbstractMeterManager(memo);
         InstanceManager::setMeterManager(m);
         return m;
@@ -84,7 +84,7 @@
 
     //@Override
     /*public*/ void ProxyMeterManager::propertyChange(PropertyChangeEvent* e) {
-        AbstractProxyMeterManager::propertyChange(e);
+        AbstractProxyManager::propertyChange(e);
 
         // When we add or remove the Light to the internal Meter manager,
         // we get a propertyChange for that.
@@ -118,7 +118,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/ void ProxyMeterManager::dispose() {
-        AbstractProxyMeterManager::dispose();
+        AbstractProxyManager::dispose();
 //        for (Manager<? extends NamedBean> manager : registerBeanManagers) {
 //            manager.removePropertyChangeListener("beans", this);
 //        }

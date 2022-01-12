@@ -88,10 +88,10 @@
         return nullptr;
     }
     if (T == ("SensorManager")) {
-        return (Manager*) getSensorManager();
+        return (AbstractManager*) getSensorManager();
     }
     if (T == ("ReporterManager")) {
-        return (Manager*) getReporterManager();
+        return (AbstractManager*) getReporterManager();
     }
     return (Manager*)SystemConnectionMemo::get(T);
 }
@@ -151,7 +151,7 @@
  *
  * @return VALID if system name has a valid format, else return INVALID
  */
-/*public*/ Manager::NameValidity RpsSystemConnectionMemo::validSystemNameFormat(QString systemName, char type) {
+/*public*/ Manager::NameValidity RpsSystemConnectionMemo::validSystemNameFormat(QString systemName, QChar type) {
     // validate the system Name leader characters
     if (!(systemName.startsWith(getSystemPrefix() + type))) {
         // here if an illegal format

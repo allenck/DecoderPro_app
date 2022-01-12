@@ -300,13 +300,13 @@ if(!log)
  *
  * @return true if changed since loaded
  */
-/*public*/ bool DefaultSystemConnectionMemo::isDirty() {
+/*public*/ bool DefaultSystemConnectionMemo::isDirty() const{
     return ((this->disabledAsLoaded == false || this->disabledAsLoaded != this->disabled)
             || (this->prefixAsLoaded.isNull() || this->prefixAsLoaded != (this->prefix))
             || (this->userNameAsLoaded.isNull() || this->userNameAsLoaded !=(this->userName)));
 }
 
-/*public*/ bool DefaultSystemConnectionMemo::isRestartRequired() {
+/*public*/ bool DefaultSystemConnectionMemo::isRestartRequired() const{
     return this->isDirty();
 }
 

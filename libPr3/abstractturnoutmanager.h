@@ -7,18 +7,19 @@
 #include "systemconnectionmemo.h"
 
 class AbstractManager;
-class LIBPR3SHARED_EXPORT AbstractTurnoutManager : public TurnoutManager
+class LIBPR3SHARED_EXPORT AbstractTurnoutManager : public AbstractManager, public TurnoutManager
 {
  Q_OBJECT
+  Q_INTERFACES(TurnoutManager)
 public:
     explicit AbstractTurnoutManager(SystemConnectionMemo* memo, QObject *parent = 0);
-    virtual int getXMLOrder() const;
-    virtual char typeLetter() const;
-    Turnout* provideTurnout(QString name)const override;
-    Turnout* getTurnout(QString name) const override;
-    Turnout* newTurnout(QString systemName, QString userName) const override;
-    Turnout* getBySystemName(QString name)const  override;
-    Turnout* getByUserName(QString key)const  override;
+    virtual int getXMLOrder() const override;
+    virtual QChar typeLetter()  override;
+    Turnout* provideTurnout(QString name) override;
+    Turnout* getTurnout(QString name) override;
+    Turnout* newTurnout(QString systemName, QString userName) override;
+    Turnout* getBySystemName(QString name) override;
+    Turnout* getByUserName(QString key) override;
     /*public*/ QString getBeanTypeHandled(bool plural)const override;
     /*public*/ QString getNamedBeanClass() const override;
     QString getClosedText() override;
@@ -69,10 +70,10 @@ public:
 
       virtual bool allowMultipleAdditions(QString systemName)  override{Q_UNUSED(systemName);return true;}
 
-      QString createSystemName(QString curAddress, QString prefix) const override;// throws JmriException{
-      QString getNextValidAddress(QString curAddress, QString prefix)const override; // throws JmriException{
-      void setDefaultClosedSpeed(QString speed)const override;// throws JmriException {
-      void setDefaultThrownSpeed(QString speed)const override;// throws JmriException{
+      QString createSystemName(QString curAddress, QString prefix) override;// throws JmriException{
+      QString getNextValidAddress(QString curAddress, QString prefix) override; // throws JmriException{
+      void setDefaultClosedSpeed(QString speed) override;// throws JmriException {
+      void setDefaultThrownSpeed(QString speed) override;// throws JmriException{
       QString getDefaultThrownSpeed()const override;
       QString getDefaultClosedSpeed()const override;
 //      /*public*/ SystemConnectionMemo* getMemo() override;
@@ -101,7 +102,7 @@ public slots:
  /*private*/ void handleIntervalChange(int newVal);
 
 protected:
-  virtual Turnout* createNewTurnout(QString systemName, QString userName) const=0;
+  virtual Turnout* createNewTurnout(QString systemName, QString userName) =0;
   //QMap<QString, Turnout*> turnoutMap; // key = systemName!
   /*protected*/ /*final*/ SystemConnectionMemo* memo;
 };

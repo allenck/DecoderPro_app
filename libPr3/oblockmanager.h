@@ -14,18 +14,18 @@ public:
     ~OBlockManager(){}
     OBlockManager(const OBlockManager&) : AbstractManager() {}
     /*public*/ int getXMLOrder()const  override;
-    /*public*/ QString getSystemPrefix() const override;
-    /*public*/ char typeLetter()const  override ;
+    /*public*/ QString getSystemPrefix()  override;
+    /*public*/ QChar typeLetter()  override ;
     /*public*/ OBlock* createNewOBlock(QString systemName, QString userName);
     /*public*/ OBlock* createNewOBlock(/*@Nonnull*/ QString userName);
     /*public*/ OBlock* getOBlock(QString name);
     /*public*/ NamedBean* getBySystemName(QString name)const ;
-    /*public*/ NamedBean* getByUserName(QString key)const override;
-    /*public*/ OBlock* provideOBlock(QString name)const ;
+    /*public*/ NamedBean* getByUserName(QString key) override;
+    /*public*/ OBlock* provideOBlock(QString name) ;
     static OBlockManager* _instance;// = NULL;
     static /*public*/ OBlockManager* instance();
     /*public*/ bool isAssignableFromType() {return true;}
-    virtual /*public*/ OBlock *provide(QString name) const throw (IllegalArgumentException);
+    virtual /*public*/ OBlock *provide(QString name) ;
     /*public*/ QString getNamedBeanClass()const override {
         return "OBlock";
     }
@@ -33,7 +33,7 @@ public:
     {
      return tr(plural?"OBlocks":"OBlock");
     }
-    QObject* self() {return (QObject*)this;}
+    QObject* self() override{return (QObject*)this;}
 
 signals:
 public slots:

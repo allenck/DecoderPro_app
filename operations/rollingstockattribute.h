@@ -5,14 +5,14 @@
 #include <QStringList>
 #include <QtXml>
 #include "appslib_global.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 
 class QDomElement;
 class JComboBox;
 class Logger;
 namespace Operations
 {
- class APPSLIBSHARED_EXPORT RollingStockAttribute : public PropertyChangeSupport
+ class APPSLIBSHARED_EXPORT RollingStockAttribute : public SwingPropertyChangeSupport
  {
   Q_OBJECT
  public:

@@ -5,7 +5,7 @@
 #include "logger.h"
 #include "libPr3_global.h"
 
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class LIBPR3SHARED_EXPORT ProgDebugger : public QObject, public AddressedProgrammer
 {
     Q_OBJECT
@@ -96,9 +96,9 @@ private:
     int readLimit;// = 256;
     bool confirmOK;  // cached result of last compare
     /**
-     * Provide a {@link java.beans.PropertyChangeSupport} helper.
+     * Provide a {@link java.beans.SwingPropertyChangeSupport} helper.
      */
-    /*private*/ /*final*/ PropertyChangeSupport* propertyChangeSupport;// = new PropertyChangeSupport(this);
+    /*private*/ /*final*/ SwingPropertyChangeSupport* propertyChangeSupport;// = new SwingPropertyChangeSupport(this, nullptr);
     static const bool IMMEDIATERETURN;// = false;
     static const int DELAY;// = 10;
     void sendReturn(Runnable* run);

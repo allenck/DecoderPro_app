@@ -4,10 +4,10 @@
 #include "actionlistener.h"
 #include <QVector>
 #include "component.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "jdialog.h"
 #include "jcomponent.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 
 class ChangeEvent;
 class QTabWidget;
@@ -55,7 +55,7 @@ public:
 
  void addPropertyChangeListener(QString s, PropertyChangeListener* l);
  void removePropertyChangeListener(QString s, PropertyChangeListener* l);
- PropertyChangeSupport* pcs;
+ SwingPropertyChangeSupport* pcs;
  /*public*/ QWidget* jself() override{return (QWidget*)this;}
 
  /*public*/ bool isOpaque() override{return true;}

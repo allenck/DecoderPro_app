@@ -380,7 +380,7 @@ void LongAddrVariableValue::setColor(QColor c)
 //            _var.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
 //                @Override
 //                public void propertyChange(java.beans.PropertyChangeEvent e) {
-            connect(this->_var->prop, &PropertyChangeSupport::propertyChange, [=](PropertyChangeEvent* e) {
+            connect(this->_var->prop, &SwingPropertyChangeSupport::propertyChange, [=](PropertyChangeEvent* e) {
                     originalPropertyChanged(e);
 //                }
             });

@@ -48,7 +48,7 @@
  * (and restore) any listeners that are themselves serializable.  Any
  * non-serializable listeners will be skipped during serialization.
  *
- * @see PropertyChangeSupport
+ * @see SwingPropertyChangeSupport
  */
 ///*public*/ class VetoableChangeSupport implements Serializable {
 //    private VetoableChangeListenerMap map = new VetoableChangeListenerMap();

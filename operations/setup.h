@@ -3,14 +3,14 @@
 
 #include <QObject>
 #include <QtXml>
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "instancemanagerautodefault.h"
 
 class JComboBox;
 namespace Operations
 {
  class Control;
- class Setup : public PropertyChangeSupport, public InstanceManagerAutoDefault
+ class Setup : public SwingPropertyChangeSupport, public InstanceManagerAutoDefault
  {
   Q_OBJECT
    Q_INTERFACES(InstanceManagerAutoDefault)
@@ -18,7 +18,7 @@ namespace Operations
  public:
   Q_INVOKABLE explicit Setup(QObject *parent = 0);
    ~Setup() {}
-   Setup(const Setup&): PropertyChangeSupport(this) {}
+   Setup(const Setup&): SwingPropertyChangeSupport(this, this) {}
   /*public*/ static bool isMainMenuEnabled();
   /*public*/ static void setMainMenuEnabled(bool enabled);
   /*public*/ static bool isCloseWindowOnSaveEnabled();
@@ -609,7 +609,7 @@ namespace Operations
 
  private:
   /*private*/ static void storeXmlMessageFormat(QDomElement values, QString prefix, QStringList messageFormat);
-  //static PropertyChangeSupport* pcs;// = new PropertyChangeSupport("Setup");
+  //static SwingPropertyChangeSupport* pcs;// = new SwingPropertyChangeSupport("Setup");
   /*private*/ static void stringToKeyConversion(QStringList strings);
   /*private*/ static void replaceOldFormat(QStringList format);
   /*private*/ static void keyToStringConversion(QStringList keys);

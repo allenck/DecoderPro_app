@@ -7,9 +7,9 @@ class JMRIClientSensorManager : public AbstractSensorManager
 {
 public:
  JMRIClientSensorManager(JMRIClientSystemConnectionMemo* memo, QObject* parent = nullptr);
- /*public*/ QString getSystemPrefix()const override;
+ /*public*/ QString getSystemPrefix() override;
  /*public*/ Sensor* createNewSensor(QString systemName, QString userName) override;
- /*public*/ QString createSystemName(QString curAddress, QString prefix)const /*throw (JmriException)*/ override;
+ /*public*/ QString createSystemName(QString curAddress, QString prefix) /*throw (JmriException)*/ override;
  /*public*/ QString getNamedBeanClass()const override {
      return "Sensor";
  }

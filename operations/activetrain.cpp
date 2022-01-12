@@ -1,5 +1,5 @@
 #include "activetrain.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "transit.h"
 #include "rosterentry.h"
 #include "roster.h"
@@ -8,7 +8,7 @@
 #include "instancemanager.h"
 #include "dispatcherframe.h"
 #include "autoactivetrain.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "section.h"
 #include "allocationrequest.h"
 #include "vptr.h"
@@ -163,7 +163,7 @@
   _holdAllocation = false;
 
   // Property Change Support
-  pcs = new PropertyChangeSupport(this);
+  pcs = new SwingPropertyChangeSupport(this, nullptr);
 
 
   mTransit = t;
@@ -1085,7 +1085,7 @@
 
 
 /*public*/ /*synchronized*/ void ActiveTrain::addPropertyChangeListener(PropertyChangeListener* l) {
-    pcs->PropertyChangeSupport::addPropertyChangeListener(l);
+    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 }
 #endif
 /*protected*/ void ActiveTrain::firePropertyChange(QString p, QVariant old, QVariant n) {

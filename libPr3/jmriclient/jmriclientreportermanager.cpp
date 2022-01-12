@@ -22,12 +22,12 @@
     }
 
     //@Override
-    /*public*/ QString JMRIClientReporterManager::getSystemPrefix() const {
+    /*public*/ QString JMRIClientReporterManager::getSystemPrefix() {
         return prefix;
     }
 
     //@Override
-    /*public*/ Reporter* JMRIClientReporterManager::createNewReporter(QString systemName, QString userName) const {
+    /*public*/ Reporter* JMRIClientReporterManager::createNewReporter(QString systemName, QString userName) {
         Reporter* t;
         int addr = (systemName.mid(prefix.length() + 1).toInt());
         t = new JMRIClientReporter(addr, memo);

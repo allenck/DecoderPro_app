@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QRectF>
 #include <QPointF>
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "editscene.h"
 #include "hitpointtype.h"
 
@@ -76,7 +76,7 @@ public:
 // //@Deprecated // Java standard pattern for bool getters is "isHidden()"
 // QT_DEPRECATED/*public*/ bool getHidden();
 // /*public*/ void setHidden(bool hide);
-// PropertyChangeSupport* propertyChangeSupport;
+// SwingPropertyChangeSupport* SwingPropertyChangeSupport;
 // /*public*/ QString getTurnoutStateString(int turnoutState);
 // /*public*/ /*abstract*/virtual  bool canRemove();
 // /*public*/ void displayRemoveWarningDialog(QList<QString> itemList, QString typeKey);

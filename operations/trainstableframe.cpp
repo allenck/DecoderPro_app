@@ -582,7 +582,7 @@ namespace Operations
  /*private*/ /*synchronized*/ void TrainsTableFrame::addPropertyChangeLocations() {
      QList<Location*> locations = locationManager->getList();
      foreach (Location* location, locations) {
-      location->PropertyChangeSupport::addPropertyChangeListener(this);
+      location->SwingPropertyChangeSupport::addPropertyChangeListener(this);
 
      }
  }

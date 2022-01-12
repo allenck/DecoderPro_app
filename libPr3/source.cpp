@@ -40,7 +40,7 @@
  sourceSignal = NULL;
  //String ref = "Empty";
  pd = NULL;
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
 
  manager = (EntryExitPairs*)InstanceManager::getDefault("EntryExitPairs");
 
@@ -66,7 +66,7 @@
  * @since 4.17.4
  */
 /*public*/ void Source::addPropertyChangeListener(PropertyChangeListener* listener) {
-    pcs->PropertyChangeSupport::addPropertyChangeListener(listener);
+    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(listener);
 }
 
 /**

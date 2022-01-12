@@ -10,7 +10,7 @@
 
 TriggerRouteModelFactory::TriggerRouteModelFactory()
 {
- setObjectName("TriggerRouteModelFactory");
+ self()->setObjectName("TriggerRouteModelFactory");
 }
 /**
  * Factory to create {@link apps.startup.TriggerRouteModel} objects.

@@ -205,8 +205,8 @@ BlockBossLogic::~BlockBossLogic()
 
  //if (log->isTraceEnabled()) log->trace("Create BBL "+name);
  ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
- InstanceManager::turnoutManagerInstance()->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
- InstanceManager::sensorManagerInstance()->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
+ InstanceManager::turnoutManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
+ InstanceManager::sensorManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
  SignalHead* driveHead = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name);
  if (driveHead == nullptr) {
      log->warn(tr("%1 \"%2\" was not found").arg(tr("SignalHead")).arg(name));

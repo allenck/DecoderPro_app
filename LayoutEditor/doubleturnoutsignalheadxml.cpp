@@ -112,7 +112,7 @@ NamedBeanHandle<Turnout*>* DoubleTurnoutSignalHeadXml::loadTurnout(/*QObject o*/
   }
   else
   {
-   t = (Turnout*)((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getBySystemName(name);
+   t = (Turnout*)((AbstractProxyManager*)InstanceManager::turnoutManagerInstance())->getBySystemName(name);
   }
   return ((NamedBeanHandleManager*) InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(name, t);
  }

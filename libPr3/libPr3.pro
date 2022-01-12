@@ -142,6 +142,8 @@ SOURCES += \
  Signal/mergsd2signalhead.cpp \
  Signal/mergsd2signalheadxml.cpp \
  #Signal/serialsignalhead.cpp \
+ abstractprovidingproxymanager.cpp \
+ abstractproxymanager.cpp \
  acelamessage.cpp \
  acelasignalheadxml.cpp \
  addeditsinglelightcontrolframe.cpp \
@@ -258,7 +260,6 @@ SOURCES += \
     lnlight.cpp \
     abstractlight.cpp \
     lightcontrol.cpp \
-    abstractproxylightmanager.cpp \
     proxylightmanager.cpp \
     internallightmanager.cpp \
     loconetconsistmanager.cpp \
@@ -974,13 +975,9 @@ SOURCES += \
     rfid/abstractidtagreporter.cpp \
     rfid/idtaglistener.cpp \
     loconet/lndeferprogrammer.cpp \
-    abstractproxyturnoutmanager.cpp \
     proxyturnoutmanagerxml.cpp \
     proxysensormanagerxml.cpp \
-    abstractproxysensormanager.cpp \
-    abstractproxyidtagmanager.cpp \
 #    namedbeancombobox.cpp \
-    abstractproxyreportermanager.cpp \
     trackreporter.cpp \
     loconet/bluetooth/loconetbluetoothadapter.cpp \
     scwarrant.cpp \
@@ -1043,7 +1040,6 @@ SOURCES += \
     meterframemanagerxml.cpp \
     meteraction.cpp \
     proxymetermanager.cpp \
-    abstractproxymetermanager.cpp \
     internalmetermanager.cpp \
     abstractmetermanager.cpp \
     internalmetermanagerxml.cpp \
@@ -1175,6 +1171,7 @@ HEADERS += \
  Signal/mergsd2signalhead.h \
  Signal/mergsd2signalheadxml.h \
  #Signal/serialsignalhead.h \
+ abstractprovidingproxymanager.h \
  acelasignalheadxml.h \
  addeditsinglelightcontrolframe.h \
  defaultlightcontrol.h \
@@ -2098,14 +2095,9 @@ HEADERS += \
     rfid/addressedidtag.h \
     rfid/reportervariant.h \
     loconet/lndeferprogrammer.h \
-    abstractproxyturnoutmanager.h \
     proxyturnoutmanagerxml.h \
     proxysensormanagerxml.h \
-    abstractproxysensormanager.h \
-    abstractproxyidtagmanager.h \
-    abstractproxyreportermanager.h \
 #    namedbeancombobox.h \
-    abstractproxylightmanager.h \
     trackreporter.h \
     loconet/bluetooth/loconetbluetoothadapter.h \
     Signal/signals.h \
@@ -2181,7 +2173,6 @@ HEADERS += \
     meterframemanagerxml.h \
     meteraction.h \
     proxymetermanager.h \
-    abstractproxymetermanager.h \
     internalmetermanager.h \
     abstractmetermanager.h \
     internalmetermanagerxml.h \

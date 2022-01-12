@@ -77,9 +77,9 @@ SystemNameValidator::SystemNameValidator(QObject *parent) : JInputValidator(null
          QString text = jtc->text();
             if (!text .isNull() && !text.isEmpty()) {
                 try {
-                    if (static_cast<AbstractProxyManager*>(manager->self())) {
+                    if (qobject_cast<AbstractProxyManager*>(manager->self())) {
                         AbstractProxyManager/*<?>*/* proxyManager = (AbstractProxyManager/*<?>*/*) manager->self();
-                        proxyManager->validateSystemNameFormat(text);
+                        proxyManager->validateSystemNameFormat(text, QLocale());
                     } else {
                         manager->makeSystemName(text, false);
                     }
@@ -122,7 +122,7 @@ SystemNameValidator::SystemNameValidator(QObject *parent) : JInputValidator(null
         if (old == nullptr || old != (manager)) {
             this->manager = manager;
 #if 1
-            getPropertyChangeSupport()->firePropertyChange("manager",VPtr<Manager>::asQVariant( old), VPtr<Manager>::asQVariant(this->manager));
+            getSwingPropertyChangeSupport()->firePropertyChange("manager",VPtr<Manager>::asQVariant( old), VPtr<Manager>::asQVariant(this->manager));
             verify(getComponent());
 #endif
         }
@@ -131,9 +131,9 @@ SystemNameValidator::SystemNameValidator(QObject *parent) : JInputValidator(null
     QValidator::State SystemNameValidator::validate(QString& text, int& pos) const
     {
      try {
-         if (static_cast<AbstractProxyManager*>(manager->self())) {
+         if (static_cast<AbstractProxyManager*>(manager)) {
              AbstractProxyManager/*<?>*/* proxyManager = (AbstractProxyManager/*<?>*/*) manager->self();
-             proxyManager->validateSystemNameFormat(text);
+             proxyManager->validateSystemNameFormat(text, QLocale());
          } else {
              manager->makeSystemName(text, false);
          }

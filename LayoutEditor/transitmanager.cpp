@@ -56,8 +56,8 @@ TransitManager::TransitManager(QObject *parent) :
     return Manager::TRANSITS;
 }
 
-QString TransitManager::getSystemPrefix()const { return "I"; }
-char TransitManager::typeLetter() const { return 'Z'; }
+QString TransitManager::getSystemPrefix() { return "I"; }
+QChar TransitManager::typeLetter()  { return 'Z'; }
 
 /**
  * Method to create a new Transit if the Transit does not exist
@@ -126,12 +126,12 @@ Transit* TransitManager::createNewTransit(QString systemName, QString userName) 
     return getBySystemName(name);
 }
 
-/*public*/ Transit* TransitManager::getBySystemName(QString name) const {
+/*public*/ Transit* TransitManager::getBySystemName(QString name) {
     QString key = name.toUpper();
     return (Transit*)_tsys->value(key);
 }
 
-/*public*/ Transit* TransitManager::getByUserName(QString key) const {
+/*public*/ Transit* TransitManager::getByUserName(QString key) {
     return (Transit*)_tuser->value(key);
 }
 

@@ -107,13 +107,13 @@ RtBeanTableDataModel::RtBeanTableDataModel(ReporterTableAction* act)
    }
 }
 
-/*public*/ AbstractManager *RtBeanTableDataModel::getManager() {
+/*public*/ Manager *RtBeanTableDataModel::getManager() {
     return act->reporterManager;
 }
 
 /*public*/ NamedBean* RtBeanTableDataModel::getBySystemName(QString name)  const
 {
-    return ((ProxyReporterManager*)act->reporterManager)->getBySystemName(name);
+    return ((ProxyReporterManager*)act->reporterManager)->AbstractProxyManager::getBySystemName(name);
 }
 
 /*public*/ NamedBean* RtBeanTableDataModel::getByUserName(QString name) {
@@ -384,7 +384,7 @@ void ReporterTableAction::createPressed(ActionEvent* /*e*/)
       }
       if (user != "" && user != ("") && (reporterManager->getByUserName(user) == nullptr)) {
           r->setUserName(user);
-      } else if (((ProxyReporterManager*)reporterManager)->getByUserName(user) != nullptr && !pref->getPreferenceState(getClassName(), userNameError))
+      } else if (((ProxyReporterManager*)reporterManager)->AbstractProxyManager::getByUserName(user) != nullptr && !pref->getPreferenceState(getClassName(), userNameError))
       {
           pref->showErrorMessage("Duplicate UserName", "The username " + user + " specified is already in use and therefore will not be set", userNameError, "", false, true);
       }
@@ -424,10 +424,10 @@ void ReporterTableAction::createPressed(ActionEvent* /*e*/)
      // Tab All or first time opening, default tooltip
      connectionChoice = "TBD";
  }
- if (QString(reporterManager->metaObject()->className()).contains("ProxyReporterManager"))
+ if (QString(reporterManager->self()->metaObject()->className()).contains("ProxyReporterManager"))
  {
   ProxyReporterManager* proxy = (ProxyReporterManager*) reporterManager;
-  QList<AbstractManager*> managerList = proxy->getManagerList();
+  QList<Manager*> managerList = proxy->getManagerList();
   QString systemPrefix = ConnectionNameFromSystemName::getPrefixFromName(connectionChoice);
   for (int x = 0; x < managerList.size(); x++) {
       ReporterManager* mgr = (ReporterManager*) managerList.at(x);
@@ -630,7 +630,7 @@ QValidator::State RTAValidator::validate(QString &s, int &pos) const
  else {
      bool validFormat = false;
          // try {
-         validFormat = static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->validSystemNameFormat(prefix + "R" + value) == Manager::NameValidity::VALID;
+         validFormat = qobject_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->validSystemNameFormat(prefix + "R" + value) == Manager::NameValidity::VALID;
          // } catch (jmri.JmriException e) {
          // use it for the status bar?
          // }

@@ -833,7 +833,7 @@ void PaneProgFrame::readConfig(QDomElement root, RosterEntry* r)
  if (addMode==NULL) log->debug("DCC Address monitor didnt find an Address Format variable");
  else
  {
-  //addMode->PropertyChangeSupport::addPropertyChangeListener(dccNews);
+  //addMode->SwingPropertyChangeSupport::addPropertyChangeListener(dccNews);
   connect(addMode->prop, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(OnDccNews(PropertyChangeEvent*)));
  }
 

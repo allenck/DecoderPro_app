@@ -1,7 +1,7 @@
 #ifndef OPERATIONS_DIVISIONMANAGER_H
 #define OPERATIONS_DIVISIONMANAGER_H
 
-#include <propertychangesupport.h>
+#include "swingpropertychangesupport.h"
 #include "instancemanagerautodefault.h"
 #include "instancemanagerautoinitialize.h"
 #include "jcombobox.h"
@@ -9,14 +9,14 @@
 
 namespace Operations {
  class Division;
- class DivisionManager : public PropertyChangeSupport,public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize
+ class DivisionManager : public SwingPropertyChangeSupport,public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize
  {
    Q_OBJECT
    Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize)
   public:
    Q_INVOKABLE explicit DivisionManager(QObject *parent = nullptr);
    ~DivisionManager() {}
-   DivisionManager(const DivisionManager&) : PropertyChangeSupport(this) {}
+   DivisionManager(const DivisionManager&) : SwingPropertyChangeSupport(this, this) {}
    /*public*/  static /*final*/ QString LISTLENGTH_CHANGED_PROPERTY;// = "divisionsListLength"; // NOI18N
    /*public*/  void dispose();
    /*public*/  int getNumberOfdivisions();

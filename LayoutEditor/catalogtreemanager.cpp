@@ -2,12 +2,12 @@
 #include "catalogtree.h"
 
 CatalogTreeManager::CatalogTreeManager(QObject *parent) :
-    AbstractManager(parent)
+    QObject(parent)
 {
  setObjectName("CatalogTreeManager");
  setProperty("JavaClassName", "jmri.CatalogTreeManager");
 
- registerSelf();
+ //registerSelf();
 }
 
 /**

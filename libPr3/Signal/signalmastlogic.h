@@ -6,7 +6,7 @@
 #include "namedbeanhandle.h"
 #include "exceptions.h"
 #include "libPr3_global.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "section.h"
 
 class Block;

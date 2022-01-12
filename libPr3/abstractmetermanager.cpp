@@ -14,7 +14,7 @@
      *
      * @param memo the system connection
      */
-    /*public*/ AbstractMeterManager::AbstractMeterManager(SystemConnectionMemo* memo, QObject* parent) : MeterManager(memo, parent){
+    /*public*/ AbstractMeterManager::AbstractMeterManager(SystemConnectionMemo* memo, QObject* parent) : AbstractManager(memo, parent){
         //super(memo);
     }
 
@@ -28,7 +28,7 @@
      * {@inheritDoc}
      */
     //@Override
-    /*public*/ char AbstractMeterManager::typeLetter() const{
+    /*public*/ QChar AbstractMeterManager::typeLetter(){
         return 'V';
     }
 
@@ -51,12 +51,12 @@
         return "Meter";
     }
 
-    /*public*/ NamedBean *AbstractMeterManager::getBySystemName(QString name) const
-    {
-     return _tsys->value(name);
-    }
+//    /*public*/ NamedBean *AbstractMeterManager::getBySystemName(QString name)
+//    {
+//     return _tsys->value(name);
+//    }
 
-    /*public*/ NamedBean* AbstractMeterManager::getByUserName(QString key) const
-    {
-     return _tuser->value(key);
-    }
+//    /*public*/ NamedBean* AbstractMeterManager::getByUserName(QString key)
+//    {
+//     return _tuser->value(key);
+//    }

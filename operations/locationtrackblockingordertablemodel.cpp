@@ -46,7 +46,7 @@ namespace Operations
      _tracksList = _location->getTracksByBlockingOrderList(NULL);
      // and add them back in
      foreach (Track* track, _tracksList) {
-      track->PropertyChangeSupport::addPropertyChangeListener(this);
+      track->SwingPropertyChangeSupport::addPropertyChangeListener(this);
      }
      fireTableDataChanged();
  }
@@ -55,7 +55,7 @@ namespace Operations
      _table = table;
      _location = location;
      if (_location != NULL) {
-      _location->PropertyChangeSupport::addPropertyChangeListener(this);
+      _location->SwingPropertyChangeSupport::addPropertyChangeListener(this);
      }
      initTable();
      // have to shut off autoResizeMode to get horizontal scroll to work (JavaSwing p 541)

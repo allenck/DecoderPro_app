@@ -13,7 +13,7 @@
 
 
 class LocoIOAddress;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 /* CV usage
  * CV
  *  0       Configuration byte:
@@ -296,7 +296,7 @@ private:
   * This data model is shared between several views; each
   * needs to know when the data changes out from under it.
   */
- /*private*/ PropertyChangeSupport* dataListeners;// = new PropertyChangeSupport(this);
+ /*private*/ SwingPropertyChangeSupport* dataListeners;// = new SwingPropertyChangeSupport(this, nullptr);
  /**
   * Define the number of rows in the table, which is also
   * the number of "channels" in a signel LocoIO unit

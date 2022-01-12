@@ -141,7 +141,7 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString Track::TRACK_REPORTER_PROPERTY = "trackReporterChange"; // NOI18N
 
  /*public*/ Track::Track(QString id, QString name, QString type, Location* location,QObject *parent) :
- PropertyChangeSupport(this, parent)
+ SwingPropertyChangeSupport(this, parent)
  {
   common();
   log->debug(tr("New (%1) track (%2) id: %3").arg(type).arg(name).arg(id));
@@ -2324,7 +2324,7 @@ if (loads.length() == 0) {
   *
   * @param e Consist XML element
   */
- /*public*/ Track::Track(QDomElement e, Location* location) : PropertyChangeSupport(this)
+ /*public*/ Track::Track(QDomElement e, Location* location) : SwingPropertyChangeSupport(this,this)
  {
   common();
      _location = location;

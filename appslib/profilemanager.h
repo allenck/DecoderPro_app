@@ -7,7 +7,7 @@
 #include "indexedpropertychangeevent.h"
 #include "addprofiledialog.h"
 #include "appslib_global.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "exceptions.h"
 #include "bean.h"
 
@@ -90,7 +90,7 @@ private:
     /*private*/ bool exportDirectory(QuaZipFile* zip, File* source, QString root); //throws IOException
     /*private*/ bool exportFile(QuaZipFile* zip, File* source, QString root); //throws IOException
     /*private*/ QString relativeName(File* file, QString root);
-    PropertyChangeSupport* pcs;
+    SwingPropertyChangeSupport* pcs;
 
 
     class FileFilter1 : public FileFilter

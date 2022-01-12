@@ -40,16 +40,16 @@
     log = new Logger("DefaultSignalMastLogicManager");
     //_speedMap = static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"));
     signalMastLogic =  QList<SignalMastLogic*>();
-    //pcs = new PropertyChangeSupport(this);
+    //pcs = new SwingPropertyChangeSupport(this, nullptr);
     signalLogicDelay = 500L;
     runWhenStablised = false;
     propertyBlockManagerListener = new PropertyBlockManagerListener(this);
     registerSelf();
-//    InstanceManager::layoutBlockManagerInstance()->PropertyChangeSupport::addPropertyChangeListener(propertyBlockManagerListener);
+//    InstanceManager::layoutBlockManagerInstance()->SwingPropertyChangeSupport::addPropertyChangeListener(propertyBlockManagerListener);
     connect(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), propertyBlockManagerListener, SLOT(propertyChange(PropertyChangeEvent*)));
     ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->PropertyChangeSupport::addPropertyChangeListener(propertyBlockManagerListener);
     ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
-    InstanceManager::turnoutManagerInstance()->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
+    InstanceManager::turnoutManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
     //_speedMap = jmri.implementation.SignalSpeedMap.getMap();
 }
 
@@ -258,15 +258,15 @@
     throw  UnsupportedOperationException("Not supported yet.");
 }
 
-/*public*/ NamedBean* DefaultSignalMastLogicManager::getNamedBean(QString /*name*/)const{
+/*public*/ NamedBean* DefaultSignalMastLogicManager::getNamedBean(QString /*name*/){
     throw  UnsupportedOperationException("Not supported yet.");
 }
 
-/*public*/ QString DefaultSignalMastLogicManager::getSystemPrefix() const {
+/*public*/ QString DefaultSignalMastLogicManager::getSystemPrefix() {
     throw  UnsupportedOperationException("Not supported yet.");
 }
 
-/*public*/ char DefaultSignalMastLogicManager::typeLetter()const  {
+/*public*/ QChar DefaultSignalMastLogicManager::typeLetter()  {
     throw  UnsupportedOperationException("Not supported yet.");
 }
 
@@ -288,7 +288,7 @@
 ///*public*/ /*synchronized*/ void DefaultSignalMastLogicManager::addPropertyChangeListener(PropertyChangeListener* l) {
 //    QMutexLocker locker(&mutex);
 
-//    pcs->PropertyChangeSupport::addPropertyChangeListener(l);
+//    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 //}
 ///*public*/ /*synchronized*/ void DefaultSignalMastLogicManager::removePropertyChangeListener(PropertyChangeListener* l) {
 //    QMutexLocker locker(&mutex);
@@ -300,11 +300,11 @@
     emit propertyChange(new PropertyChangeEvent((QObject*)this, p, old, n));
 }
 
-/*public*/ void DefaultSignalMastLogicManager::Register(NamedBean* /*n*/) const{
+/*public*/ void DefaultSignalMastLogicManager::Register(NamedBean* /*n*/){
     throw  UnsupportedOperationException("Not supported yet.");
 }
 
-/*public*/ void DefaultSignalMastLogicManager::deregister(NamedBean* /*n*/) const{
+/*public*/ void DefaultSignalMastLogicManager::deregister(NamedBean* /*n*/){
     throw  UnsupportedOperationException("Not supported yet.");
 }
 

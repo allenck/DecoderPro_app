@@ -60,7 +60,7 @@ public:
     void setButtonState(int state);
     /*synchronized*/ /*public*/ void setNXButtonState(int state);
     /*public*/ void setRefObjectByPanel(NamedBean* refObs, LayoutEditor* pnl);
-    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+    SwingPropertyChangeSupport* pcs;// = new SwingPropertyChangeSupport(this, nullptr);
     /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) ;
     /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
 

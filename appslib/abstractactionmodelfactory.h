@@ -8,9 +8,10 @@
 
 class StartupModel;
 class Logger;
-class AbstractActionModelFactory : public StartupModelFactory
+class AbstractActionModelFactory : public QObject, public StartupModelFactory
 {
  Q_OBJECT
+  Q_INTERFACES(StartupModelFactory)
 public:
  AbstractActionModelFactory();
  /*public*/ QString getDescription();

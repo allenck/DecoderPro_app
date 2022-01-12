@@ -99,7 +99,7 @@ void ProfileManager::common(File* catalog)
  autoStartActiveProfile = false;
  defaultSearchPath = nullptr;//new File(FileUtil::getPreferencesPath());
  autoStartActiveProfileTimeout = 10;
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
  defaultInstance = this;
 
  this->catalog = catalog;

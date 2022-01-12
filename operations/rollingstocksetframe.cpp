@@ -309,7 +309,7 @@ void RollingStockSetFrame::common()
           QMessageBox::warning(this, tr("Car has been assigned a destination and train"), tr(""));
          }
      }
-     _rs->PropertyChangeSupport::addPropertyChangeListener(this);
+     _rs->SwingPropertyChangeSupport::addPropertyChangeListener(this);
  }
 
  // Save button

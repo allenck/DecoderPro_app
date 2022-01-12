@@ -89,7 +89,7 @@
 /*public*/ QJsonValue JsonTurnoutHttpService::doGetList(QString /*type*/, QLocale locale) /*throw (JsonException)*/ {
     //ArrayNode root = this->mapper.createArrayNode();
  QJsonArray root = QJsonArray();
-    foreach (QString name, ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getSystemNameList())
+    foreach (QString name, ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->AbstractProxyManager::getSystemNameList())
     {
         root.append(this->doGet(JSON::TURNOUT, name, locale));
     }

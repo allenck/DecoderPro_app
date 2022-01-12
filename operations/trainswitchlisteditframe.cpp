@@ -408,7 +408,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      // restore listeners
      /*synchronized (this)*/ {
          foreach (Location* location, locations) {
-          location->PropertyChangeSupport::addPropertyChangeListener(this);
+          location->SwingPropertyChangeSupport::addPropertyChangeListener(this);
          }
      }
 

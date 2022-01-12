@@ -48,7 +48,7 @@
  * (and restore) any listeners that are themselves serializable.  Any
  * non-serializable listeners will be skipped during serialization.
  *
- * @see PropertyChangeSupport
+ * @see SwingPropertyChangeSupport
  */
 ///*public*/ class VetoableChangeSupport implements Serializable {
 //    private VetoableChangeListenerMap map = new VetoableChangeListenerMap();
@@ -58,12 +58,12 @@
      *
      * @param sourceBean  The bean to be given as the source for any events.
      */
-    /*public*/ VetoableChangeSupport::VetoableChangeSupport(QObject* sourceBean, QObject* parent)
-      : PropertyChangeSupport(sourceBean, parent) {
-        if (sourceBean == nullptr) {
-            throw new NullPointerException();
-        }
-    }
+//    /*public*/ VetoableChangeSupport::VetoableChangeSupport(QObject* sourceBean, QObject* parent)
+//      : PropertyChangeSupport(sourceBean, parent) {
+//        if (sourceBean == nullptr) {
+//            throw new NullPointerException();
+//        }
+//    }
 
    /**
      * Add a VetoableChangeListener to the listener list.

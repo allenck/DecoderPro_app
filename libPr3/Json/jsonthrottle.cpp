@@ -363,7 +363,7 @@
     log->debug(tr("Found throttle %1").arg(throttle->getLocoAddress()->toString()));
     try {
         this->throttle = throttle;
-//        throttle->PropertyChangeSupport::addPropertyChangeListener(this);
+//        throttle->SwingPropertyChangeSupport::addPropertyChangeListener(this);
      connect((AbstractThrottle*)throttle->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
         switch (throttle->getSpeedStepMode()) {
             case DccThrottle::SpeedStepMode14:

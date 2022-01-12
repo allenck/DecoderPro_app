@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include "logger.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "appslib_global.h"
 #include "reporter.h"
 
@@ -20,7 +20,7 @@ namespace Operations
  class RollingStock;
  class Pool;
  class Location;
-class APPSLIBSHARED_EXPORT Track : public PropertyChangeSupport
+class APPSLIBSHARED_EXPORT Track : public SwingPropertyChangeSupport
 {
  Q_OBJECT
 public:

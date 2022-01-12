@@ -37,7 +37,7 @@ AbstractReporterManagerConfigXML::AbstractReporterManagerConfigXML(QObject *pare
     setStoreElementClass(reporters);
     AbstractReporterManager* tm = (AbstractReporterManager*) o;
     if (tm!=NULL) {
-        QStringListIterator iter(                               tm->getSystemNameList());
+        QStringListIterator iter(((AbstractManager*)tm)->getSystemNameList());
 
         // don't return an element if there are not reporters to include
         if (!iter.hasNext()) return QDomElement();

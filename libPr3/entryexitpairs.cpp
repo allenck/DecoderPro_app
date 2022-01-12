@@ -95,7 +95,7 @@ return (settingRouteColor == QColor() ? false : true);
 
 /*static*/ QWidget* EntryExitPairs::glassPane = NULL; //new QWidget();
 
-/*public*/ EntryExitPairs::EntryExitPairs(QObject */*parent*/) :VetoableChangeSupport(this)
+/*public*/ EntryExitPairs::EntryExitPairs(QObject */*parent*/) :QObject(parent())
 {
  setObjectName("EntryExitPairs");
  setProperty("JavaClassName", "jmri.jmrit.entryexit.EntryExitPairs");
@@ -118,9 +118,8 @@ return (settingRouteColor == QColor() ? false : true);
  connect(checkTimer, SIGNAL(timeout()), this, SLOT(checkRoute()));
  deletePairList = QList<DeletePair*>();
  nxpair = QHash<PointDetails*, Source*>();
- vcs = new VetoableChangeSupport(this);
- listeners = QVector</*ManagerDataListener*/QObject*>();
- //pcs = new PropertyChangeSupport(this);
+ listeners = QVector<ManagerDataListener*>();
+ //pcs = new SwingPropertyChangeSupport(this, nullptr);
 
  memo = (SystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo");
  if(InstanceManager::getDefault("ConfigureManager")!=NULL)
@@ -205,7 +204,7 @@ return (settingRouteColor == QColor() ? false : true);
     return ENTRYEXIT;
 }
 
-/*public*/ NamedBean* EntryExitPairs::getBySystemName(QString systemName) const
+/*public*/ NamedBean* EntryExitPairs::getBySystemName(QString systemName)
 {
  foreach(Source* e,   nxpair.values())
  {
@@ -218,7 +217,7 @@ return (settingRouteColor == QColor() ? false : true);
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ /*DestinationPoints*/NamedBean *EntryExitPairs::getByUserName(/*@Nonnull*/ QString userName) const {
+/*public*/ /*DestinationPoints*/NamedBean *EntryExitPairs::getByUserName(/*@Nonnull*/ QString userName) {
  if(userName=="")
   throw new NullPointerException(tr("userName is marked NonNull but is null"));
 
@@ -244,7 +243,7 @@ return (settingRouteColor == QColor() ? false : true);
     return NULL;
 }
 #endif
-/*public*/ NamedBean* EntryExitPairs::getNamedBean(QString name) const{
+/*public*/ NamedBean* EntryExitPairs::getNamedBean(QString name){
     NamedBean* b = getByUserName(name);
     if(b!=NULL) return b;
     return getBySystemName(name);
@@ -258,20 +257,20 @@ return (settingRouteColor == QColor() ? false : true);
 /** {@inheritDoc} */
 //@Nonnull
 //@Override
-/*public*/ SystemConnectionMemo* EntryExitPairs::getMemo() const {
+/*public*/ SystemConnectionMemo* EntryExitPairs::getMemo() {
     return memo;
 }
-/*public*/ QString EntryExitPairs::getSystemPrefix() const{
+/*public*/ QString EntryExitPairs::getSystemPrefix(){
  return memo->getSystemPrefix();
 }
 
-/*public*/ char EntryExitPairs::typeLetter() const {
+/*public*/ QChar EntryExitPairs::typeLetter() {
     throw new  UnsupportedOperationException("Not supported yet.");
 }
 
 //@Override
 //@Nonnull
-/*public*/ QString EntryExitPairs::makeSystemName(QString /*s*/)const {
+/*public*/ QString EntryExitPairs::makeSystemName(QString /*s*/) {
     throw new UnsupportedOperationException("Not supported yet.");
 }
 
@@ -328,11 +327,11 @@ public List<DestinationPoints> getNamedBeanList() {
     return beanList;
 }
 
-/*public*/ void EntryExitPairs::Register(/*@Nonnull*/ NamedBean* /*n*/)const {
+/*public*/ void EntryExitPairs::Register(/*@Nonnull*/ NamedBean* /*n*/) {
     throw new  UnsupportedOperationException("Not supported yet.");
 }
 
-/*public*/ void EntryExitPairs::deregister(/*@Nonnull*/NamedBean* /*n*/)const {
+/*public*/ void EntryExitPairs::deregister(/*@Nonnull*/NamedBean* /*n*/) {
     throw new  UnsupportedOperationException("Not supported yet.");
 }
 
@@ -571,7 +570,7 @@ public List<DestinationPoints> getNamedBeanList() {
     currentDealing = routesToSet.at(0)->ref;
     routesToSet.removeAt(0);
 
-    //dp->PropertyChangeSupport::addPropertyChangeListener(propertyDestinationListener);
+    //dp->SwingPropertyChangeSupport::addPropertyChangeListener(propertyDestinationListener);
     connect(dp->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyDestinationPropertyChange(PropertyChangeEvent*)));
     s->activeBean(dp, dir);
 }
@@ -1284,7 +1283,7 @@ PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, QList<LayoutB
 //    }
 //}
 
-//java.beans.PropertyChangeSupport pcs = new java.beans.PropertyChangeSupport(this);
+//java.beans.SwingPropertyChangeSupport pcs = new java.beans.SwingPropertyChangeSupport(this,this);
 /*public*/ /*synchronized*/ void EntryExitPairs::addPropertyChangeListener(PropertyChangeListener* l) {
     addPropertyChangeListener(l);
     //disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
@@ -1375,14 +1374,14 @@ PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, QList<LayoutB
 
 
 //@Override
-/*public*/ /*synchronized*/ void EntryExitPairs::addVetoableChangeListener(VetoableChangeListener* l) {
-    vcs->addVetoableChangeListener(l);
-}
+///*public*/ /*synchronized*/ void EntryExitPairs::addVetoableChangeListener(VetoableChangeListener* l) {
+//    vcs->addVetoableChangeListener(l);
+//}
 
 //@Override
-/*public*/ /*synchronized*/ void EntryExitPairs::removeVetoableChangeListener(VetoableChangeListener* l) {
-    vcs->removeVetoableChangeListener(l);
-}
+///*public*/ /*synchronized*/ void EntryExitPairs::removeVetoableChangeListener(VetoableChangeListener* l) {
+//    vcs->removeVetoableChangeListener(l);
+//}
 
 
 //@Override
@@ -1391,39 +1390,39 @@ PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, QList<LayoutB
 }
 
 //@Override
-/*public*/ QVector<PropertyChangeListener*> EntryExitPairs::getPropertyChangeListeners() {
-    return getPropertyChangeListeners();
-}
+///*public*/ QVector<PropertyChangeListener*> EntryExitPairs::getPropertyChangeListeners() {
+//    return getPropertyChangeListeners();
+//}
 
 //@Override
-/*public*/ QVector<PropertyChangeListener*> EntryExitPairs::getPropertyChangeListeners(QString propertyName) {
-    return getPropertyChangeListeners(propertyName);
-}
+///*public*/ QVector<PropertyChangeListener*> EntryExitPairs::getPropertyChangeListeners(QString propertyName) {
+//    return getPropertyChangeListeners(propertyName);
+//}
 
 //@Override
-/*public*/ void EntryExitPairs::removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-   removePropertyChangeListener(propertyName, listener);
-}
+///*public*/ void EntryExitPairs::removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
+//   removePropertyChangeListener(propertyName, listener);
+//}
 
 //@Override
-/*public*/ void EntryExitPairs::addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
-    vcs->addVetoableChangeListener(propertyName, listener);
-}
+///*public*/ void EntryExitPairs::addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
+//    vcs->addVetoableChangeListener(propertyName, listener);
+//}
 
 //@Override
-/*public*/ QVector<VetoableChangeListener*> EntryExitPairs::getVetoableChangeListeners() {
-    return vcs->getVetoableChangeListeners();
-}
+///*public*/ QVector<VetoableChangeListener*> EntryExitPairs::getVetoableChangeListeners() {
+//    return vcs->getVetoableChangeListeners();
+//}
 
 //@Override
-/*public*/ QVector<VetoableChangeListener*> EntryExitPairs::getVetoableChangeListeners(QString propertyName) {
-    return vcs->getVetoableChangeListeners(propertyName);
-}
+///*public*/ QVector<VetoableChangeListener*> EntryExitPairs::getVetoableChangeListeners(QString propertyName) {
+//    return vcs->getVetoableChangeListeners(propertyName);
+//}
 
 //@Override
-/*public*/ void EntryExitPairs::removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
-    vcs->removeVetoableChangeListener(propertyName, listener);
-}
+///*public*/ void EntryExitPairs::removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
+//    vcs->removeVetoableChangeListener(propertyName, listener);
+//}
 
 //@Override
 /*public*/ void EntryExitPairs::deleteBean(DestinationPoints* bean, QString property) /*throw (PropertyVetoException)*/ {
@@ -1445,13 +1444,13 @@ PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, QList<LayoutB
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ void EntryExitPairs::addDataListener(QObject *e) {
+/*public*/ void EntryExitPairs::addDataListener(ManagerDataListener *e) {
     if (e != nullptr) listeners.append(e);
 }
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ void EntryExitPairs::removeDataListener(/*ManagerDataListener*/QObject *e)  {
+/*public*/ void EntryExitPairs::removeDataListener(ManagerDataListener *e)  {
     if (e != nullptr) listeners.removeOne(e);
 }
 

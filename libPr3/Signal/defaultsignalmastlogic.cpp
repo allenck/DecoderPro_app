@@ -83,7 +83,7 @@ class RunnableThis : public Runnable
   throw new NullPointerException(tr("source is marked @NonNull but is null."));
  this->source = source;
  destList =  QHash<SignalMast*, DestinationMast*>();
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
  propertyDestinationMastListener = new PropertyDestinationMastListener(this);
  propertySourceMastListener = new PropertySourceMastListener(this);
  thr = nullptr;
@@ -2915,7 +2915,7 @@ protected PropertyChangeListener propertySignalMastLogicManagerListener = new Pr
 /*public*/ /*synchronized*/ void DefaultSignalMastLogic::addPropertyChangeListener(PropertyChangeListener* l)
 {
  QMutexLocker locker(&mutex);
- pcs->PropertyChangeSupport::addPropertyChangeListener(l);
+ pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 }
 /*public*/ /*synchronized*/ void DefaultSignalMastLogic::removePropertyChangeListener(PropertyChangeListener* l)
 {

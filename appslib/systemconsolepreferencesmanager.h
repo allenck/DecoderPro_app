@@ -1,13 +1,15 @@
 #ifndef SYSTEMCONSOLEPREFERENCESMANAGER_H
 #define SYSTEMCONSOLEPREFERENCESMANAGER_H
 #include "preferencesmanager.h"
+#include "bean.h"
 
 class Exception;
 class Logger;
 class InitializationException;
-class SystemConsolePreferencesManager : public PreferencesManager
+class SystemConsolePreferencesManager : public Bean, public PreferencesManager
 {
  Q_OBJECT
+  Q_INTERFACES(PreferencesManager)
 public:
  Q_INVOKABLE SystemConsolePreferencesManager();
  ~SystemConsolePreferencesManager() {}
@@ -34,6 +36,8 @@ public:
  /*public*/ void setWrapStyle(int wrapStyle);
  /*public*/ bool isInitializedWithExceptions(Profile* profile);
  /*public*/ QList<Exception*>* getInitializationExceptions(Profile* profile);
+
+ QObject* self() override {return (QObject*)this;}
 
 private:
  // default settings

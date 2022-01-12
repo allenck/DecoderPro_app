@@ -5,22 +5,24 @@
 #include <QRegExp>
 #include "exceptions.h"
 #include "logger.h"
+#include "abstractmanager.h"
 
 //class AbstractManager;
 class Sensor;
-class LIBPR3SHARED_EXPORT AbstractSensorManager : public SensorManager
+class LIBPR3SHARED_EXPORT AbstractSensorManager : public AbstractManager, public SensorManager
 {
     Q_OBJECT
+  Q_INTERFACES(SensorManager)
 public:
     AbstractSensorManager(QObject *parent = 0);
     AbstractSensorManager(SystemConnectionMemo* memo, QObject *parent =nullptr);
 
     /*public*/ int getXMLOrder()const override;
-    /*public*/ char typeLetter() const  override;
+    /*public*/ QChar typeLetter()  override;
     /*public*/ Sensor* provideSensor(QString name) override;
-    /*public*/ Sensor* getSensor(QString name) const override;
-    /*public*/ NamedBean* getBySystemName(QString key) const override;
-    /*public*/ NamedBean* getByUserName(QString key) const override;
+    /*public*/ Sensor* getSensor(QString name) override;
+    /*public*/ NamedBean* getBySystemName(QString key) override;
+    /*public*/ NamedBean* getByUserName(QString key)  override;
     /**
      * Requests status of all layout sensors under this Sensor Manager.
      * This method may be invoked whenever the status of sensors needs to be updated from
@@ -36,7 +38,7 @@ public:
 
      /*public*/ bool allowMultipleAdditions(QString systemName) override;
 
-    /*public*/ QString createSystemName(QString curAddress, QString prefix)const /*throw (JmriException)*/ override;
+    /*public*/ QString createSystemName(QString curAddress, QString prefix) /*throw (JmriException)*/ override;
     /*public*/ Sensor* newSensor(QString sysName, QString userName) override;
     /*public*/ QString getBeanTypeHandled(bool plural) const override;
     /*public*/ QString getNamedBeanClass() const override;
@@ -69,7 +71,7 @@ protected:
     /*protected*/ long sensorDebounceGoingInActive/* = 0L*/;
     /*protected*/ QString normalizeSystemName(QString sysName)const  override;
 //QMap<QString, Sensor*> sensorMap; // key = systemName!
-    friend class PropertyChangeSupport;
+    friend class SwingPropertyChangeSupport;
 };
 //QRegExp AbstractSensorManager::numberMatcher;
 #endif // ABSTRACTSENSORMANAGER_H

@@ -17,18 +17,19 @@ public:
  ~DefaultAudioManager() {}
  DefaultAudioManager(const DefaultAudioManager&) : AbstractAudioManager() {}
  /*public*/ int getXMLOrder()const override;
- /*public*/ QString getSystemPrefix()const override;
+ /*public*/ QString getSystemPrefix() override;
  /*public*/ static DefaultAudioManager* instance();
  /*public*/ QT_DEPRECATED QStringList getSystemNameList(int subType);
- /*public*/ QSet<NamedBean*> getNamedBeanSet(QChar subType);
+ /*public*/ QSet<NamedBean*> getNamedBeanSet(QChar subType) override;
  /*public*/ QT_DEPRECATED QStringList getSystemNameList(QChar subType)override;
  /*public*/ /*synchronized*/ void init()override;
- /*public*/ void deregister(NamedBean* s)const override;
+ /*public*/ void deregister(NamedBean* s) override;
  /*public*/ void cleanUp();
  /*public*/ AudioFactory* getActiveAudioFactory()override;
  /*public*/ QString getNamedBeanClass()const override {
      return "Audio";
  }
+ QObject* self() override {return (QObject*)this;}
 
 signals:
 

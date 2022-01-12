@@ -34,13 +34,14 @@ InternalTurnoutManager::InternalTurnoutManager(QObject *parent) : AbstractTurnou
  * {@inheritDoc}
  */
 //@Override
-/*public*/ SystemConnectionMemo *InternalTurnoutManager::getMemo() const {
+/*public*/ SystemConnectionMemo *InternalTurnoutManager::getMemo() {
     return  memo;
 }
+
 /**
  * Create and return an internal (no layout connection) turnout
  */
-/*protected*/ Turnout* InternalTurnoutManager::createNewTurnout(QString systemName, QString userName) const
+/*protected*/ Turnout* InternalTurnoutManager::createNewTurnout(QString systemName, QString userName)
 {
 //    return (Turnout*)new AbstractTurnout(systemName, userName)
 //    {
@@ -55,7 +56,7 @@ InternalTurnoutManager::InternalTurnoutManager(QObject *parent) : AbstractTurnou
     return true;
 }
 
-/*public*/ QString InternalTurnoutManager::createSystemName(QString curAddress, QString prefix) const /*throw (JmriException)*/
+/*public*/ QString InternalTurnoutManager::createSystemName(QString curAddress, QString prefix) /*throw (JmriException)*/
 {
     return prefix+QString(typeLetter())+curAddress;
 }

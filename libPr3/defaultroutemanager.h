@@ -15,13 +15,13 @@ public:
     DefaultRouteManager(const DefaultRouteManager& other) : AbstractRouteManager(other.memo) {}
     /*public*/ int getXMLOrder() const override;
 //    /*public*/ QString getSystemPrefix() const override;
-    /*public*/ char typeLetter() const override;
+    /*public*/ QChar typeLetter()  override;
 
     /**
      * Method to provide a  Route
      * whether or not is already exists.
      */
-    /*public*/ Route* provideRoute(QString systemName, QString userName)const override;
+    /*public*/ Route* provideRoute(QString systemName, QString userName) override;
     /*public*/ Route* newRoute(QString userName) override;
 
     /**

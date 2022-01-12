@@ -6,7 +6,7 @@
 #include "javaqt_global.h"
 #include "jcomponent.h"
 #include "jpanel.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 
 class WindowListener;
 class PropertyChangeEvent;
@@ -137,7 +137,7 @@ private:
  //void moveEvent(QMoveEvent*);
  Border* _border = nullptr;
  bool _windowClosing = false;
- PropertyChangeSupport* pcs = new PropertyChangeSupport(this);
+ SwingPropertyChangeSupport* pcs = new SwingPropertyChangeSupport(this, nullptr);
  //Qt::WindowStates QWindowStateChangeEvent();
 
 protected:

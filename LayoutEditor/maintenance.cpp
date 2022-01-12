@@ -110,7 +110,7 @@ Maintenance::Maintenance(QObject *parent) :
  QVector <QString>* display = new QVector<QString>();
  QVector <QString>* names = new QVector<QString>();
 
- QStringListIterator iter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSystemNameList());
+ QStringListIterator iter(((SensorManager*)InstanceManager::sensorManagerInstance())->getSystemNameList());
  while (iter.hasNext())
  {
   QString name = iter.next();
@@ -122,7 +122,7 @@ Maintenance::Maintenance(QObject *parent) :
    names->append( name);
   }
  }
- iter = QStringListIterator(((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getSystemNameList());
+ iter = QStringListIterator(((TurnoutManager*)InstanceManager::turnoutManagerInstance())->getSystemNameList());
  while (iter.hasNext())
  {
   QString name = iter.next();
@@ -146,7 +146,7 @@ Maintenance::Maintenance(QObject *parent) :
    names->append( name);
   }
  }
- iter = QStringListIterator(((AbstractLightManager*)InstanceManager::lightManagerInstance())->getSystemNameList());
+ iter = QStringListIterator(((LightManager*)InstanceManager::lightManagerInstance())->getSystemNameList());
  while (iter.hasNext())
  {
   QString name = iter.next();
@@ -180,7 +180,7 @@ Maintenance::Maintenance(QObject *parent) :
         }
     }
 
- iter = QStringListIterator(((BlockManager*)InstanceManager::getDefault("BlockManager"))->getSystemNameList());
+ iter = QStringListIterator(((AbstractManager*)InstanceManager::getDefault("BlockManager"))->getSystemNameList());
  while (iter.hasNext())
  {
   QString name = iter.next();
@@ -400,7 +400,7 @@ Maintenance::Maintenance(QObject *parent) :
  if (log->isDebugEnabled()) log->debug("getTypeAndNames for \""+name+"\"");
 
  SensorManager* sensorManager = InstanceManager::sensorManagerInstance();
- Sensor* sen = ((ProxySensorManager*)sensorManager)->getBySystemName(sysName);
+ Sensor* sen = (Sensor*)((AbstractManager*)sensorManager)->getBySystemName(sysName);
  if ( sen!=NULL )
  {
   userName = ((AbstractSensor*)sen)->getUserName();
@@ -408,7 +408,7 @@ Maintenance::Maintenance(QObject *parent) :
  }
  else
  {
-  sen = ((ProxySensorManager*)sensorManager)->getBySystemName(userName.toUpper());
+  sen = (Sensor*)((AbstractManager*)sensorManager)->getBySystemName(userName.toUpper());
   if (sen!=NULL)
   {
    sysName = ((AbstractSensor*)sen)->getSystemName();
@@ -417,7 +417,7 @@ Maintenance::Maintenance(QObject *parent) :
   }
   else
   {
-   sen = ((ProxySensorManager*)sensorManager)->getByUserName(userName);
+   sen = (Sensor*)((AbstractManager*)sensorManager)->getByUserName(userName);
    if ( sen!=NULL )
    {
     sysName = ((AbstractSensor*)sen)->getSystemName();
@@ -433,7 +433,7 @@ Maintenance::Maintenance(QObject *parent) :
   return l;
  }
  TurnoutManager* turnoutManager = InstanceManager::turnoutManagerInstance();
- Turnout* t = (Turnout*)((ProxyTurnoutManager*)turnoutManager)->getBySystemName(sysName);
+ Turnout* t = (Turnout*)((AbstractManager*)turnoutManager)->getBySystemName(sysName);
  if ( t!=NULL )
  {
   userName = ((AbstractTurnout*)t)->getUserName();
@@ -441,7 +441,7 @@ Maintenance::Maintenance(QObject *parent) :
  }
  else
  {
-  t = (Turnout*)((ProxyTurnoutManager*)turnoutManager)->getBySystemName(userName.toUpper());
+  t = (Turnout*)((AbstractManager*)turnoutManager)->getBySystemName(userName.toUpper());
   if (t!=NULL)
   {
    sysName = ((AbstractTurnout*)t)->getSystemName();
@@ -450,7 +450,7 @@ Maintenance::Maintenance(QObject *parent) :
   }
   else
   {
-   t = (Turnout*)((ProxyTurnoutManager*)turnoutManager)->getByUserName(userName);
+   t = (Turnout*)((AbstractManager*)turnoutManager)->getByUserName(userName);
    if ( t!=NULL )
    {
     sysName = ((AbstractTurnout*)t)->getSystemName();
@@ -569,7 +569,7 @@ Maintenance::Maintenance(QObject *parent) :
  }
 
  BlockManager* blockManager = ((BlockManager*)InstanceManager::getDefault("BlockManager"));
- Block* b = (Block*)blockManager->getBySystemName(sysName);
+ Block* b = (Block*)((AbstractManager*)blockManager)->getBySystemName(sysName);
  if ( b!=NULL )
  {
   userName = b->getUserName();
@@ -577,7 +577,7 @@ Maintenance::Maintenance(QObject *parent) :
  }
  else
  {
-  b = (Block*)blockManager->getBySystemName(userName.toUpper());
+  b = (Block*)((AbstractManager*)blockManager)->getBySystemName(userName.toUpper());
   if (b!=NULL)
   {
    sysName = b->getSystemName();
@@ -586,7 +586,7 @@ Maintenance::Maintenance(QObject *parent) :
   }
   else
   {
-   b = (Block*)blockManager->getByUserName(userName);
+   b = (Block*)blockManager->AbstractManager::getByUserName(userName);
    if ( b!=NULL )
    {
     sysName = b->getSystemName();
@@ -1102,7 +1102,7 @@ Maintenance::Maintenance(QObject *parent) :
     found = false;
     empty = true;
     BlockManager* blockManager = ((BlockManager*)InstanceManager::getDefault("BlockManager"));
-    sysNameList = blockManager->getSystemNameList();
+    sysNameList = ((AbstractManager*)blockManager)->getSystemNameList();
 
     sectionManager = ((SectionManager*)InstanceManager::getDefault("SectionManager"));
     iter1 = QStringListIterator(sectionManager->getSystemNameList());
@@ -1118,7 +1118,7 @@ Maintenance::Maintenance(QObject *parent) :
     while (iter1.hasNext()) {
         // get the next Logix
         QString sName = iter1.next();
-        Block* b = (Block*)blockManager->getBySystemName(sName);
+        Block* b = (Block*)((AbstractManager*)blockManager)->getBySystemName(sName);
         QString uName = b->getUserName();
         QString line1 = tr("%1%2: \"%3\" (%4)").arg(" ").arg(tr("Block")).arg(uName).arg(sName);
         if (sName==(sysName) || (uName !=NULL && uName==(userName)))  {

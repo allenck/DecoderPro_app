@@ -4,7 +4,7 @@
 #include "cvvalue.h"
 #include "gridbagconstraints.h"
 #include "variabletablemodel.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "dccaddresspanel.h"
 #include "gridbaglayout.h"
 #include "watchinglabel.h"
@@ -1889,7 +1889,7 @@ MyQualifierAdder::MyQualifierAdder(JLabel *l, PaneProgPane *self) : QualifierAdd
 }
 /*protected*/ void MyQualifierAdder::addListener(PropertyChangeListener* qc)
 {
- //l->PropertyChangeSupport::addPropertyChangeListener(qc);
+ //l->SwingPropertyChangeSupport::addPropertyChangeListener(qc);
     // TODO:
 }
 
@@ -3185,7 +3185,7 @@ void PaneProgPane::On_confirmAllButtonClicked()
 }
 void PaneProgPane::addPropertyChangeListener(PropertyChangeListener* /*l*/)
 {
-// pcs->PropertyChangeSupport::addPropertyChangeListener(l);
+// pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 }
 void PaneProgPane::removePropertyChangeListener(PropertyChangeListener* /*l*/)
 {

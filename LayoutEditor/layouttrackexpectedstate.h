@@ -1,7 +1,7 @@
 #ifndef LAYOUTTRACKEXPECTEDSTATE_H
 #define LAYOUTTRACKEXPECTEDSTATE_H
 #include "layouttrack.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "bean.h"
 
 template<class T>

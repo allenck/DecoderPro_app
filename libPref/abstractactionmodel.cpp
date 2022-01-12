@@ -1,7 +1,7 @@
 #include "abstractactionmodel.h"
 #include <QStringList>
 #include "stringutil.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "fileutil.h"
 #include <QMap>
 #include <QTextStream>

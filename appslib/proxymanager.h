@@ -10,9 +10,10 @@
  * @param <B> type of supported NamedBean
  */
 //template<class B>
-/*public*/ class  ProxyManager ///*<B extends NamedBean>*/ : public Manager
+/*public*/ class  ProxyManager /*<B extends NamedBean>*/ : public Manager
 {
 //Q_OBJECT
+    Q_INTERFACES(Manager)
 public:
 //    ProxyManager(QObject* parent) : Manager(parent){}
     /**
@@ -21,7 +22,7 @@ public:
      * @param manager the Manager to add; if manager has already been added, it
      *                will not be added again
      */
- /*public*/ virtual void addManager(/*@Nonnull*/ AbstractManager* /*manager*/) {}
+ /*public*/ virtual void addManager(/*@Nonnull*/ Manager* /*manager*/) =0;
 
     /**
      * Get the default manager or the internal manager if no default manager has
@@ -30,7 +31,7 @@ public:
      * @return the default manager or the internal manager
      */
     /*@Nonnull*/
- /*public*/ virtual AbstractManager* getDefaultManager() const {return  nullptr;}
+ /*public*/ virtual Manager* getDefaultManager()  {return  nullptr;}
 
     /**
      * Returns a list of all managers, including the internal manager. This is
@@ -39,7 +40,7 @@ public:
      *
      * @return the list of managers
      */
- /*public*/ virtual QList<AbstractManager*> getManagerList() const {return QList<AbstractManager*>();}
+ /*public*/ virtual QList<Manager*> getManagerList()  =0;
 
     /**
      * Get a list of all managers, with the default as the first item and internal
@@ -47,7 +48,7 @@ public:
      *
      * @return the list of managers
      */
-    /*public*/ virtual QList<AbstractManager*> getDisplayOrderManagerList() const {return QList<AbstractManager*>();}
+    /*public*/ virtual QList<Manager*> getDisplayOrderManagerList() {return QList<Manager*>();}
 };
 Q_DECLARE_INTERFACE(ProxyManager, "ProxyManager")
 #endif // PROXYMANAGER_H

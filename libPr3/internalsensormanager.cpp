@@ -123,7 +123,7 @@ InternalSensorManager::InternalSensorManager(InternalSystemConnectionMemo* memo,
  * {@inheritDoc}
  */
 //@Override
-/*public*/ SystemConnectionMemo* InternalSensorManager::getMemo() const {
+/*public*/ SystemConnectionMemo* InternalSensorManager::getMemo() {
     return  memo;
 }
 

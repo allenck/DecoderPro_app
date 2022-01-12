@@ -36,7 +36,7 @@
 //{
 // center =  QPointF(50.0, 50.0);
 // hidden = false;
-// propertyChangeSupport = new PropertyChangeSupport(this);
+// SwingPropertyChangeSupport = new SwingPropertyChangeSupport(this, nullptr);
 
 //}
 /*public*/ LayoutTrack::LayoutTrack(/*@Nonnull*/ QString ident, /*@Nonnull*/ LayoutEditor* models, QObject *parent) : QObject(parent){

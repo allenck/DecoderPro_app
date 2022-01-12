@@ -10,7 +10,7 @@
 #include "enginemanagerxml.h"
 #include "rollingstock.h"
 #include "enginelengths.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "train.h"
 #include "instancemanager.h"
 #include "consistmanager.h"
@@ -387,8 +387,8 @@ namespace Operations
  }
 
  /*private*/ void Engine::addPropertyChangeListeners() {
-  ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->PropertyChangeSupport::addPropertyChangeListener(this);
-  ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->PropertyChangeSupport::addPropertyChangeListener(this);
+  ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+  ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->SwingPropertyChangeSupport::addPropertyChangeListener(this);
  }
 
  /*public*/ void Engine::propertyChange(PropertyChangeEvent* e)

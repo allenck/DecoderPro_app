@@ -3,6 +3,7 @@
 #include "defaultsystemconnectionmemo.h"
 #include "instancemanagerautodefault.h"
 
+class NamedBean;
 class InternalMeterManager;
 class InternalConsistManager;
 class InternalLightManager;

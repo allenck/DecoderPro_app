@@ -16,7 +16,7 @@ public:
  /*public*/ bool provides(/*Class<?>*/QString type)override;
  /*public*/ Manager* get(QString T);
  /*public*/ QString validateSystemNameFormat(QString name, Manager* manager, QLocale locale);
- /*public*/ Manager::NameValidity validSystemNameFormat(QString systemName, char type) ;
+ /*public*/ Manager::NameValidity validSystemNameFormat(QString systemName, QChar type) ;
 
 private:
  static Logger* log;

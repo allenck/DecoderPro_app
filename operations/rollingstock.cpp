@@ -65,13 +65,13 @@ namespace Operations
 /*protected*/ /*static*/ /*final*/ QString RollingStock::DEFAULT_WEIGHT = "0";
 
 /*public*/ RollingStock::RollingStock(QObject *parent) :
- PropertyChangeSupport(this, parent) {
+ SwingPropertyChangeSupport(this, parent) {
 common();
  _lastDate = QDateTime(); //(new GregorianCalendar()).getGregorianChange(); // set to change date of the Gregorian Calendar.
 }
 
 /*public*/ RollingStock::RollingStock(QString road, QString number, QObject *parent) :
- PropertyChangeSupport(this, parent)
+ SwingPropertyChangeSupport(this, parent)
 {
  //this();
 common();
@@ -448,13 +448,13 @@ return getLength().toInt();
   {
    _location->addRS(this);
    // Need to know if location name changes so we can forward to listeners
-  _location->PropertyChangeSupport::addPropertyChangeListener(this);
+  _location->SwingPropertyChangeSupport::addPropertyChangeListener(this);
   }
   if (_trackLocation != NULL)
   {
    _trackLocation->addRS(this);
    // Need to know if location name changes so we can forward to listeners
-   _trackLocation->PropertyChangeSupport::addPropertyChangeListener(this);
+   _trackLocation->SwingPropertyChangeSupport::addPropertyChangeListener(this);
    // if there's a destination then there's a pick up
    if (_destination != NULL)
    {
@@ -1251,7 +1251,7 @@ return "";
   * @param e RollingStock XML element
   */
  /*public*/ RollingStock::RollingStock(QDomElement e, QObject* parent)
- : PropertyChangeSupport(this, parent)
+ : SwingPropertyChangeSupport(this, parent)
  {
      //this();
   common();

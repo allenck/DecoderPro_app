@@ -684,9 +684,9 @@ void TableColumn::common()
 /*public*/ /*synchronized*/ void TableColumn::addPropertyChangeListener(
                             PropertyChangeListener* listener) {
     if (changeSupport == NULL) {
-        changeSupport = new PropertyChangeSupport(this);
+        changeSupport = new SwingPropertyChangeSupport(this, nullptr);
     }
-    changeSupport->PropertyChangeSupport::addPropertyChangeListener(listener);
+    changeSupport->SwingPropertyChangeSupport::addPropertyChangeListener(listener);
     //connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 

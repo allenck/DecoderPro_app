@@ -429,7 +429,7 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
 {
  if (namedTurnout!=nullptr)
  {
-//        namedTurnout->getBean()->PropertyChangeSupport::addPropertyChangeListener(mTurnoutListener =
+//        namedTurnout->getBean()->SwingPropertyChangeSupport::addPropertyChangeListener(mTurnoutListener =
 //                            new PropertyChangeListener());
 //        {
 //            /*public*/ void propertyChange(PropertyChangeEvent* e) {
@@ -442,7 +442,7 @@ void LayoutSlip::setTurnoutState(TurnoutState* ts)
     }
     if (namedTurnoutB!=nullptr)
     {
-//        namedTurnoutB->getBean()->PropertyChangeSupport::addPropertyChangeListener(mTurnoutListener =
+//        namedTurnoutB->getBean()->SwingPropertyChangeSupport::addPropertyChangeListener(mTurnoutListener =
 //                            new PropertyChangeListener());
 //        {
 //            /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {

@@ -14,11 +14,11 @@ namespace Operations {
   * @author Bob Jacobsen Copyright (C) 2003
   * @author Daniel Boudreau Copyright (C) 2021
   */
- ///*public*/  class DivisionManager extends PropertyChangeSupport implements InstanceManagerAutoDefault, InstanceManagerAutoInitialize {
+ ///*public*/  class DivisionManager extends SwingPropertyChangeSupport implements InstanceManagerAutoDefault, InstanceManagerAutoInitialize {
 
      /*public*/  /*static*/ /*final*/ QString DivisionManager::LISTLENGTH_CHANGED_PROPERTY = "divisionsListLength"; // NOI18N
 
-     /*public*/  DivisionManager::DivisionManager(QObject* parent): PropertyChangeSupport(this, parent){
+     /*public*/  DivisionManager::DivisionManager(QObject* parent): SwingPropertyChangeSupport(this, parent){
      }
 
 

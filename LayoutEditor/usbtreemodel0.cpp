@@ -2,7 +2,7 @@
 #include "usbnode.h"
 #include "logger.h"
 #include "controller.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include <QStringList>
 #include <QDebug>
 #include "linuxabstractcontroller.h"
@@ -40,7 +40,7 @@ namespace Usb
 {
  log = new Logger("UsbTreeModel");
  ca = new QVector<Usb::Controller*>();
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
  devHash = QHash<qint16, DeviceFilter>();
 
     //super(new DefaultMutableTreeNode("Root"));

@@ -196,7 +196,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
   //return new ProxySensorManager();
   ProxySensorManager* psm = new ProxySensorManager();
   //InstanceManager::store(psm, type);
-  return psm;
+  return (QObject*)psm;
  }
 
  if (type == "SignalGroupManager")
@@ -289,14 +289,14 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  {
   DefaultIdTagManager* tm =new DefaultIdTagManager();
   //InstanceManager::store(tm, type);
-  return tm;
+  return (QObject*)tm;
  }
 
  if (type == "DefaultIdTagManager")
  {
   DefaultIdTagManager* tm =new DefaultIdTagManager();
   //InstanceManager::store(tm, type);
-  return tm;
+  return (QObject*)tm;
  }
 
 // if (type == "LayoutBlockManager")
@@ -519,32 +519,32 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  {
   StartupPauseFactory* supf = new StartupPauseFactory();
   //InstanceManager::store(supf,type);
-  return supf;
+  return supf->self();
  }
  if(type == "CreateButtonModelFactory")
  {
   CreateButtonModelFactory* supf = new CreateButtonModelFactory();
   //InstanceManager::store(supf,type);
-  return supf;
+  return supf->self();
  }
  if(type == "TriggerRouteModelFactory")
  {
   TriggerRouteModelFactory* supf = new TriggerRouteModelFactory();
-  InstanceManager::store(supf,type);
-  return supf;
+  InstanceManager::store(supf->self(),type);
+  return supf->self();
  }
  if(type == "ScriptButtonModelFactory")
  {
   ScriptButtonModelFactory* supf = new ScriptButtonModelFactory();
   //InstanceManager::store(supf,type);
-  return supf;
+  return supf->self();
  }
 
  if(type == "PerformFileModelFactory")
  {
   PerformFileModelFactory* supf = new PerformFileModelFactory();
   //InstanceManager::store(supf,type);
-  return supf;
+  return supf->self();
  }
 
  if(type == "RestartStartupActionFactory")

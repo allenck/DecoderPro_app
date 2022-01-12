@@ -80,7 +80,7 @@
 }
 
 /*public*/ void LncvDevices::addPropertyChangeListener(PropertyChangeListener* l){
- pcs->PropertyChangeSupport::addPropertyChangeListener(l);
+ pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 }
 
 /*public*/ void LncvDevices::removePropertyChangeListener(PropertyChangeListener*l)

@@ -48,7 +48,7 @@
 SystemConnectionMemo::SystemConnectionMemo(QString prefix, QString userName, QObject *parent) :
     QObject(parent)
 {
- propertyChangeSupport = new PropertyChangeSupport(this);
+ SwingPropertyChangeSupport = new SwingPropertyChangeSupport(this, nullptr);
  if(log == nullptr)
   log = LoggerFactory::getLogger("SystemConnectionMemo");
 
@@ -169,7 +169,7 @@ void SystemConnectionMemo::_register()
         if (this->userNameAsLoaded == "") {
             this->userNameAsLoaded = userName;
         }
-        //this.propertyChangeSupport.firePropertyChange(USER_NAME, oldUserName, userName);
+        //this.SwingPropertyChangeSupport.firePropertyChange(USER_NAME, oldUserName, userName);
         return true;
     }
     return false;

@@ -26,8 +26,8 @@
     }
 
     //@Override
-    /*protected*/ /*final*/ void IdTagTableDataModel::setManager(/*Manager<IdTag>*/AbstractManager* mgr){
-        if ( qobject_cast<IdTagManager*>(mgr)){
+    /*protected*/ /*final*/ void IdTagTableDataModel::setManager(/*Manager<IdTag>*/Manager* mgr){
+        if ( qobject_cast<IdTagManager*>(mgr->self())){
             tagManager = (IdTagManager*)mgr->self();
         }
     }
@@ -42,7 +42,7 @@
     }
 
     //@Override
-    /*public*/ /*Manager<IdTag>*/AbstractManager* IdTagTableDataModel::getManager() {
+    /*public*/ /*Manager<IdTag>*/Manager* IdTagTableDataModel::getManager() {
         return  tagManager != nullptr ? tagManager : (IdTagManager*)InstanceManager::getDefault("IdTagManager");
     }
 

@@ -11,7 +11,7 @@
 #include "enginemanager.h"
 #include "enginemodels.h"
 #include "engine.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "carroads.h"
 #include "enginelengths.h"
 #include "enginetypes.h"
@@ -155,15 +155,15 @@ namespace Operations
          RollingStockAttributeEditFrame::loadCombobox();
          if (_attribute == (MODEL)) {
              comboBox = ((EngineModels*)InstanceManager::getDefault("EngineModels"))->getComboBox();
-             ((EngineModels*)InstanceManager::getDefault("EngineModels"))->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
+             ((EngineModels*)InstanceManager::getDefault("EngineModels"))->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
          }
          if (_attribute == (TYPE)) {
              comboBox = ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->getComboBox();
-             ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
+             ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
          }
          if (_attribute == LENGTH) {
              comboBox = ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->getComboBox();
-             ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
+             ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
          }
          if (_attribute ==(CONSIST)) {
           comboBox = ((ConsistManager*)InstanceManager::getDefault("Operations::ConsistManager"))->getComboBox();

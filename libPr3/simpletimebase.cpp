@@ -67,9 +67,9 @@
 //    SimpleDateFormat timeStorageFormat = NULL;
 
  timer = NULL;
- //pcMinutes = new PropertyChangeSupport(this);
+ //pcMinutes = new SwingPropertyChangeSupport(this, nullptr);
  oldMinutes = 0;
- //pcs = new PropertyChangeSupport(this);
+ //pcs = new SwingPropertyChangeSupport(this, nullptr);
  // initialize time-containing memory
  try
  {

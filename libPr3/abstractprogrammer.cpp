@@ -1,6 +1,6 @@
 #include "abstractprogrammer.h"
 //#include "bundle.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "defaultprogrammermanager.h"
 #include "programmingmode.h"
 #include "vptr.h" // for VPtr
@@ -15,7 +15,7 @@ AbstractProgrammer::AbstractProgrammer(QObject *parent) /*:
  timer = NULL;
  log = new Logger();
   propListeners= new QVector<PropertyChangeListener*>();
-  propertyChangeSupport = new PropertyChangeSupport(this);
+  propertyChangeSupport = new SwingPropertyChangeSupport(this, nullptr);
   mode = ProgrammingMode::PAGEMODE;
 }
 QString AbstractProgrammer::decodeErrorCode(int code)
@@ -61,7 +61,7 @@ QString AbstractProgrammer::decodeErrorCode(int code)
 //    if (!propListeners->contains(l)) {
 //        propListeners->append(l);
 //    }
- propertyChangeSupport->PropertyChangeSupport::addPropertyChangeListener(listener);
+ propertyChangeSupport->SwingPropertyChangeSupport::addPropertyChangeListener(listener);
 }
 
 /*public synchronized*/ void AbstractProgrammer::removePropertyChangeListener(PropertyChangeListener* listener) {

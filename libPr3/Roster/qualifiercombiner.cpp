@@ -1,5 +1,5 @@
 #include "qualifiercombiner.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "valuequalifier.h"
 
 //QualifierCombiner::QualifierCombiner(QObject *parent) :

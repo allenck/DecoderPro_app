@@ -16,6 +16,7 @@ public:
  /*public*/ bool isUpdateCV19();
  /*public*/ void setUpdateCV19(bool update);
 
+ QObject* self() override {return (QObject*)this;}
 private:
  static Logger* log;
  /*private*/ bool updateCV19 = false;

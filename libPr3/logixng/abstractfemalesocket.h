@@ -4,7 +4,7 @@
 #include <QObject>
 #include "femalesocketlistener.h"
 #include "socketalreadyconnectedexception.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "base.h"
 #include "femalesocket.h"
 
@@ -90,7 +90,7 @@ class AbstractFemaleSocket : public QObject, public FemaleSocket
   /*private*/ QString _name = nullptr;
   /*private*/ bool _listenersAreRegistered = false;
   bool _enableListeners = true;
-  /*private*/ /*final*/ PropertyChangeSupport* pcs = new PropertyChangeSupport(this);
+  /*private*/ /*final*/ SwingPropertyChangeSupport* pcs = new SwingPropertyChangeSupport(this, nullptr);
 
  protected:
   /*protected*/ /*final*/ FemaleSocketListener* _listener;

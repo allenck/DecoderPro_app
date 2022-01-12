@@ -72,7 +72,7 @@
 //@Override
 /*public*/ QJsonValue JsonBlockHttpService::doGetList(QString /*type*/, QLocale locale) throw (JsonException) {
     QJsonArray root = QJsonArray(); //this->mapper.createArrayNode();
-    for (QString name : ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getSystemNameList()) {
+    for (QString name : ((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getSystemNameList()) {
         root.append(this->doGet(JsonBlock::BLOCK, name, locale));
     }
     return root;

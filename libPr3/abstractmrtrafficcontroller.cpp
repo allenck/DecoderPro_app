@@ -41,7 +41,7 @@
  */
 //abstract /*public*/ class AbstractMRTrafficController {
 
-/*public*/ AbstractMRTrafficController::AbstractMRTrafficController(QObject *parent) : RfidInterface(parent)
+/*public*/ AbstractMRTrafficController::AbstractMRTrafficController(QObject *parent) : QObject(parent)
 {
 // log = new Logger("AbstractMRTrafficController");
  if (log->isDebugEnabled()) log->debug("setting instance: "+QString("%1").arg(this->objectName()));
@@ -102,8 +102,8 @@
  }
  //if(qobject_cast<JMRIClientListener*>(l))
  {
-  connect(rcvHandler, SIGNAL(incomingMessage(AbstractMRMessage*)), l, SLOT(message(AbstractMRMessage*)));
-  connect(this, SIGNAL(messageSent(AbstractMRMessage*)), l, SLOT(reply(AbstractMRMessage*)) );
+  connect(rcvHandler, SIGNAL(incomingMessage(AbstractMRMessage*)), l->self(), SLOT(message(AbstractMRMessage*)));
+  connect(this, SIGNAL(messageSent(AbstractMRMessage*)), l->self(), SLOT(reply(AbstractMRMessage*)) );
  }
 }
 
@@ -114,10 +114,10 @@
   //cmdListeners->removeElement(l);
   cmdListeners->remove(cmdListeners->indexOf(l));
  }
- if(qobject_cast<JMRIClientListener*>(l))
+ if(qobject_cast<JMRIClientListener*>(l->self()))
  {
-  disconnect(this->rcvHandler, SIGNAL(incomingMessage(AbstractMRMessage*)), l, SLOT(message(AbstractMRMessage*)));
-  disconnect(this, SIGNAL(messageSent(AbstractMRMessage*)), l, SLOT(reply(AbstractMRMessage*)) );
+  disconnect(this->rcvHandler, SIGNAL(incomingMessage(AbstractMRMessage*)), l->self(), SLOT(message(AbstractMRMessage*)));
+  disconnect(this, SIGNAL(messageSent(AbstractMRMessage*)), l->self(), SLOT(reply(AbstractMRMessage*)) );
  }
 }
 
@@ -150,14 +150,14 @@
   AbstractMRListener* client = v->at(i);
   if (notMe != client)
   {
-   if (log->isDebugEnabled()) log->debug(tr("notify client: ")+client->metaObject()->className());
+   if (log->isDebugEnabled()) log->debug(tr("notify client: ")+client->self()->metaObject()->className());
    try
    {
     forwardMessage(client, m);
    }
    catch (Exception* e)
    {
-    log->warn(tr("notify: During message dispatch to ")+client->metaObject()->className()+"\nException "+e->getMessage());
+    log->warn(tr("notify: During message dispatch to ")+client->self()->metaObject()->className()+"\nException "+e->getMessage());
                 //e->printStackTrace();
    }
   }
@@ -243,14 +243,14 @@
     int cnt = v->size();
     for (int i=0; i < cnt; i++) {
         AbstractMRListener* client = v->at(i);
-        if (log->isDebugEnabled()) log->debug("notify client: "+client->objectName());
+        if (log->isDebugEnabled()) log->debug("notify client: "+client->self()->objectName());
         try {
             //skip dest for now, we'll send the message to there last.
 //    if(dest!=client)
 //                forwardReply(client, r);
         }
         catch (Exception* e) {
-            log->warn(tr("notify: During reply dispatch to ")+client->metaObject()->className()+"\nException "+e->getMessage());
+            log->warn(tr("notify: During reply dispatch to ")+client->self()->metaObject()->className()+"\nException "+e->getMessage());
             //e->printStackTrace();
         }
     }

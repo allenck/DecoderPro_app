@@ -3,12 +3,12 @@
 #include "instancemanager.h"
 #include "abstractsensormanager.h"
 
-ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxySensorManager(parent)
+ProxySensorManager::ProxySensorManager(QObject *parent) : QObject(parent)
 {
  setObjectName("ProxySensorManager");
  //qDebug() << "ProxySensorManger created";
  //internalManager = makeInternalManager();
- registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
+ //registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
 
 }
 /**
@@ -25,7 +25,7 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxySensorMan
 //        super();
 //    }
 
-/*protected*/ AbstractManager* ProxySensorManager::makeInternalManager() const
+/*protected*/ AbstractManager* ProxySensorManager::makeInternalManager()
 {
  AbstractManager* manager = (AbstractManager*)((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"))->getSensorManager();
  return manager;
@@ -37,8 +37,8 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxySensorMan
  * @param name
  * @return Null if nothing by that name exists
  */
-/*public*/ Sensor* ProxySensorManager::getSensor(QString name) const {
- return (Sensor*)AbstractProxySensorManager::getNamedBean(name);
+/*public*/ Sensor* ProxySensorManager::getSensor(QString name) {
+ return (Sensor*)AbstractProxyManager::getNamedBean(name);
 }
 
 /*protected*/ Sensor* ProxySensorManager::makeBean(Manager* manager, QString systemName, QString userName)
@@ -48,7 +48,7 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxySensorMan
 
 /*public*/ Sensor* ProxySensorManager::provideSensor(QString sName)
 {
- return static_cast<Sensor*>(AbstractProxySensorManager::provideNamedBean(sName));
+ return static_cast<Sensor*>(provideNamedBean(sName));
 }
 
 
@@ -145,12 +145,12 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxySensorMan
 //@Override
 /*public*/ QString ProxySensorManager::getNextValidAddress(QString curAddress, QString prefix) /*throw (JmriException)*/
 {
- return getNextValidAddress(curAddress, prefix, typeLetter());
+ return AbstractProxyManager::getNextValidAddress(curAddress, prefix, AbstractProxyManager::typeLetter());
 }
 
 //@Override
 /*public*/ QString ProxySensorManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) /*throw (JmriException)*/ {
-    return AbstractProxySensorManager::getNextValidAddress(curAddress, prefix, ignoreInitialExisting, typeLetter());
+    return AbstractProxyManager::getNextValidAddress(curAddress, prefix, ignoreInitialExisting, AbstractProxyManager::typeLetter());
 }
 /**
  * {@inheritDoc}
@@ -162,21 +162,21 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxySensorMan
 
 //@Override
 /*public*/ long ProxySensorManager::getDefaultSensorDebounceGoingActive(){
-    return ((AbstractSensorManager*)mgrs.at(0)->self())->getDefaultSensorDebounceGoingActive();
+ return ((SensorManager*) getDefaultManager())->getDefaultSensorDebounceGoingActive();
 }
 //@Override
 /*public*/ long ProxySensorManager::getDefaultSensorDebounceGoingInActive(){
-    return ((AbstractSensorManager*)mgrs.at(0)->self())->getDefaultSensorDebounceGoingInActive();
+ return ((SensorManager*) getDefaultManager())->getDefaultSensorDebounceGoingInActive();
 }
 //@Override
 /*public*/ void ProxySensorManager::setDefaultSensorDebounceGoingActive(long timer){
-    for (Manager/*<E>*/* m : mgrs) {
+    for (Manager/*<E>*/* m : getManagerList()) {
         ((AbstractSensorManager*)m->self())->setDefaultSensorDebounceGoingActive(timer);
     }
 }
 //@Override
 /*public*/ void ProxySensorManager::setDefaultSensorDebounceGoingInActive(long timer){
-    for (Manager/*<E>*/* m : mgrs) {
+    for (Manager/*<E>*/* m : getManagerList()) {
         ((AbstractSensorManager*)m->self())->setDefaultSensorDebounceGoingInActive(timer);
     }
 }
@@ -201,12 +201,12 @@ QCompleter* ProxySensorManager::getCompleter(QString text)
 {
  if(text.length()>0)
  {
-  QStringList nameList = getSystemNameList();
+  QStringList nameList = AbstractProxyManager::getSystemNameList();
   QStringList completerList;
   bool bOk;
   foreach(QString systemName, nameList)
   {
-   Sensor* s = getBySystemName(systemName);
+   Sensor* s = (Sensor*)AbstractProxyManager::getBySystemName(systemName);
    if(s->getUserName().startsWith(text,Qt::CaseInsensitive))
     completerList.append(s->getUserName());
    if(systemName.startsWith(text,Qt::CaseInsensitive))

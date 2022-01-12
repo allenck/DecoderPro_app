@@ -185,11 +185,11 @@ namespace Operations
     /*protected*/ void RollingStockAttributeEditFrame::loadCombobox() {
         if (_attribute == (ROAD)) {
             comboBox = ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->getComboBox();
-            ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
+            ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
         }
         if (_attribute == (OWNER)) {
             comboBox = ((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->getComboBox();
-            ((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
+            ((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
         }
     }
 

@@ -84,8 +84,8 @@ void AbstractIdTag::init()
 }
 
 /*private*/ QString AbstractIdTag::findPrefix() {
-        QList<AbstractManager*> managerList = ((ProxyIdTagManager*)InstanceManager::getDefault("ProxyIdTagManager"))->getManagerList();
-        for (AbstractManager* m : managerList) {
+        QList<Manager*> managerList = ((ProxyIdTagManager*)InstanceManager::getDefault("ProxyIdTagManager"))->getManagerList();
+        for (Manager* m : managerList) {
             if (m->getBeanBySystemName(mSystemName) != nullptr) {
                 return m->getSystemPrefix();
             }

@@ -745,7 +745,7 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 /*public*/ /*static*/ void JUnitUtil::initReporterManager() {
     ReporterManager* m = new InternalReporterManager((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"));
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m, Manager::REPORTERS);
+        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m->self(), Manager::REPORTERS);
     }
 }
 

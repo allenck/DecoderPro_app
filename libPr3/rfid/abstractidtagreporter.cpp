@@ -26,7 +26,7 @@
 /*public*/ AbstractIdTagReporter::AbstractIdTagReporter(QString systemName, QString userName, QObject* parent) :AbstractReporter(systemName, userName, parent) {
     //super(systemName, userName);
 }
-
+#if 0
 //@Override
 /*public*/ void AbstractIdTagReporter::notify(DefaultIdTag* id)
 {
@@ -51,7 +51,36 @@
  setReport(VPtr<TranspondingTag>::asQVariant((TranspondingTag*)id->self()));
  setState(id != nullptr ? IdTag::SEEN : IdTag::UNSEEN);
 }
+#endif
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void AbstractIdTagReporter::notify(IdTag* id) {
+    log->debug(tr("Notify: %1").arg(mSystemName));
+    if (id != nullptr) {
+        log->debug(tr("Tag: %1").arg(id->toString()));
+        Reporter* r = id->getWhereLastSeen();
+        if (r != nullptr) {
+            notifyPreviousReporter(r,id);
+        }
+        id->setWhereLastSeen(this);
+        log->debug(tr("Seen here: %1").arg(this->mSystemName));
+    }
+    setReport(VPtr<IdTag>::asQVariant(id));
+    setState(id != nullptr ? IdTag::SEEN : IdTag::UNSEEN);
+}
 
+/*private*/ void AbstractIdTagReporter::notifyPreviousReporter(Reporter* r, IdTag* id) {
+        log->debug(tr("Previous reporter: %1").arg(r->getSystemName()));
+        if (!(r->equals(this)) && r->getCurrentReport() == VPtr<IdTag>::asQVariant(id)
+           && (qobject_cast<IdTagListener*>(r))) {
+            log->debug("Notify previous");
+            ((IdTagListener*)r)->notify(nullptr);
+        } else {
+            log->debug(tr("Current report was: %1").arg(r->getCurrentReport().toString()));
+        }
+    }
 
 //@Override
 /*public*/ void AbstractIdTagReporter::setState(int s) {
@@ -145,5 +174,6 @@
 /*public*/ PhysicalLocation *AbstractIdTagReporter::getPhysicalLocation(QString s) {
     return (PhysicalLocation::getBeanPhysicalLocation(this));
 }
+
 
 /*private*/ /*static*/ /*final*/ Logger* AbstractIdTagReporter::log = LoggerFactory::getLogger("AbstractIdTagReporter");

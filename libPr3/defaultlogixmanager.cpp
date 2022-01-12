@@ -22,10 +22,8 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
  paddedNumber = new DecimalFormat("0000");
  registerSelf();
 
- //jmri.InstanceManager.turnoutManagerInstance().addVetoableChangeListener(this);
- connect(InstanceManager::turnoutManagerInstance(), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
- //jmri.InstanceManager.sensorManagerInstance().addVetoableChangeListener(this);
- connect(InstanceManager::sensorManagerInstance(), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ InstanceManager::turnoutManagerInstance()->addVetoableChangeListener(this);
+ InstanceManager::sensorManagerInstance()->addVetoableChangeListener(this);
  //jmri.InstanceManager.memoryManagerInstance().addVetoableChangeListener(this);
  connect(InstanceManager::memoryManagerInstance(), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
  //jmri.InstanceManager.getDefault(jmri.SignalHeadManager.class).addVetoableChangeListener(this);
@@ -34,8 +32,7 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
  connect(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager")), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
  //jmri.InstanceManager.getDefault(jmri.BlockManager.class).addVetoableChangeListener(this);
  connect(static_cast<BlockManager*>(InstanceManager::getDefault("BlockManager")), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
- //jmri.InstanceManager.lightManagerInstance().addVetoableChangeListener(this);
- connect(InstanceManager::lightManagerInstance(), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ InstanceManager::lightManagerInstance()->addVetoableChangeListener(this);
  //jmri.InstanceManager.getDefault(jmri.ConditionalManager.class).addVetoableChangeListener(this);
  connect(static_cast<ConditionalManager*>(InstanceManager::getDefault("ConditionalManager")), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
  //InstanceManager.getDefault(jmri.jmrit.logix.WarrantManager.class).addVetoableChangeListener(this);
@@ -70,8 +67,8 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
     return Manager::LOGIXS;
 }
 
-/*public*/ QString DefaultLogixManager::getSystemPrefix()const { return "I"; }
-/*public*/ char DefaultLogixManager::typeLetter()const { return 'X'; }
+/*public*/ QString DefaultLogixManager::getSystemPrefix() { return "I"; }
+/*public*/ QChar DefaultLogixManager::typeLetter() { return 'X'; }
 
 /**
  * Method to create a new Logix if the Logix does not exist

@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include "lncvdevice.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 
 class Logger;
 class LncvDevices : public QObject
@@ -28,7 +28,7 @@ class LncvDevices : public QObject
  private:
   static Logger* log;
   /*private*/ /*final*/ QList<LncvDevice*> deviceList;
-  PropertyChangeSupport* pcs = new PropertyChangeSupport(this);
+  SwingPropertyChangeSupport* pcs = new SwingPropertyChangeSupport(this, nullptr);
 };
 
 #endif // LNCVDEVICES_H

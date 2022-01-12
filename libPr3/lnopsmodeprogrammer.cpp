@@ -349,9 +349,9 @@ void LnOpsModeProgrammer::loadSV2MessageFormat(LocoNetMessage* m, int mAddress, 
 }
 
 ///**
-// * Provide a {@link java.beans.PropertyChangeSupport} helper.
+// * Provide a {@link java.beans.SwingPropertyChangeSupport} helper.
 // */
-//private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+//private final SwingPropertyChangeSupport SwingPropertyChangeSupport = new SwingPropertyChangeSupport(this, nullptr);
 
 /**
  * Add a PropertyChangeListener to the listener list.
@@ -359,17 +359,17 @@ void LnOpsModeProgrammer::loadSV2MessageFormat(LocoNetMessage* m, int mAddress, 
  * @param listener The PropertyChangeListener to be added
  */
 /*public*/ void LnOpsModeProgrammer::addPropertyChangeListener(PropertyChangeListener* listener) {
- //propertyChangeSupport.addPropertyChangeListener(listener);
+ //SwingPropertyChangeSupport.addPropertyChangeListener(listener);
  connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 /*public*/ void LnOpsModeProgrammer::removePropertyChangeListener(PropertyChangeListener* listener) {
-//    propertyChangeSupport.removePropertyChangeListener(listener);
+//    SwingPropertyChangeSupport.removePropertyChangeListener(listener);
  disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 /*protected*/ void LnOpsModeProgrammer::notifyPropertyChange(QString key, QVariant oldValue, QVariant value) {
-    //propertyChangeSupport.firePropertyChange(key, oldValue, value);
+    //SwingPropertyChangeSupport.firePropertyChange(key, oldValue, value);
     emit propertyChange(new PropertyChangeEvent(this, key, oldValue, value));
 }
 

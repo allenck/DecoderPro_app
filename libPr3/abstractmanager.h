@@ -3,7 +3,7 @@
 #include "logger.h"
 //#include "instancemanager.h"
 #include "manager.h"
-//#include "propertychangesupport.h"
+//#include "swingpropertychangesupport.h"
 #include "libPr3_global.h"
 #include "propertyvetoexception.h"
 #include "namedbeancomparator.h"
@@ -23,13 +23,13 @@
  */
 //class Manager;
 //class VetoableChangeSupport;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class PropertyChangeListener;
 class PropertyChangeEvent;
-class LIBPR3SHARED_EXPORT AbstractManager : public VetoableChangeSupport, public  Manager, public VetoableChangeListener, public PropertyChangeListener
+class LIBPR3SHARED_EXPORT AbstractManager : public QObject, public VetoableChangeSupport, public  Manager, public VetoableChangeListener, public PropertyChangeListener
 {
     Q_OBJECT
-    Q_INTERFACES(Manager VetoableChangeListener PropertyChangeListener)
+    Q_INTERFACES(VetoableChangeSupport Manager VetoableChangeListener PropertyChangeListener)
 public:
     AbstractManager(QObject *parent = 0);
     AbstractManager(SystemConnectionMemo* memo, QObject *parent = 0);
@@ -65,21 +65,21 @@ public:
      * @param name System Name of the required NamedBean
      * @return requested NamedBean object or NULL if none exists
      */
-    /*public*/  NamedBean* getNamedBean(QString name)const override;
+    /*public*/  NamedBean* getNamedBean(QString name) override;
     /**
      * Remember a NamedBean Object created outside the manager.
      * <P>
      * The non-system-specific SignalHeadManagers
      * use this method extensively.
      */
-    /*public*/  void Register(NamedBean* s) const override;
+    /*public*/  void Register(NamedBean* s)  override;
     /**
      * Forget a NamedBean Object created outside the manager.
      * <P>
      * The non-system-specific RouteManager
      * uses this method.
      */
-    /*public*/  void deregister(NamedBean* s) const override;
+    /*public*/  void deregister(NamedBean* s)  override;
     /**
      * The PropertyChangeListener interface in this class is
      * intended to keep track of user name changes to individual NamedBeans.
@@ -110,25 +110,25 @@ public:
     /*public*/ /*SortedSet<E>*/QSet<NamedBean*> getNamedBeanSet() override;
 
     /*public*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName)const override; //throws NamedBean.BadSystemNameException
-    /*public*/  QString getSystemPrefix() const /*final*/ override;
+    /*public*/  QString getSystemPrefix()  /*final*/ override;
     /*public*/ void setPropertyChangesSilenced(/*@Nonnull*/ QString propertyName, bool silenced) override;
-    /*public*/ Manager::NameValidity validSystemNameFormat(QString systemName) const override;
-    /*public*/ void setDataListenerMute(bool m);
-    /*public*/ void addDataListener(/*ManagerDataListener<E>*/QObject* e) override;
-    /*public*/ void removeDataListener(/*ManagerDataListener<E>*/QObject* e) override;
-    /*public*/ QString makeSystemName(/*@Nonnull*/ QString s, bool logErrors = true, QLocale locale = QLocale()) const override;
-    /*public*/ virtual SystemConnectionMemo* getMemo() const override;
-    /*public*/ void updateAutoNumber(QString systemName) const;
-    /*public*/ QString getAutoSystemName()const;
+    /*public*/ Manager::NameValidity validSystemNameFormat(QString systemName)  override;
+    /*public*/ void setDataListenerMute(bool m) override;
+    QT_DEPRECATED/*public*/ void addDataListener(ManagerDataListener/*<E>*/* e) override;
+    QT_DEPRECATED/*public*/ void removeDataListener(ManagerDataListener *e) override;
+    /*public*/ QString makeSystemName(/*@Nonnull*/ QString s, bool logErrors = true, QLocale locale = QLocale())  override;
+    /*public*/ SystemConnectionMemo* getMemo()  override;
+    /*public*/ void updateAutoNumber(QString systemName);
+    /*public*/ QString getAutoSystemName();
 
-    QObject* self() override{return (QObject*)this;}
+//    QObject* self() override{return (QObject*)this;}
     QString getNamedBeanClass() const override{return "AbstractManager";}
     int getXMLOrder() const override {return 0;}
     /*public*/ QString createSystemName(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) /*throw (JmriException)*/;
     QT_DEPRECATED/*public*/ /*final*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) /*throw (JmriException)*/;
     QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) /*throw (JmriException)*/;
-    /*public*/ NamedBean *getBySystemName(/*@Nonnull*/ QString systemName) const override;
-    /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString userName) const override;
+    /*public*/ NamedBean *getBySystemName(/*@Nonnull*/ QString systemName)  override;
+    /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString userName)  override;
 
 signals:
 //    void beanDeleted(NamedBean* s);
@@ -155,7 +155,7 @@ private:
     /*private*/ int getPosition(NamedBean* s) const ;
     /*private*/ bool muted = false;
     Logger* log;
-    /*final*/ QList</*ManagerDataListener<E>>*/QObject*> listeners;// = new ArrayList<>();
+    /*final*/ QList<Manager::ManagerDataListener/*<E>*/*> listeners;// = new ArrayList<>();
     SystemConnectionMemo* memo = nullptr;
     //QAtomicInteger<int> lastAutoNamedBeanRef;
     mutable int lastAutoNamedBeanRef = 0;
@@ -214,7 +214,7 @@ QT_DEPRECATED NamedBean* getInstanceByUserName(QString userName);
 protected slots:
 
  friend class AbstractProxySensorManager;
- friend class PropertyChangeSupport;
+ friend class SwingPropertyChangeSupport;
  friend class BeanTableDataModel;
  friend class SGBeanTableDataModel;
  friend class SensorTableDataModel;

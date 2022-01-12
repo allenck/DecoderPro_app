@@ -378,7 +378,7 @@
 
 //@OverridingMethodsMustInvokeSuper
 /*public*/ /*synchronized*/ void Portal::addPropertyChangeListener(PropertyChangeListener* listener) {
-    pcs->PropertyChangeSupport::addPropertyChangeListener(listener);
+    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(listener);
 }
 
 //@OverridingMethodsMustInvokeSuper

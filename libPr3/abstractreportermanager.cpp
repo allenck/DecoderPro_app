@@ -4,7 +4,7 @@
 #include "loggerfactory.h"
 
 AbstractReporterManager::AbstractReporterManager(SystemConnectionMemo* memo, QObject *parent) :
-    ReporterManager(memo, parent)
+    AbstractManager(memo, parent)
 {
  setProperty("JavaClassName", "jmri.managers.AbstractReporterManager");
 
@@ -24,18 +24,18 @@ int AbstractReporterManager::getXMLOrder() const{
     return Manager::REPORTERS;
 }
 
-char AbstractReporterManager::typeLetter() const  { return 'R'; }
+QChar AbstractReporterManager::typeLetter()   { return 'R'; }
 
 Reporter* AbstractReporterManager::provideReporter(QString sName) {
     Reporter* t = getReporter(sName);
     if (t!=nullptr) return t;
-    if (sName.startsWith(getSystemPrefix()+typeLetter()))
+    if (sName.startsWith(AbstractManager::getSystemPrefix()+typeLetter()))
         return newReporter(sName, nullptr);
     else
-        return newReporter(makeSystemName(sName), "");
+        return newReporter(AbstractManager::makeSystemName(sName), "");
 }
 
-Reporter* AbstractReporterManager::getReporter(QString name) const {
+Reporter* AbstractReporterManager::getReporter(QString name)  {
     Reporter* t = (Reporter*)getByUserName(name);
     if (t!=nullptr) return t;
 
@@ -50,18 +50,18 @@ Reporter* AbstractReporterManager::getReporter(QString name) const {
 }
 
 #if 1
-NamedBean *AbstractReporterManager::getBySystemName(QString name) const
+NamedBean *AbstractReporterManager::getBySystemName(QString name)
 {
     return (Reporter*)_tsys->value(name);
 }
 
-NamedBean *AbstractReporterManager::getByUserName(QString key) const{
+NamedBean *AbstractReporterManager::getByUserName(QString key){
     return _tuser->value(key);
 }
 #endif
 /** {@inheritDoc} */
 
-Reporter* AbstractReporterManager::getByDisplayName(QString key) const {
+Reporter* AbstractReporterManager::getByDisplayName(QString key)  {
 // First try to find it in the user list.
 // If that fails, look it up in the system list
 Reporter* retv = (Reporter*)this->getByUserName(key);
@@ -72,7 +72,7 @@ if (retv == nullptr) {
 return(retv);
 }
 
-Reporter* AbstractReporterManager::newReporter(QString systemName, QString userName) const /*throw(IllegalArgumentException)*/ {
+Reporter* AbstractReporterManager::newReporter(QString systemName, QString userName)  /*throw(IllegalArgumentException)*/ {
  if (log->isDebugEnabled()) log->debug(tr("new Reporter:")
                                         +( (systemName==NULL) ? "NULL" : systemName)
                                         +";"+( (userName==NULL) ? "NULL" : userName));
@@ -102,7 +102,7 @@ Reporter* AbstractReporterManager::newReporter(QString systemName, QString userN
 
     //emit newReporterCreated(this, r);
     // save in the maps
-    Register(r);
+    AbstractManager::Register(r);
 
 
     // if that failed, blame it on the input arguements
@@ -123,9 +123,9 @@ Reporter* AbstractReporterManager::newReporter(QString systemName, QString userN
 * of turnouts in numerical order eg 10 to 30
 **/
 
-bool AbstractReporterManager::allowMultipleAdditions(QString systemName) const { return false;  }
+bool AbstractReporterManager::allowMultipleAdditions(QString systemName) { return false;  }
 #if 1
-QString AbstractReporterManager::getNextValidAddress(QString curAddress, QString prefix) const
+QString AbstractReporterManager::getNextValidAddress(QString curAddress, QString prefix)
 {
  //If the hardware address past does not already exist then this can
  //be considered the next valid address.

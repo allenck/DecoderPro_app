@@ -14,7 +14,7 @@
 
 AbstractProvidingTurnoutManagerTestBase::AbstractProvidingTurnoutManagerTestBase(QObject *parent)
 {
- l= qobject_cast<Manager*>(InstanceManager::turnoutManagerInstance());
+ l= qobject_cast<Manager*>(InstanceManager::turnoutManagerInstance()->self());
 }
 /**
  * Extension of AbstractManagerTestBase base for ProvidingManager test classes.

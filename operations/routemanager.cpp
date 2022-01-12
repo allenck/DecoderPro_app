@@ -1,5 +1,5 @@
 #include "routemanager.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "logger.h"
 #include "operationssetupxml.h"
 #include "routemanagerxml.h"
@@ -32,7 +32,7 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString RouteManager::LISTLENGTH_CHANGED_PROPERTY = "routesListLengthChanged"; // NOI18N
 
  /*public*/ RouteManager::RouteManager(QObject *parent)
-   : PropertyChangeSupport(this, parent)
+   : SwingPropertyChangeSupport(this, parent)
  {
   setProperty("InstanceManagerAutoDefault", "true");
   setProperty("InstanceManagerAutoInitialize", "true");

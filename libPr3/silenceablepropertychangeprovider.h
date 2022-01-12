@@ -10,7 +10,7 @@
  *
  * @author Randall Wood Copyright 2020
  */
-/*public*/ /*interface*/ class SilenceablePropertyChangeProvider : PropertyChangeProvider {
+/*public*/ /*interface*/ class SilenceablePropertyChangeProvider : public PropertyChangeProvider {
     Q_INTERFACES(PropertyChangeProvider)
  public:
     /**

@@ -50,7 +50,7 @@
   enabled=true;
   log = new Logger("DefaultSignalGroup");
   _signalHeadItem =  QList<SignalHeadItem*>();
-  pcs = new PropertyChangeSupport(this);
+  pcs = new SwingPropertyChangeSupport(this, nullptr);
 }
 
 ///*public*/ DefaultSignalGroup(String systemName) {
@@ -727,7 +727,7 @@ bool SignalHeadItem::isSensorIncluded(Sensor* pSensor)
 }
 
 /*public*/ /*synchronized*/ void DefaultSignalGroup::addPropertyChangeListener(PropertyChangeListener* l) {
-    pcs->PropertyChangeSupport::addPropertyChangeListener(l);
+    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 }
 
 /*public*/ /*synchronized*/ void DefaultSignalGroup::removePropertyChangeListener(PropertyChangeListener* l) {

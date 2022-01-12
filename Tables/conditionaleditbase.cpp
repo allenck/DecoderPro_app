@@ -1133,12 +1133,12 @@ QString ConditionalEditBase::validateSensorReference(QString name) {
     Sensor* s = NULL;
     if (name != NULL) {
         if (name.length() > 0) {
-            s = ((ProxySensorManager*)InstanceManager::getDefault("SensorManager"))->getByUserName(name);
+            s = (Sensor*)((ProxySensorManager*)InstanceManager::getDefault("SensorManager"))->AbstractProxyManager::getByUserName(name);
             if (s != NULL) {
                 return name;
             }
         }
-        s = ((ProxySensorManager*)InstanceManager::getDefault("SensorManager"))->getBySystemName(name);
+        s = (Sensor*)((ProxySensorManager*)InstanceManager::getDefault("SensorManager"))->AbstractProxyManager::getBySystemName(name);
     }
     if (s == NULL) {
         messageInvalidActionItemName(name, "Sensor"); // NOI18N
@@ -1323,7 +1323,7 @@ Light* ConditionalEditBase::getLight(QString name) {
         if (l != NULL) {
             return l;
         }
-        l = (Light*)((ProxyLightManager*)InstanceManager::lightManagerInstance())->getBySystemName(name);
+        l = (Light*)((ProxyLightManager*)InstanceManager::lightManagerInstance())->AbstractProxyManager::getBySystemName(name);
     }
     if (l == NULL) {
         messageInvalidActionItemName(name, "Light"); //NOI18N

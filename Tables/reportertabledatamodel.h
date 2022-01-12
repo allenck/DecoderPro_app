@@ -12,8 +12,8 @@ class ReporterTableDataModel : public BeanTableDataModel
  public:
   explicit     /*public*/ ReporterTableDataModel(/*Manager<Reporter>*/AbstractManager* mgr, QObject* parent = nullptr);
   /*public*/ QString getValue(QString name) override;
-  /*public*/ /*final*/ void setManager(/*Manager<Reporter>*/AbstractManager* rm) override;
-  /*public*/ AbstractManager* getManager() override;
+  /*public*/ /*final*/ void setManager(/*Manager<Reporter>*/Manager* rm) override;
+  /*public*/ Manager *getManager() override;
   /*public*/ NamedBean *getBySystemName(/*@Nonnull*/ QString name) const override;
   /*public*/ Reporter* getByUserName(/*@Nonnull*/ QString name)override;
   /*public*/ void clickOn(NamedBean* t) override;

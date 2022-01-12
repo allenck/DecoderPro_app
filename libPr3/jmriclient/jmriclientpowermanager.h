@@ -1,7 +1,7 @@
 #ifndef JMRICLIENTPOWERMANAGER_H
 #define JMRICLIENTPOWERMANAGER_H
 #include "powermanager.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 
 class AbstractMRListener;
 class JMRIClientReply;
@@ -17,7 +17,7 @@ public:
  /*public*/ int getPower();
  /*public*/ void dispose() /*throw (JmriException)*/;
  // to hear of changes
- PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
+ SwingPropertyChangeSupport* pcs;// = new java.beans.SwingPropertyChangeSupport(this,this);
  /*public*/  void addPropertyChangeListener(PropertyChangeListener* l);
  /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
  /*public*/ void message(JMRIClientMessage* m);

@@ -64,7 +64,7 @@ private:
 
 protected:
  /*protected*/ JTable* table;
- /*protected*/ void setManager(AbstractManager* manager) override;
+ /*protected*/ void setManager(Manager* manager) override;
  /*protected*/ AbstractManager* getManager() override;
  /*protected*/ virtual NamedBean* getBySystemName(QString name) const override;
  /*protected*/ NamedBean* getByUserName(QString name) override;

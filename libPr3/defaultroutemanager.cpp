@@ -12,8 +12,8 @@ DefaultRouteManager::DefaultRouteManager(InternalSystemConnectionMemo* memo, QOb
  paddedNumber = new DecimalFormat("0000");
  registerSelf();
 
- InstanceManager::turnoutManagerInstance()->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
- InstanceManager::sensorManagerInstance()->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
+ InstanceManager::turnoutManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
+ InstanceManager::sensorManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
 
 }
 /**
@@ -36,13 +36,13 @@ DefaultRouteManager::DefaultRouteManager(InternalSystemConnectionMemo* memo, QOb
 }
 
 ///*public*/ QString DefaultRouteManager::getSystemPrefix() const { return "I"; }
-/*public*/ char DefaultRouteManager::typeLetter() const { return 'O'; }
+/*public*/ QChar DefaultRouteManager::typeLetter() { return 'O'; }
 
 /**
  * Method to provide a  Route
  * whether or not it already exists.
  */
-/*public*/ Route* DefaultRouteManager::provideRoute(QString systemName, QString userName) const
+/*public*/ Route* DefaultRouteManager::provideRoute(QString systemName, QString userName)
 {
  DefaultRoute* r;
  r = (DefaultRoute*)getByUserName(systemName);

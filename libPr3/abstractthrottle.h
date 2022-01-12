@@ -6,9 +6,9 @@
 #include "basicrosterentry.h"
 #include "dccthrottle.h"
 #include "libPr3_global.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 
-class LIBPR3SHARED_EXPORT AbstractThrottle : public PropertyChangeSupport, public DccThrottle
+class LIBPR3SHARED_EXPORT AbstractThrottle : public SwingPropertyChangeSupport, public DccThrottle
 {
     Q_OBJECT
   Q_INTERFACES(DccThrottle)

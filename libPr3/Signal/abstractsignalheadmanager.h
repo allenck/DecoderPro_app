@@ -13,23 +13,24 @@ public:
     explicit AbstractSignalHeadManager(QObject *parent = 0);
     /*public*/ int getXMLOrder()const override;
 //    /*public*/ QString getSystemPrefix()const override;
-    /*public*/ char typeLetter()const override ;
+    /*public*/ QChar typeLetter() override ;
     /*public*/ SignalHead* getSignalHead(QString name) override;
     /*public*/ SignalHead* getBySystemName(QString name) const override;
     /*public*/ SignalHead* getByUserName(QString key) const override;
-    void Register(NamedBean *s)const override;
+    void Register(NamedBean *s) override;
     QCompleter* getCompleter(QString text, bool bIncludeUserNames = false) override;
     /*public*/ QString getBeanTypeHandled(bool plural);
     /*public*/ QString getNamedBeanClass()const override {
         return "SignalHead";
     }
+    QObject* self() override{return (QObject*)this;}
 
 signals:
     void newSignalHeadCreated(AbstractSignalHead*);
     void propertyChange(PropertyChangeEvent *e) override;
 public slots:
-friend class PropertyChangeSupport;
-friend class VetoablePropertyChangeSupport;
+friend class SwingPropertyChangeSupport;
+friend class VetoableSwingPropertyChangeSupport;
 };
 
 #endif // ABSTRACTSIGNALHEADMANAGER_H

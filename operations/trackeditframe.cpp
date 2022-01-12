@@ -173,7 +173,7 @@ namespace Operations
   autoPickupCheckBox->setToolTip(tr("When selected only show trains or routes that service this track"));
 
   // property changes
-  //_location->PropertyChangeSupport::addPropertyChangeListener(this);
+  //_location->SwingPropertyChangeSupport::addPropertyChangeListener(this);
   connect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(propertyChange(PropertyChangeEvent*)) );
   // listen for car road name and type changes
   //CarRoads::instance().addPropertyChangeListener(this);
@@ -382,7 +382,7 @@ namespace Operations
   // load fields and enable buttons
   if (_track != NULL)
   {
-   //_track->PropertyChangeSupport::addPropertyChangeListener(this);
+   //_track->SwingPropertyChangeSupport::addPropertyChangeListener(this);
    connect(_track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    trackNameTextField->setText(_track->getName());
    commentTextArea->setText(_track->getComment());
@@ -626,7 +626,7 @@ namespace Operations
   updateRoadOption();
   updateLoadOption();
 
-  //_track->PropertyChangeSupport::addPropertyChangeListener(this);
+  //_track->SwingPropertyChangeSupport::addPropertyChangeListener(this);
   connect(_track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
   // setup check boxes

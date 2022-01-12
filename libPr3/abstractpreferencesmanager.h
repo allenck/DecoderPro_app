@@ -1,11 +1,15 @@
 #ifndef ABSTRACTPREFERENCESMANAGER_H
 #define ABSTRACTPREFERENCESMANAGER_H
 #include "preferencesmanager.h"
+#include <QtCore>
 #include "exceptions.h"
+#include "bean.h"
 
 class Logger;
-class AbstractPreferencesManager : public PreferencesManager
+class AbstractPreferencesManager : public Bean, public PreferencesManager
 {
+  Q_OBJECT
+  Q_INTERFACES(PreferencesManager)
 public:
  AbstractPreferencesManager(QObject* parent = 0);
  /*public*/ bool isInitialized(/*@Nonnull*/ Profile* profile);

@@ -39,7 +39,7 @@
  setProperty("JavaClassName", "jmri.managers.ManagerDefaultSelector");
 
  memoListener = new MemoListener(this);
- //SystemConnectionMemoManager::getDefault()->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
+ //SystemConnectionMemoManager::getDefault()->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
 
  defaults = QMap<QString, QString>();
  // Define set of items that we remember defaults for, manually maintained because
@@ -55,9 +55,7 @@
  if(log == NULL)
   log = LoggerFactory::getLogger("ManagerDefaultSelector");
 
- //SystemConnectionMemoManager::addPropertyChangeListener((PropertyChangeListener*)this);
- SystemConnectionMemoManager* mgr = SystemConnectionMemoManager::getDefault();
- connect(mgr->propertyChangeSupport, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ SystemConnectionMemoManager::getDefault()-> addPropertyChangeListener((PropertyChangeListener*)this);
 
  //InstanceManager::getList("SystemConnectionMemo").forEach((memo) ->
  QList<QObject*>* list = InstanceManager::getList("SystemConnectionMemo");
@@ -89,7 +87,7 @@
   if(qobject_cast<SystemConnectionMemo*>(VPtr<QObject>::asPtr(e->getNewValue())))
   {
    SystemConnectionMemo* memo = VPtr<SystemConnectionMemo>::asPtr( e->getNewValue());
-   //memo->PropertyChangeSupport::addPropertyChangeListener(this->memoListener);
+   //memo->SwingPropertyChangeSupport::addPropertyChangeListener(this->memoListener);
    connect((DefaultSystemConnectionMemo*)memo->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    // check for special case of anything else then Internal
    QObjectList* list = InstanceManager::getList("SystemConnectionMemo");

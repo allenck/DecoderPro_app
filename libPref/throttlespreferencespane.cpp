@@ -45,7 +45,7 @@ void ThrottlesPreferencesPane::common()
  initComponents();
  setComponents(tp);
  checkConsistancy(true);
- //tp->PropertyChangeSupport::addPropertyChangeListener(this);
+ //tp->SwingPropertyChangeSupport::addPropertyChangeListener(this);
  connect(ThrottleFrameManager::instance()->getThrottlesPreferences(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 

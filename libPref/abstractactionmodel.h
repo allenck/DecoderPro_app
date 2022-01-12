@@ -10,7 +10,7 @@
 #include "action.h"
 
 class PropertyChangeListener;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class LIBPREFSHARED_EXPORT AbstractActionModel : public StartupModel
 {
     Q_OBJECT

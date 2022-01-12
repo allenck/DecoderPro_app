@@ -4,7 +4,7 @@
 #include <QButtonGroup>
 #include "namedbeanhandle.h"
 #include "Signal/signalhead.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 //#include "actionlistener.h"
 
 
@@ -73,7 +73,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT SignalHeadIcon : public PositionableIcon, pub
     QButtonGroup* litButtonGroup;// = NULL;
     SignalHeadItemPanel* _itemPanel;
     /*private*/ void setIcons(QMap<QString, NamedIcon *> *map);
-    PropertyChangeSupport* pcs;
+    SwingPropertyChangeSupport* pcs;
     void addPropertyChangeListener(PropertyChangeListener*);
     void removePropertyChangeListener(PropertyChangeListener*);
  protected:

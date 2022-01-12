@@ -47,7 +47,7 @@ const int LocoIOData::LocoBufferAddress  = 0x0150;
 void LocoIOData::common(int unitAddr, int unitSubAddr, LnTrafficController *tc)
 {
  setObjectName("LocoIOData");
- dataListeners = new PropertyChangeSupport(this);
+ dataListeners = new SwingPropertyChangeSupport(this, nullptr);
  log = new Logger(this->objectName(), this);
  /**
   * Define the number of rows in the table, which is also
@@ -202,7 +202,7 @@ LocoIOData::~LocoIOData()
 int LocoIOData::numRows(){return _numRows;}
 #if 1 // TODO::
 /*public*/ void LocoIOData::addPropertyChangeListener(PropertyChangeListener* pcl) {
-    dataListeners->PropertyChangeSupport::addPropertyChangeListener(pcl);
+    dataListeners->SwingPropertyChangeSupport::addPropertyChangeListener(pcl);
 }
 
 /*public*/ void LocoIOData::removePropertyChangeListener(PropertyChangeListener* pcl) {

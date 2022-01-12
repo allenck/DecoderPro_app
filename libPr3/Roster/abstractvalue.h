@@ -2,7 +2,7 @@
 #define ABSTRACTVALUE_H
 
 #include <QObject>
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include <QColor>
 #include <QString>
 #include "libPr3_global.h"
@@ -76,7 +76,7 @@ signals:
 
 public slots:
 private:
-    PropertyChangeSupport* prop;// = new PropertyChangeSupport(this);
+    SwingPropertyChangeSupport* prop;// = new SwingPropertyChangeSupport(this, nullptr);
     /*private*/ bool _toWrite = false;
     /*private*/ bool available = true;
     /*private*/ bool _toRead = false;

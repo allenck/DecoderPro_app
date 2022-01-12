@@ -662,9 +662,9 @@ int SplitVariableValue::priorityValue(int state) {
                  });
 
         // listen for changes to original state
-//        _var->PropertyChangeSupport::addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+//        _var->SwingPropertyChangeSupport::addPropertyChangeListener(new java.beans.PropertyChangeListener() {
 //                /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
-          connect(this->_var->prop, &PropertyChangeSupport::propertyChange, [=](PropertyChangeEvent* e) {
+          connect(this->_var->prop, &SwingPropertyChangeSupport::propertyChange, [=](PropertyChangeEvent* e) {
                     originalPropertyChanged(e);
 //                }
             });

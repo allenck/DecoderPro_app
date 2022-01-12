@@ -67,11 +67,11 @@ PortalManager::PortalManager(QObject *parent) :
     return Manager::OBLOCKS;
 }
 
-/*public*/ QString PortalManager::getSystemPrefix() const{
+/*public*/ QString PortalManager::getSystemPrefix(){
     return "I";
 }
 
-/*public*/ char PortalManager::typeLetter()const {
+/*public*/ QChar PortalManager::typeLetter() {
     return 'P';
 }
 

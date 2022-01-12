@@ -59,7 +59,7 @@ public:
     /*public*/ QVector<PropertyChangeListener *> getMinuteChangeListeners() override;
     /*public*/ void setState(int s) /*throw (JmriException)*/ override;
     /*public*/ int getState() override;
-    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+    SwingPropertyChangeSupport* pcs;// = new SwingPropertyChangeSupport(this, nullptr);
     /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
 
 signals:
@@ -104,7 +104,7 @@ private:
 //    SimpleDateFormat timeStorageFormat = NULL;
 
     QTimer* timer;// = NULL;
-    //PropertyChangeSupport* pcMinutes;// = new PropertyChangeSupport(this);
+    //SwingPropertyChangeSupport* pcMinutes;// = new SwingPropertyChangeSupport(this, nullptr);
     int oldMinutes;// = 0;
     /*private*/ void clockSensorChanged();
  Logger* log;

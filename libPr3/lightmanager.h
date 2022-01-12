@@ -1,13 +1,14 @@
 #ifndef LIGHTMANAGER_H
 #define LIGHTMANAGER_H
 #include "abstractmanager.h"
-
+#include "providingmanager.h"
 class Light;
-class LightManager : public AbstractManager
+class LightManager : public ProvidingManager
 {
-    Q_OBJECT
+    //Q_OBJECT
+  Q_INTERFACES(ProvidingManager)
 public:
-    explicit LightManager(SystemConnectionMemo*memo, QObject *parent = 0) : AbstractManager(memo, parent) {}
+    //explicit LightManager(SystemConnectionMemo*memo, QObject *parent = 0) : AbstractManager(memo, parent) {}
     /**
      * Interface for obtaining Lights.
      * <P>
@@ -34,20 +35,24 @@ public:
      */
     //public interface LightManager extends Manager {
 
-        /**
-         * Locate via user name, then system name if needed.
-         * If that fails, create a new Light: If the name
-         * is a valid system name, it will be used for the new
-         * Light.  Otherwise, the makeSystemName method
-         * will attempt to turn it into a valid system name.
-         *
-         * @param name
-         * @return Never null under normal circumstances
-         */
-        virtual Light* provideLight(QString /*name*/) { return NULL;}
+    /**
+       * Get the Light with the user name, then system name if needed; if that fails, create a
+       * new Light.
+       * If the name is a valid system name, it will be used for the new Light.
+       * Otherwise, the {@link Manager#makeSystemName} method will attempt to turn it
+       * into a valid system name.
+       * <p>This provides the same function as {@link ProvidingManager#provide}
+       * which has a more generic form.
+       *
+       * @param name User name, system name, or address which can be promoted to
+       *             system name
+       * @return Never null under normal circumstances
+       */
+      //@Nonnull
+      virtual /*public*/ Light* provideLight(/*@Nonnull*/ QString name) /*throws IllegalArgumentException*/=0;
 
         // to free resources when no longer used
-        virtual void dispose() {}
+      virtual void dispose() {}
 
         /**
          * Locate via user name, then system name if needed.
@@ -97,7 +102,7 @@ public:
         /**
          * Locate a Light by its system name
          */
-        virtual NamedBean* getBySystemName(QString /*s*/) const =0;
+        virtual NamedBean* getBySystemName(QString /*s*/) const {return nullptr;}
 
 //        /**
 //         * Validate system name format
@@ -110,7 +115,7 @@ public:
          *   returns 'true' if system name has a valid meaning in current configuration,
          *      else returns 'false'
          */
-        virtual bool validSystemNameConfig(QString /*systemName*/)const {return false;}
+        virtual bool validSystemNameConfig(QString /*systemName*/){return false;}
 
         /**
          * Normalize the system name
@@ -174,8 +179,39 @@ public:
      //@Override
      virtual/*default*/ /*public*/ Light* provide(/*@Nonnull*/ QString name) /*throw (IllegalArgumentException)*/
      { return provideLight(name); }
-     /*public*/ QString toString() {return "LightManager";}
+//     /*public*/ QString toString() {return "LightManager";}
   QString getNamedBeanClass() const {return "LightManager";}
+  /**
+   * Get the Next valid hardware address.
+   * Used by the Turnout / Sensor / Reporter / Light Manager classes.
+   * <p>
+   * System-specific methods may want to override getIncrement() rather than this one.
+   * @param curAddress the starting hardware address to get the next valid from.
+   * @param prefix system prefix, just system name, not type letter.
+   * @param ignoreInitialExisting false to return the starting address if it
+   *                          does not exist, else true to force an increment.
+   * @return the next valid system name, excluding both system name prefix and type letter.
+   * @throws JmriException    if unable to get the current / next address,
+   *                          or more than 10 next addresses in use.
+   */
+  //@Nonnull
+  virtual /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix,
+                                                 bool ignoreInitialExisting) /*throws JmriException*/ {return "";}
+
+  /**
+   * Get a system name for a given hardware address and system prefix.
+   *
+   * @param curAddress desired hardware address
+   * @param prefix     system prefix used in system name, excluding Bean type-letter.
+   * @return the complete Light system name for the prefix and current
+   *         address
+   * @throws jmri.JmriException if unable to create a system name for the
+   *                            given address, possibly due to invalid address
+   *                            format
+   */
+  //@Nonnull
+  virtual /*public*/ QString createSystemName(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) /*throws JmriException*/{return "";}
+
   QObject* self() {return (QObject*)this;}
 
 signals:
@@ -183,5 +219,5 @@ signals:
 public slots:
     
 };
-
+Q_DECLARE_INTERFACE(LightManager, "LightManager")
 #endif // LIGHTMANAGER_H

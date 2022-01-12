@@ -28,7 +28,7 @@ class LayoutSlipEditor : public LayoutTurnoutEditor
   /*private*/ NamedBeanComboBox/*<Turnout>*/* editLayoutSlipTurnoutBComboBox;
   /*private*/ /*final*/ JCheckBox* editLayoutSlipHiddenBox = new JCheckBox(tr("Hide Slip"));
   /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* editLayoutSlipBlockNameComboBox = new NamedBeanComboBox(
-          (BlockManager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+          (Manager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
   /*private*/ bool editLayoutSlipOpen = false;
   /*private*/ bool editLayoutSlipNeedsRedraw = false;

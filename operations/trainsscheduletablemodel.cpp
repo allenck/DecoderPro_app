@@ -316,7 +316,7 @@ namespace Operations
  /*private*/ /*synchronized*/ void TrainsScheduleTableModel::addPropertyChangeTrains() {
      if (!sysList.isEmpty()) {
          foreach (Train* train, sysList) {
-             //train->PropertyChangeSupport::addPropertyChangeListener(this);
+             //train->SwingPropertyChangeSupport::addPropertyChangeListener(this);
           connect(train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          }
      }

@@ -483,12 +483,12 @@ void LRouteTableAction::buildLists()
  QList<LRouteOutputElement*>* outputTS = new QList<LRouteOutputElement*>();
 
  TurnoutManager* tm = InstanceManager::turnoutManagerInstance();
- QStringList systemNameList = ((ProxyTurnoutManager*)tm)->getSystemNameList();
+ QStringList systemNameList = ((ProxyTurnoutManager*)tm)->AbstractProxyManager::getSystemNameList();
  QStringListIterator iter(systemNameList);
  while (iter.hasNext())
  {
     QString systemName = iter.next();
-    QString userName = ((ProxyTurnoutManager*)tm)->getBySystemName(systemName)->getUserName();
+    QString userName = ((ProxyTurnoutManager*)tm)->AbstractProxyManager::getBySystemName(systemName)->getUserName();
     inputTS->append(new LRouteInputTurnout(systemName, userName));
     outputTS->append(new LRouteOutputTurnout(systemName, userName));
  }
@@ -496,23 +496,23 @@ void LRouteTableAction::buildLists()
  //TreeSet <AlignElement>alignTS = new TreeSet<AlignElement>(new RouteElementComparator());
  QList<LAlignElement*>* alignTS = new QList<LAlignElement*>();
  SensorManager* sm = InstanceManager::sensorManagerInstance();
- systemNameList = ((ProxySensorManager*)sm)->getSystemNameList();
+ systemNameList = ((ProxySensorManager*)sm)->AbstractProxyManager::getSystemNameList();
  iter = QStringListIterator(systemNameList);
  while (iter.hasNext())
  {
     QString systemName = iter.next();
-    QString userName = ((ProxySensorManager*)sm)->getBySystemName(systemName)->getUserName();
+    QString userName = ((ProxySensorManager*)sm)->AbstractProxyManager::getBySystemName(systemName)->getUserName();
     inputTS->append(new LRouteInputSensor(systemName, userName));
     outputTS->append(new LRouteOutputSensor(systemName, userName));
     alignTS->append(new LAlignElement(systemName, userName));
  }
 
 LightManager* lm = InstanceManager::lightManagerInstance();
-systemNameList = ((ProxyLightManager*)lm)->getSystemNameList();
+systemNameList = ((ProxyLightManager*)lm)->AbstractProxyManager::getSystemNameList();
 iter = QStringListIterator(systemNameList);
 while (iter.hasNext()) {
     QString systemName = iter.next();
-    QString userName = ((ProxyLightManager*)lm)->getBySystemName(systemName)->getUserName();
+    QString userName = ((ProxyLightManager*)lm)->AbstractProxyManager::getBySystemName(systemName)->getUserName();
     inputTS->append(new LRouteInputLight(systemName, userName));
     outputTS->append(new LRouteOutputLight(systemName, userName));
 }

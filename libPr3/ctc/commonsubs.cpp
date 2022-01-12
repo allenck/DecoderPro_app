@@ -239,7 +239,7 @@ CommonSubs::CommonSubs(QObject *parent) : QObject(parent)
         }
         else  if(beanType =="Block")   // NOI18N
         {
-                foreach(NamedBean* b, ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getNamedBeanSet()) //.forEach((b) ->
+                foreach(NamedBean* b, ((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getNamedBeanSet()) //.forEach((b) ->
                 {
                     list.append(((Block*)b)->getDisplayName());
                 }//);

@@ -9,7 +9,7 @@
 #include "propertychangelistener.h"
 #include "instancemanagerautodefault.h"
 #include "instancemanagerautoinitialize.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "instancemanagerautodefault.h"
 #include "instancemanagerautoinitialize.h"
 
@@ -19,14 +19,14 @@ namespace Operations
 {
  class Track;
  class Location;
- class APPSLIBSHARED_EXPORT LocationManager : public PropertyChangeSupport, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize
+ class APPSLIBSHARED_EXPORT LocationManager : public SwingPropertyChangeSupport, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize
  {
   Q_OBJECT
      Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize)
  public:
   Q_INVOKABLE explicit LocationManager(QObject *parent = 0);
    ~LocationManager(){}
-   LocationManager(const LocationManager&) : PropertyChangeSupport(nullptr) {}
+   LocationManager(const LocationManager&) : SwingPropertyChangeSupport(nullptr, this) {}
   /*public*/ static /*final*/ QString LISTLENGTH_CHANGED_PROPERTY;// = "locationsListLength"; // NOI18N
   /*public*/ void dispose();
   /*public*/ int getNumberOfLocations() ;

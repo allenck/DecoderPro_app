@@ -185,7 +185,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
    trainDescription->setText(_train->getDescription());
    updateButtons(true);
    // listen for train changes
-   //_train->PropertyChangeSupport::addPropertyChangeListener(this);
+   //_train->SwingPropertyChangeSupport::addPropertyChangeListener(this);
    connect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   }
   else

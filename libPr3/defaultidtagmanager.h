@@ -14,24 +14,25 @@
 #include "abstractmanager.h"
 
 class DefaultIdTag;
-class DefaultIdTagManager : public IdTagManager
+class DefaultIdTagManager : public AbstractManager, public IdTagManager
 {
     Q_OBJECT
+  Q_INTERFACES(IdTagManager)
 public:
     explicit DefaultIdTagManager(QObject *parent = 0);
     /*public*/ int getXMLOrder()const override;
-    /*public*/ bool isInitialised()override;
-    /*public*/ void init() const  override;
-    /*public*/ char typeLetter()const override ;
-    /*public*/ QString getSystemPrefix()const override;
+    /*public*/ bool isInitialised()  override;
+    /*public*/ void init()   override;
+    /*public*/ QChar typeLetter()  override ;
+    /*public*/ QString getSystemPrefix() override;
     /*public*/ DefaultIdTag *provideIdTag(QString name)override;
     /*public*/ DefaultIdTag *getIdTag(QString name)override;
-    /*public*/ NamedBean *getBySystemName(QString name)const override;
-    /*public*/ NamedBean* getByUserName(QString key)const override;
+    /*public*/ NamedBean *getBySystemName(QString name) override;
+    /*public*/ NamedBean* getByUserName(QString key) override;
     /*public*/ DefaultIdTag* getByTagID(QString tagID)override;
     /*public*/ virtual DefaultIdTag *newIdTag(QString systemName, QString userName)override;
-    /*public*/ void Register(NamedBean* s) const override;
-    /*public*/ void deregister(NamedBean* s)  const override;
+    /*public*/ void Register(NamedBean* s) override;
+    /*public*/ void deregister(NamedBean* s)   override;
     /*public*/ virtual void writeIdTagDetails() ;// /*throw (IOException)*/;
     /*public*/ virtual void readIdTagDetails();
     /*public*/ void setStateStored(bool state)override;
@@ -43,12 +44,14 @@ public:
  /*public*/ QString getNamedBeanClass()const override {
      return "IdTag";
  }
+  QObject* self() override {return (QObject*)this;}
+
 
 signals:
     void newIdTagCreated(DefaultIdTag* tag);
 
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* e)override;
+    /*public*/ void propertyChange(PropertyChangeEvent* e);
 private:
  Logger* log;
  /*private*/ static bool _initialised;// = false;

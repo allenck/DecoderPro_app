@@ -17,8 +17,8 @@ public:
     ~TransitManager() override{}
     TransitManager(const TransitManager&) : AbstractManager() {}
     int getXMLOrder() const override;
-    QString getSystemPrefix()const override;
-    char typeLetter()const override ;
+    QString getSystemPrefix() override;
+    QChar typeLetter() override ;
 
     /**
      * Method to create a new Transit if the Transit does not exist
@@ -28,8 +28,8 @@ public:
     Transit* createNewTransit(QString systemName, QString userName);
     /*public*/ Transit* createNewTransit(QString userName);
     /*public*/ Transit* getTransit(QString name) ;
-    /*public*/ Transit* getBySystemName(QString name)const override;
-    /*public*/ Transit* getByUserName(QString key)const override;
+    /*public*/ Transit* getBySystemName(QString name) override;
+    /*public*/ Transit* getByUserName(QString key) override;
     /*public*/ void deleteTransit(Transit* z) ;
     /*public*/ QList<Transit*>* getListUsingSection(Section* s);
     /*static*/ /*public*/ TransitManager* instance();
@@ -38,6 +38,8 @@ public:
     /*public*/ QString getNamedBeanClass()const override ;
     /*public*/ QString getBeanTypeHandled(bool plural) const override;
     /*public*/ void dispose() override;
+
+    QObject* self() override{return (QObject*)this;}
 
 signals:
     

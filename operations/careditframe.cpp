@@ -454,7 +454,7 @@ namespace Operations
       }
      }
      // listen for changes in car load
-     car->PropertyChangeSupport::addPropertyChangeListener(this);
+     car->SwingPropertyChangeSupport::addPropertyChangeListener(this);
      ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->updateComboBox(car->getTypeName(), loadComboBox);
      loadComboBox->setCurrentIndex(loadComboBox->findText(car->getLoadName()));
 
@@ -608,7 +608,7 @@ namespace Operations
   if (_car == NULL || _car->getRoadName()!=(roadComboBox->currentText())
           || _car->getNumber()!=(roadNumberTextField->text())) {
       _car = (Car*)carManager->newRS( roadComboBox->currentText(), roadNumberTextField->text());
-      _car->PropertyChangeSupport::addPropertyChangeListener(this);
+      _car->SwingPropertyChangeSupport::addPropertyChangeListener(this);
   }
   if (typeComboBox->currentText() != NULL) {
       _car->setTypeName( typeComboBox->currentText());
@@ -883,9 +883,9 @@ namespace Operations
 
  //@Override
  /*protected*/ void CarEditFrame::addPropertyChangeListeners() {
-     ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->PropertyChangeSupport::addPropertyChangeListener(this);
-     ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->PropertyChangeSupport::addPropertyChangeListener(this);
-     carManager->PropertyChangeSupport::addPropertyChangeListener(this);
+     ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+     ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+     carManager->SwingPropertyChangeSupport::addPropertyChangeListener(this);
      RollingStockEditFrame::addPropertyChangeListeners();
  }
  /*private*/ void CarEditFrame::removePropertyChangeListeners()

@@ -818,7 +818,7 @@ list << "dcc" <<"dcc_short" << "dcc_long";
    foreach (PropertyChangeListener* prop , *v)
    {
     if(qobject_cast<LocoNetThrottle*>(throttle->self())!= NULL)
-     ((LocoNetThrottle*)this->throttle)->PropertyChangeSupport::addPropertyChangeListener(prop);
+     ((LocoNetThrottle*)this->throttle)->SwingPropertyChangeSupport::addPropertyChangeListener(prop);
 #if 1 //TODO:
      prop->propertyChange(new PropertyChangeEvent((QObject*)this, "throttleAssignmentChanged", QString(""), VPtr<DccLocoAddress>::asQVariant(la)));
 #endif

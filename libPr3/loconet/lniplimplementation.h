@@ -3,7 +3,7 @@
 #include "jcomponent.h"
 #include "loconetlistener.h"
 #include "timer.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 
 /*public*/ class DeviceTypes {
   //Q_OBJECT
@@ -178,7 +178,7 @@ class LnIPLImplementation : public QObject, public JComponent, public LocoNetLis
   /*private*/ static /*final*/ bool isIplRf24SlaveIdentityReportMessage(LocoNetMessage* m);
   /*private*/ bool handleMessageIplDeviceReport(LocoNetMessage* m);
   static QMap<DeviceTypes::TYPES, DeviceTypes*> deviceTypes;
-  PropertyChangeSupport* pcs;
+  SwingPropertyChangeSupport* pcs;
 
   friend class SwingTmr;
   friend class LnIplImplementationTest;

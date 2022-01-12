@@ -6,14 +6,15 @@
 #include "abstractlight.h"
 
 class SystemConnectionMemo;
-class LIBPR3SHARED_EXPORT AbstractLightManager : public  LightManager
+class LIBPR3SHARED_EXPORT AbstractLightManager : public  AbstractManager, public LightManager
 {
     Q_OBJECT
+  Q_INTERFACES(LightManager)
 public:
     //explicit AbstractLightManager(QObject *parent = 0);
  /*public*/ AbstractLightManager(SystemConnectionMemo* memo, QObject *parent = 0);
     /*public*/ virtual int getXMLOrder() const override;
-    /*public*/ virtual char typeLetter() const override;
+    /*public*/ virtual QChar typeLetter()  override;
     /**
      * Locate via user name, then system name if needed.
      * If that fails, create a new Light: If the name
@@ -42,7 +43,7 @@ public:
     /**
      * Locate a Light by its user name
      */
-    /*public*/ NamedBean* getByUserName(QString key) const override;
+    /*public*/ NamedBean* getByUserName(QString key)  override;
 
     /**
      * Return an instance with the specified system and user names.

@@ -68,16 +68,16 @@ template<class T>
 // to free resources when no longer used
 /*public*/ virtual void dispose()override;
 /*public*/ char systemLetter();
-/*public*/ QString getSystemPrefix() const override;
-/*public*/ char typeLetter() const override;
-/*public*/ QString makeSystemName(QString s)const override;
+/*public*/ QString getSystemPrefix()  override;
+/*public*/ QChar typeLetter()  override;
+/*public*/ QString makeSystemName(QString s) override;
 /*public*/ QStringList getSystemNameArray() override;
 /*public*/ QStringList getSystemNameList()override;
-PropertyChangeSupport* pcs; // = new PropertyChangeSupport(this);
+SwingPropertyChangeSupport* pcs; // = new SwingPropertyChangeSupport(this, nullptr);
 ///*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l)override;
 ///*public synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) override;
- /*public*/ void Register(NamedBean* n)const override;
-/*public*/ void deregister(NamedBean* n)const override;
+ /*public*/ void Register(NamedBean* n) override;
+/*public*/ void deregister(NamedBean* n) override;
 /*public*/ int getXMLOrder()const override;
 ///*public*/ NamedBean* getBySystemName(QString /*systemName*/) const override {return nullptr;}
 ///*public*/ NamedBean* getByUserName(QString /*userName*/) const override{return nullptr;}

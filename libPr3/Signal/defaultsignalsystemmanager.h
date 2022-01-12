@@ -17,8 +17,8 @@ public:
     ~DefaultSignalSystemManager()  override{}
     DefaultSignalSystemManager(const DefaultSignalSystemManager&) : SignalSystemManager() {}
     /*public*/ int getXMLOrder()const  override;
-    QString getSystemPrefix() ;
-    /*public*/ char typeLetter() ;
+    QString getSystemPrefix() override;
+    /*public*/ QChar typeLetter() override;
     /*public*/ SignalSystem* getSystem(QString name)  override;
     /*public*/ SignalSystem* getBySystemName(QString key) const  override;
     /*public*/ SignalSystem* getByUserName(QString key)const  override;
@@ -29,6 +29,7 @@ public:
     /*public*/ QString getNamedBeanClass()const override {
         return "SignalSystem";
     }
+    QObject* self() override {return (QObject*)this;}
 
 
 signals:

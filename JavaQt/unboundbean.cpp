@@ -12,7 +12,7 @@ UnboundBean::UnboundBean(QObject *parent) : QObject(parent)
  * for arbitrary properties defined at runtime.
  * <p>
  * <b>NOTE</b> This class does not implement
- * {@link java.beans.PropertyChangeSupport}. Subclass {@link jmri.beans.Bean} if
+ * {@link java.beans.SwingPropertyChangeSupport}. Subclass {@link jmri.beans.Bean} if
  * you need to support property change listeners.
  *
  * @author rhwood

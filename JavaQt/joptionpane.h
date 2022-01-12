@@ -5,7 +5,7 @@
 #include <QIcon>
 #include <QList>
 #include "jdialog.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "exceptions.h"
 #include <QValidator>
 
@@ -205,7 +205,7 @@ private:
  void common(QVariant message, int messageType = 0, int optionType = DEFAULT_OPTION,
              QIcon icon = QIcon(), QList<QVariant> options = QList<QVariant>(), QVariant initialValue = QVariant());
  /*private*/ void initDialog(/*final*/ JDialog* dialog, int style, QWidget* parentComponent);
- PropertyChangeSupport* changeSupport;
+ SwingPropertyChangeSupport* changeSupport;
  QWidget* layoutPane(JDialog* dialog);
  JTextField* f;
  QPushButton* btnOk;

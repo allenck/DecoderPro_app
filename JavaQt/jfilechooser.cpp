@@ -1,6 +1,6 @@
 #include "jfilechooser.h"
 #include "file.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "loggerfactory.h"
 #include "vptr.h"
 #include "filesystemview.h"
@@ -23,7 +23,7 @@ JFileChooser::JFileChooser(int dialogType, QObject *parent) :
 
 void JFileChooser::common()
 {
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
  dialog = nullptr;
  dialogType = OPEN_DIALOG;
  approveButtonText = "";

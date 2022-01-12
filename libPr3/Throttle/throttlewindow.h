@@ -181,7 +181,7 @@ private slots:
     /*private*/ void editPreferences();
     QT_DEPRECATED/*private*/ void switchMode();
 
-friend class PropertyChangeSupport;
+friend class SwingPropertyChangeSupport;
 friend class LocoNetSlot;
 friend class AbstractThrottle;
 friend class SlotManager;

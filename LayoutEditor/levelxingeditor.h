@@ -23,9 +23,9 @@ class LevelXingEditor : public LayoutTurntableEditor
   /*private*/ /*final*/ JCheckBox* editLevelXingHiddenCheckBox = new JCheckBox(tr("Hide Crossing"));  // NOI18N
 
   /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* editLevelXingBlock1NameComboBox = new NamedBeanComboBox(
-          (BlockManager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+          (Manager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
   /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* editLevelXingBlock2NameComboBox = new NamedBeanComboBox(
-          (BlockManager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+          (Manager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
   /*private*/ QPushButton *editLevelXingBlock1Button;
   /*private*/ QPushButton* editLevelXingBlock2Button;
 

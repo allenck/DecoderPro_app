@@ -11,7 +11,7 @@
 class SignalSpeedMap;
 class SignalMastLogic;
 class SignalMast;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class PropertyChangeListener;
 class PropertyBlockManagerListener;
 class LIBPR3SHARED_EXPORT DefaultSignalMastLogicManager : public AbstractManager, public SignalMastLogicManager
@@ -39,16 +39,16 @@ public:
     /*public*/ void initialise() override;
     /*public*/ NamedBean* getBeanBySystemName(QString systemName)const override;
     /*public*/ NamedBean* getBeanByUserName(QString userName)const override;
-    /*public*/ NamedBean* getNamedBean(QString name)const override;
-    /*public*/ QString getSystemPrefix()const override ;
-    /*public*/ char typeLetter() const override;
+    /*public*/ NamedBean* getNamedBean(QString name) override;
+    /*public*/ QString getSystemPrefix() override ;
+    /*public*/ QChar typeLetter()  override;
     /*public*/ QStringList getSystemNameArray()  override;
     /*public*/ QStringList getSystemNameList() override;
 //    /*public*/ QSet<NamedBean*> getNamedBeanSet() override;
 //    /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) ;
 //    /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) ;
-    /*public*/ void Register(NamedBean* n)const override ;
-    /*public*/ void deregister(NamedBean* n)const override;
+    /*public*/ void Register(NamedBean* n) override ;
+    /*public*/ void deregister(NamedBean* n) override;
     /*public*/ long getSignalLogicDelay() override;
     /*public*/ void setSignalLogicDelay(long l)override;
     /*public*/ void discoverSignallingDest(SignalMast* source, LayoutEditor* layout) /*throw (JmriException)*/ override;

@@ -44,7 +44,7 @@ public:
     ARSReporterListener(QString reporterName, AbstractReporterServer* ars) {
      this->ars = ars;
         name = reporterName;
-        reporter = static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->getReporter(reporterName);
+        reporter = qobject_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->getReporter(reporterName);
     }
     QObject* self() override{return (QObject*)this;}
 

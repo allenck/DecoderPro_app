@@ -14,8 +14,8 @@ class LIBPR3SHARED_EXPORT DefaultConditionalManager : public ConditionalManager
 public:
     explicit DefaultConditionalManager(QObject *parent = 0);
     /*public*/ int getXMLOrder()const override;
-    /*public*/ QString getSystemPrefix()const override;
-    /*public*/ char typeLetter()const override ;
+    /*public*/ QString getSystemPrefix() override;
+    /*public*/ QChar typeLetter() override ;
     /*public*/ Conditional* createNewConditional(QString systemName, QString userName)  override;
     /*public*/ Logix* getParentLogix(QString name) override;
     /*public*/ void deleteConditional(Conditional* c) override;
@@ -38,6 +38,7 @@ public:
         return "Conditional";
     }
 
+    QObject* self() override {return (QObject*)this;}
 signals:
 
 public slots:

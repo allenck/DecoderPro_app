@@ -11,7 +11,7 @@
 /*public final*/ /*static*/ float AbstractThrottle::SPEED_STEP_128_INCREMENT=1.0f/126.0f; // remember there are only 126
                                                                 // non-stop values in 128 speed
 
-AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) :    PropertyChangeSupport(this, parent)
+AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) :    SwingPropertyChangeSupport(this, parent)
 {
  active = true;
  adapterMemo = memo;
@@ -409,7 +409,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
         log->warn(tr("Preventing %1 adding duplicate PCL").arg(l->self()->objectName()));
         return;
     }
-    PropertyChangeSupport::addPropertyChangeListener(l);
+    SwingPropertyChangeSupport::addPropertyChangeListener(l);
 }
 
 /**
@@ -418,7 +418,7 @@ AbstractThrottle::AbstractThrottle(SystemConnectionMemo* memo, QObject *parent) 
 //@Override
 /*public*/ void AbstractThrottle::removePropertyChangeListener(PropertyChangeListener* l) {
     log->debug(tr("Removing property change %1").arg(l->self()->objectName()));
-    PropertyChangeSupport::removePropertyChangeListener(l);
+    SwingPropertyChangeSupport::removePropertyChangeListener(l);
     log->debug(tr("remove listeners size is %1").arg(getPropertyChangeListeners().length()));
     if (getPropertyChangeListeners().length() == 0) {
         log->debug("No listeners so calling ThrottleManager.dispose with an empty ThrottleListener");

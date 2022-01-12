@@ -13,7 +13,7 @@
 #include <QMessageBox>
 #include "trainmanager.h"
 #include "carroads.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "cartypes.h"
 #include "carmanager.h"
 #include "carattributeaction.h"
@@ -81,7 +81,7 @@ namespace Operations
   RollingStockAttributeEditFrame::initComponents(attribute, name);
 
        setTitle(tr("Edit Car %1").arg(attribute ));
-       carManager->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
+       carManager->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
 
        addComboBoxAction(comboBox);
 
@@ -195,15 +195,15 @@ namespace Operations
        RollingStockAttributeEditFrame::loadCombobox();
        if (_attribute == (TYPE)) {
            comboBox = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getComboBox();
-           ((CarTypes*)InstanceManager::getDefault("CarTypes"))->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
+           ((CarTypes*)InstanceManager::getDefault("CarTypes"))->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
        }
        if (_attribute == (COLOR)) {
            comboBox = ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->getComboBox();
-           ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
+           ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
        }
        if (_attribute == (LENGTH)) {
            comboBox = ((CarLengths*)InstanceManager::getDefault("CarLengths"))->getComboBox();
-           ((CarLengths*)InstanceManager::getDefault("CarLengths"))->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
+           ((CarLengths*)InstanceManager::getDefault("CarLengths"))->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
        }
        if (_attribute == (KERNEL)) {
            comboBox = carManager->getKernelComboBox();

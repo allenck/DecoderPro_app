@@ -94,7 +94,7 @@ void RosterEntry::init()
 {
  log = new Logger("RosterEntry");
  log->setDebugEnabled(true);
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
   _fileName = "";
 
  _id = "";
@@ -1428,14 +1428,14 @@ if (!(_decoderFamily==("")))
 /*public*/ /*synchronized*/ void RosterEntry::addPropertyChangeListener(PropertyChangeListener* l)
 {
  QMutexLocker locker(&mutex);
- if (pcs == NULL) pcs = new PropertyChangeSupport(this);
- pcs->PropertyChangeSupport::addPropertyChangeListener(l);
+ if (pcs == NULL) pcs = new SwingPropertyChangeSupport(this, nullptr);
+ pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 }
 
 /*protected*/ /*synchronized*/ void RosterEntry::firePropertyChange(QString p, QVariant old, QVariant n)
 {
     QMutexLocker locker(&mutex);
-    if (pcs == NULL) pcs = new PropertyChangeSupport(this);
+    if (pcs == NULL) pcs = new SwingPropertyChangeSupport(this, nullptr);
     pcs->firePropertyChange(p,old,n);
     emit propertyChange(new PropertyChangeEvent(this, p, old,n));
 }
@@ -1443,7 +1443,7 @@ if (!(_decoderFamily==("")))
 /*public*/ /*synchronized*/ void RosterEntry::removePropertyChangeListener(PropertyChangeListener* l)
 {
     QMutexLocker locker(&mutex);
-    if (pcs == NULL) pcs = new PropertyChangeSupport(this);
+    if (pcs == NULL) pcs = new SwingPropertyChangeSupport(this, nullptr);
     pcs->removePropertyChangeListener(l);
 }
 

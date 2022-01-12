@@ -7929,8 +7929,8 @@ setSignalsAtTToTOpen = true;
  // Initialize if needed
  if (setSensorsAtBlockBoundaryFrame == nullptr)
  {
-  westBoundSensor = new BeanDetails("Sensor", InstanceManager::sensorManagerInstance());
-  eastBoundSensor = new BeanDetails("Sensor", InstanceManager::sensorManagerInstance());
+  westBoundSensor = new BeanDetails("Sensor", (Manager*)InstanceManager::sensorManagerInstance());
+  eastBoundSensor = new BeanDetails("Sensor", (Manager*)InstanceManager::sensorManagerInstance());
 
   setSensorsAtBlockBoundaryFrame = new JmriJFrameX( tr("Set Sensors at Block Boundary"), false, true );
   setSensorsAtBlockBoundaryFrame->addHelpMenu("package.jmri.jmrit.display.SetSensorsAtBoundary", true);
@@ -11501,10 +11501,10 @@ for (LevelXing* x : layoutEditor->getLevelXings()) {
     if (setSensorsAtTurnoutFrame == nullptr) {
         setSensorsAtTurnoutOpenFlag = false;
 
-        turnoutSensorA = new BeanDetails("Sensor", InstanceManager::sensorManagerInstance());  // NOI18N
-        turnoutSensorB = new BeanDetails("Sensor", InstanceManager::sensorManagerInstance());  // NOI18N
-        turnoutSensorC = new BeanDetails("Sensor", InstanceManager::sensorManagerInstance());  // NOI18N
-        turnoutSensorD = new BeanDetails("Sensor", InstanceManager::sensorManagerInstance());  // NOI18N
+        turnoutSensorA = new BeanDetails("Sensor", (Manager*)InstanceManager::sensorManagerInstance());  // NOI18N
+        turnoutSensorB = new BeanDetails("Sensor", (Manager*)InstanceManager::sensorManagerInstance());  // NOI18N
+        turnoutSensorC = new BeanDetails("Sensor", (Manager*)InstanceManager::sensorManagerInstance());  // NOI18N
+        turnoutSensorD = new BeanDetails("Sensor", (Manager*)InstanceManager::sensorManagerInstance());  // NOI18N
 
         //xingSignalMastA->getDetailsPanel()->setBackground(new Color(255,255,200));
         turnoutSensorA->getDetailsPanel()->setStyleSheet("QWidget { background: rgb(255,255,200)}");
@@ -11969,10 +11969,10 @@ for (LevelXing* x : layoutEditor->getLevelXings()) {
  if (setSensorsAtLevelXingFrame == nullptr) {
   setSensorsAtLevelXingOpenFlag = false;
 
-  xingSensorA = new BeanDetails("Sensor", InstanceManager::sensorManagerInstance());
-  xingSensorB = new BeanDetails("Sensor", InstanceManager::sensorManagerInstance());
-  xingSensorC = new BeanDetails("Sensor", InstanceManager::sensorManagerInstance());
-  xingSensorD = new BeanDetails("Sensor", InstanceManager::sensorManagerInstance());
+  xingSensorA = new BeanDetails("Sensor", (Manager*)InstanceManager::sensorManagerInstance());
+  xingSensorB = new BeanDetails("Sensor", (Manager*)InstanceManager::sensorManagerInstance());
+  xingSensorC = new BeanDetails("Sensor", (Manager*)InstanceManager::sensorManagerInstance());
+  xingSensorD = new BeanDetails("Sensor", (Manager*)InstanceManager::sensorManagerInstance());
 
 //  xingSensorA->getDetailsPanel().setBackground(new Color(255, 255, 200));
   xingSensorA->getDetailsPanel()->setStyleSheet("QWidget { background: rgb(255,255,200)}");
@@ -12520,10 +12520,10 @@ void LayoutEditorTools::setLevelXingSensor(Sensor* newSensor, Sensor* currSensor
  if (setSensorsAtSlipFrame == nullptr)
  {
   setSensorsAtSlipOpenFlag = false;
-  slipSensorA = new BeanDetails("Sensor", InstanceManager::sensorManagerInstance());
-  slipSensorB = new BeanDetails("Sensor", InstanceManager::sensorManagerInstance());
-  slipSensorC = new BeanDetails("Sensor", InstanceManager::sensorManagerInstance());
-  slipSensorD = new BeanDetails("Sensor", InstanceManager::sensorManagerInstance());
+  slipSensorA = new BeanDetails("Sensor", (Manager*)InstanceManager::sensorManagerInstance());
+  slipSensorB = new BeanDetails("Sensor", (Manager*)InstanceManager::sensorManagerInstance());
+  slipSensorC = new BeanDetails("Sensor", (Manager*)InstanceManager::sensorManagerInstance());
+  slipSensorD = new BeanDetails("Sensor", (Manager*)InstanceManager::sensorManagerInstance());
 
   slipSensorA->getDetailsPanel()->setStyleSheet("QWidget { background: rgb(255,255,200)}");
   slipSensorB->getDetailsPanel()->setStyleSheet("QWidget { background: rgb(200, 255, 255)}");

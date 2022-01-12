@@ -5,7 +5,7 @@
 #include "appslib_global.h"
 
 class Logger;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 namespace Operations
 {
 class RollingStock;
@@ -14,7 +14,7 @@ class RollingStock;
   Q_OBJECT
  public:
   RollingStockGroup(QString name, QObject *parent = 0);
-  PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
+  SwingPropertyChangeSupport* pcs;// = new java.beans.SwingPropertyChangeSupport(this,this);
   /*public*/ QString getName();
   /*public*/ QString toString();
   /*public*/ void add(RollingStock* rs);

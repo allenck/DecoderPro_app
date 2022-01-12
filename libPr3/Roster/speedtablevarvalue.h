@@ -125,7 +125,7 @@ private:
    // tooltip label
     setToolTip(tr("TextStep") +" "+QString::number(step)+" CV "+(var->number()));
    // listen for changes to original state
-   //_var->PropertyChangeSupport::addPropertyChangeListener(new PropertyChangeListener() {
+   //_var->SwingPropertyChangeSupport::addPropertyChangeListener(new PropertyChangeListener() {
     var->addPropertyChangeListener((PropertyChangeListener*)this);
     connect(var, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(originalPropertyChanged(PropertyChangeEvent*)));
 //                /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {

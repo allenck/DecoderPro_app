@@ -8,7 +8,7 @@
 class Logger;
 class Controller;
 class DefaultMutableTreeNode;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 namespace Usb
 {
 class UsbTreeModel0 : public DefaultTreeModel
@@ -20,7 +20,7 @@ public:
 
 
 private:
- PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+ SwingPropertyChangeSupport* pcs;// = new SwingPropertyChangeSupport(this, nullptr);
  /*private*/ UsbTreeModel0(QObject* parent = 0);
  DefaultMutableTreeNode* dRoot;
  static /*private*/ UsbTreeModel0* instanceValue;// = NULL;

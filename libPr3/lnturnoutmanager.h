@@ -12,13 +12,14 @@ public:
     LnTurnoutManager(LnTrafficController* fastcontroller, LnTrafficController* throttledcontroller, QString prefix, bool mTurnoutNoRetry, QObject* parent = 0);
     /*public*/ LnTurnoutManager(LocoNetSystemConnectionMemo* memo, LocoNetInterface* throttledcontroller, bool mTurnoutNoRetry, QObject *parent = nullptr);
     void dispose() override;
-    Turnout* createNewTurnout(QString systemName, QString userName)const override;
+    Turnout* createNewTurnout(QString systemName, QString userName) override;
     /*public*/ static /*final*/ QString BYPASSBUSHBYBITKEY;// = "Bypass Bushby Bit";
     /*public*/ static /*final*/ QString SENDONANDOFFKEY;// = "Send ON/OFF";
     /*public*/ QString getNamedBeanClass()const override {
         return "LnTurnout";
     }
 
+    QObject* self() override { return (QObject*)this;}
 public slots:
     // listen for turnouts, creating them as needed
     void message(LocoNetMessage* l);

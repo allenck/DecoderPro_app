@@ -262,7 +262,7 @@ namespace Operations
          _rl->removePropertyChangeListener(this);
          _rl->setTrainIconX( spinTrainIconX->value());
          _rl->setTrainIconY( spinTrainIconY->value());
-         _rl->PropertyChangeSupport::addPropertyChangeListener(this);
+         _rl->SwingPropertyChangeSupport::addPropertyChangeListener(this);
      }
  }
 

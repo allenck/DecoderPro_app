@@ -102,7 +102,7 @@
 /*public*/ QJsonValue JsonSensorHttpService::doGetList(QString /*type*/, QLocale locale) throw (JsonException) {
     //ArrayNode root = this.mapper.createArrayNode();
  QJsonArray root = QJsonArray();
-    foreach (QString name, ((ProxySensorManager*) InstanceManager::getDefault("SensorManager"))->getSystemNameList()) {
+    foreach (QString name, ((ProxySensorManager*) InstanceManager::getDefault("SensorManager"))->AbstractProxyManager::getSystemNameList()) {
         root.append(this->doGet(JSON::SENSOR, name, locale));
     }
     return QJsonValue(root);

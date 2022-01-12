@@ -41,9 +41,9 @@ DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
  return Manager::SIGNALMASTS;
 }
 
-/*public*/ QString DefaultSignalMastManager::getSystemPrefix() const { return "I"; }
+/*public*/ QString DefaultSignalMastManager::getSystemPrefix() { return "I"; }
 
-/*public*/ char DefaultSignalMastManager::typeLetter() const{ return 'F'; }
+/*public*/ QChar DefaultSignalMastManager::typeLetter() { return 'F'; }
 
 /*public*/ SignalMast* DefaultSignalMastManager::getSignalMast(QString name)
 {
@@ -85,11 +85,11 @@ DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
  return m;
 }
 
-/*public*/ SignalMast* DefaultSignalMastManager::getBySystemName(QString key) const {
+/*public*/ SignalMast* DefaultSignalMastManager::getBySystemName(QString key) {
     return (SignalMast*)_tsys->value(key);
 }
 
-/*public*/ SignalMast* DefaultSignalMastManager::getByUserName(QString key) const {
+/*public*/ SignalMast* DefaultSignalMastManager::getByUserName(QString key) {
     return (SignalMast*)_tuser->value(key);
 }
 //@Override

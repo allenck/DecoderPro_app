@@ -51,9 +51,9 @@
      */
     //@Nonnull
     //@Override
-    /*public*/ AbstractManager *LightTableDataModel::getManager(){
+    /*public*/ Manager *LightTableDataModel::getManager(){
         if (lightManager == nullptr) {
-            lightManager = (ProxyLightManager*)InstanceManager::getDefault("LightManager");
+            lightManager = (LightManager*)InstanceManager::getDefault("LightManager");
         }
         return lightManager;
     }
@@ -62,11 +62,11 @@
      * {@inheritDoc}
      */
     //@Override
-    /*protected*/ /*final*/ void LightTableDataModel::setManager(/*@Nonnull*/ AbstractManager/*<Light>*/* manager) {
-        if (!(qobject_cast<LightManager*>(manager))) {
+    /*protected*/ /*final*/ void LightTableDataModel::setManager(/*@Nonnull*/ Manager *manager) {
+        if (!(qobject_cast<LightManager*>(manager->self()))) {
             return;
         }
-        getManager()->PropertyChangeSupport::removePropertyChangeListener(this);
+        getManager()->removePropertyChangeListener(this);
         if (!sysNameList.isEmpty()) {
             for (int i = 0; i < sysNameList.size(); i++) {
                 // if object has been deleted, it's not here; ignore it
@@ -77,7 +77,7 @@
             }
         }
         lightManager = manager;
-        getManager()->PropertyChangeSupport::addPropertyChangeListener(this);
+        getManager()->addPropertyChangeListener(this);
         updateNameList();
     }
 

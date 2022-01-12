@@ -288,9 +288,9 @@ void ATABeanTableFrame::extras()
  */
 /*protected*/ void AbstractTableAction::configureManagerComboBox(ManagerComboBox/*<E>*/* comboBox, Manager/*<E>*/* manager,
         /*Class<? extends Manager<E>>*/QString managerClass) {
-    AbstractManager/*<E>*/* defaultManager = (AbstractManager*)InstanceManager::getDefault(managerClass);
+    Manager/*<E>*/* defaultManager = (AbstractManager*)InstanceManager::getDefault(managerClass);
     // populate comboBox
-    if(qobject_cast<ProxyManager*>(defaultManager)) {
+    if(qobject_cast<ProxyManager*>(defaultManager->self())) {
         comboBox->setManagers(defaultManager);
     } else {
         comboBox->setManagers(manager);
@@ -306,13 +306,13 @@ void ATABeanTableFrame::extras()
         } else {
             //ProxyManager/*<E>*/* proxy = (ProxyManager/*<E>*/*) manager;
             if(qobject_cast<ProxyTurnoutManager*>(manager->self()))
-             comboBox->setSelectedItem(((ProxyTurnoutManager*)manager)->getDefaultManager()->toString());
+             comboBox->setSelectedItem(((ProxyTurnoutManager*)manager->self())->getDefaultManager()->toString());
             if(qobject_cast<ProxySensorManager*>(manager->self()))
-             comboBox->setSelectedItem(((ProxySensorManager*)manager)->getDefaultManager()->toString());
+             comboBox->setSelectedItem(((ProxySensorManager*)manager->self())->getDefaultManager()->toString());
             if(qobject_cast<ProxyLightManager*>(manager->self()))
-             comboBox->setSelectedItem(((ProxyLightManager*)manager)->getDefaultManager()->toString());
+             comboBox->setSelectedItem(((ProxyLightManager*)manager->self())->getDefaultManager()->toString());
             if(qobject_cast<ProxyReporterManager*>(manager->self()))
-             comboBox->setSelectedItem(((ProxyReporterManager*)manager)->getDefaultManager()->toString());
+             comboBox->setSelectedItem(((ProxyReporterManager*)manager->self())->getDefaultManager()->toString());
         }
     } else {
         comboBox->setSelectedItem(manager->toString());

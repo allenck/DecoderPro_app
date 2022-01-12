@@ -3,7 +3,7 @@
 #include <QSet>
 #include "instancemanager.h"
 #include "loggerfactory.h"
-AbstractPreferencesManager::AbstractPreferencesManager(QObject* parent) : PreferencesManager(parent)
+AbstractPreferencesManager::AbstractPreferencesManager(QObject* parent) : Bean(parent)
 {
  initialized = new QHash<Profile*, bool>();
  initializing = new QHash<Profile*, bool>();

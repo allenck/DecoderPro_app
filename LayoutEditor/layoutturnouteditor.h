@@ -32,13 +32,13 @@ class LayoutTurnoutEditor : public LayoutTrackEditor
   /*protected*/ NamedBeanComboBox/*<Turnout>*/* editLayoutTurnout2ndTurnoutComboBox = nullptr;
   /*protected*/ JLabel* editLayoutTurnout2ndTurnoutLabel = nullptr;
   /*protected*/ /*final*/ NamedBeanComboBox/*<Block>*/* editLayoutTurnoutBlockNameComboBox = new NamedBeanComboBox(
-          (BlockManager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+          (Manager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
   /*protected*/ /*final*/ NamedBeanComboBox/*<Block>*/* editLayoutTurnoutBlockBNameComboBox = new NamedBeanComboBox(
-          (BlockManager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+          (Manager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
   /*protected*/ /*final*/ NamedBeanComboBox/*<Block>*/* editLayoutTurnoutBlockCNameComboBox = new NamedBeanComboBox(
-          (BlockManager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+          (Manager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
   /*protected*/ /*final*/ NamedBeanComboBox/*<Block>*/* editLayoutTurnoutBlockDNameComboBox = new NamedBeanComboBox(
-          (BlockManager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+          (Manager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
   /*protected*/ /*final*/ JComboBox/*<String>*/* editLayoutTurnoutStateComboBox = new JComboBox();
   /*protected*/ JCheckBox* editLayoutTurnoutHiddenCheckBox = nullptr;
   /*protected*/ QPushButton* editLayoutTurnoutBlockButton;

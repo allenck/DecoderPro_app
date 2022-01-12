@@ -29,7 +29,7 @@
  int bitNum = getBitFromSystemName(systemName);
  if (bitNum == 0) return (NULL);
  // Normalize the systemName
- QString sName = getSystemPrefix()+"L"+QString::number(bitNum);   // removes any leading zeros
+ QString sName = AbstractManager::getSystemPrefix()+"L"+QString::number(bitNum);   // removes any leading zeros
  // make the new Light object
  lgt = (Light*)new LnLight(sName, userName, _trafficController, this);
  return lgt;
@@ -41,7 +41,7 @@
 /*public*/ int LnLightManager::getBitFromSystemName (QString systemName)throw (Exception)
 {
  // validate the system Name leader characters
- if ( (!systemName.startsWith(getSystemPrefix())) || (!systemName.startsWith(getSystemPrefix()+"L")) )
+ if ( (!systemName.startsWith(AbstractManager::getSystemPrefix())) || (!systemName.startsWith(AbstractManager::getSystemPrefix()+"L")) )
  {
   // here if an illegal loconet light system name
   log.error("illegal character in header field of loconet light system name: "+systemName);
@@ -52,7 +52,7 @@
 // try
 // {
  bool bOK;
- num = systemName.mid(getSystemPrefix().length()+1, systemName.length()).toInt(&bOK);
+ num = systemName.mid(AbstractManager::getSystemPrefix().length()+1, systemName.length()).toInt(&bOK);
  if(!bOK)
  {
   log.error("illegal character in number field of system name: "+systemName);

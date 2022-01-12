@@ -68,6 +68,7 @@ SOURCES += javaqt.cpp \
     #systemtype.cpp \
     physicallocation.cpp \
     physicallocationpanel.cpp \
+    swingpropertychangesupport.cpp \
     thread.cpp \
     tristatejcheckbox.cpp \
     uncheckedioexception.cpp \
@@ -80,7 +81,6 @@ SOURCES += javaqt.cpp \
     propertychangeevent.cpp \
     propertychangelistenermap.cpp \
     propertychangelistenerproxy.cpp \
-    propertychangesupport.cpp \
     eventobject.cpp \
     defaultlistmodel.cpp \
     defaultlistselectionmodel.cpp \
@@ -315,6 +315,8 @@ HEADERS += javaqt.h\
  physicallocationpanel.h \
  preferNumericComparator.h \
  #systemtype.h \
+ propertychangefirer.h \
+ swingpropertychangesupport.h \
  thread.h \
  tristatejcheckbox.h \
  uncheckedioexception.h \
@@ -341,7 +343,6 @@ HEADERS += javaqt.h\
     propertychangelistener.h \
     propertychangelistenermap.h \
     propertychangelistenerproxy.h \
-    propertychangesupport.h \
     eventobject.h \
     defaultlistmodel.h \
     defaultlistselectionmodel.h \

@@ -15,7 +15,7 @@
  * @version     $Revision: 22216 $
  */
 
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class LIBPR3SHARED_EXPORT AbstractProgrammer : public QObject, public Programmer
 {
  Q_OBJECT
@@ -44,9 +44,9 @@ signals:
     void propertyChange(PropertyChangeEvent*);
 private:
     /**
-     * Provide a {@link java.beans.PropertyChangeSupport} helper.
+     * Provide a {@link java.beans.SwingPropertyChangeSupport} helper.
      */
-    /*private*/ /*final*/ PropertyChangeSupport* propertyChangeSupport;// = new PropertyChangeSupport(this);
+    /*private*/ /*final*/ SwingPropertyChangeSupport* propertyChangeSupport;// = new SwingPropertyChangeSupport(this, nullptr);
 
 protected:
 

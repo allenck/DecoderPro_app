@@ -7,7 +7,7 @@
 #include <QLabel>
 #include "jcomponent.h"
 #include "border.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 
 class Logger;
 class ImageIcon;
@@ -337,7 +337,7 @@ public:
     /*public*/ Border* getBorder() override{return _border;}
     /*public*/ int getBaseline(int w, int h);
 
-    PropertyChangeSupport* pcs = new PropertyChangeSupport(this);
+    SwingPropertyChangeSupport* pcs = new SwingPropertyChangeSupport(this, nullptr);
     /*public*/ void firePropertyChange(QString propertyName, QVariant oldValue, QVariant newValue);
     /*public*/ QWidget* getLabelFor();
     /*public*/ void setLabelFor(QWidget* c);

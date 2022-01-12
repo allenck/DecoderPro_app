@@ -377,7 +377,7 @@ namespace Operations
             }
             if (_finalDestTrack != NULL) {
                 _finalDestTrack->addReservedInRoute(this);
-                //_finalDestTrack->PropertyChangeSupport::addPropertyChangeListener(this);
+                //_finalDestTrack->SwingPropertyChangeSupport::addPropertyChangeListener(this);
                 connect(_finalDestTrack, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
             }
             setDirtyAndFirePropertyChange(FINAL_DESTINATION_TRACK_CHANGED_PROPERTY, VPtr<Track>::asQVariant(old), VPtr<Track>::asQVariant(track));

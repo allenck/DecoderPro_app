@@ -8,9 +8,10 @@ class Exception;
 class Profile;
 class PreferencesManager : public JmriServiceProviderInterface
 {
- Q_OBJECT
+ //Q_OBJECT
+  Q_INTERFACES(JmriServiceProviderInterface)
 public:
- PreferencesManager(QObject* parent = 0);
+ //PreferencesManager(QObject* parent = 0);
  /*public*/ virtual void initialize(/*@Nonnull*/ Profile* profile) /*throw (InitializationException)*/;
  /*public*/ virtual bool isInitialized(/*@Nonnull*/ Profile* profile);
  /*public*/ virtual bool isInitializedWithExceptions(/*@Nonnull */Profile* profile);
@@ -23,6 +24,7 @@ public:
  virtual QSet<QString>* getProvides();
  /*public*/ virtual void savePreferences(/*@Nonnull*/ Profile* /*profile*/) {}
 
+ virtual QObject* self() =0;
 };
-
+Q_DECLARE_INTERFACE(PreferencesManager, "PreferencesManager")
 #endif // PREFERENCESMANAGER_H

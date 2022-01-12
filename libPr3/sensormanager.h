@@ -4,13 +4,15 @@
 #include "sensor.h"
 #include "abstractmanager.h"
 #include "libPr3_global.h"
+#include "providingmanager.h"
 
-class LIBPR3SHARED_EXPORT SensorManager : public AbstractManager
+class LIBPR3SHARED_EXPORT SensorManager : public ProvidingManager
 {
-    Q_OBJECT
+    //Q_OBJECT
+  Q_INTERFACES(ProvidingManager)
 public:
-    explicit SensorManager(QObject *parent = nullptr) : AbstractManager(parent) {}
-    SensorManager(SystemConnectionMemo* memo, QObject *parent = nullptr) : AbstractManager(memo,parent) {}
+//    explicit SensorManager(QObject *parent = nullptr) : AbstractManager(parent) {}
+//    SensorManager(SystemConnectionMemo* memo, QObject *parent = nullptr) : AbstractManager(memo,parent) {}
     /**
      * Interface for controlling sensors.
      *
@@ -60,7 +62,7 @@ public:
          * @param name
          * @return null if no match found
          */
-        virtual Sensor* getSensor(QString /*name*/) const { return NULL;}
+        virtual Sensor* getSensor(QString /*name*/)  { return NULL;}
 
         // to free resources when no longer used
         virtual void dispose() const  {}
@@ -92,8 +94,8 @@ public:
          */
         virtual Sensor* newSensor(QString /*systemName*/, QString /*userName*/) { return NULL;}
 
-        virtual NamedBean* getByUserName(QString /*s*/)  const { return NULL;}
-        virtual NamedBean* getBySystemName(QString /*s*/) const { return NULL;}
+        virtual NamedBean* getByUserName(QString /*s*/)   { return NULL;}
+        virtual NamedBean* getBySystemName(QString /*s*/)  { return NULL;}
 
 //    virtual  QStringList getSystemNameList() const { return QStringList();}
 
@@ -140,7 +142,7 @@ public:
         //@Nonnull
         virtual /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString /*curAddress*/, /*@Nonnull*/ QString /*prefix*/, bool /*ignoreInitialExisting*/) /*throw (JmriException)*/ {return "";}
         
-        virtual QString createSystemName(QString /*curAddress*/, QString /*prefix*/) const /*throw (JmriException)*/ {return "";}
+        virtual QString createSystemName(QString /*curAddress*/, QString /*prefix*/)  /*throw (JmriException)*/ {return "";}
 
         virtual long getDefaultSensorDebounceGoingActive() {return 0;}
         virtual long getDefaultSensorDebounceGoingInActive() {return 0;}
@@ -155,10 +157,10 @@ public:
          * @return true if pull up/pull down configuration is supported.
          */
         virtual /*public*/ bool isPullResistanceConfigurable() {return false;}
-    /*public*/ QString toString() override {return "SensorManager";}
-    QObject* self() override{return (QObject*)this;}
-    QString getNamedBeanClass() const override {return "SensorManager";}
-    /*public*/ QString getBeanTypeHandled(bool plural) const override {return tr(plural?"Sensors":"Sensor");}
+//    /*public*/ QString toString()  {return "SensorManager";}
+    virtual QObject* self() =0;
+//    QString getNamedBeanClass() const override {return "SensorManager";}
+//    /*public*/ QString getBeanTypeHandled(bool plural) const override {return tr(plural?"Sensors":"Sensor");}
 
 signals:
     

@@ -337,7 +337,7 @@
 
 /*private*/ QString TableFrames::oblockPrefix() {
     if (_oblockPrefix == nullptr) {
-        _oblockPrefix = ((BlockManager*)InstanceManager::getDefault("OBlockManager"))->getSystemNamePrefix();
+        _oblockPrefix = ((Manager*)InstanceManager::getDefault("OBlockManager"))->getSystemNamePrefix();
     }
     return _oblockPrefix;
 }
@@ -361,7 +361,7 @@
     BlockManager* bm = (BlockManager*)InstanceManager::getDefault("BlockManager");
     OBlockManager* obm = (OBlockManager*)InstanceManager::getDefault("OBlockManager");
     PortalManager* pom = (PortalManager*)InstanceManager::getDefault("PortalManager");
-    QSet</*Block*/NamedBean*> blkList = bm->getNamedBeanSet();
+    QSet</*Block*/NamedBean*> blkList = bm->AbstractManager::getNamedBeanSet();
     // don't return an element if there are no Blocks to include
     if (blkList.isEmpty()) {
         log->warn("no Blocks to convert"); // NOI18N
@@ -814,7 +814,7 @@ void TableFrames::addCloseListener(JmriJFrame* desktop) {
     bool result = false;
     if (blockSystemName != nullptr) {
         // this is for Edit (new OBlocks are created from [Add oBlock->..] button in table)
-        OBlock* oblock = (OBlock*)((BlockManager*)InstanceManager::getDefault("OBlockManager"))->getBySystemName(blockSystemName);
+        OBlock* oblock = (OBlock*)((BlockManager*)InstanceManager::getDefault("OBlockManager"))->AbstractManager::getBySystemName(blockSystemName);
         if (oblock != nullptr) {
             BlockPathJPanel* panel = makeBlockPathEditPanel(oblock);
             // BeanEdit UI, adapted from jmri.jmrit.beantable.BlockTableAction
@@ -1023,7 +1023,7 @@ void TableFrames::addCloseListener(JmriJFrame* desktop) {
 /*protected*/ void TableFrames::openBlockPathFrame(QString blockSystemName) {
     BlockPathFrame* frame = (BlockPathFrame*)_blockPathMap.value(blockSystemName);
     if (frame == nullptr) {
-        OBlock* block = (OBlock*)((BlockManager*)InstanceManager::getDefault("OBlockManager"))->getBySystemName(blockSystemName);
+        OBlock* block = (OBlock*)((BlockManager*)InstanceManager::getDefault("OBlockManager"))->AbstractManager::getBySystemName(blockSystemName);
         if (block == nullptr) {
             return;
         }
@@ -1334,7 +1334,7 @@ void TableFrames::addCloseListener(JmriJFrame* desktop) {
         int index = pathTurnoutName.indexOf('&');
         QString pathName = pathTurnoutName.mid(1, index);
         QString blockName = pathTurnoutName.mid(index + 1);
-        OBlock* block = (OBlock*)((BlockManager*)InstanceManager::getDefault("OBlockManager"))->getBySystemName(blockName);
+        OBlock* block = (OBlock*)((BlockManager*)InstanceManager::getDefault("OBlockManager"))->AbstractManager::getBySystemName(blockName);
         if (block == nullptr) {
             return;
         }
@@ -1367,7 +1367,7 @@ void TableFrames::addCloseListener(JmriJFrame* desktop) {
     int index = pathTurnoutName.indexOf('&');
     QString pathName = pathTurnoutName.mid(1, index);
     QString blockName = pathTurnoutName.mid(index + 1);
-    OBlock* block = (OBlock*)((BlockManager*)InstanceManager::getDefault("OBlockManager"))->getBySystemName(blockName);
+    OBlock* block = (OBlock*)((BlockManager*)InstanceManager::getDefault("OBlockManager"))->AbstractManager::getBySystemName(blockName);
     if (block == nullptr) {
         return;
     }

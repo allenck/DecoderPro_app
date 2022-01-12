@@ -17,6 +17,8 @@ public:
  /*public*/ QSet<QString/* extends PreferencesManager*/>* getRequires();
  /*public*/ void savePreferences(Profile* profile);
 
+ QObject* self() override {return (QObject*)this;}
+
 };
 Q_DECLARE_METATYPE(FileLocationsPreferences)
 #endif // FILELOCATIONSPREFERENCES_H

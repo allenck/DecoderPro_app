@@ -224,7 +224,7 @@
     if (qobject_cast<ProxyManager*>(getManager(beanTypeChar)->self())!= nullptr)
     { // from abstractTableTabAction
         ProxyManager* proxy = qobject_cast<ProxyManager*>(getManager(beanTypeChar)->self());
-        QList<AbstractManager*> managerList = proxy->getManagerList(); // picks up all managers to fetch
+        QList<Manager*> managerList = proxy->getManagerList(); // picks up all managers to fetch
         for (int x = 0; x < managerList.size(); x++) {
             QString manuPrefix = managerList.value(x)->getSystemPrefix();
             log->debug(tr("Prefix = [%1]").arg(manuPrefix));
