@@ -138,7 +138,7 @@
      name = attr;
  }
 
- SignalHead* sh = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name);
+ SignalHead* sh = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name);
  if (sh != NULL)
  {
   l->setSignalHead(new NamedBeanHandle<SignalHead*>(name, (SignalHead*)sh));

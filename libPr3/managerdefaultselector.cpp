@@ -55,7 +55,7 @@
  if(log == NULL)
   log = LoggerFactory::getLogger("ManagerDefaultSelector");
 
- SystemConnectionMemoManager::getDefault()-> addPropertyChangeListener((PropertyChangeListener*)this);
+ SystemConnectionMemoManager::getDefault()-> addPropertyChangeListener((PropertyChangeListener*)this->memoListener);
 
  //InstanceManager::getList("SystemConnectionMemo").forEach((memo) ->
  QList<QObject*>* list = InstanceManager::getList("SystemConnectionMemo");

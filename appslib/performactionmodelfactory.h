@@ -8,7 +8,7 @@ class PerformActionModelFactory : public AbstractActionModelFactory
 {
  Q_OBJECT
 public:
- /*public*/ PerformActionModelFactory() ;
+ Q_INVOKABLE/*public*/ PerformActionModelFactory() ;
  ~PerformActionModelFactory() {}
  PerformActionModelFactory(const PerformActionModelFactory&) : AbstractActionModelFactory() {}
  /*public*/ /*Class<? extends StartupModel>*/QString getModelClass()override;

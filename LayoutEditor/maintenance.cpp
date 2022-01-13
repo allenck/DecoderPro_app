@@ -134,7 +134,7 @@ Maintenance::Maintenance(QObject *parent) :
    names->append( name);
   }
  }
- iter = QStringListIterator(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSystemNameList());
+ iter = QStringListIterator(qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSystemNameList());
  while (iter.hasNext())
  {
   QString name = iter.next();
@@ -500,8 +500,8 @@ Maintenance::Maintenance(QObject *parent) :
   return list;
  }
 
- SignalHeadManager* signalManager = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
- SignalHead* sh =(SignalHead*) ((AbstractSignalHeadManager*)signalManager)->getBySystemName(sysName);
+ SignalHeadManager* signalManager = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
+ SignalHead* sh =(SignalHead*) ((AbstractSignalHeadManager*)signalManager)->AbstractManager::getBySystemName(sysName);
  if ( sh!=NULL )
  {
   userName = ((AbstractSignalHead*)sh)->getUserName();
@@ -509,7 +509,7 @@ Maintenance::Maintenance(QObject *parent) :
  }
  else
  {
-  sh = (SignalHead*)((AbstractSignalHeadManager*)signalManager)->getBySystemName(userName.toUpper());
+  sh = (SignalHead*)((AbstractSignalHeadManager*)signalManager)->AbstractManager::getBySystemName(userName.toUpper());
   if (sh!=NULL)
   {
    sysName = ((AbstractSignalHead*)sh)->getSystemName();
@@ -518,7 +518,7 @@ Maintenance::Maintenance(QObject *parent) :
   }
   else
   {
-   sh = (SignalHead*)((AbstractSignalHeadManager*)signalManager)->getByUserName(userName);
+   sh = (SignalHead*)((AbstractSignalHeadManager*)signalManager)->AbstractManager::getByUserName(userName);
    if ( sh!=NULL )
    {
     sysName = ((AbstractSignalHead*)sh)->getSystemName();

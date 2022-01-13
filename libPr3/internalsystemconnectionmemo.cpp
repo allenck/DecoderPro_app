@@ -108,8 +108,9 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
 
 /*public*/ InternalSensorManager* InternalSystemConnectionMemo::getSensorManager()
 {
- InternalSensorManager* sensorManager = (InternalSensorManager*) classObjectMap.value("SensorManager")->self();
- if (sensorManager == nullptr) {
+ Manager* m = classObjectMap.value("SensorManager");
+ InternalSensorManager* sensorManager= nullptr;// = (InternalSensorManager*)m->self();
+ if (m == nullptr) {
      log->debug(tr("Create InternalSensorManager \"%1\" by request").arg(getSystemPrefix()));
      sensorManager = new InternalSensorManager(this);
      store((Manager*)sensorManager->self(), "SensorManager");

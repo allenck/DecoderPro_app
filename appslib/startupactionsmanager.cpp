@@ -187,10 +187,10 @@
   QList<Exception*>* exceptions = this->getInitializationExceptions(profile);
   if (exceptions->size() == 1)
   {
-      throw  InitializationException(exceptions->at(0));
+      throw new InitializationException(exceptions->at(0));
   } else if (exceptions->size() > 1)
   {
-   throw  InitializationException(tr(/*Locale.ENGLISH,*/ "There are multiple errors running Startup Actions."),
+   throw new InitializationException(tr(/*Locale.ENGLISH,*/ "There are multiple errors running Startup Actions."),
               tr("There are multiple errors running Startup Actions."),NULL); // NOI18N
   }
  }
@@ -206,7 +206,7 @@
 
  foreach (QString clazz, factoryList)
  {
-  StartupModelFactory* factory = (StartupModelFactory*)InstanceManager::getDefault(clazz);
+  StartupModelFactory* factory = (AbstractActionModelFactory*)InstanceManager::getDefault(clazz);
   if(factory != NULL )
   {
    factory->initialize();

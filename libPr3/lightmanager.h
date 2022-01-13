@@ -212,7 +212,7 @@ public:
   //@Nonnull
   virtual /*public*/ QString createSystemName(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) /*throws JmriException*/{return "";}
 
-  QObject* self() {return (QObject*)this;}
+  //QObject* self() {return (QObject*)this;}
 
 signals:
     

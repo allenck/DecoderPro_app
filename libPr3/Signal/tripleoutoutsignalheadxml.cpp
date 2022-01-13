@@ -63,7 +63,7 @@
 
     loadCommon(h, shared);
 
-    static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(h);
+    qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(h);
     return true;
 }
 

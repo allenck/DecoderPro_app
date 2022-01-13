@@ -127,7 +127,7 @@
     }
 
     int SignalGroupSubTableAction::signalStateFromBox(QComboBox* box) {
-        SignalHead* sig = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(curSignal);
+        SignalHead* sig = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(curSignal);
         int result;
         QString mode;
         if (sig!=NULL){
@@ -148,7 +148,7 @@
 
     void SignalGroupSubTableAction::setSignalStateBox(int mode, QComboBox* box)
     {
-        SignalHead* sig = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(curSignal);
+        SignalHead* sig = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(curSignal);
         QString result = StringUtil::getNameFromState(mode, ((AbstractSignalHead*)sig)->getValidStates(), ((AbstractSignalHead*)sig)->getValidStateNames().toList());
         box->setCurrentIndex(box->findText(result));
     }
@@ -177,7 +177,7 @@ void SignalGroupSubTableAction::editSignal(SignalGroup* g, QString signal)
 {
  curSignalGroup = g;
  curSignal = signal;
- curSignalHead = ((AbstractSignalHeadManager*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")))->getSignalHead(curSignal);
+ curSignalHead = ((AbstractSignalHeadManager*)qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")))->getSignalHead(curSignal);
  //SignalHead sig = jmri.static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")).getSignalHead(curSignal);
 
  _OnAppearance = new QComboBox();
@@ -252,7 +252,7 @@ if (addFrame==NULL)
  contentPaneLayout->addLayout(pFlowLayout);
  if (QString(curSignalHead->metaObject()->className()).contains("SingleTurnoutSignalHead"))
  {
-  SingleTurnoutSignalHead* Signal = (SingleTurnoutSignalHead*) ((AbstractSignalHeadManager*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")))->getBySystemName(curSignal);
+  SingleTurnoutSignalHead* Signal = (SingleTurnoutSignalHead*) ((AbstractSignalHeadManager*)qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")))->getBySystemName(curSignal);
   if ((((DefaultSignalGroup*)g)->getHeadOnState(curSignalHead)==0x00) && (((DefaultSignalGroup*)g)->getHeadOffState(curSignalHead)==0x00)){
             ((DefaultSignalGroup*)g)->setHeadOnState(curSignalHead, Signal->getOnAppearance());
             ((DefaultSignalGroup*)g)->setHeadOffState(curSignalHead, Signal->getOffAppearance());

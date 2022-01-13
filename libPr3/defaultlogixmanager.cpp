@@ -26,8 +26,8 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
  InstanceManager::sensorManagerInstance()->addVetoableChangeListener(this);
  //jmri.InstanceManager.memoryManagerInstance().addVetoableChangeListener(this);
  connect(InstanceManager::memoryManagerInstance(), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
- //jmri.InstanceManager.getDefault(jmri.SignalHeadManager.class).addVetoableChangeListener(this);
- connect(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->addVetoableChangeListener(this);
+ //connect(qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
  //jmri.InstanceManager.getDefault(jmri.SignalMastManager.class).addVetoableChangeListener(this);
  connect(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager")), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
  //jmri.InstanceManager.getDefault(jmri.BlockManager.class).addVetoableChangeListener(this);

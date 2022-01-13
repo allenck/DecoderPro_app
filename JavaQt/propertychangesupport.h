@@ -14,12 +14,11 @@ class JAVAQTSHARED_EXPORT PropertyChangeSupport :  public PropertyChangeProvider
  public:
   Q_INTERFACES(PropertyChangeProvider PropertyChangeFirer)
  protected:
-    //virtual QObject* self() =0;
 
     /**
      * Provide a {@link java.beans.PropertyChangeSupport} helper.
      */
-    /*protected*/ /*final*/ SwingPropertyChangeSupport* propertyChangeSupport = new SwingPropertyChangeSupport((QObject*)this, (QObject*)this);
+    /*protected*/ /*final*/ SwingPropertyChangeSupport* propertyChangeSupport; //= new SwingPropertyChangeSupport((QObject*)this->self(), (QObject*)this->self());
  public:
     /** {@inheritDoc} */
     //@Override

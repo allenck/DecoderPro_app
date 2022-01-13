@@ -57,7 +57,7 @@ QT_DEPRECATED /*public*/ void init()  override;
 /*public*/ NamedBean* getBeanAt(int index);
 /*public*/ int getIndexOf(NamedBean* bean) ;
 /*public*/ QList <NamedBean*>* getBeanList();
-/*abstract*/ virtual /*public*/ AbstractManager* getManager() override{return NULL;}
+/*abstract*/ virtual /*public*/ Manager* getManager() override{return NULL;}
 /*abstract*/ virtual /*public*/ NamedBean* getBySystemName(QString /*name*/) const override{return NULL;}
 /*abstract*/ virtual /*public*/ NamedBean* addBean(QString /*name*/) {return NULL;}
 /*abstract*/ virtual /*public*/ NamedBean* addBean(QString /*sysName*/, QString /*userName*/) {return NULL;}
@@ -169,7 +169,7 @@ class SignalHeadPickModel : public PickListModel
     SignalHeadManager* manager;
 public:
     SignalHeadPickModel (QObject *parent= 0);
-    /*public*/ AbstractManager *getManager();
+    /*public*/ Manager *getManager();
     /*public*/ NamedBean* getBySystemName(QString name);
     /*public*/ NamedBean* addBean(QString name);
     /*public*/ NamedBean* addBean(QString sysName, QString userName) ;

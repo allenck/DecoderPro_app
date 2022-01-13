@@ -715,12 +715,17 @@ MemoryManager* InstanceManager::memoryManagerInstance()
 {
  return static_cast<MemoryManager*>(getDefault("MemoryManager"));
 }
-void InstanceManager::setSensorManager(SensorManager* p)
-{
+
+// Needs to have proxy manager converted to work
+// with current list of managers (and robust default
+// management) before this can be deprecated in favor of
+// store(p, SensorManager.class)void InstanceManager::setSensorManager(SensorManager* p)
+//@SuppressWarnings("unchecked") // AbstractProxyManager of the right type is type-safe by definition
+/*public*/ /*static*/ void InstanceManager::setSensorManager(SensorManager* p) {
  log->debug(" setSensorManager");
- SensorManager* apm = (SensorManager*)getDefault("SensorManager");
- if (qobject_cast<AbstractProxyManager*>(apm->self())!= nullptr) { // <?> due to type erasure
-     ((ProxySensorManager*) apm)->addManager(p);
+ AbstractProxyManager* apm = (AbstractProxyManager*)getDefault("SensorManager");
+ if (static_cast<AbstractProxyManager*>(apm)!= nullptr) { // <?> due to type erasure
+     ((AbstractProxyManager*) apm)->addManager((Manager*)p->self());
  } else {
      log->error("Incorrect setup: SensorManager default isn't an AbstractProxyManager<Sensor>");
  }
@@ -782,8 +787,12 @@ void InstanceManager::setTurnoutManager(TurnoutManager* p) {
 
 void InstanceManager::setLightManager(LightManager* p) {
  log->debug(" setLightManager");
- ((AbstractProxyManager*) getDefault("LightManager"))->addManager(p);
- //store(p, LightManager.class);
+ LightManager* apm = (LightManager*)getDefault("LightManager");
+ if (qobject_cast<ProxyManager*>(apm->self())) { // <?> due to type erasure
+     ((ProxyManager/*<Light>*/*) apm)->addManager(p);
+ } else {
+     log->error("Incorrect setup: LightManager default isn't an AbstractProxyManager<Light>");
+ }
 }
 
 void InstanceManager::setThrottleManager(ThrottleManager* p)

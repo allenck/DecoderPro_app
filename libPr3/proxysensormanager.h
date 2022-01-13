@@ -12,7 +12,7 @@
 class ProxySensorManager : public QObject, public AbstractProvidingProxyManager, public SensorManager
 {
  Q_OBJECT
-  Q_INTERFACES(AbstractProvidingProxyManager SensorManager)
+ Q_INTERFACES(AbstractProvidingProxyManager SensorManager)
 public:
  ProxySensorManager(QObject* parent = nullptr);
  /*public*/ Sensor* getSensor(QString name)  override;

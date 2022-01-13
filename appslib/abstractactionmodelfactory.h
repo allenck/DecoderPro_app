@@ -18,7 +18,7 @@ public:
  /*public*/ QString getActionText();
  /*public*/ /*abstract*/ virtual QString getEditModelMessage();
  /*public*/ void editModel(StartupModel* model, QWidget* parent);
- /*public*/ void initialize();
+ Q_INVOKABLE/*public*/ void initialize();
 
 private:
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory.getLogger("AbstractActionModelFactory");

@@ -37,7 +37,7 @@
         cm->registerConfig(this, getXMLOrder());
 //        });
     ((SensorManager*)InstanceManager::getDefault("SensorManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
-    ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
+    ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
     ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
     ((TurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
     ((BlockManager*)InstanceManager::getDefault("BlockManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);

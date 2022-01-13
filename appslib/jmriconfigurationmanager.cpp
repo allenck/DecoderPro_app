@@ -32,6 +32,7 @@
 #include "system.h"
 #include <QClipboard>
 #include "hasconnectionbutunabletoconnectexception.h"
+#include "abstractpreferencesmanager.h"
 
 //JmriConfigurationManager::JmriConfigurationManager()
 //{
@@ -239,7 +240,7 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
    //providers.stream().forEach((provider) -> {
    foreach(QObject* provider, *providers)
    {
-    this->initializeProvider((PreferencesManager*)provider, profile);
+    this->initializeProvider((AbstractPreferencesManager*)provider, profile);
    }//);
    //foreach(QObject* provider, *providers)
    if (!this->initializationExceptions->isEmpty())
@@ -468,7 +469,7 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
 //        }
   foreach(QString classname, *provider->getRequires())
   {
-   PreferencesManager* p = (PreferencesManager*) InstanceManager::getDefault(classname);
+   PreferencesManager* p = (AbstractPreferencesManager*) InstanceManager::getDefault(classname);
    if(p != NULL)
    this->initializeProvider(p,profile);
   }

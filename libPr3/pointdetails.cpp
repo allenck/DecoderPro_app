@@ -615,8 +615,8 @@ NamedBean* PointDetails::getSignal(){
         return getSignalMast();
     if((getPanel()!=NULL) && (!getPanel()->isEditable()) && (getSignalHead()!=NULL))
         return getSignalHead();
-    SignalMastManager* sm = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"));
-    SignalHeadManager* sh = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
+    SignalMastManager* sm = qobject_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"));
+    SignalHeadManager* sh = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
     NamedBean* signal = NULL;
 
     if(getRefObject()==NULL) {

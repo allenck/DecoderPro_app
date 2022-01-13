@@ -204,7 +204,7 @@ BlockBossLogic::~BlockBossLogic()
 // umap = smap = NULL;
 
  //if (log->isTraceEnabled()) log->trace("Create BBL "+name);
- ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
+ ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
  InstanceManager::turnoutManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
  InstanceManager::sensorManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
  SignalHead* driveHead = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name);
@@ -212,7 +212,7 @@ BlockBossLogic::~BlockBossLogic()
      log->warn(tr("%1 \"%2\" was not found").arg(tr("SignalHead")).arg(name));
      throw new IllegalArgumentException("SignalHead \"" + name + "\" does not exist");
  }
- driveSignal = new NamedBeanHandle<SignalHead*> (name, static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
+ driveSignal = new NamedBeanHandle<SignalHead*> (name, qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
  if (driveSignal->getBean() == nullptr) log->warn(tr("Signal_")+name+tr(" was not found!"));
  driveSignal = nbhm->getNamedBeanHandle(name, driveHead);
 //          java.util.Objects.requireNonNull(driveSignal, "driveSignal should not have been null");
@@ -378,7 +378,7 @@ BlockBossLogic::~BlockBossLogic()
   watchedSignal1 = NULL;
   return;
  }
- watchedSignal1 = new NamedBeanHandle<SignalHead*>(name,  static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
+ watchedSignal1 = new NamedBeanHandle<SignalHead*>(name,  qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
  if (watchedSignal1 == NULL || watchedSignal1->getBean() == NULL)
  {
   log->warn(tr("Signal \"")+name+tr("\" was not found!"));
@@ -386,7 +386,7 @@ BlockBossLogic::~BlockBossLogic()
  }
  else
  {
-  AbstractSignalHead* head = (AbstractSignalHead*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name);
+  AbstractSignalHead* head = (AbstractSignalHead*)qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name);
   connect(head->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(signalChange(PropertyChangeEvent*)));
  }
  protectWithFlashing = useFlash;
@@ -408,7 +408,7 @@ BlockBossLogic::~BlockBossLogic()
   watchedSignal1Alt = NULL;
   return;
  }
- watchedSignal1Alt = new NamedBeanHandle<SignalHead*>(name, static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
+ watchedSignal1Alt = new NamedBeanHandle<SignalHead*>(name, qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
  if (watchedSignal1Alt == NULL || watchedSignal1Alt->getBean() == NULL) log->warn(tr("Signal")+name+tr(" was not found!"));
 }
 /**
@@ -427,7 +427,7 @@ BlockBossLogic::~BlockBossLogic()
   watchedSignal2 = NULL;
   return;
  }
- watchedSignal2 = new NamedBeanHandle<SignalHead*>(name, static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
+ watchedSignal2 = new NamedBeanHandle<SignalHead*>(name, qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
  if (watchedSignal2 == NULL || watchedSignal2->getBean() == NULL) log->warn(tr("Signal_")+name+tr("_was not found!"));
 }
 /**
@@ -446,7 +446,7 @@ BlockBossLogic::~BlockBossLogic()
   watchedSignal2Alt = NULL;
   return;
  }
- watchedSignal2Alt = new NamedBeanHandle<SignalHead*>(name, static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
+ watchedSignal2Alt = new NamedBeanHandle<SignalHead*>(name, qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
  if (watchedSignal2Alt == NULL || watchedSignal2Alt->getBean() == NULL) log->warn(tr("Signal_")+name+tr(" was not found!"));
 }
 /**
@@ -561,6 +561,13 @@ void BlockBossLogic::turnoutChange(PropertyChangeEvent */*e*/)
     if (watchedSensor2Alt == NULL) return NULL;
     return watchedSensor2Alt->getName();
 }
+/*public*/ void BlockBossLogic::setRestrictingSpeed1(bool d) {
+    restrictingSpeed1 = d;
+}
+
+/*public*/ bool BlockBossLogic::getRestrictingSpeed1() {
+    return restrictingSpeed1;
+}
 /*public*/ void BlockBossLogic::setLimitSpeed1(bool d) { limitSpeed1 = d; }
 /*public*/ bool BlockBossLogic::getLimitSpeed1() {
     return limitSpeed1;
@@ -568,6 +575,13 @@ void BlockBossLogic::turnoutChange(PropertyChangeEvent */*e*/)
 /*public*/ void BlockBossLogic::setLimitSpeed2(bool d) { limitSpeed2 = d; }
 /*public*/ bool BlockBossLogic::getLimitSpeed2() {
     return limitSpeed2;
+}
+/*public*/ void BlockBossLogic::setRestrictingSpeed2(bool d) {
+    restrictingSpeed2 = d;
+}
+
+/*public*/ bool BlockBossLogic::getRestrictingSpeed2() {
+    return restrictingSpeed2;
 }
 
 /*public*/ bool BlockBossLogic::getUseFlash() {

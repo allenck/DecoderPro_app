@@ -25,7 +25,7 @@
 
 /*synchronized*/ /*protected*/ void AbstractSignalHeadServer::addSignalHeadToList(QString signalHeadName) {
     if (!signalHeads.contains(signalHeadName)) {
-        SignalHead* sh = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHeadName);
+        SignalHead* sh = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHeadName);
         if(sh!=nullptr) {
            ASHSignalHeadListener* shl = new ASHSignalHeadListener(signalHeadName, this);
 //           sh.addPropertyChangeListener(shl);
@@ -38,7 +38,7 @@
 
 /*synchronized*/ /*protected*/ void AbstractSignalHeadServer::removeSignalHeadFromList(QString signalHeadName) {
     if (signalHeads.contains(signalHeadName)) {
-        SignalHead* sh = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHeadName);
+        SignalHead* sh = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHeadName);
         if(sh!=nullptr) {
            //sh.removePropertyChangeListener(signalHeads.get(signalHeadName));
          disconnect(sh->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -55,7 +55,7 @@
     SignalHead* signalHead;
     try {
         addSignalHeadToList(signalHeadName);
-        signalHead = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHeadName);
+        signalHead = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHeadName);
         if (signalHead == nullptr) {
             // only log, since this may be from a remote system
             log->error("SignalHead " + signalHeadName + " is not available.");
@@ -139,7 +139,7 @@
     while(signalHead.hasNext())
     {
      signalHead.next();
-        SignalHead* sh = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead.key());
+        SignalHead* sh = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead.key());
         if(sh != nullptr) {
            //sh.removePropertyChangeListener(SignalHead::getValue());
          disconnect(sh->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

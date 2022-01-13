@@ -45,7 +45,7 @@ Q_OBJECT
 public:
     ASHSignalHeadListener(QString signalHeadName, AbstractSignalHeadServer* ashs) {
         name = signalHeadName;
-        signalHead = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHeadName);
+        signalHead = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHeadName);
     }
     QObject* self() override{return (QObject*)this;}
 public slots:

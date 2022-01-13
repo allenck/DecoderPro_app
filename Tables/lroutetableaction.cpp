@@ -516,8 +516,8 @@ while (iter.hasNext()) {
     inputTS->append(new LRouteInputLight(systemName, userName));
     outputTS->append(new LRouteOutputLight(systemName, userName));
 }
-SignalHeadManager* shm = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
-systemNameList = ((AbstractSignalHeadManager*)shm)->getSystemNameList();
+SignalHeadManager* shm = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
+systemNameList = ((AbstractSignalHeadManager*)shm)->AbstractManager::getSystemNameList();
 iter = QStringListIterator(systemNameList);
 while (iter.hasNext()) {
     QString systemName = iter.next();

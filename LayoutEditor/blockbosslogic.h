@@ -59,8 +59,12 @@ public:
     /*public*/ QString getWatchedSensor2();
     /*public*/ void setWatchedSensor2Alt(QString name);
     /*public*/ QString getWatchedSensor2Alt();
+    /*public*/ void setRestrictingSpeed1(bool d) ;
+    /*public*/ bool getRestrictingSpeed1();
     /*public*/ void setLimitSpeed1(bool d) ;
     /*public*/ bool getLimitSpeed1() ;
+    /*public*/ void setRestrictingSpeed2(bool d) ;
+    /*public*/ bool getRestrictingSpeed2();
     /*public*/ void setLimitSpeed2(bool d);
     /*public*/ bool getLimitSpeed2();
     /*public*/ bool getUseFlash() ;
@@ -118,7 +122,9 @@ private:
     NamedBeanHandle<Sensor*>*  approachSensor1 = NULL;
 
     bool limitSpeed1 = false;
+    /*private*/ bool restrictingSpeed1 = false;
     bool limitSpeed2 = false;
+    /*private*/ bool restrictingSpeed2 = false;
     bool protectWithFlashing = false;
     bool distantSignal = false;
     static QHash<QString,BlockBossLogic*>* umap;// = NULL;

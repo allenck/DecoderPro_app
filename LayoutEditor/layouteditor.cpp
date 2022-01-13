@@ -7112,7 +7112,7 @@ void LayoutEditor::addSensor()
 
      SignalHead* mHead = nullptr;
      if ( (newName!=("")) ) {
-         mHead = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(newName);
+         mHead = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(newName);
          /*if (mHead == nullptr)
              mHead = InstanceManager.signalHeadManagerInstance().getByUserName(tName);
          else */

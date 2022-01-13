@@ -109,7 +109,7 @@
         if (listener == nullptr) {
             return;
         }
-        if (qobject_cast<VetoableChangeListenerProxy*>(listener->self()) != nullptr) {
+        if ((VetoableChangeListenerProxy*)(listener) != nullptr) {
             VetoableChangeListenerProxy* proxy =
                     (VetoableChangeListenerProxy*)listener;
             // Call two argument remove method.

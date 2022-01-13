@@ -5,6 +5,7 @@
 #include "instancemanager.h"
 #include "signalheadmanager.h"
 #include "vetoablechangesupport.h"
+#include "abstractsignalheadmanager.h"
 
 DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
     SignalMastManager(parent)
@@ -15,10 +16,7 @@ DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
  log = new Logger("DefaultSignalMastManager");
  repeaterList = new QList<SignalMastRepeater*>();
  registerSelf();
- ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->VetoableChangeSupport::addVetoableChangeListener(this);
- //connect(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
- ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->VetoableChangeSupport::addVetoableChangeListener(this);
- //connect(InstanceManager::turnoutManagerInstance()->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ ((AbstractSignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->VetoableChangeSupport::addVetoableChangeListener(this);
 }
 /**
  * Default implementation of a SignalMastManager.

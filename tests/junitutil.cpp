@@ -793,10 +793,10 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 }
 
 /*public*/ /*static*/ void JUnitUtil::initInternalSignalHeadManager() {
-    SignalHeadManager* m = new AbstractSignalHeadManager(InstanceManager::getDefault("InternalSystemConnectionMemo"));
-    InstanceManager::setDefault("SignalHeadManager", m);
+    SignalHeadManager* m = new AbstractSignalHeadManager((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"));
+    InstanceManager::setDefault("SignalHeadManager", m->self());
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m, Manager::SIGNALHEADS);
+        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m->self(), Manager::SIGNALHEADS);
     }
 }
 

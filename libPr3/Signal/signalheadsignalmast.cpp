@@ -105,7 +105,7 @@ void SignalHeadSignalMast::configureHeads(QStringList parts, int start)
   QString name = parts.at(i);
   NamedBeanHandle<SignalHead*>* s
           = new NamedBeanHandle<SignalHead*>(parts.at(i),
-              static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
+              qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
   heads->append(s);
  }
 }

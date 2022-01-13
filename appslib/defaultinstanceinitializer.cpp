@@ -211,7 +211,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  if (type == "SignalHeadManager")
  {
    AbstractSignalHeadManager* o =  new AbstractSignalHeadManager(memo);
-//   InstanceManager::store(o, type);
+   InstanceManager::store(o, type);
    return o;
  }
 

@@ -491,7 +491,10 @@ NamedBeanComboBox::NamedBeanComboBox(QWidget *parent): JComboBox(parent)
     this->excludedItems.unite(excludedItems);
     sort();
 }
-
+/*public*/ QAbstractItemModel* NamedBeanComboBox::getModel()
+{
+ return model();
+}
 
 #if 0
 /*private*/ class NamedBeanEditor implements ComboBoxEditor {

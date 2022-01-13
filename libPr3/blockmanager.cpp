@@ -8,7 +8,8 @@
 #include "rosterentry.h"
 #include "limits.h"
 #include "loggerfactory.h"
-
+#include "abstractsensormanager.h"
+#include "abstractreportermanager.h"
 /**
  * Basic Implementation of a BlockManager.
  * <P>
@@ -50,8 +51,8 @@ BlockManager::BlockManager(QObject *parent) :
  defaultSpeed = "Normal";
  paddedNumber = new DecimalFormat("0000");
 
- ((SensorManager*)InstanceManager::getDefault("SensorManager"))->addVetoableChangeListener(this);
- ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->addVetoableChangeListener(this);
+ ((AbstractProxyManager*)InstanceManager::getDefault("SensorManager"))->VetoableChangeSupport::addVetoableChangeListener(this);
+ ((AbstractProxyManager*)InstanceManager::getDefault("ReporterManager"))->VetoableChangeSupport::addVetoableChangeListener(this);
  //InstanceManager.getList("PowerManager").forEach(pm -> pm.addPropertyChangeListener(this));
  for(QObject* obj : *InstanceManager::getList("PowerManager"))
  {

@@ -37,6 +37,8 @@ AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : 
 {
   Q_UNUSED(parent);
  this->memo = memo;
+ propertyChangeSupport = new SwingPropertyChangeSupport(this, this);
+
   log = new Logger("AbstractManager");
  _tsys = new QMap<QString, NamedBean*>;   // stores known Turnout instances by system name
  _tuser = new QMap<QString, NamedBean*>;   // stores known Turnout instances by user name

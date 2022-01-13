@@ -5,11 +5,11 @@
 #include "abstractmanager.h"
 #include <QCompleter>
 
-class LIBPR3SHARED_EXPORT SignalHeadManager : public AbstractManager
+class LIBPR3SHARED_EXPORT SignalHeadManager : public Manager
 {
-    Q_OBJECT
+    //Q_OBJECT
 public:
-    explicit SignalHeadManager(QObject *parent = 0) : AbstractManager(parent) {}
+    //explicit SignalHeadManager(QObject *parent = 0) : AbstractManager(parent) {}
     /**
      * Interface for obtaining signal heads.
      * <P>
@@ -46,18 +46,19 @@ public:
          */
         virtual SignalHead* getSignalHead(QString name) = 0;
 
-        virtual SignalHead* getByUserName(QString /*s*/) const = 0;
-        virtual SignalHead* getBySystemName(QString /*s*/) const = 0;
+        virtual SignalHead* getByUserName(QString /*s*/)  = 0;
+        virtual SignalHead* getBySystemName(QString /*s*/)  = 0;
 
         /**
          * Get a list of all SignalHead system names.
          */
 //        virtual QStringList getSystemNameList() { return QStringList();}
-          virtual QCompleter* getCompleter(QString /*text*/, bool /*bIncludeUserNames*/) {return NULL;}
+//          virtual QCompleter* getCompleter(QString /*text*/, bool /*bIncludeUserNames*/) {return NULL;}
 
 signals:
     
 public slots:
     
 };
+Q_DECLARE_INTERFACE(SignalHeadManager, "SignalHeadManager")
 #endif // SIGNALHEADMANAGER_H

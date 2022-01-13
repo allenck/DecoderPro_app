@@ -334,7 +334,7 @@ bool systemNameComparator(QString o1, QString o2)
  QStringListIterator iter(systemNameList);
  while (iter.hasNext())
  {
-  AbstractManager* manager = getManager();
+  Manager* manager = getManager();
 #if 0
   if(qobject_cast<ProxySensorManager*>(manager->self())!= NULL)
    ts->append(((ProxySensorManager*)manager->self())->getBySystemName(iter.next()));
@@ -890,16 +890,16 @@ void MultiSensorPickModel::tableClicked(QModelIndex index)
 //class SignalHeadPickModel extends PickListModel {
 SignalHeadPickModel::SignalHeadPickModel (QObject *parent) : PickListModel(parent)
 {
- manager = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
+ manager = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
  _name = tr("Signal Table");
  AbstractSignalHeadManager* mgr = (AbstractSignalHeadManager*)manager;
  connect(mgr, SIGNAL(beanCreated(NamedBean*)),this, SLOT(newSignalHeadCreated(NamedBean*)));
 }
-/*public*/ AbstractManager* SignalHeadPickModel::getManager() {
+/*public*/ Manager* SignalHeadPickModel::getManager() {
     return manager;
 }
 /*public*/ NamedBean* SignalHeadPickModel::getBySystemName(QString name) {
-    return ((AbstractSignalHeadManager*)manager)->getBySystemName(name);
+    return ((AbstractSignalHeadManager*)manager)->AbstractManager::getBySystemName(name);
 }
 /*public*/ NamedBean* SignalHeadPickModel::addBean(QString name) {
     return ((AbstractSignalHeadManager*)manager)->getSignalHead(name);

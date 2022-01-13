@@ -422,7 +422,7 @@
         return;
     }
 
-    SignalHead* head = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead);
+    SignalHead* head = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead);
     if (head != nullptr) {
         signalEastHeadNamed = static_cast<NamedBeanHandleManager*>(InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalHead, head);
     } else {
@@ -490,7 +490,7 @@
         return;
     }
 
-    SignalHead* head = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead);
+    SignalHead* head = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead);
     if (head != nullptr) {
         signalWestHeadNamed = static_cast<NamedBeanHandleManager*>(InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalHead, head);
     } else {

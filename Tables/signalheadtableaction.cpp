@@ -1092,7 +1092,7 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
    {
     s = new AcelaSignalHead("AH"+QString::number(headnumber), inputusername,(AcelaSystemConnectionMemo*)InstanceManager::getDefault("AcelaSystemConnectionMemo"));
    }
-   static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
+   qobject_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->AbstractManager::Register(s);
   }
 
   int st = signalheadTypeFromBox(stBox);
@@ -1160,7 +1160,7 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
    nbhm->getNamedBeanHandle(to2->getDisplayName(),t2),
    nbhm->getNamedBeanHandle(to3->getDisplayName(),t3),
    nbhm->getNamedBeanHandle(to4->getDisplayName(),t4));
-   static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
+   qobject_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->AbstractManager::Register(s);
   }
  }
  else if (tripleTurnout ==(typeBox->currentText()))
@@ -1184,7 +1184,7 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
                 nbhm->getNamedBeanHandle(to2->getDisplayName(),t2),
                 nbhm->getNamedBeanHandle(to3->getDisplayName(),t3));
 
-   static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
+   qobject_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->AbstractManager::Register(s);
   }
  }
  else if (tripleOutput == (typeBox->currentText()))
@@ -1213,7 +1213,7 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
                   nbhm->getNamedBeanHandle(to2->getDisplayName(), t2),
                   nbhm->getNamedBeanHandle(to3->getDisplayName(), t3));
 
-          static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
+          qobject_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->AbstractManager::Register(s);
       }
   }
  else if (doubleTurnout ==(typeBox->currentText()))
@@ -1235,7 +1235,7 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
    nbhm->getNamedBeanHandle(to1->getDisplayName(),t1),
    nbhm->getNamedBeanHandle(to2->getDisplayName(),t2));
    s->setUserName(userNameTextField->text());
-   static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
+   qobject_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->AbstractManager::Register(s);
   }
  }
 
@@ -1255,7 +1255,7 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
    }
 
    s = (SignalHead*)new SingleTurnoutSignalHead( systemNameTextField->text(), userNameTextField->text(), nbhm->getNamedBeanHandle(t1->getDisplayName(),t1), on, off);
-   static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
+   qobject_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->AbstractManager::Register(s);
   }
  }
  else if (virtualHead ==(typeBox->currentText()))
@@ -1263,7 +1263,7 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
   if (checkBeforeCreating( systemNameTextField->text()))
   {
    s = (SignalHead*)new VirtualSignalHead( systemNameTextField->text(),userNameTextField->text());
-   static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
+   qobject_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->AbstractManager::Register(s);
   }
  }
  else if (lsDec ==(typeBox->currentText()))
@@ -1301,7 +1301,7 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
 
    s = (SignalHead*)new LsDecSignalHead( systemNameTextField->text(), nbhm->getNamedBeanHandle(t1->getDisplayName(),t1), s1, nbhm->getNamedBeanHandle(t2->getDisplayName(),t2), s2, nbhm->getNamedBeanHandle(t3->getDisplayName(),t3), s3, nbhm->getNamedBeanHandle(t4->getDisplayName(),t4), s4, nbhm->getNamedBeanHandle(t5->getDisplayName(),t5), s5, nbhm->getNamedBeanHandle(t6->getDisplayName(),t6), s6, nbhm->getNamedBeanHandle(t7->getDisplayName(),t7), s7);
    s->setUserName(userNameTextField->text());
-   static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
+   qobject_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->AbstractManager::Register(s);
   }
  }
  else if (dccSignalDecoder ==(typeBox->currentText()))
@@ -1316,7 +1316,7 @@ void SignalHeadTableAction::okPressed(JActionEvent * /*e*/)
    {
     s = new DccSignalHead(systemNameText);
     s->setUserName(userNameTextField->text());
-    static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
+    qobject_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->AbstractManager::Register(s);
    }
   }
   else if (mergSignalDriver ==(typeBox->currentText()))
@@ -1339,7 +1339,7 @@ void SignalHeadTableAction::handleSE8cOkPressed() {
             nbhm->getNamedBeanHandle(t1->getSystemName(), t1),
             nbhm->getNamedBeanHandle(t2->getSystemName(), t2),
             userNameTextField->text());
-        static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
+        qobject_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->AbstractManager::Register(s);
     } else {
         // couldn't create turnouts, error
         QString msg = tr("Skipping creation of se8c4 signal head because \"%1\" is neither a number nor a valid Turnout name.").arg(to1->getDisplayName());
@@ -1423,7 +1423,7 @@ void SignalHeadTableAction::handleMergSignalDriverOkPressed() {
 
         s = new MergSD2SignalHead( systemNameTextField->text(), ukSignalAspectsFromBox(msaBox), nbt1, nbt2, nbt3, false, home);
         s->setUserName(userNameTextField->text());
-        static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(s);
+        qobject_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->AbstractManager::Register(s);
 
     }
 }

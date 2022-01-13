@@ -17,7 +17,7 @@ SectionManager::SectionManager(QObject *parent) :
  registerSelf();
  setProperty("InstanceManagerAutoDefault", "yes");
 
- ((SensorManager*)InstanceManager::getDefault("SensorManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+ ((AbstractSensorManager*)InstanceManager::getDefault("SensorManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
  ((BlockManager*)InstanceManager::getDefault("BlockManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
 
 }
@@ -227,7 +227,7 @@ Section* SectionManager::createNewSection(QString userName) {
   if ( (name!=NULL) && (name!=("")) )
    sensorList.append(name);
  }
- SignalHeadManager* shManager = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
+ SignalHeadManager* shManager = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
     QStringList signalList = shManager->getSystemNameList();
     for (int j=0; j<signalList.size(); j++)
     {

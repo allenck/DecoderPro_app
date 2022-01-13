@@ -38,7 +38,7 @@
         if (status.length() == 3) {
             this->setSignalHeadAppearance(status[1], status[2]);
         } else {
-            SignalHead* signalHead = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(status[1]);
+            SignalHead* signalHead = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(status[1]);
             if(signalHead != nullptr) {
                this->sendStatus(signalHead->getSystemName(), signalHead->getAppearance());
             } else {

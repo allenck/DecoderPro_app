@@ -120,7 +120,7 @@ namespace Operations
    /*public*/ bool isRoadRestricted();
    /*public*/ bool isOwnerRestricted();
 
-  Q_INVOKABLE /*public*/ void initialize();
+   Q_INVOKABLE /*public*/ void initialize()override;
    //QObject* self() override{return (QObject*)this;}
 
  signals:

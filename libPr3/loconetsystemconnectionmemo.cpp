@@ -295,17 +295,13 @@ void LocoNetSystemConnectionMemo::configureManagers()
 
  InstanceManager::store(getPowerManager(), "PowerManager");
 
- InstanceManager::setSensorManager(
-  (SensorManager*)getSensorManager());
+ InstanceManager::setSensorManager(getSensorManager());
 
- InstanceManager::setTurnoutManager(
-  (TurnoutManager*)getTurnoutManager());
+ InstanceManager::setTurnoutManager(getTurnoutManager());
 
- InstanceManager::setLightManager(
-  (LightManager*)getLightManager());
+ InstanceManager::setLightManager(getLightManager());
 
- InstanceManager::setThrottleManager(
-  getThrottleManager());
+ InstanceManager::setThrottleManager(getThrottleManager());
 
  DefaultProgrammerManager* programmerManager = getProgrammerManager();
 

@@ -40,6 +40,7 @@ public:
  /*public*/ QString getInvalidNameFormatMessage(QString beanType, QString text, QString exception);
  /*public*/ QString getNoMatchingBeanMessage(QString beanType, QString text);
  /*public*/ QString getWillCreateBeanMessage(QString beanType, QString text);
+ /*public*/ QAbstractItemModel* getModel();
 
 private:
  static Logger* log;

@@ -196,7 +196,7 @@ void Editor::commonInit()
  //_iconEditorFrame = new QHash <QString, JFrameItem*>();
  _spinCols = new SpinnerNumberModel(3,1,100,1);
   panelMenuIsVisible = true;
-  ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
+  ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
   ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
   InstanceManager::turnoutManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
   InstanceManager::sensorManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
@@ -218,7 +218,7 @@ void Editor::commonInit()
  _debug = log->isDebugEnabled();
  _defaultToolTip = /*new ToolTip(NULL, 0, 0)*/ "";
  setVisible(false);
- static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
+ qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
  //connect(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
  static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
  //connect(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));

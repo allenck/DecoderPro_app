@@ -90,8 +90,8 @@
  }
 
  // If a listener has no self() function, a chrash here will occur!
- if(listener->self()->metaObject() == nullptr)
-  return;
+// if(listener->self()->metaObject() == nullptr)
+//  return;
 
  // add to catch bad listener pointers: qDebug()<< tr("add listener ") + listener->metaObject()->className();
 

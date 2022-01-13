@@ -216,7 +216,7 @@ void DefaultConditionalAction::common()
    }
    break;
   case Conditional::ITEM_TYPE_SIGNALHEAD:
-   bean = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(devName);
+   bean = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(devName);
    if (bean == NULL)
    {
         log->error("invalid signal head name= \""+_deviceName+"\" in conditional action");
