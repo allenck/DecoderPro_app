@@ -5,14 +5,14 @@
 
 class Reporter;
 class IdTag;
-class ProxyIdTagManager : public QObject, public AbstractProvidingProxyManager, public IdTagManager
+class ProxyIdTagManager : public AbstractProvidingProxyManager, public IdTagManager
 {
  Q_OBJECT
-  Q_INTERFACES(IdTagManager AbstractProvidingProxyManager)
+  Q_INTERFACES(IdTagManager )
 public:
  ProxyIdTagManager(QObject *parent = nullptr);
  ~ProxyIdTagManager()  override{}
- ProxyIdTagManager(const ProxyIdTagManager& ) : QObject() {}
+ ProxyIdTagManager(const ProxyIdTagManager& ) : AbstractProvidingProxyManager() {}
  /*public*/ int getXMLOrder()const  override;
  /*public*/ void init() override;
  /*public*/ bool isInitialised()  override;
@@ -41,7 +41,7 @@ private:
 
 protected:
 /*protected*/ AbstractManager* makeInternalManager() override;
-/*protected*/ NamedBean* makeBean(Manager* m, QString systemName, QString userName)override;
+/*protected*/ NamedBean* makeBean(AbstractManager* m, QString systemName, QString userName)override;
 
 };
 Q_DECLARE_METATYPE(ProxyIdTagManager)

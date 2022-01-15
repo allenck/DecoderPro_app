@@ -122,7 +122,7 @@ LnSensorManagerTest::LnSensorManagerTest()
 
     // create and register the manager object
     l = new LnSensorManager(memo);
-    InstanceManager::setSensorManager((SensorManager*)l);
+    InstanceManager::setSensorManager((AbstractSensorManager*)l);
 }
 
 //@After

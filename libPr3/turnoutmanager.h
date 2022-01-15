@@ -215,7 +215,7 @@ public:
   virtual /*public*/ LocalDateTime* outputIntervalEnds() {return nullptr;}
 
         virtual /*public*/ QString toString() {return "TurnoutManager";}
-  QObject* self() {return (QObject*)this;}
+  //QObject* self() {return (QObject*)this;}
 
 public slots:
     

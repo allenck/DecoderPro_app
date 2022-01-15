@@ -181,7 +181,7 @@ ProxyLightManagerTest::ProxyLightManagerTest(QObject *parent) : QObject(parent)
         JUnitUtil::setUp();
         // create and register the manager object
         l = new InternalLightManager(new InternalSystemConnectionMemo("J", "Juliet"));
-        InstanceManager::setLightManager(l);
+        InstanceManager::setLightManager((AbstractManager*)l->self());
     }
 
     //@After

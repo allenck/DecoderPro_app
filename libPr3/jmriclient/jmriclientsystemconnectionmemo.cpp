@@ -73,16 +73,16 @@
  * common manager config in one place.
  */
 /*public*/ void JMRIClientSystemConnectionMemo::configureManagers() {
-    setPowerManager((PowerManager*)new JMRIClientPowerManager(this));
-    InstanceManager::store(getPowerManager(), "PowerManager");
+    setPowerManager((AbstractPowerManager*)new JMRIClientPowerManager(this));
+    InstanceManager::store((QObject*)getPowerManager(), "PowerManager");
     setTurnoutManager(new JMRIClientTurnoutManager(this));
-    InstanceManager::setTurnoutManager(getTurnoutManager());
+    InstanceManager::setTurnoutManager((AbstractManager*)getTurnoutManager());
     setSensorManager(new JMRIClientSensorManager(this));
     InstanceManager::setSensorManager(getSensorManager());
     setLightManager(new JMRIClientLightManager(this));
-    InstanceManager::setLightManager(getLightManager());
+    InstanceManager::setLightManager((AbstractManager*)getLightManager()->self());
     setReporterManager(new JMRIClientReporterManager(this));
-    InstanceManager::setReporterManager(getReporterManager());
+    InstanceManager::setReporterManager((AbstractManager*)getReporterManager()->self());
 }
 
 /**
@@ -98,7 +98,7 @@
 //    getSensorManager().getNamedBeanSet().forEach((sen) -> {
 //        ((JMRIClientSensor)(sen)).requestUpdateFromLayout();
 //    });
-    foreach(NamedBean* sen, getSensorManager()->getNamedBeanSet())
+    foreach(NamedBean* sen, getSensorManager()->AbstractManager::getNamedBeanSet())
      ((JMRIClientSensor*)(sen))->requestUpdateFromLayout();
 #if 0
     getLightManager().getNamedBeanSet().forEach((light) -> {
@@ -113,23 +113,23 @@
 /*
  * Provides access to the Power Manager for this particular connection.
  */
-/*public*/ PowerManager* JMRIClientSystemConnectionMemo::getPowerManager() {
+/*public*/ AbstractPowerManager* JMRIClientSystemConnectionMemo::getPowerManager() {
     return powerManager;
 }
 
-/*public*/ void JMRIClientSystemConnectionMemo::setPowerManager(PowerManager* p) {
+/*public*/ void JMRIClientSystemConnectionMemo::setPowerManager(AbstractPowerManager* p) {
     powerManager = p;
 }
 
 /*
  * Provides access to the Sensor Manager for this particular connection.
  */
-/*public*/ SensorManager* JMRIClientSystemConnectionMemo::getSensorManager() {
+/*public*/ AbstractSensorManager* JMRIClientSystemConnectionMemo::getSensorManager() {
     return sensorManager;
 
 }
 
-/*public*/ void JMRIClientSystemConnectionMemo::setSensorManager(SensorManager* s) {
+/*public*/ void JMRIClientSystemConnectionMemo::setSensorManager(AbstractSensorManager* s) {
     sensorManager = s;
 }
 
@@ -143,7 +143,7 @@
 
 }
 
-/*public*/ void JMRIClientSystemConnectionMemo::setTurnoutManager(TurnoutManager* t) {
+/*public*/ void JMRIClientSystemConnectionMemo::setTurnoutManager(AbstractTurnoutManager* t) {
     turnoutManager = t;
 }
 
@@ -155,7 +155,7 @@
     return lightManager;
 }
 
-/*public*/ void JMRIClientSystemConnectionMemo::setLightManager(LightManager* t) {
+/*public*/ void JMRIClientSystemConnectionMemo::setLightManager(AbstractLightManager* t) {
     lightManager = t;
 }
 
@@ -167,7 +167,7 @@
     return reporterManager;
 }
 
-/*public*/ void JMRIClientSystemConnectionMemo::setReporterManager(ReporterManager* t) {
+/*public*/ void JMRIClientSystemConnectionMemo::setReporterManager(AbstractReporterManager* t) {
     reporterManager = t;
 }
 
@@ -197,19 +197,19 @@
         return nullptr;
     }
     if (T == ("PowerManager")) {
-        return  (Manager*) getPowerManager();
+        return  (AbstractManager*) getPowerManager();
     }
     if (T == ("SensorManager")) {
-        return  (Manager*) getSensorManager();
+        return  (AbstractManager*) getSensorManager();
     }
     if (T == ("TurnoutManager")) {
-        return  (Manager*) getTurnoutManager();
+        return  (AbstractManager*) getTurnoutManager();
     }
     if (T == ("LightManager")) {
-        return  (Manager*) getLightManager();
+        return  (AbstractManager*) getLightManager();
     }
     if (T == ("ReporterManager")) {
-        return  (Manager*) getReporterManager();
+        return  (AbstractManager*) getReporterManager();
     }
     return SystemConnectionMemo::get (T);
 }

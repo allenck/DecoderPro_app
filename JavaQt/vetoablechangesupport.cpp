@@ -58,12 +58,12 @@
      *
      * @param sourceBean  The bean to be given as the source for any events.
      */
-//    /*public*/ VetoableChangeSupport::VetoableChangeSupport(QObject* sourceBean, QObject* parent)
-//      : PropertyChangeSupport(sourceBean, parent) {
+    /*public*/ VetoableChangeSupport::VetoableChangeSupport( QObject* parent)
+      : PropertyChangeSupport( parent) {
 //        if (sourceBean == nullptr) {
 //            throw new NullPointerException();
 //        }
-//    }
+    }
 
    /**
      * Add a VetoableChangeListener to the listener list.

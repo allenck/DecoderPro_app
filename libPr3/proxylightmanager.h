@@ -4,10 +4,10 @@
 #include "lightmanager.h"
 
 class Meter;
-class LIBPR3SHARED_EXPORT ProxyLightManager : public QObject, public AbstractProvidingProxyManager, public LightManager
+class LIBPR3SHARED_EXPORT ProxyLightManager : public AbstractProvidingProxyManager, public LightManager
 {
     Q_OBJECT
-  Q_INTERFACES(AbstractProvidingProxyManager LightManager)
+  Q_INTERFACES(LightManager)
 public:
  explicit ProxyLightManager(QObject *parent = 0);
  /*public*/ int getXMLOrder() const override;
@@ -37,10 +37,10 @@ signals:
 
 public slots:
 private:
- Logger* log;
+ static Logger* log;
 protected:
  /*protected*/ AbstractManager *makeInternalManager()  override;
- /*protected*/ NamedBean* makeBean(Manager* manager, QString systemName, QString userName)override;
+ /*protected*/ NamedBean* makeBean(AbstractManager* manager, QString systemName, QString userName)override;
  friend class AbstractProxyManager;
 };
 

@@ -2,7 +2,7 @@
 #include "light.h"
 #include "proxylightmanager.h"
 #include "json.h"
-
+#include "instancemanager.h"
 /**
  *
  * @author Randall Wood

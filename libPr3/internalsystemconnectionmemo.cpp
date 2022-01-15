@@ -113,7 +113,7 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
  if (m == nullptr) {
      log->debug(tr("Create InternalSensorManager \"%1\" by request").arg(getSystemPrefix()));
      sensorManager = new InternalSensorManager(this);
-     store((Manager*)sensorManager->self(), "SensorManager");
+     store((AbstractManager*)sensorManager->self(), "SensorManager");
      // special due to ProxyManager support
      InstanceManager::setSensorManager(sensorManager);
  }
@@ -122,7 +122,7 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
 
 /*public*/ InternalLightManager* InternalSystemConnectionMemo::getLightManager()
 {
- InternalLightManager* lightManager = (InternalLightManager*) classObjectMap.value("LightManager")->self();
+ InternalLightManager* lightManager = (InternalLightManager*) classObjectMap.value("LightManager");
  if (lightManager == nullptr)
  {
      log->debug("Create InternalLightManager by request");
@@ -134,11 +134,11 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
 }
 
 /*public*/ InternalReporterManager* InternalSystemConnectionMemo::getReporterManager() {
- InternalReporterManager* reporterManager = (InternalReporterManager*) classObjectMap.value("ReporterManager")->self();
+ InternalReporterManager* reporterManager = (InternalReporterManager*) classObjectMap.value("ReporterManager");
     if (reporterManager == nullptr) {
         log->debug("Create InternalReporterManager by request");
         reporterManager = new InternalReporterManager(this);
-        store((Manager*)reporterManager->self(), "ReporterManager");
+        store((AbstractManager*)reporterManager->self(), "ReporterManager");
         // special due to ProxyManager support
         InstanceManager::setReporterManager(reporterManager);
     }
@@ -146,24 +146,27 @@ void InternalSystemConnectionMemo::common(QString prefix, QString name, bool def
 }
 
 /*public*/ InternalTurnoutManager* InternalSystemConnectionMemo::getTurnoutManager() {
- InternalTurnoutManager* turnoutManager = (InternalTurnoutManager*) classObjectMap.value("TurnoutManager")->self();
- if (turnoutManager == nullptr) {
+ AbstractManager* manager = classObjectMap.value("TurnoutManager");
+ InternalTurnoutManager* turnoutManager;
+ if (manager == nullptr) {
      log->debug(tr("Create InternalTurnoutManager \"%1\" by request").arg(getSystemPrefix()));
      turnoutManager = new InternalTurnoutManager(this);
-     store((Manager*)turnoutManager->self(), "TurnoutManager");
+     store((AbstractManager*)turnoutManager->self(), "TurnoutManager");
      // special due to ProxyManager support
      InstanceManager::setTurnoutManager(turnoutManager);
     }
-    return turnoutManager;
+ else
+  turnoutManager =(InternalTurnoutManager*) manager;
+ return turnoutManager;
 }
 
 /*public*/ InternalMeterManager* InternalSystemConnectionMemo::getMeterManager() {
-    InternalMeterManager* meterManager = (InternalMeterManager*) classObjectMap.value("MeterManager")->self();
+    InternalMeterManager* meterManager = (InternalMeterManager*) classObjectMap.value("MeterManager");
     if (meterManager == nullptr) {
         log->debug(tr("Create InternalMeterManager %1 by request").arg(getSystemPrefix()));
         meterManager = new InternalMeterManager(this);
         // special due to ProxyManager support
-        InstanceManager::setMeterManager((MeterManager*)meterManager);
+        InstanceManager::setMeterManager((AbstractMeterManager*)meterManager);
     }
     return meterManager;
 }

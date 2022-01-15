@@ -9,16 +9,20 @@
 #include "propertychangefirer.h"
 #include "swingpropertychangesupport.h"
 
-class JAVAQTSHARED_EXPORT PropertyChangeSupport :  public PropertyChangeProvider, public PropertyChangeFirer
+class JAVAQTSHARED_EXPORT PropertyChangeSupport :  public QObject, public PropertyChangeProvider, public PropertyChangeFirer
 {
- public:
-  Q_INTERFACES(PropertyChangeProvider PropertyChangeFirer)
- protected:
+    //Q_OBJECT
+    Q_INTERFACES(PropertyChangeProvider PropertyChangeFirer)
 
+ public:
+    PropertyChangeSupport( QObject* parent = nullptr) : QObject(parent) {
+        propertyChangeSupport = new SwingPropertyChangeSupport(this, parent);
+    }
+ protected:
     /**
      * Provide a {@link java.beans.PropertyChangeSupport} helper.
      */
-    /*protected*/ /*final*/ SwingPropertyChangeSupport* propertyChangeSupport; //= new SwingPropertyChangeSupport((QObject*)this->self(), (QObject*)this->self());
+    /*protected*/ /*final*/ SwingPropertyChangeSupport* propertyChangeSupport;// = new SwingPropertyChangeSupport(source, parent);
  public:
     /** {@inheritDoc} */
     //@Override
@@ -30,6 +34,8 @@ class JAVAQTSHARED_EXPORT PropertyChangeSupport :  public PropertyChangeProvider
     //@Override
     /*public*/ void addPropertyChangeListener(/*@CheckForNull*/ QString propertyName,
             /*@CheckForNull*/ PropertyChangeListener* listener) override{
+        if(propertyChangeSupport == nullptr)
+            propertyChangeSupport = new SwingPropertyChangeSupport(this, nullptr);
         propertyChangeSupport->addPropertyChangeListener(propertyName, listener);
     }
 

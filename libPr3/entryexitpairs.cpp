@@ -95,7 +95,7 @@ return (settingRouteColor == QColor() ? false : true);
 
 /*static*/ QWidget* EntryExitPairs::glassPane = NULL; //new QWidget();
 
-/*public*/ EntryExitPairs::EntryExitPairs(QObject */*parent*/) :QObject(parent())
+/*public*/ EntryExitPairs::EntryExitPairs(QObject */*parent*/) :VetoableChangeSupport(parent())
 {
  setObjectName("EntryExitPairs");
  setProperty("JavaClassName", "jmri.jmrit.entryexit.EntryExitPairs");

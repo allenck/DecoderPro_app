@@ -25,7 +25,7 @@
 if(!log)
  log = LoggerFactory::getLogger("DefaultSystemConnectionMemo");
 
-    classObjectMap = QMap</*Class<?>*/QString, Manager*>();
+    classObjectMap = QMap</*Class<?>*/QString, AbstractManager*>();
     if (qobject_cast<ConflictingSystemConnectionMemo*>(this)) {
         this->prefix = prefix;
         this->userName = userName;
@@ -202,7 +202,7 @@ if(!log)
     Manager* object = get(c);
     if (object != nullptr) {
         InstanceManager::deregister(object->self(), c);
-        deregister(object, c);
+        deregister((AbstractManager*)object, c);
         disposeIfPossible(c, object);
     }
 }
@@ -334,15 +334,15 @@ if(!log)
 }
 
 /*public*/ void DefaultSystemConnectionMemo::setConsistManager(ConsistManager* c) {
-    store((Manager*)c, "ConsistManager");
+    store((AbstractManager*)c, "ConsistManager");
     InstanceManager::store((QObject*)c, "ConsistManager");
 }
 
-/*public*/ /*<T>*/ void DefaultSystemConnectionMemo::store(/*@Nonnull*/ Manager* item, /*@Nonnull Class<T>*/QString type){
+/*public*/ /*<T>*/ void DefaultSystemConnectionMemo::store(/*@Nonnull*/ AbstractManager* item, /*@Nonnull Class<T>*/QString type){
     classObjectMap.insert(type,item);
 }
 
-/*public*/ /*<T>*/ void DefaultSystemConnectionMemo::deregister(/*@Nonnull T*/Manager* item, /*@Nonnull Class<T>*/QString type){
+/*public*/ /*<T>*/ void DefaultSystemConnectionMemo::deregister(/*@Nonnull T*/AbstractManager *item, /*@Nonnull Class<T>*/QString type){
     classObjectMap.remove(type/*,item*/);
 }
 

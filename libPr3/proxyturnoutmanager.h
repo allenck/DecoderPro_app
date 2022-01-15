@@ -6,16 +6,16 @@
 #include "exceptions.h"
 
 class QCompleter;
-class LIBPR3SHARED_EXPORT ProxyTurnoutManager : public QObject, public AbstractProvidingProxyManager, public TurnoutManager
+class LIBPR3SHARED_EXPORT ProxyTurnoutManager : public AbstractProvidingProxyManager, public TurnoutManager
 {
   Q_OBJECT
-  Q_INTERFACES(AbstractProvidingProxyManager TurnoutManager)
+  Q_INTERFACES(TurnoutManager)
 public:
  ProxyTurnoutManager(QObject* parent = 0);
  /**
   * Revise superclass behavior: support TurnoutOperations
   */
- /*public*/ void addManager(Manager* m) override;
+ /*public*/ void addManager(AbstractManager* m) override;
  /**
   * Locate via user name, then system name if needed.
   *
@@ -145,7 +145,7 @@ private:
 
 protected:
  virtual /*protected*/ AbstractManager* makeInternalManager()  override;
- /*protected*/ Turnout* makeBean(Manager/*<Turnout>*/* manager, QString systemName, QString userName) /*throws IllegalArgumentException*/ override;
+ /*protected*/ Turnout* makeBean(AbstractManager/*<Turnout>*/* manager, QString systemName, QString userName) /*throws IllegalArgumentException*/ override;
  ///*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
 
  friend class AbstractProxyManager;

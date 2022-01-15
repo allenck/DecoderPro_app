@@ -115,7 +115,8 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
          type == "SignalHeadManager" ||
          type == "SignalMastLogicManager" ||
          type == "SignalMastManager" ||
-         type == "SignalSystemManager")
+         type == "SignalSystemManager" ||
+         type == "Timebase")
   memo = (InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo");
     // In order for getDefault() to create a new object, the manager also
     // needs to be added to the method getInitalizes() below.
@@ -196,7 +197,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
   //return new ProxySensorManager();
   ProxySensorManager* psm = new ProxySensorManager();
   //InstanceManager::store(psm, type);
-  return (QObject*)psm;
+  return /*(QObject*)*/psm;
  }
 
  if (type == "SignalGroupManager")
@@ -247,7 +248,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
 
  if (type == "Timebase")
  {
-  Timebase* timebase = static_cast<Timebase*>(new SimpleTimebase(/*this*/));
+  Timebase* timebase = static_cast<Timebase*>(new SimpleTimebase(memo));
   if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr)
    static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerConfig(timebase, Manager::TIMEBASE);
   return timebase;

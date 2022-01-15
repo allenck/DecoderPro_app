@@ -14,13 +14,13 @@
 class VetoableChangeListenerMap;
 class VetoableChangeListener;
 class PropertyChangeEvent;
-class VetoableChangeSupport : public PropertyChangeSupport, public VetoableChangeProvider, public VetoableChangeFirer
+class VetoableChangeSupport :  public PropertyChangeSupport, public VetoableChangeProvider, public VetoableChangeFirer
 {
- //Q_OBJECT
-  Q_INTERFACES(PropertyChangeSupport VetoableChangeProvider VetoableChangeFirer PropertyChangeProvider)
+  Q_OBJECT
+  Q_INTERFACES( VetoableChangeProvider VetoableChangeFirer PropertyChangeProvider)
 
 public:
-  //explicit VetoableChangeSupport(QObject *source, QObject* parent=nullptr);
+  explicit VetoableChangeSupport( QObject* parent=nullptr);
   /*public*/ void addVetoableChangeListener(VetoableChangeListener* listener) override;
   /*public*/ void addVetoableChangeListener(/*@CheckForNull*/ QString propertyName,/* @CheckForNull*/ VetoableChangeListener* listener) override;
   /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners() override;

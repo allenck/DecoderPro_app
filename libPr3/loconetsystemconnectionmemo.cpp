@@ -316,7 +316,7 @@ void LocoNetSystemConnectionMemo::configureManagers()
   InstanceManager::store(programmerManager, "GlobalProgrammerManager");
  }
 
- InstanceManager::setReporterManager((ReporterManager*)getReporterManager());
+ InstanceManager::setReporterManager((AbstractReporterManager*)getReporterManager()->self());
 
  InstanceManager::setDefault("CabSignalManager",getCabSignalManager());
 
@@ -364,7 +364,7 @@ ThrottleManager* LocoNetSystemConnectionMemo::getThrottleManager() {
      log->debug(tr("getThrottleManager constructs for %1").arg(cmdstation->getName()));
      throttleManager = cmdstation->getThrottleManager(this);
      log->debug(tr("result was type {}").arg(throttleManager->self()->metaObject()->className()));
-     store((Manager*)throttleManager,"ThrottleManager");
+     store((AbstractManager*)throttleManager,"ThrottleManager");
  }
  return throttleManager;
 }

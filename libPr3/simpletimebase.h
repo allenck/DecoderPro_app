@@ -7,12 +7,13 @@
 #include "clockcontrol.h"
 #include "exceptions.h"
 #include "timebase.h"
+#include "internalsystemconnectionmemo.h"
 
 class LIBPR3SHARED_EXPORT SimpleTimebase : public Timebase
 {
     Q_OBJECT
 public:
-    explicit SimpleTimebase(QObject *parent = 0);
+    explicit SimpleTimebase(InternalSystemConnectionMemo* memo, QObject *parent = 0);
     ~SimpleTimebase();
     /*public*/ QString getBeanType() override;
     /*public*/ virtual QDateTime getTime();
@@ -102,6 +103,7 @@ private:
     /*private*/ bool notInitialized;// = true;  // true before initialization received from start up
 
 //    SimpleDateFormat timeStorageFormat = NULL;
+    InternalSystemConnectionMemo* memo;
 
     QTimer* timer;// = NULL;
     //SwingPropertyChangeSupport* pcMinutes;// = new SwingPropertyChangeSupport(this, nullptr);

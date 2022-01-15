@@ -3,16 +3,16 @@
 
 #include "lightcontrol.h"
 
-class DefaultLightControl : public LightControl
+class DefaultLightControl : public QObject, public LightControl
 {
   Q_OBJECT
-
+  Q_INTERFACES(LightControl)
  public:
   DefaultLightControl();
   /*public*/ DefaultLightControl(Light* l);
   /*public*/ DefaultLightControl(/*@Nonnull*/ LightControl* lc);
   /*public*/ bool equals(QObject *o);
-  /*public*/ int hashCode()override;
+  /*public*/ int hashCode();
   /*public*/ int getControlType()override;
   /*public*/ void setControlType(int type)override;
   /*public*/ void setControlSensorName(QString sensorName)override;
@@ -37,12 +37,14 @@ class DefaultLightControl : public LightControl
   /*public*/ void setTimedOnDuration(int duration)override;
   /*public*/ QString getControlSensor2Name()override;
   /*public*/ void setControlSensor2Name(QString sensorName)override;
-  /*public*/ void setParentLight(Light* l)override;
+  /*public*/ void setParentLight(AbstractLight* l)override;
   /*public*/ QString getDescriptionText(QString lightName)override;
   /*public*/ void activateLightControl() override;
   /*public*/ bool onOffTimesFaulty() override;
   /*public*/ bool areFollowerTimesFaulty( QList<LightControl*> compareList )override;
   /*public*/ void deactivateLightControl() override;
+
+  QObject* self() override {return (QObject*)this;}
 
  private:
   static Logger* log;
@@ -95,6 +97,12 @@ class DefaultLightControl : public LightControl
   friend class TimeLight;
   friend class TimedSensorListener;
   friend class  DLC_minuteListener;
+  friend class LC1PropertyChangeListener;
+  friend class LC2PropertyChangeListener;
+  friend class LC3PropertyChangeListener;
+  friend class LC4PropertyChangeListener;
+  friend class LC5PropertyChangeListener;
+  friend class LC6PropertyChangeListener;
 };
 /**
  * Class for defining ActionListener for TIMED_ON_CONTROL
@@ -160,5 +168,109 @@ class DLC_minuteListener : public QObject, public PropertyChangeListener
   }
   QObject* self() override {return (QObject*)this;}
 };
+class LC1PropertyChangeListener : public QObject, public PropertyChangeListener
+{
+ Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
+ DefaultLightControl* lc;
+ public:
+ LC1PropertyChangeListener(DefaultLightControl* lc) {this->lc = lc;}
+ QObject* self() override{return (QObject*)this;}
 
+public slots:
+ void propertyChange(PropertyChangeEvent*)override{}
+};
+
+class LC2PropertyChangeListener : public QObject,public PropertyChangeListener
+{
+ Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
+ DefaultLightControl* lc;
+ public:
+ LC2PropertyChangeListener(DefaultLightControl* lc) {this->lc = lc;}
+ QObject* self() override{return (QObject*)this;}
+public slots:
+ void propertyChange(PropertyChangeEvent* e) override
+ {
+  if (e->getPropertyName()==("KnownState"))
+  {
+   lc->oneSensorChanged( e->getNewValue().toInt() );
+  }
+ }
+};
+
+class LC3PropertyChangeListener : public QObject, public PropertyChangeListener
+{
+ Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
+ DefaultLightControl* lc;
+ public:
+ LC3PropertyChangeListener(DefaultLightControl* lc) {this->lc = lc;}
+ QObject* self() override{return (QObject*)this;}
+public slots:
+ void propertyChange(PropertyChangeEvent* ) override
+ {
+  lc->updateClockControlLightFollower();
+ }
+};
+
+class LC4PropertyChangeListener : public QObject, public PropertyChangeListener
+{
+ Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
+ DefaultLightControl* lc;
+ public:
+ LC4PropertyChangeListener(DefaultLightControl* lc) {this->lc = lc;}
+ QObject* self() override{return (QObject*)this;}
+public slots:
+ void propertyChange(PropertyChangeEvent* e) override
+ {
+     if (e->getPropertyName() == ("KnownState")) {
+         lc->oneTurnoutChanged(  e->getNewValue().toInt() );
+     }
+ }
+};
+
+class LC5PropertyChangeListener : public QObject, public PropertyChangeListener
+{
+ Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
+ DefaultLightControl* lc;
+ public:
+ LC5PropertyChangeListener(DefaultLightControl* lc) {this->lc = lc;}
+ QObject* self() override{return (QObject*)this;}
+public slots:
+ void propertyChange(PropertyChangeEvent* e) override{
+  if (e->getPropertyName()==("KnownState")) {
+      if (e->getNewValue().toInt() == Sensor::ACTIVE) {
+          if (lc->_timedControlTimer == nullptr && lc->_parentLight->getEnabled()) {
+              // Turn light on
+              lc->_parentLight->setState(Light::ON);
+              // Create a timer if one does not exist
+              lc->_timedControlListener = new TimeLight((DefaultLightControl*)lc);
+              lc->_timedControlTimer = new QTimer();
+              lc->_timedControlTimer->setInterval(lc->_timeOnDuration);
+//                    _timedControlListener);
+              connect(lc->_timedControlTimer, SIGNAL(timeout()),lc->_timedControlListener->self(), SLOT(actionPerformed()));
+              // Start the Timer to turn the light OFF
+              lc->_timedControlTimer->start();
+          }
+      }
+  }
+ }
+};
+
+class LC6PropertyChangeListener : public QObject, public PropertyChangeListener
+{
+ Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
+ DefaultLightControl* lc;
+ public:
+ LC6PropertyChangeListener(DefaultLightControl* lc) {this->lc = lc;}
+ QObject* self() override{return (QObject*)this;}
+public slots:
+ void propertyChange(PropertyChangeEvent*)override {
+  lc->twoSensorChanged();
+ }
+};
 #endif // DEFAULTLIGHTCONTROL_H

@@ -84,7 +84,7 @@ ProxyReporterManagerTest::ProxyReporterManagerTest(QObject* parent)
         Assert::assertNotNull(((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->provideReporter("IR1"), __FILE__, __LINE__);
 
         ReporterManager* m = new InternalReporterManager(new InternalSystemConnectionMemo("J", "Juliet"));
-        InstanceManager::setReporterManager(m);
+        InstanceManager::setReporterManager(((AbstractManager*)m->self()));
 
         Assert::assertNotNull(((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->provideReporter("JR1"), __FILE__, __LINE__);
         Assert::assertNotNull(((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->provideReporter("IR2"), __FILE__, __LINE__);

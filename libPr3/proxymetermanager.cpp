@@ -15,7 +15,7 @@
 ///*public*/ class ProxyMeterManager extends AbstractProxyManager<Meter>
 //        implements MeterManager {
 
-    ProxyMeterManager::ProxyMeterManager(QObject *parent) : QObject(parent)
+    ProxyMeterManager::ProxyMeterManager(QObject *parent) : AbstractProxyManager(parent)
     {
      setObjectName("ProxyMeterManager");
     }
@@ -27,8 +27,8 @@
     }
 
     //@Override
-    /*protected*/ Manager *ProxyMeterManager::makeInternalManager() {
-     return (Manager*)((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"))->getMeterManager();
+    /*protected*/ AbstractManager *ProxyMeterManager::makeInternalManager() {
+     return (AbstractManager*)((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"))->getMeterManager();
     }
 
     //@Override
@@ -76,8 +76,8 @@
      * @return the new manager or null if it's not possible to create the manager
      */
     //@Override
-    /*protected*/ Manager* ProxyMeterManager::createSystemManager(/*@Nonnull*/ SystemConnectionMemo* memo)  {
-        MeterManager* m = new AbstractMeterManager(memo);
+    /*protected*/ AbstractManager *ProxyMeterManager::createSystemManager(/*@Nonnull*/ SystemConnectionMemo* memo)  {
+        AbstractMeterManager* m = new AbstractMeterManager(memo);
         InstanceManager::setMeterManager(m);
         return m;
     }

@@ -184,7 +184,7 @@ ProxyTurnoutManagerTest::ProxyTurnoutManagerTest(QObject *parent) : QObject(pare
  JUnitUtil::setUp();
  // create and register the manager object
  l = new InternalTurnoutManager(new InternalSystemConnectionMemo("J", "Juliet"));
- InstanceManager::setTurnoutManager(l);
+ InstanceManager::setTurnoutManager((AbstractManager*)l);
 }
 
 //@After

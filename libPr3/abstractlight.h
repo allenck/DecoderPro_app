@@ -3,12 +3,13 @@
 #include <QList>
 #include "light.h"
 #include "abstractnamedbean.h"
+#include "lightcontrol.h"
+#include "libPr3_global.h"
 
-class LightControl;
-class LIBPR3SHARED_EXPORT AbstractLight : /*public AbstractNamedBean,*/ public Light
+class LIBPR3SHARED_EXPORT AbstractLight : public AbstractNamedBean, public Light
 {
     Q_OBJECT
-    //Q_INTERFACES(Light)
+    Q_INTERFACES(Light)
 public:
     //explicit AbstractLight(QObject *parent = 0);
     /*public*/ AbstractLight(QString systemName, QString userName, QObject *parent = 0);
@@ -44,23 +45,22 @@ signals:
 
 public slots:
 private:
-    void common();
-Logger* log;
+static Logger* log;
 protected:
     /**
      *  System independent instance variables (saved between runs)
      */
-    /*protected*/ QList<LightControl*> lightControlList;// = new QList<LightControl*>();
-    /*protected*/ double mMaxIntensity;// = 1.0;
-    /*protected*/ double mMinIntensity;// = 0.0;
+    /*protected*/ QList<LightControl*> lightControlList = QList<LightControl*>();
+    /*protected*/ double mMaxIntensity = 1.0;
+    /*protected*/ double mMinIntensity = 0.0;
 
     /**
      *  System independent operational instance variables (not saved between runs)
      */
-    /*protected*/ bool mActive;// = false;
-    /*protected*/ bool mEnabled;// = true;
-    /*protected*/ double mCurrentIntensity;// = 0.0;
-    /*protected*/ int mState;// = OFF;
+    /*protected*/ bool mActive = false;
+    /*protected*/ bool mEnabled = true;
+    /*protected*/ double mCurrentIntensity = 0.0;
+    /*protected*/ int mState = OFF;
     /*protected*/ void updateIntensityLow(double intensity);
     /*protected*/ void updateIntensityIntermediate(double intensity);
     /*protected*/ void updateIntensityHigh(double intensity);

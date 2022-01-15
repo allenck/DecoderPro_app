@@ -3,12 +3,13 @@
 #include "instancemanager.h"
 #include "abstractsensormanager.h"
 
-ProxySensorManager::ProxySensorManager(QObject *parent) : QObject(parent)
+ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProvidingProxyManager(parent)
 {
  setObjectName("ProxySensorManager");
  //qDebug() << "ProxySensorManger created";
  //internalManager = makeInternalManager();
  //registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
+ //propertyChangeSupport = new SwingPropertyChangeSupport(this,this);
 
 }
 /**
@@ -41,14 +42,14 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : QObject(parent)
  return (Sensor*)AbstractProxyManager::getNamedBean(name);
 }
 
-/*protected*/ Sensor* ProxySensorManager::makeBean(Manager* manager, QString systemName, QString userName)
+/*protected*/ Sensor* ProxySensorManager::makeBean(AbstractManager* manager, QString systemName, QString userName)
 {
- return ((SensorManager*) manager->self())->newSensor(systemName, userName);
+ return ((AbstractSensorManager*) manager)->newSensor(systemName, userName);
 }
 
 /*public*/ Sensor* ProxySensorManager::provideSensor(QString sName)
 {
- return static_cast<Sensor*>(provideNamedBean(sName));
+ return (Sensor*)(provideNamedBean(sName));
 }
 
 

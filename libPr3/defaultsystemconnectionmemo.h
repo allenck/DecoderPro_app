@@ -3,7 +3,7 @@
 #include "systemconnectionmemo.h"
 #include <QMap>
 #include "startupactionfactory.h"
-
+#include "abstractmanager.h"
 
 class DefaultSystemConnectionMemo : /*public Bean,*/ public SystemConnectionMemo
 {
@@ -27,8 +27,8 @@ class DefaultSystemConnectionMemo : /*public Bean,*/ public SystemConnectionMemo
   /*public*/ bool isRestartRequired()const override;
   /*public*/ ConsistManager* getConsistManager();
   /*public*/ void setConsistManager(ConsistManager* c);
-  /*public*/ /*<T>*/ void store(/*@Nonnull*/ Manager *item, /*@Nonnull Class<T>*/QString type);
-  /*public*/ /*<T>*/ void deregister(/*@Nonnull T*/Manager *item, /*@Nonnull Class<T>*/QString type);
+  /*public*/ /*<T>*/ void store(/*@Nonnull*/ AbstractManager *item, /*@Nonnull Class<T>*/QString type);
+  /*public*/ /*<T>*/ void deregister(/*@Nonnull T*/AbstractManager *item, /*@Nonnull Class<T>*/QString type);
   /*public*/ int getDefaultOutputInterval() override;
   /*public*/ int getOutputInterval() override;
   /*public*/ void setOutputInterval(int newInterval) override;
@@ -53,7 +53,7 @@ class DefaultSystemConnectionMemo : /*public Bean,*/ public SystemConnectionMemo
 
  protected:
   /*protected*/ DefaultSystemConnectionMemo(/*@Nonnull*/ QString prefix, /*@Nonnull*/ QString userName, QObject *parent = 0);
-  /*protected*/ QMap</*Class<?>*/QString,Manager*> classObjectMap;
+  /*protected*/ QMap</*Class<?>*/QString,AbstractManager*> classObjectMap;
   /*protected*/ /*abstract*/virtual ResourceBundle* getActionModelResourceBundle() {return nullptr;}
   QT_DEPRECATED /*protected*/ /*final*/ void addToActionList();
   QT_DEPRECATED /*protected*/ /*final*/ void removeFromActionList();

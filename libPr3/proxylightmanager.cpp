@@ -3,12 +3,14 @@
 #include "internallightmanager.h"
 #include "internalsystemconnectionmemo.h"
 #include "meter.h"
+#include "loggerfactory.h"
 
 ProxyLightManager::ProxyLightManager(QObject *parent) :
-    QObject(parent)
+    AbstractProvidingProxyManager(parent)
 {
- log = new Logger("ProxyLightManager");
  this->setObjectName("ProxyLightManager");
+ //propertyChangeSupport = new SwingPropertyChangeSupport(this,this);
+ log = new Logger("ProxyLightManager");
  //registerSelf();
 }
 /**
@@ -46,9 +48,9 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
   return (Light*) AbstractProxyManager::getNamedBean(name);
 }
 
-/*protected*/ NamedBean* ProxyLightManager::makeBean(Manager* manager, QString systemName, QString userName)
+/*protected*/ NamedBean* ProxyLightManager::makeBean(AbstractManager *manager, QString systemName, QString userName)
 {
- return ((LightManager*) manager)->newLight(systemName, userName);
+ return  (NamedBean*)((ProxyLightManager*)manager)->newLight(systemName, userName);
 }
 
 //@Override
@@ -226,5 +228,5 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
     return tr(plural ? "Lights" : "Light");
 }
 // initialize logging
-//static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ProxyLightManager.class.getName());
+/*static*/ Logger* ProxyLightManager::log = LoggerFactory::getLogger("ProxyLightManager");
 //}

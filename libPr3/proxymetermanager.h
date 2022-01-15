@@ -6,10 +6,10 @@
 #include <QList>
 
 class Manager;
-class ProxyMeterManager : public QObject, public AbstractProxyManager, public MeterManager
+class ProxyMeterManager :  public AbstractProxyManager, public MeterManager
 {
   Q_OBJECT
-  Q_INTERFACES(AbstractProxyManager MeterManager)
+  Q_INTERFACES(MeterManager)
  public:
   ProxyMeterManager(QObject *parent = 0);
   /*public*/ int getXMLOrder() const override;
@@ -32,8 +32,8 @@ class ProxyMeterManager : public QObject, public AbstractProxyManager, public Me
 
 
  protected:
-  /*protected*/ Manager* makeInternalManager()  override;
-  /*protected*/ Manager *createSystemManager(/*@Nonnull*/ SystemConnectionMemo* memo)  override;
+  /*protected*/ AbstractManager* makeInternalManager()  override;
+  /*protected*/ AbstractManager *createSystemManager(/*@Nonnull*/ SystemConnectionMemo* memo)  override;
 
 };
 

@@ -2,7 +2,8 @@
 #define LIGHTMANAGER_H
 #include "abstractmanager.h"
 #include "providingmanager.h"
-class Light;
+#include "light.h"
+
 class LightManager : public ProvidingManager
 {
     //Q_OBJECT
@@ -212,7 +213,7 @@ public:
   //@Nonnull
   virtual /*public*/ QString createSystemName(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) /*throws JmriException*/{return "";}
 
-  //QObject* self() {return (QObject*)this;}
+  virtual QObject* self() =0;
 
 signals:
     

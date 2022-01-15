@@ -5,10 +5,11 @@
 #include "signalspeedmap.h"
 
 ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
-    : QObject(parent)
+    : AbstractProvidingProxyManager(parent)
 {
  setObjectName("ProxyTurnoutManager");
  //registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
+ //propertyChangeSupport = new SwingPropertyChangeSupport(this,this);
 
 }
 /**
@@ -33,7 +34,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
  * Revise superclass behavior: support TurnoutOperations
  */
 //@Override
-/*public*/ void ProxyTurnoutManager::addManager(Manager* m)
+/*public*/ void ProxyTurnoutManager::addManager(AbstractManager *m)
 {
  AbstractProxyManager::addManager(m);
  ((TurnoutOperationManager*)InstanceManager::getDefault("TurnoutOperationManager"))->loadOperationTypes();
@@ -55,7 +56,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
  */
 //@Override
 //@Nonnull
-/*protected*/ Turnout* ProxyTurnoutManager::makeBean(Manager/*<Turnout>*/* manager, QString systemName, QString userName) /*throws IllegalArgumentException*/ {
+/*protected*/ Turnout* ProxyTurnoutManager::makeBean(AbstractManager *manager, QString systemName, QString userName) /*throws IllegalArgumentException*/ {
     return ((TurnoutManager*) manager)->newTurnout(systemName, userName);
 }
 

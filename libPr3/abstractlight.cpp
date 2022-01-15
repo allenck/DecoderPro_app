@@ -1,6 +1,7 @@
 #include "abstractlight.h"
 #include "exceptions.h"
 #include "light.h"
+#include "loggerfactory.h"
 
 //AbstractLight::AbstractLight(QObject *parent) :
 //    AbstractNamedBean(parent)
@@ -54,38 +55,17 @@
 //    implements Light, java.io.Serializable {
 
 /*public*/ AbstractLight::AbstractLight(QString systemName, QString userName, QObject *parent)
- : Light(systemName.toUpper(), userName, parent)
+ : AbstractNamedBean(systemName.toUpper(), userName, parent)
 {
  //super(systemName.toUpperCase(), userName);
- common();
 }
 
 /*public*/ AbstractLight::AbstractLight(QString systemName,QObject *parent)
- : Light(systemName.toUpper(), parent)
+ : AbstractNamedBean(systemName.toUpper(), parent)
 {
  //super(systemName.toUpperCase());
- common();
 }
 
-void AbstractLight::common()
-{
- log = new Logger("AbstractLight");
- /**
-  *  System independent instance variables (saved between runs)
-  */
- lightControlList = QList<LightControl*>();
- mMaxIntensity = 1.0;
- mMinIntensity = 0.0;
-
- /**
-  *  System independent operational instance variables (not saved between runs)
-  */
- mActive = false;
- mEnabled = true;
- mCurrentIntensity = 0.0;
- mState = Light::OFF;
-
-}
 
 /**
  * Get enabled status
@@ -457,3 +437,4 @@ void AbstractLight::common()
     }
     return report;
 }
+/*private*/ /*final*/ /*static*/ Logger* AbstractLight::log = LoggerFactory::getLogger("AbstractLight");

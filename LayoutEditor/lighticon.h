@@ -4,9 +4,9 @@
 #include "abstractnamedbean.h"
 #include "propertychangelistener.h"
 #include "liblayouteditor_global.h"
+#include "light.h"
 
 class QGraphicsSceneMouseEvent;
-class Light;
 class PropertyChangeEvent;
 class LIBLAYOUTEDITORSHARED_EXPORT LightIcon : public PositionableIcon, public PropertyChangeListener
 {

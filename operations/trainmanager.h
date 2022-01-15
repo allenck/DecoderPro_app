@@ -22,15 +22,15 @@ namespace Operations
  class Location;
  class Car;
  class Train;
- class APPSLIBSHARED_EXPORT TrainManager : public QObject, public PropertyChangeSupport, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize
+ class APPSLIBSHARED_EXPORT TrainManager :  public PropertyChangeSupport, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize
  {
   Q_OBJECT
-  Q_INTERFACES(PropertyChangeSupport InstanceManagerAutoDefault InstanceManagerAutoInitialize)
+  Q_INTERFACES( InstanceManagerAutoDefault InstanceManagerAutoInitialize)
 
  public:
   Q_INVOKABLE explicit TrainManager(QObject *parent = 0);
    ~TrainManager() {}
-   TrainManager(const TrainManager&) : QObject(this) {}
+   TrainManager(const TrainManager&) : PropertyChangeSupport(this) {}
   // property changes
   /*public*/ static /*final*/ QString LISTLENGTH_CHANGED_PROPERTY;// = "TrainsListLength"; // NOI18N
   /*public*/ static /*final*/ QString PRINTPREVIEW_CHANGED_PROPERTY;// = "TrainsPrintPreview"; // NOI18N

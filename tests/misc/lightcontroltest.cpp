@@ -1,55 +1,54 @@
 #include "lightcontroltest.h"
 #include "assert1.h"
-#include "lightcontrol.h"
 #include "abstractlight.h"
 #include "junitappender.h"
 #include "lightmanager.h"
 #include "gregoriancalendar.h"
-
+#include "defaultlightcontrol.h"
 
 LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
 {
 
 }
 /**
- * Tests for the LightControl* class
+ * Tests for the DefaultLightControl* class
  *
  * @author Paul Bender Copyright (C) 2016
  * @author Steve Young Copyright (C) 2019
  */
-///*public*/ class LightControlTest {
+///*public*/ class DefaultLightControlTest {
 
 //@Test
 /*public*/ void LightControlTest::testCtor() {
-    LightControl* l = new LightControl();
-    Assert::assertNotNull("LightControl* not null", l, __FILE__, __LINE__);
+    LightControl* l = new DefaultLightControl();
+//    Assert::assertNotNull("DefaultLightControl* not null", l, __FILE__, __LINE__);
 }
 
 //@Test
 /*public*/ void LightControlTest::testCLighttor() {
     Light* o = new AbstractLight("IL1", "test light");
-    LightControl* l = new LightControl(o);
-    Assert::assertNotNull("LightControl* not null", l, __FILE__, __LINE__);
+    DefaultLightControl* l = new DefaultLightControl(o);
+    Assert::assertNotNull("DefaultLightControl* not null", l, __FILE__, __LINE__);
 }
 
 //@Test
 /*public*/ void LightControlTest::testLightControlCopyCtor() {
-    LightControl* l = new LightControl();
-    LightControl* copyOfl = new LightControl(l);
-    Assert::assertNotNull("LightControl* Copy not null", copyOfl, __FILE__, __LINE__);
+    DefaultLightControl* l = new DefaultLightControl();
+    DefaultLightControl* copyOfl = new DefaultLightControl(l);
+    Assert::assertNotNull("DefaultLightControl* Copy not null", copyOfl, __FILE__, __LINE__);
 }
 
 //@Test
-//@SuppressWarnings("unlikely-arg-type") // String seems to be unrelated to LightControl
+//@SuppressWarnings("unlikely-arg-type") // String seems to be unrelated to DefaultLightControl
 /*public*/ void LightControlTest::testEquals() {
     Light* o = new AbstractLight("IL1", "test light");
-    LightControl* l1 = new LightControl(o);
+    DefaultLightControl* l1 = new DefaultLightControl(o);
 
     Assert::assertFalse(l1->equals(nullptr), __FILE__, __LINE__);
     Assert::assertTrue(l1->equals(l1), __FILE__, __LINE__);
     Assert::assertFalse(l1->equals(nullptr), __FILE__, __LINE__);
 
-    LightControl* l2 = new LightControl(o);
+    DefaultLightControl* l2 = new DefaultLightControl(o);
     Assert::assertTrue(l1->equals(l2), __FILE__, __LINE__);
 
     l1->setControlType(999);
@@ -153,7 +152,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
 //@Test
 /*public*/ void LightControlTest::testSetGetNames() {
     // used while editing the control with no Sensors / turnouts etc. attached
-    LightControl* t = new LightControl();
+    DefaultLightControl* t = new DefaultLightControl();
     t->setControlSensorName("MySensor");
     Assert::assertEquals("Same Name", "MySensor", t->getControlSensorName(), __FILE__, __LINE__);
 
@@ -167,16 +166,16 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
 //@Test
 /*public*/ void LightControlTest::testInvalidControlType() {
     l = ((LightManager*)InstanceManager::getDefault("LightManager"))->provideLight("L1");
-    lc = new LightControl(l);
+    lc = new DefaultLightControl(l);
     lc->activateLightControl();
     JUnitAppender::assertErrorMessage("Unexpected control type when activating Light: ILL1", __FILE__, __LINE__);
 }
 
 //@Test
 /*public*/ void LightControlTest::testActivateNoLight() {
-    lc = new LightControl();
+    lc = new DefaultLightControl();
     lc->activateLightControl();
-    JUnitAppender::assertErrorMessage("No Parent Light when activating LightControl", __FILE__, __LINE__);
+    JUnitAppender::assertErrorMessage("No Parent Light when activating DefaultLightControl", __FILE__, __LINE__);
 }
 
 //@Test
@@ -187,7 +186,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
 
     int startListeners = s->getPropertyChangeListeners().length();
 
-    lc = new LightControl(l);
+    lc = new DefaultLightControl(l);
     lc->setControlType(Light::SENSOR_CONTROL);
     lc->setControlSensorName("S2");
     lc->setControlSensorSense(Sensor::ACTIVE);
@@ -237,7 +236,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
 /*public*/ void LightControlTest::testNoSensor() {
 
     l = ((LightManager*)InstanceManager::getDefault("LightManager"))->provideLight("L1");
-    lc = new LightControl(l);
+    lc = new DefaultLightControl(l);
     lc->setControlType(Light::SENSOR_CONTROL);
 
     l->addLightControl(lc);
@@ -250,7 +249,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
 /*public*/ void LightControlTest::testNoTurnout() {
 
     l = ((LightManager*)InstanceManager::getDefault("LightManager"))->provideLight("L1");
-    lc = new LightControl(l);
+    lc = new DefaultLightControl(l);
     lc->setControlType(Light::TURNOUT_STATUS_CONTROL);
 
     l->addLightControl(lc);
@@ -271,7 +270,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
 
     int startListeners = t->getPropertyChangeListeners().length();
 
-    lc = new LightControl(l);
+    lc = new DefaultLightControl(l);
     lc->setControlType(Light::TURNOUT_STATUS_CONTROL);
     lc->setControlTurnout("T1");
     lc->setControlTurnoutState(Turnout::THROWN);
@@ -337,8 +336,8 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
 
     int startListeners = timebase->getMinuteChangeListeners().length();
 
-    lc = new LightControl();
-    lc->setParentLight(l);
+    lc = new DefaultLightControl();
+    lc->setParentLight((AbstractLight*)l);
     lc->setControlType(Light::FAST_CLOCK_CONTROL);
     lc->setFastClockControlSchedule(3, 0, 4, 0); // onHr, OnMin, OffHr, OffMin
 
@@ -389,7 +388,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
     l = ((LightManager*)InstanceManager::getDefault("LightManager"))->provideLight("L1");
     Assert::assertEquals("OFF state by default", Light::OFF, l->getState(), __FILE__, __LINE__); // lights are OFF by default
 
-    lc = new LightControl(l);
+    lc = new DefaultLightControl(l);
     lc->setControlType(Light::FAST_CLOCK_CONTROL);
     lc->setFastClockControlSchedule(18, 0, 7, 0); // onHr, OnMin, OffHr, OffMin
 
@@ -435,11 +434,11 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
     l = ((LightManager*)InstanceManager::getDefault("LightManager"))->provideLight("L1");
     Assert::assertEquals("OFF state by default", Light::OFF, l->getState(), __FILE__, __LINE__); // lights are OFF by default
 
-    lc = new LightControl(l);
+    lc = new DefaultLightControl(l);
     lc->setControlType(Light::FAST_CLOCK_CONTROL);
     lc->setFastClockControlSchedule(3, 0, 4, 0); // onHr, OnMin, OffHr, OffMin
 
-    LightControl* lcb = new LightControl(l);
+    DefaultLightControl* lcb = new DefaultLightControl(l);
     lcb->setControlType(Light::FAST_CLOCK_CONTROL);
     lcb->setFastClockControlSchedule(5, 0, 6, 0); // onHr, OnMin, OffHr, OffMin
 
@@ -512,11 +511,11 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
     l = ((LightManager*)InstanceManager::getDefault("LightManager"))->provideLight("L1");
     Assert::assertEquals("OFF state by default", Light::OFF, l->getState(), __FILE__, __LINE__); // lights are OFF by default
 
-    lc = new LightControl(l);
+    lc = new DefaultLightControl(l);
     lc->setControlType(Light::FAST_CLOCK_CONTROL);
     lc->setFastClockControlSchedule(3, 0, 4, 0); // onHr, OnMin, OffHr, OffMin
 
-    LightControl* lcb = new LightControl(l);
+    DefaultLightControl* lcb = new DefaultLightControl(l);
     lcb->setControlType(Light::FAST_CLOCK_CONTROL);
     lcb->setFastClockControlSchedule(3, 30, 4, 30); // onHr, OnMin, OffHr, OffMin
 
@@ -585,7 +584,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
 
     int startListeners = s->getPropertyChangeListeners().length();
 
-    lc = new LightControl(l);
+    lc = new DefaultLightControl(l);
     lc->setControlType(Light::TIMED_ON_CONTROL);
     lc->setControlTimedOnSensorName("S2");
 
@@ -671,7 +670,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
 /*public*/ void LightControlTest::testNoTimedSensor() {
 
     l = ((LightManager*)InstanceManager::getDefault("LightManager"))->provideLight("L1");
-    lc = new LightControl(l);
+    lc = new DefaultLightControl(l);
     lc->setControlType(Light::TIMED_ON_CONTROL);
 
     l->addLightControl(lc);
@@ -685,7 +684,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
 
     l = ((LightManager*)InstanceManager::getDefault("LightManager"))->provideLight("L1");
 
-    lc = new LightControl(l);
+    lc = new DefaultLightControl(l);
     lc->setControlType(Light::TWO_SENSOR_CONTROL);
 
     lc->setControlSensorName("");
@@ -719,7 +718,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
     Sensor* sOne = ((SensorManager*)InstanceManager::getDefault("SensorManager"))->provideSensor("S1");
     Sensor* sTwo = ((SensorManager*)InstanceManager::getDefault("SensorManager"))->provideSensor("S2");
 
-    lc = new LightControl(l);
+    lc = new DefaultLightControl(l);
     lc->setControlType(Light::TWO_SENSOR_CONTROL);
     lc->setControlSensorName("S1");
     lc->setControlSensor2Name("S2");
@@ -789,7 +788,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
     Sensor* sOne = ((SensorManager*)InstanceManager::getDefault("SensorManager"))->provideSensor("S1");
     Sensor* sTwo = ((SensorManager*)InstanceManager::getDefault("SensorManager"))->provideSensor("S2");
 
-    lc = new LightControl(l);
+    lc = new DefaultLightControl(l);
     lc->setControlType(Light::TWO_SENSOR_CONTROL);
     lc->setControlSensorName("S1");
     lc->setControlSensor2Name("S2");
@@ -843,7 +842,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
     l = ((LightManager*)InstanceManager::getDefault("LightManager"))->provideLight("L1");
     Assert::assertEquals("OFF state by default", Light::OFF, l->getState(), __FILE__, __LINE__); // lights are OFF by default
 
-    lc = new LightControl(l);
+    lc = new DefaultLightControl(l);
     lc->setControlType(Light::FAST_CLOCK_CONTROL);
     lc->setFastClockControlSchedule(0, 0, 0, 0); // onHr, OnMin, OffHr, OffMin
 
@@ -851,7 +850,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
     lc->setFastClockControlSchedule(1, 2, 3, 4); // onHr, OnMin, OffHr, OffMin
     Assert::assertFalse(lc->onOffTimesFaulty(), __FILE__, __LINE__);
 
-    LightControl* lcb = new LightControl(l);
+    DefaultLightControl* lcb = new DefaultLightControl(l);
     lcb->setControlType(Light::FAST_CLOCK_CONTROL);
     lcb->setFastClockControlSchedule(1, 2, 0, 0); // onHr, OnMin, OffHr, OffMin
 

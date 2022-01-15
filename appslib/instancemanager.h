@@ -33,6 +33,9 @@
 //#include "rfid/transpondingtagmanager.h"
 #include "audiomanager.h"
 #include "metermanager.h"
+#include "abstractmetermanager.h"
+#include "abstractlightmanager.h"
+#include "abstractreportermanager.h"
 
 /**
  * Provides methods for locating various interface implementations.
@@ -100,6 +103,7 @@ public:
    friend class InstanceManager;
 };
 
+class AbstractSensorManager;
 //class TranspondingTagManager;
 class SignalSpeedMap;
 class PrintWriter;
@@ -194,15 +198,15 @@ static QString contentsToString();
 /*public*/ static /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
 /*public*/ static /*synchronized*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* l);
 static ThrottleManager* throttleManagerInstance();
-static void setTurnoutManager(TurnoutManager* p);
+static void setTurnoutManager(AbstractManager *p);
 
 static /*public*/  bool containsDefault(/*@Nonnull*/ QString type);
 /*public*/ static /*<T>*/ bool isInitialized(/*@Nonnull*/ QString type);
 static MemoryManager* memoryManagerInstance();
-static void setSensorManager(SensorManager* p);
-static void setLightManager(LightManager* p);
+static void setSensorManager(AbstractSensorManager *p);
+static void setLightManager(AbstractManager *p);
 static void setThrottleManager(ThrottleManager* p);
-static void setReporterManager(ReporterManager* p);
+static void setReporterManager(AbstractManager *p);
 //template<class T>
 /*public*/ /*<T>*/ QObjectList* getInstances(/*@Nonnull Class<T>*/ QString type);
 /*public*/ void clearAll();
@@ -215,7 +219,7 @@ static /*public*/ T* getNullableDefaultT(QString type)
  return (T*)getDefault()->getInstance(type);
 }
 static /*public*/ void setIdTagManager(IdTagManager *p);
-static /*public*/ void setMeterManager(MeterManager* p);
+static /*public*/ void setMeterManager(AbstractMeterManager *p);
 
 
 signals:

@@ -203,7 +203,7 @@ TurnoutOperationManager::TurnoutOperationManager(QObject *parent) :
  */
 /*public*/ void TurnoutOperationManager::loadOperationTypes()
 {
- QStringList validTypes = ((ProxyTurnoutManager*) InstanceManager::turnoutManagerInstance())->getValidOperationTypes();
+ QStringList validTypes =  InstanceManager::turnoutManagerInstance()->getValidOperationTypes();
  for (int i=0; i<validTypes.length(); ++i)
  {
   QString thisClassName = /*"jmri."+*/validTypes.at(i)+"TurnoutOperation";

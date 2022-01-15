@@ -32,6 +32,8 @@
 #include "lightintensitypane.h"
 #include "borderfactory.h"
 #include "namedbean.h"
+#include "defaultlightcontrol.h"
+
 
 /**
  * Swing action to create and register a LightTable GUI.
@@ -1062,7 +1064,7 @@ void LightTableAction::updatePressed(ActionEvent* /*e*/) {
     g->clearLightControls();
     for (int i = 0; i < controlList.size(); i++) {
         LightControl* lc = controlList.at(i);
-        lc->setParentLight(g);
+        lc->setParentLight((AbstractLight*)g->self());
         g->addLightControl(lc);
     }
 }
@@ -1748,8 +1750,7 @@ QString LightTableAction::formatTime(int hour, int minute) {
 /*public*/ /*static*/ QString LightTableAction::getDescriptionText(LightControl* lc, int type) {
     switch (type) {
         case Light::SENSOR_CONTROL:
-            return tr("ON when %1 is $2.").arg(
-                   lc->getControlSensorName()).arg(lc->getControlSensorSenseText(lc));
+            return tr("ON when %1 is %2.").arg(lc->getControlSensorName(), getControlSensorSenseText(lc));
         case Light::FAST_CLOCK_CONTROL:
             return tr("ON at %1, OFF at %2.").arg(tr("%1:%2").arg(lc->getFastClockOnHour()).arg(lc->getFastClockOnMin()).arg(
                         tr("%1:%2").arg(lc->getFastClockOffHour()).arg(lc->getFastClockOffMin())));

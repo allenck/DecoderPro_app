@@ -851,7 +851,7 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
     if (QString(turnoutManager->self()->metaObject()->className()).contains("ProxyTurnoutManager"))
     {
         ProxyTurnoutManager* proxy = (ProxyTurnoutManager*) turnoutManager;
-        QList<Manager*> managerList = proxy->getManagerList();
+        QList<AbstractManager*> managerList = proxy->getManagerList();
         QString systemPrefix = ConnectionNameFromSystemName::getPrefixFromName( connectionChoice);
         for(int x = 0; x<managerList.size(); x++){
             TurnoutManager* mgr = (TurnoutManager*) managerList.at(x);

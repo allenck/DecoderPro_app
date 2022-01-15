@@ -8,16 +8,17 @@
 #include "idtagmanager.h"
 #include "proxymanager.h"
 
-class LIBPR3SHARED_EXPORT AbstractProxyManager :  public VetoableChangeSupport, public ProxyManager, PropertyChangeListener, Manager::ManagerDataListener
+class LIBPR3SHARED_EXPORT AbstractProxyManager :   public VetoableChangeSupport, public ProxyManager, PropertyChangeListener, Manager::ManagerDataListener
 {
-    //Q_OBJECT
-    Q_INTERFACES(VetoableChangeSupport ProxyManager PropertyChangeListener Manager::ManagerDataListener PropertyChangeSupport PropertyChangeProvider)
+    Q_OBJECT
+    Q_INTERFACES( ProxyManager PropertyChangeListener Manager::ManagerDataListener )
  public:
-    /*public*/  QList<Manager/*<E>*/*> getManagerList() override;
-    /*public*/  QList<Manager/*<E>*/*> getDisplayOrderManagerList() override;
-    /*public*/  Manager/*<E>*/* getInternalManager(); //not override!
-    /*public*/  Manager/*<E>*/* getDefaultManager() override;
-    /*public*/  void addManager(/*@Nonnull*/ Manager/*<E>*/* m) override;
+    AbstractProxyManager(QObject* parent = nullptr );
+    /*public*/  QList<AbstractManager/*<E>*/*> getManagerList() override;
+    /*public*/  QList<AbstractManager/*<E>*/*> getDisplayOrderManagerList() override;
+    /*public*/  AbstractManager *getInternalManager(); //not override!
+    /*public*/  AbstractManager *getDefaultManager() override;
+    /*public*/  void addManager(/*@Nonnull*/ AbstractManager *m) override;
     /*public*/  /*E*/NamedBean* getNamedBean(/*@Nonnull*/ QString name) override;
     /*public*/  /*E*/NamedBean* getBySystemName(/*@Nonnull*/ QString systemName) override;
     /*public*/  /*E*/NamedBean* getByUserName(/*@Nonnull*/ QString userName)  override;
@@ -57,7 +58,6 @@ class LIBPR3SHARED_EXPORT AbstractProxyManager :  public VetoableChangeSupport, 
     QT_DEPRECATED /*public*/  void intervalRemoved(AbstractProxyManager::ManagerDataEvent/*<E>*/* e);
     QT_DEPRECATED /*public*/  void setDataListenerMute(bool m) override;
 
-
 private:
     static Logger* log;
     /*private*/ bool muted = false;
@@ -71,8 +71,8 @@ private:
      * VetoableChangeListeners.
      */
     /*private*/ /*final*/ QList<QString> vetoablePropertyNames = QList<QString>();
-    /*private*/ /*final*/ QSet<Manager/*<E>*/*> mgrs = QSet<Manager*>();//new TreeSet<>((Manager/*<E>*/* e1, Manager/*<E>*/* e2) -> e1.getSystemPrefix().compareTo(e2.getSystemPrefix()));
-    /*private*/ Manager/*<E>*/* internalManager = nullptr;
+    /*private*/ /*final*/ QSet<AbstractManager/*<E>*/*> mgrs = QSet<AbstractManager*>();//new TreeSet<>((Manager/*<E>*/* e1, Manager/*<E>*/* e2) -> e1.getSystemPrefix().compareTo(e2.getSystemPrefix()));
+    /*private*/ AbstractManager/*<E>*/* internalManager = nullptr;
     QString createSystemName(QString curAddress, QString prefix, QString beanType) /*throws JmriException */;
     virtual /*private*/ Manager/*<E>*/* createSystemManager(/*@Nonnull*/ QString systemPrefix);
     /*private*/ QSet<NamedBean*>* namedBeanSet = nullptr;
@@ -81,14 +81,14 @@ private:
 protected:
     /*protected*/ /*final*/ QMap<QString, bool> silencedProperties = QMap<QString, bool>();
     /*protected*/ /*final*/ QSet<QString> silenceableProperties = QSet<QString>();
-    /*protected*/ Manager/*<E>*/* initInternal(); // no override!
-    /*protected*/ Manager/*<E>*/* defaultManager = nullptr;
-    /*abstract*/virtual /*protected*/ Manager/*<E>*/* makeInternalManager()  {return nullptr;}
-    /*protected*/ Manager/*<E>*/* getManager(/*@Nonnull*/ QString systemName) ; // not override!
-    /*protected*/ Manager/*<E>*/* getManagerOrDefault(/*@Nonnull*/ QString systemName);
-    virtual /*protected*/ Manager/*<E>*/* createSystemManager(/*@Nonnull*/ SystemConnectionMemo* memo) ;
+    /*protected*/ AbstractManager/*<E>*/* initInternal(); // no override!
+    /*protected*/ AbstractManager/*<E>*/* defaultManager = nullptr;
+    /*abstract*/virtual /*protected*/ AbstractManager/*<E>*/* makeInternalManager()  {return nullptr;}
+    /*protected*/ AbstractManager *getManager(/*@Nonnull*/ QString systemName) ; // not override!
+    /*protected*/ AbstractManager/*<E>*/* getManagerOrDefault(/*@Nonnull*/ QString systemName);
+    virtual /*protected*/ AbstractManager/*<E>*/* createSystemManager(/*@Nonnull*/ SystemConnectionMemo* memo) ;
     /*protected*/ void recomputeNamedBeanSet();
 
 };
-Q_DECLARE_INTERFACE(AbstractProxyManager, "AbstractProxyManager")
+//Q_DECLARE_INTERFACE(AbstractProxyManager, "AbstractProxyManager")
 #endif // ABSTRACTPROXYMANAGER_H

@@ -54,7 +54,7 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString TrainManager::TRAINS_SHOW_FULL_NAME_PROPERTY = "TrainsShowFullName"; // NOI18N
 
  /*public*/ TrainManager::TrainManager(QObject *parent) :
- QObject(parent)
+ PropertyChangeSupport(parent)
  {
   setObjectName("TrainManager");
   // Train frame attributes

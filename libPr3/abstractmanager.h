@@ -26,10 +26,10 @@
 class SwingPropertyChangeSupport;
 class PropertyChangeListener;
 class PropertyChangeEvent;
-class LIBPR3SHARED_EXPORT AbstractManager : public QObject, public VetoableChangeSupport, public  Manager, public VetoableChangeListener, public PropertyChangeListener
+class LIBPR3SHARED_EXPORT AbstractManager :  public VetoableChangeSupport, public  Manager, public VetoableChangeListener, public PropertyChangeListener
 {
     Q_OBJECT
-    Q_INTERFACES(VetoableChangeSupport Manager VetoableChangeListener PropertyChangeListener)
+    Q_INTERFACES( Manager VetoableChangeListener PropertyChangeListener)
 public:
     AbstractManager(QObject *parent = 0);
     AbstractManager(SystemConnectionMemo* memo, QObject *parent = 0);

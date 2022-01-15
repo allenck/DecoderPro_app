@@ -895,8 +895,8 @@ SignalHeadPickModel::SignalHeadPickModel (QObject *parent) : PickListModel(paren
  AbstractSignalHeadManager* mgr = (AbstractSignalHeadManager*)manager;
  connect(mgr, SIGNAL(beanCreated(NamedBean*)),this, SLOT(newSignalHeadCreated(NamedBean*)));
 }
-/*public*/ Manager* SignalHeadPickModel::getManager() {
-    return manager;
+/*public*/ AbstractManager *SignalHeadPickModel::getManager() {
+    return (AbstractManager*)manager;
 }
 /*public*/ NamedBean* SignalHeadPickModel::getBySystemName(QString name) {
     return ((AbstractSignalHeadManager*)manager)->AbstractManager::getBySystemName(name);
@@ -1023,10 +1023,10 @@ ReporterPickModel::ReporterPickModel (QObject *parent) : PickListModel(parent)
  manager = (ReporterManager*)InstanceManager::getDefault("ReporterManager");
  _name = tr("Reporter Table");
  ProxyReporterManager* mgr = (ProxyReporterManager*)manager;
- QList<Manager*> mgrList = mgr->getManagerList();
+ QList<AbstractManager*> mgrList = mgr->getManagerList();
  for( int i=0; i< mgrList.count(); i++)
  {
-  AbstractReporterManager* rMgr = (AbstractReporterManager*)mgrList.at(i)->self();
+  AbstractReporterManager* rMgr = (AbstractReporterManager*)mgrList.at(i);
   connect(rMgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  //??
@@ -1107,7 +1107,7 @@ LightPickModel::LightPickModel (QObject *parent) : PickListModel(parent)
 {
  manager = InstanceManager::lightManagerInstance();
  _name = tr("Light Table");
- QList<Manager*> list = ((ProxyLightManager*)manager)->getManagerList();
+ QList<AbstractManager*> list = ((ProxyLightManager*)manager)->getManagerList();
  foreach(Manager* m, list)
  {
   AbstractLightManager* mgr = (AbstractLightManager*)m->self();

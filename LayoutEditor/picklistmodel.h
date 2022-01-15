@@ -169,7 +169,7 @@ class SignalHeadPickModel : public PickListModel
     SignalHeadManager* manager;
 public:
     SignalHeadPickModel (QObject *parent= 0);
-    /*public*/ Manager *getManager();
+    /*public*/ AbstractManager *getManager();
     /*public*/ NamedBean* getBySystemName(QString name);
     /*public*/ NamedBean* addBean(QString name);
     /*public*/ NamedBean* addBean(QString sysName, QString userName) ;

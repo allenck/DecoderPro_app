@@ -657,12 +657,12 @@ void InstanceManager::deregister(QObject* item, QString type)
 
 SensorManager* InstanceManager::sensorManagerInstance()
 {
- return (SensorManager*)getDefault("SensorManager");
+ return (ProxySensorManager*)getDefault("SensorManager");
 }
 
 TurnoutManager* InstanceManager::turnoutManagerInstance()
 {
- return (TurnoutManager*)getDefault("TurnoutManager");
+ return (ProxyTurnoutManager*)getDefault("TurnoutManager");
 }
 
 // helper function for scripts that use Proxy managers
@@ -721,11 +721,11 @@ MemoryManager* InstanceManager::memoryManagerInstance()
 // management) before this can be deprecated in favor of
 // store(p, SensorManager.class)void InstanceManager::setSensorManager(SensorManager* p)
 //@SuppressWarnings("unchecked") // AbstractProxyManager of the right type is type-safe by definition
-/*public*/ /*static*/ void InstanceManager::setSensorManager(SensorManager* p) {
+/*public*/ /*static*/ void InstanceManager::setSensorManager(AbstractSensorManager* p) {
  log->debug(" setSensorManager");
  AbstractProxyManager* apm = (AbstractProxyManager*)getDefault("SensorManager");
- if (static_cast<AbstractProxyManager*>(apm)!= nullptr) { // <?> due to type erasure
-     ((AbstractProxyManager*) apm)->addManager((Manager*)p->self());
+ if (qobject_cast<AbstractProxyManager*>(apm)!= nullptr) { // <?> due to type erasure
+     ((AbstractProxyManager*) apm)->addManager((AbstractManager*)p);
  } else {
      log->error("Incorrect setup: SensorManager default isn't an AbstractProxyManager<Sensor>");
  }
@@ -754,7 +754,7 @@ MemoryManager* InstanceManager::memoryManagerInstance()
 // management) before this can be deprecated in favor of
 // store(p, MeterManager.class)
 //@SuppressWarnings("unchecked") // AbstractProxyManager of the right type is type-safe by definition
-/*static*/ /*public*/ void InstanceManager::setMeterManager(MeterManager* p) {
+/*static*/ /*public*/ void InstanceManager::setMeterManager(AbstractMeterManager* p) {
     log->debug(" setMeterManager");
 #if 1
     MeterManager* apm = (ProxyMeterManager*)getDefault("MeterManager");
@@ -770,11 +770,11 @@ MemoryManager* InstanceManager::memoryManagerInstance()
 // with current list of managers (and robust default
 // management) before this can be deprecated in favor of
 // store(p, TurnoutManager.class)
-void InstanceManager::setTurnoutManager(TurnoutManager* p) {
+void InstanceManager::setTurnoutManager(AbstractManager* p) {
  log->debug(" setTurnoutManager");
  TurnoutManager* apm = qobject_cast<TurnoutManager*>(getDefault("TurnoutManager"));
  if (qobject_cast<AbstractProxyManager*>(apm->self()) != nullptr) { // <?> due to type erasure
-     ((ProxyTurnoutManager*) apm)->addManager(p);
+     ((ProxyTurnoutManager*) apm)->addManager((AbstractManager*)p);
  } else {
      log->error("Incorrect setup: TurnoutManager default isn't an AbstractProxyTurnoutManager<Turnout>");
  }
@@ -785,11 +785,11 @@ void InstanceManager::setTurnoutManager(TurnoutManager* p) {
 //    ((AbstractProxyManager*)instance()->turnoutManager)->addManager(p);
 //}
 
-void InstanceManager::setLightManager(LightManager* p) {
+void InstanceManager::setLightManager(AbstractManager *p) {
  log->debug(" setLightManager");
- LightManager* apm = (LightManager*)getDefault("LightManager");
- if (qobject_cast<ProxyManager*>(apm->self())) { // <?> due to type erasure
-     ((ProxyManager/*<Light>*/*) apm)->addManager(p);
+ ProxyLightManager* apm = (ProxyLightManager*)getDefault("LightManager");
+ if (qobject_cast<ProxyLightManager*>(apm)) { // <?> due to type erasure
+     ((ProxyLightManager/*<Light>*/*) apm)->addManager((AbstractManager*)p);
  } else {
      log->error("Incorrect setup: LightManager default isn't an AbstractProxyManager<Light>");
  }
@@ -800,9 +800,9 @@ void InstanceManager::setThrottleManager(ThrottleManager* p)
  store((QObject*)p->self(), "ThrottleManager");
 }
 
-void InstanceManager::setReporterManager(ReporterManager* p) {
+void InstanceManager::setReporterManager(AbstractManager* p) {
  log->debug(" setReporterManager");
-   ((AbstractProxyManager*) getDefault("ReporterManager"))->addManager(p);
+   ((AbstractProxyManager*) getDefault("ReporterManager"))->addManager((AbstractManager*)p);
    //store(p, ReporterManager.class);
 }
 

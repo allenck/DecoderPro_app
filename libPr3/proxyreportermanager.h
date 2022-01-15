@@ -5,11 +5,11 @@
 #include "reporter.h"
 #include "abstractprovidingproxymanager.h"
 
-class LIBPR3SHARED_EXPORT ProxyReporterManager : public QObject, public  AbstractProvidingProxyManager, public ReporterManager
+class LIBPR3SHARED_EXPORT ProxyReporterManager : public  AbstractProvidingProxyManager, public ReporterManager
 {
     friend class AbstractProxyManager;
     Q_OBJECT
-    Q_INTERFACES(AbstractProvidingProxyManager ReporterManager)
+    Q_INTERFACES(ReporterManager)
 public:
     explicit ProxyReporterManager(QObject *parent = 0);
     /*public*/ int getXMLOrder()const  override;
@@ -84,7 +84,7 @@ private:
  Logger log;
 protected:
  /*protected*/ AbstractManager* makeInternalManager() override;
- /*protected*/ NamedBean* makeBean(Manager/*<Reporter>*/* manager, QString systemName,
+ /*protected*/ NamedBean* makeBean(AbstractManager/*<Reporter>*/* manager, QString systemName,
                                    QString userName) /*throws IllegalArgumentException*/override;
 
 };

@@ -16,9 +16,10 @@
  * @version			$Revision: 18178 $
  */
 //class AbstractSensorManager;
-class LIBPR3SHARED_EXPORT LnSensorManager : public AbstractSensorManager
+class LIBPR3SHARED_EXPORT LnSensorManager : public AbstractSensorManager, public LocoNetListener
 {
     Q_OBJECT
+  Q_INTERFACES(LocoNetListener)
 public:
 //    LnSensorManager(LnTrafficController* tc, QString prefix, QObject *parent = 0);
     /*public*/ LnSensorManager(LocoNetSystemConnectionMemo* memo, QObject *parent = 0);

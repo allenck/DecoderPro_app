@@ -211,7 +211,7 @@
         case EDITCOL:
             return tr("Edit");
         case INTENSITYCOL:
-         if (qobject_cast<VariableLight*>(l)) {
+         if (qobject_cast<VariableLight*>(l->self())) {
              return ((VariableLight*)l)->getTargetIntensity();
          } else {
              return 0.0;

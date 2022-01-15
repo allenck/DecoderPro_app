@@ -9,10 +9,10 @@
 #include "abstractprovidingproxymanager.h"
 
 
-class ProxySensorManager : public QObject, public AbstractProvidingProxyManager, public SensorManager
+class ProxySensorManager :public AbstractProvidingProxyManager, public SensorManager
 {
  Q_OBJECT
- Q_INTERFACES(AbstractProvidingProxyManager SensorManager)
+ Q_INTERFACES(SensorManager)
 public:
  ProxySensorManager(QObject* parent = nullptr);
  /*public*/ Sensor* getSensor(QString name)  override;
@@ -89,7 +89,7 @@ private:
 protected:
  ///*private*/ AbstractManager* getInternal();
  virtual /*protected*/ AbstractManager* makeInternalManager();
- virtual /*protected*/ Sensor* makeBean(Manager *, QString systemName, QString userName);
+ virtual /*protected*/ Sensor* makeBean(AbstractManager *, QString systemName, QString userName);
  // /*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
  // /*protected*/ NamedBean* provideNamedBean(QString name);
 

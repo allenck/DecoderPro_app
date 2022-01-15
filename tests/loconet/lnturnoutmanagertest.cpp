@@ -171,7 +171,7 @@ LnTurnoutManagerTest::LnTurnoutManagerTest(QObject *parent)
         // create and register the manager object
 #if 1
         l = new LnTurnoutManager(memo, lnis, false);
-        InstanceManager::setTurnoutManager(l);
+        InstanceManager::setTurnoutManager((AbstractManager*)l);
 #endif
     }
 

@@ -67,14 +67,14 @@ public:
     }
 };
 
-class /*LIBPR3SHARED_EXPORT*/ EntryExitPairs : public QObject, public VetoableChangeSupport, public Manager, public InstanceManagerAutoDefault, public PropertyChangeListener
+class /*LIBPR3SHARED_EXPORT*/ EntryExitPairs :  public VetoableChangeSupport, public Manager, public InstanceManagerAutoDefault, public PropertyChangeListener
 {
   Q_OBJECT
-  Q_INTERFACES(VetoableChangeSupport Manager InstanceManagerAutoDefault PropertyChangeListener)
+  Q_INTERFACES( Manager InstanceManagerAutoDefault PropertyChangeListener)
 public:
     explicit EntryExitPairs(QObject *parent = 0);
  ~EntryExitPairs() {}
- EntryExitPairs(const EntryExitPairs&) : QObject(this) {}
+ EntryExitPairs(const EntryExitPairs&) : VetoableChangeSupport(this) {}
     /*public*/ int routingMethod;// = LayoutBlockConnectivityTools.METRIC;
     //Method to get delay between issuing Turnout commands
     /*public*/ int turnoutSetDelay;// = 0;

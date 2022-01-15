@@ -99,7 +99,7 @@
 //    });
     for(LightControl* control : getControlList())
     {
-     control->setParentLight(g);
+     control->setParentLight((AbstractLight*)g->self());
      // ??
     }
     g->activateLight();

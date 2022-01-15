@@ -1,20 +1,16 @@
 #ifndef LIGHT_H
 #define LIGHT_H
 #include "abstractnamedbean.h"
-#include "lightcontrol.h"
+//#include "lightcontrol.h"
 #include "digitalio.h"
 
 class LightControl;
-class Light :  public AbstractNamedBean, public DigitalIO
+class Light :   public DigitalIO
 {
     //Q_OBJECT
   Q_INTERFACES(DigitalIO)
 public:
 // explicit Light(QObject *parent = 0) : AbstractNamedBean(parent) {}
-    Light(QString sysName, QString userName, QObject* parent = 0)
-     : AbstractNamedBean(sysName, userName, parent) {}
-    Light(QString sysName, QObject* parent = 0)
-     : AbstractNamedBean(sysName, parent) {}
 
     /**
      * Represent a single visible Light on the physical layout.
@@ -368,5 +364,5 @@ signals:
 public slots:
     
 };
-//Q_DECLARE_INTERFACE(Light, "Light")
+Q_DECLARE_INTERFACE(Light, "Light")
 #endif // LIGHT_H

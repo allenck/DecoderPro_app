@@ -42,7 +42,7 @@
             return t;
         }
         // Doesn't exist. If the systemName was specified, find that system
-        Manager/*<E>*/* manager = getManager(name);
+        AbstractManager/*<E>*/* manager = getManager(name);
         if (manager != nullptr) {
             return makeBean(manager, name, nullptr);
         }
@@ -94,7 +94,7 @@
         initInternal();
 
         // if the systemName is specified, find that system
-        Manager/*<E>*/* m = getManager(systemName);
+        AbstractManager/*<E>*/* m = getManager(systemName);
         if (m != nullptr) {
             return makeBean(m, systemName, userName);
         }

@@ -20,7 +20,7 @@
  * @author      Bob Jacobsen Copyright (C) 2003
  * @version	$Revision: 19272 $
  */
-AbstractManager::AbstractManager(QObject *parent) : QObject( parent)
+AbstractManager::AbstractManager(QObject *parent) : VetoableChangeSupport(parent)
 {
   Q_UNUSED(parent);
   log = new Logger("AbstractManager");
@@ -33,11 +33,12 @@ AbstractManager::AbstractManager(QObject *parent) : QObject( parent)
  listeners = QList<Manager::ManagerDataListener*>();
 }
 
-AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : QObject( parent)
+AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : VetoableChangeSupport( parent)
 {
   Q_UNUSED(parent);
  this->memo = memo;
- propertyChangeSupport = new SwingPropertyChangeSupport(this, this);
+ if(propertyChangeSupport == nullptr)
+  propertyChangeSupport = new SwingPropertyChangeSupport(this, this);
 
   log = new Logger("AbstractManager");
  _tsys = new QMap<QString, NamedBean*>;   // stores known Turnout instances by system name

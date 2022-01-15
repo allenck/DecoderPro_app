@@ -282,7 +282,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ void DefaultLightControl::setParentLight(Light* l) {
+    /*public*/ void DefaultLightControl::setParentLight(AbstractLight* l) {
         _parentLight = l;
     }
 
@@ -638,11 +638,11 @@
 //            compareList.stream().anyMatch(isFastClockEqual(getFastClockOffCombined())));
         for(LightControl* lc : compareList)
         {
-         if(lc->isFastClockEqual(getFastClockOnCombined()))
+         if(((DefaultLightControl*)lc->self())->isFastClockEqual(getFastClockOnCombined()))
          {
           return true;
          }
-         if(lc->isFastClockEqual(getFastClockOffCombined()))
+         if(((DefaultLightControl*)lc->self())->isFastClockEqual(getFastClockOffCombined()))
          {
           return true;
          }

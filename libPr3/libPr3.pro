@@ -259,7 +259,6 @@ SOURCES += \
     lnlightmanager.cpp \
     lnlight.cpp \
     abstractlight.cpp \
-    lightcontrol.cpp \
     proxylightmanager.cpp \
     internallightmanager.cpp \
     loconetconsistmanager.cpp \
@@ -1172,6 +1171,7 @@ HEADERS += \
  Signal/mergsd2signalheadxml.h \
  #Signal/serialsignalhead.h \
  abstractprovidingproxymanager.h \
+ abstractproxymanager.h \
  acelasignalheadxml.h \
  addeditsinglelightcontrolframe.h \
  defaultlightcontrol.h \

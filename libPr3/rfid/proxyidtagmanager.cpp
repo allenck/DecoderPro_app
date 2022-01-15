@@ -14,8 +14,10 @@
 ///*public*/ class ProxyIdTagManager extends AbstractProxyManager<IdTag>
 //        implements IdTagManager {
 
-    /*public*/ ProxyIdTagManager::ProxyIdTagManager(QObject* parent) : QObject(parent){
+    /*public*/ ProxyIdTagManager::ProxyIdTagManager(QObject* parent) : AbstractProvidingProxyManager(parent){
         //super();
+     //propertyChangeSupport = new SwingPropertyChangeSupport(this,this);
+
     }
 
     //@Override
@@ -56,9 +58,9 @@
     }
 
     //@Override
-    /*protected*/ NamedBean *ProxyIdTagManager::makeBean(Manager *m, QString systemName, QString userName) {
+    /*protected*/ NamedBean *ProxyIdTagManager::makeBean(AbstractManager *m, QString systemName, QString userName) {
      init();
-     return ((IdTagManager*) m->self())->newIdTag(systemName, userName);
+     return ((IdTagManager*) m)->newIdTag(systemName, userName);
     }
 
     //@Override

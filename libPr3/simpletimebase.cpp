@@ -35,11 +35,11 @@
  */
 //public class SimpleTimebase extends jmri.implementation.AbstractNamedBean implements Timebase
 
-/*public*/ SimpleTimebase::SimpleTimebase(QObject* parent) : Timebase(QString("SIMPLECLOCK"), parent)
+/*public*/ SimpleTimebase::SimpleTimebase(InternalSystemConnectionMemo *memo, QObject* parent) : Timebase(QString("SIMPLECLOCK"), parent)
 {
 //super("SIMPLECLOCK");
  setProperty("JavaClassName", "jmri.jmrit.simpleclock.SimpleTimebase");
-
+ this->memo = memo;
  log = new Logger("SimpleTimebase");
  mFactor = 1.0;  // this is the rate factor for the JMRI fast clock
  hardwareFactor = 1.0;  // this is the rate factor for the hardware clock
@@ -86,7 +86,7 @@
  // initialize start/stop sensor for time running
  try
  {
-  clockSensor = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->provideSensor("ISCLOCKRUNNING");
+  clockSensor = InstanceManager::sensorManagerInstance()->provideSensor(memo->getSystemPrefix()+"SCLOCKRUNNING");
   clockSensor->setKnownState(Sensor::ACTIVE);
 //     clockSensor.addPropertyChangeListener(
 //             new PropertyChangeListener() {

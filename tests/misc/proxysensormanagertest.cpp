@@ -518,7 +518,7 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
         l->addManager(new InternalSensorManager(new InternalSystemConnectionMemo("I", "India"))); // not in alpha order to make it exciting
         l->addManager(new InternalSensorManager(new InternalSystemConnectionMemo("K", "Kilo")));
 #endif
-        InstanceManager::setSensorManager((SensorManager*)l);
+        InstanceManager::setSensorManager((AbstractSensorManager*)l);
 
         propertyListenerCount = 0;
         propertyListenerLast = nullptr;

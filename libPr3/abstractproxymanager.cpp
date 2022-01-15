@@ -37,33 +37,34 @@
 //@SuppressWarnings("deprecation")
 // abstract /*public*/  class AbstractProxyManager<E extends NamedBean> extends VetoableChangeSupport implements ProxyManager/*<E>*/*, PropertyChangeListener, Manager.ManagerDataListener<E> {
 
+AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSupport(parent) {}
 
     /**
      * {@inheritDoc}
      */
     //@Override
-    /*public*/  QList<Manager/*<E>*/*> AbstractProxyManager::getManagerList()    {
+    /*public*/  QList<AbstractManager *> AbstractProxyManager::getManagerList()    {
         // make sure internal present
         initInternal();
-        return QList<Manager*>(mgrs.toList());
+        return QList<AbstractManager*>(mgrs.toList());
     }
 
     /**
      * {@inheritDoc}
      */
     //@Override
-    /*public*/  QList<Manager/*<E>*/*> AbstractProxyManager::getDisplayOrderManagerList()  {
+    /*public*/  QList<AbstractManager/*<E>*/*> AbstractProxyManager::getDisplayOrderManagerList()  {
         // make sure internal present
         initInternal();
 
-        QList<Manager/*<E>*/*> retval = QList<Manager/*<E>*/*>();
+        QList<AbstractManager/*<E>*/*> retval = QList<AbstractManager/*<E>*/*>();
         if (defaultManager != nullptr) {
             retval.append(defaultManager);
         }
 //        mgrs.stream()
 //                .filter(manager -> manager != defaultManager && manager != internalManager)
 //                .forEachOrdered(retval::add);
-        for(Manager* manager : mgrs)
+        for(AbstractManager* manager : mgrs)
         {
          if(manager != defaultManager && manager != internalManager)
          {
@@ -76,7 +77,7 @@
         return retval;
     }
 
-    /*public*/  Manager/*<E>*/* AbstractProxyManager::getInternalManager()    {
+    /*public*/  AbstractManager/*<E>*/* AbstractProxyManager::getInternalManager()    {
         initInternal();
         return internalManager;
     }
@@ -86,7 +87,7 @@
      */
     //@Override
     //@Nonnull
-    /*public*/  Manager/*<E>*/* AbstractProxyManager::getDefaultManager()
+    /*public*/  AbstractManager/*<E>*/* AbstractProxyManager::getDefaultManager()
 {
         return defaultManager != nullptr ? defaultManager : getInternalManager();
     }
@@ -96,10 +97,10 @@
      */
     //@Override
     //@SuppressWarnings("deprecation")
-    /*public*/  void AbstractProxyManager::addManager(/*@Nonnull*/ Manager/*<E>*/* m) {
+    /*public*/  void AbstractProxyManager::addManager(/*@Nonnull*/ AbstractManager/*<E>*/* m) {
 //        Objects.requireNonNull(m, "Can only add non-null manager");
         // check for already present
-        for (Manager/*<E>*/* check : mgrs) {
+        for (AbstractManager/*<E>*/* check : mgrs) {
             if (m == check) { // can't use contains(..) because of Comparator ==  is on the prefix
                 // already present, complain and skip
                 log->warn(QString("Manager already present: %1").arg(m->toString())); // NOI18N
@@ -112,31 +113,31 @@
 
         //Arrays.stream(getPropertyChangeListeners()).forEach(l -> m.addPropertyChangeListener(l));
         for(PropertyChangeListener* l : PropertyChangeSupport::getPropertyChangeListeners())
-         for(Manager* m : mgrs)
-          m->addPropertyChangeListener(l);
+         //for(Manager* m : mgrs)
+          m->PropertyChangeSupport::addPropertyChangeListener(l);
         //Arrays.stream(getVetoableChangeListeners()).forEach(l -> m.addVetoableChangeListener(l));
         for(VetoableChangeListener* l : VetoableChangeSupport::getVetoableChangeListeners())
-         for(Manager* m : mgrs)
-             m->addVetoableChangeListener(l);
+         //for(AbstractManager* m : mgrs)
+             m->VetoableChangeSupport::addVetoableChangeListener(l);
 //        boundPropertyNames
 //                .forEach(n -> Arrays.stream(getPropertyChangeListeners(n))
 //                .forEach(l -> m.addPropertyChangeListener(n, l)));
         for(QString n : boundPropertyNames)
          for(PropertyChangeListener* l : PropertyChangeSupport::getPropertyChangeListeners(n))
-          m->addPropertyChangeListener(n, l);
+          m->PropertyChangeSupport::addPropertyChangeListener(n, l);
 //        vetoablePropertyNames
 //                .forEach(n -> Arrays.stream(getVetoableChangeListeners(n))
 //                .forEach(l -> m.addVetoableChangeListener(n, l)));
         for(QString n : vetoablePropertyNames)
          for(VetoableChangeListener* l : VetoableChangeSupport::getVetoableChangeListeners(n))
-          m->addVetoableChangeListener(n, l);
-        m->addPropertyChangeListener("beans", this);
-        m->addDataListener(this);
+          m->VetoableChangeSupport::addVetoableChangeListener(n, l);
+        m->PropertyChangeSupport::addPropertyChangeListener("beans", this);
+        ((AbstractManager*)m)->addDataListener(this);
         recomputeNamedBeanSet();
-        log->debug(QString(QString("added manager %1").arg(m->self()->metaObject()->className())));
+        log->debug(QString("added manager %1").arg(QString(m->metaObject()->className())));
     }
 
-    /*protected*/ Manager/*<E>*/* AbstractProxyManager::initInternal()       {
+    /*protected*/ AbstractManager *AbstractProxyManager::initInternal()       {
         if (internalManager == nullptr) {
             log->debug(QString("create internal manager when first requested")); // NOI18N
             internalManager = makeInternalManager();
@@ -237,10 +238,10 @@
      * @return the requested manager or null if there is no matching manager
      */
     //@CheckForNull
-    /*protected*/ Manager/*<E>*/* AbstractProxyManager::getManager(/*@Nonnull*/ QString systemName)   {
+    /*protected*/ AbstractManager/*<E>*/* AbstractProxyManager::getManager(/*@Nonnull*/ QString systemName)   {
         // make sure internal present
         initInternal();
-        for (Manager/*<E>*/* m : getManagerList()) {
+        for (AbstractManager/*<E>*/* m : getManagerList()) {
             if (systemName.startsWith(m->getSystemNamePrefix())) {
                 return m;
             }
@@ -257,8 +258,8 @@
      *         matching manager
      */
     //@Nonnull
-    /*protected*/ Manager/*<E>*/* AbstractProxyManager::getManagerOrDefault(/*@Nonnull*/ QString systemName) {
-        Manager/*<E>*/* manager = getManager(systemName);
+    /*protected*/ AbstractManager *AbstractProxyManager::getManagerOrDefault(/*@Nonnull*/ QString systemName) {
+        AbstractManager/*<E>*/* manager = getManager(systemName);
         if (manager == nullptr) {
             manager = getDefaultManager();
         }
@@ -370,7 +371,7 @@
      * @param memo the system connection memo for this connection
      * @return the new manager or null if it's not possible to create the manager
      */
-    /*protected*/ Manager/*<E>*/* AbstractProxyManager::createSystemManager(/*@Nonnull*/ SystemConnectionMemo* /*memo*/) {
+    /*protected*/ AbstractManager *AbstractProxyManager::createSystemManager(/*@Nonnull*/ SystemConnectionMemo* /*memo*/) {
         return nullptr;
     }
 

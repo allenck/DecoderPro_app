@@ -5,10 +5,11 @@
 #include "internalsystemconnectionmemo.h"
 
 ProxyReporterManager::ProxyReporterManager(QObject *parent) :
-    QObject(parent)
+    AbstractProvidingProxyManager(parent)
 {
  setObjectName("ProxyReporterManager");
 // registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
+ //propertyChangeSupport = new SwingPropertyChangeSupport(this,this);
 
 }
 
@@ -24,7 +25,7 @@ ProxyReporterManager::ProxyReporterManager(QObject *parent) :
 //@Override
 /*protected*/ AbstractManager *ProxyReporterManager::makeInternalManager()
 {
-        return (AbstractManager*)((InternalSystemConnectionMemo*) InstanceManager::getDefault("InternalSystemConnectionMemo"))->getReporterManager();
+ return (AbstractManager*)((InternalSystemConnectionMemo*) InstanceManager::getDefault("InternalSystemConnectionMemo"))->getReporterManager();
 }
 
 /*public*/ int ProxyReporterManager::getXMLOrder() const{
@@ -45,7 +46,7 @@ ProxyReporterManager::ProxyReporterManager(QObject *parent) :
 
 //@Override
 //@Nonnull
-/*protected*/ NamedBean* ProxyReporterManager::makeBean(Manager/*<Reporter>*/* manager, QString systemName, QString userName) /*throws IllegalArgumentException*/ {
+/*protected*/ NamedBean* ProxyReporterManager::makeBean(AbstractManager *manager, QString systemName, QString userName) /*throws IllegalArgumentException*/ {
     return ((ReporterManager*) manager)->newReporter(systemName, userName);
 }
 
