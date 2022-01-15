@@ -47,7 +47,7 @@
 /*private*/ /*final*/ /*static*/ Logger* JmriConfigurationManager::log = LoggerFactory::getLogger("JmriConfigurationManager");
 
 //@SuppressWarnings("unchecked") // For types in InstanceManager.store()
-/*public*/ JmriConfigurationManager::JmriConfigurationManager(QObject* parent) : ConfigureManager(parent)
+/*public*/ JmriConfigurationManager::JmriConfigurationManager(QObject* parent) : QObject(parent)
 {
  setObjectName("JmriConfigurationManager");
  legacy = new ConfigXmlManager();
@@ -221,13 +221,13 @@
 
 //@Override
 /*public*/ bool JmriConfigurationManager::
-load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
+load(File* file, bool registerDeferred)  /*throw (JmriConfigureXmlException)*/
 {
     return this->load(FileUtil::fileToURL(file), registerDeferred);
 }
 
 //@Override
-/*public*/ bool JmriConfigurationManager::load(QUrl file, bool registerDeferred)  throw (JmriConfigureXmlException)
+/*public*/ bool JmriConfigurationManager::load(QUrl file, bool registerDeferred)
 {
  log->debug(tr("loading %1 ...").arg(file.path()));
  try {
@@ -442,7 +442,7 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
 }
 
 //@Override
-/*public*/ bool JmriConfigurationManager::loadDeferred( QUrl file)  throw (JmriConfigureXmlException)
+/*public*/ bool JmriConfigurationManager::loadDeferred( QUrl file)
 {
     return this->legacy->loadDeferred(file);
 }
@@ -461,7 +461,7 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
 {
  if (!provider->isInitialized(profile) && !provider->isInitializedWithExceptions(profile))
  {
-  log->debug(tr("Initializing provider %1").arg(provider->self()->metaObject()->className()));
+  log->debug(tr("Initializing provider %1").arg(((AbstractPreferencesManager*)provider)->metaObject()->className()));
 //        foreach (QString extends PreferencesManager> c : provider.getRequires()) {
 //            InstanceManager.getList(c).stream().forEach((p) -> {
 //                this.initializeProvider(p, profile);
@@ -494,7 +494,7 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
    }
   }
   this->initialized->append(provider);
-  log->debug(tr("Initialized provider %1").arg(provider->self()->metaObject()->className()));
+  log->debug(tr("Initialized provider %1").arg(((AbstractPreferencesManager*)provider)->metaObject()->className()));
  }
 }
 
@@ -503,7 +503,7 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
 }
 
 //@Override
-/*public*/ void JmriConfigurationManager::setValidate(Validate v) {
+/*public*/ void JmriConfigurationManager::setValidate(XmlFile::Validate v) {
     legacy->setValidate(v);
 }
 

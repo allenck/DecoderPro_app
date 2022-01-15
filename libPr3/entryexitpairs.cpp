@@ -21,6 +21,8 @@
 #include "conditionalaction.h"
 #include "joptionpane.h"
 #include "vetoablechangesupport.h"
+#include "appsconfigurationmanager.h"
+#include "defaultlogixmanager.h"
 
 /**
  * Implements an Entry Exit based method of setting turnouts, setting up signal logic and the
@@ -95,7 +97,7 @@ return (settingRouteColor == QColor() ? false : true);
 
 /*static*/ QWidget* EntryExitPairs::glassPane = NULL; //new QWidget();
 
-/*public*/ EntryExitPairs::EntryExitPairs(QObject */*parent*/) :VetoableChangeSupport(parent())
+/*public*/ EntryExitPairs::EntryExitPairs(QObject *parent) : VetoableChangeSupport(parent)
 {
  setObjectName("EntryExitPairs");
  setProperty("JavaClassName", "jmri.jmrit.entryexit.EntryExitPairs");
@@ -123,7 +125,7 @@ return (settingRouteColor == QColor() ? false : true);
 
  memo = (SystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo");
  if(InstanceManager::getDefault("ConfigureManager")!=NULL)
-   static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerUser(this);
+   qobject_cast<AppsConfigurationManager*>(InstanceManager::getDefault("ConfigureManager"))->registerUser(this);
  ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->PropertyChangeSupport::addPropertyChangeListener(/*propertyBlockManagerListener*/(PropertyChangeListener*)this);
  //connect(lbm, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
 
@@ -779,14 +781,14 @@ public List<DestinationPoints> getNamedBeanList() {
  */
 /*private*/ bool EntryExitPairs::checkNxPairs()
 {
- LogixManager* mgr = static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"));
+ DefaultLogixManager* mgr = static_cast<DefaultLogixManager*>(InstanceManager::getDefault("LogixManager"));
  QList<QString> conditionalReferences = QList<QString> ();
  for (DeletePair* dPair : deletePairList)
  {
   if (dPair->dp == nullptr) {
       continue;
   }
-  for (NamedBean* nb : mgr->getNamedBeanSet())
+  for (NamedBean* nb : mgr->AbstractManager::getNamedBeanSet())
   {
    Logix* lgx = (Logix*)nb;
    for (int i = 0; i < lgx->getNumConditionals(); i++)

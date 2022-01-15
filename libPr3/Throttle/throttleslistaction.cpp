@@ -28,7 +28,7 @@
 void ThrottlesListAction::common()
 {
  // disable the ourselves if there is no throttle Manager
- if (InstanceManager::throttleManagerInstance() == NULL)
+ if (InstanceManager::getNullableDefault("ThrottleManager") == nullptr)
  {
   setEnabled(false);
  }

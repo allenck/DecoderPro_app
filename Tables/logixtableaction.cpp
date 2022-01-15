@@ -361,7 +361,7 @@ void LogixTableModel::doDelete(NamedBean* bean)
 
 /*public*/ AbstractManager *LogixTableModel::getManager()
 {
- return (LogixManager*)InstanceManager::getDefault("LogixManager");
+ return (AbstractManager*)InstanceManager::getDefault("LogixManager");
  //return self->_logixManager;
 
 }
@@ -810,7 +810,7 @@ void RefDialog::deviceReportPressed(JActionEvent* /*e*/)
 //};
 
 void LogixTableAction::enableAll(bool enable) {
-    QStringList sysNameList = ((DefaultLogixManager*)_logixManager)->getSystemNameList();
+    QStringList sysNameList = ((DefaultLogixManager*)_logixManager)->AbstractManager::getSystemNameList();
     for (int i=0; i<sysNameList.size(); i++) {
         Logix* x = (Logix*)((DefaultLogixManager*)_logixManager)->getBySystemName(sysNameList.at(i));
         ((DefaultLogix*)x)->setEnabled(enable);

@@ -703,7 +703,7 @@ ThrottleManager* InstanceManager::throttleManagerInstance()  {
  *
  * @return the default light manager. May not be the only instance.
  */
-LightManager* InstanceManager::lightManagerInstance()  { return (LightManager*) getDefault("LightManager");}
+LightManager* InstanceManager::lightManagerInstance()  { return (AbstractLightManager*) getDefault("LightManager");}
 
 
 /**
@@ -713,7 +713,7 @@ LightManager* InstanceManager::lightManagerInstance()  { return (LightManager*) 
  */
 MemoryManager* InstanceManager::memoryManagerInstance()
 {
- return static_cast<MemoryManager*>(getDefault("MemoryManager"));
+ return (AbstractMemoryManager*)(getDefault("MemoryManager"));
 }
 
 // Needs to have proxy manager converted to work

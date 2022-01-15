@@ -8,13 +8,15 @@
 #include "level.h"
 #include "../libPr3/configuremanager.h"
 #include "liblayouteditor_global.h"
+#include "xmlfile.h"
 
 class File;
 class XmlAdapter;
 class ErrorHandler;
-class LIBLAYOUTEDITORSHARED_EXPORT ConfigXmlManager : public ConfigureManager
+class LIBLAYOUTEDITORSHARED_EXPORT ConfigXmlManager : public XmlFile, public ConfigureManager
 {
     Q_OBJECT
+    Q_INTERFACES(ConfigureManager)
 public:
     explicit ConfigXmlManager(QObject *parent = nullptr);
     ~ConfigXmlManager();
@@ -50,6 +52,8 @@ public:
     /*public*/ bool load(QUrl url) throw (JmriConfigureXmlException) override;
     /*public*/ bool load(File* fi, bool registerDeferred) /*throw (JmriException)*/  override;
     /*public*/ bool load(QUrl url, bool registerDeferred) throw (JmriConfigureXmlException)  override;
+    /*public*/ void setValidate(XmlFile::Validate v)override;
+    /*public*/ XmlFile::Validate getValidate()override;
     /*public*/ bool loadDeferred(File* fi) /*throw (JmriException)*/ override;
     /*public*/ bool loadDeferred(QUrl url) throw (JmriConfigureXmlException) override;
     /*public*/ QUrl find(QString f) override;
@@ -68,6 +72,8 @@ public:
             Throwable *exception
             );
     static /*public*/ void setErrorHandler(ErrorHandler* handler);
+
+    QObject* self() override{return (QObject*)this;}
 
 signals:
 
@@ -89,6 +95,7 @@ private:
     static ErrorHandler* handler;// = new ErrorHandler();
     QMap<QString, QString> configXmlMap;
 //    /*private*/ void loadVersion(QDomElement root, XmlAdapter* adapter) ;
+    /*private*/ XmlFile::Validate validate = XmlFile::Validate::CheckDtdThenSchema;
 
 protected:
 

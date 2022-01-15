@@ -35,6 +35,7 @@
  */
 /*public*/ /*interface*/ class JTablePersistenceManager : public AbstractPreferencesManager
 {
+  Q_OBJECT
 public:
  JTablePersistenceManager(QObject* parent = 0) : AbstractPreferencesManager(parent){}
     /**

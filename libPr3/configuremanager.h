@@ -7,7 +7,7 @@
 #include "xmlfile.h"
 #include "exceptions.h"
 
-class ConfigureManager :  public XmlFile
+class ConfigureManager
 {
     //Q_OBJECT
 public:
@@ -56,9 +56,9 @@ public:
      * @see jmri.configurexml.ConfigXmlManager
      */
 //    public interface ConfigureManager {
-    ConfigureManager(QObject* parent = 0) : XmlFile(parent) {}
-    ~ConfigureManager() {}
-    ConfigureManager(const ConfigureManager&) : XmlFile() {}
+//    ConfigureManager(QObject* parent = 0) : XmlFile(parent) {}
+//    ~ConfigureManager() {}
+//    ConfigureManager(const ConfigureManager&) : XmlFile() {}
         virtual void registerPref(QObject* /*o*/) {}
         virtual void removePrefItems() {}
 
@@ -210,11 +210,26 @@ public:
          */
         virtual bool makeBackup(File* /*file*/) const { return false;}
 
+      /**
+       * Control the scope of validation of XML files when loading.
+       *
+       * @param validate the validation scope
+       */
+      virtual /*public*/ void setValidate(XmlFile::Validate validate)=0;
+
+      /**
+       * Get the scope of validation of XML files when loading.
+       *
+       * @return the validation scope
+       */
+      virtual /*public*/ XmlFile::Validate getValidate()=0;
+
+    virtual QObject* self() =0;
 signals:
     
 public slots:
     
 };
 Q_DECLARE_INTERFACE(ConfigureManager, "ConfigureManager")
-Q_DECLARE_METATYPE(ConfigureManager)
+//Q_DECLARE_METATYPE(ConfigureManager)
 #endif // CONFIGUREMANAGER_H

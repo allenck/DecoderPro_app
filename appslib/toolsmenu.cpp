@@ -147,7 +147,7 @@ addAction(ta);
 
 
  // disable the throttle menu if there is no throttle Manager
- if (InstanceManager::throttleManagerInstance() == NULL)
+ if (InstanceManager::getNullableDefault("ThrottleManager") == nullptr)
  {
   throttleMenu->setEnabled(false);
  }

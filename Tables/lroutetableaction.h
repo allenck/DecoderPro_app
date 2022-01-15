@@ -305,7 +305,7 @@ public:
  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
  /*public*/ QVariant data(const QModelIndex &index, int role) const;
  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
- /*public*/ virtual AbstractManager *getManager();
+// /*public*/ virtual AbstractManager *getManager();
  /*public*/ virtual NamedBean* getBySystemName(QString name) const;
  /*public*/ virtual NamedBean* getByUserName(QString name);
  /*public*/ int getDisplayDeleteMsg() ;

@@ -70,7 +70,7 @@ private:
     /*throw (JmriException)*/;
     friend class TimeTurnout;
     friend class TimeSensor;
-    friend class ErrorDialog;
+    friend class DCErrorDialog;
 };
 /*static*/ class DataPair
 {
@@ -111,13 +111,13 @@ public slots:
 
 };
 
-class ErrorDialog : public  JDialog
+class DCErrorDialog : public  JDialog
 {
  Q_OBJECT
     QCheckBox* rememberSession;
     DefaultConditional* cond;
 public:
-    ErrorDialog(QStringList list, DefaultConditional* cond);
+    DCErrorDialog(QStringList list, DefaultConditional* cond);
 public slots:
     void onCloseButton();
 };

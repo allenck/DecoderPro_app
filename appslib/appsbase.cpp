@@ -22,6 +22,7 @@
 #include "jmriconfigurationmanager.h"
 #include "jmriuserpreferencesmanager.h"
 #include "appspreferencesactionfactory.h"
+#include "appsconfigurationmanager.h"
 
 AppsBase::AppsBase(QObject *parent) :
     QObject(parent)
@@ -250,7 +251,7 @@ void AppsBase::init()
 /*protected*/ void AppsBase::installConfigurationManager()
 {
  //InstanceManager::store(new AppsPreferencesActionFactory(), "JmriPreferencesActionFactory");
- ConfigureManager* cm = (ConfigureManager*)InstanceManager::setDefault("ConfigureManager", new JmriConfigurationManager());
+ AppsConfigurationManager* cm =  new AppsConfigurationManager();
  FileUtil::createDirectory(FileUtil::getUserFilesPath());
 // InstanceManager::setConfigureManager(cm);
 // QString cfgName;

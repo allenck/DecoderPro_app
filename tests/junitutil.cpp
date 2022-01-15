@@ -854,7 +854,7 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 }
 #endif
 /*public*/ /*static*/ void JUnitUtil::initLogixManager() {
-    LogixManager* m = new DefaultLogixManager(InstanceManager::getDefault("InternalSystemConnectionMemo"));
+    DefaultLogixManager* m = new DefaultLogixManager(InstanceManager::getDefault("InternalSystemConnectionMemo"));
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
         ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m, Manager::LOGIXS);
     }

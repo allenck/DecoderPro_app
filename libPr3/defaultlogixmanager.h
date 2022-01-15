@@ -6,9 +6,10 @@
 
 class DecimalFormat;
 class Logix;
-class LIBPR3SHARED_EXPORT DefaultLogixManager : public LogixManager
+class LIBPR3SHARED_EXPORT DefaultLogixManager : public AbstractManager, public LogixManager
 {
     Q_OBJECT
+  Q_INTERFACES(LogixManager)
 public:
     explicit DefaultLogixManager(QObject *parent = 0);
     int getXMLOrder() const override;

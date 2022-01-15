@@ -1285,7 +1285,7 @@ LogixPickModel::LogixPickModel (QObject* parent): PickListModel(parent) {
     _name = tr("Logix Table");
 }
 /*public*/ AbstractManager* LogixPickModel::getManager() {
-    return manager;
+    return (AbstractManager*)manager->self();
 }
 /*public*/ NamedBean* LogixPickModel::getBySystemName(QString name)const {
     return (NamedBean*)manager->getBySystemName(name);

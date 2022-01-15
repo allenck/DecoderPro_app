@@ -512,12 +512,12 @@
          */
         /*public*/ /*final*/ VetoableChangeListener* VetoableChangeListenerMap::extract(VetoableChangeListener* listener) {
             //while (listener instanceof VetoableChangeListenerProxy)
+#if 0
             while(static_cast<VetoableChangeListenerProxy*>(listener->self()) != nullptr)
             {
-#if 1
                 listener = ((VetoableChangeListenerProxy*) listener)->getListener();
-#endif
             }
+#endif
             return listener;
         }
 //    };

@@ -168,7 +168,7 @@ AbstractSignalHeadManagerXml::~AbstractSignalHeadManagerXml()
  AbstractSignalHeadManager* pManager = new AbstractSignalHeadManager((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"));
  InstanceManager::setDefault("SignalHeadManager", pManager);
  // register new one for configuration
- static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerConfig(pManager, Manager::SIGNALHEADS);
+ qobject_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerConfig(pManager, Manager::SIGNALHEADS);
 }
 
 /*public*/ int AbstractSignalHeadManagerXml::loadOrder() const

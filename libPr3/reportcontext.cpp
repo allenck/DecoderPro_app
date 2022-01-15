@@ -20,6 +20,7 @@
 #include "configuremanager.h"
 #include "zeroconfservice.h"
 #include <QHostInfo>
+#include "appsconfigurationmanager.h"
 
 /**
  * Provide the JMRI context info.
@@ -56,7 +57,7 @@
 
     addString("JMRI Application: " + QApplication::applicationName() + "   ");
     //ConnectionConfig[] connList = InstanceManager.getDefault(ConnectionConfigManager.class).getConnections();
-    QObjectList connList = static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->getInstanceList("ConnectionConfig");
+    QObjectList connList = qobject_cast<AppsConfigurationManager*>(InstanceManager::getDefault("ConfigureManager"))->getInstanceList("ConnectionConfig");
     if (!connList.isEmpty()) {
         for (int x = 0; x < connList.length(); x++) {
             ConnectionConfig* conn = (ConnectionConfig*)connList.at(x);

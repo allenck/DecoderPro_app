@@ -258,9 +258,9 @@ bool Apps::configDeferredLoadOK = false;
 
  // Install configuration manager and Swing error handler
  // Constructing the AppsConfigurationManager also loads various configuration services
- ConfigureManager* cm = nullptr;
- if((cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager")) == nullptr)
-   cm = (ConfigureManager*)InstanceManager::setDefault("ConfigureManager", new AppsConfigurationManager());
+ JmriConfigurationManager* cm = nullptr;
+ if((cm = (JmriConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager")) == nullptr)
+   cm = (JmriConfigurationManager*)InstanceManager::setDefault("ConfigureManager", new AppsConfigurationManager());
 
   //ConfigXmlManager::setErrorHandler(new DialogErrorHandler());
   //InstanceManager::setConfigureManager(cm);
@@ -621,7 +621,7 @@ void Apps::initGui() // must be called after Constructor is complete!
  log->debug("start deferred load from config file " + file->getPath());
  try
  {
-  ConfigureManager* cmOD = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+  AppsConfigurationManager* cmOD = (AppsConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
   if (cmOD != NULL) {
       result = cmOD->loadDeferred(file);
   } else {

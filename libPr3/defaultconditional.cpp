@@ -1009,7 +1009,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
     break;
    }
    case Conditional::ACTION_ENABLE_LOGIX:
-    x = static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getLogix(devName);
+    x = qobject_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getLogix(devName);
     if (x == nullptr) {
         errorList.append("invalid logix name in action - "+action->getDeviceName());
     }
@@ -1019,7 +1019,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
     }
     break;
    case Conditional::ACTION_DISABLE_LOGIX:
-    x = static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getLogix(devName);
+    x = qobject_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getLogix(devName);
     if (x == nullptr) {
         errorList.append("invalid logix name in action - "+action->getDeviceName());
     }
@@ -1425,7 +1425,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
   //Toolkit.getDefaultToolkit().beep();
   QApplication::beep();
   if (!_skipErrorDialog) {
-      new ErrorDialog(errorList, this);
+      new DCErrorDialog(errorList, this);
   }
  }
  if (log->isDebugEnabled())
@@ -1450,7 +1450,7 @@ DataPair::DataPair()
 
 //class ErrorDialog : public  QDialog {
 //    JCheckBox rememberSession;
-    ErrorDialog::ErrorDialog(QStringList list, DefaultConditional *cond) : JDialog()
+    DCErrorDialog::DCErrorDialog(QStringList list, DefaultConditional *cond) : JDialog()
     {
         //super();
      this->cond = cond;
@@ -1502,7 +1502,7 @@ DataPair::DataPair()
         setVisible(true);
     }
 
-    void ErrorDialog::onCloseButton()
+    void DCErrorDialog::onCloseButton()
     {
      if(rememberSession->isChecked()){
          cond->_skipErrorDialog = true;

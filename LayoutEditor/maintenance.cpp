@@ -710,12 +710,12 @@ Maintenance::Maintenance(QObject *parent) :
  bool found = false;
  bool empty = true;
  // search for references among each class known to be listeners
- QStringListIterator iter1(static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getSystemNameList());
+ QStringListIterator iter1(qobject_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getSystemNameList());
  while (iter1.hasNext())
  {
   // get the next Logix
   QString sName = iter1.next();
-  Logix* x =(Logix*) static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getBySystemName(sName);
+  Logix* x =(Logix*) qobject_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getBySystemName(sName);
   if (x==NULL)
   {
    log->error("Error getting Logix  - " + sName);
@@ -1308,10 +1308,10 @@ Maintenance::Maintenance(QObject *parent) :
     ConditionalManager* conditionalManager = static_cast<ConditionalManager*>(InstanceManager::getDefault("ConditionalManager"));
     sysNameList = conditionalManager->getSystemNameList();
 
-    iter1 = QStringListIterator(static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getSystemNameList());
+    iter1 = QStringListIterator(qobject_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getSystemNameList());
     while (iter1.hasNext()) {
         QString sName = iter1.next();
-        Logix* x =(Logix*)static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getBySystemName(sName);
+        Logix* x =(Logix*)qobject_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getBySystemName(sName);
         for (int i=0; i<((DefaultLogix*)x)->getNumConditionals(); i++)  {
             sName = ((DefaultLogix*)x)->getConditionalByNumberOrder(i);
             sysNameList.removeAt(sysNameList.indexOf(sName));

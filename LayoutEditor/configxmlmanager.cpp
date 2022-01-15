@@ -37,7 +37,7 @@ QString ConfigXmlManager::fileLocation = QString("layout")+QDir::separator();
 
 
 ConfigXmlManager::ConfigXmlManager(QObject *parent) :
-    ConfigureManager(parent)
+    XmlFile(parent)
 {
  setObjectName("ConfigXmlManager");
  if(log != nullptr)
@@ -1071,6 +1071,17 @@ File userPrefsFile;*/
  }
 
  return result;
+}
+/** {@inheritDoc} */
+//@Override
+/*public*/ void ConfigXmlManager::setValidate(XmlFile::Validate v) {
+    validate = v;
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ XmlFile::Validate ConfigXmlManager::getValidate() {
+    return validate;
 }
 
 //@Override

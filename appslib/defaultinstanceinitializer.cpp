@@ -76,6 +76,8 @@
 #include "jmriclient/jmriclientsystemconnectionmemo.h"
 #include "../operations/routemanager.h"
 #include "defaultvariablelightmanager.h"
+#include "defaultlightcontrol.h"
+#include "jmriconfigurationmanager.h"
 
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {
@@ -248,9 +250,11 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
 
  if (type == "Timebase")
  {
-  Timebase* timebase = static_cast<Timebase*>(new SimpleTimebase(memo));
-  if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr)
-   static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerConfig(timebase, Manager::TIMEBASE);
+  Timebase* timebase = qobject_cast<Timebase*>(new SimpleTimebase(memo));
+  //InstanceManager.getOptionalDefault(ConfigureManager.class).ifPresent(cm -> cm.registerConfig(timebase, Manager.TIMEBASE));
+  AppsConfigurationManager* cm = (AppsConfigurationManager*)InstanceManager::getOptionalDefault("ConfigureManager");
+  if(cm)
+   cm->registerConfig(timebase, Manager::TIMEBASE);
   return timebase;
 //        return new SimpleTimebase();
  }
@@ -336,6 +340,13 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  }
 #endif
 
+ if (type == "GlobalProgrammerManager")
+ {
+  DefaultProgrammerManager* lnpm = new DefaultProgrammerManager();
+  InstanceManager::store(lnpm,type);
+  return lnpm;
+ }
+
  if (type == "RosterIconFactory") {
      return RosterIconFactory::instance();
  }
@@ -392,7 +403,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
 
  if(type == "ConfigureManager")
  {
-  ConfigureManager* cm = new AppsConfigurationManager();
+  AppsConfigurationManager* cm = new AppsConfigurationManager();
   //InstanceManager::store(cm,type);
   return cm;
  }

@@ -10,6 +10,7 @@ public:
 protected:
     /*protected*/ bool isEditDialogRestart();
 
+    QObject* self() override {return (QObject*)this;}
 };
 
 #endif // APPSCONFIGURATIONMANAGER_H

@@ -565,7 +565,7 @@ return routes;
  DefaultRouteManager* pManager = (DefaultRouteManager*)InstanceManager::getDefault("DefaultRouteManager");
  InstanceManager::store((QObject*)pManager, "RouteManager");
  // register new one for configuration
- static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)pManager, Manager::ROUTES);
+ qobject_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)pManager, Manager::ROUTES);
 }
 
 /*public*/ int DefaultRouteManagerXml::loadOrder() const {

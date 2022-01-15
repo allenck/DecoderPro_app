@@ -291,7 +291,7 @@
      panel->getTargetFrame()->setVisible(true);    // always show the panel
 
     // register the resulting panel for later configuration
-    ConfigureManager* cm = static_cast<ConfigureManager*>(InstanceManager::getNullableDefault("ConfigureManager"));
+    ConfigureManager* cm = qobject_cast<ConfigureManager*>(InstanceManager::getNullableDefault("ConfigureManager"));
     if (cm != nullptr) {
         cm->registerUser(panel);
     }

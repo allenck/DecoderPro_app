@@ -159,7 +159,7 @@ LBeanTableDataModel::LBeanTableDataModel(QObject* parent) : BeanTableDataModel(p
   }
  }
  Manager* m = getManager();
- QStringList list = ((DefaultLogixManager*)m)->getSystemNameList();
+ QStringList list = ((DefaultLogixManager*)m->self())->AbstractManager::getSystemNameList();
  sysNameList =  QStringList();
  // and add them back in
  for (int i = 0; i< list.size(); i++)
@@ -320,9 +320,9 @@ void LBeanTableDataModel::doDelete(NamedBean* bean)
   return BeanTableDataModel::matchPropertyName(e);
 }
 
-/*public*/ AbstractManager* LBeanTableDataModel::getManager() {
-    return _self->_logixManager;
-}
+///*public*/ AbstractManager* LBeanTableDataModel::getManager() {
+//    return _logixManager;
+//}
 
 /*public*/ NamedBean* LBeanTableDataModel::getBySystemName(QString name) const {
     return (NamedBean*)((DefaultLogixManager*)_self->_logixManager)->getBySystemName(name);

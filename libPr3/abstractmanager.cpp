@@ -11,6 +11,8 @@
 #include "namedbean.h"
 #include "vptr.h"
 #include "stringutil.h"
+#include "appsconfigurationmanager.h"
+
 /**
  * Abstract partial implementation for all Manager-type classes.
  * <P>
@@ -72,8 +74,8 @@ AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : 
 /*protected*/ void AbstractManager::registerSelf()
 {
   log->debug(tr("registerSelf for config of type %1").arg(this->metaObject()->className()));
-  ConfigureManager* cm;
-  cm = (ConfigureManager*)InstanceManager::getOptionalDefault("ConfigureManager");
+  AppsConfigurationManager* cm;
+  cm = (AppsConfigurationManager*)InstanceManager::getOptionalDefault("ConfigureManager");
   if (cm != NULL) {
       cm->registerConfig(this, getXMLOrder());
       log->debug(tr("registering for config of type %1").arg(this->metaObject()->className()));

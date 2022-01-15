@@ -106,7 +106,7 @@ void StoreXmlConfigAction::common()
  if (file==nullptr) return;
 
  // and finally store
- bool results = static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->storeConfig(file);
+ bool results = qobject_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->storeConfig(file);
  //System.out.println(results);
  log->debug(results?"store was successful":"Error Storing Information!");
  if (!results)

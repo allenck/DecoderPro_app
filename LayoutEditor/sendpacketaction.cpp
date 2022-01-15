@@ -29,7 +29,7 @@ common();
 void SendPacketAction::common()
 {
     // disable ourself if there is no command Station object available
-    if (InstanceManager::getDefault("CommandStation") == nullptr) {
+    if (InstanceManager::getNullableDefault("CommandStation") == nullptr) {
         setEnabled(false);
     }
     connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));

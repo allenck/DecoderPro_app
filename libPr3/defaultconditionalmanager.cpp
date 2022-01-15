@@ -240,7 +240,7 @@ DefaultConditionalManager::DefaultConditionalManager(QObject *parent) :
 /*public*/ Conditional* DefaultConditionalManager::getByUserName(QString key) {
     if (key == NULL)  return NULL;
     LogixManager* logixManager = (LogixManager*)InstanceManager::getDefault("LogixManager");
-    QStringListIterator iter(((DefaultLogixManager*) logixManager)->getSystemNameList());
+    QStringListIterator iter(((DefaultLogixManager*) logixManager)->AbstractManager::getSystemNameList());
     while (iter.hasNext()) {
         // get the next Logix
         QString sName = iter.next();     //sName a logix nams

@@ -6,6 +6,7 @@
 #include "defaultsignalmastlogic.h"
 #include "../LayoutEditor/configxmlmanager.h"
 #include "signalmastmanager.h"
+#include "appsconfigurationmanager.h"
 
 //DefaultSignalMastLogicManager::DefaultSignalMastLogicManager(QObject *parent) :
 //    SignalMastLogicManager(parent)
@@ -227,8 +228,8 @@
  * information.  Override to change that.
  **/
 /*protected*/ void DefaultSignalMastLogicManager::registerSelf() {
-     if (static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))!=NULL) {
-        static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerConfig(this, Manager::SIGNALMASTLOGICS);
+     if (qobject_cast<AppsConfigurationManager*>(InstanceManager::getDefault("ConfigureManager"))!=NULL) {
+        qobject_cast<AppsConfigurationManager*>(InstanceManager::getDefault("ConfigureManager"))->registerConfig(this, Manager::SIGNALMASTLOGICS);
         log->debug("register for config");
     }
 }
@@ -236,8 +237,8 @@
 // abstract methods to be extended by subclasses
 // to free resources when no longer used
 /*public*/ void DefaultSignalMastLogicManager::dispose() {
-    if (static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))!= NULL)
-        static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->deregister(this);
+    if (qobject_cast<AppsConfigurationManager*>(InstanceManager::getDefault("ConfigureManager"))!= NULL)
+        qobject_cast<AppsConfigurationManager*>(InstanceManager::getDefault("ConfigureManager"))->deregister(this);
     signalMastLogic.clear();
 }
 

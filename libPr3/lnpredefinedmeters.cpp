@@ -74,7 +74,7 @@
         int srcSerNum = msg->getElement(18)+128*msg->getElement(19);
 
         QString voltSysName = createSystemName(srcDeviceType, srcSerNum, "Voltage"); // NOI18N
-        MeterManager* mm = ((MeterManager*)InstanceManager::getDefault("MeterManager"));
+        MeterManager* mm = ((ProxyMeterManager*)InstanceManager::getDefault("MeterManager"));
 //        ((AbstractProxyMeterManager*)mm)->createSystemManager("L");
         //Meter* m = (DefaultMeter*)((AbstractMeterManager*)mm)->getBySystemName(voltSysName);
         NamedBean* m = mm->getBySystemName(voltSysName);
@@ -82,7 +82,7 @@
 
         QString ampsSysName = createSystemName(srcDeviceType, srcSerNum, "InputCurrent"); // NOI18N
         //m = (DefaultMeter*)((AbstractMeterManager*)InstanceManager::getDefault("MeterManager"))->getBySystemName(ampsSysName);
-        m = (DefaultMeter*)mm->getBeanBySystemName(ampsSysName);
+        m = mm->getBeanBySystemName(ampsSysName);
         updateAddMeter((DefaultMeter*)m, ampsSysName, valAmps, false);
     }
 

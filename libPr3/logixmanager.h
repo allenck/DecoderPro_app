@@ -3,12 +3,13 @@
 #include "manager.h"
 #include "abstractmanager.h"
 class Logix;
-class LogixManager : public AbstractManager
+class LogixManager : public Manager
 {
     //Q_OBJECT
+  Q_INTERFACES(Manager)
 public:
-    explicit LogixManager(QObject *parent = 0)
-        : AbstractManager(parent) {}
+//    explicit LogixManager(QObject *parent = 0)
+//        : AbstractManager(parent) {}
     /**
      * Interface for obtaining Logixs
      * <P>
@@ -84,10 +85,11 @@ public:
          */
         virtual void setLoadDisabled(bool /*s*/) = 0;
 
+  virtual QObject* self()=0;
 signals:
     
 public slots:
     
 };
-
+Q_DECLARE_INTERFACE(LogixManager, "LogixManager")
 #endif // LOGIXMANAGER_H
