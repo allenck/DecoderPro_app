@@ -59,8 +59,8 @@
             panel1->layout()->addWidget(turnoutNameLabel);
 
             // add combobox to select turnout
-            editLayoutTurnout1stTurnoutComboBox = new NamedBeanComboBox((TurnoutManager*)
-                    InstanceManager::getDefault("TurnoutManager"));
+            editLayoutTurnout1stTurnoutComboBox = new NamedBeanComboBox(
+                    (AbstractProxyManager*)InstanceManager::getDefault("TurnoutManager"));
             editLayoutTurnout1stTurnoutComboBox->setToolTip(tr("EditTurnoutToolTip"));
             LayoutEditor::setupComboBox(editLayoutTurnout1stTurnoutComboBox, false, true, false);
             turnoutNameLabel->setLabelFor(editLayoutTurnout1stTurnoutComboBox);
@@ -72,7 +72,7 @@
             panel1a->setLayout(new QVBoxLayout());//panel1a, BoxLayout.Y_AXIS));
 
             editLayoutTurnout2ndTurnoutComboBox = new NamedBeanComboBox(
-                    (TurnoutManager*)InstanceManager::getDefault("TurnoutManager"));
+                    (AbstractProxyManager*)InstanceManager::getDefault("TurnoutManager"));
             editLayoutTurnout2ndTurnoutComboBox->setToolTip(tr("Select a turnout, used turnouts are excluded from the list."));
             LayoutEditor::setupComboBox(editLayoutTurnout2ndTurnoutComboBox, false, true, false);
 

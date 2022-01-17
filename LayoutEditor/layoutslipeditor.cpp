@@ -54,7 +54,7 @@
             panel1->setLayout(new FlowLayout());
             JLabel* turnoutNameLabel = new JLabel(tr("Turnout") + " A");  // NOI18N
             panel1->layout()->addWidget(turnoutNameLabel);
-            editLayoutSlipTurnoutAComboBox = new NamedBeanComboBox((TurnoutManager*)InstanceManager::getDefault("TurnoutManager"));
+            editLayoutSlipTurnoutAComboBox = new NamedBeanComboBox((AbstractProxyManager*)InstanceManager::getDefault("TurnoutManager"));
             editLayoutSlipTurnoutAComboBox->setToolTip(tr("Select a turnout, used turnouts are excluded from the list."));
             LayoutEditor::setupComboBox(editLayoutSlipTurnoutAComboBox, false, true, false);
             turnoutNameLabel->setLabelFor(editLayoutSlipTurnoutAComboBox);
@@ -66,7 +66,7 @@
             panel1a->setLayout(new FlowLayout());
             JLabel* turnoutBNameLabel = new JLabel(tr("BeanNameTurnout") + " B");  // NOI18N
             panel1a->layout()->addWidget(turnoutBNameLabel);
-            editLayoutSlipTurnoutBComboBox = new NamedBeanComboBox((TurnoutManager*)InstanceManager::getDefault("TurnoutManager"));
+            editLayoutSlipTurnoutBComboBox = new NamedBeanComboBox((AbstractProxyManager*)InstanceManager::getDefault("TurnoutManager"));
             editLayoutSlipTurnoutBComboBox->setToolTip(tr("Select a turnout, used turnouts are excluded from the list."));
             LayoutEditor::setupComboBox(editLayoutSlipTurnoutBComboBox, false, true, false);
             turnoutBNameLabel->setLabelFor(editLayoutSlipTurnoutBComboBox);

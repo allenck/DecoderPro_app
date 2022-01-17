@@ -5,6 +5,7 @@
 #include "tristatejcheckbox.h"
 #include "tablecolumnmodelevent.h"
 #include "tablecolumnmodellistener.h"
+#include "abstractmanager.h"
 
 class QGridLayout;
 class QFrame;
@@ -19,19 +20,19 @@ public:
     //explicit AbstractTableTabAction(QObject *parent = 0);
     /*public*/ AbstractTableTabAction(QString s, QObject *parent);
     ~AbstractTableTabAction();
-    /*public*/ QWidget* getPanel();
-    /*public*/ void addToFrame(BeanTableFrame* f);
-    /*public*/ void setMenuBar(BeanTableFrame* f);
+    /*public*/ QWidget* getPanel()override;
+    /*public*/ void addToFrame(BeanTableFrame* f)override;
+    /*public*/ void setMenuBar(BeanTableFrame* f) override;
     /*public*/ void addToBottomBox(QWidget* c, QString str);
     /*public*/ void print(JTable::PrintMode mode, QString headerFormat, QString footerFormat);
-    /*public*/ void dispose();
+    /*public*/ void dispose()override;
  virtual /*public*/ BeanTableFrame* currFrame();
  virtual /*public*/ void setCurrFrame(BeanTableFrame*);
 signals:
 
 public slots:
     void On_dataTabs_currentChanged(int);
-    void actionPerformed(JActionEvent *e = 0);
+    void actionPerformed(JActionEvent *e = 0)override;
 private:
     Logger* log;
     QVBoxLayout* centralWidgetLayout;
@@ -46,13 +47,13 @@ protected:
     virtual /*abstract*/ /*protected*/ Manager* getManager();
     virtual /*abstract*/ /*protected*/ AbstractTableAction* getNewTableAction(QString choice);
     /*protected*/ QList<TabbedTableItem*> tabbedTableArray;// = new ArrayList<TabbedTableItem>();
-    /*protected*/ void setTitle();
-    virtual /*abstract*/ /*protected*/ QString helpTarget();
+    /*protected*/ void setTitle()override;
+    virtual /*abstract*/ /*protected*/ QString helpTarget()override;
     void buildMenus(BeanTableFrame* f);
-    virtual /*protected*/ void columnsVisibleUpdated(QVector<bool> colsVisible);
+    virtual /*protected*/ void columnsVisibleUpdated(QVector<bool> colsVisible)override;
 
 protected slots:
-    /*protected*/ void addPressed(ActionEvent* e = 0);
+    /*protected*/ void addPressed(JActionEvent* e = 0)override;
     void On_printAction_triggered();
 friend class TablesFrame;
 friend class TurnoutTableTabAction;
@@ -85,7 +86,7 @@ friend class LightTableTabAction;
     /*private*/ void setPropertyVisibleCheckbox(QVector<bool> colsVisible);
 
 public:
-    /*public*/ TabbedTableItem(QString choice, bool stdModel, Manager* manager, AbstractTableAction* tableAction);
+    /*public*/ TabbedTableItem(QString choice, bool stdModel, Manager *manager, AbstractTableAction* tableAction);
     void createDataModel();
     void addPanelModel();
     /*public*/ bool getStandardTableModel();

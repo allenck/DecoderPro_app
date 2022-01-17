@@ -64,12 +64,12 @@ AbstractTableTabAction::~AbstractTableTabAction()
  //if (getManager() instanceof jmri.managers.AbstractProxyManager)
  if(qobject_cast<ProxyManager*>(getManager()->self())!= nullptr)
  {
-  ProxyManager* proxy = qobject_cast<ProxyManager*>(getManager()->self());
+  AbstractProxyManager* proxy = qobject_cast<AbstractProxyManager*>(getManager()->self());
   QList<AbstractManager*> managerList = proxy->getDisplayOrderManagerList();
   AbstractTableAction* a = getNewTableAction("All");
   Q_UNUSED(a);
   tabbedTableArray.append(new TabbedTableItem("All", true, getManager(), getNewTableAction("All")));
-  for(Manager* manager : managerList)
+  for(AbstractManager* manager : managerList)
   {
    QString manuName = manager->getMemo()->getUserName();
    TabbedTableItem* itemModel = new TabbedTableItem(manuName, true, manager, getNewTableAction(manuName));
@@ -131,7 +131,7 @@ void AbstractTableTabAction::On_dataTabs_currentChanged(int iTab)
 
 /*abstract*/ /*protected*/ QString AbstractTableTabAction::helpTarget() {return "";}
 
-/*protected*/ void AbstractTableTabAction::addPressed(ActionEvent* /*e*/) {
+/*protected*/ void AbstractTableTabAction::addPressed(JActionEvent * /*e*/) {
     log->warn("This should not have happened");
 }
 
@@ -240,7 +240,7 @@ void AbstractTableTabAction::actionPerformed(JActionEvent */*e*/)
 /*static*/ /*final*/ int TabbedTableItem::bottomStrutWidth = 20;
 
 
-/*public*/ TabbedTableItem::TabbedTableItem(QString choice, bool stdModel, Manager* manager, AbstractTableAction* tableAction)
+/*public*/ TabbedTableItem::TabbedTableItem(QString choice, bool stdModel, Manager *manager, AbstractTableAction* tableAction)
 {
  AddToFrameRan = false;
  standardModel = true;

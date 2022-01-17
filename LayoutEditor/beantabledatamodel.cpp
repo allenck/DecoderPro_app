@@ -114,7 +114,7 @@ void BeanTableDataModel::setManager(Manager *) {}
 
 /*protected*/ /*synchronized*/ void BeanTableDataModel::updateNameList()
 {
- AbstractManager* mgr = (AbstractManager*)getManager();
+ Manager* mgr = getManager();
 
  // first, remove listeners from the individual objects
  if (!sysNameList.isEmpty())
@@ -133,6 +133,7 @@ void BeanTableDataModel::setManager(Manager *) {}
   }
  }
  sysNameList = mgr->getSystemNameList();
+ //sysNameList = getManager().getNamedBeanSet().stream().map(NamedBean::getSystemName).collect( java.util.stream.Collectors.toList() );
  qSort(sysNameList.begin(), sysNameList.end(), SystemNameComparator::compare);
  // and add them back in
  for (int i = 0; i< sysNameList.size(); i++)

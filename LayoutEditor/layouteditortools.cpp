@@ -78,7 +78,259 @@
 
  layoutEditor = thePanel;
 
+ turnout1ComboBox
+         = new NamedBeanComboBox(
+        (AbstractProxyManager*)InstanceManager::turnoutManagerInstance()->self(),
+        nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
+    turnout2ComboBox
+            = new NamedBeanComboBox(
+           (AbstractProxyManager*)InstanceManager::turnoutManagerInstance()->self(),
+           nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    a1TToTSignalHeadComboBox
+        = new NamedBeanComboBox(
+           (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+           nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    a2TToTSignalHeadComboBox
+            = new NamedBeanComboBox(
+           (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+           nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    b1TToTSignalHeadComboBox
+            = new NamedBeanComboBox(
+           (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+           nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    b2TToTSignalHeadComboBox
+           = new NamedBeanComboBox(
+           (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+           nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    c1TToTSignalHeadComboBox
+            = new NamedBeanComboBox(
+           (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+           nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    c2TToTSignalHeadComboBox
+        = new NamedBeanComboBox(
+           (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+           nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    d1TToTSignalHeadComboBox
+           = new NamedBeanComboBox(
+           (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+           nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    d2TToTSignalHeadComboBox
+            = new NamedBeanComboBox(
+           (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+           nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    turnoutComboBox
+        = new NamedBeanComboBox(
+                (AbstractProxyManager*)InstanceManager::turnoutManagerInstance()->self(),
+                nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    throatContinuingSignalHeadComboBox
+        = new NamedBeanComboBox(
+                (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+                nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    throatDivergingSignalHeadComboBox
+        = new NamedBeanComboBox(
+                (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+                nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    continuingSignalHeadComboBox
+        = new NamedBeanComboBox(
+                (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+                nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    divergingSignalHeadComboBox
+        = new NamedBeanComboBox(
+                (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+                nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    signalMastsTurnoutComboBox
+        = new NamedBeanComboBox(
+                   (AbstractProxyManager*)InstanceManager::turnoutManagerInstance()->self(), nullptr,
+                   NamedBean::DisplayOptions::DISPLAYNAME);
+    block1IDComboBox
+        = new NamedBeanComboBox(
+                (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+                nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    block2IDComboBox
+        = new NamedBeanComboBox(
+                (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+                nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    eastBoundSignalHeadComboBox
+       = new NamedBeanComboBox(
+               (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+               nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    westBoundSignalHeadComboBox
+        = new NamedBeanComboBox(
+                (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+                nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    a1SignalHeadComboBox
+        = new NamedBeanComboBox(
+                (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+                nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    a2SignalHeadComboBox
+        = new NamedBeanComboBox(
+                (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+                nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    b1SignalHeadComboBox
+        = new NamedBeanComboBox(
+                (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+                nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    b2SignalHeadComboBox
+        = new NamedBeanComboBox(
+                (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+                nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    c1SignalHeadComboBox
+        = new NamedBeanComboBox(
+                (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+                nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    c2SignalHeadComboBox
+        = new NamedBeanComboBox(
+                (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+                nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    d1SignalHeadComboBox
+        = new NamedBeanComboBox(
+                (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+                nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    d2SignalHeadComboBox
+        = new NamedBeanComboBox(
+                (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+                nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+
+    sensorsTurnoutComboBox
+            = new NamedBeanComboBox(
+                    (AbstractProxyManager*)InstanceManager::turnoutManagerInstance()->self(),
+                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    slipSensorsBlockAComboBox
+                = new NamedBeanComboBox(
+                        (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+                        nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    slipSensorsBlockBComboBox
+                = new NamedBeanComboBox(
+                        (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+                        nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    slipSensorsBlockCComboBox
+                = new NamedBeanComboBox(
+                        (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+                        nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    slipSensorsBlockDComboBox
+                = new NamedBeanComboBox(
+                        (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+                        nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    xingBlockACComboBox
+        = new NamedBeanComboBox(
+                (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+                nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    xingBlockBDComboBox
+        = new NamedBeanComboBox(
+                (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+                nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ a1SlipSignalHeadComboBox
+             = new NamedBeanComboBox(
+                     (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+                     nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ a2SlipSignalHeadComboBox
+             = new NamedBeanComboBox(
+                     (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+                     nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ b1SlipSignalHeadComboBox
+             = new NamedBeanComboBox(
+                     (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+                     nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ b2SlipSignalHeadComboBox
+             = new NamedBeanComboBox(
+                     (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+                     nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ c1SlipSignalHeadComboBox
+             = new NamedBeanComboBox(
+                     (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+                     nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ c2SlipSignalHeadComboBox
+             = new NamedBeanComboBox(
+                     (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+                     nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ d1SlipSignalHeadComboBox
+             = new NamedBeanComboBox(
+                     (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+                     nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ d2SlipSignalHeadComboBox
+             = new NamedBeanComboBox(
+                     (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+                     nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ blockACComboBox = new NamedBeanComboBox(
+             (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+             nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ blockBDComboBox
+       = new NamedBeanComboBox(
+             (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+             nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ aSignalHeadComboBox
+     = new NamedBeanComboBox(
+             (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+             nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ bSignalHeadComboBox
+     = new NamedBeanComboBox(
+             (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+             nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ cSignalHeadComboBox
+     = new NamedBeanComboBox(
+             (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+             nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ dSignalHeadComboBox
+     = new NamedBeanComboBox(
+             (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+             nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ xingSensorsBlockACComboBox
+             = new NamedBeanComboBox(
+                     (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+                     nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ xingSensorsBlockBDComboBox
+             = new NamedBeanComboBox(
+        (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+        nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ slipSignalBlockAComboBox
+           = new NamedBeanComboBox(
+                   (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+                   nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ slipSignalBlockBComboBox
+           = new NamedBeanComboBox(
+                    (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+                   nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ slipSignalBlockCComboBox
+           = new NamedBeanComboBox(
+                    (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+                   nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ slipSignalBlockDComboBox
+           = new NamedBeanComboBox(
+                   (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+                   nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ turnoutAComboBox
+  = new NamedBeanComboBox(
+          (AbstractManager*)InstanceManager::turnoutManagerInstance()->self(),
+          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ turnoutBComboBox
+   = new NamedBeanComboBox(
+           (AbstractManager*)InstanceManager::turnoutManagerInstance()->self(),
+           nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ a1_3WaySignalHeadComboBox
+   = new NamedBeanComboBox(
+           (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+           nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ a2_3WaySignalHeadComboBox
+   = new NamedBeanComboBox(
+           (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+           nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ a3_3WaySignalHeadComboBox
+   = new NamedBeanComboBox(
+           (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+           nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ b_3WaySignalHeadComboBox
+   = new NamedBeanComboBox(
+           (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+           nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ c_3WaySignalHeadComboBox
+   = new NamedBeanComboBox(
+           (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+           nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ d_3WaySignalHeadComboBox
+   = new NamedBeanComboBox(
+           (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+           nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
  // operational variables for Set Signals at Double Crossover Turnout tool
 
 // setSignalMastsOpen =false;

@@ -263,10 +263,10 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
   }
   QString userName = getUserName(elem);
   if (log->isDebugEnabled()) log->debug("create turnout: ("+sysName+")("+(userName==nullptr?"<nullptr>":userName)+")");
-  Turnout* t = ((TurnoutManager*)tm)->getBySystemName(sysName);
+  Turnout* t = (Turnout*)((ProxyTurnoutManager*)tm)->AbstractProxyManager::getBySystemName(sysName);
   if (t==nullptr)
   {
-   t = tm->newTurnout(sysName, userName);
+   t = ((ProxyTurnoutManager*)tm)->newTurnout(sysName, userName);
    //Nothing is logged in the console window as the newTurnoutFunction already does this.
                 //log->error("Could not create turnout: '"+sysName+"' user name: '"+(userName==nullptr?"":userName)+"'");
    if (t==nullptr)

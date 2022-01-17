@@ -204,10 +204,10 @@ BlockBossLogic::~BlockBossLogic()
 // umap = smap = NULL;
 
  //if (log->isTraceEnabled()) log->trace("Create BBL "+name);
- ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+ ((AbstractSignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
  InstanceManager::turnoutManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
  InstanceManager::sensorManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
- SignalHead* driveHead = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name);
+ SignalHead* driveHead = ((AbstractSignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name);
  if (driveHead == nullptr) {
      log->warn(tr("%1 \"%2\" was not found").arg(tr("SignalHead")).arg(name));
      throw new IllegalArgumentException("SignalHead \"" + name + "\" does not exist");

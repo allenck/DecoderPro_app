@@ -7,6 +7,7 @@
 #include "configxmlmanager.h"
 #include "jmriconfigurationmanager.h"
 #include "loggerfactory.h"
+#include "appsconfigurationmanager.h"
 
 //LoadXmlConfigAction::LoadXmlConfigAction(QObject *parent) :
 //  LoadStoreBaseAction(parent)
@@ -71,7 +72,7 @@ void LoadXmlConfigAction::common()
  {
   try
   {
-   ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+   ConfigureManager* cm = (AppsConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
    if (cm == nullptr)
    {
     log->error("Failed to get default configure manager");

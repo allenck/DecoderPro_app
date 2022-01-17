@@ -335,21 +335,21 @@ bool systemNameComparator(QString o1, QString o2)
  while (iter.hasNext())
  {
   Manager* manager = getManager();
-#if 0
+#if 1
   if(qobject_cast<ProxySensorManager*>(manager->self())!= NULL)
-   ts->append(((ProxySensorManager*)manager->self())->getBySystemName(iter.next()));
+   ts->append(((ProxySensorManager*)manager->self())->AbstractProxyManager::getBySystemName(iter.next()));
   else if(qobject_cast<ProxyTurnoutManager*>(manager->self())!= NULL)
-   ts->append(((ProxyTurnoutManager*)manager)->getBySystemName(iter.next()));
+   ts->append(((ProxyTurnoutManager*)manager->self())->AbstractProxyManager::getBySystemName(iter.next()));
   else if(qobject_cast<ProxyReporterManager*>(manager->self())!= NULL)
-   ts->append(((ProxyReporterManager*)manager)->getBySystemName(iter.next()));
+   ts->append(((ProxyReporterManager*)manager->self())->AbstractProxyManager::getBySystemName(iter.next()));
   else if(qobject_cast<AbstractSignalHeadManager*>(manager->self())!= NULL)
-   ts->append(((AbstractSignalHeadManager*)manager)->getBySystemName(iter.next()));
+   ts->append(((AbstractManager*)manager)->getBySystemName(iter.next()));
   else if(qobject_cast<DefaultSignalMastManager*>(manager->self())!= NULL)
    ts->append(((DefaultSignalMastManager*)manager)->getBySystemName(iter.next()));
   else if(qobject_cast<DefaultConditionalManager*>(manager->self())!= NULL)
    ts->append(((DefaultConditionalManager*)manager)->getBySystemName(iter.next()));
   else if(qobject_cast<ProxyLightManager*>(manager->self())!= NULL)
-   ts->append(((ProxyLightManager*)manager)->getBySystemName(iter.next()));
+   ts->append(((ProxyLightManager*)manager->self())->AbstractProxyManager::getBySystemName(iter.next()));
   else if(qobject_cast<DefaultMemoryManager*>(manager->self())!= NULL)
    ts->append(((DefaultMemoryManager*)manager)->getBySystemName(iter.next()));
   else if(qobject_cast<OBlockManager*>(manager->self())!= NULL)
@@ -357,7 +357,7 @@ bool systemNameComparator(QString o1, QString o2)
   else if(qobject_cast<WarrantManager*>(manager->self())!= NULL)
    ts->append((NamedBean*)((WarrantManager*)manager)->getBySystemName(iter.next()));
   else if(qobject_cast<BlockManager*>(manager->self())!= NULL)
-   ts->append((NamedBean*)((BlockManager*)manager)->getBySystemName(iter.next()));
+   ts->append((NamedBean*)((AbstractManager*)manager)->getBySystemName(iter.next()));
   else Q_ASSERT(false);
 #endif
  }

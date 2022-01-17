@@ -7,6 +7,7 @@
 #include "jcombobox.h"
 #include "jtable.h"
 #include "namedbeancombobox.h"
+#include "abstractturnoutmanager.h"
 
 class Sensor;
 class TurnoutManager;
@@ -50,8 +51,8 @@ class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
     /*public*/ QVariant data(const QModelIndex &index, int role) const override;
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     /*public*/ QString getValue(QString name) const override;
-    /*public*/ Manager* getManager() override;
-    /*public*/ NamedBean* getBySystemName(QString name) const override;
+    /*public*/ TurnoutManager* getManager() override;
+    /*public*/ Turnout *getBySystemName(QString name) const override;
     /*public*/ NamedBean* getByUserName(QString name) override;
     /*public*/ void clickOn(NamedBean* t) override;
     /*public*/ void configureTable(JTable* tbl) override;
@@ -115,7 +116,7 @@ class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
     /*protected*/ JComboBox* makeAutomationBox(Turnout* t) const;
     /*protected*/ void setTurnoutOperation(Turnout* t, JComboBox* cb) const;
     /*protected*/ JButton* editButton();
-    /*protected*/ /*final*/ void setManager(/*@Nonnull*/ Manager* manager)override;
+    /*protected*/ /*final*/ void setManager(/*@Nonnull*/ Manager *manager)override;
 
  protected slots:
 

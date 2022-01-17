@@ -681,7 +681,7 @@ TurnoutTableDataModel::TurnoutTableDataModel()
  }
 }
 
-/*public*/ Manager *TurnoutTableDataModel::getManager() {
+/*public*/ TurnoutManager *TurnoutTableDataModel::getManager() {
  if (turnoutManager == nullptr) {
      turnoutManager = (TurnoutManager*)InstanceManager::getDefault("TurnoutManager");
  }
@@ -706,26 +706,20 @@ TurnoutTableDataModel::TurnoutTableDataModel()
             }
         }
     }
-    turnoutManager = (TurnoutManager*) manager;
+    turnoutManager =  (TurnoutManager*)manager;
     getManager()->addPropertyChangeListener(this);
     updateNameList();
 }
 
-/*public*/ NamedBean* TurnoutTableDataModel::getBySystemName(QString name) const
- {
-  if(qobject_cast<AbstractProxyManager*>(turnoutManager->self())!= NULL)
-   return ((ProxyTurnoutManager*)turnoutManager)->AbstractProxyManager::getBySystemName(name);
-  else
-   return ((AbstractTurnoutManager*)turnoutManager)->getBySystemName(name);
- }
+/*public*/ Turnout* TurnoutTableDataModel::getBySystemName(QString name) const
+{
+  return turnoutManager->getBySystemName(name);
+}
 
 /*public*/ NamedBean* TurnoutTableDataModel::getByUserName(QString name)
- {
-  if(qobject_cast<AbstractProxyManager*>(turnoutManager->self())!= NULL)
-     return ((ProxyTurnoutManager*)turnoutManager)->AbstractProxyManager::getByUserName(name);
-  else
-  return ((AbstractTurnoutManager*)turnoutManager)->getByUserName(name);
- }
+{
+ return ((TurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->getByUserName(name);
+}
 
 /*protected*/ QString TurnoutTableDataModel::getMasterClassName() { return getClassName(); }
 

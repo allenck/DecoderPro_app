@@ -24,6 +24,7 @@ LnReporterManager::LnReporterManager(LocoNetSystemConnectionMemo* memo, QObject 
 // this->prefix = prefix;
 // this->tc = tc;
  registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
+ setProperty("JavaClassName", "jmri.jmrix.loconet.LnReporterManager");
 
  tc = memo->getLnTrafficController();
  if (tc != NULL)

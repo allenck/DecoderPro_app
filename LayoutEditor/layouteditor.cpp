@@ -7554,13 +7554,14 @@ void LayoutEditor::addSensor()
 
  /*public*/ LayoutEditorTools* LayoutEditor::getLETools() {
      if (tools == nullptr) {
-         tools = new LayoutEditorTools(/*thisPanel*/this);
+         tools = new LayoutEditorTools(/*thisPanel*/this, nullptr);
      }
      if (tools==nullptr) log->error("Unable to establish link to Layout Editor Tools for Layout Editor panel "+layoutName);
      return tools;
  }
-  /*public*/ LayoutEditorAuxTools* LayoutEditor::getLEAuxTools()
-  {
+
+ /*public*/ LayoutEditorAuxTools* LayoutEditor::getLEAuxTools()
+ {
      if (auxTools == nullptr) {
          auxTools = new LayoutEditorAuxTools(this);
      }

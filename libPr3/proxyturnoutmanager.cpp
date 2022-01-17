@@ -57,7 +57,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
 //@Override
 //@Nonnull
 /*protected*/ Turnout* ProxyTurnoutManager::makeBean(AbstractManager *manager, QString systemName, QString userName) /*throws IllegalArgumentException*/ {
-    return ((TurnoutManager*) manager)->newTurnout(systemName, userName);
+    return ((AbstractTurnoutManager*) manager)->newTurnout(systemName, userName);
 }
 
 /*public*/ Turnout * ProxyTurnoutManager::provideTurnout(QString name)  {
@@ -139,7 +139,10 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
  * "CLOSED" is the desired terminology.
  */
 /*public*/ QString ProxyTurnoutManager::getClosedText() {
- return ((TurnoutManager*) getDefaultManager())->getClosedText();
+ //return ((AbstractTurnoutManager*) getDefaultManager())->getClosedText();
+ AbstractManager* dm =  getDefaultManager();
+ QString s = ((AbstractTurnoutManager*)dm)->getClosedText();
+ return s;
 }
 
 /**

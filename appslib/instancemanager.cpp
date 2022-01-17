@@ -388,6 +388,12 @@ void InstanceManager::deregister(QObject* item, QString type)
 //static /*public*/ <T> T getNullableDefault(@Nonnull Class<T> type) {
 /*static*/ /*public*/ QObject* InstanceManager::getNullableDefault(QString type)
 {
+// int id = QMetaType::type(type.toLocal8Bit());
+// if (id != QMetaType::UnknownType) {
+//     void *myClassPtr = QMetaType::create(id);
+//     if(myClassPtr)
+//      return (QObject*)myClassPtr;
+// }
  return getDefault()->getInstance(type);
 }
 
@@ -429,6 +435,7 @@ void InstanceManager::deregister(QObject* item, QString type)
   {
    log->error(tr("Proceeding to initialize %1 but initialization is marked as complete").arg(type), new Exception("Thread \"" + QThread::currentThread()->objectName() + "\""));
   }
+
 
   // see if can autocreate
   if(Metatypes::done == 0)
@@ -772,7 +779,7 @@ MemoryManager* InstanceManager::memoryManagerInstance()
 // store(p, TurnoutManager.class)
 void InstanceManager::setTurnoutManager(AbstractManager* p) {
  log->debug(" setTurnoutManager");
- TurnoutManager* apm = qobject_cast<TurnoutManager*>(getDefault("TurnoutManager"));
+ TurnoutManager* apm = qobject_cast<ProxyTurnoutManager*>(getDefault("TurnoutManager"));
  if (qobject_cast<AbstractProxyManager*>(apm->self()) != nullptr) { // <?> due to type erasure
      ((ProxyTurnoutManager*) apm)->addManager((AbstractManager*)p);
  } else {

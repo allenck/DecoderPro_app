@@ -6,7 +6,7 @@
 AbstractReporterManager::AbstractReporterManager(SystemConnectionMemo* memo, QObject *parent) :
     AbstractManager(memo, parent)
 {
- setProperty("JavaClassName", "jmri.managers.AbstractReporterManager");
+ //setProperty("JavaClassName", "jmri.managers.AbstractReporterManager");
 
  //registerSelf();
 }

@@ -35,7 +35,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT TrackSegmentEditor : public LayoutTrackEditor
   /*private*/ /*final*/ JComboBox/*<String>*/* editTrackSegmentDashedComboBox = new JComboBox();
   /*private*/ /*final*/ JCheckBox* editTrackSegmentHiddenCheckBox = new JCheckBox(tr("Hide Track"));  // NOI18N
   /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* editTrackSegmentBlockNameComboBox = new NamedBeanComboBox(
-          (Manager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+          (AbstractManager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
   /*private*/ /*final*/ JTextField* editTrackSegmentArcTextField = new JTextField(5);
   /*private*/ QPushButton* editTrackSegmentSegmentEditBlockButton;
 

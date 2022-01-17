@@ -76,6 +76,8 @@
 #include <QScrollBar>
 #include "editormanager.h"
 #include "placewindow.h"
+#include "abstractsignalheadmanager.h"
+#include "defaultsignalmastmanager.h"
 
 //Editor::Editor(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -196,8 +198,8 @@ void Editor::commonInit()
  //_iconEditorFrame = new QHash <QString, JFrameItem*>();
  _spinCols = new SpinnerNumberModel(3,1,100,1);
   panelMenuIsVisible = true;
-  ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
-  ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
+  ((AbstractSignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
+  ((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
   InstanceManager::turnoutManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
   InstanceManager::sensorManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
   InstanceManager::memoryManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);

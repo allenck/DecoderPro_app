@@ -37,7 +37,7 @@ void TurnoutTableTabAction::common()
     return InstanceManager::turnoutManagerInstance();
 }
 
-//@Override
+//@Overridemgrs.i
 /*protected*/ QString TurnoutTableTabAction::getClassName() {
     return /*TurnoutTableAction.class.getName()*/ "jmri.jmrit.beantable.TurnoutTableTabAction";
 }

@@ -112,7 +112,7 @@ SingleTurnoutSignalHeadXml::SingleTurnoutSignalHeadXml(QObject *parent) :
 
     loadCommon(h, shared);
 
-    qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(h);
+    qobject_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->AbstractManager::Register(h);
     return true;
 }
 
@@ -135,7 +135,7 @@ NamedBeanHandle<Turnout*>* SingleTurnoutSignalHeadXml::loadTurnout(/*QObject o*/
 
  QString name = e.text();
 
- TurnoutManager* mgr = InstanceManager::turnoutManagerInstance();
+ TurnoutManager* mgr = (ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance();
  //Turnout* t = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->provideTurnout(name);
  Turnout* t = ((ProxyTurnoutManager*)mgr)->provideTurnout(name);
  NamedBeanHandle<Turnout*>* h = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(name, t);

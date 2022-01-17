@@ -88,7 +88,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
     //@Override
     //@Nonnull
     /*public*/  AbstractManager/*<E>*/* AbstractProxyManager::getDefaultManager()
-{
+    {
         return defaultManager != nullptr ? defaultManager : getInternalManager();
     }
 
@@ -672,6 +672,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
             recomputeNamedBeanSet();
         }
         //return Collections.unmodifiableSortedSet(namedBeanSet);
+        return QSet<NamedBean*>(*namedBeanSet);
     }
 
     /**

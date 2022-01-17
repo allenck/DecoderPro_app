@@ -17,7 +17,10 @@
 #include "signalmastmanager.h"
 #include <QMetaEnum>
 #include "userpreferencesmanager.h"
-
+#include "proxysensormanager.h"
+#include "abstractproxymanager.h"
+#include "defaultsignalmastmanager.h"
+#include "abstractsignalheadmanager.h"
 
 LayoutEditorToolBarPanel::LayoutEditorToolBarPanel(LayoutEditor *layoutEditor, QWidget *parent)
  : JPanel(parent)
@@ -68,11 +71,11 @@ LayoutEditorToolBarPanel::LayoutEditorToolBarPanel(LayoutEditor *layoutEditor, Q
  dashedLine = new QCheckBox(tr("Dashed"));
 
  blockLabel = new JLabel(tr("%1").arg(tr("Block Name:")));
- blockIDComboBox = new NamedBeanComboBox((Manager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ blockIDComboBox = new NamedBeanComboBox((AbstractManager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
  highlightBlockCheckBox = new QCheckBox(tr("Highlight"));
 
  blockSensorLabel = new JLabel(tr("%1").arg(tr("Block Sensor Name")));
- blockSensorComboBox = new NamedBeanComboBox((SensorManager*) InstanceManager::getDefault("SensorManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ blockSensorComboBox = new NamedBeanComboBox((AbstractProxyManager*) InstanceManager::getDefault("SensorManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
  //3rd row of radio buttons (and any associated text fields)
  endBumperButton = new QRadioButton(tr("End Bumper"));
@@ -87,19 +90,19 @@ LayoutEditorToolBarPanel::LayoutEditorToolBarPanel(LayoutEditor *layoutEditor, Q
  textMemoryComboBox = new NamedBeanComboBox((MemoryManager*)InstanceManager::getDefault("MemoryManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
  blockContentsButton = new QRadioButton(tr("Block Contents"));
- blockContentsComboBox = new NamedBeanComboBox((Manager*) InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ blockContentsComboBox = new NamedBeanComboBox((AbstractManager*) InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
  //4th row of radio buttons (and any associated text fields)
  multiSensorButton = new QRadioButton(tr("MultiSensor") + "...");
 
  signalMastButton = new QRadioButton(tr("Signal Mast Icon"));
- signalMastComboBox = new NamedBeanComboBox((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ signalMastComboBox = new NamedBeanComboBox((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
  sensorButton = new QRadioButton(tr("Sensor Icon"));
  sensorComboBox = new NamedBeanComboBox((AbstractProxyManager*)InstanceManager::getDefault("SensorManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
  signalButton = new QRadioButton(tr("Signal Head Icon"));
- signalHeadComboBox = new NamedBeanComboBox((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+ signalHeadComboBox = new NamedBeanComboBox((AbstractManager*)InstanceManager::getDefault("SignalHeadManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
  iconLabelButton = new QRadioButton(tr("Icon Label"));
  shapeButton = new QRadioButton(tr("Shape"));
