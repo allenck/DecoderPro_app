@@ -2377,6 +2377,14 @@ QWidget* JOptionPane::layoutPane(JDialog* dialog)
  QLabel* iconLabel = new QLabel();
  iconLabel->setPixmap(icon.pixmap(64,64));
  ll->addWidget(iconLabel);
+ if(message.canConvert<QVariantList>())
+ {
+  QList<QVariant> list = message.toList();
+  QVBoxLayout* vl = new QVBoxLayout();
+  foreach(QVariant v, list)
+   vl->addWidget(new QLabel(v.toString()));
+  ll->addLayout(vl);
+ }
  if(VPtr<QWidget>::asPtr(message) != NULL)
  {
   ll->addWidget(VPtr<QWidget>::asPtr(message));
@@ -2441,17 +2449,29 @@ QWidget* JOptionPane::layoutPane(JDialog* dialog)
   btnYes = new QPushButton(tr("Yes"));
   btnYes->setObjectName("btnYes");
   fl->addWidget(btnYes);
-  connect(btnYes, SIGNAL(clicked(bool)), this, SLOT(handleYes()));
+  //connect(btnYes, SIGNAL(clicked(bool)), this, SLOT(handleYes()));
+  connect(btnYes, &QPushButton::clicked, [=]{
+   handleYes();
+   value = btnYes->text();
+  });
   btnNo = new QPushButton(tr("No"));
   btnNo->setObjectName("btnNo");
   fl->addWidget(btnNo);
-  connect(btnNo, SIGNAL(clicked(bool)), this, SLOT(handleNo()));
+  //connect(btnNo, SIGNAL(clicked(bool)), this, SLOT(handleNo()));
+  connect(btnNo, &QPushButton::clicked, [=]{
+   handleNo();
+   value = btnNo->text();
+  });
   if(optionType == YES_NO_CANCEL_OPTION)
   {
    btnCancel = new QPushButton(tr("Cancel"));
    btnCancel->setObjectName("btnCancel");
    fl->addWidget(btnCancel);
-   connect(btnCancel, SIGNAL(clicked(bool)), this, SLOT(handleCancel()));
+   //connect(btnCancel, SIGNAL(clicked(bool)), this, SLOT(handleCancel()));
+   connect(btnCancel, &QPushButton::clicked, [=]{
+    handleCancel();
+    value = btnCancel->text();
+   });
   }
   pLayout->addLayout(fl);
  }

@@ -150,7 +150,7 @@ class JAVAQTSHARED_EXPORT SwingPropertyChangeSupport : public QObject,  public P
   * @param oldValue      the old value of the property
   * @param newValue      the new value of the property
   */
- /*public*/ void firePropertyChange(QString propertyName, bool oldValue, bool newValue)const override;
+ /*public*/ void firePropertyChange(QString propertyName, bool oldValue, bool newValue)const ;
  /**
   * Fires a property change event to listeners
   * that have been registered to track updates of

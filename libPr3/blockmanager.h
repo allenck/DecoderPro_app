@@ -56,13 +56,17 @@ public:
     /*public*/ /*final*/ ShutDownTask* shutDownTask = new AbstractShutDownTask("Writing Blocks");
     QObject* self() override {return (QObject*)this;}
 
-    /*public*/ SystemConnectionMemo* getMemo() override;
+    /*public*/ SystemConnectionMemo* getMemo()  override;
     /*public*/ NamedBean* getNamedBean(QString s)  override;
     /*public*/ void Register(NamedBean*)  override;
     /*public*/ void deregister(NamedBean*)override;
     /*public*/ void addDataListener(Manager::ManagerDataListener*)override;
     /*public*/ void removeDataListener(Manager::ManagerDataListener*)override;
 
+    /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
+    /*public*/ NamedBean* getBySystemName(QString name) override {return AbstractManager::getBySystemName(name);}
+    /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::addPropertyChangeListener(l);}
+    /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::removePropertyChangeListener(l);}
 
 signals:
     //void propertyChange(PropertyChangeEvent *e);

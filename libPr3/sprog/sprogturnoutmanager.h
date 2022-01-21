@@ -22,6 +22,8 @@ namespace Sprog
   /*public*/ QString getNamedBeanClass()const override {
       return "Turnout";
   }
+  /*public*/ SystemConnectionMemo* getMemo() override {return AbstractManager::getMemo();}
+
   QObject* self() override {return (QObject*)this;}
 
  private:

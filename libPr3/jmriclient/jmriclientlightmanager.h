@@ -14,6 +14,7 @@ public:
  /*public*/ QString getNamedBeanClass()const override {
      return "Light";
  }
+ /*public*/ SystemConnectionMemo* getMemo() override {return AbstractManager::getMemo();}
 
 private:
  /*private*/ JMRIClientSystemConnectionMemo* memo = nullptr;

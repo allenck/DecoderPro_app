@@ -292,7 +292,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
 
  if (type == "IdTagManager")
  {
-  DefaultIdTagManager* tm =new DefaultIdTagManager();
+  ProxyIdTagManager* tm =new ProxyIdTagManager();
   //InstanceManager::store(tm, type);
   return (QObject*)tm;
  }

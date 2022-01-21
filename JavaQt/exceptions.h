@@ -397,7 +397,7 @@ public:
  void raise() const { throw *this; }
  InitializationException *clone() const { return new InitializationException(*this); }
 
- InitializationException(QString msg, QString localMsg) : Exception(msg, localMsg) {}
+ //InitializationException(QString msg, QString localMsg) : Exception(msg, localMsg) {}
  InitializationException(QString msg, QString localMsg, Exception* ex =0) : Exception(msg, localMsg, ex) {}
  InitializationException(Exception* cause) : Exception(cause)
  {

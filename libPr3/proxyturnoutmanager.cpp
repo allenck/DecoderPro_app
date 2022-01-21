@@ -140,8 +140,8 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
  */
 /*public*/ QString ProxyTurnoutManager::getClosedText() {
  //return ((AbstractTurnoutManager*) getDefaultManager())->getClosedText();
- AbstractManager* dm =  getDefaultManager();
- QString s = ((AbstractTurnoutManager*)dm)->getClosedText();
+ AbstractManager* dm =  AbstractProxyManager::getDefaultManager();
+ QString s = ((AbstractTurnoutManager*)((AbstractTurnoutManager*)dm))->getClosedText();
  return s;
 }
 
@@ -154,7 +154,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
  * "THROWN" is the desired terminology.
  */
 /*public*/ QString ProxyTurnoutManager::getThrownText() {
-    return ((TurnoutManager*) getDefaultManager())->getThrownText();
+    return((AbstractTurnoutManager*) AbstractProxyManager::getDefaultManager())->getThrownText();
 }
 
 /**
@@ -169,7 +169,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
  * control bits, after informing the user of the problem.
  */
  /*public*/ int ProxyTurnoutManager::askNumControlBits(QString systemName) {
- return ((TurnoutManager*) getManagerOrDefault(systemName))->askNumControlBits(systemName);
+ return ((AbstractTurnoutManager*) AbstractProxyManager::getManagerOrDefault(systemName))->askNumControlBits(systemName);
 }
 
 /**

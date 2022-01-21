@@ -12,6 +12,8 @@ public:
  /*public*/ QString getNamedBeanClass()const override {
      return "Reporter";
  }
+ /*public*/ SystemConnectionMemo* getMemo() override {return AbstractManager::getMemo();}
+
  QObject* self() override {return (QObject*)this;}
 
 private:

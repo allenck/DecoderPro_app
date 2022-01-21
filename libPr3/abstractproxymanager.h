@@ -8,7 +8,7 @@
 #include "idtagmanager.h"
 #include "proxymanager.h"
 
-class LIBPR3SHARED_EXPORT AbstractProxyManager :   public VetoableChangeSupport, public ProxyManager, PropertyChangeListener, Manager::ManagerDataListener
+class LIBPR3SHARED_EXPORT AbstractProxyManager :   public VetoableChangeSupport, public ProxyManager, public PropertyChangeListener, public Manager::ManagerDataListener
 {
     Q_OBJECT
     Q_INTERFACES( ProxyManager PropertyChangeListener Manager::ManagerDataListener )
@@ -33,30 +33,34 @@ class LIBPR3SHARED_EXPORT AbstractProxyManager :   public VetoableChangeSupport,
     /*public*/  void Register(/*@Nonnull*/ /*E*/NamedBean* s) override;
     /*public*/  void deregister(/*@Nonnull*/ /*E*/NamedBean* s) override;
     /*public*/  QList<NamedBeanPropertyDescriptor/*<?>*/*> getKnownBeanProperties() override;
-    /*public*/  /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) override;
-    /*public*/  /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
-    /*public*/  void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
-    /*public*/  void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener);
+    /*public*/  virtual /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) override;
+    /*public*/  virtual /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l)override;
+    /*public*/  virtual void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
+    /*public*/  virtual void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener)override;
     /*public*/  /*synchronized*/ void addVetoableChangeListener(VetoableChangeListener* l)override;
     /*public*/  /*synchronized*/ void removeVetoableChangeListener(VetoableChangeListener* l)override;
     /*public*/  void addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) override;
     /*public*/  void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener)override;
-    /*public*/  void propertyChange(PropertyChangeEvent* event)override;
-    /*public*/  SystemConnectionMemo* getMemo() override;
+    /*public*/  SystemConnectionMemo* getMemo()override;
     /*public*/  QString getSystemPrefix() override;
     /*public*/  QChar typeLetter()  override;
     /*public*/  QString makeSystemName(/*@Nonnull*/ QString s) override;
     /*public*/  int getObjectCount()override ;
     QT_DEPRECATED/*public*/  QStringList getSystemNameList()  override;
     /*public*/  QList<NamedBean*>* getNamedBeanList() override;
-    /*public*/  QSet<NamedBean*> getNamedBeanSet();
+    /*public*/  QSet<NamedBean*> getNamedBeanSet()override;
     /*public*/  void setPropertyChangesSilenced(QString propertyName, bool silenced) override;
-    /*public*/  void addDataListener(Manager::ManagerDataListener/*<E>*/* e);
-    /*public*/  void removeDataListener(Manager::ManagerDataListener/*<E>*/* e);
-    QT_DEPRECATED /*public*/  void contentsChanged(Manager::ManagerDataEvent* e);
-    /*public*/  void intervalAdded(AbstractProxyManager::ManagerDataEvent/*<E>*/* e);
-    QT_DEPRECATED /*public*/  void intervalRemoved(AbstractProxyManager::ManagerDataEvent/*<E>*/* e);
+    /*public*/  void addDataListener(Manager::ManagerDataListener/*<E>*/* e)override;
+    /*public*/  void removeDataListener(Manager::ManagerDataListener/*<E>*/* e)override;
+    QT_DEPRECATED /*public*/  void contentsChanged(Manager::ManagerDataEvent* e)override;
+    /*public*/  void intervalAdded(AbstractProxyManager::ManagerDataEvent/*<E>*/* e)override;
+    QT_DEPRECATED /*public*/  void intervalRemoved(AbstractProxyManager::ManagerDataEvent/*<E>*/* e)override;
     QT_DEPRECATED /*public*/  void setDataListenerMute(bool m) override;
+
+    QObject* self() override {return (QObject*)this;}
+
+ public slots:
+    /*public*/  void propertyChange(PropertyChangeEvent* event)override;
 
 private:
     static Logger* log;

@@ -41,7 +41,7 @@ public:
  /*public*/ bool store(QDomElement root);
  QT_DEPRECATED /*public*/ void apply();
  /*public*/ float getThrottleScale();
- /*public*/ void initialize(Profile* profile) throw (InitializationException);
+ /*public*/ void initialize(Profile* profile) override /*throw (InitializationException)*/;
  /*public*/ QMap<QString, QString> getAppearances();
  /*public*/ QMap<QString, float> getSpeedNames();
  /*protected*/ void setShutdown(Shutdown set);

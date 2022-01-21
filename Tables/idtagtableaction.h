@@ -4,6 +4,7 @@
 #include "beantabledatamodel.h"
 #include "actionlistener.h"
 #include "instancemanager.h"
+#include "rfid/proxyidtagmanager.h"
 
 class AddNewDevicePanel;
 class JTextField;
@@ -39,7 +40,7 @@ protected:
     /*protected*/ QString getClassName() override;
     /*protected*/ void setTitle() override;
     /*protected*/ QString helpTarget() override;
-    /*protected*/ IdTagManager* tagManager = (IdTagManager*)InstanceManager::getDefault("IdTagManager");
+    /*protected*/ IdTagManager* tagManager = (ProxyIdTagManager*)InstanceManager::getDefault("IdTagManager");
 
 protected slots:
     /*protected*/ void addPressed(JActionEvent* =0) override;
@@ -52,6 +53,7 @@ protected slots:
 };
 Q_DECLARE_METATYPE(IdTagTableAction)
 
+#if 0
 class IdTagBeanTableDataModel : public BeanTableDataModel
 {
  Q_OBJECT
@@ -112,7 +114,7 @@ public slots:
 
  friend class IdTagTableAction;
 };
-
+#endif
 class IdTagOkListener : public QObject, public ActionListener
 {
  Q_OBJECT

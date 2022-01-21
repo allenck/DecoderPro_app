@@ -10,7 +10,8 @@ class ReporterTableDataModel : public BeanTableDataModel
 {
   Q_OBJECT
  public:
-  explicit     /*public*/ ReporterTableDataModel(/*Manager<Reporter>*/AbstractManager* mgr, QObject* parent = nullptr);
+  explicit ReporterTableDataModel();
+  /*public*/ ReporterTableDataModel(Manager *mgr, QObject* parent = nullptr);
   /*public*/ QString getValue(QString name) override;
   /*public*/ /*final*/ void setManager(/*Manager<Reporter>*/Manager* rm) override;
   /*public*/ Manager *getManager() override;

@@ -17,11 +17,14 @@
 #include "jbutton.h"
 #include "sensoreditaction.h"
 #include "xtablecolumnmodel.h"
+#include "loggerfactory.h"
 
 SensorTableDataModel::SensorTableDataModel(QObject *parent) :
     BeanTableDataModel(parent)
 {
+ _graphicState = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState();
  common();
+ init();
 }
 /**
  * Data model for a SensorTable
@@ -38,78 +41,24 @@ SensorTableDataModel::SensorTableDataModel(QObject *parent) :
 //    }
 void SensorTableDataModel::common()
 {
- senManager = (SensorManager*)InstanceManager::sensorManagerInstance();
- setObjectName("SensorTableDataModel");
- log = new Logger("SensorDataModel");
- deleteMapper = new QSignalMapper();
- table = nullptr;
- // load graphic state column display preference
- _graphicState = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState();
  rootPath = FileUtil::getProgramPath() + "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
  beanTypeChar = 'S'; // for Sensor
  onIconPath = rootPath + beanTypeChar + "-on-s.png";
  offIconPath = rootPath + beanTypeChar + "-off-s.png";
 
- init();
+ //init();
 }
 
-/*public*/ SensorTableDataModel::SensorTableDataModel(SensorManager* manager, QObject *parent) : BeanTableDataModel(parent)
+/*public*/ SensorTableDataModel::SensorTableDataModel(Manager* manager, QObject *parent) : BeanTableDataModel(parent)
 {
  //super();
  common();
- senManager = manager;
- SensorManager* proxy = nullptr;
- AbstractManager* mgr = nullptr;
- if(qobject_cast<SensorManager*>(senManager->self()) != nullptr)
- {
-  proxy = (ProxySensorManager*)(senManager->self());
-  proxy->removePropertyChangeListener((PropertyChangeListener*) this);
-  //disconnect(proxy->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
- }
- else
- {
-  mgr = static_cast<AbstractManager*>(senManager->self());
-  mgr->PropertyChangeSupport::removePropertyChangeListener((PropertyChangeListener*) this);
-  //disconnect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
- }
-
-// getManager()->removePropertyChangeListener((PropertyChangeListener*)this);
-// AbstractSensorManager* mgr = (AbstractSensorManager*)getManager();
-// disconnect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
- if (!sysNameList.isEmpty())
- {
-  for (int i = 0; i< sysNameList.size(); i++)
-  {
-   // if object has been deleted, it's not here; ignore it
-   NamedBean* b = getBySystemName(sysNameList.at(i));
-   if (b!=nullptr)
-   {
-    b->removePropertyChangeListener((PropertyChangeListener*)this);
-    AbstractNamedBean* anb = (AbstractNamedBean*)b;
-//    disconnect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-   }
-  }
- }
- senManager = (SensorManager*)manager;
-// getManager()->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
-// //ProxySensorManager* mgr = (ProxySensorManager*)getManager();
-// connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
- if(proxy != nullptr)
- {
-  proxy->addPropertyChangeListener((PropertyChangeListener*) this);
-  //connect(proxy->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
- }
- if(mgr != nullptr)
- {
-  mgr->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*) this);
-  //connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  //connect(aMgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
- }
-
- updateNameList();
+ setManager(manager); // updates name list
+ setObjectName(QString("SensorTableDataModel") + "_" + manager->self()->metaObject()->className());
  // load graphic state column display preference
  _graphicState = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState();
-
+ init();
+ updateNameList();
 }
 
 /*public*/ QString SensorTableDataModel::getValue(QString name) const
@@ -130,9 +79,10 @@ void SensorTableDataModel::common()
 }
 /*protected*/ void SensorTableDataModel::setManager(Manager *manager)
 {
- ((AbstractManager*)getManager())->PropertyChangeSupport::removePropertyChangeListener((PropertyChangeListener*)this);
-// ProxySensorManager* mgr = (ProxySensorManager*)getManager();
-// disconnect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ if (!(static_cast<SensorManager*>(manager))) {
+     return;
+ }
+ getManager()->removePropertyChangeListener(this);
  if (!sysNameList.isEmpty())
  {
   for (int i = 0; i< sysNameList.size(); i++)
@@ -148,17 +98,17 @@ void SensorTableDataModel::common()
   }
  }
  senManager = (SensorManager*)manager;
- ((AbstractManager*)getManager())->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
- //ProxySensorManager* mgr = (ProxySensorManager*)getManager();
- //connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ getManager()->addPropertyChangeListener(this);
  updateNameList();
 }
-/*protected*/ AbstractManager *SensorTableDataModel::getManager()
+
+/*protected*/ Manager *SensorTableDataModel::getManager()
 {
  if (senManager==nullptr)
-  senManager= InstanceManager::sensorManagerInstance();
- return (AbstractManager*)senManager;
+  senManager= (ProxySensorManager*)InstanceManager::sensorManagerInstance();
+ return senManager;
 }
+
 /*protected*/ NamedBean* SensorTableDataModel::getBySystemName(QString name) const
 {
  if(qobject_cast<AbstractManager*>(senManager->self()) != nullptr)
@@ -306,11 +256,11 @@ void SensorTableDataModel::common()
 /*public*/ QVariant SensorTableDataModel::data(const QModelIndex &index, int role) const
 {
  QString name = sysNameList.at(index.row());
- AbstractSensor* s;
- if(qobject_cast<AbstractManager*>(senManager->self()) != 0)
-  s = (AbstractSensor*)((AbstractManager*)senManager->self())->getBySystemName(name);
- else
-  s = (AbstractSensor*)((AbstractSensorManager*)senManager)->getBySystemName(name);
+ Sensor* s;
+// if(qobject_cast<AbstractManager*>(senManager->self()) != 0)
+//  s = (AbstractSensor*)((AbstractManager*)senManager->self())->getBySystemName(name);
+// else
+  s = (Sensor*)senManager->getBySystemName(name);
 
  if(role == Qt::CheckStateRole)
  {
@@ -797,3 +747,4 @@ void SensorTableDataModel::editButton(Sensor* s) {
 //  fireTableDataChanged();
 // }
 //}
+/*private*/ /*final*/ /*static*/ Logger* SensorTableDataModel::log = LoggerFactory::getLogger("SensorTableDataModel");

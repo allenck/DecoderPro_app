@@ -121,6 +121,7 @@ public:
     /*public*/ virtual void removeSignalMastsDirectionSensors() = 0;
 
     virtual QObject* self() =0;
+
  friend class RunnableThis;
  friend class DestinationMast;
  friend class LevelXing;

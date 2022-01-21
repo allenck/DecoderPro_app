@@ -109,7 +109,7 @@ void ManagerDefaultsConfigPane::reloadConnections(QObjectList connList)
  matrixLayout->addWidget(new QLabel(""), row, col++);
 
 
- foreach (ManagerDefaultSelector::Item1 item, manager->knownManagers)
+ foreach (ManagerDefaultSelector::Item item, manager->knownManagers)
  {
   matrixLayout->addWidget(new QLabel(item.typeName), row, col++);
  }
@@ -131,7 +131,7 @@ void ManagerDefaultsConfigPane::reloadConnections(QObjectList connList)
   QString name = memo->getUserName();
   matrixLayout->addWidget(new QLabel(name));
   int i = 0;
-  foreach (ManagerDefaultSelector::Item1 item, manager->knownManagers)
+  foreach (ManagerDefaultSelector::Item item, manager->knownManagers)
   {
    if (memo->provides(item.managerClass))
    {
@@ -244,7 +244,8 @@ ManagerDefaultSelector* manager = (ManagerDefaultSelector*) InstanceManager::get
     //@Override
     /*public*/ void SelectionButton::setSelected(bool t) {
         QRadioButton::setChecked(t);
-        ManagerDefaultSelector* manager = (ManagerDefaultSelector*) InstanceManager::getDefault("ManagerDefaultSelector");if (t) {
+        ManagerDefaultSelector* manager = (ManagerDefaultSelector*) InstanceManager::getDefault("ManagerDefaultSelector");
+        if (t) {
              manager->setDefault(this->managerClass, this->name);
         }
     }

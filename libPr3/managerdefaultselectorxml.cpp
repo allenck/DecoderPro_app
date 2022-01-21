@@ -2,6 +2,7 @@
 #include "managerdefaultselector.h"
 #include <QMetaType>
 #include "instancemanager.h"
+#include "profilemanager.h"
 
 ManagerDefaultSelectorXml::ManagerDefaultSelectorXml(QObject *parent) :
     AbstractXmlAdapter(parent)
@@ -29,7 +30,7 @@ ManagerDefaultSelectorXml::ManagerDefaultSelectorXml(QObject *parent) :
  * @param o Object to store, of type ManagerDefaultSelector
  * @return Element containing the complete info
  */
-/*public*/ QDomElement ManagerDefaultSelectorXml::store(QObject* o) throw (Exception)
+/*public*/ QDomElement ManagerDefaultSelectorXml::store(QObject* o)
 {
  QDomElement e = doc.createElement("managerdefaults");
  e.setAttribute("class", /*getClass().getName()*/"jmri.managers.configurexml.ManagerDefaultSelectorXml");
@@ -48,7 +49,7 @@ ManagerDefaultSelectorXml::ManagerDefaultSelectorXml(QObject *parent) :
  return e;
 }
 
-/*public*/ bool ManagerDefaultSelectorXml::load(QDomElement e) throw (Exception)
+/*public*/ bool ManagerDefaultSelectorXml::load(QDomElement e)
 {
  QDomNodeList list = e.elementsByTagName("setting");
 
@@ -72,7 +73,7 @@ ManagerDefaultSelectorXml::ManagerDefaultSelectorXml(QObject *parent) :
 
     }
     // put into effect
-    ((ManagerDefaultSelector*)InstanceManager::getDefault("ManagerDefaultSelector"))->configure();
+    ((ManagerDefaultSelector*)InstanceManager::getDefault("ManagerDefaultSelector"))->configure(ProfileManager::getDefault()->getActiveProfile());
     ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerPref((ManagerDefaultSelector*)InstanceManager::getDefault("ManagerDefaultSelector"));
     return true;
 }
@@ -82,6 +83,6 @@ ManagerDefaultSelectorXml::ManagerDefaultSelectorXml(QObject *parent) :
  * @param element Top level Element to unpack.
  * @param o  PanelEditor as an Object
  */
-/*public*/ void ManagerDefaultSelectorXml::load(QDomElement /*element*/, QObject* o) throw (Exception)
+/*public*/ void ManagerDefaultSelectorXml::load(QDomElement /*element*/, QObject* o)
 {
 }

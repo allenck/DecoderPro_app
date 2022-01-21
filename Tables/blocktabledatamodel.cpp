@@ -27,10 +27,10 @@
 
 
 
-/*public*/ BlockTableDataModel::BlockTableDataModel(Manager/*<Block>*/* mgr)
- : BeanTableDataModel(){
+/*public*/ BlockTableDataModel::BlockTableDataModel(Manager/*<Block>*/* mgr, QObject *parent)
+ : BeanTableDataModel(parent){
     //super();
-    setManager((AbstractManager*)mgr); // for consistency with other BeanTableModels, default BlockManager always used.
+    setManager(mgr); // for consistency with other BeanTableModels, default BlockManager always used.
     updateNameList();
     rootPath = FileUtil::getProgramPath() + "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
     beanTypeChar = 'S'; // reuse Sensor icon for block state
@@ -590,10 +590,10 @@ void BlockTableDataModel::editButton(Block* b) {
 }
 
 /*private*/ void BlockTableDataModel::updateReporterList() {
-    QSet<NamedBean*> nameSet = ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->getNamedBeanSet();
+    QSet<NamedBean*> nameSet = ((ProxyReporterManager*)InstanceManager::getDefault("ReporterManager"))->getNamedBeanSet();
     QVector<QString> displayList = QVector<QString>(nameSet.size());
     int i = 0;
-    for (NamedBean* nb : nameSet) {
+    foreach (NamedBean* nb, nameSet) {
      Reporter* nBean = (Reporter*)nb;
         if (nBean != nullptr) {
             displayList[i++] = nBean->getDisplayName();

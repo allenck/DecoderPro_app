@@ -19,7 +19,7 @@ public:
  /*public*/ DefaultIdTag* getIdTag(QString name)override;
  /*public*/ DefaultIdTag* provide(/*@Nonnull */QString name) /*throw (IllegalArgumentException)*/ override;
  /*public*/ DefaultIdTag* provideIdTag(QString name) throw (IllegalArgumentException) override;
- /*public*/ DefaultIdTag *getBySystemName(QString systemName)const override;
+ /*public*/ DefaultIdTag *getBySystemName(QString systemName) override;
  /*public*/ NamedBean* getByUserName(QString userName)const override;
  /*public*/ DefaultIdTag* newIdTag(QString systemName, QString userName) override;
  /*public*/ DefaultIdTag *getByTagID(QString tagID) override;
@@ -33,6 +33,12 @@ public:
  /*public*/ QString getNamedBeanClass()const override {
      return "ProxyIdTag";
  }
+ /*public*/ SystemConnectionMemo* getMemo() override {return AbstractProxyManager::getMemo();}
+ /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractProxyManager::getNamedBeanSet();}
+ /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{AbstractProxyManager::addPropertyChangeListener(l);}
+ /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{AbstractProxyManager::removePropertyChangeListener(l);}
+
+
  QObject* self() override {return (QObject*)this;}
 
 private:

@@ -23,6 +23,7 @@ private:
  /*private*/ /*final*/ QHash<Profile*, bool>* initializing;// = new HashMap<>();
  /*private*/ /*final*/ QHash<Profile*, QList<Exception*>* >* exceptions;// = new HashMap<>();
  static Logger* log;
+
 protected:
  /*protected*/ bool isInitializing(/*@Nonnull*/ Profile* profile);
  /*protected*/ void setInitialized(/*@Nonnull*/ Profile* profile, bool initialized);

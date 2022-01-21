@@ -50,7 +50,7 @@ public:
      * @param oldValue     the old value of the property
      * @param newValue     the new value of the property
      */
-  virtual void fireIndexedPropertyChange(QString propertyName, int /*index*/, QVariant /*oldValue*/, QVariant /*newValue*/) const{}
+  virtual void fireIndexedPropertyChange(QString propertyName, int /*index*/, QVariant /*oldValue*/, QVariant /*newValue*/)const {}
 
     /**
      * Fire a property change. Despite being public due to limitations
@@ -63,7 +63,7 @@ public:
      * @param oldValue     the old value of the property
      * @param newValue     the new value of the property
      */
-  virtual void firePropertyChange(QString /*propertyName*/, bool /*oldValue*/, bool /*newValue*/) const {}
+//  virtual void firePropertyChange(QString /*propertyName*/, bool /*oldValue*/, bool /*newValue*/)  {}
 
     /**
      * Fire a property change. Despite being public due to limitations

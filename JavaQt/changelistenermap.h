@@ -55,7 +55,7 @@ void remove(QString name, L listener) {
  QMutexLocker locker(mutex1);
  if (!this->map.isEmpty())
  {
-  QVector<L>* array = this->map.value(name);
+  QVector<L>* array = this->map.value(name, new  QVector<L>());
   if (!array->isEmpty())
   {
    for (int i = 0; i < array->length(); i++)
@@ -214,7 +214,7 @@ signals:
 
 public slots:
 private:
- QHash<QString, QVector<L>* > map;
+ QHash<QString, QVector<L>* > map = QHash<QString, QVector<L>* >();
  QMutex* mutex = new QMutex();
  QMutex* mutex1= new QMutex();
  QMutex* mutex2= new QMutex();

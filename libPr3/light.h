@@ -5,12 +5,15 @@
 #include "digitalio.h"
 
 class LightControl;
-class Light :   public DigitalIO
+class Light :   public AbstractNamedBean, public DigitalIO
 {
     //Q_OBJECT
   Q_INTERFACES(DigitalIO)
 public:
-// explicit Light(QObject *parent = 0) : AbstractNamedBean(parent) {}
+  explicit Light(QObject *parent = 0) : AbstractNamedBean(parent) {}
+  Light(QString sysName, QObject* parent=0) : AbstractNamedBean(sysName, parent) {}
+  Light(QString sysName, QString userName, QObject* parent=0) : AbstractNamedBean(sysName, userName, parent) {}
+
 
     /**
      * Represent a single visible Light on the physical layout.

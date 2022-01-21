@@ -32,7 +32,7 @@ public:
     Q_INVOKABLE /*public*/ ReporterTableAction(QString actionName, QObject* parent);
     ~ReporterTableAction() {}
     ReporterTableAction(const ReporterTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
-    /*public*/ void setManager(ReporterManager* man);
+    /*public*/ void setManager(Manager *man) override;
     Q_INVOKABLE /*public*/ QString getClassDescription();
 
 private:
@@ -55,7 +55,7 @@ private:
     /*private*/ QString addEntryToolTip;
     UserPreferencesManager* pref;
     /*private*/ SystemNameValidator* hardwareAddressValidator;
-    Logger* log;
+    static Logger* log;
 
 private slots:
     void cancelPressed(ActionEvent* e = 0);
@@ -64,8 +64,8 @@ private slots:
 
 
 protected:
-    /*protected*/ ReporterManager* reporterManager;// = InstanceManager::reporterManagerInstance();
-    /*protected*/ void createModel();
+    /*protected*/ ReporterManager* reporterManager = (ReporterManager*)InstanceManager::getDefault("ReporterManager");
+    /*protected*/ void createModel()override;
     /*protected*/ void setTitle();
     /*protected*/ QString helpTarget();
     /*protected*/ QString getClassName();
@@ -81,7 +81,7 @@ protected slots:
  friend class RTAValidator;
 };
 Q_DECLARE_METATYPE(ReporterTableAction)
-
+#if 0
 class RtBeanTableDataModel : public BeanTableDataModel
 {
     Q_OBJECT
@@ -110,7 +110,7 @@ protected:
     /*protected*/ QString getBeanType();
     /*protected*/ bool matchPropertyName(PropertyChangeEvent* e);
 };
-
+#endif
 class RTACreateListener : public QObject, public ActionListener
 {
  Q_OBJECT

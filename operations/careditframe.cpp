@@ -462,7 +462,7 @@ namespace Operations
 
      commentTextField->setText(car->getComment());
      valueTextField->setText(car->getValue());
-     rfidComboBox->setCurrentIndex(rfidComboBox->findData(VPtr<DefaultIdTag>::asQVariant(car->getIdTag())));
+     rfidComboBox->setCurrentIndex(rfidComboBox->findData(VPtr<IdTag>::asQVariant(car->getIdTag())));
      autoTrackCheckBox->setEnabled(true);
      blockingTextField->setText(QString::number(car->getBlocking()));
 

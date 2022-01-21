@@ -165,6 +165,7 @@ friend class DeleteBeanWorker;
 friend class TurnoutTableAction;
 friend class LightTableDataModel;
 friend class LightTableAction;
+friend class ReporterTableAction;
 };
 
 class DeleteBeanWorker : public QObject//extends SwingWorker<Void, Void>

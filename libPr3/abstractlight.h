@@ -6,10 +6,10 @@
 #include "lightcontrol.h"
 #include "libPr3_global.h"
 
-class LIBPR3SHARED_EXPORT AbstractLight : public AbstractNamedBean, public Light
+class LIBPR3SHARED_EXPORT AbstractLight :  public Light, public PropertyChangeListener
 {
     Q_OBJECT
-    Q_INTERFACES(Light)
+    Q_INTERFACES(PropertyChangeListener)
 public:
     //explicit AbstractLight(QObject *parent = 0);
     /*public*/ AbstractLight(QString systemName, QString userName, QObject *parent = 0);

@@ -123,8 +123,8 @@ namespace Operations
   /*public*/ QString getLastDate();
   /*public*/ void setValue(QString value);
   /*public*/ QString getRfid() const;
-  /*public*/ DefaultIdTag* getIdTag();
-  /*public*/ void setIdTag(DefaultIdTag *tag);
+  /*public*/ IdTag* getIdTag();
+  /*public*/ void setIdTag(IdTag *tag);
   /*public*/ void setRfid(QString id);
   /*public*/ QDateTime getLastMoveDate() const;
   /*public*/ void setColor(QString color);
@@ -158,7 +158,7 @@ namespace Operations
   static Logger* log;
   bool verboseStore;// = false;
   /*private*/QString rsTestDestination(Location* destination, Track* track);
-  /*private*/ DefaultIdTag* _tag = nullptr;
+  /*private*/ IdTag* _tag = nullptr;
   /*private*/ PropertyChangeListener* _tagListener;// = NULL;
   /*private*/ void addPropertyChangeListeners();
 

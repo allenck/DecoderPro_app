@@ -3,7 +3,7 @@
 #include "instancemanager.h"
 
 AbstractIdTag::AbstractIdTag(QObject *parent) :
-    AbstractNamedBean(parent)
+    IdTag(parent)
 {
  init();
 }
@@ -35,14 +35,14 @@ const int IdTag::SEEN = 0x03;
 ///*public*/ abstract class AbstractIdTag extends AbstractNamedBean implements IdTag {
 
 /*public*/ AbstractIdTag::AbstractIdTag(QString systemName, QObject *parent)
-    : AbstractNamedBean(systemName,parent)
+    : IdTag(systemName,parent)
 {
  init();
     //super(systemName.toUpperCase());
 }
 
 /*public*/ AbstractIdTag::AbstractIdTag(QString systemName, QString userName, QObject* parent)
-    : AbstractNamedBean(systemName, userName, parent)
+    : IdTag(systemName, userName, parent)
 {
  //super(systemName.toUpperCase(), userName);
  init();

@@ -96,7 +96,7 @@ public:
   */
  //@CheckReturnValue
  //@Nonnull
- /*public*/ virtual SystemConnectionMemo* getMemo()  {return nullptr;}
+ /*public*/ virtual SystemConnectionMemo* getMemo() =0;
 
 /**
  * Provides access to the system prefix string.

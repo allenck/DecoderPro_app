@@ -110,13 +110,13 @@ protected:
     /*protected*/ void setDefaultSpeeds(JFrame* _who);
     // for icon state col
     /*protected*/ bool _graphicState = false; // updated from prefs
-    /*protected*/ TurnoutManager* turnoutManager = (TurnoutManager*)InstanceManager::getDefault("TurnoutManager");
+    /*protected*/ TurnoutManager* turnoutManager = (ProxyTurnoutManager*)InstanceManager::getDefault("TurnoutManager");
     /*protected*/ void configureTable(JTable* table) override;
     /*protected*/ void columnsVisibleUpdated(QVector<bool> colsVisible) override;
 
 protected slots:
     /*protected*/ void addPressed(JActionEvent* e = 0) override;
-    /*private*/ void canAddRange(ActionEvent* e = 0);
+    /*private*/ void canAddRange(JActionEvent *e = 0);
  friend class CBActionListener;
  friend class RangeListener;
  friend class OkListener;

@@ -12,7 +12,7 @@ class BlockTableDataModel : public BeanTableDataModel
 {
   Q_OBJECT
  public:
-  BlockTableDataModel(Manager* mgr);
+  BlockTableDataModel(Manager* mgr, QObject *parent =nullptr);
   enum COLUMNS
   {
    EDITCOL = BeanTableDataModel::NUMCOLUMN,

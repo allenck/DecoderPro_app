@@ -91,7 +91,7 @@
      * @return requested IdTag object or null if none exists
      */
     //@Override
-    /*public*/ DefaultIdTag *ProxyIdTagManager::getBySystemName(QString systemName) const {
+    /*public*/ DefaultIdTag *ProxyIdTagManager::getBySystemName(QString systemName) {
         return (DefaultIdTag *)AbstractProxyManager::getBeanBySystemName(systemName);
     }
 

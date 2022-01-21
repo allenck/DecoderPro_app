@@ -6,6 +6,7 @@
 #include "jbutton.h"
 #include "bufferedimage.h"
 #include "jlabel.h"
+#include "lightmanager.h"
 
 class LightTableDataModel : public BeanTableDataModel
 {
@@ -21,7 +22,7 @@ class LightTableDataModel : public BeanTableDataModel
   LightTableDataModel();
   /*public*/ LightTableDataModel(Manager/*<Light>*/* mgr);
   /*private*/ void initTable();
-  /*public*/ Manager *getManager()  override;
+  /*public*/ LightManager *getManager()  override;
   /*public*/ int columnCount(const QModelIndex& parent) const override;
   /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
   /*public*/ QString getColumnClass(int col) const override;
@@ -38,9 +39,9 @@ class LightTableDataModel : public BeanTableDataModel
 
  private:
   static Logger* log;
-  /*private*/ Manager* lightManager;
+  /*private*/ LightManager* lightManager;
   /*private*/ void editButton(Light* bean);
-
+ void common();
  protected:
   // for icon state col
   /*protected*/ bool _graphicState = false; // updated from prefs

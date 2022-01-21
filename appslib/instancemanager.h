@@ -213,11 +213,23 @@ static void setReporterManager(AbstractManager *p);
 //template<class T>
 /*public*/  void clear(/*@Nonnull*/ /*Class<T>*/QString type);
 /*public*/ /*<T>*/ void remove(/*@Nonnull T*/QObject* item, /*@Nonnull Class<T>*/QString type);
-template<class T>
-static /*public*/ T* getNullableDefaultT(QString type)
-{
- return (T*)getDefault()->getInstance(type);
-}
+
+template<class T, char* S>
+class myclass{
+  //T memblock [S];
+ public:
+ static T getNullableDefault(char* type)
+  {
+    int id = QMetaType::type(type);
+    if (id != QMetaType::UnknownType) {
+        void *myClassPtr = QMetaType::create(id);
+        if(myClassPtr)
+         return (T)myClassPtr;
+    }
+    return nullptr;
+  }
+};
+
 static /*public*/ void setIdTagManager(IdTagManager *p);
 static /*public*/ void setMeterManager(AbstractMeterManager *p);
 

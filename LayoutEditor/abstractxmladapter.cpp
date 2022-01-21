@@ -49,7 +49,7 @@ AbstractXmlAdapter::AbstractXmlAdapter(QObject *parent)
 }
 
 //@Override
-/*public*/ bool AbstractXmlAdapter::load(QDomElement /*e*/) throw (Exception)
+/*public*/ bool AbstractXmlAdapter::load(QDomElement /*e*/)
 {
  throw new UnsupportedOperationException("One of the other load methods must be implemented.");
 }

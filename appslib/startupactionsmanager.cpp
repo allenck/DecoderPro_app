@@ -99,7 +99,7 @@
  * that can be used to explain why isValid() is false.
  */
 //@Override
-/*public*/ void StartupActionsManager::initialize(Profile* profile) throw (InitializationException)
+/*public*/ void StartupActionsManager::initialize(Profile* profile) /*throws InitializationException*/
 {
  if (!this->isInitialized(profile))
  {
@@ -108,7 +108,7 @@
   {
    this->requiresNoInitializedWithExceptions(profile, tr("Unable to run startup actions due to earlier failures."));
   }
-  catch (InitializationException ex)
+  catch (InitializationException* ex)
   {
    perform = false;
   }

@@ -64,7 +64,7 @@ public:
      * already exist and the manager cannot create the IdTag
      * due to e.g. an illegal name or name that can't be parsed.
      */
-    /*public*/ virtual DefaultIdTag* provideIdTag(QString /*name*/) {return NULL;}
+    /*public*/ virtual IdTag* provideIdTag(QString /*name*/) {return NULL;}
 
     /**
      * Locate via tag ID, then by user name, and finally system name if needed.
@@ -73,7 +73,7 @@ public:
      * @param name tag name being requested
      * @return null if no match found
      */
-    /*public*/ virtual DefaultIdTag* getIdTag(QString /*name*/) {return NULL;}
+    /*public*/ virtual IdTag* getIdTag(QString /*name*/) {return NULL;}
 
     /**
      * Locate an instance based on a system name.  Returns null if no
@@ -81,7 +81,7 @@ public:
      * @param systemName system name being requested
      * @return requested IdTag object or null if none exists
      */
-    /*public*/ virtual NamedBean* getBySystemName(QString /*systemName*/) const {return NULL;}
+    /*public*/ virtual NamedBean* getBySystemName(QString /*systemName*/)  override{return NULL;}
 
     /**
      * Locate an instance based on a user name.  Returns null if no
@@ -177,7 +177,7 @@ public:
      * @return state of initialisation
      */
     /*public*/ virtual bool isInitialised()  {return false;}
-    virtual /*public*/ DefaultIdTag* provide(QString name) /*throw (IllegalArgumentException)*/ =0;
+    //virtual /*public*/ NamedBean* provide(QString name) /*throw (IllegalArgumentException)*/ =0;
 
  friend class IdTagManagerXml;
 };

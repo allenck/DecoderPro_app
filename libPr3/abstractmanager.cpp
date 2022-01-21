@@ -269,7 +269,7 @@ NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
    }
    else {
        log->error(tr("systemName is already registered: %1").arg(systemName),nullptr);
-       throw  NamedBean::DuplicateSystemNameException("systemName is already registered: " + systemName);
+       throw new NamedBean::DuplicateSystemNameException("systemName is already registered: " + systemName);
    }
   }
   else
@@ -296,7 +296,7 @@ NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
               QString msg = tr("systemName is already registered. Current system name: %1. New system name: %2").arg(
                       systemName).arg(systemName);
               log->error(msg);
-              throw  NamedBean::DuplicateSystemNameException(msg);
+              throw new NamedBean::DuplicateSystemNameException(msg);
           }
       }
   }
@@ -313,16 +313,13 @@ NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
 
   // notifications
   int position = getPosition(s);
-//  fireDataListenersAdded(position, position, s);
+  fireDataListenersAdded(position, position, s);
   if (!silencedProperties.value("beans", false)) {
       fireIndexedPropertyChange("beans", position, QVariant(), VPtr<NamedBean>::asQVariant(s));
   }
   firePropertyChange("length", 0, _beans.size());
   // listen for name and state changes to forward
-  s->addPropertyChangeListener((PropertyChangeListener*)this);
-  AbstractNamedBean* ab = (AbstractNamedBean*)s;
-  //connect(ab->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-
+  s->addPropertyChangeListener(this);
 }
   // not efficient, but does job for now
 /*private*/ int AbstractManager::getPosition(NamedBean* s) const{
@@ -705,13 +702,13 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
      message.append("</ul>")
              .append(tr("It will be removed from the %1s").arg(getBeanTypeHandled()));
      if (found) {
-         throw  PropertyVetoException(message, evt);
+         throw new PropertyVetoException(message, evt);
      }
  } else {
      for (NamedBean* nb : _beans) {
          try {
              nb->vetoableChange(evt);
-         } catch (PropertyVetoException e) {
+         } catch (PropertyVetoException* e) {
              throw e;
          }
      }
@@ -793,33 +790,40 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
 
 /** {@inheritDoc} */
 //@Override
+//@Deprecated
+//@SuppressWarnings("deprecation")
 /*public*/ void AbstractManager::setDataListenerMute(bool m) {
     if (muted && !m) {
         // send a total update, as we haven't kept track of specifics
         ManagerDataEvent/*<E>*/* e = new ManagerDataEvent(this, ManagerDataEvent::CONTENTS_CHANGED, 0, getObjectCount()-1, nullptr);
-//        for (ManagerDataListener<E> listener : listeners) {
-//            listener.contentsChanged(e);
-//        }
-        emit notifyContentsChanged(e);
+        for (ManagerDataListener/*<E>*/* listener : listeners) {
+            listener->contentsChanged(e);
+        }
+//        emit notifyContentsChanged(e);
     }
     this->muted = m;
 }
 
+//@Deprecated
+//@SuppressWarnings("deprecation")
 /*protected*/ void AbstractManager::fireDataListenersAdded(int start, int end, NamedBean* changedBean) {
     if (muted) return;
     ManagerDataEvent/*<E>*/* e = new ManagerDataEvent(this, ManagerDataEvent::INTERVAL_ADDED, start, end, changedBean);
-//    for (ManagerDataListener<E> m : listeners) {
-//        m.intervalAdded(e);
-//    }
-    emit notifyIntervalAdded(e);
+    for (ManagerDataListener/*<E>*/* m : listeners) {
+        m->intervalAdded(e);
+    }
+//    emit notifyIntervalAdded(e);
 }
+
+//@Deprecated
+//@SuppressWarnings("deprecation")
 /*protected*/ void AbstractManager::fireDataListenersRemoved(int start, int end, NamedBean* changedBean) {
     if (muted) return;
     ManagerDataEvent/*<E>*/* e = new ManagerDataEvent(this, ManagerDataEvent::INTERVAL_REMOVED, start, end, changedBean);
-//    for (ManagerDataListener<E> m : listeners) {
-//        m.intervalRemoved(e);
-//    }
-    emit notifyIntervalRemoved(e);
+    for (ManagerDataListener/*<E>*/* m : listeners) {
+        m->intervalRemoved(e);
+    }
+//    emit notifyIntervalRemoved(e);
 }
 
 /*public*/ void AbstractManager::updateAutoNumber(QString systemName) {
@@ -913,13 +917,13 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
     int increment;
     // If hardware address passed does not already exist then this is the next valid address.
     try {
-        // System.out.format("curaddress: "+curAddress);
-        testAddr = validateSystemNameFormat(createSystemName(curAddress,prefix));
-        // System.out.format("testaddr: "+testAddr);
-        bean = getBySystemName(testAddr);
-        increment = ( static_cast<Turnout*>(bean)? ((Turnout*)bean)->getNumberOutputBits() : 1);
-        testAddr = testAddr.mid(getSystemNamePrefix().length());
-        getIncrement(testAddr, increment);
+     // System.out.format("curaddress: "+curAddress);
+     testAddr = validateSystemNameFormat(createSystemName(curAddress,prefix));
+     // System.out.format("testaddr: "+testAddr);
+     bean = getBySystemName(testAddr);
+     increment = ( static_cast<Turnout*>(bean)? ((Turnout*)bean)->getNumberOutputBits() : 1);
+     testAddr = testAddr.mid(getSystemNamePrefix().length());
+     getIncrement(testAddr, increment);
     }
     catch ( NamedBean::BadSystemNameException* ex){
         throw new JmriException(ex->getMessage());

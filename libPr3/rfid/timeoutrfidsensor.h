@@ -9,7 +9,7 @@ class TimeoutRfidSensor : public RfidSensor
 public:
  TimeoutRfidSensor(QString systemName, QString userName, QObject* parent = nullptr);
  TimeoutRfidSensor(QString systemName, QObject* parent = nullptr);
- /*public*/ void notify(DefaultIdTag *t);
+ /*public*/ void notify(IdTag *t);
 
 
 private:

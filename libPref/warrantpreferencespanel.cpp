@@ -532,12 +532,17 @@ FlowLayout* buttonPanelLayout = new FlowLayout;
 //         return this;
 //     }
 // }.init(button, interp));
- ButtonActionListener* bal = new ButtonActionListener();
- bal->init(button,interp,this);
- if (_interpretation==interp)
- {
-  button->setChecked(true);
- }
+// ButtonActionListener* bal = new ButtonActionListener();
+// bal->init(button,interp,this);
+// if (_interpretation==interp)
+// {
+//  button->setChecked(true);
+// }
+ connect(button, &QRadioButton::clicked, [=]{
+     if (button->isChecked()) {
+        _interpretation = interp;
+      }
+ });
 }
 ButtonActionListener* ButtonActionListener::init(QRadioButton *b, int num, WarrantPreferencesPanel* panel)
 {

@@ -710,7 +710,7 @@ ThrottleManager* InstanceManager::throttleManagerInstance()  {
  *
  * @return the default light manager. May not be the only instance.
  */
-LightManager* InstanceManager::lightManagerInstance()  { return (AbstractLightManager*) getDefault("LightManager");}
+LightManager* InstanceManager::lightManagerInstance()  { return (ProxyLightManager*) getDefault("LightManager");}
 
 
 /**

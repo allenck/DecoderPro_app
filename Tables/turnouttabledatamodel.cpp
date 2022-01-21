@@ -24,26 +24,28 @@
  *
  */
 // /*private*/ static /*final*/ long serialVersionUID = -8822546005900067212L;
-TurnoutTableDataModel::TurnoutTableDataModel()
-    : BeanTableDataModel()
+TurnoutTableDataModel::TurnoutTableDataModel(QObject *parent)
+    : BeanTableDataModel(parent)
 {
 // this->turnoutTableAction = self;
- rootPath = FileUtil::getProgramPath() + "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
- beanTypeChar = 'T'; // for Turnout
- onIconPath = rootPath + beanTypeChar + "-on-s.png";
- offIconPath = rootPath + beanTypeChar + "-off-s.png";
+ common();
  setObjectName("TurnoutTableDataModel");
  init();
 }
 
-/*public*/ TurnoutTableDataModel::TurnoutTableDataModel(Manager* mgr) : BeanTableDataModel(){
-    //super();
+/*private*/ void TurnoutTableDataModel:: common()
+{
  rootPath = FileUtil::getProgramPath() + "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
  beanTypeChar = 'T'; // for Turnout
  onIconPath = rootPath + beanTypeChar + "-on-s.png";
  offIconPath = rootPath + beanTypeChar + "-off-s.png";
+}
+
+/*public*/ TurnoutTableDataModel::TurnoutTableDataModel(Manager* mgr, QObject* parent) : BeanTableDataModel(parent){
+    //super();
+ common();
+ setObjectName(QString("TurnoutTableDataModel") + " " + mgr->self()->metaObject()->className());
  setManager(mgr);
- setObjectName("TurnoutTableDataModel");
  init();
  initTable();
 }
@@ -177,14 +179,7 @@ TurnoutTableDataModel::TurnoutTableDataModel()
  int col = index.column();
  if(row < 0)
      return 0;
- QString name = sysNameList.at(row);
- TurnoutManager* manager = turnoutManager;
- AbstractTurnout* t;
- if(qobject_cast<ProxyManager*>(manager->self()))
-  t = (AbstractTurnout*)((AbstractProxyManager*)manager)->getBeanBySystemName(name);
- else
-  t =(AbstractTurnout*) ((AbstractTurnoutManager*)manager)->getBySystemName(name);
-
+ Turnout* t = turnoutManager->getBySystemName(sysNameList.at(row));
  Qt::ItemFlags editable = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
  Qt::ItemFlags noteditable = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
@@ -218,11 +213,7 @@ TurnoutTableDataModel::TurnoutTableDataModel()
  int row = index.row();
  QString name = sysNameList.at(row);
  TurnoutManager* manager = turnoutManager;
- AbstractTurnout* t;
- if(qobject_cast<AbstractProxyManager*>(manager->self()))
-  t = (AbstractTurnout*)((AbstractProxyManager*)manager->self())->getBeanBySystemName(name);
- else
-  t = (AbstractTurnout*)((AbstractTurnoutManager*)manager)->getBySystemName(name);
+ Turnout* t = manager->getBySystemName(name);
  if (t == NULL)
  {
   log->debug("error NULL turnout!");
@@ -683,7 +674,7 @@ TurnoutTableDataModel::TurnoutTableDataModel()
 
 /*public*/ TurnoutManager *TurnoutTableDataModel::getManager() {
  if (turnoutManager == nullptr) {
-     turnoutManager = (TurnoutManager*)InstanceManager::getDefault("TurnoutManager");
+     turnoutManager = (ProxyTurnoutManager*)InstanceManager::getDefault("TurnoutManager");
  }
  return turnoutManager;
 }

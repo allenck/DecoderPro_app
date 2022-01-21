@@ -36,7 +36,7 @@ enum COLUMNS
   FORGETCOL = PULLUPCOL + 1,
   QUERYCOL = FORGETCOL + 1
 };
-/*public*/ SensorTableDataModel(SensorManager* manager, QObject *parent);
+/*public*/ SensorTableDataModel(Manager *manager, QObject *parent);
 /*public*/ QString getValue(QString name) const override;
 /*public*/ int columnCount(const QModelIndex &parent) const override;
 /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
@@ -56,16 +56,16 @@ signals:
 public slots:
  //void OnDelete(int);
 private:
- SensorManager* senManager;// = InstanceManager.sensorManagerInstance();
+ SensorManager* senManager = nullptr;// = InstanceManager.sensorManagerInstance();
  void common();
- Logger * log;
- QSignalMapper* deleteMapper;
+ static Logger * log;
+ QSignalMapper* deleteMapper = new QSignalMapper();
  void editButton(Sensor* s);
 
 protected:
- /*protected*/ JTable* table;
+ /*protected*/ JTable* table = nullptr;
  /*protected*/ void setManager(Manager* manager) override;
- /*protected*/ AbstractManager* getManager() override;
+ /*protected*/ Manager *getManager() override;
  /*protected*/ virtual NamedBean* getBySystemName(QString name) const override;
  /*protected*/ NamedBean* getByUserName(QString name) override;
 

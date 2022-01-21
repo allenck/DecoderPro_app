@@ -19,7 +19,7 @@ public:
     Turnout* getTurnout(QString name) override;
     Turnout* newTurnout(QString systemName, QString userName) override;
     Turnout* getBySystemName(QString name) override;
-    Turnout* getByUserName(QString key) override;
+    Turnout* getByUserName(QString key)  override;
     /*public*/ QString getBeanTypeHandled(bool plural)const override;
     /*public*/ QString getNamedBeanClass() const override;
     QString getClosedText() override;

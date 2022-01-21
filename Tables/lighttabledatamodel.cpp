@@ -27,17 +27,24 @@
 
     /*public*/ LightTableDataModel::LightTableDataModel() : BeanTableDataModel(){
         //super();
+        common();
+        init();
         initTable();
     }
 
     /*public*/ LightTableDataModel::LightTableDataModel(Manager/*<Light>*/* mgr) : BeanTableDataModel(){
         //super();
         setManager((AbstractManager*)mgr->self());
+        setObjectName(QString("LightTableDataModel") + "_" + mgr->self()->metaObject()->className());
         initTable();
     }
 
     /*private*/ void LightTableDataModel::initTable() {
-    setObjectName("LightTableDataModel");
+     _graphicState = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState();
+    }
+
+    void LightTableDataModel::common()
+    {
      _graphicState = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState();
      rootPath = FileUtil::getProgramPath() + "resources/icons/misc/switchboard/";
      onIconPath = rootPath + beanTypeChar + "-on-s.png";
@@ -45,15 +52,14 @@
      loadIcons();
     }
 
-
     /**
      * {@inheritDoc}
      */
     //@Nonnull
     //@Override
-    /*public*/ Manager *LightTableDataModel::getManager(){
+    /*public*/ LightManager *LightTableDataModel::getManager(){
         if (lightManager == nullptr) {
-            lightManager = (LightManager*)InstanceManager::getDefault("LightManager");
+            lightManager = (ProxyLightManager*)InstanceManager::getDefault("LightManager");
         }
         return lightManager;
     }
@@ -76,7 +82,7 @@
                 }
             }
         }
-        lightManager = manager;
+        lightManager = qobject_cast<LightManager*>(manager->self());
         getManager()->addPropertyChangeListener(this);
         updateNameList();
     }

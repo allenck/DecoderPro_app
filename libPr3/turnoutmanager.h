@@ -48,14 +48,14 @@ public:
          * instance already exists.
          * @return requested Turnout object or null if none exists
          */
-         virtual Turnout* getBySystemName(QString /*systemName*/) const {return nullptr;}
+         virtual Turnout* getBySystemName(QString /*systemName*/)  {return nullptr;}
 
         /**
          * Locate an instance based on a user name.  Returns null if no
          * instance already exists.
          * @return requested Turnout object or null if none exists
          */
-         virtual Turnout* getByUserName(QString /*userName*/) const {return nullptr;}
+         virtual Turnout* getByUserName(QString /*userName*/)  {return nullptr;}
 
         /**
          * Return an instance with the specified system and user names.

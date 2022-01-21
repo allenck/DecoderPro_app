@@ -106,9 +106,12 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 
 //@Override
 /*public*/ DefaultIdTag* DefaultIdTagManager::provideIdTag(QString name) {
-    if (!_initialised && !_loading) init();
+    if (!_initialised && !_loading) {
+     init();
+    }
     DefaultIdTag* t = getIdTag(name);
-    if (t!=NULL) return t;
+    if (t!=NULL)
+     return t;
     if (name.startsWith(getSystemPrefix()+typeLetter()))
         return newIdTag(name, QString());
     else

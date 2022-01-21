@@ -83,26 +83,26 @@ void ListedTableFrame::common()
  {
   /*Add the default tables to the static list array, this should only be done
    once when first loaded*/
-  addTable("jmri.jmrit.beantable.TurnoutTableTabAction", tr("Turnout Table"), false);
-  addTable("jmri.jmrit.beantable.SensorTableTabAction", tr("Sensor Table"), false);
-  addTable("jmri.jmrit.beantable.LightTableTabAction", tr("Light Table"), false);
-  addTable("jmri.jmrit.beantable.SignalHeadTableAction", tr("Signal Table"), true);
-  addTable("jmri.jmrit.beantable.SignalMastTableAction", tr("Signal Mast Table"), true);
-  addTable("jmri.jmrit.beantable.SignalGroupTableAction", tr("Signal Group Table"), true);
-  addTable("jmri.jmrit.beantable.SignalMastLogicTableAction", tr("Signal MastLogic Table"), true);
-  addTable("jmri.jmrit.beantable.ReporterTableAction", tr("Reporter Table"), true);
-  addTable("jmri.jmrit.beantable.MemoryTableAction", tr("Memory Table"), true);
-  addTable("jmri.jmrit.beantable.RouteTableAction", tr("Route Table"), true);
-  addTable("jmri.jmrit.beantable.LRouteTableAction", tr("LRoute Table"), true);
-  addTable("jmri.jmrit.beantable.LogixTableAction", tr("Logix Table"), true);
-  addTable("jmri.jmrit.beantable.BlockTableAction", tr("Block Table"), true);
-  if (((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isOblockEditTabbed()) { // select _tabbed in prefs
-      addTable("jmri.jmrit.beantable.OBlockTableAction", tr("MenuItemOBlockTable"), false);
-  } // requires restart after changing the interface setting (on Display tab)
-  addTable("jmri.jmrit.beantable.SectionTableAction", tr("Section Table"), true);
-  addTable("jmri.jmrit.beantable.TransitTableAction", tr("Transit Table"), true);
-  addTable("jmri.jmrit.beantable.AudioTableAction", tr("Audio Table"), false);
-  addTable("jmri.jmrit.beantable.IdTagTableAction", tr("IdTag Table"), true);
+    addTable("jmri.jmrit.beantable.TurnoutTableTabAction", tr("Turnout Table"), false);
+    addTable("jmri.jmrit.beantable.SensorTableTabAction", tr("Sensor Table"), false);
+    addTable("jmri.jmrit.beantable.LightTableTabAction", tr("Light Table"), false);
+    addTable("jmri.jmrit.beantable.SignalHeadTableAction", tr("Signal Table"), true);
+    addTable("jmri.jmrit.beantable.SignalMastTableAction", tr("Signal Mast Table"), true);
+    addTable("jmri.jmrit.beantable.SignalGroupTableAction", tr("Signal Group Table"), true);
+    addTable("jmri.jmrit.beantable.SignalMastLogicTableAction", tr("Signal MastLogic Table"), true);
+//    addTable("jmri.jmrit.beantable.ReporterTableAction", tr("Reporter Table"), true);
+    addTable("jmri.jmrit.beantable.MemoryTableAction", tr("Memory Table"), true);
+    addTable("jmri.jmrit.beantable.RouteTableAction", tr("Route Table"), true);
+    addTable("jmri.jmrit.beantable.LRouteTableAction", tr("LRoute Table"), true);
+    addTable("jmri.jmrit.beantable.LogixTableAction", tr("Logix Table"), true);
+    addTable("jmri.jmrit.beantable.BlockTableAction", tr("Block Table"), true);
+    if (((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isOblockEditTabbed()) { // select _tabbed in prefs
+        addTable("jmri.jmrit.beantable.OBlockTableAction", tr("MenuItemOBlockTable"), false);
+    } // requires restart after changing the interface setting (on Display tab)
+    addTable("jmri.jmrit.beantable.SectionTableAction", tr("Section Table"), true);
+    addTable("jmri.jmrit.beantable.TransitTableAction", tr("Transit Table"), true);
+    addTable("jmri.jmrit.beantable.AudioTableAction", tr("Audio Table"), false);
+    addTable("jmri.jmrit.beantable.IdTagTableAction", tr("IdTag Table"), true);
   init = true;
  }
 }

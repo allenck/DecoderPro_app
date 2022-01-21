@@ -82,7 +82,8 @@ void RosterConfigManager::propertyChange(PropertyChangeEvent* evt)
 //                    ex);
    tr("\"%1\" is not a valid path").arg(preferences->get(DIRECTORY, this->getDirectory())),QString("\"%1\" is not a valid path").arg(preferences->get(DIRECTORY, this->getDirectory())), NULL);
   }
-  Roster::getDefault()->setRosterLocation(this->getDirectory());
+  //Roster::getDefault()->setRosterLocation(this->getDirectory());
+  getRoster(profile)->setRosterLocation(this->getDirectory());
   this->setInitialized(profile, true);
  }
 }

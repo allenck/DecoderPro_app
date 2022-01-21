@@ -23,24 +23,22 @@ AbstractPreferencesManager::AbstractPreferencesManager(QObject* parent) : Bean(p
 /*public*/ bool AbstractPreferencesManager::isInitialized(/*@Nonnull*/ Profile* profile) {
 //    return this->initialized.getOrDefault(profile, false)
 //            && this->exceptions.getOrDefault(profile, new QList<Exception>()).isEmpty();
- return (this->initialized->value(profile)==false?false: this->initialized->value(profile))
-   && (this->exceptions->value(profile)==NULL? new QList<Exception*>(): this->exceptions->value(profile))->isEmpty();
+ return this->initialized->value(profile, false)
+   && this->exceptions->value(profile, new QList<Exception*>())->isEmpty();
 }
 
 //@Override
 /*public*/ bool AbstractPreferencesManager::isInitializedWithExceptions(/*@Nonnull*/ Profile* profile) {
 //    return this->initialized.getOrDefault(profile, false)
 //            && !this->exceptions.getOrDefault(profile, new QList<Exception>()).isEmpty();
- return (this->initialized->value(profile)==false?false: this->initialized->value(profile))
-   && !(this->exceptions->value(profile)== NULL? new QList<Exception*>(): this->exceptions->value(profile))->isEmpty();
+ return this->initialized->value(profile, false)
+   && !this->exceptions->value(profile, new QList<Exception*>())->isEmpty();
 }
 
 //@Override
 /*public*/ QList<Exception*>* AbstractPreferencesManager::getInitializationExceptions(/*@Nonnull*/ Profile* profile) {
     //return new QList<Exception>(this->exceptions.getOrDefault(profile, new QList<Exception>()));
- if(this->exceptions->value(profile) == NULL)
-  return new QList<Exception*>();
- return new QList<Exception*>(*this->exceptions->value(profile));
+ return new QList<Exception*>(*this->exceptions->value(profile, new QList<Exception*>()));
 }
 
 /**
@@ -51,10 +49,7 @@ AbstractPreferencesManager::AbstractPreferencesManager(QObject* parent) : Bean(p
  */
 /*protected*/ bool AbstractPreferencesManager::isInitializing(/*@Nonnull*/ Profile* profile)
 {
- bool b0 = this->initialized->value(profile);
- QList<Exception*>* l = this->exceptions->value(profile);
- return (this->initialized->value(profile)?false: this->initialized->value(profile))
-   && (this->exceptions->value(profile)== NULL? false: this->exceptions->value(profile)->isEmpty());
+ return !this->initialized->value(profile, false) && this->initializing->value(profile, false);
 }
 #if 0
 /**
@@ -198,7 +193,7 @@ AbstractPreferencesManager::AbstractPreferencesManager(QObject* parent) : Bean(p
        log->debug(tr("throw exception on class '%1' msg: '%2', local msg '%3'").arg(clazz).arg(exception->getMessage()).arg(exception->getLocalizedMessage()));
        this->addInitializationException(profile, exception);
        this->setInitialized(profile, true);
-//                throw exception;
+       throw exception;
    }
   }
  }

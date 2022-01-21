@@ -28,6 +28,8 @@ public:
     /*public*/ QString getBeanTypeHandled(bool plural) const override;
     /*public*/ QString getNamedBeanClass()const override ;
 
+    /*public*/ SystemConnectionMemo* getMemo() override {return AbstractManager::getMemo();}
+
     QObject* self() override {return (QObject*)this;}
 
 signals:

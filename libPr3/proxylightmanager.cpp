@@ -55,7 +55,9 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
 
 //@Override
 /** {@inheritDoc} */
-/*public*/ Light* ProxyLightManager::provide(/*@Nonnull*/ QString name)  { return provideLight(name); }
+/*public*/ Light* ProxyLightManager::provide(/*@Nonnull*/ QString name)  {
+ return provideLight(name);
+}
 
 /**
  * Locate via user name, then system name if needed.
@@ -68,7 +70,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * @return Never null under normal circumstances
  */
 /*public*/ Light* ProxyLightManager::provideLight(QString name) {
-    return provideLight(name);
+ return (Light*)AbstractProvidingProxyManager::provideNamedBean(name);
 }
 
 /**

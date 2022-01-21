@@ -33,7 +33,7 @@ class IdTagTableDataModel : public BeanTableDataModel
 
  private:
   static Logger* log;
-  /*private*/ IdTagManager* tagManager;
+  /*private*/ IdTagManager* tagManager = nullptr;
 
  protected:
   /*protected*/ /*final*/ void setManager(/*Manager<IdTag>*/Manager *mgr) override;

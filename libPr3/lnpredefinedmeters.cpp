@@ -129,7 +129,7 @@
                         (typeVolt?"volt":"current")).arg( // NOI18N
                         sysName).arg(value).arg(e->getMessage()));
             }
-            ((MeterManager*)InstanceManager::getDefault("MeterManager"))->Register(qobject_cast<NamedBean*>(newMeter));
+            ((ProxyMeterManager*)InstanceManager::getDefault("MeterManager"))->AbstractProxyManager::Register(qobject_cast<NamedBean*>(newMeter));
             log->debug(tr("Added new %1Meter %2 with value %3").arg(
                         (typeVolt?"volt":"current")).arg( // NOI18N
                     sysName).arg(value));

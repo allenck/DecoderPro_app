@@ -167,7 +167,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
     //@CheckReturnValue
     //@CheckForNull
     /*public*/  /*E*/NamedBean* AbstractProxyManager::getBySystemName(/*@Nonnull*/ QString systemName)  {
-        Manager/*<E>*/* m = getManager(systemName);
+        AbstractManager/*<E>*/* m = getManager(systemName);
         if (m == nullptr) {
             log->debug(QString("getBySystemName did not find manager from name %1, defer to default manager").arg(systemName));
             m = getDefaultManager();
@@ -415,10 +415,10 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
      */
     //@Override
     /*public*/  void AbstractProxyManager::Register(/*@Nonnull*/ /*E*/NamedBean* s)  {
-        Manager/*<E>*/* m = getManager(s->getSystemName());
+        AbstractManager/*<E>*/* m = getManager(s->getSystemName());
         if (m == nullptr) {
-            QString systemPrefix = m->getSystemPrefix(s->getSystemName());
-            m = createSystemManager(systemPrefix);
+            QString systemPrefix = Manager::getSystemPrefix(s->getSystemName());
+            m = (AbstractManager*)createSystemManager(systemPrefix)->self();
         }
         if (m != nullptr) {
             m->Register(s);

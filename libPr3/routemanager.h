@@ -63,8 +63,8 @@ public:
      */
     /*public*/ virtual Route* getRoute(QString /*name*/) {return nullptr;}
 
-    virtual /*public*/ Route* getByUserName(QString /*s*/) const =0;
-    virtual /*public*/ Route* getBySystemName(QString /*s*/) const =0;
+//    virtual /*public*/ Route* getByUserName(QString /*s*/) const =0;
+//    virtual /*public*/ Route* getBySystemName(QString /*s*/) const =0;
 
     /**
      * Get a list of all Route system names.
@@ -82,6 +82,13 @@ public:
     virtual /*public*/ Route* provide(QString name) /*throw (IllegalArgumentException)*/=0;
  QObject* self() override{return (QObject*)this;}
  QString getNamedBeanClass() const override{return "RouteManager";}
+
+ /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
+// /*public*/ NamedBean* getBySystemName(QString name) override {return AbstractManager::getBySystemName(name);}
+// /*public*/ NamedBean* getByUserName(QString name) override {return AbstractManager::getByUserName(name);}
+ /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::addPropertyChangeListener(l);}
+ /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::removePropertyChangeListener(l);}
+
 
 signals:
 

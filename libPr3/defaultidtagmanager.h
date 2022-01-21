@@ -41,9 +41,15 @@ public:
     /*public*/ bool isFastClockUsed()override;
     /*public*/ QList<IdTag*>* getTagsForReporter(Reporter* reporter, long threshold)override;
     /*public*/ DefaultIdTag *provide(QString name) /*throw (IllegalArgumentException)*/override;
- /*public*/ QString getNamedBeanClass()const override {
-     return "IdTag";
- }
+    /*public*/ QString getNamedBeanClass()const override {
+        return "IdTag";
+    }
+  /*public*/ SystemConnectionMemo* getMemo() override {return AbstractManager::getMemo();}
+  /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
+//  /*public*/ IdTag* getBySystemName(QString name) override {return (IdTag*)AbstractManager::getBySystemName(name);}
+  /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::addPropertyChangeListener(l);}
+  /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::removePropertyChangeListener(l);}
+
   QObject* self() override {return (QObject*)this;}
 
 
@@ -51,7 +57,7 @@ signals:
     void newIdTagCreated(DefaultIdTag* tag);
 
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e)override;
 private:
  Logger* log;
  /*private*/ static bool _initialised;// = false;

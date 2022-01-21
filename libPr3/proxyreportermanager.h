@@ -75,6 +75,12 @@ public:
         return "Reporter";
     }
     /*public*/ QString toString() override {return "ProxyReporterManager";}
+    /*public*/ SystemConnectionMemo* getMemo() override {return AbstractProxyManager::getMemo();}
+    /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractProxyManager::getNamedBeanSet();}
+    /*public*/ Reporter* getBySystemName(QString name) override {return (Reporter*)AbstractProxyManager::getBySystemName(name);}
+    /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{AbstractProxyManager::addPropertyChangeListener(l);}
+    /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{AbstractProxyManager::removePropertyChangeListener(l);}
+
     QObject* self() override {return (QObject*)this;}
 
 signals:

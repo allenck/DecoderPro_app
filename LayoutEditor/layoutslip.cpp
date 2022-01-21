@@ -204,10 +204,13 @@ void LayoutSlip::init()
  return namedTurnoutB->getBean();
 }
 
-/*public*/ void LayoutSlip::setTurnoutB(QString tName)
+/*public*/ void LayoutSlip::setTurnoutB(/*@CheckForNull*/ QString tName)
 {
- if (namedTurnoutB!=nullptr)
-  deactivateTurnout();
+ bool reactivate = false;
+ if (namedTurnoutB != nullptr) {
+     deactivateTurnout();
+     reactivate = (namedTurnout != nullptr);
+ }
  turnoutBName = tName;
  Turnout* turnout = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->
                      getTurnout(turnoutBName);
@@ -220,6 +223,11 @@ void LayoutSlip::init()
  {
   turnoutBName = "";
   namedTurnoutB = nullptr;
+ }
+ if (reactivate) {
+     // this has to be called even on a delete in order
+     // to re-activate namedTurnout (A) (if necessary)
+     activateTurnout();
  }
 }
 

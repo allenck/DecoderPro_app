@@ -4,7 +4,7 @@
 #include "instancemanager.h"
 #include "jtextfield.h"
 #include "jbutton.h"
-
+#include "rfid/proxyidtagmanager.h"
 /**
  * TableDataModel for an IdTag Table.
  *
@@ -22,13 +22,15 @@
      */
     /*public*/ IdTagTableDataModel::IdTagTableDataModel(Manager/*<IdTag>*/* mgr, QObject* parent) : BeanTableDataModel(parent){
         //super();
-        setManager((AbstractManager*)mgr->self());
+        setManager(mgr);
+        setObjectName(QString("IdTagTableDataModel") + "_" + mgr->self()->metaObject()->className());
+        init();
     }
 
     //@Override
     /*protected*/ /*final*/ void IdTagTableDataModel::setManager(/*Manager<IdTag>*/Manager* mgr){
-        if ( qobject_cast<IdTagManager*>(mgr->self())){
-            tagManager = (IdTagManager*)mgr->self();
+        if ( static_cast<IdTagManager*>(mgr)){
+            tagManager = (IdTagManager*)mgr;
         }
     }
 
@@ -43,7 +45,7 @@
 
     //@Override
     /*public*/ /*Manager<IdTag>*/Manager* IdTagTableDataModel::getManager() {
-        return  tagManager != nullptr ? tagManager : (IdTagManager*)InstanceManager::getDefault("IdTagManager");
+        return  tagManager != nullptr ? tagManager : (ProxyIdTagManager*)InstanceManager::getDefault("IdTagManager");
     }
 
     //@Override

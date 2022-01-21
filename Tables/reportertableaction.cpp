@@ -10,6 +10,8 @@
 #include <reportable.h>
 #include "vptr.h"
 #include "rfid/reportervariant.h"
+#include "reportertabledatamodel.h"
+#include "loggerfactory.h"
 
 //ReporterTableAction::ReporterTableAction()
 //{
@@ -43,19 +45,19 @@
 }
 
 
-/*public*/ void ReporterTableAction::setManager(ReporterManager* man) {
-    reporterManager = man;
+/*public*/ void ReporterTableAction::setManager(Manager* man) {
+ if(qobject_cast<ReporterManager*>(man->self()))
+    reporterManager = static_cast<ReporterManager*>(man);
 }
 
 /*public*/ ReporterTableAction::ReporterTableAction(QObject* parent) : AbstractTableAction(tr("TitleReporterTable"), parent)
 {
     //this(tr("TitleReporterTable"));
-
+ common();
 }
+
 void ReporterTableAction::common()
 {
- reporterManager = (ReporterManager*)InstanceManager::getDefault("ReporterManager");
- log = new Logger("ReporterTableAction");
 
  addFrame = NULL;
  sysNameLabel = new JLabel("Hardware Address");
@@ -72,9 +74,10 @@ void ReporterTableAction::common()
  */
 /*protected*/ void ReporterTableAction::createModel()
 {
- m = new RtBeanTableDataModel(this);
+ m = new ReporterTableDataModel();
+ m->setManager(reporterManager);
 }
-
+#if 0
 RtBeanTableDataModel::RtBeanTableDataModel(ReporterTableAction* act)
 {
     this->act = act;
@@ -228,7 +231,7 @@ RtBeanTableDataModel::RtBeanTableDataModel(ReporterTableAction* act)
 /*protected*/ QString RtBeanTableDataModel::getBeanType() {
     return tr("Reporter");
 }
-
+#endif
 /*protected*/ void ReporterTableAction::setTitle() {
     f->setTitle(tr("TitleReporterTable"));
 }
@@ -652,3 +655,5 @@ void RTAValidator::prefixBoxChanged(QString txt)
 {
  prefix = ConnectionNameFromSystemName::getPrefixFromName(txt);
 }
+
+/*private*/ /*final*/ /*static*/ Logger* ReporterTableAction::log = LoggerFactory::getLogger("ReporterTableAction");

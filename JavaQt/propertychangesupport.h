@@ -22,17 +22,17 @@ class JAVAQTSHARED_EXPORT PropertyChangeSupport :  public QObject, public Proper
     /**
      * Provide a {@link java.beans.PropertyChangeSupport} helper.
      */
-    /*protected*/ /*final*/ SwingPropertyChangeSupport* propertyChangeSupport;// = new SwingPropertyChangeSupport(source, parent);
+    /*protected*/ /*final*/ SwingPropertyChangeSupport* propertyChangeSupport=nullptr;// = new SwingPropertyChangeSupport(source, parent);
  public:
     /** {@inheritDoc} */
     //@Override
-    /*public*/ void addPropertyChangeListener(/*@CheckForNull*/ PropertyChangeListener* listener) override{
+    /*public*/ virtual void addPropertyChangeListener(/*@CheckForNull*/ PropertyChangeListener* listener) override{
         propertyChangeSupport->addPropertyChangeListener(listener);
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ void addPropertyChangeListener(/*@CheckForNull*/ QString propertyName,
+    /*public*/ virtual void addPropertyChangeListener(/*@CheckForNull*/ QString propertyName,
             /*@CheckForNull*/ PropertyChangeListener* listener) override{
         if(propertyChangeSupport == nullptr)
             propertyChangeSupport = new SwingPropertyChangeSupport(this, nullptr);
@@ -53,13 +53,13 @@ class JAVAQTSHARED_EXPORT PropertyChangeSupport :  public QObject, public Proper
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ void removePropertyChangeListener(/*@CheckForNull*/ PropertyChangeListener* listener) override{
+    /*public*/ virtual void removePropertyChangeListener(/*@CheckForNull*/ PropertyChangeListener* listener) override{
         propertyChangeSupport->removePropertyChangeListener(listener);
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ void removePropertyChangeListener(/*@CheckForNull*/ QString propertyName,
+    /*public*/ virtual void removePropertyChangeListener(/*@CheckForNull*/ QString propertyName,
             /*@CheckForNull*/ PropertyChangeListener* listener) override{
         propertyChangeSupport->removePropertyChangeListener(propertyName, listener);
     }
@@ -84,7 +84,7 @@ class JAVAQTSHARED_EXPORT PropertyChangeSupport :  public QObject, public Proper
      * {@inheritDoc}
      */
     //@Override
-    /*public*/ void fireIndexedPropertyChange(QString propertyName, int index, QVariant oldValue, QVariant newValue) {
+    /*public*/ void fireIndexedPropertyChange(QString propertyName, int index, QVariant oldValue, QVariant newValue)const {
         propertyChangeSupport->fireIndexedPropertyChange(propertyName, index, oldValue, newValue);
     }
 
@@ -100,7 +100,7 @@ class JAVAQTSHARED_EXPORT PropertyChangeSupport :  public QObject, public Proper
      * {@inheritDoc}
      */
     //@Override
-    /*public*/ void firePropertyChange(PropertyChangeEvent* event) {
+    /*public*/ void firePropertyChange(PropertyChangeEvent* event) const {
         propertyChangeSupport->firePropertyChange(event);
     }
 
@@ -116,7 +116,7 @@ class JAVAQTSHARED_EXPORT PropertyChangeSupport :  public QObject, public Proper
      * {@inheritDoc}
      */
     //@Override
-    /*public*/ void firePropertyChange(QString propertyName, QVariant oldValue, QVariant newValue)const override{
+    /*public*/ void firePropertyChange(QString propertyName, QVariant oldValue, QVariant newValue) const override{
         propertyChangeSupport->firePropertyChange(propertyName, oldValue, newValue);
     }
 

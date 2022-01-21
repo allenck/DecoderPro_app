@@ -4,9 +4,10 @@
 #include "reporter.h"
 #include "libPr3_global.h"
 #include "providingmanager.h"
+
 class LIBPR3SHARED_EXPORT ReporterManager : public ProvidingManager
 {
-    //Q_OBJECT
+  //Q_OBJECT
   Q_INTERFACES(ProvidingManager)
 public:
     //explicit ReporterManager(QObject *parent = 0);
@@ -168,7 +169,6 @@ public:
 
        /*public*/ QString toString() {return "ReporterManager";}
 
-       QObject* self() {return (QObject*)this;}
 
        /**
         * Get a system name for a given hardware address and system prefix.
@@ -184,8 +184,9 @@ public:
        //@Nonnull
        virtual /*public*/ QString createSystemName(/*@Nonnull*/ QString /*curAddress*/, /*@Nonnull*/ QString /*prefix*/)
          /*throws JmriException*/ {return "";}
+       virtual QObject* self() =0;
 
-    
+
 };
-Q_DECLARE_INTERFACE(ReporterManager, "Reporter Manager")
+Q_DECLARE_INTERFACE(ReporterManager, "ReporterManager")
 #endif // REPORTERMANAGER_H

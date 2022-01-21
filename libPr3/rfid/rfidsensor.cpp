@@ -31,7 +31,7 @@ RfidSensor::RfidSensor(QObject *parent) :
     contents = new QVector<int>();
 }
 
-/*public*/ void RfidSensor::notify(DefaultIdTag* r) {
+/*public*/ void RfidSensor::notify(IdTag *r) {
     setOwnState(r!=NULL?/*Sensor::ACTIVE*/0x02:/*Sensor::INACTIVE*/0x04);
 }
 

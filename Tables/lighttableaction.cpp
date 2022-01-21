@@ -139,7 +139,7 @@ void LightTableAction::common()
 }
 
 /*public*/ void LightTableAction::setManager(Manager* man) {
-    lightManager = (LightManager*) man;
+    lightManager = qobject_cast<LightManager*>(man->self());
 }
 
 /**

@@ -13,6 +13,7 @@ public:
  /*public*/ QString getNamedBeanClass()const override {
      return "Sensor";
  }
+ /*public*/ SystemConnectionMemo* getMemo() override {return AbstractManager::getMemo();}
 
 private:
  /*private*/ JMRIClientSystemConnectionMemo* memo = nullptr;

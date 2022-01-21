@@ -457,7 +457,7 @@ void WarrantPreferences::setThrottleIncrement(float ti) {
     _throttleIncr = ti;
 }
 //@Override
-/*public*/ void WarrantPreferences::initialize(Profile* profile) throw (InitializationException)
+/*public*/ void WarrantPreferences::initialize(Profile* profile)
 {
     if (!this->isInitialized(profile) && !this->isInitializing(profile)) {
         this->setInitializing(profile, true);

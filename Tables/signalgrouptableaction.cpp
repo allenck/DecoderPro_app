@@ -856,7 +856,7 @@ bool SignalGroupTableAction::checkNewNamesOK() {
         }
     }
     // check if a SignalGroup with this system name already exists
-    g = static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"))->getBySystemName(sName);
+    g = (SignalGroup*)static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"))->getBySystemName(sName);
     if (g!=NULL) {
         // SignalGroup already exists
 //        javax.swing.JOptionPane.showMessageDialog(NULL,"A SignalGroup with this system name already exists","System Name Error",javax.swing.JOptionPane.WARNING_MESSAGE);
@@ -1003,7 +1003,7 @@ void SignalGroupTableAction::cancelEdit() {
 void SignalGroupTableAction::editPressed(ActionEvent* /*e*/) {
     // identify the SignalGroup with this name if it already exists
     QString sName = _systemName->text().toUpper();
-    SignalGroup* g = static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"))->getBySystemName(sName);
+    SignalGroup* g = (SignalGroup*)static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"))->getBySystemName(sName);
     if (g==NULL) {
         // SignalGroup does not exist, so cannot be edited
         return;

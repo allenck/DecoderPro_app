@@ -8,6 +8,7 @@
 #include "jlist.h"
 #include <QMenu>
 
+class JOptionPane;
 class Profile;
 class InitializationException;
 //class ConfigXmlManager;
@@ -56,6 +57,16 @@ private:
  /*private*/ /*final*/ QHash<PreferencesManager*, InitializationException*>* initializationExceptions;// = new HashMap<>();
  /*private*/ /*final*/ QList<PreferencesManager*>* initialized;// = new ArrayList<>();
  /*private*/ void handleConnectionError(QList<QString> *errors, QVariant list);
+ /*private*/ void handleRestartSelection(QVariant selectedValue);
+ /*private*/ JOptionPane* getjOptionPane(QVariant list, QVariantList options);
+ /*private*/ void handleInitializationExceptions(Profile* profile);
+ /*private*/ QVariant getErrorListObject(QList<QString>* errors);
+
+ protected:
+ /*protected*/ bool isEditDialogRestart();
+ /*protected*/ void handleRestart();
+ /*protected*/ void handleQuit();
+ /*protected*/ void displayErrorListDialog(QVariant list);
 
 };
 

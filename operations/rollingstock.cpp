@@ -803,11 +803,11 @@ return getLength().toInt();
      return _rfid;
  }
 
- /*public*/ DefaultIdTag *RollingStock::getIdTag() {
+ /*public*/ IdTag *RollingStock::getIdTag() {
      return _tag;
  }
 
- /*public*/ void RollingStock::setIdTag(DefaultIdTag* tag)
+ /*public*/ void RollingStock::setIdTag(IdTag* tag)
 {
      if (_tag != NULL)
      {
@@ -890,7 +890,7 @@ IdTagPropertyChangeListener::IdTagPropertyChangeListener(RollingStock* parent) {
      if (old!=(id))
          setDirtyAndFirePropertyChange("rolling stock rfid", old, id); // NOI18N
      try {
-      DefaultIdTag* tag = ((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->getIdTag(id.toUpper());
+      IdTag* tag = ((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->getIdTag(id.toUpper());
          if(log->isDebugEnabled()) log->debug(tr("Tag %1 Found").arg(tag->toString()));
          setIdTag(tag);
      } catch (NullPointerException* e) {

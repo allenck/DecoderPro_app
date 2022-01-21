@@ -22,6 +22,7 @@ class ProxyMeterManager :  public AbstractProxyManager, public MeterManager
   QObject* self() override{return (QObject*)this;}
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e)override;
+  /*public*/ SystemConnectionMemo* getMemo() override {return AbstractProxyManager::getMemo();}
 
  private:
   /*private*/ bool muteUpdates = false;

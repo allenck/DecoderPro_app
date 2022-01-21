@@ -74,6 +74,7 @@ public:
     {
      return Manager::MEMORIES; // ??
     }
+    /*public*/ SystemConnectionMemo* getMemo() override;
 
     QObject* self() override{return (QObject*)this;}
 

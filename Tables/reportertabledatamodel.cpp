@@ -14,11 +14,17 @@
 
     /*public*/ /*static*/ /*final*/ const int ReporterTableDataModel::LASTREPORTCOL = NUMCOLUMN;
 
-    /*public*/ ReporterTableDataModel::ReporterTableDataModel(/*Manager<Reporter>*/AbstractManager* mgr, QObject* parent) : BeanTableDataModel(parent){
+    /*public*/ ReporterTableDataModel::ReporterTableDataModel(/*Manager<Reporter>*/Manager *mgr, QObject* parent) : BeanTableDataModel(parent){
         //super();
-        setManager(mgr);
+     setObjectName(QString("ReporterTableDataModel") + "_" + mgr->self()->metaObject()->className());
+     setManager(mgr);
+     init();
     }
 
+    ReporterTableDataModel::ReporterTableDataModel()
+    {
+     init();
+    }
 
     /**
      * {@inheritDoc}
@@ -46,7 +52,7 @@
      */
     //@Override
     /*public*/ /*final*/ void ReporterTableDataModel::setManager(/*Manager<Reporter>*/Manager *rm) {
-        if (!(qobject_cast<ReporterManager*>(rm->self()))) {
+        if (!(static_cast<ReporterManager*>(rm))) {
             return;
         }
         getManager()->removePropertyChangeListener(this);
@@ -69,7 +75,10 @@
      */
     //@Override
     /*public*/ Manager *ReporterTableDataModel::getManager() {
-        return ( reporterManager == nullptr ? (ProxyReporterManager*)InstanceManager::getDefault("ReporterManager"): reporterManager);
+     if (reporterManager == nullptr) {
+         reporterManager = (ProxyReporterManager*)InstanceManager::getDefault("ReporterManager");
+     }
+     return reporterManager;
     }
 
     /**

@@ -123,6 +123,8 @@ void TurnoutTableAction::common()
  if (turnoutManager==NULL) {
      setEnabled(false);
  }
+// const char s[] = "Turnout\0";
+// InstanceManager::myclass<Turnout*, s> test;
 
  //This following must contain the word Global for a correct match in the abstract turnout
 // if(qobject_cast<ProxyTurnoutManager*>(turnoutManager)!=NULL)
@@ -161,9 +163,9 @@ void TurnoutTableAction::common()
 /*public*/ void TurnoutTableAction::setManager(Manager* man)
 {
 // log->debug(tr("setting manager of TTAction %1 to %2").arg(this->objectName(),man->self()->metaObject->classname()));
- turnoutManager = (TurnoutManager*) man;
+ turnoutManager = qobject_cast<TurnoutManager*>(man->self());
  if (m!=nullptr){ // also update Table Model
-     m->setManager((AbstractManager*)man->self());
+     m->setManager(man);
  }
 }
 
@@ -173,23 +175,6 @@ void TurnoutTableAction::common()
  */
 /*protected*/ void TurnoutTableAction::createModel()
 {
- // store the terminology
-// if(qobject_cast<ProxyManager*>(turnoutManager)!= NULL)
-// {
-//  closedText = ((ProxyTurnoutManager*)turnoutManager)->getClosedText();
-//  thrownText = ((ProxyTurnoutManager*)turnoutManager)->getThrownText();
-// }
-// else
-// {
-//  closedText = turnoutManager->getClosedText();
-//  thrownText = turnoutManager->getThrownText();
-// }
- // load graphic state column display preference
- // from apps/GuiLafConfigPane.java
-// _graphicState = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState();
-
- // create the data model object that drives the table;
- // note that this is a class creation, and very long
  m = new TurnoutTableDataModel(turnoutManager);
 }
 
@@ -840,41 +825,26 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
  addFrame = nullptr;
 }
 
-/*private*/ void TurnoutTableAction::canAddRange(ActionEvent* /*e*/){
-    rangeBox->setEnabled(false);
-    rangeBox->setChecked(false);
-    connectionChoice = prefixBox->currentText(); // store in Field for CheckedTextField
-    if (connectionChoice == "") {
-        // Tab All or first time opening, use default tooltip
-        connectionChoice = "TBD";
-    }
-    if (QString(turnoutManager->self()->metaObject()->className()).contains("ProxyTurnoutManager"))
-    {
-        ProxyTurnoutManager* proxy = (ProxyTurnoutManager*) turnoutManager;
-        QList<AbstractManager*> managerList = proxy->getManagerList();
-        QString systemPrefix = ConnectionNameFromSystemName::getPrefixFromName( connectionChoice);
-        for(int x = 0; x<managerList.size(); x++){
-            TurnoutManager* mgr = (TurnoutManager*) managerList.at(x);
-            if (mgr->getSystemPrefix()==(systemPrefix) && mgr->allowMultipleAdditions(systemPrefix)){
-                rangeBox->setEnabled(true);
-                return;
-            }
-        }
-    }
-    else if (turnoutManager->allowMultipleAdditions(ConnectionNameFromSystemName::getPrefixFromName( prefixBox->currentText())))
-    {
-     rangeBox->setEnabled(true);
-     log->debug("T Add box enabled2");
-     // get tooltip from turnout manager
-     addEntryToolTip = turnoutManager->getEntryToolTip();
-     log->debug("TurnoutManager tip");
-    }
-    // show sysName (HW address) field tooltip in the Add Turnout pane that matches system connection selected from combobox
-    hardwareAddressTextField->setToolTip("<html>"
-            + tr("For %1 %2 use one of these patterns:").arg(connectionChoice).arg(tr("Turnouts"))
-            + "<br>" + addEntryToolTip + "</html>");
-    hardwareAddressTextField->setBackground(QColor(Qt::yellow)); // reset
-    addButton->setEnabled(true); // ambiguous, so start enabled
+/*private*/ void TurnoutTableAction::canAddRange(JActionEvent* /*e*/){
+ rangeBox->setEnabled(false);
+ log->debug("T Add box disabled");
+ rangeBox->setSelected(false);
+ if (prefixBox->getSelectedIndex() == -1) {
+     prefixBox->setSelectedIndex(0);
+ }
+ TurnoutManager* manager = (TurnoutManager*)prefixBox->getSelectedItem();
+ Q_ASSERT( manager != nullptr);
+ QString systemPrefix = manager->getSystemPrefix();
+ rangeBox->setEnabled(((AbstractTurnoutManager*)manager->self())->allowMultipleAdditions(systemPrefix));
+ addEntryToolTip = manager->getEntryToolTip();
+ // show sysName (HW address) field tooltip in the Add Turnout pane that matches system connection selected from combobox
+ hardwareAddressTextField->setToolTip(
+         tr("<html>%1 %2 use one of these patterns:<br>%3</html>").arg(
+                 manager->getMemo()->getUserName(),
+                 tr("Turnouts"),
+                 addEntryToolTip));
+// hardwareAddressValidator->setTooltip(hardwareAddressTextField->toolTip());
+ hardwareAddressValidator->verify(hardwareAddressTextField);
 }
 
 void TurnoutTableAction::handleCreateException(QString sysName)

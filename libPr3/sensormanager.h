@@ -158,7 +158,7 @@ public:
          */
         virtual /*public*/ bool isPullResistanceConfigurable() {return false;}
 //    /*public*/ QString toString()  {return "SensorManager";}
-    virtual QObject* self() =0;
+      virtual QObject* self() =0;
 //    QString getNamedBeanClass() const override {return "SensorManager";}
 //    /*public*/ QString getBeanTypeHandled(bool plural) const override {return tr(plural?"Sensors":"Sensor");}
 
@@ -167,5 +167,5 @@ signals:
 public slots:
     
 };
-Q_DECLARE_INTERFACE(SensorManager, "Sensor manager")
+Q_DECLARE_INTERFACE(SensorManager, "SensorManager")
 #endif // SENSORMANAGER_H

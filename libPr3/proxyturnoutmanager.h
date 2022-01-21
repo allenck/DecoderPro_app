@@ -131,6 +131,10 @@ public:
  }
  /*public*/ QString toString()override {return "ProxyTurnoutManager";}
 
+ /*public*/ SystemConnectionMemo* getMemo() override {return AbstractProxyManager::getMemo();}
+ /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractProxyManager::getNamedBeanSet();}
+ /*public*/ Turnout* getBySystemName(QString name) override {return (Turnout*)AbstractProxyManager::getBySystemName(name);}
+ /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractProxyManager::addPropertyChangeListener(l); }
  QObject* self() override {return (QObject*)this;}
 
 public slots:

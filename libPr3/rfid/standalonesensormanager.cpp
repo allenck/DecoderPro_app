@@ -65,7 +65,7 @@
         log->warn("Invalid message - skipping " + r->toString());
         return;
     }
-    DefaultIdTag* idTag = qobject_cast<IdTagManager*>( InstanceManager::getDefault("IdTagManager"))->provideIdTag(tc->getAdapterMemo()->getProtocol()->getTag(r));
+    IdTag* idTag = qobject_cast<IdTagManager*>( InstanceManager::getDefault("IdTagManager"))->provideIdTag(tc->getAdapterMemo()->getProtocol()->getTag(r));
     TimeoutRfidSensor* sensor = (TimeoutRfidSensor*) provideSensor(prefix + typeLetter() + "1");
     sensor->notify(idTag);
 }

@@ -11,6 +11,8 @@ public:
  /*public*/ QString getNamedBeanClass()const override {
      return "Memory";
  }
+  /*public*/ SystemConnectionMemo* getMemo() override {throw new IllegalArgumentException();}
+
   QObject* self() override {return (QObject*)this;}
 
 signals:

@@ -267,7 +267,7 @@
  * @param oldValue      the old value of the property
  * @param newValue      the new value of the property
  */
-/*public*/ void PropertyChangeSupport::firePropertyChange(QString propertyName, QVariant oldValue, QVariant newValue) const
+/*public*/ void PropertyChangeSupport::firePropertyChange(QString propertyName, QVariant oldValue, QVariant newValue)
 {
  if (!oldValue.isNull() && oldValue==(newValue))
   return;
@@ -275,7 +275,7 @@
  firePropertyChange(new PropertyChangeEvent(this->source, propertyName, oldValue, newValue));
 }
 
-/*public*/ void PropertyChangeSupport::firePropertyChange(QString propertyName, QObject* oldValue, QObject* newValue) const
+/*public*/ void PropertyChangeSupport::firePropertyChange(QString propertyName, QObject* oldValue, QObject* newValue)
 {
  if ( !(oldValue==newValue))
  {

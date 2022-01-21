@@ -171,14 +171,12 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
   QList<Exception*>* exceptions = this->getInitializationExceptions(profile);
   if (exceptions->size() == 1)
   {
-#if 1
    if (dynamic_cast<HasConnectionButUnableToConnectException*>(exceptions->at(0)) )
    {
     throw (HasConnectionButUnableToConnectException*) exceptions->at(0);
    } else {
        throw new HasConnectionButUnableToConnectException(exceptions->at(0));
    }
-#endif
   }
   else if (exceptions->size() > 1)
   {

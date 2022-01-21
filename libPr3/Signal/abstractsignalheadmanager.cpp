@@ -104,4 +104,10 @@ QCompleter* AbstractSignalHeadManager::getCompleter(QString text, bool bIncludeU
  }
  return NULL;
 }
+
+
 #endif
+/*public*/ SystemConnectionMemo* AbstractSignalHeadManager::getMemo()
+{
+ throw new IllegalArgumentException();
+}

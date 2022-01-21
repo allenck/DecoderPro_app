@@ -18,9 +18,9 @@ public:
  /*public*/ void setState(int s)override;
  /*public*/ int getState()override;
  /*public*/ LocoAddress* getLocoAddress(QString rep)override;
- /*public*/ virtual PhysicalLocationReporter::Direction getDirection(QString rep);
- /*public*/ virtual PhysicalLocation *getPhysicalLocation();
- /*public*/ virtual PhysicalLocation* getPhysicalLocation(QString s);
+ /*public*/ virtual PhysicalLocationReporter::Direction getDirection(QString rep)override;
+ /*public*/ virtual PhysicalLocation *getPhysicalLocation()override;
+ /*public*/ virtual PhysicalLocation* getPhysicalLocation(QString s)override;
 
 private:
  static Logger* log;

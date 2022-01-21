@@ -61,6 +61,12 @@ public:
     }
     QObject* self() override{return (QObject*)this;}
 
+    /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
+    /*public*/ NamedBean* getBySystemName(QString name) override {return AbstractManager::getBySystemName(name);}
+    /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::addPropertyChangeListener(l);}
+    /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::removePropertyChangeListener(l);}
+
+
 };
 Q_DECLARE_METATYPE(SignalGroupManager)
 #endif // SIGNALGROUPMANAGER_H

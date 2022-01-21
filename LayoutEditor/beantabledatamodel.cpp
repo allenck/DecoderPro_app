@@ -82,6 +82,7 @@ void /*public*/ BeanTableDataModel::init() // SLOT
   //connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
+
 BeanTableDataModel::~BeanTableDataModel()
 {
 }
@@ -123,25 +124,30 @@ void BeanTableDataModel::setManager(Manager *) {}
   {
    // if object has been deleted, it's not here; ignore it
    NamedBean* b = getBySystemName(sysNameList.at(i));
-   AbstractNamedBean* anb = (AbstractNamedBean*)b;
 
    if (b!=NULL)
    {
     b->removePropertyChangeListener((PropertyChangeListener*)this);
-//    disconnect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    }
   }
  }
- sysNameList = mgr->getSystemNameList();
+ //sysNameList = mgr->getSystemNameList();
  //sysNameList = getManager().getNamedBeanSet().stream().map(NamedBean::getSystemName).collect( java.util.stream.Collectors.toList() );
- qSort(sysNameList.begin(), sysNameList.end(), SystemNameComparator::compare);
- // and add them back in
- for (int i = 0; i< sysNameList.size(); i++)
+ QSet<NamedBean*> nbs = getManager()->getNamedBeanSet();
+ sysNameList.clear();
+ if(!nbs.isEmpty())
  {
-  // if object has been deleted, it's not here; ignore it
-  NamedBean* b = getBySystemName(sysNameList.at(i));
-  if (b != nullptr) {
-      b->addPropertyChangeListener((PropertyChangeListener*)this);
+  foreach (NamedBean* nb , nbs)
+   sysNameList.append(nb->getSystemName());
+  qSort(sysNameList.begin(), sysNameList.end(), SystemNameComparator::compare);
+  // and add them back in
+  for (int i = 0; i< sysNameList.size(); i++)
+  {
+   // if object has been deleted, it's not here; ignore it
+   NamedBean* b = getBySystemName(sysNameList.at(i));
+   if (b != nullptr) {
+       b->addPropertyChangeListener(this);
+   }
   }
  }
 }
@@ -176,6 +182,34 @@ void BeanTableDataModel::setManager(Manager *) {}
    }
   }
  }
+#if 0
+ //  ACK added
+ if(e->getPropertyName() == "beans")
+ {
+  // a value changed.  Find it, to avoid complete redraw
+  NamedBean* bean = VPtr<NamedBean>::asPtr(e->getNewValue());
+  if(!sysNameList.contains(bean->getSystemName()))
+   updateNameList();
+//  for (int i=0; i<sysNameList.size(); i++)
+//  {
+//   if (bean->getSystemName() == (sysNameList.at(i)))
+//   {
+//    fireTableRowsUpdated(i, i);
+//   }
+//  }
+ }
+// else if (qobject_cast< NamedBean*>(e->getSource())) {
+//  // a value changed.  Find it, to avoid complete redraw
+//  NamedBean* bean = (NamedBean*)e->getSource();
+//  for (int i=0; i<sysNameList.size(); i++)
+//  {
+//   if (bean->getSystemName() == (sysNameList.at(i)))
+//   {
+//    fireTableRowsUpdated(i, i);
+//   }
+//  }
+// }
+#endif
 }
 
 /**

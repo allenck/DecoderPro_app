@@ -8,6 +8,7 @@
 #include "jtable.h"
 #include "namedbeancombobox.h"
 #include "abstractturnoutmanager.h"
+#include "abstractproxymanager.h"
 
 class Sensor;
 class TurnoutManager;
@@ -41,8 +42,8 @@ class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
      QUERYCOL = FORGETCOL+1                     // 19
     };
 
-    TurnoutTableDataModel();
-    /*public*/ TurnoutTableDataModel(Manager *mgr);
+    TurnoutTableDataModel(QObject* parent = nullptr);
+    /*public*/ TurnoutTableDataModel(Manager *mgr, QObject* parent = nullptr);
     /*public*/ int columnCount(const QModelIndex &parent) const override;
     /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
     /*public*/ QString getColumnClass(int col) const override;
@@ -71,6 +72,7 @@ class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
     /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
  private:
+    void common();
     static Logger* log;
 //    TTComboBoxDelegate* modeColDelegate = nullptr;
 //    TTComboBoxDelegate* lockDecColDelegate = nullptr;

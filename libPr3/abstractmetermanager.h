@@ -20,6 +20,8 @@ class AbstractMeterManager : public AbstractManager,  public MeterManager
   /*public*/ NamedBean* getBySystemName(QString name) override{return AbstractManager::getBySystemName(name);}
   /*public*/ NamedBean* getByUserName(QString name) override{return AbstractManager::getByUserName(name);}
 
+  /*public*/ SystemConnectionMemo* getMemo() override {return AbstractManager::getMemo();}
+
 };
 
 #endif // ABSTRACTMETERMANAGER_H

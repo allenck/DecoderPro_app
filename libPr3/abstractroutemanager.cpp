@@ -6,10 +6,10 @@ AbstractRouteManager::AbstractRouteManager(SystemConnectionMemo *memo, QObject *
 
 }
 
-/*public*/ Route* AbstractRouteManager::getBySystemName(QString name) const {
+/*public*/ Route* AbstractRouteManager::getBySystemName(QString name) {
     return (Route*)_tsys->value(name);
 }
 
-/*public*/ Route* AbstractRouteManager::getByUserName(QString key) const {
+/*public*/ Route* AbstractRouteManager::getByUserName(QString key) {
     return (Route*)_tuser->value(key);
 }

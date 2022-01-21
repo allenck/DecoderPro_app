@@ -74,13 +74,18 @@ public:
  }
  /*public*/ QString getEntryToolTip() override;
  /*public*/ bool isPullResistanceConfigurable() override;
-/*public*/ QString toString() override{return "ProxySensorManager";}
+ /*public*/ QString toString() override{return "ProxySensorManager";}
  /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) /*throw (JmriException)*/ override;
 
  QObject* self() override {return (QObject*)this;}
+ /*public*/ SystemConnectionMemo* getMemo() override {return AbstractProxyManager::getMemo();}
+ /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractProxyManager::getNamedBeanSet();}
+ /*public*/ Sensor* getBySystemName(QString name) override {return (Sensor*)AbstractProxyManager::getBySystemName(name);}
+ /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{AbstractProxyManager::addPropertyChangeListener(l);}
+ /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{AbstractProxyManager::removePropertyChangeListener(l);}
 
- signals:
- void propertyChange(PropertyChangeEvent *e) override;
+ public slots:
+ void propertyChange(PropertyChangeEvent *e) override {AbstractProxyManager::propertyChange(e);}
  //void newSensorCreated(AbstractSensorManager*,Sensor*);
 
 private:

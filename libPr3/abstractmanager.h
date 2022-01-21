@@ -113,7 +113,7 @@ public:
     /*public*/  QString getSystemPrefix()  /*final*/ override;
     /*public*/ void setPropertyChangesSilenced(/*@Nonnull*/ QString propertyName, bool silenced) override;
     /*public*/ Manager::NameValidity validSystemNameFormat(QString systemName)  override;
-    /*public*/ void setDataListenerMute(bool m) override;
+    QT_DEPRECATED/*public*/ void setDataListenerMute(bool m) override;
     QT_DEPRECATED/*public*/ void addDataListener(ManagerDataListener/*<E>*/* e) override;
     QT_DEPRECATED/*public*/ void removeDataListener(ManagerDataListener *e) override;
     /*public*/ QString makeSystemName(/*@Nonnull*/ QString s, bool logErrors = true, QLocale locale = QLocale())  override;
@@ -135,9 +135,9 @@ signals:
 //    void beanCreated(NamedBean* s);
     //void propertyChange(PropertyChangeEvent* e);
     void vetoablePropertyChange(PropertyChangeEvent *evt);
-    void notifyContentsChanged(ManagerDataEvent* e);
-    void notifyIntervalAdded(ManagerDataEvent* e);
-    void notifyIntervalRemoved(ManagerDataEvent* e);
+//    void notifyContentsChanged(ManagerDataEvent* e);
+//    void notifyIntervalAdded(ManagerDataEvent* e);
+//    void notifyIntervalRemoved(ManagerDataEvent* e);
 
 public slots:
     virtual void propertyChange(PropertyChangeEvent* e)override;
@@ -146,8 +146,8 @@ public slots:
 protected:
     /*protected*/void registerSelf();
     /*protected*/ void registerUserName(NamedBean* s)const;
-    /*protected*/ void fireDataListenersAdded(int start, int end, NamedBean* changedBean);
-    /*protected*/ void fireDataListenersRemoved(int start, int end, NamedBean* changedBean);
+    QT_DEPRECATED/*protected*/ void fireDataListenersAdded(int start, int end, NamedBean* changedBean);
+    QT_DEPRECATED/*protected*/ void fireDataListenersRemoved(int start, int end, NamedBean* changedBean);
     /*protected*/ QString checkNumeric(/*@Nonnull*/ QString curAddress) /*throw (JmriException)*/;
 
 private:

@@ -6,7 +6,7 @@
 class Meter;
 class LIBPR3SHARED_EXPORT ProxyLightManager : public AbstractProvidingProxyManager, public LightManager
 {
-    Q_OBJECT
+  Q_OBJECT
   Q_INTERFACES(LightManager)
 public:
  explicit ProxyLightManager(QObject *parent = 0);
@@ -30,7 +30,10 @@ public:
  /*public*/ QString getNamedBeanClass()const override {
      return "Light";
  }
-  /*public*/ QString toString() {return "ProxyLightManager";}
+  /*public*/ QString toString() override {return "ProxyLightManager";}
+  /*public*/ SystemConnectionMemo* getMemo() override {return AbstractProxyManager::getMemo();}
+  /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractProxyManager::getNamedBeanSet();}
+//  /*public*/ Light* getBySystemName(QString name)  {return (Light*)AbstractProxyManager::getBySystemName(name);}
   QObject* self() override {return (QObject*)this;}
 
 signals:
