@@ -16,7 +16,6 @@ SystemConsolePreferencesManager::SystemConsolePreferencesManager()
  wrapStyle = SystemConsole::WRAP_STYLE_WORD;
 
  initialized = false;
- exceptions = new QList<Exception*>();
  log = new Logger("SystemConsolePreferencesManager");
 
 }
@@ -72,7 +71,7 @@ SystemConsolePreferencesManager::SystemConsolePreferencesManager()
 
 //@Override
 /*public*/ bool SystemConsolePreferencesManager::isInitialized(Profile* profile) {
-    return this->initialized && this->exceptions->isEmpty();
+    return this->initialized && this->exceptions.isEmpty();
 }
 
 //@Override
@@ -200,10 +199,10 @@ SystemConsolePreferencesManager::SystemConsolePreferencesManager()
 
 //@Override
 /*public*/ bool SystemConsolePreferencesManager::isInitializedWithExceptions(Profile* profile) {
-    return this->initialized && !this->exceptions->isEmpty();
+    return this->initialized && !this->exceptions.isEmpty();
 }
 
 //@Override
-/*public*/ QList<Exception*>* SystemConsolePreferencesManager::getInitializationExceptions(Profile* profile) {
-    return new QList<Exception*>(*this->exceptions);
+/*public*/ QList<Exception *> SystemConsolePreferencesManager::getInitializationExceptions(Profile* profile) {
+    return QList<Exception*>(this->exceptions);
 }

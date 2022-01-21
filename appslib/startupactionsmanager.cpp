@@ -88,7 +88,7 @@
 # endif
 #endif
 }
-#if 1
+
 /**
  * {@inheritDoc}
  *
@@ -184,18 +184,18 @@
   this->_isDirty = false;
   this->restartRequired = false;
   this->setInitialized(profile, true);
-  QList<Exception*>* exceptions = this->getInitializationExceptions(profile);
-  if (exceptions->size() == 1)
+  QList<Exception*> exceptions = this->getInitializationExceptions(profile);
+  if (exceptions.size() == 1)
   {
-      throw new InitializationException(exceptions->at(0));
-  } else if (exceptions->size() > 1)
+      throw new InitializationException(exceptions.at(0));
+  } else if (exceptions.size() > 1)
   {
    throw new InitializationException(tr(/*Locale.ENGLISH,*/ "There are multiple errors running Startup Actions."),
               tr("There are multiple errors running Startup Actions."),NULL); // NOI18N
   }
  }
 }
-#endif
+
 /*public*/ void StartupActionsManager::loadFactories()
 {
  QStringList factoryList = QStringList();
@@ -234,7 +234,7 @@ void StartupActionsManager::loadPreferencesmanagers()
  {
   if(clazz == "StartupActionsManager" )
    continue;
-  PreferencesManager* mgr = (PreferencesManager*)InstanceManager::getDefault(clazz);
+  PreferencesManager* mgr = (AbstractPreferencesManager*)InstanceManager::getDefault(clazz);
   if(mgr != NULL && profileManager != NULL)
   {
    mgr->initialize(profileManager->getActiveProfile());

@@ -11,24 +11,13 @@
 
 GuiLafPreferencesManager::GuiLafPreferencesManager()
 {
- log = new Logger("GuiLafPreferencesManager");
  setObjectName("GuiLafPreferencesManager");
- // preferences with default values
- locale = QLocale();
- fontSize = 0;
- defaultFontSize = 0;
- nonStandardMouseEvent = false;
- verticalToolBar = false;
- lookAndFeel = "na"; //UIManager.getLookAndFeel().getClass().getName();
- toolTipDismissDelay = 20; //ToolTipManager.sharedInstance().getDismissDelay();
- dirty = false;
- restartRequired = false;
+
  /*
   * Unlike most PreferencesProviders, the GUI Look & Feel preferences should
   * be per-application instead of per-profile.
   */
  initialized = false;
- exceptions = new QList<Exception*>();
 }
 /**
  *
@@ -66,7 +55,7 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
 /*private*/ /*static*/ /*final*/ Logger* GuiLafPreferencesManager::log = LoggerFactory::getLogger("GuiLafPreferencesManager");
 
 //@Override
-/*public*/ void GuiLafPreferencesManager::initialize(Profile* profile) throw (InitializationException)
+/*public*/ void GuiLafPreferencesManager::initialize(Profile* profile)
 {
     if (!this->initialized) {
         Preferences* preferences = ProfileUtils::getPreferences(profile, "apps.gui.GuiLafPreferencesManager", true);
@@ -95,7 +84,7 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
 
 //@Override
 /*public*/ bool GuiLafPreferencesManager::isInitialized(Profile* /*profile*/) {
-    return this->initialized && this->exceptions->isEmpty();
+    return this->initialized && this->exceptions.isEmpty();
 }
 
 //@Override
@@ -475,10 +464,10 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
 
 //@Override
 /*public*/ bool GuiLafPreferencesManager::isInitializedWithExceptions(Profile* /*profile*/) {
-    return this->initialized && !this->exceptions->isEmpty();
+    return this->initialized && !this->exceptions.isEmpty();
 }
 
 //@Override
-/*public*/ QList<Exception*>* GuiLafPreferencesManager::getInitializationExceptions(Profile* /*profile*/) {
-    return new QList<Exception*>(*this->exceptions);
+/*public*/ QList<Exception*> GuiLafPreferencesManager::getInitializationExceptions(Profile* /*profile*/) {
+    return  QList<Exception*>(this->exceptions);
 }

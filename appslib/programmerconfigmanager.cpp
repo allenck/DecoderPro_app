@@ -32,7 +32,7 @@ ProgrammerConfigManager::ProgrammerConfigManager()
     /*public*/ /*final*/ /*static*/ QString ProgrammerConfigManager::DO_CONFIRM_READ = "doConfirmRead";
 
 //@Override
-/*public*/ void ProgrammerConfigManager::initialize(Profile* profile) throw (InitializationException)
+/*public*/ void ProgrammerConfigManager::initialize(Profile* profile)
 {
     if (!this->isInitialized(profile)) {
         Preferences* preferences = ProfileUtils::getPreferences(profile, "jmri/jmrit/symbolicprog/ProgrammerConfigManager", true);

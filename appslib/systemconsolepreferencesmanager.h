@@ -35,7 +35,7 @@ public:
  /*public*/ int getWrapStyle() ;
  /*public*/ void setWrapStyle(int wrapStyle);
  /*public*/ bool isInitializedWithExceptions(Profile* profile);
- /*public*/ QList<Exception*>* getInitializationExceptions(Profile* profile);
+ /*public*/ QList<Exception*> getInitializationExceptions(Profile* profile);
 
  QObject* self() override {return (QObject*)this;}
 
@@ -47,7 +47,7 @@ private:
  /*private*/ QString fontFamily;// = "Monospaced";  //NOI18N
  /*private*/ int wrapStyle;// = SystemConsole::WRAP_STYLE_WORD;
  /*private*/ bool initialized;// = false;
- /*private*/ /*final*/ QList<Exception*>* exceptions; // = new ArrayList<>();
+ /*private*/ /*final*/ QList<Exception*> exceptions = QList<Exception*>();
  /*private*/ /*static*/ /*final*/ Logger* log;// = LoggerFactory.getLogger(SystemConsolePreferencesManager.class);
 
 };

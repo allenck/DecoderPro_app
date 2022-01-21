@@ -54,9 +54,9 @@ public:
     /*public*/ void setActiveProfile(Profile* profile);
     /*public*/ int getAutoStartActiveProfileTimeout();
     /*public*/ void setAutoStartActiveProfileTimeout(int autoStartActiveProfileTimeout);
-    /*public*/ bool migrateToProfiles(/*@Nonnull*/ QString configFilename) throw (IllegalArgumentException, IOException);
+    /*public*/ bool migrateToProfiles(/*@Nonnull*/ QString configFilename) /*throw (IllegalArgumentException, IOException)*/;
     /*public*/ void _export(/*@Nonnull*/ Profile* profile, /*@Nonnull*/ File* target, bool exportExternalUserFiles,
-         bool exportExternalRoster) throw (IOException, JDOMException, InitializationException);
+         bool exportExternalRoster) /*throw (IOException, JDOMException, InitializationException)*/;
 
 
 signals:

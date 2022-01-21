@@ -13,7 +13,7 @@
 #include "rowsorterutil.h"
 #include "exceptions.h"
 
-JmriJTablePersistenceManager::JmriJTablePersistenceManager() :JTablePersistenceManager()
+JmriJTablePersistenceManager::JmriJTablePersistenceManager(QObject* parent) :AbstractPreferencesManager(parent)
 {
  log = new Logger("JmriJTablePersistenceManager");
  listeners = new QMap<QString, JTableListener*>();

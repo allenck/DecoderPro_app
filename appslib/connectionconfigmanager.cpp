@@ -168,21 +168,21 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
    }
   }
   setInitialized(profile, true);
-  QList<Exception*>* exceptions = this->getInitializationExceptions(profile);
-  if (exceptions->size() == 1)
+  QList<Exception*> exceptions = this->getInitializationExceptions(profile);
+  if (exceptions.size() == 1)
   {
-   if (dynamic_cast<HasConnectionButUnableToConnectException*>(exceptions->at(0)) )
+   if (dynamic_cast<HasConnectionButUnableToConnectException*>(exceptions.at(0)) )
    {
-    throw (HasConnectionButUnableToConnectException*) exceptions->at(0);
+    throw (HasConnectionButUnableToConnectException*) exceptions.at(0);
    } else {
-       throw new HasConnectionButUnableToConnectException(exceptions->at(0));
+       throw new HasConnectionButUnableToConnectException(exceptions.at(0));
    }
   }
-  else if (exceptions->size() > 1)
+  else if (exceptions.size() > 1)
   {
 //      QString english = Bundle.getMessage(Locale.ENGLISH, "ErrorMultipleConnections"); // NOI18N
 //      QString localized = Bundle.getMessage("ErrorMultipleConnections"); // NOI18N
-   QString english = tr("Unable to create connection \"%1\" (%2).");
+   QString english = QString("Unable to create connection \"%1\" (%2).");
    QString localized = tr("Unable to create connection \"%1\" (%2).");
       throw new  HasConnectionButUnableToConnectException(english, localized, nullptr);
   }

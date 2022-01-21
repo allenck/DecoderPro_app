@@ -5,10 +5,6 @@
 #include "loggerfactory.h"
 AbstractPreferencesManager::AbstractPreferencesManager(QObject* parent) : Bean(parent)
 {
- initialized = new QHash<Profile*, bool>();
- initializing = new QHash<Profile*, bool>();
- exceptions = new QHash<Profile*, QList<Exception*>* >();
-
 }
 /**
  * An abstract PreferencesManager that implements some of the boilerplate that
@@ -23,22 +19,23 @@ AbstractPreferencesManager::AbstractPreferencesManager(QObject* parent) : Bean(p
 /*public*/ bool AbstractPreferencesManager::isInitialized(/*@Nonnull*/ Profile* profile) {
 //    return this->initialized.getOrDefault(profile, false)
 //            && this->exceptions.getOrDefault(profile, new QList<Exception>()).isEmpty();
- return this->initialized->value(profile, false)
-   && this->exceptions->value(profile, new QList<Exception*>())->isEmpty();
+ return this->initialized.value(profile, false)
+   && this->exceptions.value(profile, new QList<Exception*>())->isEmpty();
 }
 
 //@Override
 /*public*/ bool AbstractPreferencesManager::isInitializedWithExceptions(/*@Nonnull*/ Profile* profile) {
 //    return this->initialized.getOrDefault(profile, false)
 //            && !this->exceptions.getOrDefault(profile, new QList<Exception>()).isEmpty();
- return this->initialized->value(profile, false)
-   && !this->exceptions->value(profile, new QList<Exception*>())->isEmpty();
+ bool b  = this->initialized.value(profile, false)
+   && !this->exceptions.value(profile, new QList<Exception*>())->isEmpty();
+ return b;
 }
 
 //@Override
-/*public*/ QList<Exception*>* AbstractPreferencesManager::getInitializationExceptions(/*@Nonnull*/ Profile* profile) {
+/*public*/ QList<Exception *> AbstractPreferencesManager::getInitializationExceptions(/*@Nonnull*/ Profile* profile) {
     //return new QList<Exception>(this->exceptions.getOrDefault(profile, new QList<Exception>()));
- return new QList<Exception*>(*this->exceptions->value(profile, new QList<Exception*>()));
+ return  QList<Exception*>(*this->exceptions.value(profile, new QList<Exception*>()));
 }
 
 /**
@@ -49,7 +46,7 @@ AbstractPreferencesManager::AbstractPreferencesManager(QObject* parent) : Bean(p
  */
 /*protected*/ bool AbstractPreferencesManager::isInitializing(/*@Nonnull*/ Profile* profile)
 {
- return !this->initialized->value(profile, false) && this->initializing->value(profile, false);
+ return !this->initialized.value(profile, false) && this->initializing.value(profile, false);
 }
 #if 0
 /**
@@ -119,7 +116,7 @@ AbstractPreferencesManager::AbstractPreferencesManager(QObject* parent) : Bean(p
  * @param initialized the initialized state to set
  */
 /*protected*/ void AbstractPreferencesManager::setInitialized(/*@Nonnull*/ Profile* profile, bool initialized) {
-    this->initialized->insert(profile, initialized);
+    this->initialized.insert(profile, initialized);
     if (initialized) {
         this->setInitializing(profile, false);
     }
@@ -132,7 +129,7 @@ AbstractPreferencesManager::AbstractPreferencesManager(QObject* parent) : Bean(p
  * @param initializing the initializing state to set
  */
 /*protected*/ void AbstractPreferencesManager::setInitializing(/*@Nonnull*/ Profile* profile, bool initializing) {
-    this->initializing->insert(profile, initializing);
+    this->initializing.insert(profile, initializing);
 }
 
 /**
@@ -143,10 +140,10 @@ AbstractPreferencesManager::AbstractPreferencesManager(QObject* parent) : Bean(p
  * @param exception the exception to add
  */
 /*protected*/ void AbstractPreferencesManager::addInitializationException(/*@Nonnull*/ Profile* profile, /*@Nonnull*/ Exception* exception) {
-    if (this->exceptions->value(profile) == NULL) {
-        this->exceptions->insert(profile, new QList<Exception*>());
+    if (this->exceptions.value(profile) == NULL) {
+        this->exceptions.insert(profile, new QList<Exception*>());
     }
-    this->exceptions->value(profile)->append(exception);
+    this->exceptions.value(profile)->append(exception);
 }
 
 /**
@@ -187,13 +184,13 @@ AbstractPreferencesManager::AbstractPreferencesManager(QObject* parent) : Bean(p
  {
   foreach (QObject* instance,  *InstanceManager::getList(clazz))
   {
-   if (((PreferencesManager*)instance)->isInitializedWithExceptions(profile))
+   if (((AbstractPreferencesManager*)instance)->isInitializedWithExceptions(profile))
    {
        InitializationException* exception =  new InitializationException("Refusing to initialize", message,NULL);
        log->debug(tr("throw exception on class '%1' msg: '%2', local msg '%3'").arg(clazz).arg(exception->getMessage()).arg(exception->getLocalizedMessage()));
        this->addInitializationException(profile, exception);
        this->setInitialized(profile, true);
-       throw exception;
+       //throw exception;
    }
   }
  }
@@ -205,16 +202,19 @@ AbstractPreferencesManager::AbstractPreferencesManager(QObject* parent) : Bean(p
  * {@link #initialize(jmri.profile.Profile)}, generally immediately after
  * the PreferencesManager verifies that it is not already initialized. If
  * this method is within a try-catch block, the exception it generates
- * should be re-thrown by initialize(profile). This calls
- * {@link #requiresNoInitializedWithExceptions(jmri.profile.Profile, java.util.Set, java.lang.String)}
- * with the result of {@link #getRequires()} as the set of classes to
- * require.
+ * should be re-thrown by initialize(profile).
  *
  * @param profile the profile against which the manager is being initialized
+ * @param classes the manager classes for which all calling
+ *                {@link #isInitialized(jmri.profile.Profile)} must return
+ *                true against all instances of
  * @param message the localized message to display if an
  *                InitializationExcpetion is thrown
- * @throws InitializationException if any instance of any class in classes
- *                                 returns false on isIntialized(profile)
+ * @throws InitializationException  if any instance of any class in classes
+ *                                  returns false on isIntialized(profile)
+ * @throws IllegalArgumentException if any member of classes is not also in
+ *                                  the set of classes returned by
+ *                                  {@link #getRequires()}
  */
 /*protected*/ void AbstractPreferencesManager::requiresNoInitializedWithExceptions(/*@Nonnull*/ Profile* profile, /*@Nonnull*/ QString message) //throws InitializationException
 {

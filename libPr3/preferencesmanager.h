@@ -12,10 +12,10 @@ class PreferencesManager : public JmriServiceProviderInterface
   Q_INTERFACES(JmriServiceProviderInterface)
 public:
  //PreferencesManager(QObject* parent = 0);
- /*public*/ virtual void initialize(/*@Nonnull*/ Profile* profile) /*throw (InitializationException)*/;
+ /*public*/ virtual void initialize(/*@Nonnull*/ Profile* profile) /*throw (InitializationException)*/=0;
  /*public*/ virtual bool isInitialized(/*@Nonnull*/ Profile* profile);
  /*public*/ virtual bool isInitializedWithExceptions(/*@Nonnull */Profile* profile);
- virtual QList<Exception*>* getInitializationExceptions(/*@Nonnull */Profile* profile);
+ virtual QList<Exception*> getInitializationExceptions(/*@Nonnull */Profile* profile)=0;
 // template <class T>
 // /*public*/ QList<T>* getRequires();
  virtual QSet<QString>* getRequires();

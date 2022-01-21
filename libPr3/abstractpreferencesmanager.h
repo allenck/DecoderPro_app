@@ -13,15 +13,15 @@ class AbstractPreferencesManager : public Bean, public PreferencesManager
 public:
  AbstractPreferencesManager(QObject* parent = 0);
  /*public*/ bool isInitialized(/*@Nonnull*/ Profile* profile);
- /*public*/ QList<Exception*>* getInitializationExceptions(/*@Nonnull*/ Profile* profile);
+ /*public*/ QList<Exception*> getInitializationExceptions(/*@Nonnull*/ Profile* profile);
  /*public*/ bool isInitializedWithExceptions(/*@Nonnull*/ Profile* profile);
  /*public*/ QSet<QString>* getRequires();
  /*public*/ QSet<QString>* getProvides();
 
 private:
- /*private*/ /*final*/ QHash<Profile*, bool>* initialized;// = new HashMap<>();
- /*private*/ /*final*/ QHash<Profile*, bool>* initializing;// = new HashMap<>();
- /*private*/ /*final*/ QHash<Profile*, QList<Exception*>* >* exceptions;// = new HashMap<>();
+ /*private*/ /*final*/ QHash<Profile*, bool> initialized = QHash<Profile*, bool>();
+ /*private*/ /*final*/ QHash<Profile*, bool> initializing = QHash<Profile*, bool>();
+ /*private*/ /*final*/ QHash<Profile*, QList<Exception*>* > exceptions = QHash<Profile*, QList<Exception*>* >();
  static Logger* log;
 
 protected:

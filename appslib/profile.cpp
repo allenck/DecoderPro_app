@@ -85,13 +85,13 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _EXTENSION, (".jmri"))
      pathWithExt = new File(path->getParentFile(), path->getName() + EXTENSION);
  }
  if (pathWithExt->getName() != (id + EXTENSION)) {
-     throw  IllegalArgumentException(id + " " + path->getName() + " do not match"); // NOI18N
+     throw new IllegalArgumentException(id + " " + path->getName() + " do not match"); // NOI18N
  }
  if (Profile::isProfile(path) || Profile::isProfile(pathWithExt)) {
-     throw  IllegalArgumentException("A profile already exists at " + path->toString()); // NOI18N
+     throw new IllegalArgumentException("A profile already exists at " + path->toString()); // NOI18N
  }
  if (Profile::containsProfile(path) || Profile::containsProfile(pathWithExt)) {
-     throw  IllegalArgumentException(path->toString() + " contains a profile in a subdirectory."); // NOI18N
+     throw new IllegalArgumentException(path->toString() + " contains a profile in a subdirectory."); // NOI18N
  }
  if (Profile::inProfile(path) || Profile::inProfile(pathWithExt)) {
      if (Profile::inProfile(path)) log->warn(tr("Exception: Path %1 is within an existing profile.").arg(path->toString()), new Exception("traceback")); // NOI18N
@@ -175,7 +175,7 @@ void Profile::common(File *path, bool isReadable)
 /*public*/ void Profile::setName(QString name) {
     QString oldName = this->name;
     this->name = name;
-ProfileManager::getDefault()->profileNameChange(this, oldName);
+    ProfileManager::getDefault()->profileNameChange(this, oldName);
 }
 
 /**

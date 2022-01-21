@@ -32,7 +32,7 @@ class Exception;
  * provider is not repeatedly initialized.
  *
  */
-/*public*/ void PreferencesManager::initialize(/*@Nonnull*/ Profile* /*profile*/) /*throw (InitializationException)*/ {}
+///*public*/ void PreferencesManager::initialize(/*@Nonnull*/ Profile* /*profile*/) /*throw (InitializationException)*/ {}
 
 /**
  * Test if the PreferencesManager is initialized for the provided Profile.
@@ -62,7 +62,7 @@ class Exception;
      *         set instead of null.
      */
     //@Nonnull
-     QList<Exception*>* PreferencesManager::getInitializationExceptions(/*@Nonnull */Profile* /*profile*/) {return NULL;}
+     //QList<Exception *> PreferencesManager::getInitializationExceptions(/*@Nonnull */Profile* /*profile*/) {return NULL;}
 
 /**
  * Get the set of PreferencesProviders that must be initialized prior to
@@ -79,7 +79,9 @@ class Exception;
 //Iterable<Class<? extends PreferencesManager>> getRequires();
 //template<class T>
 ///*public*/ QList<T>* PreferencesManager::getRequires() {return NULL;}
-QSet<QString>* PreferencesManager::getRequires() {return NULL;}
+QSet<QString>* PreferencesManager::getRequires() {
+ return new QSet<QString>();
+}
 /**
  * Get the set of Classes that this PreferencesManager can be registered as
  * a provider of in the {@link jmri.InstanceManager}.

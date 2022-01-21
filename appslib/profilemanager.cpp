@@ -874,7 +874,7 @@ QString ProfileManager::FileFilter1::getDescription()
  * @throws java.io.IOException      if unable to to create a Profile
  * @throws IllegalArgumentException if profile already exists for configFilename
  */
-/*public*/ bool ProfileManager::migrateToProfiles(/*@Nonnull*/ QString configFilename) throw (IllegalArgumentException, IOException) {
+/*public*/ bool ProfileManager::migrateToProfiles(/*@Nonnull*/ QString configFilename)  {
     File* appConfigFile = new File(configFilename);
     bool didMigrate = false;
     if (!appConfigFile->isAbsolute()) {
@@ -927,7 +927,7 @@ QString ProfileManager::FileFilter1::getDescription()
  * @throws InitializationException if unable to read profile to export
  */
 /*public*/ void ProfileManager::_export(/*@Nonnull*/ Profile* profile, /*@Nonnull*/ File* target, bool exportExternalUserFiles,
-        bool exportExternalRoster) throw (IOException, JDOMException, InitializationException) {
+        bool exportExternalRoster) /*throw (IOException, JDOMException, InitializationException)*/ {
     if (!target->exists() && !target->createNewFile()) {
         throw new IOException("Unable to create file " + target->toString());
     }

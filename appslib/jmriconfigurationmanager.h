@@ -8,6 +8,7 @@
 #include "jlist.h"
 #include <QMenu>
 
+class AbstractPreferencesManager;
 class JOptionPane;
 class Profile;
 class InitializationException;
@@ -51,16 +52,21 @@ public:
 
  QObject* self() override {return (QObject*)this;}
 private:
- /*private*/ void initializeProvider( PreferencesManager* provider, Profile* profile);
+ /*private*/ void initializeProvider(AbstractPreferencesManager *provider, Profile* profile);
  static /*private*/ Logger* log;// = LoggerFactory.getLogger(JmriConfigurationManager.class);
  /*private*/ /*final*/ ConfigXmlManager* legacy;// = new ConfigXmlManager();
- /*private*/ /*final*/ QHash<PreferencesManager*, InitializationException*>* initializationExceptions;// = new HashMap<>();
- /*private*/ /*final*/ QList<PreferencesManager*>* initialized;// = new ArrayList<>();
- /*private*/ void handleConnectionError(QList<QString> *errors, QVariant list);
+ /*private*/ /*final*/ QHash<PreferencesManager*, InitializationException*> initializationExceptions = QHash<PreferencesManager*, InitializationException*>();
+ /*private*/ /*final*/ QList<PreferencesManager*> initialized = QList<PreferencesManager*>();
+ /*
+  * This set is used to prevent a stack overflow by preventing
+  * initializeProvider from recursively being called with the same provider.
+  */
+ /*private*/ /*final*/ QSet<PreferencesManager*> initializing = QSet<PreferencesManager*>();
+ /*private*/ void handleConnectionError(QList<QString> errors, QVariant list);
  /*private*/ void handleRestartSelection(QVariant selectedValue);
- /*private*/ JOptionPane* getjOptionPane(QVariant list, QVariantList options);
+ /*private*/ JOptionPane* getJOptionPane(QVariant list, QVariantList options);
  /*private*/ void handleInitializationExceptions(Profile* profile);
- /*private*/ QVariant getErrorListObject(QList<QString>* errors);
+ /*private*/ QVariant getErrorListObject(QList<QString> errors);
 
  protected:
  /*protected*/ bool isEditDialogRestart();
@@ -69,7 +75,7 @@ private:
  /*protected*/ void displayErrorListDialog(QVariant list);
 
 };
-
+#if 0
 /*private*/ /*static*/ /*final*/ class ErrorDialog : public JDialog {
  Q_OBJECT
 
@@ -90,7 +96,7 @@ public slots:
     void onEditConnections();
 
 };
-
+#endif
 class ListSelectionListener1 : public QObject, public ListSelectionListener
 {
  Q_OBJECT
