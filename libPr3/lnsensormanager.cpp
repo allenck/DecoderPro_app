@@ -88,6 +88,7 @@ LnSensorManager::LnSensorManager(LnTrafficController* tc, QString prefix, QObjec
 #endif
 /*public*/ LnSensorManager::LnSensorManager(LocoNetSystemConnectionMemo* memo, QObject *parent) : AbstractSensorManager(memo, parent) {
     //super(memo);
+ setObjectName("LnSensorManager");
     this->prefix = memo->getSystemPrefix();
     tc = memo->getLnTrafficController();
     if (tc == nullptr) {

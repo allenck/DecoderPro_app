@@ -32,8 +32,8 @@ public:
  /*public*/ static /*final*/ QString PROP_RESTARTREQUIRED;// = "restartRequired";
  Q_INVOKABLE /*public*/ void initialize(Profile* profile) override/*throw (InitializationException)*/;
  /*public*/ bool isInitialized(Profile* profile)override;
- /*public*/ /*Iterable<Class<? extends PreferencesManager>> */ QSet<QString>* getRequires()override;
- /*public*/ /*Iterable<Class<?>>*/ QSet<QString>* getProvides()override;
+ /*public*/ /*Iterable<Class<? extends PreferencesManager>> */ QSet<QString> getRequires()override;
+ /*public*/ /*Iterable<Class<?>>*/ QSet<QString> getProvides()override;
  /*public*/ void savePreferences(Profile* profile)override;
  /*public*/ QLocale getLocale();
  /*public*/ void setLocale(QLocale locale);

@@ -4,10 +4,10 @@
 
 /*public*/ LnLightManager::LnLightManager(LocoNetSystemConnectionMemo* memo, QObject *parent) : AbstractLightManager(memo, parent)
 {
+ setObjectName("LnLightManager");
 // _trafficController = tc;
 // this->prefix = prefix;
  registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
-
 }
 
 

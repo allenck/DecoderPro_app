@@ -160,6 +160,7 @@ private:
     //QAtomicInteger<int> lastAutoNamedBeanRef;
     mutable int lastAutoNamedBeanRef = 0;
     DecimalFormat paddedNumber = DecimalFormat("0000");
+    /*final*/ void setRegisterSelf();
 
 friend class SectionTableDataModel;
 friend class ReporterPickModel;

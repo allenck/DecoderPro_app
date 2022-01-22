@@ -58,19 +58,19 @@ ProgrammerConfigManager::ProgrammerConfigManager()
 }
 
 //@Override
-/*public*/ /*Set<Class<? extends PreferencesManager>>*/ QSet<QString>* ProgrammerConfigManager::getRequires() {
+/*public*/ /*Set<Class<? extends PreferencesManager>>*/ QSet<QString> ProgrammerConfigManager::getRequires() {
     //Set<Class<? extends PreferencesManager>> requires = super.getRequires();
- QSet<QString>* requires = new QSet<QString>();
-    requires->insert("FileLocationsPreferences");
+    QSet<QString> requires = QSet<QString>();
+    requires.insert("FileLocationsPreferences");
     return requires;
 }
 
 //@Override
-/*public*/ /*Set<Class<?>>*/ QSet<QString>* ProgrammerConfigManager::getProvides() {
+/*public*/ /*Set<Class<?>>*/ QSet<QString> ProgrammerConfigManager::getProvides() {
     //Set<Class<?>> provides = super.getProvides();
-    QSet<QString>* provides = AbstractPreferencesManager::getProvides();
+    QSet<QString> provides = AbstractPreferencesManager::getProvides();
     //provides.stream().forEach((provide) -> {
-    foreach(QString provide, *provides )
+    foreach(QString provide, provides )
     {
         log->debug(tr("ProgammerConfigManager provides %1").arg(provide));
     }//);

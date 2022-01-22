@@ -30,6 +30,8 @@ LnTurnoutManager::LnTurnoutManager(LnTrafficController* fastcontroller, LnTraffi
  : AbstractTurnoutManager(memo, parent)
 {
     //super(memo);
+ setObjectName("LnTurnoutManager");
+ setProperty("JavaClassName", "jmri.jmrix.loconet.LnTurnoutManager");
     this->fastcontroller = memo->getLnTrafficController();
     this->throttledcontroller = throttledcontroller;
     this->mTurnoutNoRetry = mTurnoutNoRetry;

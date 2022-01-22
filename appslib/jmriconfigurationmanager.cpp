@@ -35,6 +35,8 @@
 #include "abstractpreferencesmanager.h"
 #include "jmripreferencesactionfactory.h"
 #include "atomic"
+#include "guilafpreferencesmanager.h"
+#include "systemconsolepreferencesmanager.h"
 
 //JmriConfigurationManager::JmriConfigurationManager()
 //{
@@ -72,7 +74,7 @@
 
  foreach (QString name, lst)
  {
-  AbstractPreferencesManager* pp = (AbstractPreferencesManager*)InstanceManager::getNullableDefault(name);
+  PreferencesManager* pp = (PreferencesManager*)InstanceManager::getNullableDefault(name);
 //  QList<PreferencesManager*> l = pp->getProvides();
 //  foreach (PreferencesManager* provided, *pp->getProvides())
 //  {
@@ -80,7 +82,27 @@
 //  }
   if(pp == NULL)
    continue;
-  InstanceManager::store((QObject*)pp, "PreferencesManager");
+  InstanceManager::store((QObject*)pp->self(), "PreferencesManager");
+  QSet<QString> provides;
+  QObject* pobj;
+  if(QString(pp->self()->metaObject()->className()) == "GuiLafPreferencesManager")
+  {
+   provides = qobject_cast<GuiLafPreferencesManager*>(pp->self())->getProvides();
+   pobj = qobject_cast<GuiLafPreferencesManager*>(pp->self());
+  }
+  else
+   if(QString(pp->self()->metaObject()->className()) == "SystemConsolePreferencesManager")
+   {
+    provides = qobject_cast<SystemConsolePreferencesManager*>(pp->self())->getProvides();
+    pobj = qobject_cast<SystemConsolePreferencesManager*>(pp->self());
+   }
+  else
+   {
+   provides = qobject_cast<AbstractPreferencesManager*>(pp->self())->getProvides();
+   pobj = qobject_cast<AbstractPreferencesManager*>(pp->self());
+   }
+  foreach(QString provided, provides)
+   InstanceManager::store(pobj, provided);
  }
 #endif
  Profile* profile = ProfileManager::getDefault()->getActiveProfile();
@@ -102,11 +124,11 @@
   this->legacy->registerPref(o);
   return;
  }
-    if(qobject_cast<PreferencesManager*>(o) != NULL)
-    {
-        InstanceManager::store(/*(PreferencesManager*)*/ o, "PreferencesManager");
-    }
-    this->legacy->registerPref(o);
+ if(qobject_cast<PreferencesManager*>(o) != NULL)
+ {
+  InstanceManager::store(/*(PreferencesManager*)*/ o, "PreferencesManager");
+ }
+ this->legacy->registerPref(o);
 }
 
 //@Override
@@ -240,7 +262,14 @@ load(File* file, bool registerDeferred)  /*throw (JmriConfigureXmlException)*/
    //providers.stream().forEach((provider) -> {
    foreach(QObject* provider, *providers)
    {
-    this->initializeProvider((AbstractPreferencesManager*)provider, profile);
+    //this->initializeProvider((PreferencesManager*)provider, profile);
+    if(provider->metaObject()->className() == "GuiLafPreferencesManager")
+       this->initializeProvider((GuiLafPreferencesManager*)provider, profile);
+    else
+     if(provider->metaObject()->className() == "SystemConsolePreferencesManager")
+        this->initializeProvider((SystemConsolePreferencesManager*)provider, profile);
+     else
+      this->initializeProvider((AbstractPreferencesManager*)provider, profile);
    }//);
    //foreach(QObject* provider, *providers)
    if (!this->initializationExceptions.isEmpty())
@@ -511,7 +540,7 @@ load(File* file, bool registerDeferred)  /*throw (JmriConfigureXmlException)*/
     return this->legacy->makeBackup(file);
 }
 
-/*private*/ void JmriConfigurationManager::initializeProvider( AbstractPreferencesManager* provider, Profile* profile)
+/*private*/ void JmriConfigurationManager::initializeProvider( PreferencesManager* provider, Profile* profile)
 {
  if (!initializing.contains(provider) && !provider->isInitialized(profile) && !provider->isInitializedWithExceptions(profile)) {
   initializing.insert(provider);
@@ -519,18 +548,31 @@ load(File* file, bool registerDeferred)  /*throw (JmriConfigureXmlException)*/
 //  provider.getRequires()
 //          .forEach(c -> InstanceManager.getList(c)
 //                  .forEach(p -> initializeProvider(p, profile)));
-  QSet<QString>* requires = provider->getRequires();
-  if(requires)
-  foreach(QString c, *requires )
+  QSet<QString> requires;// = provider->getRequires();
+  if(QString(provider->self()->metaObject()->className()) == "GuiLafPreferencesManager")
+   requires = qobject_cast<GuiLafPreferencesManager*>(provider->self())->getProvides();
+  else
+   if(QString(provider->self()->metaObject()->className()) == "SystemConsolePreferencesManager")
+    requires = qobject_cast<SystemConsolePreferencesManager*>(provider->self())->getProvides();
+  else
+   requires = qobject_cast<AbstractPreferencesManager*>(provider->self())->getProvides();
+  foreach(QString c, requires )
   {
    foreach(QObject* obj, *InstanceManager::getList(c))
    {
-    AbstractPreferencesManager* p = (AbstractPreferencesManager*)obj;
+    PreferencesManager* p = (PreferencesManager*)obj;
     initializeProvider(p, profile);
    }
   }
   try {
-      provider->initialize(profile);
+      //provider->initialize(profile);
+   if(provider->self()->metaObject()->className() == "GuiLafPreferencesManager")
+    ((GuiLafPreferencesManager*)provider->self())->initialize(profile);
+   else
+    if(provider->self()->metaObject()->className() == "SystemConsolePreferencesManager")
+     ((SystemConsolePreferencesManager*)provider->self())->initialize(profile);
+   else
+    ((AbstractPreferencesManager*)provider->self())->initialize(profile);
   } catch (InitializationException* ex) {
       // log all initialization exceptions, but only retain for GUI display the
       // first initialization exception for a provider

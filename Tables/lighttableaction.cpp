@@ -33,7 +33,7 @@
 #include "borderfactory.h"
 #include "namedbean.h"
 #include "defaultlightcontrol.h"
-
+#include "borderfactory.h"
 
 /**
  * Swing action to create and register a LightTable GUI.
@@ -72,7 +72,7 @@
 void LightTableAction::common()
 {
  setObjectName("LightTableAction");
- lightManager = qobject_cast<LightManager*>(InstanceManager::getNullableDefault("LightManager"));
+ lightManager = qobject_cast<ProxyLightManager*>(InstanceManager::getNullableDefault("LightManager"));
  oneDigit = new DecimalFormat("0");
  oneDotTwoDigit = new DecimalFormat("0.00");
  addFrame = nullptr;

@@ -37,7 +37,7 @@ public:
  /*public*/ void clearState(JTable* table) override;
  /*public*/ void initialize(Profile* profile)throw (InitializationException) override;
  /*public*/ /*synchronized*/ void savePreferences(Profile* profile) override;
- /*public*/ QSet<QString>* getProvides() override;
+ /*public*/ QSet<QString> getProvides() override;
  /*public*/ void resetState(JTable* table) override;
  /*public*/ void setPaused(bool paused) override;
  /*public*/ bool isPaused() override;

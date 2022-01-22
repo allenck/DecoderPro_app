@@ -13,6 +13,7 @@
 WarrantPreferences::WarrantPreferences(QObject *parent) :
   AbstractPreferencesManager(parent)
 {
+    setObjectName("WarrantPreferences");
  _scale = 87.1f;
  _searchDepth = 20;
   _throttleScale = 0.90f;

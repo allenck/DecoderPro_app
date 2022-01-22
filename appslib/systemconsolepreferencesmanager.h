@@ -19,11 +19,11 @@ public:
  /*public*/ static /*final*/ QString FONT_STYLE;// = "fontStyle";
  /*public*/ static /*final*/ QString FONT_FAMILY;// = "fontFamily";
  /*public*/ static /*final*/ QString WRAP_STYLE;// = "wrapStyle";
- /*public*/ void initialize(Profile* profile)throw (InitializationException);
- /*public*/ void savePreferences(Profile* profile);
- /*public*/ bool isInitialized(Profile* profile);
- /*public*/ QSet<QString>* /*Iterable<Class<? extends PreferencesManager>> */getRequires();
- /*public*/ QSet<QString>* /*Iterable<Class<?>>*/ getProvides();
+ /*public*/ void initialize(Profile* profile)throw (InitializationException)override;
+ /*public*/ void savePreferences(Profile* profile)override;
+ /*public*/ bool isInitialized(Profile* profile)override;
+ /*public*/ QSet<QString> /*Iterable<Class<? extends PreferencesManager>> */getRequires()override;
+ /*public*/ QSet<QString> /*Iterable<Class<?>>*/ getProvides()override;
  /*public*/ int getScheme();
  /*public*/ void setScheme(int scheme) ;
  /*public*/ int getFontSize();

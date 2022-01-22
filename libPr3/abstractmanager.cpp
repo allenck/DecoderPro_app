@@ -51,9 +51,12 @@ AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : 
  lastAutoNamedBeanRef = QAtomicInteger<int>(0);
  silenceableProperties.insert("beans");
  listeners = QList<Manager::ManagerDataListener*>();
-
+ setRegisterSelf();
 }
 
+/*final*/ void AbstractManager::setRegisterSelf(){
+    registerSelf();
+}
 //abstract public class AbstractManager
 //    implements Manager, java.beans.PropertyChangeListener {
 

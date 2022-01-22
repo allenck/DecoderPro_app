@@ -24,7 +24,7 @@ public:
  /*public*/ /*final*/ static QString SYSTEM_NAME;// = "systemPrefix"; // NOI18N
  /*public*/ /*final*/ static QString MANUFACTURER;// = "manufacturer"; // NOI18N
  Q_INVOKABLE/*public*/ void initialize(Profile* profile) override/*throw (InitializationException)*/;
- /*public*/ QSet<QString>* getRequires() override;
+ /*public*/ QSet<QString> getRequires() override;
  /*public*/ void savePreferences(Profile* profile)override;
  /*public*/ bool add(/*@Nonnull*/ ConnectionConfig* c) /*throw (NullPointerException)*/;
  /*public*/ bool remove(/*@NonNULL*/ ConnectionConfig* c);

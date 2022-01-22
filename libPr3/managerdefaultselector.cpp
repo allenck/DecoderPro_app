@@ -38,7 +38,7 @@
 /*public*/ ManagerDefaultSelector::ManagerDefaultSelector(QObject *parent) : AbstractPreferencesManager(parent)
 {
  setProperty("JavaClassName", "jmri.managers.ManagerDefaultSelector");
-
+ setObjectName("ManagerDefaultSelector");
  memoListener = new MemoListener(this);
  //SystemConnectionMemoManager::getDefault()->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
 

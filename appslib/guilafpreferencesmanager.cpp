@@ -88,15 +88,15 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
 }
 
 //@Override
-/*public*/ /*Iterable<Class<? extends PreferencesManager>> */ QSet<QString>* GuiLafPreferencesManager::getRequires() {
-    return new QSet<QString>();
+/*public*/ /*Iterable<Class<? extends PreferencesManager>> */ QSet<QString> GuiLafPreferencesManager::getRequires() {
+    return QSet<QString>();
 }
 
 //@Override
-/*public*/ /*Iterable<Class<?>>*/ QSet<QString>* GuiLafPreferencesManager::getProvides() {
+/*public*/ /*Iterable<Class<?>>*/ QSet<QString> GuiLafPreferencesManager::getProvides() {
     //Set<Class<?>> provides = new HashSet<>();
- QSet<QString>* provides = new QSet<QString>();
-    provides->insert(this->metaObject()->className());
+ QSet<QString> provides = QSet<QString>();
+    provides.insert(this->metaObject()->className());
     return provides;
 }
 

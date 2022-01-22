@@ -52,7 +52,7 @@ public:
 
  QObject* self() override {return (QObject*)this;}
 private:
- /*private*/ void initializeProvider(AbstractPreferencesManager *provider, Profile* profile);
+ /*private*/ void initializeProvider(PreferencesManager *provider, Profile* profile);
  static /*private*/ Logger* log;// = LoggerFactory.getLogger(JmriConfigurationManager.class);
  /*private*/ /*final*/ ConfigXmlManager* legacy;// = new ConfigXmlManager();
  /*private*/ /*final*/ QHash<PreferencesManager*, InitializationException*> initializationExceptions = QHash<PreferencesManager*, InitializationException*>();

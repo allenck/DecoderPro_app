@@ -75,15 +75,15 @@ SystemConsolePreferencesManager::SystemConsolePreferencesManager()
 }
 
 //@Override
-/*public*/ QSet<QString>* /*Iterable<Class<? extends PreferencesManager>> */SystemConsolePreferencesManager::getRequires() {
-    return new QSet<QString>();
+/*public*/ QSet<QString> /*Iterable<Class<? extends PreferencesManager>> */SystemConsolePreferencesManager::getRequires() {
+    return QSet<QString>();
 }
 
 //@Override
-/*public*/ QSet<QString>* /*Iterable<Class<?>>*/ SystemConsolePreferencesManager::getProvides() {
+/*public*/ QSet<QString> SystemConsolePreferencesManager::getProvides() {
     //Set<Class<?>> provides = new HashSet<>();
-    QSet<QString>* provides = new QSet<QString>();
-    provides->insert(this->metaObject()->className());
+    QSet<QString> provides = QSet<QString>();
+    provides.insert(this->metaObject()->className());
     return provides;
 }
 

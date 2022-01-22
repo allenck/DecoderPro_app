@@ -3,6 +3,9 @@
 #include <QSet>
 #include "instancemanager.h"
 #include "loggerfactory.h"
+#include "guilafpreferencesmanager.h"
+#include "systemconsolepreferencesmanager.h"
+
 AbstractPreferencesManager::AbstractPreferencesManager(QObject* parent) : Bean(parent)
 {
 }
@@ -71,10 +74,10 @@ AbstractPreferencesManager::AbstractPreferencesManager(QObject* parent) : Bean(p
     return requires;
 }
 #else
-/*public*/ QSet<QString>* AbstractPreferencesManager::getRequires()
+/*public*/ QSet<QString> AbstractPreferencesManager::getRequires()
 {
- QSet<QString>* requires = new QSet<QString>();
- requires->insert("ConnectionConfigManager");
+ QSet<QString> requires = QSet<QString>();
+ requires.insert("ConnectionConfigManager");
  return requires;
 }
 #endif
@@ -99,10 +102,10 @@ AbstractPreferencesManager::AbstractPreferencesManager(QObject* parent) : Bean(p
     return provides;
 }
 #else
-/*public*/ QSet<QString>* AbstractPreferencesManager::getProvides()
+/*public*/ QSet<QString> AbstractPreferencesManager::getProvides()
 {
- QSet<QString>* provides = new QSet<QString>();
- provides->insert(this->metaObject()->className());
+ QSet<QString> provides = QSet<QString>();
+ provides.insert(this->metaObject()->className());
  return provides;
 }
 
@@ -166,7 +169,7 @@ AbstractPreferencesManager::AbstractPreferencesManager(QObject* parent) : Bean(p
  *                                  the set of classes returned by
  *                                  {@link #getRequires()}
  */
-/*protected*/ void AbstractPreferencesManager::requiresNoInitializedWithExceptions(/*@Nonnull*/ Profile* profile, /*@Nonnull*/ /*Set<Class<? extends PreferencesManager>> */QSet<QString>* classes, /*@Nonnull*/ QString message) //throws InitializationException
+/*protected*/ void AbstractPreferencesManager::requiresNoInitializedWithExceptions(/*@Nonnull*/ Profile* profile, /*@Nonnull*/ /*Set<Class<? extends PreferencesManager>> */QSet<QString> classes, /*@Nonnull*/ QString message) //throws InitializationException
 {
 #if 0
  classes.stream().filter((clazz) -> (!this->getRequires().contains(clazz))).forEach((clazz) ->
@@ -174,23 +177,32 @@ AbstractPreferencesManager::AbstractPreferencesManager(QObject* parent) : Bean(p
      throw new IllegalArgumentException("Class " + clazz.getClass().getName() + " not marked as required by " + this->metaObject()->className();
  });
 #else
- foreach(QString clazz, *classes)
+ foreach(QString clazz, classes)
  {
-  if (!this->getRequires()->contains(clazz))
+  if (!this->getRequires().contains(clazz))
    throw new IllegalArgumentException("Class " + clazz + " not marked as required by " + this->metaObject()->className());
  }
 #endif
- foreach (/*Class<? extends PreferencesManager>*/QString clazz , classes->toList())
+ foreach (/*Class<? extends PreferencesManager>*/QString clazz , classes.toList())
  {
   foreach (QObject* instance,  *InstanceManager::getList(clazz))
   {
-   if (((AbstractPreferencesManager*)instance)->isInitializedWithExceptions(profile))
+   bool condition;
+   if(QString(instance->metaObject()->className()) == "GuiLafPreferencesManager")
+    condition = ((GuiLafPreferencesManager*)instance)->isInitializedWithExceptions(profile);
+   else
+    if(QString(instance->metaObject()->className()) == "SystemConsolePreferencesManager")
+     condition = ((SystemConsolePreferencesManager*)instance)->isInitializedWithExceptions(profile);
+   else
+     condition = ((AbstractPreferencesManager*)instance)->isInitializedWithExceptions(profile);
+
+   if( /*((AbstractPreferencesManager*)instance)->isInitializedWithExceptions(profile)*/condition)
    {
        InitializationException* exception =  new InitializationException("Refusing to initialize", message,NULL);
        log->debug(tr("throw exception on class '%1' msg: '%2', local msg '%3'").arg(clazz).arg(exception->getMessage()).arg(exception->getLocalizedMessage()));
        this->addInitializationException(profile, exception);
        this->setInitialized(profile, true);
-       //throw exception;
+       throw exception;
    }
   }
  }

@@ -15,6 +15,7 @@
 
 ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager()
 {
+ setObjectName("ConnectionConfigManager");
  connections = QList<ConnectionConfig*>();
  NAMESPACE = "http://jmri.org/xml/schema/auxiliary-configuration/connections-2-9-6.xsd"; // NOI18N
 
@@ -193,9 +194,9 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
 
 //@Override
 ///*public*/ QSet<Class<? extends PreferencesManager>> getRequires() {
-/*public*/ QSet<QString>* ConnectionConfigManager::getRequires()
+/*public*/ QSet<QString> ConnectionConfigManager::getRequires()
 {
- return new QSet<QString>();
+ return QSet<QString>();
 }
 
 //@Override

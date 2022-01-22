@@ -100,6 +100,7 @@
 #include "appspreferencesactionfactory.h"
 #include "guilafpreferencesmanager.h"
 #include "../operations/metatypes.h"
+#include "connectionconfigmanager.h"
 
 //Apps::Apps(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -270,20 +271,6 @@ bool Apps::configDeferredLoadOK = false;
 
   // Install abstractActionModel
   InstanceManager::store(new CreateButtonModel(), "CreateButtonModel");
-
-//  // Install a user preferences manager
-//  InstanceManager::store(JmriUserPreferencesManager::getDefault(), "UserPreferencesManager");
-//  InstanceManager::store(new NamedBeanHandleManager(), "NamedBeanHandleManager");
-//  // Install an IdTag manager
-//  InstanceManager::store(new DefaultIdTagManager(), "IdTagManager");
-//  //Install Entry Exit Pairs Manager
-//  InstanceManager::store(new EntryExitPairs(), "EntryExitPairs");
-
-//  // install preference manager
-//  InstanceManager::store(new TabbedPreferences(), "TabbedPreferences");
-
-//  // Install abstractActionModel
-//  InstanceManager::store(new CreateButtonModel(), "CreateButtonModel");
 
   // find preference file and set location in configuration manager
   // Needs to be declared final as we might need to
@@ -1079,7 +1066,7 @@ void Apps::On_handleQuit()
  QHBoxLayout* pane1Layout;
  pane1->setLayout(pane1Layout = new QHBoxLayout); //(pane1, BoxLayout.X_AXIS));
  log->debug(tr("Fetch main logo: %1").arg(logo()));
- // TODO: pane1Layout->addWidget(new QLabel(new ImageIcon(getToolkit().getImage(logo()), "JMRI logo"), JLabel.LEFT));
+ // pane1Layout->addWidget(new QLabel(new ImageIcon(getToolkit().getImage(logo()), "JMRI logo"), JLabel.LEFT));
  pane1Layout->addWidget(new JLabel("JMRI logo", new ImageIcon(logo(), "JMRI logo"),JLabel::LEFT),0, Qt::AlignCenter);
  //    pane1Layout->addWidget(Box.createRigidArea(new Dimension(15, 0))); // Some spacing between logo and status panel
 
@@ -1099,28 +1086,17 @@ void Apps::On_handleQuit()
  {
   pane2Layout->addWidget(new QLabel(tr("Failed Profile:")));
  }
- // add listerner for Com port updates
+ // add listener for Com port updates
  ConnectionStatus::instance()->addPropertyChangeListener(this);
- //connect(ConnectionStatus::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this,  SLOT(propertyChange(PropertyChangeEvent*)));
- //ArrayList<Object> connList = InstanceManager::configureManagerInstance().getInstanceList(ConnectionConfig.class);
- QObjectList connList = ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->getInstanceList("ConnectionConfig");
-
  int i = 0;
- if (!connList.isEmpty())
- {
-  for (int x = 0; x < connList.size(); x++)
-  {
-   ConnectionConfig* conn = (ConnectionConfig*) connList.at(x);
-   if (!conn->getDisabled())
-   {
-    connection[i] = conn;
-    i++;
-   }
-   if (i > 3)
-   {
-    break;
-   }
-  }
+ foreach (ConnectionConfig* conn, ((ConnectionConfigManager*)InstanceManager::getDefault("ConnectionConfigManager"))->getConnections()) {
+     if (!conn->getDisabled()) {
+         connection[i] = conn;
+         i++;
+     }
+     if (i > 3) {
+         break;
+     }
  }
  buildLine4(pane2);
  buildLine5(pane2);

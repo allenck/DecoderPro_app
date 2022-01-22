@@ -17,8 +17,8 @@ public:
  /*public*/ /*final*/ static QString DO_CONFIRM_READ;// = "doConfirmRead";
 
  /*public*/ void initialize(Profile* profile)/*throw (InitializationException)*/override;
- /*public*/ QSet<QString>* getRequires()override;
- /*public*/ QSet<QString>* getProvides()override;
+ /*public*/ QSet<QString> getRequires()override;
+ /*public*/ QSet<QString> getProvides()override;
  /*public*/ void savePreferences(Profile* profile)override;
  /*public*/ QString getDefaultFile();
  /*public*/ void setDefaultFile(QString defaultFile);

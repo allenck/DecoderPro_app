@@ -81,9 +81,8 @@ JmriConfiguration::JmriConfiguration() : AuxiliaryConfiguration() {
  QString _namespace = fragment.namespaceURI();
  if (_namespace == NULL)
  {
-     //throw new IllegalArgumentException();
   log->error("Invalid namespace");
-  return;
+  throw new IllegalArgumentException();
  }
  File* file = this->getConfigurationFile(shared);
  doc = QDomDocument();

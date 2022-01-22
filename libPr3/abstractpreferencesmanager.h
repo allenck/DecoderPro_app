@@ -15,8 +15,8 @@ public:
  /*public*/ bool isInitialized(/*@Nonnull*/ Profile* profile);
  /*public*/ QList<Exception*> getInitializationExceptions(/*@Nonnull*/ Profile* profile);
  /*public*/ bool isInitializedWithExceptions(/*@Nonnull*/ Profile* profile);
- /*public*/ QSet<QString>* getRequires();
- /*public*/ QSet<QString>* getProvides();
+ /*public*/ QSet<QString> getRequires();
+ /*public*/ QSet<QString> getProvides();
 
 private:
  /*private*/ /*final*/ QHash<Profile*, bool> initialized = QHash<Profile*, bool>();
@@ -29,7 +29,7 @@ protected:
  /*protected*/ void setInitialized(/*@Nonnull*/ Profile* profile, bool initialized);
  /*protected*/ void setInitializing(/*@Nonnull*/ Profile* profile, bool initializing);
  /*protected*/ void addInitializationException(/*@Nonnull*/ Profile* profile, /*@Nonnull*/ Exception* exception);
- /*protected*/ void requiresNoInitializedWithExceptions(/*@Nonnull*/ Profile* profile, /*@Nonnull*/ /*Set<Class<? extends PreferencesManager>> */QSet<QString>* classes, /*@Nonnull*/ QString message); //throws InitializationException
+ /*protected*/ void requiresNoInitializedWithExceptions(/*@Nonnull*/ Profile* profile, /*@Nonnull*/ /*Set<Class<? extends PreferencesManager>> */QSet<QString> classes, /*@Nonnull*/ QString message); //throws InitializationException
  /*protected*/ void requiresNoInitializedWithExceptions(/*@Nonnull*/ Profile* profile, /*@Nonnull*/ QString message); //throws InitializationException
 
 

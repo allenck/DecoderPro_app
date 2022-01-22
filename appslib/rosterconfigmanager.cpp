@@ -31,6 +31,7 @@
 
 /*public*/ RosterConfigManager::RosterConfigManager()
 {
+ setObjectName("RosterConfigManager");
  log = new Logger("RosterConfigManager");
  //directory = FileUtil::PREFERENCES;
  //defaultOwner = "";
@@ -127,10 +128,10 @@ void RosterConfigManager::propertyChange(PropertyChangeEvent* evt)
 }
 
 //@Override
-/*public*/ /*Set<Class<? extends PreferencesManager>>*/ QSet<QString>* RosterConfigManager::getRequires() {
+/*public*/ /*Set<Class<? extends PreferencesManager>>*/ QSet<QString> RosterConfigManager::getRequires() {
    // Set<Class<? extends PreferencesManager>> requires = super.getRequires();
- QSet<QString>* requires = AbstractPreferencesManager::getRequires();
-    requires->insert("FileLocationsPreferences");
+ QSet<QString> requires = AbstractPreferencesManager::getRequires();
+    requires.insert("FileLocationsPreferences");
     return requires;
 }
 

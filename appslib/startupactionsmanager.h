@@ -18,8 +18,8 @@ public:
  /*public*/ /*final*/ static QString NAMESPACE_OLD;// = "http://jmri.org/xml/schema/auxiliary-configuration/startup-2-9-6.xsd"; // NOI18N
  /*public*/ QList<StartupModel*>* getActions();
  /*public*/ /*<T extends StartupModel>*/ QList<StartupModel*>* getActions(QString type);
- /*public*/ /*Set<Class<? extends PreferencesManager>>*/QSet<QString>* getRequires();
- /*public*/ /*synchronized*/ void savePreferences(Profile* profile);
+ /*public*/ /*Set<Class<? extends PreferencesManager>>*/QSet<QString> getRequires()override;
+ /*public*/ /*synchronized*/ void savePreferences(Profile* profile)override;
  /*public*/ void addAction(StartupModel* model);
  /*public*/ StartupModel* getActions(int index);
  /*public*/ void setActions(int index, StartupModel* model);
@@ -35,7 +35,7 @@ public:
  QObject* self() override {return (QObject*)this;}
 
 signals:
- void propertyChange(PropertyChangeEvent *);
+ //void propertyChange(PropertyChangeEvent *);
 
 public slots:
  void loadPreferencesmanagers();

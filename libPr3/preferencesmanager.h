@@ -18,10 +18,10 @@ public:
  virtual QList<Exception*> getInitializationExceptions(/*@Nonnull */Profile* profile)=0;
 // template <class T>
 // /*public*/ QList<T>* getRequires();
- virtual QSet<QString>* getRequires();
+ virtual QSet<QString> getRequires();
 // template <class T>
 // /*public*/ QList<T>* getProvides();
- virtual QSet<QString>* getProvides();
+ virtual QSet<QString> getProvides();
  /*public*/ virtual void savePreferences(/*@Nonnull*/ Profile* /*profile*/) {}
 
  virtual QObject* self() =0;

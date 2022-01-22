@@ -6,7 +6,7 @@
 
 FileLocationsPreferences::FileLocationsPreferences()
 {
-
+ setObjectName("FileLocationsPreferences");
 }
 /**
  *
@@ -91,8 +91,8 @@ FileLocationsPreferences::FileLocationsPreferences()
 }
 
 //@Override
-/*public*/ QSet<QString/* extends PreferencesManager*/>* FileLocationsPreferences::getRequires() {
-    return new QSet<QString>();
+/*public*/ QSet<QString> FileLocationsPreferences::getRequires() {
+    return QSet<QString>();
 }
 
 //@Override

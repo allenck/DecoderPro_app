@@ -79,8 +79,8 @@ class Exception;
 //Iterable<Class<? extends PreferencesManager>> getRequires();
 //template<class T>
 ///*public*/ QList<T>* PreferencesManager::getRequires() {return NULL;}
-QSet<QString>* PreferencesManager::getRequires() {
- return new QSet<QString>();
+QSet<QString> PreferencesManager::getRequires() {
+ return  QSet<QString>();
 }
 /**
  * Get the set of Classes that this PreferencesManager can be registered as
@@ -94,4 +94,4 @@ QSet<QString>* PreferencesManager::getRequires() {
 //Iterable<Class<?>> getProvides();
 //template <class T>
 ///*public*/ QList<T>* PreferencesManager::getProvides() {return NULL;}
-QSet<QString>* PreferencesManager::getProvides() {return NULL;}
+QSet<QString> PreferencesManager::getProvides() {return QSet<QString>();}

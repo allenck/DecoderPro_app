@@ -259,13 +259,13 @@ void StartupActionsManager::loadPreferencesmanagers()
 }
 
 //@Override
-/*public*/ /*Set<Class<? extends PreferencesManager>>*/QSet<QString>* StartupActionsManager::getRequires() {
-    /*Set<Class<? extends PreferencesManager>> */QSet<QString>* requires = AbstractPreferencesManager::getRequires();
-    requires->insert("ManagerDefaultSelector");
-    requires->insert("FileLocationsPreferences");
-    requires->insert("RosterConfigManager");
-    requires->insert("ProgrammerConfigManager");
-    requires->insert("GuiLafPreferencesManager");
+/*public*/ /*Set<Class<? extends PreferencesManager>>*/QSet<QString> StartupActionsManager::getRequires() {
+    /*Set<Class<? extends PreferencesManager>> */QSet<QString> requires = AbstractPreferencesManager::getRequires();
+    requires.insert("ManagerDefaultSelector");
+    requires.insert("FileLocationsPreferences");
+    requires.insert("RosterConfigManager");
+    requires.insert("ProgrammerConfigManager");
+    requires.insert("GuiLafPreferencesManager");
     return requires;
 }
 
@@ -346,8 +346,8 @@ void StartupActionsManager::loadPreferencesmanagers()
   this->setRestartRequired();
   if (fireChange)
   {
-//   this->fireIndexedPropertyChange(STARTUP, index, QVariant(), VPtr<StartupModel>::asQVariant(model));
-   emit propertyChange((PropertyChangeEvent*)(new IndexedPropertyChangeEvent(this, STARTUP,  QVariant(), VPtr<StartupModel>::asQVariant(model),index)));
+   this->fireIndexedPropertyChange(STARTUP, index, QVariant(), VPtr<StartupModel>::asQVariant(model));
+   //emit propertyChange((PropertyChangeEvent*)(new IndexedPropertyChangeEvent(this, STARTUP,  QVariant(), VPtr<StartupModel>::asQVariant(model),index)));
   }
  }
 }
@@ -365,8 +365,8 @@ void StartupActionsManager::loadPreferencesmanagers()
  StartupModel* model = this->getActions(start);
  this->removeAction(model, false);
  this->setActions(end, model, false);
- //this->fireIndexedPropertyChange(STARTUP, end, start, VPtr<StartupModel>::asQVariant(model));
- emit propertyChange((PropertyChangeEvent*)(new IndexedPropertyChangeEvent(this,STARTUP, start, VPtr<StartupModel>::asQVariant(model), end)));
+ this->fireIndexedPropertyChange(STARTUP, end, start, VPtr<StartupModel>::asQVariant(model));
+ //emit propertyChange((PropertyChangeEvent*)(new IndexedPropertyChangeEvent(this,STARTUP, start, VPtr<StartupModel>::asQVariant(model), end)));
 }
 
 /*public*/ void StartupActionsManager::addAction(StartupModel* model)
@@ -393,8 +393,8 @@ void StartupActionsManager::loadPreferencesmanagers()
  this->setRestartRequired();
  if (fireChange)
  {
-  //this->fireIndexedPropertyChange(STARTUP, index, VPtr<StartupModel>::asQVariant(model), QVariant());
-  emit propertyChange((PropertyChangeEvent*)(new IndexedPropertyChangeEvent(this, STARTUP,  VPtr<StartupModel>::asQVariant(model), QVariant(), index)));
+  this->fireIndexedPropertyChange(STARTUP, index, VPtr<StartupModel>::asQVariant(model), QVariant());
+  //emit propertyChange((PropertyChangeEvent*)(new IndexedPropertyChangeEvent(this, STARTUP,  VPtr<StartupModel>::asQVariant(model), QVariant(), index)));
  }
 }
 

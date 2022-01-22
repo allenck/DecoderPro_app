@@ -15,6 +15,7 @@
 
 JmriJTablePersistenceManager::JmriJTablePersistenceManager(QObject* parent) :AbstractPreferencesManager(parent)
 {
+ setObjectName("JmriJTablePersistenceManager");
  log = new Logger("JmriJTablePersistenceManager");
  listeners = new QMap<QString, JTableListener*>();
  columns = new QMap<QString, QMap<QString, TableColumnPreferences*>*>();
@@ -438,10 +439,10 @@ JmriJTablePersistenceManager::JmriJTablePersistenceManager(QObject* parent) :Abs
     return provides;
 }
 #else
-/*public*/ QSet<QString>* JmriJTablePersistenceManager::getProvides()
+/*public*/ QSet<QString> JmriJTablePersistenceManager::getProvides()
 {
- QSet<QString>* provides = AbstractPreferencesManager::getProvides();
- provides->insert("JTablePersistenceManager");
+ QSet<QString> provides = AbstractPreferencesManager::getProvides();
+ provides.insert("JTablePersistenceManager");
  return provides;
 }
 #endif
