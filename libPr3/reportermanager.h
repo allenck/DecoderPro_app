@@ -185,7 +185,7 @@ public:
        virtual /*public*/ QString createSystemName(/*@Nonnull*/ QString /*curAddress*/, /*@Nonnull*/ QString /*prefix*/)
          /*throws JmriException*/ {return "";}
 
-    virtual QObject* self() =0;
+    virtual QObject* self() {return nullptr;}
 
 };
 Q_DECLARE_INTERFACE(ReporterManager, "ReporterManager")
