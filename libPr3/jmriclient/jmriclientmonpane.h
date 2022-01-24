@@ -31,7 +31,18 @@ public:
  /*public*/ QString getTitle();
  /*public*/ void initContext(QObject* context);
  /*public*/ void dispose();
+ /**
+  * Nested class to create one of these using old-style defaults
+  */
+  /*static*/ /*public*/ class Default : public JmriNamedPaneAction {
 
+   /*public*/ Default(QObject* parent = nullptr)
+    : JmriNamedPaneAction(JmriNamedPaneAction(tr(" Jmri Client Command Monitor"), "JMRIClientMonPane", parent))
+   {
+       //super(Bundle.getMessage("MenuItemJmriClientCommandMonitorTitle"), JMRIClientMonPane.class.getName());
+       setContext(InstanceManager::getDefault("JMRIClientSystemConnectionMemo"));
+   }
+  };
 public slots:
  /*public*/ /*synchronized*/ void reply(AbstractMRMessage* l);  // receive a reply message and log it
  /*public*/ /*synchronized*/ void message(AbstractMRMessage *l);  // receive a message and log it
@@ -49,10 +60,8 @@ Q_DECLARE_METATYPE(JMRIClientMonPane)
 public:
  /*public*/ JmriNamedPaneActionDefault(QObject* parent =nullptr) : JmriNamedPaneAction(tr(" Jmri Client Command Monitor"), "JMRIClientMonPane", parent)
  {
-        //super(tr(" Jmri Client Command Monitor"), "JMRIClientMonPane");
-        setContext(static_cast<JMRIClientSystemConnectionMemo*>(InstanceManager::
-                getDefault("JMRIClientSystemConnectionMemo")));
-        //connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed(ActionEvent*))); // JmriNamedPaneAction does this
+  //super(tr(" Jmri Client Command Monitor"), "JMRIClientMonPane");
+  setContext(static_cast<JMRIClientSystemConnectionMemo*>(InstanceManager::getDefault("JMRIClientSystemConnectionMemo")));
  }
 public slots:
 void actionPerformed(JActionEvent* e = 0)

@@ -219,7 +219,7 @@ InstanceManager::InstanceManager(QObject *parent) :
     if (item == nullptr) {
      QString msg = tr("Should not store null value of type %1").arg(type);
      log->error(msg);
-        NullPointerException npe =  NullPointerException(msg);
+        NullPointerException* npe = new NullPointerException(msg);
         throw npe;
     }
     log->debug(tr("Store item of type %1, class %2").arg(type).arg(item->metaObject()->className()));

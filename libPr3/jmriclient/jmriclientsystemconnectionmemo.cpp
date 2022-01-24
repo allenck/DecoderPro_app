@@ -26,23 +26,22 @@
 {
     //super("J", "JMRI Client");
     this->jt = jt;
-    _register(); // registers general type
-    InstanceManager::store(this, "JMRIClientSystemConnectionMemo"); // also register as specific type
-
-    // create and register the JMRIClientComponentFactory
-    InstanceManager::store(cf = new JMRIClientComponentFactory(this),
-            "ComponentFactory");
+    common();
 }
 
-/*public*/ JMRIClientSystemConnectionMemo::JMRIClientSystemConnectionMemo(QObject* parent) : DefaultSystemConnectionMemo("J", "JMRI Client", parent) {
-    //super("J", "JMRIClient");
-    this->jt = new JMRIClientTrafficController();
+void JMRIClientSystemConnectionMemo::common()
+{
     _register(); // registers general type
     InstanceManager::store(this, "JMRIClientSystemConnectionMemo"); // also register as specific type
 
     // create and register the JMRIClientComponentFactory
     InstanceManager::store(cf = new JMRIClientComponentFactory(this), "ComponentFactory");
+}
 
+/*public*/ JMRIClientSystemConnectionMemo::JMRIClientSystemConnectionMemo(QObject* parent) : DefaultSystemConnectionMemo("J", "JMRI Client", parent) {
+    //super("J", "JMRIClient");
+    this->jt = new JMRIClientTrafficController();
+    common();
 }
 
 

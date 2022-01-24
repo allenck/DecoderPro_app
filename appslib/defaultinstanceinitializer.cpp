@@ -507,13 +507,13 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
 //  return itcm;
 // }
 
- if(type == "JMRIClientSystemConnectionMemo")
- {
-  JMRIClientSystemConnectionMemo* memo = new JMRIClientSystemConnectionMemo();
-  //InstanceManager::store(memo,type);
-  //InstanceManager::store(itcm, "SystemConnectionMemo");
-  return memo;
- }
+// if(type == "JMRIClientSystemConnectionMemo")
+// {
+//  JMRIClientSystemConnectionMemo* memo = new JMRIClientSystemConnectionMemo();
+//  //InstanceManager::store(memo,type);
+//  //InstanceManager::store(itcm, "SystemConnectionMemo");
+//  return memo;
+// }
 
  if(type == "ManagerDefaultSelector")
  {

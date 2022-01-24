@@ -44,6 +44,7 @@ public:
  /*public*/ bool provides(QString type);
 
 private:
+ void common();
  ComponentFactory* cf = nullptr;
  /*private*/ JMRIClientTrafficController* jt;
  /*private*/ AbstractSensorManager* sensorManager = nullptr;
