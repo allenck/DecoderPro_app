@@ -34,6 +34,8 @@ public:
 signals:
 
 public slots:
+    /*public*/ void PropertyChange(PropertyChangeEvent* e);
+
 private:
  static QMutex* mutex;
  /** record the single instance **/

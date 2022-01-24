@@ -732,6 +732,6 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<TabbedPreferencesProfileAction>("TabbedPreferencesProfileAction");
  qRegisterMetaType<MergSD2SignalHeadXml>("MergSD2SignalHeadXml");
  qRegisterMetaType<AcelaSignalHeadXml>("AcelaSignalHeadXml");
-
+ qRegisterMetaType<LocoNetSystemConnectionMemo>("LocoNetSystemConnectionMemo");
  Metatypes::done = true;
 }

@@ -88,11 +88,6 @@ PanelPro::PanelPro(JFrame* p, QWidget *parent) :
  // Buttons
  QAction* quit = new QAction("Quit", this);//
 //    {
-//        /**
-//         *
-//         */
-//        private static final long serialVersionUID = 8078721796099848602L;
-
 //        /*public*/ void actionPerformed(ActionEvent e) {
 //            Apps.handleQuit();
 //        }

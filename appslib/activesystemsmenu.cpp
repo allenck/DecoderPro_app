@@ -61,14 +61,18 @@ void ActiveSystemsMenu::common()
  */
 /*static*/ /*public*/ void ActiveSystemsMenu::addItems(QMenuBar* m, QWidget* frame)
 {
+ QString menuName;
  // get ComponentFactory objects and create menus
  QList<QObject*>* list = InstanceManager::getList("ComponentFactory");
   for (QObject* obj : *list)
   {
    ComponentFactory* memo = (ComponentFactory*)obj;
-   QMenu* menu = memo->getMenu(frame);
+   QMenu* menu = memo->getMenu();
    if (menu != NULL) {
-       m->addMenu(menu);
+       if(menu->title() != menuName){
+           m->addMenu(menu);
+        menuName = menu->title();
+       }
    }
   }
  }
@@ -83,7 +87,7 @@ void ActiveSystemsMenu::common()
              = InstanceManager::getList("ComponentFactory");
 
      for (QObject* memo : *list) {
-         QMenu* menu = ((ComponentFactory*)memo)->getMenu(frame);
+         QMenu* menu = ((ComponentFactory*)memo)->getMenu();
          if (menu != NULL) {
              m->addMenu(menu);
          }

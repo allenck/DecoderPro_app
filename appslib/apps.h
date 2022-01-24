@@ -7,13 +7,12 @@
 #include "appslib_global.h"
 #include "filedrop.h"
 #include "propertychangelistener.h"
-
+#include "jlabel.h"
 
 class QMenuBar;
 class JFrame;
 class PropertyChangeEvent;
 class ConnectionConfig;
-class QLabel;
 class WindowInterface;
 class QFile;
 class File;
@@ -43,7 +42,7 @@ void initGui();
 #ifdef SCRIPTING_ENABLED
 /*public*/ static void ynstrument(QString path);
 #endif
-QObject* self() override {(QObject*)this;}
+QObject* self() override {return (QObject*)this;}
 
 
 signals:
@@ -79,20 +78,20 @@ private:
     static bool debugFired;// = false;  // true if we've seen F8 during startup
     static bool debugmsg;// = false;    // true while we're handling the "No Logix?" prompt window on startup
     /*private*/ bool doDeferredLoad(File* file);
-    void keyPressEvent(QKeyEvent *);
+    void keyPressEvent(QKeyEvent *)override;
     // GUI members
     /*private*/ QMenuBar* menuBar;
     static QString nameString;// = "JMRI program";
     // line 4
-    QLabel* cs4;// = new QLabel();
+    JLabel* cs4 = new JLabel();
     // line 5 optional
-    QLabel* cs5;// = new QLabel();
+    QLabel* cs5 = new QLabel();
     // line 6 optional
-    QLabel* cs6;// = new QLabel();
+    QLabel* cs6 = new QLabel();
     // line 7 optional
-    QLabel* cs7;// = new QLabel();
+    QLabel* cs7 = new QLabel();
     //int[] connection = {-1,-1,-1,-1};
-    QVector<ConnectionConfig*> connection;// = {NULL, NULL, NULL, NULL};
+    QVector<ConnectionConfig*> connection = {NULL, NULL, NULL, NULL};
     QAction* prefsAction;
     /*public*/ void doPreferences();
 #ifdef SCRIPTING_ENABLED

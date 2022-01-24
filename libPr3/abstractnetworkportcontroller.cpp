@@ -108,8 +108,6 @@
               m_HostName, ConnectionStatus::CONNECTION_UP);
   }
  }
-#if 1
-//     opened = true;
  catch (IOException* e) {
      log->error("error opening network connection: " + e->getMessage());
      if (m_port != 0) {
@@ -122,7 +120,7 @@
      throw (e);
  }
 }
-#endif
+
 void AbstractNetworkPortController::on_socketConn_hostFound()
 {
   log->debug(tr("host: %1 found").arg(m_HostName));

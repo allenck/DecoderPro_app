@@ -50,8 +50,9 @@ class LIBPR3SHARED_EXPORT  LocoNetSystemConnectionMemo : public  DefaultSystemCo
 public:
  LocoNetSystemConnectionMemo(LnTrafficController* lt, SlotManager* sm, QObject* parent=0);
  LocoNetSystemConnectionMemo(QObject* parent=0);
- /*public*/ LocoNetSystemConnectionMemo(/*@Nonnull*/ QString prefix, /*@Nonnull*/ QString name);
  ~LocoNetSystemConnectionMemo();
+ LocoNetSystemConnectionMemo(const LocoNetSystemConnectionMemo&) : DefaultSystemConnectionMemo() {}
+ /*public*/ LocoNetSystemConnectionMemo(/*@Nonnull*/ QString prefix, /*@Nonnull*/ QString name);
  /*public*/ void _register()override;
 
  /**

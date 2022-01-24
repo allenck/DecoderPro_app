@@ -363,7 +363,7 @@ ThrottleManager* LocoNetSystemConnectionMemo::getThrottleManager() {
      LnCommandStationType* cmdstation = getSlotManager()->getCommandStationType();
      log->debug(tr("getThrottleManager constructs for %1").arg(cmdstation->getName()));
      throttleManager = cmdstation->getThrottleManager(this);
-     log->debug(tr("result was type {}").arg(throttleManager->self()->metaObject()->className()));
+     log->debug(tr("result was type %1").arg(throttleManager->self()->metaObject()->className()));
      store((AbstractManager*)throttleManager,"ThrottleManager");
  }
  return throttleManager;

@@ -9,17 +9,17 @@
  */
 ///*public*/ class JMRIClientMenu extends JMenu {
 
-/*public*/ JMRIClientMenu::JMRIClientMenu(QString name, JMRIClientSystemConnectionMemo* memo) {
+/*public*/ JMRIClientMenu::JMRIClientMenu(QString name, JMRIClientSystemConnectionMemo* memo, QWidget *parent) : QMenu(parent){
     common(memo);
     setTitle(name);
 }
 
-/*public*/ JMRIClientMenu::JMRIClientMenu(JMRIClientSystemConnectionMemo* memo, QObject* parent) {
+/*public*/ JMRIClientMenu::JMRIClientMenu(JMRIClientSystemConnectionMemo* memo, QWidget* parent) : QMenu(parent){
     common(memo);
 }
+
 void JMRIClientMenu::common(JMRIClientSystemConnectionMemo *memo)
 {
-
     if (memo != nullptr) {
         setTitle(memo->getUserName());
     } else {

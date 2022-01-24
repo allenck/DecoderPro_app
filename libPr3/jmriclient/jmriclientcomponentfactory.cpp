@@ -21,9 +21,9 @@
  * Provide a menu with all items attached to this system connection
  */
 //@Override
-/*public*/ QMenu* JMRIClientComponentFactory::getMenu(QWidget* frame) {
+/*public*/ QMenu* JMRIClientComponentFactory::getMenu() {
     if (memo->getDisabled()) {
         return nullptr;
     }
-    return new JMRIClientMenu(memo, this);
+    return new JMRIClientMenu(memo);
 }

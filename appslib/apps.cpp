@@ -139,7 +139,7 @@ bool Apps::configDeferredLoadOK = false;
  start = QDateTime::currentMSecsSinceEpoch();
  _buttonSpace = nullptr;
  prefsAction = nullptr;
- cs4 = new QLabel("?", this);
+ cs4 = new JLabel("?", this);
  cs4->setObjectName("cs4");
  cs5 = new QLabel();
  cs6 = new QLabel();
@@ -1119,12 +1119,11 @@ void Apps::On_handleQuit()
  */
 //@Override
 /*public*/ void Apps::windowClosing(QCloseEvent* e)
-{/*
-    if (JOptionPane.showConfirmDialog(NULL,
-            tr("MessageLongCloseWarning"),
-            tr("MessageShortCloseWarning"),
-            JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)*/
- if(QMessageBox::question(NULL, tr("Quit?"), tr("Closing this window will quit the program. Close?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+{
+ if (JOptionPane::showConfirmDialog(NULL,
+        tr("Closing this window will quit the program. Close?"),
+        tr("Quit?"),
+        JOptionPane::YES_NO_OPTION) == JOptionPane::YES_OPTION)
  {
   handleQuit();
  }
@@ -1519,7 +1518,6 @@ static /*protected*/ void loadFile(String name) {
  }
  if (connection[0] != NULL)
  {
-  cs4 = new QLabel();
   updateLine(connection[0], cs4);
  }
 

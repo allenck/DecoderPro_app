@@ -20,8 +20,8 @@ class LIBPR3SHARED_EXPORT LocoNetMenu : public QMenu
  Q_OBJECT
 public:
  //explicit LocoNetMenu(QWidget *parent = 0);
- /*public*/ LocoNetMenu(LocoNetSystemConnectionMemo* memo, QWidget *parent);
- static LocoNetMenu* instance(LocoNetSystemConnectionMemo* memo, QWidget* parent);
+ /*public*/ LocoNetMenu(LocoNetSystemConnectionMemo* memo, QWidget *parent=nullptr);
+ static LocoNetMenu* instance(LocoNetSystemConnectionMemo* memo, QWidget* parent=nullptr);
  static LocoNetMenu* instance();
  QList<LocoNetMenuItem*> getMenuItems();
 signals:

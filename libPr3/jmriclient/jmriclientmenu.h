@@ -6,8 +6,8 @@ class JMRIClientSystemConnectionMemo;
 class JMRIClientMenu : public QMenu
 {
 public:
- /*public*/ JMRIClientMenu(QString name, JMRIClientSystemConnectionMemo* memo);
- /*public*/ JMRIClientMenu(JMRIClientSystemConnectionMemo* memo, QObject *parent);
+ /*public*/ JMRIClientMenu(QString name, JMRIClientSystemConnectionMemo* memo, QWidget *parent = nullptr);
+ /*public*/ JMRIClientMenu(JMRIClientSystemConnectionMemo* memo, QWidget *parent = nullptr);
 
 
 private:

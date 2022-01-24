@@ -141,10 +141,10 @@
      name = override; // after logging difference and creating error message
     }
     QString type = action.attribute("type"); // NOI18N
-    log->debug(tr("Read %1 %2 adapter %3").arg(type).arg(name).arg(adapter));
+    log->debug(tr("Read %1 %2 adapter %3").arg(type, name, adapter));
     try
     {
-     log->debug(tr("Creating %1 %2 adapter %3...").arg(type).arg(name).arg(adapter));
+     log->debug(tr("Creating %1 %2 adapter %3...").arg(type, name, adapter));
      ((XmlAdapter*) Class::forName(adapter/*)newInstance()*/))->load(action, QDomElement()); // no perNode preferences
     }
     catch (ClassNotFoundException* /*| InstantiationException | IllegalAccessException*/ ex)

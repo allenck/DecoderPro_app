@@ -8,7 +8,7 @@ class LnComponentFactory : public ComponentFactory
  Q_OBJECT
 public:
  LnComponentFactory(LocoNetSystemConnectionMemo* memo);
- /*public*/ QMenu* getMenu(QWidget* frame);
+ /*public*/ QMenu* getMenu() override;
 
 private:
  LocoNetSystemConnectionMemo* memo;

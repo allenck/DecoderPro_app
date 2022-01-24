@@ -158,22 +158,23 @@ ConnectionStatus::ConnectionStatus(QObject *parent) :
 
 /*public*/ /*synchronized*/ void ConnectionStatus::addPropertyChangeListener(PropertyChangeListener* l)
 {
- pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
- //connect(pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l->self(), SLOT(propertyChange(PropertyChangeEvent*)));
+ pcs->addPropertyChangeListener(l);
 }
 
 /*protected*/ void ConnectionStatus::firePropertyChange(QString p, QVariant old, QVariant n)
 {
  log->debug ("firePropertyChange \"" + p + "\" old: " +old.toString() + " new: "+ n.toString());
-    pcs->firePropertyChange(p,old,n);
+ pcs->firePropertyChange(p,old,n);
 }
 
 /*public*/ /*synchronized*/ void ConnectionStatus::removePropertyChangeListener(PropertyChangeListener* l)
 {
  pcs->removePropertyChangeListener(l);
- disconnect(pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l->self(), SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
-
+/*public*/ void ConnectionStatus::PropertyChange(PropertyChangeEvent* e)
+{
+  log->debug(tr("property change: %1").arg(e->getPropertyName()));
+}
 
 

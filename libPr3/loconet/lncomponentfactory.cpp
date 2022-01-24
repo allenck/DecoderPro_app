@@ -16,9 +16,9 @@
  * Provide a menu with all items attached to this system connection.
  */
 //@Override
-/*public*/ QMenu* LnComponentFactory::getMenu(QWidget* frame) {
+/*public*/ QMenu* LnComponentFactory::getMenu() {
     if (memo->getDisabled()) {
         return NULL;
     }
-    return new LocoNetMenu(memo,frame);
+    return new LocoNetMenu(memo);
 }
