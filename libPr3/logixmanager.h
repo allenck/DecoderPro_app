@@ -3,12 +3,13 @@
 #include "manager.h"
 #include "abstractmanager.h"
 class Logix;
-class LogixManager : public AbstractManager
+class LogixManager : public Manager
 {
     //Q_OBJECT
+  Q_INTERFACES(Manager)
 public:
-    explicit LogixManager(QObject *parent = 0)
-        : AbstractManager(parent) {}
+//    explicit LogixManager(QObject *parent = 0)
+//        : AbstractManager(parent) {}
     /**
      * Interface for obtaining Logixs
      * <P>
@@ -42,7 +43,7 @@ public:
          *   Returns null if a Logix with the same systemName or userName
          *       already exists, or if there is trouble creating a new Logix.
          */
-        virtual Logix* createNewLogix(QString /*systemName*/, QString /*userName*/) {return NULL;}
+        virtual Logix* createNewLogix(QString /*systemName*/, QString /*userName*/) = 0;
 
         /**
          * For use with User GUI, to allow the auto generation of systemNames,
@@ -50,7 +51,7 @@ public:
          *   Returns null if a Logix with the same userName
          *       already exists, or if there is trouble creating a new Logix.
          */
-         virtual Logix* createNewLogix(QString /*userName*/) {return NULL;}
+         virtual Logix* createNewLogix(QString /*userName*/) = 0;
 
         /**
          * Locate via user name, then system name if needed.
@@ -61,19 +62,15 @@ public:
          */
         virtual Logix* getLogix(QString /*name*/) {return NULL;}
 
-        //virtual Logix* getByUserName(QString /*s*/) {return NULL;}
-         //NamedBean* getBySystemName(QString /*s*/)const {return NULL;}
+        virtual NamedBean* getByUserName(QString /*s*/) const =0;
+        virtual NamedBean* getBySystemName(QString /*s*/)const =0;
 
         /**
          * Activate all Logixs that are not currently active
          * This method is called after a configuration file is loaded.
          */
-        virtual void activateAllLogixs() {}
+        virtual void activateAllLogixs() = 0;
 
-        /**
-         * Get a list of all Logix system names.
-         */
-    //virtual QStringList getSystemNameList() {return QStringList();}
 
         /**
          * Delete Logix by removing it from
@@ -81,18 +78,18 @@ public:
          * The Logix must first be deactivated so it
          *     stops processing.
          */
-        virtual void deleteLogix(Logix* /*x*/) {}
+        virtual void deleteLogix(Logix* /*x*/)  = 0;
 
         /**
          * Support for loading Logixs in a disabled state to debug loops
          */
-        virtual void setLoadDisabled(bool /*s*/) {}
-        virtual bool getLoadDisabled()const  {return false;}
+        virtual void setLoadDisabled(bool /*s*/) = 0;
 
+  virtual QObject* self()=0;
 signals:
     
 public slots:
     
 };
-
+Q_DECLARE_INTERFACE(LogixManager, "LogixManager")
 #endif // LOGIXMANAGER_H

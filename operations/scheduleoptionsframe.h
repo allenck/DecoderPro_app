@@ -27,7 +27,7 @@ namespace Operations
 
   // radio buttons
   // major buttons
-  QPushButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
+  JButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
 
   Track* _track;
  };

@@ -1,6 +1,7 @@
 #include "abstractnamedbeanmanagerconfigxml.h"
 #include "manager.h"
 #include "class.h"
+#include "abstractmanager.h"
 
 AbstractNamedBeanManagerConfigXML::AbstractNamedBeanManagerConfigXML(QObject *parent) :
     AbstractXmlAdapter(parent)
@@ -55,7 +56,7 @@ AbstractNamedBeanManagerConfigXML::~AbstractNamedBeanManagerConfigXML()
  * @param t The NamedBean being loaded
  * @param elem The JDOM element containing the NamedBean
  */
-/*protected*/ void AbstractNamedBeanManagerConfigXML::loadCommon(NamedBean* t, QDomElement elem) {
+/*protected*/ void AbstractNamedBeanManagerConfigXML::loadCommon(NamedBean *t, QDomElement elem) {
     loadComment(t, elem);
     loadProperties(t, elem);
 }
@@ -91,7 +92,7 @@ void AbstractNamedBeanManagerConfigXML::storeUserName(NamedBean* t, QDomElement 
  QString uname = t->getUserName();
  if (uname!=NULL && uname.length() > 0)
  {
-  elem.setAttribute("userName", uname); // doing this for compatibility during 2.9.* series
+  //elem.setAttribute("userName", uname); // doing this for compatibility during 2.9.* series
   QDomElement e1;
   elem.appendChild(e1=doc.createElement("userName"));
   e1.appendChild(doc.createTextNode(uname));
@@ -175,7 +176,7 @@ void AbstractNamedBeanManagerConfigXML::checkNameNormalization(/*@Nonnull*/ QStr
                     rawUserName).arg(rawSystemName).arg(normalizedUserName));
         }
         if (!normalizedUserName.isNull()) {
-            NamedBean* bean = manager->getByUserName(normalizedUserName);
+            NamedBean* bean = ((AbstractManager*)manager)->getBeanByUserName(normalizedUserName);
             if (bean != nullptr && bean->getSystemName() != (rawSystemName)) {
                 log->warn(tr("User name \"%1\" already exists as system name \"%2\"").arg(normalizedUserName).arg(bean->getSystemName()));
             }
@@ -344,7 +345,7 @@ void AbstractNamedBeanManagerConfigXML::loadProperties(NamedBean* t, QDomElement
     // store
    t.setProperty(key, value);
   }
-  catch (Exception ex)
+  catch (Exception* ex)
   {
    log.error("Error loading properties", ex);
   }

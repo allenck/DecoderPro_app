@@ -184,11 +184,11 @@ using namespace Sprog;
     try {
      bool ok;
         int sum = s2.toInt(&ok, 16);
-        if(!ok) throw NumberFormatException();
+        if(!ok) throw new NumberFormatException();
         sum += 16 * s1.toInt(&ok, 16);
-        if(!ok) throw NumberFormatException();
+        if(!ok) throw new NumberFormatException();
         val = sum;  // don't do this assign until now in case the conversion throws
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException* e) {
         log->error(tr("Unable to get number from reply: \"%1%2\" index: %3 message: \"%4\"").arg(s1).arg(s2).arg(index).arg(toString()));
     }
     return val;

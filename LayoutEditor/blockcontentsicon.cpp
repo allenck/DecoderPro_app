@@ -377,7 +377,7 @@ void BlockContentsIcon::on_newTrain_triggered()
     _iconEditor->setSelection(getBlock());
 }
 AddBCIconActionListener::AddBCIconActionListener(BlockContentsIcon *icon) { this->icon = icon;}
-void AddBCIconActionListener::actionPerformed() { icon->editBlock();}
+void AddBCIconActionListener::actionPerformed(JActionEvent *) { icon->editBlock();}
 
 void BlockContentsIcon::editBlock() {
     setBlock(_iconEditor->getTableSelection()->getDisplayName());

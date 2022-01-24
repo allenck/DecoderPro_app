@@ -2,6 +2,8 @@
 #define LOCATIONCOPYACTION_H
 
 #include "abstractaction.h"
+#include "locationcopyframe.h"
+#include <QPointer>
 
 namespace Operations
 {
@@ -12,9 +14,9 @@ namespace Operations
  public:
   LocationCopyAction(QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* /*e*/);
+  /*public*/ void actionPerformed(JActionEvent * /*e*/)override;
  private:
-  LocationCopyFrame* f;// = null;
+  QPointer<LocationCopyFrame> f;// = null;
 
  };
 }

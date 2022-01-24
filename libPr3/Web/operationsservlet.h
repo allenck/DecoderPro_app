@@ -14,12 +14,12 @@ public:
 private:
  /*private*/ ObjectMapper mapper;
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory.getLogger("OperationsServlet");
- /*private*/ void processManifest(QString id, HttpServletRequest* request, HttpServletResponse* response) throw (IOException);
+ /*private*/ void processManifest(QString id, HttpServletRequest* request, HttpServletResponse* response) /*throw (IOException)*/;
 
 protected:
  /*protected*/ void processRequest(HttpServletRequest* request, HttpServletResponse* response) throw (ServletException, IOException );
- /*protected*/ void processTrains(HttpServletRequest* request, HttpServletResponse* response) throw (IOException);
- /*private*/ void processConductor(QString id, HttpServletRequest* request, HttpServletResponse* response) throw (IOException);
+ /*protected*/ void processTrains(HttpServletRequest* request, HttpServletResponse* response) /*throw (IOException)*/;
+ /*private*/ void processConductor(QString id, HttpServletRequest* request, HttpServletResponse* response) /*throw (IOException)*/;
  /*protected*/ void doGet(HttpServletRequest* request, HttpServletResponse* response) throw (ServletException, IOException);
  /*protected*/ void doPost(HttpServletRequest* request, HttpServletResponse* response)
          throw (ServletException, IOException);

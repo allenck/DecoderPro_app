@@ -59,7 +59,7 @@
     setAppearance(off);
 }
 
-
+//@Override
 /*protected*/ void SingleTurnoutSignalHead::updateOutput()
 {
  int oldAppearance = mAppearance;
@@ -158,8 +158,8 @@
     QVector<QString> validStateName;
     if(mOnAppearance == mOffAppearance){
         validStateName = QVector<QString>(2);
-        validStateName.replace(0, getSignalColour(mOnAppearance));
-        validStateName.replace(1, getSignalColour(mOffAppearance));
+        validStateName.replace(0, getSignalColorKey(mOnAppearance));
+        validStateName.replace(1, getSignalColorKey(mOffAppearance));
         return validStateName;
     }
     if (mOnAppearance == SignalHead::DARK || mOffAppearance == SignalHead::DARK){
@@ -169,45 +169,48 @@
         validStateName =QVector<QString>(2);
     }
     int x = 0;
-    validStateName[x] = getSignalColour(mOnAppearance);
+    validStateName[x] = getSignalColorKey(mOnAppearance);
     x++;
     if (mOffAppearance == SignalHead::DARK){
-        validStateName.replace(x, getSignalColour((mOnAppearance * 2)));  // makes flashing
+        validStateName.replace(x, getSignalColorKey((mOnAppearance * 2)));  // makes flashing
         x++;
     }
-    validStateName.replace(x, getSignalColour(mOffAppearance));
+    validStateName.replace(x, getSignalColorKey(mOffAppearance));
     x++;
     if (mOnAppearance == SignalHead::DARK){
-        validStateName.replace(x,getSignalColour((mOffAppearance * 2)));  // makes flashing
+        validStateName.replace(x,getSignalColorKey((mOffAppearance * 2)));  // makes flashing
     }
     return validStateName;
 }
 
 //@SuppressWarnings("fallthrough")
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="SF_SWITCH_FALLTHROUGH")
-/*private*/ QString SingleTurnoutSignalHead::getSignalColour(int mAppearance){
-    //switch(mAppearance){
-        if(mAppearance == SignalHead::RED)
+/*private*/ QString SingleTurnoutSignalHead::getSignalColorKey(int mAppearance){
+    switch(mAppearance){
+    case  SignalHead::RED:
                 return  tr("Red");
-        if(mAppearance ==  SignalHead::FLASHRED)
+    case   SignalHead::FLASHRED:
                 return tr("Flashing Red");
-        if(mAppearance ==  SignalHead::YELLOW)
+    case   SignalHead::YELLOW:
                 return tr("Yellow");
-        if(mAppearance ==  SignalHead::FLASHYELLOW)
+    case   SignalHead::FLASHYELLOW:
                 return tr("Flashing Yellow");
-        if(mAppearance ==  SignalHead::GREEN)
+    case   SignalHead::GREEN:
                 return tr("Green");
-        if(mAppearance ==  SignalHead::FLASHGREEN)
+    case   SignalHead::FLASHGREEN:
                 return tr("Flashing Green");
-        if(mAppearance ==  SignalHead::LUNAR)
+    case   SignalHead::LUNAR:
                 return tr("Lunar");
-        if(mAppearance ==  SignalHead::FLASHLUNAR)
+    case   SignalHead::FLASHLUNAR:
                 return tr("Flashing Lunar");
-        else
-                log->warn("Unexpected appearance: "+QString::number(mAppearance));
-            // go dark by falling through
-        if(mAppearance ==  SignalHead::DARK)
-                return  tr("Dark");
-
+    default:
+           log->warn("Unexpected appearance: "+QString::number(mAppearance));
+           // go dark by falling through
+    case   SignalHead::DARK:
+           return  tr("Dark");
+ }
 }
 
+/*private*/ QString SingleTurnoutSignalHead::getSignalColorName(int mAppearance) {
+        return getSignalColorKey(mAppearance);
+    }

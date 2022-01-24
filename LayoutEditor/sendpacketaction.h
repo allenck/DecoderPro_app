@@ -3,7 +3,7 @@
 #include "abstractaction.h"
 #include "liblayouteditor_global.h"
 
-class ActionEvent;
+class JActionEvent;
 class LIBLAYOUTEDITORSHARED_EXPORT SendPacketAction : public AbstractAction
 {
  Q_OBJECT
@@ -14,7 +14,7 @@ public:
 signals:
 
 public slots:
- /*public*/ void actionPerformed(ActionEvent* /*e*/);
+ /*public*/ void actionPerformed(JActionEvent* /*e*/) override;
 private:
  void common();
 

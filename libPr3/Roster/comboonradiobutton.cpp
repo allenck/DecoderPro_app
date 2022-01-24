@@ -18,13 +18,6 @@ ComboOnRadioButton::ComboOnRadioButton(QComboBox* box, EnumVariableValue* var, Q
         addToPanel(v->at(i), i);
 }
 
-ComboOnRadioButton::ComboOnRadioButton(QComboBox* box, IndexedEnumVariableValue* var, QWidget *parent)  : ComboRadioButtons(box,var, parent)
-{
-    //super(box, var);
-    for(int i =0; i < v->count(); i++)
-        addToPanel(v->at(i), i);
-}
-
 /**
  * Make only the "on" button visible
  */

@@ -1,18 +1,21 @@
 #ifndef PROXYSENSORMANAGER_H
 #define PROXYSENSORMANAGER_H
-#include "abstractproxysensormanager.h"
+#include "sensormanager.h"
 #include <QString>
 #include "exceptions.h"
 //#include "internalsensormanager.h"
 //#include <QDebug>
 #include <QCompleter>
+#include "abstractprovidingproxymanager.h"
 
-class ProxySensorManager : public AbstractProxySensorManager/*, public SensorManager*/
+
+class ProxySensorManager :public AbstractProvidingProxyManager, public SensorManager
 {
  Q_OBJECT
+ Q_INTERFACES(SensorManager)
 public:
  ProxySensorManager(QObject* parent = nullptr);
- /*public*/ Sensor* getSensor(QString name) const override;
+ /*public*/ Sensor* getSensor(QString name)  override;
  /*public*/ Sensor* provideSensor(QString sName) override;
  /**
   * Locate an instance based on a system name.  Returns null if no
@@ -54,12 +57,12 @@ public:
   * be looking them up.
   * @return requested Sensor object (never null)
   */
- /*public*/ Sensor* newSensor(QString systemName, QString userName);
+ /*public*/ Sensor* newSensor(QString systemName, QString userName) override;
  // null implementation to satisfy the SensorManager interface
  /*public*/ void updateAll()const override;
  /*public*/ bool allowMultipleAdditions(QString systemName) override;
- /*public*/ QString createSystemName(QString curAddress, QString prefix)const throw (JmriException) override;
- /*public*/ QString getNextValidAddress(QString curAddress, QString prefix) throw (JmriException) override;
+ ///*public*/ QString createSystemName(QString curAddress, QString prefix)const /*throw (JmriException)*/ override;
+ /*public*/ QString getNextValidAddress(QString curAddress, QString prefix) /*throw (JmriException)*/ override;
  /*public*/ long getDefaultSensorDebounceGoingActive() override;
  /*public*/ long getDefaultSensorDebounceGoingInActive() override;
  /*public*/ void setDefaultSensorDebounceGoingActive(long timer) override;
@@ -71,9 +74,18 @@ public:
  }
  /*public*/ QString getEntryToolTip() override;
  /*public*/ bool isPullResistanceConfigurable() override;
+ /*public*/ QString toString() override{return "ProxySensorManager";}
+ /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) /*throw (JmriException)*/ override;
 
-signals:
- void propertyChange(PropertyChangeEvent *e);
+ QObject* self() override {return (QObject*)this;}
+ /*public*/ SystemConnectionMemo* getMemo() override {return AbstractProxyManager::getMemo();}
+ /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractProxyManager::getNamedBeanSet();}
+ /*public*/ Sensor* getBySystemName(QString name) override {return (Sensor*)AbstractProxyManager::getBySystemName(name);}
+ /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{AbstractProxyManager::addPropertyChangeListener(l);}
+ /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{AbstractProxyManager::removePropertyChangeListener(l);}
+
+ public slots:
+ void propertyChange(PropertyChangeEvent *e) override {AbstractProxyManager::propertyChange(e);}
  //void newSensorCreated(AbstractSensorManager*,Sensor*);
 
 private:
@@ -81,8 +93,8 @@ private:
 
 protected:
  ///*private*/ AbstractManager* getInternal();
- virtual /*protected*/ Manager* makeInternalManager() const;
- virtual /*protected*/ Sensor* makeBean(int i, QString systemName, QString userName);
+ virtual /*protected*/ AbstractManager* makeInternalManager();
+ virtual /*protected*/ Sensor* makeBean(AbstractManager *, QString systemName, QString userName);
  // /*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
  // /*protected*/ NamedBean* provideNamedBean(QString name);
 

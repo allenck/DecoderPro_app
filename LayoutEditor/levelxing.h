@@ -15,11 +15,12 @@
 #include <QWidget>
 #include "liblayouteditor_global.h"
 #include <cmath>
+#include "levelxingview.h"
 
 class LevelXingEditor;
 class QMenuItem;
-class LayoutBlock;
-class LayoutEditor;
+//class LayoutBlock;
+//class LayoutEditor;
 class SignalMast;
 class LIBLAYOUTEDITORSHARED_EXPORT LevelXing : public LayoutTrack
 {
@@ -29,12 +30,12 @@ public:
     /**
      * constructor method
      */
-    /*public*/ LevelXing(QString id, QPointF c, LayoutEditor* myPanel);
-    /*public*/ enum GEOMETRY
+    /*public*/ LevelXing(QString id, LayoutEditor* myPanel);
+    /*public*/ enum Geometry
     {
         POINTA, POINTB, POINTC, POINTD
     };
-    Q_ENUM(GEOMETRY)
+    Q_ENUM(Geometry)
     /**
      * Accessor methods
     */
@@ -56,21 +57,21 @@ public:
     /*public*/ void setSensorCName(QString sensorName);
     /*public*/ QString getSensorDName();
     /*public*/ void setSensorDName(QString sensorName);
-    /*public*/ QObject* getConnectA() {return connectA;}
-    /*public*/ QObject* getConnectB() {return connectB;}
-    /*public*/ QObject* getConnectC() {return connectC;}
-    /*public*/ QObject* getConnectD() {return connectD;}
+    /*public*/ LayoutTrack* getConnectA() {return connectA;}
+    /*public*/ LayoutTrack* getConnectB() {return connectB;}
+    /*public*/ LayoutTrack* getConnectC() {return connectC;}
+    /*public*/ LayoutTrack* getConnectD() {return connectD;}
     /*public*/ void setConnectA(LayoutTrack* o,int type);
     /*public*/ void setConnectB(LayoutTrack *o, int type);
     /*public*/ void setConnectC(LayoutTrack* o,int type);
     /*public*/ void setConnectD(LayoutTrack *o, int type);
     /*public*/ LayoutBlock* getLayoutBlockAC();
     /*public*/ LayoutBlock* getLayoutBlockBD();
-    /*public*/ QPointF getCoordsCenter();
-    /*public*/ QPointF getCoordsA();
-    /*public*/ QPointF getCoordsB();
-    /*public*/ QPointF getCoordsC();
-    /*public*/ QPointF getCoordsD();
+//    /*public*/ QPointF getCoordsCenter();
+//    /*public*/ QPointF getCoordsA();
+//    /*public*/ QPointF getCoordsB();
+//    /*public*/ QPointF getCoordsC();
+//    /*public*/ QPointF getCoordsD();
     /**
      * Add Layout Blocks
      */
@@ -88,12 +89,12 @@ public:
     /**
      * Modify coordinates methods
      */
-    /*public*/ void setCoordsCenter(QPointF p)override;
-    /*public*/ void setCoordsA(QPointF p);
-    /*public*/ void setCoordsB(QPointF p);
-    /*public*/ void setCoordsC(QPointF p);
-    /*public*/ void setCoordsD(QPointF p);
-    /*public*/ void scaleCoords(double xFactor, double yFactor)override;
+//    /*public*/ void setCoordsCenter(QPointF p)override;
+//    /*public*/ void setCoordsA(QPointF p);
+//    /*public*/ void setCoordsB(QPointF p);
+//    /*public*/ void setCoordsC(QPointF p);
+//    /*public*/ void setCoordsD(QPointF p);
+//    /*public*/ void scaleCoords(double xFactor, double yFactor)override;
     double round (double x);
 
     /**
@@ -111,17 +112,19 @@ public:
     /*public*/ QString tLayoutBlockNameAC = "";
     /*public*/ QString tLayoutBlockNameBD = "";
     QMenu* popup = nullptr;
+    /*public*/ bool canRemove() override;
+    /*public*/ QList<QString> getBeanReferences(QString pointName);
     /*public*/ QVector<QString>* getBlockBoundaries();
 //    /*public*/ void removeSignalMastLogic(SignalMast* sm);
     void invalidate(QGraphicsScene* g2);
 //    void drawXings(LayoutEditor* editor, QGraphicsScene* g2);
-    void drawXingRects(LayoutEditor* editor, QGraphicsScene* g2);
+//    void drawXingRects(LayoutEditor* editor, QGraphicsScene* g2);
     /*public*/ void addSignalMastLogic(SignalMast* sm);
     /*public*/ void removeSignalMastLogic(SignalMast* sm);
     /*public*/ void addEditPopUpMenu(QMenu* menu);
     /*public*/ void addViewPopUpMenu(QMenu* menu);
     /*public*/ SignalMast* getSignalAMast();
-    /*public*/ SignalHead* getSignalHead(int loc);
+    ///*public*/ SignalHead* getSignalHead(int loc);
     /*public*/ void setSignalAMast(QString signalMast) ;
     /*public*/ SignalMast* getSignalBMast();
     /*public*/ void setSignalBMast(QString signalMast) ;
@@ -129,10 +132,10 @@ public:
     /*public*/ void setSignalCMast(QString signalMast);
     /*public*/ SignalMast* getSignalDMast();
     /*public*/ void setSignalDMast(QString signalMast);
-    /*public*/ LayoutTrack* getConnection(int location) throw (JmriException)override;
-    /*public*/ void setConnection(int location, LayoutTrack *o, int type) throw (JmriException);
-    /*public*/ QPointF getCoordsForConnectionType(int connectionType)override;
-    /*public*/ QRectF getBounds()override;
+    /*public*/ LayoutTrack* getConnection(HitPointType::TYPES location) /*throw (JmriException)*/override;
+    /*public*/ void setConnection(HitPointType::TYPES location, LayoutTrack *o, HitPointType::TYPES type) /*throw (JmriException)*/override;
+    // /*public*/ QPointF getCoordsForConnectionType(int connectionType)override;
+    ///*public*/ QRectF getBounds()override;
     /*public*/ Sensor* getSensorA();
     /*public*/ Sensor* getSensorB();
     /*public*/ Sensor* getSensorC();
@@ -140,19 +143,19 @@ public:
     /*public*/ void addViewPopUpMenu(QMenuItem menu);
     /*public*/ void setAdditionalEditPopUpMenu(QMenu* popup);
     /*public*/ void setAdditionalViewPopUpMenu(QMenu* popup);
-    /*public*/ void translateCoords(double xFactor, double yFactor)override;
-    /*public*/ QList<int> checkForFreeConnections() override;
+    // /*public*/ void translateCoords(double xFactor, double yFactor)override;
+    /*public*/ QList<HitPointType::TYPES> checkForFreeConnections() override;
     /*public*/ bool checkForUnAssignedBlocks() override;
-    /*public*/ void checkForNonContiguousBlocks(/*@Nonnull*/ QMap<QString, QList<QSet<QString> *> *> *blockNamesToTrackNameSetsMap) override;
+    /*public*/ void checkForNonContiguousBlocks(/*@Nonnull*/ QMap<QString, QList<QSet<QString> *> *> blockNamesToTrackNameSetsMap) override;
     /*public*/ void collectContiguousTracksNamesInBlockNamed(/*@Nonnull*/ QString blockName,
-            /*@Nonnull*/ QSet<QString>* TrackNameSet);
-    /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock);
+            /*@Nonnull*/ QSet<QString>* trackNameSet) override;
+    /*public*/ void setAllLayoutBlocks(LayoutBlock* layoutBlock)override;
     /*public*/ QString toString() override;
     /*public*/ QString getBlockNameAC();
     /*public*/ QString getBlockNameBD();
-    /*public*/ SignalHead* getSignalHead(GEOMETRY loc);
-    /*public*/ SignalMast* getSignalMast(GEOMETRY loc);
-    /*public*/ Sensor* getSensor(GEOMETRY loc);
+    /*public*/ SignalHead* getSignalHead(/*LevelXing::Geometry*/int loc);
+    /*public*/ SignalMast* getSignalMast(/*LevelXing::Geometry */ int loc);
+    /*public*/ Sensor* getSensor(Geometry loc);
     /*public*/ QString getSignalAName();
     /*public*/ void setSignalAName(QString signalHead);
     /*public*/ QString getSignalBName();
@@ -202,9 +205,9 @@ private:
     /*private*/ LayoutTrack* connectB; //NULL;
     /*private*/ LayoutTrack* connectC; //NULL;
     /*private*/ LayoutTrack* connectD; //NULL;
-    /*private*/ QPointF center; //new QPointF(50.0,50.0);
-    /*private*/ QPointF dispA; //new QPointF(-20.0,0.0);
-    /*private*/ QPointF dispB; //new QPointF(-14.0,14.0);
+//    /*private*/ QPointF center; //new QPointF(50.0,50.0);
+//    /*private*/ QPointF dispA; //new QPointF(-20.0,0.0);
+//    /*private*/ QPointF dispB; //new QPointF(-14.0,14.0);
     // variables for Edit Level Crossing pane
     QWidget* editLevelXingFrame;// = NULL;
     QLineEdit* block1Name;// = new QTextEdit(16);
@@ -251,7 +254,7 @@ protected:
     /**
      * Display popup menu for information and editing
      */
-     /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e)override;
+//     /*protected*/ QMenu* showPopup(QGraphicsSceneMouseEvent* e)override;
 
      /*private*/ NamedBeanHandle<LayoutBlock*>* namedLayoutBlockAC = nullptr;
      /*private*/ NamedBeanHandle<LayoutBlock*>* namedLayoutBlockBD = nullptr;
@@ -265,13 +268,13 @@ protected:
      /*protected*/ NamedBeanHandle<SignalMast*>* signalBMastNamed;// = NULL; // signal at B track junction
      /*protected*/ NamedBeanHandle<SignalMast*>* signalCMastNamed;// = NULL; // signal at C track junction
      /*protected*/ NamedBeanHandle<SignalMast*>* signalDMastNamed;// = NULL; // signal at D track junction
-     /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock)override;
-     /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement)override;
-     /*protected*/ void highlightUnconnected(EditScene* g2, int specificType)override;
-     /*protected*/ void drawEditControls(EditScene* g2)override;
-     /*protected*/ void drawTurnoutControls(EditScene* g2)override;
-     /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected)override;
-     /*protected*/ QList<LayoutConnectivity*>* getLayoutConnectivity() override;
+//     /*protected*/ void draw1(EditScene* g2, bool isMain, bool isBlock)override;
+//     /*protected*/ void draw2(EditScene* g2, bool isMain, float railDisplacement)override;
+//     /*protected*/ void highlightUnconnected(EditScene* g2, int specificType)override;
+//     /*protected*/ void drawEditControls(EditScene* g2)override;
+//     /*protected*/ void drawTurnoutControls(EditScene* g2)override;
+//     /*protected*/ int findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected)override;
+     /*protected*/ QList<LayoutConnectivity*> getLayoutConnectivity() override;
 
      friend class LayoutEditor;
      friend class LoadXml;

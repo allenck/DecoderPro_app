@@ -2,6 +2,7 @@
 #include "control.h"
 #include "xml.h"
 #include "carmanagerxml.h"
+#include "instancemanager.h"
 
 //CarRoads::CarRoads(QObject *parent) :
 //  RollingStockAttribute(parent)
@@ -27,27 +28,6 @@ namespace Operations {
   maxNameLengthSubType = 0;
   setProperty("InstanceManagerAutoDefault", "yes");
 
- }
-
- /**
-  * record the single instance *
-  */
- /*private*/ /*static*/ CarRoads* CarRoads::_instance = NULL;
-
- /*public*/ /*static*/ /*synchronized*/ CarRoads* CarRoads::instance() {
-Logger*  log = new Logger("CarRoads");
-
-     if (_instance == NULL) {
-         if (log->isDebugEnabled()) {
-             log->debug("CarRoads creating instance");
-         }
-         // create and load
-         _instance = new CarRoads();
-     }
-     if (Control::showInstance) {
-         log->debug(tr("CarRoads returns instance %1").arg(_instance->metaObject()->className()));
-     }
-     return _instance;
  }
 
     /*protected*/ QString CarRoads::getDefaultNames() {
@@ -111,7 +91,7 @@ Logger*  log = new Logger("CarRoads");
 
     /*protected*/ void CarRoads::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
         // Set dirty
-        CarManagerXml::instance()->setDirty(true);
+        ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml"))->setDirty(true);
         RollingStockAttribute::firePropertyChange(p, old, n);
     }
 }

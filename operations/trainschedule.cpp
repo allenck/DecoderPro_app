@@ -1,11 +1,12 @@
 #include "trainschedule.h"
 #include "logger.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "trainmanagerxml.h"
 #include <QtXml>
 #include "control.h"
 #include "xml.h"
 #include <QStringList>
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -32,7 +33,7 @@ namespace Operations
 //      _name = NONE;
       _comment = NONE;
      _trainIds = QStringList();
-     pcs = new PropertyChangeSupport(this);
+     pcs = new SwingPropertyChangeSupport(this, nullptr);
 
      _name = name;
      _id = id;
@@ -156,7 +157,7 @@ namespace Operations
  }
 #endif
  /*protected*/ void TrainSchedule::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
-     TrainManagerXml::instance()->setDirty(true);
+     ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->setDirty(true);
      pcs->firePropertyChange(p, old, n);
  }
 

@@ -17,8 +17,8 @@ void JmriUserPreferencesManagerTestAction::actionPerformed()
     try
     {
      QStringList testList = QStringList()
-       << "testGetInstance"
-       << "testGetDefault"
+//       << "testGetInstance"
+//       << "testGetDefault"
        << "testAllowSave"
        << "testDisallowSave"
        << "testSetSaveAllowed"
@@ -89,9 +89,9 @@ void JmriUserPreferencesManagerTestAction::actionPerformed()
      JUnitUtil::runTests(test, testList);
 
     }
-    catch (AssertionError er)
+    catch (AssertionError* er)
     {
-        JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
+        JOptionPane::showMessageDialog(nullptr, er->getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
     }
 }
 Logger* JmriUserPreferencesManagerTestAction::log = LoggerFactory::getLogger("JmriUserPreferencesManagerTestAction");

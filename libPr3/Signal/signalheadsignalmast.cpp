@@ -105,7 +105,7 @@ void SignalHeadSignalMast::configureHeads(QStringList parts, int start)
   QString name = parts.at(i);
   NamedBeanHandle<SignalHead*>* s
           = new NamedBeanHandle<SignalHead*>(parts.at(i),
-              static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
+              qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
   heads->append(s);
  }
 }
@@ -135,7 +135,7 @@ void SignalHeadSignalMast::configureHeads(QStringList parts, int start)
     foreach (NamedBeanHandle<SignalHead*>* h , *heads) {
         try {
             ((DefaultSignalHead*)h->getBean())->setHeld(state);
-        } catch (NullPointerException ex){
+        } catch (NullPointerException* ex){
             log->error("NPE caused when trying to set Held due to missing signal head in mast " + getDisplayName());
         }
     }
@@ -148,7 +148,7 @@ void SignalHeadSignalMast::configureHeads(QStringList parts, int start)
     foreach (NamedBeanHandle<SignalHead*>* h , *heads) {
         try {
             ((DefaultSignalHead*)h->getBean())->setLit(state);
-        }  catch (NullPointerException ex){
+        }  catch (NullPointerException* ex){
             log->error("NPE caused when trying to set Dark due to missing signal head in mast " + getDisplayName());
         }
     }
@@ -165,7 +165,7 @@ void SignalHeadSignalMast::configureHeads(QStringList parts, int start)
         log->error("No appearance map defined, unable to set appearance " + getDisplayName());
         return;
     }
-#if 0 // TODO: SignalSystem not defined, causes crash.
+#if 1 // TODO: SignalSystem not defined, causes crash.
     if (map->getSignalSystem() !=NULL && ((DefaultSignalSystem*)map->getSignalSystem())->checkAspect(aspect) && map->getAspectSettings(aspect)!=NULL)
         log->warn("Attempt to set "+getSystemName()+" to undefined aspect: "+aspect);
     else if ((map->getAspectSettings(aspect)!=NULL) && (heads->size() > map->getAspectSettings(aspect)->count()))
@@ -176,7 +176,7 @@ void SignalHeadSignalMast::configureHeads(QStringList parts, int start)
         if(map->getProperty(aspect, "delay")!=NULL){
             delay = map->getProperty(aspect, "delay").toInt();
         }
-    } catch (Exception e){
+    } catch (Exception* e){
         log->debug("No delay set");
         //can be considered normal if does not exists or is invalid
     }
@@ -224,10 +224,10 @@ void SignalHeadSignalMast::configureHeads(QStringList parts, int start)
         Runnable1* r = new Runnable1(thrDelayedSet, thrDelay, this);
         QThread* thr = new QThread(r);
         thr->setObjectName(getDisplayName() + " delayed set appearance");
-        //try{
+//        try{
             thr->start();
-//        } catch (IllegalThreadStateException ex){
-//            log->error(ex.toQString());
+//        } catch (IllegalThreadStateException* ex){
+//            log->error(ex.toString());
 //        }
     }
     return;

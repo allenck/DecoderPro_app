@@ -25,6 +25,8 @@ public:
     /*public*/ QString getVersionsAsString();
     /*public*/ QString getMfg();
     /*public*/ QString getMfgID();
+    /*public*/ QString getDeveloperID();
+    /*public*/ QString getManufacturerID();
     /*public*/ QString getModel();
     /*public*/ QString getFamily();
     /*public*/ QString getReplacementModel() ;
@@ -59,24 +61,26 @@ public slots:
     // store acceptable version numbers
     QVector<bool>* versions;// = new boolean[256];
     // store indexing information
-    QString _mfg;//       = null;
-    QString _mfgID;//     = null;
-    QString _model;//     = null;
-    QString _family;//    = null;
-    QString _replacementFamily;
-    QString _replacementModel;
-    QString _filename;//  = null;
-    QString _productID;// = null;
-    int _numFns;//  = -1;
-    int _numOuts;//  = -1;
-    QDomElement _element;// = null;
-    QList<LocoAddress::Protocol>* protocols;// = null;
+    QString _mfg = "";
+    QString _mfgID = "";
+    QString _model = "";
+    QString _family = "";
+    QString _replacementFamily = "";
+    QString _developerID = "";
+    QString _manufacturerID = "";
+    QString _replacementModel = "";
+    QString _filename = "";
+    QString _productID = "";
+    int _numFns  = -1;
+    int _numOuts = -1;
+    QDomElement _element = QDomElement();
+    QList<LocoAddress::Protocol>* protocols = nullptr;
     /*private*/ void setSupportedProtocols();
     /*private*/ static bool isInList(QString include, QString productID);
     static Logger* log;
-    int nextCvStoreIndex;// = 0;
-    int nextICvStoreIndex;// = 0;
+    int nextCvStoreIndex = 0;
 
+ friend class DecoderIndexFile;
 };
 
 #endif // DECODERFILE_H

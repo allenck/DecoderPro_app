@@ -8,17 +8,20 @@
 #include "jlist.h"
 #include <QMenu>
 
+class AbstractPreferencesManager;
+class JOptionPane;
 class Profile;
 class InitializationException;
 //class ConfigXmlManager;
 class PreferencesManager;
-class JmriConfigurationManager : public ConfigXmlManager
+class JmriConfigurationManager : public QObject, public ConfigureManager
 {
  Q_OBJECT
+ Q_INTERFACES(ConfigureManager)
 public:
  QT_DEPRECATED JmriConfigurationManager(QObject* parent = 0);
  ~JmriConfigurationManager() {}
- JmriConfigurationManager(const JmriConfigurationManager&) : ConfigXmlManager(){}
+ JmriConfigurationManager(const JmriConfigurationManager&) : QObject(){}
  /*public*/ void registerPref(QObject* o) override;
  /*public*/ void removePrefItems()  override;
  /*public*/ void registerConfig(QObject* o) override;
@@ -35,28 +38,44 @@ public:
  /*public*/ void storeUserPrefs(File* file) override;
  /*public*/ bool storeConfig(File* file) override;
  /*public*/ bool storeUser(File* file) override;
- /*public*/ bool load(File* file)  throw (JmriException) override;
- /*public*/ bool load( QUrl file)  throw (JmriConfigureXmlException);
- /*public*/ bool load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException) override;
- /*public*/ bool load( QUrl file, bool registerDeferred)  throw (JmriConfigureXmlException) override;
- /*public*/ bool loadDeferred(File* file)  throw (JmriException) override;
- /*public*/ bool loadDeferred( QUrl file)  throw (JmriConfigureXmlException) override;
+ /*public*/ bool load(File* file)  /*throw (JmriException)*/ override;
+ /*public*/ bool load( QUrl file)  throw (JmriConfigureXmlException) override;
+ /*public*/ bool load(File* file, bool registerDeferred)  /*throw (JmriConfigureXmlException)*/ override;
+ /*public*/ bool load( QUrl file, bool registerDeferred)  /*throw (JmriConfigureXmlException)*/ override;
+ /*public*/ bool loadDeferred(File* file)  /*throw (JmriException)*/ override;
+ /*public*/ bool loadDeferred( QUrl file)  /*throw (JmriConfigureXmlException)*/ override;
  /*public*/ QUrl find(QString filename) override;
  /*public*/ bool makeBackup(File* file)const override;
  /*public*/ QHash<PreferencesManager*, InitializationException*> getInitializationExceptions();
- /*public*/ void setValidate(Validate v) override;
+ /*public*/ void setValidate(XmlFile::Validate v) override;
  /*public*/ XmlFile::Validate getValidate() override;
 
+ QObject* self() override {return (QObject*)this;}
 private:
- /*private*/ void initializeProvider( PreferencesManager* provider, Profile* profile);
+ /*private*/ void initializeProvider(PreferencesManager *provider, Profile* profile);
  static /*private*/ Logger* log;// = LoggerFactory.getLogger(JmriConfigurationManager.class);
  /*private*/ /*final*/ ConfigXmlManager* legacy;// = new ConfigXmlManager();
- /*private*/ /*final*/ QHash<PreferencesManager*, InitializationException*>* initializationExceptions;// = new HashMap<>();
- /*private*/ /*final*/ QList<PreferencesManager*>* initialized;// = new ArrayList<>();
- /*private*/ void handleConnectionError(QList<QString> *errors, QVariant list);
+ /*private*/ /*final*/ QHash<PreferencesManager*, InitializationException*> initializationExceptions = QHash<PreferencesManager*, InitializationException*>();
+ /*private*/ /*final*/ QList<PreferencesManager*> initialized = QList<PreferencesManager*>();
+ /*
+  * This set is used to prevent a stack overflow by preventing
+  * initializeProvider from recursively being called with the same provider.
+  */
+ /*private*/ /*final*/ QSet<PreferencesManager*> initializing = QSet<PreferencesManager*>();
+ /*private*/ void handleConnectionError(QList<QString> errors, QVariant list);
+ /*private*/ void handleRestartSelection(QVariant selectedValue);
+ /*private*/ JOptionPane* getJOptionPane(QVariant list, QVariantList options);
+ /*private*/ void handleInitializationExceptions(Profile* profile);
+ /*private*/ QVariant getErrorListObject(QList<QString> errors);
+
+ protected:
+ /*protected*/ bool isEditDialogRestart();
+ /*protected*/ void handleRestart();
+ /*protected*/ void handleQuit();
+ /*protected*/ void displayErrorListDialog(QVariant list);
 
 };
-
+#if 0
 /*private*/ /*static*/ /*final*/ class ErrorDialog : public JDialog {
  Q_OBJECT
 
@@ -77,10 +96,11 @@ public slots:
     void onEditConnections();
 
 };
-
-class ListSelectionListener1 : public ListSelectionListener
+#endif
+class ListSelectionListener1 : public QObject, public ListSelectionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ListSelectionListener)
  JmriConfigurationManager* mgr;
  QAction * copyMenuItem;
 public:

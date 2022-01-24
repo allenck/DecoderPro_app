@@ -90,7 +90,7 @@ SourceTest::SourceTest(QObject *parent) : QObject(parent)
     Assert::assertEquals("getSourceProtecting", 1, lbprot.size(), __FILE__, __LINE__);  // NOI18N
     NamedBean* srcsig = src->getSourceSignal();
     Assert::assertNull("getSourceSignal", srcsig, __FILE__, __LINE__);  // NOI18N
-    QObject* srcobj = src->getSourceObject();
+    NamedBean* srcobj = src->getSourceObject();
     Assert::assertNotNull("getSourceObject", srcobj, __FILE__, __LINE__);  // NOI18N
 }
 

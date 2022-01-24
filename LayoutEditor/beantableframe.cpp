@@ -3,11 +3,12 @@
 #include <QVBoxLayout>
 #include <QMenuBar>
 #include <QMenu>
-#include "savemenu.h"
 #include "jtable.h"
 #include "box.h"
 #include "mysortfilterproxymodel.h"
 #include <QPushButton>
+#include "storemenu.h"
+#include "loggerfactory.h"
 
 BeanTableFrame::BeanTableFrame(QWidget *parent) :
     JmriJFrame(parent)
@@ -19,7 +20,14 @@ BeanTableFrame::BeanTableFrame(QWidget *parent) :
  bottomBox =  Box::createHorizontalBox();
  //bottomBox->setLayout(new QHBoxLayout);
  //bottomBox.add(Box.createHorizontalGlue());	// stays at end of box
- bottomBoxIndex = 0;}
+ bottomBoxIndex = 0;
+ //if(windowFrameRef.isEmpty())
+ {
+     generateWindowRef();
+     setFrameLocation();
+ }
+}
+
 /**
  * Provide a JFrame to display a table of NamedBeans.
  * <P>
@@ -58,7 +66,13 @@ BeanTableFrame::BeanTableFrame(QWidget *parent) :
  bottomBox = Box::createHorizontalBox();
  //bottomBox->setLayout(new QHBoxLayout);
  //bottomBox.add(Box.createHorizontalGlue());	// stays at end of box
- bottomBoxIndex = 0;}
+ bottomBoxIndex = 0;
+ //if(windowFrameRef.isEmpty())
+ {
+     generateWindowRef();
+     setFrameLocation();
+ }
+}
 
 /*public*/ BeanTableFrame::BeanTableFrame(BeanTableDataModel* model, QString helpTarget, JTable* dataTab, QWidget *parent) : JmriJFrame(parent)
 {
@@ -94,21 +108,25 @@ BeanTableFrame::BeanTableFrame(QWidget *parent) :
  QMenuBar* menuBar = new QMenuBar();
  QMenu* fileMenu = new QMenu(tr("File"));
  menuBar->addMenu(fileMenu);
- fileMenu->addMenu(new SaveMenu());
+ fileMenu->addMenu(new StoreMenu());
 
  QAction* printItem = new QAction(tr("Print Table"),this);
  fileMenu->addAction(printItem);
 //    printItem.addActionListener(new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent e) {
-//                try {
+ connect(printItem, &QAction::triggered, [=]{
+
+  try
+  {
 //                    // MessageFormat headerFormat = new MessageFormat(getTitle());  // not used below
 //                    MessageFormat footerFormat = new MessageFormat(getTitle()+" page {0,number}");
-//                    dataTable.print(JTable.PrintMode.FIT_WIDTH , null, footerFormat);
-//                } catch (java.awt.print.PrinterException e1) {
-//                    log.warn("error printing: "+e1,e1);
-//                }
+   QString footerFormat = getTitle() + " page {0,number}";
+   dataTable->print(JTable::PrintMode::FIT_WIDTH , QString(), footerFormat);
+  } catch (PrinterException* e1) {
+      log->warn("error printing: ",e1);
+  }
 //            }
-//    });
+ });
 
  setMenuBar(menuBar);
 
@@ -141,6 +159,12 @@ BeanTableFrame::BeanTableFrame(QWidget *parent) :
 //    dataScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 // dataModel->loadTableColumnDetails(dataTable);
  dataModel->persistTable(dataTable);
+
+ //if(windowFrameRef.isEmpty())
+ {
+     generateWindowRef();
+     setFrameLocation();
+ }
 }
 
 /**
@@ -183,7 +207,9 @@ void BeanTableFrame::extras() {}
     JmriJFrame::dispose();
     //close();
 }
+
 /*public*/ QString BeanTableFrame::getClassName()
 {
  return "jmri.jmrit.beantable.BeanTableFrame";
 }
+/*private*/ /*final*/ /*static*/ Logger* BeanTableFrame::log = LoggerFactory::getLogger("BeanTableFrame");

@@ -89,7 +89,7 @@
 //        }
 //    } catch (URISyntaxException ex) {
 //        streaming = false;
-//    } catch (IOException ex) {
+//    } catch (IOException* ex) {
 //        log->error(tr("Unable to open %1").arg(url->toDisplayString()));
 //    } catch (LineUnavailableException ex) {
 //        log->error("Unable to provide audio playback", ex);
@@ -306,10 +306,10 @@
                 log->debug("new converted Audio format: " + format);
             }
         } catch (UnsupportedAudioFileException e) {
-            log->error("AudioFileException " + e.getMessage());
+            log->error("AudioFileException " + e->getMessage());
             return;
-        } catch (IOException e) {
-            log->error("IOException " + e.getMessage());
+        } catch (IOException* e) {
+            log->error("IOException " + e->getMessage());
             return;
         }
         streamingStop = false;
@@ -332,8 +332,8 @@
                 // get a line of the required format
                 line = (SourceDataLine) AudioSystem.getLine(info);
                 line->open(format);
-            } catch (Exception e) {
-                log->error("Exception while creating Audio out " + e.getMessage());
+            } catch (Exception* e) {
+                log->error("Exception while creating Audio out " + e->getMessage());
                 return;
             }
         }
@@ -357,8 +357,8 @@
                     offset += line->write(buffer, offset, numRead - offset);
                 }
             }
-        } catch (IOException e) {
-            log->error("IOException while reading sound file " + e.getMessage());
+        } catch (IOException* e) {
+            log->error("IOException while reading sound file " + e->getMessage());
         }
         // wait until all data is played, then close the line
         line->drain();
@@ -371,7 +371,7 @@
         if (streamingSensor != nullptr) {
             try {
                 streamingSensor->setState(mode);
-            } catch (JmriException ex) {
+            } catch (JmriException* ex) {
                 log->error(tr("Exception while setting ISSOUNDSTREAMING sensor %1 to %2").arg(streamingSensor->getDisplayName()).arg(mode));
             }
         }

@@ -71,6 +71,7 @@ public:
      return str;
     }
     Throwable* cause;
+    Throwable* getCause() {return cause;}
 };
 
 class Exception : public Throwable
@@ -158,6 +159,7 @@ class JAVAQTSHARED_EXPORT InterruptedException : public Exception
 class JAVAQTSHARED_EXPORT JmriException : public Exception
 {
 public:
+    JmriException();
     ~JmriException() throw() {}
     JmriException(QString s);
     JmriException(Exception ex) : Exception(ex) {}
@@ -226,8 +228,10 @@ class JAVAQTSHARED_EXPORT TurnoutOperatorException : public Exception
 };
 class JAVAQTSHARED_EXPORT JmriConfigureXmlException : public JmriException
 {
+  Throwable e;
  public:
     JmriConfigureXmlException(QString s ="");
+    JmriConfigureXmlException(QString s, Throwable e);
     ~JmriConfigureXmlException() throw() {}
 };
 class JAVAQTSHARED_EXPORT DataConversionException : public Exception
@@ -393,7 +397,7 @@ public:
  void raise() const { throw *this; }
  InitializationException *clone() const { return new InitializationException(*this); }
 
- InitializationException(QString msg, QString localMsg) : Exception(msg, localMsg) {}
+ //InitializationException(QString msg, QString localMsg) : Exception(msg, localMsg) {}
  InitializationException(QString msg, QString localMsg, Exception* ex =0) : Exception(msg, localMsg, ex) {}
  InitializationException(Exception* cause) : Exception(cause)
  {

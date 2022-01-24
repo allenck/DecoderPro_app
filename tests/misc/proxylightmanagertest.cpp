@@ -44,8 +44,8 @@ ProxyLightManagerTest::ProxyLightManagerTest(QObject *parent) : QObject(parent)
         Light* t = l->newLight(getSystemName(getNumToTest1()), "mine");
         // check
         Assert::assertTrue("real object returned ", t != nullptr, __FILE__, __LINE__);
-        Assert::assertTrue("user name correct ", t == l->getByUserName("mine"), __FILE__, __LINE__);
-        Assert::assertTrue("system name correct ", t == l->getBySystemName(getSystemName(getNumToTest1())), __FILE__, __LINE__);
+        Assert::assertTrue("user name correct ", t->self() == l->getByUserName("mine"), __FILE__, __LINE__);
+        Assert::assertTrue("system name correct ", ((AbstractNamedBean*)t->self()) == l->getBySystemName(getSystemName(getNumToTest1())), __FILE__, __LINE__);
     }
 
     //@Test
@@ -54,7 +54,7 @@ ProxyLightManagerTest::ProxyLightManagerTest(QObject *parent) : QObject(parent)
         Light* t = l->provideLight("" + QString::number(getNumToTest1()));
         // check
         Assert::assertTrue("real object returned ", t != nullptr, __FILE__, __LINE__);
-        Assert::assertTrue("system name correct ", t == l->getBySystemName(getSystemName(getNumToTest1())), __FILE__, __LINE__);
+        Assert::assertTrue("system name correct ", t->self() == l->getBySystemName(getSystemName(getNumToTest1())), __FILE__, __LINE__);
     }
 
     //@Test(expected=IllegalArgumentException.class)
@@ -62,7 +62,7 @@ ProxyLightManagerTest::ProxyLightManagerTest(QObject *parent) : QObject(parent)
         try {
             l->provideLight("");
             Assert::fail("didn't throw", __FILE__, __LINE__);
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             JUnitAppender::assertErrorMessage("Invalid system name for Light: System name must start with \"" + l->getSystemNamePrefix() + "\".", __FILE__, __LINE__);
             throw ;
         }
@@ -73,8 +73,8 @@ ProxyLightManagerTest::ProxyLightManagerTest(QObject *parent) : QObject(parent)
         // test that you always get the same representation
         Light* t1 = l->newLight(getSystemName(getNumToTest1()), "mine");
         Assert::assertTrue("t1 real object returned ", t1 != nullptr, __FILE__, __LINE__);
-        Assert::assertTrue("same by user ", t1 == l->getByUserName("mine"), __FILE__, __LINE__);
-        Assert::assertTrue("same by system ", t1 == l->getBySystemName(getSystemName(getNumToTest1())), __FILE__, __LINE__);
+        Assert::assertTrue("same by user ", t1 == (Light*)l->getByUserName("mine"), __FILE__, __LINE__);
+        Assert::assertTrue("same by system ", t1 ==(Light*) l->getBySystemName(getSystemName(getNumToTest1())), __FILE__, __LINE__);
 
         Light* t2 = l->newLight(getSystemName(getNumToTest1()), "mine");
         Assert::assertTrue("t2 real object returned ", t2 != nullptr, __FILE__, __LINE__);
@@ -91,17 +91,17 @@ ProxyLightManagerTest::ProxyLightManagerTest(QObject *parent) : QObject(parent)
 
     //@Test
     /*public*/ void ProxyLightManagerTest::testUpperLower() {
-        Light* t = l->provideLight("" + getNumToTest2());
-        QString name = t->getSystemName();
-        Assert::assertNull(l->getLight(name.toLower()), __FILE__, __LINE__);
+        Light* t = l->provideLight(QString::number(getNumToTest2()));
+        QString name = ((AbstractNamedBean*)t->self())->getSystemName();
+        Assert::assertNull(l->getLight(name.toLower())->self(), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void ProxyLightManagerTest::testRename() {
         // get light
         Light* t1 = l->newLight(getSystemName(getNumToTest1()), "before");
-        Assert::assertNotNull("t1 real object ", t1, __FILE__, __LINE__);
-        t1->setUserName("after");
+        Assert::assertNotNull("t1 real object ", t1->self(), __FILE__, __LINE__);
+        ((AbstractNamedBean*)t1->self())->setUserName("after");
         Light* t2 = (Light*)l->getByUserName("after");
         Assert::assertEquals("same object", t1, t2, __FILE__, __LINE__);
         Assert::assertEquals("no old object", nullptr, l->getByUserName("before"), __FILE__, __LINE__);
@@ -112,8 +112,8 @@ ProxyLightManagerTest::ProxyLightManagerTest(QObject *parent) : QObject(parent)
         Light* il211 = l->provideLight("IL211");
         Light* jl211 = l->provideLight("JL211");
 
-        Assert::assertNotNull(il211, __FILE__, __LINE__);
-        Assert::assertNotNull(jl211, __FILE__, __LINE__);
+        Assert::assertNotNull(il211->self(), __FILE__, __LINE__);
+        Assert::assertNotNull(jl211->self(), __FILE__, __LINE__);
         Assert::assertTrue(il211 != jl211, __FILE__, __LINE__);
     }
 
@@ -121,26 +121,26 @@ ProxyLightManagerTest::ProxyLightManagerTest(QObject *parent) : QObject(parent)
     /*public*/ void ProxyLightManagerTest::testDefaultNotInternal() {
         Light* lut = l->provideLight("211");
 
-        Assert::assertNotNull(lut, __FILE__, __LINE__);
-        Assert::assertEquals("JL211", lut->getSystemName(), __FILE__, __LINE__);
+        Assert::assertNotNull(lut->self(), __FILE__, __LINE__);
+        Assert::assertEquals("JL211", ((AbstractNamedBean*)lut->self())->getSystemName(), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void ProxyLightManagerTest::testProvideUser() {
         Light* l1 = l->provideLight("211");
-        l1->setUserName("user 1");
+        ((AbstractNamedBean*)l1->self())->setUserName("user 1");
         Light* l2 = l->provideLight("user 1");
         Light* l3 = l->getLight("user 1");
 
-        Assert::assertNotNull(l1, __FILE__, __LINE__);
-        Assert::assertNotNull(l2, __FILE__, __LINE__);
-        Assert::assertNotNull(l3, __FILE__, __LINE__);
+        Assert::assertNotNull(l1->self(), __FILE__, __LINE__);
+        Assert::assertNotNull(l2->self(), __FILE__, __LINE__);
+        Assert::assertNotNull(l3->self(), __FILE__, __LINE__);
         Assert::assertEquals(l1, l2, __FILE__, __LINE__);
         Assert::assertEquals(l3, l2, __FILE__, __LINE__);
         Assert::assertEquals(l1, l3, __FILE__, __LINE__);
 
         Light* l4 = l->getLight("JLuser 1");
-        Assert::assertNull(l4, __FILE__, __LINE__);
+        Assert::assertNull(l4->self(), __FILE__, __LINE__);
     }
 
     //@Test
@@ -153,13 +153,13 @@ ProxyLightManagerTest::ProxyLightManagerTest(QObject *parent) : QObject(parent)
         Assert::assertTrue(qobject_cast<LightManager*>(InstanceManager::getDefault("LightManager"))!=nullptr, __FILE__, __LINE__);
 
         Assert::assertNotNull(InstanceManager::getDefault("LightManager"), __FILE__, __LINE__);
-        Assert::assertNotNull(((LightManager*)InstanceManager::getDefault("LightManager"))->provideLight("IL1"), __FILE__, __LINE__);
+        Assert::assertNotNull(((LightManager*)InstanceManager::getDefault("LightManager"))->provideLight("IL1")->self(), __FILE__, __LINE__);
 
         InternalLightManager* m = new InternalLightManager(new InternalSystemConnectionMemo("J", "Juliet"));
         InstanceManager::setLightManager(m);
 
-        Assert::assertNotNull(((LightManager*)InstanceManager::getDefault("LightManager"))->provideLight("JL1"), __FILE__, __LINE__);
-        Assert::assertNotNull(((LightManager*)InstanceManager::getDefault("LightManager"))->provideLight("IL2"), __FILE__, __LINE__);
+        Assert::assertNotNull(((LightManager*)InstanceManager::getDefault("LightManager"))->provideLight("JL1")->self(), __FILE__, __LINE__);
+        Assert::assertNotNull(((LightManager*)InstanceManager::getDefault("LightManager"))->provideLight("IL2")->self(), __FILE__, __LINE__);
     }
 
     /**
@@ -181,7 +181,7 @@ ProxyLightManagerTest::ProxyLightManagerTest(QObject *parent) : QObject(parent)
         JUnitUtil::setUp();
         // create and register the manager object
         l = new InternalLightManager(new InternalSystemConnectionMemo("J", "Juliet"));
-        InstanceManager::setLightManager(l);
+        InstanceManager::setLightManager((AbstractManager*)l->self());
     }
 
     //@After

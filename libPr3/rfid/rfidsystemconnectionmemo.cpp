@@ -27,13 +27,13 @@
 // /*public*/ class RfidSystemConnectionMemo extends jmri.jmrix.SystemConnectionMemo {
 
 
-/*public*/ RfidSystemConnectionMemo::RfidSystemConnectionMemo(RfidTrafficController* rt, QObject *parent) : SystemConnectionMemo("F", "Rfid", parent)
+/*public*/ RfidSystemConnectionMemo::RfidSystemConnectionMemo(RfidTrafficController* rt, QObject *parent) : DefaultSystemConnectionMemo("F", "Rfid", parent)
 {
     //this();
     setRfidTrafficController(rt);
 }
 
-/*public*/ RfidSystemConnectionMemo::RfidSystemConnectionMemo( QObject *parent) : SystemConnectionMemo("F", "Rfid", parent)
+/*public*/ RfidSystemConnectionMemo::RfidSystemConnectionMemo( QObject *parent) : DefaultSystemConnectionMemo("F", "Rfid", parent)
 {
     //super("F", "Rfid");
     _register(); // registers general type
@@ -101,10 +101,10 @@
         return nullptr;
     }
     if (T == "SensorManager") {
-        return (Manager*) getSensorManager();
+        return (Manager*) getSensorManager()->self();
     }
     if (T == "ReporterManager") {
-        return (Manager*) getReporterManager();
+        return (Manager*) getReporterManager()->ReporterManager::self();
     }
     // nothing, by default
     return nullptr;
@@ -121,7 +121,7 @@
     rt = nullptr;
     InstanceManager::deregister(this, "RfidSystemConnectionMemo");
     if (reporterManager != nullptr) {
-        InstanceManager::deregister(reporterManager, "RfidReporterManager");
+        InstanceManager::deregister(reporterManager->ReporterManager::self(), "RfidReporterManager");
     }
     if (sensorManager != nullptr) {
         InstanceManager::deregister(sensorManager, "RfidSensorManager");

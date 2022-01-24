@@ -21,7 +21,7 @@
 /**
  * JMRIClient lights use the light number on the remote host.
  */
-/*public*/ JMRIClientLight::JMRIClientLight(int number, JMRIClientSystemConnectionMemo* memo, QObject* paent)
+/*public*/ JMRIClientLight::JMRIClientLight(int number, JMRIClientSystemConnectionMemo* memo, QObject* parent)
  : AbstractLight(memo->getSystemPrefix() + "l" + QString::number(number), parent)
 {
     //super(memo.getSystemPrefix() + "l" + number);

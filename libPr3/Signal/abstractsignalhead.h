@@ -12,28 +12,28 @@ public:
     //explicit AbstractSignalHead(QObject *parent = 0);
     /*public*/ AbstractSignalHead(QString systemName, QString userName, QObject *parent = 0);
     /*public*/ AbstractSignalHead(QString systemName, QObject *parent = 0);
-    /*public*/ QString getAppearanceName(int appearance);
-    /*public*/ QString getAppearanceName();
-    /*public*/ int getAppearance();
-    /*public*/ bool isCleared();
-    /*public*/ bool isShowingRestricting();
-    /*public*/ bool isAtStop();
-    /*public*/ bool getLit();
-    /*public*/ bool getHeld();
-    /*public*/ void setState(int s);
-    /*public*/ int getState();
+    /*public*/ QString getAppearanceName(int appearance)override;
+    /*public*/ QString getAppearanceName()override;
+    /*public*/ int getAppearance()override;
+    /*public*/ bool isCleared()override;
+    /*public*/ bool isShowingRestricting()override;
+    /*public*/ bool isAtStop()override;
+    /*public*/ bool getLit()override;
+    /*public*/ bool getHeld()override;
+    /*public*/ void setState(int s)override;
+    /*public*/ int getState()override;
     /*public*/ static QVector<int> getDefaultValidStates();
     /*public*/ static const QVector<QString> getDefaultValidStateNames();
     /*public*/ static const QString getDefaultStateName(int appearance);
-    /*public*/ QVector<int> getValidStates();
-    /*public*/ QVector<QString> getValidStateNames();
-    /*public*/ QString getBeanType();
+    /*public*/ QVector<int> getValidStates()override;
+    /*public*/ QVector<QString> getValidStateNames()override;
+    /*public*/ QString getBeanType()override;
 
 signals:
     //void propertyChange(QString propertyName, QVariant oldValue, QVariant newValue);
     //void propertyChange(PropertyChangeEvent *);
 public slots:
- /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException);
+ /*public*/ void vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/ override;
 
 private:
     /*private*/ static const  QVector<int> validStates;// = new int[]{

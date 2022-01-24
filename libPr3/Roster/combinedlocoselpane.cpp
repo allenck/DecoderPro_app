@@ -78,7 +78,7 @@ CombinedLocoSelPane::CombinedLocoSelPane(QWidget *parent) :
  QHBoxLayout* pane1aLayout = new  QHBoxLayout;
  pane1a->setLayout(pane1aLayout);
  pane1aLayout->addWidget(new QLabel(tr("Decoder installed: ")),0, Qt::AlignCenter);
- decoderBox = DecoderIndexFile::instance()->matchingComboBox(NULL, NULL, NULL, NULL, NULL, NULL);
+ decoderBox = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingComboBox(NULL, NULL, NULL, NULL, NULL, NULL);
  decoderBox->addItem("<from locomotive settings>");
  decoderBox->setCurrentIndex(0);
 //    decoderBox.addActionListener(new ActionListener() {
@@ -187,7 +187,7 @@ bool CombinedLocoSelPane::isDecoderSelected() {
  pane2aLayout->addWidget(new QLabel(tr("Use locomotive settings for:")));
  //locoBox->setNonSelectedItem(tr("<none - new loco>"));
  locoBox->setCurrentIndex(0);
- //Roster::getDefault()->addPropertyChangeListener(this);
+ //Roster::getDefault()->SwingPropertyChangeSupport::addPropertyChangeListener(this);
  connect(Roster::getDefault(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  pane2aLayout->addWidget(locoBox);
  locoBox->setVisible(true);
@@ -477,39 +477,39 @@ CLSIdentifyDecoder::CLSIdentifyDecoder(Programmer* programmer, CombinedLocoSelPa
  // raise the button again
  iddecoder->setChecked(false);
  //QList<DecoderFile*>* temp = new QList<DecoderFile*>();
- QList<DecoderFile*>* temp = NULL;
+ QList<DecoderFile*> temp;
 
  // if productID present, try with that
  if (productID != -1)
  {
   QString sz_productID = QString::number(productID);
-  temp = DecoderIndexFile::instance()->matchingDecoderList("", "", QString::number(mfgID), QString::number(modelID), sz_productID, "");
-  if (temp->size() == 0)
+  temp = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", "", QString::number(mfgID), QString::number(modelID), sz_productID, "");
+  if (temp.size() == 0)
   {
    log->debug("selectDecoder found no items with product ID "+productID);
-   temp = NULL;
+   temp = QList<DecoderFile*>();
   }
   else
   {
-   log->debug("selectDecoder found "+QString::number(temp->size())+" matches with productID "+QString::number(productID));
+   log->debug("selectDecoder found "+QString::number(temp.size())+" matches with productID "+QString::number(productID));
   }
  }
 
  // try without product ID if needed
- if (temp == NULL)
+ if (temp == QList<DecoderFile*>())
  {  // i.e. if no match previously
-  temp = DecoderIndexFile::instance()->matchingDecoderList("", "", QString::number(mfgID), QString::number(modelID), "", "");
-  if (log->isDebugEnabled()) log->debug("selectDecoder without productID found "+QString::number(temp->size())+" matches");
+  temp = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", "", QString::number(mfgID), QString::number(modelID), "", "");
+  if (log->isDebugEnabled()) log->debug("selectDecoder without productID found "+QString::number(temp.size())+" matches");
  }
 
  // install all those in the JComboBox in place of the longer, original list
- if (temp->size() > 0)
+ if (temp.size() > 0)
  {
   updateForDecoderTypeID(temp);
  }
  else
  {
-  QString mfg = DecoderIndexFile::instance()->mfgNameFromId(QString::number(mfgID));
+  QString mfg = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->mfgNameFromId(QString::number(mfgID));
   if (mfg=="")
   {
    updateForDecoderNotID(mfgID, modelID);
@@ -524,11 +524,11 @@ CLSIdentifyDecoder::CLSIdentifyDecoder(Programmer* programmer, CombinedLocoSelPa
 /**
  * Decoder identify has matched one or more specific types
  */
-void CombinedLocoSelPane::updateForDecoderTypeID(QList<DecoderFile*>* pList)
+void CombinedLocoSelPane::updateForDecoderTypeID(QList<DecoderFile*> pList)
 {
  //decoderBox->setModel(DecoderIndexFile::jComboBoxModelFromList(pList));
  decoderBox->clear();
- foreach(DecoderFile* r, *pList)
+ foreach(DecoderFile* r, pList)
   decoderBox->addItem(r->titleString());
  decoderBox->insertItem(0, "<from locomotive settings>");
  decoderBox->setCurrentIndex(1);
@@ -548,7 +548,7 @@ void CombinedLocoSelPane::updateForDecoderMfgID(QString pMfg, int pMfgID, int pM
  if(_statusLabel != NULL)
   _statusLabel->setText(msg);
  // try to select all decoders from that MFG
- QComboBox* temp = DecoderIndexFile::instance()->matchingComboBox(NULL, NULL, QString::number(pMfgID), NULL, NULL, NULL);
+ QComboBox* temp = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingComboBox(NULL, NULL, QString::number(pMfgID), NULL, NULL, NULL);
  if (log->isDebugEnabled()) log->debug("mfg-only selectDecoder found "+QString::number(temp->count())+" matches");
  if(decoderBox == NULL)
   decoderBox = new QComboBox;
@@ -564,7 +564,7 @@ void CombinedLocoSelPane::updateForDecoderMfgID(QString pMfg, int pMfgID, int pM
  else
  {
   // if there are none from this mfg, go back to showing everything
-  temp = DecoderIndexFile::instance()->matchingComboBox(NULL, NULL, NULL, NULL, NULL, NULL);
+  temp = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingComboBox(NULL, NULL, NULL, NULL, NULL, NULL);
   //decoderBox.setModel(temp.getModel());
   for(int i = 0; i < temp->count(); i++)
    decoderBox->addItem(temp->itemText(i));
@@ -578,7 +578,7 @@ void CombinedLocoSelPane::updateForDecoderMfgID(QString pMfg, int pMfgID, int pM
 void CombinedLocoSelPane::updateForDecoderNotID(int pMfgID, int pModelID)
 {
  log->warn("Found mfg "+QString::number(pMfgID)+" version "+QString::number(pModelID)+"; no such manufacterer defined");
- QComboBox* temp = DecoderIndexFile::instance()->matchingComboBox(NULL, NULL, NULL, NULL, NULL, NULL);
+ QComboBox* temp = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingComboBox(NULL, NULL, NULL, NULL, NULL, NULL);
  //decoderBox.setModel(temp.getModel());
  for(int i = 0; i < temp->count(); i++)
   decoderBox->addItem(temp->itemText(i));
@@ -641,7 +641,7 @@ void CombinedLocoSelPane::updateForDecoderNotID(int pMfgID, int pModelID)
 {
  // find the decoderFile object
  setCursor(Qt::WaitCursor);
- DecoderFile* decoderFile = DecoderIndexFile::instance()->fileFromTitle(selectedDecoderType());
+ DecoderFile* decoderFile = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->fileFromTitle(selectedDecoderType());
  if (log->isDebugEnabled()) log->debug("decoder file: "+decoderFile->getFileName());
 
  // create a dummy RosterEntry with the decoder info

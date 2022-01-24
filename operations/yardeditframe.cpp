@@ -1,12 +1,14 @@
 #include "yardeditframe.h"
 #include "track.h"
 #include <QGroupBox>
-#include <QPushButton>
+#include "jbutton.h"
 #include "showcarsbylocationaction.h"
 #include "showtrainsservinglocationaction.h"
 #include "location.h"
 #include <QMenu>
 #include "changetracktypeaction.h"
+#include "borderfactory.h"
+
 namespace Operations
 {
 /**
@@ -37,11 +39,8 @@ namespace Operations
      addHelpMenu("package.jmri.jmrit.operations.Operations_Yards", true); // NOI18N
 
      // override text strings for tracks
-     //panelTrainDir.setBorder(BorderFactory.createTitledBorder(tr("TrainYard")));
-     panelTrainDir->setStyleSheet(gbStyleSheet);
-     panelTrainDir->setTitle(tr("Train Yard"));
-     //paneCheckBoxes.setBorder(BorderFactory.createTitledBorder(tr("TypesYard")));
-     //paneCheckBoxes->setStyleSheet()
+     panelTrainDir->setBorder(BorderFactory::createTitledBorder(tr("Train Yard")));
+     panelCheckBoxes->setBorder(BorderFactory::createTitledBorder(tr("Select the rolling stock serviced by this yard")));
      deleteTrackButton->setText(tr("Delete Yard Track"));
      addTrackButton->setText(tr("Add Yard track"));
      saveTrackButton->setText(tr("Save Yard"));

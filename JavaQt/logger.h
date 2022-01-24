@@ -13,17 +13,17 @@ class JAVAQTSHARED_EXPORT Logger : public QObject
 public:
  explicit Logger(QString name = "", QObject *parent = 0);
  Logger(const Logger&);
- static void error(QString s, QVariant ex = QVariant());
- static void error(QString s, Throwable ex);
+ //static void error(QString s, QVariant ex = QVariant());
+ static void error(QString s, Throwable *ex = nullptr);
  void warn(QString s) const;
- void warn(QString s, Throwable ex);
+ void warn(QString s, Throwable* ex);
  void info(QString s);
  void trace(QString s);
  bool isDebugEnabled() const;
  bool isInfoEnabled();
  bool isTraceEnabled();
  void debug(QString s) const;
- void debug(QString s, Throwable throwable);
+ void debug(QString s, Throwable *throwable);
  void setDebugEnabled(bool bState);
  void setInfoEnabled(bool bState);
  void setTraceEnabled(bool bState);

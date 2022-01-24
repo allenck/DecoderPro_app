@@ -72,7 +72,7 @@ BlockEditAction::BlockEditAction(QObject *parent) :
 }
 
 /*public*/ NamedBean* BlockEditAction::getByUserName(QString name) {
- return (NamedBean*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->getByUserName(name);
+ return (NamedBean*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getByUserName(name);
 }
 
 
@@ -81,10 +81,10 @@ BeanItemPanel* BlockEditAction::reporterDetails()
     BeanItemPanel* reporter = new BeanItemPanel();
     reporter->setName(tr("Reporter"));
 
-    reporterComboBox = new NamedBeanComboBox(InstanceManager::reporterManagerInstance(), ((Block*) bean)->getReporter(), NamedBean::DISPLAYNAME);
+    reporterComboBox = new NamedBeanComboBox(((ReporterManager*)InstanceManager::getDefault("ReporterManager")), ((Block*) bean)->getReporter(), NamedBean::DISPLAYNAME);
     reporterComboBox->setAllowNull(true);
 
-    reporter->addItem(new BeanEditItem(reporterComboBox, tr("BeanNameReporter"), tr("Set the reporter used to identify trains in the block")));
+    reporter->addItem(new BeanEditItem(reporterComboBox, tr("Reporter"), tr("Set the reporter used to identify trains in the block")));
 
 //    reporterField.addActionListener(new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent e) {
@@ -97,7 +97,7 @@ BeanItemPanel* BlockEditAction::reporterDetails()
 //    });
     connect(reporterComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(on_reporterComboBox_currentIndexChanged(QString)));
 
-    reporter->addItem(new BeanEditItem(useCurrent, tr("BlockReporterCurrent"), tr("Use the Current Report from the reporter as the value for the block")));
+    reporter->addItem(new BeanEditItem(useCurrent, tr("Use Current"), tr("Use the Current Report from the reporter as the value for the block")));
 
     if (reporterComboBox->currentText() == "") {
         useCurrent->setEnabled(false);
@@ -141,7 +141,7 @@ BeanItemPanel* BlockEditAction::reporterDetails()
 
 BeanItemPanel* BlockEditAction::physcialDetails() {
 
- defaultBlockSpeedText = (tr("UseGlobal") + " " + ((BlockManager*) InstanceManager::getDefault("BlockManager"))->getDefaultSpeed());
+ defaultBlockSpeedText = (tr("Use %1").arg( ((BlockManager*) InstanceManager::getDefault("BlockManager"))->getDefaultSpeed()));
     speedList.append(defaultBlockSpeedText);
     QVector<QString> _speedMap = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getValidSpeedNames();
     for (int i = 0; i < _speedMap.size(); i++) {
@@ -199,12 +199,12 @@ BeanItemPanel* BlockEditAction::physcialDetails() {
     //        }
     //    });
     connect(inch, SIGNAL(toggled(bool)), this, SLOT(updateLength()));
-    basic->addItem(new BeanEditItem(p, tr("BlockLengthUnits"), tr("BlockLengthUnitsText")));
+    basic->addItem(new BeanEditItem(p, tr("Units"), tr("Select length measurements")));
     basic->addItem(new BeanEditItem(curvatureField, tr("Curvature"), ""));
     speedField = new QComboBox(/*speedList*/);
     speedField->addItems(speedList.toList());
-    basic->addItem(new BeanEditItem(speedField, tr("Speed"), tr("BlockMaxSpeedText")));
-    basic->addItem(new BeanEditItem(permissiveField, tr("Permissive"), tr("BlockPermissiveText")));
+    basic->addItem(new BeanEditItem(speedField, tr("Speed"), tr("Set the maximum speed through the Block")));
+    basic->addItem(new BeanEditItem(permissiveField, tr("Permissive"), tr("Can another train enter the Block when it is occupied")));
 
     permissiveField->setChecked(((Block*) bean)->getPermissiveWorking());
 
@@ -231,7 +231,7 @@ BeanItemPanel* BlockEditAction::physcialDetails() {
 //            try {
 //                blk->setBlockSpeed(speed);
 //            } catch (jmri.JmriException ex) {
-//                JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + speed);
+//                JOptionPane.showMessageDialog(NULL, ex->getMessage() + "\n" + speed);
 //                return;
 //            }
 //            if (!speedList.contains(speed) && !speed.contains(tr("UseGlobal"))) {
@@ -316,8 +316,8 @@ void BlockEditAction::on_setSaveItem()
  QString speed =  speedField->currentText();
  try {
      blk->setBlockSpeed(speed);
- } catch (JmriException ex) {
-//         JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + speed);
+ } catch (JmriException* ex) {
+//         JOptionPane.showMessageDialog(NULL, ex->getMessage() + "\n" + speed);
   QMessageBox::critical(NULL, tr("Error"), tr("Speed error"));
      return;
  }

@@ -4,6 +4,9 @@
 #include "propertychangeevent.h"
 #include "defaultlistselectionmodel.h"
 #include "tablecolumnmodelevent.h"
+#include "tablecolumnmodellistener.h"
+#include <QHeaderView>
+#include "jtable.h"
 
 //DefaultTableColumnModel::DefaultTableColumnModel(QObject *parent) :
 //  TableColumnModel(parent)
@@ -35,8 +38,8 @@
 /**
  * Creates a default table column model.
  */
-/*public*/ DefaultTableColumnModel::DefaultTableColumnModel(QObject *parent) :
-TableColumnModel(parent)
+/*public*/ DefaultTableColumnModel::DefaultTableColumnModel(JTable *parent) :
+QObject((QObject*)parent)
 {
  //super();
 
@@ -46,6 +49,12 @@ TableColumnModel(parent)
  setColumnMargin(1);
  invalidateWidthCache();
  setColumnSelectionAllowed(false);
+
+// connect(parent->getTableHeader(), &QHeaderView::sectionResized, [=](int logicalIndex, int oldSize, int newSize)
+// {
+//  TableColumn* col = getColumn(logicalIndex);
+//  col->setWidth(newSize);
+// });
 }
 
 //
@@ -67,12 +76,12 @@ TableColumnModel(parent)
 {
  if (aColumn == NULL)
  {
-  throw IllegalArgumentException("Object is NULL");
+  throw new IllegalArgumentException("Object is NULL");
  }
 
  tableColumns.append(aColumn);
- //aColumn->addPropertyChangeListener((PropertyChangeListener*)this);
- connect(aColumn, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(onPropertyChange(PropertyChangeEvent*)));
+ aColumn->addPropertyChangeListener(this);
+ connect(aColumn, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  invalidateWidthCache();
 
 // // Post columnAdded event notification
@@ -102,13 +111,13 @@ TableColumnModel(parent)
    selectionModel->removeIndexInterval(columnIndex,columnIndex);
   }
 
-//  column->removePropertyChangeListener(this);
+  column->removePropertyChangeListener((PropertyChangeListener*)this);
   tableColumns.remove(columnIndex);
   invalidateWidthCache();
 
   // Post columnAdded event notification.  (JTable and JTableHeader
   // listens so they can adjust size and redraw)
-//  fireColumnRemoved(new TableColumnModelEvent(this, columnIndex, 0));
+  fireColumnRemoved(new TableColumnModelEvent(this, columnIndex, 0));
  }
 }
 #if 0
@@ -430,7 +439,7 @@ TableColumnModel(parent)
     }
     return 0;
 }
-
+#endif
 //
 // Listener Support Methods
 //
@@ -440,8 +449,8 @@ TableColumnModel(parent)
  * Adds a listener for table column model events.
  * @param x  a <code>TableColumnModelListener</code> object
  */
-/*public*/ void addColumnModelListener(TableColumnModelListener x) {
-    listenerList.add(TableColumnModelListener.class, x);
+/*public*/ void DefaultTableColumnModel::addColumnModelListener(TableColumnModelListener* x) {
+    listenerList->add("TableColumnModelListener", x);
 }
 
 // implements javax.swing.table.TableColumnModel
@@ -449,8 +458,8 @@ TableColumnModel(parent)
  * Removes a listener for table column model events.
  * @param x  a <code>TableColumnModelListener</code> object
  */
-/*public*/ void removeColumnModelListener(TableColumnModelListener x) {
-    listenerList.remove(TableColumnModelListener.class, x);
+/*public*/ void DefaultTableColumnModel::removeColumnModelListener(TableColumnModelListener* x) {
+    listenerList->remove("TableColumnModelListener", (EventListener*)x);
 }
 
 /**
@@ -466,10 +475,10 @@ TableColumnModel(parent)
  *
  * @since 1.4
  */
-/*public*/ TableColumnModelListener[] getColumnModelListeners() {
-    return listenerList.getListeners(TableColumnModelListener.class);
+/*public*/ QVector<EventListener*> DefaultTableColumnModel::getColumnModelListeners() {
+    return listenerList->getListeners("TableColumnModelListener");
 }
-#endif
+
 //
 //   Event firing methods
 //
@@ -484,19 +493,19 @@ TableColumnModel(parent)
  */
 /*protected*/ void DefaultTableColumnModel::fireColumnAdded(TableColumnModelEvent* e) {
     // Guaranteed to return a non-NULL array
-//    Object[] listeners = listenerList.getListenerList();
-//    // Process the listeners last to first, notifying
-//    // those that are interested in this event
-//    for (int i = listeners.length-2; i>=0; i-=2) {
-//        if (listeners[i]==TableColumnModelListener.class) {
-//            // Lazily create the event:
-//            // if (e == NULL)
-//            //  e = new ChangeEvent(this);
-//            ((TableColumnModelListener)listeners[i+1]).
-//                columnAdded(e);
-//        }
-//    }
-  emit notifycolumnadded(e);
+    QVector<EventListener*> listeners = listenerList->getListenerList();
+    // Process the listeners last to first, notifying
+    // those that are interested in this event
+    for (int i = listeners.length()-2; i>=0; i-=2) {
+        if (qobject_cast<TableColumnModelListener*>(listeners[i]->self())) {
+            // Lazily create the event:
+            // if (e == NULL)
+            //  e = new ChangeEvent(this);
+            ((TableColumnModelListener*)listeners[i+1]/*->self()*/)->
+                columnAdded(e);
+        }
+    }
+  //emit notifycolumnadded(e);
 }
 
 /**
@@ -509,19 +518,19 @@ TableColumnModel(parent)
  */
 /*protected*/ void DefaultTableColumnModel::fireColumnRemoved(TableColumnModelEvent* e) {
     // Guaranteed to return a non-NULL array
-//    Object[] listeners = listenerList.getListenerList();
-//    // Process the listeners last to first, notifying
-//    // those that are interested in this event
-//    for (int i = listeners.length-2; i>=0; i-=2) {
-//        if (listeners[i]==TableColumnModelListener.class) {
-//            // Lazily create the event:
-//            // if (e == NULL)
-//            //  e = new ChangeEvent(this);
-//            ((TableColumnModelListener)listeners[i+1]).
-//                columnRemoved(e);
-//        }
-//    }
- emit notifycolumnremoved(e);
+ QVector<EventListener*> listeners = listenerList->getListenerList();
+    // Process the listeners last to first, notifying
+    // those that are interested in this event
+    for (int i = listeners.length()-2; i>=0; i-=2) {
+     if (qobject_cast<TableColumnModelListener*>(listeners[i]->self())) {
+             //Lazily create the event:
+            // if (e == NULL)
+            //  e = new ChangeEvent(this);
+            ((TableColumnModelListener*)listeners[i+1]/*->self()*/)->
+                columnRemoved(e);
+        }
+    }
+// emit notifycolumnremoved(e);
 
 }
 
@@ -535,19 +544,19 @@ TableColumnModel(parent)
  */
 /*protected*/ void DefaultTableColumnModel::fireColumnMoved(TableColumnModelEvent* e) {
     // Guaranteed to return a non-NULL array
-//    Object[] listeners = listenerList.getListenerList();
-//    // Process the listeners last to first, notifying
-//    // those that are interested in this event
-//    for (int i = listeners.length-2; i>=0; i-=2) {
-//        if (listeners[i]==TableColumnModelListener.class) {
-//            // Lazily create the event:
-//            // if (e == NULL)
-//            //  e = new ChangeEvent(this);
-//            ((TableColumnModelListener)listeners[i+1]).
-//                columnMoved(e);
-//        }
-//    }
- emit notifycolumnmoved(e);
+ QVector<EventListener*> listeners = listenerList->getListenerList();
+    // Process the listeners last to first, notifying
+    // those that are interested in this event
+    for (int i = listeners.length()-2; i>=0; i-=2) {
+     if (qobject_cast<TableColumnModelListener*>(listeners[i]->self())) {
+            // Lazily create the event:
+            // if (e == NULL)
+            //  e = new ChangeEvent(this);
+            ((TableColumnModelListener*)listeners[i+1]/*->self()*/)->
+                columnMoved(e);
+        }
+    }
+ //emit notifycolumnmoved(e);
 
 }
 #if 0
@@ -597,7 +606,7 @@ TableColumnModel(parent)
 //                columnMarginChanged(changeEvent);
 //        }
 //    }
- emit propertyChange(new PropertyChangeEvent(this, "ColumMarginChanged", QVariant(), QVariant()));
+ emit firePropertyChange(new PropertyChangeEvent(this, "ColumMarginChanged", QVariant(), QVariant()));
 }
 #if 0
 /**
@@ -651,7 +660,7 @@ TableColumnModel(parent)
  *
  * @param  evt  <code>PropertyChangeEvent</code>
  */
-/*public*/ void DefaultTableColumnModel::onPropertyChange(PropertyChangeEvent* evt)
+/*public*/ void DefaultTableColumnModel::propertyChange(PropertyChangeEvent* evt)
 {
  QString name = evt->getPropertyName();
 
@@ -661,7 +670,7 @@ TableColumnModel(parent)
   // This is a misnomer, we're using this method
   // simply to cause a relayout.
   fireColumnMarginChanged();
-  emit propertyChange(evt);
+  //emit firePropertyChange(evt);
  }
 }
 #if 0

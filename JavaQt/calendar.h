@@ -294,7 +294,7 @@ protected:
   * @serial
   */
  //@SuppressWarnings("ProtectedField")
- /*protected*/ bool       isTimeSet;
+ /*protected*/ bool       isTimeSet =false;
  /*protected*/ /*abstract*/ virtual void computeTime();
  /**
   * True if <code>fields[]</code> are in sync with the currently set time.

@@ -32,15 +32,15 @@ namespace Operations
   Track* _track;//= null;
 
   // panels
-  QGroupBox* pRoadControls;//= new JPanel();
-  QWidget* panelRoads;//= new JPanel();
+  JPanel* pRoadControls;//= new JPanel();
+  JPanel* panelRoads;//= new JPanel();
   QScrollArea* paneRoads;//= new JScrollPane(panelRoads);
 
   // major buttons
-  QPushButton* saveTrackButton;//= new JButton(Bundle.getMessage("SaveTrack"));
-  QPushButton* addRoadButton;//= new JButton(Bundle.getMessage("AddRoad"));
-  QPushButton* deleteRoadButton;//= new JButton(Bundle.getMessage("DeleteRoad"));
-  QPushButton* deleteAllRoadsButton;//= new JButton(Bundle.getMessage("DeleteAll"));
+  JButton* saveTrackButton;//= new JButton(Bundle.getMessage("SaveTrack"));
+  JButton* addRoadButton;//= new JButton(Bundle.getMessage("AddRoad"));
+  JButton* deleteRoadButton;//= new JButton(Bundle.getMessage("DeleteRoad"));
+  JButton* deleteAllRoadsButton;//= new JButton(Bundle.getMessage("DeleteAll"));
 
   // radio buttons
   QRadioButton* roadNameAll;//= new JRadioButton(Bundle.getMessage("AcceptAll"));

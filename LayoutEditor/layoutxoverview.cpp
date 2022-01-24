@@ -1,4 +1,5 @@
 #include "layoutxoverview.h"
+#include "layoutxovereditor.h"
 
 /**
  * MVC View component for the LayoutXOver class.
@@ -12,9 +13,15 @@
      * Constructor method.
      * @param xover the layout crossover.
      */
-    /*public*/ LayoutXOverView::LayoutXOverView(/*@Nonnull*/ LayoutXOver* xover) : LayoutTurnoutView(xover) {
-        //super(xover);
+     /*public*/ LayoutXOverView::LayoutXOverView(/*@Nonnull*/ LayoutXOver* xover,
+            /*@Nonnull*/ QPointF c, double rot,
+            double xFactor, double yFactor,
+            /*@Nonnull*/ LayoutEditor* layoutEditor) : LayoutTurnoutView(xover, c, rot, xFactor, yFactor, layoutEditor) {
+        //super(xover, c, rot, xFactor, yFactor, layoutEditor);
         // this.xover = xover;
+
+        editor = new LayoutXOverEditor(layoutEditor);
+
     }
 
     // final private LayoutXOver xover;

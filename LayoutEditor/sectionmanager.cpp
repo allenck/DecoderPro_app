@@ -6,7 +6,7 @@
 
 
 SectionManager::SectionManager(QObject *parent) :
-    AbstractManager((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"), parent)
+    AbstractSectionManager((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"), parent)
 {
  setObjectName("SectionManager");
  setProperty("JavaClassName", "jmri.managers.SectionManager");
@@ -17,8 +17,8 @@ SectionManager::SectionManager(QObject *parent) :
  registerSelf();
  setProperty("InstanceManagerAutoDefault", "yes");
 
- ((SensorManager*)InstanceManager::getDefault("SensorManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
- ((BlockManager*)InstanceManager::getDefault("BlockManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+ ((AbstractSensorManager*)InstanceManager::getDefault("SensorManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
+ ((BlockManager*)InstanceManager::getDefault("BlockManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
 
 }
 /**
@@ -61,7 +61,7 @@ int SectionManager::getXMLOrder() const{
 }
 
 //QString SectionManager::getSystemPrefix() { return "I"; }
-char SectionManager::typeLetter()const  { return 'Y'; }
+QChar SectionManager::typeLetter()  { return 'Y'; }
 
 //@Override
 /*public*/ QString getNamedBeanClass() {
@@ -111,11 +111,11 @@ Section* SectionManager::createNewSection(QString systemName, QString userName)
         try {
             bool bOk=false;
             int autoNumber = systemName.mid(8).toInt(&bOk);
-            if(!bOk )throw NumberFormatException();
+            if(!bOk )throw new NumberFormatException();
             if (autoNumber > lastAutoSectionRef) {
                 lastAutoSectionRef = autoNumber;
             }
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException* e){
             log.warn("Auto generated SystemName "+ systemName + " is not in the correct format");
         }
     }
@@ -153,14 +153,6 @@ Section* SectionManager::createNewSection(QString userName) {
     return (Section*)getBySystemName(name);
 }
 
-///*public*/ Section* SectionManager::getBySystemName(QString name) {
-//    QString key = name.toUpper();
-//    return (Section*)_tsys->value(key);
-//}
-
-///*public*/ Section* SectionManager::getByUserName(QString key) {
-//    return (Section*)_tuser->value(key);
-//}
 
 /**
  * Validates all Sections
@@ -235,11 +227,11 @@ Section* SectionManager::createNewSection(QString userName) {
   if ( (name!=NULL) && (name!=("")) )
    sensorList.append(name);
  }
- SignalHeadManager* shManager = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
+ SignalHeadManager* shManager = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
     QStringList signalList = shManager->getSystemNameList();
     for (int j=0; j<signalList.size(); j++)
     {
-     SignalHead* sh =(SignalHead*) shManager->getBySystemName(signalList.at(j));
+     SignalHead* sh =(SignalHead*) ((AbstractSignalHeadManager*)shManager)->getBySystemName(signalList.at(j));
      if (!cUtil->removeSensorsFromSignalHeadLogic(&sensorList,	sh)) numErrors ++;
  }
  return numErrors;
@@ -265,10 +257,19 @@ Section* SectionManager::createNewSection(QString userName) {
     }
 }
 
+//@Override
+//@Nonnull
+//@CheckReturnValue
+/*public*/ QString SectionManager::getBeanTypeHandled(bool plural) const {
+    return tr(plural ? "Sections" : "Section");
+}
 
 /*public*/ QString SectionManager::getNamedBeanClass() const
 {
  return "Section";
 }
 
+//void SectionManager::vetoableChange(PropertyChangeEvent* evt) throw new (PropertyVetoException){
+
+//}
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(SectionManager.class.getName());

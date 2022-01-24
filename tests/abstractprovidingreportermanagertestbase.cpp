@@ -27,7 +27,7 @@ AbstractProvidingReporterManagerTestBase::AbstractProvidingReporterManagerTestBa
 
     //@Test(expected = IllegalArgumentException.class)
     /*public*/ void AbstractProvidingReporterManagerTestBase::testProvideEmpty() throw (IllegalArgumentException) {
-        ProxyReporterManager/*<E>*/* m = (ProxyReporterManager*)l;
+        ProxyReporterManager/*<E>*/* m = (ProxyReporterManager*)l->self();
         try {
             m->provide(""); // this should throw an IllegalArgumentException.
         } catch (IllegalArgumentException iae) {
@@ -39,7 +39,7 @@ AbstractProvidingReporterManagerTestBase::AbstractProvidingReporterManagerTestBa
     //@Test
     /*public*/ void AbstractProvidingReporterManagerTestBase::testRegisterDuplicateSystemName() throw (PropertyVetoException, /*NoSuchFieldException,
             NoSuchFieldException,*/ IllegalArgumentException, IllegalAccessException) {
-        ProxyReporterManager/*<E>*/* m = (ProxyReporterManager*)l;
+        ProxyReporterManager/*<E>*/* m = (ProxyReporterManager*)l->self();
         QString s1 = l->makeSystemName("1");
         QString s2 = l->makeSystemName("2");
         testRegisterDuplicateSystemName(m, s1, s2);
@@ -60,7 +60,7 @@ AbstractProvidingReporterManagerTestBase::AbstractProvidingReporterManagerTestBa
             e1 = (Reporter*)m->provide(s1);
             e2 = (Reporter*)m->provide(s2);
         } catch (
-                IllegalArgumentException /*|
+                IllegalArgumentException* /*|
                 com.pi4j.io.gpio.exception.GpioPinExistsException |
                 NullPointerException |
                 ArrayIndexOutOfBoundsException*/ ex) {
@@ -106,8 +106,8 @@ AbstractProvidingReporterManagerTestBase::AbstractProvidingReporterManagerTestBa
             // This should fail with an DuplicateSystemNameException.
             ((ReporterManager*)l)->Register(e2);
             Assert::fail("Expected exception not thrown", __FILE__, __LINE__);
-        } catch (NamedBean::DuplicateSystemNameException ex) {
-            Assert::assertEquals("exception message is correct", expectedMessage, ex.getMessage(), __FILE__, __LINE__);
+        } catch (NamedBean::DuplicateSystemNameException* ex) {
+            Assert::assertEquals("exception message is correct", expectedMessage, ex->getMessage(), __FILE__, __LINE__);
             JUnitAppender::assertErrorMessage(expectedMessage, __FILE__, __LINE__);
         }
 

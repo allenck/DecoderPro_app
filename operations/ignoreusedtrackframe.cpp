@@ -5,13 +5,13 @@
 #include <QBoxLayout>
 #include "gridbaglayout.h"
 #include <QRadioButton>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QButtonGroup>
 #include "trackeditframe.h"
 #include "track.h"
 #include "logger.h"
-#include <QGroupBox>
 #include "flowlayout.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -40,7 +40,7 @@ namespace Operations
      hundredPercent = new QRadioButton("100%");		// NOI18N
 
      // major buttons
-     saveButton = new QPushButton(tr("Save"));
+     saveButton = new JButton(tr("Save"));
 
      setTitle(tr("Planned Pickups"));
 
@@ -53,11 +53,9 @@ namespace Operations
 
      // load the panel
      //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
-     QGroupBox* p1 = new QGroupBox();
-     //p1.setBorder(BorderFactory.createTitledBorder(tr("PrePlanedPickups")));
-     p1->setStyleSheet(gbStyleSheet);
-     p1->setTitle(tr("PrePlanned Pickups"));
+     QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
+     JPanel* p1 = new JPanel();
+     p1->setBorder(BorderFactory::createTitledBorder(tr("PrePlanned Pickups")));
 
      p1->layout()->addWidget(zeroPercent);
      p1->layout()->addWidget(twentyfivePercent);
@@ -90,7 +88,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*public*/ void IgnoreUsedTrackFrame::buttonActionPerformed(QWidget* ae) {
-     if ((QPushButton*)ae == saveButton) {
+     if ((JButton*)ae == saveButton) {
          // save percentage selected
          int percentage = 0;
          if (twentyfivePercent->isChecked()) {

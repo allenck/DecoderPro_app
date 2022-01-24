@@ -186,7 +186,7 @@
                                     (new File(fileName).toURI().toURL().openStream(), "ISO-8859-1"));
                         } catch (MalformedURLException e) {
                             System.err.println("MalformedURLException:" + e + " while loading default flavormap.properties file:" + fileName);
-                        } catch (IOException e) {
+                        } catch (IOException* e) {
                             System.err.println("IOException:" + e + " while loading default flavormap.properties file:" + fileName);
                         }
                         return NULL;
@@ -204,7 +204,7 @@
         if (flavormapDotProperties != NULL) {
             try {
                 parseAndStoreReader(flavormapDotProperties);
-            } catch (IOException e) {
+            } catch (IOException* e) {
                 System.err.println("IOException:" + e + " while parsing default flavormap.properties file");
             }
         }
@@ -215,7 +215,7 @@
                 flavormapURL = new BufferedReader(new InputStreamReader(new URL(url).openStream(), "ISO-8859-1"));
             } catch (MalformedURLException e) {
                 System.err.println("MalformedURLException:" + e + " while reading AWT.DnD.flavorMapFileURL:" + url);
-            } catch (IOException e) {
+            } catch (IOException* e) {
                 System.err.println("IOException:" + e + " while reading AWT.DnD.flavorMapFileURL:" + url);
             } catch (SecurityException e) {
                 // ignored
@@ -225,7 +225,7 @@
         if (flavormapURL != NULL) {
             try {
                 parseAndStoreReader(flavormapURL);
-            } catch (IOException e) {
+            } catch (IOException* e) {
                 System.err.println("IOException:" + e + " while parsing AWT.DnD.flavorMapFileURL");
             }
         }
@@ -368,10 +368,10 @@
                     DataFlavor flavor;
                     try {
                         flavor = new DataFlavor(value);
-                    } catch (Exception e) {
+                    } catch (Exception* e) {
                         try {
                             flavor = new DataFlavor(value, NULL);
-                        } catch (Exception ee) {
+                        } catch (Exception* ee) {
                             ee.printStackTrace();
                             continue;
                         }
@@ -516,9 +516,9 @@
 
             try {
                 flavor = new DataFlavor(decoded);
-            } catch (Exception e) {
+            } catch (Exception* e) {
                 System.err.println("Exception \"" + e.getClass().getName() +
-                                   ": " + e.getMessage()  +
+                                   ": " + e->getMessage()  +
                                    "\"while constructing DataFlavor for: " +
                                    decoded);
             }
@@ -779,7 +779,7 @@
                     DataFlavor toAdd = NULL;
                     try {
                         toAdd = new DataFlavor(mt);
-                    } catch (ClassNotFoundException cannotHappen) {
+                    } catch (ClassNotFoundException* cannotHappen) {
                     }
                     returnValue.add(toAdd);
                 }
@@ -809,7 +809,7 @@
                             if (df.equals(DataFlavor.plainTextFlavor)) {
                                 df = DataFlavor.plainTextFlavor;
                             }
-                        } catch (ClassNotFoundException cannotHappen) {
+                        } catch (ClassNotFoundException* cannotHappen) {
                         }
 
                         returnValue.add(df);
@@ -830,7 +830,7 @@
                 try {
                     toAdd = new DataFlavor(baseType +
                          ";class=" + encodedTextClassName);
-                } catch (ClassNotFoundException cannotHappen) {
+                } catch (ClassNotFoundException* cannotHappen) {
                 }
                 returnValue.add(toAdd);
             }

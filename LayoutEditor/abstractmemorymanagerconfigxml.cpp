@@ -96,24 +96,13 @@ AbstractMemoryManagerConfigXML::~AbstractMemoryManagerConfigXML()
 }
 
 /**
- * Subclass provides implementation to create the correct top
- * element, including the type information.
- * Default implementation is to use the local class here.
- * @param memories The top-level element being created
- */
-// /*abstract*/ /*public*/ void setStoreElementClass(QDomElement memories);
-
-/*public*/ void AbstractMemoryManagerConfigXML::load(QDomElement /*element*/, QObject* /*o*/) throw (Exception){
-    log->error("Invalid method called");
-}
-
-/**
  * Create a MemoryManager object of the correct class, then
  * register and fill it.
  * @param memories Top level QDomElement to unpack.
  * @return true if successful
  */
-// /*abstract*/ /*public*/ bool load(QDomElement memories) throw (JmriConfigureXmlException);
+//@Override
+// /*abstract*/ /*public*/ bool load(QDomElement sharedMemories, QDomElement perNodeMemories) /*throws JmriConfigureXmlException*/;
 
 /**
  * Utility method to load the individual Memory objects.

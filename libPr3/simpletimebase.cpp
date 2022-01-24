@@ -35,11 +35,11 @@
  */
 //public class SimpleTimebase extends jmri.implementation.AbstractNamedBean implements Timebase
 
-/*public*/ SimpleTimebase::SimpleTimebase(QObject* parent) : Timebase(QString("SIMPLECLOCK"), parent)
+/*public*/ SimpleTimebase::SimpleTimebase(InternalSystemConnectionMemo *memo, QObject* parent) : Timebase(QString("SIMPLECLOCK"), parent)
 {
 //super("SIMPLECLOCK");
  setProperty("JavaClassName", "jmri.jmrit.simpleclock.SimpleTimebase");
-
+ this->memo = memo;
  log = new Logger("SimpleTimebase");
  mFactor = 1.0;  // this is the rate factor for the JMRI fast clock
  hardwareFactor = 1.0;  // this is the rate factor for the hardware clock
@@ -67,9 +67,9 @@
 //    SimpleDateFormat timeStorageFormat = NULL;
 
  timer = NULL;
- //pcMinutes = new PropertyChangeSupport(this);
+ //pcMinutes = new SwingPropertyChangeSupport(this, nullptr);
  oldMinutes = 0;
- //pcs = new PropertyChangeSupport(this);
+ //pcs = new SwingPropertyChangeSupport(this, nullptr);
  // initialize time-containing memory
  try
  {
@@ -77,7 +77,7 @@
   clockMemory->setValue("--");
   clockMemory->setObjectName("clockMemory");
  }
- catch (IllegalArgumentException ex) {
+ catch (IllegalArgumentException* ex) {
   log->warn("Unable to create IMCURRENTTIME time memory variable");
  }
  // set to start counting from now
@@ -86,7 +86,7 @@
  // initialize start/stop sensor for time running
  try
  {
-  clockSensor = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->provideSensor("ISCLOCKRUNNING");
+  clockSensor = InstanceManager::sensorManagerInstance()->provideSensor(memo->getSystemPrefix()+"SCLOCKRUNNING");
   clockSensor->setKnownState(Sensor::ACTIVE);
 //     clockSensor.addPropertyChangeListener(
 //             new PropertyChangeListener() {
@@ -98,9 +98,9 @@
   clockSensor->addPropertyChangeListener(new ClockSensorPropertChangeListener(this));
   //connect(clockSensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(onPropertyChange(PropertyChangeEvent*)));
  }
- catch (JmriException e)
+ catch (JmriException* e)
  {
-  log->warn("Exception setting ISCLOCKRUNNING sensor ACTIVE: " + e.getMessage());
+  log->warn("Exception setting ISCLOCKRUNNING sensor ACTIVE: " + e->getMessage());
  }
  // initialize rate factor-containing memory
  if (InstanceManager::getNullableDefault("MemoryManager") != NULL)
@@ -111,7 +111,7 @@
    factorMemory = InstanceManager::memoryManagerInstance()->provideMemory("IMRATEFACTOR");
    factorMemory->setValue(userGetRate());
   }
-  catch (IllegalArgumentException ex)
+  catch (IllegalArgumentException* ex)
   {
    log->warn("Unable to create IMRATEFACTOR time memory variable");
   }
@@ -217,9 +217,9 @@ SimpleTimebase::~SimpleTimebase()
    try {
     clockSensor->setKnownState(Sensor::ACTIVE);
    }
-   catch (JmriException e)
+   catch (JmriException* e)
    {
-    log->warn("Exception setting ISClockRunning sensor ACTIVE: "+e.getMessage());
+    log->warn("Exception setting ISClockRunning sensor ACTIVE: "+e->getMessage());
    }
   }
  }
@@ -239,8 +239,8 @@ SimpleTimebase::~SimpleTimebase()
         if (clockSensor!=NULL) {
             try {
                 clockSensor->setKnownState(Sensor::INACTIVE);
-            } catch (JmriException e) {
-                log->warn("Exception setting ISClockRunning sensor INACTIVE: "+e.getMessage());
+            } catch (JmriException* e) {
+                log->warn("Exception setting ISClockRunning sensor INACTIVE: "+e->getMessage());
             }
         }
     }
@@ -674,6 +674,6 @@ void SimpleTimebase::updateMemory(double factor) {
     return getPropertyChangeListeners("minutes");
 }
 
-/*public*/ void SimpleTimebase::setState(int s) throw (JmriException){}
+/*public*/ void SimpleTimebase::setState(int s) /*throw (JmriException)*/{}
 /*public*/ int SimpleTimebase::getState(){ return 0; }
 

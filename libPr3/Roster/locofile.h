@@ -3,7 +3,6 @@
 #include <QtXml>
 #include "xmlfile.h"
 #include "Roster/cvtablemodel.h"
-#include "Roster/indexedcvtablemodel.h"
 #include "rosterentry.h"
 #include "Roster/variabletablemodel.h"
 

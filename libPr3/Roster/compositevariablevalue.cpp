@@ -47,7 +47,7 @@
 /*public*/ CompositeVariableValue::CompositeVariableValue(QString name, QString comment, QString cvName,
                          bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly,
                          QString cvNum, QString mask, int minVal, int maxVal,
-                         QMap<QString,CvValue*>* v, QLabel* status, QString stdname, QObject *parent)
+                         QMap<QString,CvValue*>* v, JLabel* status, QString stdname, QObject *parent)
     : EnumVariableValue(name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cvNum, mask, minVal, maxVal, v, status, stdname, parent)
 {
     //super(name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cvNum, mask, minVal, maxVal, v, status, stdname);
@@ -78,21 +78,21 @@
     writingChanges = false;
 }
 
-/*public*/ QVector<CvValue*>* CompositeVariableValue::usesCVs() {
-    QSet<CvValue*>* cvSet = new QSet<CvValue*>();  // 20 is arbitrary
+/*public*/ QVector<CvValue *> CompositeVariableValue::usesCVs() {
+    QSet<CvValue*> cvSet = QSet<CvValue*>();  // 20 is arbitrary
     QSetIterator<VariableValue*> i(*variables);
     while (i.hasNext())
     {
      VariableValue* v = i.next();
-        QVector<CvValue*>* cvs = v->usesCVs();
-        for (int k=0; k<cvs->count(); k++)
-            cvSet->insert(cvs->at(k));
+        QVector<CvValue*> cvs = v->usesCVs();
+        for (int k=0; k<cvs.count(); k++)
+            cvSet.insert(cvs.at(k));
     }
-    QVector<CvValue*>* retval = new /*CvValue[cvSet->size()];*/  QVector<CvValue*>(cvSet->size(), NULL);
-    QSetIterator<CvValue*> j (*cvSet);
+    QVector<CvValue*> retval =  /*CvValue[cvSet->size()];*/  QVector<CvValue*>(cvSet.size(), NULL);
+    QSetIterator<CvValue*> j (cvSet);
     int index = 0;
     while (j.hasNext()) {
-        retval->replace(index++, j.next());
+        retval.replace(index++, j.next());
     }
     return retval;
 }
@@ -164,7 +164,7 @@
     return "composite: "+QString::number(_minVal)+" - "+QString::number(_maxVal);
 }
 
-/*public*/ void CompositeVariableValue::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void CompositeVariableValue::actionPerformed(JActionEvent* /*e*/)
 {
  // see if this is from _value itself, or from an alternate rep.
  // if from an alternate rep, it will contain the value to select

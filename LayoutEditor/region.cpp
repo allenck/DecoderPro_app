@@ -115,7 +115,7 @@ void Region::initPath(QVector<QVector3D>* points) {
             }
         }
         return true;
-    } catch (Exception e) {
+    } catch (Exception* e) {
         return false;
     }
 }

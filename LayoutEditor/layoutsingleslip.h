@@ -6,7 +6,7 @@ class LayoutSingleSlip : public LayoutSlip
 {
   Q_OBJECT
  public:
-  /*public*/ LayoutSingleSlip(QString id, QPointF c, double rot, LayoutEditor* layoutEditor);
+  /*public*/ LayoutSingleSlip(QString id,  LayoutEditor* layoutEditor);
 
 };
 

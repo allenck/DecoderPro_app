@@ -49,7 +49,7 @@
         try {
          bool ok;
             float f = len.toFloat(&ok);
-            if(!ok) throw NumberFormatException();
+            if(!ok) throw new NumberFormatException();
             if (_units->isChecked()) {
                 _lengthField->setText(QString::number(f / 2.54f));
                 _units->setText("in");
@@ -57,7 +57,7 @@
                 _lengthField->setText(QString::number(f * 2.54f));
                 _units->setText("cm");
             }
-        } catch (NumberFormatException nfe) {
+        } catch (NumberFormatException* nfe) {
             JOptionPane::showMessageDialog(this, tr("%1 is an invalid number. Must be a positive decimal number.").arg(len),
                     tr("Make Path"), JOptionPane::INFORMATION_MESSAGE);
         }

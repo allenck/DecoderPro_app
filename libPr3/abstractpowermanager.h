@@ -2,7 +2,7 @@
 #define ABSTRACTPOWERMANAGER_H
 #include "powermanager.h"
 #include "systemconnectionmemo.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include <QMutex>
 
 class LIBPR3SHARED_EXPORT AbstractPowerManager : public PowerManager
@@ -13,7 +13,7 @@ public:
  QString getUserName();
  virtual void removePropertyChangeListener(PropertyChangeListener* l);
  virtual /*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
- //PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+ //SwingPropertyChangeSupport* pcs;// = new SwingPropertyChangeSupport(this, nullptr);
 
 signals:
  //void propertyChange(QString p, QVariant old, QVariant n);

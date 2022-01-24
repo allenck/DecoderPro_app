@@ -1169,8 +1169,8 @@ void SlipTurnoutIcon::on_slipTurnoutTextEdit()
     try {
         f->initComponents(this, name);
         }
-    catch (Exception ex) {
-        log->error("Exception: "+ex.getMessage());
+    catch (Exception* ex) {
+        log->error("Exception: "+ex->getMessage());
         }
     f->setVisible(true);
 

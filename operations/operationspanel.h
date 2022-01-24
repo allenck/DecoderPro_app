@@ -4,18 +4,19 @@
 #include "preferencespanel.h"
 #include "appslib_global.h"
 
+class QWidget;
+class JPanel;
 class JTextArea;
 class HtmlTextEdit;
 class QSCrollArea;
 class JTable;
-class QComboBox;
+class JComboBox;
 class ChangeEvent;
 class QSpinBox;
 class QCheckBox;
 class QRadioButton;
 class Logger;
-class QSignalMapper;
-class ActionEvent;
+class JActionEvent;
 class QPushButton;
 namespace Operations
 {
@@ -36,11 +37,8 @@ namespace Operations
  signals:
 
  public slots:
+
  private:
-  QSignalMapper* buttonMapper;
-  QSignalMapper* radioButtonMapper;
-  QSignalMapper* checkBoxMapper;
-  QSignalMapper* comboBoxMapper;
   Logger* log;
   /*private*/ static /*final*/ int MIN_CHECKBOXES;// = 5;
   /*private*/ static /*final*/ int MAX_CHECKBOXES;// = 11;
@@ -50,19 +48,15 @@ namespace Operations
   /*protected*/ void addButtonAction(QPushButton* b);
   /*protected*/ void addRadioButtonAction(QRadioButton* b);
   /*protected*/ void addCheckBoxAction(QCheckBox* b);
-  /*protected*/ void addComboBoxAction(QComboBox* b);
-  /*protected*/ void selectNextItemComboBox(QComboBox* b);
+  /*protected*/ void addComboBoxAction(JComboBox *b);
+  /*protected*/ void selectNextItemComboBox(JComboBox* b);
   /*protected*/ void clearTableSort(JTable* table);
-  /*protected*/ void addItem(QWidget* c, int x, int y);
-  /*protected*/ void addItemLeft(QWidget* c, int x, int y);
-  /*protected*/ void addItemWidth(QWidget* c, int width, int x, int y);
-  /*protected*/ void addItem(QWidget* p, QWidget* c, int x, int y);
-  /*protected*/ void addItemLeft(QWidget* p, QWidget* c, int x, int y);
-  /*protected*/ void addItemTop(QWidget* p, QWidget* c, int x, int y);
-  /*protected*/ void addItemWidth(QWidget* p, QWidget* c, int width, int x, int y);
-  /*protected*/ int getNumberOfCheckboxesPerLine() ;
+  /*protected*/ void addItem(QWidget *c, int x, int y);
+  /*protected*/ void addItemLeft(JPanel* p, QWidget *c, int x, int y);
+  /*protected*/ void addItem(JPanel *p, QWidget *c, int x, int y);
+  /*protected*/ void addItemTop(JPanel* p, QWidget* c, int x, int y);
+  /*protected*/ void addItemWidth(JPanel *p, QWidget *c, int width, int x, int y);
   /*protected*/ int getNumberOfCheckboxesPerLine(QSize size);
-  QString gbStyleSheet;
   /*protected*/ void storeValues();
 
  protected slots:
@@ -70,7 +64,7 @@ namespace Operations
   /*protected*/ virtual void radioButtonActionPerformed(QWidget*);
   /*protected*/ virtual void checkBoxActionPerformed(QWidget *);
   /*protected*/ void addSpinnerChangeListerner(QSpinBox* s);
-  /*protected*/ virtual void spinnerChangeEvent(ChangeEvent* ae = 0);
+  /*protected*/ virtual void spinnerChangeEvent(QWidget *ae = 0);
   /*protected*/ virtual void comboBoxActionPerformed(QWidget* ae);
   /*protected*/ void adjustTextAreaColumnWidth(QWidget* scrollPane, JTextArea* textArea);
   /*protected*/ void adjustTextAreaColumnWidth(QWidget* scrollPane, HtmlTextEdit* textArea);

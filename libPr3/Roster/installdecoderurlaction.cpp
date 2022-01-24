@@ -45,7 +45,7 @@ InstallDecoderURLAction::InstallDecoderURLAction(QObject *parent) :
 //    super(s);
 //}
 
-/*public*/InstallDecoderURLAction:: InstallDecoderURLAction(QString s, QWidget* who)
+/*public*/InstallDecoderURLAction:: InstallDecoderURLAction(QString /*s*/, QWidget* who)
  :   JmriAbstractAction(who)
 {
  //super(s);
@@ -177,18 +177,18 @@ bool InstallDecoderURLAction::copyfile(QUrl* from, File* toFile, QWidget* who)
   }
   // done - finally cleans up
 // }
- //catch (FileNotFoundException ex)
+ //catch (FileNotFoundException* ex)
  if(in == NULL)
  {
-  //log->debug("" + ex.getMessage());
+  //log->debug("" + ex->getMessage());
   //JOptionPane.showMessageDialog(who, tr("CopyError1"));
   QMessageBox::critical(who, tr("Error"), tr("File couldn't be copied"));
   return false;
  }
- //catch (IOException e)
+ //catch (IOException* e)
  if(out == NULL)
  {
-  //log->debug("" + e.getMessage());
+  //log->debug("" + e->getMessage());
   //JOptionPane.showMessageDialog(who, tr("CopyError2"));
   QMessageBox::critical(who, tr("Error"), tr("Error while copying file"));
   return false;
@@ -198,15 +198,15 @@ bool InstallDecoderURLAction::copyfile(QUrl* from, File* toFile, QWidget* who)
 //      if (in != NULL) {
 //          in->close();
 //      }
-//  } catch (IOException e1) {
-//      log->error("exception closing in stream", e1.getMessage());
+//  } catch (IOException* e1) {
+//      log->error("exception closing in stream", e1->getMessage());
 //  }
 //  try {
 //      if (out != NULL) {
 //          out->close();
 //      }
-//  } catch (IOException e2) {
-//      log->error("exception closing out stream", e2.getMessage());
+//  } catch (IOException* e2) {
+//      log->error("exception closing out stream", e2->getMessage());
 //  }
 // }
 
@@ -242,9 +242,9 @@ bool InstallDecoderURLAction::checkFile(QUrl* url, QWidget* who)
   return true;
 
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
-  log->debug( ex.getMessage());
+  log->debug( ex->getMessage());
   //JOptionPane.showMessageDialog(who, tr("ParseError"));
   QMessageBox::critical(who, tr("Error"), tr("The file doesn't contain valid XML."));
   return false;

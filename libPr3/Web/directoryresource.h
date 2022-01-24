@@ -8,7 +8,7 @@ class DirectoryResource : public Resource
  Q_OBJECT
 public:
  /*public*/ DirectoryResource(QLocale locale, Resource* resource, QObject* parent = nullptr);
- /*public*/ QString getListHTML(QString base, bool parent) throw (IOException);
+ /*public*/ QString getListHTML(QString base, bool parent) /*throw (IOException)*/;
 
 
 private:

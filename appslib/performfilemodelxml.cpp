@@ -47,7 +47,7 @@
 }
 
 //@Override
-/*public*/ bool PerformFileModelXml::load(QDomElement shared, QDomElement /*perNode*/) throw (JmriException) {
+/*public*/ bool PerformFileModelXml::load(QDomElement shared, QDomElement /*perNode*/) /*throw (JmriException)*/ {
     bool result = true;
     QString fileName = FileUtil::getAbsoluteFilename(shared.attribute("name"));
     PerformFileModel* m = new PerformFileModel();

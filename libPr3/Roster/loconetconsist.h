@@ -6,30 +6,30 @@
 
 
 class LocoNetThrottle;
-class LocoNetConsist : public DccConsist, public SlotListener
+class LocoNetConsist : public DccConsist, public SlotListener, public ThrottleListener
 {
  Q_OBJECT
- Q_INTERFACES(SlotListener)
+ Q_INTERFACES(SlotListener ThrottleListener)
 public:
  /*public*/ LocoNetConsist(int address, LocoNetSystemConnectionMemo* lm, QObject* parent = nullptr);
  /*public*/ LocoNetConsist(DccLocoAddress* address, LocoNetSystemConnectionMemo* l, QObject* parent = nullptr);
- /*public*/ void dispose();
- /*public*/ void setConsistType(int consist_type)  ;
- /*public*/ bool isAddressAllowed(DccLocoAddress* address) ;
+ /*public*/ void dispose() override;
+ /*public*/ void setConsistType(int consist_type) override  ;
+ /*public*/ bool isAddressAllowed(DccLocoAddress* address)  override;
  /*public*/ int sizeLimit() const;
- /*public*/ bool contains(DccLocoAddress* address) ;
- /*public*/ bool getLocoDirection(DccLocoAddress* address) ;
- /*public*/ /*synchronized*/ void add(DccLocoAddress* LocoAddress, bool directionNormal) ;
- /*public*/ /*synchronized*/ void restore(DccLocoAddress* LocoAddress, bool directionNormal) ;
- /*public*/ /*synchronized*/ void remove(DccLocoAddress* LocoAddress)  ;
+ /*public*/ bool contains(DccLocoAddress* address)  override;
+ /*public*/ bool getLocoDirection(DccLocoAddress* address) override ;
+ /*public*/ /*synchronized*/ void add(DccLocoAddress* LocoAddress, bool directionNormal)  override;
+ /*public*/ /*synchronized*/ void restore(DccLocoAddress* LocoAddress, bool directionNormal) override ;
+ /*public*/ /*synchronized*/ void remove(DccLocoAddress* LocoAddress) override  ;
  /*public*/ /*synchronized*/ void removeFromCSConsist(DccLocoAddress* LocoAddress);
- QObject* self() {return (QObject*)this;}
+ QObject* self() override {return (QObject*)this;}
+ /*public*/ void notifyDecisionRequired(LocoAddress* address, ThrottleListener::DecisionType question) override;
 
 public slots:
- /*public*/ void notifyFailedThrottleRequest(LocoAddress* address, QString reason);
- /*public*/ void notifyChangedSlot(LocoNetSlot* s);
- /*public*/ void notifyThrottleFound(DccThrottle* t);
- /*public*/ void notifyStealThrottleRequired(LocoAddress* address);
+ /*public*/ void notifyFailedThrottleRequest(LocoAddress* address, QString reason) override;
+ /*public*/ void notifyChangedSlot(LocoNetSlot* s) override;
+ /*public*/ void notifyThrottleFound(DccThrottle* t) override;
 
 private:
  /*private*/ SlotManager* slotManager;// = null;

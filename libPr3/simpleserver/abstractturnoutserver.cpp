@@ -74,7 +74,7 @@
             // and set commanded state to CLOSED
             turnout->setCommandedState(Turnout::CLOSED);
         }
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         log->error("Error closing turnout", ex);
     }
 }
@@ -99,7 +99,7 @@
             // and set commanded state to THROWN
             turnout->setCommandedState(Turnout::THROWN);
         }
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         log->error("Error throwing turnout", ex);
     }
 }
@@ -143,7 +143,7 @@
             int now = ( e->getNewValue()).toInt();
             try {
                 abstractTurnoutServer->sendStatus(name, now);
-            } catch (IOException ie) {
+            } catch (IOException* ie) {
                 abstractTurnoutServer->log->debug("Error Sending Status");
                 // if we get an error, de-register
                 //turnout.removePropertyChangeListener(this);

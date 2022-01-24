@@ -687,13 +687,13 @@ SlotManagerTest::SlotManagerTest(QObject *parent) : QObject(parent)
 
 //@Test
 /*public*/ void SlotManagerTest::testGetProgrammingModes() {
-    QList<ProgrammingMode*> l = slotmanager->getSupportedModes();
+    QList<QString> l = slotmanager->getSupportedModes();
     Assert::assertEquals("programming mode list length ok", 5, l.size(), __FILE__, __LINE__);
-    Assert::assertEquals("programming mode 0", ProgrammingMode::DIRECTBYTEMODE, l.at(0), __FILE__, __LINE__);
-    Assert::assertEquals("programming mode 1", ProgrammingMode::PAGEMODE, l.at(1), __FILE__, __LINE__);
-    Assert::assertEquals("programming mode 2", ProgrammingMode::REGISTERMODE, l.at(2), __FILE__, __LINE__);
-    Assert::assertEquals("programming mode 3", ProgrammingMode::ADDRESSMODE, l.at(3), __FILE__, __LINE__);
-    Assert::assertEquals("programming mode 4", "LOCONETCSOPSWMODE", l.at(4)->getStandardName(), __FILE__, __LINE__);
+    Assert::assertEquals("programming mode 0", "DIRECTBYTEMODE", l.at(0), __FILE__, __LINE__);
+    Assert::assertEquals("programming mode 1", "PAGEMODE", l.at(1), __FILE__, __LINE__);
+    Assert::assertEquals("programming mode 2", "REGISTERMODE", l.at(2), __FILE__, __LINE__);
+    Assert::assertEquals("programming mode 3", "ADDRESSMODE", l.at(3), __FILE__, __LINE__);
+    Assert::assertEquals("programming mode 4", "LOCONETCSOPSWMODE", l.at(4), __FILE__, __LINE__);
 }
 
 //@Test

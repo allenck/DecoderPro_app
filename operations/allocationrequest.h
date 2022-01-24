@@ -2,6 +2,10 @@
 #define ALLOCATIONREQUEST_H
 
 #include <QObject>
+#include "propertychangelistener.h"
+#include "instancemanager.h"
+#include "dispatcherframe.h"
+#include "signalmast.h"
 
 class SignalMast;
 class PropertyChangeListener;
@@ -60,6 +64,49 @@ protected:
  friend class DispatcherFrame;
  friend class AllocationRequestTableModel;
  friend class AutoAllocate;
+ friend class SignalMastListener;
+ friend class WaitingOnBlockListener;
+};
+
+class SignalMastListener : public QObject, public PropertyChangeListener
+{
+  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
+  AllocationRequest* ar;
+ public:
+  SignalMastListener(AllocationRequest* ar) {this->ar = ar; }
+  QObject* self() override {return (QObject*)this;}
+
+public slots:
+  void propertyChange(PropertyChangeEvent* e)override
+  {
+   if (e->getPropertyName() == ("Held")) {
+       if (!( e->getNewValue()).toBool()) {
+           ar->mWaitingForSignalMast->removePropertyChangeListener(ar->mSignalMastListener);
+           ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->queueScanOfAllocationRequests();
+       }
+   }
+  }
+};
+
+class WaitingOnBlockListener : public QObject, public PropertyChangeListener
+{
+  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
+  AllocationRequest* ar;
+ public:
+  WaitingOnBlockListener(AllocationRequest* ar) {this->ar = ar; }
+  QObject* self() override {return (QObject*)this;}
+
+public slots:
+  void propertyChange(PropertyChangeEvent* e)override
+  {
+   if (e->getPropertyName() == ("state")) {
+       if (( e->getNewValue()).toInt() == Block::UNOCCUPIED) {
+           ar->mWaitingOnBlock->removePropertyChangeListener(ar->mWaitingOnBlockListener);
+           ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->queueScanOfAllocationRequests();
+       }
+   }  }
 };
 
 #endif // ALLOCATIONREQUEST_H

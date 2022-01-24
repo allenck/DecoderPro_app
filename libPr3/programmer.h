@@ -145,7 +145,7 @@ public:
   * @param p   the listener that will be notified of the write
   * @throws jmri.ProgrammerException if unable to communicate
   */
- virtual /*public*/ void writeCV(QString /*CV*/, int /*val*/, ProgListener* /*p*/) throw (ProgrammerException) =0;
+ virtual /*public*/ void writeCV(QString /*CV*/, int /*val*/, ProgListener* /*p*/) /*throw (ProgrammerException)*/ =0;
  /**
       * Perform a CV read in the system-specific manner, and using the specified
   * programming mode.
@@ -166,7 +166,7 @@ public:
   * @param p  the listener that will be notified of the read
   * @throws jmri.ProgrammerException if unable to communicate
   */
- virtual /*public*/ void readCV(QString /*CV*/, ProgListener* /*p*/) throw (ProgrammerException) =0;
+ virtual /*public*/ void readCV(QString /*CV*/, ProgListener* /*p*/) /*throw (ProgrammerException)*/ =0;
  /**
   * Confirm the value of a CV using the specified programming mode. On some
   * systems, this is faster than a read.
@@ -188,12 +188,12 @@ public:
   * @param p   the listener that will be notified of the confirmation
   * @throws jmri.ProgrammerException if unable to communicate
   */
-  virtual /*public*/ void confirmCV(QString /*CV*/, int /*val*/, ProgListener* /*p*/) throw (ProgrammerException) =0;
+  virtual /*public*/ void confirmCV(QString /*CV*/, int /*val*/, ProgListener* /*p*/) /*throw (ProgrammerException)*/ =0;
 /**
  * Get the list of {@link ProgrammingMode} supported by this
  * Programmer. If the order is significant, earlier modes are better.
  */
-    /*public*/ virtual QList<ProgrammingMode*> getSupportedModes() {return QList<ProgrammingMode*>();}
+  /*public*/ virtual QList<QString> getSupportedModes() =0;
   virtual void setMode(ProgrammingMode* /*mode*/) =0;
   virtual ProgrammingMode*  getMode() =0;
 //virtual bool hasMode(int mode) {return false;}

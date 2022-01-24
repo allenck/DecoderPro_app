@@ -23,7 +23,7 @@ namespace Operations
      connect(this, SIGNAL(triggered()),this, SLOT(actionPerformed()));
  }
 
- /*public*/ void AlternateTrackAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void AlternateTrackAction::actionPerformed(JActionEvent * /*e*/) {
      new AlternateTrackFrame(_tef);
  }
 }

@@ -4,7 +4,7 @@
 #include "fileutil.h"
 #include "jfilechooser.h"
 #include "../../../../PythonQt/pythonqt-code/src/PythonQt.h"
-//#include "PythonQt_QtAll.h"
+#include "PythonQt_QtAll.h"
 #include "jframe.h"
 #include "pythonwrappers.h"
 
@@ -177,7 +177,7 @@ void RunJythonScript::invoke(File* file)
 // never invoked, because we overrode actionPerformed above
 /*public*/ JmriPanel* RunJythonScript::makePanel()
 {
- throw  IllegalArgumentException("Should not be invoked");
+ throw new IllegalArgumentException("Should not be invoked");
 }
 
 void RunJythonScript::On_stdErr(const QString& s)

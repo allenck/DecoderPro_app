@@ -6,7 +6,7 @@
 
 class ResourceBundle;
 class LocoNetMessage;
-class ActionEvent;
+class JActionEvent;
 class QLabel;
 class QPushButton;
 class QRadioButton;
@@ -28,8 +28,8 @@ signals:
 
 public slots:
     void updateVisibility(bool show);
-    /*public*/ void readButtonActionPerformed(ActionEvent* e = 0);
-    /*public*/ void writeButtonActionPerformed(ActionEvent* e = 0);
+    /*public*/ void readButtonActionPerformed(JActionEvent* e = 0);
+    /*public*/ void writeButtonActionPerformed(JActionEvent* e = 0);
     /*public*/ void message(LocoNetMessage* msg);
 
 private:

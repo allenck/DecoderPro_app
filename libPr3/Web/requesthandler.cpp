@@ -3,7 +3,7 @@
   @author Stefan Frings
 */
 
-#include <logging/filelogger.h>
+#include <../QtWebApp/logging/filelogger.h>
 #include "requesthandler.h"
 #include "rosterservlet.h"
 #include "httpserver/staticfilecontroller.h"

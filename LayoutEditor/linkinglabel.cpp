@@ -5,7 +5,7 @@
 #include "coordinateedit.h"
 #include "loggerfactory.h"
 
-LinkingLabel::LinkingLabel(QWidget *parent) : PositionableLabel(parent)
+LinkingLabel::LinkingLabel(QWidget *parent) : PositionableLabel((Positionable*)parent)
 {
 
 }
@@ -85,11 +85,9 @@ LinkingLabel::LinkingLabel(QWidget *parent) : PositionableLabel(parent)
 //           @Override
 //           /*public*/ void run() {
                //if frame was minimized, restore
-#if 0 // TODO:
                if (jframe->getExtendedState() == JFrame::ICONIFIED) {
                    jframe->setExtendedState(JFrame::NORMAL);
                }
-#endif
                //bring the frame to the foreground
                jframe->toFront();
                jframe->update();
@@ -101,7 +99,7 @@ LinkingLabel::LinkingLabel(QWidget *parent) : PositionableLabel(parent)
   } else if (url.length() > 0) {
 //      ExternalLinkContentViewerUI.activateURL(new java.net.URL(url));
   }
- } catch (IOException /*| URISyntaxException*/ t) {
+ } catch (IOException* /*| URISyntaxException*/ t) {
      log->error("Error handling link", t);
  }
  PositionableLabel::doMouseClicked(event);

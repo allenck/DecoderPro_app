@@ -18,9 +18,9 @@ void LnPortControllerTestAction::actionPerformed()
        << "testisDirtyNotNPE";
      JUnitUtil::runTests(lnpct, testList);
     }
-    catch (AssertionError er)
+    catch (AssertionError* er)
     {
-        JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
+        JOptionPane::showMessageDialog(nullptr, er->getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
     }
 }
 Logger* LnPortControllerTestAction::log = LoggerFactory::getLogger("LnPortControllerTestAction");

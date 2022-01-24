@@ -49,7 +49,7 @@ PaneProgPaneTest::PaneProgPaneTest(QObject *parent) : QObject(parent)
 
     // create test object with special implementation of the newColumn(String) operation
     colCount = 0;
-    PaneProgPaneO1* pane = new PaneProgPaneO1(pFrame, "name", pane1, cvModel, varModel, QDomElement(), nullptr, this);
+    PaneProgPaneO1* pane = new PaneProgPaneO1(pFrame, "name", pane1, cvModel, varModel, QDomElement(), nullptr, false, this);
 //    {
 //        @Override
 //        /*public*/ JPanel newColumn(QDomElement e, boolean a, QDomElement el) {
@@ -62,15 +62,15 @@ PaneProgPaneTest::PaneProgPaneTest(QObject *parent) : QObject(parent)
     JUnitUtil::dispose(pFrame);
 }
 //@Override
-/*protected*/ QWidget* PaneProgFrameO1::getModePane()
+/*protected*/ JPanel *PaneProgFrameO1::getModePane()
 {
     return nullptr;
 }
 
 
-/*public*/ QWidget *PaneProgPaneO1::newColumn(QDomElement e, bool a, QDomElement el) {
+/*public*/ JPanel *PaneProgPaneO1::newColumn(QDomElement e, bool a, QDomElement el) {
     test->colCount++;
-    return new QWidget();
+    return new JPanel();
 }
 
 // test specifying variables in columns
@@ -108,8 +108,8 @@ PaneProgPaneTest::PaneProgPaneTest(QObject *parent) : QObject(parent)
 }
 
 //@Override
-/*public*/ void PaneProgPaneO2::newVariable(QDomElement /*e*/, QWidget* /*p*/,
-        QGridLayout* /*g*/, GridBagConstraints* /*c*/, bool /*a*/)
+/*public*/ void PaneProgPaneO2::newVariable(QDomElement /*e*/, JPanel* /*p*/,
+        GridBagLayout * /*g*/, GridBagConstraints* /*c*/, bool /*a*/)
 {
     test->varCount++;
 }

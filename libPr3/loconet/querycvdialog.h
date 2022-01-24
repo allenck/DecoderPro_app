@@ -9,10 +9,11 @@ namespace Ui {
 class QueryCvDialog;
 }
 class LIBPR3SHARED_EXPORT QueryCvDialog : public QWidget
-{  Q_OBJECT
+{
+  Q_OBJECT
 
 public:
- explicit QueryCvDialog(QWidget* parent = 0);
+ Q_INVOKABLE explicit QueryCvDialog(QWidget* parent = 0);
  QueryCvDialog(LocoIOData* data, LocoBufferAdapter* locobufferadapter, bool bHex, QWidget *parent = 0);
  ~QueryCvDialog();
  QueryCvDialog(const QueryCvDialog&) : QWidget() {}
@@ -37,5 +38,5 @@ private:
  void on_btnCancel_clicked();
  void on_edCv_editingFinished();
 };
-
+Q_DECLARE_METATYPE(QueryCvDialog)
 #endif // QUERYCVDIALOG_H

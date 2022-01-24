@@ -2,21 +2,24 @@
 #define ROUTECOPYACTION_H
 
 #include "abstractaction.h"
+#include "route.h"
+#include <QPointer>
+#include "routecopyframe.h"
 
 namespace Operations
 {
- class RouteCopyFrame;
  class RouteCopyAction : public AbstractAction
  {
   Q_OBJECT
  public:
-  /*public*/ RouteCopyAction(QString s, QObject* parent);
-  /*public*/ RouteCopyAction(QString s, QString routeName,  QObject* parent);
+  /*public*/ RouteCopyAction(QObject* parent);
+  /*public*/ RouteCopyAction(Route* route,  QObject* parent);
 
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e = 0);
+  /*public*/ void actionPerformed(JActionEvent* e = 0);
  private:
-  RouteCopyFrame* f;// = null;
+  Route* _route = nullptr;
+  QPointer<RouteCopyFrame> f = nullptr;
   void common();
   QString routeName;
 

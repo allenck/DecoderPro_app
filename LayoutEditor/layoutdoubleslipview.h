@@ -7,7 +7,8 @@ class LayoutDoubleSlipView : public LayoutSlipView
 {
   Q_OBJECT
  public:
-  LayoutDoubleSlipView(/*@Nonnull*/ LayoutDoubleSlip* slip);
+  /*public*/ LayoutDoubleSlipView(/*@Nonnull*/ LayoutDoubleSlip* slip, QPointF c, double rot, /*@Nonnull*/ LayoutEditor* layoutEditor);
+
 };
 
 #endif // LAYOUTDOUBLESLIPVIEW_H

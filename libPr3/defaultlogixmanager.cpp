@@ -9,41 +9,30 @@
 #include "warrantmanager.h"
 #include "signalheadmanager.h"
 #include "signalmastmanager.h"
+#include "loggerfactory.h"
 
 /*static*/ DefaultLogixManager* DefaultLogixManager::_instance = nullptr;
 
 DefaultLogixManager::DefaultLogixManager(QObject *parent) :
-    LogixManager(parent)
+    AbstractManager(parent)
 {
  setObjectName("DefaultLogixManager");
  setProperty("JavaClassName", "jmri.managers.DefaultLogixManager");
 
- log = new Logger("DefaultLogixManager");
  paddedNumber = new DecimalFormat("0000");
  registerSelf();
 
- //jmri.InstanceManager.turnoutManagerInstance().addVetoableChangeListener(this);
- connect(InstanceManager::turnoutManagerInstance(), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
- //jmri.InstanceManager.sensorManagerInstance().addVetoableChangeListener(this);
- connect(InstanceManager::sensorManagerInstance(), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
- //jmri.InstanceManager.memoryManagerInstance().addVetoableChangeListener(this);
- connect(InstanceManager::memoryManagerInstance(), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
- //jmri.InstanceManager.getDefault(jmri.SignalHeadManager.class).addVetoableChangeListener(this);
- connect(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
- //jmri.InstanceManager.getDefault(jmri.SignalMastManager.class).addVetoableChangeListener(this);
- connect(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager")), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
- //jmri.InstanceManager.getDefault(jmri.BlockManager.class).addVetoableChangeListener(this);
- connect(static_cast<BlockManager*>(InstanceManager::getDefault("BlockManager")), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
- //jmri.InstanceManager.lightManagerInstance().addVetoableChangeListener(this);
- connect(InstanceManager::lightManagerInstance(), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
- //jmri.InstanceManager.getDefault(jmri.ConditionalManager.class).addVetoableChangeListener(this);
- connect(static_cast<ConditionalManager*>(InstanceManager::getDefault("ConditionalManager")), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
- //InstanceManager.getDefault(jmri.jmrit.logix.WarrantManager.class).addVetoableChangeListener(this);
- connect(static_cast<WarrantManager*>(InstanceManager::getDefault("WarrantManager")), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
- //InstanceManager.getDefault(jmri.jmrit.logix.OBlockManager.class).addVetoableChangeListener(this);
- connect(static_cast<OBlockManager*>(InstanceManager::getDefault("OBlockManager")), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
- //InstanceManager.getDefault(jmri.jmrit.entryexit.EntryExitPairs.class).addVetoableChangeListener(this);
- connect(static_cast<EntryExitPairs*>(InstanceManager::getDefault("EntryExitPairs")), SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ InstanceManager::turnoutManagerInstance()->addVetoableChangeListener(this);
+ InstanceManager::sensorManagerInstance()->addVetoableChangeListener(this);
+ InstanceManager::memoryManagerInstance()->addVetoableChangeListener(this);
+ ((AbstractProxyManager*)InstanceManager::getDefault("SignalHeadManager"))->addVetoableChangeListener(this);
+ ((AbstractProxyManager*)InstanceManager::getDefault("SignalMastManager"))->addVetoableChangeListener(this);
+ ((AbstractManager*)InstanceManager::getDefault("BlockManager"))->VetoableChangeSupport::addVetoableChangeListener(this);
+ InstanceManager::lightManagerInstance()->addVetoableChangeListener(this);
+ ((AbstractManager*)InstanceManager::getDefault("ConditionalManager"))->VetoableChangeSupport::addVetoableChangeListener(this);
+ ((AbstractManager*) InstanceManager::getDefault("WarrantManager"))->VetoableChangeSupport::addVetoableChangeListener(this);
+ ((AbstractManager*)InstanceManager::getDefault("OBlockManager"))->VetoableChangeSupport::addVetoableChangeListener(this);
+ ((AbstractManager*)InstanceManager::getDefault("EntryExitPairs"))->VetoableChangeSupport::addVetoableChangeListener(this);
 }
 /**
  * Basic Implementation of a LogixManager.
@@ -70,8 +59,8 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
     return Manager::LOGIXS;
 }
 
-/*public*/ QString DefaultLogixManager::getSystemPrefix()const { return "I"; }
-/*public*/ char DefaultLogixManager::typeLetter()const { return 'X'; }
+/*public*/ QString DefaultLogixManager::getSystemPrefix() { return "I"; }
+/*public*/ QChar DefaultLogixManager::typeLetter() { return 'X'; }
 
 /**
  * Method to create a new Logix if the Logix does not exist
@@ -91,34 +80,16 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
     // Logix does not exist, create a new Logix
     x = (Logix*)new DefaultLogix(systemName,userName);
     // save in the maps
-    Register(x);
-    //emit newLogixCreated(x);
-    emit propertyChange(new PropertyChangeEvent(this, "length", QVariant(), QVariant(_tsys->count())));
+    AbstractManager::Register(x);
 
-    /*The following keeps trace of the last created auto system name.
-    currently we do not reuse numbers, although there is nothing to stop the
-    user from manually recreating them*/
-    if (systemName.startsWith("IX:AUTO:"))
-    {
-     bool bOk;
-     int autoNumber = systemName.mid(8).toInt(&bOk);
-     if (autoNumber > lastAutoLogixRef)
-     {
-      lastAutoLogixRef = autoNumber;
-     }
-     if(!bOk)
-       log->warn("Auto generated SystemName "+ systemName + " is not in the correct format");
+    // Keep track of the last created auto system name
+    updateAutoNumber(systemName);
 
- }
  return x;
 }
 
 /*public*/ Logix* DefaultLogixManager::createNewLogix(QString userName) {
-    int nextAutoLogixRef = lastAutoLogixRef+1;
-    QString b = QString("IX:AUTO:");
-    QString nextNumber = paddedNumber->format(nextAutoLogixRef);
-    b.append(nextNumber);
-    return createNewLogix(b, userName);
+ return createNewLogix(getAutoSystemName(), userName);
 }
 
 /**
@@ -138,7 +109,7 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
         }
     }
     // delete the Logix
-    deregister(x);
+    AbstractManager::deregister(x);
     x->dispose();
 }
 
@@ -154,7 +125,7 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
         x->setGuiNames();
     }
     // iterate thru all Logixs that exist
-    QStringListIterator iter(getSystemNameList());
+    QStringListIterator iter(AbstractManager::getSystemNameList());
     while (iter.hasNext()) {
         // get the next Logix
         QString sysName = iter.next();
@@ -197,19 +168,17 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
 }
 
 /*public*/ NamedBean *DefaultLogixManager::getBySystemName(QString name) const {
-    return (Logix*)_tsys->value(name);
+    return /*(Logix*)*/_tsys->value(name);
 }
 
 /*public*/ NamedBean *DefaultLogixManager::getByUserName(QString key) const {
-    return _tuser->value(key);
+    return /*(Logix*)*/_tuser->value(key);
 }
 
 /**
  * Support for loading Logixs in a disabled state to debug loops
  */
 /*public*/ void DefaultLogixManager::setLoadDisabled(bool s) {loadDisabled = s;}
-
-/*public*/ bool DefaultLogixManager::getLoadDisabled() const {return loadDisabled;}
 
 /*static*/ /*public*/ DefaultLogixManager* DefaultLogixManager::instance() {
     if (_instance == nullptr) {
@@ -218,5 +187,15 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
     return (_instance);
 }
 
-//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(DefaultLogixManager.class.getName());
+//@Override
+//@Nonnull
+/*public*/ QString DefaultLogixManager::getBeanTypeHandled(bool plural) const {
+    return tr(plural ? "Logixes" : "Logix");
+}
+
+/*public*/ QString DefaultLogixManager::getNamedBeanClass()const {
+    return "Logix";
+}
+
+/*static*/ Logger* DefaultLogixManager::log = LoggerFactory::getLogger("DefaultLogixManager");
 //}

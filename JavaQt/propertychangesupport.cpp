@@ -1,4 +1,4 @@
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "indexedpropertychangeevent.h"
 #include "exceptions.h"
 #include <QDebug>
@@ -54,22 +54,23 @@
 //public class PropertyChangeSupport implements Serializable {
 
 
-/**
- * Constructs a <code>PropertyChangeSupport</code> object.
- *
- * @param sourceBean  The bean to be given as the source for any events.
- */
-/*public*/ PropertyChangeSupport::PropertyChangeSupport(QObject* sourceBean, QObject *parent)
- : QObject(parent)
-{
- this->parent = parent;
- if (sourceBean == NULL) 
- {
-  throw NullPointerException("Null Pointer");
- }
- map = new PropertyChangeListenerMap();
- source = sourceBean;
-}
+///**
+// * Constructs a <code>PropertyChangeSupport</code> object.
+// *
+// * @param sourceBean  The bean to be given as the source for any events.
+// */
+///*public*/ PropertyChangeSupport::PropertyChangeSupport(QObject* sourceBean, QObject *parent)
+// : QObject(parent)
+//{
+// this->parent = parent;
+// if (sourceBean == NULL)
+// {
+
+//  throw new NullPointerException("PropertyChangeSupport:Null Pointer (Source)");
+// }
+// map = new PropertyChangeListenerMap();
+// source = sourceBean;
+//}
 
 /**
  * Add a PropertyChangeListener to the listener list.
@@ -87,6 +88,11 @@
  {
   return;
  }
+
+ // If a listener has no self() function, a chrash here will occur!
+ if(listener->self()->metaObject() == nullptr)
+  return;
+
  // add to catch bad listener pointers: qDebug()<< tr("add listener ") + listener->metaObject()->className();
 
 // if (qobject_cast<PropertyChangeListenerProxy*>(listener) != nullptr)
@@ -99,9 +105,9 @@
 // }
 // else
  {
-  QPointer<PropertyChangeListener> l = listener;
-  this->map->add("", l);
-  connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+  //QPointer<PropertyChangeListener> l = listener;
+  this->map->add("", /*l*/listener);
+  //connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 
@@ -123,7 +129,7 @@
   return;
  }
 #if 1
- if (qobject_cast<PropertyChangeListenerProxy*>(listener) != nullptr)
+ if (qobject_cast<PropertyChangeListenerProxy*>(listener->self()) != nullptr)
  {
   PropertyChangeListenerProxy* proxy =
                 (PropertyChangeListenerProxy*)listener;
@@ -135,7 +141,7 @@
 #endif
  {
   this->map->remove("", listener);
-  disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+//  disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 
@@ -170,8 +176,9 @@
  *         empty array if no listeners have been added
  * @since 1.4
  */
-/*public*/ QVector<PropertyChangeListener*> PropertyChangeSupport::getPropertyChangeListeners() {
-    return this->map->getListeners();
+/*public*/ QVector<PropertyChangeListener*> PropertyChangeSupport::getPropertyChangeListeners() const{
+ return propertyChangeSupport->getPropertyChangeListeners();
+
 }
 
 /**
@@ -199,7 +206,7 @@
  if (listener != NULL)
  {
   this->map->add(propertyName, listener);
-  connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+//  connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 
@@ -243,7 +250,7 @@
  * @since 1.4
  */
 /*public*/ QVector<PropertyChangeListener*> PropertyChangeSupport::getPropertyChangeListeners(QString propertyName) {
-    return this->map->getListeners(propertyName);
+    return propertyChangeSupport->getPropertyChangeListeners(propertyName);
 }
 
 /**
@@ -268,13 +275,13 @@
  firePropertyChange(new PropertyChangeEvent(this->source, propertyName, oldValue, newValue));
 }
 
-//void PropertyChangeSupport::firePropertyChange(QString propertyName, QObject* oldValue, QObject* newValue)
-//{
-// if ( !(oldValue==newValue))
-// {
-//  firePropertyChange(new PropertyChangeEvent(this->source, propertyName, oldValue, newValue));
-// }
-//}
+/*public*/ void PropertyChangeSupport::firePropertyChange(QString propertyName, QObject* oldValue, QObject* newValue)
+{
+ if ( !(oldValue==newValue))
+ {
+  firePropertyChange(new PropertyChangeEvent(this->source, propertyName, oldValue, newValue));
+ }
+}
 /**
  * Reports a boolean bound property update to listeners
  * that have been registered to track updates of
@@ -289,7 +296,7 @@
  * @param oldValue      the old value of the property
  * @param newValue      the new value of the property
  */
-/*public*/ void PropertyChangeSupport::firePropertyChange(QString propertyName, bool oldValue, bool newValue)
+/*public*/ void PropertyChangeSupport::firePropertyChange(QString propertyName, bool oldValue, bool newValue) const
 {
  if (oldValue != newValue)
  {
@@ -306,7 +313,7 @@
  *
  * @param event  the {@code PropertyChangeEvent} to be fired
  */
-/*public*/ void PropertyChangeSupport::firePropertyChange(PropertyChangeEvent* event)
+/*public*/ void PropertyChangeSupport::firePropertyChange(PropertyChangeEvent* event) const
 {
  QVariant oldValue = event->getOldValue();
  QVariant newValue = event->getNewValue();
@@ -319,12 +326,12 @@
 
   fire(common, event);
   fire(named, event);
-  emit propertyChange(event);
+  //emit propertyChange(event);
   foreach (PropertyChangeListener* l, common)
   {
-   if(!QMetaObject::invokeMethod(l, "propertyChange", Qt::AutoConnection, Q_ARG(PropertyChangeEvent*, event)))
+   if(!QMetaObject::invokeMethod(/*l->self()*/l->self(), "propertyChange", Qt::AutoConnection, Q_ARG(PropertyChangeEvent*, event)))
    {
-       Logger::error(tr("invoke method 'propertyChange' failed for %1").arg(l->metaObject()->className()));
+       Logger::error(tr("invoke method 'propertyChange' failed for %1").arg(l->self()->metaObject()->className()));
        return;
    }
   }
@@ -338,21 +345,24 @@
   foreach(PropertyChangeListener* listener, listeners)
   {
    if(listener != NULL)
-   {
-    //if(qobject_cast<PropertyChangeListener*>(listener) != NULL)
+   { // NOTE: listener MUST be derived from PropertyChangeListener!!!
+    if(qobject_cast<PropertyChangeListener*>(listener->self()) != NULL)
     {
      //((PropertyChangeListener*)listener)->propertyChange(event);
-     if(!QMetaObject::invokeMethod(listener, "propertyChange", Qt::AutoConnection, Q_ARG(PropertyChangeEvent*, event)))
+     QObject* s = listener->self();
+     //int ix = s->metaObject()->indexOfMethod("propertyChange");
+
+     if(!QMetaObject::invokeMethod(s, "propertyChange", Qt::AutoConnection, Q_ARG(PropertyChangeEvent *, event)))
      {
-         Logger::error(tr("invoke method 'propertyChange' failed for %1").arg(listener->metaObject()->className()));
+         Logger::error(tr("invoke method 'propertyChange' failed for %1").arg(s->metaObject()->className()));
          return;
      }
     }
-//    else
-//    {
-//     Logger::error(tr("not implemented %1").arg(listener->metaObject()->className()));
-//    //Q_ASSERT(false);
-//    }
+    else
+    {
+     Logger::error(tr("PropertyChangeListener not implemented %1").arg(listener->self()->metaObject()->className()));
+    //Q_ASSERT(false);
+    }
      // NOTE: Class must have a Q_OBJECT macro otherwise you will get  a "void value not ignored as it ought to be error on Q_OBJECT!
    }
   }
@@ -376,7 +386,7 @@
  * @param newValue      the new value of the property
  * @since 1.5
  */
-/*public*/ void PropertyChangeSupport::fireIndexedPropertyChange(QString propertyName, int index, QVariant oldValue, QVariant newValue)
+/*public*/ void PropertyChangeSupport::fireIndexedPropertyChange(QString propertyName, int index, QVariant oldValue, QVariant newValue) const
 {
  if (oldValue == QVariant() || newValue == QVariant() || !(oldValue == newValue))
  {

@@ -5,7 +5,7 @@
 
 PerformFileModelFactory::PerformFileModelFactory() : AbstractFileModelFactory()
 {
- setObjectName("PerformFileModelFactory");
+ self()->setObjectName("PerformFileModelFactory");
 }
 /**
  *

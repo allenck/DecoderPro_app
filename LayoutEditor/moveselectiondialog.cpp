@@ -110,7 +110,7 @@
         bool ok;
             xTranslation = newText.toFloat(&ok);
         if(!ok) {
-            showEntryErrorDialog(moveSelectionFrame, NumberFormatException());
+            showEntryErrorDialog(moveSelectionFrame, new NumberFormatException());
             return;
         }
 
@@ -119,7 +119,7 @@
 
             yTranslation = newText.toFloat(&ok);
         if(!ok) {
-            showEntryErrorDialog(moveSelectionFrame, NumberFormatException());
+            showEntryErrorDialog(moveSelectionFrame, new NumberFormatException());
             return;
         }
 
@@ -148,10 +148,10 @@
      *                        numeric types, but that the string does not have
      *                        the appropriate format.
      */
-    /*private*/ void MoveSelectionDialog::showEntryErrorDialog(QWidget* parentComponent, NumberFormatException e) {
+    /*private*/ void MoveSelectionDialog::showEntryErrorDialog(QWidget* parentComponent, NumberFormatException* e) {
         JOptionPane::showMessageDialog(parentComponent,
                 tr("%1: %2 %3").arg(tr("Error in entry")).arg(
-                        e.getMessage()).arg(tr("Please reenter or Cancel.")),
+                        e->getMessage()).arg(tr("Please reenter or Cancel.")),
                 tr("Error"),
                 JOptionPane::ERROR_MESSAGE);
     }

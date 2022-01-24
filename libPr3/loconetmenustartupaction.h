@@ -13,7 +13,7 @@ public:
  void setTitle(QString);
 
 public slots:
- void actionPerformed(ActionEvent* = 0);
+ void actionPerformed(JActionEvent* = 0);
 
 private:
  QString title;

@@ -24,7 +24,7 @@ public:
     /*public*/ void saveContents();
     /*public*/ void savePressed(bool restartRequired);
     Q_INVOKABLE virtual /*public*/ QString getClassDescription();
-//    Q_INVOKABLE virtual /*public*/ void setMessagePreferencesDetails() ;
+    Q_INVOKABLE virtual /*public*/ void setMessagePreferencesDetails() ;
     /*virtual*/ static /*public*/ QString getClassName() ;
     /*public*/ QMap<QString, PreferencesPanel*>* getPreferencesPanels();
 

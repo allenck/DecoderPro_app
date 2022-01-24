@@ -29,7 +29,7 @@ private:
  void common(bool autoFlush, QDataStream* out);
  /*private*/ void init(OutputStreamWriter* osw);
  /*private*/ void newLine();
- /*private*/ void ensureOpen() throw (IOException);
+ /*private*/ void ensureOpen() /*throw (IOException)*/;
  /*private*/ void write(QString s);
 
 

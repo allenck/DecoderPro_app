@@ -3,7 +3,7 @@
 #include "stringutil.h"
 #include "jcombobox.h"
 #include "logger.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include <QtXml>
 #include "control.h"
 #include "xml.h"
@@ -25,9 +25,8 @@ namespace Operations {
  /*protected*/ /*static*/ /*final*/ int RollingStockAttribute::MIN_NAME_LENGTH = 4;
 
  /*public*/ RollingStockAttribute::RollingStockAttribute(QObject *parent) :
-  PropertyChangeSupport(parent)
+  SwingPropertyChangeSupport(this, parent)
  {
-  pcs = new PropertyChangeSupport(this);
   list = QStringList();
   maxNameLength = 0;
   log = new Logger("RollingStockAttribute");
@@ -89,7 +88,7 @@ namespace Operations {
      }
      //try {
          StringUtil::numberSort(lengths);
-//     } catch (NumberFormatException e) {
+//     } catch (NumberFormatException* e) {
 //         log->error("lengths are not all numeric, list:");
 //         for (int i = 0; i < lengths.length; i++) {
 //             bool ok;
@@ -147,9 +146,11 @@ namespace Operations {
 
  /*public*/ int RollingStockAttribute::getMaxNameLength() {
      if (maxNameLength == 0) {
+      maxName = "";
          maxNameLength = MIN_NAME_LENGTH;
          foreach (QString name, getNames()) {
              if (name.length() > maxNameLength) {
+                 maxName = name;
                  maxNameLength = name.length();
              }
          }
@@ -224,18 +225,5 @@ namespace Operations {
          QStringList names = root.firstChildElement(oldName).text().split("%%"); // NOI18N
          setNames(names);
      }
- }
-#if 0
-
- /*public*/ synchronized void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.addPropertyChangeListener(l);
- }
-
- /*public*/ synchronized void removePropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.removePropertyChangeListener(l);
- }
-#endif
- /*protected*/ void RollingStockAttribute::firePropertyChange(QString p, QVariant old, QVariant n) {
-     pcs->firePropertyChange(p, old, n);
  }
 }

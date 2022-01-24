@@ -1,6 +1,6 @@
 #ifndef IDTAGMANAGER_H
 #define IDTAGMANAGER_H
-#include "abstractmanager.h"
+#include "providingmanager.h"
 #include "defaultidtag.h"
 /**
  * Locate an IdTag object representing a specific IdTag.
@@ -41,11 +41,13 @@
  * @see         jmri.InstanceManager
  * @since       2.11.4
  */
-/*public*/ /*interface*/class IdTagManager : public AbstractManager {
- Q_OBJECT
+/*public*/ /*interface*/class IdTagManager : public ProvidingManager
+{
+ //
+  Q_INTERFACES(ProvidingManager)
 public:
-     IdTagManager(QObject* parent = 0) : AbstractManager(parent) {}
-     IdTagManager(SystemConnectionMemo* memo, QObject *parent = nullptr) : AbstractManager(memo,parent) {}
+//     IdTagManager(QObject* parent = 0) : AbstractManager(parent) {}
+//     IdTagManager(SystemConnectionMemo* memo, QObject *parent = nullptr) : AbstractManager(memo,parent) {}
 
     /**
      * Locate via tag ID, then user name, and finally
@@ -62,7 +64,7 @@ public:
      * already exist and the manager cannot create the IdTag
      * due to e.g. an illegal name or name that can't be parsed.
      */
-    /*public*/ virtual DefaultIdTag* provideIdTag(QString /*name*/) {return NULL;}
+    /*public*/ virtual IdTag* provideIdTag(QString /*name*/) {return NULL;}
 
     /**
      * Locate via tag ID, then by user name, and finally system name if needed.
@@ -71,7 +73,7 @@ public:
      * @param name tag name being requested
      * @return null if no match found
      */
-    /*public*/ virtual DefaultIdTag* getIdTag(QString /*name*/) {return NULL;}
+    /*public*/ virtual IdTag* getIdTag(QString /*name*/) {return NULL;}
 
     /**
      * Locate an instance based on a system name.  Returns null if no
@@ -79,7 +81,7 @@ public:
      * @param systemName system name being requested
      * @return requested IdTag object or null if none exists
      */
-    /*public*/ virtual NamedBean* getBySystemName(QString /*systemName*/) const {return NULL;}
+    /*public*/ virtual NamedBean* getBySystemName(QString /*systemName*/)  override{return NULL;}
 
     /**
      * Locate an instance based on a user name.  Returns null if no
@@ -168,16 +170,16 @@ public:
     /**
      * Perform initialisation
      */
-    /*public*/ virtual void init() const {}
+    /*public*/ virtual void init()  {}
 
     /**
      * Determines if the manager has been initialised
      * @return state of initialisation
      */
-    /*public*/ virtual bool isInitialised() {return false;}
-    virtual /*public*/ DefaultIdTag* provide(QString name) throw (IllegalArgumentException) =0;
+    /*public*/ virtual bool isInitialised()  {return false;}
+    //virtual /*public*/ NamedBean* provide(QString name) /*throw (IllegalArgumentException)*/ =0;
 
  friend class IdTagManagerXml;
 };
-//Q_DECLARE_INTERFACE(IdTagManager, "IdTagManager")
+Q_DECLARE_INTERFACE(IdTagManager, "IdTagManager")
 #endif // IDTAGMANAGER_H

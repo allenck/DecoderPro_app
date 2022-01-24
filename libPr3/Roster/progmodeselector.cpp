@@ -2,7 +2,7 @@
 #include "programmer.h"
 
 ProgModeSelector::ProgModeSelector(QWidget *parent) :
-    QWidget(parent)
+    JPanel(parent)
 {
 }
 /**

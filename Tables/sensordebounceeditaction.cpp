@@ -40,7 +40,7 @@ SensorDebounceEditAction::SensorDebounceEditAction(QObject *parent) :
 }
 
 /*public*/ NamedBean* SensorDebounceEditAction::getByUserName(QString name) {
-    return ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getByUserName(name);
+    return ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::getByUserName(name);
 }
 
 //@Override

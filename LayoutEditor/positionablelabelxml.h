@@ -14,13 +14,13 @@ public:
  ~PositionableLabelXml() override {}
  PositionableLabelXml(const PositionableLabelXml&) : AbstractXmlAdapter() {}
     /*public*/ bool load(QDomElement element) throw (Exception) override;
-    /*public*/ void load(QDomElement element, QObject* o) throw (Exception) override;
+    /*public*/ void load(QDomElement element, QObject* o) /*throw (Exception)*/ override;
     /*public*/ void storeCommonAttributes(Positionable* p, QDomElement element);
     /*public*/ QDomElement storeIcon(QString elemName, NamedIcon* icon);
     /*public*/ void loadCommonAttributes(Positionable* l, int defaultLevel, QDomElement element);
     /*public*/ NamedIcon* loadIcon(PositionableLabel* l, QString attrName, QDomElement element,
                                         QString name, Editor* ed);
-    virtual void setDoc(QDomDocument);
+    virtual void setDoc(QDomDocument)override;
     PositionableLabel*  getIcon();
 signals:
 

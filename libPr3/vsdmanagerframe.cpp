@@ -19,9 +19,11 @@
 #include "windowmenu.h"
 #include <QCloseEvent>
 #include "loadvsdfileaction.h"
-#include "loadxmlvsdecoderaction.h"
 #include "vsdpreferencesaction.h"
-#include "storexmlvsdecoderaction.h"
+#include "vsdecoderpreferences.h"
+#include "loggerfactory.h"
+#include "joptionpane.h"
+
 
 //VSDManagerFrame::VSDManagerFrame(QWidget *parent) :
 //  JmriJFrame(parent)
@@ -132,9 +134,9 @@
   JmriJFrame(false, false, parent) {
     //super(false, false);
     config = new VSDConfig();
-    //this->addPropertyChangeListener((PropertyChangeListener*)VSDecoderManager::instance());
-    connect(VSDecoderManager::instance(), SIGNAL(fireEvent(VSDManagerEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-    log = new Logger("VSDManagerFrame");
+    this->addPropertyChangeListener(VSDecoderManager::instance());
+    is_auto_loading = VSDecoderManager::instance()->getVSDecoderPreferences()->isAutoLoadingDefaultVSDFile();
+    is_viewing = VSDecoderManager::instance()->getVSDecoderList().isEmpty() ? false : true;
     initGUI();
     if(PCIDMap.isEmpty())
     {
@@ -244,7 +246,7 @@
 /**
  * Handle "Close" button press
  */
-/*protected*/ void VSDManagerFrame::closeButtonPressed(ActionEvent* /*e*/) {
+/*protected*/ void VSDManagerFrame::closeButtonPressed(JActionEvent* /*e*/) {
  firePropertyChange(CLOSE_WINDOW, QVariant(), QVariant());
     dispose();
 }
@@ -252,16 +254,16 @@
 /**
  * Handle "Mute" button press
  */
-/*protected*/ void VSDManagerFrame::muteButtonPressed(ActionEvent* e) {
+/*protected*/ void VSDManagerFrame::muteButtonPressed(JActionEvent* e) {
     JToggleButton* b = (JToggleButton*) e->getSource();
-    log->debug("Mute button pressed. value = " + b->isSelected());
+    log->debug("Mute button pressed. value = " + QString(b->isSelected()?"true":"false"));
     firePropertyChange(MUTE, !b->isSelected(), b->isSelected());
 }
 
 /**
  * Handle "Add" button press
  */
-/*protected*/ void VSDManagerFrame::addButtonPressed(ActionEvent* /*e*/) {
+/*protected*/ void VSDManagerFrame::addButtonPressed(JActionEvent* /*e*/) {
     log->debug("Add button pressed");
     config = new VSDConfig(); // Create a new Config for the new VSDecoder.
     // Do something here.  Create a new VSDecoder and add it to the window.
@@ -280,52 +282,50 @@
 /**
  * Callback for the Config Dialog
  */
-/*protected*/ void VSDManagerFrame::addButtonPropertyChange(PropertyChangeEvent* event)
+/*protected*/ void VSDManagerFrame::addButtonPropertyChange(PropertyChangeEvent* /*event*/)
 {
  log->debug("internal config dialog handler");
- log->debug("New Config: " + config->toString());
- VSDecoder* newDecoder = VSDecoderManager::instance()->getVSDecoder(config);
- if (newDecoder == NULL) {
-     log->debug("no New Decoder constructed!" + config->toString());
-     return;
- }
- // Need to add something here... if this Control already exists, don't
- // create a new one.
- VSDControl* newControl = new VSDControl(config);
- // Set the Decoder to listen to PropertyChanges from the control
-// TODO:        newControl->addPropertyChangeListener(newDecoder);
- this->addPropertyChangeListener((PropertyChangeListener*)newDecoder);
- // Set US to listen to PropertyChanges from the control (mainly for DELETE)
-//        newControl.addPropertyChangeListener(new PropertyChangeListener() {
-//            /*public*/ void propertyChange(PropertyChangeEvent event) {
-//                log->debug("property change name " + event.getPropertyName() + " old " + event.getOldValue() + " new " + event.getNewValue());
-//                vsdControlPropertyChange(event);
-//            }
-//        });
- connect(newControl, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(newControlPropertyChange(PropertyChangeEvent*)));
-// if (decoderPane->isAncestorOf(decoderBlank))
-// {
-//     decoderPaneLayout->removeWidget(decoderBlank);
-// }
- QObjectList ol = decoderPane->children();
- foreach(QObject* o, ol)
- {
-  if(o->objectName() == "Blank")
-  {
-   decoderPaneLayout->removeWidget((QWidget*)o);
-   o->deleteLater();
-  }
- }
- newControl->addSoundButtons( QList<SoundEvent*>(newDecoder->getEventList()));
- decoderPaneLayout->addWidget(newControl);
- //debugPrintDecoderList();
- decoderPane->update();
- decoderPane->repaint();
+ // If this decoder already exists, don't create a new Control
+ // In Viewing Mode up to 4 existing VSDecoders are possible, so skip the check
+ if (! is_viewing && VSDecoderManager::instance()->getVSDecoderByAddress(config->getLocoAddress()->toString()) != nullptr) {
+     JOptionPane::showMessageDialog(nullptr, tr("VSDecoder already exists"));
+ } else {
+     VSDecoder* newDecoder = VSDecoderManager::instance()->getVSDecoder(config);
+     if (newDecoder == nullptr) {
+         log->error(tr("Lost context, VSDecoder is null. Quit JMRI and start over. No New Decoder constructed! Address: %1, profile: %2").arg(
+                 config->getLocoAddress()->toString(), config->getProfileName()));
+         return;
+     }
+     VSDControl* newControl = new VSDControl(config);
+     // Set the Decoder to listen to PropertyChanges from the control
+     newControl->addPropertyChangeListener(newDecoder);
+     this->addPropertyChangeListener(newDecoder);
+     // Set US to listen to PropertyChanges from the control (mainly for DELETE)
+     newControl->addPropertyChangeListener(new VSDMFPropertyChangeListener(this));
+//         //@Override
+//         /*public*/ void propertyChange(PropertyChangeEvent* event) {
+//             log.debug("property change name {}, old: {}, new: {}",
+//                     event.getPropertyName(), event.getOldValue(), event.getNewValue());
+//             vsdControlPropertyChange(event);
+//         }
+//     });
+     if (decoderPane->isAncestorOf(decoderBlank)) {
+         decoderPane->layout()->removeWidget(decoderBlank);
+     }
 
- this->adjustSize();
- //this.setVisible(true);
- // Do we need to make newControl a listener to newDecoder?
- //firePropertyChange(PropertyChangeID.ADD_DECODER, NULL, newDecoder);
+     decoderPane->layout()->addWidget(newControl);
+     newControl->addSoundButtons( QList<SoundEvent*>(newDecoder->getEventList()));
+
+     firePropertyChange(VOLUME_CHANGE, master_volume, 0);
+     log->debug(tr("Master volume set to %1").arg(master_volume));
+
+     decoderPane->update();
+     decoderPane->repaint();
+
+     this->pack();
+     //this.setVisible(true);
+     // Do we need to make newControl a listener to newDecoder?
+ }
 }
 
 /**
@@ -367,9 +367,9 @@
 /**
  * Handle volume slider change
  */
-/*protected*/ void VSDManagerFrame::volumeChange(ChangeEvent* e) {
+/*protected*/ void VSDManagerFrame::volumeChange(ChangeEvent* /*e*/) {
     //JSlider v = (JSlider) e.getSource();
-    log->debug("Volume slider moved. value = " + volume->value());
+    log->debug("Volume slider moved. value = " + QString::number(volume->value()));
     firePropertyChange(VOLUME_CHANGE, volume->value(), volume->value());
 }
 
@@ -378,10 +378,6 @@
     //fileMenu.setMnemonic(Mnemonics.get("FileMenu"));
 
     fileMenu->addAction(new LoadVSDFileAction(tr("Load VSD File"),this));
-    QAction* storeXmlVSDecoderAction;
-    fileMenu->addAction(storeXmlVSDecoderAction = new StoreXmlVSDecoderAction(tr("Save VSDecoder Profiles"),this));
-    QAction* loadXmlVSDecoderAction;
-    fileMenu->addAction(loadXmlVSDecoderAction = new LoadXmlVSDecoderAction(tr("Load VSDecoder Profiles"),this));
 
     QMenu* editMenu = new QMenu(tr("Edit"));
     //editMenu.setMnemonic(Mnemonics.get("EditMenu"));
@@ -390,8 +386,6 @@
 
 //        fileMenu->getItem(1).setEnabled(false); // disable XML store
 //        fileMenu.getItem(2).setEnabled(false); // disable XML load
-    storeXmlVSDecoderAction->setEnabled(false);
-    loadXmlVSDecoderAction->setEnabled(false);
 
     menuList = QList<QMenu*>(/*3*/);
 
@@ -430,7 +424,7 @@
 /**
  * Handle window close event
  */
-/*public*/ void VSDManagerFrame::windowClosing(QCloseEvent e) {
+/*public*/ void VSDManagerFrame::windowClosing(QCloseEvent * /*e*/) {
     // Call the superclass function
     //super.windowClosing(e);
 
@@ -444,15 +438,15 @@
 /**
  * Add a listener for this Pane's property change events
  */
-/*public*/ void VSDManagerFrame::addPropertyChangeListener(PropertyChangeListener* listener)
-{
-#if 0
-    QList<PropertyChangeListener> l = Arrays.asList(listenerList.getListeners(PropertyChangeListener.class));
-    if (!l.contains(listener)) {
-        listenerList.add(PropertyChangeListener.class, listener);
-    }
-#endif
-}
+///*public*/ void VSDManagerFrame::addPropertyChangeListener(PropertyChangeListener* listener)
+//{
+//#if 0
+//    QList<PropertyChangeListener> l = Arrays.asList(listenerList.getListeners(PropertyChangeListener.class));
+//    if (!l.contains(listener)) {
+//        listenerList.add(PropertyChangeListener.class, listener);
+//    }
+//#endif
+//}
 
 /**
  * Remove a listener
@@ -511,3 +505,5 @@ void VSDManagerFrame::firePropertyChange(PropertyChangeEvent* evt)
 {
  return "jmri.jmrit.vsdecoder.swing.VSDManagerFrame";
 }
+
+/*private*/ /*static*/ /*final*/ Logger* VSDManagerFrame::log = LoggerFactory::getLogger("VSDecoderManager");

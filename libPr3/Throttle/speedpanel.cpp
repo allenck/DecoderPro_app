@@ -6,6 +6,7 @@
 #include "rosterspeedprofile.h"
 #include "windowpreferences.h"
 #include "loggerfactory.h"
+#include "abstractthrottle.h"
 
 /**
  * A JInternalFrame that contains a label to display scale speed if available
@@ -24,6 +25,8 @@
  */
 /*public*/ SpeedPanel::SpeedPanel(QWidget* parent) : QDockWidget(parent)
 {
+ setObjectName("SpeedPanel");
+ log->setDebugEnabled(true);
  scaleSpeedLabel = new QLabel(""); //, JLabel.CENTER);
  scaleSpeedLabel->setAlignment(Qt::AlignCenter);
  useSpeedProfile = false;
@@ -52,7 +55,7 @@
     }
     if (throttle != NULL) {
         //throttle.removePropertyChangeListener(this);
-     disconnect(throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect((AbstractThrottle*)throttle->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
         throttle = NULL;
     }
 }
@@ -123,7 +126,7 @@
     this->setEnabled(false);
     if (throttle != NULL) {
         //throttle.removePropertyChangeListener(this);
-     disconnect(throttle,  SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect((AbstractThrottle*)throttle->self(),  SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
     throttle = NULL;
 }
@@ -136,7 +139,7 @@
     this->throttle = t;
 
     //this->throttle.addPropertyChangeListener(this);
-    connect(throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    connect((AbstractThrottle*)throttle->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     if (log->isDebugEnabled()) {
         DccLocoAddress* Address = (DccLocoAddress*) throttle->getLocoAddress();
         log->debug("new address is " + Address->toString());

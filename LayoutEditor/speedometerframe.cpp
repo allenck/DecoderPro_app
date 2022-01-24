@@ -426,7 +426,7 @@ void SpeedometerFrame::stopSensor2_propertyChange(PropertyChangeEvent *)
  Sensor* s;
  s = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->
          provideSensor(startSensor->text());
-//    s->addPropertyChangeListener(new PropertyChangeListener() {
+//    s->SwingPropertyChangeSupport::addPropertyChangeListener(new PropertyChangeListener() {
 //        /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
 //            SpeedometerFrame.log->debug("start sensor fired");
 //            if (e.getPropertyName()==("KnownState")) {
@@ -448,7 +448,7 @@ void SpeedometerFrame::stopSensor2_propertyChange(PropertyChangeEvent *)
  // set stop sensor1
  s = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->
          provideSensor(stopSensor1->text());
-//    s->addPropertyChangeListener(new PropertyChangeListener()
+//    s->SwingPropertyChangeSupport::addPropertyChangeListener(new PropertyChangeListener()
 //    {
 //        /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
 //            SpeedometerFrame.log->debug("stop sensor fired");
@@ -707,7 +707,7 @@ void SpeedometerFrame::stopSensor2_propertyChange(PropertyChangeEvent *)
         if (s == NULL) {
             throw new Exception();
         }
-    } catch (Exception e) {
+    } catch (Exception* e) {
         // couldn't locate the sensor, that's an error
         log->error("Start sensor invalid: " + startSensor->text());
         if (warn) {
@@ -728,7 +728,7 @@ void SpeedometerFrame::stopSensor2_propertyChange(PropertyChangeEvent *)
         if (s == NULL) {
             throw new Exception();
         }
-    } catch (Exception e) {
+    } catch (Exception* e) {
         // couldn't locate the sensor, that's an error
         log->error("Stop 1 sensor invalid : " + stopSensor1->text());
         if (warn) {
@@ -767,7 +767,7 @@ void SpeedometerFrame::stopSensor2_propertyChange(PropertyChangeEvent *)
             if (s == NULL) {
                 throw new Exception();
             }
-        } catch (Exception e) {
+        } catch (Exception* e) {
             // couldn't locate the sensor, that's an error
             log->error("Stop 2 sensor invalid: " + stopSensor2->text());
             if (warn) {
@@ -924,12 +924,12 @@ void SpeedometerFrame::stopSensor2_propertyChange(PropertyChangeEvent *)
  {
   x->writeXML(file, doc);
  }
- catch (FileNotFoundException ex)
+ catch (FileNotFoundException* ex)
  {
-  log->error("File not found when writing: " + ex.getMessage());
- } catch (IOException ex)
+  log->error("File not found when writing: " + ex->getMessage());
+ } catch (IOException* ex)
  {
-  log->error("IO Exception when writing: " + ex.getMessage());
+  log->error("IO Exception when writing: " + ex->getMessage());
  }
 
  log->debug("...done");
@@ -1027,10 +1027,10 @@ void SpeedometerFrame::stopSensor2_propertyChange(PropertyChangeEvent *)
     }
    }
   }
- } catch (JDOMException ex) {
-     log->error("File invalid: " + ex.getMessage());
- } catch (IOException ex) {
-     log->error("Error reading file: " + ex.getMessage());
+ } catch (JDOMException* ex) {
+     log->error("File invalid: " + ex->getMessage());
+ } catch (IOException* ex) {
+     log->error("Error reading file: " + ex->getMessage());
  }
 
  log->debug("...done");
@@ -1059,12 +1059,11 @@ void SpeedometerFrame::stopSensor2_propertyChange(PropertyChangeEvent *)
     }
 
     /*public*/ File* SpeedometerXml::getFile(bool store) {
-        QFile* file = findFile(getDefaultFileName());
+        File* file = findFile(getDefaultFileName());
         if (file == NULL && store) {
-            file = new QFile(getDefaultFileName());
+            file = new File(getDefaultFileName());
         }
-        QString path = getDefaultFileName();
-        return new File(path);
+        return file;
     }
 
     /*public*/ /*static*/ QString SpeedometerXml::baseFileName = "Speedometer.xml";
@@ -1079,7 +1078,9 @@ void SpeedometerFrame::stopSensor2_propertyChange(PropertyChangeEvent *)
      * @return path to location
      */
     /*public*/ /*static*/ QString SpeedometerXml::getFileLocation() {
-        return fileLocation;
+     if(fileLocation == nullptr)
+      fileLocation = FileUtil::getUserFilesPath();
+            return fileLocation;
     }
 
     /*public*/ /*static*/ QString SpeedometerXml::fileLocation = FileUtil::getUserFilesPath();

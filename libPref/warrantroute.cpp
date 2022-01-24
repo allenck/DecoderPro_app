@@ -428,7 +428,7 @@ void WarrantRoute::on_rosterBoxCurrentIndexChanged(QString selection)
  /**
   * Does the action on each of the 4 RouteLocation panels
   */
- /*public*/ void WarrantRoute::actionPerformed(ActionEvent* e)
+ /*public*/ void WarrantRoute::actionPerformed(JActionEvent* e)
 {
  QObject* obj = e->getSource();
 //        if (  log->isDebugEnabled())   log->debug("actionPerformed: source "+((Component)obj).getName()+
@@ -605,15 +605,15 @@ RouteLocation::RouteLocation(WarrantRoute::Location loc, WarrantRoute* warrantRo
 }
 void RouteLocation::on_blockBox_editingCompleted()
 {
- emit actionPerformed(new ActionEvent(blockBox,0,NULL));
+ emit actionPerformed(new JActionEvent(blockBox,0,NULL));
 }
 void RouteLocation::on_pathBox_currentIndexChanged(int)
 {
- emit actionPerformed(new ActionEvent(pathBox,0,NULL));
+ emit actionPerformed(new JActionEvent(pathBox,0,NULL));
 }
 void RouteLocation::on_portalBox_currentIndexChanged(int)
 {
- emit actionPerformed(new ActionEvent(portalBox, 0, NULL));
+ emit actionPerformed(new JActionEvent(portalBox, 0, NULL));
 }
 
 /*private*/ QWidget* RouteLocation::makePanel(QString title, QString tooltip, QString box1Name, QString box2Name, WarrantRoute* parent)
@@ -1281,7 +1281,7 @@ return true;
  JTable* routeTable = new JTable(_routeModel);
  //  routeTable.setDefaultEditor(JComboBox.class, new jmri.jmrit.symbolicprog.ValueEditor());
  //routeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
- routeTable->setColumnModel(new DefaultTableColumnModel(_routeModel));
+ routeTable->setColumnModel(new DefaultTableColumnModel(routeTable));
  for (int i=0; i<_routeModel->columnCount(QModelIndex()); i++)
  {
   int width = _routeModel->getPreferredWidth(i);
@@ -1474,9 +1474,9 @@ return QVariant();
 }
 
 //@Override
-//     /*public*/ Class<?> getColumnClass(int col) {
-//         return String.class;
-//     }
+/*public*/ QString RouteTableModel::getColumnClass(int col) {
+ return "String";
+}
 
 /*public*/ int RouteTableModel::getPreferredWidth(int /*col*/) {
  return  JTextField(15).getPreferredSize().width();

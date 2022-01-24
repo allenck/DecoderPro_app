@@ -114,7 +114,7 @@ void AudioTableAction::common()
 }
 
 //@Override
-/*public*/ void AudioTableAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void AudioTableAction::actionPerformed(JActionEvent * /*e*/)
 {
 
  // create the JTable model, with changes for specific NamedBean
@@ -178,7 +178,7 @@ void AudioTableAction::common()
 }
 
 //@Override
-/*protected*/ void AudioTableAction::addPressed(ActionEvent* /*e*/)
+/*protected*/ void AudioTableAction::addPressed(JActionEvent *)
 {
  log->warn("This should not have happened");
 }
@@ -377,15 +377,15 @@ void AudioTableSourceThread::run()
  this->act = act;
  log = new Logger("AudioTableDataModel");
  this->subType = subType;
- //getManager()->addPropertyChangeListener(this);
+ //getManager()->SwingPropertyChangeSupport::addPropertyChangeListener(this);
 AbstractManager* mgr = (AbstractManager*)getManager();
-connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  updateSpecificNameList(subType);
 }
 
 //@Override
-/*public*/ Manager* AudioTableDataModel::getManager() {
-    return (Manager*)((AudioManager*)InstanceManager::getDefault("AudioManager"));
+/*public*/ AbstractManager* AudioTableDataModel::getManager() {
+    return (AbstractManager*)((AudioManager*)InstanceManager::getDefault("AudioManager"));
 }
 /*public int AudioTableDataModel::getDisplayDeleteMsg() { return InstanceManager.getDefault(jmri.UserPreferencesManager.class).getMultipleChoiceOption(getClassName(),"delete"); }
 public void AudioTableDataModel::setDisplayDeleteMsg(int boo) { ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setMultipleChoiceOption(getClassName(), "delete", boo); }*/
@@ -431,7 +431,7 @@ public void AudioTableDataModel::setDisplayDeleteMsg(int boo) { ((UserPreference
  // and add them back in
  for (int i = 0; i < sysNameList.size(); i++)
  {
-  //getBySystemName(sysNameList.at(i))->addPropertyChangeListener(this);
+  //getBySystemName(sysNameList.at(i))->SwingPropertyChangeSupport::addPropertyChangeListener(this);
   Audio* a = (Audio*)getBySystemName(sysNameList.at(i));
   connect(a->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
@@ -469,19 +469,19 @@ public void AudioTableDataModel::setDisplayDeleteMsg(int boo) { ((UserPreference
  return BeanTableDataModel::headerData(section, orientation, role);
 }
 
-//    //@Override
-//    /*public*/ Class<?> getColumnClass(int col) {
-//        switch (col) {
-//            case VALUECOL:
-//                return String.class;
-//            case EDITCOL:
-//                return QPushButton.class;
-//            case DELETECOL:
-//                return (subType != Audio::LISTENER) ? QPushButton.class : String.class;
-//            default:
-//                return super.getColumnClass(col);
-//        }
-//    }
+//@Override
+/*public*/ QString AudioTableDataModel::getColumnClass(int col) const {
+    switch (col) {
+        case VALUECOL:
+            return "String";
+        case EDITCOL:
+            return "JButton";
+        case DELETECOL:
+            return (subType != Audio::LISTENER) ? "JButton" : "String";
+        default:
+            return BeanTableDataModel::getColumnClass(col);
+    }
+}
 
 //@Override
 /*public*/ QString AudioTableDataModel::getValue(QString systemName)  const
@@ -536,7 +536,8 @@ public void AudioTableDataModel::setDisplayDeleteMsg(int boo) { ((UserPreference
    case EDITCOL:
     a = (Audio*)getBySystemName(sysNameList.at(row));
     act->editAudio(a);
-    break;
+    fireTableRowsUpdated(row, row);
+    return true;
    default:
     break;
   }

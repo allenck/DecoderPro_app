@@ -1,5 +1,9 @@
 #include "printwriter.h"
 #include "exceptions.h"
+#include  "bufferedwriter.h"
+#include "outputstreamwriter.h"
+#include "fileoutputstream.h"
+#include <QFile>
 
 /**
  * Prints formatted representations of objects to a text-output stream.  This
@@ -115,7 +119,7 @@
             psOut = out;
         }
     }
-#if 0
+#if 1
     /**
      * Creates a new PrintWriter, without automatic line flushing, with the
      * specified file name.  This convenience constructor creates the necessary
@@ -143,11 +147,19 @@
      *
      * @since  1.5
      */
-    /*public*/ PrintWriter(String fileName) throws FileNotFoundException {
-        this(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName))),
-             false);
+    /*public*/ PrintWriter::PrintWriter(QString fileName) throw (FileNotFoundException) {
+//        this-(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName))),
+//             false);
+     QFile* file = new QFile(fileName);
+     if(!file->open(QIODevice::WriteOnly|QIODevice::Truncate|QIODevice::Text))
+     {
+      throw  new FileNotFoundException("not opened:"+fileName + " " + file->errorString());
+     }
+     psOut = new QTextStream(file);
+     autoFlush = false;
     }
-
+#endif
+#if 0
     /* Private constructor */
     /*private*/ PrintWriter(Charset charset, File file)
         throws FileNotFoundException
@@ -267,7 +279,7 @@
     }
 #endif
     /** Checks to make sure that the stream has not been closed */
-    /*private*/ void PrintWriter::ensureOpen() throw (IOException) {
+    /*private*/ void PrintWriter::ensureOpen() /*throw (IOException)*/ {
         if (out == NULL)
             throw new IOException("Stream closed");
     }
@@ -283,31 +295,32 @@
                 out->flush();
             }
         }
-        catch (IOException x) {
+        catch (IOException* x) {
             trouble = true;
         }
     }
-#if 0
+
     /**
      * Closes the stream and releases any system resources associated
      * with it. Closing a previously closed stream has no effect.
      *
      * @see #checkError()
      */
-    /*public*/ void close() {
+    /*public*/ void PrintWriter::close() /*throw (IOException)*/ {
         try {
-            synchronized (lock) {
-                if (out == null)
-                    return;
-                out.close();
-                out = null;
-            }
+//            /*synchronized (lock)*/ {
+//                if (out == nullptr)
+//                    return;
+//                out->close();
+//                out = nullptr;
+//            }
+          psOut->device()->close();
         }
-        catch (IOException x) {
+        catch (IOException* x) {
             trouble = true;
         }
     }
-
+#if 0
     /**
      * Flushes the stream if it's not closed and checks its error state.
      *
@@ -371,7 +384,7 @@
         catch (InterruptedIOException x) {
             Thread.currentThread().interrupt();
         }
-        catch (IOException x) {
+        catch (IOException* x) {
             trouble = true;
         }
     }
@@ -392,7 +405,7 @@
         catch (InterruptedIOException x) {
             Thread.currentThread().interrupt();
         }
-        catch (IOException x) {
+        catch (IOException* x) {
             trouble = true;
         }
     }
@@ -422,7 +435,7 @@
         catch (InterruptedIOException x) {
             Thread.currentThread().interrupt();
         }
-        catch (IOException x) {
+        catch (IOException* x) {
             trouble = true;
         }
     }
@@ -437,6 +450,12 @@
     }
 #endif
     /*private*/ void PrintWriter::newLine() {
+     if(psOut)
+     {
+      *psOut << lineSeparator;
+     }
+     else
+     {
         try {
             /*synchronized (lock)*/ {
                 ensureOpen();
@@ -448,9 +467,10 @@
 //        catch (InterruptedIOException x) {
 //            Thread.currentThread().interrupt();
 //        }
-        catch (IOException x) {
+        catch (IOException* x) {
             trouble = true;
         }
+     }
     }
 #if 0
     /* Methods that do not terminate lines */
@@ -563,7 +583,10 @@
         if (s == NULL) {
             s = "";
         }
-        write(s);
+        if(psOut)
+         *psOut << s;
+        else
+         write(s);
     }
 #if 0
     /**
@@ -871,7 +894,7 @@
             }
         } catch (InterruptedIOException x) {
             Thread.currentThread().interrupt();
-        } catch (IOException x) {
+        } catch (IOException* x) {
             trouble = true;
         }
         return this;
@@ -930,7 +953,7 @@
             }
         } catch (InterruptedIOException x) {
             Thread.currentThread().interrupt();
-        } catch (IOException x) {
+        } catch (IOException* x) {
             trouble = true;
         }
         return this;

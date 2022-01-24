@@ -2,6 +2,7 @@
 #define ENGINESTABLEMODEL_H
 #include "abstracttablemodel.h"
 #include "appslib_global.h"
+#include "propertychangelistener.h"
 
 class Logger;
 class PropertyChangeEvent;
@@ -12,43 +13,46 @@ namespace Operations
  class EnginesTableFrame;
  class RollingStock;
  class EngineManager;
- class APPSLIBSHARED_EXPORT EnginesTableModel : public AbstractTableModel
+ class APPSLIBSHARED_EXPORT EnginesTableModel : public AbstractTableModel, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   explicit EnginesTableModel(QObject *parent = 0);
  enum SORTOPTIONS
  {
-   SORTBYNUMBER = 1,
-   SORTBYROAD = 2,
-   SORTBYMODEL = 3,
-   SORTBYLOCATION = 4,
-   SORTBYDESTINATION = 5,
-   SORTBYTRAIN = 6,
-   SORTBYMOVES = 7,
-   SORTBYCONSIST = 8,
-   SORTBYBUILT = 9,
-   SORTBYOWNER = 10,
-   SORTBYVALUE = 11,
-   SORTBYRFID = 12,
-   SORTBYLAST = 13,
-   SORTBYHP = 14
+   SORTBYNUMBER = 0,
+   SORTBYROAD = 1,
+   SORTBYMODEL = 2,
+   SORTBYLOCATION = 3,
+   SORTBYDESTINATION = 4,
+   SORTBYTRAIN = 5,
+   SORTBYMOVES = 6,
+   SORTBYCONSIST = 7,
+   SORTBYBUILT = 8,
+   SORTBYOWNER = 9,
+   SORTBYVALUE = 10,
+   SORTBYRFID = 11,
+   SORTBYLAST = 12,
+   SORTBYHP = 13,
+   SORTBY_DCC_ADDRESS = 14
  };
  /*public*/ QList<RollingStock*>* getSelectedEngineList();
- /*public*/ int rowCount(const QModelIndex &parent) const;
- /*public*/ int columnCount(const QModelIndex &parent) const;
- /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
- /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
- /*public*/ QVariant data(const QModelIndex &index, int role) const;
+ /*public*/ int rowCount(const QModelIndex &parent) const override;
+ /*public*/ int columnCount(const QModelIndex &parent) const override;
+ /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+ /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
+ /*public*/ QVariant data(const QModelIndex &index, int role) const override;
  /*public*/ void dispose() ;
  /*public*/ void setSort(int sort);
  /*public*/ int findEngineByRoadNumber(QString roadNumber);
- /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
+ /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+ QObject* self() override {return (QObject*)this; }
 
  signals:
 
  public slots:
- /*public*/ void propertyChange(PropertyChangeEvent* e);
+ /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
  private:
 
@@ -83,7 +87,8 @@ namespace Operations
  /*private*/ int showMoveCol;// = SHOWMOVES;
 
  /*private*/ int _sort;// = SORTBYNUMBER;
- static EngineManager* manager;// = EngineManager.instance(); // There is only one manager
+ //static EngineManager* manager;// = EngineManager.instance(); // There is only one manager
+ Operations::EngineManager* engineManager;// = InstanceManager::getDefault("Operations::EngineManager"); // There is only one manager
  QString _roadNumber;// = "";
  int _index;// = 0;
  QList<RollingStock*>* sysList;// = null;
@@ -92,8 +97,8 @@ namespace Operations
  EnginesTableFrame* _frame;
  /*synchronized*/ void updateList();
  /*private*/ void removePropertyChangeEngines();
- EngineEditFrame* eef;// = NULL;
- EngineSetFrame* esf;// = NULL;
+ EngineEditFrame* engineEditFrame;// = NULL;
+ EngineSetFrame* engineSetFrame;// = NULL;
  Logger* log;
  // Engines frame table column widths (12), starts with Number column and ends with Edit
  /*private*/ QList<int> _enginesTableColumnWidths;// = {60, 60, 65, 50, 65, 35, 75, 190, 190, 65, 50, 65, 70};

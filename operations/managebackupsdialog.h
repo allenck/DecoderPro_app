@@ -6,7 +6,7 @@
 #include <defaultlistmodel.h>
 #include "appslib_global.h"
 
-class ActionEvent;
+class JActionEvent;
 class JList;
 class QLabel;
 class QPushButton;

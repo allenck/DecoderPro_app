@@ -1,5 +1,7 @@
 #ifndef INSTANCEMANAGERAUTODEFAULT_H
 #define INSTANCEMANAGERAUTODEFAULT_H
+#include <QtCore>
+
 /**
  * Interface indicating that the InstanceManager can create an object of this
  * type when needed by a request.
@@ -26,6 +28,7 @@
  * @author Bob Jacobsen Copyright (C) 2012
  */
 /*public*/ class InstanceManagerAutoDefault {
-};
 
+};
+Q_DECLARE_INTERFACE(InstanceManagerAutoDefault, "InstanceManagerAutoDefault")
 #endif // INSTANCEMANAGERAUTODEFAULT_H

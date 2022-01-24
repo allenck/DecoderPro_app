@@ -31,7 +31,7 @@ public:
  */
 //    public final synchronized
 void add(QString name, L listener) {
- QMutexLocker locker(&mutex);
+ QMutexLocker locker(mutex);
  if (this->map.isEmpty())
  {
   this->map =  QHash<QString, QVector<L>* >();
@@ -52,10 +52,10 @@ void add(QString name, L listener) {
 
 /*public final synchronized */
 void remove(QString name, L listener) {
- QMutexLocker locker(&mutex);
+ QMutexLocker locker(mutex1);
  if (!this->map.isEmpty())
  {
-  QVector<L>* array = this->map.value(name);
+  QVector<L>* array = this->map.value(name, new  QVector<L>());
   if (!array->isEmpty())
   {
    for (int i = 0; i < array->length(); i++)
@@ -96,7 +96,7 @@ void remove(QString name, L listener) {
  */
 /*public final synchronized*/
 QVector<L> get(QString name) {
- QMutexLocker locker(&mutex);
+ QMutexLocker locker(mutex2);
 
  return (!this->map.isEmpty())
             ? (this->map.contains(name)? *this->map.value(name): QVector<L>())
@@ -135,7 +135,7 @@ void set(QString name, QVector<L> *listeners) {
  */
 /*public final synchronized*/
 QVector<L> getListeners(){
- QMutexLocker locker(&mutex);
+ QMutexLocker locker(mutex3);
  QVector<L> listeners = QVector<L>();
  if( !map.values().isEmpty())
  {
@@ -176,7 +176,7 @@ QVector<L> getListeners(QString name){
  */
 /*public final synchronized*/
 bool hasListeners(QString name){
- QMutexLocker locker(&mutex);
+ QMutexLocker locker(mutex4);
  if (this->map.isEmpty())
  {
   return false;
@@ -214,8 +214,13 @@ signals:
 
 public slots:
 private:
- QHash<QString, QVector<L>* > map;
- QMutex mutex;
+ QHash<QString, QVector<L>* > map = QHash<QString, QVector<L>* >();
+ QMutex* mutex = new QMutex();
+ QMutex* mutex1= new QMutex();
+ QMutex* mutex2= new QMutex();
+ QMutex* mutex3= new QMutex();
+ QMutex* mutex4= new QMutex();
+
 protected:
 /**
  * Creates an array of listeners.

@@ -6,9 +6,9 @@
 #include "javaqt_global.h"
 
 class TableModelEvent;
-class JAVAQTSHARED_EXPORT TableModelListener : public QObject, public EventListener
+class JAVAQTSHARED_EXPORT TableModelListener : public EventListener
 {
- Q_OBJECT
+ //Q_OBJECT
  Q_INTERFACES(EventListener)
 public:
     /**
@@ -18,5 +18,5 @@ public:
     /*public*/ virtual void tableChanged(TableModelEvent* /*e*/ = 0) {}
     QObject* self() {return (QObject*)this;}
 };
-
+Q_DECLARE_INTERFACE(TableModelListener, "TableModelListener")
 #endif // TABLEMODELLISTENER_H

@@ -13,7 +13,7 @@
 #include "usbcomponent.h"
 #include "vptr.h"
 #include "controller.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 
 //TreePanel::TreePanel(QWidget *parent) : QWidget(parent)
 //{

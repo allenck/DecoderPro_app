@@ -14,7 +14,7 @@ TurnoutOperationManager::TurnoutOperationManager(QObject *parent) :
 // log->setDebugEnabled(true);
  turnoutOperations = new QMap<QString,TurnoutOperation*>();
  operationTypes = new QLinkedList<TurnoutOperation*>(); // array of the defining instances of each class, held in order of appearance
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
  setProperty("InstanceManagerAutoDefault", "yes");
 
 }
@@ -203,8 +203,7 @@ TurnoutOperationManager::TurnoutOperationManager(QObject *parent) :
  */
 /*public*/ void TurnoutOperationManager::loadOperationTypes()
 {
- #if 1 // TODO:
- QStringList validTypes = ((ProxyTurnoutManager*) InstanceManager::turnoutManagerInstance())->getValidOperationTypes();
+ QStringList validTypes =  InstanceManager::turnoutManagerInstance()->getValidOperationTypes();
  for (int i=0; i<validTypes.length(); ++i)
  {
   QString thisClassName = /*"jmri."+*/validTypes.at(i)+"TurnoutOperation";
@@ -223,12 +222,14 @@ TurnoutOperationManager::TurnoutOperationManager(QObject *parent) :
     //thisClass.getDeclaredConstructor().newInstance();
     thisClass->newInstance();
     if (log->isDebugEnabled()) { log->debug("loaded TurnoutOperation class "+thisClassName); }
-} catch (ClassNotFoundException e1) { log->error("during loadOperationTypes", e1); }
-  catch (InstantiationException e2) { log->error("during loadOperationTypes", e2); }
-  catch (IllegalAccessException e3) { log->error("during loadOperationTypes", e3); }
-  }
+    }
+    catch (ClassNotFoundException* e1) { log->error("during loadOperationTypes", e1); }
+    catch (InstantiationException* e2) { log->error("during loadOperationTypes", e2); }
+    catch (IllegalAccessException* e3) { log->error("during loadOperationTypes", e3); }
+    catch (NoSuchMethodException* e4) { log->error("during loadOperationTypes", e4); }
+    catch (InvocationTargetException* e5) { log->error("during loadOperationTypes", e5); }
+   }
  }
-#endif
 }
 
 /**
@@ -335,7 +336,7 @@ TurnoutOperationManager::TurnoutOperationManager(QObject *parent) :
  */
 /*public synchronized*/ void TurnoutOperationManager::addPropertyChangeListener(PropertyChangeListener* l)
 {
- pcs->addPropertyChangeListener(l);
+ pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 }
 /*public synchronized */void TurnoutOperationManager::removePropertyChangeListener(PropertyChangeListener* l)
 {

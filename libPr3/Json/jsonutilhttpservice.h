@@ -11,18 +11,18 @@ public:
  /*public*/ QJsonObject getPanel(QLocale locale, Editor* editor, QString format);
  /*public*/ QJsonArray getPanels(QLocale locale, QString format);
  /*public*/ QJsonArray getPanels(QLocale locale);
- /*public*/ QJsonValue doGet(QString type, QString name, QLocale locale) throw (JsonException);
- /*public*/ QJsonValue doGetList(QString type, QLocale locale) throw (JsonException) ;
- /*public*/ QJsonObject doPost(QString type, QString name, QJsonObject data, QLocale locale) throw (JsonException);
+ /*public*/ QJsonValue doGet(QString type, QString name, QLocale locale) /*throw (JsonException)*/override;
+ /*public*/ QJsonValue doGetList(QString type, QLocale locale) /*throw (JsonException)*/ override;
+ /*public*/ QJsonObject doPost(QString type, QString name, QJsonObject data, QLocale locale) /*throw (JsonException)*/override;
  /*public*/ QJsonObject getHello(QLocale locale, int heartbeat);
- /*public*/ QJsonObject getMetadata(QLocale locale, QString name) throw (JsonException);
- /*public*/ QJsonArray getMetadata(QLocale locale) throw (JsonException);
+ /*public*/ QJsonObject getMetadata(QLocale locale, QString name) /*throw (JsonException)*/;
+ /*public*/ QJsonArray getMetadata(QLocale locale) /*throw (JsonException)*/;
  /*public*/ QJsonObject getNode(QLocale locale);
  /*public*/ QJsonObject getRailroad(QLocale locale);
  /*public*/ QJsonArray getSystemConnections(QLocale locale);
  static /*public*/ DccLocoAddress* addressForString(QString address);
  /*public*/ QJsonArray getNetworkServices(QLocale locale);
- /*public*/ QJsonObject getNetworkService(QLocale locale, QString name) throw (JsonException);
+ /*public*/ QJsonObject getNetworkService(QLocale locale, QString name) /*throw (JsonException)*/;
 
 };
 

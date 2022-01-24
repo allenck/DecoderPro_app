@@ -44,10 +44,10 @@ GuiUtilBase::GuiUtilBase(QObject *parent) :
   QString iconPath = child.firstChildElement("icon").text();
   //icon = new QIcon(FileUtil::findURL().toString());
   icon = new QIcon(":/" +iconPath);
-  act = new Action(name, *icon, wi);
+//  act = new Action(name, *icon, wi);
  }
  else
-  act = new Action(name, wi);
+//  act = new Action(name, wi);
 
  //This bit does not size very well, but it works for now.
  if (!child.firstChildElement("option").isNull())
@@ -240,10 +240,10 @@ GuiUtilBase::GuiUtilBase(QObject *parent) :
    setParameters(act, parameters);
    return (Action*)act;
   }
-  catch (Exception ex)
+  catch (Exception* ex)
   {
    log.warn("could not load toolbar adapter class: " + child.firstChildElement("panel").text()
-              + " due to " + ex.getMessage());
+              + " due to " + ex->getMessage());
    return createEmptyMenuItem(icon, name);
   }
  }
@@ -297,7 +297,7 @@ QString GuiUtilBase::getLocaleAttribute(QDomElement element, QString attrName, Q
  } catch (SecurityException e) {
      log.error("security exception unable to find remoteCalls for " + obj.getClass().getName());
      createEmptyMenuItem(icon, name);
- } catch (NoSuchMethodException e) {
+ } catch (NoSuchMethodException* e) {
      log.error("No such method remoteCalls for " + obj.getClass().getName());
      return createEmptyMenuItem(icon, name);
  }
@@ -356,7 +356,7 @@ connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  this->obj = obj;
 }
 
-/*public*/  void CallingAbstractAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/  void CallingAbstractAction::actionPerformed(JActionEvent* /*e*/)
 {
 //        try {
 #if 0 // TODO:
@@ -365,7 +365,7 @@ connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  if(!method.invoke(obj, Qt::DirectConnection, Q_ARG(QStringList, args)))
   Logger::error("Invoke error");
 #endif
-//        } catch (IllegalArgumentException ex) {
+//        } catch (IllegalArgumentException* ex) {
 //            System.out.println("IllegalArgument " + ex);
 //        } catch (IllegalAccessException ex) {
 //            System.out.println("IllegalAccess " + ex);
@@ -424,7 +424,7 @@ GUAbstractAction::GUAbstractAction(QString name, QIcon* icon)
   setIcon(*icon);
  }
 }
-/*public*/  void GUAbstractAction::actionPerformed(ActionEvent* /*e*/) {
+/*public*/  void GUAbstractAction::actionPerformed(JActionEvent* /*e*/) {
 }
 
 /*public*/  QString GUAbstractAction::toString() {
@@ -453,7 +453,7 @@ GUAbstractAction::GUAbstractAction(QString name, QIcon* icon)
 //    try {
 //        return new XmlFile() {
 //        }.rootFromName(name);
-//    } catch (Exception e) {
+//    } catch (Exception* e) {
 //        log.error("Could not parse file \"" + name + "\" due to: " + e);
 //        return NULL;
 //    }

@@ -21,5 +21,5 @@ VetoableChangeListener::VetoableChangeListener() : EventListener()
      *              change to be rolled back.
      */
      void VetoableChangeListener::vetoableChange(PropertyChangeEvent* /*evt*/)
-                                throw (PropertyVetoException) {}
+                                 {}
 

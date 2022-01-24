@@ -17,7 +17,7 @@
 /*
  * Protocol Specific Abstract Functions
  */
-//abstract public void sendStatus(QString sensor, int Status) throw (IOException);
+//abstract public void sendStatus(QString sensor, int Status) /*throw (IOException)*/;
 
 //abstract public void sendErrorStatus(QString sensor) throws IOException;
 
@@ -70,12 +70,12 @@
                 log->debug(tr("not changing sensor '%1', already Active (%1)").arg(sensorName).arg(sensor->getKnownState()));
                 try {
                     sendStatus(sensorName, Sensor::ACTIVE);
-                } catch (IOException ie) {
+                } catch (IOException* ie) {
                     log->error("Error Sending Status");
                 }
             }
         }
-    } catch (JmriException ex) {
+    } catch (JmriException* ex) {
         log->error("set sensor active", ex);
     }
 }
@@ -114,13 +114,13 @@
                 log->debug(tr("not changing sensor '%1', already InActive (%2)").arg(sensorName).arg(sensor->getKnownState()));
                 try {
                     sendStatus(sensorName, Sensor::INACTIVE);
-                } catch (IOException ie) {
+                } catch (IOException* ie) {
                     log->error("Error Sending Status");
                 }
             }
         }
-    } catch (JmriException ex) {
-        log->error("set sensor inactive" + ex.getMessage());
+    } catch (JmriException* ex) {
+        log->error("set sensor inactive" + ex->getMessage());
     }
 }
 
@@ -140,7 +140,7 @@
             int now = ( e->getNewValue()).toInt();
             try {
                 abstractSensorServer->sendStatus(name, now);
-            } catch (IOException ie) {
+            } catch (IOException* ie) {
                 abstractSensorServer->log->debug("Error Sending Status");
                 // if we get an error, de-register
                 sensor->removePropertyChangeListener(this);

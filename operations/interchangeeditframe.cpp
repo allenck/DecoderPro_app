@@ -2,13 +2,14 @@
 #include "location.h"
 #include "track.h"
 #include <QGroupBox>
-#include <QPushButton>
+#include "jbutton.h"
 #include "showcarsbylocationaction.h"
 #include "showtrainsservinglocationaction.h"
 #include <QMenu>
 #include "ignoreusedtrackaction.h"
 #include "changetracktypeaction.h"
 #include "trackdestinationeditaction.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -44,10 +45,8 @@ namespace Operations
      addHelpMenu("package.jmri.jmrit.operations.Operations_Interchange", true); // NOI18N
 
      // override text strings for tracks
-     // panelTrainDir.setBorder(BorderFactory.createTitledBorder(tr("TrainInterchange")));
-     panelTrainDir->setTitle(tr("Select trains or routes for departures"));
-     //paneCheckBoxes.setBorder(BorderFactory.createTitledBorder(tr("TypesInterchange")));
-     checkBoxesGroupBox->setTitle(tr("Select the rolling stock serviced by this classification/interchange track"));
+     panelTrainDir->setBorder(BorderFactory::createTitledBorder(tr("Select trains or routes for departures")));
+     panelCheckBoxes->setBorder(BorderFactory::createTitledBorder(tr("Select the rolling stock serviced by this classification/interchange track")));
      //deleteTrackButton.setText(tr("DeleteInterchange"));
      addTrackButton->setText(tr("Add Interchange"));
      saveTrackButton->setText(tr("Save Interchange"));

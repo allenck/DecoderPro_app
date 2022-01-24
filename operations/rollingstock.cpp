@@ -20,6 +20,9 @@
 #include <QtXml>
 #include "carcolors.h"
 #include "carowners.h"
+#include "division.h"
+#include "loggerfactory.h"
+//#include "simpledateformat.h
 
 //RollingStock::RollingStock(QObject *parent) :
 //  QObject(parent)
@@ -62,13 +65,13 @@ namespace Operations
 /*protected*/ /*static*/ /*final*/ QString RollingStock::DEFAULT_WEIGHT = "0";
 
 /*public*/ RollingStock::RollingStock(QObject *parent) :
- QObject(parent) {
+ SwingPropertyChangeSupport(this, parent) {
 common();
  _lastDate = QDateTime(); //(new GregorianCalendar()).getGregorianChange(); // set to change date of the Gregorian Calendar.
 }
 
 /*public*/ RollingStock::RollingStock(QString road, QString number, QObject *parent) :
- QObject(parent)
+ SwingPropertyChangeSupport(this, parent)
 {
  //this();
 common();
@@ -80,45 +83,7 @@ common();
 }
 void RollingStock::common()
 {
-log = new Logger("RollingStocK");
-setObjectName("RollingStock");
-pcs = new PropertyChangeSupport(this);
-locationManager = LocationManager::instance();
-_id = NONE;
-_number = NONE;
-_road = NONE;
-_type = NONE;
-_length = NONE;
-_color = NONE;
-_weight = DEFAULT_WEIGHT;
-_weightTons = DEFAULT_WEIGHT;
-_built = NONE;
-_owner = NONE;
-_comment = NONE;
-_routeId = NONE; // saved route for interchange tracks
-_rfid = NONE;
-_value = NONE;
-_last = NONE;
-_lastDate = QDateTime();
-_locationUnknown = false;
-_outOfService = false;
-_selected = false;
-
-_location = NULL;
-_trackLocation= NULL;
-_destination = NULL;
-_trackDestination = NULL;
-_train = NULL;
-_routeLocation = NULL;
-_routeDestination = NULL;
-_moves = 0;
-_lastLocationId = LOCATION_UNKNOWN; // the rollingstock's last location id
-_blocking = 0;
-number = 0; // used by rolling stock manager for sort by number
-_lengthChange = false; // used for loco length change
-verboseStore = false;
-_tag = NULL;
-_tagListener = NULL;
+ setObjectName("RollingStock");
 }
 
 /*public*/ /*static*/ QString RollingStock::createId(QString road, QString number) {
@@ -143,7 +108,7 @@ _tagListener = NULL;
   }
 }
 
-/*public*/ QString RollingStock::getNumber() {
+/*public*/ QString RollingStock::getNumber() const {
   return _number;
 }
 
@@ -155,7 +120,7 @@ _tagListener = NULL;
   }
 }
 
-/*public*/QString RollingStock::getRoadName() {
+/*public*/QString RollingStock::getRoadName() const {
   return _road;
 }
 
@@ -179,7 +144,7 @@ _tagListener = NULL;
   }
 }
 
-/*public*/ QString RollingStock::getTypeName() {
+/*public*/ QString RollingStock::getTypeName()const{
   return _type;
 }
 
@@ -231,7 +196,7 @@ setDirtyAndFirePropertyChange(LENGTH_CHANGED_PROPERTY, old, length);
 /*public*/ int RollingStock::getLengthInteger() {
   //try {
 return getLength().toInt();
-//     } catch (Exception e) {
+//     } catch (Exception* e) {
 //         log->error("Rolling stock ({}) length ({}) is not valid ", toString(), getLength());
 //     }
   return 0;
@@ -253,7 +218,7 @@ return getLength().toInt();
   }
 }
 
-/*public*/ QString RollingStock::getColor() {
+/*public*/ QString RollingStock::getColor() const {
   return _color;
 }
 
@@ -294,7 +259,7 @@ return getLength().toInt();
      double weight = 0;
      try {
          weight = getWeight().toDouble();
-     } catch (Exception e) {
+     } catch (Exception* e) {
          // log->debug("Weight not set for rolling stock ("+toString()+")");
      }
      return QString::number((int) (weight * Setup::getScaleTonRatio()));
@@ -305,7 +270,7 @@ return getLength().toInt();
      try {
          // get loaded weight
          weightTons = getWeightTons().toInt();
-     } catch (Exception e) {
+     } catch (Exception* e) {
          log->debug(tr("Rolling stock (%1) weight not set").arg(toString()));
      }
      return weightTons;
@@ -327,7 +292,7 @@ return getLength().toInt();
      }
  }
 
- /*public*/ QString RollingStock::getBuilt() {
+ /*public*/ QString RollingStock::getBuilt() const {
      return _built;
  }
 
@@ -336,7 +301,7 @@ return getLength().toInt();
   * @return location unknown symbol, out of service symbol, or none if car
   *         okay
   */
- /*public*/ QString RollingStock::getStatus() {
+ /*public*/ QString RollingStock::getStatus() const {
      return (isLocationUnknown() ? "<?> " : (isOutOfService() ? "<O> " : NONE)); // NOI18N
  }
 
@@ -350,7 +315,7 @@ return getLength().toInt();
   *
   * @return empty string if rolling stock isn't on layout
   */
- /*public*/ QString RollingStock::getLocationName() {
+ /*public*/ QString RollingStock::getLocationName() const {
      if (_location != NULL) {
          return  _location->getName();
      }
@@ -392,7 +357,7 @@ return getLength().toInt();
   *
   * @return empty string if rolling stock isn't on a track
   */
- /*public*/ QString RollingStock::getTrackName()
+ /*public*/ QString RollingStock::getTrackName() const
  {
      if (_trackLocation != NULL) {
          return  _trackLocation->getName();
@@ -460,14 +425,12 @@ return getLength().toInt();
   if (oldLocation != NULL)
   {
    oldLocation->deleteRS(this);
-   //oldLocation::removePropertyChangeListener(this);
-   disconnect(oldLocation->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent())));
+   oldLocation->removePropertyChangeListener(this);
    // if track is NULL, then rolling stock is in a train
    if (oldTrack != NULL)
    {
     oldTrack->deleteRS(this);
-    //oldTrack::removePropertyChangeListener(this);
-    disconnect(oldTrack->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent())));
+    oldTrack->removePropertyChangeListener(this);
     // if there's a destination then pickup complete
     if (_destination != NULL)
     {
@@ -485,15 +448,13 @@ return getLength().toInt();
   {
    _location->addRS(this);
    // Need to know if location name changes so we can forward to listeners
-   // _location->addPropertyChangeListener(this);
-   connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  _location->SwingPropertyChangeSupport::addPropertyChangeListener(this);
   }
   if (_trackLocation != NULL)
   {
    _trackLocation->addRS(this);
    // Need to know if location name changes so we can forward to listeners
-   //_trackLocation addPropertyChangeListener(this);
-   connect(_trackLocation->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   _trackLocation->SwingPropertyChangeSupport::addPropertyChangeListener(this);
    // if there's a destination then there's a pick up
    if (_destination != NULL)
    {
@@ -558,7 +519,7 @@ return getLength().toInt();
       {
           oldDestination->deleteDropRS();
           //oldDestination->removePropertyChangeListener(this);
-          disconnect(oldDestination->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          disconnect(oldDestination, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
           // delete pick up in case destination is NULL
           if (_location != NULL && _trackLocation != NULL) {
                _location->deletePickupRS();
@@ -568,7 +529,7 @@ return getLength().toInt();
       if (oldTrack != NULL) {
           oldTrack->deleteDropRS(this);
           //oldTrack::removePropertyChangeListener(this);
-          disconnect(oldTrack->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          disconnect(oldTrack, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
       }
       if (_destination != NULL) {
           _destination->addDropRS();
@@ -579,17 +540,17 @@ return getLength().toInt();
 
           // Need to know if destination name changes so we can forward to listeners
           //_destination.addPropertyChangeListener(this);
-          connect(_destination->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          connect(_destination, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
       }
       if (_trackDestination != NULL) {
           _trackDestination->addDropRS(this);
           // Need to know if destination name changes so we can forward to listeners
           //_trackDestination.addPropertyChangeListener(this);
-          connect(_trackDestination->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          connect(_trackDestination, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
       } else {
           // rolling stock has been terminated or reset, bump rolling stock moves
           if (getTrain() != NULL && getTrain()->getRoute() != NULL) {
-              setSavedRouteId(getTrain()->getRoute()->getId());
+              setLastRouteId(getTrain()->getRoute()->getId());
           }
           if (getRouteDestination() != NULL) {
               setMoves(getMoves() + 1);
@@ -645,7 +606,7 @@ return getLength().toInt();
   _destination = destination;
 }
 
-/*public*/ QString RollingStock::getDestinationName() {
+/*public*/ QString RollingStock::getDestinationName() const {
   if (_destination != NULL) {
       return _destination->getName();
   }
@@ -677,7 +638,7 @@ return getLength().toInt();
   return _trackDestination;
 }
 
-/*public*/ QString RollingStock::getDestinationTrackName() {
+/*public*/ QString RollingStock::getDestinationTrackName() const{
   if (_trackDestination != NULL) {
       return _trackDestination->getName();
   }
@@ -691,6 +652,31 @@ return getLength().toInt();
   return NONE;
 }
 
+/*public*/ void RollingStock::setDivision(Division* division) {
+    Division* old = _division;
+    _division = division;
+    if (old != _division) {
+        setDirtyAndFirePropertyChange("homeDivisionChange", VPtr<Division>::asQVariant(old), VPtr<Division>::asQVariant(division));
+    }
+}
+
+/*public*/ Division* RollingStock::getDivision() {
+    return _division;
+}
+
+/*public*/ QString RollingStock::getDivisionName() {
+    if (getDivision() != nullptr) {
+        return getDivision()->getName();
+    }
+    return NONE;
+}
+
+/*public*/ QString RollingStock::getDivisionId() {
+    if (getDivision() != nullptr) {
+        return getDivision()->getId();
+    }
+    return NONE;
+}
 /**
 * Used to block cars from staging
 *
@@ -714,7 +700,7 @@ return getLength().toInt();
   }
 }
 
-/*public*/ int RollingStock::getMoves() {
+/*public*/ int RollingStock::getMoves() const {
   return _moves;
 }
  /**
@@ -728,20 +714,20 @@ return getLength().toInt();
      if ((old != NULL && old!=(train)) || old != train) {
          if (old != NULL) {
              //old.removePropertyChangeListener(this);
-          disconnect(old->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          disconnect(old, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          }
          if (train != NULL) {
              //train.addPropertyChangeListener(this);
-          connect(train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          connect(train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
        }
          setDirtyAndFirePropertyChange(TRAIN_CHANGED_PROPERTY, VPtr<Train>::asQVariant(old), VPtr<Train>::asQVariant(train));
      }
  }
- /*public*/ Train* RollingStock::getTrain() {
+ /*public*/ Train* RollingStock::getTrain() const {
      return _train;
  }
 
- /*public*/ QString RollingStock::getTrainName() {
+ /*public*/ QString RollingStock::getTrainName() const {
      if (getTrain() != NULL) {
          return getTrain()->getName();
      }
@@ -790,11 +776,11 @@ return getLength().toInt();
 *
 * @param id The route id.
 */
-/*public*/ void RollingStock::setSavedRouteId(QString id) {
+/*public*/ void RollingStock::setLastRouteId(QString id) {
   _routeId = id;
 }
 
-/*public*/ QString RollingStock::getValue() {
+/*public*/ QString RollingStock::getValue() const {
   return _value;
 }
 
@@ -813,20 +799,20 @@ return getLength().toInt();
  }
 
 
- /*public*/ QString RollingStock::getRfid() {
+ /*public*/ QString RollingStock::getRfid() const {
      return _rfid;
  }
 
- /*public*/ DefaultIdTag *RollingStock::getIdTag() {
+ /*public*/ IdTag *RollingStock::getIdTag() {
      return _tag;
  }
 
- /*public*/ void RollingStock::setIdTag(DefaultIdTag* tag)
+ /*public*/ void RollingStock::setIdTag(IdTag* tag)
 {
      if (_tag != NULL)
      {
          //_tag.removePropertyChangeListener(_tagListener);
-      disconnect(((AbstractIdTag*)_tag->self())->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      disconnect(((AbstractIdTag*)_tag->self()), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
      _tag = tag;
      if (_tagListener == NULL) {
@@ -862,7 +848,7 @@ return getLength().toInt();
      }
      if (_tag != NULL)
          //_tag.addPropertyChangeListener(_tagListener);
-      connect(((AbstractIdTag*)_tag->self())->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      connect(((AbstractIdTag*)_tag->self()), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
  }
 IdTagPropertyChangeListener::IdTagPropertyChangeListener(RollingStock* parent) { this->parent = parent ;}
@@ -904,10 +890,10 @@ IdTagPropertyChangeListener::IdTagPropertyChangeListener(RollingStock* parent) {
      if (old!=(id))
          setDirtyAndFirePropertyChange("rolling stock rfid", old, id); // NOI18N
      try {
-      DefaultIdTag* tag = ((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->getIdTag(id.toUpper());
+      IdTag* tag = ((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->getIdTag(id.toUpper());
          if(log->isDebugEnabled()) log->debug(tr("Tag %1 Found").arg(tag->toString()));
          setIdTag(tag);
-     } catch (NullPointerException e) {
+     } catch (NullPointerException* e) {
          log->error(tr("Tag %1 Not Found").arg(id));
      }
  }
@@ -936,7 +922,7 @@ return "";
   *
   * @return date
   */
- /*public*/ QDateTime RollingStock::getLastMoveDate() {
+ /*public*/ QDateTime RollingStock::getLastMoveDate() const{
      return _lastDate;
  }
 
@@ -993,6 +979,75 @@ return "";
      }
 #endif
  }
+ /*public*/ QString RollingStock::getWhereLastSeenName() {
+     if (getWhereLastSeen() != nullptr) {
+         return getWhereLastSeen()->getName();
+     }
+     return NONE;
+ }
+
+ /*public*/ Location* RollingStock::getWhereLastSeen() {
+     if (_tag == nullptr) {
+         return nullptr;
+     }
+     Reporter* r = _tag->getWhereLastSeen();
+     Track* t = locationManager->getTrackByReporter(r);
+     if (t != nullptr) {
+         return t->getLocation();
+     }
+     // the reader isn't associated with a track, return
+     // the location it is associated with, which might be null.
+     return locationManager->getLocationByReporter(r);
+ }
+
+ /*public*/ Track* RollingStock::getTrackLastSeen() {
+     if (_tag == nullptr) {
+         // there isn't a tag associated with this piece of rolling stock.
+         return nullptr;
+     }
+     Reporter* r = _tag->getWhereLastSeen();
+     if (r == nullptr) {
+         // there is a tag associated with this piece
+         // of rolling stock, but no reporter has seen it (or it was reset).
+         return nullptr;
+     }
+     // this return value will be null, if there isn't an associated track
+     // for the last reporter.
+     return locationManager->getTrackByReporter(r);
+ }
+
+ /*public*/ QString RollingStock::getTrackLastSeenName() {
+     // let getTrackLastSeen() find the track, if it exists.
+     Track* t = getTrackLastSeen();
+     if (t != nullptr) {
+         // if there is a track, return the name.
+         return t->getName();
+     }
+     // otherwise, there is no track to return the name of.
+     return NONE;
+ }
+
+ /*public*/ QDateTime RollingStock::getWhenLastSeen() {
+     if (_tag == nullptr) {
+         return QDateTime(); // never seen, so no date.
+     }
+     return _tag->getWhenLastSeen();
+ }
+
+ /**
+  * Provides the last date when this rolling stock was moved, or was reset from a
+  * built train, as a string.
+  *
+  * @return date
+  */
+ /*public*/ QString RollingStock::getWhenLastSeenDate() {
+     if (getWhenLastSeen() == QDateTime()) {
+         return NONE; // return an empty string for the default date.
+     }
+//     SimpleDateFormat* format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss"); // NOI18N
+//     return format.format(getWhenLastSeen());
+     return getWhenLastSeen().toString();
+ }
 
  /**
   * Sets the last date when this rolling stock was moved, or was reset from a
@@ -1016,7 +1071,7 @@ return "";
      }
  }
 
- /*public*/ int RollingStock::getBlocking() {
+ /*public*/ int RollingStock::getBlocking() const {
      return _blocking;
  }
 
@@ -1059,7 +1114,7 @@ return "";
      }
  }
 
- /*public*/ QString RollingStock::getOwner() {
+ /*public*/ QString RollingStock::getOwner() const {
      return _owner;
  }
 
@@ -1081,7 +1136,7 @@ return "";
   *
   * @return true when car's location is unknown
   */
- /*public*/ bool RollingStock::isLocationUnknown() {
+ /*public*/ bool RollingStock::isLocationUnknown() const {
      return _locationUnknown;
  }
 
@@ -1105,7 +1160,7 @@ return "";
   *
   * @return true when rolling stock is out of service
   */
- /*public*/ bool RollingStock::isOutOfService() {
+ /*public*/ bool RollingStock::isOutOfService() const{
      return _outOfService;
  }
 
@@ -1179,14 +1234,14 @@ return "";
      setDestination(NULL, NULL);
      setLocation(NULL, NULL);
      //CarRoads::instance().removePropertyChangeListener(this);
-     disconnect(CarRoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarRoads*)InstanceManager::getDefault("Operations::CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //        CarOwners.instance().removePropertyChangeListener(this);
-     disconnect(CarOwners::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarOwners*)InstanceManager::getDefault("Operations::CarOwners")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //        CarColors.instance().removePropertyChangeListener(this);
-     disconnect(CarColors::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarColors*)InstanceManager::getDefault("Operations::CarColors")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      if (_tag != NULL) {
          //_tag.removePropertyChangeListener(_tagListener);
-      disconnect(((AbstractIdTag*)_tag->self())->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      disconnect(((AbstractIdTag*)_tag->self()), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
  }
 
@@ -1196,6 +1251,7 @@ return "";
   * @param e RollingStock XML element
   */
  /*public*/ RollingStock::RollingStock(QDomElement e, QObject* parent)
+ : SwingPropertyChangeSupport(this, parent)
  {
      //this();
   common();
@@ -1256,7 +1312,7 @@ return "";
      if ((a = e.attribute (Xml::MOVES)) != NULL) {
          try {
              _moves = a.toInt();
-         } catch (NumberFormatException nfe) {
+         } catch (NumberFormatException* nfe) {
              log->error(tr("Move count (%1) for rollingstock (%2) isn't a valid number!").arg(a).arg(toString()));
          }
      }
@@ -1264,9 +1320,9 @@ return "";
          _lastLocationId = a;
      }
      if ((a = e.attribute (Xml::TRAIN_ID)) != NULL) {
-         setTrain(TrainManager::instance()->getTrainById(a));
+         setTrain(((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainById(a));
      } else if ((a = e.attribute (Xml::TRAIN)) != NULL) {
-         setTrain(TrainManager::instance()->getTrainByName(a));
+         setTrain(((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainByName(a));
      }
     if (getTrain() != NULL && getTrain()->getRoute() != NULL &&
              (a = e.attribute (Xml::ROUTE_LOCATION_ID)) != NULL) {
@@ -1398,12 +1454,9 @@ return "";
  }
 
  /*private*/ void RollingStock::addPropertyChangeListeners() {
-     //CarRoads.instance().addPropertyChangeListener(this);
-  connect(CarRoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  //        CarOwners.instance().addPropertyChangeListener(this);
-  connect(CarOwners::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  //        CarColors.instance().addPropertyChangeListener(this);
-  connect(CarColors::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->addPropertyChangeListener(this);
+ ((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->addPropertyChangeListener(this);
+ ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->addPropertyChangeListener(this);
  }
 
  // rolling stock listens for changes in a location name or if a location is deleted
@@ -1415,7 +1468,7 @@ return "";
   if (e->getPropertyName()==(Location::NAME_CHANGED_PROPERTY)) {
       if (log->isDebugEnabled()) {
        log->debug(tr("Property change for rolling stock: (%1) property name: (%2) old: (%3) new: (%4)").arg(
-                  e->toString()).arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e->getNewValue().toString()));
+                  e->toString()).arg(e->getPropertyName()).arg(e->getOldValue().toString(),e->getNewValue().toString()));
       }
       setDirtyAndFirePropertyChange(e->getPropertyName(), e->getOldValue(), e->getNewValue());
   }
@@ -1501,18 +1554,10 @@ return "";
       }
   }
  }
-#if 0
- /*public*/ synchronized void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.addPropertyChangeListener(l);
- }
 
- /*public*/ synchronized void removePropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.removePropertyChangeListener(l);
- }
-#endif
  /*protected*/ void RollingStock::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n)
  {
-  pcs->firePropertyChange(p, old, n);
+  firePropertyChange(p, old, n);
  }
-
-} // end namespace
+ /*private*/ /*final*/ /*static*/ Logger* RollingStock::log = LoggerFactory::getLogger("RollingStock");
+} // end namespace Operations

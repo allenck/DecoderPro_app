@@ -19,7 +19,7 @@ public:
     explicit DropTarget(QObject *parent = 0); // : QObject(parent) {}
 //    /*public*/ DropTarget(QWidget* c, DropTargetListener dtl, QObject *parent)
 //throw (HeadlessException);
-    /*public*/ DropTarget(Component* c, int ops, DropTargetListener* dtl, bool act = DnDConstants::ACTION_NONE, FlavorMap* fm = NULL) throw (HeadlessException);
+    /*public*/ DropTarget(Component* c, int ops, DropTargetListener* dtl, bool act = DnDConstants::ACTION_NONE, FlavorMap* fm = NULL) /*throw (HeadlessException)*/;
 //throw (HeadlessException);
     /*public*/ /*synchronized*/ Component* getComponent();
     /*public*/ /*synchronized*/ void addDropTargetListener(DropTargetListener* dtl); // throw (TooManyListenersException);

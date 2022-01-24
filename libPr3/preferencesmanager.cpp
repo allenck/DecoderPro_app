@@ -19,7 +19,7 @@ class Exception;
  */
 ///*public*/ interface PreferencesManager extends JmriServiceProviderInterface {
 
-PreferencesManager::PreferencesManager(QObject *parent) : JmriServiceProviderInterface(parent) {}
+// PreferencesManager::PreferencesManager(QObject *parent) : QObject(parent) {}
 
 /**
  * Initialize the PreferencesManager with preferences associated with the
@@ -32,7 +32,7 @@ PreferencesManager::PreferencesManager(QObject *parent) : JmriServiceProviderInt
  * provider is not repeatedly initialized.
  *
  */
-/*public*/ void PreferencesManager::initialize(/*@Nonnull*/ Profile* /*profile*/) throw (InitializationException) {}
+///*public*/ void PreferencesManager::initialize(/*@Nonnull*/ Profile* /*profile*/) /*throw (InitializationException)*/ {}
 
 /**
  * Test if the PreferencesManager is initialized for the provided Profile.
@@ -62,7 +62,7 @@ PreferencesManager::PreferencesManager(QObject *parent) : JmriServiceProviderInt
      *         set instead of null.
      */
     //@Nonnull
-     QList<Exception*>* PreferencesManager::getInitializationExceptions(/*@Nonnull */Profile* /*profile*/) {return NULL;}
+     //QList<Exception *> PreferencesManager::getInitializationExceptions(/*@Nonnull */Profile* /*profile*/) {return NULL;}
 
 /**
  * Get the set of PreferencesProviders that must be initialized prior to
@@ -79,7 +79,9 @@ PreferencesManager::PreferencesManager(QObject *parent) : JmriServiceProviderInt
 //Iterable<Class<? extends PreferencesManager>> getRequires();
 //template<class T>
 ///*public*/ QList<T>* PreferencesManager::getRequires() {return NULL;}
-QSet<QString>* PreferencesManager::getRequires() {return NULL;}
+QSet<QString> PreferencesManager::getRequires() {
+ return  QSet<QString>();
+}
 /**
  * Get the set of Classes that this PreferencesManager can be registered as
  * a provider of in the {@link jmri.InstanceManager}.
@@ -92,4 +94,4 @@ QSet<QString>* PreferencesManager::getRequires() {return NULL;}
 //Iterable<Class<?>> getProvides();
 //template <class T>
 ///*public*/ QList<T>* PreferencesManager::getProvides() {return NULL;}
-QSet<QString>* PreferencesManager::getProvides() {return NULL;}
+QSet<QString> PreferencesManager::getProvides() {return QSet<QString>();}

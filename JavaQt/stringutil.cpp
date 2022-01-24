@@ -1,6 +1,7 @@
 #include "stringutil.h"
 #include <QLocale>
 #include <QApplication>
+#include "loggerfactory.h"
 
 StringUtil::StringUtil()
 {
@@ -21,6 +22,11 @@ StringUtil::StringUtil()
  */
 
 ///*public*/ class StringUtil {
+
+/*public*/ /*static*/ /*final*/ QString StringUtil::HTML_CLOSE_TAG = "</html>";
+/*public*/ /*static*/ /*final*/ QString StringUtil::HTML_OPEN_TAG = "<html>";
+/*public*/ /*static*/ /*final*/ QString StringUtil::LINEBREAK = "\n";
+
 
 /**
  * Starting with two arrays, one of names and one of corresponding
@@ -80,6 +86,7 @@ QList<char> StringUtil::hexChars = QList<char>() <<  '0'<< '1'<< '2'<< '3'<< '4'
  */
 /*static*/ /*public*/ QString StringUtil::twoHexFromInt(int val) {
     QString sb;// = new StringBuffer() ;
+    QList<char>hexChars = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
     sb.append( hexChars[ (val&0xF0) >> 4 ] );
     sb.append( hexChars[ val & 0x0F ] ) ;
     return sb/*.toString() */;
@@ -486,3 +493,139 @@ static /*public*/ java.util.List<String> splitParens(String in) {
  // Doesn't really do anything yet. Placeholder for actual translator to be done later.
  return in;
 }
+
+/**
+ * Concatenates text Strings where either could possibly be in HTML format
+ * (as used in many Swing components).
+ * <p>
+ * Ensures any appended text is added within the {@code <html>...</html>}
+ * element, if there is any.
+ *
+ * @param baseText  original text
+ * @param extraText text to be appended to original text
+ * @return Combined text, with a single enclosing {@code <html>...</html>}
+ * element (only if needed).
+ */
+/*public*/ /*static*/ QString StringUtil::concatTextHtmlAware(QString baseText, QString extraText) {
+    if (baseText == "" && extraText == "") {
+        return QString();
+    }
+    if (baseText == "") {
+        return extraText;
+    }
+    if (extraText == "null") {
+        return baseText;
+    }
+    bool hasHtml = false;
+    QString result = baseText + extraText;
+    result = result.replace("(?i)" + HTML_OPEN_TAG, "");
+    result = result.replace("(?i)" + HTML_CLOSE_TAG, "");
+    if (result != (baseText + extraText)) {
+        hasHtml = true;
+        log->debug(QString("\n\nbaseText:\n\"%1\"\nextraText:\n\"%2\"\n").arg(baseText).arg(extraText));
+    }
+    if (hasHtml) {
+        result = HTML_OPEN_TAG + result + HTML_CLOSE_TAG;
+        log->debug(QString("\nCombined String:\n\"%1\"\n").arg(result));
+    }
+    return result;
+}
+/**
+ * Return the first int value within a string
+ * eg :X X123XX456X: will return 123
+ * eg :X123 456: will return 123
+ *
+ * @param str contents to process
+ * @return first value in int form , -1 if not found
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ int StringUtil::getFirstIntFromString(/*@Nonnull*/ QString str){
+    QString sb;// = new StringBuilder();
+    for (int i =0; i<str.length(); i ++) {
+        QChar c = str.at(i);
+        if (c != ' ' ){
+            if (c.isDigit()) {
+                sb.append(c);
+            } else {
+                if ( sb.length() > 0 ) {
+                    break;
+                }
+            }
+        } else {
+            if ( sb.length() > 0 ) {
+                break;
+            }
+        }
+    }
+    if ( sb.length() > 0 ) {
+        return sb.toInt();
+    }
+    return -1;
+}
+
+/**
+ * Return the last int value within a string
+ * eg :XX123XX456X: will return 456
+ * eg :X123 456: will return 456
+ *
+ * @param str contents to process
+ * @return last value in int form , -1 if not found
+ */
+//@CheckReturnValue
+/*public*/ /*static*/ int StringUtil::getLastIntFromString(/*@Nonnull*/ QString str){
+    QString sb;// = new StringBuilder();
+    for (int i = str.length() - 1; i >= 0; i --) {
+        QChar c = str.at(i);
+        if(c != ' '){
+            if (c.isDigit()) {
+                sb.insert(0, c);
+            } else {
+                if ( sb.length() > 0 ) {
+                    break;
+                }
+            }
+        } else {
+            if ( sb.length() > 0 ) {
+                break;
+            }
+        }
+    }
+    if ( sb.length() > 0 ) {
+        return sb.toInt();
+    }
+    return -1;
+}
+
+/**
+ * Increment the last number found in a string.
+ * @param str Initial string to increment.
+ * @param increment number to increment by.
+ * @return null if not possible, else incremented String.
+ */
+//@CheckForNull
+/*public*/ /*static*/ QString StringUtil::incrementLastNumberInString(/*@Nonnull*/ QString str, int increment){
+    int num = getLastIntFromString(str);
+    return ( (num == -1) ? QString() : replaceLast(str,QString::number(num),QString::number(num+increment)));
+}
+
+/**
+ * Replace the last occurance of string value within a String
+ * eg  from ABC to DEF will convert XXABCXXXABCX to XXABCXXXDEFX
+ *
+ * @param string contents to process
+ * @param from value within string to be replaced
+ * @param to new value
+ * @return string with the replacement, original value if no match.
+ */
+//@CheckReturnValue
+//@Nonnull
+/*public*/ /*static*/ QString StringUtil::replaceLast(/*@Nonnull*/ QString string, /*@Nonnull*/ QString from, /*@Nonnull*/ QString to) {
+    int lastIndex = string.lastIndexOf(from);
+    if (lastIndex < 0) {
+        return string;
+    }
+    QString tail = string.mid(lastIndex).replace(from, to);
+    return string.mid(0, lastIndex) + tail;
+}
+
+/*private*/ /*final*/ /*static*/ Logger* StringUtil::log = LoggerFactory::getLogger("StringUtil");

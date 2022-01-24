@@ -45,7 +45,7 @@ void ThrottlesPreferencesPane::common()
  initComponents();
  setComponents(tp);
  checkConsistancy(true);
- //tp->addPropertyChangeListener(this);
+ //tp->SwingPropertyChangeSupport::addPropertyChangeListener(this);
  connect(ThrottleFrameManager::instance()->getThrottlesPreferences(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
@@ -274,12 +274,12 @@ void ThrottlesPreferencesPane::common()
  }
 }
 
-/*private*/ void ThrottlesPreferencesPane::jbApplyActionPerformed(ActionEvent* evt)
+/*private*/ void ThrottlesPreferencesPane::jbApplyActionPerformed(JActionEvent* evt)
 {
  ThrottleFrameManager::instance()->getThrottlesPreferences()->set(getThrottlesPreferences());
 }
 
-/*public*/ void ThrottlesPreferencesPane::jbSaveActionPerformed(ActionEvent* evt)
+/*public*/ void ThrottlesPreferencesPane::jbSaveActionPerformed(JActionEvent* evt)
 {
  ThrottleFrameManager::instance()->getThrottlesPreferences()->set(getThrottlesPreferences());
  ThrottleFrameManager::instance()->getThrottlesPreferences()->save();
@@ -292,7 +292,7 @@ void ThrottlesPreferencesPane::common()
  }
 }
 
-/*private*/ void ThrottlesPreferencesPane::jbCancelActionPerformed(ActionEvent* evt)
+/*private*/ void ThrottlesPreferencesPane::jbCancelActionPerformed(JActionEvent* evt)
 {
  setComponents(ThrottleFrameManager::instance()->getThrottlesPreferences());
  checkConsistancy(true);

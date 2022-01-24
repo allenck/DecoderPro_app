@@ -1,22 +1,28 @@
 #ifndef SECTIONMANAGER_H
 #define SECTIONMANAGER_H
-#include "abstractmanager.h"
+#include "abstractsectionmanager.h"
 #include "section.h"
 #include <QString>
 #include "decimalformat.h"
 #include "liblayouteditor_global.h"
+#include "propertychangeevent.h"
+#include "instancemanagerautodefault.h"
+#include "propertyvetoexception.h"
 
-class LIBLAYOUTEDITORSHARED_EXPORT SectionManager : public AbstractManager
+class LIBLAYOUTEDITORSHARED_EXPORT SectionManager : public AbstractSectionManager, public InstanceManagerAutoDefault
 {
-    Q_OBJECT
+  Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault)
+
 public:
     explicit SectionManager(QObject *parent = 0);
     ~SectionManager() {}
-    SectionManager(const SectionManager&) : AbstractManager() {}
+    SectionManager(const SectionManager&) : AbstractSectionManager() {}
     int getXMLOrder() const override;
     //QString getSystemPrefix();
-    char typeLetter() const override;
-    /*public*/ QString getNamedBeanClass();
+    QChar typeLetter() override;
+    /*public*/ QString getBeanTypeHandled(bool plural) const override;
+    /*public*/ QString getNamedBeanClass() const override;
 
     /**
      * Method to create a new Section if the Section does not exist
@@ -35,8 +41,8 @@ public:
      *      that name is a System Name.  If both fail, returns NULL.
      */
     /*public*/ Section* getSection(QString name);
-//    /*public*/ Section* getBySystemName(QString name);
-//    /*public*/ Section* getByUserName(QString key);
+//    /*public*/ Section* getBySystemName(QString name) const override;
+//    /*public*/ Section* getByUserName(QString key)const override;
 
     /**
      * Validates all Sections
@@ -63,10 +69,11 @@ public:
      * Initialize all blocking sensors that exist - sets them to 'ACTIVE'
      */
     /*public*/ void initializeBlockingSensors ();
-    /*public*/ QString getNamedBeanClass()const override;
+    QObject* self() override {return (QObject*)this;}
 
     
 public slots:
+    //void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) override;
 private:
     DecimalFormat* paddedNumber;// =  new DecimalFormat("0000");
 

@@ -309,7 +309,7 @@
                     return spi.createInputStreamInstance(input,
                                                          usecache,
                                                          getCacheDirectory());
-                } catch (IOException e) {
+                } catch (IOException* e) {
                     throw new IIOException("Can't create cache file!", e);
                 }
             }
@@ -371,7 +371,7 @@
                     return spi.createOutputStreamInstance(output,
                                                           usecache,
                                                           getCacheDirectory());
-                } catch (IOException e) {
+                } catch (IOException* e) {
                     throw new IIOException("Can't create cache file!", e);
                 }
             }
@@ -479,7 +479,7 @@
             try {
                 spi = (ImageReaderSpi)iter.next();
                 return spi.createReaderInstance();
-            } catch (IOException e) {
+            } catch (IOException* e) {
                 // Deregister the spi in this case, but only as
                 // an ImageReaderSpi
                 theRegistry.deregisterServiceProvider(spi, ImageReaderSpi.class);
@@ -522,7 +522,7 @@
                 }
 
                 return canDecode;
-            } catch (IOException e) {
+            } catch (IOException* e) {
                 return false;
             }
         }
@@ -563,7 +563,7 @@
         /*public*/ boolean filter(Object elt) {
             try {
                 return contains((String[])method.invoke(elt), name);
-            } catch (Exception e) {
+            } catch (Exception* e) {
                 return false;
             }
         }
@@ -627,7 +627,7 @@
                 ImageWriterSpi.class.getMethod("getFileSuffixes");
             writerMIMETypesMethod =
                 ImageWriterSpi.class.getMethod("getMIMETypes");
-        } catch (NoSuchMethodException e) {
+        } catch (NoSuchMethodException* e) {
             e.printStackTrace();
         }
     }
@@ -793,7 +793,7 @@
             try {
                 spi = (ImageWriterSpi)iter.next();
                 return spi.createWriterInstance();
-            } catch (IOException e) {
+            } catch (IOException* e) {
                 // Deregister the spi in this case, but only as a writerSpi
                 theRegistry.deregisterServiceProvider(spi, ImageWriterSpi.class);
             }
@@ -985,7 +985,7 @@
         try {
             writerSpiClass = Class.forName(writerNames[0], true,
                                            ClassLoader.getSystemClassLoader());
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException* e) {
             return null;
         }
 
@@ -997,7 +997,7 @@
 
         try {
             return writerSpi.createWriterInstance();
-        } catch (IOException e) {
+        } catch (IOException* e) {
             // Deregister the spi in this case, but only as a writerSpi
             theRegistry.deregisterServiceProvider(writerSpi,
                                                   ImageWriterSpi.class);
@@ -1065,7 +1065,7 @@
         try {
             readerSpiClass = Class.forName(readerNames[0], true,
                                            ClassLoader.getSystemClassLoader());
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException* e) {
             return null;
         }
 
@@ -1077,7 +1077,7 @@
 
         try {
             return readerSpi.createReaderInstance();
-        } catch (IOException e) {
+        } catch (IOException* e) {
             // Deregister the spi in this case, but only as a readerSpi
             theRegistry.deregisterServiceProvider(readerSpi,
                                                   ImageReaderSpi.class);
@@ -1247,11 +1247,11 @@
      */
     /*public*/ /*static*/ BufferedImage* ImageIO::read(File* input) /*throws IOException*/ {
         if (input == nullptr) {
-            throw IllegalArgumentException("input == null!");
+            throw new IllegalArgumentException("input == null!");
         }
         if (!input->canRead()) {
-         log->error(tr("Can't read input file! %1").arg(input->getPath()));
-            throw IIOException("Can't read input file!");
+         log->error(tr("Can't read input file! [%1]").arg(input->getPath()));
+            throw new IIOException(tr("Can't read input file! [%1]").arg(input->getPath()));
         }
 
 //        ImageInputStream stream = createImageInputStream(input);
@@ -1264,7 +1264,7 @@
 //        }
         QFile f(input->getPath());
         if(!f.exists())
-         throw FileNotFoundException();
+         throw  new FileNotFoundException();
         BufferedImage* bi = new BufferedImage();
         bi->load(input->getPath());
 
@@ -1350,7 +1350,7 @@
         InputStream istream = null;
         try {
             istream = input.openStream();
-        } catch (IOException e) {
+        } catch (IOException* e) {
             throw new IIOException("Can't get input stream from URL!", e);
         }
         ImageInputStream stream = createImageInputStream(istream);
@@ -1487,7 +1487,7 @@
         try {
             output.delete();
             stream = createImageOutputStream(output);
-        } catch (IOException e) {
+        } catch (IOException* e) {
             throw new IIOException("Can't create output stream!", e);
         }
 
@@ -1529,7 +1529,7 @@
         ImageOutputStream stream = null;
         try {
             stream = createImageOutputStream(output);
-        } catch (IOException e) {
+        } catch (IOException* e) {
             throw new IIOException("Can't create output stream!", e);
         }
 

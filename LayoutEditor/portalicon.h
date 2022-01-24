@@ -1,11 +1,12 @@
 #ifndef PORTALICON_H
 #define PORTALICON_H
 #include "positionableicon.h"
-
+#include "propertychangelistener.h"
 class Portal;
-class PortalIcon : public PositionableIcon
+class PortalIcon : public PositionableIcon, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     /*public*/ static /*final*/ QString HIDDEN;// = "HIDDEN";
     /*public*/ static /*final*/ QString VISIBLE;// = "BLOCK";
@@ -23,8 +24,10 @@ public:
     /*public*/ void setHideArrows(bool set);
     /*public*/ bool getArrowSwitch();
     /*public*/ bool getArrowHide();
+    QObject* self() override {return (QObject*)this;}
+
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
     /*public*/ NamedBean* getNamedBean() override;
     /*public*/ void displayState(int state) override;
 private:

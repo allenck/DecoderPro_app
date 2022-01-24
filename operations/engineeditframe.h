@@ -2,14 +2,26 @@
 #define ENGINEEDITFRAME_H
 #include "operationsframe.h"
 #include "appslib_global.h"
+#include "propertychangelistener.h"
+#include "rollingstockeditframe.h"
+#include "instancemanager.h"
+#include "resourcebundle.h"
 
 class Logger;
-class QSignalMapper;
 class JTextField;
 class JComboBox;
 class QPushButton;
 namespace Operations
 {
+ class EngineResourceBundle : public ResourceBundle
+ {
+  public:
+   EngineResourceBundle();
+   QString getString(QString key);
+  private:
+   QMap<QString, QString> map = QMap<QString, QString>();
+ };
+
  class EngineAttributeEditFrame;
  class Engine;
  class EngineManager;
@@ -19,9 +31,10 @@ namespace Operations
  class EngineLengths;
  class CarManagerXml;
  class LocationManager;
- class APPSLIBSHARED_EXPORT EngineEditFrame : public OperationsFrame
+ class APPSLIBSHARED_EXPORT EngineEditFrame : public RollingStockEditFrame//, public PropertyChangeListener
  {
    Q_OBJECT
+   //Q_INTERFACES(PropertyChangeListener)
   public:
    explicit EngineEditFrame(QWidget *parent = 0);
   //private static final long serialVersionUID = 7527604846983933144L;
@@ -32,77 +45,47 @@ namespace Operations
   /*public*/ static /*final*/ QString LENGTH; //=Bundle.getMessage("Length");
   /*public*/ static /*final*/ QString OWNER; //=Bundle.getMessage("Owner");
   /*public*/ static /*final*/ QString CONSIST; //=Bundle.getMessage("Consist");
-  /*public*/ void initComponents();
-  /*public*/ void dispose();
-  /*public*/ void loadEngine(Engine* engine);
-  /*public*/ QString getClassName();
+  /*public*/ void initComponents() override;
+  /*public*/ void load(Engine* engine);
+  /*public*/ QString getClassName() override;
+   QObject* self() override {return (QObject*)this; }
 
   signals:
 
   public slots:
-  /*public*/ void buttonEditActionPerformed(QWidget* ae);
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
-  /*public*/ void comboBoxActionPerformed(QWidget* ae);
-  /*public*/ void buttonActionPerformed(QWidget* ae);
-  /*public*/ void checkBoxActionPerformed(QWidget* ae);
-
+  /*public*/ void buttonEditActionPerformed(QWidget* ae)override;
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
+  /*public*/ void comboBoxActionPerformed(QWidget* ae) override;
 
  private:
-  EngineManager* manager;// = EngineManager.instance();
-  EngineManagerXml* managerXml;// = EngineManagerXml.instance();
-  EngineModels* engineModels;// = EngineModels.instance();
-  EngineTypes* engineTypes;// = EngineTypes.instance();
-  EngineLengths* engineLengths;// = EngineLengths.instance();
-  CarManagerXml* carManagerXml;// = CarManagerXml.instance();
-  LocationManager* locationManager;// = LocationManager.instance();
+  EngineManager* engineManager = (EngineManager*)InstanceManager::getDefault("Operations::EngineManager");
+  EngineManagerXml* managerXml = (EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml");
+  EngineModels* engineModels = (EngineModels*)InstanceManager::getDefault("EngineModels");
 
-  Engine* _engine;
+  JButton* editModelButton = new JButton(tr("Edit"));
 
-  // major buttons
-  QPushButton* editRoadButton; //=new JButton(Bundle.getMessage("Edit"));
-  QPushButton* clearRoadNumberButton; //=new JButton(Bundle.getMessage("Clear"));
-  QPushButton* editModelButton; //=new JButton(Bundle.getMessage("Edit"));
-  QPushButton* editTypeButton; //=new JButton(Bundle.getMessage("Edit"));
-  QPushButton* editLengthButton; //=new JButton(Bundle.getMessage("Edit"));
-  QPushButton* fillWeightButton; //=new JButton();
-  QPushButton* editConsistButton; //=new JButton(Bundle.getMessage("Edit"));
-  QPushButton* editOwnerButton; //=new JButton(Bundle.getMessage("Edit"));
+  JCheckBox* bUnitCheckBox = new JCheckBox(tr("B Unit"));
 
-  QPushButton* saveButton; //=new JButton(Bundle.getMessage("Save"));
-  QPushButton* deleteButton; //=new JButton(Bundle.getMessage("Delete"));
-  QPushButton* addButton; //=new JButton(Bundle.getMessage("Add"));
+  JTextField* hpTextField = new JTextField(8);
+  JTextField* teTextField = new JTextField(8);
 
-  // check boxes
-  QCheckBox* bUnitCheckBox;// = new JCheckBox(Bundle.getMessage("BUnit"));
+  /*private*/ static /*final*/ QString SPEED;// = "25"; // MPH for tractive effort to HP conversion
+  EngineAttributeEditFrame* engineAttributeEditFrame = nullptr;
 
-  // text field
-  JTextField* roadNumberTextField; //=new JTextField(Control.max_len_string_road_number);
-  JTextField* builtTextField; //=new JTextField(Control.max_len_string_built_name + 3);
-  JTextField* hpTextField; //=new JTextField(8);
-  JTextField* weightTextField; //=new JTextField(Control.max_len_string_weight_name);
-  JTextField* commentTextField; //=new JTextField(35);
-  JTextField* valueTextField; //=new JTextField(8);
+  static Logger* log;
+  /*private*/ void save(bool isSave)override;
+  ResourceBundle* rb = new EngineResourceBundle();
 
-  // combo boxes
-  JComboBox* roadComboBox; //=CarRoads.instance().getComboBox();
-  JComboBox* modelComboBox; //=engineModels.getComboBox();
-  JComboBox* typeComboBox; //=engineTypes.getComboBox();
-  JComboBox* lengthComboBox; //=engineLengths.getComboBox();
-  JComboBox* ownerComboBox; //=CarOwners.instance().getComboBox();
-  JComboBox* locationBox; //=locationManager.getComboBox();
-  JComboBox* trackLocationBox; //=new JComboBox<>();
-  JComboBox* consistComboBox; //=manager.getConsistComboBox();
-  JComboBox* rfidComboBox; //=new JComboBox<IdTag>();
-  /*private*/ bool editActive;// = false;
-  EngineAttributeEditFrame* f;
-  /*private*/ void addEditButtonAction(QPushButton* b);
-  QSignalMapper* buttonEditMapper;
-  /*private*/ void removePropertyChangeListeners();
-  Logger* log;
-  /*private*/ void addEngine();
-  /*private*/ bool checkRoadNumber(QString roadNum);
-  /*private*/ void saveEngine();
+  protected:
+  /*protected*/ ResourceBundle* getRb()override;
+  /*protected*/ RollingStockAttribute* getTypeManager() override;
+  /*protected*/ RollingStockAttribute* getLengthManager() override;
+  /*protected*/ void addPropertyChangeListeners();
+  /*protected*/ void removePropertyChangeListeners();
+  /*protected*/ void _delete()override;
+  /*protected*/ bool check(RollingStock* engine) override;
 
  };
+
 }
 #endif // ENGINEEDITFRAME_H

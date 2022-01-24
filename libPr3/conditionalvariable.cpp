@@ -206,7 +206,7 @@ void ConditionalVariable::common()
    break;
   }
  }
- catch (NumberFormatException ex)
+ catch (NumberFormatException* ex)
  {
      //Can be Considered Normal where the logix is loaded prior to any other beans
  }
@@ -295,7 +295,7 @@ void ConditionalVariable::common()
   bean =(NamedBean*)((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getOBlock(_name);
   break;
  case Conditional::ITEM_TYPE_ENTRYEXIT:
-  bean = ((EntryExitPairs*)InstanceManager::getDefault("EntryExitPairs"))->getBySystemName(_name);
+  bean = (NamedBean*)((EntryExitPairs*)InstanceManager::getDefault("EntryExitPairs"))->getBySystemName(_name);
   break;
  default : log->error("Type "+QString::number(itemType)+" not set for " + _name);
  }
@@ -736,15 +736,15 @@ bool ConditionalVariable::compare(QString value1, QString value2, bool caseInsen
                 case GREATER_THAN:
                     return (n1 > n2);
             }
-        } catch (NumberFormatException nfe) {
+        } catch (NumberFormatException* nfe) {
             return false;   // n1 is a number, n2 is not
         }
         log->error("Compare 'numbers': value1= "+value1+", to value2= "+value2);
-    } catch (NumberFormatException nfe) { 
+    } catch (NumberFormatException* nfe) { 
         try {
             value2.toInt();
             return false;     // n1 is not a number, n2 is
-        } catch (NumberFormatException ex) { // OK neither a number
+        } catch (NumberFormatException* ex) { // OK neither a number
         }
     }
     if (log->isDebugEnabled()) log->debug("Compare Strings: value1= "+value1+", to value2= "+value2);

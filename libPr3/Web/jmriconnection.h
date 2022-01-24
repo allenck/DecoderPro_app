@@ -25,8 +25,8 @@ public:
  //QT_DEPRECATED /*public*/ void setWebSocketConnection(Session* webSocketConnection);
  /*public*/ DataOutputStream* getDataOutputStream();
  /*public*/ void setDataOutputStream(DataOutputStream* dataOutputStream);
- /*public*/ void sendMessage(QString message) throw (IOException);
- /*public*/ void close() throw (IOException);
+ /*public*/ void sendMessage(QString message) /*throw (IOException)*/;
+ /*public*/ void close() /*throw (IOException)*/;
  /*public*/ QLocale getLocale();
  /*public*/ void setLocale(QLocale locale);
 

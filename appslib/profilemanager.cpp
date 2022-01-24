@@ -53,7 +53,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _SEARCH_PATHS, ("searchPaths"))
  Q_GLOBAL_STATIC_WITH_ARGS(const char*, _DEFAULT_SEARCH_PATH, ("defaultSearchPath"))
 /*public*/ /*static*/ /*final*/ QString ProfileManager::DEFAULT_SEARCH_PATH = "defaultSearchPath"; // NOI18N
 /*volatile*/ /*private*/ /*static*/ ProfileManager* ProfileManager::defaultInstance = nullptr;
-//ProfileManager* ProfileManager::instance = NULL;
+
 /**
  * Default instance of the ProfileManager
  */
@@ -97,38 +97,27 @@ void ProfileManager::common(File* catalog)
  configFile = NULL;
  readingProfiles = false;
  autoStartActiveProfile = false;
- defaultSearchPath = new File(FileUtil::getPreferencesPath());
+ defaultSearchPath = nullptr;//new File(FileUtil::getPreferencesPath());
  autoStartActiveProfileTimeout = 10;
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
+ defaultInstance = this;
+
  this->catalog = catalog;
  try
  {
   this->readProfiles();
   this->findProfiles();
  }
- catch (JDOMException ex) {
-     log->error(ex.getLocalizedMessage() + ex.getMessage());
+ catch (JDOMException* ex) {
+     log->error(ex->getLocalizedMessage() + ex->getMessage());
  }
- catch (IOException ex) {
-     log->error(ex.getLocalizedMessage() + ex.getMessage());
+ catch (IOException* ex) {
+     log->error(ex->getLocalizedMessage() + ex->getMessage());
  }
- catch (FileNotFoundException ex) {
-     log->error(ex.getLocalizedMessage() + ex.getMessage());
+ catch (FileNotFoundException* ex) {
+     log->error(ex->getLocalizedMessage() + ex->getMessage());
  }
 
-}
-/**
- * Get the default {@link ProfileManager}.
- *
- * The default ProfileManager needs to be loaded before the InstanceManager
- * since user interaction with the ProfileManager may change how the
- * InstanceManager is configured.
- *
- * @return the default ProfileManager.
- */
-/*public*/ /*static*/ ProfileManager* ProfileManager::defaultManager()
-{
- return ProfileManager::getDefault();
 }
 
 /**
@@ -190,7 +179,7 @@ void ProfileManager::common(File* catalog)
       this->setActiveProfile(new Profile(profileFile));
       log->debug("  success");
       return;
-  } catch (IOException ex) {
+  } catch (IOException* ex) {
       log->error(tr("Unable to use profile path %1 to set active profile.").arg(identifier), ex);
   }
   } else {
@@ -290,7 +279,7 @@ void ProfileManager::common(File* catalog)
       oFile->close();
   }
  }
- catch (IOException ex)
+ catch (IOException* ex)
  {
   if (os != NULL)
   {
@@ -324,7 +313,7 @@ void ProfileManager::common(File* catalog)
   p->loadFromXML(is);
    //is.close();
   inFile->close();
-//        } catch (IOException ex) {
+//        } catch (IOException* ex) {
 //            if (is != NULL) {
 //                is.close();
 //            }
@@ -418,9 +407,9 @@ void ProfileManager::common(File* catalog)
    {
     this->writeProfiles();
    }
-   catch (IOException ex)
+   catch (IOException* ex)
    {
-    log->warn(tr("Unable to write profiles while adding profile %1.").arg(profile->getId() + ex.getMessage()));
+    log->warn(tr("Unable to write profiles while adding profile %1.").arg(profile->getId() + ex->getMessage()));
    }
   }
  }
@@ -446,7 +435,7 @@ void ProfileManager::common(File* catalog)
    }
   }
  }
- catch (IOException ex)
+ catch (IOException* ex)
  {
   log->warn(QString("Unable to write profiles while removing profile %1.").arg( profile->getId()));
  }
@@ -569,7 +558,7 @@ void ProfileManager::common(File* catalog)
     Profile* p = new Profile(pp);
     this->addProfile(p);
    }
-   catch (FileNotFoundException ex)
+   catch (FileNotFoundException* ex)
    {
     File* fp = new File(path);
     log->info(tr("Cataloged profile \"%1\" not in expected location\nSearching for it in %2").arg( e.attribute(/*Profile::ID*/ "id")).arg(fp->getParentFile()->toString()));
@@ -604,19 +593,19 @@ void ProfileManager::common(File* catalog)
    this->writeProfiles();
   }
  }
- catch (JDOMException ex)
+ catch (JDOMException* ex)
  {
   this->readingProfiles = false;
   throw ex;
  }
- catch (IOException ex)
+ catch (IOException* ex)
  {
   this->readingProfiles = false;
   throw ex;
  }
 }
 
-/*private*/ void ProfileManager::writeProfiles() throw (IOException)
+/*private*/ void ProfileManager::writeProfiles() /*throw (IOException)*/
 {
  if (!(File(FileUtil::getPreferencesPath()).canWrite()))
  {
@@ -657,7 +646,7 @@ void ProfileManager::common(File* catalog)
 //                            .setTextMode(Format.TextMode.PRESERVE));
 //        fmt.output(doc, fw);
 //        fw.close();
-//    } catch (IOException ex) {
+//    } catch (IOException* ex) {
 //        // close fw if possible
 //        if (fw != NULL) {
 //            fw.close();
@@ -699,7 +688,7 @@ void ProfileManager::common(File* catalog)
     Profile* p = new Profile(pp);
     this->addProfile(p);
    }
-   catch (IOException ex) {
+   catch (IOException* ex) {
        log->error(tr("Error attempting to read Profile at %1").arg(pp->toString()), ex);
    }
   }
@@ -885,7 +874,7 @@ QString ProfileManager::FileFilter1::getDescription()
  * @throws java.io.IOException      if unable to to create a Profile
  * @throws IllegalArgumentException if profile already exists for configFilename
  */
-/*public*/ bool ProfileManager::migrateToProfiles(/*@Nonnull*/ QString configFilename) throw (IllegalArgumentException, IOException) {
+/*public*/ bool ProfileManager::migrateToProfiles(/*@Nonnull*/ QString configFilename)  {
     File* appConfigFile = new File(configFilename);
     bool didMigrate = false;
     if (!appConfigFile->isAbsolute()) {
@@ -903,8 +892,8 @@ QString ProfileManager::FileFilter1::getDescription()
     } else if (appConfigFile->exists()) { // catalog and existing app config, but no profile config: migrate user who used profile with other JMRI app
         try {
             this->setActiveProfile(this->migrateConfigToProfile(appConfigFile, QApplication::applicationName()));
-        } catch (IllegalArgumentException ex) {
-            if (ex.getMessage().startsWith("A profile already exists at ")) {
+        } catch (IllegalArgumentException* ex) {
+            if (ex->getMessage().startsWith("A profile already exists at ")) {
                 // caused by attempt to migrate application with custom launcher
                 // strip ".xml" from configFilename name and use that to create profile
                 this->setActiveProfile(this->migrateConfigToProfile(appConfigFile, appConfigFile->getName().mid(0, appConfigFile->getName().length() - 4)));
@@ -938,9 +927,9 @@ QString ProfileManager::FileFilter1::getDescription()
  * @throws InitializationException if unable to read profile to export
  */
 /*public*/ void ProfileManager::_export(/*@Nonnull*/ Profile* profile, /*@Nonnull*/ File* target, bool exportExternalUserFiles,
-        bool exportExternalRoster) throw (IOException, JDOMException, InitializationException) {
+        bool exportExternalRoster) /*throw (IOException, JDOMException, InitializationException)*/ {
     if (!target->exists() && !target->createNewFile()) {
-        throw IOException("Unable to create file " + target->toString());
+        throw new IOException("Unable to create file " + target->toString());
     }
     QString tempDirPath = System::getProperty("java.io.tmpdir") + File::separator + "JMRI" + System::currentTimeMillis(); // NOI18N
     FileUtil::createDirectory(tempDirPath);
@@ -1071,7 +1060,7 @@ QString ProfileManager::FileFilter1::getDescription()
    return nullptr;
   }
  }
- return ProfileManager::defaultManager()->getActiveProfile();
+ return ProfileManager::getDefault()->getActiveProfile();
 }
 
 /**

@@ -37,7 +37,7 @@
     }
 
     // operational variables
-    /*private*/ /*static*/ QString OptionsFile::defaultFileName = FileUtil::getUserFilesPath() + "dispatcheroptions.xml";
+    /*private*/ /*static*/ QString OptionsFile::defaultFileName = nullptr; //FileUtil::getUserFilesPath() + "dispatcheroptions.xml";
 
     /*public*/ /*static*/ void OptionsFile::setDefaultFileName(QString testLocation) {
         defaultFileName = testLocation;
@@ -52,6 +52,8 @@
      */
     /*public*/ void OptionsFile::readDispatcherOptions(DispatcherFrame* f) //throw (JDOMException, IOException)
     {
+     if(defaultFileName == "")
+      defaultFileName = FileUtil::getUserFilesPath() + "dispatcheroptions.xml";
         // check if file exists
         if (checkFile(defaultFileName)) {
             // file is present,
@@ -206,7 +208,7 @@
      * @param f Dispatcher instance.
      * @throws java.io.IOException Thrown if dispatcher option file not found
      */
-    /*public*/ void OptionsFile::writeDispatcherOptions(DispatcherFrame* f) //throw (IOException)
+    /*public*/ void OptionsFile::writeDispatcherOptions(DispatcherFrame* f) ///*throw (IOException)*/
     {
         log->debug(tr("Saving Dispatcher options to file %1").arg(defaultFileName));
         dispatcher = f;
@@ -268,8 +270,8 @@
             }
             // write content to file
             writeXML(findFile(defaultFileName), doc);
-        } catch (IOException ioe) {
-            log->error(tr("IO Exception %1").arg(ioe.getMessage()));
+        } catch (IOException* ioe) {
+            log->error(tr("IO Exception %1").arg(ioe->getMessage()));
             throw (ioe);
         }
 #endif

@@ -3,7 +3,7 @@
 #include "setup.h"
 #include "control.h"
 #include "track.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include <QRadioButton>
 #include "location.h"
 #include "locationeditframe.h"
@@ -12,6 +12,7 @@
 #include <QGroupBox>
 #include "gridbaglayout.h"
 #include <QButtonGroup>
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -42,7 +43,7 @@ namespace Operations
      stagingRadioButton = new QRadioButton(tr("Staging"));
 
      // major buttons
-     saveButton = new QPushButton(tr("Save"));
+     saveButton = new JButton(tr("Save"));
 
 
      // the following code sets the frame's initial state
@@ -57,12 +58,9 @@ namespace Operations
 
      // load the panel
      // row 1a
-     QGroupBox* p1 = new QGroupBox();
+     JPanel* p1 = new JPanel();
      p1->setLayout(new GridBagLayout());
-     //p1.setBorder(BorderFactory.createTitledBorder(MessageFormat.format(tr("TrackType"),
-//             new Object[]{_location.getName()})));
-     p1->setStyleSheet(gbStyleSheet);
-     p1->setTitle(tr("Select Desired Track Type for %1").arg(_location->getName()));
+     p1->setBorder(BorderFactory::createTitledBorder(tr("Select Desired Track Type for %1").arg(_location->getName())));
      addItem(p1, spurRadioButton, 0, 0);
      addItem(p1, yardRadioButton, 1, 0);
      addItem(p1, interchangeRadioButton, 2, 0);
@@ -87,7 +85,7 @@ namespace Operations
  }
 
  /*public*/ void ChangeTracksFrame::buttonActionPerformed(QWidget* ae) {
-QPushButton* source = (QPushButton*)ae;
+JButton* source = (JButton*)ae;
      if (source == saveButton) {
          // check to see if button has changed
          if (spurRadioButton->isChecked()) {
@@ -104,7 +102,7 @@ QPushButton* source = (QPushButton*)ae;
 
  /*private*/ void ChangeTracksFrame::changeTracks(QString type) {
      log->debug(tr("change tracks to %1").arg(type));
-     QList<Track*> tracks = _location->getTrackByNameList(NULL);
+     QList<Track*> tracks = _location->getTracksByNameList(NULL);
      foreach (Track* track, tracks) {
          track->setTrackType(type);
      }

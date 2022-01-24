@@ -671,7 +671,7 @@ void PositionableShape::OnCancel_clicked()
   //try {
       pt = getInversePoint(x, y);
   if(pt == QPoint()) {
-      log->error("Can't locate Hit Rectangles " /*+ nte.getMessage()*/);
+      log->error("Can't locate Hit Rectangles " /*+ nte->getMessage()*/);
       return;
   }
   for (int i = 0; i < _handles->length(); i++) {

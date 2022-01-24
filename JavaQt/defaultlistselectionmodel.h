@@ -37,7 +37,7 @@ public:
     /*public*/ void removeIndexInterval(int index0, int index1);
     /*public*/ void setValueIsAdjusting(bool isAdjusting) ;
     /*public*/ QString toString();
-    /*public*/ QObject* clone() throw (CloneNotSupportedException);
+    /*public*/ QObject* clone() /*throw (CloneNotSupportedException)*/;
     /*public*/ int getAnchorSelectionIndex();
     /*public*/ int getLeadSelectionIndex();
     /*public*/ void setAnchorSelectionIndex(int anchorIndex);

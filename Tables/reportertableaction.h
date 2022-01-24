@@ -9,18 +9,21 @@
 #include "jtextfield.h"
 #include "instancemanager.h"
 #include "reportermanager.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include <QLineEdit>
 #include <QValidator>
+#include "managercombobox.h"
+#include "jcheckbox.h"
+#include "spinnernumbermodel.h"
+#include "jspinner.h"
+#include "jlabel.h"
+#include "systemnamevalidator.h"
 
-class QSpinBox;
 class QVBoxLayout;
 class ReporterManager;
-class JTextField;
 class JComboBox;
 class QCheckBox;
 class UserPreferencesManager;
-class QLabel;
 class ReporterTableAction : public AbstractTableAction
 {
     Q_OBJECT
@@ -29,28 +32,30 @@ public:
     Q_INVOKABLE /*public*/ ReporterTableAction(QString actionName, QObject* parent);
     ~ReporterTableAction() {}
     ReporterTableAction(const ReporterTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
-    /*public*/ void setManager(ReporterManager* man);
+    /*public*/ void setManager(Manager *man) override;
     Q_INVOKABLE /*public*/ QString getClassDescription();
 
 private:
     void common();
     JmriJFrame* addFrame = NULL;
     QVBoxLayout* addFrameLayout;
-    JTextField* hardwareAddressTextField;// = new CheckedTextField(20);
-    //JTextField* sysName;// = new JTextField(10);
-    JTextField* userNameTextField;// = new JTextField(20);
-    JComboBox* prefixBox = nullptr;// = new JComboBox<String>();
-    JTextField* numberToAdd;// = new JTextField(10);
-    QCheckBox* range;// = new JCheckBox(tr("AddRangeBox"));
-    QLabel* sysNameLabel;// = new JLabel("Hardware Address");
-    QLabel* userNameLabel;// = new JLabel(tr("LabelUserName"));
+    JTextField* hardwareAddressTextField = new JTextField(20);
+    JTextField* userNameTextField = new JTextField(20);
+    ManagerComboBox* prefixBox = new ManagerComboBox/*<Manager*>*/();
+    /*private*/ /*final*/ SpinnerNumberModel* rangeSpinner = new SpinnerNumberModel(1, 1, 100, 1); // maximum 100 items
+    /*private*/ /*final*/ JSpinner* numberToAddSpinner = new JSpinner(rangeSpinner);
+    JCheckBox* rangeCheckBox = new JCheckBox(tr("Add a range"));
+    JLabel* sysNameLabel;// = new JLabel("Hardware Address");
+    JLabel* userNameLabel;// = new JLabel(tr("LabelUserName"));
     QString systemSelectionCombo;// = this.getClass().getName() + ".SystemSelected";
+    /*private*/ JButton* addButton;
     QString userNameError;// = this.getClass().getName() + ".DuplicateUserName";
     QString connectionChoice;// = "";
-    QLabel* statusBar;// = new JLabel(Bundle.getMessage("HardwareAddStatusEnter"), JLabel.LEADING);
+    JLabel* statusBarLabel;// = new JLabel(Bundle.getMessage("HardwareAddStatusEnter"), JLabel.LEADING);
     /*private*/ QString addEntryToolTip;
     UserPreferencesManager* pref;
-    Logger* log;
+    /*private*/ SystemNameValidator* hardwareAddressValidator;
+    static Logger* log;
 
 private slots:
     void cancelPressed(ActionEvent* e = 0);
@@ -59,15 +64,15 @@ private slots:
 
 
 protected:
-    /*protected*/ ReporterManager* reportManager;// = InstanceManager::reporterManagerInstance();
-    /*protected*/ void createModel();
+    /*protected*/ ReporterManager* reporterManager = (ReporterManager*)InstanceManager::getDefault("ReporterManager");
+    /*protected*/ void createModel()override;
     /*protected*/ void setTitle();
     /*protected*/ QString helpTarget();
     /*protected*/ QString getClassName();
     void handleCreateException(QString sysName);
 
 protected slots:
-    /*protected*/ void addPressed(ActionEvent* e = 0);
+    /*protected*/ void addPressed(JActionEvent* e = 0)override;
 
  friend class RtBeanTableDataModel;
  friend class RTACreateListener;
@@ -76,7 +81,7 @@ protected slots:
  friend class RTAValidator;
 };
 Q_DECLARE_METATYPE(ReporterTableAction)
-
+#if 0
 class RtBeanTableDataModel : public BeanTableDataModel
 {
     Q_OBJECT
@@ -85,7 +90,7 @@ public:
     RtBeanTableDataModel(ReporterTableAction* act);
     /*public*/ static /*final*/ int LASTREPORTCOL;// = NUMCOLUMN;
     /*public*/ QString getValue(QString name) const;
-    /*public*/ Manager* getManager();
+    /*public*/ Manager *getManager();
     /*public*/ NamedBean* getBySystemName(QString name) const;
     /*public*/ NamedBean* getByUserName(QString name);
     /*public*/ void clickOn(NamedBean* t);
@@ -105,32 +110,41 @@ protected:
     /*protected*/ QString getBeanType();
     /*protected*/ bool matchPropertyName(PropertyChangeEvent* e);
 };
-
-class RTACreateListener : public ActionListener
+#endif
+class RTACreateListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
     ReporterTableAction* act;
 public:
     RTACreateListener(ReporterTableAction* act);
-    /*public*/ void actionPerformed(ActionEvent* e = 0) ;
+    QObject* self() override{return (QObject*)this;}
+ public slots:
+    /*public*/ void actionPerformed(JActionEvent* e = 0) override;
 };
 
-class RTACancelActionListener : public ActionListener
+class RTACancelActionListener : public QObject, public ActionListener
 {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
     ReporterTableAction* act;
    public:
     RTACancelActionListener(ReporterTableAction* act);
-    /*public*/ void actionPerformed(ActionEvent* e = 0);
+    QObject* self() override{return (QObject*)this;}
+ public slots:
+    /*public*/ void actionPerformed(JActionEvent* e = 0)override;
 };
 
-class ReporterRangeListener : public ActionListener
+class ReporterRangeListener : public QObject, public ActionListener
 {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
     ReporterTableAction* act;
    public:
      ReporterRangeListener(ReporterTableAction* act);
-    /*public*/ void actionPerformed(ActionEvent* e = 0);
+     QObject* self() override{return (QObject*)this;}
+  public slots:
+    /*public*/ void actionPerformed(JActionEvent* e = 0)override;
 };
 #if 0
 /**

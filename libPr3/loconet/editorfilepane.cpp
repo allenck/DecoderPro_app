@@ -37,7 +37,7 @@
 //    try {
  file = new SpjFile(new File(name.getPath()));
  file->read();
-//    } catch (IOException e) {
+//    } catch (IOException* e) {
 //        log.error("Exception reading file: " + e);
 //        e.printStackTrace();
 //        return;

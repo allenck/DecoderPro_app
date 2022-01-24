@@ -20,23 +20,32 @@
  * @version         $Revision: 17977 $
  */
 
-class LIBPR3SHARED_EXPORT LnReporterManager : public AbstractReporterManager
+class LIBPR3SHARED_EXPORT LnReporterManager : public AbstractReporterManager, public LocoNetListener
 {
     Q_OBJECT
+    Q_INTERFACES(LocoNetListener)
 public:
     explicit LnReporterManager(LocoNetSystemConnectionMemo *memo, QObject *parent = 0);
-    void dispose();
-    Reporter* createNewReporter(QString systemName, QString userName) const override;
-    /*public*/ int getBitFromSystemName(QString systemName) const;
-    /*public*/ NameValidity validSystemNameFormat(QString systemName)const override;
+    void dispose()override;
+    Reporter* createNewReporter(QString systemName, QString userName) override;
+    /*public*/ int getBitFromSystemName(QString systemName) ;
+    /*public*/ NameValidity validSystemNameFormat(QString systemName)  override;
     /*public*/ QString getEntryToolTip()override;
-    /*public*/ QString validateSystemNameFormat(QString systemName, QLocale locale);
+    /*public*/ QString validateSystemNameFormat(QString systemName, QLocale locale) override;
     /*public*/ QString getNamedBeanClass()const override {
         return "LnReporter";
     }
+    /*public*/ SystemConnectionMemo* getMemo() override {return AbstractManager::getMemo();}
+
+    QObject* self() override { return (QObject*)this;}
+    /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
+    /*public*/ NamedBean* getBySystemName(QString name) override {return AbstractManager::getBySystemName(name);}
+    /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::addPropertyChangeListener(l);}
+    /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::removePropertyChangeListener(l);}
+
 
 public slots:
-    void message(LocoNetMessage* l);
+    void message(LocoNetMessage* l)override;
 
 signals:
     

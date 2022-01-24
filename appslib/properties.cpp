@@ -727,7 +727,7 @@ int LineReader::readLine() //throws IOException
 }
 #endif
 /*private*/ /*static*/ void Properties::writeComments(QTextStream* bw, QString comments)
-    throw (IOException)
+    /*throw (IOException)*/
 {
 
     //bw.write("#");
@@ -800,7 +800,7 @@ int LineReader::readLine() //throws IOException
 /*public*/ void save(OutputStream out, String comments)  {
     try {
         store(out, comments);
-    } catch (IOException e) {
+    } catch (IOException* e) {
     }
 }
 
@@ -900,7 +900,7 @@ int LineReader::readLine() //throws IOException
  * @since 1.2
  */
 /*public*/ void Properties::store(QTextStream* out, QString comments)
-    throw (IOException)
+    /*throw (IOException)*/
 {
 #if 0
     store0(new BufferedWriter(new OutputStreamWriter(out, "8859_1")),
@@ -911,7 +911,7 @@ int LineReader::readLine() //throws IOException
 }
 #if 1
 /*private*/ void Properties::store0(QTextStream* bw, QString comments, bool escUnicode)
-    throw (IOException)
+    /*throw (IOException)*/
 {
  if (comments != NULL)
  {
@@ -975,7 +975,7 @@ int LineReader::readLine() //throws IOException
  * @since 1.5
  */
 /*public*/ /*synchronized*/ void Properties::loadFromXML(QTextStream* in)
-//    throw IOException, InvalidPropertiesFormatException
+//    throw new IOException, InvalidPropertiesFormatException
 {
     XmlSupport::load(this, /*Objects.requireNonNULL*/(in));
 //    in.close();
@@ -1002,7 +1002,7 @@ int LineReader::readLine() //throws IOException
  * @since 1.5
  */
 /*public*/ void Properties::storeToXML(QTextStream* os, QString comment)
-//throw (IOException)
+///*throw (IOException)*/
 {
  storeToXML(os, comment, "UTF-8");
 }
@@ -1047,7 +1047,7 @@ int LineReader::readLine() //throws IOException
  * @since 1.5
  */
 /*public*/ void Properties::storeToXML(QTextStream* os, QString comment, QString encoding)
-throw (IOException)
+/*throw (IOException)*/
 {
  XmlSupport::save(this, /*Objects.requireNonNULL*/(os), comment,
                     /*Objects.requireNonNULL*/(encoding));
@@ -1290,7 +1290,7 @@ private static XmlPropertiesProvider loadProviderFromProperty(ClassLoader cl) {
     try {
         Class<?> c = Class.forName(cn, true, cl);
         return (XmlPropertiesProvider)c.newInstance();
-    } catch (ClassNotFoundException |
+    } catch (ClassNotFoundException* |
              IllegalAccessException |
              InstantiationException x) {
         throw new ServiceConfigurationError(NULL, x);
@@ -1344,7 +1344,7 @@ private static XmlPropertiesProvider loadProvider() {
 }
 
 /*static*/ void Properties::XmlSupport::save(Properties* props, QTextStream* os, QString comment, QString encoding)
-//throw (IOException)
+///*throw (IOException)*/
 {
 //        PROVIDER.store(props, os, comment, encoding);
  QDomDocument doc;

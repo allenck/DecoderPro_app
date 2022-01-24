@@ -204,15 +204,15 @@ BlockBossLogic::~BlockBossLogic()
 // umap = smap = NULL;
 
  //if (log->isTraceEnabled()) log->trace("Create BBL "+name);
- ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+ ((AbstractSignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
  InstanceManager::turnoutManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
  InstanceManager::sensorManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
- SignalHead* driveHead = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name);
+ SignalHead* driveHead = ((AbstractSignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name);
  if (driveHead == nullptr) {
      log->warn(tr("%1 \"%2\" was not found").arg(tr("SignalHead")).arg(name));
      throw new IllegalArgumentException("SignalHead \"" + name + "\" does not exist");
  }
- driveSignal = new NamedBeanHandle<SignalHead*> (name, static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
+ driveSignal = new NamedBeanHandle<SignalHead*> (name, qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
  if (driveSignal->getBean() == nullptr) log->warn(tr("Signal_")+name+tr(" was not found!"));
  driveSignal = nbhm->getNamedBeanHandle(name, driveHead);
 //          java.util.Objects.requireNonNull(driveSignal, "driveSignal should not have been null");
@@ -378,7 +378,7 @@ BlockBossLogic::~BlockBossLogic()
   watchedSignal1 = NULL;
   return;
  }
- watchedSignal1 = new NamedBeanHandle<SignalHead*>(name,  static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
+ watchedSignal1 = new NamedBeanHandle<SignalHead*>(name,  qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
  if (watchedSignal1 == NULL || watchedSignal1->getBean() == NULL)
  {
   log->warn(tr("Signal \"")+name+tr("\" was not found!"));
@@ -386,7 +386,7 @@ BlockBossLogic::~BlockBossLogic()
  }
  else
  {
-  AbstractSignalHead* head = (AbstractSignalHead*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name);
+  AbstractSignalHead* head = (AbstractSignalHead*)qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name);
   connect(head->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(signalChange(PropertyChangeEvent*)));
  }
  protectWithFlashing = useFlash;
@@ -408,7 +408,7 @@ BlockBossLogic::~BlockBossLogic()
   watchedSignal1Alt = NULL;
   return;
  }
- watchedSignal1Alt = new NamedBeanHandle<SignalHead*>(name, static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
+ watchedSignal1Alt = new NamedBeanHandle<SignalHead*>(name, qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
  if (watchedSignal1Alt == NULL || watchedSignal1Alt->getBean() == NULL) log->warn(tr("Signal")+name+tr(" was not found!"));
 }
 /**
@@ -427,7 +427,7 @@ BlockBossLogic::~BlockBossLogic()
   watchedSignal2 = NULL;
   return;
  }
- watchedSignal2 = new NamedBeanHandle<SignalHead*>(name, static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
+ watchedSignal2 = new NamedBeanHandle<SignalHead*>(name, qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
  if (watchedSignal2 == NULL || watchedSignal2->getBean() == NULL) log->warn(tr("Signal_")+name+tr("_was not found!"));
 }
 /**
@@ -446,7 +446,7 @@ BlockBossLogic::~BlockBossLogic()
   watchedSignal2Alt = NULL;
   return;
  }
- watchedSignal2Alt = new NamedBeanHandle<SignalHead*>(name, static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
+ watchedSignal2Alt = new NamedBeanHandle<SignalHead*>(name, qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name));
  if (watchedSignal2Alt == NULL || watchedSignal2Alt->getBean() == NULL) log->warn(tr("Signal_")+name+tr(" was not found!"));
 }
 /**
@@ -561,6 +561,13 @@ void BlockBossLogic::turnoutChange(PropertyChangeEvent */*e*/)
     if (watchedSensor2Alt == NULL) return NULL;
     return watchedSensor2Alt->getName();
 }
+/*public*/ void BlockBossLogic::setRestrictingSpeed1(bool d) {
+    restrictingSpeed1 = d;
+}
+
+/*public*/ bool BlockBossLogic::getRestrictingSpeed1() {
+    return restrictingSpeed1;
+}
 /*public*/ void BlockBossLogic::setLimitSpeed1(bool d) { limitSpeed1 = d; }
 /*public*/ bool BlockBossLogic::getLimitSpeed1() {
     return limitSpeed1;
@@ -568,6 +575,13 @@ void BlockBossLogic::turnoutChange(PropertyChangeEvent */*e*/)
 /*public*/ void BlockBossLogic::setLimitSpeed2(bool d) { limitSpeed2 = d; }
 /*public*/ bool BlockBossLogic::getLimitSpeed2() {
     return limitSpeed2;
+}
+/*public*/ void BlockBossLogic::setRestrictingSpeed2(bool d) {
+    restrictingSpeed2 = d;
+}
+
+/*public*/ bool BlockBossLogic::getRestrictingSpeed2() {
+    return restrictingSpeed2;
 }
 
 /*public*/ bool BlockBossLogic::getUseFlash() {
@@ -1050,7 +1064,7 @@ void BlockBossLogic::doApproach()
     if (smap == nullptr) {
         smap = new QHash<QString,BlockBossLogic*>();
         umap = new QHash<QString,BlockBossLogic*>();
-        static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerConfig(new BlockBossLogic(), Manager::BLOCKBOSS);
+        qobject_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerConfig(new BlockBossLogic(), Manager::BLOCKBOSS);
     }
 }
 
@@ -1122,57 +1136,57 @@ void BlockBossLogic::doApproach()
 }
 
 /*public*/ QList<NamedBeanUsageReport*> BlockBossLogic::getUsageReport(NamedBean* bean) {
-        QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
-        SignalHead* head = driveSignal->getBean();
-        if (bean != nullptr) {
-            if (watchSensor1 != nullptr && bean->equals(getDrivenSignalNamedBean()->getBean())) {
-                report.append(new NamedBeanUsageReport("SSLSignal", head));  // NOI18N
-            }
-            if (watchSensor1 != nullptr && bean->equals(watchSensor1->getBean())) {
-                report.append(new NamedBeanUsageReport("SSLSensor1", head));  // NOI18N
-            }
-            if (watchSensor2 != nullptr && bean->equals(watchSensor2->getBean())) {
-                report.append(new NamedBeanUsageReport("SSLSensor2", head));  // NOI18N
-            }
-            if (watchSensor3 != nullptr && bean->equals(watchSensor3->getBean())) {
-                report.append(new NamedBeanUsageReport("SSLSensor3", head));  // NOI18N
-            }
-            if (watchSensor4 != nullptr && bean->equals(watchSensor4->getBean())) {
-                report.append(new NamedBeanUsageReport("SSLSensor4", head));  // NOI18N
-            }
-            if (watchSensor5 != nullptr && bean->equals(watchSensor5->getBean())) {
-                report.append(new NamedBeanUsageReport("SSLSensor5", head));  // NOI18N
-            }
-            if (watchTurnout != nullptr && bean->equals(watchTurnout->getBean())) {
-                report.append(new NamedBeanUsageReport("SSLTurnout", head));  // NOI18N
-            }
-            if (watchedSignal1 != nullptr && bean->equals(watchedSignal1->getBean())) {
-                report.append(new NamedBeanUsageReport("SSLSignal1", head));  // NOI18N
-            }
-            if (watchedSignal1Alt != nullptr && bean->equals(watchedSignal1Alt->getBean())) {
-                report.append(new NamedBeanUsageReport("SSLSignal1Alt", head));  // NOI18N
-            }
-            if (watchedSignal2 != nullptr && bean->equals(watchedSignal2->getBean())) {
-                report.append(new NamedBeanUsageReport("SSLSignal2", head));  // NOI18N
-            }
-            if (watchedSignal2Alt != nullptr && bean->equals(watchedSignal2Alt->getBean())) {
-                report.append(new NamedBeanUsageReport("SSLSignal2Alt", head));  // NOI18N
-            }
-            if (watchedSensor1 != nullptr && bean->equals(watchedSensor1->getBean())) {
-                report.append(new NamedBeanUsageReport("SSLSensorWatched1", head));  // NOI18N
-            }
-            if (watchedSensor1Alt != nullptr && bean->equals(watchedSensor1Alt->getBean())) {
-                report.append(new NamedBeanUsageReport("SSLSensorWatched1Alt", head));  // NOI18N
-            }
-            if (watchedSensor2 != nullptr && bean->equals(watchedSensor2->getBean())) {
-                report.append(new NamedBeanUsageReport("SSLSensorWatched2", head));  // NOI18N
-            }
-            if (watchedSensor2Alt != nullptr && bean->equals(watchedSensor2Alt->getBean())) {
-                report.append(new NamedBeanUsageReport("SSLSensorWatched2Alt", head));  // NOI18N
-            }
-            if (approachSensor1 != nullptr && bean->equals(approachSensor1->getBean())) {
-                report.append(new NamedBeanUsageReport("SSLSensorApproach", head));  // NOI18N
-            }
-        }
-        return report;
-    }
+ QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+ SignalHead* head = driveSignal->getBean();
+ if (bean != nullptr) {
+     if (watchSensor1 != nullptr && bean->equals(getDrivenSignalNamedBean()->getBean())) {
+         report.append(new NamedBeanUsageReport("SSLSignal", head));  // NOI18N
+     }
+     if (watchSensor1 != nullptr && bean->equals(watchSensor1->getBean())) {
+         report.append(new NamedBeanUsageReport("SSLSensor1", head));  // NOI18N
+     }
+     if (watchSensor2 != nullptr && bean->equals(watchSensor2->getBean())) {
+         report.append(new NamedBeanUsageReport("SSLSensor2", head));  // NOI18N
+     }
+     if (watchSensor3 != nullptr && bean->equals(watchSensor3->getBean())) {
+         report.append(new NamedBeanUsageReport("SSLSensor3", head));  // NOI18N
+     }
+     if (watchSensor4 != nullptr && bean->equals(watchSensor4->getBean())) {
+         report.append(new NamedBeanUsageReport("SSLSensor4", head));  // NOI18N
+     }
+     if (watchSensor5 != nullptr && bean->equals(watchSensor5->getBean())) {
+         report.append(new NamedBeanUsageReport("SSLSensor5", head));  // NOI18N
+     }
+     if (watchTurnout != nullptr && bean->equals(watchTurnout->getBean())) {
+         report.append(new NamedBeanUsageReport("SSLTurnout", head));  // NOI18N
+     }
+     if (watchedSignal1 != nullptr && bean->equals(watchedSignal1->getBean())) {
+         report.append(new NamedBeanUsageReport("SSLSignal1", head));  // NOI18N
+     }
+     if (watchedSignal1Alt != nullptr && bean->equals(watchedSignal1Alt->getBean())) {
+         report.append(new NamedBeanUsageReport("SSLSignal1Alt", head));  // NOI18N
+     }
+     if (watchedSignal2 != nullptr && bean->equals(watchedSignal2->getBean())) {
+         report.append(new NamedBeanUsageReport("SSLSignal2", head));  // NOI18N
+     }
+     if (watchedSignal2Alt != nullptr && bean->equals(watchedSignal2Alt->getBean())) {
+         report.append(new NamedBeanUsageReport("SSLSignal2Alt", head));  // NOI18N
+     }
+     if (watchedSensor1 != nullptr && bean->equals(watchedSensor1->getBean())) {
+         report.append(new NamedBeanUsageReport("SSLSensorWatched1", head));  // NOI18N
+     }
+     if (watchedSensor1Alt != nullptr && bean->equals(watchedSensor1Alt->getBean())) {
+         report.append(new NamedBeanUsageReport("SSLSensorWatched1Alt", head));  // NOI18N
+     }
+     if (watchedSensor2 != nullptr && bean->equals(watchedSensor2->getBean())) {
+         report.append(new NamedBeanUsageReport("SSLSensorWatched2", head));  // NOI18N
+     }
+     if (watchedSensor2Alt != nullptr && bean->equals(watchedSensor2Alt->getBean())) {
+         report.append(new NamedBeanUsageReport("SSLSensorWatched2Alt", head));  // NOI18N
+     }
+     if (approachSensor1 != nullptr && bean->equals(approachSensor1->getBean())) {
+         report.append(new NamedBeanUsageReport("SSLSensorApproach", head));  // NOI18N
+     }
+ }
+ return report;
+}

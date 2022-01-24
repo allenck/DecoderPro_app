@@ -2,7 +2,8 @@
 #include "carmanagerxml.h"
 #include "xml.h"
 #include "control.h"
-
+#include "loggerfactory.h"
+#include "instancemanager.h"
 namespace Operations
 {
 /**
@@ -17,31 +18,11 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString CarColors::CARCOLORS_CHANGED_PROPERTY = "CarColors"; // NOI18N
  /*public*/ /*static*/ /*final*/ QString CarColors::CARCOLORS_NAME_CHANGED_PROPERTY = "CarColorsName"; // NOI18N
 
- /*public*/ CarColors::CarColors(QObject* parent) :RollingStockAttribute(parent)
+ /*public*/ CarColors::CarColors(QObject* parent) : RollingStockAttribute(parent)
  {
  setProperty("InstanceManagerAutoDefault", "yes");
-
  }
 
- /**
-  * record the single instance *
-  */
- /*private*/ /*static*/ CarColors* CarColors::_instance = NULL;
-
- /*public*/ /*static*/ /*synchronized*/ CarColors* CarColors::instance() {
-  Logger* log = new Logger("CarColors");
-     if (_instance == NULL) {
-         if (log->isDebugEnabled()) {
-             log->debug("CarColors creating instance");
-         }
-         // create and load
-         _instance = new CarColors();
-     }
-     if (Control::showInstance) {
-         log->debug(tr("CarColors returns instance %1").arg(_instance->metaObject()->className()));
-     }
-     return _instance;
- }
 
  /*protected*/ QString CarColors::getDefaultNames() {
      return COLORS;
@@ -64,6 +45,15 @@ namespace Operations
      RollingStockAttribute::deleteName(oldName);
  }
 
+ //@Override
+ /*public*/ int CarColors::getMaxNameLength() {
+     if (maxNameLength == 0) {
+         RollingStockAttribute::getMaxNameLength();
+         log->info(tr("Max color name (%1) length %2").arg(maxName).arg(maxNameLength));
+     }
+     return maxNameLength;
+ }
+
  /**
   * Create an XML element to represent this Entry. This member has to remain
   * synchronized with the detailed DTD in operations-cars.dtd.
@@ -79,7 +69,8 @@ namespace Operations
 
  /*protected*/ void CarColors::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      // Set dirty
-     CarManagerXml::instance()->setDirty(true);
+     ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml"))->setDirty(true);
      RollingStockAttribute::firePropertyChange(p, old, n);
  }
+ /*private*/ /*final*/ /*static*/ Logger* CarColors::log = LoggerFactory::getLogger("CarColors");
 }

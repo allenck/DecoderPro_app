@@ -1,5 +1,5 @@
 #include "routemanager.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "logger.h"
 #include "operationssetupxml.h"
 #include "routemanagerxml.h"
@@ -12,6 +12,7 @@
 #include "routelocation.h"
 #include "locationmanager.h"
 #include "instancemanager.h"
+#include "loggerfactory.h"
 
 namespace Operations
 {
@@ -31,23 +32,10 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString RouteManager::LISTLENGTH_CHANGED_PROPERTY = "routesListLengthChanged"; // NOI18N
 
  /*public*/ RouteManager::RouteManager(QObject *parent)
-   : QObject(parent)
+   : SwingPropertyChangeSupport(this, parent)
  {
-  pcs = new ::PropertyChangeSupport(this);
-  log = new ::Logger("RouteManager");
   setProperty("InstanceManagerAutoDefault", "true");
   setProperty("InstanceManagerAutoInitialize", "true");
-
- }
-
- /**
-  * record the single instance *
-  */
-// /*private*/ /*static*/ RouteManager* RouteManager::_instance = NULL;
-
- /*public*/ /*static synchronized*/ RouteManager* RouteManager::instance()
- {
-  return static_cast<RouteManager*>(InstanceManager::getDefault("RouteManager"));
  }
 
  /*public*/ void RouteManager::dispose() {
@@ -164,7 +152,7 @@ namespace Operations
                      out.insert(j, route);
                      break;
                  }
-             } catch (NumberFormatException e) {
+             } catch (NumberFormatException* e) {
                  log->error("list id number isn't a number");
              }
          }
@@ -187,7 +175,7 @@ namespace Operations
 
  /*public*/ JComboBox* RouteManager::getComboBox() {
      JComboBox* box = new JComboBox();
-     box->addItem(NULL);
+     box->addItem("");
      QList<Route*> routes = getRoutesByNameList();
      foreach (Route* route, routes) {
          box->addItem(route->getName(), VPtr<Route>::asQVariant(route));
@@ -197,7 +185,7 @@ namespace Operations
 
  /*public*/ void RouteManager::updateComboBox(JComboBox* box) {
      box->clear();
-     box->addItem(NULL);
+     box->addItem("");
      QList<Route*> routes = getRoutesByNameList();
      foreach (Route* route, routes) {
          box->addItem(route->getName(), VPtr<Route>::asQVariant(route));
@@ -236,7 +224,7 @@ namespace Operations
 
  /*private*/ void RouteManager::copyRouteLocation(Route* newRoute, RouteLocation* rl, RouteLocation* rlNext, bool invert)
  {
-     Location* loc = LocationManager::instance()->getLocationByName(rl->getName());
+     Location* loc = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationByName(rl->getName());
      RouteLocation* rlNew = newRoute->addLocation(loc);
      // now copy the route location objects we want
      rlNew->setMaxCarMoves(rl->getMaxCarMoves());
@@ -310,19 +298,13 @@ namespace Operations
      }
  }
 
-#if 0
- /*public*/ synchronized void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.addPropertyChangeListener(l);
+ /*protected*/ void RouteManager::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
+     ((Operations::RouteManagerXml*)InstanceManager::getDefault("RouteManagerXml"))->setDirty(true);
+     firePropertyChange(p, old, n);
  }
 
- /*public*/ synchronized void removePropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.removePropertyChangeListener(l);
- }
-#endif
- /*protected*/ void RouteManager::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
-     RouteManagerXml::instance()->setDirty(true);
-     pcs->firePropertyChange(p, old, n);
- }
+ /*private*/ /*final*/ /*static*/ Logger* RouteManager::log = LoggerFactory::getLogger("RouteManager");
+
  /**
   * Locate via user name, then system name if needed. Does not create a new
   * one if nothing found
@@ -358,7 +340,7 @@ namespace Operations
 
  //@Override
  /*public*/ void RouteManager::initialize() {
-     static_cast<OperationsSetupXml*>(InstanceManager::getDefault("OperationsSetupXml")); // load setup
-     static_cast<RouteManagerXml*>(InstanceManager::getDefault("RouteManagerXml")); // load routes
+     InstanceManager::getDefault("OperationsSetupXml"); // load setup
+     InstanceManager::getDefault("RouteManagerXml"); // load routes
  }
 }

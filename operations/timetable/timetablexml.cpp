@@ -27,7 +27,7 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
         File* file = x->getFile(true);
         try {
             FileUtil::rotate(file, 4, "bup");  // NOI18N
-        } catch (IOException ex) {
+        } catch (IOException* ex) {
             log->warn("Rotate failed, reverting to xml backup");  // NOI18N
             x->makeBackupFile(TimeTableXmlFile::getDefaultFileName());
         }
@@ -144,11 +144,11 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
 
         try {
             x->writeXML(file, doc);
-        } catch (FileNotFoundException ex) {
-            log->error("File not found when writing: " + ex.getMessage());  // NOI18N
+        } catch (FileNotFoundException* ex) {
+            log->error("File not found when writing: " + ex->getMessage());  // NOI18N
             return false;
-        } catch (IOException ex) {
-            log->error("IO Exception when writing: " + ex.getMessage());  // NOI18N
+        } catch (IOException* ex) {
+            log->error("IO Exception when writing: " + ex->getMessage());  // NOI18N
             return false;
         }
 
@@ -271,7 +271,7 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
 
                 // Validate layoutId
                 if (!checkLayoutIds.contains(layoutId)) {
-                    log->warn("Segment {} layout id not found", segmentName);  // NOI18N
+                    log->warn(tr("Segment %1 layout id not found").arg(segmentName));  // NOI18N
                     continue;
                 }
 
@@ -346,7 +346,7 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
 
                 // Validate layoutId
                 if (!checkLayoutIds.contains(layoutId)) {
-                    log->warn("Schdule {} layout id not found", scheduleName);  // NOI18N
+                    log->warn(tr("Schedule %1 layout id not found").arg(scheduleName));  // NOI18N
                     continue;
                 }
 
@@ -457,11 +457,11 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
                         nextSpeed, arriveTime, departTime, stagingTrack, stopNotes);
                 dataMgr->addStop(stopId, newStop);
             }
-        } catch (JDOMException ex) {
-            log->error("File invalid: " + ex.getMessage());  // NOI18N
+        } catch (JDOMException* ex) {
+            log->error("File invalid: " + ex->getMessage());  // NOI18N
             return false;
-        } catch (IOException ex) {
-            log->error("Error reading file: " + ex.getMessage());  // NOI18N
+        } catch (IOException* ex) {
+            log->error("Error reading file: " + ex->getMessage());  // NOI18N
             return false;
         }
 
@@ -471,8 +471,8 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
 
 
 //    /*public*/ static class TimeTableXmlFile extends XmlFile {
-        /*private*/ /*static*/ QString TimeTableXmlFile::fileLocation = FileUtil::getUserFilesPath() + "timetable/";  // NOI18N
-        /*private*/ /*static*/ QString TimeTableXmlFile::demoLocation = FileUtil::getProgramPath() + "xml/demoTimetable/";  // NOI18N
+        /*private*/ /*static*/ QString TimeTableXmlFile::fileLocation = nullptr;//FileUtil::getUserFilesPath() + "timetable/";  // NOI18N
+        /*private*/ /*static*/ QString TimeTableXmlFile::demoLocation = nullptr;// FileUtil::getProgramPath() + "xml/demoTimetable/";  // NOI18N
         /*private*/ /*static*/ QString TimeTableXmlFile::baseFileName = "TimeTableData.xml";  // NOI18N
 
         /*public*/ /*static*/ QString TimeTableXmlFile::getDefaultFileName() {
@@ -493,6 +493,8 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
             File* chkfile = new File(getDefaultFileName());
             if (!chkfile->exists()) {
                 // Copy the demo file
+                if(demoLocation == nullptr)
+                    demoLocation = FileUtil::getProgramPath() + "xml/demoTimetable/";
                 File* demoFile = new File(demoLocation + baseFileName);
 //                Path toPath = chkdir->toPath();
 //                Path fromPath = demoFile->toPath();
@@ -501,9 +503,9 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
                  if(!QFile(demoFile->getPath()).copy(chkfile->getPath()))
                  {
                   log->error(tr("error copying %1 to %2").arg(demoFile->getPath()).arg(chkdir->getPath()));
-                    throw IOException(tr("error copying %1 to %2").arg(demoFile->getPath()).arg(chkfile->getPath()));
+                    throw new IOException(tr("error copying %1 to %2").arg(demoFile->getPath()).arg(chkfile->getPath()));
                  }
-                } catch (IOException ex) {
+                } catch (IOException* ex) {
                     TimeTableXml::log->error("Copy TimeTable demo file failed");  // NOI18N
                     return nullptr;
                 }
@@ -537,7 +539,8 @@ TimeTableXml::TimeTableXml(QObject *parent) : QObject(parent)
         }
 
 
-    /*private*/ /*final*/ /*static*/ Logger* TimeTableXml::log = LoggerFactory::getLogger("TimeTableXml");
-/*private*/ /*final*/ /*static*/ Logger* TimeTableXmlFile::log = LoggerFactory::getLogger("TimeTableXml");
+/*private*/ /*final*/ /*static*/ Logger* TimeTableXml::log = LoggerFactory::getLogger("TimeTableXml");
+/*private*/ /*final*/ /*static*/ Logger* TimeTableXmlFile::log = LoggerFactory::getLogger("TimeTableXmlFile");
 
-}
+
+} // namespace TimeTable

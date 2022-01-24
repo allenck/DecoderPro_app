@@ -1,7 +1,7 @@
 #ifndef ROSTERFRAME_H
 #define ROSTERFRAME_H
 
-#include "jmrijframe.h"
+#include "twopanetbwindow.h"
 #include "loconetsystemconnectionmemo.h"
 #include <QComboBox>
 #include <QAction>
@@ -15,6 +15,8 @@
 #include "copyrosteritemaction.h"
 //#include "twopanetbwindow.h"
 #include "paneprogframe.h"
+#include "rosterentryselector.h"
+#include "rostergroupselector.h"
 
 namespace Ui {
 class RosterFrame;
@@ -36,33 +38,34 @@ class RosterEntry;
 class Roster;
 class PaneProgFrame;
 class RosterEntryUpdateListener;
-class LIBPR3SHARED_EXPORT RosterFrame : public JmriJFrame
+class LIBPR3SHARED_EXPORT RosterFrame : public TwoPaneTBWindow, public RosterEntrySelector, public RosterGroupSelector
 {
     Q_OBJECT
-
+Q_INTERFACES(RosterEntrySelector RosterGroupSelector)
 public:
     explicit RosterFrame(QWidget *parent = 0);
     RosterFrame(QString name, QWidget *parent = 0);
     RosterFrame(QString name, QString menubarFile, QString toolbarFile, QWidget *parent = 0);
     ~RosterFrame();
-    RosterFrame(const RosterFrame&) : JmriJFrame() {}
-    QString getTitle();
+    RosterFrame(const RosterFrame&) : TwoPaneTBWindow(QString(), QString(), QString()) {}
+    QString getTitle() override;
 //    void propertyChange(PropertyChangeEvent*);
     //static int openWindowInstances;// = 0;
-    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+//    SwingPropertyChangeSupport* pcs;// = new SwingPropertyChangeSupport(this, nullptr);
     static QList<RosterFrame*> frameInstances;// = new ArrayList<RosterFrame>();
     /*public*/ QMenuBar* getMenu();
     /*public*/ void setAllowQuit(bool allowQuit);
-    void additionsToToolBar();
+    virtual void additionsToToolBar();
     /*public*/ void hideBottomPane(bool hide);
     QSignalMapper* currentMapper;
     /*public*/ void hideGroupsPane(bool hide);
-    /*public*/ QString getSelectedRosterGroup();
-    /*public*/ QList<RosterEntry*>* getSelectedRosterEntries();
-    /*public*/ void setTitle(QString title) ;
-    /*public*/ QVariant getProperty(QString key);
+    /*public*/ QString getSelectedRosterGroup() override;
+    /*public*/ QList<RosterEntry*>* getSelectedRosterEntries()override;
+    /*public*/ void setTitle(QString title)  override;
+    /*public*/ QVariant getProperty(QString key) override;
     /*public*/ void setProgrammerLaunch(int buttonId, QString programmer, QString buttonText);
     /*public*/ void setSelectedRosterGroup(QString rosterGroup);
+    QObject* self() override{return (QObject*)this;}
 
 
 public slots:
@@ -75,7 +78,7 @@ private:
     Ui::RosterFrame *ui;
     void common();
     Roster* roster;
-    RosterEntry* rosterEntry;
+    RosterEntry* re;
     QToolButton* newLoco;
     QToolButton* identifyLoco;
     QToolButton* togglePower;
@@ -83,7 +86,7 @@ private:
     JFrame* progFrame;
     QComboBox* cbProgrammers;
     ProgModeSelector* modePanel;
-    QComboBox* cbProgMode;
+    //QComboBox* cbProgMode;
     UserPreferencesManager* prefsMgr;
 //    ConnectionConfig* serModeProCon;// = NULL;
 //    ConnectionConfig* opsModeProCon;// = NULL;
@@ -91,14 +94,14 @@ private:
     QLabel* statusField;
     QLabel* serviceModeProgrammerLabel;
     QLabel* operationsModeProgrammerLabel;
-    QString programmer1; // "Comprehensive
-    QString programmer2; // "Basic"
+    QString programmer1 =  "Comprehensive";
+    QString programmer2 = "Basic";
     QVector<RosterEntry*> rows;
     QPushButton* prog2Button;
 
  Logger* log;
  bool inStartProgrammer;// = false;
- RosterEntryUpdateListener* rosterEntryUpdateListener;
+ RosterEntryUpdateListener* rosterEntryUpdateListener = nullptr;
 // void updateRow(int row, RosterEntry* re);
 // void updateDetails();
  bool bUpdating;
@@ -109,6 +112,7 @@ private:
 // JRadioButtonMenuItem contextOps = new JRadioButtonMenuItem(Bundle.getMessage("ProgrammingOnMain"));
 // JRadioButtonMenuItem contextService = new JRadioButtonMenuItem(Bundle.getMessage("ProgrammingTrack"));
  QSignalMapper* signalMapper;
+ int groupSplitPaneLocation = 0;
  RosterGroupsPanel* groups;
  QMenuBar* menuBar;// = new JMenuBar();
  void closeEvent(QCloseEvent *);
@@ -127,7 +131,7 @@ private:
  QAction* contextEdit;
  QList<RosterEntry*>* selectedRosterEntries;
  void editMediaButton();
- QString getClassName();
+ QString getClassName() override;
 
 private slots:
 //    void on_tableWidget_cellClicked(int row, int col);
@@ -147,7 +151,7 @@ private slots:
     void on_actionDelete_Loco_triggered();
 //    void on_tableWidget_cellChanged(int, int);
     void propertyChange(PropertyChangeEvent* e);
-    void On_cbProgrammers_currentIndexChanged(QString);
+//    void On_cbProgrammers_currentIndexChanged(QString);
     void updateProgMode();
     void On_splitterMoved(int, int);
     void On_splitter2Moved(int, int);
@@ -162,7 +166,7 @@ private slots:
 
 protected:
     /*protected*/ bool _allowQuit;// = true;
-    /*protected*/ void firePropertyChange(QString prefsMgr, QVariant old, QVariant n);
+//    /*protected*/ void firePropertyChange(QString prefsMgr, QVariant old, QVariant n);
     /*protected*/ QVector<RosterEntry*> selectRosterEntry(QString rosterGroup);
     /*protected*/ void buildGUI(QString menubarFile, QString toolbarFile);
     /*protected*/ void addMainMenuBar(QString menuFile);
@@ -200,20 +204,23 @@ protected slots:
  friend class PwrListener;
  friend class MyIdentifyLoco;
  friend class RosterEntryUpdateListener;
- friend class PropertyChangeSupport;
+ friend class SwingPropertyChangeSupport;
  friend class DefaultFilePropertyChangeListener;
 };
 
-class  PwrListener : public PropertyChangeListener
+class  PwrListener : public QObject,public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
  PwrListener(RosterFrame* parent)
  {
   this->parent = parent;
 
  }
- void propertyChange(PropertyChangeEvent *e)
+ QObject* self() override{return (QObject*)this;}
+ public slots:
+ void propertyChange(PropertyChangeEvent *e) override
  {
   if(e->getPropertyName() == "Power")
   {
@@ -254,22 +261,24 @@ class MyIdentifyLoco : public IdentifyLoco
      who = me;
      this->programmer = programmer;
     }
+    QObject* self() {return (QObject*)this;}
+ signals:
+  void doneSignal(int dccAddress, bool bLongAddr, int cv8Val, int cv7Val);
 
 private:
  RosterFrame* who;// = me;
 
     //@Override
 protected:
- void done(int dccAddress)
+ void done(int dccAddress) override
  {
   // if Done, updated the selected decoder
    //who->selectLoco(dccAddress, !shortAddr, cv8val, cv7val);
   emit doneSignal(dccAddress, !shortAddr, cv8val, cv7val);
  }
-signals:
- void doneSignal(int dccAddress, bool bLongAddr, int cv8Val, int cv7Val);
+
  //@Override
- protected: void message(QString m)
+ protected: void message(QString m) override
  {
   who->statusField->setText(m);
  }
@@ -280,12 +289,14 @@ signals:
         //idloco.setSelected(false);
     }
 };
-#if 0
-class RosterEntryUpdateListener : public PropertyChangeListener
+
+class RosterEntryUpdateListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  public:
     RosterEntryUpdateListener(RosterFrame* f);
+    QObject* self() override{return (QObject*)this;}
 public slots:
     void propertyChange(PropertyChangeEvent *);
 
@@ -293,10 +304,9 @@ private:
     RosterFrame* f;
 protected:
 };
-#endif
+
 /*static*/ class ExportRosterItem : public ExportRosterItemAction
 {
-
     /**
      *
      */
@@ -335,12 +345,14 @@ public:
     }
 };
 
-class DefaultFilePropertyChangeListener : public PropertyChangeListener
+class DefaultFilePropertyChangeListener :public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  RosterFrame* frame;
 public:
  DefaultFilePropertyChangeListener(RosterFrame* frame) {this->frame = frame;}
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent* evt);
 };
@@ -354,7 +366,7 @@ public:
  /*public*/ QString getClassName() {return "PaneProgFrameO1";}
 
 protected:
- QWidget* getModePane()
+ JPanel* getModePane()
  {
   return nullptr;
  }

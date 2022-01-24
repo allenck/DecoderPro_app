@@ -1,4 +1,4 @@
-#include "abstractproxymanager.h"
+﻿#include "abstractproxymanager.h"
 #include "exceptions.h"
 #include <QSet>
 #include "proxyreportermanager.h"
@@ -12,812 +12,784 @@
 #include "lnturnoutmanager.h"
 #include "loggerfactory.h"
 #include "namedbeancomparator.h"
-
-AbstractProxyManager::AbstractProxyManager(QObject *parent)
-    : AbstractManager(parent)
-{
- mgrs = QList<Manager*>();
- internalManager = nullptr;
- defaultManager = nullptr;
- addedOrderList = QStringList();
- log->setDebugEnabled(true);
- listeners = QList<QObject*>();
- propertyListenerList = QVector<PropertyChangeListener*>();
- namedPropertyListenerMap = QMap<QString, QVector<PropertyChangeListener*>* >();
- propertyVetoListenerList = QVector<VetoableChangeListener*> ();
- namedPropertyVetoListenerMap = QMap<QString, QVector<VetoableChangeListener*>*>();
-
-
- //registerSelf();
-}
+#include "connectionconfigmanager.h"
+#include "connectionconfig.h"
+#include "loggingutil.h"
+#include "vptr.h"
+#include "namedbeancomparator.h"
 /**
- * Implementation of a Manager that can serves as a proxy
- * for multiple system-specific implementations.
+ * Implementation of a Manager that can serves as a proxy for multiple
+ * system-specific implementations.
  * <p>
- * Automatically includes an Internal system, which
- * need not be separately added any more.
+ * Automatically includes an Internal system, which need not be separately added
+ * any more.
  * <p>
- * Encapsulates access to the "Primary" manager,
- * used by default.
+ * Encapsulates access to the "Primary" manager, used by default, which is the
+ * first one provided.
  * <p>
- * Internally, this is done by using a list of all
- * non-Internal managers, plus a separate reference to the
- * internal manager.
+ * Internally, this is done by using an ordered list of all non-Internal
+ * managers, plus a separate reference to the internal manager and default
+ * manager.
  *
- * @author	Bob Jacobsen Copyright (C) 2003, 2010
- * @version	$Revision: 18422 $
+ * @param <E> the supported type of NamedBean
+ * @author Bob Jacobsen Copyright (C) 2003, 2010, 2018
  */
-//abstract public class AbstractProxyManager implements Manager {
+//@SuppressWarnings("deprecation")
+// abstract /*public*/  class AbstractProxyManager<E extends NamedBean> extends VetoableChangeSupport implements ProxyManager/*<E>*/*, PropertyChangeListener, Manager.ManagerDataListener<E> {
 
-/**
- * Number of managers available through
- * getManager(i) and getManagerList(),
- * including the Internal manager
- */
-/*protected*/ int AbstractProxyManager::nMgrs()
-{
- // make sure internal present
- initInternal();
- return mgrs.size();
-}
+AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSupport(parent) {}
 
-/*protected*/ Manager* AbstractProxyManager::getMgr(int index)
-{
- // make sure internal present
- initInternal();
+    /**
+     * {@inheritDoc}
+     */
+    //@Override
+    /*public*/  QList<AbstractManager *> AbstractProxyManager::getManagerList()    {
+        // make sure internal present
+        initInternal();
+        return QList<AbstractManager*>(mgrs.toList());
+    }
 
- if (index < mgrs.size())
-  return mgrs.value(index);
- else
- {
-  throw  IllegalArgumentException("illegal index "+QString::number(index));
- }
-}
+    /**
+     * {@inheritDoc}
+     */
+    //@Override
+    /*public*/  QList<AbstractManager/*<E>*/*> AbstractProxyManager::getDisplayOrderManagerList()  {
+        // make sure internal present
+        initInternal();
 
-/**
- * Returns a list of all managers, including the
- * internal manager.  This is not a live list.
- */
-/*public*/ QList<Manager*> AbstractProxyManager::getManagerList()
-{
- // make sure internal present
- initInternal();
- QList<Manager*> retval = QList<Manager*>(mgrs);
- return retval;
-}
-
-/**
- * Returns a list of all managers, with the default
- * at the start and internal default at the end.
- *
- * @return the list of managers
- */
-/*public*/ QList<Manager*> AbstractProxyManager::getDisplayOrderManagerList() {
-    // make sure internal present
-    initInternal();
-
-    QList<Manager*> retval =  QList<Manager*>();
-    if (defaultManager != nullptr) { retval.append(defaultManager); }
-    foreach (Manager* manager, mgrs) {
-        if (manager != defaultManager && manager != internalManager) {
-            retval.append(manager);
+        QList<AbstractManager/*<E>*/*> retval = QList<AbstractManager/*<E>*/*>();
+        if (defaultManager != nullptr) {
+            retval.append(defaultManager);
         }
-    }
-    if (internalManager != nullptr && internalManager != defaultManager) {
-        retval.append(internalManager);
-    }
-    return retval;
-}
-
-/*public*/ Manager* AbstractProxyManager::getInternalManager() {
-    initInternal();
-    return internalManager;
-}
-
-/**
- * Returns the set default or, if not present, the internal manager as defacto default
- */
-/*public*/ Manager* AbstractProxyManager::getDefaultManager() {
-    if (defaultManager != nullptr) return defaultManager;
-
-    return getInternalManager();
-}
-
-/*public*/ void AbstractProxyManager::addManager(Manager* m)
-{
- // check for already present
- for (Manager* check : mgrs)
- {
-  if (m == check) { // can't use contains(..) because of Comparator.equals is on the prefix
-      // already present, complain and skip
-      log->warn(tr("Manager already present: %1").arg(QString(m->metaObject()->className()))); // NOI18N
-      return;
-  }
- }
- mgrs.append(static_cast<AbstractManager*>(m));
- if (defaultManager == nullptr) defaultManager = m;  // 1st one is default
-
- //propertyVetoListenerList.stream().forEach((l) ->
- foreach(VetoableChangeListener*l, propertyVetoListenerList)
- {
-             m->addVetoableChangeListener(l);
- }//);
- //propertyListenerList.stream().forEach((l) ->
- foreach(PropertyChangeListener* l, propertyListenerList)
- {
-     m->addPropertyChangeListener(l);
- }//);
-#if 0
- //namedPropertyVetoListenerMap.entrySet().forEach((e) ->
- foreach(QVector<PropertyChangeListener*> e,  namedPropertyVetoListenerMap.values())
- {
-     //e.getValue().forEach((l) -> {
-         foreach(PropertyChangeListener*l, e)
+//        mgrs.stream()
+//                .filter(manager -> manager != defaultManager && manager != internalManager)
+//                .forEachOrdered(retval::add);
+        for(AbstractManager* manager : mgrs)
+        {
+         if(manager != defaultManager && manager != internalManager)
          {
-         m.addVetoableChangeListener(e.getKey(), l);
-     });
- });
- namedPropertyListenerMap.entrySet().forEach((e) -> {
-     e.getValue().forEach((l) -> {
-         m.addPropertyChangeListener(e.getKey(), l);
-     });
- });
-
-#endif
- m->addDataListener(this);
-  recomputeNamedBeanSet();
-
- if (log->isDebugEnabled())
- {
-     log->debug(QString("added manager ") + QString(m->metaObject()->className()));
- }
-}
-
-/*private*/ Manager* AbstractProxyManager::initInternal()
-{
- if (internalManager == nullptr) {
-     log->debug("create internal manager when first requested");
-     internalManager = makeInternalManager();
- }
- return internalManager;
-}
-
-/*abstract protected*/ Manager* AbstractProxyManager::makeInternalManager() const
-{
- return nullptr;
-}
-
-/**
- * Locate via user name, then system name if needed.
- * Subclasses use this to provide e.g. getSensor, getTurnout, etc
- * via casts.
- *
- * @param name
- * @return Null if nothing by that name exists
- */
-/*public*/ NamedBean* AbstractProxyManager::getNamedBean(QString name)
-{
- NamedBean* t = getBeanByUserName(name);
- if (t != nullptr) return t;
- return getBeanBySystemName(name);
-}
-
-/**
- * Enforces, and as a user convenience converts to, the standard form for a system name
- * for the NamedBeans handled by this manager and its submanagers.
- * <p>
- * Attempts to match by system prefix first.
- * <p>
- *
- * @param inputName System name to be normalized
- * @throws NamedBean.BadSystemNameException If the inputName can't be converted to normalized form
- * @return A system name in standard normalized form
- */
-//@Override
-//@CheckReturnValue
-/*public*/ /*@Nonnull*/ QString AbstractProxyManager::normalizeSystemName(/*@Nonnull*/ QString inputName) /*throw (NamedBean::BadSystemNameException)*/ {
-    int index = matchTentative(inputName);
-    if (index >= 0) {
-        return getMgr(index)->normalizeSystemName(inputName);
+           retval.append(manager);
+         }
+        }
+        if (internalManager != nullptr && internalManager != defaultManager) {
+            retval.append(internalManager);
+        }
+        return retval;
     }
-    log->debug("normalizeSystemName did not find manager for name " + inputName + ", defer to default");
-    return getMgr(0)->normalizeSystemName(inputName);
-}
 
-/**
- * Locate via user name, then system name if needed.
- * If that fails, create a new NamedBean: If the name
- * is a valid system name, it will be used for the new
- * NamedBean.  Otherwise, the makeSystemName method
- * will attempt to turn it into a valid system name.
- * Subclasses use this to provide e.g. getSensor, getTurnout, etc
- * via casts.
- *
- * @param name
- * @return Never nullptr under normal circumstances
- */
-/*protected*/ NamedBean* AbstractProxyManager::provideNamedBean(QString name)
-{
- NamedBean* t = getNamedBean(name);
- if (t!=nullptr) return t;
- // Doesn't exist. If the systemName was specified, find that system
- int index = matchTentative(name);
- if (index >= 0) return makeBean(index, name, "");
- log->debug("Did not find manager for name "+name+", defer to default");
-//    int iI = nMgrs()-1;
-//    return makeBean(iI,getMgr(iI)->makeSystemName(name), "");
- QString newSysName = getMgr(0)->makeSystemName(name);
- return makeBean(0,newSysName,"");
-}
-
-/**
- * Defer creation of the proper type to the subclass
- * @param index Which manager to invoke
- */
-/*abstract protected*/ NamedBean* AbstractProxyManager::makeBean(int /*index*/, QString /*systemName*/, QString /*userName*/) /*const*/
-{
-// Q_UNUSED(index);
-// Q_UNUSED(systemName);
-// Q_UNUSED(userName);
-//// if(qobject_cast<ProxyReporterManager*>(this)!=NULL)
-////  return ProxyReporterManager::makeBean(index, systemName, userName);
-
- return nullptr; // Should not get here! this should be overriden by the actual class
-}
-
-//@Override
-/*public*/ NamedBean* AbstractProxyManager::getBeanBySystemName(QString systemName)
-{
- // System names can be matched to managers by system and type at front of name
- int index = matchTentative(systemName);
- if (index >= 0) {
-     Manager/*<E>*/* m = getMgr(index);
-     return m->getBeanBySystemName(systemName);
- }
- log->debug(tr("getBeanBySystemName did not find manager from name %1, defer to default manager").arg(systemName)); // NOI18N
- return getDefaultManager()->getBeanBySystemName(systemName);
-}
-
-//@Override
-/*public*/ NamedBean* AbstractProxyManager::getBeanByUserName(QString userName)
-{
- foreach (Manager* m, this->mgrs) {
-     NamedBean* b = m->getBeanByUserName(userName);
-     if (b != nullptr) {
-         return b;
-     }
- }
- return nullptr;
-}
-
-
-/**
- * Return an instance with the specified system and user names.
- * Note that two calls with the same arguments will get the same instance;
- * there is only one Sensor object representing a given physical turnout
- * and therefore only one with a specific system or user name.
- *<P>
- * This will always return a valid object reference for a valid request;
- * a new object will be
- * created if necessary. In that case:
- *<UL>
- *<LI>If a NULL reference is given for user name, no user name will be associated
- *    with the NamedBean object created; a valid system name must be provided
- *<LI>If a NULL reference is given for the system name, a system name
- *    will _somehow_ be inferred from the user name.  How this is done
- *    is system specific.  Note: a future extension of this interface
- *    will add an exception to signal that this was not possible.
- *<LI>If both names are provided, the system name defines the
- *    hardware access of the desired turnout, and the user address
- *    is associated with it.
- *</UL>
- * Note that it is possible to make an inconsistent request if both
- * addresses are provided, but the given values are associated with
- * different objects.  This is a problem, and we don't have a
- * good solution except to issue warnings.
- * This will mostly happen if you're creating NamedBean when you should
- * be looking them up.
- * @return requested NamedBean object (never NULL)
- */
-/*public*/ NamedBean* AbstractProxyManager::newNamedBean(QString systemName, QString userName) {
- // make sure internal present
- initInternal();
-
-    // if the systemName is specified, find that system
-    int i = matchTentative(systemName);
-    if (i >= 0)
-        return makeBean(i, systemName, userName);
-
-    // did not find a manager, allow it to default to the primary
-    log->debug("Did not find manager for system name "+systemName+", delegate to primary");
-    int iI = nMgrs()-1;
-    return makeBean(iI, systemName, userName);
-}
-
-/*public*/ void AbstractProxyManager::dispose() {
-    for (int i=0; i<mgrs.size(); i++)
-        mgrs.value(i)->dispose();
-    mgrs.clear();
-    if (internalManager != nullptr) internalManager->dispose(); // don't make if not made yet
-}
-
-/**
- * Find the index of a matching manager.
- * Returns -1 if there is no match, which is not considered an
- * error
- */
-/*protected*/ int AbstractProxyManager::matchTentative(QString systemname)
-{
- //Q_ASSERT(mgrs->count()> 0);
- for (Manager* m : mgrs)
- {
-  QString str = m->getSystemPrefix();
-  if ( systemname.startsWith(m->getSystemPrefix()+m->typeLetter()))
-  {
-   return mgrs.indexOf(m);
-  }
- }
- return -1;
-}
-
-/**
- * Find the index of a matching manager.
- * Throws IllegalArgumentException if there is no match,
- * here considered to be an error that must be reported.
- */
-/*protected*/ int AbstractProxyManager::match(QString systemname) {
-    int index = matchTentative(systemname);
-    if (index < 0) throw  IllegalArgumentException("System name "+systemname+" failed to match");
-    return index;
-}
-
-/**
- * Remember a NamedBean Object created outside the manager.
- * <P>
- * Forwards the register request to the matching system
- */
-/*public*/ void AbstractProxyManager::Register(NamedBean* s) {
-    QString systemName = s->getSystemName();
-    getMgr(match(systemName))->Register(s);
-}
-
-/**
- * Forget a NamedBean Object created outside the manager.
- * <P>
- * Forwards the deregister request to the matching system
- */
-/*public*/ void AbstractProxyManager::deregister(NamedBean* s) {
-    QString systemName = s->getSystemName();
-    getMgr(match(systemName))->deregister(s);
-}
-
-/*public synchronized*/ void AbstractProxyManager::addPropertyChangeListener(PropertyChangeListener* l)
-{
- for (int i = 0; i<nMgrs(); i++)
- {
-  Manager* mgr = getMgr(i);
-  mgr->addPropertyChangeListener(l);
-  connect(((AbstractManager*)mgr)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
- }
-}
-/*public synchronized*/ void AbstractProxyManager::removePropertyChangeListener(PropertyChangeListener* l)
-{
- for (int i = 0; i<nMgrs(); i++)
- {
-  Manager* mgr = getMgr(i);
-  //mgr->addPropertyChangeListener(l);
-  disconnect(((AbstractManager*)mgr)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
- }
-}
-
-/** {@inheritDoc} */
-//@Override
-//@OverridingMethodsMustInvokeSuper
-/*public*/ void AbstractProxyManager::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-    if (!namedPropertyListenerMap.contains(propertyName)) {
-        namedPropertyListenerMap.insert(propertyName,  new QVector<PropertyChangeListener*>());
+    /*public*/  AbstractManager/*<E>*/* AbstractProxyManager::getInternalManager()    {
+        initInternal();
+        return internalManager;
     }
-    if (!namedPropertyListenerMap.value(propertyName)->contains(listener)) {
-        namedPropertyListenerMap.value(propertyName)->append(listener);
-    }
-    for (Manager/*<E>*/* m : mgrs) {
-        m->addPropertyChangeListener(propertyName, listener);
-    }
-}
-/** {@inheritDoc} */
-//@Override
-//@OverridingMethodsMustInvokeSuper
-/*public*/ QVector<PropertyChangeListener *> AbstractProxyManager::getPropertyChangeListeners() {
-    QVector<PropertyChangeListener*> listeners = QVector<PropertyChangeListener*>(propertyListenerList);
-    for (QVector<PropertyChangeListener*>* list : namedPropertyListenerMap.values()) {
-        //listeners.addAll(list);
-     foreach (PropertyChangeListener* listener, *list) {
-      listeners.append(listener);
-     }
-    }
-    return listeners; //new PropertyChangeListener[listeners.size()]);
-}
 
-/** {@inheritDoc} */
-//@Override
-//@OverridingMethodsMustInvokeSuper
-/*public*/ QVector<PropertyChangeListener *> AbstractProxyManager::getPropertyChangeListeners(QString propertyName) {
-    if (!namedPropertyListenerMap.contains(propertyName)) {
-        namedPropertyListenerMap.insert(propertyName,  new QVector<PropertyChangeListener*>());
+    /**
+     * {@inheritDoc}
+     */
+    //@Override
+    //@Nonnull
+    /*public*/  AbstractManager/*<E>*/* AbstractProxyManager::getDefaultManager()
+    {
+        return defaultManager != nullptr ? defaultManager : getInternalManager();
     }
-    QVector<PropertyChangeListener*>* listeners = namedPropertyListenerMap.value(propertyName);
-    return *listeners; //new PropertyChangeListener[listeners.size()]);
-}
 
-/** {@inheritDoc} */
-//@Override
-//@OverridingMethodsMustInvokeSuper
-/*public*/ void AbstractProxyManager::removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-    if (!namedPropertyListenerMap.contains(propertyName)) {
-        namedPropertyListenerMap.insert(propertyName, new QVector<PropertyChangeListener*>());
+    /**
+     * {@inheritDoc}
+     */
+    //@Override
+    //@SuppressWarnings("deprecation")
+    /*public*/  void AbstractProxyManager::addManager(/*@Nonnull*/ AbstractManager/*<E>*/* m) {
+//        Objects.requireNonNull(m, "Can only add non-null manager");
+        // check for already present
+        for (AbstractManager/*<E>*/* check : mgrs) {
+            if (m == check) { // can't use contains(..) because of Comparator ==  is on the prefix
+                // already present, complain and skip
+                log->warn(QString("Manager already present: %1").arg(m->toString())); // NOI18N
+                return;
+            }
+        }
+        mgrs.insert(m);
+
+        if (defaultManager == nullptr) defaultManager = m;  // 1st one is default
+
+        //Arrays.stream(getPropertyChangeListeners()).forEach(l -> m.addPropertyChangeListener(l));
+        for(PropertyChangeListener* l : PropertyChangeSupport::getPropertyChangeListeners())
+         //for(Manager* m : mgrs)
+          m->PropertyChangeSupport::addPropertyChangeListener(l);
+        //Arrays.stream(getVetoableChangeListeners()).forEach(l -> m.addVetoableChangeListener(l));
+        for(VetoableChangeListener* l : VetoableChangeSupport::getVetoableChangeListeners())
+         //for(AbstractManager* m : mgrs)
+             m->VetoableChangeSupport::addVetoableChangeListener(l);
+//        boundPropertyNames
+//                .forEach(n -> Arrays.stream(getPropertyChangeListeners(n))
+//                .forEach(l -> m.addPropertyChangeListener(n, l)));
+        for(QString n : boundPropertyNames)
+         for(PropertyChangeListener* l : PropertyChangeSupport::getPropertyChangeListeners(n))
+          m->PropertyChangeSupport::addPropertyChangeListener(n, l);
+//        vetoablePropertyNames
+//                .forEach(n -> Arrays.stream(getVetoableChangeListeners(n))
+//                .forEach(l -> m.addVetoableChangeListener(n, l)));
+        for(QString n : vetoablePropertyNames)
+         for(VetoableChangeListener* l : VetoableChangeSupport::getVetoableChangeListeners(n))
+          m->VetoableChangeSupport::addVetoableChangeListener(n, l);
+        m->PropertyChangeSupport::addPropertyChangeListener("beans", this);
+        ((AbstractManager*)m)->addDataListener(this);
+        recomputeNamedBeanSet();
+        log->debug(QString("added manager %1").arg(QString(m->metaObject()->className())));
     }
-    namedPropertyListenerMap.value(propertyName)->removeOne(listener);
-    for (Manager/*<E>*/* m : mgrs) {
-        m->removePropertyChangeListener(propertyName, listener);
+
+    /*protected*/ AbstractManager *AbstractProxyManager::initInternal()       {
+        if (internalManager == nullptr) {
+            log->debug(QString("create internal manager when first requested")); // NOI18N
+            internalManager = makeInternalManager();
+        }
+        return internalManager;
     }
-}
-/** {@inheritDoc} */
-//@Override
-/*public*/ /*synchronized*/ void AbstractProxyManager::addVetoableChangeListener(VetoableChangeListener* l) {
-    if (!propertyVetoListenerList.contains(l)) {
-        propertyVetoListenerList.append(l);
+
+    /**
+     * Create specific internal manager as needed for concrete type.
+     *
+     * @return an internal manager
+     */
+    //abstract /*protected*/ Manager/*<E>*/* makeInternalManager();
+
+    /** {@inheritDoc} */
+    //@Override
+    /*public*/  /*E*/NamedBean* AbstractProxyManager::getNamedBean(/*@Nonnull*/ QString name)  {
+        /*E*/NamedBean* t = getByUserName(name);
+        if (t != nullptr) {
+            return t;
+        }
+        return getBySystemName(name);
     }
-    for (Manager/*<E>*/ *m : mgrs) {
-        m->addVetoableChangeListener(l);
+
+    /** {@inheritDoc} */
+    //@Override
+    //@CheckReturnValue
+    //@CheckForNull
+    /*public*/  /*E*/NamedBean* AbstractProxyManager::getBySystemName(/*@Nonnull*/ QString systemName)  {
+        AbstractManager/*<E>*/* m = getManager(systemName);
+        if (m == nullptr) {
+            log->debug(QString("getBySystemName did not find manager from name %1, defer to default manager").arg(systemName));
+            m = getDefaultManager();
+        }
+        return m->getBySystemName(systemName);
     }
-}
 
-/** {@inheritDoc} */
-//@Override
-/*public*/ /*synchronized*/ void AbstractProxyManager::removeVetoableChangeListener(VetoableChangeListener* l) {
-    if (propertyVetoListenerList.contains(l)) {
-        propertyVetoListenerList.removeOne(l);
+    /** {@inheritDoc} */
+    //@Override
+    //@CheckReturnValue
+    //@CheckForNull
+    /*public*/  /*E*/NamedBean* AbstractProxyManager::getByUserName(/*@Nonnull*/ QString userName) {
+        for (Manager/*<E>*/* m : this->mgrs) {
+            /*E*/NamedBean* b = m->getByUserName(userName);
+            if (b != nullptr) {
+                return b;
+            }
+        }
+        return nullptr;
     }
-    for (Manager/*<E>*/* m : mgrs) {
-        m->removeVetoableChangeListener(l);
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This implementation locates a specific Manager based on the system name
+     * and validates against that. If no matching Manager exists, the default
+     * Manager attempts to validate the system name.
+     */
+    //@Override
+    //@Nonnull
+    /*public*/  QString AbstractProxyManager::validateSystemNameFormat(/*@Nonnull*/ QString systemName, /*@Nonnull*/ QLocale locale)   {
+        Manager/*<E>*/* manager = getManager(systemName);
+        if (manager == nullptr) {
+            manager = getDefaultManager();
+        }
+        return manager->validateSystemNameFormat(systemName, locale);
     }
-}
 
-/** {@inheritDoc} */
-//@Override
-//@OverridingMethodsMustInvokeSuper
-/*public*/ void AbstractProxyManager::addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
-    if (!namedPropertyVetoListenerMap.contains(propertyName)) {
-        namedPropertyVetoListenerMap.insert(propertyName, new QVector<VetoableChangeListener*>());
+    /**
+     * Validate system name format. Locate a system specific Manager based on a
+     * system name.
+     *
+     * @return if a manager is found, return its determination of validity of
+     *         system name format. Return INVALID if no manager exists.
+     */
+    //@Override
+    /*public*/  Manager::NameValidity AbstractProxyManager::validSystemNameFormat(/*@Nonnull*/ QString systemName)  {
+        Manager/*<E>*/* m = getManager(systemName);
+        return m == nullptr ? Manager::NameValidity::INVALID : m->validSystemNameFormat(systemName);
     }
-    if (!namedPropertyVetoListenerMap.value(propertyName)->contains(listener)) {
-        namedPropertyVetoListenerMap.value(propertyName)->append(listener);
+
+    /** {@inheritDoc} */
+    //@Override
+    /*public*/  void AbstractProxyManager::dispose() {
+     //mgrs.forEach(m -> m.dispose());
+     for(Manager* m : mgrs)
+      m->dispose();
+        mgrs.clear();
+      if (internalManager != nullptr) {
+          internalManager->dispose(); // don't make if not made yet
+      }
     }
-    for (Manager/*<E>*/* m : mgrs) {
-        m->addVetoableChangeListener(propertyName, listener);
+
+    /**
+     * Get the manager for the given system name.
+     *
+     * @param systemName the given name
+     * @return the requested manager or null if there is no matching manager
+     */
+    //@CheckForNull
+    /*protected*/ AbstractManager/*<E>*/* AbstractProxyManager::getManager(/*@Nonnull*/ QString systemName)   {
+        // make sure internal present
+        initInternal();
+        for (AbstractManager/*<E>*/* m : getManagerList()) {
+            if (systemName.startsWith(m->getSystemNamePrefix())) {
+                return m;
+            }
+        }
+        return nullptr;
     }
-}
 
-/** {@inheritDoc} */
-//@Override
-//@OverridingMethodsMustInvokeSuper
-/*public*/ QVector<VetoableChangeListener*> AbstractProxyManager::getVetoableChangeListeners() {
-    QList<VetoableChangeListener*> listeners =  QList<VetoableChangeListener*>(propertyVetoListenerList.toList());
-    for (QVector<VetoableChangeListener*>* list : namedPropertyVetoListenerMap.values()) {
-        //listeners.addAll(list);
-     foreach(VetoableChangeListener* l, *list)
-      listeners.append(l);
+    /**
+     * Get the manager for the given system name or the default manager if there
+     * is no matching manager.
+     *
+     * @param systemName the given name
+     * @return the requested manager or the default manager if there is no
+     *         matching manager
+     */
+    //@Nonnull
+    /*protected*/ AbstractManager *AbstractProxyManager::getManagerOrDefault(/*@Nonnull*/ QString systemName) {
+        AbstractManager/*<E>*/* manager = getManager(systemName);
+        if (manager == nullptr) {
+            manager = getDefaultManager();
+        }
+        return manager;
     }
-    return listeners.toVector(); //new VetoableChangeListener[listeners.size()]);
-}
 
-/** {@inheritDoc} */
-//@Override
-//@OverridingMethodsMustInvokeSuper
-/*public*/ QVector<VetoableChangeListener*> AbstractProxyManager::getVetoableChangeListeners(QString propertyName) {
-    if (!namedPropertyVetoListenerMap.contains(propertyName)) {
-        namedPropertyVetoListenerMap.insert(propertyName, new QVector<VetoableChangeListener*>());
-    }
-    QVector<VetoableChangeListener*>* listeners = namedPropertyVetoListenerMap.value(propertyName);
-    //return listeners.toArray(new VetoableChangeListener[listeners->size()]);
-    return *listeners;
-}
-
-/** {@inheritDoc} */
-//@Override
-//@OverridingMethodsMustInvokeSuper
-/*public*/ void AbstractProxyManager::removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
-    if (!namedPropertyVetoListenerMap.contains(propertyName)) {
-        namedPropertyVetoListenerMap.insert(propertyName, new QVector<VetoableChangeListener*>());
-    }
-    namedPropertyVetoListenerMap.value(propertyName)->removeOne(listener);
-    for (Manager/*<E>*/* m : mgrs) {
-        m->removeVetoableChangeListener(propertyName, listener);
-    }
-}
-
-/**
- * @return The system-specific prefix letter for the primary implementation
- */
-/*public*/ QString AbstractProxyManager::getSystemPrefix() {
-//    try {
-      return getMgr(0)->getSystemPrefix();
-//        } catch(IndexOutOfBoundsException* ie) {
-//          return "?";
-//        }
-}
-
-//    /**
-//     * Provide 1st char of systemPrefix for now
-//     * @deprecated
-//     */
-//    @Deprecated
-//    public char systemLetter() {
-//        return getSystemPrefix().charAt(0);
-//    }
-
-/**
- * @return The type letter for turnouts
- */
-/*public*/ char AbstractProxyManager::typeLetter()
-{
- return getDefaultManager()->typeLetter();
-}
-
-/**
- * @return A system name from a user input, typically a number,
- * from the primary system.
- */
-/*public*/ QString AbstractProxyManager::makeSystemName(QString s) {
-    return getMgr(0)->makeSystemName(s);
-}
-
-/** {@inheritDoc} */
-//@CheckReturnValue
-//@Override
-/*public*/ int AbstractProxyManager::getObjectCount() {
-    int count = 0;
-    for (Manager/*<E>*/* m : mgrs) { count += m->getObjectCount(); }
-    return count;
-}
-/*public*/ QStringList AbstractProxyManager::getSystemNameArray() {
-    //TreeSet<QString> ts = new TreeSet<String>(new SystemNameComparator());
-    QSet<QString>* ts = new QSet<QString>();
-    for (int i = 0; i<nMgrs(); i++) {
-        //ts->add( getMgr(i).getSystemNameList() );
-        QStringList snl = getMgr(i)->getSystemNameList();
-        foreach(QString s, snl)
-         ts->insert(s);
-    }
-//        QStringList* arr;// = new String[ts.size()];
-//        Iterator<QString> it = ts.iterator();
-//        int i=0;
-//        while(it.hasNext()) {
-//            arr[i++] = it.next();
-//        }
-    QStringList arr = (ts->toList());
-    return arr;
-}
-
-/**
- * Get a list of all system names.
- */
-/*public*/ QStringList AbstractProxyManager::getSystemNameList() {
-    //TreeSet<QString> ts = new TreeSet<String>(new SystemNameComparator());
-    QSet<QString>* ts = new QSet<QString>();
-    for (int i = 0; i<nMgrs(); i++) {
-        //ts.addAll(getMgr(i).getSystemNameList());
-        QStringList snl = getMgr(i)->getSystemNameList();
-        foreach(QString s, snl)
-         ts->insert(s);
-    }
-    //return new ArrayList<String>(ts);
-    QStringList arr = ts->toList();
-    return arr;
-}
-
-/*protected*/ void AbstractProxyManager::updateOrderList() {
-    if (addedOrderList.isEmpty()) return; // only maintain if requested
-    addedOrderList.clear();
-    for (Manager* m : mgrs) {
-        //addedOrderList.addAll(m.getSystemNameAddedOrderList());
-     for(QString name : m->getSystemNameAddedOrderList() )
-      addedOrderList.append(name);
-    }
-}
-
-/** {@inheritDoc} */
-//@Override
-//@Deprecated  // will be removed when Manager method is removed due to @Override
-/*public*/ QStringList AbstractProxyManager::getSystemNameAddedOrderList() {
-    addedOrderList = QStringList();  // need to start maintaining it
-    updateOrderList();
-    //return Collections.unmodifiableList(addedOrderList);
-    return addedOrderList;
-}
-
-/** {@inheritDoc} */
-//@Override
-//@Deprecated  // will be removed when Manager method is removed due to @Override
-//@Nonnull
-/*public*/ QList<NamedBean*>* AbstractProxyManager::getNamedBeanList() {
-    // by doing this in order by manager and from each managers ordered sets, its finally in order
-    QList<NamedBean*>* tl = new QList<NamedBean*>();
-    for (Manager*  m : mgrs) {
-        //tl.addAll(m.getNamedBeanSet());
-     foreach(NamedBean* bean, m->getNamedBeanSet())
-      tl->append(bean);
-    }
-    //return Collections.unmodifiableList(tl);
-    return tl;
-}
-
-
-/*protected*/ void AbstractProxyManager::updateNamedBeanSet()
-{
- //if (namedBeanSet.isEmpty()) return; // only maintain if requested
- namedBeanSet.clear();
- for (Manager* m : mgrs)
- {
-  //namedBeanSet.addAll(m.getNamedBeanSet());
-  foreach(NamedBean* bean, m->getNamedBeanSet())
-     namedBeanSet.insert(bean);
- }
-}
-
-/*protected*/ void AbstractProxyManager::recomputeNamedBeanSet() {
-        if (namedBeanSet.isEmpty()) return; // only maintain if requested
-        namedBeanSet.clear();
+    /**
+     * Shared method to create a systemName based on the address base, the prefix and manager class.
+     *
+     * @param curAddress base address to use
+     * @param prefix system prefix to use
+     * @param beanType Bean Type for manager (method is used for Turnout and Sensor Managers)
+     * @return a valid system name for this connection
+     * @throws JmriException if systemName cannot be created
+     */
+    QString AbstractProxyManager::createSystemName(QString curAddress, QString prefix, QString beanType) /*throws JmriException */{
         for (Manager/*<E>*/* m : mgrs) {
-            namedBeanSet.unite(m->getNamedBeanSet());
+            if (prefix == (m->getSystemPrefix()) && beanType == (m->getNamedBeanClass())) {
+                try {
+                    if (beanType == "Turnout") {
+                        return ((TurnoutManager*) m)->createSystemName(curAddress, prefix);
+                    } else if (beanType == "Sensor") {
+                        return ((SensorManager*) m)->createSystemName(curAddress, prefix);
+                    }
+                    else if (beanType == "Light") {
+                        return ((LightManager*) m)->createSystemName(curAddress, prefix);
+                    }
+                    else if (beanType == "Reporter") {
+                        return ((ReporterManager*) m)->createSystemName(curAddress, prefix);
+                    }
+                    else {
+                        log->warn("createSystemName requested for incompatible Manager");
+                    }
+                } catch (JmriException* ex) {
+                    throw ex;
+                }
+            }
+        }
+        throw new JmriException("Manager could not be found for System Prefix " + prefix);
+    }
+
+    //@Nonnull
+    /*public*/  QString AbstractProxyManager::createSystemName(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) /*throws jmri.JmriException*/ {
+        return createSystemName(curAddress, prefix, getNamedBeanClass());
+    }
+
+    //@SuppressWarnings("deprecation") // user warned by actual manager class
+    /*public*/  QString AbstractProxyManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*//@Nonnull*/ QString prefix, QChar typeLetter) /*throws jmri.JmriException*/ {
+        for (Manager/*<E>*/* m : mgrs) {
+            log->debug(QString("NextValidAddress requested for %1").arg(curAddress));
+            if (prefix == (m->getSystemPrefix()) && typeLetter == m->typeLetter()) {
+                try {
+                    switch (typeLetter.toLatin1()) { // use #getDefaultManager() instead?
+                        case 'T':
+                            return ((TurnoutManager*) m)->getNextValidAddress(curAddress, prefix);
+                        case 'S':
+                            return ((SensorManager*) m)->getNextValidAddress(curAddress, prefix);
+                        case 'R':
+                            return ((ReporterManager*) m)->getNextValidAddress(curAddress, prefix);
+                        default:
+                            return nullptr;
+                    }
+                } catch (JmriException* ex) {
+                    throw ex;
+                }
+            }
+        }
+        return nullptr;
+    }
+
+    /*public*/  QString AbstractProxyManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting, QChar typeLetter) /*throws jmri.JmriException*/ {
+        for (Manager/*<E>*/* m : mgrs) {
+            log->debug(QString("NextValidAddress requested for %1").arg(curAddress));
+            if (prefix == (m->getSystemPrefix()) && typeLetter == m->typeLetter()) {
+                try {
+                    switch (typeLetter.toLatin1()) { // use #getDefaultManager() instead?
+                        case 'T':
+                            return ((TurnoutManager*) m)->getNextValidAddress(curAddress, prefix, ignoreInitialExisting);
+                        case 'S':
+                            return ((SensorManager*) m)->getNextValidAddress(curAddress, prefix, ignoreInitialExisting);
+                        case 'L':
+                            return ((LightManager*) m)->getNextValidAddress(curAddress, prefix, ignoreInitialExisting);
+                        case 'R':
+                            return ((ReporterManager*) m)->getNextValidAddress(curAddress, prefix, ignoreInitialExisting);
+                        default:
+                            return nullptr;
+                    }
+                } catch (JmriException* ex) {
+                    throw ex;
+                }
+            }
+        }
+        return nullptr;
+    }
+
+    /** {@inheritDoc} */
+    //@Override
+    /*public*/  void AbstractProxyManager::deleteBean(/*@Nonnull*/ /*E*/NamedBean* s, /*@Nonnull*/ QString property) /*throws PropertyVetoException*/ {
+        Manager/*<E>*/* m = getManager(s->getSystemName());
+        if (m != nullptr) {
+            m->deleteBean(s, property);
         }
     }
 
-/** {@inheritDoc} */
-//@Override
-//@Nonnull
-/*public*/ /*SortedSet<E>*/QSet<NamedBean*> AbstractProxyManager::getNamedBeanSet() {
-    namedBeanSet = QSet<NamedBean*>();//new TreeSet<>(new NamedBeanComparator());
-    updateNamedBeanSet();
-    //return Collections.unmodifiableSortedSet(namedBeanSet);
-    QList<NamedBean*> list = namedBeanSet.toList();
-    qSort(list.begin(), list.end(), NamedBeanComparator::compare);
-    return list.toSet();
-}
-
-/**
- * Get a list of all user names.
- */
-/*public*/ QStringList AbstractProxyManager::getUserNameList()
-{
- //TreeSet<QString> ts = new TreeSet<String>(new SystemNameComparator());
- QSet<QString>* ts = new QSet<QString>();
- for (int i = 0; i<nMgrs(); i++)
- {
-  //ts.addAll(getMgr(i).getSystemNameList());
-  QStringList snl = getMgr(i)->getSystemNameList();
-  foreach(QString s, snl)
-  {
-   AbstractNamedBean* bean = (AbstractNamedBean*)getMgr(i)->getBeanBySystemName(s);
-   QString userName = bean->getUserName();
-   if(userName != "")
-    ts->insert(userName);
-  }
- }
- //return new ArrayList<String>(ts);
- QStringList arr = ts->toList();
- return arr;
-}
-
-void AbstractProxyManager::propertyChange(PropertyChangeEvent */*e*/)
-{
- //emit this->propertyChange(e);
-}
-
-/** {@inheritDoc} */
-//@Override
-/*public*/ void AbstractProxyManager::addDataListener(/*ManagerDataListener<E>*/QObject* e) {
-    if (e != nullptr)
-    {
-     listeners.append(e);
-     ManagerDataListener* listener = (ManagerDataListener*)e;
-     connect(this, SIGNAL(notifyContentsChanged(ManagerDataEvent*)), listener, SLOT(contentsChanged(ManagerDataEvent*)));
-     connect(this, SIGNAL(notifyIntervalAdded(ManagerDataEvent*)), listener, SLOT(intervalAdded(ManagerDataEvent*)));
-     connect(this, SIGNAL(notifyIntervalRemoved(ManagerDataEvent*)), listener, SLOT(intervalRemoved(ManagerDataEvent*)));
+    /**
+     * Try to create a system manager. If this proxy manager is able to create
+     * a system manager, the concrete class must implement this method.
+     *
+     * @param memo the system connection memo for this connection
+     * @return the new manager or null if it's not possible to create the manager
+     */
+    /*protected*/ AbstractManager *AbstractProxyManager::createSystemManager(/*@Nonnull*/ SystemConnectionMemo* /*memo*/) {
+        return nullptr;
     }
-}
 
-/** {@inheritDoc} */
-//@Override
-/*public*/ void AbstractProxyManager::removeDataListener(/*ManagerDataListener<E>*/QObject* e) {
-    if (e != nullptr)
-    {
-     listeners.removeOne(e);
-     disconnect(this, SIGNAL(notifyContentsChanged(ManagerDataEvent*)), (ManagerDataListener*)e, SLOT(contentsChanged(Manager::ManagerDataEvent*)));
-     disconnect(this, SIGNAL(notifyIntervalAdded(ManagerDataEvent*)), (ManagerDataListener*)e, SLOT(intervalAdded(Manager::ManagerDataEvent*)));
-     disconnect(this, SIGNAL(notifyIntervalRemoved(ManagerDataEvent*)), (ManagerDataListener*)e, SLOT(intervalRemoved(Manager::ManagerDataEvent*)));
+    /**
+     * Get the Default Manager ToolTip.
+     * {@inheritDoc}
+     */
+    //@Override
+    /*public*/  QString AbstractProxyManager::getEntryToolTip() {
+        return getDefaultManager()->getEntryToolTip();
     }
-}
+
+    /**
+     * Try to create a system manager.
+     *
+     * @param systemPrefix the system prefix
+     * @return the new manager or null if it's not possible to create the manager
+     */
+    /*private*/ Manager/*<E>*/* AbstractProxyManager::createSystemManager(/*@Nonnull*/ QString systemPrefix) {
+        Manager/*<E>*/* m = nullptr;
+
+        ConnectionConfigManager* manager = (ConnectionConfigManager*)InstanceManager::getNullableDefault("ConnectionConfigManager");
+        if (manager == nullptr) return nullptr;
+
+        QVector<ConnectionConfig*> connections = manager->getConnections();
+
+        for (ConnectionConfig* connection : connections) {
+            if (systemPrefix == (connection->getAdapter()->getSystemPrefix())) {
+                m = createSystemManager(connection->getAdapter()->getSystemConnectionMemo());
+            }
+            if (m != nullptr) break;
+        }
+//        if (m == null) throw new RuntimeException("Manager not created");
+        return m;
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Forwards the register request to the matching system.
+     */
+    //@Override
+    /*public*/  void AbstractProxyManager::Register(/*@Nonnull*/ /*E*/NamedBean* s)  {
+        AbstractManager/*<E>*/* m = getManager(s->getSystemName());
+        if (m == nullptr) {
+            QString systemPrefix = Manager::getSystemPrefix(s->getSystemName());
+            m = (AbstractManager*)createSystemManager(systemPrefix)->self();
+        }
+        if (m != nullptr) {
+            m->Register(s);
+        } else {
+            log->error(QString("Unable to register %1 in this proxy manager. No system specific manager supports this bean.").arg(s->getSystemName()));
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Forwards the deregister request to the matching system.
+     *
+     * @param s the name
+     */
+    //@Override
+    /*public*/  void AbstractProxyManager::deregister(/*@Nonnull*/ /*E*/NamedBean* s) {
+        Manager/*<E>*/* m = getManager(s->getSystemName());
+        if (m != nullptr) {
+            m->deregister(s);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     * List does not contain duplicates.
+     */
+    //@Nonnull
+    //@Override
+    /*public*/  QList<NamedBeanPropertyDescriptor/*<?>*/*> AbstractProxyManager::getKnownBeanProperties() {
+        // Create List as set to prevent duplicates from multiple managers
+        // of the same hardware type.
+        QSet<NamedBeanPropertyDescriptor/*<?>*/*> set = QSet<NamedBeanPropertyDescriptor*>();
+        //mgrs.forEach(m -> set.addAll(m->getKnownBeanProperties()));
+        for(Manager* m : mgrs)
+         for(NamedBeanPropertyDescriptor* d : m->getKnownBeanProperties())
+          set.insert(d);
+        return QList<NamedBeanPropertyDescriptor/*<?>*/*>(set.toList());
+    }
+
+    /** {@inheritDoc} */
+    //@Override
+    //@OverridingMethodsMustInvokeSuper
+    /*public*/  /*synchronized*/ void AbstractProxyManager::addPropertyChangeListener(PropertyChangeListener* l) {
+        PropertyChangeSupport::addPropertyChangeListener(l);
+        //mgrs.forEach(m -> m->addPropertyChangeListener(l));
+        for(Manager* m : mgrs)
+         m->addPropertyChangeListener(l);
+    }
+
+    /** {@inheritDoc} */
+    //@Override
+    //@OverridingMethodsMustInvokeSuper
+    /*public*/  /*synchronized*/ void AbstractProxyManager::removePropertyChangeListener(PropertyChangeListener* l) {
+        PropertyChangeSupport::removePropertyChangeListener(l);
+        //mgrs.forEach(m -> m->removePropertyChangeListener(l));
+        for(Manager* m : mgrs)
+         m->removePropertyChangeListener(l);
+    }
+
+    /** {@inheritDoc} */
+    //@Override
+    //@OverridingMethodsMustInvokeSuper
+    /*public*/  void AbstractProxyManager::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
+        PropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
+        boundPropertyNames.append(propertyName);
+        //mgrs.forEach(m -> m->addPropertyChangeListener(propertyName, listener));
+        for(Manager* m : mgrs)
+         m->addPropertyChangeListener(propertyName, listener);
+    }
+
+    /** {@inheritDoc} */
+    //@Override
+    //@OverridingMethodsMustInvokeSuper
+    /*public*/  void AbstractProxyManager::removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
+        PropertyChangeSupport::removePropertyChangeListener(propertyName, listener);
+        //mgrs.forEach(m -> m->removePropertyChangeListener(propertyName, listener));
+        for(Manager* m : mgrs)
+         m->removePropertyChangeListener(propertyName, listener);
+    }
+
+    /** {@inheritDoc} */
+    //@Override
+    //@OverridingMethodsMustInvokeSuper
+    /*public*/  /*synchronized*/ void AbstractProxyManager::addVetoableChangeListener(VetoableChangeListener* l) {
+        VetoableChangeSupport::addVetoableChangeListener(l);
+//        mgrs.forEach(m -> m->addVetoableChangeListener(l));
+        for(Manager* m : mgrs)
+         m->addVetoableChangeListener(l);
+    }
+
+    /** {@inheritDoc} */
+    //@Override
+    //@OverridingMethodsMustInvokeSuper
+    /*public*/  /*synchronized*/ void AbstractProxyManager::removeVetoableChangeListener(VetoableChangeListener* l) {
+        VetoableChangeSupport::removeVetoableChangeListener(l);
+        //mgrs.forEach(m -> m->removeVetoableChangeListener(l));
+        for(Manager* m : mgrs)
+         m->removeVetoableChangeListener( l);
+    }
+
+    /** {@inheritDoc} */
+    //@Override
+    //@OverridingMethodsMustInvokeSuper
+    /*public*/  void AbstractProxyManager::addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
+        VetoableChangeSupport::addVetoableChangeListener(propertyName, listener);
+        vetoablePropertyNames.append(propertyName);
+        //mgrs.forEach(m -> m->addVetoableChangeListener(propertyName, listener));
+        for(Manager* m : mgrs)
+         m->addVetoableChangeListener(propertyName, listener);
+    }
+
+    /** {@inheritDoc} */
+    //@Override
+    //@OverridingMethodsMustInvokeSuper
+    /*public*/  void AbstractProxyManager::removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
+        VetoableChangeSupport::removeVetoableChangeListener(propertyName, listener);
+        //mgrs.forEach(m -> m->removeVetoableChangeListener(propertyName, listener));
+        for(Manager* m : mgrs)
+         m->removeVetoableChangeListener(propertyName, listener);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    //@Override
+    /*public*/  void AbstractProxyManager::propertyChange(PropertyChangeEvent* event) {
+        if (event->getPropertyName() == ("beans")) {
+            recomputeNamedBeanSet();
+        }
+        event->setPropagationId(VPtr<AbstractProxyManager>::asQVariant(this));
+        if (!silencedProperties.value(event->getPropertyName(), false)) {
+            firePropertyChange(event);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return The system connection memo for the manager returned by
+     *         {@link #getDefaultManager()}, or the Internal system connection
+     *         memo if there is no default manager
+     */
+    //@Override
+    //@Nonnull
+    /*public*/  SystemConnectionMemo* AbstractProxyManager::getMemo()    {
+        try {
+            return getDefaultManager()->getMemo();
+        } catch (IndexOutOfBoundsException ex) {
+            return (InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo");
+        }
+    }
+
+    /**
+     * @return The system-specific prefix letter for the primary implementation
+     */
+    //@Override
+    //@Nonnull
+    /*public*/  QString AbstractProxyManager::getSystemPrefix()   {
+        try {
+            return getDefaultManager()->getSystemPrefix();
+        } catch (IndexOutOfBoundsException* ie) {
+            return "?";
+        }
+    }
+
+    /**
+     * @return The type letter for for the primary implementation
+     */
+    //@Override
+    /*public*/  QChar AbstractProxyManager::typeLetter()   {
+        return getDefaultManager()->typeLetter();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    //@Override
+    //@Nonnull
+    /*public*/  QString AbstractProxyManager::makeSystemName(/*@Nonnull*/ QString s) {
+        return getDefaultManager()->makeSystemName(s);
+    }
+
+    /** {@inheritDoc} */
+    //@CheckReturnValue
+    //@Override
+    /*public*/  int AbstractProxyManager::getObjectCount() {
+        //return mgrs.stream().map(m -> m->getObjectCount()).reduce(0, Integer::sum);
+     int count;
+     for(Manager* m : mgrs)
+      count += m->getObjectCount();
+     return count;
+    }
+
+    /** {@inheritDoc} */
+    //@Nonnull
+    //@Override
+    //@Deprecated  // will be removed when superclass method is removed due to //@Override
+    /*public*/  QStringList AbstractProxyManager::getSystemNameList() {
+        LoggingUtil::deprecationWarning(log, "getSystemNameList");
+        QList<NamedBean*>* list = getNamedBeanList();
+        QVector<QString> retval = QVector<QString>(list->size());
+        //list.forEach(e -> retval.add(e.getSystemName()));
+        for(NamedBean* e : *list)
+         retval.append(e->getSystemName());
+        //return Collections.unmodifiableList(retval);
+        return QStringList(retval.toList());
+    }
+
+    /** {@inheritDoc} */
+    //@Override
+    //@Deprecated  // will be removed when superclass method is removed due to //@Override
+    //@Nonnull
+    /*public*/  QList<NamedBean*>* AbstractProxyManager::getNamedBeanList() {
+        LoggingUtil::deprecationWarning(log, "getNamedBeanList"); // used by getSystemNameList
+        // by doing this in order by manager and from each managers ordered sets, its /*final*/ly in order
+        QList<NamedBean*> tl = QList<NamedBean*>();
+        //mgrs.forEach(m -> tl.addAll(m->getNamedBeanSet()));
+        for(Manager* m : mgrs)
+         for(NamedBean* b : m->getNamedBeanSet())
+          tl.append(b);
+        //return Collections.unmodifiableList(tl);
+        return new QList<NamedBean*>(tl);
+    }
+
+    /*protected*/ void AbstractProxyManager::recomputeNamedBeanSet() {
+        if (namedBeanSet != nullptr) { // only maintain if requested
+            namedBeanSet->clear();
+            //mgrs.forEach(m -> namedBeanSet.addAll(m->getNamedBeanSet()));
+            for(Manager* m : mgrs)
+             for(NamedBean* b : m->getNamedBeanSet())
+              namedBeanSet->insert(b);
 
 
-/**
- * {@inheritDoc}
- * From Manager.ManagerDataListener, receives notifications from underlying
- * managers.
- */
-//@Override
-/*public*/ void AbstractProxyManager::contentsChanged(Manager::ManagerDataEvent/*<E>*/* e) {
-}
+        }
+    }
 
-/**
- * {@inheritDoc}
- * From Manager.ManagerDataListener, receives notifications from underlying
- * managers.
- */
-//@Override
-/*public*/ void AbstractProxyManager::intervalAdded(AbstractProxyManager::ManagerDataEvent/*<E>*/* e) {
-    if (!namedBeanSet.isEmpty() && e->getIndex0() == e->getIndex1()) {
-        // just one element added, and we have the object reference
-        namedBeanSet.insert(e->getChangedBean());
-    } else {
+    NamedBeanComparator<NamedBean*> comparator4 = NamedBeanComparator<NamedBean*>();
+    bool sortLessThanconst4( NamedBean* s1,  NamedBean* s2)
+    {
+     return comparator4.compare(s1, s2) < 0;
+    }
+
+    /** {@inheritDoc} */
+    //@Override
+    //@Nonnull
+    /*public*/  QSet<NamedBean*> AbstractProxyManager::getNamedBeanSet() {
+        if (namedBeanSet == nullptr) {
+            namedBeanSet = new QSet<NamedBean*>();//TreeSet<>(new NamedBeanComparator<>());
+//            std::sort(namedBeanSet->begin(), namedBeanSet->end(), sortLessThanconst4);
+            recomputeNamedBeanSet();
+        }
+        //return Collections.unmodifiableSortedSet(namedBeanSet);
+        return QSet<NamedBean*>(*namedBeanSet);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    //@Override
+    //@OverridingMethodsMustInvokeSuper
+    /*public*/  void AbstractProxyManager::setPropertyChangesSilenced(QString propertyName, bool silenced) {
+        // since AbstractProxyManager has no explicit constructors, acccept
+        // "beans" as well as anything needed to be accepted by subclasses
+        if (!"beans" == (propertyName) && !silenceableProperties.contains(propertyName)) {
+            throw new IllegalArgumentException("Property " + propertyName + " cannot be silenced.");
+        }
+        silencedProperties.insert(propertyName, silenced);
+        if (propertyName == ("beans") && !silenced) {
+            fireIndexedPropertyChange("beans", getNamedBeanSet().size(), 0, 0);
+        }
+    }
+
+    /** {@inheritDoc} */
+    //@Override
+    //@Deprecated
+    /*public*/  void AbstractProxyManager::addDataListener(Manager::ManagerDataListener/*<E>*/* e) {
+        if (e != nullptr) listeners.append(e);
+    }
+
+    /** {@inheritDoc} */
+    //@Override
+    //@Deprecated
+    /*public*/  void AbstractProxyManager::removeDataListener(Manager::ManagerDataListener/*<E>*/* e) {
+        if (e != nullptr) listeners.removeOne(e);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     * From Manager.ManagerDataListener, receives notifications from underlying
+     * managers.
+     */
+    //@Override
+    //@Deprecated
+    /*public*/  void AbstractProxyManager::contentsChanged(Manager::ManagerDataEvent* /*e*/) {
+    }
+
+    /**
+     * {@inheritDoc}
+     * From Manager.ManagerDataListener, receives notifications from underlying
+     * managers.
+     */
+    //@Override
+    //@Deprecated
+    //@SuppressWarnings("deprecation")
+    /*public*/  void AbstractProxyManager::intervalAdded(AbstractProxyManager::ManagerDataEvent/*<E>*/* e) {
+        if (namedBeanSet != nullptr && e->getIndex0() == e->getIndex1()) {
+            // just one element added, and we have the object reference
+            namedBeanSet->insert(e->getChangedBean());
+        } else {
+            recomputeNamedBeanSet();
+        }
+
+        if (muted) return;
+
+        int offset = 0;
+        for (Manager/*<E>*/* m : mgrs) {
+            if (m == e->getSource()) break;
+            offset += m->getObjectCount();
+        }
+
+        ManagerDataEvent/*<E>*/* eOut = new ManagerDataEvent(this, Manager::ManagerDataEvent::INTERVAL_ADDED, e->getIndex0()+offset, e->getIndex1()+offset, e->getChangedBean());
+
+        //listeners.forEach(m -> m->intervalAdded(eOut));
+        for (Manager::ManagerDataListener/*<E>*/* m : listeners)
+         m->intervalAdded(eOut);
+    }
+
+    /**
+     * {@inheritDoc}
+     * From Manager.ManagerDataListener, receives notifications from underlying
+     * managers.
+     */
+    //@Override
+    //@Deprecated
+    //@SuppressWarnings("deprecation")
+    /*public*/  void AbstractProxyManager::intervalRemoved(AbstractProxyManager::ManagerDataEvent/*<E>*/* e) {
         recomputeNamedBeanSet();
+
+        if (muted) return;
+
+        int offset = 0;
+        for (Manager/*<E>*/* m : mgrs) {
+            if (m == e->getSource()) break;
+            offset += m->getObjectCount();
+        }
+
+        ManagerDataEvent/*<E>*/* eOut = new ManagerDataEvent(this, Manager::ManagerDataEvent::INTERVAL_REMOVED, e->getIndex0()+offset, e->getIndex1()+offset, e->getChangedBean());
+
+        //listeners.forEach(m -> m->intervalRemoved(eOut));
+        for (Manager::ManagerDataListener/*<E>*/* m : listeners)
+         m->intervalRemoved(eOut);
     }
 
-    if (muted) return;
-
-    int offset = 0;
-    for (Manager/*<E>*/* m : mgrs) {
-        if (m == e->getSource()) break;
-        offset += m->getObjectCount();
+    /** {@inheritDoc} */
+    //@Override
+    //@Deprecated
+    //@SuppressWarnings("deprecation")
+    /*public*/  void AbstractProxyManager::setDataListenerMute(bool m) {
+        if (muted && !m) {
+            // send a total update, as we haven't kept track of specifics
+            ManagerDataEvent/*<E>*/* e = new ManagerDataEvent(this, ManagerDataEvent::CONTENTS_CHANGED, 0, getObjectCount()-1, nullptr);
+            //listeners.forEach((listener) -> listener.contentsChanged(e));
+            for (Manager::ManagerDataListener/*<E>*/* m : listeners)
+             m->contentsChanged(e);
+        }
+        this->muted = m;
     }
 
-    ManagerDataEvent/*<E>*/* eOut = new ManagerDataEvent/*<E>*/(this, Manager::ManagerDataEvent::INTERVAL_ADDED, e->getIndex0()+offset, e->getIndex1()+offset, e->getChangedBean());
 
-//    for (ManagerDataListener<E> m : listeners) {
-//        m.intervalAdded(eOut);
-//    }
-    emit notifyIntervalAdded(eOut);
-}
-
-/**
- * {@inheritDoc}
- * From Manager.ManagerDataListener, receives notifications from underlying
- * managers.
- */
-//@Override
-/*public*/ void AbstractProxyManager::intervalRemoved(AbstractProxyManager::ManagerDataEvent/*<E>*/* e) {
-    recomputeNamedBeanSet();
-
-    if (muted) return;
-
-    int offset = 0;
-    for (Manager/*<E>*/* m : mgrs) {
-        if (m == e->getSource()) break;
-        offset += m->getObjectCount();
-    }
-
-    ManagerDataEvent/*<E>*/* eOut = new ManagerDataEvent/*<E>*/(this, Manager::ManagerDataEvent::INTERVAL_REMOVED, e->getIndex0()+offset, e->getIndex1()+offset, e->getChangedBean());
-
-//    for (ManagerDataListener<E> m : listeners) {
-//        m.intervalRemoved(eOut);
-//    }
-    emit notifyIntervalRemoved(eOut);
-}
-
-/** {@inheritDoc} */
-//@Override
-/*public*/ void AbstractProxyManager::setDataListenerMute(bool m) {
-    if (muted && !m)
-    {
-        // send a total update, as we haven't kept track of specifics
-        ManagerDataEvent/*<E>*/* e = new ManagerDataEvent/*<E>*/(this, ManagerDataEvent::CONTENTS_CHANGED, 0, getObjectCount()-1, nullptr);
-//        for (ManagerDataListener<E> listener : listeners) {
-//            listener.contentsChanged(e);
-//        }
-        emit notifyContentsChanged(e);
-    }
-    this->muted = m;
-}
 
 // initialize logging
 /*private*/ /*final*/ /*static*/ Logger* AbstractProxyManager::log = LoggerFactory::getLogger("AbstractProxyManager");

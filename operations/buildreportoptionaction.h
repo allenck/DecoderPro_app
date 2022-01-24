@@ -2,6 +2,9 @@
 #define BUILDREPORTOPTIONACTION_H
 
 #include "abstractaction.h"
+#include "buildreportoptionframe.h"
+#include <QPointer>
+
 namespace Operations
 {
  class BuildReportOptionFrame;
@@ -16,7 +19,7 @@ namespace Operations
   /*public*/ void actionPerformed(ActionEvent* e = 0);
 
  private:
-  BuildReportOptionFrame* f;// = null;
+  QPointer<BuildReportOptionFrame> f;// = null;
 
  };
 }

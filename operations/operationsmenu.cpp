@@ -1,7 +1,7 @@
 #include "operationsmenu.h"
 #include "routestableaction.h"
 #include "enginestableaction.h"
-#include "operationssetupaction.h"
+#include "operationssettingsaction.h"
 #include "carstableaction.h"
 #include "locationstableaction.h"
 #include "trainstableaction.h"
@@ -45,11 +45,10 @@ void OperationsMenu::common()
 
  setTitle(tr("Operations"));
 
- addAction(new OperationsSetupAction(this));
-
+ addAction(new Operations::OperationsSettingsAction(this));
  addAction(new Operations::LocationsTableAction(this));
  addAction(new Operations::CarsTableAction(this));
- addAction(new EnginesTableAction(this));
+ addAction(new Operations::EnginesTableAction(this));
  addAction(new Operations::RoutesTableAction(this));
  addAction(new Operations::TrainsTableAction(this));
 

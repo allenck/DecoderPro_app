@@ -35,7 +35,7 @@ LoadStoreBaseAction::LoadStoreBaseAction(QObject *parent) :
  this->s = s;
  //super(s);
  // ensure that an XML config manager exists
- if (static_cast<ConfigureManager*>(InstanceManager::getOptionalDefault("ConfigureManager"))==NULL)
+ if (qobject_cast<ConfigureManager*>(InstanceManager::getOptionalDefault("ConfigureManager"))==NULL)
        InstanceManager::setDefault("ConfigureManager", new ConfigXmlManager());
 }
 

@@ -115,7 +115,7 @@ void IconAdder::common()
 //@SuppressWarnings("unchecked")
 /*public*/ void IconAdder::initDefaultIcons()
 {
- CatalogTreeManager* manager = static_cast<CatalogTreeManager*>(InstanceManager::getDefault("CatalogTreeManager"));
+ CatalogTreeManager* manager = static_cast<DefaultCatalogTreeManager*>(InstanceManager::getDefault("CatalogTreeManager"));
  CatalogTree* tree = (CatalogTree*)((DefaultCatalogTreeManager*)manager)->getBySystemName("NXDI");
  if (tree != NULL)
  {
@@ -675,7 +675,10 @@ void IconAdder::checkIconSizes()
  sizePolicy.setHeightForWidth(_addButton->sizePolicy().hasHeightForWidth());
  _addButton->setSizePolicy(sizePolicy);
  //        _addButton.addActionListener(addIconAction);
- connect(_addButton, SIGNAL(clicked()), addIconAction, SLOT(actionPerformed()));
+// connect(_addButton, SIGNAL(clicked()), addIconAction->self(), SLOT(actionPerformed()));
+ connect(_addButton, &QPushButton::clicked, [=]{
+  addIconAction->actionPerformed();
+ });
  _addButton->setEnabled(true);
  if (changeIcon)
  {
@@ -840,7 +843,7 @@ void IconAdder::closeCatalog()
 */
 /*private*/ void IconAdder::updateCatalogTree()
 {
- CatalogTreeManager* manager = static_cast<CatalogTreeManager*>(InstanceManager::getDefault("CatalogTreeManager"));
+ CatalogTreeManager* manager = static_cast<DefaultCatalogTreeManager*>(InstanceManager::getDefault("CatalogTreeManager"));
  // unfiltered, xml-stored, default icon tree
  CatalogTree* tree = (CatalogTree*)manager->getBySystemName("NXDI");
  if (tree == NULL)
@@ -917,7 +920,7 @@ DropButton::DropButton (NamedIcon* icon, IconAdder* parent) : JToggleButton(icon
  {
   dataFlavor = new DataFlavor(ImageIndexEditor::IconDataFlavorMime);
  }
- catch (ClassNotFoundException cnfe)
+ catch (ClassNotFoundException* cnfe)
  {
         //cnfe.printStackTrace();
  }

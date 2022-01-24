@@ -1,4 +1,5 @@
 #include "treeset.h"
+#include <QVariant>
 
 //TreeSet::TreeSet(QObject *parent) :
 //    QSet(parent)
@@ -118,15 +119,16 @@ template <class E>
  *        ordering} of the elements will be used.
  */
 // /*public*/ TreeSet(Comparator<? super E> comparator)
-#if 0
+
 template <class E>
-/*public*/ TreeSet<E>::TreeSet(Comparator<E> comparator, QObject *parent) : QSet<E>(parent)
+/*public*/ TreeSet<E>::TreeSet(ComparatorT<E>* comparator, QObject *parent) : QSet<E>(parent)
 {
+ this->comparator = comparator;
     //this(new TreeMap<>(comparator));
     PRESENT = /*new*/ QVariant();
-    m = new TreeMap(comparator);
+    //m = new TreeMap(comparator);
 }
-
+#if 0
 /**
  * Constructs a new tree set containing the elements in the specified
  * collection, sorted according to the <i>natural ordering</i> of its

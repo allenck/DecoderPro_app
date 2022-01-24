@@ -1,7 +1,7 @@
 #include "settrainiconrouteframe.h"
 #include "routemanager.h"
 #include <QLabel>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QSpinBox>
 #include "trainicon.h"
 #include "route.h"
@@ -15,10 +15,11 @@
 #include "propertychangeevent.h"
 #include "routelocation.h"
 #include "routemanagerxml.h"
-#include <QMessageBox>
+#include "joptionpane.h"
 #include "panelmenu.h"
 #include "editor.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -28,17 +29,17 @@ namespace Operations
  //private static final long serialVersionUID = 3933825267912834479L;
 
 
- /*public*/ SetTrainIconRouteFrame::SetTrainIconRouteFrame(QString routeName, QWidget* parent)
+ /*public*/ SetTrainIconRouteFrame::SetTrainIconRouteFrame(Route* route, QWidget* parent)
  : OperationsFrame(tr("Train Icon"),parent)
  {
   //super(tr("MenuSetTrainIcon"));
   log = new Logger("SetTrainIconRouteFrame");
-  value = QMessageBox::No; //JOptionPane.NO_OPTION;
+  value = JOptionPane::NO_OPTION;
   FORWARD = 1;
   BACK = -1;
   NONE = 0;
 
-  routeManager = RouteManager::instance();
+  routeManager = ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"));
 
   // labels
   textX = new JLabel("   X  ");
@@ -49,11 +50,11 @@ namespace Operations
   // text field
   // check boxes
   // major buttons
-  previousButton = new QPushButton(tr("Previous"));
-  nextButton = new QPushButton(tr("Next"));
-  placeButton = new QPushButton(tr("Place Test Icon"));
-  applyButton = new QPushButton(tr("Apply"));
-  saveButton = new QPushButton(tr("Save"));
+  previousButton = new JButton(tr("Previous"));
+  nextButton = new JButton(tr("Next"));
+  placeButton = new JButton(tr("Place Test Icon"));
+  applyButton = new JButton(tr("Apply"));
+  saveButton = new JButton(tr("Save"));
 
   // combo boxes
   // Spinners
@@ -71,13 +72,11 @@ namespace Operations
   _routeIndex = 0;
   _tIon = NULL;
 
-  // create route
-  if (routeName == NULL) {
+  if (route == nullptr) {
       return;
   }
-  _route = RouteManager::instance()->getRouteByName(routeName);
-  //_route.addPropertyChangeListener(this);
-  connect(_route->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  _route = route;
+  _route->addPropertyChangeListener(this);
 
   // general GUI config
   //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
@@ -89,31 +88,24 @@ namespace Operations
   saveButton->setToolTip(tr("Saves the train icon coordinates for the selected location"));
 
   // Set up the panels
-  QGroupBox* pRoute = new QGroupBox();
-//  pRoute.setBorder(BorderFactory
-//          .createTitledBorder(tr("Route") + " " + _route.getName()));
-  pRoute->setStyleSheet(gbStyleSheet);
-  pRoute->setTitle(tr("Route"));
+  JPanel* pRoute = new JPanel();
   pRoute->setLayout(new GridBagLayout());
+  pRoute->setBorder(BorderFactory::createTitledBorder(tr("Route") + " " + _route->getName()));
   addItem(pRoute, previousButton, 0, 0);
   addItem(pRoute, routeLocationName, 1, 0);
   addItem(pRoute, nextButton, 2, 0);
 
-  QGroupBox* pSpin = new QGroupBox();
+  JPanel* pSpin = new JPanel();
   pSpin->setLayout(new GridBagLayout());
-  //pSpin.setBorder(BorderFactory.createTitledBorder(tr("TrainIcon")));
-  pSpin->setStyleSheet(gbStyleSheet);
-  pSpin->setTitle(tr("Train Icon"));
+  pSpin->setBorder(BorderFactory::createTitledBorder(tr("Train Icon")));
   addItem(pSpin, textX, 0, 0);
   addItem(pSpin, spinTrainIconX, 1, 0);
   addItem(pSpin, textY, 2, 0);
   addItem(pSpin, spinTrainIconY, 3, 0);
 
-  QGroupBox* pControl = new QGroupBox();
+  JPanel* pControl = new JPanel();
   pControl->setLayout(new GridBagLayout());
-  //pControl.setBorder(BorderFactory.createTitledBorder(""));
-  pControl->setStyleSheet(gbStyleSheet);
-  pControl->setTitle(tr("Route"));
+  pControl->setBorder(BorderFactory::createTitledBorder(""));
   addItem(pControl, placeButton, 0, 0);
   addItem(pControl, applyButton, 1, 0);
   addItem(pControl, saveButton, 2, 0);
@@ -146,7 +138,7 @@ namespace Operations
  }
 
  /*public*/ void SetTrainIconRouteFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == previousButton) {
          updateRouteLocation(BACK);
      }
@@ -157,19 +149,16 @@ namespace Operations
          placeTestIcons();
      }
      if (source == applyButton) {
-         if (value != QMessageBox::Yes) {
-//             value = JOptionPane.showConfirmDialog(NULL, MessageFormat.format(Bundle
-//                     .getMessage("UpdateTrainIconRoute"), new Object[]{_route.getName()}), Bundle
-//                     .getMessage("DoYouWantThisRoute"), JOptionPane.YES_NO_OPTION);
-          value = QMessageBox::question(NULL, tr("Do you want to update this route?"), tr("Update train icon coordinates for route \"%1\"?").arg(_route->getName()), QMessageBox::Yes | QMessageBox::No);
+         if (value != JOptionPane::YES_OPTION) {
+          value = JOptionPane::showConfirmDialog(NULL, tr("Update train icon coordinates for route \"%1\"?").arg(_route->getName()), tr("Do you want to update this route?"), JOptionPane::YES_NO_OPTION);
          }
-         if (value == QMessageBox::Yes) {
+         if (value == JOptionPane::YES_OPTION) {
              saveButton->setEnabled(true);
          }
          updateTrainIconCoordinates();
      }
      if (source == saveButton) {
-         RouteManagerXml::instance()->writeOperationsFile();
+         ((Operations::RouteManagerXml*)InstanceManager::getDefault("RouteManagerXml"))->writeOperationsFile();
          if (Setup::isCloseWindowOnSaveEnabled()) {
              dispose();
          }
@@ -196,18 +185,17 @@ namespace Operations
  /*private*/ void SetTrainIconRouteFrame::placeTestIcons() {
      Editor* editor = ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->getEditorByName(Setup::getPanelName());
      if (editor == NULL) {
-//         JOptionPane.showMessageDialog(this, MessageFormat.format(tr("LoadPanel"),
-//                 new Object[]{Setup.getPanelName()}), tr("PanelNotFound"),
-//                 JOptionPane.ERROR_MESSAGE);
-      QMessageBox::critical(this, tr("Panel not found!"), tr("You need to load panel \"%1\"").arg(Setup::getPanelName()));
-     } else {
+         JOptionPane::showMessageDialog(this, tr("You need to load panel \"%1\"").arg(Setup::getPanelName()), tr("Panel not found!"),
+                 JOptionPane::ERROR_MESSAGE);
+    } else {
          if (_tIon != NULL) {
              _tIon->remove();
          }
          // icon
          _tIon = editor->addTrainIcon(_rl->getName());
-// TODO:        _tIon->getTooltip().setText(_route->getName());
-//         _tIon->getTooltip().setBackgroundColor(QColor(Qt::white));
+//         _tIon->getToolTip().setText(_route->getName());
+         _tIon->setToolTip(_route->getName());
+//         _tIon->getToolTip().setBackgroundColor(QColor(Qt::white));
          _tIon->setLocation(_rl->getTrainIconX(), _rl->getTrainIconY());
          setTrainIconNameAndColor();
          addIconListener(_tIon);
@@ -256,15 +244,13 @@ namespace Operations
      }
 
      if (_rl != NULL) {
-         //_rl->removePropertyChangeListener(this);
-         disconnect(_rl->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         _rl->removePropertyChangeListener(this);
      }
      if (_routeList->size() > 0) {
          _rl = _routeList->at(_routeIndex);
      }
      if (_rl != NULL) {
-         //_rl->addPropertyChangeListener(this);
-      connect(_rl->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         _rl->addPropertyChangeListener(this);
          loadSpinners(_rl);
          routeLocationName->setText(_rl->getName());
      }
@@ -273,12 +259,10 @@ namespace Operations
 
  /*private*/ void SetTrainIconRouteFrame::updateTrainIconCoordinates() {
      if (_rl != NULL) {
-         //_rl->removePropertyChangeListener(this);
-      disconnect(_rl->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         _rl->removePropertyChangeListener(this);
          _rl->setTrainIconX( spinTrainIconX->value());
          _rl->setTrainIconY( spinTrainIconY->value());
-         //_rl->addPropertyChangeListener(this);
-         connect(_rl->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         _rl->SwingPropertyChangeSupport::addPropertyChangeListener(this);
      }
  }
 

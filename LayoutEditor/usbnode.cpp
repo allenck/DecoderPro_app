@@ -78,16 +78,16 @@ UsbNode::UsbNode(QString name, Usb::Controller* controller, UsbComponent* compon
                     ->provideSensor(attachedSensor)->setKnownState(
                             val > 0.0 ? Sensor::ACTIVE : Sensor::INACTIVE);
         }
-    } catch (Exception e1) {
-        log->error(tr("Can't set sensor: ") + e1.getMessage());
+    } catch (Exception* e1) {
+        log->error(tr("Can't set sensor: ") + e1->getMessage());
     }
     try {
         if ((attachedMemory != NULL) && (attachedMemory!=(""))) {
             InstanceManager::memoryManagerInstance()
                     ->provideMemory(attachedMemory)->setValue(val);
         }
-    } catch (Exception e2) {
-        log->error("Can't set memory: " + e2.getMessage());
+    } catch (Exception* e2) {
+        log->error("Can't set memory: " + e2->getMessage());
     }
 }
 

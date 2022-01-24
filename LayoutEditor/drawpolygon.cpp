@@ -235,7 +235,7 @@ DrawPolygon::DrawPolygon(): DrawFrame(NULL)
     pt = _pShape->getInversePoint(event->scenePos().x(), event->scenePos().y());
     if(pt == QPoint())
     {
-     Logger::error("Can't locate Hit Rectangles " /*+ nte.getMessage()*/);
+     Logger::error("Can't locate Hit Rectangles " /*+ nte->getMessage()*/);
      return false;
     }
     _vertices->removeAt(hitIndex);

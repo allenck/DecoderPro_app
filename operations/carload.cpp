@@ -1,5 +1,6 @@
 #include "carload.h"
 #include "carloads.h"
+#include "instancemanager.h"
 
 //CarLoad::CarLoad(QObject *parent) : QObject(parent)
 //{
@@ -43,7 +44,7 @@ namespace Operations
  /*public*/ void CarLoad::setName(QString name)
  {
   _name = name;
-  if (name==(CarLoads::instance()->getDefaultEmptyName())) {
+  if (name==(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultEmptyName())) {
       setLoadType(LOAD_TYPE_EMPTY);
   }
  }

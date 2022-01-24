@@ -18,12 +18,12 @@ public:
      * Minor number changes with each production release.
      * Odd is development, even is production.
      */
-    static /*final*/ const /*public*/ int minor = 15;
+    static /*final*/ const /*public*/ int minor = 20;
 
     /* Test number changes with individual releases,
      * generally fastest for test releases. Set 0 for production
      */
-    static /*final*/ const /*public*/ int test = 4;
+    static /*final*/ const /*public*/ int test = 0;
     /* The user who built this release */
     static /*final*/ const /*public*/ QString buildUser;// = "allen";
 

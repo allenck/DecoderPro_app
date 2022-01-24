@@ -16,6 +16,8 @@
 #include <QCheckBox>
 #include "borderfactory.h"
 #include <QGroupBox>
+#include "abstractsignalheadmanager.h"
+#include "proxyturnoutmanager.h"
 
 
 class BeanDetails;
@@ -52,9 +54,10 @@ public:
 // display dialog for Set Signals at Turnout* tool
 /*public*/ void setSignalsAtTurnoutFromMenu( LayoutTurnout* to,
                 MultiIconEditor* theEditor, JFrame* theFrame ) ;
-/*public*/ void setSignalsAtTurnout( MultiIconEditor* theEditor, JFrame* theFrame );
+    /*public*/ void setSignalsAtTurnout( MultiIconEditor* theEditor, JFrame* theFrame );
     /*public*/ bool reachedEndBumper();
-    /*public*/ static bool isAtWestEndOfAnchor(TrackSegment* t, PositionablePoint* p);
+    /*public*/ bool isAtWestEndOfAnchor(TrackSegment* t, PositionablePoint* p);
+    /*public*/ static bool isAtWestEndOfAnchor(LayoutEditor* layoutEditor, TrackSegment* t, PositionablePoint* p);
     /*public*/ void setSignalsAtBlockBoundaryFromMenu( PositionablePoint* p, MultiIconEditor* theEditor, JFrame* theFrame );
     /*public*/ void setSignalsAtBlockBoundary( MultiIconEditor* theEditor, JFrame* theFrame );
     /*public*/ void removeSignalHeadFromPanel(QString signalName);
@@ -141,7 +144,7 @@ QString headName, JmriJFrame* frame);
 signals:
     
 public slots:
-    /*private*/ void getSavedAnchorSignals (ActionEvent* /*a*/ = 0);
+    /*private*/ void getSavedAnchorSignals (JActionEvent* /*a*/ = 0);
 
 private:
     // constants
@@ -168,36 +171,46 @@ private:
         /*private*/ JLabel* ttotTurnoutName1Label = nullptr;
         /*private*/ JLabel* ttotTurnoutName2Label = nullptr;
 
-        /*private*/ /*final*/ NamedBeanComboBox/*<Turnout>*/* turnout1ComboBox = new NamedBeanComboBox(
-       InstanceManager::turnoutManagerInstance(),
-       nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-        /*private*/ /*final*/ NamedBeanComboBox/*<Turnout>*/* turnout2ComboBox = new NamedBeanComboBox(
-       InstanceManager::turnoutManagerInstance(),
-       nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-        /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* a1TToTSignalHeadComboBox = new NamedBeanComboBox(
-       (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-       nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-        /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* a2TToTSignalHeadComboBox = new NamedBeanComboBox(
-       (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-       nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-        /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* b1TToTSignalHeadComboBox = new NamedBeanComboBox(
-       (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-       nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-        /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* b2TToTSignalHeadComboBox = new NamedBeanComboBox(
-       (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-       nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-        /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* c1TToTSignalHeadComboBox = new NamedBeanComboBox(
-       (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-       nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-        /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* c2TToTSignalHeadComboBox = new NamedBeanComboBox(
-       (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-       nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-        /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* d1TToTSignalHeadComboBox = new NamedBeanComboBox(
-       (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-       nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-        /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* d2TToTSignalHeadComboBox = new NamedBeanComboBox(
-       (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-       nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+        /*private*/ /*final*/ NamedBeanComboBox/*<Turnout>*/* turnout1ComboBox;
+//        = new NamedBeanComboBox(
+//       (AbstractProxyManager*)InstanceManager::turnoutManagerInstance(),
+//       nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+        /*private*/ /*final*/ NamedBeanComboBox/*<Turnout>*/* turnout2ComboBox;
+//        = new NamedBeanComboBox(
+//       (AbstractProxyManager*)InstanceManager::turnoutManagerInstance(),
+//       nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+        /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* a1TToTSignalHeadComboBox;
+//       = new NamedBeanComboBox(
+//       (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//       nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+        /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* a2TToTSignalHeadComboBox;
+//        = new NamedBeanComboBox(
+//       (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//       nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+        /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* b1TToTSignalHeadComboBox;
+//        = new NamedBeanComboBox(
+//       (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//       nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+        /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* b2TToTSignalHeadComboBox;
+//       = new NamedBeanComboBox(
+//       (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//       nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+        /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* c1TToTSignalHeadComboBox;
+//        = new NamedBeanComboBox(
+//       (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//       nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+        /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* c2TToTSignalHeadComboBox;
+//        = new NamedBeanComboBox(
+//       (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//       nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+        /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* d1TToTSignalHeadComboBox;
+//       = new NamedBeanComboBox(
+//       (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//       nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+        /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* d2TToTSignalHeadComboBox;
+//        = new NamedBeanComboBox(
+//       (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//       nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
     /*private*/ /*final*/ QCheckBox* setA1TToTHead = new QCheckBox(tr("Add the above Signal Head Icon to Panel"));
     /*private*/ /*final*/ QCheckBox* setA2TToTHead = new QCheckBox(tr("Add the above Signal Head Icon to Panel"));
     /*private*/ /*final*/ QCheckBox* setB1TToTHead = new QCheckBox(tr("Add the above Signal Head Icon to Panel"));
@@ -248,29 +261,35 @@ private:
 
     /*private*/ QLabel* xoverTurnoutNameLabel = new QLabel("");
 
-    /*private*/ /*final*/ NamedBeanComboBox/*<Turnout>*/* turnoutComboBox = new NamedBeanComboBox(
-            InstanceManager::turnoutManagerInstance(),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<Turnout>*/* turnoutComboBox;
+//    = new NamedBeanComboBox(
+//            (AbstractProxyManager*)InstanceManager::turnoutManagerInstance(),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* throatContinuingSignalHeadComboBox = new NamedBeanComboBox(
-            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* throatDivergingSignalHeadComboBox = new NamedBeanComboBox(
-            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* continuingSignalHeadComboBox = new NamedBeanComboBox(
-            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* divergingSignalHeadComboBox = new NamedBeanComboBox(
-            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* throatContinuingSignalHeadComboBox;
+//    = new NamedBeanComboBox(
+//            (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* throatDivergingSignalHeadComboBox;
+//    = new NamedBeanComboBox(
+//            (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* continuingSignalHeadComboBox;
+//    = new NamedBeanComboBox(
+//            (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* divergingSignalHeadComboBox;
+//    = new NamedBeanComboBox(
+//            (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
     /*private*/ /*final*/ QCheckBox* setPlaceAllHeads = new QCheckBox(tr("Place All Signal Head Icons"));
     /*private*/ /*final*/ QCheckBox* setupAllLogic = new QCheckBox(tr("Set up all SSL's"));
 
-    /*private*/ /*final*/ NamedBeanComboBox/*<Turnout>*/* signalMastsTurnoutComboBox = new NamedBeanComboBox(
-               InstanceManager::turnoutManagerInstance(), nullptr,
-               NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<Turnout>*/* signalMastsTurnoutComboBox;
+//    = new NamedBeanComboBox(
+//               (AbstractProxyManager*)InstanceManager::turnoutManagerInstance(), nullptr,
+//               NamedBean::DisplayOptions::DISPLAYNAME);
 
     /*private*/ double placeSignalDirectionDEG = 0.0;
     /*private*/ JmriJFrame* setSignalsFrame = nullptr;
@@ -314,19 +333,23 @@ private:
     /*private*/ JLabel* block1NameLabel = nullptr;
     /*private*/ JLabel* block2NameLabel = nullptr;
 
-    /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* block1IDComboBox = new NamedBeanComboBox(
-            (BlockManager*)InstanceManager::getDefault("BlockManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* block2IDComboBox = new NamedBeanComboBox(
-            (BlockManager*)InstanceManager::getDefault("BlockManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* block1IDComboBox;
+//    = new NamedBeanComboBox(
+//            (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* block2IDComboBox;
+//    = new NamedBeanComboBox(
+//            (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* eastBoundSignalHeadComboBox = new NamedBeanComboBox(
-            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* westBoundSignalHeadComboBox = new NamedBeanComboBox(
-            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* eastBoundSignalHeadComboBox;
+//    = new NamedBeanComboBox(
+//            (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* westBoundSignalHeadComboBox;
+//    = new NamedBeanComboBox(
+//            (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
     /*private*/ /*final*/ QCheckBox* setEastBound = new QCheckBox(tr("Add the above Signal Head Icon to Panel"));
     /*private*/ /*final*/ QCheckBox* setupLogicEastBound = new QCheckBox(tr("Set up SSL"));
@@ -358,30 +381,38 @@ private:
     /*private*/ bool setSignalsAtXoverTurnoutOpenFlag = false;
     /*private*/ bool setSignalsAtXoverTurnoutFromMenuFlag = false;
 
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* a1SignalHeadComboBox = new NamedBeanComboBox(
-            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* a2SignalHeadComboBox = new NamedBeanComboBox(
-            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* b1SignalHeadComboBox = new NamedBeanComboBox(
-            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* b2SignalHeadComboBox = new NamedBeanComboBox(
-            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* c1SignalHeadComboBox = new NamedBeanComboBox(
-            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* c2SignalHeadComboBox = new NamedBeanComboBox(
-            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* d1SignalHeadComboBox = new NamedBeanComboBox(
-            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* d2SignalHeadComboBox = new NamedBeanComboBox(
-            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* a1SignalHeadComboBox;
+//    = new NamedBeanComboBox(
+//            (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* a2SignalHeadComboBox;
+//    = new NamedBeanComboBox(
+//            (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* b1SignalHeadComboBox;
+//    = new NamedBeanComboBox(
+//            (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* b2SignalHeadComboBox;
+//    = new NamedBeanComboBox(
+//            (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* c1SignalHeadComboBox;
+//    = new NamedBeanComboBox(
+//            (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* c2SignalHeadComboBox;
+//    = new NamedBeanComboBox(
+//            (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* d1SignalHeadComboBox;
+//    = new NamedBeanComboBox(
+//            (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* d2SignalHeadComboBox;
+//    = new NamedBeanComboBox(
+//            (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
     /*private*/ /*final*/ QCheckBox* setA1Head = new QCheckBox(tr("Add the above Signal Head Icon to Panel"));
     /*private*/ /*final*/ QCheckBox* setA2Head = new QCheckBox(tr("Add the above Signal Head Icon to Panel"));
@@ -444,10 +475,10 @@ private:
     /*private*/ JFrame* turnoutSensorFrame = nullptr;
     /*private*/ JLabel* turnoutSensorNameLabel = nullptr;
 
-    /*private*/ /*final*/ NamedBeanComboBox/*<Turnout>*/* sensorsTurnoutComboBox
-            = new NamedBeanComboBox(
-                    InstanceManager::turnoutManagerInstance(),
-                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<Turnout>*/* sensorsTurnoutComboBox;
+//            = new NamedBeanComboBox(
+//                    (AbstractProxyManager*)InstanceManager::turnoutManagerInstance(),
+//                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
     /*private*/ QPushButton* setSensorsDone;
     /*private*/ QPushButton* getSavedSensors;
@@ -498,22 +529,22 @@ private:
     QPushButton* changeSensorSlipIcon;// = NULL;
     JFrame* sensorSlipFrame;// = NULL;
 
-    /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* slipSensorsBlockAComboBox
-            = new NamedBeanComboBox(
-                    (BlockManager*)InstanceManager::getDefault("BlockManager"),
-                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-   /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* slipSensorsBlockBComboBox
-            = new NamedBeanComboBox(
-                    (BlockManager*)InstanceManager::getDefault("BlockManager"),
-                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-   /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* slipSensorsBlockCComboBox
-            = new NamedBeanComboBox(
-                    (BlockManager*)InstanceManager::getDefault("BlockManager"),
-                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-   /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* slipSensorsBlockDComboBox
-            = new NamedBeanComboBox(
-                    (BlockManager*)InstanceManager::getDefault("BlockManager"),
-                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* slipSensorsBlockAComboBox;
+//            = new NamedBeanComboBox(
+//                    (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+//                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+   /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* slipSensorsBlockBComboBox;
+//            = new NamedBeanComboBox(
+//                    (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+//                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+   /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* slipSensorsBlockCComboBox;
+//            = new NamedBeanComboBox(
+//                    (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+//                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+   /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* slipSensorsBlockDComboBox;
+//            = new NamedBeanComboBox(
+//                    (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+//                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
     /*private*/ QVector<QString>* slipSensorBlocks;// = new String[4];
 
@@ -532,12 +563,14 @@ private:
     /*private*/ JLabel* xingSignalBlockACNameLabel = nullptr;
     /*private*/ JLabel* xingSignalBlockBDNameLabel = nullptr;
 
-    /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* xingBlockACComboBox = new NamedBeanComboBox(
-            (BlockManager*)InstanceManager::getDefault("BlockManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* xingBlockBDComboBox = new NamedBeanComboBox(
-            (BlockManager*)InstanceManager::getDefault("BlockManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* xingBlockACComboBox;
+//    = new NamedBeanComboBox(
+//            (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* xingBlockBDComboBox;
+//    = new NamedBeanComboBox(
+//            (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
     /*private*/ QPushButton* getSavedXingSignalMasts;// = null;
     /*private*/ QPushButton*  setXingSignalMastsDone;// = null;
@@ -564,7 +597,7 @@ private:
     /*private*/ void SetLogicSSLWestBound();
     /*private*/ int isHeadAssignedHere(SignalHead* head, LayoutTurnout* lTurnout);
     /*private*/ void warnOfSkippedTurnout(JmriJFrame* frame, QString turnoutName, QString headName);
-    /*private*/ TrackSegment* getContinuingTrack(LayoutTurnout* to, int type);
+    /*private*/ TrackSegment* getContinuingTrack(LayoutTurnout* to, HitPointType &type);
     /*private*/ bool getTurnoutInformation(bool isCrossover);
     /*private*/ bool getTurnoutSignalHeadInformation();
     /*private*/ void placeThroatContinuing();
@@ -581,15 +614,17 @@ private:
     void createListUsedSignalMasts();
     void refreshSignalMastAtTurnoutComboBox();
     /*private*/ int isMastAssignedHere(SignalMast* mast, LayoutTurnout* lTurnout);
+    /*<T extends LayoutTurnout>*/ void setTurnoutSensor(LayoutTurnout* trackItem, Sensor* newSensor, Sensor* currSensor,
+            BeanDetails* beanDetail, LayoutTrack* connect, QPointF coords, QString position);
     /*private*/ bool getTurnoutSensorInformation();
     bool sensorAssignedElseWhere(Sensor* sensor);
     /*private*/ bool getSimpleBlockInformation();
     /*private*/ void placeEastBoundIcon(PositionableIcon* icon, bool right, double fromPoint);
     /*private*/ void placeWestBoundIcon(PositionableIcon* icon, bool right, double fromPoint);
-    /*private*/ void placingBlock(PositionableIcon* icon, bool right, double fromPoint);
-    /*private*/ void placingBlockB(PositionableIcon* icon, bool right, double fromPoint);
-    /*private*/ void placingBlockC(PositionableIcon* icon, bool right, double fromPoint);
-    /*private*/ void placingBlockD(PositionableIcon* icon, bool right, double fromPoint);
+    /*private*/ void placingBlock(PositionableIcon* icon, bool right, double fromPoint, QObject *obj, QPointF p);
+//    /*private*/ void placingBlockB(PositionableIcon* icon, bool right, double fromPoint);
+//    /*private*/ void placingBlockC(PositionableIcon* icon, bool right, double fromPoint);
+//    /*private*/ void placingBlockD(PositionableIcon* icon, bool right, double fromPoint);
     /*private*/ bool getTurnoutMastInformation();
     void setIconOnPanel(TrackSegment* t, PositionableIcon* l, bool eastbound, QPoint p, QPoint pt2, bool side, double fromPoint);
     QPoint southToNorth(QPoint p, PositionableIcon* l, bool right, double fromPoint);
@@ -650,7 +685,7 @@ private:
     /*private*/ bool	layoutTurnout2BLeft;// = false;
     /*private*/ bool getTToTTurnoutInformation();
     /*private*/ bool getTToTSignalHeadInformation();
-    /*private*/ void placeA1TToT(QString headName);
+    /*private*/ void placeA1TToT(QString signalHeadName);
     /*private*/ void placeA2TToT(QString headName);
     /*private*/ void placeB1TToT(QString headName);
     /*private*/ void placeB2TToT(QString headName);
@@ -672,38 +707,38 @@ private:
 
     /*private*/ /*final*/ QComboBox* slipNameComboBox = new QComboBox();
 
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* a1SlipSignalHeadComboBox
-            = new NamedBeanComboBox(
-                    (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* a2SlipSignalHeadComboBox
-            = new NamedBeanComboBox(
-                    (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* b1SlipSignalHeadComboBox
-            = new NamedBeanComboBox(
-                    (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* b2SlipSignalHeadComboBox
-            = new NamedBeanComboBox(
-                    (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* c1SlipSignalHeadComboBox
-            = new NamedBeanComboBox(
-                    (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* c2SlipSignalHeadComboBox
-            = new NamedBeanComboBox(
-                    (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* d1SlipSignalHeadComboBox
-            = new NamedBeanComboBox(
-                    (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* d2SlipSignalHeadComboBox
-            = new NamedBeanComboBox(
-                    (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* a1SlipSignalHeadComboBox;
+//            = new NamedBeanComboBox(
+//                    (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* a2SlipSignalHeadComboBox;
+//            = new NamedBeanComboBox(
+//                    (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* b1SlipSignalHeadComboBox;
+//            = new NamedBeanComboBox(
+//                    (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* b2SlipSignalHeadComboBox;
+//            = new NamedBeanComboBox(
+//                    (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* c1SlipSignalHeadComboBox;
+//            = new NamedBeanComboBox(
+//                    (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* c2SlipSignalHeadComboBox;
+//            = new NamedBeanComboBox(
+//                    (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* d1SlipSignalHeadComboBox;
+//            = new NamedBeanComboBox(
+//                    (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* d2SlipSignalHeadComboBox;
+//            = new NamedBeanComboBox(
+//                    (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
     /*private*/ /*final*/ QCheckBox* setA1SlipHead = new QCheckBox(tr("Add the above Signal Head Icon to Panel"));
     /*private*/ /*final*/ QCheckBox* setupA1SlipLogic = new QCheckBox(tr("Set up SSL"));
@@ -763,25 +798,31 @@ private:
     /*private*/ JLabel* blockACNameLabel = nullptr;
     /*private*/ JLabel* blockBDNameLabel = nullptr;
 
-    /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* blockACComboBox = new NamedBeanComboBox(
-            (BlockManager*)InstanceManager::getDefault("BlockManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* blockBDComboBox = new NamedBeanComboBox(
-            (BlockManager*)InstanceManager::getDefault("BlockManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* blockACComboBox;
+//     = new NamedBeanComboBox(
+//            (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* blockBDComboBox;
+//      = new NamedBeanComboBox(
+//            (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* aSignalHeadComboBox = new NamedBeanComboBox(
-            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* bSignalHeadComboBox = new NamedBeanComboBox(
-            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* cSignalHeadComboBox = new NamedBeanComboBox(
-            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* dSignalHeadComboBox = new NamedBeanComboBox(
-            (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* aSignalHeadComboBox;
+//    = new NamedBeanComboBox(
+//            (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* bSignalHeadComboBox;
+//    = new NamedBeanComboBox(
+//            (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* cSignalHeadComboBox;
+//    = new NamedBeanComboBox(
+//            (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* dSignalHeadComboBox;
+//    = new NamedBeanComboBox(
+//            (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
     /*private*/ QCheckBox* setAHead;// = new JCheckBox(rb.getString("Add the above Signal Head Icon to Panel"));
     /*private*/ QCheckBox* setupALogic;// = new JCheckBox(rb.getString("Set up SSL"));
     /*private*/ QCheckBox* setBHead;// = new JCheckBox(rb.getString("Add the above Signal Head Icon to Panel"));
@@ -815,14 +856,14 @@ private:
     /*private*/ JLabel* xingSensorsBlockACNameLabel = nullptr;
     /*private*/ JLabel* xingSensorsBlockBDNameLabel = nullptr;
 
-    /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* xingSensorsBlockACComboBox
-            = new NamedBeanComboBox(
-                    (BlockManager*)InstanceManager::getDefault("BlockManager"),
-                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-    /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* xingSensorsBlockBDComboBox
-            = new NamedBeanComboBox(
-       (BlockManager*)InstanceManager::getDefault("BlockManager"),
-       nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* xingSensorsBlockACComboBox;
+//            = new NamedBeanComboBox(
+//                    (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+//                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+    /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* xingSensorsBlockBDComboBox;
+//            = new NamedBeanComboBox(
+//       (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+//       nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
     /*private*/ QPushButton* getSavedXingSensors = nullptr;
     /*private*/ QPushButton* setXingSensorsDone = nullptr;
@@ -867,22 +908,22 @@ private:
 
   /*private*/ QVector<QString>* slipBlocks;// = new String[4];
 
-  /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* slipSignalBlockAComboBox
-          = new NamedBeanComboBox(
-                  (BlockManager*)InstanceManager::getDefault("BlockManager"),
-                  nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-  /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* slipSignalBlockBComboBox
-          = new NamedBeanComboBox(
-                   (BlockManager*)InstanceManager::getDefault("BlockManager"),
-                  nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-  /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* slipSignalBlockCComboBox
-          = new NamedBeanComboBox(
-                   (BlockManager*)InstanceManager::getDefault("BlockManager"),
-                  nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-  /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* slipSignalBlockDComboBox
-          = new NamedBeanComboBox(
-                  (BlockManager*)InstanceManager::getDefault("BlockManager"),
-                  nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+  /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* slipSignalBlockAComboBox;
+//          = new NamedBeanComboBox(
+//                  (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+//                  nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+  /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* slipSignalBlockBComboBox;
+//          = new NamedBeanComboBox(
+//                   (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+//                  nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+  /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* slipSignalBlockCComboBox;
+//          = new NamedBeanComboBox(
+//                   (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+//                  nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+  /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* slipSignalBlockDComboBox;
+//          = new NamedBeanComboBox(
+//                  (AbstractManager*)InstanceManager::getDefault("BlockManager"),
+//                  nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
   /*private*/ JLabel* slipSignalBlockANameLabel = nullptr;
   /*private*/ JLabel* slipSignalBlockBNameLabel = nullptr;
@@ -908,10 +949,9 @@ private:
   QGridLayout* signalMastLayoutSlipPanelLayout;
   void refreshSignalMastAtXingComboBox();
   /*private*/ bool getLevelCrossingMastInformation();
-  /*private*/ void placeXingAIcon(PositionableIcon* icon, bool right, double fromPoint);
-  /*private*/ void placeXingBIcon(PositionableIcon* icon, bool right, double fromPoint);
-  /*private*/ void placeXingCIcon(PositionableIcon* icon, bool right, double fromPoint);
-  /*private*/ void placeXingDIcon(PositionableIcon* icon, bool right, double fromPoint);
+  void setLevelXingSensor(Sensor* newSensor, Sensor* currSensor, BeanDetails* beanDetail,
+          LayoutTrack* connect, QPointF coords, QString position);
+
   QGridLayout* signalMastLevelXingPanelLayout;
   /*private*/ bool getLevelCrossingSensorInformation();
   QGridLayout* sensorXingPanelLayout;
@@ -926,30 +966,38 @@ private:
   /*private*/ QLabel* turnoutANameLabel = nullptr;
   /*private*/ QLabel* turnoutBNameLabel = nullptr;
 
-  /*private*/ /*final*/ NamedBeanComboBox/*<Turnout>*/* turnoutAComboBox = new NamedBeanComboBox(
-          InstanceManager::turnoutManagerInstance(),
-          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-  /*private*/ /*final*/ NamedBeanComboBox/*<Turnout>*/* turnoutBComboBox = new NamedBeanComboBox(
-          InstanceManager::turnoutManagerInstance(),
-          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-  /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* a1_3WaySignalHeadComboBox = new NamedBeanComboBox(
-          (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-  /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* a2_3WaySignalHeadComboBox = new NamedBeanComboBox(
-          (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-  /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* a3_3WaySignalHeadComboBox = new NamedBeanComboBox(
-          (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-  /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* b_3WaySignalHeadComboBox = new NamedBeanComboBox(
-          (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-  /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* c_3WaySignalHeadComboBox = new NamedBeanComboBox(
-          (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
-  /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* d_3WaySignalHeadComboBox = new NamedBeanComboBox(
-          (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"),
-          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+  /*private*/ /*final*/ NamedBeanComboBox/*<Turnout>*/* turnoutAComboBox;
+//  = new NamedBeanComboBox(
+//          (AbstractManager*)InstanceManager::turnoutManagerInstance(),
+//          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+  /*private*/ /*final*/ NamedBeanComboBox/*<Turnout>*/* turnoutBComboBox;
+//  = new NamedBeanComboBox(
+//          (AbstractManager*)InstanceManager::turnoutManagerInstance(),
+//          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+  /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* a1_3WaySignalHeadComboBox;
+//  = new NamedBeanComboBox(
+//          (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+  /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* a2_3WaySignalHeadComboBox;
+//  = new NamedBeanComboBox(
+//          (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+  /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* a3_3WaySignalHeadComboBox;
+//  = new NamedBeanComboBox(
+//          (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+  /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* b_3WaySignalHeadComboBox;
+//  = new NamedBeanComboBox(
+//          (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+  /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* c_3WaySignalHeadComboBox;
+//  = new NamedBeanComboBox(
+//          (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+  /*private*/ /*final*/ NamedBeanComboBox/*<SignalHead>*/* d_3WaySignalHeadComboBox;
+//  = new NamedBeanComboBox(
+//          (AbstractManager*)InstanceManager::getDefault("SignalHeadManager"),
+//          nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
   /*private*/ bool setSignalsAt3WayOpen;// =false;
 //  JTextField* turnoutANameField;// =new JTextField(16);
@@ -1048,50 +1096,50 @@ private:
   JPanel* signalMastBlockPanel = new JPanel(new FlowLayout());
 
  private slots:
-    /*private*/ void setSignalsAtBlockBoundaryDonePressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void setSignalsAtBlockBoundaryCancelPressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void turnoutSignalsGetSaved (ActionEvent* /*a*/ = 0);
-    void setSignalsDonePressed(ActionEvent* /*a*/ = 0);
-    /*private*/ void setSignalsCancelPressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void setXoverSignalsCancelPressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void xoverTurnoutSignalsGetSaved (ActionEvent* /*a*/ = 0);
-    /*private*/ void setXoverSignalsDonePressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void turnoutSensorsGetSaved (ActionEvent* /*a*/ = 0);
-    /*private*/ void setSensorsDonePressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void turnoutSignalMastsGetSaved (ActionEvent* /*a*/ = 0); // SLOT
-    /*private*/ void getSavedAnchorSensors (ActionEvent* /*a*/ = 0);
-    /*private*/ void setXingSensorsCancelPressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void setSensorsAtBlockBoundaryCancelPressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void setSensorsAtBlockBoundaryDonePressed (ActionEvent* a  = 0);
-    /*private*/ void setSignalMastsCancelPressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void setSignalMastsDonePressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void setSensorsCancelPressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void getSavedAnchorSignalMasts (ActionEvent* /*a*/ = 0);
-    /*private*/ void setSignalMastsAtBlockBoundaryCancelPressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void setSignalMastsAtBlockBoundaryDonePressed (ActionEvent* /*a*/ = 0) ;
-    /*private*/ void setXingSignalsCancelPressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void setXingSignalsDonePressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void setXingSensorsDonePressed (ActionEvent* /*a*/ = 0);
-    /*private*/ void setTToTSignalsDonePressed (ActionEvent* /*a*/ = 0);
+    /*private*/ void setSignalsAtBlockBoundaryDonePressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void setSignalsAtBlockBoundaryCancelPressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void turnoutSignalsGetSaved (JActionEvent* /*a*/ = 0);
+    void setSignalsDonePressed(JActionEvent* /*a*/ = 0);
+    /*private*/ void setSignalsCancelPressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void setXoverSignalsCancelPressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void xoverTurnoutSignalsGetSaved (JActionEvent* /*a*/ = 0);
+    /*private*/ void setXoverSignalsDonePressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void turnoutSensorsGetSaved (JActionEvent* /*a*/ = 0);
+    /*private*/ void setSensorsDonePressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void turnoutSignalMastsGetSaved (JActionEvent* /*a*/ = 0); // SLOT
+    /*private*/ void getSavedAnchorSensors (JActionEvent* /*a*/ = 0);
+    /*private*/ void setXingSensorsCancelPressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void setSensorsAtBlockBoundaryCancelPressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void setSensorsAtBlockBoundaryDonePressed (JActionEvent* a  = 0);
+    /*private*/ void setSignalMastsCancelPressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void setSignalMastsDonePressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void setSensorsCancelPressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void getSavedAnchorSignalMasts (JActionEvent* /*a*/ = 0);
+    /*private*/ void setSignalMastsAtBlockBoundaryCancelPressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void setSignalMastsAtBlockBoundaryDonePressed (JActionEvent* /*a*/ = 0) ;
+    /*private*/ void setXingSignalsCancelPressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void setXingSignalsDonePressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void setXingSensorsDonePressed (JActionEvent* /*a*/ = 0);
+    /*private*/ void setTToTSignalsDonePressed (JActionEvent* /*a*/ = 0);
     ///*private*/ void tToTTurnoutSignalsGetSaved (ActionEvent* /*a*/ = 0);
     /*private*/ void setTToTSignalsCancelPressed ();
-    /*private*/ void slipSensorsGetSaved (ActionEvent* a = 0);
-    /*private*/ void setSlipSensorsCancelPressed (ActionEvent* a = 0);
-    /*private*/ void setSlipSensorsDonePressed (ActionEvent* a = 0);
-    /*private*/ void setSlipSignalsDonePressed (ActionEvent* a = 0);
-    /*private*/ void getSlipTurnoutSignalsGetSaved (ActionEvent* a = 0);
-    /*private*/ void setSlipSignalsCancelPressed (ActionEvent* a = 0);
-    /*private*/ void xingSignalsGetSaved (ActionEvent* a = 0);
-    /*private*/ void setSlipSignalMastsCancelPressed (ActionEvent* a = 0);
-    /*private*/ void slipSignalMastsGetSaved (ActionEvent* a = 0);
-    /*private*/ void setSlipSignalMastsDonePressed (ActionEvent* a = 0);
-    /*private*/ void xingSignalMastsGetSaved (ActionEvent* a = 0);
-    /*private*/ void setXingSignalMastsCancelPressed (ActionEvent*  = 0);
-    /*private*/ void setXingSignalMastsDonePressed (ActionEvent* a = 0);
-    /*private*/ void xingSensorsGetSaved (ActionEvent* a = 0);
-    /*private*/ void getSaved3WaySignals (ActionEvent* a = 0);
-    /*private*/ void set3WaySignalsCancelPressed (ActionEvent* a = 0);
-    /*private*/ void set3WaySignalsDonePressed (ActionEvent* a = 0);
+    /*private*/ void slipSensorsGetSaved (JActionEvent* a = 0);
+    /*private*/ void setSlipSensorsCancelPressed (JActionEvent* a = 0);
+    /*private*/ void setSlipSensorsDonePressed (JActionEvent* a = 0);
+    /*private*/ void setSlipSignalsDonePressed (JActionEvent* a = 0);
+    /*private*/ void getSlipTurnoutSignalsGetSaved (JActionEvent* a = 0);
+    /*private*/ void setSlipSignalsCancelPressed (JActionEvent* a = 0);
+    /*private*/ void xingSignalsGetSaved (JActionEvent* a = 0);
+    /*private*/ void setSlipSignalMastsCancelPressed (JActionEvent* a = 0);
+    /*private*/ void slipSignalMastsGetSaved (JActionEvent* a = 0);
+    /*private*/ void setSlipSignalMastsDonePressed (JActionEvent* a = 0);
+    /*private*/ void xingSignalMastsGetSaved (JActionEvent* a = 0);
+    /*private*/ void setXingSignalMastsCancelPressed (JActionEvent*  = 0);
+    /*private*/ void setXingSignalMastsDonePressed (JActionEvent* a = 0);
+    /*private*/ void xingSensorsGetSaved (JActionEvent* a = 0);
+    /*private*/ void getSaved3WaySignals (JActionEvent* a = 0);
+    /*private*/ void set3WaySignalsCancelPressed (JActionEvent* a = 0);
+    /*private*/ void set3WaySignalsDonePressed (JActionEvent* a = 0);
 
     /*private*/ void setSignalsAtTToTTurnoutsGetSaved(/*ActionEvent* a*/);
 protected:
@@ -1121,6 +1169,9 @@ protected:
     friend class SBBWindowListener;
     friend class PositionablePoint;
     friend class LayoutEditorToolBarPanel;
+    friend class LayoutTurnoutView;
+    friend class LayoutSlipView;
+    friend class PositionablePointView;
 };
 
 /*static*/ class BeanDetails : public QObject
@@ -1159,6 +1210,7 @@ public:
     QWidget* addIconPanel();
 
     //Border blackline = BorderFactory.createLineBorder(Color.black);
+    friend class LayoutSlipView;
 };
 class SSWindowListener: public WindowListener
 {

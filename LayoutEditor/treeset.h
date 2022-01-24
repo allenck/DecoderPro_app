@@ -3,7 +3,7 @@
 
 #include <QSet>
 #include "navigablemap.h"
-#include "comparator.h"
+#include "comparatort.h"
 
 class TreeMap;
 template <class E>
@@ -13,7 +13,7 @@ class TreeSet : public QSet<E>
 public:
     //explicit TreeSet(QObject *parent = 0);
     TreeSet(NavigableMap<E,QVariant> m, QObject *parent = 0);
-//    /*public*/ TreeSet(Comparator<E> comparator, QObject *parent = 0);
+    /*public*/ TreeSet(ComparatorT<E>* comparator, QObject *parent = 0);
     /*public*/ TreeSet(E, QObject *parent = 0);
 
     /*public*/ bool add(E e);
@@ -29,7 +29,7 @@ private:
 
     // Dummy value to associate with an Object in the backing Map
     /*private*/ static /*final*/ QVariant PRESENT;// = /*new*/ QVariant();
-
+    ComparatorT<E>* comparator = nullptr;
 
 };
 

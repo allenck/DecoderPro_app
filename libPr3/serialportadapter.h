@@ -73,9 +73,9 @@ public:
      * Error handling for busy port at open.
      * @see jmri.jmrix.AbstractSerialPortController
      */
-    virtual QString handlePortBusy(PortInUseException /*p*/,
+    virtual QString handlePortBusy(PortInUseException* /*p*/,
                             QString /*portName*/,
-                                   Logger /*log*/) {return "";}
+                            Logger /*log*/) {return "";}
 
 
      /**

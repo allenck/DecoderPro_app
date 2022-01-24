@@ -15,8 +15,8 @@ public:
     Q_INVOKABLE/*public*/ void tearDown();
 public slots:
     /*public*/ void testImplementsIdle();
-    /*public*/ void testStateIdle() throw (JmriException);
-    /*public*/ void testSetPowerIdle() throw (JmriException);
+    /*public*/ void testStateIdle() /*throw (JmriException)*/;
+    /*public*/ void testSetPowerIdle() /*throw (JmriException)*/;
 
 private:
     LocoNetInterfaceScaffold* controller;  // holds dummy for testing

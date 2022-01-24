@@ -31,6 +31,7 @@
 
 /*public*/ RosterConfigManager::RosterConfigManager()
 {
+ setObjectName("RosterConfigManager");
  log = new Logger("RosterConfigManager");
  //directory = FileUtil::PREFERENCES;
  //defaultOwner = "";
@@ -39,14 +40,14 @@
  rosters = QHash<Profile*, Roster*>();
 
 //    log->debug(tr("Roster is %1").arg(this->directory));
-//    FileUtilSupport::getDefault()->addPropertyChangeListener(FileUtil::PREFERENCES, (PropertyChangeEvent evt) -> {
+//    FileUtilSupport::getDefault()->SwingPropertyChangeSupport::addPropertyChangeListener(FileUtil::PREFERENCES, (PropertyChangeEvent evt) -> {
 //        log->debug(tr("UserFiles changed from {} to {}", evt.getOldValue(), evt.getNewValue());
 //        if (RosterConfigManager.this->getDirectory().equals(evt.getOldValue())) {
 //            RosterConfigManager.this->setDirectory(FileUtil.PREFERENCES);
 //        }
 //    });
     //connect(FileUtilSupport::getDefault(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(onPropertyChange(PropertyChangeEvent*)));
- FileUtilSupport::getDefault()->addPropertyChangeListener(FileUtil::PREFERENCES, (PropertyChangeListener*)this);
+ FileUtilSupport::getDefault()->addPropertyChangeListener(/*FileUtil::PREFERENCES*/"preference:", (PropertyChangeListener*)this);
 }
 
 void RosterConfigManager::propertyChange(PropertyChangeEvent* evt)
@@ -63,7 +64,7 @@ void RosterConfigManager::propertyChange(PropertyChangeEvent* evt)
 }
 
 //@Override
-/*public*/ void RosterConfigManager::initialize(Profile* profile) throw (InitializationException)
+/*public*/ void RosterConfigManager::initialize(Profile* profile) /*throw new (InitializationException)*/
 {
  if (!this->isInitialized(profile))
  {
@@ -73,16 +74,17 @@ void RosterConfigManager::propertyChange(PropertyChangeEvent* evt)
   {
    this->setDirectory(profile, preferences->get(DIRECTORY, this->getDirectory()));
   }
-  catch (IllegalArgumentException ex)
+  catch (IllegalArgumentException* ex)
   {
    this->setInitialized(profile, true);
-   throw InitializationException(
+   throw new InitializationException(
 //                    Bundle.getMessage(Locale.ENGLISH, "IllegalRosterLocation", preferences.get(DIRECTORY, this->getDirectory())),
-//                    ex.getMessage(),
+//                    ex->getMessage(),
 //                    ex);
    tr("\"%1\" is not a valid path").arg(preferences->get(DIRECTORY, this->getDirectory())),QString("\"%1\" is not a valid path").arg(preferences->get(DIRECTORY, this->getDirectory())), NULL);
   }
-  Roster::getDefault()->setRosterLocation(this->getDirectory());
+  //Roster::getDefault()->setRosterLocation(this->getDirectory());
+  getRoster(profile)->setRosterLocation(this->getDirectory());
   this->setInitialized(profile, true);
  }
 }
@@ -94,7 +96,7 @@ void RosterConfigManager::propertyChange(PropertyChangeEvent* evt)
     preferences->put(DEFAULT_OWNER, this->getDefaultOwner());
     try {
         preferences->sync();
-    } catch (BackingStoreException ex) {
+    } catch (BackingStoreException* ex) {
         log->error("Unable to save preferences", ex);
     }
 }
@@ -126,10 +128,10 @@ void RosterConfigManager::propertyChange(PropertyChangeEvent* evt)
 }
 
 //@Override
-/*public*/ /*Set<Class<? extends PreferencesManager>>*/ QSet<QString>* RosterConfigManager::getRequires() {
+/*public*/ /*Set<Class<? extends PreferencesManager>>*/ QSet<QString> RosterConfigManager::getRequires() {
    // Set<Class<? extends PreferencesManager>> requires = super.getRequires();
- QSet<QString>* requires = AbstractPreferencesManager::getRequires();
-    requires->insert("FileLocationsPreferences");
+ QSet<QString> requires = AbstractPreferencesManager::getRequires();
+    requires.insert("FileLocationsPreferences");
     return requires;
 }
 
@@ -190,12 +192,12 @@ void RosterConfigManager::propertyChange(PropertyChangeEvent* evt)
  {
   if (!FileUtil::getFile(directory)->isDirectory()) 
   {
-   throw  IllegalArgumentException(tr("\"%1\" is not a valid path").arg(directory)); // NOI18N
+   throw new  IllegalArgumentException(tr("\"%1\" is not a valid path").arg(directory)); // NOI18N
   }
  } 
- catch (FileNotFoundException ex) 
+ catch (FileNotFoundException* ex) 
  { // thrown by getFile() if directory does not exist
-  throw  IllegalArgumentException(tr("\"%1\" is not a valid path").arg(directory)); // NOI18N
+  throw new  IllegalArgumentException(tr("\"%1\" is not a valid path").arg(directory)); // NOI18N
  }
  if (directory != (FileUtil::PREFERENCES)) {
      directory = FileUtil::getAbsoluteFilename(directory);

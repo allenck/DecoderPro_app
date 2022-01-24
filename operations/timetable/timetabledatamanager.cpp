@@ -182,7 +182,7 @@ namespace TimeTable
      */
     /*public*/ void TimeTableDataManager::deleteStation(int id) {
         if (!getStops(0, id, false).isEmpty()) {
-            throw IllegalArgumentException(STATION_HAS_REFERENCE);
+            throw new IllegalArgumentException(STATION_HAS_REFERENCE);
         }
 
         int segmentId = getStation(id)->getSegmentId();
@@ -206,7 +206,7 @@ namespace TimeTable
      */
     /*public*/ void TimeTableDataManager::deleteSchedule(int id) {
         if (!getTrains(id, 0, false).isEmpty()) {
-            throw IllegalArgumentException(SCHEDULE_HAS_CHILDREN);
+            throw new IllegalArgumentException(SCHEDULE_HAS_CHILDREN);
         }
         _scheduleMap.remove(id);
     }

@@ -84,7 +84,7 @@
         }
         try {
             this->setFadeInTime(s.toInt());
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException* e) {
             log->debug("setFadeInTime Failed to parse int from: " + s);
         }
     }
@@ -101,7 +101,7 @@
 
         try {
             this->setFadeOutTime(s.toInt());
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException* e) {
             log->debug("setFadeOutTime Failed to parse int from: " + s);
         }
     }

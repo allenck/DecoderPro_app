@@ -5,7 +5,6 @@
 #include "resettablemodel.h"
 #include "xmlfile.h"
 #include "cvtablemodel.h"
-#include "indexedcvtablemodel.h"
 #include "variabletablemodel.h"
 #include "rosterentry.h"
 #include "decoderindexfile.h"
@@ -22,6 +21,7 @@
 #include "imageicon.h"
 #include <QImage>
 #include "jlabel.h"
+#include "instancemanager.h"
 
 //PrintRosterEntry::PrintRosterEntry(QObject *parent) :
 //    PaneContainer(parent)
@@ -33,7 +33,7 @@
 
 /*public*/ PrintRosterEntry::PrintRosterEntry(RosterEntry* rosterEntry, JmriJFrame* parent, QString filename)
 {
- _paneList        = QList<QWidget*>();
+ _paneList        = QList<JPanel*>();
  _flPane         = NULL;
  _rMPane         = NULL;
  _parent         = NULL;
@@ -42,7 +42,7 @@
  _rMPane = new RosterMediaPane(rosterEntry);
  _parent = parent;
  log = new Logger("PrintRosterEntry");
- QLabel* progStatus   = new QLabel(tr("Idle"));
+ JLabel* progStatus   = new JLabel(tr("Idle"));
  Programmer* mProgrammer   = NULL;
  ResetTableModel* resetModel    = new ResetTableModel(progStatus, mProgrammer);
 
@@ -62,7 +62,7 @@
    return;
   }
  }
- catch (Exception e)
+ catch (Exception* e)
  {
   log->error("exception reading programmer file: "+filename, e);
   // provide traceback too
@@ -81,19 +81,19 @@
 
  if (log->isDebugEnabled()) log->debug("selected loco uses decoder "+decoderFamily+" "+decoderModel);
  // locate a decoder like that.
- QList<DecoderFile*>* l = DecoderIndexFile::instance()->matchingDecoderList(NULL, decoderFamily, NULL, NULL, NULL, decoderModel);
- if (log->isDebugEnabled()) log->debug("found "+QString(l->size())+" matches");
- if (l->size() == 0)
+ QList<DecoderFile*> l = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList(NULL, decoderFamily, NULL, NULL, NULL, decoderModel);
+ if (log->isDebugEnabled()) log->debug("found "+QString(l.size())+" matches");
+ if (l.size() == 0)
  {
   log->debug("Loco uses "+decoderFamily+" "+decoderModel+" decoder, but no such decoder defined");
   // fall back to use just the decoder name, not family
-  l = DecoderIndexFile::instance()->matchingDecoderList(NULL, NULL, NULL, NULL, NULL, decoderModel);
-  if (log->isDebugEnabled()) log->debug("found "+QString::number(l->size())+" matches without family key");
+  l = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList(NULL, NULL, NULL, NULL, NULL, decoderModel);
+  if (log->isDebugEnabled()) log->debug("found "+QString::number(l.size())+" matches without family key");
  }
  DecoderFile* d=NULL;
- if (l->size() > 0)
+ if (l.size() > 0)
  {
-  d = l->at(0);
+  d = l.at(0);
  }
  else
  {
@@ -111,26 +111,19 @@
   decoderRoot = d->rootFromName(DecoderFile::fileLocation+d->getFileName());
 
  }
- catch (JDOMException exj)
+ catch (JDOMException* exj)
  {
-  log->error("could not parse "+d->getFileName()+": "+exj.getMessage());
+  log->error("could not parse "+d->getFileName()+": "+exj->getMessage());
   return;
  }
- catch (IOException exj)
+ catch (IOException* exj)
  {
-  log->error("could not read "+d->getFileName()+": "+exj.getMessage());
+  log->error("could not read "+d->getFileName()+": "+exj->getMessage());
   return;
  }
 
  d->loadVariableModel(decoderRoot.firstChildElement("decoder"), variableModel);
- if (variableModel->piCv() != "")
- {
-  resetModel->setPiCv(variableModel->piCv());
- }
- if (variableModel->siCv() != "")
- {
-  resetModel->setSiCv(variableModel->siCv());
- }
+
  d->loadResetModel(decoderRoot.firstChildElement("decoder"), resetModel);
 
  //@SuppressWarnings("unchecked")
@@ -154,7 +147,7 @@
 
 /*public*/ bool  PrintRosterEntry::isBusy() { return false; }
 
-/*public*/  PrintRosterEntry::PrintRosterEntry(RosterEntry* rosterEntry, QList<QWidget*> paneList, FunctionLabelPane* flPane,RosterMediaPane* rMPane, JmriJFrame* parent)
+/*public*/  PrintRosterEntry::PrintRosterEntry(RosterEntry* rosterEntry, QList<JPanel*> paneList, FunctionLabelPane* flPane,RosterMediaPane* rMPane, JmriJFrame* parent)
 {
  _rosterEntry = rosterEntry;
  _paneList = paneList;
@@ -306,9 +299,9 @@ void PrintRosterEntry::On_ok_clicked()
    w->write(s,0,s.length());
   }
  }
- catch (IOException e)
+ catch (IOException* e)
  {
-  log->warn("error during printing: "+e.getMessage());
+  log->warn("error during printing: "+e->getMessage());
  }
  _rosterEntry->printEntry(w);
  w->setFontWeight(QFont::Normal);

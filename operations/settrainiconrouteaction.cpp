@@ -1,5 +1,5 @@
 #include "settrainiconrouteaction.h"
-#include "settrainiconrouteframe.h"
+
 namespace Operations
 {
 /**
@@ -16,36 +16,37 @@ namespace Operations
   */
  //private static final long serialVersionUID = -9152117316952301773L;
 
- /*public*/ SetTrainIconRouteAction::SetTrainIconRouteAction(QString s, QObject* parent)
- : AbstractAction(s, parent)
+ /*public*/ SetTrainIconRouteAction::SetTrainIconRouteAction( QObject* parent)
+ : AbstractAction(tr("Set Train Icons Coordinates for this Route"), parent)
  {
   //super(s);
-  common();
+  common(nullptr);
  }
 
 
- /*public*/ SetTrainIconRouteAction::SetTrainIconRouteAction(QString s, QString routeName, QObject* parent)
- : AbstractAction(s, parent)
+ /*public*/ SetTrainIconRouteAction::SetTrainIconRouteAction(Route* route, QObject* parent)
+ : AbstractAction(tr("Set Train Icons Coordinates for this Route"), parent)
 {
   // super(s);
-  common();
+  common(route);
   this->routeName = routeName;
  }
 
- void SetTrainIconRouteAction::common()
+ void SetTrainIconRouteAction::common(Route* route)
  {
-  f = NULL;
+  f = QPointer<SetTrainIconRouteFrame>();
   routeName = "";
+  this->_route = route;
   connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void SetTrainIconRouteAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void SetTrainIconRouteAction::actionPerformed(JActionEvent * /*e*/) {
      // create a copy route frame
 
      if (f == NULL || !f->isVisible()) {
-         f = new SetTrainIconRouteFrame(routeName);
+         f = new SetTrainIconRouteFrame(_route);
      }
-     //f.setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setVisible(true);	// this also brings the frame into focus
 
  }

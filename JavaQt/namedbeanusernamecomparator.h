@@ -12,7 +12,7 @@ public:
      QString s1 = n1->getUserName();
      QString s2 = n2->getUserName();
      int comparison = 0;
-     AlphanumComparator comparator = AlphanumComparator();
+     AlphanumComparator* comparator = new AlphanumComparator();
      // handle both usernames being null or empty
      if ((s1 == "" || s1.isEmpty()) && (s2 == "" || s2.isEmpty())) {
          return n1->compareTo(n2);
@@ -23,7 +23,7 @@ public:
      if (s2 == "" || s2.isEmpty()) {
          s2 = n1->getSystemName();
      }
-     return comparison != 0 ? comparison : comparator.compare(s1, s2);
+     return comparison != 0 ? comparison : comparator->compare(s1, s2);
  }
 
 

@@ -2,7 +2,6 @@
 #include "location.h"
 #include "control.h"
 #include "locationmanager.h"
-#include <QPushButton>
 #include <QCheckBox>
 #include <QScrollArea>
 #include <QRadioButton>
@@ -45,6 +44,11 @@
 #include "modifylocationscarloadsaction.h"
 #include "showtrainsservinglocationaction.h"
 #include "locationtrackblockingorderaction.h"
+#include "borderfactory.h"
+#include "setphysicallocationaction.h"
+#include "traincommon.h"
+#include "division.h"
+
 
 //LocationEditFrame::LocationEditFrame()
 //{
@@ -82,26 +86,26 @@ namespace Operations
   interchangeTable = new JTable(interchangeModel);
   stagingModel = new StagingTableModel();
   stagingTable = new JTable(stagingModel);
-  locationManager = LocationManager::instance();
+  locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
 
   _location = NULL;
   checkBoxes =  QList<QCheckBox*>();
-  panelCheckBoxes = new QWidget();
+  panelCheckBoxes = new JPanel();
   panelCheckBoxes->setLayout(new GridBagLayout()); //layout must be set before setting QScrollArea's widget.
 
-  directionPanel = new QGroupBox();
+  directionPanel = new JPanel();
 
      // major buttons
-  clearButton = new QPushButton(tr("Clear"));
-  setButton = new QPushButton(tr("Select"));
-  autoSelectButton = new QPushButton(tr("Auto Select"));
-  saveLocationButton = new QPushButton(tr("Save Location"));
-  deleteLocationButton = new QPushButton(tr("DeleteLocation"));
-  addLocationButton = new QPushButton(tr("Add Location"));
-  addYardButton = new QPushButton(tr("Add Yard Track"));
-  addSpurButton = new QPushButton(tr("Add Spur Track"));
-  addInterchangeButton = new QPushButton(tr("Add C/I Track"));
-  addStagingButton = new QPushButton(tr("Add Staging Track"));
+  clearButton = new JButton(tr("Clear"));
+  setButton = new JButton(tr("Select"));
+  autoSelectButton = new JButton(tr("Auto Select"));
+  saveLocationButton = new JButton(tr("Save Location"));
+  deleteLocationButton = new JButton(tr("Delete Location"));
+  addLocationButton = new JButton(tr("Add Location"));
+  addYardButton = new JButton(tr("Add Yard Track"));
+  addSpurButton = new JButton(tr("Add Spur Track"));
+  addInterchangeButton = new JButton(tr("Add C/I Track"));
+  addStagingButton = new JButton(tr("Add Staging Track"));
 
      // check boxes
   northCheckBox = new QCheckBox(tr("North"));
@@ -125,8 +129,6 @@ namespace Operations
   readerSelector = new JComboBox();
 
   _location = location;
-   chkBoxMapper = new QSignalMapper;
-   connect(chkBoxMapper, SIGNAL(mapped(QWidget*)), this, SLOT(checkBoxActionTrainPerformed(QWidget*)));
    yef = NULL;
    sef = NULL;
    ief = NULL;
@@ -136,15 +138,13 @@ namespace Operations
    lctf = NULL;
 
    // Set up the jtable in a Scroll Pane..
-   typePane = new QGroupBox();
+   typePane = new JPanel();
    typePane->setLayout(new QVBoxLayout);
    QScrollArea* typePaneScroll = new QScrollArea(/*panelCheckBoxes*/);
    typePaneScroll->setWidget(panelCheckBoxes);
    typePaneScroll->setWidgetResizable(true);
 //     typePane->setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-//     typePane->setBorder(BorderFactory.createTitledBorder(tr("Types")));
-   typePane->setStyleSheet(gbStyleSheet);
-   typePane->setTitle(tr("Types"));
+   typePane->setBorder(BorderFactory::createTitledBorder(tr("Types")));
    typePane->layout()->addWidget(typePaneScroll);
 
 //     yardPane = new JScrollPane(yardTable);
@@ -178,12 +178,13 @@ namespace Operations
    enableButtons(true);
    locationNameTextField->setText(_location->getName());
    commentTextArea->setText(_location->getComment());
+   divisionComboBox->setSelectedItem(_location->getDivision()->getName());
    yardModel->initTable(yardTable, location);
    spurModel->initTable(spurTable, location);
    interchangeModel->initTable(interchangeTable, location);
    stagingModel->initTable(stagingTable, location);
-   //_location->addPropertyChangeListener(this);
-   connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   //_location->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+   connect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    locationName = _location->getName();
    if (_location->getLocationOps() == Location::NORMAL)
    {
@@ -206,14 +207,14 @@ namespace Operations
    {
     // setup the Reader dropdown.
     readerSelector->addItem(""); // add an empty entry.
-    foreach (NamedBean* r, *InstanceManager::reporterManagerInstance()->getNamedBeanList())
+    foreach (NamedBean* r, *((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->getNamedBeanList())
     {
      readerSelector->addItem(((Reporter*) r)->getDisplayName());
     }
 
     //try {
     readerSelector->setCurrentIndex(readerSelector->findText(_location->getReporter()->getDisplayName()));
-//             } catch (NULLPointerException e) {
+//             } catch (NullPointerException* e) {
 //                 // if there is no reader set, getReporter
 //                 // will return NULL, so set a blank.
 //             }
@@ -240,19 +241,15 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 //     p1Pane->setBorder(BorderFactory.createTitledBorder(""));
 
   // row 1a
-  QGroupBox* pName = new QGroupBox();
+  JPanel* pName = new JPanel();
   pName->setLayout(new GridBagLayout());
- // pName->setBorder(BorderFactory.createTitledBorder(tr("Name")));
-  pName->setStyleSheet(gbStyleSheet);
-  pName->setTitle(tr("Name"));
+  pName->setBorder(BorderFactory::createTitledBorder(tr("Name")));
 
   addItem(pName, locationNameTextField, 0, 0);
 
   // row 1b
   directionPanel->setLayout(new GridBagLayout());
-  //directionPanel->setBorder(BorderFactory.createTitledBorder(tr("TrainLocation")));
-  directionPanel->setStyleSheet(gbStyleSheet);
-  directionPanel->setTitle(tr("Train Location"));
+  directionPanel->setBorder(BorderFactory::createTitledBorder(tr("Train Location")));
   addItem(directionPanel, northCheckBox, 1, 0);
   addItem(directionPanel, southCheckBox, 2, 0);
   addItem(directionPanel, eastCheckBox, 3, 0);
@@ -261,44 +258,46 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   p1Layout->addWidget(pName);
   p1Layout->addWidget(directionPanel);
 
+  // division field
+  JPanel* pDivision = new JPanel();
+  pDivision->setLayout(new GridBagLayout());
+  pDivision->setBorder(BorderFactory::createTitledBorder(tr("Division")));
+  addItem(pDivision, divisionComboBox, 2, 0);
+  addItem(pDivision, editDivisionButton, 3, 0);
+  setDivisionButtonText();
+
   // row 5
   updateCheckboxes();
 
   // row 9
-  QGroupBox* pOp = new QGroupBox();
+  JPanel* pOp = new JPanel();
   FlowLayout* pOpLayout;
   pOp->setLayout(pOpLayout = new FlowLayout());
-  //pOp->setBorder(BorderFactory.createTitledBorder(tr("TracksAtLocation")));
-  pOp->setStyleSheet(gbStyleSheet);
-  pOp->setTitle(tr("Tracks at Location"));
+  pOp->setBorder(BorderFactory::createTitledBorder(tr("Tracks at Location")));
   pOpLayout->addWidget(spurRadioButton);
   pOpLayout->addWidget(yardRadioButton);
   pOpLayout->addWidget(interchangeRadioButton);
   pOpLayout->addWidget(stageRadioButton);
 
   // row 11
-  QGroupBox* pC = new QGroupBox();
+  JPanel* pC = new JPanel();
   pC->setLayout(new GridBagLayout());
-  //pC->setBorder(BorderFactory.createTitledBorder(tr("Comment")));
-  pC->setStyleSheet(gbStyleSheet);
-  pC->setTitle(tr("Comment"));
+  pC->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
   addItem(pC, /*commentScroller*/commentTextArea, 0, 0);
 
   // adjust text area width based on window size
   adjustTextAreaColumnWidth(pC, commentTextArea);
 
   // reader row
-  QGroupBox* readerPanel = new QGroupBox();
+  JPanel* readerPanel = new JPanel();
   readerPanel->setLayout(new GridBagLayout());
-  //readerPanel->setBorder(BorderFactory.createTitledBorder(tr("IdTag Reader at this Location ")));
-  readerPanel->setStyleSheet(gbStyleSheet);
-  readerPanel->setTitle(tr("Comment"));
+  readerPanel->setBorder(BorderFactory::createTitledBorder(tr("IdTag Reader at this Location ")));
   addItem(readerPanel, readerSelector, 0, 0);
 
   readerPanel->setVisible(Setup::isRfidEnabled());
 
   // row 12
-  QWidget* pB = new QWidget();
+  JPanel* pB = new JPanel();
   pB->setLayout(new GridBagLayout());
   addItem(pB, deleteLocationButton, 0, 0);
   addItem(pB, addLocationButton, 1, 0);
@@ -345,10 +344,10 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   addCheckBoxTrainAction(westCheckBox);
 
   // add property listeners
-  //CarTypes.instance().addPropertyChangeListener(this);
-  connect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //((CarTypes*)InstanceManager::getDefault("CarTypes"))->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+  connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //EngineTypes.instance().addPropertyChangeListener(this);
-  connect(EngineTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((EngineTypes*)InstanceManager::getDefault("EngineTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
   // build menu
   QMenuBar* menuBar = new QMenuBar();
@@ -366,9 +365,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   toolMenu->addAction(new ShowCarsByLocationAction(false, locationName, NULL,this));
   toolMenu->addAction(new PrintLocationsAction(tr("Print"), false, location,this));
   toolMenu->addAction(new PrintLocationsAction(tr("Preview"), true, location,this));
-#if 0
+#if 1
   if (Setup::isVsdPhysicalLocationEnabled()) {
-      toolMenu->addAction(new SetPhysicalLocationAction(tr("MenuSetPhysicalLocation"), _location));
+      toolMenu->addAction(new SetPhysicalLocationAction( _location));
   }
 #endif
   menuBar->addMenu(toolMenu);
@@ -383,7 +382,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  // Save, Delete, Add
  /*public*/ void LocationEditFrame::buttonActionPerformed(QWidget* ae) {
-  QPushButton* source = (QPushButton*)ae;
+  JButton* source = (JButton*)ae;
      if (source == addYardButton) {
          yef = new YardEditFrame();
          yef->initComponents(_location, NULL);
@@ -520,27 +519,32 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*private*/ void LocationEditFrame::saveLocation() {
-     if (!checkName(tr("save"))) {
-         return;
-     }
-     _location->setName(locationNameTextField->text());
-     _location->setComment(commentTextArea->toPlainText());
-     if (Setup::isRfidEnabled() &&
-             readerSelector->currentText() != NULL &&
-             ( readerSelector->currentText())!=(""))
-     {
-      _location->setReporter(
-                 InstanceManager::reporterManagerInstance()
-                         ->getReporter( readerSelector->currentText()));
-     } else if (Setup::isRfidEnabled() &&
-             readerSelector->currentText() != NULL &&
-             ( readerSelector->currentText())==(""))
-     {
-      _location->setReporter(NULL);
-     }
-     setLocationOps();
-     // save location file
-     OperationsXml::save();
+  if (!checkName(tr("save"))) {
+   return;
+  }
+#if 0
+  // stop table editing so "Moves" are properly saved
+  if (spurTable->isEditing()) {
+     spurTable->getCellEditor().stopCellEditing();
+  }
+  if (yardTable->isEditing()) {
+     yardTable.getCellEditor().stopCellEditing();
+  }
+  if (interchangeTable->isEditing()) {
+     interchangeTable.getCellEditor().stopCellEditing();
+  }
+  if (stagingTable->isEditing()) {
+     stagingTable.getCellEditor().stopCellEditing();
+  }
+#endif
+  _location->setName(locationNameTextField->text());
+  _location->setComment(TrainCommon::formatColorString(commentTextArea->toHtml(), commentColorChooser->getColor()));
+  _location->setDivision((Division*) VPtr<Division>::asPtr(divisionComboBox->getSelectedItem()));
+  if (Setup::isRfidEnabled() && readerSelector != nullptr) {
+     _location->setReporter(VPtr<Reporter>::asPtr(readerSelector->getSelectedItem()));
+  }
+  // save location file
+  OperationsXml::save();
  }
 
  /**
@@ -687,8 +691,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
        delete o;
       }
      }
-     loadTypes(CarTypes::instance()->getNames());
-     loadTypes(EngineTypes::instance()->getNames());
+     loadTypes(((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames());
+     loadTypes(((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->getNames());
      QWidget* p = new QWidget();
      QHBoxLayout* pLayout = new QHBoxLayout(p);
      pLayout->addWidget(clearButton);
@@ -703,6 +707,12 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      update();
  }
 
+ /*protected*/ void LocationEditFrame::updateDivisionComboBox() {
+     ((DivisionManager*)InstanceManager::getDefault("Operations::DivisionManager"))->updateComboBox(divisionComboBox);
+     if (_location != nullptr) {
+         divisionComboBox->setSelectedItem(_location->getDivision()->getName());
+     }
+ }
 
  /*private*/ void LocationEditFrame::loadTypes(QStringList types)
 {
@@ -762,12 +772,12 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      if (_location == NULL) {
          return;
      }
-    // _location->removePropertyChangeListener(this);
-     disconnect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     _location->removePropertyChangeListener(this);
+     disconnect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      if (b->isChecked()) {
          _location->addTypeName(b->text());
          // show which tracks will service this car type
-         if (CarTypes::instance()->containsName(b->text())) {
+         if (((CarTypes*)InstanceManager::getDefault("CarTypes"))->containsName(b->text())) {
 #if 0
              if (lctf != NULL) {
                  lctf.dispose();
@@ -779,19 +789,18 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      } else {
          _location->deleteTypeName(b->text());
      }
-     //_location->addPropertyChangeListener(this);
-     connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //_location->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+     connect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 
  /*private*/ void LocationEditFrame::addCheckBoxTrainAction(QCheckBox* b)
  {
 //     b.addActionListener(new java.awt.event.ActionListener() {
 //         /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
-//             checkBoxActionTrainPerformed(e);
+  connect(b, &QCheckBox::toggled, [=]{
+             checkBoxActionTrainPerformed(b);
 //         }
-//     });
-  chkBoxMapper->setMapping(b,b);
-  connect(b, SIGNAL(clicked(bool)), chkBoxMapper, SLOT(map()));
+     });
  }
 
  /*private*/ void LocationEditFrame::checkBoxActionTrainPerformed(QWidget* /*ae*/) {
@@ -828,15 +837,23 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      westCheckBox->setChecked((_location->getTrainDirections() & Location::WEST) > 0);
  }
 
+ /*private*/ void LocationEditFrame::setDivisionButtonText() {
+     if (divisionComboBox->getSelectedItem() == "") {
+         editDivisionButton->setText(tr("Add"));
+     } else {
+         editDivisionButton->setText(("Edit"));
+     }
+ }
+
  /*public*/ void LocationEditFrame::dispose() {
      if (_location != NULL) {
          //_location->removePropertyChangeListener(this);
-      disconnect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      disconnect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
      //CarTypes::instance().removePropertyChangeListener(this);
-     disconnect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //EngineTypes.instance().removePropertyChangeListener(this);
-     disconnect(EngineTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((EngineTypes*)InstanceManager::getDefault("EngineTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      yardModel->dispose();
      spurModel->dispose();
      interchangeModel->dispose();
@@ -858,6 +875,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
              || e->getPropertyName()==(EngineTypes::ENGINETYPES_CHANGED_PROPERTY)
              || e->getPropertyName()==(Location::TYPES_CHANGED_PROPERTY)) {
          updateCheckboxes();
+     }
+     if (e->getPropertyName()==(DivisionManager::LISTLENGTH_CHANGED_PROPERTY)) {
+         updateDivisionComboBox();
      }
  }
  /*public*/ QString LocationEditFrame::getClassName()

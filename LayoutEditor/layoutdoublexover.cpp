@@ -99,10 +99,8 @@
 // /*public*/ class LayoutDoubleXOver extends LayoutXOver {
 
     /*public*/ LayoutDoubleXOver::LayoutDoubleXOver(/*@Nonnull*/ QString id,
-            /*@Nonnull*/ QPointF c, double rot,
-            double xFactor, double yFactor,
             /*@Nonnull*/ LayoutEditor* layoutEditor)
-     : LayoutXOver(id, TurnoutType::DOUBLE_XOVER, c, rot, xFactor, yFactor, layoutEditor, 1)
+     : LayoutXOver(id, TurnoutType::DOUBLE_XOVER,  layoutEditor, 1)
     {
         //this(id, c, rot, xFactor, yFactor, layoutEditor, 1);
 
@@ -119,9 +117,8 @@
      * @param layoutEditor main layout editor.
      * @param v version, unused.
      */
-    /*public*/ LayoutDoubleXOver::LayoutDoubleXOver(/*@Nonnull*/ QString id, /*@Nonnull*/ QPointF c, double rot,
-            double xFactor, double yFactor, /*@Nonnull*/ LayoutEditor* layoutEditor, int v)
-     : LayoutXOver(id, TurnoutType::DOUBLE_XOVER, c, rot, xFactor, yFactor, layoutEditor, 1)
+    /*public*/ LayoutDoubleXOver::LayoutDoubleXOver(/*@Nonnull*/ QString id,  /*@Nonnull*/ LayoutEditor* layoutEditor, int v)
+     : LayoutXOver(id, TurnoutType::DOUBLE_XOVER,  layoutEditor, v)
     {
         //super(id, TurnoutType.DOUBLE_XOVER, c, rot, xFactor, yFactor, layoutEditor, 1);
 

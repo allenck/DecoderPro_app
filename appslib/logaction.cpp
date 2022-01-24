@@ -28,7 +28,7 @@
         LogFrame* f = new LogFrame();
         try {
             f->initComponents();
-        } catch (Exception ex) {
+        } catch (Exception* ex) {
             log->error("Exception in startup", ex);
         }
         f->setVisible(true);

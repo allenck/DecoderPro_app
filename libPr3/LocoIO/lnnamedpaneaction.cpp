@@ -49,13 +49,12 @@ LnNamedPaneAction::LnNamedPaneAction(QObject *parent) :
   return nullptr;
  }
 
- //try {
+ try {
  ((LnPanelInterface*) p)->initComponents(memo);
-//     return p;
-// } catch (Exception ex) {
- if(p == nullptr)
- {
-  log->warn("could not init pane class: " + paneClass /*+ " due to:" + ex.getMessage()*/);
+     return p;
+ } catch (Exception* ex) {
+
+  log->warn("could not init pane class: " + paneClass /*+ " due to:" + ex->getMessage()*/);
      //ex.printStackTrace();
  }
 

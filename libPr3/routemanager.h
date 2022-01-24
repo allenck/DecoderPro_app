@@ -34,15 +34,16 @@ class LIBPR3SHARED_EXPORT RouteManager : public AbstractManager
 public:
     //explicit RouteManager(QObject *parent = 0);
  RouteManager(QObject* parent = nullptr) : AbstractManager(parent) {}
+ RouteManager(SystemConnectionMemo* memo, QObject* parent = nullptr) : AbstractManager(memo, parent) {}
     // to free resources when no longer used
- /*public*/ virtual void dispose() {}
+ /*public*/ void dispose() override {}
 
     /**
      * Method to create a new Route if the route does not exist
      *   Returns null if a Route with the same systemName or userName
      *       already exists, or if there is trouble creating a new Route.
      */
- /*public*/ virtual Route* provideRoute(QString /*systemName*/, QString /*userName*/) {return nullptr;}
+ /*public*/ virtual Route* provideRoute(QString /*systemName*/, QString /*userName*/)  {return nullptr;}
 
     /**
      * For use with User GUI, to allow the auto generation of systemNames,
@@ -51,7 +52,7 @@ public:
      *   Returns null if a Route with the same userName
      *       already exists, or if there is trouble creating a new Route.
      */
-    /*public*/ virtual Route* newRoute(QString /*userName*/) {return nullptr;}
+    /*public*/ virtual Route* newRoute(QString /*userName*/)  {return nullptr;}
 
     /**
      * Locate via user name, then system name if needed.
@@ -62,8 +63,8 @@ public:
      */
     /*public*/ virtual Route* getRoute(QString /*name*/) {return nullptr;}
 
-    /*public*/ virtual Route* getByUserName(QString /*s*/){return nullptr;}
-    /*public*/ virtual Route* getBySystemName(QString /*s*/) {return nullptr;}
+//    virtual /*public*/ Route* getByUserName(QString /*s*/) const =0;
+//    virtual /*public*/ Route* getBySystemName(QString /*s*/) const =0;
 
     /**
      * Get a list of all Route system names.
@@ -78,7 +79,16 @@ public:
      */
     virtual void deleteRoute(Route* /*r*/) {}
 
-    virtual /*public*/ Route* provide(QString name) throw (IllegalArgumentException)=0;
+    virtual /*public*/ Route* provide(QString name) /*throw (IllegalArgumentException)*/=0;
+ QObject* self() override{return (QObject*)this;}
+ QString getNamedBeanClass() const override{return "RouteManager";}
+
+ /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
+// /*public*/ NamedBean* getBySystemName(QString name) override {return AbstractManager::getBySystemName(name);}
+// /*public*/ NamedBean* getByUserName(QString name) override {return AbstractManager::getByUserName(name);}
+ /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::addPropertyChangeListener(l);}
+ /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::removePropertyChangeListener(l);}
+
 
 signals:
 

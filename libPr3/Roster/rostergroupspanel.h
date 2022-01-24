@@ -9,7 +9,7 @@
 
 class TreeSelectionEvent;
 class JmriAbstractAction;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class PropertyChangeEvent;
 class DefaultMutableTreeNode;
 class JTree;
@@ -37,7 +37,7 @@ public:
  /*public*/  QMenu* getAllEntriesMenu();
  /*public*/  /*final*/ JTree* getTree();
  /*public*/  bool isSelectionUserDefinedRosterGroup();
- PropertyChangeSupport* pcs;
+ SwingPropertyChangeSupport* pcs;
  /*public*/  JmriAbstractAction* getNewWindowMenuAction();
 
 signals:

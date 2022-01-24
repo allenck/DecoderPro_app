@@ -4,8 +4,10 @@
 #include "focusevent.h"
 #include "focuslistener.h"
 #include "changelistener.h"
+#include "vptr.h"
+#include "javaqt_global.h"
 
-class JCheckBox : public QCheckBox
+class JAVAQTSHARED_EXPORT JCheckBox : public QCheckBox
 {
  Q_OBJECT
 public:
@@ -16,7 +18,8 @@ public:
  /*public*/ void removeChangeListener(ChangeListener* l);
  /*public*/ void addFocusListener(FocusListener* l);
  /*public*/ void removeFocusListener(FocusListener *l);
-
+ virtual /*public*/ void setSelected(bool b) {setChecked(b);}
+ virtual /*public*/ bool isSelected() {return isChecked();}
 public slots:
 
 signals:

@@ -177,7 +177,7 @@ CircuitBuilderTest::CircuitBuilderTest(QObject *parent) : QObject(parent)
         File* f = new File("java/test/jmri/jmrit/display/controlPanelEditor/valid/CircuitBuilderTest.xml");
         try {
             ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->load(f);
-        } catch(JmriException je) {
+        } catch(JmriException* je) {
             log->error("CircuitBuilderTest can't load CircuitBuilderTester.xml %1", je);
         }
         cpe = (ControlPanelEditor*) JmriJFrame::getFrame("CircuitBuilderTest Editor");

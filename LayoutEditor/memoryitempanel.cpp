@@ -171,7 +171,7 @@
         comp = this->getDragger(new DataFlavor(Editor::POSITIONABLE_FLAVOR), type, mem->sizeHint());
         comp->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
     }
-    catch (ClassNotFoundException cnfe) {
+    catch (ClassNotFoundException* cnfe) {
         //cnfe.printStackTrace();
         comp = new JPanel();
     }
@@ -290,8 +290,8 @@ default:
 //                    if (log->isDebugEnabled()) log->debug("MemoryDnD.createTransferable: spinCols= "
 //                                                        +spinModel.getNumber().intValue());
            numCols = self->_spinner->value();
-        } catch (ParseException pe) {
-            self->log->error("MemoryDnD.createTransferable: "+pe.getMessage());
+        } catch (ParseException* pe) {
+            self->log->error("MemoryDnD.createTransferable: "+pe->getMessage());
         }
         MemoryInputIcon* mi = new MemoryInputIcon(numCols, self->_editor);
         mi->setMemory(bean->getDisplayName());
@@ -350,8 +350,8 @@ QByteArray MemoryIconDragJComponent::mimeData()
 //                    if (log->isDebugEnabled()) log->debug("MemoryDnD.createTransferable: spinCols= "
 //                                                        +spinModel.getNumber().intValue());
          numCols = self->_spinner->value();
-      } catch (ParseException pe) {
-          self->log->error("MemoryDnD.createTransferable: "+pe.getMessage());
+      } catch (ParseException* pe) {
+          self->log->error("MemoryDnD.createTransferable: "+pe->getMessage());
       }
       MemoryInputIcon* mi = new MemoryInputIcon(numCols, self->_editor);
       mi->setMemory(bean->getDisplayName());

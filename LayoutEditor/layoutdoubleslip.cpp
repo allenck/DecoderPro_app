@@ -44,9 +44,9 @@
      * @param rot rotation.
      * @param layoutEditor main layout editor.
      */
-    /*public*/ LayoutDoubleSlip::LayoutDoubleSlip(QString id, QPointF c, double rot, LayoutEditor* layoutEditor)
-     : LayoutSlip(id, c, rot, layoutEditor, TurnoutType::DOUBLE_SLIP) {
-        //super(id, c, rot, layoutEditor, TurnoutType.DOUBLE_SLIP);
+    /*public*/ LayoutDoubleSlip::LayoutDoubleSlip(QString id, LayoutEditor* layoutEditor)
+     : LayoutSlip(id,  layoutEditor, TurnoutType::DOUBLE_SLIP) {
+        //super(id, layoutEditor, TurnoutType.DOUBLE_SLIP);
 
         editor = new LayoutDoubleSlipEditor(layoutEditor);
     }

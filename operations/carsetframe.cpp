@@ -13,8 +13,8 @@
 #include <QCheckBox>
 #include "jcombobox.h"
 #include <QLabel>
-#include <QPushButton>
-#include <propertychangesupport.h>
+#include "jbutton.h"
+#include "swingpropertychangesupport.h"
 #include "locationmanager.h"
 #include "trainmanager.h"
 #include "vptr.h"
@@ -31,11 +31,9 @@
 #include "enabledestinationaction.h"
 #include "carloadeditframe.h"
 #include "schedule.h"
+#include "instancemanager.h"
+#include "borderfactory.h"
 
-//CarSetFrame::CarSetFrame()
-//{
-
-//}
 namespace Operations
 {
 /**
@@ -64,18 +62,18 @@ namespace Operations
   setObjectName("CarSetFrame");
   editActive = false;
   f = NULL;
-  carManager = CarManager::instance();
+  carManager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
 
   askKernelChange = true;
-  destReturnWhenEmptyBox = LocationManager::instance()->getComboBox();
+  destReturnWhenEmptyBox = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getComboBox();
   trackReturnWhenEmptyBox = new JComboBox();
-  loadReturnWhenEmptyBox = CarLoads::instance()->getComboBox();
-  loadComboBox = CarLoads::instance()->getComboBox();
+  loadReturnWhenEmptyBox = ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getComboBox();
+  loadComboBox =((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getComboBox();
   kernelComboBox = carManager->getKernelComboBox();
 
   // buttons
-  editLoadButton = new QPushButton(tr("Edit"));
-  editKernelButton = new QPushButton(tr("Edit"));
+  editLoadButton = new JButton(tr("Edit"));
+  editKernelButton = new JButton(tr("Edit"));
 
   // check boxes
   ignoreRWECheckBox = new QCheckBox(tr("Ignore"));
@@ -97,9 +95,7 @@ namespace Operations
      addHelpMenu("package.jmri.jmrit.operations.Operations_CarsSet", true); // NOI18N
 
      // optional panel return when empty, load, and kernel
-     //paneOptional->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutOptional")));
-     pOptional->setStyleSheet(gbStyleSheet);
-     pOptional->setTitle("optional");
+     pOptional->setBorder(BorderFactory::createTitledBorder(tr("optional")));
      //pOptional->setLayout(new BoxLayout(pOptional, BoxLayout.Y_AXIS));
      QWidget* pOptionalPane = new QWidget;
      QVBoxLayout* pOptionalLayout = new QVBoxLayout(pOptionalPane);
@@ -107,12 +103,9 @@ namespace Operations
      paneOptional->setWidgetResizable(true);
 
      // row 5
-     QGroupBox* pReturnWhenEmpty = new QGroupBox();
+     JPanel* pReturnWhenEmpty = new JPanel();
      pReturnWhenEmpty->setLayout(new GridBagLayout());
-     //pReturnWhenEmpty->setBorder(BorderFactory.createTitledBorder(Bundle
-     //        .getMessage("BorderLayoutReturnWhenEmpty")));
-     pReturnWhenEmpty->setStyleSheet(gbStyleSheet);
-     pReturnWhenEmpty->setTitle(tr("Return wnen empty"));
+     pReturnWhenEmpty->setBorder(BorderFactory::createTitledBorder(tr("Return wnen empty")));
      addItem(pReturnWhenEmpty, new QLabel(tr("Location")), 1, 0);
      addItem(pReturnWhenEmpty, new QLabel(tr("Track")), 2, 0);
      addItem(pReturnWhenEmpty, new QLabel(tr("Load")), 3, 0);
@@ -124,22 +117,18 @@ namespace Operations
      pOptionalLayout->addWidget(pReturnWhenEmpty);
 
      // add load fields
-     QGroupBox* pLoad = new QGroupBox();
+     JPanel* pLoad = new JPanel();
      pLoad->setLayout(new GridBagLayout());
-     //pLoad->setBorder(BorderFactory.createTitledBorder(tr("Load")));
-     pLoad->setStyleSheet(gbStyleSheet);
-     pLoad->setTitle(tr("Return wnen empty"));
+     pLoad->setBorder(BorderFactory::createTitledBorder(tr("Load")));
      addItemLeft(pLoad, ignoreLoadCheckBox, 1, 0);
      addItem(pLoad, loadComboBox, 2, 0);
      addItem(pLoad, editLoadButton, 3, 0);
      pOptionalLayout->addWidget(pLoad);
 
      // add kernel fields
-     QGroupBox* pKernel = new QGroupBox();
+     JPanel* pKernel = new JPanel();
      pKernel->setLayout(new GridBagLayout());
-     //pKernel->setBorder(BorderFactory.createTitledBorder(tr("Kernel")));
-     pKernel->setStyleSheet(gbStyleSheet);
-     pKernel->setTitle(tr("Return wnen empty"));
+     pKernel->setBorder(BorderFactory::createTitledBorder(tr("Kernel")));
      addItemLeft(pKernel, ignoreKernelCheckBox, 1, 0);
      addItem(pKernel, kernelComboBox, 2, 0);
      addItem(pKernel, editKernelButton, 3, 0);
@@ -174,10 +163,10 @@ namespace Operations
      autoReturnWhenEmptyTrackCheckBox->setToolTip(tr("NOT USED! Only here for eliminate warnings from i18n consistency check"));
 
      // get notified if combo box gets modified
-     //CarLoads::instance().addPropertyChangeListener(this);
-     connect(CarLoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //((CarLoads*)InstanceManager::getDefault("Operations::CarLoads")).addPropertyChangeListener(this);
+     connect(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarManager::addPropertyChangeListener(this);
-     connect(carManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(carManager, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      packFrame();
  }
@@ -187,6 +176,11 @@ namespace Operations
      load(car);
      updateLoadComboBox();
      updateKernelComboBox();
+ }
+
+ //@Override
+ /*protected*/ ResourceBundle* CarSetFrame::getRb() {
+     return rb;
  }
 
  /*protected*/ void CarSetFrame::updateComboBoxes() {
@@ -259,7 +253,7 @@ namespace Operations
  /*public*/ void CarSetFrame::buttonActionPerformed(QWidget* ae)
  {
   RollingStockSetFrame::buttonActionPerformed(ae);
-  QPushButton* source = (QPushButton*)ae;
+  JButton* source = (JButton*)ae;
 
   if (source == editLoadButton && _car != NULL)
   {
@@ -282,7 +276,7 @@ namespace Operations
    f = new CarAttributeEditFrame();
 //         f->setLocationRelativeTo(this);
    //f.addPropertyChangeListener(this);
-   connect(f->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   connect(f, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    editActive = true;
    f->initComponents(tr("Kernel"),  kernelComboBox->currentText());
   }
@@ -312,7 +306,7 @@ namespace Operations
    QString load = loadComboBox->currentText();
    if (car->getLoadName()!=(load))
    {
-    if (CarLoads::instance()->containsName(car->getTypeName(), load))
+    if (((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->containsName(car->getTypeName(), load))
     {
         car->setLoadName(load);
         updateComboBoxesLoadChange();
@@ -544,7 +538,7 @@ namespace Operations
          }
          // update car load
          if (!ignoreLoadCheckBox->isChecked()
-                 && CarLoads::instance()->containsName(car->getTypeName(), _car->getLoadName())) {
+                 && ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->containsName(car->getTypeName(), _car->getLoadName())) {
              car->setLoadName(_car->getLoadName());
          }
          // update kernel
@@ -635,9 +629,9 @@ namespace Operations
  /*protected*/ void CarSetFrame::updateLoadComboBox() {
      if (_car != NULL) {
          log->debug(tr("Updating load box for car (%1)").arg(_car->toString()));
-         CarLoads::instance()->updateComboBox(_car->getTypeName(), loadComboBox);
+         ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->updateComboBox(_car->getTypeName(), loadComboBox);
          loadComboBox->setCurrentIndex(loadComboBox->findText(_car->getLoadName()));
-         CarLoads::instance()->updateRweComboBox(_car->getTypeName(), loadReturnWhenEmptyBox);
+         ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->updateRweComboBox(_car->getTypeName(), loadReturnWhenEmptyBox);
          loadReturnWhenEmptyBox->setCurrentIndex(loadReturnWhenEmptyBox->findText(_car->getReturnWhenEmptyLoadName()));
      }
  }
@@ -667,7 +661,7 @@ namespace Operations
      // clone car and set the load to default empty and a length of zero
      if (car != NULL) {
          c = car->copy();
-         c->setLoadName(CarLoads::instance()->getDefaultEmptyName());
+         c->setLoadName(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultEmptyName());
          c->setLength("0"); // ignore car length
      }
      return c;
@@ -680,10 +674,10 @@ namespace Operations
  }
 
  /*public*/ void CarSetFrame::dispose() {
-     //CarLoads::instance().removePropertyChangeListener(this);
-     disconnect(CarLoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //((CarLoads*)InstanceManager::getDefault("Operations::CarLoads")).removePropertyChangeListener(this);
+     disconnect(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarManager::removePropertyChangeListener(this);
-     connect(carManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(carManager, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
      RollingStockSetFrame::dispose();
  }
 
@@ -719,4 +713,11 @@ namespace Operations
   return "jmri.jmrit.operations.rollingstock.cars.CarSetFrame";
  }
 
+ CSResourceBundle::CSResourceBundle()
+ {
+  map.insert("rsType", "Car");
+  map.insert("rsNeedToRemoveStaging", tr(""));
+  map.insert("rsInStaging", tr(""));
+  map.insert("rsTrainNotServType", tr(""));
+  map.insert("rsNotMove", tr(""));}
 }

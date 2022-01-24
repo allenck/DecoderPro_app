@@ -8,9 +8,9 @@ namespace Operations
  {
   Q_OBJECT
  public:
-  ManageBackupsAction(QString s, QObject* parent);
+  ManageBackupsAction(QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* /*e*/);
+  /*public*/ void actionPerformed(JActionEvent* /*e*/)override;
 
  };
 }

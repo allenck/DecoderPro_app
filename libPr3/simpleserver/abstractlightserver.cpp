@@ -28,8 +28,8 @@
         Light* li = InstanceManager::lightManagerInstance()->getLight(lightName);
         if (li != nullptr) {
             lights.insert(lightName, new ALSLightListener(lightName, this));
-            //li.addPropertyChangeListener(lights.get(lightName));
-            connect(li->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+            ((AbstractNamedBean*)li->self())->addPropertyChangeListener(lights.value(lightName));
+            //connect(li->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
         } else {
             log->error(tr("Failed to get light %1").arg(lightName));
         }
@@ -40,8 +40,8 @@
     if (lights.contains(lightName)) {
         Light* li = InstanceManager::lightManagerInstance()->getLight(lightName);
         if (li != nullptr) {
-            //li.removePropertyChangeListener(lights.get(lightName));
-            disconnect(li->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+            ((AbstractNamedBean*)li->self())->removePropertyChangeListener(lights.value(lightName));
+            //disconnect(li->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
             lights.remove(lightName);
         } else {
             log->error(tr("Failed to get light %1").arg(lightName));
@@ -69,7 +69,7 @@
             // and set state to OFF
             light->setState(Light::OFF);
         }
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log->error("light off", ex);
     }
 }
@@ -88,7 +88,7 @@
             // and set state to ON
             light->setState(Light::ON);
         }
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log->error("light on", ex);
     }
 }
@@ -101,8 +101,8 @@
   light.next();
         Light* li = InstanceManager::lightManagerInstance()->getLight(light.key());
         if (li != nullptr) {
-            //li.removePropertyChangeListener(light.value());
-         disconnect(li, SIGNAL(propertyChange(PropertyChangeEvent*)), light.value(), SLOT(propertyChange(PropertyChangeEvent*)));
+         ((AbstractNamedBean*)li->self())->removePropertyChangeListener(light.value());
+         //disconnect(li, SIGNAL(propertyChange(PropertyChangeEvent*)), light.value(), SLOT(propertyChange(PropertyChangeEvent*)));
         }
     }
     this->lights.clear();

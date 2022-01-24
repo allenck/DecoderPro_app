@@ -4,7 +4,7 @@
 #include "libPr3_global.h"
 
 class LnHexFilePort;
-class ActionEvent;
+class JActionEvent;
 class LnPacketizer;
 class QPushButton;
 class JTextField;
@@ -24,10 +24,10 @@ public:
 signals:
 
 public slots:
-    /*public*/ void openHexFileButtonActionPerformed(ActionEvent* /*e*/ = 0);
-    /*public*/ void filePauseButtonActionPerformed(ActionEvent* /*e*/ = 0);
-    /*public*/ void jButton1ActionPerformed(ActionEvent* /*e*/ = 0);  // resume button
-    /*public*/ void delayFieldActionPerformed(ActionEvent* /*e*/ = 0);
+    /*public*/ void openHexFileButtonActionPerformed(JActionEvent* /*e*/ = 0);
+    /*public*/ void filePauseButtonActionPerformed(JActionEvent* /*e*/ = 0);
+    /*public*/ void jButton1ActionPerformed(JActionEvent* /*e*/ = 0);  // resume button
+    /*public*/ void delayFieldActionPerformed(JActionEvent* /*e*/ = 0);
 
 private:
     //private static final long serialVersionUID = -2625562807572301674L;

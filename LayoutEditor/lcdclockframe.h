@@ -5,25 +5,28 @@
 #include "namedicon.h"
 #include "jmrijframe.h"
 #include "liblayouteditor_global.h"
+#include "propertychangelistener.h"
 
 class SimpleTimebase;
 class QPushButton;
 class JLabel;
-class LIBLAYOUTEDITORSHARED_EXPORT LcdClockFrame : public JmriJFrame
+class LIBLAYOUTEDITORSHARED_EXPORT LcdClockFrame : public JmriJFrame, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     explicit LcdClockFrame(QWidget *parent = 0);
     ~LcdClockFrame();
     /*public*/ void scaleImage();
-    /*public*/ void dispose();
- /*public*/ QString getClassName();
+    /*public*/ void dispose() override;
+ /*public*/ QString getClassName() override;
+  QObject* self() override {return (QObject*)this;}
 
 signals:
 
 public slots:
     void update();
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 private:
     // GUI member declarations

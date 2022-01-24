@@ -10,11 +10,11 @@
 {
 public:
  Servlet(QObject* parent = 0) : QObject(parent) {}
-    /*public*/ virtual void init(ServletConfig* /*sc*/) throw (ServletException) {}
+    /*public*/ virtual void init(ServletConfig* /*sc*/) /*throw (ServletException)*/ {}
 
     /*public*/ virtual ServletConfig* getServletConfig() {return NULL;}
 
-    /*public*/ virtual void service(ServletRequest* /*sr*/, ServletResponse* /*sr1*/) throw (ServletException, IOException) {}
+    /*public*/ virtual void service(ServletRequest* /*sr*/, ServletResponse* /*sr1*/) /*throw (ServletException, IOException)*/ {}
 
     /*public*/ QString getServletInfo();
 

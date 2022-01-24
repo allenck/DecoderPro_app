@@ -46,6 +46,10 @@ private:
  JTextField* sysName;// = new JTextField(5);
  QLabel* userNameLabel;// = new QLabel(tr("User Name"));
  JTextField* userName;// = new JTextField(15);
+
+ protected:
+ /*protected*/ bool entryError(QString entry, QString prefix, QString counter);
+
  friend class AudioSourceFrame;
  friend class JPanelSliderf;
  friend class AudioBufferFrame;

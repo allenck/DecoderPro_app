@@ -10,8 +10,10 @@
 #include "enginemanagerxml.h"
 #include "rollingstock.h"
 #include "enginelengths.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "train.h"
+#include "instancemanager.h"
+#include "consistmanager.h"
 
 //Engine::Engine(QObject *parent) :
 //  RollingStock(parent)
@@ -29,6 +31,7 @@ namespace Operations
 
  /*public*/ /*static*/ /*final*/ int Engine::NCE_REAR_BLOCK_NUMBER = 8;
  /*public*/ /*static*/ /*final*/ int Engine::B_UNIT_BLOCKING = 10; // block B Units after NCE Consists
+ /*public*/ /*static*/ /*final*/ QString Engine::HP_CHANGED_PROPERTY = "hp"; // NOI18N
 
  /*public*/ Engine::Engine(QString road, QString number, QObject *parent) :
    RollingStock(road, number, parent)
@@ -45,7 +48,7 @@ namespace Operations
      _consist = NULL;
      _model = NONE;
      verboseStore = false;
-   engineModels = EngineModels::instance();
+     engineModels = (EngineModels*)InstanceManager::getDefault("EngineModels");
  }
 
  /**
@@ -102,7 +105,7 @@ namespace Operations
      QString old = getHp();
      engineModels->setModelHorsepower(getModel(), hp);
      if (old!=(hp)) {
-         setDirtyAndFirePropertyChange("hp", old, hp); // NOI18N
+         setDirtyAndFirePropertyChange(HP_CHANGED_PROPERTY, old, hp); // NOI18N
      }
  }
 
@@ -164,7 +167,7 @@ namespace Operations
              RollingStock::setLength(length); // adjust track lengths
          }
          return length;
-     } catch (NullPointerException npe) {
+     } catch (NullPointerException* npe) {
          log->debug(tr("NPE setting length for Engine (%1)").arg(toString()));
      }
      return NONE;
@@ -186,7 +189,7 @@ namespace Operations
         if (old!=(weight)) {
            setDirtyAndFirePropertyChange("Engine Weight Tons", old, weight); // NOI18N
         }
-     } catch(NullPointerException npe) {
+     } catch(NullPointerException* npe) {
         // this failed, was the model set?
         log->debug(tr("NPE setting Weight Tons for Engine (%1)").arg(toString()));
      }
@@ -199,7 +202,7 @@ namespace Operations
         if (weight == NULL) {
             weight = NONE;
         }
-    } catch(NullPointerException npe){
+    } catch(NullPointerException* npe){
        log->debug(tr("NPE getting Weight Tons for Engine (%1)").arg(toString()));
        weight = NONE;
     }
@@ -220,7 +223,7 @@ namespace Operations
 /*public*/ bool Engine::isBunit() {
     try {
         return engineModels->isModelBunit(getModel());
-    } catch (NullPointerException npe) {
+    } catch (NullPointerException* npe) {
         log->debug(tr("NPE getting is B unit for Engine (%1)").arg(toString()));
     }
     return false;
@@ -293,10 +296,8 @@ namespace Operations
 
  /*public*/ void Engine::dispose() {
      setConsist(NULL);
-     //EngineTypes.instance().removePropertyChangeListener(this);
-     disconnect(EngineTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //EngineLengths.instance().removePropertyChangeListener(this);
-     disconnect(EngineLengths::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->removePropertyChangeListener(this);
+     ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->removePropertyChangeListener(this);
      RollingStock::dispose();
  }
 
@@ -327,11 +328,11 @@ namespace Operations
      if ((a = e.attribute (Xml::WEIGHT_TONS)) != NULL) {
          setWeightTons(a);
      }
-     if ((a = e.attribute(Xml::B_UNIT)) != NULL) {
+     if ((a = e.attribute(Xml::B_UNIT)) != "") {
          setBunit(a == (Xml::_TRUE));
      }
-     if ((a = e.attribute (Xml::CONSIST)) != NULL) {
-         Consist* c = EngineManager::instance()->getConsistByName(a);
+     if ((a = e.attribute (Xml::CONSIST)) != "") {
+         Consist* c = ((ConsistManager*)InstanceManager::getDefault("Operations::ConsistManager"))->getConsistByName(a);
          if (c != NULL) {
              setConsist(c);
              if ((a = e.attribute (Xml::LEAD_CONSIST)) != NULL && a==(Xml::_TRUE)) {
@@ -381,15 +382,13 @@ namespace Operations
 
  /*protected*/ void Engine::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      // Set dirty
-   EngineManagerXml::instance()->setDirty(true);
+   ((EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml"))->setDirty(true);
    RollingStock::setDirtyAndFirePropertyChange(p, old, n);
  }
 
  /*private*/ void Engine::addPropertyChangeListeners() {
-//     EngineTypes.instance().addPropertyChangeListener(this);
- connect(EngineTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-//     EngineLengths.instance().addPropertyChangeListener(this);
- connect(EngineLengths::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+  ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->SwingPropertyChangeSupport::addPropertyChangeListener(this);
  }
 
  /*public*/ void Engine::propertyChange(PropertyChangeEvent* e)

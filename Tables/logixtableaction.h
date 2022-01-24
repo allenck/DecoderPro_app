@@ -52,7 +52,7 @@ class JTextField;
 class JmriJFrame;
 class PickFrame;
 class LogixManager;
-class ActionEvent;
+class JActionEvent;
 class ConditionalManager;
 class LIBTABLESSHARED_EXPORT LogixTableAction : public AbstractTableAction
 {
@@ -373,7 +373,7 @@ class LIBTABLESSHARED_EXPORT RefDialog : public JDialog
 public:
     RefDialog(BeanTableFrame* frame, LogixTableAction* action);
 public slots:
-    void deviceReportPressed(ActionEvent* e = 0);
+    void deviceReportPressed(JActionEvent* e = 0);
 };
 
 class LIBTABLESSHARED_EXPORT LogixTableModel : public BeanTableDataModel
@@ -392,7 +392,7 @@ public:
  /*public*/ QVariant data(const QModelIndex &index, int role) const override;
  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
  void doDelete(NamedBean* bean) override;
- /*public*/ Manager* getManager()override;
+ /*public*/ AbstractManager* getManager()override;
  /*public*/ NamedBean* getBySystemName(QString name) const override;
  /*public*/ NamedBean* getByUserName(QString name) override;
  /*public*/ int getDisplayDeleteMsg();
@@ -443,34 +443,35 @@ public:
 };
 
 
-class ItemDelegate : public QAbstractItemDelegate
-{
-  Q_OBJECT
- public:
-  ItemDelegate(QStringList items, QObject *parent);
-  QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
-    void setEditorData(QWidget *editor, const QModelIndex &index) const override;
-    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const override ;
-    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
-    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
-private:
-  QStringList Items;
-  //int row;
-signals:
-private slots:
-};
+//class ItemDelegate : public QAbstractItemDelegate
+//{
+//  Q_OBJECT
+// public:
+//  ItemDelegate(QStringList items, QObject *parent);
+//  QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+//    void setEditorData(QWidget *editor, const QModelIndex &index) const override;
+//    void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const override ;
+//    void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+//    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+//    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+//private:
+//  QStringList Items;
+//  //int row;
+//signals:
+//private slots:
+//};
 
-class CrossReferenceActionListener : public ActionListener
+class CrossReferenceActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  BeanTableFrame* frame;
  LogixTableAction* parent;
 public:
  CrossReferenceActionListener(BeanTableFrame* frame, LogixTableAction* parent);
-
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void actionPerformed() ;
+ void actionPerformed(JActionEvent */*e*/ = 0) override;
 };
 
 class LTALogixEventListener : public LogixEventListener
@@ -482,7 +483,7 @@ class LTALogixEventListener : public LogixEventListener
 public:
  /*public*/ LTALogixEventListener(QString sName, LogixTableAction* lta);
  /*public*/ void logixEventOccurred() override;
- QObject* self() {return (QObject*)this;}
+ QObject* self() override{return (QObject*)this;}
 };
 
 class LTALogixEventListener1 : public LogixEventListener

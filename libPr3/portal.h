@@ -95,7 +95,7 @@ private:
     /*private*/ static /*@Nonnull*/ QString getPermissibleSignalSpeed(/*@Nonnull */SignalHead* signal, bool entrance);
     /*private*/ static /*@Nonnull*/ QString getPermissibleSignalSpeed(/*@Nonnull*/ SignalMast* signal, bool entrance);
     /*private*/ bool verify(QList <OPath*>* paths, OBlock* block);
-    /*private*/ /*final*/ PropertyChangeSupport* pcs = new PropertyChangeSupport(this);
+    /*private*/ /*final*/ SwingPropertyChangeSupport* pcs = new SwingPropertyChangeSupport(this, nullptr);
 
  static Logger* log;
 

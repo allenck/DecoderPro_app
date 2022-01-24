@@ -32,7 +32,7 @@ ProgrammerConfigManager::ProgrammerConfigManager()
     /*public*/ /*final*/ /*static*/ QString ProgrammerConfigManager::DO_CONFIRM_READ = "doConfirmRead";
 
 //@Override
-/*public*/ void ProgrammerConfigManager::initialize(Profile* profile) throw (InitializationException)
+/*public*/ void ProgrammerConfigManager::initialize(Profile* profile)
 {
     if (!this->isInitialized(profile)) {
         Preferences* preferences = ProfileUtils::getPreferences(profile, "jmri/jmrit/symbolicprog/ProgrammerConfigManager", true);
@@ -40,28 +40,37 @@ ProgrammerConfigManager::ProgrammerConfigManager()
             this->setDefaultFile(preferences->get(DEFAULT_FILE, this->getDefaultFile()));
             ProgDefault::setDefaultProgFile(this->getDefaultFile());
         }
+
         this->setShowEmptyPanes(preferences->getBoolean(SHOW_EMPTY_PANES, this->isShowEmptyPanes()));
         PaneProgFrame::setShowEmptyPanes(this->isShowEmptyPanes());
+
         this->setShowCvNumbers(preferences->getBoolean(SHOW_CV_NUMBERS, this->isShowCvNumbers()));
         PaneProgFrame::setShowCvNumbers(this->isShowCvNumbers());
+
+        this->setCanCacheDefault(preferences->getBoolean(CAN_CACHE_DEFAULT, this->isCanCacheDefault()));
+        PaneProgFrame::setCanCacheDefault(this->isCanCacheDefault());
+
+        this->setDoConfirmRead(preferences->getBoolean(DO_CONFIRM_READ, this->isDoConfirmRead()));
+        PaneProgFrame::setDoConfirmRead(this->isDoConfirmRead());
+
         this->setInitialized(profile, true);
     }
 }
 
 //@Override
-/*public*/ /*Set<Class<? extends PreferencesManager>>*/ QSet<QString>* ProgrammerConfigManager::getRequires() {
+/*public*/ /*Set<Class<? extends PreferencesManager>>*/ QSet<QString> ProgrammerConfigManager::getRequires() {
     //Set<Class<? extends PreferencesManager>> requires = super.getRequires();
- QSet<QString>* requires = new QSet<QString>();
-    requires->insert("FileLocationsPreferences");
+    QSet<QString> requires = QSet<QString>();
+    requires.insert("FileLocationsPreferences");
     return requires;
 }
 
 //@Override
-/*public*/ /*Set<Class<?>>*/ QSet<QString>* ProgrammerConfigManager::getProvides() {
+/*public*/ /*Set<Class<?>>*/ QSet<QString> ProgrammerConfigManager::getProvides() {
     //Set<Class<?>> provides = super.getProvides();
-    QSet<QString>* provides = AbstractPreferencesManager::getProvides();
+    QSet<QString> provides = AbstractPreferencesManager::getProvides();
     //provides.stream().forEach((provide) -> {
-    foreach(QString provide, *provides )
+    foreach(QString provide, provides )
     {
         log->debug(tr("ProgammerConfigManager provides %1").arg(provide));
     }//);
@@ -80,7 +89,7 @@ ProgrammerConfigManager::ProgrammerConfigManager()
     preferences->putBoolean(SHOW_CV_NUMBERS, this->showCvNumbers);
 //    try {
         preferences->sync();
-//    } catch (BackingStoreException ex) {
+//    } catch (BackingStoreException* ex) {
 //        log.error("Unable to save preferences.", ex);
 //    }
 }

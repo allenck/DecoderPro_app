@@ -137,11 +137,11 @@
     if ((_atOne == NULL) || (_atTwo == NULL)) {
         return false;
     }
-    QList<AllocatedSection*>* aSections = _atOne->getAllocatedSectionList();
+    QList<AllocatedSection*> aSections = _atOne->getAllocatedSectionList();
     bool complete = false;
-    for (int i = 0; i < aSections->size(); i++) {
-        if ((aSections->at(i)->getSection() == _tSectionOne)
-                && (aSections->at(i)->getSequence() == _tSectionOneSeq)) {
+    for (int i = 0; i < aSections.size(); i++) {
+        if ((aSections.at(i)->getSection() == _tSectionOne)
+                && (aSections.at(i)->getSequence() == _tSectionOneSeq)) {
             complete = true;
         }
     }
@@ -150,9 +150,9 @@
     }
     complete = false;
     aSections = _atTwo->getAllocatedSectionList();
-    for (int j = 0; j < aSections->size(); j++) {
-        if ((aSections->at(j)->getSection() == _tSectionTwo)
-                && (aSections->at(j)->getSequence() == _tSectionTwoSeq)) {
+    for (int j = 0; j < aSections.size(); j++) {
+        if ((aSections.at(j)->getSection() == _tSectionTwo)
+                && (aSections.at(j)->getSequence() == _tSectionTwoSeq)) {
             complete = true;
         }
     }

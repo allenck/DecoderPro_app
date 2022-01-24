@@ -89,9 +89,9 @@ AbstractProgrammerFacade(prog, parent) {
  // test for only one!
  if (_usingProgrammer != NULL && _usingProgrammer != p) {
      if (log->isInfoEnabled()) {
-         log->info(tr("programmer already in use by ") + _usingProgrammer->metaObject()->className());
+         log->info(tr("programmer already in use by ") + _usingProgrammer->self()->metaObject()->className());
      }
-     throw ProgrammerException("programmer in use");
+     throw new ProgrammerException("programmer in use");
  } else {
      _usingProgrammer = p;
      return;
@@ -138,7 +138,7 @@ AbstractProgrammerFacade(prog, parent) {
      try {
          state = ProgState::FINISHREAD;
          prog->writeCV(addrCVlow, _cv % modulo, (ProgListener*)this);
-     } catch (ProgrammerException e) {
+     } catch (ProgrammerException* e) {
          log->error("Exception doing final read"/*, e*/);
      }
      break;
@@ -147,7 +147,7 @@ AbstractProgrammerFacade(prog, parent) {
      try {
          state = FINISHWRITE;
          prog->writeCV(addrCVlow, _cv % modulo,(ProgListener*) this);
-     } catch (ProgrammerException e) {
+     } catch (ProgrammerException* e) {
          log->error("Exception doing final write"/*, e*/);
      }
      break;
@@ -157,7 +157,7 @@ AbstractProgrammerFacade(prog, parent) {
      try {
          state = PROGRAMMING;
          prog->readCV(valueCV, (ProgListener*)this);
-     } catch (ProgrammerException e) {
+     } catch (ProgrammerException* e) {
          log->error("Exception doing final read"/*, e*/);
      }
      break;
@@ -166,7 +166,7 @@ AbstractProgrammerFacade(prog, parent) {
         try {
             state = PROGRAMMING;
             prog->writeCV(valueCV, _val, (ProgListener*)this);
-        } catch (ProgrammerException e) {
+        } catch (ProgrammerException* e) {
             log->error("Exception doing final write"/*, e*/);
         }
         break;

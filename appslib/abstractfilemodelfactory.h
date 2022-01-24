@@ -4,9 +4,10 @@
 
 class JFileChooser;
 class Logger;
-class AbstractFileModelFactory : public StartupModelFactory
+class AbstractFileModelFactory : public QObject, public StartupModelFactory
 {
  Q_OBJECT
+  Q_INTERFACES(StartupModelFactory)
 public:
  AbstractFileModelFactory();
  /*public*/ QString getDescription();

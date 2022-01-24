@@ -148,7 +148,37 @@ public:
   /*public*/ QString toString(QLocale locale);
   /*public*/ static bool isSupportedSv2Command(int possibleCmd);
   /*public*/ bool isSupportedSv2Command();
-
+  /*public*/ bool isSupportedSv2ReadOneReply();
+  /*public*/ bool isSupportedSv2ReadFourReply();
+  /*public*/ bool isSupportedSv2ReadOneReplyOrSv2ReadFourReply();
+  /*public*/ int getSingleReadReportData();
+  /*public*/ static LocoNetMessage* createSv2Message (int source, int command,
+          int destination, int svNum, int d1, int d2, int d3, int d4)
+      throw (IllegalArgumentException) ;
+  /*public*/ int getDestAddr();
+  /*public*/ int getSVNum();
+  /*public*/ int getSv2ManufacturerID();
+  /*public*/ bool isSvReconfigureReply();
+  /*public*/ int getSv2DeveloperID();
+  /*public*/ int getSv2ProductID();
+  /*public*/ int getSv2SerialNum();
+  /*public*/ static LocoNetMessage* createSv2DeviceDiscoveryReply(int ida, int currentDest,
+          int mfg, int devel, int prodID, int serial);
+  /*public*/ static LocoNetMessage* createSv2ChangeAddressReply(int ida, int destAddr);
+  /*public*/ static LocoNetMessage* createSv2ChangeAddressReply(int ida, int newDestAddr,
+          int mfg, int developer, int productId, int serialNum);
+  /*public*/ static LocoNetMessage* createSv2ReconfigureReply(int ida, int newDestAddr,
+          int mfg, int developer, int productId, int serialNum) ;
+  /*public*/ static LocoNetMessage* createSvReadReply(LocoNetMessage* m, QVector<int> svValues);
+  /*public*/ static LocoNetMessage* createSvReadReply(LocoNetMessage* m, int svValue);
+  /*public*/ int getSv2D1();
+  /*public*/ int getSv2D2();
+  /*public*/ int getSv2D3();
+  /*public*/ int getSv2D4();
+  /*public*/ bool isSvChangeAddressReply();
+  /*public*/ static LocoNetMessage* createSvDiscoverQueryMessage();
+  /*public*/ static LocoNetMessage* createSvReadRequest();
+  /*public*/ static LocoNetMessage* createSvReadRequest(int deviceAddress, int svNum);
 signals:
 
 public slots:

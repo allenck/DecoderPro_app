@@ -2,15 +2,19 @@
 #define EXPORTCARROSTERACTION_H
 
 #include "abstractaction.h"
+#include "carstableframe.h"
+
 namespace Operations
 {
  class ExportCarRosterAction : public AbstractAction
  {
  public:
-  ExportCarRosterAction(QString actionName, QWidget* frame);
+  ExportCarRosterAction(CarsTableFrame* carsTableFrame);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* ae = 0);
+  /*public*/ void actionPerformed(JActionEvent* ae = 0);
 
+  private:
+  CarsTableFrame* _carsTableFrame;
  };
 }
 #endif // EXPORTCARROSTERACTION_H

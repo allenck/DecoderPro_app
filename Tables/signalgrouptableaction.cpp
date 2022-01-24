@@ -17,7 +17,7 @@
 #include <QVBoxLayout>
 #include "flowlayout.h"
 #include <QTableView>
-#include <QGroupBox>
+//#include <QGroupBox>
 #include "signalmastmanager.h"
 #include "signalgroupsubtableaction.h"
 #include "abstractsignalheadmanager.h"
@@ -27,8 +27,13 @@
 #include "pushbuttondelegate.h" // for PushButtonItemDelegate
 #include <QHeaderView>
 #include "../LayoutEditor/jmrijframe.h"
-#include <QLabel>
-#include <QPushButton>
+//#include <QLabel>
+//#include <QPushButton>
+#include "joptionpane.h"
+#include "loggerfactory.h"
+#include "borderfactory.h"
+#include "userpreferencesmanager.h"
+#include <QGridLayout>
 
 //SignalGroupTableAction::SignalGroupTableAction(QObject *parent) :
 //    QObject(parent)
@@ -48,6 +53,10 @@
 
 /*private*/ /*static*/ QVector<QString> SignalGroupTableAction::signalStates =  QVector<QString>()  << tr("Dark") <<  tr("Red") << tr("Yellow") << tr("Green") << tr("Lunar");
 /*private*/ /*static*/ QVector<int> SignalGroupTableAction::signalStatesValues =  QVector<int>() << SignalHead::DARK << SignalHead::RED << SignalHead::YELLOW << SignalHead::GREEN << SignalHead::LUNAR;
+
+/*static*/ /*final*/ QString SignalGroupTableAction::createInst = tr("To create a new Signal Group, enter its definition, then click [%1].").arg(tr("Create")); // I18N to include original button name in help string
+/*static*/ /*final*/ QString SignalGroupTableAction::updateInst = tr("To change this Signal Group, make changes above, then click [%1].").arg(tr("Apply"));
+/*static*/ /*final*/ QString SignalGroupTableAction::cancelInst = tr("To leave Edit mode without changing this Signal Group, click [%1].").arg(tr("Cancel"));
 
 /**
  * Swing action to create and register a SignalGroup Table
@@ -91,20 +100,13 @@ void SignalGroupTableAction::common()
  allButton = NULL;
  includedButton = NULL;
 
- nameLabel = new QLabel("SignalGroup System Name:");
- userLabel = new QLabel("SignalGroup User Name:");
- fixedSystemName = new QLabel("xxxxxxxxxxx");
-
- deleteButton = new QPushButton("Delete SignalGroup");
- updateButton = new QPushButton("Done");
-
  p2xs = NULL;   // SignalHead list table
  p2xsi = NULL;   // SignalHead list table
  p3xsi = NULL;
 
  curSignalGroup = NULL;
  SignalGroupDirty = false;  // true to fire reminder to save work
- editMode = false;
+ inEditMode = false;
  signalEditFrame = NULL;
 
  // disable ourself if there is no primary SignalGroup manager available
@@ -127,15 +129,15 @@ void SignalGroupTableAction::setEnabled(bool b) { bEnabled = b;}
 #if 1
  if (e->getPropertyName()==("UpdateCondition"))
  {
-  for (int i=_signalList.size()-1; i>=0; i--)
+  for (int i=_signalHeadsList->size()-1; i>=0; i--)
   {
-   SignalGroupSignal* signal = _signalList.at(i);
+   SignalGroupSignalHead* signal = _signalHeadsList->at(i);
     //String tSysName = signal.getSysName();
    SignalHead* sigBean = signal->getBean();
-    if (curSignalGroup->isSignalIncluded(sigBean) ) {
+    if (curSignalGroup->isHeadIncluded(sigBean) ) {
         signal->setIncluded(true);
-        signal->setOnState(curSignalGroup->getSignalHeadOnState(sigBean));
-        signal->setOffState(curSignalGroup->getSignalHeadOffState(sigBean));
+        signal->setOnState(curSignalGroup->getHeadOnState(sigBean));
+        signal->setOffState(curSignalGroup->getHeadOffState(sigBean));
     } else {
         signal->setIncluded(false);
     }
@@ -152,16 +154,17 @@ void SignalGroupTableAction::setEnabled(bool b) { bEnabled = b;}
 {
  SGBeanTableDataModel* mm = new SGBeanTableDataModel(this);
  m = (BeanTableDataModel*)mm;
+ mm->init();
 }
 
 SGBeanTableDataModel::SGBeanTableDataModel(SignalGroupTableAction *act)
  : BeanTableDataModel(act)
 {
  this->act = act;
- DefaultSignalGroupManager* mgr = (DefaultSignalGroupManager*)getManager();
- connect(mgr->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+// DefaultSignalGroupManager* mgr = (DefaultSignalGroupManager*)getManager()->self();
+// connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  //updateNameList();
- init();
+ // init(); must be called after constructor is complete
 }
 
 /*public*/ int SGBeanTableDataModel::columnCount(const QModelIndex &/*parent*/) const { return 6;}
@@ -275,7 +278,7 @@ SGBeanTableDataModel::SGBeanTableDataModel(SignalGroupTableAction *act)
             }
             /*public*/ void run() {
                     //Thread.yield();
-                    _act->addPressed(NULL);
+                    _act->addPressed();
                     _act->_systemName->setText(_model->data(_model->index(row, SYSNAMECOL),Qt::DisplayRole).toString());
                     _act->editPressed(NULL); // don't really want to stop SignalGroup w/o user action
                 }
@@ -334,10 +337,10 @@ void SGBeanTableDataModel::doDelete(NamedBean* bean) {
     else return BeanTableDataModel::matchPropertyName(e);
 }
 
-/*public*/ Manager* SGBeanTableDataModel::getManager()
+/*public*/ AbstractManager *SGBeanTableDataModel::getManager()
 {
  //return static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"));
- return (Manager*)InstanceManager::getNullableDefault("SignalGroupManager");
+ return (AbstractManager*)InstanceManager::getNullableDefault("SignalGroupManager");
 }
 
 /*public*/ NamedBean* SGBeanTableDataModel::getBySystemName(QString name) const
@@ -392,38 +395,50 @@ void SignalGroupTableAction::setSignalStateBox(int mode, QComboBox* box) {
     box->setCurrentIndex(box->findText(result));
 }
 
-
-/*protected*/ void SignalGroupTableAction::addPressed(ActionEvent* /*e*/)
+//@Override
+/*protected*/ void SignalGroupTableAction::addPressed(JActionEvent *)
 {
-    /*if (editMode) {
-        cancelEdit();
-    }*/
+ pref = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
+ if (inEditMode) {
+     log->debug("Can not open another editing session for Signal Groups.");
+     // add user warning that a 2nd session not allowed (cf. Logix)
+     // Already editing a Signal Group, ask for completion of that edit first
+     QString workingTitle = _systemName->text();
+     if (workingTitle.isNull() || workingTitle.isEmpty()) {
+         workingTitle = tr("NONE");
+         _systemName->setText(workingTitle);
+     }
+     JOptionPane::showMessageDialog(addFrame,
+             tr("Cannot edit two Signal Groups at the same time.\nPlease complete edit of Signal Group \"%1\" and try again.").arg(workingTitle),
+             tr("Error"),
+             JOptionPane::ERROR_MESSAGE);
+     // cancelEdit(); not needed as second edit is blocked
+     return;
+ }
 
- TurnoutManager* tm = InstanceManager::turnoutManagerInstance();
- QStringList systemNameList = ((ProxyTurnoutManager*)tm)->getSystemNameList();
- _mastAppearancesList = QList <SignalMastAspect*>();
+ //inEditMode = true;
+ _mastAspectsList=QList<SignalMastAspect*>();
 
- SignalHeadManager* shm = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
- systemNameList = ((AbstractSignalHeadManager*)shm)->getSystemNameList();
- _signalList = QList <SignalGroupSignal*> (/*systemNameList.size()*/);
-
- QStringListIterator iter(systemNameList);
- while (iter.hasNext())
- {
-  QString systemName = iter.next();
-  if (QString(((AbstractSignalHeadManager*)shm)->getBySystemName(systemName)->metaObject()->className()).contains("SingleTurnoutSignalHead"))
-  {
-   QString userName = ((AbstractSignalHeadManager*)shm)->getBySystemName(systemName)->getUserName();
-   _signalList.append(new SignalGroupSignal(systemName, userName));
-  }
-  else log->debug ("Signal Head " + systemName + " is not a single Turnout Controlled Signal Head");
+ SignalHeadManager* shm = (SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager");
+ _signalHeadsList = new QList<SignalGroupSignalHead*>();
+ // create list of all available Single Output Signal Heads to choose from
+ for (NamedBean* nb : shm->getNamedBeanSet()) {
+  SignalHead* sh = (SignalHead*)nb;
+     QString systemName = sh->getSystemName();
+     if (QString(sh->metaObject()->className()).contains("SingleTurnoutSignalHead")) {
+         QString userName = sh->getUserName();
+         // add every single output signal head item to the list
+         _signalHeadsList->append(new SignalGroupSignalHead(systemName, userName));
+     } else {
+         log->debug(tr("Signal Head %1 is not a Single Output Controlled Signal Head").arg(systemName));
+     }
  }
 
  // Set up window
- if (addFrame==NULL)
+ if (addFrame==nullptr)
  {
-  mainSignal = new JmriBeanComboBox((Manager*)InstanceManager::getDefault("SignalMastManager"), NULL, JmriBeanComboBox::DISPLAYNAME);
-  mainSignal->setFirstItemBlank(true);
+  mainSignalComboBox = new NamedBeanComboBox((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"), NULL, NamedBean::DISPLAYNAME);
+  mainSignalComboBox->setAllowNull(true);
   addFrame = new JmriJFrameX("Add/Edit SignalGroup", false, true);
   addFrame->addHelpMenu("package.jmri.jmrit.beantable.SignalGroupAddEdit", true);
   addFrame->setLocation(100,30);
@@ -436,28 +451,39 @@ void SignalGroupTableAction::setSignalStateBox(int mode, QComboBox* box) {
   else contentPaneLayout = (QVBoxLayout*)addFrame->getContentPane()->layout();
   QWidget* contentPane = addFrame->getContentPane();
   contentPane->setObjectName("signalgrouptableactioncontent");
-  // add system name
-  //QWidget* ps = new QWidget();
-  FlowLayout* psFlowLayout = new FlowLayout;
-  //ps->setLayout(psFlowLayout);
-  psFlowLayout->addWidget(nameLabel);
-  psFlowLayout->addWidget(_systemName);
-  _systemName->setToolTip("Enter system name for new SignalGroup, e.g. R12.");
-  psFlowLayout->addWidget(fixedSystemName);
-  fixedSystemName->setVisible(false);
-  //contentPaneLayout->addWidget(ps);
-  contentPaneLayout->addLayout(psFlowLayout);
-  // add user name
-  //QWidget* p = new QWidget();
-  FlowLayout* pFlowLayout = new FlowLayout;
-  //p->setLayout(pFlowLayout);
-  pFlowLayout->addWidget(userLabel);
-  pFlowLayout->addWidget(_userName);
-  _userName->setToolTip("Enter user name for new SignalGroup, e.g. Junction Indicator on Signal 1.");
 
-  //contentPaneLayout->addWidget(p);
-  contentPaneLayout->addLayout(pFlowLayout);
-  // add Turnout Display Choice
+  JPanel* namesGrid = new JPanel();
+  QGridLayout* layout = new QGridLayout();//2, 2, 10, 0); // (int rows, int cols, int hgap, int vgap)
+  namesGrid->setLayout(layout);
+  // row 1: add system name label + field/label
+  namesGrid->layout()->addWidget(nameLabel);
+  nameLabel->setLabelFor(_systemName);
+  JPanel* ps = new JPanel();
+  ps->setLayout(new QHBoxLayout());//ps, BoxLayout.X_AXIS));
+  ps->layout()->addWidget(_systemName);
+  _systemName->setToolTip(tr("Enter system name for new Signal Group, e.g. IG12."));
+  ps->layout()->addWidget(fixedSystemName);
+  fixedSystemName->setVisible(false);
+  ps->layout()->addWidget(_autoSystemName);
+  //_autoSystemName.addActionListener((ActionEvent e1) -> {
+  connect(_autoSystemName, &JCheckBox::clicked, [=]{
+      autoSystemName();
+  });
+  if (pref->getSimplePreferenceState(systemNameAuto)) {
+      _autoSystemName->setSelected(true);
+  }
+  namesGrid->layout()->addWidget(ps);
+  // row 2: add user name label + field
+  namesGrid->layout()->addWidget(userLabel);
+  userLabel->setLabelFor(_userName);
+  JPanel* p = new JPanel();
+  p->setLayout(new QHBoxLayout());//p, BoxLayout.X_AXIS));
+  p->layout()->addWidget(_userName);
+  _userName->setToolTip(tr("Enter user name for new Signal Group, e.g. Junction Indicator on Signal 1."));
+  namesGrid->layout()->addWidget(p);
+  contentPane->layout()->addWidget(namesGrid);
+
+// add Signal Masts/Heads Display Choice
   //QWidget* py = new QWidget();
   FlowLayout* pyFlowLayout = new FlowLayout;
   //py->setLayout(new FlowLayout);
@@ -512,7 +538,7 @@ void SignalGroupTableAction::setSignalStateBox(int mode, QComboBox* box) {
   QWidget* p32 = new QWidget();
   p32->setLayout(new FlowLayout);
   p32->layout()->addWidget(new QLabel("Signal Mast: "));
-  p32->layout()->addWidget(mainSignal);
+  p32->layout()->addWidget(mainSignalComboBox);
   //p32.add(new QLabel("Appearance Logic"));
   //p32.add(mainSignalOperation);
 //            mainSignal.setText("");
@@ -535,7 +561,7 @@ void SignalGroupTableAction::setSignalStateBox(int mode, QComboBox* box) {
   p31siLayout->addWidget(new QLabel(" Group."));
   //p3xsi->layout()->addWidget(p31si);
   p3xsiLayout->addLayout(p31siLayout);
-  _AppearanceModel = new ATSignalMastAppearanceModel(this);
+  _aspectModel = new SignalMastAspectModel(this);
   //JTable SignalAppearanceTable = JTableUtil.sortableDataModel(_AppearanceModel);
   QTableView* signalAppearanceTable = new QTableView();
   QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::MinimumExpanding);
@@ -543,7 +569,7 @@ void SignalGroupTableAction::setSignalStateBox(int mode, QComboBox* box) {
   sizePolicy.setVerticalStretch(0);
   sizePolicy.setHeightForWidth(signalAppearanceTable->sizePolicy().hasWidthForHeight());
   signalAppearanceTable->setSizePolicy(sizePolicy);
-  signalAppearanceTable->setModel(_AppearanceModel);
+  signalAppearanceTable->setModel(_aspectModel);
   signalAppearanceTable->resizeColumnsToContents();
   signalAppearanceTable->verticalHeader()->setVisible(false);
 //    try {
@@ -582,7 +608,7 @@ void SignalGroupTableAction::setSignalStateBox(int mode, QComboBox* box) {
 //        }
 //    }
 //    );
-  connect(mainSignal, SIGNAL(currentIndexChanged(int)), this, SLOT(On_mainSignal_currentIndexChanged()));
+  connect(mainSignalComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(On_mainSignal_currentIndexChanged()));
         // complete this panel
 //        Border p3Border = BorderFactory.createEtchedBorder();
 //        p3.setBorder(p3Border);
@@ -606,10 +632,10 @@ void SignalGroupTableAction::setSignalStateBox(int mode, QComboBox* box) {
   p21siLayout->addWidget(new QLabel(" in this Group."));
   //p2xsiLayout->addWidget(p21si);
   p2xsiLayout->addLayout(p21siLayout);
-  _signalGroupSignalModel = new SignalGroupSignalHeadModel(this);
+  _signalGroupHeadModel = new SignalGroupSignalHeadModel(this);
  //JTable SignalGroupSignalTable = jmri.util.JTableUtil.sortableDataModel(_SignalGroupSignalModel);
   QTableView* signalGroupSignalTable = new QTableView();
-  signalGroupSignalTable->setModel(_signalGroupSignalModel);
+  signalGroupSignalTable->setModel(_signalGroupHeadModel);
   signalGroupSignalTable->resize(480,160);
   signalGroupSignalTable->setItemDelegateForColumn(SignalGroupSignalHeadModel::EDIT_COLUMN, new PushButtonDelegate());
 //        try {
@@ -661,34 +687,56 @@ void SignalGroupTableAction::setSignalStateBox(int mode, QComboBox* box) {
 
 
   // add notes panel
-  QGroupBox* pa = new QGroupBox();
+  JPanel* pa = new JPanel();
   pa->setLayout(new QVBoxLayout(pa/*, BoxLayout.Y_AXIS*/));
 
-    //Border pBorder = BorderFactory.createEtchedBorder();
-  QString     gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
-        //pa.setBorder(pBorder);
-  pa->setStyleSheet(gbStyleSheet);
-  contentPaneLayout->addWidget(pa);
-  QWidget* pb = new QWidget();
-  pb->setLayout(new FlowLayout());
+  // include status bar
+  JPanel* p1 = new JPanel();
+  p1->setLayout(new FlowLayout());
+  QFont f = status1->font();
+  f.setPixelSize(nameLabel->font().pixelSize()*.9);
+  //status1.setFont(status1.getFont().deriveFont(0.9f * nameLabel.getFont().getSize())); // a bit smaller
+  status1->setFont(f);
+  status1->setForeground(Qt::gray);
+  p1->layout()->addWidget(status1);
+  JPanel* p2 = new JPanel();
+  p2->setLayout(new FlowLayout());
+  //status2.setFont(status1.getFont().deriveFont(0.9f * nameLabel.getFont().getSize())); // a bit smaller
+  status2->setFont(f);
+  status2->setForeground(Qt::gray);
+  p2->layout()->addWidget(status2);
+  pa->layout()->addWidget(p1);
+  pa->layout()->addWidget(p2);
+
+  Border* pBorder = BorderFactory::createEtchedBorder();
+  pa->setBorder(pBorder);
+  contentPane->layout()->addWidget(pa);
+
+  // buttons at bottom of panel
+  JPanel* pb = new JPanel();
+  pb->setLayout(new FlowLayout());//FlowLayout.TRAILING));
+
+  pb->layout()->addWidget(cancelButton);
+  //cancelButton.addActionListener(this::cancelPressed);
+  connect(cancelButton, &JButton::clicked, [=]{cancelPressed();});
+  cancelButton->setVisible(true);
   pb->layout()->addWidget(deleteButton);
-//        deleteButton.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent e) {
-//                deletePressed(e);
-//            }
-//        });
-  connect(deleteButton, SIGNAL(clicked()), this, SLOT(deletePressed()));
-  deleteButton->setToolTip(tr("Delete the SignalGroup in System Name"));
-        // Update SignalGroup button
+  //deleteButton.addActionListener(this::deletePressed);
+  connect(deleteButton, &JButton::clicked, [=]{deletePressed();});
+  deleteButton->setToolTip(tr("Delete the Signal Group in System Name"));
+  // Add Create Group button
+  pb->layout()->addWidget(createButton);
+  //createButton.addActionListener(this::createPressed);
+  connect(createButton, &JButton::clicked, [=]{createPressed();});
+  createButton->setToolTip(tr("Add a new Signal Group using the data entered above"));
+  // [Update] Signal Group button in Add/Edit SignalGroup pane
   pb->layout()->addWidget(updateButton);
-//        updateButton.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent e) {
-//                updatePressed(e, false, true);
-//            }
-//        });
-  connect(updateButton, SIGNAL(clicked()), this, SLOT(on_updateButton_clicked()));
-  updateButton->setToolTip("Change this SignalGroup and leave Edit mode");
-  updateButton->setVisible(true);
+  //updateButton.addActionListener((ActionEvent e1) -> {
+  connect(updateButton, &JButton::clicked, [=]{
+      updatePressed(nullptr, false, false);
+  });
+  updateButton->setToolTip(tr("Apply settings to this Signal Group and leave Edit mode?"));
+
   contentPaneLayout->addWidget(pb);
   // pack and release space
   addFrame->pack();
@@ -697,7 +745,7 @@ void SignalGroupTableAction::setSignalStateBox(int mode, QComboBox* box) {
     // set listener for window closing
  else
  {
-  mainSignal->setSelectedBean(NULL);
+  mainSignalComboBox->setSelectedItem(NULL);
  }
 //    addFrame.addWindowListener(new java.awt.event.WindowAdapter() {
 //            /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
@@ -717,6 +765,17 @@ void SignalGroupTableAction::setSignalStateBox(int mode, QComboBox* box) {
 //        });
     // display the window
  addFrame->setVisible(true);
+ autoSystemName();
+}
+
+void SignalGroupTableAction::autoSystemName() {
+    if (_autoSystemName->isSelected()) {
+        _systemName->setEnabled(false);
+        nameLabel->setEnabled(false);
+    } else {
+        _systemName->setEnabled(true);
+        nameLabel->setEnabled(true);
+    }
 }
 
 void SignalGroupTableAction::setColumnToHoldButton(JTable* /*table*/, int /*column*/, QPushButton* /*sample*/) {
@@ -738,22 +797,39 @@ void SignalGroupTableAction::setColumnToHoldButton(JTable* /*table*/, int /*colu
 void SignalGroupTableAction::initializeIncludedList()
 {
  _includedMastAspectsList =  QList<SignalMastAspect*>();
- for (int i=0; i<_mastAppearancesList.size();i++)
+ for (int i=0; i<_mastAspectsList.size();i++)
  {
-  if (_mastAppearancesList.at(i)->isIncluded())
+  if (_mastAspectsList.at(i)->isIncluded())
   {
-   _includedMastAspectsList.append(_mastAppearancesList.at(i));
+   _includedMastAspectsList.append(_mastAspectsList.at(i));
   }
 
  }
- _includedSignalList =  QList <SignalGroupSignal*> ();
- for (int i=0; i<_signalList.size(); i++)
+ _includedSignalHeadsList =  new QList <SignalGroupSignalHead*> ();
+ for (int i=0; i<_signalHeadsList->size(); i++)
  {
-  if (_signalList.at(i)->isIncluded())
+  if (_signalHeadsList->at(i)->isIncluded())
   {
-   _includedSignalList.append(_signalList.at(i));
+   _includedSignalHeadsList->append(_signalHeadsList->at(i));
   }
  }
+}
+
+/**
+ * Respond to the Create button.
+ *
+ * @param e the action event
+ */
+void SignalGroupTableAction::createPressed(JActionEvent* /*e*/) {
+    if (!_autoSystemName->isSelected()) {
+        if (!checkNewNamesOK()) {
+            log->debug("NewNames not OK");
+            return;
+        }
+    }
+    updatePressed(nullptr, true, true); // to close pane after creating
+    pref->setSimplePreferenceState(systemNameAuto, _autoSystemName->isSelected());
+    // activate the signal group
 }
 
 bool SignalGroupTableAction::checkNewNamesOK() {
@@ -780,7 +856,7 @@ bool SignalGroupTableAction::checkNewNamesOK() {
         }
     }
     // check if a SignalGroup with this system name already exists
-    g = static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"))->getBySystemName(sName);
+    g = (SignalGroup*)static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"))->getBySystemName(sName);
     if (g!=NULL) {
         // SignalGroup already exists
 //        javax.swing.JOptionPane.showMessageDialog(NULL,"A SignalGroup with this system name already exists","System Name Error",javax.swing.JOptionPane.WARNING_MESSAGE);
@@ -792,7 +868,7 @@ bool SignalGroupTableAction::checkNewNamesOK() {
 
 bool SignalGroupTableAction::checkValidSignalMast()
 {
- SignalMast* mMast = (SignalMast*) mainSignal->getSelectedBean();
+ SignalMast* mMast = (SignalMast*) mainSignalComboBox->getSelectedItem();
  if (mMast == NULL)
  {
   log->warn("Signal Mast not selected");
@@ -820,12 +896,20 @@ SignalGroup* SignalGroupTableAction::checkNamesOK() {
     return g;
 }
 
-int SignalGroupTableAction::setSignalInformation(SignalGroup* g) {
-    for (int i=0; i<g->getNumSignalHeadItems(); i++) {
-        SignalHead* sig = g->getSignalHeadItemBeanByIndex(i);
+/**
+ * Check all available Single Output Signal Heads against the list of signal
+ * head items registered with the group. Updates the list, which is stored
+ * in the field _includedSignalHeadsList.
+ *
+ * @param g Signal Group object
+ * @return The number of Signal Heads included in the group
+ */
+int SignalGroupTableAction::setHeadInformation(SignalGroup* g) {
+    for (int i=0; i<g->getNumHeadItems(); i++) {
+        SignalHead* sig = g->getHeadItemBeanByIndex(i);
         bool valid = false;
-        for (int x = 0; x<_includedSignalList.size(); x++) {
-            SignalGroupSignal* s = _includedSignalList.at(x);
+        for (int x = 0; x<_includedSignalHeadsList->size(); x++) {
+            SignalGroupSignalHead* s = _includedSignalHeadsList->at(x);
             //String si = s.getBean();
             if (sig==s->getBean()){
                 valid = true;
@@ -837,17 +921,17 @@ int SignalGroupTableAction::setSignalInformation(SignalGroup* g) {
         }
     }
 
-    for (int i=0; i<_includedSignalList.size(); i++){
-        SignalGroupSignal* s = _includedSignalList.at(i);
+    for (int i=0; i<_includedSignalHeadsList->size(); i++){
+        SignalGroupSignalHead* s = _includedSignalHeadsList->at(i);
         SignalHead* sig = s->getBean();
-        if (!g->isSignalIncluded(sig)){
+        if (!g->isHeadIncluded(sig)){
             g->addSignalHead(sig);
-            g->setSignalHeadOnState(sig, s->getOnStateInt());
-            g->setSignalHeadOffState(sig, s->getOffStateInt());
+            g->setHeadOnState(sig, s->getOnStateInt());
+            g->setHeadOffState(sig, s->getOffStateInt());
         }
     }
 
-    return _includedSignalList.size();
+    return _includedSignalHeadsList->size();
 }
 
 void SignalGroupTableAction::setMastAspectInformation(SignalGroup* g) {
@@ -874,17 +958,43 @@ void SignalGroupTableAction::setMastAspectInformation(SignalGroup* g) {
 
 void SignalGroupTableAction::setValidSignalAspects()
 {
- SignalMast* sh = (SignalMast*) mainSignal->getSelectedBean();
+ SignalMast* sh = (SignalMast*) mainSignalComboBox->getSelectedItem();
  if (sh==NULL)
    return;
  QVector<QString> appear = sh->getValidAspects();
 
- _mastAppearancesList =  QList <SignalMastAspect*> (/*appear.size()*/);
+ _mastAspectsList = QList <SignalMastAspect*> (/*appear.size()*/);
  for(int i = 0; i<appear.size(); i++)
  {
-  _mastAppearancesList.append(new SignalMastAspect(appear.at(i)));
+  _mastAspectsList.append(new SignalMastAspect(appear.at(i)));
  }
- _AppearanceModel->fireTableDataChanged();
+ _aspectModel->fireTableDataChanged();
+}
+
+/**
+ * When user clicks Cancel during editing a Signal Group, close the
+ * Add/Edit pane and reset default entries.
+ *
+ * @param e Event from origin
+ */
+void SignalGroupTableAction::cancelPressed(JActionEvent* /*e*/) {
+    cancelEdit();
+}
+
+/**
+ * Cancels edit mode
+ */
+void SignalGroupTableAction::cancelEdit() {
+    if (inEditMode) {
+        status1->setText(createInst);
+    }
+    if (addFrame != nullptr) {
+        addFrame->setVisible(false);
+    } // hide first, may cause NPE unchecked
+    inEditMode = false; // release editing soon, as NPEs may occur in the following methods
+    finishUpdate();
+    _signalGroupHeadModel->dispose();
+    _aspectModel->dispose();
 }
 
 /**
@@ -893,7 +1003,7 @@ void SignalGroupTableAction::setValidSignalAspects()
 void SignalGroupTableAction::editPressed(ActionEvent* /*e*/) {
     // identify the SignalGroup with this name if it already exists
     QString sName = _systemName->text().toUpper();
-    SignalGroup* g = static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"))->getBySystemName(sName);
+    SignalGroup* g = (SignalGroup*)static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"))->getBySystemName(sName);
     if (g==NULL) {
         // SignalGroup does not exist, so cannot be edited
         return;
@@ -909,29 +1019,29 @@ void SignalGroupTableAction::editPressed(ActionEvent* /*e*/) {
     SignalMast* sh = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(((DefaultSignalGroup*)g)->getSignalMastName());
     QVector<QString> appear = sh->getValidAspects();
 
-    _mastAppearancesList =  QList <SignalMastAspect*> (/*appear.size()*/);
+    _mastAspectsList = QList <SignalMastAspect*> (/*appear.size()*/);
 
     for(int i = 0; i<appear.size(); i++){
-        _mastAppearancesList.append(new SignalMastAspect(appear.at(i)));
+        _mastAspectsList.append(new SignalMastAspect(appear.at(i)));
     }
 
     fixedSystemName->setText(sName);
     fixedSystemName->setVisible(true);
     _systemName->setVisible(false);
     //mainSignal.setText(g.getSignalMastName());
-    mainSignal->setSelectedBean(g->getSignalMast());
+    mainSignalComboBox->setSelectedItem(g->getSignalMast());
 
     _userName->setText(g->getUserName());
     int setRow = 0;
 
-     for (int i=_signalList.size()-1; i>=0; i--) {
-        SignalGroupSignal* signal = _signalList.at(i);
+     for (int i=_signalHeadsList->size()-1; i>=0; i--) {
+        SignalGroupSignalHead* signal = _signalHeadsList->at(i);
         //String tSysName = signal.getSysName();
         SignalHead* sigBean = signal->getBean();
-        if (g->isSignalIncluded(sigBean) ) {
+        if (g->isHeadIncluded(sigBean) ) {
             signal->setIncluded(true);
-            signal->setOnState(g->getSignalHeadOnState(sigBean));
-            signal->setOffState(g->getSignalHeadOffState(sigBean));
+            signal->setOnState(g->getHeadOnState(sigBean));
+            signal->setOffState(g->getHeadOffState(sigBean));
             setRow = i;
         } else {
             signal->setIncluded(false);
@@ -940,10 +1050,10 @@ void SignalGroupTableAction::editPressed(ActionEvent* /*e*/) {
         }
     }
     //_SignalGroupSignalScrollPane.getVerticalScrollBar().setValue(setRow*ROW_HEIGHT);
-    _signalGroupSignalModel->fireTableDataChanged();
+    _signalGroupHeadModel->fireTableDataChanged();
 
-    for (int i=0; i<_mastAppearancesList.size(); i++){
-        SignalMastAspect* appearance = _mastAppearancesList.at(i);
+    for (int i=0; i<_mastAspectsList.size(); i++){
+        SignalMastAspect* appearance = _mastAspectsList.at(i);
         QString app = appearance->getAspect();
         if (g->isSignalMastAspectIncluded(app)){
             appearance->setIncluded(true);
@@ -955,13 +1065,13 @@ void SignalGroupTableAction::editPressed(ActionEvent* /*e*/) {
     }
 //    _SignalAppearanceScrollPane.getVerticalScrollBar().setValue(setRow*ROW_HEIGHT);
 
-    _AppearanceModel->fireTableDataChanged();
+    _aspectModel->fireTableDataChanged();
     initializeIncludedList();
 
     updateButton->setVisible(true);
     fixedSystemName->setVisible(true);
     _systemName->setVisible(false);
-    editMode = true;
+    inEditMode = true;
 }
 
 /**
@@ -997,13 +1107,13 @@ void SignalGroupTableAction::updatePressed(ActionEvent* /*e*/, bool newSignalGro
  curSignalGroup = g;
  // user name is unique, change it
  g->setUserName(uName);
-    initializeIncludedList();
-    setSignalInformation(g);
-    setMastAspectInformation(g);
+ initializeIncludedList();
+ setHeadInformation(g);
+ setMastAspectInformation(g);
 
-    ((DefaultSignalGroup*)g)->setSignalMast((SignalMast*)mainSignal->getSelectedBean(), mainSignal->getSelectedDisplayName());
-    if(close)
-        finishUpdate();
+ ((DefaultSignalGroup*)g)->setSignalMast((SignalMast*)mainSignalComboBox->getSelectedItem(), mainSignalComboBox->getSelectedItemDisplayName());
+ if(close)
+     finishUpdate();
 }
 
 void SignalGroupTableAction::finishUpdate() {
@@ -1013,12 +1123,13 @@ void SignalGroupTableAction::finishUpdate() {
     fixedSystemName->setVisible(false);
     _systemName->setText("");
     _userName->setText("");
-    mainSignal->setSelectedBean(NULL);
-    for (int i=_signalList.size()-1; i>=0; i--) {
-        _signalList.at(i)->setIncluded(false);
+    mainSignalComboBox->setSelectedItem(NULL);
+    for (int i=_signalHeadsList->size()-1; i>=0; i--) {
+        _signalHeadsList->at(i)->setIncluded(false);
     }
-    for (int i=_mastAppearancesList.size()-1; i>=0; i--) {
-        _mastAppearancesList.at(i)->setIncluded(false);
+
+    for (int i=_mastAspectsList.size()-1; i>=0; i--) {
+        _mastAspectsList.at(i)->setIncluded(false);
     }
    // mainSignal.setText("");
     curSignalGroup=NULL;
@@ -1036,12 +1147,12 @@ void SignalGroupTableAction::finishUpdate() {
 //            return String.class;
 //        }
 //    }
-ATSignalMastAppearanceModel::ATSignalMastAppearanceModel(SignalGroupTableAction *act)
+SignalMastAspectModel::SignalMastAspectModel(SignalGroupTableAction *act)
 {
  this->act = act;
 }
 
-/*public*/ QVariant ATSignalMastAppearanceModel::headerData(int section, Qt::Orientation orientation, int role) const
+/*public*/ QVariant SignalMastAspectModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
  if(role == Qt::DisplayRole && orientation == Qt::Horizontal)
  {
@@ -1053,12 +1164,12 @@ ATSignalMastAppearanceModel::ATSignalMastAppearanceModel(SignalGroupTableAction 
  return QVariant();
 }
 
-    /*public*/ void ATSignalMastAppearanceModel::dispose()
+    /*public*/ void SignalMastAspectModel::dispose()
 {
- static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->removePropertyChangeListener((PropertyChangeListener*)this);
+ static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->PropertyChangeSupport::removePropertyChangeListener((PropertyChangeListener*)this);
 }
 
-/*public*/ void ATSignalMastAppearanceModel::propertyChange(PropertyChangeEvent* e)
+/*public*/ void SignalMastAspectModel::propertyChange(PropertyChangeEvent* e)
 {
  if (e->getPropertyName()==("length"))
  {
@@ -1068,9 +1179,9 @@ ATSignalMastAppearanceModel::ATSignalMastAppearanceModel(SignalGroupTableAction 
 }
 
 
-/*public*/ int ATSignalMastAppearanceModel::columnCount(const QModelIndex &/*parent*/) const{return 2;}
+/*public*/ int SignalMastAspectModel::columnCount(const QModelIndex &/*parent*/) const{return 2;}
 
-/*public*/ Qt::ItemFlags ATSignalMastAppearanceModel::flags(const QModelIndex &index) const
+/*public*/ Qt::ItemFlags SignalMastAspectModel::flags(const QModelIndex &index) const
 {
  //return ( (c==INCLUDE_COLUMN) );
     if(index.column() == INCLUDE_COLUMN)
@@ -1078,19 +1189,19 @@ ATSignalMastAppearanceModel::ATSignalMastAppearanceModel(SignalGroupTableAction 
  return QAbstractTableModel::flags(index);
 }
 
-/*public*/ void ATSignalMastAppearanceModel::setSetToState(QString /*x*/){}
+/*public*/ void SignalMastAspectModel::setSetToState(QString /*x*/){}
 
-/*public*/ int ATSignalMastAppearanceModel::rowCount(const QModelIndex &/*parent*/) const
+/*public*/ int SignalMastAspectModel::rowCount(const QModelIndex &/*parent*/) const
 {
-        if (act->_mastAppearancesList.isEmpty())
+        if (/*!act->_mastAspectsList ||*/ act->_mastAspectsList.isEmpty())
             return 0;
         if (act->showAll)
-            return act->_mastAppearancesList.size();
+            return act->_mastAspectsList.size();
         else
             return act->_includedMastAspectsList.size();
     }
 
-/*public*/ QVariant  ATSignalMastAppearanceModel::data (const QModelIndex &index, int role) const
+/*public*/ QVariant  SignalMastAspectModel::data (const QModelIndex &index, int role) const
 {
  int r = index.row();
  int c = index.column();
@@ -1099,7 +1210,7 @@ ATSignalMastAppearanceModel::ATSignalMastAppearanceModel(SignalGroupTableAction 
   QList <SignalGroupTableAction::SignalMastAspect*> appearList = QList <SignalGroupTableAction::SignalMastAspect*>();
   if (act->showAll)
   {
-   appearList = act->_mastAppearancesList;
+   appearList = act->_mastAspectsList;
   }
   else
   {
@@ -1123,10 +1234,10 @@ ATSignalMastAppearanceModel::ATSignalMastAppearanceModel(SignalGroupTableAction 
  }
  if(role == Qt::CheckStateRole)
  {
-  QList <SignalGroupTableAction::SignalMastAspect*> appearList = QList <SignalGroupTableAction::SignalMastAspect*>();
+  QList <SignalGroupTableAction::SignalMastAspect*> appearList =  QList <SignalGroupTableAction::SignalMastAspect*>();
   if (act->showAll)
   {
-   appearList = act->_mastAppearancesList;
+   appearList = act->_mastAspectsList;
   }
   else
   {
@@ -1143,15 +1254,15 @@ ATSignalMastAppearanceModel::ATSignalMastAppearanceModel(SignalGroupTableAction 
  return QVariant();
 }
 
-/*public*/ bool ATSignalMastAppearanceModel::setData(const QModelIndex &index, const QVariant &value, int role)
+/*public*/ bool SignalMastAspectModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
  int r = index.row();
  int c = index.column();
 
- QList <SignalGroupTableAction::SignalMastAspect*> appearList = QList <SignalGroupTableAction::SignalMastAspect*>();
+ QList <SignalGroupTableAction::SignalMastAspect*> appearList =  QList <SignalGroupTableAction::SignalMastAspect*>();
   if (act->showAll)
   {
-   appearList = act->_mastAppearancesList;
+   appearList = act->_mastAspectsList;
   }
   else
   {
@@ -1230,8 +1341,8 @@ this->act = act;
 //{
 SignalGroupSignalHeadModel::SignalGroupSignalHeadModel(SignalGroupTableAction *act) : SignalGroupOutputModel(act)
 {
- static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->addPropertyChangeListener((PropertyChangeListener*)this);
- AbstractSignalHeadManager* mgr = (AbstractSignalHeadManager*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
+ static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
+ AbstractSignalHeadManager* mgr = (AbstractSignalHeadManager*)static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
  connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  editMapper = new QSignalMapper;
 }
@@ -1279,26 +1390,26 @@ SignalGroupSignalHeadModel::SignalGroupSignalHeadModel(SignalGroupTableAction *a
 /*public*/ int SignalGroupSignalHeadModel::rowCount(const QModelIndex &/*parent*/) const
 {
  if (act->showAll)
-  return act->_signalList.size();
+  return act->_signalHeadsList->size();
  else
-  return act->_includedSignalList.size();
+  return act->_includedSignalHeadsList->size();
  }
 
 /*public*/ QVariant SignalGroupSignalHeadModel::data(const QModelIndex &index, int role) const
 {
-    QList <SignalGroupTableAction::SignalGroupSignal*> signalList = QList <SignalGroupTableAction::SignalGroupSignal*>();
+    QList <SignalGroupTableAction::SignalGroupSignalHead*>* signalList = new QList <SignalGroupTableAction::SignalGroupSignalHead*>();
  int c = index.column();
  int r =index.row();
  if (act->showAll)
  {
-  signalList = act->_signalList;
+  signalList = act->_signalHeadsList;
  }
  else
  {
-  signalList = act->_includedSignalList;
+  signalList = act->_includedSignalHeadsList;
  }
  // some error checking
- if (r >= signalList.size())
+ if (r >= signalList->size())
  {
   act->log->debug("row is greater than turnout list size");
   return QVariant();
@@ -1308,15 +1419,15 @@ SignalGroupSignalHeadModel::SignalGroupSignalHeadModel(SignalGroupTableAction *a
   switch (c)
   {
 // case INCLUDE_COLUMN:
-//    return Boolean.valueOf(signalList.get(r).isIncluded());
+//    return Boolean.valueOf(signalList->get(r).isIncluded());
   case SNAME_COLUMN:  // slot number
-    return signalList.at(r)->getSysName();
+    return signalList->at(r)->getSysName();
   case UNAME_COLUMN:  //
-    return signalList.at(r)->getUserName();
+    return signalList->at(r)->getUserName();
   case STATE_ON_COLUMN:  //
-    return signalList.at(r)->getOnState();
+    return signalList->at(r)->getOnState();
   case STATE_OFF_COLUMN:  //
-    return signalList.at(r)->getOffState();
+    return signalList->at(r)->getOffState();
   case EDIT_COLUMN:
     return ("edit");
   default:
@@ -1327,7 +1438,7 @@ SignalGroupSignalHeadModel::SignalGroupSignalHeadModel(SignalGroupTableAction *a
  {
   if(c == INCLUDE_COLUMN)
   {
-   if(signalList.at(r)->isIncluded())
+   if(signalList->at(r)->isIncluded())
     return Qt::Checked;
     else
    return Qt::Unchecked;
@@ -1350,26 +1461,26 @@ SignalGroupSignalHeadModel::SignalGroupSignalHeadModel(SignalGroupTableAction *a
 
 /*public*/ SignalHead* SignalGroupSignalHeadModel::getBean(int r)
 {
-        return static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(data(index(r, SNAME_COLUMN),Qt::DisplayRole).toString());
+        return static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(data(index(r, SNAME_COLUMN),Qt::DisplayRole).toString());
     }
 
 /*public*/ bool  SignalGroupSignalHeadModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
- QList <SignalGroupTableAction::SignalGroupSignal*> signalList = QList <SignalGroupTableAction::SignalGroupSignal*>();
+ QList <SignalGroupTableAction::SignalGroupSignalHead*>* signalList = new QList <SignalGroupTableAction::SignalGroupSignalHead*>();
  int r = index.row();
  if (act->showAll)
  {
-  signalList = act->_signalList;
+  signalList = act->_signalHeadsList;
   }
   else
   {
-   signalList = act->_includedSignalList;
+   signalList = act->_includedSignalHeadsList;
   }
  if(role == Qt::CheckStateRole)
  {
   if(index.column() == INCLUDE_COLUMN)
   {
-   signalList.at(r)->setIncluded(value.toBool());
+   signalList->at(r)->setIncluded(value.toBool());
    return true;
   }
  }
@@ -1378,16 +1489,16 @@ SignalGroupSignalHeadModel::SignalGroupSignalHeadModel(SignalGroupTableAction *a
   switch (index.column())
  {
 //            case INCLUDE_COLUMN:
-//                signalList.get(r).setIncluded(((Boolean)type).boolValue());
+//                signalList->get(r).setIncluded(((Boolean)type).boolValue());
 //                break;
     case STATE_ON_COLUMN:
-        signalList.at(r)->setSetOnState(value.toString());
+        signalList->at(r)->setSetOnState(value.toString());
         break;
     case STATE_OFF_COLUMN:
-        signalList.at(r)->setSetOffState(value.toString());
+        signalList->at(r)->setSetOffState(value.toString());
         break;
     case EDIT_COLUMN:
-        signalList.at(r)->setIncluded(true);
+        signalList->at(r)->setIncluded(true);
 //        class WindowMaker implements Runnable {
 //        final int row;
 //        WindowMaker(int r){
@@ -1410,7 +1521,7 @@ SignalGroupSignalHeadModel::SignalGroupSignalHeadModel(SignalGroupTableAction *a
  return false;
 }
     /*public*/ void SignalGroupSignalHeadModel::dispose() {
-        static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->removePropertyChangeListener((PropertyChangeListener*)this);
+        static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->PropertyChangeSupport::removePropertyChangeListener((PropertyChangeListener*)this);
     }
 //};
 
@@ -1427,13 +1538,13 @@ void SignalGroupTableAction::signalEditPressed(int row)
    return;
   updatePressed(NULL, true, false);
  }
- if(!((DefaultSignalGroup*)curSignalGroup)->isSignalIncluded(_signalGroupSignalModel->getBean(row)))
+ if(!((DefaultSignalGroup*)curSignalGroup)->isHeadIncluded(_signalGroupHeadModel->getBean(row)))
  {
-  ((DefaultSignalGroup*)curSignalGroup)->addSignalHead( _signalGroupSignalModel->getBean(row));
+  ((DefaultSignalGroup*)curSignalGroup)->addSignalHead( _signalGroupHeadModel->getBean(row));
  }
- _signalGroupSignalModel->fireTableDataChanged();
+ _signalGroupHeadModel->fireTableDataChanged();
  SignalGroupSubTableAction* editSignalHead = new SignalGroupSubTableAction();
- editSignalHead->editSignal(curSignalGroup, _signalGroupSignalModel->getDisplayName(row));
+ editSignalHead->editSignal(curSignalGroup, _signalGroupHeadModel->getDisplayName(row));
 }
 
 
@@ -1445,7 +1556,7 @@ void SignalGroupTableAction::signalEditPressed(int row)
 //    SignalHead _signal = NULL;
 //    bool _included;
 
-SignalGroupTableAction::SignalGroupSignal::SignalGroupSignal(QString sysName, QString /*userName*/)
+SignalGroupTableAction::SignalGroupSignalHead::SignalGroupSignalHead(QString sysName, QString /*userName*/)
 {
         /*_sysName = sysName;
         _userName = userName;*/
@@ -1454,24 +1565,24 @@ SignalGroupTableAction::SignalGroupSignal::SignalGroupSignal(QString sysName, QS
  _onState = 0x00;
  _offState = 0x00;
 
- SignalHead* head = (SignalHead*)((AbstractSignalHeadManager*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")))->getBySystemName(sysName);
+ SignalHead* head = (SignalHead*)((AbstractSignalHeadManager*)static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")))->getBySystemName(sysName);
  if (QString(head->metaObject()->className()).contains("SingleTurnoutSignalHead"))
  {
-  SingleTurnoutSignalHead* signal = (SingleTurnoutSignalHead*) static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(sysName);
+  SingleTurnoutSignalHead* signal = (SingleTurnoutSignalHead*) static_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(sysName);
   _onState = signal->getOnAppearance();
   _offState = signal->getOffAppearance();
   _signal = (SignalHead*)signal;
  }
 }
 
-    SignalHead* SignalGroupTableAction::SignalGroupSignal::getBean(){
+    SignalHead* SignalGroupTableAction::SignalGroupSignalHead::getBean(){
         return _signal;
     }
 
-    QString SignalGroupTableAction::SignalGroupSignal::getSysName() {
+    QString SignalGroupTableAction::SignalGroupSignalHead::getSysName() {
         return _signal->getSystemName();
     }
-    QString SignalGroupTableAction::SignalGroupSignal::getUserName() {
+    QString SignalGroupTableAction::SignalGroupSignalHead::getUserName() {
         return _signal->getUserName();
     }
 
@@ -1479,14 +1590,14 @@ SignalGroupTableAction::SignalGroupSignal::SignalGroupSignal(QString sysName, QS
         return _signal.getDisplayName();
     }*/
 
-    bool SignalGroupTableAction::SignalGroupSignal::isIncluded() {
+    bool SignalGroupTableAction::SignalGroupSignalHead::isIncluded() {
         return _included;
     }
-    void SignalGroupTableAction::SignalGroupSignal::setIncluded(bool include) {
+    void SignalGroupTableAction::SignalGroupSignalHead::setIncluded(bool include) {
         _included = include;
     }
 
-    QString SignalGroupTableAction::SignalGroupSignal::getOnState() {
+    QString SignalGroupTableAction::SignalGroupSignalHead::getOnState() {
         switch (_onState) {
             case SignalHead::DARK:
                 return tr("Dark");
@@ -1509,7 +1620,7 @@ SignalGroupTableAction::SignalGroupSignal::SignalGroupSignal(QString sysName, QS
         }
         return "";
     }
-    QString SignalGroupTableAction::SignalGroupSignal::getOffState() {
+    QString SignalGroupTableAction::SignalGroupSignalHead::getOffState() {
         switch (_offState) {
             case SignalHead::DARK:
                 return tr("Dark");
@@ -1533,10 +1644,10 @@ SignalGroupTableAction::SignalGroupSignal::SignalGroupSignal(QString sysName, QS
         return "";
     }
 
-    int SignalGroupTableAction::SignalGroupSignal::getOnStateInt(){ return _onState;}
-    int SignalGroupTableAction::SignalGroupSignal::getOffStateInt(){ return _offState;}
+    int SignalGroupTableAction::SignalGroupSignalHead::getOnStateInt(){ return _onState;}
+    int SignalGroupTableAction::SignalGroupSignalHead::getOffStateInt(){ return _offState;}
 
-    void SignalGroupTableAction::SignalGroupSignal::setSetOnState(QString state) {
+    void SignalGroupTableAction::SignalGroupSignalHead::setSetOnState(QString state) {
         if (state==(tr("Dark"))) {
             _onState = SignalHead::DARK;
         } else if (state==(tr("Red"))) {
@@ -1558,7 +1669,7 @@ SignalGroupTableAction::SignalGroupSignal::SignalGroupSignal(QString sysName, QS
         }
     }
 
-    void SignalGroupTableAction::SignalGroupSignal::setSetOffState(QString state) {
+    void SignalGroupTableAction::SignalGroupSignalHead::setSetOffState(QString state) {
         if (state==(tr("Dark"))) {
             _offState = SignalHead::DARK;
         } else if (state==(tr("Red"))) {
@@ -1581,10 +1692,10 @@ SignalGroupTableAction::SignalGroupSignal::SignalGroupSignal(QString sysName, QS
     }
 
 
-    /*public*/ void SignalGroupTableAction::SignalGroupSignal::setOnState(int state){
+    /*public*/ void SignalGroupTableAction::SignalGroupSignalHead::setOnState(int state){
         _onState = state;
     }
-    /*public*/ void SignalGroupTableAction::SignalGroupSignal::setOffState(int state){
+    /*public*/ void SignalGroupTableAction::SignalGroupSignalHead::setOffState(int state){
         _offState = state;
     }
 //};
@@ -1613,16 +1724,12 @@ SignalGroupTableAction::SignalGroupSignal::SignalGroupSignal(QString sysName, QS
 
 //};
 
-    /*protected*/ QString SignalGroupTableAction::getClassName() { return "jmri.jmrit.beantable.SignalGroupTableAction"; }
-
-/*public*/ QString SignalGroupTableAction::getClassDescription() { return tr("Signal Group Table"); }
-
 /*public*/ void SignalGroupTableAction::on_allButton_clicked(ActionEvent* /*e*/) {
     // Setup for display of all Turnouts, if needed
     if (!showAll) {
         showAll = true;
-          _signalGroupSignalModel->fireTableDataChanged();
-          _AppearanceModel->fireTableDataChanged();
+          _signalGroupHeadModel->fireTableDataChanged();
+          _aspectModel->fireTableDataChanged();
     }
 }
 /*public*/ void SignalGroupTableAction::on_includedButton_clicked(ActionEvent* /*e*/)
@@ -1632,19 +1739,33 @@ SignalGroupTableAction::SignalGroupSignal::SignalGroupSignal(QString sysName, QS
  {
     showAll = false;
     initializeIncludedList();
-    _signalGroupSignalModel->fireTableDataChanged();
-    _AppearanceModel->fireTableDataChanged();
+    _signalGroupHeadModel->fireTableDataChanged();
+    _aspectModel->fireTableDataChanged();
  }
 }
+
 void SignalGroupTableAction::on_updateButton_clicked()
 {
     updatePressed(NULL, false, true);
 }
+
 SGBeanTableDataModel* SignalGroupTableAction::model() {return (SGBeanTableDataModel*) m;}
 void SignalGroupTableAction::On_mainSignal_currentIndexChanged()
 {
  if(curSignalGroup==NULL)
    setValidSignalAspects();
- else if (mainSignal->getSelectedBean()!=curSignalGroup->getSignalMast())
+ else if (mainSignalComboBox->getSelectedItem()!=curSignalGroup->getSignalMast())
    setValidSignalAspects();
 }
+
+//@Override
+/*protected*/ QString SignalGroupTableAction::getClassName() {
+    return "jmri.jmrit.beantable.SignalGroupTableAction";
+}
+
+//@Override
+/*public*/ QString SignalGroupTableAction::getClassDescription() {
+    return tr("SignalGroup Table");
+}
+
+/*private*/ /*final*/ /*static*/ Logger* SignalGroupTableAction::log = LoggerFactory::getLogger("SignalGroupTableAction");

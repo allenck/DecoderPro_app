@@ -2,6 +2,7 @@
 #define CONSTRAINEDBEAN_H
 #include "bean.h"
 #include "propertyvetoexception.h"
+#include "vetoablechangesupport.h"
 
 class PropertyVetoException;
 class VetoableChangeListener;
@@ -19,13 +20,13 @@ public:
  /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName);
  /*public*/ void removeVetoableChangeListener(VetoableChangeListener* listener);
  /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
- /*public*/ void fireVetoableChange(PropertyChangeEvent *event) throw (PropertyVetoException);
- /*public*/ void fireVetoableChange(QString propertyName, QVariant oldValue, QVariant newValue) throw (PropertyVetoException) ;
- /*public*/ void fireVetoableChange(QString propertyName, int oldValue, int newValue) throw (PropertyVetoException) ;
- /*public*/ void fireVetoableChange(QString propertyName, bool oldValue, bool newValue) throw (PropertyVetoException) ;
+ /*public*/ void fireVetoableChange(PropertyChangeEvent *event) /*throw (PropertyVetoException)*/;
+ /*public*/ void fireVetoableChange(QString propertyName, QVariant oldValue, QVariant newValue) /*throw (PropertyVetoException)*/ ;
+ /*public*/ void fireVetoableChange(QString propertyName, int oldValue, int newValue) /*throw (PropertyVetoException)*/ ;
+ /*public*/ void fireVetoableChange(QString propertyName, bool oldValue, bool newValue) /*throw (PropertyVetoException)*/ ;
 
 protected:
- /*protected*/ /*final*/ VetoableChangeSupport* vetoableChangeSupport;// = new VetoableChangeSupport(this);
+ /*protected*/ /*final*/ JVetoableChangeSupport* vetoableChangeSupport = new JVetoableChangeSupport(this);
 
 };
 

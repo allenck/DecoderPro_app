@@ -9,13 +9,16 @@ class LIBPR3SHARED_EXPORT InternalReporterManager : public AbstractReporterManag
     Q_OBJECT
 public:
     InternalReporterManager(InternalSystemConnectionMemo *memo, QObject *parent = 0);
-    /*public*/ bool allowMultipleAdditions(QString systemName)const override;
+    /*public*/ bool allowMultipleAdditions(QString systemName) override;
 
-    /*public*/ SystemConnectionMemo* getMemo()const override;
+    /*public*/ SystemConnectionMemo* getMemo() override;
     /*public*/ QString getNamedBeanClass() const override
     {
      return "Reporter";
     }
+    /*public*/ QString toString() {return "InternalReporterManager";}
+
+    QObject* self() override {return (QObject*)this;}
 signals:
     
 public slots:
@@ -24,7 +27,7 @@ public slots:
      * @return new null
      */
 
-    /*protected*/ Reporter* createNewReporter(QString systemName, QString userName)const override;
+    /*protected*/ Reporter* createNewReporter(QString systemName, QString userName) override;
 
 };
 

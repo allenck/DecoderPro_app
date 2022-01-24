@@ -33,7 +33,7 @@
 {
  //super();
  init();
- ThrottleManager* throttleManager = (ThrottleManager*) InstanceManager::throttleManagerInstance();
+ ThrottleManager* throttleManager = /*(ThrottleManager*)*/ InstanceManager::throttleManagerInstance();
  if ((throttleManager !=NULL)
         && !throttleManager->addressTypeUnique())
  {
@@ -304,7 +304,7 @@ bool varFontSize = false;
 }
 
 void DccLocoAddressSelector::reportError(QString msg) {
-    log->error(msg,  ("traceback"));
+    log->error(msg,  new Throwable("traceback"));
 }
 
 /*

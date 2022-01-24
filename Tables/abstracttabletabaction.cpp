@@ -17,6 +17,7 @@
 #include "instancemanager.h"
 #include "proxymanager.h"
 #include "proxylightmanager.h"
+#include "xtablecolumnmodel.h"
 
 //AbstractTableTabAction::AbstractTableTabAction(QObject *parent) :
 //    AbstractTableAction(parent)
@@ -61,17 +62,17 @@ AbstractTableTabAction::~AbstractTableTabAction()
  QGridLayout* dataPanelLayout;
  dataPanel->setLayout(dataPanelLayout = new QGridLayout());
  //if (getManager() instanceof jmri.managers.AbstractProxyManager)
- if(qobject_cast<ProxyManager*>(getManager())!= nullptr)
+ if(qobject_cast<ProxyManager*>(getManager()->self())!= nullptr)
  {
-  ProxyManager* proxy = qobject_cast<ProxyManager*>(getManager());
-  QList<Manager*> managerList = proxy->getDisplayOrderManagerList();
+  AbstractProxyManager* proxy = qobject_cast<AbstractProxyManager*>(getManager()->self());
+  QList<AbstractManager*> managerList = proxy->getDisplayOrderManagerList();
   AbstractTableAction* a = getNewTableAction("All");
   Q_UNUSED(a);
   tabbedTableArray.append(new TabbedTableItem("All", true, getManager(), getNewTableAction("All")));
-  for(int x = 0; x<managerList.size(); x++)
+  for(AbstractManager* manager : managerList)
   {
-   QString manuName = ConnectionNameFromSystemName::getConnectionName(managerList.at(x)->getSystemPrefix());
-   TabbedTableItem* itemModel = new TabbedTableItem(manuName, true, managerList.at(x), getNewTableAction(manuName));
+   QString manuName = manager->getMemo()->getUserName();
+   TabbedTableItem* itemModel = new TabbedTableItem(manuName, true, manager, getNewTableAction(manuName));
    tabbedTableArray.append(itemModel);
   }
  }
@@ -89,8 +90,9 @@ AbstractTableTabAction::~AbstractTableTabAction()
  }
 // dataTabs.addChangeListener(new ChangeListener() {
 //        /*public*/ void stateChanged(ChangeEvent evt) {
+// connect(dataTabs, &QTabWidget::currentChanged, [=]{
 //            setMenuBar(f);
-//        }
+////        }
 //    });
  dataPanelLayout->addWidget(dataTabs,0,0); //,/* BorderLayout.CENTER*/0, Qt::AlignCenter);
  init = true;
@@ -129,11 +131,11 @@ void AbstractTableTabAction::On_dataTabs_currentChanged(int iTab)
 
 /*abstract*/ /*protected*/ QString AbstractTableTabAction::helpTarget() {return "";}
 
-/*protected*/ void AbstractTableTabAction::addPressed(ActionEvent* /*e*/) {
+/*protected*/ void AbstractTableTabAction::addPressed(JActionEvent * /*e*/) {
     log->warn("This should not have happened");
 }
 
-void AbstractTableTabAction::actionPerformed(ActionEvent */*e*/)
+void AbstractTableTabAction::actionPerformed(JActionEvent */*e*/)
 {
  if(currFrame() != nullptr)
  {
@@ -161,15 +163,30 @@ void AbstractTableTabAction::actionPerformed(ActionEvent */*e*/)
  f->setVisible(true);
 }
 
+/**
+ * Notification that column visibility for the JTable has updated.
+ * <p>
+ * This is overridden by classes which have column visibility Checkboxes on bottom bar.
+ * <p>
+ *
+ * Called on table startup and whenever a column goes hidden / visible.
+ *
+ * @param colsVisible   array of ALL table columns and their visibility
+ *                      status in order of main Table Model, NOT XTableColumnModel.
+ */
+/*protected*/ void AbstractTableTabAction::columnsVisibleUpdated(QVector<bool> colsVisible){
+    log->debug(tr("columns updated %1").arg(colsVisible.count()));
+}
+
 /*public*/ void AbstractTableTabAction::addToFrame(BeanTableFrame* f)
 {
  try
  {
   tabbedTableArray.at(dataTabs->currentIndex())->getAAClass()->addToFrame(f);
  }
- catch (ArrayIndexOutOfBoundsException ex)
+ catch (ArrayIndexOutOfBoundsException* ex)
  {
-  log->error(ex.getMessage() + " in add to Frame "  + QString::number(dataTabs->currentIndex()) + " " + QString::number(dataTabs->currentIndex()));
+  log->error(ex->getMessage() + " in add to Frame "  + QString::number(dataTabs->currentIndex()) + " " + QString::number(dataTabs->currentIndex()));
  }
 }
 
@@ -179,9 +196,9 @@ void AbstractTableTabAction::actionPerformed(ActionEvent */*e*/)
  {
   tabbedTableArray.at(dataTabs->currentIndex())->getAAClass()->setMenuBar(f);
  }
- catch (ArrayIndexOutOfBoundsException ex)
+ catch (ArrayIndexOutOfBoundsException* ex)
  {
-  log->error(ex.getMessage()  + " in add to Menu " + QString::number(dataTabs->currentIndex()) + " " + QString::number(dataTabs->currentIndex()));
+  log->error(ex->getMessage()  + " in add to Menu " + QString::number(dataTabs->currentIndex()) + " " + QString::number(dataTabs->currentIndex()));
  }
 }
 
@@ -201,9 +218,9 @@ void AbstractTableTabAction::actionPerformed(ActionEvent */*e*/)
  {
   tabbedTableArray.at(dataTabs->currentIndex())->getDataTable()->print(mode, headerFormat, footerFormat);
  }
- catch (PrinterException e1)
+ catch (PrinterException* e1)
  {
-  log->warn("error printing: "+e1.getMessage() + e1.getMessage());
+  log->warn("error printing: "+e1->getMessage() + e1->getMessage());
  }
  catch ( NullPointerException ex)
  {
@@ -223,7 +240,7 @@ void AbstractTableTabAction::actionPerformed(ActionEvent */*e*/)
 /*static*/ /*final*/ int TabbedTableItem::bottomStrutWidth = 20;
 
 
-/*public*/ TabbedTableItem::TabbedTableItem(QString choice, bool stdModel, Manager* manager, AbstractTableAction* tableAction)
+/*public*/ TabbedTableItem::TabbedTableItem(QString choice, bool stdModel, Manager *manager, AbstractTableAction* tableAction)
 {
  AddToFrameRan = false;
  standardModel = true;
@@ -263,11 +280,11 @@ void TabbedTableItem::createDataModel()
  sorter->setSourceModel(dataModel);
  dataTable = dataModel->makeJTable(dataModel->getMasterClassName() + ":" + getItemString(), dataModel, sorter);
 
- tableAction->table = dataTable;
  //sorter->setSourceModel(dataModel);
  dataTable->setSortingEnabled(true);
  //sorter.setTableHeader(dataTable.getTableHeader());
  //dataScroll	= new JScrollPane(dataTable);
+ dataTable->resizeRowsToContents();
 
 //        try {
 //            TableSorter tmodel = ((TableSorter)dataTable.getModel());
@@ -276,6 +293,8 @@ void TabbedTableItem::createDataModel()
 //        } catch (java.lang.ClassCastException e) {}  // happens if not sortable table
 
  dataModel->configureTable(dataTable);
+ tableAction->configureTable(dataTable);
+
  //dataModel->loadTableColumnDetails(dataTable, dataModel->getMasterClassName()+":"+getItemString());
  dataModel->persistTable(dataTable);
  //dataModel->setPersistentButtons();
@@ -318,6 +337,18 @@ void TabbedTableItem::createDataModel()
   addButton->setSizePolicy(sizePolicy);
   connect(addButton, SIGNAL(clicked()), tableAction, SLOT(addPressed()));
  }
+ if (dataModel->getPropertyColumnCount() > 0) {
+     propertyVisible->setToolTip(tr
+             ("If the underlying hardware has additional options to set, shows the columns for these options."));
+     addToBottomBox(propertyVisible);
+     //propertyVisible.addActionListener((ActionEvent e) -> {
+     connect(propertyVisible, &TriStateJCheckBox::clicked, [=]{
+         dataModel->setPropertyColumnsVisible(dataTable, propertyVisible->isSelected());
+     });
+ }
+
+ fireColumnsUpdated(); // init bottom buttons
+ dataTable->getColumnModel()->addColumnModelListener(this);
 }
 
 void TabbedTableItem::addPanelModel()
@@ -365,12 +396,128 @@ void TabbedTableItem::addPanelModel()
   bottomBoxLayout->insertWidget(bottomBoxIndex, comp);
   ++bottomBoxIndex;
  }
- catch (IllegalArgumentException ex)
+ catch (IllegalArgumentException* ex)
  {
-  // log.error (ex.getLocalizedMessage(), ex);
+  // log.error (ex->getLocalizedMessage(), ex);
  }
 }
+/**
+ * Notify the subclasses that column visibility has been updated,
+ * or the table has finished loading.
+ *
+ * Sends notification to the tableAction with boolean array of column visibility.
+ *
+ */
+/*private*/ void TabbedTableItem::fireColumnsUpdated(){
+    TableColumnModel* model = dataTable->getColumnModel();
+    if (qobject_cast<XTableColumnModel*>(model->self())) {
+        QListIterator<TableColumn *> e = ((XTableColumnModel*) model)->getColumns(false);
+        int numCols = ((XTableColumnModel*) model)->getColumnCount(false);
+        // XTableColumnModel has been spotted to return a fleeting different
+        // column count to actual model, generally if manager is changed at startup
+        // so we do a sanity check to make sure the models are in synch.
+        if (numCols != dataModel->getColumnCount()){
+            tableAction->log->debug(tr("Difference with Xtable cols: %1 Model cols: %2").arg(numCols,dataModel->getColumnCount()));
+            return;
+        }
+        QVector<bool> colsVisible = QVector<bool>(numCols);
+        while (e.hasNext()) {
+            TableColumn* column = e.next();
+            bool visible = ((XTableColumnModel*) model)->isColumnVisible(column);
+            colsVisible[column->getModelIndex()] = visible;
+        }
+        tableAction->columnsVisibleUpdated(colsVisible);
+        setPropertyVisibleCheckbox(colsVisible);
+    }
+}
 
+/**
+ * Updates the custom bean property columns checkbox.
+ * @param colsVisible array of column visibility
+ */
+/*private*/ void TabbedTableItem::setPropertyVisibleCheckbox(QVector<bool> colsVisible){
+    int numberofCustomCols = dataModel->getPropertyColumnCount();
+    if (numberofCustomCols>0){
+        QVector<bool> customColVisibility = QVector<bool>(numberofCustomCols);
+        for ( int i=0; i<numberofCustomCols; i++){
+            customColVisibility[i]=colsVisible[colsVisible.length()-i-1];
+        }
+        propertyVisible->setState(customColVisibility);
+    }
+}
+
+/**
+ * {@inheritDoc}
+ * A column is now visible.  fireColumnsUpdated()
+ */
+//@Override
+/*public*/ void TabbedTableItem::columnAdded(TableColumnModelEvent* e) {
+    fireColumnsUpdated();
+}
+
+/**
+ * {@inheritDoc}
+ * A column is now hidden.  fireColumnsUpdated()
+ */
+//@Override
+/*public*/ void TabbedTableItem::columnRemoved(TableColumnModelEvent* e) {
+    fireColumnsUpdated();
+}
+#if 0
+/**
+ * {@inheritDoc}
+ * Unused.
+ */
+@Override
+public void columnMoved(TableColumnModelEvent e) {}
+
+/**
+ * {@inheritDoc}
+ * Unused.
+ */
+@Override
+public void columnSelectionChanged(ListSelectionEvent e) {}
+
+/**
+ * {@inheritDoc}
+ * Unused.
+ */
+@Override
+public void columnMarginChanged(ChangeEvent e) {}
+
+final void addPanelModel() {
+    dataPanel.add(tableAction.getPanel(), BorderLayout.CENTER);
+    dataPanel.add(bottomBox, BorderLayout.SOUTH);
+}
+
+/*public*/ bool getStandardTableModel() {
+    return standardModel;
+}
+
+/*public*/ QString getItemString() {
+    return itemText;
+}
+
+/*public*/ AbstractTableAction/*<E>*/* getAAClass() {
+    return tableAction;
+}
+
+/*public*/ JPanel* getPanel() {
+    return dataPanel;
+}
+
+/*public*/ bool getAdditionsToFrameDone() {
+    return addToFrameRan;
+}
+
+public void setAddToFrameRan() {
+    addToFrameRan = true;
+}
+
+public JTable getDataTable() {
+    return dataTable;
+}
+#endif
 /*protected*/ void TabbedTableItem::dispose()
 {
  if (dataModel != nullptr)
@@ -421,7 +568,7 @@ void AbstractTableTabAction::buildMenus(BeanTableFrame* f)
 //                }
 //            } catch (java.awt.print.PrinterException e1) {
 //                log.warn("error printing: " + e1, e1);
-//            } catch (NullPointerException ex) {
+//            } catch (NullPointerException* ex) {
 //                log.error("Trying to print returned a NPE error");
 //            }
 //        }
@@ -446,9 +593,9 @@ void AbstractTableTabAction::buildMenus(BeanTableFrame* f)
   item->getAAClass()->setMenuBar(f);
   f->addHelpMenu(item->getAAClass()->helpTarget(), true);
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
-  log->error("Error when trying to set menu bar for " + /*item->getClassAsString()*/ QString(item->metaObject()->className())+ "\n" + ex.getMessage());
+  log->error("Error when trying to set menu bar for " + /*item->getClassAsString()*/ QString(item->metaObject()->className())+ "\n" + ex->getMessage());
  }
 // this.revalidate();
 }
@@ -469,11 +616,11 @@ void AbstractTableTabAction::On_printAction_triggered()
   {
    item->getAAClass()->print(JTable::FIT_WIDTH, nullptr, footerFormat);
   }
- } catch (PrinterException e1)
+ } catch (PrinterException* e1)
  {
-  log->warn("error printing: " + e1.getMessage());
+  log->warn("error printing: " + e1->getMessage());
  }
- catch (NullPointerException ex)
+ catch (NullPointerException* ex)
  {
   log->error("Trying to print returned a NPE error");
  }

@@ -16,24 +16,36 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 }
 
 
+
 win32_msvc: {
  QMAKE_CXXFLAGS += /wd4290
  QMAKE_CFLAGS_DEBUG += /wd4290
 }
 
-APPNAME = "LocoNetMonitor"
+APPNAME = "JMRI"
 APPVERSION = 0.1
 
 PREFIX = /home/allen/pythonqt-code
 
 MOC_DIR = moc_obj
-OBJECTS_DIR += moc_obj
+OBJECTS_DIR = moc_obj
 
 #QT       -= gui
 QT       += core xml  gui printsupport   sql network  multimedia #webkitwidgets
 
 TARGET = Pr3
 TEMPLATE = lib
+
+# Windows and Unix get the suffix "d" to indicate a debug version of the library.
+# Mac OS gets the suffix "_debug".
+CONFIG(debug, debug|release) {
+    win32:      TARGET = $$join(TARGET,,,d)
+    mac:        TARGET = $$join(TARGET,,,_debug)
+    unix:!mac:  TARGET = $$join(TARGET,,,d)
+    MOC_DIR = moc_objd
+    OBJECTS_DIR = moc_objd
+}
+
 unix{
  isEmpty(PREFIX): PREFIX_USR = /usr
  isEmpty(PREFIX): PREFIX_LOCAL = $${PREFIX_USR}/local
@@ -46,9 +58,12 @@ unix{
  exists($$PWD/../QtWebApp/libQtWebAppd.so) {
  isEmpty(WEBAPP): WEBAPP = 1
   DEFINES += QTWEBAPP
-  message("libPr3: libQtWebAppd found!")
+  message("libPr3: libQtWebAppd found! define QTWEBAPP is set")
+ } else {
+  message("libPr3: libQtWebAppd not found! define QTWEBAPP not set")
  }
 }
+
 win32{
  isEmpty(PREFIX): PREFIX_USR = "C:/"
  isEmpty(PREFIX): PREFIX_LOCAL = $${PREFIX_USR}QGeomColl
@@ -76,18 +91,31 @@ isEmpty( PROJ_DIR ) {
   unix:PROJ_DIR=/home/allen/Projects
 }
 
+include(../scripts_config.prf)
 
-PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
-isEmpty( PYTHONQT_PREFIX ) {
-  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
-  unix:PYTHONQT_PREFIX=$${PROJ_DIR}/PythonQt/pythonqt-code
-}
-win32:exists($$PYTHONQT_PREFIX/lib/PythonQt_d.dll){
-ENABLE_SCRIPTING = "Y"
-}
-unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so) {
-ENABLE_SCRIPTING = "Y"
-}
+# NOTE: The PYTHONQT_PREFIX path should be exported in the environment like thi:
+# On Unix, "export PYTHON_VERSION=2.7"
+# and "export PYTHONQT_PREFIX=/home/allen/Projects/PythonQt/pythonqt-code"
+#
+#PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
+#isEmpty( PYTHONQT_PREFIX ) {
+#  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
+#  unix:PYTHONQT_PREFIX=$${PROJ_DIR}/PythonQt/pythonqt-code
+#}
+#include($$PYTHONQT_PREFIX/build/python.prf)
+
+#win32:exists($$PYTHONQT_PREFIX/lib/PythonQt_d.dll){
+#ENABLE_SCRIPTING = "Y"
+#}
+#unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so) {
+#ENABLE_SCRIPTING = "Y"
+# message(libPr3: found $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so)
+#} else {
+# message(libPr3: not found $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so)
+#}
+
+#message(libPr3: PYTHON_VERSION = $$PYTHON_VERSION)
+#message(libPr3: PYTHONQT_PREFIX = $$PYTHONQT_PREFIX)
 
 #CONFIG += scripts
 equals(ENABLE_SCRIPTING, "Y") {
@@ -96,10 +124,47 @@ equals(ENABLE_SCRIPTING, "Y") {
 
 DEFINES += USE_THREAD
 
+
+ENABLE_LOGIXNG = "N" # change to "Y" to compile LogixNG modules
 SOURCES += \
+ #abstractproxymanager.cpp \
+ Signal/abstractmrnodetrafficcontroller.cpp \
+ Signal/abstractnode.cpp \
+ Signal/acelaaddress.cpp \
+ Signal/acelaconnectiontypelist.cpp \
+ Signal/acelanode.cpp \
+ Signal/acelareply.cpp \
+ Signal/acelasignalhead.cpp \
+ Signal/acelasystemconnectionmemo.cpp \
+ Signal/acelatrafficcontroller.cpp \
+ Signal/lsdecsignalhead.cpp \
+ Signal/lsdecsignalheadxml.cpp \
+ Signal/mergsd2signalhead.cpp \
+ Signal/mergsd2signalheadxml.cpp \
+ #Signal/serialsignalhead.cpp \
+ abstractprovidingproxymanager.cpp \
+ abstractproxymanager.cpp \
+ acelamessage.cpp \
+ acelasignalheadxml.cpp \
+ addeditsinglelightcontrolframe.cpp \
+ defaultlightcontrol.cpp \
+# direct/defaultthrottle.cpp \
+# direct/defaultthrottlemanager.cpp \
+# direct/directcomponentfactory.cpp \
+# direct/directmenu.cpp \
+# direct/directsystemconnectionmemo.cpp \
+# direct/portcontroller.cpp \
+# direct/serialdriveradapter.cpp \
+# direct/trafficcontroller.cpp \
+ lightcontrolpane.cpp \
+ lightcontroltablemodel.cpp \
+ lighteditaction.cpp \
+ lightintensitypane.cpp \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
+    namedbeancombobox.cpp \
+ otherconnectiontypelist.cpp \
     serialport.cpp \
     dccmanufacturerlist.cpp \
     lnconnectiontypelist.cpp \
@@ -118,8 +183,8 @@ SOURCES += \
     slotmanager.cpp \
     abstractprogrammer.cpp \
     loconetslot.cpp \
+ sprog/sprogserialdriveradapter.cpp \
     systemconnectionmemomanager.cpp \
-    systemconnectionmemo.cpp \
     loconetsystemconnectionmemo.cpp \
     abstractpowermanager.cpp \
     lnpowermanager.cpp \
@@ -154,7 +219,6 @@ SOURCES += \
     internalsensormanager.cpp \
     internalturnoutmanager.cpp \
     abstractmemory.cpp \
-    physicallocation.cpp \
     defaultmemorymanager.cpp \
     abstractmemorymanager.cpp \
     defaultmemory.cpp \
@@ -186,7 +250,6 @@ SOURCES += \
     abstractthrottlemanager.cpp \
     lnthrottlemanager.cpp \
     proglistener.cpp \
-    throttlemanager.cpp \
     rfid/rfidusb.cpp \
     defaultroutemanager.cpp \
     defaultroute.cpp \
@@ -196,8 +259,6 @@ SOURCES += \
     lnlightmanager.cpp \
     lnlight.cpp \
     abstractlight.cpp \
-    lightcontrol.cpp \
-    abstractproxylightmanager.cpp \
     proxylightmanager.cpp \
     internallightmanager.cpp \
     loconetconsistmanager.cpp \
@@ -210,7 +271,6 @@ SOURCES += \
     Throttle/throttlewindow.cpp \
     Roster/locofile.cpp \
     Roster/cvtablemodel.cpp \
-    Roster/indexedcvtablemodel.cpp \
     Roster/abstractvalue.cpp \
     Roster/cvvalue.cpp \
     Roster/variabletablemodel.cpp \
@@ -221,8 +281,6 @@ SOURCES += \
     Roster/compositevariablevalue.cpp \
     Roster/decvariablevalue.cpp \
     Roster/hexvariablevalue.cpp \
-    Roster/indexedenumvariablevalue.cpp \
-    Roster/indexedvariablevalue.cpp \
     Roster/longaddrvariablevalue.cpp \
     Roster/shortaddrvariablevalue.cpp \
     Roster/speedtablevarvalue.cpp \
@@ -233,20 +291,15 @@ SOURCES += \
     Roster/resettablemodel.cpp \
     Roster/combocheckbox.cpp \
     Roster/comboradiobuttons.cpp \
-    Roster/indexedcombocheckbox.cpp \
-    Roster/indexedpairvariablevalue.cpp \
     Roster/decvarslider.cpp \
     Roster/comboonradiobutton.cpp \
     Roster/combooffradiobutton.cpp \
-    Roster/indexedvarslider.cpp \
     Roster/rosterentrypane.cpp \
     Roster/decoderindexfile.cpp \
-    Roster/defaultcomboboxmodel.cpp \
     Roster/busyglasspane.cpp \
     Roster/dccaddresspanel.cpp \
     Roster/paneprogpane.cpp \
     Roster/watchinglabel.cpp \
-    Roster/vartextfield.cpp \
     Roster/fnmappanel.cpp \
     Roster/paneprogframe.cpp \
     Roster/paneopsprogframe.cpp \
@@ -495,7 +548,6 @@ SOURCES += \
     loconet/editorframe.cpp \
     loconet/sdfeditorpane.cpp \
     loconet/sdfmacroeditor.cpp \
-    loconet/jeditorpane.cpp \
     loconet/monitoringlabel.cpp \
     loconet/defaultmutabletreemodel.cpp \
     loconet/channelstarteditor.cpp \
@@ -543,7 +595,6 @@ SOURCES += \
     zipfile.cpp \
     vsdsound.cpp \
     vsdecoderevent.cpp \
-    storexmlvsdecoderaction.cpp \
     trigger.cpp \
     soundevent.cpp \
     momentarysoundevent.cpp \
@@ -723,7 +774,6 @@ SOURCES += \
     Throttle/locoaddressxml.cpp \
     loconetmenustartupaction.cpp \
     Web/aboutservlet.cpp \
-    sprog/serialdriveradapter.cpp \
     sprog/sprogportcontroller.cpp \
     sprog/sprogsystemconnectionmemo.cpp \
     sprog/sprogtrafficcontroller.cpp \
@@ -924,13 +974,9 @@ SOURCES += \
     rfid/abstractidtagreporter.cpp \
     rfid/idtaglistener.cpp \
     loconet/lndeferprogrammer.cpp \
-    abstractproxyturnoutmanager.cpp \
     proxyturnoutmanagerxml.cpp \
     proxysensormanagerxml.cpp \
-    abstractproxysensormanager.cpp \
-    abstractproxyidtagmanager.cpp \
 #    namedbeancombobox.cpp \
-    abstractproxyreportermanager.cpp \
     trackreporter.cpp \
     loconet/bluetooth/loconetbluetoothadapter.cpp \
     scwarrant.cpp \
@@ -980,17 +1026,173 @@ SOURCES += \
     zeroconfservicemanager.cpp \
     zeroconfpreferences.cpp \
     logix/learnthrottleframe.cpp \
-    logix/ltfcontrolpanel.cpp \
-    logix/ltffunctionpanel.cpp
+    defaultsystemconnectionmemo.cpp \
+    lnpredefinedmeters.cpp \
+    meterupdatetask.cpp \
+    loconet/lnmeterinittask.cpp \
+    abstractanalogio.cpp \
+    defaultmeter.cpp \
+    loconet/lniplimplementation.cpp \
+    loconet/lndplxgrpinfoimpl.cpp \
+    meterframe.cpp \
+    meterframemanager.cpp \
+    meterframemanagerxml.cpp \
+    meteraction.cpp \
+    proxymetermanager.cpp \
+    internalmetermanager.cpp \
+    abstractmetermanager.cpp \
+    internalmetermanagerxml.cpp \
+    abstractmetermanagerxml.cpp \
+    ctc/nbhsensor.cpp \
+    ctc/ctcexception.cpp \
+    ctc/ctcexceptionbuffer.cpp \
+    ctc/ctcmanager.cpp \
+    ctc/projectscommonsubs.cpp \
+    ctc/programproperties.cpp \
+    ctc/ctcserialdata.cpp \
+    ctc/nbhsignal.cpp \
+    ctc/nbhturnout.cpp \
+    ctc/otherdata.cpp \
+    ctc/codebuttonhandlerdata.cpp \
+    ctc/trafficlockingdata.cpp \
+    ctc/frmtrl_rules.cpp \
+    ctc/ctcfiles.cpp \
+    ctc/callondata.cpp \
+    ctc/topologyinfo.cpp \
+    ctc/commonsubs.cpp \
+    ctc/awtwindowproperties.cpp \
+    ctc/checkjmriobject.cpp \
+    ctc/ctcmain.cpp \
+    ctc/codebuttonhandler.cpp \
+    ctc/lockedroutesmanager.cpp \
+    ctc/turnoutlock.cpp \
+    ctc/ctceditoraction.cpp \
+    ctc/frmmainform.cpp \
+    ctc/columns.cpp \
+    ctc/frmswdi.cpp \
+    ctc/codebuttonhandlerdataroutines.cpp \
+    ctc/ctcrunaction.cpp \
+    ctc/ctcmanagerxml.cpp \
+    ctc/frmaddmodifyctccolumn.cpp \
+    ctc/frmcb.cpp \
+    ctc/frmabout.cpp \
+    ctc/frmguidesign.cpp \
+    ctc/frmco.cpp \
+    ctc/importexternaldata.cpp \
+    ctc/importotherdata.cpp \
+    ctc/importcodebuttonhandlerdata.cpp \
+    ctc/callonentry.cpp \
+    ctc/trafficlockingentry.cpp \
+    ctc/createguiobjectsxmlfile.cpp \
+    ctc/frmdefaults.cpp \
+    ctc/frmdebugging.cpp \
+    ctc/frmsidi.cpp \
+    ctc/frmswdl.cpp \
+    ctc/frmtrl.cpp \
+    ctc/topology.cpp \
+    ctc/frmsidl.cpp \
+    ctc/frmtul.cpp \
+    ctc/frmil.cpp \
+    ctc/frmfleeting.cpp \
+    ctc/frmpatterns.cpp \
+    ctc/frmfixerrors.cpp \
+    ctc/lockedroute.cpp \
+    ctc/reentrantlock.cpp \
+    ctc/signaldirectionindicators.cpp \
+    ctc/requesteddirectionobserved.cpp \
+    ctc/codebuttonsimulator.cpp \
+    ctc/switchdirectionlever.cpp \
+    ctc/signaldirectionlever.cpp \
+    ctc/switchdirectionindicators.cpp \
+    ctc/trafficlockinginfo.cpp \
+    ctc/fleeting.cpp \
+    ctc/callon.cpp \
+    ctc/switchindicatorsroute.cpp \
+    ctc/indicationlockingsignals.cpp \
+    ctc/trafficlocking.cpp \
+    storemenu.cpp \
+    systemconnectionmemo.cpp \
+    managercombobox.cpp \
+    abstractblockmanager.cpp \
+    abstractsectionmanager.cpp \
+    abstractnamedbeanhandlemanager.cpp \
+    abstractroutemanager.cpp \
+    loconet/lncvdevicesmanager.cpp \
+    loconet/lncvdevices.cpp \
+    loconet/lncvdevice.cpp \
+    loconet/lncvmessagecontents.cpp \
+    loconet/lncvprogtablemodel.cpp \
+    loconet/lncvprogpane.cpp \
+    loconet/lncvprogaction.cpp \
+    abstractprogrammerserver.cpp \
+    searchbar.cpp \
+    cvutil.cpp \
+    logix/learnfunctionpanel.cpp \
+    logix/learncontrolpanel.cpp \
+    logix/learnspeedpanel.cpp
+#    Throttle/throttleframe.cpp
 
+equals(ENABLE_LOGIXNG, "Y") {
+ SOURCES += \
+ logixng/abortconditionalngexecutionexception.cpp \
+ logixng/abstractmalesocket.cpp \
+ logixng/base.cpp \
+ logixng/category.cpp \
+ logixng/defaultlogixng.cpp \
+ logixng/defaultlogixngmanager.cpp \
+ logixng/defaultlogixngmanagerxml.cpp \
+ logixng/logixng_thread.cpp \
+ logixng/socketalreadyconnectedexception.cpp \
+ logixng/abstractbase.cpp \
+ logixng/abstractfemalesocket.cpp \
+ logixng/clipboardmany.cpp \
+ logixng/defaultclipboard.cpp \
+ logixng/defaultfemaleanysocket.cpp
+}
 
  !contains(FTDI, 1) {
     SOURCES +=
  }
 HEADERS += \
+ Signal/abstractmrnodetrafficcontroller.h \
+ Signal/abstractnode.h \
+ Signal/acelaaddress.h \
+ Signal/acelaconnectiontypelist.h \
+ Signal/acelalistener.h \
+ Signal/acelamessage.h \
+ Signal/acelanode.h \
+ Signal/acelareply.h \
+ Signal/acelasignalhead.h \
+ Signal/acelasystemconnectionmemo.h \
+ Signal/acelatrafficcontroller.h \
+ Signal/lsdecsignalhead.h \
+ Signal/lsdecsignalheadxml.h \
+ Signal/mergsd2signalhead.h \
+ Signal/mergsd2signalheadxml.h \
+ #Signal/serialsignalhead.h \
+ abstractprovidingproxymanager.h \
+ abstractproxymanager.h \
+ acelasignalheadxml.h \
+ addeditsinglelightcontrolframe.h \
+ defaultlightcontrol.h \
+ digitalio.h \
+# direct/defaultthrottle.h \
+# direct/defaultthrottlemanager.h \
+# direct/directcomponentfactory.h \
+# direct/directmenu.h \
+# direct/directsystemconnectionmemo.h \
+# direct/portcontroller.h \
+# direct/serialdriveradapter.h \
+# direct/trafficcontroller.h \
+ lightcontrolpane.h \
+ lightcontroltablemodel.h \
+ lighteditaction.h \
+ lightintensitypane.h \
     loconetmessage.h \
     lnconstants.h \
     llnmon.h \
+    namedbeancombobox.h \
+ otherconnectiontypelist.h \
     serialport.h \
     dccmanufacturerlist.h \
     lnconnectiontypelist.h \
@@ -1011,11 +1213,13 @@ HEADERS += \
     language.h \
     locoaddress.h \
     dcclocoaddress.h \
+ silenceablepropertychangeprovider.h \
     slotmanager.h \
     abstractprogrammer.h \
     programmer.h \
     loconetslot.h \
     slotlistener.h \
+ sprog/sprogserialdriveradapter.h \
     systemconnectionmemomanager.h \
     systemconnectionmemo.h \
     loconetsystemconnectionmemo.h \
@@ -1055,11 +1259,9 @@ HEADERS += \
     proxyturnoutmanager.h \
     internalsensormanager.h \
     internalturnoutmanager.h \
-    runnable.h \
     sensor.h \
     abstractmemory.h \
     physicallocationreporter.h \
-    physicallocation.h \
     initializer.h \
     defaultmemorymanager.h \
     abstractmemorymanager.h \
@@ -1133,7 +1335,6 @@ HEADERS += \
     Throttle/throttlewindow.h \
     Roster/locofile.h \
     Roster/cvtablemodel.h \
-    Roster/indexedcvtablemodel.h \
     Roster/abstractvalue.h \
     Roster/cvvalue.h \
     Roster/variabletablemodel.h \
@@ -1145,8 +1346,6 @@ HEADERS += \
     Roster/compositevariablevalue.h \
     Roster/decvariablevalue.h \
     Roster/hexvariablevalue.h \
-    Roster/indexedenumvariablevalue.h \
-    Roster/indexedvariablevalue.h \
     Roster/longaddrvariablevalue.h \
     Roster/shortaddrvariablevalue.h \
     Roster/speedtablevarvalue.h \
@@ -1158,21 +1357,16 @@ HEADERS += \
     Roster/combocheckbox.h \
     Roster/comboradiobuttons.h \
     Roster/listdatalistener.h \
-    Roster/indexedcombocheckbox.h \
-    Roster/indexedpairvariablevalue.h \
     Roster/decvarslider.h \
     Roster/comboonradiobutton.h \
     Roster/combooffradiobutton.h \
-    Roster/indexedvarslider.h \
     Roster/rosterentrypane.h \
     Roster/decoderindexfile.h \
-    Roster/defaultcomboboxmodel.h \
     Roster/paneprogpane.h \
     Roster/panecontainer.h \
     Roster/busyglasspane.h \
     Roster/dccaddresspanel.h \
     Roster/watchinglabel.h \
-    Roster/vartextfield.h \
     Roster/fnmappanel.h \
     #Roster/functionlabelspane.h \
     Roster/paneprogframe.h \
@@ -1242,6 +1436,7 @@ HEADERS += \
     abstractaudio.h \
     oblock.h \
     portal.h \
+ variablelight.h \
     warrant.h \
     blockorder.h \
     opath.h \
@@ -1444,7 +1639,6 @@ HEADERS += \
     loconet/editorframe.h \
     loconet/sdfeditorpane.h \
     loconet/sdfmacroeditor.h \
-    loconet/jeditorpane.h \
     loconet/monitoringlabel.h \
     loconet/defaultmutabletreemodel.h \
     loconet/channelstarteditor.h \
@@ -1494,7 +1688,6 @@ HEADERS += \
     zipfile.h \
     vsdsound.h \
     vsdecoderevent.h \
-    storexmlvsdecoderaction.h \
     trigger.h \
     soundevent.h \
     momentarysoundevent.h \
@@ -1692,7 +1885,6 @@ HEADERS += \
     Throttle/locoaddressxml.h \
     loconetmenustartupaction.h \
     Web/aboutservlet.h \
-    sprog/serialdriveradapter.h \
     sprog/sprogportcontroller.h \
     sprog/sprogsystemconnectionmemo.h \
     sprog/sprogconstants.h \
@@ -1903,15 +2095,9 @@ HEADERS += \
     rfid/addressedidtag.h \
     rfid/reportervariant.h \
     loconet/lndeferprogrammer.h \
-    vetoablechangeprovider.h \
-    abstractproxyturnoutmanager.h \
     proxyturnoutmanagerxml.h \
     proxysensormanagerxml.h \
-    abstractproxysensormanager.h \
-    abstractproxyidtagmanager.h \
-    abstractproxyreportermanager.h \
 #    namedbeancombobox.h \
-    abstractproxylightmanager.h \
     trackreporter.h \
     loconet/bluetooth/loconetbluetoothadapter.h \
     Signal/signals.h \
@@ -1967,14 +2153,165 @@ HEADERS += \
     networktopologyevent.h \
     zeroconfpreferences.h \
     logix/learnthrottleframe.h \
-    logix/ltfcontrolpanel.h \
-    logix/ltffunctionpanel.h
+    defaultsystemconnectionmemo.h \
+    lnpredefinedmeters.h \
+    meterupdatetask.h \
+    meter.h \
+    loconet/lnmeterinittask.h \
+    metermanager.h \
+    currentmeter.h \
+    voltagemeter.h \
+    abstractanalogio.h \
+    defaultmeter.h \
+    analogio.h \
+    loconet/lniplimplementation.h \
+    loconet/lndplxgrpinfoimpl.h \
+    loconet/lndplxgrpinfoimplconstants.h \
+    loconet/duplexgroupmessagetype.h \
+    meterframe.h \
+    meterframemanager.h \
+    meterframemanagerxml.h \
+    meteraction.h \
+    proxymetermanager.h \
+    internalmetermanager.h \
+    abstractmetermanager.h \
+    internalmetermanagerxml.h \
+    abstractmetermanagerxml.h \
+    ctc/nbhsensor.h \
+    ctc/ctcexception.h \
+    ctc/ctcexceptionbuffer.h \
+    ctc/ctcmanager.h \
+    ctc/projectscommonsubs.h \
+    ../LayoutEditor/disposable.h \
+    ctc/programproperties.h \
+    ctc/ctcserialdata.h \
+    ctc/nbhsignal.h \
+    ctc/nbhturnout.h \
+    ctc/otherdata.h \
+    ctc/codebuttonhandlerdata.h \
+    ctc/trafficlockingdata.h \
+    ctc/frmtrl_rules.h \
+    ctc/ctcfiles.h \
+    ctc/callondata.h \
+    ctc/topologyinfo.h \
+    ctc/commonsubs.h \
+    ctc/awtwindowproperties.h \
+    ctc/checkjmriobject.h \
+    ctc/ctcmain.h \
+    ctc/codebuttonhandler.h \
+    ctc/ctcconstants.h \
+    ctc/lockedroutesmanager.h \
+    ctc/turnoutlock.h \
+    ctc/ctceditoraction.h \
+    ctc/frmmainform.h \
+    ctc/columns.h \
+    ctc/frmswdi.h \
+    ctc/codebuttonhandlerdataroutines.h \
+    ctc/ctcrunaction.h \
+    ctc/ctcmanagerxml.h \
+    ctc/frmaddmodifyctccolumn.h \
+    ctc/frmcb.h \
+    ctc/frmabout.h \
+    ctc/frmguidesign.h \
+    ctc/frmco.h \
+    ctc/importexternaldata.h \
+    ctc/importotherdata.h \
+    ctc/importcodebuttonhandlerdata.h \
+    ctc/callonentry.h \
+    ctc/trafficlockingentry.h \
+    ctc/createguiobjectsxmlfile.h \
+    ctc/frmdefaults.h \
+    ctc/frmdebugging.h \
+    ctc/frmsidi.h \
+    ctc/frmswdl.h \
+    ctc/frmtrl.h \
+    ctc/topology.h \
+    ctc/frmsidl.h \
+    ctc/frmtul.h \
+    ctc/frmil.h \
+    ctc/frmfleeting.h \
+    ctc/frmpatterns.h \
+    ctc/frmfixerrors.h \
+    ctc/lockedroute.h \
+    ctc/reentrantlock.h \
+    ctc/lock.h \
+    ctc/signaldirectionindicators.h \
+    ctc/signaldirectionindicatorsinterface.h \
+    ctc/requesteddirectionobserved.h \
+    ctc/codebuttonsimulator.h \
+    ctc/switchdirectionlever.h \
+    ctc/signaldirectionlever.h \
+    ctc/switchdirectionindicators.h \
+    ctc/trafficlockinginfo.h \
+    ctc/fleeting.h \
+    ctc/callon.h \
+    ctc/switchindicatorsroute.h \
+    ctc/indicationlockingsignals.h \
+    ctc/trafficlocking.h \
+    storemenu.h \
+    managercombobox.h \
+    abstractblockmanager.h \
+    abstractsectionmanager.h \
+    abstractnamedbeanhandlemanager.h \
+    abstractroutemanager.h \
+    loconet/lncvdevicesmanager.h \
+    loconet/lncvdevices.h \
+    loconet/lncvdevice.h \
+    loconet/lncvmessagecontents.h \
+    loconet/programmingtool.h \
+    loconet/lncvprogtablemodel.h \
+    loconet/lncvprogpane.h \
+    loconet/lncvprogaction.h \
+    logix/learncontrolpanel.h \
+    logix/learnfunctionpanel.h \
+    logix/learnspeedpanel.h \
+    abstractprogrammerserver.h \
+    searchbar.h \
+    cvutil.h
+#    Throttle/throttleframe.h
 
 
  !contains(FTDI, 1) {
     HEADERS +=
  }
+ equals(ENABLE_LOGIXNG, "Y") {
 
+ HEADERS += \
+ logixng/abortconditionalngexecutionexception.h \
+ logixng/abstractmalesocket.h \
+ logixng/base.h \
+ logixng/basemanager.h \
+ logixng/category.h \
+ logixng/conditionalng.h \
+ logixng/conditionalng_manager.h \
+ logixng/debugable.h \
+ logixng/defaultlogixng.h \
+ logixng/defaultlogixngmanager.h \
+ logixng/defaultlogixngmanagerxml.h \
+ logixng/femalesocket.h \
+ logixng/femalesocketmanager.h \
+ logixng/logixng.h \
+ logixng/logixng_initializationmanager.h \
+ logixng/logixng_manager.h \
+ logixng/logixng_thread.h \
+ logixng/logixngpreferences.h \
+ logixng/malesocket.h \
+ logixng/malesocketfactory.h \
+ logixng/module.h \
+ logixng/modulemanager.h \
+ logixng/socketalreadyconnectedexception.h \
+ logixng/symboltable.h \
+ logixng/clipboard.h \
+ logixng/stack.h \
+ logixng/abstractbase.h \
+ logixng/abstractfemalesocket.h \
+ logixng/clipboardmany.h \
+ logixng/defaultclipboard.h \
+ logixng/defaultfemaleanysocket.h \
+ logixng/femaleanysocket.h \
+ logixng/femalesocketlistener.h \
+ logixng/femalesocketoperation.h
+}
 symbian {
     MMP_RULES += EXPORTUNFROZEN
     TARGET.UID3 = 0xE60D7F4C
@@ -2069,17 +2406,17 @@ INCLUDEPATH += "~/Qt/5.7/gcc_64/include/QtMultimedia"
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/release/ -lappslib
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/debug/ -lappslib
-else:unix: LIBS += -L$$PWD/../appslib/ -lappslib
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/ -lappslib
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/ -lappslibd
 
-INCLUDEPATH += $$PWD/../appslib $$PWD/../appslib/operations
-DEPENDPATH += $$PWD/../appslib $$PWD/../appslib/operations
 
 INCLUDEPATH += $$PWD/../appslib $$PWD/../appslib/operations
 DEPENDPATH += $$PWD/../appslib $$PWD/../appslib/operations
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../LocoIO/release/ -lLocoIO
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LocoIO/debug/ -lLocoIO
-else:unix: LIBS += -L$$PWD/../LocoIO/ -lLocoIO
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../LocoIO/ -lLocoIO
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LocoIO/ -lLocoIOd
 
 INCLUDEPATH += $$PWD/../LocoIO
 DEPENDPATH += $$PWD/../LocoIO
@@ -2090,43 +2427,51 @@ DEPENDPATH += $$PWD/../LocoIO
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../JavaQt/release/ -lJavaQt
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../JavaQt/debug/ -lJavaQt
-else:unix: LIBS += -L$$PWD/../JavaQt/ -lJavaQt
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../JavaQt/ -lJavaQt
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../JavaQt/ -lJavaQtd
+
 
 INCLUDEPATH += $$PWD/../JavaQt
 DEPENDPATH += $$PWD/../JavaQt
 
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../LayoutEditor/release/ -lLayoutEditor
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LayoutEditor/debug -lLayoutEditor
-else:unix: LIBS += -L$$PWD/../LayoutEditor/ -lLayoutEditor
+#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../LayoutEditor/release/ -lLayoutEditor
+#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LayoutEditor/debug -lLayoutEditor
+#else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../LayoutEditor/ -lLayoutEditor
+#else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LayoutEditor/ -lLayoutEditord
+
 
 INCLUDEPATH += $$PWD/../LayoutEditor $$PWD/../LayoutEditor/scripts
 DEPENDPATH += $$PWD/../LayoutEditor $$PWD/../LayoutEditor/scripts
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPref/release/ -lPref
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPref/debug/ -lPref
-else:unix: LIBS += -L$$PWD/../libPref/ -lPref
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPref/ -lPref
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPref/ -lPrefd
+
 
 INCLUDEPATH += $$PWD/../libPref/
 DEPENDPATH += $$PWD/../libPref
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Tables/release/ -lTables
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Tables/debug/ -lTables
-else:unix: LIBS += -L$$PWD/../Tables/ -lTables
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../Tables/ -lTables
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Tables/ -lTablesd
+
 
 INCLUDEPATH += $$PWD/../Tables
 DEPENDPATH += $$PWD/../Tables
 
 DISTFILES +=
 
-contains(WEBAPP, 1) {
+#contains(WEBAPP, 1) {
 
-unix:!macx: LIBS += -L$$PWD/../QtWebApp/ -lQtWebAppd
+#unix:!macx: LIBS += -L$$PWD/../QtWebApp/ -lQtWebAppd
 
-INCLUDEPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
-DEPENDPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
-message("libPr3: link to libQtWebAppd")
-}
+#INCLUDEPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
+#DEPENDPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
+#message("libPr3: link to libQtWebAppd")
+#}
 
 DEFINES += QZEROCONF_STATIC
 
@@ -2143,21 +2488,24 @@ message(LibPr3: $$PROJ_DIR/QtZeroConf-master/libQtZeroConf.so.1 not found)
 }
 
 
-unix|win32: LIBS += -L$$PWD/../QtWebApp/ -lQtWebAppd
+##unix|win32: LIBS += -L$$PWD/../QtWebApp/ -lQtWebAppd
 
-INCLUDEPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
-DEPENDPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
+#INCLUDEPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
+#DEPENDPATH += $$PWD/../QtWebApp $$PWD/../QtWebApp/httpserver/
 
-exists($$PWD/../QtWebApp/libQtWebAppd.so.1) {
-message(libPr3: $$PWD/../QtWebApp/libQtWebAppd.so.1 found)
-} else {
-message(libPr3: $$PWD/../QtWebApp/libQtWebAppd.so.1 not found)
-}
+#exists($$PWD/../QtWebApp/libQtWebAppd.so.1) {
+#message(libPr3: $$PWD/../QtWebApp/libQtWebAppd.so.1 found)
+#} else {
+#message(libPr3: $$PWD/../QtWebApp/libQtWebAppd.so.1 not found)
+#}
+
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../operations/release/ -loperations
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../operations/debug/ -loperations
-else:unix: LIBS += -L$$PWD/../operations/ -loperations
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../operations/ -loperations
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../operations/ -loperationsd
+
 
 INCLUDEPATH += $$PWD/../operations
 DEPENDPATH += $$PWD/../operations
@@ -2167,3 +2515,24 @@ unix|win32: LIBS += -L$$PWD/../../../../QtZeroConf-master/ -lQtZeroConf
 
 INCLUDEPATH += $$PWD/../../../../QtZeroConf-master
 DEPENDPATH += $$PWD/../../../../QtZeroConf-master
+
+
+
+#win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../Downloads/QtWebApp/build-QtWebApp-Desktop_Qt_5_15_2_GCC_64bit-Debug/release/ -lQtWebAppd
+#else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../Downloads/QtWebApp/build-QtWebApp-Desktop_Qt_5_15_2_GCC_64bit-Debug/debug/ -lQtWebAppd
+#else:unix: LIBS += -L$$PWD/../../../../../Downloads/QtWebApp/build-QtWebApp-Desktop_Qt_5_15_2_GCC_64bit-Debug/ -lQtWebAppd
+
+#INCLUDEPATH += $$PWD/../../../../../Downloads/QtWebApp/build-QtWebApp-Desktop_Qt_5_15_2_GCC_64bit-Debug
+#DEPENDPATH += $$PWD/../../../../../Downloads/QtWebApp/build-QtWebApp-Desktop_Qt_5_15_2_GCC_64bit-Debug
+
+unix|win32: LIBS += -L$$PWD/../../../../QtWebApp/QtWebApp/ -lQtWebAppd
+
+INCLUDEPATH += $$PWD/../../../../QtWebApp/QtWebApp
+DEPENDPATH += $$PWD/../../../../QtWebApp/QtWebApp
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../QtWebApp/QtWebApp/ -lQtWebAppd
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../QtWebApp/QtWebApp/ -lQtWebAppdd
+else:unix: LIBS += -L$$PWD/../../../../QtWebApp/QtWebApp/ -lQtWebAppd
+
+INCLUDEPATH += $$PWD/../../../../QtWebApp/QtWebApp
+DEPENDPATH += $$PWD/../../../../QtWebApp/QtWebApp

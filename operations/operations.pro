@@ -10,7 +10,17 @@ TARGET = operations
 TEMPLATE = lib
 
 MOC_DIR = moc_obj
-OBJECTS_DIR += moc_obj
+OBJECTS_DIR = moc_obj
+
+# Windows and Unix get the suffix "d" to indicate a debug version of the library.
+# Mac OS gets the suffix "_debug".
+CONFIG(debug, debug|release) {
+    win32:      TARGET = $$join(TARGET,,,d)
+    mac:        TARGET = $$join(TARGET,,,_debug)
+    unix:!mac:  TARGET = $$join(TARGET,,,d)
+    MOC_DIR = moc_objd
+    OBJECTS_DIR = moc_objd
+}
 
 PROJ_DIR=$$(PROJ_DIR) # get project directory from env
 isEmpty( PROJ_DIR ) {
@@ -31,23 +41,25 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
-isEmpty( PYTHONQT_PREFIX ) {
-  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
-  unix:PYTHONQT_PREFIX=$${PROJ_DIR}/PythonQt/pythonqt-code
-}
+include(../scripts_config.prf)
 
-include($$PYTHONQT_PREFIX/build/python.prf)
+#PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
+#isEmpty( PYTHONQT_PREFIX ) {
+#  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
+#  unix:PYTHONQT_PREFIX=$${PROJ_DIR}/PythonQt/pythonqt-code
+#}
 
-win32:exists("C:/Program Files (x86)/local/lib/PythonQt.dll") {
-    ENABLE_SCRIPTING = "Y"
-}
-unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so) {
-    ENABLE_SCRIPTING = "Y"
-    message(operations: found $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so)
-} else {
-    message(operations: not found $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so)
-}
+#include($$PYTHONQT_PREFIX/build/python.prf)
+
+#win32:exists("C:/Program Files (x86)/local/lib/PythonQt.dll") {
+#    ENABLE_SCRIPTING = "Y"
+#}
+#unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so) {
+#    ENABLE_SCRIPTING = "Y"
+#    message(operations: found $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so)
+#} else {
+#    message(operations: not found $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so)
+#}
 #CONFIG += scripts
 equals(ENABLE_SCRIPTING, "Y") {
     DEFINES += SCRIPTING_ENABLED
@@ -66,8 +78,27 @@ HEADERS += \
 }
 
 SOURCES += \
+ consistmanager.cpp \
+ division.cpp \
+ divisionmanager.cpp \
+ exportlocations.cpp \
+ exportlocationsrosteraction.cpp \
+ kernelmanager.cpp \
+ metatypes.cpp \
+ nceconsistengineaction.cpp \
         operations.cpp \
         operationsmenu.cpp \
+ operationssettingsaction.cpp \
+ operationssettingsframe.cpp \
+ operationssettingspanel.cpp \
+ rollingstockeditframe.cpp \
+ rollingstockgroupmanager.cpp \
+    routeblockingordereditframe.cpp \
+ routeblockingordereditframeaction.cpp \
+    routeblockingorderedittablemodel.cpp \
+ setphysicallocationaction.cpp \
+ setphysicallocationframe.cpp \
+ traincustomswitchlist.cpp \
         trainmanifesttext.cpp \
         operationsxml.cpp \
         trainswitchlisttext.cpp \
@@ -117,9 +148,6 @@ SOURCES += \
         carmanagerxml.cpp \
         car.cpp \
         kernel.cpp \
-        operationssetupaction.cpp \
-        operationssetupframe.cpp \
-        operationssetuppanel.cpp \
         operationspreferencespanel.cpp \
         autobackup.cpp \
         backupbase.cpp \
@@ -360,13 +388,33 @@ SOURCES += \
     timetable/timetabledisplaygraph.cpp \
     timetable/timetablegraphcommon.cpp \
     timetable/exporttimetable.cpp \
-    rollingstockattributeeditframe.cpp
+    rollingstockattributeeditframe.cpp \
+    taskallocaterelease.cpp
 
 HEADERS += \
+ consistmanager.h \
+ division.h \
+ divisionmanager.h \
+ exportlocations.h \
+ exportlocationsrosteraction.h \
+ kernelmanager.h \
+ metatypes.h \
+ nceconsistengineaction.h \
         operations.h \
         operations_global.h \
         operationsmenu.h \
+ operationssettingsaction.h \
+ operationssettingsframe.h \
+ operationssettingspanel.h \
         operationsxml.h \
+ rollingstockeditframe.h \
+ rollingstockgroupmanager.h \
+    routeblockingordereditframe.h \
+ routeblockingordereditframeaction.h \
+    routeblockingorderedittablemodel.h \
+ setphysicallocationaction.h \
+ setphysicallocationframe.h \
+ traincustomswitchlist.h \
         trainswitchlisttext.h \
         routemanagerxml.h \
         routemanager.h \
@@ -407,9 +455,6 @@ HEADERS += \
         carmanagerxml.h \
         car.h \
         kernel.h \
-        operationssetupaction.h \
-        operationssetupframe.h \
-        operationssetuppanel.h \
         operationspreferencespanel.h \
         autobackup.h \
         backupbase.h \
@@ -656,7 +701,8 @@ HEADERS += \
     timetable/timetabledisplaygraph.h \
     timetable/timetablegraphcommon.h \
     timetable/exporttimetable.h \
-    rollingstockattributeeditframe.h
+    rollingstockattributeeditframe.h \
+    taskallocaterelease.h
 
 unix {
     target.path = /usr/lib
@@ -670,7 +716,8 @@ TRANSLATIONS += \
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/release/ -lappslib
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/debug/ -lappslib
-else:unix: LIBS += -L$$PWD/../appslib/ -lappslib
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/ -lappslib
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/ -lappslibd
 
 INCLUDEPATH += $$PWD/../appslib
 DEPENDPATH += $$PWD/../appslib
@@ -678,7 +725,9 @@ DEPENDPATH += $$PWD/../appslib
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../JavaQt/release/ -lJavaQt
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../JavaQt/debug/ -lJavaQt
-else:unix: LIBS += -L$$PWD/../JavaQt/ -lJavaQt
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../JavaQt/ -lJavaQt
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../JavaQt/ -lJavaQtd
+
 
 INCLUDEPATH += $$PWD/../JavaQt
 DEPENDPATH += $$PWD/../JavaQt
@@ -686,7 +735,9 @@ DEPENDPATH += $$PWD/../JavaQt
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../LayoutEditor/release/ -lLayoutEditor
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LayoutEditor/debug/ -lLayoutEditor
-else:unix: LIBS += -L$$PWD/../LayoutEditor/ -lLayoutEditor
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../LayoutEditor/ -lLayoutEditor
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LayoutEditor/ -lLayoutEditord
+
 
 INCLUDEPATH += $$PWD/../LayoutEditor $$PWD/../LayoutEditor/scripts
 DEPENDPATH += $$PWD/../LayoutEditor $$PWD/../LayoutEditor/scripts
@@ -694,7 +745,9 @@ DEPENDPATH += $$PWD/../LayoutEditor $$PWD/../LayoutEditor/scripts
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPr3/release/ -lPr3
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPr3/debug/ -lPr3
-else:unix: LIBS += -L$$PWD/../libPr3/ -lPr3
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPr3/ -lPr3
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPr3/ -lPr3d
+
 
 INCLUDEPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Signal \
  $$PWD/../Tables $$PWD/../libPr3/Throttle $$PWD/../libPr3/LocoIO $$PWD/../libPr3/loconet \
@@ -706,7 +759,9 @@ DEPENDPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Signal \
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPref/release/ -lPref
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPref/debug/ -lPref
-else:unix: LIBS += -L$$PWD/../libPref/ -lPref
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPref/ -lPref
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPref/ -lPrefd
+
 
 INCLUDEPATH += $$PWD/../libPref
 DEPENDPATH += $$PWD/../libPref

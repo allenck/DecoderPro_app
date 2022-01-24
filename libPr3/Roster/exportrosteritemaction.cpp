@@ -69,8 +69,8 @@ bool ExportRosterItemAction::doTransfer() {
     QDomElement lroot;
     try {
         lroot = lf->rootFromName(mFullFromFilename).cloneNode().toElement();
-    } catch (Exception e) {
-        log->error("Exception while loading loco XML file: " + mFullFromFilename + " exception: " + e.getMessage());
+    } catch (Exception* e) {
+        log->error("Exception while loading loco XML file: " + mFullFromFilename + " exception: " + e->getMessage());
         return false;
     }
 

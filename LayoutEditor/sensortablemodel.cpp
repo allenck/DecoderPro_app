@@ -27,7 +27,7 @@
  log = new Logger("SensorTableModel");
 
     init();
-    getManager()->addPropertyChangeListener((PropertyChangeListener*)this);
+    ((AbstractManager*)getManager()->self())->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
 //    ProxySensorManager* a = (ProxySensorManager*)getManager();
 //    connect(a->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
@@ -45,16 +45,16 @@
 }
 
 /*public*/ void SensorTableModel::dispose() {
- getManager()->removePropertyChangeListener((PropertyChangeListener*)this);
+ ((AbstractManager*)getManager()->self())->PropertyChangeSupport::removePropertyChangeListener((PropertyChangeListener*)this);
 // ProxySensorManager* a = (ProxySensorManager*)getManager();
 // disconnect(a->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
-/*public*/ Manager* SensorTableModel::getManager() {
+/*public*/ Manager* SensorTableModel::getManager() const {
     return InstanceManager::sensorManagerInstance();
 }
 
-/*public*/ int SensorTableModel::rowCount(const QModelIndex &parent) const
+/*public*/ int SensorTableModel::rowCount(const QModelIndex &/*parent*/) const
 {
  return _sysNameList.length();
 }

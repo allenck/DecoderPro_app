@@ -40,6 +40,7 @@ public:
   this->state=state;
   this->test = test;
  }
- bool ready() throw (Exception) {return turnout->getCommandedState() == state; }
+ bool ready() /*throw (Exception)*/
+ {return turnout->getCommandedState() == state; }
 };
 #endif // MATRIXSIGNALMASTTEST_H

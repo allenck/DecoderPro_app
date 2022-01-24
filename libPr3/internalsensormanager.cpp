@@ -32,9 +32,9 @@ InternalSensorManager::InternalSensorManager(InternalSystemConnectionMemo* memo,
 
 }
 
-/*public*/ InternalSensorManager::InternalSensorManager(QString prefix) {
+/*public*/ InternalSensorManager::InternalSensorManager(QString prefix, QObject* parent) : AbstractSensorManager(parent) {
     //super();
- setObjectName("InternalSensorManager");
+ //setObjectName("InternalSensorManager");
  setProperty("JavaClassName", "jmri.jmrix.internal.InternalSensorManager");
 
  this->prefix = prefix;
@@ -62,9 +62,9 @@ InternalSensorManager::InternalSensorManager(InternalSystemConnectionMemo* memo,
    sen->setKnownState(getDefaultStateForNewSensors());
   return sen;
   }
-  catch (JmriException ex) {
+  catch (JmriException* ex) {
    log->error("An error occurred while trying to set initial state for sensor " + sen->getDisplayName());
-   log->error(ex.toString());
+   log->error(ex->toString());
   }
   log->debug(tr("Internal Sensor \"%1\", \"%2\" created").arg(systemName).arg(userName));
 }
@@ -98,9 +98,9 @@ InternalSensorManager::InternalSensorManager(InternalSystemConnectionMemo* memo,
     int iName = 0;
     try {
         iName = curAddress.toInt();
-    } catch (NumberFormatException ex) {
+    } catch (NumberFormatException* ex) {
         log->error("Unable to convert " + curAddress + " Hardware Address to a number");
-        ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->showInfoMessage("Error","Unable to convert " + curAddress + " to a valid Hardware Address",ex.getMessage(), "",true, false);
+        ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->showInfoMessage("Error","Unable to convert " + curAddress + " to a valid Hardware Address",ex->getMessage(), "",true, false);
         return NULL;
     }
     //Check to determine if the systemName is in use, return null if it is,

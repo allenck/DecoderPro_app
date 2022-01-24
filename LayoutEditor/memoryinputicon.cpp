@@ -365,7 +365,7 @@ MiiActionListener:: MiiActionListener(MemoryInputIcon* parent)
 {
  this->parent = parent;
 }
-/*public*/ void MiiActionListener::actionPerformed(ActionEvent* /*a*/)
+/*public*/ void MiiActionListener::actionPerformed(JActionEvent* /*a*/)
 {
  parent->editMemory();
 }

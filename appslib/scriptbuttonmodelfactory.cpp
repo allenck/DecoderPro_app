@@ -16,7 +16,7 @@
 /*public*/ ScriptButtonModelFactory::ScriptButtonModelFactory()
 {
  chooser = NULL;
- setObjectName("ScriptButtonModelFactory");
+ self()->setObjectName("ScriptButtonModelFactory");
 }
 
 //@Override

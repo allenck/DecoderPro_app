@@ -16,9 +16,10 @@ public:
   /*static*/ NamedIcon* icon;
     MultiSensorIconEntry(NamedIcon* icon, NamedBeanHandle<Sensor*>* namedSensor);
 };
-class MultiSensorIcon : public PositionableLabel
+class MultiSensorIcon : public PositionableLabel, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
 
     //explicit MultiSensorIcon(QObject *parent = 0);
@@ -61,10 +62,11 @@ public:
          NamedIcon* icon;
     };
  /*public*/ QString getGroupName()override;
+  QObject* self() override {return (QObject*)this;}
 
 public slots:
     // update icon as state of turnout changes
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
     void updateItem();
     /*public*/ void setInactiveIcon(NamedIcon* i);
     /*public*/ void setInconsistentIcon(NamedIcon* i);
@@ -91,19 +93,7 @@ private:
     MultiSensorItemPanel* _itemPanel;
     int displaying;// = -1;
     bool buttonLive();
-    class AddIconActionListener : public ActionListener
-    {
-     MultiSensorIcon* parent;
-    public:
-     AddIconActionListener(MultiSensorIcon* parent)
-     {
-      this->parent = parent;
-     }
-     void actionPerformed(ActionEvent */*e*/ = 0)
-     {
-      parent->updateSensor();
-     }
-    };
+
 
 protected:
     /*protected*/ void rotateOrthogonal()override;
@@ -114,17 +104,36 @@ protected slots:
 friend class MultiSensorIconWidget;
 friend class MultiSensorIconAdder;
 };
-class UIActionListener : public ActionListener
+
+class MSIAddIconActionListener : public QObject, public ActionListener
+{
+  Q_OBJECT
+  Q_INTERFACES(ActionListener)
+ MultiSensorIcon* parent;
+public:
+ MSIAddIconActionListener(MultiSensorIcon* parent)
+ {
+  this->parent = parent;
+ }
+ QObject* self() override {return (QObject*)this;}
+ void actionPerformed(JActionEvent */*e*/ = 0)
+ {
+  parent->updateSensor();
+ }
+};
+class UIActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  MultiSensorIcon* parent;
 public:
  UIActionListener(MultiSensorIcon* parent)
  {
   this->parent = parent;
  }
+ QObject* self() override {return (QObject*)this;}
 public slots:
- void actionPerformed(ActionEvent * = 0) { parent->updateItem();}
+ void actionPerformed(JActionEvent * = 0) override{ parent->updateItem();}
 };
 
 #endif // MULTISENSORICON_H

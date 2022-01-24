@@ -30,7 +30,7 @@
  * Protocol Specific Abstract Functions
  */
 //@Override
-/*public*/ void SimpleTurnoutServer::sendStatus(QString turnoutName, int Status) throw (IOException) {
+/*public*/ void SimpleTurnoutServer::sendStatus(QString turnoutName, int Status) /*throw (IOException)*/ {
     addTurnoutToList(turnoutName);
     if (Status == Turnout::THROWN) {
         this->sendMessage("TURNOUT " + turnoutName + " THROWN\n");
@@ -43,7 +43,7 @@
 }
 
 //@Override
-/*public*/ void SimpleTurnoutServer::sendErrorStatus(QString turnoutName) throw (IOException) {
+/*public*/ void SimpleTurnoutServer::sendErrorStatus(QString turnoutName) /*throw (IOException)*/ {
     this->sendMessage("TURNOUT ERROR\n");
 }
 
@@ -71,13 +71,13 @@
         try {
             sendStatus(statusString.mid(index),
                 InstanceManager::turnoutManagerInstance()->provideTurnout(statusString.mid(index).toUpper())->getKnownState());
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             log->warn(tr("Failed to provide Turnout \"%1\" in parseStatus").arg(statusString.mid(index).toUpper()));
         }
     }
 }
 
-/*private*/ void SimpleTurnoutServer::sendMessage(QString message) throw (IOException) {
+/*private*/ void SimpleTurnoutServer::sendMessage(QString message) /*throw (IOException)*/ {
     if (this->output != nullptr) {
         this->output->writeBytes(message.toLocal8Bit(), message.length());
     } else {

@@ -11,8 +11,8 @@ public:
  ~InternalLightManagerXml()  override{}
  InternalLightManagerXml(const InternalLightManagerXml&) : AbstractLightManagerConfigXML() {}
  /*public*/ void setStoreElementClass(QDomElement lights) override;
- /*public*/ void load(QDomElement element, QObject* o)  throw (Exception) override;
- /*public*/ bool load(QDomElement lights)throw (Exception) override;
+ /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (Exception) override;
+ /*public*/ void load(QDomElement shared, QObject* o) throw (Exception) override {}
 
 signals:
 

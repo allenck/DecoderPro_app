@@ -11,9 +11,9 @@ class BufferedOutputStream : public QObject
 public:
  /*public*/ BufferedOutputStream(QDataStream* out, QObject* parent = nullptr);
  /*public*/ BufferedOutputStream(QDataStream* out, int size, QObject* parent = nullptr);
- /*public*/ /*synchronized*/ void write(int b) throw (IOException);
- /*public*/ /*synchronized*/ void flush() throw (IOException);
- /*public*/ void close() throw (IOException);
+ /*public*/ /*synchronized*/ void write(int b) /*throw (IOException)*/;
+ /*public*/ /*synchronized*/ void flush() /*throw (IOException)*/;
+ /*public*/ void close() /*throw (IOException)*/;
 
 signals:
 
@@ -21,7 +21,7 @@ public slots:
 
 private:
  void common(QDataStream* out, int size);
- /*private*/ void flushBuffer() throw (IOException);
+ /*private*/ void flushBuffer() /*throw (IOException)*/;
  QDataStream* out;
 
 protected:

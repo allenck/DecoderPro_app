@@ -44,3 +44,8 @@ void ZipFile::common()
 {
  return name;
 }
+
+/*public*/void  ZipFile::close()
+{
+ zipper->close();
+}

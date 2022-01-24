@@ -81,7 +81,7 @@ DefaultShutDownManager::DefaultShutDownManager(QObject *parent) :
  else
  {
   log->error("task not registered");
-  throw IllegalArgumentException("task not registered");
+  throw new IllegalArgumentException("task not registered");
 
  }
 }
@@ -226,9 +226,9 @@ DefaultShutDownManager::DefaultShutDownManager(QObject *parent) :
                     log->info(tr("Program termination aborted by \"%1\"").arg(task->getName()));
                     return false;  // abort early
                 }
-            } catch (Exception e) {
-                log->error(tr("Error during processing of ShutDownTask \"%1\"").arg(task->getName()+ e.getMessage()));
-            } catch (Throwable e) {
+            } catch (Exception* e) {
+                log->error(tr("Error during processing of ShutDownTask \"%1\"").arg(task->getName()+ e->getMessage()));
+            } catch (Throwable* e) {
                 // try logging the error
                 log->error(tr("Unrecoverable error during processing of ShutDownTask \"%1\"").arg(task->getName()), e);
                 log->error("Terminating abnormally");

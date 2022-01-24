@@ -3,7 +3,9 @@
 #include "exceptions.h"
 #include <QDebug>
 #include "loggerfactory.h"
-
+#include "instancemanagerautodefault.h"
+#include "instancemanagerautoinitialize.h"
+#include "classmigration.h"
 /**
  * Instances of the class {@code Class} represent classes and
  * interfaces in a running Java application.  An enum is a kind of
@@ -199,12 +201,14 @@
 //        Class<?> caller = Reflection.getCallerClass();
 //        return forName0(className, true, ClassLoader.getClassLoader(caller), caller);
      QString clazz = className;
+     className = ClassMigration::migrateName(className);
      if(className.contains("."))
       clazz = className.mid(className.lastIndexOf(".")+1);
      int id = QMetaType::type(clazz.toLocal8Bit());
      QObject* obj;
      if(id != 0)
      {
+      log->debug(tr("Id found %1 typename: %2").arg(id).arg(QMetaType::typeName(id)));
    #if QT_VERSION < 0x050000
       obj = (QObject*)QMetaType::construct(id);
    #else
@@ -214,14 +218,14 @@
        obj->setObjectName(className);
       return (Class*)obj;
     }
-     else
-     {
+    else
+    {
 //      qDebug() << "class not found: " << className;
 //      if(className == "AbstractProxyManagerXml" || className == "AbstractTurnoutManagerXml")
 //       qDebug() << "stop";
-      throw ClassNotFoundException(className);
-     }
+      throw new ClassNotFoundException(tr("metatype class '%1' not found").arg(className));
     }
+}
 
 #if 0
 
@@ -352,7 +356,7 @@
     //@CallerSensitive
     //template<class T>
     /*public*/ Class* Class::newInstance()
-        throw (InstantiationException, IllegalAccessException)
+//        throw new (InstantiationException, IllegalAccessException)
     {
 #if 0
         if (System.getSecurityManager() != null) {
@@ -384,8 +388,8 @@
                             }
                         });
                 cachedConstructor = c;
-            } catch (NoSuchMethodException e) {
-                throw (InstantiationException)
+            } catch (NoSuchMethodException* e) {
+                throw new (InstantiationException)
                     new InstantiationException(getName()).initCause(e);
             }
         }
@@ -413,7 +417,7 @@
         {
           QString msg = tr("Constructor may need Q_INVOKABLE %1").arg(metaObject()->className());
           log->error(msg);
-          throw InvocationTargetException(msg);
+          throw new InvocationTargetException(msg);
           //return this;
         }
         return clazz;
@@ -517,12 +521,34 @@
       } while( metaObject != NULL);
       return false;
      }
-     catch(ClassNotFoundException)
+     catch(ClassNotFoundException *)
      {
       return false;
      }
+    }
 
-
+    /*public*/ /*static*/ bool Class::isAssignableFrom(QString clazz, QString type){
+     int id = QMetaType::type(clazz.toLocal8Bit());
+     QObject* obj;
+     if(id != 0)
+     {
+      log->debug(tr("Id found %1 typename: %2").arg(id).arg(QMetaType::typeName(id)));
+   #if QT_VERSION < 0x050000
+      obj = (QObject*)QMetaType::construct(id);
+   #else
+      obj = (QObject*)QMetaType::create(id);
+   #endif
+      if(obj == nullptr)
+       return false;
+      //return ((Class*)obj)->isAssignableFrom(type);
+      if(type == "InstanceManagerAutoDefault")
+       return qobject_cast<InstanceManagerAutoDefault*>(obj);
+      if(type == "InstanceManagerAutoInitialize")
+       return qobject_cast<InstanceManagerAutoInitialize*>(obj);
+      return false;
+     }
+     else
+      return false;
     }
 
 #if 0
@@ -706,7 +732,7 @@
 
     // Initialized in JVM not by /*private*/ constructor
     // This field is filtered from reflection access, i.e. getDeclaredField
-    // will throw NoSuchFieldException
+    // will throw new NoSuchFieldException
     /*private*/ final ClassLoader classLoader;
 
     /**
@@ -2346,7 +2372,7 @@
 
     /*
      * Check if client is allowed to access members.  If access is denied,
-     * throw a SecurityException.
+     * throw new a SecurityException.
      *
      * This method also enforces package access.
      *
@@ -2375,7 +2401,7 @@
     /*
      * Checks if a client loaded in ClassLoader ccl is allowed to access this
      * class under the current package access policy. If access is denied,
-     * throw a SecurityException.
+     * throw new a SecurityException.
      */
     /*private*/ void checkPackageAccess(final ClassLoader ccl, boolean checkProxyInterfaces) {
         final SecurityManager s = System.getSecurityManager();

@@ -7,6 +7,7 @@
 #include <QVector>
 #include <QMutex>
 #include "dcclocoaddress.h"
+#include "proglistener.h"
 
 class AddressedProgrammerManager;
 class DecoderFile;
@@ -14,9 +15,10 @@ class RosterEntry;
 class VariableTableModel;
 class DccLocoAddress;
 class ConsistListener;
-class DccConsist : public Consist
+class DccConsist : public Consist, public ProgListener
 {
     Q_OBJECT
+  Q_INTERFACES(ProgListener)
 public:
     explicit DccConsist(int address);
     /*public*/ DccConsist(DccLocoAddress* address) ;

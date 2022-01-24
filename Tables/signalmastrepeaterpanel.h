@@ -2,6 +2,7 @@
 #define SIGNALMASTREPEATERPANEL_H
 #include "jmripanel.h"
 #include "abstracttablemodel.h"
+#include "propertychangelistener.h"
 
 
 class SignalMastRepeater;
@@ -30,9 +31,10 @@ private:
     friend class SignalMastRepeaterModel;
 };
 
-/*public*/ class SignalMastRepeaterModel : public  AbstractTableModel //implements PropertyChangeListener
+/*public*/ class SignalMastRepeaterModel : public  AbstractTableModel, public PropertyChangeListener
 {
  Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
     SignalMastRepeaterPanel* panel;
 public:
  SignalMastRepeaterModel(SignalMastRepeaterPanel* panel);
@@ -54,8 +56,10 @@ public:
  /*public*/ int rowCount(const QModelIndex &parent) const;
  /*public*/ QVariant data(const QModelIndex &index, int role) const;
  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
+ QObject* self() override {return (QObject*)this;}
+
 public slots:
- /*public*/ void propertyChange(PropertyChangeEvent* e) ;
+ /*public*/ void propertyChange(PropertyChangeEvent* e)  override;
 
 private:
  Logger* log;

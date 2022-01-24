@@ -98,7 +98,7 @@ void SimpleServer::on_newConnection()
          serverSocket->close();
      }
     }
-    catch (IOException ex) {
+    catch (IOException* ex) {
     }
 
 //    updateServerStateListener();
@@ -247,7 +247,7 @@ void JMRIClientTxHandler::sendMessage(QString msg)
 
   }
  }
-//    } catch (IOException ex) {
+//    } catch (IOException* ex) {
 //        log->error("ClientTxHandler: IO Exception");
 //    } catch (InterruptedException ex) {
 //        //Thread.currentThread().interrupt(); // retain if needed later
@@ -313,7 +313,7 @@ JMRIClientTxHandler::JMRIClientTxHandler(QString newRemoteAddress, QTcpSocket *n
             try {
                 powerServer->parseStatus(cmd);
                 powerServer->sendStatus(static_cast<PowerManager*>(InstanceManager::getDefault("PowerManager"))->getPower());
-            } catch (JmriException je) {
+            } catch (JmriException* je) {
                 //outStream.writeBytes("not supported\n");
           powerServer->sendStatus("not supported");
 
@@ -321,7 +321,7 @@ JMRIClientTxHandler::JMRIClientTxHandler(QString newRemoteAddress, QTcpSocket *n
         } else if (cmd.startsWith("TURNOUT")) {
             try {
                 turnoutServer->parseStatus(cmd);
-            } catch (JmriException je) {
+            } catch (JmriException* je) {
                 //outStream.writeBytes("not supported\n");
           turnoutServer->sendErrorStatus("not supported");
             }
@@ -330,7 +330,7 @@ JMRIClientTxHandler::JMRIClientTxHandler(QString newRemoteAddress, QTcpSocket *n
         else if (cmd.startsWith("LIGHT")) {
             try {
                 lightServer->parseStatus(cmd);
-            } catch (JmriException je) {
+            } catch (JmriException* je) {
                 //outStream.writeBytes("not supported\n");
           lightServer->sendErrorStatus("not supported");
             }
@@ -339,7 +339,7 @@ JMRIClientTxHandler::JMRIClientTxHandler(QString newRemoteAddress, QTcpSocket *n
         else if (cmd.startsWith("SENSOR")) {
             try {
                 sensorServer->parseStatus(cmd);
-            } catch (JmriException je) {
+            } catch (JmriException* je) {
                 //outStream.writeBytes("not supported\n");
           sensorServer->sendErrorStatus("not supported");
             }
@@ -348,13 +348,13 @@ JMRIClientTxHandler::JMRIClientTxHandler(QString newRemoteAddress, QTcpSocket *n
         else if (cmd.startsWith("SIGNALHEAD")) {
             try {
                 signalHeadServer->parseStatus(cmd);
-            } catch (JmriException je) {
+            } catch (JmriException* je) {
                 signalHeadServer->sendErrorStatus("not supported\n");
             }
         } else if (cmd.startsWith("REPORTER")) {
             try {
                 reporterServer->parseStatus(cmd);
-            } catch (JmriException je) {
+            } catch (JmriException* je) {
                 reporterServer->sendErrorStatus("not supported\n");
             }
         }
@@ -362,7 +362,7 @@ JMRIClientTxHandler::JMRIClientTxHandler(QString newRemoteAddress, QTcpSocket *n
         else if (cmd.startsWith(SimpleOperationsServer.OPERATIONS)) {
             try {
                 operationsServer.parseStatus(cmd);
-            } catch (JmriException je) {
+            } catch (JmriException* je) {
                 outStream.writeBytes("not supported\n");
             }
         }

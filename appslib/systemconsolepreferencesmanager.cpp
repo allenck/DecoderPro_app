@@ -16,7 +16,6 @@ SystemConsolePreferencesManager::SystemConsolePreferencesManager()
  wrapStyle = SystemConsole::WRAP_STYLE_WORD;
 
  initialized = false;
- exceptions = new QList<Exception*>();
  log = new Logger("SystemConsolePreferencesManager");
 
 }
@@ -65,26 +64,26 @@ SystemConsolePreferencesManager::SystemConsolePreferencesManager()
     try
     {
         preferences->sync();
-    } catch (BackingStoreException ex) {
+    } catch (BackingStoreException* ex) {
         log->error("Unable to save preferences->", ex);
     }
 }
 
 //@Override
 /*public*/ bool SystemConsolePreferencesManager::isInitialized(Profile* profile) {
-    return this->initialized && this->exceptions->isEmpty();
+    return this->initialized && this->exceptions.isEmpty();
 }
 
 //@Override
-/*public*/ QSet<QString>* /*Iterable<Class<? extends PreferencesManager>> */SystemConsolePreferencesManager::getRequires() {
-    return new QSet<QString>();
+/*public*/ QSet<QString> /*Iterable<Class<? extends PreferencesManager>> */SystemConsolePreferencesManager::getRequires() {
+    return QSet<QString>();
 }
 
 //@Override
-/*public*/ QSet<QString>* /*Iterable<Class<?>>*/ SystemConsolePreferencesManager::getProvides() {
+/*public*/ QSet<QString> SystemConsolePreferencesManager::getProvides() {
     //Set<Class<?>> provides = new HashSet<>();
-    QSet<QString>* provides = new QSet<QString>();
-    provides->insert(this->metaObject()->className());
+    QSet<QString> provides = QSet<QString>();
+    provides.insert(this->metaObject()->className());
     return provides;
 }
 
@@ -200,10 +199,10 @@ SystemConsolePreferencesManager::SystemConsolePreferencesManager()
 
 //@Override
 /*public*/ bool SystemConsolePreferencesManager::isInitializedWithExceptions(Profile* profile) {
-    return this->initialized && !this->exceptions->isEmpty();
+    return this->initialized && !this->exceptions.isEmpty();
 }
 
 //@Override
-/*public*/ QList<Exception*>* SystemConsolePreferencesManager::getInitializationExceptions(Profile* profile) {
-    return new QList<Exception*>(*this->exceptions);
+/*public*/ QList<Exception *> SystemConsolePreferencesManager::getInitializationExceptions(Profile* profile) {
+    return QList<Exception*>(this->exceptions);
 }

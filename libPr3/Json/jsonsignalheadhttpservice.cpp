@@ -17,7 +17,7 @@
 }
 
 //@Override
-/*public*/ QJsonValue JsonSignalHeadHttpService::doGet(QString type, QString name, QLocale locale) throw (JsonException) {
+/*public*/ QJsonValue JsonSignalHeadHttpService::doGet(QString type, QString name, QLocale locale) /*throw (JsonException)*/ {
     QJsonObject root = QJsonObject(); //mapper.createQJsonObject();
     root.insert(JSON::TYPE, JsonSignalHead::SIGNAL_HEAD);
     SignalHead* signalHead = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name);
@@ -40,7 +40,7 @@
 }
 
 //@Override
-/*public*/ QJsonObject JsonSignalHeadHttpService::doPost(QString type, QString name, QJsonObject data, QLocale locale) throw (JsonException) {
+/*public*/ QJsonObject JsonSignalHeadHttpService::doPost(QString type, QString name, QJsonObject data, QLocale locale) /*throw (JsonException)*/ {
     SignalHead* signalHead = ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name);
     this->postNamedBean(signalHead, data, name, type, locale);
     if (signalHead != NULL) {
@@ -60,7 +60,7 @@
                     }
                 }
                 if (!isValid) {
-                    throw JsonException(400, tr(/*locale, */"Attempting to set object type %1 to unknown state %2.").arg(JsonSignalHead::SIGNAL_HEAD).arg(state));
+                    throw new JsonException(400, tr(/*locale, */"Attempting to set object type %1 to unknown state %2.").arg(JsonSignalHead::SIGNAL_HEAD).arg(state));
                 }
             }
         }
@@ -69,7 +69,7 @@
 }
 
 //@Override
-/*public*/ QJsonValue JsonSignalHeadHttpService::doGetList(QString type, QLocale locale) throw (JsonException) {
+/*public*/ QJsonValue JsonSignalHeadHttpService::doGetList(QString type, QLocale locale) /*throw (JsonException)*/ {
     QJsonArray root = QJsonArray(); //this->mapper.createArrayNode();
     foreach (QString name, ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSystemNameList()) {
         root.append(this->doGet(JsonSignalHead::SIGNAL_HEAD, name, locale));

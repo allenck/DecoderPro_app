@@ -2,11 +2,16 @@
 #define LOCATIONEDITFRAME_H
 #include "operationsframe.h"
 #include "appslib_global.h"
+#include "propertychangelistener.h"
+#include "divisionmanager.h"
+#include "instancemanager.h"
+#include "jcolorchooser.h"
+#include "jbutton.h"
 
 class QGroupBox;
 class JTextArea;
 class JTextField;
-class QPushButton;
+class JButton;
 class QScrollArea;
 namespace Operations
 {
@@ -22,23 +27,25 @@ namespace Operations
  class InterchangeTableModel;
  class YardTableModel;
  class SpurTableModel;
- class APPSLIBSHARED_EXPORT LocationEditFrame : public OperationsFrame
+ class APPSLIBSHARED_EXPORT LocationEditFrame : public OperationsFrame, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   /*public*/ LocationEditFrame(Location* location, QWidget* parent= 0);
   /*public*/ static /*final*/ QString NAME;// = Bundle.getMessage("Name");
   /*public*/ static /*final*/ int MAX_NAME_LENGTH;// = Control.max_len_string_location_name;
   /*public*/ static /*final*/ QString DISPOSE;// = "dispose"; // NOI18N
-  /*public*/ void dispose();
-  /*public*/ QString getClassName();
+  /*public*/ void dispose()override;
+  /*public*/ QString getClassName()override;
+   QObject* self() override {return (QObject*)this; }
 
 
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
-  /*public*/ void buttonActionPerformed(QWidget* ae);
-  /*public*/ void checkBoxActionPerformed(QWidget* ae);
-  /*public*/ void radioButtonActionPerformed(QWidget* ae);
+  /*public*/ void propertyChange(PropertyChangeEvent* e)override;
+  /*public*/ void buttonActionPerformed(QWidget* ae)override;
+  /*public*/ void checkBoxActionPerformed(QWidget* ae)override;
+  /*public*/ void radioButtonActionPerformed(QWidget* ae)override;
 
 
  private:
@@ -59,21 +66,22 @@ namespace Operations
 
   Location* _location;// = null;
   QList<QCheckBox*> checkBoxes;// = new ArrayList<JCheckBox>();
-  QWidget* panelCheckBoxes;// = new JPanel();
-  QGroupBox* typePane;
-  QGroupBox* directionPanel;// = new JPanel();
+  JPanel* panelCheckBoxes;// = new JPanel();
+  JPanel* typePane;
+  JPanel* directionPanel;// = new JPanel();
 
   // major buttons
-  QPushButton* clearButton;// = new JButton(Bundle.getMessage("Clear"));
-  QPushButton* setButton;//= new JButton(Bundle.getMessage("Select"));
-  QPushButton* autoSelectButton;// = new JButton(Bundle.getMessage("AutoSelect"));
-  QPushButton* saveLocationButton;// = new JButton(Bundle.getMessage("SaveLocation"));
-  QPushButton* deleteLocationButton;// = new JButton(Bundle.getMessage("DeleteLocation"));
-  QPushButton* addLocationButton;// = new JButton(Bundle.getMessage("AddLocation"));
-  QPushButton* addYardButton;// = new JButton(Bundle.getMessage("AddYard"));
-  QPushButton* addSpurButton;// = new JButton(Bundle.getMessage("AddSpur"));
-  QPushButton* addInterchangeButton;// = new JButton(Bundle.getMessage("AddInterchange"));
-  QPushButton* addStagingButton;// = new JButton(Bundle.getMessage("AddStaging"));
+  JButton* clearButton;// = new JButton(Bundle.getMessage("Clear"));
+  JButton* setButton;//= new JButton(Bundle.getMessage("Select"));
+  JButton* autoSelectButton;// = new JButton(Bundle.getMessage("AutoSelect"));
+  JButton* editDivisionButton = new JButton(tr("Edit"));
+  JButton* saveLocationButton;// = new JButton(Bundle.getMessage("SaveLocation"));
+  JButton* deleteLocationButton;// = new JButton(Bundle.getMessage("DeleteLocation"));
+  JButton* addLocationButton;// = new JButton(Bundle.getMessage("AddLocation"));
+  JButton* addYardButton;// = new JButton(Bundle.getMessage("AddYard"));
+  JButton* addSpurButton;// = new JButton(Bundle.getMessage("AddSpur"));
+  JButton* addInterchangeButton;// = new JButton(Bundle.getMessage("AddInterchange"));
+  JButton* addStagingButton;// = new JButton(Bundle.getMessage("AddStaging"));
 
   // check boxes
   QCheckBox* northCheckBox;// = new JCheckBox(Bundle.getMessage("North"));
@@ -104,7 +112,6 @@ namespace Operations
   /*private*/ void setVisibleLocations();
   /*private*/ void setEnabledLocations();
   /*private*/ void addCheckBoxTrainAction(QCheckBox* b);
-  QSignalMapper* chkBoxMapper;
   YardEditFrame* yef;// = NULL;
   SpurEditFrame* sef;// = NULL;
   InterchangeEditFrame* ief;// = NULL;
@@ -121,9 +128,16 @@ namespace Operations
   /*private*/ void autoSelectCheckboxes();
   /*private*/ void loadTypes(QStringList types);
   LocationsByCarTypeFrame* lctf;// = NULL;
+  JColorChooser* commentColorChooser = new JColorChooser();
+  /*private*/ void setDivisionButtonText();
 
  private slots:
   /*private*/ void checkBoxActionTrainPerformed(QWidget* ae);
+
+ protected:
+  /*protected*/ JComboBox/*<Division>*/* divisionComboBox = ((DivisionManager*)InstanceManager::getDefault("Operations::DivisionManager"))->getComboBox();
+  /*protected*/ void updateDivisionComboBox();
+
 
 friend class LocationsTableModel;
 friend class ChangeTracksFrame;

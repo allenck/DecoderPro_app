@@ -7,7 +7,7 @@
 #include "libPr3_global.h"
 
 class JmriPanel;
-class ActionEvent;
+class JActionEvent;
 class QIcon;
 //class RosterEntry;
 class LIBPR3SHARED_EXPORT CreateRosterGroupAction : public JmriAbstractAction

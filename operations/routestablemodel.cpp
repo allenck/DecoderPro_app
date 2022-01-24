@@ -8,8 +8,8 @@
 #include "jtable.h"
 #include "tablecolumn.h"
 #include "xtablecolumnmodel.h"
-#include "routeeditframe.h"
 #include "pushbuttondelegate.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -38,11 +38,11 @@ namespace Operations
   log = new Logger("RoutesTableModel");
 
 
-     manager = RouteManager::instance();
+     manager = ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"));
      //manager.addPropertyChangeListener(this);
-     connect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //LocationManager::instance().addPropertyChangeListener(this);
-     connect(LocationManager::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")).addPropertyChangeListener(this);
+     connect(((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      updateList();
  }
 
@@ -67,8 +67,7 @@ namespace Operations
      }
      // and add them back in
      foreach (Route* route, sysList) {
-         //route.addPropertyChangeListener(this);
-      connect(route->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         route->addPropertyChangeListener(this);
      }
  }
 
@@ -78,7 +77,7 @@ namespace Operations
 #if 1
      //TableColumnModel* tcm = table->getColumnModel();
   // Use XTableColumnModel so we can control which columns are visible
-  XTableColumnModel* tcm = new XTableColumnModel((AbstractTableModel*)table->model());
+  XTableColumnModel* tcm = new XTableColumnModel(/*(AbstractTableModel*)table->model()*/table);
   table->setColumnModel(tcm);
   table->createDefaultColumnsFromModel();
 //     ButtonRenderer buttonRenderer = new ButtonRenderer();
@@ -244,8 +243,7 @@ namespace Operations
  /*private*/ /*synchronized*/ void RoutesTableModel::removePropertyChangeRoutes() {
      if (!sysList.isEmpty()) {
          foreach (Route* route, sysList) {
-             //route.removePropertyChangeListener(this);
-          disconnect(route->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+             route->removePropertyChangeListener(this);
          }
      }
  }
@@ -260,9 +258,9 @@ namespace Operations
      }
 
      //manager.removePropertyChangeListener(this);
-     disconnect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //LocationManager::instance().removePropertyChangeListener(this);
-     disconnect(LocationManager::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")).removePropertyChangeListener(this);
+     disconnect(((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      removePropertyChangeRoutes();
  }
 

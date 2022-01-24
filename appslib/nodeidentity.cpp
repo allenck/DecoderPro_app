@@ -75,7 +75,7 @@
    {
     doc.setContent(f);
    }
-   else throw IOException(identityFile->getPath());
+   else throw new IOException(identityFile->getPath());
    QDomElement ue = doc.documentElement().firstChildElement(UUID_ELEMENT);
    if (!ue.isNull())
    {
@@ -84,10 +84,12 @@
      QString attr = ue.attribute(UUID_ELEMENT);
      this->uuid = uuidFromCompactString( attr);
      this->_storageIdentity = this->uuid.toString(QUuid::WithoutBraces); // backwards compatible, see class docs
-     this->_formerIdentities.append(this->_storageIdentity);
-     this->_formerIdentities.append(IDENTITY_PREFIX + attr);
+     if(!this->_formerIdentities.contains(this->_storageIdentity))
+        this->_formerIdentities.append(this->_storageIdentity);
+     if(!this->_formerIdentities.contains(IDENTITY_PREFIX + attr))
+        this->_formerIdentities.append(IDENTITY_PREFIX + attr);
     }
-    catch (IllegalArgumentException ex){
+    catch (IllegalArgumentException* ex){
      // do nothing
     }
    }
@@ -101,7 +103,7 @@
          this->uuid = QUuid::fromString(this->_storageIdentity);
          save = true; // updated UUID
      }
-    } catch (IllegalArgumentException ex) {
+    } catch (IllegalArgumentException* ex) {
         save = true; // save if attribute not available
     }
    } else {
@@ -115,16 +117,14 @@
    try
    {
     id = doc.documentElement().firstChildElement(NODE_IDENTITY).attribute(NODE_IDENTITY);
-  //            doc.getRootElement().getChild(FORMER_IDENTITIES).getChildren().stream().forEach((e) -> {
-  //                this->formerIdentities.add(e.getAttributeValue(NODE_IDENTITY));
-  //            });
     QDomNodeList nl = doc.documentElement().firstChildElement(FORMER_IDENTITIES).childNodes();
     for(int i = 0; i < nl.size(); i++)
     {
     QDomElement e = nl.at(i).toElement();
-    this->_formerIdentities.append(e.attribute(NODE_IDENTITY));
+    if(!this->_formerIdentities.contains(e.attribute(NODE_IDENTITY)))
+        this->_formerIdentities.append(e.attribute(NODE_IDENTITY));
     }
-   } catch (NullPointerException ex)
+   } catch (NullPointerException* ex)
    {
     // do nothing -- if id was not set, it will be generated
    }
@@ -145,8 +145,8 @@
     this->saveIdentity();
    }
   }
-  catch (/*JDOMException |*/ IOException ex) {
-      log->error(tr("Unable to read node identities: %1").arg( ex.getLocalizedMessage()));
+  catch (/*JDOMException |*/ IOException* ex) {
+      log->error(tr("Unable to read node identities: %1").arg( ex->getLocalizedMessage()));
       this->getNetworkIdentity(true);
   }
  }
@@ -274,7 +274,7 @@
 //            }
 //        }
 //    } catch (SocketException ex) {
-//        log.error("Error accessing interface: {}", ex.getLocalizedMessage(), ex);
+//        log.error("Error accessing interface: {}", ex->getLocalizedMessage(), ex);
 //    }
   QList<QNetworkInterface> addresses = QNetworkInterface::allInterfaces();
   foreach(QNetworkInterface nic, addresses)
@@ -300,7 +300,7 @@
 //        try {
 //            try {
  this->_networkIdentity = this->createIdentity(QNetworkInterface::interfaceFromIndex(QHostAddress::LocalHost).hardwareAddress().toLocal8Bit());
-//            } catch (NullPointerException ex) {
+//            } catch (NullPointerException* ex) {
 //                // NetworkInterface.getByInetAddress(InetAddress.getLocalHost()).getHardwareAddress() failed
 //                // this can be due to multiple reasons, most likely getLocalHost() failing on certain platforms.
 //                // Only set this.identity = null, since the following null checks address all potential problems
@@ -365,10 +365,10 @@
  try
  {
   if(ProfileManager::getDefault()->getActiveProfile() == nullptr)
-   throw NullPointerException();
+   throw new NullPointerException();
   uniqueId += ProfileManager::getDefault()->getActiveProfile()->getUniqueId();
  }
- catch (NullPointerException ex) {
+ catch (NullPointerException* ex) {
      uniqueId += ProfileManager::createUniqueId();
  }
  if (_instance == nullptr)
@@ -401,7 +401,7 @@
 //            try {
 //                this->_identity = this->createIdentity(NetworkInterface.getByInetAddress(InetAddress.getLocalHost()).getHardwareAddress());
     this->_identity = this->createIdentity(QNetworkInterface::interfaceFromIndex(QHostAddress::LocalHost).hardwareAddress().toLocal8Bit());
-//            } catch (NullPointerException ex) {
+//            } catch (NullPointerException* ex) {
 //                // NetworkInterface.getByInetAddress(InetAddress.getLocalHost()).getHardwareAddress() failed
 //                // this can be due to multiple reasons, most likely getLocalHost() failing on certain platforms.
 //                // Only set this->identity = null, since the following null checks address all potential problems
@@ -447,7 +447,7 @@
 //        }
 //    } catch (UnknownHostException ex) {
 //        this->identity = WebServerPreferences.getDefault().getRailRoadName().replaceAll("[^A-Za-z0-9 ]", "-"); // NOI18N
-//        log->error("Cannot get host address or name {}", ex.getLocalizedMessage());
+//        log->error("Cannot get host address or name {}", ex->getLocalizedMessage());
 //        log->error("Using {} as a fallback.", this->identity);
 //    }
     if (save) {
@@ -468,7 +468,8 @@
             this->uuid = QUuid::createUuid().toString(QUuid::WithoutBraces);
         }
         this->_storageIdentity = this->uuid.toString(QUuid::WithoutBraces);
-        this->_formerIdentities.append(this->_storageIdentity);
+        if(!this->_formerIdentities.contains(this->_storageIdentity))
+            this->_formerIdentities.append(this->_storageIdentity);
     }
     if (save) {
         this->saveIdentity();
@@ -527,8 +528,8 @@
 //             .setLineSeparator(System.getProperty("line.separator"))
 //             .setTextMode(Format.TextMode.PRESERVE));
 //     fmt.output(doc, w);
-// } catch (IOException ex) {
-//     log.error("Unable to store node identities: {}", ex.getLocalizedMessage());
+// } catch (IOException* ex) {
+//     log.error("Unable to store node identities: {}", ex->getLocalizedMessage());
 // }
  XmlFile* xmlFile = new XmlFile();
  xmlFile->writeXML(this->identityFile(), doc);
@@ -548,7 +549,7 @@
          if(mac[i] != ':')
           sb.append(tr("%02").arg(mac[i]));
         }
-//    } catch (NullPointerException ex) {
+//    } catch (NullPointerException* ex) {
 //        return null;
 //    }
     return sb/*.toString()*/;
@@ -568,7 +569,7 @@
          if(mac[i] != ':')
           sb.append(tr("%02").arg(mac[i]));
         }
-//    } catch (NullPointerException ex) {
+//    } catch (NullPointerException* ex) {
 //        return null;
 //    }
     return sb/*.toString()*/;
@@ -642,7 +643,7 @@
     QString uniqueId = "-";
     try {
         uniqueId += ProfileManager::getDefault()->getActiveProfile()->getUniqueId();
-    } catch (NullPointerException ex) { // because there is no active profile
+    } catch (NullPointerException* ex) { // because there is no active profile
         uniqueId += ProfileManager::createUniqueId();
         log->debug(tr("created uniqueID \"%1\" because of there (probably) is no active profile").arg( uniqueId));
     }
@@ -662,7 +663,7 @@
                 log->info(tr("Copying from old node \"%1\"").arg(theDir->toString()));
                 log->info(tr("  to new node \"%1\"").arg(newPath->toString()));
                 FileUtil::copy(theDir, newPath);
-            } catch (IOException ex) {
+            } catch (IOException* ex) {
                 log->warn(tr("Unable to copy \"%1\" to \"%2\"").arg(theDir->toString()).arg(newPath->toString()));
                 return false;
             }

@@ -4,11 +4,11 @@
 #include <QtXml>
 #include "errorhandler.h"
 #include "hasconnectionbutunabletoconnectexception.h"
+#include "connectionconfig.h"
 
 class ProxyConnectionTypeList;
 class ConnectionTypeList;
 class ConnectionTypeManager;
-class ConnectionConfig;
 class Logger;
 class ConnectionConfigManager : public AbstractPreferencesManager
 {
@@ -23,10 +23,10 @@ public:
  /*public*/ /*final*/ static QString USER_NAME;// = "userName"; // NOI18N
  /*public*/ /*final*/ static QString SYSTEM_NAME;// = "systemPrefix"; // NOI18N
  /*public*/ /*final*/ static QString MANUFACTURER;// = "manufacturer"; // NOI18N
- /*public*/ void initialize(Profile* profile)throw (InitializationException);
- /*public*/ QSet<QString>* getRequires() override;
+ Q_INVOKABLE/*public*/ void initialize(Profile* profile) override/*throw (InitializationException)*/;
+ /*public*/ QSet<QString> getRequires() override;
  /*public*/ void savePreferences(Profile* profile)override;
- /*public*/ bool add(/*@Nonnull*/ ConnectionConfig* c) throw (NullPointerException);
+ /*public*/ bool add(/*@Nonnull*/ ConnectionConfig* c) /*throw (NullPointerException)*/;
  /*public*/ bool remove(/*@NonNULL*/ ConnectionConfig* c);
  /*public*/ QVector<ConnectionConfig*> getConnections();
  /*public*/ ConnectionConfig* getConnections(int index);
@@ -35,6 +35,8 @@ public:
  /*public*/ QStringList getConnectionManufacturers();
  /*public*/ QString getConnectionManufacturer(/*@NonNULL*/ QString connectionType);
  /*public*/ QStringList getConnectionManufacturers(/*@NonNULL*/ QString connectionType);
+
+ QObject* self() override {return (QObject*)this;}
 
 private:
  /*private*/ /*final*/ QList<ConnectionConfig*> connections;// = new QList<ConnectionConfig*>();

@@ -57,7 +57,7 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
         bool pass = false;
         try {
             r->addEntry(nullptr);
-        } catch (NullPointerException e) {
+        } catch (NullPointerException* e) {
             pass = true;
         }
         Assert::assertTrue("Adding nullptr entry should have caused NPE", pass,__FILE__, __LINE__);
@@ -71,7 +71,7 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
         bool pass = false;
         try {
             r->addEntry(nullptr);
-        } catch (NullPointerException e) {
+        } catch (NullPointerException* e) {
             pass = true;
         }
         Assert::assertTrue("Adding nullptr entry should have caused NPE", pass,__FILE__, __LINE__);
@@ -412,7 +412,7 @@ RosterTest::RosterTest(QObject *parent) : QObject(parent)
         JUnitUtil::setUp();
         try {
             JUnitUtil::resetProfileManager( new NullProfile(folder->newFolder("PROFILE")));
-        } catch (IOException ioe){
+        } catch (IOException* ioe){
             // failed to reset the profile relative to the temporary folder.
             // use the default reset.
             JUnitUtil::resetProfileManager();

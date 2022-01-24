@@ -372,7 +372,7 @@ RosterEntryComboBox::RosterEntryComboBox(QWidget *parent) : QComboBox(parent)
                 decoderVersionID,
                 id);
 
-       //_roster->addPropertyChangeListener(new PropertyChangeListener());
+       //_roster->SwingPropertyChangeSupport::addPropertyChangeListener(new PropertyChangeListener());
         connect(_roster->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //        {
 //            /*public*/ void propertyChange(PropertyChangeEvent pce) {
@@ -634,7 +634,7 @@ void RosterEntryComboBox::on_currentIndexChanged(QString /*text*/)
 // this method allows anonymous listeners to fire the "selectedRosterEntries" property change
 /*protected*/ void RosterEntryComboBox::fireSelectedRosterEntriesPropertyChange()
 {
- //this->firePropertyChange(RosterEntrySelector::SELECTED_ROSTER_ENTRIES,
+// this->firePropertyChange(RosterEntrySelector::SELECTED_ROSTER_ENTRIES,
 //            _currentSelection,
 //            this->getSelectedRosterEntries(true));
  emit propertyChange("selectedRosterEntries",

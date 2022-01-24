@@ -18,8 +18,8 @@ ConsistPreferencesManager::ConsistPreferencesManager(QObject* parent)
     /*private*/ /*final*/ /*static*/ Logger* ConsistPreferencesManager::log = LoggerFactory::getLogger("ConsistPreferencesManager");
     /*public*/ /*final*/ /*static*/ QString ConsistPreferencesManager::UPDATE_CV19 = "updateCV19";
 
-    ////@Override
-    /*public*/ void ConsistPreferencesManager::initialize(Profile* profile) throw (InitializationException) {
+    //@Override
+    /*public*/ void ConsistPreferencesManager::initialize(Profile* profile) /*throw (InitializationException)*/ {
         if (!this->isInitialized(profile)) {
             Preferences* preferences = ProfileUtils::getPreferences(profile, /*this.getClass()*/"jmri.jmrit.consisttool.ConsistPreferencesManager", true);
             this->setUpdateCV19(preferences->getBoolean(UPDATE_CV19, this->isUpdateCV19()));
@@ -33,7 +33,7 @@ ConsistPreferencesManager::ConsistPreferencesManager(QObject* parent)
         preferences->putBoolean(UPDATE_CV19, this->updateCV19);
         try {
             preferences->sync();
-        } catch (BackingStoreException ex) {
+        } catch (BackingStoreException* ex) {
             log->error("Unable to save preferences.", ex);
         }
     }

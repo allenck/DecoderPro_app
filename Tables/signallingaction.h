@@ -3,6 +3,7 @@
 
 #include <QAction>
 #include "logger.h"
+#include "actionevent.h"
 
 class SignalMast;
 class SignallingAction : public QAction
@@ -16,7 +17,7 @@ public:
 signals:
 
 public slots:
-    /*public*/ void actionPerformed(ActionEvent* e = 0);
+    /*public*/ void actionPerformed(/*JActionEvent* e = 0*/);
 
 private:
  Logger* log;

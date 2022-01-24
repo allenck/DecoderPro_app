@@ -13,6 +13,11 @@ DefaultAudioManager::DefaultAudioManager(QObject *parent) :
  log = new Logger("DefaultAudioManager");
  audioShutDownTask = nullptr;
  registerSelf();
+
+ listeners = QSet<NamedBean*>();
+ buffers = QSet<NamedBean*>();
+ sources = QSet<NamedBean*>();
+
 }
 /**
  * Provide the concrete implementation for the Internal Audio Manager.
@@ -52,7 +57,7 @@ DefaultAudioManager::DefaultAudioManager(QObject *parent) :
 }
 
 //@Override
-/*public*/ QString DefaultAudioManager::getSystemPrefix() const {
+/*public*/ QString DefaultAudioManager::getSystemPrefix() {
     return "I";
 }
 
@@ -85,6 +90,7 @@ DefaultAudioManager::DefaultAudioManager(QObject *parent) :
   }
   countBuffers++;
   a = activeAudioFactory->createNewBuffer(systemName, userName);
+  buffers.insert(a);
  //            break;
  }
  //        case Audio::LISTENER: {
@@ -97,6 +103,7 @@ DefaultAudioManager::DefaultAudioManager(QObject *parent) :
   }
   countListeners++;
   a = (Audio*)activeAudioFactory->createNewListener(systemName, userName);
+  listeners.insert(a);
   //            break;
  }
  //        case Audio::SOURCE: {
@@ -109,6 +116,7 @@ DefaultAudioManager::DefaultAudioManager(QObject *parent) :
   }
   countSources++;
   a = (Audio*)activeAudioFactory->createNewSource(systemName, userName);
+  sources.insert(a);
  //            break;
  }
  //        default:
@@ -135,6 +143,30 @@ DefaultAudioManager::DefaultAudioManager(QObject *parent) :
         }
     }
     return out;
+}
+/*public*/ QSet<NamedBean*> DefaultAudioManager::getNamedBeanSet(QChar subType) {
+// switch (subType)
+// {
+//     case Audio::BUFFER: {
+//         return Collections.unmodifiableSortedSet(buffers);
+//     }
+//     case Audio::LISTENER: {
+//         return Collections.unmodifiableSortedSet(listeners);
+//     }
+//     case Audio::SOURCE: {
+//         return Collections.unmodifiableSortedSet(sources);
+//     }
+//     default: {
+//         throw new IllegalArgumentException();
+//     }
+// }
+ if(subType == Audio::BUFFER)
+  return QSet<NamedBean*>(buffers);
+ else if(subType == Audio::LISTENER)
+  return QSet<NamedBean*>(listeners);
+ else if(subType == Audio::SOURCE)
+  return QSet<NamedBean*>(sources);
+ else  throw new IllegalArgumentException();
 }
 
 /**
@@ -180,9 +212,9 @@ DefaultAudioManager::DefaultAudioManager(QObject *parent) :
    if(s != nullptr)
     Register(s);
   }
-  catch (AudioException ex)
+  catch (AudioException* ex)
   {
-   log->error("Error creating Default Audio Listener: " + ex.getMessage());
+   log->error("Error creating Default Audio Listener: " + ex->getMessage());
   }
 
   // Finally, create and register a shutdown task to ensure clean exit
@@ -224,7 +256,7 @@ bool AudioShutDownTask::doAction()
 }
 
 //@Override
-/*public*/ void DefaultAudioManager::deregister(NamedBean* s)const {
+/*public*/ void DefaultAudioManager::deregister(NamedBean* s) {
     AbstractAudioManager::deregister(s);
     // Decrement the relevant Audio object counter
 //    switch (((Audio*) s)->getSubType()) {

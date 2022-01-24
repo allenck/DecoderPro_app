@@ -60,7 +60,7 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
   e2.appendChild(doc.createTextNode(QString::number(((AbstractSensorManager*)tm)->getDefaultSensorDebounceGoingInActive())));
   sensors.appendChild(elem);
  }
- QStringListIterator iter(((AbstractSensorManager*)tm)->getSystemNameList());
+ QStringListIterator iter(((SensorManager*)tm)->getSystemNameList());
 
  // don't return an element if there are not sensors to include
  if (!iter.hasNext()) return QDomElement();
@@ -75,7 +75,6 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
   QString inverted = ((AbstractSensor*)s)->getInverted() ? "true" : "false";
 
   QDomElement elem = doc.createElement("sensor");
-  //elem.setAttribute("systemName", sname); // deprecated for 2.9.* series
   elem.setAttribute("inverted", inverted);
   QDomElement e1;
   elem.appendChild(e1 = doc.createElement("systemName"));
@@ -155,9 +154,9 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
     tm->setDefaultSensorDebounceGoingActive(goingActive);
    }
   }
-  catch (NumberFormatException ex)
+  catch (NumberFormatException* ex)
   {
-   log->error(ex.getMessage());
+   log->error(ex->getMessage());
   }
 
   try
@@ -169,9 +168,9 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
     tm->setDefaultSensorDebounceGoingInActive(goingInActive);
    }
   }
-  catch (NumberFormatException ex)
+  catch (NumberFormatException* ex)
   {
-   log->error(ex.getMessage());
+   log->error(ex->getMessage());
   }
 
  }
@@ -224,9 +223,9 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
      s->setSensorDebounceGoingActiveTimer(active.toLong());
     }
    }
-   catch (NumberFormatException ex)
+   catch (NumberFormatException* ex)
    {
-    log->error(ex.getMessage());
+    log->error(ex->getMessage());
    }
 
    try
@@ -237,9 +236,9 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
      s->setSensorDebounceGoingInActiveTimer(inActive.toLong());
     }
    }
-   catch (NumberFormatException ex)
+   catch (NumberFormatException* ex)
    {
-    log->error(ex.getMessage());
+    log->error(ex->getMessage());
    }
   }
 

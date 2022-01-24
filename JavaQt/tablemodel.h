@@ -42,7 +42,7 @@ class JAVAQTSHARED_EXPORT TableModel : public QAbstractTableModel
       * @param   columnIndex     the index of the column
       * @return  the name of the column
       */
-     /*public*/ virtual QString getColumnName(int /*columnIndex*/) {return "";}
+     /*public*/ virtual QString getColumnName(int /*columnIndex*/) const =0;
 
      /**
       * Returns the most specific superclass for all the cell values
@@ -52,7 +52,7 @@ class JAVAQTSHARED_EXPORT TableModel : public QAbstractTableModel
       * @param columnIndex  the index of the column
       * @return the common ancestor class of the object values in the model.
       */
- /*public*/ virtual /*Class<?>*/ QString getColumnClass(int /*columnIndex*/) const {return "";}
+      /*public*/ virtual /*Class<?>*/ QString getColumnClass(int /*columnIndex*/) const = 0;
 
      /**
       * Returns true if the cell at <code>rowIndex</code> and
@@ -75,7 +75,7 @@ class JAVAQTSHARED_EXPORT TableModel : public QAbstractTableModel
       * @param   columnIndex     the column whose value is to be queried
       * @return  the value Object at the specified cell
       */
-     /*public*/ virtual QVariant getValueAt(int /*rowIndex*/, int /*columnIndex*/) {return QVariant();}
+     /*public*/ virtual QVariant getValueAt(int /*rowIndex*/, int /*columnIndex*/) const =0;
 
      /**
       * Sets the value in the cell at <code>columnIndex</code> and

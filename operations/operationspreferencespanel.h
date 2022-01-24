@@ -5,18 +5,20 @@
 
 namespace Operations
 {
- class APPSLIBSHARED_EXPORT OperationsPreferencesPanel : public OperationsPanel
+ class APPSLIBSHARED_EXPORT OperationsPreferencesPanel : public OperationsPanel, public PreferencesPanel
  {
   Q_OBJECT
+  Q_INTERFACES(PreferencesPanel)
  public:
   explicit OperationsPreferencesPanel(QWidget *parent = 0);
-  /*public*/ QString getPreferencesItem();
-  /*public*/ QString getPreferencesItemText();
-  /*public*/ QString getLabelKey();
-  /*public*/ QWidget* getPreferencesComponent();
-  /*public*/ bool isPersistant() ;
-  /*public*/ bool isRestartRequired();
-  /*public*/ bool isPreferencesValid();
+  /*public*/ QString getPreferencesItem()override;
+  /*public*/ QString getPreferencesItemText()override;
+  /*public*/ QString getLabelKey()override;
+  /*public*/ QWidget* getPreferencesComponent()override;
+  /*public*/ bool isPersistant() override;
+  /*public*/ bool isRestartRequired()override;
+  /*public*/ bool isPreferencesValid()override;
+   QObject* self() override{return (QObject*)this;}
 
  signals:
 

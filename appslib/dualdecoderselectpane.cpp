@@ -185,9 +185,9 @@ void DualDecoderSelectPane::writeCV(QString cv, int value) {
         try {
             status->setText("writing...");
             p->writeCV(cv, value, (ProgListener*)this);
-        } catch (ProgrammerException ex) {
+        } catch (ProgrammerException* ex) {
             state = IDLE;
-            status->setText("" + ex.getMessage());
+            status->setText("" + ex->getMessage());
         }
     }
 }
@@ -202,9 +202,9 @@ void DualDecoderSelectPane::readCV16() {
             status->setText("reading...");
             state = READCV16;
             p->readCV("16", (ProgListener*)this);
-        } catch (ProgrammerException ex) {
+        } catch (ProgrammerException* ex) {
             state = IDLE;
-            status->setText("" + ex.getMessage());
+            status->setText("" + ex->getMessage());
         }
     }
 }
@@ -219,7 +219,7 @@ void DualDecoderSelectPane::readCV16() {
             initReply(value, retcode);
             break;
         default:
-            log->warn("unexpected mode: " + mode);
+            log->warn("unexpected mode: " + QString::number(mode));
             break;
     }
 }

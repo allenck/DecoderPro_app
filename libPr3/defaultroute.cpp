@@ -74,7 +74,7 @@ void DefaultRoute::init()
  _locked = false;
 }
 
-/*public*/ bool DefaultRoute::getEnabled() {
+/*public*/ bool DefaultRoute::getEnabled() const{
     return _enabled;
 }
 /*public*/ void DefaultRoute::setEnabled(bool v) {
@@ -767,23 +767,24 @@ void DefaultRoute::init()
             } else {
                 ((AbstractSensor*)getTurnoutsAlgdSensor())->setKnownState(Sensor::INACTIVE);
             }
-        } catch (JmriException ex) {
+        } catch (JmriException* ex) {
                 log->warn("Exception setting sensor "+getTurnoutsAlignedSensor()+" in route");
         }
     }
 }
 
-
+//@Override
 /**
  * Method to activate the Route via Sensors and control Turnout
  * Sets up for Route activation based on a list of Sensors and a control Turnout
  * Registers to receive known state changes for output turnouts
  */
-/*public*/ void DefaultRoute::activateRoute() {
+/*public*/ void DefaultRoute::activateRoute()
+{
+    activatedRoute = true;
 
     //register output turnouts to return Known State if a turnouts aligned sensor is defined
-    if (getTurnoutsAlignedSensor()!=("")) {
-
+    if (getTurnoutsAlignedSensor().isEmpty()) {
         for (int k=0; k< _outputTurnoutList->size(); k++) {
             _outputTurnoutList->at(k)->addListener();
         }
@@ -792,12 +793,11 @@ void DefaultRoute::init()
     for (int k=0; k< _controlSensorList->size(); k++) {
         _controlSensorList->at(k)->addListener();
     }
-    if (getCtlTurnout()!=NULL)
+    Turnout* ctl = getCtlTurnout();
+    if (ctl!=nullptr)
     {
-//        getCtlTurnout()->addPropertyChangeListener(mTurnoutListener =
+//        getCtlTurnout()->SwingPropertyChangeSupport::addPropertyChangeListener(mTurnoutListener =
 //                                        new PropertyChangeListener());
-        AbstractTurnout* t = (AbstractTurnout*)getCtlTurnout();
-        connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), SLOT(propertyChange(PropertyChangeEvent*)));
 //        {
 //                /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
 //                    if (e.getPropertyName().equals("KnownState")) {
@@ -807,35 +807,24 @@ void DefaultRoute::init()
 //                    }
 //                }
 //            }, getControlTurnout(), "Route " + getDisplayName());
+     ctl->addPropertyChangeListener(mTurnoutListener =new MTurnoutListener(this), getControlTurnout(), "Route " + getDisplayName());
     }
 
-    if (getLockCtlTurnout()!=NULL)
-    {
-//        getLockCtlTurnout()->addPropertyChangeListener(mLockTurnoutListener =
-//                                        new PropertyChangeListener());
-      AbstractTurnout* t = (AbstractTurnout*)getLockCtlTurnout();
-      connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), SLOT(propertyChange(PropertyChangeEvent*)));
-//        {
-//                /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
-//                    if (e.getPropertyName().equals("KnownState")) {
-//                        int now = ((Integer) e.getNewValue()).intValue();
-//                        int then = ((Integer) e.getOldValue()).intValue();
-//                        checkLockTurnout(now, then, (Turnout)e.getSource());
-//                    }
-//                }
-//            }, getLockControlTurnout(), "Route " + getDisplayName());
+    Turnout* lockCtl = getLockCtlTurnout();
+    if (lockCtl != nullptr) {
+//        mLockTurnoutListener = (java.beans.PropertyChangeEvent e) -> {
+//            if (e.getPropertyName().equals("KnownState")) {
+//                int now = ((Integer) e.getNewValue());
+//                int then = ((Integer) e.getOldValue());
+//                checkLockTurnout(now, then, (Turnout) e.getSource());
+//            }
+//        };
+     mLockTurnoutListener = new MLockTurnoutListener(this);
+        lockCtl->addPropertyChangeListener(mLockTurnoutListener, getLockControlTurnout(), "Route " + getDisplayName());
     }
-// register for updates to the Output Turnouts
-}
 
-/*public*/ void DefaultRoute::propertyChange(PropertyChangeEvent* e) // SLOT[]
-{
-  if (e->getPropertyName()==("KnownState"))
-  {
-      int now =  e->getNewValue().toInt();
-      int then = e->getOldValue().toInt();
-      checkTurnout(now, then, (Turnout*)e->getSource());
-  }
+    checkTurnoutAlignment();
+    // register for updates to the Output Turnouts
 }
 
 /**
@@ -872,22 +861,34 @@ bool DefaultRoute::isVetoed() {
  * Deactivates Route based on a list of Sensors and two control Turnouts
  */
 /*public*/ void DefaultRoute::deActivateRoute() {
+ //Check that the route isn't already deactived.
+    if (!activatedRoute) {
+        return;
+    }
+
+    activatedRoute = false;
     // remove control turnout if there's one
-    for (int k=0; k<_controlSensorList->size(); k++) {
+    for (int k = 0; k < _controlSensorList->size(); k++) {
         _controlSensorList->at(k)->removeListener();
     }
-    if (mTurnoutListener!=NULL) {
-        getCtlTurnout()->removePropertyChangeListener(mTurnoutListener);
-        mTurnoutListener = NULL;
+    if (mTurnoutListener != nullptr) {
+        Turnout* ctl = getCtlTurnout();
+        if (ctl != nullptr) {
+            ctl->removePropertyChangeListener(mTurnoutListener);
+        }
+        mTurnoutListener = nullptr;
     }
     // remove lock control turnout if there's one
-    if (mLockTurnoutListener!=NULL) {
-        getLockCtlTurnout()->removePropertyChangeListener(mLockTurnoutListener);
-        mLockTurnoutListener = NULL;
+    if (mLockTurnoutListener != nullptr) {
+        Turnout* lockCtl = getCtlTurnout();
+        if (lockCtl != nullptr) {
+            lockCtl->removePropertyChangeListener(mLockTurnoutListener);
+        }
+        mLockTurnoutListener = nullptr;
     }
     //remove listeners on output turnouts if there are any
-    if (mTurnoutsAlignedSensor!=""){
-        for (int k=0; k< _outputTurnoutList->size(); k++) {
+    if (!mTurnoutsAlignedSensor.isEmpty()) {
+        for (int k = 0; k < _outputTurnoutList->size(); k++) {
             _outputTurnoutList->at(k)->removeListener();
         }
     }
@@ -1110,7 +1111,7 @@ void OutputTurnout::removeListener()
    {
     try {
         (new Sound(r->getOutputSoundName()))->play();
-    } catch (NullPointerException ex) {
+    } catch (NullPointerException* ex) {
         log->error(tr("Cannot find file %1").arg(r->getOutputSoundName()));
     }
    }
@@ -1136,7 +1137,7 @@ void OutputTurnout::removeListener()
   {
    ((AbstractSensor*)t)->setKnownState(state);
   }
-  catch (JmriException e)
+  catch (JmriException* e)
   {
    log->warn("Exception setting sensor "+t->getSystemName()+" in route");
   }
@@ -1187,3 +1188,34 @@ void OutputTurnout::removeListener()
  r->checkTurnoutAlignment();
 }
 
+//@Override
+/*public*/ QList<NamedBeanUsageReport*> DefaultRoute::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+    if (bean != nullptr) {
+        for (int i = 0; i < getNumOutputTurnouts(); i++) {
+            if (bean->equals(getOutputTurnout(i))) {
+                report.append(new NamedBeanUsageReport("RouteTurnoutOutput"));  // NOI18N
+            }
+        }
+        for (int i = 0; i < getNumOutputSensors(); i++) {
+            if (bean->equals(getOutputSensor(i))) {
+                report.append(new NamedBeanUsageReport("RouteSensorOutput"));  // NOI18N
+            }
+        }
+        for (int i = 0; i < _controlSensorList->size(); i++) {
+            if (bean->equals(getRouteSensor(i))) {
+                report.append(new NamedBeanUsageReport("RouteSensorControl"));  // NOI18N
+            }
+        }
+        if (bean->equals(getTurnoutsAlgdSensor())) {
+            report.append(new NamedBeanUsageReport("RouteSensorAligned"));  // NOI18N
+        }
+        if (bean->equals(getCtlTurnout())) {
+            report.append(new NamedBeanUsageReport("default Route {} created"));  // NOI18N
+        }
+        if (bean->equals(getLockCtlTurnout())) {
+            report.append(new NamedBeanUsageReport("RouteTurnoutLock"));  // NOI18N
+        }
+    }
+    return report;
+}

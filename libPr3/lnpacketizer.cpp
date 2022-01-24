@@ -42,7 +42,15 @@ LnPacketizer::LnPacketizer(LocoNetSystemConnectionMemo *m, QObject* parent)
 }
 // The methods to implement the LocoNetInterface
 
-/*public*/ bool LnPacketizer::status() { return ((ostream != NULL) & (istream != NULL)); }
+/*public*/ bool LnPacketizer::status()
+{
+ bool returnVal = ( /*ostream != nullptr && istream != nullptr
+         &&*/ xmtThread != nullptr && xmtThread->isRunning() && xmtHandler != nullptr
+         && rcvThread != nullptr && rcvThread->isRunning() && rcvHandler != nullptr
+         );
+ return returnVal;
+
+}
 
 void LnPacketizer::connectPort(LnPortController* p)
 {
@@ -112,6 +120,7 @@ void LnPacketizer::sendLocoNetMessage(LocoNetMessage* m)
 
 //    xmtHandler->setPriority(QThread::HighPriority); // Highest -1
     xmtHandler->start(QThread::HighPriority);
+    xmtThread = xmtHandler;
 
     // start the RcvHandler in a thread of its own
     if( rcvHandler == NULL )
@@ -124,6 +133,8 @@ void LnPacketizer::sendLocoNetMessage(LocoNetMessage* m)
     connect(handler, SIGNAL(finished()), this, SLOT(rcvTerminated()));
     if (istream != NULL)
       rcvHandler->start(QThread::HighestPriority);
+    rcvThread = rcvHandler;
+
 }
 #endif
 void LnPacketizer::loconetMsgRcvd(LocoNetMessage *m)    // [slot]

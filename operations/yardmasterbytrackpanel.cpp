@@ -4,7 +4,7 @@
 #include <QGroupBox>
 #include "htmltextedit.h"
 #include "location.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QPushButton>
 #include "borderfactory.h"
 #include <QScrollArea>
@@ -31,6 +31,8 @@
 #include "instancemanager.h"
 #include <QCheckBox>
 #include "control.h"
+#include "jpanel.h"
+#include "borderfactory.h"
 
 using namespace Operations;
 /**
@@ -59,7 +61,7 @@ void YardmasterByTrackPanel::common()
  textTrackCommentWorkPane = new HtmlTextEdit();
 
  // combo boxes
- trackComboBox = new QComboBox(); // <Track>
+ trackComboBox = new JComboBox(); // <Track>
 
  // buttons
  nextButton = new QPushButton(tr("Next"));
@@ -79,36 +81,31 @@ void YardmasterByTrackPanel::common()
 
     _location = location;
 
-    QGroupBox* textSwitchListCommentFrame = new QGroupBox(tr("Comment"));
+    JPanel* textSwitchListCommentFrame = new JPanel();
+    textSwitchListCommentFrame->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
     textSwitchListCommentFrame->setLayout(new QVBoxLayout());
-    textSwitchListCommentFrame->setStyleSheet(gbStyleSheet);
-//    textSwitchListCommentPane->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
-    textSwitchListCommentPane->setStyleSheet(gbStyleSheet);
+    //textSwitchListCommentPane->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
 //    textSwitchListCommentPane->setBackground(NULL);
     textSwitchListCommentPane->setEditable(false);
     textSwitchListCommentPane->setMaximumSize(QSize(2000, 200));
 
-    QGroupBox* textTrackCommentFrame = new QGroupBox(tr("Comment"));
+    JPanel* textTrackCommentFrame = new JPanel();
     textTrackCommentFrame->setLayout(new QVBoxLayout());
-    textTrackCommentFrame->setStyleSheet(gbStyleSheet);
-//    textTrackCommentPane->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
+    textTrackCommentFrame->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
 //    textTrackCommentPane->setBackground(NULL);
     textTrackCommentPane->setEditable(false);
     textTrackCommentPane->setMaximumSize(QSize(2000, 200));
 
-    QGroupBox* textTrackCommentWorkFrame = new QGroupBox(tr("Comments"));
+    JPanel* textTrackCommentWorkFrame = new JPanel();
     textTrackCommentWorkFrame->setLayout(new QVBoxLayout());
-    textTrackCommentWorkFrame->setStyleSheet(gbStyleSheet);
-//    textTrackCommentWorkPane->setBorder(BorderFactory::createTitledBorder(tr("Comments")));
+    textTrackCommentWorkFrame->setBorder(BorderFactory::createTitledBorder(tr("Comments")));
 //    textTrackCommentWorkPane->setBackground(NULL);
     textTrackCommentWorkPane->setEditable(false);
     textTrackCommentWorkPane->setMaximumSize(QSize(2000, 200));
 
-    QGroupBox* pTrackSelect = new QGroupBox();
+    JPanel* pTrackSelect = new JPanel();
     QVBoxLayout* pTrackSelectLayout = new QVBoxLayout(pTrackSelect);
-    //pTrackSelect->setBorder(BorderFactory.createTitledBorder(Bundle.getMessage("Track")));
-    pTrackSelect->setStyleSheet(gbStyleSheet);
-    pTrackSelect->setTitle(tr("Track"));
+    pTrackSelect->setBorder(BorderFactory::createTitledBorder(tr("Track")));
     pTrackSelectLayout->addWidget(trackComboBox);
     // add next button for web server
     pTrackSelectLayout->addWidget(nextButton);
@@ -142,8 +139,7 @@ void YardmasterByTrackPanel::common()
         textSwitchListCommentPane->setText(_location->getSwitchListComment());
         textSwitchListCommentPane->setVisible(_location->getSwitchListComment() != (Location::NONE));
         updateTrackComboBox();
-        //_location->addPropertyChangeListener(this);
-        connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        _location->SwingPropertyChangeSupport::addPropertyChangeListener(this);
     }
 
     update();
@@ -257,8 +253,7 @@ void YardmasterByTrackPanel::common()
             }
             for (Engine* engine : *engList) {
                 if (engine->getTrack() == _track) {
-                    //engine.addPropertyChangeListener(this);
-                 connect(engine->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+                 engine->SwingPropertyChangeSupport::addPropertyChangeListener(this);
                     rollingStock.append(engine);
                     QCheckBox* checkBox = new QCheckBox(trainCommon->pickupEngine(engine));
                     setCheckBoxFont(checkBox);
@@ -280,8 +275,7 @@ void YardmasterByTrackPanel::common()
             }
             for (Engine* engine : *engList) {
                 if (engine->getDestinationTrack() == _track) {
-                    //engine.addPropertyChangeListener(this);
-                 connect(engine->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+                 engine->SwingPropertyChangeSupport::addPropertyChangeListener(this);
                     rollingStock.append(engine);
                     QCheckBox* checkBox = new QCheckBox(trainCommon->dropEngine(engine));
                     setCheckBoxFont(checkBox);
@@ -310,8 +304,7 @@ void YardmasterByTrackPanel::common()
                     if (car->getTrack() == _track &&
                             car->getRouteDestination() != car->getRouteLocation() &&
                             car->getRouteDestination() == rl) {
-                        //car->addPropertyChangeListener(this);
-                     connect(car->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+                     car->SwingPropertyChangeSupport::addPropertyChangeListener(this);
                         rollingStock.append(car);
                         QString text;
                         if (car->isUtility()) {
@@ -347,8 +340,7 @@ void YardmasterByTrackPanel::common()
             for (Car* car : *carList) {
                 if (car->getDestinationTrack() == _track &&
                         car->getRouteLocation() != car->getRouteDestination()) {
-                    //car->addPropertyChangeListener(this);
-                 connect(car->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+                 car->SwingPropertyChangeSupport::addPropertyChangeListener(this);
                     rollingStock.append(car);
                     QString text;
                     if (car->isUtility()) {
@@ -382,8 +374,7 @@ void YardmasterByTrackPanel::common()
             for (Car* car : *carList) {
                 if ((car->getTrack() == _track || car->getDestinationTrack() == _track) &&
                         car->getRouteLocation() != NULL && car->getRouteLocation() == car->getRouteDestination()) {
-                    //car->addPropertyChangeListener(this);
-                 connect(car->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+                 car->SwingPropertyChangeSupport::addPropertyChangeListener(this);
                     rollingStock.append(car);
                     QString text;
                     if (car->isUtility()) {
@@ -428,13 +419,13 @@ void YardmasterByTrackPanel::common()
                 text = TrainSwitchListText::getStringHoldCar().split(QRegExp("\\{"))[0] + s.trimmed();
             } else {
                 text = TrainSwitchListText::getStringHoldCar().arg(
-                        TrainCommon::padAndTruncateString(car->getRoadName(),((CarRoads*) InstanceManager::getDefault("CarRoads"))->getMaxNameLength())).arg(
+                        TrainCommon::padAndTruncateString(car->getRoadName(),((CarRoads*) InstanceManager::getDefault("Operations::CarRoads"))->getMaxNameLength())).arg(
                                 TrainCommon::padAndTruncateString(TrainCommon::splitString(car->getNumber()), Control::max_len_string_print_road_number)).arg(
                                 TrainCommon::padAndTruncateString(car->getTypeName().split("-")[0], ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getMaxNameLength()),
                                 TrainCommon::padAndTruncateString(car->getLength() + TrainCommon::LENGTHABV, Control::max_len_string_length_name)).arg(
-                                TrainCommon::padAndTruncateString(car->getLoadName(),((CarLoads*) InstanceManager::getDefault("CarLoads"))->getMaxNameLength()).arg(
-                                TrainCommon::padAndTruncateString(_track->getName(),((LocationManager*) InstanceManager::getDefault("LocationManager"))->getMaxTrackNameLength()).arg(
-                                TrainCommon::padAndTruncateString(car->getColor(),((CarColors*) InstanceManager::getDefault("CarColors"))->getMaxNameLength()))));
+                                TrainCommon::padAndTruncateString(car->getLoadName(),((CarLoads*) InstanceManager::getDefault("Operations::CarLoads"))->getMaxNameLength()).arg(
+                                TrainCommon::padAndTruncateString(_track->getName(),((LocationManager*) InstanceManager::getDefault("Operations::LocationManager"))->getMaxTrackNameLength()).arg(
+                                TrainCommon::padAndTruncateString(car->getColor(),((CarColors*) InstanceManager::getDefault("Operations::CarColors"))->getMaxNameLength()))));
 
             }
             QCheckBox* checkBox = new QCheckBox(text);
@@ -476,8 +467,7 @@ void YardmasterByTrackPanel::common()
 //@Override
 /*public*/ void YardmasterByTrackPanel::dispose() {
     if (_location != NULL)
-        //_location->removePropertyChangeListener(this);
-     disconnect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     _location->removePropertyChangeListener(this);
     CommonConductorYardmasterPanel::removePropertyChangeListerners();
 }
 

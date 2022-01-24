@@ -16,7 +16,7 @@ public:
  DefaultSignalMastLogicManagerXml(const DefaultSignalMastLogicManagerXml&) : AbstractNamedBeanManagerConfigXML() {}
     /*public*/ void setStoreElementClass(QDomElement signalMastLogic) ;
     /*public*/ void load(QDomElement element, QObject* o) throw (Exception) override;
-    /*public*/ bool load(QDomElement signalMastLogic) throw (Exception) override;
+    /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException) override;
     /*public*/ bool loadSignalMastLogic(QDomElement signalMastLogic);
     /*public*/ int loadOrder() const override;
 

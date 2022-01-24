@@ -1,13 +1,15 @@
 #ifndef SYSTEMCONSOLEPREFERENCESMANAGER_H
 #define SYSTEMCONSOLEPREFERENCESMANAGER_H
 #include "preferencesmanager.h"
+#include "bean.h"
 
 class Exception;
 class Logger;
 class InitializationException;
-class SystemConsolePreferencesManager : public PreferencesManager
+class SystemConsolePreferencesManager : public Bean, public PreferencesManager
 {
  Q_OBJECT
+  Q_INTERFACES(PreferencesManager)
 public:
  Q_INVOKABLE SystemConsolePreferencesManager();
  ~SystemConsolePreferencesManager() {}
@@ -17,11 +19,11 @@ public:
  /*public*/ static /*final*/ QString FONT_STYLE;// = "fontStyle";
  /*public*/ static /*final*/ QString FONT_FAMILY;// = "fontFamily";
  /*public*/ static /*final*/ QString WRAP_STYLE;// = "wrapStyle";
- /*public*/ void initialize(Profile* profile)throw (InitializationException);
- /*public*/ void savePreferences(Profile* profile);
- /*public*/ bool isInitialized(Profile* profile);
- /*public*/ QSet<QString>* /*Iterable<Class<? extends PreferencesManager>> */getRequires();
- /*public*/ QSet<QString>* /*Iterable<Class<?>>*/ getProvides();
+ /*public*/ void initialize(Profile* profile)throw (InitializationException)override;
+ /*public*/ void savePreferences(Profile* profile)override;
+ /*public*/ bool isInitialized(Profile* profile)override;
+ /*public*/ QSet<QString> /*Iterable<Class<? extends PreferencesManager>> */getRequires()override;
+ /*public*/ QSet<QString> /*Iterable<Class<?>>*/ getProvides()override;
  /*public*/ int getScheme();
  /*public*/ void setScheme(int scheme) ;
  /*public*/ int getFontSize();
@@ -33,7 +35,9 @@ public:
  /*public*/ int getWrapStyle() ;
  /*public*/ void setWrapStyle(int wrapStyle);
  /*public*/ bool isInitializedWithExceptions(Profile* profile);
- /*public*/ QList<Exception*>* getInitializationExceptions(Profile* profile);
+ /*public*/ QList<Exception*> getInitializationExceptions(Profile* profile);
+
+ QObject* self() override {return (QObject*)this;}
 
 private:
  // default settings
@@ -43,7 +47,7 @@ private:
  /*private*/ QString fontFamily;// = "Monospaced";  //NOI18N
  /*private*/ int wrapStyle;// = SystemConsole::WRAP_STYLE_WORD;
  /*private*/ bool initialized;// = false;
- /*private*/ /*final*/ QList<Exception*>* exceptions; // = new ArrayList<>();
+ /*private*/ /*final*/ QList<Exception*> exceptions = QList<Exception*>();
  /*private*/ /*static*/ /*final*/ Logger* log;// = LoggerFactory.getLogger(SystemConsolePreferencesManager.class);
 
 };

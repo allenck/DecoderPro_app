@@ -1,19 +1,22 @@
 #ifndef BEANEDITACTION_H
 #define BEANEDITACTION_H
 
-#include <QAction>
+#include "abstractaction.h"
 #include "abstracttablemodel.h"
 #include "actionlistener.h"
 #include "libtables_global.h"
 #include <QStatusBar>
-#include <QLabel>
+#include "jlabel.h"
+#include "jbutton.h"
+#include "windowadapter.h"
 
+class JTextPane;
 class KeyValueModel;
 class NamedBeanHandleManager;
 class JTextArea;
 class BeanEditItem;
 class Logger;
-class QTabWidget;
+class JTabbedPane;
 class JmriJFrame;
 class BeanPropertiesTableModel;
 class BeanItemPanel;
@@ -21,7 +24,7 @@ class QScrollArea;
 class JTextArea;
 class JTextField;
 class NamedBean;
-class LIBTABLESSHARED_EXPORT BeanEditAction : public QAction
+class LIBTABLESSHARED_EXPORT BeanEditAction : public AbstractAction
 {
  Q_OBJECT
 public:
@@ -35,28 +38,30 @@ public:
 
 signals:
 private:
- NamedBean* bean;
+ NamedBean* bean = nullptr;
  Logger* log;
 
 public slots:
- /*public*/ void actionPerformed(ActionEvent* e = 0);
- void On_okBut_clicked();
+ /*public*/ void actionPerformed(JActionEvent* e = 0)override;
 
 private:
  void common();
  JTextField* userNameField;// = new JTextField(20);
  JTextArea* commentField;// = new JTextArea(3, 30);
- QScrollArea* commentFieldScroller;// = new JScrollPane(commentField);
+ //QScrollArea* commentFieldScroller;// = new JScrollPane(commentField);
+ /*private*/ JLabel* statusBar = new JLabel(tr("Configure the properties on each tab and click [%1]").arg(tr("Apply")));
  virtual BeanItemPanel* basicDetails();
  virtual BeanItemPanel* usageDetails();
  BeanPropertiesTableModel* propertiesModel;
  virtual BeanItemPanel* propertiesDetails();
  JmriJFrame* f;
- /*private*/ QTabWidget* detailsTab;// = new JTabbedPane();
- void formatTextAreaAsLabel(JTextArea* pane);
+ /*private*/ JTabbedPane* detailsTab;// = new JTabbedPane();
+
+ void formatTextAreaAsLabel(JTextPane *pane);
  static bool validateNumericalInput(QString text);
  NamedBeanHandleManager* nbMan;// = InstanceManager.getDefault(jmri.NamedBeanHandleManager.class);
  QLabel* statusBarWidget;
+ /*private*/ void persistSelectedTab();
 
 protected:
  virtual /*protected*/ void initPanels();
@@ -66,7 +71,12 @@ protected:
  virtual /*protected*/ void resetBasicItems(ActionEvent* e = 0);
  virtual /*abstract*/ /*protected*/ QString helpTarget();
  /*protected*/QList<BeanItemPanel*> bei;// = new ArrayList<BeanItemPanel>(5);
- /*protected*/ QWidget* selectedTab;// = NULL;
+ /*protected*/ QWidget* selectedTab = NULL;
+ /**
+  * Apply Button.
+  * Accessible so Edit Actions can set custom tool tip.
+  */
+ /*protected*/ JButton* applyBut = nullptr;
 protected slots:
  /*protected*/ void applyButtonAction(ActionEvent* e = 0);
  /*protected*/ void cancelButtonAction(ActionEvent* e = 0);
@@ -89,7 +99,20 @@ protected slots:
  friend class SensorDebounceEditAction;
  friend class SetResetItemAction;
  friend class SetSaveItemAction;
+ friend class OBlockEditAction;
+ friend class OBTSaveItemAction1;
+ friend class OBTResetItemAction1;
+ friend class OBTResetItemAction1a;
+ friend class OBTSaveItemAction2;
+ friend class OBTResetItemAction2;
+ friend class OBTSaveItemAction3;
+ friend class OBTResetItemAction3;
+ friend class LightEditAction;
+ friend class LEAResetAction;
+ friend class LEASaveAction;
+ friend class BEWindowListener;
 };
+
 /*private*/ /*static*/ class LIBTABLESSHARED_EXPORT BeanPropertiesTableModel : public  AbstractTableModel
 {
  Q_OBJECT
@@ -122,41 +145,53 @@ protected slots:
     /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
     /*public*/ bool wasModified() ;
 };
-class LIBTABLESSHARED_EXPORT BasicSetSaveActionListener : public ActionListener
+
+class LIBTABLESSHARED_EXPORT BasicSetSaveActionListener : public AbstractAction
 {
  Q_OBJECT
  BeanEditAction* act;
 public:
  BasicSetSaveActionListener(BeanEditAction* act);
 public slots:
- void actionPerformed(ActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0);
 };
-class LIBTABLESSHARED_EXPORT BasicSetResetActionListener : public ActionListener
+class LIBTABLESSHARED_EXPORT BasicSetResetActionListener : public AbstractAction
 {
  Q_OBJECT
  BeanEditAction* act;
 public:
  BasicSetResetActionListener(BeanEditAction* act);
 public slots:
- void actionPerformed(ActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0);
 };
-class LIBTABLESSHARED_EXPORT PropertiesSetSaveActionListener : public ActionListener
+class LIBTABLESSHARED_EXPORT PropertiesSetSaveActionListener : public AbstractAction
 {
  Q_OBJECT
  BeanEditAction* act;
 public:
  PropertiesSetSaveActionListener(BeanEditAction* act);
 public slots:
- void actionPerformed(ActionEvent *e = 0) override;
+ void actionPerformed(JActionEvent *e = 0) /*override*/;
 };
-class LIBTABLESSHARED_EXPORT PropertiesSetResetActionListener : public ActionListener
+class LIBTABLESSHARED_EXPORT PropertiesSetResetActionListener : public AbstractAction
 {
  Q_OBJECT
  BeanEditAction* act;
 public:
  PropertiesSetResetActionListener(BeanEditAction* act);
 public slots:
- void actionPerformed(ActionEvent *e = 0) override;
+ void actionPerformed(JActionEvent *e = 0) /*override*/;
+};
+
+class BEWindowListener : public WindowAdapter
+{
+  BeanEditAction* be;
+ public:
+  BEWindowListener(BeanEditAction* be) {this->be = be;}
+  //@Override
+  /*public*/ void windowClosing(QEvent* /*e*/) {
+      be->cancelButtonAction(/*null*/);
+  }
 };
 
 #endif // BEANEDITACTION_H

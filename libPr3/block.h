@@ -26,10 +26,13 @@ public:
     };
     Q_ENUM(STATE)
     // Curvature attributes
-    static /*const*/ int NONE;// = 0x00;
-    static /*const*/ int GRADUAL;// = 0x01;
-    static /*const*/ int TIGHT;// = 0x02;
-    static /*const*/ int SEVERE;// = 0x04;
+    enum CURVATURE
+    {
+    NONE = 0x00,
+    GRADUAL = 0x01,
+    TIGHT = 0x02,
+    SEVERE = 0x04
+    };
 
     /*public*/ virtual bool setSensor(QString pName);
     /*public*/ virtual void setNamedSensor(NamedBeanHandle<Sensor*>* s);
@@ -114,7 +117,7 @@ public:
     /*public*/ void setPermissiveWorking(bool w);
     /*public*/ float getSpeedLimit();
     /*public*/ QString getBlockSpeed();
-    /*public*/ void setBlockSpeed(QString s) throw (JmriException);
+    /*public*/ void setBlockSpeed(QString s) /*throw (JmriException)*/;
     /*public*/ void setCurvature(int c);
     /*public*/ int getCurvature();
     /*public*/ void setLength(float l);  // l must be in millimeters
@@ -191,6 +194,8 @@ public:
     /*public*/ void setBlockSpeedName(QString s);
     virtual /*public*/ void goingUnknown();
     virtual /*public*/ void goingInconsistent();
+    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean)override;
+    /*public*/ QString getBeanType()override;
 
 signals:
 
@@ -229,16 +234,18 @@ private:
     /*private*/ QString _blockSpeed;// = "";
     /*private*/ int maxInfoMessages = 5;
     /*private*/ int infoMessageCount = 0;
-
 };
 
-class BlockSensorListener : public PropertyChangeListener
+class BlockSensorListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  Block* block;
 public:
  BlockSensorListener(Block* block) {this->block = block;}
+ QObject* self() override{return (QObject*)this;}
+
 public slots:
- void propertyChange(PropertyChangeEvent*);
+ void propertyChange(PropertyChangeEvent*)override;
 };
 #endif // BLOCK_H

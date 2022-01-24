@@ -28,6 +28,7 @@ protected:
     virtual /*protected*/ void start();
     virtual /*protected*/ void displayMainFrame(QSize d);
 
+    friend class LoadDecoders;
 };
 
 class LoadDecoders : public QObject

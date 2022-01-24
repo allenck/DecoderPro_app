@@ -36,7 +36,7 @@
  //super();
  fixedSourceMastLabel = new QLabel();
  discoverPairs = new QPushButton(tr("Discover"));
- sml = ((DefaultSignalMastLogicManager*)InstanceManager::signalMastLogicManagerInstance())->getSignalMastLogic(sourceMast);
+ sml = ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->getSignalMastLogic(sourceMast);
  this->sourceMast = sourceMast;
  fixedSourceMastLabel = new QLabel(sourceMast->getDisplayName());
  signalMastLogicFrame = NULL;
@@ -50,8 +50,8 @@
 
   //InstanceManager::layoutBlockManagerInstance().addPropertyChangeListener(this);
   LayoutBlockManager* lbm = ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"));
-  connect(lbm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  connect(static_cast<DefaultSignalMastLogicManager*>(InstanceManager::getDefault("SignalMastLogicManager"))->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(lbm, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(static_cast<DefaultSignalMastLogicManager*>(InstanceManager::getDefault("SignalMastLogicManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
 
   setLayout(new /*BorderLayout()*/QVBoxLayout);
@@ -130,9 +130,9 @@
 /*public*/ void SignallingSourcePanel::dispose()
 {
     //static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->removePropertyChangeListener(this);
- disconnect(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     //InstanceManager.getDefault(jmri.SignalMastLogicManager.class).removePropertyChangeListener(this);
- disconnect(static_cast<DefaultSignalMastLogicManager*>(InstanceManager::getDefault("SignalMastLogicManager"))->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(static_cast<DefaultSignalMastLogicManager*>(InstanceManager::getDefault("SignalMastLogicManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     JmriPanel::dispose();
 }
 
@@ -140,7 +140,7 @@ void SignallingSourcePanel::on_addLogic_pressed()
 {
  SignallingAction* sigLog = new SignallingAction();
  sigLog->setMast(sourceMast, NULL);
- sigLog->actionPerformed(NULL);
+ sigLog->actionPerformed();
 }
 
 void SignallingSourcePanel::discoverPressed(/*ActionEvent e*/)
@@ -187,9 +187,9 @@ void SignallingSourcePanel::discoverPressed(/*ActionEvent e*/)
    {
        ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->discoverSignallingDest(sourceMast, layout->at(i));
    }
-   catch (JmriException ex) {
+   catch (JmriException* ex) {
        signalMastLogicFrame->setVisible(false);
-       JOptionPane::showMessageDialog(NULL, ex.toString());
+       JOptionPane::showMessageDialog(NULL, ex->toString());
    }
   }
  }
@@ -236,7 +236,7 @@ SignalMastAppearanceModel::SignalMastAppearanceModel(SignallingSourcePanel* self
  {
   //super();
     log = new Logger("SignalMastAppearanceModel");
-  this->self = self;
+  this->_self = self;
   if(self->sml!=NULL)
   {
    //sml.addPropertyChangeListener(this);
@@ -333,9 +333,9 @@ SignalMastAppearanceModel::SignalMastAppearanceModel(SignallingSourcePanel* self
 
 /*public*/ void SignalMastAppearanceModel::dispose()
  {
-  if(self->sml!=NULL)
+  if(_self->sml!=NULL)
   {
-   DefaultSignalMastLogic* sml = (DefaultSignalMastLogic*)self->sml;
+   DefaultSignalMastLogic* sml = (DefaultSignalMastLogic*)_self->sml;
         //sml.removePropertyChangeListener(this);
    disconnect(sml->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(propertyChangeEvent*)));
   }
@@ -346,13 +346,13 @@ SignalMastAppearanceModel::SignalMastAppearanceModel(SignallingSourcePanel* self
   if (e->getPropertyName()==("length"))
   {
    beginResetModel();
-   self->_signalMastList = ((DefaultSignalMastLogic*)self->sml)->getDestinationList();
+   _self->_signalMastList = ((DefaultSignalMastLogic*)_self->sml)->getDestinationList();
    int length =  e->getNewValue().toInt();
    if(length==0)
    {
     //((DefaultSignalMastLogic*)self->sml)->removePropertyChangeListener(this);
-    disconnect(((DefaultSignalMastLogic*)self->sml)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-    self->sml = NULL;
+    disconnect(((DefaultSignalMastLogic*)_self->sml)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    _self->sml = NULL;
    }
         //fireTableDataChanged();
    endResetModel();
@@ -360,7 +360,7 @@ SignalMastAppearanceModel::SignalMastAppearanceModel(SignallingSourcePanel* self
   else if (e->getPropertyName()==("updatedDestination"))
   {
    // a new NamedBean is available in the manager
-   self->_signalMastList = ((DefaultSignalMastLogic*)self->sml)->getDestinationList();
+   _self->_signalMastList = ((DefaultSignalMastLogic*)_self->sml)->getDestinationList();
         //fireTableDataChanged();
   }
   else if((e->getPropertyName()==("state")) || (e->getPropertyName()==("Enabled")))
@@ -432,22 +432,22 @@ SignalMastAppearanceModel::SignalMastAppearanceModel(SignallingSourcePanel* self
     javax.swing.SwingUtilities.invokeLater(t);
 #endif
     SignallingAction* sigLog = new SignallingAction();
-    sigLog->setMast(self->sourceMast, self->_signalMastList.at(row));
+    sigLog->setMast(_self->sourceMast, _self->_signalMastList.at(row));
     sigLog->actionPerformed(/*NULL*/);
 
 }
 
 /*protected*/ void SignalMastAppearanceModel::deletePair(int r){
-    InstanceManager::signalMastLogicManagerInstance()->removeSignalMastLogic(self->sml, self->_signalMastList.at(r));
+    ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->removeSignalMastLogic(_self->sml, _self->_signalMastList.at(r));
 }
 
 
 ///*public*/ void setSetToState(String x){}
 
 /*public*/ int SignalMastAppearanceModel::rowCount (const QModelIndex &/*parent*/) const {
-    if (self->_signalMastList.isEmpty())
+    if (_self->_signalMastList.isEmpty())
         return 0;
-    return self->_signalMastList.size();
+    return _self->_signalMastList.size();
 }
 
 /*public*/ QVariant SignalMastAppearanceModel::data(const QModelIndex &index, int role) const
@@ -458,19 +458,19 @@ SignalMastAppearanceModel::SignalMastAppearanceModel(SignallingSourcePanel* self
   if(role == Qt::DisplayRole || role == Qt::EditRole)
   {
 
-    if(self->sml==NULL)
+    if(_self->sml==NULL)
         return QVariant();
     // some error checking
-    if (r >= self->_signalMastList.size()){
+    if (r >= _self->_signalMastList.size()){
         log->debug("row is greater than turnout list size");
         return QVariant();
     }
     switch (c)
     {
         case USERNAME_COLUMN:
-            return self->_signalMastList.at(r)->getUserName();
+            return _self->_signalMastList.at(r)->getUserName();
         case SYSNAME_COLUMN:  // slot number
-            return self->_signalMastList.at(r)->getSystemName();
+            return _self->_signalMastList.at(r)->getSystemName();
         case EDIT_COLUMN:
             return tr("Edit");
         case DEL_COLUMN:
@@ -485,12 +485,12 @@ SignalMastAppearanceModel::SignalMastAppearanceModel(SignallingSourcePanel* self
    switch (c)
    {
     case ACTIVE_COLUMN:
-          if (((DefaultSignalMastLogic*)self->sml)->isActive(self->_signalMastList.at(r)))
+          if (((DefaultSignalMastLogic*)_self->sml)->isActive(_self->_signalMastList.at(r)))
            return Qt::Checked;
           else
            return Qt::Unchecked;
        case ENABLE_COLUMN:
-          if(((DefaultSignalMastLogic*)self->sml)->isEnabled(self->_signalMastList.at(r)))
+          if(((DefaultSignalMastLogic*)_self->sml)->isEnabled(_self->_signalMastList.at(r)))
               return Qt::Checked;
              else
               return Qt::Unchecked;
@@ -516,9 +516,9 @@ SignalMastAppearanceModel::SignalMastAppearanceModel(SignallingSourcePanel* self
    {
     bool b = value.toBool();
     if(b)
-     ((DefaultSignalMastLogic*)self->sml)->setEnabled(self->_signalMastList.at(r));
+     ((DefaultSignalMastLogic*)_self->sml)->setEnabled(_self->_signalMastList.at(r));
     else
-     ((DefaultSignalMastLogic*)self->sml)->setDisabled(self->_signalMastList.at(r));
+     ((DefaultSignalMastLogic*)_self->sml)->setDisabled(_self->_signalMastList.at(r));
    }
    return true;
   }

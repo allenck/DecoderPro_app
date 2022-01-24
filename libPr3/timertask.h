@@ -35,7 +35,7 @@ public:
     };
     /*public*/ bool cancel();
     /*public*/ long scheduledExecutionTime();
-
+    /*public*/ long getPeriod() {return period;}
 signals:
 
 public slots:
@@ -50,7 +50,7 @@ private:
     /**
      * The state of this task, chosen from the constants below.
      */
-    int state;// = VIRGIN;
+    int state = VIRGIN;
 
 
 
@@ -66,7 +66,7 @@ private:
      * fixed-rate execution.  A negative value indicates fixed-delay execution.
      * A value of 0 indicates a non-repeating task.
      */
-    long period;// = 0;
+    long period = 0;
 };
 
 #endif // TIMERTASK_H

@@ -82,8 +82,8 @@
             else
                 throw  JsonException(400, tr("Attempting to set object type %1 to unknown state %2.").arg(JSON::SENSOR).arg(state));
 //        }
-    } catch (JmriException ex) {
-        throw JsonException(500, ex.getMessage());
+    } catch (JmriException* ex) {
+        throw new JsonException(500, ex->getMessage());
     }
     return this->doGet(type, name, locale).toObject();
 }
@@ -92,8 +92,8 @@
 /*public*/ QJsonObject JsonSensorHttpService::doPut(QString type, QString name, QJsonObject data, QLocale locale) throw (JsonException) {
     try {
         ((ProxySensorManager*)InstanceManager::getDefault("SensorManager"))->provideSensor(name);
-    } catch (Exception ex) {
-        throw  JsonException(500, tr("ErrorCreatingObject %1 %2").arg(JSON::SENSOR).arg(name));
+    } catch (Exception* ex) {
+        throw new JsonException(500, tr("ErrorCreatingObject %1 %2").arg(JSON::SENSOR).arg(name));
     }
     return this->doPost(type, name, data, locale);
 }
@@ -102,7 +102,7 @@
 /*public*/ QJsonValue JsonSensorHttpService::doGetList(QString /*type*/, QLocale locale) throw (JsonException) {
     //ArrayNode root = this.mapper.createArrayNode();
  QJsonArray root = QJsonArray();
-    foreach (QString name, ((ProxySensorManager*) InstanceManager::getDefault("SensorManager"))->getSystemNameList()) {
+    foreach (QString name, ((ProxySensorManager*) InstanceManager::getDefault("SensorManager"))->AbstractProxyManager::getSystemNameList()) {
         root.append(this->doGet(JSON::SENSOR, name, locale));
     }
     return QJsonValue(root);

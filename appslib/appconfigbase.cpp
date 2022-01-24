@@ -286,7 +286,7 @@ AppConfigBase::AppConfigBase(QWidget *parent) :
 /*public*/ QString AppConfigBase::getClassDescription() {
     return tr("Application");
 }
-#if 0
+#if 1
 /*public*/ void AppConfigBase::setMessagePreferencesDetails()
 {
  QMap<int, QString> options = QMap<int, QString>(); // 3

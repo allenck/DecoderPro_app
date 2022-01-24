@@ -1,6 +1,6 @@
 #include "abstractportcontroller.h"
 #include "exceptions.h"
-#include "systemconnectionmemo.h"
+#include "defaultsystemconnectionmemo.h"
 #include "sleeperthread.h"
 #include <QDataStream>
 #include "loggerfactory.h"
@@ -221,8 +221,8 @@ log->debug("update manufacturer from \""+manufacturerName+"\" to \""+manufacture
 
 //@Override
 /*public*/ void AbstractPortController::setSystemPrefix(QString systemPrefix) {
-    if (!this->getSystemConnectionMemo()->setSystemPrefix(systemPrefix)) {
-        throw IllegalArgumentException();
+    if (!((DefaultSystemConnectionMemo*) this->getSystemConnectionMemo())->setSystemPrefix(systemPrefix)) {
+        throw new IllegalArgumentException();
     }
 }
 
@@ -234,7 +234,7 @@ log->debug("update manufacturer from \""+manufacturerName+"\" to \""+manufacture
 //@Override
 /*public*/ void AbstractPortController::setUserName(QString userName) {
     if (!this->getSystemConnectionMemo()->setUserName(userName)) {
-        throw IllegalArgumentException();
+        throw new IllegalArgumentException();
     }
 }
 
@@ -284,7 +284,7 @@ log->debug("update manufacturer from \""+manufacturerName+"\" to \""+manufacture
  * while opening the connection.
  */
  //@SuppressFBWarnings(value = "SR_NOT_CHECKED", justification = "skipping all, don't care what skip() returns")
- /*protected*/ void AbstractPortController::purgeStream(/*@Nonnull*/ QDataStream* serialStream) //throw (IOException)
+ /*protected*/ void AbstractPortController::purgeStream(/*@Nonnull*/ QDataStream* serialStream) ///*throw (IOException)*/
 {
 #if 0
     int count = serialStream->available();
@@ -311,7 +311,7 @@ log->debug("update manufacturer from \""+manufacturerName+"\" to \""+manufacture
  * @return a SystemConnectionMemo
  */
 //@Override
-/*public*/ SystemConnectionMemo* AbstractPortController::getSystemConnectionMemo()
+/*public*/ SystemConnectionMemo* AbstractPortController::getSystemConnectionMemo() const
 {
  return this->connectionMemo;
 }
@@ -330,7 +330,7 @@ log->debug("update manufacturer from \""+manufacturerName+"\" to \""+manufacture
 {
  if (connectionMemo == NULL)
  {
-  throw NullPointerException();
+  throw new NullPointerException();
  }
  this->connectionMemo = connectionMemo;
 }

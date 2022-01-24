@@ -4,13 +4,12 @@
 #include "track.h"
 #include <QBoxLayout>
 #include <QLabel>
-#include <QPushButton>
+#include "jbutton.h"
 #include "jtextfield.h"
 #include "jcombobox.h"
 #include "logger.h"
 #include "control.h"
 #include <QScrollArea>
-#include <QGroupBox>
 #include "location.h"
 #include <QMessageBox>
 #include "operationsxml.h"
@@ -18,6 +17,7 @@
 #include "setup.h"
 #include "trackeditframe.h"
 #include "gridbaglayout.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -77,11 +77,11 @@ common();
   comboBoxPools = new JComboBox();
 
   // major buttons
-  addButton = new QPushButton(tr("Add"));
-  saveButton = new QPushButton(tr("Save"));
+  addButton = new JButton(tr("Add"));
+  saveButton = new JButton(tr("Save"));
 
   // pool status
-  poolStatus = new QGroupBox();
+  poolStatus = new JPanel();
 
  }
 
@@ -95,21 +95,19 @@ common();
    }
    // the following code sets the frame's initial state
    //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
-   //_track.addPropertyChangeListener(this);
-connect(_track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(pack()));
-   //_track.getLocation().addPropertyChangeListener(this);
-connect(_track->getLocation()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(pack()));
+   QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
+   _track->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+   _track->getLocation()->SwingPropertyChangeSupport::addPropertyChangeListener(this);
 
    _pool = _track->getPool();
 
    if (_pool != NULL) {
        //_pool.addPropertyChangeListener(this);
-       connect(_pool->propertyChangeSupport, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(pack()));
+       connect(_pool, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(pack()));
    }
 
    // load the panel
-   QGroupBox* p1Frame = new QGroupBox;
+   JPanel* p1Frame = new JPanel;
    p1Frame->setLayout(new QVBoxLayout);
    QWidget* p1 = new QWidget();
    p1->setLayout(new QVBoxLayout); //(p1, BoxLayout.Y_AXIS));
@@ -117,39 +115,29 @@ connect(_track->getLocation()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*))
    p1Pane->setWidgetResizable(true);
    p1Frame->layout()->addWidget(p1Pane);
    //p1Pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-   //p1Pane.setBorder(BorderFactory.createTitledBorder(""));
-   p1Frame->setStyleSheet(gbStyleSheet);
+   p1Frame->setBorder(BorderFactory::createTitledBorder(""));
 
-   QGroupBox* poolName = new QGroupBox();
+   JPanel* poolName = new JPanel();
    poolName->setLayout(new GridBagLayout());
-   //poolName.setBorder(BorderFactory.createTitledBorder(tr("PoolName")));
-   poolName->setStyleSheet(gbStyleSheet);
-   poolName->setTitle(tr("Pool Name"));
+   poolName->setBorder(BorderFactory::createTitledBorder(tr("Pool Name")));
    addItem(poolName, trackPoolNameTextField, 0, 0);
    addItem(poolName, addButton, 1, 0);
 
-   QGroupBox* selectPool = new QGroupBox();
+   JPanel* selectPool = new JPanel();
    selectPool->setLayout(new GridBagLayout());
-   //selectPool.setBorder(BorderFactory.createTitledBorder(tr("PoolSelect")));
-   selectPool->setStyleSheet(gbStyleSheet);
-   selectPool->setTitle(tr("Pool Select"));
+   selectPool->setBorder(BorderFactory::createTitledBorder(tr("Pool Select")));
    addItem(selectPool, comboBoxPools, 0, 0);
 
-   QGroupBox* minLengthTrack = new QGroupBox();
+   JPanel* minLengthTrack = new JPanel();
    minLengthTrack->setLayout(new GridBagLayout());
-//   minLengthTrack.setBorder(BorderFactory.createTitledBorder(MessageFormat.format(Bundle
-//           .getMessage("PoolTrackMinimum"), new Object[]{_track.getName()})));
-   minLengthTrack->setStyleSheet(gbStyleSheet);
-   minLengthTrack->setTitle(tr("Minimum track length %1").arg(_track->getName()));
+   minLengthTrack->setBorder(BorderFactory::createTitledBorder(tr("Minimum track length %1").arg(_track->getName())));
    addItem(minLengthTrack, trackMinLengthTextField, 0, 0);
 
    trackMinLengthTextField->setText(QString::number(_track->getMinimumLength()));
 
-   QGroupBox* savePool = new QGroupBox();
+   JPanel* savePool = new JPanel();
    savePool->setLayout(new GridBagLayout());
-   //savePool.setBorder(BorderFactory.createTitledBorder(""));
-   savePool->setStyleSheet(gbStyleSheet);
-   //savePool->setTitle(tr(""));
+   savePool->setBorder(BorderFactory::createTitledBorder(""));
    addItem(savePool, saveButton, 0, 0);
 
    p1->layout()->addWidget(poolName);
@@ -157,7 +145,7 @@ connect(_track->getLocation()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*))
    p1->layout()->addWidget(minLengthTrack);
    p1->layout()->addWidget(savePool);
 
-   QGroupBox* p2Frame = new QGroupBox;
+   JPanel* p2Frame = new JPanel;
    p2Frame->setLayout(new QVBoxLayout);
    QWidget* p2 = new QWidget();
    p2->setLayout(new QVBoxLayout); //(p2, BoxLayout.Y_AXIS));
@@ -165,8 +153,7 @@ connect(_track->getLocation()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*))
    p2Pane->setWidgetResizable(true);
    p2Frame->layout()->addWidget(p2Pane);
 //   p2Pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-//   p2Pane.setBorder(BorderFactory.createTitledBorder(""));
-   p2Frame->setStyleSheet(gbStyleSheet);
+   p2Frame->setBorder(BorderFactory::createTitledBorder(""));
 
    // pool status panel
    poolStatus->setLayout(new GridBagLayout());
@@ -246,10 +233,7 @@ connect(_track->getLocation()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*))
          totalLen->setText(QString::number(totalLength));
          addItem(poolStatus, totalLen, 2, tracks.size() + 1);
      }
-//     poolStatus.setBorder(BorderFactory.createTitledBorder(MessageFormat.format(tr("PoolTracks"),
-//             new Object[]{poolName})));
-     poolStatus->setStyleSheet(gbStyleSheet);
-     poolStatus->setTitle(tr("Tracks in pool %1").arg(poolName));
+     poolStatus->setBorder(BorderFactory::createTitledBorder(tr("Tracks in pool %1").arg(poolName)));
      poolStatus->update();
      //poolStatus->repaint();
      resize(QSize()); // kill JMRI window size
@@ -257,7 +241,7 @@ connect(_track->getLocation()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*))
  }
 
  /*public*/ void PoolTrackFrame::buttonActionPerformed(QWidget* ae) {
-  QPushButton* source = (QPushButton*)ae;
+  JButton* source = (JButton*)ae;
      if (source == addButton) {
          Location* location = _track->getLocation();
          location->addPool(trackPoolNameTextField->text());
@@ -276,12 +260,12 @@ connect(_track->getLocation()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*))
 
          if (_pool != NULL) {
              //_pool.removePropertyChangeListener(this);
-          disconnect(_pool->propertyChangeSupport, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(pack()));
+          disconnect(_pool, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(pack()));
          }
          _pool = (Pool*) VPtr<Pool>::asPtr(comboBoxPools->currentData());
          if (_pool != NULL) {
              //_pool.addPropertyChangeListener(this);
-          connect(_pool->propertyChangeSupport, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(pack()));
+          connect(_pool, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(pack()));
          }
          _track->setPool(_pool);	// this causes a property change to this frame
 
@@ -295,14 +279,12 @@ connect(_track->getLocation()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*))
 
  /*public*/ void PoolTrackFrame::dispose() {
      if (_track != NULL) {
-         //_track.removePropertyChangeListener(this);
-      disconnect(_track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(pack()));
-         //_track.getLocation().removePropertyChangeListener(this);
-      disconnect(_track->getLocation()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(pack()));
+      _track->removePropertyChangeListener(this);
+      _track->getLocation()->removePropertyChangeListener(this);
      }
      if (_pool != NULL) {
          //_pool.removePropertyChangeListener(this);
-      disconnect(_pool->propertyChangeSupport, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(pack()));
+      disconnect(_pool, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(pack()));
      }
      OperationsFrame::dispose();
  }

@@ -21,19 +21,19 @@ bool XInclude::copyXml(QUrl *in, File* toFile, QWidget* who)
  {
   QFile* fin = new QFile(in->path());
   if(!fin->exists())
-   throw IOException(tr("input file \"%1\" not found").arg(in->path()));
+   throw new IOException(tr("input file \"%1\" not found").arg(in->path()));
   if(!fin->open(QIODevice::ReadOnly))
-   throw IOException(tr("input file \"%1\" can not be opened").arg(in->path()));
+   throw new IOException(tr("input file \"%1\" can not be opened").arg(in->path()));
   reader->setDevice(fin);
 
   FileUtil::createDirectory(toFile->getParent());
 
   QFile* fout = new QFile(toFile->getPath());
-  if(!fout->open(QIODevice::WriteOnly)) throw IOException(tr("File \"%1\" cannot be opened").arg(toFile->getPath()));
+  if(!fout->open(QIODevice::WriteOnly)) throw new IOException(tr("File \"%1\" cannot be opened").arg(toFile->getPath()));
   writer->setDevice(fout);
   writer->setAutoFormatting(true);
   writer->setAutoFormattingIndent(2);
-  if(!reader->readNext() == QXmlStreamReader::StartDocument) throw Exception(tr("No StartDocument"));
+  if(reader->readNext() != QXmlStreamReader::StartDocument) throw new Exception(tr("No StartDocument"));
   writer->setCodec(reader->documentEncoding().toLocal8Bit());
   writer->writeStartDocument(reader->documentVersion().toString());
   QXmlStreamReader::TokenType type;
@@ -59,7 +59,7 @@ bool XInclude::copyXml(QUrl *in, File* toFile, QWidget* who)
    else if(type == QXmlStreamReader::StartElement)
     break;
    //reader->raiseError(tr("unrecognized type %1").arg(type.tokenString()));
-   throw Exception(tr("unrecognized type %1").arg(typeString));
+   throw new Exception(tr("unrecognized type %1").arg(typeString));
   }
 
   processStartElement(reader);
@@ -68,14 +68,14 @@ bool XInclude::copyXml(QUrl *in, File* toFile, QWidget* who)
   fout->flush();
   fout->close();
  }
- catch(IOException ex)
+ catch(IOException* ex)
  {
-  JOptionPane::showMessageDialog(this->who, ex.getMessage(), tr("XML Error"), JOptionPane::ERROR_MESSAGE);
+  JOptionPane::showMessageDialog(this->who, ex->getMessage(), tr("XML Error"), JOptionPane::ERROR_MESSAGE);
   return false;
  }
- catch(Exception ex)
+ catch(Exception* ex)
  {
-  JOptionPane::showMessageDialog(this->who, ex.getMessage(), tr("XML Error"), JOptionPane::ERROR_MESSAGE);
+  JOptionPane::showMessageDialog(this->who, ex->getMessage(), tr("XML Error"), JOptionPane::ERROR_MESSAGE);
   return false;
  }
 
@@ -116,7 +116,7 @@ bool XInclude::processStartElement(QXmlStreamReader* reader)
    qDebug() << tr("Process xi:include href=\"%1\"").arg(sv.at(0));
    QUrl* url = new QUrl(href);
    if(!url->isValid())
-    throw Exception(tr("Invalid url: \"%1\"").arg(url->path()));
+    throw new Exception(tr("Invalid url: \"%1\"").arg(url->path()));
    processInclude(url);
    reader->skipCurrentElement();
    return true;
@@ -170,7 +170,7 @@ bool XInclude::processStartElement(QXmlStreamReader* reader)
   }
   else if(reader->isEndDocument())
    return true;
-  else    throw Exception(tr("unrecognized type %1").arg(typeString));
+  else    throw new Exception(tr("unrecognized type %1").arg(typeString));
  } while(!reader->atEnd());
 
  return true;
@@ -211,7 +211,7 @@ bool XInclude::processInclude(QUrl* href)
  timer.start(10000);
  loop.exec();
  if(!timer.isActive())
-  throw IOException(tr("failure reading %1").arg(href->path()));
+  throw new IOException(tr("failure reading %1").arg(href->path()));
  return true;
 }
 
@@ -221,7 +221,7 @@ void XInclude::fileDownloaded(QNetworkReply* pReply)
   //emit a signal
   pReply->deleteLater();
   if(m_DownloadedData.isEmpty())
-   throw IOException(tr("Failure reading %1; empty file returned").arg(href->path()));
+   throw new IOException(tr("Failure reading %1; empty file returned").arg(href->path()));
 //  qDebug() << m_DownloadedData;
   //emit downloaded();
   QXmlStreamReader* reader = new QXmlStreamReader(m_DownloadedData);
@@ -280,11 +280,11 @@ void XInclude::processIncludeBody(QXmlStreamReader* reader)
    {
     return;
    }
-   else    throw Exception(tr("unrecognized type %1").arg(typeString));
+   else    throw new Exception(tr("unrecognized type %1").arg(typeString));
   } while (!reader->atEnd());
- } catch (IOException e)
+ } catch (IOException* e)
  {
-  qDebug() << e.getMessage();
+  qDebug() << e->getMessage();
   return ;
  }
 }
@@ -292,5 +292,5 @@ void XInclude::processIncludeBody(QXmlStreamReader* reader)
 void XInclude::error(QNetworkReply::NetworkError e)
 {
  qDebug() << tr("Network error %1").arg(e);
- throw Exception(tr("Network error %1").arg(e));
+ throw new Exception(tr("Network error %1").arg(e));
 }

@@ -1,7 +1,9 @@
 #ifndef LEVELXINGEDITOR_H
 #define LEVELXINGEDITOR_H
 #include "layoutturntableeditor.h"
+#include "levelxingview.h"
 
+class LevelXingView;
 class LevelXing;
 class LevelXingEditor : public LayoutTurntableEditor
 {
@@ -13,6 +15,7 @@ class LevelXingEditor : public LayoutTurntableEditor
 
  private:
   // variables for Edit Track Segment pane
+  /*private*/ LevelXingView* levelXingView;
   /*private*/ LevelXing* levelXing;
 
   // variables for Edit Level Crossing pane
@@ -20,9 +23,9 @@ class LevelXingEditor : public LayoutTurntableEditor
   /*private*/ /*final*/ JCheckBox* editLevelXingHiddenCheckBox = new JCheckBox(tr("Hide Crossing"));  // NOI18N
 
   /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* editLevelXingBlock1NameComboBox = new NamedBeanComboBox(
-          (BlockManager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+          (Manager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
   /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* editLevelXingBlock2NameComboBox = new NamedBeanComboBox(
-          (BlockManager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+          (Manager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
   /*private*/ QPushButton *editLevelXingBlock1Button;
   /*private*/ QPushButton* editLevelXingBlock2Button;
 
@@ -41,6 +44,7 @@ class LevelXingEditor : public LayoutTurntableEditor
   friend class LXEeditLevelXingDonePressed;
   friend class LXEeditLevelXingCancelPressed;
 };
+
 class ELXWindowListener : public WindowListener
 {
   Q_OBJECT
@@ -52,24 +56,32 @@ class ELXWindowListener : public WindowListener
   }
 
 };
-class LXEeditLevelXingDonePressed : public ActionListener
+
+class LXEeditLevelXingDonePressed : public QObject, public ActionListener
 {
   Q_OBJECT
+    Q_INTERFACES(ActionListener)
   LevelXingEditor* editor;
  public:
   LXEeditLevelXingDonePressed(LevelXingEditor* editor) {this->editor = editor;}
-  void actionPerformed()
+  QObject* self() override {return (QObject*)this;}
+public slots:
+  void actionPerformed(JActionEvent */*e*/ = 0) override
   {
   editor->editLevelXingDonePressed();
  }
 };
-class LXEeditLevelXingCancelPressed : public ActionListener
+
+class LXEeditLevelXingCancelPressed : public QObject, public ActionListener
 {
   Q_OBJECT
+    Q_INTERFACES(ActionListener)
   LevelXingEditor* editor;
  public:
   LXEeditLevelXingCancelPressed(LevelXingEditor* editor) {this->editor = editor;}
-  void actionPerformed()
+  QObject* self() override {return (QObject*)this;}
+public slots:
+  void actionPerformed(JActionEvent */*e*/ = 0)override
   {
   editor->editLevelXingCancelPressed();
  }

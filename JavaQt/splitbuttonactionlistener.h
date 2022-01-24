@@ -9,9 +9,9 @@
  Q_OBJECT
  Q_INTERFACES(EventListener)
 public slots:
-  virtual  /*public*/ void buttonClicked(ActionEvent* ae) = 0;
+  virtual  /*public*/ void buttonClicked(JActionEvent* ae) = 0;
 
-  virtual  /*public*/ void splitButtonClicked(ActionEvent* ae) =0;
+  virtual  /*public*/ void splitButtonClicked(JActionEvent* ae) =0;
 };
 
 #endif // SPLITBUTTONACTIONLISTENER_H

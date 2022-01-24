@@ -48,7 +48,7 @@
 
 
 //@Override
-/*public*/ void OffsetHighCvProgrammerFacade::writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException) {
+/*public*/ void OffsetHighCvProgrammerFacade::writeCV(QString CV, int val, ProgListener* p) /*throw (ProgrammerException)*/ {
     log->debug("start writeCV");
     _cv = CV.toInt();
     _val = val;
@@ -64,7 +64,7 @@
 }
 
 //@Override
-/*public*/ void OffsetHighCvProgrammerFacade::readCV(QString CV, ProgListener* p) throw (ProgrammerException) {
+/*public*/ void OffsetHighCvProgrammerFacade::readCV(QString CV, ProgListener* p) /*throw (ProgrammerException)*/ {
     log->debug("start readCV");
     useProgrammer(p);
     if (prog->getCanRead(CV) || _cv <= top) {
@@ -79,13 +79,13 @@
 
 
 // internal method to remember who's using the programmer
-/*protected*/ void OffsetHighCvProgrammerFacade::useProgrammer(ProgListener* p) throw (ProgrammerException) {
+/*protected*/ void OffsetHighCvProgrammerFacade::useProgrammer(ProgListener* p) /*throw (ProgrammerException) */{
     // test for only one!
     if (_usingProgrammer != NULL && _usingProgrammer != p) {
         if (log->isInfoEnabled()) {
-            log->info(tr("programmer already in use by ") + _usingProgrammer->metaObject()->className());
+            log->info(tr("programmer already in use by ") + _usingProgrammer->self()->metaObject()->className());
         }
-        throw ProgrammerException("programmer in use");
+        throw new ProgrammerException("programmer in use");
     } else {
         _usingProgrammer = p;
     }
@@ -107,9 +107,9 @@
         _usingProgrammer = NULL; // done
         state = ProgState::NOTPROGRAMMING;
         //temp.programmingOpReply(value, status);
-        connect(this, SIGNAL(on_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+        connect(this, SIGNAL(on_programmingOpReply(int,int)), temp->self(), SLOT(programmingOpReply(int,int)));
         emit on_programmingOpReply(value, status);
-        disconnect(this, SIGNAL(on_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+        disconnect(this, SIGNAL(on_programmingOpReply(int,int)), temp->self(), SLOT(programmingOpReply(int,int)));
 
         return;
     }
@@ -129,16 +129,16 @@
             _usingProgrammer = NULL; // done
             state = ProgState::NOTPROGRAMMING;
             //temp.programmingOpReply(value, status);
-            connect(this, SIGNAL(on_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+            connect(this, SIGNAL(on_programmingOpReply(int,int)), temp->self(), SLOT(programmingOpReply(int,int)));
             emit on_programmingOpReply(value, status);
-            disconnect(this, SIGNAL(on_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
+            disconnect(this, SIGNAL(on_programmingOpReply(int,int)), temp->self(), SLOT(programmingOpReply(int,int)));
             break;
     }
         case FINISHREAD:
             try {
                 state = ProgState::PROGRAMMING;
                 prog->readCV(QString::number(_cv % modulo), (ProgListener*)this);
-            } catch (ProgrammerException e) {
+            } catch (ProgrammerException* e) {
                 log->error("Exception doing final read", e);
             }
             break;
@@ -146,7 +146,7 @@
             try {
                 state = ProgState::PROGRAMMING;
                 prog->writeCV(""+(_cv % modulo), _val, (ProgListener*)this);
-            } catch (ProgrammerException e) {
+            } catch (ProgrammerException* e) {
                 log->error("Exception doing final write", e);
             }
             break;

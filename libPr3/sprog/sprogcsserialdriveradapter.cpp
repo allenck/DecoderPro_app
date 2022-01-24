@@ -17,7 +17,7 @@ using namespace Sprog;
 //        extends jmri.jmrix.sprog.serialdriver.SerialDriverAdapter {
 
 /*public*/ SprogCSSerialDriverAdapter::SprogCSSerialDriverAdapter(QObject* parent)
- : SerialDriverAdapter(SprogConstants::OPS, parent)
+ : SprogSerialDriverAdapter(SprogConstants::OPS, parent)
 {
     //super(SprogMode.OPS);
     options.insert("TrackPowerState", new Option(tr("Track Power At StartUp:"),

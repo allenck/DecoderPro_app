@@ -20,6 +20,8 @@
 #include "scheduleitem.h"
 #include "trainschedulemanager.h"
 #include "trainschedule.h"
+#include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -39,14 +41,14 @@ namespace Operations
  /*public*/ SchedulesByLoadFrame::SchedulesByLoadFrame(QWidget* parent) : OperationsFrame(tr("Show Schedule by Load"), parent){
      //super(tr("MenuItemShowSchedulesByLoad"));
  // combo box
- typesComboBox= CarTypes::instance()->getComboBox();
+ typesComboBox= ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getComboBox();
  loadsComboBox = new JComboBox();
 
  // checkbox
  allLoadsCheckBox = new QCheckBox(tr("All Loads"));
 
  // managers'
- locationManager = LocationManager::instance();
+ locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
 
      // the following code sets the frame's initial state
      //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
@@ -57,35 +59,29 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      p1->setMaximumSize(QSize(2000, 200));
      p1->setLayout(new QVBoxLayout);//(p1, BoxLayout.X_AXIS));
 
-     QGroupBox* type = new QGroupBox();
+     JPanel* type = new JPanel();
      type->setLayout(new GridBagLayout());
-     //type.setBorder(BorderFactory.createTitledBorder(tr("Type")));
-     type->setStyleSheet(gbStyleSheet);
-     type->setTitle(tr("Type"));
+     type->setBorder(BorderFactory::createTitledBorder(tr("Type")));
      addItem(type, typesComboBox, 0, 0);
 
-     QGroupBox* load = new QGroupBox();
+     JPanel* load = new JPanel();
      load->setLayout(new GridBagLayout());
-     //load.setBorder(BorderFactory.createTitledBorder(tr("Load")));
-     load->setStyleSheet(gbStyleSheet);
-     load->setTitle(tr("Load"));
+     load->setBorder(BorderFactory::createTitledBorder(tr("Load")));
      addItem(load, loadsComboBox, 0, 0);
      addItem(load, allLoadsCheckBox, 1, 0);
 
      p1->layout()->addWidget(type);
      p1->layout()->addWidget(load);
 
-     QGroupBox* locationsPanelFrame = new QGroupBox;
+     JPanel* locationsPanelFrame = new JPanel;
      locationsPanelFrame->setLayout(new QVBoxLayout);
-     locationsPanel = new QWidget();
+     locationsPanel = new JPanel();
      locationsPanel->setLayout(new GridBagLayout());
      QScrollArea* locationsPane = new QScrollArea(/*locationsPanel*/);
      locationsPanelFrame->layout()->addWidget(locationsPane);
      locationsPane->setWidgetResizable(true);
      //locationsPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-     //locationsPane.setBorder(BorderFactory.createTitledBorder(tr("Locations")));
-     locationsPanelFrame->setStyleSheet(gbStyleSheet);
-     locationsPanelFrame->setTitle(tr("Locations"));
+     locationsPanelFrame->setBorder(BorderFactory::createTitledBorder(tr("Locations")));
 
      thisLayout->addWidget(p1);
      locationsPane->setWidget(locationsPanel);
@@ -98,17 +94,17 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      // property changes
      //locationManager.addPropertyChangeListener(this);
-     connect(locationManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes::instance().addPropertyChangeListener(this);
-     connect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //CarLoads::instance().addPropertyChangeListener(this);
-     connect(CarLoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //((CarLoads*)InstanceManager::getDefault("Operations::CarLoads")).addPropertyChangeListener(this);
+     connect(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      // build menu
      QMenuBar* menuBar = new QMenuBar();
      QMenu* toolMenu = new QMenu(tr("Tools"));
-     toolMenu->addAction(new PrintCarLoadsAction(tr("Car Loads Preview"), true, this));
-     toolMenu->addAction(new PrintCarLoadsAction(tr("Car Loads Print"), false, this));
+     toolMenu->addAction(new PrintCarLoadsAction(true, this));
+     toolMenu->addAction(new PrintCarLoadsAction(false, this));
      menuBar->addMenu(toolMenu);
      setMenuBar(menuBar);
      addHelpMenu("package.jmri.jmrit.operations.Operations_ShowSchedulesByCarTypeAndLoad", true); // NOI18N
@@ -139,7 +135,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  /*private*/ void SchedulesByLoadFrame::updateLoadComboBox() {
      if (typesComboBox->currentText() != NULL) {
          QString type =  typesComboBox->currentText();
-         CarLoads::instance()->updateComboBox(type, loadsComboBox);
+         ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->updateComboBox(type, loadsComboBox);
      }
  }
 
@@ -166,20 +162,20 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
              continue;
          addItemLeft(locationsPanel, new QLabel(location->getName()), 0, x++);
          // now look for a spur with a schedule
-         foreach (Track* spur, location->getTrackByNameList(Track::SPUR)) {
+         foreach (Track* spur, location->getTracksByNameList(Track::SPUR)) {
              Schedule* sch = spur->getSchedule();
              if (sch == NULL) {
                  continue;
              }
              // listen for changes
              //spur.removePropertyChangeListener(this);
-             disconnect(spur->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+             disconnect(spur, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              //spur.addPropertyChangeListener(this);
-             connect(spur->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+             connect(spur, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              //sch.removePropertyChangeListener(this);
-             disconnect(sch->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+             disconnect(sch, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              //sch.addPropertyChangeListener(this);
-             connect(sch->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+             connect(sch, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              // determine if schedule is requesting car type and load
              foreach (ScheduleItem* si, sch->getItemsBySequenceList()) {
                  if (si->getTypeName()==(type) && si->getReceiveLoadName()==(load)
@@ -197,8 +193,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
                      // create string Receive(type, delivery, road, load)
                      QString s = si->getTypeName();
                      if (si->getSetoutTrainScheduleId()!=(ScheduleItem::NONE)
-                             && TrainScheduleManager::instance()->getScheduleById(si->getSetoutTrainScheduleId()) != NULL) {
-                         s = s  + ", " + TrainScheduleManager::instance()->getScheduleById(si->getSetoutTrainScheduleId())->getName();
+                             && ((Operations::TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(si->getSetoutTrainScheduleId()) != NULL) {
+                         s = s  + ", " + ((Operations::TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(si->getSetoutTrainScheduleId())->getName();
                      } else {
                          s = s + ",";
                      }
@@ -212,8 +208,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
                      // create string Ship(load, pickup)
                      s = "";
                      if (si->getPickupTrainScheduleId()!=(ScheduleItem::NONE)
-                             && TrainScheduleManager::instance()->getScheduleById(si->getPickupTrainScheduleId()) != NULL) {
-                         s = ", "+ TrainScheduleManager::instance()->getScheduleById(si->getPickupTrainScheduleId())->getName();
+                             && ((Operations::TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(si->getPickupTrainScheduleId()) != NULL) {
+                         s = ", "+ ((Operations::TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(si->getPickupTrainScheduleId())->getName();
                      }
                      addItemLeft(locationsPanel, new QLabel(tr("Ship") +
                              " (" + si->getShipLoadName() + s + ")"), 3, x++);
@@ -240,20 +236,20 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  /*public*/ void SchedulesByLoadFrame::dispose() {
      //locationManager.removePropertyChangeListener(this);
- disconnect(locationManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes.instance().removePropertyChangeListener(this);
- disconnect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarLoads.instance().removePropertyChangeListener(this);
- disconnect(CarLoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      foreach (Track* spur, locationManager->getTracks(Track::SPUR)) {
          Schedule* sch = spur->getSchedule();
          if (sch == NULL) {
              continue;
          }
          //spur.removePropertyChangeListener(this);
-         disconnect(spur->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         disconnect(spur, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          //sch.removePropertyChangeListener(this);
-         disconnect(sch->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         disconnect(sch, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
      OperationsFrame::dispose();
  }
@@ -263,10 +259,10 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          log->debug(tr("Property change (%1) old: (%2) new: (%3)").arg(e->getPropertyName()).arg(e->getOldValue().toString()).arg(e->getNewValue().toString())); // NOI18N
 
      if (e->getPropertyName()==(CarTypes::CARTYPES_CHANGED_PROPERTY)) {
-         CarTypes::instance()->updateComboBox(typesComboBox);
+         ((CarTypes*)InstanceManager::getDefault("CarTypes"))->updateComboBox(typesComboBox);
      }
-     if (e->getSource()->metaObject()->className()==("CarLoads")) {
-         CarLoads::instance()->updateComboBox( typesComboBox->currentText(), loadsComboBox);
+     if (e->getSource()->metaObject()->className()==("Operations::CarLoads")) {
+         ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->updateComboBox( typesComboBox->currentText(), loadsComboBox);
      }
      if (e->getSource()->metaObject()->className()==("Schedule") || e->getSource()->metaObject()->className()==("LocationManager")
              || e->getPropertyName()==(Track::LOADS_CHANGED_PROPERTY)) {

@@ -13,6 +13,7 @@
 WarrantPreferences::WarrantPreferences(QObject *parent) :
   AbstractPreferencesManager(parent)
 {
+    setObjectName("WarrantPreferences");
  _scale = 87.1f;
  _searchDepth = 20;
   _throttleScale = 0.90f;
@@ -36,26 +37,10 @@ WarrantPreferences::WarrantPreferences(QObject *parent) :
     /*public*/ /*static*/ /*final*/ QString WarrantPreferences::RAMP_INCREMENT = "rampIncrement"; // NOI18N
     /*public*/ /*static*/ /*final*/ QString WarrantPreferences::STEP_INCREMENTS = "stepIncrements"; // NOI18N
     /*public*/ /*static*/ /*final*/ QString WarrantPreferences::SPEED_NAME_PREFS = "speedNames";   // NOI18N
-    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::SPEED_NAMES = SPEED_NAME_PREFS;
+    /*public*/ /*static*/ /*final*/ QString WarrantPreferences::SPEED_NAMES = WarrantPreferences::SPEED_NAME_PREFS;
     /*public*/ /*static*/ /*final*/ QString WarrantPreferences::INTERPRETATION = "interpretation"; // NOI18N
     /*public*/ /*static*/ /*final*/ QString WarrantPreferences::APPEARANCE_PREFS = "appearancePrefs"; // NOI18N
     /*public*/ /*static*/ /*final*/ QString WarrantPreferences::APPEARANCES = "appearances"; // NOI18N
-
-
-WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
-  AbstractPreferencesManager(parent) {
- _scale = 87.1f;
- _searchDepth = 20;
-  _throttleScale = 0.5f;
-  log = new Logger("WarrantPreferences");
-
- _interpretation = SignalSpeedMap::PERCENT_NORMAL;    // Interpretation of values in speed name table
-
- _msIncrTime = 1000;         // time in milliseconds between speed changes ramping up or down
-  _throttleIncr = 0.04f;    // throttle increment for each ramp speed change
-
- //openFile(fileName);
-}
 
 /**
  * Get the default instance.
@@ -72,7 +57,7 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
       preferences->initialize(ProfileManager::getDefault()->getActiveProfile());
   }
   catch (InitializationException ex) {
-      Logger::error("Error initializing default WarrantPreferences", ex);
+      Logger::error("Error initializing default WarrantPreferences", &ex);
   }
  }//);
  return preferences;
@@ -93,11 +78,11 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
    root = QDomElement();
   }
  }
- catch (FileNotFoundException ea) {
+ catch (FileNotFoundException* ea) {
      log->debug("Could not find Warrant preferences file.  Normal if preferences have not been saved before.");
      root = QDomElement();
- }catch (Exception eb) {
-     log->error("Exception while loading warrant preferences: " + eb.getMessage());
+ }catch (Exception* eb) {
+     log->error("Exception while loading warrant preferences: " + eb->getMessage());
      root = QDomElement();
  }
  if (!root.isNull())
@@ -288,7 +273,7 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
   }
   if (file->createNewFile()) log->debug("Creating new warrant prefs file: "+_fileName);
  }
- catch (Exception ea)
+ catch (Exception* ea)
  {
   Logger::error("Could not create warrant preferences file at "+_fileName+". "/*+ea*/);
  }
@@ -307,7 +292,7 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
    xmlFile->writeXML(file, doc);
   }
  }
- catch (Exception eb)
+ catch (Exception* eb)
  {
   log->warn("Exception in storing warrant xml: "/*+eb*/);
  }
@@ -370,7 +355,7 @@ WarrantPreferences::WarrantPreferences(QString fileName, QObject *parent) :
   rampPrefs.appendChild(step);
   prefs.appendChild(rampPrefs);
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
   log->warn("Exception in storing warrant xml: ");
   //ex.printStackTrace();
@@ -473,7 +458,7 @@ void WarrantPreferences::setThrottleIncrement(float ti) {
     _throttleIncr = ti;
 }
 //@Override
-/*public*/ void WarrantPreferences::initialize(Profile* profile) throw (InitializationException)
+/*public*/ void WarrantPreferences::initialize(Profile* profile)
 {
     if (!this->isInitialized(profile) && !this->isInitializing(profile)) {
         this->setInitializing(profile, true);

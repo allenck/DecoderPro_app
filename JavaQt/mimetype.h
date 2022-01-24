@@ -11,9 +11,9 @@ class MimeType : public QObject
     Q_OBJECT
 public:
     explicit MimeType(QObject *parent = 0);
-    /*public*/ MimeType(QString rawdata,QObject *parent = 0) throw (MimeTypeParseException);
-    /*public*/ MimeType(QString primary, QString sub, MimeTypeParameterList* mtpl = 0,QObject *parent = 0) throw
-    (MimeTypeParseException);
+    /*public*/ MimeType(QString rawdata,QObject *parent = 0) /*throw (MimeTypeParseException)*/;
+    /*public*/ MimeType(QString primary, QString sub, MimeTypeParameterList* mtpl = 0,QObject *parent = 0) /*throw
+    (MimeTypeParseException)*/;
 //    /*public*/ int hashCode();
     /*public*/ bool equals(QObject* thatObject);
     /*public*/ QString getPrimaryType();
@@ -25,8 +25,8 @@ public:
     /*public*/ QString toString();
     /*public*/ QString getBaseType();
     /*public*/ bool match(MimeType* type);
-    /*public*/ bool match(QString rawdata) throw (MimeTypeParseException);
-//    /*public*/ void writeExternal(ObjectOutput out) throw (IOException) ;
+    /*public*/ bool match(QString rawdata) /*throw (MimeTypeParseException)*/;
+//    /*public*/ void writeExternal(ObjectOutput out) /*throw (IOException)*/ ;
 //    /*public*/ void readExternal(ObjectInput in) throw (IOException,
 //ClassNotFoundException);
     /*public*/ QObject* clone();
@@ -35,7 +35,7 @@ signals:
 
 public slots:
 private:
-    /*private*/ void parse(QString rawdata) throw (MimeTypeParseException);
+    /*private*/ void parse(QString rawdata) /*throw (MimeTypeParseException)*/;
     /*private*/ QString    primaryType;
     /*private*/ QString    subType;
     /*private*/ MimeTypeParameterList* parameters;

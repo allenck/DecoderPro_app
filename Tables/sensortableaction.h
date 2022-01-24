@@ -7,9 +7,16 @@
 #include "libtables_global.h"
 #include "propertychangeevent.h"
 #include <QVariant>
-#include<QPushButton>
+#include "jbutton.h"
 #include "propertychangelistener.h"
-#include <QSpinBox>
+#include "spinnernumbermodel.h"
+#include "instancemanager.h"
+#include "jspinner.h"
+#include "tristatejcheckbox.h"
+#include "jlabel.h"
+#include "managercombobox.h"
+#include "systemnamevalidator.h"
+#include "jtextfield.h"
 
 class STAValidator;
 class QPushButton;
@@ -25,7 +32,6 @@ class SensorManager;
 class QLabel;
 class QCheckBox;
 class UserPreferencesManager;
-class JComboBox;
 class JmriJFrame;
 class JTextField;
 class LIBTABLESSHARED_EXPORT SensorTableAction : public AbstractTableAction
@@ -54,41 +60,49 @@ public slots:
 private:
     JmriJFrame* addFrame;// = NULL;
 
-    JTextField* hardwareAddressTextField;// = new JTextField(40);
-    JTextField* userNameField;// = new JTextField(40);
-    JComboBox* prefixBox;// = new JComboBox();
-    JTextField* numberToAdd;// = new JTextField(5);
-    QCheckBox* rangeBox;// = new JCheckBox("Add a range");
-    QLabel* sysNameLabel;// = new JLabel("Hardware Address");
-    QLabel* userNameLabel;// = new JLabel(tr("LabelUserName"));
+    JTextField* hardwareAddressTextField = new JTextField(40);
+    // initially allow any 20 char string, updated by prefixBox selection
+    JTextField* userNameField = new JTextField(40);
+    ManagerComboBox/*<Sensor*>*/* prefixBox = new ManagerComboBox();
+    SpinnerNumberModel* rangeSpinner = new SpinnerNumberModel(1, 1, 100, 1); // maximum 100 items
+    JSpinner* numberToAddSpinner = new JSpinner(rangeSpinner);
+    JCheckBox* rangeBox = new JCheckBox("Add a range");
+    JLabel* hwAddressLabel = new JLabel("Hardware Address:");
+    JLabel* userNameLabel = new JLabel(tr("User Name:"));
     QString systemSelectionCombo;// = this.getClass().getName()+".SystemSelected";
     QString userNameError;// = this.getClass().getName()+".DuplicateUserName";
-    QLabel* statusBarLabel;// = new JLabel(Bundle.getMessage("HardwareAddStatusEnter"), JLabel.LEADING);
+    JButton* addButton;
+    JLabel* statusBarLabel = new JLabel(tr("Enter a Hardware Address and (optional) User Name.")/*, JLabel.LEADING*/);
 
     UserPreferencesManager* p;
-    void handleCreateException(QString hardwareAddressTextField);
+    Manager/*<Sensor>*/* connectionChoice = nullptr;
+    SystemNameValidator* hardwareAddressValidator;
+
     BeanTableFrame* f;
     //BeanTableDataModel* m;
-    QCheckBox* showDebounceBox;// = new JCheckBox(tr("SensorDebounceCheckBox"));
-    bool enabled;
-    QString connectionChoice;// = "";
+    /*private*/ /*final*/ TriStateJCheckBox* showDebounceBox = new TriStateJCheckBox(tr("Show Debounce Delay Information"));
+    /*private*/ /*final*/ TriStateJCheckBox* showPullUpBox = new TriStateJCheckBox(tr("Show Pull-Up/Down Information"));
+    /*private*/ /*final*/ TriStateJCheckBox* showStateForgetAndQueryBox = new TriStateJCheckBox(tr("Show State Query actions"));
+    bool enabled = true;
     QString  addEntryToolTip;
-    QLabel* statusBar;// = new JLabel(Bundle.getMessage("HardwareAddStatusEnter"), JLabel.LEADING);
     STAValidator* validator;
+    void handleCreateException(QString sysName);
 
 private slots:
     /*private*/ void canAddRange();
-    void showDebounceChanged(bool);
+//    void showDebounceChanged(bool);
     void createPressed();
 
 protected:
-    /*protected*/ SensorManager* senManager;// = jmri.InstanceManager.sensorManagerInstance();
     /*protected*/ void createModel();
     /*protected*/ void setTitle();
     /*protected*/ QString helpTarget();
     /*protected*/ void setDefaultDebounce(JFrame* _who);
     /*protected*/ QString getClassName();
     /*protected*/ void setDefaultState(JFrame* _who);
+    /*protected*/ SensorManager* sensorManager = (SensorManager*)InstanceManager::getDefault("SensorManager");
+    /*protected*/ void configureTable(JTable* table);
+    /*protected*/ void columnsVisibleUpdated(QVector<bool> colsVisible) override;
 
 protected slots:
     /*protected*/ void addPressed();
@@ -106,57 +120,67 @@ friend class STAValidator;
 };
 Q_DECLARE_METATYPE(SensorTableAction)
 
-class STOkButtonActionListener : public ActionListener
+class STOkButtonActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  SensorTableAction* act;
 public:
  STOkButtonActionListener(SensorTableAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent */*e*/ = 0)override;
 
 };
 
-//class STCancelActionListener : public ActionListener
-//{
-// Q_OBJECT
-// SensorTableAction* act;
-//public:
-// STCancelActionListener(SensorTableAction* act);
-//public slots:
-// void actionPerformed();
-//};
-
-class STRangeActionListener : public ActionListener
+class STCancelActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
+ SensorTableAction* act;
+public:
+ STCancelActionListener(SensorTableAction* act);
+ QObject* self() override{return (QObject*)this;}
+public slots:
+ void actionPerformed(JActionEvent */*e*/ = 0)override;
+};
+
+class STRangeActionListener : public QObject, public ActionListener
+{
+ Q_OBJECT
+    Q_INTERFACES(ActionListener)
  SensorTableAction* act;
 public:
  STRangeActionListener(SensorTableAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent */*e*/ = 0)override;
 };
 
-class DebounceActionListener : public ActionListener
+class DebounceActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  JmriJFrame* finalF;
  SensorTableAction* act;
 public:
  DebounceActionListener(JmriJFrame* finalF, SensorTableAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void actionPerformed(ActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0)override;
 };
 
-class DefaultStateActionListener : public ActionListener
+class DefaultStateActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  JmriJFrame* finalF;
  SensorTableAction* act;
 public:
  DefaultStateActionListener(JmriJFrame* finalF, SensorTableAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void actionPerformed(ActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0)override;
 };
 
 class STAValidator : public QValidator

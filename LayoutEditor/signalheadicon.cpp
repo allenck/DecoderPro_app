@@ -47,7 +47,7 @@
  _text = false;
  setLevel(Editor::SIGNALS);
 
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
 }
 
 /*public*/ Positionable* SignalHeadIcon::deepClone()
@@ -119,8 +119,8 @@
  */
 /*public*/ void SignalHeadIcon::setSignalHead(QString pName)
 {
- SignalHead* mHead = (SignalHead*)((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(pName);
- if (mHead == NULL) mHead = (SignalHead*)((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getByUserName(pName);
+ SignalHead* mHead = (SignalHead*)((AbstractSignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->AbstractManager::getBySystemName(pName);
+ if (mHead == NULL) mHead = (SignalHead*)((AbstractSignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->AbstractManager::getByUserName(pName);
  if (mHead == NULL) log->warn("did not find a SignalHead named "+pName);
  else
  {
@@ -566,7 +566,7 @@ void SignalHeadIcon::updateItem()
 //            updateSignal();
 //        }
 //    };
- AddIconActionListener* addIconAction = new AddIconActionListener(this);
+ SHIAddIconActionListener* addIconAction = new SHIAddIconActionListener(this);
  _iconEditor->complete(addIconAction, true, false, true);
  _iconEditor->setSelection(getSignalHead());
 }
@@ -746,7 +746,7 @@ void SignalHeadIcon::updateSignal()
 
 void SignalHeadIcon::addPropertyChangeListener(PropertyChangeListener * /*l*/)
 {
- //pcs->addPropertyChangeListener(l);
+ //pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 
 }
 void SignalHeadIcon::removePropertyChangeListener(PropertyChangeListener */*l*/)

@@ -8,7 +8,7 @@
 #include "memory.h"
 #include "turnout.h"
 #include <QDialog>
-#include <QLineEdit>
+#include "jtextfield.h"
 #include <QComboBox>
 #include <QPushButton>
 #include <QLabel>
@@ -28,23 +28,26 @@
 #include "layouteditor.h"
 #include "instancemanager.h"
 #include "beanedititem.h"
+#include "layoutturnout.h"
+#include "actionlistener.h"
 
 class ConnectivityUtil;
-class ActionEvent;
+class JActionEvent;
 class JmriJFrame;
 class RoutingPacket;
 class LayoutEditorAuxTools;
 class Adjacencies;
 class ThroughPaths;
 class Routes;
-class LayoutTurnout;
+//class LayoutTurnout;
 class LayoutConnectivity;
-class LIBLAYOUTEDITORSHARED_EXPORT LayoutBlock : public AbstractNamedBean
+class LIBLAYOUTEDITORSHARED_EXPORT LayoutBlock : public AbstractNamedBean, public PropertyChangeListener
 {
     friend class LevelXing;
     friend class LayoutEditor;
     friend class LayoutBlockManager;
     Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
 public:
     //explicit LayoutBlock(QObject *parent = 0);
     /*public*/ bool enableAddRouteLogging;// = false;
@@ -66,9 +69,9 @@ public:
     /*public*/ QString occupancySensorName;// = "";
     /*public*/ QString memoryName;// = "";
     /*public*/ int occupiedSense;// = Sensor.ACTIVE;
-    /*public*/ QColor blockTrackColor;// = Color.black;
-    /*public*/ QColor blockOccupiedColor;// = Color.black;
-    /*public*/ QColor blockExtraColor;// = Color.black;
+    /*public*/ QColor blockTrackColor = Qt::black;
+    /*public*/ QColor blockOccupiedColor = Qt::black;
+    /*public*/ QColor blockExtraColor = Qt::black;
     // constants
     /*public*/ static const int OCCUPIED = Block::OCCUPIED;
     /*public*/ static const int EMPTY = 0x04;//Block::UNOCCUPIED;
@@ -159,7 +162,7 @@ public:
     /*public*/ void updatePaths();
 
 
-    /*public*/ int getState();
+    /*public*/ int getState() override;
     // dummy for completion of NamedBean interface
     /*public*/ void setState(int i) override;
 
@@ -343,8 +346,12 @@ public:
     /*public*/ int getThroughPathIndex(Block* sourceBlock, Block* destinationBlock);
     QVector<Routes*>* getDestRoutes(Block* dstBlock);
     QVector<Routes*>* getNextRoutes(Block* nxtBlock);
+    void updateRoutingInfo(Routes* route);
     void updateRoutingInfo(LayoutBlock* src, RoutingPacket* update);
-    Routes* getBestRoute(Block* dest);
+    //    Routes* getBestRoute(Block* dest);
+    Routes* getBestRouteByMetric(Block* dest);
+    Routes* getBestRouteByHop(Block* dest);
+    Routes* getBestRouteByLength(Block* dest);
     /*public*/ int getNeighbourDirection(LayoutBlock* neigh);
     /*public*/ int getNeighbourDirection(Block* neighbourBlock);
     void addRouteFromNeighbour(LayoutBlock* src, RoutingPacket* update);
@@ -353,15 +360,14 @@ public:
     int getBlockStatus();
     void updateRoutesToNeighbours(QVector<Block*>* messageRecipients, Routes* ro, RoutingPacket* update);
     void addRouteToNeighbours(Routes* ro);
-
-    /*public*/ static QString colorToString(QColor color);
-    /*public*/ static QColor stringToColor(QString string);
-
     /*public*/ int getNumberOfNeighbours();
     /*public*/ Block* getNeighbourAtIndex(int i);
     /*public*/ int getNeighbourDirection(int i);
     /*public*/ int getNeighbourMetric(int i);
-    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+    SwingPropertyChangeSupport* pcs;// = new SwingPropertyChangeSupport(this, nullptr);
+    QObject* self() override {return (QObject*)this;}
+    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean) override;
+    /*public*/ QString getBeanType() override;
 
 signals:
     
@@ -371,13 +377,14 @@ public slots:
      */
     void handleBlockChange(PropertyChangeEvent* e);
     void handleBlockChange(QString pName, int o, int val);
-#if 0
-    void sensorDebounceGlobalCheck_clicked();
-    void blockEditCancelPressed(ActionEvent* a = 0);
-    void blockEditDonePressed(ActionEvent* a = 0);
-#endif
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+
+    //void sensorDebounceGlobalCheck_clicked();
+    void blockEditCancelPressed(JActionEvent* a = 0);
+    void blockEditDonePressed(JActionEvent* a = 0);
+
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 private:
+    LayoutEditorAuxTools* auxTools= nullptr;
     //static bool InstanceManager.layoutBlockManagerInstance().isAdvancedRoutingEnabled() = true;
     QStringList working;// = {"Bi-Directional", "Receive Only", "Send Only"};
 
@@ -411,9 +418,10 @@ private:
     /*private*/ NamedBeanHandle<Sensor*>* occupancyNamedSensor; //NULL;
     /*private*/ NamedBeanHandle<Memory*>* namedMemory = nullptr;
 
+    /*private*/ Block* block = nullptr;
+
     friend class CreateEditBlock;
     /*private*/ Memory* memory; //NULL;
-    /*private*/ Block* block; //NULL;
     ///*private*/ int maxBlockNumber; //0;
     /*private*/ QVector<LayoutEditor*>* panels; //new QVector<LayoutEditor*>();  // panels using this block
     /*private*/ PropertyChangeListener* mBlockListener; //NULL;
@@ -429,15 +437,15 @@ private:
     /*private*/ void deactivateBlock();
 
     // variables for Edit Layout Block pane
-    /*JmriJFrame*/ QMainWindow* editLayoutBlockFrame; //NULL;
+    /*JmriJFrame*/ JmriJFrameX* editLayoutBlockFrame = nullptr;
     /*Component*/ QWidget* callingPane;
     /*JTextField*/ QLineEdit* sensorNameField; //new /*JTextField*/ QLineEdit(16);
     /*JTextField*/ QLineEdit* sensorDebounceInactiveField; //new /*JTextField*/ QLineEdit(5);
     /*JTextField*/ QLineEdit* sensorDebounceActiveField; //new /*JTextField*/ QLineEdit(5);
     /*JCheckBox*/ QCheckBox* sensorDebounceGlobalCheck; //new /*JCheckBox*/ QCheckBox(rb.getQString("OccupancySensorUseGlobal"));
     /*JTextField*/ QLineEdit* memoryNameField; //new /*JTextField*/ QLineEdit(16);
-    /*JTextField*/ QLineEdit* metricField; //new /*JTextField*/ QLineEdit(10);
-    /*JComboBox*/ QComboBox* senseBox; //new /*JComboBox*/ QComboBox();
+    /*JTextField*/ JTextField* metricField = new JTextField(10);
+    /*JComboBox*/ JComboBox* senseBox =new JComboBox();
     /*JCheckBox*/ QCheckBox* permissiveCheck; //new /*JCheckBox*/ QCheckBox("Permissive Working Allowed");
     /*private*/ /*final*/ NamedBeanComboBox/*<Memory*>*/* memoryComboBox = nullptr;// = new NamedBeanComboBox<>(
     //InstanceManager.getDefault(MemoryManager.class), null, DisplayOptions.DISPLAYNAME);
@@ -487,21 +495,6 @@ private:
     int metric; //= 100
     int getNextPacketID();
     bool updatePacketActedUpon(int packetID);
-#if 0
-    /*private*/ void setColorCombo(QComboBox* colorCombo,QColor color);
-    /*private*/ QColor getSelectedColor(QComboBox* colorCombo);
-    /**
-     * Methods and data to support initialization of color Combo box
-     */
-    QStringList colorText;// = {"Black","DarkGray","Gray",
-//            "LightGray","White","Red","Pink","Orange",
-//            "Yellow","Green","Blue","Magenta","Cyan"};
-    QList<QColor> colorCode;// = {Color->black,Color->darkGray,Color->gray,
-//            Color->lightGray,Color->white,Color->red,Color->pink,Color->orange,
-//            Color->yellow,Color->green,Color->blue,Color->magenta,Color->cyan};
-    int numColors;// = 13;  // number of entries in the above arrays
-    /*private*/ void initializeColorCombo(QComboBox* colorCombo, QColor c);
-#endif
     /*public*/ QString getNeighbourPacketFlowAsString(int i);
     /*public*/ bool isNeighbourMutual(int i);
     int getNeighbourIndex(Adjacencies* adj);
@@ -555,9 +548,10 @@ protected:
 
 }; // end class LayoutBlock
 
-class Routes : public QObject
+class Routes : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  LayoutBlock* block;
 public:
     /*public*/ Routes(Block* dstBlock, Block* nxtBlock, int hop, int dir, int met, float len, LayoutBlock* block);
@@ -632,10 +626,11 @@ public:
     * the route with the lowest count is returned.
     */
     /*public*/ int getBlockHopCount(Block* destination, Block* nextBlock);
+    QObject* self() override {return (QObject*)this;}
 public slots:
-    /*public*/ void on_propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e)override;
 signals:
-    void propertyChange(PropertyChangeEvent*);
+    //void propertyChange(PropertyChangeEvent*);
 
 private:
     int direction;
@@ -697,13 +692,13 @@ private:
  QHash<Block*, Routes*>* adjDestRoutes;// = new Hashtable<Block*, Routes*>();
  QVector<int>* actedUponUpdates;// = new QVector<int>();
  Logger* log;
-
 };
 
-class ThroughPaths : public QObject
+class ThroughPaths : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
-    LayoutBlock* parent;
+ Q_INTERFACES(PropertyChangeListener)
+ LayoutBlock* parent;
 public:
     ThroughPaths(Block* srcBlock, Path* srcPath, Block* destBlock, Path* dstPath, LayoutBlock * parent);
     Block* getSourceBlock();
@@ -713,10 +708,11 @@ public:
     bool isPathActive();
     void setTurnoutList(QList<LayoutTrackExpectedState<LayoutTurnout*>*> turnouts);
     /*/*public*/ QHash<Turnout*, int> getTurnoutList();
+    QObject* self() override{return (QObject*)this;}
 
 public slots:
-    void handlePropertyChange(QString propertyName, Turnout* source, int newVal);
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+//    void handlePropertyChange(QString propertyName, Turnout* source, int newVal);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 private:
     Block* sourceBlock;
@@ -773,14 +769,16 @@ int getPacketId() { return packetRef; }
 friend class LoadXml;
 };
 
-class HandleBlockChangeListener : public PropertyChangeListener
+class HandleBlockChangeListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  public:
     HandleBlockChangeListener(LayoutBlock* parent)
     {
      this->parent = parent;
     }
+    QObject* self() override{return (QObject*)this;}
 public slots:
     void propertyChange(PropertyChangeEvent *e) override
     {
@@ -837,41 +835,45 @@ private:
     friend class RoutingSetSaveItemListener;
     friend class RoutingSetResetItemListener;
 };
-class LayoutSetSaveItemListener : public ActionListener
+
+class LayoutSetSaveItemListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  LayoutBlock* lb;
  LayoutSetSaveItemListener(LayoutBlock* lb) {this->lb = lb;}
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent* =0)override;
 };
 
-class LayoutSetResetItemListener : public ActionListener
+class LayoutSetResetItemListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  LayoutBlock* lb;
  LayoutSetResetItemListener(LayoutBlock* lb) {this->lb = lb;}
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent* =0)override;
 };
 
-class RoutingSetSaveItemListener : public ActionListener
+class RoutingSetSaveItemListener : public AbstractAction
 {
  Q_OBJECT
  LayoutBlock* lb;
  RoutingSetSaveItemListener(LayoutBlock* lb) {this->lb = lb;}
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent * =0)override;
  friend class LayoutBlockEditAction;
 };
 
-class RoutingSetResetItemListener : public ActionListener
+class RoutingSetResetItemListener : public AbstractAction
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  LayoutBlock* lb;
  RoutingSetResetItemListener(LayoutBlock* lb) {this->lb = lb;}
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent * =0) override;
  friend class LayoutBlockEditAction;
 };
 

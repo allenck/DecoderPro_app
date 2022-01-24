@@ -14,10 +14,12 @@
 #include "tablecolumn.h"
 #include "defaultsignalmastlogicmanager.h"
 #include <QPushButton>
-#include <QMessageBox>
+#include "joptionpane.h"
 #include <QVBoxLayout>
 #include <QCheckBox>
 #include "layoutblockmanager.h"
+#include "mysortfilterproxymodel.h"
+#include "xtablecolumnmodel.h"
 
 //SignalMastLogicTableAction::SignalMastLogicTableAction()
 //{
@@ -40,37 +42,19 @@
     : AbstractTableAction(tr("Signal Mast Logic Table"), parent)
 {
      //this(tr("TitleSignalMastLogicTable"));
-    common();
- }
+ common();
+}
 
 void SignalMastLogicTableAction::common()
 {
-    sigLog = new SignallingAction();
-    signalMastLogicList = NULL;
-     suppressUpdate = false;
-    signalMastLogicFrame = NULL;
-    sourceLabel = new QLabel();
+ sigLog = new SignallingAction();
+ signalMastLogicList = NULL;
+  suppressUpdate = false;
+ signalMastLogicFrame = NULL;
+ sourceLabel = new QLabel();
 
 }
 
- //@Override
- /*public*/ void SignalMastLogicTableAction::actionPerformed(ActionEvent* /*e*/) {
-#if 0
-     // create the JTable model, with changes for specific NamedBean
-     createModel();
-     MySortFilterProxyModel* sorter = new MySortFilterProxyModel(m);
-     JTable* dataTable = m.makeJTable(sorter);
-     dataTable->setObjectName("SignalMastLogicTable");
-     //sorter.setTableHeader(dataTable.getTableHeader());
-     // create the frame
-     f = new jmri.jmrit.beantable.BeanTableFrame(m, helpTarget(), dataTable) {};
-     setMenuBar(f);
-     setTitle();
-     addToFrame(f);
-     f.pack();
-     f.setVisible(true);
-#endif
- }
 
  /*public*/ void SignalMastLogicTableAction::setMenuBar(BeanTableFrame* f) {
      finalF = f;			// needed for anonymous ActionListener class
@@ -89,19 +73,26 @@ void SignalMastLogicTableAction::common()
      pathMenu->addAction(item);
 //     item.addActionListener(new ActionListener() {
 //         /*public*/ void actionPerformed(ActionEvent e) {
-//             ((jmri.managers.DefaultSignalMastLogicManager) InstanceManager::signalMastLogicManagerInstance()).generateSection();
-//             JOptionPane.showMessageDialog(NULL, tr("SectionGenerationComplete"));
+     connect(item, &QAction::triggered, [=]{
+             ((DefaultSignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->generateSection();
+             JOptionPane::showMessageDialog(NULL,tr("Generation of Sections Complete"));
 //         }
-//     });
-  connect(item, SIGNAL(triggered(bool)), this, SLOT(On_autoGenSections()));
- }
+     });
+     QAction* setSMLDirSensors = new QAction(tr("Add Direction Sensors to SML"));
+     pathMenu->addAction(setSMLDirSensors);
+//     setSMLDirSensors.addActionListener(new ActionListener() {
+//         @Override
+//         public void actionPerformed(ActionEvent e) {
+     connect(setSMLDirSensors, &QAction::triggered, [=]{
+             int n = ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->setupSignalMastsDirectionSensors();
+             if (n > 0) {
+                 JOptionPane::showMessageDialog(finalF, tr("There were %1 errors, see console log.").arg(n),
+                         tr("Error"), JOptionPane::ERROR_MESSAGE);
+             }
+//         }
+     });
+}
 
- void SignalMastLogicTableAction::On_autoGenSections()
- {
-  ((DefaultSignalMastLogicManager*) InstanceManager::signalMastLogicManagerInstance())->generateSection();
-  //JOptionPane.showMessageDialog(NULL, tr("Generation of Sections Complete"));
-  QMessageBox::information(NULL, tr("COmplete"), tr(""));
- }
 
  /*protected*/ void SignalMastLogicTableAction::createModel()
 {
@@ -117,12 +108,12 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
  init();
 }
  //We have to set a manager first off, but this gets replaced.
- /*protected*/ Manager* SmlBeanTableDataModel::getManager() {
-     return (Manager*)InstanceManager::signalMastLogicManagerInstance();
+ /*protected*/ Manager *SmlBeanTableDataModel::getManager() {
+     return ( AbstractManager*)InstanceManager::getDefault("SignalMastLogicManager");
  }
 
  /*public EcosLocoAddress getByDccAddress(int address) {return getManager().getByDccAddress(address);}*/
- /*public*/ QString SmlBeanTableDataModel::getValue(QString /*s*/) {
+ /*public*/ QString SmlBeanTableDataModel::getValue(QString /*s*/) const{
      return "Set";
  }
 
@@ -310,6 +301,8 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
              return ""; // override default, no title for Edit column
          case ENABLECOL:
              return tr("Head Enabled");
+         case MAXSPEEDCOL:
+             return tr("Max speed");
          default:
              break;
      }
@@ -318,23 +311,23 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
  }
 
 // @Override
-// /*public*/ Class<?> getColumnClass(int col) {
-//     switch (col) {
-//         case SOURCECOL:
-//         case DESTCOL:
-//         case SOURCEAPPCOL:
-//         case COMCOL:
-//         case DESTAPPCOL:
-//             return String.class;
-//         case ENABLECOL:
-//             return Boolean.class;
-//         case EDITLOGICCOL:
-//         case DELCOL:
-//             return JButton.class;
-//         default:
-//             return NULL;
-//     }
-// }
+ /*public*/ QString SmlBeanTableDataModel::getColumnClass(int col) const {
+     switch (col) {
+         case SOURCECOL:
+         case DESTCOL:
+         case SOURCEAPPCOL:
+         case COMCOL:
+         case DESTAPPCOL:
+             return "String";
+         case ENABLECOL:
+             return "Boolean";
+         case EDITLOGICCOL:
+         case DELCOL:
+             return "JButton";
+         default:
+             return QString();
+     }
+ }
 
  //@Override
  /*public*/ Qt::ItemFlags SmlBeanTableDataModel::flags(const QModelIndex &index) const
@@ -354,12 +347,12 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
 
  void SmlBeanTableDataModel::editLogic(int row, int /*col*/) {
      act->sigLog->setMast(getLogicFromRow(row)->getSourceMast(), getDestMastFromRow(row));
-     act->sigLog->actionPerformed(NULL);
+     act->sigLog->actionPerformed();
  }
 
  void SmlBeanTableDataModel::deleteLogic(int row, int /*col*/) {
      //This needs to be looked at
-     InstanceManager::signalMastLogicManagerInstance()->removeSignalMastLogic(getLogicFromRow(row), getDestMastFromRow(row));
+     ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->removeSignalMastLogic(getLogicFromRow(row), getDestMastFromRow(row));
  }
 
  /*public*/ SignalMast* SmlBeanTableDataModel::getDestMastFromRow(int row) const{
@@ -386,6 +379,8 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
  /*public*/ int SmlBeanTableDataModel::getPreferredWidth(int col) {
      switch (col) {
          case SOURCECOL:
+             return  JTextField(10).sizeHint().width();
+         case MAXSPEEDCOL:
              return  JTextField(10).sizeHint().width();
          case COMCOL:
              return 75;
@@ -428,18 +423,18 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
      configDeleteColumn(table);
  }
 
- /*public*/ NamedBean* SmlBeanTableDataModel::getBySystemName(QString /*name*/) const {
-     return NULL;
- }
+// /*public*/ NamedBean* SmlBeanTableDataModel::getBySystemName(QString /*name*/) const {
+//     return NULL;
+// }
 
- /*public*/ NamedBean* SmlBeanTableDataModel::getByUserName(QString /*name*/) {
-     return NULL;
- }
+// /*public*/ NamedBean* SmlBeanTableDataModel::getByUserName(QString /*name*/) {
+//     return NULL;
+// }
 
  /*synchronized*/ /*public*/ void SmlBeanTableDataModel::dispose() {
 
      //getManager().removePropertyChangeListener(this);
-     disconnect(getManager(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(getManager()->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      if (act->signalMastLogicList != NULL) {
          for (int i = 0; i < act->signalMastLogicList->size(); i++) {
              SignalMastLogic* b = getLogicFromRow(i);
@@ -493,6 +488,8 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
              return tr("Delete");
          case EDITLOGICCOL:
              return tr("Edit");
+         case MAXSPEEDCOL:
+             return  (b != nullptr) ? b->getMaximumSpeed(getDestMastFromRow(row)) : 0.0;
          default:
              //log.error("internal state inconsistent with table requst for "+row+" "+col);
              break;;
@@ -515,7 +512,37 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
  /*protected*/ void SmlBeanTableDataModel::showPopup(QMouseEvent* e) {
 
  }
-
+ //@Override
+ /*protected*/ void SmlBeanTableDataModel::setColumnIdentities(JTable* table) {
+     BeanTableDataModel::setColumnIdentities(table);
+     //Enumeration<TableColumn> columns;
+     QListIterator<TableColumn*> columns = table->getColumnModel()->getColumns();
+     if (static_cast<XTableColumnModel*>(table->getColumnModel())) {
+         columns = ((XTableColumnModel*) table->getColumnModel())->getColumns(false);
+     } else {
+         columns = table->getColumnModel()->getColumns();
+     }
+     while (columns.hasNext()) {
+         TableColumn* column = columns.next();
+         switch (column->getModelIndex()) {
+             case SOURCEAPPCOL:
+                 column->setIdentifier("SrcAspect");
+                 break;
+             case DESTAPPCOL:
+                 column->setIdentifier("DstAspect");
+                 break;
+             case DELCOL:
+                 column->setIdentifier("Delete");
+                 break;
+             case EDITLOGICCOL:
+                 column->setIdentifier("Edit");
+                 break;
+             default:
+             // use existing value
+          break;
+         }
+     }
+ }
 
  /*protected*/ void SignalMastLogicTableAction::setTitle() {
      f->setTitle(tr("TitleSignalMastLogicTable"));
@@ -526,22 +553,19 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
      return "package.jmri.jmrit.beantable.SignalMastLogicTable";// NOI18N
  }
 
- /*protected*/ void SignalMastLogicTableAction::addPressed(ActionEvent* e) {
+ /*protected*/ void SignalMastLogicTableAction::addPressed(JActionEvent *) {
      sigLog->setMast(NULL, NULL);
-     sigLog->actionPerformed(e);
+     sigLog->actionPerformed(/*e*/);
  }
 
 
  void SignalMastLogicTableAction::autoCreatePairs(/*jmri.util.JmriJFrame f*/) {
      if (!((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled()) {
-//         int response = JOptionPane.showConfirmDialog(NULL, tr("EnableLayoutBlockRouting"));
-//         if (response == 0) {
-         int response = QMessageBox::question(NULL, tr("Question"), tr("Layout Block routing is not enabled\nDo you want to enable it?"), QMessageBox::Yes | QMessageBox::No);
-         if(response == QMessageBox::No )
+         int response = JOptionPane::showConfirmDialog(NULL, tr("Layout Block routing is not enabled\nDo you want to enable it?"));
+         if (response == 0)
          {
              ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->enableAdvancedRouting(true);
-             //JOptionPane.showMessageDialog(NULL, tr("LayoutBlockRoutingEnabled"));
-         QMessageBox::information(NULL, tr("Enabled"), tr("Layout Block routing has been enabled."));
+             JOptionPane::showMessageDialog(NULL, tr("Layout Block routing has been enabled."));
          } else {
              return;
          }

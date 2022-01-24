@@ -1,13 +1,13 @@
 #include "trainschedulemanager.h"
 #include "control.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "trainmanagerxml.h"
 #include "trainschedule.h"
 #include "jcombobox.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include "xml.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "vptr.h"
 #include "propertychangeevent.h"
 #include "instancemanager.h"
@@ -25,27 +25,20 @@ namespace Operations
  */
 ///*public*/ class TrainScheduleManager implements java.beans.PropertyChangeListener {
 
- /*public*/ /*static*/ /*final*/ QString TrainScheduleManager::LISTLENGTH_CHANGED_PROPERTY = "trainScheduleListLength"; // NOI18N
+ /*public*/ /*static*/ /*final*/ QString TrainScheduleManager::NONE = "";
 
- /*public*/ TrainScheduleManager::TrainScheduleManager(QObject* parent) : QObject(parent) {
+ /*public*/ /*static*/ /*final*/ QString TrainScheduleManager::LISTLENGTH_CHANGED_PROPERTY = "trainScheduleListLength"; // NOI18N
+ /*public*/ /*static*/ /*final*/ QString TrainScheduleManager::SCHEDULE_ID_CHANGED_PROPERTY = "ActiveTrainScheduleId"; // NOI18N
+
+ /*public*/ TrainScheduleManager::TrainScheduleManager(QObject* parent) : SwingPropertyChangeSupport(this, parent) {
   log = new Logger("TrainScheduleManger");
   setObjectName("TrainScheduleManager");
   _id = 0;
   _scheduleHashTable = QHash<QString, TrainSchedule*>();
-  pcs = new PropertyChangeSupport(this);
+  pcs = new SwingPropertyChangeSupport(this, nullptr);
   setProperty("InstanceManagerAutoDefault", "true");
   setProperty("InstanceManagerAutoInitialize", "true");
 
- }
-
- /**
-  * record the single instance *
-  */
-// /*private*/ /*static*/ TrainScheduleManager* TrainScheduleManager::_instance = NULL;
-
- /*public*/ /*static*/ /*synchronized*/ TrainScheduleManager* TrainScheduleManager::instance()
- {
-  return static_cast<TrainScheduleManager*>(InstanceManager::getDefault("TrainScheduleManager"));
  }
 
  /*public*/ void TrainScheduleManager::dispose() {
@@ -58,6 +51,27 @@ namespace Operations
   */
  /*public*/ int TrainScheduleManager::numEntries() {
      return _scheduleHashTable.size();
+ }
+
+ /**
+  * Sets the selected schedule id
+  *
+  * @param id Selected schedule id
+  */
+ /*public*/ void TrainScheduleManager::setTrainScheduleActiveId(QString id) {
+     QString old = _trainScheduleActiveId;
+     _trainScheduleActiveId = id;
+     if (old!=(id)) {
+         setDirtyAndFirePropertyChange(SCHEDULE_ID_CHANGED_PROPERTY, old, id);
+     }
+ }
+
+ /*public*/ QString TrainScheduleManager::getTrainScheduleActiveId() {
+     return _trainScheduleActiveId;
+ }
+
+ /*public*/ TrainSchedule* TrainScheduleManager::getActiveSchedule() {
+     return getScheduleById(getTrainScheduleActiveId());
  }
 
  /**
@@ -209,7 +223,7 @@ namespace Operations
   */
  /*public*/ JComboBox* TrainScheduleManager::getSelectComboBox() {
      JComboBox* box = new JComboBox();
-     box->addItem(NULL);
+     box->addItem("");
      foreach (TrainSchedule* sch, getSchedulesByIdList()) {
          box->addItem(sch->toString(), VPtr<TrainSchedule>::asQVariant(sch));
      }
@@ -291,7 +305,7 @@ namespace Operations
  }
 #endif
  /*protected*/ void TrainScheduleManager::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
-     TrainManagerXml::instance()->setDirty(true);
+     ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->setDirty(true);
      pcs->firePropertyChange(p, old, n);
  }
 

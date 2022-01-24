@@ -5,10 +5,9 @@
 #include <QVariant>
 #include "javaqt_global.h"
 #include "propertychangelistener.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
+#include "tabledelegates.h"
 
-class TableCellRenderer;
-class TableCellEditor;
 class PropertyChangeEvent;
 class JAVAQTSHARED_EXPORT TableColumn : public QObject
 {
@@ -42,6 +41,10 @@ public:
  /*public*/ bool getResizable();
  /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* listener);
  /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* listener);
+ /*public*/ void setCellRenderer(TableCellRenderer* cellRenderer);
+ /*public*/ TableCellRenderer* getCellRenderer();
+ /*public*/ void setCellEditor(TableCellEditor* cellEditor);
+ /*public*/ TableCellEditor* getCellEditor();
 
 signals:
  void propertyChange(PropertyChangeEvent*);
@@ -53,7 +56,7 @@ private:
   * <code>changeSupport</code> field describes them.
   */
 // /*private*/ SwingPropertyChangeSupport changeSupport;
- PropertyChangeSupport* changeSupport;
+ SwingPropertyChangeSupport* changeSupport = nullptr;
 
  void common();
  /*private*/ void firePropertyChange(QString propertyName, QVariant oldValue, QVariant newValue);
@@ -64,7 +67,7 @@ protected:
    * this <code>TableColumn</code>. As columns are moved around in the
    * view <code>modelIndex</code> remains constant.
    */
- /*protected*/ int       modelIndex;
+ /*protected*/ int       modelIndex =0;
 
  /**
   *  This object is not used internally by the drawing machinery of
@@ -79,13 +82,13 @@ protected:
  /*protected*/ QVariant    identifier;
 
  /** The width of the column. */
- /*protected*/ int       width;
+ /*protected*/ int       width = 75;
 
  /** The minimum width of the column. */
- /*protected*/ int       minWidth;
+ /*protected*/ int       minWidth =0;
 
  /** The preferred width of the column. */
- /*private*/ int         preferredWidth;
+ /*private*/ int         preferredWidth = 75;
 
  /** The maximum width of the column. */
  /*protected*/ int       maxWidth;
@@ -103,20 +106,9 @@ protected:
  /*protected*/ TableCellEditor*   cellEditor;
 
  /** If true, the user is allowed to resize the column; the default is true. */
- /*protected*/ bool   isResizable;
+ /*protected*/ bool   isResizable = true;
 
- /**
-  * This field was not used in previous releases and there are
-  * currently no plans to support it in the future.
-  *
-  * @deprecated as of Java 2 platform v1.3
-  */
- /*
-  *  Counter used to disable posting of resizing notifications until the
-  *  end of the resize.
-  */
- /*@Deprecated
- transient*/ /*protected*/ int     resizedPostingDisableCount;
+
 
  friend class JTable;
 };

@@ -42,7 +42,7 @@
 }
 
 //@Override
-/*public*/ bool TripleOutputSignalHeadXml::load(QDomElement shared, QDomElement /*perNode*/) {
+/*public*/ bool TripleOutputSignalHeadXml::load(QDomElement shared, QDomElement /*perNode*/) throw (JmriConfigureXmlException){
     QDomNodeList l = shared.elementsByTagName("turnoutname");
     if (l.size() == 0) {
         l = shared.elementsByTagName("turnout");
@@ -63,7 +63,7 @@
 
     loadCommon(h, shared);
 
-    static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(h);
+    qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(h);
     return true;
 }
 

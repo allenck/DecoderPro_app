@@ -13,7 +13,10 @@
 #endif
 #include "abstractaction.h"
 #include "liblayouteditor_global.h"
+#include "jmenuitem.h"
+#include "exceptions.h"
 
+class File;
 class WebHistoryItem;
 class QWebView;
 class HelpFrame;
@@ -34,11 +37,16 @@ public:
     static /*public*/ bool initOK();
 //    static HelpSet* globalHelpSet;
     static HelpBroker* globalHelpBroker;
-    static /*public*/ QAction* makeHelpMenuItem(QString ref);
+    static /*public*/ JMenuItem* makeHelpMenuItem(QString ref);
     static /*public*/ void addHelpToComponent(QWidget* component, QString ref);
+    /*public*/ static void enableHelpOnButton(QWidget* comp, QString id);
     static /*public*/ void displayHelpRef(QString ref);
     static /*public*/ HelpBroker* getGlobalHelpBroker();
-    static /*public*/ QAction* getHelpAction(/*final*/ QString name, /*final*/ QIcon icon, /*final*/ QString id);
+    static /*public*/ JMenuItem* getHelpAction(/*final*/ QString name, /*final*/ QIcon icon, /*final*/ QString id);
+    /*public*/ static QString createStubFile(QString helpKey, QString locale) /*throw (IOException)*/;
+    /*public*/ static void openWindowsFile(File* file) /*throw (JmriException)*/;
+    /*public*/ static bool showWebPage(QString ref, QString url);
+    /*public*/ static void openWebPage(QString url) /*throw (JmriException)*/;
 
 signals:
 
@@ -49,7 +57,7 @@ private:
     explicit HelpUtil(QObject *parent = 0);
     static HelpUtil* thisMenu;
     static Logger* log;
-    HelpFrame* _frame;
+    HelpFrame* _frame = nullptr;
 };
 
 class HUAbstractAction : public  AbstractAction
@@ -58,9 +66,9 @@ class HUAbstractAction : public  AbstractAction
     QString helpID;
     HelpUtil* parent;
  public:
-    HUAbstractAction(QString, QIcon, QString, HelpUtil* parent);
+    HUAbstractAction(QString, QIcon, QString id, HelpUtil* parent);
 public slots:
-    void actionPerformed();
+    void actionPerformed(JActionEvent* e=0) override;
 };
 
 class MyWebView : public QWebEngineView
@@ -75,7 +83,7 @@ public:
   MyWebView(QWidget* parent = 0);
   void addHistory(const QUrl &);
 private:
-  void contextMenuEvent(QContextMenuEvent *);
+//  void contextMenuEvent(QContextMenuEvent *);
   QList<WebHistoryItem> historyList;
   int currHistoryItem;
   QString loadHtml(QString path);
@@ -107,5 +115,18 @@ private slots:
   QString loadHtml(QString path);
 
  };
+ /*public*/ /*interface*/class MenuProvider {
+  public:
+ /**
+  * Get the menu items to include in the menu. Any menu item that is null will be
+  * replaced with a separator.
+  *
+  * @return the list of menu items
+  */
+ //@Nonnull
+ virtual QList<JMenuItem*> getHelpMenuItems()=0;
+ virtual QObject* self() =0;
+ };
 
+Q_DECLARE_INTERFACE(MenuProvider, "MenuProvider")
 #endif // HELPUTIL_H

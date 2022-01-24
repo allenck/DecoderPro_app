@@ -609,9 +609,9 @@
 <context>
 =======
 >>>>>>> 3ea6a431ea042a12f11e9da7f00bc94fae7de1aa
-    <name>PropertyChangeSupport</name>
+    <name>SwingPropertyChangeSupport</name>
     <message>
-        <location filename="../propertychangesupport.cpp" line="509"/>
+        <location filename="../SwingPropertyChangeSupport.cpp" line="509"/>
         <source>not implemented %1</source>
         <translation type="unfinished"></translation>
     </message>

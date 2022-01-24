@@ -8,8 +8,9 @@
 #include "libtables_global.h"
 #include <QSortFilterProxyModel>
 
+class ManagerComboBox;
 class AbstractTableTabAction;
-class ActionEvent;
+class JActionEvent;
 class MessageFormat;
 //class PrintMode;
 class Manager;
@@ -32,34 +33,42 @@ public:
     virtual /*public*/ void dispose();
     virtual /*public*/ QString getClassDescription();
     Q_INVOKABLE virtual /*public*/ void setMessagePreferencesDetails();
-    virtual/*public*/ bool includeAddButton();
-    virtual/*public*/ void print(JTable::PrintMode mode, QString headerFormat, QString footerFormat);
+    virtual /*public*/ bool includeAddButton();
+    virtual /*public*/ void print(JTable::PrintMode mode, QString headerFormat, QString footerFormat);
     virtual /*public*/ void addToPanel(AbstractTableTabAction* f);
-    virtual void buildMenus(BeanTableFrame*) {}
+    //virtual void buildMenus(BeanTableFrame*) {}
 signals:
 
 public slots:
-    virtual /*public*/ void actionPerformed(ActionEvent* e = 0);
+    virtual /*public*/ void actionPerformed(JActionEvent* e = 0);
 private:
-    Logger* log;
-    JTable* dataTable;
+    static Logger* log;
 protected:
-    /*protected*/ BeanTableDataModel* m;
-    virtual /*protected*/ /*abstract*/ void createModel();
+    /*protected*/ BeanTableDataModel* m = nullptr;
+    virtual /*protected*/ /*abstract*/ void createModel() = 0;
     virtual /*protected*/ /*abstract*/ void setTitle();
     /*protected*/ BeanTableFrame* f;
     virtual /*protected*/ void setManager(Manager* man);
     virtual/*protected*/ QString helpTarget();
     virtual /*protected*/ /*abstract*/ QString getClassName();
-    /*protected*/ bool _includeAddButton;// = true;
-    /*protected*/ JTable* table;
+    /*protected*/ bool _includeAddButton = true;
+//    /*protected*/ JTable* table = nullptr;
+    /*protected*/ /*@Nonnull*/ QString nextName(/*@Nonnull*/ QString name);
+    /*protected*/ void configureManagerComboBox(ManagerComboBox/*<E>*/* comboBox, Manager/*<E>*/* manager,
+                                                /*Class<? extends Manager<E>>*/QString managerClass);
+    /*protected*/ void removePrefixBoxListener(ManagerComboBox/*<E>*/* prefixBox);
+    /*protected*/ void displayHwError(QString curAddress, Exception *ex);
+    virtual /*protected*/ void configureTable(JTable* table);
+    virtual /*protected*/ void columnsVisibleUpdated(QVector<bool> colsVisible);
+
   protected slots:
-    virtual /*protected*/ /*abstract*/ void addPressed(ActionEvent* e = 0);
+    virtual /*protected*/ /*abstract*/ void addPressed(JActionEvent* /*e*/ = 0);
 friend class TabbedTableItem;
 friend class ATABeanTableFrame;
 friend class AbstractTableTabAction;
 friend class SensorTableAction;
 friend class ListedTableFrame;
+friend class OBlockTableActionTest;
 };
 
 class ATABeanTableFrame : public BeanTableFrame

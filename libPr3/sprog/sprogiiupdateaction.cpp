@@ -29,8 +29,8 @@ using namespace Sprog;
         SprogIIUpdateFrame* f = new SprogIIUpdateFrame(_memo);
         try {
             f->initComponents();
-        } catch (Exception ex) {
-            log->warn("SprogIIUpdateAction starting SprogIIUpdateFrame: Exception: " + ex.getMessage());
+        } catch (Exception* ex) {
+            log->warn("SprogIIUpdateAction starting SprogIIUpdateFrame: Exception: " + ex->getMessage());
         }
         f->setVisible(true);
     }

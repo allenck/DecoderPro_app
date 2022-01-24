@@ -1,6 +1,7 @@
 #ifndef ROUTEEDITFRAME_H
 #define ROUTEEDITFRAME_H
 #include "operationsframe.h"
+#include <QMenu>
 
 class JComboBox;
 class QGroupBox;
@@ -37,7 +38,7 @@ namespace Operations
  private:
   RouteEditTableModel* routeModel;// = new RouteEditTableModel();
   JTable* routeTable;// = new JTable(routeModel);
-  QGroupBox* routePane;
+  JPanel* routePane;
 
   RouteManager* routeManager;
   RouteManagerXml* managerXml;
@@ -48,10 +49,10 @@ namespace Operations
   Train* _train;// = null;
 
   // major buttons
-  QPushButton* addLocationButton;// =  new JButton(Bundle.getMessage("AddLocation"));
-  QPushButton* saveRouteButton;// =  new JButton(Bundle.getMessage("SaveRoute"));
-  QPushButton* deleteRouteButton;// =  new JButton(Bundle.getMessage("DeleteRoute"));
-  QPushButton* addRouteButton;// =  new JButton(Bundle.getMessage("AddRoute"));
+  JButton* addLocationButton;// =  new JButton(Bundle.getMessage("AddLocation"));
+  JButton* saveRouteButton;// =  new JButton(Bundle.getMessage("SaveRoute"));
+  JButton* deleteRouteButton;// =  new JButton(Bundle.getMessage("DeleteRoute"));
+  JButton* addRouteButton;// =  new JButton(Bundle.getMessage("AddRoute"));
 
   // check boxes
   QCheckBox* checkBox;
@@ -80,6 +81,8 @@ namespace Operations
   /*private*/ void saveRoute();
   /*private*/ bool checkName(QString s);
   /*private*/ void reportRouteExists(QString s);
+  QMenu* toolMenu = new QMenu(tr("Tools"));
+  /*private*/ void loadToolMenu();
 
  };
 }

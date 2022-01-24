@@ -61,16 +61,16 @@ DefaultCabSignalTest::DefaultCabSignalTest(QObject *parent) : QObject(parent)
     }
 
     //@Test
-    /*public*/ void DefaultCabSignalTest::testSignalSequence() throw (JmriException) {
+    /*public*/ void DefaultCabSignalTest::testSignalSequence() /*throw (JmriException)*/ {
         runSequence(VPtr<DccLocoAddress>::asQVariant(new DccLocoAddress(1234,true)));
     }
 
     //@Test
-//    /*public*/ void DefaultCabSignalTest::testSignalSequenceIdTag() throw (JmriException) {
+//    /*public*/ void DefaultCabSignalTest::testSignalSequenceIdTag() /*throw (JmriException)*/ {
 //        runSequence(new DefaultRailCom("ID1234","Test Tag"));
 //    }
 
-    /*protected*/ void DefaultCabSignalTest::runSequence(QVariant initialBlockContents) throw (JmriException) {
+    /*protected*/ void DefaultCabSignalTest::runSequence(QVariant initialBlockContents) /*throw (JmriException)*/ {
         //Assume.assumeFalse(GraphicsEnvironment.isHeadless());
         // load and display test panel file
         ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->setStabilisedSensor("IS_ROUTING_DONE");
@@ -119,7 +119,7 @@ DefaultCabSignalTest::DefaultCabSignalTest(QObject *parent) : QObject(parent)
                 sm->provideSensor("WestTurnoutOS")->setState(Sensor::INACTIVE);
                 sm->provideSensor("West1")->setState(Sensor::INACTIVE);
                 sm->provideSensor("West2")->setState(Sensor::INACTIVE);
-             } catch (JmriException je) {
+             } catch (JmriException* je) {
                 log->error("Expected error setting up test", je);
              }
 //        });
@@ -153,7 +153,7 @@ DefaultCabSignalTest::DefaultCabSignalTest(QObject *parent) : QObject(parent)
 //        ThreadingUtil.runOnLayout( ()-> {
              try{
               tm->provideTurnout("WestTurnout")->setState(Turnout::THROWN);
-             } catch (JmriException je) {
+             } catch (JmriException* je) {
              }
 //        });
         // and verify the state does not change.
@@ -163,7 +163,7 @@ DefaultCabSignalTest::DefaultCabSignalTest(QObject *parent) : QObject(parent)
 //        ThreadingUtil.runOnLayout( ()-> {
              try{
               tm->provideTurnout("EastTurnout")->setState(Turnout::THROWN);
-             } catch (JmriException je) {
+             } catch (JmriException* je) {
              }
 //        });
         // and verify the state changes.
@@ -182,7 +182,7 @@ DefaultCabSignalTest::DefaultCabSignalTest(QObject *parent) : QObject(parent)
                  SensorManager* sm = (SensorManager*)InstanceManager::getDefault("SensorManager");
                  sm->provideSensor(endingBlock)->setState(Sensor::ACTIVE);
                  sm->provideSensor(startingBlock)->setState(Sensor::INACTIVE);
-             } catch (JmriException je) {
+             } catch (JmriException* je) {
              }
 //        });
     }

@@ -10,7 +10,7 @@ namespace Sprog
   Q_OBJECT
  public:
   SprogProgrammer(SprogSystemConnectionMemo* memo, QObject* parent = 0);
-  /*public*/ QList<ProgrammingMode*> getSupportedModes();
+  /*public*/ QList<QString> getSupportedModes();
   /*public*/ bool getCanRead();
   /*synchronized*/ /*public*/ void writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
   /*synchronized*/ /*public*/ void writeCV(int CV, int val, ProgListener* p) throw (ProgrammerException);

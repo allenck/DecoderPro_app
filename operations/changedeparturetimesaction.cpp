@@ -1,5 +1,4 @@
 #include "changedeparturetimesaction.h"
-#include "changedeparturetimesframe.h"
 
 namespace Operations
 {
@@ -26,12 +25,12 @@ namespace Operations
  }
 
 
- /*public*/ void ChangeDepartureTimesAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void ChangeDepartureTimesAction::actionPerformed(JActionEvent * /*e*/) {
      // create a copy train frame
      if (f == NULL || !f->isVisible()) {
          f = new ChangeDepartureTimesFrame();
      }
-     //f.setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setVisible(true);	// this also brings the frame into focus
  }
 }

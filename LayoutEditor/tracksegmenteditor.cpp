@@ -31,13 +31,14 @@
      */
     //@InvokeOnGuiThread
     //@Override
-    /*public*/ void TrackSegmentEditor::editLayoutTrack(/*@Nonnull*/ LayoutTrack* layoutTrack) {
-        if (qobject_cast<TrackSegment*>(layoutTrack) ) {
-            this->trackSegment = (TrackSegment*) layoutTrack;
+    /*public*/ void TrackSegmentEditor::editLayoutTrack(/*@Nonnull*/ LayoutTrackView *layoutTrackView) {
+        if (qobject_cast<TrackSegmentView*>(layoutTrackView) ) {
+         this->trackSegmentView = (TrackSegmentView*) layoutTrackView;
+         this->trackSegment = this->trackSegmentView->getTrackSegment();
         } else {
             log->error(tr("editLayoutTrack received type %1 content %2").arg(
-                    layoutTrack->metaObject()->className()).arg(layoutTrack->objectName()),
-                    Exception("traceback"));
+                    layoutTrackView->metaObject()->className()).arg(layoutTrackView->objectName()),
+                    new Exception("traceback"));
         }
         sensorList.clear();
 
@@ -131,19 +132,20 @@
         } else {
             editTrackSegmentMainlineComboBox->setCurrentIndex(editTrackSegmentSideTrackIndex);
         }
-        if (trackSegment->isDashed()) {
+        if (trackSegmentView->isDashed()) {
             editTrackSegmentDashedComboBox->setCurrentIndex(editTrackSegmentDashedIndex);
         } else {
             editTrackSegmentDashedComboBox->setCurrentIndex(editTrackSegmentSolidIndex);
         }
-        editTrackSegmentHiddenCheckBox->setChecked(trackSegment->isHidden());
+        editTrackSegmentHiddenCheckBox->setChecked(trackSegmentView->isHidden());
         Block* block = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBlock(trackSegment->getBlockName());
         //editTrackSegmentBlockNameComboBox.getEditor().setItem(block);   // Select the item via the editor, empty text field if null
-        editTrackSegmentBlockNameComboBox->setCurrentIndex(editTrackSegmentBlockNameComboBox->findData(VPtr<Block>::asQVariant(block)));
+        //editTrackSegmentBlockNameComboBox->setCurrentIndex(editTrackSegmentBlockNameComboBox->findData(VPtr<Block>::asQVariant(block)));
+        editTrackSegmentBlockNameComboBox->setCurrentIndex(editTrackSegmentBlockNameComboBox->findText(block->getDisplayName(editTrackSegmentBlockNameComboBox->getDisplayOrder())));
         editTrackSegmentBlockNameComboBox->setEnabled(!hasNxSensorPairs(trackSegment->getLayoutBlock()));
 
-        if (trackSegment->isArc() && trackSegment->isCircle()) {
-            editTrackSegmentArcTextField->setText(QString::number(trackSegment->getAngle()));
+        if (trackSegmentView->isArc() && trackSegmentView->isCircle()) {
+            editTrackSegmentArcTextField->setText(QString::number(trackSegmentView->getAngle()));
             editTrackSegmentArcTextField->setEnabled(true);
         } else {
             editTrackSegmentArcTextField->setEnabled(false);
@@ -194,30 +196,30 @@
     //@InvokeOnGuiThread
     /*private*/ void TrackSegmentEditor::editTracksegmentDonePressed(/*ActionEvent a*/) {
         // set dashed
-        bool oldDashed = trackSegment->isDashed();
-        trackSegment->setDashed(editTrackSegmentDashedComboBox->currentText() == editTrackSegmentDashedIndex);
+        bool oldDashed = trackSegmentView->isDashed();
+        trackSegmentView->setDashed(editTrackSegmentDashedComboBox->currentText() == editTrackSegmentDashedIndex);
 
         // set mainline
         bool oldMainline = trackSegment->isMainline();
         trackSegment->setMainline(editTrackSegmentMainlineComboBox->currentIndex() == editTrackSegmentMainlineTrackIndex);
 
         // set hidden
-        bool oldHidden = trackSegment->isHidden();
-        trackSegment->setHidden(editTrackSegmentHiddenCheckBox->isChecked());
+        bool oldHidden = trackSegmentView->isHidden();
+        trackSegmentView->setHidden(editTrackSegmentHiddenCheckBox->isChecked());
 
-        if (trackSegment->isArc()) {
+        if (trackSegmentView->isArc()) {
             bool ok;
                 double newAngle = editTrackSegmentArcTextField->text().toDouble(&ok);
-                trackSegment->setAngle(newAngle);
+                trackSegmentView->setAngle(newAngle);
                 editTrackSegmentNeedsRedraw = true;
             if(!ok) {
-                editTrackSegmentArcTextField->setText(QString::number(trackSegment->getAngle()));
+                editTrackSegmentArcTextField->setText(QString::number(trackSegmentView->getAngle()));
             }
         }
         // check if anything changed
-        if ((oldDashed != trackSegment->isDashed())
+        if ((oldDashed != trackSegmentView->isDashed())
                 || (oldMainline != trackSegment->isMainline())
-                || (oldHidden != trackSegment->isHidden())) {
+                || (oldHidden != trackSegmentView->isHidden())) {
             editTrackSegmentNeedsRedraw = true;
         }
         // check if Block changed

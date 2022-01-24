@@ -7,6 +7,8 @@
 #include "jfilechooser.h"
 #include "operationsmanager.h"
 #include "defaultbackup.h"
+#include "instancemanager.h"
+#include "exceptiondisplayframe.h"
 
 namespace Operations
 {
@@ -26,14 +28,14 @@ namespace Operations
 // static Logger log = LoggerFactory
 //         .getLogger(RestoreFilesAction.class.getName());
 
- /*public*/ RestoreFilesAction::RestoreFilesAction(QString s, QObject* parent)
-     : AbstractAction(s, parent)
+ /*public*/ RestoreFilesAction::RestoreFilesAction(QObject* parent)
+     : AbstractAction(tr("Restore"), parent)
  {
   //super(s);
   connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void RestoreFilesAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void RestoreFilesAction::actionPerformed(JActionEvent * /*e*/) {
      restore();
  }
 
@@ -76,7 +78,7 @@ namespace Operations
   // now backup files
   AutoBackup* autoBackup = new AutoBackup();
 
-  //try {
+  try {
       autoBackup->autoBackup();
 
       File* directory = fc->getSelectedFile();
@@ -94,16 +96,16 @@ namespace Operations
       // now deregister shut down task
       // If Trains window was opened, then task is active
       // otherwise it is normal to not have the task running
-      OperationsManager::getInstance()->setShutDownTask(NULL);
+      ((Operations::OperationsManager*)InstanceManager::getDefault("Operations::OperationsManager"))->setShutDownTask(NULL);
 
       Apps::handleRestart();
 
-//  } catch (Exception ex) {
-//      ExceptionContext context = new ExceptionContext(ex,
-//              tr("RestoreDialog.restore.files"),
-//              tr("RestoreDialog.makeSure"));
-//      new ExceptionDisplayFrame(context);
-//  }
+  } catch (Exception* ex) {
+      ExceptionContext* context = new ExceptionContext(ex,
+              tr("RestoreDialog.restore.files"),
+              tr("RestoreDialog.makeSure"));
+      new ExceptionDisplayFrame(context);
+  }
  }
 #if 0
  /*private*/ static class fileFilter extends javax.swing.filechooser.FileFilter {

@@ -3,12 +3,15 @@
 
 #include "abstractmanager.h"
 #include "liblayouteditor_global.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
+#include "instancemanagerautodefault.h"
+#include "propertychangelistener.h"
 
 class Portal;
-class LIBLAYOUTEDITORSHARED_EXPORT PortalManager : public AbstractManager
+class LIBLAYOUTEDITORSHARED_EXPORT PortalManager : public AbstractManager, public InstanceManagerAutoDefault
 {
  Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault )
 public:
  explicit PortalManager(QObject *parent = 0);
  ~PortalManager() {}
@@ -17,13 +20,13 @@ public:
  /*public*/ Portal* getPortal(int idx);
  /*public*/ int getIndexOf(Portal* portal);
  /*public*/ int getXMLOrder()const override;
- /*public*/ QString getSystemPrefix() const override;
- /*public*/ char typeLetter() const override;
+ /*public*/ QString getSystemPrefix()  override;
+ /*public*/ QChar typeLetter() override;
  /*public*/ Portal* createNewPortal(QString sName);
  /*public*/ QString generateSystemName();
  /*public*/ Portal* getPortal(QString name);
- /*public*/ NamedBean* getBySystemName(QString name)const override;
- /*public*/ NamedBean* getByUserName(QString key) const override;
+ /*public*/ NamedBean *getBySystemName(QString name)const ;
+ /*public*/ NamedBean* getByUserName(QString key) const ;
  /*public*/ Portal* providePortal(QString name);
  static /*public*/ PortalManager* instance();
  /*public*/ QString getBeanTypeHandled();
@@ -32,6 +35,7 @@ public:
      return "Portal";
  }
  /*public*/ QSet<Portal*> getPortalSet();
+ QObject* self() {return (QObject*)this;}
 
 signals:
 
@@ -39,7 +43,7 @@ public slots:
 private:
  /*private*/ static int _nextSName;// = 1;
  static PortalManager* _instance;// = NULL;
- /*private*/ PropertyChangeSupport* pcs = new PropertyChangeSupport(this);
+ /*private*/ SwingPropertyChangeSupport* pcs = new SwingPropertyChangeSupport(this, nullptr);
  /*private*/ QList<Portal*> _nameList =QList<Portal*>();          // stores Portal in loaded order
  /*private*/ QMap<QString, Portal*> _portalMap = QMap<QString, Portal*>(); // stores portal by current name
  /*private*/ int _nextIndex = 1;

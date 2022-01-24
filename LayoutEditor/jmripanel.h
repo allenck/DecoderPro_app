@@ -5,18 +5,18 @@
 #include "exceptions.h"
 #include <QMenu>
 #include <QFrame>
-#include "liblayouteditor_global.h"
+#include "javaqt_global.h"
 #include "jpanel.h"
 
 class UserPreferencesManager;
 class Logger;
 class WindowInterface;
-class LIBLAYOUTEDITORSHARED_EXPORT JmriPanel : public JPanel
+class JAVAQTSHARED_EXPORT JmriPanel : public JPanel
 {
     Q_OBJECT
 public:
     explicit JmriPanel(QWidget *parent = nullptr);
- virtual ~JmriPanel() {}
+    virtual ~JmriPanel() {}
     /*public*/ virtual QString getHelpTarget();
     /*public*/ virtual QString getTitle() ;
     /*public*/ virtual bool isMultipleInstances();

@@ -20,7 +20,7 @@ public:
     QDataStream* getInputStream(){return istream;}
     QSerialPort* getSerialPort() { return serial;}
     qint32 getBaudRate();
-    void setSerialPortParams(int i, int i1, int i2, int i3) throw(UnsupportedCommOperationException);
+    void setSerialPortParams(int i, int i1, int i2, int i3) /*throw(UnsupportedCommOperationException)*/;
 
     bool isDTR(){QSerialPort::PinoutSignals sig = serial->pinoutSignals(); return sig & serial->DataTerminalReadySignal;}
     bool isRTS(){QSerialPort::PinoutSignals sig = serial->pinoutSignals(); return sig & serial->RequestToSendSignal;}
@@ -46,7 +46,7 @@ public:
     static const int FLOWCONTROL_NONE = QSerialPort::NoFlowControl;
     void setRTS(bool bRts);
     void setDTR(bool bDTR);
-    void setFlowControlMode(int flow) throw(UnsupportedCommOperationException);
+    void setFlowControlMode(int flow) /*throw(UnsupportedCommOperationException)*/;
     int getFlowControlMode();
     void setPortName(QString portName);
     QString errorString();

@@ -17,10 +17,10 @@
 /*        if(mgrOK()) {
      try {
      sendStatus(p.getPower());
-     } catch (JmriException ex) {
+     } catch (JmriException* ex) {
      try {
      sendErrorStatus();
-     } catch (IOException ie) {
+     } catch (IOException* ie) {
      } catch (java.lang.NullPointerException je) {
      }
      } catch(IOException ie2) {
@@ -40,7 +40,7 @@
       try {
           sendErrorStatus();
       }
-      catch (IOException ie) {
+      catch (IOException* ie) {
       }
       return false;
   }
@@ -56,11 +56,11 @@
     if (mgrOK()) {
         try {
             p->setPower(PowerManager::ON);
-        } catch (JmriException e) {
-            log->error("Exception trying to turn power on " + e.getMessage());
+        } catch (JmriException* e) {
+            log->error("Exception trying to turn power on " + e->getMessage());
             try {
                 sendErrorStatus();
-            } catch (IOException ie) {
+            } catch (IOException* ie) {
             }
         }
     }
@@ -70,11 +70,11 @@
     if (mgrOK()) {
         try {
             p->setPower(PowerManager::OFF);
-        } catch (JmriException e) {
-            log->error("Exception trying to turn power off " + e.getMessage());
+        } catch (JmriException* e) {
+            log->error("Exception trying to turn power off " + e->getMessage());
             try {
                 sendErrorStatus();
-            } catch (IOException ie) {
+            } catch (IOException* ie) {
             }
         }
     }
@@ -87,17 +87,17 @@
  {
   sendStatus(p->getPower());
  }
- catch (JmriException ex)
+ catch (JmriException* ex)
  {
   try
   {
    sendErrorStatus();
   }
-  catch (IOException ie)
+  catch (IOException* ie)
   {
   }
  }
- catch (IOException ie2)
+ catch (IOException* ie2)
  {
  }
 }

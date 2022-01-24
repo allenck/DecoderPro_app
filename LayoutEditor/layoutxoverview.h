@@ -7,7 +7,11 @@ class LayoutXOverView : public LayoutTurnoutView
 {
   Q_OBJECT
  public:
-  /*public*/ LayoutXOverView(/*@Nonnull*/ LayoutXOver* xover);
+  /*public*/ LayoutXOverView(/*@Nonnull*/ LayoutXOver* xover,
+         /*@Nonnull*/ QPointF c, double rot,
+         double xFactor, double yFactor,
+         /*@Nonnull*/ LayoutEditor* layoutEditor);
+
 
 };
 

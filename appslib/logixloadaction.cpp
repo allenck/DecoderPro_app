@@ -19,8 +19,6 @@ LogixLoadAction::LogixLoadAction()
     //super(s);
     _who = who;
     log = new Logger("LogixLoadAction");
-    setCheckable(true);
-    setChecked(((LogixManager*)InstanceManager::getDefault("LogixManager"))->getLoadDisabled());
     connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
@@ -44,5 +42,4 @@ LogixLoadAction::LogixLoadAction()
         ((LogixManager*)InstanceManager::getDefault("LogixManager"))->setLoadDisabled(true);
         log->info("Requested load Logixs diabled via Debug menu.");
     }
-    setChecked(((LogixManager*)InstanceManager::getDefault("LogixManager"))->getLoadDisabled());
 }

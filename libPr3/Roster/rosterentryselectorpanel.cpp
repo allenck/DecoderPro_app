@@ -1,4 +1,5 @@
 #include "rosterentryselectorpanel.h"
+#include <QFrame>
 
 //RosterEntrySelectorPanel::RosterEntrySelectorPanel(QWidget *parent) :
 //    QWidget(parent)
@@ -12,14 +13,14 @@
 
 
 /*public*/ RosterEntrySelectorPanel::RosterEntrySelectorPanel(QWidget *parent)
-    : QFrame(parent)
+    : JFrame(parent)
 {
  //RosterEntrySelectorPanel(NULL, "", parent);
  init(NULL, "");
 }
 
 /*public*/ RosterEntrySelectorPanel::RosterEntrySelectorPanel(RosterEntry* re, QString rg, QWidget *parent)
-    : QFrame(parent)
+    : JFrame(parent)
 {
  //super();
  //this.setLayout(new FlowLayout());
@@ -30,8 +31,8 @@ void RosterEntrySelectorPanel::init(RosterEntry* re, QString /*rg*/)
 {
  setObjectName(QString::fromUtf8("rosterEntrySelectorPanel"));
  resize(196,50);
- setFrameShape(QFrame::StyledPanel);
- setFrameShadow(QFrame::Raised);
+// setFrameShape(QFrame::StyledPanel);
+// setFrameShadow(QFrame::Raised);
  horizontalLayout = new QHBoxLayout(this);
  horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
  //entryCombo = new RosterEntryComboBox(rg );
@@ -79,9 +80,10 @@ void RosterEntrySelectorPanel::on_rosterGroup_changed(QString /*text*/)
  entryCombo->update(getSelectedRosterGroup());
 }
 
-//protected void fireSelectedRosterEntriesPropertyChange(Object oldValue, Object newValue) {
-//    this.firePropertyChange(RosterEntrySelector.SELECTED_ROSTER_ENTRIES, oldValue, newValue);
-//}
+/*protected*/ void RosterEntrySelectorPanel::fireSelectedRosterEntriesPropertyChange(QObject* oldValue, QObject* newValue) {
+    //this->firePropertyChange(/*RosterEntrySelector::SELECTED_ROSTER_ENTRIES*/"selectedRosterEntries", oldValue, newValue);
+}
+
 void RosterEntrySelectorPanel::on_rosterEntryPropertyChange(QString propertyName ,QList<RosterEntry*>* oldValue,QList<RosterEntry*>* newValue)
 {
  if(propertyName == "selectedRosterEntries")

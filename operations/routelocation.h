@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include "logger.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "appslib_global.h"
 #include <QColor>
 
@@ -13,9 +13,10 @@ namespace Operations
 {
  class  Setup;
  class Location;
- class APPSLIBSHARED_EXPORT RouteLocation : public QObject
+ class APPSLIBSHARED_EXPORT RouteLocation : public SwingPropertyChangeSupport, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   //explicit RouteLocation(QObject *parent = 0);
   /*public*/ static /*final*/ QString NONE; //="";
@@ -43,10 +44,11 @@ namespace Operations
   /*public*/ QString toString();
   /*public*/ QString getId() ;
   /*public*/ QString getName();
-  PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
   /*public*/ Location* getLocation() ;
   /*public*/ int getSequenceId();
   /*public*/ void setSequenceId(int sequence) ;
+  /*public*/ int getBlockingOrder();
+  /*public*/ void setBlockingOrder(int order);
   /*public*/ void setComment(QString comment);
   /*public*/ QString getComment();
   /*public*/ void setCommentColor(QColor color);
@@ -66,7 +68,7 @@ namespace Operations
   /*public*/ void setTrainIconCoordinates() ;
   /*public*/ QPoint getTrainIconCoordinates();
   /*public*/ void dispose();
-  /*public*/ RouteLocation(QDomElement e);
+  /*public*/ RouteLocation(QDomElement e, QObject *parent = nullptr);
   /*public*/ QDomElement store(QDomDocument doc);
   /*public*/ int getMaxCarMoves();
   /*public*/ void setRandomControl(QString value);
@@ -92,11 +94,12 @@ namespace Operations
   /*public*/ int getTrainLength();
   /*public*/ void setTrainWeight(int weight);
   /*public*/ int getTrainWeight();
+  QObject* self() override {return (QObject*)this; }
 
  signals:
 
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
+  /*public*/ void propertyChange(PropertyChangeEvent* e)override;
 
  private:
   Logger* log;
@@ -120,6 +123,7 @@ namespace Operations
   /*protected*/ QString _departureTime; //=NONE; // departure time from this location
   /*protected*/ int _trainIconX; //=0; // the x & y coordinates for the train icon
   /*protected*/ int _trainIconY; //=0;
+  /*protected*/ int _blockingOrder = 0;
   /*protected*/ QString _comment; //=NONE;
 
   /*protected*/ int _carMoves; //=0; // number of moves at this location

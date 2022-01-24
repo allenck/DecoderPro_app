@@ -1,7 +1,7 @@
 #include "loadxmluseraction.h"
 #include <QFileDialog>
 #include "jfilechooser.h"
-#include <QMessageBox>
+#include "joptionpane.h"
 #include "logger.h"
 #include <QWidget>
 
@@ -50,7 +50,7 @@ void LoadXmlUserAction::common()
 }
 
 //@Override
-/*public*/ void LoadXmlUserAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void LoadXmlUserAction::actionPerformed(JActionEvent * /*e*/)
 {
  JFileChooser* userFileChooser = getUserFileChooser();
  userFileChooser->setDialogType(JFileChooser::OPEN_DIALOG);
@@ -68,13 +68,12 @@ void LoadXmlUserAction::common()
  {
   log->debug("load failed");
 
-//     JOptionPane.showMessageDialog(null,
-//             rb.getString("PanelHasErrors") + "\n"
-//             + rb.getString("CheckPreferences") + "\n"
-//             + rb.getString("ConsoleWindowHasInfo"),
-//             rb.getString("PanelLoadError"), JOptionPane.ERROR_MESSAGE);
-  QMessageBox::critical(nullptr, tr("Error Opening Panel!"), tr("Panel experienced errors during load.")+ "\n" + tr("Check your system Preferences.") + "\n" + tr("The console window contains error details."));
-     currentFile = nullptr;
+  JOptionPane::showMessageDialog(nullptr,
+    tr("Panel experienced errors during load.") + "\n"
+    + tr("Check your system Preferences.") + "\n"
+    + tr("The console window contains error details."),
+    tr("Error Opening Panel!"), JOptionPane::ERROR_MESSAGE);
+  currentFile = nullptr;
  }
 }
 

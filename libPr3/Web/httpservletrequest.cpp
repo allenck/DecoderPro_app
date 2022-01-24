@@ -1,5 +1,5 @@
 #include "httpservletrequest.h"
-#include "httpserver/httprequest.h"
+#include "../QtWebApp//QtWebApp/httpserver/httprequest.h"
 
 /*public*/ /*static*/ /*final*/ QString HttpServletRequest::BASIC_AUTH = "BASIC";
 /*public*/ /*static*/ /*final*/ QString HttpServletRequest::FORM_AUTH = "FORM";

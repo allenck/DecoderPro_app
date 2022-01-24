@@ -55,10 +55,10 @@ TransitManagerXml::TransitManagerXml()
                 storeCommon(x, elem);
 
                 // save child transitsection entries
-                QList<TransitSection*>* tsList = x->getTransitSectionList();
+                QList<TransitSection*> tsList = x->getTransitSectionList();
                 QDomElement  tsElem = QDomElement();
-                for (int k = 0; k < tsList->size(); k++) {
-                    TransitSection* ts = tsList->at(k);
+                for (int k = 0; k < tsList.size(); k++) {
+                    TransitSection* ts = tsList.at(k);
                     if (ts != NULL && !ts->isTemporary()) {
                         tsElem = doc.createElement("transitsection");
                         Section* tSection = ts->getSection();

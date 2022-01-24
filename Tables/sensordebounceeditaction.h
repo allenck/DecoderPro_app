@@ -34,27 +34,30 @@ protected slots:
  /*protected*/ void resetDebounceItems(ActionEvent* e = 0);
  friend class SaveItemAction;
  friend class ResetItemAction;
+ friend class OBTResetItemAction1;
+ friend class OBlockEditAction;
+
 };
-class SaveItemAction : public ActionListener
+class SaveItemAction : public AbstractAction
 {
  Q_OBJECT
  SensorDebounceEditAction* action;
 public:
  SaveItemAction(SensorDebounceEditAction* action) {this->action = action;}
 public slots:
- void actionPerformed(ActionEvent * = 0)
+ void actionPerformed(JActionEvent * = 0)
  {
   action->saveDebounceItems();
  }
 };
-class ResetItemAction : public ActionListener
+class ResetItemAction : public AbstractAction
 {
  Q_OBJECT
  SensorDebounceEditAction* action;
 public:
  ResetItemAction(SensorDebounceEditAction* action) {this->action = action;}
 public slots:
- void actionPerformed(ActionEvent * = 0)
+ void actionPerformed(JActionEvent * = 0)
  {
   action->resetDebounceItems();
  }

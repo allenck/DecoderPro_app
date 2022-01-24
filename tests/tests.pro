@@ -10,7 +10,7 @@ TARGET = tests
 TEMPLATE = lib
 
 MOC_DIR = moc_obj
-OBJECTS_DIR += moc_obj
+OBJECTS_DIR = moc_obj
 
 DEFINES += TESTS_LIBRARY
 
@@ -24,6 +24,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+
+# Windows and Unix get the suffix "d" to indicate a debug version of the library.
+# Mac OS gets the suffix "_debug".
+CONFIG(debug, debug|release) {
+    win32:      TARGET = $$join(TARGET,,,d)
+    mac:        TARGET = $$join(TARGET,,,_debug)
+    unix:!mac:  TARGET = $$join(TARGET,,,d)
+    MOC_DIR = moc_objd
+    OBJECTS_DIR = moc_objd
+}
 
 SOURCES += \
         tests.cpp \
@@ -237,7 +247,33 @@ SOURCES += \
     layouteditor/layoutshapetest.cpp \
     layouteditor/layoutshapetestaction.cpp \
     entryexit/circuitbuildertest.cpp \
-    entryexit/circuitbuildertestaction.cpp
+    entryexit/circuitbuildertestaction.cpp \
+    loconet/controlpaneltest.cpp \
+    loconet/controlpaneltestaction.cpp \
+    misc/meterframetest.cpp \
+    loconet/lnpredefinedmeterstest.cpp \
+    loconet/lnpredefinedmeterstestaction.cpp \
+    loconet/lniplimplementationtest.cpp \
+    loconet/lniplimplementationtestaction.cpp \
+    tables/oblocktableactiontest.cpp \
+    tables/oblocktableactiontestaction.cpp \
+    loconet/lncvdevicetest.cpp \
+    loconet/lncvdevicetestaction.cpp \
+    loconet/lncvmessagecontentsclasstest.cpp \
+    loconet/lncvmessagecontentsclasstestaction.cpp \
+    jmripaneltest.cpp \
+    loconet/lncvprogpanetestaction.cpp \
+    loconet/lncvprogtablemodeltest.cpp \
+    loconet/lncvprogtablemodeltestaction.cpp \
+    loconet/lncvprogpanetest.cpp \
+    misc/identifydecodertest.cpp \
+    misc/identifydecodertestaction.cpp \
+    misc/cvutiltest.cpp \
+    misc/cvutiltestaction.cpp \
+    misc/fileutilsupporttest.cpp \
+    misc/fileutilsupporttestaction.cpp \
+    programmers/abstractprogrammertest.cpp \
+    programmers/abstractprogrammertestaction.cpp
 
 HEADERS += \
         tests.h \
@@ -452,7 +488,34 @@ HEADERS += \
     layouteditor/layoutshapetest.h \
     layouteditor/layoutshapetestaction.h \
     entryexit/circuitbuildertest.h \
-    entryexit/circuitbuildertestaction.h
+    entryexit/circuitbuildertestaction.h \
+    loconet/controlpaneltest.h \
+    loconet/controlpaneltestaction.h \
+    misc/meterframetest.h \
+    loconet/lnpredefinedmeterstest.h \
+    loconet/lnpredefinedmeterstestaction.h \
+    loconet/lniplimplementationtest.h \
+    loconet/lniplimplementationtestaction.h \
+    tables/oblocktableactiontest.h \
+    tables/oblocktableactiontestaction.h \
+    loconet/lncvdevicetest.h \
+    loconet/lncvdevicetestaction.h \
+    loconet/lncvmessagecontentsclasstest.h \
+    loconet/lncvmessagecontentsclasstestaction.h \
+    lncvprogpanetest.h \
+    jmripaneltest.h \
+    loconet/lncvprogpanetestaction.h \
+    loconet/lncvprogtablemodeltest.h \
+    loconet/lncvprogtablemodeltestaction.h \
+    loconet/lncvprogpanetest.h \
+    misc/identifydecodertest.h \
+    misc/identifydecodertestaction.h \
+    misc/cvutiltest.h \
+    misc/cvutiltestaction.h \
+    misc/fileutilsupporttest.h \
+    misc/fileutilsupporttestaction.h \
+    programmers/abstractprogrammertest.h \
+    programmers/abstractprogrammertestaction.h
 
 unix {
     target.path = /usr/lib
@@ -462,14 +525,16 @@ unix {
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../JavaQt/release/ -lJavaQt
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../JavaQt/debug/ -lJavaQt
-else:unix: LIBS += -L$$PWD/../JavaQt/ -lJavaQt
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../JavaQt/ -lJavaQt
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../JavaQt/ -lJavaQtd
 
 INCLUDEPATH += $$PWD/../JavaQt
 DEPENDPATH += $$PWD/../JavaQt
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/release/ -lappslib
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/debug/ -lappslib
-else:unix: LIBS += -L$$PWD/../appslib/ -lappslib
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/ -lappslib
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/ -lappslibd
 
 INCLUDEPATH += $$PWD/../appslib
 DEPENDPATH += $$PWD/../appslib
@@ -477,14 +542,16 @@ DEPENDPATH += $$PWD/../appslib
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPref/release/ -lPref
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPref/debug/ -lPref
-else:unix: LIBS += -L$$PWD/../libPref/ -lPref
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPref/ -lPref
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPref/ -lPrefd
 
 INCLUDEPATH += $$PWD/../libPref
 DEPENDPATH += $$PWD/../libPref
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPr3/release/ -lPr3
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPr3/debug/ -lPr3
-else:unix: LIBS += -L$$PWD/../libPr3/ -lPr3
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPr3/ -lPr3
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPr3/ -lPr3d
 
 INCLUDEPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Signal \
  $$PWD/../Tables $$PWD/../libPr3/Throttle $$PWD/../libPr3/LocoIO $$PWD/../libPr3/loconet \
@@ -497,7 +564,8 @@ DEPENDPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Signal \
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../LayoutEditor/release/ -lLayoutEditor
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LayoutEditor/debug/ -lLayoutEditor
-else:unix: LIBS += -L$$PWD/../LayoutEditor/ -lLayoutEditor
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../LayoutEditor/ -lLayoutEditor
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LayoutEditor/ -lLayoutEditord
 
 INCLUDEPATH += $$PWD/../LayoutEditor $$PWD/../LayoutEditor/scripts
 DEPENDPATH += $$PWD/../LayoutEditor $$PWD/../LayoutEditor/scripts

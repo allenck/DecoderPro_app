@@ -68,7 +68,7 @@ void LocoBufferAdapter::common()
  return portNameVector;
 }
 
-/*public*/ QString LocoBufferAdapter::openPort(QString portName, QString appName) throw(NoSuchPortException)
+/*public*/ QString LocoBufferAdapter::openPort(QString portName, QString appName)
 {
  Q_UNUSED(appName)
     // open the primary and secondary ports in LocoNet mode, check ability to set moderators
@@ -85,9 +85,9 @@ void LocoBufferAdapter::common()
 //        // try to set it for LocoNet via LocoBuffer
 //        try {
 //            setSerialPort(activeSerialPort);
-//        } catch (UnsupportedCommOperationException e) {
-//            log->error("Cannot set serial parameters on port "+portName+": "+e.getMessage());
-//            return "Cannot set serial parameters on port "+portName+": "+e.getMessage();
+//        } catch (UnsupportedCommOperationException* e) {
+//            log->error("Cannot set serial parameters on port "+portName+": "+e->getMessage());
+//            return "Cannot set serial parameters on port "+portName+": "+e->getMessage();
 //        }
 
 //        // set timeout
@@ -95,7 +95,7 @@ void LocoBufferAdapter::common()
 //            activeSerialPort.enableReceiveTimeout(10);
 //            log->debug("Serial timeout was observed as: "+activeSerialPort.getReceiveTimeout()
 //                  +" "+activeSerialPort.isReceiveTimeoutEnabled());
-//        } catch (Exception et) {
+//        } catch (Exception* et) {
 //            log->info("failed to set serial timeout: "+et);
 //        }
 
@@ -171,16 +171,16 @@ void LocoBufferAdapter::common()
 //                }
 //                                              );
 //            try { activeSerialPort.notifyOnFramingError(true); }
-//            catch (Exception e) { log->debug("Could not notifyOnFramingError: "+e); }
+//            catch (Exception* e) { log->debug("Could not notifyOnFramingError: "+e); }
 
 //            try { activeSerialPort.notifyOnBreakInterrupt(true); }
-//            catch (Exception e) { log->debug("Could not notifyOnBreakInterrupt: "+e); }
+//            catch (Exception* e) { log->debug("Could not notifyOnBreakInterrupt: "+e); }
 
 //            try { activeSerialPort.notifyOnParityError(true); }
-//            catch (Exception e) { log->debug("Could not notifyOnParityError: "+e); }
+//            catch (Exception* e) { log->debug("Could not notifyOnParityError: "+e); }
 
 //            try { activeSerialPort.notifyOnOverrunError(true); }
-//            catch (Exception e) { log->debug("Could not notifyOnOverrunError: "+e); }
+//            catch (Exception* e) { log->debug("Could not notifyOnOverrunError: "+e); }
 
 //        }
 
@@ -188,7 +188,7 @@ void LocoBufferAdapter::common()
 
 //    } catch (NoSuchPortException p) {
 //        return handlePortNotFound(p, portName, log);
-//    } catch (Exception ex) {
+//    } catch (Exception* ex) {
 //        log->error("Unexpected exception while opening port "+portName+" trace follows: "+ex);
 //        ex.printStackTrace();
 //        return "Unexpected error while opening port "+portName+": "+ex;
@@ -225,7 +225,7 @@ void LocoBufferAdapter::common()
   return false;
  }
 #endif
- ConnectionStatus::instance()->setConnectionState(portName, ConnectionStatus::CONNECTION_UP);
+// ConnectionStatus::instance()->setConnectionState(portName, ConnectionStatus::CONNECTION_UP);
 
  activeSerialPort->clear(); // clear out any data in serial port buffers.
 
@@ -235,10 +235,10 @@ void LocoBufferAdapter::common()
   //if (!opened)
    setSerialPort(activeSerialPort);
  }
- catch (UnsupportedCommOperationException e)
+ catch (UnsupportedCommOperationException* e)
  {
-  log->error("Cannot set serial parameters on port "+portName+": "+e.getMessage());
-  emit error( "Cannot set serial parameters on port "+portName+": "+e.getMessage());
+  log->error("Cannot set serial parameters on port "+portName+": "+e->getMessage());
+  emit error( "Cannot set serial parameters on port "+portName+": "+e->getMessage());
   return "";
  }
 //    // set timeout
@@ -246,7 +246,7 @@ void LocoBufferAdapter::common()
 //        activeSerialPort->serial.enableReceiveTimeout(10);
 //        log->debug("Serial timeout was observed as: "+activeSerialPort.getReceiveTimeout()
 //              +" "+activeSerialPort.isReceiveTimeoutEnabled());
-//    } catch (Exception et) {
+//    } catch (Exception* et) {
 //        log->info("failed to set serial timeout: "+et);
 //    }
 
@@ -348,9 +348,9 @@ void LocoBufferAdapter::dataReady()
   //return new  DataOutputStream(activeSerialPort.getOutputStream());
   return activeSerialPort->getOutputStream();
  }
- catch (IOException e)
+ catch (IOException* e)
  {
-  log->error("getOutputStream exception: "+e.getMessage());
+  log->error("getOutputStream exception: "+e->getMessage());
  }
  return activeSerialPort->getOutputStream();
 }
@@ -364,7 +364,7 @@ QSerialPort* LocoBufferAdapter::getSerialPort()
 /**
  * Local method to do specific configuration, overridden in class
  */
-/*protected*/ void LocoBufferAdapter::setSerialPort(SerialPort* activeSerialPort) throw(UnsupportedCommOperationException)
+/*protected*/ void LocoBufferAdapter::setSerialPort(SerialPort* activeSerialPort)
 {
  // find the baud rate value, configure comm options
 

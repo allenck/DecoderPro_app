@@ -7,7 +7,7 @@
 #include "jcombobox.h"
 #include <QGroupBox>
 #include <QRadioButton>
-#include <QPushButton>
+#include "jbutton.h"
 #include "jtextfield.h"
 #include <QBoxLayout>
 #include "gridbaglayout.h"
@@ -30,6 +30,8 @@
 #include "gridbagconstraints.h"
 #include "location.h"
 #include "vptr.h"
+#include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -56,18 +58,18 @@ namespace Operations
  log = new Logger("TrainEditBuildOptionsFrame");
   _train = NULL;
 
-  panelOwnerNames = new QWidget();
-  panelBuilt = new QWidget();
-  panelTrainReq1 = new QWidget();
-  panelTrainReq2 = new QWidget();
+  panelOwnerNames = new JPanel();
+  panelBuilt = new JPanel();
+  panelTrainReq1 = new JPanel();
+  panelTrainReq2 = new JPanel();
 
-  engine1Option = new QGroupBox();
-  engine1DropOption = new QWidget();
-  engine1caboose = new QGroupBox();
+  engine1Option = new JPanel();
+  engine1DropOption = new JPanel();
+  engine1caboose = new JPanel();
 
-  engine2Option = new QGroupBox();
-  engine2DropOption = new QWidget();
-  engine2caboose = new QGroupBox();
+  engine2Option = new JPanel();
+  engine2DropOption = new JPanel();
+  engine2caboose = new JPanel();
 
   // labels
   trainName = new QLabel();
@@ -76,9 +78,9 @@ namespace Operations
   after = new QLabel(tr("After"));
 
   // major buttons
-  addOwnerButton = new QPushButton(tr("Add Owner"));
-  deleteOwnerButton = new QPushButton(tr("Delete Owner"));
-  saveTrainButton = new QPushButton(tr("SaveT rain"));
+  addOwnerButton = new JButton(tr("Add Owner"));
+  deleteOwnerButton = new JButton(tr("Delete Owner"));
+  saveTrainButton = new JButton(tr("SaveT rain"));
 
   // radio buttons
   ownerNameAll = new QRadioButton(tr("Accept All"));
@@ -134,66 +136,58 @@ namespace Operations
   builtBeforeTextField->setValidator(new QIntValidator(1800,2050));
 
   // combo boxes
-  ownerBox = CarOwners::instance()->getComboBox();
+  ownerBox = ((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->getComboBox();
 
   // train requirements 1st set
   routePickup1Box = new JComboBox();
   routeDrop1Box = new JComboBox();
   roadCaboose1Box = new JComboBox();
-  roadEngine1Box = CarRoads::instance()->getComboBox();
-  modelEngine1Box = EngineModels::instance()->getComboBox();
+  roadEngine1Box = ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->getComboBox();
+  modelEngine1Box = ((EngineModels*)InstanceManager::getDefault("EngineModels"))->getComboBox();
   numEngines1Box = new JComboBox();
 
   // train requirements 2nd set
   routePickup2Box = new JComboBox();
   routeDrop2Box = new JComboBox();
   roadCaboose2Box = new JComboBox();
-  roadEngine2Box = CarRoads::instance()->getComboBox();
-  modelEngine2Box = EngineModels::instance()->getComboBox();
+  roadEngine2Box = ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->getComboBox();
+  modelEngine2Box = ((EngineModels*)InstanceManager::getDefault("EngineModels"))->getComboBox();
   numEngines2Box = new JComboBox();
 }
 
 /*public*/ void TrainEditBuildOptionsFrame::initComponents(TrainEditFrame* parent)
 {
-  QGroupBox* ownerPaneFrame = new QGroupBox;
+  JPanel* ownerPaneFrame = new JPanel;
   ownerPaneFrame->setLayout(new QVBoxLayout);
   ownerPane = new QScrollArea(/*panelOwnerNames*/);
   ownerPaneFrame->layout()->addWidget(ownerPane);
   ownerPane->setWidgetResizable(true);
   //ownerPane->setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-  //ownerPane->setBorder(BorderFactory.createTitledBorder(tr("OwnersTrain")));
-  ownerPaneFrame->setStyleSheet(gbStyleSheet);
-  ownerPaneFrame->setTitle("Select owners serviced by this train");
+  ownerPaneFrame->setBorder(BorderFactory::createTitledBorder(tr("OwnersTrain")));
 
-  QGroupBox* builtPaneFrame = new QGroupBox;
+  JPanel* builtPaneFrame = new JPanel;
   builtPaneFrame->setLayout(new QVBoxLayout);
   builtPane = new QScrollArea(/*panelBuilt*/);
   builtPaneFrame->layout()->addWidget(builtPane);
   builtPane->setWidgetResizable(true);
   //builtPane->setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-  //builtPane->setBorder(BorderFactory.createTitledBorder(tr("BuiltDatesTrain")));
-  builtPaneFrame->setStyleSheet(gbStyleSheet);
-  builtPaneFrame->setTitle("Select built dates serviced by this train");
+  builtPaneFrame->setBorder(BorderFactory::createTitledBorder(tr("Select built dates serviced by this train")));
 
-  QGroupBox* trainReq1PaneFrame = new QGroupBox;
+  JPanel* trainReq1PaneFrame = new JPanel;
   trainReq1PaneFrame->setLayout(new QVBoxLayout);
   trainReq1Pane = new QScrollArea(/*panelTrainReq1*/);
   trainReq1PaneFrame->layout()->addWidget(trainReq1Pane);
   trainReq1Pane->setWidgetResizable(true);
   //trainReq1Pane->setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-  //trainReq1Pane->setBorder(BorderFactory.createTitledBorder(tr("TrainRequires")));
-  trainReq1PaneFrame->setStyleSheet(gbStyleSheet);
-  trainReq1PaneFrame->setTitle("Optional train requirements");
+  trainReq1PaneFrame->setBorder(BorderFactory::createTitledBorder(tr("Optional train requirements")));
 
-  QGroupBox* trainReq2PaneFrame = new QGroupBox;
+  JPanel* trainReq2PaneFrame = new JPanel;
   trainReq2PaneFrame->setLayout(new QVBoxLayout);
   trainReq2Pane = new QScrollArea(/*panelTrainReq2*/);
   trainReq2PaneFrame->layout()->addWidget(trainReq2Pane);
   trainReq2Pane->setWidgetResizable(true);
   //trainReq2Pane->setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-  //trainReq2Pane->setBorder(BorderFactory.createTitledBorder(tr("TrainRequires")));
-  trainReq2PaneFrame->setStyleSheet(gbStyleSheet);
-  trainReq2PaneFrame->setTitle("Optional train requirements");
+  trainReq2PaneFrame->setBorder(BorderFactory::createTitledBorder(tr("Optional train requirements")));
 
 
 //  ??   parent->setChildFrame(this);
@@ -209,30 +203,24 @@ namespace Operations
 
   // Layout the panel by rows
   // row 1a
-  QGroupBox* pName = new QGroupBox();
+  JPanel* pName = new JPanel();
   pName->setLayout(new GridBagLayout());
-  //pName->setBorder(BorderFactory.createTitledBorder(tr("Name")));
-  pName->setStyleSheet(gbStyleSheet);
-  pName->setTitle("Name");
+  pName->setBorder(BorderFactory::createTitledBorder(tr("Name")));
   addItem(pName, trainName, 0, 0);
 
   // row 1b
-  QGroupBox* pDesc = new QGroupBox();
+  JPanel* pDesc = new JPanel();
   pDesc->setLayout(new GridBagLayout());
-  //pDesc->setBorder(BorderFactory.createTitledBorder(tr("Description")));
-  pDesc->setStyleSheet(gbStyleSheet);
-  pDesc->setTitle("Description");
+  pDesc->setBorder(BorderFactory::createTitledBorder(tr("Description")));
   addItem(pDesc, trainDescription, 0, 0);
 
   p1->layout()->addWidget(pName);
   p1->layout()->addWidget(pDesc);
 
   // row 2
-  QGroupBox* pOption = new QGroupBox();
+  JPanel* pOption = new JPanel();
   pOption->setLayout(new GridBagLayout());
-  //pOption->setBorder(BorderFactory.createTitledBorder(tr("Options")));
-  pOption->setStyleSheet(gbStyleSheet);
-  pOption->setTitle("Options");
+  pOption->setBorder(BorderFactory::createTitledBorder(tr("Options")));
   addItemLeft(pOption, buildNormalCheckBox, 0, 0);
   addItemLeft(pOption, sendToTerminalCheckBox, 1, 0);
   addItemLeft(pOption, returnStagingCheckBox, 0, 1);
@@ -352,9 +340,7 @@ namespace Operations
 
   // caboose options
   engine2caboose->setLayout(new GridBagLayout());
-  //engine2caboose->setBorder(BorderFactory.createTitledBorder(tr("ChangeCaboose")));
-  engine2caboose->setStyleSheet(gbStyleSheet);
-  engine2caboose->setTitle("Caboose change");
+  engine2caboose->setBorder(BorderFactory::createTitledBorder(tr("Caboose change")));
   roadCaboose2Box->setMinimumSize(QSize(120, 20));
   roadCaboose2Box->setToolTip(tr("RoadCabooseTip"));
   panelTrainReq2->layout()->addWidget(engine2caboose);
@@ -369,7 +355,7 @@ namespace Operations
   panelTrainReq2->layout()->addWidget(engine2DropOption);
 
   // row 15 buttons
-  QWidget* pB = new QWidget();
+  JPanel* pB = new JPanel();
   pB->setLayout(new GridBagLayout());
 //		pB->setMaximumSize(QSize(2000, 250));
   addItem(pB, saveTrainButton, 3, 0);
@@ -460,8 +446,8 @@ namespace Operations
           }
       }
       // listen for train changes
-      //_train->addPropertyChangeListener(this);
-      connect(_train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      //_train->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+      connect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   } else {
       enableButtons(false);
   }
@@ -472,10 +458,10 @@ namespace Operations
   updateTrainRequires2Option();
 
   // get notified if car owners or engine models gets modified
-  //CarOwners::instance().addPropertyChangeListener(this);
-  connect(CarOwners::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  //EngineModels::instance()->addPropertyChangeListener(this);
-  connect(EngineModels::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //((CarOwners*)InstanceManager::getDefault("Operations::CarOwners")).addPropertyChangeListener(this);
+  connect(((CarOwners*)InstanceManager::getDefault("Operations::CarOwners")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //((EngineModels*)InstanceManager::getDefault("EngineModels"))->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+  connect(((EngineModels*)InstanceManager::getDefault("EngineModels")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
   initMinimumSize();
 }
@@ -483,7 +469,7 @@ namespace Operations
 // Save
 /*public*/ void TrainEditBuildOptionsFrame::buttonActionPerformed(QWidget* ae)
 {
-QPushButton* source = (QPushButton*)ae;
+JButton* source = (JButton*)ae;
   if (_train != NULL) {
       if (source == saveTrainButton) {
           log->debug("train save button activated");
@@ -740,9 +726,7 @@ JComboBox* source = (JComboBox*)ae;
   engine1Option->setVisible(change1Engine->isChecked() || helper1Service->isChecked());
   engine1caboose->setVisible(change1Engine->isChecked() || modify1Caboose->isChecked());
   engine1DropOption->setVisible(helper1Service->isChecked());
-  //engine1Option->setBorder(BorderFactory.createTitledBorder(tr("EngineChange")));
-  engine1Option->setStyleSheet(gbStyleSheet);
-  engine1Option->setTitle(tr("Locomotive change"));
+  engine1Option->setBorder(BorderFactory::createTitledBorder(tr("Locomotive change")));
   if (change1Engine->isChecked() || helper1Service->isChecked()) {
       createEngine1Panel();
   }
@@ -750,9 +734,7 @@ JComboBox* source = (JComboBox*)ae;
       createCaboose1Panel(modify1Caboose->isChecked());
   }
   if (helper1Service->isChecked()) {
-      //engine1Option->setBorder(BorderFactory.createTitledBorder(tr("AddHelpers")));
-   engine1Option->setStyleSheet(gbStyleSheet);
-   engine1Option->setTitle(tr("Add helper locomotives"));
+      engine1Option->setBorder(BorderFactory::createTitledBorder(tr("Add helper locomotives")));
   }
   update();
 }
@@ -797,9 +779,7 @@ JComboBox* source = (JComboBox*)ae;
   engine2Option->setVisible(change2Engine->isChecked() || helper2Service->isChecked());
   engine2caboose->setVisible(change2Engine->isChecked() || modify2Caboose->isChecked());
   engine2DropOption->setVisible(helper2Service->isChecked());
-  //engine2Option->setBorder(BorderFactory.createTitledBorder(tr("EngineChange")));
-  engine2Option->setStyleSheet(gbStyleSheet);
-  engine2Option->setTitle(tr("Locomotive change"));
+  engine2Option->setBorder(BorderFactory::createTitledBorder(tr("Locomotive change")));
   if (change2Engine->isChecked() || helper2Service->isChecked()) {
       createEngine2Panel();
   }
@@ -807,9 +787,7 @@ JComboBox* source = (JComboBox*)ae;
       createCaboose2Panel(modify2Caboose->isChecked());
   }
   if (helper2Service->isChecked()) {
-      //engine2Option->setBorder(BorderFactory.createTitledBorder(tr("AddHelpers")));
-   engine2Option->setStyleSheet(gbStyleSheet);
-   engine2Option->setTitle(tr("Add helper locomotives"));
+     engine2Option->setBorder(BorderFactory::createTitledBorder(tr("Add helper locomotives")));
   }
   update();
 }
@@ -914,7 +892,7 @@ JComboBox* source = (JComboBox*)ae;
       if (builtBeforeTextField->text().trimmed()!=("")) {
          builtBeforeTextField->text().trimmed().toInt();
       }
-//     } catch (NumberFormatException e) {
+//     } catch (NumberFormatException* e) {
 ////         JOptionPane.showMessageDialog(this, tr("EnterFourDigitYear"), Bundle
 ////                 ->getMessage("CanNotSave"), JOptionPane.ERROR_MESSAGE);
 //      QMessageBox::critical(this, tr("Can not save train!"), tr("Enter the built year, use 4 digits"));
@@ -947,8 +925,8 @@ JComboBox* source = (JComboBox*)ae;
 }
 
 /*private*/ void TrainEditBuildOptionsFrame::updateModelComboBoxes() {
-  EngineModels::instance()->updateComboBox(modelEngine1Box);
-  EngineModels::instance()->updateComboBox(modelEngine2Box);
+  ((EngineModels*)InstanceManager::getDefault("EngineModels"))->updateComboBox(modelEngine1Box);
+  ((EngineModels*)InstanceManager::getDefault("EngineModels"))->updateComboBox(modelEngine2Box);
   modelEngine1Box->insertItem(0,"");
   modelEngine2Box->insertItem(0,"");
   if (_train != NULL) {
@@ -958,14 +936,14 @@ JComboBox* source = (JComboBox*)ae;
 }
 
 /*private*/ void TrainEditBuildOptionsFrame::updateOwnerComboBoxes() {
-  CarOwners::instance()->updateComboBox(ownerBox);
+  ((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->updateComboBox(ownerBox);
 }
 
 // update caboose road box based on radio selection
 /*private*/ void TrainEditBuildOptionsFrame::updateCabooseRoadComboBox(JComboBox* box) {
   box->clear();
   box->addItem("");
-  QStringList roads = CarManager::instance()->getCabooseRoadNames();
+  QStringList roads = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getCabooseRoadNames();
   foreach (QString road, roads) {
       box->addItem(road);
   }
@@ -977,7 +955,7 @@ JComboBox* source = (JComboBox*)ae;
   }
   box->clear();
   box->addItem("");
-  QStringList roads = EngineManager::instance()->getEngineRoadNames(engineModel);
+  QStringList roads = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getEngineRoadNames(engineModel);
   foreach (QString road, roads) {
       box->addItem(road);
   }
@@ -1070,13 +1048,13 @@ while ( ( item = engine1caboose->layout()->takeAt( 0 ) ) != NULL )
  */
  /*public*/ void TrainEditBuildOptionsFrame::dispose()
  {
-    //CarOwners::instance()->removePropertyChangeListener(this);
-  disconnect(CarOwners::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-    //EngineModels::instance().removePropertyChangeListener(this);
-  disconnect(EngineModels::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    //((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->removePropertyChangeListener(this);
+  disconnect(((CarOwners*)InstanceManager::getDefault("Operations::CarOwners")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    //((EngineModels*)InstanceManager::getDefault("EngineModels")).removePropertyChangeListener(this);
+  disconnect(((EngineModels*)InstanceManager::getDefault("EngineModels")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   if (_train != NULL) {
       //_train->removePropertyChangeListener(this);
-   disconnect(_train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   disconnect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   }
   OperationsFrame::dispose();
 }

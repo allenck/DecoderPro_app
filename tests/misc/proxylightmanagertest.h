@@ -42,12 +42,13 @@ protected:
  friend class ListenO7;
 };
 
-class ListenO7 : public PropertyChangeListener
+class ListenO7 : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
- ProxyLightManagerTest* test;
+ Q_INTERFACES(PropertyChangeListener)ProxyLightManagerTest* test;
 public:
  ListenO7(ProxyLightManagerTest* test) {this->test = test;}
+QObject* self() {return (QObject*)this;}
 public slots:
  /*public*/ void propertyChange(PropertyChangeEvent* e);
 

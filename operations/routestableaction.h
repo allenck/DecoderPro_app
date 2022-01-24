@@ -3,6 +3,8 @@
 
 #include "abstractaction.h"
 #include <QObject>
+#include "routestableframe.h"
+#include <QPointer>
 
 namespace Operations
 {
@@ -18,7 +20,7 @@ namespace Operations
    /*public*/ void actionPerformed(ActionEvent* e = 0);
 
  private:
-   static RoutesTableFrame* f;// = null;
+   static QPointer<RoutesTableFrame> f;// = null;
    void common();
  };
 }

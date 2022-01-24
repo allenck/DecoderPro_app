@@ -97,8 +97,6 @@ void HardcopyWriter::common()
  charnum = 0, linenum = 0;
  charoffset = 0;
  previewToolBar = new QToolBar();
-// headermetrics = NULL;
-// metrics = NULL;
  previewImage = new QImage();
  cancelled = false;
 }
@@ -281,7 +279,7 @@ void HardcopyWriter::On_close_clicked()
  // enable/disable the previous/next buttons as appropriate
  previousButton->setEnabled(true);
  nextButton->setEnabled(true);
- if (pagenum == pageImages.size())
+ if (pagenum >= pageImages.size())
   nextButton->setEnabled(false);
  if (pagenum == 1)
   previousButton->setEnabled(false);
@@ -388,7 +386,7 @@ void HardcopyWriter::On_close_clicked()
  *            the String
  * @throws IOException
  */
-/*public*/ void HardcopyWriter::write(QColor c, QString s) throw (IOException)
+/*public*/ void HardcopyWriter::write(QColor c, QString s) /*throw (IOException)*/
 {
  if (page != NULL)
  {
@@ -405,11 +403,11 @@ void HardcopyWriter::On_close_clicked()
   }
 }
 
-/*public*/ void HardcopyWriter::flush() throw (IOException) {
+/*public*/ void HardcopyWriter::flush() /*throw (IOException)*/ {
 }
 #endif
 /** method modified by Dennis Miller to add preview capability */
-/*public*/ void HardcopyWriter::close() throw (IOException)
+/*public*/ void HardcopyWriter::close() /*throw (IOException)*/
 {
 //    synchronized (this.lock) {
  if (isPreview)
@@ -446,7 +444,7 @@ void HardcopyWriter::On_close_clicked()
 //        try {
 //            font = new Font(fontName, style, fontsize);
 //            fontStyle = style;
-//        } catch (Exception e) {
+//        } catch (Exception* e) {
 //            font = current;
 //        }
 //        // if a page is pending, set the new font, else newpage() will
@@ -507,7 +505,7 @@ void HardcopyWriter::setFontWeight(QFont::Weight w)
   chars_per_line = width / charwidth;
   lines_per_page = height / lineheight;
  }
- catch (Exception e)
+ catch (Exception* e)
  {
   font = current;
  }
@@ -630,6 +628,9 @@ void HardcopyWriter::setFontWeight(QFont::Weight w)
  {
   page->setFont(headerfont);
   page->drawText(x0, headery, jobname);
+
+  if(headermetrics)
+   throw new IOException("null headermetrics in hardcopywriter");
 
   QString s = "- " + QString::number(pagenum) + " -"; // print page number centered
   int w = headermetrics->width(s);

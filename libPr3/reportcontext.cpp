@@ -20,6 +20,7 @@
 #include "configuremanager.h"
 #include "zeroconfservice.h"
 #include <QHostInfo>
+#include "appsconfigurationmanager.h"
 
 /**
  * Provide the JMRI context info.
@@ -56,7 +57,7 @@
 
     addString("JMRI Application: " + QApplication::applicationName() + "   ");
     //ConnectionConfig[] connList = InstanceManager.getDefault(ConnectionConfigManager.class).getConnections();
-    QObjectList connList = static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->getInstanceList("ConnectionConfig");
+    QObjectList connList = qobject_cast<AppsConfigurationManager*>(InstanceManager::getDefault("ConfigureManager"))->getInstanceList("ConnectionConfig");
     if (!connList.isEmpty()) {
         for (int x = 0; x < connList.length(); x++) {
             ConnectionConfig* conn = (ConnectionConfig*)connList.at(x);
@@ -67,7 +68,7 @@
     addString("Available Communication Ports:");
     addCommunicationPortInfo();
 
-    Profile* profile = ProfileManager::defaultManager()->getActiveProfile();
+    Profile* profile = ProfileManager::getDefault()->getActiveProfile();
     addString("Active profile: " + profile-> getName() + "   ");
     addString("Profile location: " + profile-> getPath()->getPath() + "   ");
     addString("Profile ID: " + profile-> getId() + "   ");
@@ -208,10 +209,10 @@ void ReportContext::addProperty(QString prop) {
                         + " " + gd.getDefaultConfiguration().toString());
             }
         } catch (HeadlessException ex) {
-            addString("Exception getting device bounds " + ex.getMessage());
+            addString("Exception getting device bounds " + ex->getMessage());
         }
     } catch (HeadlessException ex) {
-        addString("Exception getting max window bounds " + ex.getMessage());
+        addString("Exception getting max window bounds " + ex->getMessage());
     }
     // Return the insets using a custom class
     // which should return the correct values under
@@ -221,7 +222,7 @@ void ReportContext::addProperty(QString prop) {
         addString("JmriInsets t:" + jmriInsets.top + ", b:" + jmriInsets.bottom
                 + "; l:" + jmriInsets.left + ", r:" + jmriInsets.right);
     } catch (Throwable ex) {
-        addString("Exception getting JmriInsets" + ex.getMessage());
+        addString("Exception getting JmriInsets" + ex->getMessage());
     }
 #endif
 }
@@ -284,7 +285,7 @@ void ReportContext::addProperty(QString prop) {
                 for (QString address : service->serviceInfo()->getHostAddresses()) {
                     addString(" Address:" + address + "   ");
                 }
-            } catch (NullPointerException ex) {
+            } catch (NullPointerException* ex) {
                 addString(" Address: [unknown due to NPE]");
             }
             addString(" Port: " + QString::number(service->serviceInfo()->getPort()) + "   ");
@@ -294,7 +295,7 @@ void ReportContext::addProperty(QString prop) {
                 for (QString url : service->serviceInfo()->getURLs()) {
                     addString(" URL: " + url + "   ");
                 }
-            } catch (NullPointerException ex) {
+            } catch (NullPointerException* ex) {
                 addString(" URL: [unknown due to NPE]");
             }
             addString(tr(" Published: ") + (service->isPublished() ? "yes" : "no"));

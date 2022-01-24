@@ -48,8 +48,8 @@ OBlockManager::OBlockManager(QObject *parent) :
     return Manager::OBLOCKS;
 }
 
-/*public*/ QString OBlockManager::getSystemPrefix() const { return "O"; }
-/*public*/ char OBlockManager::typeLetter()const { return 'B'; }
+/*public*/ QString OBlockManager::getSystemPrefix() { return "O"; }
+/*public*/ QChar OBlockManager::typeLetter() { return 'B'; }
 
 /**
  * Method to create a new OBlock if it does not exist
@@ -81,6 +81,19 @@ OBlockManager::OBlockManager(QObject *parent) :
 }
 
 /**
+ * Create a new OBlock using an automatically incrementing system
+ * name.
+ *
+ * @param userName the user name for the new OBlock
+ * @return null if an OBlock with the same systemName or userName already
+ *         exists, or if there is trouble creating a new OBlock.
+ */
+//@CheckForNull
+/*public*/ OBlock* OBlockManager::createNewOBlock(/*@Nonnull*/ QString userName) {
+    return createNewOBlock(getAutoSystemName(), userName);
+}
+
+/**
  * Method to get an existing OBlock.  First looks up assuming that
  *      name is a User Name.  If this fails looks up assuming
  *      that name is a System Name.  If both fail, returns NULL.
@@ -97,16 +110,16 @@ OBlockManager::OBlockManager(QObject *parent) :
     return (OBlock*)_tsys->value(key);
 }
 
-/*public*/ NamedBean *OBlockManager::getByUserName(QString key)const  {
+/*public*/ NamedBean *OBlockManager::getByUserName(QString key)  {
     if (key==NULL || key.trimmed().length()==0) { return NULL; }
-    return _tuser->value(key);
+    return (OBlock*)_tuser->value(key);
 }
 //@Override
-/*public*/ OBlock* OBlockManager::provide(QString name) const throw (IllegalArgumentException) {
+/*public*/ OBlock* OBlockManager::provide(QString name)  /*throw (IllegalArgumentException)*/ {
     return provideOBlock(name);
 }
 
-/*public*/ OBlock* OBlockManager::provideOBlock(QString name) const{
+/*public*/ OBlock* OBlockManager::provideOBlock(QString name) {
     if (name==NULL || name.length()==0) { return NULL; }
     OBlock* ob = (OBlock*)getByUserName(name);
     if (ob==NULL) {

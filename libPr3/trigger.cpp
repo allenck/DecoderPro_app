@@ -103,7 +103,7 @@ me.setTagName("trigger");
 
 //        } catch (IllegalArgumentException iea) {
 //            this->setTargetAction(NOTHING);
-//        } catch (NullPointerException npe) {
+//        } catch (NullPointerException* npe) {
 //            this->setTargetAction(NOTHING);
 //        }
 }

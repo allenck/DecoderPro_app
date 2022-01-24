@@ -2,9 +2,9 @@
 #include "insets.h"
 #include "exceptions.h"
 #include "jlabel.h"
-#include "borderfactory.h".h"
+#include "borderfactory.h"
 #include <QLayout>
-
+#include <QPainterPath>
 /**
  * A class which implements an arbitrary border
  * with the addition of a String title in a
@@ -447,7 +447,7 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
             this->titlePosition = titlePosition;
             break;
         default:
-            throw IllegalArgumentException(QString::number(titlePosition) +
+            throw new IllegalArgumentException(QString::number(titlePosition) +
                     " is not a valid title position.");
     }
 }
@@ -467,7 +467,7 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
             this->titleJustification = titleJustification;
             break;
         default:
-            throw IllegalArgumentException(QString::number(titleJustification) +
+            throw new IllegalArgumentException(QString::number(titleJustification) +
                     " is not a valid title justification.");
     }
 }
@@ -526,13 +526,13 @@ void TitledBorder::common(Border *border, QString title, int titleJustification,
  */
 /*public*/ int TitledBorder::getBaseline(QWidget* c, int width, int height) {
     if (c == NULL) {
-        throw  NullPointerException("Must supply non-NULL component");
+        throw new NullPointerException("Must supply non-NULL component");
     }
     if (width < 0) {
-        throw  IllegalArgumentException("Width must be >= 0");
+        throw new IllegalArgumentException("Width must be >= 0");
     }
     if (height < 0) {
-        throw  IllegalArgumentException("Height must be >= 0");
+        throw new IllegalArgumentException("Height must be >= 0");
     }
     Border* border = getBorder();
     QString title = getTitle();

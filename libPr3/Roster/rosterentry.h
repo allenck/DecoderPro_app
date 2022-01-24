@@ -9,10 +9,9 @@
 #include <QDir>
 #include <QtXml>
 #include "dcclocoaddress.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "Roster/cvtablemodel.h"
 #include "Roster/locofile.h"
-#include "Roster/indexedcvtablemodel.h"
 #include "basicrosterentry.h"
 #include "arbitrarybean.h"
 #include "rosterobject.h"
@@ -41,8 +40,13 @@ public:
      /*public*/ static /*final*/ QString PROTOCOL;// = "protocol"; // NOI18N
      /*public*/ static /*final*/ QString COMMENT;// = "comment"; // NOI18N
      /*public*/ static /*final*/ QString DECODER_MODEL;// = "decodermodel"; // NOI18N
+     /*public*/ static /*final*/ QString DECODER_DEVELOPERID;// = "developerID"; // NOI18N
+     /*public*/ static /*final*/ QString DECODER_MANUFACTURERID;// = "manufacturerID"; // NOI18N
+     /*public*/ static /*final*/ QString DECODER_PRODUCTID;// = "productID"; // NOI18N
      /*public*/ static /*final*/ QString DECODER_FAMILY;// = "decoderfamily"; // NOI18N
      /*public*/ static /*final*/ QString DECODER_COMMENT;// = "decodercomment"; // NOI18N
+     /*public*/ static /*final*/ QString DECODER_MAXFNNUM;// = "decodermaxFnNum"; // NOI18N
+     /*public*/ static /*final*/ QString DEFAULT_MAXFNNUM;// = "28"; // NOI18N
      /*public*/ static /*final*/ QString IMAGE_FILE_PATH;// = "imagefilepath"; // NOI18N
      /*public*/ static /*final*/ QString ICON_FILE_PATH;// = "iconfilepath"; // NOI18N
      /*public*/ static /*final*/ QString URL;// = "url"; // NOI18N
@@ -88,7 +92,9 @@ public:
     /*public*/ RosterEntry(QDomElement e, QObject *parent = 0);
 //    /*public*/ LocoAddress* getAddress(QDomElement element);
     /*public*/ void loadFunctions(QDomElement e3);
+    /*public*/ void loadFunctions(QDomElement e3, QString source);
     /*public*/ void loadAttributes(QDomElement e3);
+    /*public*/ void loadSounds(QDomElement e3, QString source);
     /*public*/ void putAttribute(QString key, QString value);
     /*public*/ QString getAttribute(QString key) ;
     /*public*/ QString titleString();
@@ -125,9 +131,17 @@ public:
     /*public*/ void   setDecoderModel(QString s);
     /*public*/ QString getDecoderModel();
     /*public*/ void   setDecoderFamily(QString s);
+    /*public*/ void setDeveloperID(QString s);
+    /*public*/ QString getDeveloperID();
+    /*public*/ void setManufacturerID(QString s);
+    /*public*/ QString getManufacturerID();
+    /*public*/ void setProductID(QString s);
+    /*public*/ QString getProductID();
     /*public*/ QString getDecoderFamily();
     /*public*/ void   setDecoderComment(QString s);
     /*public*/ QString getDecoderComment();
+    /*public*/ void setMaxFnNum(QString s);
+    /*public*/ QString getMaxFnNum();
     /*public*/ DccLocoAddress* getDccLocoAddress();
     /*public*/ void setImagePath(QString s) ;
     /*public*/ QString getImagePath();
@@ -138,7 +152,7 @@ public:
     /*public*/ void setURL(QString s);
     /*public*/ QString getURL();
     /*public*/ void setDateModified(/*@Nonnull*/ QDateTime date);
-    /*public*/ void setDateModified(/*@Nonnull*/ QString date) throw (ParseException) ;
+    /*public*/ void setDateModified(/*@Nonnull*/ QString date) /*throw (ParseException)*/ ;
     /*public*/ QDateTime getDateModified();
     QT_DEPRECATED /*public*/ void setDateUpdated(QString s);
     /*public*/ QString getDateUpdated();
@@ -170,7 +184,7 @@ public:
     /*public*/ static void setDefaultOwner(QString n);
     /*public*/ QList<RosterGroup*> getGroups();
     /*public*/ QList<RosterGroup*> getGroups(Roster* roster);
-    /*public*/ static RosterEntry* fromFile(/*@Nonnull*/ File* file) throw (JDOMException, IOException);
+    /*public*/ static RosterEntry* fromFile(/*@Nonnull*/ File* file) /*throw (JDOMException, IOException)*/;
     /*public*/ QString getDisplayName();
 
 
@@ -188,7 +202,7 @@ private:
      * RosterEntry.
      */
     /*private*/ QDomElement mRootElement;// = NULL;
-    PropertyChangeSupport* pcs;
+    SwingPropertyChangeSupport* pcs;
     int openCounter;// =0;
     QMutex mutex;
     /*private*/ int blanks;//=0;
@@ -198,6 +212,7 @@ private:
     QString newLine;// = "\n";
     /*private*/ int writeWrappedComment(HardcopyWriter* w, QString text, QString title, int textSpace);
     QDateTime dateModified;
+    bool soundLoadedOnce = false;
 
 protected:
     // members to remember all the info
@@ -216,13 +231,17 @@ protected:
     /*protected*/ QString _decoderModel;// = "";
     /*protected*/ QString _decoderFamily;// = "";
     /*protected*/ QString _decoderComment;// = "";
+    /*protected*/ QString _maxFnNum = DEFAULT_MAXFNNUM;
     /*protected*/ QString _dateUpdated;// = "";
-    /*protected*/ int _maxSpeedPCT;// = 100;
-    /*protected*/ QVector<QString> functionLabels;
-    /*protected*/ QVector<QString> soundLabels;
-    /*protected*/ QVector<QString> functionSelectedImages;
-    /*protected*/ QVector<QString> functionImages;
-    /*protected*/ QVector<bool> functionLockables;
+    /*protected*/ int _maxSpeedPCT = 100;
+    /*protected*/ QString _developerID = "";
+    /*protected*/ QString _manufacturerID = "";
+    /*protected*/ QString _productID = "";
+    /*protected*/ QMap<int, QString> functionLabels;
+    /*protected*/ QMap<int, QString> soundLabels;
+    /*protected*/ QMap<int, QString> functionSelectedImages;
+    /*protected*/ QMap<int, QString> functionImages;
+    /*protected*/ QMap<int, bool> functionLockables;
     /*protected*/ QString _isShuntingOn;//="";
     qint32 _rfidTag;
 

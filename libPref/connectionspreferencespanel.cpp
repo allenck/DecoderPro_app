@@ -4,7 +4,7 @@
 #include "instancemanager.h"
 #include "jmrixconfigpane.h"
 #include <QBoxLayout>
-#include <QPushButton>
+#include "jbutton.h"
 #include "flowlayout.h"
 #include <QCheckBox>
 #include <QLabel>
@@ -46,11 +46,7 @@ void ConnectionsPreferencesPanel::common(/*TabbedPreferences* preferences*/)
  //setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
  // tabWidget->setMinimumSize(400,400);
  setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
- restartRequired = false;
-  bDeleteFlag= false;
-
- configPanes = QList<JmrixConfigPane*>();
-
+ 
  //this->preferences = preferences;
  deleteIconRollOver =  QIcon(":/resources/icons/misc/gui3/Delete16x16.png");
  deleteIcon =  QIcon(":/resources/icons/misc/gui3/Delete-bw16x16.png");
@@ -59,32 +55,6 @@ void ConnectionsPreferencesPanel::common(/*TabbedPreferences* preferences*/)
             deleteImageIcon->getIconWidth() + 2,
             deleteImageIcon->getIconHeight() + 2);
  addIcon =  QIcon(":/resources/icons/misc/gui3/Add16x16.png");
-#if 0
- if (this->preferences != NULL)
- {
-  QObjectList connList = ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))
-                ->getInstanceList("ConnectionConfig");
-  if (!connList .isEmpty())
-  {
-   for (int x = 0; x < connList.size(); x++)
-   {
-    JmrixConfigPane* configPane = JmrixConfigPane::instance(x);
-    addConnection(x, configPane);
-   }
-   newConnectionTab(); // added ACK
-  }
-  else
-  {
-   addConnection(0, JmrixConfigPane::createNewPanel());
-
-   //this->addChangeListener(addTabListener);
-   connect(this, SIGNAL(tabBarClicked(int)), this, SLOT(On_currentChanged(int)));
-   newConnectionTab();
-   setCurrentIndex(0);
-  }
-  connect(this, SIGNAL(tabBarClicked(int)), this, SLOT(On_currentChanged(int)));
- }
-#endif
  ConnectionConfigManager* ccm = (ConnectionConfigManager*)InstanceManager::getDefault("ConnectionConfigManager");
  QVector<ConnectionConfig*> connections = ccm->getConnections();
  if (connections.length() != 0) {
@@ -120,20 +90,20 @@ void ConnectionsPreferencesPanel::common(/*TabbedPreferences* preferences*/)
 void ConnectionsPreferencesPanel::propertyChange(PropertyChangeEvent* evt)
 {
  int i = ((IndexedPropertyChangeEvent*) evt)->getIndex();
- QObject* pnewValue = VPtr<QObject>::asPtr(evt->getNewValue());
- QObject* poldValue = VPtr<QObject>::asPtr(evt->getOldValue());
+ QObject* pNewValue = VPtr<QObject>::asPtr(evt->getNewValue());
+ QObject* pOldValue = VPtr<QObject>::asPtr(evt->getOldValue());
 
- if (pnewValue != nullptr
-         && i < configPanes.size()
-         && poldValue == (configPanes.at(i)->getCurrentObject())) {
-     removeTab( i);
- }
- else if (poldValue == nullptr)
- {
+ log->debug(tr("PrefPanel ChangeListener of tab index i = %1 of %2 list").arg(i+1).arg(configPanes.size()));
+ //if (evt.getNewValue() == null
+ //        && i < configPanes.size()
+ //        && evt.getOldValue().equals(configPanes.get(i).getCurrentObject())) {
+ //    //removeTab(null, i); // called same method removeTab again, conn tab was already removed by the user click
+ //} else
+ if ((pOldValue == nullptr) && (pNewValue != nullptr)) {
      for (JmrixConfigPane* pane : this->configPanes) {
          if (pane->getCurrentObject() == nullptr ) {
-             log->error(tr("did not expect pane.getCurrentObject()==null here for %1 %2 %3").arg(i).arg(VPtr<QObject>::asPtr(evt->getNewValue())->metaObject()->className()).arg(configPanes.size()));
-         } else if (pane->getCurrentObject() == pnewValue) {
+             log->error(tr("did not expect pane.getCurrentObject()==null here for %1 %2 %3").arg(i).arg(pNewValue->objectName()).arg(configPanes.count()));
+         } else if (pane->getCurrentObject() == (pNewValue)) {
              return; // don't add the connection again
          }
      }
@@ -151,8 +121,8 @@ void ConnectionsPreferencesPanel::propertyChange(PropertyChangeEvent* evt)
 
 void ConnectionsPreferencesPanel::On_currentChanged(int sel)
 {
-    // This method is called whenever the selected tab changes
-//    JTabbedPane pane = (JTabbedPane) evt.getSource();
+ // This method is called whenever the selected tab changes
+ JTabbedPane* pane = (JTabbedPane*)this->widget(sel);////(JTabbedPane) evt.getSource();
 //    int sel = pane.getSelectedIndex();
  if (sel == -1)
  {
@@ -220,7 +190,7 @@ void ConnectionsPreferencesPanel::On_currentChanged(int sel)
  tabCloseButton->setStyleSheet(ss = QString("QToolButton { border-image: url(%1) 2; } QToolButton:hover { border-image: url(%2) 2; }").arg(FileUtil::getExternalFilename(":/resources/icons/misc/gui3/Delete-bw16x16.png")).arg(FileUtil::getExternalFilename(":/resources/icons/misc/gui3/Delete16x16.png")));
  tabCloseButton->resize(deleteButtonSize);
  //tabCloseButton.setBorderPainted(false);
-    //tabCloseButton.setRolloverIcon(deleteIconRollOver);
+ //tabCloseButton->setRolloverIcon(deleteIconRollOver);
  tabCloseButton->setVisible(false);
 
  //QWidget* c = new QWidget();
@@ -233,7 +203,8 @@ void ConnectionsPreferencesPanel::On_currentChanged(int sel)
         configPane.setDisabled(disable.isSelected());
     })*/;
  DisableCheckboxListener* dcl = new DisableCheckboxListener(configPane, disable);
- connect(disable, SIGNAL(toggled(bool)), dcl, SLOT(actionPerformed()));
+ //connect(disable, SIGNAL(toggled(bool)), dcl->self(), SLOT(actionPerformed()));
+ connect(disable, &QCheckBox::clicked, [=]{dcl->actionPerformed();});
  cLayout->addWidget(disable);
  pLayout->addLayout(cLayout, 0);// /*BorderLayout.SOUTH*/ Qt::AlignBottom);
  QString title;
@@ -292,12 +263,13 @@ void ConnectionsPreferencesPanel::On_currentChanged(int sel)
 //        removeTab(e, this->indexOfTabComponent(tabTitle));
 //    });
  CloseButtonListener* cbl = new CloseButtonListener(tabPosition, this);
- connect(tabCloseButton, SIGNAL(clicked()), cbl, SLOT(actionPerformed()));
+ //connect(tabCloseButton, SIGNAL(clicked()), cbl->self(), SLOT(actionPerformed()));
+ connect(tabCloseButton, &QToolButton::clicked, [=]{cbl->actionPerformed();});
 
  setTabToolTip(tabPosition, title);
 
 
- if (ConnectionStatus::instance()->isConnectionOk(
+ if (ConnectionStatus::instance()->isConnectionOk(nullptr,
             configPane->getCurrentProtocolInfo()))
  {
   //tabLabel.setForeground(Color.black);
@@ -324,7 +296,7 @@ DisableCheckboxListener::DisableCheckboxListener(JmrixConfigPane *configPane, QC
  this->checkBox = checkBox;
 }
 
-void DisableCheckboxListener::actionPerformed(ActionEvent *)
+void DisableCheckboxListener::actionPerformed(JActionEvent *)
 {
  configPane->setDisabled(checkBox->isChecked());
 }
@@ -335,7 +307,7 @@ CloseButtonListener::CloseButtonListener(int index, ConnectionsPreferencesPanel*
     this->parent = parent;
 }
 
-void CloseButtonListener::actionPerformed(ActionEvent *)
+void CloseButtonListener::actionPerformed(JActionEvent *)
 {
  parent->removeTab(index);
 }
@@ -388,7 +360,7 @@ void ConnectionsPreferencesPanel::addConnectionTab()
   {
    JmrixConfigPane::dispose(configPane);
   }
-  catch (NullPointerException ex)
+  catch (NullPointerException* ex)
   {
    log->error("Caught NULL Pointer Exception while removing connection tab");
   }

@@ -73,7 +73,7 @@ public slots:
 
 private:
     Ui::PanelEditor *ui;
- Logger* log;
+ static Logger* log;
  //int panelWidth, panelHeight;
  bool delayedPopupTrigger;
  /*private*/ void amendSelectionGroup(Positionable* p);
@@ -152,33 +152,40 @@ class RemoveMenuAction : public AbstractAction
  Positionable* comp;
  PanelEditor *parent;
 public slots:
- /*public*/ void actionPerformed();
+ /*public*/ void actionPerformed(JActionEvent* =0) override;
 public:
  RemoveMenuAction(QString title, PanelEditor *parent);
  AbstractAction* init(Positionable* pos);
 };
 
-class LockItemListener : public ActionListener
+class LockItemListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  Positionable* comp;
  QAction* checkBox;
  PanelEditor* editor;
 public slots:
- /*public*/ void actionPerformed();
+ /*public*/ void actionPerformed(JActionEvent* =0) override;
 public:
  LockItemListener(PanelEditor* editor);
  ActionListener* init(Positionable* pos, QAction* cb);
+ QObject* self() override {return (QObject*)this;}
+
 };
 
-class RenameActionListener : public ActionListener
+class RenameActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  PanelEditor* editor;
+
+ public:
+ QObject* self() override {return (QObject*)this;}
 
 public slots:
  //@Override
- /*public*/ void actionPerformed(/*ActionEvent e*/);
+ /*public*/ void actionPerformed(JActionEvent* =0) override;
 
  ActionListener* init(PanelEditor* e);
 };

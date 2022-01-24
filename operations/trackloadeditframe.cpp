@@ -4,7 +4,7 @@
 #include "location.h"
 #include "track.h"
 #include <QCheckBox>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QRadioButton>
 #include <QBoxLayout>
 #include "gridbaglayout.h"
@@ -21,6 +21,8 @@
 #include "operationsxml.h"
 #include <QMessageBox>
 #include "carload.h"
+#include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -54,25 +56,25 @@ namespace Operations
   _toolMenu = NULL;
 
   // panels
-  pLoadControls = new QGroupBox();
-  panelLoads = new QWidget();
+  pLoadControls = new JPanel();
+  panelLoads = new JPanel();
   paneLoads = new QScrollArea(/*panelLoads*/);
 
-  pShipLoadControls = new QGroupBox();
-  panelShipLoads = new QGroupBox();
+  pShipLoadControls = new JPanel();
+  panelShipLoads = new JPanel();
   paneShipLoadControls = NULL;
   paneShipLoads = new QScrollArea(/*panelShipLoads*/);
 
   // major buttons
-  saveTrackButton = new QPushButton(tr("Save Track"));
+  saveTrackButton = new JButton(tr("Save Track"));
 
-  addLoadButton = new QPushButton(tr("Add Load"));
-  deleteLoadButton = new QPushButton(tr("Delete Load"));
-  deleteAllLoadsButton = new QPushButton(tr("Delete All"));
+  addLoadButton = new JButton(tr("Add Load"));
+  deleteLoadButton = new JButton(tr("Delete Load"));
+  deleteAllLoadsButton = new JButton(tr("Delete All"));
 
-  addShipLoadButton = new QPushButton(tr("Add Load"));
-  deleteShipLoadButton = new QPushButton(tr("Delete Load"));
-  deleteAllShipLoadsButton = new QPushButton(tr("Delete All"));
+  addShipLoadButton = new JButton(tr("Add Load"));
+  deleteShipLoadButton = new JButton(tr("Delete Load"));
+  deleteAllShipLoadsButton = new JButton(tr("Delete All"));
 
   // check boxes
   loadAndTypeCheckBox = new QCheckBox(tr("Type And Load"));
@@ -88,10 +90,10 @@ namespace Operations
   shipLoadNameExclude = new QRadioButton(tr("Exclude"));
 
   // combo box
-  comboBoxLoads = CarLoads::instance()->getComboBox(NULL);
-  comboBoxShipLoads = CarLoads::instance()->getComboBox(NULL);
-  comboBoxTypes = CarTypes::instance()->getComboBox();
-  comboBoxShipTypes = CarTypes::instance()->getComboBox();
+  comboBoxLoads = ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getComboBox(NULL);
+  comboBoxShipLoads = ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getComboBox(NULL);
+  comboBoxTypes = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getComboBox();
+  comboBoxShipTypes = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getComboBox();
 
   // labels
   trackName = new QLabel();
@@ -104,12 +106,12 @@ namespace Operations
 
   // property changes
   //_location.addPropertyChangeListener(this);
-  connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   // listen for car load name and type changes
   //CarLoads.instance().addPropertyChangeListener(this);
-  connect(CarLoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarTypes.instance().addPropertyChangeListener(this);
-  connect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   // the following code sets the frame's initial state
 
   //getContentPane()->setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
@@ -123,35 +125,29 @@ namespace Operations
   p1->setMaximumSize(QSize(2000, 250));
 
   // row 1a
-  QGroupBox* pTrackName = new QGroupBox();
+  JPanel* pTrackName = new JPanel();
   pTrackName->setLayout(new GridBagLayout());
-  //pTrackName->setBorder(BorderFactory.createTitledBorder(tr("Track")));
-  pTrackName->setStyleSheet(gbStyleSheet);
-  pTrackName->setTitle(tr("Track"));
+  pTrackName->setBorder(BorderFactory::createTitledBorder(tr("Track")));
   addItem(pTrackName, trackName, 0, 0);
 
   // row 1b
-  QGroupBox* pLocationName = new QGroupBox();
+  JPanel* pLocationName = new JPanel();
   pLocationName->setLayout(new GridBagLayout());
-  //pLocationName->setBorder(BorderFactory.createTitledBorder(tr("Location")));
-  pLocationName->setStyleSheet(gbStyleSheet);
-  pLocationName->setTitle(tr("Location"));
+  pLocationName->setBorder(BorderFactory::createTitledBorder(tr("Location")));
   addItem(pLocationName, new QLabel(_location->getName()), 0, 0);
 
   p1->layout()->addWidget(pTrackName);
   p1->layout()->addWidget(pLocationName);
 
   // row 3
-  QGroupBox* p3Frame = new QGroupBox;
+  JPanel* p3Frame = new JPanel;
   p3Frame->setLayout(new QVBoxLayout);
   QWidget* p3 = new QWidget();
   p3->setLayout(new QVBoxLayout);//(p3, BoxLayout.Y_AXIS));
   QScrollArea* pane3 = new QScrollArea(/*p3*/);
   p3Frame->layout()->addWidget(pane3);
   pane3->setWidgetResizable(true);
-  //pane3->setBorder(BorderFactory.createTitledBorder(tr("LoadsTrack")));
-  p3Frame->setStyleSheet(gbStyleSheet);
-  p3Frame->setTitle("Select loads serviced by this track");
+  p3Frame->setBorder(BorderFactory::createTitledBorder(tr("LoadsTrack")));
   pane3->setMaximumSize(QSize(2000, 400));
 
   QWidget* pLoadRadioButtons = new QWidget();
@@ -176,14 +172,12 @@ namespace Operations
   p3->layout()->addWidget(pLoadControls);
 
   // row 4
-  QGroupBox* p4Frame = new QGroupBox;
+  JPanel* p4Frame = new JPanel;
   p4Frame->setLayout(new QVBoxLayout);
   panelLoads->setLayout(new GridBagLayout());
   paneLoads->setWidgetResizable(true);
   p4Frame->layout()->addWidget(paneLoads);
-  //paneLoads->setBorder(BorderFactory.createTitledBorder(tr("Loads")));
-  p4Frame->setStyleSheet(gbStyleSheet);
-  p4Frame->setTitle(tr("Loads"));
+  p4Frame->setBorder(BorderFactory::createTitledBorder(tr("Loads")));
 
   QButtonGroup* loadGroup = new QButtonGroup();
   loadGroup->addButton(loadNameAll);
@@ -191,16 +185,14 @@ namespace Operations
   loadGroup->addButton(loadNameExclude);
 
   // row 6
-  QGroupBox* p6Frame = new QGroupBox;
+  JPanel* p6Frame = new JPanel;
   p6Frame->setLayout(new QVBoxLayout);
   QWidget* p6 = new QWidget();
   p6->setLayout(new QVBoxLayout);//(p6, BoxLayout.Y_AXIS));
   paneShipLoadControls = new QScrollArea(/*p6*/);
   paneShipLoadControls->setWidgetResizable(true);
   p6Frame->layout()->addWidget(paneShipLoadControls);
-  //paneShipLoadControls->setBorder(BorderFactory.createTitledBorder(tr("ShipLoadsTrack")));
-  p6Frame->setStyleSheet(gbStyleSheet);
-  p6Frame->setTitle(tr("Select loads shipped from this track"));
+  p6Frame->setBorder(BorderFactory::createTitledBorder(tr("Select loads shipped from this track")));
   paneShipLoadControls->setMaximumSize(QSize(2000, 400));
 
   QWidget* pShipLoadRadioButtons = new QWidget();
@@ -225,10 +217,10 @@ namespace Operations
   p6->layout()->addWidget(pShipLoadControls);
 
   // row 7
+  JPanel* panelShipLoadsFrame = new JPanel(new QVBoxLayout());
+  panelShipLoadsFrame->layout()->addWidget(panelShipLoads);
   panelShipLoads->setLayout(new GridBagLayout());
-  //paneShipLoads->setBorder(BorderFactory.createTitledBorder(tr("Loads")));
-  panelShipLoads->setStyleSheet(gbStyleSheet);
-  panelShipLoads->setTitle(tr("Loads"));
+  panelShipLoadsFrame->setBorder(BorderFactory::createTitledBorder(tr("Loads")));
 
   QButtonGroup* shipLoadGroup = new QButtonGroup();
   shipLoadGroup->addButton(shipLoadNameAll);
@@ -236,10 +228,9 @@ namespace Operations
   shipLoadGroup->addButton(shipLoadNameExclude);
 
   // row 12
-  QGroupBox* panelButtons = new QGroupBox();
+  JPanel* panelButtons = new JPanel();
   panelButtons->setLayout(new GridBagLayout());
-  //panelButtons->setBorder(BorderFactory.createTitledBorder(""));
-  panelButtons->setStyleSheet(gbStyleSheet);
+  panelButtons->setBorder(BorderFactory::createTitledBorder(""));
   panelButtons->setMaximumSize(QSize(2000, 200));
 
   // row 13
@@ -252,7 +243,7 @@ namespace Operations
   thisLayout->addWidget(p4Frame);
   paneShipLoadControls->setWidget(p6);
   thisLayout->addWidget(/*paneShipLoadControls*/p6Frame);
-  thisLayout->addWidget(panelShipLoads);
+  thisLayout->addWidget(panelShipLoadsFrame);
   thisLayout->addWidget(panelButtons);
 
   // setup buttons
@@ -283,7 +274,7 @@ namespace Operations
   // load fields and enable buttons
   if (_track != NULL)
   {
-   //_track->addPropertyChangeListener(this);
+   //_track->SwingPropertyChangeSupport::addPropertyChangeListener(this);
    trackName->setText(_track->getName());
    // only show ship loads for staging tracks
    paneShipLoadControls->setVisible(_track->getTrackType()==(Track::STAGING));
@@ -319,7 +310,7 @@ namespace Operations
      if (_track == NULL) {
          return;
      }
-     QPushButton* source = (QPushButton*)ae;
+     JButton* source = (JButton*)ae;
      if (source == saveTrackButton) {
          log->debug("track save button activated");
          save();
@@ -433,9 +424,9 @@ namespace Operations
 
  /*private*/ void TrackLoadEditFrame::updateLoadComboBoxes() {
      QString carType =  comboBoxTypes->currentText();
-     CarLoads::instance()->updateComboBox(carType, comboBoxLoads);
+     ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->updateComboBox(carType, comboBoxLoads);
      carType =  comboBoxShipTypes->currentText();
-     CarLoads::instance()->updateComboBox(carType, comboBoxShipLoads);
+     ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->updateComboBox(carType, comboBoxShipLoads);
  }
 
  /*private*/ void TrackLoadEditFrame::updateLoadNames()
@@ -543,7 +534,7 @@ namespace Operations
  }
 
  /*private*/ void TrackLoadEditFrame::updateTypeComboBoxes() {
-     CarTypes::instance()->updateComboBox(comboBoxTypes);
+     ((CarTypes*)InstanceManager::getDefault("CarTypes"))->updateComboBox(comboBoxTypes);
      // remove car types not serviced by this location and track
      for (int i = comboBoxTypes->count() - 1; i >= 0; i--) {
          QString type = comboBoxTypes->itemText(i);
@@ -551,7 +542,7 @@ namespace Operations
              comboBoxTypes->removeItem(comboBoxTypes->findText(type));
          }
      }
-     CarTypes::instance()->updateComboBox(comboBoxShipTypes);
+     ((CarTypes*)InstanceManager::getDefault("CarTypes"))->updateComboBox(comboBoxShipTypes);
      // remove car types not serviced by this location and track
      for (int i = comboBoxShipTypes->count() - 1; i >= 0; i--) {
          QString type = comboBoxShipTypes->itemText(i);
@@ -573,14 +564,14 @@ namespace Operations
  /*public*/ void TrackLoadEditFrame::dispose() {
      if (_track != NULL) {
          //_track->removePropertyChangeListener(this);
-      disconnect(_track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent)));
+      disconnect(_track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent)));
      }
      //_location.removePropertyChangeListener(this);
-     disconnect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarLoads.instance().removePropertyChangeListener(this);
-     disconnect(CarLoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes.instance().removePropertyChangeListener(this);
-     disconnect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      OperationsFrame::dispose();
  }
 

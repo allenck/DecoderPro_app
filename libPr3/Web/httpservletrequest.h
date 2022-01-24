@@ -3,7 +3,7 @@
 #include "servletrequest.h"
 #include "httpservletresponse.h"
 #include "servletexception.h"
-#include "httpserver/httprequest.h"
+#include "../QtWebApp//QtWebApp/httpserver/httprequest.h"
 #include "requesthandler.h"
 #include "fileutil.h"
 
@@ -109,9 +109,9 @@ public:
 
     /*public*/ virtual void logout() throw (ServletException()) {}
 #if 0
-    /*public*/ virtual Collection<Part> getParts() throw IOException, ServletException;
+    /*public*/ virtual Collection<Part> getParts() throw new IOException, ServletException;
 
-    /*public*/ virtual Part getPart(String string) throw IOException, ServletException;
+    /*public*/ virtual Part getPart(String string) throw new IOException, ServletException;
 
     /*public*/ virtual <T extends HttpUpgradeHandler> T upgrade(Class<T> type) throws IOException, ServletException;
 #endif
@@ -120,7 +120,7 @@ public:
     QMap<QString, QStringList*>* getParameterMap();
     QString getParameter(QString);
     QLocale getLocale();
-    QTextStream* getReader() throw (IOException)
+    QTextStream* getReader() /*throw (IOException)*/
     {
      QByteArray ba = req->getBody();
      QTextStream* stream = new QTextStream(&ba, QIODevice::ReadOnly);

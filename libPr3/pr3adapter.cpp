@@ -17,7 +17,7 @@ PR3Adapter::PR3Adapter(QObject* parent)
 
  //InstanceManager::instance()->store(this, "PortAdapter");
 }
-void PR3Adapter::setSerialPort(SerialPort* activeSerialPort) throw(UnsupportedCommOperationException)
+void PR3Adapter::setSerialPort(SerialPort* activeSerialPort) /*throw(UnsupportedCommOperationException)*/
 {
  // find the baud rate value, configure comm options
  int baud = 57600;  // default, but also defaulted in the initial value of selectedSpeed
@@ -168,7 +168,7 @@ void PR3Adapter::configure()
 /*public*/ SystemConnectionMemo *PR3Adapter::getSystemConnectionMemo()
 {
     SystemConnectionMemo* m = LocoBufferAdapter::getSystemConnectionMemo();
-    if (qobject_cast<PR3SystemConnectionMemo*>(m)) {
+    if (qobject_cast<PR3SystemConnectionMemo*>(m->self())) {
         return (PR3SystemConnectionMemo*) m;
     }
     log->error("Cannot cast the system connection memo to a PR3SystemConnection Memo.");

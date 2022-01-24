@@ -27,6 +27,7 @@
 #include "rollingstock.h"
 #include "car.h"
 #include "jmrijframe.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -50,7 +51,7 @@ namespace Operations
  ImportCars::ImportCars() : ImportRollingStock()
  {
   log = new Logger("ImportCars");
-  manager = CarManager::instance();
+  manager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
 
   weightResults = QMessageBox::No; // Automatically calculate weight for car if weight entry is not
   // found
@@ -135,7 +136,7 @@ namespace Operations
    lineNumber->setText(tr("LineNumber") + " " + QString::number(++lineNum));
    try {
        line = in->readLine();
-   } catch (IOException e) {
+   } catch (IOException* e) {
        break;
    }
 
@@ -205,7 +206,7 @@ namespace Operations
     carBuilt = "";
     carLocation = "";
     carTrack = "";
-    carLoad = CarLoads::instance()->getDefaultEmptyName();
+    carLoad = ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultEmptyName();
     carKernel = "";
     carMoves = 0;
     carValue = "";
@@ -250,12 +251,12 @@ namespace Operations
         break;
     }
 
-    if (!CarTypes::instance()->containsName(carType))
+    if (!((CarTypes*)InstanceManager::getDefault("CarTypes"))->containsName(carType))
     {
      if (autoCreateTypes)
      {
       log->debug(tr("Adding car type (%1)").arg(carType));
-      CarTypes::instance()->addName(carType);
+      ((CarTypes*)InstanceManager::getDefault("CarTypes"))->addName(carType);
      }
      else
      {
@@ -268,7 +269,7 @@ namespace Operations
       int results = QMessageBox::question(NULL, tr("Add car type?"), tr("Car")+ " (" + carRoad + " " + carNumber + ")" + NEW_LINE + tr("Type \"%1\" does not exist in your roster, add?").arg(carType), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
       if (results == QMessageBox::Yes)
       {
-       CarTypes::instance()->addName(carType);
+       ((CarTypes*)InstanceManager::getDefault("CarTypes"))->addName(carType);
        if (askAutoCreateTypes)
        {
 //        results = JOptionPane.showConfirmDialog(NULL, Bundle
@@ -483,14 +484,14 @@ namespace Operations
        QMessageBox::critical(NULL, tr("Car attribute must be %1 characters or less").arg(Control::max_len_string_track_name), tr(""));
        break;
       }
-      Location* location = LocationManager::instance()->getLocationByName(carLocation);
+      Location* location = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationByName(carLocation);
       Track* track = NULL;
       if (location == NULL && carLocation!=(""))
       {
        if (autoCreateLocations)
        {
         log->debug(tr("Create location (%1)").arg(carLocation));
-        location = LocationManager::instance()->newLocation(carLocation);
+        location = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->newLocation(carLocation);
        }
        else
        {
@@ -504,7 +505,7 @@ namespace Operations
         int results = QMessageBox::question(NULL, tr("Location does not exist!"), tr("Do you want to create location (%1)?").arg(carLocation), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
         if (results == QMessageBox::Yes) {
             log->debug(tr("Create location (%1)").arg(carLocation));
-            location = LocationManager::instance()->newLocation(carLocation);
+            location = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->newLocation(carLocation);
             if (askAutoCreateLocations) {
 //                results = JOptionPane.showConfirmDialog(NULL, Bundle
 //                        .getMessage("DoYouWantToAutoCreateLoc"),
@@ -581,7 +582,7 @@ namespace Operations
 
       log->debug(tr("Add car (%1 %2) owner (%3) built (%4) location (%5, %6)").arg(carRoad).arg(carNumber).arg(carOwner).arg(
               carBuilt).arg(carLocation).arg(carTrack));
-      Car* car = manager->newCar(carRoad, carNumber);
+      Car* car = (Car*)manager->newRS(carRoad, carNumber);
       car->setTypeName(carType);
       car->setLength(carLength);
       car->setWeight(carWeight);
@@ -630,42 +631,42 @@ namespace Operations
       }
 
       // add new roads
-      if (!CarRoads::instance()->containsName(carRoad))
+      if (!((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->containsName(carRoad))
       {
        if (autoCreateRoads)
        {
            log->debug(tr("add car road %1").arg(carRoad));
-           CarRoads::instance()->addName(carRoad);
+           ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->addName(carRoad);
        }
       }
 
       // add new lengths
-      if (!CarLengths::instance()->containsName(carLength))
+      if (!((CarLengths*)InstanceManager::getDefault("CarLengths"))->containsName(carLength))
       {
        if (autoCreateLengths)
        {
         log->debug(tr("add car length %1").arg(carLength));
-        CarLengths::instance()->addName(carLength);
+        ((CarLengths*)InstanceManager::getDefault("CarLengths"))->addName(carLength);
        }
       }
 
       // add new colors
-      if (!CarColors::instance()->containsName(carColor))
+      if (!((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->containsName(carColor))
       {
        if (autoCreateColors)
        {
         log->debug(tr("add car color %1").arg(carColor));
-        CarColors::instance()->addName(carColor);
+        ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->addName(carColor);
        }
       }
 
       // add new owners
-      if (!CarOwners::instance()->containsName(carOwner))
+      if (!((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->containsName(carOwner))
       {
        if (autoCreateOwners)
        {
         log->debug(tr("add car owner %1").arg(carOwner));
-        CarOwners::instance()->addName(carOwner);
+        ((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->addName(carOwner);
        }
       }
 
@@ -882,7 +883,7 @@ namespace Operations
      // in.close();
    in->device()->close();
   }
-  catch (IOException e)
+  catch (IOException* e)
   {
   }
 

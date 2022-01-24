@@ -11,6 +11,9 @@
 #include "memoryicon.h"
 #include "jmricolorchooser.h"
 #include "joptionpane.h"
+#include "limits.h"
+#include "joptionpane.h"
+
 
 QVector<int>* LayoutBlock::updateReferences = new QVector<int>();
 long LayoutBlock::time=0;
@@ -100,9 +103,9 @@ long LayoutBlock::time=0;
              (MemoryManager*)InstanceManager::getDefault("MemoryManager"), nullptr, DisplayOptions::DISPLAYNAME);
  memoryNameField = new /*JTextField*/ QLineEdit();
  memoryNameField->setMaxLength(16);
- metricField = new /*JTextField*/ QLineEdit();
- metricField->setMaxLength(10);
- senseBox = new /*JComboBox*/ QComboBox();
+ //metricField = JTextField();
+ //metricField->setMaxLength(10);
+ //senseBox = new /*JComboBox*/ QComboBox();
  permissiveCheck = new /*JCheckBox*/ QCheckBox();
  permissiveCheck->setText(tr("Permissive Working Allowed"));
  trackColorBox = new /*JComboBox*/ QComboBox();
@@ -144,7 +147,7 @@ long LayoutBlock::time=0;
  routes = new QVector<Routes*>();
  listeners = new QVector<PropertyChangeListener*>();
 
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
 
  blockName = uName;
  lbSystemName = sName;
@@ -173,7 +176,7 @@ long LayoutBlock::time=0;
  block = nullptr;   // assume failure (pessimist!)
  QString userName = getUserName();
  if (!(userName.isNull()) && !userName.isEmpty()) {
-     block =(Block*) ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getByUserName(userName);
+     block =(Block*) ((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getByUserName(userName);
  }
 
  if (block == nullptr) {
@@ -182,13 +185,13 @@ long LayoutBlock::time=0;
      QString s;
      while (true) {
          if (jmriblknum > 50000) {
-             throw IndexOutOfBoundsException("Run away prevented while trying to create a block");
+             throw new IndexOutOfBoundsException("Run away prevented while trying to create a block");
          }
          s = "IB" + QString::number(jmriblknum);
          jmriblknum++;
 
          // Find an unused system name
-         block = (Block*)bm->getBySystemName(s);
+         block = (Block*)bm->AbstractManager::getBySystemName(s);
          if (block != nullptr) {
              log->debug(tr("System name is already used: %1").arg(s));
              continue;
@@ -202,7 +205,8 @@ long LayoutBlock::time=0;
          }
 
          // Verify registration
-         if (bm->getSystemNameList().contains(s)) {
+         Block* testGet = (Block*)bm->AbstractManager::getBySystemName(s);
+         if ( testGet!=nullptr && bm->AbstractManager::getNamedBeanSet().contains(testGet) ) {
              log->debug(tr("Block is valid: %1").arg(s));
              break;
          }
@@ -337,6 +341,7 @@ long LayoutBlock::time=0;
   }
  }
 }
+
 /*public*/ bool  LayoutBlock::isOnPanel(LayoutEditor* panel)
 {
     // returns true if this Layout Block is used on panel
@@ -367,7 +372,7 @@ long LayoutBlock::time=0;
   }
   //panels->at(0)->redrawPanel();
  }
-
+ firePropertyChange("redraw", QVariant(), QVariant());
 }
 
 /**
@@ -647,28 +652,20 @@ long LayoutBlock::time=0;
  */
 /*public*/ LayoutEditor*  LayoutBlock::getMaxConnectedPanel()
 {
- LayoutEditor* panel = NULL;
- if ( (block!=NULL) && (panels->size() > 0) )
- {
-  // a block is attached and this LayoutBlock is used
-  // initialize connectivity as defined in first Layout Editor panel
-  panel = panels->at(0);
-  QVector<LayoutConnectivity*>* c = panel->auxTools->getConnectivityList(this);
-  // if more than one panel, find panel with the highest connectivity
-  if (panels->size()>1)
-  {
-   for (int i = 1;i < panels->size();i++)
-   {
-    if (c->size()<panels->at(i)->auxTools->
-                                    getConnectivityList(this)->size())
-    {
-     panel = panels->at(i);
-     c = panel->auxTools->getConnectivityList(this);
-    }
-   }
-  }
+ LayoutEditor* result = NULL;
+ // a block is attached and this LayoutBlock is used
+ if ((block != nullptr) && (panels->size() > 0)) {
+     // initialize connectivity as defined in first Layout Editor panel
+     int maxConnectivity = INT_MIN;//Integer.MIN_VALUE;
+     for (LayoutEditor* panel : *panels) {
+         QVector<LayoutConnectivity*>* c = panel->getLEAuxTools()->getConnectivityList(this);
+         if (maxConnectivity < c->size()) {
+             maxConnectivity = c->size();
+             result = panel;
+         }
+     }
  }
- return panel;
+ return result;
 }
 
 /**
@@ -685,45 +682,51 @@ long LayoutBlock::time=0;
   // a block is attached and this LayoutBlock is used
   // initialize connectivity as defined in first Layout Editor panel
   LayoutEditor* panel = panels->at(0);
-  QVector<LayoutConnectivity*>* c = panel->auxTools->getConnectivityList(this);
+  QVector<LayoutConnectivity*>* c = panel->getLEAuxTools()->getConnectivityList(this);
 
   // if more than one panel, find panel with the highest connectivity
   if (panels->size()>1)
   {
    for (int i = 1;i < panels->size();i++)
    {
-    if (c->size()<panels->at(i)->auxTools->
-                                    getConnectivityList(this)->size())
-    {
-     panel = panels->at(i);
-     c = panel->auxTools->getConnectivityList(this);
+    if (c->size() < panels->at(i)->getLEAuxTools()->
+            getConnectivityList(this)->size()) {
+        panel = panels->at(i);
+        c = panel->getLEAuxTools()->getConnectivityList(this);
     }
    }
-   // check that this connectivity is compatible with that of other panels.
-   for (int j = 0;j < panels->size();j++)
-   {
-    LayoutEditor* tPanel = panels->at(j);
-    if ( (tPanel!=panel) && ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->
-                            warn() && ( !compareConnectivity(c,
-                                    tPanel->auxTools->getConnectivityList(this)) )  )
-    {
-     // send user an error message
-//     int response = JOptionPane.showOptionDialog(NULL,
-//                            java.text.MessageFormat.format(tr("Warn1"),
-//                            new Object[]{blockName,tPanel.getLayoutName(),
-//                            panel.getLayoutName()}),tr("WarningTitle"),
-//                            JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,
-//                            NULL,new Object[] {tr("ButtonOK"),
-//                            tr("ButtonOKPlus")},tr("ButtonOK"));
-    int response = QMessageBox::warning(NULL, tr("Warning"), tr("Warning - Connectivities for block \"%1\" in panels \"%2\" and \"%3\" are not compatible.").arg(blockName).arg(tPanel->getLayoutName()).arg(panel->getLayoutName()),QMessageBox::Yes | QMessageBox::No);
-    if (response!=0)
-      // user elected to disable messages
-     ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->turnOffWarning();
-    }
-   }
+
+   // Now try to determine if this block is across two panels due to a linked point
+      PositionablePoint* point = panel->getFinder()->findPositionableLinkPoint(this);
+      if ((point != nullptr) && (point->getLinkedEditor() != nullptr) && panels->contains(point->getLinkedEditor())) {
+          c = panel->getLEAuxTools()->getConnectivityList(this);
+          //c->addAll(point.getLinkedEditor().getLEAuxTools().getConnectivityList(this));
+          for(LayoutConnectivity* lc : *point->getLinkedEditor()->getLEAuxTools()->getConnectivityList(this))
+           c->append(lc);
+      } else {
+          // check that this connectivity is compatible with that of other panels.
+          for (LayoutEditor* tPanel : *panels) {
+              if ((tPanel != panel) && ((LayoutBlockManager*)InstanceManager::getDefault(
+                      "LayoutBlockManager"))->warn()
+                      && (!compareConnectivity(c, tPanel->getLEAuxTools()->getConnectivityList(this)))) {
+                  // send user an error message
+                  int response = JOptionPane::showOptionDialog(nullptr,
+                          tr("Warning - Connectivities for Block \"%1\" in Panels \"%2\" and \"%3\" are not compatible.").arg(
+                                  getUserName(), tPanel->getLayoutName(),
+                                      panel->getLayoutName()), tr("Warning"),
+                          JOptionPane::YES_NO_OPTION, JOptionPane::QUESTION_MESSAGE,
+                          QIcon(), QVariantList{tr("OK"),
+                              tr("OK - Stop Reminders")}, tr("OK"));
+                  if (response != 0) {    // user elected to disable messages
+                      ((LayoutBlockManager*)InstanceManager::getDefault(
+                              "LayoutBlockManager"))->turnOffWarning();
+                  }
+              }
+          }
+      }
   }
   // update block Paths to reflect connectivity as needed
-  updateBlockPaths(c,panel);
+  updateBlockPaths(c, panel);
  }
 }
 
@@ -746,7 +749,7 @@ long LayoutBlock::time=0;
 {
  if(enableAddRouteLogging)
   log->info("From " + this->getDisplayName() + " updatePaths Called");
- LayoutEditorAuxTools* auxTools = new LayoutEditorAuxTools(panel);
+ auxTools = panel->getLEAuxTools();
  QVector<Path*>* paths = block->getPaths();
  QVector<bool> used =  QVector<bool>(c->size(),false);
  QVector<int> need = QVector<int>(paths->size(),-1);
@@ -985,237 +988,12 @@ void LayoutBlock::handleBlockChange(QString /*pName*/, int /*o*/, int /*val*/)
  */
 /*protected*/ void  LayoutBlock::editLayoutBlock(/*Component*/ QWidget* /*callingPane*/)
 {
-#if 1
- if (editOpen)
- {
-  editLayoutBlockFrame->setVisible(true);
-  return;
- }
-#if 0
- // Initialize if needed
- if (editLayoutBlockFrame == NULL)
- {
-  editLayoutBlockFrame = new JmriJFrameX( tr("Create/Edit Block"), false, false);
-  editLayoutBlockFrame->addHelpMenu("package.jmri.jmrit.display.EditLayoutBlock", true);
-//  editLayoutBlockFrame->setLocation(80,40);
-//  QWidget* contentPane = editLayoutBlockFrame->getContentPane();
-//  contentPane->setLayout(new QVBoxLayout(contentPane/*, BoxLayout.Y_AXIS*/));
-  QWidget* contentPane = new QWidget;
-  editLayoutBlockFrame->setCentralWidget(contentPane);
-  QVBoxLayout* contentPaneLayout = new QVBoxLayout(contentPane);
-  // show block ID (not changeable)
-  QWidget* panel1 = new QWidget();
-  panel1->setLayout(new FlowLayout());
-  /*JLabel*/ QLabel* blockNameLabel = new /*JLabel*/ QLabel( tr("Name")+": "+blockName );
-  panel1->layout()->addWidget(blockNameLabel);
-  contentPaneLayout->addWidget(panel1);
-  // show current use count (not editable)
-  QWidget* panel2 = new QWidget();
-  panel2->setLayout(new FlowLayout());
-  panel2->layout()->addWidget(blockUseLabel);
-  contentPaneLayout->addWidget(panel2);
-  // set up occupancy sensor (changeable)
-  contentPaneLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
-  QWidget* panel3 = new QWidget();
-  panel3->setLayout(new FlowLayout());
-  /*JLabel*/ QLabel* sensorLabel = new /*JLabel*/ QLabel( tr("Occupancy Sensor")+":");
-  panel3->layout()->addWidget(sensorLabel);
-  panel3->layout()->addWidget(sensorNameField);
-  sensorNameField->setToolTip( tr("Enter name of occupancy sensor for this block; no entry means don't change.") );
-  contentPaneLayout->addWidget(panel3);
-
-  // set up occupied sense (changeable)
-  QWidget* panel4 = new QWidget();
-  panel4->setLayout(new FlowLayout());
-  /*JLabel*/ QLabel* sensorSenseLabel = new /*JLabel*/ QLabel( tr("Occupied Sense")+":");
-  panel4->layout()->addWidget(sensorSenseLabel);
-  senseBox->clear();
-  senseBox->addItem( tr("Active") );
-  senseActiveIndex = 0;
-  senseBox->addItem( tr("Inactive") );
-  senseInactiveIndex = 1;
-  panel4->layout()->addWidget(senseBox);
-  senseBox->setToolTip( tr("Select the occupancy sensor state when the block is occupied.") );
-  contentPaneLayout->addWidget(panel4);
-
-  contentPaneLayout->addWidget(sensorDebounceGlobalCheck);
-  sensorDebounceGlobalCheck->setToolTip(tr("Use Global Debounce Values"));
-  QWidget* panel4a = new QWidget();
-  QHBoxLayout* panel4aLayout= new QHBoxLayout(panel4a);
-  panel4aLayout->addWidget(new /*JLabel*/ QLabel(tr("Sensor InActive Debounce")));
-  sensorDebounceInactiveField->setToolTip(tr("Enter in the duration (milli seconds) which the sensor has to be InActive, before the change is acted upon."));
-  panel4aLayout->addWidget(sensorDebounceInactiveField);
-  contentPaneLayout->addWidget(panel4a);
-  QWidget* panel4b = new QWidget();
-  QHBoxLayout* panel4bLayout= new QHBoxLayout(panel4b);
-  panel4bLayout->addWidget(new /*JLabel*/ QLabel(tr("Sensor Active Debounce")));
-  panel4bLayout->addWidget(sensorDebounceActiveField);
-  sensorDebounceActiveField->setToolTip(tr("Enter in the duration (milli seconds) which the sensor has to be Active, before the change is acted upon."));
-  contentPaneLayout->addWidget(panel4b);
-
-  // set up track color (changeable)
-  contentPaneLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
-  QWidget* panel6 = new QWidget();
-  panel6->setLayout(new FlowLayout());
-  /*JLabel*/ QLabel* trackColorLabel = new /*JLabel*/ QLabel( tr("Track Color:") );
-  panel6->layout()->addWidget(trackColorLabel);
-  initializeColorCombo(trackColorBox, blockTrackColor);
-  panel6->layout()->addWidget(trackColorBox);
-  trackColorBox->setToolTip( tr("Select the track color when this block is unoccupied.") );
-  contentPaneLayout->addWidget(panel6);
-  // set up occupied color (changeable)
-  QWidget* panel7 = new QWidget();
-  panel7->setLayout(new FlowLayout());
-  /*JLabel*/ QLabel* occupiedColorLabel = new /*JLabel*/ QLabel( tr("Occupied Track Color:") );
-  panel7->layout()->addWidget(occupiedColorLabel);
-  initializeColorCombo(occupiedColorBox, blockOccupiedColor);
-  panel7->layout()->addWidget(occupiedColorBox);
-  occupiedColorBox->setToolTip( tr("Select the track color when this block is occupied.") );
-  contentPaneLayout->addWidget(panel7);
-  // set up extra color (changeable)
-  QWidget* panel7a = new QWidget();
-  panel7a->setLayout(new FlowLayout());
-  /*JLabel*/ QLabel* extraColorLabel = new /*JLabel*/ QLabel( tr("Alternate Track Color:") );
-  panel7a->layout()->addWidget(extraColorLabel);
-  initializeColorCombo(extraColorBox, blockExtraColor);
-  panel7a->layout()->addWidget(extraColorBox);
-  extraColorBox->setToolTip( tr("Select the track color for unoccupied special use, e.g. allocated.") );
-  contentPaneLayout->addWidget(panel7a);
-  // set up Memory entry (changeable)
-  contentPaneLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
-  QWidget* panel8 = new QWidget();
-  panel8->setLayout(new FlowLayout());
-  /*JLabel*/ QLabel* memoryLabel = new /*JLabel*/ QLabel( tr("Memory Variable")+":");
-  panel8->layout()->addWidget(memoryLabel);
-  panel8->layout()->addWidget(memoryNameField);
-  memoryNameField->setToolTip( tr("Enter name (system or user) of Memory Variable (optional).") );
-  contentPaneLayout->addWidget(panel8);
-
-  //if(InstanceManager::layoutBlockManagerInstance()->isAdvancedRoutingEnabled())
-  if(((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled())
-  {
-    contentPaneLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
-    QWidget* panel19 = new QWidget();
-    panel19->setLayout(new FlowLayout());
-    /*JLabel*/ QLabel* metricLabel = new /*JLabel*/ QLabel("Block Metric");
-    panel19->layout()->addWidget(metricLabel);
-    panel19->layout()->addWidget(metricField);
-    metricField->setToolTip("set the cost for going over this block");
-    contentPaneLayout->addWidget(panel19);
-    neighbourDir =  QVector<QComboBox*>(getNumberOfNeighbours());
-    for(int i = 0; i<getNumberOfNeighbours(); i++)
-    {
-     QWidget* panel = new QWidget();
-     panel->setLayout(new FlowLayout());
-     panel->layout()->addWidget(new /*JLabel*/ QLabel("Attached Block: " + getNeighbourAtIndex(i)->getDisplayName()));
-     QComboBox* dir = new QComboBox(/*working*/);
-     dir->addItems(working);
-     Block* blk = neighbours->at(i)->getBlock();
-     if(block->isBlockDenied(blk))
-      dir->setCurrentIndex(2);
-     else if (blk->isBlockDenied(block))
-      dir->setCurrentIndex(1);
-     else
-      dir->setCurrentIndex(0);
-     panel->layout()->addWidget(dir);
-     neighbourDir.append(dir);
-     contentPaneLayout->addWidget(panel);
-     }
-    }
-    contentPaneLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
-    QWidget* panel20 = new QWidget();
-    panel20->setLayout(new FlowLayout());
-    panel20->layout()->addWidget(permissiveCheck);
-    permissiveCheck->setToolTip("Is another train allowed to enter the block when it is already occupied");
-    contentPaneLayout->addWidget(panel20);
-
-
-    // set up Done and Cancel buttons
-    contentPaneLayout->addWidget(new JSeparator(JSeparator::HORIZONTAL));
-    QWidget* panel5 = new QWidget();
-    panel5->setLayout(new FlowLayout());
-    // Done
-    panel5->layout()->addWidget(blockEditDone = new QPushButton(tr("Done")));
-//        blockEditDone.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent e) {
-//                blockEditDonePressed(e);
-//            }
-//        });
-    connect(blockEditDone, SIGNAL(clicked()), this, SLOT(blockEditDonePressed()));
-    blockEditDone->setToolTip( tr("Click Done to accept any changes made above and dismiss this dialog->") );
-    // Cancel
-    panel5->layout()->addWidget(blockEditCancel = new QPushButton(tr("Cancel")));
-//        blockEditCancel.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent e) {
-//                blockEditCancelPressed(e);
-//            }
-//        });
-    connect(blockEditCancel, SIGNAL(clicked()), this, SLOT(blockEditCancelPressed()));
-    blockEditCancel->setToolTip( tr("CancelHint") );
-    contentPaneLayout->addWidget(panel5);
-
-
-    }
-    // Set up for Edit
-    blockUseLabel->setText(tr("Current Use Count")+": "+QString::number(useCount) );
-    sensorNameField->setText(getOccupancySensorName());
-    if (occupiedSense==Sensor::ACTIVE)
-    {
-     senseBox->setCurrentIndex(senseActiveIndex);
-    }
-    else
-    {
-     senseBox->setCurrentIndex(senseInactiveIndex);
-    }
-    if(getOccupancySensor()!=NULL)
-    {
-     sensorDebounceGlobalCheck->setChecked(getOccupancySensor()->useDefaultTimerSettings());
-     sensorDebounceInactiveField->setText(QString::number(getOccupancySensor()->getSensorDebounceGoingInActiveTimer()));
-     sensorDebounceActiveField->setText(QString::number(getOccupancySensor()->getSensorDebounceGoingActiveTimer()));
-     sensorDebounceGlobalCheck->setChecked(getOccupancySensor()->useDefaultTimerSettings());
-    }
-//    sensorDebounceGlobalCheck.addActionListener(new ActionListener() {
-//        /*public*/ void actionPerformed(ActionEvent e){
-//            if(sensorDebounceGlobalCheck.isSelected()){
-//                sensorDebounceInactiveField.setEnabled(false);
-//                sensorDebounceActiveField.setEnabled(false);
-//                sensorDebounceActiveField.setText(QString::number(jmri.InstanceManager::sensorManagerInstance().getDefaultSensorDebounceGoingActive()));
-//                sensorDebounceInactiveField.setText(QString::number(jmri.InstanceManager::sensorManagerInstance().getDefaultSensorDebounceGoingInActive()));
-//            } else {
-//                sensorDebounceInactiveField.setEnabled(true);
-//                sensorDebounceActiveField.setEnabled(true);
-//            }
-//        }
-//    });
- connect(sensorDebounceGlobalCheck, SIGNAL(clicked()), this, SLOT(sensorDebounceGlobalCheck_clicked()));
- setColorCombo(trackColorBox,blockTrackColor);
- setColorCombo(occupiedColorBox,blockOccupiedColor);
- setColorCombo(extraColorBox,blockExtraColor);
- memoryNameField->setText(memoryName);
- metricField->setText(QString::number(metric));
-
- if(block!=NULL)
-  permissiveCheck->setChecked(block->getPermissiveWorking());
-//    editLayoutBlockFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-//            /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//                blockEditCancelPressed(NULL);
-//            }
-//        });
- editLayoutBlockFrame->addWindowListener(new LBWindowListener(this));
- editLayoutBlockFrame->adjustSize();
- editLayoutBlockFrame->setVisible(true);
-#else
- editLayoutBlockFrame = new CreateEditBlock(this->blockName, (LayoutEditor*)panels->value(0));
- editLayoutBlockFrame->show();
-#endif
- editOpen = true;
-#else
  LayoutBlockEditAction* beanEdit = new LayoutBlockEditAction(this);
  if (block == nullptr) {
-     //Block may not have been initialised due to an error so manually set it in the edit window
+     // Block may not have been initialised due to an error so manually set it in the edit window
      QString userName = getUserName();
-     if ((!userName.isNull()) && !userName.isEmpty()) {
-         Block* b = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBlock(userName);
+     if ((userName != "") && !userName.isEmpty()) {
+         Block* b = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBlock(userName);
          if (b != nullptr) {
              beanEdit->setBean(b);
          }
@@ -1223,163 +1001,157 @@ void LayoutBlock::handleBlockChange(QString /*pName*/, int /*o*/, int /*val*/)
  } else {
      beanEdit->setBean(block);
  }
- beanEdit->actionPerformed();
+ beanEdit->actionPerformed(nullptr);
+}
 
-#endif
+void LayoutBlock::blockEditDonePressed(JActionEvent*) {
+    bool needsRedraw = false;
+    // check if Sensor changed
+    QString newName = NamedBean::normalizeUserName(sensorNameField->text());
+    if ((getOccupancySensorName()) != (newName)) {
+        // sensor has changed
+        if ((newName == "") || newName.isEmpty()) {
+            setOccupancySensorName(newName);
+            sensorNameField->setText("");
+            needsRedraw = true;
+        } else if (validateSensor(newName, editLayoutBlockFrame) == nullptr) {
+            // invalid sensor entered
+            occupancyNamedSensor = nullptr;
+            occupancySensorName = "";
+            sensorNameField->setText("");
+            return;
+        } else {
+            sensorNameField->setText(newName);
+            needsRedraw = true;
+        }
+    }
+
+    Sensor* s = getOccupancySensor();
+    if ( s != nullptr) {
+        if (sensorDebounceGlobalCheck->isChecked()) {
+            s->setUseDefaultTimerSettings(true);
+        } else {
+            s->setUseDefaultTimerSettings(false);
+            if (!sensorDebounceInactiveField->text().trimmed().isEmpty()) {
+                s->setSensorDebounceGoingInActiveTimer(sensorDebounceInactiveField->text().trimmed().toLong());
+            }
+            if (!sensorDebounceActiveField->text().trimmed().isEmpty()) {
+                s->setSensorDebounceGoingActiveTimer(sensorDebounceActiveField->text().trimmed().toLong());
+            }
+        }
+        Reporter* reporter = s->getReporter();
+        if (reporter != nullptr && block != nullptr) {
+            QString msg = tr("Sensor %1 has Reporter %2 associated with it; do you want to use the Reporter with this block?").arg(
+                    s->getDisplayName(),
+                        reporter->getDisplayName());
+            if (JOptionPane::showConfirmDialog(editLayoutBlockFrame,
+                    msg, tr("Assign Reporter to Block"),
+                    JOptionPane::YES_NO_OPTION) == 0) {
+                block->setReporter(reporter);
+            }
+        }
+    }
+
+    // check if occupied sense changed
+    int k = senseBox->getSelectedIndex();
+    int oldSense = occupiedSense;
+    if (k == senseActiveIndex) {
+        occupiedSense = Sensor::ACTIVE;
+    } else {
+        occupiedSense = Sensor::INACTIVE;
+    }
+    if (oldSense != occupiedSense) {
+        needsRedraw = true;
+    }
+
+    // check if track color changed
+    QColor oldColor = blockTrackColor;
+    blockTrackColor = trackColorChooser->getColor();
+    if (oldColor != blockTrackColor) {
+        needsRedraw = true;
+    }
+    // check if occupied color changed
+    oldColor = blockOccupiedColor;
+    blockOccupiedColor = occupiedColorChooser->getColor();
+    if (oldColor != blockOccupiedColor) {
+        needsRedraw = true;
+    }
+    // check if extra color changed
+    oldColor = blockExtraColor;
+    blockExtraColor = extraColorChooser->getColor();
+    if (oldColor != blockExtraColor) {
+        needsRedraw = true;
+    }
+
+    // check if Memory changed
+    newName = memoryComboBox->getSelectedItemDisplayName();
+    if (newName == "") {
+        newName = "";
+    }
+    if (memoryName !=(newName)) {
+        // memory has changed
+        setMemory(validateMemory(newName, editLayoutBlockFrame), newName);
+        if (getMemory() == nullptr) {
+            // invalid memory entered
+            memoryName = "";
+            memoryComboBox->setSelectedItem(nullptr);
+            return;
+        } else {
+            memoryComboBox->setSelectedItem(getMemory());
+            needsRedraw = true;
+        }
+    }
+    int m = metricField->text().trimmed().toInt();
+    if (m != metric) {
+        setBlockMetric(m);
+    }
+    block->setPermissiveWorking(permissiveCheck->isChecked());
+    if (!neighbourDir.isEmpty()) {
+        for (int i = 0; i < neighbourDir.size(); i++) {
+            int neigh = neighbourDir.at(i)->getSelectedIndex();
+            neighbours->at(i)->getBlock()->removeBlockDenyList(this->block);
+            this->block->removeBlockDenyList(neighbours->at(i)->getBlock());
+            switch (neigh) {
+                case 0: {
+                    updateNeighbourPacketFlow(neighbours->at(i), RXTX);
+                    break;
+                }
+
+                case 1: {
+                    neighbours->at(i)->getBlock()->addBlockDenyList(this->block->getDisplayName());
+                    updateNeighbourPacketFlow(neighbours->at(i), TXONLY);
+                    break;
+                }
+
+                case 2: {
+                    this->block->addBlockDenyList(neighbours->at(i)->getBlock()->getDisplayName());
+                    updateNeighbourPacketFlow(neighbours->at(i), RXONLY);
+                    break;
+                }
+
+                default: {
+                    break;
+                }
+            }
+            /* switch */
+        }
+    }
+    // complete
+    editLayoutBlockFrame->setVisible(false);
+    editLayoutBlockFrame->dispose();
+    editLayoutBlockFrame = nullptr;
+
+    if (needsRedraw) {
+        redrawLayoutBlockPanels();
+    }
+}
+
+void LayoutBlock::blockEditCancelPressed(JActionEvent*) {
+    editLayoutBlockFrame->setVisible(false);
+    editLayoutBlockFrame->dispose();
+    editLayoutBlockFrame = nullptr;
 }
 #if 0
-void LayoutBlock::sensorDebounceGlobalCheck_clicked()
-{
- if(sensorDebounceGlobalCheck->isChecked())
- {
-  sensorDebounceInactiveField->setEnabled(false);
-  sensorDebounceActiveField->setEnabled(false);
-  sensorDebounceActiveField->setText(QString::number(InstanceManager::sensorManagerInstance()->getDefaultSensorDebounceGoingActive()));
-  sensorDebounceInactiveField->setText(QString::number(InstanceManager::sensorManagerInstance()->getDefaultSensorDebounceGoingInActive()));
- }
- else
- {
-  sensorDebounceInactiveField->setEnabled(true);
-  sensorDebounceActiveField->setEnabled(true);
- }
-}
-
-
-void LayoutBlock::blockEditDonePressed(ActionEvent* /*a*/)
-{
- bool needsRedraw = false;
- // check if Sensor changed
- QString newName = NamedBean::normalizeUserName(sensorNameField->text());
- if ( (getOccupancySensorName())!=(newName) )
- {
-  // sensor has changed
-  if ((newName.isNull()) || newName.isEmpty())
-  {
-      setOccupancySensorName(newName);
-      sensorNameField->setText("");
-      needsRedraw = true;
-  } else if (validateSensor(newName, editLayoutBlockFrame) == nullptr) {
-      //invalid sensor entered
-      occupancyNamedSensor = nullptr;
-      occupancySensorName = "";
-      sensorNameField->setText("");
-      return;
-  } else {
-      sensorNameField->setText(newName);
-      needsRedraw = true;
-  }
- }
- if(getOccupancySensor()!=NULL)
- {
-  if(sensorDebounceGlobalCheck->isChecked())
-  {
-   getOccupancySensor()->useDefaultTimerSettings(true);
-  }
-  else
-  {
-   getOccupancySensor()->useDefaultTimerSettings(false);
-   if(sensorDebounceInactiveField->text().trimmed()!=(""))
-    getOccupancySensor()->setSensorDebounceGoingInActiveTimer(sensorDebounceInactiveField->text().trimmed().toLong());
-   if(sensorDebounceActiveField->text().trimmed()!=(""))
-    getOccupancySensor()->setSensorDebounceGoingActiveTimer((sensorDebounceActiveField->text().trimmed().toLong()));
-   }
-   if(getOccupancySensor()->getReporter()!=NULL && block!=NULL)
-   {
-    QString msg = tr("Sensor %1 has reporter %2 associated with it, do you want to use the reporter with this block?").arg( getOccupancySensor()->getDisplayName()).arg(getOccupancySensor()->getReporter()->getDisplayName() );
-//            if(JOptionPane.showConfirmDialog(editLayoutBlockFrame,
-//                                                 msg,tr("BlockAssignReporterTitle"),
-//                                                 JOptionPane.YES_NO_OPTION)==0)
-    if(QMessageBox::question(editLayoutBlockFrame, tr("Assign Reporter to Block"),msg, QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-     block->setReporter(getOccupancySensor()->getReporter());
-
-   }
-  }
-  // check if occupied sense changed
-  int k = senseBox->currentIndex();
-  int oldSense = occupiedSense;
-  if (k==senseActiveIndex) occupiedSense = Sensor::ACTIVE;
-   else occupiedSense = Sensor::INACTIVE;
-  if (oldSense!=occupiedSense)
-   needsRedraw = true;
-
-  // check if track color changed
-  QColor oldColor = blockTrackColor;
-  blockTrackColor = getSelectedColor(trackColorBox);
-  if (oldColor!=blockTrackColor)
-   needsRedraw = true;
-
-  // check if occupied color changed
-  oldColor = blockOccupiedColor;
-  blockOccupiedColor = getSelectedColor(occupiedColorBox);
-  if (oldColor!=blockOccupiedColor)
-   needsRedraw = true;
-  // check if extra color changed
-  oldColor = blockExtraColor;
-  blockExtraColor = getSelectedColor(extraColorBox);
-  if (oldColor!=blockExtraColor)
-   needsRedraw = true;
-
-  // check if Memory changed
-  if ( memoryName!=(memoryNameField->text().trimmed()) )
-  {
-   // memory has changed
-    QString newName = memoryNameField->text().trimmed();
-   if ((memory = validateMemory(newName,editLayoutBlockFrame))==NULL)
-   {
-    // invalid memory entered
-    memoryName = "";
-    memoryNameField->setText("");
-    return;
-   }
-   else
-   {
-    memoryNameField->setText(memoryName);
-    needsRedraw = true;
-   }
-  }
-  int m = metricField->text().trimmed().toInt();
-  if (m!=metric)
-   setBlockMetric(m);
-  block->setPermissiveWorking(permissiveCheck->isChecked());
-  if(!neighbourDir.isEmpty())
-  {
-   for(int i = 0; i<neighbourDir.size(); i++)
-   {
-    int neigh = neighbourDir.at(i)->currentIndex();
-    neighbours->at(i)->getBlock()->removeBlockDenyList(this->block);
-    this->block->removeBlockDenyList(neighbours->at(i)->getBlock());
-    switch(neigh)
-    {
-    case 0 : updateNeighbourPacketFlow(neighbours->at(i), RXTX);
-             break;
-    case 1 :
-            neighbours->at(i)->getBlock()->addBlockDenyList(this->block->getDisplayName());
-            updateNeighbourPacketFlow(neighbours->at(i), TXONLY);
-            break;
-    case 2 :
-            this->block->addBlockDenyList(neighbours->at(i)->getBlock()->getDisplayName());
-            updateNeighbourPacketFlow(neighbours->at(i), RXONLY);
-            break;
-     default: break;
-    }
-   }
-  }
-  // complete
-  editOpen = false;
-  editLayoutBlockFrame->setVisible(false);
-  //editLayoutBlockFrame->dispose();
-  editLayoutBlockFrame = NULL;
-  if (needsRedraw)
-   redrawLayoutBlockPanels();
-}
-
-void LayoutBlock::blockEditCancelPressed(ActionEvent* /*a*/) {
-    editOpen = false;
-    editLayoutBlockFrame->setVisible(false);
-    //editLayoutBlockFrame->dispose();
-    editLayoutBlockFrame = NULL;
-}
-
 /*private*/ void LayoutBlock::initializeColorCombo(QComboBox* colorCombo, QColor c) {
  colorCombo->clear();
  for (int i = 0;i<numColors;i++)
@@ -1407,44 +1179,7 @@ void LayoutBlock::blockEditCancelPressed(ActionEvent* /*a*/) {
     return (colorCode.at(colorCombo->currentIndex()));
 }
 #endif
-/**
- * Utility methods for converting between string and color
- * Note: These names are only used internally, so don't need a resource bundle
- */
-/*public*/ /*static*/ QString LayoutBlock::colorToString(QColor color) {
-    if(color == QColor(Qt::black)) return "black";
-    else if (color == QColor(Qt::darkGray)) return "darkGray";
-    else if (color == QColor(Qt::gray)) return "gray";
-    else if (color == QColor(Qt::lightGray)) return "lightGray";
-    else if (color == QColor(Qt::white)) return "white";
-    else if (color == QColor(Qt::red)) return "red";
-    else if (color == QColor(255,233,236)) return "pink";
-    else if (color == QColor(255, 165, 0)) return "orange";
-    else if (color == QColor(Qt::yellow)) return "yellow";
-    else if (color == QColor(Qt::green)) return "green";
-    else if (color == QColor(Qt::blue)) return "blue";
-    else if (color == QColor(Qt::magenta)) return "magenta";
-    else if (color == QColor(Qt::cyan)) return "cyan";
-    //log->error ("unknown color sent to colorToQString");
-    return "black";
-}
-/*public*/ /*static*/ QColor LayoutBlock::stringToColor(QString string) {
-    if(string==("black")) return QColor(Qt::black);
-    else if (string==("darkGray")) return QColor(Qt::darkGray);
-    else if (string==("gray")) return QColor(Qt::gray);
-    else if (string==("lightGray")) return QColor(Qt::lightGray);
-    else if (string==("white")) return QColor(Qt::white);
-    else if (string==("red")) return QColor(Qt::red);
-    else if (string==("pink")) return QColor(255,192,203);
-    else if (string==("orange")) return QColor(255,170,0);
-    else if (string==("yellow")) return QColor(Qt::yellow);
-    else if (string==("green")) return QColor(Qt::green);
-    else if (string==("blue")) return QColor(Qt::blue);
-    else if (string==("magenta")) return QColor(Qt::magenta);
-    else if (string==("cyan")) return QColor(Qt::cyan);
-    //log->error("unknown color text '"+string+"' sent to stringToColor");
-    return QColor(Qt::black);
-}
+
 
 /**
  * Removes this object from display and persistance
@@ -1601,7 +1336,7 @@ void LayoutBlock::setBlockMetric(){
     }
    }
   }
-  LayoutEditorAuxTools* auxTools = new LayoutEditorAuxTools(panel);
+  auxTools = panel->getLEAuxTools();
   QVector<LayoutConnectivity*>* d = auxTools->getConnectivityList(this);
   QVector<LayoutBlock*>* attachedBlocks = new QVector<LayoutBlock*>();
   for (int i = 0; i<d->size(); i++)
@@ -3098,7 +2833,7 @@ bool LayoutBlock::isValidNeighbour(Block* blk){
  if (!listeners->contains(l))
  {
   listeners->append(l);
-  pcs->addPropertyChangeListener(l);
+  pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
  }
 }
 //@Override
@@ -3220,6 +2955,20 @@ QVector<Routes*>* LayoutBlock::getNextRoutes(Block* nxtBlock){
         }
     }
     return rtr;
+}
+
+void LayoutBlock::updateRoutingInfo(Routes* route) {
+    if (route->getHopCount() >= 254) {
+        return;
+    }
+    Block* destBlock = route->getDestBlock();
+
+    RoutingPacket* update = new RoutingPacket(UPDATE, destBlock, getBestRouteByHop(destBlock)->getHopCount() + 1,
+            ((getBestRouteByMetric(destBlock)->getMetric()) + metric),
+            ((getBestRouteByMetric(destBlock)->getMetric())
+            + block->getLengthMm()), -1,
+            getNextPacketID());
+    firePropertyChange("routing", QVariant(), VPtr<RoutingPacket>::asQVariant(update));
 }
 
 void LayoutBlock::updateRoutingInfo(LayoutBlock* src, RoutingPacket* update)
@@ -3425,19 +3174,78 @@ void LayoutBlock::updateRoutesToNeighbours(QVector<Block*>* messageRecipients, R
     }
 }
 
-Routes* LayoutBlock::getBestRoute(Block* dest){
-    //int bestHopCount = 255;
+//Routes* LayoutBlock::getBestRoute(Block* dest){
+//    //int bestHopCount = 255;
+//    int bestMetric = 965000;
+//    int bestIndex = -1;
+//    QVector<Routes*>* destRoutes = getDestRoutes(dest);
+//    for (int i = 0; i<destRoutes->size(); i++){
+//        if(destRoutes->at(i)->getMetric()<bestMetric){
+//            bestMetric = destRoutes->at(i)->getMetric();
+//            bestIndex=i;
+//        }
+//    }
+//    if (bestIndex==-1)
+//        return NULL;
+//    return destRoutes->at(bestIndex);
+//}
+
+Routes* LayoutBlock::getBestRouteByMetric(Block* dest) {
+    // int bestHopCount = 255;
     int bestMetric = 965000;
     int bestIndex = -1;
+
     QVector<Routes*>* destRoutes = getDestRoutes(dest);
-    for (int i = 0; i<destRoutes->size(); i++){
-        if(destRoutes->at(i)->getMetric()<bestMetric){
+    for (int i = 0; i < destRoutes->size(); i++) {
+        if (destRoutes->at(i)->getMetric() < bestMetric) {
             bestMetric = destRoutes->at(i)->getMetric();
-            bestIndex=i;
+            bestIndex = i;
         }
     }
-    if (bestIndex==-1)
-        return NULL;
+
+    if (bestIndex == -1) {
+        return nullptr;
+    }
+    return destRoutes->at(bestIndex);
+}
+
+Routes* LayoutBlock::getBestRouteByHop(Block* dest) {
+    int bestHopCount = 255;
+    // int bestMetric = 965000;
+    int bestIndex = -1;
+
+    QVector<Routes*>* destRoutes = getDestRoutes(dest);
+    for (int i = 0; i < destRoutes->size(); i++) {
+        if (destRoutes->at(i)->getHopCount() < bestHopCount) {
+            bestHopCount = destRoutes->at(i)->getHopCount();
+            bestIndex = i;
+        }
+    }
+
+    if (bestIndex == -1) {
+        return nullptr;
+    }
+    return destRoutes->at(bestIndex);
+}
+
+Routes* LayoutBlock::getBestRouteByLength(Block* dest) {
+    // int bestHopCount = 255;
+    // int bestMetric = 965000;
+    // long bestLength = 999999999;
+    int bestIndex = -1;
+    QVector<Routes*>* destRoutes = getDestRoutes(dest);
+    float bestLength = destRoutes->at(0)->getLength();
+
+    for (int i = 0; i < destRoutes->size(); i++) {
+        if (destRoutes->at(i)->getLength() < bestLength) {
+            bestLength = destRoutes->at(i)->getLength();
+            bestIndex = i;
+        }
+    }
+
+    if (bestIndex == -1) {
+        return nullptr;
+    }
     return destRoutes->at(bestIndex);
 }
 
@@ -3972,13 +3780,13 @@ int LayoutBlock::getRouteIndex(Routes* r){
  length = len;
  validCurrentRoute = block->checkIsRouteOnValidThroughPath(this);
  firePropertyChange("length", QVariant(), QVariant());
-//    destBlock->addPropertyChangeListener(this);
+//    destBlock->SwingPropertyChangeSupport::addPropertyChangeListener(this);
 // connect(destBlock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
 // connect(destBlock->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
 
 }
 
-/*public*/ void Routes::on_propertyChange(PropertyChangeEvent* e)
+/*public*/ void Routes::propertyChange(PropertyChangeEvent* e)
 {
  if (e->getPropertyName()==("state"))
  {
@@ -4205,42 +4013,42 @@ void ThroughPaths::setTurnoutList(QList<LayoutTrackExpectedState<LayoutTurnout*>
   pathActive=allset;
  }
 }
-void ThroughPaths::handlePropertyChange(QString propertyName, Turnout* source, int newVal)
-{
- if (propertyName==("KnownState"))
- {
-  Turnout* srcTurnout = (Turnout*) source;
-  //int newVal =  e->getNewValue().toInt();
-  int values = _turnouts.value(srcTurnout);
-  bool allset=false;
-  pathActive=false;
-  if (newVal==values)
-  {
-   allset=true;
-   if (_turnouts.size()>1)
-   {
-    //Enumeration<Turnout> en = _turnouts->keys();
-    QHashIterator<Turnout*, int> en(_turnouts);
-    while (en.hasNext())
-    {
-     en.next();
-     Turnout* listTurnout = en.key();
-     if (srcTurnout!=listTurnout)
-     {
-      int state = listTurnout->getState();
-      int required = _turnouts.value(listTurnout);
-      if (state!=required)
-      {
-       allset=false;
-      }
-     }
-    }
-   }
-  }
-  parent->updateActiveThroughPaths(this, allset);
-  pathActive=allset;
- }
-}
+//void ThroughPaths::handlePropertyChange(QString propertyName, Turnout* source, int newVal)
+//{
+// if (propertyName==("KnownState"))
+// {
+//  Turnout* srcTurnout = (Turnout*) source;
+//  //int newVal =  e->getNewValue().toInt();
+//  int values = _turnouts.value(srcTurnout);
+//  bool allset=false;
+//  pathActive=false;
+//  if (newVal==values)
+//  {
+//   allset=true;
+//   if (_turnouts.size()>1)
+//   {
+//    //Enumeration<Turnout> en = _turnouts->keys();
+//    QHashIterator<Turnout*, int> en(_turnouts);
+//    while (en.hasNext())
+//    {
+//     en.next();
+//     Turnout* listTurnout = en.key();
+//     if (srcTurnout!=listTurnout)
+//     {
+//      int state = listTurnout->getState();
+//      int required = _turnouts.value(listTurnout);
+//      if (state!=required)
+//      {
+//       allset=false;
+//      }
+//     }
+//    }
+//   }
+//  }
+//  parent->updateActiveThroughPaths(this, allset);
+//  pathActive=allset;
+// }
+//}
 
 //}; // end ThroughPaths
 
@@ -4499,6 +4307,7 @@ BeanItemPanel* LayoutBlockEditAction::layoutDetails()
     bei.append(layout);
     return layout;
 }
+
 BeanItemPanel* LayoutBlockEditAction::blockRoutingDetails() {
     BeanItemPanel* routing = new BeanItemPanel();
     routing->setName("Routing");
@@ -4579,7 +4388,8 @@ BeanItemPanel* LayoutBlockEditAction::blockRoutingDetails() {
     return routing;
 }
 
-/*public*/ void LayoutSetSaveItemListener::actionPerformed() {
+/*public*/ void LayoutSetSaveItemListener::actionPerformed(JActionEvent*) {
+#if 0
     bool needsRedraw = false;
     int k = lb->senseBox->currentIndex();
     int oldSense = lb->occupiedSense;
@@ -4636,9 +4446,47 @@ BeanItemPanel* LayoutBlockEditAction::blockRoutingDetails() {
     if (needsRedraw) {
         lb->redrawLayoutBlockPanels();
     }
+#else
+ int m = lb->metricField->text().trimmed().toInt();
+  if (m != lb->metric) {
+      lb->setBlockMetric(m);
+  }
+  lb->block->setPermissiveWorking(lb->permissiveCheck->isChecked());
+  if (!lb->neighbourDir .isEmpty()) {
+      for (int i = 0; i < lb->neighbourDir.size(); i++) {
+          int neigh = lb->neighbourDir.at(i)->getSelectedIndex();
+          lb->neighbours->at(i)->getBlock()->removeBlockDenyList(lb->block);
+          lb->block->removeBlockDenyList(lb->neighbours->at(i)->getBlock());
+          switch (neigh) {
+              case 0: {
+                  lb->updateNeighbourPacketFlow(lb->neighbours->at(i), lb->RXTX);
+                  break;
+              }
+
+              case 1: {
+                  lb->neighbours->at(i)->getBlock()->addBlockDenyList(lb->block->getDisplayName());
+                  lb->updateNeighbourPacketFlow(lb->neighbours->at(i), lb->TXONLY);
+                  break;
+              }
+
+              case 2: {
+                  lb->block->addBlockDenyList(lb->neighbours->at(i)->getBlock()->getDisplayName());
+                  lb->updateNeighbourPacketFlow(lb->neighbours->at(i), lb->RXONLY);
+                  break;
+              }
+
+              default: {
+                  break;
+              }
+          }
+          /* switch */
+      }
+  }
+
+#endif
 }
 
-/*public*/ void LayoutSetResetItemListener::actionPerformed() {
+/*public*/ void LayoutSetResetItemListener::actionPerformed(JActionEvent*) {
     lb->memoryComboBox->setSelectedItem(lb->getMemory());
     lb->trackColorChooser->setColor(lb->blockTrackColor);
     lb->occupiedColorChooser->setColor(lb->blockOccupiedColor);
@@ -4651,7 +4499,7 @@ BeanItemPanel* LayoutBlockEditAction::blockRoutingDetails() {
 }
 
 
-void RoutingSetResetItemListener::actionPerformed()
+void RoutingSetResetItemListener::actionPerformed(JActionEvent *)
 {
     lb->metricField->setText(QString::number(lb->metric));
     for (int i = 0; i < lb->getNumberOfNeighbours(); i++) {
@@ -4668,7 +4516,7 @@ void RoutingSetResetItemListener::actionPerformed()
 }
 
 
-void RoutingSetSaveItemListener::actionPerformed()
+void RoutingSetSaveItemListener::actionPerformed(JActionEvent *)
 {
  int m = (lb->metricField->text().trimmed().toInt());
  if (m != lb->metric) {
@@ -4706,4 +4554,31 @@ void RoutingSetSaveItemListener::actionPerformed()
          /* switch */
      }
  }
+}
+
+//@Override
+/*public*/ QList<NamedBeanUsageReport*> LayoutBlock::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+    if (bean != nullptr) {
+        if (bean->equals(getBlock())) {
+            report.append(new NamedBeanUsageReport("LayoutBlockBlock"));  // NOI18N
+        }
+        if (bean->equals(getMemory())) {
+            report.append(new NamedBeanUsageReport("LayoutBlockMemory"));  // NOI18N
+        }
+        if (bean->equals(getOccupancySensor())) {
+            report.append(new NamedBeanUsageReport("LayoutBlockSensor"));  // NOI18N
+        }
+        for (int i = 0; i < getNumberOfNeighbours(); i++) {
+            if (bean->equals(getNeighbourAtIndex(i))) {
+                report.append(new NamedBeanUsageReport("LayoutBlockNeighbor", "Neighbor"));  // NOI18N
+            }
+        }
+    }
+    return report;
+}
+
+//@Override
+/*public*/ QString LayoutBlock::getBeanType() {
+    return tr("LayoutBlock");
 }

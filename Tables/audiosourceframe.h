@@ -5,7 +5,7 @@
 class QComboBox;
 class QSpinBox;
 class QCheckBox;
-class ActionEvent;
+class JActionEvent;
 class AudioTableDataModel;
 class Audio;
 class QLabel;
@@ -24,7 +24,7 @@ public:
 signals:
 
 public slots:
- void okPressed(ActionEvent* e = 0);
+ void okPressed(JActionEvent* e = 0);
  void On_loopMin_valueChanged();
  void On_loopMax_valueChanged();
  void On_loopInfinite_toggled();

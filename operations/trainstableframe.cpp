@@ -9,7 +9,7 @@
 #include <QBoxLayout>
 #include "jtable.h"
 #include <QLabel>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QCheckBox>
 #include <QComboBox>
 #include <QRadioButton>
@@ -49,6 +49,8 @@
 #endif
 #include "exporttrainrosteraction.h"
 #include "setupexcelprogramframeaction.h"
+#include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -77,11 +79,11 @@ namespace Operations
   //super();
   setObjectName("TrainsTableFrame");
   log = new Logger("TrainsTableFrame");
-  carManagerXml = CarManagerXml::instance(); // load cars
-  engineManagerXml = EngineManagerXml::instance(); // load engines
-  trainManager = TrainManager::instance();
-  trainManagerXml = TrainManagerXml::instance();
-  locationManager = LocationManager::instance();
+  carManagerXml = ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml")); // load cars
+  engineManagerXml = ((EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml")); // load engines
+  trainManager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
+  trainManagerXml = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"));
+  locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
 
   // labels
   numTrains = new QLabel();
@@ -98,14 +100,14 @@ namespace Operations
   conductorRB = new QRadioButton(CONDUCTOR);
 
   // major buttons
-  addButton = new QPushButton(tr("Add"));
-  buildButton = new QPushButton(tr("Build"));
-  printButton = new QPushButton(tr("Print"));
-  openFileButton = new QPushButton(tr("OpenFile"));
-  runFileButton = new QPushButton(tr("RunFile"));
-  switchListsButton = new QPushButton(tr("SwitchLists"));
-  terminateButton = new QPushButton(tr("Terminate"));
-  saveButton = new QPushButton(tr("SaveBuilds"));
+  addButton = new JButton(tr("Add"));
+  buildButton = new JButton(tr("Build"));
+  printButton = new JButton(tr("Print"));
+  openFileButton = new JButton(tr("OpenFile"));
+  runFileButton = new JButton(tr("RunFile"));
+  switchListsButton = new JButton(tr("SwitchLists"));
+  terminateButton = new JButton(tr("Terminate"));
+  saveButton = new JButton(tr("SaveBuilds"));
 
   // check boxes
   buildMsgBox = new QCheckBox(tr("BuildMessages"));
@@ -144,20 +146,16 @@ namespace Operations
   QWidget* cp1 = new QWidget();
   cp1->setLayout(new QVBoxLayout);//(cp1, BoxLayout.X_AXIS));
 
-  QGroupBox* show = new QGroupBox();
+  JPanel* show = new JPanel();
   show->setLayout(new QHBoxLayout);
-  show->setStyleSheet(gbStyleSheet);
-  show->setTitle(tr("Click to sort"));
-  //show.setBorder(BorderFactory.createTitledBorder(tr("ShowClickToSort")));
+  show->setBorder(BorderFactory::createTitledBorder(tr("Click to sort")));
   show->layout()->addWidget(showTime);
   show->layout()->addWidget(showId);
 
 
-  QGroupBox* options = new QGroupBox();
-  //options.setBorder(BorderFactory.createTitledBorder(tr("Options")));
+  JPanel* options = new JPanel();
   options->setLayout(new FlowLayout);
-  options->setStyleSheet(gbStyleSheet);
-  options->setTitle(tr("Options"));
+  options->setBorder(BorderFactory::createTitledBorder(tr("Options")));
   options->layout()->addWidget(showAllBox);
   options->layout()->addWidget(buildMsgBox);
   options->layout()->addWidget(buildReportBox);
@@ -165,11 +163,9 @@ namespace Operations
   options->layout()->addWidget(openFileBox);
   options->layout()->addWidget(runFileBox);
 
-  QGroupBox* action = new QGroupBox();
-  //action.setBorder(BorderFactory.createTitledBorder(tr("Action")));
+  JPanel* action = new JPanel();
   action->setLayout(new FlowLayout);
-  action->setStyleSheet(gbStyleSheet);
-  action->setTitle(tr("Action"));
+  action->setBorder(BorderFactory::createTitledBorder(tr("Action")));
   action->layout()->addWidget(moveRB);
   action->layout()->addWidget(conductorRB);
   action->layout()->addWidget(terminateRB);
@@ -199,11 +195,9 @@ namespace Operations
   resetRB->setToolTip(tr("When selected, show Reset button for train"));
 
   // row 2
-  QGroupBox* addTrain = new QGroupBox();
-  //addTrain.setBorder(BorderFactory.createTitledBorder(""));
+  JPanel* addTrain = new JPanel();
   addTrain->setLayout(new QHBoxLayout);
-  addTrain->setStyleSheet(gbStyleSheet);
-  //addTrain->setTitle(tr("Options"));
+  addTrain->setBorder(BorderFactory::createTitledBorder(""));
   addTrain->layout()->addWidget(numTrains);
   addTrain->layout()->addWidget(textTrains);
   addTrain->layout()->addWidget(textSep1);
@@ -211,11 +205,9 @@ namespace Operations
 
   numTrains->setText(QString::number(trainManager->getNumEntries()));
 
-  QWidget* select = new QGroupBox();
-  //select.setBorder(BorderFactory.createTitledBorder(""));
+  JPanel* select = new JPanel();
   select->setLayout(new QHBoxLayout);
-  select->setStyleSheet(gbStyleSheet);
-  //select->setTitle(tr("Options"));
+  select->setBorder(BorderFactory::createTitledBorder(""));
   select->layout()->addWidget(buildButton);
   select->layout()->addWidget(printButton);
   select->layout()->addWidget(openFileButton);
@@ -301,11 +293,11 @@ namespace Operations
   QMenuBar* menuBar = new QMenuBar();
   QMenu* toolMenu = new QMenu(tr("Tools"));
 
-  toolMenu->addAction(new OptionAction(tr("Options"), this));
+  toolMenu->addAction(new OptionAction(this));
   toolMenu->addAction(new PrintOptionAction(this));
   toolMenu->addAction(new BuildReportOptionAction(this));
   toolMenu->addAction(new TrainsByCarTypeAction(tr("Modify Trains by Car Type"),this));
-  toolMenu->addAction(new TrainByCarTypeAction(tr("Show Car Types"), NULL, this));
+  toolMenu->addAction(new TrainByCarTypeAction(NULL, this));
   toolMenu->addAction(new ChangeDepartureTimesAction(tr("Change Departure Time"),this));
   toolMenu->addAction(new TrainsTableSetColorAction(this));
   toolMenu->addAction(new TrainsScheduleAction(tr("TimeTable"),this));
@@ -331,8 +323,7 @@ namespace Operations
   //addHorizontalScrollBarKludgeFix(controlPane, controlPanel);
 
   // listen for timetable changes
-  //trainManager.addPropertyChangeListener(this);
-  connect(trainManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+  trainManager->addPropertyChangeListener(this);
   //SetupaddPropertyChangeListener(this);
   // listen for location switch list changes
   addPropertyChangeLocations();
@@ -369,7 +360,7 @@ namespace Operations
  // add, build, print, switch lists, terminate, and save buttons
  /*public*/ void TrainsTableFrame::buttonActionPerformed(QWidget* ae)
  {
-  QPushButton* source = (QPushButton*)ae;
+  JButton* source = (JButton*)ae;
   // log->debug("train button activated");
 
   if (source == addButton)
@@ -491,7 +482,7 @@ namespace Operations
  {
   QList<Train*> sysList;
   QString sortBy = getSortBy();
-  if (sortBy==(TrainsTableModel::IDCOLUMNNAME)) {
+  if (sortBy==(TrainsTableModel::ID_COLUMN)) {
       sysList = trainManager->getTrainsByIdList();
   } else if (sortBy==(TrainsTableModel::TIMECOLUMNNAME)) {
       sysList = trainManager->getTrainsByTimeList();
@@ -560,7 +551,7 @@ namespace Operations
 
  /*private*/ void TrainsTableFrame::updateTitle() {
      QString title = tr("Trains Table");
-     TrainSchedule* sch = TrainScheduleManager::instance()->getScheduleById(trainManager->getTrainScheduleActiveId());
+     TrainSchedule* sch = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getActiveSchedule();
      if (sch != NULL) {
          title = title + " (" + sch->getName() + ")";
      }
@@ -591,8 +582,7 @@ namespace Operations
  /*private*/ /*synchronized*/ void TrainsTableFrame::addPropertyChangeLocations() {
      QList<Location*> locations = locationManager->getList();
      foreach (Location* location, locations) {
-         //location.addPropertyChangeListener(this);
-      connect(location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+      location->SwingPropertyChangeSupport::addPropertyChangeListener(this);
 
      }
  }
@@ -600,8 +590,7 @@ namespace Operations
  /*private*/ /*synchronized*/ void TrainsTableFrame::removePropertyChangeLocations() {
      QList<Location*> locations = locationManager->getList();
      foreach (Location* location, locations) {
-         //location.removePropertyChangeListener(this);
-      disconnect(location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+      location->removePropertyChangeListener(this);
      }
  }
 
@@ -613,8 +602,7 @@ namespace Operations
       */
      trainsModel->dispose();
      trainManager->runShutDownScripts();
-     //trainManager.removePropertyChangeListener(this);
-     disconnect(trainManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     trainManager->removePropertyChangeListener(this);
      //Setup.removePropertyChangeListener(this);
      removePropertyChangeLocations();
      OperationsFrame::dispose();

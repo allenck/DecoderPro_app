@@ -6,14 +6,14 @@
 #include "jcombobox.h"
 #include <QBoxLayout>
 #include <gridbaglayout.h>
-#include <QGroupBox>
 #include "route.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include "control.h"
 #include "logger.h"
 #include "vptr.h"
 #include <QMessageBox>
 #include "routeeditframe.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -32,10 +32,10 @@ namespace Operations
  //private static final long serialVersionUID = 4478401682355496019L;
 
 
- /*public*/ RouteCopyFrame::RouteCopyFrame(QWidget* parent) : OperationsFrame(tr("Copy Route"),parent) {
+ /*public*/ RouteCopyFrame::RouteCopyFrame(Route* route, QWidget* parent) : OperationsFrame(tr("Copy Route"),parent) {
      //super(tr("TitleRouteCopy"));
  log = new Logger("RouteCopyFrame");
- routeManager = RouteManager::instance();
+ routeManager = ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"));
 
   // labels
   textCopyRoute = new QLabel(tr("Copy Route"));
@@ -48,17 +48,17 @@ namespace Operations
   invertCheckBox = new QCheckBox(tr("Invert"));
 
   // major buttons
-  copyButton = new QPushButton(tr("Copy"));
+  copyButton = new JButton(tr("Copy"));
 
   // combo boxes
-  routeBox = RouteManager::instance()->getComboBox();
+  routeBox = ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"))->getComboBox();
   // general GUI config
 
   //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
   QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
   // Set up the panels
-  QWidget* p1 = new QWidget();
+  JPanel* p1 = new JPanel();
   p1->setLayout(new GridBagLayout());
 
   // Layout the panel by rows
@@ -83,6 +83,10 @@ namespace Operations
 
   // setup buttons
   addButtonAction(copyButton);
+
+  QVariant rv = VPtr<Route>::asQVariant(route);
+  routeBox->setSelectedItem(rv);
+
  }
 
  /*public*/ void RouteCopyFrame::setRouteName(QString routeName) {
@@ -90,7 +94,7 @@ namespace Operations
  }
 
  /*public*/ void RouteCopyFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == copyButton) {
          log->debug("copy route button activated");
          if (!checkName()) {

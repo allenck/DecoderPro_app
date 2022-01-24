@@ -1,5 +1,5 @@
 #include "layoutsingleslipview.h"
-
+#include "layoutsingleslipeditor.h"
 /**
  * MVC View component for the LayoutSingleSlip class.
  *
@@ -12,9 +12,12 @@
      * Constructor method.
      * @param slip the slip to create view for.
      */
-    /*public*/ LayoutSingleSlipView::LayoutSingleSlipView(/*@Nonnull*/ LayoutSingleSlip* slip) : LayoutSlipView(slip) {
-        //super(slip);
+     /*public*/ LayoutSingleSlipView::LayoutSingleSlipView(/*@Nonnull*/ LayoutSingleSlip* slip, QPointF c, double rot, /*@Nonnull*/ LayoutEditor* layoutEditor) : LayoutSlipView(slip, c, rot, layoutEditor) {
+        //super(slip, c, rot, layoutEditor);
         // this.slip = slip;
+
+        editor = new LayoutSingleSlipEditor(layoutEditor);
+
     }
 
     // final private LayoutSingleSlip slip;

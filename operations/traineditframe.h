@@ -43,10 +43,10 @@ namespace Operations
   QList<QCheckBox*> typeCarCheckBoxes;//= new ArrayList<JCheckBox>();
   QList<QCheckBox*> typeEngineCheckBoxes;//= new ArrayList<JCheckBox>();
   QList<QCheckBox*> locationCheckBoxes;//= new ArrayList<JCheckBox>();
-  QWidget* typeCarPanelCheckBoxes;//= new JPanel();
-  QWidget* typeEnginePanelCheckBoxes;//= new JPanel();
-  QWidget* roadAndLoadStatusPanel;//= new JPanel();
-  QWidget* locationPanelCheckBoxes;//= new JPanel();
+  JPanel* typeCarPanelCheckBoxes;//= new JPanel();
+  JPanel* typeEnginePanelCheckBoxes;//= new JPanel();
+  JPanel* roadAndLoadStatusPanel;//= new JPanel();
+  JPanel* locationPanelCheckBoxes;//= new JPanel();
   QScrollArea* typeCarPane;
   QScrollArea* typeEnginePane;
   QScrollArea* locationsPane;
@@ -61,13 +61,13 @@ namespace Operations
   QLabel* textEngine;//= new JLabel(Bundle.getMessage("Engines"));
 
   // major buttons
-  QPushButton* editButton;//= new JButton(Bundle.getMessage("Edit"));	// edit route
-  QPushButton* clearButton;//= new JButton(Bundle.getMessage("Clear"));
-  QPushButton* setButton;//= new JButton(Bundle.getMessage("Select"));
-  QPushButton* resetButton;//= new JButton(Bundle.getMessage("ResetTrain"));
-  QPushButton* saveTrainButton;//= new JButton(Bundle.getMessage("SaveTrain"));
-  QPushButton* deleteTrainButton;//= new JButton(Bundle.getMessage("DeleteTrain"));
-  QPushButton* addTrainButton;//= new JButton(Bundle.getMessage("AddTrain"));
+  JButton* editButton;//= new JButton(Bundle.getMessage("Edit"));	// edit route
+  JButton* clearButton;//= new JButton(Bundle.getMessage("Clear"));
+  JButton* setButton;//= new JButton(Bundle.getMessage("Select"));
+  JButton* resetButton;//= new JButton(Bundle.getMessage("ResetTrain"));
+  JButton* saveTrainButton;//= new JButton(Bundle.getMessage("SaveTrain"));
+  JButton* deleteTrainButton;//= new JButton(Bundle.getMessage("DeleteTrain"));
+  JButton* addTrainButton;//= new JButton(Bundle.getMessage("AddTrain"));
 
   // radio buttons
   QRadioButton* noneRadioButton;//= new JRadioButton(Bundle.getMessage("None"));
@@ -108,8 +108,6 @@ namespace Operations
   RouteEditFrame* ref;
   /*private*/ void enableCheckboxes(bool enable);
   /*private*/ void addLocationCheckBoxAction(QCheckBox* b);
-  QSignalMapper* boxMapper;
-  QSignalMapper* typeCheckBoxMapper;
   Logger*log;
   /*private*/ void updateRoadAndLoadStatus();
   /*private*/ void updateRouteComboBox();

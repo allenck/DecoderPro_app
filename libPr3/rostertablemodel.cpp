@@ -370,7 +370,7 @@ ImageIcon* RosterTableModel::getIcon(RosterEntry* re)
     this->rosterGroup = rosterGroup;
     foreach (RosterEntry* re, Roster::getDefault()->getEntriesInGroup(rosterGroup))
     {
-        //re->addPropertyChangeListener(this);
+        //re->SwingPropertyChangeSupport::addPropertyChangeListener(this);
      connect(re, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
     fireTableDataChanged();

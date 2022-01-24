@@ -16,7 +16,7 @@ public:
     Q_INVOKABLE/*public*/ void tearDown();
 public slots:
     /*public*/ void testProfileWithExtension();
-    /*public*/ void testSave() throw (IOException);
+    /*public*/ void testSave() /*throw (IOException)*/;
     /*public*/ void testGetName();
     /*public*/ void testSetName();
     /*public*/ void testGetId();

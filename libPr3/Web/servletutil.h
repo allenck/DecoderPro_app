@@ -21,11 +21,11 @@ public:
  /*public*/ static /*final*/ QString UTF8_APPLICATION_XML;// = APPLICATION_XML + "; charset=utf-8"; // NOI18N
  /*public*/ static /*final*/ QString UTF8_TEXT_HTML;// = TEXT_HTML + "; charset=utf-8"; // NOI18N
  /*public*/ QString getRailroadName(bool inComments);
- /*public*/ QString getFooter(QLocale locale, QString context) throw (IOException);
- /*public*/ QString getNavBar(QLocale locale, QString context) throw (IOException);
+ /*public*/ QString getFooter(QLocale locale, QString context) /*throw (IOException)*/;
+ /*public*/ QString getNavBar(QLocale locale, QString context) /*throw (IOException)*/;
  /*public*/ static ServletUtil* getInstance();
  /*public*/ void setNonCachingHeaders(HttpServletResponse* response);
- /*public*/ void writeFile(HttpServletResponse* response, File* file, QString contentType) throw (IOException);
+ /*public*/ void writeFile(HttpServletResponse* response, File* file, QString contentType) /*throw (IOException)*/;
  /*public*/ QString getTitle(QLocale locale, QString title);
 
 

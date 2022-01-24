@@ -2,7 +2,7 @@
 #include "treemodel.h"
 #include "treeselectionmodel.h"
 #include "treeselectionevent.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "defaultmutabletreenode.h"
 #include "vptr.h"
 #include <QDebug>
@@ -75,7 +75,7 @@ void JTree::common()
  selectionModel = new DefaultTreeSelectionModel();
  tree = NULL;
  rootVisible = true;
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
  expandedStack =  QStack<QStack<TreePath*> >();
  expandedState = QHash<TreePath*, bool>();
  listenerList = new EventListenerList();
@@ -149,7 +149,7 @@ void JTree::setExpandsSelectedPaths(bool newValue )
      {
       fireTreeWillExpand(parentPath);
      }
-     catch (ExpandVetoException eve) {
+     catch (ExpandVetoException* eve) {
       // Expand vetoed!
       return;
      }
@@ -162,7 +162,7 @@ void JTree::setExpandsSelectedPaths(bool newValue )
     }
    }
   }
-  catch(Exception ex) {}
+  catch(Exception* ex) {}
   /*finally*/ {
       if (expandedStack.size() < TEMP_STACK_SIZE) {
           stack.clear();
@@ -177,7 +177,7 @@ void JTree::setExpandsSelectedPaths(bool newValue )
           try {
               fireTreeWillCollapse(path);
           }
-          catch (ExpandVetoException eve) {
+          catch (ExpandVetoException* eve) {
               return;
           }
           expandedState.insert(path, false);
@@ -201,7 +201,7 @@ void JTree::setExpandsSelectedPaths(bool newValue )
           try {
               fireTreeWillExpand(path);
           }
-          catch (ExpandVetoException eve) {
+          catch (ExpandVetoException* eve) {
               return;
           }
           expandedState.insert(path, true);
@@ -480,7 +480,7 @@ void JTree::on_clicked(QModelIndex index)
  *          expanded
  * @see EventListenerList
  */
-/*public*/ void JTree::fireTreeWillCollapse(TreePath* path) throw (ExpandVetoException)
+/*public*/ void JTree::fireTreeWillCollapse(TreePath* path) /*throw (ExpandVetoException)*/
 {
     // Guaranteed to return a non-NULL array
     //Object[] listeners = listenerList.getListenerList();
@@ -507,7 +507,7 @@ void JTree::on_clicked(QModelIndex index)
  *          expanded
  * @see EventListenerList
  */
- /*public*/ void JTree::fireTreeWillExpand(TreePath* path) throw (ExpandVetoException) {
+ /*public*/ void JTree::fireTreeWillExpand(TreePath* path) /*throw (ExpandVetoException)*/ {
     // Guaranteed to return a non-NULL array
     //Object[] listeners = listenerList.getListenerList();
     TreeExpansionEvent* e = NULL;

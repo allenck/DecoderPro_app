@@ -11,6 +11,7 @@ ThrottlesTableModel::ThrottlesTableModel(QObject *parent) :
 {
  throttleFrames =  QList<ThrottleWindow*>(/*5*/);
 }
+
 // /*public*/ class ThrottlesTableModel extends AbstractTableModel implements AddressListener, java.beans.PropertyChangeListener {
 
 /*public*/ int ThrottlesTableModel::rowCount(const QModelIndex& /*index*/) const
@@ -47,18 +48,20 @@ ThrottlesTableModel::ThrottlesTableModel(QObject *parent) :
  beginInsertRows(QModelIndex(), throttleFrames.count(), throttleFrames.count());
  throttleFrames.append(tf);
  endInsertRows();
-    fireTableDataChanged();
+ fireTableDataChanged();
 }
 
 /*public*/ void ThrottlesTableModel::removeThrottleFrame(ThrottleWindow* tf, DccLocoAddress* la)
 {
  int row = throttleFrames.indexOf(tf);
+ if(row < 0)
+  return;
  beginRemoveRows(QModelIndex(), row, row);
  throttleFrames.removeAt(row);
  endRemoveRows();
- setPersistentButtons();
+ //setPersistentButtons();
  if(la!=NULL)
-        ((AbstractThrottleManager*)InstanceManager::throttleManagerInstance())->removeListener(la, (PropertyChangeListener*)this);
+   ((AbstractThrottleManager*)InstanceManager::throttleManagerInstance())->removeListener(la, (PropertyChangeListener*)this);
 }
 
 /*public*/ void ThrottlesTableModel::notifyAddressChosen(LocoAddress* la) {
@@ -72,7 +75,7 @@ ThrottlesTableModel::ThrottlesTableModel(QObject *parent) :
 
 /*public*/ void ThrottlesTableModel::notifyAddressThrottleFound(DccThrottle* throttle) {
     fireTableDataChanged();
-    //throttle->addPropertyChangeListener((PropertyChangeListener*)this);
+    //throttle->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
     connect((AbstractThrottle*)throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
 }

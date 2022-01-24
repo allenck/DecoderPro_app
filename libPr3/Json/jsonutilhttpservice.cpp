@@ -25,7 +25,7 @@
 }
 
 //@Override
-/*public*/ QJsonValue JsonUtilHttpService::doGet(QString type, QString name, QLocale locale) throw (JsonException)
+/*public*/ QJsonValue JsonUtilHttpService::doGet(QString type, QString name, QLocale locale) /*throw (JsonException)*/
 {
  if(type == JSON::HELLO)
  {
@@ -64,11 +64,11 @@
   return QJsonValue(this->getSystemConnections(locale));
  }
  else
-  throw JsonException(HttpServletResponse::SC_INTERNAL_SERVER_ERROR, tr(/*locale,*/ "Unknown object type %1 was requested.").arg(type));
+  throw new JsonException(HttpServletResponse::SC_INTERNAL_SERVER_ERROR, tr(/*locale,*/ "Unknown object type %1 was requested.").arg(type));
 }
 
 //@Override
-/*public*/ QJsonValue JsonUtilHttpService::doGetList(QString type, QLocale locale) throw (JsonException) {
+/*public*/ QJsonValue JsonUtilHttpService::doGetList(QString type, QLocale locale) /*throw (JsonException)*/ {
  if(type == JSON::METADATA)
  {
   return QJsonValue(this->getMetadata(locale));
@@ -88,7 +88,7 @@
 }
 
 //@Override
-/*public*/ QJsonObject JsonUtilHttpService::doPost(QString type, QString name, QJsonObject /*data*/, QLocale locale) throw (JsonException) {
+/*public*/ QJsonObject JsonUtilHttpService::doPost(QString type, QString name, QJsonObject /*data*/, QLocale locale) /*throw (JsonException)*/ {
     return this->doGet(type, name, locale).toObject();
 }
 
@@ -123,7 +123,7 @@
  * @return JSON metadata element.
  * @throws JsonException if name is not a recognized metadata element.
  */
-/*public*/ QJsonObject JsonUtilHttpService::getMetadata(QLocale /*locale*/, QString name) throw (JsonException) {
+/*public*/ QJsonObject JsonUtilHttpService::getMetadata(QLocale /*locale*/, QString name) /*throw (JsonException)*/ {
     QString metadata = Metadata::getBySystemName(name);
     QJsonObject root = QJsonObject();
     if (metadata != NULL) {
@@ -135,7 +135,7 @@
         data.insert(JSON::VALUE, Metadata::getBySystemName(name));
         root.insert(JSON::DATA, data);
     } else {
-        throw JsonException(404, tr(/*locale,*/ "Unknown object type %1 was requested.").arg(JSON::METADATA, name));
+        throw new JsonException(404, tr(/*locale,*/ "Unknown object type %1 was requested.").arg(JSON::METADATA, name));
     }
     return root;
 }
@@ -149,7 +149,7 @@
  * @throws JsonException if thrown by
  *                       {@link #getMetadata(java.util.Locale, java.lang.String)}.
  */
-/*public*/ QJsonArray JsonUtilHttpService::getMetadata(QLocale locale) throw (JsonException) {
+/*public*/ QJsonArray JsonUtilHttpService::getMetadata(QLocale locale) /*throw (JsonException)*/ {
     QJsonArray root = QJsonArray(); //mapper.createArrayNode();
     foreach (QString name, Metadata::getSystemNameList())
     {
@@ -168,13 +168,13 @@
  * @throws jmri.server.json.JsonException if type is not a running zeroconf
  *                                        networking protocol.
  */
-/*public*/ QJsonObject JsonUtilHttpService::getNetworkService(QLocale /*locale*/, QString /*name*/) throw (JsonException) {
+/*public*/ QJsonObject JsonUtilHttpService::getNetworkService(QLocale /*locale*/, QString /*name*/) /*throw (JsonException)*/ {
 //        for (ZeroConfService service : ZeroConfService.allServices()) {
 //            if (service.type().equals(name)) {
 //                return this->getNetworkService(service);
 //            }
 //        }
-//        throw JsonException(404, tr(locale, "ErrorObject", JSON::NETWORK_SERVICE, name));
+//        throw new JsonException(404, tr(locale, "ErrorObject", JSON::NETWORK_SERVICE, name));
 return QJsonObject();
 }
 #if 0

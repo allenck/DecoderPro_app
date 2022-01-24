@@ -52,7 +52,7 @@ void /*private*/ ProgrammerConfigPane::common()
  QVBoxLayout* advancedPanelLayout;
  advancedPanel->setLayout(advancedPanelLayout = new QVBoxLayout); //(advancedPanel, BoxLayout.Y_AXIS));
  advancedPanelLayout->addWidget(showEmptyTabs = new QCheckBox("Show empty tabs"));
- showEmptyTabs->setChecked(PaneProgFrame::getShowEmptyPanes());
+ showEmptyTabs->setChecked(PaneProgFrame::isShowingEmptyPanes());
  advancedPanelLayout->addWidget(ShowCvNums = new QCheckBox("Show CV numbers in tool tips"));
  ShowCvNums->setChecked(PaneProgFrame::getShowCvNumbers());
  thisLayout->addWidget(advancedPanel);
@@ -126,7 +126,7 @@ void /*private*/ ProgrammerConfigPane::common()
 
 //@Override
 /*public*/ bool ProgrammerConfigPane::isDirty() {
-    return (this->getShowEmptyTabs() != PaneProgFrame::getShowEmptyPanes()
+    return (this->getShowEmptyTabs() != PaneProgFrame::isShowingEmptyPanes()
             || this->getShowCvNums() != PaneProgFrame::getShowCvNumbers()
             || this->getSelectedItem()!=(ProgDefault::getDefaultProgFile()));
 }

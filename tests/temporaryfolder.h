@@ -13,8 +13,8 @@ public:
     explicit TemporaryFolder(QObject *parent = nullptr);
     /*public*/ TemporaryFolder(File* parentFolder,QObject *parent);
 
-    /*public*/ File* newFolder(QString folder) throw (IOException);
-    /*public*/ File* newFolder() throw (IOException);
+    /*public*/ File* newFolder(QString folder) /*throw (IOException)*/;
+    /*public*/ File* newFolder() /*throw (IOException)*/;
 
 signals:
 

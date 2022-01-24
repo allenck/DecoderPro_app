@@ -84,7 +84,7 @@
     jmss->connection->sendMessage(ex.getJsonMessage());
    }
   }
-  catch (IOException ex) {
+  catch (IOException* ex) {
       // if we get an error, de-register
       //memory.removePropertyChangeListener(this);
 disconnect(memory->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));

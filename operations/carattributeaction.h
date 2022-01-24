@@ -15,7 +15,7 @@ namespace Operations
  public:
   /*public*/ CarAttributeAction( CarAttributeEditFrame* caef);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* ae = 0);
+  /*public*/ void actionPerformed(JActionEvent* ae = 0);
 
  };
 }

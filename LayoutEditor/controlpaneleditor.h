@@ -141,7 +141,6 @@ protected:
 /*protected*/ Positionable* getCurrentSelection(QGraphicsSceneMouseEvent* event);
 /*protected*/ Positionable* getCopySelection(QGraphicsSceneMouseEvent* event);
 /*protected*/ void makeCircuitMenu();
-/*protected*/ void makeCircuitMenu(bool edit);
 /*protected*/ void disableMenus();
 /*protected*/ QList<Positionable*>* getSelectionGroup();
 /*protected*/ void highlight(Positionable* pos);
@@ -155,6 +154,8 @@ protected:
 /*protected*/ void setSelectionsRotation(int k, Positionable* p);
 /*protected*/ void showPopUp(Positionable* p, QGraphicsSceneMouseEvent* event);
 
+protected slots:
+ /*protected*/ void makeCircuitMenu(bool edit);
 
 friend class CircuitBuilder;
 friend class EditCircuitFrame;
@@ -169,29 +170,37 @@ friend class EPIconDragJLabel;
 };
 Q_DECLARE_METATYPE(ControlPanelEditor)
 
-class CPEditItemActionListener : public ActionListener
+class CPEditItemActionListener : public QObject, public ActionListener
 {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
     ControlPanelEditor* panelEd;
 public slots:
-    /*public*/ void actionPerformed(ActionEvent* e = 0);
+    /*public*/ void actionPerformed(JActionEvent* e = 0);
 public:
     CPEditItemActionListener* init(ControlPanelEditor* pe);
+    QObject* self() override {return (QObject*)this;}
+
 };
-class DuplicateActionListener : public ActionListener
+
+class DuplicateActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+  Q_INTERFACES(ActionListener)
  Positionable* comp;
  ControlPanelEditor* edit;
 public slots:
-    /*public*/ void actionPerformed(ActionEvent* e = 0);
+    /*public*/ void actionPerformed(JActionEvent* e = 0);
 public:
     DuplicateActionListener* init(Positionable* pos, ControlPanelEditor* edit);
+    QObject* self() override {return (QObject*)this;}
+
 };
 
-class CPEEditListener : public ActionListener
+class CPEEditListener : public QObject, public ActionListener
 {
   Q_OBJECT
+  Q_INTERFACES(ActionListener)
  ControlPanelEditor* edit;
  int type;
  QWidget* pos;
@@ -202,6 +211,8 @@ public:
   this->pos = pos;
   this->edit = edit;
  }
+ QObject* self() override {return (QObject*)this;}
+
 public slots:
  void actionPerformed() { new ColorDialog(edit, pos, type, nullptr);}
 };

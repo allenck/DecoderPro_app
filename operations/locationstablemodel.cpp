@@ -9,6 +9,7 @@
 #include "jtable.h"
 #include "QLabel"
 #include "pushbuttondelegate.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -27,7 +28,7 @@ namespace Operations
 
 
 
- /*private*/ /*static*/ /*final*/ int LocationsTableModel::HIGHESTCOLUMN = LocationsTableModel::EDITCOLUMN + 1;
+ /*private*/ /*static*/ /*final*/ int LocationsTableModel::HIGHEST_COLUMN = LocationsTableModel::EDIT_COLUMN + 1;
 
  /*public*/ LocationsTableModel::LocationsTableModel(QObject* parent) : AbstractTableModel(parent)
  {
@@ -35,9 +36,9 @@ namespace Operations
   log = new Logger("OperationsTableModel");
   _sort = SORTBYNAME;
 
-  locationManager = LocationManager::instance();
+  locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
   //locationManager.addPropertyChangeListener(this);
-  connect(locationManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   updateList();
  }
 
@@ -61,8 +62,7 @@ namespace Operations
      }
      // and add them back in
      foreach (Location* loc, locationsList) {
-         //loc.addPropertyChangeListener(this);
-      connect(loc->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      loc->SwingPropertyChangeSupport::addPropertyChangeListener(this);
      }
  }
 
@@ -74,7 +74,7 @@ namespace Operations
      TableColumnModel tcm = table.getColumnModel();
 #endif
      // Use XTableColumnModel so we can control which columns are visible
-     XTableColumnModel* tcm = new XTableColumnModel((AbstractTableModel*)table->model());
+     XTableColumnModel* tcm = new XTableColumnModel(/*(AbstractTableModel*)table->model()*/table);
      table->setColumnModel(tcm);
      table->createDefaultColumnsFromModel();
 #if 0
@@ -85,26 +85,29 @@ namespace Operations
      tcm.getColumn(EDITCOLUMN).setCellRenderer(buttonRenderer);
      tcm.getColumn(EDITCOLUMN).setCellEditor(buttonEditor);
 #endif
-     table->setItemDelegateForColumn(ACTIONCOLUMN, new MyDelegate());
-     table->setItemDelegateForColumn(EDITCOLUMN, new MyDelegate());
+     table->setItemDelegateForColumn(ACTION_COLUMN, new MyDelegate());
+     table->setItemDelegateForColumn(EDIT_COLUMN, new MyDelegate());
      // set column preferred widths
-     table->getColumnModel()->getColumn(IDCOLUMN)->setPreferredWidth(40);
-     table->getColumnModel()->getColumn(NAMECOLUMN)->setPreferredWidth(200);
-     table->getColumnModel()->getColumn(TRACKCOLUMN)->setPreferredWidth(
+     table->getColumnModel()->getColumn(ID_COLUMN)->setPreferredWidth(40);
+     table->getColumnModel()->getColumn(NAME_COLUMN)->setPreferredWidth(200);
+     table->getColumnModel()->getColumn(TRACK_COLUMN)->setPreferredWidth(
              qMax(60, QLabel(tr("Class/Interchange") + tr("Spurs")
                      + tr("Yards")).sizeHint().width() + 20));
-     table->getColumnModel()->getColumn(LENGTHCOLUMN)->setPreferredWidth(
-             qMax(60, QLabel(getColumnName(LENGTHCOLUMN)).sizeHint().width() + 10));
-     table->getColumnModel()->getColumn(USEDLENGTHCOLUMN)->setPreferredWidth(60);
-     table->getColumnModel()->getColumn(ROLLINGSTOCK)->setPreferredWidth(
-             qMax(80, QLabel(getColumnName(ROLLINGSTOCK)).sizeHint().width() + 10));
-     table->getColumnModel()->getColumn(PICKUPS)->setPreferredWidth(
-             qMax(60, QLabel(getColumnName(PICKUPS)).sizeHint().width() + 10));
-     table->getColumnModel()->getColumn(DROPS)->setPreferredWidth(
-             qMax(60, QLabel(getColumnName(DROPS)).sizeHint().width() + 10));
-     table->getColumnModel()->getColumn(ACTIONCOLUMN)->setPreferredWidth(
+     table->getColumnModel()->getColumn(NUMBER_COLUMN)->setPreferredWidth(40);
+     table->getColumnModel()->getColumn(LENGTH_COLUMN)->setPreferredWidth(
+             qMax(60, QLabel(getColumnName(LENGTH_COLUMN)).sizeHint().width() + 10));
+     table->getColumnModel()->getColumn(USED_LENGTH_COLUMN)->setPreferredWidth(60);
+     table->getColumnModel()->getColumn(ROLLINGSTOCK_COLUMN)->setPreferredWidth(
+             qMax(80, QLabel(getColumnName(ROLLINGSTOCK_COLUMN)).sizeHint().width() + 10));
+     table->getColumnModel()->getColumn(CARS_COLUMN)->setPreferredWidth(60);
+     table->getColumnModel()->getColumn(LOCOS_COLUMN)->setPreferredWidth(60);
+     table->getColumnModel()->getColumn(PICKUPS_COLUMN)->setPreferredWidth(
+             qMax(60, QLabel(getColumnName(PICKUPS_COLUMN)).sizeHint().width() + 10));
+     table->getColumnModel()->getColumn(DROPS_COLUMN)->setPreferredWidth(
+             qMax(60, QLabel(getColumnName(DROPS_COLUMN)).sizeHint().width() + 10));
+     table->getColumnModel()->getColumn(ACTION_COLUMN)->setPreferredWidth(
              qMax(80, QLabel(tr("Yardmaster")).sizeHint().width() + 40));
-     table->getColumnModel()->getColumn(EDITCOLUMN)->setPreferredWidth(80);
+     table->getColumnModel()->getColumn(EDIT_COLUMN)->setPreferredWidth(80);
 //     table->setMinimumHeight(table->rowHeight*5);
      // have to shut off autoResizeMode to get horizontal scroll to work (JavaSwing p 541)
 #if 0
@@ -119,7 +122,7 @@ namespace Operations
 
  /*public*/ int LocationsTableModel::columnCount(const QModelIndex &parent) const
  {
-     return HIGHESTCOLUMN;
+     return HIGHEST_COLUMN;
  }
 
  /*public*/ QVariant LocationsTableModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -127,26 +130,36 @@ namespace Operations
   if(role == Qt::DisplayRole && orientation == Qt::Horizontal)
   {
      switch (section) {
-         case IDCOLUMN:
+         case ID_COLUMN:
              return tr("Id");
-         case NAMECOLUMN:
+         case NAME_COLUMN:
              return tr("Name");
-         case TRACKCOLUMN:
+         case TRACK_COLUMN:
              return tr("Track");
-         case LENGTHCOLUMN:
+         case NUMBER_COLUMN:
+             return tr("Number");
+         case LENGTH_COLUMN:
              return tr("Length");
-         case USEDLENGTHCOLUMN:
+         case USED_LENGTH_COLUMN:
              return tr("Used");
-         case ROLLINGSTOCK:
+         case ROLLINGSTOCK_COLUMN:
              return tr("RollingStock");
-         case PICKUPS:
+         case LOCOS_COLUMN:
+             return tr("Engines");
+         case CARS_COLUMN:
+             return tr("Cars");
+         case PICKUPS_COLUMN:
              return tr("Pickups");
-         case DROPS:
+         case DROPS_COLUMN:
              return tr("Drop");
-         case ACTIONCOLUMN:
+         case ACTION_COLUMN:
              return tr("Action");
-         case EDITCOLUMN:
+         case EDIT_COLUMN:
              return tr("Edit"); // edit column
+         case DIVISION_COLUMN:
+             return tr("Division");
+         case REPORTER_COLUMN:
+             return tr("Reporters");
          default:
              return "unknown"; // NOI18N
      }
@@ -154,37 +167,36 @@ namespace Operations
   return QVariant();
  }
 
-// /*public*/ Class<?> getColumnClass(int col) {
-//     switch (col) {
-//         case IDCOLUMN:
-//             return String.class;
-//         case NAMECOLUMN:
-//             return String.class;
-//         case TRACKCOLUMN:
-//             return String.class;
-//         case LENGTHCOLUMN:
-//             return String.class;
-//         case USEDLENGTHCOLUMN:
-//             return String.class;
-//         case ROLLINGSTOCK:
-//             return String.class;
-//         case PICKUPS:
-//             return String.class;
-//         case DROPS:
-//             return String.class;
-//         case ACTIONCOLUMN:
-//             return JButton.class;
-//         case EDITCOLUMN:
-//             return JButton.class;
-//         default:
-//             return NULL;
-//     }
-// }
+ /*public*/ QString LocationsTableModel::getColumnClass(int col)const{
+     switch (col) {
+         case ID_COLUMN:
+         case NAME_COLUMN:
+         case TRACK_COLUMN:
+         case DIVISION_COLUMN:
+         case REPORTER_COLUMN:
+         case LENGTH_COLUMN:
+         case USED_LENGTH_COLUMN:
+         case ROLLINGSTOCK_COLUMN:
+         case LOCOS_COLUMN:
+         case CARS_COLUMN:
+             return "String";
+         case PICKUPS_COLUMN:
+             return "Integer";
+         case DROPS_COLUMN:
+             return "Integer";
+         case ACTION_COLUMN:
+             return "JButton";
+         case EDIT_COLUMN:
+             return "JButton";
+         default:
+             return NULL;
+     }
+ }
 
  /*public*/ Qt::ItemFlags LocationsTableModel::flags(const QModelIndex &index) const {
      switch (index.column()) {
-         case EDITCOLUMN:
-         case ACTIONCOLUMN:
+         case EDIT_COLUMN:
+         case ACTION_COLUMN:
              return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
          default:
              return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
@@ -198,33 +210,43 @@ namespace Operations
    int row = index.row();
    int col =index.column();
      if (row >= rowCount(QModelIndex())) {
-         return "ERROR row " + row; // NOI18N
+         return "ERROR row " + QString::number(row); // NOI18N
      }
      Location* l = locationsList.at(row);
      if (l == NULL) {
-         return "ERROR location unknown " + row; // NOI18N
+         return "ERROR location unknown " + QString::number(row); // NOI18N
      }
      switch (col) {
-         case IDCOLUMN:
+         case ID_COLUMN:
              return l->getId();
-         case NAMECOLUMN:
+         case NAME_COLUMN:
              return l->getName();
-         case TRACKCOLUMN:
+         case TRACK_COLUMN:
              return getTrackTypes(l);
-         case LENGTHCOLUMN:
+         case NUMBER_COLUMN:
+             return l->getTracksList().size();
+         case LENGTH_COLUMN:
              return (l->getLength());
-         case USEDLENGTHCOLUMN:
+         case USED_LENGTH_COLUMN:
              return (l->getUsedLength());
-         case ROLLINGSTOCK:
+         case ROLLINGSTOCK_COLUMN:
              return (l->getNumberRS());
-         case PICKUPS:
+         case LOCOS_COLUMN:
+             return l->getNumberEngines();
+         case CARS_COLUMN:
+             return l->getNumberCars();
+         case PICKUPS_COLUMN:
              return (l->getPickupRS());
-         case DROPS:
+         case DROPS_COLUMN:
              return (l->getDropRS());
-         case ACTIONCOLUMN:
+         case ACTION_COLUMN:
              return tr("Yardmaster");
-         case EDITCOLUMN:
+         case EDIT_COLUMN:
              return tr("Edit");
+         case DIVISION_COLUMN:
+             return l->getDivisionName();
+         case REPORTER_COLUMN:
+             return l->getReporterName();
          default:
              return "unknown " + col; // NOI18N
      }
@@ -257,10 +279,10 @@ namespace Operations
    int col = index.column();
    int row = index.row();
      switch (col) {
-         case ACTIONCOLUMN:
+         case ACTION_COLUMN:
              launchYardmaster(row);
              break;
-         case EDITCOLUMN:
+         case EDIT_COLUMN:
              editLocation(row);
              break;
          default:
@@ -328,8 +350,7 @@ namespace Operations
  /*private*/ /*synchronized*/ void LocationsTableModel::removePropertyChangeLocations() {
      if (!locationsList.isEmpty()) {
          foreach (Location* loc, locationsList) {
-             //loc.removePropertyChangeListener(this);
-          disconnect(loc->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          loc->removePropertyChangeListener(this);
          }
      }
  }
@@ -342,7 +363,7 @@ namespace Operations
          lef->dispose();
      }
      //locationManager.removePropertyChangeListener(this);
-     disconnect(locationManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      removePropertyChangeLocations();
  }
 

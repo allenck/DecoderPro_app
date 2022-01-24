@@ -54,7 +54,7 @@ void BlockPathTableModel::common()
 /*public*/ void BlockPathTableModel::init()
 {
  initTempRow();
- //_block->addPropertyChangeListener(this);
+ //_block->SwingPropertyChangeSupport::addPropertyChangeListener(this);
  connect(_block->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
@@ -65,7 +65,7 @@ void BlockPathTableModel::common()
  }
 //    try {
 //        _block->removePropertyChangeListener(this);
-//    } catch (NullPointerException npe) { // OK when block is removed
+//    } catch (NullPointerException* npe) { // OK when block is removed
 //    }
  disconnect(_block->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
@@ -269,7 +269,7 @@ void BlockPathTableModel::initTempRow()
        } else
        {
         initTempRow();
-        _parent->updateOpenMenu();
+        _parent->updateOBlockTablesMenu();
         fireTableDataChanged();
        }
       }
@@ -367,7 +367,7 @@ void BlockPathTableModel::initTempRow()
         }
        }
        portal->setFromBlock(_block, true);
-       _parent->getPortalModel()->fireTableDataChanged();
+       _parent->getPortalTableModel()->fireTableDataChanged();
       }
      }
      path->setFromPortal(portal);
@@ -436,7 +436,7 @@ void BlockPathTableModel::initTempRow()
         }
        }
        portal->setToBlock(_block, true);
-       _parent->getPortalModel()->fireTableDataChanged();
+       _parent->getPortalTableModel()->fireTableDataChanged();
       }
      }
      path->setToPortal(portal);

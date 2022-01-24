@@ -1,10 +1,10 @@
 #ifndef PISPROGNANOSERIALDRIVERADAPTER_H
 #define PISPROGNANOSERIALDRIVERADAPTER_H
-#include "serialdriveradapter.h"
+#include "sprogserialdriveradapter.h"
 
 namespace Sprog
 {
- class PiSprogNanoSerialDriverAdapter : public SerialDriverAdapter
+ class PiSprogNanoSerialDriverAdapter : public SprogSerialDriverAdapter
  {
  public:
   PiSprogNanoSerialDriverAdapter(QObject* parent);

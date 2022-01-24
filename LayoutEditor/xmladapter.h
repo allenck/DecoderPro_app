@@ -28,7 +28,7 @@ public:
      *          as required by the input XML.
      * @return true if successful
      */
-    /*public*/ virtual bool load(QDomElement /*e*/) throw (Exception) { return false;}
+    /*public*/ virtual bool load(QDomElement /*e*/) /*throw (Exception)*/ { return false;}
 
     /**
       * Create a set of configured objects from their XML description.
@@ -62,7 +62,7 @@ public:
      * @throws Exception when a error prevents creating the objects as
      *          as required by the input XML.
      */
-    /*public*/ virtual void load(QDomElement /*e*/, QObject* /*o*/) throw (Exception) {}
+  /*public*/ virtual void load(QDomElement /*e*/, QObject* /*o*/) /*throw (Exception)*/ {}
 
  /**
       * Create a set of configured objects from their XML description, using an
@@ -77,20 +77,20 @@ public:
       * @throws Exception when a error prevents creating the objects as as
       *                   required by the input XML.
       */
- /*public*/ virtual void load(QDomElement /*shared*/, QDomElement /*perNode*/, QObject* /*o*/) throw (JmriConfigureXmlException) {}
+ /*public*/ virtual void load(QDomElement /*shared*/, QDomElement /*perNode*/, QObject* /*o*/) /*throw (JmriConfigureXmlException)*/ {}
 
  /**
-     * Store the
-     * @param o The object to be recorded.  Specific XmlAdapter
-     *          implementations will require this to be of a specific
-     *          type; that binding is done in ConfigXmlManager.
-     * @return The XML representation QDomElement
-     */
-    /*public*/ virtual QDomElement store(QObject* o)
-    {
-     Q_UNUSED(o)
-     return QDomElement();
-    }
+ * Store the
+ * @param o The object to be recorded.  Specific XmlAdapter
+ *          implementations will require this to be of a specific
+ *          type; that binding is done in ConfigXmlManager.
+ * @return The XML representation QDomElement
+ */
+/*public*/ virtual QDomElement store(QObject* o)
+{
+ Q_UNUSED(o)
+ return QDomElement();
+}
 
 /**
   * Store the object in XML

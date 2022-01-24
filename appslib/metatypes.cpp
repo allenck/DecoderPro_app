@@ -21,6 +21,7 @@
 #include "simpletimebasexml.h"
 #include "layouteditorxml.h"
 #include "defaultroutemanagerxml.h"
+#include "defaultroutemanager.h"
 #include "simpletimebasexml.h"
 #include "sensoriconxml.h"
 #include "turnouticonxml.h"
@@ -29,11 +30,11 @@
 #include "multisensoriconxml.h"
 #include "positionablelabelxml.h"
 #include "activesystemsmenu.h"
-#include "tracksegmentxml.h"
+#include "tracksegmentviewxml.h"
 #include "signalmasticonxml.h"
-#include "layoutturnoutxml.h"
-#include "positionablepointxml.h"
-#include "levelxingxml.h"
+#include "layoutturnoutviewxml.h"
+#include "positionablepointviewxml.h"
+#include "levelxingviewxml.h"
 #include "virtualsignalheadxml.h"
 #include "turnoutsignalmastxml.h"
 #include "systemconsoleconfigpanelxml.h"
@@ -128,7 +129,7 @@
 #include "lnreportermanagerxml.h"
 #include "internalsensormanagerxml.h"
 #include "internallightmanagerxml.h"
-#include "layoutslipxml.h"
+#include "layoutslipviewxml.h"
 #include "layoutblockmanager.h"
 #include "blocktableaction.h"
 #include "importrosteritemaction.h"
@@ -170,7 +171,7 @@
 #include "sectionmanager.h"
 #include "configuremanager.h"
 #include "trainmanifesttext.h"
-#include "layoutturntablexml.h"
+#include "layoutturntableviewxml.h"
 #include "filehistory.h"
 #include "lighttabletabaction.h"
 #include "signalmasttableaction.h"
@@ -181,7 +182,6 @@
 #include "../libPr3/Signal/defaultsignalgroupmanager.h"
 #include "../libPr3/Signal/defaultsignalsystemmanager.h"
 #include "../libPr3/Signal/defaultsignalmastlogicmanager.h"
-#include "defaultroutemanager.h"
 #include "../libPr3/Signal/defaultsignalmastmanager.h"
 #include "signalmastlogictableaction.h"
 #include "transittableaction.h"
@@ -282,10 +282,7 @@
 #include "../libPr3/rfid/rfidreportermanagerxml.h"
 #include "../libPr3/rfid/rfidserialconnectionconfig.h"
 #include "../libPr3/rfid/rfidserialconnectionconfigxml.h"
-#include "operationssetupxml.h"
 #include "sensortabledatamodel.h"
-#include "enginemanager.h"
-#include "enginemanagerxml.h"
 #include "jmriclient/jmriclientconnectionconfigxml.h"
 #include "jmriclient/jmriclientconnectionconfig.h"
 #include "simpleserveraction.h"
@@ -327,6 +324,41 @@
 #include "webserverpreferences.h"
 #include "layoutshapexml.h"
 #include "editormanager.h"
+#include "meterframemanagerxml.h"
+#include "internalmetermanagerxml.h"
+#include "ctc/ctcmanager.h"
+#include "ctc/ctcmanagerxml.h"
+#include "ctc/ctcexceptionbuffer.h"
+#include "ctc/otherdata.h"
+#include "se8csignalheadxml.h"
+#include "turnoutoperationmanagerxml.h"
+#include "lncvprogpane.h"
+#include "decoderindexfile.h"
+#include "querycvdialog.h"
+#include "namedbeanhandlemanager.h"
+#include "catalogtreemodel.h"
+#include "tracksegmentviewxml.h"
+#include "slipturnouticonxml.h"
+#include "layoutdoublexoverviewxml.h"
+#include "layoutlhxoverviewxml.h"
+#include "layoutrhxoverviewxml.h"
+#include "jmrisrcpserver.h"
+#include "trackertableaction.h"
+#include "helputilpreferencespanel.h"
+#include "layoutdoubleslipviewxml.h"
+#include "layoutrhturnoutviewxml.h"
+#include "layoutlhturnoutviewxml.h"
+#include "layoutsingleslipviewxml.h"
+#include "layoutwyeviewxml.h"
+#include "loaddefaultxmlthrottleslayoutaction.h"
+#include "paneprogaction.h"
+#include "blockbossaction.h"
+#include "dispatcheraction.h"
+#include "paneopsprogaction.h"
+#include "systemconsoleaction.h"
+#include "tabbedpreferencesprofileaction.h"
+#include "mergsd2signalheadxml.h"
+#include "acelasignalheadxml.h"
 
 bool Metatypes::done = false;
 
@@ -382,11 +414,10 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<SignalHeadIconXml>("SignalHeadIconXml");
  qRegisterMetaType<MultiSensorIconXml>("MultiSensorIconXml");
  qRegisterMetaType<PositionableLabelXml>("PositionableLabelXml");
- qRegisterMetaType<TrackSegmentXml>("TrackSegmentXml");
  qRegisterMetaType<SignalMastIconXml>("SignalMastIconXml");
- qRegisterMetaType<LayoutTurnoutXml>("LayoutTurnoutXml");
- qRegisterMetaType<PositionablePointXml>("PositionablePointXml");
- qRegisterMetaType<LevelXingXml>("LevelXingXml");
+ qRegisterMetaType<LayoutTurnoutViewXml>("LayoutTurnoutXml");
+ qRegisterMetaType<PositionablePointViewXml>("PositionablePointXml");
+ qRegisterMetaType<LevelXingViewXml>("LevelXingXml");
  qRegisterMetaType<VirtualSignalHeadXml>("VirtualSignalHeadXml");
  qRegisterMetaType<TurnoutSignalMastXml>("TurnoutSignalMastXml");
  qRegisterMetaType<SystemConsoleConfigPanelXml>("SystemConsoleConfigPanelXml");
@@ -459,14 +490,13 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<LnLightManagerXml>("LnLightManagerXml");
  qRegisterMetaType<LnSensorManagerXml>("LnSensorManagerXml");
  qRegisterMetaType<InternalReporterManagerXml>("InternalReporterManagerXml");
- qRegisterMetaType<InternalReporterManagerXml>("InternalReporterManagerXml");
  qRegisterMetaType<DefaultLogixManagerXml>("DefaultLogixManagerXml");
  qRegisterMetaType<LocoIOPanel>("LocoIOPanel");
  qRegisterMetaType<GuiLafConfigPaneXml>("GuiLafConfigPaneXml");
  qRegisterMetaType<LnReporterManagerXml>("LnReporterManagerXml");
  qRegisterMetaType<InternalSensorManagerXml>("InternalSensorManagerXml");
  qRegisterMetaType<InternalLightManagerXml>("InternalLightManagerXml");
- qRegisterMetaType<LayoutSlipXml>("LayoutSlipXml");
+ qRegisterMetaType<LayoutSlipViewXml>("LayoutSlipXml");
  qRegisterMetaType<LayoutBlockManager>("LayoutBlockManager");
  qRegisterMetaType<RfidSensorManagerXml>("RfidSensorManagerXml");
  qRegisterMetaType<BlockTableAction>("BlockTableAction");
@@ -509,10 +539,9 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<TransitManager>("TransitManager");
  qRegisterMetaType<SectionManager>("SectionManager");
  //qRegisterMetaType<CatalogTreeManager>("CatalogTreeManager");
- qRegisterMetaType<SystemConnectionMemo>("SystemConnectionMemo");
+ //qRegisterMetaType<SystemConnectionMemo>("SystemConnectionMemo");
  //qRegisterMetaType<ConfigureManager>("ConfigureManager");
- qRegisterMetaType<Operations::TrainManifestText>("TrainManifestText");
- qRegisterMetaType<LayoutTurntableXml>("LayoutTurntableXml");
+ qRegisterMetaType<LayoutTurntableViewXml>("LayoutTurntableViewXml");
  qRegisterMetaType<FileHistory>("FileHistory");
  qRegisterMetaType<JmriUserPreferencesManager>("JmriUserPreferencesManager");
  //qRegisterMetaType<ListedTableFrame>("ListedTableFrame");
@@ -525,7 +554,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<DefaultSignalGroupManager>("DefaultSignalGroupManager");
  qRegisterMetaType<DefaultSignalSystemManager>("DefaultSignalSystemManager");
  qRegisterMetaType<DefaultSignalMastLogicManager>("DefaultSignalMastLogicManager");
- qRegisterMetaType<DefaultRouteManager>("DefaultRouteManager");
+ //qRegisterMetaType<DefaultRouteManager>("DefaultRouteManager");
  qRegisterMetaType<DefaultSignalMastManager>("DefaultSignalMastManager");
  qRegisterMetaType<SignalMastLogicTableAction>("SignalMastLogicTableAction");
  qRegisterMetaType<TransitTableAction>("TransitTableAction");
@@ -551,7 +580,6 @@ Metatypes::Metatypes(QObject *parent) :
  //qRegisterMetaType<JmriConfigurationManager>("JmriConfigurationManager");
  qRegisterMetaType<WarrantManager>("WarrantManager");
  qRegisterMetaType<OBlockManager>("OBlockManager");
- //qRegisterMetaType<JmriUserPreferencesManager>("JmriUserPreferencesManager");
  qRegisterMetaType<JmriJTablePersistenceManager>("JmriJTablePersistenceManager");
  qRegisterMetaType<StartupActionsManager>("StartupActionsManager");
  qRegisterMetaType<ManagerDefaultSelector>("ManagerDefaultSelector");
@@ -560,7 +588,7 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<ProgrammerConfigManager>("ProgrammerConfigManager");
  qRegisterMetaType<RosterConfigManager>("RosterConfigManager");
  qRegisterMetaType<TreeFrame>("TreeFrame");
- qRegisterMetaType<DccThrottle>("DccThrottle");
+ //qRegisterMetaType<DccThrottle>("DccThrottle");
  qRegisterMetaType<WiThrottlePrefsPanel>("WiThrottlePrefsPanel");
  qRegisterMetaType<WebServerPreferencesPanel>("WebServerPreferencesPanel");
  qRegisterMetaType<JsonServerPreferencesPanel>("JsonServerPreferencesPanel");
@@ -625,11 +653,8 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<RfidSensorManagerXml>("RfidSensorManagerXml");
  qRegisterMetaType<RfidSerialConnectionConfig>("RfidSerialConnectionConfig");
  qRegisterMetaType<RfidSerialConnectionConfigXml>("RfidSerialConnectionConfigXml");
- qRegisterMetaType<Operations::OperationsSetupXml>("OperationsSetupXml");
  qRegisterMetaType<SensorTableDataModel>("SensorTableDataModel");
  qRegisterMetaType<SensorTableAction>("SensorTableAction");
- qRegisterMetaType<Operations::EngineManager>("EngineManager");
- qRegisterMetaType<Operations::EngineManagerXml>("EngineManagerXml");
  qRegisterMetaType<JMRIClientConnectionConfigXml>("JMRIClientConnectionConfigXml");
  qRegisterMetaType<JMRIClientConnectionConfig>("JMRIClientConnectionConfig");
  qRegisterMetaType<SimpleServerAction>("SimpleServerAction");
@@ -671,6 +696,42 @@ Metatypes::Metatypes(QObject *parent) :
  qRegisterMetaType<WebServerPreferences>("WebServerPreferences");
  qRegisterMetaType<LayoutShapeXml>("LayoutShapeXml");
  qRegisterMetaType<EditorManager>("EditorManager");
+ qRegisterMetaType<MeterFrameManagerXml>("MeterFrameManagerXml");
+ qRegisterMetaType<InternalMeterManagerXml>("InternalMeterManagerXml");
+ qRegisterMetaType<CtcManager>("CtcManager");
+ qRegisterMetaType<CtcManagerXml>("CtcManagerXml");
+ qRegisterMetaType<CTCExceptionBuffer>("CTCExceptionBuffer");
+ qRegisterMetaType<OtherData>("OtherData");
+ qRegisterMetaType<SE8cSignalHeadXml>("SE8cSignalHeadXml");
+ qRegisterMetaType<TurnoutOperationManagerXml>("TurnoutOperationManagerXml");
+ qRegisterMetaType<LncvProgPane>("LncvProgPane");
+ qRegisterMetaType<DecoderIndexFile>("DecoderIndexFile");
+ qRegisterMetaType<QueryCvDialog>("QueryCvDialog");
+ qRegisterMetaType<CatalogTreeModel>("CatalogTreeModel");
+ qRegisterMetaType<TrackSegmentViewXml>("TrackSegmentViewXml");
+ qRegisterMetaType<SlipTurnoutIconXml>("SlipTurnoutIconXml");
+ qRegisterMetaType<LayoutXOverViewXml>("LayoutXOverViewXml");
+ qRegisterMetaType<LayoutDoubleXOverViewXml>("LayoutDoubleXOverViewXml");
+ qRegisterMetaType<LayoutLHXOverViewXml>("LayoutLHXOverViewXml");
+ qRegisterMetaType<LayoutRHXOverViewXml>("LayoutRHXOverViewXml");
+ qRegisterMetaType<JmriSRCPServer>("JmriSRCPServer");
+ qRegisterMetaType<TrackerTableAction>("TrackerTableAction");
+ qRegisterMetaType<HelpUtilPreferencesPanel>("HelpUtilPreferencesPanel");
+ qRegisterMetaType<HelpUtilPreferences>("HelpUtilPreferences");
+ qRegisterMetaType<LayoutDoubleSlipViewXml>("LayoutDoubleSlipViewXml");
+ qRegisterMetaType<LayoutSingleSlipViewXml>("LayoutSingleSlipViewXml");
+ qRegisterMetaType<LayoutRHTurnoutViewXml>("LayoutRHTurnoutViewXml");
+ qRegisterMetaType<LayoutLHTurnoutViewXml>("LayoutLHTurnoutViewXml");
+ qRegisterMetaType<LayoutWyeViewXml>("LayoutWyeViewXml");
+ qRegisterMetaType<LoadDefaultXmlThrottlesLayoutAction>("LoadDefaultXmlThrottlesLayoutAction");
+ qRegisterMetaType<PaneProgAction>("PaneProgAction");
+ qRegisterMetaType<BlockBossAction>("BlockBossAction");
+ qRegisterMetaType<DispatcherAction>("DispatcherAction");
+ qRegisterMetaType<PaneOpsProgAction>("PaneOpsProgAction");
+ qRegisterMetaType<SystemConsoleAction>("SystemConsoleAction");
+ qRegisterMetaType<TabbedPreferencesProfileAction>("TabbedPreferencesProfileAction");
+ qRegisterMetaType<MergSD2SignalHeadXml>("MergSD2SignalHeadXml");
+ qRegisterMetaType<AcelaSignalHeadXml>("AcelaSignalHeadXml");
 
  Metatypes::done = true;
 }

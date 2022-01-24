@@ -4,6 +4,7 @@
 #include "xml.h"
 #include <QDomElement>
 #include "carmanagerxml.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -25,27 +26,6 @@ namespace Operations
 
  }
 
- /**
-  * record the single instance *
-  */
- /*private*/ /*static*/ CarLengths* CarLengths::_instance = NULL;
-
- /*public*/ /*static*/ /*synchronized*/ CarLengths* CarLengths::instance()
-{
- Logger* log = new Logger("CarLengths");
-     if (_instance == NULL)
-     {
-         if (log->isDebugEnabled()) {
-             log->debug("CarLengths creating instance");
-         }
-         // create and load
-         _instance = new CarLengths();
-     }
-     if (Control::showInstance) {
-         log->debug(tr("CarLengths returns instance %1").arg(_instance->metaObject()->className()));
-     }
-     return _instance;
- }
 
  /*protected*/ QString CarLengths::getDefaultNames() {
      return LENGTHS;
@@ -88,7 +68,7 @@ namespace Operations
 
  /*protected*/ void CarLengths::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      // Set dirty
-     CarManagerXml::instance()->setDirty(true);
+     ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml"))->setDirty(true);
      RollingStockAttribute::firePropertyChange(p, old, n);
  }
 }

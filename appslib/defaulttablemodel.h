@@ -10,23 +10,29 @@ class DefaultTableModel : public AbstractTableModel
 public:
  explicit DefaultTableModel(QObject *parent = 0);
  /*public*/ DefaultTableModel(int rowCount, int columnCount, QObject *parent = 0);
- /*public*/ DefaultTableModel(QVector<QObject*> columnNames, int rowCount, QObject *parent = 0);
- /*public*/ QVector<QObject*> getDataVector();
- /*public*/ void setDataVector(QVector<QObject*> dataVector, QVector<QObject*> columnIdentifiers);
+ /*public*/ DefaultTableModel(QVector<QVariant>* columnNames, int rowCount, QObject *parent = 0);
+ /*public*/ QVector<QVariant>* getDataVector();
+ /*public*/ void setDataVector(QVector<QVariant>* dataVector, QVector<QVariant>* columnIdentifiers);
  /*public*/ int getRowCount();
- /*public*/ int getColumnCount();
+ /*public*/ int getColumnCount() const;
  int rowCount(const QModelIndex &parent) const;
  int columnCount(const QModelIndex &parent) const;
  QVariant data(const QModelIndex &index, int role) const;
+ bool setData(const QModelIndex &index, const QVariant &value, int role);
  /*public*/ void addColumn(QVariant columnName);
+ /*public*/ void setRowCount(int rowCount);
+ /*public*/ void setValueAt(QVariant aValue, int rowIndex, int columnIndex);
+ /*public*/ QVariant getValueAt(int row, int column);
 
 signals:
 
 public slots:
 private:
- /*private*/ static QVector<QObject*> newVector(int size);
- /*private*/ static QVector<QObject*> nonNullVector(QVector<QObject*> v);
+ /*private*/ static QVector<QVariant>* newVector(int size);
+ /*private*/ static QVector<QVariant>* nonNullVector(QVector<QVariant>* v);
  /*private*/ void justifyRows(int from, int to);
+
+ int _rowCount = 0;
 
 protected:
 
@@ -34,10 +40,10 @@ protected:
   * The <code>Vector</code> of <code>Vectors</code> of
   * <code>Object</code> values.
   */
- /*protected*/ QVector<QObject*>    dataVector;
+ /*protected*/ QVector<QVariant>*   dataVector;
 
  /** The <code>Vector</code> of column identifiers. */
- /*protected*/QVector<QObject*>    columnIdentifiers;
+ /*protected*/QVector<QVariant>*    columnIdentifiers;
 
 };
 

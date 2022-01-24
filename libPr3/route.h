@@ -46,7 +46,7 @@
  */
 /*public*/ /*interface*/class LIBPR3SHARED_EXPORT Route : public  AbstractNamedBean
 {
- Q_OBJECT
+ //Q_OBJECT
 public:
  Route(QString systemName, QString userName = "", QObject* parent = 0) : AbstractNamedBean(systemName, userName, parent) {}
     /*public*/ static /*final*/ const int TOGGLE = 0x08;
@@ -55,25 +55,25 @@ public:
     /**
      * Set enabled status.
      */
-    /*public*/ virtual void setEnabled(bool /*state*/) {}
+    /*public*/ virtual void setEnabled(bool /*state*/) =0;
     /**
      * Get enabled status
     */
-    /*public*/ virtual bool getEnabled() { return false;}
+    /*public*/ virtual bool getEnabled() const =0;
 
     /**
      * Set locked status.
      */
-    /*public*/ virtual void setLocked(bool /*state*/)  {}
+    /*public*/ virtual void setLocked(bool /*state*/)  =0;
     /**
      * Get locked status.
     */
-    /*public*/ virtual bool getLocked() { return false;}
+    /*public*/ virtual bool getLocked() =0;
 
     /**
      * Has at least one lockable turnout.
     */
-    /*public*/ virtual bool canLock() { return false;}
+    /*public*/ virtual bool canLock() =0;
     // new interface for outputs
 
     /**
@@ -82,18 +82,18 @@ public:
      * @param state must be Turnout.CLOSED, Turnout.THROWN, or Route.TOGGLE,
      *      which determines how the Turnout is to be switched when this Route is set
      */
-    /*public*/ virtual bool addOutputTurnout(QString /*systemName*/, int /*state*/) { return false;}
+    /*public*/ virtual bool addOutputTurnout(QString /*systemName*/, int /*state*/) =0;
 
     /**
      * Delete all output Turnouts from this Route.
      */
-    /*public*/ virtual void clearOutputTurnouts() {}
+    /*public*/ virtual void clearOutputTurnouts() =0;
 
     /*public*/ virtual int getNumOutputTurnouts() = 0;
     /**
      * Inquire if a Turnout is included in this Route as an output.
      */
-    /*public*/ virtual bool isOutputTurnoutIncluded(QString /*systemName*/) { return false;}
+    /*public*/ virtual bool isOutputTurnoutIncluded(QString /*systemName*/) =0;
 
     /**
      * Method to get the Set State of an output Turnout.
@@ -105,13 +105,13 @@ public:
      * Get an output Turnout system name by Index.
      * @return null if there is no turnout with that index
      */
-    /*public*/ virtual QString getOutputTurnoutByIndex(int /*index*/) {return "";}
+    /*public*/ virtual QString getOutputTurnoutByIndex(int /*index*/) =0;
 
     /**
      * Method to get the 'k'th output Turnout of the Route.
      * @return null if there are less than 'k' Turnouts defined
      */
-    /*public*/ virtual Turnout* getOutputTurnout(int /*k*/) {return NULL;}
+    /*public*/ virtual Turnout* getOutputTurnout(int /*k*/) =0;
 
     /**
      * Method to get the desired state of 'k'th Turnout of the Route.
@@ -125,36 +125,36 @@ public:
      * @param state must be Sensor.ACTIVE, Sensor.INACTIVE, or Route.TOGGLE,
      *      which determines how the Sensor is to be switched when this Route is set
      */
-    /*public*/ virtual bool addOutputSensor(QString /*systemName*/, int /*state*/) { return false;}
+    /*public*/ virtual bool addOutputSensor(QString /*systemName*/, int /*state*/) =0;
 
     /**
      * Delete all output Sensors from this Route.
      */
-    /*public*/ virtual void clearOutputSensors()  {}
+    /*public*/ virtual void clearOutputSensors()  =0;
 
-    /*public*/ virtual int getNumOutputSensors()  {return 0;}
+    /*public*/ virtual int getNumOutputSensors()  =0;
     /**
      * Inquire if a Sensor is included in this Route as an output.
      */
-    /*public*/ virtual bool isOutputSensorIncluded(QString /*systemName*/) { return false;}
+    /*public*/ virtual bool isOutputSensorIncluded(QString /*systemName*/) =0;
 
     /**
      * Method to get the Set State of an output Sensor.
      * @return -1 if the Sensor is not found
      */
-    /*public*/ virtual int getOutputSensorSetState(QString /*systemName*/) {return 0;}
+    /*public*/ virtual int getOutputSensorSetState(QString /*systemName*/) =0;
 
     /**
      * Get an output Sensor system name by Index.
      * @return null if there is no sensor with that index
      */
-    /*public*/ virtual QString getOutputSensorByIndex(int /*index*/){ return "";}
+    /*public*/ virtual QString getOutputSensorByIndex(int /*index*/)=0;
 
     /**
      * Get the 'k'th output Sensor of the Route.
      * @return null if there are less than 'k' Sensor defined
      */
-    /*public*/ virtual Sensor* getOutputSensor(int /*k*/) {return NULL;}
+    /*public*/ virtual Sensor* getOutputSensor(int /*k*/) =0;
 
     /**
      * Get the desired state of 'k'th Sensor of the Route.
@@ -166,43 +166,43 @@ public:
     /**
      * Set name of script file to be run when Route is fired.
      */
-    /*public*/ virtual void setOutputScriptName(QString /*filename*/)  {}
+    /*public*/ virtual void setOutputScriptName(QString /*filename*/)  =0;
 
     /**
      * Get name of script file to be run when Route is fired.
      */
-    /*public*/ virtual QString getOutputScriptName() { return "";}
+    /*public*/ virtual QString getOutputScriptName() =0;
 
     /**
      * Set name of sound file to be played when Route is fired.
      */
-    /*public*/ virtual void setOutputSoundName(QString /*filename*/)  {}
+    /*public*/ virtual void setOutputSoundName(QString /*filename*/)  =0;
 
     /**
      * Get name of sound file to be played when Route is fired.
      */
-    /*public*/ virtual QString getOutputSoundName() { return "";}
+    /*public*/ virtual QString getOutputSoundName() =0;
 
      /**
      * Method to set turnouts aligned sensor
      */
-    /*public*/ virtual void setTurnoutsAlignedSensor (QString /*sensorSystemName*/)  {}
+    /*public*/ virtual void setTurnoutsAlignedSensor (QString /*sensorSystemName*/)  =0;
     /**
      * Method to get system name of turnouts aligned sensor.
      */
-    /*public*/ virtual QString getTurnoutsAlignedSensor() { return "";}
+    /*public*/ virtual QString getTurnoutsAlignedSensor() =0;
 
     /**
      * Method to get sensor of turnouts aligned sensor.
      */
-    /*public*/ virtual Sensor* getTurnoutsAlgdSensor() {return NULL;}
+    /*public*/ virtual Sensor* getTurnoutsAlgdSensor() =0;
 
     // Interface for control inputs
 
     /**
      * Method to add a Sensor to the list of control Sensors for this Route.
      */
-    /*public*/ virtual bool addSensorToRoute(QString /*sensorSystemName*/, int /*mode*/) { return false;}
+    /*public*/ virtual bool addSensorToRoute(QString /*sensorSystemName*/, int /*mode*/) =0;
 
     enum ACTIONS
     {
@@ -218,11 +218,11 @@ public:
     /*static*/ /*final*/ /*const int*/ VETOCLOSED = 8,  // turnout must be closed for route to fire
     /*static*/ /*final*/ /*const int*/ VETOTHROWN = 16  // turnout must be thrown for route to fire
     };
-    Q_ENUM(ACTIONS)
+    //Q_ENUM(ACTIONS)
     /**
      * Method to delete all control Sensors from this Route.
      */
-    /*public*/ virtual void clearRouteSensors()  {}
+    /*public*/ virtual void clearRouteSensors()  =0;
 
     /**
      * Method to get the SystemName of a control Sensor in this Route.
@@ -232,7 +232,7 @@ public:
      *@return  null If there is no Sensor with that 'index', or if 'index'
      *      is not in the range 0 thru MAX_SENSORS-1.
      */
-    /*public*/ virtual QString getRouteSensorName(int /*index*/) { return "";}
+    /*public*/ virtual QString getRouteSensorName(int /*index*/) =0;
 
     /**
      * Method to get the Sensor of a control Sensor in this Route.
@@ -242,7 +242,7 @@ public:
      *@return  null If there is no Sensor with that 'index', or if 'index'
      *      is not in the range 0 thru MAX_SENSORS-1.
      */
-    /*public*/ virtual Sensor* getRouteSensor(int /*index*/) {return NULL;}
+    /*public*/ virtual Sensor* getRouteSensor(int /*index*/) =0;
 
     /**
      * Method to get the mode of a particular Sensor in this Route.
@@ -257,22 +257,22 @@ public:
     /**
      * Method to set the SystemName of a control Turnout for this Route.
      */
-    /*public*/ virtual void setControlTurnout(QString /*turnoutSystemName*/) {}
+    /*public*/ virtual void setControlTurnout(QString /*turnoutSystemName*/) =0;
 
     /**
      * Method to get the SystemName of a control Turnout for this Route.
      */
-    /*public*/ virtual QString getControlTurnout() {return "";}
+    /*public*/ virtual QString getControlTurnout() =0;
 
     /**
      * Method to get the Turnout of a control Turnout for this Route.
      */
-    /*public*/ virtual Turnout* getCtlTurnout() {return NULL;}
+    /*public*/ virtual Turnout* getCtlTurnout() =0;
 
     /**
      * Method to set the State of control Turnout that fires this Route.
      */
-    /*public*/ virtual void setControlTurnoutState(int /*turnoutState*/)  {}
+    /*public*/ virtual void setControlTurnoutState(int /*turnoutState*/)  =0;
 
     /**
      * Method to get the State of control Turnout that fires this Route.
@@ -282,22 +282,22 @@ public:
     /**
      * Method to set the SystemName of a lock control Turnout for this Route.
      */
-    /*public*/ virtual void setLockControlTurnout(QString /*turnoutSystemName*/)  {}
+    /*public*/ virtual void setLockControlTurnout(QString /*turnoutSystemName*/)  =0;
 
     /**
      * Method to get the SystemName of a lock control Turnout for this Route.
      */
-    /*public*/ virtual QString getLockControlTurnout() { return "";}
+    /*public*/ virtual QString getLockControlTurnout() =0;
 
     /**
      * Method to get the Turnout of a lock control Turnout for this Route.
      */
-    /*public*/ virtual Turnout* getLockCtlTurnout() {return NULL;}
+    /*public*/ virtual Turnout* getLockCtlTurnout() =0;
 
     /**
      * Method to set the State of the lock control Turnout that locks this Route.
      */
-    /*public*/ void virtual setLockControlTurnoutState(int /*turnoutState*/)  {}
+    /*public*/ void virtual setLockControlTurnoutState(int /*turnoutState*/)  =0;
 
     /**
      * Method to get the State of the lock control Turnout that locks this Route.
@@ -307,7 +307,7 @@ public:
     /**
      * Method to set delay (milliseconds) between issuing Turnout commands.
      */
-    /*public*/ virtual void setRouteCommandDelay(int /*delay*/) {}
+    /*public*/ virtual void setRouteCommandDelay(int /*delay*/) =0;
 
     /**
      * Method to get delay (milliseconds) between issuing Turnout commands.
@@ -319,7 +319,7 @@ public:
      *<p>
      * Sets all Route Turnouts to the state shown in the Route definition.
      */
-    /*public*/ virtual void setRoute() {}
+    /*public*/ virtual void setRoute() =0;
 
     /**
      * Activate the Route.
@@ -327,7 +327,7 @@ public:
      * This starts route processing by connecting to inputs, etc.
      * A Route must be activated before it will fire.
      */
-    /*public*/ virtual void activateRoute()  {}
+    /*public*/ virtual void activateRoute()  =0;
 
     /**
      * Deactivate the Route.
@@ -337,7 +337,9 @@ public:
      * A Route must be deactivated before it's input
      * and output definitions are changed.
      */
-    /*public*/ virtual void deActivateRoute() {}
-};
+    /*public*/ virtual void deActivateRoute() =0;
 
+    /*public*/ virtual QObject* self() =0;
+};
+Q_DECLARE_INTERFACE(Route, "Route")
 #endif // ROUTE_H

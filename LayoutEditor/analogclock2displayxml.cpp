@@ -42,6 +42,7 @@ AnalogClock2DisplayXml::~AnalogClock2DisplayXml()
  QDomElement element = doc.createElement("fastclock");
 
  // include contents
+ if (p->getId() != "") element.setAttribute("id", p->getId());
  element.setAttribute("x", p->getX());
  element.setAttribute("y", p->getY());
  element.setAttribute("scale",  p->getScale());
@@ -79,6 +80,13 @@ AnalogClock2DisplayXml::~AnalogClock2DisplayXml()
 // try {
  bool bOk=true;
  bool bOk1;
+ if (element.attribute("id") != "") {
+  try {
+      l->setId(element.attribute("id"));
+  } catch (Positionable::DuplicateIdException* e) {
+      throw new JmriConfigureXmlException("Positionable id is not unique", e);
+  }
+ }
  x = element.attribute("x").toInt(&bOk1);
  if(!bOk1) bOk = false;
  y = element.attribute("y").toInt(&bOk1);
@@ -89,7 +97,7 @@ AnalogClock2DisplayXml::~AnalogClock2DisplayXml()
    if(!bOk1) bOk = false;
  }
 //    }
-//  catch (DataConversionException e) {
+//  catch (DataConversionException* e) {
  if(!bOk)
  {
   log->error("failed to convert positional attribute");

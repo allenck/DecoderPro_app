@@ -16,6 +16,7 @@
 #include "trainmanifesttext.h"
 #include "routelocation.h"
 #include "location.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -35,7 +36,7 @@ namespace Operations
   log = new Logger("TrainManifest");
   messageFormatText = "";
   // create manifest file
-  File* file = TrainManagerXml::instance()->createTrainManifestFile(train->getName());
+  File* file = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->createTrainManifestFile(train->getName());
 
   PrintWriter* fileOut;
 
@@ -51,7 +52,7 @@ namespace Operations
       //fileOut = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8")), // NOI18N
 //      true);
   fileOut = new PrintWriter(stream, true);
-//  } catch (IOException e) {
+//  } catch (IOException* e) {
 //      log->error("Can not open train manifest file: " + file.getName());
 //      return;
 //  }
@@ -69,8 +70,8 @@ namespace Operations
 
   if (Setup::isPrintTimetableNameEnabled())
   {
-   TrainSchedule* sch = TrainScheduleManager::instance()->getScheduleById(
-           TrainManager::instance()->getTrainScheduleActiveId());
+   TrainSchedule* sch = ((Operations::TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(
+           ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getTrainScheduleActiveId());
    if (sch != NULL)
    {
     valid = valid + " (" + sch->getName() + ")";
@@ -294,7 +295,7 @@ namespace Operations
   addCarsLocationUnknown(fileOut, IS_MANIFEST);
 //  } catch (IllegalArgumentException e) {
 //      newLine(fileOut, tr(Bundle.getMessage("ErrorIllegalArgument")).arg(
-//              Bundle.getMessage("TitleManifestText"), e.getLocalizedMessage()}));
+//              Bundle.getMessage("TitleManifestText"), e->getLocalizedMessage()}));
 //      newLine(fileOut, messageFormatText);
 //      e.printStackTrace();
 //  }

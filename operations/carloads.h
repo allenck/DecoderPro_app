@@ -3,14 +3,19 @@
 #include "rollingstockattribute.h"
 #include "appslib_global.h"
 #include "jcombobox.h"
+#include "instancemanagerautodefault.h"
+
 namespace Operations
 {
  class CarLoad;
- class APPSLIBSHARED_EXPORT CarLoads : public RollingStockAttribute
+ class APPSLIBSHARED_EXPORT CarLoads : public RollingStockAttribute, public InstanceManagerAutoDefault
  {
   Q_OBJECT
+     Q_INTERFACES(InstanceManagerAutoDefault)
  public:
-  /*public*/ CarLoads(QObject* parent =0);
+  Q_INVOKABLE /*public*/ CarLoads(QObject* parent =0);
+  ~CarLoads() {}
+  CarLoads(const CarLoads&) : RollingStockAttribute() {}
   /*public*/ static /*final*/ QString NONE;// = ""; // NOI18N
 
   // for property change
@@ -19,7 +24,6 @@ namespace Operations
   /*public*/ static /*final*/ QString LOAD_PRIORITY_CHANGED_PROPERTY;// = "CarLoads_Load_Priority"; // NOI18N
   /*public*/ static /*final*/ QString LOAD_NAME_CHANGED_PROPERTY;// = "CarLoads_Name"; // NOI18N
   /*public*/ static /*final*/ QString LOAD_COMMENT_CHANGED_PROPERTY;// = "CarLoads_Load_Comment"; // NOI18N
-  /*public*/ static /*synchronized*/ CarLoads* instance();
   /*public*/ void addType(QString type);
   /*public*/ void replaceType(QString oldType, QString newType);
   /*public*/ QString getDefaultEmptyName();
@@ -54,7 +58,6 @@ namespace Operations
   /**
    * record the single instance *
    */
-  /*private*/ static CarLoads* _instance;// = null;
   Logger* log;
   /*private*/ QList<CarLoad*>* getSortedList(QString type);
 
@@ -66,4 +69,5 @@ namespace Operations
 
  };
 }
+Q_DECLARE_METATYPE(Operations::CarLoads)
 #endif // CARLOADS_H

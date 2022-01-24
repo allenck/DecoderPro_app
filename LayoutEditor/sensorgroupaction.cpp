@@ -28,7 +28,7 @@
 void SensorGroupAction::common()
 {
     // disable ourself if there is no route manager object available
-    if (InstanceManager::routeManagerInstance() == NULL) {
+    if (InstanceManager::getDefault("RouteManager") == NULL) {
         setEnabled(false);
     }
     connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
@@ -41,7 +41,7 @@ void SensorGroupAction::common()
  common();
 }
 
-/*public*/ void SensorGroupAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void SensorGroupAction::actionPerformed(JActionEvent * /*e*/)
 {
  SensorGroupFrame* f = new SensorGroupFrame();
  f->initComponents();

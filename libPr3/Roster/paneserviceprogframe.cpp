@@ -23,10 +23,11 @@
 /**
  * Provide the programming mode selection pane for inclusion
  */
-/*protected*/ QWidget* PaneServiceProgFrame::getModePane()
+/*protected*/ JPanel *PaneServiceProgFrame::getModePane()
 {
  // ensure initialization, even if invoked in ctor
- if (modePane == NULL) modePane = new MyProgServiceModeComboBox(this);
+ if (modePane == NULL)
+  modePane = new MyProgServiceModeComboBox(this);
  log->debug("invoked getModePane");
  return modePane;
 }

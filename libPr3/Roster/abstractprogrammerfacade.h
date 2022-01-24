@@ -14,11 +14,11 @@ public:
     /*public*/ QString decodeErrorCode(int code);
     /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
     /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
-    /*public*/ void writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
-    /*public*/ void readCV(QString CV, ProgListener* p) throw (ProgrammerException);
-    /*public*/ void confirmCV(QString CV, int val, ProgListener* p)throw (ProgrammerException);
+    /*public*/ void writeCV(QString CV, int val, ProgListener* p) /*throw (ProgrammerException)*/;
+    /*public*/ void readCV(QString CV, ProgListener* p) /*throw (ProgrammerException)*/;
+    /*public*/ void confirmCV(QString CV, int val, ProgListener* p)/*throw (ProgrammerException)*/;
     /*public*/ ProgrammingMode* getMode();
-    /*public*/ QList<ProgrammingMode*> getSupportedModes();
+    /*public*/ QList<QString> getSupportedModes();
     /*public*/ void setMode(ProgrammingMode* p);
     /*public*/ bool getCanRead();
     /*public*/ bool getCanRead(QString addr);

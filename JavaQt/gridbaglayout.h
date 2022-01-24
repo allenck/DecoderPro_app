@@ -13,6 +13,7 @@ class JAVAQTSHARED_EXPORT GridBagLayout : public QGridLayout
     void columnWidths(QList<int> columns);
     void rowHeights(QList<int> rows);
     void setConstraints(GridBagConstraints gbc);
+    GridBagConstraints getConstraints();
 
 private:
     GridBagConstraints gbc;

@@ -2,12 +2,12 @@
 #include "catalogtree.h"
 
 CatalogTreeManager::CatalogTreeManager(QObject *parent) :
-    AbstractManager(parent)
+    QObject(parent)
 {
  setObjectName("CatalogTreeManager");
  setProperty("JavaClassName", "jmri.CatalogTreeManager");
 
- registerSelf();
+ //registerSelf();
 }
 
 /**
@@ -52,3 +52,7 @@ CatalogTreeManager::CatalogTreeManager(QObject *parent) :
 //            justification="with existing code structure, just have to accept these exposed arrays. Someday...")
     /*static*/ /*final*/ QStringList CatalogTreeManager::SCRIPT_FILTER = QStringList() <<"py"<< "scpt";
 
+/*public*/ SystemConnectionMemo* CatalogTreeManager::getMemo()
+{
+ throw new IllegalArgumentException();
+}

@@ -11,6 +11,8 @@
 #include "abstractaudio.h"
 #include <QScrollArea>
 #include "jslider.h"
+#include "joptionpane.h"
+
 
 //AbstractAudioFrame::AbstractAudioFrame(QWidget *parent) :
 //  JmriJFrame(parent)
@@ -124,6 +126,24 @@
 /*public*/ void AbstractAudioFrame::populateFrame(Audio* a) {
     sysName->setText(a->getSystemName());
     userName->setText(a->getUserName());
+}
+
+/**
+ * Check System Name user input.
+ *
+ * @param entry string retrieved from text field
+ * @param counter index of all similar (Source/Buffer) items
+ * @param prefix (AudioListener/Source/Buffer) system name prefix string to compare entry against
+ * @return true if prefix doesn't match
+ */
+/*protected*/ bool AbstractAudioFrame::entryError(QString entry, QString prefix, QString counter) {
+    if (!entry.startsWith(prefix)) {
+        JOptionPane::showMessageDialog(nullptr, tr("System Name entered should start with ''%1''.").arg(prefix),
+                tr("Error creating Audio object"), JOptionPane::ERROR_MESSAGE);
+        sysName->setText(prefix + counter);
+        return true;
+    }
+    return false;
 }
 
 //private static final Logger log = LoggerFactory.getLogger(AbstractAudioFrame.class.getName());

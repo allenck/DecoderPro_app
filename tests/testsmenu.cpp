@@ -80,6 +80,18 @@
 #include "layouteditor/layouteditortoolstestaction.h"
 #include "layouteditor/layoutshapetestaction.h"
 #include "entryexit/circuitbuildertestaction.h"
+#include "loconet/controlpaneltestaction.h"
+#include "loconet/lnpredefinedmeterstestaction.h"
+#include "loconet/lniplimplementationtestaction.h"
+#include "tables/oblocktableactiontestaction.h"
+#include "loconet/lncvdevicetestaction.h"
+#include "loconet/lncvmessagecontentsclasstestaction.h"
+#include "loconet/lncvprogpanetestaction.h"
+#include "loconet/lncvprogtablemodeltestaction.h"
+#include "misc/identifydecodertestaction.h"
+#include "misc/cvutiltestaction.h"
+#include "misc/fileutilsupporttestaction.h"
+#include "programmers/abstractprogrammertestaction.h"
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -109,6 +121,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     profileTestMenu->addAction(new ProfileTestAction(this));
     profileTestMenu->addAction(new ProfileManagerTestAction(this));
     profileTestMenu->addAction(new ProfileUtilsTestAction(this));
+    profileTestMenu->addAction(new IdentifyDecoderTestAction(this));
 
     QMenu* loconetTestMenu = new QMenu(tr("LocoNet Tests ..."));
     addMenu(loconetTestMenu);
@@ -117,6 +130,8 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     loconetTestMenu->addAction(new LoconetSystemConnectionMemoTestAction(this));
     loconetTestMenu->addAction(new DefaultMemoryManagerTestAction(this));
     loconetTestMenu->addAction(new LocoNetMessageExceptionTestAction(this));
+    loconetTestMenu->addAction(new LnPredefinedMetersTestAction(this));
+    loconetTestMenu->addAction(new LnIplImplementationTestAction(this));
 
     QMenu* loconetProgrammersMenu = new QMenu(tr("Programmers ..."));
     loconetTestMenu->addMenu(loconetProgrammersMenu);
@@ -151,6 +166,13 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     loconetTestMenu->addAction(new LocoNetMessageInterpretTestAction(this));
     loconetTestMenu->addAction(new LocoNetConsistTestAction(this));
 
+    QMenu* lncvMenu = new QMenu("Lncv");
+    loconetTestMenu->addMenu(lncvMenu);
+    lncvMenu->addAction(new LncvDeviceTestAction(this));
+    lncvMenu->addAction(new LncvMessageContentsClassTestAction(this));
+    lncvMenu->addAction(new LncvProgPaneTestAction(this));
+    lncvMenu->addAction(new LncvProgTableModelTestAction(this));
+
     QMenu* sprogTestMenu = new QMenu(tr("Sprog"));
     addMenu(sprogTestMenu);
     sprogTestMenu->addAction(new SprogMessageTestAction(this));
@@ -171,6 +193,10 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     facadeMenu->addAction(new TwoIndexTcsProgrammerFacadeTestAction(this));
     facadeMenu->addAction(new VerifyWriteProgrammerFacadeTestAction(this));
 
+    QMenu* progMenu = new QMenu(tr("Programmer tests ..."));
+    addMenu(progMenu);
+    progMenu->addAction(new AbstractProgrammerTestAction(this));
+
     QMenu* panelsMenu = new QMenu(tr("Panels ..."));
     addMenu(panelsMenu);
     panelsMenu->addAction(new PaneProgFrameTestAction(this));
@@ -185,6 +211,7 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     loconetTestMenu->addMenu(loconetThrottleMenu);
     loconetThrottleMenu->addAction(new LocoNetThrottleTestAction(this));
     loconetThrottleMenu->addAction(new NmraPacketTestAction(this));
+    loconetThrottleMenu->addAction(new ControlPanelTestAction(this));
 
     QMenu* signalMenu = new QMenu(tr("Signals ..."));
     addMenu(signalMenu);
@@ -226,6 +253,9 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     miscMenu->addAction(new DccLocoAddressTestAction(this));
     miscMenu->addAction(new ControllerFilterFrameTestAction(this));
     miscMenu->addAction(new ConsistToolFrameTestAction(this));
+    miscMenu->addAction(new OBlockTableActionTestAction(this));
+    miscMenu->addAction(new CvUtilTestAction(this));
+    miscMenu->addAction(new FileUtilSupportTestAction(this));
 
     QMenu* layoutEditorMenu = new QMenu("LayoutEditor");
     addMenu(layoutEditorMenu);

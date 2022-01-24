@@ -1,7 +1,7 @@
 ﻿#include "spureditframe.h"
 #include "track.h"
 #include <QGroupBox>
-#include <QPushButton>
+#include "jbutton.h"
 #include "jcombobox.h"
 #include "control.h"
 #include <QLabel>
@@ -18,6 +18,8 @@
 #include "changetracktypeaction.h"
 #include "ignoreusedtrackaction.h"
 #include "alternatetrackaction.h"
+#include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -42,8 +44,8 @@ namespace Operations
   log = new Logger("SpurEditFrame");
   textSchedule = new QLabel(tr("Delivery Schedule"));
   textSchError = new QLabel();
-  editScheduleButton = new QPushButton();
-  comboBoxSchedules = ScheduleManager::instance()->getComboBox();
+  editScheduleButton = new JButton();
+  comboBoxSchedules = ((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"))->getComboBox();
 
   panelSchedule = panelOpt4;
   sef = NULL;
@@ -56,10 +58,9 @@ namespace Operations
 
   // setup the optional panel with schedule stuff
   panelSchedule->setLayout(new GridBagLayout());
-//        panelSchedule.setBorder(BorderFactory.createTitledBorder(Bundle
-//                .getMessage("DeliverySchedule")));
-  panelSchedule->setStyleSheet(gbStyleSheet);
-  panelSchedule->setTitle("Delivery Schedule");
+  panelSchedule->setBorder(BorderFactory::createTitledBorder(tr("Delivery Schedule")));
+//  panelSchedule->setStyleSheet(gbStyleSheet);
+//  panelSchedule->setTitle("Delivery Schedule");
   addItem(panelSchedule, comboBoxSchedules, 0, 0);
   addItem(panelSchedule, editScheduleButton, 1, 0);
   addItem(panelSchedule, textSchError, 2, 0);
@@ -74,10 +75,8 @@ namespace Operations
   addHelpMenu("package.jmri.jmrit.operations.Operations_Sidings", true); // NOI18N
 
   // override text strings for tracks
-  //panelTrainDir.setBorder(BorderFactory.createTitledBorder(tr("TrainSpur")));
-  panelTrainDir->setTitle(tr("This spur is serviced by trains traveling"));
-  //paneCheckBoxes.setBorder(BorderFactory.createTitledBorder(tr("TypesSpur")));
-  checkBoxesGroupBox->setTitle(tr("Select the rolling stock serviced by this spur"));
+  panelTrainDir->setBorder(BorderFactory::createTitledBorder(tr("This spur is serviced by trains traveling")));
+  panelCheckBoxes->setBorder(BorderFactory::createTitledBorder(tr("Select the rolling stock serviced by this spur")));
   deleteTrackButton->setText(tr("Delete Spur Track"));
   addTrackButton->setText(tr("Add Spur Track"));
   saveTrackButton->setText(tr("Save Spur Track"));
@@ -89,8 +88,8 @@ namespace Operations
   // Select the spur's Schedule
   updateScheduleComboBox();
 
-  //ScheduleManager::instance().addPropertyChangeListener(this);
-  connect(ScheduleManager::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager")).addPropertyChangeListener(this);
+  connect(((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"))->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
   // finish
   panelOrder->setVisible(false); // Car order out of spurs is not available
@@ -100,7 +99,7 @@ namespace Operations
 
  /*public*/ void SpurEditFrame::buttonActionPerformed(QWidget* ae)
  {
-  QPushButton* source = (QPushButton*)ae;
+  JButton* source = (JButton*)ae;
   if (source == editScheduleButton) {
 
       editAddSchedule();
@@ -168,10 +167,10 @@ namespace Operations
 
  /*private*/ void SpurEditFrame::updateScheduleComboBox()
  {
-  ScheduleManager::instance()->updateComboBox(comboBoxSchedules);
+  ((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"))->updateComboBox(comboBoxSchedules);
   if (_track != NULL)
   {
-   Schedule* sch = ScheduleManager::instance()->getScheduleById(_track->getScheduleId());
+   Schedule* sch = ((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"))->getScheduleById(_track->getScheduleId());
    comboBoxSchedules->setCurrentIndex(comboBoxSchedules->findData(VPtr<Schedule>::asQVariant(sch)));
    textSchError->setText(_track->checkScheduleValid());
    if (sch != NULL)
@@ -187,11 +186,11 @@ namespace Operations
  /*public*/ void SpurEditFrame::dispose()
  {
 
-  //ScheduleManager::instance().removePropertyChangeListener(this);
-  disconnect(ScheduleManager::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager")).removePropertyChangeListener(this);
+  disconnect(((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"))->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   if (_track != NULL)
   {
-   Schedule* sch = ScheduleManager::instance()->getScheduleById(_track->getScheduleId());
+   Schedule* sch = ((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"))->getScheduleById(_track->getScheduleId());
    if (sch != NULL)
        //sch.removePropertyChangeListener(this);
     disconnect(sch->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

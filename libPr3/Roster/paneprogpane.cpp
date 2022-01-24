@@ -4,14 +4,12 @@
 #include "cvvalue.h"
 #include "gridbagconstraints.h"
 #include "variabletablemodel.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "dccaddresspanel.h"
-#include <QGridLayout>
+#include "gridbaglayout.h"
 #include "watchinglabel.h"
 #include "jtable.h"
-//#include "qtcvtablemodel.h"
 #include "fnmappanel.h"
-//#include "qtindxcvtablemodel.h"
 #include "paneprogframe.h"
 #include "panecontainer.h"
 #include "variablevalue.h"
@@ -19,7 +17,6 @@
 #include "../../LayoutEditor/jseparator.h"
 #include "field.h"
 #include "rosterentry.h"
-#include "fnmappanelesu.h"
 #include "qualifier.h"
 #include "jcomponentqualifier.h"
 #include "hardcopywriter.h"
@@ -30,7 +27,13 @@
 #include "slotmanager.h"
 #include "jpanel.h"
 #include <QTimer>
-
+#include "box.h"
+#include "loggerfactory.h"
+#include "cvutil.h"
+#include "stringutil.h"
+#include <QHeaderView>
+#include "jslider.h"
+#include "jtextfield.h"
 class Attribute
 {
  public:
@@ -53,52 +56,21 @@ public:
   gridyCurrent = -1;
  }
 
- /*public*/ int gridxCurrent;// = -1;
- /*public*/ int gridyCurrent;// = -1;
+ /*public*/ int gridxCurrent = -1;
+ /*public*/ int gridyCurrent = -1;
  /*public*/ QVector<Attribute*> gridAttList;
  /*public*/ GridBagConstraints* gridConstraints;
 };
 
+/*static*/ /*final*/ QString PaneProgPane::LAST_GRIDX = "last_gridx";
+/*static*/ /*final*/ QString PaneProgPane::LAST_GRIDY = "last_gridy";
+
 class PaneProgFrame;
 
 PaneProgPane::PaneProgPane(QWidget *parent) :
-    QWidget(parent)
+    JPanel(parent)
 {
- log = new Logger("PaneProgPane");
- log->setDebugEnabled(false);
- QFont f = font();
- QFont newF = QFont("Ubuntu");
- newF.setPointSize(f.pointSize());
- setFont(newF);
- varList = new QList<int>();
- cvList = new QList<int>();
- indexedCvList = new QList<int>();
- panelList = new QList<QWidget*>();
- readChangesButton  = new JToggleButton(tr("Read Changes on Sheet"));
- readChangesButton->setCheckable(true);
- readAllButton      = new JToggleButton(tr("Read full Sheet"));
- readAllButton->setCheckable(true);
- writeChangesButton = new JToggleButton(tr("Write Changes on Sheet"));
- writeChangesButton->setCheckable(true);
- writeAllButton     = new JToggleButton(tr("Write full sheet"));
- writeAllButton->setCheckable(true);
- confirmChangesButton = new JToggleButton(tr("Compare Changes on Sheet"));
- confirmChangesButton->setCheckable(true);
- confirmAllButton     = new JToggleButton(tr("Compare full Sheet"));
- confirmAllButton->setCheckable(true);
- // reference to variable being programmed (or NULL if none)
- _programmingVar = NULL;
- _programmingCV  = NULL;
- _programmingIndexedCV = NULL;
- _read = true;
- changeSupport = new PropertyChangeSupport(this);
-
- // busy during read, write operations
- _busy = false;
- retry = 0;
- print = false;
- container = NULL;
- log->setDebugEnabled(true);
+ common();
 }
 /**
  * Provides the individual panes for the TabbedPaneProgrammer.
@@ -154,16 +126,30 @@ PaneProgPane::PaneProgPane(QWidget *parent) :
  * @param modelElem "model" element from the Decoder Index, used to check what decoder options are present.
  */
 //@SuppressWarnings("unchecked")
-/*public*/ PaneProgPane::PaneProgPane(PaneContainer* container, QString name, QDomElement  pane, CvTableModel* cvModel, /*IndexedCvTableModel* icvModel,*/ VariableTableModel* varModel, QDomElement  modelElem, RosterEntry* rosterEntry, QWidget *parent) : QWidget(parent)
+/*public*/ PaneProgPane::PaneProgPane(PaneContainer* container, QString name, QDomElement  pane,
+                                      CvTableModel* cvModel, VariableTableModel* varModel,
+                                      QDomElement  modelElem, RosterEntry* rosterEntry,
+                                      bool isProgPane, QWidget *parent) : JPanel(parent)
 {
- log = new Logger("PaneProgPane");
- log->setDebugEnabled(false);
- varList = new QList<int>();
- cvList = new QList<int>();
- indexedCvList = new QList<int>();
- fnMapList = new QList<FnMapPanel*>();
- fnMapListESU = new QList<FnMapPanelESU*>();
- panelList = new QList<QWidget*>();
+ common();
+ this->container = container;
+ mName = name;
+ this->setObjectName(name);
+ _cvModel = cvModel;
+ //_indexedCvModel = icvModel;
+ _varModel = varModel;
+ this->rosterEntry = rosterEntry;
+ this->isProgPane = isProgPane;
+ this->pane = pane;
+ this->modelElem = modelElem;
+ //QTimer::singleShot(1,this,SLOT(ctorContinue()));
+ ctorContinue();
+}
+
+void PaneProgPane::common()
+{
+ log->setDebugEnabled(true);
+
  readChangesButton  = new JToggleButton(tr("Read changes on sheet"));
  readChangesButton->setCheckable(true);
  readAllButton      = new JToggleButton(tr("Read full sheet"));
@@ -176,32 +162,8 @@ PaneProgPane::PaneProgPane(QWidget *parent) :
  confirmChangesButton->setCheckable(true);
  confirmAllButton     = new JToggleButton(tr("Compare full sheet"));
  confirmAllButton->setCheckable(true);
- // reference to variable being programmed (or NULL if none)
- _programmingVar = NULL;
- _programmingCV  = NULL;
- _programmingIndexedCV = NULL;
- _read = true;
- isCvTablePane = false;
 
- // busy during read, write operations
- _busy = false;
- retry = 0;
- print = false;
- changeSupport = new PropertyChangeSupport(this);
-
- this->container = container;
- mName = name;
- this->setObjectName(name);
- _cvModel = cvModel;
- //_indexedCvModel = icvModel;
- _varModel = varModel;
- this->rosterEntry = rosterEntry;
-
- this->pane = pane;
- this->modelElem = modelElem;
- QTimer::singleShot(1,this,SLOT(ctorContinue()));
 }
-
 void PaneProgPane::ctorContinue() // continue ctor after subclasses are built.
 {
 
@@ -241,6 +203,7 @@ void PaneProgPane::ctorContinue() // continue ctor after subclasses are built.
 
  // handle the xml definition
  // for all "column" elements ...
+ QDomElement rowElem = QDomElement();
  QDomNodeList nodeList= pane.childNodes();
  for(int i=0; i<nodeList.size();i++)
  {
@@ -251,16 +214,19 @@ void PaneProgPane::ctorContinue() // continue ctor after subclasses are built.
  for(int i=0; i<nodeList.size();i++)
  {
   QDomElement  elem = nodeList.at(i).toElement ();
-  if(elem.tagName() == "row")
+  if(elem.tagName() == "row"){
       hLayout1->addWidget(newRow( elem, showItem, modelElem));
+      rowElem = elem;
+  }
  }
  // for all "grid" elements ...
- QDomNodeList gridList = pane.elementsByTagName("grid");
+ QDomNodeList gridList = pane.firstChildElement("row").elementsByTagName("grid");
  for (int i=0; i<gridList.size(); i++)
  {
   // load each grid
   hLayout1->addWidget(newGrid( ((gridList.at(i).toElement ())), showItem, modelElem));
  }
+
  // for all "group" elements ...
  QDomNodeList groupList = pane.elementsByTagName("group");
  for (int i=0; i<groupList.size(); i++)
@@ -268,8 +234,51 @@ void PaneProgPane::ctorContinue() // continue ctor after subclasses are built.
   // load each group
   hLayout1->addWidget(newGroup( ((groupList.at(i).toElement ())), showItem, modelElem));
  }
+
+ // explain why pane is empty
+ if (cvList->isEmpty() && varList->isEmpty() && isProgPane)
+ {
+     JPanel* pe = new JPanel();
+     pe->setLayout(new QVBoxLayout());//pe, BoxLayout.Y_AXIS));
+     int line = 1;
+     while (line >= 0) {
+      try {
+       QString msg;// = SymbolicProgBundle.getMessage("TextTabEmptyExplain" + line);
+       switch (line) {
+       case 1:
+        msg = tr("This tab is empty because there are no options in this category");
+        break;
+       case 2:
+        msg = tr("or they are to be found on another tab.");
+        break;
+       case 3:
+        msg = "";
+        break;
+       case 4:
+        msg = tr("to hide empty tabs, uncheck Preferences -> Roster -> Programmer -> Show empty tabs.");
+       default:
+        throw new MissingResourceException();
+        break;
+       }
+       if (msg.isEmpty()) {
+           msg = " ";
+       }
+       JLabel* l = new JLabel(msg);
+       l->setAlignmentX(Qt::AlignHCenter);
+       pe->layout()->addWidget(l);
+       line++;
+      }
+      catch (MissingResourceException e) {  // deliberately runs until exception
+          line = -1;
+      }
+  }
+  layout()->addWidget(pe);
+  panelList->append(pe);
+  return;
+ }
+
  // add glue to the right to allow resize - but this isn't working as expected? Alignment?
-//    add(Box.createHorizontalGlue());
+ layout()->addWidget(Box::createHorizontalGlue());
 
  vLayout2->addLayout(hLayout1);
  scrollArea->setWidget(scrollAreaWidgetContents);
@@ -544,11 +553,11 @@ void PaneProgPane::enableConfirmButtons()
   if ( !changes ||
                 ( changes && var->isChanged()) )
   {
-   QVector<CvValue*>* cvs = var->usesCVs();
-   for (int j = 0; j<cvs->count(); j++)
+   QVector<CvValue*> cvs = var->usesCVs();
+   for (int j = 0; j<cvs.count(); j++)
    {
     // always of interest
-    CvValue* cv = cvs->at(j);
+    CvValue* cv = cvs.at(j);
     if (!changes || VariableValue::considerChanged(cv))
     set->insert(cv->number().toInt());
    }
@@ -593,7 +602,7 @@ void PaneProgPane::enableButtons(bool stat)
     if (log->isDebugEnabled()) log->debug("readPane starts with "
                                         +QString::number(varList->size())+" vars, "
                                         +QString::number(cvList->size())+" cvs "
-                                        +QString::number(indexedCvList->size())+" indexed cvs" );
+                                        );
     prepReadPane(true);
     return nextRead();
 }
@@ -610,6 +619,10 @@ void PaneProgPane::enableButtons(bool stat)
 {
  if (log->isDebugEnabled()) log->debug("start prepReadPane with onlyChanges="+QString(onlyChanges?"true":"false"));
  justChanges = onlyChanges;
+
+ if (isCvTablePane) {
+     setCvListFromTable();  // make sure list of CVs up to date if table
+ }
  enableButtons(false);
  if (justChanges == true)
  {
@@ -628,7 +641,6 @@ void PaneProgPane::enableButtons(bool stat)
  setToRead(justChanges, true);
  varListIndex = 0;
  cvListIndex = 0;
- indexedCvListIndex = 0;
 }
 
 /**
@@ -646,8 +658,7 @@ void PaneProgPane::enableButtons(bool stat)
 {
  if (log->isDebugEnabled()) log->debug("readAllPane starts with "
                                      +QString::number(varList->size())+" vars, "
-                                     +QString::number(cvList->size())+" cvs "
-                                     +QString::number(indexedCvList->size())+" indexed cvs" );
+                                     +QString::number(cvList->size())+" cvs ");
  prepReadPane(false);
  // start operation
  return nextRead();
@@ -700,26 +711,6 @@ void PaneProgPane::setToRead(bool justChanges, bool startProcess)
    else
    {
     cv->setToRead(startProcess);
-   }
-  }
-
-  for (int i = 0; i < indexedCvList->size(); i++)
-  {
-   CvValue* icv = _indexedCvModel->getCvByRow(i);
-   if (justChanges)
-   {
-    if (VariableValue::considerChanged(icv))
-    {
-     icv->setToRead(startProcess);
-    }
-    else
-    {
-     icv->setToRead(false);
-    }
-   }
-   else
-   {
-    icv->setToRead(startProcess);
    }
   }
  }
@@ -775,26 +766,6 @@ void PaneProgPane::setToWrite(bool justChanges, bool startProcess)
    else
    {
     cv->setToWrite(startProcess);
-   }
-  }
-  log->debug("about to start setToWrite of indexedCvList");
-  for (int i = 0; i < indexedCvList->size(); i++)
-  {
-   CvValue* icv = _indexedCvModel->getCvByRow(i);
-   if (justChanges)
-   {
-    if (VariableValue::considerChanged(icv))
-    {
-     icv->setToWrite(startProcess);
-    }
-    else
-    {
-     icv->setToWrite(false);
-    }
-   }
-   else
-   {
-    icv->setToWrite(startProcess);
    }
   }
  }
@@ -857,12 +828,16 @@ void PaneProgPane::executeWrite(VariableValue* var)
 bool PaneProgPane::nextRead()
 {
  // look for possible variables
+ if (log->isDebugEnabled()) {
+     log->debug(tr("nextRead scans %1 variables").arg(varList->size()));
+ }
  while ((varList->size() >= 0) && (varListIndex < varList->size()))
  {
   int varNum = varList->at(varListIndex);
   int vState = _varModel->getState( varNum );
   VariableValue* var = _varModel->getVariable(varNum);
-  if (log->isDebugEnabled()) log->debug("nextRead var index "+QString::number(varNum)+" state "+QString::number(vState)+"  label: "+var->label());
+  if (log->isDebugEnabled())
+   log->debug("nextRead var index "+QString::number(varNum)+" state "+QString::number(vState)+"  label: "+var->label());
   varListIndex++;
   if (var->isToRead() || vState == VariableValue::UNKNOWN)
   {        // always read UNKNOWN state
@@ -876,15 +851,20 @@ bool PaneProgPane::nextRead()
  }
 
  // found no variables needing read, try CVs
+ if (log->isDebugEnabled()) {
+     log->debug(tr("nextRead scans %1 CVs").arg(cvList->size()));
+ }
  while ((cvList->size() >= 0) && (cvListIndex < cvList->size()))
  {
   int cvNum = cvList->at(cvListIndex);
   CvValue* cv = _cvModel->getCvByRow(cvNum);
-  if (log->isDebugEnabled()) log->debug("nextRead cv index "+QString::number(cvNum)+" state "+QString::number(cv->getState()));
+  if (log->isDebugEnabled())
+   log->debug(tr("nextRead cv index %1 state %2").arg(cvNum).arg(cv->getState()));
   cvListIndex++;
   if (cv->isToRead() || cv->getState() == CvValue::UNKNOWN)
   {  // always read UNKNOWN state
-   if (log->isDebugEnabled()) log->debug("start read of cv "+cvNum);
+   if (log->isDebugEnabled())
+    log->debug("start read of cv "+cvNum);
    setBusy(true);
    if (_programmingCV != NULL)
     log->error("listener already set at read start");
@@ -892,46 +872,17 @@ bool PaneProgPane::nextRead()
    _read = true;
    // get notified when that state changes so can repeat
    _programmingCV->addPropertyChangeListener((PropertyChangeListener*)this);
-   connect(_programmingCV, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   connect(_programmingCV->prop, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    // and make the read request
    // _programmingCV.setToRead(false);  // CVs set this themselves
    _programmingCV->read(_cvModel->getStatusLabel());
-   if (log->isDebugEnabled()) log->debug("return from starting CV read");
+   if (log->isDebugEnabled())
+    log->debug("return from starting CV read");
    // the request may have instantateously been satisfied...
    return true;  // only make one request at a time!
   }
  }
 
- // found no CVs needing read, try indexed CVs
- while ((indexedCvList->size() >= 0) && (indexedCvListIndex < indexedCvList->size()))
- {
-  int indxVarNum = indexedCvList->at(indexedCvListIndex);
-  int indxState = _varModel->getState(indxVarNum);
-  if (log->isDebugEnabled()) log->debug(
-            "nextRead indexed cv @ row index " + QString::number(indexedCvListIndex) + " state " + QString::number(indxState));
-  VariableValue* iCv = _varModel->getVariable(indxVarNum);
-  indexedCvListIndex++;
-  if (iCv->isToRead() || indxState == VariableValue::UNKNOWN)
-  {
-   QString sz = "start read of indexed cv " +
-        (_indexedCvModel->getCvByRow(indexedCvListIndex-1))->cvName();
-   if (log->isDebugEnabled()) log->debug(sz);
-   setBusy(true);
-   if (_programmingIndexedCV != NULL)
-    log->error("listener already set at read start");
-   _programmingIndexedCV = _varModel->getVariable(indxVarNum);
-   _read = true;
-   // get notified when that state changes so can repeat
-   _programmingIndexedCV->addPropertyChangeListener((PropertyChangeListener*)this);
-   connect(_programmingIndexedCV, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-   // and make the read request
-   // _programmingIndexedCV.setToRead(false);  // CVs set this themselves
-   _programmingIndexedCV->readAll();
-   if (log->isDebugEnabled()) log->debug("return from starting indexed CV read");
-   // the request may have instantateously been satisfied...
-   return true; // only make one request at a time!
-  }
- }
  // nothing to program, end politely
  if (log->isDebugEnabled()) log->debug("nextRead found nothing to do");
  readChangesButton->setSelected(false);
@@ -977,36 +928,7 @@ bool PaneProgPane::nextConfirm()
    return true;  // only make one request at a time!
   }
  }
- // found no CVs needing read, try indexed CVs
- while ((indexedCvList->size() >= 0) && (indexedCvListIndex < indexedCvList->size()))
- {
-  int indxVarNum = indexedCvList->at(indexedCvListIndex);
-  int indxState = _varModel->getState(indxVarNum);
-  if (log->isDebugEnabled()) log->debug(
-    "nextRead indexed cv @ row index " + QString::number(indexedCvListIndex) + " state " + QString::number(indxState));
-  VariableValue* iCv = _varModel->getVariable(indxVarNum);
-  indexedCvListIndex++;
-  if (iCv->isToRead())
-  {
-   QString sz = "start confirm of indexed cv " +
-        (_indexedCvModel->getCvByRow(indexedCvListIndex-1))->cvName();
-   if (log->isDebugEnabled()) log->debug(sz);
-   setBusy(true);
-   if (_programmingIndexedCV != NULL) log->error(
-        "listener already set at confirm start");
-   _programmingIndexedCV = _varModel->getVariable(indxVarNum);
-   _read = true;
-   // get notified when that state changes so can repeat
-   _programmingIndexedCV->addPropertyChangeListener((PropertyChangeListener*)this);
-   connect(_programmingIndexedCV, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-   // and make the compare request
-   _programmingIndexedCV->confirmAll();
-   if (log->isDebugEnabled()) log->debug(
-        "return from starting indexed CV confirm");
-   // the request may have instantateously been satisfied...
-   return true; // only make one request at a time!
-  }
- }
+
  // nothing to program, end politely
  if (log->isDebugEnabled()) log->debug("nextConfirm found nothing to do");
  confirmChangesButton->setSelected(false);
@@ -1068,7 +990,6 @@ bool PaneProgPane::nextConfirm()
  setToWrite(justChanges, true);
  varListIndex = 0;
  cvListIndex = 0;
- indexedCvListIndex = 0;
  log->debug("end prepWritePane");
 }
 
@@ -1120,37 +1041,7 @@ bool PaneProgPane::nextWrite()
     return true;  // only make one request at a time!
   }
  }
- // check for Indexed CVs to handle (e.g. for Indexed CV table)
- while ((indexedCvList->size() >= 0) && (indexedCvListIndex < indexedCvList->size()))
- {
-  int indxVarNum = indexedCvList->at(indexedCvListIndex);
-  int indxState = _varModel->getState(indxVarNum);
-  if (log->isDebugEnabled()) log->debug(
-    "nextWrite indexed cv @ row index " + QString::number(indexedCvListIndex) + " state " + QString::number(indxState));
-  VariableValue* iCv = _varModel->getVariable(indxVarNum);
-  indexedCvListIndex++;
-  if (iCv->isToWrite() || indxState == VariableValue::UNKNOWN)
-  {
-   QString sz = "start write of indexed cv " +
-        (  _indexedCvModel->getCvByRow(indexedCvListIndex-1))->cvName();
-   if (log->isDebugEnabled()) log->debug(sz);
 
-   setBusy(true);
-   if (_programmingIndexedCV != NULL)
-    log->error("listener already set at read start");
-   _programmingIndexedCV = _varModel->getVariable(indxVarNum);
-   _read = true;
-   // get notified when that state changes so can repeat
-   _programmingIndexedCV->addPropertyChangeListener((PropertyChangeListener*)this);
-   connect(_programmingIndexedCV, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-   // _programmingIndexedCV.setToWrite(false);  // CVs set this themselves
-   // and make the write request
-   _programmingIndexedCV->writeAll();
-   if (log->isDebugEnabled()) log->debug("return from starting indexed CV read");
-    // the request may have instantateously been satisfied...
-    return true; // only make one request at a time!
-  }
- }
  // nothing to program, end politely
  if (log->isDebugEnabled()) log->debug("nextWrite found nothing to do");
  writeChangesButton->setSelected(false);
@@ -1192,7 +1083,6 @@ bool PaneProgPane::nextWrite()
  setToRead(justChanges, true);
  varListIndex = 0;
  cvListIndex = 0;
- indexedCvListIndex = 0;
 }
 
 
@@ -1208,8 +1098,7 @@ bool PaneProgPane::nextWrite()
 {
  if (log->isDebugEnabled()) log->debug("confirmPane starts with "
                                         +QString::number(varList->size())+" vars, "
-                                        +QString::number(cvList->size())+" cvs "
-                                        +QString::number(indexedCvList->size())+" indexed cvs" );
+                                        +QString::number(cvList->size())+" cvs ");
   prepConfirmPane(true);
  return nextConfirm();
 }
@@ -1229,8 +1118,7 @@ bool PaneProgPane::nextWrite()
 {
  if (log->isDebugEnabled()) log->debug("confirmAllPane starts with "
                                         +QString::number(varList->size())+" vars, "
-                                        +QString::number(cvList->size())+" cvs "
-                                        +QString::number(indexedCvList->size())+" indexed cvs" );
+                                        +QString::number(cvList->size())+" cvs " );
   prepConfirmPane(false);
  // start operation
  return nextConfirm();
@@ -1261,7 +1149,7 @@ bool PaneProgPane::nextWrite()
 {
  emit notifyPropertyChange(e);
  // check for the right event & condition
- if (_programmingVar == NULL && _programmingCV == NULL && _programmingIndexedCV == NULL)
+ if (_programmingVar == NULL && _programmingCV == NULL)
  {
   log->warn("unexpected propertyChange: "+e->getPropertyName());
   return;
@@ -1309,25 +1197,6 @@ bool PaneProgPane::nextWrite()
   replyWhileProgrammingCV();
   return;
  }
- else if (e->getSource() == _programmingIndexedCV &&
-               e->getPropertyName()==("Busy") &&
-               (e->getNewValue())==false )
- {
-  if (_programmingIndexedCV->getState() == VariableValue::UNKNOWN)
-  {
-   if (retry == 0)
-   {
-    indexedCvListIndex--;
-    retry++;
-   }
-   else
-   {
-    retry = 0;
-   }
-  }
-  replyWhileProgrammingIndxCV();
-  return;
- }
  else
  {
   if (log->isDebugEnabled() && e->getPropertyName()==("Busy"))
@@ -1355,17 +1224,6 @@ bool PaneProgPane::nextWrite()
  _programmingCV->removePropertyChangeListener((PropertyChangeListener*)this);
  disconnect(_programmingCV, SIGNAL(propertyChange(PropertyChangeEvent*)));
  _programmingCV = NULL;
- // restart the operation
- restartProgramming();
-}
-
-/*public*/ void PaneProgPane::replyWhileProgrammingIndxCV()
-{
- if (log->isDebugEnabled()) log->debug("correct event for programming Indexed CV, restart operation");
- // remove existing listener
- _programmingIndexedCV->removePropertyChangeListener((PropertyChangeListener*)this);
- disconnect(_programmingIndexedCV->prop, SIGNAL(propertyChange(PropertyChangeEvent*)));
- _programmingIndexedCV = NULL;
  // restart the operation
  restartProgramming();
 }
@@ -1398,7 +1256,6 @@ void PaneProgPane::restartProgramming()
  setToWrite(false, false);
  varListIndex = varList->size();
  cvListIndex = cvList->size();
- indexedCvListIndex = indexedCvList->size();
  if (isBusy())
  {
   container->paneFinished();
@@ -1411,12 +1268,12 @@ void PaneProgPane::restartProgramming()
 /**
  * Create a new group from the JDOM group QDomElement
  */
-/*protected*/ QWidget* PaneProgPane::newGroup(QDomElement  element, bool showStdName, QDomElement  modelElem)
+/*protected*/ JPanel* PaneProgPane::newGroup(QDomElement  element, bool showStdName, QDomElement  modelElem)
 {
  // create a panel to add as a new column or row
- /*final*/ QWidget* c = new QWidget();
+ /*final*/ JPanel* c = new JPanel();
  panelList->append(c);
- QGridLayout* g = new QGridLayout();
+ GridBagLayout* g = new GridBagLayout();
  GridBagConstraints* cs = new GridBagConstraints();
  c->setLayout(g);
 
@@ -1446,8 +1303,8 @@ void PaneProgPane::restartProgramming()
    JSeparator* j = new JSeparator(JSeparator::HORIZONTAL);
    cs->fill = GridBagConstraints::BOTH;
    cs->gridwidth = GridBagConstraints::REMAINDER;
-   //g.setConstraints(j, cs);
-   g->addWidget(j,cs->gridy, cs->gridx);
+   //g.setConstraints(j, *cs);
+   g->addWidget(j,*cs);
    cs->gridwidth = 1;
   }
   else if (name== ("label"))
@@ -1464,39 +1321,6 @@ void PaneProgPane::restartProgramming()
   {
    makeCvTable(cs, g, c);
   }
-  else if (name== ("indxcvtable"))
-  {
-   log->debug("starting to build IndexedCvTable pane");
-   JTable* indxcvTable = new JTable();
-   indxcvTable->setModel(_indexedCvModel);
-//           JScrollPane cvScroll = new JScrollPane(indxcvTable);
-//           indxcvTable.setDefaultRenderer(JTextField.class, new ValueRenderer());
-//           indxcvTable.setDefaultRenderer(JButton.class, new ValueRenderer());
-//           indxcvTable.setDefaultEditor(JTextField.class, new ValueEditor());
-//           indxcvTable.setDefaultEditor(JButton.class, new ValueEditor());
-//           indxcvTable.setRowHeight(new JButton("X").getPreferredSize().height);
-//           indxcvTable.setPreferredScrollableViewportSize(new Dimension(700, indxcvTable.getRowHeight()*14));
-//           cvScroll.setColumnHeaderView(indxcvTable.getTableHeader());
-//           // don't want a horizontal scroll bar
-//           // Need to see the whole row at one time
-////                indxcvTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-   cs->gridwidth = GridBagConstraints::REMAINDER;
-   //g.setConstraints(cvScroll, cs);
-   //c.add(cvScroll);
-   g->addWidget(indxcvTable,cs->gridy, cs->gridx);
-   cs->gridwidth = 1;
-
-   // remember which indexed CVs to read/write
-   for (int j=0; j<_indexedCvModel->rowCount(QModelIndex()); j++)
-   {
-    QString sz = "CV" +_indexedCvModel->getName(j);
-    int in = _varModel->findVarIndex(sz);
-    indexedCvList->append((in));
-   }
-
-   _cvTable = true;
-   log->debug("end of building IndexedCvTable pane");
-  }
   else if (name== ("fnmapping"))
   {
    pickFnMapPanel(c, g, cs, modelElem);
@@ -1507,8 +1331,8 @@ void PaneProgPane::restartProgramming()
    if (l->children().count() > 1)
    {
     cs->gridwidth = GridBagConstraints::REMAINDER;
-    //g.setConstraints(l, cs);
-    g->addWidget(l, cs->gridy,cs->gridx);
+    //g.setConstraints(l, *cs);
+    g->addWidget(l, *cs);
     cs->gridwidth = 1;
    }
   }
@@ -1520,8 +1344,8 @@ void PaneProgPane::restartProgramming()
    if (l->children().count() > 1)
    {
     panelList->append(l);
-    //g.setConstraints(l, cs);
-    g->addWidget(l, cs->gridy,cs->gridx);
+    //g.setConstraints(l, *cs);
+    g->addWidget(l, *cs);
     cs->gridheight = 1;
    }
   }
@@ -1533,8 +1357,8 @@ void PaneProgPane::restartProgramming()
    if (l->children().count() > 1)
    {
     panelList->append(l);
-    //g.setConstraints(l, cs);
-    g->addWidget(l, cs->gridy,cs->gridx);
+    //g.setConstraints(l, *cs);
+    g->addWidget(l, *cs);
     cs->gridwidth = 1;
    }
   }
@@ -1546,8 +1370,8 @@ void PaneProgPane::restartProgramming()
    if (l->children().count() > 1)
    {
     panelList->append(l);
-    //g.setConstraints(l, cs);
-    g->addWidget(l, cs->gridy,cs->gridx);
+    //g.setConstraints(l, *cs);
+    g->addWidget(l, *cs);
     cs->gridwidth = 1;
    }
   }
@@ -1558,8 +1382,8 @@ void PaneProgPane::restartProgramming()
    if (l->children().count() > 1)
    {
     panelList->append(l);
-    //g.setConstraints(l, cs);
-    g->addWidget(l, cs->gridy,cs->gridx);
+    //g.setConstraints(l, *cs);
+    g->addWidget(l, *cs);
    }
   }
   else if (name!= ("qualifier"))
@@ -1570,11 +1394,11 @@ void PaneProgPane::restartProgramming()
  // add glue to the bottom to allow resize
  if (c->children().count() > 1)
  {
-  //g->addWidget(Box.createVerticalGlue(), cs->gridy,cs->gridx);
+  g->addWidget(Box::createVerticalGlue(), *cs);
  }
-
+#if 0
  // handle qualification if any
- MyQualifierAdder* qa = new MyQualifierAdder(c, this);
+ MyQualifierAdder* qa = new MyQualifierAdder(1, this);
 // {
 //       protected Qualifier createQualifier(VariableValue var, String relation, String value) {
 //           return new JComponentQualifier(c, var, Integer.parseInt(value), relation);
@@ -1585,13 +1409,14 @@ void PaneProgPane::restartProgramming()
 // };
 
  qa->processModifierElements(element, _varModel);
+#endif
  return c;
 }
 
 /**
 * Create a new grid group from the JDOM group QDomElement
 */
-/*protected*/ void PaneProgPane::newGridGroup(QDomElement  element, /*final*/ QWidget* c, QGridLayout* g, GridGlobals* globs, bool showStdName, QDomElement  modelElem)
+/*protected*/ void PaneProgPane::newGridGroup(QDomElement  element, /*final*/ JPanel *c, GridBagLayout *g, GridGlobals* globs, bool showStdName, QDomElement  modelElem)
 {
 
  // handle include/exclude
@@ -1613,14 +1438,15 @@ void PaneProgPane::restartProgramming()
   // decode the type
   if (name== ("griditem"))
   {
-   /*final*/ QWidget* l = newGridItem(e, showStdName, modelElem, globs);
+   /*final*/ JPanel* l = newGridItem(e, showStdName, modelElem, globs);
    if (l->children().count() > 1)
    {
     panelList->append(l);
     //g.setConstraints(l, globs.gridConstraints);
-    g->addWidget(l, globs->gridConstraints->gridy,globs->gridConstraints->gridx);
+    g->addWidget(l, *globs->gridConstraints);
 //                     globs.gridConstraints.gridwidth = 1;
     // handle qualification if any
+#if 0
     MyQualifierAdder* qa = new MyQualifierAdder(c, this);
 //    {
 //               protected Qualifier createQualifier(VariableValue var, String relation, String value) {
@@ -1632,6 +1458,7 @@ void PaneProgPane::restartProgramming()
 //    };
 
     qa->processModifierElements(e, _varModel);
+#endif
    }
   }
   else if (name== ("group"))
@@ -1655,15 +1482,14 @@ void PaneProgPane::restartProgramming()
  * Create a single column from the JDOM column QDomElement
  */
 //@SuppressWarnings("unchecked")
-/*public*/ QWidget *PaneProgPane::newColumn(QDomElement  element, bool showStdName, QDomElement  modelElem)
+/*public*/ JPanel *PaneProgPane::newColumn(QDomElement  element, bool showStdName, QDomElement  modelElem)
 {
  // create a panel to add as a new column or row
- QWidget* c = new QWidget();
+ JPanel* c = new JPanel();
  c->resize(523, 368);
  panelList->append(c);
- //GridBagLayout g = new GridBagLayout();
+ GridBagLayout* g = new GridBagLayout();
  GridBagConstraints* cs = new GridBagConstraints();
- QGridLayout* g = new QGridLayout(c);
  g->setContentsMargins(0,0,0,0);
  g->setVerticalSpacing(2);
  g->setHorizontalSpacing(2);
@@ -1673,22 +1499,26 @@ void PaneProgPane::restartProgramming()
  setFont(font);
  c->setLayout(g);
 
+// // handle include/exclude
+// if (!PaneProgFrame::isIncludedFE(element, modelElem, rosterEntry, "", "")) {
+//     return c;
+// }
+
  // handle the xml definition
  // for all elements in the column or row
  QDomNodeList elemList = element.childNodes();
- if (log->isDebugEnabled()) log->debug("newColumn starting with "+QString::number(elemList.size())+" elements");
+ if (log->isDebugEnabled())
+  log->debug("newColumn starting with "+QString::number(elemList.size())+" elements");
  for (int i=0; i<elemList.size(); i++)
  {
   // update the grid position
-//  if(cs->gridy == GridBagConstraints::RELATIVE)
-//   cs->gridy = 0;
-//  else
   cs->gridy++;
   cs->gridx = 0;
 
   QDomElement  e = (elemList.at(i).toElement ());
   QString name = e.tagName();
-  if (log->isDebugEnabled()) log->debug("newColumn processing "+name+" element");
+  if (log->isDebugEnabled())
+   log->debug("newColumn processing "+name+" element");
   // decode the type
   if (name==("display"))
   { // its a variable
@@ -1706,10 +1536,10 @@ void PaneProgPane::restartProgramming()
    line->setFrameShadow(QFrame::Sunken);
    cs->fill = GridBagConstraints::BOTH;
    cs->gridwidth = GridBagConstraints::REMAINDER;
-   //g.setConstraints(j, cs);
+   //g.setConstraints(j, *cs);
    //c.add(j);
    Q_ASSERT(cs->gridx >=0);
-   g->addWidget(line, cs->gridy,cs->gridx,cs->rowSpan(), cs->colSpan());
+   g->addWidget(line, *cs);
    cs->gridwidth = 1;
   }
   else if (name==("label"))
@@ -1717,123 +1547,36 @@ void PaneProgPane::restartProgramming()
    cs->gridwidth = GridBagConstraints::REMAINDER;
    makeLabel(e, c, g, cs);
   }
-  else if (name==("label"))
+  else if (name == ("soundlabel"))
   {
    cs->gridwidth = GridBagConstraints::REMAINDER;
-   makeLabel(e, c, g, cs);
+   makeSoundLabel(e, c, g, cs);
   }
-#if 0 // Done. See Below
-
-        else if (name==("cvtable")) {
-            log->debug("starting to build CvTable pane");
-                            // this is copied from SymbolicProgFrame
-            JTable cvTable = new JTable(_cvModel);
-            JScrollPane cvScroll = new JScrollPane(cvTable);
-            cvTable.setDefaultRenderer(JTextField.class, new ValueRenderer());
-            cvTable.setDefaultRenderer(JButton.class, new ValueRenderer());
-            cvTable.setDefaultEditor(JTextField.class, new ValueEditor());
-            cvTable.setDefaultEditor(JButton.class, new ValueEditor());
-            cvTable.setRowHeight(new JButton("X").getPreferredSize().height);
-            cvScroll.setColumnHeaderView(cvTable.getTableHeader());
-            // have to shut off autoResizeMode to get horizontal scroll to work (JavaSwing p 541)
-            // instead of forcing the columns to fill the frame (and only fill)
-            cvTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-            cs->gridwidth = GridBagConstraints::REMAINDER;
-            g.setConstraints(cvScroll, cs);
-            c.add(cvScroll);
-            cs->gridwidth = 1;
-
-            // remember which CVs to read/write
-            for (int j=0; j<_cvModel->getRowCount(); j++) {
-                cvList.add(Integer.valueOf(j));
-            }
-
-            _cvTable = true;
-            log->debug("end of building CvTable pane");
-
-        }
-#endif
   else if (name==("cvtable"))
   {
-   log->debug("starting to build CvTable pane");
+//   log->debug("starting to build CvTable pane");
 
-   JTable* cvTable = new JTable();
-   Q_ASSERT(cs->gridx >=0);
-   g->addWidget(cvTable, cs->gridy,cs->gridx,cs->rowSpan(), cs->colSpan());
-   //cvTable->setModel(new QtCvTableModel(_cvModel));
-   QSortFilterProxyModel* proxyModel = new QSortFilterProxyModel(this);
-   proxyModel->setSourceModel(_cvModel);
-   cvTable->setModel(proxyModel);
-   cvTable->setSortingEnabled(true);
-   //cvTable->setModel(_cvModel);
-   cs->gridheight = GridBagConstraints::REMAINDER;
-   // remember which CVs to read/write
-   for (int j=0; j<_cvModel->rowCount(QModelIndex()); j++) {
-       cvList->append(j);
-   }
+//   JTable* cvTable = new JTable();
+//   Q_ASSERT(cs->gridx >=0);
+//   g->addWidget(cvTable, cs->gridy,cs->gridx,cs->rowSpan(), cs->colSpan());
+//   //cvTable->setModel(new QtCvTableModel(_cvModel));
+//   QSortFilterProxyModel* proxyModel = new QSortFilterProxyModel(this);
+//   proxyModel->setSourceModel(_cvModel);
+//   cvTable->setModel(proxyModel);
+//   cvTable->setSortingEnabled(true);
+//   //cvTable->setModel(_cvModel);
+//   cs->gridheight = GridBagConstraints::REMAINDER;
+//   // remember which CVs to read/write
+//   for (int j=0; j<_cvModel->rowCount(QModelIndex()); j++) {
+//       cvList->append(j);
+//   }
 
-   _cvTable = true;
-   _cvModel->configureTable(cvTable);
-   //connect(_cvModel, SIGNAL(modelChange(CvValue*,int)), this, SLOT(onModelChange(CvValue*,int)));
+//   _cvTable = true;
+//   _cvModel->configureTable(cvTable);
+//   //connect(_cvModel, SIGNAL(modelChange(CvValue*,int)), this, SLOT(onModelChange(CvValue*,int)));
 
-   log->debug("end of building CvTable pane");
-  }
-#if 0 // Done, see below->
-        else if (name==("indxcvtable")) {
-            log->debug("starting to build IndexedCvTable pane");
-            JTable indxcvTable   = new JTable(_indexedCvModel);
-            JScrollPane cvScroll = new JScrollPane(indxcvTable);
-            indxcvTable.setDefaultRenderer(JTextField.class, new ValueRenderer());
-            indxcvTable.setDefaultRenderer(JButton.class, new ValueRenderer());
-            indxcvTable.setDefaultEditor(JTextField.class, new ValueEditor());
-            indxcvTable.setDefaultEditor(JButton.class, new ValueEditor());
-            indxcvTable.setRowHeight(new JButton("X").getPreferredSize().height);
-            indxcvTable.setPreferredScrollableViewportSize(new Dimension(700, indxcvTable.getRowHeight()*14));
-            cvScroll.setColumnHeaderView(indxcvTable.getTableHeader());
-            // don't want a horizontal scroll bar
-            // Need to see the whole row at one time
-//                indxcvTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-            cs->gridwidth = GridBagConstraints::REMAINDER;
-            g.setConstraints(cvScroll, cs);
-            c.add(cvScroll);
-            cs->gridwidth = 1;
-
-            // remember which indexed CVs to read/write
-            for (int j=0; j<_indexedCvModel.getRowCount(); j++) {
-                String sz = "CV" +_indexedCvModel.getName(j);
-                int in = _varModel.findVarIndex(sz);
-                indexedCvList.add(Integer.valueOf(in));
-            }
-
-            _cvTable = true;
-            log->debug("end of building IndexedCvTable pane");
-
-        }
-#endif
-  else if (name==("indxcvtable"))
-  {
-   log->debug("starting to build IndexedCvTable pane");
-
-   JTable* indxcvtable = new JTable();
-   Q_ASSERT(cs->gridx >=0);
-   g->addWidget(indxcvtable, cs->gridy,cs->gridx,cs->rowSpan(), cs->colSpan());
-   indxcvtable->setModel(_indexedCvModel);
-   _indexedCvModel->setTable(indxcvtable);
-
-   cs->gridheight = GridBagConstraints::REMAINDER;
-   // remember which CVs to read/write
-   // remember which indexed CVs to read/write
-   for (int j=0; j<_indexedCvModel->rowCount(QModelIndex()); j++)
-   {
-    QString sz = "CV" +_indexedCvModel->getName(j);
-    int in = _varModel->findVarIndex(sz);
-    indexedCvList->append((in));
-   }
-
-   _cvTable = true;
-   connect(_indexedCvModel, SIGNAL(modelChange(CvValue*,int)), this, SLOT(onIvModelChange(CvValue*,int)));
-   _cvModel->configureTable(indxcvtable);
-   log->debug("end of building IndexedCvTable pane");
+//   log->debug("end of building CvTable pane");
+   makeCvTable(cs, g, c);
   }
   else if (name==("fnmapping"))
   {
@@ -1843,10 +1586,10 @@ void PaneProgPane::restartProgramming()
   {
    QWidget* l = addDccAddressPanel(e);
    cs->gridwidth = GridBagConstraints::REMAINDER;
-//            g->setConstraints(l, cs);
+//            g->setConstraints(l, *cs);
             //c->layout()->addWidget(l);
    Q_ASSERT(cs->gridx >=0);
-   g->addWidget(l, cs->gridy,cs->gridx/*,cs->rowSpan(), cs->colSpan()*/);
+   g->addWidget(l, *cs);
    cs->gridwidth = 1;
   }
   else if (name== ("column"))
@@ -1857,8 +1600,8 @@ void PaneProgPane::restartProgramming()
    if (l->children().count() > 1)
    {
     panelList->append(l);
-    //g.setConstraints(l, cs);
-    g->addWidget(l, cs->gridy,cs->gridx);
+    //g.setConstraints(l, *cs);
+    g->addWidget(l, *cs);
     cs->gridheight = 1;
    }
   }
@@ -1866,12 +1609,12 @@ void PaneProgPane::restartProgramming()
   {
    // nested "row" elements ...
    cs->gridwidth = GridBagConstraints::REMAINDER;
-   QWidget* l = newRow(e, showStdName, modelElem);
+   JPanel* l = newRow(e, showStdName, modelElem);
    panelList->append(l);
-//   g->setConstraints(l, cs);
+//   g->setConstraints(l, *cs);
    //c->layout()->addWidget(l);
    Q_ASSERT(cs->gridx >=0);
-   g->addWidget(l, cs->gridy,cs->gridx/*,cs->rowSpan(), cs->colSpan()*/);
+   g->addWidget(l, *cs);
    cs->gridwidth = 1;
   }
   else if (name== ("grid"))
@@ -1882,8 +1625,8 @@ void PaneProgPane::restartProgramming()
    if (l->children().count() > 1)
    {
     panelList->append(l);
-    //g.setConstraints(l, cs);
-    g->addWidget(l, cs->gridy,cs->gridx);
+    //g.setConstraints(l, *cs);
+    g->addWidget(l, *cs);
     cs->gridwidth = 1;
    }
   }
@@ -1894,8 +1637,8 @@ void PaneProgPane::restartProgramming()
    if (l->children().count() > 1)
    {
     panelList->append(l);
-    //g.setConstraints(l, cs);
-    g->addWidget(l, cs->gridy,cs->gridx);
+    //g.setConstraints(l, *cs);
+    g->addWidget(l, *cs);
    }
   }
   else if (name!=("qualifier"))
@@ -1915,15 +1658,14 @@ void PaneProgPane::restartProgramming()
  * Create a single row from the JDOM column QDomElement
  */
 //@SuppressWarnings("unchecked")
-/*public*/ QWidget* PaneProgPane::newRow(QDomElement  element, bool showStdName, QDomElement  modelElem)
+/*public*/ JPanel* PaneProgPane::newRow(QDomElement  element, bool showStdName, QDomElement  modelElem)
 {
  // create a panel to add as a new column or row
- QWidget* c = new QWidget();
+ JPanel* c = new JPanel();
  c->resize(523, 368);
  panelList->append(c);
- //GridBagLayout g = new GridBagLayout();
+ GridBagLayout* g = new GridBagLayout();
  GridBagConstraints* cs = new GridBagConstraints();
- QGridLayout* g = new QGridLayout(c);
  g->setContentsMargins(0,0,0,0);
  g->setVerticalSpacing(2);
  g->setHorizontalSpacing(2);
@@ -1946,11 +1688,12 @@ void PaneProgPane::restartProgramming()
 //  else
   cs->gridx++;
 
-  QDomElement  e = elemList.at(i).toElement ();
+  QDomElement  e = elemList.at(i).toElement();
   QString name = e.tagName();
-  if (log->isDebugEnabled()) log->debug("newRow processing "+name+" element");
+  if (log->isDebugEnabled())
+   log->debug("newRow processing "+name+" element");
   // decode the type
-  if (name==("display"))
+  if (name == ("display"))
   { // its a variable
     // load the variable
       Q_ASSERT(cs->gridx >=0);
@@ -1962,7 +1705,7 @@ void PaneProgPane::restartProgramming()
    //JSeparator j = new JSeparator(javax.swing.SwingConstants.VERTICAL);
    cs->fill = GridBagConstraints::BOTH;
    cs->gridheight = GridBagConstraints::REMAINDER;
-   //g.setConstraints(j, cs);
+   //g.setConstraints(j, *cs);
    //c.add(j);
    QFrame* line = new QFrame(c);
       line->setObjectName(QString::fromUtf8("line"));
@@ -1970,7 +1713,7 @@ void PaneProgPane::restartProgramming()
       line->setFrameShape(QFrame::VLine);
       line->setFrameShadow(QFrame::Sunken);
       Q_ASSERT(cs->gridx >=0);
-   g->addWidget(line, cs->gridy,cs->gridx,cs->rowSpan(), cs->colSpan());
+   g->addWidget(line, *cs);
    cs->fill = GridBagConstraints::NONE;
    cs->gridheight = 1;
   }
@@ -1984,110 +1727,9 @@ void PaneProgPane::restartProgramming()
    cs->gridheight = GridBagConstraints::REMAINDER;
    makeSoundLabel(e, c, g, cs);
   }
-#if 0 // Done:
-
-    else if (name==("cvtable")) {
-        log->debug("starting to build CvTable pane");
-        // this is copied from SymbolicProgFrame
-        JTable			cvTable		= new JTable(_cvModel);
-        JScrollPane 	cvScroll	= new JScrollPane(cvTable);
-        cvTable.setDefaultRenderer(JTextField.class, new ValueRenderer());
-        cvTable.setDefaultRenderer(JButton.class, new ValueRenderer());
-        cvTable.setDefaultEditor(JTextField.class, new ValueEditor());
-        cvTable.setDefaultEditor(JButton.class, new ValueEditor());
-        cvTable.setRowHeight(new JButton("X").getPreferredSize().height);
-        cvScroll.setColumnHeaderView(cvTable.getTableHeader());
-        // have to shut off autoResizeMode to get horizontal scroll to work (JavaSwing p 541)
-        // instead of forcing the columns to fill the frame (and only fill)
-        cvTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-
-        cs->gridheight = GridBagConstraints::REMAINDER;
-        g.setConstraints(cvScroll, cs);
-        c.add(cvScroll);
-        cs->gridheight = 1;
-
-        // remember which CVs to read/write
-        for (int j=0; j<_cvModel->getRowCount(); j++) {
-            cvList.add(Integer.valueOf(j));
-        }
-        _cvTable = true;
-        log->debug("end of building CvTable pane");
-
-    }
-#endif
   else if (name==("cvtable"))
   {
-   log->debug("starting to build CvTable pane");
-
-   QTableView* cvTable = new QTableView();
-   Q_ASSERT(cs->gridx >=0);
-   _cvModel->setParent(this);
-   g->addWidget(cvTable, cs->gridy,cs->gridx,cs->rowSpan(), cs->colSpan());
-   QSortFilterProxyModel* proxyModel = new QSortFilterProxyModel(this);
-   proxyModel->setSourceModel(_cvModel);
-   cvTable->setModel(proxyModel);
-   //cvTable->setModel(_cvModel);
-   cvTable->setSortingEnabled(true);
-   cs->gridheight = GridBagConstraints::REMAINDER;
-   for (int j=0; j<_cvModel->rowCount(QModelIndex()); j++)
-   {
-    cvList->append(j);
-   }
-
-   _cvTable = true;
-   log->debug("end of building CvTable pane");
-  }
-#if 0 // Done:
-   else if (name==("indxcvtable")) {
-        log->debug("starting to build IndexedCvTable pane");
-        JTable	indxcvTable	= new JTable(_indexedCvModel);
-        JScrollPane cvScroll = new JScrollPane(indxcvTable);
-        indxcvTable.setDefaultRenderer(JTextField.class, new ValueRenderer());
-        indxcvTable.setDefaultRenderer(JButton.class, new ValueRenderer());
-        indxcvTable.setDefaultEditor(JTextField.class, new ValueEditor());
-        indxcvTable.setDefaultEditor(JButton.class, new ValueEditor());
-        indxcvTable.setRowHeight(new JButton("X").getPreferredSize().height);
-        indxcvTable.setPreferredScrollableViewportSize(new Dimension(700, indxcvTable.getRowHeight()*14));
-        cvScroll.setColumnHeaderView(indxcvTable.getTableHeader());
-        // don't want a horizontal scroll bar
-        // Need to see the whole row at one time
-//                indxcvTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        cs->gridwidth = GridBagConstraints::REMAINDER;
-        g.setConstraints(cvScroll, cs);
-        c.add(cvScroll);
-        cs->gridwidth = 1;
-
-        // remember which indexed CVs to read/write
-        for (int j=0; j<_indexedCvModel.getRowCount(); j++) {
-            String sz = "CV" +_indexedCvModel.getName(j);
-            int in = _varModel.findVarIndex(sz);
-            indexedCvList.add(Integer.valueOf(in));
-        }
-
-        _cvTable = true;
-        log->debug("end of building IndexedCvTable pane");
-    }
-#endif
-  else if (name==("indxcvtable"))
-  {
-   log->debug("starting to build IndexedCvTable pane");
-
-   QTableView* cvTable = new QTableView();
-   Q_ASSERT(cs->gridx >=0);
-   g->addWidget(cvTable, cs->gridy,cs->gridx,cs->rowSpan(), cs->colSpan());
-   cvTable->setModel(_indexedCvModel);
-   cs->gridheight = GridBagConstraints::REMAINDER;
-   // remember which CVs to read/write
-   // remember which indexed CVs to read/write
-   for (int j=0; j<_indexedCvModel->rowCount(QModelIndex()); j++)
-   {
-    QString sz = "CV" +_indexedCvModel->getName(j);
-    int in = _varModel->findVarIndex(sz);
-    indexedCvList->append((in));
-   }
-
-   _cvTable = true;
-   log->debug("end of building IndexedCvTable pane");
+   makeCvTable(cs, g, c);
   }
   else if (name==("fnmapping"))
   {
@@ -2097,10 +1739,10 @@ void PaneProgPane::restartProgramming()
   {
    QWidget* l = addDccAddressPanel(e);
    cs->gridheight = GridBagConstraints::REMAINDER;
-//            g->setConstraints(l, cs);
+//            g->setConstraints(l, *cs);
         //c->layout()->addWidget(l);
    Q_ASSERT(cs->gridx >=0);
-   g->addWidget(l, cs->gridy,cs->gridx/*,cs->rowSpan(), cs->colSpan()*/);
+   g->addWidget(l, *cs);
    cs->gridheight = 1;
   }
   else if (name==("column"))
@@ -2109,10 +1751,10 @@ void PaneProgPane::restartProgramming()
    cs->gridheight = GridBagConstraints::REMAINDER;
    QWidget* l = newColumn(e, showStdName, modelElem);
    panelList->append(l);
-//  g->setConstraints(l, cs);
+//  g->setConstraints(l, *cs);
    //c->layout()->addWidget(l);
    Q_ASSERT(cs->gridx >=0);
-   g->addWidget(l, cs->gridy,cs->gridx/*,cs->rowSpan(), cs->colSpan()*/);
+   g->addWidget(l, *cs);
    cs->gridheight = 1;
   }
   else if (name== ("row"))
@@ -2123,8 +1765,8 @@ void PaneProgPane::restartProgramming()
    if (l->children().count() > 1)
    {
     panelList->append(l);
-    //g.setConstraints(l, cs);
-    g->addWidget(l, cs->gridy,cs->gridx);
+    //g.setConstraints(l, *cs);
+    g->addWidget(l, *cs);
     cs->gridwidth = 1;
    }
   }
@@ -2136,8 +1778,8 @@ void PaneProgPane::restartProgramming()
    if (l->children().count() > 1)
    {
     panelList->append(l);
-    //g.setConstraints(l, cs);
-    g->addWidget(l, cs->gridy,cs->gridx);
+    //g.setConstraints(l, *cs);
+    g->addWidget(l, *cs);
     cs->gridwidth = 1;
    }
   }
@@ -2148,8 +1790,8 @@ void PaneProgPane::restartProgramming()
    if (l->children().count() > 1)
    {
     panelList->append(l);
-    //g.setConstraints(l, cs);
-    g->addWidget(l, cs->gridy,cs->gridx);
+    //g.setConstraints(l, *cs);
+    g->addWidget(l, *cs);
 }
   }
   else if (name!=("qualifier"))
@@ -2167,12 +1809,12 @@ void PaneProgPane::restartProgramming()
 /**
  * Create a grid from the JDOM  QDomElement
  */
-/*public*/ QWidget* PaneProgPane::newGrid(QDomElement  element, bool showStdName, QDomElement  modelElem)
+/*public*/ JPanel* PaneProgPane::newGrid(QDomElement  element, bool showStdName, QDomElement  modelElem)
 {
  // create a panel to add as a new grid
- /*final*/ QWidget* c = new QWidget();
+ /*final*/ JPanel* c = new JPanel();
  panelList->append(c);
- QGridLayout* g = new QGridLayout();
+ GridBagLayout* g = new GridBagLayout();
  c->setLayout(g);
 
  GridGlobals* globs = new GridGlobals();
@@ -2182,13 +1824,13 @@ void PaneProgPane::restartProgramming()
  QDomNodeList elemList = element.childNodes();
  //globs->gridAttList = element.getAttributes(); // get grid-level attributes
  globs->gridAttList = getAttributeList(element);
- if (log->isDebugEnabled()) log->debug("newGrid starting with "+QString::number(elemList.size())+" elements");
+ log->trace(tr("newGrid starting with %1 elements").arg(elemList.size()));
  for (int i=0; i<elemList.size(); i++)
  {
   globs->gridConstraints = new GridBagConstraints();
-  QDomElement  e = elemList.at(i).toElement();
+  QDomElement e = elemList.at(i).toElement();
   QString name = e.tagName();
-  //log->trace("newGrid processing {} element", name);
+  log->trace(tr("newGrid processing %1 element").arg(name));
   // decode the type
   if (name== ("griditem"))
   {
@@ -2197,7 +1839,7 @@ void PaneProgPane::restartProgramming()
    {
     panelList->append(l);
     //g.setConstraints(l, globs.gridConstraints);
-    g->addWidget(l, globs->gridConstraints->gridy,globs->gridConstraints->gridx);
+    g->addWidget(l, *globs->gridConstraints);
 //                     globs.gridConstraints.gridwidth = 1;
    }
   }
@@ -2218,6 +1860,7 @@ void PaneProgPane::restartProgramming()
   //g->addWidget(Box.createVerticalGlue());
  }
 
+#if 0
  // handle qualification if any
  MyQualifierAdder* qa = new MyQualifierAdder(c, this);
 //    {
@@ -2230,36 +1873,38 @@ void PaneProgPane::restartProgramming()
 //    };
 
  qa->processModifierElements(element, _varModel);
+#endif
  return c;
 }
 
-MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAdder(self)
+MyQualifierAdder::MyQualifierAdder(JLabel *l, PaneProgPane *self) : QualifierAdder(self)
 {
  this->self = self;
- this->c = c;
+ this->l = l;
 }
 
-/*protected*/ Qualifier* MyQualifierAdder::createQualifier(VariableValue* var, QString relation, QString value) {
-
- return new JComponentQualifier(c, var, value.toInt(), relation);
-}
-/*protected*/ void MyQualifierAdder::addListener(PropertyChangeListener* /*qc*/)
+/*protected*/ Qualifier* MyQualifierAdder::createQualifier(VariableValue* var, QString relation, QString value)
 {
- //c->addPropertyChangeListener(qc);
+ return new JComponentQualifier(l, var, value.toInt(), relation);
+}
+/*protected*/ void MyQualifierAdder::addListener(PropertyChangeListener* qc)
+{
+ //l->SwingPropertyChangeSupport::addPropertyChangeListener(qc);
     // TODO:
 }
 
 /**
  * Create a griditem from the JDOM  QDomElement
  */
-/*public*/ QWidget* PaneProgPane::newGridItem(QDomElement  element, bool showStdName, QDomElement  modelElem, GridGlobals* globs)
+/*public*/ JPanel* PaneProgPane::newGridItem(QDomElement  element, bool showStdName, QDomElement  modelElem, GridGlobals* globs)
 {
+ QString tagName = element.tagName();
  //QDomNamedNodeMap itemAttList = element.attributes(); // get item-level attributes
  QVector<Attribute*> itemAttList = getAttributeList(element);
  QVector<Attribute*> attList =  QVector<Attribute*>(globs->gridAttList);
  //attList.addAll(itemAttList); // merge grid and item-level attributes
- for(int i = 0; i < attList.size(); i++)
-  itemAttList.append(attList.at(i));
+ for(int i = 0; i < itemAttList.size(); i++)
+  attList.append(itemAttList.at(i));
 //                log->info("New gridtiem -----------------------------------------------");
 //                log->info("Attribute list:"+attList);
  attList.append(new Attribute(LAST_GRIDX,""));
@@ -2283,16 +1928,19 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
   {
    Attribute* a = new Attribute(LAST_GRIDX,attribRawValue);
    //attList.set(attList.size()-2,a);
-   attList.append(a);
+   attList.replace(attList.size()-2,a);
+   //attList.append(a);
 //                        log->info("Moved & Updated Attribute list:"+attList);
+   globs->gridConstraints->gridx = attribRawValue.toInt();
    continue; //. don't process now
   }
-  if ( attribName== ("gridy") )
+  if ( attribName == ("gridy") )
   {
    Attribute* a = new Attribute(LAST_GRIDY,attribRawValue);
    //attList.set(attList.size()-1,a);
    attList.append(a);
 //                        log->info("Moved & Updated Attribute list:"+attList);
+   globs->gridConstraints->gridy = attribRawValue.toInt();
     continue; //. don't process now
   }
   if ( attribName== (LAST_GRIDX) )
@@ -2356,7 +2004,7 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
   {
    log->error("Unable to set constraint \""+attribName+". IllegalAccessException error thrown.");
   }
-  catch (NumberFormatException ex)
+  catch (NumberFormatException* ex)
   {
 #if 0
    try
@@ -2389,7 +2037,7 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
   {
    log->error("Unable to set constraint \""+attribName+". IllegalAccessException error thrown.");
   }
-  catch (NumberFormatException ex)
+  catch (NumberFormatException* ex)
   {
    log->error("Invalid value \""+attribRawValue+"\" for attribute \""+attribName+"\"");
   }
@@ -2414,7 +2062,7 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
    {
     log->error("Unable to set constraint \""+attribName+". IllegalAccessException error thrown.");
    }
-   catch (NumberFormatException ex)
+   catch (NumberFormatException* ex)
    {
     log->error("Invalid value \""+attribRawValue+"\" for attribute \""+attribName+"\"");
     log->error("Value should be four integers of the form \"top,left,bottom,right\"");
@@ -2430,16 +2078,17 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
 
 
  // create a panel to add as a new grid item
-  /*final*/ QWidget* c = new QWidget();
+  /*final*/ JPanel* c = new JPanel();
   panelList->append(c);
-  QGridLayout* g = new QGridLayout();
+  GridBagLayout* g = new GridBagLayout();
   GridBagConstraints* cs = new GridBagConstraints();
   c->setLayout(g);
 
   // handle the xml definition
   // for all elements in the grid item
   QDomNodeList elemList = element.childNodes();
-  if (log->isDebugEnabled()) log->debug("newGridItem starting with "+QString::number(elemList.size())+" elements");
+  if (log->isDebugEnabled())
+   log->debug("newGridItem starting with "+QString::number(elemList.size())+" elements");
   for (int i=0; i<elemList.size(); i++)
   {
    // update the grid position
@@ -2448,7 +2097,7 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
 
    QDomElement  e = elemList.at(i).toElement();
    QString name = e.tagName();
-   //log->trace("newGridItem processing {} element", name);
+   log->trace(tr("newGridItem processing %1 element").arg(name));
    // decode the type
    if (name== ("display"))
    { // its a variable
@@ -2460,8 +2109,8 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
     JSeparator* j = new JSeparator(JSeparator::VERTICAL);
     cs->fill = GridBagConstraints::BOTH;
     cs->gridheight = GridBagConstraints::REMAINDER;
-    //g.setConstraints(j, cs);
-    g->addWidget(j, cs->gridy,cs->gridx);
+    //g.setConstraints(j, *cs);
+    g->addWidget(j, *cs);
     cs->fill = GridBagConstraints::NONE;
     cs->gridheight = 1;
    }
@@ -2479,55 +2128,6 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
    {
     makeCvTable(cs, g, c);
    }
-   else if (name== ("indxcvtable"))
-   {
-    log->debug("starting to build IndexedCvTable pane");
-    QTableView* indxcvTable = new QTableView(/*_indexedCvModel*/);
-    indxcvTable->setModel(_indexedCvModel);
-//    JScrollPane cvScroll = new JScrollPane(indxcvTable);
-//    indxcvTable.setDefaultRenderer(JTextField.class, new ValueRenderer());
-//    indxcvTable.setDefaultRenderer(JButton.class, new ValueRenderer());
-//    indxcvTable.setDefaultEditor(JTextField.class, new ValueEditor());
-//    indxcvTable.setDefaultEditor(JButton.class, new ValueEditor());
-//    indxcvTable.setRowHeight(new JButton("X").getPreferredSize().height);
-//    indxcvTable.setPreferredScrollableViewportSize(new Dimension(700, indxcvTable.getRowHeight()*14));
-//    cvScroll.setColumnHeaderView(indxcvTable.getTableHeader());
-    // don't want a horizontal scroll bar
-    // Need to see the whole row at one time
-//                indxcvTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-    cs->gridwidth = GridBagConstraints::REMAINDER;
-    //g.setConstraints(cvScroll, cs);
-    //c.add(cvScroll);
-    g->addWidget(indxcvTable, cs->gridy,cs->gridx);
-
-    cs->gridwidth = 1;
-
-    // remember which indexed CVs to read/write
-    for (int j=0; j<_indexedCvModel->rowCount(QModelIndex()); j++)
-    {
-     QString sz = "CV" +_indexedCvModel->getName(j);
-     int in = _varModel->findVarIndex(sz);
-     indexedCvList->append((in));
-    }
-
-    _cvTable = true;
-    log->debug("end of building IndexedCvTable pane");
-    }
-   else if (name== ("fnmapping"))
-   {
-    pickFnMapPanel(c, g, cs, modelElem);
-   }
-   else if (name== ("dccaddress"))
-   {
-    QWidget* l = addDccAddressPanel(e);
-    if (l->children().count() > 1)
-    {
-     cs->gridheight = GridBagConstraints::REMAINDER;
-     //g.setConstraints(l, cs);
-     g->addWidget(l, cs->gridy,cs->gridx);
-     cs->gridheight = 1;
-    }
-   }
    else if (name== ("column"))
    {
     // nested "column" elements ...
@@ -2536,8 +2136,8 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
     if (l->children().count() > 1)
     {
      panelList->append(l);
-     //g.setConstraints(l, cs);
-     g->addWidget(l, cs->gridy,cs->gridx);
+     //g.setConstraints(l, *cs);
+     g->addWidget(l, *cs);
      cs->gridheight = 1;
     }
    }
@@ -2549,8 +2149,8 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
     if (l->children().count() > 1)
     {
      panelList->append(l);
-     //g.setConstraints(l, cs);
-     g->addWidget(l, cs->gridy,cs->gridx);
+     //g.setConstraints(l, *cs);
+     g->addWidget(l, *cs);
      cs->gridwidth = 1;
     }
    }
@@ -2562,8 +2162,8 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
     if (l->children().count() > 1)
     {
      panelList->append(l);
-     //g.setConstraints(l, cs);
-     g->addWidget(l, cs->gridy,cs->gridx);
+     //g.setConstraints(l, *cs);
+     g->addWidget(l, *cs);
      cs->gridwidth = 1;
     }
    }
@@ -2574,8 +2174,8 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
     if (l->children().count() > 1)
     {
      panelList->append(l);
-     //g.setConstraints(l, cs);
-     g->addWidget(l, cs->gridy,cs->gridx);
+     //g.setConstraints(l, *cs);
+     g->addWidget(l, *cs);
     }
    }
    else if (name!= ("qualifier"))
@@ -2592,9 +2192,9 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
   if (c->children().count() > 1) {
 //   g->addWidget(Box.createVerticalGlue());
   }
-
+#if 0
   // handle qualification if any
-  MyQualifierAdder* qa = new MyQualifierAdder( c, this);
+  MyQualifierAdder* qa = new MyQualifierAdder( l, this);
 //  {
 //        /*protected*/ Qualifier createQualifier(VariableValue var, String relation, QString value) {
 //            return new JComponentQualifier(c, var, Integer.parseInt(value), relation);
@@ -2605,35 +2205,35 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
 //    };
 
  qa->processModifierElements(element, _varModel);
+#endif
  return c;
 }
 /**
  * Create label from Element
  */
-/*protected*/ void PaneProgPane::makeLabel(QDomElement e, QWidget* c, QGridLayout* g, GridBagConstraints* cs)
+/*protected*/ void PaneProgPane::makeLabel(QDomElement e, QWidget* c, GridBagLayout* g, GridBagConstraints* cs)
 {
  //QString text = LocaleSelector.getAttribute(e,"text");
  QString text = e.attribute("text");
- if (text=="" || text== (""))
+ if (text.isNull() || text== (""))
   //text = LocaleSelector.getAttribute(e,"label"); // label subelement deprecated 3.7.5
   text = e.attribute("label");
- /*final*/ QLabel* l = new QLabel(text);
+ QDomElement eText= e.firstChildElement("text");
+ if(!eText.isNull())
+  text= eText.text();
+ /*final*/ JLabel* l = new JLabel(text);
  //l.setAlignmentX(1.0f);
  cs->fill = GridBagConstraints::BOTH;
- if (log->isDebugEnabled())
- {
-  log->debug("Add label: "+l->text()+" cs: "
-                  +QString::number(cs->gridwidth)+" "+QString::number(cs->fill)+" "
-                  +QString::number(cs->gridx)+" "+QString::number(cs->gridy));
- }
- //g.setConstraints(l, cs);
- g->addWidget(l, cs->gridy,cs->gridx);
+ log->trace(tr("Add label: %1 cs: %2 fill: %3 x: %4 y: %5").arg(
+                 l->text()).arg(cs->gridwidth).arg(cs->fill).arg(cs->gridx).arg(cs->gridy));
+ //g.setConstraints(l, *cs);
+ g->addWidget(l, *cs);
  cs->fill = GridBagConstraints::NONE;
  cs->gridwidth = 1;
  cs->gridheight = 1;
 
  // handle qualification if any
- MyQualifierAdder* qa = new MyQualifierAdder(c, this);
+ MyQualifierAdder* qa = new MyQualifierAdder(l, this);
 // {
 //        protected Qualifier createQualifier(VariableValue var, String relation, String value) {
 //            return new JComponentQualifier(l, var, Integer.parseInt(value), relation);
@@ -2648,9 +2248,9 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
  /**
   * Create sound label from Element
   */
-/*protected*/ void PaneProgPane::makeSoundLabel(QDomElement e, QWidget* c, QGridLayout* g, GridBagConstraints* cs)
+/*protected*/ void PaneProgPane::makeSoundLabel(QDomElement e, QWidget* c, GridBagLayout *g, GridBagConstraints* cs)
 {
-#if 1
+
  QString labelText = rosterEntry->getSoundLabel(e.attribute("num").toInt());
  /*final*/ QLabel* l = new QLabel(labelText);
  //l.setAlignmentX(1.0f);
@@ -2661,12 +2261,12 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
                    +QString::number(cs->gridwidth)+" "+QString::number(cs->fill)+" "
                    +QString::number(cs->gridx)+" "+QString::number(cs->gridy));
  }
- //g.setConstraints(l, cs);
- g->addWidget(l, cs->gridy,cs->gridx);
+ //g.setConstraints(l, *cs);
+ g->addWidget(l, *cs);
  cs->fill = GridBagConstraints::NONE;
  cs->gridwidth = 1;
  cs->gridheight = 1;
-
+#if 0
  // handle qualification if any
  MyQualifierAdder* qa = new MyQualifierAdder(c, this);
 //  {
@@ -2682,7 +2282,8 @@ MyQualifierAdder::MyQualifierAdder(QWidget* c, PaneProgPane *self) : QualifierAd
  qa->processModifierElements(e, _varModel);
 #endif
 }
-void PaneProgPane::makeCvTable(GridBagConstraints* cs, QGridLayout* g, QWidget* c)
+
+void PaneProgPane::makeCvTable(GridBagConstraints* cs, GridBagLayout* g, JPanel* c)
 {
  log->debug("starting to build CvTable pane");
 
@@ -2698,7 +2299,8 @@ void PaneProgPane::makeCvTable(GridBagConstraints* cs, QGridLayout* g, QWidget* 
  _cvModel->configureTable(cvTable);
  _cvModel->setTable(cvTable);
  //sorter.setComparator(CvTableModel.NUMCOLUMN, new jmri.util.PreferNumericComparator());
-
+ cvTable->getTableHeader()->setSectionsMovable(false);
+ cvTable->getTableHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 //    List <RowSorter.SortKey> sortKeys
 //        = new ArrayList<RowSorter.SortKey>();
 //    sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
@@ -2713,15 +2315,15 @@ void PaneProgPane::makeCvTable(GridBagConstraints* cs, QGridLayout* g, QWidget* 
 //    cvTable.setRowHeight(new JButton("X").getPreferredSize().height);
 //    // have to shut off autoResizeMode to get horizontal scroll to work (JavaSwing p 541)
 //    // instead of forcing the columns to fill the frame (and only fill)
-//    cvTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    cvTable->setAutoResizeMode(JTable::AUTO_RESIZE_OFF);
 
 //    JScrollPane  cvScroll = new JScrollPane(cvTable);
 //    cvScroll.setColumnHeaderView(cvTable.getTableHeader());
-
+ cvTable->resize(600,400);
  cs->gridheight = GridBagConstraints::REMAINDER;
- //g.setConstraints(cvScroll, cs);
+ //g.setConstraints(cvScroll, *cs);
  //c.add(cvScroll);
- g->addWidget(cvTable, cs->gridy, cs->gridx);
+ g->addWidget(cvTable, *cs);
  cs->gridheight = 1;
 
  // remember which CVs to read/write
@@ -2751,22 +2353,26 @@ void PaneProgPane::setCvListFromTable()
  * </dl>
  */
 
-void PaneProgPane::pickFnMapPanel(QWidget* c, QGridLayout* g, GridBagConstraints* cs, QDomElement modelElem)
+void PaneProgPane::pickFnMapPanel(QWidget* c, GridBagLayout* g, GridBagConstraints* cs, QDomElement modelElem)
 {
  bool extFnsESU = false;
  QString a = modelElem.attribute("extFnsESU");
  try
  {
-  if (a!="") extFnsESU = a.compare("yes",Qt::CaseInsensitive);
+  if (a != "") {
+      extFnsESU = a.toLower() != ("no");
+  }
  }
- catch (Exception ex) {log->error("error handling decoder's extFnsESU value");}
+ catch (Exception* ex) {
+  log->error("error handling decoder's extFnsESU value");
+ }
  if (extFnsESU)
  {
   FnMapPanelESU* l = new FnMapPanelESU(_varModel, varList, modelElem, rosterEntry, _cvModel);
   fnMapListESU->append(l); // remember for deletion
   cs->gridwidth = GridBagConstraints::REMAINDER;
-  //g.setConstraints(l, cs);
-  g->addWidget(l, cs->gridy,cs->gridx);
+  //g.setConstraints(l, *cs);
+  g->addWidget(l, *cs);
   cs->gridwidth = 1;
  }
  else
@@ -2774,8 +2380,8 @@ void PaneProgPane::pickFnMapPanel(QWidget* c, QGridLayout* g, GridBagConstraints
   FnMapPanel* l = new FnMapPanel(_varModel, varList, modelElem);
   fnMapList->append(l); // remember for deletion
   cs->gridwidth = GridBagConstraints::REMAINDER;
-  //g.setConstraints(l, cs);
-  g->addWidget(l, cs->gridy,cs->gridx);
+  //g.setConstraints(l, *cs);
+  g->addWidget(l, *cs);
   cs->gridwidth = 1;
  }
 }
@@ -2783,7 +2389,7 @@ void PaneProgPane::pickFnMapPanel(QWidget* c, QGridLayout* g, GridBagConstraints
  * Add the representation of a single variable.  The
  * variable is defined by a JDOM variable QDomElement  from the XML file.
  */
-/*public*/ void PaneProgPane::newVariable( QDomElement  var, QWidget* /*col*/, QGridLayout* gridLayout, GridBagConstraints* cs, bool showStdName)
+/*public*/ void PaneProgPane::newVariable(QDomElement  var, JPanel * /*col*/, GridBagLayout* g, GridBagConstraints* cs, bool showStdName)
 {
  // get the name
  QString name = var.attribute("item");
@@ -2821,75 +2427,80 @@ void PaneProgPane::pickFnMapPanel(QWidget* c, QGridLayout* g, GridBagConstraints
   varList->append(i);
 
  // create the paired label
- QLabel* l = new WatchingLabel(" "+label+" ", rep);
+ JLabel* l = new WatchingLabel(" "+label+" ", rep);
 
  // now handle the four orientations
  // assemble v from label, rep
  if (layout==("left"))
  {
-  QHBoxLayout* hLayout = new QHBoxLayout();
-  Q_ASSERT(cs->gridx >=0);
-  gridLayout->addLayout(hLayout, cs->gridy, cs->gridx);
+//  QHBoxLayout* hLayout = new QHBoxLayout();
+//  Q_ASSERT(cs->gridx >=0);
+//  g->addLayout(hLayout, cs->gridy, cs->gridx);
   cs->anchor= GridBagConstraints::EAST;
-//        g.setConstraints(l, cs);
+//        g.setConstraints(l, *cs);
   //col->layout()->addWidget(l);
-  hLayout->addWidget(l);
+  g->addWidget(l, *cs);
+  cs->gridx = g->getConstraints().gridx;
 
   //cs->gridx = GridBagConstraints::RELATIVE;
   cs->anchor= GridBagConstraints::WEST;
-//        g.setConstraints(rep, cs);
+//        g.setConstraints(rep, *cs);
 //  col->layout()->addWidget(rep);
-  hLayout->addWidget(rep);
+  g->addWidget(rep, *cs);
+  cs->gridx = g->getConstraints().gridx;
  }
  else if (layout==("right"))
  {
-  QHBoxLayout* hLayout = new QHBoxLayout();
-  Q_ASSERT(cs->gridx >=0);
-  gridLayout->addLayout(hLayout, cs->gridy, cs->gridx);
+//  QHBoxLayout* hLayout = new QHBoxLayout();
+//  Q_ASSERT(cs->gridx >=0);
+//  g->addLayout(hLayout, cs->gridy, cs->gridx);
   cs->anchor= GridBagConstraints::EAST;
-//        g.setConstraints(rep, cs);
+//        g.setConstraints(rep, *cs);
 //        col->layout()->addWidget(rep);
-  hLayout->addWidget(rep);
+  g->addWidget(rep, *cs);
+  cs->gridx = g->getConstraints().gridx;
+
 
   //cs->gridx = GridBagConstraints::RELATIVE;
   cs->anchor= GridBagConstraints::WEST;
-//        g.setConstraints(l, cs);
+//        g.setConstraints(l, *cs);
 //        col->layout()->addWidget(l);
-  hLayout->addWidget(l);
+  g->addWidget(l, *cs);
+  cs->gridx = g->getConstraints().gridx;
  }
  else if (layout==("below"))
  {
   // variable in center of upper line
   cs->anchor=GridBagConstraints::CENTER;
-//        g.setConstraints(rep, cs);
+//        g.setConstraints(rep, *cs);
 //        col->layout()->addWidget(rep);
   Q_ASSERT(cs->gridx >=0);
-  gridLayout->addWidget(rep, cs->gridy, cs->gridx);
+  g->addWidget(rep, *cs);
 
   // label aligned like others
   cs->gridy++;
   cs->anchor= GridBagConstraints::WEST;
-//        g.setConstraints(l, cs);
+//        g.setConstraints(l, *cs);
 //        col->layout()->addWidget(l);
   Q_ASSERT(cs->gridx >=0);
-  gridLayout->addWidget(l, cs->gridy, cs->gridx);
+  g->addWidget(l, *cs);
  }
  else if (layout==("above"))
  {
   // label aligned like others
   cs->anchor= GridBagConstraints::WEST;
-//        g.setConstraints(l, cs);
+//        g.setConstraints(l, *cs);
 //        col->layout()->addWidget(l);
   Q_ASSERT(cs->gridx >=0);
-  gridLayout->addWidget(l, cs->gridy, cs->gridx);
+  g->addWidget(l, *cs);
 
   // variable in center of lower line
   cs->gridy++;
   cs->anchor=GridBagConstraints::CENTER;
-//        g.setConstraints(rep, cs);
+//        g.setConstraints(rep, *cs);
 //        col->layout()->addWidget(rep);
   Q_ASSERT(cs->gridx >=0);
-  gridLayout->addWidget(rep, cs->gridy, cs->gridx);
+  g->addWidget(rep, *cs);
  }
  else
  {
@@ -2910,7 +2521,7 @@ void PaneProgPane::pickFnMapPanel(QWidget* c, QGridLayout* g, GridBagConstraints
 /*public*/ QWidget* PaneProgPane::getRepresentation(QString name, QDomElement  var)
 {
  int i = _varModel->findVarIndex(name);
- //QWidget* rep =/* NULL*/ new QLabel("???", this);
+ VariableValue* variable = _varModel->getVariable(i);
  QWidget* rep = NULL;
  QString format = "default";
  QString attr;
@@ -2923,12 +2534,12 @@ void PaneProgPane::pickFnMapPanel(QWidget* c, QGridLayout* g, GridBagConstraints
   if(newRep)
   rep = newRep;
   Q_ASSERT(newRep != NULL);
-//        rep->setMaximumSize(rep->getPreferredSize());
-        // set tooltip if specified here & not overridden by defn in Variable
+  rep->setMaximumSize(rep->sizeHint());
+  // set tooltip if specified here & not overridden by defn in Variable
   QString tip = "";
   if ( (tip = /*LocaleSelector.attribute(var, "tooltip")*/var.attribute("tooltip"))!=NULL
               && rep->toolTip()==NULL)
-   rep->setToolTip(tip);
+   rep->setToolTip(modifyToolTipText(tip, variable));
   rep->setParent(this);
 
  }
@@ -2938,6 +2549,46 @@ void PaneProgPane::pickFnMapPanel(QWidget* c, QGridLayout* g, GridBagConstraints
  return rep;
 }
 
+/**
+ * Takes default tool tip text, e.g. from the decoder element, and modifies
+ * it as needed.
+ * <p>
+ * Intended to handle e.g. adding CV numbers to variables.
+ *
+ * @param start    existing tool tip text
+ * @param variable the CV
+ * @return new tool tip text
+ */
+QString PaneProgPane::modifyToolTipText(QString start, VariableValue* variable) {
+    log->trace(tr("modifyToolTipText: %1").arg(variable->label()));
+    // this is the place to invoke VariableValue methods to (conditionally)
+    // add information about CVs, etc in the ToolTip text
+
+    // Optionally add CV numbers based on Roster Preferences setting
+    start = CvUtil::addCvDescription(start, variable->getCvDescription(), variable->getMask());
+
+    // Indicate what the command station can do
+    // need to update this with e.g. the specific CV numbers
+    if (_cvModel->getProgrammer() != nullptr
+            && !_cvModel->getProgrammer()->getCanRead()) {
+        start = StringUtil::concatTextHtmlAware(start, " (Hardware cannot read)");
+    }
+    if (_cvModel->getProgrammer() != nullptr
+            && !_cvModel->getProgrammer()->getCanWrite()) {
+        start = StringUtil::concatTextHtmlAware(start, " (Hardware cannot write)");
+    }
+
+    // indicate other reasons for read/write constraints
+    if (variable->getReadOnly()) {
+        start = StringUtil::concatTextHtmlAware(start, " (Defined to be read only)");
+    }
+    if (variable->getWriteOnly()) {
+        start = StringUtil::concatTextHtmlAware(start, " (Defined to be write only)");
+    }
+
+    return start;
+}
+
 QWidget* PaneProgPane::getRep(int i, QString format) {
     return _varModel->getRep(i, format);
 }
@@ -2945,7 +2596,6 @@ QWidget* PaneProgPane::getRep(int i, QString format) {
 /*public*/ void PaneProgPane::dispose()
 {
  if (log->isDebugEnabled()) log->debug("dispose");
-#if 1 // TODO:
 
     // remove components
     //removeAll();
@@ -2960,39 +2610,28 @@ QWidget* PaneProgPane::getRep(int i, QString format) {
 
     if (_programmingVar != NULL) _programmingVar->removePropertyChangeListener((PropertyChangeListener*)this);
     if (_programmingCV != NULL) _programmingCV->removePropertyChangeListener((PropertyChangeListener*)this);
-    if (_programmingIndexedCV != NULL) _programmingIndexedCV->removePropertyChangeListener((PropertyChangeListener*)this);
 
     _programmingVar = NULL;
     _programmingCV  = NULL;
-    _programmingIndexedCV = NULL;
 
     varList->clear();
     varList = NULL;
     cvList->clear();
     cvList = NULL;
-    indexedCvList->clear();
-    indexedCvList = NULL;
 
 //    // dispose of any panels
-//    for (int i=0; i<panelList.size(); i++) {
-//        panelList->at(i)->removeAll();
-//    }
     panelList->clear();
     panelList = NULL;
 
 //    // dispose of any fnMaps
-//    for (int i=0; i<fnMapList.size(); i++) {
-//        fnMapList.get(i).dispose();
-//    }
     fnMapList->clear();
     fnMapList = NULL;
 
     readChangesButton = NULL;
     writeChangesButton = NULL;
-#endif
+
     // these are disposed elsewhere
     _cvModel = NULL;
-    _indexedCvModel = NULL;
     _varModel = NULL;
 }
 
@@ -3360,7 +2999,7 @@ QWidget* PaneProgPane::getRep(int i, QString format) {
 
   // handle special cases
  }
- catch (IOException e) { log->warn("error during printing: "+e.getMessage());
+ catch (IOException* e) { log->warn("error during printing: "+e->getMessage());
  }
 #endif
 }
@@ -3546,7 +3185,7 @@ void PaneProgPane::On_confirmAllButtonClicked()
 }
 void PaneProgPane::addPropertyChangeListener(PropertyChangeListener* /*l*/)
 {
-// pcs->addPropertyChangeListener(l);
+// pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 }
 void PaneProgPane::removePropertyChangeListener(PropertyChangeListener* /*l*/)
 {
@@ -3586,3 +3225,5 @@ QVector<Attribute*> PaneProgPane::getAttributeList(QDomElement e)
     }
     changeSupport->firePropertyChange(propertyName, oldValue, newValue);
 }
+
+/*private*/ /*final*/ /*static*/ Logger* PaneProgPane::log = LoggerFactory::getLogger("PaneProgPane");

@@ -13,7 +13,7 @@ class LinuxAbstractController : public Usb::AbstractController
 public:
  LinuxAbstractController();
  /*public*/ /*final*/ PortType getPortType();
- /*public*/ /*final*/ void pollDevice() throw (IOException);
+ /*public*/ /*final*/ void pollDevice() /*throw (IOException)*/;
  /*public*/ Controller::Type getType();
 
 private:
@@ -22,8 +22,8 @@ private:
  /*private*/ /*final*/ Controller::Type type;
 
 protected:
- /*protected*/ LinuxAbstractController(LinuxEventDevice* device, QVector<UsbComponent*>* components, QVector<Usb::Controller*>* children, QVector<Rumbler*>* rumblers, Type type) throw (IOException);
- /*protected*/ /*final*/ bool getNextDeviceEvent(Event* event) throw (IOException);
+ /*protected*/ LinuxAbstractController(LinuxEventDevice* device, QVector<UsbComponent*>* components, QVector<Usb::Controller*>* children, QVector<Rumbler*>* rumblers, Type type) /*throw (IOException)*/;
+ /*protected*/ /*final*/ bool getNextDeviceEvent(Event* event) /*throw (IOException)*/;
 
  friend class UsbTreeModel0;
 };

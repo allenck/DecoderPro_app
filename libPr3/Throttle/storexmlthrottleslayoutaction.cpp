@@ -96,23 +96,23 @@
 //                    .setLineSeparator(System.getProperty("line.separator"))
 //                    .setTextMode(Format.TextMode.PRESERVE));
 //            fmt.output(doc, o);
-         if(!fout.open(QIODevice::WriteOnly)) throw IOException();
+         if(!fout.open(QIODevice::WriteOnly)) throw new IOException();
               QTextStream stream(&fout);
               doc.toString();
               stream.setCodec("UTF-8");
               doc.save(stream,2);
               fout.close();
-        } catch (IOException ex) {
-            log->warn("Exception in storing throttle xml: " + ex.getMessage());
+        } catch (IOException* ex) {
+            log->warn("Exception in storing throttle xml: " + ex->getMessage());
         }
 //              finally {
 //            o.close();
 //        }
 #endif
-    } catch (FileNotFoundException ex) {
-        log->warn("Exception in storing throttle xml: " + ex.getMessage());
-    } catch (IOException ex) {
-        log->warn("Exception in storing throttle xml: " + ex.getMessage());
+    } catch (FileNotFoundException* ex) {
+        log->warn("Exception in storing throttle xml: " + ex->getMessage());
+    } catch (IOException* ex) {
+        log->warn("Exception in storing throttle xml: " + ex->getMessage());
     }
 }
 

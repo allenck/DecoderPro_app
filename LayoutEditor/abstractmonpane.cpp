@@ -167,7 +167,7 @@ AbstractMonPane::~AbstractMonPane()
  {
   filterField->setText(p->getProperty(filterFieldCheck, filterFieldCheck).toString());  //restore prev values
  }
- catch (Exception e1) {  //leave blank if previous value not retrieved
+ catch (Exception* e1) {  //leave blank if previous value not retrieved
  }
  //automatically uppercase input in filterField, and only accept spaces and valid hex characters
 //    ((AbstractDocument) filterField.getDocument()).setDocumentFilter(new DocumentFilter() {
@@ -576,7 +576,7 @@ void AMPRunnable::run()
 }
 #endif
 
-/*public*/ /*synchronized*/ void AbstractMonPane::clearButtonActionPerformed(ActionEvent* /*e*/) {
+/*public*/ /*synchronized*/ void AbstractMonPane::clearButtonActionPerformed(JActionEvent* /*e*/) {
     // clear the monitoring history
 //    synchronized( linesBuffer )
     {
@@ -585,14 +585,14 @@ void AMPRunnable::run()
     }
 }
 
-/*public*/ /*synchronized*/ void AbstractMonPane::startLogButtonActionPerformed(ActionEvent* /*e*/) {
+/*public*/ /*synchronized*/ void AbstractMonPane::startLogButtonActionPerformed(JActionEvent* /*e*/) {
     // start logging by creating the stream
 #if 0
     if ( logStream==nullptr) {  // successive clicks don't restart the file
         // start logging
         try {
             logStream = new PrintStream (new FileOutputStream(logFileChooser.getSelectedFile()));
-        } catch (Exception ex) {
+        } catch (Exception* ex) {
             log->error("exception "+ex);
         }
     }
@@ -602,7 +602,7 @@ void AMPRunnable::run()
     stopLogButton->setEnabled(true);
 }
 
-/*public*/ /*synchronized*/ void AbstractMonPane::stopLogButtonActionPerformed(ActionEvent* /*e*/)
+/*public*/ /*synchronized*/ void AbstractMonPane::stopLogButtonActionPerformed(JActionEvent* /*e*/)
 {
  // stop logging by removing the stream
 #if 1
@@ -620,7 +620,7 @@ void AMPRunnable::run()
 #endif
 }
 
-/*public*/ void AbstractMonPane::openFileChooserButtonActionPerformed(ActionEvent* e)
+/*public*/ void AbstractMonPane::openFileChooserButtonActionPerformed(JActionEvent* e)
 {
  // start at current file, show dialog
 #if 0 // done
@@ -650,7 +650,7 @@ void AMPRunnable::run()
  setCursor(Qt::ArrowCursor);
 }
 
-/*public*/ void AbstractMonPane::enterButtonActionPerformed(ActionEvent* /*e*/) {
+/*public*/ void AbstractMonPane::enterButtonActionPerformed(JActionEvent* /*e*/) {
     nextLine(entryField->text(), "");
 }
 

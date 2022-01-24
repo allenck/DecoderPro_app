@@ -9,16 +9,16 @@ class Reader : public QObject
 {
  Q_OBJECT
 public:
- /*public*/ int read(CharBuffer* target) throw (IOException);
- /*public*/ int read() throw (IOException);
- /*public*/ int read(QByteArray cbuf) throw (IOException);
- virtual/*abstract*/ /*public*/ int read(QByteArray cbuf, int off, int len) throw (IOException);
- /*public*/ long skip(long n) throw (IOException);
- /*public*/ bool ready() throw (IOException);
+ /*public*/ int read(CharBuffer* target) /*throw (IOException)*/;
+ /*public*/ int read() /*throw (IOException)*/;
+ /*public*/ int read(QByteArray cbuf) /*throw (IOException)*/;
+ virtual/*abstract*/ /*public*/ int read(QByteArray cbuf, int off, int len) /*throw (IOException)*/;
+ /*public*/ long skip(long n) /*throw (IOException)*/;
+ /*public*/ bool ready() /*throw (IOException)*/;
  /*public*/ bool markSupported();
- /*public*/ void mark(int readAheadLimit) throw (IOException);
- /*public*/ void reset() throw (IOException);
- virtual /*abstract*/ /*public*/ void close() throw (IOException);
+ /*public*/ void mark(int readAheadLimit) /*throw (IOException)*/;
+ /*public*/ void reset() /*throw (IOException)*/;
+ virtual /*abstract*/ /*public*/ void close() /*throw (IOException)*/;
 
 signals:
 

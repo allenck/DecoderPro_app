@@ -11,11 +11,11 @@ public:
  ~StartupPauseModel() {}
  StartupPauseModel(const StartupPauseModel&) :AbstractStartupModel() {}
  /*public*/ static /*final*/ int DEFAULT_DELAY;// = 10;
- /*public*/ QString getName();
- /*public*/ bool isValid();
+ /*public*/ QString getName()override;
+ /*public*/ bool isValid()override;
  /*public*/ int getDelay();
  /*public*/ void setDelay(int delay);
- /*public*/ void performAction(QString) throw (JmriException);
+ /*public*/ void performAction() override /*throw (JmriException)*/;
 
 private:
  /*private*/ int delay;// = -1; // default to invalid duration

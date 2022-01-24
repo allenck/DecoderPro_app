@@ -2,17 +2,20 @@
 #define ABSTRACTACTION_H
 #include "action.h"
 #include "javaqt_global.h"
+#include "propertychangelistener.h"
+#include "swingpropertychangesupport.h"
 
-class PropertyChangeListener;
-class SwingPropertyChangeSupport;
+//class SwingPropertyChangeSupport;
 class PropertyChangeEvent;
 class ArrayTable;
-class JAVAQTSHARED_EXPORT AbstractAction : public Action
+class JAVAQTSHARED_EXPORT AbstractAction : public Action, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
  //explicit AbstractAction(QObject *parent = 0);
  /*public*/  AbstractAction(QObject *parent = 0);
+ /*public*/  AbstractAction(const AbstractAction&) : Action() {}
  static bool shouldReconfigure(PropertyChangeEvent* e);
  static void setEnabledFromAction(QWidget* c, Action* a);
  static void setToolTipTextFromAction(QWidget* c, Action* a);
@@ -20,21 +23,23 @@ public:
  static bool isSelected(Action* a);
  /*public*/  AbstractAction(QString name, QObject *parent);
  /*public*/  AbstractAction(QString name, QIcon icon, QObject* parent);
- /*public*/  QVariant getValue(QString key);
- /*public*/  void putValue(QString key, QVariant newValue);
- /*public*/  bool isEnabled();
- /*public*/  void setEnabled(bool newValue);
+ /*public*/  QVariant getValue(QString key) override;
+ /*public*/  void putValue(QString key, QVariant newValue) override;
+ /*public*/  bool isEnabled() override;
+ /*public*/  void setEnabled(bool newValue) override;
  /*public*/  QStringList  getKeys();
- /*public*/  /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* listener);
- /*public*/  /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* listener);
+ /*public*/  /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* listener) override;
+ /*public*/  /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* listener) override;
  Q_INVOKABLE /*public*/ void setClassname(QString);
  /*public*/ QString getClassname();
+ QObject* self() override {return (QObject*)this;}
+
 
 signals:
- void propertyChange(PropertyChangeEvent*);
+ void propertyChange(PropertyChangeEvent*) override;
 
 public slots:
- virtual void actionPerformed(ActionEvent* = 0) {}
+ void actionPerformed(JActionEvent* = 0)  override{}
 
 private:
  /*private*/ static bool RECONFIGURE_ON_NULL;
@@ -46,7 +51,7 @@ private:
   * If any <code>PropertyChangeListeners</code> have been registered, the
   * <code>changeSupport</code> field describes them.
   */
-// /*protected*/  SwingPropertyChangeSupport* changeSupport;
+ /*protected*/  SwingPropertyChangeSupport* changeSupport = nullptr;
  void common();
  QString _class;
 

@@ -74,23 +74,29 @@ public:
  QByteArray mimeData();
 };
 
-class AddTableActionListener : public ActionListener
+class AddTableActionListener : public QObject, public ActionListener
 {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
     TableItemPanel* parent;
 public:
     AddTableActionListener(TableItemPanel* parent);
-    void actionPerformed(ActionEvent *e = 0);
+    QObject* self() override {return (QObject*)this;}
+  public slots:
+
+    void actionPerformed(JActionEvent *e = 0)override;
 };
 
-class AtCancelListener : public ActionListener
+class AtCancelListener : public QObject, public ActionListener
 {
-  TableItemPanel* self;
+  TableItemPanel* tip;
   Q_OBJECT
+  Q_INTERFACES(ActionListener)
 public:
-  AtCancelListener(TableItemPanel* self);
+  AtCancelListener(TableItemPanel* tip);
+  QObject* self() override {return (QObject*)this;}
 public slots:
-  /*public*/ void actionPerformed() ;
+  /*public*/ void actionPerformed(JActionEvent* =0)override ;
 };
 
 #endif // TABLEITEMPANEL_H

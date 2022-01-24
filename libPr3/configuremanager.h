@@ -7,7 +7,7 @@
 #include "xmlfile.h"
 #include "exceptions.h"
 
-class ConfigureManager :  public XmlFile
+class ConfigureManager
 {
     //Q_OBJECT
 public:
@@ -56,9 +56,9 @@ public:
      * @see jmri.configurexml.ConfigXmlManager
      */
 //    public interface ConfigureManager {
-    ConfigureManager(QObject* parent = 0) : XmlFile(parent) {}
-    ~ConfigureManager() {}
-    ConfigureManager(const ConfigureManager&) : XmlFile() {}
+//    ConfigureManager(QObject* parent = 0) : XmlFile(parent) {}
+//    ~ConfigureManager() {}
+//    ConfigureManager(const ConfigureManager&) : XmlFile() {}
         virtual void registerPref(QObject* /*o*/) {}
         virtual void removePrefItems() {}
 
@@ -137,9 +137,9 @@ public:
          * @param file Input file
          * @return true if succeeded
          */
-        virtual bool load(File* /*file*/) throw (JmriException) {return false;}
+        virtual bool load(File* /*file*/) /*throw (JmriException)*/ {return false;}
 
-        virtual bool load(QFile* /*file*/)  throw (JmriException) {return false;}
+        virtual bool load(QFile* /*file*/)  /*throw (JmriException)*/ {return false;}
 
         /**
          * Create the objects defined in a particular configuration
@@ -147,7 +147,7 @@ public:
          * @param file Input URL
          * @return true if succeeded
          */
-        virtual bool load(QUrl /*file*/) throw (JmriException) {return false;}
+        virtual bool load(QUrl /*file*/) /*throw (JmriException)*/ {return false;}
 
         /**
          * Create the objects defined in a particular configuration
@@ -158,7 +158,7 @@ public:
          * @throws JmriException
          * @since 2.11.2
          */
-         virtual bool load(File* /*file*/, bool /*registerDeferred*/)  throw (JmriException) { return false;}
+         virtual bool load(File* /*file*/, bool /*registerDeferred*/)  /*throw (JmriException)*/ { return false;}
 
         /**
          * Create the objects defined in a particular configuration
@@ -169,7 +169,7 @@ public:
          * @throws JmriException
          * @since 2.11.2
          */
-        virtual bool load(QUrl /*file*/, bool /*registerDeferred*/) throw (JmriException) { return false;}
+        virtual bool load(QUrl /*file*/, bool /*registerDeferred*/) /*throw (JmriException)*/ { return false;}
 
         /**
          * Create the objects defined in a particular configuration
@@ -181,7 +181,7 @@ public:
          * @see jmri.configurexml.XmlAdapter#loadDeferred()
          * @since 2.11.2
          */
-         virtual bool loadDeferred(File* /*file*/)  throw (JmriException) { return false;}
+         virtual bool loadDeferred(File* /*file*/)  /*throw (JmriException)*/ { return false;}
 
         /**
          * Create the objects defined in a particular configuration
@@ -193,7 +193,7 @@ public:
          * @see jmri.configurexml.XmlAdapter#loadDeferred()
          * @since 2.11.2
          */
-        virtual bool loadDeferred(QUrl /*file*/) throw (JmriException) { return false;}
+        virtual bool loadDeferred(QUrl /*file*/) /*throw (JmriException)*/ { return false;}
 
         /**
          * Provide a method-specific way of locating a file to be
@@ -210,11 +210,26 @@ public:
          */
         virtual bool makeBackup(File* /*file*/) const { return false;}
 
+      /**
+       * Control the scope of validation of XML files when loading.
+       *
+       * @param validate the validation scope
+       */
+      virtual /*public*/ void setValidate(XmlFile::Validate validate)=0;
+
+      /**
+       * Get the scope of validation of XML files when loading.
+       *
+       * @return the validation scope
+       */
+      virtual /*public*/ XmlFile::Validate getValidate()=0;
+
+    virtual QObject* self() =0;
 signals:
     
 public slots:
     
 };
 Q_DECLARE_INTERFACE(ConfigureManager, "ConfigureManager")
-Q_DECLARE_METATYPE(ConfigureManager)
+//Q_DECLARE_METATYPE(ConfigureManager)
 #endif // CONFIGUREMANAGER_H

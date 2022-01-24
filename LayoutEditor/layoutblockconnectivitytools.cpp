@@ -33,7 +33,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
  * @return true if source and destination beans are reachable, or false if they are not
  * @throws Jmri.Exception if no blocks can be found that related to the named beans.
  */
-/*public*/ bool LayoutBlockConnectivityTools::checkValidDest(NamedBean* sourceBean, NamedBean* destBean, int pathMethod) throw (JmriException)
+/*public*/ bool LayoutBlockConnectivityTools::checkValidDest(NamedBean* sourceBean, NamedBean* destBean, int pathMethod) /*throw (JmriException)*/
 {
  LayoutBlock* facingBlock = NULL;
  LayoutBlock* protectingBlock = NULL;
@@ -70,7 +70,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
     {
      return checkValidDest(facingBlock, protectingBlock, destFacingBlock, destProtectBlock, pathMethod);
      }
-     catch (JmriException e)
+     catch (JmriException* e)
      {
       throw e;
      }
@@ -107,7 +107,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
 *                            has not been enabled.
 */
 /*public*/ QList<LayoutBlock*> LayoutBlockConnectivityTools::getLayoutBlocks(NamedBean* sourceBean, NamedBean* destBean,
-                                                                             bool validateOnly, int pathMethod) throw (JmriException)
+                                                                             bool validateOnly, int pathMethod) /*throw (JmriException)*/
 {
  QList<LayoutEditor*>* layout = ((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->getLayoutEditorPanelList();
  LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
@@ -130,7 +130,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
   if((destFacingBlock!=NULL) && (facingBlock!=NULL) && (protectingBlock!=NULL)){
       try{
           return getLayoutBlocks(facingBlock, destFacingBlock, protectingBlock, validateOnly, pathMethod);
-      } catch (JmriException e){
+      } catch (JmriException* e){
           throw e;
       }
   } else {
@@ -139,7 +139,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
  }
  if(log->isDebugEnabled())
      log->debug("No valid route from " + sourceBean->getDisplayName() + " to " + destBean->getDisplayName());
- throw JmriException("Blocks Not Found");
+ throw new JmriException("Blocks Not Found");
 }
 #if 0  // done, see below!
 
@@ -230,7 +230,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
      * @return true if a path to the destination is valid.
      * @throws jmri.JmriException if any Block is null;
      */
-    /*public*/ bool LayoutBlockConnectivityTools::checkValidDest(LayoutBlock* currentBlock, LayoutBlock* nextBlock, LayoutBlock* destBlock, LayoutBlock* destProBlock, int pathMethod) throw (JmriException) {
+    /*public*/ bool LayoutBlockConnectivityTools::checkValidDest(LayoutBlock* currentBlock, LayoutBlock* nextBlock, LayoutBlock* destBlock, LayoutBlock* destProBlock, int pathMethod) /*throw (JmriException)*/ {
 
         QList<LayoutBlock*> destList = QList<LayoutBlock*>();
         if (destProBlock != nullptr) {
@@ -238,7 +238,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
         }
         try {
             return checkValidDest(currentBlock, nextBlock, destBlock, destList, pathMethod);
-        } catch (JmriException e) {
+        } catch (JmriException* e) {
             throw e;
         }
 
@@ -261,13 +261,13 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
  * false if destBlock comes after destBlock+1
  * @throws Jmri.Exception if any Block is NULL;
  */
-/*public*/ bool LayoutBlockConnectivityTools::checkValidDest(LayoutBlock* currentBlock, LayoutBlock* nextBlock, LayoutBlock* destBlock, QList<LayoutBlock*> destBlockn1, int pathMethod) throw (JmriException)
+/*public*/ bool LayoutBlockConnectivityTools::checkValidDest(LayoutBlock* currentBlock, LayoutBlock* nextBlock, LayoutBlock* destBlock, QList<LayoutBlock*> destBlockn1, int pathMethod) /*throw (JmriException)*/
 {
  LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
  if (!lbm->isAdvancedRoutingEnabled())
  {
   log->info("Advanced routing has not been enabled therefore we cannot use this function");
-  throw JmriException("Advanced routing has not been enabled therefore we cannot use this function");
+  throw new JmriException("Advanced routing has not been enabled therefore we cannot use this function");
  }
  if(log->isDebugEnabled())
  {
@@ -281,7 +281,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
     log->debug(tr("dest + 1 %1").arg(dp->getDisplayName()));
    }
   }
-  catch (NullPointerException e)
+  catch (NullPointerException* e)
   {
   }
  }
@@ -345,13 +345,13 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
   return true;
 
  } else if (destBlock == nullptr) {
-     throw JmriException("Block in Destination Field returns as invalid");
+     throw new JmriException("Block in Destination Field returns as invalid");
  } else if (currentBlock == nullptr) {
-     throw JmriException("Block in Facing Field returns as invalid");
+     throw new JmriException("Block in Facing Field returns as invalid");
  } else if (nextBlock == nullptr) {
-     throw JmriException("Block in Protecting Field returns as invalid");
+     throw new JmriException("Block in Protecting Field returns as invalid");
  }
- throw JmriException("BlockIsNull");
+ throw new JmriException("BlockIsNull");
 }
 
 /**
@@ -364,13 +364,13 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
 * @return true if valid, false if not valid.
 */
 
-/*public*/ bool LayoutBlockConnectivityTools::checkValidDest(LayoutBlock* facing, LayoutBlock* protecting, FacingProtecting* dest, int pathMethod) throw (JmriException){
+/*public*/ bool LayoutBlockConnectivityTools::checkValidDest(LayoutBlock* facing, LayoutBlock* protecting, FacingProtecting* dest, int pathMethod) /*throw (JmriException)*/{
         if(facing==NULL || protecting==NULL || dest == NULL){
             return false;
         }
         try{
             return checkValidDest(facing, protecting, static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlock(dest->getFacing()), static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlock(dest->getProtecting()), pathMethod);
-        } catch (JmriException e){
+        } catch (JmriException* e){
             throw e;
         }
     }
@@ -396,12 +396,12 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
     * @throws jmri.JmriException if it can not find a valid path or the routing
     *                            has not been enabled.
     */
-/*public*/ QList<LayoutBlock*> LayoutBlockConnectivityTools::getLayoutBlocks(LayoutBlock* sourceLayoutBlock, LayoutBlock* destinationLayoutBlock, LayoutBlock* protectingLayoutBlock, bool validateOnly, int pathMethod) throw (JmriException){
+/*public*/ QList<LayoutBlock*> LayoutBlockConnectivityTools::getLayoutBlocks(LayoutBlock* sourceLayoutBlock, LayoutBlock* destinationLayoutBlock, LayoutBlock* protectingLayoutBlock, bool validateOnly, int pathMethod) /*throw (JmriException)*/{
         lastErrorMessage= "Unknown Error Occured";
         LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
         if (!lbm->isAdvancedRoutingEnabled()){
             log->info("Advanced routing has not been enabled therefore we cannot use this function");
-            throw  JmriException("Advanced routing has not been enabled therefore we cannot use this function");
+            throw new JmriException("Advanced routing has not been enabled therefore we cannot use this function");
         }
 
         int directionOfTravel = sourceLayoutBlock->getNeighbourDirection(protectingLayoutBlock);
@@ -422,12 +422,12 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
             } else {
                 lastErrorMessage = "Block we are protecting is already occupied or reserved";
                 log->debug(lastErrorMessage);
-                throw  JmriException(lastErrorMessage);
+                throw new JmriException(lastErrorMessage);
             }
             if (!canLBlockBeUsed(destinationLayoutBlock)){
                 lastErrorMessage = "Destination Block is already occupied or reserved";
                 log->debug(lastErrorMessage);
-                throw  JmriException(lastErrorMessage);
+                throw new JmriException(lastErrorMessage);
             }
         } else {
             blocksInRoute.append(new BlocksTested(protectingLayoutBlock));
@@ -524,7 +524,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
             lastErrorMessage = "ttlExpired";
         }
         //we exited the loop without either finding the destination or we had error.
-        throw JmriException(lastErrorMessage);
+        throw new JmriException(lastErrorMessage);
     }
 #if 1
 
@@ -671,7 +671,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
                     log->debug("\nSource " + beanList.at(i)->getBean()->getDisplayName());
                     log->debug("facing " + beanList.at(i)->getFacing()->getDisplayName());
                     log->debug("protecting " + beanList.at(i)->getProtecting()->getDisplayName());
-                } catch (NullPointerException e){
+                } catch (NullPointerException* e){
                     //Can be considered normal if the signalmast is assigned to an end bumper.
                 }
             Block* facing = beanList.at(i)->getFacing();
@@ -681,8 +681,8 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
             NamedBean* source = beanList.at(i)->getBean();
             try {
                 retPairs.insert(source, discoverPairDest(source, lProtecting, lFacing, beanList, pathMethod));
-            } catch (JmriException ex){
-                log->error(ex.toString());
+            } catch (JmriException* ex){
+                log->error(ex->toString());
             }
         }
         return retPairs;
@@ -695,7 +695,7 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
     * @param T The class of the remote destination, if NULL, then both SignalMasts and Sensors are considered
     * @return A list of all reachable NamedBeans
     */
-    /*public*/ QList<NamedBean*> LayoutBlockConnectivityTools::discoverPairDest(NamedBean* source, LayoutEditor* editor, QString T, int pathMethod) throw (JmriException)
+    /*public*/ QList<NamedBean*> LayoutBlockConnectivityTools::discoverPairDest(NamedBean* source, LayoutEditor* editor, QString T, int pathMethod) /*throw (JmriException)*/
     {
      LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
      LayoutBlock* lFacing = lbm->getFacingBlockByNamedBean(source, editor);
@@ -710,23 +710,23 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
           ret.append(bean);
           }
          }
-     } catch (JmriException e) {
+     } catch (JmriException* e) {
          throw e;
      }
      return ret;
     }
 
-    QList<NamedBean*> LayoutBlockConnectivityTools::discoverPairDest(NamedBean* source, LayoutBlock* lProtecting, LayoutBlock* lFacing, QList<FacingProtecting*> blockList, int pathMethod) throw (JmriException)
+    QList<NamedBean*> LayoutBlockConnectivityTools::discoverPairDest(NamedBean* source, LayoutBlock* lProtecting, LayoutBlock* lFacing, QList<FacingProtecting*> blockList, int pathMethod) /*throw (JmriException)*/
     {
      LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
      if(!lbm->isAdvancedRoutingEnabled())
      {
-      throw  JmriException("advanced routing not enabled");
+      throw new JmriException("advanced routing not enabled");
      }
      if(!lbm->routingStablised())
      {
       log->error(("routing not stablised"));
-      throw JmriException("routing not stablised");
+      throw new JmriException("routing not stablised");
 
      }
      QList<NamedBean*> validDestBean =  QList<NamedBean*>();
@@ -749,15 +749,15 @@ LayoutBlockConnectivityTools::LayoutBlockConnectivityTools()
                           log->debug("Adding block " + destObj->getDisplayName() + " to paths, current size " + lblks.size());
                       validDestBean.append(destObj);
          }
-         catch (JmriException e)
+         catch (JmriException* e)
          {  // Considered normal if route not found.
           log->debug("not a valid route through " + source->getDisplayName() + " - " + destObj->getDisplayName());
          }
         }
        }
-       catch (JmriException ex)
+       catch (JmriException* ex)
        {
-         log->debug(ex.toString());
+         log->debug(ex->toString());
        }
       }
      }

@@ -5,6 +5,7 @@
 #include "paneprogpane.h"
 #include "dccaddressvarhandler.h"
 #include "combinedlocoseltreepane.h"
+#include "progservicemodecombobox.h"
 
 #include <QObject>
 #include "libPr3_global.h"
@@ -37,9 +38,10 @@ class RosterEntry;
 class JmriJFrame;
 //class CombinedLocoSelTreePane;
 class ProgModeSelector;
-class LIBPR3SHARED_EXPORT PaneProgDp3Action : public JmriAbstractAction
+class LIBPR3SHARED_EXPORT PaneProgDp3Action : public JmriAbstractAction, public ProgListener
 {
  Q_OBJECT
+ Q_INTERFACES(ProgListener)
 public:
  PaneProgDp3Action();
     ~PaneProgDp3Action();
@@ -49,8 +51,10 @@ public:
     /*public*/ PaneProgDp3Action(QObject* parent);
     /*public*/ PaneProgDp3Action(QString s, QObject* parent);
     /*public*/ void windowClosing(QCloseEvent* we);
-    /*public*/ JmriPanel* makePanel();
+    /*public*/ JmriPanel* makePanel() override;
     /*synchronized*/ /*public*/ BusyGlassPane* getBusyGlassPane();
+    QObject* self() {return (QObject*)this;}
+
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
     /*public*/ bool isBusy();
@@ -58,8 +62,9 @@ public slots:
 private:
     Logger* log;
     QObject *o1, *o2, *o3, *o4;
-    QLabel* statusLabel;
-    ProgModeSelector* modePane;// = new jmri.jmrit.progsupport.ProgServiceModeComboBox();
+    JLabel* statusLabel;
+    /*final*/ ProgModeSelector* modePane = new ProgServiceModeComboBox();
+
     void init();
     JmriJFrame* f;
     CombinedLocoSelTreePane* combinedLocoSelTree;
@@ -71,36 +76,36 @@ private:
 
     RosterEntry* re;
 
-    int teststatus;// = 0;
+    int teststatus = 0;
     /*synchronized*/ void findDecoderAddress();
     DecoderFile* decoderFile;
     bool shortAddr;// = false;
-    int cv29;// = 0;
-    int cv17;// = -1;
-    int cv18;// = -1;
-    int cv19;// = 0;
-    int cv1;// = 0;
+    int cv29 = 0;
+    int cv17 = -1;
+    int cv18 = -1;
+    int cv19 = 0;
+    int cv1 = 0;
     int longAddress;
-    QString address;//="3";
-    QWidget* rosterPanel;// = NULL;//new QWidget();
-    Programmer*          mProgrammer;
-    CvTableModel*        cvModel;//      = NULL;
-    IndexedCvTableModel* iCvModel;//     = NULL;
+    QString address = "3";
+    QWidget* rosterPanel = NULL;//new QWidget();
+    Programmer*          mProgrammer = nullptr;
+    CvTableModel*        cvModel      = NULL;
+    IndexedCvTableModel* iCvModel     = NULL;
     VariableTableModel*  variableModel;
     DccAddressPanel* dccAddressPanel;
-    QDomElement modelElem;// = NULL;
-    ThisProgPane* progPane;// = NULL;
+    QDomElement modelElem= QDomElement();
+    ThisProgPane* progPane = NULL;
     /*synchronized*/ void setUpRosterPanel();
-    bool longMode;// = false;
-    QString newAddr;// = NULL;
+    bool longMode = false;
+    QString newAddr = NULL;
     void updateDccAddress();
     QPushButton* saveBasicRoster;
     bool checkDuplicate();
     void saveRosterEntry() /*throws jmri.JmriException*/;
     // hold refs to variables to check dccAddress
-    VariableValue* primaryAddr;// = NULL;
-    VariableValue* extendAddr;// = NULL;
-    EnumVariableValue* addMode;// = NULL;
+    VariableValue* primaryAddr = NULL;
+    VariableValue* extendAddr = NULL;
+    EnumVariableValue* addMode = NULL;
     /*public*/ void enableButtons(bool enable);
     /*public*/ void prepGlassPane(JToggleButton* activeButton);
     QString getLocaleAttribute(QDomElement element, QString attrName, QString locale);
@@ -124,10 +129,12 @@ protected:
     /*protected*/ void selectDecoder(int mfgID, int modelID, int productID);
     /*protected*/ QWidget* createProgrammerSelection();
     /*protected*/ void readCV(QString cv);
+
  friend class ThisProgPane;
  friend class PPD3CombinedLocoSelTreePane;
  friend class PPD3DccAddressVarHandler;
 };
+
 class PPD3CombinedLocoSelTreePane : public CombinedLocoSelTreePane
 {
  Q_OBJECT
@@ -137,7 +144,7 @@ class PPD3CombinedLocoSelTreePane : public CombinedLocoSelTreePane
    // private static final long serialVersionUID = 587815634507269784L;
  PaneProgDp3Action* pane;
 public:
- /*public*/ PPD3CombinedLocoSelTreePane(QLabel *s, PaneProgDp3Action* pane);
+ /*public*/ PPD3CombinedLocoSelTreePane(QLabel *s, ProgModeSelector* selector, PaneProgDp3Action* pane);
 public slots:
  void On_go2();
  void On_ServiceMode(bool b);
@@ -147,13 +154,14 @@ private:
  Logger* log;
    protected:
     /*protected*/ void startProgrammer(DecoderFile* decoderFile, RosterEntry* re,
-            QString filename);
+            QString progName);
     /*protected*/ void openNewLoco();
     /*protected*/ QWidget* layoutRosterSelection() ;
     /*protected*/ QWidget* layoutDecoderSelection();
     /*protected*/ void selectDecoder(int mfgID, int modelID, int productID);
     /*protected*/ QWidget* createProgrammerSelection() ;
 };
+
 class PPD3PaneProgFrame : public PaneProgFrame
 {
  Q_OBJECT
@@ -163,7 +171,7 @@ public:
                    Programmer* pProg, bool opsMode, PPD3CombinedLocoSelTreePane* parent = 0);
 
 protected:
- /*protected*/ QWidget* getModePane();
+ /*protected*/ JPanel* getModePane();
 
 };
 

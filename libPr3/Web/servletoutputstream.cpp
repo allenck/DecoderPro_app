@@ -71,7 +71,7 @@
  *
  */
 
- /*public*/ void ServletOutputStream::print(QString s) throw (IOException)
+ /*public*/ void ServletOutputStream::print(QString s) /*throw (IOException)*/
 {
  if (s==NULL) s="NULL";
  int len = s.length();

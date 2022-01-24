@@ -18,10 +18,10 @@ signals:
 
 public slots:
 private:
-    QWidget* modePane;
+    JPanel* modePane;
     Logger* log;
 protected:
-    /*protected*/ QWidget *getModePane() override;
+    /*protected*/ JPanel* getModePane() override;
     /*protected*/ void pickProgrammerMode(/*@NonNull*/ QDomElement programming);
 
 };

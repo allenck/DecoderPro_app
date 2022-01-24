@@ -63,7 +63,7 @@
 /*public*/ QJsonObject JsonBlockHttpService::doPut(QString type, QString name, QJsonObject data, QLocale locale) throw (JsonException) {
     try {
     ((BlockManager*)InstanceManager::getDefault("BlockManager"))->provideBlock(name);
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         throw  JsonException(500, tr(/*locale,*/ "ErrorCreatingObject %1 %2").arg(JsonBlock::BLOCK).arg(name));
     }
     return this->doPost(type, name, data, locale);
@@ -72,7 +72,7 @@
 //@Override
 /*public*/ QJsonValue JsonBlockHttpService::doGetList(QString /*type*/, QLocale locale) throw (JsonException) {
     QJsonArray root = QJsonArray(); //this->mapper.createArrayNode();
-    for (QString name : ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getSystemNameList()) {
+    for (QString name : ((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getSystemNameList()) {
         root.append(this->doGet(JsonBlock::BLOCK, name, locale));
     }
     return root;

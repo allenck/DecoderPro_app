@@ -54,7 +54,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _EXTENSION, (".jmri"))
  * @param path The Profile's directory
  * @throws IOException
  */
-/*public*/ Profile::Profile(File* path, QObject* parent) throw (IOException)
+/*public*/ Profile::Profile(File* path, QObject* parent) /*throw (IOException)*/
  : QObject(parent)
 {
  common(path,  true);
@@ -85,32 +85,32 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _EXTENSION, (".jmri"))
      pathWithExt = new File(path->getParentFile(), path->getName() + EXTENSION);
  }
  if (pathWithExt->getName() != (id + EXTENSION)) {
-     throw  IllegalArgumentException(id + " " + path->getName() + " do not match"); // NOI18N
+     throw new IllegalArgumentException(id + " " + path->getName() + " do not match"); // NOI18N
  }
  if (Profile::isProfile(path) || Profile::isProfile(pathWithExt)) {
-     throw  IllegalArgumentException("A profile already exists at " + path->toString()); // NOI18N
+     throw new IllegalArgumentException("A profile already exists at " + path->toString()); // NOI18N
  }
  if (Profile::containsProfile(path) || Profile::containsProfile(pathWithExt)) {
-     throw  IllegalArgumentException(path->toString() + " contains a profile in a subdirectory."); // NOI18N
+     throw new IllegalArgumentException(path->toString() + " contains a profile in a subdirectory."); // NOI18N
  }
  if (Profile::inProfile(path) || Profile::inProfile(pathWithExt)) {
-     if (Profile::inProfile(path)) log->warn(tr("Exception: Path %1 is within an existing profile.").arg(path->toString()),  Exception("traceback")); // NOI18N
-     if (Profile::inProfile(pathWithExt)) log->warn(tr("Exception: pathWithExt %1 is within an existing profile.").arg(pathWithExt->toString()),  Exception("traceback")); // NOI18N
-     throw  IllegalArgumentException(path->toString() + " is within an existing profile."); // NOI18N
+     if (Profile::inProfile(path)) log->warn(tr("Exception: Path %1 is within an existing profile.").arg(path->toString()), new Exception("traceback")); // NOI18N
+     if (Profile::inProfile(pathWithExt)) log->warn(tr("Exception: pathWithExt %1 is within an existing profile.").arg(pathWithExt->toString()), new Exception("traceback")); // NOI18N
+     throw new IllegalArgumentException(path->toString() + " is within an existing profile."); // NOI18N
  }
  this->name = name;
  this->id = id + "." + ProfileManager::createUniqueId();
  this->path = pathWithExt;
  // use field, not local variables (path or pathWithExt) for paths below
  if (!this->path->exists() && !this->path->mkdirs()) {
-     throw IOException("Unable to create directory " + this->path->toString()); // NOI18N
+     throw new IOException("Unable to create directory " + this->path->toString()); // NOI18N
  }
  if (!this->path->isDirectory()) {
-     throw IllegalArgumentException(path->getPath() + " is not a directory"); // NOI18N
+     throw new IllegalArgumentException(path->getPath() + " is not a directory"); // NOI18N
  }
  this->save();
  if (!Profile::isProfile(this->path)) {
-     throw IllegalArgumentException(path->getPath() + " does not contain a profile.properties file"); // NOI18N
+     throw new IllegalArgumentException(path->getPath() + " does not contain a profile.properties file"); // NOI18N
  }
 }
 
@@ -151,44 +151,19 @@ void Profile::common(File *path, bool isReadable)
  }
 }
 
-/*protected*/ Profile::Profile(/*@Nonnull*/ File* path, /*@Nonnull*/ QString id, bool isReadable, QObject* parent) throw (IOException) : QObject(parent)
+/*protected*/ Profile::Profile(/*@Nonnull*/ File* path, /*@Nonnull*/ QString id, bool isReadable, QObject* parent) /*throw (IOException)*/ : QObject(parent)
 {
  common(path, isReadable);
 }
 
-/*protected*/ /*final*/ void Profile::save() throw (IOException)
+/*protected*/ /*final*/ void Profile::save() /*throw (IOException)*/
 {
     ProfileProperties* p = new ProfileProperties(this);
     p->put(*_NAME, this->name, true);
     p->put(*_ID, this->id, true);
-    this->saveXml();
 }
 
-/*
- * Remove when or after support for writing ProfileConfig.xml is removed.
- */
-//@Deprecated
-/*protected*/ /*final*/ void Profile::saveXml() throw (IOException) {
-    Properties* p = new Properties();
-    File* f = new File(this->path, PROPERTIES);
-    FileOutputStream* os = nullptr;
 
-    p->setProperty(NAME, this->name);
-    p->setProperty(ID, this->id);
-    if (!f->exists() && !f->createNewFile()) {
-        throw  IOException("Unable to create file at " + f->getAbsolutePath()); // NOI18N
-    }
-    try {
-        os = new FileOutputStream(f);
-        p->storeToXML(os, "JMRI Profile"); // NOI18N
-        os->close();
-    } catch (IOException ex) {
-        if (os != nullptr) {
-            os->close();
-        }
-        throw ex;
-    }
-}
 
 /**
  * @return the name
@@ -200,7 +175,7 @@ void Profile::common(File *path, bool isReadable)
 /*public*/ void Profile::setName(QString name) {
     QString oldName = this->name;
     this->name = name;
-ProfileManager::defaultManager()->profileNameChange(this, oldName);
+    ProfileManager::getDefault()->profileNameChange(this, oldName);
 }
 
 /**
@@ -219,7 +194,7 @@ ProfileManager::defaultManager()->profileNameChange(this, oldName);
 /**
  * @return the id
  */
-/*public*/ QString Profile::getId()
+/*public*/ QString Profile::getId() const
 {
  return id;
 }
@@ -235,41 +210,16 @@ ProfileManager::defaultManager()->profileNameChange(this, oldName);
 {
  ProfileProperties* p = new ProfileProperties(this->path);
 
- this->id = p->get(*_ID, true);
- this->name = p->get(*_NAME, true);
- if (this->id == NULL)
- {
-  this->readProfileXml();
-  this->save();
+ QString readId = p->get(*_ID, true);
+ if (readId != "") {
+     id = readId;
+ }
+ QString readName = p->get(*_NAME, true);
+ if (readName != "") {
+     name = readName;
  }
 }
 
-/**
- * @deprecated since 4.1.1; Remove sometime after the new profiles get
- * entrenched (JMRI 5.0, 6.0?)
- */
-//@Deprecated
-/*private*/ void Profile::readProfileXml() throw (IOException) {
-    Properties* p = new Properties();
-    File* f = new File(this->path, /*PROPERTIES*/"profile.properties");
-    //FileInputStream is = null;
-    QFile* ff = new QFile(f->getPath());
-    if(!ff->open(QIODevice::ReadOnly))
-     throw IOException(tr("File not found: %1").arg(f->getPath()));
-    QTextStream* is;
-    try {
-        is = new QTextStream(ff);
-        p->loadFromXML(is);
-        ff->close();
-    } catch (IOException ex) {
-        if (is != NULL) {
-            ff->close();
-        }
-        throw ex;
-    }
-    this->id = p->getProperty("id");
-    this->name = p->getProperty("name");
-}
 
 //@Override
 /*public*/ QString Profile::toString() {
@@ -392,7 +342,7 @@ ProfileManager::defaultManager()->profileNameChange(this, oldName);
    return true;
   }
   // Version 1
-  if ((new File(path, *_PROPERTIES))->canRead() && path->getName() != (PROFILE)) // i.e: "profile.properties"
+  if ((new File(path, *_PROPERTIES))->canRead() && path->getName() != (/*PROFILE*/"profile")) // i.e: "profile.properties"
   {
    return true;
   }

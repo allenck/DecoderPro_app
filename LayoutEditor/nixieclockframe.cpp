@@ -73,7 +73,7 @@
  aspect =  (4.5*24.)/32.;
 
  // listen for changes to the timebase parameters
-// ((SimpleTimebase*)clock)->addPropertyChangeListener((PropertyChangeListener*)this);
+// ((SimpleTimebase*)clock)->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
  connect(clock, SIGNAL(minuteTick()), this, SLOT(update()));
 
 
@@ -99,7 +99,7 @@
  pack();
 
  // request callback to update time
- clock->addMinuteChangeListener( new PropertyChangeListener());
+ clock->addMinuteChangeListener( this);
  //connect(clock, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //    {
 //     /*public*/ void propertyChange(PropertyChangeEvent* e)

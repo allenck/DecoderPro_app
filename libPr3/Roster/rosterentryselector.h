@@ -2,7 +2,6 @@
 #define ROSTERENTRYSELECTOR_H
 #include "propertychangelistener.h"
 #include "rosterentry.h"
-#include "rosterentryselector.h"
 /**
  * The getter method for a roster entry selection.
  * <p>
@@ -19,7 +18,7 @@
 /*public*/ /*interface*/ class LIBPR3SHARED_EXPORT RosterEntrySelector
 {
 public:
-    //static /*final*/ QString SELECTED_ROSTER_ENTRIES;
+    //static /*final*/ QString SELECTED_ROSTER_ENTRIES = "selectedRosterEntries";//static /*final*/ QString SELECTED_ROSTER_ENTRIES;
 /**
  * Get the currently selected roster entries. Since the selection could contain
  * multiple roster entries, this returns an array of RosterEntry instead of a
@@ -36,6 +35,8 @@ public:
 /*public*/ virtual void removePropertyChangeListener(PropertyChangeListener* /*listener*/) {}
 
 /*public*/ virtual void removePropertyChangeListener(QString /*propertyName*/, PropertyChangeListener* /*listener*/) {}
+
+  virtual QObject* self() =0;
 private:
 
 };

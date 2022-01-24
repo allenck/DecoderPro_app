@@ -74,14 +74,16 @@ friend class CDWindowListener;
 friend class CDChangeListener;
 };
 
-class CDActionListener : public ActionListener
+class CDActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  ColorDialog* colorDialog;
 public:
  CDActionListener(ColorDialog* colorDialog) {this->colorDialog = colorDialog;}
+ QObject* self() override {return (QObject*)this;}
 public slots:
- void actionPerformed() {colorDialog->update();}
+ void actionPerformed(JActionEvent */*e*/ = 0) override{colorDialog->update();}
 };
 
 class CDWindowListener : public WindowListener

@@ -38,7 +38,7 @@ namespace Operations
   *                  dialog boxes will pop in the right place.
   */
 
- /*public*/ CarRosterMenu::CarRosterMenu(QString pMenuName, MENUTYPES pMenuType, QWidget* pWho)
+ /*public*/ CarRosterMenu::CarRosterMenu(QString pMenuName, MENUTYPES pMenuType, CarsTableFrame* pWho)
      : QMenu(pMenuName)
  {
   //super(pMenuName);
@@ -48,15 +48,16 @@ namespace Operations
           pWho);
 
   importAction->setEnabled(false);
-  AbstractAction* exportAction = new ExportCarRosterAction(tr("Export"),
+  AbstractAction* exportAction = new ExportCarRosterAction(
           pWho);
   exportAction->setEnabled(false);
-  AbstractAction* deleteAction = new DeleteCarRosterAction(tr("Delete"),
+  AbstractAction* deleteAction = new DeleteCarRosterAction(
           pWho);
   deleteAction->setEnabled(false);
   AbstractAction* resetMovesAction = new ResetCarMovesAction(
           tr("Reset Moves"), pWho);
   resetMovesAction->setEnabled(false);
+
   // Need a frame here, but are not passed one
   JFrame* newFrame = new JFrame();
   AbstractAction* printAction = new PrintCarRosterAction(tr("Print"),
@@ -83,15 +84,12 @@ namespace Operations
        previewAction->setEnabled(true);
        break;
    case SELECTMENU:
-       printAction->setEnabled(true);
-       previewAction->setEnabled(true);
-       break;
    case ENTRYMENU:
        printAction->setEnabled(true);
        previewAction->setEnabled(true);
        break;
    default:
-       Logger::error("RosterMenu constructed without a valid menuType parameter: " + pMenuType);
+       Logger::error("RosterMenu constructed without a valid menuType parameter: " + QString::number(pMenuType));
   }
  }
 

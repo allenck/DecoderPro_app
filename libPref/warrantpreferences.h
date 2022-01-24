@@ -11,7 +11,7 @@ class LIBPREFSHARED_EXPORT WarrantPreferences : public AbstractPreferencesManage
 {
  Q_OBJECT
 public:
- explicit WarrantPreferences(QObject *parent = 0);
+ Q_INVOKABLE explicit WarrantPreferences(QObject *parent = 0);
  /*public*/ enum Shutdown {NO_MERGE, PROMPT, MERGE_ALL};
  /*public*/ static /*final*/ QString LAYOUT_PARAMS;// = "layoutParams";   // NOI18N
  /*public*/ static /*final*/ QString LAYOUT_SCALE;// = "layoutScale";     // NOI18N
@@ -29,8 +29,8 @@ public:
  /*public*/ static /*final*/ QString APPEARANCES;// = "appearances"; // NOI18N
 
  /*public*/ void savePreferences(Profile* profile);
+    QObject* self() override {return (QObject*)this;}
 
- WarrantPreferences(QString fileName, QObject *parent = 0);
  ~WarrantPreferences() {}
  WarrantPreferences(const WarrantPreferences&) : AbstractPreferencesManager() {}
  /*public*/ static WarrantPreferences* getDefault();
@@ -41,7 +41,7 @@ public:
  /*public*/ bool store(QDomElement root);
  QT_DEPRECATED /*public*/ void apply();
  /*public*/ float getThrottleScale();
- /*public*/ void initialize(Profile* profile) throw (InitializationException);
+ /*public*/ void initialize(Profile* profile) override /*throw (InitializationException)*/;
  /*public*/ QMap<QString, QString> getAppearances();
  /*public*/ QMap<QString, float> getSpeedNames();
  /*protected*/ void setShutdown(Shutdown set);

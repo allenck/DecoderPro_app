@@ -21,13 +21,13 @@ BeanTableModel::BeanTableModel(QObject *parent) :
  */
 //private static final long serialVersionUID = 8121523528465367528L;
 
-///*public*/ Class<?> getColumnClass(int c) {
-//    if (c == INCLUDE_COLUMN) {
-//        return Boolean.class;
-//    } else {
-//        return String.class;
-//    }
-//}
+/*public*/ QString BeanTableModel::getColumnClass(int c) {
+    if (c == INCLUDE_COLUMN) {
+        return "Boolean";
+    } else {
+        return "String";
+    }
+}
 
 /*public*/ /*abstract*/ Manager* BeanTableModel::getManager() const {}
 

@@ -1,18 +1,19 @@
 #ifndef LIGHT_H
 #define LIGHT_H
 #include "abstractnamedbean.h"
-#include "lightcontrol.h"
+//#include "lightcontrol.h"
+#include "digitalio.h"
 
 class LightControl;
-class Light :  public AbstractNamedBean
+class Light :   public AbstractNamedBean, public DigitalIO
 {
     //Q_OBJECT
+  Q_INTERFACES(DigitalIO)
 public:
- explicit Light(QObject *parent = 0) : AbstractNamedBean(parent) {}
-    Light(QString sysName, QString userName, QObject* parent = 0)
-     : AbstractNamedBean(sysName, userName, parent) {}
-    Light(QString sysName, QObject* parent = 0)
-     : AbstractNamedBean(sysName, parent) {}
+  explicit Light(QObject *parent = 0) : AbstractNamedBean(parent) {}
+  Light(QString sysName, QObject* parent=0) : AbstractNamedBean(sysName, parent) {}
+  Light(QString sysName, QString userName, QObject* parent=0) : AbstractNamedBean(sysName, userName, parent) {}
+
 
     /**
      * Represent a single visible Light on the physical layout.
@@ -78,38 +79,85 @@ public:
      * @version			$Revision: 17977 $
      */
     //virtual interface Light extends NamedBean {
+    enum STATES
+    {
+     /**
+         * Constant representing an "unknown" state, indicating that the object's
+         * state is not necessarily that of the actual layout hardware. This is the
+         * initial state of a newly created object before communication with the
+         * layout.
+         */
+        /*public static final int*/ UNKNOWN = 0x01,
+
+        /**
+         * Constant representing an "inconsistent" state, indicating that some
+         * inconsistency has been detected in the hardware readback.
+         */
+        /*public static final int*/ INCONSISTENT = 0x08,
 
         /** State value indicating output intensity is at or above maxIntensity */
-        const static int ON          = 0x02;
+        /*const static int*/ ON          = 0x02,
 
         /** State value indicating output intensity is at or below minIntensity */
-        const static int OFF         = 0x04;
+        /*const static int*/ OFF         = 0x04,
 
         /** State value indicating output intensity is
          * less than maxIntensity and more than minIntensity,
          * and no transition is in progress */
-        const static int INTERMEDIATE         = 0x08;
+        /*const static int*/ INTERMEDIATE         = 0x08,
 
 
         /** State value indicating output intensity is currently changing toward higher intensity, and will
             continue until full ON is reached */
-        const static int TRANSITIONINGTOFULLON   = 0x310;
+        /*const static int*/ TRANSITIONINGTOFULLON   = 0x310,
 
         /** State value indicating output intensity is currently changing toward higher intensity. The current
             transition will stop before full ON is reached. */
-        const static int TRANSITIONINGHIGHER 	      = 0x210;
+        /*const static int*/ TRANSITIONINGHIGHER 	      = 0x210,
 
         /** State value indicating output intensity is currently changing toward lower intensity. The current
             transition will stop before full OFF is reached. */
-        const static int TRANSITIONINGLOWER        = 0x110;
+        /*const static int*/ TRANSITIONINGLOWER        = 0x110,
 
         /** State value indicating output intensity is currently changing toward lower intensity, and will
             continue until full OFF is reached */
-        const static int TRANSITIONINGTOFULLOFF = 0x010;
+        /*const static int*/ TRANSITIONINGTOFULLOFF = 0x010,
 
         /** State value mask representing status where output is changing due to a request to transition. */
-        const static int TRANSITIONING         = 0x010;
+        /*const static int*/ TRANSITIONING         = 0x010
+      };
+        /** {@inheritDoc} */
+        //@Override
+        /*default*/ /*public*/ bool isConsistentState() {
+            return (getState() == ON)
+                    || (getState() == OFF);
+        }
 
+        /** {@inheritDoc} */
+//        @Override
+//        @InvokeOnLayoutThread
+        /*default*/ /*public*/ void setCommandedState(int s) {
+            setState(s);
+        }
+
+        /** {@inheritDoc} */
+        //@Override
+        /*default*/ /*public*/ int getCommandedState() {
+            return getState();
+        }
+
+        /** {@inheritDoc} */
+        //@Override
+        /*default*/ /*public*/ int getKnownState() {
+            return getState();
+        }
+
+        /** {@inheritDoc} */
+        //@Override
+        //@InvokeOnLayoutThread
+        /*default*/ /*public*/ void requestUpdateFromLayout() {
+            // Do nothing
+        }
 
         /**
          * Set the demanded output state. Valid values are ON and OFF.
@@ -131,13 +179,15 @@ public:
         virtual int  getState() {return 0;}
 
         // control types - types defined
-        const static int SENSOR_CONTROL          = 0x01;
-        const static int FAST_CLOCK_CONTROL      = 0x02;
-        const static int TURNOUT_STATUS_CONTROL  = 0x03;
-        const static int TIMED_ON_CONTROL		= 0x04;
-        const static int TWO_SENSOR_CONTROL		= 0x05;
-        const static int NO_CONTROL              = 0x00;
-
+    enum TYPES
+    {
+        /*const static int*/ SENSOR_CONTROL          = 0x01,
+        /*const static int*/ FAST_CLOCK_CONTROL      = 0x02,
+        /*const static int*/ TURNOUT_STATUS_CONTROL  = 0x03,
+        /*const static int*/ TIMED_ON_CONTROL		= 0x04,
+        /*const static int*/ TWO_SENSOR_CONTROL		= 0x05,
+        /*const static int*/ NO_CONTROL              = 0x00
+    };
         /** Check if this object can handle variable intensity.
             <P>
             Unbound property.
@@ -310,10 +360,12 @@ public:
          *   shutting down its control mechanism.
          */
         virtual void deactivateLight() {}
+
+    virtual QObject* self() =0;
 signals:
     
 public slots:
     
 };
-
+Q_DECLARE_INTERFACE(Light, "Light")
 #endif // LIGHT_H

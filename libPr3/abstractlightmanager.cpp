@@ -3,7 +3,7 @@
 #include "manager.h"
 
 AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *parent) :
-    LightManager(memo, parent)
+    AbstractManager(memo, parent)
 {
  log= new Logger("AbstractLightManager");
 }
@@ -30,7 +30,7 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
 /**
  * Returns the second letter in the system name for a Light
  */
-/*public*/ char AbstractLightManager::typeLetter() const { return 'L'; }
+/*public*/ QChar AbstractLightManager::typeLetter() { return 'L'; }
 
 /**
  * Locate via user name, then system name if needed.
@@ -47,7 +47,7 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
 {
     Light* light = getLight(name);
     // makeSystemName checks for validity
-    return light == nullptr ? newLight(makeSystemName(name, true, QLocale()), "") : light;
+    return light == nullptr ? newLight(AbstractManager::makeSystemName(name, true, QLocale()), "") : light;
 }
 
 /**
@@ -63,22 +63,22 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
 
     return (Light*)getBySystemName(name);
 }
-#if 0
+
 /**
  * Locate a Light by its system name
  */
-/*public*/ Light* AbstractLightManager::getBySystemName(QString name)
+/*public*/ NamedBean* AbstractLightManager::getBySystemName(QString name) const
 {
- return (Light*)(_tsys->value(name));
+ return /*(Light*)*/(_tsys->value(name));
 }
 
 /**
  * Locate a Light by its user name
  */
-/*public*/ Light* AbstractLightManager::getByUserName(QString key) {
-    return dynamic_cast<Light*>(_tuser->value(key));
+/*public*/ NamedBean *AbstractLightManager::getByUserName(QString key) {
+    return /*dynamic_cast<Light*>*/(_tuser->value(key));
 }
-#endif
+
 /**
  * Return an instance with the specified system and user names.
  * Note that two calls with the same arguments will get the same instance;
@@ -107,14 +107,14 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
  if (log->isDebugEnabled()) log->debug("newLight:"
                                         +( (systemName==NULL) ? "NULL" : systemName)
                                         +";"+( (userName==NULL) ? "NULL" : userName));
- if (systemName == NULL)
+ if (systemName.isNull())
  {
   log->error("SystemName cannot be NULL. UserName was "
                                     +( (userName==NULL) ? "NULL" : userName));
   return NULL;
  }
  // is system name in correct format?
- if ( validSystemNameFormat(systemName) != NameValidity::VALID)
+ if ( AbstractManager::validSystemNameFormat(systemName) != NameValidity::VALID)
  {
   log->error("Invalid system name for newLight: "+systemName);
   return NULL;
@@ -123,15 +123,15 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
  Light* s = NULL;
  if ( (userName!=NULL) && ((s = (Light*)getByUserName(userName)) != NULL))
  {
-  if (getBySystemName(systemName)!=s)
+  if (getBySystemName(systemName)!=(NamedBean*)s->self())
    log->error("inconsistent user ("+userName+") and system name ("
-                    +systemName+") results; userName related to ("+s->getSystemName()+")");
+                    +systemName+") results; userName related to ("+((AbstractNamedBean*)s->self())->getSystemName()+")");
   return s;
  }
  if ( (s = (Light*)getBySystemName(systemName)) != NULL)
  {
-  if ((s->getUserName() == NULL) && (userName != NULL))
-   s->setUserName(userName);
+  if ((((AbstractNamedBean*)s->self())->getUserName() == NULL) && (userName != NULL))
+   ((AbstractNamedBean*)s->self())->setUserName(userName);
   else if (userName != NULL) log->warn("Found light via system name ("+systemName
                                 +") with non-NULL user name ("+userName+")");
    return s;
@@ -147,8 +147,8 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
   throw new IllegalArgumentException("cannot create new light "+systemName);
  }
  // save in the maps
- Register(s);
- emit newLightCreated(this, s);
+ AbstractManager::Register(static_cast<NamedBean*>(s->self()));
+ //emit newLightCreated(this, s);
  return s;
 }
 
@@ -171,7 +171,7 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
 //                                getSystemNameList().iterator();
 //    while (iter.hasNext()) {
 //        String systemName = iter.next();
-        foreach(QString systemName, getSystemNameList())
+        foreach(QString systemName, AbstractManager::getSystemNameList())
         {
         if (systemName.isEmpty()) {
             log->error("System name NULL during activation of Lights");
@@ -234,7 +234,7 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
  */
 //@Override
 /*public*/ QString AbstractLightManager::getBeanTypeHandled(bool plural) const {
-    return (plural ? tr("Lights") : ("Light"));
+    return (plural ? tr("Lights") : tr("Light"));
 }
 
 /**

@@ -1,5 +1,5 @@
 #include "printoptionpanel.h"
-#include <QComboBox>
+#include "jcombobox.h"
 #include <QCheckBox>
 #include <QRadioButton>
 #include <QPushButton>
@@ -23,7 +23,8 @@
 #include "operationssetupxml.h"
 #include "htmltextedit.h"
 #include "flowlayout.h"
-
+#include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -115,61 +116,52 @@ namespace Operations
   fontComboBox = new QFontComboBox();
   manifestFormatComboBox = Setup::getManifestFormatComboBox();
   manifestOrientationComboBox = Setup::getOrientationComboBox();
-  fontSizeComboBox = new QComboBox();
+  fontSizeComboBox = new JComboBox();
   pickupComboBox = Setup::getPrintColorComboBox(); // colors
   dropComboBox = Setup::getPrintColorComboBox();
   localComboBox = Setup::getPrintColorComboBox();
   switchListOrientationComboBox = Setup::getOrientationComboBox();
 
   // message formats
-  enginePickupMessageList = QList<QComboBox*>();
-  engineDropMessageList = QList<QComboBox*>();
-  carPickupMessageList = QList<QComboBox*>();
-  carDropMessageList = QList<QComboBox*>();
-  localMessageList = QList<QComboBox*>();
-  switchListCarPickupMessageList = QList<QComboBox*>();
-  switchListCarDropMessageList = QList<QComboBox*>();
-  switchListLocalMessageList = QList<QComboBox*>();
+  enginePickupMessageList = QList<JComboBox*>();
+  engineDropMessageList = QList<JComboBox*>();
+  carPickupMessageList = QList<JComboBox*>();
+  carDropMessageList = QList<JComboBox*>();
+  localMessageList = QList<JComboBox*>();
+  switchListCarPickupMessageList = QList<JComboBox*>();
+  switchListCarDropMessageList = QList<JComboBox*>();
+  switchListLocalMessageList = QList<JComboBox*>();
 
   // manifest panels
-  QString     gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
 
   pManifest = new QWidget();
-  pEngPickup = new QGroupBox();
+  pEngPickup = new JPanel();
   pEngPickup->setLayout(new QHBoxLayout);
-  pEngPickup->setStyleSheet(gbStyleSheet);
-  pEngPickup->setTitle(tr("Pick Up Locomotive Message Format"));
-  pEngDrop = new QGroupBox();
+  pEngPickup->setBorder(BorderFactory::createTitledBorder(tr("Pick Up Locomotive Message Format")));
+  pEngDrop = new JPanel();
   pEngDrop->setLayout(new QHBoxLayout);
-  pEngDrop->setStyleSheet(gbStyleSheet);
-  pEngDrop->setTitle(tr("Set Out Locomotive Message Format"));
-  pPickup = new QGroupBox();
+  pEngDrop->setBorder(BorderFactory::createTitledBorder(tr("Set Out Locomotive Message Format")));
+  pPickup = new JPanel();
   pPickup->setLayout(new QHBoxLayout);
-  pPickup->setStyleSheet(gbStyleSheet);
-  pPickup->setTitle("Pick Up Car Message Format");
-  pDrop = new QGroupBox();
+  pPickup->setBorder(BorderFactory::createTitledBorder("Pick Up Car Message Format"));
+  pDrop = new JPanel();
   pDrop->setLayout(new QHBoxLayout);
-  pDrop->setStyleSheet(gbStyleSheet);
-  pDrop->setTitle("Set Out Car Message Format");
-  pLocal = new QGroupBox();
+  pDrop->setBorder(BorderFactory::createTitledBorder("Set Out Car Message Format"));
+  pLocal = new JPanel();
   pLocal->setLayout(new QHBoxLayout);
-  pLocal->setStyleSheet(gbStyleSheet);
-  pLocal->setTitle("Local Move Message Format");
+  pLocal->setBorder(BorderFactory::createTitledBorder("Local Move Message Format"));
 
   // switch list panels
-  pSwitchListOrientation = new QGroupBox();
-  pSwPickup = new QGroupBox();
+  pSwitchListOrientation = new JPanel();
+  pSwPickup = new JPanel();
   pSwPickup->setLayout(new QHBoxLayout);
-  pSwPickup->setStyleSheet(gbStyleSheet);
-  pSwPickup->setTitle("Switch List Pick Up Car Message Format");
-  pSwDrop = new QGroupBox();
+  pSwPickup->setBorder(BorderFactory::createTitledBorder("Switch List Pick Up Car Message Format"));
+  pSwDrop = new JPanel();
   pSwDrop->setLayout(new QHBoxLayout);
-  pSwDrop->setStyleSheet(gbStyleSheet);
-  pSwDrop->setTitle("Switch List Set Out Car Message Format");
-  pSwLocal = new QGroupBox();
+  pSwDrop->setBorder(BorderFactory::createTitledBorder("Switch List Set Out Car Message Format"));
+  pSwLocal = new JPanel();
   pSwLocal->setLayout(new QHBoxLayout);
-  pSwLocal->setStyleSheet(gbStyleSheet);
-  pSwLocal->setTitle("Switch List Local Move Message Format");
+  pSwLocal->setBorder(BorderFactory::createTitledBorder("Switch List Local Move Message Format"));
 
      // the following code sets the frame's initial state
      // add tool tips
@@ -220,63 +212,45 @@ namespace Operations
 
      // row 1 font type and size
      QWidget* p1 = new QWidget();
-     p1->setLayout(new QVBoxLayout);//(p1, BoxLayout.X_AXIS));
+     p1->setLayout(new QHBoxLayout);//(p1, BoxLayout.X_AXIS));
 
 
-     QGroupBox* pFont = new QGroupBox();
+     JPanel* pFont = new JPanel();
      pFont->setLayout(new FlowLayout());
-     //pFont->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutFont")));
-     pFont->setStyleSheet(gbStyleSheet);
-     pFont->setTitle(tr("Layout Font"));
+     pFont->setBorder(BorderFactory::createTitledBorder(tr("Layout Font")));
      pFont->layout()->addWidget(fontComboBox);
 
-     QGroupBox* pFontSize = new QGroupBox();
+     JPanel* pFontSize = new JPanel();
      pFontSize->setLayout(new FlowLayout());
-     //pFontSize->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutFontSize")));
-     pFontSize->setStyleSheet(gbStyleSheet);
-     pFontSize->setTitle(tr("Layout Font Size"));
+     pFontSize->setBorder(BorderFactory::createTitledBorder(tr("Layout Font Size")));
      pFontSize->layout()->addWidget(fontSizeComboBox);
 
-     QGroupBox* pFormat = new QGroupBox();
+     JPanel* pFormat = new JPanel();
      pFormat->setLayout(new FlowLayout);
-     //pFormat->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutFormat")));
-     pFormat->setStyleSheet(gbStyleSheet);
-     pFormat->setTitle(tr("Layout Format"));
+     pFormat->setBorder(BorderFactory::createTitledBorder(tr("Layout Format")));
      pFormat->layout()->addWidget(tabFormatCheckBox);
      pFormat->layout()->addWidget(manifestFormatComboBox);
 
      manifestFormatComboBox->setCurrentIndex(manifestFormatComboBox->findText(Setup::getManifestFormat()));
 
-     QGroupBox* pOrientation = new QGroupBox();
+     JPanel* pOrientation = new JPanel();
      pOrientation->setLayout(new FlowLayout);
-     //pOrientation->setBorder(BorderFactory.createTitledBorder(Bundle
-//             .getMessage("BorderLayoutOrientation")));
-     pOrientation->setStyleSheet(gbStyleSheet);
-     pOrientation->setTitle(tr("Layout Orientation"));
+     pOrientation->setBorder(BorderFactory::createTitledBorder(tr("Layout Orientation")));
      pOrientation->layout()->addWidget(manifestOrientationComboBox);
 
-     QGroupBox* pPickupColor = new QGroupBox();
+     JPanel* pPickupColor = new JPanel();
      pPickupColor->setLayout(new FlowLayout);
-     //pPickupColor->setBorder(BorderFactory.createTitledBorder(Bundle
-//             .getMessage("BorderLayoutPickupColor")));
-     pPickupColor->setStyleSheet(gbStyleSheet);
-     pPickupColor->setTitle(tr("Pick Up Text Color"));
+     pPickupColor->setBorder(BorderFactory::createTitledBorder(tr("Pick Up Text Color")));
      pPickupColor->layout()->addWidget(pickupComboBox);
 
-     QGroupBox* pDropColor = new QGroupBox();
+     JPanel* pDropColor = new JPanel();
      pDropColor->setLayout(new FlowLayout);
-//     pDropColor
-//             ->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutDropColor")));
-     pDropColor->setStyleSheet(gbStyleSheet);
-     pDropColor->setTitle(tr("Set Out Text Color"));
+     pDropColor->setBorder(BorderFactory::createTitledBorder(tr("Set Out Text Color")));
      pDropColor->layout()->addWidget(dropComboBox);
 
-     QGroupBox* pLocalColor = new QGroupBox();
+     JPanel* pLocalColor = new JPanel();
      pLocalColor->setLayout(new FlowLayout);
-//     pLocalColor->setBorder(BorderFactory.createTitledBorder(Bundle
-//             .getMessage("BorderLayoutLocalColor")));
-     pLocalColor->setStyleSheet(gbStyleSheet);
-     pLocalColor->setTitle(tr("Local Move Text Color"));
+     pLocalColor->setBorder(BorderFactory::createTitledBorder(tr("Local Move Text Color")));
      pLocalColor->layout()->addWidget(localComboBox);
 
      p1->layout()->addWidget(pFont);
@@ -294,29 +268,22 @@ namespace Operations
      QWidget* pSl = new QWidget();
      pSl->setLayout(new QHBoxLayout);//(pSl, BoxLayout.X_AXIS));
 
-     QGroupBox* pSwitchFormat = new QGroupBox();
+     JPanel* pSwitchFormat = new JPanel();
      pSwitchFormat->setLayout(new FlowLayout);
-     //pSwitchFormat->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutSwitchListFormat")));
-     pSwitchFormat->setStyleSheet(gbStyleSheet);
-     pSwitchFormat->setTitle(tr("Switch List Format"));
+     pSwitchFormat->setBorder(BorderFactory::createTitledBorder(tr("Switch List Format")));
      pSwitchFormat->layout()->addWidget(formatSwitchListCheckBox);
 
      pSwitchListOrientation->setLayout(new GridBagLayout());
-     //pSwitchListOrientation->setBorder(BorderFactory.createTitledBorder(Bundle
-//             .getMessage("BorderLayoutSwitchListOrientation")));
-     pSwitchListOrientation->setStyleSheet(gbStyleSheet);
-     pSwitchListOrientation->setTitle(tr("Switch List Page Orientation"));
+     pSwitchListOrientation->setBorder(BorderFactory::createTitledBorder(tr("Switch List Page Orientation")));
      pSwitchListOrientation->setMaximumSize(QSize(8000, 100));
      addItem(pSwitchListOrientation, switchListOrientationComboBox, 0, 0);
      addItem(pSwitchListOrientation, new QLabel(" "), 1, 0); // pad
      addItem(pSwitchListOrientation, new QLabel(" "), 2, 0); // pad
      addItem(pSwitchListOrientation, new QLabel(" "), 3, 0); // pad
 
-     QGroupBox* pSwitchOptions = new QGroupBox();
+     JPanel* pSwitchOptions = new JPanel();
      pSwitchOptions->setLayout(new FlowLayout);
-     //pSwitchOptions->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutSwitchListOptions")));
-     pSwitchOptions->setStyleSheet(gbStyleSheet);
-     pSwitchOptions->setTitle(tr("Switch List Options"));
+     pSwitchOptions->setBorder(BorderFactory::createTitledBorder(tr("Switch List Options")));
      pSwitchOptions->layout()->addWidget(trackSummaryCheckBox);
      pSwitchOptions->layout()->addWidget(routeLocationCheckBox);
 
@@ -325,12 +292,9 @@ namespace Operations
      pSl->layout()->addWidget(pSwitchOptions);
 
      // Manifest comments
-     QGroupBox* pManifestOptions = new QGroupBox();
+     JPanel* pManifestOptions = new JPanel();
      pManifestOptions->setLayout(new FlowLayout);
-//     pManifestOptions->setBorder(BorderFactory.createTitledBorder(Bundle
-//             .getMessage("BorderLayoutManifestOptions")));
-     pManifestOptions->setStyleSheet(gbStyleSheet);
-     pManifestOptions->setTitle(tr("Manifest & Switch List Options"));
+     pManifestOptions->setBorder(BorderFactory::createTitledBorder(tr("Manifest & Switch List Options")));
      pManifestOptions->layout()->addWidget(printValidCheckBox);
      pManifestOptions->layout()->addWidget(printLocCommentsCheckBox);
      pManifestOptions->layout()->addWidget(printRouteCommentsCheckBox);
@@ -346,20 +310,15 @@ namespace Operations
      p2->setLayout(new QHBoxLayout);//(p2, BoxLayout.X_AXIS));
 
      // Use text editor for manifest
-     QGroupBox* pEdit = new QGroupBox();
+     JPanel* pEdit = new JPanel();
      pEdit->setLayout(new FlowLayout);
-//     pEdit->setBorder(BorderFactory.createTitledBorder(Bundle
-//             .getMessage("BorderLayoutManifestPreview")));
-     pEdit->setStyleSheet(gbStyleSheet);
-     pEdit->setTitle(tr("Manifest & Switch List Preview"));
+     pEdit->setBorder(BorderFactory::createTitledBorder(tr("Manifest & Switch List Preview")));
      pEdit->layout()->addWidget(editManifestCheckBox);
 
      // manifest logo
-     QGroupBox* pLogo = new QGroupBox();
+     JPanel* pLogo = new JPanel();
      pLogo->setLayout(new FlowLayout);
-     //pLogo->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutLogo")));
-     pLogo->setStyleSheet(gbStyleSheet);
-     pLogo->setTitle(tr("Logo"));
+     pLogo->setBorder(BorderFactory::createTitledBorder(tr("Logo")));
      pLogo->layout()->addWidget(removeLogoButton);
      pLogo->layout()->addWidget(addLogoButton);
      pLogo->layout()->addWidget(logoURL);
@@ -372,21 +331,15 @@ namespace Operations
      pComments->setLayout(new QHBoxLayout);//(pComments, BoxLayout.X_AXIS));
 
      // missing cars comment
-     QGroupBox* pComment = new QGroupBox();
+     JPanel* pComment = new JPanel();
      pComment->setLayout(new GridBagLayout());
-//     pComment->setBorder(BorderFactory.createTitledBorder(Bundle
-//             .getMessage("BorderLayoutCommentOptions")));
-     pComment->setStyleSheet(gbStyleSheet);
-     pComment->setTitle(tr("Misplaced Cars Comment"));
+     pComment->setBorder(BorderFactory::createTitledBorder(tr("Misplaced Cars Comment")));
      addItem(pComment, commentScroller, 0, 0);
 
      // Hazardous comment
-     QGroupBox* pHazardous = new QGroupBox();
+     JPanel* pHazardous = new JPanel();
      pHazardous->setLayout(new FlowLayout);
-//     pHazardous
-//             ->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutHazardous")));
-     pHazardous->setStyleSheet(gbStyleSheet);
-     pHazardous->setTitle(tr("Hazardous Comment"));
+     pHazardous->setBorder(BorderFactory::createTitledBorder(tr("Hazardous Comment")));
      pHazardous->layout()->addWidget(hazardousTextField);
 
      pComments->layout()->addWidget(pComment);
@@ -407,10 +360,9 @@ namespace Operations
      pManifest->layout()->addWidget(pComments);
 
      // row 11
-     QGroupBox* pControl = new QGroupBox();
-     //pControl->setBorder(BorderFactory.createTitledBorder(""));
-     pControl->setStyleSheet(gbStyleSheet);
+     JPanel* pControl = new JPanel();
      pControl->setLayout(new GridBagLayout());
+     pControl->setBorder(BorderFactory::createTitledBorder(""));
      addItem(pControl, saveButton, 0, 0);
 
      pManifestPane->setWidget(pManifest);
@@ -589,7 +541,7 @@ namespace Operations
  //@Override
  /*public*/ void PrintOptionPanel::comboBoxActionPerformed(QWidget* ae) {
 
-     if ((QComboBox*)ae == manifestFormatComboBox) {
+     if ((JComboBox*)ae == manifestFormatComboBox) {
          loadFontComboBox();
      }
  }
@@ -629,16 +581,16 @@ namespace Operations
      }
  }
 
- /*private*/ void PrintOptionPanel::addComboBox(QWidget* panel, QList<QComboBox*> list, QComboBox* box) {
+ /*private*/ void PrintOptionPanel::addComboBox(QWidget* panel, QList<JComboBox*> list, JComboBox* box) {
      list.append(box);
      ((QHBoxLayout*)panel->layout())->insertWidget(list.size(), box);
      panel->update();
      pManifest->update();
  }
 
- /*private*/ void PrintOptionPanel::removeComboBox(QWidget* panel, QList<QComboBox*>list) {
+ /*private*/ void PrintOptionPanel::removeComboBox(QWidget* panel, QList<JComboBox*>list) {
      for (int i = 0; i < list.size(); i++) {
-         QComboBox* cb = list.at(i);
+         JComboBox* cb = list.at(i);
          if (cb->currentText() == Setup::BLANK) {
              list.removeAt(i);
              panel->layout()->removeWidget(cb);
@@ -667,7 +619,7 @@ namespace Operations
      pickupEngPrefix->setText(Setup::getPickupEnginePrefix());
      QStringList format = Setup::getPickupEngineMessageFormat();
      foreach (QString f, format) {
-      QComboBox*   cb = Setup::getEngineMessageComboBox();
+      JComboBox*   cb = Setup::getEngineMessageComboBox();
          cb->setCurrentIndex(cb->findText(f));
          pEngPickup->layout()->addWidget(cb);
          enginePickupMessageList.append(cb);
@@ -689,7 +641,7 @@ namespace Operations
      dropEngPrefix->setText(Setup::getDropEnginePrefix());
      format = Setup::getDropEngineMessageFormat();
      foreach (QString f, format) {
-     QComboBox*    cb = Setup::getEngineMessageComboBox();
+     JComboBox*    cb = Setup::getEngineMessageComboBox();
          cb->setCurrentIndex(cb->findText(f));
          pEngDrop->layout()->addWidget(cb);
          engineDropMessageList.append(cb);
@@ -711,7 +663,7 @@ namespace Operations
      pickupCarPrefix->setText(Setup::getPickupCarPrefix());
      QStringList pickFormat = Setup::getPickupManifestMessageFormat();
      foreach (QString pf, pickFormat) {
-     QComboBox*    cb = Setup::getCarMessageComboBox();
+     JComboBox*    cb = Setup::getCarMessageComboBox();
          cb->setCurrentIndex(cb->findText(pf));
          pPickup->layout()->addWidget(cb);
          carPickupMessageList.append(cb);
@@ -733,7 +685,7 @@ namespace Operations
      dropCarPrefix->setText(Setup::getDropCarPrefix());
      QStringList dropFormat = Setup::getDropManifestMessageFormat();
      foreach (QString lf, dropFormat) {
-      QComboBox*   cb = Setup::getCarMessageComboBox();
+      JComboBox*   cb = Setup::getCarMessageComboBox();
          cb->setCurrentIndex(cb->findText(lf));
          pDrop->layout()->addWidget(cb);
          carDropMessageList.append(cb);
@@ -755,7 +707,7 @@ namespace Operations
      localPrefix->setText(Setup::getLocalPrefix());
      QStringList localFormat = Setup::getLocalManifestMessageFormat();
      foreach (QString lf, localFormat) {
-      QComboBox*   cb = Setup::getCarMessageComboBox();
+      JComboBox*   cb = Setup::getCarMessageComboBox();
          cb->setCurrentIndex(cb->findText(lf));
          pLocal->layout()->addWidget(cb);
          localMessageList.append(cb);
@@ -778,7 +730,7 @@ namespace Operations
      switchListPickupCarPrefix->setText(Setup::getSwitchListPickupCarPrefix());
      pickFormat = Setup::getPickupSwitchListMessageFormat();
      foreach (QString pf, pickFormat) {
-      QComboBox*   cb = Setup::getCarMessageComboBox();
+      JComboBox*   cb = Setup::getCarMessageComboBox();
          cb->setCurrentIndex(cb->findText(pf));
          pSwPickup->layout()->addWidget(cb);
          switchListCarPickupMessageList.append(cb);
@@ -800,7 +752,7 @@ namespace Operations
      switchListDropCarPrefix->setText(Setup::getSwitchListDropCarPrefix());
      dropFormat = Setup::getDropSwitchListMessageFormat();
      foreach (QString df, dropFormat) {
-      QComboBox*   cb = Setup::getCarMessageComboBox();
+      JComboBox*   cb = Setup::getCarMessageComboBox();
          cb->setCurrentIndex(cb->findText(df));
          pSwDrop->layout()->addWidget(cb);
          switchListCarDropMessageList.append(cb);
@@ -822,7 +774,7 @@ namespace Operations
      switchListLocalPrefix->setText(Setup::getSwitchListLocalPrefix());
      localFormat = Setup::getLocalSwitchListMessageFormat();
      foreach (QString lf, localFormat) {
-      QComboBox*   cb = Setup::getCarMessageComboBox();
+      JComboBox*   cb = Setup::getCarMessageComboBox();
          cb->setCurrentIndex(cb->findText(lf));
          pSwLocal->layout()->addWidget(cb);
          switchListLocalMessageList.append(cb);
@@ -878,7 +830,7 @@ namespace Operations
      Setup::setPickupEnginePrefix(pickupEngPrefix->text());
      QVector<QString> format = QVector<QString>(enginePickupMessageList.size());
      for (int i = 0; i < enginePickupMessageList.size(); i++) {
-         QComboBox* cb = enginePickupMessageList.at(i);
+         JComboBox* cb = enginePickupMessageList.at(i);
          format.replace(i,  cb->currentText());
      }
      Setup::setPickupEngineMessageFormat(format.toList());
@@ -886,7 +838,7 @@ namespace Operations
      Setup::setDropEnginePrefix(dropEngPrefix->text());
      format = QVector<QString>(engineDropMessageList.size());
      for (int i = 0; i < engineDropMessageList.size(); i++) {
-         QComboBox* cb = engineDropMessageList.at(i);
+         JComboBox* cb = engineDropMessageList.at(i);
          format.replace(i, cb->currentText());
      }
      Setup::setDropEngineMessageFormat(format.toList());
@@ -894,7 +846,7 @@ namespace Operations
      Setup::setPickupCarPrefix(pickupCarPrefix->text());
      format = QVector<QString>(carPickupMessageList.size());
      for (int i = 0; i < carPickupMessageList.size(); i++) {
-         QComboBox* cb = carPickupMessageList.at(i);
+         JComboBox* cb = carPickupMessageList.at(i);
          format.replace(i, cb->currentText());
      }
      Setup::setPickupManifestMessageFormat(format.toList());
@@ -902,7 +854,7 @@ namespace Operations
      Setup::setDropCarPrefix(dropCarPrefix->text());
      format = QVector<QString>(carDropMessageList.size());
      for (int i = 0; i < carDropMessageList.size(); i++) {
-         QComboBox* cb = carDropMessageList.at(i);
+         JComboBox* cb = carDropMessageList.at(i);
          format.replace(i, cb->currentText());
      }
      Setup::setDropManifestMessageFormat(format.toList());
@@ -910,7 +862,7 @@ namespace Operations
      Setup::setLocalPrefix(localPrefix->text());
      format = QVector<QString>(localMessageList.size());
      for (int i = 0; i < localMessageList.size(); i++) {
-         QComboBox* cb = localMessageList.at(i);
+         JComboBox* cb = localMessageList.at(i);
          format.replace(i, cb->currentText());
      }
      Setup::setLocalManifestMessageFormat(format.toList());
@@ -918,7 +870,7 @@ namespace Operations
      Setup::setSwitchListPickupCarPrefix(switchListPickupCarPrefix->text());
      format = QVector<QString>(switchListCarPickupMessageList.size());
      for (int i = 0; i < switchListCarPickupMessageList.size(); i++) {
-         QComboBox* cb = switchListCarPickupMessageList.at(i);
+         JComboBox* cb = switchListCarPickupMessageList.at(i);
          format.replace(i, cb->currentText());
      }
      Setup::setPickupSwitchListMessageFormat(format.toList());
@@ -926,7 +878,7 @@ namespace Operations
      Setup::setSwitchListDropCarPrefix(switchListDropCarPrefix->text());
      format = QVector<QString>(switchListCarDropMessageList.size());
      for (int i = 0; i < switchListCarDropMessageList.size(); i++) {
-         QComboBox* cb = switchListCarDropMessageList.at(i);
+         JComboBox* cb = switchListCarDropMessageList.at(i);
          format.replace(i, cb->currentText());
      }
      Setup::setDropSwitchListMessageFormat(format.toList());
@@ -934,7 +886,7 @@ namespace Operations
      Setup::setSwitchListLocalPrefix(switchListLocalPrefix->text());
      format = QVector<QString>(switchListLocalMessageList.size());
      for (int i = 0; i < switchListLocalMessageList.size(); i++) {
-         QComboBox* cb = switchListLocalMessageList.at(i);
+         JComboBox* cb = switchListLocalMessageList.at(i);
          format.replace(i, cb->currentText());
      }
      Setup::setLocalSwitchListMessageFormat(format.toList());
@@ -965,9 +917,9 @@ namespace Operations
      }
 
      // recreate all train manifests
-     TrainManager::instance()->setTrainsModified();
+     ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->setTrainsModified();
 
-     OperationsSetupXml::instance()->writeOperationsFile();
+     ((Operations::OperationsSetupXml*)InstanceManager::getDefault("OperationsSetupXml"))->writeOperationsFile();
  }
 
  //@Override
@@ -1010,7 +962,7 @@ namespace Operations
      // save engine pick up message format
      QVector<QString> format = QVector<QString>(enginePickupMessageList.size());
      for (int i = 0; i < enginePickupMessageList.size(); i++) {
-         QComboBox* cb = enginePickupMessageList.at(i);
+         JComboBox* cb = enginePickupMessageList.at(i);
          format.replace(i,  cb->currentText());
      }
      if (Setup::getPickupEnginePrefix()!=(pickupEngPrefix->text())
@@ -1021,7 +973,7 @@ namespace Operations
      // save engine drop message format
      format = QVector<QString>(engineDropMessageList.size());
      for (int i = 0; i < engineDropMessageList.size(); i++) {
-         QComboBox* cb = engineDropMessageList.at(i);
+         JComboBox* cb = engineDropMessageList.at(i);
          format.replace(i, cb->currentText());
      }
      if (Setup::getDropEnginePrefix()!=(dropEngPrefix->text())
@@ -1032,7 +984,7 @@ namespace Operations
      // save car pick up message format
      format = QVector<QString>(carPickupMessageList.size());
      for (int i = 0; i < carPickupMessageList.size(); i++) {
-         QComboBox* cb = carPickupMessageList.at(i);
+         JComboBox* cb = carPickupMessageList.at(i);
          format.replace(i, cb->currentText());
      }
      if (Setup::getPickupCarPrefix()!=(this->pickupCarPrefix->text())
@@ -1042,7 +994,7 @@ namespace Operations
      // save car drop message format
      format = QVector<QString>(carDropMessageList.size());
      for (int i = 0; i < carDropMessageList.size(); i++) {
-         QComboBox* cb = carDropMessageList.at(i);
+         JComboBox* cb = carDropMessageList.at(i);
          format.replace(i, cb->currentText());
      }
      if (Setup::getDropCarPrefix()!=(this->dropCarPrefix->text())
@@ -1052,7 +1004,7 @@ namespace Operations
      // save local message format
      format = QVector<QString>(localMessageList.size());
      for (int i = 0; i < localMessageList.size(); i++) {
-         QComboBox* cb = localMessageList.at(i);
+         JComboBox* cb = localMessageList.at(i);
          format.replace(i, cb->currentText());
      }
      if (Setup::getLocalPrefix()!=(this->localPrefix->text())
@@ -1062,7 +1014,7 @@ namespace Operations
      // save switch list car pick up message format
      format = QVector<QString>(switchListCarPickupMessageList.size());
      for (int i = 0; i < switchListCarPickupMessageList.size(); i++) {
-         QComboBox* cb = switchListCarPickupMessageList.at(i);
+         JComboBox* cb = switchListCarPickupMessageList.at(i);
          format.replace(i, cb->currentText());
      }
      if (Setup::getSwitchListPickupCarPrefix()!=(this->switchListPickupCarPrefix->text())
@@ -1072,7 +1024,7 @@ namespace Operations
      // save switch list car drop message format
      format = QVector<QString>(switchListCarDropMessageList.size());
      for (int i = 0; i < switchListCarDropMessageList.size(); i++) {
-         QComboBox* cb = switchListCarDropMessageList.at(i);
+         JComboBox* cb = switchListCarDropMessageList.at(i);
          format.replace(i, cb->currentText());
      }
      if (Setup::getSwitchListDropCarPrefix()!=(this->switchListDropCarPrefix->text())
@@ -1082,7 +1034,7 @@ namespace Operations
      // save switch list local message format
      format = QVector<QString>(switchListLocalMessageList.size());
      for (int i = 0; i < switchListLocalMessageList.size(); i++) {
-         QComboBox* cb = switchListLocalMessageList.at(i);
+         JComboBox* cb = switchListLocalMessageList.at(i);
          format.replace(i, cb->currentText());
      }
      return Setup::getSwitchListLocalPrefix()!=(this->switchListLocalPrefix->text())

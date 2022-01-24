@@ -203,7 +203,7 @@ FileOutputStream::FileOutputStream()
 //            security.checkWrite(name);
 //        }
         if (name.isEmpty()) {
-            throw NullPointerException();
+            throw new NullPointerException();
         }
 //        this.fd = new FileDescriptor();
         this->append = append;
@@ -277,7 +277,7 @@ FileOutputStream::FileOutputStream()
      * @param   append   {@code true} if the write operation first
      *     advances the position to the end of file
      */
-    /*private*/ /*native*/ void FileOutputStream::write(int b, bool append) throw (IOException)
+    /*private*/ /*native*/ void FileOutputStream::write(int b, bool append) /*throw (IOException)*/
     {
 
     }
@@ -289,7 +289,7 @@ FileOutputStream::FileOutputStream()
      * @param      b   the byte to be written.
      * @exception  IOException  if an I/O error occurs.
      */
-    /*public*/ void FileOutputStream::write(int b) throw (IOException) {
+    /*public*/ void FileOutputStream::write(int b) /*throw (IOException)*/ {
         write(b, append);
     }
 #if 0
@@ -342,7 +342,7 @@ FileOutputStream::FileOutputStream()
      * @revised 1.4
      * @spec JSR-51
      */
-    /*public*/ void FileOutputStream::close() throw (IOException) {
+    /*public*/ void FileOutputStream::close() /*throw (IOException)*/ {
 //        /*synchronized*/ (closeLock) {
 //            if (closed) {
 //                return;

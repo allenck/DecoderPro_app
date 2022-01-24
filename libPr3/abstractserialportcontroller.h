@@ -20,7 +20,7 @@ public:
  /**
   * Standard error handling for port-busy case
   */
- /*public*/ QString handlePortBusy(PortInUseException p,
+ /*public*/ QString handlePortBusy(PortInUseException *p,
                        QString portName,
                        Logger* log);
  /**
@@ -29,10 +29,10 @@ public:
  /*public*/ virtual QString handlePortNotFound(NoSuchPortException p,
                          QString portName,
                          Logger* log);
-    /*public*/ void _connect(); // throw( Exception);
- /*public*/ virtual void setPort(QString port);
-    /*public*/  QString getCurrentPortName();
- /*public*/ QVector<QString> getPortNames();
+ /*public*/ void _connect(); // throw( Exception);
+ /*public*/ virtual void setPort(QString port)override;
+    /*public*/  QString getCurrentPortName()override;
+ /*public*/ QVector<QString> getPortNames()override;
  /**
   * Set the baud rate.  This records it for later.
   */
@@ -79,14 +79,14 @@ signals:
 public slots:
 private:
  QVector<QString> portNameVector;
-Logger* log;
+static Logger* log;
 protected:
  //QMap<QString, Option> options;
  /*protected*/ QString mPort;
  /*protected*/ QString mBaudRate;
  /*Each serial port adapter should handle this and it should be abstract.
   However this is in place until all the other code has been refactored */
- /*protected*/ virtual void closeConnection() throw( Exception);// { System.out.println("crap Called"); }
+ /*protected*/ virtual void closeConnection() /*throw( Exception)*/;// { System.out.println("crap Called"); }
  /*Each port adapter should handle this and it should be abstract.
   However this is in place until all the other code has been refactored */
  /*protected*/ virtual void resetupConnection();

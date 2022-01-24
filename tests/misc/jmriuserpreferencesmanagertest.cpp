@@ -34,19 +34,19 @@ JmriUserPreferencesManagerTest::JmriUserPreferencesManagerTest(QObject *parent) 
 /*private*/ /*final*/ /*static*/ Logger* JmriUserPreferencesManagerTest::log = LoggerFactory::getLogger("JmriUserPreferencesManagerTest");
 
 //@Test
-/*public*/ void JmriUserPreferencesManagerTest::testGetInstance() {
-    Assert::assertFalse(InstanceManager::containsDefault("UserPreferencesManager"), __FILE__, __LINE__);
-    Assert::assertNotNull(JmriUserPreferencesManager::getInstance(), __FILE__, __LINE__);
-    Assert::assertEquals(InstanceManager::getDefault("UserPreferencesManager"), JmriUserPreferencesManager::getInstance(), __FILE__, __LINE__);
-    Assert::assertEquals(JmriUserPreferencesManager::getDefault(), JmriUserPreferencesManager::getInstance(), __FILE__, __LINE__);
-}
+///*public*/ void JmriUserPreferencesManagerTest::testGetInstance() {
+//    Assert::assertFalse(InstanceManager::containsDefault("UserPreferencesManager"), __FILE__, __LINE__);
+//    Assert::assertNotNull(JmriUserPreferencesManager::getInstance(), __FILE__, __LINE__);
+//    Assert::assertEquals(InstanceManager::getDefault("UserPreferencesManager"), JmriUserPreferencesManager::getInstance(), __FILE__, __LINE__);
+//    Assert::assertEquals(JmriUserPreferencesManager::getDefault(), JmriUserPreferencesManager::getInstance(), __FILE__, __LINE__);
+//}
 
 //@Test
-/*public*/ void JmriUserPreferencesManagerTest::testGetDefault() {
-    Assert::assertFalse(InstanceManager::containsDefault("UserPreferencesManager"), __FILE__, __LINE__);
-    Assert::assertNotNull(JmriUserPreferencesManager::getDefault(), __FILE__, __LINE__);
-    Assert::assertEquals(InstanceManager::getDefault("UserPreferencesManager"), JmriUserPreferencesManager::getDefault(), __FILE__, __LINE__);
-}
+///*public*/ void JmriUserPreferencesManagerTest::testGetDefault() {
+//    Assert::assertFalse(InstanceManager::containsDefault("UserPreferencesManager"), __FILE__, __LINE__);
+//    Assert::assertNotNull(JmriUserPreferencesManager::getDefault(), __FILE__, __LINE__);
+//    Assert::assertEquals(InstanceManager::getDefault("UserPreferencesManager"), JmriUserPreferencesManager::getDefault(), __FILE__, __LINE__);
+//}
 
 //@Test
 /*public*/ void JmriUserPreferencesManagerTest::testAllowSave() {
@@ -911,7 +911,7 @@ JmriUserPreferencesManagerTest::JmriUserPreferencesManagerTest(QObject *parent) 
 }
 
 //@Test
-/*public*/ void JmriUserPreferencesManagerTest::testReadUserPreferences() throw (IOException) {
+/*public*/ void JmriUserPreferencesManagerTest::testReadUserPreferences() /*throw (IOException)*/ {
     JUnitUtil::resetProfileManager(new NullProfile(folder->newFolder(Profile::PROFILE)));
     QPoint location = QPoint(69, 96);
     QSize windowSize = QSize(100, 200);
@@ -955,7 +955,7 @@ JmriUserPreferencesManagerTest::JmriUserPreferencesManagerTest(QObject *parent) 
 }
 
 //@Test
-/*public*/ void JmriUserPreferencesManagerTest::testSaveElement() throw (IOException) {
+/*public*/ void JmriUserPreferencesManagerTest::testSaveElement() /*throw (IOException)*/ {
     JUnitUtil::resetProfileManager(new NullProfile(folder->newFolder(Profile::PROFILE)));
     QPoint location = QPoint(69, 96);
     QSize windowSize = QSize(100, 200);

@@ -17,13 +17,14 @@
 #include "car.h"
 #include "track.h"
 #include "carloads.h"
+#include "instancemanager.h"
 
 using namespace Operations;
 TrainCsvManifest::TrainCsvManifest()
 {
- engineManager = EngineManager::instance();
- carManager = CarManager::instance();
- locationManager = LocationManager::instance();
+ engineManager = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"));
+ carManager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
+ locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
 
 }
 /**
@@ -41,7 +42,7 @@ TrainCsvManifest::TrainCsvManifest()
 /*public*/ TrainCsvManifest::TrainCsvManifest(Train* train)
 {
  // create comma separated value manifest file
- File* file = TrainManagerXml::instance()->createTrainCsvManifestFile(train->getName());
+ File* file = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->createTrainCsvManifestFile(train->getName());
 
  PrintWriter* fileOut;
 
@@ -49,11 +50,11 @@ TrainCsvManifest::TrainCsvManifest()
      //fileOut = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8")),// NOI18N
 //            true); // NOI18N
   QFile f(file->getPath());
-  if(!f.open(QIODevice::WriteOnly)) throw IOException("Error opening file");
+  if(!f.open(QIODevice::WriteOnly)) throw new IOException("Error opening file");
   QTextStream os(&f);
   os.setCodec("UTF-8");
   fileOut = new PrintWriter(&os);
- } catch (IOException e) {
+ } catch (IOException* e) {
      log->error(tr("Can not open CSV manifest file: %1").arg(file->getName()));
      return;
  }
@@ -191,7 +192,7 @@ TrainCsvManifest::TrainCsvManifest()
    {
     cars--;
     newWork = true;
-    if (CarLoads::instance()->getLoadType(car->getTypeName(), car->getLoadName()) == (
+    if (((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getLoadType(car->getTypeName(), car->getLoadName()) == (
             CarLoad::LOAD_TYPE_EMPTY)) {
         emptyCars--;
     }
@@ -206,7 +207,7 @@ TrainCsvManifest::TrainCsvManifest()
    }
   }
   // car holds
-  QList<RollingStock*>* rsByLocation = CarManager::instance()->getByLocationList();
+  QList<RollingStock*>* rsByLocation = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getByLocationList();
   QList<Car*> cList = QList<Car*>();
   for (RollingStock* rs : *rsByLocation) {
       if (rs->getLocation() == rl->getLocation() && rs->getRouteLocation() == NULL && rs->getTrack() != NULL) {

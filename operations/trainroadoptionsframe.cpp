@@ -1,7 +1,6 @@
 #include "trainroadoptionsframe.h"
 #include "train.h"
-#include <QPushButton>
-#include <QGroupBox>
+#include "jbutton.h"
 #include <QBoxLayout>
 #include "gridbaglayout.h"
 #include <QScrollArea>
@@ -17,6 +16,8 @@
 #include "operationsxml.h"
 #include "setup.h"
 #include <QLabel>
+#include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -43,8 +44,8 @@ namespace Operations
  log = new Logger("TrainRoadOptionsFrame");
      _train = NULL;
 
-     pRoadControls = new QWidget();
-     panelRoads = new QGroupBox();
+     pRoadControls = new JPanel();
+     panelRoads = new JPanel();
      paneRoads = new QScrollArea(/*panelRoads*/);
 
      // labels
@@ -52,10 +53,10 @@ namespace Operations
      trainDescription = new QLabel();
 
      // major buttons
-     addRoadButton = new QPushButton(tr("Add Road"));
-     deleteRoadButton = new QPushButton(tr("Delete Road"));
-     deleteAllRoadsButton = new QPushButton(tr("Delete All"));
-     saveTrainButton = new QPushButton(tr("Save Train"));
+     addRoadButton = new JButton(tr("Add Road"));
+     deleteRoadButton = new JButton(tr("Delete Road"));
+     deleteAllRoadsButton = new JButton(tr("Delete All"));
+     saveTrainButton = new JButton(tr("Save Train"));
 
      // radio buttons
      roadNameAll = new QRadioButton(tr("Accept All"));
@@ -67,7 +68,7 @@ namespace Operations
      // check boxes
      // text field
      // combo boxes
-     comboBoxRoads = CarRoads::instance()->getComboBox();
+     comboBoxRoads = ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->getComboBox();
  }
 
  /*public*/ void TrainRoadOptionsFrame::initComponents(TrainEditFrame* parent) {
@@ -84,35 +85,29 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      // Layout the panel by rows
      // row 1a
-     QGroupBox* pName = new QGroupBox();
+     JPanel* pName = new JPanel();
      pName->setLayout(new GridBagLayout());
-     //pName->setBorder(BorderFactory.createTitledBorder(tr("Name")));
-     pName->setStyleSheet(gbStyleSheet);
-     pName->setTitle(tr("Name"));
+     pName->setBorder(BorderFactory::createTitledBorder(tr("Name")));
      addItem(pName, trainName, 0, 0);
 
      // row 1b
-     QGroupBox* pDesc = new QGroupBox();
+     JPanel* pDesc = new JPanel();
      pDesc->setLayout(new GridBagLayout());
-     //pDesc->setBorder(BorderFactory.createTitledBorder(tr("Description")));
-     pDesc->setStyleSheet(gbStyleSheet);
-     pDesc->setTitle(tr("Description"));
+     pDesc->setBorder(BorderFactory::createTitledBorder(tr("Description")));
      addItem(pDesc, trainDescription, 0, 0);
 
      p1->layout()->addWidget(pName);
      p1->layout()->addWidget(pDesc);
 
      // row 3
-     QGroupBox* p3Frame = new QGroupBox;
+     JPanel* p3Frame = new JPanel;
      p3Frame->setLayout(new QVBoxLayout);
      QWidget* p3 = new QWidget();
      p3->setLayout(new QVBoxLayout);//(p3, BoxLayout.Y_AXIS));
      QScrollArea* pane3 = new QScrollArea(/*p3*/);
      p3Frame->layout()->addWidget(pane3);
      pane3->setWidgetResizable(true);
-     //pane3->setBorder(BorderFactory.createTitledBorder(tr("RoadsTrain")));
-     p3Frame->setStyleSheet(gbStyleSheet);
-     p3Frame->setTitle(tr("Select roads serviced by this train"));
+     p3Frame->setBorder(BorderFactory::createTitledBorder(tr("Select roads serviced by this train")));
      pane3->setMaximumSize(QSize(2000, 400));
 
      QWidget* pRoadRadioButtons = new QWidget();
@@ -135,14 +130,12 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      p3->layout()->addWidget(pRoadControls);
 
      // row 4
-     QGroupBox* panelRoadsFrame = new QGroupBox;
+     JPanel* panelRoadsFrame = new JPanel;
      panelRoadsFrame->setLayout(new QVBoxLayout);
      panelRoads->setLayout(new GridBagLayout());
-     //paneRoads->setBorder(BorderFactory.createTitledBorder(tr("Roads")));
+     panelRoadsFrame->setBorder(BorderFactory::createTitledBorder(tr("Roads")));
      panelRoadsFrame->layout()->addWidget(paneRoads);
      paneRoads->setWidgetResizable(true);
-     panelRoadsFrame->setStyleSheet(gbStyleSheet);
-     panelRoadsFrame->setTitle(tr("Roads"));
 
      QButtonGroup* roadGroup = new QButtonGroup();
      roadGroup->addButton(roadNameAll);
@@ -150,10 +143,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      roadGroup->addButton(roadNameExclude);
 
      // row 12
-     QGroupBox* panelButtons = new QGroupBox();
+     JPanel* panelButtons = new JPanel();
      panelButtons->setLayout(new GridBagLayout());
-     //panelButtons->setBorder(BorderFactory.createTitledBorder(""));
-     panelButtons->setStyleSheet(gbStyleSheet);
+     panelButtons->setBorder(BorderFactory::createTitledBorder(""));
      panelButtons->setMaximumSize(QSize(2000, 200));
 
      // row 13
@@ -182,8 +174,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
          trainDescription->setText(_train->getDescription());
          updateButtons(true);
          // listen for train changes
-         //_train->addPropertyChangeListener(this);
-         connect(_train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         //_train->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+         connect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      } else {
          updateButtons(false);
      }
@@ -193,9 +185,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      // get notified if car roads, roads, and owners gets modified
      //CarTypes.instance().addPropertyChangeListener(this);
-     connect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarRoads.instance().addPropertyChangeListener(this);
-     connect(CarRoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(((CarRoads*)InstanceManager::getDefault("Operations::CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      initMinimumSize(QSize(Control::panelWidth500, Control::panelHeight400));
  }
@@ -203,7 +195,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  // Save
  /*public*/ void TrainRoadOptionsFrame::buttonActionPerformed(QWidget* ae)
  {
-  QPushButton* source = (QPushButton*)ae;
+  JButton* source = (JButton*)ae;
      if (_train != NULL) {
          if (source == saveTrainButton) {
              log->debug("train save button activated");
@@ -317,17 +309,17 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*private*/ void TrainRoadOptionsFrame::updateRoadComboBoxes() {
-     CarRoads::instance()->updateComboBox(comboBoxRoads);
+    ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->updateComboBox(comboBoxRoads);
  }
 
  /*public*/ void TrainRoadOptionsFrame::dispose() {
      //CarTypes.instance().removePropertyChangeListener(this);
- disconnect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarRoads.instance().removePropertyChangeListener(this);
- connect(CarRoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(((CarRoads*)InstanceManager::getDefault("Operations::CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      if (_train != NULL) {
          //_train->removePropertyChangeListener(this);
-      disconnect(_train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      disconnect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
      OperationsFrame::dispose();
  }

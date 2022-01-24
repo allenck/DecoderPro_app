@@ -31,7 +31,7 @@
  * Protocol Specific Abstract Functions
  */
 //@Override
-/*public*/ void SimpleReporterServer::sendReport(QString reporterName, QVariant r) throw (IOException) {
+/*public*/ void SimpleReporterServer::sendReport(QString reporterName, QVariant r) /*throw (IOException)*/ {
     addReporterToList(reporterName);
     if (r != QVariant()) {
 //        if (r instanceof jmri.Reportable )
@@ -48,7 +48,7 @@
 }
 
 //@Override
-/*public*/ void SimpleReporterServer::sendErrorStatus(QString reporterName) throw (IOException) {
+/*public*/ void SimpleReporterServer::sendErrorStatus(QString reporterName) /*throw (IOException)*/ {
     this->sendMessage("REPORTER ERROR\n");
 }
 
@@ -70,15 +70,15 @@
     } else {
         // send the current status if the report
         try {
-           Reporter* reporter = static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->provideReporter(reporterName);
+           Reporter* reporter = qobject_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->provideReporter(reporterName);
            sendReport(reporterName, reporter->getCurrentReport());
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             log->warn(tr("Failed to provide Reporter \"%1\" in parseStatus").arg(reporterName));
         }
     }
 }
 
-/*private*/ void SimpleReporterServer::sendMessage(QString message) throw (IOException) {
+/*private*/ void SimpleReporterServer::sendMessage(QString message) /*throw (IOException)*/ {
     if (this->output != nullptr) {
         this->output->writeBytes(message.toLocal8Bit().data(), message.length());
     } else {

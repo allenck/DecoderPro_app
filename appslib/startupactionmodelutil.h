@@ -20,9 +20,9 @@ public:
  /*public*/ QString getClassName(/*@NonNULL*/ QString name);
  /*public*/ QStringList getNames();
  /*public*/ QVector<Class*> getClasses();
- /*public*/ void addAction(/*@NonNULL*/ QString strClass, /*@NonNULL*/ QString name) throw (ClassNotFoundException);
+ /*public*/ void addAction(/*@NonNULL*/ QString strClass, /*@NonNULL*/ QString name) /*throw (ClassNotFoundException)*/;
  /*public*/ void addAction(Class* clazz, QString name);
- /*public*/ void removeAction(/*@NonNULL*/ QString strClass) throw (ClassNotFoundException);
+ /*public*/ void removeAction(/*@NonNULL*/ QString strClass) /*throw (ClassNotFoundException)*/;
  /*public*/ QString getOverride(/*@Nullable */QString name);
 
 private:

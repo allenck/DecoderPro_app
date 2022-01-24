@@ -62,14 +62,14 @@
 
         // if that failed, blame it on the input arguments
         if (s == nullptr) {
-            throw IllegalArgumentException();
+            throw new IllegalArgumentException();
         }
 
         return (DefaultIdTag*)s;
     }
 
     //@Override
-    /*public*/ void TranspondingTagManager::writeIdTagDetails() throw (IOException) {
+    /*public*/ void TranspondingTagManager::writeIdTagDetails() /*throw (IOException)*/ {
         if (this->dirty) {
             (new DefaultIdTagManagerXml(this,"TranspondingIdTags.xml"))->store();  //NOI18N
             this->dirty = false;

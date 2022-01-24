@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QMap>
 #include "libPr3_global.h"
+#include "propertychangelistener.h"
 
 class QDomElement;
 class VSDecoderEvent;
@@ -17,9 +18,10 @@ class Trigger;
 class SoundEvent;
 class EventListenerList;
 class VSDConfig;
-class LIBPR3SHARED_EXPORT VSDecoder : public QObject
+class LIBPR3SHARED_EXPORT VSDecoder : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
  explicit VSDecoder(QObject *parent = 0);
  /*public*/ VSDecoder(QString id, QString name, QObject *parent = 0);
@@ -55,7 +57,7 @@ public:
  /*public*/ void playHorn() ;
  /*public*/ void shortHorn();
  /*public*/ void stopHorn();
-
+  QObject* self() override {return (QObject*)this;}
 
 signals:
  void notify(VSDecoderEvent*);

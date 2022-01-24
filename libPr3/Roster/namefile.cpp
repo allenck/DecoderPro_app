@@ -47,8 +47,8 @@ NameFile::NameFile(QObject* parent) : XmlFile(parent)
         _instance = new NameFile();
         try {
             _instance->readFile(defaultNameFilename());
-        } catch (Exception e) {
-            log->error("Exception during name file reading: " + e.getMessage());
+        } catch (Exception* e) {
+            log->error("Exception during name file reading: " + e->getMessage());
         }
     }
     if (log->isDebugEnabled()) {

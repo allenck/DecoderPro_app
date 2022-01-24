@@ -2,6 +2,7 @@
 #include "locobufferadapter.h"
 #include "locobufferconnectionconfig.h"
 #include "instancemanager.h"
+#include "appsconfigurationmanager.h"
 
 LocobufferConnectionConfigXml::LocobufferConnectionConfigXml(QObject *parent) :
     AbstractSerialConnectionConfigXml(parent)
@@ -34,5 +35,5 @@ LocobufferConnectionConfigXml::LocobufferConnectionConfigXml(QObject *parent) :
 }
 
 /*protected*/ void LocobufferConnectionConfigXml::_register() {
-    static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerPref(new LocobufferConnectionConfig(adapter));
+    qobject_cast<AppsConfigurationManager*>(InstanceManager::getDefault("ConfigureManager"))->registerPref(new LocobufferConnectionConfig(adapter));
 }

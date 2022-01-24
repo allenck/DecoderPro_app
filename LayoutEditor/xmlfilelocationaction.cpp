@@ -8,6 +8,7 @@
 #include "flowlayout.h"
 #include <QPushButton>
 #include <QTextBrowser>
+#include "jfilechooser.h"
 
 //XmlFileLocationAction::XmlFileLocationAction()
 //{
@@ -31,7 +32,7 @@
 }
 
 //@Override
-/*public*/ void XmlFileLocationAction::actionPerformed(ActionEvent* ev) {
+/*public*/ void XmlFileLocationAction::actionPerformed(JActionEvent *ev) {
 
     /*final*/ QString user = FileUtil::getUserFilesPath();
     /*final*/ QString roster = Roster::getDefault()->getRosterLocation();
@@ -65,14 +66,19 @@
 //        /*public*/ void actionPerformed(ActionEvent event) {
 //            try {
 //                Desktop.getDesktop().open(new File(user));
-//            } catch (IOException e) {
+//            } catch (IOException* e) {
 //                XmlFileLocationAction.log.error("Error when opening user files location: " + e);
 //            } catch (UnsupportedOperationException e) {
 //                XmlFileLocationAction.log.error("Error when opening user files location: " + e);
 //            }
 //        }
 //    });
-    connect(b, SIGNAL(clicked(bool)), this, SLOT(on_openUserFilesButton()));
+//    connect(b, SIGNAL(clicked(bool)), this, SLOT(on_openUserFilesButton()));
+    connect(b, &QPushButton::clicked, [=]{
+     JFileChooser* fc = new JFileChooser(user);
+     fc->setFileFilter("All files (*.*)");
+     fc->showOpenDialog(nullptr);
+    });
     b = new QPushButton("Open Roster Location");
     buttons->layout()->addWidget(b);
 //    b.addActionListener(new ActionListener() {
@@ -87,8 +93,12 @@
 //            }
 //        }
 //    });
-    connect(b, SIGNAL(clicked(bool)), this, SLOT(on_openRosterButton()));
-    b = new QPushButton("Open Profile Location");
+//    connect(b, SIGNAL(clicked(bool)), this, SLOT(on_openRosterButton()));
+    connect(b, &QPushButton::clicked, [=]{
+     JFileChooser* fc = new JFileChooser(roster);
+     fc->setFileFilter("All files (*.*)");
+     fc->showOpenDialog(nullptr);
+    }); b = new QPushButton("Open Profile Location");
     buttons->layout()->addWidget(b);
 //    b.addActionListener(new ActionListener() {
 //        @Override
@@ -117,8 +127,12 @@
 //            }
 //        }
 //    });
-    connect(b, SIGNAL(clicked(bool)), this, SLOT(on_openSettingsButton()));
-    b = new QPushButton("Open Scripts Location");
+//    connect(b, SIGNAL(clicked(bool)), this, SLOT(on_openSettingsButton()));
+    connect(b, &QPushButton::clicked, [=]{
+     JFileChooser* fc = new JFileChooser(settings);
+     fc->setFileFilter("All files (*.*)");
+     fc->showOpenDialog(nullptr);
+    }); b = new QPushButton("Open Scripts Location");
     buttons->layout()->addWidget(b);
 //    b.addActionListener(new ActionListener() {
 //        @Override
@@ -132,8 +146,12 @@
 //            }
 //        }
 //    });
-    connect(b, SIGNAL(clicked(bool)), this, SLOT(on_openScriptsButton(ActionEvent*)));
-    b = new QPushButton("Open Program Location");
+//    connect(b, SIGNAL(clicked(bool)), this, SLOT(on_openScriptsButton(ActionEvent*)));
+    connect(b, &QPushButton::clicked, [=]{
+     JFileChooser* fc = new JFileChooser(scripts);
+     fc->setFileFilter("All files (*.*)");
+     fc->showOpenDialog(nullptr);
+    });b = new QPushButton("Open Program Location");
     buttons->layout()->addWidget(b);
 //    b.addActionListener(new ActionListener() {
 //        @Override
@@ -147,8 +165,12 @@
 //            }
 //        }
 //    });
-    connect(b, SIGNAL(clicked(bool)), this, SLOT(on_openProgramButton()));
-    b = new QPushButton("Open Log Files Location");
+//    connect(b, SIGNAL(clicked(bool)), this, SLOT(on_openProgramButton()));
+    connect(b, &QPushButton::clicked, [=]{
+     JFileChooser* fc = new JFileChooser(prog);
+     fc->setFileFilter("All files (*.*)");
+     fc->showOpenDialog(nullptr);
+    });b = new QPushButton("Open Log Files Location");
     buttons->layout()->addWidget(b);
 //    b.addActionListener(new ActionListener() {
 //        @Override
@@ -162,8 +184,11 @@
 //            }
 //        }
 //    });
-    connect(b, SIGNAL(clicked(bool)), this, SLOT(on_openLogFilesButton()));
-
+    connect(b, &QPushButton::clicked, [=]{
+     JFileChooser* fc = new JFileChooser(log);
+     fc->setFileFilter("All files (*.*)");
+     fc->showOpenDialog(nullptr);
+    });
     //QScrollArea* scroll = new JScrollPane(pane);
     //frame.getContentPane().add(scroll);
     //QVBoxLayout* thisLayout = new QVBoxLayout(frame->getContentPane());
@@ -205,72 +230,3 @@ void XmlFileLocationAction::addLogFiles(QTextBrowser* pane, QString logDir) {
     }
 }
 
-/*public*/ void XmlFileLocationAction::on_openUserFilesButton(ActionEvent* event) {
-//    try {
-//        Desktop.getDesktop().open(new File(user));
-//    } catch (IOException e) {
-//        XmlFileLocationAction.log.error("Error when opening user files location: " + e);
-//    } catch (UnsupportedOperationException e) {
-//        XmlFileLocationAction.log.error("Error when opening user files location: " + e);
-//    }
-}
-
-/*public*/ void XmlFileLocationAction::on_openRosterButton(ActionEvent* event) {
-//    try {
-//        Desktop.getDesktop().open(new java.io.File(roster));
-//    } catch (java.io.IOException e) {
-//        XmlFileLocationAction.log.error("Error when opening roster location: " + e);
-//    } catch (UnsupportedOperationException e) {
-//        XmlFileLocationAction.log.error("Error when opening roster location: " + e);
-//    }
-}
-
-/*public*/ void XmlFileLocationAction::on_openProfileButton(ActionEvent* event) {
-//    try {
-//        Desktop.getDesktop().open(new java.io.File(profile));
-//    } catch (java.io.IOException e) {
-//        XmlFileLocationAction.log.error("Error when opening profile location: " + e);
-//    } catch (UnsupportedOperationException e) {
-//        XmlFileLocationAction.log.error("Error when opening profile location: " + e);
-//    }
-}
-
-/*public*/ void XmlFileLocationAction::on_openSettingsButton(ActionEvent* event) {
-//    try {
-//        Desktop.getDesktop().open(new java.io.File(settings));
-//    } catch (java.io.IOException e) {
-//        XmlFileLocationAction.log.error("Error when opening settings location: " + e);
-//    } catch (UnsupportedOperationException e) {
-//        XmlFileLocationAction.log.error("Error when opening settings location: " + e);
-//    }
-}
-
-/*public*/ void XmlFileLocationAction::on_openScriptsButton(ActionEvent* event) {
-//    try {
-//        Desktop.getDesktop().open(new java.io.File(scripts));
-//    } catch (java.io.IOException e) {
-//        XmlFileLocationAction.log.error("Error when opening scripts location: " + e);
-//    } catch (UnsupportedOperationException e) {
-//        XmlFileLocationAction.log.error("Error when opening scripts location: " + e);
-//    }
-}
-
-/*public*/ void XmlFileLocationAction::on_openProgramButton(ActionEvent* event) {
-//    try {
-//        Desktop.getDesktop().open(new java.io.File(prog));
-//    } catch (java.io.IOException e) {
-//        XmlFileLocationAction.log.error("Error when opening program location: " + e);
-//    } catch (UnsupportedOperationException e) {
-//        XmlFileLocationAction.log.error("Error when opening program location: " + e);
-//    }
-}
-
-/*public*/ void XmlFileLocationAction::on_openLogFilesButton(ActionEvent* event) {
-//    try {
-//        Desktop.getDesktop().open(new java.io.File(log));
-//    } catch (java.io.IOException e) {
-//        XmlFileLocationAction.log.error("Error when opening log files location: " + e);
-//    } catch (UnsupportedOperationException e) {
-//        XmlFileLocationAction.log.error("Error when opening log files location: " + e);
-//    }
-}

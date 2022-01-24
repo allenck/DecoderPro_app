@@ -97,7 +97,7 @@ using namespace Sprog;
 // Ignore unsynchronized access to state
 //@Override
 
-/*public*/ void SprogConsoleFrame::initComponents() throw (Exception)
+/*public*/ void SprogConsoleFrame::initComponents() /*throw (Exception)*/
 {
  //SprogMessage msg;
  AbstractMonFrame::initComponents();
@@ -254,7 +254,7 @@ connect(sendButton, SIGNAL(clicked()), this, SLOT(sendButtonActionPerformed()));
     addHelpMenu("package.jmri.jmrix.sprog.console.SprogConsoleFrame", true);
 }
 
-/*public*/ void SprogConsoleFrame::sendButtonActionPerformed(ActionEvent* /*e*/) {
+/*public*/ void SprogConsoleFrame::sendButtonActionPerformed(JActionEvent* /*e*/) {
     SprogMessage* m = new SprogMessage(cmdTextField->text());
     // Messages sent by us will not be forwarded back so add to display manually
     nextLine("cmd: \"" + m->toString(_memo->getSprogTrafficController()->isSIIBootMode()) + "\"\n", "");
@@ -277,8 +277,8 @@ connect(sendButton, SIGNAL(clicked()), this, SLOT(sendButtonActionPerformed()));
     try {
      bool ok;
         currentLimit = currentTextField->text().toInt(&ok);
-        if(!ok) throw NumberFormatException();
-    } catch (NumberFormatException e) {
+        if(!ok) throw new NumberFormatException();
+    } catch (NumberFormatException* e) {
         JOptionPane::showMessageDialog(NULL, tr("CurrentLimitDialogString").arg(currentRange),
                 tr("SPROG Console"), JOptionPane::ERROR_MESSAGE);
         currentLimit = validLimit;
@@ -291,7 +291,7 @@ connect(sendButton, SIGNAL(clicked()), this, SLOT(sendButtonActionPerformed()));
     }
 }
 
-/*synchronized*/ /*public*/ void SprogConsoleFrame::saveButtonActionPerformed(ActionEvent* e)
+/*synchronized*/ /*public*/ void SprogConsoleFrame::saveButtonActionPerformed(JActionEvent* e)
 {
  SprogMessage* saveMsg;
  int currentLimitForHardware;
@@ -466,9 +466,9 @@ connect(sendButton, SIGNAL(clicked()), this, SLOT(sendButtonActionPerformed()));
     {
      bool ok;
      currentLimitFromHardware = tmpString.toInt(&ok);
-     if(!ok) throw NumberFormatException();
+     if(!ok) throw new NumberFormatException();
     }
-    catch (NumberFormatException e) {
+    catch (NumberFormatException* e) {
         JOptionPane::showMessageDialog(NULL, tr("Malformed Reply for current limit"), tr("SPROG Console"), JOptionPane::ERROR_MESSAGE);
         state = State::IDLE;
         return;
@@ -501,9 +501,9 @@ connect(sendButton, SIGNAL(clicked()), this, SLOT(sendButtonActionPerformed()));
     {
      bool ok;
       modeWord = tmpString.toInt(&ok,16);
-     if(!ok) throw NumberFormatException();
+     if(!ok) throw new NumberFormatException();
     }
-    catch (NumberFormatException e)
+    catch (NumberFormatException* e)
     {
         JOptionPane::showMessageDialog(NULL, tr("Malformed Reply for mode word"),
                 tr("SPROG Console"), JOptionPane::ERROR_MESSAGE);

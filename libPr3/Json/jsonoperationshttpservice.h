@@ -2,6 +2,7 @@
 #define JSONOPERATIONSHTTPSERVICE_H
 #include "jsonhttpservice.h"
 
+class JsonUtil;
 class JsonOperationsHttpService : public JsonHttpService
 {
 public:
@@ -17,7 +18,7 @@ public:
 
 private:
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("JsonOperationsHttpService");
-
+ /*private*/ /*final*/ JsonUtil* utilities;
 };
 
 #endif // JSONOPERATIONSHTTPSERVICE_H

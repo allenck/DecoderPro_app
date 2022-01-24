@@ -8,7 +8,7 @@
 
 class LIBPR3SHARED_EXPORT DecVarSlider : public JSlider
 {
-    Q_OBJECT
+ Q_OBJECT
 public:
  //explicit DecVarSlider(QWidget *parent = 0);
  DecVarSlider(DecVariableValue* var, int min, int max, QWidget *parent = 0);
@@ -25,12 +25,14 @@ private:
  DecVariableValue* _var;
  Logger* logit;
 };
-class DVSPropertyChangeListener : public PropertyChangeListener
+class DVSPropertyChangeListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
-  DecVarSlider* self;
+  Q_INTERFACES(PropertyChangeListener)
+  DecVarSlider* decVarSlider;
  public:
-  DVSPropertyChangeListener(DecVarSlider* self);
+  DVSPropertyChangeListener(DecVarSlider* decVarSlider);
+  QObject* self() override{return (QObject*)this;}
  public slots:
   void propertyChange(PropertyChangeEvent*);
 };

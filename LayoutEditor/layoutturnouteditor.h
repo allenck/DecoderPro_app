@@ -6,13 +6,15 @@
 #include "instancemanager.h"
 #include "windowlistener.h"
 #include "actionlistener.h"
+#include "layouttrackview.h"
+#include "layoutturnoutview.h"
 
 class LayoutTurnoutEditor : public LayoutTrackEditor
 {
   Q_OBJECT
  public:
   /*public*/ LayoutTurnoutEditor(/*@Nonnull*/ LayoutEditor* layoutEditor);
-  /*public*/ void editLayoutTrack(/*@Nonnull*/ LayoutTrack* layoutTrack) override;
+  /*public*/ void editLayoutTrack(/*@Nonnull*/ LayoutTrackView* layoutTrack) override;
 
 
  private:
@@ -22,6 +24,7 @@ class LayoutTurnoutEditor : public LayoutTrackEditor
   /*private*/ void editLayoutTurnoutCancelPressed(/*ActionEvent* a*/);
 
  protected:
+  /*protected*/ LayoutTurnoutView* layoutTurnoutView = nullptr;
   /*protected*/ LayoutTurnout* layoutTurnout = nullptr;
 
   /*protected*/ JmriJFrame* editLayoutTurnoutFrame = nullptr;
@@ -29,13 +32,13 @@ class LayoutTurnoutEditor : public LayoutTrackEditor
   /*protected*/ NamedBeanComboBox/*<Turnout>*/* editLayoutTurnout2ndTurnoutComboBox = nullptr;
   /*protected*/ JLabel* editLayoutTurnout2ndTurnoutLabel = nullptr;
   /*protected*/ /*final*/ NamedBeanComboBox/*<Block>*/* editLayoutTurnoutBlockNameComboBox = new NamedBeanComboBox(
-          (BlockManager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+          (AbstractManager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
   /*protected*/ /*final*/ NamedBeanComboBox/*<Block>*/* editLayoutTurnoutBlockBNameComboBox = new NamedBeanComboBox(
-          (BlockManager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+          (AbstractManager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
   /*protected*/ /*final*/ NamedBeanComboBox/*<Block>*/* editLayoutTurnoutBlockCNameComboBox = new NamedBeanComboBox(
-          (BlockManager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+          (AbstractManager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
   /*protected*/ /*final*/ NamedBeanComboBox/*<Block>*/* editLayoutTurnoutBlockDNameComboBox = new NamedBeanComboBox(
-          (BlockManager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+          (AbstractManager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
   /*protected*/ /*final*/ JComboBox/*<String>*/* editLayoutTurnoutStateComboBox = new JComboBox();
   /*protected*/ JCheckBox* editLayoutTurnoutHiddenCheckBox = nullptr;
   /*protected*/ QPushButton* editLayoutTurnoutBlockButton;
@@ -78,27 +81,31 @@ class ELTWindowListener : public WindowListener
   }
 };
 
-class ELT_editLayoutTurnoutDonePressed : public ActionListener
+class ELT_editLayoutTurnoutDonePressed : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
   LayoutTurnoutEditor* editor;
  public:
   ELT_editLayoutTurnoutDonePressed(LayoutTurnoutEditor* editor) {this->editor = editor;}
+  QObject* self() override {return (QObject*)this;}
  public slots:
-  void actionPerformed()
+  void actionPerformed(JActionEvent */*e*/ = 0)override
   {
    editor->editLayoutTurnoutDonePressed();
   }
 };
 
-class ELT_editLayoutTurnoutCancelPressed : public ActionListener
+class ELT_editLayoutTurnoutCancelPressed : public QObject, public ActionListener
 {
   Q_OBJECT
+    Q_INTERFACES(ActionListener)
   LayoutTurnoutEditor* editor;
  public:
   ELT_editLayoutTurnoutCancelPressed(LayoutTurnoutEditor* editor) {this->editor = editor;}
+  QObject* self() override {return (QObject*)this;}
  public slots:
-  void actionPerformed()
+  void actionPerformed(JActionEvent */*e*/ = 0) override
   {
    editor->editLayoutTurnoutCancelPressed();
   }

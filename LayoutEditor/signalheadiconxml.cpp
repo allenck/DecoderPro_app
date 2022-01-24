@@ -138,7 +138,7 @@
      name = attr;
  }
 
- SignalHead* sh = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name);
+ SignalHead* sh = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(name);
  if (sh != NULL)
  {
   l->setSignalHead(new NamedBeanHandle<SignalHead*>(name, (SignalHead*)sh));
@@ -155,7 +155,7 @@
   attr = element.attribute("rotate");
   rotation = attr.toInt();
  }
- catch (DataConversionException e)
+ catch (DataConversionException* e)
  {
  }
  catch ( NullPointerException e)
@@ -263,7 +263,7 @@
 // }
  if(!bok)
  {
-  log->error("Failed on clickmode attribute: "/*+e.getMessage()*/);
+  log->error("Failed on clickmode attribute: "/*+e->getMessage()*/);
  }
 
  try
@@ -274,9 +274,9 @@
    l->setLitMode(attr=="yes"?true:false);
   }
  }
- catch (DataConversionException e)
+ catch (DataConversionException* e)
  {
-  log->error("Failed on litmode attribute: "+e.getMessage());
+  log->error("Failed on litmode attribute: "+e->getMessage());
  }
  // load individual item's option settings after editor has set its global settings
  loadCommonAttributes((Positionable*)l, Editor::SIGNALS, element);

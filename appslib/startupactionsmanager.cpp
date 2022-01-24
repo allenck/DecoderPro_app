@@ -88,7 +88,7 @@
 # endif
 #endif
 }
-#if 1
+
 /**
  * {@inheritDoc}
  *
@@ -99,7 +99,7 @@
  * that can be used to explain why isValid() is false.
  */
 //@Override
-/*public*/ void StartupActionsManager::initialize(Profile* profile) throw (InitializationException)
+/*public*/ void StartupActionsManager::initialize(Profile* profile) /*throws InitializationException*/
 {
  if (!this->isInitialized(profile))
  {
@@ -108,7 +108,7 @@
   {
    this->requiresNoInitializedWithExceptions(profile, tr("Unable to run startup actions due to earlier failures."));
   }
-  catch (InitializationException ex)
+  catch (InitializationException* ex)
   {
    perform = false;
   }
@@ -119,7 +119,7 @@
    {
     startup = /*JDOMUtil.toJDOMElement*/(ProfileUtils::getAuxiliaryConfiguration(profile)->getConfigurationFragment(STARTUP, NAMESPACE, true));
    }
-   catch (NullPointerException ex)
+   catch (NullPointerException* ex)
    {
     log->debug("Reading element from version 2.9.6 namespace...");
     startup = /*JDOMUtil.toJDOMElement*/(ProfileUtils::getAuxiliaryConfiguration(profile)->getConfigurationFragment(STARTUP, NAMESPACE_OLD, true));
@@ -147,21 +147,21 @@
      log->debug(tr("Creating %1 %2 adapter %3...").arg(type).arg(name).arg(adapter));
      ((XmlAdapter*) Class::forName(adapter/*)newInstance()*/))->load(action, QDomElement()); // no perNode preferences
     }
-    catch (ClassNotFoundException /*| InstantiationException | IllegalAccessException*/ ex)
+    catch (ClassNotFoundException* /*| InstantiationException | IllegalAccessException*/ ex)
     {
-     log->error(tr("Unable to create %1 for %2").arg(adapter).arg(action.tagName()) + ex.getMessage());
+     log->error(tr("Unable to create %1 for %2").arg(adapter).arg(action.tagName()) + ex->getMessage());
      this->addInitializationException(profile, new InitializationException(tr(/*Locale.ENGLISH, */"Unable to create loader \"%1\" for Startup Action class \"%2\".").arg(adapter).arg(name),
              tr("Unable to create loader \"%1\" for Startup Action class \"%2\".").arg(adapter).arg(name),NULL)); // NOI18N
     }
-    catch (Exception ex)
+    catch (Exception* ex)
     {
-     log->error(tr("Unable to load %1 into %2").arg(action.tagName()).arg(adapter) + ex.getMessage());
+     log->error(tr("Unable to load %1 into %2").arg(action.tagName()).arg(adapter) + ex->getMessage());
      this->addInitializationException(profile, new InitializationException(tr(/*Locale.ENGLISH, */"Unable to load Startup action \"%1\" using \"%3\".").arg(adapter).arg(name),
              tr("Unable to load Startup action \"%2\" using \"%1\".").arg(adapter).arg(name),NULL)); // NOI18N
     }
    }
   }
-  catch (NullPointerException ex)
+  catch (NullPointerException* ex)
   {
    // ignore - this indicates migration has not occured
    log->debug("No element to read");
@@ -173,29 +173,29 @@
    {
     try
     {
-     action->performAction(action->getTitle());
+     action->performAction();
     }
-    catch (JmriException ex)
+    catch (JmriException* ex)
     {
-     this->addInitializationException(profile, &ex);
+     this->addInitializationException(profile, ex);
     }
    }//);
   }
   this->_isDirty = false;
   this->restartRequired = false;
   this->setInitialized(profile, true);
-  QList<Exception*>* exceptions = this->getInitializationExceptions(profile);
-  if (exceptions->size() == 1)
+  QList<Exception*> exceptions = this->getInitializationExceptions(profile);
+  if (exceptions.size() == 1)
   {
-      throw  InitializationException(exceptions->at(0));
-  } else if (exceptions->size() > 1)
+      throw new InitializationException(exceptions.at(0));
+  } else if (exceptions.size() > 1)
   {
-   throw  InitializationException(tr(/*Locale.ENGLISH,*/ "There are multiple errors running Startup Actions."),
+   throw new InitializationException(tr(/*Locale.ENGLISH,*/ "There are multiple errors running Startup Actions."),
               tr("There are multiple errors running Startup Actions."),NULL); // NOI18N
   }
  }
 }
-#endif
+
 /*public*/ void StartupActionsManager::loadFactories()
 {
  QStringList factoryList = QStringList();
@@ -206,7 +206,7 @@
 
  foreach (QString clazz, factoryList)
  {
-  StartupModelFactory* factory = (StartupModelFactory*)InstanceManager::getDefault(clazz);
+  StartupModelFactory* factory = (AbstractActionModelFactory*)InstanceManager::getDefault(clazz);
   if(factory != NULL )
   {
    factory->initialize();
@@ -234,7 +234,7 @@ void StartupActionsManager::loadPreferencesmanagers()
  {
   if(clazz == "StartupActionsManager" )
    continue;
-  PreferencesManager* mgr = (PreferencesManager*)InstanceManager::getDefault(clazz);
+  PreferencesManager* mgr = (AbstractPreferencesManager*)InstanceManager::getDefault(clazz);
   if(mgr != NULL && profileManager != NULL)
   {
    mgr->initialize(profileManager->getActiveProfile());
@@ -259,16 +259,16 @@ void StartupActionsManager::loadPreferencesmanagers()
 }
 
 //@Override
-/*public*/ /*Set<Class<? extends PreferencesManager>>*/QSet<QString>* StartupActionsManager::getRequires() {
-    /*Set<Class<? extends PreferencesManager>> */QSet<QString>* requires = AbstractPreferencesManager::getRequires();
-    requires->insert("ManagerDefaultSelector");
-    requires->insert("FileLocationsPreferences");
-    requires->insert("RosterConfigManager");
-    requires->insert("ProgrammerConfigManager");
-    requires->insert("GuiLafPreferencesManager");
+/*public*/ /*Set<Class<? extends PreferencesManager>>*/QSet<QString> StartupActionsManager::getRequires() {
+    /*Set<Class<? extends PreferencesManager>> */QSet<QString> requires = AbstractPreferencesManager::getRequires();
+    requires.insert("ManagerDefaultSelector");
+    requires.insert("FileLocationsPreferences");
+    requires.insert("RosterConfigManager");
+    requires.insert("ProgrammerConfigManager");
+    requires.insert("GuiLafPreferencesManager");
     return requires;
 }
-#if 1
+
 //@Override
 /*public*/ /*synchronized*/ void StartupActionsManager::savePreferences(Profile* profile)
 {
@@ -296,11 +296,11 @@ void StartupActionsManager::loadPreferencesmanagers()
  {
      ProfileUtils::getAuxiliaryConfiguration(profile)->putConfigurationFragment(/*JDOMUtil.toW3CElement*/(element), true);
      this->_isDirty = false;
- } catch (JDOMException ex) {
-     log->error("Unable to create create XML"+ ex.getMessage());
+ } catch (JDOMException* ex) {
+     log->error("Unable to create create XML"+ ex->getMessage());
  }
 }
-#endif
+
 /*public*/ QList<StartupModel*>* StartupActionsManager::getActions() {
     return this->actions; //.toArray(new StartupModel[this->actions->size()]);
 }
@@ -346,8 +346,8 @@ void StartupActionsManager::loadPreferencesmanagers()
   this->setRestartRequired();
   if (fireChange)
   {
-//   this->fireIndexedPropertyChange(STARTUP, index, QVariant(), VPtr<StartupModel>::asQVariant(model));
-   emit propertyChange((PropertyChangeEvent*)(new IndexedPropertyChangeEvent(this, STARTUP,  QVariant(), VPtr<StartupModel>::asQVariant(model),index)));
+   this->fireIndexedPropertyChange(STARTUP, index, QVariant(), VPtr<StartupModel>::asQVariant(model));
+   //emit propertyChange((PropertyChangeEvent*)(new IndexedPropertyChangeEvent(this, STARTUP,  QVariant(), VPtr<StartupModel>::asQVariant(model),index)));
   }
  }
 }
@@ -365,8 +365,8 @@ void StartupActionsManager::loadPreferencesmanagers()
  StartupModel* model = this->getActions(start);
  this->removeAction(model, false);
  this->setActions(end, model, false);
- //this->fireIndexedPropertyChange(STARTUP, end, start, VPtr<StartupModel>::asQVariant(model));
- emit propertyChange((PropertyChangeEvent*)(new IndexedPropertyChangeEvent(this,STARTUP, start, VPtr<StartupModel>::asQVariant(model), end)));
+ this->fireIndexedPropertyChange(STARTUP, end, start, VPtr<StartupModel>::asQVariant(model));
+ //emit propertyChange((PropertyChangeEvent*)(new IndexedPropertyChangeEvent(this,STARTUP, start, VPtr<StartupModel>::asQVariant(model), end)));
 }
 
 /*public*/ void StartupActionsManager::addAction(StartupModel* model)
@@ -393,8 +393,8 @@ void StartupActionsManager::loadPreferencesmanagers()
  this->setRestartRequired();
  if (fireChange)
  {
-  //this->fireIndexedPropertyChange(STARTUP, index, VPtr<StartupModel>::asQVariant(model), QVariant());
-  emit propertyChange((PropertyChangeEvent*)(new IndexedPropertyChangeEvent(this, STARTUP,  VPtr<StartupModel>::asQVariant(model), QVariant(), index)));
+  this->fireIndexedPropertyChange(STARTUP, index, VPtr<StartupModel>::asQVariant(model), QVariant());
+  //emit propertyChange((PropertyChangeEvent*)(new IndexedPropertyChangeEvent(this, STARTUP,  VPtr<StartupModel>::asQVariant(model), QVariant(), index)));
  }
 }
 

@@ -12,10 +12,12 @@
 #include "carmanager.h"
 #include "track.h"
 #include "traincommon.h"
+#include "instancemanager.h"
+#include "../operations/engine.h"
 
-JsonUtil::JsonUtil(QObject *parent) : QObject(parent)
+JsonUtil::JsonUtil(ObjectMapper mapper, QObject *parent) : QObject(parent)
 {
-
+ this->mapper = mapper;
 }
 /**
  * A set of static methods for converting certain objects to/from JSON
@@ -36,7 +38,7 @@ JsonUtil::JsonUtil(QObject *parent) : QObject(parent)
 /*static*/ /*public*/ QJsonObject JsonUtil::getCar(QLocale locale, QString id) {
     QJsonObject root = QJsonObject();//mapper.createObjectNode();
     root.insert(JSON::TYPE, JSON::CAR);
-    root.insert(JSON::DATA, JsonUtil::getCar(Operations::CarManager::instance()->getById(id)));
+    root.insert(JSON::DATA, JsonUtil::getCar(((Operations::CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getById(id)));
     return root;
 }
 #if 0
@@ -63,7 +65,7 @@ static /*public*/ void delConsist(Locale locale, DccLocoAddress address) throws 
         } else {
             throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", CONSIST, address.toString()));
         }
-    } catch (NullPointerException ex) {
+    } catch (NullPointerException* ex) {
         throw new JsonException(503, Bundle.getMessage(locale, "ErrorNoConsistManager")); // NOI18N
     }
 }
@@ -121,7 +123,7 @@ static /*public*/ JsonNode getConsist(Locale locale, DccLocoAddress address) thr
         } else {
             throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", CONSIST, address.toString()));
         }
-    } catch (NullPointerException ex) {
+    } catch (NullPointerException* ex) {
         throw new JsonException(503, Bundle.getMessage(locale, "ErrorNoConsistManager")); // NOI18N
     }
 }
@@ -144,7 +146,7 @@ static /*public*/ void putConsist(Locale locale, DccLocoAddress address, JsonNod
             InstanceManager.getDefault(jmri.ConsistManager.class).getConsist(address);
             setConsist(locale, address, data);
         }
-    } catch (NullPointerException ex) {
+    } catch (NullPointerException* ex) {
         throw new JsonException(503, Bundle.getMessage(locale, "ErrorNoConsistManager")); // NOI18N
     }
 }
@@ -164,7 +166,7 @@ static /*public*/ JsonNode getConsists(Locale locale) throws JsonException {
             root.add(getConsist(locale, address));
         }
         return root;
-    } catch (NullPointerException ex) {
+    } catch (NullPointerException* ex) {
         throw new JsonException(503, Bundle.getMessage(locale, "ErrorNoConsistManager")); // NOI18N
     }
 }
@@ -223,11 +225,11 @@ static /*public*/ void setConsist(Locale locale, DccLocoAddress address, JsonNod
             }
             try {
                 (new ConsistFile()).writeFile(InstanceManager.getDefault(jmri.ConsistManager.class).getConsistList());
-            } catch (IOException ex) {
-                throw new JsonException(500, ex.getLocalizedMessage());
+            } catch (IOException* ex) {
+                throw new JsonException(500, ex->getLocalizedMessage());
             }
         }
-    } catch (NullPointerException ex) {
+    } catch (NullPointerException* ex) {
         throw new JsonException(503, Bundle.getMessage(locale, "ErrorNoConsistManager")); // NOI18N
     }
 }
@@ -243,7 +245,7 @@ static /*public*/ void setConsist(Locale locale, DccLocoAddress address, JsonNod
 /*static*/ /*public*/ QJsonObject JsonUtil::getEngine(QLocale locale, QString id) {
     QJsonObject root = QJsonObject();//mapper.createObjectNode();
     root.insert(JSON::TYPE, JSON::ENGINE);
-    root.insert(JSON::DATA, JsonUtil::getEngine(Operations::EngineManager::instance()->getById(id)));
+    root.insert(JSON::DATA, JsonUtil::getEngine((Operations::Engine*)((Operations::EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getById(id)));
     return root;
 }
 #if 0
@@ -289,7 +291,7 @@ static /*public*/ JsonNode getLight(Locale locale, String name) throws JsonExcep
                 break;
         }
         return root;
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error("Unable to get light [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", LIGHT, name));
     }
@@ -318,7 +320,7 @@ static /*public*/ JsonNode getLights(Locale locale) throws JsonException {
 static /*public*/ void putLight(Locale locale, String name, JsonNode data) throws JsonException {
     try {
         InstanceManager.lightManagerInstance().provideLight(name);
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         throw new JsonException(500, Bundle.getMessage(locale, "ErrorCreatingObject", LIGHT, name));
     }
     setLight(locale, name, data);
@@ -353,7 +355,7 @@ static /*public*/ void setLight(Locale locale, String name, JsonNode data) throw
             default:
                 throw new JsonException(400, Bundle.getMessage(locale, "ErrorUnknownState", LIGHT, state));
         }
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error("Unable to get light [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", LIGHT, name));
     }
@@ -374,12 +376,12 @@ static /*public*/ void setLight(Locale locale, String name, JsonNode data) throw
     //ObjectNode data = root.putObject(DATA);
     QJsonObject data = QJsonObject();
     try {
-        Operations::Location* location = Operations::LocationManager::instance()->getLocationById(id);
+        Operations::Location* location = ((Operations::LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationById(id);
         data.insert(JSON::NAME, location->getName());
         data.insert(JSON::ID, location->getId());
         data.insert(JSON::LENGTH, location->getLength());
         data.insert(JSON::COMMENT, location->getComment());
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error(tr("Unable to get location id [%1].").arg(id));
         throw new JsonException(404, tr( "Unable to access %1 %2.").arg(JSON::LOCATION).arg(id));
     }
@@ -397,7 +399,7 @@ static /*public*/ void setLight(Locale locale, String name, JsonNode data) throw
 //@Deprecated
 /*static*/ /*public*/ QJsonArray JsonUtil::getLocations(QLocale locale) throw (JsonException) {
     QJsonArray root = QJsonArray();//mapper.createArrayNode();
-    for (Operations::Location* location : Operations::LocationManager::instance()->getLocationsByIdList()) {
+    for (Operations::Location* location : ((Operations::LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationsByIdList()) {
         root.append(getLocation(locale, location->getId()));
     }
     return root;
@@ -437,7 +439,7 @@ static /*public*/ JsonNode getMemory(Locale locale, String name) throws JsonExce
         } else {
             data.insert(JSON::VALUE, memory.getValue().toString());
         }
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error("Unable to get memory [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", MEMORY, name));
     }
@@ -453,7 +455,7 @@ static /*public*/ JsonNode getMemory(Locale locale, String name) throws JsonExce
 static /*public*/ void putMemory(Locale locale, String name, JsonNode data) throws JsonException {
     try {
         InstanceManager.memoryManagerInstance().provideMemory(name);
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         throw new JsonException(500, Bundle.getMessage(locale, "ErrorCreatingObject", MEMORY, name));
     }
     setMemory(locale, name, data);
@@ -481,7 +483,7 @@ static /*public*/ void setMemory(Locale locale, String name, JsonNode data) thro
                 memory.setValue(data.path(VALUE).asText());
             }
         }
-    } catch (NullPointerException ex) {
+    } catch (NullPointerException* ex) {
         log->error("Unable to get memory [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", MEMORY, name));
     }
@@ -599,10 +601,10 @@ static /*public*/ JsonNode getPower(Locale locale) throws JsonException {
                 data.insert(JSON::STATE, UNKNOWN);
                 break;
         }
-    } catch (JmriException e) {
+    } catch (JmriException* e) {
         log->error("Unable to get Power state.", e);
         throw new JsonException(500, Bundle.getMessage(locale, "ErrorPower"));
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         // No PowerManager is defined; just report it as UNKNOWN
         data.insert(JSON::STATE, UNKNOWN);
     }
@@ -626,7 +628,7 @@ static /*public*/ void setPower(Locale locale, JsonNode data) throws JsonExcepti
             default:
                 throw new JsonException(400, Bundle.getMessage(locale, "ErrorUnknownState", POWER, state));
         }
-    } catch (JmriException ex) {
+    } catch (JmriException* ex) {
         throw new JsonException(500, ex);
     }
 }
@@ -664,7 +666,7 @@ static /*public*/ JsonNode getReporters(Locale locale) {
 static /*public*/ void putReporter(Locale locale, String name, JsonNode data) throws JsonException {
     try {
         InstanceManager.getDefault(jmri.ReporterManager.class).provideReporter(name);
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         throw new JsonException(500, Bundle.getMessage(locale, "ErrorCreatingObject", REPORTER, name));
     }
     setReporter(locale, name, data);
@@ -684,7 +686,7 @@ static /*public*/ void setReporter(Locale locale, String name, JsonNode data) th
         } else {
             InstanceManager.getDefault(jmri.ReporterManager.class).getReporter(name).setReport(data.path(REPORT).asText());
         }
-    } catch (NullPointerException ex) {
+    } catch (NullPointerException* ex) {
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", REPORTER, name));
     }
 }
@@ -846,7 +848,7 @@ static /*public*/ JsonNode getRoute(Locale locale, String name) throws JsonExcep
         } else {
             data.insert(JSON::STATE, UNKNOWN);
         }
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error("Unable to get route [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", ROUTE, name));
     }
@@ -896,7 +898,7 @@ static /*public*/ void setRoute(Locale locale, String name, JsonNode data) throw
             default:
                 throw new JsonException(400, Bundle.getMessage(locale, "ErrorUnknownState", ROUTE, state));
         }
-    } catch (NullPointerException ex) {
+    } catch (NullPointerException* ex) {
         log->error("Unable to get route [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", ROUTE, name));
     }
@@ -928,7 +930,7 @@ static /*public*/ JsonNode getSensor(Locale locale, String name) throws JsonExce
                 data.insert(JSON::STATE, UNKNOWN);
                 break;
         }
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error("Unable to get sensor [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", SENSOR, name));
     }
@@ -948,7 +950,7 @@ static /*public*/ JsonNode getSensors(Locale locale) throws JsonException {
 static /*public*/ void putSensor(Locale locale, String name, JsonNode data) throws JsonException {
     try {
         InstanceManager.sensorManagerInstance().provideSensor(name);
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         throw new JsonException(500, Bundle.getMessage(locale, "ErrorCreatingObject", TURNOUT, name));
     }
     setSensor(locale, name, data);
@@ -981,10 +983,10 @@ static /*public*/ void setSensor(Locale locale, String name, JsonNode data) thro
             default:
                 throw new JsonException(400, Bundle.getMessage(locale, "ErrorUnknownState", SENSOR, state));
         }
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error("Unable to get sensor [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", SENSOR, name));
-    } catch (JmriException ex) {
+    } catch (JmriException* ex) {
         throw new JsonException(500, ex);
     }
 }
@@ -1008,7 +1010,7 @@ static /*public*/ JsonNode getSignalHead(Locale locale, String name) throws Json
             data.insert(JSON::STATE, signalHead.getAppearance());
         }
         data.insert(JSON::APPEARANCE_NAME, signalHead.getAppearanceName());
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error("Unable to get signalHead [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", SIGNAL_HEAD, name));
     }
@@ -1046,7 +1048,7 @@ static /*public*/ void setSignalHead(Locale locale, String name, JsonNode data) 
         } else {
             throw new JsonException(400, Bundle.getMessage(locale, "ErrorUnknownState", SIGNAL_HEAD, state));
         }
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error("Unable to get signal head [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", SIGNAL_HEAD, name));
     }
@@ -1078,7 +1080,7 @@ static /*public*/ JsonNode getSignalMast(Locale locale, String name) throws Json
         } else {
             data.insert(JSON::STATE, aspect);
         }
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error("Unable to get signalMast [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", SIGNAL_MAST, name));
     }
@@ -1109,7 +1111,7 @@ static /*public*/ void setSignalMast(Locale locale, String name, JsonNode data) 
         } else {
             throw new JsonException(400, Bundle.getMessage(locale, "ErrorUnknownState", SIGNAL_MAST, aspect));
         }
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error("Unable to get signal mast [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", SIGNAL_MAST, name));
     }
@@ -1199,7 +1201,7 @@ static /*public*/ void setTime(Locale locale, JsonNode data) throws JsonExceptio
     //ObjectNode data = root.putObject(JSON::DATA);
     QJsonObject data = QJsonObject();
     try {
-        Operations::Train* train = Operations::TrainManager::instance()->getTrainById(id);
+        Operations::Train* train = ((Operations::TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainById(id);
         data.insert(JSON::NAME, train->getName());
         data.insert(JSON::ICON_NAME, train->getIconName());
         data.insert(JSON::ID, train->getId());
@@ -1230,7 +1232,7 @@ static /*public*/ void setTime(Locale locale, JsonNode data) throws JsonExceptio
         }
         data.insert(JSON::CABOOSE, train->getCabooseRoadAndNumber());
 root.insert(JSON::DATA, data);
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error(tr("Unable to get train id [%1].").arg(id));
         throw new JsonException(404, tr( "Unable to access %1 %2.").arg(JSON::TRAIN).arg(id));
     }
@@ -1239,7 +1241,7 @@ root.insert(JSON::DATA, data);
 
 /*static*/ /*public*/ QJsonArray JsonUtil::getTrains(QLocale locale) throw (JsonException) {
     QJsonArray root = QJsonArray();//mapper.createArrayNode();
-    for (Operations::Train* train : Operations::TrainManager::instance()->getTrainsByNameList()) {
+    for (Operations::Train* train : ((Operations::TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainsByNameList()) {
         root.append(getTrain(locale, train->getId()));
     }
     return root;
@@ -1297,7 +1299,7 @@ static /*public*/ JsonNode getTurnout(Locale locale, String name) throws JsonExc
                 data.insert(JSON::STATE, UNKNOWN);
                 break;
         }
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
         log->error("Unable to get turnout [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", TURNOUT, name));
     }
@@ -1317,7 +1319,7 @@ static /*public*/ JsonNode getTurnouts(Locale locale) throws JsonException {
 static /*public*/ void putTurnout(Locale locale, String name, JsonNode data) throws JsonException {
     try {
         InstanceManager.turnoutManagerInstance().provideTurnout(name);
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         throw new JsonException(500, Bundle.getMessage(locale, "ErrorCreatingObject", TURNOUT, name));
     }
     setTurnout(locale, name, data);
@@ -1350,7 +1352,7 @@ static /*public*/ void setTurnout(Locale locale, String name, JsonNode data) thr
             default:
                 throw new JsonException(400, Bundle.getMessage(locale, "ErrorUnknownState", TURNOUT, state));
         }
-    } catch (NullPointerException ex) {
+    } catch (NullPointerException* ex) {
         log->error("Unable to get turnout [{}].", name);
         throw new JsonException(404, Bundle.getMessage(locale, "ErrorObject", TURNOUT, name));
     }
@@ -1371,7 +1373,7 @@ static /*public*/ JsonNode getUnknown(Locale locale, String type) {
 #endif
 /*static*/ /*private*/ QJsonArray JsonUtil::getCarsForTrain(QLocale locale, Operations::Train* train) {
     QJsonArray clan = QJsonArray();//mapper.createArrayNode();
-    Operations::CarManager* carManager = Operations::CarManager::instance();
+    Operations::CarManager* carManager = ((Operations::CarManager*)InstanceManager::getDefault("Operations::CarManager"));
     QList<Operations::Car*>* carList = carManager->getByTrainDestinationList(train);
     foreach (Operations::Car* car, *carList) {
         clan.append(getCar(locale, car->getId()).value(JSON::DATA)); //add each car's data to the carList array
@@ -1381,7 +1383,7 @@ static /*public*/ JsonNode getUnknown(Locale locale, String type) {
 
 /*static*/ /*private*/ QJsonArray JsonUtil::getEnginesForTrain(QLocale locale, Operations::Train* train) {
     QJsonArray elan = QJsonArray();//mapper.createArrayNode();
-    Operations::EngineManager* engineManager = Operations::EngineManager::instance();
+    Operations::EngineManager* engineManager = ((Operations::EngineManager*)InstanceManager::getDefault("Operations::EngineManager"));
     QList<Operations::Engine*>* engineList = engineManager->getByTrainBlockingList(train);
     foreach (Operations::Engine* engine, *engineList) {
         elan.append(getEngine(locale, engine->getId()).value(JSON::DATA)); //add each engine's data to the engineList array

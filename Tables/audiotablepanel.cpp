@@ -64,7 +64,7 @@
  RowSorterUtil::setSortOrder(sorter, AudioTableDataModel::SYSNAMECOL, ASCENDING);
  listenerDataTable = listenerDataModel->makeJTable(listenerDataModel->getMasterClassName(), listenerDataModel, sorter);
  //listenerDataScroll = new JScrollPane(listenerDataTable);
- listenerDataTable->setColumnModel(new XTableColumnModel(listenerDataModel));
+ listenerDataTable->setColumnModel(new XTableColumnModel(listenerDataTable));
  listenerDataTable->createDefaultColumnsFromModel();
 
  bufferDataModel = bufferModel;
@@ -74,7 +74,7 @@
  RowSorterUtil::setSortOrder(sorter, AudioTableDataModel::SYSNAMECOL, ASCENDING);
  bufferDataTable = new JTable(bufferDataModel);
  bufferDataTable = bufferDataModel->makeJTable(bufferDataModel->getMasterClassName(), bufferDataModel, sorter);//bufferDataScroll = new JScrollPane(bufferDataTable);
- bufferDataTable->setColumnModel(new XTableColumnModel(bufferDataModel));
+ bufferDataTable->setColumnModel(new XTableColumnModel(bufferDataTable));
  bufferDataTable->createDefaultColumnsFromModel();
 
  sourceDataModel = sourceModel;
@@ -84,7 +84,7 @@
  sorter->setComparator(AudioTableDataModel::SYSNAMECOL, new SystemNameComparator());
  RowSorterUtil::setSortOrder(sorter, AudioTableDataModel::SYSNAMECOL, ASCENDING);
  sourceDataTable = sourceDataModel->makeJTable(sourceDataModel->getMasterClassName(), sourceDataModel, sorter);//sourceDataScroll = new JScrollPane(sourceDataTable);
- sourceDataTable->setColumnModel(new XTableColumnModel(sourceDataModel));
+ sourceDataTable->setColumnModel(new XTableColumnModel(sourceDataTable));
  sourceDataTable->createDefaultColumnsFromModel();
  sourceDataTable->resizeColumnsToContents();
 #if 0

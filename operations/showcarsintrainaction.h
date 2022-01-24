@@ -2,6 +2,9 @@
 #define SHOWCARSINTRAINACTION_H
 
 #include "abstractaction.h"
+#include "showcarsintrainframe.h"
+#include <QPointer>
+
 namespace Operations
 {
  class Train;
@@ -12,9 +15,9 @@ namespace Operations
  public:
   ShowCarsInTrainAction(QString s, Train* train,QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* /*e*/);
+  /*public*/ void actionPerformed(JActionEvent * /*e*/);
  private:
-  ShowCarsInTrainFrame* f;// = null;
+  QPointer<ShowCarsInTrainFrame> f;// = null;
   Train* train;
 
  };

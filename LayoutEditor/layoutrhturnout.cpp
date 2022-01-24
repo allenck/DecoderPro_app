@@ -99,10 +99,7 @@
  */
 // /*public*/ class LayoutRHTurnout extends LayoutTurnout {
 
-    /*public*/ LayoutRHTurnout::LayoutRHTurnout(/*@Nonnull*/ QString id,
-            /*@Nonnull*/ QPointF c, double rot,
-            double xFactor, double yFactor,
-            /*@Nonnull*/ LayoutEditor* layoutEditor) : LayoutTurnout(id, TurnoutType::RH_TURNOUT, c, rot, xFactor, yFactor, layoutEditor, 1) {
+    /*public*/ LayoutRHTurnout::LayoutRHTurnout(/*@Nonnull*/ QString id, /*@Nonnull*/ LayoutEditor* layoutEditor) : LayoutTurnout(id, TurnoutType::RH_TURNOUT,  layoutEditor, 1) {
         //this(id, c, rot, xFactor, yFactor, layoutEditor, 1);
      editor = new LayoutRHTurnoutEditor(layoutEditor);
 
@@ -118,9 +115,8 @@
      * @param layoutEditor main layout editor.
      * @param v version, unused.
      */
-    /*public*/ LayoutRHTurnout::LayoutRHTurnout(/*@Nonnull*/ QString id, /*@Nonnull*/ QPointF c, double rot,
-            double xFactor, double yFactor, /*@Nonnull*/ LayoutEditor* layoutEditor, int v)
-     : LayoutTurnout(id, TurnoutType::RH_TURNOUT, c, rot, xFactor, yFactor, layoutEditor, 1)
+    /*public*/ LayoutRHTurnout::LayoutRHTurnout(/*@Nonnull*/ QString id, /*@Nonnull*/ LayoutEditor* layoutEditor, int v)
+     : LayoutTurnout(id, TurnoutType::RH_TURNOUT, layoutEditor, 1)
     {
         //super(id, TurnoutType.RH_TURNOUT, c, rot, xFactor, yFactor, layoutEditor, 1);
 

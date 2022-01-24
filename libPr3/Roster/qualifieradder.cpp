@@ -45,13 +45,13 @@ QualifierAdder::QualifierAdder(QObject *parent) :
  processList(le, lq, model);
 
  // search for enclosing element so we can find all relevant qualifiers
-#if 0 // TODO
- Parent p = e;
-    while ( (p = p.getParent()) != null && p instanceof Element) {
-        Element el = (Element)p;
-        if (el.getName().equals("pane")) break;  // stop when we get to an enclosing pane element
-        @SuppressWarnings("unchecked")
-        List<Element> le2 = el.getChildren("qualifier");  // we assign to this to allow us to suppress unchecked error
+#if 1 // TODO
+ QDomNode p = e;
+    while ( !(p = p.parentNode()).isNull() && p.isElement()) {
+        QDomElement el = p.toElement();
+        if (el.tagName() == ("pane")) break;  // stop when we get to an enclosing pane element
+        //@SuppressWarnings("unchecked")
+        QDomNodeList le2 = el.elementsByTagName("qualifier");  // we assign to this to allow us to suppress unchecked error
         processList(le2, lq, model);
     }
 #endif

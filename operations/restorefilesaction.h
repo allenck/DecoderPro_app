@@ -9,9 +9,9 @@ namespace Operations
  {
   Q_OBJECT
  public:
-  RestoreFilesAction(QString s, QObject* parent);
+  RestoreFilesAction(QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e = 0);
+  /*public*/ void actionPerformed(JActionEvent* e = 0)override;
 
  private:
   /*private*/ void restore();

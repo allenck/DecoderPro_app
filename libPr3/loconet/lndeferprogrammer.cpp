@@ -51,13 +51,13 @@
 }
 
 //@Override
-/*@Nonnull*/ /*public*/ QList<ProgrammingMode*> LnDeferProgrammer::getSupportedModes() {
+/*@Nonnull*/ /*public*/ QList<QString> LnDeferProgrammer::getSupportedModes() {
     SlotManager* m = memo->getSlotManager();
     if (m!=nullptr) {
         return m->getSupportedModes();
     } else {
         log->warn("getSupportedModes() called without a SlotManager");
-        return QList<ProgrammingMode*>(); // empty
+        return QList<QString>(); // empty
     }
 }
 
@@ -143,7 +143,7 @@
 /*public*/ void LnDeferProgrammer::notifyProgListenerEnd(ProgListener* p, int value, int status) {
     SlotManager* m = memo->getSlotManager();
     if (m!=nullptr) {
-        m->notifyProgListenerEnd(p, value, status);
+        ((Programmer*)m)->notifyProgListenerEnd(p, value, status);
     } else {
         log->warn("notifyProgListenerEnd called without a SlotManager");
     }

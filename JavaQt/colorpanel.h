@@ -4,7 +4,7 @@
 
 class QButtonGroup;
 class SlidingSpinner;
-class ActionEvent;
+class JActionEvent;
 class ColorModel;
 class ColorPanel : public JPanel
 {

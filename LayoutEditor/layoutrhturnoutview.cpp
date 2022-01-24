@@ -13,7 +13,11 @@
      * Constructor method.
      * @param turnout the turnout to view.
      */
-    /*public*/ LayoutRHTurnoutView::LayoutRHTurnoutView(/*@Nonnull*/ LayoutRHTurnout* turnout) : LayoutTurnoutView(turnout){
+    /*public*/ LayoutRHTurnoutView::LayoutRHTurnoutView(/*@Nonnull*/ LayoutRHTurnout* turnout,
+      /*@Nonnull*/ QPointF c, double rot,
+      double xFactor, double yFactor,
+      /*@Nonnull*/ LayoutEditor* layoutEditor)
+    : LayoutTurnoutView(turnout, c, rot, xFactor, yFactor, layoutEditor){
         //super(turnout);
         // this.turnout = turnout;
     }

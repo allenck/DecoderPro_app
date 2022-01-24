@@ -19,24 +19,13 @@ namespace Operations
  */
 ///*public*/ class RouteManagerXml extends OperationsXml {
 
-/*public*/ RouteManagerXml::RouteManagerXml(QObject *parent) :
-OperationsXml(parent)
+/*public*/ RouteManagerXml::RouteManagerXml(QObject *parent)
+  : OperationsXml(parent)
 {
  log = new Logger("RouteManagerXml");
  operationsFileName = "OperationsRouteRoster.xml"; // NOI18N
  setProperty("InstanceManagerAutoDefault", "true");
  setProperty("InstanceManagerAutoInitialize", "true");
-
-}
-
-/**
- * record the single instance *
- */
-///*private*/ /*static*/ RouteManagerXml* RouteManagerXml::_instance = NULL;
-
-/*public*/ /*static*/ /*synchronized*/ RouteManagerXml* RouteManagerXml::instance()
-{
-return static_cast<RouteManagerXml*>(InstanceManager::getDefault("RouteManagerXml"));
 }
 
 /*public*/ void RouteManagerXml::writeFile(QString name) //throws java.io.FileNotFoundException, java.io.IOException
@@ -69,7 +58,7 @@ return static_cast<RouteManagerXml*>(InstanceManager::getDefault("RouteManagerXm
     root.appendChild(p);
     doc.appendChild(root);
 
-    RouteManager::instance()->store(root, doc);
+    ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"))->store(root, doc);
 
     writeXML(file, doc);
 
@@ -96,7 +85,7 @@ return static_cast<RouteManagerXml*>(InstanceManager::getDefault("RouteManagerXm
         return;
     }
 
-    RouteManager::instance()->load(root);
+    ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"))->load(root);
 
     // clear dirty bit
     setDirty(false);

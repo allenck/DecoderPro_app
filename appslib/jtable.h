@@ -4,6 +4,8 @@
 #include <QTableView>
 #include "tablemodel.h"
 #include "javaqt_global.h"
+#include "pushbuttondelegate.h"
+#include "tabledelegates.h"
 
 class AbstractTableModel;
 class DefaultListSelectionModel;
@@ -122,6 +124,7 @@ public:
  void setName(QString name);
  QString getName();
  /*public*/ QString getColumnName(int column);
+ /*public*/ TableColumn* getColumn(QString name);
  /*public*/ void setRowSorter(RowSorter/*<? extends TableModel>*/* sorter);
  RowSorter* getRowSorter();
  /*public*/ void setUpdateSelectionOnSort(bool update);
@@ -151,8 +154,17 @@ public:
  /*public*/ void setShowVerticalLines(bool showVerticalLines);
  /*public*/ bool getShowHorizontalLines();
  /*public*/ bool getShowVerticalLines();
-
-signals:
+ /*public*/ void setDefaultRenderer(QString, QObject*);
+ /*public*/ void setDefaultEditor(QString, QStyledItemDelegate *);
+ /*public*/ void doLayout();
+ /*public*/ int columnAtPoint(QPoint);
+ /*public*/ QAbstractItemDelegate *getCellRenderer(int row, int column);
+ /*public*/ QAbstractItemDelegate* getCellEditor(int row, int column);
+ /*public*/ void clearSelection();
+ /*public*/ void changeSelection(int row, int col, bool, bool) {
+  setCurrentIndex( model()->index(row, col));
+ }
+ signals:
  void propertyChange(PropertyChangeEvent*);
 
 public slots:
@@ -247,6 +259,7 @@ private:
  /*private*/ int convertRowIndexToView(int modelIndex, ModelChange *change);
  /*private*/ void notifySorter(ModelChange* change);
  /*private*/ SizeSequence* getRowModel();
+ /*private*/ QObject* defaultItemDelegate;
 
 private slots:
  void On_columnResized(int col, int oldWidth, int newWidth);
@@ -262,7 +275,7 @@ protected:
  /*protected*/ QAbstractItemModel*        dataModel;
 
  /** The <code>TableColumnModel</code> of the table. */
- /*protected*/ TableColumnModel*  columnModel;
+ /*protected*/ TableColumnModel*  columnModel = nullptr;
 
  /** The <code>ListSelectionModel</code> of the table, used to keep track of row selections. */
  /*protected*/ DefaultListSelectionModel* _selectionModel;
@@ -357,12 +370,14 @@ protected:
  /*protected*/ DefaultListSelectionModel* createDefaultSelectionModel();
  /*protected*/ TableModel* createDefaultDataModel();
  /*protected*/ void resizeAndRepaint();
+ /*protected*/ void columnResized(int column, int oldWidth, int newWidth);
 
 friend class TableFrames;
 friend class WarrantPreferencesPanel;
 friend class SortManager;
 friend class LocationsTableModel;
 friend class MultiSensorItemPanel;
+friend class TTJTable;
 };
 
 /**
@@ -437,4 +452,7 @@ public:
     friend class SortManager;
 
 };
+
+
+
 #endif // JTABLE_H

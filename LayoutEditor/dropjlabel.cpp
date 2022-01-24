@@ -41,7 +41,7 @@ void DropJLabel::init(NamedIcon* icon)
  {
   _dataFlavor = new DataFlavor(ImageIndexEditor::IconDataFlavorMime);
  }
- catch (ClassNotFoundException cnfe)
+ catch (ClassNotFoundException* cnfe)
  {
 //        cnfe.printStackTrace();
  }
@@ -184,12 +184,12 @@ _iconMap = iconMap;
    e->rejectDrop();
   }
  }
- catch(IOException ioe)
+ catch(IOException* ioe)
  {
   if (log->isDebugEnabled()) log->debug("DropPanel.drop REJECTED!");
   e->rejectDrop();
  }
- catch(UnsupportedFlavorException ufe)
+ catch(UnsupportedFlavorException* ufe)
  {
   if (log->isDebugEnabled()) log->debug("DropJLabel.drop REJECTED!");
   e->rejectDrop();

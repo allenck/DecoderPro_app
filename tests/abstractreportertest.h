@@ -32,12 +32,12 @@ protected:
     friend class TestReporterListener;
 };
 
-/*public*/ class TestReporterListener : public PropertyChangeListener {
+/*public*/ class TestReporterListener : public QObject, public PropertyChangeListener {
     Q_OBJECT
-    AbstractReporterTest* test;
+    Q_INTERFACES(PropertyChangeListener)AbstractReporterTest* test;
 public:
     TestReporterListener(AbstractReporterTest* test) {this->test = test;}
-public slots:
+QObject* self() {return (QObject*)this;}public slots:
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* e){
         if (e->getPropertyName()==("currentReport")) {

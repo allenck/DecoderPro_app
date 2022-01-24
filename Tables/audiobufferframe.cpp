@@ -268,7 +268,7 @@ void AudioBufferFrame::On_loopEnd_valueChanged()
  this->_newBuffer = false;
 }
 
-void AudioBufferFrame::browsePressed(ActionEvent* /*e*/)
+void AudioBufferFrame::browsePressed(JActionEvent* /*e*/)
 {
 //    if (fileChooser == NULL) {
 //        fileChooser = new JFileChooser("resources" + File.separator + "sounds" + File.separator);
@@ -297,13 +297,13 @@ void AudioBufferFrame::browsePressed(ActionEvent* /*e*/)
 //                    WaveFileReader wfr = new WaveFileReader(FileUtil.getExternalFilename(fileName));
 //                    JOptionPane.showMessageDialog(NULL, wfr.toString(), wfr.toString(), JOptionPane.INFORMATION_MESSAGE);
 //                } catch (AudioException ex) {
-//                    JOptionPane.showMessageDialog(NULL, ex.getMessage(), tr("TitleReadError"), JOptionPane.ERROR_MESSAGE);
+//                    JOptionPane.showMessageDialog(NULL, ex->getMessage(), tr("TitleReadError"), JOptionPane.ERROR_MESSAGE);
 //                }
         }
     }
 }
 
-void AudioBufferFrame::okPressed(ActionEvent* /*e*/)
+void AudioBufferFrame::okPressed(JActionEvent* /*e*/)
 {
  QString user = userName->text();
  if (user==(""))
@@ -353,7 +353,7 @@ void AudioBufferFrame::okPressed(ActionEvent* /*e*/)
    this->setHidden(true);
  } catch (AudioException ex)
  {
-//   JOptionPane.showMessageDialog(NULL, ex.getMessage(), rb.getString("AudioCreateErrorTitle"), JOptionPane.ERROR_MESSAGE);
+//   JOptionPane.showMessageDialog(NULL, ex->getMessage(), rb.getString("AudioCreateErrorTitle"), JOptionPane.ERROR_MESSAGE);
  }
 }
 /*public*/ QString AudioBufferFrame::getClassName()

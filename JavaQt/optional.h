@@ -21,7 +21,7 @@ public:
  /*public*/ T get()
  {
       if (value == NULL) {
-          throw  NoSuchElementException("No value present");
+          throw new NoSuchElementException("No value present");
       }
       return value;
  }

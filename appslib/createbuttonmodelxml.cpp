@@ -56,10 +56,10 @@ CreateButtonModelXml::CreateButtonModelXml(QObject* parent) :
  * @param e Top level QDomElement to unpack.
  * @return true if successful
   */
-/*public*/ bool CreateButtonModelXml::load(QDomElement e) throw (Exception)
+/*public*/ bool CreateButtonModelXml::load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException)
 {
  bool result = true;
- QString className = e.attribute("name");
+ QString className = shared.attribute("name");
  log->debug("Invoke Action from"+className);
 // try
 // {

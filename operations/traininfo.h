@@ -117,6 +117,7 @@ protected:
 
  friend class TrainInfoFile;
  friend class DispatcherFrame;
+ friend class ActivateTrainFrame;
 };
 
 #endif // TRAININFO_H

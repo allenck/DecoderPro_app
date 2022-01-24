@@ -5,7 +5,7 @@
 
 class PropertyChangeEvent;
 class VSDManagerEvent;
-class ActionEvent;
+class JActionEvent;
 class NullProfileBoxItem;
 class VSDConfig;
 class RosterEntry;
@@ -52,17 +52,17 @@ private:
 
 private slots:
  /*private*/ void vsdecoderManagerEventAction(VSDManagerEvent* evt);
- /*private*/ void profileLoadButtonActionPerformed(ActionEvent* evt = 0);
- /*private*/ void addressSetButtonActionPerformed(ActionEvent* evt = 0);
- /*private*/ void rosterItemSelectAction(ActionEvent* e = 0);
- /*private*/ void profileComboBoxActionPerformed(ActionEvent* evt = 0);
+ /*private*/ void profileLoadButtonActionPerformed(JActionEvent* evt = 0);
+ /*private*/ void addressSetButtonActionPerformed(JActionEvent* evt = 0);
+ /*private*/ void rosterItemSelectAction(JActionEvent* e = 0);
+ /*private*/ void profileComboBoxActionPerformed(JActionEvent* evt = 0);
 
 signals:
  void propertyChange(PropertyChangeEvent*);
 public slots:
- /*public*/ void cancelButtonActionPerformed(ActionEvent* ae = 0);
- /*public*/ void closeButtonActionPerformed(ActionEvent* ae = 0);
- /*private*/ void rosterSaveButtonAction(ActionEvent* e = 0);
+ /*public*/ void cancelButtonActionPerformed(JActionEvent* ae = 0);
+ /*public*/ void closeButtonActionPerformed(JActionEvent* ae = 0);
+ /*private*/ void rosterSaveButtonAction(JActionEvent* e = 0);
 
 protected:
  /*protected*/ void initComponents();

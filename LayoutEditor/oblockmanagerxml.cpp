@@ -6,6 +6,7 @@
 #include "oblockmanager.h"
 #include "portalmanager.h"
 #include "warranttableaction.h"
+#include "joptionpane.h"
 
 OBlockManagerXml::OBlockManagerXml(QObject *parent) :
     AbstractXmlAdapter(parent)
@@ -354,12 +355,12 @@ void OBlockManagerXml::loadBlock(QDomElement elem)
   //Sensor sensor = InstanceManager.sensorManagerInstance().provideSensor(name);
   try
   {
-   Reporter* rep = InstanceManager::reporterManagerInstance()->getReporter(name);
+   Reporter* rep = ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->getReporter(name);
    if (rep != NULL)
    {
     block->setReporter(rep);
    }
-  } catch (Exception ex) {
+  } catch (Exception* ex) {
       log->error("No Reporter named \"" + name + "\" found. threw exception: " /*+ ex*/);
   }
   if (reporter.attribute("reportCurrent") != NULL) {
@@ -376,11 +377,11 @@ void OBlockManagerXml::loadBlock(QDomElement elem)
  }
  if (elem.attribute("speedNotch") != NULL)
  {
-     //try {
+     try {
   block->setBlockSpeed(elem.attribute("speedNotch"));
-//            } catch (jmri.JmriException ex) {
-//                JOptionPane.showMessageDialog(NULL, ex.getMessage() + "\n" + elem.attribute("speedNotch"));
-//            }
+  } catch (Exception* ex) {
+      JOptionPane::showMessageDialog(NULL, ex->getMessage() + "\n" + elem.attribute("speedNotch"));
+  }
  }
 
  QDomNodeList portals = elem.elementsByTagName("portal");

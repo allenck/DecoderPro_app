@@ -323,11 +323,11 @@ void LnOpsModeProgrammer::loadSV2MessageFormat(LocoNetMessage* m, int mAddress, 
 //@Override
 /*public*/ /*final*/ void LnOpsModeProgrammer::setMode(ProgrammingMode* m)
 {
-    if (getSupportedModes().contains(m)) {
+    if (getSupportedModes().contains(m->getStandardName())) {
         mode = m;
         notifyPropertyChange("Mode", VPtr<ProgrammingMode>::asQVariant(mode), VPtr<ProgrammingMode>::asQVariant(m));
     } else {
-        throw IllegalArgumentException("Invalid requested mode: "+m->toString());
+        throw new IllegalArgumentException("Invalid requested mode: "+m->toString());
     }
 }
 /*public*/ /*final*/ ProgrammingMode* LnOpsModeProgrammer::getMode() { return mode; }
@@ -336,22 +336,22 @@ void LnOpsModeProgrammer::loadSV2MessageFormat(LocoNetMessage* m, int mAddress, 
  * Types implemented here.
  */
 //@Override
-/*public*/ QList<ProgrammingMode*> LnOpsModeProgrammer::getSupportedModes()
+/*public*/ QList<QString> LnOpsModeProgrammer::getSupportedModes()
 {
- QVector<ProgrammingMode*> ret =  QVector<ProgrammingMode*>();//  (4,nullptr);
- ret.append(ProgrammingMode::OPSBYTEMODE);
- ret.append(LnProgrammerManager::LOCONETOPSBOARD);
- ret.append(LnProgrammerManager::LOCONETSV1MODE);
- ret.append(LnProgrammerManager::LOCONETSV2MODE);
- ret.append(LnProgrammerManager::LOCONETBDOPSWMODE);
- ret.append(LnProgrammerManager::LOCONETCSOPSWMODE);
- return ret.toList();
+ QStringList ret =  QStringList();//  (4,nullptr);
+ ret.append("OPSBYTEMODE");
+ ret.append("LOCONETOPSBOARD");
+ ret.append("LOCONETSV1MODE");
+ ret.append("LOCONETSV2MODE");
+ ret.append("LOCONETBDOPSWMODE");
+ ret.append("LOCONETCSOPSWMODE");
+ return ret;
 }
 
 ///**
-// * Provide a {@link java.beans.PropertyChangeSupport} helper.
+// * Provide a {@link java.beans.SwingPropertyChangeSupport} helper.
 // */
-//private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
+//private final SwingPropertyChangeSupport SwingPropertyChangeSupport = new SwingPropertyChangeSupport(this, nullptr);
 
 /**
  * Add a PropertyChangeListener to the listener list.
@@ -359,17 +359,17 @@ void LnOpsModeProgrammer::loadSV2MessageFormat(LocoNetMessage* m, int mAddress, 
  * @param listener The PropertyChangeListener to be added
  */
 /*public*/ void LnOpsModeProgrammer::addPropertyChangeListener(PropertyChangeListener* listener) {
- //propertyChangeSupport.addPropertyChangeListener(listener);
- connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+ //SwingPropertyChangeSupport.addPropertyChangeListener(listener);
+ connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 /*public*/ void LnOpsModeProgrammer::removePropertyChangeListener(PropertyChangeListener* listener) {
-//    propertyChangeSupport.removePropertyChangeListener(listener);
- disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+//    SwingPropertyChangeSupport.removePropertyChangeListener(listener);
+ disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 /*protected*/ void LnOpsModeProgrammer::notifyPropertyChange(QString key, QVariant oldValue, QVariant value) {
-    //propertyChangeSupport.firePropertyChange(key, oldValue, value);
+    //SwingPropertyChangeSupport.firePropertyChange(key, oldValue, value);
     emit propertyChange(new PropertyChangeEvent(this, key, oldValue, value));
 }
 

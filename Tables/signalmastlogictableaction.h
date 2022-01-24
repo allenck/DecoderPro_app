@@ -16,15 +16,14 @@ public:
     Q_INVOKABLE /*public*/ SignalMastLogicTableAction(QString s, QObject* parent);
     ~SignalMastLogicTableAction() {}
     SignalMastLogicTableAction(const SignalMastLogicTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
-    /*public*/ void setMenuBar(BeanTableFrame* f);
+    /*public*/ void setMenuBar(BeanTableFrame* f) override;
 
 public slots:
-    /*public*/ void actionPerformed(ActionEvent* /*e*/);
 
 private:
     void common();
     SignallingAction* sigLog;// = new jmri.jmrit.signalling.SignallingAction();
-    QList<QHash<SignalMastLogic*, SignalMast*>*>* signalMastLogicList;// = null;
+    QList<QHash<SignalMastLogic*, SignalMast*>*>* signalMastLogicList = nullptr;
     QWidget* update;
     bool suppressUpdate;// = false;
     JmriJFrame* signalMastLogicFrame;// = null;
@@ -33,16 +32,15 @@ private:
 
 private slots:
     void autoCreatePairs(/*jmri.util.JmriJFrame f*/);
-    void On_autoGenSections();
 
    protected:
-    /*protected*/ QString getClassName();
-    /*protected*/ void createModel();
-    /*protected*/ void setTitle();
-    /*protected*/ QString helpTarget() ;
+    /*protected*/ QString getClassName() override;
+    /*protected*/ void createModel() override;
+    /*protected*/ void setTitle() override;
+    /*protected*/ QString helpTarget() override ;
 
     protected slots:
-    /*protected*/ void addPressed(ActionEvent* e = 0) ;
+    /*protected*/ void addPressed(JActionEvent* =0)override;
 
 friend class SmlBeanTableDataModel;
 };
@@ -62,29 +60,32 @@ public:
      COMCOL = 4,
      DELCOL = 5,
      ENABLECOL = 6,
-     EDITLOGICCOL = 7
+     EDITLOGICCOL = 7,
+     MAXSPEEDCOL = 8,
+     COLUMNCOUNT = 9
     };
     SmlBeanTableDataModel(SignalMastLogicTableAction* act);
     //We have to set a manager first off, but this gets replaced.
-    /*public*/ QString getValue(QString s);
+    /*public*/ QString getValue(QString s) const override;
 
-    /*public*/ void clickOn(NamedBean* t);
-    /*public*/ int columnCount(const QModelIndex &parent) const;
-    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
-    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
+    /*public*/ void clickOn(NamedBean* t) override;
+    /*public*/ int columnCount(const QModelIndex &parent) const override;
+    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+    /*public*/ QString getColumnClass(int col) const override;
+    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
     /*public*/ SignalMast* getDestMastFromRow(int row) const;
     /*public*/ SignalMastLogic* getLogicFromRow(int row) const;
-    /*public*/ int getPreferredWidth(int col);
-    /*public*/ void configureTable(JTable* table);
-    /*public*/ NamedBean* getBySystemName(QString name) const;
-    /*public*/ NamedBean* getByUserName(QString name);
+    /*public*/ int getPreferredWidth(int col) override;
+    /*public*/ void configureTable(JTable* table) override;
+//    /*public*/ NamedBean* getBySystemName(QString name) const;
+//    /*public*/ NamedBean* getByUserName(QString name);
     /*synchronized*/ /*public*/ void dispose() ;
-    /*public*/ int rowCount(const QModelIndex &parent) const;
-    /*public*/ QVariant data(const QModelIndex &index, int role) const;
+    /*public*/ int rowCount(const QModelIndex &parent) const override;
+    /*public*/ QVariant data(const QModelIndex &index, int role) const override;
 
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 private:
     void editLogic(int row, int col);
@@ -93,13 +94,14 @@ private:
     QList<SignalMastLogic*> source;// = getManager().getSignalMastLogicList();
 
 protected:
-    /*protected*/ Manager* getManager();
-    /*protected*/ QString getMasterClassName() ;
-    /*protected*/ void configDeleteColumn(JTable* table);
-    /*protected*/ /*synchronized*/ void updateNameList();
-    /*protected*/ bool matchPropertyName(PropertyChangeEvent* e);
-    /*protected*/ QString getBeanType();
+    /*protected*/ Manager *getManager() override;
+    /*protected*/ QString getMasterClassName() override;
+    /*protected*/ void configDeleteColumn(JTable* table)override;
+    /*protected*/ /*synchronized*/ void updateNameList()override;
+    /*protected*/ bool matchPropertyName(PropertyChangeEvent* e)override;
+    /*protected*/ QString getBeanType()override;
     /*protected*/ void showPopup(QMouseEvent* e);
+    /*protected*/ void setColumnIdentities(JTable* table) override;
 
 };
 

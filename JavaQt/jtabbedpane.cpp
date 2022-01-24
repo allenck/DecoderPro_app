@@ -60,6 +60,11 @@ void JTabbedPane::setTabButton(int iTab, QToolButton * button)
  return -1;
 }
 
+/*public*/ void JTabbedPane::add(QWidget* component, QString title, int i){
+ insertTab(title, QIcon(), component, "", i);
+}
+
+
 /**
  * Adds a <code>component</code> and <code>tip</code>
  * represented by a <code>title</code> and/or <code>icon</code>,
@@ -219,4 +224,13 @@ void JTabbedPane::setTabButton(int iTab, QToolButton * button)
 /*public*/ void JTabbedPane::setEnabledAt(int tabIndex, bool enabled)
 {
  QTabWidget::setTabEnabled(tabIndex, enabled);
+}
+
+/*public*/ void JTabbedPane::setToolTipTextAt(int i, QString txt)
+{
+ setTabToolTip(i, txt);
+}
+
+/*public*/ void JTabbedPane::setSelectedComponent(QWidget* w){
+ setCurrentWidget(w);
 }

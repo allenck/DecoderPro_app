@@ -20,6 +20,7 @@
 #include "htmlconductor.h"
 #include "stringescapeutils.h"
 #include "../operations/engine.h"
+#include "instancemanager.h"
 
 OperationsServlet::OperationsServlet() : HttpServlet()
 {
@@ -48,7 +49,7 @@ OperationsServlet::OperationsServlet() : HttpServlet()
     if (this->getServletContext()->getContextPath() == ("/operations")) { // NOI18N
         this->mapper =  ObjectMapper();
         // ensure all operations managers are functional before handling first request
-        Operations::OperationsManager::getInstance();
+        InstanceManager::getDefault("Operations::OperationsManager");
     }
 }
 
@@ -96,7 +97,7 @@ OperationsServlet::OperationsServlet() : HttpServlet()
     }
 }
 
-/*protected*/ void OperationsServlet::processTrains(HttpServletRequest* request, HttpServletResponse* response) throw (IOException)
+/*protected*/ void OperationsServlet::processTrains(HttpServletRequest* request, HttpServletResponse* response) /*throw (IOException)*/
 {
 #if 1
  if (JSON::_JSON == (request->getParameter("format")))
@@ -124,9 +125,9 @@ OperationsServlet::OperationsServlet() : HttpServlet()
   //StringBuilder html = new StringBuilder();
   QString html;
   QString format = FileUtil::readURL(FileUtil::findURL("web/servlet/operations/TrainsSnippet.html"));
-  foreach (Operations::Train* train, Operations::TrainManager::instance()->getTrainsByNameList())
+  foreach (Operations::Train* train, ((Operations::TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainsByNameList())
   {
-   if (showAll || !Operations::CarManager::instance()->getByTrainDestinationList(train)->isEmpty())
+   if (showAll || !((Operations::CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getByTrainDestinationList(train)->isEmpty())
    {
 //       html.append(String.format(request->getLocale(), format,
 //               train.getIconName(),
@@ -185,9 +186,9 @@ OperationsServlet::OperationsServlet() : HttpServlet()
 #endif
 }
 
-/*private*/ void OperationsServlet::processManifest(QString id, HttpServletRequest* request, HttpServletResponse* response) throw (IOException)
+/*private*/ void OperationsServlet::processManifest(QString id, HttpServletRequest* request, HttpServletResponse* response) /*throw (IOException)*/
 {
- Operations::Train* train = Operations::TrainManager::instance()->getTrainById(id);
+ Operations::Train* train = ((Operations::TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainById(id);
  log->debug(tr("train id=%1 name=%2 %3").arg(id).arg(train->getName()).arg(train->getDescription()));
 #if 1
  if ("html" == (request->getParameter("format")))
@@ -220,7 +221,7 @@ OperationsServlet::OperationsServlet() : HttpServlet()
      //QJsonObject manifest = this->mapper.readTree(new JsonManifest(train).getFile());
      File* file = Operations::JsonManifest(train).getFile();
      QFile f(file->getPath());
-     if(!f.open(QIODevice::ReadOnly)) throw FileNotFoundException(f.fileName());
+     if(!f.open(QIODevice::ReadOnly)) throw  new FileNotFoundException(f.fileName());
      QTextStream is(&f);
      QJsonObject manifest = QJsonDocument::fromBinaryData(is.readAll().toLocal8Bit()).object();
      if (manifest.value(JSON::IMAGE).isString())
@@ -268,9 +269,9 @@ OperationsServlet::OperationsServlet() : HttpServlet()
 #endif
 }
 
-/*private*/ void OperationsServlet::processConductor(QString id, HttpServletRequest* request, HttpServletResponse* response) throw (IOException)
+/*private*/ void OperationsServlet::processConductor(QString id, HttpServletRequest* request, HttpServletResponse* response) /*throw (IOException)*/
 {
- Operations::Train* train = Operations::TrainManager::instance()->getTrainById(id);
+ Operations::Train* train = ((Operations::TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainById(id);
  QJsonObject data;
 #if 1
  if (request->getContentType() != NULL && request->getContentType().contains(ServletUtil::APPLICATION_JSON))

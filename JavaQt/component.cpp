@@ -3,8 +3,7 @@
 #include "droptargetlistener.h"
 #include <QBoxLayout>
 
-Component::Component(QWidget *parent) :
-    QWidget(parent)
+Component::Component(QWidget *parent) :  JPanel(parent)
 {
  peer = NULL;
  dropTarget = NULL;
@@ -52,12 +51,12 @@ Component::Component(QWidget *parent) :
         try {
             dropTarget->setComponent(this);
             if (peer != NULL) dropTarget->addNotify((ComponentPeer*)peer);
-        } catch (IllegalArgumentException iae) {
+        } catch (IllegalArgumentException* iae) {
             if (old != NULL) {
                 try {
                     old->setComponent(this);
                     if (peer != NULL) dropTarget->addNotify((ComponentPeer*)peer);
-                } catch (IllegalArgumentException iae1) {
+                } catch (IllegalArgumentException* iae1) {
                     // ignore it!
                 }
             }

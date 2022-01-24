@@ -6,8 +6,9 @@
 #include "fileutil.h"
 #include "file.h"
 #include "fileutil.h"
+#include <QStringList>
+#include "jcombobox.h"
 
-DecoderIndexFile* DecoderIndexFile::_instance = NULL;
 //QString DecoderIndexFile::decoderIndexFileName = "decoderIndex.xml";
 /*static*/ /*final*/ /*protected*/ QString DecoderIndexFile::DECODER_INDEX_FILE_NAME = "decoderIndex.xml";
 QString DecoderIndexFile::decoderIndexFileName = "/home/allen/NetBeansProjects/JMRI/xml/decoderIndex.xml";
@@ -15,14 +16,17 @@ QString DecoderIndexFile::decoderIndexFileName = "/home/allen/NetBeansProjects/J
 DecoderIndexFile::DecoderIndexFile(QObject *parent) :
     XmlFile(parent)
 {
- log = new Logger("DecoderIndexFile");
+ log->setDebugEnabled(true);
  fileVersion = -1;
  decoderList = new QList<DecoderFile*>();
  _mfgIdFromNameHash = new QHash<QString,QString>();
  _mfgNameFromIdHash = new QHash<QString,QString>();
 
   mMfgNameList = new QStringList();
+
+  readFile(defaultDecoderIndexFilename());
 }
+
 /**
  * DecoderIndex represents a decoderIndex.xml file in memory.
  * <P>
@@ -61,15 +65,34 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
 /**
  *	Get a List of decoders matching some information
  */
-/*public*/ QList<DecoderFile*>* DecoderIndexFile::matchingDecoderList(QString mfg, QString family, QString decoderMfgID, QString decoderVersionID, QString decoderProductID, QString model )
+/*public*/ QList<DecoderFile*> DecoderIndexFile::matchingDecoderList(QString mfg, QString family, QString decoderMfgID, QString decoderVersionID, QString decoderProductID, QString model )
 {
- QList<DecoderFile*>* l = new QList<DecoderFile*>();
- for (int i = 0; i < numDecoders(); i++)
- {
-  if ( checkEntry(i, mfg, family, decoderMfgID, decoderVersionID, decoderProductID, model ))
-  {
-   l->append(decoderList->at(i));
-  }
+ return (matchingDecoderList(mfg, family, decoderMfgID, decoderVersionID, decoderProductID, model, "", "", ""));
+}
+
+/**
+ * Get a List of decoders matching some information.
+ *
+ * @param mfg              decoder manufacturer
+ * @param family           decoder family
+ * @param decoderMfgID     NMRA decoder manufacturer ID
+ * @param decoderVersionID decoder version ID
+ * @param decoderProductID decoder product ID
+ * @param model            decoder model
+ * @param developerID      developer ID number
+ * @param manufacturerID   manufacturerID number
+ * @param productID        productID number
+ * @return a list, possibly empty, of matching decoders
+ */
+//@Nonnull
+/*public*/ QList<DecoderFile*>DecoderIndexFile:: matchingDecoderList(QString mfg, QString family,
+        QString decoderMfgID, QString decoderVersionID,
+        QString decoderProductID, QString model, QString developerID, QString manufacturerID, QString productID) {
+ QList<DecoderFile*> l = QList<DecoderFile*>();
+ for (int i = 0; i < numDecoders(); i++) {
+     if (checkEntry(i, mfg, family, decoderMfgID, decoderVersionID, decoderProductID, model, developerID, manufacturerID, productID)) {
+         l.append(decoderList->at(i));
+     }
  }
  return l;
 }
@@ -80,40 +103,38 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
  */
 /*public*/ QComboBox* DecoderIndexFile::matchingComboBox(QString mfg, QString family, QString decoderMfgID, QString decoderVersionID, QString decoderProductID, QString model )
 {
- QList<DecoderFile*>* l = matchingDecoderList(mfg, family, decoderMfgID, decoderVersionID, decoderProductID, model );
+ QList<DecoderFile*> l = matchingDecoderList(mfg, family, decoderMfgID, decoderVersionID, decoderProductID, model );
  return jComboBoxFromList(l);
 }
 
 /**
- * Return a JComboBox made with the titles from a list of
- * DecoderFile entries
+ * Get a JComboBox made with the titles from a list of DecoderFile entries.
+ *
+ * @param l list of decoders
+ * @return a combo box populated with the list
  */
-/*static*/ /*public*/ QComboBox* DecoderIndexFile::jComboBoxFromList(QList<DecoderFile*>* l)
-{
- QComboBox* comboBox = new QComboBox();
-// for(int i=0; i < l->size(); l++)
-//  comboBox->addItem(l->at(i)->titleString());
- foreach (DecoderFile* f, *l)
- {
-  comboBox->addItem(f->titleString());
+/*public*/ /*static*/ JComboBox/*<String>*/* DecoderIndexFile::jComboBoxFromList(QList<DecoderFile*> l) {
+    //return new JComboBox(jComboBoxModelFromList(l));
+ JComboBox* box = new JComboBox();
+ for (int i = 0; i < l.size(); i++) {
+     DecoderFile* r = l.at(i);
+     box->addItem(r->titleString());
  }
- //return new QComboBox(jComboBoxModelFromList(l));
- return comboBox;
+ return box;
 }
 
 /**
  * Return a new ComboBoxModel made with the titles from a list of
  * DecoderFile entries
  */
-/*static*/ /*public*/ ComboBoxModel* DecoderIndexFile::jComboBoxModelFromList(QList<DecoderFile*>* l)
+/*static*/ /*public*/ ComboBoxModel* DecoderIndexFile::jComboBoxModelFromList(QList<DecoderFile*> l)
 {
-//    DefaultComboBoxModel<QString>* b = new DefaultComboBoxModel<QString>();
-//    for (int i = 0; i < l->size(); i++) {
-//        DecoderFile* r = l->at(i);
-////        b->addElement(r->titleString());
-//    }
-//    return (ComboBoxModel*)b;
-    return NULL;
+ DefaultComboBoxModel/*<QString>*/* b = new DefaultComboBoxModel/*<QString>*/(QList<QString>());
+ for (int i = 0; i < l.size(); i++) {
+     DecoderFile* r = l.at(i);
+     b->addElement(r->titleString());
+ }
+ return b;
 }
 
 /**
@@ -135,7 +156,7 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
  * Don't bother asking about the model number...
  *
  */
-/*public*/ bool DecoderIndexFile::checkEntry(int i, QString mfgName, QString family, QString mfgID, QString decoderVersionID, QString decoderProductID, QString model)
+/*public*/ bool DecoderIndexFile::checkEntry(int i, QString mfgName, QString family, QString mfgID, QString decoderVersionID, QString decoderProductID, QString model, QString developerID, QString manufacturerID, QString productID)
 {
  DecoderFile* r = decoderList->at(i);
  if (mfgName != "" && mfgName!=(r->getMfg())) return false;
@@ -149,57 +170,63 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
   if (!r->isVersion(versionID)) return false;
  }
  if (decoderProductID != "" && decoderProductID!=(r->getProductID())) return false;
+ if (developerID != "") {
+     // must have a developerID value that matches to consider this entry a match
+     if (developerID != (r->getDeveloperID())) {
+         // didn't match the getDeveloperID() value, so check the model developerID value
+         if (r->getModelElement().attribute("developerID") == "") {
+             // no model developerID value, so not a match!
+             return false;
+         }
+         if (!QString("," + r->getModelElement().attribute("developerID") + ",").contains("," + developerID + ",")) {
+                 return false;
+         }
+     }
+     log->debug("developerID match");
+ }
+
+
+ if (manufacturerID != "") {
+     log->debug(tr("checking manufactureriD %1, mfgID %2, modelElement[manufacturerID] #3").arg(
+             manufacturerID).arg(r->_mfgID).arg(r->getModelElement().attribute("manufacturerID")));
+     // must have a manufacturerID value that matches to consider this entry a match
+
+     if ((r->_mfgID == "") || (manufacturerID.compare(r->_mfgID) != 0)) {
+         // ID number from manufacturer name isn't identical; try another way
+         if (manufacturerID != (r->getManufacturerID())) {
+             // no match to the manufacturerID attribute at the (family?) level, so try model level
+             QString a = r->getModelElement().attribute("manufacturerID");
+             if ((a == "") || (a.isNull()) ||
+                     (manufacturerID.compare(a)!=0)) {
+                     // no model manufacturerID value, or model manufacturerID
+                     // value does not match so this decoder is not a match!
+                     return false;
+             }
+         }
+     }
+     log->debug("manufacturerID match");
+ }
+
+ if (productID != "") {
+     // must have a productID value that matches to consider this entry a match
+     if (productID !=(r->getProductID())) {
+         // didn't match the getProductID() value, so check the model productID value
+         if (r->getModelElement().attribute("productID") == "") {
+             // no model productID value, so not a match!
+             return false;
+         }
+         if (!QString("," + r->getModelElement().attribute("productID") + ",").contains("," + productID + ",")) {
+                 return false;
+         }
+     }
+     log->debug("productID match");
+ }
  return true;
 }
 
 /*public*/ /*synchronized*/ /*static*/ void DecoderIndexFile::resetInstance()
 {
- //QMutexLocker locker(*mutex);
- _instance = NULL;
-}
-/*public*/ /*synchronized*/ /*static*/ DecoderIndexFile* DecoderIndexFile::instance()
-{
- //QMutexLocker locker(*mutex);
- Logger log = Logger("DecoderIndexFile");
- if (_instance == NULL)
- {
-  if (log.isDebugEnabled()) log.debug("DecoderIndexFile creating instance");
-  // create and load
-  try
-  {
-   _instance = new DecoderIndexFile();
-   _instance->readFile(FileUtil::getProgramPath() + "xml" + File::separator + defaultDecoderIndexFilename());
-  }
-  catch (Exception e)
-  {
-   log.error("Exception during decoder index reading: "+e.getMessage());
-//            e.printStackTrace();
-  }
-  // see if needs to be updated
-  try
-  {
-   if (updateIndexIfNeeded(defaultDecoderIndexFilename()))
-   {
-    try
-    {
-     _instance = new DecoderIndexFile();
-     _instance->readFile(defaultDecoderIndexFilename());
-    }
-    catch (Exception e)
-    {
-     log.error("Exception during decoder index reload: "+e.getMessage());
-//                    e.printStackTrace();
-    }
-   }
-  }
-  catch (Exception e)
-  {
-   log.error("Exception during decoder index update: "+e.getMessage());
-//            e.printStackTrace();
-  }
- }
- if (log.isDebugEnabled()) log.debug(tr("DecoderIndexFile returns instance ")+_instance->metaObject()->className());
-  return _instance;
+ InstanceManager::getDefault()->clear("DecoderIndexFile");;
 }
 
 /**
@@ -210,7 +237,7 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
  * @throws JDOMException
  * @throws FileNotFoundException
  */
-/*static*/ bool DecoderIndexFile::updateIndexIfNeeded(QString name) throw (JDOMException, IOException)
+/*static*/ bool DecoderIndexFile::updateIndexIfNeeded(QString name) /*throw (JDOMException, IOException)*/
 {
  Logger log = Logger("DecoderIndexFile");
  // get version from master index; if not found, give up
@@ -245,9 +272,7 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
  if (masterVersion!=NULL && masterVersion==(userVersion)) return false;
 
  // force the update, with the version number located earlier is available
- if (masterVersion != NULL)
-  instance()->fileVersion = (masterVersion.toInt());
-
+ log.debug(tr("forcing update of decoder index due to %1 and %2").arg(masterVersion).arg(userVersion));
  forceCreationOfNewIndex();
  // and force it to be used
  return true;
@@ -265,92 +290,76 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
  * Force creation of a new user index
  */
 /*static*/ /*public*/ void DecoderIndexFile::forceCreationOfNewIndex(bool increment) {
- Logger* log = new Logger("DecoderIndexFile");
  log->info("update decoder index");
  // make sure we're using only the default manufacturer info
  // to keep from propagating wrong, old stuff
- File* oldfile = new File(FileUtil::getUserFilesPath() + "decoderIndex.xml");
- if (oldfile->exists())
- {
-  log->debug("remove existing user decoderIndex.xml file");
-  if (!oldfile->_delete()) // delete file, check for success
-  {
-   Logger::error("Failed to delete old index file");
-  }
-  // force read from distributed file
-  resetInstance();
-  instance();
+ File* oldfile = new File(FileUtil::getUserFilesPath() + DECODER_INDEX_FILE_NAME);
+ if (oldfile->exists()) {
+     log->debug("remove existing user decoderIndex.xml file");
+     if (!oldfile->_delete()) // delete file, check for success
+     {
+         log->error("Failed to delete old index file");
+     }
+     // force read from distributed file on next access
+     resetInstance();
  }
 
  // create an array of file names from decoders dir in preferences, count entries
- QStringList al;
- QStringList sp = QStringList();
- int i=0;
+ QList<QString> al = QList<QString>();
  FileUtil::createDirectory(FileUtil::getUserFilesPath() + DecoderFile::fileLocation);
- QDir* fp = new QDir(FileUtil::getUserFilesPath() + DecoderFile::fileLocation);
- if (fp->exists())
- {
-  sp = fp->entryList();
-  for (i=0; i<sp.length(); i++)
-  {
-   if (sp.at(i).endsWith(".xml") || sp.at(i).endsWith(".XML"))
-    al.append(sp.at(i));
-  }
- }
- else
- {
-  log->warn(FileUtil::getUserFilesPath()+"decoders was missing, though tried to create it");
+ File* fp = new File(FileUtil::getUserFilesPath() + DecoderFile::fileLocation);
+
+ if (fp->exists()) {
+     QStringList list = fp->list();
+     if (!list.isEmpty()) {
+         for (QString sp : list) {
+             if (sp.endsWith(".xml") || sp.endsWith(".XML")) {
+                 al.append(sp);
+             }
+         }
+     }
+ } else {
+     log->debug(tr("%1 decoders was missing, though tried to create it").arg(FileUtil::getUserFilesPath()));
  }
  // create an array of file names from xml/decoders, count entries
- QStringList sx = ( new QDir(XmlFile::xmlDir()+DecoderFile::fileLocation))->entryList();
- for (i=0; i<sx.length(); i++)
- {
-  if (sx[i].endsWith(".xml") || sx[i].endsWith(".XML"))
-  {
-   // Valid name.  Does it exist in preferences xml/decoders?
-   if (!al.contains(sx[i]))
-   {
-    // no, include it!
-    al.append(sx.at(i));
-   }
-  }
+ QStringList fileList = (new File(XmlFile::xmlDir() + DecoderFile::fileLocation))->list();
+ if (!fileList.isEmpty()) {
+     for (QString sx : fileList ) {
+         if (sx.endsWith(".xml") || sx.endsWith(".XML")) {
+             // Valid name.  Does it exist in preferences xml/decoders?
+             if (!al.contains(sx)) {
+                 // no, include it!
+                 al.append(sx);
+             }
+         }
+     }
+ } else {
+     log->error(tr("Could not access decoder definition directory %1%2").arg(XmlFile::xmlDir()).arg(DecoderFile::fileLocation));
  }
- // copy the decoder entries to the final array (toArray needs cast of +elements+)
- //QList<QObject*> aa = al.toArray();
- QList<QObject*> aa;
- foreach (QString s, al)
- {
-  aa.append((QObject*)&s);
- }
- QStringList* sbox =  new QStringList();
- for (i =0; i<sbox->length(); i++)
-  sbox->append(*(QString*) aa.at(i));
+ // copy the decoder entries to the final array
+ QStringList sbox = QStringList(al);//al.toArray(new String[al.size()]);
 
  //the resulting array is now sorted on file-name to make it easier
  // for humans to read
-// TODO:    jmri.util.QStringUtil.sort(sbox);
+ //Arrays.sort(sbox);
+ sbox.sort();
 
  // create a new decoderIndex
- // the existing version is used, so that a new master file
- // with a larger one will force an update
  DecoderIndexFile* index = new DecoderIndexFile();
 
  // For user operations the existing version is used, so that a new master file
  // with a larger one will force an update
  if (increment) {
-     index->fileVersion = instance()->fileVersion + 2;
+     index->fileVersion = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->fileVersion + 2;
  } else {
-     index->fileVersion = instance()->fileVersion;
+     index->fileVersion = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->fileVersion;
  }
 
  // write it out
- try
- {
-  index->writeFile("decoderIndex.xml", _instance, sbox);
- }
- catch (IOException ex)
- {
-  log->error("Error writing new decoder index file: "+ex.getMessage());
+ try {
+     index->writeFile(DECODER_INDEX_FILE_NAME, ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile")), &sbox);
+ } catch (IOException* ex) {
+     log->error(tr("Error writing new decoder index file: %1").arg(ex->getMessage()));
  }
 }
 
@@ -358,7 +367,7 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
  * Read the contents of a decoderIndex XML file into this object. Note that this does not
  * clear any existing entries; reset the instance to do that.
  */
-void DecoderIndexFile::readFile(QString name) throw (JDOMException, IOException)
+void DecoderIndexFile::readFile(QString name) /*throw (JDOMException, IOException)*/
 {
  if (log->isDebugEnabled()) log->debug("readFile "+name);
 
@@ -503,7 +512,7 @@ void DecoderIndexFile::readFamily(QDomElement family)
  }
 }
 
-/*public*/ void DecoderIndexFile::writeFile(QString name, DecoderIndexFile* oldIndex, QStringList* files) throw (IOException)
+/*public*/ void DecoderIndexFile::writeFile(QString name, DecoderIndexFile* oldIndex, QStringList* files) /*throw (IOException)*/
 {
 #if 1 //TODO:
  //QDomDocument doc(/*QString("../xml/)"+"decoderIndex-config.dtd")*/);
@@ -582,9 +591,9 @@ void DecoderIndexFile::readFamily(QDomElement family)
    family.setAttribute("file",files->at(i));
    familyList.appendChild(family);
   }
-  catch (JDOMException exj) {log->error(tr("could not parse ")+files->at(i)+": "+exj.getMessage());}
-  catch (FileNotFoundException exj) {log->error("could not read "+files->at(i)+": "+exj.getMessage());}
-  catch (Exception exj) {log->error(tr("other exception while dealing with ")+files->at(i)+": "+exj.getMessage());}
+  catch (JDOMException* exj) {log->error(tr("could not parse ")+files->at(i)+": "+exj->getMessage());}
+  catch (FileNotFoundException* exj) {log->error("could not read "+files->at(i)+": "+exj->getMessage());}
+  catch (Exception* exj) {log->error(tr("other exception while dealing with ")+files->at(i)+": "+exj->getMessage());}
  }
 
  index.appendChild(mfgList);
@@ -605,3 +614,4 @@ void DecoderIndexFile::readFamily(QDomElement family)
 /*protected*/ /*static*/ QString DecoderIndexFile::defaultDecoderIndexFilename()
 { return DECODER_INDEX_FILE_NAME;}
 
+/*private*/ /*static*/ /*final*/ Logger* DecoderIndexFile::log = LoggerFactory::getLogger("DecoderIndexFile");

@@ -8,7 +8,7 @@
 
 class QPushButton;
 class JTextField;
-class ActionEvent;
+class JActionEvent;
 class QCheckBox;
 class NamedBean;
 class ValidPoints;
@@ -95,7 +95,7 @@ protected:
   /*protected*/ void setColumnToHoldButton(JTable* table, int column, QPushButton* sample);
 
 protected slots:
-  /*protected*/ void optionWindow(ActionEvent* e = 0);
+  /*protected*/ void optionWindow(JActionEvent* e = 0);
 
  friend class AddEntryExitPairFrame;
  friend class AEPTableModel;
@@ -145,6 +145,7 @@ public:
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
     /*public*/ int getPreferredWidth(int col);
     /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    /*public*/ QString getColumnClass(int col);
     /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
     /*public*/ int columnCount(const QModelIndex &parent) const;
 
@@ -173,14 +174,17 @@ public slots:
 
 };
 
-class PropertyNXListener : public PropertyChangeListener
+class PropertyNXListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  AddEntryExitPairPanel* panel;
 public:
  PropertyNXListener(AddEntryExitPairPanel* panel) {this->panel = panel;}
+ QObject* self() override {return (QObject*)this;}
+
 public slots:
- void propertyChange(PropertyChangeEvent*);
+ void propertyChange(PropertyChangeEvent*) override;
 };
 
 #endif // ADDENTRYEXITPAIRPANEL_H

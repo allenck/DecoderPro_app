@@ -28,7 +28,7 @@
 ///*public*/ final class ClientRxHandler extends Thread implements LocoNetListener {
 
 
-/*public*/ ClientRxHandler::ClientRxHandler(QString newRemoteAddress, QTcpSocket* newSocket, int connectionNbr, QObject *parent) :
+/*public*/ ClientRxHandler::ClientRxHandler(QString newRemoteAddress, QTcpSocket* newSocket, LnTrafficController *tc, int connectionNbr, QObject *parent) :
   QThread(parent)
 {
  clientSocket = newSocket;
@@ -40,16 +40,17 @@
  //connect(clientSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));
 
  //tc = ((LocoNetSystemConnectionMemo*)InstanceManager::getDefault("SystemConnectionMemo"))->getLnTrafficController();
- QObjectList* list = InstanceManager::getList("SystemConnectionMemo");
- foreach (QObject* memo, *list)
- {
-  if(qobject_cast<LocoNetSystemConnectionMemo*>(memo) != NULL)
-  {
-   LocoNetSystemConnectionMemo* connectionMemo = (LocoNetSystemConnectionMemo*)memo;
-   tc = connectionMemo->getLnTrafficController();
-   break;
-  }
- }
+// QObjectList* list = InstanceManager::getList("SystemConnectionMemo");
+// foreach (QObject* memo, *list)
+// {
+//  if(qobject_cast<LocoNetSystemConnectionMemo*>(memo) != NULL)
+//  {
+//   LocoNetSystemConnectionMemo* connectionMemo = (LocoNetSystemConnectionMemo*)memo;
+//   tc = connectionMemo->getLnTrafficController();
+//   break;
+//  }
+// }
+ this->tc = tc;
  bIsInterrupted = false;
  log = new Logger(objectName());
  log->setDebugEnabled(false);
@@ -97,10 +98,10 @@
 
  //try {
   clientSocket->close();
-  //} catch (IOException ex1) {
+  //} catch (IOException* ex1) {
   //}
 
- LnTcpServer::getInstance()->removeClient(this);
+ LnTcpServer::getDefault()->removeClient(this);
  log->info("ClientRxHandler: Exiting");
 }
 
@@ -204,7 +205,7 @@ void ClientRxHandler::on_readyRead()
 //   }
 //  }
  }
-//    } catch (IOException ex) {
+//    } catch (IOException* ex) {
 //        log->debug("ClientRxHandler: IO Exception: ", ex);
 //    }
  //LnTrafficController.instance().removeLocoNetListener(~0, this);
@@ -219,7 +220,7 @@ void ClientRxHandler::on_readyRead()
 
 // //try {
 //  clientSocket->close();
-//  //} catch (IOException ex1) {
+//  //} catch (IOException* ex1) {
 //  //}
 
 // Server::getInstance()->removeClient(this);
@@ -230,7 +231,7 @@ void ClientRxHandler::on_readyRead()
 {
  try {
      clientSocket->close();
- } catch (IOException ex1) {
+ } catch (IOException* ex1) {
      log->error("close, which closing clientSocket", ex1);
  }
 }
@@ -370,7 +371,7 @@ void ClientTxHandler::sendMessage(LocoNetMessage * msg)
 
   }
  }
-//    } catch (IOException ex) {
+//    } catch (IOException* ex) {
 //        log->error("ClientTxHandler: IO Exception");
 //    } catch (InterruptedException ex) {
 //        //Thread.currentThread().interrupt(); // retain if needed later

@@ -157,7 +157,7 @@ FilterOutputStream::FilterOutputStream(QObject *parent)
     /*public*/ void close() throws IOException {
         try {
           flush();
-        } catch (IOException ignored) {
+        } catch (IOException* ignored) {
         }
         out.close();
     }

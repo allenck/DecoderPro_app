@@ -88,7 +88,7 @@ void PrintTrainAction::on_PrintCancelled(QString msg)
              s = tr("Comment") + ": " + train->getComment() + NEW_LINE;
              writer->writeHtml(s);
          }
-//     } catch (IOException we) {
+//     } catch (IOException* we) {
 //         logerror("Error printing train report");
 //     }
  }

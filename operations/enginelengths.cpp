@@ -3,6 +3,7 @@
 #include "logger.h"
 #include "control.h"
 #include "enginemanagerxml.h"
+#include "instancemanager.h"
 
 //EngineLengths::EngineLengths()
 //{
@@ -26,27 +27,6 @@ namespace Operations
  {
  setProperty("InstanceManagerAutoDefault", "yes");
 
- }
-
- /**
-  * record the single instance *
-  */
- /*private*/ /*static*/ EngineLengths* EngineLengths::_instance = NULL;
-
- /*public*/ /*static*/ /*synchronized*/ EngineLengths* EngineLengths::instance()
- {
-  Logger log("EngineLengths");
-     if (_instance == NULL) {
-         if (log.isDebugEnabled()) {
-             log.debug("EngineLengths creating instance");
-         }
-         // create and load
-         _instance = new EngineLengths();
-     }
-     if (Control::showInstance) {
-         log.debug(tr("EngineLengths returns instance %1").arg(_instance->metaObject()->className()));
-     }
-     return _instance;
  }
 
  /*protected*/ QString EngineLengths::getDefaultNames() {
@@ -90,8 +70,15 @@ namespace Operations
 
  /*protected*/ void EngineLengths::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      // Set dirty
-     EngineManagerXml::instance()->setDirty(true);
+     ((EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml"))->setDirty(true);
      RollingStockAttribute::firePropertyChange(p, old, n);
  }
+
+ //@Override
+    /*public*/ void EngineLengths::initialize() {
+        InstanceManager::getDefault("OperationsSetupXml"); // load setup
+        // create manager to load engines and their attributes
+        InstanceManager::getDefault("EngineManagerXml");
+    }
 
 }

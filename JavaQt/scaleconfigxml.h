@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "xmlfile.h"
+#include "fileutil.h"
 
 class Logger;
 class ScaleConfigXML : public QObject
@@ -28,6 +29,11 @@ private:
     /*private*/ static QString userPath;// = FileUtil.getUserFilesPath() + "resources/scales/";  // NOI18N
     /*private*/ static QString fileName;// = "ScaleData.xml";  // NOI18N
 public:
+  ScaleXmlFile() : XmlFile(){
+   prodPath = FileUtil::getProgramPath() + "resources/scales/";  // NOI18N
+   userPath = FileUtil::getUserFilesPath() + "resources/scales/";  // NOI18N
+  }
+
     /*public*/ static QString getStoreFileName() ;
     /*public*/ File* getStoreFile();
     /*public*/ File* getLoadFile();

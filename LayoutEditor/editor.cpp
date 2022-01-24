@@ -76,6 +76,8 @@
 #include <QScrollBar>
 #include "editormanager.h"
 #include "placewindow.h"
+#include "abstractsignalheadmanager.h"
+#include "defaultsignalmastmanager.h"
 
 //Editor::Editor(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -196,12 +198,12 @@ void Editor::commonInit()
  //_iconEditorFrame = new QHash <QString, JFrameItem*>();
  _spinCols = new SpinnerNumberModel(3,1,100,1);
   panelMenuIsVisible = true;
-  ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
-  ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+  ((AbstractSignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
+  ((DefaultSignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
   InstanceManager::turnoutManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
   InstanceManager::sensorManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
   InstanceManager::memoryManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
-  ((BlockManager*)InstanceManager::getDefault("BlockManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+  ((BlockManager*)InstanceManager::getDefault("BlockManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
   ((EditorManager*)InstanceManager::getDefault("EditorManager"))->addEditor(this);
 }
 
@@ -218,9 +220,9 @@ void Editor::commonInit()
  _debug = log->isDebugEnabled();
  _defaultToolTip = /*new ToolTip(NULL, 0, 0)*/ "";
  setVisible(false);
- static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+ qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
  //connect(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
- static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+ static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
  //connect(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
  InstanceManager::turnoutManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
  //connect(InstanceManager::turnoutManagerInstance()->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
@@ -228,7 +230,7 @@ void Editor::commonInit()
  //connect(InstanceManager::sensorManagerInstance()->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
  InstanceManager::memoryManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
  //connect(InstanceManager::memoryManagerInstance()->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
- static_cast<BlockManager*>(InstanceManager::getDefault("BlockManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+ static_cast<BlockManager*>(InstanceManager::getDefault("BlockManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
  //connect(static_cast<BlockManager*>(InstanceManager::getDefault("BlockManager"))->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
  editors->append(this);
 }
@@ -361,7 +363,7 @@ if (_newIcon==nullptr)
     _targetFrame->pack();
 }
 
-/*protected*/ void Editor::setTargetPanel(EditScene* targetPanel, JmriJFrame* frame) {
+/*protected*/ void Editor::setTargetPanel(QGraphicsView* targetPanel, JmriJFrame* frame) {
          editScene = new EditScene();
     editScene->setObjectName("editScene");
     if (frame == nullptr) {
@@ -907,9 +909,34 @@ void Editor::closeEvent(QCloseEvent */*e*/)
  */
 /*abstract*/ /*protected*/ void Editor::paintTargetPanel(QGraphicsScene* /*g*/) {}
 
-///*protected*/ void Editor::setSecondSelectionGroup(QList<Positionable*> list) {
-//    _secondSelectionGroup = list;
-//}
+/**
+ * Set an object's location when it is created.
+ *
+ * @param obj the object to locate
+ */
+///*abstract*/ /*protected*/ void setNextLocation(Positionable* obj);
+
+/**
+ * Editor Views should make calls to this class (Editor) to set popup menu
+ * items. See 'Popup Item Methods' above for the calls.
+ *
+ * @param p     the item containing or requiring the context menu
+ * @param event the event triggering the menu
+ */
+///*abstract*/ /*protected*/ void showPopUp(Positionable* p, QGraphicsSceneMouseEvent* event);
+
+/**
+ * After construction, initialize all the widgets to their saved config
+ * settings.
+ */
+///*abstract*/ /*public*/ void initView();
+
+/**
+ * Set up item(s) to be copied by paste.
+ *
+ * @param p the item to copy
+ */
+///*abstract*/ /*protected*/ void copyItem(Positionable p);
 
 /*protected*/ Editor* Editor::changeView(QString className)
 {
@@ -955,12 +982,12 @@ void Editor::closeEvent(QCloseEvent */*e*/)
   dispose(false);
   setCursor(Qt::ArrowCursor);
   return ed;
- } catch (ClassNotFoundException cnfe) {
-     log->error("changeView exception "+cnfe.getMessage());
- } catch (InstantiationException ie) {
-     log->error("changeView exception "+ie.getMessage());
- } catch (IllegalAccessException iae) {
-     log->error("changeView exception "+iae.getMessage());
+ } catch (ClassNotFoundException* cnfe) {
+     log->error("changeView exception "+cnfe->getMessage());
+ } catch (InstantiationException* ie) {
+     log->error("changeView exception "+ie->getMessage());
+ } catch (IllegalAccessException* iae) {
+     log->error("changeView exception "+iae->getMessage());
  }
 
  return nullptr;
@@ -1323,7 +1350,7 @@ void Editor::On_actionHidden_toggled(bool bState) // [slot]
 //     }
 // }.init(p, showTooltipItem));
  ShowToolTipActionListener* showToolTipActionListener = new ShowToolTipActionListener( p,  p->showToolTip(), this);
- connect(showTooltipItem, SIGNAL(triggered()), showToolTipActionListener, SLOT(actionPerformed()));
+ connect(showTooltipItem, SIGNAL(triggered()), showToolTipActionListener->self(), SLOT(actionPerformed()));
 
  edit->addAction(showTooltipItem);
  edit->addAction(CoordinateEdit::getTooltipEditAction(p, this));
@@ -1336,7 +1363,7 @@ ShowToolTipActionListener::ShowToolTipActionListener(Positionable *pos, bool isC
  this->isChecked = isChecked;
  this->editor = editor;
 }
-void ShowToolTipActionListener::actionPerformed(ActionEvent */*e*/)
+void ShowToolTipActionListener::actionPerformed(JActionEvent */*e*/)
 {
  comp->setShowToolTip(!isChecked);
 }
@@ -1403,8 +1430,8 @@ void Editor::On_removeMenuAction_triggered()
    //         }
    //     }
    // });
-    rosterBox->addPropertyChangeListener("selectedRosterEntries", (PropertyChangeListener*)this);
-    //connect(rosterBox, SIGNAL(propertyChange(QString,QObject*,QObject*)), this, SLOT(On_rosterBoxSelectionChanged(QString,QObject*,QObject*)));
+    //rosterBox->SwingPropertyChangeSupport::addPropertyChangeListener("selectedRosterEntries", (PropertyChangeListener*)this);
+    connect(rosterBox, SIGNAL(propertyChange(QString,QObject*,QObject*)), this, SLOT(On_rosterBoxSelectionChanged(QString,QObject*,QObject*)));
     //connect(rosterBox, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
     //locoRosterFrame.getContentPane().add(rosterBox);
@@ -1492,7 +1519,7 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
     if(dlg->exec() == QDialog::Accepted)
     {
      QString nameID= dlg->value();
-     if(!nameID.isNull())
+     if (!nameID.isNull())
      {
       LocoIcon* icon = addLocoIcon(nameID.trimmed());
       icon->setLocation(200,100);
@@ -1740,7 +1767,12 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
  }
  editScene->addItem(pl->_itemGroup);
 #else
-
+ if(l->_itemGroup && l->_itemGroup->scene())
+ {
+  //log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
+  l->updateScene();
+  return;
+ }
    if(l != nullptr)
    {
     bAdded = l->updateScene();
@@ -1750,7 +1782,8 @@ void Editor::On_rosterBoxSelectionChanged(QString propertyName,QObject* /*o*/,QO
 //     log->warn("item already has been added ");
     if(l->_itemGroup && l->_itemGroup->scene())
      log->warn(tr("item already has been added %1 %2").arg(__FILE__).arg(__LINE__));
-    editScene->addItem(l->_itemGroup);
+    else
+     editScene->addItem(l->_itemGroup);
     if(l->_itemGroup != nullptr && l->_itemGroup->name() == "")
      l->_itemGroup->setName(l->getGroupName());
    }
@@ -1982,7 +2015,7 @@ AddPanelIconActionListener::AddPanelIconActionListener(Editor *parent)
 {
  this->parent = parent;
 }
-void AddPanelIconActionListener::actionPerformed(ActionEvent *)
+void AddPanelIconActionListener::actionPerformed(JActionEvent *)
 {
  parent->putSensor();
 }
@@ -2637,11 +2670,11 @@ void Editor::putBackground() {
   }
  }
  else
-  if(editScene != nullptr)
+  if(editScene != nullptr)  // use editPanel?
   {
-   if (((QWidget*)editScene->parent())->window() !=nullptr)
+   if (((QWidget*)editPanel)->window() !=nullptr)
    {
-    name=((JFrame*)((QWidget*)editScene->parent())->window())->getTitle();
+    name=((JFrame*)((QWidget*)editPanel)->window())->getTitle();
    }
 
   }
@@ -2741,7 +2774,7 @@ void Editor::putBackground() {
 //         }
 //     });
   EditItemActionListener* editItemActionListener = new EditItemActionListener();
-  connect(editItem, SIGNAL(triggered(bool)), editItemActionListener, SLOT(actionPerformed()));
+  connect(editItem, SIGNAL(triggered(bool)), editItemActionListener->self(), SLOT(actionPerformed()));
   findIcon->addAction(editItem);
   findIcon->addSeparator();
 
@@ -2762,7 +2795,7 @@ void Editor::putBackground() {
 //     }.init(editor));
   SearchItemActionListener* searchItemActionListener  = new SearchItemActionListener();
   searchItemActionListener->init(editor);
-  connect(searchItem, SIGNAL(toggled(bool)), searchItemActionListener, SLOT(actionPerformed()));
+  connect(searchItem, SIGNAL(toggled(bool)), searchItemActionListener->self(), SLOT(actionPerformed()));
 
   findIcon->addAction(searchItem);
   frame->setMenuBar(menuBar);
@@ -2807,7 +2840,7 @@ AddIconFrameWindowListener::AddIconFrameWindowListener(Editor *editor)
     if (editor->log->isDebugEnabled()) editor->log->debug("windowClosing: HIDE "+editor->title());
 }
 
-void SearchItemActionListener::actionPerformed(ActionEvent */*e*/)
+void SearchItemActionListener::actionPerformed(JActionEvent */*e*/)
 {
     QDir* dir = DirectorySearcher::instance()->searchFS();
 if (dir != nullptr) {
@@ -2826,7 +2859,7 @@ EditItemActionListener* EditItemActionListener::init(Editor *ed)
  editor = ed;
  return this;
 }
-void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
+void EditItemActionListener::actionPerformed(JActionEvent * /*e*/)
 {
  ImageIndexEditor* ii = ImageIndexEditor::instance(editor);
  ii->pack();
@@ -3040,7 +3073,7 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
 * Return a List of all items whose bounding rectangle contain the mouse position.
 * ordered from top level to bottom
 */
-/*protected*/ QList <Positionable*>* Editor::getSelectedItems(QGraphicsSceneMouseEvent* event)
+/*protected*/ QList <Positionable*> Editor::getSelectedItems(QGraphicsSceneMouseEvent* event)
 {
  double x = event->scenePos().x();
  double y = event->scenePos().y();
@@ -3200,13 +3233,13 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
  return selections->toList();
 }
 #else
-/*protected*/ QList <Positionable*>* Editor::getSelectedItems(QPointF pt)
+/*protected*/ QList <Positionable*> Editor::getSelectedItems(QPointF pt)
 {
  double x = pt.x();
  double y = pt.y();
  QRectF rect;
  int level;
- QList<Positionable*>* selections = new QList<Positionable*>();
+ QList<Positionable*> selections = QList<Positionable*>();
  for (int i=0; i<_contents->size(); i++)
  {
   Positionable* p = _contents->at(i);
@@ -3221,7 +3254,7 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
       //qDebug() << tr("rect %1,%2,%3,%4 contains %5,%6").arg(rect2D.x()).arg(rect2D.y()).arg(rect2D.width()).arg(rect2D.height()).arg(x).arg(y);
    bool added =false;
       //int level = ((PositionableLabel*)p)->getDisplayLevel();
-   for (int k=0; k<selections->size(); k++)
+   for (int k=0; k<selections.size(); k++)
    {
     int selLevel;
 //    if(qobject_cast<PositionableJComponent*>(selections->at(k))!= NULL)
@@ -3230,19 +3263,19 @@ void EditItemActionListener::actionPerformed(/*ActionEvent**/ /*e*/)
 //    }
 //    else
     {
-     selLevel = selections->at(k)->getDisplayLevel();
+     selLevel = selections.at(k)->getDisplayLevel();
     }
 
     if (level >= selLevel)
     {
-     selections->insert(k, p);
+     selections.insert(k, p);
      added = true;       // OK to lie in the case of background icon
      break;
     }
    }
    if (!added)
    {
-    selections->append(p);
+    selections.append(p);
     statusBar()->showMessage( tr("select %1 x=%2,y=%3, w=%4, h= %5").arg(p->self()->metaObject()->className()).arg(rect.x()).arg(rect.y()).arg(rect.width()).arg(rect.height()));
    }
   }
@@ -3808,6 +3841,7 @@ abstract /*protected*/ void init(QString name);
       _selectRectItemGroup->removeFromGroup(it);
      }
     }
+#if 0
     if (!_selectRect.isNull())
     {
      //Draw a rectangle on top of the image.
@@ -3870,6 +3904,7 @@ abstract /*protected*/ void init(QString name);
       parentScene->removeItem(_selectRectItemGroup);
     }
     g2d->addItem(_selectRectItemGroup);
+#endif
 }
 
 void Editor::setName(QString name)
@@ -3986,7 +4021,7 @@ abstract public void mouseExited(MouseEvent event);
   {
    clazz = Class::forName(type);
   }
-  catch(ClassNotFoundException ex)
+  catch(ClassNotFoundException* ex)
   {
    continue;
   }
@@ -4161,7 +4196,7 @@ void UrlErrorDialog::cancelButton_clicked()
             message.append("<br>");
             message.append(tr("These items and references will be removed.")); //IN18N
             message.append("<br>");
-            throw PropertyVetoException(message, evt);
+            throw new PropertyVetoException(message, evt);
         }
     } else if ("DoDelete" == (evt->getPropertyName())) { //IN18N
         QList<Positionable*> toDelete = QList<Positionable*>();
@@ -4214,12 +4249,12 @@ void UrlErrorDialog::cancelButton_clicked()
 
                 } else if (qobject_cast<LightIcon*>(pos->self())) {
                     LightIcon* icon = (LightIcon*) pos->self();
-                    if (bean->equals(icon->getLight())) {
+                    if (bean->equals((NamedBean*)icon->getLight())) {
                         report.append(new NamedBeanUsageReport("PositionalIcon", data));
                     }
 
                 } else {
-                    if (bean->equals(pos->getNamedBean())) {
+                    if (bean->equals((NamedBean*)pos->getNamedBean())) {
                         report.append(new NamedBeanUsageReport("PositionalIcon", data));
                     }
                }
@@ -4239,12 +4274,12 @@ void UrlErrorDialog::cancelButton_clicked()
 
     /*public*/ void Editor::addPropertyChangeListener(PropertyChangeListener* listener)
     {
-     pcs->addPropertyChangeListener(listener);
+     pcs->SwingPropertyChangeSupport::addPropertyChangeListener(listener);
     }
 
     /*public*/ void Editor::addPropertyChangeListener(QString name, PropertyChangeListener* listener)
     {
-     pcs->addPropertyChangeListener(name, listener);
+     pcs->SwingPropertyChangeSupport::addPropertyChangeListener(name, listener);
     }
 
     /*public*/ void Editor::removePropertyChangeListener(PropertyChangeListener* listener)

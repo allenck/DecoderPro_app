@@ -41,8 +41,8 @@ void SimpleClockAction::common()
  SimpleClockFrame* f = new SimpleClockFrame();
  try {
      f->initComponents();
- } catch (Exception E) {
-  Logger::error("Exception in Simple Clock: " + E.getMessage());
+ } catch (Exception* E) {
+  Logger::error("Exception in Simple Clock: " + E->getMessage());
  }
  f->setVisible(true);
 }

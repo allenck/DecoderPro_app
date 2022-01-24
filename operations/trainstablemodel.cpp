@@ -11,10 +11,10 @@
 #include "logger.h"
 #include "pushbuttondelegate.h"
 #include "traineditframe.h"
-#include "trainconductorframe.h"
 #include "routeeditframe.h"
 #include <QMessageBox>
 #include <QPen>
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -40,17 +40,16 @@ namespace Operations
      //super();
   SORTBYTIME = 2;
   SORTBYID = 7;
- trainManager = TrainManager::instance(); // There is only one manager
+ trainManager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager")); // There is only one manager
  _sort = SORTBYTIME;
  _showAll = true;
  tef = NULL;
  log = new Logger("TrainsTableModel");
- ref = NULL;
+ //ref = NULL;
  buildThread = NULL;
  darkColors = QList<QColor>() << Qt::black << Qt::blue<< Qt::gray <<  Qt::red << Qt::magenta;
 
-     //trainManager.addPropertyChangeListener(this);
- connect(trainManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     trainManager->addPropertyChangeListener(this);
      //Setup.addPropertyChangeListener(this);
 
      updateList();
@@ -116,33 +115,38 @@ namespace Operations
   // Install the button handlers
   TableColumnModel* tcm = _table->getColumnModel();
 #if 0
-     ButtonRenderer buttonRenderer = new ButtonRenderer();
-     TableCellEditor buttonEditor = new ButtonEditor(new javax.swing.JButton());
+     ButtonRenderer* buttonRenderer = new ButtonRenderer();
+     TableCellEditor* buttonEditor = new ButtonEditor(new javax.swing.JButton());
      tcm.getColumn(EDITCOLUMN).setCellRenderer(buttonRenderer);
      tcm.getColumn(EDITCOLUMN).setCellEditor(buttonEditor);
      tcm.getColumn(ACTIONCOLUMN).setCellRenderer(buttonRenderer);
-     tcm.getColumn(ACTIONCOLUMN).setCellEditor(buttonEditor);
+     tcm->getColumn(ACTION_COLUMN)->setCellEditor(buttonEditor);
      tcm.getColumn(BUILDCOLUMN).setCellRenderer(buttonRenderer);
      tcm.getColumn(BUILDCOLUMN).setCellEditor(buttonEditor);
      _table.setDefaultRenderer(bool.class, new EnablingCheckboxRenderer());
 #endif
-  _table->setItemDelegateForColumn(EDITCOLUMN, new MyDelegate());
-  _table->setItemDelegateForColumn(ACTIONCOLUMN, new MyDelegate());
-  _table->setItemDelegateForColumn(BUILDCOLUMN, new MyDelegate());
+  _table->setItemDelegateForColumn(EDIT_COLUMN, new PushButtonDelegate());
+  _table->setItemDelegateForColumn(ACTION_COLUMN, new PushButtonDelegate());
+  _table->setItemDelegateForColumn(BUILD_COLUMN, new PushButtonDelegate());
 
   // set column preferred widths
-  if ( !_frame->loadTableDetails(_table))
-  {
-   // load defaults, xml file data not found
-   QList<int> tableColumnWidths = trainManager->getTrainsFrameTableColumnWidths();
-   for (int i = 0; i < tcm->getColumnCount(); i++)
-   {
-    tcm->getColumn(i)->setPreferredWidth(tableColumnWidths[i]);
-   }
+  for (int i = 0; i < tcm->getColumnCount(); i++) {
+      tcm->getColumn(i)->setPreferredWidth(_tableColumnWidths[i]);
   }
+  _frame->loadTableDetails(_table);
+
+  // turn off column
+  updateColumnVisible();
+ }
+ /*private*/ void TrainsTableModel::updateColumnVisible() {
 #if 0
-     // have to shut off autoResizeMode to get horizontal scroll to work (JavaSwing p 541)
-     _table->setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+     XTableColumnModel* tcm = (XTableColumnModel*) _table->getColumnModel();
+     tcm->setColumnVisible(tcm->getColumnByModelIndex(ID_COLUMN), _sort == SORTBYID);
+     tcm->setColumnVisible(tcm->getColumnByModelIndex(TIME_COLUMN), _sort == SORTBYTIME);
+     tcm->setColumnVisible(tcm->getColumnByModelIndex(BUILT_COLUMN), trainManager->isBuiltRestricted());
+     tcm->setColumnVisible(tcm->getColumnByModelIndex(ROAD_COLUMN), trainManager->isRoadRestricted());
+     tcm->setColumnVisible(tcm->getColumnByModelIndex(LOAD_COLUMN), trainManager->isLoadRestricted());
+     tcm->setColumnVisible(tcm->getColumnByModelIndex(OWNER_COLUMN), trainManager->isOwnerRestricted());
 #endif
  }
 
@@ -174,33 +178,41 @@ namespace Operations
   {
    switch (section)
    {
-    case IDCOLUMN:
+    case ID_COLUMN:
      if (_sort == SORTBYID)
      {
-      return IDCOLUMNNAME;
+      return ID_COLUMN;
      }
      return TIMECOLUMNNAME;
-    case BUILDBOXCOLUMN:
+    case BUILD_BOXCOLUMN:
         return BUILDBOXCOLUMNNAME;
-    case BUILDCOLUMN:
+    case BUILD_COLUMN:
         return BUILDCOLUMNNAME;
-    case NAMECOLUMN:
+    case NAME_COLUMN:
         return NAMECOLUMNNAME;
-    case DESCRIPTIONCOLUMN:
+    case DESCRIPTION_COLUMN:
         return DESCRIPTIONCOLUMNNAME;
-    case ROUTECOLUMN:
+    case BUILT_COLUMN:
+        return tr("Built");
+    case ROAD_COLUMN:
+        return tr("Road");
+    case LOAD_COLUMN:
+        return tr("Load");
+    case OWNER_COLUMN:
+        return tr("Owner");
+    case ROUTE_COLUMN:
         return ROUTECOLUMNNAME;
-    case DEPARTSCOLUMN:
+    case DEPARTS_COLUMN:
         return DEPARTSCOLUMNNAME;
-    case CURRENTCOLUMN:
+    case CURRENT_COLUMN:
         return CURRENTCOLUMNNAME;
-    case TERMINATESCOLUMN:
+    case TERMINATES_COLUMN:
         return TERMINATESCOLUMNNAME;
-    case STATUSCOLUMN:
+    case STATUS_COLUMN:
         return STATUSCOLUMNNAME;
-    case ACTIONCOLUMN:
+    case ACTION_COLUMN:
         return ACTIONCOLUMNNAME;
-    case EDITCOLUMN:
+    case EDIT_COLUMN:
         return EDITCOLUMNNAME;
     default:
         return "unknown"; // NOI18N
@@ -208,33 +220,30 @@ namespace Operations
   }
   return QVariant();
  }
-#if 0
- /*public*/ Class<?> getColumnClass(int col) {
+#if 1
+ /*public*/ QString TrainsTableModel::getColumnClass(int col) const {
      switch (col) {
-         case IDCOLUMN:
-             return String.class;
-         case BUILDBOXCOLUMN:
-             return bool.class;
-         case BUILDCOLUMN:
-             return JButton.class;
-         case NAMECOLUMN:
-             return String.class;
-         case DESCRIPTIONCOLUMN:
-             return String.class;
-         case ROUTECOLUMN:
-             return String.class;
-         case DEPARTSCOLUMN:
-             return String.class;
-         case CURRENTCOLUMN:
-             return String.class;
-         case TERMINATESCOLUMN:
-             return String.class;
-         case STATUSCOLUMN:
-             return String.class;
-         case ACTIONCOLUMN:
-             return JButton.class;
-         case EDITCOLUMN:
-             return JButton.class;
+         case BUILD_BOXCOLUMN:
+             return "bool";
+         case ID_COLUMN:
+             return "Integer";
+         case TIME_COLUMN:
+         case NAME_COLUMN:
+         case DESCRIPTION_COLUMN:
+         case BUILT_COLUMN:
+         case ROAD_COLUMN:
+         case LOAD_COLUMN:
+         case OWNER_COLUMN:
+         case ROUTE_COLUMN:
+         case DEPARTS_COLUMN:
+         case CURRENT_COLUMN:
+         case TERMINATES_COLUMN:
+         case STATUS_COLUMN:
+             return "String";
+         case BUILD_COLUMN:
+         case ACTION_COLUMN:
+         case EDIT_COLUMN:
+             return "JButton";
          default:
              return NULL;
      }
@@ -244,12 +253,12 @@ namespace Operations
  /*public*/ Qt::ItemFlags TrainsTableModel::flags(const QModelIndex &index) const
  {
      switch (index.column()) {
-         case BUILDBOXCOLUMN:
+         case BUILD_BOXCOLUMN:
           return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable;
-         case BUILDCOLUMN:
-         case ROUTECOLUMN:
-         case ACTIONCOLUMN:
-         case EDITCOLUMN:
+         case BUILD_COLUMN:
+         case ROUTE_COLUMN:
+         case ACTION_COLUMN:
+         case EDIT_COLUMN:
              return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
          default:
              return Qt::ItemIsEnabled | Qt::ItemIsSelectable;;
@@ -274,7 +283,7 @@ namespace Operations
   }
   if(role == Qt::CheckStateRole)
   {
-   if(col==BUILDBOXCOLUMN)
+   if(col==BUILD_BOXCOLUMN)
    {
     return train->isBuildEnabled()?Qt::Checked: Qt::Unchecked;
    }
@@ -288,40 +297,53 @@ namespace Operations
          return "ERROR train unknown " + row; // NOI18N
      }
      switch (col) {
-         case IDCOLUMN: {
+         case ID_COLUMN: {
              if (_sort == SORTBYID) {
                  return train->getId();
              }
              return train->getDepartureTime();
          }
-         case NAMECOLUMN:
+         case TIME_COLUMN:
+          return train->getDepartureTime();
+         case NAME_COLUMN:
              return train->getIconName();
-         case DESCRIPTIONCOLUMN:
+         case DESCRIPTION_COLUMN:
              return train->getDescription();
 //         case BUILDBOXCOLUMN:
 //             //return bool.valueOf(train->isBuildEnabled());
 //          return tr("Built");
-         case ROUTECOLUMN:
+         case BUILT_COLUMN:
+            return getBuiltString(train);
+         case ROAD_COLUMN:
+             return getModifiedString(train->getRoadNames().length(), train->getRoadOption() == (Train::ALL_ROADS),
+                     train->getRoadOption() ==(Train::INCLUDE_ROADS));
+         case LOAD_COLUMN:
+             return getModifiedString(train->getLoadNames().length(), train->getLoadOption() == (Train::ALL_LOADS),
+                     train->getLoadOption() == (Train::INCLUDE_LOADS));
+         case OWNER_COLUMN:
+             return getModifiedString(train->getOwnerNames().length(), train->getOwnerOption() == (Train::ALL_OWNERS),
+                     train->getOwnerOption() == (Train::INCLUDE_OWNERS));
+         case ROUTE_COLUMN:
              return train->getTrainRouteName();
-         case DEPARTSCOLUMN: {
+         case DEPARTS_COLUMN: {
              if (train->getDepartureTrack() == NULL) {
                  return train->getTrainDepartsName();
              } else {
                  return train->getTrainDepartsName() + " (" + train->getDepartureTrack()->getName() + ")";
              }
          }
-         case CURRENTCOLUMN:
+         case CURRENT_COLUMN:
              return train->getCurrentLocationName();
-         case TERMINATESCOLUMN: {
+         case TERMINATES_COLUMN: {
              if (train->getTerminationTrack() == NULL) {
                  return train->getTrainTerminatesName();
              } else {
                  return train->getTrainTerminatesName() + " (" + train->getTerminationTrack()->getName() + ")";
              }
          }
-         case STATUSCOLUMN:
+         case STATUS_COLUMN:
              return train->getStatus();
-         case BUILDCOLUMN: {
+         case BUILD_COLUMN: {
              if (train->isBuilt()) {
                  if (Setup::isGenerateCsvManifestEnabled() && trainManager->isOpenFileEnabled()) {
                      return tr("OpenFile");
@@ -337,13 +359,13 @@ namespace Operations
              }
              return tr("Build");
          }
-         case ACTIONCOLUMN: {
+         case ACTION_COLUMN: {
              if (train->getBuildFailed()) {
                  return tr("Report");
              }
              return trainManager->getTrainsFrameTrainAction();
          }
-         case EDITCOLUMN:
+         case EDIT_COLUMN:
              return tr("Edit");
          default:
              //return "unknown " + QString::number(col); // NOI18N
@@ -353,7 +375,30 @@ namespace Operations
   return QVariant();
  }
 
- /*public*/ bool TrainsTableModel::setData(const QModelIndex &index, const QVariant &value, int role) \
+ /*private*/ QString TrainsTableModel::getBuiltString(Train* train) const {
+     if (train->getBuiltStartYear()!=(Train::NONE) && train->getBuiltEndYear() ==(Train::NONE)) {
+         return "A " + train->getBuiltStartYear();
+     }
+     if (train->getBuiltStartYear()==(Train::NONE) && train->getBuiltEndYear()!=(Train::NONE)) {
+         return "B " + train->getBuiltEndYear();
+     }
+     if (train->getBuiltStartYear()!=(Train::NONE) && train->getBuiltEndYear()!=(Train::NONE)) {
+         return "R " + train->getBuiltStartYear() + ":" + train->getBuiltEndYear();
+     }
+     return "";
+ }
+
+ /*private*/ QString TrainsTableModel::getModifiedString(int number, bool all, bool accept) const {
+     if (all) {
+         return "";
+     }
+     if (accept) {
+         return "A " + QString::number(number); // NOI18N
+     }
+     return "E " + QString::number(number); // NOI18N
+ }
+
+ /*public*/ bool TrainsTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
  {
   int col = index.column();
   int row = index.row();
@@ -361,16 +406,13 @@ namespace Operations
   {
    switch (col)
    {
-    case EDITCOLUMN:
+    case EDIT_COLUMN:
         editTrain(row);
         break;
-    case BUILDCOLUMN:
+    case BUILD_COLUMN:
         buildTrain(row);
         break;
-    case ROUTECOLUMN:
-        editRoute(row);
-        break;
-    case ACTIONCOLUMN:
+    case ACTION_COLUMN:
         actionTrain(row);
         break;
 //         case BUILDBOXCOLUMN:
@@ -386,7 +428,7 @@ namespace Operations
   }
   if(role == Qt::CheckStateRole)
   {
-   if(col == BUILDBOXCOLUMN)
+   if(col == BUILD_BOXCOLUMN)
    {
     Train* train = sysList.at(row);
     train->setBuildEnabled(value.toBool());
@@ -418,20 +460,20 @@ namespace Operations
  }
 
 
- /*private*/ /*synchronized*/ void TrainsTableModel::editRoute(int row) {
-     if (ref != NULL) {
-         ref->dispose();
-     }
-     // use invokeLater so new window appears on top
-//     SwingUtilities.invokeLater(new Runnable() {
-//         /*public*/ void run() {
-             ref = new RouteEditFrame();
-             Train* train = sysList.at(row);
-             log->debug("Edit route for train (" + train->getName() + ")");
-             ref->initComponents(train->getRoute(), train);
-//         }
-//     });
- }
+// /*private*/ /*synchronized*/ void TrainsTableModel::editRoute(int row) {
+//     if (ref != NULL) {
+//         ref->dispose();
+//     }
+//     // use invokeLater so new window appears on top
+////     SwingUtilities.invokeLater(new Runnable() {
+////         /*public*/ void run() {
+//             ref = new RouteEditFrame();
+//             Train* train = sysList.at(row);
+//             log->debug("Edit route for train (" + train->getName() + ")");
+//             ref->initComponents(train->getRoute(), train);
+////         }
+////     });
+// }
 #if 1
 
  /*private*/ /*synchronized*/ void TrainsTableModel::buildTrain(int row)
@@ -585,7 +627,7 @@ namespace Operations
       f = new TrainConductorFrame(train);
       _trainConductorHashTable.insert(train->getId(), f);
   } else {
-      //f.setExtendedState(Frame.NORMAL);
+      f->setExtendedState(JFrame::NORMAL);
   }
   f->setVisible(true); // this also brings the frame into focus
 //         }
@@ -648,8 +690,7 @@ namespace Operations
      if (tef != NULL) {
          tef->dispose();
      }
-     //trainManager.removePropertyChangeListener(this);
-     connect(trainManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     trainManager->removePropertyChangeListener(this);
      //Setup::removePropertyChangeListener(this);
      removePropertyChangeTrains();
  }

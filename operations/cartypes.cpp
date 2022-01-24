@@ -3,6 +3,7 @@
 #include "control.h"
 #include "setup.h"
 #include "carmanagerxml.h"
+#include "instancemanager.h"
 
 //CarTypes::CarTypes(QObject *parent) :
 //  RollingStockAttribute(parent)
@@ -35,24 +36,6 @@ namespace Operations
   maxNameLengthSubType = 0;
   setProperty("InstanceManagerAutoDefault", "yes");
 
- }
-
-
- /*public*/ /*static*/ /*synchronized*/ CarTypes* CarTypes::instance()
- {
-  Logger* log = new Logger("CarTypes");
-  log->setDebugEnabled(false);
-  if (_instance == NULL) {
-      if (log->isDebugEnabled()) {
-          log->debug("CarTypes creating instance");
-      }
-      // create and load
-      _instance = new CarTypes();
-  }
-  if (Control::showInstance) {
-      log->debug(tr("CarTypes returns instance %1").arg(_instance->metaObject()->className()));
-  }
-  return _instance;
  }
 
  /*protected*/ QString CarTypes::getDefaultNames() {
@@ -178,7 +161,7 @@ namespace Operations
 
  /*protected*/ void CarTypes::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      // Set dirty
-     CarManagerXml::instance()->setDirty(true);
+     ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml"))->setDirty(true);
      RollingStockAttribute::firePropertyChange(p, old, n);
  }
 

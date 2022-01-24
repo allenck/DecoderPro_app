@@ -81,8 +81,8 @@ void JmriBeanComboBox::common(Manager *manager, NamedBean *nBean, int displayOrd
 /*public*/ void JmriBeanComboBox::setManager(Manager* manager)
 {
  this->_manager = manager;
- //((AbstractManager*)_manager)->addPropertyChangeListener((PropertyChangeListener*)this);
- connect(((AbstractManager*)_manager)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ ((AbstractManager*)_manager->self())->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
+ //connect(((AbstractManager*)_manager->self()), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  refreshCombo();
 }
 
@@ -139,7 +139,7 @@ void JmriBeanComboBox::updateComboBox(QString inSelect)
     // native Manager interfaces
 
     QStringList nameList = QStringList();
-    for (QObject* obj : _manager->getNamedBeanSet()) {
+    for (NamedBean* obj : _manager->getNamedBeanSet()) {
         nameList.append(((NamedBean*)obj)->getSystemName());
         if(!itemMap.contains(((NamedBean*)obj)->getSystemName()))
             itemMap.insert(((NamedBean*)obj)->getSystemName(), false);
@@ -548,11 +548,11 @@ void JmriBeanComboBox::updateComboBox(QString inSelect)
     QString comboBoxText = NamedBean::normalizeUserName(currentText());
     if (comboBoxText != "") {
 
-        //try user name
+        // try user name
         result = uDaManager->getBeanByUserName(comboBoxText);
 
         if (nullptr == result) {
-            //try system name
+            // try system name
             //note: don't use getBeanBySystemName here
             //throws an IllegalArgumentException if text is invalid
             result = uDaManager->getNamedBean(comboBoxText);

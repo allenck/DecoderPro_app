@@ -1,7 +1,7 @@
 #include "routestableframe.h"
 #include "routestablemodel.h"
 #include <QLabel>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QRadioButton>
 #include <QBoxLayout>
 #include <QSortFilterProxyModel>
@@ -49,7 +49,7 @@ namespace Operations
   sortById = new QRadioButton(tr("Id"));
 
   // major buttons
-  addButton = new QPushButton(tr("Add"));
+  addButton = new JButton(tr("Add"));
 
   // general GUI config
 
@@ -92,10 +92,10 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   QMenuBar* menuBar = new QMenuBar();
   QMenu* toolMenu = new QMenu(tr("Tools"));
 
-  toolMenu->addAction(new RouteCopyAction(tr("Copy Route"),this));
-  toolMenu->addAction(new SetTrainIconPositionAction(tr("Set Train Icons Coordinates"),this));
-  toolMenu->addAction(new PrintRoutesAction(tr("Print"), false,this));
-  toolMenu->addAction(new PrintRoutesAction(tr("Preview"), true,this));
+  toolMenu->addAction(new RouteCopyAction(this));
+  toolMenu->addAction(new SetTrainIconPositionAction(this));
+  toolMenu->addAction(new PrintRoutesAction(false,this));
+  toolMenu->addAction(new PrintRoutesAction( true,this));
   menuBar->addMenu(toolMenu);
   menuBar->addMenu(new OperationsMenu());
   setMenuBar(menuBar);
@@ -133,7 +133,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  // add button
  /*public*/ void RoutesTableFrame::buttonActionPerformed(QWidget* ae) {
      // log->debug("route button activated");
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == addButton) {
          RouteEditFrame* f = new RouteEditFrame();
          f->initComponents(NULL);

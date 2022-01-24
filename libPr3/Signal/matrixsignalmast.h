@@ -41,8 +41,7 @@ public:
  /*public*/ int getMatrixMastCommandDelay();
 
 public slots:
- /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException
-);
+ /*public*/ void vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/;
 
 private:
  static Logger* log;

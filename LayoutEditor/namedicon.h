@@ -6,11 +6,11 @@
 #include <QUrl>
 #include "logger.h"
 #include "imageicon.h"
-#include "javaqt_global.h"
+#include "liblayouteditor_global.h"
 
 class Logger;
 class QObject;
-class JAVAQTSHARED_EXPORT NamedIcon : public ImageIcon
+class LIBLAYOUTEDITORSHARED_EXPORT NamedIcon : public ImageIcon
 {
     Q_OBJECT
 public:

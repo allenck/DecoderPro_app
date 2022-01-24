@@ -8,8 +8,8 @@ namespace Operations {
 class HtmlConductor : public HtmlTrainCommon
 {
 public:
- /*public*/ HtmlConductor(QLocale locale, Operations::Train* train, QObject* parent = 0) throw (IOException);
- /*public*/ QString getLocation() throw (IOException);
+ /*public*/ HtmlConductor(QLocale locale, Operations::Train* train, QObject* parent = 0) /*throw (IOException)*/;
+ /*public*/ QString getLocation() /*throw (IOException)*/;
  /*private*/ QString getCurrentAndNextLocation();
  /*private*/ QString getMoveButton();
  // needed for location comments, not yet in formatter

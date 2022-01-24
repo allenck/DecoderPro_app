@@ -26,15 +26,17 @@ protected:
 friend class MemoryListener;
 };
 
-/*private*/ class MemoryListener : public PropertyChangeListener {
+/*private*/ class MemoryListener : public QObject,public PropertyChangeListener {
 
 Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  JsonMemorySocketService* jmss;
  Memory* memory;
 public:
     /*public*/ MemoryListener(Memory* memory, JsonMemorySocketService* jmss);
+ QObject* self() override{return (QObject*)this;}
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* e) ;
+    /*public*/ void propertyChange(PropertyChangeEvent* e)  override;
  friend class JsonMemorySocketService;
 };
 

@@ -105,7 +105,7 @@ public:
      *<p>
      * If the order is significant, earlier modes are better.
      */
-    /*public*/ virtual QList<ProgrammingMode*> getDefaultModes() =0;
+    /*public*/ virtual QList<QString> getDefaultModes() =0;
     /**
      * Provides the human-readable
      * representation for including ProgrammerManagers

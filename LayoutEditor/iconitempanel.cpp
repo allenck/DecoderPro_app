@@ -158,7 +158,7 @@
    panel->setMinimumSize(QSize(width, panel->minimumSize().height()));
    ((QBoxLayout*)panel->layout())->addWidget(label,0, Qt::AlignCenter);
 
-  } catch (ClassNotFoundException cnfe) {
+  } catch (ClassNotFoundException* cnfe) {
            //cnfe.printStackTrace();
   }
   _iconPanel->layout()->addWidget(panel);
@@ -611,8 +611,8 @@ void IconDragJLabel::mouseDoubleClickEvent(QMouseEvent */*e*/)
                 int height = getPreferredSize().height;
                 setPreferredSize(new Dimension(width, height));
 #endif
-            } catch (ClassNotFoundException cnfe) {
-                iconItemPanel->log->error(tr("Unable to find class supporting %1").arg( Editor::POSITIONABLE_FLAVOR +  cnfe.getMessage()));
+            } catch (ClassNotFoundException* cnfe) {
+                iconItemPanel->log->error(tr("Unable to find class supporting %1").arg( Editor::POSITIONABLE_FLAVOR +  cnfe->getMessage()));
             }
         }
 

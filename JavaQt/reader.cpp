@@ -61,7 +61,7 @@
  * @throws java.nio.ReadOnlyBufferException if target is a read only buffer
  * @since 1.5
  */
-/*public*/ int Reader::read(CharBuffer* target) throw (IOException) {
+/*public*/ int Reader::read(CharBuffer* target) /*throw (IOException)*/ {
     int len = target->remaining();
     QByteArray cbuf = QByteArray(len,0);
     int n = read(cbuf, 0, len);
@@ -83,7 +83,7 @@
  *
  * @exception  IOException  If an I/O error occurs
  */
-/*public*/ int Reader::read() throw (IOException) {
+/*public*/ int Reader::read() /*throw (IOException)*/ {
     QByteArray cb = QByteArray(1,0);
     if (read(cb, 0, 1) == -1)
         return -1;
@@ -103,7 +103,7 @@
  *
  * @exception   IOException  If an I/O error occurs
  */
-/*public*/ int Reader::read(QByteArray cbuf) throw (IOException) {
+/*public*/ int Reader::read(QByteArray cbuf) /*throw (IOException)*/ {
     return read(cbuf, 0, cbuf.length());
 }
 
@@ -121,7 +121,7 @@
  *
  * @exception  IOException  If an I/O error occurs
  */
-/*abstract*/ /*public*/ int Reader::read(QByteArray cbuf, int off, int len) throw (IOException) {return 0;}
+/*abstract*/ /*public*/ int Reader::read(QByteArray cbuf, int off, int len) /*throw (IOException)*/ {return 0;}
 
 
 /** Skip buffer, NULL until allocated */
@@ -138,7 +138,7 @@
  * @exception  IllegalArgumentException  If <code>n</code> is negative.
  * @exception  IOException  If an I/O error occurs
  */
-/*public*/ long Reader::skip(long n) throw (IOException) {
+/*public*/ long Reader::skip(long n) /*throw (IOException)*/ {
     if (n < 0L)
         throw new IllegalArgumentException("skip value is negative");
     int nn = (int) qMin((int)n, (int)maxSkipBufferSize);
@@ -166,7 +166,7 @@
  *
  * @exception  IOException  If an I/O error occurs
  */
-/*public*/ bool Reader::ready() throw (IOException) {
+/*public*/ bool Reader::ready() /*throw (IOException)*/ {
     return false;
 }
 
@@ -194,8 +194,8 @@
  * @exception  IOException  If the stream does not support mark(),
  *                          or if some other I/O error occurs
  */
-/*public*/ void Reader::mark(int /*readAheadLimit*/) throw (IOException) {
-    throw IOException("mark() not supported");
+/*public*/ void Reader::mark(int /*readAheadLimit*/) /*throw (IOException)*/ {
+    throw new IOException("mark() not supported");
 }
 
 /**
@@ -211,8 +211,8 @@
  *                          or if the stream does not support reset(),
  *                          or if some other I/O error occurs
  */
-/*public*/ void Reader::reset() throw (IOException) {
-    throw  IOException("reset() not supported");
+/*public*/ void Reader::reset() /*throw (IOException)*/ {
+    throw new IOException("reset() not supported");
 }
 
 /**
@@ -223,5 +223,5 @@
  *
  * @exception  IOException  If an I/O error occurs
  */
-/*abstract*/ /*public*/ void Reader::close() throw (IOException) {}
+/*abstract*/ /*public*/ void Reader::close() /*throw (IOException)*/ {}
 

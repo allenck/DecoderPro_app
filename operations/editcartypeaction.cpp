@@ -1,5 +1,4 @@
 #include "editcartypeaction.h"
-#include "carattributeeditframe.h"
 #include "careditframe.h"
 namespace Operations
 {
@@ -21,7 +20,7 @@ namespace Operations
          f = new CarAttributeEditFrame();
      }
      f->initComponents(CarEditFrame::TYPE, NULL);
-     //f.setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setVisible(true);	// this also brings the frame into focus
  }
 }

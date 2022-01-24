@@ -2,10 +2,10 @@
 #define IGNOREUSEDTRACKACTION_H
 
 #include "abstractaction.h"
+#include "trackeditframe.h"
 
 namespace Operations
 {
- class TrackEditFrame;
  class IgnoreUsedTrackFrame;
  class IgnoreUsedTrackAction : public AbstractAction
  {
@@ -13,10 +13,10 @@ namespace Operations
  public:
   IgnoreUsedTrackAction(TrackEditFrame* tef);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e = 0);
+  /*public*/ void actionPerformed(JActionEvent* e = 0);
  private:
-  /*private*/ TrackEditFrame* _tef;
-  /*private*/ IgnoreUsedTrackFrame* _iutf;
+  /*private*/ QPointer<TrackEditFrame> _tef;
+  /*private*/ QPointer<IgnoreUsedTrackFrame> _iutf;
 
  };
 }

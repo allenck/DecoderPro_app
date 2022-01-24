@@ -9,7 +9,7 @@ class JTextArea;
 class JTable;
 class ChangeEvent;
 class QSignalMapper;
-class QPushButton;
+class JButton;
 class QRadioButton;
 class JComboBox;
 class QCheckBox;
@@ -26,25 +26,20 @@ namespace Operations
   /*public*/ OperationsFrame(QString s, QWidget* parent = 0);
   /*public*/ OperationsFrame(QWidget* parent = 0);
   /*public*/ OperationsFrame(OperationsPanel* p, QWidget* parent = 0);
-  /*public*/ QT_DEPRECATED OperationsFrame(QString s, OperationsPanel* p, QWidget* parent = 0);
-  /*public*/ void initComponents();
+  /*public*/ OperationsFrame(QString s, OperationsPanel* p, QWidget* parent = 0);
+  /*public*/ void initComponents() override;
   /*public*/ void initMinimumSize();
   /*public*/ void initMinimumSize(QSize dimension);
-  /*public*/ bool loadTableDetails(JTable* table);
-  /*public*/ virtual void dispose();
+  /*public*/ void loadTableDetails(JTable* table);
+  /*public*/ void dispose()override;
 
  private:
-  QSignalMapper* buttonMapper;
-  QSignalMapper* radioButtonMapper;
-  QSignalMapper* comboBoxMapper;
-  QSignalMapper* checkBoxMapper;
-  QSignalMapper* spinBoxMapper;
   void common();
   Logger* log;
 
 protected:
   /*protected*/ /*synchronized*/ void createShutDownTask();
-  /*protected*/ void addButtonAction(QPushButton* b);
+  /*protected*/ void addButtonAction(JButton* b);
   /*protected*/ void addRadioButtonAction(QRadioButton* b);
   /*protected*/ void addCheckBoxAction(QCheckBox* b);
   /*protected*/ void addSpinnerChangeListerner(QSpinBox* s);
@@ -52,15 +47,16 @@ protected:
   /*protected*/ void selectNextItemComboBox(JComboBox* b);
   /*protected*/ void clearTableSort(JTable* table);
 
-  /*protected*/ void addItem(QWidget* p, QWidget* c, int x, int y) ;
-  /*protected*/ void addItemLeft(QWidget* p, QWidget* c, int x, int y);
-  /*protected*/ void addItemTop(QWidget* p, QWidget* c, int x, int y) ;
-  /*protected*/ void addItemWidth(QWidget* p, QWidget* c, int width, int x, int y);
+  /*protected*/ void addItem(JPanel* p, QWidget* c, int x, int y) ;
+  /*protected*/ void addItemLeft(JPanel* p, QWidget* c, int x, int y);
+  /*protected*/ void addItemTop(JPanel* p, QWidget* c, int x, int y) ;
+  /*protected*/ void addItemWidth(JPanel *p, QWidget *c, int width, int x, int y);
   /*protected*/ int getNumberOfCheckboxesPerLine();
   /*protected*/ void saveTableDetails(JTable* table);
-  /*protected*/ void addItem(QWidget* c, int x, int y);
-  QString gbStyleSheet;
-  /*protected*/ void storeValues();
+  /*protected*/ void addItem(QWidget *c, int x, int y);
+//  /*protected*/ void addItemLeft(QWidget* c, int x, int y);
+//  /*protected*/ void addItemWidth(QWidget* c, int width, int x, int y);
+  /*protected*/ void storeValues()override;
 
   protected slots:
   /*protected*/ virtual void comboBoxActionPerformed(QWidget* ae);
@@ -68,13 +64,8 @@ protected:
   /*protected*/ virtual void radioButtonActionPerformed(QWidget* b);
   /*protected*/ virtual void checkBoxActionPerformed(QWidget* b) ;
   /*protected*/ virtual void spinnerChangeEvent(QWidget* ae) ;
-  /*protected*/ void on_buttonActionPerformed(QWidget* b);
-  /*protected*/ void on_radioButtonActionPerformed(QWidget* b);
-  /*protected*/ void on_checkBoxActionPerformed(QWidget* b) ;
-  /*protected*/ void on_spinnerChangeEvent(QWidget* ae) ;
   /*protected*/ void adjustTextAreaColumnWidth(QWidget* scrollPane, JTextArea* textArea);
   /*protected*/ void adjustTextAreaColumnWidth(QWidget* scrollPane, HtmlTextEdit* textArea);
-  /*protected*/ void on_comboBoxActionPerformed(QWidget* ae);
 
  };
 }

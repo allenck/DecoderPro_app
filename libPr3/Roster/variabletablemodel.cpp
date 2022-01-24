@@ -4,8 +4,6 @@
 #include "compositevariablevalue.h"
 #include "decvariablevalue.h"
 #include "hexvariablevalue.h"
-#include "indexedenumvariablevalue.h"
-#include "indexedvariablevalue.h"
 #include "longaddrvariablevalue.h"
 #include "shortaddrvariablevalue.h"
 #include "speedtablevarvalue.h"
@@ -13,8 +11,6 @@
 #include "constantvalue.h"
 #include "qualifiercombiner.h"
 #include "decoderfile.h"
-#include "indexedpairvariablevalue.h"
-#include "speedtablevarvalue.h"
 #include "qualifieradder.h"
 #include "xmlinclude.h"
 
@@ -39,7 +35,7 @@ VariableTableModel::VariableTableModel(QObject *parent) :
  *  "Name", "Value", "Range", "Read", "Write", "Comment", "CV", "Mask", "State"
  */
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP2") // OK until Java 1.6 allows cheap array copy
-/*public*/ VariableTableModel::VariableTableModel(QLabel* status, QStringList h, CvTableModel* cvModel, QObject *parent) :
+/*public*/ VariableTableModel::VariableTableModel(JLabel* status, QStringList h, CvTableModel* cvModel, QObject *parent) :
 AbstractTableModel(parent)
 {
 //super();
@@ -74,13 +70,13 @@ _readButtons = new QVector<QPushButton*>();
 /*public*/ QString VariableTableModel::getColumnClass(int col) const {
     // if (log->isDebugEnabled()) log->debug("getColumnClass "+QString::number(col));
     if (headers[col]==("Value"))
-        return "QLineEdit";
+        return "JTextField";
     else if (headers[col]==("Read"))
-        return "QPushButton";
+        return "JButton";
     else if (headers[col]==("Write"))
-        return "QPushButton";
+        return "JButton";
     else
-        return "QString";
+        return "String";
 }
 
 /*public*/ bool VariableTableModel::isCellEditable(int row, int col) const {
@@ -135,21 +131,6 @@ _readButtons = new QVector<QPushButton*>();
  */
 /*public*/ QWidget* VariableTableModel::getRep(int row, QString format) {
     VariableValue* v = rowVector->at(row);
-//    if(qobject_cast<DecVariableValue*>(v) != NULL)
-//        return ((DecVariableValue*)v)->getNewRep(format);
-//    else
-//    if(qobject_cast<EnumVariableValue*>(v) != NULL)
-//        return ((EnumVariableValue*)v)->getNewRep(format);
-//    else
-//    if(qobject_cast<ShortAddrVariableValue*>(v) != NULL)
-//        return ((ShortAddrVariableValue*)v)->getNewRep(format);
-//    else
-//    if(qobject_cast<LongAddrVariableValue*>(v) != NULL)
-//        return ((LongAddrVariableValue*)v)->getNewRep(format);
-//    else
-//    if(qobject_cast<SpeedTableVarValue*>(v) != NULL)
-//     return ((SpeedTableVarValue*)v)->getNewRep(format);
-//    else
     return v->getNewRep(format);
 }
 
@@ -218,9 +199,10 @@ _readButtons = new QVector<QPushButton*>();
  * @param row number of row to fill
  * @param e Element of type "variable"
  */
-/*public*/ void VariableTableModel::setRow(int row, QDomElement e)
+/*public*/ void VariableTableModel::setRow(int row, QDomElement e, DecoderFile* df)
 {
  // get the values for the VariableValue ctor
+ _df = df;
  //QString name = LocaleSelector.attribute(e, "label"); 	// Note the name variable is actually the label attribute
  QString name = e.attribute("label");
  if (log->isDebugEnabled()) log->debug("Starting to setRow \""+name+"\"");
@@ -385,187 +367,104 @@ VTQualifierAdder::VTQualifierAdder(VariableValue *v) { this->v = v;}
  return new ValueQualifier(v, var, value.toInt(), relation);
 }
 /*protected*/ void VTQualifierAdder::addListener(PropertyChangeListener* qc) {
-//    v->addPropertyChangeListener(qc);
+//    v->SwingPropertyChangeSupport::addPropertyChangeListener(qc);
 //    connect(v, SIGNAL(notifyPropertyChange(PropertyChangeEvent*)), this, SLOT());
-}
-
-/**
- * Create an IndexedVariableValue object of a specific
- * type from a describing element.
- * @return NULL if no valid element
- * @throws java.lang.NumberFormatException
- */
-/*protected*/ VariableValue* VariableTableModel::createIndexedVariableFromElement(QDomElement e, int row, QString name, QString comment, QString cvName, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString cv, QString mask, QString item, QString productID) throw (NumberFormatException)
-{
- VariableValue* iv = NULL;
- QDomElement child;
- if (!(child = e.firstChildElement("indexedVal")).isNull())
- {
-  iv = processIndexedVal(child, row, name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cv, mask, item);
- }
- else if (!(child = e.firstChildElement("ienumVal")).isNull())
- {
-  iv = processIEnumVal(child, row, name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cv, mask, item, productID);
- }
- else if (!(child = e.firstChildElement("indexedPairVal")).isNull())
- {
-  iv = processIndexedPairVal(child, row, readOnly, infoOnly, writeOnly, name, comment, cvName, opsOnly, cv, mask, item);
- }
- return iv;
 }
 
 /**
  * If there's a "default" attribute, set that value to start
  * @return true if the value was set
  */
-/*protected*/ bool VariableTableModel::setDefaultValue(QDomElement e, VariableValue* v) {
+/*protected*/ bool VariableTableModel::setDefaultValue(QDomElement e, VariableValue* variable) {
     QString a;
+    bool set = false;
     if ( (a = e.attribute("default")) != "") {
         QString val = a;
-        v->setIntValue(val.toInt());
-        return true;
+        variable->setIntValue(val.toInt());
+        set = true;
     }
-    return false;
-}
-/*public*/ QString VariableTableModel::piCv() {return _piCv;}
-/*public*/ QString VariableTableModel::siCv() {return _siCv;}
-
-/**
- * Load one row in the IndexedVariableTableModel,
- * by reading in the Element containing its
- * definition.
- * <p>
- * Invoked from DecoderFile
- * @param row number of row to fill
- * @param e Element of type "variable"
- */
-/*public*/ int VariableTableModel::setIndxRow(int row, QDomElement e, QString productID)
-{
-// if (DecoderFile::isIncluded(e, productID) == false)
-// {
-//  if (log->isDebugEnabled()) log->debug("include not match, return row - 1 ="+(row-1));
-//   return row - 1;
-// }
-
- // get the values for the VariableValue ctor
- //QString name = LocaleSelector.attribute(e, "label"); 	// Note the name variable is actually the label attribute
- QString name = e.attribute("label");
- if (log->isDebugEnabled()) log->debug("Starting to setIndexedRow \""+name+"\"");
-    QString cvName = e.attribute("CVname");
-    QString item = ( e.attribute("item")!="" ?
-                    e.attribute("item") :
-                "");
-    QString comment = "";
-    if (e.attribute("comment") != NULL)
-        comment = e.attribute("comment");
-    int piVal = e.attribute("PI").toInt();
-    int siVal = ( e.attribute("SI") != NULL ?
-                  e.attribute("SI").toInt() :
-                  -1);
-    QString cv = e.attribute("CV");
-    QString mask = NULL;
-    if (e.attribute("mask") != "")
-        mask = e.attribute("mask");
-    else {
-        mask ="VVVVVVVV";
-    }
-
-    bool readOnly = e.attribute("readOnly")!=NULL ?
-                            e.attribute("readOnly")==("yes") : false;
-    bool infoOnly = e.attribute("infoOnly")!=NULL ?
-                            e.attribute("infoOnly")==("yes") : false;
-    bool writeOnly = e.attribute("writeOnly")!=NULL ?
-                            e.attribute("writeOnly")==("yes") : false;
-    bool opsOnly = e.attribute("opsOnly")!=NULL ?
-                            e.attribute("opsOnly")==("yes") : false;
-
-
-    QPushButton* br = new QPushButton("Read");
-    _readButtons->append(br);
-    QPushButton* bw = new QPushButton("Write");
-    _writeButtons->append(bw);
-
-    setButtonsReadWrite(readOnly, infoOnly, writeOnly, bw, br, row);
-
-    if (_indxCvModel == NULL) {
-        log->error("IndexedCvModel reference is NULL; can not add variables");
-        return -1;
-    }
-
-    // add the information to the CV model
-    int _newRow = _indxCvModel->addIndxCV(cvName, _piCv, piVal, _siCv, siVal, cv, readOnly, infoOnly, writeOnly);
-    if( _newRow != row) {
-        row = _newRow;
-        if (log->isDebugEnabled()) log->debug("new row is "+QString::number(_newRow)+", row was "+QString::number(row));
-    }
-
-    // Find and process the specific content types
-    VariableValue* iv;
-    iv = createIndexedVariableFromElement(e, row, name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cv, mask, item, productID);
-
-    if (iv == NULL) {
-       // trouble reporting
-     log->error("createIndexedVariableFromElement is null");
-       reportBogus();
-        return -1;
-    }
-
-    processModifierElements(e,iv);
-
-    setToolTip(e, iv);
-
-    // record new variable, update state, hook up listeners
-    rowVector->append(iv);
-    iv->setState(VariableValue::FROMFILE);
-    iv->addPropertyChangeListener((PropertyChangeListener*)this);
-    connect(iv->prop, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-
-    // set to default value if specified (CV load may later override this)
-    QString a;
-    if ((a = e.attribute("default")) != "") {
-        QString val = a;
-        if (log->isDebugEnabled()) log->debug("Found default value: "+val+" for "+name);
-        iv->setIntValue(val.toInt());
-        if (_indxCvModel->getCvByRow(row)->getInfoOnly()) {
-            _indxCvModel->getCvByRow(row)->setState(VariableValue::READ);
-        } else {
-            _indxCvModel->getCvByRow(row)->setState(VariableValue::FROMFILE); // correct for transition to "edited"
+    // check for matching child
+    QDomNodeList elements = e.elementsByTagName("defaultItem");
+    //for (Element defaultItem : elements)
+    for(int i=0; i < elements.size(); i++)
+    {
+     QDomElement defaultItem = elements.at(i).toElement();
+        if (_df != nullptr && DecoderFile::isIncluded(defaultItem, _df->getProductID(), _df->getModel(), _df->getFamily(), "", "")) {
+            log->debug(tr("element included by productID=%1 model=%2 family=%3").arg(_df->getProductID()).arg(_df->getModel()).arg(_df->getFamily()));
+            variable->setValue(defaultItem.attribute("default"));
+            return true;
         }
-    } else {
-        _indxCvModel->getCvByRow(row)->setState(VariableValue::UNKNOWN);
     }
-    return row;
+    return set;
 }
+
 
 /*protected*/ VariableValue* VariableTableModel::processCompositeVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) {
-    VariableValue* v;
-    //@SuppressWarnings("unchecked")
-    QDomNodeList lChoice = child.elementsByTagName("compositeChoice");
-    CompositeVariableValue* v1 = new CompositeVariableValue(name, comment, "", readOnly, infoOnly, writeOnly, opsOnly, CV, mask, 0, lChoice.size() - 1, _indxCvModel->allIndxCvMap(), _status, item);
-    v = v1; // v1 is of CompositeVariableType, so doesn't need casts
-    // loop over the choices
-    for (int k = 0; k < lChoice.size(); k++) {
-        // Create the choice
-        QDomElement choiceElement = lChoice.at(k).toElement();
-        //QString choice = LocaleSelector.attribute(choiceElement, "choice");
-        QString choice = choiceElement.attribute("choice");
-        v1->addChoice(choice);
-        // for each choice, capture the settings
-        //@SuppressWarnings("unchecked")
-        QDomNodeList lSetting = choiceElement.elementsByTagName("compositeSetting");
-        for (int n = 0; n < lSetting.size(); n++) {
-            QDomElement settingElement = lSetting.at(n).toElement();
-            //QString varName = LocaleSelector.attribute(settingElement, "label");
-            QString varName = settingElement.attribute("label");
-            QString value = settingElement.attribute("value");
-            v1->addSetting(choice, varName, findVar(varName), value);
-        }
-    }
-    v1->lastItem();
-    return v;
+ int count = 0;
+ //IteratorIterable<Content> iterator = child.getDescendants();
+ QDomNodeList content = child.childNodes();
+ //while (iterator.hasNext()) {
+ for(int i = 0; i<content.size(); i++)
+ {
+//     Object ex = iterator.next();
+//     if (ex instanceof Element) {
+  QDomElement ex = content.at(i).toElement();
+  //       if (((Element) ex).getName().equals("compositeChoice")) {
+  if(ex.tagName() == "compositChoice"){
+             count++;
+         }
+     }
+// }
+
+ VariableValue* v;
+ CompositeVariableValue* v1 = new CompositeVariableValue(name, comment, "", readOnly, infoOnly, writeOnly, opsOnly, CV, mask, 0, count, _cvModel->allCvMap(), _status, item);
+ v = v1; // v1 is of CompositeVariableType, so doesn't need casts
+
+ v1->nItems(count);
+ handleCompositeValChildren(child, v1);
+ v1->lastItem();
+ return v;
 }
 
-/*protected*/ VariableValue* VariableTableModel::processDecVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) throw (NumberFormatException) {
+/**
+ * Recursively walk the child compositeChoice elements, working through the
+ * compositeChoiceGroup elements as needed.
+ * <p>
+ * Adapted from handleEnumValChildren for use in LocoIO Legacy tool.
+ *
+ * @param e Element that's source of info
+ * @param var Variable to load
+ */
+/*protected*/ void VariableTableModel::handleCompositeValChildren(QDomElement e, CompositeVariableValue* var) {
+    QDomNodeList local = e.childNodes();
+    for (int k = 0; k < local.size(); k++) {
+        QDomElement el = local.at(k).toElement();
+        log->debug(tr("processing element='%1' name='%2' choice='%3' value='%4'").arg(el.tagName()).arg(/*LocaleSelector.*/el.attribute("name")).arg(el.attribute("choice")).arg(el.attribute("value")));
+        if (_df != nullptr && !DecoderFile::isIncluded(el, _df->getProductID(), _df->getModel(), _df->getFamily(), "", "")) {
+            log->debug(tr("element excluded by productID=%1 model=%2 family=%3").arg(_df->getProductID()).arg(_df->getModel()).arg(_df->getFamily()));
+            continue;
+        }
+        if (el.tagName() == ("compositeChoice")) {
+            // Create the choice
+            QString choice = el.attribute("choice"); //el.attribute("choice");
+            var->addChoice(choice);
+            // for each choice, capture the settings
+            QDomNodeList lSetting = el.elementsByTagName("compositeSetting");
+            for (int n = 0; n < lSetting.size(); n++) {
+                QDomElement settingElement = lSetting.at(n).toElement();
+                QString varName = settingElement.attribute("label");//LocaleSelector.getAttribute(settingElement, "label");
+                QString value = settingElement.attribute("value");
+                var->addSetting(choice, varName, findVar(varName), value);
+            }
+        } else if (el.tagName() == ("compositeChoiceGroup")) {
+            // no tree to manage as in enumGroup
+            handleCompositeValChildren(el, var);
+        }
+        log->debug("element processed");
+    }
+}
+
+/*protected*/ VariableValue* VariableTableModel::processDecVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) /*throw (NumberFormatException)*/ {
     VariableValue* v;
     QString a;
     int minVal = 0;
@@ -581,7 +480,7 @@ VTQualifierAdder::VTQualifierAdder(VariableValue *v) { this->v = v;}
 }
 
 
-/*protected*/ VariableValue* VariableTableModel::processEnumVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) throw (NumberFormatException)
+/*protected*/ VariableValue* VariableTableModel::processEnumVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) /*throw (NumberFormatException)*/
 {
  int count = 0;
  //IteratorIterable<Content> iterator = child.getDescendants();
@@ -618,38 +517,31 @@ VTQualifierAdder::VTQualifierAdder(VariableValue *v) { this->v = v;}
  */
 /*protected*/ void VariableTableModel::handleENumValChildren(QDomElement e, EnumVariableValue* var)
 {
-    //List<Element> local = e.getChildren();
  QDomNodeList local = e.childNodes();
- for (int k = 0; k < local.size(); k++)
- {
-     //Element el = local.get(k);
-  QDomElement el = local.at(k).toElement();
-  if (el.tagName()==("enumChoice"))
-  {
-   QString valAttr = el.attribute("value");
-   if (valAttr == "")
-   {
-       //var->addItem(LocaleSelector.getAttribute(el, "choice"));
-    var->addItem(el.attribute("choice"));
-   }
-   else
-   {
-//                var->addItem(LocaleSelector.getAttribute(el, "choice"),
-//                        Integer.parseInt(valAttr.getValue()));
-    var->addItem(el.attribute("choice"),el.text().toInt());
-   }
-  }
-  else if (el.tagName()==("enumChoiceGroup"))
-  {
-      //var->startGroup(LocaleSelector.getAttribute(el, "name"));
-   var->startGroup(el.attribute("name"));
-   handleENumValChildren(el, var);
-   var->endGroup();
-  }
+ for (int k = 0; k < local.size(); k++) {
+     QDomElement el = local.at(k).toElement();
+     log->debug(tr("processing element='%1' name='%2' choice='%3' value='%4'").arg(el.tagName()).arg(el.attribute( "name")).arg(el.attribute( "choice")).arg(el.attribute("value")));
+     if (_df != nullptr && !DecoderFile::isIncluded(el, _df->getProductID(), _df->getModel(), _df->getFamily(), "", "")) {
+         log->debug(tr("element excluded by productID=%1 model=%2 family=%3").arg(_df->getProductID()).arg(_df->getModel()).arg(_df->getFamily()));
+         continue;
+     }
+     if (el.tagName() == ("enumChoice")) {
+         QString valAttr = el.attribute("value");
+         if (valAttr == "") {
+             var->addItem(el.attribute( "choice"));
+         } else {
+             var->addItem(el.attribute("choice"),
+                     valAttr.toInt());
+         }
+     } else if (el.tagName() == ("enumChoiceGroup")) {
+         var->startGroup(el.attribute("name"));
+         handleENumValChildren(el, var);
+         var->endGroup();
+     }
+     log->debug("element processed");
  }
 }
-
-/*protected*/ VariableValue* VariableTableModel::processHexVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) throw (NumberFormatException) {
+/*protected*/ VariableValue* VariableTableModel::processHexVal(QDomElement child, QString name, QString comment, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString CV, QString mask, QString item) /*throw (NumberFormatException)*/ {
     VariableValue* v;
     QString a;
     int minVal = 0;
@@ -662,120 +554,6 @@ VTQualifierAdder::VTQualifierAdder(VariableValue *v) { this->v = v;}
     }
     v = new HexVariableValue(name, comment, "", readOnly, infoOnly, writeOnly, opsOnly, CV, mask, minVal, maxVal, _cvModel->allCvMap(), _status, item);
     return v;
-}
-
-/*protected*/ VariableValue* VariableTableModel::processIEnumVal(QDomElement child, int row, QString name, QString comment, QString cvName, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString cv, QString mask, QString item, QString productID) throw (NumberFormatException) {
-    VariableValue* iv;
-    //@SuppressWarnings("unchecked")
-    QDomNodeList l = child.elementsByTagName("ienumChoice");
-    IndexedEnumVariableValue* v1 = new IndexedEnumVariableValue(row, name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cv, mask, _indxCvModel->allIndxCvMap(), _status, item);
-    iv = v1;
-    for (int x = 0; x < l.size(); x++) {
-        QDomElement ex = l.at(x).toElement();
-//        if (DecoderFile::isIncluded(ex, productID) == false) {
-//            l.remove(x);
-//            x--;
-//        }
-    }
-    v1->nItems(l.size());
-    for (int k = 0; k < l.size(); k++) {
-        QDomElement enumChElement = l.at(k).toElement();
-        // is a value specified?
-        QString valAttr = enumChElement.attribute("value");
-        if (valAttr == "") {
-            //v1->addItem(LocaleSelector.attribute(enumChElement, "choice"));
-            v1->addItem(enumChElement.attribute("choice"));
-        } else {
-            //            v1->addItem(LocaleSelector.attribute(enumChElement, "choice"),
-            //                        Integer.parseInt(valAttr.getValue()));
-            v1->addItem(enumChElement.attribute("choice"),valAttr.toInt());
-        }
-    }
-    v1->lastItem();
-    return iv;
-}
-
-/*protected*/ VariableValue* VariableTableModel::processIndexedPairVal(QDomElement child, int row, bool readOnly, bool infoOnly, bool writeOnly, QString name, QString comment, QString cvName, bool opsOnly, QString cv, QString mask, QString item) throw (NumberFormatException)
-{
-    VariableValue* iv;
-    int minVal = 0;
-    int maxVal = 255;
-    QString a;
-    if ((a = child.attribute("min")) != "") {
-        minVal =a.toInt();
-    }
-    if ((a = child.attribute("max")) != "") {
-        maxVal = a.toInt();
-    }
-    int factor = 1;
-    if ((a = child.attribute("factor")) != "") {
-        factor = a.toInt();
-    }
-    int offset = 0;
-    if ((a = child.attribute("offset")) != "") {
-        offset = a.toInt();
-    }
-    QString uppermask = "VVVVVVVV";
-    if ((a = child.attribute("upperMask")) != "") {
-        uppermask = a;
-    }
-    QString highCVname = "";
-    QString highCVnumber = "";
-    int highCVpiVal = -1;
-    int highCVsiVal = -1;
-    if ((a = child.attribute("highCVname")) != "")
-    {
-     highCVname = a;
-     int x = highCVname.indexOf('.');
-     highCVnumber = highCVname.mid(0, x);
-     int y = highCVname.indexOf('.', x + 1);
-     if (y > 0)
-     {
-      highCVpiVal = highCVname.mid(x + 1, y).toInt();
-      x = highCVname.lastIndexOf('.');
-      highCVsiVal = highCVname.mid(x + 1).toInt();
-     }
-     else
-     {
-      x = highCVname.lastIndexOf('.');
-      highCVpiVal = highCVname.mid(x + 1).toInt();
-     }
-    }
-// ensure highCVnumber indexed CV exists
-if (log->isDebugEnabled()) log->debug("Add high indexed CV "+highCVname);
-_indxCvModel->addIndxCV(highCVname, _piCv, highCVpiVal, _siCv, highCVsiVal, highCVnumber, readOnly, infoOnly, writeOnly);
-
-// order
-bool upperFirst = false;
-if ((a = child.attribute("order")) != "") {
-if (a==("highFirst")) upperFirst = true;
-}
-
-iv = new IndexedPairVariableValue(name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cv, mask, minVal, maxVal, _indxCvModel->allIndxCvMap(), _status, item, highCVname, factor, offset, uppermask, upperFirst);
-return iv;
-}
-
-/*protected*/ VariableValue* VariableTableModel::processIndexedVal(QDomElement child, int row, QString name, QString comment, QString cvName, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString cv, QString mask, QString item) throw (NumberFormatException) {
-VariableValue* iv;
-int minVal = 0;
-int maxVal = 255;
-QString a;
-if ((a = child.attribute("min")) != "") {
-minVal = a.toInt();
-}
-if ((a = child.attribute("max")) != "") {
-maxVal = a.toInt();
-}
-iv = new IndexedVariableValue(row, name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cv, mask, minVal, maxVal, _indxCvModel->allIndxCvMap(), _status, item);
-
-    if ((a = child.attribute("min")) != "") {
-        minVal = a.toInt();
-    }
-    if ((a = child.attribute("max")) != "") {
-        maxVal = a.toInt();
-    }
-    iv = new IndexedVariableValue(row, name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cv, mask, minVal, maxVal, _indxCvModel->allIndxCvMap(), _status, item);
-    return iv;
 }
 
 /*protected*/ VariableValue* VariableTableModel::processLongAddressVal(QString CV, bool readOnly, bool infoOnly, bool writeOnly, QString name, QString comment, bool opsOnly, QString mask, QString item) {
@@ -797,7 +575,7 @@ iv = new IndexedVariableValue(row, name, comment, cvName, readOnly, infoOnly, wr
     for (int k = 0; k < l.size(); k++) {
         try {
             v1->setModifiedCV(l.at(k).toElement().attribute("cv"));
-        } catch (DataConversionException e1) {
+        } catch (DataConversionException* e1) {
             log->error("invalid cv attribute in short address element of decoder file");
         }
     }
@@ -807,7 +585,7 @@ iv = new IndexedVariableValue(row, name, comment, cvName, readOnly, infoOnly, wr
 /*protected*/ VariableValue* VariableTableModel::processSpeedTableVal(QDomElement child, QString CV, bool readOnly,
                                                                       bool infoOnly, bool writeOnly, QString name,
                                                                       QString comment, bool opsOnly, QString mask,
-                                                                      QString item) throw (NumberFormatException)
+                                                                      QString item) /*throw (NumberFormatException)*/
 {
  VariableValue* v;
  QString a;
@@ -830,7 +608,7 @@ iv = new IndexedVariableValue(row, name, comment, cvName, readOnly, infoOnly, wr
    entries = entriesAttr.toInt();
   }
  }
- catch (DataConversionException e1)
+ catch (DataConversionException* e1)
  {
  }
  QString ESUAttr = child.attribute("mfx");
@@ -846,7 +624,7 @@ iv = new IndexedVariableValue(row, name, comment, cvName, readOnly, infoOnly, wr
     mfxFlag = false;
   }
  }
- catch (DataConversionException e1)
+ catch (DataConversionException* e1)
  {
  }
  // ensure all CVs exist
@@ -863,20 +641,18 @@ iv = new IndexedVariableValue(row, name, comment, cvName, readOnly, infoOnly, wr
  return v;
 }
 
-/*protected*/ VariableValue* VariableTableModel::processSplitVal(QDomElement child, QString CV, bool readOnly, bool infoOnly, bool writeOnly, QString name, QString comment, bool opsOnly, QString mask, QString item) throw (NumberFormatException) {
+/*protected*/ VariableValue* VariableTableModel::processSplitVal(QDomElement child, QString CV, bool readOnly, bool infoOnly, bool writeOnly, QString name, QString comment, bool opsOnly, QString mask, QString item) /*throw (NumberFormatException)*/ {
     VariableValue* v;
     QString a;
     int minVal = 0;
     int maxVal = 255;
+    QString highCV = "";
+
     if ((a = child.attribute("min")) != "") {
         minVal = a.toInt();
     }
     if ((a = child.attribute("max")) != "") {
         maxVal = a.toInt();
-    }
-    int highCV = CV.toInt() + 1;
-    if ((a = child.attribute("highCV")) != "") {
-        highCV = a.toInt();
     }
     int factor = 1;
     if ((a = child.attribute("factor")) != "") {
@@ -890,8 +666,15 @@ iv = new IndexedVariableValue(row, name, comment, cvName, readOnly, infoOnly, wr
     if ((a = child.attribute("upperMask")) != "") {
         uppermask = a;
     }
-    _cvModel->addCV(QString::number(highCV), readOnly, infoOnly, writeOnly); // ensure 2nd CV exists
-    v = new SplitVariableValue(name, comment, "", readOnly, infoOnly, writeOnly, opsOnly, CV, mask, minVal, maxVal, _cvModel->allCvMap(), _status, item, highCV, factor, offset, uppermask);
+    QString extra3 = "0";
+    if ((a = child.attribute("min")) != "") {
+        extra3 = a;
+    }
+    QString extra4 = /*Long.toUnsignedString*/QString::number(~0);
+    if ((a = child.attribute("max")) != "") {
+        extra4 = a;
+    }
+    v = new SplitVariableValue(name, comment, "", readOnly, infoOnly, writeOnly, opsOnly, CV, mask, minVal, maxVal, _cvModel->allCvMap(), _status, item, highCV, factor, offset, uppermask, "", "", extra3, extra4);
     return v;
 }
 
@@ -976,11 +759,6 @@ void VariableTableModel::reportBogus() {
         QString val = a;
         if (log->isDebugEnabled()) log->debug("Found default value: "+val+" for "+stdname);
         defaultVal = val.toInt();
-        if ( stdname.compare("PICV") == 0 ) {
-            _piCv = val.toInt();
-        } else if ( stdname.compare("SICV") == 0 ) {
-            _siCv =val.toInt();
-        }
     }
 
     // create the specific object
@@ -1032,7 +810,7 @@ void VariableTableModel::reportBogus() {
     connect(v->prop, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
-/*public*/ void VariableTableModel::actionPerformed(ActionEvent* e) {
+/*public*/ void VariableTableModel::actionPerformed(JActionEvent* e) {
     if (log->isDebugEnabled()) log->debug("action performed,  command: "+e->getActionCommand());
     setFileDirty(true);
     QChar b = e->getActionCommand().at(0);
@@ -1147,9 +925,6 @@ void VariableTableModel::reportBogus() {
         if (name==(getItem(i))) return i;
         if (name==(getLabel(i))) return i;
         if (name==("CV"+getCvName(i))) return i;
-//            try {
-//                if (name==("CV"+((IndexedEnumVariableValue)rowVector->at(i)).cvName())) return i;
-//            } catch (Exception e){}
     }
     return -1;
 }
@@ -1178,7 +953,6 @@ void VariableTableModel::reportBogus() {
     rowVector = NULL;
 
     _cvModel = NULL;
-    _indxCvModel = NULL;
 
     _writeButtons->clear();
     _writeButtons = NULL;

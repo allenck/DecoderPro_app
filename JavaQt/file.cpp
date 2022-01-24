@@ -248,7 +248,7 @@ int File::getPrefixLength() {
 
  if (inpathname.isNull())
  {
-  throw NullPointerException();
+  throw new NullPointerException();
  }
  this->path = inpathname; //fs.normalize(pathname);
  this->prefixLength = getParent().length(); /*fs.prefixLength(this.path);*/
@@ -293,7 +293,7 @@ int File::getPrefixLength() {
 
  if (child.isNull())
  {
-  throw  NullPointerException();
+  throw new NullPointerException();
  }
  if (parent != "")
  {
@@ -307,7 +307,10 @@ int File::getPrefixLength() {
   {
 //   this->path = fs.resolve(fs.normalize(parent),
 //                                   fs.normalize(child));
-      this->path = QFileInfo(parent).absoluteFilePath() /*+ pathSeparator*/ + /*QFileInfo(child).canonicalFilePath()*/child;
+   if(QFileInfo(parent).absoluteFilePath().endsWith(/*pathSeparator*/QDir::separator()))
+    this->path = QFileInfo(parent).absoluteFilePath() + child;
+   else
+    this->path = QFileInfo(parent).absoluteFilePath() + /*pathSeparator*/QDir::separator() + /*QFileInfo(child).canonicalFilePath()*/child;
   }
  }
  else
@@ -349,7 +352,7 @@ int File::getPrefixLength() {
  prefixLength = 0;
  if (child.isNull())
  {
-  throw  NullPointerException();
+  throw new NullPointerException();
  }
  if (parent != NULL)
  {
@@ -623,7 +626,7 @@ int File::getPrefixLength() {
 /*public*/ QString File::getCanonicalPath() /*throws IOException*/
 {
  if (isInvalid()) {
-     throw  IOException("Invalid file path");
+     throw new IOException("Invalid file path");
  }
 //    return fs.canonicalize(fs.resolve(this));
  QDir dir(path);
@@ -1411,7 +1414,7 @@ int File::getPrefixLength() {
     File* canonFile = NULL;
     try {
         canonFile = getCanonicalFile();
-    } catch (IOException e) {
+    } catch (IOException* e) {
         return false;
     }
 
@@ -2209,10 +2212,17 @@ int File::getPrefixLength() {
 /*public*/ bool File::renameTo(File* dest)
 {
  if (dest == nullptr) {
-  throw NullPointerException();
+  throw new NullPointerException();
  }
- QFile qFile(dest->getPath());
- return qFile.rename(dest->fileName());
+ if(dest->exists())
+  throw new IOException(tr("backup file %1 exists").arg(dest->getPath()));
+ QFile qFile(getPath());
+ bool bRslt  = qFile.rename(dest->getPath());
+ if(!bRslt)
+ {
+  throw new IOException(tr("backup of %1 to %2 failed: %3").arg(getPath()).arg(dest->fileName()).arg(qFile.errorString()));
+ }
+ return bRslt;
 }
 
 #if 0
@@ -2322,6 +2332,11 @@ static {
 /*public*/ QString File::absoluteFilePath()
 {
  return QFileInfo(path).absoluteFilePath();
+}
+
+/*public*/ QFile* File::toQfile()
+{
+ return new QFile(absoluteFilePath());
 }
 
 /*public*/ bool File::equals(QObject* other)

@@ -5,7 +5,7 @@
 #include <QButtonGroup>
 #include <QBoxLayout>
 
-class ActionEvent;
+class JActionEvent;
 class QBoxLayout;
 class GlobalProgrammerManager;
 class ProgrammingMode;
@@ -29,14 +29,14 @@ public slots:
 //    void OnRadioButton();
     /*public*/ void propertyChange(PropertyChangeEvent* e);
     void programmerSelected();
-    /*public*/ void actionPerformed(ActionEvent* /*e*/ = 0);
+    /*public*/ void actionPerformed(JActionEvent* /*e*/ = 0);
 
 private:
     void init();
     // GUI member declarations
     QComboBox* progBox;
     QButtonGroup* modeGroup;// 		= new QButtonGroup();
-    QMap<ProgrammingMode*, QRadioButton*>* buttonMap;// = new QMap<ProgrammingMode*, QRadioButton*>();
+    QMap<QString, QRadioButton*>* buttonMap;// = new QMap<ProgrammingMode*, QRadioButton*>();
     QList<QRadioButton*>* buttonPool;// = new ArrayList<JRadioButton>();
     Logger* log;
     QBoxLayout* layout;

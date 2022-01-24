@@ -59,9 +59,9 @@ WindowPreferences::WindowPreferences()
     c->showNormal();
   }
  }
- catch (DataConversionException ex) {
+ catch (DataConversionException* ex) {
      //System::out.println(ex);
-  Logger::error(ex.getMessage());
+  Logger::error(ex->getMessage());
  }
 // catch (PropertyVetoException ex) {
 //     System::out.println(ex);
@@ -107,10 +107,10 @@ WindowPreferences::WindowPreferences()
 /*public*/ /*static*/ void WindowPreferences::setPreferences(QWidget* c, QDomElement e, bool ignorePosition) {
     try {
   bool bok;
-        int x = e.attribute("x").toInt(&bok); if(!bok) throw DataConversionException();
-        int y = e.attribute("y").toInt(&bok); if(!bok) throw DataConversionException();
-        int width = e.attribute("width").toInt(&bok); if(!bok) throw DataConversionException();
-        int height = e.attribute("height").toInt(&bok); if(!bok) throw DataConversionException();
+        int x = e.attribute("x").toInt(&bok); if(!bok) throw new DataConversionException();
+        int y = e.attribute("y").toInt(&bok); if(!bok) throw new DataConversionException();
+        int width = e.attribute("width").toInt(&bok); if(!bok) throw new DataConversionException();
+        int height = e.attribute("height").toInt(&bok); if(!bok) throw new DataConversionException();
         if (!ignorePosition) {
             c->move(x, y);
         }
@@ -118,9 +118,9 @@ WindowPreferences::WindowPreferences()
         if (e.attribute("isVisible") != "") {
             c->setVisible(e.attribute("isVisible")== "true");
         }
-    } catch (DataConversionException ex) {
+    } catch (DataConversionException* ex) {
         //System.out.println(ex);
-  Logger::error(ex.getMessage());
+  Logger::error(ex->getMessage());
     }
 }
 

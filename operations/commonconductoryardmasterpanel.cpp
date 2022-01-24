@@ -11,7 +11,7 @@
 #include <QBoxLayout>
 #include <QGroupBox>
 #include "control.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include <jtextarea.h>
 #include "gridbaglayout.h"
 #include "setup.h"
@@ -25,6 +25,9 @@
 #include "htmltextedit.h"
 #include "joptionpane.h"
 #include "carstableframe.h"
+#include "instancemanager.h"
+#include "borderfactory.h"
+#include "enginesetframe.h"
 
 namespace Operations
 {
@@ -53,9 +56,9 @@ namespace Operations
   _location = NULL;
   _train = NULL;
 
-  trainManager = TrainManager::instance();
-  engManager = EngineManager::instance();
-  carManager = CarManager::instance();
+  trainManager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
+  engManager = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"));
+  carManager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
   trainCommon = new TrainCommon();
 
   // labels
@@ -78,9 +81,8 @@ namespace Operations
    textTrainRouteLocationCommentPane = new HtmlTextEdit();
 
    // panels
-   pRailRoadName = new QGroupBox();
-   pTrainDescription = new QGroupBox();
-   pLocationName = new QGroupBox();
+   pRailRoadName = new JPanel();
+   pTrainDescription = new JPanel();
    pLocos = new QWidget();
    pPickupLocos = new QWidget();
    pSetoutLocos = new QWidget();
@@ -88,8 +90,6 @@ namespace Operations
    pSetouts = new QWidget();
    pWorkPanes = new QWidget(); // place car pick ups and set outs side by side using two columns
    pMoves = new QWidget();
-   pStatus = new QGroupBox();
-   pButtons = new QGroupBox();
 
    // check boxes
    checkBoxes =  QHash<QString, QCheckBox*>();
@@ -106,7 +106,7 @@ namespace Operations
   //setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
   thisLayout = new QVBoxLayout(this);
 
-  locoPaneFrame = new QGroupBox;
+  locoPaneFrame = new JPanel;
   locoPaneFrame->setLayout(new QVBoxLayout);
   locoPane = new QScrollArea(); //JScrollPane(pLocos);
   locoPane->setWidgetResizable(true);
@@ -114,44 +114,38 @@ namespace Operations
   pLocos = new QWidget;
   //pLocos->setLayout(new QVBoxLayout); // is set later!
   locoPaneFrame->layout()->addWidget(locoPane);
-  //locoPane->setBorder(BorderFactory.createTitledBorder(tr("Engines")));
-  locoPaneFrame->setStyleSheet(gbStyleSheet);
-  locoPaneFrame->setTitle(tr("Engines"));
+  locoPaneFrame->setBorder(BorderFactory::createTitledBorder(tr("Engines")));
 
 //        pickupPane = new JScrollPane(pPickups);
 //        pickupPane->setBorder(BorderFactory.createTitledBorder(tr("Pickup")));
-  pickupPaneFrame = new QGroupBox;
+  pickupPaneFrame = new JPanel;
   pickupPaneFrame->setLayout(new QVBoxLayout);
   pickupPane = new QScrollArea(); //JScrollPane(pLocos);
   pickupPaneFrame->layout()->addWidget(pickupPane);
   pPickups = new QWidget;
   pPickups->setLayout(new QVBoxLayout);
   pickupPane->setWidgetResizable(true);
-  pickupPaneFrame->setStyleSheet(gbStyleSheet);
-  pickupPaneFrame->setTitle(tr("Pickup"));
-
+  pickupPaneFrame->setBorder(BorderFactory::createTitledBorder(tr("Pickup")));
 //        setoutPane = new JScrollPane(pSetouts);
-//        setoutPane->setBorder(BorderFactory.createTitledBorder(tr("SetOut")));
-  setoutPaneFrame = new QGroupBox;
+//        setoutPane->setBorder(BorderFactory.createTitledBorder(tr("Setut")));
+  setoutPaneFrame = new JPanel;
   setoutPaneFrame->setLayout(new QVBoxLayout);
   setoutPane = new QScrollArea(); //JScrollPane(pLocos);
   setoutPane->setWidgetResizable(true);
   setoutPaneFrame->layout()->addWidget(setoutPane);
   pSetouts = new QWidget;
   pSetouts->setLayout(new QVBoxLayout);
-  setoutPaneFrame->setStyleSheet(gbStyleSheet);
-  setoutPaneFrame->setTitle(tr("Set out"));
+  setoutPaneFrame->setBorder(BorderFactory::createTitledBorder(tr("Set out")));
 
 //        movePane = new JScrollPane(pMoves);
 //        movePane->setBorder(BorderFactory.createTitledBorder(tr("LocalMoves")));
-  movePaneFrame = new QGroupBox;
+  movePaneFrame = new JPanel();
   movePaneFrame->setLayout(new QVBoxLayout);
   movePane = new QScrollArea;
   movePane->setWidgetResizable(true);
   pMoves = new QWidget;
   pMoves->setLayout(new QVBoxLayout);
-  movePaneFrame->setStyleSheet(gbStyleSheet);
-  movePaneFrame->setTitle(tr("Moves"));
+  movePaneFrame->setBorder(BorderFactory::createTitledBorder(tr("Local moves")));
 
   // Set up the panels
   pPickupLocos->setLayout(new QVBoxLayout);//(pPickupLocos, BoxLayout.Y_AXIS));
@@ -161,24 +155,18 @@ namespace Operations
   pMoves->setLayout(new QVBoxLayout);//(pMoves, BoxLayout.Y_AXIS));
 
   // railroad name
-  //pRailRoadName->setBorder(BorderFactory.createTitledBorder(tr("RailroadName")));
-  pRailRoadName->setStyleSheet(gbStyleSheet);
-  pRailRoadName->setTitle(tr("Railroad Name"));
+  pRailRoadName->setBorder(BorderFactory::createTitledBorder(tr("Railroad Name")));
   pRailRoadName->setLayout(new QHBoxLayout);
   pRailRoadName->layout()->addWidget(textRailRoadName);
 
   // location name
-  //pLocationName->setBorder(BorderFactory.createTitledBorder(tr("Location")));
-  pLocationName->setStyleSheet(gbStyleSheet);
-  pLocationName->setTitle(tr("Location"));
+  pLocationName->setBorder(BorderFactory::createTitledBorder(tr("Location")));
   pLocationName->setLayout(new QHBoxLayout);
   pLocationName->layout()->addWidget(textLocationName);
 
   // location comment
-  //textLocationCommentPane->setBorder(BorderFactory.createTitledBorder(tr("LocationComment")));
-  textLocationCommentGB = new QGroupBox;
-  textLocationCommentGB->setStyleSheet(gbStyleSheet);
-  textLocationCommentGB->setTitle(tr("Location Comment"));
+  textLocationCommentGB = new JPanel;
+  textLocationCommentGB->setBorder(BorderFactory::createTitledBorder(tr("Location Comment")));
   textLocationCommentGB->setLayout(new QVBoxLayout);
   textLocationCommentGB->layout()->addWidget(textLocationCommentPane);
   //textLocationCommentPane->setBackground(NULL);
@@ -186,28 +174,22 @@ namespace Operations
   textLocationCommentPane->setMaximumSize(QSize(2000, 200));
 
   // train description
-  //pTrainDescription->setBorder(BorderFactory.createTitledBorder(tr("Description")));
-  pTrainDescription->setStyleSheet(gbStyleSheet);
-  pTrainDescription->setTitle(tr("Description"));
+  pTrainDescription->setBorder(BorderFactory::createTitledBorder(tr("Description")));
   pTrainDescription->setLayout(new QHBoxLayout);
   pTrainDescription->layout()->addWidget(textTrainDescription);
 
   // train comment
-  //textTrainCommentPane->setBorder(BorderFactory.createTitledBorder(tr("TrainComment")));
+  textTrainCommentGB = new JPanel;
+  textTrainCommentGB->setBorder(BorderFactory::createTitledBorder(tr("Train Comment")));
   //textTrainCommentPane->setBackground(NULL);
-  textTrainCommentGB = new QGroupBox;
-  textTrainCommentGB->setStyleSheet(gbStyleSheet);
-  textTrainCommentGB->setTitle(tr("Train Comment"));
   textTrainCommentGB->setLayout(new QVBoxLayout);
   textTrainCommentGB->layout()->addWidget(textTrainCommentPane);
   textTrainCommentPane->setEditable(false);
   textTrainCommentPane->setMaximumSize(QSize(2000, 200));
 
   // train route comment
-  //textTrainRouteCommentPane->setBorder(BorderFactory.createTitledBorder(tr("RouteComment")));
-  textTrainRouteCommentGB = new QGroupBox;
-  textTrainRouteCommentGB->setStyleSheet(gbStyleSheet);
-  textTrainRouteCommentGB->setTitle(tr("Route Comment"));
+  textTrainRouteCommentGB = new JPanel;
+  textTrainRouteCommentGB->setBorder(BorderFactory::createTitledBorder(tr("Route Comment")));
   textTrainRouteCommentGB->setLayout(new QVBoxLayout);
   //textTrainRouteCommentPane->setBackground(NULL);
   textTrainRouteCommentGB->layout()->addWidget(textTrainRouteCommentPane);
@@ -215,11 +197,8 @@ namespace Operations
   textTrainRouteCommentPane->setMaximumSize(QSize(2000, 200));
 
   // train route location comment
-  //textTrainRouteLocationCommentPane->setBorder(BorderFactory.createTitledBorder(Bundle
-//             .getMessage("RouteLocationComment")));
-  textTrainRouteLocationCommentGB = new QGroupBox;
-  textTrainRouteLocationCommentGB->setStyleSheet(gbStyleSheet);
-  textTrainRouteLocationCommentGB->setTitle(tr("Location"));
+  textTrainRouteLocationCommentGB = new JPanel;
+  textTrainRouteLocationCommentGB->setBorder(BorderFactory::createTitledBorder(tr("Location")));
   textTrainRouteLocationCommentGB->setLayout(new QVBoxLayout);
   //textTrainRouteLocationCommentPane->setBackground(NULL);
   textTrainRouteLocationCommentGB->layout()->addWidget(textTrainRouteLocationCommentPane);
@@ -245,15 +224,12 @@ namespace Operations
 
   // row 13
   pStatus->setLayout(new GridBagLayout());
-  //pStatus->setBorder(BorderFactory.createTitledBorder(""));
-  pStatus->setStyleSheet(gbStyleSheet);
+  pStatus->setBorder(BorderFactory::createTitledBorder(""));
   addItem(pStatus, textStatus, 0, 0);
 
   // row 14
   pButtons->setLayout(new GridBagLayout());
-  //pButtons->setBorder(BorderFactory.createTitledBorder(tr("Work")));
-  pButtons->setStyleSheet(gbStyleSheet);
-  pButtons->setTitle(tr("Work"));
+  pButtons->setBorder(BorderFactory::createTitledBorder(tr("Work")));
   addItem(pButtons, selectButton, 0, 0);
   addItem(pButtons, clearButton, 1, 0);
   addItem(pButtons, modifyButton, 2, 0);
@@ -371,8 +347,8 @@ namespace Operations
  }
 
  // action for set button for a car, opens the set car window
- /*public*/ void CommonConductorYardmasterPanel::setCarButtonActionPerfomed(QWidget* ae) {
-     QString name = ((QPushButton*) ae)->objectName();
+ /*public*/ void CommonConductorYardmasterPanel::carSetButtonActionPerfomed(QWidget* ae) {
+     QString name = ((JButton*) ae)->objectName();
      log->debug("Set button for car " + name);
      Car* car = carManager->getById(name);
      if (csf != NULL) {
@@ -383,7 +359,20 @@ namespace Operations
      csf->loadCar(car);
      // csf->setTitle(tr("TitleCarSet"));
      csf->setVisible(true);
-     //csf->setExtendedState(Frame.NORMAL);
+     csf->setExtendedState(JFrame::NORMAL);
+ }
+
+ // action for set button for an engine, opens the set engine window
+ /*public*/ void CommonConductorYardmasterPanel::engineSetButtonActionPerfomed(QWidget* ae) {
+  QString name = ((JButton*) ae)->objectName();
+     log->debug(tr("Set button for loco %1").arg(name));
+     Engine* eng = (Engine*)engManager->getById(name);
+     if (esf != nullptr) {
+         esf->dispose();
+     }
+     esf = new EngineSetFrame();
+     esf->initComponents();
+     esf->loadEngine(eng);
  }
 
  // confirm that all work is done
@@ -438,8 +427,7 @@ namespace Operations
           locoPaneFrame->setVisible(true);
              pPickupLocos->setVisible(true);
              rollingStock.append(engine);
-             //engine.addPropertyChangeListener(this);
-             connect(engine->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+             engine->SwingPropertyChangeSupport::addPropertyChangeListener(this);
              QCheckBox* checkBox = new QCheckBox(trainCommon->pickupEngine(engine));
              setCheckBoxFont(checkBox);
              pPickupLocos->layout()->addWidget(checkBox);
@@ -449,8 +437,7 @@ namespace Operations
              locoPaneFrame->setVisible(true);
              pSetoutLocos->setVisible(true);
              rollingStock.append(engine);
-             //engine.addPropertyChangeListener(this);
-             connect(engine->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+             engine->SwingPropertyChangeSupport::addPropertyChangeListener(this);
              QCheckBox* checkBox = new QCheckBox(trainCommon->dropEngine(engine));
              setCheckBoxFont(checkBox);
              pSetoutLocos->layout()->addWidget(checkBox);
@@ -490,7 +477,7 @@ namespace Operations
       setLabelFont(header);
       pMoves->layout()->addWidget(header);
   }
-  QList<Track*> tracks = rl->getLocation()->getTrackByNameList(NULL);
+  QList<Track*> tracks = rl->getLocation()->getTracksByNameList(NULL);
   QList<RouteLocation*>* routeList = _train->getRoute()->getLocationsBySequenceList();
   QList<Car*>* carList = carManager->getByTrainDestinationList(_train);
   foreach (Track* track, tracks)
@@ -511,8 +498,7 @@ namespace Operations
       if (!rollingStock.contains(car))
       {
           rollingStock.append(car);
-          //car.addPropertyChangeListener(this);
-          connect(car->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          car->SwingPropertyChangeSupport::addPropertyChangeListener(this);
       }
       // did we already process this car?
       if (checkBoxes.contains("p" + car->getId()))
@@ -569,8 +555,7 @@ namespace Operations
         setoutPaneFrame->setVisible(true);
         if (!rollingStock.contains(car)) {
             rollingStock.append(car);
-            //car.addPropertyChangeListener(this);
-            connect(car->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+            car->SwingPropertyChangeSupport::addPropertyChangeListener(this);
         }
         if (checkBoxes.contains("s" + car->getId())) {
             if (isSetMode && !checkBoxes.value("s" + car->getId())->isChecked()) {
@@ -648,23 +633,29 @@ namespace Operations
   pMoves->layout()->addWidget(new QLabel(Space));
  }
 
- // replace the car checkbox and text with the car's road and number and a Set button
- /*Protected*/ QWidget* CommonConductorYardmasterPanel::addSet(Car* car) {
-     QWidget* pSet = new QWidget();
+ // replace the car or engine checkbox and text with only the road and number and
+ // a Set button
+ /*Protected*/ JPanel* CommonConductorYardmasterPanel::addSet(RollingStock* rs) {
+     JPanel* pSet = new JPanel();
      pSet->setLayout(new GridBagLayout());
-     QPushButton* carSetButton = new QPushButton(tr("Set"));
-     carSetButton->setObjectName(car->getId());
-//     carSetButton.addActionListener((ActionEvent e) -> {
-//         setCarButtonActionPerfomed(e);
-//     });
-     connect(carSetButton, SIGNAL(clicked()), this, SLOT(setCarButtonActionPerfomed()));
-     QLabel* label = new QLabel(TrainCommon::padString(car->toString(), Control::max_len_string_attibute
-             + Control::max_len_string_road_number));
+     JButton* setButton = new JButton(tr("Set"));
+     setButton->setObjectName(rs->getId());
+//     setButton.addActionListener((ActionEvent e) -> {
+     connect(setButton, &JButton::clicked, [=]{
+      if (qobject_cast<Car*>(rs)) {
+          carSetButtonActionPerfomed(setButton);
+      } else {
+          engineSetButtonActionPerfomed(setButton);
+      }
+     });
+     JLabel* label = new JLabel(TrainCommon::padString(rs->toString(),
+             Control::max_len_string_attibute + Control::max_len_string_road_number));
      setLabelFont(label);
      addItem(pSet, label, 0, 0);
-     addItemLeft(pSet, carSetButton, 1, 0);
+     addItemLeft(pSet, setButton, 1, 0);
+//     pSet->setAlignmentX(/*LEFT_ALIGNMENT*/Qt::AlignLeft);
      return pSet;
- }
+}
 
  /*protected*/ void CommonConductorYardmasterPanel::setCheckBoxFont(QCheckBox* checkBox) {
      if (Setup::isTabEnabled()) {
@@ -728,12 +719,32 @@ namespace Operations
      }
  }
 
+ /*protected*/ void CommonConductorYardmasterPanel::removeCarFromList(Car* car) {
+     checkBoxes.remove("p" + car->getId());
+     checkBoxes.remove("s" + car->getId());
+     checkBoxes.remove("m" + car->getId());
+     log->debug(tr("Car (%1) removed from list").arg(car->toString()));
+     if (car->isUtility()) {
+         clearAndUpdate(); // need to recalculate number of utility cars
+     }
+ }
+
+ /*protected*/ void CommonConductorYardmasterPanel::clearAndUpdate() {
+     trainCommon->clearUtilityCarTypes(); // reset the utility car counts
+     checkBoxes.clear();
+     isSetMode = false;
+     update();
+ }
+
+ // to be overridden
+ /*protected*/ /*abstract*/ void CommonConductorYardmasterPanel::update() {}
+
  /*protected*/ void CommonConductorYardmasterPanel::removePropertyChangeListerners() {
 //     rollingStock.stream().forEach((rs) -> {
 //         rs.removePropertyChangeListener(this);
 //     });
   foreach (RollingStock* rs, rollingStock) {
-   disconnect(rs->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  rs->removePropertyChangeListener(this);
   }
   rollingStock.clear();
  }

@@ -13,7 +13,7 @@ class BufferedInputStream : public QObject
 public:
  /*public*/ BufferedInputStream(QDataStream* in, QObject *parent = nullptr);
  /*public*/ BufferedInputStream(QDataStream* in, int size, QObject* parent = nullptr);
- /*public*/ /*synchronized*/ int read() throw (IOException);
+ /*public*/ /*synchronized*/ int read() /*throw (IOException)*/;
 
 signals:
 
@@ -22,10 +22,10 @@ private:
  /*private*/ static int DEFAULT_BUFFER_SIZE;// = 8192;
  /*private*/ static int MAX_BUFFER_SIZE;// = INT_MAX - 8;
  void common(QDataStream* in, int size);
- /*private*/ QDataStream* getInIfOpen() throw (IOException);
- /*private*/ QByteArray getBufIfOpen() throw (IOException);
+ /*private*/ QDataStream* getInIfOpen() ;
+ /*private*/ QByteArray getBufIfOpen() ;
  QDataStream* in;
- /*private*/ void fill() throw (IOException);
+ /*private*/ void fill() /*throw (IOException)*/;
 
 protected:
  /**

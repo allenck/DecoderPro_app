@@ -29,7 +29,7 @@ LnSensorManagerTest::LnSensorManagerTest()
 
 //@Test
 /*public*/ void LnSensorManagerTest::testLnSensorCreate() {
-    Assert::assertNotNull("exists", l, __FILE__, __LINE__);
+    Assert::assertNotNull("exists", l->self(), __FILE__, __LINE__);
 }
 
 //@Test
@@ -100,7 +100,7 @@ LnSensorManagerTest::LnSensorManagerTest()
     QString s = "";
     try {
         s = l->createSystemName("3:5", "L");
-    } catch (JmriException e) {
+    } catch (JmriException* e) {
         excep = true;
     }
     Assert::assertEquals("no exception during createSystemName for arguments '3:5', 'L'", false, excep, __FILE__, __LINE__);
@@ -122,7 +122,7 @@ LnSensorManagerTest::LnSensorManagerTest()
 
     // create and register the manager object
     l = new LnSensorManager(memo);
-    InstanceManager::setSensorManager((SensorManager*)l);
+    InstanceManager::setSensorManager((AbstractSensorManager*)l);
 }
 
 //@After

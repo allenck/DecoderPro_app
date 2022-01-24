@@ -22,34 +22,35 @@ class LIBLAYOUTEDITORSHARED_EXPORT CoordinateEdit : public JmriJFrame
 {
     Q_OBJECT
 public:
-    explicit CoordinateEdit(QWidget* parent = 0);
-    /*public*/ static QAction* getTextEditAction(/*const*/ Positionable* pos, const QString title, QObject* parent);
-    /*public*/ static QAction* getLevelEditAction(/*final*/ Positionable* pos, QObject *parent);
-    /*public*/ static QAction* getCoordinateEditAction(/*final*/ Positionable* pos, QObject *parent);
-    /*public*/ void init(QString title, Positionable* pos, bool showName);
-    /*public*/ void initSetXY();
-    /*public*/ void initSetLevel();
-    /*public*/ void initText();
-    /*public*/ static QAction* getRotateEditAction(/*final*/ Positionable* pos, QObject *parent);
-    /*public*/ static QAction* getScaleEditAction(/*final*/ Positionable* pos, CoordinateEdit* parent);
-    /*public*/ void initRotate();
-    /*public*/ void initScale();
-    /*public*/ static QAction* getMarginEditAction(/*final*/ Positionable* pos, PositionablePopupUtil* parent);
-    /*public*/ static QAction* getFixedSizeEditAction(/*final*/ Positionable* pos, PositionablePopupUtil* parent);
-    /*public*/ void initMargin();
-    /*public*/ void initFixedSize();
-    //static Positionable* pos;
-    /*public*/ static QAction* getBorderEditAction(/*final*/ Positionable* pos, QObject *parent);
-    /*public*/ void initBorder();
-    /*public*/ /*static*/ QAction* getNameEditAction(/*final*/ Positionable* pos);
-    /*public*/ void  initSetName();
-    /*public*/ static AbstractAction* getTooltipEditAction(/*final*/ Positionable* pos, QObject *parent);
-    /*public*/ void initSetTip();
- /*public*/ static AbstractAction* getLinkEditAction(/*final*/ Positionable* pos, /*final*/ QString title, QObject* parent);
- /*public*/ static AbstractAction* getZoomEditAction(/*final*/ Positionable* pos, QObject *parent);
- /*public*/ void initZoom();
- /*public*/ void initLink();
- /*public*/ QString getClassName();
+  explicit CoordinateEdit(QWidget* parent = 0);
+  /*public*/ static QAction* getTextEditAction(/*const*/ Positionable* pos, const QString title, QObject* parent);
+  /*public*/ static QAction* getLevelEditAction(/*final*/ Positionable* pos, QObject *parent);
+  /*public*/ static QAction* getCoordinateEditAction(/*final*/ Positionable* pos, QObject *parent);
+  /*public*/ void init(QString title, Positionable* pos, bool showName);
+  /*public*/ void initSetXY();
+  /*public*/ void initSetLevel();
+  /*public*/ void initId(/*final*/ Editor* editor);
+  /*public*/ void initText();
+  /*public*/ static QAction* getRotateEditAction(/*final*/ Positionable* pos, QObject *parent);
+  /*public*/ static QAction* getScaleEditAction(/*final*/ Positionable* pos, CoordinateEdit* parent);
+  /*public*/ void initRotate();
+  /*public*/ void initScale();
+  /*public*/ static QAction* getMarginEditAction(/*final*/ Positionable* pos, PositionablePopupUtil* parent);
+  /*public*/ static QAction* getFixedSizeEditAction(/*final*/ Positionable* pos, PositionablePopupUtil* parent);
+  /*public*/ void initMargin();
+  /*public*/ void initFixedSize();
+  //static Positionable* pos;
+  /*public*/ static QAction* getBorderEditAction(/*final*/ Positionable* pos, QObject *parent);
+  /*public*/ void initBorder();
+  /*public*/ /*static*/ QAction* getNameEditAction(/*final*/ Positionable* pos);
+  /*public*/ void  initSetName();
+  /*public*/ static AbstractAction* getTooltipEditAction(/*final*/ Positionable* pos, QObject *parent);
+  /*public*/ void initSetTip();
+  /*public*/ static AbstractAction* getLinkEditAction(/*final*/ Positionable* pos, /*final*/ QString title, QObject* parent);
+  /*public*/ static AbstractAction* getZoomEditAction(/*final*/ Positionable* pos, QObject *parent);
+  /*public*/ void initZoom();
+  /*public*/ void initLink();
+  /*public*/ QString getClassName();
 
 signals:
     
@@ -132,15 +133,18 @@ protected:
  friend class MemoryIconCoordinateEdit;
 };
 
-class SetBorderSizeActionListener : public ActionListener
+class SetBorderSizeActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
     Positionable* pos;
     QObject* parent;
 public:
     SetBorderSizeActionListener(Positionable* pos, QObject* parent);
- public slots:
-    void actionPerformed(ActionEvent *e = 0);
+    QObject* self() override {return (QObject*)this;}
+public slots:
+
+    void actionPerformed(JActionEvent *e = 0)override;
 };
 
 class LevelEditAction : public AbstractAction
@@ -162,7 +166,7 @@ class TooltipEditAction : public AbstractAction
 public:
  TooltipEditAction(Positionable* pos, QString name, QObject* parent);
 public slots:
- void actionPerformed(ActionEvent * = 0);
+ void actionPerformed(JActionEvent * = 0) override;
 };
 
 class ActionMarginEdit : public AbstractAction
@@ -208,10 +212,11 @@ public:
 public slots:
  void on_actionGetFixedSizeEdit_triggered();
 };
+
 class RotateAction : public AbstractAction
 {
  Q_OBJECT
- QObject* parent;
+QObject* parent;
  Positionable* pos;
 public:
  RotateAction(Positionable* pos, QString name, QObject *parent);

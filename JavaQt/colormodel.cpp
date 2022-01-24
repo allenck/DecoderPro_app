@@ -99,7 +99,7 @@ float ColorModel::getDefault(int index) {
         try {
             return Integer.parseInt((String) value);
         }
-        catch (NumberFormatException exception) {
+        catch (NumberFormatException* exception) {
         }
     }
 #endif

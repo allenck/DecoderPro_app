@@ -32,7 +32,7 @@ JFrameOperator::JFrameOperator(QString chooser) : QObject()
   }
  }
  if(this->_frame == nullptr)
-  throw Exception(tr("frame title '%1' not found").arg(chooser));
+  throw new Exception(tr("frame title '%1' not found").arg(chooser));
 }
 
 JmriJFrame* JFrameOperator::getFrame()
@@ -44,6 +44,10 @@ void JFrameOperator::waitClosed()
 {
  SleeperThread::msleep(10);
 }
+JmriJFrame* JFrameOperator::waitJFrame(QString t, bool b1, bool b2)
+{
+ return new JmriJFrameX(t, b1, b2);
+}
 
 JRadioButtonOperator::JRadioButtonOperator(QObject*parent, QString text)
 {
@@ -53,7 +57,7 @@ JRadioButtonOperator::JRadioButtonOperator(QObject*parent, QString text)
   {
    QList<QRadioButton*> list = frame->findChildren<QRadioButton*>();
    if(list.isEmpty())
-    throw Exception(tr("QRadioButton '%1' not found ").arg(text));
+    throw new Exception(tr("QRadioButton '%1' not found ").arg(text));
    foreach(QRadioButton* b, list)
    {
     if(b->text() == text)
@@ -76,7 +80,7 @@ QWidget* JRadioButtonOperator::parentWidget()
     return (oper->getFrame());
  }
  else
-  throw Exception("no parent widget defined for JRadioButtonOperator");
+  throw new Exception("no parent widget defined for JRadioButtonOperator");
 }
 
 JButtonOperator::JButtonOperator(QObject* parent, QString text)
@@ -85,7 +89,7 @@ JButtonOperator::JButtonOperator(QObject* parent, QString text)
  this->parent = parent;
  list = parentWidget()->findChildren<QPushButton*>();
  if(list.isEmpty())
-  throw Exception(tr("QPushButton '%1' not found; no such button ").arg(text));
+  throw new Exception(tr("QPushButton '%1' not found; no such button ").arg(text));
  if(!text.isEmpty())
  {
   foreach(QPushButton* b, list)
@@ -98,7 +102,7 @@ JButtonOperator::JButtonOperator(QObject* parent, QString text)
     }
   }
   if(this->button == nullptr)
-   throw Exception(tr("QPushButton '%1' not found ").arg(text));
+   throw new Exception(tr("QPushButton '%1' not found ").arg(text));
  }
 }
 
@@ -113,7 +117,7 @@ JButtonOperator::JButtonOperator(QObject* parent, QString text)
    }
  }
  if(this->button == nullptr)
-  throw Exception(tr("QPushButton '%1' not found ").arg(text));
+  throw new Exception(tr("QPushButton '%1' not found ").arg(text));
 }
 
 /*private*/ bool JButtonOperator::checkComponent(QWidget* b)
@@ -132,7 +136,7 @@ JButtonOperator::JButtonOperator(QObject* parent, QString text)
   //button->click();
   qDebug() << "push " << button->objectName();
    if(!QMetaObject::invokeMethod(button, "click", Qt::AutoConnection))
-    throw Exception(tr("Button '%1'click failed").arg(button->text()));
+    throw new Exception(tr("Button '%1'click failed").arg(button->text()));
  }
  qApp->processEvents(QEventLoop::AllEvents, 100);
 }
@@ -152,7 +156,7 @@ void JButtonOperator::doClick()
   //button->click();
   qDebug() << "click " << button->objectName();
    if(!QMetaObject::invokeMethod(button, "click", Qt::AutoConnection))
-    throw Exception(tr("Button '%1'click failed").arg(button->text()));
+    throw new Exception(tr("Button '%1'click failed").arg(button->text()));
  }
  qApp->processEvents();
 }
@@ -190,7 +194,7 @@ QWidget* JButtonOperator::parentWidget()
  }
 
  else
-  throw Exception("no parent widget defined for JButtonOperator");
+  throw new Exception("no parent widget defined for JButtonOperator");
 }
 
 JCheckBoxOperator::JCheckBoxOperator(QObject*parent, QString text)
@@ -199,7 +203,7 @@ JCheckBoxOperator::JCheckBoxOperator(QObject*parent, QString text)
  this->parent = parent;
  QList<QCheckBox*> list = parentWidget()->findChildren<QCheckBox*>();
  if(list.isEmpty())
-  throw Exception(tr("QCheckBox '%1' not found ").arg(text));
+  throw new Exception(tr("QCheckBox '%1' not found ").arg(text));
  foreach(QCheckBox* b, list)
  {
   if(b->text() == text)
@@ -222,7 +226,7 @@ QWidget* JCheckBoxOperator::parentWidget()
     return (oper->getFrame());
  }
  else
-  throw Exception("no parent widget defined for JCheckBoxOperator");
+  throw new Exception("no parent widget defined for JCheckBoxOperator");
 }
 
 JToggleButtonOperator::JToggleButtonOperator(QObject*parent, QString text)
@@ -231,7 +235,7 @@ JToggleButtonOperator::JToggleButtonOperator(QObject*parent, QString text)
  this->parent = parent;
  QList<JToggleButton*> list = parentWidget()->findChildren<JToggleButton*>();
  if(list.isEmpty())
-  throw Exception(tr("JToggleButton '%1' not found ").arg(text));
+  throw new Exception(tr("JToggleButton '%1' not found ").arg(text));
  foreach(JToggleButton* b, list)
  {
   if(b->text() == text)
@@ -248,7 +252,7 @@ QWidget* JToggleButtonOperator::parentWidget()
   return qobject_cast<QWidget*>(parent);
  }
  else
-  throw Exception("no parent widget defined for JToggleButtonOperator");
+  throw new Exception("no parent widget defined for JToggleButtonOperator");
 }
 
 JToggleButtonOperator::JToggleButtonOperator(FunctionButton *fb)
@@ -259,7 +263,7 @@ JToggleButtonOperator::JToggleButtonOperator(FunctionButton *fb)
 bool JButtonOperator::isEnabled()
 {
   if(button) return button->isEnabled();
-  throw Exception(tr("button %1 not found").arg(text));
+  throw new Exception(tr("button %1 not found").arg(text));
 }
 
 JLabelOperator::JLabelOperator(QObject *parent, QString text)
@@ -268,7 +272,7 @@ JLabelOperator::JLabelOperator(QObject *parent, QString text)
  this->text = text;
   QList<QLabel*> list = parentWidget()->findChildren<QLabel*>();
   if(list.isEmpty())
-   throw Exception(tr("QLabel '%1' not found ").arg(text));
+   throw new Exception(tr("QLabel '%1' not found ").arg(text));
   foreach(QLabel* b, list)
   {
    if(b->text() == text)
@@ -278,7 +282,7 @@ JLabelOperator::JLabelOperator(QObject *parent, QString text)
    }
   }
   if(this->label == nullptr)
-   throw Exception(tr("QLabel '%1' not found ").arg(text));
+   throw new Exception(tr("QLabel '%1' not found ").arg(text));
 
 }
 
@@ -289,10 +293,10 @@ QWidget *JLabelOperator::getLabelFor()
 
   QWidget* labelfor = ((JLabel*)label)->getLabelFor();
   if(labelfor == nullptr)
-   throw Exception(tr("no labelFor defined for label %1").arg(text));
+   throw new Exception(tr("no labelFor defined for label %1").arg(text));
   return labelfor;
  }
- throw Exception(tr("no labelFor defined for label %1").arg(text));
+ throw new Exception(tr("no labelFor defined for label %1").arg(text));
 }
 
 QWidget* JLabelOperator::parentWidget()
@@ -308,7 +312,7 @@ QWidget* JLabelOperator::parentWidget()
     return (oper->getFrame());
  }
  else
-  throw Exception("no parent widget defined for JLabelOperator");
+  throw new Exception("no parent widget defined for JLabelOperator");
 }
 
 JMenuBarOperator::JMenuBarOperator(QObject *parent)
@@ -326,7 +330,7 @@ JMenuBarOperator::JMenuBarOperator(QObject *parent)
  }
  if(qobject_cast<JmriJFrame*>(parent))
   return (JmriJFrame*)parent;
- throw Exception("no frame defined for JMenuBarOperator");
+ throw new Exception("no frame defined for JMenuBarOperator");
 }
 
 ///*public*/ QMenuBar* JMenuBarOperator::menuBar()
@@ -361,7 +365,7 @@ JMenuOperator::JMenuOperator(JMenuBarOperator* jmbo, QString text)
   }
  }
  if(this->menu == nullptr)
-  throw Exception(tr("menu '%1' not found").arg(text));
+  throw new Exception(tr("menu '%1' not found").arg(text));
 }
 
 
@@ -420,7 +424,7 @@ JDialogOperator::JDialogOperator(QString text)
  // look for a window with the title" 'text'
  JDialog* dlg = JDialog::findDialog(text);
  if(dlg == nullptr)
-  throw Exception(tr("frame title '%1' not found").arg(text));
+  throw new Exception(tr("frame title '%1' not found").arg(text));
  this->frameOperator = new JFrameOperator(dlg);
  this->dialog = dlg;
 }
@@ -460,14 +464,20 @@ JTextFieldOperator::JTextFieldOperator(QObject *parent)
  if(list.size()>0)
   textField = list.at(0);
  if(list.size()>1)
-  throw Exception("more than one textField found!");
+  throw new Exception("more than one textField found!");
 }
 
 void JTextFieldOperator::typeText(QString text)
 {
  textField->setText(text);
 }
-
+void JTextFieldOperator::setText(QString text)
+{
+ textField->setText(text);
+}
+void JTextFieldOperator::clickMouse()
+{
+}
 JInternalFrameOperator::JInternalFrameOperator(QObject *parent, QString name)
 {
  this->parent = parent;
@@ -504,7 +514,7 @@ QWidget* JSliderOperator::parentWidget()
     return (oper->getFrame());
  }
  else
-  throw Exception("no parent widget defined for JSliderOperator");
+  throw new Exception("no parent widget defined for JSliderOperator");
 }
 
 void JSliderOperator::scrollToValue(int i)
@@ -552,4 +562,35 @@ void JSpinnerOperator::scrollToMinimum()
 void JSpinnerOperator::setValue(int i)
 {
  spinner->setValue(i);
+}
+
+JComboBoxOperator::JComboBoxOperator(QObject *parent, int index)
+{
+
+}
+void JComboBoxOperator::setSelectedItem(QString s)
+{
+ comboBox->setCurrentText(s);
+}
+
+void JComboBoxOperator::setSelectedIndex(int i)
+{
+ comboBox->setSelectedIndex(i);
+}
+
+JTabbedPaneOperator::JTabbedPaneOperator(QObject *parent)
+{
+
+}
+QWidget* JTabbedPaneOperator::selectPage(QString title)
+{
+
+}
+JTableOperator::JTableOperator(QObject *parent)
+{
+
+}
+void JTableOperator::clickOnCell(int r, int col)
+{
+
 }

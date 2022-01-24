@@ -4,7 +4,7 @@
 #include "instancemanager.h"
 #include <QCheckBox>
 #include "jtextfield.h"
-#include <QLabel>
+#include "jlabel.h"
 #include "systemconnectionmemo.h"
 #include <QMessageBox>
 #include <QComboBox>
@@ -15,6 +15,7 @@
 #include "gridbagconstraints.h"
 #include "abstractnetworkportcontroller.h"
 #include <QSignalMapper>
+
 
 AbstractNetworkConnectionConfig::AbstractNetworkConnectionConfig(QObject *parent) :
   AbstractConnectionConfig(parent)
@@ -303,7 +304,7 @@ void AbstractNetworkConnectionConfig::on_serviceTypeField_leave()
 }
 void AbstractNetworkConnectionConfig::on_systemPrefixField_editingFinished()
 {
- if (!adapter->getSystemConnectionMemo()->setSystemPrefix(systemPrefixField->text()))
+ if (!((DefaultSystemConnectionMemo*)adapter->getSystemConnectionMemo())->setSystemPrefix(systemPrefixField->text()))
  {
  //                    JOptionPane.showMessageDialog(NULL, "System Prefix " + systemPrefixField.getText() + " is already assigned");
   QMessageBox::warning(NULL, tr("Warning"), tr("System Prefix ") + systemPrefixField->text() + " is already assigned");
@@ -314,7 +315,7 @@ void AbstractNetworkConnectionConfig::on_systemPrefixField_editingFinished()
 
 void AbstractNetworkConnectionConfig::on_systemPrefixField_leave()
 {
- if (!adapter->getSystemConnectionMemo()->setSystemPrefix(systemPrefixField->text()))
+ if (!((DefaultSystemConnectionMemo*)adapter->getSystemConnectionMemo())->setSystemPrefix(systemPrefixField->text()))
  {
  //                    JOptionPane.showMessageDialog(NULL, "System Prefix " + systemPrefixField.getText() + " is already assigned");
   QMessageBox::warning(NULL, tr("Warning"), tr("System Prefix ") + systemPrefixField->text() + " is already assigned");
@@ -364,7 +365,7 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
  {
   adapter->setOptionState(i, options.value(i)->getItem());
  }
- if (adapter->getSystemConnectionMemo() != NULL && !adapter->getSystemConnectionMemo()->setSystemPrefix(systemPrefixField->text()))
+ if (adapter->getSystemConnectionMemo() != NULL && !((DefaultSystemConnectionMemo*)adapter->getSystemConnectionMemo())->setSystemPrefix(systemPrefixField->text()))
  {
   systemPrefixField->setText(adapter->getSystemConnectionMemo()->getSystemPrefix());
   connectionNameField->setText(adapter->getSystemConnectionMemo()->getUserName());
@@ -373,7 +374,7 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
 
 
 //Override
-/*public*/ PortAdapter* AbstractNetworkConnectionConfig::getAdapter() {
+/*public*/ PortAdapter* AbstractNetworkConnectionConfig::getAdapter()  {
     return adapter;
 }
 
@@ -455,6 +456,22 @@ void AbstractNetworkConnectionConfig::on_connectionNameField_leave()
  serviceTypeField->setText(adapter->getServiceType());
  serviceTypeFieldLabel = new QLabel(tr("Service Type Name: "));
  serviceTypeFieldLabel->setEnabled(false);
+
+ // connection (memo) specific output command delay option, calls jmri.jmrix.SystemConnectionMemo#setOutputInterval(int)
+ outputIntervalLabel = new JLabel(tr("Output Interval (ms):"));
+ outputIntervalSpinner->setToolTip(tr("<html>Enter the additional interval in milliseconds to wait before sending a following (Turnout) output Command<br>Default = %1 ms<br>Interval applies to this %2 connection only, used in Routes and MatrixSignalMasts</html>").arg(
+         adapter->getSystemConnectionMemo()->getDefaultOutputInterval()).arg(adapter->getManufacturer()));
+// JTextField* field = ((JSpinner.DefaultEditor) outputIntervalSpinner.getEditor()).getTextField();
+// field.setColumns(6);
+ outputIntervalSpinner->setMaximumSize(outputIntervalSpinner->sizeHint()); // set spinner JTextField width
+ outputIntervalSpinner->setValue(adapter->getSystemConnectionMemo()->getOutputInterval());
+ outputIntervalSpinner->setEnabled(true);
+ //outputIntervalReset.addActionListener((ActionEvent event) -> {
+ connect(outputIntervalReset, &QPushButton::clicked, [=]{
+     outputIntervalSpinner->setValue(adapter->getSystemConnectionMemo()->getDefaultOutputInterval());
+     adapter->getSystemConnectionMemo()->setOutputInterval(adapter->getSystemConnectionMemo()->getDefaultOutputInterval());
+ });
+
  QFont f = showAutoConfig->font();
  f.setPointSizeF(9.0);
  showAutoConfig->setFont(f);

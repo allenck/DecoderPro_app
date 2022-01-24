@@ -7,11 +7,8 @@ class LayoutLHXOver : public LayoutXOver
   Q_OBJECT
  public:
   /*public*/ LayoutLHXOver(/*@Nonnull*/ QString id,
-          /*@Nonnull*/ QPointF c, double rot,
-          double xFactor, double yFactor,
           /*@Nonnull*/ LayoutEditor* layoutEditor);
-  /*public*/ LayoutLHXOver(/*@Nonnull*/ QString id, /*@Nonnull*/ QPointF c, double rot,
-          double xFactor, double yFactor, /*@Nonnull*/ LayoutEditor* layoutEditor, int v);
+  /*public*/ LayoutLHXOver(/*@Nonnull*/ QString id, /*@Nonnull*/ LayoutEditor* layoutEditor, int v);
 
 };
 

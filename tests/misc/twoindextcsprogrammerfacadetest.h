@@ -31,11 +31,13 @@ private:
  friend class ProgListenerO9;
 };
 
-class ProgListenerO9 :public ProgListener {
+class ProgListenerO9 : public QObject, public ProgListener {
  Q_OBJECT
- TwoIndexTcsProgrammerFacadeTest* test;
+ Q_INTERFACES(ProgListener)
+  TwoIndexTcsProgrammerFacadeTest* test;
 public:
 ProgListenerO9(TwoIndexTcsProgrammerFacadeTest* test) {this->test = test;}
+QObject* self() {return (QObject*)this;}
 public slots:
     //@Override
     /*public*/ void programmingOpReply(int value, int status);

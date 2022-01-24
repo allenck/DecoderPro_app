@@ -10,6 +10,7 @@
 #include "location.h"
 #include "trainmanager.h"
 #include "locationmanager.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -283,7 +284,7 @@ namespace Operations
                 addLine(_buildReport, SEVEN, _train->getServiceStatus());
             }
         } else if (!trainServicesCar) {
-            testTrain = TrainManager::instance()->getTrainForCar(_clone, _train, _buildReport);
+            testTrain = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainForCar(_clone, _train, _buildReport);
         }
         if (testTrain != NULL && _train != NULL && !trainServicesCar
                 && _train->isServiceAllCarsWithFinalDestinationsEnabled()) {
@@ -468,7 +469,7 @@ namespace Operations
         }
         bool foundRoute = false;
         // now search for a yard or interchange that a train can pick up and deliver the car to its destination
-        QList<Track*> tracks = LocationManager::instance()->getTracksByMoves(trackType);
+        QList<Track*> tracks = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getTracksByMoves(trackType);
         foreach (Track* track, tracks) {
             if (car->getTrack() == track) {
                 continue; // don't use car's current track
@@ -497,7 +498,7 @@ namespace Operations
             testCar->setTrack(track);
             ((RollingStock*)testCar)->setDestination(car->getFinalDestination());
             testCar->setDestinationTrack(car->getFinalDestinationTrack());
-            Train* secondTrain = TrainManager::instance()->getTrainForCar(testCar, _buildReport);
+            Train* secondTrain = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainForCar(testCar, _buildReport);
             if (secondTrain == NULL) {
                 if (debugFlag) {
                     log->debug(tr("Could not find a train to service car from %1 (%2, %3) to destination (%4, %5)").arg(
@@ -541,7 +542,7 @@ namespace Operations
                                 track->getName()).arg(_train->getServiceStatus()));
                 foundRoute = true; // however, the issue is route moves or train length
             } else {
-                firstTrain = TrainManager::instance()->getTrainForCar(testCar, _buildReport);
+                firstTrain = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainForCar(testCar, _buildReport);
             }
             if (firstTrain == NULL && _addtoReport) {
                 addLine(_buildReport, SEVEN, tr("Router could not find a train to transport car from %1 (%2, %3) to (%4, %5)").arg(
@@ -663,17 +664,17 @@ namespace Operations
         // start with interchanges
         QList<Track*> tracks;
         if (!useStaging) {
-            tracks = LocationManager::instance()->getTracksByMoves(Track::INTERCHANGE);
+            tracks = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getTracksByMoves(Track::INTERCHANGE);
             loadTracks(car, testCar, tracks);
         }
         // next load yards if enabled
         if (!useStaging && Setup::isCarRoutingViaYardsEnabled()) {
-            tracks = LocationManager::instance()->getTracksByMoves(Track::YARD);
+            tracks = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getTracksByMoves(Track::YARD);
             loadTracks(car, testCar, tracks);
         }
         // now staging if enabled
         if (useStaging && Setup::isCarRoutingViaStagingEnabled()) {
-            tracks = LocationManager::instance()->getTracksByMoves(Track::STAGING);
+            tracks = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getTracksByMoves(Track::STAGING);
             loadTracks(car, testCar, tracks);
         }
 
@@ -712,7 +713,7 @@ namespace Operations
             foreach (Track* llt, _lastLocationTracks) {
                 testCar->setDestinationTrack(llt); // set car to this destination and track
                 // does a train service these two locations?
-                Train* middleTrain = TrainManager::instance()->getTrainForCar(testCar, NULL); // don't add to report
+                Train* middleTrain = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainForCar(testCar, NULL); // don't add to report
                 if (middleTrain != NULL) {
                     log->debug(tr("Found 3 train route, setting car destination (%1, %2)").arg(testCar->getLocationName(),
                             testCar->getTrackName()));
@@ -756,7 +757,7 @@ namespace Operations
                 testCar->setTrack(nlt); // set car to this location and track
                 testCar->setDestinationTrack(mlt); // set car to this destination and track
                 // does a train service these two locations?
-                Train* middleTrain2 = TrainManager::instance()->getTrainForCar(testCar, NULL); // don't add to report
+                Train* middleTrain2 = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainForCar(testCar, NULL); // don't add to report
                 if (middleTrain2 != NULL) {
                     if (debugFlag) {
                         log->debug(tr("Train 2 (%1) services car from (%2) to (%3, %4)").arg(middleTrain2->getName()).arg(testCar
@@ -765,7 +766,7 @@ namespace Operations
                     foreach (Track* llt, _lastLocationTracks) {
                         testCar->setTrack(mlt); // set car to this location and track
                         testCar->setDestinationTrack(llt); // set car to this destination and track
-                        Train* middleTrain3 = TrainManager::instance()->getTrainForCar(testCar, NULL); // don't add to
+                        Train* middleTrain3 = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainForCar(testCar, NULL); // don't add to
                         // report
                         if (middleTrain3 != NULL) {
                             log->debug(tr("Found 4 train route, setting car destination (%1, %2)").arg(nlt->getLocation()
@@ -816,7 +817,7 @@ namespace Operations
                 testCar->setTrack(nlt); // set car to this location and track
                 testCar->setDestinationTrack(mlt1); // set car to this destination and track
                 // does a train service these two locations?
-                Train* middleTrain2 = TrainManager::instance()->getTrainForCar(testCar, NULL); // don't add to report
+                Train* middleTrain2 = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainForCar(testCar, NULL); // don't add to report
                 if (middleTrain2 != NULL) {
                     if (debugFlag) {
                         log->debug(tr("Train 2 (%1) services car from (%2) to (%3, %4)").arg(middleTrain2->getName()).arg(testCar
@@ -829,7 +830,7 @@ namespace Operations
                         testCar->setTrack(mlt1); // set car to this location and track
                         testCar->setDestinationTrack(mlt2); // set car to this destination and track
                         // does a train service these two locations?
-                        Train* middleTrain3 = TrainManager::instance()->getTrainForCar(testCar, NULL); // don't add to
+                        Train* middleTrain3 = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainForCar(testCar, NULL); // don't add to
                         // report
                         if (middleTrain3 != NULL) {
                             if (debugFlag) {
@@ -841,7 +842,7 @@ namespace Operations
                                 testCar->setTrack(mlt2); // set car to this location and track
                                 testCar->setDestinationTrack(llt); // set car to this destination and track
                                 // does a train service these two locations?
-                                Train* middleTrain4 = TrainManager::instance()->getTrainForCar(testCar, NULL); // don't add
+                                Train* middleTrain4 = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainForCar(testCar, NULL); // don't add
                                 // to report
                                 if (middleTrain4 != NULL) {
                                     log->debug(tr("Found 5 train route, setting car destination (%1, %2)").arg(nlt
@@ -961,7 +962,7 @@ namespace Operations
          if (specific==(YES) || specific==(NOT_NOW)) {
              train = _train;
          } else {
-             train = TrainManager::instance()->getTrainForCar(testCar, NULL); // don't add to report
+             train = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainForCar(testCar, NULL); // don't add to report
          }
          // Can specific train carry this car out of staging?
          if (car->getTrack()->getTrackType()==(Track::STAGING) && specific!=(YES)) {

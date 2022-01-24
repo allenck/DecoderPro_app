@@ -8,8 +8,8 @@ class LIBLAYOUTEDITORSHARED_EXPORT TurnoutSignalMastXml : public AbstractNamedBe
     Q_OBJECT
 public:
     Q_INVOKABLE explicit TurnoutSignalMastXml(QObject *parent = 0);
- ~TurnoutSignalMastXml() {}
- TurnoutSignalMastXml(const TurnoutSignalMastXml&) : AbstractNamedBeanManagerConfigXML() {}
+    ~TurnoutSignalMastXml() {}
+    TurnoutSignalMastXml(const TurnoutSignalMastXml&) : AbstractNamedBeanManagerConfigXML() {}
     /*public*/ QDomElement store(QObject* o);
     /*public*/ bool load(QDomElement shared, QDomElement perNode);
     /*public*/ void load(QDomElement element, QObject* o) throw (Exception);

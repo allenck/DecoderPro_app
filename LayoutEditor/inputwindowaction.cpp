@@ -3,7 +3,7 @@
 #include <QBoxLayout>
 #include "inputwindow.h"
 #include "PythonQt.h"
-//#include "PythonQt_QtAll.h"
+#include "PythonQt_QtAll.h"
 #include "jmrijframe.h"
 #include "jmriuserpreferencesmanager.h"
 #include "instancemanager.h"
@@ -58,7 +58,7 @@ void InputWindowAction::common()
  *
  * @param e
  */
-/*public*/ void InputWindowAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void InputWindowAction::actionPerformed(JActionEvent * /*e*/)
 {
  //PythonInterp.getPythonInterpreter();
  PythonQt::self()->getMainModule();

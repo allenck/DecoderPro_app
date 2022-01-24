@@ -7,7 +7,7 @@
 #include "indexedpropertychangeevent.h"
 #include "addprofiledialog.h"
 #include "appslib_global.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "exceptions.h"
 #include "bean.h"
 
@@ -24,7 +24,6 @@ class APPSLIBSHARED_EXPORT ProfileManager : public Bean
 public:
     explicit ProfileManager(QObject *parent = 0);
     ProfileManager(File * catalog, QObject *parent = 0);
-    QT_DEPRECATED/*public*/  static ProfileManager* defaultManager();
     /*public*/ static ProfileManager* getDefault();
     /*public*/ File* getConfigFile();
     /*public*/ void setConfigFile(File* configFile);
@@ -55,9 +54,9 @@ public:
     /*public*/ void setActiveProfile(Profile* profile);
     /*public*/ int getAutoStartActiveProfileTimeout();
     /*public*/ void setAutoStartActiveProfileTimeout(int autoStartActiveProfileTimeout);
-    /*public*/ bool migrateToProfiles(/*@Nonnull*/ QString configFilename) throw (IllegalArgumentException, IOException);
+    /*public*/ bool migrateToProfiles(/*@Nonnull*/ QString configFilename) /*throw (IllegalArgumentException, IOException)*/;
     /*public*/ void _export(/*@Nonnull*/ Profile* profile, /*@Nonnull*/ File* target, bool exportExternalUserFiles,
-         bool exportExternalRoster) throw (IOException, JDOMException, InitializationException);
+         bool exportExternalRoster) /*throw (IOException, JDOMException, InitializationException)*/;
 
 
 signals:
@@ -84,14 +83,14 @@ private:
     Logger* log;
     void profileNameChange(Profile* profile, QString oldName);
     /*private*/ void readProfiles() throw (JDOMException, IOException);
-    /*private*/ void writeProfiles() throw (IOException);
+    /*private*/ void writeProfiles() /*throw (IOException)*/;
     /*private*/ void findProfiles();
     /*private*/ void findProfiles(File* searchPath);
     QuaZip* zip;
     /*private*/ bool exportDirectory(QuaZipFile* zip, File* source, QString root); //throws IOException
     /*private*/ bool exportFile(QuaZipFile* zip, File* source, QString root); //throws IOException
     /*private*/ QString relativeName(File* file, QString root);
-    PropertyChangeSupport* pcs;
+    SwingPropertyChangeSupport* pcs;
 
 
     class FileFilter1 : public FileFilter
@@ -125,13 +124,14 @@ protected:
     friend class Apps3;
     friend class AddProfileDialog;
 };
-/*private*/ /*static*/ class ProfileManagerHolder
-{
- /**
-  * Default instance of the ProfileManager
-  */
- /*public*/ static ProfileManager* manager;// = new ProfileManager();
- friend class ProfileManager;
-};
+
+///*private*/ /*static*/ class ProfileManagerHolder
+//{
+// /**
+//  * Default instance of the ProfileManager
+//  */
+// /*public*/ static ProfileManager* manager;// = new ProfileManager();
+// friend class ProfileManager;
+//};
 
 #endif // PROFILEMANAGER_H

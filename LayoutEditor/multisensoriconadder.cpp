@@ -35,7 +35,7 @@
 
 // /*public*/ class MultiSensorIconAdder extends IconAdder {
 
-/*public*/ /*static*/ /*final*/ QString MultiSensorIconAdder::NamedBeanFlavorMime = DataFlavor::javaJVMLocalObjectMimeType +
+/*public*/ /*static*/ /*final*/ QString MultiSensorIconAdder::NamedBeanFlavorMime = /*DataFlavor::javaJVMLocalObjectMimeType*/QString("application/x-java-jvm-local-objectref") +
                ";class=jmri.NamedBean";
 
 //    /*public*/ MultiSensorIconAdder(QWidget *parent) {
@@ -156,7 +156,7 @@ void MultiSensorIconAdder::setMultiIcon(QList <MultiSensorIcon::Entry*>* icons)
 //        delete.addActionListener(action);
   DeleteActionListener* dal = new DeleteActionListener();
   dal->init(key, this);
-  connect(deleteButton, SIGNAL(clicked()), dal, SLOT(actionPerformed()));
+  connect(deleteButton, SIGNAL(clicked()), dal->self(), SLOT(actionPerformed()));
   p2->layout()->addWidget(deleteButton);
 
   DropPanel* p3 = new DropPanel(this);
@@ -225,7 +225,7 @@ void MultiSensorIconAdder::setMultiIcon(QList <MultiSensorIcon::Entry*>* icons)
   //rowPanel->layout()->addWidget(Box.createRigidArea(dim));
   cnt++;
   }
-  catch (NullPointerException npe) { /* never */}
+  catch (NullPointerException* npe) { /* never */}
  }
  if (rowPanel != NULL)
  {

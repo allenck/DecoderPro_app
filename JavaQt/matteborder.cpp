@@ -33,7 +33,7 @@ public class MatteBorder extends EmptyBorder
  * @param matteColor the color rendered for the border
  */
 /*public*/ MatteBorder::MatteBorder(int top, int left, int bottom, int right, QColor matteColor, QWidget *parent)
-  : EmptyBorder(top, left, bottom, right)
+  : EmptyBorder(top, left, bottom, right, parent)
  {
     //super(top, left, bottom, right);
     this->color = matteColor;
@@ -133,7 +133,7 @@ public class MatteBorder extends EmptyBorder
 
 }
 
-/*private*/ void MatteBorder::paintEdge(QWidget* c, /*QPainter g,*/ int x, int y, int width, int height, int tileW, int tileH) {
+/*private*/ void MatteBorder::paintEdge(QWidget* /*c*/, /*QPainter g,*/ int /*x*/, int /*y*/, int /*width*/, int /*height*/, int /*tileW*/, int /*tileH*/) {
 #if 0
     g = g.create(x, y, width, height);
     int sY = -(y % tileH);

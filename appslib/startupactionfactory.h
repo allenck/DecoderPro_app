@@ -18,9 +18,9 @@
  * @author Randall Wood (C) 2016;
  */
 /*public*/ /*interface*/ class StartupActionFactory : public JmriServiceProviderInterface {
-Q_OBJECT
+//Q_OBJECT
 public:
- StartupActionFactory(QObject* parent = 0) : JmriServiceProviderInterface(parent) {}
+ //StartupActionFactory(QObject* parent = 0) : JmriServiceProviderInterface(parent) {}
     /**
      * Get the title for the given class using the default locale.
      *
@@ -30,7 +30,7 @@ public:
      *                                  factory
      */
     //@Nonnull
-   virtual QString getTitle(/*@Nonnull*/ /*Class<?>*/QString /*clazz*/) throw (IllegalArgumentException) {return "";}
+   virtual QString getTitle(/*@Nonnull*/ /*Class<?>*/QString /*clazz*/) /*throw (IllegalArgumentException)*/ {return "";}
 
     /**
      * Get the title for the given class.
@@ -42,7 +42,7 @@ public:
      *                                  factory
      */
     //@Nonnull
-    virtual QString getTitle(/*@Nonnull*/ /*Class<?>*/QString /*clazz*/, /*@Nonnull*/ QLocale /*locale*/) throw (IllegalArgumentException) {return "";}
+    virtual QString getTitle(/*@Nonnull*/ /*Class<?>*/QString /*clazz*/, /*@Nonnull*/ QLocale /*locale*/) /*throw (IllegalArgumentException)*/ {return "";}
 
     /**
      * Get the classes this factory supports.
@@ -65,9 +65,12 @@ public:
      *                                  factory
      */
     //@Nonnull
-    virtual QStringList getOverriddenClasses(/*@Nonnull*/ /*Class<?>*/QString /*clazz*/) throw (IllegalArgumentException) {return QStringList();}
+    virtual QStringList getOverriddenClasses(/*@Nonnull*/ /*Class<?>*/QString /*clazz*/) /*throw (IllegalArgumentException)*/ {return QStringList();}
 
- virtual void initialize() {}
+    virtual void initialize() {}
+
+  virtual QObject* self() = 0;
+
 };
-
+Q_DECLARE_INTERFACE(StartupActionFactory, "StartupActionFactory")
 #endif // STARTUPACTIONFACTORY_H

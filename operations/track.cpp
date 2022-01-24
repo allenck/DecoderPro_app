@@ -27,6 +27,8 @@
 #include "trainmanager.h"
 #include "trainschedule.h"
 #include "trainschedulemanager.h"
+#include "instancemanager.h"
+#include "division.h"
 
 //Track::Track(QObject *parent) :
 //  QObject(parent)
@@ -136,9 +138,10 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString Track::SERVICE_ORDER_CHANGED_PROPERTY = "trackServiceOrder"; // NOI18N
  /*public*/ /*static*/ /*final*/ QString Track::ALTERNATE_TRACK_CHANGED_PROPERTY = "trackAlternate"; // NOI18N
  /*public*/ /*static*/ /*final*/ QString Track::TRACK_BLOCKING_ORDER_CHANGED_PROPERTY = "trackBlockingOrder"; // NOI18N
+ /*public*/ /*static*/ /*final*/ QString Track::TRACK_REPORTER_PROPERTY = "trackReporterChange"; // NOI18N
 
  /*public*/ Track::Track(QString id, QString name, QString type, Location* location,QObject *parent) :
- QObject(parent)
+ SwingPropertyChangeSupport(this, parent)
  {
   common();
   log->debug(tr("New (%1) track (%2) id: %3").arg(type).arg(name).arg(id));
@@ -149,6 +152,7 @@ namespace Operations
   _id = id;
 
  }
+
  void Track::common()
  {
   log = new Logger("Track");
@@ -206,9 +210,8 @@ namespace Operations
 
 
   // a new track accepts all types
-  setTypeNames(CarTypes::instance()->getNames());
-  setTypeNames(EngineTypes::instance()->getNames());
-  pcs = new PropertyChangeSupport(this);
+  setTypeNames(((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames());
+  setTypeNames(((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->getNames());
   _typeList = QStringList();
   _loadList = QStringList();
    debugFlag = false;
@@ -289,15 +292,41 @@ namespace Operations
  }
 
  /*public*/ void Track::setName(QString name) {
-     QString old = _name;
-     _name = name;
-     if (old!=(name)) {
-         setDirtyAndFirePropertyChange(NAME_CHANGED_PROPERTY, old, name);
+         QString old = _name;
+         _name = name;
+         if (old!=(name)) {
+             ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->resetNameLengths(); // recalculate max track name length
+                                                                                   // for manifests
+             setDirtyAndFirePropertyChange(NAME_CHANGED_PROPERTY, old, name);
+         }
      }
+
+  /*public*/ QString Track::getName() {
+      return _name;
+  }
+
+  /*public*/ Division* Track::getDivision() {
+      return getLocation()->getDivision();
+  }
+
+
+ /*public*/ QString Track::getDivisionName() {
+     return getLocation()->getDivisionName();
  }
 
- /*public*/ QString Track::getName() {
-     return _name;
+ /*public*/ bool Track::isSpur() {
+         return getTrackType()==(Track::SPUR);
+     }
+ /*public*/ bool Track::isYard() {
+         return getTrackType() == (Track::YARD);
+ }
+
+ /*public*/ bool Track::isInterchange() {
+     return getTrackType()==(Track::INTERCHANGE);
+ }
+
+ /*public*/ bool Track::isStaging() {
+     return getTrackType()==(Track::STAGING);
  }
 
  /**
@@ -464,6 +493,13 @@ namespace Operations
  /*public*/ int Track::getScheduleMode() {
      return _mode;
  }
+
+ /*public*/ QString Track::getScheduleModeName() {
+    if (getScheduleMode() == Track::MATCH) {
+        return tr("Match");
+    }
+    return tr("Sequential");
+}
 
  /*public*/ void Track::setAlternateTrack(Track* track) {
      Track* oldTrack = _location->getTrackById(_alternateTrackId);
@@ -814,6 +850,17 @@ if (types.length() == 0) {
  /*public*/ QString Track::getRoadOption() {
      return _roadOption;
  }
+ /*public*/ QString Track::getRoadOptionString() {
+         QString s;
+         if (getRoadOption() ==(Track::INCLUDE_ROADS)) {
+             s = tr("Accept Only") + " " + QString::number(getRoadNames().length()) + " " + tr("Roads");
+         } else if (getRoadOption() ==(Track::EXCLUDE_ROADS)) {
+             s = tr("Exclude") + " " + QString::number(getRoadNames().length()) + " " + tr("Roads");
+         } else {
+             s = tr("Track accepts all railways");
+         }
+         return s;
+     }
 
  /**
   * Set the road option for this track.
@@ -890,6 +937,17 @@ if (roads.length() == 0) {
      return _loadOption;
  }
 
+ /*public*/ QString Track::getLoadOptionString() {
+         QString s;
+         if (getLoadOption() == (Track::INCLUDE_LOADS)) {
+             s = tr("Accept Only") + " " + QString::number(getLoadNames().length())+ " " + tr("Loads");
+         } else if (getLoadOption() == (Track::EXCLUDE_LOADS)) {
+             s = tr("Exclude") + " " + QString::number(getLoadNames().length()) + " " + tr("Loads");
+         } else {
+             s = tr("Track accepts all loads");
+         }
+         return s;
+     }
  /**
   * Set how this track deals with receiving car loads
   *
@@ -1011,6 +1069,17 @@ if (loads.length() == 0) {
      return _shipLoadOption;
  }
 
+ /*public*/ QString Track::getShipLoadOptionString() {
+         QString s;
+         if (getShipLoadOption() ==(Track::INCLUDE_LOADS)) {
+             s = tr("Ship 0nly") + " " + QString::number(getShipLoadNames().length()) + " " + tr("Loads");
+         } else if (getShipLoadOption() ==(Track::EXCLUDE_LOADS)) {
+             s = tr("Exclude") + " " +QString::number( getShipLoadNames().length()) + " " + tr("Loads");
+         } else {
+             s = tr("ShipAll");
+         }
+         return s;
+     }
  /**
   * Set how this track deals with shipping car loads
   *
@@ -1497,7 +1566,7 @@ if (loads.length() == 0) {
      if (getScheduleId()==(NONE)) {
          return NULL;
      }
-     Schedule* schedule = ScheduleManager::instance()->getScheduleById(getScheduleId());
+     Schedule* schedule = ((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"))->getScheduleById(getScheduleId());
      if (schedule == NULL) {
          log->error("No schedule for id: " + getScheduleId());
      }
@@ -1511,7 +1580,7 @@ if (loads.length() == 0) {
      }
      // old code only stored schedule name, so create id if needed.
      if (_scheduleId==(NONE) && _scheduleName!=(NONE)) {
-         Schedule* schedule = ScheduleManager::instance()->getScheduleByName(_scheduleName);
+         Schedule* schedule = ((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"))->getScheduleByName(_scheduleName);
          if (schedule == NULL) {
              log->error("No schedule for name: " + _scheduleName);
          } else {
@@ -1525,7 +1594,7 @@ if (loads.length() == 0) {
      QString old = _scheduleId;
      _scheduleId = id;
      if (old!=(id)) {
-         Schedule* schedule = ScheduleManager::instance()->getScheduleById(id);
+         Schedule* schedule = ((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"))->getScheduleById(id);
          if (schedule == NULL) {
              _scheduleName = NONE;
          } else {
@@ -1658,13 +1727,13 @@ if (loads.length() == 0) {
   {
    // check train schedules
    if (si->getSetoutTrainScheduleId()!=(ScheduleItem::NONE)
-           && TrainScheduleManager::instance()->getScheduleById(si->getSetoutTrainScheduleId()) == NULL)
+           && ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(si->getSetoutTrainScheduleId()) == NULL)
    {
        status = (tr("Not Valid <%1>").arg(si->getSetoutTrainScheduleId()));
        break;
    }
    if (si->getPickupTrainScheduleId()!=(ScheduleItem::NONE)
-           && TrainScheduleManager::instance()->getScheduleById(si->getPickupTrainScheduleId()) == NULL)
+           && ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(si->getPickupTrainScheduleId()) == NULL)
    {
        status = (tr("Not Valid <%1>").arg(si->getPickupTrainScheduleId()));
        break;
@@ -1679,13 +1748,13 @@ if (loads.length() == 0) {
    }
    // check roads, accepted by track, valid road, and there's at least one car with that road
    if (si->getRoadName()!=(ScheduleItem::NONE)
-           && (!acceptsRoadName(si->getRoadName()) || !CarRoads::instance()->containsName(si->getRoadName()) || CarManager
-           ::instance()->getByTypeAndRoad(si->getTypeName(), si->getRoadName()) == NULL)) {
+           && (!acceptsRoadName(si->getRoadName()) || !((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->containsName(si->getRoadName()) ||
+               ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getByTypeAndRoad(si->getTypeName(), si->getRoadName()) == NULL)) {
        status = (tr("Not Valid <%1>").arg(si->getRoadName()));
        break;
    }
    // check loads
-   QStringList loads = CarLoads::instance()->getNames(si->getTypeName());
+   QStringList loads = ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getNames(si->getTypeName());
    if (si->getReceiveLoadName()!=(ScheduleItem::NONE)
            && (!acceptsLoad(si->getReceiveLoadName(), si->getTypeName()) || !loads.contains(si
                    ->getReceiveLoadName()))) {
@@ -1698,7 +1767,7 @@ if (loads.length() == 0) {
    }
    // check destination
    if (si->getDestination() != NULL
-           && (!si->getDestination()->acceptsTypeName(si->getTypeName()) || LocationManager::instance()
+           && (!si->getDestination()->acceptsTypeName(si->getTypeName()) || ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))
            ->getLocationById(si->getDestination()->getId()) == NULL)) {
        status = tr("Not Valid <%1>").arg(si->getDestination()->toString());
        break;
@@ -1754,8 +1823,8 @@ if (loads.length() == 0) {
      }
      if (getScheduleId()==(NONE)) {
          // does car have a scheduled load?
-         if (car->getLoadName()==(CarLoads::instance()->getDefaultEmptyName())
-                 || car->getLoadName()==(CarLoads::instance()->getDefaultLoadName())) {
+         if (car->getLoadName()==(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultEmptyName())
+                 || car->getLoadName()==(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultLoadName())) {
              return OKAY; // no
          }
          return tr("carHasA").arg(CUSTOM, LOAD).arg(car->getLoadName());
@@ -1814,12 +1883,23 @@ if (loads.length() == 0) {
  }
 
  /*private*/ QString Track::checkScheduleItem(ScheduleItem* si, Car* car) {
-     if (si->getSetoutTrainScheduleId()!=(ScheduleItem::NONE)
-             && TrainManager::instance()->getTrainScheduleActiveId()!=(si->getSetoutTrainScheduleId())) {
-         TrainSchedule* sch = TrainScheduleManager::instance()->getScheduleById(si->getSetoutTrainScheduleId());
-         if (sch != NULL) {
-             return SCHEDULE + " (" + getScheduleName() + ") " + tr("requestCarOnly") + " ("
-                     + sch->getName() + ")";
+ // if car is already assigned to this schedule item allow it to be dropped off
+     // on the wrong day (car arrived late)
+     if (car->getScheduleItemId()!=(si->getId()) &&
+             si->getSetoutTrainScheduleId()!=(ScheduleItem::NONE) &&
+             ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getTrainScheduleActiveId()
+                     !=(si->getSetoutTrainScheduleId())) {
+         TrainSchedule* trainSch = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))
+                 ->getScheduleById(si->getSetoutTrainScheduleId());
+         if (trainSch != nullptr) {
+             return SCHEDULE +
+                     " (" +
+                     getScheduleName() +
+                     ") " +
+                     tr("requests car only on") +
+                     " (" +
+                     trainSch->getName() +
+                     ")";
          }
      }
      // Check for correct car type, road, load
@@ -1909,7 +1989,8 @@ if (loads.length() == 0) {
   log->debug(tr("Destination track (%1) has schedule (%2) item id (%3) mode: %4 (%5)").arg(getName()).arg(getScheduleName()).arg(
           getScheduleItemId()).arg(getScheduleMode()).arg(getScheduleMode() == SEQUENTIAL ? "Sequential" : "Match")); // NOI18N
   if (currentSi != NULL
-          && (currentSi->getSetoutTrainScheduleId()==(ScheduleItem::NONE) || TrainManager::instance()
+          && (currentSi->getSetoutTrainScheduleId()==(ScheduleItem::NONE) ||
+              ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))
           ->getTrainScheduleActiveId()==(currentSi->getSetoutTrainScheduleId()))
           && car->getTypeName()==(currentSi->getTypeName())
           && (currentSi->getRoadName()==(ScheduleItem::NONE) || car->getRoadName()==(
@@ -1927,12 +2008,12 @@ if (loads.length() == 0) {
       // build return message
       QString timetableName = "";
       QString currentTimetableName = "";
-      TrainSchedule* sch = TrainScheduleManager::instance()->getScheduleById(
-              TrainManager::instance()->getTrainScheduleActiveId());
+      TrainSchedule* sch = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(
+              ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getTrainScheduleActiveId());
       if (sch != NULL) {
           timetableName = sch->getName();
       }
-      sch = TrainScheduleManager::instance()->getScheduleById(currentSi->getSetoutTrainScheduleId());
+      sch = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(currentSi->getSetoutTrainScheduleId());
       if (sch != NULL) {
           currentTimetableName = sch->getName();
       }
@@ -2243,7 +2324,7 @@ if (loads.length() == 0) {
   *
   * @param e Consist XML element
   */
- /*public*/ Track::Track(QDomElement e, Location* location)
+ /*public*/ Track::Track(QDomElement e, Location* location) : SwingPropertyChangeSupport(this,this)
  {
   common();
      _location = location;
@@ -2581,7 +2662,7 @@ if (loads.length() == 0) {
          QString buf;// = new StringBuffer();
          foreach (QString type, types) {
              // remove types that have been deleted by user
-             if (CarTypes::instance()->containsName(type) || EngineTypes::instance()->containsName(type)) {
+             if (((CarTypes*)InstanceManager::getDefault("CarTypes"))->containsName(type) || ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->containsName(type)) {
                  buf.append(type + "%%"); // NOI18N
              }
          }
@@ -2591,12 +2672,12 @@ if (loads.length() == 0) {
      QDomElement eTypes = doc.createElement(Xml::TYPES);
      foreach (QString type, types) {
          // don't save types that have been deleted by user
-         if (EngineTypes::instance()->containsName(type)) {
+         if (((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->containsName(type)) {
              QDomElement eType = QDomElement();
              eType.setTagName(Xml::LOCO_TYPE);
              eType.setAttribute(Xml::NAME, type);
              eTypes.appendChild(eType);
-         } else if (CarTypes::instance()->containsName(type)) {
+         } else if (((CarTypes*)InstanceManager::getDefault("CarTypes"))->containsName(type)) {
              QDomElement eType =QDomElement();
              eType.setTagName(Xml::CAR_TYPE);
              eType.setAttribute(Xml::NAME, type);
@@ -2745,7 +2826,7 @@ if (loads.length() == 0) {
              QDomElement destinations = QDomElement();
              destinations.setTagName(Xml::DESTINATIONS);
              foreach (QString id, destIds) {
-                 Location* loc = LocationManager::instance()->getLocationById(id);
+                 Location* loc = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationById(id);
                  if (loc != NULL) {
                      QDomElement destination = QDomElement();
                      destination.setTagName(Xml::DESTINATION);
@@ -2783,18 +2864,36 @@ if (loads.length() == 0) {
      return e;
  }
 
-#if 0
- /*public*/ synchronized void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.addPropertyChangeListener(l);
- }
-
- /*public*/ synchronized void removePropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.removePropertyChangeListener(l);
- }
-#endif
  /*protected*/ void Track::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
-     LocationManagerXml::instance()->setDirty(true);
-     pcs->firePropertyChange(p, old, n);
+     ((LocationManagerXml*)InstanceManager::getDefault("LocationManagerXml"))->setDirty(true);
+     firePropertyChange(p, old, n);
+ }
+/*
+  * set the jmri.Reporter object associated with this location.
+  *
+  * @param reader jmri.Reporter object.
+  */
+ /*public*/ void Track::setReporter(Reporter* r) {
+     Reporter* old = _reader;
+     _reader = r;
+     if (old != r) {
+         setDirtyAndFirePropertyChange(TRACK_REPORTER_PROPERTY, VPtr<Reporter>::asQVariant(old),VPtr<Reporter>::asQVariant(r));
+     }
  }
 
+ /*
+  * get the jmri.Reporter object associated with this location.
+  *
+  * @return jmri.Reporter object.
+  */
+ /*public*/ Reporter* Track::getReporter() {
+     return _reader;
+ }
+
+ /*public*/ QString Track::getReporterName() {
+     if (getReporter() != nullptr) {
+         return getReporter()->getDisplayName();
+     }
+     return "";
+ }
 }

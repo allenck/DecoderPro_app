@@ -135,7 +135,7 @@ AddTableActionListener::AddTableActionListener(TableItemPanel *parent)
 {
  this->parent = parent;
 }
-void AddTableActionListener::actionPerformed(ActionEvent *e)
+void AddTableActionListener::actionPerformed(JActionEvent *e)
 {
  parent->addToTable();
 }
@@ -161,14 +161,14 @@ void AddTableActionListener::actionPerformed(ActionEvent *e)
     _addTableDialog->setVisible(true);
 }
 
-AtCancelListener::AtCancelListener(TableItemPanel *self)
+AtCancelListener::AtCancelListener(TableItemPanel *tip)
 {
- this->self = self;
+ this->tip = tip;
 }
-void AtCancelListener::actionPerformed()
+void AtCancelListener::actionPerformed(JActionEvent*)
 {
  //self->close();
- self->cancelPressed();
+ tip->cancelPressed();
 }
 
 void TableItemPanel::cancelPressed(/*ActionEvent e*/) {
@@ -199,11 +199,11 @@ void TableItemPanel::cancelPressed(/*ActionEvent e*/) {
    }
 //            _addTableDialog->dispose();
   }
-  catch(IllegalArgumentException ex)
+  catch(IllegalArgumentException* ex)
   {
-//            JOptionPane.showMessageDialog(_paletteFrame, ex.getMessage(),
+//            JOptionPane.showMessageDialog(_paletteFrame, ex->getMessage(),
 //                    ItemPalette.rb.getString("warnTitle"), JOptionPane.WARNING_MESSAGE);
-   QMessageBox::warning(_paletteFrame, tr("Warning"), ex.getMessage());
+   QMessageBox::warning(_paletteFrame, tr("Warning"), ex->getMessage());
   }
  }
  _sysNametext->setText("");

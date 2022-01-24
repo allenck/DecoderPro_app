@@ -33,6 +33,7 @@
 #include "traincsvmanifest.h"
 #include "buildfailedexception.h"
 #include "joptionpane.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -64,9 +65,9 @@ namespace Operations
   multipass = false;
 
   // managers
-  carManager = CarManager::instance();
-  locationManager = LocationManager::instance();
-  engineManager = EngineManager::instance();
+  carManager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
+  locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
+  engineManager = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"));
   log = new Logger("TrainBuilder");
  }
 
@@ -95,7 +96,7 @@ namespace Operations
   {
    build();
   }
-  catch (BuildFailedException e)
+  catch (BuildFailedException* e)
   {
    buildFailed(e);
   }
@@ -110,7 +111,7 @@ namespace Operations
    _train->setLeadEngine(NULL);
 
    // create build report file
-   File* file = TrainManagerXml::instance()->createTrainBuildReportFile(_train->getName());
+   File* file = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->createTrainBuildReportFile(_train->getName());
    try
    {
     QFile* qFile = new QFile(file->getPath());
@@ -123,7 +124,7 @@ namespace Operations
     //_buildReport = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file),
     //               "UTF-8")), true); // NOI18N
     _buildReport = new PrintWriter(new QTextStream(qFile),true);
-   } catch (IOException e) {
+   } catch (IOException* e) {
       log->error("Can not open build report file: " + file->getName());
        return;
    }
@@ -155,24 +156,24 @@ namespace Operations
 
    if (_train->getRoute() == NULL)
    {
-    throw BuildFailedException(tr("ERROR Can not build train (%1), needs a route").arg(
+    throw new BuildFailedException(tr("ERROR Can not build train (%1), needs a route").arg(
                     _train->getName()));
    }
    // get the train's route
    _routeList = _train->getRoute()->getLocationsBySequenceList();
    if (_routeList->size() < 1)
    {
-    throw BuildFailedException(tr("ERROR Route needs at least one location to build train (%1)").arg(_train->getName()));
+    throw new BuildFailedException(tr("ERROR Route needs at least one location to build train (%1)").arg(_train->getName()));
    }
    // train departs
    _departLocation = locationManager->getLocationByName(_train->getTrainDepartsName());
    if (_departLocation == NULL) {
-    throw  BuildFailedException(tr("ERROR Route departure location missing for train (%1)").arg(_train->getName()));
+    throw new  BuildFailedException(tr("ERROR Route departure location missing for train (%1)").arg(_train->getName()));
    }
    // train terminates
    _terminateLocation = locationManager->getLocationByName(_train->getTrainTerminatesName());
    if (_terminateLocation == NULL) {
-    throw  BuildFailedException(tr("ERROR Route terminate location missing for train (%1)").arg(_train->getName()));
+    throw new  BuildFailedException(tr("ERROR Route terminate location missing for train (%1)").arg(_train->getName()));
    }
 
    // show train build options in detailed mode
@@ -200,7 +201,7 @@ namespace Operations
     {
      addLine(_buildReport, FIVE, tr("WARNING only selected trains used for routing:"));
      // list the selected trains
-     foreach (Train* train, TrainManager::instance()->getTrainsByNameList())
+     foreach (Train* train, ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainsByNameList())
      {
       if (train->isBuildEnabled())
       {
@@ -254,7 +255,7 @@ namespace Operations
 //    emit buildException(tr("Not enough cars (%1) at departure (%2) to build train (%3)").arg(
 //        _departLocation->getNumberRS()).arg(_train->getTrainDepartsName()).arg(_train->getName()), "Normal");
 //    return;
-    throw BuildFailedException(tr("Not enough cars (%1) at departure (%2) to build train (%3)").arg(
+    throw new BuildFailedException(tr("Not enough cars (%1) at departure (%2) to build train (%3)").arg(
         _departLocation->getNumberRS()).arg(_train->getTrainDepartsName()).arg(_train->getName()));
 
    }
@@ -272,7 +273,7 @@ namespace Operations
 //                        _train->getRoute()->getName()));
 //     emit buildException(tr("ERROR location missing in route (%1)").arg(_train->getRoute()->getName()), "Normal");
 //     return;
-     throw BuildFailedException(tr("ERROR location missing in route (%1)").arg(_train->getRoute()->getName()));
+     throw new BuildFailedException(tr("ERROR location missing in route (%1)").arg(_train->getRoute()->getName()));
 
     }
     // train doesn't drop or pick up cars from staging locations found in middle of a route
@@ -374,7 +375,7 @@ namespace Operations
 //                       _train->getRoute()->getName(), rl->getName(), rl->getRandomControl()));
 //         emit buildException(tr("Route (%1) location (%2) random control value (%3) is not an integer").arg(_train->getRoute()->getName()).arg(rl->getName()).arg(rl->getRandomControl()), "Normal");
 //         return;
-         throw BuildFailedException(tr("Route (%1) location (%2) random control value (%3) is not an integer").arg(_train->getRoute()->getName()).arg(rl->getName()).arg(rl->getRandomControl()));
+         throw new BuildFailedException(tr("Route (%1) location (%2) random control value (%3) is not an integer").arg(_train->getRoute()->getName()).arg(rl->getName()).arg(rl->getRandomControl()));
 
         }
     }
@@ -500,7 +501,7 @@ namespace Operations
               log->debug("Train is returning to same track in staging");
            } else {
                addLine(_buildReport, ONE, tr("Note that the program requires an empty staging track for each train!"));
-               throw BuildFailedException(tr("All staging tracks at %1 are occupied, reserved, or can not service the train").arg(
+               throw new BuildFailedException(tr("All staging tracks at %1 are occupied, reserved, or can not service the train").arg(
                        _terminateLocation->getName()));
                return;
            }
@@ -523,14 +524,14 @@ namespace Operations
            startTime = QDateTime::currentDateTime(); // restart build timer
            if (_departStageTrack == NULL) {
                showTrainRequirements();
-               throw BuildFailedException(tr("Could not find a departure staging track at %1 that meets the train requirements").arg(
+               throw new BuildFailedException(tr("Could not find a departure staging track at %1 that meets the train requirements").arg(
                        _departLocation->getName()));
                return;
            }
            // load engines for this train
            if (!getEngines(_reqNumEngines, _train->getEngineModel(), _train->getEngineRoad(), _train
                    ->getTrainDepartsRouteLocation(), engineTerminatesFirstLeg)) {
-               throw BuildFailedException(tr("Train requires %1 loco(s), could not pick up at departure (%2) or set out at (%3)").arg(_reqNumEngines).arg(_train->getTrainDepartsName()).arg(engineTerminatesFirstLeg->getName()));
+               throw new BuildFailedException(tr("Train requires %1 loco(s), could not pick up at departure (%2) or set out at (%3)").arg(_reqNumEngines).arg(_train->getTrainDepartsName()).arg(engineTerminatesFirstLeg->getName()));
             return;
            }
        } else {
@@ -553,7 +554,7 @@ namespace Operations
        }
        if (_departStageTrack == NULL) {
            showTrainRequirements();
-           throw BuildFailedException(tr("Could not find a departure staging track at %1 that meets the train requirements").arg(
+           throw new BuildFailedException(tr("Could not find a departure staging track at %1 that meets the train requirements").arg(
                    _departLocation->getName()));
            return;
            // departing staging and returning to same track?
@@ -568,7 +569,7 @@ namespace Operations
        }
        if (!getEngines(_reqNumEngines, _train->getEngineModel(), _train->getEngineRoad(), _train
                ->getTrainDepartsRouteLocation(), engineTerminatesFirstLeg)) {
-           throw BuildFailedException(tr("Train requires %1 loco(s), could not pick up at departure (%2) or set out at (%3)").arg(_reqNumEngines).arg(
+           throw new BuildFailedException(tr("Train requires %1 loco(s), could not pick up at departure (%2) or set out at (%3)").arg(_reqNumEngines).arg(
                            _train->getTrainDepartsName()).arg(engineTerminatesFirstLeg->getName()));
         return;
        }
@@ -587,7 +588,7 @@ namespace Operations
                _train->getSecondLegEngineRoad(), _train->getSecondLegStartLocation(), engineTerminatesSecondLeg)) {
            secondLeadEngine = _leadEngine;
        } else {
-           throw BuildFailedException(tr("Train requires %1 loco(s), could not pick up at departure (%2) or set out at (%3)").arg(
+           throw new BuildFailedException(tr("Train requires %1 loco(s), could not pick up at departure (%2) or set out at (%3)").arg(
                    _train->getSecondLegNumberEngines()).arg(
                            _train->getSecondLegStartLocation()->toString()).arg(engineTerminatesSecondLeg->toString()));
         return;
@@ -604,7 +605,7 @@ namespace Operations
                ->getTrainTerminatesRouteLocation())) {
            thirdLeadEngine = _leadEngine;
        } else {
-           throw BuildFailedException(tr("Train requires %1 loco(s), could not pick up at departure (%2) or set out at (%3)").arg(
+           throw new BuildFailedException(tr("Train requires %1 loco(s), could not pick up at departure (%2) or set out at (%3)").arg(
                    _train->getThirdLegNumberEngines()).arg(
                            _train->getThirdLegStartLocation()->toString()).arg(_train->getTrainTerminatesRouteLocation()->toString()));
         return;
@@ -630,7 +631,7 @@ namespace Operations
    _carList = carManager->getAvailableTrainList(_train);
    // TODO: DAB this needs to be controlled by each train
    if (requested > _carList->size() && Control::fullTrainOnly) {
-       throw BuildFailedException(tr("The number of requested cars (%1) for train (%2) is greater than the number available (%3)").arg(
+       throw new BuildFailedException(tr("The number of requested cars (%1) for train (%2) is greater than the number available (%3)").arg(
                requested).arg(_train->getName().arg(_carList->size())));
    }
 
@@ -719,10 +720,10 @@ namespace Operations
 
    try {
        (new JsonManifest(_train))->build();
-   } catch (IOException ex) {
-      log->error(tr("Unable to create JSON manifest: %1").arg(ex.getLocalizedMessage()));
+   } catch (IOException* ex) {
+      log->error(tr("Unable to create JSON manifest: %1").arg(ex->getLocalizedMessage()));
        //emit buildException(ex);
-        throw BuildFailedException(ex);
+        throw new BuildFailedException(ex);
    }
    if (Setup::isGenerateCsvManifestEnabled()) {
        new TrainCsvManifest(_train);
@@ -838,7 +839,7 @@ namespace Operations
   */
  /*private*/ Track* TrainBuilder::PromptToStagingDialog()
  {
-    QList<Track*> tracksIn = _terminateLocation->getTrackByNameList(NULL);
+    QList<Track*> tracksIn = _terminateLocation->getTracksByNameList(NULL);
      QList<Track*> validTracks = QList<Track*>();
      // only show valid tracks
      foreach (Track* track, tracksIn)
@@ -916,7 +917,7 @@ namespace Operations
 
      // code check
      if (rl == NULL || rld == NULL) {
-         throw BuildFailedException(tr("ERROR locomotive location not specified!"));
+         throw new BuildFailedException(tr("ERROR locomotive location not specified!"));
       return false;
      }
 
@@ -1225,7 +1226,7 @@ namespace Operations
                      foundCar = true;
                  }
                  if (!foundCar) {
-                     throw BuildFailedException(
+                     throw new BuildFailedException(
                              tr("BUILD FAILED car (%1) departing staging without a destination").arg(car->toString()));
                   return;
                  }
@@ -1260,7 +1261,7 @@ namespace Operations
          }
      }
      if (requiresCar && !foundCar) {
-         throw BuildFailedException(tr("Train (%1) requires %2, can't meet requirements at departure (%3) and/or termination (%4)").arg(
+         throw new BuildFailedException(tr("Train (%1) requires %2, can't meet requirements at departure (%3) and/or termination (%4)").arg(
                  _train->getName()).arg(tr("FRED")).arg(rl->getName()).arg(rld->getName()));
       return;
      }
@@ -1284,12 +1285,12 @@ namespace Operations
          bool requiresCaboose) //throws BuildFailedException
 {
      if (rl == NULL) {
-         throw BuildFailedException(tr("Caboose change requested for train (%1) departure location missing!").arg(
+         throw new BuildFailedException(tr("Caboose change requested for train (%1) departure location missing!").arg(
                  _train->getName()));
       return;
      }
      if (rld == NULL) {
-         throw BuildFailedException(tr("Caboose change requested for train ({0}) departs ({1}) change location missing!").arg(
+         throw new BuildFailedException(tr("Caboose change requested for train ({0}) departs ({1}) change location missing!").arg(
                  _train->getName()).arg(rl->getName()),"Normal");
       return;
      }
@@ -1336,7 +1337,7 @@ namespace Operations
                foundCaboose = true;
            }
            if (!foundCaboose) {
-               throw BuildFailedException(
+               throw new BuildFailedException(
                        tr("BUILD FAILED car (%1) departing staging without a destination").arg(car->toString()));
             return;
            }
@@ -1410,11 +1411,11 @@ namespace Operations
              addLine(_buildReport, ONE, tr("NOTE! The train has to also service the car type (Caboose)"));
          }
          if (!cabooseAtDeparture) {
-             throw BuildFailedException(tr("Train (%1) requires %2, can't find %2 at departure (%3)").arg( _train->getName()).arg(tr("Caboose").toLower()).arg(rl->getName()));
+             throw new BuildFailedException(tr("Train (%1) requires %2, can't find %2 at departure (%3)").arg( _train->getName()).arg(tr("Caboose").toLower()).arg(rl->getName()));
           return;
          }
          // we did find a caboose at departure that meet requirements, but couldn't place it at destination.
-         throw BuildFailedException(tr("Train (%1) requires %2, can't set out %2 at destination (%3)").arg( _train->getName()).arg(tr("Caboose")).arg(rld->getName()));
+         throw new BuildFailedException(tr("Train (%1) requires %2, can't set out %2 at destination (%3)").arg( _train->getName()).arg(tr("Caboose")).arg(rld->getName()));
          return;
      }
  }
@@ -1436,7 +1437,7 @@ namespace Operations
                      car->toString()).arg(car->getTypeName()).arg(
                              (car->getLocationName() + ").arg(" + car->getTrackName())));
              if (car->getTrack() == _departStageTrack) {
-                 throw BuildFailedException(tr("ERROR: Attempt to removed car with FRED or Caboose from staging")); // NOI18N
+                 throw new BuildFailedException(tr("ERROR: Attempt to removed car with FRED or Caboose from staging")); // NOI18N
               return;
              }
              _carList->removeOne(car); // remove this car from the list
@@ -1481,7 +1482,7 @@ namespace Operations
              addLine(_buildReport, SEVEN, tr("Exclude car (%1) location unknown, last known location (%2, %3)").arg(
                      car->toString()).arg(car->getLocationName()).arg(car->getTrackName()));
              if (car->getTrack()==(_departStageTrack)) {
-                 throw BuildFailedException(tr("Staging (%1, %2) has a car (%3) with an unknown location").arg(
+                 throw new BuildFailedException(tr("Staging (%1, %2) has a car (%3) with an unknown location").arg(
                          car->getLocationName()).arg(car->getTrackName()).arg(car->toString()));
               return;
              }
@@ -1494,7 +1495,7 @@ namespace Operations
              addLine(_buildReport, SEVEN, tr("Exclude car (%1) out of service, car''s location (%2, %3)").arg(
                      car->toString()).arg(car->getLocationName()).arg(car->getTrackName()));
              if (car->getTrack()==(_departStageTrack)) {
-                 throw BuildFailedException(tr("Staging (%1, %2) has a car (%3) that is out of service").arg(car->getLocationName(),
+                 throw new BuildFailedException(tr("Staging (%1, %2) has a car (%3) that is out of service").arg(car->getLocationName(),
                          car->getTrackName()).arg(car->toString()));
               return;
              }
@@ -1629,10 +1630,10 @@ namespace Operations
                  continue;
              }
              if (car->getPickupScheduleId()!=(Car::NONE)) {
-                 if (car->getPickupScheduleId()==(TrainManager::instance()->getTrainScheduleActiveId())) {
+                 if (car->getPickupScheduleId()==(((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getTrainScheduleActiveId())) {
                      car->setPickupScheduleId(Car::NONE);
                  } else {
-                     TrainSchedule* sch = TrainScheduleManager::instance()->getScheduleById(car->getPickupScheduleId());
+                     TrainSchedule* sch = ((Operations::TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(car->getPickupScheduleId());
                      if (sch != NULL) {
                          addLine(_buildReport, SEVEN, tr("Exclude car (%1) type (%2) at location (%3, %4) scheduled pickup on (%5)").arg(car->toString(),
                                  car->getTypeName()).arg(car->getLocationName()).arg(car->getTrackName()).arg(sch->getName()));
@@ -1693,7 +1694,7 @@ namespace Operations
          }
          // error if all of the cars and engines from staging aren't available
          if (numCarsFromStaging + _departStageTrack->getNumberEngines() != _departStageTrack->getNumberRS()) {
-             throw BuildFailedException(tr("ERROR not all cars or locos in staging can be serviced by this train, %1 cars or locos can not be serviced").arg(
+             throw new BuildFailedException(tr("ERROR not all cars or locos in staging can be serviced by this train, %1 cars or locos can not be serviced").arg(
                      (_departStageTrack->getNumberRS()
                              - (numCarsFromStaging + _departStageTrack->getNumberEngines()))));
           return;
@@ -1781,7 +1782,7 @@ namespace Operations
                          // The following code should not be executed, departing staging tracks are checked before
                          // this
                          // routine.
-                         throw BuildFailedException(tr("Car (%1) departing staging with destination that is not part of this train''s route").arg(car->toString()));
+                         throw new BuildFailedException(tr("Car (%1) departing staging with destination that is not part of this train''s route").arg(car->toString()));
                       return;
                      }
                      _carList->removeOne(car); // remove this car from the list
@@ -1812,13 +1813,13 @@ namespace Operations
          }
          // check to see that all cars have the same location and track
          if (car->getLocation() != c->getLocation() || car->getTrack() != c->getTrack()) {
-             throw BuildFailedException(tr("Car (%1) in kernel (%2) doesn''t match car (%3) location").arg(
+             throw new BuildFailedException(tr("Car (%1) in kernel (%2) doesn''t match car (%3) location").arg(
                      c->toString()).arg(car->getKernelName()).arg(car->toString()));
           return;
          }
      }
      if (foundLeadCar == false) {
-         throw BuildFailedException(tr("No lead car in kernel (%1)").arg(
+         throw new BuildFailedException(tr("No lead car in kernel (%1)").arg(
                  car->getKernelName()));
      }
  }
@@ -1917,13 +1918,13 @@ namespace Operations
                                      car->getFinalDestination()->getName()));
                              continue;
                          }
-                         if (car->getLoadName()!=(CarLoads::instance()->getDefaultEmptyName())
-                                 && car->getLoadName()!=(CarLoads::instance()->getDefaultLoadName())) {
+                         if (car->getLoadName()!=(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultEmptyName())
+                                 && car->getLoadName()!=(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultLoadName())) {
                              addLine(_buildReport, SEVEN, tr("Not able to block car (%1), it has custom load (%2)").arg(car->toString()).arg(
                                      car->getLoadName()));
                              continue;
                          }
-                         if (car->getLoadName()==(CarLoads::instance()->getDefaultEmptyName())
+                         if (car->getLoadName()==(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultEmptyName())
                                  && (_departStageTrack->isAddCustomLoadsEnabled()
                                          || _departStageTrack->isAddCustomLoadsAnySpurEnabled() || _departStageTrack
                                              ->isAddCustomLoadsAnyStagingTrackEnabled())) {
@@ -2358,7 +2359,7 @@ namespace Operations
         log->debug(tr("%1 cars stuck in staging").arg(carCount));
          QString msg = tr("BUILD FAILED could not find destinations for %1 car(s) departing from staging track (%2, %3)").arg(
                  carCount).arg(_departStageTrack->getLocation()->getName()).arg(_departStageTrack->getName());
-         throw BuildFailedException(msg + buf/*.toString()*/, /*BuildFailedException::STAGING*/"Staging");
+         throw new BuildFailedException(msg + buf/*.toString()*/, /*BuildFailedException::STAGING*/"Staging");
      }
  }
 
@@ -2779,7 +2780,7 @@ namespace Operations
              // does the train accept the car load from the staging track?
              if (!car->isCaboose()
                      && !car->isPassenger()
-                     && (car->getLoadName()!=(CarLoads::instance()->getDefaultEmptyName()) || !departStageTrack
+                     && (car->getLoadName()!=(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultEmptyName()) || !departStageTrack
                              ->isAddCustomLoadsEnabled()
                              && !departStageTrack->isAddCustomLoadsAnySpurEnabled()
                              && !departStageTrack->isAddCustomLoadsAnyStagingTrackEnabled())
@@ -2921,7 +2922,7 @@ namespace Operations
          }
      } else if (_train->getRoadOption()==(Train::EXCLUDE_ROADS)) {
          QStringList roads = QStringList();
-         foreach (QString road, CarRoads::instance()->getNames()) {
+         foreach (QString road, ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->getNames()) {
              roads.append(road);
          }
          foreach (QString road, _train->getRoadNames()) {
@@ -2963,7 +2964,7 @@ namespace Operations
          // build a list of loads that the staging track must accept
          QStringList loads = QStringList();
          foreach (QString type, _train->getTypeNames()) {
-             foreach (QString load, CarLoads::instance()->getNames(type)) {
+             foreach (QString load, ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getNames(type)) {
                  if (!loads.contains(load)) {
                      loads.append(load);
                  }
@@ -3010,8 +3011,8 @@ namespace Operations
  /*private*/ bool TrainBuilder::findFinalDestinationForCarLoad(Car* car) //throws BuildFailedException
                                         {
      bool routeToSpurFound = false;
-     if (car->getLoadName()==(CarLoads::instance()->getDefaultEmptyName())
-             || car->getLoadName()==(CarLoads::instance()->getDefaultLoadName()) || car->getDestination() != NULL
+     if (car->getLoadName()==(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultEmptyName())
+             || car->getLoadName()==(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultLoadName()) || car->getDestination() != NULL
              || car->getFinalDestination() != NULL) {
          return false; // no schedule found for this car
      }
@@ -3214,7 +3215,7 @@ namespace Operations
 {
      if (car->getTrack() == NULL || car->getTrack()->getTrackType()!=(Track::STAGING)
              || (!car->getTrack()->isAddCustomLoadsAnySpurEnabled() && !car->getTrack()->isAddCustomLoadsEnabled())
-             || car->getLoadName()!=(CarLoads::instance()->getDefaultEmptyName()) || car->getDestination() != NULL
+             || car->getLoadName()!=(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultEmptyName()) || car->getDestination() != NULL
              || car->getFinalDestination() != NULL) {
         log->debug(tr("No load generation for car (%1) isAddLoadsAnySpurEnabled: ").arg(car->toString()) // NOI18N
                  +
@@ -3225,7 +3226,7 @@ namespace Operations
          // if car has a destination or /*final*/ destination add "no load generated" message to report
          if (car->getTrack() != NULL && car->getTrack()->getTrackType()==(Track::STAGING)
                  && car->getTrack()->isAddCustomLoadsAnySpurEnabled()
-                 && car->getLoadName()==(CarLoads::instance()->getDefaultEmptyName())) {
+                 && car->getLoadName()==(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultEmptyName())) {
              addLine(_buildReport, FIVE, tr("Car (%1) departing staging with load (%2) has destination (%3) or final destination (%4) no load generated for this car").arg(
                      car->toString()).arg(car->getLoadName()).arg(car->getDestinationName()).arg(
                              car->getFinalDestinationName()));
@@ -3235,7 +3236,7 @@ namespace Operations
      addLine(_buildReport, FIVE, tr("Generate load for (%1) type (%2) load (%3) at (%4, %5)").arg(
              car->toString(), car->getTypeName(), car->getLoadName(), car->getLocationName(), car->getTrackName()));
      // check to see if car type has custom loads
-     if (CarLoads::instance()->getNames(car->getTypeName()).size() == 2) {
+     if (((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getNames(car->getTypeName()).size() == 2) {
          addLine(_buildReport, SEVEN, tr("Car (%1) type (%2) doesn''t have a custom load,").arg(
                  car->toString(), car->getTypeName()));
          return false;
@@ -3327,7 +3328,7 @@ namespace Operations
 {
      if (car->getTrack() == NULL || car->getTrack()->getTrackType()!=(Track::STAGING)
              || !car->getTrack()->isAddCustomLoadsAnyStagingTrackEnabled()
-             || car->getLoadName()!=(CarLoads::instance()->getDefaultEmptyName()) || car->getDestination() != NULL
+             || car->getLoadName()!=(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultEmptyName()) || car->getDestination() != NULL
              || car->getFinalDestination() != NULL) {
         log->debug(tr("No load generation for car (%1) isAddCustomLoadsAnyStagingTrackEnabled: ").arg(car->toString()) // NOI18N
                  +
@@ -3380,7 +3381,7 @@ namespace Operations
              addLine(_buildReport, SEVEN, tr("Staging track (%1, %2) not reachable with custom load (%3)").arg(
                      track->getLocation()->getName()).arg(track->getName()).arg(car->getLoadName()));
              // return car to original state
-             car->setLoadName(CarLoads::instance()->getDefaultEmptyName());
+             car->setLoadName(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultEmptyName());
              car->setLoadGeneratedFromStaging(false);
              car->setFinalDestination(NULL);
              car->updateKernel();
@@ -3414,7 +3415,7 @@ namespace Operations
      if (track->getScheduleMode() == Track::SEQUENTIAL) {
          si = track->getCurrentScheduleItem();
          if (si == NULL) {
-             throw BuildFailedException(tr("ERROR Can''t find schedule item (%1) for schedule (%2) for track (%3) at location (%4)").arg(
+             throw new BuildFailedException(tr("ERROR Can''t find schedule item (%1) for schedule (%2) for track (%3) at location (%4)").arg(
                      track->getScheduleItemId()).arg(track->getScheduleName()).arg(track->getName()).arg(
                              track->getLocation()->getName()),"Normal");
           return NULL;
@@ -3425,7 +3426,7 @@ namespace Operations
      for (int i = 0; i < track->getSchedule()->getSize(); i++) {
          si = track->getNextScheduleItem();
          if (si == NULL) {
-             throw BuildFailedException(tr("ERROR Can't find schedule item (%1) for schedule (%2) for track (%3) at location (%4)").arg(
+             throw new BuildFailedException(tr("ERROR Can't find schedule item (%1) for schedule (%2) for track (%3) at location (%4)").arg(
                      track->getScheduleItemId()).arg(track->getScheduleName()).arg(track->getName()).arg(
                              track->getLocation()->getName()));
           return NULL;
@@ -3453,8 +3454,8 @@ namespace Operations
   */
  /*private*/ ScheduleItem* TrainBuilder::checkScheduleItem(ScheduleItem* si, Car* car, Track* track) {
      if (car->getTypeName()!=(si->getTypeName()) || si->getReceiveLoadName()==(ScheduleItem::NONE)
-             || si->getReceiveLoadName()==(CarLoads::instance()->getDefaultEmptyName())
-             || si->getReceiveLoadName()==(CarLoads::instance()->getDefaultLoadName())) {
+             || si->getReceiveLoadName()==(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultEmptyName())
+             || si->getReceiveLoadName()==(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultLoadName())) {
         log->debug(tr("Not using track (%1) schedule request type (%2) road (%3) load (%4)").arg(track->getName()).arg(si
                  ->getTypeName()).arg(si->getRoadName()).arg(si->getReceiveLoadName())); // NOI18N
          return NULL;
@@ -3476,12 +3477,12 @@ namespace Operations
          return NULL;
      }
      if (si->getSetoutTrainScheduleId()!=(ScheduleItem::NONE)
-             && TrainManager::instance()->getTrainScheduleActiveId()!=(si->getSetoutTrainScheduleId())) {
+             && ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getTrainScheduleActiveId()!=(si->getSetoutTrainScheduleId())) {
         log->debug("Schedule item isn't active");
          // build the status message
-         TrainSchedule* aSch = TrainScheduleManager::instance()->getScheduleById(
-                 TrainManager::instance()->getTrainScheduleActiveId());
-         TrainSchedule* tSch = TrainScheduleManager::instance()->getScheduleById(si->getSetoutTrainScheduleId());
+         TrainSchedule* aSch = ((Operations::TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(
+                 ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getTrainScheduleActiveId());
+         TrainSchedule* tSch = ((Operations::TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(si->getSetoutTrainScheduleId());
          QString aName = "";
          QString tName = "";
          if (aSch != NULL) {
@@ -3774,7 +3775,7 @@ namespace Operations
                      }
                  }
              } else {
-                 throw BuildFailedException(
+                 throw new BuildFailedException(
                          tr("Car (%1) has staging destination (%2, %3) wrong track").arg(car->toString(),
                                  car->getDestinationName()).arg(car->getDestinationTrackName()));
               return false;
@@ -3915,7 +3916,7 @@ namespace Operations
          Location* testDestination = rld->getLocation();
          if (testDestination == NULL) {
              // code check, should never throw, all locations in the route have been already checked
-             throw BuildFailedException(tr("Route (%1) missing location (%2)").arg(
+             throw new BuildFailedException(tr("Route (%1) missing location (%2)").arg(
                      _train->getRoute()->getName()).arg(rld->getName()),"Normal");
           return false;
          }
@@ -3976,7 +3977,7 @@ namespace Operations
                  // only generate a new load if there aren't any other tracks available for this car
              } else if (status.startsWith(Track::LOAD)
                      && car->getTrack() == _departStageTrack
-                     && car->getLoadName()==(CarLoads::instance()->getDefaultEmptyName())
+                     && car->getLoadName()==(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultEmptyName())
                      && rldSave == NULL
                      && (_departStageTrack->isAddCustomLoadsAnyStagingTrackEnabled()
                              || _departStageTrack->isAddCustomLoadsEnabled() || _departStageTrack
@@ -3998,7 +3999,7 @@ namespace Operations
              // no staging track assigned, start track search
          } else {
              // first report if there are any alternate tracks
-             foreach (Track* track, testDestination->getTrackByNameList(NULL)) {
+             foreach (Track* track, testDestination->getTracksByNameList(NULL)) {
                  if (track->isAlternate()) {
                      addLine(_buildReport, SEVEN, tr("Can''t send (%1) directly to alternate %2 (%3)").arg(
                              car->toString()).arg(track->getTrackTypeName()).arg(track->getName()));
@@ -4041,8 +4042,8 @@ namespace Operations
                  // Could be a caboose or car with FRED with a custom load
                  // is the destination a spur with a schedule demanding this car's custom load?
                  if (status==(Track::OKAY) && testTrack->getScheduleId()!=(Track::NONE)
-                         && car->getLoadName()!=(CarLoads::instance()->getDefaultEmptyName())
-                         && car->getLoadName()!=(CarLoads::instance()->getDefaultLoadName())) {
+                         && car->getLoadName()!=(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultEmptyName())
+                         && car->getLoadName()!=(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultLoadName())) {
                      addLine(_buildReport, FIVE, tr("Spur (%1) has schedule requesting car load (%2)").arg(
                              testTrack->getName()).arg(car->getLoadName()));
                      addCarToTrain(car, rl, rld, testTrack);
@@ -4065,7 +4066,7 @@ namespace Operations
                          (car->getTrack()->isAddCustomLoadsEnabled() || car->getTrack()
                                  ->isAddCustomLoadsAnySpurEnabled())
                          &&
-                         car->getLoadName()==(CarLoads::instance()->getDefaultEmptyName())) {
+                         car->getLoadName()==(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultEmptyName())) {
                      // can we use this track?
                      if (!testTrack->isSpaceAvailable(car)) {
                          addLine(_buildReport, SEVEN, tr("Car (%1) would overload track (%2, %3), currently %4 inbound cars, length (%5) %6, %7% loading from staging").arg(car->toString()).arg(
@@ -4136,7 +4137,7 @@ namespace Operations
                      continue;
                  }
 
-                 // not staging, then use (should never be staging TODO throw an exception)
+                 // not staging, then use (should never be staging TODO throw new an exception)
                  if (testTrack->getTrackType()!=(Track::STAGING)) {
                      trackTemp = testTrack;
                      break;
@@ -4281,10 +4282,10 @@ namespace Operations
          return false;
      }
      // figure out which loads the car can use
-     QStringList loads = CarLoads::instance()->getNames(car->getTypeName());
+     QStringList loads = ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getNames(car->getTypeName());
      // remove the default names
-     loads.removeOne(CarLoads::instance()->getDefaultEmptyName());
-     loads.removeOne(CarLoads::instance()->getDefaultLoadName());
+     loads.removeOne(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultEmptyName());
+     loads.removeOne(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultLoadName());
      if (loads.size() == 0) {
         log->debug(tr("No custom loads for car type (%1) ignoring staging track (%2)").arg(car->getTypeName()).arg(stageTrack
                  ->getName()));
@@ -4454,7 +4455,7 @@ namespace Operations
      // there should be at lease one engine assigned to this train
      Engine* leadEngine = _train->getLeadEngine();
      if (leadEngine == NULL)
-         return; // TODO throw an exception
+         return; // TODO throw new an exception
      addLine(_buildReport, ONE, BLANK_LINE);
      addLine(_buildReport, ONE, tr("Determine if assigned loco (%1) has the appropriate HP (%2) based on %3 HP per ton and the route grades").arg(
              leadEngine->toString()).arg(leadEngine->getHp()).arg(Setup::getHorsePowerPerTon()));
@@ -4547,7 +4548,7 @@ namespace Operations
          }
      }
      if (_train->getLeadEngine() == NULL && !_train->isBuildConsistEnabled()) {
-         throw BuildFailedException(tr("ERROR could not find a locomotive that meets the train's HP requirements"));
+         throw new BuildFailedException(tr("ERROR could not find a locomotive that meets the train's HP requirements"));
      }
  }
 
@@ -4644,7 +4645,7 @@ namespace Operations
      }
      int numberLocos = 0;
      // determine how many locos have already been assigned to the train
-     QList<RollingStock*>* engines = EngineManager::instance()->getList(_train);
+     QList<RollingStock*>* engines = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getList(_train);
      foreach (RollingStock* rs,  *engines) {
          if (rs->getRouteLocation() == rl) {
              numberLocos++;
@@ -4654,7 +4655,7 @@ namespace Operations
              extraHpNeeded).arg(rlNeedHp->getName()).arg(rld->getName()).arg(numberLocos));
      while (numberLocos < Setup::getMaxNumberEngines()) {
          if (!getEngines(1, _train->getEngineModel(), _train->getEngineRoad(), rl, rld)) {
-             throw BuildFailedException(tr("Train requires %1 loco(s), could not pick up at departure (%2) or set out at (%3)").arg(
+             throw new BuildFailedException(tr("Train requires %1 loco(s), could not pick up at departure (%2) or set out at (%3)").arg(
                      tr("additional")).arg(rl->getName()).arg(rld->getName()),"Normal");
          }
          numberLocos++;
@@ -4682,7 +4683,7 @@ namespace Operations
   if (log->isDebugEnabled()) {
      log->debug(msg);
   }
-  if (TrainManager::instance()->isBuildMessagesEnabled()) {
+  if (((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->isBuildMessagesEnabled()) {
 //         if (e->getExceptionType()==(BuildFailedException.NORMAL)) {
 //             JOptionPane.showMessageDialog(NULL, msg, tr("buildErrorMsg"),
 //                     _train->getName(), _train->getDescription()}), JOptionPane.ERROR_MESSAGE);
@@ -4737,17 +4738,17 @@ namespace Operations
   }
  }
 
-/*private*/ void TrainBuilder::buildFailed(BuildFailedException e)
+/*private*/ void TrainBuilder::buildFailed(BuildFailedException* e)
 {
- QString msg = e.getMessage();
+ QString msg = e->getMessage();
  _train->setBuildFailedMessage(msg);
  _train->setStatus(Train::CODE_BUILD_FAILED);
  _train->setBuildFailed(true);
  log->debug(msg);
 
- if (TrainManager::instance()->isBuildMessagesEnabled())
+ if (((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->isBuildMessagesEnabled())
  {
-  if (e.getExceptionType() ==(BuildFailedException::NORMAL))
+  if (e->getExceptionType() ==(BuildFailedException::NORMAL))
   {
    JOptionPane::showMessageDialog(NULL, msg, tr("Can not build train (%1) %2").arg(_train->getName()).arg(_train->getDescription()), JOptionPane::ERROR_MESSAGE);
 } else {

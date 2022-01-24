@@ -71,9 +71,9 @@
     /*public*/ /*static*/ /*final*/ QString ZeroConfService::IPv4 = "IPv4";
     /*public*/ /*static*/ /*final*/ QString ZeroConfService::IPv6 = "IPv6";
 
-    /*private*/ /*static*/ /*final*/ Preferences* ZeroConfService::zeroConfPrefs = ProfileUtils::getPreferences(ProfileManager::getDefault()->getActiveProfile(),
-            "ZeroConfService",
-            false);
+    /*private*/ /*static*/ /*final*/ Preferences* ZeroConfService::zeroConfPrefs = nullptr;//ProfileUtils::getPreferences(ProfileManager::getDefault()->getActiveProfile(),
+//"ZeroConfService",
+//false);
 
 /**
  * Create a ZeroConfService with the minimal required settings. This method
@@ -214,7 +214,7 @@
     return this->serviceInfo()->getType();
 }
 #if 1
-/*private*/ ServiceInfo* ZeroConfService::addServiceInfo(JmDNS* DNS) throw (IOException) {
+/*private*/ ServiceInfo* ZeroConfService::addServiceInfo(JmDNS* DNS) /*throw (IOException)*/ {
     if (!this->serviceInfos.contains(DNS->getInetAddress())) {
         this->serviceInfos.insert(DNS->getInetAddress(), this->serviceInfo()->clone());
     }
@@ -270,8 +270,8 @@
                 }
                 try {
                     log->debug("Publishing ZeroConfService for '{}' on {}", key(), netService.getInetAddress().getHostAddress());
-                } catch (IOException ex) {
-                    log->debug("Publishing ZeroConfService for '{}' with IOException {}", key(), ex.getLocalizedMessage(), ex);
+                } catch (IOException* ex) {
+                    log->debug("Publishing ZeroConfService for '{}' with IOException {}", key(), ex->getLocalizedMessage(), ex);
                 }
                 // JmDNS requires a 1-to-1 mapping of serviceInfo to InetAddress
                 if (!this.serviceInfos.containsKey(netService.getInetAddress())) {
@@ -299,8 +299,8 @@
                     log->debug("skipping '{}' on {}, already in serviceInfos.", this.key(), netService.getInetAddress().getHostAddress());
                 }
                 event = new ZeroConfServiceEvent(this, netService);
-            } catch (IOException ex) {
-                log->error("Unable to publish service for '{}': {}", key(), ex.getMessage());
+            } catch (IOException* ex) {
+                log->error("Unable to publish service for '{}': {}", key(), ex->getMessage());
                 continue;
             }
             this.listeners.stream().forEach((listener) -> {
@@ -399,11 +399,11 @@ void ZeroConfService::addService(QZeroConfService zcs)
 //                    this.listeners.stream().forEach((listener) -> {
 //                        listener.serviceUnpublished(new ZeroConfServiceEvent(this, netService));
 //                    });
-//                } catch (NullPointerException ex) {
+//                } catch (NullPointerException* ex) {
 //                    log->debug(tr("%1 already unregistered from %2").arg(this->key()).arg( netService.getInetAddress()));
 //                }
-//            } catch (IOException ex) {
-//                log->error(tr("Unable to stop ZeroConfService {}. {}", this.key(), ex.getLocalizedMessage());
+//            } catch (IOException* ex) {
+//                log->error(tr("Unable to stop ZeroConfService {}. {}", this.key(), ex->getLocalizedMessage());
 //            }
 //        });
 
@@ -438,8 +438,8 @@ void ZeroConfService::addService(QZeroConfService zcs)
             if (close) {
                 try {
                     netService.close();
-                } catch (IOException ex) {
-                    log->debug("jmdns.close() returned IOException: {}", ex.getMessage());
+                } catch (IOException* ex) {
+                    log->debug("jmdns.close() returned IOException: {}", ex->getMessage());
                 }
             }
             nsLatch.countDown();
@@ -483,8 +483,8 @@ void ZeroConfService::addService(QZeroConfService zcs)
                 log->debug(tr("Calling JmDNS.create(%1, '%2')").arg(address->getHostAddress()).arg(address->getHostAddress()));
                 ZeroConfService::_netServices.insert(address, JmDNS::create(address, address->getHostAddress()));
             }
-        } catch (IOException ex) {
-            log->warn(tr("Unable to create JmDNS with error: %1").arg(ex.getMessage())/*, ex*/);
+        } catch (IOException* ex) {
+            log->warn(tr("Unable to create JmDNS with error: %1").arg(ex->getMessage())/*, ex*/);
         }
         if(InstanceManager::getOptionalDefault("ShutDownManager"))
         {
@@ -635,8 +635,8 @@ void ZeroConfService::addService(QZeroConfService zcs)
 //                        });
                         emit servicePublished(new ZeroConfServiceEvent(service, _DNS));
                     }
-                } catch (IOException ex) {
-                    log->error(ex.getLocalizedMessage() + ex.getMessage());
+                } catch (IOException* ex) {
+                    log->error(ex->getLocalizedMessage() + ex->getMessage());
                 }
             };//);
         } else {

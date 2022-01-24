@@ -22,15 +22,15 @@
 /*public*/ ProfileTableModel::ProfileTableModel(QObject *parent) :
     AbstractTableModel(parent)
 {
- ProfileManager::defaultManager()->addPropertyChangeListener((PropertyChangeListener*)this);
- ProfileManager* mgr = ProfileManager::defaultManager();
+ ProfileManager::getDefault()->addPropertyChangeListener((PropertyChangeListener*)this);
+ ProfileManager* mgr = ProfileManager::getDefault();
  //connect(mgr->p, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 //@Override
 /*public*/ int ProfileTableModel::rowCount(const QModelIndex &/*parent*/) const
 {
- return ProfileManager::defaultManager()->getAllProfiles().size();
+ return ProfileManager::getDefault()->getAllProfiles().size();
 }
 
 //@Override
@@ -42,7 +42,7 @@
 //@Override
 /*public*/ QVariant ProfileTableModel::data(const QModelIndex &mindex, int role) const
 {
- Profile* p = ProfileManager::defaultManager()->getAllProfiles().at(mindex.row());
+ Profile* p = ProfileManager::getDefault()->getAllProfiles().at(mindex.row());
  if(role == Qt::ToolTipRole)
  {
      return QString("<html>Name: %1<br>Path: %2<br>Id: %3<br>%4</html>").arg(p->getName()).arg(p->getPath()->toString()).arg(p->getId()).arg(this->data(index(mindex.row(), 2),Qt::DisplayRole).toString());
@@ -60,11 +60,11 @@
   case 1:
    return p->getPath()->toString();
   case 2:
-   if (p==(ProfileManager::defaultManager()->getActiveProfile()))
+   if (p==(ProfileManager::getDefault()->getActiveProfile()))
    {
     return tr("Current active profile"); // NOI18N
    }
-   else if (p==(ProfileManager::defaultManager()->getNextActiveProfile()))
+   else if (p==(ProfileManager::getDefault()->getNextActiveProfile()))
    {
     return tr("Active profile on restart"); // NOI18N
    }
@@ -131,7 +131,7 @@
   switch (index.column())
   {
    case 0:
-    ProfileManager::defaultManager()->getAllProfiles().at(index.row())->setName(value.toString());
+    ProfileManager::getDefault()->getAllProfiles().at(index.row())->setName(value.toString());
    break;
    default:
     break;

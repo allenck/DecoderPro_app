@@ -65,7 +65,7 @@
 }
 
 
-/*public*/ void PaneProgAction::actionPerformed()
+/*public*/ void PaneProgAction::actionPerformed(JActionEvent *)
 {
  if (log->isDebugEnabled()) log->debug("Pane programmer requested");
 

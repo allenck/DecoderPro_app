@@ -64,14 +64,17 @@ protected:
     void updateItem();
 friend class ITOUpdateActionListener;
 };
-class ITOUpdateActionListener : public ActionListener
+
+class ITOUpdateActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
     IndicatorTurnoutIcon* parent;
 public:
     ITOUpdateActionListener(IndicatorTurnoutIcon* parent);
+    QObject* self() override {return (QObject*)this;}
 public slots:
-    void actionPerformed(ActionEvent *e = 0);
+    void actionPerformed(JActionEvent *e = 0)override;
 };
 
 #endif // INDICATORTURNOUTICON_H

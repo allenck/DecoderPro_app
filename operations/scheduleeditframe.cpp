@@ -1,7 +1,7 @@
 #include "scheduleeditframe.h"
 #include "jtextfield.h"
 #include <QBoxLayout>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QRadioButton>
 #include <QGroupBox>
 #include <QCheckBox>
@@ -28,6 +28,8 @@
 #include "locationmanager.h"
 #include "schedulecopyaction.h"
 #include "scheduleoptionsaction.h"
+#include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -67,10 +69,10 @@ namespace Operations
 
      // labels
      // major buttons
-     addTypeButton = new QPushButton(tr("AddType"));
-     saveScheduleButton = new QPushButton(tr("Save Schedule"));
-     deleteScheduleButton = new QPushButton(tr("Delete Schedule"));
-     addScheduleButton = new QPushButton(tr("Add Schedule"));
+     addTypeButton = new JButton(tr("AddType"));
+     saveScheduleButton = new JButton(tr("Save Schedule"));
+     deleteScheduleButton = new JButton(tr("Delete Schedule"));
+     addScheduleButton = new JButton(tr("Add Schedule"));
 
      // check boxes
      QCheckBox* checkBox = NULL;
@@ -93,8 +95,8 @@ namespace Operations
      _track = track;
 
      // load managers
-     manager = ScheduleManager::instance();
-     managerXml = LocationManagerXml::instance();
+     manager = ((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"));
+     managerXml = ((LocationManagerXml*)InstanceManager::getDefault("LocationManagerXml"));
 
      // Set up the jtable in a Scroll Pane..
 //     schedulePane = new JScrollPane(scheduleTable);
@@ -128,27 +130,21 @@ namespace Operations
      p1Pane->setMaximumSize(QSize(2000, 200));
 
      // row 1a name
-     QGroupBox* pName = new QGroupBox();
+     JPanel* pName = new JPanel();
      pName->setLayout(new GridBagLayout());
-     pName->setStyleSheet(gbStyleSheet);
-     pName->setTitle(tr("Name"));
-     //pName->setBorder(BorderFactory.createTitledBorder(tr("Name")));
+     pName->setBorder(BorderFactory::createTitledBorder(tr("Name")));
      addItem(pName, scheduleNameTextField, 0, 0);
 
      // row 1b comment
-     QGroupBox* pC = new QGroupBox();
+     JPanel* pC = new JPanel();
      pC->setLayout(new GridBagLayout());
-     //pC->setBorder(BorderFactory.createTitledBorder(tr("Comment")));
-     pC->setStyleSheet(gbStyleSheet);
-     pC->setTitle(tr("Comment"));
+     pC->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
      addItem(pC, commentTextField, 0, 0);
 
      // row 1c mode
-     QGroupBox* pMode = new QGroupBox();
+     JPanel* pMode = new JPanel();
      pMode->setLayout(new GridBagLayout());
-     //pMode->setBorder(BorderFactory.createTitledBorder(tr("ScheduleMode")));
-     pMode->setStyleSheet(gbStyleSheet);
-     pMode->setTitle(tr("Schedule Mode"));
+     pMode->setBorder(BorderFactory::createTitledBorder(tr("Schedule Mode")));
      addItem(pMode, sequentialRadioButton, 0, 0);
      addItem(pMode, matchRadioButton, 1, 0);
 
@@ -168,11 +164,9 @@ namespace Operations
      p1Pane->setWidget(p1);
 
      // row 2
-     QGroupBox* p3 = new QGroupBox();
+     JPanel* p3 = new JPanel();
      p3->setLayout(new GridBagLayout());
-     //p3->setBorder(BorderFactory.createTitledBorder(tr("AddItem")));
-     p3->setStyleSheet(gbStyleSheet);
-     p3->setTitle(tr("Add New Delivery"));
+     p3->setBorder(BorderFactory::createTitledBorder(tr("Add New Delivery")));
      addItem(p3, typeBox, 0, 1);
      addItem(p3, addTypeButton, 1, 1);
      addItem(p3, addLocAtTop, 2, 1);
@@ -185,11 +179,10 @@ namespace Operations
      p3->setMaximumSize(QSize(2000, 200));
 
      // row 11 buttons
-     QGroupBox* pB = new QGroupBox();
+     JPanel* pB = new JPanel();
      pB->setLayout(new GridBagLayout());
-     //pB->setBorder(BorderFactory.createTitledBorder(""));
-     pB->setStyleSheet(gbStyleSheet);
-     pName->setTitle(tr("Name"));
+     pB->setBorder(BorderFactory::createTitledBorder(""));
+     //pName->setTitle(tr("Name"));
      pB->setMaximumSize(QSize(2000, 200));
 
      // row 13
@@ -228,11 +221,11 @@ namespace Operations
 
      // get notified if car types or roads are changed
      //CarTypes::instance().addPropertyChangeListener(this);
-     connect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //_location.addPropertyChangeListener(this);
-     connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     // _track.addPropertyChangeListener(this);
-     connect(_track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(_track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      // set frame size and schedule for display
      initMinimumSize(QSize(Control::panelWidth700, Control::panelHeight400));
@@ -241,7 +234,7 @@ namespace Operations
  // Save, Delete, Add
  /*public*/ void ScheduleEditFrame::buttonActionPerformed(QWidget* ae)
  {
-  QPushButton* source = (QPushButton*)ae;
+  JButton* source = (JButton*)ae;
   if (source == addTypeButton) {
       addNewScheduleItem();
   }
@@ -348,7 +341,7 @@ namespace Operations
 //     }
      if (_track != NULL ) {
          if (_track->getScheduleId()!=(_schedule->getId())) {
-             LocationManager::instance()->resetMoves();
+             ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->resetMoves();
          }
          _track->setScheduleId(_schedule->getId());
          if (sequentialRadioButton->isChecked()) {
@@ -366,7 +359,7 @@ namespace Operations
  /*private*/ void ScheduleEditFrame::loadTypeComboBox()
 {
   typeBox->clear();
-  foreach (QString typeName, CarTypes::instance()->getNames())
+  foreach (QString typeName, ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames())
   {
    if (_track->acceptsTypeName(typeName))
    {
@@ -421,12 +414,12 @@ namespace Operations
 
  /*public*/ void ScheduleEditFrame::dispose() {
      //CarTypes::instance().removePropertyChangeListener(this);
-     disconnect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      //_location.removePropertyChangeListener(this);
-     disconnect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //_track.removePropertyChangeListener(this);
-     disconnect(_track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(_track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      scheduleModel->dispose();
      OperationsFrame::dispose();
  }

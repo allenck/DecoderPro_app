@@ -49,7 +49,7 @@ bool JmDNS::isClosed() {return false;}
              } finally {
                  inputStream.close();
              }
-         } catch (Exception ignored) {
+         } catch (Exception* ignored) {
              VERSION = "VERSION MISSING";
          }
 
@@ -70,7 +70,7 @@ bool JmDNS::isClosed() {return false;}
       * @exception IOException
       *                if an exception occurs during the socket creation
       */
-     /*public*/ /*static*/ JmDNS* JmDNS::create() throw (IOException) {
+     /*public*/ /*static*/ JmDNS* JmDNS::create() /*throw (IOException)*/ {
          return (JmDNS*)new JmDNSImpl(nullptr, "");
      }
 
@@ -91,7 +91,7 @@ bool JmDNS::isClosed() {return false;}
       * @exception IOException
       *                if an exception occurs during the socket creation
       */
-     /*public*/ /*static*/ JmDNS* JmDNS::create(/*final*/ InetAddress* addr) throw (IOException) {
+     /*public*/ /*static*/ JmDNS* JmDNS::create(/*final*/ InetAddress* addr) /*throw (IOException)*/ {
          return (JmDNS*)new JmDNSImpl(addr, "");
      }
 
@@ -112,7 +112,7 @@ bool JmDNS::isClosed() {return false;}
       * @exception IOException
       *                if an exception occurs during the socket creation
       */
-     /*public*/ /*static*/ JmDNS* JmDNS::create(/*final*/ QString name) throw (IOException) {
+     /*public*/ /*static*/ JmDNS* JmDNS::create(/*final*/ QString name) /*throw (IOException)*/ {
          return (JmDNS*)new JmDNSImpl(nullptr, name);
      }
 
@@ -147,7 +147,7 @@ bool JmDNS::isClosed() {return false;}
       * @exception IOException
       *                if an exception occurs during the socket creation
       */
-     /*public*/ /*static*/ JmDNS* JmDNS::create(/*final*/ InetAddress* addr, /*final*/ QString name) throw (IOException) {
+     /*public*/ /*static*/ JmDNS* JmDNS::create(/*final*/ InetAddress* addr, /*final*/ QString name) /*throw (IOException)*/ {
          return (JmDNS*)new JmDNSImpl(addr, name);
      }
 
@@ -172,7 +172,7 @@ bool JmDNS::isClosed() {return false;}
       * @exception IOException
       *                if there is an error in the underlying protocol, such as a TCP error.
       */
-     /*public*/ /*abstract*/ InetAddress* JmDNS::getInetAddress() throw (IOException) {return nullptr;}
+     /*public*/ /*abstract*/ InetAddress* JmDNS::getInetAddress() /*throw (IOException)*/ {return nullptr;}
 #if 0
      /**
       * Return the address of the interface to which this instance of JmDNS is bound.
@@ -344,7 +344,7 @@ bool JmDNS::isClosed() {return false;}
       * @exception IOException
       *                if there is an error in the underlying protocol, such as a TCP error.
       */
-     /*public*/ /*abstract*/ void JmDNS::registerService(ServiceInfo* /*info*/) throw (IOException) {}
+     /*public*/ /*abstract*/ void JmDNS::registerService(ServiceInfo* /*info*/) /*throw (IOException)*/ {}
 
      /**
       * Unregister a service. The service should have been registered.

@@ -4,7 +4,8 @@
 #include "cvvalue.h"
 #include "actionevent.h"
 #include <QtXml>
-class JTextField;
+#include "jtextfield.h"
+
 class LIBPR3SHARED_EXPORT LongAddrVariableValue : public VariableValue
 {
     Q_OBJECT
@@ -13,8 +14,8 @@ public:
  /*public*/ LongAddrVariableValue(QString name, QString comment, QString cvName,
                                  bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly,
                                  QString cvNum, QString mask, int minVal, int maxVal,
-                                 QMap<QString, CvValue*>* v, QLabel* status, QString stdname, QObject *parent = 0);
-    /*public*/ QVector<CvValue*>* usesCVs() ;
+                                 QMap<QString, CvValue*>* v, JLabel *status, QString stdname, QObject *parent = 0);
+    /*public*/ QVector<CvValue*> usesCVs() ;
     /*public*/ void setToolTipText(QString t);
     /*public*/ QVariant rangeVal();
 
@@ -50,7 +51,7 @@ public slots:
     void textChanged();
     // handle incoming parameter notification
     /*public*/ void propertyChange(PropertyChangeEvent* e);
-    /*public*/ void actionPerformed(ActionEvent* e = 0);
+    /*public*/ void actionPerformed();
     /*public*/ void focusGained(/*FocusEvent*/QEvent* e = 0);
     /*public*/ void focusLost(/*FocusEvent*/QEvent* e = 0) ;
 
@@ -66,13 +67,27 @@ private:
     /*private*/ static /*final*/ const int WRITING_FIRST = 3;
     /*private*/ static /*final*/ const int WRITING_SECOND = 4;
     QColor _defaultColor;
-    JTextField* _value;
-    Logger* logit;
-    friend class VarTextField;
-friend class DccAddressPanel;
-friend class MyDccAddressVarHandler1;
-friend class MyDccAddressVarHandler2;
 
+    // stored value
+    JTextField* _value = nullptr;
+    static Logger* logit;
+
+    friend class DccAddressPanel;
+    friend class MyDccAddressVarHandler1;
+    friend class MyDccAddressVarHandler2;
+    friend class LAVarTextField;
 };
 
+class LAVarTextField : public JTextField
+{
+  Q_OBJECT
+  LongAddrVariableValue* _var;
+ public:
+
+ LAVarTextField(Document* doc, QString text, int col, LongAddrVariableValue* var);
+
+  public slots:
+    void thisActionPerformed(/*java.awt.event.ActionEvent e*/);
+    void originalPropertyChanged(PropertyChangeEvent* e);
+};
 #endif // LONGADDRVARIABLEVALUE_H

@@ -11,7 +11,7 @@ public:
  ~SimpleServerAction() {}
  SimpleServerAction(const SimpleServerAction&) : AbstractAction() {}
 public slots:
- /*public*/ void actionPerformed(ActionEvent *e);
+ /*public*/ void actionPerformed(JActionEvent *e);
 
 };
 Q_DECLARE_METATYPE(SimpleServerAction)

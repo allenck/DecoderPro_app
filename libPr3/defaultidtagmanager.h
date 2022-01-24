@@ -14,35 +14,44 @@
 #include "abstractmanager.h"
 
 class DefaultIdTag;
-class DefaultIdTagManager : public IdTagManager
+class DefaultIdTagManager : public AbstractManager, public IdTagManager
 {
     Q_OBJECT
+  Q_INTERFACES(IdTagManager)
 public:
     explicit DefaultIdTagManager(QObject *parent = 0);
     /*public*/ int getXMLOrder()const override;
-    /*public*/ bool isInitialised()override;
-    /*public*/ void init() const  override;
-    /*public*/ char typeLetter()const override ;
-    /*public*/ QString getSystemPrefix()const override;
+    /*public*/ bool isInitialised()  override;
+    /*public*/ void init()   override;
+    /*public*/ QChar typeLetter()  override ;
+    /*public*/ QString getSystemPrefix() override;
     /*public*/ DefaultIdTag *provideIdTag(QString name)override;
     /*public*/ DefaultIdTag *getIdTag(QString name)override;
-    /*public*/ NamedBean *getBySystemName(QString name)const override;
-    /*public*/ NamedBean* getByUserName(QString key)const override;
+    /*public*/ NamedBean *getBySystemName(QString name) override;
+    /*public*/ NamedBean* getByUserName(QString key) override;
     /*public*/ DefaultIdTag* getByTagID(QString tagID)override;
     /*public*/ virtual DefaultIdTag *newIdTag(QString systemName, QString userName)override;
-    /*public*/ void Register(NamedBean* s) const override;
-    /*public*/ void deregister(NamedBean* s)  const override;
-    /*public*/ virtual void writeIdTagDetails() ;// throw (IOException);
+    /*public*/ void Register(NamedBean* s) override;
+    /*public*/ void deregister(NamedBean* s)   override;
+    /*public*/ virtual void writeIdTagDetails() ;// /*throw (IOException)*/;
     /*public*/ virtual void readIdTagDetails();
     /*public*/ void setStateStored(bool state)override;
     /*public*/ bool isStateStored()override;
     /*public*/ void setFastClockUsed(bool fastClock)override;
     /*public*/ bool isFastClockUsed()override;
     /*public*/ QList<IdTag*>* getTagsForReporter(Reporter* reporter, long threshold)override;
-    /*public*/ DefaultIdTag *provide(QString name) throw (IllegalArgumentException)override;
- /*public*/ QString getNamedBeanClass()const override {
-     return "IdTag";
- }
+    /*public*/ DefaultIdTag *provide(QString name) /*throw (IllegalArgumentException)*/override;
+    /*public*/ QString getNamedBeanClass()const override {
+        return "IdTag";
+    }
+  /*public*/ SystemConnectionMemo* getMemo() override {return AbstractManager::getMemo();}
+  /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
+//  /*public*/ IdTag* getBySystemName(QString name) override {return (IdTag*)AbstractManager::getBySystemName(name);}
+  /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::addPropertyChangeListener(l);}
+  /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::removePropertyChangeListener(l);}
+
+  QObject* self() override {return (QObject*)this;}
+
 
 signals:
     void newIdTagCreated(DefaultIdTag* tag);
@@ -119,9 +128,9 @@ class DefaultIdTagShutdownTask : public AbstractShutDownTask
 //      ((DefaultIdTagManager*)InstanceManager::getDefault("IdTagManager"))->writeIdTagDetails();
       //new jmri.managers.DefaultIdTagManager().writeIdTagDetails();
 //     }
-//     catch (IOException ioe)
+//     catch (IOException* ioe)
 //     {
-//      log.error("Exception writing IdTags: "+ioe.getMessage());
+//      log.error("Exception writing IdTags: "+ioe->getMessage());
 //     }
 
      // continue shutdown

@@ -1,13 +1,12 @@
 #include "namedbeanhandlemanager.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "abstractnamedbean.h"
 
-//template<class T>
 NamedBeanHandleManager::NamedBeanHandleManager(QObject *parent) :
-    AbstractManager(parent)
+    AbstractNamedBeanHandleManager(parent)
 {
     namedBeanHandles = new QList<QObject*>();
-    pcs = new PropertyChangeSupport(this);
+    pcs = new SwingPropertyChangeSupport(this, nullptr);
     registerSelf();
     setProperty("InstanceManagerAutoDefault", "yes");
 
@@ -130,13 +129,13 @@ template<class T>
 }
 
 //template<class T>
-/*public*/ void NamedBeanHandleManager::updateBeanFromSystemToUser(NamedBean* bean) throw(JmriException){
+/*public*/ void NamedBeanHandleManager::updateBeanFromSystemToUser(NamedBean* bean) /*throw(JmriException)*/{
     QString userName = bean->getUserName();
     QString systemName = bean->getSystemName();
 
     if((userName.isEmpty()) || (userName==(""))){
         log.error("UserName is empty, can not update items to use UserName");
-        throw JmriException("UserName is empty, can not update items to use UserName");
+        throw new JmriException("UserName is empty, can not update items to use UserName");
     }
     renameBean(systemName, userName, bean);
 }
@@ -181,9 +180,9 @@ template<class T>
  {
   QString listenerRef = oldBean->getListenerRef(l);
   oldBean->removePropertyChangeListener(l);
-  disconnect(((AbstractNamedBean*)newBean)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
+  //disconnect(((AbstractNamedBean*)newBean)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
   newBean->addPropertyChangeListener(l, currentName, listenerRef);
-  connect(((AbstractNamedBean*)newBean)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
+  //connect(((AbstractNamedBean*)newBean)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 
@@ -207,69 +206,83 @@ template<class T>
 //        @Override
 //template<class T>
 /*public*/ char NamedBeanHandleManager::systemLetter() {
-    throw UnsupportedOperationException("Not supported yet.");
+    throw new UnsupportedOperationException("Not supported yet.");
 }
 
 //template<class T>
-/*public*/ QString NamedBeanHandleManager::getSystemPrefix() const{
-    throw UnsupportedOperationException("Not supported yet.");
+/*public*/ QString NamedBeanHandleManager::getSystemPrefix() {
+    throw new UnsupportedOperationException("Not supported yet.");
 }
 
 //template<class T>
-/*public*/ char NamedBeanHandleManager::typeLetter()const{
-    throw UnsupportedOperationException("Not supported yet.");
+/*public*/ QChar NamedBeanHandleManager::typeLetter(){
+    throw new UnsupportedOperationException("Not supported yet.");
 }
 
 //        @Override
 //template<class T>
-/*public*/ QString NamedBeanHandleManager::makeSystemName(QString /*s*/) const {
-    throw  UnsupportedOperationException("Not supported yet.");
+/*public*/ QString NamedBeanHandleManager::makeSystemName(QString /*s*/) {
+    throw new  UnsupportedOperationException("Not supported yet.");
 }
 
 //        @Override
 //template<class T>
 /*public*/ QStringList NamedBeanHandleManager::getSystemNameArray() {
-    throw UnsupportedOperationException("Not supported yet.");
+    throw new UnsupportedOperationException("Not supported yet.");
 }
 
 //        @Override
 //template<class T>
 /*public*/ QStringList NamedBeanHandleManager::getSystemNameList()
 {
-    throw UnsupportedOperationException("Not supported yet.");
+    throw new UnsupportedOperationException("Not supported yet.");
 }
 
 //        @Override
 //template<class T>
-/*public synchronized*/ void NamedBeanHandleManager::addPropertyChangeListener(PropertyChangeListener* l) {
-    pcs->addPropertyChangeListener(l);
+///*public synchronized*/ void NamedBeanHandleManager::addPropertyChangeListener(PropertyChangeListener* l) {
+//    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
+//}
+
+//        @Override
+//template<class T>
+///*public synchronized*/ void NamedBeanHandleManager::removePropertyChangeListener(PropertyChangeListener* l) {
+//    pcs->removePropertyChangeListener(l);
+//}
+
+//        @Override
+//template<class T>
+/*protected*/ void NamedBeanHandleManager::firePropertyChange(QString p, QVariant old, QVariant n)const { pcs->firePropertyChange(p,old,n);}
+
+//        @Override
+//template<class T>
+/*public*/ void NamedBeanHandleManager::Register(NamedBean* /*n*/) {
+    throw new UnsupportedOperationException("Not supported yet.");
 }
 
 //        @Override
 //template<class T>
-/*public synchronized*/ void NamedBeanHandleManager::removePropertyChangeListener(PropertyChangeListener* l) {
-    pcs->removePropertyChangeListener(l);
-}
-
-//        @Override
-//template<class T>
-/*protected*/ void NamedBeanHandleManager::firePropertyChange(QString p, QVariant old, QVariant n) { pcs->firePropertyChange(p,old,n);}
-
-//        @Override
-//template<class T>
-/*public*/ void NamedBeanHandleManager::Register(NamedBean* /*n*/) const {
-    throw UnsupportedOperationException("Not supported yet.");
-}
-
-//        @Override
-//template<class T>
-/*public*/ void NamedBeanHandleManager::deregister(NamedBean* /*n*/)const {
-    throw UnsupportedOperationException("Not supported yet.");
+/*public*/ void NamedBeanHandleManager::deregister(NamedBean* /*n*/) {
+    throw new  UnsupportedOperationException("Not supported yet.");
 }
 
 //template<class T>
 /*public*/ int NamedBeanHandleManager::getXMLOrder()const {
-    throw UnsupportedOperationException("Not supported yet.");
+    throw new UnsupportedOperationException("Not supported yet.");
 }
 
+//@Override
+//@Nonnull
+//@CheckReturnValue
+/*public*/ QString NamedBeanHandleManager::getBeanTypeHandled(bool plural) const {
+    return tr(plural ? "Beans" : "Bean");
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ /*Class<NamedBean>*/QString NamedBeanHandleManager::getNamedBeanClass() const{
+    return "NamedBean";
+}
 //        static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(NamedBeanHandleManager.class.getName());

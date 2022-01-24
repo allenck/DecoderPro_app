@@ -1,7 +1,7 @@
 #include "longaddrvariablevalue.h"
 #include "actionlistener.h"
-#include "vartextfield.h"
 #include <QIntValidator>
+#include "loggerfactory.h"
 
 //LongAddrVariableValue::LongAddrVariableValue(QObject *parent) :
 //    VariableValue(parent)
@@ -19,7 +19,7 @@
 /*public*/ LongAddrVariableValue::LongAddrVariableValue(QString name, QString comment, QString cvName,
                              bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly,
                              QString cvNum, QString mask, int minVal, int maxVal,
-                             QMap<QString, CvValue*>* v, QLabel* status, QString stdname, QObject *parent)
+                             QMap<QString, CvValue*>* v, JLabel* status, QString stdname, QObject *parent)
     : VariableValue(name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cvNum, mask, v, status, stdname, parent)
 
 
@@ -50,12 +50,12 @@
     connect(_value, SIGNAL(editingFinished()), this, SLOT(textChanged()));
 }
 
-/*public*/ QVector<CvValue*>* LongAddrVariableValue::usesCVs()
+/*public*/ QVector<CvValue *> LongAddrVariableValue::usesCVs()
 {
  //return new CvValue[]{
- QVector<CvValue*>*list = new QVector<CvValue*>(2, NULL);
- list->replace(0, _cvMap->value(getCvNum()));
- list->replace(1, _cvMap->value(QString::number(getCvNum().toInt()+1)));
+ QVector<CvValue*> list = QVector<CvValue*>(2, NULL);
+ list.replace(0, _cvMap->value(getCvNum()));
+ list.replace(1, _cvMap->value(QString::number(getCvNum().toInt()+1)));
  return list;
 }
 
@@ -111,7 +111,7 @@ void LongAddrVariableValue::updatedTextField() {
 }
 
 /** ActionListener implementations */
-/*public*/ void LongAddrVariableValue::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void LongAddrVariableValue::actionPerformed(/*JActionEvent* e*/)
 {
  if (logit->isDebugEnabled()) logit->debug("actionPerformed");
  int newVal = (_value->text()).toInt();
@@ -166,7 +166,7 @@ void LongAddrVariableValue::updatedTextField() {
  if (logit->isDebugEnabled()) logit->debug("setValue with new value "+QString::number(value)+" old value "+QString::number(oldVal));
  _value->setText(QString::number(value));
  if (oldVal != value || getState() == VariableValue::UNKNOWN)
-  actionPerformed(NULL);
+  actionPerformed(/*NULL*/);
  prop->firePropertyChange("Value", QVariant(oldVal), QVariant(value));
  //emit notifyPropertyChange(new PropertyChangeEvent(this, "Value", QVariant(oldVal), QVariant(value)));
 }
@@ -181,11 +181,7 @@ void LongAddrVariableValue::setColor(QColor c)
 
 /*public*/ QWidget* LongAddrVariableValue::getNewRep(QString format)
 {
- VarTextField* value= new VarTextField(_value->getDocument(),_value->text(), 5, this);
- _value->setVisible(false);
- value->setVisible(true);
- updateRepresentation(value);
- return value;
+ return updateRepresentation(new LAVarTextField(_value->getDocument(), _value->text(), 5, this));
 }
 
 /**
@@ -330,65 +326,82 @@ void LongAddrVariableValue::setColor(QColor c)
  }
 }
 
-#if 0
-/* Internal class extends a JTextField so that its color is consistent with
- * an underlying variable
- *
- * @author			Bob Jacobsen   Copyright (C) 2001
- * @version
- */
-/*public*/ class VarTextField : public QLineEdit {
 
-    VarTextField(QDomDocument doc, QString text, int col, LongAddrVariableValue* var) :QLineEdit(text)
-    {
-     //super(doc, text, col);
-        _var = var;
-        // get the original color right
-//        setBackground(_var->_value->getBackground());
-        // listen for changes to ourself
-//        addActionListener(new ActionListener());
-//        {
-//                /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
+    /* Internal class extends a JTextField so that its color is consistent with
+     * an underlying variable
+     *
+     * @author   Bob Jacobsen   Copyright (C) 2001
+     */
+    //public class VarTextField extends JTextField {
+
+        LAVarTextField::LAVarTextField(Document* doc, QString text, int col, LongAddrVariableValue* var)
+         : JTextField(doc, text, col)
+        {
+            //super(doc, text, col);
+            _var = var;
+            // get the original color right
+            setBackground(_var->_value->getBackground());
+            // listen for changes to ourself
+//            addActionListener(new java.awt.event.ActionListener() {
+//                @Override
+//                public void actionPerformed(java.awt.event.ActionEvent e) {
 //                    thisActionPerformed(e);
 //                }
 //            });
-//        addFocusListener(new FocusListener());
-//        {
-//                /*public*/ void focusGained(FocusEvent e) {
-//                    if (log->isDebugEnabled()) log->debug("focusGained");
+            connect(this, &LAVarTextField::textEdited, [=]{
+             thisActionPerformed();
+            });
+//            addFocusListener(new java.awt.event.FocusListener() {
+//                @Override
+//                public void focusGained(FocusEvent e) {
+//                    log.debug("focusGained");
 //                    enterField();
 //                }
+            connect(this, &LAVarTextField::focusGained, [=]{
+              if (_var->logit->isDebugEnabled()) {
+                  _var->logit->debug("focusGained");
+              }
+              enterField();
+            });
 
-//                /*public*/ void focusLost(FocusEvent e) {
-//                    if (log->isDebugEnabled()) log->debug("focusLost");
+//                @Override
+//                public void focusLost(FocusEvent e) {
+//                    log.debug("focusLost");
 //                    exitField();
 //                }
 //            });
-        // listen for changes to original state
-        _var->addPropertyChangeListener(new PropertyChangeListener());
-//        {
-//                /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
-//                    originalPropertyChanged(e);
+            connect(this, &LAVarTextField::focusLost, [=]{
+              if (_var->logit->isDebugEnabled()) {
+                  _var->logit->debug("focusLost");
+              }
+              leaveField();
+            });
+            // listen for changes to original state
+//            _var.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+//                @Override
+//                public void propertyChange(java.beans.PropertyChangeEvent e) {
+            connect(this->_var->prop, &SwingPropertyChangeSupport::propertyChange, [=](PropertyChangeEvent* e) {
+                    originalPropertyChanged(e);
 //                }
-//            });
-    }
+            });
+        }
 
-    LongAddrVariableValue* _var;
+//    LongAddrVariableValue* _var;
 
-    void thisActionPerformed(ActionEvent* /*e*/) {
+    void LAVarTextField::thisActionPerformed(/*ActionEvent* e*/) {
         // tell original
-        _var->actionPerformed(e);
+        _var->actionPerformed(/*e*/);
     }
 
-    void originalPropertyChanged(PropertyChangeEvent* e) {
+    void LAVarTextField::originalPropertyChanged(PropertyChangeEvent* e) {
         // update this color from original state
         if (e->getPropertyName()==("State")) {
 //            setBackground(_var->_value->getBackground());
         }
     }
 
-};
-#endif
+//};
+
 // clean up connections when done
 /*public*/ void LongAddrVariableValue::dispose() {
     if (logit->isDebugEnabled()) logit->debug("dispose");
@@ -401,5 +414,8 @@ void LongAddrVariableValue::setColor(QColor c)
 }
 void LongAddrVariableValue::textChanged()
 {
- actionPerformed(NULL);
+ actionPerformed(/*NULL*/);
 }
+
+// initialize logging
+/*private*/ /*final*/ /*static*/ Logger* LongAddrVariableValue::logit = LoggerFactory::getLogger("LongAddrVariableValue");

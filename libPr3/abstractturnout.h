@@ -8,20 +8,24 @@
 //#include "instancemanager.h"
 #include "namedbeanhandlemanager.h"
 #include "libPr3_global.h"
+#include "localdatetime.h"
+#include "sleeperthread.h"
 
+class IntervalCheck;
 class TurnoutOperation;
 class TurnoutOperator;
-class LIBPR3SHARED_EXPORT AbstractTurnout : public Turnout
+class LIBPR3SHARED_EXPORT AbstractTurnout : public Turnout, public PropertyChangeListener
 {
  friend class InternalTurnoutManager;
  Q_OBJECT
+ Q_INTERFACES(PropertyChangeListener)
 public:
  explicit AbstractTurnout(QObject *parent = 0);
  /*public*/ int getKnownState() override;
  /*public*/ QString describeState(int state) override;
 
      //@Override
-     /*public*/ QString getBeanType() {
+     /*public*/ QString getBeanType() override{
          return tr("Turnout");
      }
     /**
@@ -32,6 +36,7 @@ public:
      */
     /*public*/ void setCommandedState(int s) override;
     /*public*/ int getCommandedState() override;
+    /*public*/ void setCommandedStateAtInterval(int s) override;
     /**
      * Show whether state is one you can safely run trains over
      * @return	true iff state is a valid one and the known state is the same as commanded
@@ -72,8 +77,8 @@ public:
     /*public*/ int getValidFeedbackTypes() override;
     //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="EI_EXPOSE_REP") // OK until Java 1.6 allows return of //cheap array copy
     /*public*/ QVector<QString> getValidFeedbackNames() override;
-    /*public*/ void setFeedbackMode(QString mode) throw(IllegalArgumentException) override;
-    /*public*/ void setFeedbackMode(int mode) throw(IllegalArgumentException) override;
+    /*public*/ void setFeedbackMode(QString mode) /*throw(IllegalArgumentException)*/ override;
+    /*public*/ void setFeedbackMode(int mode) /*throw(IllegalArgumentException)*/ override;
     /*public*/ int getFeedbackMode() override;
     /*public*/ QString getFeedbackModeName() override;
     /*public*/ void requestUpdateFromLayout() override;
@@ -131,11 +136,11 @@ public:
     /*public*/ void setTurnoutOperation(TurnoutOperation* toper) override;
     /*public*/ bool getInhibitOperation() override;
     /*public*/ void setInhibitOperation(bool io) override;
-    /*public*/ void provideFirstFeedbackSensor(QString pName) throw(JmriException) override;
+    /*public*/ void provideFirstFeedbackSensor(QString pName) /*throw(JmriException)*/ override;
     /*public*/ void provideFirstFeedbackNamedSensor(NamedBeanHandle<Sensor*>* s);
     /*public*/ Sensor* getFirstSensor() override;
     /*public*/ NamedBeanHandle <Sensor*>* getFirstNamedSensor() override;
-    /*public*/ void provideSecondFeedbackSensor(QString pName) throw(JmriException) override;
+    /*public*/ void provideSecondFeedbackSensor(QString pName) /*throw(JmriException)*/ override;
     /*public*/ void provideSecondFeedbackNamedSensor(NamedBeanHandle<Sensor*>* s);
     /*public*/ Sensor* getSecondSensor() override;
     /*public*/ NamedBeanHandle <Sensor*>* getSecondNamedSensor() override;
@@ -149,16 +154,23 @@ public:
     /*public*/ void dispose() override;
     /*public*/ float getDivergingLimit() override;
     /*public*/ QString getDivergingSpeed() override;
-    /*public*/ void setDivergingSpeed(QString s) const throw(JmriException) override;
+    /*public*/ void setDivergingSpeed(QString s) const /*throw(JmriException) */override;
     /*public*/ float getStraightLimit() override;
     /*public*/ QString getStraightSpeed() override;
-    /*public*/ void setStraightSpeed(QString s)const  throw(JmriException) override;
-
-signals:
+    /*public*/ void setStraightSpeed(QString s)const  /*throw(JmriException)*/ override;
+    QObject* self() override{return (QObject*)this;}
+    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean)override;
+    /*public*/ bool isCanFollow()override;
+    /*public*/ Turnout* getLeadingTurnout()override;
+    /*public*/ void setLeadingTurnout(/*@CheckForNull*/ Turnout* turnout)override;
+    /*public*/ void setLeadingTurnout(/*@CheckForNull*/ Turnout* turnout, bool followingCommandedState)override;
+    /*public*/ bool isFollowingCommandedState()override;
+    /*public*/ void setFollowingCommandedState(bool following)override;
     //void propertyChange(PropertyChangeEvent *);
+    /*public*/ void vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/override;
 
 public slots:
-    void propertyChange(PropertyChangeEvent *evt);
+    void propertyChange(PropertyChangeEvent *evt) override;
 
 private:
     mutable QString _divergeSpeed;
@@ -175,6 +187,10 @@ private:
     //Sensor getSecondSensor() = null;
     /*private*/ NamedBeanHandle<Sensor*>* _secondNamedSensor;
     static Logger* log;
+    /*private*/ Turnout* leadingTurnout = nullptr;
+    /*private*/ bool followingCommandedState = true;
+    LocalDateTime* nextWait;
+    IntervalCheck* thr = nullptr;
 
 protected:
     AbstractTurnout(QString systemName, QObject *parent=0);
@@ -268,6 +284,34 @@ protected:
     /*protected*/ TurnoutOperator*  getTurnoutOperator();
     friend class NoFeedbackTurnoutOperator;
     friend class SensorTurnoutOperator;
+    friend class IntervalCheck;
+
+};
+
+class IntervalCheck : public QObject
+{
+  Q_OBJECT
+  AbstractTurnout* at;
+  int s;
+ public:
+  IntervalCheck(int s, AbstractTurnout* at) {this->s = s; this->at = at;}
+ signals:
+  void finished();
+ public slots:
+  void process()
+  {
+   at->log->debug(tr("go to sleep for %1 ms...").arg(qMax(0ULL, LocalDateTime::now()->until(at->nextWait, LocalDateTime::ChronoUnit::MILLIS))));
+   try {
+       SleeperThread::msleep(qMax(0ULL, LocalDateTime::now()->until(at->nextWait, LocalDateTime::ChronoUnit::MILLIS))); // nextWait might have passed in the meantime
+       at->log->debug(tr("back from sleep, forward on %1").arg(LocalDateTime::now()->toString()));
+       at->setCommandedState(s);
+   } catch (InterruptedException* ex) {
+       at->log->debug(tr("setCommandedStateAtInterval(s) interrupted at %1").arg(LocalDateTime::now()->toString()));
+//       Thread.currentThread().interrupt(); // retain if needed later
+       emit finished();
+   }
+
+  }
 };
 
 #endif // ABSTRACTTURNOUT_H

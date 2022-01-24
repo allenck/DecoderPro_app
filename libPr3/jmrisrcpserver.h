@@ -4,19 +4,21 @@
 
 class JmriSRCPServer : public JmriServer
 {
+  Q_OBJECT
 public:
- JmriSRCPServer(QObject* parent = nullptr);
+ Q_INVOKABLE JmriSRCPServer(QObject* parent = nullptr);
+ ~JmriSRCPServer() {}
+ JmriSRCPServer(const JmriSRCPServer&) : JmriServer() {}
  /*synchronized*/ /*public*/ static JmriServer* instance();
- /*public*/ JmriSRCPServer(int port, QObject* parent = nullptr);
+ Q_INVOKABLE/*public*/ JmriSRCPServer(int port, QObject* parent = nullptr);
 
 
 private:
- /*private*/ static JmriServer* _instance;// = nullptr;
  static Logger* log;
 
 protected:
  /*protected*/ void advertise();
 
 };
-
+Q_DECLARE_METATYPE(JmriSRCPServer)
 #endif // JMRISRCPSERVER_H

@@ -8,13 +8,14 @@
 #include "actionlistener.h"
 #include "liblayouteditor_global.h"
 
-class ActionEvent;
+class JActionEvent;
 class TableItemPanel;
 class NamedIcon;
 class Editor;
-class LIBLAYOUTEDITORSHARED_EXPORT SensorIcon : public PositionableIcon
+class LIBLAYOUTEDITORSHARED_EXPORT SensorIcon : public PositionableIcon, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     //explicit SensorIcon(QObject *parent = 0);
     static const /*public*/ int UNKNOWN_FONT_COLOR =      0x03;
@@ -112,6 +113,7 @@ public:
     /*public*/ bool setEditItemMenu(QMenu* popup) override;
     /*public*/ bool setEditIconMenu(QMenu* popup) override;
     /*public*/ bool updateScene() override;
+    QObject* self() override {return (QObject*)this;}
 
 signals:
     
@@ -119,7 +121,7 @@ public slots:
     // update icon as state of turnout changes
 //    /*public*/ void propertyChange(PropertyChangeEvent* e);
     //void propertyChange(QString propertyName, int old, int now);
-    void propertyChange(PropertyChangeEvent* e);
+    void propertyChange(PropertyChangeEvent* e) override;
 
  void changeLayoutSensorType();
  /*public*/ void doMousePressed(QGraphicsSceneMouseEvent* e) override;
@@ -179,21 +181,29 @@ protected slots:
  friend class EditActionListener;
 
 };
-class UpdateActionListener : public ActionListener
+
+class UpdateActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+  Q_INTERFACES(ActionListener)
  SensorIcon* parent;
 public:
  UpdateActionListener(SensorIcon* parent);
- /*public*/ void actionPerformed(ActionEvent* a = 0) override;
+ QObject* self() override {return (QObject*)this;}
+public slots:
+ /*public*/ void actionPerformed(JActionEvent* a = 0) override;
 };
-class EditActionListener : public ActionListener
+
+class EditActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+  Q_INTERFACES(ActionListener)
  SensorIcon* parent;
 public:
  EditActionListener(SensorIcon* parent);
- /*public*/ void actionPerformed(ActionEvent* a = 0);
+ QObject* self() override {return (QObject*)this;}
+public slots:
+ /*public*/ void actionPerformed(JActionEvent* a = 0)override;
 };
 
 #endif // SENSORICON_H

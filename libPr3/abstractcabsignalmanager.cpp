@@ -134,7 +134,7 @@
     /*private*/ void AbstractCabSignalManager::initBlocks(){
         blockInit = true;
         BlockManager* bmgr = (BlockManager*)InstanceManager::getDefault("BlockManager");
-        QSet</*Block*/NamedBean*> blockSet = bmgr->getNamedBeanSet();
+        QSet</*Block*/NamedBean*> blockSet = bmgr->AbstractManager::getNamedBeanSet();
         for (/*Block*/NamedBean* nb : blockSet)
         {
          Block*b = (Block*)nb;

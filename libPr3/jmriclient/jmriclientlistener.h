@@ -11,9 +11,11 @@ class JMRIClientReply;
  *
  * @author Bob Jacobsen Copyright (C) 2001, 2004, 2008
   */
-/*public*/ /*interface*/class JMRIClientListener : public AbstractMRListener {
- Q_OBJECT
-public slots:
+/*public*/ /*interface*/class JMRIClientListener :  public AbstractMRListener {
+ //Q_OBJECT
+    Q_INTERFACES(AbstractMRListener)
+public:
+//public slots:
 
  /*public*/ void message(AbstractMRMessage* /*m*/, AbstractMRListener* ) {}
 

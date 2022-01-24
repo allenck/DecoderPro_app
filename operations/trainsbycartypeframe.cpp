@@ -4,8 +4,7 @@
 #include "jcombobox.h"
 #include <QBoxLayout>
 #include "gridbaglayout.h"
-#include <QGroupBox>
-#include <QPushButton>
+#include "jbutton.h"
 #include "control.h"
 #include <propertychangeevent.h>
 #include "setup.h"
@@ -19,6 +18,8 @@
 #include "train.h"
 #include "operationsxml.h"
 #include "printtrainsbycartypesaction.h"
+#include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -40,51 +41,46 @@ namespace Operations
  log = new Logger("TrainsByCarTypeFrame");
      Empty = "            ";
      trainList = QList<QCheckBox*>();
-     trainCheckBoxes = new QWidget();
-     clearButton = new QPushButton(tr("Clear"));
-     setButton = new QPushButton(tr("Select"));
-     saveButton = new QPushButton(tr("Save"));
+     trainCheckBoxes = new JPanel();
+     clearButton = new JButton(tr("Clear"));
+     setButton = new JButton(tr("Select"));
+     saveButton = new JButton(tr("Save"));
      copyCheckBox = new QCheckBox(tr("Copy"));
      textCarType = new QLabel(Empty);
-     typeComboBox = CarTypes::instance()->getComboBox();
+     typeComboBox = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getComboBox();
  }
 
  /*public*/ void TrainsByCarTypeFrame::initComponents(QString carType) {
 
      // load managers
-     manager = TrainManager::instance();
+     manager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
 
      // general GUI config
      //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
      QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      // Set up the panels
-     QGroupBox* pCarType = new QGroupBox();
+     JPanel* pCarType = new JPanel();
      pCarType->setLayout(new GridBagLayout());
-     //pCarType.setBorder(BorderFactory.createTitledBorder(tr("Type")));
-     pCarType->setStyleSheet(gbStyleSheet);
-     pCarType->setTitle(tr("Type"));
+     pCarType->setBorder(BorderFactory::createTitledBorder(tr("Type")));
      addItem(pCarType, typeComboBox, 0, 0);
      addItem(pCarType, copyCheckBox, 1, 0);
      addItem(pCarType, textCarType, 2, 0);
      typeComboBox->setCurrentIndex(typeComboBox->findText(carType));
      copyCheckBox->setToolTip(tr("First select the car type you want to copy, then select Copy, then the car type you want to copy to, then Save"));
 
-     QGroupBox* pTrainsFrame = new QGroupBox();
+     JPanel* pTrainsFrame = new JPanel();
      pTrainsFrame->setLayout(new QVBoxLayout);
-     pTrains = new QWidget();
+     pTrains = new JPanel();
      pTrains->setLayout(new GridBagLayout());
      QScrollArea* trainPane = new QScrollArea(/*pTrains*/);
      //trainPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-     //trainPane.setBorder(BorderFactory.createTitledBorder(tr("Trains")));
-     pTrainsFrame->setStyleSheet(gbStyleSheet);
-     pTrainsFrame->setTitle(tr("Trains"));
+     pTrainsFrame->setBorder(BorderFactory::createTitledBorder(tr("Trains")));
      updateTrains();
 
-     QFrame* pButtons = new QFrame();
+     JPanel* pButtons = new JPanel();
      pButtons->setLayout(new GridBagLayout());
-     //pButtons.setBorder(BorderFactory.createEtchedBorder());
-     pButtons->setFrameStyle(QFrame::Box | QFrame::Sunken);
+     pButtons->setBorder(BorderFactory::createEtchedBorder());
 
      addItem(pButtons, clearButton, 0, 0);
      addItem(pButtons, setButton, 1, 0);
@@ -107,9 +103,9 @@ namespace Operations
      addCheckBoxAction(copyCheckBox);
 
      //manager.addPropertyChangeListener(this);
-     connect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes::instance().addPropertyChangeListener(this);
-     connect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      // build menu
      QMenuBar* menuBar = new QMenuBar();
@@ -134,8 +130,8 @@ namespace Operations
  }
 
  // Save, Delete, Add
- /*public*/ void TrainsByCarTypeFrame::buttonActionPerformed(QPushButton* ae) {
- QPushButton* source = (QPushButton*)ae;
+ /*public*/ void TrainsByCarTypeFrame::buttonActionPerformed(JButton* ae) {
+ JButton* source = (JButton*)ae;
      if (source == saveButton) {
          save();
      }
@@ -196,7 +192,7 @@ namespace Operations
      QList<Train*> trains = manager->getTrainsByNameList();
      foreach (Train* train, trains) {
          //train.addPropertyChangeListener(this);
-      connect(train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      connect(train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          QCheckBox* cb = new QCheckBox(train->getName());
          cb->setObjectName(train->getId());
          cb->setToolTip(tr("Select this train if it services car type %1").arg(carType));
@@ -214,7 +210,7 @@ namespace Operations
 
  /*private*/ void TrainsByCarTypeFrame::updateComboBox() {
      log->debug("update combobox");
-     CarTypes::instance()->updateComboBox(typeComboBox);
+     ((CarTypes*)InstanceManager::getDefault("CarTypes"))->updateComboBox(typeComboBox);
  }
 
  /*private*/ void TrainsByCarTypeFrame::selectCheckboxes(bool b) {
@@ -251,7 +247,7 @@ namespace Operations
              Train* train = manager->getTrainById(trainList.at(i)->objectName());
              if (train != NULL) {
                  //train.removePropertyChangeListener(this);
-              disconnect(train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+              disconnect(train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              }
          }
      }
@@ -259,9 +255,9 @@ namespace Operations
 
  /*public*/ void TrainsByCarTypeFrame::dispose() {
      //manager.removePropertyChangeListener(this);
- disconnect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes.instance().removePropertyChangeListener(this);
- disconnect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      removePropertyChangeTrains();
      OperationsFrame::dispose();
  }

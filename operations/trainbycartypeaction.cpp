@@ -17,8 +17,8 @@ namespace Operations
   */
  //private static final long serialVersionUID = -5831631159830861734L;
 
- /*public*/ TrainByCarTypeAction::TrainByCarTypeAction(QString s, Train* train, QObject* parent)
-    : AbstractAction(s, parent)
+ /*public*/ TrainByCarTypeAction::TrainByCarTypeAction( Train* train, QObject* parent)
+    : AbstractAction(tr("Show Car Types"), parent)
  {
      //super(s);
      _train = train;
@@ -26,9 +26,9 @@ namespace Operations
  }
 
 
- /*public*/ void TrainByCarTypeAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void TrainByCarTypeAction::actionPerformed(JActionEvent * /*e*/) {
      // create frame
-     TrainByCarTypeFrame* f = new TrainByCarTypeFrame();
+     TrainByCarTypeFrame* f = new TrainByCarTypeFrame(_train);
      f->initComponents(_train);
  }
 }

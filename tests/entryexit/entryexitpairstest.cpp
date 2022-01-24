@@ -96,7 +96,7 @@ EntryExitPairsTest::EntryExitPairsTest(QObject *parent) : QObject(parent)
     }
 
     //@BeforeClass
-//    /*public*/ static void EntryExitPairsTest::before() throw Exception
+//    /*public*/ static void EntryExitPairsTest::before() throw new Exception
     /*public*/ void EntryExitPairsTest::setUp()
     {
         JUnitUtil::setUp();

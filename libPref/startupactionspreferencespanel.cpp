@@ -49,7 +49,7 @@ bool compareItems(QObject* o1, QObject* o2)
  foreach(StartupModelFactory* factory, factories->values())
  {
   QAction* item = new QAction(factory->getActionText(),this);
-  mapper->setMapping(item, factory);
+  mapper->setMapping(item, factory->self());
 //        item.addActionListener((ActionEvent e) -> {
 //            StartupModel model = factory.newModel();
 //            factory.editModel(model, this->getTopLevelAncestor());
@@ -230,13 +230,13 @@ void StartupActionsPreferencesPanel::on_getAction(QObject* factory)
 
 }// </editor-fold>
 
-/*private*/ void StartupActionsPreferencesPanel::addBtnActionPerformed(ActionEvent* /*evt*/) {
+/*private*/ void StartupActionsPreferencesPanel::addBtnActionPerformed(JActionEvent* /*evt*/) {
     //Component c = (Component) evt.getSource();
 //    this->actionsMenu->show(c, 0 - 1, c.getHeight());
  this->actionsMenu->exec(QCursor::pos());
 }
 
-/*private*/ void StartupActionsPreferencesPanel::removeBtnActionPerformed(ActionEvent* /*evt*/) {
+/*private*/ void StartupActionsPreferencesPanel::removeBtnActionPerformed(JActionEvent* /*evt*/) {
     int row = this->actionsTbl->getSelectedRow();
     if (row != -1) {
         StartupModel* model = ((StartupActionsManager*) InstanceManager::getDefault("StartupActionsManager"))->getActions(row);
@@ -244,7 +244,7 @@ void StartupActionsPreferencesPanel::on_getAction(QObject* factory)
     }
 }
 
-/*private*/ void StartupActionsPreferencesPanel::upBtnActionPerformed(ActionEvent* /*evt*/) {
+/*private*/ void StartupActionsPreferencesPanel::upBtnActionPerformed(JActionEvent* /*evt*/) {
     int row = this->actionsTbl->getSelectedRow();
     if (row != 0) {
         ((StartupActionsManager*)InstanceManager::getDefault("StartupActionsManager"))->moveAction(row, row - 1);
@@ -252,7 +252,7 @@ void StartupActionsPreferencesPanel::on_getAction(QObject* factory)
     }
 }
 
-/*private*/ void StartupActionsPreferencesPanel::downBtnActionPerformed(ActionEvent* /*evt*/) {
+/*private*/ void StartupActionsPreferencesPanel::downBtnActionPerformed(JActionEvent* /*evt*/) {
     int row = this->actionsTbl->getSelectedRow();
     if (row != this->actionsTbl->model()->rowCount() - 1) {
         ((StartupActionsManager*)InstanceManager::getDefault("StartupActionsManager"))->moveAction(row, row + 1);

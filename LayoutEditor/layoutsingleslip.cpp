@@ -44,8 +44,8 @@
      * @param rot rotation.
      * @param layoutEditor main layout editor.
      */
-    /*public*/ LayoutSingleSlip::LayoutSingleSlip(QString id, QPointF c, double rot, LayoutEditor* layoutEditor)
-      : LayoutSlip(id, c, rot, layoutEditor, TurnoutType::SINGLE_SLIP)
+    /*public*/ LayoutSingleSlip::LayoutSingleSlip(QString id, LayoutEditor* layoutEditor)
+      : LayoutSlip(id, layoutEditor, TurnoutType::SINGLE_SLIP)
     {
         //super(id, c, rot, layoutEditor, TurnoutType.SINGLE_SLIP);
 

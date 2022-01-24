@@ -1,7 +1,7 @@
 #include "abstractsimulatorconnectionconfig.h"
 #include <jtextfield.h>
 #include "serialportadapter.h"
-#include "systemconnectionmemo.h"
+#include "defaultsystemconnectionmemo.h"
 #include <QMessageBox>
 #include <QBoxLayout>
 #include <QCheckBox>
@@ -42,7 +42,7 @@
 }
 
 //@Override
-/*public*/ PortAdapter* AbstractSimulatorConnectionConfig::getAdapter() { return adapter; }
+/*public*/ PortAdapter* AbstractSimulatorConnectionConfig::getAdapter()  { return adapter; }
 
 /**
  * Ctor for a functional object with no prexisting adapter.
@@ -112,8 +112,11 @@
 //                    }
 //                });
                 QComboBox* box = (QComboBox*)options.value(i)->getComponent();
-                ASCCActionListener* listener = new ASCCActionListener(item,this);
-                connect(box, SIGNAL(currentIndexChanged(QString)), listener, SLOT(actionPerformed()));
+//                ASCCActionListener* listener = new ASCCActionListener(item,this);
+//                connect(box, SIGNAL(currentIndexChanged(QString)), listener->self(), SLOT(actionPerformed()));
+                connect(box, &QComboBox::currentTextChanged, [=]{
+                 adapter->setOptionState(item, options.value(item)->getItem());
+                });
             }
         }
 
@@ -122,7 +125,7 @@
 }
 void AbstractSimulatorConnectionConfig::On_systemPrefixField_editingFinished()
 {
- if(!adapter->getSystemConnectionMemo()->setSystemPrefix(systemPrefixField->text()))
+ if(!((DefaultSystemConnectionMemo*)adapter->getSystemConnectionMemo())->setSystemPrefix(systemPrefixField->text()))
  {
 //  JOptionPane.showMessageDialog(NULL, "System Prefix " + systemPrefixField.getText() + " is already assigned");
   QMessageBox::warning(NULL, tr("Warning"), tr("System Prefix ") + systemPrefixField->text() + " is already assigned");
@@ -131,23 +134,23 @@ void AbstractSimulatorConnectionConfig::On_systemPrefixField_editingFinished()
 }
 void AbstractSimulatorConnectionConfig::On_connectionNameField_editingFinished()
 {
- if(!adapter->getSystemConnectionMemo()->setSystemPrefix(systemPrefixField->text()))
+ if(!((DefaultSystemConnectionMemo*)adapter->getSystemConnectionMemo())->setSystemPrefix(systemPrefixField->text()))
  {
 //  JOptionPane.showMessageDialog(NULL, "System Prefix " + systemPrefixField.getText() + " is already assigned");
   QMessageBox::warning(NULL, tr("Warning"), tr("Connection Name") + connectionNameField->text() + " is already assigned");
   connectionNameField->setText(adapter->getSystemConnectionMemo()->getUserName());
  }
 }
-ASCCActionListener::ASCCActionListener(QString item, AbstractSimulatorConnectionConfig *parent)
-{
-    this->item = item;
-    this->parent = parent;
-}
+//ASCCActionListener::ASCCActionListener(QString item, AbstractSimulatorConnectionConfig *parent)
+//{
+//    this->item = item;
+//    this->parent = parent;
+//}
 
-void ASCCActionListener::actionPerformed(ActionEvent */*e*/)
-{
-    parent->adapter->setOptionState(item, parent->options.value(item)->getItem());
-}
+//void ASCCActionListener::actionPerformed(JActionEvent */*e*/)
+//{
+//    parent->adapter->setOptionState(item, parent->options.value(item)->getItem());
+//}
 
 /*public*/ void AbstractSimulatorConnectionConfig::updateAdapter()
 {
@@ -156,7 +159,7 @@ void ASCCActionListener::actionPerformed(ActionEvent */*e*/)
   adapter->setOptionState(i, options.value(i)->getItem());
  }
 
- if(!adapter->getSystemConnectionMemo()->setSystemPrefix(systemPrefixField->text().trimmed()))
+ if(!((DefaultSystemConnectionMemo*)adapter->getSystemConnectionMemo())->setSystemPrefix(systemPrefixField->text().trimmed()))
  {
   systemPrefixField->setText(adapter->getSystemConnectionMemo()->getSystemPrefix());
   connectionNameField->setText(adapter->getSystemConnectionMemo()->getUserName());

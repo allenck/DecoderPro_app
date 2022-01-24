@@ -11,8 +11,7 @@ class MimeTypeParameterList : public QObject
     Q_OBJECT
 public:
     explicit MimeTypeParameterList(QObject *parent = 0);
-    /*public*/ MimeTypeParameterList(QString rawdata)
-throw (MimeTypeParseException);
+    /*public*/ MimeTypeParameterList(QString rawdata) /*throw (MimeTypeParseException)*/;
 //    /*public*/ int hashCode();
     /*public*/ bool equals(QObject* thatObject);
     /*public*/ int size();
@@ -39,7 +38,7 @@ private:
     QHash<QString, QString>* parameters;
     Logger* log;
 protected:
-    /*protected*/ void parse(QString rawdata) throw (MimeTypeParseException);
+    /*protected*/ void parse(QString rawdata) /*throw (MimeTypeParseException)*/;
  friend class DataFlavor;
 };
 

@@ -44,6 +44,7 @@
 #include "warranttableaction.h"
 #include "box.h"
 #include <QSortFilterProxyModel>
+#include "helpbroker.h"
 
 //CircuitBuilder::CircuitBuilder(QObject *parent) :
 //    QObject(parent)
@@ -145,7 +146,7 @@ CircuitBuilder::~CircuitBuilder()
     });
     _circuitMenu->addSection(tr("At least two track circuits are needed "));
     QAction* helpItem = new QAction(tr("CircuitBuilder Help"),this);
-//    HelpUtil::getGlobalHelpBroker()->enableHelpOnButton(helpItem, "package.jmri.jmrit.display.CircuitBuilder", nullptr);
+    HelpUtil::getGlobalHelpBroker()->enableHelpOnButton(helpItem, "package.jmri.jmrit.display.CircuitBuilder", nullptr);
     _circuitMenu->addAction(helpItem);
 
 }
@@ -1412,39 +1413,39 @@ _todoMenu->addMenu(blockNeeds);  // #1
     return false;
 }
 
-/*protected*/ bool CircuitBuilder::doMouseClicked(QList<Positionable*>* selections, QGraphicsSceneMouseEvent* event)
+/*protected*/ bool CircuitBuilder::doMouseClicked(QList<Positionable*> selections, QGraphicsSceneMouseEvent* event)
 {
     if (_editCircuitFrame != NULL || _editPathsFrame != NULL
             || _editPortalFrame != NULL || _editDirectionFrame != NULL) {
-        if (selections != NULL && selections->size() > 0) {
-            QList<Positionable*>* tracks = new QList<Positionable*>();
-            QListIterator<Positionable*> iter (*selections);
+        if (selections.size() > 0) {
+            QList<Positionable*> tracks = QList<Positionable*>();
+            QListIterator<Positionable*> iter (selections);
             if (_editCircuitFrame != NULL) {
                 while (iter.hasNext()) {
                     Positionable* pos = iter.next();
                     if (isTrack(pos)) {
-                        tracks->append(pos);
+                        tracks.append(pos);
                     }
                 }
             } else if (_editPathsFrame != NULL) {
                 while (iter.hasNext()) {
                     Positionable* pos = iter.next();
                     if (isTrack(pos) || qobject_cast<PortalIcon*>((QObject*)pos)) {
-                        tracks->append(pos);
+                        tracks.append(pos);
                     }
                 }
             } else {
                 while (iter.hasNext()) {
                     Positionable* pos = iter.next();
                     if (qobject_cast<PortalIcon*>((QObject*)pos)) {
-                        tracks->append(pos);
+                        tracks.append(pos);
                     }
                 }
             }
-            if (tracks->size() > 0) {
+            if (tracks.size() > 0) {
                 Positionable* selection = NULL;
-                if (tracks->size() == 1) {
-                    selection = tracks->at(0);
+                if (tracks.size() == 1) {
+                    selection = tracks.at(0);
                 } else {
                     selection = getSelection(tracks);
                 }
@@ -1612,19 +1613,19 @@ _todoMenu->addMenu(blockNeeds);  // #1
     return false;
 }
 
-/*private*/ Positionable* CircuitBuilder::getSelection(QList<Positionable*>* tracks)
+/*private*/ Positionable* CircuitBuilder::getSelection(QList<Positionable*> tracks)
 {
- if (tracks->size() > 0)
+ if (tracks.size() > 0)
  {
-  if (tracks->size() == 1)
+  if (tracks.size() == 1)
   {
-      return tracks->at(0);
+      return tracks.at(0);
   }
-  if (tracks->size() > 1)
+  if (tracks.size() > 1)
   {
 
-   QVector<QString> selects = QVector<QString>(tracks->size());
-   QListIterator<Positionable*> iter(*tracks);
+   QVector<QString> selects = QVector<QString>(tracks.size());
+   QListIterator<Positionable*> iter(tracks);
    int i = 0;
    while (iter.hasNext()) {
        selects.replace(i++, iter.next()->getNameString());
@@ -1639,7 +1640,7 @@ _todoMenu->addMenu(blockNeeds);  // #1
    QString select = selectBox->currentText();
    if (select != NULL) {
        //iter = tracks.iterator();
-       QListIterator<Positionable*> iter(*tracks);
+       QListIterator<Positionable*> iter(tracks);
        while (iter.hasNext()) {
            Positionable* pos = iter.next();
            if (((QString) select)==(pos->getNameString())) {
@@ -1647,7 +1648,7 @@ _todoMenu->addMenu(blockNeeds);  // #1
            }
        }
    } else {
-       return tracks->at(tracks->size() - 1);
+       return tracks.at(tracks.size() - 1);
    }
   }
  }

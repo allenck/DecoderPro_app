@@ -8,8 +8,9 @@
 #include "trackeditframe.h"
 #include "track.h"
 #include <QGroupBox>
-#include <QPushButton>
+#include "jbutton.h"
 #include "gridbaglayout.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -40,7 +41,7 @@ namespace Operations
   group = new QButtonGroup();
 
   // major buttons
-  saveButton = new QPushButton(tr("Save"));
+  saveButton = new JButton(tr("Save"));
 
   _trackType = "";
   // the following code sets the frame's initial state
@@ -55,10 +56,9 @@ namespace Operations
 
   // load the panel
   // row 1a
-  QGroupBox* p1 = new QGroupBox();
+  JPanel* p1 = new JPanel();
   p1->setLayout(new GridBagLayout());
-  //p1.setBorder(BorderFactory.createTitledBorder(MessageFormat.format(tr("TrackType"), new Object[]{trackName})));
-  p1->setStyleSheet(gbStyleSheet);
+  p1->setBorder(BorderFactory::createTitledBorder(tr("Select Desired Track Type for %1").arg(trackName)));
   addItem(p1, spurRadioButton, 0, 0);
   addItem(p1, yardRadioButton, 1, 0);
   addItem(p1, interchangeRadioButton, 2, 0);
@@ -88,7 +88,7 @@ namespace Operations
  }
 
  /*public*/ void ChangeTrackFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == saveButton) {
          // check to see if button has changed
          if (spurRadioButton->isChecked() && _trackType!=(Track::SPUR)) {

@@ -1,6 +1,5 @@
 #include "locofile.h"
 #include "cvtablemodel.h"
-#include "indexedcvtablemodel.h"
 #include "fileutil.h"
 #include "roster.h"
 #include "file.h"
@@ -285,7 +284,7 @@ LocoFile::LocoFile(QObject *parent) :
         writeXML(file, doc);
 
     }
-    catch (IOException ex) {
+    catch (IOException* ex) {
         log->error("IOException"/*, ex*/);
     }
 }
@@ -330,7 +329,7 @@ LocoFile::LocoFile(QObject *parent) :
   addDefaultInfo(pRootElement);
   writeXML(pFile, doc);
  }
-    catch (Exception ex) {
+    catch (Exception* ex) {
         // need to trace this one back
 //        ex.printStackTrace();
     }
@@ -379,7 +378,7 @@ LocoFile::LocoFile(QObject *parent) :
 
         writeXML(pFile, doc);
     }
-    catch (Exception ex) {
+    catch (Exception* ex) {
         // need to trace this one back
 //        ex.printStackTrace();
     }

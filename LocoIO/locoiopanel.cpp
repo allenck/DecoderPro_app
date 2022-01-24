@@ -66,7 +66,7 @@ LocoIOPanel::LocoIOPanel(QWidget *parent) :
  table->resizeColumnsToContents();
  //scroll = new JScrollPane(table);
 
- //data->addPropertyChangeListener(this);
+ //data->SwingPropertyChangeSupport::addPropertyChangeListener(this);
  connect(data, SIGNAL(notifyPropertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
  // have to shut off autoResizeMode to get horizontal scroll to work (JavaSwing p 541)
@@ -188,7 +188,7 @@ LocoIOPanel::LocoIOPanel(QWidget *parent) :
              data.setUnitAddress(
                      Integer.valueOf(addrField.getText(), 16).intValue(),
                      Integer.valueOf(subAddrField.getText(), 16).intValue());
-         } catch (NullPointerException e) {
+         } catch (NullPointerException* e) {
              log->error("Caught NullPointerException", e);
          }
      }
@@ -202,7 +202,7 @@ LocoIOPanel::LocoIOPanel(QWidget *parent) :
              data.setUnitAddress(
                      Integer.valueOf(addrField.getText(), 16).intValue(),
                      Integer.valueOf(subAddrField.getText(), 16).intValue());
-         } catch (NullPointerException e) {
+         } catch (NullPointerException* e) {
              log->error("Caught NullPointerException", e);
          }
      }
@@ -220,7 +220,7 @@ LocoIOPanel::LocoIOPanel(QWidget *parent) :
 
  try {
      data->setUnitAddress(0x51, 0x00);
- } catch (NullPointerException e) {
+ } catch (NullPointerException* e) {
      log->error("Caught NullPointerException", e);
  }
 
@@ -252,10 +252,10 @@ void LocoIOPanel::on_al4UnitAddress()
 {
  try
  {
-  if(addrField == nullptr || subAddrField == nullptr) throw NullPointerException("Invalid address");
+  if(addrField == nullptr || subAddrField == nullptr) throw new NullPointerException("Invalid address");
   data->setUnitAddress(addrField->text().toInt(0,16), subAddrField->text().toInt(0,16));
  }
- catch (NullPointerException e)
+ catch (NullPointerException* e)
  {
   log->error("Caught NullPointerException", e);
  }

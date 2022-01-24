@@ -11,7 +11,7 @@ public:
  ~DefaultAudioManagerXml() {}
  DefaultAudioManagerXml(const DefaultAudioManagerXml&) : AbstractAudioManagerConfigXML() {}
  /*public*/ void setStoreElementClass(QDomElement audio);
- /*public*/ bool load(QDomElement audio) throw (Exception);
+ /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException);
 
 signals:
 

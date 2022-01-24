@@ -30,7 +30,7 @@
 }
 
 
-/*public*/ void JythonAutomatonAction::actionPerformed(ActionEvent*  /*e*/)
+/*public*/ void JythonAutomatonAction::actionPerformed(JActionEvent *  /*e*/)
 {
     // create a SampleAutomaton
 //    JFileChooser fci = jmri.jmrit.XmlFile.userFileChooser("Python script files", "py");

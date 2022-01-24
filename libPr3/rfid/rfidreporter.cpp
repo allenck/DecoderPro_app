@@ -38,22 +38,23 @@
 //    implements RfidTagListener, PhysicalLocationReporter {
 
 /*public*/ RfidReporter::RfidReporter(QString systemName, QObject *parent)
-    : AbstractReporter(systemName, parent)
+    : AbstractIdTagReporter(systemName, parent)
 {
     //super(systemName);
-    init();
+//    init();
 }
 
 /*public*/ RfidReporter::RfidReporter(QString systemName, QString userName, QObject *parent)
-    : AbstractReporter(systemName, userName, parent)
+    : AbstractIdTagReporter(systemName, userName, parent)
 {
  //super(systemName, userName);
- init();
+// init();
 }
+#if 0
 void RfidReporter::init()
 {
  log = new Logger("RfidReporter");
- state = UNKNOWN;
+ state = PhysicalLocationReporter::UNKNOWN;
 
 }
 
@@ -109,7 +110,7 @@ void RfidReporter::init()
  // IdTag.getTagID() is a system-name-ized version of the loco address. I think.
  // Matcher.group(1) : loco address (I think)
     AbstractIdTag* cr = (AbstractIdTag*) VPtr<AbstractIdTag>::asPtr(this->getCurrentReport());
- ReporterManager* rm = static_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"));
+ ReporterManager* rm = qobject_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"));
  //Pattern p = Pattern.compile(""+rm->getSystemPrefix()+rm->typeLetter()+"(\\d+)");
  //Matcher m = p.matcher(cr.getTagID());
  QRegExp regExp(rm->getSystemPrefix()+rm->typeLetter()+"(\\d+)");
@@ -167,3 +168,4 @@ return(PhysicalLocation::getBeanPhysicalLocation(this));
 //    private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(RfidReporter.class.getName());
 
 //}
+#endif

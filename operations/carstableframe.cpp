@@ -1,7 +1,7 @@
 #include "carstableframe.h"
 #include "operationsxml.h"
 #include <jtextfield.h>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QRadioButton>
 #include <QButtonGroup>
 #include "carmanager.h"
@@ -31,7 +31,10 @@
 #include "jtable.h"
 #include "modifylocationsaction.h"
 #include "trainsbycartypeaction.h"
-
+#include "instancemanager.h"
+#include "joptionpane.h"
+#include "borderfactory.h"
+#include "printcarloadsaction.h"
 //CarsTableFrame::CarsTableFrame()
 //{
 
@@ -55,7 +58,7 @@ namespace Operations
  {
   setObjectName("CarsTableFrame");
   log = new Logger("CarsTableFrame");
-  carManager = CarManager::instance();
+  carManager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
   setStatusBar(new QStatusBar());
   statusBar()->setSizeGripEnabled(true);
 
@@ -87,9 +90,9 @@ namespace Operations
   group = new QButtonGroup();
 
   // major buttons
-  addButton = new QPushButton(tr("Add"));
-  findButton = new QPushButton(tr("Find"));
-  saveButton = new QPushButton(tr("Save"));
+  addButton = new JButton(tr("Add"));
+  findButton = new JButton(tr("Find"));
+  saveButton = new JButton(tr("Save"));
 
   findCarTextBox = new JTextField(6);
   f = NULL;
@@ -117,39 +120,36 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
   // Set up the control panel
   // row 1
-  QGroupBox* cp1 = new QGroupBox();
-  //cp1.setBorder(BorderFactory.createTitledBorder(tr("SortBy")));
-  cp1->setStyleSheet(gbStyleSheet);
-  cp1->setTitle(tr("Sort by"));
+  JPanel* cp1 = new JPanel();
   QHBoxLayout* cp1Layout = new QHBoxLayout(cp1);
+  cp1->setBorder(BorderFactory::createTitledBorder(tr("Sort by")));
   cp1Layout->addWidget(sortByNumber);
   cp1Layout->addWidget(sortByRoad);
   cp1Layout->addWidget(sortByType);
 
-  QGroupBox* clp = new QGroupBox();
-  //clp.setBorder(BorderFactory.createTitledBorder(""));
-  clp->setStyleSheet(gbStyleSheet);
+  JPanel* clp = new JPanel();
   QHBoxLayout* clpLayout = new QHBoxLayout(clp);
+  clp->setBorder(BorderFactory::createTitledBorder(""));
   clpLayout->addWidget(sortByColor);
   clpLayout->addWidget(sortByLoad);
   cp1Layout->addWidget(clp);
   cp1Layout->addWidget(sortByKernel);
   cp1Layout->addWidget(sortByLocation);
 
-  QGroupBox* destp = new QGroupBox();
-  //destp.setBorder(BorderFactory.createTitledBorder(""));
-  destp->setStyleSheet(gbStyleSheet);
+  JPanel* destp = new JPanel();
   QHBoxLayout* destpLayout = new QHBoxLayout(destp);
+  destp->setBorder(BorderFactory::createTitledBorder(""));
   destpLayout->addWidget(sortByDestination);
   destpLayout->addWidget(sortByFinalDestination);
   destpLayout->addWidget(sortByRwe);
+  destpLayout->addWidget(sortByRwl);
+  destpLayout->addWidget(sortByDivision);
   cp1Layout->addWidget(destp);
   cp1Layout->addWidget(sortByTrain);
 
-  QGroupBox* movep = new QGroupBox();
-  //movep.setBorder(BorderFactory.createTitledBorder(""));
-  movep->setStyleSheet(gbStyleSheet);
+  JPanel* movep = new JPanel();
   QHBoxLayout* movepLayout = new QHBoxLayout(movep);
+  movep->setBorder(BorderFactory::createTitledBorder(""));
   movepLayout->addWidget(sortByMoves);
   movepLayout->addWidget(sortByBuilt);
   movepLayout->addWidget(sortByOwner);
@@ -160,7 +160,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
       movepLayout->addWidget(sortByRfid);
   }
 
-     if (ScheduleManager::instance()->numEntries() > 0) {
+     if (((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"))->numEntries() > 0) {
          movepLayout->addWidget(sortByWait);
          movepLayout->addWidget(sortByPickup);
      }
@@ -173,32 +173,27 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   //cp2.setLayout(new BoxLayout(cp2, BoxLayout.X_AXIS));
   QHBoxLayout* cp2Layout = new QHBoxLayout(cp2);
 
-  QGroupBox* cp2Add = new QGroupBox();
+  JPanel* cp2Add = new JPanel();
   FlowLayout* cp2AddLayout = new FlowLayout(cp2Add);
-  //cp2Add.setBorder(BorderFactory.createTitledBorder(""));
-  cp2Add->setStyleSheet(gbStyleSheet);
+  cp2Add->setBorder(BorderFactory::createTitledBorder(""));
   cp2AddLayout->addWidget(numCars);
   cp2AddLayout->addWidget(textCars);
   cp2AddLayout->addWidget(textSep1);
   cp2AddLayout->addWidget(addButton);
   cp2Layout->addWidget(cp2Add);
 
-  QGroupBox* cp2Find = new QGroupBox();
-  //cp2Find.setBorder(BorderFactory.createTitledBorder(""));
-  cp2Find->setStyleSheet(gbStyleSheet);
+  JPanel* cp2Find = new JPanel();
   FlowLayout * cp2FindLayout = new FlowLayout(cp2Find);
-  cp2Find->setStyleSheet(gbStyleSheet);
+  cp2Find->setBorder(BorderFactory::createTitledBorder(""));
   findButton->setToolTip(tr("Find car by road number. Asterisk \"*\" = wild card."));
   findCarTextBox->setToolTip(tr("Find car by road number. Asterisk \"*\" = wild card."));
   cp2FindLayout->addWidget(findButton);
   cp2FindLayout->addWidget(findCarTextBox);
   cp2Layout->addWidget(cp2Find);
 
-  QGroupBox* cp2Save = new QGroupBox();
-  //cp2Save.setBorder(BorderFactory.createTitledBorder(""));
-  cp2Save->setStyleSheet(gbStyleSheet);
+  JPanel* cp2Save = new JPanel();
   FlowLayout* cp2SaveLayout = new FlowLayout(cp2Save);
-  cp2Save->setStyleSheet(gbStyleSheet);
+  cp2Save->setBorder(BorderFactory::createTitledBorder(""));
   cp2SaveLayout->addWidget(saveButton);
   cp2Layout->addWidget(cp2Save);
 
@@ -236,6 +231,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   addRadioButtonAction(sortByDestination);
   addRadioButtonAction(sortByFinalDestination);
   addRadioButtonAction(sortByRwe);
+  addRadioButtonAction(sortByRwl);
+  addRadioButtonAction(sortByDivision);
   addRadioButtonAction(sortByTrain);
   addRadioButtonAction(sortByMoves);
   addRadioButtonAction(sortByBuilt);
@@ -256,6 +253,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   group->addButton(sortByDestination);
   group->addButton(sortByFinalDestination);
   group->addButton(sortByRwe);
+  group->addButton(sortByRwl);
+  group->addButton(sortByDivision);
   group->addButton(sortByTrain);
   group->addButton(sortByMoves);
   group->addButton(sortByBuilt);
@@ -287,6 +286,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      toolMenu->addAction(new ResetCheckboxesCarsTableAction(carsTableModel,this));
      toolMenu->addAction(new ModifyLocationsAction(this));
      toolMenu->addAction(new TrainsByCarTypeAction(this));
+     toolMenu->addAction(new PrintCarLoadsAction(true, this));
+     toolMenu->addAction(new PrintCarLoadsAction(false,this));
      toolMenu->addAction(new CarsSetFrameAction(carsTable,this));
 
      menuBar->addMenu(toolMenu);
@@ -337,6 +338,12 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      if (source == sortByRwe) {
          carsTableModel->setSort(CarsTableModel::SORTBY_RWE);
      }
+     if (source == sortByRwl) {
+         carsTableModel->setSort(CarsTableModel::SORTBY_RWL);
+     }
+     if (source == sortByDivision) {
+         carsTableModel->setSort(CarsTableModel::SORTBY_DIVISION);
+     }
      if (source == sortByTrain) {
          carsTableModel->setSort(CarsTableModel::SORTBY_TRAIN);
      }
@@ -368,51 +375,45 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      clearTableSort(carsTable);
  }
 
- /*public*/ QList<RollingStock*>* CarsTableFrame::getSortByList() {
-     return carsTableModel->sysList;
+ /*public*/ QList<Car*>* CarsTableFrame::getSortByList() {
+     return carsTableModel->carList;
  }
 
 
  // add, find or save button
  /*public*/ void CarsTableFrame::buttonActionPerformed(QWidget* ae)
  {
-  QPushButton* source = (QPushButton*)ae;
-     // log->debug("car button activated");
-     if (source == findButton) {
+  // log.debug("car button activated");
+  if (ae == findButton) {
       int rowindex = carsTableModel->findCarByRoadNumber(findCarTextBox->text());
-         if (rowindex < 0) {
-//             JOptionPane.showMessageDialog(this, MessageFormat.format(tr("carWithRoadNumNotFound"),
-//                 new Object[]{findCarTextBox.getText()}), Bundle.getMessage("carCouldNotFind"),
-//                     JOptionPane.INFORMATION_MESSAGE);
-          QMessageBox::information(this, tr("Could not find car!"), tr("Car with road number \"%1\" not found ").arg(findCarTextBox->text()));
-             return;
-         }
-         // clear any sorts by column
-         clearTableSort(carsTable);
-// TODO:         carsTable->changeSelection(rowindex, 0, false, false);
-         return;
-     }
-     if (source == addButton) {
-         if (f != NULL) {
-             f->dispose();
-         }
-         f = new CarEditFrame();
-         f->initComponents();
-         f->setTitle(tr("Add Car"));
-     }
-#if 0
-     if (source == saveButton) {
-         if (carsTable.isEditing()) {
-             log->debug("cars table edit true");
-             carsTable.getCellEditor().stopCellEditing();
-         }
-         OperationsXml::save();
-         saveTableDetails(carsTable);
-         if (Setup::isCloseWindowOnSaveEnabled()) {
-             dispose();
-         }
-     }
-#endif
+      if (rowindex < 0) {
+          JOptionPane::showMessageDialog(this, tr("Car with road number \"%1\" not found ").arg(
+                  findCarTextBox->text()),tr("Could not find car!"),
+                  JOptionPane::INFORMATION_MESSAGE);
+          return;
+      }
+      // clear any sorts by column
+      clearTableSort(carsTable);
+      carsTable->changeSelection(rowindex, 0, false, false);
+      return;
+  }
+  if (ae == addButton) {
+      if (f != nullptr) {
+          f->dispose();
+      }
+      f = new CarEditFrame();
+      f->initComponents(); // default is add car
+  }
+  if (ae == saveButton) {
+//      if (carsTable->isEditing()) {
+//          log.debug("cars table edit true");
+//          carsTable.getCellEditor().stopCellEditing();
+//      }
+      OperationsXml::save();
+      if (Setup::isCloseWindowOnSaveEnabled()) {
+          dispose();
+      }
+  }
  }
 #if 0
  /*protected*/ int[] getCurrentTableColumnWidths() {
@@ -441,7 +442,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 #endif
  /*private*/ void CarsTableFrame::updateNumCars() {
-     QString totalNumber = QString::number(CarManager::instance()->getNumEntries());
+     QString totalNumber = QString::number(((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getNumEntries());
      if (showAllCars) {
          numCars->setText(totalNumber);
          return;

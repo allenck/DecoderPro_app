@@ -3,7 +3,7 @@
 #include "jmrijframe.h"
 #include "liblayouteditor_global.h"
 
-class ActionEvent;
+class JActionEvent;
 class Logix;
 class QListView;
 class JTextField;
@@ -35,7 +35,7 @@ signals:
 public slots:
  void addPressed();
  void viewPressed();
- void donePressed(ActionEvent* e = 0);
+ void donePressed(JActionEvent* e = 0);
  void undoGroupPressed();
 
 private:

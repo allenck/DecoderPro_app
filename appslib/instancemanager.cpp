@@ -72,14 +72,15 @@
 #include <QApplication>
 //#include "proxymanager.h"
 #include "proxylightmanager.h"
-
+#include "proxymetermanager.h"
+#include "instancemanagerautoinitialize.h"
 
 class ManagerLists : public QHash<QString,QObjectList*>
 {
 
 };
 // /*static*/ InstanceInitializer* InstanceManager::initializer = (InstanceInitializer*)new DefaultInstanceInitializer();
-Q_GLOBAL_STATIC(DefaultInstanceInitializer, initializer)
+Q_GLOBAL_STATIC_WITH_ARGS(DefaultInstanceInitializer*, initializer, (new DefaultInstanceInitializer()))
 //Q_GLOBAL_STATIC(ManagerLists, managerLists)
 //Logger InstanceManager::log;
 //SensorManager* InstanceManager::sensorManager=nullptr;
@@ -123,7 +124,7 @@ InstanceManager::InstanceManager(QObject *parent) :
  initializers.insert("JmriUserPreferencesManager", new JmriUserPreferencesManager());
 // initializers.insert("WebServerPreferencesInstanceInitializer", new WebServerPreferencesInstanceInitializer());
 #endif
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
  initState = QMap</*Class<?>*/QString, StateHolder*>();
 
  //root = this;
@@ -347,7 +348,7 @@ void InstanceManager::deregister(QObject* item, QString type)
  {
   QString msg = "Required nonnull default for " + type + " does not exist.";
   log->warn(msg);
-  //throw NullPointerException(msg);
+  throw new NullPointerException(msg);
  }
  else
  {
@@ -355,6 +356,7 @@ void InstanceManager::deregister(QObject* item, QString type)
    o->setObjectName(o->metaObject()->className());
  }
  return o;
+ //return QObject::qt_metacast(type);
 }
 
 /*static*/ /*public*/ AudioManager* InstanceManager::AudioManagerInstance()
@@ -386,6 +388,12 @@ void InstanceManager::deregister(QObject* item, QString type)
 //static /*public*/ <T> T getNullableDefault(@Nonnull Class<T> type) {
 /*static*/ /*public*/ QObject* InstanceManager::getNullableDefault(QString type)
 {
+// int id = QMetaType::type(type.toLocal8Bit());
+// if (id != QMetaType::UnknownType) {
+//     void *myClassPtr = QMetaType::create(id);
+//     if(myClassPtr)
+//      return (QObject*)myClassPtr;
+// }
  return getDefault()->getInstance(type);
 }
 
@@ -417,72 +425,62 @@ void InstanceManager::deregister(QObject* item, QString type)
   setInitializationState(type, InitializationState::STARTED);
   if (working == InitializationState::STARTED)
   {
-   log->error(tr("Proceeding to initialize %1 while already in initialization").arg(type),  Exception("Thread \"" + QThread::currentThread()->objectName() + "\""));
-   log->error(tr("    Prior initialization:"), *except);
+   log->error(tr("Proceeding to initialize %1 while already in initialization").arg(type),  new Exception("Thread \"" + QThread::currentThread()->objectName() + "\""));
+   log->error(tr("    Prior initialization:"), except);
    if (traceFileActive) {
        traceFilePrint("*** Already in process ***");
    }
   }
   else if (working == InitializationState::DONE)
   {
-   log->error(tr("Proceeding to initialize %1 but initialization is marked as complete").arg(type),  Exception("Thread \"" + QThread::currentThread()->objectName() + "\""));
+   log->error(tr("Proceeding to initialize %1 but initialization is marked as complete").arg(type), new Exception("Thread \"" + QThread::currentThread()->objectName() + "\""));
   }
+
 
   // see if can autocreate
-  if(log)
-  log->debug(tr("    attempt auto-create of %1").arg(type/*.getName()*/));
-        //if (InstanceManagerAutoDefault.class.isAssignableFrom(type))
   if(Metatypes::done == 0)
    new Metatypes();
-  QObject* obj1;
-  try
+  if(log)
+   log->debug(tr("    attempt auto-create of %1").arg(type/*.getName()*/));
+  //if (InstanceManagerAutoDefault.class.isAssignableFrom(type))
+  if(Class::isAssignableFrom(type,"InstanceManagerAutoDefault"))
   {
-   obj1 = (QObject*)Class::forName(type);
-  }
-  catch (ClassNotFoundException ex)
-  {
-   setInitializationState(type, InitializationState::FAILED);
-   obj1 = nullptr;
-  }
-  if(obj1 != nullptr )
-  {
-   QVariant property= obj1->property("InstanceManagerAutoDefault");
-   if(property != QVariant())
-   {
+   QObject* obj1;
    try
    {
-    property = obj1->property("InstanceManagerAutoInitialize");
-    if(property != QVariant())
-    {
-     int methodIndex = obj1->metaObject()->indexOfMethod(QMetaObject::normalizedSignature("initialize()"));
-     if(methodIndex >= 0)
-     {
-      //QMetaMethod  method = obj1->metaObject()->method(methodIndex);
-      if(!QMetaObject::invokeMethod(obj1, QMetaObject::normalizedSignature("initialize"), Qt::DirectConnection))
-       throw NoSuchMethodException(tr("no method initialize found for type %1").arg(type));
-     }
-     else throw NoSuchMethodException(tr("no method initialize found for type %1").arg(type));
-     log->debug(tr("      auto-created default of %1").arg(type/*.getName()*/));
-    }
-    setInitializationState(type, InitializationState::DONE);
+    obj1 = (QObject*)Class::forName(type);
     l->append((QObject*)obj1);
-     //store(obj1, type);
-     return l->value(l->size() - 1);
-
- //      try {
-           //l.add(type.getConstructor((Class[]) null).newInstance((Object[]) null));
-   }
- //      } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
- //          log.error("Exception creating auto-default object", e); // unexpected
- //          return null;
- //      }
-    catch (NoSuchMethodException e)
+    //if(qobject_cast<InstanceManagerAutoInitialize*>(obj1))
+    if(Class::isAssignableFrom(type, "InstanceManagerAutoInitialize"))
     {
-     log->error("Exception creating auto-default object", e); // unexpected
-     setInitializationState(type, InitializationState::FAILED);
-     return nullptr;
+     //((InstanceManagerAutoInitialize*) obj1)->initialize();
+     if(!QMetaObject::invokeMethod(obj1, "initialize", Qt::AutoConnection))
+     {
+         Logger::error(tr("invoke method 'initialize' failed for %1").arg(obj1->metaObject()->className()));
+         throw new NoSuchMethodException("no such method initialize");
+     }
     }
    }
+   catch (NoSuchMethodException* ex)
+   {
+    log->error(tr("Exception creating auto-default object for %1").arg(type/*.getName()*/), ex);
+    setInitializationState(type, InitializationState::FAILED);
+    return nullptr;
+   }
+   catch (ClassNotFoundException* ex)
+   {
+    log->error(tr("Exception creating auto-default object for %1").arg(type/*.getName()*/), ex);
+    setInitializationState(type, InitializationState::FAILED);
+    return nullptr;
+   }
+   catch (std::exception& ex)
+   {
+    log->error(tr("Exception creating auto-default object for %1").arg(type/*.getName()*/)/*, ex*/);
+    setInitializationState(type, InitializationState::FAILED);
+    return nullptr;
+   }
+   setInitializationState(type, InitializationState::DONE);
+   return l->value(l->size() - 1);
   }
   // see if initializer can handle
   if(log)
@@ -491,9 +489,9 @@ void InstanceManager::deregister(QObject* item, QString type)
 //  if(initializers.contains(type))
 //  {
    //QObject* obj = initializers.value(type);//->getDefault(type);//initializer->getDefault(type);
-   QObject* obj = initializer->getDefault(type);
-   if(type == "InternalSystemConnectionMemo")
-       obj = obj1;
+   QObject* obj = ((DefaultInstanceInitializer*)*initializer)->getDefault(type);
+//  if(type == "InternalSystemConnectionMemo")
+//       obj = obj1;
    if (obj != nullptr)
    {
     log->debug(tr("      initializer created default of %1").arg(type/*.getName()*/));
@@ -577,6 +575,21 @@ void InstanceManager::deregister(QObject* item, QString type)
 }
 
 /**
+ * Check if a particular type has been initialized without
+ * triggering an automatic initialization. The existence or
+ * non-existence of the corresponding list is not changed, and
+ * no PropertyChangeEvent is fired.
+ *
+ * @param <T>  The type of the class
+ * @param type The class type
+ * @return true if an item is available as a default for the given type;
+ *         false otherwise
+ */
+/*public*/ /*static*/ /*<T>*/ bool InstanceManager::isInitialized(/*@Nonnull*/ QString type) {
+    return getDefault()->managerLists.value(type) != nullptr;
+}
+
+/**
  * Dump generic content of InstanceManager
  * by type.
  */
@@ -635,7 +648,7 @@ void InstanceManager::deregister(QObject* item, QString type)
  * @param l The listener to add
  */
 /*public*/ /*static*/ /*synchronized*/ void InstanceManager::addPropertyChangeListener(PropertyChangeListener* l) {
-    getDefault()->pcs->addPropertyChangeListener(l);
+    getDefault()->pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 }
 
 /**
@@ -645,161 +658,47 @@ void InstanceManager::deregister(QObject* item, QString type)
  * @param l            The listener to add
  */
 /*public*/ /*static*/ /*synchronized*/ void InstanceManager::addPropertyChangeListener(QString propertyName, PropertyChangeListener* l) {
-    getDefault()->pcs->addPropertyChangeListener(propertyName, l);
+    getDefault()->pcs->SwingPropertyChangeSupport::addPropertyChangeListener(propertyName, l);
 }
 
-PowerManager* InstanceManager::powerManagerInstance()
-{
- return (PowerManager*)getDefault("PowerManager");
-}
-
-//void InstanceManager::setPowerManager(PowerManager* p)
-//{
-//    //store(p, p->metaObject()->className());
-//    store(p,"PowerManager");
-//}
-
-//ProgrammerManager* InstanceManager::programmerManagerInstance()
-//{
-// return (ProgrammerManager*)getDefault("ProgrammerManager");
-//}
 
 SensorManager* InstanceManager::sensorManagerInstance()
-{
- return (SensorManager*)getDefault("SensorManager");
-}
-
-TurnoutManager* InstanceManager::turnoutManagerInstance()
-{
- return (TurnoutManager*)getDefault("TurnoutManager");
-}
-
-// helper function for scripts that use Proxy managers
-ProxyTurnoutManager* InstanceManager::proxyTurnoutManagerInstance()
-{
- return (ProxyTurnoutManager*)getDefault("TurnoutManager");
-}
-
-ProxySensorManager* InstanceManager::proxySensorManagerInstance()
 {
  return (ProxySensorManager*)getDefault("SensorManager");
 }
 
-ProxyLightManager* InstanceManager::proxyLightManagerInstance()
+TurnoutManager* InstanceManager::turnoutManagerInstance()
 {
- return (ProxyLightManager*)getDefault("LightManager");
+ return (ProxyTurnoutManager*)getDefault("TurnoutManager");
 }
 
-ProxyReporterManager* InstanceManager::proxyReporterManagerInstance()
-{
- return (ProxyReporterManager*)getDefault("ReporterManager");
-}
+// helper function for scripts that use Proxy managers
+//ProxyTurnoutManager* InstanceManager::proxyTurnoutManagerInstance()
+//{
+// return (ProxyTurnoutManager*)getDefault("TurnoutManager");
+//}
+
+//ProxySensorManager* InstanceManager::proxySensorManagerInstance()
+//{
+// return (ProxySensorManager*)getDefault("SensorManager");
+//}
+
+//ProxyLightManager* InstanceManager::proxyLightManagerInstance()
+//{
+// return (ProxyLightManager*)getDefault("LightManager");
+//}
+
+//ProxyReporterManager* InstanceManager::proxyReporterManagerInstance()
+//{
+// return (ProxyReporterManager*)getDefault("ReporterManager");
+//}
 
 
 ThrottleManager* InstanceManager::throttleManagerInstance()  {
     return (ThrottleManager*)getDefault(/*ThrottleManager.class*/  "ThrottleManager");
 }
 
-/**
- * Will eventually be deprecated, use @{link #getDefault} directly.
- *
- * @return the default signal head manager. May not be the only instance.
- * @deprecated 4.5.1
- */
-//@Deprecated
-//SignalHeadManager* InstanceManager::signalHeadManagerInstance()
-//{
-////    if (instance()->signalHeadManager != NULL) return instance()->signalHeadManager;
-////    // As a convenience, we create a default object if none was provided explicitly.
-////    // This must be replaced when we start registering specific implementations
-////    //instance()->signalHeadManager = (SignalHeadManager*)initializer->getDefault(/*SignalHeadManager.class)*/"SignalHeadManager");
-////    instance()->signalHeadManager = (SignalHeadManager*)new  AbstractSignalHeadManager();
-////    return instance()->signalHeadManager;
-// return (SignalHeadManager*)getDefault("SignalHeadManager");
-//}
 
-/**
- * Will eventually be deprecated, use @{link #getDefault} directly.
- *
- * @return the default signal mast manager. May not be the only instance.
- * @deprecated 4.5.1
- */
-//@Deprecated
-//SignalMastManager* InstanceManager::signalMastManagerInstance()
-//{
-// SignalMastManager* m = (SignalMastManager*)getDefault("SignalMastManager");
-//// if (m == nullptr)
-//// {
-////  m = (SignalMastManager*)initializer->getDefault("SignalMastManager");
-////  setSignalMastManager(m);
-//// }
-// return m;
-//}
-//void InstanceManager::setSignalMastManager(SignalMastManager* p)
-//{
-//    store(p, "SignalMastManager");
-//}
-
-//SignalSystemManager* InstanceManager::signalSystemManagerInstance()
-//{
-// SignalSystemManager* m = (SignalSystemManager*)getDefault("SignalSystemManager");
-// if (m == nullptr)
-// {
-//  m = (SignalSystemManager*)initializer->getDefault("SignalSystemManager");
-//  setSignalSystemManager(m);
-// }
-// return m;
-//}
-
-//void InstanceManager::setSignalSystemManager(SignalSystemManager* p) {
-//    store(p, "SignalSystemManager");
-//}
-
-//SignalGroupManager* InstanceManager::signalGroupManagerInstance()  {
-// SignalGroupManager* m = (SignalGroupManager*)getDefault("DefaultSignalGroupManager");
-// if (m == nullptr) {
-//     m = (SignalGroupManager*)initializer->getDefault("SignalGroupManager");
-//     setSignalGroupManager(m);
-// }
-// return m;
-//}
-
-//void InstanceManager::setSignalGroupManager(SignalGroupManager* p) {
-//    store(p, "SignalGroupManager");
-//}
-
-//BlockManager* InstanceManager::blockManagerInstance()
-//{
-// BlockManager* o = (BlockManager*)getDefault("BlockManager");
-// if (o != nullptr) return o;
-// o = (BlockManager*)initializer->getDefault("BlockManager");
-// store(o, "BlockManager");
-// return o;
-//}
-
-//SectionManager* InstanceManager::sectionManagerInstance()
-//{
-// return (SectionManager*)getDefault("SectionManager");
-//}
-
- SignalMastLogicManager* InstanceManager::signalMastLogicManagerInstance()  {
-     SignalMastLogicManager* r = (SignalMastLogicManager*)getDefault("SignalMastLogicManager");
-    if (r != nullptr) return r;
-    r = (SignalMastLogicManager*)initializer->getDefault("SignalMastLogicManager");
-    store((QObject*)r, "SignalMastLogicManager");
-    return r;
-}
-
-RouteManager* InstanceManager::routeManagerInstance()
-{
-    RouteManager* r = (RouteManager*)getDefault("RouteManager");
-    if (r != nullptr) return r;
-    r = (RouteManager*)initializer->getDefault("RouteManager");
-    store(r, "RouteManager");
-    return r;
-}
-
-ReporterManager* InstanceManager::reporterManagerInstance()  { return (ReporterManager*) getDefault("ReporterManager"); }
 /* ****************************************************************************
  *                   Primary Accessors - Left (for now)
  *
@@ -811,7 +710,7 @@ ReporterManager* InstanceManager::reporterManagerInstance()  { return (ReporterM
  *
  * @return the default light manager. May not be the only instance.
  */
-LightManager* InstanceManager::lightManagerInstance()  { return (LightManager*) getDefault("LightManager");}
+LightManager* InstanceManager::lightManagerInstance()  { return (ProxyLightManager*) getDefault("LightManager");}
 
 
 /**
@@ -821,38 +720,19 @@ LightManager* InstanceManager::lightManagerInstance()  { return (LightManager*) 
  */
 MemoryManager* InstanceManager::memoryManagerInstance()
 {
- return static_cast<MemoryManager*>(getDefault("MemoryManager"));
+ return (AbstractMemoryManager*)(getDefault("MemoryManager"));
 }
-//VSDecoderManager InstanceManager::vsdecoderManagerInstance() {
-//if (instance()->vsdecoderManager == NULL) instance()->vsdecoderManager = VSDecoderManager.instance();
-//return instance()->vsdecoderManager;
-//}
 
-//InstanceManager* InstanceManager::instance()
-//{
-// if (root==nullptr)
-// {
-//  setRootInstance();
-// }
-// return root;
-//}
-
-//void InstanceManager::setRootInstance()
-//{
-// if(root!=nullptr)
-//  return;
-// root = new InstanceManager();
-//}
-
-//    public InstanceManager() {
-//        init();
-//    }
-void InstanceManager::setSensorManager(SensorManager* p)
-{
+// Needs to have proxy manager converted to work
+// with current list of managers (and robust default
+// management) before this can be deprecated in favor of
+// store(p, SensorManager.class)void InstanceManager::setSensorManager(SensorManager* p)
+//@SuppressWarnings("unchecked") // AbstractProxyManager of the right type is type-safe by definition
+/*public*/ /*static*/ void InstanceManager::setSensorManager(AbstractSensorManager* p) {
  log->debug(" setSensorManager");
- SensorManager* apm = static_cast<SensorManager*>(getDefault("SensorManager"));
- if (qobject_cast<AbstractProxySensorManager*>(apm)!= nullptr) { // <?> due to type erasure
-     ((ProxySensorManager*) apm)->addManager(p);
+ AbstractProxyManager* apm = (AbstractProxyManager*)getDefault("SensorManager");
+ if (qobject_cast<AbstractProxyManager*>(apm)!= nullptr) { // <?> due to type erasure
+     ((AbstractProxyManager*) apm)->addManager((AbstractManager*)p);
  } else {
      log->error("Incorrect setup: SensorManager default isn't an AbstractProxyManager<Sensor>");
  }
@@ -875,15 +755,33 @@ void InstanceManager::setSensorManager(SensorManager* p)
 #endif
 }
 
+
+// Needs to have proxy manager converted to work
+// with current list of managers (and robust default
+// management) before this can be deprecated in favor of
+// store(p, MeterManager.class)
+//@SuppressWarnings("unchecked") // AbstractProxyManager of the right type is type-safe by definition
+/*static*/ /*public*/ void InstanceManager::setMeterManager(AbstractMeterManager* p) {
+    log->debug(" setMeterManager");
+#if 1
+    MeterManager* apm = (ProxyMeterManager*)getDefault("MeterManager");
+    if (qobject_cast<ProxyManager*>(apm->self())) { // <?> due to type erasure
+        ((ProxyMeterManager/*<Meter*>*/*) apm)->addManager(p);
+    } else {
+        log->error("Incorrect setup: MeterManager default isn't an AbstractProxyManager<Meter>");
+    }
+#endif
+}
+
 // Needs to have proxy manager converted to work
 // with current list of managers (and robust default
 // management) before this can be deprecated in favor of
 // store(p, TurnoutManager.class)
-void InstanceManager::setTurnoutManager(TurnoutManager* p) {
+void InstanceManager::setTurnoutManager(AbstractManager* p) {
  log->debug(" setTurnoutManager");
- TurnoutManager* apm = static_cast<TurnoutManager*>(getDefault("TurnoutManager"));
- if (qobject_cast<AbstractProxyTurnoutManager*>(apm) != nullptr) { // <?> due to type erasure
-     ((ProxyTurnoutManager*) apm)->addManager(p);
+ TurnoutManager* apm = qobject_cast<ProxyTurnoutManager*>(getDefault("TurnoutManager"));
+ if (qobject_cast<AbstractProxyManager*>(apm->self()) != nullptr) { // <?> due to type erasure
+     ((ProxyTurnoutManager*) apm)->addManager((AbstractManager*)p);
  } else {
      log->error("Incorrect setup: TurnoutManager default isn't an AbstractProxyTurnoutManager<Turnout>");
  }
@@ -894,66 +792,28 @@ void InstanceManager::setTurnoutManager(TurnoutManager* p) {
 //    ((AbstractProxyManager*)instance()->turnoutManager)->addManager(p);
 //}
 
-void InstanceManager::setLightManager(LightManager* p) {
+void InstanceManager::setLightManager(AbstractManager *p) {
  log->debug(" setLightManager");
- ((AbstractProxyLightManager*) getDefault("LightManager"))->addManager(p);
- //store(p, LightManager.class);
+ ProxyLightManager* apm = (ProxyLightManager*)getDefault("LightManager");
+ if (qobject_cast<ProxyLightManager*>(apm)) { // <?> due to type erasure
+     ((ProxyLightManager/*<Light>*/*) apm)->addManager((AbstractManager*)p);
+ } else {
+     log->error("Incorrect setup: LightManager default isn't an AbstractProxyManager<Light>");
+ }
 }
 
 void InstanceManager::setThrottleManager(ThrottleManager* p)
 {
-    store(p, "ThrottleManager");
-    //instance()->notifyPropertyChangeListener("throttlemanager", QVariant(), QVariant());
+ store((QObject*)p->self(), "ThrottleManager");
 }
 
-void InstanceManager::setSignalHeadManager(SignalHeadManager* p) {
-    setDefault("SignalHeadManager", p);
-}
-
-void InstanceManager::setConsistManager(ConsistManager* p) {
-    store(p->self(), "ConsistManager");
-    //instance()->notifyPropertyChangeListener("consistmanager", QVariant(), QVariant());
-}
-
-//
-// This updates the consist manager, which must be
-// either built into instances of calling code or a
-// new service, before this can be deprecated.
-//
-//@Deprecated
-///*static*/ /*public*/ void InstanceManager::setCommandStation(CommandStation* p)
-//{
-// store(p, "CommandStation");
-//}
-
-/**
- * @param p CommandStation to make default
- * @deprecated Since 4.9.5, use
- * {@link #store(java.lang.Object,java.lang.Class)} directly.
- */
-//@Deprecated
-///*static*/ /*public*/ void InstanceManager::setAddressedProgrammerManager(AddressedProgrammerManager* p) {
-//    store(p, "AddressedProgrammerManager");
-//}
-
-void InstanceManager::setReporterManager(ReporterManager* p) {
+void InstanceManager::setReporterManager(AbstractManager* p) {
  log->debug(" setReporterManager");
-   ((AbstractProxyReporterManager*) getDefault("ReporterManager"))->addManager(p);
+   ((AbstractProxyManager*) getDefault("ReporterManager"))->addManager((AbstractManager*)p);
    //store(p, ReporterManager.class);
 }
 
-//void InstanceManager::addReporterManager(ReporterManager* p) {
-//    ((AbstractProxyManager*)instance()->reporterManager)->addManager(p);
-//}
 
-///*public*/ /*static*/ /*synchronized*/ void InstanceManager::addPropertyChangeListener(PropertyChangeListener* l) {
-// //QMutex mutex;
-//    QMutexLocker locker(&mutex);
-//    // add only if not already registered
-//    if (!listeners.contains(l)) {
-//        listeners.append(l);
-//    }
-//}
 
 /**
  * Trigger the notification of all PropertyChangeListeners
@@ -999,42 +859,6 @@ void InstanceManager::notifyPropertyChangeListener(QString property, QVariant ol
 /*public*/ /*static*/ QString InstanceManager::getListPropertyName(/*Class<?>*/QString clazz) {
     return "list-" + clazz/*.getName()*/;
 }
-/* ****************************************************************************
- *                   Old Style Setters - Deprecated and migrated,
- *                                       just here for other users
- *
- *                     Check Jython scripts before removing
- * ****************************************************************************/
-///**
-// * @deprecated Since 3.7.1, use @{link #store} and @{link #setDefault} directly.
-// */
-//@Deprecated
-//static public void setConditionalManager(ConditionalManager p) {
-//    store(p, ConditionalManager.class);
-//    setDefault(ConditionalManager.class, p);
-//}
-///**
-// * @deprecated Since 3.7.4, use @{link #store} directly.
-// */
-//@Deprecated
-//static public void setLogixManager(LogixManager p) {
-//    store(p, LogixManager.class);
-//}
-///**
-// * @deprecated Since 3.7.4, use @{link #store} directly.
-// */
-//@Deprecated
-//static public void setTabbedPreferences(TabbedPreferences p) {
-//    store(p, TabbedPreferences.class);
-//}
-///**
-// * @deprecated Since 3.7.1, use @{link #store} and @{link #setDefault}
-// * directly.
-// */
-// @Deprecated
-// static public void setPowerManager(PowerManager p) {
-//     store(p, PowerManager.class);
-// }
 /**
  * Clear all managed instances from the common instance manager, effectively
  * installing a new one.
@@ -1102,13 +926,18 @@ void InstanceManager::notifyPropertyChangeListener(QString property, QVariant ol
   */
  //@Nonnull
  /*public*/ /*static*/ InstanceManager* InstanceManager::getDefault() {
- if(log == nullptr)
-  log = LoggerFactory::getLogger("InstanceManager");
+  if(log == nullptr)
+   log = LoggerFactory::getLogger("InstanceManager");
 
  // if(LazyInstanceManager::instanceManager == nullptr)
  //  LazyInstanceManager::instanceManager = new InstanceManager();
  // return LazyInstanceManager::instanceManager;
-  return *_instancePtr;
+  //return *_instancePtr;
+//  if(_instancePtr.exists())
+//      return *_instancePtr;
+//  return nullptr;
+  InstanceManager* mgr = *_instancePtr;
+  return mgr;
  }
 
 /*public*/ /*static*/ InstanceManager* LazyInstanceManager::instanceManager = new InstanceManager();

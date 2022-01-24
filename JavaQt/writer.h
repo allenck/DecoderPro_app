@@ -10,11 +10,11 @@ class JAVAQTSHARED_EXPORT Writer : public QTextStream
 {
 public:
     Writer();
-    ///*abstract*/ /*public*/ virtual void flush() throw (IOException);
-    /*public*/ void write(QString str) throw (IOException);
-    /*abstract*/ /*public*/ virtual void close() throw (IOException);
-    /*public*/ void write(QByteArray cbuf) throw (IOException);
-    virtual /*public*/ void write(QByteArray /*cbuf*/, int /*off*/, int /*len*/) throw (IOException) {}
+    ///*abstract*/ /*public*/ virtual void flush() /*throw (IOException)*/;
+    /*public*/ void write(QString str) /*throw (IOException)*/;
+    /*abstract*/ /*public*/ virtual void close() /*throw (IOException)*/;
+    /*public*/ void write(QByteArray cbuf) /*throw (IOException)*/;
+    virtual /*public*/ void write(QByteArray /*cbuf*/, int /*off*/, int /*len*/) /*throw (IOException)*/ {}
 
 private:
     /**

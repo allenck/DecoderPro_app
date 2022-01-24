@@ -101,9 +101,9 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
     QDomElement e = ConfigXmlManager::elementFromObject(sub->self());
     if (!e.isNull()) panel.appendChild(e);
    }
-   catch (Exception e)
+   catch (Exception* e)
    {
-    log->error("Error storing panel element: "+e.getMessage());
+    log->error("Error storing panel element: "+e->getMessage());
                 //e.printStackTrace();
    }
   }
@@ -134,7 +134,7 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
  * @return true if successful
  */
 //@SuppressWarnings("unchecked")
-/*public*/ bool ControlPanelEditorXml::load(QDomElement element) throw (Exception)
+/*public*/ bool ControlPanelEditorXml::load(QDomElement shared, QDomElement /*perNode*/) throw (JmriConfigureXmlException)
 {
  bool result = true;
  // find coordinates
@@ -143,18 +143,18 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
  int height = 400;
  int width = 300;
  try {
-     x = element.attribute("x").toInt();
-     y = element.attribute("y").toInt();
-     height = element.attribute("height").toInt();
-     width = element.attribute("width").toInt();
+     x = shared.attribute("x").toInt();
+     y = shared.attribute("y").toInt();
+     height = shared.attribute("height").toInt();
+     width = shared.attribute("width").toInt();
  } catch ( DataConversionException e) {
      log->error("failed to convert ControlPanelEditor's attribute");
      result = false;
  }
  // find the name
  QString name = "Control Panel";
- if (element.attribute("name")!=NULL)
-     name = element.attribute("name");
+ if (shared.attribute("name")!=NULL)
+     name = shared.attribute("name");
  // confirm that panel hasn't already been loaded
  if(((PanelMenu*)InstanceManager::getDefault("PanelMenu"))->isPanelNameUsed(name)){
      log->warn("File contains a panel with the same name (" + name + ") as an existing panel");
@@ -190,12 +190,12 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
  // items are loaded, to preserve the individual item settings
  QString a;
  bool value = true;
- if ((a = element.attribute("editable"))!=NULL && a==("no"))
+ if ((a = shared.attribute("editable"))!=NULL && a==("no"))
      value = false;
  panel->setAllEditable(value);
 
  value = true;
- if ((a = element.attribute("positionable"))!=NULL && a==("no"))
+ if ((a = shared.attribute("positionable"))!=NULL && a==("no"))
      value = false;
  panel->setAllPositionable(value);
 
@@ -207,37 +207,37 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
  */
 
  value = true;
- if ((a = element.attribute("showtooltips"))!=NULL && a==("no"))
+ if ((a = shared.attribute("showtooltips"))!=NULL && a==("no"))
      value = false;
  panel->setAllShowToolTip(value);
 
  value = true;
- if ((a = element.attribute("controlling"))!=NULL && a==("no"))
+ if ((a = shared.attribute("controlling"))!=NULL && a==("no"))
      value = false;
  panel->setAllControlling(value);
 
  value = false;
- if ((a = element.attribute("hide"))!=NULL && a==("yes"))
+ if ((a = shared.attribute("hide"))!=NULL && a==("yes"))
      value = true;
  panel->setShowHidden(value);
 
  value = true;
- if ((a = element.attribute("panelmenu"))!=NULL && a==("no"))
+ if ((a = shared.attribute("panelmenu"))!=NULL && a==("no"))
      value = false;
  panel->setPanelMenuVisible(value);
 
  value = true;
 
- if ((a = element.attribute("shapeSelect")) != "" && a==("no"))
+ if ((a = shared.attribute("shapeSelect")) != "" && a==("no"))
  {
   value = false;
  }
  panel->setShapeSelect(value);
 
- if ((a = element.attribute("state"))!=NULL) {
+ if ((a = shared.attribute("state"))!=NULL) {
   bool bOk;
       int xState = a.toInt(&bOk);
-//            panel->setExtendedState(xState);
+            panel->setExtendedState(xState);
   if(!bOk) {
       log->error("failed to convert ControlPanelEditor's extended State");
       result = false;
@@ -245,16 +245,16 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
  }
 
  QString state = "both";
- if ((a = element.attribute("scrollable"))!=NULL)
+ if ((a = shared.attribute("scrollable"))!=NULL)
      state = a;
      panel->setScroll(state);
  bool bOk = true;
  bool bok;
-     int red = element.attribute("redBackground","215").toInt(&bok);
+     int red = shared.attribute("redBackground","215").toInt(&bok);
      if(!bok)  bOk = false;
-     int blue = element.attribute("blueBackground","214").toInt(&bok);
+     int blue = shared.attribute("blueBackground","214").toInt(&bok);
      if(!bok)  bOk = false;
-     int green = element.attribute("greenBackground","213").toInt(&bok);
+     int green = shared.attribute("greenBackground","213").toInt(&bok);
      if(!bok)  bOk = false;
      panel->setBackgroundColor( QColor(red, green, blue));
   if(!bOk)
@@ -263,7 +263,7 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
   } /*catch ( NullPointerException e) {  // considered normal if the attributes are not present
  }*/
 
- QDomElement icons = element.firstChildElement("icons");
+ QDomElement icons = shared.firstChildElement("icons");
  if (icons != QDomElement())
  {
   QMap<QString, NamedIcon*>* portalIconMap = new QMap<QString, NamedIcon*>();
@@ -275,13 +275,13 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
   panel->setDefaultPortalIcons(portalIconMap);
  }
  //element.removeAttribute("icons");
- element.removeChild(icons);
+ shared.removeChild(icons);
 
  //set the (global) editor display widgets to their flag settings
  panel->initView();
 
  // load the contents
- QDomNodeList items = element.childNodes();
+ QDomNodeList items = shared.childNodes();
  for (int i = 0; i<items.size(); i++)
  {
   // get the class, hence the adapter object to do loading
@@ -361,9 +361,9 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
     }
    }
   }
-  catch (Exception e)
+  catch (Exception* e)
   {
-   log->error("Exception while loading "+item.tagName()+":"+e.getMessage());
+   log->error("Exception while loading "+item.tagName()+":"+e->getMessage());
    result = false;
    //e.printStackTrace();
   }
@@ -381,7 +381,7 @@ ControlPanelEditorXml::~ControlPanelEditorXml()
  panel->getTargetFrame()->setVisible(true);    // always show the panel
 
  // register the resulting panel for later configuration
- ConfigureManager* cm = static_cast<ConfigureManager*>(InstanceManager::getNullableDefault("ConfigureManager"));
+ ConfigureManager* cm = qobject_cast<ConfigureManager*>(InstanceManager::getNullableDefault("ConfigureManager"));
  if (cm != nullptr) {
      cm->registerUser(panel);
  }

@@ -159,7 +159,7 @@
             return valField->text().toInt();
         else
             return valField->text().toInt(0, 16);
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException* e) {
         valField->setText("");
         return 0;
     }
@@ -198,7 +198,7 @@
 }
 
 // handle the buttons being pushed
-/*public*/ void SimpleProgFrame::readPushed(ActionEvent* /*e*/)
+/*public*/ void SimpleProgFrame::readPushed(JActionEvent* /*e*/)
 {
  SlotManager* p = (SlotManager*)modePane->getProgrammer();
  if (p == NULL)
@@ -214,8 +214,8 @@
    connect(p, SIGNAL(programmerException(QString)), this, SLOT(On_read_programmerException(QString)));
    resultsField->setText("programming...");
    p->readCV(getNewAddr(), (ProgListener*)this);
-//            } catch (ProgrammerException ex) {
-//                resultsField->setText("" + ex.getMessage());
+//            } catch (ProgrammerException* ex) {
+//                resultsField->setText("" + ex->getMessage());
 //                readButton->setChecked(false);
 //            }
   }
@@ -233,7 +233,7 @@ void SimpleProgFrame::On_read_programmerException(QString txt)
  readButton->setChecked(false);
 }
 
-/*public*/ void SimpleProgFrame::writePushed(ActionEvent* /*e*/)
+/*public*/ void SimpleProgFrame::writePushed(JActionEvent* /*e*/)
 {
  SlotManager* p = (SlotManager*)modePane->getProgrammer();
  if (p == NULL)
@@ -247,8 +247,8 @@ void SimpleProgFrame::On_read_programmerException(QString txt)
   resultsField->setText("programming...");
   connect(p, SIGNAL(programmerException(QString)), this, SLOT(On_write_programmerException(QString)));
   p->writeCV(getNewAddr(),getNewVal(), (ProgListener*)this);
-//        } catch (ProgrammerException ex) {
-//            resultsField->setText(""+ex.getMessage());
+//        } catch (ProgrammerException* ex) {
+//            resultsField->setText(""+ex->getMessage());
 //            writeButton->setSelected(false);
 //        }
  }
@@ -260,7 +260,7 @@ void SimpleProgFrame::On_write_programmerException(QString txt)
 }
 
 // provide simple data conversion if dec or hex button changed
-/*public*/ void SimpleProgFrame::decHexButtonChanged(ActionEvent* /*e*/)
+/*public*/ void SimpleProgFrame::decHexButtonChanged(JActionEvent* /*e*/)
 {
  resultsField->setText("OK");
  if (valField->text()==(""))
@@ -282,7 +282,7 @@ void SimpleProgFrame::On_write_programmerException(QString txt)
    valField->setValidator(new QIntValidator);
   }
  }
- catch (NumberFormatException ee)
+ catch (NumberFormatException* ee)
  {
   resultsField->setText("error");
  }

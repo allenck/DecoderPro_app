@@ -57,7 +57,7 @@ public:
          try {
              server.start();
              server.join();
-         } catch (Exception ex) {
+         } catch (Exception* ex) {
              log.error("Exception starting Web Server", ex);
          }
      }

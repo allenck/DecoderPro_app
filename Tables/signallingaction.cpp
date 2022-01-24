@@ -42,13 +42,13 @@ void SignallingAction::init()
 }
 
 
-/*public*/ void SignallingAction::actionPerformed(ActionEvent* /*e*/) {
+/*public*/ void SignallingAction::actionPerformed(/*JActionEvent* e*/) {
     SignallingFrame* f = new SignallingFrame();
     try {
         f->initComponents(source, dest);
         }
-    catch (Exception ex) {
-        log->error("Exception: "+ex.getMessage());
+    catch (Exception* ex) {
+        log->error("Exception: "+ex->getMessage());
         //ex.printStackTrace();
         }
     f->setVisible(true);

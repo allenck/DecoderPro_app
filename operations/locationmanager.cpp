@@ -4,13 +4,14 @@
 #include "location.h"
 #include "logger.h"
 #include "xml.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "jcombobox.h"
 #include "rosterentry.h"
 #include "track.h"
 #include "carload.h"
 #include "traincommon.h"
 #include "instancemanager.h"
+#include "loggerfactory.h"
 
 //LocationManager::LocationManager(QObject *parent) :
 //  QObject(parent)
@@ -31,27 +32,10 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString LocationManager::LISTLENGTH_CHANGED_PROPERTY = "locationsListLength"; // NOI18N
 
  /*public*/ LocationManager::LocationManager(QObject *parent) :
-QObject(parent)
+SwingPropertyChangeSupport(this, parent)
  {
-  _id = 0;
-  log = new Logger("LocationManager");
-  _locationHashTable = QHash<QString, Location*>();
-  pcs = new PropertyChangeSupport(this);
-  _maxLocationNameLength = 0;
-   _maxTrackNameLength = 0;
-   _maxLocationAndTrackNameLength = 0;
    setProperty("InstanceManagerAutoDefault", "true");
    setProperty("InstanceManagerAutoInitialize", "true");
- }
-
- /**
-  * record the single instance *
-  */
- /*private*/ /*static*/ LocationManager* LocationManager::_instance = NULL;
-
- /*public*/ /*static*/ /*synchronized*/ LocationManager* LocationManager::instance()
-{
- return static_cast<LocationManager*>(InstanceManager::getDefault("LocationManager"));
  }
 
  /*public*/ void LocationManager::dispose() {
@@ -88,6 +72,41 @@ QObject(parent)
  }
 
  /**
+  * Used to determine if a division name has been assigned to a location
+  * @return true if a location has a division name
+  */
+ /*public*/ bool LocationManager::hasDivisions() {
+     for (Location* location : getList()) {
+         if (location->getDivision() != nullptr) {
+             return true;
+         }
+     }
+     return false;
+ }
+
+ /*public*/ bool LocationManager::hasWork() {
+     for (Location* location : getList()) {
+         if (location->hasWork()) {
+             return true;
+         }
+     }
+     return false;
+ }
+
+ /**
+  * Used to determine if a reporter has been assigned to a location
+  * @return true if a location has a RFID reporter
+  */
+ /*public*/ bool LocationManager::hasReporters() {
+     for (Location* location : getList()) {
+         if (location->getReporter() != nullptr) {
+             return true;
+         }
+     }
+     return false;
+ }
+
+ /**
   * Request a location associated with a given reporter.
   *
   * @param r Reporter object associated with desired location.
@@ -98,7 +117,7 @@ QObject(parent)
        try {
           if (location->getReporter()==(r))
               return location;
-} catch(NullPointerException npe) {
+} catch(NullPointerException* npe) {
           // it's valid for a reporter to be NULL (no reporter
           // at a given location.
        }
@@ -106,7 +125,25 @@ QObject(parent)
      return NULL;
  }
 
-
+ /**
+  * Request a track associated with a given reporter.
+  *
+  * @param r Reporter object associated with desired location.
+  * @return requested Location object or null if none exists
+  */
+ /*public*/ Track* LocationManager::getTrackByReporter(Reporter* r) {
+     for (Track* track : getTracks(nullptr)) {
+         try {
+             if (track->getReporter() == (r)) {
+                 return track;
+             }
+         } catch (NullPointerException* npe) {
+             // it's valid for a reporter to be null (no reporter
+             // at a given location.
+         }
+     }
+     return nullptr;
+ }
  /**
   * Finds an existing location or creates a new location if needed requires
   * location's name creates a unique id for this location
@@ -196,7 +233,7 @@ QObject(parent)
                      out.insert(j, location);
                      break;
                  }
-             } catch (NumberFormatException e) {
+             } catch (NumberFormatException* e) {
                  log->debug("list id number isn't a number");
              }
          }
@@ -234,7 +271,7 @@ QObject(parent)
      QList<Location*> sortList = getList();
      QList<Track*> trackList = QList<Track*>();
      foreach (Location* location, sortList) {
-         QList<Track*> tracks = location->getTrackByNameList(type);
+         QList<Track*> tracks = location->getTracksByNameList(type);
          foreach (Track* track, tracks) {
              trackList.append(track);
          }
@@ -290,8 +327,9 @@ QObject(parent)
  /*public*/ void LocationManager::updateComboBox(JComboBox* box) {
      box->clear();
      box->addItem("");
-     foreach (Location* loc, getLocationsByNameList()) {
-      box->addItem(loc->getName(), VPtr<Location>::asQVariant(loc));
+     foreach (Operations::Location* loc, getLocationsByNameList()) {
+      QVariant v = VPtr<Operations::Location>::asQVariant(loc);
+      box->addItem(loc->getName(), v);
      }
  }
 
@@ -352,7 +390,11 @@ QObject(parent)
      calculateMaxNameLengths();
      return _maxTrackNameLength;
  }
-
+ /*public*/ void LocationManager::resetNameLengths() {
+     _maxLocationNameLength = 0;
+     _maxTrackNameLength = 0;
+     _maxLocationAndTrackNameLength = 0;
+ }
  /*public*/ int LocationManager::getMaxLocationAndTrackNameLength() {
      calculateMaxNameLengths();
      return _maxLocationAndTrackNameLength;
@@ -423,27 +465,21 @@ QObject(parent)
              .getOldValue(), e.getNewValue()); // NOI18N
  }
 
-
- /*public*/ synchronized void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.addPropertyChangeListener(l);
- }
-
- /*public*/ synchronized void removePropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.removePropertyChangeListener(l);
- }
 #endif
  /*protected*/ void LocationManager::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      // set dirty
-     LocationManagerXml::instance()->setDirty(true);
-     pcs->firePropertyChange(p, old, n);
+     ((LocationManagerXml*)InstanceManager::getDefault("Operations::LocationManagerXml"))->setDirty(true);
+     firePropertyChange(p, old, n);
  }
 
 //@Override
-/*public*/ void LocationManager::initialize()
-{
- InstanceManager::getDefault("OperationsSetupXml"); // load setup
- InstanceManager::getDefault("LocationManagerXml"); // load locations
-}
+ /*public*/ void LocationManager::initialize()
+ {
+  InstanceManager::getDefault("Operations::OperationsSetupXml"); // load setup
+  InstanceManager::getDefault("Operations::LocationManagerXml"); // load locations
+ }
+
+ /*private*/ /*final*/ /*static*/ Logger* LocationManager::log = LoggerFactory::getLogger("LocationManager");
 
 }
 

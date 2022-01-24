@@ -83,7 +83,7 @@ private slots:
 friend class TurnoutSignalMastAddPane;
 };
 
-/*static*/ /*public*/ class TurnoutSignalMastAddPaneProvider : public SignalMastAddPane::SignalMastAddPaneProvider
+/*static*/ /*public*/ class TurnoutSignalMastAddPaneProvider : public SignalMastAddPaneProvider
 {
  Q_OBJECT
 public:

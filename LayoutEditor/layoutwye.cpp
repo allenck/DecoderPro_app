@@ -61,10 +61,8 @@
 // public class LayoutWye extends LayoutTurnout {
 
     /*public*/ LayoutWye::LayoutWye(/*@Nonnull*/ QString id,
-            /*@Nonnull*/ QPointF c, double rot,
-            double xFactor, double yFactor,
             /*@Nonnull*/ LayoutEditor* layoutEditor)
-     : LayoutTurnout(id, LayoutTurnout::TurnoutType::WYE_TURNOUT, c, rot, xFactor, yFactor, layoutEditor, 1)
+     : LayoutTurnout(id, LayoutTurnout::TurnoutType::WYE_TURNOUT,  layoutEditor, 1)
     {
         //this(id, c, rot, xFactor, yFactor, layoutEditor, 1);
      editor = new LayoutWyeEditor(layoutEditor);
@@ -81,9 +79,8 @@
      * @param layoutEditor main layout editor.
      * @param v unused.
      */
-    /*public*/ LayoutWye::LayoutWye(/*@Nonnull*/ QString id, /*@Nonnull*/ QPointF c, double rot,
-            double xFactor, double yFactor, /*@Nonnull*/ LayoutEditor* layoutEditor, int v)
-     : LayoutTurnout(id, LayoutTurnout::TurnoutType::WYE_TURNOUT, c, rot, xFactor, yFactor, layoutEditor, 1)
+    /*public*/ LayoutWye::LayoutWye(/*@Nonnull*/ QString id, /*@Nonnull*/ LayoutEditor* layoutEditor, int v)
+     : LayoutTurnout(id, LayoutTurnout::TurnoutType::WYE_TURNOUT,  layoutEditor, 1)
     {
         //super(id, TurnoutType.WYE_TURNOUT, c, rot, xFactor, yFactor, layoutEditor, 1);
 

@@ -4,7 +4,7 @@
 #include "jtable.h"
 #include <QRadioButton>
 #include <QButtonGroup>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QBoxLayout>
 #include "flowlayout.h"
 #include <QMenuBar>
@@ -20,6 +20,10 @@
 #include "showcarsbylocationaction.h"
 #include "printlocationsaction.h"
 #include "modifylocationscarloadsaction.h"
+#include "setup.h"
+#include "trackcopyaction.h"
+#include "setphysicallocationaction.h"
+#include "exportlocationsrosteraction.h"
 
 //LocationsTableFrame::LocationsTableFrame()
 //{
@@ -58,7 +62,7 @@ namespace Operations
   sortById = new QRadioButton(tr("Id"));
 
   // major buttons
-  addButton = new QPushButton(tr("Add"));
+  addButton = new JButton(tr("Add"));
 //	JButton printTableButton = new JButton("Print Table");
 
      // general GUI config
@@ -102,15 +106,15 @@ namespace Operations
      QMenu* toolMenu = new QMenu(tr("Tools"));
 
      toolMenu->addAction(new LocationCopyAction(this));
+     toolMenu->addAction(new TrackCopyAction(this));
      toolMenu->addAction(new SchedulesTableAction(tr("Schedules"),this));
      toolMenu->addAction(new ModifyLocationsAction(tr("Modify Locations by Car Type"),this));
      toolMenu->addAction(new ModifyLocationsCarLoadsAction(this));
      toolMenu->addAction(new ShowCarsByLocationAction(false, NULL, NULL,this));
-#if 0
+     toolMenu->addAction(new ExportLocationsRosterAction(this));
      if (Setup::isVsdPhysicalLocationEnabled()) {
-         toolMenu.add(new SetPhysicalLocationAction(tr("MenuSetPhysicalLocation"), null));
+         toolMenu->addAction(new SetPhysicalLocationAction(nullptr));
      }
-#endif
      toolMenu->addAction(new PrintLocationsAction(tr("Print"), false,this));
      toolMenu->addAction(new PrintLocationsAction(tr("Preview"), true, this));
      menuBar->addMenu(toolMenu);
@@ -146,7 +150,7 @@ namespace Operations
  // add button
  /*public*/ void LocationsTableFrame::buttonActionPerformed(QWidget* ae) {
 //		log.debug("location button activated");
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == addButton) {
 
          LocationEditFrame* f = new LocationEditFrame(NULL);

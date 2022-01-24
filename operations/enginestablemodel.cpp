@@ -1,6 +1,6 @@
 #include "enginestablemodel.h"
 #include "enginemanager.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "control.h"
 #include "engine.h"
 #include "enginestableframe.h"
@@ -11,7 +11,7 @@
 #include "engineeditframe.h"
 #include "enginesetframe.h"
 #include "pushbuttondelegate.h"
-
+#include "instancemanager.h"
 
 //EnginesTableModel::EnginesTableModel(QObject *parent) :
 //  AbstractTableModel(parent)
@@ -32,7 +32,7 @@ namespace Operations
   *
   */
  //private static final long serialVersionUID = 6804454611283948123L;
- EngineManager* EnginesTableModel::manager = EngineManager::instance(); // There is only one manager
+ //EngineManager* EnginesTableModel::manager = EngineManager::instance(); // There is only one manager
 
  /*public*/ EnginesTableModel::EnginesTableModel(QObject *parent) :
    AbstractTableModel(parent)
@@ -42,15 +42,16 @@ namespace Operations
   _roadNumber = "";
   _index = 0;
   sysList = NULL;
- eef = NULL;
-  esf = NULL;
+ engineEditFrame = NULL;
+  engineSetFrame = NULL;
   log = new Logger("EngineTableModel");
   _enginesTableColumnWidths = QList<int>() << 60 << 60 << 65 << 50 << 65 << 35 << 75 << 190 << 190 << 65 << 50 << 65 << 70;
   showMoveCol = SHOWMOVES;
+  engineManager = (EngineManager*)InstanceManager::getDefault("Operations::EngineManager"); // There is only one manager
 
 
-  //manager->addPropertyChangeListener(this);
-  connect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //manager->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+  connect(engineManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   updateList();
  }
 
@@ -144,45 +145,44 @@ namespace Operations
      sysList = getSelectedEngineList();
      // and add listeners back in
      foreach (RollingStock* rs, *sysList) {
-         //rs->addPropertyChangeListener(this);
-      connect(rs->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      rs->SwingPropertyChangeSupport::addPropertyChangeListener(this);
      }
  }
 
  /*public*/ QList<RollingStock*>* EnginesTableModel::getSelectedEngineList() {
 QList<RollingStock*>* list = new QList<RollingStock*>();
      if (_sort == SORTBYROAD) {
-         list = manager->getByRoadNameList();
+         list = engineManager->getByRoadNameList();
      }
      else if (_sort == SORTBYMODEL) {
-         list = manager->getByModelList();
+         list = engineManager->getByModelList();
      }
 
      else if (_sort == SORTBYLOCATION) {
-         list = manager->getByLocationList();
+         list = engineManager->getByLocationList();
      } else if (_sort == SORTBYDESTINATION) {
-         list = manager->getByDestinationList();
+         list = engineManager->getByDestinationList();
      } else if (_sort == SORTBYTRAIN) {
-         list = manager->getByTrainList();
+         list = engineManager->getByTrainList();
      } else if (_sort == SORTBYMOVES) {
-         list = manager->getByMovesList();
+         list = engineManager->getByMovesList();
      }
      else if (_sort == SORTBYCONSIST) {
-         list = manager->getByConsistList();
+         list = engineManager->getByConsistList();
      }
      else if (_sort == SORTBYOWNER) {
-         list = manager->getByOwnerList();
+         list = engineManager->getByOwnerList();
      } else if (_sort == SORTBYBUILT) {
-         list = manager->getByBuiltList();
+         list = engineManager->getByBuiltList();
      } else if (_sort == SORTBYVALUE) {
-         list = manager->getByValueList();
+         list = engineManager->getByValueList();
      } else if (_sort == SORTBYRFID) {
-         list = manager->getByRfidList();
+         list = engineManager->getByRfidList();
      } else if (_sort == SORTBYLAST) {
-         list = manager->getByLastDateList();
+         list = engineManager->getByLastDateList();
      }
      else {
-         list = manager->getByNumberList();
+         list = engineManager->getByNumberList();
      }
 
      return list;
@@ -199,7 +199,7 @@ QList<RollingStock*>* list = new QList<RollingStock*>();
  void EnginesTableModel::initTable()
  {
   // Install the button handlers
-  XTableColumnModel* tcm = new XTableColumnModel((AbstractTableModel*)_table->model());
+  XTableColumnModel* tcm = new XTableColumnModel(/*(AbstractTableModel*)_table->model()*/_table);
   _table->setColumnModel(tcm);
   _table->createDefaultColumnsFromModel();
      // TODO:
@@ -422,29 +422,29 @@ QList<RollingStock*>* list = new QList<RollingStock*>();
      switch (col) {
          case SET_COLUMN:
              log->debug("Set engine location");
-             if (esf != NULL) {
-                 esf->dispose();
+             if (engineSetFrame != NULL) {
+                 engineSetFrame->dispose();
              }
              // use invokeLater so new window appears on top
 //             SwingUtilities.invokeLater(new Runnable() {
 //                 /*public*/ void run() {
-                     esf = new EngineSetFrame();
-                     esf->initComponents();
-                     esf->loadEngine(engine);
+                     engineSetFrame = new EngineSetFrame();
+                     engineSetFrame->initComponents();
+                     engineSetFrame->loadEngine(engine);
 //                 }
 //             });
              break;
          case EDIT_COLUMN:
              log->debug("Edit engine");
-             if (eef != NULL) {
-                 eef->dispose();
+             if (engineEditFrame != NULL) {
+                 engineEditFrame->dispose();
              }
              // use invokeLater so new window appears on top
 //             SwingUtilities.invokeLater(new Runnable() {
 //                 /*public*/ void run() {
-                     eef = new EngineEditFrame();
-                     eef->initComponents();
-                     eef->loadEngine(engine);
+                     engineEditFrame = new EngineEditFrame();
+                     engineEditFrame->initComponents();
+                     engineEditFrame->load(engine);
 //                 }
 //             });
              break;
@@ -477,16 +477,15 @@ QList<RollingStock*>* list = new QList<RollingStock*>();
      if (log->isDebugEnabled()) {
          log->debug("dispose EngineTableModel");
      }
-     //manager->removePropertyChangeListener(this);
-     disconnect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     engineManager->removePropertyChangeListener(this);
      removePropertyChangeEngines();
 
-     if (esf != NULL) {
-         esf->dispose();
+     if (engineSetFrame != NULL) {
+         engineSetFrame->dispose();
      }
 
-     if (eef != NULL) {
-         eef->dispose();
+     if (engineEditFrame != NULL) {
+         engineEditFrame->dispose();
      }
  }
 
@@ -496,8 +495,7 @@ QList<RollingStock*>* list = new QList<RollingStock*>();
   {
    foreach (RollingStock* rs, *sysList)
    {
-       //rs.removePropertyChangeListener(this);
-    disconnect(rs->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    rs->removePropertyChangeListener(this);
    }
   }
  }
@@ -512,12 +510,14 @@ QList<RollingStock*>* list = new QList<RollingStock*>();
              || e->getPropertyName()==(EngineManager::CONSISTLISTLENGTH_CHANGED_PROPERTY)) {
          updateList();
          fireTableDataChanged();
-     } // Engine lengths are based on model, so multiple changes
+     }
+     // Engine lengths are based on model, so multiple changes
      else if (e->getPropertyName()==(Engine::LENGTH_CHANGED_PROPERTY)
-             || e->getPropertyName()==(Engine::TYPE_CHANGED_PROPERTY)) {
+             || e->getPropertyName()==(Engine::TYPE_CHANGED_PROPERTY)
+             || e->getPropertyName()==(Engine::HP_CHANGED_PROPERTY)) {
          fireTableDataChanged();
      } // must be a engine change
-                   else if (e->getSource()->metaObject()->className()==("Engine")) {
+     else if (QString(e->getSource()->metaObject()->className())==("Engine")) {
          Engine* engine = (Engine*) e->getSource();
          int row = sysList->indexOf(engine);
          if (Control::SHOW_PROPERTY) {

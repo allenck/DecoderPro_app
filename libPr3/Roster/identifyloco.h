@@ -11,32 +11,32 @@ class LIBPR3SHARED_EXPORT IdentifyLoco : public AbstractIdentify
 public:
     explicit IdentifyLoco(Programmer *programmer, QObject *parent = 0);
     /*public*/ bool test1();
-    /*public*/ bool test2(int value);
-    /*public*/ bool test3(int value);
-    /*public*/ bool test4(int value);
-    /*public*/ bool test5(int value);
-    /*public*/ bool test6(int value);
-    /*public*/ bool test7(int value);
-    /*public*/ bool test8(int value);
-    /*public*/ bool test9(int value);
-    virtual void message(QString) {}
+    /*public*/ bool test2(int value) override;
+    /*public*/ bool test3(int value) override;
+    /*public*/ bool test4(int value) override;
+    /*public*/ bool test5(int value) override;
+    /*public*/ bool test6(int value) override;
+    /*public*/ bool test7(int value) override;
+    /*public*/ bool test8(int value) override;
+    /*public*/ bool test9(int value) override;
+    virtual void message(QString) =0;
 
 signals:
 
 public slots:
-  private:
+
+private:
     /*private*/ int cv17val;
     /*private*/ int cv18val;
-    int address;// = -1;
+    int address = -1;
 
-    Logger* log;
+    static Logger* log;
 protected:
-    /*protected*/ bool shortAddr;
+    /*protected*/ bool shortAddr = false;
     /*protected*/ int cv7val;
     /*protected*/ int cv8val;
-    /*protected*/ void statusUpdate(QString s);
-    /*abstract*/ /*protected*/ virtual void done(int address) {Q_UNUSED(address)}
-
+    /*protected*/ void statusUpdate(QString s) override;
+    /*abstract*/ /*protected*/ virtual void done(int address) =0;
 
 };
 

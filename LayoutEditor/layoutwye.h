@@ -7,11 +7,8 @@ class LayoutWye : public LayoutTurnout
   Q_OBJECT
  public:
   /*public*/ LayoutWye(/*@Nonnull*/ QString id,
-          /*@Nonnull*/ QPointF c, double rot,
-          double xFactor, double yFactor,
           /*@Nonnull*/ LayoutEditor* layoutEditor);
-  /*public*/ LayoutWye(/*@Nonnull*/ QString id, /*@Nonnull*/ QPointF c, double rot,
-          double xFactor, double yFactor, /*@Nonnull*/ LayoutEditor* layoutEditor, int v);
+  /*public*/ LayoutWye(/*@Nonnull*/ QString id,  LayoutEditor* layoutEditor, int v);
 
 };
 

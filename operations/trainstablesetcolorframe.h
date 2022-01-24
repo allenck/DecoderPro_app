@@ -2,23 +2,28 @@
 #define TRAINSTABLESETCOLORFRAME_H
 
 #include "operationsframe.h"
+#include "propertychangelistener.h"
+
 class QGroupBox;
 namespace Operations
 {
  class Train;
  class TrainManager;
- class TrainsTableSetColorFrame : public OperationsFrame
+ class TrainsTableSetColorFrame : public OperationsFrame, public PropertyChangeListener
  {
   Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  public:
   TrainsTableSetColorFrame(Train* train, QWidget* parent = 0);
-  /*public*/ void dispose();
-  /*public*/ QString getClassName();
+  /*public*/ void dispose() override;
+  /*public*/ QString getClassName()override;
+
+  QObject* self() override {return (QObject*)this;}
 
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
-  /*public*/ void buttonActionPerformed(QWidget* ae);
-  /*public*/ void radioButtonActionPerformed(QWidget* ae);
+  /*public*/ void propertyChange(PropertyChangeEvent* e)override;
+  /*public*/ void buttonActionPerformed(QWidget* ae)override;
+  /*public*/ void radioButtonActionPerformed(QWidget* ae)override;
  private:
   TrainManager* trainManager;// = TrainManager.instance();
 
@@ -29,7 +34,7 @@ namespace Operations
   QRadioButton* autoRadioButton;// = new JRadioButton(Bundle.getMessage("Auto"));
 
   // major buttons
-  QPushButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
+  JButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
 
   // combo boxes
   JComboBox* trainBox;// = TrainManager.instance().getTrainComboBox();
@@ -41,13 +46,13 @@ namespace Operations
   JComboBox* colorTerminatedBox;// = TrainManager::instance().getRowColorComboBox();
 
   // display panels based on which option is selected
-  QGroupBox* pTrains;
-  QGroupBox* pColor;
+  JPanel* pTrains;
+  JPanel* pColor;
 
-  QGroupBox* pColorBuilt;
-  QGroupBox* pColorBuildFailed;
-  QGroupBox* pColorTrainEnRoute;
-  QGroupBox* pColorTerminated;
+  JPanel* pColorBuilt;
+  JPanel* pColorBuildFailed;
+  JPanel* pColorTrainEnRoute;
+  JPanel* pColorTerminated;
   /*private*/ void makePanelsVisible();
   Logger* log;
 

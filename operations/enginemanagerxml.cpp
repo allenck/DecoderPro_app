@@ -11,6 +11,7 @@
 #include "instancemanager.h"
 //#include "locationmanager.h"
 #include "operationssetupxml.h"
+#include "consistmanager.h"
 
 //EngineManagerXml::EngineManagerXml(QObject *parent) :
 //  OperationsXml(parent)
@@ -35,16 +36,6 @@ namespace Operations
   setProperty("InstanceManagerAutoDefault", "true");
   setProperty("InstanceManagerAutoInitialize", "true");
 
- }
-
- /**
-  * record the single instance *
-  */
-// /*private*/ /*static*/ EngineManagerXml*  EngineManagerXml::_instance = NULL;
-
- /*public*/ /*static*/ /*synchronized*/ EngineManagerXml* EngineManagerXml::instance()
- {
-  return static_cast<EngineManagerXml*>(InstanceManager::getDefault("EngineManagerXml"));
  }
 
  /*public*/ void EngineManagerXml::writeFile(QString name) //throws java.io.FileNotFoundException, java.io.IOException
@@ -72,15 +63,15 @@ namespace Operations
 //     m.put("href", xsltLocation + "operations-engines.xsl"); // NOI18N
 //     ProcessingInstruction p = new ProcessingInstruction("xml-stylesheet", m); // NOI18N
 //     doc.addContent(0, p);
-       QDomProcessingInstruction p = doc.createProcessingInstruction("type", "text/xsl");
-       root.appendChild(p);
-       p = doc.createProcessingInstruction("href", tr("%1operations-operations-engines.xsl").arg(xsltLocation));
+      QDomProcessingInstruction p = doc.createProcessingInstruction("type", "text/xsl");
       root.appendChild(p);
-      doc.appendChild(root);
-     EngineModels::instance()->store(root, doc);
-     EngineTypes::instance()->store(root, doc);
-     EngineLengths::instance()->store(root, doc);
-     EngineManager::instance()->store(root,doc);
+      p = doc.createProcessingInstruction("href", tr("%1operations-operations-engines.xsl").arg(xsltLocation));
+     root.appendChild(p);
+     doc.appendChild(root);
+     ((EngineModels*)InstanceManager::getDefault("EngineModels"))->store(root, doc);
+     ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->store(root, doc);
+     ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->store(root, doc);
+     ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->store(root,doc);
 
      writeXML(file, doc);
 
@@ -107,10 +98,11 @@ namespace Operations
          return;
      }
 
-     EngineModels::instance()->load(root);
-     EngineTypes::instance()->load(root);
-     EngineLengths::instance()->load(root);
-     EngineManager::instance()->load(root);
+     ((EngineModels*)InstanceManager::getDefault("EngineModels"))->load(root);
+     ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->load(root);
+     ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->load(root);
+     ((ConsistManager*)InstanceManager::getDefault("Operations::ConsistManager"))->load(root);
+     ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->load(root);
 
      log->debug("Engines have been loaded!");
 //     RollingStockLogger.instance().enableEngineLogging(Setup.isEngineLoggerEnabled());

@@ -3,12 +3,13 @@
 #include "instancemanager.h"
 #include "abstractsensormanager.h"
 
-ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxySensorManager(parent)
+ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProvidingProxyManager(parent)
 {
  setObjectName("ProxySensorManager");
  //qDebug() << "ProxySensorManger created";
  //internalManager = makeInternalManager();
- registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
+ //registerSelf(); // Added by ACK (can't be done by AbstractManager's ctor!
+ //propertyChangeSupport = new SwingPropertyChangeSupport(this,this);
 
 }
 /**
@@ -25,9 +26,9 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxySensorMan
 //        super();
 //    }
 
-/*protected*/ Manager* ProxySensorManager::makeInternalManager() const
+/*protected*/ AbstractManager* ProxySensorManager::makeInternalManager()
 {
- Manager* manager = (Manager*)((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"))->getSensorManager();
+ AbstractManager* manager = (AbstractManager*)((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"))->getSensorManager();
  return manager;
 }
 
@@ -37,21 +38,18 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxySensorMan
  * @param name
  * @return Null if nothing by that name exists
  */
-/*public*/ Sensor* ProxySensorManager::getSensor(QString name) const {
- return (Sensor*)AbstractProxySensorManager::getNamedBean(name);
+/*public*/ Sensor* ProxySensorManager::getSensor(QString name) {
+ return (Sensor*)AbstractProxyManager::getNamedBean(name);
 }
 
-/*protected*/ Sensor* ProxySensorManager::makeBean(int i, QString systemName, QString userName)
+/*protected*/ Sensor* ProxySensorManager::makeBean(AbstractManager* manager, QString systemName, QString userName)
 {
- log.debug(tr("makeBean(%1, \"%2\", \"%3\"").arg(i).arg(systemName).arg(userName));
- Sensor* sensor =  ((SensorManager*)getMgr(i))->newSensor(systemName, userName);
- //emit newSensorCreated((AbstractSensorManager*)getMgr(i),sensor);
- return sensor;
+ return ((AbstractSensorManager*) manager)->newSensor(systemName, userName);
 }
 
 /*public*/ Sensor* ProxySensorManager::provideSensor(QString sName)
 {
- return static_cast<Sensor*>(AbstractProxySensorManager::provideNamedBean(sName));
+ return (Sensor*)(provideNamedBean(sName));
 }
 
 
@@ -122,50 +120,39 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxySensorMan
 
 /*public*/ bool ProxySensorManager::allowMultipleAdditions(QString systemName)
 {
-    int i = matchTentative(systemName);
-    if (i >= 0)
-        return ((SensorManager*)getMgr(i))->allowMultipleAdditions(systemName);
-    return ((SensorManager*)getMgr(0))->allowMultipleAdditions(systemName);
+ return ((SensorManager*) getManagerOrDefault(systemName))->allowMultipleAdditions(systemName);
 }
 
-/*public*/ QString ProxySensorManager::createSystemName(QString curAddress, QString prefix) const throw (JmriException)
+///*public*/ QString ProxySensorManager::createSystemName(QString curAddress, QString prefix) const /*throw (JmriException)*/
+//{
+// for (int i=0; i<nMgrs(); i++)
+// {
+//  if ( prefix==( ((SensorManager*)getMgr(i))->getSystemPrefix()) )
+//  {
+//   try
+//   {
+//    return ((AbstractSensorManager*)getMgr(i))->createSystemName(curAddress, prefix);
+//   } catch (JmriException* ex)
+//   {
+//    log.error(ex.toString());
+//    throw ex;
+//   }
+//  }
+// }
+// throw new JmriException("Sensor Manager could not be found for System Prefix " + prefix);
+//}
+
+//@SuppressWarnings("deprecation") // user warned by actual manager class
+//@Override
+/*public*/ QString ProxySensorManager::getNextValidAddress(QString curAddress, QString prefix) /*throw (JmriException)*/
 {
- for (int i=0; i<nMgrs(); i++)
- {
-  if ( prefix==( ((SensorManager*)getMgr(i))->getSystemPrefix()) )
-  {
-   try
-   {
-    return ((AbstractSensorManager*)getMgr(i))->createSystemName(curAddress, prefix);
-   } catch (JmriException ex)
-   {
-    log.error(ex.toString());
-    throw ex;
-   }
-  }
- }
- throw new JmriException("Sensor Manager could not be found for System Prefix " + prefix);
+ return AbstractProxyManager::getNextValidAddress(curAddress, prefix, AbstractProxyManager::typeLetter());
 }
 
-/*public*/ QString ProxySensorManager::getNextValidAddress(QString curAddress, QString prefix) throw (JmriException)
-{
- for (int i=0; i<nMgrs(); i++)
- {
-  if ( prefix==( ((SensorManager*)getMgr(i))->getSystemPrefix()) )
-  {
-   try
-   {
-    return ((SensorManager*)getMgr(i))->getNextValidAddress(curAddress, prefix);
-   }
-   catch (JmriException ex)
-   {
-    throw ex;
-   }
-  }
- }
- return nullptr;
+//@Override
+/*public*/ QString ProxySensorManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) /*throw (JmriException)*/ {
+    return AbstractProxyManager::getNextValidAddress(curAddress, prefix, ignoreInitialExisting, AbstractProxyManager::typeLetter());
 }
-
 /**
  * {@inheritDoc}
  */
@@ -176,22 +163,22 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProxySensorMan
 
 //@Override
 /*public*/ long ProxySensorManager::getDefaultSensorDebounceGoingActive(){
-    return ((AbstractSensorManager*)getMgr(0))->getDefaultSensorDebounceGoingActive();
+ return ((SensorManager*) getDefaultManager())->getDefaultSensorDebounceGoingActive();
 }
 //@Override
 /*public*/ long ProxySensorManager::getDefaultSensorDebounceGoingInActive(){
-    return ((AbstractSensorManager*)getMgr(0))->getDefaultSensorDebounceGoingInActive();
+ return ((SensorManager*) getDefaultManager())->getDefaultSensorDebounceGoingInActive();
 }
 //@Override
 /*public*/ void ProxySensorManager::setDefaultSensorDebounceGoingActive(long timer){
-    for (int i=0; i<nMgrs(); i++) {
-        ((AbstractSensorManager*)getMgr(i))->setDefaultSensorDebounceGoingActive(timer);
+    for (Manager/*<E>*/* m : getManagerList()) {
+        ((AbstractSensorManager*)m->self())->setDefaultSensorDebounceGoingActive(timer);
     }
 }
 //@Override
 /*public*/ void ProxySensorManager::setDefaultSensorDebounceGoingInActive(long timer){
-    for (int i=0; i<nMgrs(); i++) {
-        ((AbstractSensorManager*)getMgr(i))->setDefaultSensorDebounceGoingInActive(timer);
+    for (Manager/*<E>*/* m : getManagerList()) {
+        ((AbstractSensorManager*)m->self())->setDefaultSensorDebounceGoingInActive(timer);
     }
 }
 
@@ -215,12 +202,12 @@ QCompleter* ProxySensorManager::getCompleter(QString text)
 {
  if(text.length()>0)
  {
-  QStringList nameList = getSystemNameList();
+  QStringList nameList = AbstractProxyManager::getSystemNameList();
   QStringList completerList;
   bool bOk;
   foreach(QString systemName, nameList)
   {
-   Sensor* s = getBySystemName(systemName);
+   Sensor* s = (Sensor*)AbstractProxyManager::getBySystemName(systemName);
    if(s->getUserName().startsWith(text,Qt::CaseInsensitive))
     completerList.append(s->getUserName());
    if(systemName.startsWith(text,Qt::CaseInsensitive))

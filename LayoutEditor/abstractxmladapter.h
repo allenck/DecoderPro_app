@@ -20,19 +20,27 @@ public:
     /*public*/ void setConfigXmlManager(ConfigXmlManager* c)  override;
     QDomDocument doc;
     virtual void setDoc(QDomDocument doc);
-    /*public*/ bool load(QDomElement e) throw (Exception) override;
+    /*public*/ bool load(QDomElement e) /*throw (Exception)*/ override;
     /*public*/ bool load(QDomElement shared, QDomElement perNode) override; //throws Exception
-    /*public*/ void load(QDomElement shared, QDomElement perNode, QObject* o) throw (JmriConfigureXmlException) override;
+    /*public*/ void load(QDomElement shared, QDomElement perNode, QObject* o) /*throw (JmriConfigureXmlException)*/ override;
+    /*public*/ QDomElement store(/*@Nonnull*/ QObject* o, bool shared)override;
+    /*public*/ void setExceptionHandler(ErrorHandler* errorHandler);
+    /*public*/ ErrorHandler* getExceptionHandler();
+    /*final*/ /*public*/ bool getAttributeBooleanValue(/*@Nonnull*/ QDomElement element, /*@Nonnull*/ QString name, bool def) ;
+    /*final*/ /*public*/ int getAttributeIntegerValue(/*@Nonnull*/ QDomElement element, /*@Nonnull*/ QString name, int def) ;
+    /*final*/ /*public*/ double getAttributeDoubleValue(/*@Nonnull*/ QDomElement element, /*@Nonnull*/ QString name, double def);
+    /*final*/ /*public*/ float getAttributeFloatValue(/*@Nonnull*/ QDomElement element, /*@Nonnull*/ QString name, float def);
 
 signals:
 
 public slots:
 private:
     /*private*/ ConfigXmlManager* c;
+    /*private*/ ErrorHandler* errorHandler;// = XmlAdapter::getDefaultExceptionHandler();
+    static Logger* log;
   protected:
     /*protected*/ ConfigXmlManager* getConfigXmlManager() ;
  QObject *parent;
- /*private*/ ErrorHandler* errorHandler;// = XmlAdapter::getDefaultExceptionHandler();
 };
 
 #endif // ABSTRACTXMLADAPTER_H

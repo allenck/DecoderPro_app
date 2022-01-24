@@ -26,11 +26,12 @@ public:
     /*public*/ void setState(int state);
     /*public*/ Conditional* getConditional(QString systemName) ;
     /*public*/ void setGuiNames();
+  /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean);
 
 signals:
 
 public slots:
- /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException);
+ /*public*/ void vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/;
 
 private:
     /**

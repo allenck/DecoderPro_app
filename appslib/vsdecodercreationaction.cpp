@@ -1,7 +1,6 @@
 #include "vsdecodercreationaction.h"
-#include "jframe.h"
+#include "jmrijframe.h"
 #include "vsdecodermanager.h"
-#include "vsdecoderframe.h"
 #include "logger.h"
 #include "file.h"
 #include "vsdecoderpreferences.h"
@@ -59,22 +58,11 @@ void VSDecoderCreationAction::common()
 /*public*/ void VSDecoderCreationAction::actionPerformed(ActionEvent* /*e*/)
 {
  QString fp = "", fn = "";
- JFrame* tf = NULL;
- if (_useNewGUI == true)
- {
-  tf = VSDecoderManager::instance()->provideManagerFrame();
+ JmriJFrame* tf = NULL;
+
+ tf = VSDecoderManager::instance()->provideManagerFrame(); // headless will return null
+
+ if (tf != nullptr) {
+     tf->toFront();
  }
- else
- {
-  tf = new VSDecoderFrame();
- }
- if (VSDecoderManager::instance()->getVSDecoderPreferences()->isAutoLoadingDefaultVSDFile())
- {
-  // Force load of a VSD file
-  fp = VSDecoderManager::instance()->getVSDecoderPreferences()->getDefaultVSDFilePath();
-  fn = VSDecoderManager::instance()->getVSDecoderPreferences()->getDefaultVSDFileName();
-  log->debug("Loading VSD File: " + fp + File::separator + fn);
-  LoadVSDFileAction::loadVSDFile(fp + File::separator + fn);
- }
- tf->toFront();
 }

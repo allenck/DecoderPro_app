@@ -9,13 +9,14 @@ namespace Operations
  {
   Q_OBJECT
  public:
-  /*public*/ PrintRoutesAction(QString actionName, bool preview, QObject* parent);
+  /*public*/ PrintRoutesAction(bool preview, QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* /*e*/);
+  /*public*/ void actionPerformed(JActionEvent* /*e*/=0)override;
 
  private:
   /*private*/ static /*final*/ char FORM_FEED;// = '\f';
   Logger* log;
+  Route* _route;
  };
 }
 #endif // PRINTROUTESACTION_H

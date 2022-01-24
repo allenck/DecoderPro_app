@@ -4,6 +4,7 @@
 #include "activetrain.h"
 #include "dispatcherframe.h"
 #include "signalmast.h"
+#include "instancemanager.h"
 
 //AllocationRequest::AllocationRequest(QObject *parent) : QObject(parent)
 //{
@@ -151,11 +152,11 @@
  * Methods
  */
 /*private*/ void AllocationRequest::handleSectionChange(PropertyChangeEvent* e) {
-    DispatcherFrame::instance()->sectionOccupancyChanged();
+    ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->sectionOccupancyChanged();
     //This forces us to rescan the allocation list if the section has gone unoccupied, thus this might get re-allocated
     if (e->getPropertyName() == ("occupancy")) {
         if (( e->getNewValue()).toInt() == Section::UNOCCUPIED) {
-            DispatcherFrame::instance()->forceScanOfAllocation();
+            ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->queueScanOfAllocationRequests();
         }
     }
 }
@@ -164,13 +165,13 @@
     if ((mSectionListener != NULL) && (mSection != NULL)) {
         mSection->removePropertyChangeListener(mSectionListener);
     }
-#if 0
+#if 1
     if ((mSignalMastListener != NULL) && (mWaitingForSignalMast != NULL)) {
-        mWaitingForSignalMast.removePropertyChangeListener(mSignalMastListener);
+        mWaitingForSignalMast->removePropertyChangeListener(mSignalMastListener);
     }
 
     if ((mWaitingOnBlock != NULL) && (mWaitingOnBlockListener != NULL)) {
-        mWaitingOnBlock.removePropertyChangeListener(mWaitingOnBlockListener);
+        mWaitingOnBlock->removePropertyChangeListener(mWaitingOnBlockListener);
     }
 #endif
     mWaitingOnBlock = NULL;
@@ -185,53 +186,55 @@
 
 /*public*/ void AllocationRequest::setWaitingForSignalMast(SignalMast* sm) {
     if (mSignalMastListener == NULL) {
-#if 0
-        mSignalMastListener = new PropertyChangeListener() {
-            //@Override
-            /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
-                if (e.getPropertyName() == ("Held")) {
-                    if (!((Boolean) e.getNewValue()).booleanValue()) {
-                        mWaitingForSignalMast.removePropertyChangeListener(mSignalMastListener);
-                        DispatcherFrame::instance().forceScanOfAllocation();
-                    }
-                }
-            }
-        };
+#if 1
+        mSignalMastListener = new SignalMastListener(this);
+//        {
+//            //@Override
+//            /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
+//                if (e.getPropertyName() == ("Held")) {
+//                    if (!((Boolean) e.getNewValue()).booleanValue()) {
+//                        mWaitingForSignalMast.removePropertyChangeListener(mSignalMastListener);
+//                        DispatcherFrame::instance().forceScanOfAllocation();
+//                    }
+//                }
+//            }
+//        };
 #endif
     }
-#if 0
+#if 1
     if (mWaitingForSignalMast != NULL) {
-        mWaitingForSignalMast.removePropertyChangeListener(mSignalMastListener);
+        mWaitingForSignalMast->removePropertyChangeListener(mSignalMastListener);
     }
     mWaitingForSignalMast = sm;
     if (mWaitingForSignalMast != NULL) {
-        mWaitingForSignalMast.addPropertyChangeListener(mSignalMastListener);
+        mWaitingForSignalMast->addPropertyChangeListener(mSignalMastListener);
     }
 #endif
 }
 
 
 /*protected*/ void AllocationRequest::setWaitingOnBlock(Block* b) {
-#if 0
+#if 1
     if (mWaitingOnBlockListener == NULL) {
-        mWaitingOnBlockListener = new PropertyChangeListener() {
-            //@Override
-            /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
-                if (e.getPropertyName() == ("state")) {
-                    if (((Integer) e.getNewValue()).intValue() == jmri.Block.UNOCCUPIED) {
-                        mWaitingOnBlock.removePropertyChangeListener(mWaitingOnBlockListener);
-                        DispatcherFrame.instance().forceScanOfAllocation();
-                    }
-                }
-            }
-        };
+        mWaitingOnBlockListener = new WaitingOnBlockListener(this);
+//        {
+//            //@Override
+//            /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
+//                if (e.getPropertyName() == ("state")) {
+//                    if (((Integer) e.getNewValue()).intValue() == jmri.Block.UNOCCUPIED) {
+//                        mWaitingOnBlock.removePropertyChangeListener(mWaitingOnBlockListener);
+//                        DispatcherFrame.instance().forceScanOfAllocation();
+//                    }
+//                }
+//            }
+//        };
     }
     if (mWaitingOnBlock != NULL) {
-        mWaitingOnBlock.removePropertyChangeListener(mWaitingOnBlockListener);
+        mWaitingOnBlock->removePropertyChangeListener(mWaitingOnBlockListener);
     }
     mWaitingOnBlock = b;
     if (mWaitingOnBlock != NULL) {
-        mWaitingOnBlock.addPropertyChangeListener(mWaitingOnBlockListener);
+        mWaitingOnBlock->addPropertyChangeListener(mWaitingOnBlockListener);
     }
 #endif
 }

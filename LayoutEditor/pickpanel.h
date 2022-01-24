@@ -7,7 +7,7 @@
 #include <QModelIndex>
 #include "liblayouteditor_global.h"
 
-class ActionEvent;
+class JActionEvent;
 class ListSelectionEvent;
 class ChangeEvent;
 class PickListModel;
@@ -44,23 +44,29 @@ protected:
 //    void dragMoveEvent(QDragMoveEvent *);
  friend class ItActionListener;
 };
-class ItActionListener : public ActionListener
+
+class ItActionListener : public QObject, public ActionListener
 {
-  PickPanel* self;
+  PickPanel* pp;
   Q_OBJECT
+  Q_INTERFACES(ActionListener)
 public:
-  ItActionListener(PickPanel* self);
+  ItActionListener(PickPanel* pp);
+  QObject* self() override {return (QObject*)this;}
 public slots:
-  /*public*/ void actionPerformed(ActionEvent* a = 0) ;
+  /*public*/ void actionPerformed(JActionEvent* a = 0) override;
 };
-class PPCancelListener : public ActionListener
+
+class PPCancelListener : public QObject, public ActionListener
 {
-  PickPanel* self;
+  PickPanel* pp;
   Q_OBJECT
+  Q_INTERFACES(ActionListener)
 public:
-  PPCancelListener(PickPanel* self);
+  PPCancelListener(PickPanel* pp);
+  QObject* self() override {return (QObject*)this;}
 public slots:
-  /*public*/ void actionPerformed() ;
+  /*public*/ void actionPerformed(JActionEvent *) override;
 };
 
 #endif // PICKPANEL_H

@@ -30,12 +30,12 @@ namespace Operations
  }
 
 
- /*public*/ void PrintOptionAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void PrintOptionAction::actionPerformed(JActionEvent * /*e*/) {
      if (f == NULL || !f->isVisible()) {
          f = new PrintOptionFrame();
          f->initComponents();
      }
-     //f.setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setVisible(true); // this also brings the frame into focus
  }
 }

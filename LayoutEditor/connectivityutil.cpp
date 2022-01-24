@@ -5,6 +5,7 @@
 #include "abstractsignalheadmanager.h"
 #include "defaultsignalmastmanager.h"
 #include "layouteditorfinditems.h"
+#include "layouteditortools.h"
 
 ConnectivityUtil::ConnectivityUtil(QObject *parent) :
     QObject(parent)
@@ -49,15 +50,15 @@ ConnectivityUtil::ConnectivityUtil(QObject *parent) :
 
  auxTools = nullptr;
  layoutBlockManager = nullptr;
- leTools = nullptr;
+ //leTools = nullptr;
  ts = nullptr; // was tr
- prevConnectType = 0;
+ prevConnectType = HitPointType::NONE;
  prevConnectObject = nullptr;
  turnoutConnectivity = true;
 
  layoutEditor = thePanel;
- auxTools = new LayoutEditorAuxTools(layoutEditor);
- leTools = layoutEditor->getLETools();
+ auxTools = layoutEditor->getLEAuxTools();
+ //leTools = layoutEditor->getLETools();
  layoutBlockManager = ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"));
 }
 
@@ -141,7 +142,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
      }
 
      QVector<LayoutConnectivity*>* cList = auxTools->getConnectivityList(currLayoutBlock);
-     int cType;
+     HitPointType cType;
      // initialize the connectivity search, processing a turnout in this block if it is present
      bool notFound = true;
      for (int i = 0; (i < cList->size()) && notFound; i++) {
@@ -160,11 +161,11 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
                      if (((TrackSegment*) xt->getConnectA() != nullptr) && (currLayoutBlock == ((TrackSegment*) xt->getConnectA())->getLayoutBlock())) {
                          // block exits Xover at A
                          _tr = (TrackSegment*) xt->getConnectA();
-                         prevConnectType = LayoutTrack::TURNOUT_A;
+                         prevConnectType = HitPointType::TURNOUT_A;
                      } else if (((TrackSegment*) xt->getConnectB() != nullptr) && (currLayoutBlock == ((TrackSegment*) xt->getConnectB())->getLayoutBlock())) {
                          // block exits Xover at B
                          _tr = (TrackSegment*) xt->getConnectB();
-                         prevConnectType = LayoutTrack::TURNOUT_B;
+                         prevConnectType = HitPointType::TURNOUT_B;
                      }
                      break;
                  case LayoutConnectivity::XOVER_BOUNDARY_CD:
@@ -172,33 +173,33 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
                      if (((TrackSegment*) xt->getConnectC() != nullptr) && (currLayoutBlock == ((TrackSegment*) xt->getConnectC())->getLayoutBlock())) {
                          // block exits Xover at C
                          _tr = (TrackSegment*) xt->getConnectC();
-                         prevConnectType = LayoutTrack::TURNOUT_C;
+                         prevConnectType = HitPointType::TURNOUT_C;
                      } else if (((TrackSegment*) xt->getConnectD() != nullptr) && (currLayoutBlock == ((TrackSegment*) xt->getConnectD())->getLayoutBlock())) {
                          // block exits Xover at D
                          _tr = (TrackSegment*) xt->getConnectD();
-                         prevConnectType = LayoutTrack::TURNOUT_D;
+                         prevConnectType = HitPointType::TURNOUT_D;
                      }
                      break;
                  case LayoutConnectivity::XOVER_BOUNDARY_AC:
                      if (((TrackSegment*) xt->getConnectA() != nullptr) && (currLayoutBlock == ((TrackSegment*) xt->getConnectA())->getLayoutBlock())) {
                          // block exits Xover at A
                          _tr = (TrackSegment*) xt->getConnectA();
-                         prevConnectType = LayoutTrack::TURNOUT_A;
+                         prevConnectType = HitPointType::TURNOUT_A;
                      } else if (((TrackSegment*) xt->getConnectC() != nullptr) && (currLayoutBlock == ((TrackSegment*) xt->getConnectC())->getLayoutBlock())) {
                          // block exits Xover at C
                          _tr = (TrackSegment*) xt->getConnectC();
-                         prevConnectType = LayoutTrack::TURNOUT_C;
+                         prevConnectType = HitPointType::TURNOUT_C;
                      }
                      break;
                  case LayoutConnectivity::XOVER_BOUNDARY_BD:
                      if (((TrackSegment*) xt->getConnectB() != nullptr) && (currLayoutBlock == ((TrackSegment*) xt->getConnectB())->getLayoutBlock())) {
                          // block exits Xover at B
                          _tr = (TrackSegment*) xt->getConnectB();
-                         prevConnectType = LayoutTrack::TURNOUT_B;
+                         prevConnectType = HitPointType::TURNOUT_B;
                      } else if (((TrackSegment*) xt->getConnectD() != nullptr) && (currLayoutBlock == ((TrackSegment*) xt->getConnectD())->getLayoutBlock())) {
                          // block exits Xover at D
                          _tr = (TrackSegment*) xt->getConnectD();
-                         prevConnectType = LayoutTrack::TURNOUT_D;
+                         prevConnectType = HitPointType::TURNOUT_D;
                      }
                      break;
                  default:
@@ -209,8 +210,8 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
          } else if ((lc->getBlock1() == currLayoutBlock) && (lc->getBlock2() == prevLayoutBlock)) {
              // no turnout  or level crossing at the beginning of this block
              _tr = lc->getTrackSegment();
-             if (lc->getConnectedType() == LayoutTrack::TRACK) {
-                 prevConnectType = LayoutTrack::POS_POINT;
+             if (lc->getConnectedType() == HitPointType::TRACK) {
+                 prevConnectType = HitPointType::POS_POINT;
                  prevConnectObject = lc->getAnchor();
              } else {
                  prevConnectType = lc->getConnectedType();
@@ -220,21 +221,21 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
          } else if ((lc->getBlock2() == currLayoutBlock) && (lc->getBlock1() == prevLayoutBlock)) {
              cType = lc->getConnectedType();
              // check for connection to a track segment
-             if (cType == LayoutTrack::TRACK) {
+             if (cType == HitPointType::TRACK) {
                  _tr = (TrackSegment*) lc->getConnectedObject();
-                 prevConnectType = LayoutTrack::POS_POINT;
+                 prevConnectType = HitPointType::POS_POINT;
                  prevConnectObject = lc->getAnchor();
              } // check for a level crossing
-             else if ((cType >= LayoutTrack::LEVEL_XING_A) && (cType <= LayoutTrack::LEVEL_XING_D)) {
+             else if ((cType >= HitPointType::LEVEL_XING_A) && (cType <= HitPointType::LEVEL_XING_D)) {
                  // entering this Block at a level crossing, skip over it an initialize the next
                  //      TrackSegment if there is one in this Block
                  setupOpposingTrackSegment((LevelXing*) lc->getConnectedObject(), cType);
              } // check for turnout
-             else if ((cType >= LayoutTrack::TURNOUT_A) && (cType <= LayoutTrack::TURNOUT_D)) {
+             else if ((cType >= HitPointType::TURNOUT_A) && (cType <= HitPointType::TURNOUT_D)) {
                  // add turnout to list
                  result.append(new LayoutTrackExpectedState<LayoutTurnout*>((LayoutTurnout*) lc->getConnectedObject(),
                          getTurnoutSetting((LayoutTurnout*) lc->getConnectedObject(), cType, suppress)));
-             } else if ((cType >= LayoutTrack::SLIP_A) && (cType <= LayoutTrack::SLIP_D)) {
+             } else if ((cType >= HitPointType::SLIP_A) && (cType <= HitPointType::SLIP_D)) {
                  result.append(new LayoutTrackExpectedState<LayoutTurnout*>((LayoutTurnout*) lc->getConnectedObject(),
                          getTurnoutSetting((LayoutTurnout*) lc->getConnectedObject(), cType, suppress)));
              }
@@ -255,10 +256,10 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
      while (_tr != nullptr) {
          LayoutTrack* cObject;
          // identify next connection
-         if ((_tr->getConnect1() == prevConnectObject) && (_tr->getType1() == prevConnectType)) {
+         if ((_tr->getConnect1() == prevConnectObject) && (_tr->getType1() == prevConnectType.type())) {
              cType = _tr->getType2();
              cObject = (LayoutTrack*)_tr->getConnect2();
-         } else if ((_tr->getConnect2() == prevConnectObject) && (_tr->getType2() == prevConnectType)) {
+         } else if ((_tr->getConnect2() == prevConnectObject) && (_tr->getType2() == prevConnectType.type())) {
              cType = _tr->getType1();
              cObject = (LayoutTrack*)_tr->getConnect1();
          } else {
@@ -268,7 +269,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
              _tr = nullptr;
              break;
          }
-         if (cType == LayoutTrack::POS_POINT) {
+         if (cType == HitPointType::POS_POINT) {
              // reached anchor point or end bumper
              if (((PositionablePoint*) cObject)->getType() == PositionablePoint::END_BUMPER) {
                  // end of line
@@ -288,9 +289,9 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
                      prevConnectObject = cObject;
                  }
              }
-         } else if ((cType >= LayoutTrack::LEVEL_XING_A) && (cType <= LayoutTrack::LEVEL_XING_D)) {
+         } else if ((cType >= HitPointType::LEVEL_XING_A) && (cType <= HitPointType::LEVEL_XING_D)) {
              // reached a level crossing, is it within this block?
-             if ((cType == LayoutTrack::LEVEL_XING_A) || (cType == LayoutTrack::LEVEL_XING_C)) {
+             if ((cType == HitPointType::LEVEL_XING_A) || (cType == HitPointType::LEVEL_XING_C)) {
                  if (((LevelXing*) cObject)->getLayoutBlockAC() != currLayoutBlock) {
                      // outside of block
                      _tr = nullptr;
@@ -307,7 +308,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
                      setupOpposingTrackSegment((LevelXing*) cObject, cType);
                  }
              }
-         } else if ((cType >= LayoutTrack::TURNOUT_A) && (cType <= LayoutTrack::TURNOUT_D)) {
+         } else if ((cType >= HitPointType::TURNOUT_A) && (cType <= HitPointType::TURNOUT_D)) {
              // reached a turnout
              LayoutTurnout* lt = (LayoutTurnout*) cObject;
              int tType = lt->getTurnoutType();
@@ -315,8 +316,8 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
              if ((tType == LayoutTurnout::DOUBLE_XOVER) || (tType == LayoutTurnout::RH_XOVER)
                      || (tType == LayoutTurnout::LH_XOVER)) {
                  // reached a crossover turnout
-                 switch (cType) {
-                     case LayoutTrack::TURNOUT_A:
+                 switch (cType.type()) {
+                     case HitPointType::TURNOUT_A:
                          if ((lt->getLayoutBlock()) != currLayoutBlock) {
                              // connection is outside of the current block
                              _tr = nullptr;
@@ -332,13 +333,13 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
                              // block continues at B
                              result.append(new LayoutTrackExpectedState<LayoutTurnout*>((LayoutTurnout*) cObject, Turnout::CLOSED));
                              _tr = (TrackSegment*) lt->getConnectB();
-                             prevConnectType = LayoutTrack::TURNOUT_B;
+                             prevConnectType = HitPointType::TURNOUT_B;
                              prevConnectObject = cObject;
                          } else if ((lt->getLayoutBlockC() == currLayoutBlock) && (tType != LayoutTurnout::LH_XOVER)) {
                              // block continues at C, either Double or RH
                              result.append(new LayoutTrackExpectedState<LayoutTurnout*>((LayoutTurnout*) cObject, Turnout::THROWN));
                              _tr = (TrackSegment*) lt->getConnectC();
-                             prevConnectType = LayoutTrack::TURNOUT_C;
+                             prevConnectType = HitPointType::TURNOUT_C;
                              prevConnectObject = cObject;
                          } else if (lt->getLayoutBlock() == currLayoutBlock && currLayoutBlock == nextLayoutBlock) {
                              //we are at our final destination so not an error such
@@ -351,7 +352,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
                              _tr = nullptr;
                          }
                          break;
-                     case LayoutTrack::TURNOUT_B:
+                     case HitPointType::TURNOUT_B:
                          if ((lt->getLayoutBlockB()) != currLayoutBlock) {
                              // connection is outside of the current block
                              _tr = nullptr;
@@ -367,13 +368,13 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
                              // block continues at A
                              result.append(new LayoutTrackExpectedState<LayoutTurnout*>((LayoutTurnout*) cObject, Turnout::CLOSED));
                              _tr = (TrackSegment*) lt->getConnectA();
-                             prevConnectType = LayoutTrack::TURNOUT_A;
+                             prevConnectType = HitPointType::TURNOUT_A;
                              prevConnectObject = cObject;
                          } else if ((lt->getLayoutBlockD() == currLayoutBlock) && (tType != LayoutTurnout::RH_XOVER)) {
                              // block continues at D, either Double or LH
                              result.append(new LayoutTrackExpectedState<LayoutTurnout*>((LayoutTurnout*) cObject, Turnout::THROWN));
                              _tr = (TrackSegment*) lt->getConnectD();
-                             prevConnectType = LayoutTrack::TURNOUT_D;
+                             prevConnectType = HitPointType::TURNOUT_D;
                              prevConnectObject = cObject;
                          } else if (lt->getLayoutBlockB() == currLayoutBlock && currLayoutBlock == nextLayoutBlock) {
                              //we are at our final destination so not an error such
@@ -386,7 +387,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
                              _tr = nullptr;
                          }
                          break;
-                     case LayoutTrack::TURNOUT_C:
+                     case HitPointType::TURNOUT_C:
                          if ((lt->getLayoutBlockC()) != currLayoutBlock) {
                              // connection is outside of the current block
                              _tr = nullptr;
@@ -402,13 +403,13 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
                              // block continues at D
                              result.append(new LayoutTrackExpectedState<LayoutTurnout*>((LayoutTurnout*) cObject, Turnout::CLOSED));
                              _tr = (TrackSegment*) lt->getConnectD();
-                             prevConnectType = LayoutTrack::TURNOUT_D;
+                             prevConnectType = HitPointType::TURNOUT_D;
                              prevConnectObject = cObject;
                          } else if ((lt->getLayoutBlock() == currLayoutBlock) && (tType != LayoutTurnout::LH_XOVER)) {
                              // block continues at A, either Double or RH
                              result.append(new LayoutTrackExpectedState<LayoutTurnout*>((LayoutTurnout*) cObject, Turnout::THROWN));
                              _tr = (TrackSegment*) lt->getConnectA();
-                             prevConnectType = LayoutTrack::TURNOUT_A;
+                             prevConnectType = HitPointType::TURNOUT_A;
                              prevConnectObject = cObject;
                          } else if (lt->getLayoutBlockC() == currLayoutBlock && currLayoutBlock == nextLayoutBlock) {
                              //we are at our final destination so not an error such
@@ -421,7 +422,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
                              _tr = nullptr;
                          }
                          break;
-                     case LayoutTrack::TURNOUT_D:
+                     case HitPointType::TURNOUT_D:
                          if ((lt->getLayoutBlockD()) != currLayoutBlock) {
                              // connection is outside of the current block
                              _tr = nullptr;
@@ -437,13 +438,13 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
                              // block continues at C
                              result.append(new LayoutTrackExpectedState<LayoutTurnout*>((LayoutTurnout*) cObject, Turnout::CLOSED));
                              _tr = (TrackSegment*) lt->getConnectC();
-                             prevConnectType = LayoutTrack::TURNOUT_C;
+                             prevConnectType = HitPointType::TURNOUT_C;
                              prevConnectObject = cObject;
                          } else if ((lt->getLayoutBlockB() == currLayoutBlock) && (tType != LayoutTurnout::RH_XOVER)) {
                              // block continues at B, either Double or LH
                              result.append(new LayoutTrackExpectedState<LayoutTurnout*>((LayoutTurnout*) cObject, Turnout::THROWN));
                              _tr = (TrackSegment*) lt->getConnectB();
-                             prevConnectType = LayoutTrack::TURNOUT_B;
+                             prevConnectType = HitPointType::TURNOUT_B;
                              prevConnectObject = cObject;
                          } else if (lt->getLayoutBlockD() == currLayoutBlock && currLayoutBlock == nextLayoutBlock) {
                              //we are at our final destination so not an error such
@@ -457,7 +458,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
                          }
                          break;
                      default:
-                         log.warn(tr("Unhandled crossover type: %1").arg(cType));
+                         log.warn(tr("Unhandled crossover type: %1").arg(cType.toString()));
                          break;
                  }
              } else if ((tType == LayoutTurnout::RH_TURNOUT) || (tType == LayoutTurnout::LH_TURNOUT)
@@ -471,13 +472,13 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
                      result.append(new LayoutTrackExpectedState<LayoutTurnout*>((LayoutTurnout*) cObject, getTurnoutSetting(lt, cType, suppress)));
                  }
              }
-         } else if ((cType >= LayoutTrack::SLIP_A) && (cType <= LayoutTrack::SLIP_D)) {
+         } else if ((cType >= HitPointType::SLIP_A) && (cType <= HitPointType::SLIP_D)) {
              // reached a LayoutSlip
              LayoutSlip* ls = (LayoutSlip*) cObject;
-             if (((cType == LayoutTrack::SLIP_A) && (ls->getLayoutBlock() != currLayoutBlock))
-                     || ((cType == LayoutTrack::SLIP_B) && (ls->getLayoutBlockB() != currLayoutBlock))
-                     || ((cType == LayoutTrack::SLIP_C) && (ls->getLayoutBlockC() != currLayoutBlock))
-                     || ((cType == LayoutTrack::SLIP_D) && (ls->getLayoutBlockD() != currLayoutBlock))) {
+             if (((cType == HitPointType::SLIP_A) && (ls->getLayoutBlock() != currLayoutBlock))
+                     || ((cType == HitPointType::SLIP_B) && (ls->getLayoutBlockB() != currLayoutBlock))
+                     || ((cType == HitPointType::SLIP_C) && (ls->getLayoutBlockC() != currLayoutBlock))
+                     || ((cType == HitPointType::SLIP_D) && (ls->getLayoutBlockD() != currLayoutBlock))) {
                  //Slip is outside of the current block
                  _tr = nullptr;
              } else {
@@ -680,33 +681,33 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
  */
 /*public*/ SignalHead* ConnectivityUtil::getSignalHeadAtAnchor(PositionablePoint* p, Block* block, bool facing)
 {
- if ( (p==nullptr) || (block==nullptr) )
- {
-  log.error("nullptr arguments in call to getSignalHeadAtAnchor");
-  return nullptr;
+ if ((p == nullptr) || (block == nullptr)) {
+     log.error("null arguments in call to getSignalHeadAtAnchor");
+     return nullptr;
  }
- LayoutBlock* lBlock = (LayoutBlock*)layoutBlockManager->getByUserName(block->getUserName());
-#if 1
- if (((p->getConnect1())->getLayoutBlock()==lBlock) && ((p->getConnect2())->getLayoutBlock()!=lBlock))
- {
-  if ( (leTools->isAtWestEndOfAnchor(p->getConnect2(), p) && facing) ||((!leTools->isAtWestEndOfAnchor(p->getConnect2(), p)) && (!facing)) )
-   return ((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(p->getWestBoundSignal());
-  else
-   return (((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(p->getEastBoundSignal()));
+ QString userName = block->getUserName();
+ LayoutBlock* lBlock = nullptr;
+ if ((userName != "") && !userName.isEmpty()) {
+     lBlock = (LayoutBlock*)layoutBlockManager->getByUserName(userName);
  }
- else if (((p->getConnect1())->getLayoutBlock()!=lBlock) && ((p->getConnect2())->getLayoutBlock()==lBlock))
- {
-  if ( (leTools->isAtWestEndOfAnchor(p->getConnect1(), p) && facing) || ((!leTools->isAtWestEndOfAnchor(p->getConnect1(), p)) && (!facing)) )
-   return (((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(p->getWestBoundSignal()));
-  else
-   return (((SignalHeadManager*)InstanceManager::InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(p->getEastBoundSignal()));
+ if (((p->getConnect1())->getLayoutBlock() == lBlock) && ((p->getConnect2())->getLayoutBlock() != lBlock)) {
+     if ((LayoutEditorTools::isAtWestEndOfAnchor(layoutEditor, p->getConnect2(), p) && facing)
+             || ((!LayoutEditorTools::isAtWestEndOfAnchor(layoutEditor, p->getConnect2(), p)) && (!facing))) {
+         return ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(p->getWestBoundSignal());
+     } else {
+         return ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(p->getEastBoundSignal());
+     }
+ } else if (((p->getConnect1())->getLayoutBlock() != lBlock) && ((p->getConnect2())->getLayoutBlock() == lBlock)) {
+     if ((LayoutEditorTools::isAtWestEndOfAnchor(layoutEditor, p->getConnect1(), p) && facing)
+             || ((!LayoutEditorTools::isAtWestEndOfAnchor(layoutEditor, p->getConnect1(), p)) && (!facing))) {
+         return ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(p->getWestBoundSignal());
+     } else {
+         return ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(p->getEastBoundSignal());
+     }
+ } else {
+     // should never happen
+     return nullptr;
  }
- else
- {
-  // should never happen
-  return nullptr;
- }
-#endif
 }
 
     /**
@@ -716,30 +717,32 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
  */
 /*public*/ SignalMast* ConnectivityUtil::getSignalMastAtAnchor(PositionablePoint* p, Block* block, bool facing)
 {
- if ( (p==nullptr) || (block==nullptr) )
- {
-  log.error("nullptr arguments in call to getSignalHeadAtAnchor");
-  return nullptr;
+ if ((p == nullptr) || (block == nullptr)) {
+     log.error("null arguments in call to getSignalHeadAtAnchor");
+     return nullptr;
  }
- LayoutBlock* lBlock = (LayoutBlock*)layoutBlockManager->getByUserName(block->getUserName());
- if (((p->getConnect1())->getLayoutBlock()==lBlock) && ((p->getConnect2())->getLayoutBlock()!=lBlock))
- {
-  if ( (leTools->isAtWestEndOfAnchor(p->getConnect2(), p) && facing) || ((!leTools->isAtWestEndOfAnchor(p->getConnect2(), p)) && (!facing)) )
-   return static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(p->getWestBoundSignalMastName());
-  else
-   return static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(p->getEastBoundSignalMastName());
+ QString userName = block->getUserName();
+ LayoutBlock* lBlock = nullptr;
+ if ((userName != "") && !userName.isEmpty()) {
+     lBlock = (LayoutBlock*)layoutBlockManager->getByUserName(userName);
  }
- else if (((p->getConnect1())->getLayoutBlock()!=lBlock) && ((p->getConnect2())->getLayoutBlock()==lBlock))
- {
-  if ( (leTools->isAtWestEndOfAnchor(p->getConnect1(), p) && facing) || ((!leTools->isAtWestEndOfAnchor(p->getConnect1(), p)) && (!facing)) )
-   return static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(p->getWestBoundSignalMastName());
-  else
-   return static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(p->getEastBoundSignalMastName());
- }
- else
- {
-  // should never happen
-  return nullptr;
+ if (((p->getConnect1())->getLayoutBlock() == lBlock) && ((p->getConnect2())->getLayoutBlock() != lBlock)) {
+     if ((LayoutEditorTools::isAtWestEndOfAnchor(layoutEditor, p->getConnect2(), p) && facing)
+             || ((!LayoutEditorTools::isAtWestEndOfAnchor(layoutEditor, p->getConnect2(), p)) && (!facing))) {
+         return ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(p->getWestBoundSignalMastName());
+     } else {
+         return ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(p->getEastBoundSignalMastName());
+     }
+ } else if (((p->getConnect1())->getLayoutBlock() != lBlock) && ((p->getConnect2())->getLayoutBlock() == lBlock)) {
+     if ((LayoutEditorTools::isAtWestEndOfAnchor(layoutEditor, p->getConnect1(), p) && facing)
+             || ((!LayoutEditorTools::isAtWestEndOfAnchor(layoutEditor, p->getConnect1(), p)) && (!facing))) {
+         return ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(p->getWestBoundSignalMastName());
+     } else {
+         return ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getSignalMast(p->getEastBoundSignalMastName());
+     }
+ } else {
+     // should never happen
+     return nullptr;
  }
 }
 
@@ -1110,7 +1113,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
 {
  // initialize
  LayoutTrack* node = nullptr;
- int nodeType = LayoutEditor::NONE;
+ HitPointType nodeType;// = LayoutEditor::NONE;
  TrackSegment* track = nullptr;
  bool hitEnd = false;
  //@SuppressWarnings("unused")
@@ -1142,7 +1145,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
      log.warn("cNodeType wrong for cNode");
    }
    break;
-  case LayoutTrack::TURNOUT_A:
+  case HitPointType::TURNOUT_A:
   {
    if (qobject_cast<LayoutTurnout*>(cNode))
    {
@@ -1160,11 +1163,11 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
        {
         case 0:
             tTrack = (TrackSegment*) lt->getConnectB();
-            pType = LayoutTrack::TURNOUT_B;
+            pType = HitPointType::TURNOUT_B;
             break;
         case 1:
             tTrack = (TrackSegment*) lt->getConnectC();
-            pType = LayoutTrack::TURNOUT_C;
+            pType = HitPointType::TURNOUT_C;
             break;
         default:
             log.error("Bad cNodeState argument when searching track-std. normal");
@@ -1219,10 +1222,10 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
        case 2:
         if (lto->getContinuingSense() == Turnout::CLOSED) {
             tTrack = (TrackSegment*) lto->getConnectC();
-            pType = LayoutTrack::TURNOUT_C;
+            pType = HitPointType::TURNOUT_C;
         } else {
             tTrack = (TrackSegment*) lto->getConnectB();
-            pType = LayoutTrack::TURNOUT_B;
+            pType = HitPointType::TURNOUT_B;
         }
         pObject = lto;
         break;
@@ -1312,8 +1315,8 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
    }
    break;
   }
-  case LayoutTrack::TURNOUT_B:
-  case LayoutTrack::TURNOUT_C:
+  case HitPointType::TURNOUT_B:
+  case HitPointType::TURNOUT_C:
   {
          if ( (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::RH_TURNOUT) ||
                  (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::LH_TURNOUT) ||
@@ -1395,7 +1398,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
          }
          break;
  }
-     case LayoutTrack::TURNOUT_D:
+     case HitPointType::TURNOUT_D:
  {
          if ( (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::RH_XOVER) ||
                  (((LayoutTurnout*)cNode)->getTurnoutType()==LayoutTurnout::LH_XOVER) ||
@@ -1492,7 +1495,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
  // follow track to anchor block boundary, turnout, or level crossing
  bool hasNode = false;
  LayoutTrack* tObject = nullptr;
- int tType = 0;
+ HitPointType tType;// = 0;
  if (tTrack==nullptr){
      log.error("Error tTrack is nullptr!");
      return nullptr;
@@ -1545,7 +1548,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
          }
      }
  }
- return (new TrackNode(node, nodeType, track, hitEnd, cNodeState));
+ return (new TrackNode(node, nodeType.type(), track, hitEnd, cNodeState));
 }
 
 /**
@@ -1715,7 +1718,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
  * Initializes the setting (as an object), sets the new track segment (if in Block), and sets the
  *    prevConnectType.
  */
-/*private*/ int ConnectivityUtil::getTurnoutSetting(LayoutTurnout* lt, int cType, bool suppress) {
+/*private*/ int ConnectivityUtil::getTurnoutSetting(LayoutTurnout* lt, HitPointType& cType, bool suppress) {
     prevConnectObject = lt;
     int setting = Turnout::THROWN;
     int tType = lt->getTurnoutType();
@@ -1724,7 +1727,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
      setting = LayoutSlip::UNKNOWN;
      LayoutSlip* ls = (LayoutSlip*)lt;
      int tType = ls->getTurnoutType();
-     switch(cType)
+     switch(cType.type())
      {
       case LayoutEditor::SLIP_A :
        if(nextLayoutBlock==((TrackSegment*)ls->getConnectC())->getLayoutBlock())
@@ -1939,7 +1942,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
     }
     else
     {
-        switch (cType) {
+        switch (cType.type()) {
             case LayoutEditor::TURNOUT_A:
                 // check for left-handed crossover
                 if (tType == LayoutTurnout::LH_XOVER) {
@@ -2161,6 +2164,8 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
                     ts = (TrackSegment*)lt->getConnectA();
                 }
                 break;
+        default:
+         break;
         }
         if ( (ts!=nullptr) && (ts->getLayoutBlock() != currLayoutBlock) ) {
             // continuing track segment is not in this block
@@ -2193,7 +2198,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
     QObject* curObj = ob;
     QVector<TrackSegment*>* posTS = new QVector<TrackSegment*>();
     QVector<QObject*>* posOB = new QVector<QObject*>();
-    int conType = 0;
+    HitPointType conType;// = 0;
     QObject* conObj = nullptr;
     // follow track to all exit points outside this block
     while (curTS!=nullptr) {
@@ -2267,7 +2272,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
                 if ( (tType==LayoutTurnout::DOUBLE_XOVER) || (tType==LayoutTurnout::RH_XOVER) ||
                         (tType==LayoutTurnout::LH_XOVER) ) {
                     // reached a crossover turnout
-                    switch (conType) {
+                    switch (conType.type()) {
                         case LayoutEditor::TURNOUT_A:
                             if ((lt->getLayoutBlock())!=currLayoutBlock) {
                                 if (lt->getLayoutBlock()==nextLayoutBlock) return true;
@@ -2393,7 +2398,7 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
                     if(ls->getLayoutBlock()==nextLayoutBlock) return true;
                     else curTS = nullptr;
                 } else {
-                    switch (conType){
+                    switch (conType.type()){
                             case LayoutEditor::SLIP_A:
                                                  if(((TrackSegment*)ls->getConnectC())->getLayoutBlock()==nextLayoutBlock) {
                                                     //Leg A-D has next lb
@@ -2486,6 +2491,8 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
                                                         curTS = (TrackSegment*)ls->getConnectA();
                                                     }
                                                     break;
+                    default:
+                     break;
                     }
                 }
             }
@@ -2518,8 +2525,8 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
  */
 ///*public*/ bool isTurnoutConnectivityComplete() { return turnoutConnectivity; }
 
-/*private*/ void ConnectivityUtil::setupOpposingTrackSegment(LevelXing* x, int cType) {
-    switch (cType) {
+/*private*/ void ConnectivityUtil::setupOpposingTrackSegment(LevelXing* x, HitPointType& cType) {
+    switch (cType.type()) {
         case LayoutEditor::LEVEL_XING_A:
             ts = (TrackSegment*)x->getConnectC();
             prevConnectType = LayoutEditor::LEVEL_XING_C;
@@ -2549,11 +2556,11 @@ QList<LayoutTrackExpectedState<LayoutTurnout*>* > result = QList<LayoutTrackExpe
 }
 /*public*/ QVector<LayoutTurnout*>* ConnectivityUtil::getAllTurnoutsThisBlock(LayoutBlock* lb) {
     QVector<LayoutTurnout*>* list = new QVector<LayoutTurnout*>();
-    for (int i = 0; i < layoutEditor->getLayoutTracks()->size(); i++)
+    for (int i = 0; i < layoutEditor->getLayoutTracks().size(); i++)
     {
-     if(qobject_cast<LayoutTurnout*>(layoutEditor->getLayoutTracks()->at(i)))
+     if(qobject_cast<LayoutTurnout*>(layoutEditor->getLayoutTracks().at(i)))
      {
-        LayoutTurnout* lt = (LayoutTurnout*)layoutEditor->getLayoutTracks()->at(i);
+        LayoutTurnout* lt = (LayoutTurnout*)layoutEditor->getLayoutTracks().at(i);
         if ( (lt->getLayoutBlock()==lb) || (lt->getLayoutBlockB()==lb) ||
                 (lt->getLayoutBlockC()==lb) || (lt->getLayoutBlockD()==lb) ) {
             list->append(lt);

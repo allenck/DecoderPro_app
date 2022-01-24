@@ -99,7 +99,7 @@ void JmriAbstractAction::common()
 //}
 
 //@Override
-/*public*/  void JmriAbstractAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/  void JmriAbstractAction::actionPerformed(JActionEvent * /*e*/)
 {
  // we have to make a new panel if we don't have one yet
  // we don't make a new panel if the window interface is
@@ -111,9 +111,9 @@ void JmriAbstractAction::common()
   try
   {
    cache = makePanel();
-  } catch (Exception ex)
+  } catch (Exception* ex)
   {
-Logger::error("Exception creating panel: " + ex.getMessage());
+Logger::error("Exception creating panel: " + ex->getMessage());
    return;
   }
   if (cache == nullptr)

@@ -84,6 +84,8 @@ public:
     /*public*/ void goingInconsistent() override;
     /*public*/ QString getAllocatingWarrantName();
     /*public*/ bool isAllocatedTo(Warrant* warrant);
+    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean)override;
+    /*public*/ QString getBeanType()override;
 
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* evt);
@@ -130,6 +132,7 @@ friend class Calibrater;
 friend class SpeedUtil;
 friend class SCWarrant;
 friend class WarrantTest;
+friend class OBlockTableModel;
 };
 
 #endif // OBLOCK_H

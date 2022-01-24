@@ -16,9 +16,10 @@
 #include "displayframe.h"
 #include "itempanel.h"
 
-PositionableLabel::PositionableLabel(QWidget *parent) :
-    JLabel(parent)
+PositionableLabel::PositionableLabel(Positionable *parent) :
+    JLabel((QWidget*)parent)
 {
+ common(parent);
 }
 /**
  * PositionableLabel is a JLabel that can be dragged around the

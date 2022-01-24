@@ -10,30 +10,32 @@ class PrintStream;
 class JAVAQTSHARED_EXPORT PrintWriter : public Writer
 {
 public:
- /*public*/ PrintWriter (Writer* out);
+ /*public*/ PrintWriter(Writer* out);
  /*public*/ PrintWriter(Writer* out, bool autoFlush);
  /*public*/ PrintWriter(QTextStream* out);
  /*public*/ PrintWriter(QTextStream* out, bool autoFlush);
+ /*public*/ PrintWriter(QString fileName) throw (FileNotFoundException);
  /*public*/ void println();
  /*public*/ void flush();
  /*public*/ void print(const QString s);
  /*public*/ void println(const QString x);
+ /*public*/ void close() /*throw (IOException)*/ override;
 
 private:
  //void common(Writer* out, bool AutoFlush);
 
  /*private*/ /*final*/ bool autoFlush;
  /*private*/ bool trouble;// = false;
- /*private*/ Formatter* formatter;
- /*private*/ QTextStream* psOut;// = null;
+ /*private*/ Formatter* formatter = nullptr;
+ /*private*/ QTextStream* psOut = nullptr;
 
  /**
   * Line separator string.  This is the value of the line.separator
   * property at the moment that the stream was created.
   */
- /*private*/ /*final*/ QString lineSeparator;
+ /*private*/ /*final*/ QString lineSeparator = "\n";
  /*private*/ void newLine();
- /*private*/ void ensureOpen() throw (IOException);
+ /*private*/ void ensureOpen() /*throw (IOException)*/;
 
 protected:
  /**
@@ -42,7 +44,7 @@ protected:
   *
   * @since 1.2
   */
- /*protected*/ Writer* out;
+ /*protected*/ Writer* out =nullptr;
 
 };
 

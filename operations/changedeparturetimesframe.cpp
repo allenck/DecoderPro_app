@@ -1,6 +1,6 @@
 #include "changedeparturetimesframe.h"
 #include "schedule.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include "jcombobox.h"
 #include <QBoxLayout>
 #include <QGroupBox>
@@ -11,6 +11,8 @@
 #include "trainmanager.h"
 #include "routelocation.h"
 #include "route.h"
+#include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -35,7 +37,7 @@ namespace Operations
  /*public*/ ChangeDepartureTimesFrame::ChangeDepartureTimesFrame(QWidget* parent)
 : OperationsFrame(parent)
 {
- changeButton = new QPushButton(tr("Change"));
+ changeButton = new JButton(tr("Change"));
 
 // combo boxes
  hourBox = new JComboBox();
@@ -51,11 +53,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      }
 
      // row 2
-     QGroupBox* pHour = new QGroupBox();
+     JPanel* pHour = new JPanel();
      pHour->setLayout(new GridBagLayout());
-     //pHour.setBorder(BorderFactory.createTitledBorder(tr("SelectHours")));
-     pHour->setStyleSheet(gbStyleSheet);
-     pHour->setTitle(tr("Select the hours to add to each train's departure time"));
+     pHour->setBorder(BorderFactory::createTitledBorder(tr("Select the hours to add to each train's departure time")));
      addItem(pHour, hourBox, 0, 0);
 
      // row 4
@@ -79,10 +79,10 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*public*/ void ChangeDepartureTimesFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == changeButton) {
          log->debug("change button activated");
-         TrainManager* trainManager = TrainManager::instance();
+         TrainManager* trainManager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
          QList<Train*> trains = trainManager->getTrainsByIdList();
          foreach (Train* train, trains) {
              train->setDepartureTime(adjustHour(train->getDepartureTimeHour()), train->getDepartureTimeMinute());

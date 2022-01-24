@@ -1,5 +1,4 @@
 #include "optionaction.h"
-#include "optionframe.h"
 
 namespace Operations
 {
@@ -17,8 +16,8 @@ namespace Operations
   */
  //private static final long serialVersionUID = 7507020443490655869L;
 
- /*public*/ OptionAction::OptionAction(QString s, QObject* parent)
- : AbstractAction(s, parent)
+ /*public*/ OptionAction::OptionAction(QObject* parent)
+ : AbstractAction(tr("Options"), parent)
  {
      //super(s);
   f = NULL;
@@ -26,12 +25,12 @@ namespace Operations
  }
 
 
- /*public*/ void OptionAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void OptionAction::actionPerformed(JActionEvent* /*e*/) {
      if (f == NULL || !f->isVisible()) {
          f = new OptionFrame();
          f->initComponents();
      }
-     //f.setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setVisible(true); // this also brings the frame into focus
  }
 }

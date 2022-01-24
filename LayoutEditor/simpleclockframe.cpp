@@ -535,7 +535,7 @@ void SimpleClockFrame::updateRunningButton()
 //    try {
     rate = factorField->text().toDouble(&bOk);
 //    }
-//    catch (Exception e) {
+//    catch (Exception* e) {
     if(!bOk)
     {
 //        JOptionPane.showMessageDialog(this,(tr("ParseRateError")+"\n"+e),
@@ -564,7 +564,7 @@ void SimpleClockFrame::updateRunningButton()
 //    try {
         clock->userSetRate(rate);
 //    }
-//    catch (Exception e) {
+//    catch (Exception* e) {
 //        JOptionPane.showMessageDialog(this,(tr("SetRateError")+"\n"+e),
 //                tr("ErrorTitle"),JOptionPane.ERROR_MESSAGE);
 //        log->error("Exception when setting timebase rate: "+e);
@@ -652,7 +652,7 @@ void SimpleClockFrame::updateRunningButton()
  bool bOk;
  hours = hoursField->text().toInt(&bOk);
 //    }
-//    catch (Exception e) {
+//    catch (Exception* e) {
  if(!bOk)
  {
 //        JOptionPane.showMessageDialog(this,(tr("HoursError")+"\n"+e),
@@ -672,7 +672,7 @@ void SimpleClockFrame::updateRunningButton()
 //    try {
  minutes = minutesField->text().toInt(&bOk);
 //    }
-//    catch (Exception e) {
+//    catch (Exception* e) {
  if(!bOk)
  {
 //        JOptionPane.showMessageDialog(this,(tr("HoursError")+"\n"+e),
@@ -725,7 +725,7 @@ void SimpleClockFrame::updateRunningButton()
  bool bOk;
  hours = startHoursField->text().toInt(&bOk);
 // }
-// catch (Exception e) {
+// catch (Exception* e) {
  if(!bOk)
  {
 //        JOptionPane.showMessageDialog(this,(tr("HoursError")+"\n"+e),
@@ -745,7 +745,7 @@ void SimpleClockFrame::updateRunningButton()
 //    try {
  minutes = startMinutesField->text().toInt(&bOk);
 //    }
-//    catch (Exception e) {
+//    catch (Exception* e) {
  if(!bOk)
  {
 //        JOptionPane.showMessageDialog(this,(tr("HoursError")+"\n"+e),

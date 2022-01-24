@@ -14,7 +14,7 @@
 ///*public*/ class RpsSystemConnectionMemo extends SystemConnectionMemo {
 
 /*public*/ RpsSystemConnectionMemo::RpsSystemConnectionMemo(/*@Nonnull*/ QString prefix, /*@Nonnull*/ QString name, QObject* parent)
-: SystemConnectionMemo(prefix, name, parent){
+: DefaultSystemConnectionMemo(prefix, name, parent){
     //super(prefix, name);
     _register(); // registers general type
     InstanceManager::store(this, "RpsSystemConnectionMemo"); // also register as specific type
@@ -26,7 +26,7 @@
     log->debug(tr("Created RpsSystemConnectionMemo with prefix %1").arg(prefix));
 }
 
-/*public*/ RpsSystemConnectionMemo::RpsSystemConnectionMemo(QObject* parent) : SystemConnectionMemo("R", "RPS", parent)
+/*public*/ RpsSystemConnectionMemo::RpsSystemConnectionMemo(QObject* parent) : DefaultSystemConnectionMemo("R", "RPS", parent)
 {
     //this("R", "RPS"); // default connection prefix, default RPS product name NOI18N
     log->debug("Created nameless RpsSystemConnectionMemo");
@@ -88,10 +88,10 @@
         return nullptr;
     }
     if (T == ("SensorManager")) {
-        return (Manager*) getSensorManager();
+        return (AbstractManager*) getSensorManager();
     }
     if (T == ("ReporterManager")) {
-        return (Manager*) getReporterManager();
+        return (AbstractManager*) getReporterManager();
     }
     return (Manager*)SystemConnectionMemo::get(T);
 }
@@ -110,7 +110,7 @@
     if (points.length() < 3) {
      QString msg = tr("%1 needs at least 3 (x,y,z) point coordinates, but has only %2").arg(name).arg(points.length());
      
-        throw NamedBean:: BadSystemNameException(
+        throw new NamedBean:: BadSystemNameException(
 //                Bundle.getMessage(Locale.ENGLISH, "SystemNameInvalidMissingPoints", name, points.length),
 //                Bundle.getMessage(locale, "SystemNameInvalidMissingPoints", name, points.length)
         QLocale(),msg,name);
@@ -118,7 +118,7 @@
     for (int i = 0; i < points.length(); i++) {
         if (!points[i].startsWith("(") || !points[i].endsWith(")")) {
          QString msg = tr("Point \"%2\" in %1 needs to be in the format \"(x,y,z) where x, y, and z are numbers\"").arg(name).arg(points[i]);
-            throw  NamedBean::BadSystemNameException(
+            throw new NamedBean::BadSystemNameException(
 //                    Bundle.getMessage(Locale.ENGLISH, "SystemNameInvalidPointInvalid", name, points[i]),
 //                    Bundle.getMessage(locale, "SystemNameInvalidPointInvalid", name, points[i])
             QLocale(),msg,name);
@@ -126,7 +126,7 @@
         QStringList coords = points[i].mid(1, points[i].length() - 1).split(",");
         if (coords.length() != 3) {
          QString msg = tr("Point \"%2\" in %1 needs to be in the format \"(x,y,z) where x, y, and z are numbers\"").arg(name).arg(points[i]);
-            throw  NamedBean::BadSystemNameException(
+            throw new NamedBean::BadSystemNameException(
 //                    Bundle.getMessage(Locale.ENGLISH, "SystemNameInvalidPointInvalid", name, points[i]),
 //                    Bundle.getMessage(locale, "SystemNameInvalidPointInvalid", name, points[i])
             QLocale(),msg,name);
@@ -136,7 +136,7 @@
                 coords[j].toDouble(&bok);
             if(!bok) {
              QString msg = tr("Coordinate \"%3\" in point \"%2\" in %1 needs to be a number").arg(name).arg(points[i]).arg(coords[i]);
-            throw NamedBean::BadSystemNameException(
+            throw new NamedBean::BadSystemNameException(
 //                    Bundle.getMessage(Locale.ENGLISH, "SystemNameInvalidCoordInvalid", name, points[i], coords[j]),
 //                    Bundle.getMessage(locale, "SystemNameInvalidCoordInvalid", name, points[i], coords[j])
                 QLocale(),msg,name);
@@ -151,7 +151,7 @@
  *
  * @return VALID if system name has a valid format, else return INVALID
  */
-/*public*/ Manager::NameValidity RpsSystemConnectionMemo::validSystemNameFormat(QString systemName, char type) const{
+/*public*/ Manager::NameValidity RpsSystemConnectionMemo::validSystemNameFormat(QString systemName, QChar type) {
     // validate the system Name leader characters
     if (!(systemName.startsWith(getSystemPrefix() + type))) {
         // here if an illegal format
@@ -183,7 +183,7 @@
             double z = (coord[2].toDouble());
             log->debug(tr("succes converting systemName point %1 to %2,%3,%4").arg(i).arg(x).arg(y).arg(z));
             // valid, continue
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException* e) {
             return Manager::NameValidity::INVALID;
         }
     }

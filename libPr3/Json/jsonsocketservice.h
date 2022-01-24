@@ -41,8 +41,8 @@ public:
      *                             the client.
      * @throws JsonException       Thrown if the service needs to pass an error
      *                             message back to the client.
-     */
-    /*public*/ /*abstract*/ virtual  void onMessage(QString /*type*/, QJsonObject /*data*/, QLocale /*locale*/) throw (IOException, JmriException, JsonException) {}
+//     */
+    /*public*/ /*abstract*/ virtual  void onMessage(QString /*type*/, QJsonObject /*data*/, QLocale /*locale*/) /*throw (IOException, JmriException, JsonException)*/ {}
 
     /**
      * Handle a request for a list of objects.
@@ -64,7 +64,7 @@ public:
      * @throws JsonException       If the service needs to pass an error message
      *                             back to the client.
      */
-    /*public*/ /*abstract*/ virtual  void onList(QString /*type*/, /*JsonNode*/QJsonObject /*data*/, QLocale /*locale*/) throw (IOException, JmriException, JsonException) {}
+    /*public*/ /*abstract*/ virtual  void onList(QString /*type*/, /*JsonNode*/QJsonObject /*data*/, QLocale /*locale*/) /*throw (IOException, JmriException, JsonException)*/ {}
 
     /**
      * Perform any teardown required when closing a connection.

@@ -7,6 +7,8 @@
 #include "trainschedulemanager.h"
 #include "operationsmanager.h"
 #include "instancemanager.h"
+//#include "automationmanager.h"
+#include "loggerfactory.h"
 
 //TrainManagerXml::TrainManagerXml(QObject *parent) :
 //  OperationsXml(parent)
@@ -35,7 +37,6 @@ namespace Operations
   OperationsXml(parent)
  {
   fileLoaded = false;
-  log = new Logger("TrainManagerXml");
   log->setDebugEnabled(true);
   operationsFileName = "OperationsTrainRoster.xml";// NOI18N
   buildReportFileName = tr("train") + " (";
@@ -52,17 +53,8 @@ namespace Operations
 
  }
 
- /**
-  * record the single instance *
-  */
-// /*private*/ /*static*/ TrainManagerXml* TrainManagerXml::_instance = NULL;
-
- /*public*/ /*static*/ /*synchronized*/ TrainManagerXml* TrainManagerXml::instance()
- {
-  return static_cast<TrainManagerXml*>(InstanceManager::getDefault("TrainManagerXml"));
- }
-     //@Override
- /*public*/ void TrainManagerXml::writeFile(QString name) //throw FileNotFoundException, IOException
+ //@Override
+ /*public*/ void TrainManagerXml::writeFile(QString name) //throw  new FileNotFoundException, IOException
  {
   if (log->isDebugEnabled())
   {
@@ -95,8 +87,8 @@ namespace Operations
   root.appendChild(p);
   doc.appendChild(root);
 
-  Operations::TrainManager::instance()->store(root, doc);
-  TrainScheduleManager::instance()->store(root, doc);
+  ((Operations::TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->store(root, doc);
+  ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->store(root, doc);
 
   writeXML(file, doc);
 
@@ -124,19 +116,27 @@ namespace Operations
       return;
   }
 
-  Operations::TrainManager::instance()->load(root);
-//    TrainScheduleManager.instance().load(root);
+  ((Operations::TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->load(root);
+  ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->load(root);
 
   fileLoaded = true; // set flag trains are loaded
+//  ((AutomationManager*)InstanceManager::getDefault("AutomationManager"))->load(root);
 
   // now load train icons on panels
-  Operations::TrainManager::instance()->loadTrainIcons();
+  ((Operations::TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->loadTrainIcons();
 
   // loading complete run startup scripts
-  Operations::TrainManager::instance()->runStartUpScripts();
+  ((Operations::TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->runStartUpScripts();
 
   log->debug("Trains have been loaded!");
 //    Operations::TrainLogger::instance().enableTrainLogging(Setup.isTrainLoggerEnabled());
+
+  for (Train* train : ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainsByIdList()) {
+      if (train->getStatusCode() == Train::CODE_BUILDING) {
+          log->warn(tr("Reseting train %1, was building when saved").arg(train->getName()));
+          train->reset();
+      }
+  }
   setDirty(false); // clear dirty flag
  }
 
@@ -208,7 +208,7 @@ namespace Operations
     }
 
     /*private*/ QString TrainManagerXml::getDefaultManifestFilename(QString name, QString ext) {
-        return OperationsManager::getInstance()->getPath(MANIFESTS) + File::separator + "train-" + name + "." + ext; // NOI18N
+        return ((Operations::OperationsManager*)InstanceManager::getDefault("Operations::OperationsManager"))->getPath(MANIFESTS) + File::separator + "train-" + name + "." + ext; // NOI18N
     }
 
     /**
@@ -265,6 +265,8 @@ namespace Operations
     /*public*/ void TrainManagerXml::dispose(){
 //        _instance = NULL;
     }
+
+ /*private*/ /*final*/ /*static*/ Logger* TrainManagerXml::log = LoggerFactory::getLogger("TrainManagerXml");
 
     /*public*/ void TrainManagerXml::initialize()
     {

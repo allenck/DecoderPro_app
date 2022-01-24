@@ -1,16 +1,15 @@
 #include "trackcopyaction.h"
-#include "trackcopyframe.h"
-#include "locationeditframe.h"
 
 namespace Operations
 {
- /**
-  *
-  */
- ///*private*/ static final long serialVersionUID = -353491308526162622L;
+ /*public*/ TrackCopyAction::TrackCopyAction(QObject* parent) : AbstractAction(tr("Copy Track"), parent){
+         //super(Bundle.getMessage("MenuItemCopyTrack"));
+  connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
 
- /*public*/ TrackCopyAction::TrackCopyAction(LocationEditFrame* lef)
-    : AbstractAction(tr("Copy Track"),lef)
+ }
+
+ /*public*/ TrackCopyAction::TrackCopyAction(LocationEditFrame* lef, QObject* parent)
+    : AbstractAction(tr("Copy Track"),parent)
  {
      //super(Bundle.getMessage("MenuItemCopyTrack"));
      _lef = lef;
@@ -18,12 +17,12 @@ namespace Operations
  }
 
 
- /*public*/ void TrackCopyAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void TrackCopyAction::actionPerformed(JActionEvent * /*e*/) {
      // create a copy track frame
      if (f == NULL || !f->isVisible()) {
          f = new TrackCopyFrame(_lef);
      }
-     //f.setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setVisible(true);	// this also brings the frame into focus
  }
 }

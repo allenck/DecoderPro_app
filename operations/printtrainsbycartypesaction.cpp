@@ -5,6 +5,7 @@
 #include "car.h"
 #include "cartypes.h"
 #include "control.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -51,7 +52,7 @@ namespace Operations
 
   // Loop through the car types showing which locations and tracks will
   // service that car type
-  QStringList carTypes = CarTypes::instance()->getNames();
+  QStringList carTypes = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames();
 
   QList<Train*> trains = trainManager->getTrainsByNameList();
 
@@ -82,7 +83,7 @@ namespace Operations
       }
       // and force completion of the printing
       writer->close();
-//  } catch (IOException we) {
+//  } catch (IOException* we) {
 //      log->error("Error printing PrintLocationAction: " + we);
 //  }
  }

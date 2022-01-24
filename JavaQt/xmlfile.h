@@ -20,13 +20,13 @@ class JAVAQTSHARED_EXPORT XmlFile : public QObject
 public:
     explicit XmlFile(QObject *parent = 0);
     /*public*/ static /*final*/ QString xsltLocation;// = "/xml/XSLT/";
-    /*public*/ QDomElement rootFromName(QString name) throw (JDOMException);
- /*public*/ QDomElement rootFromFile(File* file);
-    /*public*/ QDomElement rootFromFile(QFile* file) throw (JDOMException);
+    /*public*/ QDomElement rootFromName(QString name) /*throw (JDOMException)*/;
+    /*public*/ QDomElement rootFromFile(File* file);
+    /*public*/ QDomElement rootFromFile(QFile* file) /*throw (JDOMException)*/;
     /*public*/ QDomElement rootFromInputStream(QDataStream* stream) /*throw (JDOMException)*/;
-    /*public*/ QDomElement rootFromURL(QUrl* url) throw (JDOMException);
-    /*public*/ void writeXML(File* file, QDomDocument doc) throw (FileNotFoundException);
-    /*public*/ void writeXML(QFile* file, QDomDocument doc) const throw (FileNotFoundException);
+    /*public*/ QDomElement rootFromURL(QUrl* url) /*throw (JDOMException)*/;
+    /*public*/ void writeXML(File* file, QDomDocument doc) /*throw (FileNotFoundException)*/;
+    /*public*/ void writeXML(QFile* file, QDomDocument doc) const /*throw (FileNotFoundException)*/;
 
     /**
      * Specify a standard prefix for DTDs in new XML documents
@@ -108,7 +108,7 @@ static /*private*/ Validate defaultValidate;// = Validate.None;
 
 protected:
  /*protected*/ bool checkFile(QString name);
- /*protected*/ QFile* findFile(QString name) const;
+ /*protected*/ File *findFile(QString name) const;
  //QT_DEPRECATED /*protected*/ QDomElement getRoot(bool validate, QDataStream* stream) /*throw (JDOMException)*/;
  /*protected*/ QDomElement getRoot(QDataStream* stream) /*throw (JDOMException)*/;
  friend class LayoutEditor;

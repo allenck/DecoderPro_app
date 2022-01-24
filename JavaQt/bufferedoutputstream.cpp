@@ -41,13 +41,13 @@ void BufferedOutputStream::common(QDataStream *out, int size)
 {
  this->out = out;
  if (size <= 0) {
-        throw  IllegalArgumentException("Buffer size <= 0");
+        throw new IllegalArgumentException("Buffer size <= 0");
     }
     buf = QByteArray(size, '\0');
 }
 
 /** Flush the internal buffer */
-/*private*/ void BufferedOutputStream::flushBuffer() throw (IOException)
+/*private*/ void BufferedOutputStream::flushBuffer() /*throw (IOException)*/
 {
  if (count > 0) {
      out->writeRawData(buf.constData(), count);
@@ -61,7 +61,7 @@ void BufferedOutputStream::common(QDataStream *out, int size)
  * @param      b   the byte to be written.
  * @exception  IOException  if an I/O error occurs.
  */
-/*public*/ /*synchronized*/ void BufferedOutputStream::write(int b) throw (IOException) {
+/*public*/ /*synchronized*/ void BufferedOutputStream::write(int b)  {
     if (count >= buf.length()) {
         flushBuffer();
     }
@@ -107,7 +107,7 @@ void BufferedOutputStream::common(QDataStream *out, int size)
  * @exception  IOException  if an I/O error occurs.
  * @see        java.io.FilterOutputStream#out
  */
-/*public*/ /*synchronized*/ void BufferedOutputStream::flush() throw (IOException) {
+/*public*/ /*synchronized*/ void BufferedOutputStream::flush()  {
     flushBuffer();
     //out->flush();
 }
@@ -125,7 +125,7 @@ void BufferedOutputStream::common(QDataStream *out, int size)
  * @see        java.io.FilterOutputStream#out
  */
 //@SuppressWarnings("try")
-/*public*/ void BufferedOutputStream::close() throw (IOException) {
+/*public*/ void BufferedOutputStream::close()  {
 //    try (OutputStream* ostream = out) {
 //        flush();
 //    }

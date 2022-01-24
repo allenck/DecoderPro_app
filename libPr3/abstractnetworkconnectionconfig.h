@@ -4,6 +4,9 @@
 #include "logger.h"
 #include "libPr3_global.h"
 #include <qhostinfo.h>
+#include "spinnernumbermodel.h"
+#include "jspinner.h"
+#include <QPushButton>
 
 class JLabel;
 class QCheckBox;
@@ -67,6 +70,11 @@ protected:
  /*protected*/ QLabel* adNameFieldLabel;
  /*protected*/ JTextField* serviceTypeField;// = new JTextField(15);
  /*protected*/ QLabel* serviceTypeFieldLabel;
+
+ /*protected*/ SpinnerNumberModel* intervalSpinner = new SpinnerNumberModel(250, 0, 10000, 1); // 10 sec max seems long enough
+ /*protected*/ JSpinner* outputIntervalSpinner = new JSpinner(intervalSpinner);
+ /*protected*/ JLabel* outputIntervalLabel;
+ /*protected*/ QPushButton* outputIntervalReset = new QPushButton(tr("Reset"));
 
  /*protected*/ NetworkPortAdapter* adapter = nullptr;
  /*abstract*/ /*protected*/ virtual void setInstance() override;

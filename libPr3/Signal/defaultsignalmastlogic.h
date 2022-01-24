@@ -18,7 +18,7 @@ class SignalMast;
 class LayoutEditor;
 class LayoutBlock;
 class DestinationMast;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class PropertyDestinationMastListener;
 class PropertySourceMastListener;
 class NamedBeanSetting;
@@ -55,22 +55,24 @@ public:
     /*public*/ bool isActive(SignalMast* dest) override;
     /*public*/ bool removeDestination(SignalMast* dest) override;
     /*public*/ void disableLayoutEditorUse() override;
-    /*public*/ void useLayoutEditor(bool boo, SignalMast* destination) throw (JmriException) override;
+    /*public*/ void useLayoutEditor(bool boo, SignalMast* destination) /*throw (JmriException)*/ override;
+    /*public*/ int setupDirectionSensors() override;
+    /*public*/ void removeDirectionSensors() override;
     /*public*/ bool useLayoutEditor(SignalMast* destination) override;
-    /*public*/ void useLayoutEditorDetails(bool turnouts, bool blocks, SignalMast* destination) throw (JmriException) override;
-    /*public*/ bool useLayoutEditorTurnouts(SignalMast* destination);
-    /*public*/ bool useLayoutEditorBlocks(SignalMast* destination);
+    /*public*/ void useLayoutEditorDetails(bool turnouts, bool blocks, SignalMast* destination) /*throw (JmriException)*/ override;
+    /*public*/ bool useLayoutEditorTurnouts(SignalMast* destination)override;
+    /*public*/ bool useLayoutEditorBlocks(SignalMast* destination)override;
     /*public*/ bool allowAutoMaticSignalMastGeneration(SignalMast* destination) override;
     /*public*/ void allowAutoMaticSignalMastGeneration(bool allow, SignalMast* destination) override;
     /*public*/ void allowTurnoutLock(bool lock, SignalMast* destination) override;
     /*public*/ bool isTurnoutLockAllowed(SignalMast* destination) override;
-    /*public*/ virtual void setTurnouts(QHash<NamedBeanHandle<Turnout*>*, int> turnouts, SignalMast* destination);
+    /*public*/ virtual void setTurnouts(QHash<NamedBeanHandle<Turnout*>*, int> turnouts, SignalMast* destination)override;
     /*public*/ void setAutoTurnouts(QHash<Turnout*, int> turnouts, SignalMast* destination) override;
     /*public*/ void setBlocks(QHash<Block*, int> blocks, SignalMast* destination) override;
-    /*public*/ virtual void setAutoBlocks(QMap<Block*, int> blocks, SignalMast* destination);
+    /*public*/ virtual void setAutoBlocks(QMap<Block*, int> blocks, SignalMast* destination)override;
     /*public*/ void setMasts(QHash<SignalMast*, QString> masts, SignalMast* destination) override;
     /*public*/ void setAutoMasts(QHash<SignalMast *, QString> *masts, SignalMast* destination) override;
-    /*public*/ virtual void setSensors(QHash<NamedBeanHandle<Sensor*>*, int> sensors, SignalMast* destination);
+    /*public*/ virtual void setSensors(QHash<NamedBeanHandle<Sensor*>*, int> sensors, SignalMast* destination)override;
     /*public*/ void addSensor(QString sensorName, int state, SignalMast* destination) override;
     /*public*/ void removeSensor(QString sensorName, SignalMast* destination) override;
     /*public*/ QList<Block*> getBlocks(SignalMast* destination) override;
@@ -129,16 +131,16 @@ private:
     QHash<SignalMast*, DestinationMast*> destList;// =  QHash<SignalMast*, DestinationMast*>();
     LayoutEditor* editor;
 
-    bool useAutoGenBlock;// = true;
-    bool useAutoGenTurnouts;// = true;
+    bool useAutoGenBlock = true;
+    bool useAutoGenTurnouts = true;
 
-    LayoutBlock* facingBlock;// = NULL;
-    LayoutBlock* protectingBlock;// = NULL;
+    LayoutBlock* facingBlock = NULL;
+    LayoutBlock* protectingBlock = NULL;
 
-    bool disposing;// = false;
-    Logger*log;
-    //PropertyChangeSupport* pcs;// = new jPropertyChangeSupport(this);
-    /*volatile*/ bool inWait;// = false;
+    bool disposing = false;
+    static Logger* log;
+    //SwingPropertyChangeSupport* pcs;// = new jSwingPropertyChangeSupport(this,this);
+    /*volatile*/ bool inWait = false;
     QThread* thr;// = NULL;
     /*synchronized*/ void setSignalAppearance();
     QMutex mutex;
@@ -161,16 +163,18 @@ friend class SignalMastLogicWidget;
 };
 
 //This is the listener on the destination signalMast
-class PropertyDestinationMastListener : public PropertyChangeListener
+class PropertyDestinationMastListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     PropertyDestinationMastListener(DefaultSignalMastLogic* parent)
     {
      this->parent = parent;
     }
     DefaultSignalMastLogic* parent;
-    void propertyChange(PropertyChangeEvent *e)
+public slots:
+    void propertyChange(PropertyChangeEvent *e) override
     {
         SignalMast* mast = (SignalMast*) e->getSource();
         if (mast==parent->destination)
@@ -180,19 +184,22 @@ public:
             parent->setSignalAppearance();
         }
     }
+    QObject* self() override{return (QObject*)this;}
 };
 
 //This is the listener on the source signalMast
-class PropertySourceMastListener : public PropertyChangeListener
+class PropertySourceMastListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     PropertySourceMastListener(DefaultSignalMastLogic* parent)
     {
      this->parent = parent;
     }
     DefaultSignalMastLogic* parent;
-    void propertyChange(PropertyChangeEvent *e)
+public slots:
+    void propertyChange(PropertyChangeEvent *e) override
     {
         SignalMast* mast = (SignalMast*) e->getSource();
         if ((mast==parent->source) && (e->getPropertyName()==("Held")))
@@ -202,6 +209,7 @@ public:
             parent->setSignalAppearance();
         }
     }
+    QObject* self() override{return (QObject*)this;}
 };
 
 class DestinationMast : public QObject
@@ -263,9 +271,9 @@ class DestinationMast : public QObject
       void checkState();
       void checkStateDetails();
       void initialise();
-      void useLayoutEditor(bool boo) throw (JmriException) ;
-      void useLayoutEditorDetails(bool turnouts, bool blocks) throw (JmriException);
-      void setupLayoutEditorDetails() throw (JmriException);
+      void useLayoutEditor(bool boo) /*throw (JmriException)*/ ;
+      void useLayoutEditorDetails(bool turnouts, bool blocks) /*throw (JmriException)*/;
+      void setupLayoutEditorDetails() /*throw (JmriException)*/;
       void setupAutoSignalMast(SignalMastLogic* sml, bool overright);
       void addAutoSignalMast(SignalMast* mast);
       void removeAutoSignalMast(SignalMast* mast);
@@ -383,15 +391,17 @@ public:
       }
   };
 
-class PropertySensorListener : public PropertyChangeListener
+class PropertySensorListener : public QObject,public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     PropertySensorListener(DestinationMast* parent)
     {
      this->parent = parent;
     }
     DestinationMast* parent;
+    QObject* self() override{return (QObject*)this;}
 public slots:
     void propertyChange(PropertyChangeEvent *e) override
     {
@@ -421,9 +431,10 @@ public slots:
      }
     }
 };
-class PropertyTurnoutListener : public PropertyChangeListener
+class PropertyTurnoutListener : public QObject,public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     PropertyTurnoutListener(DestinationMast* parent)
     {
@@ -489,17 +500,20 @@ public:
       parent->calculateSpeed();
      }
     }
+    QObject* self() override{return (QObject*)this;}
 };
-class PropertyBlockListener : public PropertyChangeListener
+class PropertyBlockListener : public QObject,public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     PropertyBlockListener(DestinationMast* parent)
     {
      this->parent = parent;
     }
     DestinationMast* parent;
-    void propertyChange(PropertyChangeEvent *e)
+ public slots:
+    void propertyChange(PropertyChangeEvent *e)override
     {
      Block* block = (Block*) e->getSource();
      if(parent->log->isDebugEnabled())
@@ -560,10 +574,12 @@ public:
             parent->calculateSpeed();
         }
     }
+    QObject* self() override{return (QObject*)this;}
 };
-class PropertySignalMastListener : public PropertyChangeListener
+class PropertySignalMastListener : public QObject,public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     PropertySignalMastListener(DestinationMast* parent)
     {
@@ -615,6 +631,7 @@ public:
             }
         }
     }
+    QObject* self() override{return (QObject*)this;}
 };
 
 #endif // DEFAULTSIGNALMASTLOGIC_H

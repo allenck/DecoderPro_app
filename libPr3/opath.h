@@ -4,7 +4,7 @@
 #include "libPr3_global.h"
 
 class OBlock;
-class ActionEvent;
+class JActionEvent;
 class OPTimeTurnout;
 class ActionListener;
 class Portal;
@@ -69,6 +69,6 @@ public:
      void setParams(bool s, int ls, bool l);
 
 public slots:
-     /*public*/ void actionPerformed(ActionEvent* event = 0);
+     /*public*/ void actionPerformed(JActionEvent* event = 0);
 };
 #endif // OPATH_H

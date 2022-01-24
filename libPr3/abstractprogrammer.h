@@ -15,7 +15,7 @@
  * @version     $Revision: 22216 $
  */
 
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class LIBPR3SHARED_EXPORT AbstractProgrammer : public QObject, public Programmer
 {
  Q_OBJECT
@@ -26,14 +26,15 @@ public:
     int registerFromCV(int cv); // throws ProgrammerException
     /*public synchronized */virtual void addPropertyChangeListener(PropertyChangeListener* l);
     /*public synchronized*/ virtual void removePropertyChangeListener(PropertyChangeListener* l);
-//    /*public*/ void writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
-    /*public*/ virtual void readCV(QString /*CV*/, ProgListener* /*p*/) throw (ProgrammerException) {}
+//    /*public*/ void writeCV(QString CV, int val, ProgListener* p) /*throw (ProgrammerException)*/;
+    /*public*/ virtual void readCV(QString /*CV*/, ProgListener* /*p*/) /*throw (ProgrammerException)*/ {}
 //    /*public*/ void confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
     /*public*/ bool getCanRead();
     /*public*/ bool getCanRead(QString addr);
     /*public*/ /*final*/ void setMode(ProgrammingMode* m);
+    virtual /*public*/ ProgrammingMode* getBestMode();
     /*public*/ /*final*/ ProgrammingMode* getMode();
-    /*abstract*/ /*public*/ virtual QList<ProgrammingMode*> getSupportedModes();
+    /*abstract*/ /*public*/ virtual QList<QString> getSupportedModes();
     /*public*/ bool getCanWrite();
     /*public*/ bool getCanWrite(QString addr);
 
@@ -43,9 +44,9 @@ signals:
     void propertyChange(PropertyChangeEvent*);
 private:
     /**
-     * Provide a {@link java.beans.PropertyChangeSupport} helper.
+     * Provide a {@link java.beans.SwingPropertyChangeSupport} helper.
      */
-    /*private*/ /*final*/ PropertyChangeSupport* propertyChangeSupport;// = new PropertyChangeSupport(this);
+    /*private*/ /*final*/ SwingPropertyChangeSupport* propertyChangeSupport;// = new SwingPropertyChangeSupport(this, nullptr);
 
 protected:
 

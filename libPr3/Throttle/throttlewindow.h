@@ -8,6 +8,11 @@
 #include "libPr3_global.h"
 #include "speedpanel.h"
 #include "addresslistener.h"
+#include "windowadapter.h"
+#include "throttleframemanager.h"
+#include "instancemanager.h"
+#include "throttlestablemodel.h"
+#include "throttleslistpanel.h"
 
 namespace Ui {
 class ThrottleWindow;
@@ -41,7 +46,7 @@ public:
     /*public*/ void nextThrottleFrame();
     /*public*/ void previousRunningThrottleFrame();
     /*public*/ void previousThrottleFrame();
-    /*public*/ void dispose();
+    /*public*/ void dispose() override;
     /*public*/ void removeThrottleFrame(ThrottleWindow* tf);
     /*public*/ void addThrottleFrame(ThrottleWindow* tp);
     /*public*/ ThrottleWindow* addThrottleFrame();
@@ -65,15 +70,18 @@ public:
     /*public*/ static void setTransparent(QWidget* jcomp);
     /*public*/ static void setTransparent(QObject* jcomp, bool transparency);
     QObject* self() {return (QObject*)this;}
-    QString getClassName();
+    QString getClassName() override;
+    /*public*/ void saveRosterChanges();
+    /*public*/ void setEditMode(bool mode);
+    /*public*/ bool getEditMode();
 
 public slots:
     /*public*/ void saveThrottle();
     /*public*/ void saveThrottleAs();
-    void notifyAddressThrottleFound(DccThrottle*t);
-    /*public*/ virtual void notifyAddressReleased(LocoAddress* la);
+    void notifyAddressThrottleFound(DccThrottle*t) override;
+    /*public*/ virtual void notifyAddressReleased(LocoAddress* la) override;
     void notifyThrottleFound(DccThrottle* t);
-    /*public*/ virtual void notifyAddressChosen(LocoAddress* l);
+    /*public*/ virtual void notifyAddressChosen(LocoAddress* l) override;
 
 
 signals:
@@ -132,7 +140,7 @@ private slots:
     void fillCbRoster();
     void getSettings();
     void saveSettings();
-    void closeEvent(QCloseEvent *);
+//    void closeEvent(QCloseEvent *);
     Logger* log;
     ListThrottles* listViewDlg;
     bool bAltFunc;
@@ -171,15 +179,38 @@ private slots:
 private slots:
     void propertyChange(PropertyChangeEvent* e);
     /*private*/ void editPreferences();
-    /*private*/ void switchMode();
-    void OnEditMenuExportRoster();
+    QT_DEPRECATED/*private*/ void switchMode();
 
-friend class PropertyChangeSupport;
+friend class SwingPropertyChangeSupport;
 friend class LocoNetSlot;
 friend class AbstractThrottle;
 friend class SlotManager;
 friend class ThrottleCreationAction;
 friend class ThrottleOperator;
+friend class TWWindowListener;
 };
 
+class TWWindowListener : public WindowAdapter
+{
+  Q_OBJECT
+  ThrottleWindow* me;
+ public:
+  TWWindowListener(ThrottleWindow* me) {this->me = me;}
+  //@Override
+ /*public*/ void windowClosing(QCloseEvent* e) {
+     //ThrottleWindow me = (ThrottleWindow) e.getSource();
+     //((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->requestThrottleWindowDestruction(me);
+     ThrottleFrameManager::instance()->getThrottlesListPanel()->getTableModel()->removeThrottleFrame(me, nullptr);
+     if (me->throttleToolBar != nullptr) {
+//         Component[] cmps = throttleToolBar.getComponents();
+//         if (cmps != null) {
+//             for (int i = 0; i < cmps.length; i++) {
+//                 if (cmps[i] instanceof Jynstrument) {
+//                     ((Jynstrument) cmps[i]).exit();
+//                 }
+//             }
+//         }
+     }
+ }
+};
 #endif // THROTTLEWINDOW_H

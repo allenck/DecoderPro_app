@@ -13,6 +13,8 @@
 #include "signalmastlogicmanager.h"
 #include "signallingguitools.h"
 #include "layouteditorfinditems.h"
+#include "loggerfactory.h"
+
 
 //PositionablePoint::PositionablePoint(QObject *parent) :
 //    QObject(parent)
@@ -47,11 +49,10 @@
 
     // operational instance variables (not saved between sessions)
 
-/*public*/ PositionablePoint::PositionablePoint(QString id, int t, QPointF c, LayoutEditor* layoutEditor,QObject *parent)
- : LayoutTrack(id, c, layoutEditor,parent)
+/*public*/ PositionablePoint::PositionablePoint(QString id, PositionablePoint::PointType t, LayoutEditor* layoutEditor, QObject *parent)
+ : LayoutTrack(id, layoutEditor,parent)
 {
  setObjectName(id);
- instance = nullptr;
  this->layoutEditor = layoutEditor;
  // initialization instance variables (used when loading a LayoutEditor)
  trackSegment1Name = "";
@@ -59,7 +60,7 @@
 
  // persistent instances variables (saved between sessions)
  //ident = "";
- type = 0;
+ type = NONE;
  connect1 = nullptr;
  connect2 = nullptr;
  //coords = QPointF(10.0,10.0);
@@ -74,15 +75,16 @@
 
  //eastBoundSignalMastName = "";
  //westBoundSignalMastName = "";
- instance = this;
- //layoutEditor = myPanel;
- if ( (t==ANCHOR) || (t==END_BUMPER) || (t == EDGE_CONNECTOR))
+//layoutEditor = myPanel;
+
+ if ( (t==PointType::ANCHOR) || (t==PointType::END_BUMPER) || (t == PointType::EDGE_CONNECTOR))
  {
   type = t;
  }
  else
  {
-  log->error("Illegal type of PositionablePoint - "+t);
+  QMetaEnum metaEnum = QMetaEnum::fromType<PointType>();
+  log->error(QString("Illegal type of PositionablePoint - ")+metaEnum.valueToKey(t));
   type = ANCHOR;
  }
  //ident = id;
@@ -126,11 +128,11 @@
 /**
  * Accessor methods
 */
- /*public*/ int PositionablePoint::getType()const {
+ /*public*/ PositionablePoint::PointType PositionablePoint::getType()const {
     return type;
 }
 
-/*public*/ void PositionablePoint::setType(int newType) {
+/*public*/ void PositionablePoint::setType(PointType newType) {
     if (type != newType)
     {
         switch (newType)
@@ -157,59 +159,69 @@
     ident = layoutEditor->getFinder()->uniqueName("A", 1);
     type = ANCHOR;
     if (connect1 != nullptr) {
-        if (connect1->getConnect1() == this) {
-            connect1->setArrowEndStart(false);
-            connect1->setBumperEndStart(false);
-        }
-        if (connect1->getConnect2() == this) {
-            connect1->setArrowEndStop(false);
-            connect1->setBumperEndStop(false);
-        }
-    }
-    if (connect2 != nullptr) {
-        if (connect2->getConnect1() == this) {
-            connect2->setArrowEndStart(false);
-            connect2->setBumperEndStart(false);
-        }
-        if (connect2->getConnect2() == this) {
-            connect2->setArrowEndStop(false);
-            connect2->setBumperEndStop(false);
-        }
-    }
+
+     if (connect1->getConnect1() == this) {
+         log->info("Elided handling of connect1 in setTypeAnchor");
+         //connect1.setArrowEndStart(false);   // temporary - is this being done in the view?
+         //connect1.setBumperEndStart(false);   // temporary - is this being done in the view?
+     }
+     if (connect1->getConnect2() == this) {
+         log->info("Elided handling of connect1 in setTypeAnchor");
+         //connect1.setArrowEndStop(false);   // temporary - is this being done in the view?
+         //connect1.setBumperEndStop(false);   // temporary - is this being done in the view?
+     }
+ }
+ if (connect2 != nullptr) {
+     if (connect2->getConnect1() == this) {
+         log->info("Elided handling of connect2 in setTypeAnchor");
+         //connect2.setArrowEndStart(false);   // temporary - is this being done in the view?
+         //connect2.setBumperEndStart(false);   // temporary - is this being done in the view?
+     }
+     if (connect2->getConnect2() == this) {
+         log->info("Elided handling of connect2 in setTypeAnchor");
+         //connect2.setArrowEndStop(false);   // temporary - is this being done in the view?
+         //connect2.setBumperEndStop(false);   // temporary - is this being done in the view?
+     }
+ }
+
 }
 
 /*private*/ void PositionablePoint::setTypeEndBumper() {
     ident = layoutEditor->getFinder()->uniqueName("EB", 1);
     type = END_BUMPER;
-    if (connect1 != nullptr) {
-        if (connect1->getConnect1() == this) {
-            connect1->setArrowEndStart(false);
-            connect1->setBumperEndStart(true);
-        }
-        if (connect1->getConnect2() == this) {
-            connect1->setArrowEndStop(false);
-            connect1->setBumperEndStop(true);
-        }
-    }
+//    if (connect1 != nullptr) {
+//        if (connect1->getConnect1() == this) {
+//            connect1->setArrowEndStart(false);
+//            connect1->setBumperEndStart(true);
+//        }
+//        if (connect1->getConnect2() == this) {
+//            connect1->setArrowEndStop(false);
+//            connect1->setBumperEndStop(true);
+//        }
+//    }
 }
 
 /*private*/ void PositionablePoint::setTypeEdgeConnector() {
     ident = layoutEditor->getFinder()->uniqueName("EC", 1);
     type = EDGE_CONNECTOR;
-    if (connect1 != nullptr) {
-        if (connect1->getConnect1() == this) {
-            connect1->setBumperEndStart(false);
-        }
-        if (connect1->getConnect2() == this) {
-            connect1->setBumperEndStop(false);
-        }
-    }
+//    if (connect1 != null) {
+//        if (connect1.getConnect1() == PositionablePoint.this) {
+//            log.info("Elided handling of connect1 in setTypeEdgeConnector");
+//            //connect1.setBumperEndStart(false);   // temporary - is this being done in the view?
+//        }
+//        if (connect1.getConnect2() == PositionablePoint.this) {
+//            log.info("Elided handling of connect2 in setTypeEdgeConnector");
+//            //connect1.setBumperEndStop(false);   // temporary - is this being done in the view?
+//        }
+//    }
 }
 
 /*public*/ TrackSegment* PositionablePoint::getConnect1() const
 {
  return connect1;
 }
+
+ /*public*/ void PositionablePoint::setConnect1(TrackSegment* trk) { connect1 = trk; }
 
 /*public*/ TrackSegment* PositionablePoint::getConnect2() const
 {
@@ -219,52 +231,27 @@
  return connect2;
 }
 
-/**
- * {@inheritDoc}
- */
-//@Override
-/*public*/ void PositionablePoint::scaleCoords(double xFactor, double yFactor)  {
-    QPointF factor = QPointF(xFactor, yFactor);
-    center = MathUtil::granulize(MathUtil::multiply(center, factor), 1.0);
-}
+/*public*/ void PositionablePoint::setConnect2(TrackSegment* trk) { connect2 = trk; }
 
 /**
- * {@inheritDoc}
+ * Provide the destination TrackSegment of the 2nd connection
+ * without doing the look-through present in {@link #getConnect2()}
+ * @return destination track segment
  */
-//@Override
-/*public*/ void PositionablePoint::translateCoords(double xFactor, double yFactor) {
-    QPointF factor = QPointF(xFactor, yFactor);
-    center = MathUtil::add(center, factor);
+/*public*/ TrackSegment* PositionablePoint::getConnect2Actual() {
+    return connect2;
 }
 
-/**
- * {@inheritDoc}
- */
-//@Override
-/*public*/ void PositionablePoint::rotateCoords(double angleDEG) {
-    //can't really rotate a point... so...
-    //nothing to see here... move along...
-}
+/*public*/ void PositionablePoint::setConnect2Actual(TrackSegment* trk) { connect2 = trk; }
 
-/**
- * @return the bounds of this positional point
- */
-//@Override
-/*public*/ QRectF PositionablePoint::getBounds() {
-    QPointF c = getCoordsCenter();
-    //Note: empty bounds don't draw...
-    // so now I'm making them 0.5 bigger in all directions (1 pixel total)
-    return QRectF(c.x() - 0.5, c.y() - 0.5, 1.0, 1.0);
-}
-
-/*public*/ QString PositionablePoint::getLinkEditorName() {
+/*public*/ QString PositionablePoint::getLinkedEditorName() {
     if (getLinkedEditor() != nullptr) {
         return getLinkedEditor()->getLayoutName();
     }
     return "";
 }
 
-/*public*/ PositionablePoint* PositionablePoint::getLinkedPoint() const {
+/*public*/ PositionablePoint* PositionablePoint::getLinkedPoint() {
     return linkedPoint;
 }
 
@@ -279,7 +266,7 @@
     if (p == linkedPoint) {
         return;
     }
-    if (linkedPoint != nullptr && linkedPoint != p) {
+    if (linkedPoint != nullptr) {
         PositionablePoint* oldLinkedPoint = linkedPoint;
         linkedPoint = nullptr;
         if (oldLinkedPoint->getLinkedPoint() != nullptr) {
@@ -287,26 +274,83 @@
         }
         if (oldLinkedPoint->getConnect1() != nullptr) {
             TrackSegment* ts = oldLinkedPoint->getConnect1();
-            oldLinkedPoint->getLayoutEditor()->auxTools->setBlockConnectivityChanged();
+            oldLinkedPoint->getLayoutEditor()->getLEAuxTools()->setBlockConnectivityChanged();
             ts->updateBlockInfo();
-            oldLinkedPoint->getLayoutEditor()->repaint();
+
+            log->info("temporary - repaint was removed here, needs to be rescoped");
+            // oldLinkedPoint.getLayoutEditor().repaint();
+
         }
         if (getConnect1() != nullptr) {
-            layoutEditor->auxTools->setBlockConnectivityChanged();
+            models->getLEAuxTools()->setBlockConnectivityChanged();
             getConnect1()->updateBlockInfo();
-            layoutEditor->repaint();
+
+            log->info("temporary - repaint was removed here, needs to be rescoped");
+            // models.repaint();
         }
     }
     linkedPoint = p;
     if (p != nullptr) {
         p->setLinkedPoint(this);
         if (getConnect1() != nullptr) {
-            layoutEditor->auxTools->setBlockConnectivityChanged();
+            models->getLEAuxTools()->setBlockConnectivityChanged();
             getConnect1()->updateBlockInfo();
-            layoutEditor->repaint();
+
+            log->info("temporary - repaint was removed here, needs to be rescoped");
+            // models.repaint();
         }
     }
 }
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+///*public*/ void PositionablePoint::scaleCoords(double xFactor, double yFactor)  {
+//    QPointF factor = QPointF(xFactor, yFactor);
+//    center = MathUtil::granulize(MathUtil::multiply(center, factor), 1.0);
+//}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+///*public*/ void PositionablePoint::translateCoords(double xFactor, double yFactor) {
+//    QPointF factor = QPointF(xFactor, yFactor);
+//    center = MathUtil::add(center, factor);
+//}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void PositionablePoint::rotateCoords(double angleDEG) {
+    //can't really rotate a point... so...
+    //nothing to see here... move along...
+}
+
+/**
+ * @return the bounds of this positional point
+ */
+//@Override
+///*public*/ QRectF PositionablePoint::getBounds() {
+//    QPointF c = getCoordsCenter();
+//    //Note: empty bounds don't draw...
+//    // so now I'm making them 0.5 bigger in all directions (1 pixel total)
+//    return QRectF(c.x() - 0.5, c.y() - 0.5, 1.0, 1.0);
+//}
+
+/*public*/ QString PositionablePoint::getLinkEditorName() {
+    if (getLinkedEditor() != nullptr) {
+        return getLinkedEditor()->getLayoutName();
+    }
+    return "";
+}
+
+/*public*/ PositionablePoint* PositionablePoint::getLinkedPoint() const {
+    return linkedPoint;
+}
+
 
 /*public*/ LayoutEditor* PositionablePoint::getLinkedEditor() const{
     if (getLinkedPoint() != nullptr) {
@@ -378,7 +422,7 @@
         return;
     }
 
-    SignalHead* head = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead);
+    SignalHead* head = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead);
     if (head != nullptr) {
         signalEastHeadNamed = static_cast<NamedBeanHandleManager*>(InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalHead, head);
     } else {
@@ -446,7 +490,7 @@
         return;
     }
 
-    SignalHead* head = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead);
+    SignalHead* head = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHead);
     if (head != nullptr) {
         signalWestHeadNamed = static_cast<NamedBeanHandleManager*>(InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(signalHead, head);
     } else {
@@ -642,7 +686,6 @@ return nullptr;
  if (type == EDGE_CONNECTOR)
  {
    connect1 = p->getFinder()->findTrackSegmentByName(trackSegment1Name);
-   //connect2 = p->getFinder()->findTrackSegmentByName(trackSegment2Name); // added ACK
    if (getConnect2() != nullptr && getLinkedEditor() != nullptr)
    {
     //now that we have a connection we can fire off a change
@@ -655,7 +698,9 @@ return nullptr;
   connect1 = p->getFinder()->findTrackSegmentByName(trackSegment1Name);
   connect2 = p->getFinder()->findTrackSegmentByName(trackSegment2Name);
  }
+ log->trace(tr("PositionablePoint:setObjects %1: %2 and %3 %4").arg(trackSegment1Name, connect1?connect1->toString():"null", trackSegment1Name, connect2?connect2->toString():"null"));
 }
+
 /**
  * setup a connection to a track
  *
@@ -672,7 +717,7 @@ return nullptr;
  * @param track the track we want to disconnect from
  * @return true if successful
  */
-/*public*/ bool PositionablePoint::removeTrackConnection(/*@Nonnull*/ TrackSegment* track) const {
+/*public*/ bool PositionablePoint::removeTrackConnection(/*@Nonnull*/ TrackSegment* track) {
     return replaceTrackConnection(track, nullptr);
 }
 
@@ -684,7 +729,7 @@ return nullptr;
  * @return true if successful
  */
 /*public*/ bool PositionablePoint::replaceTrackConnection(/*@nullptrable*/ TrackSegment* oldTrack,
- /* @nullptrable */TrackSegment* newTrack) const
+ /* @nullptrable */TrackSegment* newTrack)
 {
     bool result = false; // assume failure (pessimist!)
     // trying to replace old track with nullptr?
@@ -739,19 +784,19 @@ return nullptr;
         if (nb == nullptr) {
             return;
         }
-        if (qobject_cast<SignalMast*>(nb)) {
-            if (nb->equals((QObject*)getWestBoundSignalMast())) {
+        if (static_cast<SignalMast*>(nb)) {
+            if (nb->equals((NamedBean*)getWestBoundSignalMast())) {
                 setWestBoundSignalMast(nullptr);
-            } else if (nb->equals((QObject*)getEastBoundSignalMast())) {
+            } else if (nb->equals((NamedBean*)getEastBoundSignalMast())) {
                 setEastBoundSignalMast(nullptr);
             }
-        } else if (qobject_cast<Sensor*>(nb)) {
+        } else if (static_cast<Sensor*>(nb)) {
             if (nb->equals(getWestBoundSensor())) {
                 setWestBoundSignalMast(nullptr);
             } else if (nb->equals(getEastBoundSensor())) {
                 setEastBoundSignalMast(nullptr);
             }
-        } else if (qobject_cast<SignalHead*>(nb)) {
+        } else if (static_cast<SignalHead*>(nb)) {
             if (nb->equals(getWestBoundSignalHead())) {
                 setWestBoundSignal(nullptr);
             }
@@ -773,6 +818,78 @@ void PositionablePoint::removeSML(SignalMast* signalMast) {
         SignallingGuiTools::removeSignalMastLogic(nullptr, signalMast);
     }
 }
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ bool PositionablePoint::canRemove() {
+    QList<QString> itemList = QList<QString>();
+    // A has two track segments, EB has one, EC has one plus optional link
+
+    TrackSegment* ts1 = getConnect1();
+    TrackSegment* ts2 = getConnect2();
+
+    if (ts1 != nullptr) {
+        //itemList.addAll(getSegmentReferences(ts1));
+     for(QString s : getSegmentReferences(ts1))
+     {itemList.append(s);}
+    }
+    if (ts2 != nullptr) {
+        for (QString item : getSegmentReferences(ts2)) {
+            // Do not add duplicates
+            if (!itemList.contains(item)) {
+                itemList.append(item);
+            }
+        }
+    }
+
+    if (!itemList.isEmpty()) {
+        QString typeName = "";
+        switch (type) {
+            case ANCHOR:
+                typeName = "Anchor";  // NOI18N
+                break;
+            case END_BUMPER:
+                typeName = "EndBumper";  // NOI18N
+                break;
+            case EDGE_CONNECTOR:
+                typeName = "EdgeConnector";  // NOI18N
+                break;
+            default:
+                typeName = "Unknown type (" + QString::number(type) + ")";  // NOI18N
+                break;
+        }
+        models->displayRemoveWarning(this, itemList, typeName);
+    }
+    return itemList.isEmpty();
+}
+
+/**
+ * Build a list of sensors, signal heads, and signal masts attached to a
+ * connection point.
+ *
+ * @param ts The track segment to be checked.
+ * @return a list of bean reference names.
+ */
+/*public*/ QList<QString> PositionablePoint::getSegmentReferences(TrackSegment* ts) {
+    QList<QString> items = QList<QString>();
+
+    HitPointType::TYPES type1 = ts->getType1();
+    LayoutTrack* conn1 = ts->getConnect1();
+    //items.addAll(ts.getPointReferences(type1, conn1));
+    for(QString s : ts->getPointReferences(type1, conn1))
+     items.append(s);
+
+    HitPointType::TYPES type2 = ts->getType2();
+    LayoutTrack* conn2 = ts->getConnect2();
+    //items.addAll(ts.getPointReferences(type2, conn2));
+    for(QString s : ts->getPointReferences(type2, conn2))
+     items.append(s);
+
+    return items;
+}
+
 /**
  * return true if this connection type is disconnected
  *
@@ -780,12 +897,14 @@ void PositionablePoint::removeSML(SignalMast* signalMast) {
  * @return true if the connection for this connection type is free
  */
 //@Override
-/*public*/ bool PositionablePoint::isDisconnected(int connectionType) {
+/*public*/ bool PositionablePoint::isDisconnected(HitPointType::TYPES connectionType) {
     bool result = false;
-    if (connectionType == POS_POINT) {
+    if (connectionType == HitPointType::POS_POINT) {
         result = ((getConnect1() == nullptr) || (getConnect2() == nullptr));
     } else {
-        log->error("Invalid connection type " + connectionType); //I18IN
+     QMetaEnum metaEnum = QMetaEnum::fromType<HitPointType::TYPES>();
+
+        log->error(QString("Invalid connection type ") + HitPointType::toString(connectionType)); //I18IN
     }
     return result;
 }
@@ -824,67 +943,67 @@ void PositionablePoint::removeSML(SignalMast* signalMast) {
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void PositionablePoint::highlightUnconnected(EditScene *g2, int specificType) {
-    if ((specificType == NONE) || (specificType == POS_POINT)) {
-        if ((getConnect1() == nullptr)
-                || ((getType() == ANCHOR) && (getConnect2() == nullptr))) {
- // TODO:           g2.fill(layoutEditor->trackControlCircleAt(getCoordsCenter()));
-         QGraphicsEllipseItem* circleItem = trackControlCircleAt(getCoordsCenter());
-         g2->addItem(circleItem);
-        }
-    }
-}
+///*protected*/ void PositionablePoint::highlightUnconnected(EditScene *g2, int specificType) {
+//    if ((specificType == HitPointType::NONE) || (specificType == HitPointType::POS_POINT)) {
+//        if ((getConnect1() == nullptr)
+//                || ((getType() == ANCHOR) && (getConnect2() == nullptr))) {
+// // TODO:           g2.fill(layoutEditor->trackControlCircleAt(getCoordsCenter()));
+//         QGraphicsEllipseItem* circleItem = trackControlCircleAt(getCoordsCenter());
+//         g2->addItem(circleItem);
+//        }
+//    }
+//}
 /*
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void PositionablePoint::drawEditControls(EditScene* g2)
-{
- QPen stroke = QPen(Qt::black, 1);
- if(rects!=nullptr && rects->scene()!=nullptr)
- {
-  g2->removeItem(rects);
-  rects = nullptr;
- }
- TrackSegment* ts1 = getConnect1();
- if (ts1 == nullptr)
- {
-     //g2.setColor(Color.red);
-  stroke.setColor(QColor(Qt::red));
- }
- else {
-     TrackSegment* ts2 = nullptr;
-     if (getType() == ANCHOR) {
-         ts2 = getConnect2();
-     } else if (getType() == EDGE_CONNECTOR) {
-         if (getLinkedPoint() != nullptr) {
-             ts2 = getLinkedPoint()->getConnect1();
-         }
-     }
-     if ((getType() != END_BUMPER) && (ts2 == nullptr)) {
-         //g2.setColor(Color.yellow);
-      stroke.setColor(QColor(Qt::yellow));
-     } else {
-         //g2.setColor(Color.green);
-      stroke.setColor(QColor(Qt::green));
-     }
- }
- //g2.draw(layoutEditor->trackEditControlRectAt(getCoordsCenter()));
- QGraphicsRectItem* rectItem = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(getCoordsCenter()));
-   rectItem->setPen(stroke);
- rects = rectItem;
- g2->addItem(rects);
+///*protected*/ void PositionablePoint::drawEditControls(EditScene* g2)
+//{
+// QPen stroke = QPen(Qt::black, 1);
+// if(rects!=nullptr && rects->scene()!=nullptr)
+// {
+//  g2->removeItem(rects);
+//  rects = nullptr;
+// }
+// TrackSegment* ts1 = getConnect1();
+// if (ts1 == nullptr)
+// {
+//     //g2.setColor(Color.red);
+//  stroke.setColor(QColor(Qt::red));
+// }
+// else {
+//     TrackSegment* ts2 = nullptr;
+//     if (getType() == ANCHOR) {
+//         ts2 = getConnect2();
+//     } else if (getType() == EDGE_CONNECTOR) {
+//         if (getLinkedPoint() != nullptr) {
+//             ts2 = getLinkedPoint()->getConnect1();
+//         }
+//     }
+//     if ((getType() != END_BUMPER) && (ts2 == nullptr)) {
+//         //g2.setColor(Color.yellow);
+//      stroke.setColor(QColor(Qt::yellow));
+//     } else {
+//         //g2.setColor(Color.green);
+//      stroke.setColor(QColor(Qt::green));
+//     }
+// }
+// //g2.draw(layoutEditor->trackEditControlRectAt(getCoordsCenter()));
+// QGraphicsRectItem* rectItem = new QGraphicsRectItem(layoutEditor->trackEditControlRectAt(getCoordsCenter()));
+//   rectItem->setPen(stroke);
+// rects = rectItem;
+// g2->addItem(rects);
 
-}   // drawEditControls
+//}   // drawEditControls
 
 /**
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ void PositionablePoint::drawTurnoutControls(EditScene *g2) {
-    // PositionablePoints don't have turnout controls...
-    // nothing to see here... move along...
-}
+///*protected*/ void PositionablePoint::drawTurnoutControls(EditScene *g2) {
+//    // PositionablePoints don't have turnout controls...
+//    // nothing to see here... move along...
+//}
 
 /*public*/ void PositionablePoint::reCheckBlockBoundary()const{
     if(type==END_BUMPER)
@@ -949,202 +1068,202 @@ void removeSML(QString signalMast){
 //    }
 }
 
-/*public*/ void PositionablePoint::mouseReleased(QGraphicsSceneMouseEvent* e)
-{
- // if (debug) log->debug("Release: "+where(e));
- //if (e.isPopupTrigger())
- if((e->buttons()& Qt::RightButton) != 0)
- {
-  showPopUp(e);
- }
-}
+///*public*/ void PositionablePoint::mouseReleased(QGraphicsSceneMouseEvent* e)
+//{
+// // if (debug) log->debug("Release: "+where(e));
+// //if (e.isPopupTrigger())
+// if((e->buttons()& Qt::RightButton) != 0)
+// {
+//  showPopUp(e);
+// }
+//}
 
-/*public*/ void PositionablePoint::mouseClicked(QGraphicsSceneMouseEvent* e)
-{
- if((e->buttons()& Qt::RightButton) != 0)
- {
-  showPopUp(e);
- }
-}
+///*public*/ void PositionablePoint::mouseClicked(QGraphicsSceneMouseEvent* e)
+//{
+// if((e->buttons()& Qt::RightButton) != 0)
+// {
+//  showPopUp(e);
+// }
+//}
 
 
 /**
  * For editing: only provides remove
  */
-/*protected*/ void PositionablePoint::showPopUp(QGraphicsSceneMouseEvent* /*e*/)
-{
- // TODO: incorporate latest Java code!!
+///*protected*/ void PositionablePoint::showPopUp(QGraphicsSceneMouseEvent* /*e*/)
+//{
+// // TODO: incorporate latest Java code!!
 
- if (popup != nullptr )
- {
-  popup->clear();
- }
- else
- {
-  popup = new QMenu();
- }
- bool blockBoundary = false;
- bool endBumper = false;
- switch (getType())
- {
- case ANCHOR:
- {
-  popup->addAction(new QAction(tr("Anchor ")+ getId(),this));
-  LayoutBlock* block1 = nullptr;
-  LayoutBlock* block2 = nullptr;
-  if (connect1!=nullptr) block1 = connect1->getLayoutBlock();
-  if (connect2!=nullptr) block2 = connect2->getLayoutBlock();
-  if ( (block1!=nullptr) && (block1==block2) )
-  {
-   popup->addAction(new QAction(tr("Block")+": "+block1->getId(),this));
-   //jmi = popup->addAction(tr("%1).arg(tr("Block")) + block1->getDisplayName());
-  }
-  else if ( (block1!=nullptr) && (block2!=nullptr) && (block1!=block2) )
-  {
-   popup->addAction(new QAction(tr("BlockDivider"),this));
-   popup->addAction(new QAction(" "+tr("Block1ID")+": "+block1->getId(),this));
-   popup->addAction(new QAction(" "+tr("Block2ID")+": "+block2->getId(),this));
-   blockBoundary = true;
-  }
-  break;
- }
- case END_BUMPER:
- {
-  popup->addAction(new QAction(tr("End Bumper ")+ getId() ,this));
-  LayoutBlock* blockEnd = nullptr;
-  if (connect1!=nullptr) blockEnd = connect1->getLayoutBlock();
-  if (blockEnd!=nullptr)
-  {
-   popup->addAction(new QAction(tr("BlockID")+": "+blockEnd->getId(),this));
-  }
-  endBumper = true;
-  break;
- }
- default : break;
- }
- popup->addSeparator();
-
- // popup.add(new AbstractAction(tr("Remove"))
+// if (popup != nullptr )
 // {
-//  /*public*/ void actionPerformed(ActionEvent e)
+//  popup->clear();
+// }
+// else
+// {
+//  popup = new QMenu();
+// }
+// bool blockBoundary = false;
+// bool endBumper = false;
+// switch (getType())
+// {
+// case ANCHOR:
+// {
+//  popup->addAction(new QAction(tr("Anchor ")+ getId(),this));
+//  LayoutBlock* block1 = nullptr;
+//  LayoutBlock* block2 = nullptr;
+//  if (connect1!=nullptr) block1 = connect1->getLayoutBlock();
+//  if (connect2!=nullptr) block2 = connect2->getLayoutBlock();
+//  if ( (block1!=nullptr) && (block1==block2) )
 //  {
-//   if (LayoutEditor::removePositionablePoint(instance))
-//   {
-//    // user is serious about removing this point from the panel
-//    remove();
-//    dispose();
-//   }
+//   popup->addAction(new QAction(tr("Block")+": "+block1->getId(),this));
+//   //jmi = popup->addAction(tr("%1).arg(tr("Block")) + block1->getDisplayName());
 //  }
-//  });
- QAction* actRemove = new QAction(tr("Remove"),this);
- popup->addAction(actRemove);
- connect(actRemove, SIGNAL(triggered()), this, SLOT(on_actRemove_triggered()));
-#if 1 // TODO:
-  if (blockBoundary)
-  {
-   QAction * act;
-   if (getType() == EDGE_CONNECTOR)
-   {
-    popup->addAction(act = new AbstractAction(tr("Edit Link"),this));
-//    {
-//        @Override
-//        public void actionPerformed(ActionEvent e) {
-//            setLink();
-//        }
-//    });
-    connect(act, SIGNAL(triggered()), this, SLOT(setLink()));
-    }
-    popup->addAction(act =new QAction(tr("Set Signals"), this));
+//  else if ( (block1!=nullptr) && (block2!=nullptr) && (block1!=block2) )
+//  {
+//   popup->addAction(new QAction(tr("BlockDivider"),this));
+//   popup->addAction(new QAction(" "+tr("Block1ID")+": "+block1->getId(),this));
+//   popup->addAction(new QAction(" "+tr("Block2ID")+": "+block2->getId(),this));
+//   blockBoundary = true;
+//  }
+//  break;
+// }
+// case END_BUMPER:
+// {
+//  popup->addAction(new QAction(tr("End Bumper ")+ getId() ,this));
+//  LayoutBlock* blockEnd = nullptr;
+//  if (connect1!=nullptr) blockEnd = connect1->getLayoutBlock();
+//  if (blockEnd!=nullptr)
+//  {
+//   popup->addAction(new QAction(tr("BlockID")+": "+blockEnd->getId(),this));
+//  }
+//  endBumper = true;
+//  break;
+// }
+// default : break;
+// }
+// popup->addSeparator();
+
+// // popup.add(new AbstractAction(tr("Remove"))
+//// {
+////  /*public*/ void actionPerformed(ActionEvent e)
+////  {
+////   if (LayoutEditor::removePositionablePoint(instance))
+////   {
+////    // user is serious about removing this point from the panel
+////    remove();
+////    dispose();
+////   }
+////  }
+////  });
+// QAction* actRemove = new QAction(tr("Remove"),this);
+// popup->addAction(actRemove);
+// connect(actRemove, SIGNAL(triggered()), this, SLOT(on_actRemove_triggered()));
+//#if 1 // TODO:
+//  if (blockBoundary)
+//  {
+//   QAction * act;
+//   if (getType() == EDGE_CONNECTOR)
 //   {
-//                /*public*/ void actionPerformed(ActionEvent e) {
-//                if (tools == nullptr) {
-//                    tools = new LayoutEditorTools(layoutEditor);
-//                }
-//                // bring up signals at level crossing tool dialog
-//                tools.setSignalsAtBlockBoundaryFromMenu(instance,
-//                    LayoutEditor::signalIconEditor,LayoutEditor::signalFrame);
-//                }
-//            });
-   connect(act, SIGNAL(triggered()), this, SLOT(On_setSignals()));
-   popup->addAction(act = new QAction(tr("Set Sensors"), this));
-//   {
-//       /*public*/ void actionPerformed(ActionEvent event) {
-//           if (tools == nullptr) {
-//               tools = new LayoutEditorTools(layoutEditor);
-//           }
-//           // bring up signals at block boundary tool dialog
-//           tools.setSensorsAtBlockBoundaryFromMenu(instance,
-//               LayoutEditor::sensorIconEditor,LayoutEditor::sensorFrame);
-//       }
-//   });
-     connect(act, SIGNAL(triggered()), this, SLOT(On_setSensors()));
-   popup->addAction(act = new QAction(tr("Set Signal Masts"), this));
-//   {
-//       /*public*/ void actionPerformed(ActionEvent event) {
-//           if (tools == nullptr) {
-//               tools = new LayoutEditorTools(layoutEditor);
-//           }
-//           // bring up signals at block boundary tool dialog
-//           tools.setSignalMastsAtBlockBoundaryFromMenu(instance);
-//       }
-//   });
-  }
-  if (endBumper)
-  {
-   QAction* act;
-        popup->addAction(act = new QAction(tr("Set Sensors"), this));
-//        {
-//            /*public*/ void actionPerformed(ActionEvent event) {
-//                if (tools == nullptr) {
-//                    tools = new LayoutEditorTools(layoutEditor);
-//                }
-//                // bring up signals at block boundary tool dialog
-//                tools.setSensorsAtBlockBoundaryFromMenu(instance,
-//                    LayoutEditor::sensorIconEditor,LayoutEditor::sensorFrame);
-//            }
-//        });
-          connect(act, SIGNAL(triggered()), this, SLOT(On_setSensors()));
-        popup->addAction(act = new QAction(tr("Set Signal Masts"),this));
-//        {
-//            /*public*/ void actionPerformed(ActionEvent event) {
-//                if (tools == nullptr) {
-//                    tools = new LayoutEditorTools(layoutEditor);
-//                }
-//                // bring up signals at block boundary tool dialog
-//                tools.setSignalMastsAtBlockBoundaryFromMenu(instance);
-//            }
-//        });
-        connect(act, SIGNAL(triggered()), this, SLOT(On_setSignalMasts()));
-  }
-#endif
-  layoutEditor->setShowAlignmentMenu(popup);
-  //popup.show(e.getComponent(), e.getX(), e.getY());
-  //popup->exec(layoutEditor->panel()->mapFromScene(QPoint(e->scenePos().x(), e->scenePos().y())));
-  popup->exec(QCursor::pos());
-}
+//    popup->addAction(act = new AbstractAction(tr("Edit Link"),this));
+////    {
+////        @Override
+////        public void actionPerformed(ActionEvent e) {
+////            setLink();
+////        }
+////    });
+//    connect(act, SIGNAL(triggered()), this, SLOT(setLink()));
+//    }
+//    popup->addAction(act =new QAction(tr("Set Signals"), this));
+////   {
+////                /*public*/ void actionPerformed(ActionEvent e) {
+////                if (tools == nullptr) {
+////                    tools = new LayoutEditorTools(layoutEditor);
+////                }
+////                // bring up signals at level crossing tool dialog
+////                tools.setSignalsAtBlockBoundaryFromMenu(instance,
+////                    LayoutEditor::signalIconEditor,LayoutEditor::signalFrame);
+////                }
+////            });
+//   connect(act, SIGNAL(triggered()), this, SLOT(On_setSignals()));
+//   popup->addAction(act = new QAction(tr("Set Sensors"), this));
+////   {
+////       /*public*/ void actionPerformed(ActionEvent event) {
+////           if (tools == nullptr) {
+////               tools = new LayoutEditorTools(layoutEditor);
+////           }
+////           // bring up signals at block boundary tool dialog
+////           tools.setSensorsAtBlockBoundaryFromMenu(instance,
+////               LayoutEditor::sensorIconEditor,LayoutEditor::sensorFrame);
+////       }
+////   });
+//     connect(act, SIGNAL(triggered()), this, SLOT(On_setSensors()));
+//   popup->addAction(act = new QAction(tr("Set Signal Masts"), this));
+////   {
+////       /*public*/ void actionPerformed(ActionEvent event) {
+////           if (tools == nullptr) {
+////               tools = new LayoutEditorTools(layoutEditor);
+////           }
+////           // bring up signals at block boundary tool dialog
+////           tools.setSignalMastsAtBlockBoundaryFromMenu(instance);
+////       }
+////   });
+//  }
+//  if (endBumper)
+//  {
+//   QAction* act;
+//        popup->addAction(act = new QAction(tr("Set Sensors"), this));
+////        {
+////            /*public*/ void actionPerformed(ActionEvent event) {
+////                if (tools == nullptr) {
+////                    tools = new LayoutEditorTools(layoutEditor);
+////                }
+////                // bring up signals at block boundary tool dialog
+////                tools.setSensorsAtBlockBoundaryFromMenu(instance,
+////                    LayoutEditor::sensorIconEditor,LayoutEditor::sensorFrame);
+////            }
+////        });
+//          connect(act, SIGNAL(triggered()), this, SLOT(On_setSensors()));
+//        popup->addAction(act = new QAction(tr("Set Signal Masts"),this));
+////        {
+////            /*public*/ void actionPerformed(ActionEvent event) {
+////                if (tools == nullptr) {
+////                    tools = new LayoutEditorTools(layoutEditor);
+////                }
+////                // bring up signals at block boundary tool dialog
+////                tools.setSignalMastsAtBlockBoundaryFromMenu(instance);
+////            }
+////        });
+//        connect(act, SIGNAL(triggered()), this, SLOT(On_setSignalMasts()));
+//  }
+//#endif
+//  layoutEditor->setShowAlignmentMenu(popup);
+//  //popup.show(e.getComponent(), e.getX(), e.getY());
+//  //popup->exec(layoutEditor->panel()->mapFromScene(QPoint(e->scenePos().x(), e->scenePos().y())));
+//  popup->exec(QCursor::pos());
+//}
 
 QString PositionablePoint::where(QGraphicsSceneMouseEvent* e) {
     return QString("%1").arg(+e->scenePos().x())+","+QString("%1").arg(e->scenePos().y());
 }
-void PositionablePoint::On_setSignals()
-{
- // bring up signals at level crossing tool dialog
- layoutEditor->getLETools()->setSignalsAtBlockBoundaryFromMenu(this,
-                                 layoutEditor->getLETools()->signalIconEditor, layoutEditor->getLETools()->signalFrame);}
+//void PositionablePoint::On_setSignals()
+//{
+// // bring up signals at level crossing tool dialog
+// layoutEditor->getLETools()->setSignalsAtBlockBoundaryFromMenu(this,
+//                                 layoutEditor->getLETools()->signalIconEditor, layoutEditor->getLETools()->signalFrame);}
 
-void PositionablePoint::On_setSensors()
-{
- // bring up signals at block boundary tool dialog
- layoutEditor->getLETools()->setSensorsAtBlockBoundaryFromMenu(instance,
-     layoutEditor->getLETools()->sensorIconEditor,layoutEditor->getLETools()->sensorFrame);
+//void PositionablePoint::On_setSensors()
+//{
+// // bring up signals at block boundary tool dialog
+// layoutEditor->getLETools()->setSensorsAtBlockBoundaryFromMenu(instance,
+//     layoutEditor->getLETools()->sensorIconEditor,layoutEditor->getLETools()->sensorFrame);
 
-}
-void PositionablePoint::On_setSignalMasts()
-{
- // bring up signals at block boundary tool dialog
- layoutEditor->getLETools()->setSignalMastsAtBlockBoundaryFromMenu(instance);
+//}
+//void PositionablePoint::On_setSignalMasts()
+//{
+// // bring up signals at block boundary tool dialog
+// layoutEditor->getLETools()->setSignalMastsAtBlockBoundaryFromMenu(instance);
 
-}
+//}
 
 /**
  * Clean up when this object is no longer needed.  Should not
@@ -1156,7 +1275,7 @@ void PositionablePoint::dispose()
  popup = nullptr;
 }
 
-void PositionablePoint::removeLinkedPoint() const{
+void PositionablePoint::removeLinkedPoint() {
  if (type == EDGE_CONNECTOR && getLinkedPoint() != nullptr) {
 
      if (getConnect2() != nullptr && getLinkedEditor() != nullptr) {
@@ -1336,34 +1455,34 @@ void PositionablePoint::updatePointBox() {
  * {@inheritDoc}
  */
 ///@Override
-/*protected*/ int PositionablePoint::findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected) {
-    int result = NONE;  // assume point not on connection
-    //note: optimization here: instead of creating rectangles for all the
-    // points to check below, we create a rectangle for the test point
-    // and test if the points below are in that rectangle instead.
-    QRectF r = layoutEditor->trackControlCircleRectAt(hitPoint);
-    QPointF p, minPoint = MathUtil::zeroPoint2D;
+///*protected*/ int PositionablePoint::findHitPointType(QPointF hitPoint, bool useRectangles, bool requireUnconnected) {
+//    int result = NONE;  // assume point not on connection
+//    //note: optimization here: instead of creating rectangles for all the
+//    // points to check below, we create a rectangle for the test point
+//    // and test if the points below are in that rectangle instead.
+//    QRectF r = layoutEditor->trackControlCircleRectAt(hitPoint);
+//    QPointF p, minPoint = MathUtil::zeroPoint2D;
 
-    double circleRadius = LayoutEditor::SIZE * layoutEditor->getTurnoutCircleSize();
-    double distance, minDistance = std::numeric_limits<double>::infinity();//POSITIVE_INFINITY;
+//    double circleRadius = LayoutEditor::SIZE * layoutEditor->getTurnoutCircleSize();
+//    double distance, minDistance = std::numeric_limits<double>::infinity();//POSITIVE_INFINITY;
 
-    if (!requireUnconnected || (getConnect1() == nullptr)
-            || ((getType() == ANCHOR) && (getConnect2() == nullptr))) {
-        // test point control rectangle
-        p = getCoordsCenter();
-        distance = MathUtil::distance(p, hitPoint);
-        if (distance < minDistance) {
-            minDistance = distance;
-            minPoint = p;
-            result = POS_POINT;
-        }
-    }
-    if ((useRectangles && !r.contains(minPoint))
-            || (!useRectangles && (minDistance > circleRadius))) {
-        result = NONE;
-    }
-    return result;
-}   // findHitPointType
+//    if (!requireUnconnected || (getConnect1() == nullptr)
+//            || ((getType() == ANCHOR) && (getConnect2() == nullptr))) {
+//        // test point control rectangle
+//        p = getCoordsCenter();
+//        distance = MathUtil::distance(p, hitPoint);
+//        if (distance < minDistance) {
+//            minDistance = distance;
+//            minPoint = p;
+//            result = HitPointType::POS_POINT;
+//        }
+//    }
+//    if ((useRectangles && !r.contains(minPoint))
+//            || (!useRectangles && (minDistance > circleRadius))) {
+//        result = NONE;
+//    }
+//    return result;
+//}   // findHitPointType
 
 /**
  * return the coordinates for a specified connection type
@@ -1372,28 +1491,28 @@ void PositionablePoint::updatePointBox() {
  * @return the coordinates for the specified connection type
  */
 //@Override
-/*public*/ QPointF PositionablePoint::getCoordsForConnectionType(int connectionType) {
-    QPointF result = getCoordsCenter();
-    if (connectionType != POS_POINT) {
-        log->error("Invalid connection type " + QString::number(connectionType)); //I18IN
-    }
-    return result;
-}
+///*public*/ QPointF PositionablePoint::getCoordsForConnectionType(int connectionType) {
+//    QPointF result = getCoordsCenter();
+//    if (connectionType != POS_POINT) {
+//        log->error("Invalid connection type " + QString::number(connectionType)); //I18IN
+//    }
+//    return result;
+//}
 
 /**
  * {@inheritDoc}
  */
 //@Override
-/*public*/ LayoutTrack* PositionablePoint::getConnection(int connectionType) throw (JmriException) {
+/*public*/ LayoutTrack* PositionablePoint::getConnection(HitPointType::TYPES connectionType) /*throw (JmriException)*/ {
     LayoutTrack* result = nullptr;
-    if (connectionType == POS_POINT) {
+    if (connectionType == HitPointType::POS_POINT) {
         result = getConnect1();
         if (nullptr == result) {
             result = getConnect2();
         }
     } else {
         log->error("Invalid connection type " + QString::number(connectionType)); //I18IN
-        throw JmriException("Invalid Point");
+        throw new JmriException("Invalid Point");
     }
     return result;
 }
@@ -1402,14 +1521,15 @@ void PositionablePoint::updatePointBox() {
  * {@inheritDoc}
  */
 //@Override
-/*public*/ void PositionablePoint::setConnection(int connectionType, LayoutTrack *o, int type) throw (JmriException) {
-    if ((type != TRACK) && (type != NONE)) {
-        log->error("unexpected type of connection to positionable point - " + QString::number(type));
-        throw JmriException("unexpected type of connection to positionable point - " + QString::number(type));
+/*public*/ void PositionablePoint::setConnection(HitPointType::TYPES connectionType, LayoutTrack *o, HitPointType::TYPES type) /*throw (JmriException)*/ {
+
+    if ((type != HitPointType::TRACK) && (type != HitPointType::NONE)) {
+        log->error(QString("unexpected type of connection to positionable point - ") + HitPointType::toString(type));
+        throw new JmriException(QString("unexpected type of connection to positionable point - ") + HitPointType::toString(type));
     }
-    if (connectionType != POS_POINT) {
-        log->error("Invalid Connection Type " + QString::number(connectionType)); //I18IN
-        throw JmriException("Invalid Connection Type " + QString::number(connectionType));
+    if (connectionType != HitPointType::POS_POINT) {
+        log->error(QString("Invalid Connection Type ") + HitPointType::toString(connectionType)); //I18IN
+        throw new JmriException(QString("Invalid Connection Type ") + HitPointType::toString(connectionType));
     }
 }
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(PositionablePoint.class.getName());
@@ -1508,13 +1628,13 @@ void PositionablePoint::draw(EditScene* g2)
 
  TrackSegment* ts1 = getConnect1();
  if (ts1 != nullptr) {
-     QPointF p1;
-     if (ts1->getConnect1() == this) {
-         p1 = LayoutEditor::getCoords(ts1->getConnect2(), ts1->getType2());
-     } else {
-         p1 = LayoutEditor::getCoords(ts1->getConnect1(), ts1->getType1());
+     if (ts1 != nullptr) {
+         if (ts1->getConnect1() == this) {
+             result = models->computeDirectionFromCenter(this, ts1->getConnect2(), ts1->getType2());
+         } else {
+             result = models->computeDirectionFromCenter(this, ts1->getConnect1(), ts1->getType1());
+         }
      }
-     result = Path::computeDirection(getCoordsCenter(), p1);
  }
  return result;
 }
@@ -1522,12 +1642,11 @@ void PositionablePoint::draw(EditScene* g2)
  * {@inheritDoc}
  */
 //@Override
-/*protected*/ QList<LayoutConnectivity *> *PositionablePoint::getLayoutConnectivity() {
-    QList<LayoutConnectivity*>* results = new QList<LayoutConnectivity*>();
+/*protected*/ QList<LayoutConnectivity *> PositionablePoint::getLayoutConnectivity() {
+    QList<LayoutConnectivity*> results =  QList<LayoutConnectivity*>();
     LayoutConnectivity* lc = nullptr;
     LayoutBlock* blk1 = nullptr, *blk2 = nullptr;
     TrackSegment* ts1 = getConnect1();
-    QPointF p1, p2;
 
     if (getType() == ANCHOR) {
         TrackSegment* ts2 = getConnect2();
@@ -1539,20 +1658,21 @@ void PositionablePoint::draw(EditScene* g2)
                 log->debug(tr("Block boundary ('%1'<->'%2') found at %3").arg(blk1->getDisplayName()).arg(blk2->getDisplayName()).arg(this->getId()));
                 lc = new LayoutConnectivity(blk1, blk2);
                 // determine direction from block 1 to block 2
-                if (ts1->getConnect1() == this) {
-                    p1 = LayoutEditor::getCoords(ts1->getConnect2(), ts1->getType2());
-                } else {
-                    p1 = LayoutEditor::getCoords(ts1->getConnect1(), ts1->getType1());
-                }
-                if (ts2->getConnect1() == this) {
-                    p2 = LayoutEditor::getCoords(ts2->getConnect2(), ts2->getType2());
-                } else {
-                    p2 = LayoutEditor::getCoords(ts2->getConnect1(), ts2->getType1());
-                }
-                lc->setDirection(Path::computeDirection(p1, p2));
+                lc->setDirection(
+                    models->computeDirection(
+                        ts1->getConnect1() == this ? ts1->getConnect2()   : ts1->getConnect1(),
+                        ts1->getConnect1() == this ? ts1->getType2()      : ts1->getType1(),
+
+                        ts2->getConnect1() == this ? ts2->getConnect2() : ts2->getConnect1(),
+                        ts2->getConnect1() == this ? ts2->getType2() : ts2->getType1()
+                    )
+                );
+
                 // save Connections
-                lc->setConnections(ts1, ts2, TRACK, this);
-                results->append(lc);
+                HitPointType::TYPES type = HitPointType::TRACK;
+                lc->setConnections(ts1, ts2,
+                                   type, this);
+                results.append(lc);
             }
         }
     } else if (getType() == EDGE_CONNECTOR) {
@@ -1569,18 +1689,21 @@ void PositionablePoint::draw(EditScene* g2)
                 lc = new LayoutConnectivity(blk1, blk2);
 
                 // determine direction from block 1 to block 2
+                int result;
+
                 if (ts1->getConnect1() == this) {
-                    p1 = LayoutEditor::getCoords(ts1->getConnect2(), ts1->getType2());
+                    result = models->computeDirectionToCenter(ts1->getConnect2(), ts1->getType2(), this);
                 } else {
-                    p1 = LayoutEditor::getCoords(ts1->getConnect1(), ts1->getType1());
+                    result = models->computeDirectionToCenter(ts1->getConnect1(), ts1->getType1(), this);
                 }
 
                 //Need to find a way to compute the direction for this for a split over the panel
                 //In this instance work out the direction of the first track relative to the positionable poin.
-                lc->setDirection(Path::computeDirection(p1, getCoordsCenter()));
+                lc->setDirection(result);
                 // save Connections
-                lc->setConnections(ts1, ts2, TRACK, this);
-                results->append(lc);
+                HitPointType::TYPES type = HitPointType::TRACK;
+                lc->setConnections(ts1, ts2, type, this);
+                results.append(lc);
             }
         }
     }
@@ -1591,12 +1714,12 @@ void PositionablePoint::draw(EditScene* g2)
  * {@inheritDoc}
  */
 //@Override
-/*public*/ QList<int> PositionablePoint::checkForFreeConnections() {
-    QList<int> result = QList<int>();
+/*public*/ QList<HitPointType::TYPES> PositionablePoint::checkForFreeConnections() {
+    QList<HitPointType::TYPES> result = QList<HitPointType::TYPES>();
 
     if ((getConnect1() == nullptr)
             || ((getType() == ANCHOR) && (getConnect2() == nullptr))) {
-        result.append((POS_POINT));
+        result.append((HitPointType::POS_POINT));
     }
     return result;
 }
@@ -1615,7 +1738,7 @@ void PositionablePoint::draw(EditScene* g2)
  * {@inheritDoc}
  */
 //@Override
-/*public*/ void PositionablePoint::checkForNonContiguousBlocks(/*@Nonnullptr*/ QMap<QString, QList<QSet<QString> *> *> *blockNamesToTrackNameSetsMap) {
+/*public*/ void PositionablePoint::checkForNonContiguousBlocks(/*@Nonnullptr*/ QMap<QString, QList<QSet<QString> *> *> blockNamesToTrackNameSetsMap) {
     /*
      * For each (non-nullptr) blocks of this track do:
      * #1) If it's got an entry in the blockNamesToTrackNameSetMap then
@@ -1638,7 +1761,7 @@ void PositionablePoint::draw(EditScene* g2)
     if (ts1 != nullptr) {
         blk1 = ts1->getBlockName();
         if (blk1 != nullptr) {
-            TrackNameSets = blockNamesToTrackNameSetsMap->value(blk1);
+            TrackNameSets = blockNamesToTrackNameSetsMap.value(blk1);
             if (TrackNameSets && !TrackNameSets->isEmpty())
             { // (#1)
                 for (QSet<QString>* checkTrackNameSet : *TrackNameSets) {
@@ -1650,7 +1773,7 @@ void PositionablePoint::draw(EditScene* g2)
             } else {    // (#3)
                 log->debug(tr("*New block ('%1') trackNameSets").arg(blk1));
                 TrackNameSets = new QList<QSet<QString>*>();
-                blockNamesToTrackNameSetsMap->insert(blk1, TrackNameSets);
+                blockNamesToTrackNameSetsMap.insert(blk1, TrackNameSets);
             }
             if (TrackNameSet == nullptr || TrackNameSet->isEmpty()) {
                 TrackNameSet = new QSet<QString>();
@@ -1672,7 +1795,7 @@ void PositionablePoint::draw(EditScene* g2)
             QString blk2 = ts2->getBlockName();
             if (blk2 != nullptr) {
                 TrackNameSet = new QSet<QString>();    // assume not found (pessimist!)
-                TrackNameSets = blockNamesToTrackNameSetsMap->value(blk2);
+                TrackNameSets = blockNamesToTrackNameSetsMap.value(blk2);
                 if (TrackNameSets && !TrackNameSets->isEmpty()) { // (#1)
                     for (QSet<QString>* checkTrackNameSet : *TrackNameSets) {
                         if (checkTrackNameSet->contains(getName())) { // (#2)
@@ -1683,7 +1806,7 @@ void PositionablePoint::draw(EditScene* g2)
                 } else {    // (#3)
                     log->debug(tr("*New block ('%1') trackNameSets").arg(blk2));
                     TrackNameSets = new QList<QSet<QString>*>();
-                    blockNamesToTrackNameSetsMap->insert(blk2, TrackNameSets);
+                    blockNamesToTrackNameSetsMap.insert(blk2, TrackNameSets);
                 }
                 if (TrackNameSet ==nullptr || TrackNameSet->isEmpty()) {
                     TrackNameSet = new QSet<QString>();

@@ -9,13 +9,13 @@ class LIBPR3SHARED_EXPORT AbstractAudioManager : public AudioManager
  Q_OBJECT
 public:
  explicit AbstractAudioManager(QObject *parent = 0);
- /*public*/ char typeLetter() const ;
- /*public*/ Audio* provideAudio(QString name); //throws AudioException {
- /*public*/ Audio* getAudio(QString name);
- /*public*/ Audio* getBySystemName(QString key);
- /*public*/ Audio* getByUserName(QString key);
- /*public*/ Audio* newAudio(QString systemName, QString userName) /*throws AudioException */;
- /*public*/ QString getBeanTypeHandled(bool plural);
+ /*public*/ QChar typeLetter()  override;
+ /*public*/ Audio* provideAudio(QString name) override; //throws AudioException {
+ /*public*/ Audio* getAudio(QString name)override;
+ /*public*/ Audio* getBySystemName(QString key) const override;
+ /*public*/ Audio* getByUserName(QString key)const override;
+ /*public*/ Audio* newAudio(QString systemName, QString userName) /*throws AudioException */ override;
+ /*public*/ QString getBeanTypeHandled(bool plural) const override;
 
 signals:
 

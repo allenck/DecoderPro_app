@@ -17,14 +17,18 @@
 #include "blockvaluefile.h"
 #include "system.h"
 #include "metatypes.h"
+#include "../operations/metatypes.h"
 #include "properties.h"
 #include "jmriconfigurationmanager.h"
 #include "jmriuserpreferencesmanager.h"
+#include "appspreferencesactionfactory.h"
+#include "appsconfigurationmanager.h"
 
 AppsBase::AppsBase(QObject *parent) :
     QObject(parent)
 {
  new Metatypes();
+ new Operations::Metatypes();
  configDeferredLoadOK = false;
 }
 /**
@@ -63,7 +67,7 @@ AppsBase::AppsBase(QObject *parent) :
 //        Application.setApplicationName(applicationName);
 //    } catch (IllegalAccessException ex) {
 //        log->error("Unable to set application name");
-//    } catch (IllegalArgumentException ex) {
+//    } catch (IllegalArgumentException* ex) {
 //        log->error("Unable to set application name");
 //    }
  QApplication::setApplicationName(applicationName);
@@ -122,7 +126,7 @@ void AppsBase::init()
             /*public*/ void run() {
                 try {
                     InstanceManager::tabbedPreferencesInstance().init();
-                } catch (Exception ex) {
+                } catch (Exception* ex) {
                     log->error(ex.toString());
                 }
             }
@@ -138,7 +142,7 @@ void AppsBase::init()
             /*public*/ void run() {
                 try {
                     PythonInterp.getPythonInterpreter();
-                } catch (Exception ex) {
+                } catch (Exception* ex) {
                     log->error("Error in trying to initialize python interpreter " + ex.toString());
                 }
             }
@@ -205,15 +209,15 @@ void AppsBase::init()
     log->info(tr("Please ensure that the User Files location and Roster location are correct."));
    }
   }
-  catch (IOException ex)
+  catch (IOException* ex)
   {
    // GUI should show message here
-   log->error(tr("Profiles not configurable. Using fallback per-application configuration. Error: %1").arg(ex.getMessage()));
+   log->error(tr("Profiles not configurable. Using fallback per-application configuration. Error: %1").arg(ex->getMessage()));
   }
-  catch (IllegalArgumentException ex)
+  catch (IllegalArgumentException* ex)
   {
    // GUI should show message here
-   log->error(tr("Profiles not configurable. Using fallback per-application configuration. Error: %1").arg(ex.getMessage()));
+   log->error(tr("Profiles not configurable. Using fallback per-application configuration. Error: %1").arg(ex->getMessage()));
   }
  }
  try
@@ -238,15 +242,16 @@ void AppsBase::init()
    log->error("Profiles not configurable. Using fallback per-application configuration.");
   }
  }
- catch (IOException ex)
+ catch (IOException* ex)
  {
-  log->info(tr("Profiles not configurable. Using fallback per-application configuration. Error: %1").arg(ex.getMessage()));
+  log->info(tr("Profiles not configurable. Using fallback per-application configuration. Error: %1").arg(ex->getMessage()));
  }
 }
 
 /*protected*/ void AppsBase::installConfigurationManager()
 {
- ConfigureManager* cm = (ConfigureManager*)InstanceManager::setDefault("ConfigureManager", new JmriConfigurationManager());
+ //InstanceManager::store(new AppsPreferencesActionFactory(), "JmriPreferencesActionFactory");
+ AppsConfigurationManager* cm =  new AppsConfigurationManager();
  FileUtil::createDirectory(FileUtil::getUserFilesPath());
 // InstanceManager::setConfigureManager(cm);
 // QString cfgName;
@@ -260,29 +265,12 @@ void AppsBase::init()
 }
 
 /*protected*/ void AppsBase::installManagers() {
-    // Install a history manager
- InstanceManager::store(new FileHistory(), "FileHistory");
-    // record startup
+ // record startup
  ((FileHistory*)InstanceManager::getDefault("FileHistory"))->addOperation("app", QApplication::applicationName(), NULL);
 
-    // Install a user preferences manager
- InstanceManager::store((QObject*)JmriUserPreferencesManager::getDefault(), "UserPreferencesManager");
-
-    // install the abstract action model that allows items to be added to the, both
-    // CreateButton and Perform Action Model use a common Abstract class
+ // install the abstract action model that allows items to be added to the, both
+ // CreateButton and Perform Action Model use a common Abstract class
  InstanceManager::store(new CreateButtonModel(), "CreateButtonModel");
-
-    // install preference manager
- InstanceManager::store(new TabbedPreferences(), "TabbedPreferences");
-
-    // install the named bean handler
- InstanceManager::store(new NamedBeanHandleManager(), "NamedBeanHandleManager");
-
-    // Install an IdTag manager
- InstanceManager::store(new DefaultIdTagManager(), "IdTagManager");
-
-    //Install Entry Exit Pairs Manager
- InstanceManager::store(new EntryExitPairs(), "EntryExitPairs");
 
 }
 
@@ -296,7 +284,7 @@ void AppsBase::init()
      if (!sharedConfig->canRead()) {
          sharedConfig = nullptr;
      }
- } catch (FileNotFoundException ex) {
+ } catch (FileNotFoundException* ex) {
      // ignore - this only means that sharedConfig does not exist.
  }
  if (sharedConfig != nullptr) {
@@ -341,7 +329,7 @@ void AppsBase::init()
    log->debug(tr("end load config file ") + file->getName() + ", OK=" + (configOK?"true":"false"));
   }
  }
- catch (Exception e)
+ catch (Exception* e)
  {
   configOK = false;
  }
@@ -360,7 +348,7 @@ void AppsBase::init()
 //                    configDeferredLoadOK = doDeferredLoad(file);
 //                }
 //            });
-//        } catch (Exception ex) {
+//        } catch (Exception* ex) {
 //            log->error("Exception creating system console frame: " + ex);
 //        }
 //    }
@@ -381,8 +369,8 @@ void AppsBase::init()
          log->error("Failed to get default configure manager");
          result = false;
      }
-    } catch (JmriException e) {
-        log->error("Unhandled problem loading deferred configuration: " + e.getMessage());
+    } catch (JmriException* e) {
+        log->error("Unhandled problem loading deferred configuration: " + e->getMessage());
         result = false;
     }
     if (log->isDebugEnabled()) {
@@ -432,8 +420,8 @@ WriteBlocksShutDownTask::WriteBlocksShutDownTask(QString text, AppsBase *base) :
     try {
         (new BlockValueFile())->writeBlockValues();
     } //catch (org.jdom2.JDOMException jde) { log->error("Exception writing blocks: "+jde); }
-    catch (IOException ioe) {
-        Logger::error("Exception writing blocks: " + ioe.getMessage());
+    catch (IOException* ioe) {
+        Logger::error("Exception writing blocks: " + ioe->getMessage());
     }
 
     // continue shutdown
@@ -521,10 +509,10 @@ WriteBlocksShutDownTask::WriteBlocksShutDownTask(QString text, AppsBase *base) :
               + ", skipping reset to " + value);
   }
  }
- catch (Exception e)
+ catch (Exception* e)
  {
   Logger::error("Unable to set JMRI property " + key + " to " + value
-                + "due to exception: " + e.getMessage());
+                + "due to exception: " + e->getMessage());
  }
 #endif
 }
@@ -538,7 +526,7 @@ WriteBlocksShutDownTask::WriteBlocksShutDownTask(QString text, AppsBase *base) :
     log->debug("Start handleQuit");
     try {
         return ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->shutdown();
-    } catch (Exception e) {
+    } catch (Exception* e) {
         log->error("Continuing after error in handleQuit");
     }
     return false;
@@ -552,7 +540,7 @@ WriteBlocksShutDownTask::WriteBlocksShutDownTask(QString text, AppsBase *base) :
     log->debug("Start handleRestart");
     try {
         return ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->restart();
-    } catch (Exception e) {
+    } catch (Exception* e) {
         log->error("Continuing after error in handleRestart");
     }
     return false;

@@ -37,6 +37,7 @@ class LnReporter : public AbstractIdTagReporter /*, public PhysicalLocationRepor
 
 {
     Q_OBJECT
+  Q_INTERFACES(Reporter)
 public:
     //explicit LnReporter(QObject *parent = 0);
     LnReporter(int number, LnTrafficController* tc, QString prefix, QObject* parent= nullptr); // a human-readable Reporter number must be specified!
@@ -75,14 +76,17 @@ public:
 
    // Parses out a (possibly old) LnReporter-generated report string to extract the address from the front.
    // Assumes the LocoReporter format is "NNNN [enter|exit]"
-   LocoAddress* getLocoAddress(QString rep);
+   LocoAddress* getLocoAddress(QString rep)override;
    // Parses out a (possibly old) LnReporter-generated report string to extract the direction from the end.
    // Assumes the LocoReporter format is "NNNN [enter|exit]"
-   PhysicalLocationReporter::Direction getDirection(QString rep);
-   PhysicalLocation* getPhysicalLocation();
-   PhysicalLocation* getPhysicalLocation(QString s);
+   PhysicalLocationReporter::Direction getDirection(QString rep)override;
+   PhysicalLocation* getPhysicalLocation()override;
+   PhysicalLocation* getPhysicalLocation(QString s)override;
    /*public*/ int getLocoAddrFromTranspondingMsg(LocoNetMessage* l);
    /*public*/ ReporterVariantEntrySet getCollection();
+
+   ReporterVariant getCurrentReport()override {return AbstractReporter::getCurrentReport();}
+   ReporterVariant getLastReport()override {return AbstractReporter::getLastReport();}
 
 signals:
     
@@ -116,7 +120,7 @@ private:
     int _number;   // loconet Reporter number
     bool myAddress(int a1, int a2);
   Logger log;
-  /*private*/ int state = UNKNOWN;
+  /*private*/ int state = NamedBean::UNKNOWN;
   ReporterVariantEntrySet entrySet;
     
   friend class LnReporterTest;

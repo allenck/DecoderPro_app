@@ -141,7 +141,7 @@ public:
      */
     virtual /*public*/ void setSystemPrefix(QString /*systemPrefix*/) /*throws IllegalArgumentException;*/ {}
 
-     /*public*/ virtual SystemConnectionMemo* getSystemConnectionMemo() {return NULL;}
+     /*public*/ virtual SystemConnectionMemo* getSystemConnectionMemo() const {return NULL;}
 
     /**
      * Replace the existing SystemConnectionMemo with another one. Overriding

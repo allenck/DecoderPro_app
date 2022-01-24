@@ -207,7 +207,7 @@ Level::Level(QObject *parent) :
 //    try {
 //        ResourceBundle rb = ResourceBundle.getBundle(resourceBundleName);
 //        return rb.getString(name);
-//    } catch (Exception ex) {
+//    } catch (Exception* ex) {
         return name;
 //    }
 }
@@ -303,7 +303,7 @@ Level::Level(QObject *parent) :
         }
         // Create a new Level.
         return new Level(name, x);
-    } catch (NumberFormatException ex) {
+    } catch (NumberFormatException* ex) {
         // Not an integer.
         // Drop through.
     }
@@ -331,7 +331,7 @@ Level::Level(QObject *parent) :
     try {
         Level* lx = (Level*)ox;
         return (lx->value == this->value);
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         return false;
     }
 }

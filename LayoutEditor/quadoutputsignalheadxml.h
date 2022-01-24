@@ -6,7 +6,7 @@ class QuadOutputSignalHeadXml : public TripleTurnoutSignalHeadXml
 {
     Q_OBJECT
 public:
-    explicit QuadOutputSignalHeadXml(QObject *parent = 0);
+    Q_INVOKABLE explicit QuadOutputSignalHeadXml(QObject *parent = 0);
  ~QuadOutputSignalHeadXml() {}
  QuadOutputSignalHeadXml(const QuadOutputSignalHeadXml&) : TripleTurnoutSignalHeadXml() {}
     /*public*/ QDomElement store(QObject* o);

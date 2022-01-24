@@ -95,7 +95,7 @@
  debugWaitFrame = NULL;
  promptOnWait = false;
  inThread = false;
- self = this;
+ _self = this;
  messageFrame = NULL;
  message = "";
  debugWaitFrame = NULL;
@@ -112,7 +112,7 @@
  debugWaitFrame = NULL;
  promptOnWait = false;
  inThread = false;
- self = this;
+ _self = this;
  messageFrame = NULL;
  message = "";
  debugWaitFrame = NULL;
@@ -185,11 +185,11 @@ AbstractAutomaton::~AbstractAutomaton()
  }
 // catch (/*ThreadDeath*/Exception e1)
 // {
-//  log->debug("Received ThreadDeath, likely due to stop(): "+e1.getMessage() +" "+ e1.getMessage());
+//  log->debug("Received ThreadDeath, likely due to stop(): "+e1->getMessage() +" "+ e1->getMessage());
 // }
- catch (Exception e2)
+ catch (Exception* e2)
  {
-  log->warn("Exception ends AbstractAutomaton thread: "+e2.getMessage() + " "+ e2.getMessage());
+  log->warn("Exception ends AbstractAutomaton thread: "+e2->getMessage() + " "+ e2->getMessage());
  }
 }
 void AbstractAutomaton::threadTerminated()
@@ -215,9 +215,9 @@ void AbstractAutomaton::threadTerminated()
  {
   currentThread->exit();
  }
- catch (/*ThreadDeath*/Exception e)
+ catch (/*ThreadDeath*/Exception* e)
  {
-  log->error(e.getMessage());
+  log->error(e->getMessage());
  }
  currentThread = NULL;
  done();
@@ -354,12 +354,14 @@ void AbstractAutomaton::defaultName() {
  if (promptOnWait) debuggingWait();
 }
 
-class SensorListener : public PropertyChangeListener
+class SensorListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  AbstractAutomaton* aa;
 public:
  SensorListener(AbstractAutomaton* aa) {this->aa = aa;}
+ QObject* self() {return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent* evt)
  {
@@ -414,7 +416,7 @@ public slots:
 }
 void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
 {
- self->notifyAll();
+ _self->notifyAll();
 }
 
 /**
@@ -677,8 +679,8 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
  {
   PropertyChangeListener* l = (PropertyChangeListener*)this;
   listeners.replace(i, l);
-  //mInputs.at(i)->addPropertyChangeListener(l);
-  if(qobject_cast<AbstractSensor*>(mInputs.at(i))!= NULL)
+  //mInputs.at(i)->SwingPropertyChangeSupport::addPropertyChangeListener(l);
+  if(static_cast<AbstractSensor*>(mInputs.at(i))!= NULL)
   {
    AbstractSensor* sensor = (AbstractSensor*)mInputs.at(i);
    connect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -703,7 +705,7 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
  for (i=0; i<mInputs.size(); i++)
  {
   //mInputs.at(i)->removePropertyChangeListener(listeners.at(i));
-  if(qobject_cast<AbstractSensor*>(mInputs.at(i))!= NULL)
+  if(static_cast<AbstractSensor*>(mInputs.at(i))!= NULL)
   {
    AbstractSensor* sensor = (AbstractSensor*)mInputs.at(i);
    disconnect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -765,25 +767,15 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
  * @param longAddress true if this is a long address, false for a short address
  * @return A usable throttle, or NULL if error
  */
-/*public*/ DccThrottle* AbstractAutomaton::getThrottle(int address, bool longAddress)
+/*public*/ DccThrottle* AbstractAutomaton::getThrottle(int address, bool longAddress, int waitSecs)
 {
+ log->debug(tr("requesting DccThrottle for addr %1").arg(address));
     if (!inThread) log->warn("getThrottle invoked from invalid context");
     throttle = NULL;
-    bool ok = true;
-#if 0 // done
-    ok = InstanceManager::throttleManagerInstance()->requestThrottle(address,new ThrottleListener(),[] {
-                /*public*/ void notifyThrottleFound(DccThrottle* t) {
-                    throttle = t;
-                    synchronized (self) {
-                        self->notifyAll(); // should be only one thread waiting, but just in case
-                    }
-                }
-                /*public*/ void notifyFailedThrottleRequest(jmri.DccLocoAddress address, String reason){
-                }
-            });
-#endif
-    ok= ((LnThrottleManager*)InstanceManager::throttleManagerInstance())->requestThrottle(address, longAddress, (ThrottleListener*)this);
+    ThrottleListener* throttleListener = new AAThrottleListener(this);
 
+    bool ok = ((ThrottleManager*)InstanceManager::getDefault("ThrottleManager"))->requestThrottle(
+        new DccLocoAddress(address, longAddress), throttleListener, false);
     // check if reply is coming
     if (!ok) {
         log->info("Throttle for loco "+QString::number(address)+" not available");
@@ -791,7 +783,8 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
     }
 
     // now wait for reply from identified throttle
-    while (throttle == NULL) {
+    int waited = 0;
+    while (throttle == nullptr && failedThrottleRequest == false && waited <= waitSecs) {
         log->debug("waiting for throttle");
         wait(10000);
         if (throttle == NULL) log->warn("Still waiting for throttle "+QString::number(address)+"!");
@@ -799,44 +792,85 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
     return throttle;
 }
 
+/*public*/ DccThrottle* AbstractAutomaton::getThrottle(int address, bool longAddress) {
+        return getThrottle(address, longAddress, 30);  //default to 30 seconds wait
+    }
+
 /**
- * Obtains a DCC throttle, including waiting for the command station response.
- * @param re specifies the desired locomotive
- * @return A usable throttle, or NULL if error
+ * Obtains a DCC throttle, including waiting for the command station
+ * response.
+ *
+ * @param re       specifies the desired locomotive
+ * @param waitSecs number of seconds to wait for throttle to acquire before
+ *                 returning null
+ * @return A usable throttle, or null if error
  */
-/*public*/ DccThrottle* AbstractAutomaton::getThrottle(BasicRosterEntry* re) {
-    if (!inThread) log->warn("getThrottle invoked from invalid context");
-    throttle = NULL;
-    bool ok = true;
-#if 0 // done
-    ok = InstanceManager::throttleManagerInstance()->requestThrottle(re,new ThrottleListener(), [] {
-                /*public*/ void notifyThrottleFound(DccThrottle* t) {
-                    throttle = t;
-                    synchronized (self) {
-                        self.notifyAll(); // should be only one thread waiting, but just in case
-                    }
-                }
-                /*public*/ void notifyFailedThrottleRequest(jmri.DccLocoAddress address, String reason){
-                }
-            });
-#endif
-    ok= ((LnThrottleManager*)InstanceManager::throttleManagerInstance())->requestThrottle(re, (ThrottleListener*)this);
+/*public*/ DccThrottle*AbstractAutomaton:: getThrottle(BasicRosterEntry* re, int waitSecs) {
+    log->debug(tr("requesting DccThrottle for rosterEntry %1").arg(re->getId()));
+    if (!inThread) {
+        log->warn("getThrottle invoked from invalid context");
+    }
+    throttle = nullptr;
+//    ThrottleListener throttleListener = new ThrottleListener() {
+//        @Override
+//        public void notifyThrottleFound(DccThrottle t) {
+//            throttle = t;
+//            synchronized (self) {
+//                self.notifyAll(); // should be only one thread waiting, but just in case
+//            }
+//        }
+
+//        @Override
+//        public void notifyFailedThrottleRequest(jmri.LocoAddress address, String reason) {
+//            log.error("Throttle request failed for {} because {}", address, reason);
+//            failedThrottleRequest = true;
+//            synchronized (self) {
+//                self.notifyAll(); // should be only one thread waiting, but just in case
+//            }
+//        }
+
+//        /**
+//         * No steal or share decisions made locally
+//         * {@inheritDoc}
+//         */
+//        @Override
+//        public void notifyDecisionRequired(jmri.LocoAddress address, DecisionType question) {
+//        }
+//    };
+    ThrottleListener* throttleListener = new AAThrottleListener(this);
+
+    bool ok = ((ThrottleManager*)InstanceManager::getDefault("DefaultThrottleManager"))
+            ->requestThrottle(re, throttleListener, false);
+
     // check if reply is coming
     if (!ok) {
-        log->info("Throttle for loco "+re->getId()+" not available");
-        return NULL;
+        log->info(tr("Throttle for loco %1 not available").arg(re->getId()));
+        ((ThrottleManager*)InstanceManager::getDefault("ThrottleManager"))->cancelThrottleRequest(
+            re->getDccLocoAddress(), throttleListener);  //kill the pending request
+        return nullptr;
     }
 
     // now wait for reply from identified throttle
-    while (throttle == NULL) {
+    int waited = 0;
+    while (throttle == nullptr && failedThrottleRequest == false && waited <= waitSecs) {
         log->debug("waiting for throttle");
-        wait(10000);
-        if (throttle == NULL) log->warn("Still waiting for throttle "+re->getId()+"!");
+        wait(1000);  //  1 seconds
+        waited++;
+        if (throttle == nullptr) {
+            log->warn(tr("Still waiting for throttle %1!").arg(re->getId()));
+        }
+    }
+    if (throttle == nullptr) {
+        log->debug(tr("canceling request for Throttle %1").arg(re->getId()));
+        ((ThrottleManager*)InstanceManager::getDefault("DefaultThrottleManager"))->cancelThrottleRequest(
+            re->getDccLocoAddress(), throttleListener);  //kill the pending request
     }
     return throttle;
 }
 
-
+/*public*/ DccThrottle* AbstractAutomaton::getThrottle(BasicRosterEntry* re) {
+    return getThrottle(re, 30);  //default to 30 seconds
+}
 /**
  * Write a CV on the service track, including waiting for completion.
  * @param CV Number 1 through 512
@@ -859,8 +893,8 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
 //                }
 //            }
 //        });
-    } catch (ProgrammerException e) {
-        log->warn("Exception during writeServiceModeCV: "+e.getMessage());
+    } catch (ProgrammerException* e) {
+        log->warn("Exception during writeServiceModeCV: "+e->getMessage());
         return false;
     }
     // wait for the result
@@ -893,8 +927,8 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
 //                }
 //            }
 //        });
-    } catch (ProgrammerException e) {
-        log->warn("Exception during writeServiceModeCV: "+e.getMessage());
+    } catch (ProgrammerException* e) {
+        log->warn("Exception during writeServiceModeCV: "+e->getMessage());
         return -1;
     }
     // wait for the result
@@ -925,8 +959,8 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
 //                }
 //            }
 //        });
-    } catch (ProgrammerException e) {
-        log->warn("Exception during writeServiceModeCV: "+e.getMessage());
+    } catch (ProgrammerException* e) {
+        log->warn("Exception during writeServiceModeCV: "+e->getMessage());
         return false;
     }
     // wait for the result
@@ -1085,7 +1119,7 @@ void AbstractAutomaton::notifyAll()
  /*synchronized (self)*/
  {
   QMutexLocker locker(&throttleMutex);
-  self->notifyAll(); // should be only one thread waiting, but just in case
+  _self->notifyAll(); // should be only one thread waiting, but just in case
  }
 }
 /*public*/ void AbstractAutomaton::notifyFailedThrottleRequest(DccLocoAddress* /*address*/, QString /*reason*/)

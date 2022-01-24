@@ -1,25 +1,29 @@
-#ifndef ROUTEMANAGER_H
-#define ROUTEMANAGER_H
+#ifndef OROUTEMANAGER_H
+#define OROUTEMANAGER_H
 
 #include <QObject>
 #include <QHash>
 #include "logger.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include <QtXml>
 #include "appslib_global.h"
+#include "instancemanagerautodefault.h"
+#include "instancemanagerautoinitialize.h"
 
 class JComboBox;
 namespace Operations {
  class RouteLocation;
  class Route;
- class APPSLIBSHARED_EXPORT RouteManager : public QObject
+ class APPSLIBSHARED_EXPORT RouteManager : public SwingPropertyChangeSupport, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize
  {
   Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize)
  public:
-  explicit RouteManager(QObject *parent = 0);
+  Q_INVOKABLE explicit RouteManager(QObject *parent = 0);
+   ~RouteManager() {}
+   RouteManager(const RouteManager&) : SwingPropertyChangeSupport(nullptr, nullptr) {}
   /*public*/ static /*final*/ QString LISTLENGTH_CHANGED_PROPERTY;// = "routesListLengthChanged"; // NOI18N
-  PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
-  /*public*/ static /*synchronized*/ RouteManager* instance();
+  //SwingPropertyChangeSupport* pcs;// = new SwingPropertyChangeSupport(this, nullptr);
   /*public*/ void dispose();
   /*public*/ Route* getRouteByName(QString name);
   /*public*/ Route* getRouteById(QString id);
@@ -34,23 +38,27 @@ namespace Operations {
   /*public*/ void load(QDomElement root);
   /*public*/ void store(QDomElement root, QDomDocument doc);
   /*public*/ Route* copyRoute(Route* route, QString routeName, bool invert);
-  Q_INVOKABLE /*public*/ void initialize();
-  virtual /*public*/ Route* provide(QString name) throw (IllegalArgumentException) = 0;
+  Q_INVOKABLE /*public*/ void initialize() override;
+  //virtual /*public*/ Route* provide(QString /*name*/)const  /*throw (IllegalArgumentException)*/ =0;
+  //QObject* self() {return (QObject*)this;}
+  QString getNamedBeanClass() const {return "RouteManager";}
+
  signals:
  
  public slots:
  private:
   /*private*/ static RouteManager* _instance;// = null;
   /*private*/ int _id;// = 0;
-  Logger* log;
+  static Logger* log;
   /*private*/ QList<Route*> getList();
   /*private*/ void copyRouteLocation(Route* newRoute, RouteLocation* rl, RouteLocation* rlNext, bool invert);
 
  protected:
   // stores known Route instances by id
-  /*protected*/ QHash<QString, Route*> _routeHashTable;// = new QHash<QString, Route*>();
+  /*protected*/ QHash<QString, Route*> _routeHashTable = QHash<QString, Route*>();
   /*protected*/ void setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n);
 
  };
 }
-#endif // ROUTEMANAGER_H
+Q_DECLARE_METATYPE(Operations::RouteManager)
+#endif // OROUTEMANAGER_H

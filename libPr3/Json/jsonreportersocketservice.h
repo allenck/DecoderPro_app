@@ -21,15 +21,17 @@ private:
  /*private*/ QLocale locale;
  friend class ReporterListener;
 };
-/*private*/ class ReporterListener :public  PropertyChangeListener {
+/*private*/ class ReporterListener : public QObject,public  PropertyChangeListener {
 Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
     /*protected*/ /*final*/ Reporter* reporter;
 private:
  JsonReporterSocketService* jrss;
     /*public*/ ReporterListener(Reporter* reporter, JsonReporterSocketService* jrss);
+ QObject* self() override{return (QObject*)this;}
 public slots:
     //@Override
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
  friend class JsonReporterSocketService;
 };
 

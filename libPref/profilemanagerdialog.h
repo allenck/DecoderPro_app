@@ -11,7 +11,7 @@ class IndexedPropertyChangeEvent;
 class ListSelectionEvent;
 class Profile;
 class WindowEvent;
-class ActionEvent;
+class JActionEvent;
 class JFrame;
 class QScrollArea;
 class QLabel;
@@ -22,7 +22,7 @@ class LIBPREFSHARED_EXPORT ProfileManagerDialog : public JDialog
 public:
     //explicit ProfileManagerDialog(QWidget *parent = 0);
     /*public*/ ProfileManagerDialog(JFrame* parent, bool modal);
-    /*public*/ static Profile* getStartingProfile(JFrame* f) throw (IOException);
+    /*public*/ static Profile* getStartingProfile(JFrame* f) /*throw (IOException)*/;
 
 signals:
 
@@ -44,9 +44,9 @@ private:
     /*private*/ void initComponents();
     Logger* log;
 private slots:
-    /*private*/ void btnSelectActionPerformed(ActionEvent* /*evt*/ = 0);
-    /*private*/ void btnCreateActionPerformed(ActionEvent* /*evt*/= 0);
-    /*private*/ void btnUseExistingActionPerformed(ActionEvent* /*evt*/= 0);
+    /*private*/ void btnSelectActionPerformed(JActionEvent* /*evt*/ = 0);
+    /*private*/ void btnCreateActionPerformed(JActionEvent* /*evt*/= 0);
+    /*private*/ void btnUseExistingActionPerformed(JActionEvent* /*evt*/= 0);
     /*private*/ void profileNameChanged(Profile* p);
     /*private*/ void profilesValueChanged(QModelIndex);
     /*private*/ void profilesKeyPressed(QKeyEvent* evt);
@@ -60,25 +60,25 @@ private slots:
     friend class PMDPropertyChangeListener2;
 };
 
-class PMDPropertyChangeListener1 : public PropertyChangeListener
-{
- Q_OBJECT
- ProfileManagerDialog* dlg;
-public:
- PMDPropertyChangeListener1(ProfileManagerDialog* dlg) {this->dlg = dlg;}
-public slots:
- void propertyChange(PropertyChangeEvent* evt);
-};
+//class PMDPropertyChangeListener1 : public PropertyChangeListener
+//{
+// Q_OBJECT
+// ProfileManagerDialog* dlg;
+//public:
+// PMDPropertyChangeListener1(ProfileManagerDialog* dlg) {this->dlg = dlg;}
+//public slots:
+// void propertyChange(PropertyChangeEvent* evt);
+//};
 
-class PMDPropertyChangeListener2 : public PropertyChangeListener
-{
- Q_OBJECT
- ProfileManagerDialog* dlg;
-public:
- PMDPropertyChangeListener2(ProfileManagerDialog* dlg) {this->dlg = dlg;}
-public slots:
- void propertyChange(PropertyChangeEvent*evt);
-};
+//class PMDPropertyChangeListener2 : public PropertyChangeListener
+//{
+// Q_OBJECT
+// ProfileManagerDialog* dlg;
+//public:
+// PMDPropertyChangeListener2(ProfileManagerDialog* dlg) {this->dlg = dlg;}
+//public slots:
+// void propertyChange(PropertyChangeEvent*evt);
+//};
 
 
 #endif // PROFILEMANAGERDIALOG_H

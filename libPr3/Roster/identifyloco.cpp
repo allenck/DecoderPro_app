@@ -1,6 +1,7 @@
 #include "identifyloco.h"
 #include "instancemanager.h"
 #include "lnprogrammermanager.h"
+#include "loggerfactory.h"
 
 IdentifyLoco::IdentifyLoco(Programmer* programmer,QObject *parent) :
     AbstractIdentify(programmer, parent)
@@ -31,27 +32,26 @@ IdentifyLoco::IdentifyLoco(Programmer* programmer,QObject *parent) :
 {
  // request contents of CV 29
  statusUpdate(tr("Read CV 29"));
- readCV(29);
+ readCV("29");
  return false;
 }
 
 /*public*/ bool IdentifyLoco::test2(int value)
 {
  // check for long address vs short address
- if ( (value&0x20) != 0 )
+ if ( (value & 0x20) != 0 )
  {
   // long address needed
   shortAddr = false;
-
   statusUpdate(tr("Long address - read CV 17"));
-  readCV(17);
+  readCV("17");
  }
  else
  {
     // short - read address
     shortAddr = true;
     statusUpdate(tr("Short address - read CV 1"));
-    readCV(1);
+    readCV("1");
  }
  return false;
 }
@@ -62,13 +62,13 @@ IdentifyLoco::IdentifyLoco(Programmer* programmer,QObject *parent) :
         // short - this is the address
         address = value;
         statusUpdate(tr("Reading Mfg Id CV 8"));
-        readCV(7);
+        readCV("7");
         return false;
     } else {
         // long - need CV18 also
         cv17val = value;
         statusUpdate(tr("LONG ADDRESS - READ CV 18"));
-        readCV(18);
+        readCV("18");
         return false;
     }
 }
@@ -78,16 +78,16 @@ IdentifyLoco::IdentifyLoco(Programmer* programmer,QObject *parent) :
     if (shortAddr) {
         cv7val = value;
         statusUpdate(tr("Read MFG version - CV 7"));
-        readCV(8);
+        readCV("8");
         return false;
 
     }
 
     // value is CV18, calculate address
     cv18val = value;
-    address = (cv17val&0x3f)*256 + cv18val;
+    address = (cv17val & 0x3f)*256 + cv18val;
     statusUpdate(tr("Reading Mfg Id CV 8"));
-    readCV(7);
+    readCV("7");
     return false;
 }
 
@@ -98,7 +98,7 @@ IdentifyLoco::IdentifyLoco(Programmer* programmer,QObject *parent) :
         return true;
     }
     statusUpdate(tr("Read MFG version - CV 7"));
-    readCV(8);
+    readCV("8");
     cv7val = value;
     return false;
 }
@@ -121,6 +121,7 @@ IdentifyLoco::IdentifyLoco(Programmer* programmer,QObject *parent) :
     log->error("unexpected step 8 reached with value: "+QString::number(value));
     return true;
 }
+
 //@Override
 /*public*/ bool IdentifyLoco::test9(int value) {
     log->error("unexpected step 9 reached with value: " + QString::number(value));
@@ -137,7 +138,7 @@ IdentifyLoco::IdentifyLoco(Programmer* programmer,QObject *parent) :
 
 //abstract /*protected*/ void message(String m);
 
-//    // initialize logging
-//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(IdentifyLoco.class.getName());
+// initialize logging
+/*static*/ Logger* IdentifyLoco::log = LoggerFactory::getLogger("IdentifyLoco");
 
 //}

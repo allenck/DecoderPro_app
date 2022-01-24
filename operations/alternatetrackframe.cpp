@@ -1,6 +1,6 @@
 #include "alternatetrackframe.h"
 #include "track.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include "jcombobox.h"
 #include <QBoxLayout>
 #include "gridbaglayout.h"
@@ -12,6 +12,7 @@
 #include "control.h"
 #include "operationsxml.h"
 #include "setup.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -33,7 +34,7 @@ namespace Operations
      //super();
  trackBox = new JComboBox();
 
- saveButton = new QPushButton(tr("Save"));
+ saveButton = new JButton(tr("Save"));
 
 
      // the following code sets the frame's initial state
@@ -43,10 +44,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      // load the panel
      // row 2
-     QGroupBox* pAlternate = new QGroupBox();
+     JPanel* pAlternate = new JPanel();
      pAlternate->setLayout(new GridBagLayout());
-     //pAlternate.setBorder(BorderFactory.createTitledBorder(""));
-     pAlternate->setStyleSheet(gbStyleSheet);
+     pAlternate->setBorder(BorderFactory::createTitledBorder(""));
      addItem(pAlternate, trackBox, 0, 0);
 
      _track->getLocation()->updateComboBox(trackBox);
@@ -69,8 +69,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      setVisible(true);
  }
 
- /*public*/ void AlternateTrackFrame::buttonActionPerformed(ActionEvent* ae) {
- QPushButton* source = (QPushButton*)ae;
+ /*public*/ void AlternateTrackFrame::buttonActionPerformed(JActionEvent* ae) {
+ JButton* source = (JButton*)ae;
      if (source == saveButton) {
          _track->setAlternateTrack((Track*) VPtr<Track>::asPtr(trackBox->currentData()));
          OperationsXml::save();

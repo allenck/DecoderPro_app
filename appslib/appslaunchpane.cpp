@@ -191,7 +191,7 @@ QWidget* AppsLaunchPane::_buttonSpace = NULL;
  if (name == NULL) {
      name = conn->getManufacturer();
  }
- if (ConnectionStatus::instance()->isConnectionOk(conn->getInfo()))
+ if (ConnectionStatus::instance()->isConnectionOk(nullptr, conn->getInfo()))
  {
   //cs.setForeground(Color.black);
   cs->setStyleSheet("QLabel { color: black};");
@@ -285,8 +285,8 @@ QWidget* AppsLaunchPane::_buttonSpace = NULL;
         } else if (current!=(value)) {
          log->warn(tr("JMRI property %1 already set to %2, skipping reset to %3").arg(key).arg(current).arg(value));
         }
-    } catch (Exception e) {
-  log->error(tr("Unable to set JMRI property %1 to %2 due to exception %3").arg(key).arg(value).arg(e.getMessage()));
+    } catch (Exception* e) {
+  log->error(tr("Unable to set JMRI property %1 to %2 due to exception %3").arg(key).arg(value).arg(e->getMessage()));
     }
 }
 

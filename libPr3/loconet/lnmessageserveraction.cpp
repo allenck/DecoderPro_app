@@ -34,7 +34,7 @@ LnMessageServerAction::LnMessageServerAction()
         // disable action, as already run
         setEnabled(false);
     } catch (RemoteException ex) {
-        log.warn("LnMessageServerAction Exception: {}", ex.getMessage()); // NOI18N
+        log.warn("LnMessageServerAction Exception: {}", ex->getMessage()); // NOI18N
     }
 #endif
 }

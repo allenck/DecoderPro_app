@@ -23,6 +23,7 @@
 #include "joptionpane.h"
 #include "profilemanager.h"
 #include "guilafpreferencesmanager.h"
+#include "appsconfigurationmanager.h"
 
 // /*public*/ class FirstTimeStartUpWizard {
 
@@ -340,7 +341,7 @@ Connect::Connect(FirstTimeStartUpWizard* wizard) { this->wizard = wizard;}
         QCursor hourglassCursor = QCursor(Qt::WaitCursor);
         wizard->parent->setCursor(hourglassCursor);
         ConnectionConfig* connect = (ConnectionConfig*)wizard->connectionConfigPane->getCurrentObject();
-        ConfigureManager* cm = static_cast<ConfigureManager*>(InstanceManager::getNullableDefault("ConfigureManager"));
+        ConfigureManager* cm = qobject_cast<AppsConfigurationManager*>(InstanceManager::getNullableDefault("ConfigureManager"));
         if (cm != nullptr) {
             cm->registerPref(connect);
         }
@@ -350,8 +351,8 @@ Connect::Connect(FirstTimeStartUpWizard* wizard) { this->wizard = wizard;}
             try {
                 adp->_connect();
                 adp->configure();
-            } catch (Exception ex) {
-                wizard->log->error(ex.getLocalizedMessage(), ex);
+            } catch (Exception* ex) {
+                wizard->log->error(ex->getLocalizedMessage(), ex);
                 QCursor normalCursor = QCursor(Qt::ArrowCursor);//new Cursor(Cursor.DEFAULT_CURSOR);
                wizard-> parent->setCursor(normalCursor);
                 JOptionPane::showMessageDialog(nullptr,
@@ -367,7 +368,7 @@ Connect::Connect(FirstTimeStartUpWizard* wizard) { this->wizard = wizard;}
         static_cast<RosterConfigManager*>(InstanceManager::getDefault("RosterConfigManager"))->savePreferences(project);
         static_cast<GuiLafPreferencesManager*>(InstanceManager::getDefault("GuiLafPreferencesManager"))->savePreferences(project);
         wizard->connectionConfigPane->savePreferences();
-        static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->storePrefs();
+        qobject_cast<AppsConfigurationManager*>(InstanceManager::getDefault("ConfigureManager"))->storePrefs();
         emit finished();
         wizard->dispose();
 

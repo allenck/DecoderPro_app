@@ -17,7 +17,7 @@ CreateEditBlock::CreateEditBlock(QString blockName, LayoutEditor* editor, QWidge
  ui->sensorNameField->setText(this->layoutBlock->getOccupancySensorName());
  setWindowTitle(tr("Edit Block"));
  _Colors << "Black"<<"Dark Gray"<<"Gray"<<"Light Gray"<<"White"<<"Red"<<"Orange"<<"Yellow"<<"Green"<<"Blue"<<"Magenta";
- _colors << QColor(Qt::black) << QColor(Qt::darkGray) << QColor(Qt::gray) << QColor(Qt::lightGray) << QColor(Qt::white) << QColor(Qt::red) << QColor(255, 170, 0) << QColor(Qt::yellow ) << QColor(Qt::green) <<QColor(Qt::blue) <<QColor(Qt::magenta)<<QColor();
+ _colors << QColor(Qt::black) << QColor(Qt::darkGray) << QColor(Qt::gray) << QColor(Qt::lightGray) << QColor(Qt::white) << QColor(Qt::red) << QColor(255, 165, 0) << QColor(Qt::yellow ) << QColor(Qt::green) <<QColor(Qt::blue) <<QColor(Qt::magenta)<<QColor();
  ui->occupiedColorBox->clear();
  ui->extraColorBox->clear();
  ui->trackColorBox->clear();
@@ -52,7 +52,7 @@ void CreateEditBlock::on_blockEditDone_clicked()
   bool bOk;
   int iAddr = newName.toInt(&bOk);
   if(bOk && iAddr > 0)
-      newName = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->createSystemName(newName, "I");
+      newName = ((AbstractProxyManager*)InstanceManager::sensorManagerInstance())->createSystemName(newName, "I");
   if (layoutBlock->validateSensor(newName,/*this*/editor)==NULL)
   {
    // invalid sensor entered

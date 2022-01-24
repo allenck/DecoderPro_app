@@ -37,26 +37,26 @@ private:
 
 protected:
  /*protected*/ void doGet(HttpServletRequest* req, HttpServletResponse* resp)
-throw (ServletException, IOException);
+/*throw (ServletException, IOException)*/;
  /*protected*/ long getLastModified(HttpServletRequest* req);
  /*protected*/ void doHead(HttpServletRequest* req, HttpServletResponse* resp)
-throw (ServletException, IOException);
+/*throw (ServletException, IOException)*/;
  /*protected*/ void doPost(HttpServletRequest* req, HttpServletResponse* resp)
-throw (ServletException, IOException);
+/*throw (ServletException, IOException)*/;
  /*protected*/ void doPut(HttpServletRequest* req, HttpServletResponse* resp)
-throw (ServletException, IOException);
+/*throw (ServletException, IOException)*/;
  /*protected*/ void doDelete(HttpServletRequest* req, HttpServletResponse* resp)
-throw (ServletException, IOException);
+/*throw (ServletException, IOException)*/;
  /*protected*/ void doOptions(HttpServletRequest* req, HttpServletResponse* resp)
-throw (ServletException, IOException);
+/*throw (ServletException, IOException)*/;
  /*protected*/ void doTrace(HttpServletRequest* req, HttpServletResponse* resp)
- throw (ServletException, IOException);
+ /*throw (ServletException, IOException)*/;
  /*protected*/ void service(ServletRequest* req, ServletResponse* resp)
- throw (ServletException, IOException);
+ /*throw (ServletException, IOException)*/;
  /*protected*/ virtual void doList(HttpServletRequest* req, HttpServletResponse* resp)
- throw (ServletException, IOException);
+ /*throw (ServletException, IOException)*/;
  /*protected*/ void service(HttpServletRequest* req, HttpServletResponse* resp)
- throw (ServletException, IOException);
+ /*throw (ServletException, IOException)*/;
 
 
 friend class RequestHandler;
@@ -81,7 +81,7 @@ public:
     /*public*/ void setCharacterEncoding(QString charset);
     /*public*/ void setContentType(QString type);
     /*public*/ QString getContentType();
-    /*public*/ ServletOutputStream* getOutputStream() throw (IOException);
+    /*public*/ ServletOutputStream* getOutputStream() /*throw (IOException)*/;
     /*public*/ QString getCharacterEncoding();
     /*public*/ PrintWriter* getWriter() throw ( IOException);
     /*public*/ void setBufferSize(int size) throw (IllegalStateException);
@@ -89,7 +89,7 @@ public:
     /*public*/ void reset() throw (IllegalStateException);
       /*public*/ void resetBuffer() throw (IllegalStateException);
     /*public*/ bool isCommitted();
-    /*public*/ void flushBuffer() throw (IOException);
+    /*public*/ void flushBuffer() /*throw (IOException)*/;
     /*public*/ void setLocale(QLocale loc);
     /*public*/ QLocale getLocale();
     // HTTP SERVLET RESPONSE interface methods
@@ -101,9 +101,9 @@ public:
     /*public*/ void setHeader(QString name, QString value);
     /*public*/ void setIntHeader(QString name, int value);
     /*public*/ void setDateHeader(QString name, long date);
-    /*public*/ void sendError(int sc, QString msg) throw (IOException);
-    /*public*/ void sendError(int sc) throw (IOException);
-    /*public*/ void sendRedirect(QString location) throw (IOException);
+    /*public*/ void sendError(int sc, QString msg) /*throw (IOException)*/;
+    /*public*/ void sendError(int sc) /*throw (IOException)*/;
+    /*public*/ void sendRedirect(QString location) /*throw (IOException)*/;
     /*public*/ QString encodeURL(QString url);
     /*public*/ QString encodeRedirectURL(QString url);
     /*public*/ void addHeader(QString name, QString value);
@@ -132,7 +132,7 @@ public:
     int getContentLength() ;
     /*public*/ void write(int b) ;
     /*public*/ void write(QByteArray, int offset, int len)
- throw (IOException);
+ /*throw (IOException)*/;
 };
 #endif
 #endif // HTTPSERVLET_H

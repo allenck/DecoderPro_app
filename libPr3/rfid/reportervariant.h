@@ -24,7 +24,7 @@ public:
    {
     return ((TranspondingTag*)obj)->toString();
    }
-   throw IllegalArgumentException(QString("no cast for ReporterVariant to %1").arg(obj->metaObject()->className()));
+   throw new IllegalArgumentException(QString("no cast for ReporterVariant to %1").arg(obj->metaObject()->className()));
   }
   return v.toString();
  }

@@ -4,13 +4,15 @@
 #include "sensor.h"
 #include "abstractmanager.h"
 #include "libPr3_global.h"
+#include "providingmanager.h"
 
-class LIBPR3SHARED_EXPORT SensorManager : public AbstractManager
+class LIBPR3SHARED_EXPORT SensorManager : public ProvidingManager
 {
-    Q_OBJECT
+    //Q_OBJECT
+  Q_INTERFACES(ProvidingManager)
 public:
-    explicit SensorManager(QObject *parent = nullptr) : AbstractManager(parent) {}
-    SensorManager(SystemConnectionMemo* memo, QObject *parent = nullptr) : AbstractManager(memo,parent) {}
+//    explicit SensorManager(QObject *parent = nullptr) : AbstractManager(parent) {}
+//    SensorManager(SystemConnectionMemo* memo, QObject *parent = nullptr) : AbstractManager(memo,parent) {}
     /**
      * Interface for controlling sensors.
      *
@@ -49,7 +51,7 @@ public:
         virtual  Sensor* provideSensor(QString /*name*/) { return NULL;}
         //@Override
         /** {@inheritDoc} */
-        virtual /*default*/ /*public*/ Sensor* provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException)
+        virtual /*default*/ /*public*/ Sensor* provide(/*@Nonnull*/ QString name) /*throw (IllegalArgumentException)*/
         { return provideSensor(name); }
 
 
@@ -60,7 +62,7 @@ public:
          * @param name
          * @return null if no match found
          */
-        virtual Sensor* getSensor(QString /*name*/) const { return NULL;}
+        virtual Sensor* getSensor(QString /*name*/)  { return NULL;}
 
         // to free resources when no longer used
         virtual void dispose() const  {}
@@ -92,8 +94,8 @@ public:
          */
         virtual Sensor* newSensor(QString /*systemName*/, QString /*userName*/) { return NULL;}
 
-        virtual NamedBean* getByUserName(QString /*s*/)  const { return NULL;}
-        virtual NamedBean* getBySystemName(QString /*s*/) const { return NULL;}
+        virtual NamedBean* getByUserName(QString /*s*/)   { return NULL;}
+        virtual NamedBean* getBySystemName(QString /*s*/)  { return NULL;}
 
 //    virtual  QStringList getSystemNameList() const { return QStringList();}
 
@@ -124,9 +126,23 @@ public:
         * @param curAddress - The hardware address of the turnout we which to check.
         */
 
-        virtual QString getNextValidAddress(QString /*curAddress*/, QString /*prefix*/) {return "";}// throws JmriException;
+        QT_DEPRECATED virtual QString getNextValidAddress(QString /*curAddress*/, QString /*prefix*/) {return "";}// throws JmriException;
 
-        virtual QString createSystemName(QString /*curAddress*/, QString /*prefix*/) const {return "";}// throws JmriException;
+        /**
+         * Get the Next valid Sensor address.
+         * <p>
+         * @param curAddress the starting hardware address to get the next valid from.
+         * @param prefix system prefix, just system name, not type letter.
+         * @param ignoreInitialExisting false to return the starting address if it 
+         *                          does not exist, else true to force an increment.
+         * @return the next valid system name, excluding both system name prefix and type letter.
+         * @throws JmriException    if unable to get the current / next address, 
+         *                          or more than 10 next addresses in use.
+         */
+        //@Nonnull
+        virtual /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString /*curAddress*/, /*@Nonnull*/ QString /*prefix*/, bool /*ignoreInitialExisting*/) /*throw (JmriException)*/ {return "";}
+        
+        virtual QString createSystemName(QString /*curAddress*/, QString /*prefix*/)  /*throw (JmriException)*/ {return "";}
 
         virtual long getDefaultSensorDebounceGoingActive() {return 0;}
         virtual long getDefaultSensorDebounceGoingInActive() {return 0;}
@@ -141,10 +157,15 @@ public:
          * @return true if pull up/pull down configuration is supported.
          */
         virtual /*public*/ bool isPullResistanceConfigurable() {return false;}
+//    /*public*/ QString toString()  {return "SensorManager";}
+      virtual QObject* self() =0;
+//    QString getNamedBeanClass() const override {return "SensorManager";}
+//    /*public*/ QString getBeanTypeHandled(bool plural) const override {return tr(plural?"Sensors":"Sensor");}
+
 signals:
     
 public slots:
     
 };
-Q_DECLARE_INTERFACE(SensorManager, "Sensor manager")
+Q_DECLARE_INTERFACE(SensorManager, "SensorManager")
 #endif // SENSORMANAGER_H

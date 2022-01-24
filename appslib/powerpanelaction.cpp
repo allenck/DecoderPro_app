@@ -32,7 +32,7 @@ void PowerPanelAction::common()
 {
 
     // disable ourself if there is no power Manager
-    if (InstanceManager::getDefault("PowerManager") == NULL) {
+    if (InstanceManager::getNullableDefault("PowerManager") == NULL) {
         setEnabled(false);
     }
     connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));

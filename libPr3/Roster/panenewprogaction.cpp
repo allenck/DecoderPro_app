@@ -116,4 +116,5 @@ PNPLocoSelTreePane::PNPLocoSelTreePane(QLabel* s, ProgModeSelector* selector, QW
 }
 PNPPaneProgFrame::PNPPaneProgFrame(DecoderFile* decoderFile, RosterEntry* re, QString frameTitle, QString filename,Programmer* pProg, bool opsMode, QWidget *parent)
     : PaneProgFrame(decoderFile, re, frameTitle, filename,pProg,opsMode, parent){}
-QWidget* PNPPaneProgFrame::getModePane() {return NULL;}
+
+JPanel* PNPPaneProgFrame::getModePane() {return NULL;}

@@ -5,7 +5,7 @@
 #include <QIcon>
 #include <QList>
 #include "jdialog.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "exceptions.h"
 #include <QValidator>
 
@@ -13,9 +13,10 @@ class Component;
 class JTextField;
 class PropertyChangeEvent;
 class OptionPaneUI;
-class JOptionPane : public QWidget
+class JOptionPane : public QWidget, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
 
  /*public*/ static /*final*/ QVariant      UNINITIALIZED_VALUE;// = "uninitializedValue";
@@ -160,25 +161,26 @@ public:
  /*public*/ bool getWantsInput();
  /*public*/ void selectInitialValue();
  /*public*/ static int showConfirmDialog(QWidget* parentComponent,
-     QVariant message) throw (HeadlessException);
+     QVariant message) /*throw (HeadlessException)*/;
  /*public*/ static int showConfirmDialog(QWidget* parentComponent,
      QVariant message, QString title, int optionType)
-     throw (HeadlessException);
+     /*throw (HeadlessException)*/;
  /*public*/ static int showConfirmDialog(QWidget* parentComponent,
      QVariant message, QString title, int optionType, int messageType)
-     throw (HeadlessException);
+     /*throw (HeadlessException)*/;
  /*public*/ static int showConfirmDialog(QWidget* parentComponent,
      QVariant message, QString title, int optionType,
-     int messageType, QIcon icon) throw (HeadlessException);
- static QWidget* getWindowForComponent(QWidget* parentComponent) throw (HeadlessException);
+     int messageType, QIcon icon) /*throw (HeadlessException)*/;
+ static QWidget* getWindowForComponent(QWidget* parentComponent) /*throw (HeadlessException)*/;
  /*public*/ JDialog* createDialog(QWidget* parentComponent, QString title);
  /*public*/ JDialog* createDialog(QString title);
  /*public*/ void setValidator(QValidator* val);
+ QObject* self() override {return (QObject*)this;}
 
  signals:
 
 public slots:
- /*public*/ void propertyChange(PropertyChangeEvent* event);
+ /*public*/ void propertyChange(PropertyChangeEvent* event) override;
  void handleTextInput();
  void handleOk();
  void handleCancel();
@@ -199,11 +201,11 @@ private:
  /** Message type. */
  /*private*/ static int styleFromMessageType(int messageType);
  /*private*/ JDialog* createDialog(QWidget* parentComponent, QString title,
-         int style);
+         int style, int optionType =0);
  void common(QVariant message, int messageType = 0, int optionType = DEFAULT_OPTION,
              QIcon icon = QIcon(), QList<QVariant> options = QList<QVariant>(), QVariant initialValue = QVariant());
  /*private*/ void initDialog(/*final*/ JDialog* dialog, int style, QWidget* parentComponent);
- PropertyChangeSupport* changeSupport;
+ SwingPropertyChangeSupport* changeSupport;
  QWidget* layoutPane(JDialog* dialog);
  JTextField* f;
  QPushButton* btnOk;
@@ -223,7 +225,7 @@ protected:
   * <code>YES_NO_CANCEL_OPTION</code> or
   * <code>OK_CANCEL_OPTION</code>.
   */
- /*protected*/ int                   optionType;
+ /*protected*/ int                   optionType = 0;
  /** Currently selected value, will be a valid option, or
   * <code>UNINITIALIZED_VALUE</code> or <code>NULL</code>. */
  /*transient*/ /*protected*/ QVariant                value;

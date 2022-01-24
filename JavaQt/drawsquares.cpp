@@ -46,22 +46,20 @@ DrawSquares::DrawSquares(QObject *parent) : QObject(parent)
     }
     // paint alternate squares
     result = new BufferedImage(w, h, QImage::Format_Mono);//(w, h, BufferedImage::TYPE_INT_RGB);
-#if 0
-    Graphics2D g2d = result->createGraphics();
-    g2d.setColor(bgColor);
-    g2d.fillRect(0, 0, w, h); // plain rect background
-    if (sqColor != bgColor) {
-        g2d.setColor(sqColor);
-        for (int j = 0; j <= (w / dim); j++) {
-            for (int k = 0; k <= (h / dim); k++) {
-                if ((j + k) % 2 == 0) { // skip every other square
-                    g2d.fillRect(j * dim, k * dim, dim, dim); // gray squares
-                }
-            }
-        }
-    }
-    g2d.dispose();
-#else
+//    Graphics2D g2d = result->createGraphics();
+//    g2d.setColor(bgColor);
+//    g2d.fillRect(0, 0, w, h); // plain rect background
+//    if (sqColor != bgColor) {
+//        g2d.setColor(sqColor);
+//        for (int j = 0; j <= (w / dim); j++) {
+//            for (int k = 0; k <= (h / dim); k++) {
+//                if ((j + k) % 2 == 0) { // skip every other square
+//                    g2d.fillRect(j * dim, k * dim, dim, dim); // gray squares
+//                }
+//            }
+//        }
+//    }
+//    g2d.dispose();
     result->setColorCount(2);
     result->setColor(0, qRgba(bgColor.red(), bgColor.green(), bgColor.blue(), 255));
     result->setColor(1, qRgba(sqColor.red(), sqColor.green(), sqColor.blue(), 255));
@@ -85,7 +83,6 @@ DrawSquares::DrawSquares(QObject *parent) : QObject(parent)
       }
      }
     }
-#endif
     log->debug("DrawSquares ready");
     return result;
 }

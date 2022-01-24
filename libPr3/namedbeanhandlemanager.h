@@ -1,21 +1,22 @@
 #ifndef NAMEDBEANHANDLEMANAGER_H
 #define NAMEDBEANHANDLEMANAGER_H
-#include "abstractmanager.h"
+#include "abstractnamedbeanhandlemanager.h"
 #include "logger.h"
 #include "exceptions.h"
 #include "namedbeanhandle.h"
 #include <QList>
 #include "javaqt_global.h"
-//template <typename T> class NamedBeanhandle;
-//template <class T>
+#include "instancemanagerautodefault.h"
 
-class JAVAQTSHARED_EXPORT NamedBeanHandleManager:  public AbstractManager
+class JAVAQTSHARED_EXPORT NamedBeanHandleManager:  public AbstractNamedBeanHandleManager, public InstanceManagerAutoDefault
 {
-//Q_OBJECT
+  Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault)
+
 public:
 explicit NamedBeanHandleManager(QObject *parent = 0);
  ~NamedBeanHandleManager() {}
- NamedBeanHandleManager(const NamedBeanHandleManager&) : AbstractManager() {}
+ NamedBeanHandleManager(const NamedBeanHandleManager&) : AbstractNamedBeanHandleManager() {}
 //template <typename T>
 template<class T>
 NamedBeanHandle<T>* getNamedBeanHandle(QString name, T bean)
@@ -35,6 +36,7 @@ NamedBeanHandle<T>* getNamedBeanHandle(QString name, T bean)
  namedBeanHandles->append(temp);
  return temp;
 }
+QObject* self() {return (QObject*)this;}
 
 /**
 * A Method to update the name on a bean.
@@ -55,7 +57,7 @@ template<class T>
 /*public*/ void moveBean(NamedBean* oldBean, NamedBean* newBean, QString name);
 
 /*public*/ void updateBeanFromUserToSystem(NamedBean* bean);
-/*public*/ void updateBeanFromSystemToUser(NamedBean* bean) throw(JmriException);
+/*public*/ void updateBeanFromSystemToUser(NamedBean* bean) /*throw(JmriException)*/;
 // <typename T>
 //template<class T>
 /*public*/ bool inUse(QString name, NamedBean* bean);
@@ -66,22 +68,21 @@ template<class T>
 // to free resources when no longer used
 /*public*/ virtual void dispose()override;
 /*public*/ char systemLetter();
-/*public*/ QString getSystemPrefix() const override;
-/*public*/ char typeLetter() const override;
-/*public*/ QString makeSystemName(QString s)const override;
+/*public*/ QString getSystemPrefix()  override;
+/*public*/ QChar typeLetter()  override;
+/*public*/ QString makeSystemName(QString s) override;
 /*public*/ QStringList getSystemNameArray() override;
 /*public*/ QStringList getSystemNameList()override;
-PropertyChangeSupport* pcs; // = new PropertyChangeSupport(this);
-/*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l)override;
-/*public synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) override;
- /*public*/ void Register(NamedBean* n)const override;
-/*public*/ void deregister(NamedBean* n)const override;
+SwingPropertyChangeSupport* pcs; // = new SwingPropertyChangeSupport(this, nullptr);
+///*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l)override;
+///*public synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) override;
+ /*public*/ void Register(NamedBean* n) override;
+/*public*/ void deregister(NamedBean* n) override;
 /*public*/ int getXMLOrder()const override;
-/*public*/ NamedBean* getBySystemName(QString /*systemName*/) const override {return nullptr;}
-/*public*/ NamedBean* getByUserName(QString /*userName*/) const override{return nullptr;}
-/*public*/ QString getNamedBeanClass()const override {
-    return "NamedBean";
-}
+///*public*/ NamedBean* getBySystemName(QString /*systemName*/) const override {return nullptr;}
+///*public*/ NamedBean* getByUserName(QString /*userName*/) const override{return nullptr;}
+/*public*/ QString getBeanTypeHandled(bool plural) const override;
+/*public*/ /*Class<NamedBean>*/QString getNamedBeanClass() const override;
 signals:
 
 public slots:
@@ -101,7 +102,7 @@ Logger log;
 QList<QObject* >*  namedBeanHandles;// = new ArrayList<NamedBeanHandle>();
 protected:
 /*protected*/ void registerSelf();
-/*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);
+/*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n) const override;
 
 };
 Q_DECLARE_METATYPE(NamedBeanHandleManager)

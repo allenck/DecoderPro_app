@@ -15,7 +15,7 @@ public:
     /*public*/ QDomElement store(QObject* o) override;
     QDomElement addTurnoutElement(NamedBeanHandle<Turnout*>* to, QString which);
     QDomElement addTurnoutElement(Turnout* to);
-    /*public*/ bool load(QDomElement element) throw (Exception) override;
+    /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException) override;
     NamedBeanHandle<Turnout*>* loadTurnout(QDomElement e);
     /*public*/ void load(QDomElement element, QObject* o) throw (Exception) override;
 

@@ -67,7 +67,7 @@ Trigger(name,parent)
 }
 
 // ActionListener function(s)
-/*public*/ void ButtonTrigger::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void ButtonTrigger::actionPerformed(JActionEvent* /*e*/)
 {
     log->debug("ButtonTrigger.actionPerformed() " + this->getName());
 // TODO:        this->click(((QAbstractButton*) e.getSource()).isSelected());

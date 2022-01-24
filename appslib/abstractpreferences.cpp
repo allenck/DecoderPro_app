@@ -32,13 +32,13 @@ AbstractPreferences::AbstractPreferences()
  * performance.
  *
  * <p>The SPI methods fall into three groups concerning exception
- * behavior. The <tt>getSpi</tt> method should never throw exceptions, but it
+ * behavior. The <tt>getSpi</tt> method should never throw new exceptions, but it
  * doesn't really matter, as any exception thrown by this method will be
  * intercepted by {@link #get(String,String)}, which will return the specified
  * default value to the caller.  The <tt>removeNodeSpi, keysSpi,
  * childrenNamesSpi, syncSpi</tt> and <tt>flushSpi</tt> methods are specified
- * to throw {@link BackingStoreException}, and the implementation is required
- * to throw this checked exception if it is unable to perform the operation.
+ * to throw new {@link BackingStoreException}, and the implementation is required
+ * to throw new this checked exception if it is unable to perform the operation.
  * The exception propagates outward, causing the corresponding API method
  * to fail.
  *
@@ -50,7 +50,7 @@ AbstractPreferences::AbstractPreferences()
  * no information and their effects are not required to become permanent until
  * a subsequent call to {@link Preferences#flush()} or
  * {@link Preferences#sync()}. Generally speaking, these SPI methods should not
- * throw exceptions.  In some implementations, there may be circumstances
+ * throw new exceptions.  In some implementations, there may be circumstances
  * under which these calls cannot even enqueue the requested operation for
  * later processing.  Even under these circumstances it is generally better to
  * simply ignore the invocation and return, rather than throwing an
@@ -60,7 +60,7 @@ AbstractPreferences::AbstractPreferences()
  * successfully been made permanent.
  *
  * <p>There is one circumstance under which <tt>putSpi, removeSpi and
- * childSpi</tt> <i>should</i> throw an exception: if the caller lacks
+ * childSpi</tt> <i>should</i> throw new an exception: if the caller lacks
  * sufficient privileges on the underlying operating system to perform the
  * requested operation.  This will, for instance, occur on most systems
  * if a non-privileged user attempts to modify system preferences.
@@ -70,7 +70,7 @@ AbstractPreferences::AbstractPreferences()
  * to modify contents of some key in a registry.)  Under any of these
  * circumstances, it would generally be undesirable to let the program
  * continue executing as if these operations would become permanent at a later
- * time.  While implementations are not required to throw an exception under
+ * time.  While implementations are not required to throw new an exception under
  * these circumstances, they are encouraged to do so.  A {@link
  * SecurityException} would be appropriate.
  *
@@ -139,16 +139,16 @@ AbstractPreferences::AbstractPreferences()
 
     if (parent==NULL) {
         if (name != (""))
-            throw  IllegalArgumentException("Root name '"+name+
+            throw new  IllegalArgumentException("Root name '"+name+
                                                "' must be \"\"");
         this->_absolutePath = "/";
         root = this;
     } else {
         if (name.indexOf('/') != -1)
-            throw  IllegalArgumentException("Name '" + name +
+            throw new  IllegalArgumentException("Name '" + name +
                                              "' contains '/'");
         if (name == (""))
-          throw  IllegalArgumentException("Illegal name: empty string");
+          throw new  IllegalArgumentException("Illegal name: empty string");
 
         root = parent->root;
         _absolutePath = (parent==root ? ("/" + name)
@@ -180,17 +180,17 @@ AbstractPreferences::AbstractPreferences()
 /*public*/ void AbstractPreferences::put(QString key, QString value)
 {
 // if (key.isEmpty() || value.isEmpty())
-//     throw NullPointerException();
+//     throw new NullPointerException();
  if (key.length() > MAX_KEY_LENGTH
     || value.length() > MAX_VALUE_LENGTH)
-  throw  IllegalArgumentException("key ("
+  throw new  IllegalArgumentException("key ("
     + QString::number(key.length()) + ")"
     + " or value ("
     + QString::number(value.length()) + ")"
     + " to large");
 //    /*synchronized*/(lock) {
  if (removed)
-     throw IllegalStateException("Node has been removed.");
+     throw new IllegalStateException("Node has been removed.");
 
  putSpi(key, value);
  enqueuePreferenceChangeEvent(key, value);
@@ -223,15 +223,15 @@ AbstractPreferences::AbstractPreferences()
  */
 /*public*/ QString AbstractPreferences::get(QString key, QString def) {
     if (key==NULL)
-        throw NullPointerException("Null key");
+        throw new NullPointerException("Null key");
 //    /*synchronized*/(lock) {
         if (removed)
-            throw IllegalStateException("Node has been removed.");
+            throw new IllegalStateException("Node has been removed.");
 
         QString result = NULL;
         try {
             result = getSpi(key);
-        } catch (Exception e) {
+        } catch (Exception* e) {
             // Ignoring exception causes default to be returned
         }
         if(result == "preference:")
@@ -394,8 +394,8 @@ AbstractPreferences::AbstractPreferences()
         if (value != NULL)
             result = value.toLong(&bOk);
         if(!bOk)
-         throw NumberFormatException();
-    } catch (NumberFormatException e) {
+         throw new NumberFormatException();
+    } catch (NumberFormatException* e) {
         // Ignoring exception causes specified default to be returned
     }
 
@@ -509,8 +509,8 @@ AbstractPreferences::AbstractPreferences()
         bool bOk;
         if (value != NULL)
             result = (value.toFloat(&bOk));
-        if(!bOk) throw NumberFormatException();
-    } catch (NumberFormatException e) {
+        if(!bOk) throw new NumberFormatException();
+    } catch (NumberFormatException* e) {
         // Ignoring exception causes specified default to be returned
     }
 
@@ -566,8 +566,8 @@ AbstractPreferences::AbstractPreferences()
         bool bOk;
         if (value != NULL)
             result =(value.toDouble(&bOk));
-        if(!bOk) throw NumberFormatException();
-    } catch (NumberFormatException e) {
+        if(!bOk) throw new NumberFormatException();
+    } catch (NumberFormatException* e) {
         // Ignoring exception causes specified default to be returned
     }
 
@@ -636,7 +636,7 @@ AbstractPreferences::AbstractPreferences()
  * @throws IllegalStateException if this node (or an ancestor) has been
  *         removed with the {@link #removeNode()} method.
  */
-/*public*/ QStringList AbstractPreferences::keys() throw (BackingStoreException) {
+/*public*/ QStringList AbstractPreferences::keys() /*throw (BackingStoreException)*/ {
     /*synchronized(lock)*/ {
         if (removed)
             throw new IllegalStateException("Node has been removed.");
@@ -665,7 +665,7 @@ AbstractPreferences::AbstractPreferences()
  *         removed with the {@link #removeNode()} method.
  * @see #cachedChildren()
  */
-/*public*/QStringList AbstractPreferences::childrenNames() throw (BackingStoreException) {
+/*public*/QStringList AbstractPreferences::childrenNames() /*throw (BackingStoreException)*/ {
     /*synchronized(lock)*/ {
         if (removed)
             throw new IllegalStateException("Node has been removed.");
@@ -824,7 +824,7 @@ AbstractPreferences::AbstractPreferences()
  *         <tt>pathname</tt> is not the empty string (<tt>""</tt>).
  */
 /*public*/ bool AbstractPreferences::nodeExists(QString path)
-    throw (BackingStoreException)
+//    throw (BackingStoreException)
 {
  /*synchronized(lock)*/
  {
@@ -847,7 +847,7 @@ AbstractPreferences::AbstractPreferences()
  * tokenizer contains <name> {'/' <name>}*
  */
 /*private*/ bool AbstractPreferences::nodeExists(StringTokenizer* path)
-    throw (BackingStoreException)
+//    throw (BackingStoreException)
 {
  QString token = path->nextToken();
  if (token == ("/"))  // Check for consecutive slashes
@@ -900,7 +900,7 @@ AbstractPreferences::AbstractPreferences()
  *         due to a failure in the backing store, or inability to
  *         communicate with it.
  */
-/*public*/ void AbstractPreferences::removeNode() throw (BackingStoreException) {
+/*public*/ void AbstractPreferences::removeNode() /*throw (BackingStoreException)*/ {
     if (this==root)
         throw new UnsupportedOperationException("Can't remove the root!");
     /*synchronized(parent.lock)*/ {
@@ -913,7 +913,7 @@ AbstractPreferences::AbstractPreferences()
  * Called with locks on all nodes on path from parent of "removal root"
  * to this (including the former but excluding the latter).
  */
-/*private*/ void AbstractPreferences::removeNode2() throw (BackingStoreException) {
+/*private*/ void AbstractPreferences::removeNode2() /*throw (BackingStoreException)*/ {
     /*synchronized(lock)*/ {
         if (removed)
             throw new IllegalStateException("Node already removed.");
@@ -932,7 +932,7 @@ AbstractPreferences::AbstractPreferences()
             try {
                 i.next()->removeNode2();
 //                i.remove();
-            } catch (BackingStoreException x) { }
+            } catch (BackingStoreException* x) { }
         }
 
         // Now we have no descendants - it's time to die!
@@ -1101,8 +1101,8 @@ AbstractPreferences::AbstractPreferences()
  * not been removed.  (The implementor needn't check for either of these
  * things.)
  *
- * <p> Generally speaking, this method should not throw an exception
- * under any circumstances.  If, however, if it does throw an exception,
+ * <p> Generally speaking, this method should not throw new an exception
+ * under any circumstances.  If, however, if it does throw new an exception,
  * the exception will be intercepted and treated as a <tt>NULL</tt>
  * return value.
  *
@@ -1148,7 +1148,7 @@ AbstractPreferences::AbstractPreferences()
  *         due to a failure in the backing store, or inability to
  *         communicate with it.
  */
-/*protected*/ /*abstract*/ void AbstractPreferences::removeNodeSpi() throw (BackingStoreException) {}
+/*protected*/ /*abstract*/ void AbstractPreferences::removeNodeSpi() /*throw new (BackingStoreException)*/ {}
 
 /**
  * Returns all of the keys that have an associated value in this
@@ -1167,7 +1167,7 @@ AbstractPreferences::AbstractPreferences()
  *         due to a failure in the backing store, or inability to
  *         communicate with it.
  */
-/*protected*/ /*abstract*/ QStringList AbstractPreferences::keysSpi() throw (BackingStoreException) {return QStringList();}
+/*protected*/ /*abstract*/ QStringList AbstractPreferences::keysSpi() /*throw (BackingStoreException)*/ {return QStringList();}
 /**
  * Returns the names of the children of this preference node.  (The
  * returned array will be of size zero if this node has no children.)
@@ -1186,7 +1186,7 @@ AbstractPreferences::AbstractPreferences()
  *         due to a failure in the backing store, or inability to
  *         communicate with it.
  */
-/*protected*/ /*abstract*/ QStringList AbstractPreferences::childrenNamesSpi() throw (BackingStoreException) {return QStringList();}   // throws BackingStoreException;
+/*protected*/ /*abstract*/ QStringList AbstractPreferences::childrenNamesSpi() /*throw (BackingStoreException)*/ {return QStringList();}   // throws BackingStoreException;
 
 /**
  * Returns the named child if it exists, or <tt>NULL</tt> if it does not.
@@ -1218,7 +1218,7 @@ AbstractPreferences::AbstractPreferences()
  *         communicate with it.
  */
 /*protected*/ AbstractPreferences* AbstractPreferences::getChild(QString nodeName)
-        throw (BackingStoreException) {
+        /*throw (BackingStoreException)*/ {
     /*synchronized(lock)*/ {
         // assert kidCache.get(nodeName)==NULL;
         QStringList kidNames = childrenNames();
@@ -1290,11 +1290,11 @@ AbstractPreferences::AbstractPreferences()
  *         removed with the {@link #removeNode()} method.
  * @see #flush()
  */
-/*public*/ void AbstractPreferences::sync() throw (BackingStoreException) {
+/*public*/ void AbstractPreferences::sync()/* throw (BackingStoreException)*/ {
     sync2();
 }
 
-/*private*/ void AbstractPreferences::sync2() throw (BackingStoreException)
+/*private*/ void AbstractPreferences::sync2() /*throw (BackingStoreException)*/
 {
  QList<AbstractPreferences*> cachedKids;
 
@@ -1328,7 +1328,7 @@ AbstractPreferences::AbstractPreferences()
  *         due to a failure in the backing store, or inability to
  *         communicate with it.
  */
-/*protected*/ /*abstract*/ void AbstractPreferences::syncSpi() throw (BackingStoreException) {throw BackingStoreException();}
+/*protected*/ /*abstract*/ void AbstractPreferences::syncSpi() /*throw (BackingStoreException)*/ {throw new BackingStoreException();}
 
 /**
  * Implements the <tt>flush</tt> method as per the specification in
@@ -1352,11 +1352,11 @@ AbstractPreferences::AbstractPreferences()
  *         communicate with it.
  * @see #flush()
  */
-/*public*/ void AbstractPreferences::flush() throw (BackingStoreException) {
+/*public*/ void AbstractPreferences::flush() /*throw (BackingStoreException)*/ {
     flush2();
 }
 
-/*private*/ void AbstractPreferences::flush2() throw (BackingStoreException)
+/*private*/ void AbstractPreferences::flush2() /*throw (BackingStoreException)*/
 {
  QList<AbstractPreferences*> cachedKids;
 
@@ -1391,7 +1391,7 @@ AbstractPreferences::AbstractPreferences()
  *         due to a failure in the backing store, or inability to
  *         communicate with it.
  */
-/*protected*/ /*abstract*/ void AbstractPreferences::flushSpi() throw (BackingStoreException) { throw BackingStoreException();}
+/*protected*/ /*abstract*/ void AbstractPreferences::flushSpi() /*throw (BackingStoreException)*/ { throw new BackingStoreException();}
 
 /**
  * Returns <tt>true</tt> iff this node (or an ancestor) has been
@@ -1568,7 +1568,7 @@ NodeChangeListener[] nodeListeners() {
  *         backing store.
  */
 /*public*/ void AbstractPreferences::exportNode(QTextStream* os)
-    throw (IOException, BackingStoreException)
+//    throw new (IOException, BackingStoreException)
 {
     XmlSupport::_export(os, this, false);
 }
@@ -1584,7 +1584,7 @@ NodeChangeListener[] nodeListeners() {
  *         backing store.
  */
 /*public*/ void AbstractPreferences::exportSubtree(QTextStream* os)
-    throw (IOException, BackingStoreException)
+//    throw (IOException, BackingStoreException)
 {
     XmlSupport::_export(os, this, true);
 }

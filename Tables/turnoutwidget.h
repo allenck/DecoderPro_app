@@ -14,7 +14,7 @@ class UserPreferencesManager;
 class JTextField;
 class JmriJFrame;
 class UserPreferencesManager;
-class ActionEvent;
+class JActionEvent;
 class LIBTABLESSHARED_EXPORT TurnoutWidget : public QWidget
 {
     Q_OBJECT
@@ -34,8 +34,8 @@ private slots:
     void on_chkSpeedDetails_toggled(bool bState);
 //    void on_btnAdd_clicked();
     void on_chkAuto_toggled(bool bState);
-    /*private*/ void canAddRange(ActionEvent* e = 0);
-    void okPressed(ActionEvent* e = 0);
+    /*private*/ void canAddRange(JActionEvent* e = 0);
+    void okPressed(JActionEvent* e = 0);
 
 private:
     Ui::TurnoutWidget *ui;
@@ -68,7 +68,7 @@ private:
 protected:
     /*protected*/ void setDefaultSpeeds(QWidget* _who);
 protected slots:
-    /*protected*/ void addPressed(ActionEvent* e = 0);
+    /*protected*/ void addPressed(JActionEvent* e = 0);
  friend class RangeActionListener;
  friend class OkButtonActionListener;
 };
@@ -79,7 +79,7 @@ class OkButtonActionListener : public ActionListener
 public:
  OkButtonActionListener(TurnoutWidget* widget);
 public slots:
- void actionPerformed(ActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0);
 };
 
 class CancelButtonActionListener : public ActionListener
@@ -89,7 +89,7 @@ class CancelButtonActionListener : public ActionListener
 public:
  CancelButtonActionListener(TurnoutWidget* widget);
 public slots:
- void actionPerformed(ActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0);
 };
 
 class RangeActionListener : public ActionListener
@@ -99,7 +99,7 @@ class RangeActionListener : public ActionListener
 public:
  RangeActionListener(TurnoutWidget* widget);
 public slots:
- void actionPerformed(ActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0);
 };
 
 #endif // TURNOUTWIDGET_H

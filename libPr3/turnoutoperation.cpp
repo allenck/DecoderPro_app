@@ -12,7 +12,7 @@
 //    nonce = false;		// created just for one turnout and not reusable
 //    name = n;
 //    TurnoutOperationManager.getInstance()->addOperation(this);
-//    pcs = new PropertyChangeSupport(this);
+//    pcs = new SwingPropertyChangeSupport(this, nullptr);
 //}
 /**
  * Framework for automating reliable turnout operation. This interface allows
@@ -92,22 +92,22 @@
  */
 //public abstract class TurnoutOperation implements Comparable<Object> {
 
-TurnoutOperation::TurnoutOperation(QString n, QObject *parent)
+TurnoutOperation::TurnoutOperation(QString n, QObject *parent) : SwingPropertyChangeSupport(this, parent)
 {
  feedbackModes = 0;
  nonce = false;		// created just for one turnout and not reusable
  name = n;
  this->parent = parent;
  TurnoutOperationManager::getInstance()->addOperation(this);
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
 }
 
-TurnoutOperation::TurnoutOperation(TurnoutOperation & other) : QObject(parent)
+TurnoutOperation::TurnoutOperation(TurnoutOperation & other) : SwingPropertyChangeSupport(this, parent)
 {this->parent = other.parent;
  this->name = other.name;
  this->feedbackModes = other.feedbackModes;
  this->nonce = other.nonce;
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
 }
 
 /**
@@ -247,11 +247,11 @@ pcs->firePropertyChange("Deleted", QVariant(), QVariant());		// this will remove
 bool result = false;
 #if 1 // TODO:
 TurnoutManager* tm = InstanceManager::turnoutManagerInstance();
-QStringList turnouts = ((ProxyTurnoutManager*)tm)->getSystemNameList();
+QStringList turnouts = ((ProxyTurnoutManager*)tm)->AbstractProxyManager::getSystemNameList();
 QStringListIterator iter(turnouts);
 while (iter.hasNext())
 {
- Turnout* t = (Turnout*)((ProxyTurnoutManager*)tm)->getBySystemName(iter.next());
+ Turnout* t = (Turnout*)((ProxyTurnoutManager*)tm)->AbstractProxyManager::getBySystemName(iter.next());
  if (t!=NULL && ((AbstractTurnout*)t)->getTurnoutOperation() == this)
  {
   result = true;
@@ -281,15 +281,15 @@ TurnoutOperationManager::getInstance()->firePropertyChange("Content", QVariant()
     return op;
 }
 
-/*
- * property change support
- */
-/*public synchronized*/ void TurnoutOperation::addPropertyChangeListener(PropertyChangeListener* l) {
-    pcs->addPropertyChangeListener(l);
-}
-/*public synchronized*/ void TurnoutOperation::removePropertyChangeListener(PropertyChangeListener* l) {
-    pcs->removePropertyChangeListener(l);
-}
+///*
+// * property change support
+// */
+///*public synchronized*/ void TurnoutOperation::addPropertyChangeListener(PropertyChangeListener* l) {
+//    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
+//}
+///*public synchronized*/ void TurnoutOperation::removePropertyChangeListener(PropertyChangeListener* l) {
+//    pcs->removePropertyChangeListener(l);
+//}
 
 /**
  * @param mode feedback mode for a turnout

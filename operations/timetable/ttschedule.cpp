@@ -75,7 +75,7 @@ namespace TimeTable
         try {
             _dm->calculateScheduleTrains(getScheduleId(), false);
             _dm->calculateScheduleTrains(getScheduleId(), true);
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             _startHour = oldStartHour;  // Roll back start hour change
             throw ex;
         }
@@ -92,7 +92,7 @@ namespace TimeTable
      */
     /*public*/ void TTSchedule::setDuration(int newDuration) {
         if (newDuration < 1 || newDuration > 24) {
-            throw IllegalArgumentException(TimeTableDataManager::DURATION_RANGE);
+            throw new IllegalArgumentException(TimeTableDataManager::DURATION_RANGE);
         }
         int oldDuration = _duration;
         _duration = newDuration;
@@ -100,7 +100,7 @@ namespace TimeTable
         try {
             _dm->calculateScheduleTrains(getScheduleId(), false);
             _dm->calculateScheduleTrains(getScheduleId(), true);
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             _duration = oldDuration;  // Roll back duration change
             throw ex;
         }

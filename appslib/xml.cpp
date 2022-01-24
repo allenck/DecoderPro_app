@@ -24,6 +24,8 @@ Xml::Xml() {}
     /*static final*/ QString Xml::_TRUE = "true"; // NOI18N
     /*static final*/ QString Xml::_FALSE = "false"; // NOI18N
     /*static final*/ QString Xml::LOAD = "load"; // NOI18N
+    /*static final*/ QString Xml::DIVISION = "division"; // NOI18N
+    /*static final*/ QString Xml::DIVISIONS = "divisions"; // NOI18N
 
 // LocationManager.java
 /*static*/ /*final*/ QString Xml::LOCATIONS = "locations"; // NOI18N
@@ -325,6 +327,11 @@ Xml::Xml() {}
     /*static final*/ QString Xml::START_UP = "startUp"; // NOI18N
     /*static final*/ QString Xml::SHUT_DOWN = "shutDown"; // NOI18N
 
+    /*static*/ /*final*/ QString Xml::CONDUCTOR_OPTIONS = "conductorOptions"; // NOI18N
+    /*static*/ /*final*/ QString Xml::SHOW_HYPHEN_NAME = "showHyphenName"; // NOI18N
+
+
+
     /*static final*/ QString Xml::ROW_COLOR_OPTIONS = "rowColorOptions"; // NOI18N
     /*static final*/ QString Xml::ROW_COLOR_MANUAL = "rowColorManual"; // NOI18N
     /*static final*/ QString Xml::ROW_COLOR_BUILT = "rowColorBuilt"; // NOI18N
@@ -615,3 +622,5 @@ Xml::Xml() {}
 /*static final*/ QString Xml::SWITCH_LIST_TRACK = "switchListTrack";
 /*static final*/ QString Xml::HOLD_CAR = "holdCar";
 
+// SwitchListCreator
+/*static*/ /*final*/ QString Xml::SWITCHLIST_CREATOR = "switchlistCreator"; // NOI18N

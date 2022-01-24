@@ -136,7 +136,7 @@
     adjustSize();
 }
 
-/*public*/ void SendPacketFrame::sendButtonActionPerformed(ActionEvent* /*e*/) {
+/*public*/ void SendPacketFrame::sendButtonActionPerformed(JActionEvent* /*e*/) {
     cs->sendPacket(createPacket(packetTextField->text()), 1);
 }
 
@@ -165,7 +165,7 @@
  *
  * @param e
  */
-/*public*/ void SendPacketFrame::runButtonActionPerformed(ActionEvent* /*e*/)
+/*public*/ void SendPacketFrame::runButtonActionPerformed(JActionEvent* /*e*/)
 {
     if (!mRunButton->isChecked()) {
         return;
@@ -195,7 +195,7 @@ void SendPacketFrame::startSequenceDelay() {
     int delay = 500;   // default delay if non specified, or format bad
     try {
         delay = mDelayField->at(mNextSequenceElement)->text().toInt();
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException* e) {
     }
 
     // increment to next line at completion

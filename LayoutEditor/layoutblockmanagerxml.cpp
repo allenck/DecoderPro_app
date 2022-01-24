@@ -30,7 +30,7 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
 {
  QDomElement layoutblocks = doc.createElement("layoutblocks");
  //setStoreElementClass(layoutblocks);
- layoutblocks.setAttribute("class", "jmri.jmrit.display.layouteditor.configurexml.LayoutBlockManagerXml");
+ layoutblocks.setAttribute("class", "jmri.jmrit.display.layoutEditor.configurexml.LayoutBlockManagerXml");
  LayoutBlockManager* tm = (LayoutBlockManager*) o;
  if (tm->isAdvancedRoutingEnabled())
  {
@@ -66,9 +66,9 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
     elem.setAttribute("occupancysensor", b->getOccupancySensorName());
    }
    elem.setAttribute("occupiedsense", b->getOccupiedSense());
-   elem.setAttribute("trackcolor", LayoutBlock::colorToString(b->getBlockTrackColor()));
-   elem.setAttribute("occupiedcolor", LayoutBlock::colorToString(b->getBlockOccupiedColor()));
-   elem.setAttribute("extracolor", LayoutBlock::colorToString(b->getBlockExtraColor()));
+   elem.setAttribute("trackcolor", ColorUtil::colorToColorName(b->getBlockTrackColor()));
+   elem.setAttribute("occupiedcolor", ColorUtil::colorToColorName(b->getBlockOccupiedColor()));
+   elem.setAttribute("extracolor", ColorUtil::colorToColorName(b->getBlockExtraColor()));
    layoutblocks.appendChild(elem);
    if (b->getMemoryName() != "")
    {
@@ -93,7 +93,7 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
  */
 /*public*/ void LayoutBlockManagerXml::setStoreElementClass(QDomElement layoutblocks)
 {
- layoutblocks.setAttribute("class",                        "jmri.jmrit.display.configurexml.LayoutBlockManagerXml");
+ layoutblocks.setAttribute("class", "jmri.jmrit.display.layoutEditor.configurexml.LayoutBlockManagerXml");
 }
 
 /*public*/ void LayoutBlockManagerXml::load(QDomElement /*element*/, QObject* /*o*/) throw (Exception) {
@@ -127,10 +127,10 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
  try
  {
   tm->enableAdvancedRouting(layoutblocks.attribute("blockrouting")=="true");
- } catch (DataConversionException e1) {
+ } catch (DataConversionException* e1) {
      log->warn("unable to convert layout block manager blockrouting attribute");
  }
- catch (NullPointerException e) {  // considered normal if the attribute is not present
+ catch (NullPointerException* e) {  // considered normal if the attribute is not present
  }
  if (layoutblocks.attribute("routingStablisedSensor") != "")
  {
@@ -138,7 +138,7 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
   {
    tm->setStabilisedSensor(layoutblocks.attribute("routingStablisedSensor"));
   }
-  catch (JmriException e) {
+  catch (JmriException* e) {
   }
  }
 
@@ -165,38 +165,32 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
   if (b!=NULL)
   {
    // set attributes
-   QColor color = LayoutBlock::stringToColor(((layoutblockList.at(i).toElement())).
-                                            attribute("trackcolor"));
+   QColor color = ColorUtil::stringToColor(((layoutblockList.at(i).toElement())).attribute("trackcolor"));
    b->setBlockTrackColor(color);
-   color = LayoutBlock::stringToColor(((layoutblockList.at(i).toElement()))
-                                        .attribute("occupiedcolor"));
+   color = ColorUtil::stringToColor(((layoutblockList.at(i).toElement())).attribute("occupiedcolor"));
    b->setBlockOccupiedColor(color);
-   QString a = ((layoutblockList.at(i).toElement()))
-                                        .attribute("extracolor");
+   QString a = ((layoutblockList.at(i).toElement())).attribute("extracolor");
    if (a!="")
    {
-    b->setBlockExtraColor(LayoutBlock::stringToColor(a));
+    b->setBlockExtraColor(ColorUtil::stringToColor(a));
    }
    a = ((layoutblockList.at(i).toElement())).attribute("occupancysensor");
    if (a!="")
    {
     b->setOccupancySensorName(a);
    }
-   a = ((layoutblockList.at(i).toElement()))
-                                        .attribute("memory");
+   a = ((layoutblockList.at(i).toElement())).attribute("memory");
    if (a!=NULL)
    {
     b->setMemoryName(a);
    }
-   a = ((layoutblockList.at(i).toElement())).
-                                        attribute("occupancysensorsense");
+   a = ((layoutblockList.at(i).toElement())).attribute("occupancysensorsense");
    int sense = Sensor::ACTIVE;
    try
    {
-    sense = ((layoutblockList.at(i).toElement())).
-                                        attribute("occupiedsense").toInt();
+    sense = ((layoutblockList.at(i).toElement())).attribute("occupiedsense").toInt();
    }
-   catch (DataConversionException e)
+   catch (DataConversionException* e)
    {
     log->error("failed to convert occupiedsense attribute");
    }
@@ -208,7 +202,7 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
     {
      b->setBlockMetric((stMetric).toInt());
     }
-    catch (NumberFormatException e)
+    catch (NumberFormatException* e)
     {
      log->error("failed to convert metric attribute for block " + b->getDisplayName());
     }
@@ -231,13 +225,13 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
  // if old manager exists, remove it from configuration process
  if (InstanceManager::getDefault("LayoutBlockManager") != NULL)
   // TODO: imlement ConfigXmlManager
-  static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->deregister(
-            static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager")) );
+  qobject_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->deregister(
+            qobject_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager")) );
 
  // register new one with InstanceManager
  LayoutBlockManager* pManager = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
  // register new one for configuration
- ConfigureManager* cm =static_cast<ConfigureManager*>(InstanceManager::getNullableDefault("ConfigureManager"));
+ ConfigureManager* cm =qobject_cast<ConfigureManager*>(InstanceManager::getNullableDefault("ConfigureManager"));
  if(cm != nullptr)
   cm->registerConfig(pManager, Manager::LAYOUTBLOCKS);
 #endif

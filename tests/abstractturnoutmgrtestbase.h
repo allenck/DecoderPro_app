@@ -41,16 +41,17 @@ protected:
  friend class LnTurnoutManagerTest;
 };
 
-class ListenO4 : public PropertyChangeListener
+class ListenO4 : public QObject, public PropertyChangeListener
 {
     Q_OBJECT
-    AbstractTurnoutMgrTestBase* base;
+    Q_INTERFACES(PropertyChangeListener)AbstractTurnoutMgrTestBase* base;
 public:
     ListenO4(AbstractTurnoutMgrTestBase* base) {this->base = base;}
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* /*e*/) {
         base->listenerResult = true;
     }
+QObject* self() {return (QObject*)this;}
 };
 
 #endif // ABSTRACTTURNOUTMGRTESTBASE_H

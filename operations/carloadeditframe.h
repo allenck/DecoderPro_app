@@ -33,10 +33,10 @@ namespace Operations
   QLabel* quanity;//= new JLabel("0");
 
   // major buttons
-  QPushButton* addButton;//= new JButton(Bundle.getMessage("Add"));
-  QPushButton* deleteButton;//= new JButton(Bundle.getMessage("Delete"));
-  QPushButton* replaceButton;//= new JButton(Bundle.getMessage("Replace"));
-  QPushButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
+  JButton* addButton;//= new JButton(Bundle.getMessage("Add"));
+  JButton* deleteButton;//= new JButton(Bundle.getMessage("Delete"));
+  JButton* replaceButton;//= new JButton(Bundle.getMessage("Replace"));
+  JButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
 
   // combo boxes
   JComboBox* loadComboBox;

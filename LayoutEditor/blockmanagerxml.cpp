@@ -4,7 +4,7 @@
 #include "instancemanager.h"
 #include "level.h"
 #include "path.h"
-
+#include "abstractblockmanager.h"
 BlockManagerXml::BlockManagerXml(QObject *parent) :
     AbstractMemoryManagerConfigXML(parent)
 {
@@ -59,7 +59,7 @@ BlockManagerXml::~BlockManagerXml()
  BlockManager* bm = (BlockManager*) o;
  if (bm!=NULL)
  {
-  QStringListIterator iter( bm->getSystemNameList());
+  QStringListIterator iter( ((AbstractManager*)bm)->getSystemNameList());
 
   // don't return an element if there are not blocks to include
   if (!iter.hasNext()) return QDomElement();
@@ -71,7 +71,7 @@ BlockManagerXml::~BlockManagerXml()
   {
    QString sname = iter.next();
    if (sname==NULL) log->error("System name NULL during store");
-   Block* b = (Block*)bm->getBySystemName(sname);
+   Block* b = (Block*)((AbstractManager*)bm)->getBySystemName(sname);
    // the following NULL check is to catch a NULL pointer exception that sometimes was found to happen
    if (b==NULL) log->error("Null block during store - sname = "+sname);
    QDomElement elem = doc.createElement("block");
@@ -97,12 +97,12 @@ BlockManagerXml::~BlockManagerXml()
   }
 
   // write out again with contents
-  iter = QStringListIterator(bm->getSystemNameList());
+  iter = QStringListIterator(((AbstractManager*)bm)->getSystemNameList());
   while (iter.hasNext())
   {
    QString sname = iter.next();
    if (sname==NULL) log->error("System name NULL during store");
-   Block* b = (Block*)bm->getBySystemName(sname);
+   Block* b = (Block*)((AbstractManager*)bm)->getBySystemName(sname);
    // the following NULL check is to catch a NULL pointer exception that sometimes was found to happen
    if (b==NULL)
    {
@@ -217,7 +217,7 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
 }
 
 //@Override
-/*public*/ void BlockManagerXml::load(QDomElement element, QObject* o) throw (Exception)
+/*public*/ void BlockManagerXml::load(QDomElement element, QObject* o) /*throw (Exception)*/
 {
     log->error("Invalid method called");
 }
@@ -231,7 +231,7 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
  * @return true if successful
  */
 //@SuppressWarnings("unchecked")
-/*public*/ bool BlockManagerXml::load(QDomElement sharedBlocks, QDomElement /*perNodeBlocks*/) throw (JmriConfigureXmlException)
+/*public*/ bool BlockManagerXml::load(QDomElement sharedBlocks, QDomElement /*perNodeBlocks*/)
 {
  bool result = true;
  try
@@ -245,15 +245,17 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
    }
   }
  }
- catch (JmriException ex)
+ catch (IllegalArgumentException* ex)
  {
-  log->error(ex.getMessage());
+  log->error(ex->getMessage());
  }
 
  QDomNodeList list = sharedBlocks.elementsByTagName("block");
- if (log->isDebugEnabled()) log->debug("Found "+QString::number(list.size())+" objects");
- //BlockManager tm = InstanceManager.blockManagerInstance();
+ if (log->isDebugEnabled())
+  log->debug("Found "+QString::number(list.size())+" objects");
 
+ ((AbstractBlockManager*)InstanceManager::getDefault("BlockManager"))->setPropertyChangesSilenced("beans", true);
+ // first pass don't load full contents (just create all the blocks)
  for (int i=0; i<list.size(); i++)
  {
   QDomElement block = list.at(i).toElement();
@@ -266,6 +268,8 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
   QDomElement block = list.at(i).toElement();
      loadBlock(block, true);
  }
+ ((AbstractBlockManager*)InstanceManager::getDefault("BlockManager"))->setPropertyChangesSilenced("beans", false);
+
  return result;
 }
 
@@ -275,7 +279,7 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
  * @param element QDomElement holding one block
  */
 //@SuppressWarnings("unchecked")
-/*public*/ void BlockManagerXml::loadBlock(QDomElement element, bool contentsFlag) throw (JmriConfigureXmlException)
+/*public*/ void BlockManagerXml::loadBlock(QDomElement element, bool contentsFlag) /*throw (JmriConfigureXmlException)*/
 {
  QString sysName = getSystemName(element);
  QString userName = getUserName(element);
@@ -314,9 +318,9 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
             block->setBlockSpeed(speed);
         }
     }
- } catch (JmriException ex)
+ } catch (JmriException* ex)
  {
-    log->error(ex.getMessage());
+    log->error(ex->getMessage());
  }
  if(!element.firstChildElement("permissive").isNull()){
     bool permissive = false;
@@ -366,7 +370,7 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
      block->setReporter(reporter);
      block->setReportingCurrent(reporters.at(0).toElement().attribute("useCurrent")==("yes"));
     }
-    catch (IllegalArgumentException ex) {
+    catch (IllegalArgumentException* ex) {
         log->warn(tr("failed to create Reporter \"%1\" during Block load").arg(name));
     }
  }
@@ -401,7 +405,7 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
  * @param element QDomElement containing path information
  */
 //@SuppressWarnings("unchecked")
-/*public*/ bool BlockManagerXml::loadPath(Block* block, QDomElement element) throw (JmriConfigureXmlException)
+/*public*/ bool BlockManagerXml::loadPath(Block* block, QDomElement element) /*throw (JmriConfigureXmlException)*/
 {
  // load individual path
  int toDir = 0;
@@ -409,13 +413,13 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
  bool bok;
  try {
         toDir = element.attribute("todir").toInt(&bok);
-        if(!bok) throw DataConversionException();
+        if(!bok) throw new DataConversionException();
         fromDir = element.attribute("fromdir").toInt(&bok);
-        if(!bok) throw DataConversionException();
+        if(!bok) throw new DataConversionException();
 
-    } catch (DataConversionException e) {
+    } catch (DataConversionException* e) {
         log->error("Could not parse path attribute");
-    } catch (NullPointerException e) {
+    } catch (NullPointerException* e) {
      handleException("Block Path entry in file missing required attribute",
           QString(), block->getSystemName(), block->getUserName(), new Exception());
     }
@@ -454,7 +458,7 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
 {
  int setting = 0;
  bool bok;
-     setting = element.attribute("setting").toInt();
+     setting = element.attribute("setting").toInt(&bok);
  if(!bok) {
      log->error("Could not parse beansetting attribute");
  }
@@ -468,7 +472,7 @@ void BlockManagerXml::addBeanSetting(QDomElement e, BeanSetting* bs)
   BeanSetting* bs = new BeanSetting(t, name, setting);
   path->addSetting(bs);
  }
- catch (IllegalArgumentException ex)
+ catch (IllegalArgumentException* ex)
  {
    log->warn(tr("failed to create Turnout \"%1\" during Block load").arg(name));
  }

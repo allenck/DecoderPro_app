@@ -8,6 +8,7 @@
 #include "logger.h"
 #include "jlabel.h"
 #include <QUrl>
+#include "instancemanager.h"
 
 //PrintDecoderListAction::PrintDecoderListAction(QObject *parent) :
 //  AbstractAction(parent)
@@ -62,12 +63,12 @@
     QString lastMfg = "";
     QString lastFamily = "";
 
-    DecoderIndexFile* f = DecoderIndexFile::instance();
-    QList<DecoderFile*>* l = f->matchingDecoderList(NULL, NULL, NULL, NULL, NULL, NULL); // take all
+    DecoderIndexFile* f = (DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile");
+    QList<DecoderFile*> l = f->matchingDecoderList(NULL, NULL, NULL, NULL, NULL, NULL); // take all
     int i = -1;
-    log->debug("Roster list size: " + l->size());
-    for (i = 0; i < l->size(); i++) {
-        DecoderFile* d = l->at(i);
+    log->debug("Roster list size: " + l.size());
+    for (i = 0; i < l.size(); i++) {
+        DecoderFile* d = l.at(i);
         if (d->getMfg()!=(lastMfg)) {
             printMfg(d, writer);
             lastMfg = d->getMfg();
@@ -90,8 +91,8 @@ void PrintDecoderListAction::printEntry(DecoderFile* d, HardcopyWriter* w) {
     try {
         QString s = "\n                       " + d->getModel();
         w->write(s, 0, s.length());
-    } catch (IOException e) {
-        log->error("Error printing: " + e.getMessage());
+    } catch (IOException* e) {
+        log->error("Error printing: " + e->getMessage());
     }
 }
 
@@ -99,8 +100,8 @@ void PrintDecoderListAction::printMfg(DecoderFile* d, HardcopyWriter* w) {
     try {
         QString s = "\n\n" + d->getMfg();
         w->write(s, 0, s.length());
-    } catch (IOException e) {
-        log->error("Error printing: " + e.getMessage());
+    } catch (IOException* e) {
+        log->error("Error printing: " + e->getMessage());
     }
 }
 
@@ -108,7 +109,7 @@ void PrintDecoderListAction::printFamily(DecoderFile* d, HardcopyWriter* w) {
     try {
         QString s = "\n           " + d->getFamily();
         w->write(s, 0, s.length());
-    } catch (IOException e) {
-        log->error("Error printing: " + e.getMessage());
+    } catch (IOException* e) {
+        log->error("Error printing: " + e->getMessage());
     }
 }

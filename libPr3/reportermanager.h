@@ -3,13 +3,15 @@
 #include "abstractmanager.h"
 #include "reporter.h"
 #include "libPr3_global.h"
+#include "providingmanager.h"
 
-class LIBPR3SHARED_EXPORT ReporterManager : public AbstractManager
+class LIBPR3SHARED_EXPORT ReporterManager : public ProvidingManager
 {
-    Q_OBJECT
+  //Q_OBJECT
+  Q_INTERFACES(ProvidingManager)
 public:
     //explicit ReporterManager(QObject *parent = 0);
-    ReporterManager(SystemConnectionMemo* memo, QObject* parent =0) : AbstractManager(memo, parent) {}
+//    ReporterManager(SystemConnectionMemo* memo, QObject* parent =0) : AbstractManager(memo, parent) {}
     /**
      * Locate a Reporter object representing some specific device on the layout.
      *<P>
@@ -67,7 +69,7 @@ public:
 
         //@Override
         /** {@inheritDoc} */
-        virtual /*default*/ /*public*/ Reporter* provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException)
+        virtual /*default*/ /*public*/ Reporter* provide(/*@Nonnull*/ QString name) /*throw (IllegalArgumentException)*/
         { return provideReporter(name); }
 
         /**
@@ -77,21 +79,21 @@ public:
          * @param name
          * @return null if no match found
          */
-        virtual Reporter* getReporter(QString /*name*/) const {return NULL;}
+        virtual Reporter* getReporter(QString /*name*/)  {return NULL;}
 
         /**
          * Locate an instance based on a system name.  Returns null if no
          * instance already exists.
          * @return requested Reporter object or null if none exists
          */
-        virtual NamedBean* getBySystemName(QString /*systemName*/) const {return NULL;}
+        virtual NamedBean* getBySystemName(QString /*systemName*/)  {return NULL;}
 
         /**
          * Locate an instance based on a user name.  Returns null if no
          * instance already exists.
          * @return requested Reporter object or null if none exists
          */
-        virtual NamedBean* getByUserName(QString /*userName*/) const {return NULL;}
+        virtual NamedBean* getByUserName(QString /*userName*/)  {return NULL;}
 
         /**
          * Locate an instance based on a user name, or if that fails,
@@ -99,7 +101,7 @@ public:
          * instance already exists.
          * @return requested Reporter object or null if none exists
          */
-        virtual Reporter* getByDisplayName(QString /*userName*/) const {return NULL;}
+        virtual Reporter* getByDisplayName(QString /*userName*/)  {return NULL;}
 
         /**
          * Return an instance with the specified system and user names.
@@ -126,7 +128,7 @@ public:
          * @throws IllegalArgumentException if cannot create the Reporter
          * due to e.g. an illegal name or name that can't be parsed.
          */
-        virtual Reporter* newReporter(QString /*systemName*/, QString /*userName*/) const {return NULL;}
+        virtual Reporter* newReporter(QString /*systemName*/, QString /*userName*/)  {return NULL;}
 
         /**
          * Get a list of all Reporter's system names.
@@ -139,7 +141,7 @@ public:
         * where as if the address format is 1b23 this will return false.
         **/
 
-       virtual bool allowMultipleAdditions(QString /*systemName*/) const {return false;}
+       virtual bool allowMultipleAdditions(QString /*systemName*/)  {return false;}
 
        /**
         * Determine if the address supplied is valid and free, if not then it shall
@@ -149,12 +151,42 @@ public:
         * @param curAddress - The hardware address of the turnout we which to check.
         */
 
- virtual QString getNextValidAddress(QString /*curAddress*/, QString /*prefix*/) const {return "";}
+       QT_DEPRECATED virtual QString getNextValidAddress(QString /*curAddress*/, QString /*prefix*/)  =0;
+       /**
+         * Get the Next valid Reporter address.
+         * <p>
+         * @param curAddress the starting hardware address to get the next valid from.
+         * @param prefix system prefix, just system name, not type letter.
+         * @param ignoreInitialExisting false to return the starting address if it
+         *                          does not exist, else true to force an increment.
+         * @return the next valid system name not already in use, excluding both system name prefix and type letter.
+         * @throws JmriException    if unable to get the current / next address,
+         *                          or more than 10 next addresses in use.
+         */
+        //@Nonnull
+        /*public*/ virtual QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix,
+                 bool ignoreInitialExisting) /*throws JmriException*/ {return "";}
 
-signals:
-    
-public slots:
-    
+       /*public*/ QString toString() {return "ReporterManager";}
+
+
+       /**
+        * Get a system name for a given hardware address and system prefix.
+        *
+        * @param curAddress desired hardware address
+        * @param prefix     system prefix used in system name, excluding Bean type-letter..
+        * @return the complete Reporter system name for the prefix and current
+        *         address
+        * @throws jmri.JmriException if unable to create a system name for the
+        *                            given address, possibly due to invalid address
+        *                            format
+        */
+       //@Nonnull
+       virtual /*public*/ QString createSystemName(/*@Nonnull*/ QString /*curAddress*/, /*@Nonnull*/ QString /*prefix*/)
+         /*throws JmriException*/ {return "";}
+
+    virtual QObject* self() =0;
+
 };
-Q_DECLARE_INTERFACE(ReporterManager, "Reporter Manager")
+Q_DECLARE_INTERFACE(ReporterManager, "ReporterManager")
 #endif // REPORTERMANAGER_H

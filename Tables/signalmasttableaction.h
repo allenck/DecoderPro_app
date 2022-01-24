@@ -18,24 +18,22 @@ public:
      VALUECOL = BeanTableDataModel::VALUECOL,
      SYSNAMECOL = BeanTableDataModel::SYSNAMECOL
     };
-    /*public*/ void setMenuBar(BeanTableFrame* f);
-    Q_INVOKABLE /*public*/ QString getClassDescription();
+    /*public*/ void setMenuBar(BeanTableFrame* f)override;
+    Q_INVOKABLE /*public*/ QString getClassDescription() override;
 
 public slots:
-    /*public*/ void actionPerformed(ActionEvent* e = 0);
-
 
 private:
     AddSignalMastJFrame* addFrame;// = null;
 
  protected:
-    /*protected*/ void createModel();
-    /*protected*/ void setTitle();
-    /*protected*/ QString helpTarget();
-    /*protected*/ QString getClassName();
+    /*protected*/ void createModel() override;
+    /*protected*/ void setTitle() override;
+    /*protected*/ QString helpTarget() override;
+    /*protected*/ QString getClassName() override;
 
 protected slots:
-    /*protected*/ void addPressed(ActionEvent* e = 0);
+    /*protected*/ void addPressed(JActionEvent* =0) override;
     void On_repeatersTriggered();
 
 };

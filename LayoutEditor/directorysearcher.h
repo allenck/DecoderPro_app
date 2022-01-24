@@ -4,13 +4,16 @@
 #include <QObject>
 #include <QFileDialog>
 #include "actionlistener.h"
+#include "instancemanagerautodefault.h"
 
 class JTextField;
 class PreviewDialog;
 class JFrame;
-class DirectorySearcher : public QObject
+class DirectorySearcher : public QObject, public InstanceManagerAutoDefault
 {
     Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault)
+
 public:
     /*public*/ static DirectorySearcher* instance();
     /*public*/ QDir* searchFS();
@@ -47,37 +50,51 @@ private:
     friend class LActionListener;
     friend class CActionListener;
 };
-class AActionListener : public  ActionListener {
+
+class AActionListener : public QObject, public  ActionListener {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
     QDir* dir;
     DirectorySearcher* s;
 public:
     /*public*/ AActionListener(QDir* d, DirectorySearcher* s);
-    /*public*/ void actionPerformed(ActionEvent* a = 0);
+    QObject* self() override {return (QObject*)this;}
+  public slots:
+    /*public*/ void actionPerformed(JActionEvent* a = 0)override;
 };
-class MActionListener : public  ActionListener {
+
+class MActionListener : public QObject, public  ActionListener {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
     QDir* dir;
     bool oneDir;
     DirectorySearcher* s;
 public:
     /*public*/ MActionListener(QDir* d, bool o, DirectorySearcher* s);
-    /*public*/ void actionPerformed(ActionEvent* a = 0);
+    QObject* self() override {return (QObject*)this;}
+ public slots:
+    /*public*/ void actionPerformed(JActionEvent* a = 0)override;
 };
-class LActionListener : public  ActionListener {
+class LActionListener : public QObject, public  ActionListener {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
     DirectorySearcher* s;
 public:
     LActionListener(DirectorySearcher* s);
+    QObject* self() override {return (QObject*)this;}
+  public slots:
 
-    /*public*/ void actionPerformed(ActionEvent* a = 0);
+    /*public*/ void actionPerformed(JActionEvent* a = 0)override;
 };
-class CActionListener : public  ActionListener {
+class CActionListener : public QObject, public  ActionListener {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
     DirectorySearcher* s;
 public:
     CActionListener(DirectorySearcher* s);
-    /*public*/ void actionPerformed(ActionEvent* a = 0);
+    QObject* self() override {return (QObject*)this;}
+  public slots:
+    /*public*/ void actionPerformed(JActionEvent* a = 0)override;
 };
 
 #endif // DIRECTORYSEARCHER_H

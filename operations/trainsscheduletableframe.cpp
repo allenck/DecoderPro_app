@@ -5,8 +5,7 @@
 #include "trainschedule.h"
 #include "locationmanager.h"
 #include "location.h"
-#include <QGroupBox>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QRadioButton>
 #include <QButtonGroup>
 #include <QBoxLayout>
@@ -25,6 +24,9 @@
 #include "trainswitchlists.h"
 #include "operationsxml.h"
 #include "control.h"
+#include "instancemanager.h"
+#include "borderfactory.h"
+#include "trainschedulemanager.h"
 
 namespace Operations
 {
@@ -49,9 +51,9 @@ namespace Operations
  /*public*/ TrainsScheduleTableFrame::TrainsScheduleTableFrame(QWidget* parent) : OperationsFrame(parent)
  {
   log = new Logger("TrainsScheduleTableFrame");
-  trainManager = TrainManager::instance();
-  scheduleManager = TrainScheduleManager::instance();
-  locationManager = LocationManager::instance();
+  trainManager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
+  trainScheduleManager = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"));
+  locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
 
   trainsScheduleModel = new TrainsScheduleTableModel();
   trainsScheduleTable = new JTable(trainsScheduleModel);
@@ -69,21 +71,21 @@ namespace Operations
   schGroup = new QButtonGroup();
 
   // major buttons
-  selectButton = new QPushButton(tr("Select"));
-  clearButton = new QPushButton(tr("Clear"));
+  selectButton = new JButton(tr("Select"));
+  clearButton = new JButton(tr("Clear"));
 
-  applyButton = new QPushButton(tr("Apply"));
-  buildButton = new QPushButton(tr("Build"));
-  printButton = new QPushButton(tr("Print"));
-  switchListsButton = new QPushButton();
-  terminateButton = new QPushButton(tr("Terminate"));
+  applyButton = new JButton(tr("Apply"));
+  buildButton = new JButton(tr("Build"));
+  printButton = new JButton(tr("Print"));
+  switchListsButton = new JButton();
+  terminateButton = new JButton(tr("Terminate"));
 
-  activateButton = new QPushButton(tr("Activate"));
-  saveButton = new QPushButton(tr("Save"));
+  activateButton = new JButton(tr("Activate"));
+  saveButton = new JButton(tr("Save"));
 
   // check boxes
   // panel
-  schedule = new QGroupBox();
+  schedule = new JPanel();
 
      // general GUI configuration
      //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
@@ -100,19 +102,15 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      cp1->setLayout(new QHBoxLayout); //(cp1, BoxLayout.X_AXIS));
 
      // row 1
-     QGroupBox* sortBy = new QGroupBox();
+     JPanel* sortBy = new JPanel();
      sortBy->setLayout(new FlowLayout);
-     //sortBy.setBorder(BorderFactory.createTitledBorder(tr("SortBy")));
-     sortBy->setStyleSheet(gbStyleSheet);
-     sortBy->setTitle(tr("Sort By"));
+     sortBy->setBorder(BorderFactory::createTitledBorder(tr("Sort By")));
      sortBy->layout()->addWidget(sortByTime);
      sortBy->layout()->addWidget(sortByName);
 
      // row 2
-     //schedule.setBorder(BorderFactory.createTitledBorder(tr("Active")));
+     schedule->setBorder(BorderFactory::createTitledBorder(tr("Active")));
      schedule->setLayout(new QHBoxLayout);
-     schedule->setStyleSheet(gbStyleSheet);
-     schedule->setTitle(tr("Active"));
 
      updateControlPanel();
 
@@ -122,18 +120,16 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      QWidget* pButtons = new QWidget();
      pButtons->setLayout(new QHBoxLayout);//(pButtons, BoxLayout.X_AXIS));
 
-     QGroupBox* cp3 = new QGroupBox();
+     JPanel* cp3 = new JPanel();
      cp3->setLayout(new FlowLayout);
-     //cp3.setBorder(BorderFactory.createTitledBorder(""));
-     cp3->setStyleSheet(gbStyleSheet);
+     cp3->setBorder(BorderFactory::createTitledBorder(""));
      //cp3->setTitle(tr(""));
      cp3->layout()->addWidget(clearButton);
      cp3->layout()->addWidget(selectButton);
 
-     QGroupBox* cp4 = new QGroupBox();
+     JPanel* cp4 = new JPanel();
      cp4->setLayout(new FlowLayout);
-     //cp4.setBorder(BorderFactory.createTitledBorder(""));
-     cp4->setStyleSheet(gbStyleSheet);
+     cp4->setBorder(BorderFactory::createTitledBorder(""));
      //cp4->setTitle(tr(""));
      cp4->layout()->addWidget(applyButton);
      cp4->layout()->addWidget(buildButton);
@@ -141,10 +137,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      cp4->layout()->addWidget(switchListsButton);
      cp4->layout()->addWidget(terminateButton);
 
-     QGroupBox* cp5 = new QGroupBox();
+     JPanel* cp5 = new JPanel();
      cp5->setLayout(new FlowLayout);
-     //cp5.setBorder(BorderFactory.createTitledBorder(""));
-     cp5->setStyleSheet(gbStyleSheet);
+     cp5->setBorder(BorderFactory::createTitledBorder(""));
      //cp5->setTitle(tr(""));
      cp5->layout()->addWidget(activateButton);
      cp5->layout()->addWidget(saveButton);
@@ -217,10 +212,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      //addHorizontalScrollBarKludgeFix(controlPane, controlPanel);
 
     // Setup.addPropertyChangeListener(this);
-     //trainManager.addPropertyChangeListener(this);
-     connect(trainManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //scheduleManager.addPropertyChangeListener(this);
-     connect(scheduleManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     trainManager->addPropertyChangeListener(this);
+     trainScheduleManager->addPropertyChangeListener(this);
      addPropertyChangeLocations();
      addPropertyChangeTrainSchedules();
  }
@@ -243,7 +236,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  // add, build, print, switch lists, terminate, and save buttons
  /*public*/ void TrainsScheduleTableFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      log->debug("button activated");
      if (source == clearButton) {
          updateCheckboxes(false);
@@ -268,10 +261,10 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      if (source == terminateButton) {
          trainManager->terminateSelectedTrains(getSortByList());
      }
-     if (source == activateButton) {
-         trainManager->setTrainSecheduleActiveId(getSelectedScheduleId());
-         activateButton->setEnabled(false);
-     }
+//     if (source == activateButton) {
+//         trainManager->setTrainSecheduleActiveId(getSelectedScheduleId());
+//         activateButton->setEnabled(false);
+//     }
      if (source == saveButton) {
          storeValues();
          if (Setup::isCloseWindowOnSaveEnabled()) {
@@ -304,7 +297,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
   {
    QString columnName = trainsScheduleTable->model()->headerData(i, Qt::Horizontal,Qt::DisplayRole).toString();
    log->debug(tr("Column name: %1").arg(columnName));
-   TrainSchedule* ts = scheduleManager->getScheduleByName(columnName);
+   TrainSchedule* ts = trainScheduleManager->getScheduleByName(columnName);
    if (ts != NULL)
    {
     QRadioButton* b = new QRadioButton();
@@ -313,7 +306,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
     schedule->layout()->addWidget(b);
     schGroup->addButton(b);
     addRadioButtonAction(b);
-    if (b->objectName()==(trainManager->getTrainScheduleActiveId()))
+    if (b->objectName()==(trainScheduleManager->getTrainScheduleActiveId()))
     {
      b->setChecked(true);
      enableButtons(true);
@@ -324,7 +317,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*private*/ void TrainsScheduleTableFrame::updateCheckboxes(bool selected) {
-     TrainSchedule* ts = TrainScheduleManager::instance()->getScheduleById(getSelectedScheduleId());
+     TrainSchedule* ts = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(getSelectedScheduleId());
      if (ts != NULL) {
          foreach (Train* train, trainManager->getTrainsByIdList()) {
              if (selected) {
@@ -337,7 +330,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*private*/ void TrainsScheduleTableFrame::applySchedule() {
-     TrainSchedule* ts = TrainScheduleManager::instance()->getScheduleById(getSelectedScheduleId());
+     TrainSchedule* ts = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(getSelectedScheduleId());
      if (ts != NULL) {
          foreach (Train* train, trainManager->getTrainsByIdList()) {
              train->setBuildEnabled(ts->containsTrainId(train->getId()));
@@ -367,10 +360,10 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      switchListsButton->setEnabled(enable);
      terminateButton->setEnabled(enable);
 
-     log->debug(tr("Selected id: %1, Active id:%2").arg(getSelectedScheduleId()).arg(trainManager->getTrainScheduleActiveId()));
+     log->debug(tr("Selected id: %1, Active id:%2").arg(getSelectedScheduleId()).arg(trainScheduleManager->getTrainScheduleActiveId()));
 
      activateButton->setEnabled(getSelectedScheduleId() != NULL
-             && getSelectedScheduleId()!=(trainManager->getTrainScheduleActiveId()));
+             && getSelectedScheduleId()!=(trainScheduleManager->getTrainScheduleActiveId()));
  }
 
  /*private*/ QList<Train*> TrainsScheduleTableFrame::getSortByList() {
@@ -409,12 +402,12 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
              trainSwitchLists->buildSwitchList(location);
              // // print or print changes
              if (Setup::isSwitchListRealTime() && location->getStatus()!=(Location::PRINTED)) {
-                 trainSwitchLists->printSwitchList(location, TrainManager::instance()->isPrintPreviewEnabled());
+                 trainSwitchLists->printSwitchList(location, ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->isPrintPreviewEnabled());
              }
          }
      }
      // set trains switch lists printed
-     TrainManager::instance()->setTrainsSwitchListStatus(Train::PRINTED);
+     ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->setTrainsSwitchListStatus(Train::PRINTED);
  }
 
  /*private*/ void TrainsScheduleTableFrame::updateSwitchListButton() {
@@ -423,12 +416,12 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      foreach (Location* location, locations) {
          if (location != NULL && location->isSwitchListEnabled() && location->getStatus()==(Location::MODIFIED)) {
              //switchListsButton->setBackground(Qt::red);
-          switchListsButton->setStyleSheet("QPushButton {background-color: red; border: none");
+          switchListsButton->setStyleSheet("JButton {background-color: red; border: none");
              return;
          }
      }
      //switchListsButton->setBackground(Qt::green);
-     switchListsButton->setStyleSheet("QPushButton {background-color: green; border: none");
+     switchListsButton->setStyleSheet("JButton {background-color: green; border: none");
  }
 
  /*protected*/ void TrainsScheduleTableFrame::storeValues() {
@@ -439,10 +432,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  /*public*/ void TrainsScheduleTableFrame::dispose() {
      //Setup.removePropertyChangeListener(this);
-     //trainManager.removePropertyChangeListener(this);
- disconnect(trainManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //scheduleManager.removePropertyChangeListener(this);
- disconnect(scheduleManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     trainManager->removePropertyChangeListener(this);
+     trainScheduleManager->removePropertyChangeListener(this);
      removePropertyChangeTrainSchedules();
      removePropertyChangeLocations();
      trainsScheduleModel->dispose();
@@ -451,20 +442,18 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  /*private*/ void TrainsScheduleTableFrame::addPropertyChangeLocations() {
      foreach (Location* location, locationManager->getList()) {
-         //location.addPropertyChangeListener(this);
-      connect(location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      location->SwingPropertyChangeSupport::addPropertyChangeListener(this);
      }
  }
 
  /*private*/ void TrainsScheduleTableFrame::removePropertyChangeLocations() {
      foreach (Location* location, locationManager->getList()) {
-         //location.removePropertyChangeListener(this);
-         disconnect(location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         location->removePropertyChangeListener(this);
      }
  }
 
  /*private*/ void TrainsScheduleTableFrame::addPropertyChangeTrainSchedules() {
-     QList<TrainSchedule*> trainSchedules = scheduleManager->getSchedulesByIdList();
+     QList<TrainSchedule*> trainSchedules = trainScheduleManager->getSchedulesByIdList();
      foreach (TrainSchedule* ts, trainSchedules) {
          //ts.addPropertyChangeListener(this);
       connect(ts->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -472,7 +461,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*private*/ void TrainsScheduleTableFrame::removePropertyChangeTrainSchedules() {
-     QList<TrainSchedule*> trainSchedules = scheduleManager->getSchedulesByIdList();
+     QList<TrainSchedule*> trainSchedules = trainScheduleManager->getSchedulesByIdList();
      foreach (TrainSchedule* ts, trainSchedules) {
          //ts.removePropertyChangeListener(this);
          disconnect(ts->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

@@ -67,10 +67,10 @@ private:
     protected:
     /*protected*/ QList <ConditionalAction*>* _actionList;// = new ArrayList<ConditionalAction>();
     DataPair* parseCalculate(QString s, QList <ConditionalVariable*>* variableList)
-    throw (JmriException);
+    /*throw (JmriException)*/;
     friend class TimeTurnout;
     friend class TimeSensor;
-    friend class ErrorDialog;
+    friend class DCErrorDialog;
 };
 /*static*/ class DataPair
 {
@@ -81,39 +81,43 @@ private:
     BitSet* argsUsed;// = NULL;     // error detection for missing arguments
     DataPair();
 };
-class TimeSensor : public ActionListener
+class TimeSensor : public QObject, public ActionListener
 {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
 
     /*private*/ int mIndex;// = 0;
-     DefaultConditional* self;
+     DefaultConditional* dc;
 public:
-     TimeSensor(int index, DefaultConditional* self);
+     TimeSensor(int index, DefaultConditional* dc);
+     QObject* self() override{return (QObject*)this;}
 public slots:
-     /*public*/ void actionPerformed(ActionEvent* event = 0);
+     /*public*/ void actionPerformed(JActionEvent* event = 0)override;
 
 };
 
-class TimeTurnout : public ActionListener
+class TimeTurnout : public QObject, public ActionListener
 {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
 
     /*private*/ int mIndex;// = 0;
-     DefaultConditional* self;
+     DefaultConditional* dc;
 public:
-    TimeTurnout(int index, DefaultConditional* self);
+    TimeTurnout(int index, DefaultConditional* dc);
+    QObject* self() override{return (QObject*)this;}
 public slots:
-    /*public*/ void actionPerformed(ActionEvent* event = 0);
+    /*public*/ void actionPerformed(JActionEvent* event = 0) override;
 
 };
 
-class ErrorDialog : public  JDialog
+class DCErrorDialog : public  JDialog
 {
  Q_OBJECT
     QCheckBox* rememberSession;
     DefaultConditional* cond;
 public:
-    ErrorDialog(QStringList list, DefaultConditional* cond);
+    DCErrorDialog(QStringList list, DefaultConditional* cond);
 public slots:
     void onCloseButton();
 };

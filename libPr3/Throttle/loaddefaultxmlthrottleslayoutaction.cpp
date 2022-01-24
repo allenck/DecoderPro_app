@@ -63,14 +63,14 @@
  * @param e The event causing the action.
  */
 //@Override
-/*public*/ void LoadDefaultXmlThrottlesLayoutAction::actionPerformed(/*ActionEvent e*/) {
+/*public*/ void LoadDefaultXmlThrottlesLayoutAction::actionPerformed(JActionEvent *) {
     // load throttle preference
     LoadXmlThrottlesLayoutAction* lxta = new LoadXmlThrottlesLayoutAction(parent());
     try {
         if (lxta->loadThrottlesLayout(new File(ThrottleWindow::getDefaultThrottleFilename()))) {
             return;
         }
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         log->error("No default throttle layout, creating an empty throttle window");
     }
     // need to create a new one

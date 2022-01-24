@@ -23,8 +23,10 @@
  */
 // /*public*/ class CatalogTreeModel extends DefaultTreeModel implements InstanceManagerAutoDefault {
 
-/*public*/ CatalogTreeModel::CatalogTreeModel(QObject* parent) : DefaultTreeModel(new DefaultMutableTreeNode("Root"))
+/*public*/ CatalogTreeModel::CatalogTreeModel(QObject* parent) : DefaultTreeModel(new DefaultMutableTreeNode("Root"),parent)
 {
+ if(fileRoot == nullptr)
+  fileRoot = FileUtil::getUserFilesPath() + "resources";
     //super(new DefaultMutableTreeNode("Root"));
     dRoot = (DefaultMutableTreeNode*) DefaultTreeModel::getRoot();  // this is used because we can't store the DMTN we just made during the super() call
 
@@ -117,22 +119,10 @@ void CatalogTreeModel::insertFileNodes(QString name, QString path, DefaultMutabl
     }
 }
 
-#if 0
-/**
- *
- * @return the managed instance
- * @deprecated since 4.9.2; use
- * {@link jmri.InstanceManager#getDefault(java.lang.Class)} instead
- */
-//@Deprecated
-/*static*/ /*public*/ CatalogTreeModel* CatalogTreeModel::instance() {
-    return InstanceManager::getDefault("CatalogTreeModel");
-}
-#endif
 /**
  * Starting point in the .jar file for the "icons" part of the tree
  */
 /*static*/ /*final*/ QString CatalogTreeModel::resourceRoot = "resources";
-/*static*/ /*final*/ QString CatalogTreeModel::fileRoot = FileUtil::getUserFilesPath() + "resources";
+/*static*/ /*final*/ QString CatalogTreeModel::fileRoot = nullptr;//FileUtil::getUserFilesPath() + "resources";
 
 /*private*/ /*final*/ /*static*/ Logger* CatalogTreeModel::log = LoggerFactory::getLogger("CatalogTreeModel");

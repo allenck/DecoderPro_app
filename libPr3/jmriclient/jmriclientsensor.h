@@ -12,7 +12,7 @@ class JMRIClientSensor : public AbstractSensor
 public:
  JMRIClientSensor(int number, JMRIClientSystemConnectionMemo* memo, QObject* parent = nullptr);
  /*public*/ int getNumber() ;
- /*public*/ void setKnownState(int s) throw (JmriException)  override;
+ /*public*/ void setKnownState(int s) /*throw (JmriException)*/  override;
  /*public*/ void requestUpdateFromLayout()const  override;
  /*public*/ void reply(JMRIClientReply* m);
  /*public*/ void message(JMRIClientMessage *m);

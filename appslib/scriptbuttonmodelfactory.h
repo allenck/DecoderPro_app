@@ -4,9 +4,10 @@
 
 class ScriptButtonModel;
 class ScriptFileChooser;
-class ScriptButtonModelFactory : public StartupModelFactory
+class ScriptButtonModelFactory : QObject, public StartupModelFactory
 {
  Q_OBJECT
+  Q_INTERFACES(StartupModelFactory)
 public:
  ScriptButtonModelFactory();
  ~ScriptButtonModelFactory() {}
@@ -17,6 +18,7 @@ public:
  /*public*/ QString getActionText();
  /*public*/ void editModel(StartupModel* model, QWidget* parent);
  /*public*/ void initialize();
+ QObject* self() override {return (QObject*)this;}
 
 private:
  /*private*/ ScriptFileChooser* chooser;// = null;

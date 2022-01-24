@@ -2,6 +2,7 @@
 #define TRANSIT_H
 #include "abstractnamedbean.h"
 #include "logger.h"
+#include "exceptions.h"
 
 class LayoutEditor;
 class Block;
@@ -27,12 +28,12 @@ public:
     /*public*/ int getState();
     /*public*/ void setState(int state);
     /*public*/ void addTransitSection(TransitSection* s);
-    /*public*/ QList<TransitSection*>* getTransitSectionList();
+    /*public*/ QList<TransitSection *> getTransitSectionList();
     /*public*/ int getMaxSequence();
     /*public*/ void removeAllSections();
     /*public*/ bool containsSection(Section* s);
-    /*public*/ QList<Section*>* getSectionListBySeq(int seq);
-    /*public*/ QList<TransitSection*>* getTransitSectionListBySeq(int seq);
+    /*public*/ QList<Section *> getSectionListBySeq(int seq);
+    /*public*/ QList<TransitSection *> getTransitSectionListBySeq(int seq);
     /*public*/ QList<int>* getSeqListBySection(Section* s);
     /*public*/ bool containsBlock(Block* b);
     /*public*/ int getBlockCount(Block* b);
@@ -49,6 +50,11 @@ public:
     /*public*/ int checkSignals(LayoutEditor* panel);
     /*public*/ int validateConnectivity(LayoutEditor* panel);
     /*public*/ int initializeBlockingSensors();
+    /*public*/ void removeTemporarySections();
+    /*public*/ bool removeLastTemporarySection(Section* s);
+    /*public*/ QString getBeanType() override;
+    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean) override;
+    /*public*/ void vetoableChange(PropertyChangeEvent* evt)  throw (PropertyVetoException) override;
 
 signals:
     

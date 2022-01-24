@@ -20,7 +20,7 @@ public:
     /*public*/ /*synchronized*/ void setProperty(QString key, QString value);
     /*public*/ void storeToXML(QTextStream* os, QString comment);
     /*public*/ void storeToXML(QTextStream* os, QString comment, QString encoding)
-    throw (IOException);
+    /*throw (IOException)*/;
     QMap<QString, QVariant> getHash();
     /*public*/ /*synchronized*/ void loadFromXML(QTextStream* in);
     /*public*/ QString getProperty(QString key);
@@ -31,7 +31,7 @@ public:
     QVariant get(QVariant key);
     /*public*/ void remove(QString);
     /*public*/ QStringListIterator propertyNames();
-    /*public*/ void store(QTextStream* writer, QString comments) throw (IOException);
+    /*public*/ void store(QTextStream* writer, QString comments) /*throw (IOException)*/;
     /*public*/  void load(FileInputStream* inStream); //throws IOException
 
 
@@ -59,8 +59,8 @@ private:
     /*private*/ void load0 (LineReader* lr); //throws IOException
 
     /*private*/ QString loadConvert (QByteArray in, int off, int len, QByteArray convtBuf);
-    /*private*/ void store0(QTextStream* bw, QString comments, bool escUnicode)throw (IOException);
-    /*private*/ static void writeComments(QTextStream* bw, QString comments) throw (IOException);
+    /*private*/ void store0(QTextStream* bw, QString comments, bool escUnicode)/*throw (IOException)*/;
+    /*private*/ static void writeComments(QTextStream* bw, QString comments) /*throw (IOException)*/;
     /*private*/ QString saveConvert(QString theString,
                                     bool escapeSpace,
                                     bool escapeUnicode);

@@ -11,6 +11,7 @@
 #include "routelocation.h"
 #include "location.h"
 #include "stringescapeutils.h"
+#include "instancemanager.h"
 
 using namespace Operations;
 /**
@@ -21,7 +22,7 @@ using namespace Operations;
 
 /*private*/ /*final*/ /*static*/ Logger* HtmlManifest::log = LoggerFactory::getLogger("HtmlManifest");
 
-/*public*/ HtmlManifest::HtmlManifest(QLocale locale, Operations::Train* train, QObject* parent) throw (IOException) : HtmlTrainCommon(locale, train, parent){
+/*public*/ HtmlManifest::HtmlManifest(QLocale locale, Operations::Train* train, QObject* parent) /*throw (IOException)*/ : HtmlTrainCommon(locale, train, parent){
     //super(locale, train);
     this->mapper = ObjectMapper();
     this->resourcePrefix = "Manifest";
@@ -29,7 +30,7 @@ using namespace Operations;
 
 // TODO cache the results so a quick check that if the JsonManifest file is not
 // newer than the Html manifest, the cached copy is returned instead.
-/*public*/ QString HtmlManifest::getLocations() throw (IOException)
+/*public*/ QString HtmlManifest::getLocations() /*throw (IOException)*/
 {
  // build manifest from JSON manifest
  if (this->getJsonManifest().isEmpty()) {
@@ -544,7 +545,7 @@ using namespace Operations;
     return car.value(JSON::UTILITY). toBool();
 }
 
-/*protected*/ QJsonObject HtmlManifest::getJsonManifest() throw (IOException)
+/*protected*/ QJsonObject HtmlManifest::getJsonManifest() /*throw (IOException)*/
 {
  if (this->jsonManifest.isEmpty())
  {
@@ -555,11 +556,11 @@ using namespace Operations;
    File* file = manifest->getFile();
    QFile f(file->getPath());
    if(!f.open(QIODevice::ReadOnly))
-    throw IOException(f.fileName());
+    throw new IOException(f.fileName());
    QTextStream is(&f);
    this->jsonManifest =  QJsonDocument::fromJson(is.readAll().toLocal8Bit()).object();
   }
-  catch (IOException e)
+  catch (IOException* e)
   {
    log->error(tr("Json manifest file not found for train (%1)").arg(this->train->getName()));
    throw e;
@@ -578,14 +579,14 @@ using namespace Operations;
    return String::format(locale, strings->getProperty(this->resourcePrefix + "ValidityWithSchedule"),
 //              getDate((new ISO8601DateFormat()).parse(this->getJsonManifest().value(JsonOperations::DATE).toString())),
                 getDate(QDateTime::fromString(this->getJsonManifest().value(JsonOperations::DATE).toString(),Qt::ISODate)),
-              Operations::TrainScheduleManager::instance()->getScheduleById(train->getId())->toString());
+              ((Operations::TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(train->getId())->toString());
   }
   else
   {
    return String::format(locale, strings->getProperty(this->resourcePrefix + "Validity"), getDate(QDateTime::fromString(this->getJsonManifest().value(JsonOperations::DATE).toString(), Qt::ISODate)));
   }
  }
- catch (NullPointerException ex)
+ catch (NullPointerException* ex)
  {
   log->warn(tr("Manifest for train %1 (id %2) does not have any validity.").arg(this->train->getIconName()).arg(this->train->getId()));
  }
@@ -593,7 +594,7 @@ using namespace Operations;
  {
   log->error("Date of JSON manifest could not be parsed as a Date.");
  }
- catch (IOException ex)
+ catch (IOException* ex)
  {
   log->error("JSON manifest could not be read.");
  }

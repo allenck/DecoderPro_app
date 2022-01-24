@@ -3,6 +3,10 @@
 #include "abstracttableaction.h"
 #include "beantabledatamodel.h"
 #include "actionlistener.h"
+#include "spinnernumbermodel.h"
+#include "jspinner.h"
+#include "jcheckbox.h"
+#include "jlabel.h"
 
 class UserPreferencesManager;
 class JTextField;
@@ -15,35 +19,36 @@ public:
     Q_INVOKABLE/*public*/ MemoryTableAction(QString actionName, QObject* parent);
     ~MemoryTableAction() {}
     MemoryTableAction(const MemoryTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
-    Q_INVOKABLE /*public*/ QString getClassDescription();
-    Q_INVOKABLE /*public*/ void setMessagePreferencesDetails();
+    Q_INVOKABLE /*public*/ QString getClassDescription() override;
+    Q_INVOKABLE /*public*/ void setMessagePreferencesDetails() override;
 
 private:
     void common();
     JmriJFrame* addFrame;// = NULL;
-    JTextField* sysName;// = new JTextField(5);
-    JTextField* userName;// = new JTextField(5);
+    JTextField* sysNameField;// = new JTextField(5);
+    JTextField* userNameField;// = new JTextField(5);
     QLabel* sysNameLabel;// = new JLabel(tr("LabelSystemName"));
     QLabel* userNameLabel;// = new JLabel(tr("LabelUserName"));
-
-    JTextField* numberToAdd;// = new JTextField(10);
-    QCheckBox* range;// = new JCheckBox(tr("AddRangeBox"));
-    QCheckBox* autoSystemName;// = new JCheckBox(tr("LabelAutoSysName"));
-    UserPreferencesManager* p;
+    SpinnerNumberModel* rangeSpinner = new SpinnerNumberModel(1, 1, 100, 1); // maximum 100 items
+    JSpinner* numberToAddSpinner = new JSpinner(rangeSpinner);
+    JCheckBox* rangeBox = new JCheckBox(tr("Add Range Box"));
+    JCheckBox* autoSystemNameBox = new JCheckBox(tr("Auto Sys Name"));
+    JLabel* statusBarLabel = new JLabel(tr("Enter a System Name and (optional) User Name."), JLabel::LEADING);
+    UserPreferencesManager* p = nullptr;
     QString systemNameAuto;// = this.getClass().getName() + ".AutoSystemName";
     Logger* log;
-    void handleCreateException(QString sysName);
+    void handleCreateException(QString sysNameField);
 
 protected:
-    /*protected*/ void createModel();
-    /*protected*/ void setTitle();
-    /*protected*/ QString helpTarget();
-    /*protected*/ QString getClassName();
+    /*protected*/ void createModel() override;
+    /*protected*/ void setTitle() override;
+    /*protected*/ QString helpTarget() override;
+    /*protected*/ QString getClassName() override;
 
 protected slots:
-    /*protected*/ void addPressed(ActionEvent* /*e*/);
-    void cancelPressed(ActionEvent* e = 0);
-    void okPressed(ActionEvent* e = 0);
+    /*protected*/ void addPressed(JActionEvent* =0) override;
+    void cancelPressed(JActionEvent* e = 0);
+    void okPressed(JActionEvent* e = 0);
 
 
     friend class MtBeanTableDataModel;
@@ -59,7 +64,7 @@ class MtBeanTableDataModel : public BeanTableDataModel
 public:
     MtBeanTableDataModel(MemoryTableAction* mt);
     /*public*/ QString getValue(QString name) const;
-    /*public*/ Manager* getManager();
+    /*public*/ Manager *getManager();
     /*public*/ NamedBean* getBySystemName(QString name) const;
     /*public*/ NamedBean* getByUserName(QString name) ;
     /*public*/ void clickOn(NamedBean* t);
@@ -76,24 +81,27 @@ protected:
     /*protected*/ QString getBeanType() ;
 };
 
-class MtOkListener : public ActionListener
+class MtOkListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  MemoryTableAction* act;
 public:
  MtOkListener(MemoryTableAction* act);
-public slots:
- void actionPerformed();
+QObject* self() override{return (QObject*)this;}public slots:
+ void actionPerformed(JActionEvent */*e*/ = 0) override;
 };
 
-class MtCancelListener : public ActionListener
+class MtCancelListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  MemoryTableAction* act;
 public:
  MtCancelListener(MemoryTableAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent */*e*/ = 0)override;
 };
 
 #endif // MEMORYTABLEACTION_H

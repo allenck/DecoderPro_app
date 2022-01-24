@@ -48,7 +48,7 @@ LnReporter::LnReporter(int number, LnTrafficController* tc, QString prefix, QObj
   _number = number;
  // At construction, register for messages
  tc->addLocoNetListener(~0, (LocoNetListener*)this);
- connect(tc, SIGNAL(messageProcessed(LocoNetMessage*)), this, SLOT(message(LocoNetMessage*)));
+ //connect(tc, SIGNAL(messageProcessed(LocoNetMessage*)), this, SLOT(message(LocoNetMessage*)));
  this->tc = tc;
  lastLoco = -1;
  entrySet = ReporterVariantEntrySet();
@@ -187,7 +187,7 @@ int LnReporter::getNumber() { return _number; }
 
         // get loco address
         QString s = QString("%1").arg(loco)+" seen "+(north?"northbound":"southbound");
-        setReport(QVariant(s));
+        AbstractReporter::setReport(QVariant(s));
 
     }
 

@@ -47,7 +47,7 @@
     if (pwrMgr != NULL) {
         try {
             pwrMgr->setPower(PowerManager::ON);
-        } catch (JmriException e) {
+        } catch (JmriException* e) {
             log->error("Cannot turn power on.");
         }
     }
@@ -57,7 +57,7 @@
     if (pwrMgr != NULL) {
         try {
             pwrMgr->setPower(PowerManager::OFF);
-        } catch (JmriException e) {
+        } catch (JmriException* e) {
             log->error("Cannot turn power off.");
         }
     }
@@ -78,7 +78,7 @@
         } else {
             log->error("Unexpected state value: +" + pwrMgr->getPower());
         }
-    } catch (JmriException e) {
+    } catch (JmriException* e) {
         log->error("Power Manager exception");
     }
 

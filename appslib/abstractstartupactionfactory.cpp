@@ -1,7 +1,7 @@
 #include "abstractstartupactionfactory.h"
 
 AbstractStartupActionFactory::AbstractStartupActionFactory(QObject* parent)
- : StartupActionFactory(parent)
+ : QObject(parent)
 {
 
 }

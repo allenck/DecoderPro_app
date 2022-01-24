@@ -190,7 +190,7 @@ JmriJFrame(parent)
     pack();
 }
 
-/*public*/ void SimpleTurnoutCtrlFrame::closeButtonActionPerformed(ActionEvent* /*e*/)
+/*public*/ void SimpleTurnoutCtrlFrame::closeButtonActionPerformed(JActionEvent* /*e*/)
 {
  // load address from switchAddrTextField
  try {
@@ -219,16 +219,16 @@ JmriJFrame(parent)
             // and set commanded state to CLOSED
             turnout->setCommandedState(Turnout::CLOSED);
         }
-    } catch (IllegalArgumentException ex1) {
+    } catch (IllegalArgumentException* ex1) {
         invalidTurnout(adrTextField->text(), ex1);
-    } catch (Exception ex2) {
+    } catch (Exception* ex2) {
         log->error("exception during closeButtonActionPerformed", ex2);
         nowStateLabel->setText("ERROR");
         nowFeedbackLabel->setText("<unknown>");
     }
 }
 
-/*public*/ void SimpleTurnoutCtrlFrame::throwButtonActionPerformed(ActionEvent* /*e*/) {
+/*public*/ void SimpleTurnoutCtrlFrame::throwButtonActionPerformed(JActionEvent* /*e*/) {
     // load address from switchAddrTextField
     try {
         if (turnout != NULL)
@@ -254,16 +254,16 @@ JmriJFrame(parent)
             // and set commanded state to THROWN
             turnout->setCommandedState(Turnout::THROWN);
         }
-    } catch (IllegalArgumentException ex1) {
+    } catch (IllegalArgumentException* ex1) {
         invalidTurnout(adrTextField->text(), ex1);
-    } catch (Exception ex2) {
+    } catch (Exception* ex2) {
         log->error("exception during throwButtonActionPerformed", ex2);
         nowStateLabel->setText("ERROR");
         nowFeedbackLabel->setText("<unknown>");
     }
 }
 
-/*public*/ void SimpleTurnoutCtrlFrame::lockButtonActionPerformed(ActionEvent* /*e*/) {
+/*public*/ void SimpleTurnoutCtrlFrame::lockButtonActionPerformed(JActionEvent* /*e*/) {
     // load address from switchAddrTextField
     try {
         if (turnout != NULL)
@@ -288,16 +288,16 @@ JmriJFrame(parent)
                 turnout->setLocked(Turnout::CABLOCKOUT, true);
             }
         }
-    } catch (IllegalArgumentException ex1) {
+    } catch (IllegalArgumentException* ex1) {
         invalidTurnout(adrTextField->text(), ex1);
-    } catch (Exception ex2) {
+    } catch (Exception* ex2) {
         log->error("exception during lockButtonActionPerformed", ex2);
         nowStateLabel->setText("ERROR");
         nowFeedbackLabel->setText("<unknown>");
     }
 }
 
-/*public*/ void SimpleTurnoutCtrlFrame::lockPushButtonActionPerformed(ActionEvent* /*e*/) {
+/*public*/ void SimpleTurnoutCtrlFrame::lockPushButtonActionPerformed(JActionEvent* /*e*/) {
     // load address from switchAddrTextField
     try {
         if (turnout != NULL)
@@ -323,9 +323,9 @@ JmriJFrame(parent)
             }
 
         }
-    } catch (IllegalArgumentException ex1) {
+    } catch (IllegalArgumentException* ex1) {
         invalidTurnout(adrTextField->text(), ex1);
-    } catch (Exception ex2) {
+    } catch (Exception* ex2) {
         log->error("exception during lockPushButtonActionPerformed", ex2);
         nowStateLabel->setText("ERROR");
         nowFeedbackLabel->setText("<unknown>");
@@ -427,9 +427,9 @@ JmriJFrame(parent)
     }
   }
 
-void SimpleTurnoutCtrlFrame::invalidTurnout(QString name, Exception ex) {
+void SimpleTurnoutCtrlFrame::invalidTurnout(QString name, Exception* ex) {
     ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->showInfoMessage("Error",
-    "Unable to convert \"" + name + "\" to a valid hardware address", ex.getMessage(), "", true, false);
+    "Unable to convert \"" + name + "\" to a valid hardware address", ex->getMessage(), "", true, false);
 }
 
 

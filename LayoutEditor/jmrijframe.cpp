@@ -136,6 +136,7 @@
 void JmriJFrame::init(bool saveSize, bool savePosition)
 {
  log = new Logger("JmriJFrame");
+ log->setDebugEnabled(true);
  setVisible(true);
  //reuseFrameSavedPosition = true;
  //reuseFrameSavedSized = true;
@@ -291,8 +292,9 @@ void JmriJFrame::setupWindowRef()
             (prefsMgr->getWindowSize(windowFrameRef).height()==0.0))))
   {
 #ifdef Q_OS_LINUX
-   if (log->isDebugEnabled()) log->debug("setFrameLocation 2nd clause sets preferredSize to "+QString::number(prefsMgr->getWindowSize(windowFrameRef).width()) + ","+QString::number(prefsMgr->getWindowSize(windowFrameRef).height()));
-            this->resize(prefsMgr->getWindowSize(windowFrameRef));
+   if (log->isDebugEnabled())
+    log->debug("setFrameLocation 2nd clause sets preferredSize to "+QString::number(prefsMgr->getWindowSize(windowFrameRef).width()) + ","+QString::number(prefsMgr->getWindowSize(windowFrameRef).height()));
+   this->resize(prefsMgr->getWindowSize(windowFrameRef));
 #endif
 #ifdef Q_OS_WIN32
   if (log->isDebugEnabled()) log->debug("setFrameLocation 2nd clause sets size to "+QString::number(prefsMgr->getWindowSize(windowFrameRef).width()) + ","+QString::number(prefsMgr->getWindowSize(windowFrameRef).height()));
@@ -662,11 +664,11 @@ private bool escapeKeyActionClosesWindow = false;
 //            String sw = System.getProperty("jmri.inset.width");
 //            if (sw!=NULL) try {
 //                widthInset = Integer.parseInt(sw);
-//            } catch (Exception e1) {log->error("Error parsing jmri.inset.width: "+e1);}
+//            } catch (Exception* e1) {log->error("Error parsing jmri.inset.width: "+e1);}
 //            String sh = System.getProperty("jmri.inset.height");
 //            if (sh!=NULL) try {
 //                heightInset = Integer.parseInt(sh);
-//            } catch (Exception e1) {log->error("Error parsing jmri.inset.height: "+e1);}
+//            } catch (Exception* e1) {log->error("Error parsing jmri.inset.height: "+e1);}
 
   int widthInset = 0;
   int heightInset = 0;
@@ -685,7 +687,7 @@ private bool escapeKeyActionClosesWindow = false;
 //            return new Dimension(screen.width,
 //                screen.height-45);  // approximate this->..
 //        }
-//    } catch (Exception e2) {
+//    } catch (Exception* e2) {
 //        // failed completely, fall back to standard method
 //        if (log->isDebugEnabled()) log->debug("getMaximumSize returns super due to failure "+super.getMaximumSize());
 //        return super.getMaximumSize();

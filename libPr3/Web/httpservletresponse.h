@@ -2,8 +2,8 @@
 #define HTTPSERVLETRESPONSE_H
 #include "exceptions.h"
 #include "servletresponse.h"
-#include "httpserver/httpcookie.h"
-#include "httpserver/httpresponse.h"
+#include "../QtWebApp//QtWebApp/httpserver/httpcookie.h"
+#include "../QtWebApp//QtWebApp//httpserver/httpresponse.h"
 #include "requesthandler.h"
 
 class RequestHandler;
@@ -67,14 +67,14 @@ public:
 
     /*public*/ virtual QString encodeRedirectUrl(QString /*string*/) {return "";}
 
-    /*public*/ virtual void sendError(int /*i*/, QString /*string*/) throw (IOException)
+    /*public*/ virtual void sendError(int /*i*/, QString /*string*/) /*throw (IOException)*/
     {
      // TODO:
     }
 
-    /*public*/ virtual void sendError(int /*i*/) throw (IOException) {}
+    /*public*/ virtual void sendError(int /*i*/) /*throw (IOException)*/ {}
 
-    /*public*/ virtual void sendRedirect(QString /*string*/) throw (IOException) {}
+    /*public*/ virtual void sendRedirect(QString /*string*/) /*throw (IOException)*/ {}
 
     /*public*/ virtual void setDateHeader(QString name, long value)
     {
@@ -115,7 +115,7 @@ public:
 
     /*public*/ virtual QList<QString> getHeaderNames() {return QList<QString>();}
 
-    PrintWriter* getWriter() throw (IOException);
+    PrintWriter* getWriter() /*throw (IOException)*/;
     void setContentType(QString);
     stefanfrings::HttpResponse* resp;
     void setContentLength(int);

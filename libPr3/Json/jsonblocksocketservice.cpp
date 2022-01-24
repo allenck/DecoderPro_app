@@ -78,7 +78,7 @@
             } catch (JsonException ex) {
                 jbss->connection->sendMessage(ex.getJsonMessage());
             }
-        } catch (IOException ex) {
+        } catch (IOException* ex) {
             // if we get an error, de-register
             //block.removePropertyChangeListener(this);
       disconnect(block->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

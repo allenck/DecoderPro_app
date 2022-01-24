@@ -1,7 +1,7 @@
 #include "decoderpro3window.h"
 #include "decoder3action.h"
 #include <QApplication>
-
+#include "apps3.h"
 
 //DecoderPro3Window::DecoderPro3Window(QWidget *parent) :
 //  RosterFrame(parent)
@@ -51,4 +51,13 @@ void DecoderPro3Window::buildWindow()
 /*public*/  void DecoderPro3Window::remoteCalls(QStringList args)
 {
  RosterFrame::remoteCalls(args);
+}
+
+//@Override
+/*protected*/ void DecoderPro3Window::additionsToToolBar() {
+    //This value may return null if the DP3 window has been called from a the traditional JMRI menu frame
+    if (Apps3::buttonSpace() != nullptr) {
+        getToolBar()->layout()->addWidget(Apps3::buttonSpace());
+    }
+    RosterFrame::additionsToToolBar();
 }

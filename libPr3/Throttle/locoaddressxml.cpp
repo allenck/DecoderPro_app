@@ -60,8 +60,8 @@
     try {
      bool bok;
         addr = element.firstChildElement("number").text().toInt(&bok);
-        if(!bok) throw NumberFormatException();
-    } catch (NumberFormatException e) {
+        if(!bok) throw new NumberFormatException();
+    } catch (NumberFormatException* e) {
         return NULL;
     }
     QString protocol = element.firstChildElement("protocol").text();
@@ -70,7 +70,7 @@
 }
 
 //@Override
-/*public*/ void LocoAddressXml::load(QDomElement element, QObject* o) throw (Exception){
+/*public*/ void LocoAddressXml::load(QDomElement element, QObject* o) /*throw (Exception)*/{
     log->error("Invalid method called");
 }
 

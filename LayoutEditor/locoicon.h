@@ -8,9 +8,10 @@
 class ThrottleWindow;
 //class ThrottleFrame;
 class LayoutEditor;
-class LIBLAYOUTEDITORSHARED_EXPORT LocoIcon : public PositionableLabel
+class LIBLAYOUTEDITORSHARED_EXPORT LocoIcon : public PositionableLabel, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     //explicit LocoIcon(QObject *parent = 0);
     /*public*/ static const /*final*/ QString WHITE;// = "White";		//loco background colors
@@ -21,12 +22,12 @@ public:
     /*public*/ static const /*final*/ QString YELLOW;// = "Yellow";
     /*public*/ LocoIcon(Editor* editor);
     void common();
-    /*public*/ Positionable* deepClone() ;
-    /*public*/ Positionable* finishClone(Positionable* p);
-    /*public*/ void setShowToolTip(bool set);
-    /*public*/ void setPositionable(bool enabled);
-    /*public*/ bool doViemMenu();
-    /*public*/ bool showPopUp(QMenu* popup);
+    /*public*/ Positionable* deepClone() override ;
+    /*public*/ Positionable* finishClone(Positionable* p) override;
+    /*public*/ void setShowToolTip(bool set) override;
+    /*public*/ void setPositionable(bool enabled) override;
+    /*public*/ bool doViemMenu() override;
+    /*public*/ bool showPopUp(QMenu* popup) override;
     /*public*/ void setLocoColor(QString color);
     /*public*/ static QStringList getLocoColors();
     /*public*/ void setDockingLocation(int x, int y);
@@ -37,8 +38,9 @@ public:
     /*public*/ void setRosterEntry (RosterEntry* entry);
     /*public*/ RosterEntry* getRosterEntry ();
     /*public*/ void init();
-    /*public*/ bool updateScene();
+    /*public*/ bool updateScene() override;
     void setLocation(double x, double y);
+    QObject* self() override {return (QObject*)this;}
 
 signals:
     
@@ -72,6 +74,7 @@ protected:
  friend class DockingActionListener;
  friend class DockMenuListener;
 };
+
 class DockingActionListener : public QObject
 {
  Q_OBJECT
@@ -82,6 +85,7 @@ public:
 public slots:
  /*public*/ void actionPerformed();
 };
+
 class DockMenuListener : public QObject
 {
  Q_OBJECT

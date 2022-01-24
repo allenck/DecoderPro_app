@@ -1,10 +1,10 @@
 #ifndef PROGMODESELECTOR_H
 #define PROGMODESELECTOR_H
 
-#include <QWidget>
+#include "jpanel.h"
 
 class Programmer;
-class ProgModeSelector : public QWidget
+class ProgModeSelector : public JPanel
 {
     Q_OBJECT
 public:

@@ -28,7 +28,7 @@
 }
 
 //@Override
-/*public*/ Turnout* JMRIClientTurnoutManager::createNewTurnout(QString systemName, QString userName) const {
+/*public*/ Turnout* JMRIClientTurnoutManager::createNewTurnout(QString systemName, QString userName) {
     Turnout* t;
     int addr = (systemName.mid(prefix.length() + 1).toInt());
     t = new JMRIClientTurnout(addr, memo);
@@ -41,7 +41,7 @@
  * on the server.
  */
 //@Override
-/*public*/ QString JMRIClientTurnoutManager::createSystemName(QString curAddress, QString prefix) const throw (JmriException) {
+/*public*/ QString JMRIClientTurnoutManager::createSystemName(QString curAddress, QString prefix) /*throw (JmriException)*/ {
     return prefix + typeLetter() + curAddress;
 }
 

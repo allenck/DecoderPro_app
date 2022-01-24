@@ -7,7 +7,7 @@
 class QDomDocument;
 class QDomElement;
 class Logger;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class PropertyChangeEvent;
 namespace Operations
 {
@@ -17,7 +17,7 @@ namespace Operations
   Q_OBJECT
  public:
   explicit Schedule(QString id, QString name, QObject *parent = 0);
-  PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
+  SwingPropertyChangeSupport* pcs;// = new java.beans.SwingPropertyChangeSupport(this,this);
   /*public*/ static /*final*/ QString LISTCHANGE_CHANGED_PROPERTY;// = "scheduleListChange"; // NOI18N
   /*public*/ static /*final*/ QString DISPOSE;// = "scheduleDispose"; // NOI18N
   /*public*/ QString getId();

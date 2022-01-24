@@ -187,12 +187,12 @@
 //    //var = VPtr<Editor>::asQVariant(panel);
 //    act->setData(var);
 //    r.addActionListener(a);
-    PanelActionListener* a = new PanelActionListener(panel, this);
-    QAction* r = new QAction(panel->getTitle(), this);
-    r->setCheckable(true);
-    connect(r, SIGNAL(toggled(bool)), a, SLOT(actionPerformed()));
-    panelsSubMenu->addAction(r);
-    updateEditorPanel (panel);
+   PanelActionListener* a = new PanelActionListener(panel, this);
+   QAction* r = new QAction(panel->getTitle(), this);
+   r->setCheckable(true);
+   connect(r, SIGNAL(toggled(bool)), a, SLOT(actionPerformed()));
+   panelsSubMenu->addAction(r);
+   updateEditorPanel (panel);
 }
 
 PanelActionListener::PanelActionListener(Editor *panel, PanelMenu* pm)
@@ -325,7 +325,7 @@ void PanelMenu::menuSelected()
      return true;
     }
    }
-   catch(Exception e){
+   catch(Exception* e){
   }
  }
  return false;
@@ -347,7 +347,7 @@ void PanelMenu::menuSelected()
     }
    }
   }
-  catch(Exception e)
+  catch(Exception* e)
   {
   }
  }
@@ -372,7 +372,7 @@ void PanelMenu::menuSelected()
    lePanelsList->append(le);
   }
 //  }
-//  catch(Exception e)
+//  catch(Exception* e)
 //  {
 //  }
  }

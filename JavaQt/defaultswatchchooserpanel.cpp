@@ -390,6 +390,7 @@ void SwatchPanel::init()
 {
  QPainter g(this);
  QRect rect = evt->rect();
+ Q_UNUSED(rect)
  //g->setColor(getBackground());
  g.fillRect(0,0,width(), height(), QColor(Qt::lightGray));
  for (int row = 0; row < numSwatches.height(); row++)
@@ -523,7 +524,7 @@ void SwatchPanel::init()
 /*public*/ void SwatchPanel::mousePressed(QMouseEvent* e) {
     if (isEnabled()) {
         QColor color = SwatchPanel::getColorForLocation(e->pos().x(), e->pos().y());
-        QObject* p = parent();
+//        QObject* p = parent();
         dscp->setSelectedColor(color);
         dscp->swatchPanel->setSelectedColorFromLocation(e->pos().x(), e->pos().y());
         dscp->recentSwatchPanel->setMostRecentColor(color);

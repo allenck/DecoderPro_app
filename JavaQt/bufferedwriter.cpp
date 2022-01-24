@@ -111,7 +111,7 @@
     }
 
     /** Checks to make sure that the stream has not been closed */
-    /*private*/ void BufferedWriter::ensureOpen() throw (IOException) {
+    /*private*/ void BufferedWriter::ensureOpen() /*throw (IOException)*/ {
         if (out == nullptr)
             throw new IOException("Stream closed");
     }
@@ -121,7 +121,7 @@
      * flushing the stream itself.  This method is non-private only so that it
      * may be invoked by PrintStream.
      */
-    void BufferedWriter::flushBuffer() throw (IOException) {
+    void BufferedWriter::flushBuffer()  {
         /*synchronized (lock)*/ {
             ensureOpen();
             if (nextChar == 0)
@@ -136,7 +136,7 @@
      *
      * @exception  IOException  If an I/O error occurs
      */
-    /*public*/ void BufferedWriter::write(int c) throw (IOException) {
+    /*public*/ void BufferedWriter::write(int c) /*throw (IOException)*/ {
         /*synchronized (lock)*/ {
             ensureOpen();
             if (nextChar >= nChars)
@@ -170,7 +170,7 @@
      *
      * @exception  IOException  If an I/O error occurs
      */
-    /*public*/ void BufferedWriter::write(QByteArray cbuf, int off, int len) throw (IOException) {
+    /*public*/ void BufferedWriter::write(QByteArray cbuf, int off, int len) /*throw (IOException)*/ {
         /*synchronized (lock)*/ {
             ensureOpen();
             if ((off < 0) || (off > cbuf.length()) || (len < 0) ||
@@ -217,7 +217,7 @@
      *
      * @exception  IOException  If an I/O error occurs
      */
-    /*public*/ void BufferedWriter::write(QString s, int off, int len) throw (IOException) {
+    /*public*/ void BufferedWriter::write(QString s, int off, int len) /*throw (IOException)*/ {
         /*synchronized (lock) */{
             ensureOpen();
 
@@ -240,7 +240,7 @@
      *
      * @exception  IOException  If an I/O error occurs
      */
-    /*public*/ void BufferedWriter::newLine() throw (IOException) {
+    /*public*/ void BufferedWriter::newLine() /*throw (IOException)*/ {
 //        write(lineSeparator);
     }
 
@@ -249,14 +249,14 @@
      *
      * @exception  IOException  If an I/O error occurs
      */
-    /*public*/ void BufferedWriter::flush() throw (IOException) {
+    /*public*/ void BufferedWriter::flush() /*throw (IOException)*/ {
         /*synchronized (lock) */{
             flushBuffer();
             out->flush();
         }
     }
 
-    /*public*/ void BufferedWriter::close() throw (IOException) {
+    /*public*/ void BufferedWriter::close() /*throw (IOException)*/ {
         /*synchronized (lock) */{
             if (out == nullptr) {
                 return;

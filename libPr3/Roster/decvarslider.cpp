@@ -28,9 +28,9 @@ DecVarSlider::DecVarSlider(DecVariableValue* var, int min, int max, QWidget *par
  setValue(val.toInt());
  // listen for changes here
  connect(this, SIGNAL(valueChanged(int)), this, SLOT(on_value_Changed(int)));
-//    addChangeListener(this);
+ addChangeListener((ChangeListener*)this);
  // listen for changes to associated variable
- // _var->addPropertyChangeListener(new PropertyChangeListener();
+ // _var->SwingPropertyChangeSupport::addPropertyChangeListener(new PropertyChangeListener();
  DVSPropertyChangeListener* l = new DVSPropertyChangeListener(this);
 //    {
 //        /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
@@ -40,21 +40,21 @@ DecVarSlider::DecVarSlider(DecVariableValue* var, int min, int max, QWidget *par
  connect(_var->prop, SIGNAL(propertyChange(PropertyChangeEvent*)), l, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
-DVSPropertyChangeListener::DVSPropertyChangeListener(DecVarSlider *self) { this->self = self;}
-void DVSPropertyChangeListener::propertyChange(PropertyChangeEvent* e) {self->originalPropertyChanged(e);}
+DVSPropertyChangeListener::DVSPropertyChangeListener(DecVarSlider *decVarSlider) { this->decVarSlider = decVarSlider;}
+void DVSPropertyChangeListener::propertyChange(PropertyChangeEvent* e) {decVarSlider->originalPropertyChanged(e);}
 
 void DecVarSlider::propertyChange(PropertyChangeEvent* e)
 {
- if(qobject_cast<ShortAddrVariableValue*>(_var)!= NULL)
-  ((ShortAddrVariableValue*)_var)->setValue(/*value()*/e->getNewValue().toInt());
- else
- if(qobject_cast<DecVariableValue*>(_var)!= NULL)
-  ((DecVariableValue*)_var)->setValue(/*value()*/e->getNewValue().toInt());
-     else
- {
-  logit->debug(tr("missing cast ")+ _var->metaObject()->className());
-  Q_ASSERT(false);
- }
+// if(qobject_cast<ShortAddrVariableValue*>(_var)!= NULL)
+//  ((ShortAddrVariableValue*)_var)->setValue(/*value()*/e->getNewValue().toInt());
+// else
+// if(qobject_cast<DecVariableValue*>(_var)!= NULL)
+//  ((DecVariableValue*)_var)->setValue(/*value()*/e->getNewValue().toInt());
+//     else
+// {
+//  logit->debug(tr("missing cast ")+ _var->metaObject()->className());
+//  Q_ASSERT(false);
+// }
  originalPropertyChanged(e);
 }
 
@@ -82,8 +82,8 @@ void DecVarSlider::originalPropertyChanged(PropertyChangeEvent* e)
  }
  if (e->getPropertyName()==("Value"))
  {
-  //int newValue = (((QLineEdit*)_var->getCommonRep())->text()).toInt();
-  int newValue = e->getNewValue().toInt();
+  int newValue = (((QLineEdit*)_var->getCommonRep())->text()).toInt();
+  //int newValue = e->getNewValue().toInt();
   setValue(newValue);
  }
 }
@@ -92,6 +92,7 @@ void DecVarSlider::on_value_Changed(int v)
  ChangeEvent* event = new ChangeEvent(this);
  stateChanged(event);
 }
+
 QColor DecVarSlider::getBackground()
 {
  QColor c;

@@ -38,7 +38,7 @@ public:
 
     /*public*/ virtual QString getContentType() { return "";}
 
-    /*public*/ virtual QTextStream* getInputStream() throw (IOException) {return NULL;}
+    /*public*/ virtual QTextStream* getInputStream() /*throw (IOException)*/ {return NULL;}
 
     /*public*/ virtual QString getParameter(QString /*string*/) { return "";}
 
@@ -56,7 +56,7 @@ public:
 
     /*public*/ virtual int getServerPort() {return 0;}
 
-    /*public*/ virtual QTextStream* getReader() throw (IOException) {return NULL;}
+    /*public*/ virtual QTextStream* getReader() /*throw (IOException)*/ {return NULL;}
 
     /*public*/ virtual QString getRemoteAddr() { return "";}
 

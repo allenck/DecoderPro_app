@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
  PythonQt::init(PythonQt::RedirectStdOut);
  PythonWrappers::defineClasses();
 
-# if 0 // test Python install
+# if 1 // test Python install
  // get the __main__ python module
  PythonQtObjectPtr mainModule = PythonQt::self()->getMainModule();
 

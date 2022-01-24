@@ -10,9 +10,9 @@ public:
     explicit ManagerDefaultSelectorXml(QObject *parent = 0);
     ~ManagerDefaultSelectorXml() {}
     ManagerDefaultSelectorXml(const ManagerDefaultSelectorXml&) :AbstractXmlAdapter() {}
-    /*public*/ QDomElement store(QObject* o) throw (Exception);
-    /*public*/ bool load(QDomElement e) throw (Exception);
-    /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
+    /*public*/ QDomElement store(QObject* o) /*throw (Exception)*/;
+    /*public*/ bool load(QDomElement e) /*throw (Exception)*/;
+    /*public*/ void load(QDomElement element, QObject* o) /*throw (Exception)*/;
 
 signals:
 

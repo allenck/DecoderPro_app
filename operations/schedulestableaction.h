@@ -2,7 +2,8 @@
 #define SCHEDULESTABLEACTION_H
 
 #include "abstractaction.h"
-
+#include "schedulestableframe.h"
+#include <QPointer>
 namespace Operations
 {
  class SchedulesTableFrame;
@@ -12,10 +13,10 @@ namespace Operations
  public:
   SchedulesTableAction(QString s, QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* /*e*/);
+  /*public*/ void actionPerformed(JActionEvent* /*e*/)override;
 
  private:
-  SchedulesTableFrame* f;// = null;
+  QPointer<SchedulesTableFrame> f = nullptr;
 
  };
 }

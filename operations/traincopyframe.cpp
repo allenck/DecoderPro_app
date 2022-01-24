@@ -5,13 +5,14 @@
 #include "gridbaglayout.h"
 #include "trainmanager.h"
 #include "jtextfield.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include <QComboBox>
 #include "control.h"
-#include <QGroupBox>
 #include "flowlayout.h"
 #include "vptr.h"
 #include "traineditframe.h"
+#include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -32,37 +33,33 @@ namespace Operations
 
  /*public*/ TrainCopyFrame::TrainCopyFrame(Train* train, QWidget* parent) : OperationsFrame(parent){
  log = new Logger("TrainCopyFrame");
- trainManager = TrainManager::instance();
+ trainManager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
 
  // labels
  // text field
  trainNameTextField = new JTextField(Control::max_len_string_train_name);
 
  // major buttons
- copyButton = new QPushButton(tr("Copy"));
+ copyButton = new JButton(tr("Copy"));
 
  // combo boxes
- trainBox = TrainManager::instance()->getTrainComboBox();
+ trainBox = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainComboBox();
      // general GUI config
 
      //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
+     QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      // Set up the panels
      // Layout the panel by rows
      // row 1
-     QGroupBox* pName = new QGroupBox();
+     JPanel* pName = new JPanel();
      pName->setLayout(new GridBagLayout());
-     //pName.setBorder(BorderFactory.createTitledBorder(tr("Name")));
-     pName->setStyleSheet(gbStyleSheet);
-     pName->setTitle(tr("Name"));
+     pName->setBorder(BorderFactory::createTitledBorder(tr("Name")));
      addItem(pName, trainNameTextField, 0, 0);
 
      // row 2
-     QGroupBox* pCopy = new QGroupBox();
+     JPanel* pCopy = new JPanel();
      pCopy->setLayout(new GridBagLayout());
-     //pCopy.setBorder(BorderFactory.createTitledBorder(tr("SelectTrain")));
-     pCopy->setStyleSheet(gbStyleSheet);
-     pCopy->setTitle(tr("Select Train to Copy"));
+     pCopy->setBorder(BorderFactory::createTitledBorder(tr("Select Train to Copy")));
      addItem(pCopy, trainBox, 0, 0);
 
      trainBox->setCurrentIndex(trainBox->findData(VPtr<Train>::asQVariant(train)));
@@ -89,7 +86,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
  }
 
  /*public*/ void TrainCopyFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == copyButton) {
          log->debug("copy train button activated");
          if (!checkName()) {

@@ -12,9 +12,10 @@ class SignalMast;
 //class NamedBeanHandle;
 class NamedBean;
 class PropertyChangeEvent;
-class LIBLAYOUTEDITORSHARED_EXPORT SignalMastIcon : public PositionableIcon
+class LIBLAYOUTEDITORSHARED_EXPORT SignalMastIcon : public PositionableIcon, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     explicit SignalMastIcon(QWidget *parent = 0);
     /*public*/ SignalMastIcon(Editor* editor, Positionable* parent = 0);
@@ -52,6 +53,7 @@ public:
     /*public*/ bool getLitMode();
     /*public*/ void dispose() override;
     /*public*/ bool updateScene() override;
+    QObject* self() override {return (QObject*)this;}
 
 signals:
 
@@ -87,22 +89,26 @@ protected:
      */
     /*protected*/ int clickMode;// = 0;
     /*protected*/ bool litMode;// = false;
-    class AddIconActionListener : public ActionListener
-    {
-     SignalMastIcon* parent;
-    public:
-     AddIconActionListener(SignalMastIcon* parent)
-     {
-      this->parent = parent;
-     }
-     void actionPerformed(ActionEvent */*e*/ = 0)
-     {
-      parent->updateItem();
-     }
-    };
 protected slots:
     /*protected*/ void editItem();
-
+ friend class SMIAddIconActionListener;
 };
+class SMIAddIconActionListener : public QObject, public ActionListener
+{
+  Q_OBJECT
+  Q_INTERFACES(ActionListener)
+ SignalMastIcon* parent;
+public:
+ SMIAddIconActionListener(SignalMastIcon* parent)
+ {
+  this->parent = parent;
+ }
+ QObject* self() override {return (QObject*)this;}
+ void actionPerformed(JActionEvent */*e*/ = 0) override
+ {
+  parent->updateItem();
+ }
+};
+
 Q_DECLARE_METATYPE(SignalMastIcon)
 #endif // SIGNALMASTICON_H

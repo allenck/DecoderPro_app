@@ -40,7 +40,7 @@ ServerSocket::ServerSocket(QTcpSocket* impl, QObject *parent) : QObject(parent) 
  * @exception IOException IO error when opening the socket.
  * @revised 1.4
  */
-/*public*/ ServerSocket::ServerSocket(QObject *parent)  throw (IOException) : QObject(parent)
+/*public*/ ServerSocket::ServerSocket(QObject *parent)  /*throw (IOException)*/ : QObject(parent)
 {
 #if 0 // TODO:
    setImpl();
@@ -84,7 +84,7 @@ ServerSocket::ServerSocket(QTcpSocket* impl, QObject *parent) : QObject(parent) 
  * @see        java.net.ServerSocket#setSocketFactory(java.net.SocketImplFactory)
  * @see        SecurityManager#checkListen
  */
-/*public*/ ServerSocket::ServerSocket(int port, QObject *parent )  throw (IOException) : QObject(parent){
+/*public*/ ServerSocket::ServerSocket(int port, QObject *parent )  /*throw (IOException)*/ : QObject(parent){
 //       this(port, 50, null);
 }
 #if 0
@@ -263,8 +263,8 @@ void createImpl() throws SocketException {
     try {
         impl.create(true);
         created = true;
-    } catch (IOException e) {
-        throw new SocketException(e.getMessage());
+    } catch (IOException* e) {
+        throw new SocketException(e->getMessage());
     }
 }
 
@@ -509,7 +509,7 @@ protected final void implAccept(Socket s) throws IOException {
             security.checkAccept(si.getInetAddress().getHostAddress(),
                                  si.getPort());
         }
-    } catch (IOException e) {
+    } catch (IOException* e) {
         if (si != null)
             si.reset();
         s.impl = si;
@@ -537,7 +537,7 @@ protected final void implAccept(Socket s) throws IOException {
  * @revised 1.4
  * @spec JSR-51
  */
-/*public*/ void ServerSocket::close() throw (IOException) {
+/*public*/ void ServerSocket::close() /*throw (IOException)*/ {
     /*synchronized(closeLock) */{
         if (isClosed())
             return;

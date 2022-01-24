@@ -12,13 +12,13 @@ public:
     explicit DccLocoAddress(int number, bool isLong, QObject *parent = 0);
     DccLocoAddress(int number, Protocol protocol, QObject *parent = 0);
     DccLocoAddress(const DccLocoAddress& l , QObject* parent = 0);
-    //bool operator ==(const LocoAddress &a) override;
-    Q_INVOKABLE /*public*/ bool equals(QObject* a);
-    int hashCode();
+    //bool operator ==(const LocoAddress &a);
+    Q_INVOKABLE /*public*/ bool equals(QObject* a) override;
+    int hashCode() const override;
     QString toString();
     bool isLongAddress();
-    virtual Protocol getProtocol() const;
-    virtual int getNumber() const;
+    Protocol getProtocol() const override;
+    int getNumber() const override;
 signals:
     
 public slots:

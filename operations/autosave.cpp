@@ -4,6 +4,7 @@
 #include "logger.h"
 #include "trainmanager.h"
 #include "sleeperthread.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -68,7 +69,7 @@ namespace Operations
               SleeperThread::sleep(60);
              } catch (InterruptedException e) {
              }
-             if (TrainManager::instance()->isAnyTrainBuilding()) {
+             if (((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->isAnyTrainBuilding()) {
                  log->debug("Detected trains being built");
                  continue;
              }

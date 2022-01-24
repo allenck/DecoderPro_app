@@ -53,21 +53,21 @@ SignalMastTableDataModel::SignalMastTableDataModel(QObject* parent) : BeanTableD
  return BeanTableDataModel::headerData(section, orientation, role);
 }
 
-///*public*/ Class<?> getColumnClass(int col) {
-//    if (col == VALUECOL) {
-//        return JComboBox.class;
-//    } else if (col == EDITMASTCOL) {
-//        return JButton.class;
-//    } else if (col == EDITLOGICCOL) {
-//        return JButton.class;
-//    } else if (col == LITCOL) {
-//        return Boolean.class;
-//    } else if (col == HELDCOL) {
-//        return Boolean.class;
-//    } else {
-//        return super.getColumnClass(col);
-//    }
-//}
+/*public*/ QString SignalMastTableDataModel::getColumnClass(int col) const{
+    if (col == VALUECOL) {
+        return "JComboBox";
+    } else if (col == EDITMASTCOL) {
+        return "JButton";
+    } else if (col == EDITLOGICCOL) {
+        return "JButton";
+    } else if (col == LITCOL) {
+        return "Boolean";
+    } else if (col == HELDCOL) {
+        return "Boolean";
+    } else {
+        return BeanTableDataModel::getColumnClass(col);
+    }
+}
 
 /*public*/ int SignalMastTableDataModel::getPreferredWidth(int col) {
     if (col == LITCOL) {
@@ -124,7 +124,7 @@ SignalMastTableDataModel::SignalMastTableDataModel(QObject* parent) : BeanTableD
     }
 }
 
-/*protected*/ Manager* SignalMastTableDataModel::getManager() {
+/*protected*/ AbstractManager *SignalMastTableDataModel::getManager() {
     return static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"));
 }
 
@@ -278,7 +278,7 @@ void SignalMastTableDataModel::editMast(int row, int col) {
     table = new SignalMastJTable(sorter);
 
     //table->getTableHeader().setReorderingAllowed(true);
-    table->setColumnModel(new XTableColumnModel((AbstractTableModel*)sorter->sourceModel()));
+    table->setColumnModel(new XTableColumnModel(/*(AbstractTableModel*)sorter->sourceModel()*/table));
     table->createDefaultColumnsFromModel();
 
     addMouseListenerToHeader(table);

@@ -206,7 +206,7 @@ LogixTableAction::LogixTableAction(const LogixTableAction & that) : AbstractTabl
 {
  m = new LogixTableModel(this);
  AbstractManager* manager = (AbstractManager*)m->getManager();
- connect(manager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), m, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), m, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 // overlay the state column with the edit column
@@ -359,9 +359,9 @@ void LogixTableModel::doDelete(NamedBean* bean)
         return BeanTableDataModel::matchPropertyName(e);
 }
 
-/*public*/ Manager* LogixTableModel::getManager()
+/*public*/ AbstractManager *LogixTableModel::getManager()
 {
- return (LogixManager*)InstanceManager::getDefault("LogixManager");
+ return (AbstractManager*)InstanceManager::getDefault("LogixManager");
  //return self->_logixManager;
 
 }
@@ -407,7 +407,7 @@ void LogixTableModel::doDelete(NamedBean* bean)
 //    TableColumn col = table.getColumnModel().getColumn(BeanTableDataModel.DELETECOL);
 //    col.setCellEditor(new DefaultCellEditor(editCombo));
  QStringList items = QStringList() << tr("Select") << tr("Edit") << tr("Browser") << tr("Copy") << tr("Delete");
- table->setItemDelegateForColumn(BeanTableDataModel::DELETECOL, new ItemDelegate(items, this));
+ table->setItemDelegateForColumn(BeanTableDataModel::DELETECOL, new JComboBoxEditor(items, this));
 }
 
 /*protected*/ void LogixTableModel::configValueColumn(JTable */*table*/)
@@ -615,7 +615,7 @@ void LogixTableModel::doDelete(NamedBean* bean)
 //        }
 //    }.init(f));
     CrossReferenceActionListener* listener = new CrossReferenceActionListener(f, this);
-    connect(item, SIGNAL(triggered()), listener, SLOT(actionPerformed()));
+    connect(item, SIGNAL(triggered()), listener->self(), SLOT(actionPerformed()));
     menu->addAction(item);
 
     item = new QAction(tr("Display Where Used"), this);  // NOI18N
@@ -638,7 +638,7 @@ CrossReferenceActionListener::CrossReferenceActionListener(BeanTableFrame* frame
  this->frame = frame;
  this->parent = parent;
 }
-void CrossReferenceActionListener::actionPerformed()
+void CrossReferenceActionListener::actionPerformed(JActionEvent *)
 {
   new RefDialog(frame, parent);
 }
@@ -801,7 +801,7 @@ RefDialog::RefDialog(BeanTableFrame *frame, LogixTableAction* action) : JDialog(
  exec();
 }
 
-void RefDialog::deviceReportPressed(ActionEvent* /*e*/)
+void RefDialog::deviceReportPressed(JActionEvent* /*e*/)
 {
  Maintenance::deviceReportPressed(_devNameField->text(), NULL);
     //dispose();
@@ -810,7 +810,7 @@ void RefDialog::deviceReportPressed(ActionEvent* /*e*/)
 //};
 
 void LogixTableAction::enableAll(bool enable) {
-    QStringList sysNameList = ((DefaultLogixManager*)_logixManager)->getSystemNameList();
+    QStringList sysNameList = ((DefaultLogixManager*)_logixManager)->AbstractManager::getSystemNameList();
     for (int i=0; i<sysNameList.size(); i++) {
         Logix* x = (Logix*)((DefaultLogixManager*)_logixManager)->getBySystemName(sysNameList.at(i));
         ((DefaultLogix*)x)->setEnabled(enable);
@@ -1289,8 +1289,8 @@ void LogixTableAction::createPressed(ActionEvent* /*e*/)
      Logix* x = NULL;
      try {
          x = (Logix*)_logixManager->getBySystemName(sName);
-         if(x == NULL) throw Exception();
-     } catch (Exception ex) {
+         if(x == NULL) throw new Exception();
+     } catch (Exception* ex) {
          // user input no good
          handleCreateException(sName);
          return; // without creating
@@ -1901,51 +1901,51 @@ QString LogixTableAction::getName()
  return "jmri.jmrit.beantable.LogixTableAction";
 }
 #endif
-ItemDelegate::ItemDelegate(QStringList items, QObject *parent)
-: QAbstractItemDelegate(parent)
-{
- Items = items;
-}
+//ItemDelegate::ItemDelegate(QStringList items, QObject *parent)
+//: QAbstractItemDelegate(parent)
+//{
+// Items = items;
+//}
 
 
-QWidget* ItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/* option */, const QModelIndex & /*index*/ ) const
-{
-  QComboBox* editor = new QComboBox(parent);
-  editor->addItems(Items);
-  return editor;
-}
+//QWidget* ItemDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/* option */, const QModelIndex & /*index*/ ) const
+//{
+//  QComboBox* editor = new QComboBox(parent);
+//  editor->addItems(Items);
+//  return editor;
+//}
 
-void ItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
-{
-  QComboBox *comboBox = static_cast<QComboBox*>(editor);
-  int value = index.model()->data(index, Qt::EditRole).toUInt();
-  comboBox->setCurrentIndex(value);
-}
+//void ItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+//{
+//  QComboBox *comboBox = static_cast<QComboBox*>(editor);
+//  int value = index.model()->data(index, Qt::EditRole).toUInt();
+//  comboBox->setCurrentIndex(value);
+//}
 
-void ItemDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
-{
-  QComboBox *comboBox = static_cast<QComboBox*>(editor);
+//void ItemDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+//{
+//  QComboBox *comboBox = static_cast<QComboBox*>(editor);
 
-  model->setData(index, comboBox->currentText(), Qt::EditRole);
-}
+//  model->setData(index, comboBox->currentText(), Qt::EditRole);
+//}
 
-void ItemDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
-{
-  editor->setGeometry(option.rect);
-}
-void ItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
-{
-  QStyleOptionViewItemV4 myOption = option;
-  QString text = Items.at(index.row());
+//void ItemDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
+//{
+//  editor->setGeometry(option.rect);
+//}
+//void ItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+//{
+//  QStyleOptionViewItemV4 myOption = option;
+//  QString text = Items.at(index.row());
 
-  myOption.text = text;
+//  myOption.text = text;
 
-  QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &myOption, painter);
-}
-QSize ItemDelegate::sizeHint(const QStyleOptionViewItem &/*option*/, const QModelIndex &/*index*/) const
-{
- return QSize (80, 100);
-}
+//  QApplication::style()->drawControl(QStyle::CE_ItemViewItem, &myOption, painter);
+//}
+//QSize ItemDelegate::sizeHint(const QStyleOptionViewItem &/*option*/, const QModelIndex &/*index*/) const
+//{
+// return QSize (80, 100);
+//}
 
 // ------------ Methods for Conditional References Window ------------
 /**
@@ -2148,8 +2148,8 @@ void LogixTableAction::saveBrowserPressed() {
         // ADD Logix Header inforation first
         FileUtil::appendTextToFile(file, tStr);
         FileUtil::appendTextToFile(file, textContent->toPlainText());
-    } catch (IOException e) {
-        log->error(tr("Unable to write browser content to '%1', exception: '%2'").arg(file->toString()).arg(e.getMessage()));  // NOI18N
+    } catch (IOException* e) {
+        log->error(tr("Unable to write browser content to '%1', exception: '%2'").arg(file->toString()).arg(e->getMessage()));  // NOI18N
     }
 }
 

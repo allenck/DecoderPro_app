@@ -8,12 +8,10 @@
 #include "actionevent.h"
 #include <QRadioButton>
 #include "enumvariablevalue.h"
-#include "indexedenumvariablevalue.h"
 #include <QVBoxLayout>
 #include <QSignalMapper>
 
 class EnumVariableValue;
-class IndexedEnumVariableValue;
 class ActionListener;
 class PropertyChangeListener;
 class VariableValue;
@@ -23,9 +21,8 @@ class LIBPR3SHARED_EXPORT ComboRadioButtons : public QWidget
 public:
  //explicit ComboRadioButtons(QWidget *parent = 0);
  ComboRadioButtons(QComboBox* box, EnumVariableValue* var, QWidget *parent = 0);
- ComboRadioButtons(QComboBox* box, IndexedEnumVariableValue* var, QWidget *parent = 0);
  virtual void addToPanel(QRadioButton* b, int i);
- void thisActionPerformed(ActionEvent* /*e*/);
+ void thisActionPerformed(JActionEvent* /*e*/);
  /*public*/ void setToolTipText(QString t);
  /*public*/ void dispose();
  QColor getBackground(QRadioButton* box);
@@ -37,8 +34,7 @@ signals:
 public slots:
  /*public*/ void actionPerformed(int i);
  void on_valueChanged(EnumVariableValue*);
- void on_valueChanged(IndexedEnumVariableValue * v);
- void originalActionPerformed(ActionEvent* e = 0) ;
+ void originalActionPerformed(JActionEvent* e = 0) ;
  void originalPropertyChanged(PropertyChangeEvent* e = 0);
  void propertyChange(PropertyChangeEvent* e);
 
@@ -63,4 +59,22 @@ protected:
  friend class ComboOffRadioButton;
 };
 
+class NewListener : public QObject, public PropertyChangeListener
+{
+  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
+
+public:
+    NewListener(ComboRadioButtons* parent)
+    {
+     this->parent = parent;
+    }
+    ComboRadioButtons* parent;
+    QObject* self() override{return (QObject*)this;}
+public slots:
+    void propertyChange(PropertyChangeEvent *e) override
+    {
+     parent->originalPropertyChanged(e);
+    }
+};
 #endif // COMBORADIOBUTTONS_H

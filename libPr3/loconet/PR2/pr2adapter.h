@@ -16,7 +16,7 @@ private:
 static Logger* log;
 
 protected:
-/*protected*/ void setSerialPort(SerialPort* activeSerialPort) throw (UnsupportedCommOperationException);
+/*protected*/ void setSerialPort(SerialPort* activeSerialPort) /*throw (UnsupportedCommOperationException)*/;
 
 };
 

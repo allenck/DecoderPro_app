@@ -222,7 +222,7 @@ DirectorySearcher::DirectorySearcher(QObject *parent) :
         dir = d;
         this->s = s;
     }
-    /*public*/ void AActionListener::actionPerformed(ActionEvent* /*a*/) {
+    /*public*/ void AActionListener::actionPerformed(JActionEvent* /*a*/) {
         s->_addDir = dir;
         s->cancelLooking();
     }
@@ -234,7 +234,7 @@ DirectorySearcher::DirectorySearcher(QObject *parent) :
         dir = d;
         oneDir = o;
     }
-    /*public*/ void MActionListener::actionPerformed(ActionEvent* /*a*/) {
+    /*public*/ void MActionListener::actionPerformed(JActionEvent* /*a*/) {
     s->displayMore(new QDir(dir->path()), oneDir);
     }
 //};
@@ -243,7 +243,7 @@ LActionListener::LActionListener(DirectorySearcher* s)
 {
 this->s = s;
 }
-    /*public*/ void LActionListener::actionPerformed(ActionEvent* /*a*/) {
+    /*public*/ void LActionListener::actionPerformed(JActionEvent* /*a*/) {
         s->keepLooking();
     }
 //    };
@@ -252,7 +252,7 @@ CActionListener::CActionListener(DirectorySearcher* s)
 {
 this->s = s;
 }
-    /*public*/ void CActionListener::actionPerformed(ActionEvent* /*a*/) {
+    /*public*/ void CActionListener::actionPerformed(JActionEvent* /*a*/) {
         s->cancelLooking();
     }
 //    };

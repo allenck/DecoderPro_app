@@ -4,7 +4,6 @@
 #include "auxiliaryconfiguration.h"
 #include "xmladapter.h"
 #include "metatypes.h"
-#include "connectionconfig.h"
 #include "vptr.h"
 #include "class.h"
 #include "loggerfactory.h"
@@ -16,6 +15,7 @@
 
 ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager()
 {
+ setObjectName("ConnectionConfigManager");
  connections = QList<ConnectionConfig*>();
  NAMESPACE = "http://jmri.org/xml/schema/auxiliary-configuration/connections-2-9-6.xsd"; // NOI18N
 
@@ -36,7 +36,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
 /*private*/ /*final*/ /*static*/ Logger* ConnectionConfigManager::log = LoggerFactory::getLogger("ConnectionConfigManager");
 
 //@Override
-/*public*/ void ConnectionConfigManager::initialize(Profile* profile) throw (InitializationException)
+/*public*/ void ConnectionConfigManager::initialize(Profile* profile) /*throw new (InitializationException)*/
 {
  if (!isInitialized(profile))
  {
@@ -46,7 +46,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
   this->setPortNamePattern();
   try {
       sharedConnections = /*JDOMUtil.toJDOMElement*/(ProfileUtils::getAuxiliaryConfiguration(profile)->getConfigurationFragment(CONNECTIONS, NAMESPACE, true));
-  } catch (NullPointerException ex)
+  } catch (NullPointerException* ex)
   {
       // Normal if this is a new profile
       log-> info("No connections configured.");
@@ -58,7 +58,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
    {
     perNodeConnections = /*JDOMUtil.toJDOMElement*/(ProfileUtils::getAuxiliaryConfiguration(profile)->getConfigurationFragment(CONNECTIONS, NAMESPACE, false));
    }
-   catch (NullPointerException ex)
+   catch (NullPointerException* ex)
    {
     // Normal if the profile has not been used on this computer
     log-> info("No local configuration found.");
@@ -149,14 +149,14 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
      }
     }
 
-    catch (ClassNotFoundException /*| InstantiationException | IllegalAccessException*/ ex)
+    catch (ClassNotFoundException* /*| InstantiationException | IllegalAccessException*/ ex)
     {
      log-> error(tr("Unable to create %1 for %2").arg(className).arg(shared.tagName()), ex);
      QString english = tr( "Unable to create connection \"%1\" (%2).").arg(userName).arg( systemName); // NOI18N
      QString localized = tr( "Unable to create connection \"%1\" (%2).").arg(userName).arg( systemName); // NOI18N
      this->addInitializationException(profile, new HasConnectionButUnableToConnectException(english, localized, NULL));
     }
-    catch (Exception ex)
+    catch (Exception* ex)
     {
      log-> error(tr("Unable to load %1 into %2").arg(shared.tagName()).arg(className)/*, ex*/);
 //              QString english = Bundle.getMessage(Locale.ENGLISH, "ErrorSingleConnection", userName, systemName); // NOI18N
@@ -169,25 +169,23 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
    }
   }
   setInitialized(profile, true);
-  QList<Exception*>* exceptions = this->getInitializationExceptions(profile);
-  if (exceptions->size() == 1)
+  QList<Exception*> exceptions = this->getInitializationExceptions(profile);
+  if (exceptions.size() == 1)
   {
-#if 1
-   if (dynamic_cast<HasConnectionButUnableToConnectException*>(exceptions->at(0)) )
+   if (dynamic_cast<HasConnectionButUnableToConnectException*>(exceptions.at(0)) )
    {
-    throw (HasConnectionButUnableToConnectException*) exceptions->at(0);
+    throw (HasConnectionButUnableToConnectException*) exceptions.at(0);
    } else {
-       throw HasConnectionButUnableToConnectException(exceptions->at(0));
+       throw new HasConnectionButUnableToConnectException(exceptions.at(0));
    }
-#endif
   }
-  else if (exceptions->size() > 1)
+  else if (exceptions.size() > 1)
   {
 //      QString english = Bundle.getMessage(Locale.ENGLISH, "ErrorMultipleConnections"); // NOI18N
 //      QString localized = Bundle.getMessage("ErrorMultipleConnections"); // NOI18N
-   QString english = tr("Unable to create connection \"%1\" (%2).");
+   QString english = QString("Unable to create connection \"%1\" (%2).");
    QString localized = tr("Unable to create connection \"%1\" (%2).");
-      throw  HasConnectionButUnableToConnectException(english, localized, nullptr);
+      throw new  HasConnectionButUnableToConnectException(english, localized, nullptr);
   }
 
   log-> debug("Initialized...");
@@ -196,9 +194,9 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
 
 //@Override
 ///*public*/ QSet<Class<? extends PreferencesManager>> getRequires() {
-/*public*/ QSet<QString>* ConnectionConfigManager::getRequires()
+/*public*/ QSet<QString> ConnectionConfigManager::getRequires()
 {
- return new QSet<QString>();
+ return QSet<QString>();
 }
 
 //@Override
@@ -227,7 +225,7 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
  // save connections, or save an empty connections element if user removed all connections
  try {
   ProfileUtils::getAuxiliaryConfiguration(profile)->putConfigurationFragment(/*JDOMUtil.toW3CElement*/(element), shared);
- } catch (JDOMException ex) {
+ } catch (JDOMException* ex) {
      log-> error("Unable to create create XML"/*, ex*/);
  }
 }
@@ -240,11 +238,11 @@ ConnectionConfigManager::ConnectionConfigManager() : AbstractPreferencesManager(
  * @return true if c was added, false otherwise
  * @throws NullPointerException if c is NULL
  */
-/*public*/ bool ConnectionConfigManager::add(/*@NonNULL*/ ConnectionConfig* c) throw (NullPointerException)
+/*public*/ bool ConnectionConfigManager::add(/*@NonNULL*/ ConnectionConfig* c) /*throw (NullPointerException)*/
 {
  if (c == NULL)
  {
-  throw NullPointerException();
+  throw new NullPointerException();
  }
  if (!connections.contains(c))
  {
@@ -480,7 +478,7 @@ Logger* ProxyConnectionTypeList::log = LoggerFactory::getLogger("ProxyConnection
         if (properties.getProperty(pattern) == null) {
             try (InputStream in = ConnectionConfigManager.class.getResourceAsStream("PortNamePatterns.properties")) { // NOI18N
                 properties.load(in);
-            } catch (IOException ex) {
+            } catch (IOException* ex) {
                 log.error("Unable to read PortNamePatterns.properties", ex);
             }
         }

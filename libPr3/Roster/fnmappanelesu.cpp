@@ -265,11 +265,11 @@
                         if ( itemName[item][0].startsWith("Sound slot") ) {
                             try {
                                 itemLabel[item] = rosterEntry.getSoundLabel(Integer.valueOf(itemName[item][0].substring( ("Sound slot"+" ").length())));
-                            } catch (Exception e) {}
+                            } catch (Exception* e) {}
                         } else if ( itemName[item][0].startsWith("F") ) {
                             try {
                                 itemLabel[item] = rosterEntry.getFunctionLabel(Integer.valueOf(itemName[item][0].substring(1))) ;
-                            } catch (Exception e) {}
+                            } catch (Exception* e) {}
                         }
                         if (itemLabel[item] == null) itemLabel[item]= "";
 
@@ -567,14 +567,14 @@ protected void configOutputs(Element model) {
     // get numOuts, numFns or leave the defaults
     Attribute a = model.getAttribute("numOuts");
     try { if (a!=null) numItems = Integer.valueOf(a.getValue()).intValue();}
-    catch (Exception e) {log.error("error handling decoder's numOuts value");}
+    catch (Exception* e) {log.error("error handling decoder's numOuts value");}
     if (numItems > MAX_ITEMS) {
         log.error("numOuts="+numItems+" exceeds the maximum number of items ("+MAX_ITEMS+") defined in the code");
         numItems= Math.min(numItems,MAX_ITEMS);
     }
     a = model.getAttribute("numFns");
     try { if (a!=null) numRows = Integer.valueOf(a.getValue()).intValue();}
-    catch (Exception e) {log.error("error handling decoder's numFns value");}
+    catch (Exception* e) {log.error("error handling decoder's numFns value");}
     if (numRows > MAX_ROWS) {
         log.error("numFns="+numRows+" exceeds the maximum number of rows ("+MAX_ROWS+") defined in the code");
         numRows= Math.min(numRows,MAX_ROWS);

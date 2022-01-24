@@ -21,19 +21,22 @@ public:
     /*public*/ void setOutput(NamedBeanHandle<Turnout*>* t);
     /*public*/ QVector<int> getValidStates() ;
     /*public*/ QVector<QString> getValidStateNames();
-    /*protected*/ void updateOutput(); // needs to be Public for flash to work
 
 
 signals:
 
 public slots:
 private:
-    /*private*/ QString getSignalColour(int mAppearance);
+    /*private*/ QString getSignalColorKey(int mAppearance);
     int mOnAppearance;// = DARK;
     int mOffAppearance;// = LUNAR;
     NamedBeanHandle<Turnout*>* mOutput;
     Logger* log;
+    /*private*/ QString getSignalColorName(int mAppearance);
+
 //friend class DefaultSignalHead;
+ protected:
+    /*protected*/ void updateOutput()override;
 };
 
 #endif // SINGLETURNOUTSIGNALHEAD_H

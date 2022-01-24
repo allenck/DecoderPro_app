@@ -6,7 +6,7 @@
 #include "namedbeanhandle.h"
 #include "exceptions.h"
 #include "libPr3_global.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "section.h"
 
 class Block;
@@ -327,7 +327,7 @@ public:
      * @param destination Destination SignalMast.
      *
      */
-    /*public*/ virtual void useLayoutEditor(bool boo, SignalMast* destination) throw (JmriException) = 0;
+    /*public*/ virtual void useLayoutEditor(bool boo, SignalMast* destination) /*throw (JmriException)*/ = 0;
 
     /**
      * Query if we are using the layout editor panels to build the signal mast
@@ -355,7 +355,7 @@ public:
      * @param blocks set false if not to use the block information gathered from the layouteditor
      * @param turnouts set false if not to use the turnout information gathered from the layouteditor
      */
-    /*public*/ virtual void useLayoutEditorDetails(bool turnouts, bool blocks, SignalMast* destination) throw (JmriException) = 0;
+    /*public*/ virtual void useLayoutEditorDetails(bool turnouts, bool blocks, SignalMast* destination) /*throw (JmriException)*/ = 0;
 
     /**
      * Query if we are using the layout editor turnout information in the
@@ -366,6 +366,17 @@ public:
      */
     /*public*/ virtual bool useLayoutEditorTurnouts(SignalMast* destination) = 0;
     
+    /**
+     * Set direction sensors in SML need to autoActiveTrains.
+     * @return number of errors
+     */
+    /*public*/ virtual int setupDirectionSensors() =0;
+
+    /**
+     * remove direction sensors from SML need to autoActiveTrains.
+     */
+    /*public*/ virtual void removeDirectionSensors() = 0;
+
     /*public*/ virtual void disableLayoutEditorUse() = 0;
 
     /*public*/ virtual void removePropertyChangeListener(PropertyChangeListener* l) = 0;

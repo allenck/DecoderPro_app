@@ -65,13 +65,13 @@
  interp.addObject("dcc", InstanceManager::getDefault("CommandStation"));
 //        set.invoke(interp, new Object[]{"self", this});
  if(bHasError)
-     throw Exception("error setting CommandStation");
+     throw new Exception("error setting CommandStation");
  interp.addObject("self", this);
 
 
  interp.evalFile(filename);
  if(bHasError)
-     throw Exception(tr("error evaluating file %s").arg(filename));
+     throw new Exception(tr("error evaluating file %s").arg(filename));
 
 #if 0
         // set up the method to exec python functions
@@ -83,8 +83,8 @@
         // execute the init routine in the jython class
         exec.invoke(interp, new Object[]{"init()"});
 #endif
-    } catch (Exception e) {
-        log->error("Exception creating jython system objects: " + e.getMessage());
+    } catch (Exception* e) {
+        log->error("Exception creating jython system objects: " + e->getMessage());
         //e.printStackTrace();
     }
 }
@@ -133,7 +133,7 @@ void JythonAutomaton::On_stdErr(QString s)
             bool br = r.toBool();
         }
         if(bHasError)
-            throw Exception(tr("an error has occurred in the script"));
+            throw new Exception(tr("an error has occurred in the script"));
 //        log->debug(tr("r = %1").arg(r.toString()));
 //        QVariant retval = interp.call("retval");
         if (retval.toBool()) {
@@ -143,8 +143,8 @@ void JythonAutomaton::On_stdErr(QString s)
 #endif
         qApp->processEvents();
         return true;
-    } catch (Exception e) {
-        log->error("Exception invoking jython command: " + e.getMessage());
+    } catch (Exception* e) {
+        log->error("Exception invoking jython command: " + e->getMessage());
 //        e.printStackTrace();
         return false;
     }

@@ -4,7 +4,7 @@
 #include <QLabel>
 #include <QBoxLayout>
 #include "gridbaglayout.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include <QSpinBox>
 #include "jcombobox.h"
 #include "locationmanager.h"
@@ -21,6 +21,7 @@
 #include "route.h"
 #include "routelocation.h"
 #include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -44,7 +45,7 @@ namespace Operations
  {
   //super(tr("MenuSetTrainIcon"));
   log = new Logger("SetTrainIconPositionFrame");
-  routeManager = RouteManager::instance();
+  routeManager = ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"));
 
      // labels
      textEastX = new QLabel("   X  ");
@@ -59,12 +60,12 @@ namespace Operations
      // text field
      // check boxes
      // major buttons
-     placeButton = new QPushButton(tr("Place Test Icon"));
-     applyButton = new QPushButton(tr("Update Routes"));
-     saveButton = new QPushButton(tr("Save"));
+     placeButton = new JButton(tr("Place Test Icon"));
+     applyButton = new JButton(tr("Update Routes"));
+     saveButton = new JButton(tr("Save"));
 
      // combo boxes
-     locationBox = LocationManager::instance()->getComboBox();
+     locationBox = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getComboBox();
 
      //Spinners
      spinTrainIconEastX = new QSpinBox(/*new SpinnerNumberModel(0, 0, 10000, 1)*/);
@@ -123,56 +124,46 @@ namespace Operations
      saveButton->setToolTip(tr("Saves the train icon coordinates for the selected location"));
 
      //      Set up the panels
-     QGroupBox* pLocation = new QGroupBox();
+     JPanel* pLocation = new JPanel();
      pLocation->setLayout(new QVBoxLayout);
-     //pLocation->setBorder(BorderFactory.createTitledBorder(tr("Location")));
-     pLocation->setStyleSheet(gbStyleSheet);
-     pLocation->setTitle(tr("Location"));
+     pLocation->setBorder(BorderFactory::createTitledBorder(tr("Location")));
      pLocation->layout()->addWidget(locationBox);
 
-     QGroupBox* pEast = new QGroupBox();
+     JPanel* pEast = new JPanel();
      pEast->setLayout(new GridBagLayout());
-     //pEast->setBorder(BorderFactory.createTitledBorder(tr("EastTrainIcon")));
-     pEast->setStyleSheet(gbStyleSheet);
-     pEast->setTitle(tr("East Train Icon"));
+     pEast->setBorder(BorderFactory::createTitledBorder(tr("East Train Icon")));
      addItem(pEast, textEastX, 0, 0);
      addItem(pEast, spinTrainIconEastX, 1, 0);
      addItem(pEast, textEastY, 2, 0);
      addItem(pEast, spinTrainIconEastY, 3, 0);
 
-     QGroupBox* pWest = new QGroupBox();
+     JPanel* pWest = new JPanel();
      pWest->setLayout(new GridBagLayout());
-     //pWest->setBorder(BorderFactory.createTitledBorder(tr("WestTrainIcon")));
-     pWest->setStyleSheet(gbStyleSheet);
-     pWest->setTitle(tr("West Train Icon"));
+     pWest->setBorder(BorderFactory::createTitledBorder(tr("West Train Icon")));
      addItem(pWest, textWestX, 0, 0);
      addItem(pWest, spinTrainIconWestX, 1, 0);
      addItem(pWest, textWestY, 2, 0);
      addItem(pWest, spinTrainIconWestY, 3, 0);
 
-     QGroupBox* pNorth = new QGroupBox();
+     JPanel* pNorth = new JPanel();
      pNorth->setLayout(new GridBagLayout());
-     //pNorth->setBorder(BorderFactory.createTitledBorder(tr("NorthTrainIcon")));
-     pNorth->setStyleSheet(gbStyleSheet);
-     pNorth->setTitle(tr("North Train Icon"));
+     pNorth->setBorder(BorderFactory::createTitledBorder(tr("North Train Icon")));
      addItem(pNorth, textNorthX, 0, 0);
      addItem(pNorth, spinTrainIconNorthX, 1, 0);
      addItem(pNorth, textNorthY, 2, 0);
      addItem(pNorth, spinTrainIconNorthY, 3, 0);
 
-     QGroupBox* pSouth = new QGroupBox();
+     JPanel* pSouth = new JPanel();
      pSouth->setLayout(new GridBagLayout());
-     //pSouth->setBorder(BorderFactory.createTitledBorder(tr("SouthTrainIcon")));
-     pSouth->setStyleSheet(gbStyleSheet);
-     pSouth->setTitle(tr("South Train Icon"));
+     pSouth->setBorder(BorderFactory::createTitledBorder(tr("South TrainIcon ")));
      addItem(pSouth, textSouthX, 0, 0);
      addItem(pSouth, spinTrainIconSouthX, 1, 0);
      addItem(pSouth, textSouthY, 2, 0);
      addItem(pSouth, spinTrainIconSouthY, 3, 0);
 
-     QWidget* pControl = new QWidget();
+     JPanel* pControl = new JPanel();
      pControl->setLayout(new GridBagLayout());
-     //pControl->setBorder(BorderFactory.createTitledBorder(""));
+     pControl->setBorder(BorderFactory::createTitledBorder(""));
      addItem(pControl, placeButton, 0, 0);
      addItem(pControl, applyButton, 1, 0);
      addItem(pControl, saveButton, 2, 0);
@@ -218,7 +209,7 @@ namespace Operations
 
  //@Override
  /*public*/ void SetTrainIconPositionFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      // check to see if a location has been selected
      if (locationBox->currentText() == NULL) {
          //JOptionPane.showMessageDialog(this, tr("SelectLocationToEdit"), tr("NoLocationSelected"), JOptionPane.ERROR_MESSAGE);
@@ -402,7 +393,7 @@ namespace Operations
  }
 
  /*public*/ void SetTrainIconPositionFrame::updateTrainIconCoordinates(Location* l) {
-     foreach (Route* route, RouteManager::instance()->getRoutesByIdList()) {
+     foreach (Route* route, ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"))->getRoutesByIdList()) {
          foreach (RouteLocation* rl, *route->getLocationsBySequenceList()) {
              if (rl->getName()==(l->getName())) {
                  log->debug(tr("Updating train icon for route location %1 in route %2").arg(rl->getName()).arg(route->getName()));

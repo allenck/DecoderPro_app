@@ -4,13 +4,14 @@
 #include "liblayouteditor_global.h"
 
 class CatalogTree;
-class LIBLAYOUTEDITORSHARED_EXPORT CatalogTreeManager : public AbstractManager
+class LIBLAYOUTEDITORSHARED_EXPORT CatalogTreeManager : public QObject, public Manager//AbstractManager
 {
     Q_OBJECT
+  Q_INTERFACES(Manager)
 public:
     explicit CatalogTreeManager(QObject *parent = 0);
     ~CatalogTreeManager() override{}
-    CatalogTreeManager(const CatalogTreeManager&) : AbstractManager() {}
+    CatalogTreeManager(const CatalogTreeManager&) : QObject() {}
     static /*final*/ QStringList IMAGE_FILTER;// = {"gif", "jpg", "jpeg", "png"};
     static /*final*/ QStringList SOUND_FILTER;// = {"wav"};
     static /*final*/ QStringList SCRIPT_FILTER;// = {"py", "scpt"};
@@ -21,13 +22,13 @@ public:
      * instance already exists.
      * @return requested CatalogTree object or null if none exists
      */
-    /*public*/ NamedBean* getBySystemName(QString /*systemName*/) const override {return NULL;}
+    /*public*/ virtual NamedBean* getBySystemName(QString /*systemName*/) const {return NULL;}
     /**
      * Locate an instance based on a user name.  Returns null if no
      * instance already exists.
      * @return requested CatalogTree object or null if none exists
      */
-    /*public*/ NamedBean* getByUserName(QString /*userName*/) const override{return NULL;}
+    /*public*/ virtual NamedBean* getByUserName(QString /*userName*/) const {return NULL;}
     /**
      * Return an instance with the specified system and user names.
      * Note that two calls with the same arguments will get the same instance;
@@ -62,7 +63,7 @@ public:
      */
     /*public*/  QStringList getSystemNameList() override{return QStringList();}
 
-    /*public*/  void Register(NamedBean*) const override{}
+    /*public*/  void Register(NamedBean*) override{}
 
     /*public*/ virtual void storeImageIndex() {}
     /*public*/ QString getNamedBeanClass()const override {
@@ -73,6 +74,10 @@ public:
     {
      return Manager::MEMORIES; // ??
     }
+    /*public*/ SystemConnectionMemo* getMemo() override;
+
+    QObject* self() override{return (QObject*)this;}
+
 signals:
 
 public slots:

@@ -47,7 +47,7 @@ ColorChooserPanel::ColorChooserPanel()
  }
 }
 
-/*public*/ void ColorChooserPanel::stateChanged(ChangeEvent *e)
+/*public*/ void ColorChooserPanel::stateChanged(ChangeEvent */*e*/)
 {
  dialog->setCurrentColor( chooser->getSelectionModel()->getSelectedColor());
 }
@@ -64,7 +64,7 @@ ColorChooserPanel::ColorChooserPanel()
     setEnabled(this, enabled);
 }
 
-/*private*/ /*static*/ void ColorChooserPanel::setEnabled(/*Container*/QWidget* container, bool enabled) {
+/*private*/ /*static*/ void ColorChooserPanel::setEnabled(/*Container*/QWidget* /*container*/, bool /*enabled*/) {
 #if 0
     for (Component component : container.getComponents())
     {
@@ -183,7 +183,7 @@ ColorChooserPanel::ColorChooserPanel()
    setLayout(new QVBoxLayout());
    this->layout()->addWidget(dialog);
 //  this->label->setLabelFor(this->text);
-//        this->text->addPropertyChangeListener("value", this); // NON-NLS: the property name
+//        this->text->SwingPropertyChangeSupport::addPropertyChangeListener("value", this); // NON-NLS: the property name
 //        this->slider.setBorder(this->text.getBorder());
 //        this->diagram.setBorder(this->text.getBorder());
 
@@ -244,7 +244,8 @@ ColorChooserPanel::ColorChooserPanel()
         //if (object instanceof Integer)
         if(object.canConvert(QMetaType::Int))
         {
-            int value = MASK & model->getSelectedColor().rgb() |  object.toInt();
+            int value = (MASK & model->getSelectedColor().rgb()) |  object.toInt();
+            Q_UNUSED(value)
             model->setSelectedColor(QColor());       //QColor(value, true));
         }
     }
@@ -257,7 +258,7 @@ ColorChooserPanel::ColorChooserPanel()
  * @param component  the root component of the tree
  * @param value      whether or not the popup menu is inherited
  */
-/*private*/ /*static*/ void ColorChooserPanel::setInheritsPopupMenu(JComponent* component, bool value) {
+/*private*/ /*static*/ void ColorChooserPanel::setInheritsPopupMenu(JComponent* /*component*/, bool /*value*/) {
 //    component->setInheritsPopupMenu(value);
 #if 0
     for (Object object : component.getComponents()) {

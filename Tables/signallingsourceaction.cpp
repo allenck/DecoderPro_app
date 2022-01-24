@@ -45,16 +45,16 @@ void SignallingSourceAction::init()
     this->source = source;
 }
 
-/*public*/ void SignallingSourceAction::actionPerformed(ActionEvent* /*e*/) // SLOT
+/*public*/ void SignallingSourceAction::actionPerformed(JActionEvent * /*e*/) // SLOT
 {
  SignallingSourceFrame* f = new SignallingSourceFrame();
  try
  {
   f->initComponents(source);
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
-  log->error("Exception: "+ex.getMessage());
+  log->error("Exception: "+ex->getMessage());
   //ex.printStackTrace();
  }
  f->setVisible(true);

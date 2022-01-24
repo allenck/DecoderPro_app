@@ -91,7 +91,7 @@ static private JUnitAppender instance = null;
     if (l == LogLevel::INFO) {
         return unexpectedFatalSeen || unexpectedErrorSeen || unexpectedWarnSeen || unexpectedInfoSeen;
     }
-    throw IllegalArgumentException("Did not expect " + l->toString());
+    throw new IllegalArgumentException("Did not expect " + l->toString());
 }
 
 /*public*/ /*static*/ QString JUnitAppender::unexpectedMessageContent(LogLevel* l) {
@@ -113,7 +113,7 @@ static private JUnitAppender instance = null;
         if (unexpectedWarnContent != nullptr ) return unexpectedWarnContent;
         return unexpectedInfoContent;
     }
-    throw IllegalArgumentException("Did not expect " + l->toString());
+    throw new IllegalArgumentException("Did not expect " + l->toString());
 }
 
 /*public*/ /*static*/ void JUnitAppender::resetUnexpectedMessageFlags(LogLevel* severity) {
@@ -524,7 +524,7 @@ void JUnitAppender::superappend(LoggingEvent* l) {
     String tmsg = StringUtils.deleteWhitespace(msg);
 
     LoggingEvent evt = list.remove(0);
-    while (!StringUtils.deleteWhitespace(evt.getMessage().toString()).startsWith(tmsg)) {
+    while (!StringUtils.deleteWhitespace(evt->getMessage().toString()).startsWith(tmsg)) {
         if (list.isEmpty()) {
             return null; // normal to not find it
         }

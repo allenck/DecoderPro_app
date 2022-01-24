@@ -2,6 +2,8 @@
 #define CONTROLLERFILTERFRAME_H
 #include "jmrijframe.h"
 #include "abstracttablemodel.h"
+#include "tablemodellistener.h"
+#include "propertychangelistener.h"
 
 class AbstractFilterModel;
 class RouteManager;
@@ -9,14 +11,16 @@ class TurnoutManager;
 class TableModelEvent;
 class JTable;
 class Logger;
-class ControllerFilterFrame : public JmriJFrame
+class ControllerFilterFrame : public JmriJFrame, public TableModelListener
 {
  Q_OBJECT
+  Q_INTERFACES(TableModelListener)
 public:
  ControllerFilterFrame(QWidget* parent = 0);
  /*public*/ void initComponents() throw (Exception);
  /*public*/ void tableChanged(TableModelEvent* e);
  /*public*/ QString getClassName();
+ QObject* self() override{return (QObject*)this;}
 
 public slots:
  void dispose();
@@ -41,14 +45,16 @@ protected:
 
 };
 #if 1
-/*public*/ /*abstract*/ class AbstractFilterModel : public  AbstractTableModel //implements PropertyChangeListener
+/*public*/ /*abstract*/ class AbstractFilterModel : public  AbstractTableModel, public PropertyChangeListener
 {
   Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
     QStringList sysNameList;// = nullptr;
     bool isDirty;
 public slots:
     //@Override
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
+    QObject* self() override{return (QObject*)this;}
 public:
     enum COLS
     {

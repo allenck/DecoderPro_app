@@ -68,15 +68,4 @@ protected:
  friend class SubMenuActionListener;
 };
 
-//class SubMenuActionListener : public ActionListener
-//{
-// Q_OBJECT
-// LayoutEditorChecks* layoutEditorChecks;
-// QString blockName;
-// QSet<QString> trackNameSet;
-//public:
-// SubMenuActionListener(QString blockName, QSet<QString> trackNameSet, LayoutEditorChecks* layoutEditorChecks);
-//public slots:
-// void actionPerformed();
-//};
 #endif // LAYOUTEDITORCHECKS_H

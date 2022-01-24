@@ -44,7 +44,7 @@
 //            checkDetection();
 //        }
 //    });
-  connect(_occDetectorName, SIGNAL(textChanged(QString)), this, SLOT(OnTextChanged(QString)));
+ connect(_occDetectorName, SIGNAL(textChanged(QString)), this, SLOT(OnTextChanged(QString)));
 //    _occDetectorName.addFocusListener(new FocusAdapter() {
 //        /*public*/ void focusLost(FocusEvent e) {
 //            checkDetection();
@@ -273,12 +273,12 @@ void DetectionPanel::OnTextChanged(QString text)
  foreach(QString s, blockUsrList)
      if(s.startsWith(text)) completerList.append(s);
 
- QStringList sensorSysList = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())-> getSystemNameList();
+ QStringList sensorSysList = ((SensorManager*)InstanceManager::sensorManagerInstance())-> getSystemNameList();
  foreach(QString s, sensorSysList)
      if(s.startsWith(text)) completerList.append(s);
- QStringList sensorUsrList = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())-> getUserNameList();
- foreach(QString s, sensorUsrList)
-     if(s.startsWith(text)) completerList.append(s);
+// QStringList sensorUsrList = ((SensorManager*)InstanceManager::sensorManagerInstance())-> getUserNameList();
+// foreach(QString s, sensorUsrList)
+//     if(s.startsWith(text)) completerList.append(s);
 
  qSort(completerList.begin(), completerList.end(), SystemNameComparator::compare);
  QCompleter* completer = new QCompleter(completerList);

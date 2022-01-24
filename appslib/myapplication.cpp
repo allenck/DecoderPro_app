@@ -8,6 +8,7 @@ MyApplication::MyApplication(int &argc, char *argv[]):
 {
 
 }
+
 bool MyApplication::notify(QObject *receiver_, QEvent *event_)
 {
  bool done = true;
@@ -15,14 +16,17 @@ bool MyApplication::notify(QObject *receiver_, QEvent *event_)
  {
   done = QApplication::notify( receiver_, event_ );
  }
- //catch ( std::exception& e )
- catch (Exception& e)
+ catch (Exception* e)
  {
   //showAngryDialog( e );
-  qDebug() << QString("caught unhandled exception, type = %1 %2").arg(event_->type()).arg(e.getMessage());
+  qDebug() << QString("caught unhandled exception, type = %1 %2").arg(event_->type()).arg(e->getMessage());
 //  if(qobject_cast<Exception*>(&e) != NULL)
 
-   //qDebug() << e.getMessage();
+   //qDebug() << e->getMessage();
+ }
+ catch ( std::exception* e )
+ {
+  qDebug() << QString("MyApplication: caught std exception %1").arg(e->what());
  }
  return done;
 }

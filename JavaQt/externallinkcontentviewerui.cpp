@@ -35,14 +35,14 @@ ExternalLinkContentViewerUI::ExternalLinkContentViewerUI(QObject *parent) : QObj
             log.debug("event has URL {}", he.getURL());
             URL u = he.getURL();
             activateURL(u);
-        } catch (IOException | URISyntaxException t) {
+        } catch (IOException* | URISyntaxException t) {
             log.error("Error processing request", t);
         }
     }
     super.hyperlinkUpdate(he);
 }
 #endif
-/*public*/ /*static*/ void ExternalLinkContentViewerUI::activateURL(QUrl u) //throw IOException, URISyntaxException
+/*public*/ /*static*/ void ExternalLinkContentViewerUI::activateURL(QUrl u) //throw new IOException, URISyntaxException
 {
     if (u.scheme().toLower() == ("mailto") || u.scheme().toLower() == ("http")
             || u.scheme().toLower() == ("ftp")) {

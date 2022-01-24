@@ -2,6 +2,8 @@
 #define MODIFYLOCATIONSACTION_H
 #include "abstractaction.h"
 #include "appslib_global.h"
+#include "locationsbycartypeframe.h"
+#include <QPointer>
 
 namespace Operations
 {
@@ -16,11 +18,11 @@ namespace Operations
   /*public*/ ModifyLocationsAction(QString s, QObject* parent);
 
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e = 0);
+  /*public*/ void actionPerformed(JActionEvent* e = 0)override;
 
  private:
   void common();
-  LocationsByCarTypeFrame* f;// = null;
+  QPointer<LocationsByCarTypeFrame> f;// = null;
   Location* l;
  };
 }

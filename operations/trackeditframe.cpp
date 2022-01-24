@@ -9,7 +9,7 @@
 #include <QScrollArea>
 #include <QLabel>
 #include <QCheckBox>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QRadioButton>
 #include <QButtonGroup>
 #include "htmltextedit.h"
@@ -40,6 +40,8 @@
 #include "trackroadeditaction.h"
 #include "trackloadeditaction.h"
 #include "pooltrackaction.h"
+#include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -68,8 +70,8 @@ namespace Operations
  {
      //super();
   log = new Logger("TrackEditFrame");
-  trainManager = TrainManager::instance();
-  routeManager = RouteManager::instance();
+  trainManager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
+  routeManager = ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"));
 
   _location = NULL;
   _track = NULL;
@@ -82,19 +84,19 @@ namespace Operations
   checkBoxes =  QList<QCheckBox*>();
 
   // panels
-  checkBoxesGroupBox =  new QGroupBox(); //new QScrollArea(/*panelCheckBoxes*/);
+  checkBoxesGroupBox =  new JPanel(); //new QScrollArea(/*panelCheckBoxes*/);
   checkBoxesGroupBox->setLayout(new QVBoxLayout);
-  panelCheckBoxes = new QWidget();
+  panelCheckBoxes = new JPanel();
   panelCheckBoxes->setLayout(pcbLayout = new GridBagLayout);
   paneCheckBoxesScroll = new QScrollArea();
   //paneCheckBoxesScroll->setWidget(panelCheckBoxes);
   paneCheckBoxesScroll->setWidgetResizable(true);
   checkBoxesGroupBox->layout()->addWidget(paneCheckBoxesScroll);
 
-  panelTrainDir = new QGroupBox();
-  pShipLoadOption = new QGroupBox();
-  pDestinationOption = new QGroupBox();
-  panelOrder = new QGroupBox();
+  panelTrainDir = new JPanel();
+  pShipLoadOption = new JPanel();
+  pDestinationOption = new JPanel();
+  panelOrder = new JPanel();
 
   // labels
   loadOption = new QLabel();
@@ -103,16 +105,16 @@ namespace Operations
   destinationOption = new QLabel();
 
   // major buttons
-  clearButton = new QPushButton(tr("Clear"));
-  setButton = new QPushButton(tr("Select"));
-  saveTrackButton = new QPushButton(tr("SaveTrack"));
-  deleteTrackButton = new QPushButton(tr("DeleteTrack"));
-  addTrackButton = new QPushButton(tr("AddTrack"));
+  clearButton = new JButton(tr("Clear"));
+  setButton = new JButton(tr("Select"));
+  saveTrackButton = new JButton(tr("SaveTrack"));
+  deleteTrackButton = new JButton(tr("DeleteTrack"));
+  addTrackButton = new JButton(tr("AddTrack"));
 
-  deleteDropButton = new QPushButton(tr("Delete"));
-  addDropButton = new QPushButton(tr("Add"));
-  deletePickupButton = new QPushButton(tr("Delete"));
-  addPickupButton = new QPushButton(tr("Add"));
+  deleteDropButton = new JButton(tr("Delete"));
+  addDropButton = new JButton(tr("Add"));
+  deletePickupButton = new JButton(tr("Delete"));
+  addPickupButton = new JButton(tr("Add"));
 
   // check boxes
   northCheckBox = new QCheckBox(tr("North"));
@@ -155,10 +157,10 @@ namespace Operations
 
 
   // optional panel for spurs, staging, and interchanges
-  dropPanel = new QGroupBox();
-  pickupPanel = new QGroupBox();
-  panelOpt3 = new QWidget(); // not currently used
-  panelOpt4 = new QGroupBox();
+  dropPanel = new JPanel();
+  pickupPanel = new JPanel();
+  panelOpt3 = new JPanel(); // not currently used
+  panelOpt4 = new JPanel();
  }
 
  /*public*/ void TrackEditFrame::initComponents(Location* location, Track* track)
@@ -171,19 +173,19 @@ namespace Operations
   autoPickupCheckBox->setToolTip(tr("When selected only show trains or routes that service this track"));
 
   // property changes
-  //_location->addPropertyChangeListener(this);
-  connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(propertyChange(PropertyChangeEvent*)) );
+  //_location->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+  connect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(propertyChange(PropertyChangeEvent*)) );
   // listen for car road name and type changes
   //CarRoads::instance().addPropertyChangeListener(this);
-  connect(CarRoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(propertyChange(PropertyChangeEvent*)) );
+  connect(((CarRoads*)InstanceManager::getDefault("Operations::CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(propertyChange(PropertyChangeEvent*)) );
   //CarLoads.instance().addPropertyChangeListener(this);
-  connect(CarLoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(propertyChange(PropertyChangeEvent*)) );
+  connect(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(propertyChange(PropertyChangeEvent*)) );
   //CarTypes.instance().addPropertyChangeListener(this);
-  connect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(propertyChange(PropertyChangeEvent*)) );
+  connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(propertyChange(PropertyChangeEvent*)) );
   //trainManager.addPropertyChangeListener(this);
-  connect(trainManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(propertyChange(PropertyChangeEvent*)) );
+  connect(trainManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(propertyChange(PropertyChangeEvent*)) );
   //routeManager.addPropertyChangeListener(this);
-  connect(routeManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(propertyChange(PropertyChangeEvent*)) );
+  connect(routeManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(propertyChange(PropertyChangeEvent*)) );
 
   // the following code sets the frame's initial state
   //getContentPane()->setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
@@ -199,7 +201,7 @@ namespace Operations
   // Set up the panels
   // Layout the panel by rows
   // row 1
-  QWidget* p1 = new QWidget();
+  JPanel* p1 = new JPanel();
   //p1->setLayout(new BoxLayout(p1, BoxLayout.X_AXIS));
   QHBoxLayout* p1Layout = new QHBoxLayout(p1);
   QScrollArea* p1Pane = new QScrollArea(/*p1*/);
@@ -208,30 +210,27 @@ namespace Operations
 //     p1Pane->setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
   p1Pane->verticalScrollBar()->setVisible(false);
   p1Pane->setMinimumSize(QSize(300, 3 * trackNameTextField->sizeHint().height()));
-//     p1Pane->setBorder(BorderFactory.createTitledBorder(""));
+  p1->setBorder(BorderFactory::createTitledBorder(""));
 
   // row 1a
-  QGroupBox* pName = new QGroupBox();
+  JPanel* pName = new JPanel();
   pName->setLayout(new GridBagLayout());
-  //pName->setBorder(BorderFactory.createTitledBorder(tr("Name")));
+  pName->setBorder(BorderFactory::createTitledBorder(tr("Name")));
   pName->setStyleSheet(gbStyleSheet);
-  pName->setTitle(tr("Name"));
   addItem(pName, trackNameTextField, 0, 0);
 
   // row 1b
-  QGroupBox* pLength = new QGroupBox();
+  JPanel* pLength = new JPanel();
   pLength->setLayout(new GridBagLayout());
-  //pLength->setBorder(BorderFactory.createTitledBorder(tr("Length")));
+  pLength->setBorder(BorderFactory::createTitledBorder(tr("Length")));
   pLength->setStyleSheet(gbStyleSheet);
-  pLength->setTitle(tr("Length"));
   pLength->setMinimumSize(QSize(60, 1));
   addItem(pLength, trackLengthTextField, 0, 0);
 
   // row 1c
   panelTrainDir->setLayout(new GridBagLayout());
-  //panelTrainDir->setBorder(BorderFactory.createTitledBorder(tr("TrainTrack")));
+  panelTrainDir->setBorder(BorderFactory::createTitledBorder(tr("This track is serviced by trains traveling")));
   panelTrainDir->setStyleSheet(gbStyleSheet);
-  panelTrainDir->setTitle(tr("This track is serviced by trains traveling"));
   panelTrainDir->resize(QSize(200, 10));
   addItem(panelTrainDir, northCheckBox, 1, 1);
   addItem(panelTrainDir, southCheckBox, 2, 1);
@@ -262,15 +261,13 @@ namespace Operations
   pLoadOption->setStyleSheet(gbStyleSheet);
   pLoadOption->setTitle(tr("Load Option"));
   pLoadOption->layout()->addWidget(loadOption);
-  //pShipLoadOption->setBorder(BorderFactory.createTitledBorder(tr("ShipLoadOption")));
+  pShipLoadOption->setBorder(BorderFactory::createTitledBorder(tr("ShipLoad Option")));
   pShipLoadOption->setStyleSheet(gbStyleSheet);
-  pShipLoadOption->setTitle(tr("ShipLoad Option"));
   pShipLoadOption->setLayout(new QVBoxLayout);
   pShipLoadOption->layout()->addWidget(shipLoadOption);
-  //pDestinationOption->setBorder(BorderFactory.createTitledBorder(tr("Destinations")));
+  pDestinationOption->setBorder(BorderFactory::createTitledBorder(tr("Destinations")));
   pDestinationOption->setLayout(new QVBoxLayout);
   pDestinationOption->setStyleSheet(gbStyleSheet);
-  pDestinationOption->setTitle(tr("Destinations"));
   pDestinationOption->layout()->addWidget(destinationOption);
 
   panelRoadAndLoadStatus->layout()->addWidget(pRoadOption);
@@ -287,9 +284,8 @@ namespace Operations
   // order panel
   //panelOrder->setLayout(new GridBagLayout());
   panelOrder->setLayout(new QHBoxLayout);
-  //panelOrder->setBorder(BorderFactory.createTitledBorder(tr("PickupOrder")));
+  panelOrder->setBorder(BorderFactory::createTitledBorder(tr("Select pick up car order")));
   panelOrder->setStyleSheet(gbStyleSheet);
-  panelOrder->setTitle(tr("Select pick up car order"));
   panelOrder->layout()->addWidget(orderNormal);
   panelOrder->layout()->addWidget(orderFIFO);
   panelOrder->layout()->addWidget(orderLIFO);
@@ -302,28 +298,25 @@ namespace Operations
   // drop panel
 
   dropPanel->setLayout(new GridBagLayout());
-  //dropPanel->setBorder(BorderFactory.createTitledBorder(tr("TrainsOrRoutesDrops")));
+  dropPanel->setBorder(BorderFactory::createTitledBorder(tr("Select trains or routes for car set outs")));
   dropPanel->setStyleSheet(gbStyleSheet);
-  dropPanel->setTitle(tr("Select trains or routes for car set outs"));
   // pickup panel
   pickupPanel->setLayout(new GridBagLayout());
-  //pickupPanel->setBorder(BorderFactory.createTitledBorder(tr("TrainsOrRoutesPickups")));
+  pickupPanel->setBorder(BorderFactory::createTitledBorder(tr("Select trains or routes for car pick ups")));
   pickupPanel->setStyleSheet(gbStyleSheet);
-  pickupPanel->setTitle(tr("Select trains or routes for car pick ups"));
 
   // row 11
-  QGroupBox* panelComment = new QGroupBox();
+  JPanel* panelComment = new JPanel();
   panelComment->setLayout(new GridBagLayout());
-  //panelComment->setBorder(BorderFactory.createTitledBorder(tr("Comment")));
+  panelComment->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
   panelComment->setStyleSheet(gbStyleSheet);
-  panelComment->setTitle(tr("Comment"));
   addItem(panelComment, /*commentScroller*/commentTextArea, 0, 0);
 
   // adjust text area width based on window size
   //adjustTextAreaColumnWidth(commentScroller, commentTextArea);
 
   // row 12
-  QWidget* panelButtons = new QWidget();
+  JPanel* panelButtons = new JPanel();
   panelButtons->setLayout(new GridBagLayout());
 
   // row 13
@@ -331,10 +324,7 @@ namespace Operations
   addItem(panelButtons, addTrackButton, 1, 0);
   addItem(panelButtons, saveTrackButton, 2, 0);
 
-  //paneCheckBoxes->setBorder(BorderFactory.createTitledBorder(tr("TypesTrack")));
-  checkBoxesGroupBox->setStyleSheet(gbStyleSheet);
-  checkBoxesGroupBox->setTitle(tr("Select the rolling stock serviced by this track"));
-
+  panelCheckBoxes->setBorder(BorderFactory::createTitledBorder(tr("Select the rolling stock serviced by this track")));
 
   panelsLayout->addWidget(p1Pane);
 
@@ -392,8 +382,8 @@ namespace Operations
   // load fields and enable buttons
   if (_track != NULL)
   {
-   //_track->addPropertyChangeListener(this);
-   connect(_track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   //_track->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+   connect(_track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    trackNameTextField->setText(_track->getName());
    commentTextArea->setText(_track->getComment());
    trackLengthTextField->setText(QString::number(_track->getLength()));
@@ -433,7 +423,7 @@ namespace Operations
  // Save, Delete, Add
  /*public*/ void TrackEditFrame::buttonActionPerformed(QWidget* ae)
  {
-  QPushButton* source = (QPushButton*)ae;
+  JButton* source = (JButton*)ae;
   if (source == saveTrackButton)
   {
    log->debug("track save button activated");
@@ -636,8 +626,8 @@ namespace Operations
   updateRoadOption();
   updateLoadOption();
 
-  //_track->addPropertyChangeListener(this);
-  connect(_track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //_track->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+  connect(_track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
   // setup check boxes
   selectCheckboxes(true);
@@ -788,7 +778,7 @@ namespace Operations
        QMessageBox::critical(this, tr("Track length incorrect!"), tr("Track length must be less than %1 {%2").arg(qPow(10, Control::max_len_string_track_length_name)).arg(Setup::getLengthUnit().toLower()));
           return false;
       }
-  } catch (NumberFormatException e) {
+  } catch (NumberFormatException* e) {
       log->error("Track length not an integer");
 //         JOptionPane.showMessageDialog(this, tr("TrackMustBeNumber"), Bundle
 //                 .getMessage("ErrorTrackLength"), JOptionPane.ERROR_MESSAGE);
@@ -1195,8 +1185,8 @@ if (!anyDrops->isChecked())
   // Now add the checkboxes to the panelCheckBoxes
   x = 0;
   y = 0; // vertical position in panel
-  loadTypes(CarTypes::instance()->getNames());
-  loadTypes(EngineTypes::instance()->getNames());
+  loadTypes(((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames());
+  loadTypes(((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->getNames());
   enableCheckboxes(_track != NULL);
 
   QWidget* p = new QWidget();
@@ -1351,7 +1341,7 @@ if (!anyDrops->isChecked())
           pDestinationOption->setVisible(true);
           destinationOption->setText(tr("Exclude")
                   + " "
-                  + QString::number(LocationManager::instance()->getNumberOfLocations() - _track
+                  + QString::number(((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getNumberOfLocations() - _track
                   ->getDestinationListSize()) + " " + tr("Destinations"));
       } else {
           destinationOption->setText(tr("Accept all"));
@@ -1364,21 +1354,21 @@ if (!anyDrops->isChecked())
  {
   if (_track != NULL) {
       //_track->removePropertyChangeListener(this);
-   disconnect(_track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   disconnect(_track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   }
   //_location->removePropertyChangeListener(this);
-  disconnect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarRoads.instance().removePropertyChangeListener(this);
-  disconnect(CarRoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(((EngineTypes*)InstanceManager::getDefault("EngineTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarLoads.instance().removePropertyChangeListener(this);
-  disconnect(CarLoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarTypes.instance().removePropertyChangeListener(this);
-  disconnect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     ScheduleManager.instance().removePropertyChangeListener(this);
   //trainManager.removePropertyChangeListener(this);
-  disconnect(trainManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(trainManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //routeManager.removePropertyChangeListener(this);
-  disconnect(routeManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(routeManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   OperationsFrame::dispose();
  }
 

@@ -9,7 +9,7 @@ class PositionableIcon : public PositionableLabel
 {
     Q_OBJECT
 public:
-    explicit PositionableIcon(QWidget *parent = 0);
+    explicit PositionableIcon(Positionable *parent = 0);
     /*public*/ PositionableIcon(Editor* editor, Positionable *parent);
     /*public*/ PositionableIcon(NamedIcon* s, Editor* editor, Positionable *parent);
     /*public*/ PositionableIcon(QString s, Editor* editor, Positionable *parent);

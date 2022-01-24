@@ -19,13 +19,13 @@ public:
 signals:
 
 public slots:
- /*public*/ void actionPerformed(ActionEvent* e = 0);
+ /*public*/ void actionPerformed(JActionEvent* e = 0)override;
 
 private:
  JFileChooser* fileChooser;
  void common();
  static /*private*/ QString last_path;// = null;
- Logger* log;
+ static Logger* log;
 };
 
 #endif // LOADVSDFILEACTION_H

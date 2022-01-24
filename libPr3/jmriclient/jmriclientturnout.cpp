@@ -23,7 +23,7 @@
 /**
  * JMRIClient turnouts use the turnout number on the remote host.
  */
-/*public*/ JMRIClientTurnout::JMRIClientTurnout(int number, JMRIClientSystemConnectionMemo* memo, QObject* paent)
+/*public*/ JMRIClientTurnout::JMRIClientTurnout(int number, JMRIClientSystemConnectionMemo* memo, QObject* parent)
  : AbstractTurnout(memo->getSystemPrefix() + "t" + QString::number(number), parent)
 {
    // super(memo.getSystemPrefix() + "t" + number);

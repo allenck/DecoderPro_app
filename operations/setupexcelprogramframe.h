@@ -2,7 +2,7 @@
 #define SETUPEXCELPROGRAMFRAME_H
 #include "operationsframe.h"
 #include <QCheckBox>
-#include <QPushButton>
+#include "jbutton.h"
 #include "jtextfield.h"
 #include <QGroupBox>
 #include <QVBoxLayout>
@@ -22,12 +22,12 @@ namespace Operations
   JTextField* fileNameTextField;// = new JTextField(30);
 
   // major buttons
-  QPushButton* addButton;//= new JButton(Bundle.getMessage("Add"));
-  QPushButton* testButton;// = new JButton(Bundle.getMessage("Test"));
-  QPushButton* saveButton;// = new JButton(Bundle.getMessage("ButtonSave"));
+  JButton* addButton;//= new JButton(Bundle.getMessage("Add"));
+  JButton* testButton;// = new JButton(Bundle.getMessage("Test"));
+  JButton* saveButton;// = new JButton(Bundle.getMessage("ButtonSave"));
 
   // directory
-  QGroupBox* pDirectoryName;// = new JPanel();
+  JPanel* pDirectoryName;// = new JPanel();
   QVBoxLayout* pDirectoryNameLayout;
  protected:
   /*protected*/ File* selectFile(QString directoryName);

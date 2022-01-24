@@ -12,9 +12,9 @@ public:
     /*public*/ HexVariableValue(QString name, QString comment, QString cvName,
                             bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly,
                             QString cvNum, QString mask, int minVal, int maxVal,
-                            QMap<QString, CvValue*>* v, QLabel* status, QString stdname, QObject *parent = 0);
-    void updatedTextField();
-    /*public*/ void actionPerformed(ActionEvent* /*e*/);
+                            QMap<QString, CvValue*>* v, JLabel *status, QString stdname, QObject *parent = 0);
+//    void updatedTextField();
+    /*public*/ void actionPerformed(JActionEvent* /*e*/);
     /*public*/ void setValue(int value);
 
 signals:

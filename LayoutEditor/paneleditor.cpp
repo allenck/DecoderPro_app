@@ -41,6 +41,7 @@
 #include "class.h"
 #include "lcdclockframe.h"
 #include "nixieclockframe.h"
+#include "loggerfactory.h"
 
 PanelEditor::PanelEditor(QWidget *parent) :
     Editor("NoName", false, true, parent),
@@ -113,11 +114,10 @@ PanelEditor::~PanelEditor()
 
 /*protected*/ void PanelEditor::init(QString name)
 {
- log = new Logger("PanelEditor");
  setObjectName("PanelEditor");
  setProperty("JavaClassName", "jmri.jmrit.display.panelEditor.PanelEditor");
 
- log->setDebugEnabled(false);
+ log->setDebugEnabled(true);
  _debug = log->isDebugEnabled();
  _multiItemCopyGroup = nullptr;  // items gathered inside fence
  pasteItemFlag = false;
@@ -293,8 +293,8 @@ PanelEditor::~PanelEditor()
              setAllEditable(editableBox->isChecked());
              hiddenCheckBoxListener();
      });
-     connect(editableBox, SIGNAL(clicked(bool)), this, SLOT(onEditableBox()));
      editableBox->setChecked(isEditable());
+
      // positionable item
      contentPaneLayout->addWidget(positionableBox);
 //     positionableBox.addActionListener(new ActionListener() {
@@ -476,7 +476,7 @@ PanelEditor::~PanelEditor()
     if (_debug) log->debug("PanelEditor ctor done.");
 }  // end ctor
 
-/*public*/ void RenameActionListener::actionPerformed(/*ActionEvent e*/) {
+/*public*/ void RenameActionListener::actionPerformed(JActionEvent(*)) {
     // prompt for name
     QString newName = JOptionPane::showInputDialog(nullptr, tr("Enter new name:"));
     if (newName == "") {
@@ -861,20 +861,20 @@ protected void paintTargetPanel(Graphics g) {
  _anchorY = event->scenePos().y();
  _lastX = _anchorX;
  _lastY = _anchorY;
- QList <Positionable*>* selections = getSelectedItems(event);
+ QList <Positionable*> selections = getSelectedItems(event);
  if (_dragging)
  {
   return;
  }
- if (selections->size() > 0)
+ if (selections.size() > 0)
  {
-  if (bShift && selections->size() > 1)
+  if (bShift && selections.size() > 1)
   {
-   _currentSelection = selections->at(1);
+   _currentSelection = selections.at(1);
   }
   else
   {
-   _currentSelection = selections->at(0);
+   _currentSelection = selections.at(0);
   }
   if (bRightButton) //isPopupTrigger()
   {
@@ -991,7 +991,7 @@ protected void paintTargetPanel(Graphics g) {
  //setToolTip("NULL"); // ends tooltip if displayed
  if (_debug) log->debug("mouseReleased at ("+QString("%1").arg(event->scenePos().x())+","+QString("%1").arg(event->scenePos().y())+") dragging= "+(_dragging?"true":"false")
                           +" selectRect is "+(_selectRect.isNull()? "NULL":"not NULL"));
- QList <Positionable*>* selections = getSelectedItems(event);
+ QList <Positionable*> selections = getSelectedItems(event);
 
  if (_dragging)
  {
@@ -1002,15 +1002,15 @@ protected void paintTargetPanel(Graphics g) {
   _currentSelection = nullptr;
   return;
  }
- if (selections->size() > 0)
+ if (selections.size() > 0)
  {
-  if (bShift && selections->size() > 1)
+  if (bShift && selections.size() > 1)
   {
-   _currentSelection = selections->at(1);
+   _currentSelection = selections.at(1);
   }
   else
   {
-    _currentSelection = selections->at(0);
+    _currentSelection = selections.at(0);
   }
   if (_multiItemCopyGroup!=NULL && !_multiItemCopyGroup->contains(_currentSelection))
    _multiItemCopyGroup = NULL;
@@ -1103,10 +1103,10 @@ protected void paintTargetPanel(Graphics g) {
  {
   if (_currentSelection!=NULL)
   {
-   QList <Positionable*>* selections = getSelectedItems(event);
-   if (selections->size() > 0)
+   QList <Positionable*> selections = getSelectedItems(event);
+   if (selections.size() > 0)
    {
-    if (selections->at(0)!=_currentSelection)
+    if (selections.at(0)!=_currentSelection)
     {
      _currentSelection->doMouseReleased(event);
     }
@@ -1207,17 +1207,17 @@ protected void paintTargetPanel(Graphics g) {
  if (_dragging || bRightButton)
   return;
 
- QList <Positionable*>* selections = getSelectedItems(event);
+ QList <Positionable*> selections = getSelectedItems(event);
  Positionable* selection = NULL;
- if (selections->size() > 0)
+ if (selections.size() > 0)
  {
-  if (bShift && selections->size() > 1)
+  if (bShift && selections.size() > 1)
   {
-    selection = selections->at(1);
+    selection = selections.at(1);
   }
   else
   {
-   selection = selections->at(0);
+   selection = selections.at(0);
   }
  }
  if (isEditable() && selection!=NULL && qobject_cast<PositionableLabel*>(selection->self()) && ((PositionableLabel*)selection->self())->getDisplayLevel()>BKG)
@@ -1261,17 +1261,17 @@ protected void paintTargetPanel(Graphics g) {
  bool bCtrl = ((event->modifiers())&Qt::ControlModifier) == Qt::ControlModifier;
  //setToolTip(NULL); // ends tooltip if displayed
  if (_debug) log->debug("mouseClicked at ("+QString("%1").arg(event->scenePos().x())+","+QString("%1").arg(event->scenePos().y())+") dragging= "+(_dragging?"true":"false") +" selectRect is "+(_selectRect.isNull()? "NULL":"not NULL"));
- QList <Positionable*>* selections = getSelectedItems(event);
+ QList <Positionable*> selections = getSelectedItems(event);
 
- if (selections->size() > 0)
+ if (selections.size() > 0)
  {
-  if (bShift && selections->size() > 1)
+  if (bShift && selections.size() > 1)
   {
-    _currentSelection = selections->at(1);
+    _currentSelection = selections.at(1);
   }
   else
   {
-   _currentSelection = selections->at(0);
+   _currentSelection = selections.at(0);
   }
  }
  else
@@ -1591,8 +1591,8 @@ protected void addItemPopUp(final ComboBoxItem item, JMenu menu){
                 adapter = (XmlAdapter*)Class::forName(className)->newInstance();
                 QDomElement el = adapter->store(copied->self());
                 adapter->load(el, this);
-            } catch (Exception ex) {
-                log->debug(ex.getMessage());
+            } catch (Exception* ex) {
+                log->debug(ex->getMessage());
             }
             /*We remove the original item from the list, so we end up with
             just the new items selected and allow the items to be moved around */
@@ -1633,7 +1633,7 @@ protected void addItemPopUp(final ComboBoxItem item, JMenu menu){
   connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
  }
 
- void RemoveMenuAction::actionPerformed()
+ void RemoveMenuAction::actionPerformed(JActionEvent*)
  {
   if (parent->_selectionGroup==NULL)
       comp->remove();
@@ -1723,7 +1723,7 @@ protected void addItemPopUp(final ComboBoxItem item, JMenu menu){
   this->editor = editor;
  }
 
- void LockItemListener::actionPerformed()
+ void LockItemListener::actionPerformed(JActionEvent*)
  {
    comp->setPositionable(!checkBox->isChecked());
    editor->setSelectionsPositionable(!checkBox->isChecked(), comp);
@@ -1752,7 +1752,7 @@ protected void addItemPopUp(final ComboBoxItem item, JMenu menu){
  addColorMenuEntry(colorMenu, buttonGrp, tr("LightGray"),QColor(Qt::lightGray));
  addColorMenuEntry(colorMenu, buttonGrp, tr("White"),QColor(Qt::white));
  addColorMenuEntry(colorMenu, buttonGrp, tr("Red"),QColor(Qt::red));
- addColorMenuEntry(colorMenu, buttonGrp, tr("Orange"),QColor(255,170,0));
+ addColorMenuEntry(colorMenu, buttonGrp, tr("Orange"),QColor(255,165,0));
  addColorMenuEntry(colorMenu, buttonGrp, tr("Yellow"),QColor(Qt::yellow));
  addColorMenuEntry(colorMenu, buttonGrp, tr("Green"),QColor(Qt::green));
  addColorMenuEntry(colorMenu, buttonGrp, tr("Blue"),QColor(Qt::blue));
@@ -2242,3 +2242,5 @@ void PanelEditor::on_actionOpenEditor_triggered()
 {
  return "jmri.jmrit.display.panelEditor.PanelEditor";
 }
+
+/*private*/ /*static*/ Logger* PanelEditor::log = LoggerFactory::getLogger("PanelEditor");

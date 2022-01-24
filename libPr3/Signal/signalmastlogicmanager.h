@@ -3,7 +3,7 @@
 #include "abstractmanager.h"
 #include "exceptions.h"
 #include "libPr3_global.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 
 /**
  *
@@ -27,11 +27,13 @@
 class SignalMast;
 class LayoutEditor;
 class SignalMastLogic;
-/*public*/ /*interface*/class LIBPR3SHARED_EXPORT SignalMastLogicManager : public AbstractManager
+/*public*/ /*interface*/class LIBPR3SHARED_EXPORT SignalMastLogicManager //: public AbstractManager
 {
- Q_OBJECT
+ //Q_OBJECT
 public:
- SignalMastLogicManager(QObject* parent=0) : AbstractManager(parent) {}
+// SignalMastLogicManager(QObject* parent=0) : AbstractManager(parent) {}
+// ~SignalMastLogicManager() {}
+// SignalMastLogicManager(const SignalMastLogicManager&) : AbstractManager() {}
     /*public void addDestinationMastToLogic(SignalMastLogic src, SignalMast destination) = 0;*/
 
     /**
@@ -46,17 +48,7 @@ public:
      * Discover all possible valid source and destination signalmasts past pairs
      * on all layout editor panels.
      */
-    /*public*/ virtual void automaticallyDiscoverSignallingPairs() throw (JmriException) = 0;
-
-    /**
-     * This uses the layout editor to check if the destination signalmast is
-     * reachable from the source signalmast
-     *
-     * @param sourceMast Source SignalMast
-     * @param destMast Destination SignalMast
-     * @return true if valid, false if not valid.
-     */
-   // /*public*/ boolean checkValidDest(SignalMast sourceMast, SignalMast destMast) throws JmriException;
+    /*public*/ virtual void automaticallyDiscoverSignallingPairs() /*throw (JmriException)*/ = 0;
 
     /**
      * Discover valid destination signalmasts for a given source signal on a
@@ -64,7 +56,7 @@ public:
      * @param source Source SignalMast
      * @param layout Layout Editor panel to check.
      */
-    /*public*/ virtual void discoverSignallingDest(SignalMast* source, LayoutEditor* layout) throw (JmriException) = 0;
+    /*public*/ virtual void discoverSignallingDest(SignalMast* source, LayoutEditor* layout) /*throw (JmriException)*/ = 0;
 
     /*public*/ virtual void dispose() = 0;
 
@@ -116,7 +108,20 @@ public:
     /*public*/ virtual bool isSignalMastUsed(SignalMast* mast) = 0;
 
     /*public*/ virtual void setSignalLogicDelay(long l) = 0;
-    //PropertyChangeSupport* pcs;
+    //SwingPropertyChangeSupport* pcs;
+    /**
+     * Iterate over the signal masts setting up direction Section sensors.
+     * @return error count
+     */
+    /*public*/ virtual int setupSignalMastsDirectionSensors() = 0;
+
+    /**
+     * Iterate over the signal masts setting up direction Section sensors.
+     */
+    /*public*/ virtual void removeSignalMastsDirectionSensors() = 0;
+
+    virtual QObject* self() =0;
+
  friend class RunnableThis;
  friend class DestinationMast;
  friend class LevelXing;
@@ -127,4 +132,5 @@ public:
  friend class LayoutTurnout;
  friend class LayoutSlip;
 };
+Q_DECLARE_INTERFACE(SignalMastLogicManager, "SignalMastLogicManager");
 #endif // SIGNALMASTLOGICMANAGER_H

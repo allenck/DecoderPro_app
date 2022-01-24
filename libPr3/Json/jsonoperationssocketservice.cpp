@@ -3,6 +3,8 @@
 #include "trainmanager.h"
 #include "json.h"
 #include "jsonoperationshttpservice.h"
+#include "instancemanager.h"
+
 /**
  *
  * @author Randall Wood (C) 2016
@@ -34,7 +36,7 @@
    TrainListener* listener;
       this->trains.insert(id, listener = new TrainListener(id, this));
 //         Operations::TrainManager::instance()->getTrainById(id).addPropertyChangeListener(this->trains.get(id));
-   connect(Operations::TrainManager::instance()->getTrainById(id)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)) );
+   connect(((Operations::TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainById(id)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)) );
   }
  }
  else
@@ -66,7 +68,7 @@
 
 /*protected*/ TrainListener::TrainListener(QString id, JsonOperationsSocketService* joss)
 {
- this->train = Operations::TrainManager::instance()->getTrainById(id);
+ this->train = ((Operations::TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainById(id);
  this->joss = joss;
 }
 
@@ -86,7 +88,7 @@
    {
        joss->connection->sendMessage(ex.getJsonMessage());
    }
-  } catch (IOException ex)
+  } catch (IOException* ex)
   {
    // if we get an error, de-register
    //this->train.removePropertyChangeListener(this);

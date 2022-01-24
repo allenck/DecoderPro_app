@@ -25,7 +25,7 @@ namespace Operations
   QButtonGroup* group;//= new ButtonGroup();
 
   // major buttons
-  QPushButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
+  JButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
 
   /*private*/ TrackEditFrame* _tef;
   QString _trackType;//= "";

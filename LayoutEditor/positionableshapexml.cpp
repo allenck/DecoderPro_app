@@ -178,7 +178,7 @@ PositionableShapeXml::PositionableShapeXml(QObject *parent) :
  int changeLevel = -1;
  //try {
      changeLevel = getInt(element, "changeLevelOnSensor");
-// } catch (Exception e) {
+// } catch (Exception* e) {
 //     log.error("failed to get changeLevel attribute ex= " + e);
 // }
 // try {
@@ -219,7 +219,7 @@ PositionableShapeXml::PositionableShapeXml(QObject *parent) :
     }
     if(!bOk)
     {
-     log->warn("failed to convert color attribute for "+name+" - "/*+e.getMessage()*/);
+     log->warn("failed to convert color attribute for "+name+" - "/*+e->getMessage()*/);
     }
     return QColor();
 }
@@ -230,7 +230,7 @@ PositionableShapeXml::PositionableShapeXml(QObject *parent) :
         return num;
 
     if(!ok) {
-        log->error("failed to convert integer attribute for "+name+" - "/*+e.getMessage()*/);
+        log->error("failed to convert integer attribute for "+name+" - "/*+e->getMessage()*/);
     }
     return 0;
 }

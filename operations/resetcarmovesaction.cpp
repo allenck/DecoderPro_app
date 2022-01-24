@@ -2,6 +2,7 @@
 #include "carmanager.h"
 #include <QMessageBox>
 #include "logger.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -24,7 +25,7 @@ namespace Operations
  {
      //super(actionName);
   log = new Logger("ResetCarMoves");
-  manager = CarManager::instance();
+  manager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
   connect(this, SIGNAL(triggered()),this, SLOT(actionPerformed()));
  }
 

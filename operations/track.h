@@ -3,13 +3,15 @@
 
 #include <QObject>
 #include "logger.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "appslib_global.h"
+#include "reporter.h"
 
 class QDomDocument;
 class QDomElement;
 namespace Operations
 {
+ class Division;
  class Train;
  class Route;
  class Schedule;
@@ -18,7 +20,7 @@ namespace Operations
  class RollingStock;
  class Pool;
  class Location;
-class APPSLIBSHARED_EXPORT Track : public QObject
+class APPSLIBSHARED_EXPORT Track : public SwingPropertyChangeSupport
 {
  Q_OBJECT
 public:
@@ -100,13 +102,20 @@ public:
  /*public*/ static /*final*/ QString SERVICE_ORDER_CHANGED_PROPERTY; //="trackServiceOrder"; // NOI18N
  /*public*/ static /*final*/ QString ALTERNATE_TRACK_CHANGED_PROPERTY; //="trackAlternate"; // NOI18N
  /*public*/ static /*final*/ QString TRACK_BLOCKING_ORDER_CHANGED_PROPERTY; //="trackBlockingOrder"; // NOI18N
- PropertyChangeSupport* pcs;
+ /*public*/ static /*final*/ QString TRACK_REPORTER_PROPERTY;// = "trackReporterChange"; // NOI18N
+
  /*public*/ Track* copyTrack(QString newName, Location* newLocation) ;
  /*public*/ QString toString() ;
  /*public*/ QString getId() ;
  /*public*/ Location* getLocation();
  /*public*/ void setName(QString name);
  /*public*/ QString getName() ;
+ /*public*/ Division* getDivision();
+ /*public*/ QString getDivisionName();
+  /*public*/ bool isSpur();
+  /*public*/ bool isYard();
+  /*public*/ bool isInterchange();
+  /*public*/ bool isStaging();
  /*public*/ QString getTrackType() ;
  /*public*/ void setTrackType(QString type);
  /*public*/ QString getTrackTypeName();
@@ -135,6 +144,7 @@ public:
  /*public*/ void setTrainDirections(int direction);
  /*public*/ int getTrainDirections();
  /*public*/ QString getRoadOption();
+  /*public*/ QString getRoadOptionString();
  /*public*/ void setRoadOption(QString option);
  /*public*/ QStringList getRoadNames();
  /*public*/ int getIgnoreUsedLengthPercentage();
@@ -161,6 +171,7 @@ public:
  /*public*/ QStringList getLoadNames() ;
  /*public*/ bool addLoadName(QString load);
  /*public*/ QString getLoadOption();
+ /*public*/ QString getLoadOptionString();
  /*public*/ void setLoadOption(QString option);
  /*public*/ Track* getAlternateTrack();
  /*public*/ Pool* getPool();
@@ -183,6 +194,7 @@ public:
  /*public*/ bool shipsLoad(QString load, QString type);
  /*public*/ QString getDropOption();
  /*public*/ QString getShipLoadOption();
+ /*public*/ QString getShipLoadOptionString();
  /*public*/ int getDestinationListSize();
  /*public*/ bool isAlternate();
  /*public*/ void setDropOption(QString option);
@@ -220,6 +232,7 @@ public:
  /*public*/ int getScheduleCount();
  /*public*/ void setScheduleCount(int count);
  /*public*/ int getScheduleMode();
+ /*public*/ QString getScheduleModeName();
  /*public*/ QString checkScheduleValid();
  /*public*/ bool acceptsLoadName(QString load);
  /*public*/ bool acceptsLoad(QString load, QString type);
@@ -245,6 +258,9 @@ public:
  /*public*/ bool isSpaceAvailable(Car* car);
  /*public*/ QString checkSchedule(Car* car);
  /*public*/ QString scheduleNext(Car* car);
+  /*public*/ void setReporter(Reporter* r);
+  /*public*/ Reporter* getReporter();
+  /*public*/ QString getReporterName();
 
 signals:
 
@@ -334,6 +350,10 @@ protected:
  /*protected*/ Pool* _pool;// = null;
  /*protected*/ int _minimumLength;// = 0;
  /*protected*/ void setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n);
+
+ // IdTag reader associated with this track.
+ /*protected*/ Reporter* _reader = nullptr;
+
  friend class RollingStock;
  friend class Pool;
  friend class Car;

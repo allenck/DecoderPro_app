@@ -2,9 +2,9 @@
 #include "dispatcherframe.h"
 #include "autoactivetrain.h"
 #include "throttle.h"
-#include <QLabel>
+#include "jlabel.h"
 #include <QRadioButton>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QSlider>
 #include "jseparator.h"
 #include "activetrain.h"
@@ -15,8 +15,8 @@
 #include <QBoxLayout>
 #include "flowlayout.h"
 #include <QButtonGroup>
-#include <QSignalMapper>
-
+#include <QDesktopWidget>
+#include <QApplication>
 
 //AutoTrainsFrame::AutoTrainsFrame()
 //{
@@ -59,8 +59,8 @@
  //This would be better refactored this all into a sub-class, rather than multiple arraylists.
  // note: the following array lists are synchronized with _autoTrainsList
  _JPanels = new QList<QWidget*>();
- _throttleStatus = new QList<QLabel*>();
- _trainLabels = new QList<QLabel*>();
+ _throttleStatus = new QList<JLabel*>();
+ _trainLabels = new QList<JLabel*>();
  _stopButtons = new QList<QPushButton*>();
  _manualButtons = new QList<QPushButton*>();
  _resumeAutoRunningButtons = new QList<QPushButton*>();
@@ -70,21 +70,10 @@
 
  _separators = new QList<JSeparator*>();
 
- tStopMapper = new QSignalMapper();
- connect(tStopMapper,SIGNAL(mapped(QString)), this, SLOT(stopResume(QString)));
- tManualMapper = new QSignalMapper();
- connect(tManualMapper, SIGNAL(mapped(QString)), this, SLOT(manualAuto(QString)));
- tResumeAutoOperationMapper = new QSignalMapper();
- connect(tResumeAutoOperationMapper, SIGNAL(mapped(QString)), this, SLOT(resumeAutoOperation(QString)));
- fButMapper=new QSignalMapper();
- connect(fButMapper, SIGNAL(mapped(QString)), this, SLOT(directionButton(QString)));
- rButMapper=new QSignalMapper();
- connect(rButMapper, SIGNAL(mapped(QString)), this, SLOT(directionButton(QString)));
- connect(speedSlidersMapper, SIGNAL(mapped(QString)), this, SLOT(sliderChanged(QString)));
 
-    //super(false, true);
-    _dispatcher = disp;
-    initializeAutoTrainsWindow();
+  //super(false, true);
+  _dispatcher = disp;
+  initializeAutoTrainsWindow();
 }
 
 //    static final ResourceBundle rb = ResourceBundle
@@ -98,28 +87,31 @@
 /*public*/ void AutoTrainsFrame::addAutoActiveTrain(AutoActiveTrain* aat) {
     if (aat != NULL) {
         _autoTrainsList->append(aat);
-#if 0
-        java.beans.PropertyChangeListener throttleListener = new java.beans.PropertyChangeListener() {
-            @Override
-            /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
-                handleThrottleChange(e);
-            }
-        };
+#if 1
+        PropertyChangeListener* throttleListener = new ATFThrottleListener(this);
+//        {
+//            @Override
+//            /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
+//                handleThrottleChange(e);
+//            }
+//        };
+
         _throttleListeners->append(throttleListener);
 
         _throttles->append(NULL); //adds a place holder
         //set up the throttle prior to attaching the listener to the ActiveTrain
         setupThrottle(aat);
 
-        ActiveTrain* at = aat->(getActiveTrain();
-        java.beans.PropertyChangeListener listener = NULL;
-        at->addPropertyChangeListener(listener = new java.beans.PropertyChangeListener() {
-            @Override
-            /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
-                handleActiveTrainChange(e);
-            }
-        });
-        _listeners.add(listener);
+        ActiveTrain* at = aat->getActiveTrain();
+        PropertyChangeListener* listener = NULL;
+        at->addPropertyChangeListener(listener = new TrainChangeListener(this));
+//        {
+//            @Override
+//            /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
+//                handleActiveTrainChange(e);
+//            }
+//        });
+        _listeners->append(listener);
 
         displayAutoTrains();
 #endif
@@ -141,21 +133,21 @@
         }
     }
 }
-#if 0
-/*private*/ void handleActiveTrainChange(java.beans.PropertyChangeEvent e) {
-    if (e.getPropertyName().equals("mode")) {
+#if 1
+/*private*/ void AutoTrainsFrame::handleActiveTrainChange(PropertyChangeEvent* e) {
+    if (e->getPropertyName() ==("mode")) {
         handleChangeOfMode(e);
     }
     displayAutoTrains();
 }
 
-/*private*/ void handleChangeOfMode(java.beans.PropertyChangeEvent e) {
-    for (AutoActiveTrain aat : _autoTrainsList) {
-        if (aat->(getActiveTrain() == e.getSource()) {
-            int newValue = ((Integer) e.getNewValue()).intValue();
-            int oldValue = ((Integer) e.getOldValue()).intValue();
+/*private*/ void AutoTrainsFrame::handleChangeOfMode(PropertyChangeEvent* e) {
+    for (AutoActiveTrain* aat : *_autoTrainsList) {
+        if (aat->getActiveTrain() == e->getSource()) {
+            int newValue = e->getNewValue().toInt();
+            int oldValue = e->getOldValue().toInt();
             if (newValue == ActiveTrain::DISPATCHED) {
-                removeThrottleListener((AutoActiveTrain) e.getSource());
+                removeThrottleListener((AutoActiveTrain*)e->getSource());
 //                } else if (oldValue == ActiveTrain::DISPATCHED && newValue != ActiveTrain::DISPATCHED) {
             } else if (oldValue == ActiveTrain::DISPATCHED) {
                 setupThrottle(aat);
@@ -164,62 +156,62 @@
     }
 }
 
-/*private*/ void setupThrottle(AutoActiveTrain aat) {
-    if (aat->(getThrottle() != NULL) {
-        int index = _autoTrainsList.indexOf(aat);
+/*private*/ void AutoTrainsFrame::setupThrottle(AutoActiveTrain* aat) {
+    if (aat->getThrottle() != NULL) {
+        int index = _autoTrainsList->indexOf(aat);
         if (_throttles->at(index) == NULL) {
-            _throttles.add(index, aat->(getThrottle());
+            _throttles->insert(index, aat->getThrottle());
             addThrottleListener(aat);
         }
     }
 }
 
-/*private*/ void handleThrottleChange(java.beans.PropertyChangeEvent e) {
-    if (!e.getPropertyName().equals("SpeedSetting") && !e.getPropertyName().equals("IsForward")) {
+/*private*/ void AutoTrainsFrame::handleThrottleChange(PropertyChangeEvent* e) {
+    if (e->getPropertyName() != ("SpeedSetting") && e->getPropertyName() != ("IsForward")) {
         return; //ignore if not speed or direction
     }
-    int index = _throttles.indexOf(e.getSource());
+    int index = _throttles->indexOf((Throttle*)e->getSource());
     if (index == -1) {
-        log.warn("handleThrottleChange - cannot find throttle index");
+        log->warn("handleThrottleChange - cannot find throttle index");
         return;
     }
-    JLabel status = _throttleStatus->at(index);
-    if (!status.isVisible()) {
+    JLabel* status = _throttleStatus->at(index);
+    if (!status->isVisible()) {
         return;
     }
-    jmri.DccLocoAddress addy = (jmri.DccLocoAddress) _throttles->at(index).getLocoAddress();
-    updateStatusLabel(status, jmri.InstanceManager.throttleManagerInstance().getThrottleInfo(addy, "SpeedSetting"), jmri.InstanceManager.throttleManagerInstance().getThrottleInfo(addy, "IsForward"));
+    DccLocoAddress* addy = (DccLocoAddress*) _throttles->at(index)->getLocoAddress();
+    updateStatusLabel(status, InstanceManager::throttleManagerInstance()->getThrottleInfo(addy, "SpeedSetting"), InstanceManager::throttleManagerInstance()->getThrottleInfo(addy, "IsForward"));
 }
 
-/*private*/ void updateStatusLabel(JLabel status, Object speed, Object forward) {
-    StringBuilder sb = new StringBuilder();
-    int spd = Math.round(((Float) speed).floatValue() * 100);
+/*private*/ void AutoTrainsFrame::updateStatusLabel(JLabel* status, QVariant speed, QVariant forward) {
+    QString sb;// = new StringBuilder();
+    int spd = qRound(( speed).toFloat() * 100);
     sb.append("" + spd);
     sb.append("% ");
-    if (((Boolean) forward).booleanValue()) {
+    if (( forward).toBool()) {
         sb.append("(fwd)");
     } else {
         sb.append("(rev)");
     }
     //Only repack if the text size has increased.
-    if (status.getText().length() < sb.toString().length()) {
-        status->setText(sb.toString());
-        autoTrainsFrame.pack();
+    if (status->text().length() < sb.length()) {
+        status->setText(sb);
+        autoTrainsFrame->pack();
     } else {
-        status->setText(sb.toString());
+        status->setText(sb);
     }
 }
 
-/*private*/ void addThrottleListener(AutoActiveTrain aat) {
-    int index = _autoTrainsList.indexOf(aat);
+/*private*/ void AutoTrainsFrame::addThrottleListener(AutoActiveTrain* aat) {
+    int index = _autoTrainsList->indexOf(aat);
     if (index == -1) {
         return;
     }
     if (_throttles->at(index) != NULL) {
-        jmri.DccLocoAddress addy = (jmri.DccLocoAddress) _throttles->at(index).getLocoAddress();
-        jmri.InstanceManager.throttleManagerInstance().attachListener(addy, _throttleListeners->at(index));
-        JLabel status = _throttleStatus->at(index);
-        updateStatusLabel(status, jmri.InstanceManager.throttleManagerInstance().getThrottleInfo(addy, "SpeedSetting"), jmri.InstanceManager.throttleManagerInstance().getThrottleInfo(addy, "IsForward"));
+        DccLocoAddress* addy = (DccLocoAddress*) _throttles->at(index)->getLocoAddress();
+        InstanceManager::throttleManagerInstance()->attachListener(addy, _throttleListeners->at(index));
+        JLabel* status = _throttleStatus->at(index);
+        updateStatusLabel(status, InstanceManager::throttleManagerInstance()->getThrottleInfo(addy, "SpeedSetting"), InstanceManager::throttleManagerInstance()->getThrottleInfo(addy, "IsForward"));
     }
 }
 #endif
@@ -243,7 +235,7 @@
     contentPane = autoTrainsFrame->getContentPane();
     contentPane->setLayout(contentPaneLayout = new QVBoxLayout); //(contentPane, BoxLayout.Y_AXIS));
     // set up 6 auto trains to size the panel
-#if 0
+#if 1
     for (int i = 0; i < 6; i++) {
         newTrainLine();
         if (i == 0) {
@@ -254,17 +246,18 @@
     contentPaneLayout->addWidget(new JSeparator());
     QWidget* pB = new QWidget();
     pB->setLayout(new FlowLayout());
-    JButton stopAllButton = new JButton(tr("StopAll"));
-    pB.add(stopAllButton);
-    stopAllButton.addActionListener(new ActionListener() {
-        @Override
-        /*public*/ void actionPerformed(ActionEvent e) {
-            stopAllPressed(e);
-        }
+    JButton* stopAllButton = new JButton(tr("Stop All"));
+    pB->layout()->addWidget(stopAllButton);
+//    stopAllButton.addActionListener(new ActionListener() {
+//        @Override
+//        /*public*/ void actionPerformed(ActionEvent e) {
+    connect(stopAllButton, &JButton::clicked, [=]{
+            stopAllPressed(/*e*/);
+//        }
     });
-    stopAllButton->setToolTip(tr("StopAllButtonHint"));
+    stopAllButton->setToolTip(tr("Press to stop all automatically running Trains."));
     contentPaneLayout->addWidget(pB);
-    autoTrainsFrame.pack();
+    autoTrainsFrame->pack();
     placeWindow();
 #endif
     displayAutoTrains();
@@ -285,7 +278,7 @@
     FlowLayout* pxLayout;
     px->setLayout(pxLayout = new FlowLayout());
     _JPanels->append(px);
-    QLabel* tLabel = new QLabel("      ");
+    JLabel* tLabel = new JLabel("      ");
     pxLayout->addWidget(tLabel);
     pxLayout->addWidget(tLabel);
     _trainLabels->append(tLabel);
@@ -295,33 +288,33 @@
 //    tStop.addActionListener(new ActionListener() {
 //        @Override
 //        /*public*/ void actionPerformed(ActionEvent e) {
-//            stopResume(s);
+          connect(tStop, &QPushButton::clicked, [=]{
+            stopResume(tStop->text());
 //        }
-//    });
-    tStopMapper->setMapping(tStop,s);
-    connect(tStop, SIGNAL(clicked(bool)), tStopMapper, SLOT(map()));
+    });
+
     QPushButton* tManual = new QPushButton(tr("To Manual"));
     pxLayout->addWidget(tManual);
     _manualButtons->append(tManual);
 //    tManual.addActionListener(new ActionListener() {
 //        @Override
 //        /*public*/ void actionPerformed(ActionEvent e) {
-//            manualAuto(s);
+     connect(tManual, &QPushButton::clicked, [=] {
+            manualAuto(tManual->text());
 //        }
-//    });
-    tManualMapper->setMapping(tManual, s);
-    connect(tManual, SIGNAL(clicked(bool)), tManualMapper, SLOT(map()));
+    });
+
     QPushButton* tResumeAuto = new QPushButton(tr("Resume Auto"));
     pxLayout->addWidget(tResumeAuto);
     _resumeAutoRunningButtons->append(tResumeAuto);
 //    tResumeAuto.addActionListener(new ActionListener() {
 //        @Override
 //        /*public*/ void actionPerformed(ActionEvent e) {
-//            resumeAutoOperation(s);
+      connect(tResumeAuto, &QPushButton::clicked, [=]{
+            resumeAutoOperation(tResumeAuto->text());
 //        }
-//    });
-    tResumeAutoOperationMapper->setMapping(tResumeAuto,s);
-    connect(tResumeAuto, SIGNAL(clicked(bool)), tResumeAutoOperationMapper, SLOT(map()));
+    });
+
     tResumeAuto->setVisible(false);
     tResumeAuto->setToolTip(tr("Press to stop WORKING and resume automatic RUNNING of this train."));
     QButtonGroup* directionGroup = new QButtonGroup();
@@ -331,11 +324,11 @@
 //    fBut.addActionListener(new ActionListener() {
 //        @Override
 //        /*public*/ void actionPerformed(ActionEvent e) {
-//            directionButton(s);
+     connect(fBut, &QPushButton::clicked, [=]{
+            directionButton(fBut->text());
 //        }
-//    });
-    fButMapper->setMapping(fBut, s);
-    connect(fBut, SIGNAL(mapped(QString)), fButMapper, SLOT(map()));
+    });
+
     directionGroup->addButton(fBut);
     QRadioButton* rBut = new QRadioButton(tr("Reverse"));
     pxLayout->addWidget(rBut);
@@ -343,11 +336,11 @@
 //    rBut.addActionListener(new ActionListener() {
 //        @Override
 //        /*public*/ void actionPerformed(ActionEvent e) {
-//            directionButton(s);
+          connect(rBut, &QPushButton::clicked, [=]{
+            directionButton(rBut->text());
 //        }
-//    });
-    rButMapper->setMapping(rBut, s);
-    connect(rBut, SIGNAL(clicked(bool)), rButMapper, SLOT(map()));
+    });
+
     directionGroup->addButton(rBut);
     QSlider* sSlider = new QSlider(/*0, 100, 0*/);
     sSlider->setMinimum(0);
@@ -359,40 +352,43 @@
 //        @Override
 //        /*public*/ void stateChanged(ChangeEvent e) {
 //            int val = ((JSlider) (e.getSource())).getValue();
-//            sliderChanged(s, val);
+         connect(sSlider, &QSlider::valueChanged, [=]{
+            sliderChanged(sSlider->objectName(), sSlider->value());
 //        }
-//    });
-    speedSlidersMapper->setMapping(sSlider,s);
-    connect(sSlider, SIGNAL(valueChanged(int)), speedSlidersMapper, SIGNAL(mapped(QString)));
-    QLabel* _throttle = new QLabel();
+    });
+
+    JLabel* _throttle = new JLabel();
     _throttle->setText("Speed Unknown");
     _throttleStatus->append(_throttle);
     pxLayout->addWidget(_throttle);
     contentPaneLayout->addWidget(px);
 }
-#if 0
-/*private*/ void placeWindow() {
+#if 1
+/*private*/ void AutoTrainsFrame::placeWindow() {
     // get size and placement of Dispatcher Window, screen size, and window size
-    Point dispPt = new Point(0, 0);
-    Dimension dispDim = new Dimension(0, 0);
+    QPoint dispPt = QPoint(0, 0);
+    QSize dispDim = QSize(0, 0);
 
-    if (_dispatcher.isShowing()) {
-        dispPt = _dispatcher.getLocationOnScreen();
-        dispDim = _dispatcher.getSize();
+    if (_dispatcher->isVisible())//isShowing())
+    {
+        dispPt = _dispatcher->getLocationOnScreen();
+        dispDim = _dispatcher->size();
     }
-    Dimension screenDim = Toolkit.getDefaultToolkit().getScreenSize();
-    int screenHeight = screenDim.height - 120;
-    int screenWidth = screenDim.width - 20;
-    Dimension dim = getSize();
-    int width = dim.width;
-    int height = dim.height;
+    //QSize screenDim = Toolkit.getDefaultToolkit().getScreenSize();
+    QDesktopWidget* desktop = QApplication::desktop();
+    QSize screenDim = desktop->screen()->size();
+    int screenHeight = screenDim.height() - 120;
+    int screenWidth = screenDim.width() - 20;
+    QSize dim = size();
+    int width = dim.width();
+    int height = dim.height();
     // place AutoTrains window to the right of Dispatcher window, if it will fit.
-    int upperLeftX = dispPt.x + dispDim.width;
+    int upperLeftX = dispPt.x() + dispDim.width();
     int upperLeftY = 0;
     if ((upperLeftX + width) > screenWidth) {
         // won't fit, place it below Dispatcher window, if it will fit.
         upperLeftX = 0;
-        upperLeftY = dispPt.y + dispDim.height;
+        upperLeftY = dispPt.y() + dispDim.height();
         if ((upperLeftY + height) > screenHeight) {
             // if all else fails, place it at the upper left of the screen, and let the user adjust placement
             upperLeftY = 0;
@@ -401,21 +397,21 @@
     setLocation(upperLeftX, upperLeftY);
 }
 
-/*public*/ void stopResume(String s) {
+/*public*/ void AutoTrainsFrame::stopResume(QString s) {
     int index = getTrainIndex(s);
     if (index >= 0) {
-        AutoActiveTrain aat = _autoTrainsList->at(index);
-        if (aat->(getAutoEngineer() != NULL) {
-            ActiveTrain at = aat->(getActiveTrain();
+        AutoActiveTrain* aat = _autoTrainsList->at(index);
+        if (aat->getAutoEngineer() != NULL) {
+            ActiveTrain* at = aat->getActiveTrain();
             if (at->getStatus() == ActiveTrain::STOPPED) {
                 // resume
-                aat->(setEngineDirection();
-                aat->(getAutoEngineer()->setHalt(false);
-                aat->(restoreSavedSpeed();
-                at->setStatus(aat->(getSavedStatus());
+                aat->setEngineDirection();
+                aat->getAutoEngineer()->setHalt(false);
+                aat->restoreSavedSpeed();
+                at->setStatus(aat->getSavedStatus());
                 if ((at->getStatus() == ActiveTrain::RUNNING)
                         || (at->getStatus() == ActiveTrain::WAITING)) {
-                    aat->(setSpeedBySignal();
+                    aat->setSpeedBySignal();
                 }
             } else if (at->getStatus() == ActiveTrain::DONE) {
                 // restart
@@ -423,109 +419,109 @@
                 at->restart();
             } else {
                 // stop
-                aat->(getAutoEngineer()->setHalt(true);
-                aat->(saveSpeed();
-                aat->(setSavedStatus(at->getStatus());
+                aat->getAutoEngineer()->setHalt(true);
+                aat->saveSpeed();
+                aat->setSavedStatus(at->getStatus());
                 at->setStatus(ActiveTrain::STOPPED);
                 if (at->getMode() == ActiveTrain::MANUAL) {
                     _speedSliders->at(index)->setValue(0);
                 }
             }
         } else {
-            log.error("unexpected NULL autoEngineer");
+            log->error("unexpected NULL autoEngineer");
         }
     }
     displayAutoTrains();
 }
 
-/*public*/ void manualAuto(String s) {
+/*public*/ void AutoTrainsFrame::manualAuto(QString s) {
     int index = getTrainIndex(s);
     if (index >= 0) {
-        AutoActiveTrain aat = _autoTrainsList->at(index);
-        ActiveTrain at = aat->(getActiveTrain();
+        AutoActiveTrain* aat = _autoTrainsList->at(index);
+        ActiveTrain* at = aat->getActiveTrain();
         // if train is AUTOMATIC mode, change it to MANUAL
         if (at->getMode() == ActiveTrain::AUTOMATIC) {
             at->setMode(ActiveTrain::MANUAL);
-            if (aat->(getAutoEngineer() != NULL) {
-                aat->(saveSpeed();
-                aat->(getAutoEngineer()->setHalt(true);
-                aat->(setTargetSpeed(0.0f);
-                aat->(waitUntilStopped();
-                aat->(getAutoEngineer()->setHalt(false);
+            if (aat->getAutoEngineer() != NULL) {
+                aat->saveSpeed();
+                aat->getAutoEngineer()->setHalt(true);
+                aat->setTargetSpeed(0.0f);
+                aat->waitUntilStopped();
+                aat->getAutoEngineer()->setHalt(false);
 
             }
         } else if (at->getMode() == ActiveTrain::MANUAL) {
             at->setMode(ActiveTrain::AUTOMATIC);
-            aat->(restoreSavedSpeed();
-            aat->(setForward(!aat->(getRunInReverse());
+            aat->restoreSavedSpeed();
+            aat->setForward(!aat->getRunInReverse());
             if ((at->getStatus() == ActiveTrain::RUNNING)
                     || (at->getStatus() == ActiveTrain::WAITING)) {
-                aat->(setSpeedBySignal();
+                aat->setSpeedBySignal();
             }
         }
     }
     displayAutoTrains();
 }
 
-/*public*/ void resumeAutoOperation(String s) {
+/*public*/ void AutoTrainsFrame::resumeAutoOperation(QString s) {
     int index = getTrainIndex(s);
     if (index >= 0) {
-        AutoActiveTrain aat = _autoTrainsList->at(index);
-        aat->(resumeAutomaticRunning();
+        AutoActiveTrain* aat = _autoTrainsList->at(index);
+        aat->resumeAutomaticRunning();
     }
     displayAutoTrains();
 }
 
-/*public*/ void directionButton(String s) {
+/*public*/ void AutoTrainsFrame::directionButton(QString s) {
     int index = getTrainIndex(s);
     if (index >= 0) {
-        AutoActiveTrain aat = _autoTrainsList->at(index);
-        ActiveTrain at = aat->(getActiveTrain();
+        AutoActiveTrain* aat = _autoTrainsList->at(index);
+        ActiveTrain* at = aat->getActiveTrain();
         if (at->getMode() == ActiveTrain::MANUAL) {
-            aat->(setForward(_forwardButtons->at(index).isSelected());
+            aat->setForward(_forwardButtons->at(index)->isChecked());
         } else {
-            log.warn("unexpected direction button change on line " + s);
+            log->warn("unexpected direction button change on line " + s);
         }
     }
 }
 
-/*public*/ void sliderChanged(String s, int value) {
+/*public*/ void AutoTrainsFrame::sliderChanged(QString s, int value) {
     int index = getTrainIndex(s);
     if (index >= 0) {
-        AutoActiveTrain aat = _autoTrainsList->at(index);
-        ActiveTrain at = aat->(getActiveTrain();
+        AutoActiveTrain* aat = _autoTrainsList->at(index);
+        ActiveTrain* at = aat->getActiveTrain();
         if (at->getMode() == ActiveTrain::MANUAL) {
             float speedValue = value;
             speedValue = speedValue * 0.01f;
-            aat->(getAutoEngineer()->setSpeedImmediate(speedValue);
+            aat->getAutoEngineer()->setSpeedImmediate(speedValue);
         } else {
-            log.warn("unexpected slider change on line " + s);
+            log->warn("unexpected slider change on line " + s);
         }
     }
 }
 
-/*private*/ int getTrainIndex(String s) {
+/*private*/ int AutoTrainsFrame::getTrainIndex(QString s) {
     int index = -1;
-    try {
-        index = Integer.parseInt(s);
-    } catch (Exception e) {
-        log.warn("exception when parsing index from AutoTrains window - " + s);
+    bool ok;
+        index = s.toInt(&ok);
+    if(!ok) {
+        log->warn("exception when parsing index from AutoTrains window - " + s);
     }
-    if ((index >= 0) && (index < _autoTrainsList.size())) {
+    if ((index >= 0) && (index < _autoTrainsList->size())) {
         return index;
     }
-    log.error("bad train index in auto trains table " + index);
+    log->error("bad train index in auto trains table " + QString::number(index));
     return (-1);
 }
 
-/*public*/ void stopAllPressed(ActionEvent e) {
-    for (int i = 0; i < _autoTrainsList.size(); i++) {
-        AutoActiveTrain aat = _autoTrainsList->at(i);
-        ActiveTrain at = aat->(getActiveTrain();
-        if ((at->getStatus() != ActiveTrain::STOPPED) && (aat->(getAutoEngineer() != NULL)) {
-            aat->(getAutoEngineer()->setHalt(true);
-            aat->(saveSpeed();
-            aat->(setSavedStatus(at->getStatus());
+/*public*/ void AutoTrainsFrame::stopAllPressed(/*ActionEvent e*/) {
+    for (int i = 0; i < _autoTrainsList->size(); i++) {
+        AutoActiveTrain* aat = _autoTrainsList->at(i);
+        ActiveTrain* at = aat->getActiveTrain();
+        if ((at->getStatus() != ActiveTrain::STOPPED) && (aat->getAutoEngineer() != NULL)) {
+            aat->getAutoEngineer()->setHalt(true);
+            aat->saveSpeed();
+            aat->setSavedStatus(at->getStatus());
             at->setStatus(ActiveTrain::STOPPED);
         }
     }

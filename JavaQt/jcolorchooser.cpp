@@ -145,9 +145,9 @@
   JDialog* dialog;
   //if (parent instanceof Frame)
   if(qobject_cast<QMainWindow*>(parent))
-    dialog = new JDialog((QMainWindow*) parent, title, true);
+    dialog = new JDialog((QMainWindow*) parent, title, modal);
   else
-    dialog = new JDialog((QDialog*) parent, title, true);
+    dialog = new JDialog((QDialog*) parent, title, modal);
 
   QVBoxLayout* thisLayout;
   dialog->setLayout(thisLayout = new QVBoxLayout());
@@ -161,22 +161,22 @@
   QPushButton* ok = new QPushButton("OK");
 //  ok.addActionListener(okListener);
   if(okListener)
-   connect(ok, SIGNAL(clicked(bool)), okListener, SLOT(actionPerformed()));
+   connect(ok, SIGNAL(clicked(bool)), okListener->self(), SLOT(actionPerformed()));
 //  ok.addActionListener(al);
-  connect(ok, SIGNAL(clicked(bool)), al, SLOT(actionPerformed()));
+  connect(ok, SIGNAL(clicked(bool)), al->self(), SLOT(actionPerformed()));
 
   al = new DefaultOKCancelListener(dialog, false);
   QPushButton* cancel = new QPushButton("Cancel");
 //  cancel.addActionListener(cancelListener);
   if(cancelListener)
-   connect(cancel, SIGNAL(clicked(bool)), cancelListener, SLOT(actionPerformed()));
+   connect(cancel, SIGNAL(clicked(bool)), cancelListener->self(), SLOT(actionPerformed()));
 //  cancel.addActionListener(al);
-  connect(cancel, SIGNAL(clicked(bool)), al, SLOT(actionPerformed()));
+  connect(cancel, SIGNAL(clicked(bool)), al->self(), SLOT(actionPerformed()));
 
   QPushButton* reset = new QPushButton("Reset");
 //  reset.addActionListener(new DefaultResetListener(chooserPane));
   DefaultResetListener* resetListener = new DefaultResetListener(chooserPane);
-  connect(reset, SIGNAL(clicked(bool)), resetListener, SLOT(actionPerformed()));
+  connect(reset, SIGNAL(clicked(bool)), resetListener/*->self()*/, SLOT(actionPerformed()));
 
   thisLayout->addWidget(chooserPane, 1, Qt::AlignTop);//BorderLayout.NORTH);
 
@@ -226,7 +226,7 @@ void JColorChooser::common(ColorSelectionModel* model)
  selectionModel = model;
 // updateUI();
  dragEnabled = false;
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
 
  setLayout(new QVBoxLayout());
 
@@ -235,15 +235,10 @@ void JColorChooser::common(ColorSelectionModel* model)
 // dlg->setOption(QColorDialog::NoButtons);
  tabWidget = new QTabWidget();
  ((QVBoxLayout*)layout())->addWidget(tabWidget, 1);
- tabWidget->setMinimumHeight(300);
-  QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
-  sizePolicy.setHorizontalStretch(1);
-  sizePolicy.setVerticalStretch(1);
-  sizePolicy.setHeightForWidth(tabWidget->sizePolicy().hasHeightForWidth());
-  tabWidget->setSizePolicy(sizePolicy);
  if(getPreviewPanel())
    ((QVBoxLayout*)layout())->addWidget(getPreviewPanel(),0);
 }
+
 /**
  * Returns the L&amp;F object that renders this component.
  *
@@ -441,8 +436,8 @@ void JColorChooser::common(ColorSelectionModel* model)
  */
 /*public*/ void JColorChooser::addChooserPanel( AbstractColorChooserPanel* panel )
 {
- if(panel == nullptr)
-  return;
+  if(panel == nullptr)
+   return;
 
   QVector<AbstractColorChooserPanel*>* old = chooserPanels;
   QVector<AbstractColorChooserPanel*>* newPanels = new QVector<AbstractColorChooserPanel*>(old->length()+1);
@@ -481,7 +476,7 @@ void JColorChooser::stateChanged(ChangeEvent* evt)
         }
     }
     if (containedAt == -1) {
-        throw IllegalArgumentException("chooser panel not in this chooser");
+        throw new IllegalArgumentException("chooser panel not in this chooser");
     }
 
     QVector<AbstractColorChooserPanel*>* newArray = new QVector<AbstractColorChooserPanel*>(chooserPanels->length()-1);
@@ -841,7 +836,7 @@ static class DisposeOnClose extends ComponentAdapter implements Serializable{
 
 void JColorChooser::addPropertyChangeListener(QString propertyName, PropertyChangeListener *listener)
 {
- pcs->addPropertyChangeListener(propertyName, listener);
+ pcs->SwingPropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
 }
 
 void JColorChooser::removePropertyChangeListener(QString propertyName, PropertyChangeListener *listener)
@@ -853,6 +848,7 @@ void JColorChooser::firePropertyChange(QString propertyName, QVariant oldVal, QV
 {
  pcs->firePropertyChange(propertyName, oldVal, newVal);
 }
+
 QColor JColorChooser::getForeground()
 {
  QColor c;

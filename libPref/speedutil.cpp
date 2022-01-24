@@ -163,7 +163,7 @@ SpeedUtil::SpeedUtil(QObject *parent) : QObject(parent)
                 _dccAddress = new DccLocoAddress(num, isLong);
                 setRosterId(_dccAddress->toString()); // not a rosterId, but does identify the  DccLocoAddress
            }
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException* e) {
             _dccAddress = nullptr;
             return false;
         }
@@ -226,7 +226,7 @@ SpeedUtil::SpeedUtil(QObject *parent) : QObject(parent)
         setDccAddress(getAddress());
     }
     if (log->isDebugEnabled()) log->debug(tr("makeSpeedTree for %1.").arg(_rosterId));
-    WarrantManager* manager = static_cast<WarrantManager*>(InstanceManager::getDefault("WarrantManager"));
+    WarrantManager* manager = qobject_cast<WarrantManager*>(InstanceManager::getDefault("WarrantManager"));
     _mergeProfile = manager->getMergeProfile(_rosterId);
     _sessionProfile = manager->getSessionProfile(_rosterId);
     if (_sessionProfile == nullptr) {
@@ -276,15 +276,15 @@ SpeedUtil::SpeedUtil(QObject *parent) : QObject(parent)
                 return;
             }
             root = xmlFile->rootFromFile(file);
-        } catch (NullPointerException npe) {
+        } catch (NullPointerException* npe) {
             return;
         }
-        catch (IOException  eb) {
-            log->error("Exception while loading warrant preferences: " + eb.getMessage());
+        catch (IOException*  eb) {
+            log->error("Exception while loading warrant preferences: " + eb->getMessage());
             return;
         }
-        catch ( JDOMException eb) {
-            log->error("Exception while loading warrant preferences: " + eb.getMessage());
+        catch ( JDOMException* eb) {
+            log->error("Exception while loading warrant preferences: " + eb->getMessage());
             return;
         }
         if (root.isNull()) {
@@ -371,7 +371,7 @@ SpeedUtil::SpeedUtil(QObject *parent) : QObject(parent)
             if ((val & 0x40) != 0) {    // 7th bit sign
                 num = -num;
             }
-        } catch (NumberFormatException nfe) {
+        } catch (NumberFormatException* nfe) {
             num = 0;
         }
     }
@@ -392,7 +392,7 @@ SpeedUtil::SpeedUtil(QObject *parent) : QObject(parent)
 
 /*protected*/ void SpeedUtil::stopRun(bool updateSpeedProfile) {
     if (updateSpeedProfile && _sessionProfile != nullptr) {
-        WarrantManager* manager = static_cast<WarrantManager*>(InstanceManager::getDefault("WarrantManager"));
+        WarrantManager* manager = qobject_cast<WarrantManager*>(InstanceManager::getDefault("WarrantManager"));
         manager->setSpeedProfiles(_rosterId, _mergeProfile, _sessionProfile);
     }
 }
@@ -486,7 +486,7 @@ SpeedUtil::SpeedUtil(QObject *parent) : QObject(parent)
     }
         default:
             log->error(tr("Unknown speed interpretation %1").arg( _signalSpeedMap->getInterpretation()));
-            throw IllegalArgumentException("Unknown speed interpretation " +  _signalSpeedMap->getInterpretation());
+            throw new IllegalArgumentException("Unknown speed interpretation " +  _signalSpeedMap->getInterpretation());
     }
     if (log->isTraceEnabled()) log->trace(tr("modifySpeed: from %1, to %2, signalSpeed= %3. interpretation= %4").arg(
             tSpeed).arg(throttleSpeed).arg(signalSpeed).arg(_signalSpeedMap->getInterpretation()));

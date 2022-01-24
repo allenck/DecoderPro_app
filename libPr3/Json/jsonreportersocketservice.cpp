@@ -79,7 +79,7 @@ this->jrss = jrss;
          } catch (JsonException ex) {
              jrss->connection->sendMessage(ex.getJsonMessage());
          }
-     } catch (IOException ex) {
+     } catch (IOException* ex) {
          // if we get an error, de-register
          //reporter.removePropertyChangeListener(this);
    disconnect(reporter->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(propertyChange(PropertyChangeEvent*)));

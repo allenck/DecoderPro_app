@@ -10,7 +10,7 @@
 #include <QLabel>
 
 class AccessoryOpsModeProgrammerFacade;
-class ActionEvent;
+class JActionEvent;
 class PropertyChangeEvent;
 class ProgrammingMode;
 class QBoxLayout;
@@ -35,7 +35,7 @@ signals:
 public slots:
     void programmerSelected();
     /*public*/ void propertyChange(PropertyChangeEvent* e);
-    /*public*/ void actionPerformed(ActionEvent* /*e*/ = 0);
+    /*public*/ void actionPerformed(JActionEvent* /*e*/ = 0);
 
 private:
     QButtonGroup* mModeGroup;
@@ -44,15 +44,15 @@ private:
     // use JSpinner for CV number input
     //SpinnerNumberModel model = new SpinnerNumberModel(0, 0, 10239, 1); // 10239 is highest DCC Long Address documented by NMRA as per 2017
     QSpinBox* mAddrField;// = new JSpinner(model);
-    int lowAddrLimit;// = 0;
-    int highAddrLimit;// = 10239;
-    int oldAddrValue;// = 3; // Default start value
-    QButtonGroup* addrGroup;// = new ButtonGroup();
+    int lowAddrLimit = 0;
+    int highAddrLimit = 10239;
+    int oldAddrValue = 3; // Default start value
+    QButtonGroup* addrGroup = new QButtonGroup(this);
     QRadioButton* shortAddrButton;// = new JRadioButton(Bundle.getMessage("ShortAddress"));
     QRadioButton* longAddrButton;// = new JRadioButton(Bundle.getMessage("LongAddress"));
     QCheckBox* offsetAddrCheckBox;// = new JCheckBox(Bundle.getMessage("DccAccessoryAddressOffSet"));
     QLabel* addressLabel;// = new JLabel(Bundle.getMessage("AddressLabel"));
-    bool oldLongAddr;// = false;
+    bool oldLongAddr = false;
     bool opsAccyMode;// = false;
     bool oldOpsAccyMode;// = false;
     bool opsSigMode;// = false;
@@ -69,7 +69,7 @@ private:
     QComboBox/*<AddressedProgrammerManager>*/*   progBox;
     QBoxLayout* layout;
     QList<QRadioButton*> buttonPool;// = new QList<QRadioButton*>();
-    QMap<ProgrammingMode*, QRadioButton*> buttonMap;// = new QMap<ProgrammingMode*,QRadioButton>();
+    QMap<QString, QRadioButton*> buttonMap;// = new QMap<ProgrammingMode*,QRadioButton>();
     QButtonGroup* modeGroup;// 		    = new QButtonGroup();
     void setGuiFromProgrammer();
     void setProgrammerFromGui(Programmer* programmer);

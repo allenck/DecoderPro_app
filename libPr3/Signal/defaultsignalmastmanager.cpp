@@ -5,6 +5,7 @@
 #include "instancemanager.h"
 #include "signalheadmanager.h"
 #include "vetoablechangesupport.h"
+#include "abstractsignalheadmanager.h"
 
 DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
     SignalMastManager(parent)
@@ -15,11 +16,7 @@ DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
  log = new Logger("DefaultSignalMastManager");
  repeaterList = new QList<SignalMastRepeater*>();
  registerSelf();
- //jmri.InstanceManager.getDefault(jmri.SignalHeadManager.class).addVetoableChangeListener(this);
- connect(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
- //jmri.InstanceManager.turnoutManagerInstance().addVetoableChangeListener(this);
- connect(InstanceManager::turnoutManagerInstance()->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
-
+ ((AbstractSignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->VetoableChangeSupport::addVetoableChangeListener(this);
 }
 /**
  * Default implementation of a SignalMastManager.
@@ -42,9 +39,9 @@ DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
  return Manager::SIGNALMASTS;
 }
 
-/*public*/ QString DefaultSignalMastManager::getSystemPrefix() const { return "I"; }
+/*public*/ QString DefaultSignalMastManager::getSystemPrefix() { return "I"; }
 
-/*public*/ char DefaultSignalMastManager::typeLetter() const{ return 'F'; }
+/*public*/ QChar DefaultSignalMastManager::typeLetter() { return 'F'; }
 
 /*public*/ SignalMast* DefaultSignalMastManager::getSignalMast(QString name)
 {
@@ -93,9 +90,13 @@ DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
 /*public*/ SignalMast* DefaultSignalMastManager::getByUserName(QString key) {
     return (SignalMast*)_tuser->value(key);
 }
-
+//@Override
+//@Nonnull
+/*public*/ QString DefaultSignalMastManager::getBeanTypeHandled(bool plural) const {
+    return tr(plural ? "SignalMasts" : "SignalMast");
+}
 #if 1
-/*public*/ void DefaultSignalMastManager::addRepeater(SignalMastRepeater* rp) throw (JmriException){
+/*public*/ void DefaultSignalMastManager::addRepeater(SignalMastRepeater* rp) /*throw (JmriException)*/{
     foreach(SignalMastRepeater* rpeat, *repeaterList)
     {
         if(rpeat->getMasterMast()==rp->getMasterMast() &&

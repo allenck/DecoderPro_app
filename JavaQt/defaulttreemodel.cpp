@@ -711,7 +711,7 @@ QModelIndex DefaultTreeModel::index(int row, int column, const QModelIndex &pare
   }
   childItem = (DefaultMutableTreeNode*)parentItem->getChildAt(row);
  }
- catch (NoSuchElementException ex)
+ catch (NoSuchElementException* ex)
  {
   return QModelIndex();
  }

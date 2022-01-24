@@ -280,7 +280,7 @@
             final Properties pomProperties = new Properties();
             pomProperties.load(JmDNSImpl.class.getResourceAsStream("/META-INF/maven/javax.jmdns/jmdns/pom.properties"));
             version = pomProperties.getProperty("version");
-        } catch (Exception e) {
+        } catch (Exception* e) {
             version = "RUNNING.IN.IDE.FULL";
         }
         System.out.println("JmDNS version \"" + version + "\"");
@@ -302,7 +302,7 @@
      *            name of the newly created JmDNS
      * @exception IOException
      */
-    /*public*/ JmDNSImpl::JmDNSImpl(InetAddress* address, QString name) throw (IOException): JmDNS()
+    /*public*/ JmDNSImpl::JmDNSImpl(InetAddress* address, QString name) /*throw (IOException)*/: JmDNS()
     {
         //super();
         logger->debug("JmDNS instance created");
@@ -370,7 +370,7 @@
         // System.out.println("Socket Address: " + address);
         // try {
         // _socket = new MulticastSocket(address);
-        // } catch (Exception exception) {
+        // } catch (Exception* exception) {
         // logger.warn("openMulticastSocket() Open socket exception Address: " + address + ", ", exception);
         // // The most likely cause is a duplicate address lets open without specifying the address
         // _socket = new MulticastSocket(DNSConstants.MDNS_PORT);
@@ -618,7 +618,7 @@
      * {@inheritDoc}
      */
     //@Override
-    /*public*/ InetAddress* JmDNSImpl::getInetAddress() throw (IOException) {
+    /*public*/ InetAddress* JmDNSImpl::getInetAddress() /*throw (IOException)*/ {
 //        return _localHost.getInetAddress();
     }
 #if 0
@@ -912,17 +912,17 @@
      * {@inheritDoc}
      */
     //@Override
-    /*public*/ void JmDNSImpl::registerService(ServiceInfo* infoAbstract) throw (IOException) {
+    /*public*/ void JmDNSImpl::registerService(ServiceInfo* infoAbstract) /*throw (IOException)*/ {
         if (this->isClosing() || this->isClosed()) {
-            throw  IllegalStateException("This DNS is closed.");
+            throw new IllegalStateException("This DNS is closed.");
         }
         /*final*/ ServiceInfoImpl* info = (ServiceInfoImpl*) infoAbstract;
 
         if (info->getDns() != nullptr) {
             if (info->getDns() != this) {
-                throw  IllegalStateException("A service information can only be registered with a single instamce of JmDNS.");
+                throw new IllegalStateException("A service information can only be registered with a single instamce of JmDNS.");
             } else if (_services.value(info->getKey()) != nullptr) {
-                throw  IllegalStateException("A service information can only be registered once.");
+                throw new IllegalStateException("A service information can only be registered once.");
             }
         }
         info->setDns(this);
@@ -970,6 +970,7 @@
     //@Override
     /*public*/ void JmDNSImpl::unregisterService(ServiceInfo* infoAbstract) {
         /*final*/ ServiceInfoImpl* info = (ServiceInfoImpl*) _services.value(infoAbstract->getKey());
+     Q_UNUSED(info)
 #if 0
         if (info != nullptr) {
             info->cancelState();
@@ -1829,7 +1830,7 @@
                         this.renewServiceCollector(type);
                     }
                 }
-            } catch (Exception exception) {
+            } catch (Exception* exception) {
                 logger.warn(this.getName() + ".Error while reaping records: " + entry, exception);
                 logger.warn(this.toString());
             }

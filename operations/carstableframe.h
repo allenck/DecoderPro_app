@@ -4,18 +4,18 @@
 #include "operationsframe.h"
 #include <QList>
 #include "appslib_global.h"
-
+#include <QRadioButton>
 
 class QButtonGroup;
 class QLabel;
-class CarsTableModel;
-class CarManager;
+//class CarsTableModel;
+//class CarManager;
 class JTextField;
-class QRadioButton;
-class QPushButton;
+class JButton;
 namespace Operations
 {
-class RollingStock;
+ class Car;
+ class RollingStock;
  class CarEditFrame;
  class CarsTableModel;
  class CarManager;
@@ -24,7 +24,7 @@ class RollingStock;
   Q_OBJECT
  public:
   /*public*/ CarsTableFrame(bool showAllCars, QString locationName, QString trackName, QWidget* parent= 0);
-  /*public*/ QList<RollingStock*>* getSortByList();
+  /*public*/ QList<Car*>* getSortByList();
   /*public*/ void radioButtonActionPerformed(QWidget* ae);
   /*public*/ QString getClassName();
 
@@ -55,6 +55,8 @@ class RollingStock;
   QRadioButton* sortByDestination;//= new JRadioButton(Bundle.getMessage("Destination"));
   QRadioButton* sortByFinalDestination;//= new JRadioButton(Bundle.getMessage("FD"));
   QRadioButton* sortByRwe;//= new JRadioButton(Bundle.getMessage("RWE"));
+  QRadioButton* sortByRwl = new QRadioButton(tr("RWL"));
+  QRadioButton* sortByDivision = new QRadioButton(tr("Division"));
   QRadioButton* sortByTrain;//= new JRadioButton(Bundle.getMessage("Train"));
   QRadioButton* sortByMoves;//= new JRadioButton(Bundle.getMessage("Moves"));
   QRadioButton* sortByBuilt;//= new JRadioButton(Bundle.getMessage("Built"));
@@ -67,9 +69,9 @@ class RollingStock;
   QButtonGroup* group;//= new ButtonGroup();
 
   // major buttons
-  QPushButton* addButton;//= new JButton(Bundle.getMessage("Add"));
-  QPushButton* findButton;//= new JButton(Bundle.getMessage("Find"));
-  QPushButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
+  JButton* addButton;//= new JButton(Bundle.getMessage("Add"));
+  JButton* findButton;//= new JButton(Bundle.getMessage("Find"));
+  JButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
 
   JTextField* findCarTextBox;// = new JTextField(6);
   /*private*/ void updateNumCars();
@@ -78,6 +80,7 @@ class RollingStock;
   friend class CarPrintOptionFrame;
   friend class PrintCarRosterAction;
   friend class DeleteCarRosterAction;
+  friend class ExportCarRosterAction;
  };
 }
 #endif // CARSTABLEFRAME_H

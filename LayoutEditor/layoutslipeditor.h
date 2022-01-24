@@ -2,6 +2,8 @@
 #define LAYOUTSLIPEDITOR_H
 #include "layoutturnouteditor.h"
 #include "layoutturnout.h"
+#include "layouttrackview.h"
+#include "layoutslipview.h"
 
 class TestState;
 class LayoutSlipEditor : public LayoutTurnoutEditor
@@ -9,7 +11,7 @@ class LayoutSlipEditor : public LayoutTurnoutEditor
   Q_OBJECT
  public:
   /*public*/ LayoutSlipEditor(/*@Nonnull*/ LayoutEditor* layoutEditor);
-  /*public*/ void editLayoutTrack(/*@Nonnull*/ LayoutTrack* layoutTrack) override;
+  /*public*/ void editLayoutTrack(/*@Nonnull*/LayoutTrackView* layoutTrackView) override;
 
   /*public*/ void toggleStateTest();
 
@@ -17,6 +19,7 @@ class LayoutSlipEditor : public LayoutTurnoutEditor
   static Logger* log;
   /*private*/ TestState* testPanel;
   // variables for Edit slip Crossing pane
+  /*private*/ LayoutSlipView* layoutSlipView = nullptr;
   /*private*/ LayoutSlip* layoutSlip = nullptr;
 
   /*private*/ JmriJFrame* editLayoutSlipFrame = nullptr;
@@ -25,7 +28,7 @@ class LayoutSlipEditor : public LayoutTurnoutEditor
   /*private*/ NamedBeanComboBox/*<Turnout>*/* editLayoutSlipTurnoutBComboBox;
   /*private*/ /*final*/ JCheckBox* editLayoutSlipHiddenBox = new JCheckBox(tr("Hide Slip"));
   /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* editLayoutSlipBlockNameComboBox = new NamedBeanComboBox(
-          (BlockManager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+          (AbstractManager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
   /*private*/ bool editLayoutSlipOpen = false;
   /*private*/ bool editLayoutSlipNeedsRedraw = false;
@@ -112,27 +115,31 @@ class LSEWindowListener : public WindowListener
 
 };
 
-class ActionListenerDone : public ActionListener
+class ActionListenerDone : public QObject, public ActionListener
 {
   Q_OBJECT
+    Q_INTERFACES(ActionListener)
   LayoutSlipEditor* editor;
  public:
   ActionListenerDone(LayoutSlipEditor* editor) {this->editor = editor;}
+  QObject* self() override {return (QObject*)this;}
  public slots:
-  void actionPerformed()
+  void actionPerformed(JActionEvent */*e*/ = 0) override
   {
    editor->editLayoutSlipDonePressed();
   }
 };
 
-class ActionListenerCancel : public ActionListener
+class ActionListenerCancel : public QObject, public ActionListener
 {
   Q_OBJECT
+    Q_INTERFACES(ActionListener)
   LayoutSlipEditor* editor;
  public:
   ActionListenerCancel(LayoutSlipEditor* editor) {this->editor = editor;}
+  QObject* self() override {return (QObject*)this;}
  public slots:
-  void actionPerformed()
+  void actionPerformed(JActionEvent */*e*/ = 0) override
   {
    editor->editLayoutSlipCancelPressed();
   }

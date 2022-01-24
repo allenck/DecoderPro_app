@@ -4,10 +4,8 @@
 #include "pushbuttondelegate.h"
 #include <QSortFilterProxyModel>
 #include "programmer.h"
+#include "jtextfield.h"
 
-//CvTableModel::CvTableModel()
-//{
-//}
 /**
  * Table data model for display of CvValues in symbolic programmer.
  * <P>This represents the contents of a single decoder, so the
@@ -101,7 +99,7 @@
  }
 }
 
-/*public*/ QString CvTableModel::getColumnClass(int col) {
+/*public*/ QString CvTableModel::getColumnClass(int col) const {
     switch (col) {
     case NUMCOLUMN: return "QString";
     case VALCOLUMN: return "QLineEdit";
@@ -145,23 +143,51 @@
 }
 
 /*public*/ CvValue* CvTableModel::getCvByRow(int row) const { return _cvDisplayVector->at(row); }
+
 /*public*/ CvValue* CvTableModel::getCvByNumber(QString number) { return _cvAllMap->value(number); }
+
 /*public*/ QVariant CvTableModel::data(const QModelIndex &index, int role) const
 {
+ int row = index.row();
+ CvValue* val = getCvByRow(index.row());
+
  if (role == Qt::BackgroundRole )
  {
-  CvValue* val = getCvByRow(index.row());
   int i = Qt::green;
   switch(index.column())
   {
-  case 1:
-   return val->getColor();
+  case VALCOLUMN:
+   return QBrush(val->getColor());
+  case STATECOLUMN:
+  {
+   int state = val->getState();
+   switch (state)
+   {
+    case CvValue::UNKNOWN:  	return QBrush(val->COLOR_UNKNOWN);
+    case CvValue::READ:  		return QBrush(val->COLOR_READ);
+    case CvValue::EDITED:  		return QBrush(val->COLOR_EDITED);
+    case CvValue::STORED:  		return QBrush(val->COLOR_STORED);
+    case CvValue::FROMFILE:  	return QBrush(val->COLOR_FROMFILE);
+    case CvValue::SAME:  		return QBrush(val->COLOR_SAME);
+    case CvValue::DIFF:  		return QBrush(val->COLOR_DIFF);
+    default: return QBrush(val->COLOR_UNKNOWN);
+   }
   }
+  }
+  return QVariant();
  }
+// if (role == Qt::ForegroundRole )
+// {
+//  CvValue* val = getCvByRow(index.row());
+//  int i = Qt::green;
+//  switch(index.column())
+//  {
+//  case VALCOLUMN:
+//   return QColor(Qt::black);
+//  }
+// }
  if(role == Qt::DisplayRole /*|| role == Qt::EditRole*/)
  {
-  int row = index.row();
-  CvValue* val = getCvByRow(index.row());
   switch (index.column())
   {
    case NUMCOLUMN:
@@ -291,10 +317,11 @@ void CvTableModel::configureTable(JTable *cvTable)
 {
  if(_table == NULL)
   _table = cvTable;
+ //cvTable->setItemDelegateForColumn(VALCOLUMN, new ValueRenderer());
  setColumnToHoldButton(cvTable,READCOLUMN);
  setColumnToHoldButton(cvTable, WRITECOLUMN);
  setColumnToHoldButton(cvTable, COMPARECOLUMN);
- setPersistentButtons();
+ //setPersistentButtons();
 }
 
 /*public*/ bool CvTableModel::decoderDirty()

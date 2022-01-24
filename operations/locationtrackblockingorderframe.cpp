@@ -3,7 +3,7 @@
 #include "location.h"
 #include "jtable.h"
 #include <QLabel>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QBoxLayout>
 #include "gridbaglayout.h"
 #include <QGroupBox>
@@ -13,6 +13,8 @@
 #include "operationsxml.h"
 #include "setup.h"
 #include "logger.h"
+#include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -39,15 +41,15 @@ namespace Operations
      trackTable = new JTable(trackModel);
      //trackPane = new QScrollArea(/*trackTable*/);
 
-     locationManager = LocationManager::instance();
+     locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
 
      _location = NULL;
 
      locationName = new QLabel();
 
      // major buttons
-     saveButton = new QPushButton(tr("Save"));
-     resetButton = new QPushButton(tr("Reset"));
+     saveButton = new JButton(tr("Save"));
+     resetButton = new JButton(tr("Reset"));
  }
 
  /*public*/ void LocationTrackBlockingOrderFrame::initComponents(Location* location) {
@@ -55,11 +57,10 @@ namespace Operations
 
 //     trackPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 //     trackPane.setBorder(BorderFactory.createTitledBorder(tr("ServiceOrderMessage")));
-     QGroupBox* trackPaneFrame = new QGroupBox;
+     JPanel* trackPaneFrame = new JPanel;
      trackPaneFrame->setLayout(new QVBoxLayout);
      trackPaneFrame->layout()->addWidget(trackTable);
-     trackPaneFrame->setStyleSheet(gbStyleSheet);
-     trackPaneFrame->setTitle(tr("Higher Order Tracks Serviced Last for Westbound and Northbound Trains"));
+     trackPaneFrame->setBorder(BorderFactory::createTitledBorder(tr("Higher Order Tracks Serviced Last for Westbound and Northbound Trains")));
      if (_location != NULL) {
          trackModel->initTable(trackTable, location);
          locationName->setText(_location->getName());
@@ -69,17 +70,15 @@ namespace Operations
      }
 
      //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
+     QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      // Layout the panel by rows
-     QGroupBox* pName = new QGroupBox();
+     JPanel* pName = new JPanel();
      pName->setLayout(new GridBagLayout());
-     //pName.setBorder(BorderFactory.createTitledBorder(tr("Location")));
-     pName->setStyleSheet(gbStyleSheet);
-     pName->setTitle(tr("Location"));
+     pName->setBorder(BorderFactory::createTitledBorder(tr("Location")));
      addItem(pName, locationName, 0, 0);
 
      // row buttons
-     QWidget* pB = new QWidget();
+     JPanel* pB = new JPanel();
      pB->setLayout(new GridBagLayout());
      addItem(pB, resetButton, 0, 0);
      addItem(pB, saveButton, 1, 0);
@@ -108,7 +107,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  // Reset and Save
  /*public*/ void LocationTrackBlockingOrderFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == resetButton && _location != NULL) {
          _location->resetTracksByBlockingOrder();
      }
@@ -119,7 +118,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 //         }
          _location->resequnceTracksByBlockingOrder();
          // recreate all train manifests
-         TrainManager::instance()->setTrainsModified();
+         ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->setTrainsModified();
          // save location file
          OperationsXml::save();
          if (Setup::isCloseWindowOnSaveEnabled()) {
@@ -136,8 +135,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  /*public*/ void LocationTrackBlockingOrderFrame::dispose() {
      if (_location != NULL) {
-         //_location->removePropertyChangeListener(this);
-      disconnect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+      _location->removePropertyChangeListener(this);
      }
      trackModel->dispose();
      OperationsFrame::dispose();

@@ -3,21 +3,24 @@
 #include "rollingstockattribute.h"
 #include <QHash>
 #include "appslib_global.h"
+#include "instancemanagerautodefault.h"
 
 class QDomElement;
 namespace Operations
 {
- class APPSLIBSHARED_EXPORT EngineModels : public RollingStockAttribute
+ class APPSLIBSHARED_EXPORT EngineModels : public RollingStockAttribute, public InstanceManagerAutoDefault
  {
   Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault)
  public:
-  explicit EngineModels(QObject *parent = 0);
+  Q_INVOKABLE explicit EngineModels(QObject *parent = 0);
+   ~EngineModels() {}
+   EngineModels(const EngineModels&) : RollingStockAttribute() {}
   /*public*/ static /*final*/ QString ENGINEMODELS_CHANGED_PROPERTY;// = "EngineModels"; // NOI18N
   /*public*/ static /*final*/ QString ENGINEMODELS_NAME_CHANGED_PROPERTY;// = "EngineModelsName"; // NOI18N
-  /*public*/ static  /*synchronized*/ EngineModels* instance();
-  /*protected*/ QString getDefaultNames();
-  /*public*/ void addName(QString model);
-  /*public*/ void deleteName(QString model);
+  /*protected*/ QString getDefaultNames() override;
+  /*public*/ void addName(QString model)override;
+  /*public*/ void deleteName(QString model)override;
   /*public*/ void replaceName(QString oldName, QString newName);
   /*public*/ void setModelHorsepower(QString model, QString horsepower);
   /*public*/ QString getModelHorsepower(QString model);
@@ -46,7 +49,6 @@ namespace Operations
   /**
    * record the single instance *
    */
-  /*private*/ static  EngineModels* _instance;// = null;
   /*private*/ void loadDefaults();
  Logger* log;
  protected:
@@ -55,8 +57,9 @@ namespace Operations
   /*protected*/ QHash<QString, QString>_engineLengthHashTable;// = new Hashtable<String, String>();
   /*protected*/ QHash<QString, QString>_engineTypeHashTable;// = new Hashtable<String, String>();
   /*protected*/ QHash<QString, QString>_engineWeightHashTable;// = new Hashtable<String, String>();
- /*protected*/ QHash<QString, bool> _engineBunitHashTable;// = new Hashtable<>();
+  /*protected*/ QHash<QString, bool> _engineBunitHashTable;// = new Hashtable<>();
 
  };
 }
+Q_DECLARE_METATYPE(Operations::EngineModels)
 #endif // ENGINEMODELS_H

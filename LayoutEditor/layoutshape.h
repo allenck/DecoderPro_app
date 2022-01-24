@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QColor>
 #include <QPointF>
+#include "hitpointtype.h"
 
 class QGraphicsItemGroup;
 class LayoutShapePointType;
@@ -184,8 +185,8 @@ public:
  /*public*/ int getNumberPoints();
  /*public*/ int getMaxNumberPoints();
  /*public*/ QRectF getBounds();
- /*public*/ static bool isShapeHitPointType(int t);
- /*public*/ static bool isShapePointOffsetHitPointType(int t);
+ /*public*/ static bool isShapeHitPointType(HitPointType::TYPES t);
+ ///*public*/ static bool isShapePointOffsetHitPointType(int t);
  /*public*/ QPointF getCoordsCenter();
  /*public*/ void setCoordsCenter(/*@Nonnull*/ QPointF p);
  /*public*/ void scaleCoords(double xFactor, double yFactor);
@@ -236,8 +237,8 @@ private:
  QString otherPointTypeName;
 
 protected:
- /*protected*/ int findHitPointType(/*@Nonnull*/ QPointF hitPoint, bool useRectangles);
- /*protected*/ QMenu* showShapePopUp(/*@CheckForNull*/ QGraphicsSceneMouseEvent* mouseEvent, int hitPointType);
+ /*protected*/ HitPointType::TYPES findHitPointType(/*@Nonnull*/ QPointF hitPoint, bool useRectangles);
+ /*protected*/ QMenu* showShapePopUp(/*@CheckForNull*/ QGraphicsSceneMouseEvent* mouseEvent, HitPointType::TYPES hitPointType);
  /*protected*/ void draw(EditScene* g2);
  /*protected*/ void drawEditControls(EditScene* g2);
 

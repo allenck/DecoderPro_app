@@ -5,12 +5,15 @@
 #include <QStringList>
 #include "turnout.h"
 #include "abstractmanager.h"
+#include "localdatetime.h"
+#include "providingmanager.h"
 
-class TurnoutManager :  public AbstractManager
+class TurnoutManager :   public ProvidingManager
 {
-    Q_OBJECT
+  //Q_OBJECT
+  Q_INTERFACES(ProvidingManager)
 public:
-    explicit TurnoutManager(SystemConnectionMemo*memo, QObject *parent = nullptr) : AbstractManager(memo, parent) {}
+    //explicit TurnoutManager(SystemConnectionMemo*memo, QObject *parent = nullptr) : AbstractManager(memo, parent) {}
     /**
          * Locate via user name, then system name if needed.
          * If that fails, create a new turnout. If the name
@@ -25,10 +28,10 @@ public:
          * already exist and the manager cannot create the Turnout
          * due to e.g. an illegal name or name that can't be parsed.
          */
-     virtual Turnout* provideTurnout(QString /*name*/)const {return NULL;}
+     virtual Turnout* provideTurnout(QString /*name*/) =0;
     /** {@inheritDoc} */ // from ProvidinManager
      //@Override
-     virtual /*default*/ /*public*/ Turnout* provide(/*@Nonnull*/ QString name)const throw (IllegalArgumentException) { return provideTurnout(name); }
+     virtual /*default*/ /*public*/ Turnout* provide(/*@Nonnull*/ QString name) /*throw (IllegalArgumentException)*/ { return provideTurnout(name); }
 
 
         /**
@@ -38,21 +41,21 @@ public:
          * @param name
          * @return null if no match found
          */
-        virtual Turnout* getTurnout(QString /*name*/)const =0;
+        virtual Turnout* getTurnout(QString /*name*/) =0;
 
         /**
          * Locate an instance based on a system name.  Returns null if no
          * instance already exists.
          * @return requested Turnout object or null if none exists
          */
-         //NamedBean* getBySystemName(QString /*systemName*/) const =0;
+         virtual Turnout* getBySystemName(QString /*systemName*/)  {return nullptr;}
 
         /**
          * Locate an instance based on a user name.  Returns null if no
          * instance already exists.
          * @return requested Turnout object or null if none exists
          */
-         //NamedBean* getByUserName(QString /*userName*/) const =0;
+         virtual Turnout* getByUserName(QString /*userName*/)  {return nullptr;}
 
         /**
          * Return an instance with the specified system and user names.
@@ -79,7 +82,7 @@ public:
          * @throws IllegalArgumentException if cannot create the Turnout
          * due to e.g. an illegal name or name that can't be parsed.
          */
-        virtual Turnout* newTurnout(QString /*systemName*/,QString /*userName*/)const  =0;
+        virtual Turnout* newTurnout(QString /*systemName*/,QString /*userName*/)  =0;
 
         /**
          * Get a list of all Turnouts' system names.
@@ -160,23 +163,60 @@ public:
         * @param curAddress - The hardware address of the turnout we which to check.
         */
 
-        virtual QString getNextValidAddress(QString /*curAddress*/, QString /*prefix*/) const {return "";} // throws JmriException;
+        virtual QString getNextValidAddress(QString /*curAddress*/, QString /*prefix*/)  {return "";} // throws JmriException;
+      /**
+       * Get the Next valid Turnout address.
+       * <p>
+       * @param curAddress the starting hardware address to get the next valid from.
+       * @param prefix system prefix, just system name, not type letter.
+       * @param ignoreInitialExisting false to return the starting address if it
+       *                          does not exist, else true to force an increment.
+       * @return the next valid system name not already in use, excluding both system name prefix and type letter.
+       * @throws JmriException    if unable to get the current / next address,
+       *                          or more than 10 next addresses in use.
+       */
+      //@Nonnull
+      virtual /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString /*curAddress*/, /*@Nonnull*/ QString /*prefix*/,
+                                                     bool /*ignoreInitialExisting*/) {return "";}
 
         /**
          * Returns a system name for a given hardware address and system prefix.
          */
-        virtual QString createSystemName(QString /*curAddress*/, QString /*prefix*/)const =0;// throws JmriException;
+        virtual QString createSystemName(QString /*curAddress*/, QString /*prefix*/) =0;// throws JmriException;
 
-        virtual void setDefaultClosedSpeed(QString /*speed*/) const{}// throws JmriException;
+        virtual void setDefaultClosedSpeed(QString /*speed*/) {}// throws JmriException;
 
-        virtual void setDefaultThrownSpeed(QString /*speed*/) const {}// throws JmriException;
+        virtual void setDefaultThrownSpeed(QString /*speed*/)  {}// throws JmriException;
 
         virtual QString getDefaultThrownSpeed() const{return "";}
 
         virtual QString getDefaultClosedSpeed() const {return "";}
+        /**
+         * Get the Interval (in ms) to wait between output commands.
+         * Configured in AdapterConfig, stored in memo.
+         *
+         * @return the (Turnout) Output Interval in milliseconds
+         */
+        virtual /*public*/ int getOutputInterval() {return 0;}
 
-signals:
-    
+        /**
+         * Set the Interval (in ms) to wait between output commands.
+         *
+         * @param newInterval the new Output Interval in Milliseconds
+         */
+        virtual /*public*/ void setOutputInterval(int /*newInterval*/) {}
+
+        /**
+         * Get end time of latest OutputInterval, calculated from the current time.
+         *
+         * @return end time in milliseconds or current time if no interval was set or timer has completed
+         */
+        //@Nonnull
+  virtual /*public*/ LocalDateTime* outputIntervalEnds() {return nullptr;}
+
+        virtual /*public*/ QString toString() {return "TurnoutManager";}
+  //QObject* self() {return (QObject*)this;}
+
 public slots:
     
 };

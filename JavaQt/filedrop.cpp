@@ -426,7 +426,7 @@ void FileDrop::common(PrintStream* out, Component* c, Border* dragBorder, bool r
 //                Class.forName("java.awt.dnd.DnDConstants");
 //                support = true;
 //            } // end try
-//            catch (Exception e) {
+//            catch (Exception* e) {
 //                support = false;
 //            }   // end catch
 //            supportsDnD = Boolean.valueOf(support);
@@ -456,14 +456,14 @@ void FileDrop::common(PrintStream* out, Component* c, Border* dragBorder, bool r
         }
 
         return list.toArray(new File[list.size()]);
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         log(out, "FileDrop: IOException");
     }
     return new File[0];
 }
 // END 2007-09-12 Nathan Blomquist -- Linux (KDE/Gnome) support added.
 #endif
-/*private*/ void FileDrop::makeDropTarget(PrintStream* out, Component* c, bool recursive)
+/*private*/ void FileDrop::makeDropTarget(PrintStream* /*out*/, Component* c, bool /*recursive*/)
 {
     // Make drop target
     DropTarget* dt = new DropTarget();
@@ -589,7 +589,7 @@ private static void log(java.io.PrintStream out, String message) {   // Log mess
  * @param recursive Recursively unregister components within a container
  * @since 1.0
  */
-/*public*/ /*static*/ bool FileDrop::remove(PrintStream* out, Component* c, bool recursive)
+/*public*/ /*static*/ bool FileDrop::remove(PrintStream* /*out*/, Component* c, bool /*recursive*/)
 {   // Make sure we support dnd.
      Logger* log = new Logger("FileDrop");
     if (supportsDnD()) {
@@ -793,7 +793,7 @@ MyDropTargetListener::MyDropTargetListener( FileDrop* fileDrop, QObject* parent)
 #endif
 }   // end drop
 
-/*public*/ void MyDropTargetListener::dragExit(QDragLeaveEvent* evt) {
+/*public*/ void MyDropTargetListener::dragExit(QDragLeaveEvent* /*evt*/) {
     //log(out, "FileDrop: dragExit event.");
  log->info("FileDrop: dragExit event.");
 #if 0 // TODO

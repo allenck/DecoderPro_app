@@ -1,6 +1,7 @@
 #include "positionablelabelxml.h"
 #include "layouteditor.h"
 #include "positionablepopuputil.h"
+#include "exceptions.h"
 
 PositionableLabelXml::PositionableLabelXml(QObject *parent) :
     AbstractXmlAdapter(parent)
@@ -122,6 +123,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
  */
 /*public*/ void PositionableLabelXml::storeCommonAttributes(Positionable* p, QDomElement element)
 {
+ if (p->getId() != "") element.setAttribute("id", p->getId());
  element.setAttribute("x", p->getX());
  element.setAttribute("y", p->getY());
  element.setAttribute("level", p->getDisplayLevel());
@@ -135,7 +137,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
  QString txt = p->getToolTip();
  if (txt!=NULL)
  {
-  QDomElement elem = doc.createElement("toolTip");
+  QDomElement elem = doc.createElement("tooltip");
   elem.appendChild(doc.createTextNode(txt));
   element.appendChild(elem);
  }
@@ -176,7 +178,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
  * @param o  Editor as an Object
  */
 //@SuppressWarnings("unchecked")
-/*public*/ void PositionableLabelXml::load(QDomElement element, QObject* o) throw (Exception)
+/*public*/ void PositionableLabelXml::load(QDomElement element, QObject* o)
 {
  // create the objects
  l = NULL;
@@ -219,7 +221,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
     icon->setRotation(rotation, l);
    }
 //  }
-//  catch (DataConversionException e) {}
+//  catch (DataConversionException* e) {}
 
   if (name==("yes"))
   {
@@ -400,7 +402,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
   //if(!bOk) throw new DataConversionException();
   util->setMargin(margin);
 //  }
-//  catch (DataConversionException e)
+//  catch (DataConversionException* e)
   if(!bOk)
   {
    log->warn("Could not parse margin attribute!");
@@ -452,6 +454,13 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
 
 /*public*/ void PositionableLabelXml::loadCommonAttributes(Positionable* l, int defaultLevel, QDomElement element)
 {
+ if (element.attribute("id") != "") {
+     try {
+         l->setId(element.attribute("id"));
+     } catch (Positionable::DuplicateIdException* e) {
+         throw new JmriConfigureXmlException("Positionable id is not unique", e);
+     }
+ }
  QString a = element.attribute("forcecontroloff");
  if ( (a!="") && a==("true"))
   l->setControlling(false);
@@ -511,7 +520,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
  else
   l->setEditable(false);
 
- QDomElement elem = element.firstChildElement("toolTip");
+ QDomElement elem = element.firstChildElement("tooltip");
  if (!elem.isNull())
  {
 //  ToolTip tip = l->getTooltip();
@@ -577,7 +586,7 @@ PositionableLabelXml::PositionableLabelXml(QObject *parent) :
     }
    }
   //}
-  //catch (DataConversionException dce) {}
+  //catch (DataConversionException* dce) {}
  }
  return icon;
 }

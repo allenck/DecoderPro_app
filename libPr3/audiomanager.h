@@ -9,7 +9,9 @@ class LIBPR3SHARED_EXPORT AudioManager : public AbstractManager
 {
     Q_OBJECT
 public:
- explicit AudioManager(QObject *parent = 0) : AbstractManager(parent) {}
+   /*Q_INVOKABLE*/ explicit AudioManager(QObject *parent = 0) : AbstractManager(parent) {}
+//   ~AudioManager() {}
+//  AudioManager(const AudioManager&) : AbstractManager() {}
     /**
      * Locate an Audio object representing some specific audio information.
      *<P>
@@ -90,7 +92,7 @@ public:
          * @param systemName Audio object system name (e.g. IAS1, IAB4)
          * @return requested Audio object or null if none exists
          */
-        virtual Audio* getBySystemName(QString /*systemName*/) {return NULL;}
+        virtual Audio* getBySystemName(QString /*systemName*/) const = 0;
 
         /**
          * Locate an instance based on a user name.  Returns null if no
@@ -98,7 +100,7 @@ public:
          * @param userName Audio object user name
          * @return requested Audio object or null if none exists
          */
-        virtual Audio* getByUserName(QString /*userName*/) {return NULL;}
+        virtual Audio* getByUserName(QString /*userName*/) const = 0;
 
         /**
          * Return an instance with the specified system and user names.
@@ -152,14 +154,25 @@ public:
          * @return List of specified Audio sub-type objects' system names.
          */
 //        @Deprecated
-        virtual QStringList getSystemNameList(QChar /*subType*/) {return QStringList();}
+        QT_DEPRECATED virtual QStringList getSystemNameList(QChar /*subType*/) {return QStringList();}
 
         /**
          * Get a list of specified Audio sub-type objects' system names.
          * @param subType sub-type to retrieve
          * @return List of specified Audio sub-type objects' system names.
          */
-        virtual QStringList getSystemNameList(char /*subType*/) {return QStringList();}
+       QT_DEPRECATED  virtual QStringList getSystemNameList(char /*subType*/) {return QStringList();}
+
+        /**
+         * Get the specified Audio sub-type NamedBeans.
+         *
+         * @param subType sub-type to retrieve
+         * @return Unmodifiable access to a SortedSet of NamedBeans for the specified Audio sub-type .
+         *
+         * @since 4.17.6
+         */
+        //@Nonnull
+        /*public*/ virtual QSet<NamedBean*> getNamedBeanSet(QChar subType)= 0;
 
         /**
          * Perform any initialisation operations
@@ -171,10 +184,12 @@ public:
          */
         virtual void cleanup() {}
 
+        int getXMLOrder() const {return Manager::AUDIO;}
+        QString getNamedBeanClass() const {return "Audio";}
 signals:
     
 public slots:
     
 };
-
+//Q_DECLARE_METATYPE(AudioManager) // don't want class to autoload this!
 #endif // AUDIOMANAGER_H

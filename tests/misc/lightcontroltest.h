@@ -28,19 +28,19 @@ public slots:
  /*public*/ void testSetGetNames();
  /*public*/ void testInvalidControlType();
  /*public*/ void testActivateNoLight();
- /*public*/ void testSingleSensorFollower() throw (JmriException);
+ /*public*/ void testSingleSensorFollower() /*throw (JmriException)*/;
  /*public*/ void testNoSensor();
  /*public*/ void testNoTurnout();
- /*public*/ void testTurnoutFollower() throw (JmriException);
+ /*public*/ void testTurnoutFollower() /*throw (JmriException)*/;
  /*public*/ void testFastClockFollowingOneControl() throw (TimebaseRateException);
  /*public*/ void testFastClockFollowingOneControlStartOn() throw (TimebaseRateException);
  /*public*/ void testFastClockFollowingTwoControls() throw (TimebaseRateException);
  /*public*/ void testFastClockFollowingTwoControlsOverlap() throw (TimebaseRateException);
- /*public*/ void testTimedSensorFollowing() throw (JmriException);
+ /*public*/ void testTimedSensorFollowing() /*throw (JmriException)*/;
  /*public*/ void testNoTimedSensor();
  /*public*/ void testTwoSensorFollowingNoSensorSet();
- /*public*/ void testTwoSensorFollowing() throw (JmriException);
- /*public*/ void testTwoSensorFollowingInactive() throw (JmriException);
+ /*public*/ void testTwoSensorFollowing() /*throw (JmriException)*/;
+ /*public*/ void testTwoSensorFollowingInactive() /*throw (JmriException)*/;
  /*public*/ void testUniqueTimes();
 
 private:
@@ -53,13 +53,13 @@ private:
  friend class ReleaseUntilO16;
 };
 
-class ControlListen : public PropertyChangeListener
+class ControlListen : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
- LightControlTest* test;
+ Q_INTERFACES(PropertyChangeListener)LightControlTest* test;
 public:
  ControlListen(LightControlTest* test) { this->test = test;}
-public slots:
+QObject* self() {return (QObject*)this;}public slots:
  //@Override
  /*public*/ void propertyChange(PropertyChangeEvent* e);
 
@@ -71,7 +71,8 @@ class ReleaseUntilO15 : public ReleaseUntil
  LightControlTest* test;
 public:
  ReleaseUntilO15(LightControlTest* test) {this->test = test;}
- bool ready() throw (Exception) { return test->_listenerkicks == 6;}
+ bool ready() /*throw (Exception)*/
+ { return test->_listenerkicks == 6;}
 };
 
 class ReleaseUntilO16 : public ReleaseUntil
@@ -80,6 +81,7 @@ class ReleaseUntilO16 : public ReleaseUntil
  LightControlTest* test;
 public:
  ReleaseUntilO16(LightControlTest* test) {this->test = test;}
- bool ready() throw (Exception) { return Light::OFF == test->l->getState();}
+ bool ready() /*throw (Exception)*/
+ { return Light::OFF == test->l->getState();}
 };
 #endif // LIGHTCONTROLTEST_H

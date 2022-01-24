@@ -107,9 +107,9 @@ DefaultCatalogTreeManagerXml::DefaultCatalogTreeManagerXml(QObject *parent) :
    // memory consistent with file
    ImageIndexEditor::indexChanged(false);
   }
-  catch (IOException ioe)
+  catch (IOException* ioe)
   {
-    log-> error("IO Exception "+ioe.getMessage());
+    log-> error("IO Exception "+ioe->getMessage());
     throw (ioe);
   }
  }
@@ -200,11 +200,11 @@ DefaultCatalogTreeManagerXml::DefaultCatalogTreeManagerXml(QObject *parent) :
             }
         } else if (log-> isDebugEnabled()) log-> debug("File: "+defaultFileName+" not Found");
     }
-    catch (JDOMException jde) { log-> error("Exception reading CatalogTrees: "+jde.getMessage()); }
-    catch (IOException ioe) { log-> error("Exception reading CatalogTrees: "+ioe.getMessage()); }
+    catch (JDOMException* jde) { log-> error("Exception reading CatalogTrees: "+jde->getMessage()); }
+    catch (IOException* ioe) { log-> error("Exception reading CatalogTrees: "+ioe->getMessage()); }
 }
 
-/*public*/ void DefaultCatalogTreeManagerXml::load(QDomElement /*element*/, QObject* /*o*/) throw (Exception) {
+/*public*/ void DefaultCatalogTreeManagerXml::load(QDomElement /*element*/, QObject* /*o*/) /*throw (Exception)*/ {
 }
 
 /**

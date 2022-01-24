@@ -19,11 +19,11 @@
 }
 
 //@Override
-/*public*/ void JsonPowerSocketService::onMessage(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException )
+/*public*/ void JsonPowerSocketService::onMessage(QString type, QJsonObject data, QLocale locale) /*throw (IOException, JmriException, JsonException )*/
 {
  if (!this->listening)
  {
-//        ((PowerManager*)InstanceManager::getDefault("PowerManager"))->addPropertyChangeListener(this);
+//        ((PowerManager*)InstanceManager::getDefault("PowerManager"))->SwingPropertyChangeSupport::addPropertyChangeListener(this);
   AbstractPowerManager* pm = (AbstractPowerManager*)InstanceManager::getOptionalDefault("PowerManager");
   connect(pm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
@@ -33,8 +33,8 @@
 }
 
 //@Override
-/*public*/ void JsonPowerSocketService::onList(QString type, QJsonObject /*data*/, QLocale /*locale*/) throw (JsonException) {
-    throw JsonException(HttpServletResponse::SC_BAD_REQUEST, tr("%1 cannot be listed.").arg(type));
+/*public*/ void JsonPowerSocketService::onList(QString type, QJsonObject /*data*/, QLocale /*locale*/) /*throw (JsonException)*/ {
+    throw new JsonException(HttpServletResponse::SC_BAD_REQUEST, tr("%1 cannot be listed.").arg(type));
 }
 
 //@Override
@@ -46,7 +46,7 @@
      } catch (JsonException ex) {
          this->connection->sendMessage(ex.getJsonMessage());
      }
- } catch (IOException ex) {
+ } catch (IOException* ex) {
      // do nothing - we can only silently fail at this point
  }
 }

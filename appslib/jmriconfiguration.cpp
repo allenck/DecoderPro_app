@@ -48,7 +48,7 @@ JmriConfiguration::JmriConfiguration() : AuxiliaryConfiguration() {
 //                        Element root = XMLUtil.parse(input, false, true, NULL, NULL).getDocumentElement();
 //                        return XMLUtil.findElement(root, elementName, namespace);
 //                    }
-//                } catch (IOException | SAXException | IllegalArgumentException ex) {
+//                } catch (IOException* | SAXException | IllegalArgumentException ex) {
 //                    log->warn("Cannot parse {}", file, ex);
 //                }
    QDomDocument doc;// =  QDomDocument(stream->readAll());
@@ -81,9 +81,8 @@ JmriConfiguration::JmriConfiguration() : AuxiliaryConfiguration() {
  QString _namespace = fragment.namespaceURI();
  if (_namespace == NULL)
  {
-     //throw new IllegalArgumentException();
   log->error("Invalid namespace");
-  return;
+  throw new IllegalArgumentException();
  }
  File* file = this->getConfigurationFile(shared);
  doc = QDomDocument();
@@ -99,7 +98,7 @@ JmriConfiguration::JmriConfiguration() : AuxiliaryConfiguration() {
 //                        input.setSystemId(file.toURI().toURL().toString());
 //                        doc = XMLUtil.parse(input, false, true, NULL, NULL);
 //                    }
-//                } catch (IOException | SAXException ex) {
+//                } catch (IOException* | SAXException ex) {
 //                    log->warn("Cannot parse {}", file, ex);
 //                }
    //QDomDocument* doc = new QDomDocument(stream->readAll());
@@ -109,7 +108,7 @@ JmriConfiguration::JmriConfiguration() : AuxiliaryConfiguration() {
   }
  }
  QDomElement root;
- if (doc.isNull())
+ if (doc.documentElement().isNull())
  {
     //doc = XMLUtil.createDocument("auxiliary-configuration", JmriConfigurationProvider::NAMESPACE, NULL, NULL); // NOI18N
    doc =  QDomDocument();
@@ -172,7 +171,7 @@ JmriConfiguration::JmriConfiguration() : AuxiliaryConfiguration() {
   }
 //      }
  }
- catch (IOException ex)
+ catch (IOException* ex)
  {
   log->error(tr("Cannot write %1").arg(file->getPath()));
 //  }
@@ -228,9 +227,9 @@ JmriConfiguration::JmriConfiguration() : AuxiliaryConfiguration() {
      return true;
     }
    }
-   catch (IOException ex) //| SAXException | DOMException ex)
+   catch (IOException* ex) //| SAXException | DOMException ex)
    {
-    log->error(tr("Cannot remove %1 from %2").arg(elementName).arg(file->toString()).arg(ex.getMessage()));
+    log->error(tr("Cannot remove %1 from %2").arg(elementName).arg(file->toString()).arg(ex->getMessage()));
    }
   }
 #endif
@@ -251,7 +250,7 @@ JmriConfiguration::JmriConfiguration() : AuxiliaryConfiguration() {
    } else {
        this->setPrivateBackedUp(true);
    }
-  } catch (IOException ex) {
+  } catch (IOException* ex) {
    log->error(tr("Error backing up %1").arg(file->toString()/*, ex*/));
   }
  }

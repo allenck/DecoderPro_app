@@ -7,11 +7,8 @@ class LayoutLHTurnout : public LayoutTurnout
   Q_OBJECT
  public:
   /*public*/ LayoutLHTurnout(/*@Nonnull*/ QString id,
-          /*@Nonnull*/ QPointF c, double rot,
-          double xFactor, double yFactor,
           /*@Nonnull*/ LayoutEditor* layoutEditor);
-  /*public*/ LayoutLHTurnout(/*@Nonnull*/ QString id, /*@Nonnull*/ QPointF c, double rot,
-          double xFactor, double yFactor, /*@Nonnull*/ LayoutEditor* layoutEditor, int v);
+  /*public*/ LayoutLHTurnout(/*@Nonnull*/ QString id, /*@Nonnull*/ LayoutEditor* layoutEditor, int v);
 
 };
 

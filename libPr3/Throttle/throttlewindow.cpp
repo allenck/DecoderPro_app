@@ -9,9 +9,7 @@
 //#include "listthrottles.h"
 #include "panelmenu.h"
 #include "editor.h"
-#include "instancemanager.h"
 #include "lnpowermanager.h"
-#include "throttleframemanager.h"
 #include "addresspanel.h"
 #include "throttleframepropertyeditor.h"
 #include "throttlespreferencesaction.h"
@@ -25,8 +23,6 @@
 #include "warrantframe.h"
 #include "functionpanel.h"
 #include "loconetsystemconnectionmemo.h"
-#include "throttleslistpanel.h"
-#include "throttlestablemodel.h"
 #include "withrottlecreationaction.h"
 #include "xmlfile.h"
 #include "jfilechooser.h"
@@ -43,6 +39,7 @@
 #ifdef SCRIPTING_ENABLED
 #include "jynstrument.h"
 #endif
+#include "joptionpane.h"
 
 ThrottleWindow::ThrottleWindow(/*LocoNetSystemConnectionMemo* memo,*/ QWidget *parent) :
     JmriJFrame(parent),
@@ -51,6 +48,7 @@ ThrottleWindow::ThrottleWindow(/*LocoNetSystemConnectionMemo* memo,*/ QWidget *p
  ui->setupUi(this);
  this->parent = parent;
  log = new Logger("ThrottleWindow");
+ log->setDebugEnabled(true);
  addressPanel = new AddressPanel(this);
  addressPanel->setAllowedAreas(Qt::BottomDockWidgetArea | Qt::RightDockWidgetArea);
  this->addDockWidget(static_cast<Qt::DockWidgetArea>(Qt::RightDockWidgetArea ), addressPanel,Qt::Horizontal);
@@ -131,6 +129,7 @@ ThrottleWindow::ThrottleWindow(/*LocoNetSystemConnectionMemo* memo,*/ QWidget *p
  addressPanel->addAddressListener((AddressListener*)this);
  //addressPanel->addAddressListener((AddressListener*)((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesListPanel()->getTableModel());
  functionPanel->setAddressPanel(addressPanel);
+ functionPanel->setEnabled(false);
  controlPanel->setAddressPanel(addressPanel);
  speedPanel->setAddressPanel(addressPanel);
 
@@ -172,13 +171,15 @@ ThrottleWindow::ThrottleWindow(/*LocoNetSystemConnectionMemo* memo,*/ QWidget *p
 #endif
  initializeMenu();
 
+ addWindowListener(new TWWindowListener(this));
+
  ThrottleFrameManager::instance()->getThrottlesListPanel()->getTableModel()->addThrottleFrame(this);
 }
 
 ThrottleWindow::~ThrottleWindow()
 {
     delete ui;
-    dispose();
+    //dispose();
 }
 /**
  *  Set up View, Edit and Power Menus
@@ -325,10 +326,10 @@ ThrottleWindow::~ThrottleWindow()
 //    editMenuExportRoster.addActionListener(new ActionListener() {
 
 //        public void actionPerformed(ActionEvent e) {
-//            getCurrentThrottleFrame().saveRosterChanges();
+ connect(editMenuExportRoster, &QAction::triggered, [=]{
+   getCurrentThrottleFrame()->saveRosterChanges();
 //        }
-//    });
- connect(editMenuExportRoster, SIGNAL(triggered()), this, SLOT(OnEditMenuExportRoster()));
+ });
  editMenu->addSeparator();
  editMenu->addAction(new ThrottlesPreferencesAction(tr("Throttles Preferences"),this)); // now in tabbed preferences
 
@@ -350,7 +351,7 @@ ThrottleWindow::~ThrottleWindow()
   //    public void actionPerformed(ActionEvent e) {
   //        try {
   //            powerMgr.setPower(PowerManager.ON);
-  //        } catch (JmriException e1) {
+  //        } catch (JmriException* e1) {
   //            log.error("Error when setting power " + e1);
   //        }
   //    }
@@ -364,7 +365,7 @@ ThrottleWindow::~ThrottleWindow()
   //    public void actionPerformed(ActionEvent e) {
   //        try {
   //            powerMgr.setPower(PowerManager.OFF);
-  //        } catch (JmriException e1) {
+  //        } catch (JmriException* e1) {
   //            log.error("Error when setting power " + e1);
   //        }
   //    }
@@ -383,12 +384,6 @@ ThrottleWindow::~ThrottleWindow()
  // add help selection
  addHelpMenu("package.jmri.jmrit.throttle.ThrottleFrame", true);
 }
-void ThrottleWindow::OnEditMenuExportRoster()
-{
- // TODO: getCurrentThrottleFrame()->saveRosterChanges();
-}
-
-
 
 //void ThrottleWindow::on_newThrottle_clicked() // not used?
 //{
@@ -499,7 +494,7 @@ void ThrottleWindow::notifyThrottleFound(DccThrottle *t)
  controlPanel->notifyAddressThrottleFound(t);
  functionPanel->setAddressPanel(addressPanel);
  functionPanel->notifyAddressThrottleFound(t);
- //throttle->addPropertyChangeListener((PropertyChangeListener*)this);
+ throttle->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
  connect((AbstractThrottle*)throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  //setWindowTitle(((RosterEntry*)throttle->getRosterEntry())->getId());
  setFrameTitle();
@@ -528,19 +523,12 @@ void ThrottleWindow::getSettings()
  settings.endGroup();
 }
 
-void ThrottleWindow::closeEvent(QCloseEvent *)
-{
- saveSettings();
- dispose();
-}
-//void ThrottleWindow::on_btnDispatch_clicked()
+//void ThrottleWindow::closeEvent(QCloseEvent *)
 //{
-// mgr->dispatchThrottle((DccThrottle*)throttle, (ThrottleListener*)this);
+// saveSettings();
+// dispose();
 //}
-//void ThrottleWindow::on_btnProgram_clicked()
-//{
 
-//}
 
 void ThrottleWindow::notifyChangedSlot(LocoNetSlot * s)
 {
@@ -658,7 +646,7 @@ void ThrottleWindow::OnFileMenuLoad()
                      }
                  }
              }
-         } catch (Exception ex) {
+         } catch (Exception* ex) {
              log.debug("Got exception (no panic) "+ex);
          }
      }
@@ -667,14 +655,14 @@ void ThrottleWindow::OnFileMenuLoad()
      setXml(conf);
   }
  }
- catch (FileNotFoundException ex)
+ catch (FileNotFoundException* ex)
  {
 //           if (log->isDebugEnabled())
-  log->debug("Loading throttle exception: " + ex.getMessage());
+  log->debug("Loading throttle exception: " + ex->getMessage());
  }
- catch (Exception ex) {
+ catch (Exception* ex) {
      if (log->isDebugEnabled())
-         log->debug("Loading throttle exception: " + ex.getMessage());
+         log->debug("Loading throttle exception: " + ex->getMessage());
  }
 
 //    	checkPosition();
@@ -723,8 +711,8 @@ void ThrottleWindow::OnFileMenuLoad()
           log->error("could not make parent directory");
   if (!file->createNewFile()) // create file, check success
       log->error("createNewFile failed");
- } catch (Exception exp) {
-     log->error("Exception while writing the throttle file, may not be complete: "+exp.getMessage());
+ } catch (Exception* exp) {
+     log->error("Exception while writing the throttle file, may not be complete: "+exp->getMessage());
  }
 
  try {
@@ -761,8 +749,8 @@ void ThrottleWindow::OnFileMenuLoad()
      xf->writeXML(file, doc);
      setLastUsedSaveFile(sfile);
  }
- catch (Exception ex){
-     log->warn("Exception while storing throttle xml: "+ex.getMessage());
+ catch (Exception* ex){
+     log->warn("Exception while storing throttle xml: "+ex->getMessage());
  }
 #endif
 }
@@ -851,29 +839,44 @@ void ThrottleWindow::OnFileMenuLoad()
 /*public*/ void ThrottleWindow::previousThrottleFrame() {
 //		throttlesLayout.previous(throttlesPanel);
 //		updateGUI();
+}
+
+/*public*/ void ThrottleWindow::setEditMode(bool mode) {
+    if (mode == isEditMode)
+        return;
+    isEditMode = mode;
+    if (!throttleFrames->isEmpty()) {
+        for (QListIterator<ThrottleWindow*> tfi(throttleFrames->values()); tfi.hasNext();) {
+            tfi.next()->setEditMode(isEditMode);
+        }
     }
+    updateGUI();
+}
+
+/*public*/ bool ThrottleWindow::getEditMode() {
+    return isEditMode;
+}
+
 /*private*/ void ThrottleWindow::switchMode()
 {
- if (isVisible()) {
-#if 0
-     if (isEditMode) {
-         playRendering();
-     } else {
-         editRendering();
-     }
-#endif
-     isEditMode = !isEditMode;
-     willSwitch = false;
- } else {
-     willSwitch = !willSwitch;
- }
- updateGUI();
+ setEditMode(!isEditMode);
 }
 
 
 void ThrottleWindow::windowClosing(QCloseEvent *)
 {
- dispose();
+ //this->dispose();
+ ((ThrottleFrameManager*)InstanceManager::getDefault("ThrottleFrameManager"))->requestThrottleWindowDestruction(/*me*/this);
+ if (throttleToolBar != nullptr) {
+//     Component[] cmps = throttleToolBar.getComponents();
+//     if (cmps != null) {
+//         for (int i = 0; i < cmps.length; i++) {
+//             if (cmps[i] instanceof Jynstrument) {
+//                 ((Jynstrument) cmps[i]).exit();
+//             }
+//         }
+//     }
+ }
 }
 
 /**
@@ -887,6 +890,8 @@ void ThrottleWindow::windowClosing(QCloseEvent *)
 /*public*/ void ThrottleWindow::dispose()
 {
  log->debug(tr("Disposing %1").arg(getTitle()));
+ if(addressPanel == nullptr)
+  return;
  addressPanel->removeAddressListener(this);
  ThrottleFrameManager::instance()->getThrottlesListPanel()->getTableModel()->removeThrottleFrame(this, addressPanel->getCurrentAddress());
  // check for any special disposing in InternalFrames
@@ -895,8 +900,23 @@ void ThrottleWindow::windowClosing(QCloseEvent *)
  speedPanel->destroy();
  // dispose of this last because it will release and destroy throttle.
  addressPanel->destroy();
+ addressPanel = nullptr;
 
 }
+
+/*public*/ void ThrottleWindow::saveRosterChanges() {
+    RosterEntry* rosterEntry = addressPanel->getRosterEntry();
+    if (rosterEntry == nullptr) {
+        JOptionPane::showMessageDialog(this, tr("Select loco using roster menu in Address Panel"), tr("No roster entry selected"), JOptionPane::ERROR_MESSAGE);
+        return;
+    }
+    if (JOptionPane::showConfirmDialog(this, tr("Update roster entry with function buttons changes?"), tr("Update roster entry"), JOptionPane::YES_NO_OPTION) != JOptionPane::YES_OPTION) {
+        return;
+    }
+    functionPanel->saveFunctionButtonsToRoster(rosterEntry);
+    controlPanel->saveToRoster(rosterEntry);
+}
+
 /*public*/ void ThrottleWindow::removeThrottleFrame(ThrottleWindow* tf)
 {
  if ( cardCounterNB > 1 ) // we don't like empty ThrottleWindow
@@ -933,6 +953,7 @@ void ThrottleWindow::windowClosing(QCloseEvent *)
  addThrottleFrame(getCurrentThrottleFrame());
  return getCurrentThrottleFrame();
 }
+
 /*public*/ void ThrottleWindow::setCurrentThrottleFrame(ThrottleWindow* tf)
 {
  if (getCurrentThrottleFrame() != NULL)
@@ -941,10 +962,12 @@ void ThrottleWindow::windowClosing(QCloseEvent *)
  emit propertyChange("ThrottleFrame", getCurrentThrottleFrame(), tf);
  currentThrottleFrame = tf;
 }
+
 /*public*/ ThrottleWindow* ThrottleWindow::getCurrentThrottleFrame()
 {
  return currentThrottleFrame;
 }
+
 /*public*/ void ThrottleWindow::updateGUI()
 {
  // title bar
@@ -989,9 +1012,9 @@ void ThrottleWindow::windowClosing(QCloseEvent *)
 }
 
 /*public*/ void ThrottleWindow::setLastUsedSaveFile(QString lusf) {
-        lastUsedSaveFile = lusf;
-        /*throttleWindow.*/updateGUI();
-    }
+    lastUsedSaveFile = lusf;
+    /*throttleWindow.*/updateGUI();
+}
 
 /**
  * setFrameTitle - set the frame title based on type, text and address
@@ -1029,7 +1052,6 @@ void ThrottleWindow::on_address_released(LocoAddress *)
 
 /*public*/ QDomElement ThrottleWindow::getXml()
 {
-
  QDomElement me =doc.createElement("ThrottleFrame");
  me.setAttribute("title", titleText);
  me.setAttribute("titleType", titleTextType);
@@ -1092,8 +1114,8 @@ void ThrottleWindow::on_address_released(LocoAddress *)
                      elt.appendChild(je);
                  }
 
-             } catch (Exception ex) {
-                 log->debug("Got exception (no panic) " + ex.getMessage());
+             } catch (Exception* ex) {
+                 log->debug("Got exception (no panic) " + ex->getMessage());
              }
          }
      }
@@ -1146,35 +1168,37 @@ void ThrottleWindow::on_address_released(LocoAddress *)
 
 //    children.add(addressPanel.getXml());
     me.appendChild(tf->addressPanel->getXml());
-#if 0
-    // Save Jynstruments
-    Component[] cmps = getComponents();
-    for (int i = 0; i < cmps.length; i++) {
-        try {
-            if (cmps[i] instanceof JInternalFrame) {
-                Component[] cmps2 = ((JInternalFrame) cmps[i]).getContentPane().getComponents();
-                int j = 0;
-                while ((j < cmps2.length) && (!(cmps2[j] instanceof Jynstrument))) {
-                    j++;
-                }
-                if ((j < cmps2.length) && (cmps2[j] instanceof Jynstrument)) {
-                    Jynstrument jyn = (Jynstrument) cmps2[j];
-                    Element elt = new Element("Jynstrument");
-                    elt.setAttribute("JynstrumentFolder", FileUtil.getPortableFilename(jyn.getFolder()));
-                    java.util.ArrayList<Element> jychildren = new java.util.ArrayList<Element>(1);
-                    jychildren.add(WindowPreferences.getPreferences((JInternalFrame) cmps[i]));
-                    Element je = jyn.getXml();
-                    if (je != null) {
-                        jychildren.add(je);
-                    }
-                    elt.setContent(jychildren);
-                    children.add(elt);
-                }
-            }
-        } catch (Exception ex) {
-            log.debug("Got exception (no panic) " + ex);
-        }
-    }
+
+#ifdef SCRIPTING_ENABLED
+ // Save Jynstruments
+ QDomDocument doc = QDomDocument();
+ if (throttleToolBar != NULL) {
+     QObjectList cmps = throttleToolBar->children();
+     if (!cmps.isEmpty()) {
+         for (int i = 0; i < cmps.length(); i++) {
+             try {
+                 //if (cmps[i] instanceof Jynstrument)
+           if(qobject_cast<Jynstrument*>(cmps.at(i)) != NULL)
+                 {
+                     Jynstrument* jyn = (Jynstrument*) cmps[i];
+                     QDomElement elt = doc.createElement("Jynstrument");
+                     elt.setAttribute("JynstrumentFolder", FileUtil::getPortableFilename(jyn->getFolder()));
+                     QDomElement je = jyn->getXml();
+//                     if (je != NULL) {
+//                         java.util.ArrayList<Element> jychildren = new java.util.ArrayList<Element>(1);
+//                         jychildren.add(je);
+//                         elt.setContent(jychildren);
+//                     }
+//                     children.add(elt);
+                     elt.appendChild(je);
+                 }
+
+             } catch (Exception* ex) {
+                 log->debug("Got exception (no panic) " + ex->getMessage());
+             }
+         }
+     }
+ }
 #endif
  if(tf != this)
  {
@@ -1275,7 +1299,7 @@ void ThrottleWindow::on_address_released(LocoAddress *)
       {
           setTransparentBackground((QWidget*) comp);
       }
-     } catch (Exception e) {
+     } catch (Exception* e) {
          // Do nothing, just go on
      }
     }
@@ -1304,7 +1328,7 @@ void ThrottleWindow::on_address_released(LocoAddress *)
             {
                 setTransparent((QWidget*) comp, transparency);
             }
-        } catch (Exception e) {
+        } catch (Exception* e) {
             // Do nothing, just go on
         }
     }

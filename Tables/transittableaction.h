@@ -33,17 +33,20 @@ private:
    void duplicatePressed(QString sName);
 
    // instance variables
-   /*private*/ bool editMode;// = false;
-   /*private*/ bool duplicateMode;// = false;
-   /*private*/ TransitManager* transitManager;// = NULL;
+   /*private*/ bool editMode = false;
+   /*private*/ bool duplicateMode = false;
+   /*private*/ TransitManager* transitManager = nullptr;
    /*private*/ SectionManager* sectionManager;// = InstanceManager::sectionManagerInstance();
-   /*private*/ Transit* curTransit;// = NULL;
-   /*private*/ SectionTableModel* sectionTableModel;// = NULL;
+   /*private*/ Transit* curTransit = nullptr;
+   /*private*/ SectionTableModel* sectionTableModel = nullptr;
    /*private*/ QList<Section*>* sectionList;// = new QList<>();
    /*private*/ QVector<int>* direction;// = new int[150];
    /*private*/ QVector<int>* sequence;// = new int[150];
-   /*private*/ QVector<QList<TransitSectionAction*>*>* action;// = new QList[150];
+   /*private*/ QVector<QList<TransitSectionAction*>*> action;// = new QList[150];
    /*private*/ QVector<bool>* alternate;// = new boolean[150];
+   /*private*/ QVector<bool> safe = QVector<bool>(150);
+   /*private*/ QVector<QString> sensorList;
+   /*private*/ /*final*/ QVector<QString> sensorStopAllocation = QVector<QString>(150);
    /*private*/ int maxSections;// = 150;  // must be equal to the dimension of the above arrays
    /*private*/ QList<Section*>* primarySectionBoxList;// = new QList<>();
    /*private*/ QVector<int>* priSectionDirection;// = new int[150];
@@ -64,8 +67,8 @@ private:
    JTextField* userName;// = new JTextField(17);
    QLabel* sysNameLabel;// = new JLabel(tr("LabelSystemName"));
    QLabel* userNameLabel;// = new JLabel(tr("LabelUserName"));
-   QPushButton* create;// = NULL;
-   QPushButton* update;// = NULL;
+   QPushButton* create = nullptr;
+   QPushButton* update = nullptr;
    QPushButton* deleteSections;// = NULL;
    QComboBox* primarySectionBox;// = new JComboBox<>();
    QPushButton* addNextSection;// = NULL;
@@ -176,13 +179,13 @@ private slots:
 
 
 protected:
-   /*protected*/ void setTitle();
-   /*protected*/ QString helpTarget();
-   /*protected*/ void createModel();
-   /*protected*/ QString getClassName();
+   /*protected*/ void setTitle()override;
+   /*protected*/ QString helpTarget()override;
+   /*protected*/ void createModel()override;
+   /*protected*/ QString getClassName()override;
 
 protected slots:
-   /*protected*/ void addPressed(ActionEvent* /*e*/);
+   /*protected*/ void addPressed(JActionEvent* =0)override;
    void On_whenBox_currentIndexChanged();
    void On_whatBox_currentIndexChanged();
 
@@ -207,7 +210,7 @@ public:
     TransitTableDataModel(TransitTableAction* act);
 
     /*public*/ QString getValue(QString name) const;
-    /*public*/ Manager* getManager();
+    /*public*/ AbstractManager* getManager();
     /*public*/ NamedBean* getBySystemName(QString name) const;
     /*public*/ NamedBean* getByUserName(QString name);
     /*public*/ void clickOn(NamedBean* t) ;
@@ -233,10 +236,10 @@ protected:
 /**
  * Table model for Sections in Create/Edit Transit window
  */
-/*public*/ class SectionTableModel : public AbstractTableModel //implements
-//        java.beans.PropertyChangeListener
+/*public*/ class SectionTableModel : public AbstractTableModel, public PropertyChangeListener
 {
  Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
  TransitTableAction* act;
 public:
  enum COLUMNS
@@ -249,27 +252,28 @@ public:
  };
 
     /*public*/ SectionTableModel(TransitTableAction* act);
-    /*public*/ int columnCount(const QModelIndex &parent) const;
-    /*public*/ int rowCount(const QModelIndex &parent) const;
-    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
-    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    /*public*/ int columnCount(const QModelIndex &parent) const override;
+    /*public*/ int rowCount(const QModelIndex &parent) const override;
+    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
+    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
     /*public*/ int getPreferredWidth(int col);
-    /*public*/ QVariant data(const QModelIndex &index, int role) const;
-    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
+    /*public*/ QVariant data(const QModelIndex &index, int role) const override;
+    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+ QObject* self() override {return (QObject*)this;}
 
  public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 };
 
 /**
  * Table model for Actions in Special Actions window
  */
-/*public*/ class SpecialActionTableModel : public  AbstractTableModel //implements
-//        java.beans.PropertyChangeListener {
+/*public*/ class SpecialActionTableModel : public  AbstractTableModel, public PropertyChangeListener
 {
     Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
     TransitTableAction* act;
 public:
     SpecialActionTableModel(TransitTableAction* act);
@@ -282,14 +286,18 @@ public:
     };
 
     /*public*/ SpecialActionTableModel();
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
-    /*public*/ int columnCount(const QModelIndex &parent) const;
-    /*public*/ int rowCount(const QModelIndex &parent) const;
-    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
-    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    /*public*/ int columnCount(const QModelIndex &parent) const override;
+    /*public*/ int rowCount(const QModelIndex &parent) const override;
+    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
+    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
     /*public*/ int getPreferredWidth(int col);
-    /*public*/ QVariant data(const QModelIndex &index, int role) const;
-    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
+    /*public*/ QVariant data(const QModelIndex &index, int role) const override;
+    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+    QObject* self() override {return (QObject*)this;}
+
+public slots:
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
+
 };
 
 class ATWindowListener : public WindowListener

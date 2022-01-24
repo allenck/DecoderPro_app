@@ -6,15 +6,17 @@
 #include "xmladapter.h"
 
 #include "level.h"
-#include "configuremanager.h"
+#include "../libPr3/configuremanager.h"
 #include "liblayouteditor_global.h"
+#include "xmlfile.h"
 
 class File;
 class XmlAdapter;
 class ErrorHandler;
-class LIBLAYOUTEDITORSHARED_EXPORT ConfigXmlManager : public ConfigureManager
+class LIBLAYOUTEDITORSHARED_EXPORT ConfigXmlManager : public XmlFile, public ConfigureManager
 {
     Q_OBJECT
+    Q_INTERFACES(ConfigureManager)
 public:
     explicit ConfigXmlManager(QObject *parent = nullptr);
     ~ConfigXmlManager();
@@ -36,7 +38,7 @@ public:
     /*public*/ void registerUserPrefs(QObject* o) override;
     /*public*/ void deregister(QObject* o) override;
     /*public*/ static QString adapterName(QObject* o);
-    void locateClassFailed(Throwable ex, QString adapterName, QObject* o);
+    void locateClassFailed(Throwable *ex, QString adapterName, QObject* o);
     /*public*/ bool storeAll(File* file) const override;
     /*public*/ void storePrefs()  override;
     /*public*/ void storePrefs(File* file)  override;
@@ -46,11 +48,13 @@ public:
     /*public*/ bool storeUser(File* file)  override;
     /*public*/ bool makeBackup(File* file) const override;
     static /*public*/ QDomElement elementFromObject(QObject* o);
-    /*public*/ bool load(File* fi) throw (JmriException)  override;
+    /*public*/ bool load(File* fi) /*throw (JmriException)*/  override;
     /*public*/ bool load(QUrl url) throw (JmriConfigureXmlException) override;
-    /*public*/ bool load(File* fi, bool registerDeferred) throw (JmriException)  override;
+    /*public*/ bool load(File* fi, bool registerDeferred) /*throw (JmriException)*/  override;
     /*public*/ bool load(QUrl url, bool registerDeferred) throw (JmriConfigureXmlException)  override;
-    /*public*/ bool loadDeferred(File* fi) throw (JmriException) override;
+    /*public*/ void setValidate(XmlFile::Validate v)override;
+    /*public*/ XmlFile::Validate getValidate()override;
+    /*public*/ bool loadDeferred(File* fi) /*throw (JmriException)*/ override;
     /*public*/ bool loadDeferred(QUrl url) throw (JmriConfigureXmlException) override;
     /*public*/ QUrl find(QString f) override;
     virtual void locateFileFailed(QString f) ;
@@ -62,13 +66,14 @@ public:
             Throwable *exception);
     static /*public*/ void storingErrorEncountered(XmlAdapter* adapter,
             QString operation,
-            Level* level,
             QString description,
             QString systemName,
             QString userName,
             Throwable *exception
             );
     static /*public*/ void setErrorHandler(ErrorHandler* handler);
+
+    QObject* self() override{return (QObject*)this;}
 
 signals:
 
@@ -90,6 +95,7 @@ private:
     static ErrorHandler* handler;// = new ErrorHandler();
     QMap<QString, QString> configXmlMap;
 //    /*private*/ void loadVersion(QDomElement root, XmlAdapter* adapter) ;
+    /*private*/ XmlFile::Validate validate = XmlFile::Validate::CheckDtdThenSchema;
 
 protected:
 

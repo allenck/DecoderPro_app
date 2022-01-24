@@ -1,6 +1,6 @@
 #include "pool.h"
 #include "track.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "logger.h"
 
 //Pool::Pool(QObject *parent) :
@@ -36,7 +36,7 @@ namespace Operations {
     /*public*/ void Pool::setName(QString name) {
         QString old = _name;
         _name = name;
-        this->propertyChangeSupport->firePropertyChange("Name", old, name);
+        this->firePropertyChange("Name", old, name);
     }
 
     /**
@@ -54,7 +54,7 @@ namespace Operations {
     }
 
     /*public*/ Pool::Pool(QString id, QString name,QObject *parent) :
-  QObject(parent) {
+  Bean(parent) {
         log->debug(tr("New pool (%1) id: %2").arg(name).arg(id));
         _name = name;
         _id = id;
@@ -62,12 +62,12 @@ namespace Operations {
 
           _id = "";
           _name = "";
-          propertyChangeSupport = new PropertyChangeSupport(this);
+          propertyChangeSupport = new SwingPropertyChangeSupport(this, nullptr);
           log = new Logger("Pool");
     }
 
     /*public*/ void Pool::dispose() {
- this->propertyChangeSupport->firePropertyChange(DISPOSE, QVariant(), DISPOSE);
+ this->firePropertyChange(DISPOSE, QVariant(), DISPOSE);
     }
 
     /**
@@ -81,7 +81,7 @@ namespace Operations {
             int oldSize = _tracks.size();
             _tracks.append(track);
 
-            this->propertyChangeSupport->firePropertyChange(LISTCHANGE_CHANGED_PROPERTY, (oldSize), (_tracks.size()));
+            this->firePropertyChange(LISTCHANGE_CHANGED_PROPERTY, (oldSize), (_tracks.size()));
         }
     }
 
@@ -96,7 +96,7 @@ namespace Operations {
             int oldSize = _tracks.size();
             _tracks.removeOne(track);
 
-            this->propertyChangeSupport->firePropertyChange(LISTCHANGE_CHANGED_PROPERTY, (oldSize), (_tracks.size()));
+            this->firePropertyChange(LISTCHANGE_CHANGED_PROPERTY, (oldSize), (_tracks.size()));
         }
     }
 

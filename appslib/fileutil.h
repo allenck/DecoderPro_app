@@ -10,6 +10,7 @@
 #include "file.h"
 #include "exceptions.h"
 
+
 class Profile;
 class QTextStream;
 class JAVAQTSHARED_EXPORT FileUtil : public QObject
@@ -36,6 +37,7 @@ public:
     static /*public*/ bool isPortableFilename(QString filename);
     static /*public*/ QTextStream* findInputStream(QString path);
     static /*public*/ QTextStream* findInputStream(QString path, /*@NonNull*/ QStringList searchPaths);
+    static /*public*/ QTextStream* findInputStream(/*@Nonnull*/ QString path, Location locations);
     /*public*/ static QString pathFromPortablePath(QString path);
 
     /**
@@ -117,16 +119,16 @@ public:
      * @param path the scriptsPath to set
      */
     /*public*/ static void setScriptsPath(/*@CheckForNull*/ Profile* profile, /*@CheckForNull*/ QString path);
-    /*public*/ static QString readFile(File* file); // throw (IOException);
+    /*public*/ static QString readFile(File* file); // /*throw (IOException)*/;
     static /*public*/ QString getAbsoluteFilename(QString path);
-    /*public*/ static QString readURL(QUrl url); // throw (IOException);
+    /*public*/ static QString readURL(QUrl url); // /*throw (IOException)*/;
     /* path to the current profile */
 
     /*public*/ static bool _delete(File* path);
     /*public*/ static void copy(File* source, File* dest) /*throws IOException*/;
-    /*public*/ static void appendTextToFile(File* file, QString text);// throw (IOException);
+    /*public*/ static void appendTextToFile(File* file, QString text);// /*throw (IOException)*/;
     /*public*/ static void backup(File* file);// //throws IOException
-    /*public*/ static void rotate(/*@Nonnull*/ File* file, int max, /*@CheckForNull*/ QString extension);// throw (IOException);
+    /*public*/ static void rotate(/*@Nonnull*/ File* file, int max, /*@CheckForNull*/ QString extension);// /*throw (IOException)*/;
 
     /*public*/ static QString sanitizeFilename(QString name);
     /*public*/ static QList<QString> *findProgramPath();

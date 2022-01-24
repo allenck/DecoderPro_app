@@ -40,7 +40,7 @@
   /*
    The property change listener is located here so that the menus can interact with the front end
    */
-  pcs = new PropertyChangeSupport(this);
+  pcs = new SwingPropertyChangeSupport(this, nullptr);
 
     buildGUI(menubarFile, toolbarFile);
     pack();
@@ -64,7 +64,7 @@
 }
 
 /*protected*/ void TwoPaneTBWindow::buildGUI(QString menubarFile, QString toolbarFile) {
-    configureFrame();
+    //configureFrame();
     addMainMenuBar(menubarFile);
     addMainToolBar(toolbarFile);
     addMainStatusBar();

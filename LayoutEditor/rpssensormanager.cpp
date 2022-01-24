@@ -20,14 +20,14 @@
  * {@inheritDoc}
  */
 //@Override
-/*public*/ SystemConnectionMemo* RpsSensorManager::getMemo()const {
+/*public*/ SystemConnectionMemo* RpsSensorManager::getMemo() {
     return  memo;
 }
 
 // to free resources when no longer used
 //@Override
 /*public*/ void RpsSensorManager::dispose() {
-    AbstractSensorManager::dispose();
+    AbstractManager::dispose();
 }
 
 /**
@@ -37,11 +37,11 @@
 //@Override
 /*public*/ Sensor* RpsSensorManager::createNewSensor(QString systemName, QString userName) {
 //    try {
-       RpsSensor* r = new RpsSensor(systemName, userName, getSystemPrefix());
+       RpsSensor* r = new RpsSensor(systemName, userName, AbstractManager::getSystemPrefix());
        Distributor::instance()->addMeasurementListener(r);
        return r;
 //   } catch(StringIndexOutOfBoundsException sioe){
-//     throw  IllegalArgumentException("Invalid System Name: " + systemName);
+//     throw new IllegalArgumentException("Invalid System Name: " + systemName);
 //   }
 }
 
@@ -49,12 +49,12 @@
  * {@inheritDoc}
  */
 //@Override
-/*public*/ QString RpsSensorManager::createSystemName(QString curAddress, QString prefix) const throw (JmriException) {
-    if (prefix != (getSystemPrefix())) {
+/*public*/ QString RpsSensorManager::createSystemName(QString curAddress, QString prefix)  /*throw (JmriException)*/ {
+    if (prefix != (AbstractManager::getSystemPrefix())) {
         log->warn("prefix does not match memo.prefix");
         return "";
     }
-    QString sys = getSystemPrefix() + typeLetter() + curAddress;
+    QString sys = AbstractManager::getSystemPrefix() + typeLetter() + curAddress;
     // first, check validity
     try {
         validSystemNameFormat(sys);
@@ -69,14 +69,14 @@
  */
 //@Override
 /*public*/ QString RpsSensorManager::validateSystemNameFormat(QString name, QLocale locale) {
-    return ((RpsSystemConnectionMemo*)getMemo())->validateSystemNameFormat(name, this, locale);
+    return ((RpsSystemConnectionMemo*)getMemo())->validateSystemNameFormat(name, (AbstractManager*)this, locale);
 }
 
 /**
  * {@inheritDoc}
  */
 //@Override
-/*public*/ Manager::NameValidity RpsSensorManager::validSystemNameFormat(QString systemName) const{
+/*public*/ Manager::NameValidity RpsSensorManager::validSystemNameFormat(QString systemName)  {
     return ((RpsSystemConnectionMemo*)getMemo())->validSystemNameFormat(systemName, typeLetter());
 }
 

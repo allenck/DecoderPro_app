@@ -32,7 +32,7 @@ ProfileFileView::ProfileFileView(QObject *parent) :
         if (Profile::isProfile(f)) {
             return false;
         }
-//    } catch (NullPointerException ex) {
+//    } catch (NullPointerException* ex) {
 //        // this is most likely caused by virtual folders like Networks in Windows 7
 //        log.debug("Unable to list contents of {}", f.getPath());
 //    }

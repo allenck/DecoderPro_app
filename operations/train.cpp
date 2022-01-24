@@ -1,5 +1,5 @@
 #include "train.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "route.h"
 #include "setup.h"
 #include "trainmanagerxml.h"
@@ -44,6 +44,7 @@
 #include <QTextEdit>
 #include "traincustommanifest.h"
 #include "joptionpane.h"
+#include "instancemanager.h"
 
 /**
  * Represents a train on the layout
@@ -145,8 +146,8 @@ QObject(parent)
  _name = name;
  _id = id;
  // a new train accepts all types
- setTypeNames(CarTypes::instance()->getNames());
- setTypeNames(EngineTypes::instance()->getNames());
+ setTypeNames(((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames());
+ setTypeNames(((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->getNames());
  addPropertyChangeListerners();
 }
 
@@ -154,7 +155,7 @@ void Train::common()
 {
 setObjectName("Train");
 log = new Logger("Train");
-pcs = new PropertyChangeSupport(this);
+pcs = new SwingPropertyChangeSupport(this, nullptr);
 _skipLocationsList = QStringList();
 _trainIconRl = NULL; // saves the icon current route location
 _trainIcon = NULL;
@@ -309,9 +310,9 @@ _roadList = QStringList();
   if (rl != NULL)
   {
    //rl->removePropertyChangeListener(this);
-   disconnect(rl->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   disconnect(rl, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    //rl.addPropertyChangeListener(this);
-   connect(rl->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   connect(rl, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    if (rl->getDepartureTime()!=(RouteLocation::NONE)) {
        return rl->getDepartureTime();
    }
@@ -339,9 +340,9 @@ _roadList = QStringList();
      if (rl !=NULL&& rl->getDepartureTime()!=(RouteLocation::NONE)) {
          // need to forward any changes to departure time
          //rl.removePropertyChangeListener(this);
-         disconnect(rl->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         disconnect(rl, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          //rl.addPropertyChangeListener(this);
-         connect(rl->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         connect(rl, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          return rl->getFormatedDepartureTime();
      }
      int hour = _departureTime->get(Calendar::HOUR_OF_DAY);
@@ -455,7 +456,7 @@ _roadList = QStringList();
      if (routeLocation == getTrainDepartsRouteLocation())
          return minutes;
      // add any work at this location
-     foreach (RollingStock* rs, *CarManager::instance()->getList(this)) {
+     foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getList(this)) {
          if (rs->getRouteLocation() == routeLocation && rs->getTrackName()!=(RollingStock::NONE)) {
              minutes += Setup::getSwitchTime();
          }
@@ -593,7 +594,7 @@ _roadList = QStringList();
      }
      if (route != NULL) {
          //route.addPropertyChangeListener(this);
-      connect(route->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      connect(route, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //            newRoute = route->toString();
      }
      _route = route;
@@ -990,7 +991,7 @@ _roadList = QStringList();
  /*protected*/ QStringList Train::getCarTypeNames() {
      QStringList list = QStringList();
      foreach (QString type, _typeList) {
-         if (CarTypes::instance()->containsName(type)) {
+         if (((CarTypes*)InstanceManager::getDefault("CarTypes"))->containsName(type)) {
              list.append(type);
          }
      }
@@ -1004,7 +1005,7 @@ _roadList = QStringList();
  /*protected*/ QStringList Train::getLocoTypeNames() {
      QStringList list = QStringList();
      foreach (QString type, _typeList) {
-         if (EngineTypes::instance()->containsName(type)) {
+         if (((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->containsName(type)) {
              list.append(type);
          }
      }
@@ -1880,7 +1881,7 @@ if (roads.length() == 0) {
   */
  /*public*/ int Train::getNumberCarsWorked() {
      int count = 0;
-     foreach (RollingStock* rs, *CarManager::instance()->getList(this)) {
+     foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getList(this)) {
          if (rs->getRouteLocation() != NULL) {
              count++;
          }
@@ -1925,7 +1926,7 @@ if (roads.length() == 0) {
      Route* route = getRoute();
      if (route != NULL) {
          foreach (RouteLocation* rl, *route->getLocationsBySequenceList()) {
-             foreach (RollingStock* rs,* CarManager::instance()->getList(this)) {
+             foreach (RollingStock* rs,* ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getList(this)) {
                  Car* car = (Car*) rs;
                  if (car->getRouteLocation() == rl) {
                      number++;
@@ -1954,7 +1955,7 @@ if (roads.length() == 0) {
      Route* route = getRoute();
      if (route != NULL) {
          foreach (RouteLocation* rl, *route->getLocationsBySequenceList()) {
-             foreach (RollingStock* rs, *CarManager::instance()->getList(this)) {
+             foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getList(this)) {
                  Car* car = (Car*) rs;
                  if (car->getLoadType()!=(CarLoad::LOAD_TYPE_EMPTY)) {
                      continue;
@@ -1995,7 +1996,7 @@ if (roads.length() == 0) {
      Route* route = getRoute();
      if (route != NULL) {
          foreach (RouteLocation* rl, *route->getLocationsBySequenceList()) {
-             foreach (RollingStock* rs, *EngineManager::instance()->getList(this)) {
+             foreach (RollingStock* rs, *((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getList(this)) {
                  Engine* eng = (Engine*) rs;
                  if (eng->getRouteLocation() == rl) {
                      length += eng->getTotalLength();
@@ -2004,7 +2005,7 @@ if (roads.length() == 0) {
                      length += -eng->getTotalLength();
                  }
              }
-             foreach (RollingStock* rs, *CarManager::instance()->getList(this)) {
+             foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getList(this)) {
                  Car* car = (Car*) rs;
                  if (car->getRouteLocation() == rl) {
                      length += car->getTotalLength();
@@ -2035,7 +2036,7 @@ if (roads.length() == 0) {
      Route* route = getRoute();
      if (route != NULL) {
          foreach (RouteLocation* rl, *route->getLocationsBySequenceList()) {
-             foreach (RollingStock* rs, *EngineManager::instance()->getList(this)) {
+             foreach (RollingStock* rs, *((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getList(this)) {
                  Engine* eng = (Engine*) rs;
                  if (eng->getRouteLocation() == rl) {
                      weight += eng->getAdjustedWeightTons();
@@ -2044,7 +2045,7 @@ if (roads.length() == 0) {
                      weight += -eng->getAdjustedWeightTons();
                  }
              }
-             foreach (RollingStock* rs, *CarManager::instance()->getList(this)) {
+             foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getList(this)) {
                  Car* car = (Car*) rs;
                  if (car->getRouteLocation() == rl) {
                      weight += car->getAdjustedWeightTons();
@@ -2072,7 +2073,7 @@ if (roads.length() == 0) {
      Route* route = getRoute();
      if (route != NULL) {
          foreach (RouteLocation* rl, *route->getLocationsBySequenceList()) {
-             foreach (RollingStock* rs, *EngineManager::instance()->getList(this)) {
+             foreach (RollingStock* rs, *((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getList(this)) {
                  Engine* eng = (Engine*) rs;
                  if (eng->getRouteLocation() == rl) {
                      hp += eng->getHpInteger();
@@ -2098,7 +2099,7 @@ if (roads.length() == 0) {
  /*public*/ QString Train::getCabooseRoadAndNumber() {
      QString cabooseRoadNumber = NONE;
      RouteLocation* rl = getCurrentLocation();
-     QList<RollingStock*>* cars = CarManager::instance()->getByTrainList(this);
+     QList<RollingStock*>* cars = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getByTrainList(this);
      foreach (RollingStock* rs, *cars) {
          Car* car = (Car*) rs;
          if (car->getRouteLocation() == rl && car->getRouteDestination() != rl && car->isCaboose()) {
@@ -2841,7 +2842,7 @@ if (roads.length() == 0) {
  void Train::on_error(QString title, QString msg)
  {
   emit error(title,msg);
-  log->error(title, QVariant(msg));
+  log->error(title, new Throwable(msg));
  }
 
  /**
@@ -2880,7 +2881,7 @@ if (roads.length() == 0) {
       for (QString scriptPathname : scripts) {
           try {
               JmriScriptEngineManager->getDefault().runScript(new File(jmri.util.FileUtil->getExternalFilename(scriptPathname)));
-          } catch (Exception e) {
+          } catch (Exception* e) {
               log->error("Problem with script: {}", scriptPathname);
           }
       }
@@ -2905,13 +2906,13 @@ if (roads.length() == 0) {
  }
 
  /*public*/ void Train::printBuildReport() {
-     bool isPreview = (TrainManager::instance()->isPrintPreviewEnabled() || Setup
+     bool isPreview = (((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->isPrintPreviewEnabled() || Setup
              ::isBuildReportAlwaysPreviewEnabled());
      printBuildReport(isPreview);
  }
 
  /*public*/ bool Train::printBuildReport(bool isPreview) {
-     File* buildFile = TrainManagerXml::instance()->getTrainBuildReportFile(getName());
+     File* buildFile = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->getTrainBuildReportFile(getName());
      if (!buildFile->exists()) {
          log->warn("Build file missing for train " + getName());
          return false;
@@ -2933,6 +2934,16 @@ if (roads.length() == 0) {
      if (old != status) {
          setDirtyAndFirePropertyChange("buildFailed", old ? "true" : "false", status ? "true" : "false"); // NOI18N
      }
+ }
+
+ /**
+  * Returns true if the train build failed. Note that returning false doesn't
+  * mean the build was successful.
+  *
+  * @return true if train build failed.
+  */
+ /*public*/ bool Train::isBuildFailed() {
+     return _buildFailed;
  }
 
  /**
@@ -2966,7 +2977,7 @@ if (roads.length() == 0) {
  {
   if (isBuilt())
   {
-   bool isPreview = TrainManager::instance()->isPrintPreviewEnabled();
+   bool isPreview = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->isPrintPreviewEnabled();
    printManifest(isPreview);
   }
   else
@@ -2990,15 +3001,15 @@ if (roads.length() == 0) {
 
    try {
        (new JsonManifest(this))->build();
-   } catch (IOException ex) {
-       log->error(tr("Unable to create JSON manifest %1").arg(ex.getLocalizedMessage()));
+   } catch (IOException* ex) {
+       log->error(tr("Unable to create JSON manifest %1").arg(ex->getLocalizedMessage()));
    }
    if (Setup::isGenerateCsvManifestEnabled()) {
        new TrainCsvManifest(this);
    }
 
   }
-  File* file = TrainManagerXml::instance()->getTrainManifestFile(getName());
+  File* file = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->getTrainManifestFile(getName());
   if (!file->exists())
   {
    log->warn(tr("Manifest file missing for train %1").arg(getName()));
@@ -3018,7 +3029,7 @@ if (roads.length() == 0) {
   } else if (Setup::getManifestLogoURL()!=(Setup::NONE)) {
       logoURL = FileUtil::getExternalFilename(Setup::getManifestLogoURL());
   }
-  Location* departs = LocationManager::instance()->getLocationByName(getTrainDepartsName());
+  Location* departs = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationByName(getTrainDepartsName());
   QString printerName = Location::NONE;
   if (departs != NULL)
   {
@@ -3070,14 +3081,14 @@ if (roads.length() == 0) {
          new TrainManifest(this);
          try {
              (new JsonManifest(this))->build();
-         } catch (IOException ex) {
-             log->error(tr("Unable to create JSON manifest %1").arg(ex.getLocalizedMessage()));
+         } catch (IOException* ex) {
+             log->error(tr("Unable to create JSON manifest %1").arg(ex->getLocalizedMessage()));
          }
          if (Setup::isGenerateCsvManifestEnabled()) {
              new TrainCsvManifest(this);
          }
      }
-     File* file = TrainManagerXml::instance()->getTrainCsvManifestFile(getName());
+     File* file = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->getTrainCsvManifestFile(getName());
      if (!file->exists()) {
          log->warn("CSV manifest file was not created for train " + getName());
          return NULL;
@@ -3312,7 +3323,7 @@ if (roads.length() == 0) {
  */
  /*public*/ Engine* Train::getLeadEngine() {
   if (_leadEngine ==NULL&& _leadEngineId!=(NONE)) {
-      _leadEngine = EngineManager::instance()->getById(_leadEngineId);
+      _leadEngine = (Engine*)((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getById(_leadEngineId);
   }
   return _leadEngine;
  }
@@ -3488,15 +3499,15 @@ if (roads.length() == 0) {
          //getRoute().removePropertyChangeListener(this);
      }
      //CarRoads.instance().removePropertyChangeListener(this);
-     disconnect(CarRoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarRoads*)InstanceManager::getDefault("Operations::CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes.instance().removePropertyChangeListener(this);
-     disconnect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //EngineTypes.instance().removePropertyChangeListener(this);
-     disconnect(EngineTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((EngineTypes*)InstanceManager::getDefault("EngineTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //        CarOwners.instance().removePropertyChangeListener(this);
-     disconnect(CarOwners::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarOwners*)InstanceManager::getDefault("Operations::CarOwners")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //        EngineModels.instance().removePropertyChangeListener(this);
-     disconnect(EngineModels::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((EngineModels*)InstanceManager::getDefault("EngineModels")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      setDirtyAndFirePropertyChange(DISPOSE_CHANGED_PROPERTY, QVariant(), "Dispose"); // NOI18N
  }
@@ -3544,7 +3555,7 @@ if (roads.length() == 0) {
      QDomElement eRoute = e.firstChildElement(Xml::ROUTE);
      if (!eRoute.isNull()) {
          if ((a = eRoute.attribute(Xml::ID)) != NULL) {
-             setRoute(RouteManager::instance()->getRouteById(a));
+             setRoute(((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"))->getRouteById(a));
          }
          if (eRoute.firstChildElement(Xml::SKIPS) != QDomElement()) {
              //@SuppressWarnings("unchecked")
@@ -3562,9 +3573,9 @@ if (roads.length() == 0) {
          // old format
          // try and first get the route by id then by name
          if ((a = e.attribute(Xml::ROUTE_ID)) != NULL) {
-             setRoute(RouteManager::instance()->getRouteById(a));
+             setRoute(((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"))->getRouteById(a));
          } else if ((a = e.attribute(Xml::ROUTE)) != NULL) {
-             setRoute(RouteManager::instance()->getRouteByName(a));
+             setRoute(((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"))->getRouteByName(a));
          }
          if ((a = e.attribute(Xml::SKIP)) != NULL) {
              QString locationIds = a;
@@ -3610,7 +3621,7 @@ if (roads.length() == 0) {
          _roadOption = a;
      }
      // new way of reading car roads using elements
-     if (e.firstChildElement(Xml::CAR_ROADS) != QDomElement()) {
+     if (!e.firstChildElement(Xml::CAR_ROADS).isNull()) {
          //@SuppressWarnings("unchecked")
          QDomNodeList carRoads = e.firstChildElement(Xml::CAR_ROADS).elementsByTagName(Xml::CAR_ROAD);
          QVector<QString> roads = QVector<QString>(carRoads.size());
@@ -3851,7 +3862,7 @@ if (roads.length() == 0) {
              _leg3End = _route->getLocationById(a);
          }
          if ((a = e.attribute(Xml::DEPARTURE_TRACK)) != NULL) {
-             Location* location = LocationManager::instance()->getLocationByName(getTrainDepartsName());
+             Location* location = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationByName(getTrainDepartsName());
              if (location != NULL) {
                  _departureTrack = location->getTrackById(a);
              } else {
@@ -3859,7 +3870,7 @@ if (roads.length() == 0) {
              }
          }
          if ((a = e.attribute(Xml::TERMINATION_TRACK)) != NULL) {
-             Location* location = LocationManager::instance()->getLocationByName(getTrainTerminatesName());
+             Location* location = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationByName(getTrainTerminatesName());
              if (location != NULL) {
                  _terminationTrack = location->getTrackById(a);
              } else {
@@ -3931,15 +3942,15 @@ if (roads.length() == 0) {
  /*private*/ void Train::addPropertyChangeListerners()
 {
   //CarRoads.instance().addPropertyChangeListener(this);
- connect(CarRoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(((CarRoads*)InstanceManager::getDefault("Operations::CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarTypes.instance().addPropertyChangeListener(this);
- connect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //EngineTypes.instance().addPropertyChangeListener(this);
- connect(EngineTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(((EngineTypes*)InstanceManager::getDefault("EngineTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarOwners.instance().addPropertyChangeListener(this);
- connect(CarOwners::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(((CarOwners*)InstanceManager::getDefault("Operations::CarOwners")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //EngineModels.instance().addPropertyChangeListener(this);
-  connect(EngineModels::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((EngineModels*)InstanceManager::getDefault("EngineModels")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
 }
  /**
@@ -4047,7 +4058,7 @@ if (roads.length() == 0) {
          QString buf = ""; //new StringBuffer();
          foreach (QString type, types) {
              // remove types that have been deleted by user
-             if (CarTypes::instance()->containsName(type) || EngineTypes::instance()->containsName(type)) {
+             if (((CarTypes*)InstanceManager::getDefault("CarTypes"))->containsName(type) || ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->containsName(type)) {
                  buf.append(type + "%%"); // NOI18N
              }
          }
@@ -4057,11 +4068,11 @@ if (roads.length() == 0) {
      QDomElement eTypes = doc.createElement(Xml::TYPES);
      foreach (QString type, types) {
          // don't save types that have been deleted by user
-         if (EngineTypes::instance()->containsName(type)) {
+         if (((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->containsName(type)) {
              QDomElement eType = doc.createElement(Xml::LOCO_TYPE);
              eType.setAttribute(Xml::NAME, type);
              eTypes.appendChild(eType);
-         } else if (CarTypes::instance()->containsName(type)) {
+         } else if (((CarTypes*)InstanceManager::getDefault("CarTypes"))->containsName(type)) {
              QDomElement eType = doc.createElement(Xml::CAR_TYPE);
              eType.setAttribute(Xml::NAME, type);
              eTypes.appendChild(eType);
@@ -4254,7 +4265,7 @@ if (roads.length() == 0) {
  }
 #endif
 /*protected*/ void Train::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
-    TrainManagerXml::instance()->setDirty(true);
+    ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->setDirty(true);
     pcs->firePropertyChange(p, old, n);
  }
 } //end namespace

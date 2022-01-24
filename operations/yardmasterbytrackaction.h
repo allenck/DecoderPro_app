@@ -3,6 +3,7 @@
 #include "abstractaction.h"
 #include "location.h"
 #include "yardmasterbytrackframe.h"
+#include <QPointer>
 
 namespace Operations {
 
@@ -17,14 +18,14 @@ public:
  /*public*/ YardmasterByTrackAction(Location* location, QObject* parent);
 
 public slots:
- /*public*/ void actionPerformed(ActionEvent* e = 0);
+ /*public*/ void actionPerformed(JActionEvent* e = 0);
 
 
 private:
  void common();
  Location* _location;
 
- YardmasterByTrackFrame* f;// = null;
+ QPointer<YardmasterByTrackFrame> f;// = null;
 
 };
 }

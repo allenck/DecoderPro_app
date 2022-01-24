@@ -62,7 +62,7 @@ private:
  /*private*/ static void putPreferencesInXml(QDomElement elt, QDomDocument doc,
             Preferences* prefs, bool subTree) throw (BackingStoreException);
  /*private*/ static /*final*/ void writeDoc(QDomDocument doc, QTextStream* out)
-     throw (IOException);
+     /*throw (IOException)*/;
 
 };
 

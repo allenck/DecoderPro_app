@@ -155,3 +155,8 @@ QLayout* JPanel::findParentLayout(QWidget* w, QLayout* topLevelLayout)
   }
   return nullptr;
 }
+
+/*public*/ void JPanel::addPropertyChangeListener(PropertyChangeListener* pl)
+{
+ pcs->addPropertyChangeListener(pl);
+}

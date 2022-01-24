@@ -3,6 +3,7 @@
 #include "instancemanager.h"
 #include "startupactionsmanager.h"
 #include "loggerfactory.h"
+#include "class.h"
 
 /**
  * Handle XML persistence of PerformActionModel objects.
@@ -64,10 +65,37 @@
  for(int i = 0; i < children.count(); i++)
  { // NOI18N
   QDomElement child = children.at(i).toElement();
+  QString value = child.attribute("value"); // NOI18N
   if (child.attribute("name")==("systemPrefix") // NOI18N
-          && child.attribute("value") != "")
+          && value != "")
   { // NOI18N
-   model->setSystemPrefix(child.attribute("value")); // NOI18N
+   // handle the situation where the model expects a system prefix
+   // but was not saved with one in a pre-4.19.7 JMRI instance
+   // TODO: at some point (June 2022 release?) change entire
+   // try/catch block to just "model.setSystemPrefix(value);"
+   try
+   {
+    Class* ac = Class::forName(className);
+    if (value.isEmpty() && ac->isAssignableFrom("SystemConnectionAction")) {
+//        SystemConnectionAction<?> a = (SystemConnectionAction<?>) ac.getConstructor().newInstance();
+//        InstanceManager::getList("SystemConnectionMemo")
+//                .forEach(memo -> a.getSystemConnectionMemoClasses().stream()
+//                .filter(mc -> memo.getClass().isAssignableFrom(mc))
+//                .forEach(mc -> model.setSystemPrefix(memo.getSystemPrefix())));
+    } else {
+        model->setSystemPrefix(value);
+    }
+   }
+   catch (ClassNotFoundException *ex){
+//           | InstantiationException
+//           | IllegalAccessException
+//           | IllegalArgumentException
+//           | InvocationTargetException
+//           | NoSuchMethodException
+//           | SecurityException ex) {
+       // ignore to allow manager to handle later
+       log->warn(tr("While trying to do %1, encountered exception").arg(className), ex);
+   }
   }
  }
  ((StartupActionsManager*)InstanceManager::getDefault("StartupActionsManager"))->addAction(model);

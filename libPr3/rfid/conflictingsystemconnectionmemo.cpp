@@ -17,7 +17,7 @@
 // /*public*/ class ConflictingSystemConnectionMemo extends SystemConnectionMemo {
 
     /*public*/ ConflictingSystemConnectionMemo::ConflictingSystemConnectionMemo(QString prefix, QString userName, QObject* parent)
-     : SystemConnectionMemo(prefix, userName, parent)
+     : DefaultSystemConnectionMemo(prefix, userName, parent)
     {
         //super(prefix, userName);
     }

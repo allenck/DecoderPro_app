@@ -2,8 +2,8 @@
 #define ZEROCONFCLIENT_H
 
 #include <QObject>
-//#include "../../../../Projects/QtZeroConf-master/qzeroconf.h"
-#include "qzeroconf.h"
+#include "../../../../Projects/QtZeroConf-master/qzeroconf.h"
+//#include "qzeroconf.h"
 #include "networktopologyevent.h"
 
 class ServiceInfo;

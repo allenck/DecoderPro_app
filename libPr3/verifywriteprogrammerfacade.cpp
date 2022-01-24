@@ -18,7 +18,7 @@
 
 // programming interface
 //@Override
-/*synchronized*/ /*public*/ void VerifyWriteProgrammerFacade::writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException) {
+/*synchronized*/ /*public*/ void VerifyWriteProgrammerFacade::writeCV(QString CV, int val, ProgListener* p) /*throw (ProgrammerException)*/ {
     _val = val;
     _cv = CV;
     useProgrammer(p);
@@ -29,7 +29,7 @@
 }
 
 //@Override
-/*synchronized*/ /*public*/ void VerifyWriteProgrammerFacade::readCV(QString CV, ProgListener* p) throw (ProgrammerException) {
+/*synchronized*/ /*public*/ void VerifyWriteProgrammerFacade::readCV(QString CV, ProgListener* p) /*throw (ProgrammerException)*/ {
     _cv = CV;
     useProgrammer(p);
 
@@ -53,11 +53,11 @@
 
 
 // internal method to remember who's using the programmer
-/*protected*/ void VerifyWriteProgrammerFacade::useProgrammer(ProgListener* p) throw (ProgrammerException) {
+/*protected*/ void VerifyWriteProgrammerFacade::useProgrammer(ProgListener* p) /*throw (ProgrammerException)*/ {
     // test for only one!
     if (_usingProgrammer != NULL && _usingProgrammer != p) {
-        log->info(tr("programmer already in use by %1").arg(_usingProgrammer->metaObject()->className()));
-        throw ProgrammerException("programmer in use");
+        log->info(tr("programmer already in use by %1").arg(_usingProgrammer->self()->metaObject()->className()));
+        throw new ProgrammerException("programmer in use");
     } else {
         _usingProgrammer = p;
     }
@@ -80,9 +80,9 @@
 //        //temp->programmingOpReply(value, status);
 //        emit do_programmingOpReply(value, status);
 //        disconnect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
-        if(!QMetaObject::invokeMethod(temp, "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
+        if(!QMetaObject::invokeMethod(temp->self(), "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
         {
-            log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->metaObject()->className()));
+            log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->self()->metaObject()->className()));
             return;
         }
 
@@ -104,7 +104,7 @@
                 state = ProgState::FINISHREAD;
                 try {
                     prog->readCV(_cv, (ProgListener*)this);
-                } catch (ProgrammerException e) {
+                } catch (ProgrammerException* e) {
                     // pass abort up
                     _usingProgrammer = NULL; // done
                     state = ProgState::NOTPROGRAMMING;
@@ -113,9 +113,9 @@
 //                //temp->programmingOpReply(value, status);
 //                emit do_programmingOpReply(value, status);
 //                disconnect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
-                    if(!QMetaObject::invokeMethod(temp, "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
+                    if(!QMetaObject::invokeMethod(temp->self(), "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
                     {
-                        log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->metaObject()->className()));
+                        log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->self()->metaObject()->className()));
                         return;
                     }
                     return;
@@ -134,9 +134,9 @@
 //            //temp->programmingOpReply(value, status);
 //            emit do_programmingOpReply(value, status);
 //            disconnect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
-            if(!QMetaObject::invokeMethod(temp, "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
+            if(!QMetaObject::invokeMethod(temp->self(), "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
             {
-                log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->metaObject()->className()));
+                log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->self()->metaObject()->className()));
                 return;
             }
             break;
@@ -152,9 +152,9 @@
 //                //temp->programmingOpReply(value, status);
 //                emit do_programmingOpReply(value, status);
 //                disconnect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
-             if(!QMetaObject::invokeMethod(temp, "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
+             if(!QMetaObject::invokeMethod(temp->self(), "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
              {
-                 log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->metaObject()->className()));
+                 log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->self()->metaObject()->className()));
                  return;
              }
             } else {
@@ -164,9 +164,9 @@
 //                //temp->programmingOpReply(value, status);
 //                emit do_programmingOpReply(value, status);
 //                disconnect(this, SIGNAL(do_programmingOpReply(int,int)), temp, SLOT(programmingOpReply(int,int)));
-             if(!QMetaObject::invokeMethod(temp, "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
+             if(!QMetaObject::invokeMethod(temp->self(), "programmingOpReply", Qt::AutoConnection, Q_ARG(int, value), Q_ARG(int, status)))
              {
-                 log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->metaObject()->className()));
+                 log->error(tr("invoke method 'programmingOpReply' failed for %1").arg(temp->self()->metaObject()->className()));
                  return;
              }
             }

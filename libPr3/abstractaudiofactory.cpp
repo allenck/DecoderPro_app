@@ -86,7 +86,7 @@ AbstractAudioFactory::AbstractAudioFactory(QObject *parent) :
     try {
         audioCommandThread->die();       // send the die signal to the thread
         audioCommandThread->exit(); // interrupt the thread to process die signal
-    } catch (Exception e) {
+    } catch (Exception* e) {
         dieException = true;
     }
 

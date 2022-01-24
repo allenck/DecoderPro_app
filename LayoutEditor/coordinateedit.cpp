@@ -9,6 +9,7 @@
 #include "gridbaglayout.h"
 #include "linkingobject.h"
 #include "positionablejcomponent.h"
+#include "joptionpane.h"
 
 //Positionable* CoordinateEdit::pos = NULL;
 //QString CoordinateEdit::title = "";
@@ -133,7 +134,7 @@ TooltipEditAction::TooltipEditAction(Positionable* pos, QString name, QObject *p
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
-void TooltipEditAction::actionPerformed(ActionEvent *)
+void TooltipEditAction::actionPerformed(JActionEvent *)
 {
  CoordinateEdit* f = new CoordinateEdit();
  f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
@@ -170,7 +171,7 @@ SetBorderSizeActionListener::SetBorderSizeActionListener(Positionable *pos, QObj
  this->parent = parent;
 }
 
-void SetBorderSizeActionListener::actionPerformed(ActionEvent */*e*/)
+void SetBorderSizeActionListener::actionPerformed(JActionEvent */*e*/)
 {
  CoordinateEdit* f = new CoordinateEdit();
  f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
@@ -1036,6 +1037,59 @@ void CoordinateEdit::on_scaleOk_clicked()
 void CoordinateEdit::on_scaleCancel_clicked()
 {
  dispose();
+}
+
+/*public*/ void CoordinateEdit::initId(/*final*/ Editor* editor) {
+    PositionableLabel* pLabel = (PositionableLabel*) pl;
+    oldStr = pLabel->getId();
+    textX = new JLabel();
+    textX->setText(tr("Enter Id") + ":");
+    textX->setVisible(true);
+
+    xTextField = new JTextField(15);
+    xTextField->setText(pLabel->getId());
+    xTextField->setToolTip(tr("Enter id"));
+
+    getContentPane()->setLayout(new GridBagLayout());
+    addTextItems();
+
+//    okButton.addActionListener(e -> {
+    connect(okButton, &QPushButton::clicked, [=]{
+        PositionableLabel* pp = (PositionableLabel*) pl;
+        QString t = xTextField->text();
+        bool hasText = (t != "" && t.length() > 0);
+        if (hasText) {
+            try {
+                pp->setId(t);
+                pp->updateSize();
+                dispose();
+            } catch (Positionable::DuplicateIdException* ignore) {
+                JOptionPane::showMessageDialog(editor,
+                        tr("Id is not unique"),
+                        tr("Error"),
+                        JOptionPane::ERROR_MESSAGE);
+            }
+        } else {
+            try {
+                pp->setId("");
+                pp->updateSize();
+                dispose();
+            } catch (Positionable::DuplicateIdException* ex) {
+                // This should never happen
+                log->error("Positionable.setId(null) has thrown DuplicateIdException", ex);
+            }
+        }
+    });
+    //okButton.getRootPane().setDefaultButton(okButton);
+    okButton->setDefault(true);
+//    cancelButton.addActionListener(e -> {
+    connect(cancelButton, &QPushButton::clicked, [=]{
+        PositionableLabel* pp = (PositionableLabel*) pl;
+//            pp.setId(oldStr);
+        pp->updateSize();
+        dispose();
+    });
+    pack();
 }
 
 /*public*/ void CoordinateEdit::initText()

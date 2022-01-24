@@ -9,6 +9,10 @@
 #include <cmath>
 #include <QToolTip>
 #include "layouttrackeditor.h"
+#include "layouttrackview.h"
+#include "loggerfactory.h"
+#include "positionablepoint.h"
+#include "tracksegmentview.h"
 
 /**
  * A collection of tools to check various things on the layout editor panel.
@@ -302,8 +306,8 @@
 
  // check all tracks for free connections
  QList<QString> trackNames = QList<QString>();
- for (LayoutTrack* layoutTrack : *layoutEditor->getLayoutTracks()) {
-     QList<int> connections = layoutTrack->checkForFreeConnections();
+ for (LayoutTrack* layoutTrack : layoutEditor->getLayoutTracks()) {
+     QList<HitPointType::TYPES> connections = layoutTrack->checkForFreeConnections();
      if (!connections.isEmpty()) {
          // add this track's name to the list of track names
          trackNames.append(layoutTrack->getName());
@@ -345,7 +349,8 @@
  LayoutTrack* layoutTrack = layoutEditor->getFinder()->findObjectByName(menuItemName);
  if (layoutTrack != nullptr)
  {
-  QRectF trackBounds = layoutTrack->getBounds();
+  LayoutTrackView* layoutTrackView = layoutEditor->getLayoutTrackView(layoutTrack);
+  QRectF trackBounds = layoutTrackView->getBounds();
   layoutEditor->setSelectionRect(trackBounds);
 
   // setSelectionRect calls createSelectionGroups...
@@ -373,7 +378,7 @@
 
  // check all tracks for un-assigned blocks
  QList<QString> trackNames = QList<QString> ();
- for (LayoutTrack* layoutTrack : *layoutEditor->getLayoutTracks())
+ for (LayoutTrack* layoutTrack : layoutEditor->getLayoutTracks())
  {
   if (!layoutTrack->checkForUnAssignedBlocks()) {
       // add this track to the list of un-assigned track names
@@ -417,7 +422,8 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
  LayoutTrack* layoutTrack = layoutEditor->getFinder()->findObjectByName(menuItemName);
  if (layoutTrack != nullptr)
  {
-  layoutEditor->setSelectionRect(layoutTrack->getBounds());
+  LayoutTrackView* layoutTrackView = layoutEditor->getLayoutTrackView(layoutTrack);
+  layoutEditor->setSelectionRect(layoutTrackView->getBounds());
   // setSelectionRect calls createSelectionGroups...
   // so we have to clear it before amending to it
   layoutEditor->clearSelectionGroups();
@@ -444,8 +450,8 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
 
  // collect all contiguous blocks
  QMap<QString, QList<QSet<QString>*>*>* blockNamesToTrackNameSetMaps =  new QMap<QString, QList<QSet<QString>*>*>();
- for (LayoutTrack* layoutTrack : *layoutEditor->getLayoutTracks()) {
-     layoutTrack->checkForNonContiguousBlocks(blockNamesToTrackNameSetMaps);
+ for (LayoutTrack* layoutTrack : layoutEditor->getLayoutTracks()) {
+     layoutTrack->checkForNonContiguousBlocks(*blockNamesToTrackNameSetMaps);
  }
 
  // clear the "in progress..." menu item
@@ -473,8 +479,6 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
     connect(subMenuItem, &QAction::triggered, [=]{
         doCheckNonContiguousBlocksMenuItem(blockName, trackNameSet);
     });
-//                SubMenuActionListener* listener = new SubMenuActionListener(blockName, trackNameSet, this);
-//                connect(subMenuItem, SIGNAL(triggered(bool)), listener, SLOT(actionPerformed()));
    }
   }
  }
@@ -509,11 +513,12 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
  {
   // collect all the bounds...
   QRectF bounds = QRectF();
-  for (LayoutTrack* layoutTrack : *layoutEditor->getLayoutTracks())
+  for (LayoutTrack* layoutTrack : layoutEditor->getLayoutTracks())
   {
    if (trackNameSet->contains(layoutTrack->getName()))
    {
-    QRectF trackBounds = layoutTrack->getBounds();
+    LayoutTrackView* layoutTrackView = layoutEditor->getLayoutTrackView(layoutTrack);
+    QRectF trackBounds = layoutTrackView->getBounds();
     if (bounds.isNull()) {
         bounds =QRectF(trackBounds.x(), trackBounds.y(), trackBounds.width(), trackBounds.height());
     } else {
@@ -528,7 +533,7 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
   layoutEditor->clearSelectionGroups();
 
   // amend all tracks in this block to the layout editor selection group
-  for (LayoutTrack* layoutTrack : *layoutEditor->getLayoutTracks()) {
+  for (LayoutTrack* layoutTrack : layoutEditor->getLayoutTracks()) {
       if (trackNameSet->contains(layoutTrack->getName())) {
           layoutEditor->amendSelectionGroup(layoutTrack);
       }
@@ -561,39 +566,41 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
   {
    // adjacent track segments must be defined...
    TrackSegment* ts1 = pp->getConnect1();
+   TrackSegmentView* ts1v = layoutEditor->getTrackSegmentView(ts1);
    TrackSegment* ts2 = pp->getConnect2();
+   TrackSegmentView* ts2v = layoutEditor->getTrackSegmentView(ts2);
    if ((ts1 != nullptr) && (ts2 != nullptr))
    {
     // can't be an arc, circle or bezier...
-    if (!ts1->isArc() && !ts1->isCircle() && !ts1->isBezier()
-            && !ts2->isArc() && !ts2->isCircle() && !ts2->isBezier())
+    if (!ts1v->isArc() && !ts1v->isCircle() && !ts1v->isBezier()
+            && !ts2v->isArc() && !ts2v->isCircle() && !ts2v->isBezier())
     {
      // must be in same block...
-     QString blockName1 = ts1->getBlockName();
+     QString blockName1 = ts1v->getBlockName();
      QString blockName2 = ts2->getBlockName();
      if (blockName1 == (blockName2))
      {
       // if length of ts1 is zero...
-      QRectF bounds1 = ts1->getBounds();
+      QRectF bounds1 = ts1v->getBounds();
       double length1 = hypot(bounds1.width(), bounds1.height());
       if (length1 < 1.0) {
           aatzlts.append(pp);
           continue;   // so we don't get added again
       }
       // if length of ts2 is zero...
-      QRectF bounds = ts2->getBounds();
+      QRectF bounds = ts2v->getBounds();
       double length = hypot(bounds.width(), bounds.height());
       if (length < 1.0) {
           aatzlts.append(pp);
           continue;   // so we don't get added again
       }
       // if either track segment has decorations
-      if (ts1->hasDecorations() || ts2->hasDecorations()) {
+      if (ts1v->hasDecorations() || ts2v->hasDecorations()) {
           continue;   // skip it
       }
       // if adjacent tracks are collinear...
-      double dir1 = ts1->getDirectionRAD();
-      double dir2 = ts2->getDirectionRAD();
+      double dir1 = ts1v->getDirectionRAD();
+      double dir2 = ts2v->getDirectionRAD();
       double diffRAD = MathUtil::absDiffAngleRAD(dir1, dir2);
       if (MathUtil::equals(diffRAD, 0.0)
               || MathUtil::equals(diffRAD, M_PI)) {
@@ -640,13 +647,14 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
 
  LayoutTrack* layoutTrack = layoutEditor->getFinder()->findObjectByName(anchorName);
  if (layoutTrack != nullptr) {
-     layoutEditor->setSelectionRect(layoutTrack->getBounds());
+     LayoutTrackView* layoutTrackView = layoutEditor->getLayoutTrackView(layoutTrack);
+     layoutEditor->setSelectionRect(layoutTrackView->getBounds());
      // setSelectionRect calls createSelectionGroups...
      // so we have to clear it before amending to it
      layoutEditor->clearSelectionGroups();
      layoutEditor->amendSelectionGroup(layoutTrack);
      // show its popup menu
-     layoutTrack->showPopup();
+     layoutTrackView->showPopup();
  } else {
      layoutEditor->clearSelectionGroups();
  }
@@ -667,37 +675,37 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
  checkLinearBezierTrackSegmentsMenu->addAction(checkInProgressMenuItem);
 
  // check all TrackSegments
- QList<TrackSegment*> linearBezierTrackSegments;// = new ArrayList<>();
- for (TrackSegment* ts : layoutEditor->getTrackSegments())
+ QList<TrackSegmentView*> linearBezierTrackSegments;// = new ArrayList<>();
+ for (TrackSegmentView* tsv : layoutEditor->getTrackSegmentViews())
  {
   // has to be a bezier
-  if (ts->isBezier())
+  if (tsv->isBezier())
   {
 //                if (ts.getName().equals("T104")) {
 //                    log.debug("T104");
 //                }
    // adjacent connections must be defined...
-   LayoutTrack* c1 = ts->getConnect1();
-   LayoutTrack* c2 = ts->getConnect2();
+   LayoutTrack* c1 = tsv->getConnect1();
+   LayoutTrack* c2 = tsv->getConnect2();
    if ((c1 != nullptr) && (c2 != nullptr))
    {
     // if length is zero...
-    QPointF end1 = LayoutEditor::getCoords(ts->getConnect1(), ts->getType1());
-    QPointF end2 = LayoutEditor::getCoords(ts->getConnect2(), ts->getType2());
+    QPointF end1 = layoutEditor->getCoords(tsv->getConnect1(), tsv->getType1());
+    QPointF end2 = layoutEditor->getCoords(tsv->getConnect2(), tsv->getType2());
     if (MathUtil::distance(end1, end2) <= 4.0) {
-        linearBezierTrackSegments.append(ts);
+        linearBezierTrackSegments.append(tsv);
         continue;   // so we don't get added again
     }
     // if control points are collinear...
     bool good = true; //assume success (optimist!)
-    for (QPointF cp : ts->getBezierControlPoints()) {
+    for (QPointF cp : tsv->getBezierControlPoints()) {
         if (qAbs(MathUtil::distance(end1, end2, cp)) > 1.0) {
             good = false;
             break;
         }
     }
     if (good) {
-        linearBezierTrackSegments.append(ts);
+        linearBezierTrackSegments.append(tsv);
 //                        ts.setBezier(false);
     }
    }   // c1 & c2 aren't null
@@ -711,8 +719,8 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
      checkLinearBezierTrackSegmentsMenu->addAction(checkNoResultsMenuItem);
  } else {
   // for each linear bezier track segment we found
-  for (TrackSegment* ts : linearBezierTrackSegments) {
-      QString name = ts->getName();
+  for (TrackSegmentView* tsv : linearBezierTrackSegments) {
+      QString name = tsv->getName();
       QAction* jmi = new QAction(name, this);
       jmi->setCheckable(true);
       checkLinearBezierTrackSegmentsMenu->addAction(jmi);
@@ -740,13 +748,14 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
 
  LayoutTrack* layoutTrack = layoutEditor->getFinder()->findObjectByName(trackSegmentName);
  if (layoutTrack != nullptr) {
-     layoutEditor->setSelectionRect(layoutTrack->getBounds());
+  LayoutTrackView* layoutTrackView = layoutEditor->getLayoutTrackView(layoutTrack);
+     layoutEditor->setSelectionRect(layoutTrackView->getBounds());
      // setSelectionRect calls createSelectionGroups...
      // so we have to clear it before amending to it
      layoutEditor->clearSelectionGroups();
      layoutEditor->amendSelectionGroup(layoutTrack);
      // show its popup menu
-     layoutTrack->showPopup();
+     layoutTrackView->showPopup();
  } else {
      layoutEditor->clearSelectionGroups();
  }
@@ -767,30 +776,30 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
  checkFixedRadiusBezierTrackSegmentsMenu->addAction(checkInProgressMenuItem);
 
  // check all TrackSegments
- QList<TrackSegment*> linearBezierTrackSegments = QList<TrackSegment*>();
- for (TrackSegment* ts : layoutEditor->getTrackSegments())
+ QList<TrackSegmentView*> linearBezierTrackSegments = QList<TrackSegmentView*>();
+ for (TrackSegmentView* tsv : layoutEditor->getTrackSegmentViews())
  {
   // has to be a bezier
-  if (ts->isBezier())
+  if (tsv->isBezier())
   {
    // adjacent connections must be defined...
-   LayoutTrack* c1 = ts->getConnect1();
-   LayoutTrack* c2 = ts->getConnect2();
+   LayoutTrack* c1 = tsv->getConnect1();
+   LayoutTrack* c2 = tsv->getConnect2();
    if ((c1 != nullptr) && (c2 != nullptr))
    {
-    QPointF end1 = LayoutEditor::getCoords(c1, ts->getType1());
-    QPointF end2 = LayoutEditor::getCoords(c2, ts->getType2());
+    QPointF end1 = layoutEditor->getCoords(c1, tsv->getType1());
+    QPointF end2 = layoutEditor->getCoords(c2, tsv->getType2());
     double chordLength = MathUtil::distance(end1, end2);
     if (chordLength <= 4.0) {
         continue;   //skip short segments
     }
 
     //get first and last control points
-    int cnt = ts->getNumberOfBezierControlPoints();
+    int cnt = tsv->getNumberOfBezierControlPoints();
     if (cnt > 0)
     {
-     QPointF cp0 = ts->getBezierControlPoint(0);
-     QPointF cpN = ts->getBezierControlPoint(cnt - 1);
+     QPointF cp0 = tsv->getBezierControlPoint(0);
+     QPointF cpN = tsv->getBezierControlPoint(cnt - 1);
      //calculate orthoginal points
      QPointF op1 = MathUtil::add(end1, MathUtil::orthogonal(MathUtil::subtract(cp0, end1)));
      QPointF op2 = MathUtil::subtract(end2, MathUtil::orthogonal(MathUtil::subtract(cpN, end2)));
@@ -813,8 +822,8 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
 
        for (int idx = 0; idx < cnt - 1; idx++)
        {
-        QPointF cp1 = ts->getBezierControlPoint(idx);
-        QPointF cp2 = ts->getBezierControlPoint(idx + 1);
+        QPointF cp1 = tsv->getBezierControlPoint(idx);
+        QPointF cp2 = tsv->getBezierControlPoint(idx + 1);
         QPointF mp = MathUtil::midPoint(cp1, cp2);
         double rM = MathUtil::distance(ip, mp);
         if (qAbs(r1 - rM) > 1.0) {
@@ -833,8 +842,8 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
         }
        }
        if (good) {
-           linearBezierTrackSegments.append(ts);
-           ts->setCircle(true);
+           linearBezierTrackSegments.append(tsv);
+           tsv->setCircle(true);
        }
       } else {
           log->error("checkFixedRadiusBezierTrackSegments(): unequal radius");
@@ -852,9 +861,9 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
      checkFixedRadiusBezierTrackSegmentsMenu->addAction(checkNoResultsMenuItem);
  } else {
   // for each linear bezier track segment we found
-  for (TrackSegment* ts : linearBezierTrackSegments)
+  for (TrackSegmentView* tsv : linearBezierTrackSegments)
   {
-   QString name = ts->getName();
+   QString name = tsv->getName();
    QAction* jmi = new QAction(name, this);
    jmi->setCheckable(true);
    checkFixedRadiusBezierTrackSegmentsMenu->addAction(jmi);
@@ -882,13 +891,14 @@ connect(jmi, SIGNAL(triggered(bool)), this, SLOT(doCheckUnBlockedTracksMenuItem(
 
  LayoutTrack* layoutTrack = layoutEditor->getFinder()->findObjectByName(trackSegmentName);
  if (layoutTrack != nullptr) {
-     layoutEditor->setSelectionRect(layoutTrack->getBounds());
+  LayoutTrackView* layoutTrackView = layoutEditor->getLayoutTrackView(layoutTrack);
+     layoutEditor->setSelectionRect(layoutTrackView->getBounds());
      // setSelectionRect calls createSelectionGroups...
      // so we have to clear it before amending to it
      layoutEditor->clearSelectionGroups();
      layoutEditor->amendSelectionGroup(layoutTrack);
      // show its popup menu
-     layoutTrack->showPopup();
+     layoutTrackView->showPopup();
  } else {
      layoutEditor->clearSelectionGroups();
  }

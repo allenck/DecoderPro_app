@@ -110,7 +110,7 @@
   ((QBoxLayout*)p->layout())->addStrut(5);
   _moreButton = new QPushButton(tr("Show More"));
   //_moreButton.addActionListener(moreAction);
-  connect(_moreButton, SIGNAL(clicked()), moreAction, SLOT(actionPerformed()));
+  connect(_moreButton, SIGNAL(clicked()), moreAction->self(), SLOT(actionPerformed()));
   p->layout()->addWidget(_moreButton);
   QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
   sizePolicy.setHorizontalStretch(0);
@@ -145,7 +145,7 @@
     ((QBoxLayout*)p->layout())->addStrut(5);
     _addButton = new QPushButton(tr("Add To Catalog"));
     //_addButton.addActionListener(addAction);
-    connect(_addButton, SIGNAL(clicked()), addAction, SLOT(actionPerformed()));
+    connect(_addButton, SIGNAL(clicked()), addAction->self(), SLOT(actionPerformed()));
     QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     sizePolicy.setHorizontalStretch(0);
     sizePolicy.setVerticalStretch(0);
@@ -173,7 +173,7 @@
   ((QBoxLayout*)p->layout())->addStrut(5);
   QPushButton* lookButton = new QPushButton(tr("Continue Searching"));
   //lookButton->layout()->addWidgetActionListener(lookAction);
-  connect(lookButton, SIGNAL(clicked()), lookAction, SLOT(actionPerformed()));
+  connect(lookButton, SIGNAL(clicked()), lookAction->self(), SLOT(actionPerformed()));
   QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
   sizePolicy.setHorizontalStretch(0);
   sizePolicy.setVerticalStretch(0);
@@ -185,7 +185,7 @@
  ((QBoxLayout*)p->layout())->addStrut(5);
  QPushButton* cancelButton = new QPushButton(tr("Cancel"));
  //cancelButton.addActionListener(cancelAction);
- connect(cancelButton, SIGNAL(clicked()), cancelAction, SLOT(actionPerformed()));
+ connect(cancelButton, SIGNAL(clicked()), cancelAction->self(), SLOT(actionPerformed()));
  QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
  sizePolicy.setHorizontalStretch(0);
  sizePolicy.setVerticalStretch(0);
@@ -444,7 +444,7 @@ class MemoryExceptionHandler implements Thread.UncaughtExceptionHandler {
                     //modeless is for ImageEditor dragging
                     try {
                         image = new DragJLabel(new DataFlavor(ImageIndexEditor::IconDataFlavorMime));
-                    } catch (ClassNotFoundException cnfe) {
+                    } catch (ClassNotFoundException* cnfe) {
                         //cnfe.printStackTrace();
                         image = new DragJLabel(NULL);
                     }

@@ -37,25 +37,15 @@
 
 void SignalMastItemPanel::init()
 {
- if(!_initialized)
- {
-  TableItemPanel::init();
-  //_table.getSelectionModel().addListSelectionListener(this);
-  connect(_table, SIGNAL(clicked(QModelIndex)), this, SLOT(valueChanged()));
-  _showIconsButton->setEnabled(false);
-  _showIconsButton->setToolTip(tr("Select a row from the table to show the icons for the item"));
-  initIconFamiliesPanel();
-  layout()->addWidget(_iconFamilyPanel/*, 1*/);
- }
+ TableItemPanel::init();
+ _showIconsButton->setEnabled(_mast != nullptr);
 }
-#if 0
+
 void SignalMastItemPanel::init(ActionListener* doneAction, QMap<QString, NamedIcon*>* iconMap)
 {
  TableItemPanel::init(doneAction, iconMap);
-// _table->getSelectionModel().addListSelectionListener(this);
- _previewPanel->setVisible(false);
 }
-#endif
+
 /*protected*/ QWidget* SignalMastItemPanel::instructions()
 {
  _blurb = new QWidget();
@@ -115,7 +105,7 @@ void SignalMastItemPanel::init(ActionListener* doneAction, QMap<QString, NamedIc
     try {
         label = getDragger(new DataFlavor(Editor::POSITIONABLE_FLAVOR));
         label->setToolTip(tr("Drag an icon from this panel to add it to the control panel"));
-    } catch (ClassNotFoundException cnfe) {
+    } catch (ClassNotFoundException* cnfe) {
 //        cnfe.printStackTrace();
         label = new JLabel();
     }
@@ -185,7 +175,7 @@ void SignalMastItemPanel::_showIconsButton_clicked()
 
     try {
         _mast = static_cast<SignalMastManager*>( InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(bean->getDisplayName());
-    } catch (IllegalArgumentException ex) {
+    } catch (IllegalArgumentException* ex) {
         log->error(tr("getIconMap: No SignalMast called %1").arg(bean->getDisplayName()));
         _iconMastMap = nullptr;
         return;

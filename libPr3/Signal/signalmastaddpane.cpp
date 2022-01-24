@@ -76,24 +76,24 @@ SignalMastAddPane::SignalMastAddPane(QWidget *parent) : JPanel(parent)
       * Is this pane available, given the current configuration of the program?
       * In other words, are all necessary managers and other objects present?
       */
-     /*public*/ bool SignalMastAddPane::SignalMastAddPaneProvider::isAvailable() { return true; }
+     /*public*/ bool SignalMastAddPaneProvider::isAvailable() { return true; }
 
      /**
       * @return Human-prefered name for type of signal mast, in local language
       */
-     /*@Nonnull*/ /*abstract*/ /*public*/ QString SignalMastAddPane::SignalMastAddPaneProvider::getPaneName() {return "";}
+     /*@Nonnull*/ /*abstract*/ /*public*/ QString SignalMastAddPaneProvider::getPaneName() {return "";}
 
      /**
       * @return A new instance of this SignalMastAddPane class
       */
-     /*@Nonnull*/ /*abstract*/ /*public*/ SignalMastAddPane* SignalMastAddPane::SignalMastAddPaneProvider::getNewPane() {return nullptr;}
+     /*@Nonnull*/ /*abstract*/ /*public*/ SignalMastAddPane* SignalMastAddPaneProvider::getNewPane() {return nullptr;}
 
      /**
       * Get all available instances as an {@link Collections#unmodifiableMap}
       * between the (localized) name and the pane. Note that this is a SortedMap in
       * name order.
       */
-     /*final*/ /*static*/ /*public*/ QMap<QString, SignalMastAddPane::SignalMastAddPaneProvider*>* SignalMastAddPane::SignalMastAddPaneProvider::getInstancesMap() {
+     /*final*/ /*static*/ /*public*/ QMap<QString, SignalMastAddPaneProvider*>* SignalMastAddPaneProvider::getInstancesMap() {
          if (instanceMap == nullptr) loadInstances();
          //return Collections.unmodifiableMap(instanceMap);
          return new QMap<QString, SignalMastAddPaneProvider*>(*instanceMap);
@@ -103,7 +103,7 @@ SignalMastAddPane::SignalMastAddPane(QWidget *parent) : JPanel(parent)
       * Get all available instances as an {@link Collections#unmodifiableCollection}
       * between the (localized) name and the pane.
       */
-     /*final*/ /*static*/ /*public*/ QList<SignalMastAddPane::SignalMastAddPaneProvider*> SignalMastAddPane::SignalMastAddPaneProvider::getInstancesCollection() {
+     /*final*/ /*static*/ /*public*/ QList<SignalMastAddPaneProvider*> SignalMastAddPaneProvider::getInstancesCollection() {
          if (instanceMap == nullptr) loadInstances();
          return QList<SignalMastAddPaneProvider*> (instanceMap->values());
      }
@@ -112,7 +112,7 @@ SignalMastAddPane::SignalMastAddPane(QWidget *parent) : JPanel(parent)
       * Load all the available instances. Note this only runs
       * once; there's no reloading once the program is running.
       */
-     /*final*/ /*static*/ /*public*/ void SignalMastAddPane::SignalMastAddPaneProvider::loadInstances() {
+     /*final*/ /*static*/ /*public*/ void SignalMastAddPaneProvider::loadInstances() {
          if (instanceMap != nullptr) return;
 
          instanceMap = new QMap<QString, SignalMastAddPaneProvider*>();  // sorted map, in string order on key
@@ -127,7 +127,7 @@ SignalMastAddPane::SignalMastAddPane(QWidget *parent) : JPanel(parent)
          instanceMap->insert(provider->getPaneName(), provider);
          TurnoutSignalMastAddPaneProvider* provider1 = new TurnoutSignalMastAddPaneProvider();
          instanceMap->insert(provider1->getPaneName(), provider1);
-         DccSignalMastAddPane::SignalMastAddPaneProvider* provider2 = new DccSignalMastAddPane::SignalMastAddPaneProvider();
+         SignalMastAddPaneProvider* provider2 = new SignalMastAddPaneProvider();
          instanceMap->insert(provider2->getPaneName(), provider2);
          SignalHeadSignalHeadSignalMastAddPaneProvider* provider3 = new SignalHeadSignalHeadSignalMastAddPaneProvider();
          instanceMap->insert(provider3->getPaneName(), provider3);
@@ -136,5 +136,5 @@ SignalMastAddPane::SignalMastAddPane(QWidget *parent) : JPanel(parent)
 
      }
 
-     /*static*/ /*volatile*/ QMap<QString, SignalMastAddPane::SignalMastAddPaneProvider*>* SignalMastAddPane::SignalMastAddPaneProvider::instanceMap = nullptr;
+     /*static*/ /*volatile*/ QMap<QString, SignalMastAddPaneProvider*>* SignalMastAddPaneProvider::instanceMap = nullptr;
  //};

@@ -5,7 +5,7 @@
 #include "jspinner.h"
 #include "spinnernumbermodel.h"
 
-SlidingSpinner::SlidingSpinner(QObject *parent) : ChangeListener()
+SlidingSpinner::SlidingSpinner(QObject *parent) : ChangeListener(parent)
 {
 
 }

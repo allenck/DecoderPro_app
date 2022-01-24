@@ -14,8 +14,8 @@ class AbstractSignalHeadServer : public QObject
  Q_OBJECT
 public:
  explicit AbstractSignalHeadServer(QObject *parent = nullptr);
- /*abstract*/ /*public*/ virtual void sendStatus(QString /*signalHead*/, int /*Status*/) throw (IOException) {}
- /*abstract*/ /*public*/ virtual void sendErrorStatus(QString /*signalHead*/) throw (IOException) {}
+ /*abstract*/ /*public*/ virtual void sendStatus(QString /*signalHead*/, int /*Status*/) /*throw (IOException)*/ {}
+ /*abstract*/ /*public*/ virtual void sendErrorStatus(QString /*signalHead*/) /*throw (IOException)*/ {}
  /*abstract*/ /*public*/ virtual void parseStatus(QString /*statusString*/) throw (JmriException, IOException, JsonException) {}
  /*public*/ void setSignalHeadAppearance(QString signalHeadName, QString signalHeadState);
  /*public*/ void dispose();
@@ -36,16 +36,18 @@ protected:
 friend class ASHSignalHeadListener;
 };
 
-class ASHSignalHeadListener : public PropertyChangeListener {
+class ASHSignalHeadListener : public QObject,public PropertyChangeListener {
 Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
     QString name = "";
     SignalHead* signalHead = nullptr;
     AbstractSignalHeadServer* ashs;
 public:
     ASHSignalHeadListener(QString signalHeadName, AbstractSignalHeadServer* ashs) {
         name = signalHeadName;
-        signalHead = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHeadName);
+        signalHead = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHeadName);
     }
+    QObject* self() override{return (QObject*)this;}
 public slots:
     // update state as state of signalHead changes
     //@Override
@@ -58,7 +60,7 @@ public slots:
             }
             try {
                 ashs->sendStatus(name, state);
-            } catch (IOException ie) {
+            } catch (IOException* ie) {
                 // if we get an error, de-register
                 if (ashs->log->isDebugEnabled()) {
                     ashs->log->debug("Unable to send status, removing listener from signalHead " + name);

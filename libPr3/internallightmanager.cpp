@@ -7,7 +7,7 @@ InternalLightManager::InternalLightManager(InternalSystemConnectionMemo* memo, Q
  setObjectName("InternalLightManager");
  setProperty("JavaClassName", "jmri.jmrix.internal.InternalLightManager");
 
- //registerSelf();
+ registerSelf();
 }
 /**
  * Implement a light manager for "Internal" (virtual) lights.
@@ -38,18 +38,19 @@ InternalLightManager::InternalLightManager(InternalSystemConnectionMemo* memo, Q
 //            return 100;
 //        }
 //    };
- return new AbstractVariableLightO1(systemName, userName);
+ AbstractVariableLight* l = new AbstractVariableLightO1(systemName, userName);
+ return (VariableLight*)(l);
 }
 
 /**
  * {@inheritDoc}
  */
 //@Override
-/*public*/ SystemConnectionMemo* InternalLightManager::getMemo() {
+/*public*/ SystemConnectionMemo* InternalLightManager::getMemo()  {
     return  memo;
 }
 
-/*public*/ bool InternalLightManager::validSystemNameConfig(QString /*systemName*/) const {
+/*public*/ bool InternalLightManager::validSystemNameConfig(QString /*systemName*/) {
     return true;
 }
 

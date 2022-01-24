@@ -27,7 +27,8 @@ private:
     QWidget* bottomBox;		// panel at bottom for extra buttons etc
     int bottomBoxIndex;	// index to insert extra stuff
     static /*final*/ int bottomStrutWidth;// = 20;
-    void extras();
+    virtual void extras();
+    static Logger* log;
 
 protected:
     virtual /*protected*/ void addToBottomBox(QWidget* comp, QString c);
@@ -38,6 +39,7 @@ friend class AudioTableFrame;
 friend class BlockTableFrame;
 friend class BlockTableAction;
 friend class IdTagTableAction;
+friend class OBlockTableFrame;
 };
 
 #endif // BEANTABLEFRAME_H

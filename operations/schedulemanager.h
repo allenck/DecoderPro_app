@@ -4,24 +4,30 @@
 #include <QObject>
 #include <QHash>
 #include "schedule.h"
+#include "propertychangelistener.h"
+#include "instancemanagerautodefault.h"
+#include "instancemanagerautoinitialize.h"
 
 class QDomDocument;
 class QDomElement;
 class JComboBox;
 class Logger;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class PropertyChangeEvent;
 namespace Operations
 {
  class Schedule;
- class ScheduleManager : public QObject
+ class ScheduleManager : public QObject, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize, public PropertyChangeListener
  {
   Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault InstanceManagerAutoInitialize PropertyChangeListener)
  public:
-  explicit ScheduleManager(QObject *parent = 0);
-  PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
+  Q_INVOKABLE explicit ScheduleManager(QObject *parent = 0);
+   ~ScheduleManager() {}
+   ScheduleManager(const ScheduleManager&) : QObject() {}
+  SwingPropertyChangeSupport* pcs;// = new java.beans.SwingPropertyChangeSupport(this,this);
   /*public*/ static /*final*/ QString LISTLENGTH_CHANGED_PROPERTY;// = "scheduleListLength"; // NOI18N
-  /*public*/ static /*synchronized*/ ScheduleManager* instance();
+//  /*public*/ static /*synchronized*/ ScheduleManager* instance();
   /*public*/ void dispose();
   /*public*/ int numEntries();
   /*public*/ Schedule* getScheduleByName(QString name);
@@ -41,7 +47,8 @@ namespace Operations
   /*public*/ JComboBox* getSpursByScheduleComboBox(Schedule* schedule);
   /*public*/ void load(QDomElement root);
   /*public*/ void store(QDomElement root, QDomDocument doc);
-  Q_INVOKABLE /*public*/ void initialize();
+  Q_INVOKABLE /*public*/ void initialize() override;
+  QObject* self() override {return (QObject*)this;}
 
  signals:
 
@@ -62,4 +69,5 @@ namespace Operations
 
  };
 }
+Q_DECLARE_METATYPE(Operations::ScheduleManager);
 #endif // SCHEDULEMANAGER_H

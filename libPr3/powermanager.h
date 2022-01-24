@@ -5,7 +5,7 @@
 #include <QString>
 #include "libPr3_global.h"
 #include "propertychangelistener.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 
 class LIBPR3SHARED_EXPORT PowerManager : public QObject
 {
@@ -36,7 +36,7 @@ class LIBPR3SHARED_EXPORT PowerManager : public QObject
     virtual void removePropertyChangeListener(PropertyChangeListener* /*p*/) {}
 
     virtual QString getUserName() {return "";}
- PropertyChangeSupport* pcs =nullptr;// = new PropertyChangeSupport(this);
+ SwingPropertyChangeSupport* pcs =nullptr;// = new SwingPropertyChangeSupport(this, nullptr);
  /*public*/ /*default*/ virtual bool implementsIdle();
 
 

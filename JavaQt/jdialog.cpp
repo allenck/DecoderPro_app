@@ -1407,11 +1407,11 @@ void JDialog::reSizeToFitOnScreen()
 //            String sw = System.getProperty("jmri.inset.width");
 //            if (sw!=NULL) try {
 //                widthInset = Integer.parseInt(sw);
-//            } catch (Exception e1) {log->error("Error parsing jmri.inset.width: "+e1);}
+//            } catch (Exception* e1) {log->error("Error parsing jmri.inset.width: "+e1);}
 //            String sh = System.getProperty("jmri.inset.height");
 //            if (sh!=NULL) try {
 //                heightInset = Integer.parseInt(sh);
-//            } catch (Exception e1) {log->error("Error parsing jmri.inset.height: "+e1);}
+//            } catch (Exception* e1) {log->error("Error parsing jmri.inset.height: "+e1);}
 
   int widthInset = 0;
   int heightInset = 0;
@@ -1430,7 +1430,7 @@ void JDialog::reSizeToFitOnScreen()
 //            return new Dimension(screen.width,
 //                screen.height-45);  // approximate this->..
 //        }
-//    } catch (Exception e2) {
+//    } catch (Exception* e2) {
 //        // failed completely, fall back to standard method
 //        if (log->isDebugEnabled()) log->debug("getMaximumSize returns super due to failure "+super.getMaximumSize());
 //        return super.getMaximumSize();
@@ -1536,6 +1536,12 @@ void JDialog::closeEvent(QCloseEvent* e)
  }
 }
 
+/*public*/ void JDialog::setContentPane(QWidget* pane)
+{
+ if(!layout())
+  setLayout(new QVBoxLayout());
+ layout()->addWidget(pane);
+}
 void JDialog::dispose()
 {
  dialogList.removeOne(this);

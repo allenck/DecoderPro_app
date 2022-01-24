@@ -132,9 +132,9 @@ void EditorPane::selectSaveFile() {
  // success, open the file
  try {
      saveFile(fName);
- } catch (IOException e) {
+ } catch (IOException* e) {
      // failed, warn user
-     JOptionPane::showMessageDialog(this, "Error during save: " + e.getMessage(),
+     JOptionPane::showMessageDialog(this, "Error during save: " + e->getMessage(),
              "Save failed!", JOptionPane::WARNING_MESSAGE);
  }
 }

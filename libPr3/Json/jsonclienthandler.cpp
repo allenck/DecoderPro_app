@@ -27,7 +27,7 @@
  * cause a {@value jmri.server.json.JSON#HELLO} message to be sent to the
  * client.
  */
-/*public*/ /*static*/ /*final*/ QString JsonClientHandler::HELLO_MSG = "{\"" + JSON::TYPE + "\":\"" + JSON::HELLO + "\"}";
+/*public*/ /*static*/ /*final*/ QString JsonClientHandler::HELLO_MSG = QString("{\"") + /*JSON::TYPE*/"type" + "\":\"" + /*JSON::HELLO*/ "hello"+ "\"}";
 /*private*/ /*static*/ /*final*/ Logger* JsonClientHandler::log = LoggerFactory::getLogger("JsonClientHandler");
 
 /*public*/ JsonClientHandler::JsonClientHandler(JsonConnection* connection, QObject* parent) : QObject(parent)
@@ -111,7 +111,7 @@
  * @param string the message
  * @throws java.io.IOException if communications with the client is broken
  */
-/*public*/ void JsonClientHandler::onMessage(QString string) throw (IOException)
+/*public*/ void JsonClientHandler::onMessage(QString string) /*throw (IOException)*/
 {
     log->debug(tr("Received from client: %1").arg(string));
 
@@ -119,9 +119,9 @@
         //this->onMessage(this->connection->getObjectMapper().readTree(string));
      QJsonDocument jdoc = QJsonDocument::fromJson(string.toUtf8());
      this->onMessage(jdoc.object());
-    } catch (JsonProcessingException pe) {
-        log->warn(tr("Exception processing \"%1\"\n%2").arg(string).arg(pe.getMessage()));
-        this->sendErrorMessage(500, tr( "Unable to process JSON message with error: %1.").arg( pe.getLocalizedMessage()));
+    } catch (JsonProcessingException* pe) {
+        log->warn(tr("Exception processing \"%1\"\n%2").arg(string).arg(pe->getMessage()));
+        this->sendErrorMessage(500, tr( "Unable to process JSON message with error: %1.").arg( pe->getLocalizedMessage()));
     }
 }
 
@@ -134,7 +134,7 @@
  * @throws java.io.IOException if communications is broken with the client.
  * @see #onMessage(java.lang.String)
  */
-/*public*/ void JsonClientHandler::onMessage(/*JsonNode*/QJsonObject root) throw (IOException) {
+/*public*/ void JsonClientHandler::onMessage(/*JsonNode*/QJsonObject root) /*throw (IOException)*/ {
  try
  {
   //QString type = root.path(JSON::TYPE).asText();
@@ -235,9 +235,9 @@ QString type = root.value(JSON::TYPE).toString();
       this->connection->close();
   }
 #endif
- } catch (JmriException je) {
-     this->sendErrorMessage(500, tr("Unsupported operation attempted: %1.").arg( je.getLocalizedMessage()));
- } catch (JsonException je) {
+ } catch (JmriException* je) {
+     this->sendErrorMessage(500, tr("Unsupported operation attempted: %1.").arg( je->getLocalizedMessage()));
+ } catch (JsonException* je) {
      this->sendErrorMessage(je);
  }
 }
@@ -251,15 +251,15 @@ QString type = root.value(JSON::TYPE).toString();
  * the parameter {@link #HELLO_MSG} instead
  */
 //@Deprecated
-/*public*/ void JsonClientHandler::sendHello(int /*heartbeat*/) throw (IOException) {
+/*public*/ void JsonClientHandler::sendHello(int /*heartbeat*/) /*throw (IOException)*/ {
     this->onMessage(HELLO_MSG);
 }
 
-/*private*/ void JsonClientHandler::sendErrorMessage(int code, QString message) throw (IOException) {
-    JsonException ex =  JsonException(code, message);
+/*private*/ void JsonClientHandler::sendErrorMessage(int code, QString message) /*throw (IOException)*/ {
+    JsonException* ex = new JsonException(code, message);
     this->sendErrorMessage(ex);
 }
 
-/*private*/ void JsonClientHandler::sendErrorMessage(JsonException ex) throw (IOException) {
-    this->connection->sendMessage(ex.getJsonMessage());
+/*private*/ void JsonClientHandler::sendErrorMessage(JsonException* ex) /*throw (IOException)*/ {
+    this->connection->sendMessage(ex->getJsonMessage());
 }

@@ -3,9 +3,10 @@
 #include "proglistener.h"
 
 
-class ProgListenerScaffold : public ProgListener
+class ProgListenerScaffold : public QObject, public ProgListener
 {
     Q_OBJECT
+  Q_INTERFACES(ProgListener)
 public:
     ProgListenerScaffold();
     /*public*/ int getRcvdValue();
@@ -13,6 +14,7 @@ public:
     /*public*/ int getRcvdInvoked();
     /*public*/ bool wasRightThread();
     /*public*/ bool reset();
+    QObject* self() {return (QObject*)this;}
 
 public slots:
     /*public*/ void programmingOpReply(int value, int status);

@@ -3,23 +3,26 @@
 
 #include <QDialog>
 #include "liblayouteditor_global.h"
+#include "propertychangelistener.h"
 
 class TurnoutOperation;
 class PropertyChangeEvent;
 class QTabWidget;
 class TurnoutOperationConfig;
-class LIBLAYOUTEDITORSHARED_EXPORT TurnoutOperationFrame : public QDialog
+class LIBLAYOUTEDITORSHARED_EXPORT TurnoutOperationFrame : public QDialog, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  public:
     explicit TurnoutOperationFrame(QWidget *parent = 0);
+  QObject* self() override {return (QObject*)this;}
 
  signals:
 
  public slots:
-    void propertyChange(PropertyChangeEvent*);
+    void propertyChange(PropertyChangeEvent*) override;
  private:
-    TurnoutOperationFrame* self;// = this;
+    TurnoutOperationFrame* _self;// = this;
     TurnoutOperationConfig* currentConfig;// = null;
     TurnoutOperation* currentOperation;// = null;
     QString previousSelectionName;// = "";

@@ -41,9 +41,9 @@
     //super(in);
     try {
 //        sd = StreamDecoder.forInputStreamReader(in, this, (String)null); // ## check lock object
-    } catch (UnsupportedEncodingException e) {
+    } catch (UnsupportedEncodingException* e) {
         // The default encoding should always be available
-        throw  Error(e.getMessage());
+        throw new Error(e->getMessage());
     }
 }
 

@@ -7,8 +7,8 @@ namespace Operations {
 class HtmlManifest : public HtmlTrainCommon
 {
 public:
- /*public*/ HtmlManifest(QLocale locale, Operations::Train* train, QObject* parent = 0) throw (IOException);
- /*public*/ QString getLocations() throw (IOException);
+ /*public*/ HtmlManifest(QLocale locale, Operations::Train* train, QObject* parent = 0) /*throw (IOException)*/;
+ /*public*/ QString getLocations() /*throw (IOException)*/;
  /*public*/ QString getValidity();
 
 private:
@@ -34,7 +34,7 @@ protected:
  /*protected*/ ObjectMapper mapper;
  /*protected*/  bool isLocalMove(QJsonObject car);
  /*protected*/  bool isUtilityCar(QJsonObject car);
- /*protected*/ QJsonObject getJsonManifest() throw (IOException);
+ /*protected*/ QJsonObject getJsonManifest() /*throw (IOException)*/;
 
 };
 }

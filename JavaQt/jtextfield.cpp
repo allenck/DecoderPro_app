@@ -320,6 +320,7 @@ void JTextField::init()
 //    putClientProperty(JComponent_INPUT_VERIFIER, inputVerifier);
 //    firePropertyChange("inputVerifier", oldInputVerifier, inputVerifier);
  this->inputVerifier = inputVerifier;
+ this->setValidator((QValidator*)inputVerifier);
 }
 
 #if 0
@@ -1159,12 +1160,12 @@ Document* JTextField::getDocument()
  disconnect(this, SIGNAL(focusLost(FocusEvent*)), l, SLOT(focusLost(FocusEvent*)));
 }
 
-/*private*/ void JTextField::focusInEvent(QFocusEvent* e)
+/*private*/ void JTextField::focusInEvent(QFocusEvent* /*e*/)
 {
  emit focusGained(new FocusEvent());
 }
 
-/*private*/ void JTextField::focusOutEvent(QFocusEvent* e)
+/*private*/ void JTextField::focusOutEvent(QFocusEvent* /*e*/)
 {
  emit focusLost(new FocusEvent());
 }

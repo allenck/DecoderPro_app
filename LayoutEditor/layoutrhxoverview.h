@@ -7,7 +7,11 @@ class LayoutRHXOverView : public LayoutXOverView
 {
   Q_OBJECT
  public:
-  /*public*/ LayoutRHXOverView(/*@Nonnull*/ LayoutRHXOver* xover);
+  /*public*/ LayoutRHXOverView(/*@Nonnull*/ LayoutRHXOver* xover,
+         /*@Nonnull*/ QPointF c, double rot,
+         double xFactor, double yFactor,
+         /*@Nonnull*/ LayoutEditor* layoutEditor);
+
 
 };
 

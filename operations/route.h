@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QHash>
 #include "logger.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include <QtXml>
 #include "appslib_global.h"
 
@@ -13,15 +13,15 @@ namespace Operations
 {
  class Location;
  class RouteLocation;
- class APPSLIBSHARED_EXPORT Route : public QObject
+ class APPSLIBSHARED_EXPORT Route : public SwingPropertyChangeSupport, public PropertyChangeListener
  {
   Q_OBJECT
+     Q_INTERFACES(PropertyChangeListener)
  public:
   //explicit Route(QObject *parent = 0);
   /*public*/ Route(QString id, QString name, QObject* parent = 0);
   /*public*/ Route(QDomElement e);
 
-  PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
   /*public*/ static /*final*/ QString NONE;// = "";
   /*public*/ static /*final*/ int EAST;// = 1; // train direction
   /*public*/ static /*final*/ int WEST;// = 2;
@@ -29,9 +29,13 @@ namespace Operations
   /*public*/ static /*final*/ int SOUTH;// = 8;
 
   /*public*/ static /*final*/ QString LISTCHANGE_CHANGED_PROPERTY;// = "routeListChange"; // NOI18N
+  /*public*/ static /*final*/ QString ROUTE_STATUS_CHANGED_PROPERTY;// = "routeStatusChange"; // NOI18N
+  /*public*/ static /*final*/ QString ROUTE_BLOCKING_CHANGED_PROPERTY;// = "routeBlockingChange"; // NOI18N
   /*public*/ static /*final*/ QString DISPOSE;// = "routeDispose"; // NOI18N
 
   /*public*/ static /*final*/ QString OKAY;// = tr("Okay");
+  /*public*/ static /*final*/ QString TRAIN_BUILT;// = Bundle.getMessage("TrainBuilt");
+
   /*public*/ static /*final*/ QString ORPHAN;// = tr("Orphan");
   /*public*/ static /*final*/ QString ERROR;// = tr("Error");
   /*public*/ QString getId();
@@ -53,6 +57,11 @@ namespace Operations
   /*public*/ QString getStatus();
   /*public*/ RouteLocation* addLocation(Location* location);
   /*public*/ RouteLocation* addLocation(Location* location, int sequence);
+  /*public*/ QList<RouteLocation*> getBlockingOrder();
+  /*public*/ void setBlockingOrderUp(RouteLocation* rl);
+  /*public*/ void setBlockingOrderDown(RouteLocation* rl);
+  /*public*/ void resetBlockingOrder();
+
   /*public*/ void moveLocationUp(RouteLocation* rl);
   /*public*/ RouteLocation* getItemBySequenceId(int sequenceId);
   /*public*/ void moveLocationDown(RouteLocation* rl);
@@ -61,10 +70,12 @@ namespace Operations
   /*public*/ QComboBox* getComboBox();
   /*public*/ void updateComboBox(QComboBox* box);
 
+  QObject* self() override {return (QObject*)this;
+                           }
  signals:
 
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
+  /*public*/ void propertyChange(PropertyChangeEvent* e)override;
 
  private:
   Logger* log;

@@ -46,7 +46,7 @@ RampData::RampData(float throttleIncre, int timeIncre,QObject*parent) : QObject(
 
 /*protected*/ float RampData::getMaxSpeed() {
     if (_settings.isEmpty()) {
-        throw IllegalArgumentException("Null array of throttle settings");
+        throw new IllegalArgumentException("Null array of throttle settings");
     }
     return _settings.value(_settings.size() - 1);
 }

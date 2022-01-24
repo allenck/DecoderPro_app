@@ -80,8 +80,8 @@
     consistFile = new ConsistFile();
     try {
         consistFile->readFile();
-    } catch (Exception e) {
-        log->warn("error reading consist file: " + e.getMessage());
+    } catch (Exception* e) {
+        log->warn("error reading consist file: " + e->getMessage());
     }
 
     // register to be notified if the consist list changes.
@@ -424,7 +424,7 @@ void ConsistToolFrame::on_isCSConsist_checked(bool)
  }
  try {
      consistManager->delConsist(address);
- } catch (Exception ex) {
+ } catch (Exception* ex) {
      log->error(tr("Error deleting consist %1").arg(address->toString()), ex);
  }
  adrSelector->reset();
@@ -434,9 +434,9 @@ void ConsistToolFrame::on_isCSConsist_checked(bool)
  {
   consistFile->writeFile(consistManager->getConsistList()->toList());
  }
- catch (IOException ex)
+ catch (IOException* ex)
  {
-  log->warn("error writing consist file: " + ex.getMessage());
+  log->warn("error writing consist file: " + ex->getMessage());
  }
  resetLocoButtonActionPerformed(/*e*/);
  canAdd();
@@ -765,8 +765,8 @@ void ConsistToolFrame::on_isCSConsist_checked(bool)
     {
      consistFile->writeFile(consistManager->getConsistList()->toList());
     }
-    catch (Exception e) {
-        log->warn("error writing consist file: " + e.getMessage());
+    catch (Exception* e) {
+        log->warn("error writing consist file: " + e->getMessage());
     }
 }
 
@@ -784,8 +784,8 @@ void ConsistToolFrame::on_isCSConsist_checked(bool)
         // finished loading consists on startup.
         try {
             consistFile->readFile();
-        } catch (Exception e) {
-            log->warn("error reading consist file: " + e.getMessage());
+        } catch (Exception* e) {
+            log->warn("error reading consist file: " + e->getMessage());
         }
         _readConsistFile = false;
     }

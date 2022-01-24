@@ -7,32 +7,36 @@
 class Logger;
 class JsonRosterHttpService;
 class JsonRosterSocketService;
-/*private*/ class JsonRosterEntryListener : public PropertyChangeListener {
+/*private*/ class JsonRosterEntryListener : public QObject,public PropertyChangeListener {
 Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  JsonRosterSocketService* jrss;
 public:
  JsonRosterEntryListener( JsonRosterSocketService* jrss);
+ QObject* self() override{return (QObject*)this;}
 public slots:
     //@Override
-    /*public*/ void propertyChange(PropertyChangeEvent* evt);
+    /*public*/ void propertyChange(PropertyChangeEvent* evt) override;
 };
 
-/*private*/ class JsonRosterListener : public PropertyChangeListener {
+/*private*/ class JsonRosterListener : public QObject,public PropertyChangeListener {
 Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
     //@Override
  JsonRosterSocketService* jrss;
 public:
  JsonRosterListener(JsonRosterSocketService* jrss);
+ QObject* self() override{return (QObject*)this;}
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* evt);
+    /*public*/ void propertyChange(PropertyChangeEvent* evt) override;
 };
 class JsonRosterSocketService : public JsonSocketService
 {
 public:
  /*public*/ JsonRosterSocketService(JsonConnection* connection, QObject* parent = 0);
  /*public*/ void listen();
- /*public*/ void onMessage(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException);
- /*public*/ void onList(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException);
+ /*public*/ void onMessage(QString type, QJsonObject data, QLocale locale) /*throw (IOException, JmriException, JsonException)*/;
+ /*public*/ void onList(QString type, QJsonObject data, QLocale locale) /*throw (IOException, JmriException, JsonException)*/;
  /*public*/ void onClose();
 
 private:

@@ -41,7 +41,7 @@ JmrixConfigPaneXml::JmrixConfigPaneXml(QObject *parent) :
  try {
      XmlAdapter* x = (XmlAdapter*) Class::forName(adapter)/*.newInstance()*/;
      return x->store(oprime);
- } catch (Exception e) {
+ } catch (Exception* e) {
      Logger::error("Exception: " /*+ e*/);
      //e.printStackTrace();
      return QDomElement();
@@ -73,7 +73,7 @@ JmrixConfigPaneXml::JmrixConfigPaneXml(QObject *parent) :
 //            } else {
 //                log->debug("skip updateLAF as already has className==" + className);
 //            }
-//        } catch (Exception ex) {
+//        } catch (Exception* ex) {
 //            Logger::error("Exception while setting GUI look & feel: " + ex);
 //            result = false;
 //        }
@@ -92,7 +92,7 @@ JmrixConfigPaneXml::JmrixConfigPaneXml(QObject *parent) :
     try {
         // Set the new look and feel, and update the sample message to reflect it.
         UIManager.setLookAndFeel(className);
-    } catch (Exception e) {
+    } catch (Exception* e) {
         String errMsg = "The " + name + " look-and-feel ";
         if (e instanceof UnsupportedLookAndFeelException) {
             errMsg += "is not supported on this platform.";

@@ -56,7 +56,7 @@ ConfigXmlManagerTest::ConfigXmlManagerTest(QObject *parent) : QObject(parent)
         // this will fail before reaching file
         try {
             configxmlmanager->storeAll(new File(FileUtil::getUserFilesPath(), "none"));
-        } catch (Exception e) {
+        } catch (Exception* e) {
             // check that the handler was invoked
             Assert::assertTrue(innerFlag, __FILE__, __LINE__);
         }

@@ -33,9 +33,9 @@
     /*public*/ URISyntaxException::URISyntaxException(QString input, QString reason, int index) : Exception(reason){
         //super(reason);
         if ((input == "") || (reason == ""))
-            throw  NullPointerException();
+            throw new NullPointerException();
         if (index < -1)
-            throw  IllegalArgumentException();
+            throw new IllegalArgumentException();
         this->input = input;
         this->index = index;
     }
@@ -53,9 +53,9 @@
     /*public*/ URISyntaxException::URISyntaxException(QString input, QString reason) : Exception(reason)
 {
  if ((input == "") || (reason == ""))
-     throw  NullPointerException();
+     throw new NullPointerException();
  if (index < -1)
-     throw  IllegalArgumentException();
+     throw new IllegalArgumentException();
  this->input = input;
  this->index = -1;
 

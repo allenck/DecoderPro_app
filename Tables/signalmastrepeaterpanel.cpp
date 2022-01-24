@@ -34,7 +34,7 @@
     //super();
     dsmm = static_cast<DefaultSignalMastManager*>(InstanceManager::getDefault("SignalMastManager"));
     //dsmm.addPropertyChangeListener(this);
-    connect(dsmm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    connect(dsmm, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
     //setLayout(new BorderLayout());
     QVBoxLayout* thisLayout = new QVBoxLayout(this);
@@ -174,7 +174,7 @@ JLabel sourceLabel = new JLabel();
         this->panel = panel;
         log = new Logger("SignalMastRepeaterModel");
         //dsmm.addPropertyChangeListener(this);
-        connect(panel->dsmm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        connect(panel->dsmm, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
 
     //@Override

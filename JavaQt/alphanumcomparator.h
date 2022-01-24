@@ -1,7 +1,7 @@
 #ifndef ALPHANUMCOMPARATOR_H
 #define ALPHANUMCOMPARATOR_H
 
-#include "comparatort.h"
+#include "comparator.h"
 
 /**
  * This is an updated version with enhancements made by Daniel Migowski, Andre
@@ -21,7 +21,7 @@
  * leading zeros. For example, 0001 is seem as larger than 1 because it's the
  * longer number. A version that does not compare leading zeros is forthcoming.
  */
-/*public*/ class AlphanumComparator : public ComparatorT<QString> {
+/*public*/ class AlphanumComparator : public Comparator/*T<QString>*/ {
 
     /*private*/ /*final*/ bool isDigit(QChar ch) {
         return (('0' <= ch) && (ch <= '9'));
@@ -90,7 +90,7 @@ public:
                 if (result == 0) {
                     for (int i = 0; i < chunkLength1; i++) {
                         //result = chunk1.at(i) - chunk2.at(i);
-                        bool b;
+//                        bool b;
                         result = 0;
                         if(chunk1.at(i) != chunk2.at(i))
                         {

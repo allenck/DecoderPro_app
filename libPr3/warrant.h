@@ -19,10 +19,10 @@ class LearnThrottleFrame;
 class DccLocoAddress;
 class ThrottleSetting;
 class BlockOrder;
-class LIBPR3SHARED_EXPORT Warrant : public AbstractNamedBean, public ThrottleListener
+class LIBPR3SHARED_EXPORT Warrant : public AbstractNamedBean, public ThrottleListener, public PropertyChangeListener
 {
     Q_OBJECT
- Q_INTERFACES(ThrottleListener)
+ Q_INTERFACES(ThrottleListener PropertyChangeListener)
 public:
    //explicit Warrant(QObject *parent = 0);
     /*public*/ Warrant(QString sName, QString uName, QObject *parent = 0);
@@ -128,10 +128,11 @@ public:
     /*public*/ QString getCurrentBlockName();
     /*public*/ void runWarrant(int mode);
     virtual /*public*/ QString setRoute(bool show, QList<BlockOrder*>* orders);
-    /*public*/ void dispose();
-    Q_INVOKABLE /*public*/ bool equals(QObject* obj);
-    /*public*/ uint hashCode();
-    /*public*/QObject* self() {return (QObject*)this;}
+    /*public*/ void dispose()override;
+    Q_INVOKABLE /*public*/ bool equals(QObject *obj);
+    /*public*/ uint hashCode()override;
+    /*public*/QObject* self() override {return (QObject*)this;}
+    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean) override;
 
 
 signals:
@@ -279,6 +280,8 @@ friend class ReleaseUntilWT2;
 friend class WarrantTest;
 friend class ThrottleRamp;
 friend class AllocateBlocks;
+friend class LearnSpeedPanel;
+friend class SCTrainRunner;
 };
 
 class BlockSpeedInfo

@@ -3,37 +3,46 @@
 #include "abstracttablemodel.h"
 #include "appslib_global.h"
 #include <QColor>
+#include "trainconductorframe.h"
+#include <QPointer>
+#include "propertychangelistener.h"
 
 class Logger;
 class PropertyChangeEvent;
 namespace Operations
 {
- class TrainConductorFrame;
  class RouteEditFrame;
  class TrainEditFrame;
  class Train;
  class TrainsTableFrame;
  class TrainManager;
- class APPSLIBSHARED_EXPORT TrainsTableModel : public AbstractTableModel
+ class APPSLIBSHARED_EXPORT TrainsTableModel : public AbstractTableModel, public PropertyChangeListener
+
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   // Defines the columns
   enum COLUMNS
   {
-   IDCOLUMN = 0,
-   BUILDBOXCOLUMN = IDCOLUMN + 1,
-   BUILDCOLUMN = BUILDBOXCOLUMN + 1,
-   NAMECOLUMN = BUILDCOLUMN + 1,
-   DESCRIPTIONCOLUMN = NAMECOLUMN + 1,
-   ROUTECOLUMN = DESCRIPTIONCOLUMN + 1,
-   DEPARTSCOLUMN = ROUTECOLUMN + 1,
-   TERMINATESCOLUMN = DEPARTSCOLUMN + 1,
-   CURRENTCOLUMN = TERMINATESCOLUMN + 1,
-   STATUSCOLUMN = CURRENTCOLUMN + 1,
-   ACTIONCOLUMN = STATUSCOLUMN + 1,
-   EDITCOLUMN = ACTIONCOLUMN + 1,
-   HIGHESTCOLUMN = EDITCOLUMN + 1
+   ID_COLUMN = 0,
+   TIME_COLUMN = ID_COLUMN + 1,
+   BUILD_BOXCOLUMN = TIME_COLUMN + 1,
+   BUILD_COLUMN = BUILD_BOXCOLUMN + 1,
+   NAME_COLUMN = BUILD_COLUMN + 1,
+   DESCRIPTION_COLUMN = NAME_COLUMN + 1,
+   BUILT_COLUMN = DESCRIPTION_COLUMN + 1,
+   ROAD_COLUMN = BUILT_COLUMN + 1,
+   LOAD_COLUMN = ROAD_COLUMN + 1,
+   OWNER_COLUMN = LOAD_COLUMN + 1,
+   ROUTE_COLUMN = OWNER_COLUMN + 1,
+   DEPARTS_COLUMN = ROUTE_COLUMN + 1,
+   TERMINATES_COLUMN = DEPARTS_COLUMN + 1,
+   CURRENT_COLUMN = TERMINATES_COLUMN + 1,
+   STATUS_COLUMN = CURRENT_COLUMN + 1,
+   ACTION_COLUMN = STATUS_COLUMN + 1,
+   EDIT_COLUMN = ACTION_COLUMN + 1,
+   HIGHESTCOLUMN = EDIT_COLUMN + 1
   };
   TrainsTableModel(QObject* parent = 0);
   /*public*/ /*final*/ int SORTBYTIME;// = 2;
@@ -41,9 +50,9 @@ namespace Operations
   /*public*/ void setSort(int sort);
   /*public*/ void setShowAll(bool showAll);
   /*public*/ bool isShowAll();
-  /*public*/ int rowCount(const QModelIndex &parent) const;
-  /*public*/ int columnCount(const QModelIndex &parent) const;
-  /*public*/ QVariant data(const QModelIndex &index, int role) const;
+  /*public*/ int rowCount(const QModelIndex &parent) const override;
+  /*public*/ int columnCount(const QModelIndex &parent) const override;
+  /*public*/ QVariant data(const QModelIndex &index, int role) const override;
   /*public*/ static /*final*/ QString IDCOLUMNNAME;//= r("Id");
   /*public*/ static /*final*/ QString TIMECOLUMNNAME;//= r("Time");
   /*public*/ static /*final*/ QString BUILDBOXCOLUMNNAME;//= r("Build");
@@ -57,17 +66,19 @@ namespace Operations
   /*public*/ static /*final*/ QString STATUSCOLUMNNAME;//= r("Status");
   /*public*/ static /*final*/ QString ACTIONCOLUMNNAME;//= r("Action");
   /*public*/ static /*final*/ QString EDITCOLUMNNAME;//= r("Edit");
-  /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
-  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
+  /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
+  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
   void initTable(JTable* table, TrainsTableFrame* frame);
   /*public*/ void dispose();
   /*public*/ QColor getRowColor(int row) const;
-  /*public*/ int getRowCount() {return rowCount(QModelIndex());}
-  /*public*/ int getColumnCount() {return columnCount(QModelIndex());}
+  /*public*/ int getRowCount()const override {return rowCount(QModelIndex());}
+  /*public*/ int getColumnCount() const override {return columnCount(QModelIndex());}
+  /*public*/ QString getColumnClass(int col) const override;
 
+  QObject* self() override {return (QObject*)this;}
 public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
  private:
   TrainManager* trainManager;// = TrainManager.instance(); // There is only one manager
@@ -75,24 +86,30 @@ public slots:
   /*private*/ bool _showAll;// = true;
   QList<Train*> sysList;// = null;
   JTable* _table;// = null;
-  TrainsTableFrame* _frame;// = null;
+  QPointer<TrainsTableFrame> _frame;// = null;
   /*private*/ /*synchronized*/ void removePropertyChangeTrains() ;
   /*private*/ /*synchronized*/ void addPropertyChangeTrains();
   void initTable();
-  TrainEditFrame* tef;// = NULL;
+  QPointer<TrainEditFrame> tef;// = NULL;
   /*private*/ /*synchronized*/ void updateList();
   Logger* log;
-  RouteEditFrame* ref;// = NULL;
+  //QPointer<RouteEditFrame> ref;// = NULL;
   /*private*/ /*synchronized*/ void editTrain(int row);
   /*private*/ static QHash<QString, TrainConductorFrame*> _trainConductorHashTable;// = new Hashtable<String, TrainConductorFrame>();
   /*private*/ /*synchronized*/ void actionTrain(int row);
   /*private*/ bool checkDepartureTrack(Train* train);
   /*private*/ void launchConductor(Train* train);
-  /*private*/ /*synchronized*/ void editRoute(int row);
+  ///*private*/ /*synchronized*/ void editRoute(int row);
   QThread* buildThread;
   /*private*/ /*synchronized*/ void buildTrain(int row);
   QList<QColor> darkColors;// = {Color.BLACK, Color.BLUE, Color.GRAY, Color.RED, Color.MAGENTA};
   /*private*/ QColor getForegroundColor(QColor background) const;
+  // Train frame table column widths, starts with id column and ends with edit
+  /*private*/ /*final*/ QList<int> _tableColumnWidths = { 50, 50, 50, 72, 100, 140, 50, 50, 50, 50, 120, 120, 120, 120, 120, 90,
+          70 };
+  /*private*/ void updateColumnVisible();
+  /*private*/ QString getBuiltString(Train* train) const;
+  /*private*/ QString getModifiedString(int number, bool all, bool accept) const;
 
  };
 

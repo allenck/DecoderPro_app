@@ -44,8 +44,7 @@
         }
         TimeoutRfidReporter* r;
         r = new TimeoutRfidReporter(systemName, userName);
-        //r->addPropertyChangeListener(this);
-        connect(r, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        r->addPropertyChangeListener(this);
         return r;
     }
 
@@ -70,7 +69,7 @@
             log->warn("Invalid message - skipping " + r->toString());
             return;
         }
-        DefaultIdTag* idTag = static_cast<IdTagManager*>(InstanceManager::getDefault("IdTagManager"))->provideIdTag(tc->getAdapterMemo()->getProtocol()->getTag(r));
+        IdTag* idTag = qobject_cast<IdTagManager*>(InstanceManager::getDefault("IdTagManager"))->provideIdTag(tc->getAdapterMemo()->getProtocol()->getTag(r));
         TimeoutRfidReporter* report = (TimeoutRfidReporter*) provideReporter(prefix + typeLetter() + "1");
         report->notify(idTag);
     }

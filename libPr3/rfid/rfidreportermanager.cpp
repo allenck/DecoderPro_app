@@ -38,7 +38,7 @@
 
 Reporter* RfidReporterManager::createNewReporter(QString systemName, QString userName)
 {
- RfidReporter* r = new RfidReporter(systemName, userName, this);
+ RfidReporter* r = new RfidReporter(systemName, userName);
  r->AbstractNamedBean::setUserName(userName);
  return (Reporter*)r;
 }

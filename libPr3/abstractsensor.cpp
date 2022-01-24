@@ -192,7 +192,7 @@ void AbstractSensor::setOwnState(int s)
     try {
 //TODO:                        thr.interrupt();
      thr->exit();
-    } catch (Exception ie)
+    } catch (Exception* ie)
     {
      //Can be considered normal.
     }
@@ -215,7 +215,7 @@ void AbstractSensor::setOwnState(int s)
     try
     {
      thr->exit();
-    } catch (Exception ie)
+    } catch (Exception* ie)
     {
      //Can be considered normal.
     }
@@ -333,6 +333,7 @@ Reporter* AbstractSensor::getReporter() const{
 /*public*/ Sensor::PullResistance::PULLRESISTANCE AbstractSensor::getPullResistance(){
    return Sensor::PullResistance::PULL_OFF;
 }
+
 ASRunnable::ASRunnable(QObject *as) : Runnable(as)
 {
  this->as = as;

@@ -1,6 +1,6 @@
 #include "guilafconfigpane.h"
 #include "jcombobox.h"
-#include <QCheckBox>
+#include "jcheckbox.h"
 #include <QLocale>
 #include <QBoxLayout>
 #include <QMap>
@@ -73,6 +73,8 @@
  thisLayout->addWidget(p);
  doGraphicState(p = new JPanel());
  thisLayout->addWidget(p);
+ doTabbedOblockEditor(p = new JPanel());
+ thisLayout->addWidget(p);
  doEditorUseOldLocSize(p = new JPanel());
  thisLayout->addWidget(p);
  doToolTipDismissDelay(p = new JPanel());
@@ -82,14 +84,14 @@ void GuiLafConfigPane::doClickSelection(QWidget* panel)
 {
  FlowLayout* panelLayout;
  panel->setLayout(panelLayout =new FlowLayout());
-    mouseEvent = new QCheckBox("Use non-standard release event for mouse click?");
+    mouseEvent = new JCheckBox("Use non-standard release event for mouse click?");
 //    mouseEvent->setChecked(SwingSettings.getNonStandardMouseEvent());
  panelLayout->addWidget(mouseEvent);
 }
 
 void GuiLafConfigPane::doGraphicState(JPanel* panel) {
     panel->setLayout(new FlowLayout());
-    graphicStateDisplay = new QCheckBox(tr("Use icons to show state in tables"));
+    graphicStateDisplay = new JCheckBox(tr("Use icons to show state in tables"));
     graphicStateDisplay->setChecked(((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState());
 //    graphicStateDisplay->addItemListener((ItemEvent e) -> {
 //        InstanceManager.getDefault(GuiLafPreferencesManager.class).setGraphicTableState(graphicStateDisplay.isSelected());
@@ -103,10 +105,22 @@ void GuiLafConfigPane::on_graphicStateDisplay_clicked(bool b)
  ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->setGraphicTableState(b);
 }
 
+void GuiLafConfigPane::doTabbedOblockEditor(JPanel* panel) {
+    panel->setLayout(new FlowLayout());
+    tabbedOblockEditor = new JCheckBox(tr("Use tabbed OBlock editing"));
+    tabbedOblockEditor->setChecked(((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isOblockEditTabbed());
+    tabbedOblockEditor->setToolTip(tr("<html>Select to edit in Tables pane.<br>Off for floating Drag-n-Drap desktop</html>"));
+    //tabbedOblockEditor.addItemListener((ItemEvent e) -> {
+    connect(tabbedOblockEditor, &JCheckBox::clicked, [=]{
+        ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->setOblockEditTabbed(tabbedOblockEditor->isChecked());
+    });
+    panel->layout()->addWidget(tabbedOblockEditor);
+}
+
 void GuiLafConfigPane::doEditorUseOldLocSize(JPanel* panel)
 {
     panel->setLayout(new FlowLayout());
-    editorUseOldLocSizeDisplay = new QCheckBox(tr("Use old location and size logic for editor panels"));
+    editorUseOldLocSizeDisplay = new JCheckBox(tr("Use old location and size logic for editor panels"));
     editorUseOldLocSizeDisplay->setChecked(((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isEditorUseOldLocSize());
 //    editorUseOldLocSizeDisplay.addItemListener((ItemEvent e) -> {
 //        InstanceManager.getDefault(GuiLafPreferencesManager.class).setEditorUseOldLocSize(editorUseOldLocSizeDisplay.isSelected());

@@ -27,16 +27,16 @@
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
-/*public*/ void AddEntryExitPairAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void AddEntryExitPairAction::actionPerformed(JActionEvent* /*e*/)
 {
  AddEntryExitPairFrame* f = new AddEntryExitPairFrame();
  try
  {
   f->initComponents(panel);
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
-  Logger::error("Exception: " + ex.getMessage());
+  Logger::error("Exception: " + ex->getMessage());
   //ex.printStackTrace();
  }
   f->setVisible(true);

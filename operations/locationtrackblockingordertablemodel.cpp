@@ -46,8 +46,7 @@ namespace Operations
      _tracksList = _location->getTracksByBlockingOrderList(NULL);
      // and add them back in
      foreach (Track* track, _tracksList) {
-         //track->addPropertyChangeListener(this);
-      connect(track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+      track->SwingPropertyChangeSupport::addPropertyChangeListener(this);
      }
      fireTableDataChanged();
  }
@@ -56,8 +55,7 @@ namespace Operations
      _table = table;
      _location = location;
      if (_location != NULL) {
-         //_location.addPropertyChangeListener(this);
-      connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      _location->SwingPropertyChangeSupport::addPropertyChangeListener(this);
      }
      initTable();
      // have to shut off autoResizeMode to get horizontal scroll to work (JavaSwing p 541)
@@ -67,7 +65,7 @@ namespace Operations
 
  /*private*/ void LocationTrackBlockingOrderTableModel::initTable() {
      // Use XTableColumnModel so we can control which columns are visible
-     XTableColumnModel* tcm = new XTableColumnModel((AbstractTableModel*)_table->model());
+     XTableColumnModel* tcm = new XTableColumnModel(/*(AbstractTableModel*)_table->model()*/_table);
      _table->setColumnModel(tcm);
      _table->createDefaultColumnsFromModel();
 #if 0
@@ -235,8 +233,7 @@ namespace Operations
 
  /*protected*/ void LocationTrackBlockingOrderTableModel::removePropertyChangeTracks() {
      foreach (Track* track, _tracksList) {
-         //track->removePropertyChangeListener(this);
-      disconnect(track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      track->removePropertyChangeListener(this);
      }
  }
 
@@ -245,8 +242,7 @@ namespace Operations
      // log.debug("dispose");
      removePropertyChangeTracks();
      if (_location != NULL) {
-        // _location.removePropertyChangeListener(this);
-      disconnect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      _location->removePropertyChangeListener(this);
      }
      _tracksList.clear();
      fireTableDataChanged();

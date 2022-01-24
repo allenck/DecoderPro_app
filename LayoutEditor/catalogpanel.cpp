@@ -1122,7 +1122,7 @@ class DropJTree extends JTree implements DropTargetListener {
         super (model);
         try {
             dataFlavor = new DataFlavor(ImageIndexEditor.IconDataFlavorMime);
-        } catch (ClassNotFoundException cnfe) {
+        } catch (ClassNotFoundException* cnfe) {
             cnfe.printStackTrace();
         }
         new DropTarget(this, DnDConstants.ACTION_COPY_OR_MOVE, this);
@@ -1274,8 +1274,8 @@ void CPIconDisplayPanel::setBorderAndIcon(NamedIcon* icon) {
 //                label.addMouseListener(new IconListener());
         ((QVBoxLayout*)layout())->addWidget(label, 0, Qt::AlignBottom); //BorderLayout.SOUTH);
                 setBorder(BorderFactory::createEmptyBorder(2,2,2,2));
-    } catch (ClassNotFoundException cnfe) {
-        catalogPanel->log->error(tr("Unable to find class supporting %1").arg( /*Editor.POSITIONABLE_FLAVOR),*/ cnfe.getMessage()));
+    } catch (ClassNotFoundException* cnfe) {
+        catalogPanel->log->error(tr("Unable to find class supporting %1").arg( /*Editor.POSITIONABLE_FLAVOR),*/ cnfe->getMessage()));
     }
 }
 

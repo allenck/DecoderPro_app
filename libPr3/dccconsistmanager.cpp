@@ -48,7 +48,7 @@ DccConsistManager::DccConsistManager(AddressedProgrammerManager *apm, QObject *p
 //@Override
 /*public*/ DccConsist *DccConsistManager::addConsist(DccLocoAddress* address) {
     if (! (qobject_cast<DccLocoAddress*>(address))) {
-        throw IllegalArgumentException("address is not a DccLocoAddress object");
+        throw new IllegalArgumentException("address is not a DccLocoAddress object");
     }
     if (consistTable->contains(address)) {
         return consistTable->value(address);

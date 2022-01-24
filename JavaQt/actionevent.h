@@ -5,17 +5,17 @@
 #include <QString>
 #include "javaqt_global.h"
 
-class JAVAQTSHARED_EXPORT ActionEvent : public QObject
+class JAVAQTSHARED_EXPORT JActionEvent : public QObject
 {
     //Q_OBJECT
 public:
-    explicit ActionEvent(QObject *parent = 0);
-    /*public*/ ActionEvent(QObject* source, int id, QString command, QObject *parent = 0);
-    /*public*/ ActionEvent(QObject* source, int id, QString command, int modifiers, QObject *parent = 0) ;
-    /*public*/ ActionEvent(QObject* source, int id, QString command, long when,
+    explicit JActionEvent(QObject *parent = 0);
+    /*public*/ JActionEvent(QObject* source, int id, QString command, QObject *parent = 0);
+    /*public*/ JActionEvent(QObject* source, int id, QString command, int modifiers, QObject *parent = 0) ;
+    /*public*/ JActionEvent(QObject* source, int id, QString command, long when,
                        int modifiers, QObject *parent = 0);
-    ~ActionEvent() {}
-    ActionEvent(const ActionEvent&) : QObject() {}
+    ~JActionEvent() {}
+    JActionEvent(const JActionEvent&) : QObject() {}
     /*public*/ QString getActionCommand() ;
     /*public*/ long getWhen() ;
     /*public*/ int getModifiers();

@@ -63,7 +63,7 @@ public:
 protected:
  // dummy implementations
  //@Override
- /*protected*/ QWidget* getModePane() override;
+ /*protected*/ JPanel* getModePane() override;
 };
 
 
@@ -75,15 +75,15 @@ class PaneProgPaneO1 : public PaneProgPane
   /*public*/ PaneProgPaneO1(PaneContainer* container, QString name,
                           QDomElement pane, CvTableModel* cvModel,
                           VariableTableModel* varModel, QDomElement modelElem,
-                          RosterEntry* rosterEntry, PaneProgPaneTest* test)
-   : PaneProgPane(container, name, pane,cvModel, varModel, modelElem, rosterEntry, nullptr)
+                          RosterEntry* rosterEntry, bool isProgPane, PaneProgPaneTest* test)
+   : PaneProgPane(container, name, pane,cvModel, varModel, modelElem, rosterEntry, isProgPane, nullptr)
   {
    this->test = test;
    qApp->processEvents();
 
   }
   //@Override
-  /*public*/ QWidget* newColumn(QDomElement e, bool a, QDomElement el) override;
+  /*public*/ JPanel* newColumn(QDomElement e, bool a, QDomElement el) override;
 };
 
 class PaneProgPaneO2 : public PaneProgPane
@@ -102,7 +102,7 @@ class PaneProgPaneO2 : public PaneProgPane
 
   }
   //@Override
-  /*public*/ void newVariable(QDomElement /*e*/, QWidget* /*p*/, QGridLayout* /*g*/,
+  /*public*/ void newVariable(QDomElement /*e*/, JPanel * /*p*/, GridBagLayout* /*g*/,
                               GridBagConstraints* /*c*/, bool /*a*/) override;
 };
 
@@ -112,7 +112,8 @@ class ReleaseUntilO14 : public ReleaseUntil
     PaneProgPane* progPane;
 public:
     ReleaseUntilO14(PaneProgPane* progPane) {this->progPane = progPane;}
-    bool ready() throw (Exception) override
+    bool ready() /*throw (Exception)*/
+ override
     {
      return (!progPane->isBusy());
     }

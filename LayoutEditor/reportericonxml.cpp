@@ -65,7 +65,7 @@ ReporterIconXml::ReporterIconXml(QObject *parent) :
 
  loadTextInfo((Positionable*)l, element);
 
- l->setReporter((Reporter*)((ProxyReporterManager*)InstanceManager::reporterManagerInstance())->getReporter( element.attribute("reporter")));
+ l->setReporter((Reporter*)((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->getReporter( element.attribute("reporter")));
 
  l->setSize(l->getPreferredSize().width(), l->getPreferredSize().height());
  //ed->putItem((Positionable*)l);

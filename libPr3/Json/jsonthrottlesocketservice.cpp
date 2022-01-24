@@ -20,13 +20,13 @@
 }
 
 //@Override
-/*public*/ void JsonThrottleSocketService::onMessage(QString /*type*/, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException)
+/*public*/ void JsonThrottleSocketService::onMessage(QString /*type*/, QJsonObject data, QLocale locale) /*throw new (IOException, JmriException, JsonException)*/
 {
  QJsonDocument doc = QJsonDocument(data);
     log->debug(tr("Processing %1").arg(QString(doc.toJson(QJsonDocument::Compact))));
     QString id = data.value(JSON::THROTTLE).toString();
     if (id.isEmpty()) {
-        throw JsonException(HttpServletResponse::SC_BAD_REQUEST, tr( "Throttles must be assigned a client ID.")); // NOI18N
+        throw new JsonException(HttpServletResponse::SC_BAD_REQUEST, tr( "Throttles must be assigned a client ID.")); // NOI18N
     }
     JsonThrottle* throttle = this->throttles->value(id);
     if (!this->throttles->contains(id)) {
@@ -39,8 +39,8 @@
 }
 
 //@Override
-/*public*/ void JsonThrottleSocketService::onList(QString type, /*JsonNode*/QJsonObject /*data*/, QLocale /*locale*/) throw (JsonException) {
-    throw JsonException(HttpServletResponse::SC_BAD_REQUEST, /*tr(locale,*/ tr("%1 cannot be listed.").arg( type));
+/*public*/ void JsonThrottleSocketService::onList(QString type, /*JsonNode*/QJsonObject /*data*/, QLocale /*locale*/) /*throw new (JsonException)*/ {
+    throw new JsonException(HttpServletResponse::SC_BAD_REQUEST, /*tr(locale,*/ tr("%1 cannot be listed.").arg( type));
 }
 
 //@Override
@@ -58,7 +58,7 @@ void JsonThrottleSocketService::release(JsonThrottle* throttle) {
     this->throttleIds->remove(throttle);
 }
 
-/*public*/ void JsonThrottleSocketService::sendMessage(JsonThrottle* throttle, QJsonObject data) throw (IOException) {
+/*public*/ void JsonThrottleSocketService::sendMessage(JsonThrottle* throttle, QJsonObject data) /*throw new (IOException)*/ {
     QString id = this->throttleIds->value(throttle);
     if (id != NULL) {
         QJsonObject root = QJsonObject(); //= this->connection->getObjectMapper().createObjectNode();

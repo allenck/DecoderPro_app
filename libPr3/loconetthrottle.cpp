@@ -47,42 +47,13 @@
 
   // cache settings
   this->speedSetting = floatSpeed(slot->speed());
-  this->f0           = slot->isF0();
-  this->f1           = slot->isF1();
-  this->f2           = slot->isF2();
-  this->f3           = slot->isF3();
-  this->f4           = slot->isF4();
-  this->f5           = slot->isF5();
-  this->f6           = slot->isF6();
-  this->f7           = slot->isF7();
-  this->f8           = slot->isF8();
-
-  // extended values
-  this->f8           = slot->isF8();
-  this->f9           = slot->isF9();
-  this->f10          = slot->isF10();
-  this->f11          = slot->isF11();
-  this->f12          = slot->isF12();
-  this->f13          = slot->isF13();
-  this->f14          = slot->isF14();
-  this->f15          = slot->isF15();
-  this->f16          = slot->isF16();
-  this->f17          = slot->isF17();
-  this->f18          = slot->isF18();
-  this->f19          = slot->isF19();
-  this->f20          = slot->isF20();
-  this->f21          = slot->isF21();
-  this->f22          = slot->isF22();
-  this->f23          = slot->isF23();
-  this->f24          = slot->isF24();
-  this->f25          = slot->isF25();
-  this->f26          = slot->isF26();
-  this->f27          = slot->isF27();
-  this->f28          = slot->isF28();
+ for (int i = 0; i < 29; i++) {
+     AbstractThrottle::updateFunction(i,slot->isFunction(i));
+ }
 
   // for LocoNet throttles, the default is f2 momentary (for the horn)
   // all other functions are continuos (as set in AbstractThrottle).
-  this->f2Momentary = true;
+  AbstractThrottle::updateFunctionMomentary(2, true);
 
   this->address      = slot->locoAddr();
   this->isForward    = slot->isForward();
@@ -92,15 +63,15 @@
   {
    case LnConstants::DEC_MODE_128:
    case LnConstants::DEC_MODE_128A:
-       setSpeedStepMode(new SpeedStepMode(SpeedStepMode::NMRA_DCC_128));
+       setSpeedStepMode(SpeedStepMode::NMRA_DCC_128);
        break;
    case LnConstants::DEC_MODE_28:
    case LnConstants::DEC_MODE_28A:
    case LnConstants::DEC_MODE_28TRI:
-       setSpeedStepMode(new SpeedStepMode(SpeedStepMode::NMRA_DCC_28));
+       setSpeedStepMode(SpeedStepMode::NMRA_DCC_28);
        break;
    case LnConstants::DEC_MODE_14:
-       setSpeedStepMode(new SpeedStepMode(SpeedStepMode::NMRA_DCC_14));
+       setSpeedStepMode(SpeedStepMode::NMRA_DCC_14);
        break;
    default:
        log->warn(tr("Unhandled decoder type: %1").arg(slot->decoderType()));
@@ -136,13 +107,13 @@
  } else if (lSpeed == 1) {
      return -1.f;   // estop
  }
- if (getSpeedStepMode()->mode == SpeedStepMode::NMRA_DCC_28) {
+ if (getSpeedStepMode() == SpeedStepMode::NMRA_DCC_28) {
      if (lSpeed <= 15) //Value less than 15 is in the stop/estop range bracket
      {
          return 0.f;
      }
      return (((lSpeed - 12) / 4.f) / 28.f);
- } else if (getSpeedStepMode()->mode == SpeedStepMode::NMRA_DCC_14) {
+ } else if (getSpeedStepMode() == SpeedStepMode::NMRA_DCC_14) {
      if (lSpeed <= 15) //Value less than 15 is in the stop/estop range bracket
      {
          return 0.f;
@@ -162,7 +133,7 @@
  if (speed <= 1) {
      return speed; // return idle and emergency stop
  }
- switch (this->getSpeedStepMode()->mode) {
+ switch (this->getSpeedStepMode()) {
      case SpeedStepMode::NMRA_DCC_28:
      case SpeedStepMode::MOTOROLA_28:
          return (int) ((fSpeed * 28) * 4) + 12;
@@ -171,11 +142,12 @@
      case SpeedStepMode::NMRA_DCC_128:
          return speed;
      default:
-         log->warn(tr("Unhandled speed step: %1").arg(this->getSpeedStepMode()->mode));
+         log->warn(tr("Unhandled speed step: %1").arg(this->getSpeedStepMode()));
          break;
  }
  return speed;
 }
+#if 0
 /*public*/ void LocoNetThrottle::setF0(bool f0) {
     bool old = this->f0;
     this->f0 = f0;
@@ -317,7 +289,7 @@
     if (old != this->f17)
         notifyPropertyChangeListener(Throttle::F17, old, this->f17 );
 }
-
+#endif
 /**
  * Send the LocoNet message to set the state of locomotive
  * direction and functions F0, F1, F2, F3, F4
@@ -485,7 +457,7 @@
         log->debug(tr("Initially starting refresh timer for slot %1 address %2").arg(slot->getSlot()).arg(slot->locoAddr()));
     }
     if (oldSpeed != this->speedSetting) {
-        notifyPropertyChangeListener("SpeedSetting", oldSpeed, this->speedSetting); // NOI18N
+        firePropertyChange("SpeedSetting", oldSpeed, this->speedSetting); // NOI18N
     }
     record(speed);
 }
@@ -500,7 +472,7 @@
  isForward = forward;
  sendFunctionGroup1();
  if (old != this->isForward)
-  notifyPropertyChangeListener("IsForward", old, this->isForward);
+  firePropertyChange("IsForward", old, this->isForward);
 }
 
 /*public*/ LocoNetSlot* LocoNetThrottle::getLocoNetSlot(){
@@ -538,7 +510,7 @@
    if (mRefreshTimer != nullptr) {
        mRefreshTimer->stop();
        log->debug(tr("Stopped refresh timer for slot %1 address %2 as part of throttleDispose").arg(slot->getSlot()).arg(slot->locoAddr()));
-   mRefreshTimer = nullptr;
+       mRefreshTimer = nullptr;
    }
 
    slot = nullptr;
@@ -558,10 +530,10 @@
 //        }
 //    });
     mRefreshTimer = new QTimer(this);
-    mRefreshTimer->setInterval(50000);
+    //mRefreshTimer->setInterval(50000);
     connect(mRefreshTimer, SIGNAL(timeout()), this, SLOT(timeout()));
     mRefreshTimer->setSingleShot(false);     // refresh until stopped by dispose
-    mRefreshTimer->start();
+    mRefreshTimer->start(50000);
 }
 
 /**
@@ -614,19 +586,13 @@
 
  // handle change in each state
  if (this->speedSetting != floatSpeed(slot->speed())) {
-     float newSpeed = (floatSpeed(slot->speed()));
-     log->debug("notifyChangedSlot: old speed: " + QString::number(this->speedSetting) + " new Speed: " + QString::number(newSpeed)); // NOI18N
-     notifyPropertyChangeListener("SpeedSetting", (this->speedSetting), newSpeed); // NOI18N
-     this->speedSetting = newSpeed/*.floatValue()*/;
+     float old = this->speedSetting;
+     this->speedSetting = floatSpeed(slot->speed());
+     log->debug(tr("notifyChangedSlot: old speed: %1 new speed: %2").arg(old).arg(this->speedSetting)); // NOI18N
+     firePropertyChange(SPEEDSETTING, old, this->speedSetting);
  }
 
- bool temp;
- if (this->isForward != slot->isForward())
- {
-  temp = this->isForward;
-  this->isForward = slot->isForward();
-  notifyPropertyChangeListener("IsForward", (temp), (slot->isForward()));
- }
+ firePropertyChange(ISFORWARD, this->isForward, this->isForward = slot->isForward());
 
  // Slot status
  if (slotStatus != slot->slotStatus())
@@ -635,7 +601,7 @@
   if (log->isDebugEnabled())
       log->debug("Slot status changed from "+LnConstants::LOCO_STAT(slotStatus)+" to "+LnConstants::LOCO_STAT(newStat) );
   // PropertyChangeListeners notification: ThrottleConnected from True to False when disconnected
-  notifyPropertyChangeListener("ThrottleConnected", (slotStatus & LnConstants::LOCOSTAT_MASK) == LnConstants::LOCO_IN_USE,
+  firePropertyChange("ThrottleConnected", (slotStatus & LnConstants::LOCOSTAT_MASK) == LnConstants::LOCO_IN_USE,
                                                       ! ( (slotStatus & LnConstants::LOCOSTAT_MASK) == LnConstants::LOCO_IN_USE) );
   slotStatus = newStat;
  }
@@ -651,20 +617,20 @@
  {
      case LnConstants::DEC_MODE_128:
      case LnConstants::DEC_MODE_128A:
-         if(SpeedStepMode::NMRA_DCC_128 != getSpeedStepMode()->mode) {
-            setSpeedStepMode(new SpeedStepMode(SpeedStepMode::NMRA_DCC_128));
+         if(SpeedStepMode::NMRA_DCC_128 != getSpeedStepMode()) {
+            setSpeedStepMode(SpeedStepMode::NMRA_DCC_128);
          }
          break;
      case LnConstants::DEC_MODE_28:
      case LnConstants::DEC_MODE_28A:
      case LnConstants::DEC_MODE_28TRI:
-         if(SpeedStepMode::NMRA_DCC_28 != getSpeedStepMode()->mode) {
-            setSpeedStepMode(new SpeedStepMode(SpeedStepMode::NMRA_DCC_28));
+         if(SpeedStepMode::NMRA_DCC_28 != getSpeedStepMode()) {
+            setSpeedStepMode(SpeedStepMode::NMRA_DCC_28);
          }
          break;
      case LnConstants::DEC_MODE_14:
-         if(SpeedStepMode::NMRA_DCC_14 != getSpeedStepMode()->mode) {
-            setSpeedStepMode(new SpeedStepMode(SpeedStepMode::NMRA_DCC_14));
+         if(SpeedStepMode::NMRA_DCC_14 != getSpeedStepMode()) {
+            setSpeedStepMode(SpeedStepMode::NMRA_DCC_14);
          }
          break;
      default:
@@ -673,152 +639,8 @@
  }
 
  // Functions
- if (this->f0 != slot->isF0()) {
-     temp = this->f0;
-     this->f0 = slot->isF0();
-     notifyPropertyChangeListener(Throttle::F0, (temp), (slot->isF0()));
- }
- if (this->f1 != slot->isF1()) {
-     temp = this->f1;
-     this->f1 = slot->isF1();
-     notifyPropertyChangeListener(Throttle::F1, (temp), (slot->isF1()));
- }
- if (this->f2 != slot->isF2()) {
-     temp = this->f2;
-     this->f2 = slot->isF2();
-     notifyPropertyChangeListener(Throttle::F2, (temp), (slot->isF2()));
- }
- if (this->f3 != slot->isF3()) {
-     temp = this->f3;
-     this->f3 = slot->isF3();
-     notifyPropertyChangeListener(Throttle::F3, (temp), (slot->isF3()));
- }
- if (this->f4 != slot->isF4()) {
-     temp = this->f4;
-     this->f4 = slot->isF4();
-     notifyPropertyChangeListener(Throttle::F4, (temp), (slot->isF4()));
- }
- if (this->f5 != slot->isF5()) {
-     temp = this->f5;
-     this->f5 = slot->isF5();
-     notifyPropertyChangeListener(Throttle::F5, (temp), (slot->isF5()));
- }
- if (this->f6 != slot->isF6()) {
-     temp = this->f6;
-     this->f6 = slot->isF6();
-     notifyPropertyChangeListener(Throttle::F6, (temp), (slot->isF6()));
- }
- if (this->f7 != slot->isF7()) {
-     temp = this->f7;
-     this->f7 = slot->isF7();
-     notifyPropertyChangeListener(Throttle::F7, (temp), (slot->isF7()));
- }
- if (this->f8 != slot->isF8()) {
-     temp = this->f8;
-     this->f8 = slot->isF8();
-     notifyPropertyChangeListener(Throttle::F8, (temp), (slot->isF8()));
- }
-
- // extended slot
- if (this->f9 != slot->isF9()) {
-     temp = this->f9;
-     this->f9 = slot->isF9();
-     notifyPropertyChangeListener(Throttle::F9, (temp), (slot->isF9()));
- }
- if (this->f10 != slot->isF10()) {
-     temp = this->f10;
-     this->f10 = slot->isF10();
-     notifyPropertyChangeListener(Throttle::F10, (temp), (slot->isF10()));
- }
- if (this->f11 != slot->isF11()) {
-     temp = this->f11;
-     this->f11 = slot->isF11();
-     notifyPropertyChangeListener(Throttle::F11, (temp), (slot->isF11()));
- }
- if (this->f12 != slot->isF12()) {
-     temp = this->f12;
-     this->f12 = slot->isF12();
-     notifyPropertyChangeListener(Throttle::F12, (temp), (slot->isF12()));
- }
- if (this->f13 != slot->isF13()) {
-     temp = this->f13;
-     this->f13 = slot->isF13();
-     notifyPropertyChangeListener(Throttle::F13, (temp), (slot->isF13()));
- }
- if (this->f14 != slot->isF14()) {
-     temp = this->f14;
-     this->f14 = slot->isF14();
-     notifyPropertyChangeListener(Throttle::F14, (temp), (slot->isF14()));
- }
- if (this->f15 != slot->isF15()) {
-     temp = this->f15;
-     this->f15 = slot->isF15();
-     notifyPropertyChangeListener(Throttle::F15, (temp), (slot->isF15()));
- }
- if (this->f16 != slot->isF16()) {
-     temp = this->f16;
-     this->f16 = slot->isF16();
-     notifyPropertyChangeListener(Throttle::F16, (temp), (slot->isF16()));
- }
- if (this->f17 != slot->isF17()) {
-     temp = this->f17;
-     this->f17 = slot->isF17();
-     notifyPropertyChangeListener(Throttle::F17, (temp), (slot->isF17()));
- }
- if (this->f18 != slot->isF18()) {
-     temp = this->f18;
-     this->f18 = slot->isF18();
-     notifyPropertyChangeListener(Throttle::F18, (temp), (slot->isF18()));
- }
- if (this->f19 != slot->isF19()) {
-     temp = this->f19;
-     this->f19 = slot->isF19();
-     notifyPropertyChangeListener(Throttle::F19, (temp), (slot->isF19()));
- }
- if (this->f20 != slot->isF20()) {
-     temp = this->f20;
-     this->f20 = slot->isF20();
-     notifyPropertyChangeListener(Throttle::F20, (temp), (slot->isF20()));
- }
- if (this->f21 != slot->isF21()) {
-     temp = this->f21;
-     this->f21 = slot->isF21();
-     notifyPropertyChangeListener(Throttle::F21, (temp), (slot->isF21()));
- }
- if (this->f22 != slot->isF22()) {
-     temp = this->f22;
-     this->f22 = slot->isF22();
-     notifyPropertyChangeListener(Throttle::F22, (temp), (slot->isF22()));
- }
- if (this->f23 != slot->isF23()) {
-     temp = this->f23;
-     this->f23 = slot->isF23();
-     notifyPropertyChangeListener(Throttle::F23, (temp), (slot->isF23()));
- }
- if (this->f24 != slot->isF24()) {
-     temp = this->f24;
-     this->f24 = slot->isF24();
-     notifyPropertyChangeListener(Throttle::F24, (temp), (slot->isF24()));
- }
- if (this->f25 != slot->isF25()) {
-     temp = this->f25;
-     this->f25 = slot->isF25();
-     notifyPropertyChangeListener(Throttle::F25, (temp), (slot->isF25()));
- }
- if (this->f26 != slot->isF26()) {
-     temp = this->f26;
-     this->f26 = slot->isF26();
-     notifyPropertyChangeListener(Throttle::F26, (temp), (slot->isF26()));
- }
- if (this->f27 != slot->isF27()) {
-     temp = this->f27;
-     this->f27 = slot->isF27();
-     notifyPropertyChangeListener(Throttle::F27, (temp), (slot->isF27()));
- }
- if (this->f28 != slot->isF28()) {
-     temp = this->f28;
-     this->f28 = slot->isF28();
-     notifyPropertyChangeListener(Throttle::F28, (temp), (slot->isF28()));
+ for (int i = 0; i < 29; i++) {
+     updateFunction(i,slot->isFunction(i));
  }
 }
 
@@ -832,31 +654,31 @@
  *              speed step mode in most cases
  */
 //@Override
-/*public*/ void LocoNetThrottle::setSpeedStepMode(SpeedStepMode* Mode)
+/*public*/ void LocoNetThrottle::setSpeedStepMode(SpeedStepMode::SSMODES Mode)
 {
  int status=slot->slotStatus();
  if(log->isDebugEnabled())
  {
-  log->debug("Speed Step Mode Change to Mode: " + Mode->name +
-            " Current mode is: " + this->speedStepMode->name);
+  log->debug("Speed Step Mode Change to Mode: " + SpeedStepMode(Mode).name +
+            " Current mode is: " + SpeedStepMode(this->speedStepMode).name);
   log->debug("Current Slot Mode: " +LnConstants::DEC_MODE(status));
  }
  if(speedStepMode!=Mode)
-   notifyPropertyChangeListener("SpeedSteps", this->speedStepMode->mode,
-                                          this->speedStepMode->mode );
+   firePropertyChange("SpeedSteps", this->speedStepMode,
+                                          this->speedStepMode );
  speedStepMode=Mode;
- if (Mode->mode == SpeedStepMode::NMRA_DCC_14)
+ if (Mode == SpeedStepMode::NMRA_DCC_14)
  {
      log->debug("14 speed step change"); // NOI18N
      status = status & ((~LnConstants::DEC_MODE_MASK)
              | LnConstants::STAT1_SL_SPDEX)
              | LnConstants::DEC_MODE_14;
- } else if (Mode->mode == SpeedStepMode::MOTOROLA_28) {
+ } else if (Mode == SpeedStepMode::MOTOROLA_28) {
      log->debug("28-Tristate speed step change");
      status = status & ((~LnConstants::DEC_MODE_MASK)
              | LnConstants::STAT1_SL_SPDEX)
              | LnConstants::DEC_MODE_28TRI;
- } else if (Mode->mode == SpeedStepMode::NMRA_DCC_28) {
+ } else if (Mode == SpeedStepMode::NMRA_DCC_28) {
      log->debug("28 speed step change");
      status = status & ((~LnConstants::DEC_MODE_MASK)
              | LnConstants::STAT1_SL_SPDEX);
@@ -879,11 +701,17 @@
 }
 
 
-
+/**
+ * Get the address controlled by this throttle. If the throttle is controlling.
+ *
+ * @return a LocoAddress for the address controlled by this throttle
+ */
+//@Override
 /*public*/ LocoAddress* LocoNetThrottle::getLocoAddress()
 {
  if (slot != nullptr)
  {
+  log->debug(tr("slot_stus = 0x%1").arg(slot->slotStatus(), 0, 16));
   if ((slot->slotStatus() == LnConstants::LOCO_IN_USE) ||
       (slot->slotStatus() == LnConstants::LOCO_COMMON))
   {
@@ -909,7 +737,7 @@
     log->debug(tr("dispatchThrottle - throttle %1").arg(t->getLocoAddress()->toString()));
     // set status to common & dispatch slot
     // needs to be done one after another with no delay.
-    if (qobject_cast<LocoNetThrottle*>(t)){
+    if (qobject_cast<LocoNetThrottle*>(t->self())){
         LocoNetThrottle* lnt = (LocoNetThrottle*) t;
         LocoNetSlot* tSlot = lnt->getLocoNetSlot();
         if (tSlot->slotStatus() != LnConstants::LOCO_COMMON) {

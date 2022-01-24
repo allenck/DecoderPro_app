@@ -203,7 +203,6 @@
 
 /*static*/ bool DccSignalMastAddPane::validateAspectId(/*@Nonnull*/ QString strAspect) {
     int aspect;
-    //try {
      bool bok;
         aspect = (strAspect.trimmed().toInt(&bok));
     if(!bok)
@@ -333,7 +332,7 @@ static /*public*/ class SignalMastAddPaneProvider extends SignalMastAddPane.Sign
     QList<QString> names = static_cast<SignalMastManager*>( InstanceManager::getDefault("SignalMastManager"))->getSystemNameList();
     for (QString name : names)
     {
-     if( qobject_cast<DccSignalMast*>(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getNamedBean(name)) != nullptr)
+     if( static_cast<DccSignalMast*>(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getNamedBean(name)) != nullptr)
      {
             mastSelect->addItem(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getNamedBean(name)->getDisplayName());
         }

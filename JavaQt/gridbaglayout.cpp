@@ -5,23 +5,28 @@ GridBagLayout::GridBagLayout(QWidget* parent) : QGridLayout(parent)
 {
 
 }
+
 void GridBagLayout::addWidget(QWidget *widget, GridBagConstraints gb)
 {
+ this->gbc = gb;
  int x;
  int y;
- if(gb.insets->top == 0)
+ if(gbc.insets->top == 0)
   lastY = -1;
- if(gb.insets->left == 0)
+ if(gbc.insets->left == 0)
   lastX = -1;
- if(gb.gridy ==  GridBagConstraints::_RELATIVE /*&& (gb.gridwidth != GridBagConstraints::REMAINDER) */)
+ if(gbc.gridy ==  GridBagConstraints::_RELATIVE && (gbc.gridwidth != GridBagConstraints::REMAINDER) )
   y = ++lastY;
  else
-  y = gb.gridy;
- if(gb.gridx ==  GridBagConstraints::_RELATIVE /*&& (gb.gridheight != GridBagConstraints::REMAINDER)*/)
+  y = gbc.gridy;
+ if(gbc.gridx ==  GridBagConstraints::_RELATIVE && (gbc.gridheight != GridBagConstraints::REMAINDER))
   x = ++lastX;
  else
-  x = gb.gridx;
- QGridLayout::addWidget(widget, y, x, gb.rowSpan(), gb.colSpan(), gb.align());
+  x = gbc.gridx;
+ if(gbc.anchor == 0)
+  QGridLayout::addWidget(widget, y, x, gbc.rowSpan(), gbc.colSpan()/*, gb.align()*/);
+ else
+  QGridLayout::addWidget(widget, y, x, gbc.rowSpan(), gbc.colSpan(), gbc.align());
 }
 
 void GridBagLayout::columnWidths(QList<int> columns)
@@ -38,4 +43,9 @@ void GridBagLayout::rowHeights(QList<int> rows)
 void GridBagLayout::setConstraints(GridBagConstraints gbc)
 {
  this->gbc = gbc;
+}
+
+GridBagConstraints GridBagLayout::getConstraints()
+{
+ return gbc;
 }

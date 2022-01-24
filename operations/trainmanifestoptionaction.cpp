@@ -1,6 +1,4 @@
 #include "trainmanifestoptionaction.h"
-#include "traineditframe.h"
-#include "trainmanifestoptionframe.h"
 
 namespace Operations
 {
@@ -28,13 +26,13 @@ namespace Operations
  }
 
 
- /*public*/ void TrainManifestOptionAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void TrainManifestOptionAction::actionPerformed(JActionEvent * /*e*/) {
      // create a settings frame
      if (f == NULL || !f->isVisible()) {
          f = new TrainManifestOptionFrame();
          f->initComponents(frame);
      }
-     //f.setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setVisible(true);	// this also brings the frame into focus
  }
 

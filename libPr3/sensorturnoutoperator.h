@@ -27,16 +27,18 @@ private:
     QMutex mutex;
     Logger* log;
 };
-class MyPropertyChangeListener : public PropertyChangeListener
+class MyPropertyChangeListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  public:
-    MyPropertyChangeListener(SensorTurnoutOperator* self)
+    MyPropertyChangeListener(SensorTurnoutOperator* sto)
     {
-     this->self = self;
+     this->sto = sto;
     }
+    QObject* self() override{return (QObject*)this;}
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* e)
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override
     {
      if (e->getPropertyName()==("KnownState"))
      {
@@ -48,7 +50,7 @@ public slots:
      }
     }
 private:
-    SensorTurnoutOperator* self;
+    SensorTurnoutOperator* sto;
     QMutex mutex;
 };
 

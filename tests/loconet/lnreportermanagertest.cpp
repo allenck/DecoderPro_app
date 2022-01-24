@@ -29,8 +29,9 @@ LnReporterManagerTest::LnReporterManagerTest()
         LocoNetSystemConnectionMemo* memo;
         tc = new LocoNetInterfaceScaffold(memo = new LocoNetSystemConnectionMemo());
         memo->setLnTrafficController(tc);
+#if 0
         l = new LnReporterManager(tc->getSystemConnectionMemo());
-
+#endif
     }
 
     //@After

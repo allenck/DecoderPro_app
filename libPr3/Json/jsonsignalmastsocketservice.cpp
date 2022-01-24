@@ -76,7 +76,7 @@
                 } catch (JsonException ex) {
                     jsmss->connection->sendMessage(ex.getJsonMessage());
                 }
-            } catch (IOException ie) {
+            } catch (IOException* ie) {
                 // if we get an error, de-register
                 //signalMast.removePropertyChangeListener(this);
           disconnect(signalMast->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));

@@ -4,6 +4,8 @@
 #include <rosterentry.h> // for VPtr
 #include "roster.h"
 #include "instancemanager.h"
+#include "file.h"
+
 
 NceConsistRoster::NceConsistRoster(QObject *parent) :
     XmlFile(parent)
@@ -203,7 +205,7 @@ void NceConsistRoster::writeFile(QString name) throw (FileNotFoundException, IOE
 {
  if (log->isDebugEnabled()) log->debug("writeFile "+name);
  // This is taken in large part from "Java and XML" page 368
- QFile* file = findFile(name);
+ QFile* file = findFile(name)->toQfile();
  if (file == NULL)
  {
   file = new QFile(name);
@@ -374,8 +376,8 @@ bool NceConsistRoster::isDirty() {return dirty;}
     makeBackupFile(defaultNceConsistRosterFilename());
     try {
         writeFile(defaultNceConsistRosterFilename());
-    } catch (Exception e) {
-        Logger::error("Exception while writing the new ConsistRoster file, may not be complete: "+e.getMessage());
+    } catch (Exception* e) {
+        Logger::error("Exception while writing the new ConsistRoster file, may not be complete: "+e->getMessage());
     }
 }
 
@@ -390,8 +392,8 @@ bool NceConsistRoster::isDirty() {return dirty;}
     // and read new
     try {
         readFile(defaultNceConsistRosterFilename());
-    } catch (Exception e) {
-        log->error("Exception during ConsistRoster reading: "+e.getMessage());
+    } catch (Exception* e) {
+        log->error("Exception during ConsistRoster reading: "+e->getMessage());
     }
 }
 
@@ -404,10 +406,10 @@ bool NceConsistRoster::isDirty() {return dirty;}
 /*public*/ /*static*/ void NceConsistRoster::setNceConsistRosterFileName(QString name) { NceConsistRosterFileName = name; }
 /*private*/ /*static*/ QString NceConsistRoster::NceConsistRosterFileName = "ConsistRoster.xml";
 
-// since we can't do a "super(this)" in the ctor to inherit from PropertyChangeSupport, we'll
+// since we can't do a "super(this)" in the ctor to inherit from SwingPropertyChangeSupport, we'll
 // reflect to it.
 // Note that dispose() doesn't act on these.  Its not clear whether it should...
-//java.beans.PropertyChangeSupport pcs = new java.beans.PropertyChangeSupport(this);
+//java.beans.SwingPropertyChangeSupport pcs = new java.beans.SwingPropertyChangeSupport(this,this);
 
 ///*public*/ synchronized void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
 //    pcs.addPropertyChangeListener(l);
@@ -448,11 +450,11 @@ bool NceConsistRoster::isDirty() {return dirty;}
      try
      {
             readFile(defaultNceConsistRosterFilename());
-     } catch (IOException  e) {
-      log->error(tr("Exception during ConsistRoster reading: %1").arg(e.getMessage()));
+     } catch (IOException*  e) {
+      log->error(tr("Exception during ConsistRoster reading: %1").arg(e->getMessage()));
      }
-     catch ( JDOMException e) {
-      log->error(tr("Exception during ConsistRoster reading: %1").arg(e.getMessage()));
+     catch ( JDOMException* e) {
+      log->error(tr("Exception during ConsistRoster reading: %1").arg(e->getMessage()));
     }
   }
 }

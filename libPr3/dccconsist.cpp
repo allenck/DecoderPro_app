@@ -82,7 +82,7 @@ void DccConsist::common(DccLocoAddress *address, AddressedProgrammerManager* apm
   {
    remove(loco);
   }
-  catch (Exception ex)
+  catch (Exception* ex)
   {
    log->error("Error removing loco: " + loco->toString() + " from consist: " + consistAddress->toString());
   }
@@ -267,7 +267,7 @@ void DccConsist::common(DccLocoAddress *address, AddressedProgrammerManager* apm
   {
    opsProg->writeCV("19",consistAddress->getNumber(), (ProgListener*)this);
   }
-  catch(ProgrammerException e)
+  catch(ProgrammerException* e)
   {
    // Don't do anything with this yet
   }
@@ -278,7 +278,7 @@ void DccConsist::common(DccLocoAddress *address, AddressedProgrammerManager* apm
   {
    opsProg->writeCV("19",consistAddress->getNumber() + 128 ,(ProgListener*)this);
   }
-  catch(ProgrammerException e)
+  catch(ProgrammerException* e)
   {
    // Don't do anything with this yet
   }
@@ -305,9 +305,9 @@ void DccConsist::common(DccLocoAddress *address, AddressedProgrammerManager* apm
  try
  {
   if(opsProg == nullptr)
-   throw ProgrammerException("No Addressed Programmer!");
+   throw new ProgrammerException("No Addressed Programmer!");
   opsProg->writeCV("19",0,(ProgListener*)this);
- } catch(ProgrammerException e) {
+ } catch(ProgrammerException* e) {
      // Don't do anything with this yet
   return;
  }
@@ -438,20 +438,20 @@ void DccConsist::common(DccLocoAddress *address, AddressedProgrammerManager* apm
          log->debug(tr("selected loco uses decoder %1 %2").arg(decoderFamily).arg(decoderModel));
      }
      // locate a decoder like that.
-     QList<DecoderFile*>* l = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", decoderFamily, "", "", "", decoderModel);
+     QList<DecoderFile*> l = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", decoderFamily, "", "", "", decoderModel);
      if (log->isDebugEnabled()) {
-         log->debug(tr("found %1 matches").arg(l->size()));
+         log->debug(tr("found %1 matches").arg(l.size()));
      }
-     if (l->isEmpty()) {
+     if (l.isEmpty()) {
          log->debug(tr("Loco uses %1 %2 decoder, but no such decoder defined").arg(decoderFamily).arg(decoderModel ));
          // fall back to use just the decoder name, not family
          l = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", "", "", "", "", decoderModel);
          if (log->isDebugEnabled()) {
-             log->debug(tr("found %1 matches without family key").arg(l->size()));
+             log->debug(tr("found %1 matches without family key").arg(l.size()));
          }
      }
-     if (!l->isEmpty()) {
-         DecoderFile* d = l->at(0);
+     if (!l.isEmpty()) {
+         DecoderFile* d = l.at(0);
          loadDecoderFile(d, r, varTable);
      } else {
          if (decoderModel ==("")) {
@@ -476,10 +476,10 @@ void DccConsist::common(DccLocoAddress *address, AddressedProgrammerManager* apm
     try {
         decoderRoot = df->rootFromName(DecoderFile::fileLocation + df->getFileName());
     }
-    catch (JDOMException  e) {
+    catch (JDOMException*  e) {
         log->error("Exception while loading decoder XML file: " + df->getFileName(), e);
     }
-    catch (IOException e) {
+    catch (IOException* e) {
         log->error("Exception while loading decoder XML file: " + df->getFileName(), e);
     }
     // load variables from decoder tree

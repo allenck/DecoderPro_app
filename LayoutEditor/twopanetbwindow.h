@@ -7,11 +7,11 @@
 
 class QLabel;
 class Box;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class TwoPaneTBWindow : public JmriJFrame
 {
 public:
- /*public*/ TwoPaneTBWindow(QString name, QString menubarFile, QString toolbarFile, QWidget* parent);
+ /*public*/ TwoPaneTBWindow(QString name, QString menubarFile, QString toolbarFile, QWidget* parent=nullptr);
  /*public*/ QWidget* getTop();
  /*public*/ QWidget* getBottom();
  /*public*/ QWidget* getToolBar();
@@ -27,7 +27,7 @@ public:
  /*
   The property change listener is located here so that the menus can interact with the front end
   */
- PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
+ SwingPropertyChangeSupport* pcs;// = new java.beans.SwingPropertyChangeSupport(this,this);
 
 private:
  QSplitter*  upDownSplitPane;

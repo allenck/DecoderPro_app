@@ -11,17 +11,20 @@ namespace Operations
  class RouteManager;
  class Route;
  class RouteLocation;
- class APPSLIBSHARED_EXPORT SetTrainIconRouteFrame : public OperationsFrame
+ class APPSLIBSHARED_EXPORT SetTrainIconRouteFrame : public OperationsFrame, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
-  SetTrainIconRouteFrame(QString routeName, QWidget* parent = 0);
-  /*public*/ QString getClassName();
-
+  SetTrainIconRouteFrame(Route* route, QWidget* parent = 0);
+  ~SetTrainIconRouteFrame() {}
+  SetTrainIconRouteFrame(const SetTrainIconRouteFrame&) : OperationsFrame() {}
+  /*public*/ QString getClassName()override;
+  QObject* self() override {return (QObject*)this;}
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
-  /*public*/ void buttonActionPerformed(QWidget* ae);
-  /*public*/ void spinnerChangeEvent(QWidget* ae);
+  /*public*/ void propertyChange(PropertyChangeEvent* e)override;
+  /*public*/ void buttonActionPerformed(QWidget* ae)override;
+  /*public*/ void spinnerChangeEvent(QWidget* ae)override;
 
  private:
   RouteManager* routeManager;//= RouteManager.instance();
@@ -35,11 +38,11 @@ namespace Operations
   // text field
   // check boxes
   // major buttons
-  QPushButton* previousButton;//= new JButton(Bundle.getMessage("Previous"));
-  QPushButton* nextButton;//= new JButton(Bundle.getMessage("Next"));
-  QPushButton* placeButton;//= new JButton(Bundle.getMessage("PlaceTestIcon"));
-  QPushButton* applyButton;//= new JButton(Bundle.getMessage("Apply"));
-  QPushButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
+  JButton* previousButton;//= new JButton(Bundle.getMessage("Previous"));
+  JButton* nextButton;//= new JButton(Bundle.getMessage("Next"));
+  JButton* placeButton;//= new JButton(Bundle.getMessage("PlaceTestIcon"));
+  JButton* applyButton;//= new JButton(Bundle.getMessage("Apply"));
+  JButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
 
   // combo boxes
   // Spinners
@@ -68,4 +71,6 @@ namespace Operations
 
  };
 }
+//Q_DECLARE_METATYPE(Operations::SetTrainIconRouteFrame)
+
 #endif // SETTRAINICONROUTEFRAME_H

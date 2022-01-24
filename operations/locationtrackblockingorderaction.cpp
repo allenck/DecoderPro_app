@@ -1,6 +1,5 @@
 #include "locationtrackblockingorderaction.h"
 #include "location.h"
-#include "locationtrackblockingorderframe.h"
 
 namespace Operations
 {
@@ -43,7 +42,7 @@ namespace Operations
          _frame = new LocationTrackBlockingOrderFrame();
          _frame->initComponents(_location);
      }
-    // _frame.setExtendedState(Frame.NORMAL);
+     _frame->setExtendedState(JFrame::NORMAL);
      _frame->setVisible(true);	// this also brings the frame into focus
  }
 }

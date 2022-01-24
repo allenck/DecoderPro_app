@@ -21,13 +21,16 @@ private:
  /*private*/ QLocale locale;
 friend class TurnoutListener;
 };
-/*private*/ class TurnoutListener : public PropertyChangeListener {
+/*private*/ class TurnoutListener : public QObject, public PropertyChangeListener {
+Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 
     /*protected*/ /*final*/ Turnout* _turnout;
  JsonTurnoutSocketService* jtss;
 public:
     /*public*/ TurnoutListener(Turnout* turnout, JsonTurnoutSocketService* jtss);
  inline Turnout* turnout() {return _turnout;}
+ QObject* self() override{return (QObject*)this;}
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
 };

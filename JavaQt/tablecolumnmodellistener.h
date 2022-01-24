@@ -1,6 +1,7 @@
 #ifndef TABLECOLUMNMODELLISTENER_H
 #define TABLECOLUMNMODELLISTENER_H
 #include "propertychangelistener.h"
+#include "eventlistener.h"
 
 /* TableColumnModelListener defines the interface for an object that listens
 * to changes in a TableColumnModel.
@@ -12,10 +13,12 @@
 class TableColumnModelEvent;
 class ChangeEvent;
 class ListSelectionEvent;
-/*public*/ /*interface*/class  TableColumnModelListener : public PropertyChangeListener //extends java.util.EventListener
+/*public*/ /*interface*/class  TableColumnModelListener : /*public QObject,*/ public PropertyChangeListener, public EventListener
 {
+  //Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener EventListener)
 public:
- TableColumnModelListener(QObject* parent = 0) : PropertyChangeListener(parent) {}
+ //TableColumnModelListener(QObject* parent = 0) : PropertyChangeListener(this) {}
    /** Tells listeners that a column was added to the model. */
    /*public*/ virtual void columnAdded(TableColumnModelEvent* /*e*/) {}
 
@@ -34,5 +37,5 @@ public:
     */
    /*public*/ virtual void columnSelectionChanged(ListSelectionEvent* /*e*/) {}
 };
-
+Q_DECLARE_INTERFACE(TableColumnModelListener, "TableColumnModelListener")
 #endif // TABLECOLUMNMODELLISTENER_H

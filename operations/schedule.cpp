@@ -1,12 +1,13 @@
 #include "schedule.h"
 #include "propertychangeevent.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "control.h"
 #include "logger.h"
 #include "locationmanagerxml.h"
 #include "stringutil.h"
 #include "scheduleitem.h"
 #include "xml.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -33,7 +34,7 @@ namespace Operations
  void Schedule:: common()
  {
   log = new Logger("Schedule");
-  pcs = new PropertyChangeSupport(this);
+  pcs = new SwingPropertyChangeSupport(this, nullptr);
   _comment = "";
 
  // stores ScheduleItems for this schedule
@@ -108,7 +109,7 @@ namespace Operations
 
      setDirtyAndFirePropertyChange(LISTCHANGE_CHANGED_PROPERTY, old, (_scheduleHashTable.size()));
      // listen for set out and pick up changes to forward
-     //si->addPropertyChangeListener(this);
+     //si->SwingPropertyChangeSupport::addPropertyChangeListener(this);
      connect(si->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      return si;
  }
@@ -386,7 +387,7 @@ namespace Operations
 #endif
  /*protected*/ void Schedule::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      // set dirty
-     LocationManagerXml::instance()->setDirty(true);
+     ((LocationManagerXml*)InstanceManager::getDefault("LocationManagerXml"))->setDirty(true);
      pcs->firePropertyChange(p, old, n);
  }
 }

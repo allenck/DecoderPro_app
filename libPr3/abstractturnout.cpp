@@ -8,6 +8,8 @@
 #include "rosterentry.h"
 #include "loggerfactory.h"
 #include "signalspeedmap.h"
+#include "vptr.h"
+#include "signalspeedmap.h"
 
 AbstractTurnout::AbstractTurnout(QObject *parent) :
     Turnout(parent)
@@ -228,7 +230,43 @@ _reportLocked = true;
 /*public*/ int AbstractTurnout::getCommandedState() {
     return _commandedState;
 }
-
+/** {@inheritDoc}
+ * Used in {@link jmri.implementation.DefaultRoute#setRoute()} and
+ * {@link jmri.implementation.MatrixSignalMast#updateOutputs(char[])}.
+ */
+//@Override
+/*public*/ void AbstractTurnout::setCommandedStateAtInterval(int s) {
+    nextWait = InstanceManager::turnoutManagerInstance()->outputIntervalEnds();
+    // nextWait time is calculated using actual turnoutInterval in TurnoutManager
+#if 1
+    if (nextWait->isAfter(LocalDateTime::now())) { // don't sleep if nextWait =< now()
+        log->debug(tr("Turnout now() = %1, waitUntil = %2").arg(LocalDateTime::now()->toString(), nextWait->toString()));
+        // insert wait before sending next output command to the layout
+//        r = []() {
+//            log->debug(tr("go to sleep for %1 ms...").arg(qMax(0ULL, LocalDateTime::now()->until(nextWait, LocalDateTime::ChronoUnit::MILLIS))));
+//            try {
+//                Thread.sleep(qMax(0L, LocalDateTime::now()->until(nextWait, LocalDateTime::ChronoUnit::MILLIS))); // nextWait might have passed in the meantime
+//                log->debug(tr("back from sleep, forward on %1").arg(LocalDateTime::now()->toString()));
+//                setCommandedState(s);
+//            } catch (InterruptedException ex) {
+//                log->debug(tr("setCommandedStateAtInterval(s) interrupted at {}", LocalDateTime.now());
+//                Thread.currentThread().interrupt(); // retain if needed later
+//            }
+//        };
+//        thr = new Thread(r);
+//        thr.start();
+        thr = new IntervalCheck(s, this);
+        QThread* thread = new QThread();
+        connect(thread, SIGNAL(started()), thr, SLOT(process()));
+        connect(thr, SIGNAL(finished()), thread, SLOT(quit()));
+        thr->moveToThread(thread);
+        thread->start();
+    } else {
+        log->debug("nextWait has passed");
+        setCommandedState(s);
+    }
+#endif
+}
 /**
  * Add a protected newKnownState() for use by implementations.
  * <P>
@@ -350,7 +388,7 @@ void AbstractTurnout::setKnownStateToCommanded()
     return _validFeedbackNames;
 }
 
-/*public*/ void AbstractTurnout::setFeedbackMode(QString mode) throw(IllegalArgumentException)
+/*public*/ void AbstractTurnout::setFeedbackMode(QString mode) /*throw(IllegalArgumentException)*/
 {
  for (int i = 0; i < _validFeedbackNames.length(); i++)
  {
@@ -360,10 +398,10 @@ void AbstractTurnout::setKnownStateToCommanded()
    return;
   }
  }
- throw IllegalArgumentException("Unexpected mode: " + mode);
+ throw new IllegalArgumentException("Unexpected mode: " + mode);
 }
 
-/*public*/ void AbstractTurnout::setFeedbackMode(int mode) throw(IllegalArgumentException) {
+/*public*/ void AbstractTurnout::setFeedbackMode(int mode) /*throw(IllegalArgumentException)*/ {
     // check for error - following removed the low bit from mode
     int test = mode & (mode - 1);
     if (test != 0)
@@ -392,7 +430,7 @@ void AbstractTurnout::setKnownStateToCommanded()
  }
  log->error("Unexpected internal mode: "
          + QString::number(_activeFeedbackType));
- throw IllegalArgumentException("Unexpected internal mode: "
+ throw new IllegalArgumentException("Unexpected internal mode: "
          + QString::number(_activeFeedbackType));
 }
 
@@ -588,7 +626,7 @@ void AbstractTurnout::setKnownStateToCommanded()
 }
 
 /*protected*/ void AbstractTurnout::operationPropertyChange(PropertyChangeEvent* evt) {
-    if ((TurnoutOperation*)evt->getSource() == myTurnoutOperation)
+    if ((SwingPropertyChangeSupport*)evt->getSource() == myTurnoutOperation)
     {
         if (((TurnoutOperation*) evt->getSource())->isDeleted()) {
             setTurnoutOperation(NULL);
@@ -642,7 +680,7 @@ void AbstractTurnout::setKnownStateToCommanded()
 }
 
 
-/*public*/ void AbstractTurnout::provideFirstFeedbackSensor(QString pName) throw(JmriException)
+/*public*/ void AbstractTurnout::provideFirstFeedbackSensor(QString pName) /*throw(JmriException)*/
 {
  if (InstanceManager::sensorManagerInstance()!=NULL)
  {
@@ -702,7 +740,7 @@ void AbstractTurnout::setKnownStateToCommanded()
     return _firstNamedSensor;
 }
 
-/*public*/ void AbstractTurnout::provideSecondFeedbackSensor(QString pName) throw(JmriException)
+/*public*/ void AbstractTurnout::provideSecondFeedbackSensor(QString pName) /*throw(JmriException)*/
 {
 
  if (InstanceManager::sensorManagerInstance()!=NULL)
@@ -922,14 +960,14 @@ void AbstractTurnout::setKnownStateToCommanded()
     try {
         return speed.toFloat();
         //return Integer.parseInt(_blockSpeed);
-    }catch (NumberFormatException nx) {
+    }catch (NumberFormatException* nx) {
         //considered normal if the speed is not a number.
     }
     try
     {
       return static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(speed);
     }
-    catch (Exception ex) {
+    catch (Exception* ex) {
       return -1;
     }
 }
@@ -943,7 +981,7 @@ void AbstractTurnout::setKnownStateToCommanded()
     return _divergeSpeed;
 }
 
-/*public*/ void AbstractTurnout::setDivergingSpeed(QString s) const throw(JmriException) {
+/*public*/ void AbstractTurnout::setDivergingSpeed(QString s) const /*throw(JmriException)*/ {
     if(s.isEmpty())
         throw new JmriException("Value of requested turnout thrown speed can not be NULL");
     if(_divergeSpeed==(s))
@@ -953,17 +991,16 @@ void AbstractTurnout::setKnownStateToCommanded()
     else if (s.contains("Block"))
         s="Block";
     else {
-#if 0 // TODO:
-        try {
-            Float.parseFloat(s);
-        } catch (NumberFormatException nx) {
+
+        bool ok;
+            s.toFloat(&ok);
+        if(!ok) {
             try{
-                jmri.implementation.SignalSpeedMap.getMap().getSpeed(s);
-            } catch (Exception ex){
+             ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(s);
+            } catch (Exception* ex){
                 throw new JmriException("Value of requested block speed is not valid");
             }
         }
-#endif
     }
     QString oldSpeed = _divergeSpeed;
     _divergeSpeed=s;
@@ -982,7 +1019,7 @@ void AbstractTurnout::setKnownStateToCommanded()
     try {
         return speed.toFloat();
     }
- catch (NumberFormatException nx)
+ catch (NumberFormatException* nx)
  {
         //considered normal if the speed is not a number.
  }
@@ -990,7 +1027,7 @@ void AbstractTurnout::setKnownStateToCommanded()
  {
     return static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(speed);
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
   return -1;
  }
@@ -1004,7 +1041,7 @@ void AbstractTurnout::setKnownStateToCommanded()
     return _straightSpeed;
 }
 
-/*public*/ void AbstractTurnout::setStraightSpeed(QString s) const throw(JmriException)
+/*public*/ void AbstractTurnout::setStraightSpeed(QString s) const /*throw(JmriException)*/
 {
     if(s==NULL)
         throw new JmriException("Value of requested turnout straight speed can not be NULL");
@@ -1023,8 +1060,8 @@ if(!bok)
 {
  try{
     static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(s);
-      } catch (Exception ex){
-          throw  JmriException("Value of requested turnout straight speed is not valid");
+      } catch (Exception* ex){
+          throw new JmriException("Value of requested turnout straight speed is not valid");
       }
      }
 #endif
@@ -1034,4 +1071,93 @@ if(!bok)
     firePropertyChange("TurnoutStraightSpeedChange", oldSpeed, s);
 }
 
+/** {@inheritDoc} */
+//@Override
+/*public*/ void AbstractTurnout::vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/ {
+    if ("CanDelete" ==(evt->getPropertyName())) { // NOI18N
+        QVariant old = evt->getOldValue();
+        if (old == VPtr<Sensor>::asQVariant(getFirstSensor()) || old == VPtr<Sensor>::asQVariant(getSecondSensor()) || old ==VPtr<Turnout>::asQVariant(leadingTurnout)) {
+            PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
+            throw new PropertyVetoException(tr("Sensor is in use by Turnout \"%1\" for feedback").arg(getDisplayName()), e); // NOI18N
+        }
+    }
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ QList<NamedBeanUsageReport*> AbstractTurnout::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+    if (bean != nullptr) {
+        if (bean->equals(getFirstSensor())) {
+            report.append(new NamedBeanUsageReport("TurnoutFeedback1"));  // NOI18N
+        }
+        if (bean->equals(getSecondSensor())) {
+            report.append(new NamedBeanUsageReport("TurnoutFeedback2"));  // NOI18N
+        }
+        if (bean->equals(getLeadingTurnout())) {
+            report.append(new NamedBeanUsageReport("LeadingTurnout")); // NOI18N
+        }
+    }
+    return report;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ bool AbstractTurnout::isCanFollow() {
+    return false;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+//@CheckForNull
+/*public*/ Turnout* AbstractTurnout::getLeadingTurnout() {
+    return leadingTurnout;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void AbstractTurnout::setLeadingTurnout(/*@CheckForNull*/ Turnout* turnout) {
+    if (isCanFollow()) {
+        Turnout* old = leadingTurnout;
+        leadingTurnout = turnout;
+        firePropertyChange("LeadingTurnout", VPtr<Turnout>::asQVariant(old), VPtr<Turnout>::asQVariant(leadingTurnout));
+        if (old != nullptr) {
+            old->removePropertyChangeListener("KnownState", this);
+        }
+        if (leadingTurnout != nullptr) {
+            leadingTurnout->addPropertyChangeListener("KnownState", this);
+        }
+    }
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void AbstractTurnout::setLeadingTurnout(/*@CheckForNull*/ Turnout* turnout, bool followingCommandedState) {
+    setLeadingTurnout(turnout);
+    setFollowingCommandedState(followingCommandedState);
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ bool AbstractTurnout::isFollowingCommandedState() {
+    return followingCommandedState;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void AbstractTurnout::setFollowingCommandedState(bool following) {
+    followingCommandedState = following;
+}
 /*static*/ Logger* AbstractTurnout::log = LoggerFactory::getLogger("AbstractTurnout");

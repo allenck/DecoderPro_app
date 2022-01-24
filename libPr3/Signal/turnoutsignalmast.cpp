@@ -70,12 +70,12 @@ void TurnoutSignalMast::configureFromName(QString systemName) {
  {
     // not a valid aspect
     log->warn("attempting to set invalid aspect: "+aspect+" on mast: "+getDisplayName());
-    throw IllegalArgumentException("attempting to set invalid aspect: "+aspect+" on mast: "+getDisplayName());
+    throw new IllegalArgumentException("attempting to set invalid aspect: "+aspect+" on mast: "+getDisplayName());
  }
  else if (disabledAspects->contains(aspect))
  {
     log->warn("attempting to set an aspect that has been disabled: "+aspect+" on mast: "+getDisplayName());
-    throw IllegalArgumentException("attempting to set an aspect that has been disabled: "+aspect+" on mast: "+getDisplayName());
+    throw new IllegalArgumentException("attempting to set an aspect that has been disabled: "+aspect+" on mast: "+getDisplayName());
  }
 
  if (getLit())

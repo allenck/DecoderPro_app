@@ -5,7 +5,7 @@
 #include "operationsframe.h"
 
 class HardcopyWriter;
-class QPushButton;
+class JButton;
 class QCheckBox;
 class JComboBox;
 //class JFrame;
@@ -87,7 +87,7 @@ public:
      QCheckBox* printSpace;// = new JCheckBox(Bundle.getMessage("PrintSpace"));
      QCheckBox* printPage;// = new JCheckBox(Bundle.getMessage("PrintPage"));
 
-     QPushButton* okayButton;// = new JButton(Bundle.getMessage("ButtonOkay"));
+     JButton* okayButton;// = new JButton(Bundle.getMessage("ButtonOkay"));
      friend class PrintCarRosterAction;
  };
 

@@ -31,11 +31,12 @@
 #include "trackertableaction.h"
 #include "nxframe.h"
 #include "oblockmanager.h"
+#include <QTimer>
 
 WarrantTableAction::WarrantTableAction(QObject *parent) :
     AbstractAction(tr("Warrants"), parent)
 {
- common();
+ common(QString());
 }
 /**
  * A WarrantAction contains the operating permissions and directives needed for
@@ -73,9 +74,9 @@ WarrantTableAction::WarrantTableAction(QObject *parent) :
     /*private*/ /*static*/ WarrantTableAction* WarrantTableAction::_instance = NULL;
     /*private*/ /*static*/ QMap <QString, Warrant*> WarrantTableAction::_warrantMap =  QMap <QString, Warrant*> ();
     /*protected*/ /*static*/ TrackerTableAction* WarrantTableAction::_trackerTable = NULL;
-    /*private*/ /*static*/ JTextArea* WarrantTableAction::_textArea = NULL;
+    ///*private*/ /*static*/ JTextArea* WarrantTableAction::_textArea = NULL;
     /*private*/ /*static*/ bool WarrantTableAction::_hasErrors = false;
-    /*private*/ /*static*/ JDialog*  WarrantTableAction::_errorDialog = NULL;
+    /*private*/ /*static*/ JmriJFrame*  WarrantTableAction::_errorDialog = NULL;
     ///*static*/ WarrantTableAction* WarrantTableAction::editWarrantAction = NULL;
     /*static*/ QColor WarrantTableAction::_background = QColor(Qt::lightGray);
     JTextField* WarrantTableAction::_endWarrant = NULL;
@@ -90,7 +91,7 @@ WarrantTableAction::WarrantTableAction(QObject *parent) :
 /*public*/ WarrantTableAction::WarrantTableAction(QString menuOption, QObject *parent) : AbstractAction(menuOption,parent)
 {
  //    super(tr(menuOption));
- common();
+ common(menuOption);
 }
 
 /*public*/ /*static*/ WarrantTableAction* WarrantTableAction::getDefault()
@@ -105,9 +106,9 @@ WarrantTableAction::WarrantTableAction(QObject *parent) :
  return wta;
 }
 
-void WarrantTableAction::common()
+void WarrantTableAction::common(QString menuOption)
 {
-  this->menuOption = menuOption;
+ this->menuOption = menuOption;
   log = new Logger("WarrantTableAction");
  _startWarrant = new JTextField(30);
  _endWarrant = new JTextField(30);
@@ -131,7 +132,7 @@ void WarrantTableAction::common()
         return wta;
     }//);
 }
-/*public*/ void WarrantTableAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void WarrantTableAction::actionPerformed(JActionEvent * /*e*/)
 {
  WarrantTableFrame::getDefault();
 }
@@ -287,7 +288,7 @@ void EditWarrantActionListener::on_editWarrantMapper(QString cmd)
 //    {
 //     WarrantTableAction::getInstance()->_tableFrame->initComponents();
 //    }
-//    catch (Exception ex ) {/*bogus*/ }
+//    catch (Exception* ex ) {/*bogus*/ }
 //   }
 //   else
 //   {
@@ -301,7 +302,7 @@ void EditWarrantActionListener::on_editWarrantMapper(QString cmd)
 //    try
 //   {
 //    f->initComponents();
-//   } catch (Exception ex ) {/*bogus*/ }
+//   } catch (Exception* ex ) {/*bogus*/ }
 //   f->setVisible(true);
 //  }
 //  WarrantTableAction::getInstance()->initPathPortalCheck();
@@ -441,7 +442,7 @@ InstanceManager::getDefault("WarrantManager");
     JTextArea* textArea = new JTextArea(10, 50);
     textArea->setEditable(false);
     textArea->setTabSize(4);
-    textArea->append(tr("ErrWarnAreaMsg"));
+    textArea->append(tr("The following are possible sources for errors:"));
     textArea->append("\n\n");
     OBlockManager* manager = (OBlockManager*) InstanceManager::getDefault("OBlockManager");
     for (NamedBean* nb : manager->getNamedBeanSet()) {
@@ -631,14 +632,13 @@ QListIterator <BeanSetting*> iter(myTOs);
  }
  return ret;
 }
-/*public*/ /*static*/ bool WarrantTableAction::showPathPortalErrors(JTextArea* ta)
+/*public*/ /*static*/ bool WarrantTableAction::showPathPortalErrors(JTextArea* textArea)
 {
- Logger* log = new Logger("WarrantTableAction");
- if (!_hasErrors) { return false; }
- if (_textArea==NULL)
- {
-  log->error("_textArea is NULL!.");
-  return true;
+ if (_errorDialog != nullptr) {
+     _errorDialog->dispose();
+ }
+ if (!_hasErrors) {
+     return false;
  }
 
  //JScrollPane scrollPane = new JScrollPane(_textArea);
@@ -647,8 +647,10 @@ QListIterator <BeanSetting*> iter(myTOs);
 // scrollPane->setWidgetResizable(true);
 // scrollPane->setEnabled(true);
 
- _errorDialog = new JDialog();
- _errorDialog->setTitle(tr("Block/Portal/Path Warnings"));
+// _errorDialog = new JDialog();
+// _errorDialog->setModal(true);
+// _errorDialog->setTitle(tr("Block/Portal/Path Warnings"));
+ _errorDialog = new JmriJFrameX(tr("Block/Portal/Path Warnings"));
  QPushButton* ok = new QPushButton(tr("OK"));
 //    class myListener extends java.awt.event.WindowAdapter implements ActionListener {
 //       /*  java.awt.Window _w;
@@ -667,14 +669,23 @@ QListIterator <BeanSetting*> iter(myTOs);
 //         }
 //    };
     //ok.addActionListener(new myListener());
- MyListener* myListener = new MyListener(_errorDialog);
- connect(ok, SIGNAL(clicked()),  myListener, SLOT(actionPerformed()));
-    ok->setMaximumSize(ok->sizeHint());
+// MyListener* myListener = new MyListener(_errorDialog);
+// connect(ok, SIGNAL(clicked()),  myListener, SLOT(actionPerformed()));
+ connect(ok, &QPushButton::clicked, [=]{
+  if(timer)
+   timer->stop();
+  _errorDialog->close();
 
-//    QWidget* contentPane = _errorDialog->getContentPane();
+ });
+    ok->setMaximumSize(ok->sizeHint());
+ timer = new QTimer();
+ connect(timer, &QTimer::timeout, [=] {ok->click();});
+ timer->start(30000);
+
+ QWidget* contentPane = _errorDialog->getContentPane();
  QVBoxLayout* contentPaneLayout;
- _errorDialog->setLayout(contentPaneLayout = new QVBoxLayout(_errorDialog/*, BoxLayout.Y_AXIS*/));
- contentPaneLayout->addWidget(/*scrollPane*/_textArea, /*BorderLayout::Center*/0, Qt::AlignCenter);
+ contentPane->setLayout(contentPaneLayout = new QVBoxLayout(_errorDialog/*, BoxLayout.Y_AXIS*/));
+ contentPaneLayout->addWidget(/*scrollPane*/textArea, /*BorderLayout::Center*/0, Qt::AlignCenter);
 //    contentPane.add(Box.createVerticalStrut(5));
 //    contentPane.add(Box.createVerticalGlue());
  QWidget* panel = new QWidget();
@@ -682,8 +693,10 @@ QListIterator <BeanSetting*> iter(myTOs);
  panel->layout()->addWidget(ok);
  contentPaneLayout->addWidget(panel, /*BorderLayout::South*/0, Qt::AlignBottom);
 //    _errorDialog->addWindowListener( new myListener());
+ _errorDialog->resize(200, 300);
  _errorDialog->adjustSize();
  _errorDialog->setVisible(true);
+ _errorDialog->show();
 
  return true;
 }
@@ -1025,7 +1038,7 @@ void WarrantTableAction::on_createWarrant_triggered()
  {
   f->initComponents();
   f->concatenate(startW, endW);
- } catch (Exception ex ) { log->error("error making CreateWarrantFrame", ex);}
+ } catch (Exception* ex ) { log->error("error making CreateWarrantFrame", ex);}
  f->setVisible(true);
 }
 #if 0

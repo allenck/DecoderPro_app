@@ -56,7 +56,7 @@ rosterLoco = NULL;
 }
 
 bool ConsistFunctionController::requestThrottle(DccLocoAddress* loco) {
-    return InstanceManager::throttleManagerInstance()->requestThrottle(loco->getNumber(), loco->isLongAddress(), (ThrottleListener*)this);
+    return InstanceManager::throttleManagerInstance()->requestThrottle(loco->getNumber(), loco->isLongAddress(), (ThrottleListener*)this, true);
 }
 
 /*private*/ /*final*/ /*static*/ Logger* ConsistFunctionController::log = LoggerFactory::getLogger("ConsistFunctionController");

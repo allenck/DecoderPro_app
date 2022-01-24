@@ -7,16 +7,21 @@ class RpsReporterManager : public AbstractReporterManager
 {
 public:
  RpsReporterManager(RpsSystemConnectionMemo* memo, QObject* parent = 0);
- //static RpsReporterManager* _instance;// = NULL;
- //static /*public*/ RpsReporterManager* instance();
- /*public*/ QString getSystemPrefix()const override;
- /*public*/ SystemConnectionMemo* getMemo() override;
+ /*public*/ SystemConnectionMemo* getMemo()  override;
+ /*public*/ QString createSystemName(QString curAddress, QString prefix) /*throw (JmriException)*/override;
+ /*public*/ QString validateSystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale)  override;
+ /*public*/ RpsReporterManager::NameValidity validSystemNameFormat(/*@Nonnull*/ QString systemName) override;
+ /*public*/ QString getEntryToolTip()override;
  /*public*/ QString getNamedBeanClass()const override {
      return "Reporter";
  }
+ QObject* self() override{return (QObject*)this;}
+
+ private:
+ static Logger* log;
 
 protected:
- /*protected*/ Reporter* createNewReporter(QString systemName, QString userName)const override;
+ /*protected*/ Reporter* createNewReporter(QString systemName, QString userName) override;
 
 };
 

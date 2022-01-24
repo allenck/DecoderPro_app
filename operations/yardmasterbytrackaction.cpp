@@ -40,11 +40,11 @@ void YardmasterByTrackAction::common()
 }
 
 //@Override
-/*public*/ void YardmasterByTrackAction::actionPerformed(ActionEvent* e) {
+/*public*/ void YardmasterByTrackAction::actionPerformed(JActionEvent* e) {
     // create a frame
     if (f == NULL || !f->isVisible()) {
         f = new YardmasterByTrackFrame(_location);
     }
-//    f->setExtendedState(Frame::NORMAL);
+    f->setExtendedState(JFrame::NORMAL);
     f->setVisible(true); // this also brings the frame into focus
 }

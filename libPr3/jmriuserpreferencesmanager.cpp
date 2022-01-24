@@ -23,10 +23,6 @@
 #include "joptionpane.h"
 #include "vptr.h"
 
-//JmriUserPreferencesManager::JmriUserPreferencesManager()
-//{
-
-//}
 /**
  * Implementation of {@link UserPreferencesManager} that saves user interface
  * preferences that should be automatically remembered as they are set.
@@ -53,9 +49,9 @@
 /*private*/ /*final*/ /*static*/ QString JmriUserPreferencesManager::WINDOWS_ELEMENT = "windowDetails"; // NOI18N
 // /*private*/ /*final*/ static Logger log = LoggerFactory.getLogger(JmriUserPreferencesManager.class);
 
-/*public*/ /*static*/ UserPreferencesManager* JmriUserPreferencesManager::getInstance() {
-    return JmriUserPreferencesManager::getDefault();
-}
+///*public*/ /*static*/ UserPreferencesManager* JmriUserPreferencesManager::getInstance() {
+//    return JmriUserPreferencesManager::getDefault();
+//}
 
 /**
  * Get the default UserPreferencesManager or create a new one if none
@@ -63,9 +59,9 @@
  *
  * @return the default UserPreferencesManager
  */
-/*public*/ /*static*/ UserPreferencesManager* JmriUserPreferencesManager::getDefault() {
-    return (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
- }
+///*public*/ /*static*/ UserPreferencesManager* JmriUserPreferencesManager::getDefault() {
+//    return (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
+// }
 
 
 /*public*/ JmriUserPreferencesManager::JmriUserPreferencesManager(QObject* parent) : UserPreferencesManager(parent)
@@ -83,6 +79,7 @@
  // prevent attempts to write during construction
  //this->allowSave = false;
  QMetaObject::invokeMethod((JmriUserPreferencesManager*)this, "initAfter", Qt::QueuedConnection);
+ QObject::setProperty("InstanceManagerAutoInitialize", "true");
 }
 
 /*private*/ void JmriUserPreferencesManager::initAfter() // finish up after subclassed constructor has run
@@ -640,14 +637,14 @@
    if(QMetaObject::invokeMethod(cl, "getClassDescription", Qt::DirectConnection, Q_RETURN_ARG(QString, desc)))
       classDesFound = true;
    else
-    throw NoSuchMethodException(tr("method %1 not found for class %2").arg("getClassDescription").arg(strClass));
+    throw new NoSuchMethodException(tr("method %1 not found for class %2").arg("getClassDescription").arg(strClass));
 //  } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NullPointerException | ExceptionInInitializerError | NoSuchMethodException ex) {
    }
-   else throw NoSuchMethodException(tr("method %1 not found for class %2").arg("getClassDescription").arg(strClass));
+   else throw new NoSuchMethodException(tr("method %1 not found for class %2").arg("getClassDescription").arg(strClass));
   }
-  catch(NoSuchMethodException ex)
+  catch(NoSuchMethodException* ex)
   {
-   log->debug(ex.getMessage());
+   log->debug(ex->getMessage());
    classDesFound = false;
   }
 //  if (!classDesFound)
@@ -679,15 +676,15 @@
     if(QMetaObject::invokeMethod(cl, "setMessagePreferencesDetails", Qt::DirectConnection))
       classSetFound = true;
      else
-      throw NoSuchMethodException(tr("method %1 not found for class %2").arg("setMessagePreferencesDetails").arg(strClass));
+      throw new NoSuchMethodException(tr("method %1 not found for class %2").arg("setMessagePreferencesDetails").arg(strClass));
    }
-    else throw NoSuchMethodException(tr("method %1 not found for class %2").arg("setMessagePreferencesDetails").arg(strClass));
+    else throw new NoSuchMethodException(tr("method %1 not found for class %2").arg("setMessagePreferencesDetails").arg(strClass));
 
 //  } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NullPointerException | ExceptionInInitializerError | NoSuchMethodException ex) {
   }
   catch(NoSuchMethodException ex)
   {
-      log->debug(ex.getMessage()); // *TableAction.setMessagePreferencesDetails() method is routinely not present in multiple classes
+      log->debug(ex->getMessage()); // *TableAction.setMessagePreferencesDetails() method is routinely not present in multiple classes
       classSetFound = false;
   }
 //  if (!classSetFound) {
@@ -699,12 +696,12 @@
 //      }
 //  }
 
-    } catch (ClassNotFoundException ex) {
+    } catch (ClassNotFoundException* ex) {
         log->warn(tr("class name \"%1\" cannot be found, perhaps an expected plugin is missing?").arg(strClass));
   }
 //     catch (IllegalAccessException ex) {
 //        log->error("unable to access class \"{}\"", strClass, ex);
-//    } catch (InstantiationException ex) {
+//    } catch (InstantiationException* ex) {
 //        log->error("unable to get a class name \"{}\"", strClass, ex);
 //    }
 }
@@ -720,7 +717,7 @@
          t = (QObject*)cl->newInstance();
      }
      //catch (IllegalArgumentException | NullPointerException | ExceptionInInitializerError | NoSuchMethodException | java.lang.reflect.InvocationTargetException ex)
-     catch(InvocationTargetException ex)
+     catch(InvocationTargetException* ex)
      {
          log->error(tr("setClassDescription(%1) failed in newInstance").arg(strClass), ex);
          //return;
@@ -738,13 +735,13 @@
          if(QMetaObject::invokeMethod(t, "getClassDescription", Qt::DirectConnection, Q_RETURN_ARG(QString, desc)))
           classDesFound = true;
          else
-          throw NoSuchMethodException(tr("method %1 not found for class %2").arg("getClassDescription").arg(strClass));
+          throw new NoSuchMethodException(tr("method %1 not found for class %2").arg("getClassDescription").arg(strClass));
      }
      //catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NullPointerException | ExceptionInInitializerError | NoSuchMethodException ex)
-     catch(NoSuchMethodException ex)
+     catch(NoSuchMethodException* ex)
      {
       if(log->isDebugEnabled())
-         log->debug(tr("Unable to call declared method \"getClassDescription\" with exception %1").arg(ex.toString()));
+         log->debug(tr("Unable to call declared method \"getClassDescription\" with exception %1").arg(ex->toString()));
       classDesFound = false;
       return;
      }
@@ -774,14 +771,14 @@
       if(QMetaObject::invokeMethod(t, "setMessagePreferencesDetails", Qt::DirectConnection))
          classSetFound = true;
       else
-       throw NoSuchMethodException(tr("method %1 not found for class %2").arg("setMessagePreferencesDetails").arg(strClass));
+       throw new NoSuchMethodException(tr("method %1 not found for class %2").arg("setMessagePreferencesDetails").arg(strClass));
 
      }
      //catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NullPointerException | ExceptionInInitializerError | NoSuchMethodException ex)
-     catch(NoSuchMethodException ex)
+     catch(NoSuchMethodException* ex)
      {
          // TableAction.setMessagePreferencesDetails() method is routinely not present in multiple classes
-         log->debug(tr("Unable to call declared method \"setMessagePreferencesDetails\" with exception %1").arg(ex.toString()));
+         log->debug(tr("Unable to call declared method \"setMessagePreferencesDetails\" with exception %1").arg(ex->toString()));
          classSetFound = false;
      }
 #if 0
@@ -794,11 +791,11 @@
          }
      }
  #endif
- } catch (ClassNotFoundException ex) {
+ } catch (ClassNotFoundException* ex) {
      log->warn(tr("class name \"%1\" cannot be found, perhaps an expected plugin is missing?").arg(strClass));
- } catch (IllegalAccessException ex) {
+ } catch (IllegalAccessException* ex) {
      log->error(tr("unable to access class \"%1\"").arg(strClass), ex);
- } catch (InstantiationException ex) {
+ } catch (InstantiationException* ex) {
      log->error(tr("unable to get a class name \"%1\"").arg(strClass), ex);
  }
 }
@@ -1091,10 +1088,10 @@
      if (!perNodeConfig->canRead()) {
          perNodeConfig = nullptr;
      }
- } catch (FileNotFoundException ex) {
+ } catch (FileNotFoundException* ex) {
      // ignore - this only means that sharedConfig does not exist.
  }
- catch (IOException ex) {
+ catch (IOException* ex) {
     // ignore - this only means that sharedConfig does not exist.
  }
  if (perNodeConfig != nullptr)
@@ -1117,16 +1114,16 @@
    ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->load(file, true);
    this->allowSave = true;
    this->savePreferences(); // write new preferences format immediately
-//                } catch (JmriException e) {
+//                } catch (JmriException* e) {
 //                    log->error("Unhandled problem loading configuration: " + e);
-//                } catch (NullPointerException e) {
+//                } catch (NullPointerException* e) {
 //                    log->error("NPE when trying to load user pref " + file);
 //                }
   } else {
       // if we got here, there is no saved user preferences
       log->info("No saved user preferences file");
   }
-        } catch (FileNotFoundException ex) {
+        } catch (FileNotFoundException* ex) {
             // ignore - this only means that UserPrefsProfileConfig.xml does not exist.
         }
  }
@@ -1344,21 +1341,21 @@
     if (window.attribute("locX") != "" && window.attribute("locX") != "")
     {
      double x = window.attribute("locX").toDouble(&ok);
-     if(!ok) throw DataConversionException();
+     if(!ok) throw new DataConversionException();
      double y = window.attribute("locY").toDouble(&ok);
-     if(!ok) throw DataConversionException();
+     if(!ok) throw new DataConversionException();
      this->setWindowLocation(reference, QPoint((int) x, (int) y));
     }
     if (window.attribute("width") != "" && window.attribute("height") != "")
     {
      double width = window.attribute("width").toDouble(&ok);
-     if(!ok) throw DataConversionException();
+     if(!ok) throw new DataConversionException();
      double height = window.attribute("height").toDouble(&ok);
-     if(!ok) throw DataConversionException();
+     if(!ok) throw new DataConversionException();
      this->setWindowSize(reference, QSize((int) width, (int) height));
     }
    }
-   catch(DataConversionException ex)
+   catch(DataConversionException* ex)
    {
     log->error(tr("Unable to read dimensions of window \"%1\"").arg(reference));
    }
@@ -1389,23 +1386,23 @@
         //Object value = ctor.newInstance(new Object[]{property.getChild("value").getText()});
         QString value;
         QMetaObject::invokeMethod(ctor, QMetaObject::normalizedSignature(property.firstChildElement("value").text().toLatin1()),Qt::DirectConnection,Q_ARG(QString, value));
-        if(value.isEmpty()) throw NullPointerException();
+        if(value.isEmpty()) throw new NullPointerException();
         log->debug(tr("Setting property %1 for %2 to %3").arg(key).arg(reference).arg(value));
         this->setProperty(reference, key, value);
        }
-       else throw NoSuchMethodException();
-//      catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)
+       else throw new NoSuchMethodException();
+//      catch (ClassNotFoundException* | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex)
       }
      }
-     catch( ClassNotFoundException ex)
+     catch( ClassNotFoundException* ex)
      {
        log->error(tr("Unable to retrieve property \"%1\" for window \"%2\"").arg(key).arg(reference));
      }
-     catch( NoSuchMethodException ex)
+     catch( NoSuchMethodException* ex)
      {
        log->error(tr("Unable to retrieve property \"%1\" for window \"%2\"").arg(key).arg(reference));
      }
-     catch (NullPointerException ex)
+     catch (NullPointerException* ex)
      {
       // NULL properties do not get set
       log->debug(tr("Property \"%1\" for window \"%2\" is NULL").arg(key).arg(reference));
@@ -1431,8 +1428,11 @@
     entry.next();
     QDomElement window = doc.createElement("window");
     window.setAttribute("class", entry.key());
-//    if(entry.key() == "LocoMonPane" && entry.value()->getLocation().x() ==0)
-//     log->debug("x=0");
+    if(entry.key() == "jmri.jmrit.beantable.ListedTableFrame:Turnout Table" )
+    {
+     if(log->isDebugEnabled())
+      log->debug("x=0");
+    }
     if (entry.value()->saveLocation)
     {
      try
@@ -1440,7 +1440,7 @@
          window.setAttribute("locX", entry.value()->getLocation().x());
          window.setAttribute("locY", entry.value()->getLocation().y());
      }
-     catch (NullPointerException ex) {
+     catch (NullPointerException* ex) {
          // Expected if the location has not been set or the window is open
      }
     }
@@ -1453,7 +1453,7 @@
                 window.setAttribute("width", (width));
                 window.setAttribute("height", (height));
             }
-        } catch (NullPointerException ex) {
+        } catch (NullPointerException* ex) {
             // Expected if the size has not been set or the window is open
         }
     }
@@ -1523,7 +1523,7 @@
     if(log->isDebugEnabled()) log->trace(tr("Saving %1 element.").arg(element.tagName()));
     try {
         ProfileUtils::getUserInterfaceConfiguration(ProfileManager::getDefault()->getActiveProfile())->putConfigurationFragment(/*JDOMUtil.toW3CElement*/(element), false);
-    } catch (JDOMException ex) {
+    } catch (JDOMException* ex) {
         log->error("Unable to save user preferences"/*, ex*/);
     }
 
@@ -1546,7 +1546,7 @@
 //@Override
     /*public*/ void JmriUserPreferencesManager::initialize() {
         this->readUserPreferences();
-    }
+}
 /**
  * Holds details about the specific class.
  */
@@ -1596,9 +1596,9 @@
     /*public*/ QString ClassPreferences::getPreferenceName(int n) {
         try {
          if(n >= preferenceList->size())
-          throw IndexOutOfBoundsException();
+          throw new IndexOutOfBoundsException();
             return preferenceList->value(n)->getItem();
-        } catch (IndexOutOfBoundsException ioob) {
+        } catch (IndexOutOfBoundsException* ioob) {
             return QString();
         }
     }

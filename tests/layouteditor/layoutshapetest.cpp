@@ -149,28 +149,28 @@ LayoutShapeTest::LayoutShapeTest(QObject *parent) : QObject(parent)
         Assert::assertNotNull("LayoutShape not null", ls, __FILE__, __LINE__);
 
         // First: miss
-        int hitType = ls->findHitPointType(MathUtil::zeroPoint2D, true);
-        Assert::assertTrue("ls->findHitPointType equals NONE", hitType == LayoutTrack::NONE, __FILE__, __LINE__);
+        HitPointType::TYPES hitType = ls->findHitPointType(MathUtil::zeroPoint2D, true);
+        Assert::assertTrue("ls->findHitPointType equals NONE", hitType == HitPointType::NONE, __FILE__, __LINE__);
 
         // now try hit getCoordsLeft -> SHAPE_CENTER
         hitType = ls->findHitPointType(ls->getCoordsCenter(), true);
-        Assert::assertEquals("ls->findHitPointType equals SHAPE_CENTER", LayoutTrack::SHAPE_CENTER, hitType, __FILE__, __LINE__);
+        Assert::assertEquals("ls->findHitPointType equals SHAPE_CENTER", HitPointType::SHAPE_CENTER, hitType, __FILE__, __LINE__);
         ///Assert::assertTrue("ls->findHitPointType equals SHAPE_CENTER", hitType == LayoutTrack.SHAPE_CENTER);
 
 
         QList<LayoutShapePoint*> lspoints = ls->getPoints();
 
         hitType = ls->findHitPointType(lspoints.at(0)->getPoint(), true);
-        Assert::assertEquals("ls->findHitPointType(point[0]) equals SHAPE_POINT_OFFSET_MIN", LayoutTrack::SHAPE_POINT_OFFSET_MIN, hitType, __FILE__, __LINE__);
+        Assert::assertEquals("ls->findHitPointType(point[0]) equals SHAPE_POINT_OFFSET_MIN", HitPointType::SHAPE_POINT_0, hitType, __FILE__, __LINE__);
 
         hitType = ls->findHitPointType(lspoints.at(1)->getPoint(), true);
-        Assert::assertEquals("ls->findHitPointType(point[1]) equals SHAPE_POINT_OFFSET_MIN + 1", LayoutTrack::SHAPE_POINT_OFFSET_MIN + 1, hitType, __FILE__, __LINE__);
+        Assert::assertEquals("ls->findHitPointType(point[1]) equals SHAPE_POINT_OFFSET_MIN + 1", HitPointType::SHAPE_POINT_1, hitType, __FILE__, __LINE__);
 
         hitType = ls->findHitPointType(lspoints.at(2)->getPoint(), true);
-        Assert::assertEquals("ls->findHitPointType(point[2]) equals SHAPE_POINT_OFFSET_MIN + 2", LayoutTrack::SHAPE_POINT_OFFSET_MIN + 2, hitType, __FILE__, __LINE__);
+        Assert::assertEquals("ls->findHitPointType(point[2]) equals SHAPE_POINT_OFFSET_MIN + 2", HitPointType::SHAPE_POINT_2, hitType, __FILE__, __LINE__);
 
         hitType = ls->findHitPointType(lspoints.at(3)->getPoint(), true);
-        Assert::assertEquals("ls->findHitPointType(point[3]) equals SHAPE_POINT_OFFSET_MIN + 3", LayoutTrack::SHAPE_POINT_OFFSET_MIN + 3, hitType, __FILE__, __LINE__);
+        Assert::assertEquals("ls->findHitPointType(point[3]) equals SHAPE_POINT_OFFSET_MIN + 3", HitPointType::SHAPE_POINT_3, hitType, __FILE__, __LINE__);
     }
 #endif
     // from here down is testing infrastructure

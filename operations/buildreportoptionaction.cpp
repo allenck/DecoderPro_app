@@ -1,5 +1,4 @@
 #include "buildreportoptionaction.h"
-#include "buildreportoptionframe.h"
 
 namespace Operations
 {
@@ -40,7 +39,7 @@ connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
          f = new BuildReportOptionFrame();
          f->initComponents();
      }
-     //f.setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setVisible(true);	// this also brings the frame into focus
  }
 

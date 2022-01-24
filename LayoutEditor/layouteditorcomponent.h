@@ -68,7 +68,8 @@ class LayoutEditorComponent : public QWidget/*, public JComponent*/
   /*private*/ void drawMemoryRects(EditScene* g2);
   /*private*/ void drawBlockContentsRects(EditScene* g2);
   /*private*/ void highLightSelection(EditScene* g2);
-
+  /*private*/ void drawLayoutTracksLabel(EditScene* g);
+  /*private*/ bool initialized = false;
  protected:
 //  /*protected*/ static /*final*/ RenderingHints antialiasing = new RenderingHints(            RenderingHints.KEY_ANTIALIASING,
 //                                                                                              RenderingHints.VALUE_ANTIALIAS_ON);

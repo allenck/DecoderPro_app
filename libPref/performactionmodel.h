@@ -4,7 +4,7 @@
 #include "libpref_global.h"
 #include "action.h"
 
-class ActionEvent;
+class JActionEvent;
 class LIBPREFSHARED_EXPORT PerformActionModel : public AbstractActionModel
 {
  Q_OBJECT
@@ -18,13 +18,13 @@ public:
     QString getTitle();
     void setTitle(QString title);
 signals:
- void actionPerformed(ActionEvent*);
+ void actionPerformed(JActionEvent*);
 
 private:
 
 public slots:
 protected slots:
-    /*protected*/ void performAction(Action* action) throw (JmriException) ;
+    /*protected*/ void performAction(Action* action) /*throw (JmriException)*/ ;
 };
 
 #endif // PERFORMACTIONMODEL_H

@@ -2,12 +2,15 @@
 #include "lightmanager.h"
 #include "internallightmanager.h"
 #include "internalsystemconnectionmemo.h"
+#include "meter.h"
+#include "loggerfactory.h"
 
 ProxyLightManager::ProxyLightManager(QObject *parent) :
-    AbstractProxyLightManager(parent)
+    AbstractProvidingProxyManager(parent)
 {
+ this->setObjectName("ProxyLightManager");
+ //propertyChangeSupport = new SwingPropertyChangeSupport(this,this);
  log = new Logger("ProxyLightManager");
- setObjectName("ProxyLightManager");
  //registerSelf();
 }
 /**
@@ -30,7 +33,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
     return Manager::LIGHTS;
 }
 
-/*protected*/ Manager* ProxyLightManager::makeInternalManager() const
+/*protected*/ AbstractManager* ProxyLightManager::makeInternalManager()
 {
  return ((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"))->getLightManager();
 }
@@ -42,17 +45,19 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * @return Null if nothing by that name exists
  */
 /*public*/ Light* ProxyLightManager::getLight(QString name) {
-  return (Light*)AbstractProxyLightManager::getNamedBean(name);
+  return (Light*) AbstractProxyManager::getNamedBean(name);
 }
 
-/*protected*/ NamedBean* ProxyLightManager::makeBean(int i, QString systemName, QString userName)
+/*protected*/ NamedBean* ProxyLightManager::makeBean(AbstractManager *manager, QString systemName, QString userName)
 {
- return ((AbstractLightManager*)getMgr(i))->newLight(systemName, userName);
+ return  (NamedBean*)((ProxyLightManager*)manager)->newLight(systemName, userName);
 }
 
 //@Override
 /** {@inheritDoc} */
-/*public*/ Light* ProxyLightManager::provide(/*@Nonnull*/ QString name) throw (IllegalArgumentException) { return provideLight(name); }
+/*public*/ Light* ProxyLightManager::provide(/*@Nonnull*/ QString name)  {
+ return provideLight(name);
+}
 
 /**
  * Locate via user name, then system name if needed.
@@ -65,7 +70,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * @return Never null under normal circumstances
  */
 /*public*/ Light* ProxyLightManager::provideLight(QString name) {
-    return (Light*) AbstractProxyLightManager::provideNamedBean(name);
+ return (Light*)AbstractProvidingProxyManager::provideNamedBean(name);
 }
 
 /**
@@ -73,17 +78,17 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * instance already exists.
  * @return requested Light object or null if none exists
  */
-/*public*/ NamedBean *ProxyLightManager::getBySystemName(QString systemName) const {
-    return AbstractProxyLightManager::getBeanBySystemName(systemName);
-}
+///*public*/ NamedBean *ProxyLightManager::getBySystemName(QString systemName) const {
+//    return (NamedBean*)AbstractProxyLightManager::getBeanBySystemName(systemName);
+//}
 
 /**
  * Locate an instance based on a user name.  Returns null if no
  * instance already exists.
  * @return requested Turnout object or null if none exists
  */
-/*public*/ NamedBean *ProxyLightManager::getByUserName(QString userName) const {
-    return (Light*) AbstractProxyLightManager::getBeanByUserName(userName);
+/*public*/ NamedBean *ProxyLightManager::getByUserName(QString userName) {
+    return (NamedBean*) AbstractProxyManager::getBeanByUserName(userName);
 }
 
 /**
@@ -149,13 +154,9 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * If a manager is found, return its determination of validity of system name relative
  *      to the hardware configuration
  */
-/*public*/ bool ProxyLightManager::validSystemNameConfig(QString systemName)const {
-    int i = matchTentative(systemName);
-    if (i >= 0)
-    {
-        return ( (LightManager*)getMgr(i))->validSystemNameConfig(systemName);
-    }
-    return false;
+/*public*/ bool ProxyLightManager::validSystemNameConfig(QString systemName) {
+ LightManager* m = (LightManager*) getManager(systemName);
+ return (m == nullptr) ? false : m->validSystemNameConfig(systemName);
 }
 
 /**
@@ -178,11 +179,8 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * If a manager is found, return its determination of an alternate system name
  */
 /*public*/ QString ProxyLightManager::convertSystemNameToAlternate(QString systemName) {
-    int i = matchTentative(systemName);
-    if (i >= 0)
-        return ( (AbstractLightManager*)getMgr(i))->convertSystemNameToAlternate(systemName);
-    return "";
-}
+ LightManager* m = (LightManager*) getManager(systemName);
+    return (m == nullptr) ? "" : m->convertSystemNameToAlternate(systemName);}
 
 /**
  * Activate the control mechanism for each Light controlled by
@@ -190,9 +188,9 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * Relay this call to all LightManagers.
  */
 /*public*/ void ProxyLightManager::activateAllLights() {
-    for (int i=0; i<nMgrs(); i++) {
-        ((AbstractLightManager*)getMgr(i))->activateAllLights();
-    }
+ //getManagerList().forEach(m -> ((LightManager) m).activateAllLights());
+ for (Manager* m : getManagerList())
+  ((LightManager*) m)->activateAllLights();
 }
 
 /**
@@ -201,10 +199,8 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * If a manager is found, return its determination of support for variable lights.
  */
 /*public*/ bool ProxyLightManager::supportsVariableLights(QString systemName) {
-    int i = matchTentative(systemName);
-    if (i >= 0)
-        return ( (AbstractLightManager*)getMgr(i))->supportsVariableLights(systemName);
-    return false;
+ LightManager* m = (LightManager*) getManager(systemName);
+ return (m == nullptr) ? false : m->supportsVariableLights(systemName);
 }
 
 /**
@@ -212,10 +208,13 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * order eg 11 thru 18, primarily used to show/not show the add range box in the add Light window
  **/
 /*public*/ bool ProxyLightManager::allowMultipleAdditions(QString systemName) {
-    int i = matchTentative(systemName);
-    if (i >= 0)
-        return ( (AbstractLightManager*)getMgr(i))->allowMultipleAdditions(systemName);
-    return false;
+ LightManager* m = (LightManager*) getManager(systemName);
+ return (m == nullptr) ? false : m->allowMultipleAdditions(systemName);
+}
+
+//@Override
+/*public*/ QString ProxyLightManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) /*throws jmri.JmriException*/ {
+    return AbstractProxyManager::getNextValidAddress(curAddress, prefix, ignoreInitialExisting, AbstractProxyManager::typeLetter());
 }
 
 /**
@@ -231,5 +230,5 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
     return tr(plural ? "Lights" : "Light");
 }
 // initialize logging
-//static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(ProxyLightManager.class.getName());
+/*static*/ Logger* ProxyLightManager::log = LoggerFactory::getLogger("ProxyLightManager");
 //}

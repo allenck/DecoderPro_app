@@ -32,10 +32,14 @@
  */
 
 class Reporter;
-class LIBPR3SHARED_EXPORT IdTag : public Reportable
+class LIBPR3SHARED_EXPORT IdTag : public AbstractNamedBean
 {
-   // Q_OBJECT
+  Q_OBJECT
 public:
+  explicit IdTag(QObject *parent = 0) : AbstractNamedBean(parent){}
+  IdTag(QString sysName, QObject* parent) : AbstractNamedBean(sysName, parent) {}
+  IdTag(QString sysName, QString userName, QObject* parent) : AbstractNamedBean(sysName, userName, parent) {}
+
     /**
      * Constant representing an "unseen" state, indicating that the
      * ID tag has not yet been seen.
@@ -90,7 +94,7 @@ public:
      * @param storeState Determine if the state of this IdTag should be stored
      * @return Element with IdTag contents
      */
-    /*public*/ virtual QDomElement store(bool /*storeState*/) {return QDomElement();}
+    /*public*/ virtual QDomElement store(QDomDocument doc, bool /*storeState*/) {return QDomElement();}
 
     /**
      * Load contents of IdTag object from an XML element
@@ -108,5 +112,5 @@ public slots:
 };
 //const int IdTag::UNSEEN = 0x02;
 //const int IdTag::SEEN = 0x03;
-Q_DECLARE_INTERFACE(IdTag, "IdTag")
+//Q_DECLARE_INTERFACE(IdTag, "IdTag")
 #endif // IDTAG_H

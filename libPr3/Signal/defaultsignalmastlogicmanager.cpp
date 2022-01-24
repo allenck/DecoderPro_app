@@ -6,6 +6,7 @@
 #include "defaultsignalmastlogic.h"
 #include "../LayoutEditor/configxmlmanager.h"
 #include "signalmastmanager.h"
+#include "appsconfigurationmanager.h"
 
 //DefaultSignalMastLogicManager::DefaultSignalMastLogicManager(QObject *parent) :
 //    SignalMastLogicManager(parent)
@@ -33,22 +34,22 @@
 
 // /*public*/ class DefaultSignalMastLogicManager implements jmri.SignalMastLogicManager {
 
-/*public*/ DefaultSignalMastLogicManager::DefaultSignalMastLogicManager(QObject *parent) : SignalMastLogicManager(parent)
+/*public*/ DefaultSignalMastLogicManager::DefaultSignalMastLogicManager(QObject *parent) : AbstractManager(parent)
 {
  setObjectName("DefaultSignalMastLogicManager");
  setProperty("JavaClassName", "jmri.managers.DefaultSignalMastLogicManager");
     log = new Logger("DefaultSignalMastLogicManager");
-    _speedMap = static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"));
+    //_speedMap = static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"));
     signalMastLogic =  QList<SignalMastLogic*>();
-    pcs = new PropertyChangeSupport(this);
+    //pcs = new SwingPropertyChangeSupport(this, nullptr);
     signalLogicDelay = 500L;
     runWhenStablised = false;
     propertyBlockManagerListener = new PropertyBlockManagerListener(this);
     registerSelf();
-//    InstanceManager::layoutBlockManagerInstance()->addPropertyChangeListener(propertyBlockManagerListener);
+//    InstanceManager::layoutBlockManagerInstance()->SwingPropertyChangeSupport::addPropertyChangeListener(propertyBlockManagerListener);
     connect(static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), propertyBlockManagerListener, SLOT(propertyChange(PropertyChangeEvent*)));
-    ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->addPropertyChangeListener(propertyBlockManagerListener);
-    ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->addVetoableChangeListener((VetoableChangeListener*)this);
+    ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->PropertyChangeSupport::addPropertyChangeListener(propertyBlockManagerListener);
+    ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->VetoableChangeSupport::addVetoableChangeListener((VetoableChangeListener*)this);
     InstanceManager::turnoutManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
     //_speedMap = jmri.implementation.SignalSpeedMap.getMap();
 }
@@ -59,7 +60,9 @@
 
 
 /*public*/ /*final*/ /*static*/ SignalSpeedMap* DefaultSignalMastLogicManager::getSpeedMap() {
-    return _speedMap;
+ if(_speedMap == nullptr)
+  _speedMap = (SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap");
+ return _speedMap;
 }
 
 /*public*/ SignalMastLogic* DefaultSignalMastLogicManager::getSignalMastLogic(SignalMast* source)
@@ -215,8 +218,8 @@
     {
         try {
             ((DefaultSignalMastLogic*)sml)->useLayoutEditor(false, mast);
-        } catch (JmriException e){
-            log->error("Error occured while trying to disable layout editor use " + e.getMessage());
+        } catch (JmriException* e){
+            log->error("Error occured while trying to disable layout editor use " + e->getMessage());
         }
     }
 }
@@ -225,8 +228,8 @@
  * information.  Override to change that.
  **/
 /*protected*/ void DefaultSignalMastLogicManager::registerSelf() {
-     if (static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))!=NULL) {
-        static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerConfig(this, Manager::SIGNALMASTLOGICS);
+     if (qobject_cast<AppsConfigurationManager*>(InstanceManager::getDefault("ConfigureManager"))!=NULL) {
+        qobject_cast<AppsConfigurationManager*>(InstanceManager::getDefault("ConfigureManager"))->registerConfig(this, Manager::SIGNALMASTLOGICS);
         log->debug("register for config");
     }
 }
@@ -234,8 +237,8 @@
 // abstract methods to be extended by subclasses
 // to free resources when no longer used
 /*public*/ void DefaultSignalMastLogicManager::dispose() {
-    if (static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))!= NULL)
-        static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->deregister(this);
+    if (qobject_cast<AppsConfigurationManager*>(InstanceManager::getDefault("ConfigureManager"))!= NULL)
+        qobject_cast<AppsConfigurationManager*>(InstanceManager::getDefault("ConfigureManager"))->deregister(this);
     signalMastLogic.clear();
 }
 
@@ -256,34 +259,26 @@
     throw  UnsupportedOperationException("Not supported yet.");
 }
 
-/*public*/ NamedBean* DefaultSignalMastLogicManager::getNamedBean(QString /*name*/)const{
+/*public*/ NamedBean* DefaultSignalMastLogicManager::getNamedBean(QString /*name*/){
     throw  UnsupportedOperationException("Not supported yet.");
 }
 
-//@Deprecated
-///*public*/ char systemLetter() {
-//    throw new UnsupportedOperationException("Not supported yet.");
-//}
-
-/*public*/ QString DefaultSignalMastLogicManager::getSystemPrefix() const {
-    throw new UnsupportedOperationException("Not supported yet.");
+/*public*/ QString DefaultSignalMastLogicManager::getSystemPrefix() {
+    throw  UnsupportedOperationException("Not supported yet.");
 }
 
-/*public*/ char DefaultSignalMastLogicManager::typeLetter()const  {
-    throw new UnsupportedOperationException("Not supported yet.");
+/*public*/ QChar DefaultSignalMastLogicManager::typeLetter()  {
+    throw  UnsupportedOperationException("Not supported yet.");
 }
 
-/*public*/ QString DefaultSignalMastLogicManager::makeSystemName(QString /*s*/)const {
-    throw new UnsupportedOperationException("Not supported yet.");
-}
 
 /*public*/ QStringList DefaultSignalMastLogicManager::getSystemNameArray() {
-    throw new UnsupportedOperationException("Not supported yet.");
+    throw  UnsupportedOperationException("Not supported yet.");
 }
 
 /*public*/ QStringList DefaultSignalMastLogicManager::getSystemNameList()
 {
-    throw new UnsupportedOperationException("Not supported yet.");
+    throw  UnsupportedOperationException("Not supported yet.");
 }
 
 /** {@inheritDoc} */
@@ -291,26 +286,26 @@
 ///*public*/ QSet<NamedBean*> DefaultSignalMastLogicManager::getNamedBeanSet(){
 //    throw new UnsupportedOperationException("Not supported yet.");
 //}
-/*public*/ /*synchronized*/ void DefaultSignalMastLogicManager::addPropertyChangeListener(PropertyChangeListener* l) {
-    QMutexLocker locker(&mutex);
+///*public*/ /*synchronized*/ void DefaultSignalMastLogicManager::addPropertyChangeListener(PropertyChangeListener* l) {
+//    QMutexLocker locker(&mutex);
 
-    pcs->addPropertyChangeListener(l);
-}
-/*public*/ /*synchronized*/ void DefaultSignalMastLogicManager::removePropertyChangeListener(PropertyChangeListener* l) {
-    QMutexLocker locker(&mutex);
-    pcs->removePropertyChangeListener(l);
-}
+//    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
+//}
+///*public*/ /*synchronized*/ void DefaultSignalMastLogicManager::removePropertyChangeListener(PropertyChangeListener* l) {
+//    QMutexLocker locker(&mutex);
+//    pcs->removePropertyChangeListener(l);
+//}
 /*protected*/ void DefaultSignalMastLogicManager::firePropertyChange(QString p, QVariant old, QVariant n)
 {
     //pcs->firePropertyChange(p,old,n);
     emit propertyChange(new PropertyChangeEvent((QObject*)this, p, old, n));
 }
 
-/*public*/ void DefaultSignalMastLogicManager::Register(NamedBean* /*n*/) const{
+/*public*/ void DefaultSignalMastLogicManager::Register(NamedBean* /*n*/){
     throw  UnsupportedOperationException("Not supported yet.");
 }
 
-/*public*/ void DefaultSignalMastLogicManager::deregister(NamedBean* /*n*/) const{
+/*public*/ void DefaultSignalMastLogicManager::deregister(NamedBean* /*n*/){
     throw  UnsupportedOperationException("Not supported yet.");
 }
 
@@ -325,7 +320,7 @@
 * @param source Source SignalMast
 * @param layout Layout Editor panel to check.
 */
-/*public*/ void DefaultSignalMastLogicManager::discoverSignallingDest(SignalMast* source, LayoutEditor* layout) throw (JmriException)
+/*public*/ void DefaultSignalMastLogicManager::discoverSignallingDest(SignalMast* source, LayoutEditor* layout) /*throw (JmriException)*/
 {
  firePropertyChange("autoSignalMastGenerateStart", QVariant(), QVariant(source->getDisplayName()));
 
@@ -345,7 +340,7 @@
  {
   validPaths.insert((NamedBean*)source, lbm->getLayoutBlockConnectivityTools()->discoverPairDest(source, layout, "SignalMast", LayoutBlockConnectivityTools::MASTTOMAST));
  }
- catch (JmriException e)
+ catch (JmriException* e)
  {
    throw e;
  }
@@ -370,10 +365,10 @@
      ((DefaultSignalMastLogic*)sml)->useLayoutEditorDetails(true, true, (SignalMast*)validDestMast.at(i));
      ((DefaultSignalMastLogic*)sml)->useLayoutEditor(true, (SignalMast*)validDestMast.value(i));
     }
-    catch (JmriException e)
+    catch (JmriException* e)
     {
      //log.debug("We shouldn't get an exception here");
-     log->error("Exception found " + e.getMessage());
+     log->error("Exception found " + e->getMessage());
      throw e;
     }
    }
@@ -387,12 +382,12 @@
 * on all layout editor panels.
 */
 
-/*public*/ void DefaultSignalMastLogicManager::automaticallyDiscoverSignallingPairs() throw (JmriException)
+/*public*/ void DefaultSignalMastLogicManager::automaticallyDiscoverSignallingPairs() /*throw (JmriException)*/
 {
  runWhenStablised=false;
  LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
  if(!lbm->isAdvancedRoutingEnabled()){
-  throw JmriException("advanced routing not enabled");
+  throw new JmriException("advanced routing not enabled");
  }
  if(!lbm->routingStablised()){
   runWhenStablised=true;
@@ -420,9 +415,9 @@
      ((DefaultSignalMastLogic*)sml)->setDestinationMast((SignalMast*)validDestMast.value(i));
      ((DefaultSignalMastLogic*)sml)->useLayoutEditorDetails(true, true, (SignalMast*)validDestMast.value(i));
      ((DefaultSignalMastLogic*)sml)->useLayoutEditor(true, (SignalMast*)validDestMast.value(i));
-    } catch (JmriException ex){
+    } catch (JmriException* ex){
      //log.debug("we shouldn't get an exception here!");
-     log->debug(ex.getMessage());
+     log->debug(ex->getMessage());
     }
    }
   }
@@ -491,4 +486,40 @@
         }
     }
 }
-/*private*/ /*static*/ SignalSpeedMap* DefaultSignalMastLogicManager::_speedMap = static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"));
+/** {@inheritDoc} */
+//@Override
+/*public*/ QString DefaultSignalMastLogicManager::getBeanTypeHandled(bool plural) const {
+    return tr(plural ? "SignalMastLogics" : "SignalMastLogic");
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ /*Class<SignalMastLogic>*/QString DefaultSignalMastLogicManager::getNamedBeanClass() const {
+    return "SignalMastLogic";
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ int DefaultSignalMastLogicManager::setupSignalMastsDirectionSensors() {
+    int errorCount = 0;
+    for (SignalMastLogic* sml : getSignalMastLogicList()) {
+        errorCount += sml->setupDirectionSensors();
+    }
+    return errorCount;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void DefaultSignalMastLogicManager::removeSignalMastsDirectionSensors() {
+    for (SignalMastLogic* sml : getSignalMastLogicList()) {
+        sml->removeDirectionSensors();
+    }
+    return;
+}
+/*private*/ /*static*/ SignalSpeedMap* DefaultSignalMastLogicManager::_speedMap = nullptr; //static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"));

@@ -4,20 +4,21 @@
 #include "rfid/addressedidtag.h"
 #include "reportable.h"
 #include "reporter.h"
+#include "idtag.h"
 
-
-class LIBPR3SHARED_EXPORT AbstractIdTag : public AbstractNamedBean, public AddressedIdTag{
+class LIBPR3SHARED_EXPORT AbstractIdTag : public IdTag, public Reportable
+{
  Q_OBJECT
- Q_INTERFACES(AddressedIdTag)
+ Q_INTERFACES(Reportable)
 public:
-    explicit AbstractIdTag(QObject *parent = 0);
+ /*explicit*/ AbstractIdTag(QObject *parent = 0);
  /*public*/ AbstractIdTag(QString systemName, QObject *parent);
  /*public*/ AbstractIdTag(QString systemName, QString userName, QObject *parent);
  /*public*/ QString getTagID() override;
  /*public*/ Reporter* getWhereLastSeen() override;
  /*public*/ QDateTime getWhenLastSeen() override;
  /*public*/ QString toString() override;
- /*public*/ QObject* self() {return this;}
+ /*public*/ QObject* self() override{return this;}
 
 signals:
     

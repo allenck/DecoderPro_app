@@ -9,13 +9,13 @@ class FileInputStream : public QDataStream
 public:
  /*public*/ FileInputStream(QString name, QObject* parent = nullptr) throw (FileNotFoundException);
  /*public*/ FileInputStream(File* file, QObject* parent = nullptr) throw (FileNotFoundException);
- /*public*/ QChar read() throw (IOException);
- /*public*/ void close() throw (IOException) ;
+ /*public*/ QChar read() /*throw (IOException)*/;
+ /*public*/ void close() /*throw (IOException)*/ ;
 private:
  void common(File*);
  /* File Descriptor - handle to the open file */
 // /*private*/ /*final*/ FileDescriptor fd;
- /*private*/ /*native*/ int read0() throw (IOException);
+ /*private*/ /*native*/ int read0() /*throw (IOException)*/;
 
  /**
   * The path of the referenced file

@@ -2,6 +2,9 @@
 #define TRAINSTABLESETCOLORACTION_H
 
 #include "abstractaction.h"
+#include "trainstablesetcolorframe.h"
+#include <QPointer>
+
 namespace Operations
 {
  class Train;
@@ -13,10 +16,10 @@ namespace Operations
   TrainsTableSetColorAction(QObject* parent);
   /*public*/ TrainsTableSetColorAction(QString s, Train* train, QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* /*e*/);
+  /*public*/ void actionPerformed(JActionEvent* /*e*/);
 
  private:
-  TrainsTableSetColorFrame* f;// = null;
+  QPointer<TrainsTableSetColorFrame> f;// = null;
   Train* _train;// = null;
   void common();
  };

@@ -2,7 +2,7 @@
 #define STOREXMLALLACTION_H
 #include "storexmlconfigaction.h"
 
-class ActionEvent;
+class JActionEvent;
 class StoreXmlAllAction : public StoreXmlConfigAction
 {
  Q_OBJECT
@@ -13,7 +13,7 @@ public:
 signals:
 
 public slots:
- /*public*/ void actionPerformed(ActionEvent* e = 0);
+ /*public*/ void actionPerformed(JActionEvent* e = 0) override;
 private:
  Logger* log;
 };

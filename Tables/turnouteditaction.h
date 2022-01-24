@@ -7,7 +7,7 @@ class FlowLayout;
 class TurnoutOperation;
 class JTextField;
 class TurnoutOperationConfig;
-class QComboBox;
+class JComboBox;
 class JmriBeanComboBox;
 class QCheckBox;
 class TurnoutEditAction : public BeanEditAction
@@ -18,7 +18,7 @@ public:
  /*public*/ QString helpTarget();
 
  public slots:
-  /*public*/ void actionPerformed(ActionEvent*  e = 0);
+  /*public*/ void actionPerformed(JActionEvent*  e = 0)override;
  /*public*/ QString getBeanType();
  void updateFeedbackOptions();
  /*public*/ NamedBean* getByUserName(QString name);
@@ -31,8 +31,8 @@ public:
  BeanItemPanel* basicDetails();
  JmriBeanComboBox* sensorFeedBack1Field;
  JmriBeanComboBox* sensorFeedBack2Field;
- QComboBox* modeBox;
- QComboBox* automationBox;
+ JComboBox* modeBox;
+ JComboBox* automationBox;
  QString useBlockSpeed;// = "Use Block Speed";//IN18N
  TurnoutOperationConfig* config;
  BeanItemPanel* _feedback;
@@ -51,14 +51,14 @@ public:
  QString pushbutText;// = "Pushbutton only";
  QString noneText;// = "None";
 
- QComboBox* lockBox;
- QComboBox* lockOperationBox;
+ JComboBox* lockBox;
+ JComboBox* lockOperationBox;
  BeanItemPanel* lock();
  /*private*/ QVector<QString> speedListClosed;// = new QVector<QString>();
  /*private*/ QVector<QString> speedListThrown;// = new QVector<QString>();
 
- QComboBox* closedSpeedBox;
- QComboBox* thrownSpeedBox;
+ JComboBox* closedSpeedBox;
+ JComboBox* thrownSpeedBox;
  QString defaultThrownSpeedText;
  QString defaultClosedSpeedText;
  BeanItemPanel* speed();
@@ -79,69 +79,79 @@ protected slots:
  friend class AutomationSelectionListener;
 };
 
-class FeedbackSaveItemListener : public ActionListener
+class FeedbackSaveItemListener : public AbstractAction
 {
  Q_OBJECT
  TurnoutEditAction* act;
 public:
  FeedbackSaveItemListener(TurnoutEditAction* act);
 public slots:
- void actionPerformed(ActionEvent* = 0);
+ void actionPerformed(JActionEvent* = 0);
 };
 
-class FeedbackResetItemListener : public ActionListener
+class FeedbackResetItemListener : public AbstractAction
 {
  Q_OBJECT
  TurnoutEditAction* act;
 public:
  FeedbackResetItemListener(TurnoutEditAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void actionPerformed(ActionEvent* = 0);
+ void actionPerformed(JActionEvent* = 0)override;
 };
-class AutomationSelectionListener : public ActionListener
+
+class AutomationSelectionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  TurnoutEditAction* act;
 public:
  AutomationSelectionListener(TurnoutEditAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void actionPerformed(ActionEvent* = 0);
+ void actionPerformed(JActionEvent* = 0)override;
 };
-class LockSaveItemListener : public ActionListener
+
+class LockSaveItemListener : public AbstractAction
 {
  Q_OBJECT
  TurnoutEditAction* act;
 public:
  LockSaveItemListener(TurnoutEditAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void actionPerformed(ActionEvent* = 0);
+ void actionPerformed(JActionEvent* = 0) override;
 };
-class LockResetItemListener : public ActionListener
+
+class LockResetItemListener : public AbstractAction
 {
  Q_OBJECT
  TurnoutEditAction* act;
 public:
  LockResetItemListener(TurnoutEditAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void actionPerformed(ActionEvent* = 0);
+ void actionPerformed(JActionEvent* = 0)override;
 };
-class SpeedSaveItemListener : public ActionListener
+
+class SpeedSaveItemListener : public AbstractAction
 {
  Q_OBJECT
  TurnoutEditAction* act;
 public:
  SpeedSaveItemListener(TurnoutEditAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void actionPerformed(ActionEvent* = 0);
+ void actionPerformed(JActionEvent* = 0);
 };
-class SpeedResetItemListener : public ActionListener
+class SpeedResetItemListener : public AbstractAction
 {
  Q_OBJECT
  TurnoutEditAction* act;
 public:
  SpeedResetItemListener(TurnoutEditAction* act);
 public slots:
- void actionPerformed(ActionEvent* = 0);
+ void actionPerformed(JActionEvent* = 0);
 };
 
 #endif // TURNOUTEDITACTION_H

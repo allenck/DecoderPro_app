@@ -1,7 +1,7 @@
 #ifndef JYTHONWINDOW_H
 #define JYTHONWINDOW_H
 #include "abstractaction.h"
-//#include "PythonQt_QtAll.h"
+#include "/home/allen/Projects/PythonQt/pythonqt-code/extensions/PythonQt_QtAll/PythonQt_QtAll.h"
 #include "windowlistener.h"
 
 class JTextArea;
@@ -24,7 +24,7 @@ public:
 signals:
 
 public slots:
- /*public*/ void actionPerformed(ActionEvent* e = 0);
+ /*public*/ void actionPerformed(JActionEvent* e = 0);
  void on_autoScroll_toggled(bool);
  void on_alwaysOnTopCheckBox_toggled(bool);
  void on_clearButton_clicked();
@@ -53,13 +53,14 @@ protected:
  /*protected*/ QCheckBox* alwaysOnTopCheckBox;// = new JCheckBox();
  friend class JWWindowListener;
 };
+
 class JWWindowListener : public WindowListener
 {
  Q_OBJECT
  JythonWindow* parent;
 public:
  JWWindowListener(JythonWindow* parent);
- void windowClosing(QCloseEvent *e);
+ void windowClosing(QCloseEvent *e)override;
 };
 
 #endif // JYTHONWINDOW_H

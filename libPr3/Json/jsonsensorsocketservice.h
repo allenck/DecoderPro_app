@@ -24,17 +24,19 @@ private:
  /*private*/ QLocale locale;
 friend class SensorListener;
 };
-/*private*/ class SensorListener : public PropertyChangeListener {
+/*private*/ class SensorListener : public QObject, public PropertyChangeListener {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 protected:
     /*protected*/ /*final*/ Sensor* sensor;
  JsonSensorSocketService* jsss;
+ QObject* self() override{return (QObject*)this;}
 public:
     /*public*/ SensorListener(Sensor* sensor, JsonSensorSocketService* jsss);
 
 public slots:
     //@Override
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
  friend class JsonSensorSocketService;
 };
 

@@ -11,10 +11,6 @@
 ///*static*/ const int Block::OCCUPIED = Sensor::ACTIVE;
 ///*static*/ const int Block::UNOCCUPIED = Sensor::INACTIVE;
 //const int Block::UNOCCUPIED = 0x04;
-/*static const*/ int Block::NONE = 0x00;
-/*static const*/ int Block::GRADUAL = 0x01;
-/*static const*/ int Block::TIGHT = 0x02;
-/*static const*/ int Block::SEVERE = 0x04;
 
 // this should only be used for debugging...
 /*public*/ QString Block::toDebugString() {
@@ -171,9 +167,9 @@
       setNamedSensor(nullptr);
       ret = true;
   } else {
-      sensor = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getByUserName(pName);
+      sensor = (Sensor*)((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::getByUserName(pName);
       if (sensor == nullptr) {
-          sensor = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getBySystemName(pName);
+          sensor = (Sensor*)((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::getBySystemName(pName);
       }
       if (sensor == nullptr) {
           if (log->isDebugEnabled()) {
@@ -202,7 +198,7 @@
   _namedSensor = s;
 
   if (_namedSensor != nullptr) {
-//      getSensor()->addPropertyChangeListener(_sensorListener = (PropertyChangeEvent e) -> {
+//      getSensor()->SwingPropertyChangeSupport::addPropertyChangeListener(_sensorListener = (PropertyChangeEvent e) -> {
 //          handleSensorChange(e);
 //      }, s.getName(), "Block Sensor " + getDisplayName());
 //      _current = getSensor()->getState();
@@ -213,6 +209,7 @@
    _current = UNDETECTED;
   }
 }
+
 void BlockSensorListener::propertyChange(PropertyChangeEvent* e)
 {
  block->handleSensorChange(e);
@@ -250,7 +247,7 @@ void BlockSensorListener::propertyChange(PropertyChangeEvent* e)
  if (_reporter != NULL)
  {
   // attach listener
- // _reporter->addPropertyChangeListener(_reporterListener = new PropertyChangeListener());
+ // _reporter->SwingPropertyChangeSupport::addPropertyChangeListener(_reporterListener = new PropertyChangeListener());
 
 // #if 0
 //  {
@@ -365,7 +362,7 @@ QString Block::getStateString()
  // It is rather unpleasant that the following needs to be done in a try-catch, but exceptions have been observed
  try {
      firePropertyChange("state", old, _current);
- } catch (Exception e) {
+ } catch (Exception* e) {
      log->error(getDisplayName()+" got exception during fireProperTyChange("+old+","+QString::number(_current)+") in thread "+
              /*Thread.currentThread().getName()+" "+Thread.currentThread().getId()+*/": ", e);
  }
@@ -500,7 +497,7 @@ QString Block::getStateString()
  {
   return /*new*/ /*Float(speed)*/speed.toFloat();
  }
- catch (NumberFormatException nx)
+ catch (NumberFormatException* nx)
  {
         //considered normal if the speed is not a number.
  }
@@ -508,7 +505,7 @@ QString Block::getStateString()
  {
   //return jmri.implementation.SignalSpeedMap.getMap().getSpeed(speed);
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
   return -1;
  }
@@ -522,7 +519,7 @@ QString Block::getStateString()
  return _blockSpeed;
 }
 
- /*public*/ void Block::setBlockSpeed(QString s) throw (JmriException)
+ /*public*/ void Block::setBlockSpeed(QString s) /*throw (JmriException)*/
 {
  if((s==NULL) || (_blockSpeed==(s)))
   return;
@@ -543,13 +540,13 @@ QString Block::getStateString()
      log->error(tr("Block %1 has invalid speed '%2'").arg(getDisplayName()).arg(s));
    }
    //  }
-//  catch (NumberFormatException nx)
+//  catch (NumberFormatException* nx)
 //  {
 //   try
 //   {
 ////                SignalSpeedMap.getMap().getSpeed(s);
 //    }
-//    catch (Exception ex)
+//    catch (Exception* ex)
 //    {
 //     throw new JmriException("Value of requested block speed is not valid");
 //    }
@@ -580,7 +577,7 @@ QString Block::getStateString()
  * some identity values.
  */
 //@Override
-/*public*/ bool Block::equals(QObject* obj) {
+/*public*/ bool Block::equals(QObject *obj) {
     if (obj == this) {
         return true;
     }
@@ -1021,4 +1018,37 @@ return(PhysicalLocation::getBeanPhysicalLocation(this));
 return(PhysicalLocation::getBeanPhysicalLocation(this));
 }
 
-    //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(Block.class.getName());
+//@Override
+/*public*/ QList<NamedBeanUsageReport*> Block::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+    if (bean != nullptr) {
+        if (bean->equals(getSensor())) {
+            report.append(new NamedBeanUsageReport("BlockSensor"));  // NOI18N
+        }
+        if (bean->equals(getReporter())) {
+            report.append(new NamedBeanUsageReport("BlockReporter"));  // NOI18N
+        }
+        // Block paths
+//        getPaths().forEach((path) ->
+        for(Path* path : *getPaths())
+        {
+            if (bean->equals(path->getBlock())) {
+                report.append(new NamedBeanUsageReport("BlockPathNeighbor"));  // NOI18N
+            }
+            //path.getSettings().forEach((setting) ->
+             for(BeanSetting* setting : path->getSettings())                          {
+                if (bean->equals(setting->getBean())) {
+                    report.append(new NamedBeanUsageReport("BlockPathTurnout"));  // NOI18N
+                }
+            }//);
+        }//);
+    }
+    return report;
+}
+
+//@Override
+/*public*/ QString Block::getBeanType() {
+    return tr("Block");
+}
+
+//static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(Block.class.getName());

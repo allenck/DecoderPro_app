@@ -15,7 +15,8 @@
  */
 /*public*/ /*interface*/class StartupModelFactory : public  JmriServiceProviderInterface
 {
- Q_OBJECT
+ //Q_OBJECT
+  Q_INTERFACES(JmriServiceProviderInterface)
 public:
     StartupModelFactory() {}
     /**
@@ -66,5 +67,8 @@ public:
      * any required post-construction initialization.
      */
     /*public*/ virtual void initialize() {}
+
+    virtual QObject* self()=0;
 };
+Q_DECLARE_INTERFACE(StartupModelFactory, "StartupModelFactory")
 #endif // STARTUPMODELFACTORY_H

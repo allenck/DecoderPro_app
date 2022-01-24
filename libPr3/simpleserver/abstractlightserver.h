@@ -13,8 +13,8 @@ class AbstractLightServer : public QObject
  Q_OBJECT
 public:
  explicit AbstractLightServer(QObject *parent = nullptr);
- /*abstract*/ virtual /*public*/ void sendStatus(QString /*lightName*/, int /*Status*/) throw (IOException) {}
- /*abstract*/ virtual /*public*/ void sendErrorStatus(QString lightName) throw (IOException) {}
+ /*abstract*/ virtual /*public*/ void sendStatus(QString /*lightName*/, int /*Status*/) /*throw (IOException)*/ {}
+ /*abstract*/ virtual /*public*/ void sendErrorStatus(QString lightName) /*throw (IOException)*/ {}
  /*abstract*/ virtual /*public*/ void parseStatus(QString /*statusString*/) throw (JmriException, IOException) {}
  /*public*/ Light* initLight(QString lightName)  throw (IllegalArgumentException);
  /*public*/ void lightOff(QString lightName);
@@ -37,29 +37,31 @@ protected:
  friend class ALSLightListener;
 };
 
-class ALSLightListener : public PropertyChangeListener {
+class ALSLightListener : public QObject,public PropertyChangeListener {
  AbstractLightServer* asl;
 Q_OBJECT
+ Q_INTERFACES(PropertyChangeListener)
 public:
     ALSLightListener(QString lightName, AbstractLightServer* asl) {
      this->asl = asl;
         name = lightName;
         light = InstanceManager::lightManagerInstance()->getLight(lightName);
     }
-
+    QObject* self() override{return (QObject*)this;}
+public slots:
     // update state as state of light changes
     //@Override
-    /*public*/ void propertyChange(PropertyChangeEvent* e) {
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override {
         // If the Commanded State changes, show transition state as "<inconsistent>"
         if (e->getPropertyName()==("KnownState")) {
             int now = ( e->getNewValue()).toInt();
             try {
                 asl->sendStatus(name, now);
-            } catch (IOException ie) {
+            } catch (IOException* ie) {
                 asl->log->debug("Error Sending Status");
                 // if we get an error, de-register
-//                light.removePropertyChangeListener(this);
-                disconnect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+                ((AbstractNamedBean*)light->self())->removePropertyChangeListener(this);
+                //disconnect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
                 asl->removeLightFromList(name);
             }
         }

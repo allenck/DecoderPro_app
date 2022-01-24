@@ -4,6 +4,7 @@
 #include "bean.h"
 #include <QtXml>
 #include "sortorder.h"
+#include "instancemanagerautoinitialize.h"
 
 class Logger;
 class QDomDocument;
@@ -14,68 +15,70 @@ class WindowLocations;
 class ClassPreferences;
 class MultipleChoice;
 class PreferenceList;
-class JmriUserPreferencesManager : public UserPreferencesManager
+class JmriUserPreferencesManager : public UserPreferencesManager, public InstanceManagerAutoInitialize
 {
+  Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoInitialize)
 public:
  /*public*/ /*final*/ static QString SAVE_ALLOWED;// = "saveAllowed";
 
- JmriUserPreferencesManager(QObject* parent = nullptr);
+ Q_INVOKABLE JmriUserPreferencesManager(QObject* parent = nullptr);
  ~JmriUserPreferencesManager() {}
  JmriUserPreferencesManager(const JmriUserPreferencesManager&) : UserPreferencesManager() {}
- /*public*/ static UserPreferencesManager* getInstance();
- /*public*/ static UserPreferencesManager* getDefault();
- /*public*/ /*synchronized*/ void setSaveAllowed(bool saveAllowed);
- /*public*/ bool isSaveAllowed() ;
- /*public*/ QSize getScreen();
- /*public*/ void setSimplePreferenceState(QString name, bool state);
- /*public*/ bool getSimplePreferenceState(QString name);
- /*public*/ QStringList getSimplePreferenceStateList() ;
- /*public*/ void setPreferenceState(QString strClass, QString item, bool state);
- /*public*/ bool getPreferenceState(QString strClass, QString item);
- /*public*/ /*final*/ void setPreferenceItemDetails(QString strClass, QString item, QString description);
- /*public*/ QStringList getPreferenceList(QString strClass);
- /*public*/ QString getPreferenceItemName(QString strClass, int n) ;
- /*public*/ QString getPreferenceItemDescription(QString strClass, QString item);
- /*public*/ void setSessionPreferenceState(QString name, bool state);
- /*public*/ bool getSessionPreferenceState(QString name);
- /*public*/ void showInfoMessage(QString title, QString message, QString strClass, QString item);
- /*public*/ void showErrorMessage(QString title, QString message, /*final*/ QString strClass, /*final*/ QString item, /*final*/ bool sessionOnly, /*final*/ bool alwaysRemember);
- /*public*/ void showInfoMessage(QString title, QString message, /*final*/ QString strClass, /*final*/ QString item, /*final*/ bool sessionOnly, /*final*/ bool alwaysRemember);
+// /*public*/ static UserPreferencesManager* getInstance();
+// /*public*/ static UserPreferencesManager* getDefault();
+ /*public*/ /*synchronized*/ void setSaveAllowed(bool saveAllowed) override;
+ /*public*/ bool isSaveAllowed() override ;
+ /*public*/ QSize getScreen() override;
+ /*public*/ void setSimplePreferenceState(QString name, bool state) override;
+ /*public*/ bool getSimplePreferenceState(QString name) override;
+ /*public*/ QStringList getSimplePreferenceStateList()  override;
+ /*public*/ void setPreferenceState(QString strClass, QString item, bool state) override;
+ /*public*/ bool getPreferenceState(QString strClass, QString item) override;
+ /*public*/ /*final*/ void setPreferenceItemDetails(QString strClass, QString item, QString description) override;
+ /*public*/ QStringList getPreferenceList(QString strClass) override;
+ /*public*/ QString getPreferenceItemName(QString strClass, int n) override ;
+ /*public*/ QString getPreferenceItemDescription(QString strClass, QString item) override;
+ /*public*/ void setSessionPreferenceState(QString name, bool state) override;
+ /*public*/ bool getSessionPreferenceState(QString name) override;
+ /*public*/ void showInfoMessage(QString title, QString message, QString strClass, QString item) override;
+ /*public*/ void showErrorMessage(QString title, QString message, /*final*/ QString strClass, /*final*/ QString item, /*final*/ bool sessionOnly, /*final*/ bool alwaysRemember) override;
+ /*public*/ void showInfoMessage(QString title, QString message, /*final*/ QString strClass, /*final*/ QString item, /*final*/ bool sessionOnly, /*final*/ bool alwaysRemember) override;
  /*public*/ void showWarningMessage(QString title, QString message, /*final*/ QString strClass, /*final*/ QString item, /*final*/ bool sessionOnly, /*final*/ bool alwaysRemember);
- /*public*/ QString getComboBoxLastSelection(QString comboBoxName);
- /*public*/ void setComboBoxLastSelection(QString comboBoxName, QString lastValue);
+ /*public*/ QString getComboBoxLastSelection(QString comboBoxName) override;
+ /*public*/ void setComboBoxLastSelection(QString comboBoxName, QString lastValue) override;
  /*public*/ /*synchronized*/ bool getChangeMade();
  /*public*/ /*synchronized*/ void setChangeMade(bool fireUpdate);
- /*public*/ /*synchronized*/ void resetChangeMade();
- /*public*/ void setLoading();
- /*public*/ void finishLoading();
+ /*public*/ /*synchronized*/ void resetChangeMade() override;
+ /*public*/ void setLoading() override;
+ /*public*/ void finishLoading() override;
  /*public*/ void displayRememberMsg() ;
- /*public*/ QPoint getWindowLocation(QString strClass);
- /*public*/ QSize getWindowSize(QString strClass);
- /*public*/ bool getSaveWindowSize(QString strClass);
- /*public*/ bool getSaveWindowLocation(QString strClass);
- /*public*/ void setSaveWindowSize(QString strClass, bool b);
- /*public*/ void setSaveWindowLocation(QString strClass, bool b) ;
+ /*public*/ QPoint getWindowLocation(QString strClass) override;
+ /*public*/ QSize getWindowSize(QString strClass) override;
+ /*public*/ bool getSaveWindowSize(QString strClass) override;
+ /*public*/ bool getSaveWindowLocation(QString strClass) override;
+ /*public*/ void setSaveWindowSize(QString strClass, bool b) override;
+ /*public*/ void setSaveWindowLocation(QString strClass, bool b) override ;
  /*public*/ void setWindowLocation(QString strClass, QPoint location) override;
- /*public*/ void setWindowSize(QString strClass, QSize dim) ;
- /*public*/ QStringList getWindowList();
- /*public*/ void setProperty(QString strClass, QString key, QVariant value);
- /*public*/ QVariant getProperty(QString strClass, QString key);
- /*public*/ QSet<QString> getPropertyKeys(QString strClass);
- /*public*/ bool hasProperties(QString strClass);
- /*public*/ QString getClassDescription(QString strClass);
- /*public*/ QStringList getPreferencesClasses();
- /*public*/ void setClassDescription(QString strClass);
+ /*public*/ void setWindowSize(QString strClass, QSize dim) override ;
+ /*public*/ QStringList getWindowList() override;
+ /*public*/ void setProperty(QString strClass, QString key, QVariant value) override;
+ /*public*/ QVariant getProperty(QString strClass, QString key) override;
+ /*public*/ QSet<QString> getPropertyKeys(QString strClass) override;
+ /*public*/ bool hasProperties(QString strClass) override;
+ /*public*/ QString getClassDescription(QString strClass) override;
+ /*public*/ QStringList getPreferencesClasses() override;
+ /*public*/ void setClassDescription(QString strClass) override;
  /*public*/ void setMessageItemDetails(QString strClass, QString item, QString description, QMap<int, QString> *options, int defaultOption) override;
- /*public*/ QMap<int, QString> *getChoiceOptions(QString strClass, QString item);
- /*public*/ int getMultipleChoiceSize(QString strClass);
- /*public*/ QStringList getMultipleChoiceList(QString strClass);
- /*public*/ QString getChoiceName(QString strClass, int n);
- /*public*/ QString getChoiceDescription(QString strClass, QString item);
- /*public*/ int getMultipleChoiceOption(QString strClass, QString item);
- /*public*/ int getMultipleChoiceDefaultOption(QString strClass, QString choice);
- /*public*/ void setMultipleChoiceOption(QString strClass, QString choice, QString value);
- /*public*/ void setMultipleChoiceOption(QString strClass,QString choice, int value);
+ /*public*/ QMap<int, QString> *getChoiceOptions(QString strClass, QString item) override;
+ /*public*/ int getMultipleChoiceSize(QString strClass) override;
+ /*public*/ QStringList getMultipleChoiceList(QString strClass) override;
+ /*public*/ QString getChoiceName(QString strClass, int n) override;
+ /*public*/ QString getChoiceDescription(QString strClass, QString item) override;
+ /*public*/ int getMultipleChoiceOption(QString strClass, QString item) override;
+ /*public*/ int getMultipleChoiceDefaultOption(QString strClass, QString choice) override;
+ /*public*/ void setMultipleChoiceOption(QString strClass, QString choice, QString value) override;
+ /*public*/ void setMultipleChoiceOption(QString strClass,QString choice, int value) override;
  /*public*/ void setTableColumnPreferences(QString table, QString column, int order, int width, SortOrder sort, bool hidden);
  /*public*/ int getTableColumnOrder(QString table, QString column);
  /*public*/ int getTableColumnWidth(QString table, QString column);
@@ -85,9 +88,9 @@ public:
  /*public*/ QStringList getTablesList();
  /*public*/ QStringList getTablesColumnList(QString table);
  /*public*/ QString getClassDescription();
- /*public*/ int getPreferencesSize(QString strClass);
+ /*public*/ int getPreferencesSize(QString strClass) override;
  /*public*/ /*final*/ void readUserPreferences();
- /*public*/ void initialize();
+ Q_INVOKABLE /*public*/ void initialize() override;
 
 
 private:
@@ -125,7 +128,7 @@ private:
  Logger* log;
 
 private slots:
- void /*private*/ initAfter();
+ void /*private*/ initAfter() override;
 
 protected:
  /*protected*/ /*final*/ QHash<QString, QString>* comboBoxLastSelection;// = new QHash<QString, QString>();

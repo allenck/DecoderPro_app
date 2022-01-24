@@ -143,12 +143,15 @@ void RegistersWidget::OnIOComplete(QList<int>*)
  case 15:
   iState = 16;
   data->writeValues(channel+1 +16);
+  break;
  case 16:
   iState = 17;
   data->writeValues(channel+2 +16);
+  break;
  case 17:
   iState = 18;
   data->writeX2Values(channel+1 );
+  break;
  case 18:
   iState = 19;
   data->writeX2Values(channel+2 );
@@ -351,7 +354,7 @@ void RegistersWidget::labelCheck(int channel)
  LocoIOMode* mode = modelist->getLocoIOModeFor(data->getSV(channel), data->getV1(channel), data->getV2(channel));
  if(mode != NULL && (mode->getOpcode() == LnConstants::OPC_INPUT_REP))
  {
-  Manager* mgr = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->mgrs.at(0);
+  Manager* mgr = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getManagerList().at(0);
   QStringList l = mgr->getSystemNameList();
   QString heading = QString::number(port);
   foreach (QString s, l)
@@ -367,9 +370,9 @@ void RegistersWidget::labelCheck(int channel)
  }
  else if(mode != NULL && (mode->getOpcode() == LnConstants::OPC_SW_REQ))
  {
-  Manager* mgr = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->mgrs.at(0);
+  Manager* mgr = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getManagerList().at(0);
   QStringList l = mgr->getSystemNameList();
-  Manager* mgr2 = ((ProxyLightManager*)InstanceManager::lightManagerInstance())->mgrs.at(0);
+  Manager* mgr2 = ((ProxyLightManager*)InstanceManager::lightManagerInstance())->getManagerList().at(0);
   QStringList l2 = mgr2->getSystemNameList();
   foreach (QString s, l2)
   {
@@ -601,8 +604,8 @@ void RegistersWidget::setPortType(portType type)
    ui->edVal2->setReadOnly(true);
    ui->btnEditVal->setEnabled(false);
        //ui->btnEditVal->setVisible(false);
-   break;
    }
+   break;
  default:
   ui->btnWrite->setEnabled(true);
   ui->edAddr->setReadOnly(false);

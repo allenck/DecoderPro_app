@@ -79,7 +79,7 @@
         getContentPane()->layout()->addWidget(b = new QPushButton(tr("Pause Clock")));
         PCButtonListener* bl = new PCButtonListener(this);
         //b->addActionListener(new ButtonListener());
-        connect(bl, SIGNAL(clicked(bool)), bl, SLOT(actionPerformed()));
+        connect(bl, SIGNAL(clicked(bool)), bl->self(), SLOT(actionPerformed()));
         // since Run/Stop button looks crummy, user may turn it on in clock prefs
         b->setVisible(clock->getShowStopButton()); // pick up clock prefs choice
 
@@ -87,7 +87,7 @@
         pack();
 
         // request callback to update time
-        clock->addMinuteChangeListener(new PCMinuteChangeListener(this));
+        clock->addMinuteChangeListener(/*new PCMinuteChangeListener(this)*/this);
 //        {
 //            @Override
 //             /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {

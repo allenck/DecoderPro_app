@@ -8,7 +8,7 @@
  Q_OBJECT
 public:
  LinuxDevice(QObject* parent = 0) : QObject(parent) {}
-    /*public*/ virtual void close() throw (IOException) {}
+    /*public*/ virtual void close() /*throw (IOException)*/ {}
 };
 
 #endif // LINUXDEVICE_H

@@ -149,8 +149,9 @@ public slots:
     virtual void logixEventOccurred();
 };
 
-class PickSingleListener : public ListSelectionListener {
+class PickSingleListener : public QObject, public ListSelectionListener {
  Q_OBJECT
+  Q_INTERFACES(ListSelectionListener)
  JTextField* saveTextField;
  int saveItemType;          // Current table type
  ConditionalEditBase* base;
@@ -175,10 +176,11 @@ private:
  *
  * @since 4.7.3
  */
-/*static*/ class NameBoxListener : public ActionListener {
+/*static*/ class NameBoxListener : public QObject, public ActionListener {
  JTextField* saveTextField;
  QObject* src;
-Q_OBJECT
+    Q_OBJECT
+ Q_INTERFACES(ActionListener)
 public:
     /**
      * @param textField The target field object when an entry is selected
@@ -187,10 +189,11 @@ public:
         saveTextField = textField;
         this->src = src;
     }
+ QObject* self() override{return (QObject*)this;}
 public slots:
 
     //@Override
-    /*public*/ void actionPerformed(ActionEvent* /*e*/ = 0) {
+    /*public*/ void actionPerformed(JActionEvent* /*e*/ = 0) override{
         // Get the combo box and display name
         //QObject* src = e.getSource();
         //if (!(src instanceof JmriBeanComboBox))

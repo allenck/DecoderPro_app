@@ -64,10 +64,10 @@ QObject(parent)
     _outBuff = new QTextStream(qFile);
         writeHeader(fileName);
 //    }
-//    catch (FileNotFoundException fnfe) {
-////        JOptionPane.showMessageDialog(parent, fnfe.getMessage(),
+//    catch (FileNotFoundException* fnfe) {
+////        JOptionPane.showMessageDialog(parent, fnfe->getMessage(),
 ////                tr("WarningTitle"), JOptionPane.WARNING_MESSAGE);
-//     QMessageBox::warning(parent, tr("Warning"), fnfe.getMessage())
+//     QMessageBox::warning(parent, tr("Warning"), fnfe->getMessage())
 //        return false;
 //    }
     return true;
@@ -82,12 +82,12 @@ void OpSessionLog::writeHeader(QString fileName)
  *_outBuff << "\n";
  *_outBuff << "\t\t\t";
  //SimpleDateFormat dateFormatter = new SimpleDateFormat("EEEE, MMMM d, yyyy");
-*_outBuff << QDateTime::currentDateTime().toString("EEEE, MMMM, d, yyyy");
+ *_outBuff << QDateTime::currentDateTime().toString("EEEE, MMMM, d, yyyy");
  *_outBuff<< "\n";
  *_outBuff<< "\n";
  writeLn(tr("startLog"));
- //    } catch (IOException ioe) {
- //        Logger::error("Op session log error " + ioe.getMessage());
+ //    } catch (IOException* ioe) {
+ //        Logger::error("Op session log error " + ioe->getMessage());
  //    }
 }
 
@@ -100,8 +100,8 @@ void OpSessionLog::writeHeader(QString fileName)
  *_outBuff << QDateTime::currentDateTime().toString("  hh:mm:ss a   ");
  *_outBuff << text;
  *_outBuff << "\n";
-//    } catch (IOException ioe) {
-//        Logger::error("Op session log error " + ioe.getMessage());
+//    } catch (IOException* ioe) {
+//        Logger::error("Op session log error " + ioe->getMessage());
 //    }
 }
 
@@ -114,7 +114,7 @@ void OpSessionLog::writeHeader(QString fileName)
   _outBuff->flush();
   qFile->close();
   _outBuff = NULL;
-//    } catch (IOException ioe) {
-//        Logger::error("Op session log error " + ioe.getMessage());
+//    } catch (IOException* ioe) {
+//        Logger::error("Op session log error " + ioe->getMessage());
 //    }
 }

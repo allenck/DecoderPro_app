@@ -467,11 +467,27 @@ FileUtil::FileUtil(QObject *parent) :
       QTextStream* stream = new QTextStream(f);
       return stream;
      }
-//        } catch (IOException ex) {
-//            log.error(ex.getLocalizedMessage(), ex);
+//        } catch (IOException* ex) {
+//            log.error(ex->getLocalizedMessage(), ex);
 //        }
     }
     return NULL;
+}
+
+/**
+ * Search for a file or JAR resource by name and return the
+ * {@link java.io.InputStream} for that file. Search order is defined by
+ * {@link #findURL(java.lang.String, jmri.util.FileUtil.Location, java.lang.String...) }.
+ *
+ * @param path      The relative path of the file or resource
+ * @param locations The type of locations to limit the search to
+ * @return InputStream or null.
+ * @see #findInputStream(java.lang.String)
+ * @see #findInputStream(java.lang.String, jmri.util.FileUtil.Location,
+ * java.lang.String...)
+ */
+/*static*/ /*public*/ QTextStream* FileUtil::findInputStream(/*@Nonnull*/ QString path, Location locations) {
+    return FileUtilSupport::getDefault()->findInputStream(path, locations);
 }
 
 /**
@@ -575,62 +591,7 @@ FileUtil::FileUtil(QObject *parent) :
  */
 /*static*/ /*public*/ QUrl FileUtil::findURL(QString path, Location locations, /*@Nonnull*/ QStringList searchPaths)
 {
-#if 1
- Logger log("FileUtil");
-    if (log.isDebugEnabled()) { // avoid the Arrays.toString call unless debugging
-        log.debug(QString("Attempting to find %1 in %2").arg(path).arg(/*Arrays.toString(searchPaths)*/""));
-    }
-    if (FileUtil::isPortableFilename(path)) {
-        return FileUtil::findExternalFilename(path);
-    }
-    QUrl resource = QUrl();
-    foreach (QString searchPath, searchPaths) {
-        resource = FileUtil::findURL(searchPath + QDir::separator() + path);
-        if (resource != QUrl()) {
-            return resource;
-        }
-    }
-    try {
-        QFileInfo file;
-        if (locations == ALL || locations == USER) {
-            // attempt to return path from preferences directory
-            file =  QFile(FileUtil::getUserFilesPath() + path);
-            if (file.exists()) {
-                //return file.toURI().toURL();
-             return QUrl(file.absoluteFilePath());
-            }
-        }
-        if (locations == ALL || locations == INSTALLED) {
-            // attempt to return path from current working directory
-            file =  QFileInfo(path);
-            if (file.exists()) {
-                //return file.toURI().toURL();
-                return QUrl(file.absoluteFilePath());
-
-            }
-            // attempt to return path from JMRI distribution directory
-            file =  QFileInfo(FileUtil::getProgramPath() + path);
-            if (file.exists()) {
-                //return file.toURI().toURL();
-                return QUrl(file.absoluteFilePath());
-
-            }
-        }
-    } catch (MalformedURLException ex) {
-        log.warn(QString("Unable to get URL for %1").arg(path).arg( ex.getMessage()));
-        return QUrl();
-    }
-//    if (locations == Location::ALL || locations == Location::INSTALLED) {
-//        // return path if in jmri.jar or null
-//        resource = FileUtil.class.getClassLoader().getResource(path);
-//        if (resource == null) {
-//            log.debug("Unable to get URL for {}", path);
-//        }
-//    }
-    return resource;
-#else
- return FileUtilSupport::getDefault()->findURL(path, locations, searchPaths);
-#endif
+ return FileUtilSupport::getDefault()->findURL(path, searchPaths);
 }
 
 /**
@@ -692,7 +653,7 @@ FileUtil::FileUtil(QObject *parent) :
         }
         try {
             return new JarFile(jarPath);
-        } catch (IOException ex) {
+        } catch (IOException* ex) {
             log.error("Unable to open jmri.jar", ex);
             return NULL;
         }
@@ -745,7 +706,7 @@ FileUtil::FileUtil(QObject *parent) :
   * @return The contents of the file.
   * @throws java.io.IOException if the file cannot be read
   */
- /*public*/ /*static*/ QString FileUtil::readFile(File* file) //throw (IOException)
+ /*public*/ /*static*/ QString FileUtil::readFile(File* file) ///*throw (IOException)*/
     {
      return FileUtil::readURL(FileUtil::fileToURL(file));
  }
@@ -757,7 +718,7 @@ FileUtil::FileUtil(QObject *parent) :
   * @return The contents of the file.
   * @throws java.io.IOException if the URL cannot be read
   */
- /*public*/ /*static*/ QString FileUtil::readURL(QUrl url) //throw (IOException)
+ /*public*/ /*static*/ QString FileUtil::readURL(QUrl url) ///*throw (IOException)*/
     {
      return FileUtilSupport::getDefault()->readURL(url);
  }
@@ -808,7 +769,7 @@ FileUtil::FileUtil(QObject *parent) :
  * @param dest must be the file, not the destination directory.
  * @throws IOException
  */
-/*public*/ /*static*/ void FileUtil::copy(File* source, File* dest) //throw (IOException)
+/*public*/ /*static*/ void FileUtil::copy(File* source, File* dest) ///*throw (IOException)*/
 {
  FileUtilSupport::getDefault()->copy(source, dest);
 }
@@ -821,7 +782,7 @@ FileUtil::FileUtil(QObject *parent) :
  * @param text Text to append
  * @throws java.io.IOException if file cannot be written to
  */
-/*public*/ /*static*/ void FileUtil::appendTextToFile(File* file, QString text) //throw (IOException)
+/*public*/ /*static*/ void FileUtil::appendTextToFile(File* file, QString text) ///*throw (IOException)*/
 {
  FileUtilSupport::getDefault()->appendTextToFile(file, text);
 }
@@ -849,10 +810,11 @@ FileUtil::FileUtil(QObject *parent) :
  * java.lang.String)
  * @see jmri.util.FileUtilSupport#backup(java.io.File)
  */
-/*public*/ /*static*/ void FileUtil::rotate(/*@Nonnull*/ File* file, int max, /*@CheckForNull*/ QString extension) //throw (IOException)
+/*public*/ /*static*/ void FileUtil::rotate(/*@Nonnull*/ File* file, int max, /*@CheckForNull*/ QString extension) ///*throw (IOException)*/
     {
     FileUtilSupport::getDefault()->rotate(file, max, extension);
 }
+
 /*public*/ /*static*/ QList<QString>* FileUtil::findProgramPath()
 {
  return FileUtilSupport::getDefault()->findProgramPath();

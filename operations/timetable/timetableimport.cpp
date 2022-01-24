@@ -21,7 +21,7 @@ namespace TimeTable
  }
  // /*public*/ class TimeTableImport {
 
- /*public*/ void TimeTableImport::importSgn(TimeTableDataManager* dm, File* file) throw (IOException) {
+ /*public*/ void TimeTableImport::importSgn(TimeTableDataManager* dm, File* file) /*throw (IOException)*/ {
   _dm = dm;
   _dm->setLockCalculate(true);
   try {
@@ -30,7 +30,7 @@ namespace TimeTable
    if(f->open(QFile::ReadOnly)) {
        in = new QTextStream(f);
    }
-   else throw FileNotFoundException();
+   else throw  new FileNotFoundException();
 
    //bufferedReader = new BufferedReader(fileReader);
 
@@ -128,8 +128,8 @@ namespace TimeTable
        }
        row++;
    }
-  } catch (IOException e) {
-      log->error("Error reading file: " + e.getMessage());  // NOI18N
+  } catch (IOException* e) {
+      log->error("Error reading file: " + e->getMessage());  // NOI18N
   }
 //        finally {
 //            if(bufferedReader != null) {

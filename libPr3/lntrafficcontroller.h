@@ -44,7 +44,7 @@ public:
   * @param m Message to forward. Listeners should not modify it!
   */
  //        @SuppressWarnings("unchecked")
- //void notify(LocoNetMessage*  m);
+ void notify(LocoNetMessage*  m);
 
  /**
   * Is there a backlog of information for the outbound link?

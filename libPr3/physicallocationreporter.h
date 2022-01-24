@@ -4,9 +4,9 @@
 #include "locoaddress.h"
 #include "physicallocation.h"
 
-class PhysicalLocationReporter : public QObject
+class PhysicalLocationReporter //: public QObject
 {
- Q_OBJECT
+ //Q_OBJECT
  public:
   enum Direction
   {
@@ -18,5 +18,5 @@ class PhysicalLocationReporter : public QObject
   /*public*/ virtual PhysicalLocation* getPhysicalLocation()=0;
   /*public*/ virtual PhysicalLocation* getPhysicalLocation(QString s) =0;
 };
-
+Q_DECLARE_INTERFACE(PhysicalLocationReporter, "PhysicalLocationReporter")
 #endif // PHYSICALLOCATIONREPORTER_H

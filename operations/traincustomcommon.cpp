@@ -6,12 +6,14 @@
 #include "operationsmanager.h"
 #include "fileutil.h"
 #include "control.h"
+#include "instancemanager.h"
 
 using namespace Operations;
 
-TrainCustomCommon::TrainCustomCommon(QObject *parent) : QObject(parent)
+TrainCustomCommon::TrainCustomCommon(QString dirName, QString xmlElement, QObject *parent) : QObject(parent)
 {
-
+ directoryName = dirName;
+ this->xmlElement = xmlElement;
 }
 ///*public*/ abstract class TrainCustomCommon {
 
@@ -22,7 +24,7 @@ TrainCustomCommon::TrainCustomCommon(QObject *parent) : QObject(parent)
 
 /*public*/ void TrainCustomCommon::setFileName(QString name) {
     mcAppName = name;
-    Operations::TrainManagerXml::instance()->setDirty(true);
+    ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->setDirty(true);
 }
 
 /*public*/ QString TrainCustomCommon::getCommonFileName() {
@@ -33,9 +35,12 @@ TrainCustomCommon::TrainCustomCommon(QObject *parent) : QObject(parent)
     csvNamesFileName = name;
 }
 
-/*abstract*/ /*public*/ QString TrainCustomCommon::getDirectoryName() {return "";}
+/*abstract*/ /*public*/ QString TrainCustomCommon::getDirectoryName() {
+ return directoryName;}
 
-/*abstract*/ /*public*/ void TrainCustomCommon::setDirectoryName(QString name) {}
+/*abstract*/ /*public*/ void TrainCustomCommon::setDirectoryName(QString name) {
+ directoryName = name;
+}
 
 /*public*/ int TrainCustomCommon::getFileCount() {
     return fileCount;
@@ -68,12 +73,12 @@ TrainCustomCommon::TrainCustomCommon(QObject *parent) : QObject(parent)
     waitTimeSeconds = getFileCount() * Control::excelWaitTime;
     alive = true;
 
-    File* csvNamesFile = new File(Operations::OperationsManager::getInstance()->getFile(getDirectoryName()), csvNamesFileName);
+    File* csvNamesFile = new File(((Operations::OperationsManager*)InstanceManager::getDefault("Operations::OperationsManager"))->getFile(getDirectoryName()), csvNamesFileName);
 
     try {
         FileUtil::appendTextToFile(csvNamesFile, csvFile->getAbsolutePath());
 
-    } catch (IOException e) {
+    } catch (IOException* e) {
 //        e.printStackTrace();
     }
 }
@@ -119,7 +124,7 @@ TrainCustomCommon::TrainCustomCommon(QObject *parent) : QObject(parent)
         try {
             process = Runtime.getRuntime().exec(cmd, NULL,
                     OperationsManager.getInstance().getFile(getDirectoryName()));
-        } catch (IOException e) {
+        } catch (IOException* e) {
             e.printStackTrace();
         }
     } else {
@@ -127,7 +132,7 @@ TrainCustomCommon::TrainCustomCommon(QObject *parent) : QObject(parent)
         try {
             process = Runtime.getRuntime().exec(cmd, NULL,
                     OperationsManager.getInstance().getFile(getDirectoryName()));
-        } catch (IOException e) {
+        } catch (IOException* e) {
             e.printStackTrace();
         }
     }
@@ -137,7 +142,7 @@ TrainCustomCommon::TrainCustomCommon(QObject *parent) : QObject(parent)
 }
 
 /*public*/ bool TrainCustomCommon::excelFileExists() {
-    File* file = new File(OperationsManager::getInstance()->getFile(getDirectoryName()), getFileName());
+    File* file = new File(((Operations::OperationsManager*)InstanceManager::getDefault("Operations::OperationsManager"))->getFile(getDirectoryName()), getFileName());
     return file->exists();
 }
 #if 0
@@ -206,8 +211,9 @@ TrainCustomCommon::TrainCustomCommon(QObject *parent) : QObject(parent)
     return file.exists();
 }
 #endif
-/*public*/ void TrainCustomCommon::load(QDomElement mc)
+/*public*/ void TrainCustomCommon::load(QDomElement options)
 {
+ QDomElement mc = options.firstChildElement(xmlElement);
  if (!mc.isNull())
  {
   QString a;

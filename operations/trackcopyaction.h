@@ -2,6 +2,8 @@
 #define TRACKCOPYACTION_H
 
 #include "abstractaction.h"
+#include "trackcopyframe.h"
+#include <QPointer>
 
 namespace Operations
 {
@@ -11,13 +13,14 @@ namespace Operations
  {
   Q_OBJECT
  public:
-  TrackCopyAction(LocationEditFrame* parent);
+   /*public*/ TrackCopyAction(QObject* parent);
+  TrackCopyAction(LocationEditFrame* lef, QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e = 0);
+  /*public*/ void actionPerformed(JActionEvent* /*e*/ = 0);
 
  private:
   /*private*/ LocationEditFrame* _lef;
-  TrackCopyFrame* f;// = null;
+  QPointer<TrackCopyFrame> f;// = null;
 
  };
 }

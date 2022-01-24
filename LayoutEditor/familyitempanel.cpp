@@ -145,7 +145,7 @@
 /*protected*/ void FamilyItemPanel::addUpdateButtonToBottom(ActionListener* doneAction) {
     _updateButton = new QPushButton(tr("Update")); // custom update label
     //_updateButton->addActionListener(doneAction);
-    connect(_updateButton, SIGNAL(clicked(bool)), doneAction, SLOT(actionPerformed(ActionEvent*)));
+    connect(_updateButton, SIGNAL(clicked(bool)), doneAction->self(), SLOT(actionPerformed(JActionEvent*)));
     _updateButton->setToolTip(tr("Select an item from the table and an icon set to update the Panel"));
     _bottom1Panel->layout()->addWidget(_updateButton);
 }
@@ -594,9 +594,9 @@ ButtonListener* ButtonListener::init(QString f, FamilyItemPanel* self) {
       _dragIconPanel->setLayout(new FlowLayout());
      _dragIconPanel->layout()->addWidget(panel);
     }
-   } catch (ClassNotFoundException cnfe)
+   } catch (ClassNotFoundException* cnfe)
    {
-    log->warn(tr("no DndIconPanel for %1, %2 created. %3").arg(_itemType).arg(displayKey).arg(cnfe.getMessage()));
+    log->warn(tr("no DndIconPanel for %1, %2 created. %3").arg(_itemType).arg(displayKey).arg(cnfe->getMessage()));
    }
 
   }

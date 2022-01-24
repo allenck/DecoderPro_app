@@ -2,7 +2,7 @@
 #define TRAINSSCHEDULETABLEFRAME_H
 
 #include "operationsframe.h"
-
+#include "propertychangelistener.h"
 class QGroupBox;
 class QButtonGroup;
 class QLabel;
@@ -14,24 +14,27 @@ namespace Operations
  class TrainScheduleManager;
  class LocationManager;
  class TrainsScheduleTableModel;
- class TrainsScheduleTableFrame : public OperationsFrame
+ class TrainsScheduleTableFrame : public OperationsFrame, public PropertyChangeListener
  {
+   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   TrainsScheduleTableFrame(QWidget* parent = 0);
   /*public*/ static /*final*/ QString NAME;// = Bundle.getMessage("Name"); // Sort by choices
   /*public*/ static /*final*/ QString TIME;// = Bundle.getMessage("Time");
-  /*public*/ void dispose();
-  /*public*/ QString getClassName();
+  /*public*/ void dispose() override;
+  /*public*/ QString getClassName() override;
+  QObject* self() override {return (QObject*)this; }
 
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
-  /*public*/ void radioButtonActionPerformed(QWidget* ae);
-  /*public*/ void buttonActionPerformed(QWidget* ae);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
+  /*public*/ void radioButtonActionPerformed(QWidget* ae) override;
+  /*public*/ void buttonActionPerformed(QWidget* ae) override;
 
  private:
   Logger* log;
   TrainManager* trainManager;// TrainManager.instance();
-  TrainScheduleManager* scheduleManager;// TrainScheduleManager.instance();
+  TrainScheduleManager* trainScheduleManager;// TrainScheduleManager.instance();
   LocationManager* locationManager;// LocationManager.instance();
 
   TrainsScheduleTableModel* trainsScheduleModel;// new TrainsScheduleTableModel();
@@ -51,21 +54,21 @@ namespace Operations
   QButtonGroup* schGroup;// new ButtonGroup();
 
   // major buttons
-  QPushButton* selectButton;// new JButton(tr("Select"));
-  QPushButton* clearButton;// new JButton(tr("Clear"));
+  JButton* selectButton;// new JButton(tr("Select"));
+  JButton* clearButton;// new JButton(tr("Clear"));
 
-  QPushButton* applyButton;// new JButton(tr("Apply"));
-  QPushButton* buildButton;// new JButton(tr("Build"));
-  QPushButton* printButton;// new JButton(tr("Print"));
-  QPushButton* switchListsButton;// new JButton();
-  QPushButton* terminateButton;// new JButton(tr("Terminate"));
+  JButton* applyButton;// new JButton(tr("Apply"));
+  JButton* buildButton;// new JButton(tr("Build"));
+  JButton* printButton;// new JButton(tr("Print"));
+  JButton* switchListsButton;// new JButton();
+  JButton* terminateButton;// new JButton(tr("Terminate"));
 
-  QPushButton* activateButton;// new JButton(tr("Activate"));
-  QPushButton* saveButton;// new JButton(tr("Save"));
+  JButton* activateButton;// new JButton(tr("Activate"));
+  JButton* saveButton;// new JButton(tr("Save"));
 
   // check boxes
   // panel
-  QGroupBox* schedule;// new JPanel();
+  JPanel* schedule;// new JPanel();
   /*private*/ void updateControlPanel();
   /*private*/ void updateCheckboxes(bool selected);
   /*private*/ void applySchedule();

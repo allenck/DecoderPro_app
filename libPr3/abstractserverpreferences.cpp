@@ -19,7 +19,7 @@
             log->info("No preferences exist.");
             migrate = true;
         }
-    } catch (BackingStoreException ex) {
+    } catch (BackingStoreException* ex) {
         log->info("No preferences file exists.");
         migrate = true;
     }
@@ -35,7 +35,7 @@
         try {
             log->info(tr("Migrating from old preferences in %1 to new format in %2.").arg(fileName).arg(FileUtil::getAbsoluteFilename("profile:profile")));
             sharedPreferences->sync();
-        } catch (BackingStoreException ex) {
+        } catch (BackingStoreException* ex) {
             log->error("Unable to write preferences.", ex);
         }
     }
@@ -94,14 +94,14 @@
     QDomElement root;
     try {
         root = prefsXml->rootFromFile(file);
-    } catch (FileNotFoundException ea) {
+    } catch (FileNotFoundException* ea) {
         log->info("Could not find Server preferences file.  Normal if preferences have not been saved before.");
         root = QDomElement();
-    } catch (IOException eb) {
-        log->error(tr("Exception while loading server preferences: %1").arg(eb.getLocalizedMessage()));
+    } catch (IOException* eb) {
+        log->error(tr("Exception while loading server preferences: %1").arg(eb->getLocalizedMessage()));
         root = QDomElement();
-    } catch (JDOMException eb) {
-        log->error(tr("Exception while loading server preferences: %1").arg(eb.getLocalizedMessage()));
+    } catch (JDOMException* eb) {
+        log->error(tr("Exception while loading server preferences: %1").arg(eb->getLocalizedMessage()));
         root = QDomElement();
     }
     if (root != QDomElement()) {

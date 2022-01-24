@@ -49,7 +49,7 @@ void ReportContextAction::common()
  zeroConf = new QZeroConf();
 }
 
-/*public*/ void ReportContextAction::actionPerformed(ActionEvent* )
+/*public*/ void ReportContextAction::actionPerformed(JActionEvent * )
 {
 
     frame = new JmriJFrameX(tr("Context"));  // JmriJFrame to ensure fits on screen
@@ -59,7 +59,7 @@ void ReportContextAction::common()
     pane = new JTextArea();
     frame->setMaximumSize(400,300);
     //pane->("\n"); // add a little space at top
-    addString(""); // add a little space at top
+    addString("\n"); // add a little space at top
     //pane->setReadOnly(true);
     //pane->setWordWrap(true);
     pane->setTextInteractionFlags(Qt::TextSelectableByMouse);
@@ -95,7 +95,7 @@ void ReportContextAction::common()
     addString(r->getReport(true));
 
     //pane->append("\n"); // add a little space at bottom
-    addString(""); // add a little space at top
+    addString("\n"); // add a little space at top
 
     QWidget* p = new QWidget();
     p->setLayout(new FlowLayout);
@@ -162,5 +162,5 @@ void ReportContextAction::addProperty(QString prop) {
 
 // never invoked, because we overrode actionPerformed above
 /*public*/ JmriPanel* ReportContextAction::makePanel() {
-    throw  IllegalArgumentException("Should not be invoked");
+    throw new IllegalArgumentException("Should not be invoked");
 }

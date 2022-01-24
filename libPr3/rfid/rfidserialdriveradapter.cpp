@@ -47,22 +47,22 @@
         try {
             //activeSerialPort = (SerialPort*) portID.open(appName, 2000);  // name of program, msec to wait
             activeSerialPort->open(portName, QIODevice::ReadWrite);
-        } catch (PortInUseException p) {
+        } catch (PortInUseException* p) {
             return handlePortBusy(p, portName, log);
         }
         // try to set it for serial
         try {
             setSerialPort();
-        } catch (UnsupportedCommOperationException e) {
-            log->error(tr("Cannot set serial parameters on port %1: %2").arg(portName).arg(e.getMessage())); // NOI18N
-            return "Cannot set serial parameters on port " + portName + ": " + e.getMessage(); // NOI18N
+        } catch (UnsupportedCommOperationException* e) {
+            log->error(tr("Cannot set serial parameters on port %1: %2").arg(portName).arg(e->getMessage())); // NOI18N
+            return "Cannot set serial parameters on port " + portName + ": " + e->getMessage(); // NOI18N
         }
 
 //        // set framing (end) character
 //        try {
 //            log->debug(tr("Serial framing was observed as: %1 %2").arg(activeSerialPort->isReceiveFramingEnabled()).arg(
 //                    activeSerialPort->getReceiveFramingByte())); // NOI18N
-//        } catch (Exception ef) {
+//        } catch (Exception* ef) {
 //            log->debug(tr("failed to set serial framing: %1").arg(ef)); // NOI18N
 //        }
 
@@ -71,8 +71,8 @@
             activeSerialPort->enableReceiveTimeout(10);
             log->debug(tr("Serial timeout was observed as: %1 %2").arg(activeSerialPort->getReceiveTimeout()).arg(
                     activeSerialPort->isReceiveTimeoutEnabled())); // NOI18N
-        } catch (UnsupportedCommOperationException et) {
-            log->info(tr("failed to set serial timeout: %1").arg(et.getMessage())); // NOI18N
+        } catch (UnsupportedCommOperationException* et) {
+            log->info(tr("failed to set serial timeout: %1").arg(et->getMessage())); // NOI18N
         }
 
         // get and save stream
@@ -106,9 +106,9 @@
 
     } catch (NoSuchPortException p) {
         return handlePortNotFound(p, portName, log);
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         log->error(tr("Unexpected exception while opening port %1").arg(portName), ex);
-        return "Unexpected error while opening port " + portName + ": " + ex.getMessage(); // NOI18N
+        return "Unexpected error while opening port " + portName + ": " + ex->getMessage(); // NOI18N
     }
 
     return nullptr; // normal operation
@@ -262,8 +262,8 @@
     try {
         //return new QDataStream(*activeSerialPort->getOutputStream());
      return activeSerialPort->getOutputStream();
-    } catch (IOException e) {
-        log->error(tr("getOutputStream exception: %1").arg(e.getMessage()));
+    } catch (IOException* e) {
+        log->error(tr("getOutputStream exception: %1").arg(e->getMessage()));
     }
     return nullptr;
 }
@@ -278,7 +278,7 @@
  *
  * @throws UnsupportedCommOperationException if unable to configure port
  */
-/*protected*/ void RfidSerialDriverAdapter::setSerialPort() throw (UnsupportedCommOperationException) {
+/*protected*/ void RfidSerialDriverAdapter::setSerialPort() /*throw (UnsupportedCommOperationException)*/ {
     // find the baud rate value, configure comm options
     int baud = 9600;  // default, but also defaulted in the initial value of selectedSpeed
 

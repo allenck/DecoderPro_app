@@ -8,6 +8,7 @@
 #include "timebase.h"
 #include "rosterentry.h"
 #include <QComboBox>
+#include "instancemanagerautodefault.h"
 
 
 class Block;
@@ -31,16 +32,16 @@ class TransitManager;
 class AllocationRequest;
 class ActiveTrain;
 class LayoutEditor;
-class DispatcherFrame : public JmriJFrame
+class DispatcherFrame : public JmriJFrame, public InstanceManagerAutoDefault
 {
  Q_OBJECT
+    Q_INTERFACES(InstanceManagerAutoDefault)
+
 public:
  Q_INVOKABLE DispatcherFrame(QWidget* parent = 0);
- static DispatcherFrame* _instance;// = NULL;
  ~DispatcherFrame() {}
  DispatcherFrame(const DispatcherFrame&) :JmriJFrame() {}
 
- static /*public*/ DispatcherFrame* instance();
  enum SIGNALS
  {
   SIGNALHEAD = 0x00,
@@ -64,7 +65,7 @@ public:
  /*public*/ void newTrainDone(ActiveTrain* at);
  /*public*/ QList<ActiveTrain*>* getActiveTrainsList();
  /*public*/ ActiveTrain* getActiveTrainForRoster(RosterEntry* re);
- /*public*/ void allocateExtraSection(ActionEvent* e, ActiveTrain* at);
+ /*public*/ void allocateExtraSection(JActionEvent* e, ActiveTrain* at);
  /*public*/ QString getSectionName(Section* sec);
  /*public*/ QString getClassName();
 
@@ -80,6 +81,7 @@ private:
  /*private*/ bool _TrainsFromTrains;// = false;
  /*private*/ bool _TrainsFromUser;// = false;
  /*private*/ bool _AutoAllocate;// = false;
+ /*private*/ bool _AutoRelease = false;
  /*private*/ bool _AutoTurnouts;// = false;
  /*private*/ bool _TrustKnownTurnouts;// = false;
  /*private*/ bool _ShortActiveTrainNames;// = false;
@@ -94,6 +96,7 @@ private:
  /*private*/ int _FullRampTime;// = 10000; //default time (in ms) for RAMP_FAST to go from 0% to 100%
 
  // operational instance variables
+ /*private*/ QThread* autoAllocateThread ;
  /*private*/ QList<ActiveTrain*>* activeTrainsList;// = new ArrayList<ActiveTrain>();  // list of ActiveTrain objects
  /*private*/ QList<PropertyChangeListener*>* _atListeners;// = new ArrayList<java.beans.PropertyChangeListener>();
  /*private*/ QList<ActiveTrain*>* delayedTrains;// = new ArrayList<ActiveTrain>();  // list of delayed Active Trains
@@ -156,10 +159,13 @@ private slots:
  void minuteChange(PropertyChangeEvent*);
  /*private*/ void handleActiveTrainChange(PropertyChangeEvent* e);
  /*private*/ void allocateExtraSection(/*ActionEvent* e*/);
- /*private*/ void handleAutoReleaseChanged(ActionEvent* e = 0);
- /*private*/ void handleATSelectionChanged(ActionEvent* e = 0);
- /*private*/ void handleAutoAllocateChanged(ActionEvent* e = 0);
- void terminateTrain(ActionEvent* e = 0);
+ /*private*/ void handleAutoReleaseChanged(JActionEvent* e = 0);
+ /*private*/ void handleATSelectionChanged(JActionEvent* e = 0);
+ /*private*/ void handleAutoAllocateChanged(JActionEvent* e = 0);
+ void terminateTrain(JActionEvent* e = 0);
+ /*private*/ Section* autoChoice(QList<Section*> sList, AllocationRequest* ar);
+ /*private*/ Section* dispatcherChoice(QList<Section*> sList, AllocationRequest* ar);
+ /*private*/ void requestNextAllocation(ActiveTrain* at);
 
 protected:
  /*protected*/ int getSignalType();
@@ -169,8 +175,12 @@ protected:
  /*protected*/ AllocationRequest* findAllocationRequestInQueue(Section* s, int seq, int dir, ActiveTrain* at);
  /*protected*/ void addDelayedTrain(ActiveTrain* at);
  /*protected*/ JmriJFrame* dispatcherFrame;// = NULL;
- /*protected*/ void forceScanOfAllocation();
  /*protected*/ void newFastClockMinute();
+ /*protected*/ void queueScanOfAllocationRequests();
+ /*protected*/ void queueReleaseOfReservedSections(QString trainName);
+ /*protected*/ void queueWaitForEmpty();
+ /*protected*/ void queueReleaseOfCompletedAllocations();
+ /*protected*/ void stopStartAutoAllocateRelease();
 
  /*protected*/  bool isFastClockTimeGE(int hr, int min);
 
@@ -216,6 +226,7 @@ protected:
  /*protected*/  bool getSupportVSDecoder();
  /*protected*/ void setSupportVSDecoder( bool set);
  /*protected*/ QList<AllocatedSection*>* getAllocatedSectionsList();
+ /*protected*/ Section* checkBlocksNotInAllocatedSection(Section* s, AllocationRequest* ar);
 
  friend class ActiveTrain;
  friend class ActiveTrainsTableModel;
@@ -230,6 +241,11 @@ protected:
  friend class OptionsMenu;
  friend class OptionsFile;
  friend class OptionsMenuTest;
+ friend class ActivateTrainFrame;
+ friend class DSLPropertyChangeListener;
+ friend class RSLPropertyChangeListener;
+ friend class SignalMastListener;
+ friend class WaitingOnBlockListener;
 };
 
 /**
@@ -265,8 +281,8 @@ public:
     /*public*/ int getPreferredWidth(int col);
     /*public*/ QVariant data(const QModelIndex &index, int role) const;
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
- /*public*/ int getRowCount() {return rowCount(QModelIndex());}
- /*public*/ int getColumnCount() {return columnCount(QModelIndex());}
+    /*public*/ int getRowCount() {return rowCount(QModelIndex());}
+    /*public*/ int getColumnCount() {return columnCount(QModelIndex());}
 
 };
 

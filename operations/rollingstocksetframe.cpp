@@ -4,7 +4,7 @@
 #include "locationmanager.h"
 #include "trainmanager.h"
 #include <QLabel>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QCheckBox>
 #include "jcombobox.h"
 #include <QScrollArea>
@@ -23,6 +23,8 @@
 #include "routelocation.h"
 #include "route.h"
 #include <QList>
+#include "instancemanager.h"
+#include "borderfactory.h"
 
 //RollingStockFrame::RollingStockFrame()
 //{
@@ -69,8 +71,8 @@ void RollingStockSetFrame::common()
 {
  log = new Logger("RollingStockSetFrame");
  setObjectName("RollingStockSetFrame");
- locationManager = LocationManager::instance();
- trainManager = TrainManager::instance();
+ locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
+ trainManager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
  _disableComboBoxUpdate = false;
 
  // labels
@@ -78,17 +80,17 @@ void RollingStockSetFrame::common()
  textType = new QLabel();
 
  // major buttons
- saveButton = new QPushButton(tr("Save"));
- ignoreAllButton = new QPushButton(tr("IgnoreAll"));
+ saveButton = new JButton(tr("Save"));
+ ignoreAllButton = new JButton(tr("IgnoreAll"));
 
  // combo boxes
- locationBox = LocationManager::instance()->getComboBox();
+ locationBox = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getComboBox();
  trackLocationBox = new JComboBox();
- destinationBox = LocationManager::instance()->getComboBox();
+ destinationBox = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getComboBox();
  trackDestinationBox = new JComboBox();
- finalDestinationBox = LocationManager::instance()->getComboBox();
+ finalDestinationBox = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getComboBox();
  finalDestTrackBox = new JComboBox();
- trainBox = TrainManager::instance()->getTrainComboBox();
+ trainBox = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainComboBox();
 
  // check boxes
  autoTrackCheckBox = new QCheckBox(tr("Auto"));
@@ -106,11 +108,11 @@ void RollingStockSetFrame::common()
  ignoreTrainCheckBox = new QCheckBox(tr("Ignore"));
 
  // optional panels
- pOptional = new QGroupBox();
+ pOptional = new JPanel();
  pOptional->setLayout(new QVBoxLayout);
  paneOptional = new QScrollArea(/*pOptional*/);
  pOptional->layout()->addWidget(paneOptional);
- pFinalDestination = new QGroupBox();
+ pFinalDestination = new JPanel();
 }
 
  /*public*/ void RollingStockSetFrame::initComponents() {
@@ -126,30 +128,24 @@ void RollingStockSetFrame::common()
      QHBoxLayout* pRow1Layout = new QHBoxLayout(pRow1);
 
      // row 1a
-     QGroupBox* pRs = new QGroupBox();
+     JPanel* pRs = new JPanel();
      pRs->setLayout(new GridBagLayout());
-     //prs->setBorder(BorderFactory.createTitledBorder(getRb().getString("rsType")));
-     pRs->setStyleSheet(gbStyleSheet);
-     pRs->setTitle("Rolling Stock");
+     pRs->setBorder(BorderFactory::createTitledBorder(getRb()->getString("rsType")));
      addItem(pRs, textRoad, 1, 0);
      pRow1Layout->addWidget(pRs);
 
      // row 1b
-     QGroupBox* pType = new QGroupBox();
+     JPanel* pType = new JPanel();
      pType->setLayout(new GridBagLayout());
-     //pType->setBorder(BorderFactory.createTitledBorder(tr("Type")));
-     pType->setStyleSheet(gbStyleSheet);
-     pType->setTitle("Type");
+     pType->setBorder(BorderFactory::createTitledBorder(tr("Type")));
 
      addItem(pType, textType, 1, 0);
      pRow1Layout->addWidget(pType);
 
      // row 1c
-     QGroupBox*pStatus = new QGroupBox();
+     JPanel*pStatus = new JPanel();
      pStatus->setLayout(new GridBagLayout());
-     //pStatus->setBorder(BorderFactory.createTitledBorder(tr("Status")));
-     pStatus->setStyleSheet(gbStyleSheet);
-     pStatus->setTitle("Status");
+     pStatus->setBorder(BorderFactory::createTitledBorder(tr("Status")));
 
      addItemLeft(pStatus, ignoreStatusCheckBox, 0, 0);
      addItemLeft(pStatus, locationUnknownCheckBox, 1, 1);
@@ -159,11 +155,9 @@ void RollingStockSetFrame::common()
      pPanelLayout->addWidget(pRow1);
 
      // row 2
-     QGroupBox* pLocation = new QGroupBox();
+     JPanel* pLocation = new JPanel();
      pLocation->setLayout(new GridBagLayout());
-     //pLocation->setBorder(BorderFactory.createTitledBorder(tr("LocationAndTrack")));
-     pLocation->setStyleSheet(gbStyleSheet);
-     pLocation->setTitle("Location and Track");
+     pLocation->setBorder(BorderFactory::createTitledBorder(tr("Location and Track")));
      addItemLeft(pLocation, ignoreLocationCheckBox, 0, 1);
      addItem(pLocation, locationBox, 1, 1);
      addItem(pLocation, trackLocationBox, 2, 1);
@@ -171,10 +165,9 @@ void RollingStockSetFrame::common()
      pPanelLayout->addWidget(pLocation);
 
      // optional panel 2
-     QGroupBox* pOptionalFrame = new QGroupBox("Optional -- Normally Set by Program --");
+     JPanel* pOptionalFrame = new JPanel();
      pOptionalFrame->setLayout(new QVBoxLayout);
-     pOptionalFrame->setStyleSheet(gbStyleSheet);
-     pOptionalFrame->setTitle(tr("Optional -- Normally Set by Program --"));
+     pOptionalFrame->setBorder(BorderFactory::createTitledBorder(tr("Optional -- Normally Set by Program --")));
      QWidget* pOptional2 = new QWidget();
      QVBoxLayout* paneOptional2Layout = new QVBoxLayout(pOptional2);
      QScrollArea* paneOptional2 = new QScrollArea(/*pOptional2*/);
@@ -186,11 +179,9 @@ void RollingStockSetFrame::common()
 //             .getMessage("BorderLayoutOptionalProgram")));
 
      // row 6
-     QGroupBox* pDestination = new QGroupBox();
+     JPanel* pDestination = new JPanel();
      pDestination->setLayout(new GridBagLayout());
-     //pDestination->setBorder(BorderFactory.createTitledBorder(tr("DestinationAndTrack")));
-     pDestination->setStyleSheet(gbStyleSheet);
-     pDestination->setTitle("Destination and Track");
+     pDestination->setBorder(BorderFactory::createTitledBorder(tr("Destination and Track")));
      addItemLeft(pDestination, ignoreDestinationCheckBox, 0, 1);
      addItem(pDestination, destinationBox, 1, 1);
      addItem(pDestination, trackDestinationBox, 2, 1);
@@ -199,10 +190,7 @@ void RollingStockSetFrame::common()
 
      // row 7
      pFinalDestination->setLayout(new GridBagLayout());
-//     pFinalDestination->setBorder(BorderFactory.createTitledBorder(Bundle
-//             .getMessage("FinalDestinationAndTrack")));
-     pFinalDestination->setStyleSheet(gbStyleSheet);
-     pFinalDestination->setTitle("Final Destination And Track");
+     pFinalDestination->setBorder(BorderFactory::createTitledBorder(tr("Final Destination And Track")));
      addItemLeft(pFinalDestination, ignoreFinalDestinationCheckBox, 0, 1);
      addItem(pFinalDestination, finalDestinationBox, 1, 1);
      addItem(pFinalDestination, finalDestTrackBox, 2, 1);
@@ -210,18 +198,16 @@ void RollingStockSetFrame::common()
      paneOptional2Layout->addWidget(pFinalDestination);
 
      // row 8
-     QGroupBox*pTrain = new QGroupBox();
+     JPanel*pTrain = new JPanel();
      pTrain->setLayout(new GridBagLayout());
-     //pTrain->setBorder(BorderFactory.createTitledBorder(tr("Train")));
-     pTrain->setStyleSheet(gbStyleSheet);
-     pTrain->setTitle("Train");
+     pTrain->setBorder(BorderFactory::createTitledBorder(tr("Train")));
      addItemLeft(pTrain, ignoreTrainCheckBox, 0, 0);
      addItem(pTrain, trainBox, 1, 0);
      addItem(pTrain, autoTrainCheckBox, 2, 0);
      paneOptional2Layout->addWidget(pTrain);
 
      // button panel
-     QWidget*pButtons = new QWidget();
+     JPanel* pButtons = new JPanel();
      pButtons->setLayout(new GridBagLayout());
      addItem(pButtons, ignoreAllButton, 1, 0);
      addItem(pButtons, saveButton, 2, 0);
@@ -286,11 +272,10 @@ void RollingStockSetFrame::common()
      ignoreTrainCheckBox->setToolTip(tr("When checked, ignore this set of fields during change"));
 
      // get notified if combo box gets modified
-     //LocationManager::instance().addPropertyChangeListener(this);
-     connect(LocationManager::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")).addPropertyChangeListener(this);
+     connect(((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      // get notified if train combo box gets modified
-     //trainManager.addPropertyChangeListener(this);
-     connect(trainManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     trainManager->addPropertyChangeListener(this);
 
      setMinimumSize(QSize(Control::panelWidth500, Control::panelHeight500));
  }
@@ -324,13 +309,12 @@ void RollingStockSetFrame::common()
           QMessageBox::warning(this, tr("Car has been assigned a destination and train"), tr(""));
          }
      }
-     //_rs->addPropertyChangeListener(this);
-     connect(rs->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     _rs->SwingPropertyChangeSupport::addPropertyChangeListener(this);
  }
 
  // Save button
  /*public*/ void RollingStockSetFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == saveButton) {
          _disableComboBoxUpdate = true; // need to stop property changes while we update
          save();
@@ -341,9 +325,7 @@ void RollingStockSetFrame::common()
      }
  }
 
-// /*protected*/ ResourceBundle getRb() {
-//     return rb;
-// }
+///*abstract*/ protected ResourceBundle getRb();
 
  /*protected*/ bool RollingStockSetFrame::save() {
      return change(_rs);
@@ -513,7 +495,7 @@ void RollingStockSetFrame::common()
     {
      QString status = rs->setLocation((Location*) VPtr<Location>::asPtr(locationBox->itemData(locationBox->currentIndex())),
              (Track*) VPtr<Track>::asPtr(trackLocationBox->currentData(/*trackLocationBox->currentIndex()*/)));
-     rs->setSavedRouteId(RollingStock::NONE); // clear last route id
+     rs->setLastRouteId(RollingStock::NONE); // clear last route id
      if (status!=(Track::OKAY))
      {
       log->debug(tr("Can't set rs's location because of %1").arg(status));
@@ -852,14 +834,13 @@ void RollingStockSetFrame::common()
 
  /*public*/ void RollingStockSetFrame::dispose() {
      if (_rs != NULL) {
-         //_rs->removePropertyChangeListener(this);
-      disconnect(_rs->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      _rs->removePropertyChangeListener(this);
      }
      //LocationManager.instance().removePropertyChangeListener(this);
-     disconnect(LocationManager::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      //trainManager.removePropertyChangeListener(this);
-     disconnect(trainManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(trainManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      OperationsFrame::dispose();
  }
 

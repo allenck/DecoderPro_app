@@ -26,7 +26,7 @@ AutomatSummary* AutomatSummary::self = NULL;
 {
  self = NULL;
  automats = new QList<AbstractAutomaton*>();
- prop = new PropertyChangeSupport(this);
+ prop = new SwingPropertyChangeSupport(this, nullptr);
 }
 /*static*/ /*public*/ AutomatSummary* AutomatSummary::instance() {
     if (self == NULL) self = new AutomatSummary();
@@ -34,7 +34,7 @@ AutomatSummary* AutomatSummary::self = NULL;
 }
 
 /*public*/ void AutomatSummary::removePropertyChangeListener(PropertyChangeListener* p) { prop->removePropertyChangeListener(p); }
-/*public*/ void AutomatSummary::addPropertyChangeListener(PropertyChangeListener* p) { prop->addPropertyChangeListener(p); }
+/*public*/ void AutomatSummary::addPropertyChangeListener(PropertyChangeListener* p) { prop->SwingPropertyChangeSupport::addPropertyChangeListener(p); }
 
 /**
  * A newly-created AbstractAutomaton instance uses this method to

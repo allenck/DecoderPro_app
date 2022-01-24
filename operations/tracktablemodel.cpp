@@ -8,6 +8,7 @@
 #include <QLabel>
 #include "jtable.h"
 #include "pushbuttondelegate.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -53,12 +54,11 @@ namespace Operations
   // first, remove listeners from the individual objects
   removePropertyChangeTracks();
 
-  tracksList = _location->getTrackByNameList(_trackType);
+  tracksList = _location->getTracksByNameList(_trackType);
   // and add them back in
   foreach (Track* track, tracksList)
   {
-   //track->addPropertyChangeListener(this);
-   connect(track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   track->SwingPropertyChangeSupport::addPropertyChangeListener(this);
   }
   if (_location->hasPools() && !_showPoolColumn)
   {
@@ -78,8 +78,7 @@ namespace Operations
   }
   if (_location != NULL)
   {
-   //_location.addPropertyChangeListener(this);
-   connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   _location->SwingPropertyChangeSupport::addPropertyChangeListener(this);
   }
   initTable();
   // have to shut off autoResizeMode to get horizontal scroll to work (JavaSwing p 541)
@@ -93,7 +92,7 @@ namespace Operations
  /*private*/ void TrackTableModel::initTable()
  {
   // Use XTableColumnModel so we can control which columns are visible
-  XTableColumnModel* tcm = new XTableColumnModel((AbstractTableModel*)_table->model());
+  XTableColumnModel* tcm = new XTableColumnModel(/*(AbstractTableModel*)_table->model()*/_table);
   _table->setColumnModel(tcm);
   _table->createDefaultColumnsFromModel();
 
@@ -303,7 +302,7 @@ namespace Operations
     case DESTINATION_COLUMN: {
         int length = track->getDestinationListSize();
         if (track->getDestinationOption()==(Track::EXCLUDE_DESTINATIONS)) {
-            length = LocationManager::instance()->getNumberOfLocations() - length;
+            length = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getNumberOfLocations() - length;
         }
         return getModifiedString(length, track->getDestinationOption()==(Track::ALL_DESTINATIONS), track
                 ->getDestinationOption()==(track->INCLUDE_DESTINATIONS));
@@ -405,8 +404,7 @@ namespace Operations
  {
   foreach (Track* t, tracksList)
   {
-      //t.removePropertyChangeListener(this);
-   disconnect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   t->removePropertyChangeListener(this);
   }
  }
 
@@ -416,8 +414,7 @@ namespace Operations
   // log.debug("dispose");
   removePropertyChangeTracks();
   if (_location != NULL) {
-      //_location.removePropertyChangeListener(this);
-   disconnect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   _location->removePropertyChangeListener(this);
   }
 
   if (tef != NULL) {

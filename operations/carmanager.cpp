@@ -44,15 +44,6 @@ RollingStockManager(parent)
  }
 
  /**
-  * record the single instance *
-  */
- // /*private*/ /*static*/ CarManager* CarManager::_instance = NULL;
-
- /*public*/ /*static*/ /*synchronized*/ CarManager* CarManager::instance() {
-  return static_cast<CarManager*>(InstanceManager::getDefault("CarManager"));
- }
-
- /**
   * Finds an existing Car* or creates a new Car* if needed requires car's road
   * and number
   *
@@ -60,13 +51,19 @@ RollingStockManager(parent)
   * @param number car number
   * @return new car or existing Car
   */
- /*public*/ Car* CarManager::newCar(QString road, QString number) {
+ /*public*/ RollingStock* CarManager::newRS(QString road, QString number) {
      Car* car = getByRoadAndNumber(road, number);
      if (car == NULL) {
          car = new Car(road, number);
          _register(car);
      }
      return car;
+ }
+
+ //@Override
+ /*public*/ void CarManager::deregister(RollingStock* car) {
+     RollingStockManager::deregister(car);
+     ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml"))->setDirty(true);
  }
 
  /**
@@ -214,12 +211,12 @@ RollingStockManager(parent)
      }
      return maxLength;
  }
-
  /**
   * Sort by rolling stock location
   *
   * @return list of cars ordered by the RollingStock's location
   */
+ //@Override
  /*public*/ QList<RollingStock*>* CarManager::getByLocationList() {
      return getByList(getByKernelList(), BY_LOCATION);
  }
@@ -269,27 +266,68 @@ RollingStockManager(parent)
      return getByList(getByIdList(), BY_PICKUP);
  }
 
-#if 0
+#if 1
  // add car options to sort comparator
  //@Override
- /*protected*/ Comparator<RollingStock*> CarManager::getComparator(int attribute) {
+// /*protected*/ Comparator<RollingStock*> CarManager::getComparator(int attribute)
+ /*static*/ bool CarManager::lessthan(RollingStock* r1, RollingStock* r2, SORTBY attribute)
+ {
      switch (attribute) {
          case BY_LOAD:
-             return (c1,c2)->(((Car*)c1)->getLoadName().compareToIgnoreCase(((Car*) c2)->getLoadName()));
+             return (((Car*)r1)->getLoadName().compare(((Car*) r2)->getLoadName(), Qt::CaseInsensitive))< 0;
          case BY_KERNEL:
-             return (c1,c2)->(((Car)c1).getKernelName().compareToIgnoreCase(((Car)c2).getKernelName()));
+             return (((Car*)r1)->getKernelName().compare(((Car*)r2)->getKernelName(), Qt::CaseInsensitive))< 0;
          case BY_RWE:
-             return (c1,c2)->(((Car)c1).getReturnWhenEmptyDestName().compareToIgnoreCase(((Car)c2).getReturnWhenEmptyDestName()));
+             return (((Car*)r1)->getReturnWhenEmptyDestName().compare(((Car*)r2)->getReturnWhenEmptyDestName(), Qt::CaseInsensitive))< 0;
          case BY_FINAL_DEST:
-             return (c1,c2)->(((Car)c1).getFinalDestinationName().compareToIgnoreCase(((Car)c2).getFinalDestinationName()));
+             return (((Car*)r1)->getFinalDestinationName().compare(((Car*)r2)->getFinalDestinationName(), Qt::CaseInsensitive))< 0;
          case BY_WAIT:
-             return (c1,c2)->(((Car)c1).getWait() - ((Car)c2).getWait());
+             return (((Car*)r1)->getWait() - ((Car*)r2)->getWait()) < 0;
          case BY_PICKUP:
-             return (c1,c2)->(((Car)c1).getPickupScheduleName().compareToIgnoreCase(((Car)c2).getPickupScheduleName()));
+             return ((((Car*)r1)->getPickupScheduleName().compare(((Car*)r2)->getPickupScheduleName(), Qt::CaseInsensitive)))< 0;
          default:
-             return RollingStockManager::getComparator(attribute);
+             return RollingStockManager::lessthan(r1, r2, (RollingStockManager::SORTBY)attribute);
      }
  }
+ /*public*/ void CarManager::sortOut(QList<RollingStock*>* out, SORTBY attribute){
+  switch (attribute)
+  {
+   case BY_LOAD:
+   case BY_KERNEL:
+   case BY_RWE:
+   case BY_FINAL_DEST:
+   case BY_WAIT:
+   case BY_PICKUP:
+    break;
+   default:
+    return RollingStockManager::sortOut(out, attribute);
+  }
+
+  auto property = attribute;
+  auto sortRuleLambda = [property] (RollingStock const* r1, RollingStock const* r2) -> bool
+  {
+   switch(property) {
+   case BY_LOAD:
+       return (((Car*)r1)->getLoadName().compare(((Car*) r2)->getLoadName(), Qt::CaseInsensitive))< 0;
+   case BY_KERNEL:
+       return (((Car*)r1)->getKernelName().compare(((Car*)r2)->getKernelName(), Qt::CaseInsensitive))< 0;
+   case BY_RWE:
+       return (((Car*)r1)->getReturnWhenEmptyDestName().compare(((Car*)r2)->getReturnWhenEmptyDestName(), Qt::CaseInsensitive))< 0;
+   case BY_FINAL_DEST:
+       return (((Car*)r1)->getFinalDestinationName().compare(((Car*)r2)->getFinalDestinationName(), Qt::CaseInsensitive))< 0;
+   case BY_WAIT:
+       return (((Car*)r1)->getWait() - ((Car*)r2)->getWait()) < 0;
+   case BY_PICKUP:
+       return ((((Car*)r1)->getPickupScheduleName().compare(((Car*)r2)->getPickupScheduleName(), Qt::CaseInsensitive)))< 0;
+   default:
+    return (r1->getRoadName() + r1->getNumber()).compare( (r2->getRoadName() +
+            r2->getNumber()),Qt::CaseInsensitive) < 0;
+
+   }
+  };
+  std::sort ( out->begin(), out->end(), sortRuleLambda);
+ }
+
 #endif
 
  /**
@@ -502,7 +540,7 @@ RollingStockManager(parent)
              if (newLoadName != NULL) {
                  car->setLoadName(newLoadName);
              } else {
-                 car->setLoadName(CarLoads::instance()->getDefaultEmptyName());
+                 car->setLoadName(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultEmptyName());
              }
          }
      }
@@ -633,7 +671,7 @@ RollingStockManager(parent)
 
  /*protected*/ void CarManager::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      // Set dirty
-     CarManagerXml::instance()->setDirty(true);
+     ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml"))->setDirty(true);
      RollingStockManager::firePropertyChange(p, old, n);
  }
 

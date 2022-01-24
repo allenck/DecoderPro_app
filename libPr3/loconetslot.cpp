@@ -17,7 +17,7 @@ LocoNetSlot::LocoNetSlot(int slotNum, QObject *parent) :
   * @throws LocoNetException if the slot does not have an easily-found
   * slot number
   */
- /*public*/ LocoNetSlot::LocoNetSlot(LocoNetMessage* l, QObject *parent) throw (LocoNetException) : QObject(parent){
+ /*public*/ LocoNetSlot::LocoNetSlot(LocoNetMessage* l, QObject *parent) /*throw (LocoNetException)*/ : QObject(parent){
  common(0);
      // TODO: Consider limiting the types of LocoNet message which can be
      // used to construct the object to only LocoNet slot write or slot
@@ -168,6 +168,24 @@ void LocoNetSlot::common(int slotNum)
  */
 /*public*/ bool LocoNetSlot::isForward() {
     return 0 == (_dirf & LnConstants::DIRF_DIR);
+}
+
+/*private*/ QVector<bool> LocoNetSlot::getFuncArray() {
+        return QVector<bool>{isF0(),isF1(),isF2(),isF3(),isF4(),isF5(),isF6(),isF7(),isF8(),
+        isF9(),isF10(),isF11(),isF12(),isF13(),isF14(),isF15(),isF16(),isF17(),isF18(),
+        isF19(),isF20(),isF21(),isF22(),isF23(),isF24(),isF25(),isF26(),isF27(),isF28()};
+}
+
+/**
+ * Return a slot Function state.
+ * <p>
+ * See individual Functions for meanings.
+ *
+ * @param Fn Function number, 0-28
+ * @return true if Function is "on", else false
+ */
+/*public*/ bool LocoNetSlot::isFunction(int Fn){
+    return getFuncArray()[Fn];
 }
 
 /**
@@ -703,7 +721,7 @@ void LocoNetSlot::common(int slotNum)
 // methods to interact with LocoNet
 //@SuppressWarnings("fallthrough")
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="SF_SWITCH_FALLTHROUGH")
-void LocoNetSlot::setSlot(LocoNetMessage* l) throw (LocoNetException)
+void LocoNetSlot::setSlot(LocoNetMessage* l) /*throw (LocoNetException)*/
 { // exception if message can't be parsed
     // sort out valid messages, handle
     switch (l->getOpCode()) {
@@ -804,7 +822,7 @@ void LocoNetSlot::setSlot(LocoNetMessage* l) throw (LocoNetException)
     default:
     {
      log->debug( tr("message can't be parsed op code 0x%1").arg(l->getOpCode(),0,16 ));
-     throw LocoNetException("message can't be parsed");
+     throw new LocoNetException("message can't be parsed");
     }
  }
 }

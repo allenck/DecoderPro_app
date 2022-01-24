@@ -3,16 +3,17 @@
 
 #include <QWidget>
 #include "appslib_global.h"
+#include "propertychangelistener.h"
 
 class PropertyChangeEvent;
 class ConnectionConfig;
 class QLabel;
 class FlowLayout;
 class Logger;
-class APPSLIBSHARED_EXPORT AppsLaunchPane : public QWidget
+class APPSLIBSHARED_EXPORT AppsLaunchPane : public QWidget, public PropertyChangeListener
 {
  Q_OBJECT
-public:
+Q_INTERFACES(PropertyChangeListener)public:
  explicit AppsLaunchPane(QWidget *parent = nullptr);
  /*public*/ static void ynstrument(QString path);
 // static /*public*/ QString getConnection1() __attribute__ ((deprecated));
@@ -21,11 +22,11 @@ public:
 // static /*public*/ QString getConnection4() __attribute__ ((deprecated));
  static /*public*/ QString getConfigFileName();
  static /*public*/ QWidget* buttonSpace();
-
+QObject* self() override {(QObject*)this;}
 signals:
 
 public slots:
- /*public*/ void propertyChange(PropertyChangeEvent* ev);
+ /*public*/ void propertyChange(PropertyChangeEvent* ev) override;
 
 private:
  static QString profileFilename;

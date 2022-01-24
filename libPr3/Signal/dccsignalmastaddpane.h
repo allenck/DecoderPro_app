@@ -26,20 +26,7 @@ public:
          QString sigsysname, /*@Nonnull*/
                  QString mastname, /*@Nonnull*/
                          QString username);
- /*static*/ /*public*/ class SignalMastAddPaneProvider : public  SignalMastAddPane::SignalMastAddPaneProvider
- {
-  public:
-  /** {@inheritDoc} */
-     //@Override
-     /*@Nonnull*/ /*public*/ QString getPaneName() {
-         return tr("DCCMast");
-     }
-     /** {@inheritDoc} */
-     //@Override
-     /*@Nonnull*/ /*public*/ SignalMastAddPane* getNewPane() {
-         return new DccSignalMastAddPane();
-     }
- };
+
 
 private:
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("DccSignalMastAddPane");
@@ -97,9 +84,12 @@ private:
     friend class DccSignalMastAddPane;
 };
 //@ServiceProvider(service = SignalMastAddPane.SignalMastAddPaneProvider.class)
-    /*static*/ /*public*/ class DccSignalMastAddPaneProvider : public SignalMastAddPane::SignalMastAddPaneProvider
+/*static*/ /*public*/ class DccSignalMastAddPaneProvider : public SignalMastAddPaneProvider
 {
+  Q_OBJECT
+  Q_INTERFACES(SignalMastAddPaneProvider)
 public:
+  DccSignalMastAddPaneProvider() {}
     /** {@inheritDoc} */
     //@Override
     /*@Nonnull*/ /*public*/ QString getPaneName() {

@@ -26,6 +26,7 @@
  //super();
 
  throttleFramesLM = new ThrottlesTableModel();
+ throttleFramesLM->setObjectName("ThrottlesTableModel");
  initGUI();
 }
 
@@ -36,6 +37,7 @@
 /*private*/ void ThrottlesListPanel::initGUI()
 {
  throttleFrames = new JTable(throttleFramesLM);
+ throttleFrames->setObjectName("ThrottlesListPanel");
  //throttleFrames->setSelectionMode(ListSelectionModel::SINGLE_SELECTION );
  throttleFrames->setSelectionMode(QAbstractItemView::SingleSelection);
 //        throttleFrames.setRowHeight(ThrottlesTableCellRenderer.height);

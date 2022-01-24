@@ -2,10 +2,12 @@
 #define LEMEMORYICON_H
 #include "memoryicon.h"
 #include "Roster/roster.h"
+#include "propertychangelistener.h"
+#include "liblayouteditor_global.h"
 
 class LayoutBlock;
 class Editor;
-class LEMemoryIcon : public MemoryIcon
+class LIBLAYOUTEDITORSHARED_EXPORT LEMemoryIcon : public MemoryIcon
 {
     Q_OBJECT
 public:
@@ -14,9 +16,9 @@ public:
     /*public*/ void setText(QString text) ;
     /*public*/ LayoutBlock* getLayoutBlock();
     /*public*/ void setLayoutBlock(LayoutBlock* lb);
-    /*public*/ void displayState();
-    /*public*/ void setMemory(QString pName);
-    /*public*/ bool showPopUp(QMenu* popup);
+    /*public*/ void displayState() override;
+    /*public*/ void setMemory(QString pName) override;
+    /*public*/ bool showPopUp(QMenu* popup) override;
     enum POS
     {
      LEFT = 0x00,
@@ -24,12 +26,13 @@ public:
      CENTRE = 0x04
     };
     Q_ENUM(POS)
+    QObject* self() override {return (QObject*)this;}
 
 signals:
 
 public slots:
     void on_updateBlockItemAction_toggled(bool bState);
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 private:
  QString defaultText;// = " ";
@@ -49,13 +52,14 @@ protected:
 friend class MIActionListener;
 };
 
-class MIActionListener : public ActionListener
+class MIActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  LEMemoryIcon* memoryIcon;
 public:
  MIActionListener(LEMemoryIcon* memoryIcon) {this->memoryIcon = memoryIcon;}
 public slots:
- void actionPerformed() { memoryIcon->editMemory();}
+ void actionPerformed(JActionEvent */*e*/ = 0)override { memoryIcon->editMemory();}
 };
 #endif // LEMEMORYICON_H

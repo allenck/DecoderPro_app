@@ -1,7 +1,7 @@
 #include "abstractmanager.h"
 #include <QStringList>
 #include "instancemanager.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "configxmlmanager.h"
 #include "abstractcatalogtree.h"
 #include "systemnamecomparator.h"
@@ -10,6 +10,8 @@
 #include "namedbeancomparator.h"
 #include "namedbean.h"
 #include "vptr.h"
+#include "stringutil.h"
+#include "appsconfigurationmanager.h"
 
 /**
  * Abstract partial implementation for all Manager-type classes.
@@ -20,36 +22,41 @@
  * @author      Bob Jacobsen Copyright (C) 2003
  * @version	$Revision: 19272 $
  */
-AbstractManager::AbstractManager(QObject *parent) : Manager(nullptr, parent)
+AbstractManager::AbstractManager(QObject *parent) : VetoableChangeSupport(parent)
 {
   Q_UNUSED(parent);
   log = new Logger("AbstractManager");
- _tsys = new QHash<QString, NamedBean*>;   // stores known Turnout instances by system name
- _tuser = new QHash<QString, NamedBean*>;   // stores known Turnout instances by user name
+ _tsys = new QMap<QString, NamedBean*>;   // stores known Turnout instances by system name
+ _tuser = new QMap<QString, NamedBean*>;   // stores known Turnout instances by user name
  _beans = QSet<NamedBean*>( _beans);
  //registerSelf(); // ACK this fumction must be called by the subclass in order to work!
  lastAutoNamedBeanRef = QAtomicInteger<int>(0);
-
- pcs = new PropertyChangeSupport((QObject*)this);
- vcs = new VetoableChangeSupport((QObject*)this);
- listeners = QList<QObject*>();
+ silenceableProperties.insert("beans");
+ listeners = QList<Manager::ManagerDataListener*>();
 }
 
-AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : Manager(memo,parent)
+AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : VetoableChangeSupport( parent)
 {
   Q_UNUSED(parent);
  this->memo = memo;
+ if(propertyChangeSupport == nullptr)
+  propertyChangeSupport = new SwingPropertyChangeSupport(this, this);
+
   log = new Logger("AbstractManager");
- _tsys = new QHash<QString, NamedBean*>;   // stores known Turnout instances by system name
- _tuser = new QHash<QString, NamedBean*>;   // stores known Turnout instances by user name
+ _tsys = new QMap<QString, NamedBean*>;   // stores known Turnout instances by system name
+ _tuser = new QMap<QString, NamedBean*>;   // stores known Turnout instances by user name
  _beans = QSet<NamedBean*>( _beans);
 
  //registerSelf(); // ACK this fumction must be called by the subclass in order to work!
-
- pcs = new PropertyChangeSupport((QObject*)this);
- vcs = new VetoableChangeSupport((QObject*)this);
+ lastAutoNamedBeanRef = QAtomicInteger<int>(0);
+ silenceableProperties.insert("beans");
+ listeners = QList<Manager::ManagerDataListener*>();
+ setRegisterSelf();
 }
 
+/*final*/ void AbstractManager::setRegisterSelf(){
+    registerSelf();
+}
 //abstract public class AbstractManager
 //    implements Manager, java.beans.PropertyChangeListener {
 
@@ -70,8 +77,8 @@ AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : 
 /*protected*/ void AbstractManager::registerSelf()
 {
   log->debug(tr("registerSelf for config of type %1").arg(this->metaObject()->className()));
-  ConfigureManager* cm;
-  cm = (ConfigureManager*)InstanceManager::getOptionalDefault("ConfigureManager");
+  AppsConfigurationManager* cm;
+  cm = (AppsConfigurationManager*)InstanceManager::getOptionalDefault("ConfigureManager");
   if (cm != NULL) {
       cm->registerConfig(this, getXMLOrder());
       log->debug(tr("registering for config of type %1").arg(this->metaObject()->className()));
@@ -84,7 +91,7 @@ AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : 
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ SystemConnectionMemo* AbstractManager::getMemo() const {
+/*public*/ SystemConnectionMemo* AbstractManager::getMemo() {
     return memo;
 }
 
@@ -103,39 +110,26 @@ AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : 
 /** {@inheritDoc} */
 //@Override
 //@Nonnull
-/*public*/ QString AbstractManager::makeSystemName(/*@Nonnull*/ QString s, bool logErrors, QLocale locale) const {
+/*public*/ QString AbstractManager::makeSystemName(/*@Nonnull*/ QString s, bool logErrors, QLocale locale) {
     try {
         return Manager::makeSystemName(s, logErrors, locale);
-    } catch (IllegalArgumentException ex) {
+    } catch (IllegalArgumentException* ex) {
         if (logErrors || log->isTraceEnabled()) {
-            log->error(tr("Invalid system name for %1: %2").arg(getBeanTypeHandled()).arg(ex.getMessage()));
+            log->error(tr("Invalid system name for %1: %2").arg(getBeanTypeHandled(),ex->getMessage()),ex);
         }
         throw ex;
     }
 }
 
-//    /**
-//     * Provide access to deprecated method temporarilly
-//     * @deprecated 2.9.5 Use getSystemPrefix
-//     */
-//    @Deprecated
-//    public char systemLetter() {
-//        return getSystemPrefix().charAt(0);
-//    }
-
-// abstract methods to be extended by subclasses
-// to free resources when no longer used
-void AbstractManager::dispose()
-{
-    if (((ConfigureManager*)InstanceManager::getOptionalDefault("ConfigureManager"))!= nullptr)
-        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->deregister((QObject*)this);
-    _tsys = new QHash<QString, NamedBean*>();   // stores known Turnout instances by system name
-    _tuser = new QHash<QString, NamedBean*>();   // stores known Turnout instances by user name
-
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ void AbstractManager::dispose() {
+    ConfigureManager* cm = (ConfigureManager*)InstanceManager::getOptionalDefault("ConfigureManager");
+    if(cm) cm->deregister(this);
     _beans.clear();
     _tsys->clear();
     _tuser->clear();
-
 }
 
 
@@ -147,7 +141,7 @@ void AbstractManager::dispose()
  * return types.
  * @return requested Turnout object or NULL if none exists
  */
-QObject* AbstractManager::getInstanceBySystemName(QString systemName)
+NamedBean* AbstractManager::getInstanceBySystemName(QString systemName)
 {
  return _tsys->value(systemName);
 }
@@ -160,14 +154,29 @@ QObject* AbstractManager::getInstanceBySystemName(QString systemName)
  * return types.
  * @return requested Turnout object or NULL if none exists
  */
-QObject* AbstractManager::getInstanceByUserName(QString userName) {
+NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
     return _tuser->value(userName);
 }
+
 /** {@inheritDoc} */
 //@Override
-/*public*/ NamedBean* AbstractManager::getBySystemName(/*@Nonnull*/ QString systemName) const {
-    return _tsys->value(systemName);
+/*public*/ NamedBean* AbstractManager::getBySystemName(/*@Nonnull*/ QString systemName) {
+    return (NamedBean*)_tsys->value(systemName);
 }
+
+/** {@inheritDoc} */
+//@Override
+//@CheckForNull
+/*public*/ NamedBean* AbstractManager::getByUserName(/*@Nonnull*/ QString userName) {
+    QString normalizedUserName = NamedBean::normalizeUserName(userName);
+    return normalizedUserName != nullptr ? _tuser->value(normalizedUserName) : nullptr;
+}
+
+/** {@inheritDoc} */
+////@Override
+///*public*/ NamedBean* AbstractManager::getBySystemName(/*@Nonnull*/ QString systemName) const {
+//    return _tsys->value(systemName);
+//}
     /**
      * Locate an instance based on a system name.  Returns NULL if no
      * instance already exists.
@@ -178,30 +187,31 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
         return _tsys->value(systemName);
     }
 
-    /**
-     * Locate an instance based on a user name.  Returns NULL if no
-     * instance already exists.
-     * @param userName System Name of the required NamedBean
-     * @return requested NamedBean object or NULL if none exists
-     */
-    /*public*/ NamedBean* AbstractManager::getBeanByUserName(QString userName) const{
-        return _tuser->value(userName);
-    }
+//    /**
+//     * Locate an instance based on a user name.  Returns NULL if no
+//     * instance already exists.
+//     * @param userName System Name of the required NamedBean
+//     * @return requested NamedBean object or NULL if none exists
+//     */
+//    /*public*/ NamedBean* AbstractManager::getBeanByUserName(QString userName) const{
+//        return _tuser->value(userName);
+//    }
 
-    /** {@inheritDoc} */
-//    @Override
-//    @CheckForNull
-    /*public*/ NamedBean* AbstractManager::getByUserName(/*@Nonnull*/ QString userName) const{
-        QString normalizedUserName = NamedBean::normalizeUserName(userName);
-        return !normalizedUserName.isNull() ? _tuser->value(normalizedUserName) : nullptr;
-    }
+//    /** {@inheritDoc} */
+////    @Override
+////    @CheckForNull
+//    /*public*/ NamedBean* AbstractManager::getByUserName(/*@Nonnull*/ QString userName) const{
+//        QString normalizedUserName = NamedBean::normalizeUserName(userName);
+//        return !normalizedUserName.isNull() ? _tuser->value(normalizedUserName) : nullptr;
+//    }
+
     /**
      * Locate an instance based on a name.  Returns NULL if no
      * instance already exists.
      * @param name System Name of the required NamedBean
      * @return requested NamedBean object or NULL if none exists
      */
-    /*public*/ NamedBean* AbstractManager::getNamedBean(QString name) const{
+    /*public*/ NamedBean* AbstractManager::getNamedBean(QString name){
         NamedBean* b = getBeanByUserName(name);
         if(b!=NULL) return b;
         return getBeanBySystemName(name);
@@ -213,7 +223,7 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
  * The non-system-specific SignalHeadManagers
  * use this method extensively.
  */
-/*public*/ void AbstractManager::Register(NamedBean* s) const
+/*public*/ void AbstractManager::Register(NamedBean* s)
 {
 #if 0
  QString systemName;
@@ -237,7 +247,7 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
  if (userName != NULL) _tuser->insert(userName, s);
  firePropertyChange("length", QVariant(), /*Integer.valueOf*/(_tsys->size()));
  // listen for name and state changes to forward
- s->addPropertyChangeListener((PropertyChangeListener*)this, QString(""), QString("Manager"));
+ s->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this, QString(""), QString("Manager"));
  
  if(qobject_cast<TreeModel*>(s) != NULL)
  {
@@ -250,7 +260,9 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
     emit beanCreated(s);
 #endif
   QString systemName = s->getSystemName();
-  Q_ASSERT(!systemName.isEmpty());
+  //Q_ASSERT(!systemName.isEmpty());
+  if(systemName.isEmpty())
+    throw new NullPointerException();
   NamedBean* existingBean = getBeanBySystemName(systemName);
   if (existingBean != nullptr)
   {
@@ -259,8 +271,8 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
        log->debug(tr("the named bean is registered twice: %1").arg(systemName));
    }
    else {
-       log->error(tr("systemName is already registered: %1").arg(systemName));
-       throw  NamedBean::DuplicateSystemNameException("systemName is already registered: " + systemName);
+       log->error(tr("systemName is already registered: %1").arg(systemName),nullptr);
+       throw new NamedBean::DuplicateSystemNameException("systemName is already registered: " + systemName);
    }
   }
   else
@@ -287,7 +299,7 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
               QString msg = tr("systemName is already registered. Current system name: %1. New system name: %2").arg(
                       systemName).arg(systemName);
               log->error(msg);
-              throw  NamedBean::DuplicateSystemNameException(msg);
+              throw new NamedBean::DuplicateSystemNameException(msg);
           }
       }
   }
@@ -304,14 +316,13 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
 
   // notifications
   int position = getPosition(s);
-//  fireDataListenersAdded(position, position, s);
-  fireIndexedPropertyChange("beans", position, QVariant(), VPtr<NamedBean>::asQVariant(s));
-  firePropertyChange("length", QVariant(), _beans.size());
+  fireDataListenersAdded(position, position, s);
+  if (!silencedProperties.value("beans", false)) {
+      fireIndexedPropertyChange("beans", position, QVariant(), VPtr<NamedBean>::asQVariant(s));
+  }
+  firePropertyChange("length", 0, _beans.size());
   // listen for name and state changes to forward
-  s->addPropertyChangeListener((PropertyChangeListener*)this);
-  AbstractNamedBean* ab = (AbstractNamedBean*)s;
-  connect(ab->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-
+  s->addPropertyChangeListener(this);
 }
   // not efficient, but does job for now
 /*private*/ int AbstractManager::getPosition(NamedBean* s) const{
@@ -366,7 +377,7 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
  * The non-system-specific RouteManager
  * uses this method.
  */
-/*public*/ void AbstractManager::deregister(NamedBean* s)const{
+/*public*/ void AbstractManager::deregister(NamedBean* s){
  int position = getPosition(s);
  // clear caches
 // cachedSystemNameArray = null;
@@ -384,7 +395,8 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
     if (userName != "")
      _tuser->remove(userName);
 //    fireDataListenersRemoved(position, position, s);
-    fireIndexedPropertyChange("beans", position, VPtr<NamedBean>::asQVariant(s), QVariant());
+    if (!silencedProperties.value("beans", false))
+        fireIndexedPropertyChange("beans", position, VPtr<NamedBean>::asQVariant(s), QVariant());
     firePropertyChange("length", QVariant(), /*Integer.valueOf*/(_tsys->size()));
     // listen for name and state changes to forward
 //    emit beanDeleted(s);
@@ -408,7 +420,7 @@ QObject* AbstractManager::getInstanceByUserName(QString userName) {
      QString old = e->getOldValue().toString();  // previous user name
      QString now = e->getNewValue().toString();  // current user name
 //     try { // really should always succeed
-         QObject* t = e->getSource();
+         NamedBean* t = (NamedBean*)e->getSource();
          if (old != nullptr) {
              _tuser->remove(old); // remove old name for this bean
          }
@@ -455,7 +467,7 @@ QStringList AbstractManager::getSystemNameList()
     QStringList arr; // =  QList<QString>();
     QStringList out;// = new QStringList();
 //    Enumeration<String> en = _tsys.keys();
-    QHashIterator<QString, NamedBean*> en(*_tsys);
+    QMapIterator<QString, NamedBean*> en(*_tsys);
     int i=0;
     while (en.hasNext())
     {
@@ -498,7 +510,7 @@ QStringList AbstractManager::AbstractManager::getUserNameList()
     QStringList arr;// = new QStringList();
     QStringList out;// = new QStringList();
 //    Enumeration<String> en = _tsys.keys();
-    QHashIterator<QString, NamedBean*> en(*_tuser);
+    QMapIterator<QString, NamedBean*> en(*_tuser);
     int i=0;
     while (en.hasNext())
     {
@@ -512,51 +524,51 @@ QStringList AbstractManager::AbstractManager::getUserNameList()
     return out;
 }
 
-/*public synchronized */void AbstractManager::addPropertyChangeListener(PropertyChangeListener* l)
-{
- pcs->addPropertyChangeListener(l);
- //connect(l, SIGNAL(signalPropertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-}
+///*public synchronized */void AbstractManager::addPropertyChangeListener(PropertyChangeListener* l)
+//{
+// pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
+// //connect(l, SIGNAL(signalPropertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//}
 
-/*public synchronized */void AbstractManager::removePropertyChangeListener(PropertyChangeListener* l) {
-    pcs->removePropertyChangeListener(l);
-}
-
-/** {@inheritDoc} */
-//@Override
-//@OverridingMethodsMustInvokeSuper
-/*public*/ void AbstractManager::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-    pcs->addPropertyChangeListener(propertyName, listener);
-}
-
-/*public*/ QVector<PropertyChangeListener *> AbstractManager::getPropertyChangeListeners()
-{
- return pcs->getPropertyChangeListeners();
-}
+///*public synchronized */void AbstractManager::removePropertyChangeListener(PropertyChangeListener* l) {
+//    pcs->removePropertyChangeListener(l);
+//}
 
 /** {@inheritDoc} */
 //@Override
 //@OverridingMethodsMustInvokeSuper
-/*public*/ QVector<PropertyChangeListener*> AbstractManager::getPropertyChangeListeners(QString propertyName) {
-    return pcs->getPropertyChangeListeners(propertyName);
-}
+///*public*/ void AbstractManager::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
+//    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
+//}
+
+///*public*/ QVector<PropertyChangeListener *> AbstractManager::getPropertyChangeListeners()
+//{
+// return getPropertyChangeListeners();
+//}
+
+///** {@inheritDoc} */
+////@Override
+////@OverridingMethodsMustInvokeSuper
+///*public*/ QVector<PropertyChangeListener*> AbstractManager::getPropertyChangeListeners(QString propertyName) {
+//    return getPropertyChangeListeners(propertyName);
+//}
 
 /** {@inheritDoc} */
 //@Override
 //@OverridingMethodsMustInvokeSuper
-/*public*/ void AbstractManager::removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-    pcs->removePropertyChangeListener(propertyName, listener);
-}
+///*public*/ void AbstractManager::removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
+//    pcs->removePropertyChangeListener(propertyName, listener);
+//}
 
-void AbstractManager::firePropertyChange(QString p, QVariant old, QVariant n) const
-{ pcs->firePropertyChange(p,old,n);}
+//void AbstractManager::firePropertyChange(QString p, QVariant old, QVariant n) const
+//{ firePropertyChange(p,old,n);}
 
-void AbstractManager::fireIndexedPropertyChange(QString p, int pos, QVariant old, QVariant n) const
-{
- pcs->fireIndexedPropertyChange(p,pos,old,n);
-}
+//void AbstractManager::fireIndexedPropertyChange(QString p, int pos, QVariant old, QVariant n) const
+//{
+// SwingPropertyChangeSupport::fireIndexedPropertyChange(p,pos,old,n);
+//}
 
-QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
+QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
 {
  return _tsys;
 }
@@ -565,46 +577,46 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
 /** {@inheritDoc} */
 //@Override
 //@OverridingMethodsMustInvokeSuper
-/*public*/ /*synchronized*/ void AbstractManager::addVetoableChangeListener(VetoableChangeListener* l) {
-    vcs->addVetoableChangeListener(l);
-    //connect(InstanceManager::sensorManagerInstance()->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+///*public*/ /*synchronized*/ void AbstractManager::addVetoableChangeListener(VetoableChangeListener* l) {
+//    vcs->addVetoableChangeListener(l);
+//    //connect(InstanceManager::sensorManagerInstance()->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
 
-}
-
-/** {@inheritDoc} */
-//@Override
-//@OverridingMethodsMustInvokeSuper
-/*public*/ /*synchronized*/ void AbstractManager::removeVetoableChangeListener(VetoableChangeListener* l) {
-    vcs->removeVetoableChangeListener(l);
-}
+//}
 
 /** {@inheritDoc} */
 //@Override
 //@OverridingMethodsMustInvokeSuper
-/*public*/ void AbstractManager::addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
-    vcs->addVetoableChangeListener(propertyName, listener);
-}
+///*public*/ /*synchronized*/ void AbstractManager::removeVetoableChangeListener(VetoableChangeListener* l) {
+//    vcs->removeVetoableChangeListener(l);
+//}
 
 /** {@inheritDoc} */
 //@Override
 //@OverridingMethodsMustInvokeSuper
-/*public*/ QVector<VetoableChangeListener*> AbstractManager::getVetoableChangeListeners() {
-    return vcs->getVetoableChangeListeners();
-}
+///*public*/ void AbstractManager::addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
+//    vcs->addVetoableChangeListener(propertyName, listener);
+//}
 
 /** {@inheritDoc} */
 //@Override
 //@OverridingMethodsMustInvokeSuper
-/*public*/ QVector<VetoableChangeListener*> AbstractManager::getVetoableChangeListeners(QString propertyName) {
-    return vcs->getVetoableChangeListeners(propertyName);
-}
+///*public*/ QVector<VetoableChangeListener*> AbstractManager::getVetoableChangeListeners() {
+//    return vcs->getVetoableChangeListeners();
+//}
 
 /** {@inheritDoc} */
 //@Override
 //@OverridingMethodsMustInvokeSuper
-/*public*/ void AbstractManager::removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
-    vcs->removeVetoableChangeListener(propertyName, listener);
-}
+///*public*/ QVector<VetoableChangeListener*> AbstractManager::getVetoableChangeListeners(QString propertyName) {
+//    return vcs->getVetoableChangeListeners(propertyName);
+//}
+
+/** {@inheritDoc} */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+///*public*/ void AbstractManager::removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
+//    vcs->removeVetoableChangeListener(propertyName, listener);
+//}
 
 /**
  * Method to inform all registered listerners of a vetoable change. If the
@@ -623,41 +635,53 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
  * @throws PropertyVetoException - if the recipients wishes the delete to be
  *                               aborted.
  */
+
+/**
+ * Inform all registered listeners of a vetoable change. If the
+ * propertyName is "CanDelete" ALL listeners with an interest in the bean
+ * will throw an exception, which is recorded returned back to the invoking
+ * method, so that it can be presented back to the user. However if a
+ * listener decides that the bean can not be deleted then it should throw an
+ * exception with a property name of "DoNotDelete", this is thrown back up
+ * to the user and the delete process should be aborted.
+ *
+ * @param p   The programmatic name of the property that is to be changed.
+ *            "CanDelete" will inquire with all listeners if the item can
+ *            be deleted. "DoDelete" tells the listener to delete the item.
+ * @param old The old value of the property.
+ * @param n   The new value of the property.
+ * @throws PropertyVetoException if the recipients wishes the delete to be
+ *                               aborted.
+ */
 //@OverridingMethodsMustInvokeSuper
-/*protected*/ void AbstractManager::fireVetoableChange(QString p, QVariant old, QVariant n) /*throws PropertyVetoException*/
-{
+//@Override
+/*public*/ void AbstractManager::fireVetoableChange(QString p, QVariant old, QVariant n) /*throw (PropertyVetoException)*/ {
     PropertyChangeEvent* evt = new PropertyChangeEvent(this, p, old, n);
-#if 0
-    if (p ==("CanDelete"))
-    { //IN18N
+    if (p == ("CanDelete")) { // NOI18N
         QString message;// = new StringBuilder();
-        for (VetoableChangeListener vc : vcs.getVetoableChangeListeners()) {
+        for (VetoableChangeListener* vc : vetoableChangeSupport->getVetoableChangeListeners()) {
             try {
-                vc.vetoableChange(evt);
-            } catch (PropertyVetoException e) {
-                if (e.getPropertyChangeEvent().getPropertyName().equals("DoNotDelete")) { //IN18N
-                    log.info(e.getMessage());
+                vc->vetoableChange(evt);
+            } catch (PropertyVetoException* e) {
+                if (e->getPropertyChangeEvent()->getPropertyName() == ("DoNotDelete")) { // NOI18N
+                    log->info(e->getMessage());
                     throw e;
                 }
-                message.append(e.getMessage());
-                message.append("<hr>"); //IN18N
+                message.append(e->getMessage()).append("<hr>"); // NOI18N
             }
         }
-        throw new PropertyVetoException(message.toString(), evt);
+        throw new PropertyVetoException(message/*.toString()*/, evt);
     } else {
         try {
-            vcs.fireVetoableChange(evt);
-        } catch (PropertyVetoException e) {
-            log.error("Change vetoed.", e);
+            vetoableChangeSupport->fireVetoableChange(evt);
+        } catch (PropertyVetoException* *e) {
+            log->error("Change vetoed.", *e);
         }
     }
-#endif
-    emit vetoablePropertyChange(evt);
 }
-
 //@Override
 //@OverridingMethodsMustInvokeSuper
-/*public*/ void AbstractManager::vetoableChange(PropertyChangeEvent* evt) //throw PropertyVetoException
+/*public*/ void AbstractManager::vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/
 {
 #if 1 // TODO:
  if ("CanDelete" == (evt->getPropertyName())) { //IN18N
@@ -668,26 +692,26 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
      for (NamedBean* nb : _beans) {
          try {
              nb->vetoableChange(evt);
-         } catch (PropertyVetoException e) {
-             if (e.getPropertyChangeEvent()->getPropertyName() == ("DoNotDelete")) { //IN18N
+         } catch (PropertyVetoException* e) {
+             if (e->getPropertyChangeEvent()->getPropertyName() == ("DoNotDelete")) { //IN18N
                  throw e;
              }
              found = true;
              message.append("<li>")
-                     .append(e.getMessage())
+                     .append(e->getMessage())
                      .append("</li>");
          }
      }
      message.append("</ul>")
              .append(tr("It will be removed from the %1s").arg(getBeanTypeHandled()));
      if (found) {
-         throw  PropertyVetoException(message, evt);
+         throw new PropertyVetoException(message, evt);
      }
  } else {
      for (NamedBean* nb : _beans) {
          try {
              nb->vetoableChange(evt);
-         } catch (PropertyVetoException e) {
+         } catch (PropertyVetoException* e) {
              throw e;
          }
      }
@@ -705,17 +729,11 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
  *         not perform more specific validation to be considered valid.
  */
 //@Override
-/*public*/ AbstractManager::NameValidity AbstractManager::validSystemNameFormat(QString systemName) const {
+/*public*/ AbstractManager::NameValidity AbstractManager::validSystemNameFormat(QString systemName)  {
  if (getSystemNamePrefix() == (systemName)) {
      return NameValidity::VALID_AS_PREFIX_ONLY;
  }
-// return getSystemNamePrefix() == (systemName)
-//            ? NameValidity::VALID_AS_PREFIX_ONLY
-//            : systemName.startsWith(getSystemNamePrefix())
-//            ? NameValidity::VALID
-//            : NameValidity::INVALID;
  return systemName.startsWith(getSystemNamePrefix()) ? NameValidity::VALID : NameValidity::INVALID;
-
 }
 
 /**
@@ -725,11 +743,25 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
  * for four managers that have arbitrary prefixes.
  */
 //@Override
-/*public*/ /*final*/ QString AbstractManager::getSystemPrefix() const {
+/*public*/ /*final*/ QString AbstractManager::getSystemPrefix() {
    QString prefix =  memo->getSystemPrefix();
-   return prefix;
+   return prefix.mid(0,1); // ACK hack to fiz incorrect prefix
 }
 
+/**
+ * {@inheritDoc}
+ */
+//@Override
+//@OverridingMethodsMustInvokeSuper
+/*public*/ void AbstractManager::setPropertyChangesSilenced(/*@Nonnull*/ QString propertyName, bool silenced) {
+    if (!silenceableProperties.contains(propertyName)) {
+        throw  IllegalArgumentException("Property " + propertyName + " cannot be silenced.");
+    }
+    silencedProperties.insert(propertyName, silenced);
+    if (propertyName == ("beans") && !silenced) {
+        fireIndexedPropertyChange("beans", _beans.size(), QVariant(), QVariant());
+    }
+}
 /**
  * Enforces, and as a user convenience converts to, the standard form for a
  * system name for the NamedBeans handled by this manager.
@@ -749,45 +781,52 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ void AbstractManager::addDataListener(/*ManagerDataListener<E>*/QObject* e) {
+/*public*/ void AbstractManager::addDataListener(ManagerDataListener/*<E>*/* e) {
     if (e != nullptr) listeners.append(e);
 }
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ void AbstractManager::removeDataListener(/*ManagerDataListener<E>*/QObject* e) {
+/*public*/ void AbstractManager::removeDataListener(ManagerDataListener/*<E>*/* e) {
     if (e != nullptr) listeners.removeOne(e);
 }
 
 /** {@inheritDoc} */
 //@Override
+//@Deprecated
+//@SuppressWarnings("deprecation")
 /*public*/ void AbstractManager::setDataListenerMute(bool m) {
     if (muted && !m) {
         // send a total update, as we haven't kept track of specifics
         ManagerDataEvent/*<E>*/* e = new ManagerDataEvent(this, ManagerDataEvent::CONTENTS_CHANGED, 0, getObjectCount()-1, nullptr);
-//        for (ManagerDataListener<E> listener : listeners) {
-//            listener.contentsChanged(e);
-//        }
-        emit notifyContentsChanged(e);
+        for (ManagerDataListener/*<E>*/* listener : listeners) {
+            listener->contentsChanged(e);
+        }
+//        emit notifyContentsChanged(e);
     }
     this->muted = m;
 }
 
+//@Deprecated
+//@SuppressWarnings("deprecation")
 /*protected*/ void AbstractManager::fireDataListenersAdded(int start, int end, NamedBean* changedBean) {
     if (muted) return;
     ManagerDataEvent/*<E>*/* e = new ManagerDataEvent(this, ManagerDataEvent::INTERVAL_ADDED, start, end, changedBean);
-//    for (ManagerDataListener<E> m : listeners) {
-//        m.intervalAdded(e);
-//    }
-    emit notifyIntervalAdded(e);
+    for (ManagerDataListener/*<E>*/* m : listeners) {
+        m->intervalAdded(e);
+    }
+//    emit notifyIntervalAdded(e);
 }
+
+//@Deprecated
+//@SuppressWarnings("deprecation")
 /*protected*/ void AbstractManager::fireDataListenersRemoved(int start, int end, NamedBean* changedBean) {
     if (muted) return;
     ManagerDataEvent/*<E>*/* e = new ManagerDataEvent(this, ManagerDataEvent::INTERVAL_REMOVED, start, end, changedBean);
-//    for (ManagerDataListener<E> m : listeners) {
-//        m.intervalRemoved(e);
-//    }
-    emit notifyIntervalRemoved(e);
+    for (ManagerDataListener/*<E>*/* m : listeners) {
+        m->intervalRemoved(e);
+    }
+//    emit notifyIntervalRemoved(e);
 }
 
 /*public*/ void AbstractManager::updateAutoNumber(QString systemName) {
@@ -806,7 +845,7 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
     }
 }
 
-/*public*/ QString AbstractManager::getAutoSystemName() const{
+/*public*/ QString AbstractManager::getAutoSystemName() {
     //int nextAutoBlockRef = lastAutoNamedBeanRef.fetchAndAddAcquire(1);//   .incrementAndGet();
     int nextAutoBlockRef = lastAutoNamedBeanRef++;
     QString b = QString(getSystemNamePrefix() + ":AUTO:");
@@ -815,4 +854,129 @@ QHash<QString, NamedBean*>* AbstractManager::getSystemNameHash()
     return b;
 }
 
+/**
+ * Create a System Name from hardware address and system letter prefix.
+ * AbstractManager performs no validation.
+ * @param curAddress hardware address, no system prefix or type letter.
+ * @param prefix - just system prefix, not including Type Letter.
+ * @return full system name with system prefix, type letter and hardware address.
+ * @throws JmriException if unable to create a system name.
+ */
+/*public*/ QString AbstractManager::createSystemName(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) /*throw (JmriException)*/ {
+    return prefix + typeLetter() + curAddress;
+}
+
+/**
+ * checks for numeric-only system names.
+ * @param curAddress the System name ( excluding both prefix and type letter) to check.
+ * @return unchanged if is numeric string.
+ * @throws JmriException if not numeric.
+ */
+/*protected*/ QString AbstractManager::checkNumeric(/*@Nonnull*/ QString curAddress) /*throw (JmriException)*/ {
+    bool ok;
+        curAddress.toInt(&ok);
+    if(!ok) {
+        throw new JmriException("Hardware Address passed "+curAddress+" should be a number");
+    }
+    return curAddress;
+}
+
+/**
+ * Get the Next valid hardware address.
+ * Used by the Turnout / Sensor / Reporter / Light Manager classes.
+ * <p>
+ * @param curAddress the starting hardware address to get the next valid from.
+ * @param prefix system prefix, just system name, not type letter.
+ * @return the next valid system name, excluding both system name prefix and type letter.
+ * @throws JmriException    if unable to get the current / next address,
+ *                          or more than 10 next addresses in use.
+ * @deprecated since 4.21.3; use #getNextValidAddress(String, String, boolean) instead.
+ */
+//@Nonnull
+//@Deprecated
+/*public*/ /*final*/ QString AbstractManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) /*throw (JmriException)*/ {
+    //jmri.util.LoggingUtil.deprecationWarning(log, "getNextValidAddress");
+    return getNextValidAddress(curAddress, prefix, false);
+}
+
+/**
+ * Get the Next valid hardware address.
+ * Used by the Turnout / Sensor / Reporter / Light Manager classes.
+ * <p>
+ * System-specific methods may want to override getIncrement() rather than this one.
+ * @param curAddress the starting hardware address to get the next valid from.
+ * @param prefix system prefix, just system name, not type letter.
+ * @param ignoreInitialExisting false to return the starting address if it
+ *                          does not exist, else true to force an increment.
+ * @return the next valid system name, excluding both system name prefix and type letter.
+ * @throws JmriException    if unable to get the current / next address,
+ *                          or more than 10 next addresses in use.
+ */
+//@Nonnull
+/*public*/ QString AbstractManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) /*throw (JmriException)*/ {
+    log->debug(tr("getNextValid for address %1").arg(curAddress));
+    QString testAddr;
+    NamedBean* bean;
+    int increment;
+    // If hardware address passed does not already exist then this is the next valid address.
+    try {
+     // System.out.format("curaddress: "+curAddress);
+     testAddr = validateSystemNameFormat(createSystemName(curAddress,prefix));
+     // System.out.format("testaddr: "+testAddr);
+     bean = getBySystemName(testAddr);
+     increment = ( static_cast<Turnout*>(bean)? ((Turnout*)bean)->getNumberOutputBits() : 1);
+     testAddr = testAddr.mid(getSystemNamePrefix().length());
+     getIncrement(testAddr, increment);
+    }
+    catch ( NamedBean::BadSystemNameException* ex){
+        throw new JmriException(ex->getMessage());
+    }
+    catch (JmriException* ex ){
+        throw new JmriException(ex->getMessage());
+    }
+    if (bean == nullptr && !ignoreInitialExisting) {
+        log->debug(tr("address %1 not in use").arg(curAddress));
+        return curAddress;
+    }
+    for (int i = 0; i <10; i++) {
+        testAddr = getIncrement(testAddr, increment);
+        bean = getBySystemName(validateSystemNameFormat(createSystemName(testAddr,prefix)));
+        if ( bean == nullptr) {
+            return testAddr;
+        }
+    }
+    throw new JmriException(tr("10 %1 starting at %2 up to %3 already in use.").arg(getBeanTypeHandled(true)).arg(curAddress).arg(testAddr));
+}
+
+/**
+ * Increment a hardware address.
+ * <p>
+ * Default is to increment only an existing number.
+ * Sub-classes may wish to override this.
+ * @param curAddress the address to increment, excluding both system name prefix and type letter.
+ * @param increment the amount to increment by.
+ * @return incremented address, no system prefix or type letter.
+ * @throws JmriException if unable to increment the address.
+ */
+//@Nonnull
+/*protected*/ QString AbstractManager::getIncrement(QString curAddress, int increment) /*throw (JmriException)*/ {
+    return getIncrementFromExistingNumber(curAddress,increment);
+}
+
+/**
+ * Increment a hardware address with an existing number.
+ * <p>
+ * @param curAddress the address to increment, excluding both system name prefix and type letter
+ * @param increment the amount to increment by.
+ * @return incremented number.
+ * @throws JmriException if unable to increment the address.
+ */
+//@Nonnull
+/*protected*/ QString AbstractManager::getIncrementFromExistingNumber(QString curAddress, int increment) /*throw (JmriException)*/ {
+    QString newIncrement = StringUtil::incrementLastNumberInString(curAddress, increment);
+    if (newIncrement=="") {
+        throw  JmriException("No existing number found when incrementing " + curAddress);
+    }
+    return newIncrement;
+}
 //    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractManager.class.getName());

@@ -27,7 +27,7 @@
 
     /*private*/ /*final*/ /*static*/ Logger* CsvImporter::log = LoggerFactory::getLogger("CsvImporter");
 
-/*public*/ CsvImporter::CsvImporter(File* file, CvTableModel* cvModel, QObject* parent) throw (IOException) : QObject(parent){
+/*public*/ CsvImporter::CsvImporter(File* file, CvTableModel* cvModel, QObject* parent) /*throw (IOException)*/ : QObject(parent){
 //        FileReader fileReader=NULL;
 //        BufferedReader bufferedReader=NULL;
 QFile f(file->getPath());
@@ -41,7 +41,7 @@ QTextStream* bufferedReader;
 
 //            fileReader = new FileReader(file);
 //            bufferedReader = new BufferedReader(fileReader);
-        if(!f.open(QIODevice::ReadOnly)) throw IOException(tr("File not found: ") + file->toString());
+        if(!f.open(QIODevice::ReadOnly)) throw new IOException(tr("File not found: ") + file->toString());
         bufferedReader = new QTextStream(&f);
 
         while ((line = bufferedReader->readLine()) != NULL)
@@ -64,8 +64,8 @@ QTextStream* bufferedReader;
                 cvObject->setValue(value);
             }
         }
-    } catch (IOException e) {
-        log->error("Error reading file: " + e.getMessage());
+    } catch (IOException* e) {
+        log->error("Error reading file: " + e->getMessage());
     } /*finally */{
         if(bufferedReader!=NULL) {
            bufferedReader->device()->close();

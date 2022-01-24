@@ -98,7 +98,7 @@ ColorUtil::ColorUtil()
      else if(string == ColorPink)
             return QColor(255,233,236);
      else if(string == ColorOrange)
-            return QColor(255,170,0);
+            return QColor(255,165,0);
      else if(string == ColorYellow)
             return Qt::yellow;
      else if(string == ColorGreen)
@@ -114,7 +114,7 @@ ColorUtil::ColorUtil()
      else if(string == ColorTrack)
             return "";
     log->error("unknown color text '" + string + "' sent to stringToColor");
-    return Qt::black;
+    throw new IllegalArgumentException("unknown color text '" + string + "'");
 }
 
 /**
@@ -140,9 +140,14 @@ ColorUtil::ColorUtil()
  * @return the color name or null if not known
  */
 //'@CheckForNull
-/*private*/ /*static*/ QString ColorUtil::colorToName(/*@Nullable*/ QColor color) {
+/*public*/ /*static*/ QString ColorUtil::colorToName(/*@Nullable*/ QColor color) {
     if (!color.isValid()) {
         return "";
+    }
+    foreach(QString s, QColor::colorNames())
+    {
+     if(QColor(s).name()== color.name())
+      return s;
     }
     if (color == QColor(Qt::black)) {
         return ColorBlack;
@@ -161,7 +166,7 @@ ColorUtil::ColorUtil()
     {
      return ColorPink;
     }
-    else if (color == (QColor(255,170,0)))
+    else if (color == (QColor(255,165,0)))
     {
         return ColorOrange;
     }

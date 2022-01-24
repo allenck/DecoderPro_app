@@ -12,10 +12,12 @@
  * @since 1.4
  * @status udpated to 1.4
  */
- /*public*/ class VetoableChangeListenerProxy : public EventListenerProxy<VetoableChangeListener*>
+ /*public*/ class VetoableChangeListenerProxy : public EventListenerProxy<VetoableChangeListener*>,
+      public VetoableChangeListener
    //implements VetoableChangeListener
  {
   Q_OBJECT
+  Q_INTERFACES(VetoableChangeListener)
    /**propertyc
     * The name of the property to listen for. Package visible for use by
     * VetoableChangeSupport.
@@ -41,7 +43,7 @@
     * @throws PropertyVetoException if the change is vetoed by the listener
     */
    /*public*/ void vetoableChange(PropertyChangeEvent* event)
-     throw (PropertyVetoException);
+    /* throw (PropertyVetoException)*/;
 
    /**
     * Gets the name of the property this proxy is filtering on.
@@ -49,6 +51,7 @@
     * @return the property name
     */
    /*public*/ QString getPropertyName();
+
  }; // class VetoableChangeListenerProxy
 
 #endif // VETOABLECHANGELISTENERPROXY_H

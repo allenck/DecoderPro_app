@@ -11,7 +11,7 @@
 class AbstractAction;
 class JmriAbstractAction;
 class QMetaMethod;
-class ActionEvent;
+class JActionEvent;
 class Action;
 class WindowInterface;
 class APPSLIBSHARED_EXPORT GuiUtilBase : public QObject
@@ -52,13 +52,13 @@ public:
  /*public*/  void setObject(QObject* obj);
  /*public*/ void setArgs(QStringList args);
 public slots:
- /*public*/  void actionPerformed(ActionEvent* e = 0) ;
+ /*public*/  void actionPerformed(JActionEvent* e = 0) ;
 };
 class GUAbstractAction : public AbstractAction
 {
  Q_OBJECT
 public slots:
- /*public*/  void actionPerformed(ActionEvent* /*e*/) ;
+ /*public*/  void actionPerformed(JActionEvent* /*e*/) ;
 public:
  GUAbstractAction(QString name, QIcon* icon = NULL);
  /*public*/  QString toString();

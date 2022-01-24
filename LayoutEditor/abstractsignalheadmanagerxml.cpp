@@ -13,6 +13,7 @@
 #include "se8csignalhead.h"
 #include "se8csignalheadxml.h"
 #include "class.h"
+#include "abstractsignalheadmanager.h"
 
 AbstractSignalHeadManagerXml::AbstractSignalHeadManagerXml(QObject *parent) :
     AbstractNamedBeanManagerConfigXML(parent)
@@ -39,30 +40,29 @@ AbstractSignalHeadManagerXml::~AbstractSignalHeadManagerXml()
 /*public*/ QDomElement AbstractSignalHeadManagerXml::store(QObject* o) {
    QDomElement signalheads = doc.createElement("signalheads");
    setStoreElementClass(signalheads);
-   SignalHeadManager* sm = (SignalHeadManager*) o;
-   if (sm!=NULL)
+   SignalHeadManager* shm = (SignalHeadManager*) o;
+   if (shm!=NULL)
    {
-    QStringListIterator iter (((AbstractSignalHeadManager*)sm)->getSystemNameList());
-
-    // don't return an element if there are not signalheads to include
-    if (!iter.hasNext()) return QDomElement();
-
-    // store the signalheads
-    while (iter.hasNext())
+    QSet<NamedBean*> shList = shm->getNamedBeanSet();
+    // don't return an element if there are no signalheads to include
+    if (shList.isEmpty()) {
+        return QDomElement();
+    }
+    for (NamedBean* nb : shList)
     {
-     QString sname = iter.next();
+     SignalHead* sh = (SignalHead*)nb;
+     QString sname = sh->getSystemName();
      if (sname=="") log->error("System name NULL during store");
      log->debug("system name is "+sname);
-     SignalHead* sub = (SignalHead*)sm->getBySystemName(sname);
      try
      {
-      QDomElement e = ConfigXmlManager::elementFromObject(sub);
+      QDomElement e = ConfigXmlManager::elementFromObject(sh);
       if (!e.isNull())
        signalheads.appendChild(e);
      }
-     catch (Exception ex)
+     catch (Exception* ex)
      {
-      log->error("Error storing signalhead: "+ex.getMessage());
+      log->error("Error storing signalhead: "+ex->getMessage());
                //e.printStackTrace();
      }
     }
@@ -87,13 +87,13 @@ AbstractSignalHeadManagerXml::~AbstractSignalHeadManagerXml()
 * @param signalheads Top level Element to unpack.
 * @return true if successful
 */
-/*public*/ bool AbstractSignalHeadManagerXml::load(QDomElement signalheads) throw (Exception)
+/*public*/ bool AbstractSignalHeadManagerXml::load(QDomElement shared, QDomElement pernode) throw (Exception)
 {
    // create the master object
    replaceSignalHeadManager();
 
    // load individual turnouts
-   loadSignalHeads(signalheads);
+   loadSignalHeads(shared, pernode);
    return true;
 }
 
@@ -109,12 +109,12 @@ AbstractSignalHeadManagerXml::~AbstractSignalHeadManagerXml()
 * @param signalheads Element containing the SignalHead elements to load.
 */
 //@SuppressWarnings("unchecked")
-/*public*/ void AbstractSignalHeadManagerXml::loadSignalHeads(QDomElement signalheads)
+/*public*/ void AbstractSignalHeadManagerXml::loadSignalHeads(QDomElement shared, QDomElement perNode)
 {
  InstanceManager::getDefault("SignalHeadManager");
 
  // load the contents
- QDomNodeList items = signalheads.childNodes();
+ QDomNodeList items = shared.childNodes();
  if (log->isDebugEnabled()) log->debug("Found "+QString::number(items.size())+" signal heads");
  for (int i = 0; i<items.size(); i++)
  {
@@ -128,7 +128,7 @@ AbstractSignalHeadManagerXml::~AbstractSignalHeadManagerXml()
       // and do it
       adapter->load(item, QDomElement());
 
-  } catch (Exception e) {
+  } catch (Exception* e) {
       log->error("Exception while loading "+item.tagName(),e);
       //e.printStackTrace();
   }
@@ -165,13 +165,13 @@ AbstractSignalHeadManagerXml::~AbstractSignalHeadManagerXml()
  }
 
  // register new one with InstanceManager
- AbstractSignalHeadManager* pManager = new AbstractSignalHeadManager();
- InstanceManager::setSignalHeadManager((SignalHeadManager*)pManager);
+ AbstractSignalHeadManager* pManager = new AbstractSignalHeadManager((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"));
+ InstanceManager::setDefault("SignalHeadManager", pManager);
  // register new one for configuration
- static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerConfig(pManager, Manager::SIGNALHEADS);
+ qobject_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerConfig(pManager, Manager::SIGNALHEADS);
 }
 
 /*public*/ int AbstractSignalHeadManagerXml::loadOrder() const
 {
- return static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getXMLOrder();
+ return qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getXMLOrder();
 }

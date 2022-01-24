@@ -2,34 +2,37 @@
 #define WARRANTMANAGER_H
 #include "abstractmanager.h"
 #include "libPr3_global.h"
+#include "instancemanagerautodefault.h"
 
 class OBlock;
 class OPath;
 class Portal;
 class RosterSpeedProfile;
 class Warrant;
-class LIBPR3SHARED_EXPORT WarrantManager : public AbstractManager
+class LIBPR3SHARED_EXPORT WarrantManager : public AbstractManager, public InstanceManagerAutoDefault
 {
     Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault)
 public:
     explicit WarrantManager(QObject *parent = 0);
     ~WarrantManager() {}
     WarrantManager(const WarrantManager&) : AbstractManager() {}
     /*public*/ int getXMLOrder()const override;
-    /*public*/ QString getSystemPrefix()const override;
-    /*public*/ char typeLetter() const override;
+    /*public*/ QString getSystemPrefix() override;
+    /*public*/ QChar typeLetter() override;
     /*public*/ Warrant* createNewWarrant(QString systemName, QString userName, bool SCWa, long TTP);
     /*public*/ Warrant* getWarrant(QString name);
-    /*public*/ NamedBean* getBySystemName(QString name)const override;
-    /*public*/ NamedBean* getByUserName(QString key)const override;
+    /*public*/ NamedBean* getBySystemName(QString name) override;
+    /*public*/ NamedBean* getByUserName(QString key) override;
     /*public*/ Warrant* provideWarrant(QString name) ;
     /*public*/ bool isAssignableFromType() {return true;}
     /*public*/ QString getNamedBeanClass()const override {
         return "Warrant";
     }
     /*public*/ static WarrantManager* getDefault();
-    /*public*/ QString getBeanTypeHandled(bool plural);
-    /*public*/ QString getNamedBeanClass();
+    /*public*/ QString getBeanTypeHandled(bool plural) const override;
+
+    QObject* self() override{return (QObject*)this;}
 
 signals:
  void propertyChange(PropertyChangeEvent *e);

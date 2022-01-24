@@ -37,27 +37,17 @@ setProperty("InstanceManagerAutoInitialize", "true");
 
  }
 
- /**
-  * record the single instance *
-  */
-// /*private*/ /*static*/ EngineManager* EngineManager::_instance = nullptr;
+// /**
+//  * @return requested Engine object or NULL if none exists
+//  */
+// /*public*/ Engine* EngineManager::getById(QString id) {
+//     return (Engine*) RollingStockManager::getById(id);
+// }
 
- /*public*/ /*static*/ /*synchronized*/ EngineManager* EngineManager::instance()
- {
-  return static_cast<EngineManager*>(InstanceManager::getDefault("EngineManager"));
- }
-
- /**
-  * @return requested Engine object or NULL if none exists
-  */
- /*public*/ Engine* EngineManager::getById(QString id) {
-     return (Engine*) RollingStockManager::getById(id);
- }
-
- /*public*/ Engine* EngineManager::getByRoadAndNumber(QString engineRoad, QString engineNumber) {
-     QString engineId = Engine::createId(engineRoad, engineNumber);
-     return getById(engineId);
- }
+// /*public*/ Engine* EngineManager::getByRoadAndNumber(QString engineRoad, QString engineNumber) {
+//     QString engineId = Engine::createId(engineRoad, engineNumber);
+//     return getById(engineId);
+// }
 
  /**
   * Finds an existing engine or creates a new engine if needed requires
@@ -67,105 +57,111 @@ setProperty("InstanceManagerAutoInitialize", "true");
   * @param engineNumber
   * @return new engine or existing engine
   */
- /*public*/ Engine* EngineManager::newEngine(QString engineRoad, QString engineNumber) {
-     Engine* engine = getByRoadAndNumber(engineRoad, engineNumber);
+ /*public*/ RollingStock* EngineManager::newRS(QString engineRoad, QString engineNumber) {
+     RollingStock* engine = getByRoadAndNumber(engineRoad, engineNumber);
      if (engine == nullptr) {
          engine = new Engine(engineRoad, engineNumber);
          _register(engine);
      }
      return engine;
- }
-
-    /**
-     * Creates a new consist if needed
-     *
-     * @param name of the consist
-     * @return consist
-     */
-    /*public*/ Consist* EngineManager::newConsist(QString name) {
-        Consist* consist = getConsistByName(name);
-        if (consist == nullptr) {
-            consist = new Consist(name);
-            int oldSize = _consistHashTable.size();
-            _consistHashTable.insert(name, consist);
-            setDirtyAndFirePropertyChange(CONSISTLISTLENGTH_CHANGED_PROPERTY, oldSize, (_consistHashTable.size()));
-        }
-        return consist;
     }
 
-    /*public*/ void EngineManager::deleteConsist(QString name) {
-        Consist* consist = getConsistByName(name);
-        if (consist != nullptr) {
-            consist->dispose();
-            int oldSize = _consistHashTable.size();
-            _consistHashTable.remove(name);
-            setDirtyAndFirePropertyChange(CONSISTLISTLENGTH_CHANGED_PROPERTY, oldSize, (_consistHashTable.size()));
-        }
-    }
+    //@Override
+     /*public*/ void EngineManager::deregister(RollingStock* engine) {
+         RollingStockManager::deregister(engine);
+         ((EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml"))->setDirty(true);
+     }
 
-    /*public*/ Consist* EngineManager::getConsistByName(QString name) {
-        return _consistHashTable.value(name);
-    }
+//    /**
+//     * Creates a new consist if needed
+//     *
+//     * @param name of the consist
+//     * @return consist
+//     */
+//    /*public*/ Consist* EngineManager::newConsist(QString name) {
+//        Consist* consist = getConsistByName(name);
+//        if (consist == nullptr) {
+//            consist = new Consist(name);
+//            int oldSize = _consistHashTable.size();
+//            _consistHashTable.insert(name, consist);
+//            setDirtyAndFirePropertyChange(CONSISTLISTLENGTH_CHANGED_PROPERTY, oldSize, (_consistHashTable.size()));
+//        }
+//        return consist;
+//    }
 
-    /*public*/ void EngineManager::replaceConsistName(QString oldName, QString newName) {
-        Consist* oldConsist = getConsistByName(oldName);
-        if (oldConsist != nullptr) {
-            Consist* newConsist = new Consist(newName);
-            // keep the lead engine
-            Engine* leadEngine = (Engine*) oldConsist->getLead();
-            leadEngine->setConsist(newConsist);
-            foreach (Engine* engine, oldConsist->getEngines()) {
-                engine->setConsist(newConsist);
-            }
-        }
-    }
+//    /*public*/ void EngineManager::deleteConsist(QString name) {
+//        Consist* consist = getConsistByName(name);
+//        if (consist != nullptr) {
+//            consist->dispose();
+//            int oldSize = _consistHashTable.size();
+//            _consistHashTable.remove(name);
+//            setDirtyAndFirePropertyChange(CONSISTLISTLENGTH_CHANGED_PROPERTY, oldSize, (_consistHashTable.size()));
+//        }
+//    }
 
-    /**
-     * Creates a combo box containing all of the consist names
-     *
-     * @return a combo box with all of the consist names
-     */
-    /*public*/ JComboBox* EngineManager::getConsistComboBox() {
-        JComboBox* box = new JComboBox();
-        box->addItem(NONE);
-        foreach (QString name, getConsistNameList()) {
-            box->addItem(name);
-        }
-        return box;
-    }
+//    /*public*/ Consist* EngineManager::getConsistByName(QString name) {
+//        return _consistHashTable.value(name);
+//    }
 
-    /*public*/ void EngineManager::updateConsistComboBox(JComboBox* box) {
-        box->clear();
-        box->addItem(NONE);
-        foreach (QString name, getConsistNameList()) {
-            box->addItem(name);
-        }
-    }
+//    /*public*/ void EngineManager::replaceConsistName(QString oldName, QString newName) {
+//        Consist* oldConsist = getConsistByName(oldName);
+//        if (oldConsist != nullptr) {
+//            Consist* newConsist = new Consist(newName);
+//            // keep the lead engine
+//            Engine* leadEngine = (Engine*) oldConsist->getLead();
+//            leadEngine->setConsist(newConsist);
+//            foreach (Engine* engine, oldConsist->getEngines()) {
+//                engine->setConsist(newConsist);
+//            }
+//        }
+//    }
 
-    /*public*/ QStringList EngineManager::getConsistNameList() {
-        QVector<QString> names = QVector<QString>(_consistHashTable.size());
-        QStringList out = QStringList();
-        QStringListIterator en(_consistHashTable.keys());
-        int i = 0;
-        while (en.hasNext()) {
-            names.replace(i++, en.next());
-        }
-        StringUtil::sort(names.toList());
-        foreach (QString name, names) {
-            out.append(name);
-        }
-        return out;
-    }
+//    /**
+//     * Creates a combo box containing all of the consist names
+//     *
+//     * @return a combo box with all of the consist names
+//     */
+//    /*public*/ JComboBox* EngineManager::getConsistComboBox() {
+//        JComboBox* box = new JComboBox();
+//        box->addItem(NONE);
+//        foreach (QString name, getConsistNameList()) {
+//            box->addItem(name);
+//        }
+//        return box;
+//    }
 
-    /*public*/ int EngineManager::getConsistMaxNameLength() {
-        int maxLength = 0;
-        foreach (QString name, getConsistNameList()) {
-            if (name.length() > maxLength) {
-                maxLength = name.length();
-            }
-        }
-        return maxLength;
-    }
+//    /*public*/ void EngineManager::updateConsistComboBox(JComboBox* box) {
+//        box->clear();
+//        box->addItem(NONE);
+//        foreach (QString name, getConsistNameList()) {
+//            box->addItem(name);
+//        }
+//    }
+
+//    /*public*/ QStringList EngineManager::getConsistNameList() {
+//        QVector<QString> names = QVector<QString>(_consistHashTable.size());
+//        QStringList out = QStringList();
+//        QStringListIterator en(_consistHashTable.keys());
+//        int i = 0;
+//        while (en.hasNext()) {
+//            names.replace(i++, en.next());
+//        }
+//        StringUtil::sort(names.toList());
+//        foreach (QString name, names) {
+//            out.append(name);
+//        }
+//        return out;
+//    }
+
+//    /*public*/ int EngineManager::getConsistMaxNameLength() {
+//        int maxLength = 0;
+//        foreach (QString name, getConsistNameList()) {
+//            if (name.length() > maxLength) {
+//                maxLength = name.length();
+//            }
+//        }
+//        return maxLength;
+//    }
 
     /**
      * Sort by engine model
@@ -173,7 +169,7 @@ setProperty("InstanceManagerAutoInitialize", "true");
      * @return list of engines ordered by engine model
      */
 /*public*/ QList<RollingStock*>* EngineManager::getByModelList() {
-    return getByList(getByRoadNameList(), BY_MODEL);
+    return getByList(getByRoadNameList(), SORTBY::BY_MODEL);
 }
 
 /**
@@ -189,10 +185,10 @@ setProperty("InstanceManagerAutoInitialize", "true");
         return getByList(getByModelList(), BY_HP);
     }
 
-    // The special sort options for engines
-    /*private*/ /*static*/ /*final*/ int EngineManager::BY_MODEL = 4;
-    /*private*/ /*static*/ /*final*/ int EngineManager::BY_CONSIST = 5;
-    /*private*/ /*static*/ /*final*/ int EngineManager::BY_HP = 13;
+//    // The special sort options for engines
+//    /*private*/ /*static*/ /*final*/ int EngineManager::BY_MODEL = 4;
+//    /*private*/ /*static*/ /*final*/ int EngineManager::BY_CONSIST = 5;
+//    /*private*/ /*static*/ /*final*/ int EngineManager::BY_HP = 13;
 #if 0
     // add engine options to sort comparator
     //@Override
@@ -210,6 +206,37 @@ setProperty("InstanceManagerAutoInitialize", "true");
     }
 
 #endif
+
+ /*public*/ void EngineManager::sortOut(QList<RollingStock*>* out, SORTBY attribute){
+  switch (attribute)
+  {
+   case BY_MODEL:
+   case BY_CONSIST:
+   case BY_HP:
+    break;
+   default:
+    return RollingStockManager::sortOut(out, attribute);
+  }
+
+  auto property = attribute;
+  auto sortRuleLambda = [property] (RollingStock const* e1, RollingStock const* e2) -> bool
+  {
+   switch(property) {
+   case BY_MODEL:
+       return (((Engine*) e1)->getModel().compare(((Engine*) e2)->getModel(), Qt::CaseInsensitive)) < 0;
+   case BY_CONSIST:
+       return  (((Engine*) e1)->getConsistName().compare(((Engine*) e2)->getConsistName(), Qt::CaseInsensitive)) < 0;
+   case BY_HP:
+       return  (((Engine*) e1)->getHpInteger() - ((Engine*) e2)->getHpInteger());
+   default:
+    return (e1->getRoadName() + e1->getNumber()).compare( (e2->getRoadName() +
+            e2->getNumber()),Qt::CaseInsensitive) < 0;
+
+   }
+  };
+  std::sort ( out->begin(), out->end(), sortRuleLambda);
+ }
+
     /**
      * return a list available engines (no assigned train) engines are ordered
      * least recently moved to most recently moved.
@@ -255,10 +282,9 @@ setProperty("InstanceManagerAutoInitialize", "true");
         QStringList names = QStringList();
         QStringListIterator en(_hashTable.keys());
         while (en.hasNext()) {
-            Engine* engine = getById(en.next ());
-            if ((engine->getModel()==(model) || model==(NONE))
-                    && !names.contains(engine->getRoadName())) {
-                names.append(engine->getRoadName());
+            RollingStock* engine = getById(en.next ());
+            if ((((Engine*)engine)->getModel() == (model) || model == (NONE)) && !names.contains(((Engine*)engine)->getRoadName())) {
+                names.append(((Engine*)engine)->getRoadName());
             }
         }
         //java.util.Collections.sort(names);
@@ -266,43 +292,43 @@ setProperty("InstanceManagerAutoInitialize", "true");
     }
 
     //@Override
-    /*public*/ void EngineManager::dispose() {
-        foreach (QString consistName, getConsistNameList()) {
-            deleteConsist(consistName);
-        }
-        RollingStockManager::dispose();
-    }
+//    /*public*/ void EngineManager::dispose() {
+//        foreach (QString consistName, getConsistNameList()) {
+//            deleteConsist(consistName);
+//        }
+//        RollingStockManager::dispose();
+//    }
 
  /*public*/ void EngineManager::load(QDomElement  root)
  {
         // new format using elements starting version 3.3.1
- if (root.firstChildElement(Xml::NEW_CONSISTS) != QDomElement()) {
-            //@SuppressWarnings("unchecked")
-            QDomNodeList consists = root.firstChildElement(Xml::NEW_CONSISTS).elementsByTagName(Xml::CONSIST);
-            if (log->isDebugEnabled()) {
-                log->debug(tr("Engine manager sees %1 consists").arg(consists.size()));
-            }
-            QString a;
-            for (int i = 0; i < consists.count(); i++)
-            {
-                 QDomElement consist  = consists.at(i).toElement();
-                if ((a = consist.attribute (Xml::NAME)) != "") {
-                    newConsist(a);
-                }
-            }
-        } // old format
-        else if (root.firstChildElement(Xml::CONSISTS) != QDomElement()) {
-            QString names = root.firstChildElement(Xml::CONSISTS).text();
-            if (names!=(NONE)) {
-                QStringList consistNames = names.split("%%"); // NOI18N
-                if (log->isDebugEnabled()) {
-                    log->debug(tr("consists: %1").arg(names));
-                }
-                foreach (QString name, consistNames) {
-                    newConsist(name);
-                }
-            }
-        }
+// if (root.firstChildElement(Xml::NEW_CONSISTS) != QDomElement()) {
+//            //@SuppressWarnings("unchecked")
+//            QDomNodeList consists = root.firstChildElement(Xml::NEW_CONSISTS).elementsByTagName(Xml::CONSIST);
+//            if (log->isDebugEnabled()) {
+//                log->debug(tr("Engine manager sees %1 consists").arg(consists.size()));
+//            }
+//            QString a;
+//            for (int i = 0; i < consists.count(); i++)
+//            {
+//                 QDomElement consist  = consists.at(i).toElement();
+//                if ((a = consist.attribute (Xml::NAME)) != "") {
+//                    newConsist(a);
+//                }
+//            }
+//        } // old format
+//        else if (root.firstChildElement(Xml::CONSISTS) != QDomElement()) {
+//            QString names = root.firstChildElement(Xml::CONSISTS).text();
+//            if (names!=(NONE)) {
+//                QStringList consistNames = names.split("%%"); // NOI18N
+//                if (log->isDebugEnabled()) {
+//                    log->debug(tr("consists: %1").arg(names));
+//                }
+//                foreach (QString name, consistNames) {
+//                    newConsist(name);
+//                }
+//            }
+//        }
 
  if (root.firstChildElement(Xml::ENGINES) != QDomElement()) {
             //@SuppressWarnings("unchecked")
@@ -327,40 +353,40 @@ setProperty("InstanceManagerAutoInitialize", "true");
 //    	root.addContent(new QDomElement (Xml::OPTIONS));	// nothing to store under options
 
  QDomElement  values;
-        QStringList names = getConsistNameList();
-        if (Control::backwardCompatible)
-        {
-//         values = QDomElement();
-//           values.setTagName(Xml::CONSISTS);
-         values = doc.createElement(Xml::CONSISTS);
-            root.appendChild(values);
-            QString consistNames;
-            foreach (QString name, names)
-            {
-             if(consistNames != "")
-              consistNames.append("%%");
-             consistNames.append(name); //= name + "%%"; // NOI18N
-            }
-            QDomText t = QDomText();
-            t.setData(consistNames);
-            values.appendChild(t);
+//        QStringList names = getConsistNameList();
+//        if (Control::backwardCompatible)
+//        {
+////         values = QDomElement();
+////           values.setTagName(Xml::CONSISTS);
+//         values = doc.createElement(Xml::CONSISTS);
+//            root.appendChild(values);
+//            QString consistNames;
+//            foreach (QString name, names)
+//            {
+//             if(consistNames != "")
+//              consistNames.append("%%");
+//             consistNames.append(name); //= name + "%%"; // NOI18N
+//            }
+//            QDomText t = QDomText();
+//            t.setData(consistNames);
+//            values.appendChild(t);
 
-        }
-        // new format using elements
-//        QDomElement  consists = QDomElement();
-//        consists.setTagName(Xml::NEW_CONSISTS);
-        QDomElement consists = doc.createElement(Xml::NEW_CONSISTS);
-        foreach (QString name, names) {
-//            QDomElement  consist = QDomElement();
-//            consist.setTagName(Xml::CONSIST);
-         QDomElement consist = doc.createElement(Xml::CONSIST);
-            consist.setAttribute(Xml::NAME, name);
-            consists.appendChild(consist);
-        }
-        root.appendChild(consists);
+//        }
+//        // new format using elements
+////        QDomElement  consists = QDomElement();
+////        consists.setTagName(Xml::NEW_CONSISTS);
+//        QDomElement consists = doc.createElement(Xml::NEW_CONSISTS);
+//        foreach (QString name, names) {
+////            QDomElement  consist = QDomElement();
+////            consist.setTagName(Xml::CONSIST);
+//         QDomElement consist = doc.createElement(Xml::CONSIST);
+//            consist.setAttribute(Xml::NAME, name);
+//            consists.appendChild(consist);
+//        }
+//        root.appendChild(consists);
 
-//        values = QDomElement();
-//        values.setTagName(Xml::ENGINES);
+////        values = QDomElement();
+////        values.setTagName(Xml::ENGINES);
         values = doc.createElement(Xml::ENGINES);
         root.appendChild(values);
         // add entries
@@ -373,13 +399,13 @@ setProperty("InstanceManagerAutoInitialize", "true");
 
     /*public*/ void EngineManager::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
         // Set dirty
-        EngineManagerXml::instance()->setDirty(true);
+        ((EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml"))->setDirty(true);
         RollingStockManager::firePropertyChange(p, old, n);
     }
  //@Override
  /*public*/ void EngineManager::initialize() {
-  static_cast<OperationsSetupXml*>(InstanceManager::getDefault("OperationsSetupXml")); // load setup
-  //static_cast<EngineManagerXml*>(InstanceManager::getDefault("EngineManagerXml", InstanceManager::InitializationState::Done)); // load routes
+  (OperationsSetupXml*)(InstanceManager::getDefault("OperationsSetupXml")); // load setup
+  // create manager to load engines and their attributes
+  (EngineManagerXml*)(InstanceManager::getDefault("EngineManagerXml"));
  }
-
 }

@@ -5,6 +5,7 @@
 #include "oblocktablemodel.h"
 #include <oblock.h>
 #include "portal.h"
+#include "loggerfactory.h"
 
 //BlockPortalTableModel::BlockPortalTableModel(QObject *parent) :
 //  AbstractTableModel(parent)
@@ -48,7 +49,11 @@
             return tr("Block Name");
         case PORTAL_NAME_COLUMN:
             return tr("Portal Name");
-    }
+        case OPPOSING_BLOCK_NAME:
+            return tr("Opposing Block");
+        default:
+            log->warn(tr("Unhandled column name: %1").arg(section));
+            break;}
     return "";
  }
  return QVariant();
@@ -85,21 +90,16 @@
     }
     return "";
    }
-   return block->getPortals().at(idx)->getName();
-   /*
-    while (count <= row)  {
-    count += ((OBlock)list.get(idx++)).getPortals().size();
-    }
-    block = (OBlock)list.get(--idx);
-    idx = row - (count - block.getPortals().size());
-    if (col==BLOCK_NAME_COLUMN) {
-    if (idx==0) {
-    return block.getDisplayName();
-    }
-    return "";
-    }
-    return block.getPortals().get(idx).getName();
-    */
+   if (col == PORTAL_NAME_COLUMN) {
+       return block->getPortals().value(idx)->getName();
+   }
+   if (col == OPPOSING_BLOCK_NAME) {
+       Portal* portal = block->getPortals().value(idx);
+       OBlock* oppBlock = portal->getOpposingBlock(block);
+       if (oppBlock != nullptr) {
+           return oppBlock->getDisplayName();
+       }
+   }
   }
   //return NULL;
  }
@@ -116,9 +116,9 @@
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-///*public*/ Class<?> getColumnClass(int col) {
-//    return String.class;
-//}
+/*public*/ QString BlockPortalTableModel::getColumnClass(int col) {
+    return "String";
+}
 
 /*public*/ int BlockPortalTableModel::getPreferredWidth(int col) {
  return  JTextField(15).sizeHint().width();
@@ -131,3 +131,4 @@
     }
 }
 
+/*private*/ /*final*/ /*static*/ Logger* BlockPortalTableModel::log = LoggerFactory::getLogger("BlockPortalTableModel");

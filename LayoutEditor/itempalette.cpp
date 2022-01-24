@@ -275,10 +275,10 @@ void ItemPalette::changeEvent(QEvent * e)
          loadFamilies(typeName, families, ed);
          QThread::yieldCurrentThread();
      }
- } catch (JDOMException e) {
-     log->error("error reading file \"defaultPanelIcons.xml\" due to: " + e.getMessage());
- } catch (IOException ioe) {
-     log->error("error reading file \"defaultPanelIcons.xml\" due to: " + ioe.getMessage());
+ } catch (JDOMException* e) {
+     log->error("error reading file \"defaultPanelIcons.xml\" due to: " + e->getMessage());
+ } catch (IOException* ioe) {
+     log->error("error reading file \"defaultPanelIcons.xml\" due to: " + ioe->getMessage());
  }
 }
 
@@ -316,10 +316,10 @@ void ItemPalette::changeEvent(QEvent * e)
             loadFamilies(itemType, families, ed);
             static_cast<CatalogTreeManager*>(InstanceManager::getDefault("CatalogTreeManager"))->indexChanged(true);
         }
-    } catch (JDOMException e) {
-        log->error("error reading file \"defaultPanelIcons.xml\" due to: " + e.getMessage());
-    } catch (IOException ioe) {
-        log->error("error reading file \"defaultPanelIcons.xml\" due to: " + ioe.getMessage());
+    } catch (JDOMException* e) {
+        log->error("error reading file \"defaultPanelIcons.xml\" due to: " + e->getMessage());
+    } catch (IOException* ioe) {
+        log->error("error reading file \"defaultPanelIcons.xml\" due to: " + ioe->getMessage());
     }
 }
 
@@ -353,7 +353,7 @@ void ItemPalette::changeEvent(QEvent * e)
    {
    icon = new NamedIcon(fileName, fileName);
    }
-   catch (Exception e)
+   catch (Exception* e)
    {
     icon = nullptr;
    }

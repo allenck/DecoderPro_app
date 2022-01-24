@@ -39,6 +39,7 @@
 #include "audiosource.h"
 #include "scriptoutput.h"
 #include "scriptexception.h"
+#include "../JavaQt/bitset.h"
 
 //DefaultConditional::DefaultConditional(QObject *parent) :
 //    AbstractNamedBean(parent)
@@ -274,20 +275,20 @@
     DataPair* dp = parseCalculate(QString(ch), _variableList);
     result = dp->result;
    }
-   catch ( NumberFormatException nfe)
+   catch ( NumberFormatException* nfe)
    {
     result = false;
-    log->error(getDisplayName()+" parseCalculation error antecedent= "+_antecedent+ ", ex= " + nfe.getMessage());
+    log->error(getDisplayName()+" parseCalculation error antecedent= "+_antecedent+ ", ex= " + nfe->getMessage());
    }
-   catch ( IndexOutOfBoundsException ioob)
+   catch ( IndexOutOfBoundsException* ioob)
    {
     result = false;
-    log->error(getDisplayName()+" parseCalculation error antecedent= "+_antecedent+ ", ex= " + ioob.getMessage());
+    log->error(getDisplayName()+" parseCalculation error antecedent= "+_antecedent+ ", ex= " + ioob->getMessage());
    }
-   catch ( JmriException je)
+   catch ( JmriException* je)
    {
     result = false;
-    log->error(getDisplayName()+" parseCalculation error antecedent= "+_antecedent+ ", ex= " + je.getMessage());
+    log->error(getDisplayName()+" parseCalculation error antecedent= "+_antecedent+ ", ex= " + je->getMessage());
    }
    break;
   }
@@ -405,12 +406,12 @@ bool DefaultConditional::wantsToTrigger(PropertyChangeEvent* evt) {
 //                                        Integer.valueOf(index+1) });
             return tr("Antecedent parsing error: All %1 rows must be used.  Row %1 is missing.").arg(variableList->size()).arg(index+1);
         }
-    } catch ( NumberFormatException nfe) {
-        return tr("ParseError6") + nfe.getMessage();
-    } catch ( IndexOutOfBoundsException ioob) {
-        return tr("ParseError6") + ioob.getMessage();
-    }  catch ( JmriException je) {
-        return tr("ParseError6") + je.getMessage();
+    } catch ( NumberFormatException* nfe) {
+        return tr("ParseError6") + nfe->getMessage();
+    } catch ( IndexOutOfBoundsException* ioob) {
+        return tr("ParseError6") + ioob->getMessage();
+    }  catch ( JmriException* je) {
+        return tr("ParseError6") + je->getMessage();
     }
     return nullptr;
 }
@@ -428,7 +429,7 @@ bool DefaultConditional::wantsToTrigger(PropertyChangeEvent* evt) {
 * bitmap of the variable indices used.
 */
 DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariable*>* variableList)
-throw (JmriException)
+/*throw (JmriException)*/
 {
 
     // for simplicity, we force the string to upper case before scanning
@@ -453,7 +454,7 @@ throw (JmriException)
 //            try {
                 k = s.mid(i+1, i+3).toInt();
                 i += 2;
-//            } catch (NumberFormatException nfe) {
+//            } catch (NumberFormatException* nfe) {
 //                k = Integer.parseInt(String.valueOf(s.charAt(++i)));
 //            } catch (IndexOutOfBoundsException ioob) {
 //                k = Integer.parseInt(String.valueOf(s.charAt(++i)));
@@ -477,7 +478,7 @@ throw (JmriException)
 //                try {
                     k = s.mid(i+1, i+3).toInt();
                     i += 2;
-//                } catch (NumberFormatException nfe) {
+//                } catch (NumberFormatException* nfe) {
 //                    k = Integer.parseInt(String.valueOf(s.charAt(++i)));
 //                } catch (IndexOutOfBoundsException ioob) {
 //                    k = Integer.parseInt(String.valueOf(s.charAt(++i)));
@@ -495,7 +496,7 @@ throw (JmriException)
             }
             leftArg = !leftArg;
         } else {
-            throw JmriException(
+            throw new JmriException(
                 tr("Unexpected operator or characters. < %1 >").arg (s ));
         }
     }
@@ -524,7 +525,7 @@ throw (JmriException)
 //                    try {
                         k = s.mid(i+1, i+3).toInt();
                         i += 2;
-//                    } catch (NumberFormatException nfe) {
+//                    } catch (NumberFormatException* nfe) {
 //                        k = Integer.parseInt(String.valueOf(s.charAt(++i)));
 //                    } catch (IndexOutOfBoundsException ioob) {
 //                        k = Integer.parseInt(String.valueOf(s.charAt(++i)));
@@ -549,7 +550,7 @@ throw (JmriException)
 //                        try {
                             k = s.mid(i+1, i+3).toInt();
                             i += 2;
-//                        } catch (NumberFormatException nfe) {
+//                        } catch (NumberFormatException* nfe) {
 //                            k = Integer.parseInt(String.valueOf(s.charAt(++i)));
 //                        } catch (IndexOutOfBoundsException ioob) {
 //                            k = Integer.parseInt(String.valueOf(s.charAt(++i)));
@@ -845,7 +846,7 @@ throw (JmriException)
           sn->setKnownState(act);
           actionCount++;
       }
-      catch (JmriException e)
+      catch (JmriException* e)
       {
           log->warn("Exception setting sensor "+devName+" in action");
       }
@@ -1008,7 +1009,7 @@ throw (JmriException)
     break;
    }
    case Conditional::ACTION_ENABLE_LOGIX:
-    x = static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getLogix(devName);
+    x = qobject_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getLogix(devName);
     if (x == nullptr) {
         errorList.append("invalid logix name in action - "+action->getDeviceName());
     }
@@ -1018,7 +1019,7 @@ throw (JmriException)
     }
     break;
    case Conditional::ACTION_DISABLE_LOGIX:
-    x = static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getLogix(devName);
+    x = qobject_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getLogix(devName);
     if (x == nullptr) {
         errorList.append("invalid logix name in action - "+action->getDeviceName());
     }
@@ -1036,7 +1037,7 @@ throw (JmriException)
         if (sound == nullptr) {
             try {
                 sound = new Sound(path);
-            } catch (NullPointerException ex) {
+            } catch (NullPointerException* ex) {
                 errorList.append("invalid path to sound: " + path);  // NOI18N
             }
         }
@@ -1138,7 +1139,7 @@ throw (JmriException)
          // and execute
          try {
              JmriScriptEngineManager::getDefault()->eval(getActionString(action), JmriScriptEngineManager::getDefault()->getEngine(JmriScriptEngineManager::PYTHON));
-         } catch (ScriptException ex) {
+         } catch (ScriptException* ex) {
              log->error(tr("Error executing script:"), ex);  // NOI18N
          }
          actionCount++;
@@ -1424,7 +1425,7 @@ throw (JmriException)
   //Toolkit.getDefaultToolkit().beep();
   QApplication::beep();
   if (!_skipErrorDialog) {
-      new ErrorDialog(errorList, this);
+      new DCErrorDialog(errorList, this);
   }
  }
  if (log->isDebugEnabled())
@@ -1449,7 +1450,7 @@ DataPair::DataPair()
 
 //class ErrorDialog : public  QDialog {
 //    JCheckBox rememberSession;
-    ErrorDialog::ErrorDialog(QStringList list, DefaultConditional *cond) : JDialog()
+    DCErrorDialog::DCErrorDialog(QStringList list, DefaultConditional *cond) : JDialog()
     {
         //super();
      this->cond = cond;
@@ -1501,7 +1502,7 @@ DataPair::DataPair()
         setVisible(true);
     }
 
-    void ErrorDialog::onCloseButton()
+    void DCErrorDialog::onCloseButton()
     {
      if(rememberSession->isChecked()){
          cond->_skipErrorDialog = true;
@@ -1560,7 +1561,7 @@ int DefaultConditional::getIntegerValue(ConditionalAction* action) {
     //try {
     bool bOk;
     time = sNumber.toInt(&bOk);
-//    } catch (NumberFormatException e) {
+//    } catch (NumberFormatException* e) {
     if(!bOk)
     {
      Memory* mem = getMemory(sNumber);
@@ -1576,7 +1577,7 @@ int DefaultConditional::getIntegerValue(ConditionalAction* action) {
       //try {
       bool bOk;
       time = mem->getValue().toInt(&bOk);
-//            } catch (NumberFormatException ex) {
+//            } catch (NumberFormatException* ex) {
       if(!bOk)
       {
                 log->error("invalid action number variable from memory, \""+
@@ -1678,27 +1679,27 @@ int DefaultConditional::getIntegerValue(ConditionalAction* action) {
  */
 //class TimeSensor implements java.awt.event.ActionListener
 //{
-    /*public*/ TimeSensor::TimeSensor(int index, DefaultConditional* self) {
+    /*public*/ TimeSensor::TimeSensor(int index, DefaultConditional* dc) {
         mIndex = index;
-        this->self = self;
+        this->dc = dc;
     }
 
-    /*public*/ void TimeSensor::actionPerformed(ActionEvent* /*event*/)
+    /*public*/ void TimeSensor::actionPerformed(JActionEvent* /*event*/)
     {
         // set sensor state
-        ConditionalAction* action = self->_actionList->at(mIndex);
-        QString devName = self->getDeviceName(action);
+        ConditionalAction* action = dc->_actionList->at(mIndex);
+        QString devName = dc->getDeviceName(action);
         Sensor* sn = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(devName);
         if (sn==nullptr) {
-            self->log->error(self->getDisplayName()+" Invalid delayed sensor name - "+action->getDeviceName());
+            dc->log->error(dc->getDisplayName()+" Invalid delayed sensor name - "+action->getDeviceName());
         }
         else {
             // set the sensor
             try {
                 sn->setKnownState(action->getActionData());
             }
-            catch (JmriException e) {
-                self->log->warn("Exception setting delayed sensor "+action->getDeviceName()+" in action");
+            catch (JmriException* e) {
+                dc->log->warn("Exception setting delayed sensor "+action->getDeviceName()+" in action");
             }
         }
         // Turn Timer OFF
@@ -1711,21 +1712,21 @@ int DefaultConditional::getIntegerValue(ConditionalAction* action) {
  */
 //class TimeTurnout implements java.awt.event.ActionListener
 //{
-    /*public*/ TimeTurnout::TimeTurnout(int index, DefaultConditional* self) {
+    /*public*/ TimeTurnout::TimeTurnout(int index, DefaultConditional* dc) {
         mIndex = index;
-    this->self = self;
+    this->dc = dc;
 
     }
 
 
-    /*public*/ void TimeTurnout::actionPerformed(ActionEvent* /*event*/)
+    /*public*/ void TimeTurnout::actionPerformed(JActionEvent* /*event*/)
     {
         // set turnout state
-        ConditionalAction* action = self->_actionList->at(mIndex);
-        QString devName = self->getDeviceName(action);
+        ConditionalAction* action = dc->_actionList->at(mIndex);
+        QString devName = dc->getDeviceName(action);
         Turnout* t = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getTurnout(devName);
         if (t==nullptr) {
-            self->log->error(self->getDisplayName()+" Invalid delayed turnout name - "+action->getDeviceName());
+            dc->log->error(dc->getDisplayName()+" Invalid delayed turnout name - "+action->getDeviceName());
         }
         else {
             // set the turnout

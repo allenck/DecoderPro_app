@@ -8,7 +8,7 @@
 #include "jcombobox.h"
 #include <QBoxLayout>
 #include <QCheckBox>
-#include <QPushButton>
+#include "jbutton.h"
 #include "setup.h"
 #include "locationmanager.h"
 #include "control.h"
@@ -24,6 +24,8 @@
 #include <QScrollArea>
 #include "carstablemodel.h"
 #include <QRadioButton>
+#include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -120,8 +122,8 @@ namespace Operations
      //try {
          printTitleLine(writer);
          QString previousLocation = NULL;
-         QList<RollingStock*>* cars = panel->carsTableModel->getCarList(sortByComboBox->currentIndex());
-         foreach (RollingStock* rs, *cars) {
+         QList<Car*>* cars = panel->carsTableModel->getCarList(sortByComboBox->currentIndex());
+         foreach (Car* rs, *cars) {
              Car* car = (Car*) rs;
              if (cpof->printCarsWithLocation->isChecked() && car->getLocation() == NULL) {
                  continue; // car doesn't have a location skip
@@ -135,7 +137,7 @@ namespace Operations
                  if (car->getLocation() != NULL) {
                      location = car->getLocationName().trimmed() + " - " + car->getTrackName().trimmed();
                  }
-                 location = padAttribute(location, LocationManager::instance()->getMaxLocationAndTrackNameLength() + 3);
+                 location = padAttribute(location, ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getMaxLocationAndTrackNameLength() + 3);
              }
              // Page break between locations?
              if (previousLocation != NULL && car->getLocationName().trimmed()!=(previousLocation)
@@ -152,9 +154,9 @@ namespace Operations
              // car number
              number = padAttribute(car->getNumber().trimmed(), Control::max_len_string_print_road_number);
              // car road
-             road = padAttribute(car->getRoadName().trimmed(), CarRoads::instance()->getMaxNameLength());
+             road = padAttribute(car->getRoadName().trimmed(), ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->getMaxNameLength());
              // car type
-             type = padAttribute(car->getTypeName().trimmed(), CarTypes::instance()->getMaxFullNameLength());
+             type = padAttribute(car->getTypeName().trimmed(), ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getMaxFullNameLength());
 
              if (cpof->printCarLength->isChecked()) {
                  length = padAttribute(car->getLength().trimmed(), Control::max_len_string_length_name);
@@ -163,16 +165,16 @@ namespace Operations
                  weight = padAttribute(car->getWeight().trimmed(), Control::max_len_string_weight_name);
              }
              if (cpof->printCarColor->isChecked()) {
-                 color = padAttribute(car->getColor().trimmed(), CarColors::instance()->getMaxNameLength());
+                 color = padAttribute(car->getColor().trimmed(), ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->getMaxNameLength());
              }
              if (cpof->printCarLoad->isChecked()) {
-                 load = padAttribute(car->getLoadName().trimmed(), CarLoads::instance()->getMaxNameLength());
+                 load = padAttribute(car->getLoadName().trimmed(), ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getMaxNameLength());
              }
              if (cpof->printCarKernel->isChecked()) {
                  kernel = padAttribute(car->getKernelName().trimmed(), Control::max_len_string_attibute);
              }
              if (cpof->printCarOwner->isChecked()) {
-                 owner = padAttribute(car->getOwner().trimmed(), CarOwners::instance()->getMaxNameLength());
+                 owner = padAttribute(car->getOwner().trimmed(), ((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->getMaxNameLength());
              }
              if (cpof->printCarBuilt->isChecked()) {
                  built = padAttribute(car->getBuilt().trimmed(), Control::max_len_string_built_name);
@@ -200,7 +202,7 @@ namespace Operations
                  if (car->getDestination() != NULL) {
                      destination = car->getDestinationName().trimmed() + " - " + car->getDestinationTrackName();
                  }
-                 destination = padAttribute(destination, LocationManager::instance()
+                 destination = padAttribute(destination, ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))
                          ->getMaxLocationAndTrackNameLength() + 3);
              }
              if (cpof->printCarFinalDestination->isChecked()) {
@@ -208,7 +210,7 @@ namespace Operations
                      finalDestination = car->getFinalDestinationName().trimmed() + " - "
                              + car->getFinalDestinationTrackName().trimmed();
                  }
-                 finalDestination = padAttribute(finalDestination, LocationManager::instance()
+                 finalDestination = padAttribute(finalDestination, ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))
                          ->getMaxLocationAndTrackNameLength() + 3);
              }
              if (cpof->printCarRWE->isChecked()) {
@@ -216,7 +218,7 @@ namespace Operations
                      returnWhenEmpty = car->getReturnWhenEmptyDestinationName().trimmed() + " - "
                              + car->getReturnWhenEmptyDestTrackName().trimmed();
                  }
-                 returnWhenEmpty = padAttribute(returnWhenEmpty, LocationManager::instance()
+                 returnWhenEmpty = padAttribute(returnWhenEmpty, ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))
                          ->getMaxLocationAndTrackNameLength() + 3);
              }
              if (cpof->printCarComment->isChecked()) {
@@ -235,7 +237,7 @@ namespace Operations
 
          // and force completion of the printing
          writer->close();
-//     } catch (IOException we) {
+//     } catch (IOException* we) {
 //         log.error("Error printing car roster");
 //     }
  }
@@ -243,32 +245,30 @@ namespace Operations
  /*private*/ void PrintCarRosterAction::printTitleLine(HardcopyWriter* writer) //throws IOException
  {
      QString s = padAttribute(tr("Number"), Control::max_len_string_print_road_number)
-             + padAttribute(tr("Road"), CarRoads::instance()->getMaxNameLength())
-             + padAttribute(tr("Type"), CarTypes::instance()->getMaxFullNameLength())
+             + padAttribute(tr("Road"), ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->getMaxNameLength())
+             + padAttribute(tr("Type"), ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getMaxFullNameLength())
              + (cpof->printCarLength->isChecked() ? tr("Len") + "  " : "")
              + (cpof->printCarWeight->isChecked() ? "     " : "")
-             + (cpof->printCarColor->isChecked() ? padAttribute(tr("Color"), CarColors::instance()
+             + (cpof->printCarColor->isChecked() ? padAttribute(tr("Color"), ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))
                              ->getMaxNameLength()) : "")
-             + (cpof->printCarLoad->isChecked() ? padAttribute(tr("Load"), CarLoads::instance()
+             + (cpof->printCarLoad->isChecked() ? padAttribute(tr("Load"), ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))
                              ->getMaxNameLength()) : "")
              + (cpof->printCarKernel->isChecked() ? padAttribute(("Kernel"), Control::max_len_string_attibute) : "")
-             + (cpof->printCarOwner->isChecked() ? padAttribute(tr("Owner"), CarOwners::instance()->getMaxNameLength()) : "")
+             + (cpof->printCarOwner->isChecked() ? padAttribute(tr("Owner"), ((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->getMaxNameLength()) : "")
              + (cpof->printCarBuilt->isChecked() ? tr("Built") + " " : "")
              + (cpof->printCarLast->isChecked() ? tr("LastMoved") + " " : "")
              + (cpof->printCarWait->isChecked() ? tr("Wait") + " " : "")
              + (cpof->printCarPickup->isChecked() ? padAttribute(tr("Pickup"), 10) : "")
              + (cpof->printCarValue->isChecked() ? Setup::getValueLabel() + "        " : "")
              + (cpof->printCarRfid->isChecked() ? Setup::getRfidLabel() + "        " : "")
-             + (cpof->printCarLocation->isChecked() ? padAttribute(tr("Location"), LocationManager
-                             ::instance()->getMaxLocationAndTrackNameLength() + 3) : "")
+             + (cpof->printCarLocation->isChecked() ? padAttribute(tr("Location"),
+                                                                   ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getMaxLocationAndTrackNameLength() + 3) : "")
              + (cpof->printCarTrain->isChecked() ? padAttribute(tr("Train"),
                              Control::max_len_string_train_name / 2) : "")
-             + (cpof->printCarDestination->isChecked() ? padAttribute(tr("Destination"), LocationManager
-                             ::instance()->getMaxLocationAndTrackNameLength() + 3) : "")
+             + (cpof->printCarDestination->isChecked() ? padAttribute(tr("Destination"), ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getMaxLocationAndTrackNameLength() + 3) : "")
              + (cpof->printCarFinalDestination->isChecked() ? padAttribute(tr("FinalDestination"),
-                             LocationManager::instance()->getMaxLocationAndTrackNameLength() + 3) : "")
-             + (cpof->printCarRWE->isChecked() ? padAttribute(tr("ReturnWhenEmpty"), LocationManager
-                             ::instance()->getMaxLocationAndTrackNameLength() + 3) : "")
+                             ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getMaxLocationAndTrackNameLength() + 3) : "")
+             + (cpof->printCarRWE->isChecked() ? padAttribute(tr("ReturnWhenEmpty"), ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getMaxLocationAndTrackNameLength() + 3) : "")
              + (cpof->printCarComment->isChecked() ? tr("Comment") : "");
      if (s.length() > numberCharPerLine) {
          s = s.mid(0, numberCharPerLine);
@@ -326,31 +326,25 @@ namespace Operations
  printSpace = new QCheckBox(tr("Add line between locations"));
  printPage = new QCheckBox(tr("Start each location on a new page"));
 
- okayButton = new QPushButton(tr("OK"));this->pcr = pcr;
+ okayButton = new JButton(tr("OK"));this->pcr = pcr;
      // create panel
-     QGroupBox* pSortBy = new QGroupBox();
+     JPanel* pSortBy = new JPanel();
      pSortBy->setLayout(new FlowLayout);
-     //pSortBy.setBorder(BorderFactory.createTitledBorder(tr("SortBy")));
-     pSortBy->setStyleSheet(gbStyleSheet);
-     pSortBy->setTitle(tr("Sort by"));
+     pSortBy->setBorder(BorderFactory::createTitledBorder(tr("Sort By")));
      pSortBy->layout()->addWidget(pcr->sortByComboBox);
      addComboBoxAction(pcr->sortByComboBox);
 
-     QGroupBox* pOrientation = new QGroupBox();
+     JPanel* pOrientation = new JPanel();
      pOrientation->setLayout(new FlowLayout);
-     //pOrientation.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutOrientation")));
-     pOrientation->setStyleSheet(gbStyleSheet);
-     pOrientation->setTitle(tr("Orientation"));
+     pOrientation->setBorder(BorderFactory::createTitledBorder(tr("Orientation")));
      pOrientation->layout()->addWidget(pcr->manifestOrientationComboBox);
 
      pcr->manifestOrientationComboBox->addItem(Setup::PORTRAIT);
      pcr->manifestOrientationComboBox->addItem(Setup::LANDSCAPE);
 
-     QGroupBox* pFontSize = new QGroupBox();
+     JPanel* pFontSize = new JPanel();
      pFontSize->setLayout(new FlowLayout);
-     //pFontSize.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutFontSize")));
-     pFontSize->setStyleSheet(gbStyleSheet);
-     pFontSize->setTitle(tr("Font Size"));
+     pFontSize->setBorder(BorderFactory::createTitledBorder(tr("Font Size")));
      pFontSize->layout()->addWidget(pcr->fontSizeComboBox);
 
      // load font sizes 5 through 14
@@ -360,15 +354,13 @@ namespace Operations
 
      pcr->fontSizeComboBox->setCurrentIndex(pcr->fontSizeComboBox->findData(Control::reportFontSize));
 
-     QGroupBox* pPanelFrame = new QGroupBox;
+     JPanel* pPanelFrame = new JPanel;
      pPanelFrame->setLayout(new QVBoxLayout);
-     QWidget* pPanel = new QWidget();
+     JPanel* pPanel = new JPanel();
      pPanel->setLayout(new GridBagLayout());
      QScrollArea* panePanel = new QScrollArea(/*pPanel*/);
      pPanelFrame->layout()->addWidget(panePanel);
-     //panePanel.setBorder(BorderFactory.createTitledBorder(tr("PrintOptions")));
-     pPanelFrame->setStyleSheet(gbStyleSheet);
-     pPanelFrame->setTitle(tr("Print Options"));
+     pPanelFrame->setBorder(BorderFactory::createTitledBorder(tr("Print Options")));
      addItemLeft(pPanel, printCarsWithLocation, 0, 0);
      addItemLeft(pPanel, printCarLength, 0, 1);
      addItemLeft(pPanel, printCarWeight, 0, 2);
@@ -422,11 +414,10 @@ namespace Operations
      printSpace->setToolTip(tr("Select sort by location to enable"));
      printPage->setToolTip(tr("TipSelectSortByLoc"));
 
-     QGroupBox* pButtons = new QGroupBox();
+     JPanel* pButtons = new JPanel();
      pButtons->setLayout(new GridBagLayout());
      pButtons->layout()->addWidget(okayButton);
-     //pButtons.setBorder(BorderFactory.createTitledBorder(""));
-     pButtons->setStyleSheet(gbStyleSheet);
+     pButtons->setBorder(BorderFactory::createTitledBorder(""));
      addButtonAction(okayButton);
 
      //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));

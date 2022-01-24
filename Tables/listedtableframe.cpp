@@ -13,7 +13,7 @@
 #include "jlist.h"
 #include <QMenu>
 #include <QMenuBar>
-#include "savemenu.h"
+#include "storemenu.h"
 #include <QPushButton>
 #include <QStatusBar>
 #include <QGridLayout>
@@ -21,6 +21,7 @@
 #include "namedbeanpropertydescriptor.h"
 #include <QCheckBox>
 #include "flowlayout.h"
+#include "guilafpreferencesmanager.h"
 
 //ListedTableFrame::ListedTableFrame()
 //{
@@ -68,7 +69,11 @@ void ListedTableFrame::common()
  thisLayout = new QVBoxLayout(getContentPane());
  statusBar()->show();
  setDefaultCloseOperation(JFrame::DISPOSE_ON_CLOSE);
-
+ //if(windowFrameRef.isEmpty())
+ {
+     generateWindowRef();
+     setFrameLocation();
+ }
 
  if (InstanceManager::getNullableDefault("ListedTableFrame") == nullptr) {
     //We add this to the instanceManager so that other components can add to the table
@@ -78,30 +83,33 @@ void ListedTableFrame::common()
  {
   /*Add the default tables to the static list array, this should only be done
    once when first loaded*/
-  addTable("jmri.jmrit.beantable.TurnoutTableTabAction", tr("Turnout Table"), false);
-  addTable("jmri.jmrit.beantable.SensorTableTabAction", tr("Sensor Table"), false);
-  addTable("jmri.jmrit.beantable.LightTableTabAction", tr("Light Table"), false);
-  addTable("jmri.jmrit.beantable.SignalHeadTableAction", tr("Signal Table"), true);
-  addTable("jmri.jmrit.beantable.SignalMastTableAction", tr("Signal Mast Table"), true);
-  addTable("jmri.jmrit.beantable.SignalGroupTableAction", tr("Signal Group Table"), true);
-  addTable("jmri.jmrit.beantable.SignalMastLogicTableAction", tr("Signal MastLogic Table"), true);
-  addTable("jmri.jmrit.beantable.ReporterTableAction", tr("Reporter Table"), true);
-  addTable("jmri.jmrit.beantable.MemoryTableAction", tr("Memory Table"), true);
-  addTable("jmri.jmrit.beantable.RouteTableAction", tr("Route Table"), true);
-  addTable("jmri.jmrit.beantable.LRouteTableAction", tr("LRoute Table"), true);
-  addTable("jmri.jmrit.beantable.LogixTableAction", tr("Logix Table"), true);
-  addTable("jmri.jmrit.beantable.BlockTableAction", tr("Block Table"), true);
-  addTable("jmri.jmrit.beantable.SectionTableAction", tr("Section Table"), true);
-  addTable("jmri.jmrit.beantable.TransitTableAction", tr("Transit Table"), true);
-  addTable("jmri.jmrit.beantable.AudioTableAction", tr("Audio Table"), false);
-  addTable("jmri.jmrit.beantable.IdTagTableAction", tr("IdTag Table"), true);
+    addTable("jmri.jmrit.beantable.TurnoutTableTabAction", tr("Turnout Table"), false);
+    addTable("jmri.jmrit.beantable.SensorTableTabAction", tr("Sensor Table"), false);
+    addTable("jmri.jmrit.beantable.LightTableTabAction", tr("Light Table"), false);
+    addTable("jmri.jmrit.beantable.SignalHeadTableAction", tr("Signal Table"), true);
+    addTable("jmri.jmrit.beantable.SignalMastTableAction", tr("Signal Mast Table"), true);
+    addTable("jmri.jmrit.beantable.SignalGroupTableAction", tr("Signal Group Table"), true);
+    addTable("jmri.jmrit.beantable.SignalMastLogicTableAction", tr("Signal MastLogic Table"), true);
+//    addTable("jmri.jmrit.beantable.ReporterTableAction", tr("Reporter Table"), true);
+    addTable("jmri.jmrit.beantable.MemoryTableAction", tr("Memory Table"), true);
+    addTable("jmri.jmrit.beantable.RouteTableAction", tr("Route Table"), true);
+    addTable("jmri.jmrit.beantable.LRouteTableAction", tr("LRoute Table"), true);
+    addTable("jmri.jmrit.beantable.LogixTableAction", tr("Logix Table"), true);
+    addTable("jmri.jmrit.beantable.BlockTableAction", tr("Block Table"), true);
+    if (((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isOblockEditTabbed()) { // select _tabbed in prefs
+        addTable("jmri.jmrit.beantable.OBlockTableAction", tr("MenuItemOBlockTable"), false);
+    } // requires restart after changing the interface setting (on Display tab)
+    addTable("jmri.jmrit.beantable.SectionTableAction", tr("Section Table"), true);
+    addTable("jmri.jmrit.beantable.TransitTableAction", tr("Transit Table"), true);
+    addTable("jmri.jmrit.beantable.AudioTableAction", tr("Audio Table"), false);
+    addTable("jmri.jmrit.beantable.IdTagTableAction", tr("IdTag Table"), true);
   init = true;
  }
 }
 
 /*public*/ void ListedTableFrame::initComponents()
 {
- JmriJFrame::initComponents();
+ //JmriJFrame::initComponents();
 
 
  actionList = new ActionJList(currTableIndex, this);
@@ -127,9 +135,9 @@ void ListedTableFrame::common()
    tabbedTableArray->append(itemModel);
    itemBeingAdded->getAAClass()->addToFrame(this);
   }
-  catch (Exception ex) {
+  catch (Exception* ex) {
    detailpanel->addWidget(errorPanel(item->getItemString())/*, item->getClassAsString()*/);
-   log->error("Error when adding " + item->getClassAsString() + " to display\n" /*+ ex*/);
+   log->error("Error when adding " + item->getClassAsString() + " to display\n", ex);
   //ex.printStackTrace();
    removeItem->append(item);
   }
@@ -155,9 +163,11 @@ void ListedTableFrame::common()
  buttonpanel->setLayout(new QVBoxLayout); //BoxLayout(buttonpanel, BoxLayout.Y_AXIS));
  buttonpanel->layout()->addWidget(/*listScroller*/list);
 
- buildMenus(tabbedTableArray->at(0));
- setTitle(tabbedTableArray->value(0)->getItemString());
-
+ if(!tabbedTableArray->isEmpty())
+ {
+  buildMenus(tabbedTableArray->at(0));
+  setTitle(tabbedTableArray->value(0)->getItemString());
+ }
  cardHolder = new QSplitter(Qt::Horizontal); //JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
  //            buttonpanel, detailpanel);
  cardHolder->addWidget(buttonpanel);
@@ -188,7 +198,7 @@ void ListedTableFrame::common()
     connect(cardHolder, SIGNAL(splitterMoved(int,int)), this, SLOT(splitterMoved(int, int)));
  //    cardHolder->setOneTouchExpandable(true);
  getContentPane()->layout()->addWidget(cardHolder);
- adjustSize();
+ pack();
  actionList->selectListItem(0);
 }
 
@@ -222,7 +232,7 @@ for (int x = 0; x < tabbedTableArray->size(); x++)
             currTableIndex = x;
             return;
         }
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log->error("An error occurred in the goto list for " + selection);
     }
  }
@@ -276,27 +286,29 @@ void ListedTableFrame::buildMenus(/*final*/ LTFTabbedTableItem* item)
 //    });
     connect(newItem, SIGNAL(triggered(bool)), this, SLOT(On_newItem_triggered()));
 
-    fileMenu->addMenu(new SaveMenu());
+    fileMenu->addMenu(new StoreMenu());
 
     QAction* printItem = new QAction(tr("Print Table"),this);
     fileMenu->addAction(printItem);
-#if 0
-    printItem.addActionListener(new ActionListener() {
-        /*public*/ void actionPerformed(ActionEvent e) {
-            try {
-                // MessageFormat headerFormat = new MessageFormat(getTitle());  // not used below
-                MessageFormat footerFormat = new MessageFormat(getTitle() + " page {0,number}");
-                if (item.getStandardTableModel()) {
-                    item.getDataTable().print(JTable.PrintMode.FIT_WIDTH, NULL, footerFormat);
-                } else {
-                    item.getAAClass().print(JTable.PrintMode.FIT_WIDTH, NULL, footerFormat);
-                }
-            } catch (java.awt.print.PrinterException e1) {
-                log->warn("error printing: " + e1, e1);
-            } catch (NullPointerException ex) {
-                log->error("Trying to print returned a NPE error");
-            }
-        }
+#if 1
+//    printItem.addActionListener(new ActionListener() {
+//        /*public*/ void actionPerformed(ActionEvent e) {
+    connect(printItem, &QAction::triggered, [=]{
+     try {
+         // MessageFormat headerFormat = new MessageFormat(getTitle());  // not used below
+      QString footerFormat = QString(getTitle() + " page {0,number}");
+      QString headerFormat = getTitle() + " page {0,number}";
+          if (item->getStandardTableModel()) {
+              item->getDataTable()->print(JTable::PrintMode::FIT_WIDTH, QString(), footerFormat);
+          } else {
+              item->getAAClass()->print(JTable::PrintMode::FIT_WIDTH, QString(), footerFormat);
+          }
+      } catch (PrinterException* e1) {
+          log->warn("error printing: " + e1->getLocalizedMessage(), e1);
+      } catch (NullPointerException* ex) {
+          log->error("Trying to print returned a NPE error");
+      }
+//     }
     });
 #endif
     QMenu* viewMenu = new QMenu(tr("View"));
@@ -320,7 +332,7 @@ void ListedTableFrame::buildMenus(/*final*/ LTFTabbedTableItem* item)
     try {
         item->getAAClass()->setMenuBar(this);
         this->addHelpMenu(item->getAAClass()->helpTarget(), true);
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log->error("Error when trying to set menu bar for " + item->getClassAsString() + "\n" /*+ ex*/);
     }
     this->update();
@@ -432,19 +444,19 @@ LTFTabbedTableItem::LTFTabbedTableItem(QString aaClass, QString choice, bool std
         //Class<?> cl = Class.forName(aaClass);
         java.lang.reflect.Constructor<?> co = cl.getConstructor(new Class[]{String.class});
         tableAction = (AbstractTableAction) co.newInstance(choice);
-    } catch (ClassNotFoundException e1) {
+    } catch (ClassNotFoundException* e1) {
         log->error("Not a valid class : " + aaClass);
         return;
-    } catch (NoSuchMethodException e2) {
+    } catch (NoSuchMethodException* e2) {
         log->error("Not such method : " + aaClass);
         return;
-    } catch (InstantiationException e3) {
+    } catch (InstantiationException* e3) {
         log->error("Not a valid class : " + aaClass);
         return;
     } catch (ClassCastException e4) {
         log->error("Not part of the abstractTableActions : " + aaClass);
         return;
-    } catch (Exception e) {
+    } catch (Exception* e) {
         log->error("Exception " + e.toString());
         return;
     }
@@ -584,7 +596,7 @@ void LTFTabbedTableItem::addPanelModel() {
      dataPanelLayout->addWidget(tableAction->getPanel(), 0,0); //, 0, Qt::AlignHCenter);
         //dataPanel.add(bottomBox, BorderLayout.SOUTH);
      dataPanelLayout->addWidget(bottomBox, 1,0); //, 0, Qt::AlignBottom);
-//    } catch (NullPointerException e) {
+//    } catch (NullPointerException* e) {
 //        log->error("An error occured while trying to create the table for " + itemText + " " + e.toString());
 //        e.printStackTrace();
 //    }
@@ -693,14 +705,15 @@ ActionJList::ActionJList(int index, BeanTableFrame* f) {
 //        }
 //    });
     LTFrameActionListener* listener = new LTFrameActionListener(index, this);
-    connect(menuItem, SIGNAL(triggered(bool)), listener, SLOT(actionPerformed()));
+    //connect(menuItem, SIGNAL(triggered(bool)), listener->self(), SLOT(actionPerformed()));
+    connect(menuItem, &QAction::triggered, [=]{listener->actionPerformed();});
 #if 0
     try {
         Object p2 = Toolkit.getDefaultToolkit().getDesktopProperty("awt_multiclick_time");
         if (p2 != NULL) {
             clickDelay = ((Integer) p2).intValue();
         }
-    } catch (Exception e2) {
+    } catch (Exception* e2) {
         log->error("Error parsing DesktopProperty awt_multiclick_time to set double click interval ", e2.toString());
     }
     try {
@@ -708,7 +721,7 @@ ActionJList::ActionJList(int index, BeanTableFrame* f) {
         if (p2 != NULL) {
             clickDelay = ((Integer) p2).intValue();
         }
-    } catch (Exception e1) {
+    } catch (Exception* e1) {
         log->error("Error parsing DesktopProperty awt.multiClickInterval to set double click interval ", e1.toString());
     }
 #endif
@@ -807,6 +820,8 @@ void ActionJList::openNewTableWindow(int index) {
 
 void ActionJList::selectListItem(int index) {
     currentItemSelected = index;
+    if(((ListedTableFrame*)frame)->tabbedTableArray->isEmpty())
+     return;
     LTFTabbedTableItem* item = ((ListedTableFrame*)frame)->tabbedTableArray->at(index);
     QStackedLayout* cl = (QStackedLayout*) (((ListedTableFrame*)frame)->detailpanel->layout());
     //cl->show(detailpanel, item->getClassAsString());
@@ -827,8 +842,8 @@ void ActionJList::selectListItem(int index) {
     try {
         item->getAAClass()->setFrame(frame);
         ((ListedTableFrame*)frame)->buildMenus(item);
-    } catch (Exception ex) {
-        log->error(ex.getLocalizedMessage()/*, ex*/);
+    } catch (Exception* ex) {
+        log->error(ex->getLocalizedMessage()/*, ex*/);
     }
     ((ListedTableFrame*)frame)->list->ensureIndexIsVisible(index);
     ((ListedTableFrame*)frame)->list->setSelectedIndex(index);

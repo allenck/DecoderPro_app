@@ -19,4 +19,5 @@ public:
      */
     /*public*/ virtual void sorterChanged(RowSorterEvent* /*e*/) {}
 };
+Q_DECLARE_INTERFACE(RowSorterListener, "RowSorterListener")
 #endif // ROWSORTERLISTENER_H

@@ -127,7 +127,7 @@ DropTargetContext::DropTargetContext(DropTarget* dt) {
  * @throws InvalidDnDOperationException if a drop is not outstanding/extant
  */
 
-/*public*/ void DropTargetContext::dropComplete(bool success) throw (InvalidDnDOperationException)
+/*public*/ void DropTargetContext::dropComplete(bool success)
 {
     DropTargetContextPeer* peer = getDropTargetContextPeer();
     if (peer != NULL) {
@@ -235,7 +235,7 @@ DropTargetContext::DropTargetContext(DropTarget* dt) {
  * @return the <code>Transferable</code>
  */
 
-/*protected*/ Transferable* DropTargetContext::getTransferable() throw (InvalidDnDOperationException)
+/*protected*/ Transferable* DropTargetContext::getTransferable() /*throw (InvalidDnDOperationException)*/
 {
  DropTargetContextPeer* peer = getDropTargetContextPeer();
  if (peer == NULL)

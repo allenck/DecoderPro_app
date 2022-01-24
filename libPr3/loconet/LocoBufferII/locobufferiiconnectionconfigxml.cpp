@@ -3,6 +3,7 @@
 #include "connectionconfig.h"
 #include "locobufferiiconnectionconfig.h"
 #include "instancemanager.h"
+#include "appsconfigurationmanager.h"
 
 /**
  * Handle XML persistance of layout connections by persisting the
@@ -37,7 +38,7 @@
     /*protected*/ void LocoBufferIIConnectionConfigXml::_register() {
         //this->_register(new LocoBufferIIConnectionConfig(adapter));
      ConnectionConfig* c;
-     static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerPref(c = (ConnectionConfig*)new LocoBufferIIConnectionConfig((LocoBufferIIAdapter*)adapter, NULL));
+     qobject_cast<AppsConfigurationManager*>(InstanceManager::getDefault("ConfigureManager"))->registerPref(c = (ConnectionConfig*)new LocoBufferIIConnectionConfig((LocoBufferIIAdapter*)adapter, NULL));
      AbstractConnectionConfigXml::_register(c);
 
     }

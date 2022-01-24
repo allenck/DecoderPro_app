@@ -130,8 +130,8 @@
 //        SwingHelpUtilities.setContentViewerUI("jmri.util.ExternalLinkContentViewerUI");
 
         // help items are set in the various Tree/Menu/Toolbar constructors
-    } catch (Throwable e3) {
-        Logger::error("Unexpected error creating help: " + e3.getMessage());
+    } catch (Throwable* e3) {
+        Logger::error("Unexpected error creating help: " + e3->getMessage());
     }
 }
 
@@ -159,7 +159,7 @@
  //        QString key = e.nextElement();
  //        try {
  //            bm.addAction(key, rb.getString(key));
- //        } catch (ClassNotFoundException ex) {
+ //        } catch (ClassNotFoundException* ex) {
  //            log->error("Did not find class " + key);
  //        }
  //    }
@@ -332,18 +332,18 @@
         profileFile = new File(profileFilename);
     }
 
-    ProfileManager::defaultManager()->setConfigFile(profileFile);
+    ProfileManager::getDefault()->setConfigFile(profileFile);
     // See if the profile to use has been specified on the command line as
     // a system property jmri.profile as a profile id.
     if (System::getProperties()->containsKey(/*ProfileManager::SYSTEM_PROPERTY*/"org.jmri.profile")) {
-        ProfileManager::defaultManager()->setActiveProfile(System::getProperty(/*ProfileManager::SYSTEM_PROPERTY*/"org.jmri.profile"));
+        ProfileManager::getDefault()->setActiveProfile(System::getProperty(/*ProfileManager::SYSTEM_PROPERTY*/"org.jmri.profile"));
     }
     // @see jmri.profile.ProfileManager#migrateToProfiles JavaDoc for conditions handled here
-    if (!ProfileManager::defaultManager()->getConfigFile()->exists()) { // no profile config for this app
+    if (!ProfileManager::getDefault()->getConfigFile()->exists()) { // no profile config for this app
      log->trace(tr("profileFile %1 doesn't exist").arg(profileFile->toString()));
      try
      {
-      if (ProfileManager::defaultManager()->migrateToProfiles(getConfigFileName())) { // migration or first use
+      if (ProfileManager::getDefault()->migrateToProfiles(getConfigFileName())) { // migration or first use
           // notify user of change only if migration occured
           // TODO: a real migration message
           JOptionPane::showMessageDialog(sp,
@@ -351,18 +351,18 @@
                   QApplication::applicationName(),
                   JOptionPane::INFORMATION_MESSAGE);
          }
-     } catch (IOException ex) {
+     } catch (IOException* ex) {
          JOptionPane::showMessageDialog(sp,
-                 ex.getLocalizedMessage(),
+                 ex->getLocalizedMessage(),
                  QApplication::applicationName(),
                  JOptionPane::ERROR_MESSAGE);
-         log->error(ex.getMessage()/*, ex*/);
-     } catch (IllegalArgumentException ex) {
+         log->error(ex->getMessage()/*, ex*/);
+     } catch (IllegalArgumentException* ex) {
          JOptionPane::showMessageDialog(sp,
-                 ex.getLocalizedMessage(),
+                 ex->getLocalizedMessage(),
                  QApplication::applicationName(),
                  JOptionPane::ERROR_MESSAGE);
-         log->error(ex.getMessage()/*, ex*/);
+         log->error(ex->getMessage()/*, ex*/);
      }
     }
     try
@@ -371,8 +371,8 @@
         // Manually setting the configFilename property since calling
         // Apps.setConfigFilename() does not reset the system property
         System::setProperty("org.jmri.Apps.configFilename", /*Profile::CONFIG_FILENAME*/"ProfileConfig.xml");
-        log->info(tr("Starting with profile %1").arg( ProfileManager::defaultManager()->getActiveProfile()->getId()));
-    } catch (IOException ex) {
-        log->info(tr("Profiles not configurable. Using fallback per-application configuration. Error: %1").arg( ex.getMessage()));
+        log->info(tr("Starting with profile %1").arg( ProfileManager::getDefault()->getActiveProfile()->getId()));
+    } catch (IOException* ex) {
+        log->info(tr("Profiles not configurable. Using fallback per-application configuration. Error: %1").arg( ex->getMessage()));
     }
 }

@@ -55,29 +55,24 @@
  if (file == nullptr)
      return;
 
- saveFile(file->absoluteFilePath());
-}
-
-void StoreXmlUserAction::saveFile(QString selectedFile)
-{
  // make a backup file
  ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
- cm->makeBackup(new File(selectedFile));
- // and finally store
- bool results = cm->storeUser(new File(selectedFile));
- log->debug(results?"store was successful":"store failed");
- if (!results)
- {
-  JOptionPane::showMessageDialog(NULL,
-          tr("Errors experienced during store.")+"\n"
-          +tr("The storing of your information is incomplete and may result in missing items")+"\n"
-          +tr("The Console window contains error details."),
-          tr("Error Storing Information!"),	JOptionPane::ERROR_MESSAGE);
-
+ if (cm == nullptr) {
+     log->error("Failed to make backup due to unable to get default configure manager");
  }
-
-//    // The last thing we do is restore the Approve button text.
-//userFileChooser.setDialogType(oldDialogType);
-//    userFileChooser.setApproveButtonText(oldButtonText);
-//userFileChooser.setDialogTitle(oldDialogTitle);
+ else {
+  if(file->exists())
+   cm->makeBackup(file);
+  // and finally store
+  bool results = cm->storeUser(file);
+  log->debug(results?"store was successful" : "store failed");
+  if (!results)
+  {
+   JOptionPane::showMessageDialog(NULL,
+           tr("Errors experienced during store.")+"\n"
+           +tr("The storing of your information is incomplete and may result in missing items")+"\n"
+           +tr("The Console window contains error details."),
+           tr("Error Storing Information!"),	JOptionPane::ERROR_MESSAGE);
+  }
+ }
 }

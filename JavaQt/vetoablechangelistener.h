@@ -5,17 +5,17 @@
 
 class PropertyChangeEvent;
 
-class VetoableChangeListener : public QObject, public EventListener
+class VetoableChangeListener :  public EventListener
 {
- Q_OBJECT
+ //Q_OBJECT
  Q_INTERFACES(EventListener)
 public:
  VetoableChangeListener();
  QObject* self() {return (QObject*)this;}
 
 public slots:
- virtual void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException);
+ virtual void vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/;
 };
 
-
+Q_DECLARE_INTERFACE(VetoableChangeListener, "VetoableChangeListener")
 #endif // VETOABLEPROPERTYCHANGELISTENER_H

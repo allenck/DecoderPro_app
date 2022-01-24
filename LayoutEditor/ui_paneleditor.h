@@ -12,6 +12,7 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
@@ -31,7 +32,7 @@ public:
     QAction *actionRemove_markers;
     QWidget *centralwidget;
     QVBoxLayout *verticalLayout;
-    QWidget *editPanel;
+    QGraphicsView *editPanel;
     QMenuBar *menubar;
     QMenu *menuEdit;
     QMenu *menuMarker;
@@ -58,7 +59,7 @@ public:
         centralwidget->setObjectName(QLatin1String("centralwidget"));
         verticalLayout = new QVBoxLayout(centralwidget);
         verticalLayout->setObjectName(QLatin1String("verticalLayout"));
-        editPanel = new QWidget(centralwidget);
+        editPanel = new QGraphicsView(centralwidget);
         editPanel->setObjectName(QLatin1String("editPanel"));
 
         verticalLayout->addWidget(editPanel);
@@ -66,7 +67,7 @@ public:
         PanelEditor->setCentralWidget(centralwidget);
         menubar = new QMenuBar(PanelEditor);
         menubar->setObjectName(QLatin1String("menubar"));
-        menubar->setGeometry(QRect(0, 0, 800, 25));
+        menubar->setGeometry(QRect(0, 0, 800, 22));
         menuEdit = new QMenu(menubar);
         menuEdit->setObjectName(QLatin1String("menuEdit"));
         menuMarker = new QMenu(menubar);

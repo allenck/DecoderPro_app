@@ -127,7 +127,7 @@
     }
 
     int SignalGroupSubTableAction::signalStateFromBox(QComboBox* box) {
-        SignalHead* sig = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(curSignal);
+        SignalHead* sig = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(curSignal);
         int result;
         QString mode;
         if (sig!=NULL){
@@ -148,7 +148,7 @@
 
     void SignalGroupSubTableAction::setSignalStateBox(int mode, QComboBox* box)
     {
-        SignalHead* sig = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(curSignal);
+        SignalHead* sig = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(curSignal);
         QString result = StringUtil::getNameFromState(mode, ((AbstractSignalHead*)sig)->getValidStates(), ((AbstractSignalHead*)sig)->getValidStateNames().toList());
         box->setCurrentIndex(box->findText(result));
     }
@@ -177,7 +177,7 @@ void SignalGroupSubTableAction::editSignal(SignalGroup* g, QString signal)
 {
  curSignalGroup = g;
  curSignal = signal;
- curSignalHead = ((AbstractSignalHeadManager*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")))->getSignalHead(curSignal);
+ curSignalHead = ((AbstractSignalHeadManager*)qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")))->getSignalHead(curSignal);
  //SignalHead sig = jmri.static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")).getSignalHead(curSignal);
 
  _OnAppearance = new QComboBox();
@@ -188,24 +188,24 @@ void SignalGroupSubTableAction::editSignal(SignalGroup* g, QString signal)
  _systemName->setVisible(true);
 
  TurnoutManager* tm = InstanceManager::turnoutManagerInstance();
- QStringList systemNameList = ((ProxyTurnoutManager*)tm)->getSystemNameList();
+ QStringList systemNameList = ((ProxyTurnoutManager*)tm)->AbstractProxyManager::getSystemNameList();
 _turnoutList =  QList <SignalGroupTurnout*> (/*systemNameList.size()*/);
  QStringListIterator iter(systemNameList);
  while (iter.hasNext())
  {
   QString systemName = iter.next();
-  QString userName = ((ProxyTurnoutManager*)tm)->getBySystemName(systemName)->getUserName();
+  QString userName = ((ProxyTurnoutManager*)tm)->AbstractProxyManager::getBySystemName(systemName)->getUserName();
   _turnoutList.append(new SignalGroupTurnout(systemName, userName));
  }
 
  SensorManager* sm = InstanceManager::sensorManagerInstance();
- systemNameList = ((ProxySensorManager*)sm)->getSystemNameList();
+ systemNameList = ((ProxySensorManager*)sm)->AbstractProxyManager::getSystemNameList();
  _sensorList = QList <SignalGroupSensor*> (/*systemNameList.size()*/);
  iter = QStringListIterator(systemNameList);
  while (iter.hasNext())
  {
   QString systemName = iter.next();
-  QString userName = ((ProxySensorManager*)sm)->getBySystemName(systemName)->getUserName();
+  QString userName = ((ProxySensorManager*)sm)->AbstractProxyManager::getBySystemName(systemName)->getUserName();
   _sensorList.append(new SignalGroupSensor(systemName, userName));
  }
  initializeIncludedList();
@@ -252,14 +252,14 @@ if (addFrame==NULL)
  contentPaneLayout->addLayout(pFlowLayout);
  if (QString(curSignalHead->metaObject()->className()).contains("SingleTurnoutSignalHead"))
  {
-  SingleTurnoutSignalHead* Signal = (SingleTurnoutSignalHead*) ((AbstractSignalHeadManager*)static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")))->getBySystemName(curSignal);
-  if ((((DefaultSignalGroup*)g)->getSignalHeadOnState(curSignalHead)==0x00) && (((DefaultSignalGroup*)g)->getSignalHeadOffState(curSignalHead)==0x00)){
-            ((DefaultSignalGroup*)g)->setSignalHeadOnState(curSignalHead, Signal->getOnAppearance());
-            ((DefaultSignalGroup*)g)->setSignalHeadOffState(curSignalHead, Signal->getOffAppearance());
+  SingleTurnoutSignalHead* Signal = (SingleTurnoutSignalHead*) ((AbstractSignalHeadManager*)qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")))->getBySystemName(curSignal);
+  if ((((DefaultSignalGroup*)g)->getHeadOnState(curSignalHead)==0x00) && (((DefaultSignalGroup*)g)->getHeadOffState(curSignalHead)==0x00)){
+            ((DefaultSignalGroup*)g)->setHeadOnState(curSignalHead, Signal->getOnAppearance());
+            ((DefaultSignalGroup*)g)->setHeadOffState(curSignalHead, Signal->getOffAppearance());
  }
 }
-setSignalStateBox(((DefaultSignalGroup*)g)->getSignalHeadOnState(curSignalHead), _OnAppearance);
-setSignalStateBox(((DefaultSignalGroup*)g)->getSignalHeadOffState(curSignalHead), _OffAppearance);
+setSignalStateBox(((DefaultSignalGroup*)g)->getHeadOnState(curSignalHead), _OnAppearance);
+setSignalStateBox(((DefaultSignalGroup*)g)->getHeadOffState(curSignalHead), _OffAppearance);
 // add Turnout Display Choice
 //QWidget* py = new QWidget();
 FlowLayout* pyFlowLayout = new FlowLayout;
@@ -479,8 +479,8 @@ pyFlowLayout->addWidget(allButton);
 //            });
 addFrame->setVisible(true);
 setoperBox(curSignalGroup->getSensorTurnoutOper(curSignalHead), _SensorTurnoutOper);
-setSignalStateBox(curSignalGroup->getSignalHeadOnState(curSignalHead), _OnAppearance);
-setSignalStateBox(curSignalGroup->getSignalHeadOffState(curSignalHead), _OffAppearance);
+setSignalStateBox(curSignalGroup->getHeadOnState(curSignalHead), _OnAppearance);
+setSignalStateBox(curSignalGroup->getHeadOffState(curSignalHead), _OffAppearance);
 int setRow = 0;
 for (int i=_turnoutList.size()-1; i>=0; i--)
 {
@@ -561,7 +561,7 @@ void SignalGroupSubTableAction::setColumnToHoldButton(QTableView* /*table*/, int
     int SignalGroupSubTableAction::setTurnoutInformation(SignalGroup* g) {
         for (int i=0; i<_includedTurnoutList.size(); i++) {
             SignalGroupTurnout* t = _includedTurnoutList.at(i);
-            ((DefaultSignalGroup*)g)->setSignalHeadAlignTurnout(curSignalHead, t->getTurnout(), t->getState());
+            ((DefaultSignalGroup*)g)->setHeadAlignTurnout(curSignalHead, t->getTurnout(), t->getState());
         }
         return _includedTurnoutList.size();
     }
@@ -572,7 +572,7 @@ void SignalGroupSubTableAction::setColumnToHoldButton(QTableView* /*table*/, int
     int SignalGroupSubTableAction::setSensorInformation(SignalGroup* g) {
         for (int i=0; i<_includedSensorList.size(); i++) {
             SignalGroupSensor* s = _includedSensorList.at(i);
-            ((DefaultSignalGroup*)g)->setSignalHeadAlignSensor(curSignalHead, s->getSensor(), s->getState());
+            ((DefaultSignalGroup*)g)->setHeadAlignSensor(curSignalHead, s->getSensor(), s->getState());
         }
         return _includedSensorList.size();
     }
@@ -580,15 +580,15 @@ void SignalGroupSubTableAction::setColumnToHoldButton(QTableView* /*table*/, int
     /**
      * Responds to the Update button - update to SignalGroup Table
      */
-    void SignalGroupSubTableAction::updateSubPressed(ActionEvent* /*e*/, bool /*newSignalGroup*/ ) {
+    void SignalGroupSubTableAction::updateSubPressed(JActionEvent* /*e*/, bool /*newSignalGroup*/ ) {
         ((DefaultSignalGroup*)curSignalGroup)->clearSignalTurnout(curSignalHead);
         ((DefaultSignalGroup*)curSignalGroup)->clearSignalSensor(curSignalHead);
 
         initializeIncludedList();
         setTurnoutInformation(curSignalGroup);
         setSensorInformation(curSignalGroup);
-        ((DefaultSignalGroup*)curSignalGroup)->setSignalHeadOnState(curSignalHead, signalStateFromBox(_OnAppearance));
-        ((DefaultSignalGroup*)curSignalGroup)->setSignalHeadOffState(curSignalHead, signalStateFromBox(_OffAppearance));
+        ((DefaultSignalGroup*)curSignalGroup)->setHeadOnState(curSignalHead, signalStateFromBox(_OnAppearance));
+        ((DefaultSignalGroup*)curSignalGroup)->setHeadOffState(curSignalHead, signalStateFromBox(_OffAppearance));
         ((DefaultSignalGroup*)curSignalGroup)->setSensorTurnoutOper(curSignalHead, operFromBox(_SensorTurnoutOper));
         // add control Sensors and a control Turnout if entered in the window
         finishUpdate();
@@ -642,7 +642,7 @@ void SignalGroupSubTableAction::setColumnToHoldButton(QTableView* /*table*/, int
         }
 
         /*public*/ void SGSTASignalGroupOutputModel::dispose() {
-            ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->removePropertyChangeListener((PropertyChangeListener*)this);
+            ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->AbstractProxyManager::removePropertyChangeListener((PropertyChangeListener*)this);
         }
 
 /*public*/ QVariant SGSTASignalGroupOutputModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -690,7 +690,7 @@ void SignalGroupSubTableAction::setColumnToHoldButton(QTableView* /*table*/, int
     SignalGroupTurnoutModel::SignalGroupTurnoutModel(SignalGroupSubTableAction* act)
     {
         this->act = act;
-        ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->addPropertyChangeListener((PropertyChangeListener*)this);
+        ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
     }
 
     /*public*/ int SignalGroupTurnoutModel::rowCount(const QModelIndex &/*parent*/) const
@@ -772,7 +772,7 @@ void SignalGroupSubTableAction::setColumnToHoldButton(QTableView* /*table*/, int
     SignalGroupSensorModel::SignalGroupSensorModel(SignalGroupSubTableAction* act)
     {
      this->act = act;
-        ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->addPropertyChangeListener((PropertyChangeListener*)this);
+        ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
     }
 
     /*public*/ int SignalGroupSensorModel::rowCount(const QModelIndex &/*parent*/) const

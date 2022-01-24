@@ -3,14 +3,14 @@
 
 #include <QObject>
 #include <QMutex>
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "runnable.h"
 #include "liblayouteditor_global.h"
 
 
 class AbstractAutomaton;
 class PropertyChangeListener;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class Runnable;
 class LIBLAYOUTEDITORSHARED_EXPORT AutomatSummary : public QObject
 {
@@ -37,7 +37,7 @@ private:
     /*private*/ AutomatSummary(QObject *parent = 0) ;
     static /*volatile*/ /*private*/ AutomatSummary* self;// = NULL;
     /*private*/ QList<AbstractAutomaton*>* automats;// = new ArrayList<AbstractAutomaton>();
-    PropertyChangeSupport* prop;// = new PropertyChangeSupport(this);
+    SwingPropertyChangeSupport* prop;// = new SwingPropertyChangeSupport(this, nullptr);
     QMutex mutex;
 //    void notify(QString property, QVariant arg1, QVariant arg2);
 #if 0
@@ -49,12 +49,12 @@ private:
          this->property = property;
          this->arg1 = arg1;
          this->arg2 = arg2;
-         PropertyChangeSupport* prop = new PropertyChangeSupport(this);
+         SwingPropertyChangeSupport* prop = new SwingPropertyChangeSupport(this, nullptr);
      }
      QVariant arg1;
      QVariant arg2;
      QString property;
-     PropertyChangeSupport* prop;
+     SwingPropertyChangeSupport* prop;
 
      /*public*/ void run() {
          prop->firePropertyChange(property, arg1, arg2);

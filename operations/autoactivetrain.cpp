@@ -15,6 +15,7 @@
 #include "signalspeedmap.h"
 #include "allocatedsection.h"
 #include "scale.h"
+#include "thread.h"
 
 //AutoActiveTrain::AutoActiveTrain(QObject *parent) : QObject(parent)
 //{
@@ -156,7 +157,7 @@ static final ResourceBundle rb = ResourceBundle
 
 /*public*/ /*synchronized*/ void AutoActiveTrain::setTargetSpeed(float speed) {
     _targetSpeed = speed;
-#if 0
+#if 1
     if (speed > 0.002) {
         _autoEngineer->slowToStop(false);
     }
@@ -253,7 +254,7 @@ static final ResourceBundle rb = ResourceBundle
     // get decoder address
     try {
         _address = (_activeTrain->getDccAddress()).toInt();
-    } catch (NumberFormatException ex) {
+    } catch (NumberFormatException* ex) {
        log->warn(tr("invalid dcc address '%1' for %2").arg(_activeTrain->getDccAddress()).arg(_activeTrain->getTrainName()));
         return false;
     }
@@ -267,7 +268,7 @@ static final ResourceBundle rb = ResourceBundle
     if (_activeTrain->getTrainSource() == ActiveTrain::ROSTER) {
         if (_activeTrain->getRosterEntry() != NULL) {
             re = _activeTrain->getRosterEntry();
-            ok = InstanceManager::throttleManagerInstance()->requestThrottle(_activeTrain->getRosterEntry(), (ThrottleListener*)this);
+            ok = InstanceManager::throttleManagerInstance()->requestThrottle(_activeTrain->getRosterEntry(), (ThrottleListener*)this, false);
             if (re->getSpeedProfile() != NULL) {
                log->debug(tr("%1: using speed profile from roster entry %2").arg(_activeTrain->getTrainName()).arg( re->getId()));
                 useSpeedProfile = true;
@@ -304,7 +305,7 @@ static final ResourceBundle rb = ResourceBundle
             _throttle->getLocoAddress()->toString()).arg(
             getMaxTrainLength()).arg( _speedFactor));
 #if 0
-    _autoEngineer = new AutoEngineer();
+    _autoEngineer = new AutoEngineer(this);
     new Thread(_autoEngineer, "Auto Engineer " + _address).start();
 #endif
     _activeTrain->setMode(ActiveTrain::AUTOMATIC);
@@ -313,7 +314,7 @@ static final ResourceBundle rb = ResourceBundle
         _activeTrain->setStatus(ActiveTrain::RUNNING);
         setEngineDirection();
         setSpeedBySignal();
-    } else if (DispatcherFrame::instance()->getAutoAllocate()) {
+    } else if (((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getAutoAllocate()) {
         // starting for the first time with automatic allocation of Sections
         setSpeedBySignal();
     }
@@ -382,15 +383,15 @@ static final ResourceBundle rb = ResourceBundle
         }
     }
 }
-#if 0
-@SuppressFBWarnings(value = "IS2_INCONSISTENT_SYNC",
-        justification = "OK to not sync here, no conflict expected")
-/*protected*/ void handleBlockStateChange(AllocatedSection as, Block b) {
-    if (b.getState() == Block::OCCUPIED) {
+#if 1
+//@SuppressFBWarnings(value = "IS2_INCONSISTENT_SYNC",
+//        justification = "OK to not sync here, no conflict expected")
+/*protected*/ void AutoActiveTrain::handleBlockStateChange(AllocatedSection* as, Block* b) {
+    if (b->getState() == Block::OCCUPIED) {
         // Block changed to OCCUPIED - train has entered this block
-       log->trace("{}: handleBlockStateChange to OCCUPIED section {}, block {}, length {}", _activeTrain->getTrainName(),
-                as->getSection().getSystemName(),
-                b.getUserName(), getBlockLength(b));
+       log->trace(tr("%1: handleBlockStateChange to OCCUPIED section %2, block %3, length %4").arg(_activeTrain->getTrainName(),
+                as->getSection()->getSystemName(),
+                b->getUserName(), QString::number(getBlockLength(b))));
         if (b == _nextBlock) {
             _previousBlock = _currentBlock;
             _currentBlock = _nextBlock;
@@ -420,18 +421,18 @@ static final ResourceBundle rb = ResourceBundle
             } else {
                 // reached last block in this transit
                 removeCurrentSignal();
-               log->trace("{}: block occupied stop in Current Section, Block= {}", _activeTrain->getTrainName(), b.getUserName());
+               log->trace(tr("%1: block occupied stop in Current Section, Block= %2").arg(_activeTrain->getTrainName(), b->getUserName()));
                 stopInCurrentSection(NO_TASK);
             }
         } else if (b != _currentBlock) {
-           log->trace("{}: block going occupied {} is not _nextBlock or _currentBlock - ignored.", _activeTrain->getTrainName(), b.getUserName());
+           log->trace(tr("%1: block going occupied %2 is not _nextBlock or _currentBlock - ignored.").arg(_activeTrain->getTrainName(), b->getUserName()));
             return;
         }
-    } else if (b.getState() == Block::UNOCCUPIED) {
-       log->trace("{}: handleBlockStateChange to UNOCCUPIED - Section {}, Block {}, speed {}", _activeTrain->getTrainName(),
-                as->getSection().getSystemName(), b.getUserName(), _targetSpeed);
+    } else if (b->getState() == Block::UNOCCUPIED) {
+       log->trace(tr("%1: handleBlockStateChange to UNOCCUPIED - Section %2, Block %3, speed %4").arg(_activeTrain->getTrainName()).arg(
+                as->getSection()->getSystemName()).arg(b->getUserName()).arg(_targetSpeed));
         if (_stoppingByBlockOccupancy && (b == _stoppingBlock)) {
-           log->trace("{}: setStopNow by block occupancy from Block unoccupied, Block= {}",_activeTrain->getTrainName(), b.getSystemName());
+           log->trace(tr("%1: setStopNow by block occupancy from Block unoccupied, Block= %2").arg(_activeTrain->getTrainName(), b->getSystemName()));
             _stoppingByBlockOccupancy = false;
             _stoppingBlock = NULL;
 // djd may need more code here
@@ -443,7 +444,7 @@ static final ResourceBundle rb = ResourceBundle
             }
         }
     }
-    _autoTrainAction.handleBlockStateChange(as, b);
+    _autoTrainAction->handleBlockStateChange(as, b);
 }
 
 #endif
@@ -506,7 +507,7 @@ static final ResourceBundle rb = ResourceBundle
         _needSetSpeed = true;
     }
     // request next allocation if appropriate--Dispatcher must decide whether to allocate it and when
-    if ((!DispatcherFrame::instance()->getAutoAllocate()) && ((_lastAllocatedSection == NULL)
+    if ((!((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getAutoAllocate()) && ((_lastAllocatedSection == NULL)
             || (_lastAllocatedSection->getNextSection() == as->getSection()))) {
         // if AutoAllocate, this is now done in DispatcherFrame::java for all trains
         _lastAllocatedSection = as;
@@ -514,7 +515,7 @@ static final ResourceBundle rb = ResourceBundle
             Section* nSection = as->getNextSection();
             int nextSeq = as->getNextSectionSequence();
             int nextDir = _activeTrain->getAllocationDirectionFromSectionAndSeq(nSection, nextSeq);
-            DispatcherFrame::instance()->requestAllocation(_activeTrain, nSection, nextDir, nextSeq, true, NULL);
+            ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->requestAllocation(_activeTrain, nSection, nextDir, nextSeq, true, NULL);
         }
     }
 }
@@ -572,7 +573,7 @@ static final ResourceBundle rb = ResourceBundle
 /*protected*/ /*synchronized*/ void AutoActiveTrain::setupNewCurrentSignal(AllocatedSection* as) {
 #if 1
     removeCurrentSignal();
-    if (DispatcherFrame::instance()->getSignalType() == DispatcherFrame::SIGNALHEAD) {
+    if (((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getSignalType() == DispatcherFrame::SIGNALHEAD) {
         SignalHead* sh = _lbManager->getFacingSignalHead(_currentBlock, _nextBlock);
         if (sh != NULL) {
             _controllingSignal = sh;
@@ -703,15 +704,15 @@ static final ResourceBundle rb = ResourceBundle
 /*protected*/ /*synchronized*/ void AutoActiveTrain::setSpeedBySignal() {
     if (_pausingActive || ((_activeTrain->getStatus() != ActiveTrain::RUNNING)
             && (_activeTrain->getStatus() != ActiveTrain::WAITING)) || ((_controllingSignal == NULL)
-            && DispatcherFrame::instance()->getSignalType() == DispatcherFrame::SIGNALHEAD)
-            || (DispatcherFrame::instance()->getSignalType() == DispatcherFrame::SIGNALMAST && (_controllingSignalMast == NULL
+            && ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getSignalType() == DispatcherFrame::SIGNALHEAD)
+            || (((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getSignalType() == DispatcherFrame::SIGNALMAST && (_controllingSignalMast == NULL
             || (_activeTrain->getStatus() == ActiveTrain::WAITING && !_activeTrain->getStarted())))
             || (_activeTrain->getMode() != ActiveTrain::AUTOMATIC)) {
         // train is pausing or not RUNNING or WAITING in AUTOMATIC mode, or no controlling signal,
         //			don't set speed based on controlling signal
         return;
     }
-    if (DispatcherFrame::instance()->getSignalType() == DispatcherFrame::SIGNALHEAD) {
+    if (((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getSignalType() == DispatcherFrame::SIGNALHEAD) {
      //set speed using signalHeads
         switch (_controllingSignal->getAppearance()) {
             case SignalHead::DARK:
@@ -783,11 +784,11 @@ static final ResourceBundle rb = ResourceBundle
             if (aspectSpeedStr != NULL) {
                 try {
                     speed = aspectSpeedStr.toFloat();
-                } catch (NumberFormatException nx) {
+                } catch (NumberFormatException* nx) {
                     try {
                         speed = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(aspectSpeedStr);
 //                       log->trace("{}: Signal {} speed from map for {} is {}", _activeTrain->getTrainName(), _controllingSignalMast->getDisplayName(), aspectSpeedStr, speed);
-                    } catch (Exception ex) {
+                    } catch (Exception* ex) {
                         //Considered Normal if the speed does not appear in the map
 //                       log->trace("{}: Speed not found {}", _activeTrain->getTrainName(), aspectSpeedStr);
                     }
@@ -1011,10 +1012,10 @@ static final ResourceBundle rb = ResourceBundle
         setStopNow();
     }
     if (task > NO_TASK) {
-#if 0
-        Runnable* waitForStop = new WaitForTrainToStop(task);
-        Thread tWait = new Thread(waitForStop, "Wait for stop " + getActiveTrain().getActiveTrainName());
-        tWait.start();
+#if 1
+        Runnable* waitForStop = new WaitForTrainToStop(task, this);
+        Thread* tWait = new Thread(waitForStop, "Wait for stop " + getActiveTrain()->getActiveTrainName());
+        tWait->start();
 #endif
     }
 }
@@ -1027,28 +1028,30 @@ static final ResourceBundle rb = ResourceBundle
  }
 }
 
-#if 0
-protected synchronized void executeStopTasks(int task) {
+#if 1
+/*protected*/ /*synchronized*/ void AutoActiveTrain::executeStopTasks(int task) {
     if (task <= 0) {
         return;
     }
     switch (task) {
-        case END_REVERSAL:
+    case END_REVERSAL:
+    {
             /* Reset _previousBlock to be the _currentBlock if we do a continious reverse otherwise the stop in block method fails
             to stop the loco in the correct block
              if the first block we come to has a stopped or held signal */
             _previousBlock = _currentBlock;
             _activeTrain->setTransitReversed(true);
-            AllocatedSection aSec = _activeTrain->reverseAllAllocatedSections();
+            AllocatedSection* aSec = _activeTrain->reverseAllAllocatedSections();
             setEngineDirection();
             if ((_nextSection != NULL) && !isSectionInAllocatedList(_nextSection)) {
-                DispatcherFrame::instance().forceScanOfAllocation();
+                ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->queueScanOfAllocationRequests();
                 break;
             }
             setupNewCurrentSignal(aSec);
             setSpeedBySignal();
             break;
-        case BEGINNING_RESET:
+    }
+    case BEGINNING_RESET:
             if (_activeTrain->getResetWhenDone()) {
                 if (_activeTrain->getReverseAtEnd()) {
                     /* Reset _previousBlock to be the _currentBlock if we do a continious
@@ -1061,7 +1064,7 @@ protected synchronized void executeStopTasks(int task) {
                     _activeTrain->resetAllAllocatedSections();
                     setEngineDirection();
                     if ((_nextSection != NULL) && !isSectionInAllocatedList(_nextSection)) {
-                        DispatcherFrame::instance().forceScanOfAllocation();
+                        ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->queueScanOfAllocationRequests();
                         break;
                     }
                     setupNewCurrentSignal(NULL);
@@ -1073,7 +1076,7 @@ protected synchronized void executeStopTasks(int task) {
                     setEngineDirection();
                     _activeTrain->setRestart();
                     if ((_nextSection != NULL) && !isSectionInAllocatedList(_nextSection)) {
-                        DispatcherFrame::instance().forceScanOfAllocation();
+                        ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->queueScanOfAllocationRequests();
                         break;
                     }
                     setupNewCurrentSignal(NULL);
@@ -1086,7 +1089,7 @@ protected synchronized void executeStopTasks(int task) {
             }
             break;
         default:
-           log->error("Request to execute unknown stop train task - " + task);
+           log->error("Request to execute unknown stop train task - " + QString::number(task));
             break;
     }
 }
@@ -1240,46 +1243,46 @@ protected synchronized void executeStopTasks(int task) {
         }
     }
 }
-#if 0
+#if 1
 /**
  * Pauses the auto active train for a specified number of fast clock minutes
  * Pausing operation is performed in a separate thread
  */
-/*public*/ Thread pauseTrain(int fastMinutes) {
+/*public*/ Thread* AutoActiveTrain::pauseTrain(int fastMinutes) {
     if (_pausingActive) {
         // if a pause train thread is currently active, ignore this call
         return (NULL);
     }
-    Runnable pauseTrain = new PauseTrain(fastMinutes);
-    Thread tPause = new Thread(pauseTrain, "pause train " + _activeTrain->getTrainName());
-    tPause.start();
+    Runnable* pauseTrain = new PauseTrain(fastMinutes, this);
+    Thread* tPause = new Thread(pauseTrain, "pause train " + _activeTrain->getTrainName());
+    tPause->start();
     return tPause;
 }
 
-/*public*/ void terminate() {
+/*public*/ void AutoActiveTrain::terminate() {
     // here add code to stop the train and release its throttle if it is in autoRun
     while (_activeHornThreads > 0) {
         try {
-            Thread.sleep(50);
+            SleeperThread::msleep(50);
         } catch (InterruptedException e) {
             // ignore this exception
         }
     }
-    _autoTrainAction.clearRemainingActions();
+    _autoTrainAction->clearRemainingActions();
     if (_autoEngineer != NULL) {
         _autoEngineer->setHalt(true);
         try {
-            Thread.sleep(50);
+            SleeperThread::msleep(50);
         } catch (InterruptedException e) {
             // ignore this exception
         }
         waitUntilStopped();
         _autoEngineer->abort();
-        InstanceManager.throttleManagerInstance().releaseThrottle(_throttle, this);
+        InstanceManager::throttleManagerInstance()->releaseThrottle(_throttle, this);
     }
 }
 
-/*public*/ void dispose() {
+/*public*/ void AutoActiveTrain::dispose() {
     if (_controllingSignalMast != NULL && _conSignalMastListener != NULL) {
         _controllingSignalMast->removePropertyChangeListener(_conSignalMastListener);
     }
@@ -1289,113 +1292,114 @@ protected synchronized void executeStopTasks(int task) {
 
 // _________________________________________________________________________________________
 // This class waits for train stop in a separate thread
-class WaitForTrainToStop implements Runnable {
+//class WaitForTrainToStop implements Runnable {
 
-    /*public*/ WaitForTrainToStop(int task) {
-        _task = task;
-    }
+//    /*public*/ WaitForTrainToStop(int task) {
+//        _task = task;
+//    }
 
-    @Override
-    /*public*/ void run() {
+//    @Override
+    /*public*/ void WaitForTrainToStop::run() {
         bool waitingOnTrain = true;
         try {
             while (waitingOnTrain) {
-                if ((getAutoEngineer() != NULL) && (getAutoEngineer().isStopped())) {
+                if ((aat->getAutoEngineer() != NULL) && (aat->getAutoEngineer()->isStopped())) {
                     waitingOnTrain = false;
                 } else {
-                    Thread.sleep(_delay);
+                    SleeperThread::msleep(_delay);
                 }
             }
-            executeStopTasks(_task);
+            aat->executeStopTasks(_task);
         } catch (InterruptedException e) {
             // interrupting will cause termination without executing the task
         }
     }
-    private int _delay = 91;
-    private int _task = 0;
-}
+//    private int _delay = 91;
+//    private int _task = 0;
+//}
 
 // _________________________________________________________________________________________
 // This class pauses the train in a separate thread
 //  Train is stopped, then restarted after specified number of fast Minutes have elapsed
-class PauseTrain implements Runnable {
+//class PauseTrain implements Runnable {
 
-    /**
-     * A runnable that executes a pause train for a specified number of Fast
-     * Clock minutes
-     */
-    /*public*/ PauseTrain(int fastMinutes) {
-        _fastMinutes = fastMinutes;
-    }
+//    /**
+//     * A runnable that executes a pause train for a specified number of Fast
+//     * Clock minutes
+//     */
+//    /*public*/ PauseTrain(int fastMinutes) {
+//        _fastMinutes = fastMinutes;
+//    }
 
-    @Override
-    /*public*/ void run() {
+//    @Override
+    /*public*/ void PauseTrain::run() {
         // set to pause at a fast ramp rate
-        _pausingActive = true;
-        _savedTargetSpeed = getTargetSpeed();
-        _savedRampRate = getRampRate();
-        setCurrentRampRate(RAMP_FAST);
-        stopInCurrentSection(NO_TASK);
+        aat->_pausingActive = true;
+        _savedTargetSpeed = aat->getTargetSpeed();
+        _savedRampRate = aat->getRampRate();
+        aat->setCurrentRampRate(AutoActiveTrain::RAMP_FAST);
+        aat->stopInCurrentSection(AutoActiveTrain::NO_TASK);
         // wait for train to stop
         bool waitNow = true;
         bool keepGoing = true;
         while (waitNow) {
             try {
-                Thread.sleep(101);
-                if (_autoEngineer != NULL) {
-                    if (_autoEngineer->isStopped()) {
+                SleeperThread::msleep(101);
+                if (aat->_autoEngineer != NULL) {
+                    if (aat->_autoEngineer->isStopped()) {
                         waitNow = false;
                     }
                 } else {
                     waitNow = false;
                 }
-            } catch (InterruptedException e) {
-               log->error("InterruptedException while watiting to stop for pause - " + e);
+            } catch (InterruptedException* e) {
+               aat->log->error("InterruptedException while watiting to stop for pause - " + e->getMessage());
                 waitNow = false;
                 keepGoing = false;
             }
         }
-        _activeTrain->setStatus(ActiveTrain::PAUSED);
+        aat->_activeTrain->setStatus(ActiveTrain::PAUSED);
         if (keepGoing) {
             // wait for specified fast clock time
-            Timebase _clock = InstanceManager.getDefault(jmri.Timebase.class);
-            java.beans.PropertyChangeListener _clockListener = NULL;
-            _clock.addMinuteChangeListener(_clockListener
-                    = new java.beans.PropertyChangeListener() {
-                @Override
-                        /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
-                            _fastMinutes--;
-                        }
-                    });
+            Timebase* _clock = (Timebase*)InstanceManager::getDefault("Timebase");
+            PropertyChangeListener* _clockListener = NULL;
+//            _clock->addMinuteChangeListener(_clockListener
+//                    = new PropertyChangeListener() {
+//                //@Override
+//                        /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
+//                            _fastMinutes--;
+//                        }
+//                    });
+            _clock->addMinuteChangeListener(this);
             // wait for fast minutes to tick away
             waitNow = true;
             while (waitNow) {
                 try {
-                    Thread.sleep(501);
+                    SleeperThread::msleep(501);
                     if (_fastMinutes <= 0) {
                         waitNow = false;
                     }
-                } catch (InterruptedException e) {
-                   log->error("InterruptedException while waiting when paused - " + e);
+                } catch (InterruptedException* e) {
+                   aat->log->error("InterruptedException while waiting when paused - " + e->getLocalizedMessage());
                     keepGoing = false;
                 }
             }
-            _clock.removeMinuteChangeListener(_clockListener);
+            _clock->removeMinuteChangeListener(this);
         }
-        _pausingActive = false;
+        aat->_pausingActive = false;
         if (keepGoing) {
             // this thread was not interrupted
             //   resume running - restore speed, status, and ramp rate
-            setCurrentRampRate(_savedRampRate);
-            setTargetSpeed(_savedTargetSpeed);
-            _activeTrain->setStatus(ActiveTrain::RUNNING);
-            setSpeedBySignal();
+            aat->setCurrentRampRate(_savedRampRate);
+            aat->setTargetSpeed(_savedTargetSpeed);
+            aat->_activeTrain->setStatus(ActiveTrain::RUNNING);
+            aat->setSpeedBySignal();
         }
     }
-    private int _fastMinutes = 0;
-    private float _savedTargetSpeed = 0.0f;
-    private int _savedRampRate = RAMP_NONE;
-}
+//    private int _fastMinutes = 0;
+//    private float _savedTargetSpeed = 0.0f;
+//    private int _savedRampRate = RAMP_NONE;
+//}
 #endif
 // _________________________________________________________________________________________
 // This class runs a throttle to control the train in a separate thread.
@@ -1423,7 +1427,7 @@ class PauseTrain implements Runnable {
         slowToStop(false);
 
         //calculate speed increment to use in each minInterval time
-        _speedIncrement = (100.0f / (DispatcherFrame::instance()->getFullRampTime() / DispatcherFrame::instance()->getMinThrottleInterval())
+        _speedIncrement = (100.0f / (((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getFullRampTime() / ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getMinThrottleInterval())
                 / aat->_currentRampRate) / 100.0f;
        log->debug(tr("%1: _speedIncrement=%2").arg(  aat->_activeTrain->getTrainName()).arg( _speedIncrement));
 
@@ -1432,8 +1436,8 @@ class PauseTrain implements Runnable {
         aat->_throttle->setIsForward(aat->_forward);
 
         // Give command station a chance to handle direction command
-        //try { Thread.sleep(DispatcherFrame::instance().getMinThrottleInterval() * 2); } catch(Exception ex) {}
-        SleeperThread::sleep(DispatcherFrame::instance()->getMinThrottleInterval() * 2);
+        //try { Thread.sleep(((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame")).getMinThrottleInterval() * 2); } catch(Exception ex) {}
+        SleeperThread::sleep(((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getMinThrottleInterval() * 2);
 
 //            setSpeedStep(aat->_throttle->getSpeedStepMode());
         aat->_throttle->setSpeedSetting(_currentSpeed);
@@ -1468,8 +1472,8 @@ class PauseTrain implements Runnable {
                     aat->_throttle->setIsForward(aat->_forward);
 
                     // Give command station a chance to handle reversing.
-                    //try { Thread.sleep(DispatcherFrame::instance().getMinThrottleInterval() * 2); } catch(Exception ex) {}
-                SleeperThread::msleep(DispatcherFrame::instance()->getMinThrottleInterval() * 2);
+                    //try { Thread.sleep(((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame")).getMinThrottleInterval() * 2); } catch(Exception ex) {}
+                SleeperThread::msleep(((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getMinThrottleInterval() * 2);
                 }
                 // test if need to change speed
                 if (qAbs(_currentSpeed - aat->_targetSpeed) > 0.001) {
@@ -1526,8 +1530,8 @@ class PauseTrain implements Runnable {
 //                    _lastAllocatedSection = _currentAllocatedSection;
 //                }
             // Give other threads a chance to work
-            //try { Thread.sleep(DispatcherFrame::instance().getMinThrottleInterval()); } catch(Exception ex) {}
- SleeperThread::msleep(DispatcherFrame::instance()->getMinThrottleInterval() * 2);
+            //try { Thread.sleep(((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame")).getMinThrottleInterval()); } catch(Exception ex) {}
+ SleeperThread::msleep(((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getMinThrottleInterval() * 2);
 
         } //while !abort
         // shut down

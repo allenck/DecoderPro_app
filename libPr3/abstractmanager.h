@@ -3,12 +3,15 @@
 #include "logger.h"
 //#include "instancemanager.h"
 #include "manager.h"
-//#include "propertychangesupport.h"
+//#include "swingpropertychangesupport.h"
 #include "libPr3_global.h"
 #include "propertyvetoexception.h"
 #include "namedbeancomparator.h"
 #include <QAtomicInteger>
 #include "decimalformat.h"
+#include "vetoablechangelistener.h"
+#include "vetoablechangesupport.h"
+
 /**
  * Abstract partial implementation for all Manager-type classes.
  * <P>
@@ -19,13 +22,14 @@
  * @version	$Revision: 19272 $
  */
 //class Manager;
-class VetoableChangeSupport;
-class PropertyChangeSupport;
+//class VetoableChangeSupport;
+class SwingPropertyChangeSupport;
 class PropertyChangeListener;
 class PropertyChangeEvent;
-class LIBPR3SHARED_EXPORT AbstractManager : public  Manager
+class LIBPR3SHARED_EXPORT AbstractManager :  public VetoableChangeSupport, public  Manager, public VetoableChangeListener, public PropertyChangeListener
 {
     Q_OBJECT
+    Q_INTERFACES( Manager VetoableChangeListener PropertyChangeListener)
 public:
     AbstractManager(QObject *parent = 0);
     AbstractManager(SystemConnectionMemo* memo, QObject *parent = 0);
@@ -37,7 +41,7 @@ public:
      QStringList getSystemNameArray() override;
      QStringList getSystemNameList() override;
     QStringList getUserNameList();
-    QHash<QString, NamedBean*>* getSystemNameHash();
+    QMap<QString, NamedBean *> *getSystemNameHash();
     /**
      * Locate an instance based on a system name.  Returns NULL if no
      * instance already exists.
@@ -52,8 +56,8 @@ public:
      * @param userName System Name of the required NamedBean
      * @return requested NamedBean object or NULL if none exists
      */
-    /*public*/  NamedBean* getBeanByUserName(QString userName)const override;
-    /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString userName) const override;
+//    /*public*/  NamedBean* getBeanByUserName(QString userName)const override;
+//    /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString userName) const override;
 
     /**
      * Locate an instance based on a name.  Returns NULL if no
@@ -61,21 +65,21 @@ public:
      * @param name System Name of the required NamedBean
      * @return requested NamedBean object or NULL if none exists
      */
-    /*public*/  NamedBean* getNamedBean(QString name)const override;
+    /*public*/  NamedBean* getNamedBean(QString name) override;
     /**
      * Remember a NamedBean Object created outside the manager.
      * <P>
      * The non-system-specific SignalHeadManagers
      * use this method extensively.
      */
-    /*public*/  void Register(NamedBean* s) const override;
+    /*public*/  void Register(NamedBean* s)  override;
     /**
      * Forget a NamedBean Object created outside the manager.
      * <P>
      * The non-system-specific RouteManager
      * uses this method.
      */
-    /*public*/  void deregister(NamedBean* s) const override;
+    /*public*/  void deregister(NamedBean* s)  override;
     /**
      * The PropertyChangeListener interface in this class is
      * intended to keep track of user name changes to individual NamedBeans.
@@ -83,20 +87,20 @@ public:
      * are not added to newly registered objects.
      */
     //virtual /*public*/ void propertyChange(PropertyChangeEvent* e);
-    /*public synchronized */ void addPropertyChangeListener(PropertyChangeListener* l) override;
-    /*public synchronized*/  void removePropertyChangeListener(PropertyChangeListener* l) override;
-    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
-    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName) override;
-    /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
+//    /*public synchronized */ void addPropertyChangeListener(PropertyChangeListener* l) override;
+//    /*public synchronized*/  void removePropertyChangeListener(PropertyChangeListener* l) override;
+//    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
+//    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName) override;
+//    /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
 
-    /**
-     * Get all {@link java.beans.PropertyChangeListener}s currently attached to
-     * this object.
-     *
-     * @return An array of PropertyChangeListeners.
-     */
-    //@Nonnull
-    /*public*/  QVector<PropertyChangeListener *> getPropertyChangeListeners() override;
+//    /**
+//     * Get all {@link java.beans.PropertyChangeListener}s currently attached to
+//     * this object.
+//     *
+//     * @return An array of PropertyChangeListeners.
+//     */
+//    //@Nonnull
+//    /*public*/  QVector<PropertyChangeListener *> getPropertyChangeListeners() override;
 
     /**
      * By default, register this manager to store as configuration
@@ -105,57 +109,58 @@ public:
     QT_DEPRECATED /*public*/ QList<NamedBean*> *getNamedBeanList() override;
     /*public*/ /*SortedSet<E>*/QSet<NamedBean*> getNamedBeanSet() override;
 
-    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
     /*public*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName)const override; //throws NamedBean.BadSystemNameException
-    VetoableChangeSupport* vcs;// = new VetoableChangeSupport(this);
-    /*public*/ /*synchronized*/ void addVetoableChangeListener(VetoableChangeListener* l) override;
-    /*public*/ /*synchronized*/ void addVetoableChangeListener(QString propertyName, VetoableChangeListener* l) override;
-    /*public*/ /*synchronized*/ void removeVetoableChangeListener(VetoableChangeListener* l) override;
-    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners() override;
-    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName) override;
-    /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
-    /*public*/ /*final*/ QString getSystemPrefix() const override;
-    /*public*/ Manager::NameValidity validSystemNameFormat(QString systemName)const override;
-    /*public*/ void setDataListenerMute(bool m);
-    /*public*/ void addDataListener(/*ManagerDataListener<E>*/QObject* e) override;
-    /*public*/ void removeDataListener(/*ManagerDataListener<E>*/QObject* e) override;
-//    /*public*/ QString makeSystemName(/*@Nonnull*/ QString s);
-//    /*public*/ QString makeSystemName(/*@Nonnull*/ QString s, bool logErrors);
-    /*public*/ QString makeSystemName(/*@Nonnull*/ QString s, bool logErrors = true, QLocale locale = QLocale()) const override;
-    /*public*/ virtual SystemConnectionMemo* getMemo()const;
-    /*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString systemName) const override;
+    /*public*/  QString getSystemPrefix()  /*final*/ override;
+    /*public*/ void setPropertyChangesSilenced(/*@Nonnull*/ QString propertyName, bool silenced) override;
+    /*public*/ Manager::NameValidity validSystemNameFormat(QString systemName)  override;
+    QT_DEPRECATED/*public*/ void setDataListenerMute(bool m) override;
+    QT_DEPRECATED/*public*/ void addDataListener(ManagerDataListener/*<E>*/* e) override;
+    QT_DEPRECATED/*public*/ void removeDataListener(ManagerDataListener *e) override;
+    /*public*/ QString makeSystemName(/*@Nonnull*/ QString s, bool logErrors = true, QLocale locale = QLocale())  override;
+    /*public*/ SystemConnectionMemo* getMemo()  override;
     /*public*/ void updateAutoNumber(QString systemName);
-    /*public*/ QString getAutoSystemName()const;
+    /*public*/ QString getAutoSystemName();
 
+    QObject* self() override{return (QObject*)this;}
+    QString getNamedBeanClass() const override{return "AbstractManager";}
+    int getXMLOrder() const override {return 0;}
+    /*public*/ QString createSystemName(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) /*throw (JmriException)*/;
+    QT_DEPRECATED/*public*/ /*final*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) /*throw (JmriException)*/;
+    QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) /*throw (JmriException)*/;
+    /*public*/ NamedBean *getBySystemName(/*@Nonnull*/ QString systemName)  override;
+    /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString userName)  override;
 
 signals:
 //    void beanDeleted(NamedBean* s);
 //    void beanCreated(NamedBean* s);
     //void propertyChange(PropertyChangeEvent* e);
     void vetoablePropertyChange(PropertyChangeEvent *evt);
-    void notifyContentsChanged(ManagerDataEvent* e);
-    void notifyIntervalAdded(ManagerDataEvent* e);
-    void notifyIntervalRemoved(ManagerDataEvent* e);
+//    void notifyContentsChanged(ManagerDataEvent* e);
+//    void notifyIntervalAdded(ManagerDataEvent* e);
+//    void notifyIntervalRemoved(ManagerDataEvent* e);
 
 public slots:
-    virtual void propertyChange(PropertyChangeEvent* e);
-    /*public*/ virtual void vetoableChange(PropertyChangeEvent* evt); //throw PropertyVetoException
+    virtual void propertyChange(PropertyChangeEvent* e)override;
+    /*public*/ void vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException) */ override;
+
 protected:
     /*protected*/void registerSelf();
     /*protected*/ void registerUserName(NamedBean* s)const;
-    /*protected*/ void fireDataListenersAdded(int start, int end, NamedBean* changedBean);
-    /*protected*/ void fireDataListenersRemoved(int start, int end, NamedBean* changedBean);
+    QT_DEPRECATED/*protected*/ void fireDataListenersAdded(int start, int end, NamedBean* changedBean);
+    QT_DEPRECATED/*protected*/ void fireDataListenersRemoved(int start, int end, NamedBean* changedBean);
+    /*protected*/ QString checkNumeric(/*@Nonnull*/ QString curAddress) /*throw (JmriException)*/;
 
 private:
     mutable QSet<NamedBean*> _beans;
     /*private*/ int getPosition(NamedBean* s) const ;
     /*private*/ bool muted = false;
     Logger* log;
-    /*final*/ QList</*ManagerDataListener<E>>*/QObject*> listeners;// = new ArrayList<>();
+    /*final*/ QList<Manager::ManagerDataListener/*<E>*/*> listeners;// = new ArrayList<>();
     SystemConnectionMemo* memo = nullptr;
     //QAtomicInteger<int> lastAutoNamedBeanRef;
     mutable int lastAutoNamedBeanRef = 0;
     DecimalFormat paddedNumber = DecimalFormat("0000");
+    /*final*/ void setRegisterSelf();
 
 friend class SectionTableDataModel;
 friend class ReporterPickModel;
@@ -168,6 +173,12 @@ friend class RpsReporterManager;
 friend class RpsSensorManager;
 friend class InternalLightManager;
 friend class InternalReporterManager;
+friend class InternalMeterManager;
+friend class DefaultRouteManager;
+friend class SignalGroupManager;
+friend class DefaultSignalGroupManager;
+friend class DefaultVariableLightManager;
+
 protected:
 /**
  * Locate an instance based on a system name.  Returns NULL if no
@@ -177,7 +188,7 @@ protected:
  * return types.
  * @return requested Turnout object or NULL if none exists
  */
-QObject* getInstanceBySystemName(QString systemName);
+NamedBean *getInstanceBySystemName(QString systemName);
 /**
  * Locate an instance based on a user name.  Returns NULL if no
  * instance already exists. This is intended to be used by
@@ -186,25 +197,31 @@ QObject* getInstanceBySystemName(QString systemName);
  * return types.
  * @return requested Turnout object or NULL if none exists
  */
-QT_DEPRECATED QObject* getInstanceByUserName(QString userName);
+QT_DEPRECATED NamedBean* getInstanceByUserName(QString userName);
 
 
-void firePropertyChange(QString p, QVariant old, QVariant n) const;
-void fireIndexedPropertyChange(QString p, int pos, QVariant old, QVariant n) const;
+//void firePropertyChange(QString p, QVariant old, QVariant n) const;
+//void fireIndexedPropertyChange(QString p, int pos, QVariant old, QVariant n) const;
 
-/*protected*/ void fireVetoableChange(QString p, QVariant old, QVariant n) /*throws PropertyVetoException*/;
+/*protected*/ void fireVetoableChange(QString p, QVariant old, QVariant n) /*throw (PropertyVetoException)*/override;
 /*protected*/ void handleUserNameUniqueness(NamedBean* s) const;
-/*protected Hashtable*/mutable QHash<QString, NamedBean*>* _tsys; // = new Hashtable<String, NamedBean>();   // stores known Turnout instances by system name
-/*protected Hashtable*/mutable QHash<QString, NamedBean*>* _tuser; // = new Hashtable<String, NamedBean>();   // stores known Turnout instances by user name
+/*protected Hashtable*/mutable QMap<QString, NamedBean*>* _tsys; // = new Hashtable<String, NamedBean>();   // stores known Turnout instances by system name
+/*protected Hashtable*/mutable QMap<QString, NamedBean*>* _tuser; // = new Hashtable<String, NamedBean>();   // stores known Turnout instances by user name
+/*protected*/ /*final*/ QMap<QString, bool> silencedProperties = QMap<QString, bool>();
+/*protected*/ /*final*/ QSet<QString> silenceableProperties = QSet<QString>();
+/*protected*/ QString getIncrement(QString curAddress, int increment) /*throw (JmriException)*/;
+/*protected*/ QString getIncrementFromExistingNumber(QString curAddress, int increment) /*throw (JmriException)*/;
 
 protected slots:
 
- //friend class AbstractProxyManager;
- friend class PropertyChangeSupport;
+ friend class AbstractProxySensorManager;
+ friend class SwingPropertyChangeSupport;
  friend class BeanTableDataModel;
  friend class SGBeanTableDataModel;
  friend class SensorTableDataModel;
  friend class InternalSensorManager;
+ friend class LightTableDataModel;
+
 };
 
 #endif // ABSTRACTMANAGER_H

@@ -21,6 +21,8 @@
 #include "locationmanagerxml.h"
 #include "carload.h"
 #include "vptr.h"
+#include "division.h"
+
 
 //Location::Location(QObject *parent) :
 //  QObject(parent)
@@ -71,9 +73,12 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString Location::POOL_LENGTH_CHANGED_PROPERTY = "poolLengthChanged"; // NOI18N
  /*public*/ /*static*/ /*final*/ QString Location::SWITCHLIST_COMMENT_CHANGED_PROPERTY = "switchListComment";// NOI18N
  /*public*/ /*static*/ /*final*/ QString Location::TRACK_BLOCKING_ORDER_CHANGED_PROPERTY = "locationTrackBlockingOrder";// NOI18N
+ /*public*/ /*static*/ /*final*/ QString Location::LOCATION_REPORTER_PROPERTY = "locationReporterChange"; // NOI18N
+ /*public*/ /*static*/ /*final*/ QString Location::LOCATION_DIVISION_PROPERTY = "homeDivisionChange"; // NOI18N
+
 
  /*public*/ Location::Location(QString id, QString name,QObject *parent)
-  : QObject(parent) {
+  : SwingPropertyChangeSupport(this, parent) {
   common();
   if(log->isDebugEnabled()) log->debug(tr("New location (%1) id: %2").arg(name).arg(id));
   _name = name;
@@ -85,12 +90,11 @@ namespace Operations
   log = new Logger("Location");
     setObjectName("Location");
      // a new location accepts all types
-     setTypeNames(CarTypes::instance()->getNames());
-     setTypeNames(EngineTypes::instance()->getNames());
+     setTypeNames(((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames());
+     setTypeNames(((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->getNames());
      addPropertyChangeListeners();
      _id = NONE;
      _name = NONE;
-     _IdNumber = 0;
      _numberRS = 0; // number of cars and engines (total rolling stock)
      _numberCars = 0; // number of cars
      _numberEngines = 0; // number of engines
@@ -114,13 +118,10 @@ namespace Operations
      _physicalLocation = new PhysicalLocation();
      _listTypes = QStringList();
 
-     // IdTag reader associated with this location.
-     reader = NULL;
 
      // Pool
      _idPoolNumber = 0;
      _poolHashTable = QHash<QString, Pool*>();
-  pcs = new PropertyChangeSupport(this);
  }
 
  /*public*/ QString Location::getId() {
@@ -145,9 +146,22 @@ namespace Operations
      return _name;
  }
 
- /*public*/ QString Location::getName() {
+ /*public*/ QString Location::getName() const{
      return _name;
  }
+
+
+// /*public*/ bool Location::isSpur() {
+//     return getTrackType()==(Track::SPUR);
+// }
+
+// /*public*/ bool Location::isYard() {
+//     return getTrackType()==(Track::YARD);
+// }
+
+// /*public*/ bool Location::isInterchange() {
+//     return getTrackType()==(Track::INTERCHANGE);
+// }
 
  /**
   * Makes a copy of this location.
@@ -197,7 +211,7 @@ namespace Operations
 
  /*public*/ void Location::setPhysicalLocation(PhysicalLocation* l) {
      _physicalLocation = l;
-// TODO:       LocationManagerXml::instance().setDirty(true);
+// TODO:       ((LocationManagerXmll*)InstanceManager::getDefault("LocationManagerXml")).setDirty(true);
  }
 
  /**
@@ -266,7 +280,7 @@ namespace Operations
   * @return true if location is setup as staging
   */
  /*public*/ bool Location::isStaging() {
-     return getLocationOps() == STAGING;
+     return hasTrackType(Track::STAGING);
  }
 
  /**
@@ -622,6 +636,31 @@ namespace Operations
      return _dropRS;
  }
 
+ /*public*/ void Location::setDivision(Division* division) {
+     Division* old = _division;
+     _division = division;
+     if (old != _division) {
+         setDirtyAndFirePropertyChange(LOCATION_DIVISION_PROPERTY, VPtr<Division>::asQVariant(old),  VPtr<Division>::asQVariant(division));
+     }
+ }
+
+ /*public*/ Division* Location::getDivision() {
+     return _division;
+ }
+
+ /*public*/QString Location::getDivisionName() {
+     if (getDivision() != nullptr) {
+         return getDivision()->getName();
+     }
+     return NONE;
+ }
+
+ /*public*/ QString Location::getDivisionId() {
+     if (getDivision() != nullptr) {
+         return getDivision()->getId();
+     }
+     return NONE;
+ }
  /*public*/ void Location::setComment(QString comment) {
      QString old = _comment;
      _comment = comment;
@@ -734,14 +773,14 @@ if (types.length() == 0) {
      setDirtyAndFirePropertyChange(TRACK_LISTLENGTH_CHANGED_PROPERTY, old, (_trackHashTable
              .size()));
      // listen for name and state changes to forward
-     //track->addPropertyChangeListener(this);
-     connect(track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //track->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+     connect(track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 
  /*public*/ void Location::deleteTrack(Track* track) {
      if (track != (NULL)) {
          //track->removePropertyChangeListener(this);
-      disconnect(track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      disconnect(track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
          // subtract from the locations's available track length
          setLength(getLength() - track->getLength());
@@ -800,7 +839,19 @@ if (types.length() == 0) {
      }
      return out;
  }
-
+ /**
+  * Gets a unsorted list of the tracks at this location.
+  *
+  * @return tracks at this location.
+  */
+ /*public*/ QList<Track*> Location::getTracksList() {
+     QList<Track*> out = QList<Track*>();
+     QListIterator<Track*> en (_trackHashTable.values());
+     while (en.hasNext()) {
+         out.append(en.next());
+     }
+     return out;
+ }
  /**
   * Gets a sorted by id list of tracks for this location.
   *
@@ -838,7 +889,7 @@ if (types.length() == 0) {
 *            Track.STAGING
 * @return list of tracks ordered by name for this location
 */
-/*public*/ QList<Track*> Location::getTrackByNameList(QString type)
+/*public*/ QList<Track*> Location::getTracksByNameList(QString type)
 {
   QList<Track*> out = QList<Track*>();
 
@@ -918,7 +969,7 @@ if (types.length() == 0) {
   */
  /*public*/ QList<Track*> Location::getTracksByBlockingOrderList(QString type) {
      QList<Track*> orderList = QList<Track*>();
-     foreach (Track* track, getTrackByNameList(type)) {
+     foreach (Track* track, getTracksByNameList(type)) {
          bool trackAdded = false;
          for (int j = 0; j < orderList.size(); j++) {
              if (track->getBlockingOrder() < orderList.at(j)->getBlockingOrder()) {
@@ -1009,7 +1060,7 @@ if (types.length() == 0) {
  {
   box->clear();
   box->addItem("");
-  QList<Track*> tracks = getTrackByNameList(NULL);
+  QList<Track*> tracks = getTracksByNameList(NULL);
   foreach (Track* track, tracks)
   {
    box->addItem(track->toString(), VPtr<Track>::asQVariant(track));
@@ -1030,7 +1081,7 @@ if (types.length() == 0) {
      if (!filter || rs == (NULL)) {
          return;
      }
-     QList<Track*> tracks = getTrackByNameList(NULL);
+     QList<Track*> tracks = getTracksByNameList(NULL);
      foreach (Track* track, tracks) {
          QString status = "";
          if (destination) {
@@ -1214,29 +1265,83 @@ if (types.length() == 0) {
      return false;
  }
 
+ /*public*/ bool Location::hasOrderRestrictions() {
+     for (Track* track : getTracksList()) {
+         if (track->getServiceOrder()!=(Track::NORMAL)) {
+             return true;
+         }
+     }
+     return false;
+ }
+
+ /*public*/ bool Location::hasSchedules() {
+     for (Track* track : getTracksList()) {
+         if (track->isSpur() && track->getSchedule() != nullptr) {
+             return true;
+         }
+     }
+     return false;
+ }
+
+ /*public*/ bool Location::hasWork() {
+     return (getDropRS() != 0 || getPickupRS() != 0);
+ }
+
+ /*public*/ bool Location::hasReporters() {
+     for (Track* track : getTracksList()) {
+         if (track->getReporter() != nullptr) {
+             return true;
+         }
+     }
+     return false;
+ }
+
+ /*
+  * set the jmri.Reporter object associated with this location.
+  *
+  * @param reader jmri.Reporter object.
+  */
+ /*public*/ void Location::setReporter(Reporter* r) {
+  Reporter* old = _reader;
+   _reader = r;
+   if (old != r) {
+       setDirtyAndFirePropertyChange(LOCATION_REPORTER_PROPERTY, VPtr<Reporter>::asQVariant(old), VPtr<Reporter>::asQVariant(r));
+   }
+ }
+
+ /*
+ * get the jmri.Reporter object associated with this location.
+ *
+ * @return jmri.Reporter object.
+ */
+ /*public*/ Reporter* Location::getReporter() {
+   return _reader;
+ }
+
+ /*public*/ QString Location::getReporterName() {
+   if (getReporter() != nullptr) {
+       return getReporter()->getDisplayName();
+   }
+   return "";
+ }
+
  /*public*/ void Location::dispose() {
      QList<Track*> tracks = getTrackList();
      foreach (Track* track, tracks) {
          deleteTrack(track);
      }
-     //CarTypes.instance().removePropertyChangeListener(this);
-     disconnect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //CarRoads.instance().removePropertyChangeListener(this);
-     disconnect(CarRoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //EngineTypes.instance().removePropertyChangeListener(this);
-     disconnect(EngineTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     ((CarTypes*)InstanceManager::getDefault("CarTypes"))->removePropertyChangeListener(this);
+     ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->removePropertyChangeListener(this);
+     ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->removePropertyChangeListener(this);
      // Change name in case object is still in use, for example Schedules
      setName(tr("NotValid %1").arg(getName()));
      setDirtyAndFirePropertyChange(DISPOSE_CHANGED_PROPERTY, QVariant(), DISPOSE_CHANGED_PROPERTY);
  }
 
  /*private*/ void Location::addPropertyChangeListeners() {
-     //CarTypes.instance().addPropertyChangeListener(this);
-connect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //CarRoads.instance().addPropertyChangeListener(this);
-connect(CarRoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //EngineTypes.instance().addPropertyChangeListener(this);
-connect(EngineTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     ((CarTypes*)InstanceManager::getDefault("CarTypes"))->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+     ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+     ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->SwingPropertyChangeSupport::addPropertyChangeListener(this);
  }
 
  /**
@@ -1245,7 +1350,7 @@ connect(EngineTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*
   *
   * @param e Consist XML element
   */
- /*public*/ Location::Location(QDomElement e)
+ /*public*/ Location::Location(QDomElement e, QObject* parent) :SwingPropertyChangeSupport(this, parent)
  {
   common();
   // if (log.isDebugEnabled())log->debug("ctor from element "+e);
@@ -1311,7 +1416,7 @@ connect(EngineTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*
        && (y = e.attribute(Xml::SOUTH_TRAIN_ICON_Y)) != "") {
           setTrainIconSouth(QPoint(x.toInt(), y.toInt()));
       }
-//       } catch (NumberFormatException nfe) {
+//       } catch (NumberFormatException* nfe) {
 //          log->error("Train icon coordinates aren't vaild for location {}", getName());
 //       }
    if ((a = e.attribute(Xml::COMMENT)) != "") {
@@ -1431,8 +1536,8 @@ connect(EngineTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*
          e.setAttribute(Xml::SOUTH_TRAIN_ICON_X, QString::number(getTrainIconSouth().x()));
          e.setAttribute(Xml::SOUTH_TRAIN_ICON_Y, QString::number(getTrainIconSouth().y()));
      }
-     if (reader != (NULL)) {
-         e.setAttribute(Xml::READER, reader->getDisplayName());
+     if (_reader != (NULL)) {
+         e.setAttribute(Xml::READER, _reader->getDisplayName());
      }
      // build list of rolling stock types for this location
      QStringList types = getTypeNames();
@@ -1441,8 +1546,8 @@ connect(EngineTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*
          QString buf;// = new StringBuffer();
          foreach (QString type, types) {
              // remove types that have been deleted by user
-             if (CarTypes::instance()->containsName(type)
-                     || EngineTypes::instance()->containsName(type)) {
+             if (((CarTypes*)InstanceManager::getDefault("CarTypes"))->containsName(type)
+                     || ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->containsName(type)) {
                  buf.append(type + "%%"); // NOI18N
              }
          }
@@ -1453,12 +1558,12 @@ connect(EngineTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*
               QDomElement eTypes = doc.createElement(Xml::TYPES);
      foreach (QString type, types) {
          // don't save types that have been deleted by user
-         if (EngineTypes::instance()->containsName(type)) {
+         if (((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->containsName(type)) {
              //QDomElement eType = QDomElement (Xml::LOCO_TYPE);
               QDomElement eType = doc.createElement(Xml::LOCO_TYPE);
              eType.setAttribute(Xml::NAME, type);
              eTypes.appendChild(eType);
-         } else if (CarTypes::instance()->containsName(type)) {
+         } else if (((CarTypes*)InstanceManager::getDefault("CarTypes"))->containsName(type)) {
              //QDomElement eType = QDomElement (Xml::CAR_TYPE);
               QDomElement eType = doc.createElement(Xml::CAR_TYPE);
              eType.setAttribute(Xml::NAME, type);
@@ -1526,24 +1631,6 @@ connect(EngineTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*
      }
  }
 
- /*
-  * set the jmri.Reporter object associated with this location.
-  *
-  * @param reader jmri.Reporter object.
-  */
- /*protected*/ void Location::setReporter(Reporter* r) {
-     reader = r;
- }
-
- /*
-  * get the jmri.Reporter object associated with this location.
-  *
-  * @return jmri.Reporter object.
-  */
- /*public*/ Reporter* Location::getReporter() {
-     return reader;
- }
-
  /*private*/ void Location::replaceRoad(QString oldRoad, QString newRoad) {
      // now adjust any track locations
      QList<Track*> tracks = getTrackList();
@@ -1581,18 +1668,8 @@ connect(EngineTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*
      }
  }
 
-#if 0
- /*public*/ synchronized void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.addPropertyChangeListener(l);
- }
-
- /*public*/ synchronized void removePropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.removePropertyChangeListener(l);
- }
-#endif
-
  /*protected*/ void Location::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
- LocationManagerXml::instance()->setDirty(true);
-     pcs->firePropertyChange(p, old, n);
+ ((LocationManagerXml*)InstanceManager::getDefault("LocationManagerXml"))->setDirty(true);
+     firePropertyChange(p, old, n);
  }
 }

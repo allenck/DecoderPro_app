@@ -8,6 +8,7 @@
 #include "routemanagerxml.h"
 #include "carmanagerxml.h"
 #include "enginemanagerxml.h"
+#include "instancemanager.h"
 
 /*private*/ /*static*/ QString OperationsXml::operationsDirectoryName = "operations"; // NOI18N
 
@@ -37,16 +38,16 @@ OperationsXml::OperationsXml(QObject *parent) :
  {
      writeFile(getDefaultOperationsFilename());
  }
- catch (Exception e) {
-     Logger::error("Exception while writing operation file, may not be complete: " + e.getMessage());
+ catch (Exception* e) {
+     Logger::error("Exception while writing operation file, may not be complete: " + e->getMessage());
  }
 }
 
-/*protected*/ void OperationsXml::load() throw (Exception)
+/*protected*/ void OperationsXml::load() /*throw (Exception)*/
 {
     try {
         readFile(getDefaultOperationsFilename());
-    } catch (Exception e) {
+    } catch (Exception* e) {
         Logger::error("Exception during operations file reading", e);
     }
 }
@@ -83,9 +84,9 @@ OperationsXml::OperationsXml(QObject *parent) :
    file = new File(fullPathName);
   }
  }
- catch (Exception e)
+ catch (Exception* e)
  {
-  Logger::error("Exception while creating operations file, may not be complete: " + e.getMessage());
+  Logger::error("Exception while creating operations file, may not be complete: " + e->getMessage());
  }
  return file;
 }
@@ -158,6 +159,8 @@ OperationsXml::OperationsXml(QObject *parent) :
  */
 /*public*/ /*static*/ QString OperationsXml::getFileLocation()
 {
+ if(fileLocation == nullptr)
+  fileLocation = FileUtil::getUserFilesPath();
  return fileLocation;
 }
 
@@ -239,13 +242,13 @@ OperationsXml::OperationsXml(QObject *parent) :
  */
 /*public*/ /*static*/ void OperationsXml::save()
 {
- Operations::OperationsSetupXml::instance()->writeFileIfDirty();
+ ((Operations::OperationsSetupXml*)InstanceManager::getDefault("OperationsSetupXml"))->writeFileIfDirty();
 
- Operations::LocationManagerXml::instance()->writeFileIfDirty(); // Need to save "moves" for track location
- Operations::RouteManagerXml::instance()->writeFileIfDirty(); // Only if user used setX&Y
- Operations::CarManagerXml::instance()->writeFileIfDirty(); // save train assignments
- Operations::EngineManagerXml::instance()->writeFileIfDirty(); // save train assignments
- Operations::TrainManagerXml::instance()->writeFileIfDirty(); // save train changes
+ ((Operations::LocationManagerXml*)InstanceManager::getDefault("Operations::LocationManagerXml"))->writeFileIfDirty(); // Need to save "moves" for track location
+ ((Operations::RouteManagerXml*)InstanceManager::getDefault("RouteManagerXml"))->writeFileIfDirty(); // Only if user used setX&Y
+ ((Operations::CarManagerXml*)InstanceManager::getDefault("CarManagerXml"))->writeFileIfDirty(); // save train assignments
+ ((Operations::EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml"))->writeFileIfDirty(); // save train assignments
+ ((Operations::TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->writeFileIfDirty(); // save train changes
 
 }
 
@@ -256,9 +259,9 @@ OperationsXml::OperationsXml(QObject *parent) :
  */
 /*public*/ /*static*/ bool OperationsXml::areFilesDirty()
 {
- if (Operations::OperationsSetupXml::instance()->isDirty() || Operations::LocationManagerXml::instance()->isDirty()
-         || Operations::RouteManagerXml::instance()->isDirty() || Operations::CarManagerXml::instance()->isDirty()
-         || Operations::EngineManagerXml::instance()->isDirty() || Operations::TrainManagerXml::instance()->isDirty())
+ if (((Operations::OperationsSetupXml*)InstanceManager::getDefault("OperationsSetupXml"))->isDirty() || ((Operations::LocationManagerXml*)InstanceManager::getDefault("Operations::LocationManagerXml"))->isDirty()
+         || ((Operations::RouteManagerXml*)InstanceManager::getDefault("RouteManagerXml"))->isDirty() || ((Operations::CarManagerXml*)InstanceManager::getDefault("CarManagerXml"))->isDirty()
+         || ((Operations::EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml"))->isDirty() || ((Operations::TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->isDirty())
  {
      return true;
  }

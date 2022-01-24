@@ -49,9 +49,9 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
  if (tm!=nullptr)
  {
   TurnoutOperationManagerXml* tomx = new TurnoutOperationManagerXml();
-  QDomElement opElem = tomx->store(doc, TurnoutOperationManager::getInstance());
+  QDomElement opElem = tomx->store((TurnoutOperationManager*)InstanceManager::getDefault("TurnoutOperationManager"));
   turnouts.appendChild(opElem);
-  QStringListIterator iter(((AbstractTurnoutManager*)tm)->getSystemNameList());
+  QStringListIterator iter(((TurnoutManager*)tm)->getSystemNameList());
 
   // don't return an element if there are not turnouts to include
   if (!iter.hasNext()) return QDomElement();
@@ -213,7 +213,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
  if (operationList.size()>0)
  {
   TurnoutOperationManagerXml* tomx = new TurnoutOperationManagerXml();
-  tomx->load(operationList.at(0).toElement());
+  tomx->load(operationList.at(0).toElement(), QDomElement());
  }
  QDomNodeList turnoutList = turnouts.elementsByTagName("turnout");
  if (log->isDebugEnabled()) log->debug("Found "+QString::number(turnoutList.size())+" turnouts");
@@ -230,9 +230,9 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
    }
   }
  }
- catch (JmriException ex)
+ catch (JmriException* ex)
  {
-  log->error(ex.getMessage());
+  log->error(ex->getMessage());
  }
 
  try
@@ -246,9 +246,9 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
    }
   }
  }
- catch (JmriException ex)
+ catch (JmriException* ex)
  {
-  log->error(ex.getMessage());
+  log->error(ex->getMessage());
  }
 
  for (int i=0; i<turnoutList.size(); i++)
@@ -263,10 +263,10 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
   }
   QString userName = getUserName(elem);
   if (log->isDebugEnabled()) log->debug("create turnout: ("+sysName+")("+(userName==nullptr?"<nullptr>":userName)+")");
-  Turnout* t = (Turnout*)tm->getBySystemName(sysName);
+  Turnout* t = (Turnout*)((ProxyTurnoutManager*)tm)->AbstractProxyManager::getBySystemName(sysName);
   if (t==nullptr)
   {
-   t = tm->newTurnout(sysName, userName);
+   t = ((ProxyTurnoutManager*)tm)->newTurnout(sysName, userName);
    //Nothing is logged in the console window as the newTurnoutFunction already does this.
                 //log->error("Could not create turnout: '"+sysName+"' user name: '"+(userName==nullptr?"":userName)+"'");
    if (t==nullptr)
@@ -305,7 +305,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
    {
     ((AbstractTurnout*)t)->provideFirstFeedbackSensor(a);
    }
-   catch (JmriException e)
+   catch (JmriException* e)
    {
     result = false;
    }
@@ -317,7 +317,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
    {
     ((AbstractTurnout*)t)->provideSecondFeedbackSensor(a);
    }
-   catch (JmriException e)
+   catch (JmriException* e)
    {
     result = false;
    }
@@ -445,9 +445,9 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
     }
    }
   }
-  catch (JmriException ex)
+  catch (JmriException* ex)
   {
-    log->error(ex.toString());
+    log->error(ex->toString());
   }
 
   try
@@ -462,9 +462,9 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
     }
    }
   }
-  catch (JmriException ex)
+  catch (JmriException* ex)
   {
-   log->error(ex.toString());
+   log->error(ex->toString());
   }
  }
  return result;

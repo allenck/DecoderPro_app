@@ -12,9 +12,9 @@ public:
  AbstractSignalHeadManagerXml(const AbstractSignalHeadManagerXml&) : AbstractNamedBeanManagerConfigXML() {}
     /*public*/ QDomElement store(QObject* o) override;
     /*public*/ void setStoreElementClass(QDomElement turnouts);
-    /*public*/ bool load(QDomElement signalheads)  throw (Exception) override;
+    /*public*/ bool load(QDomElement shared, QDomElement pernode)  throw (Exception) override;
     /*public*/ void load(QDomElement element, QObject* o) throw (Exception) override;
-    /*public*/ void loadSignalHeads(QDomElement signalheads) ;
+    /*public*/ void loadSignalHeads(QDomElement shared, QDomElement perNode) ;
     /*protected*/ void replaceSignalHeadManager();
     /*public*/ int loadOrder() const override;
 signals:

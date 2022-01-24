@@ -409,10 +409,10 @@ private static void reportActualBinding(Set<URL> staticLoggerBinderPathSet) {
      * 11: areturn
      *  */
     // </editor-fold>
- if(loggerMap == nullptr)
-  loggerMap = new QMap<QString, Logger*>();
- if(loggerMap->contains(name))
-  return loggerMap->value(name);
+  if(loggerMap == nullptr)
+   loggerMap = new QMap<QString, Logger*>();
+  if(loggerMap->contains(name))
+   return loggerMap->value(name);
   Logger* log;
   loggerMap->insert(name, log = new Logger(name));
   return log;

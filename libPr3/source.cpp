@@ -15,7 +15,7 @@
 
 
 
-/*public*/ bool Source::isEnabled(QObject* dest,LayoutEditor* panel){
+/*public*/ bool Source::isEnabled(NamedBean* dest,LayoutEditor* panel){
     PointDetails* lookingFor = manager->getPointDetails(dest, panel);
     if(pointToDest->contains(lookingFor)){
         return pointToDest->value(lookingFor)->isEnabled();
@@ -23,7 +23,7 @@
     return true;
 }
 
-/*public*/ void Source::setEnabled(QObject* dest, LayoutEditor* panel, bool boo){
+/*public*/ void Source::setEnabled(NamedBean *dest, LayoutEditor* panel, bool boo){
     PointDetails* lookingFor = manager->getPointDetails(dest, panel);
     if(pointToDest->contains(lookingFor)){
         pointToDest->value(lookingFor)->setEnabled(boo);
@@ -40,7 +40,7 @@
  sourceSignal = NULL;
  //String ref = "Empty";
  pd = NULL;
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
 
  manager = (EntryExitPairs*)InstanceManager::getDefault("EntryExitPairs");
 
@@ -66,7 +66,7 @@
  * @since 4.17.4
  */
 /*public*/ void Source::addPropertyChangeListener(PropertyChangeListener* listener) {
-    pcs->addPropertyChangeListener(listener);
+    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(listener);
 }
 
 /**
@@ -222,7 +222,7 @@ void Source::addSourceObject(NamedBean* source){
     sourceObject = source;
 }
 
-QObject* Source::getSourceObject()
+NamedBean* Source::getSourceObject()
 {
  return sourceObject;
 }
@@ -236,7 +236,7 @@ QObject* Source::getSourceObject()
     return pointToDest->contains(destPoint);
 }
 
-/*public*/ bool Source::getUniDirection(QObject* dest, LayoutEditor* panel){
+/*public*/ bool Source::getUniDirection(NamedBean* dest, LayoutEditor* panel){
     //Work on the principle that if the source is uniDirection, then the destination has to be.
     PointDetails*  lookingFor = manager->getPointDetails(dest, panel);
     if(pointToDest->contains(lookingFor)){
@@ -245,7 +245,7 @@ QObject* Source::getSourceObject()
     return true;
 }
 
-/*public*/ void Source::setUniDirection(QObject* dest, LayoutEditor* panel, bool set){
+/*public*/ void Source::setUniDirection(NamedBean *dest, LayoutEditor* panel, bool set){
 
     PointDetails* lookingFor = manager->getPointDetails(dest, panel);
     if(pointToDest->contains(lookingFor)){
@@ -253,7 +253,7 @@ QObject* Source::getSourceObject()
     }
 }
 
-/*public*/ bool Source::canBeBiDirection(QObject* dest, LayoutEditor* panel){
+/*public*/ bool Source::canBeBiDirection(NamedBean* dest, LayoutEditor* panel){
     if(getSourceSignal()==NULL){
         return true;
     }
@@ -287,21 +287,21 @@ void Source::activeBean(DestinationPoints* dest, bool reverseDirection){
  return pointToDest->size();
 }
 
-/*public*/ void Source::setEntryExitType(QObject* dest, LayoutEditor* panel, int type){
+/*public*/ void Source::setEntryExitType(NamedBean *dest, LayoutEditor* panel, int type){
     PointDetails*  lookingFor = manager->getPointDetails(dest, panel);
     if(pointToDest->contains(lookingFor)){
         pointToDest->value(lookingFor)->setEntryExitType(type);
     }
     if(type == EntryExitPairs::FULLINTERLOCK){
         //if (sourceSignal instanceof SignalMast)
-        if(qobject_cast<SignalMast*>(sourceSignal)!= NULL)
+        if(static_cast<SignalMast*>(sourceSignal)!= NULL)
         {
             ((SignalMast*) sourceSignal)->setHeld(true);
         }
     }
 }
 
-/*public*/ int Source::getEntryExitType(QObject* dest, LayoutEditor* panel){
+/*public*/ int Source::getEntryExitType(NamedBean *dest, LayoutEditor* panel){
     PointDetails* lookingFor = manager->getPointDetails(dest, panel);
     if(pointToDest->contains(lookingFor)){
         return pointToDest->value(lookingFor)->getEntryExitType();
@@ -310,14 +310,14 @@ void Source::activeBean(DestinationPoints* dest, bool reverseDirection){
     return 0x00;
 }
 
-/*public*/ void Source::cancelInterlock(QObject* dest, LayoutEditor* panel){
+/*public*/ void Source::cancelInterlock(NamedBean* dest, LayoutEditor* panel){
     PointDetails* lookingFor = manager->getPointDetails(dest, panel);
     if(pointToDest->contains(lookingFor)){
         pointToDest->value(lookingFor)->cancelClearInterlock(EntryExitPairs::CANCELROUTE);
     }
 }
 
-/*public*/ QString Source::getUniqueId(QObject* dest, LayoutEditor* panel){
+/*public*/ QString Source::getUniqueId(NamedBean *dest, LayoutEditor* panel){
     PointDetails* lookingFor = manager->getPointDetails(dest, panel);
     if(pointToDest->contains(lookingFor)){
         return pointToDest->value(lookingFor)->getUniqueId();

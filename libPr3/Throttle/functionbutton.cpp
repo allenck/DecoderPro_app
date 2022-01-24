@@ -282,7 +282,7 @@ void FunctionButton::init()
  * Handle the selection from the popup menu.
  * @param e The ActionEvent causing the action.
  */
-/*public*/ void FunctionButton::popactionPerformed(ActionEvent* /*e*/)
+/*public*/ void FunctionButton::popactionPerformed(JActionEvent* /*e*/)
 {
     FunctionButtonPropertyEditor* editor = new FunctionButtonPropertyEditor();
     editor->setFunctionButton(this);
@@ -500,9 +500,9 @@ void FunctionButton::init()
    this->setSelectedIconPath(e.attribute("selectedIconPath"));
   updateLnF();
  }
- catch (DataConversionException ex)
+ catch (DataConversionException* ex)
  {
-  log->error("DataConverstionException in setXml: "+ex.msg);
+  log->error("DataConverstionException in setXml: "+ex->msg);
  }
 }
 

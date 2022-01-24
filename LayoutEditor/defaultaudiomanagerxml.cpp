@@ -55,11 +55,11 @@ DefaultAudioManagerXml::DefaultAudioManagerXml(QObject *parent) :
   * @return true if successful
   */
  //@Override
-/*public*/ bool DefaultAudioManagerXml::load(QDomElement audio) throw (Exception){
+/*public*/ bool DefaultAudioManagerXml::load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException){
      // create the master object
      ((AudioManager*)InstanceManager::getDefault("AudioManager"));
      // load individual audio objects
-     loadAudio(audio);
+     loadAudio(shared);
      return true;
  }
 //}

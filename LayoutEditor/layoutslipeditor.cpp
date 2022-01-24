@@ -30,12 +30,13 @@
      * Edit a Slip.
      */
     //@Override
-    /*public*/ void LayoutSlipEditor::editLayoutTrack(/*@Nonnull*/ LayoutTrack* layoutTrack) {
-        if ( qobject_cast<LayoutSlip*>(layoutTrack) ) {
-            this->layoutSlip = (LayoutSlip*) layoutTrack;
-        } else {
-            log->error(tr("editLayoutTrack called with wrong type %1").arg(layoutTrack->getName()),  Exception("traceback"));
-        }
+    /*public*/ void LayoutSlipEditor::editLayoutTrack(/*@Nonnull*/ LayoutTrackView* layoutTrackView) {
+    if ( qobject_cast<LayoutSlipView*>(layoutTrackView) ) {
+        this->layoutSlipView = (LayoutSlipView*) layoutTrackView;
+        this->layoutSlip = this->layoutSlipView->getSlip();
+    } else {
+        log->error(tr("editLayoutTrack called with wrong type %1").arg(layoutTrackView->getName()), new Exception("traceback"));
+    }
         sensorList.clear();
 
         if (editLayoutSlipOpen) {
@@ -53,7 +54,7 @@
             panel1->setLayout(new FlowLayout());
             JLabel* turnoutNameLabel = new JLabel(tr("Turnout") + " A");  // NOI18N
             panel1->layout()->addWidget(turnoutNameLabel);
-            editLayoutSlipTurnoutAComboBox = new NamedBeanComboBox((TurnoutManager*)InstanceManager::getDefault("TurnoutManager"));
+            editLayoutSlipTurnoutAComboBox = new NamedBeanComboBox((AbstractProxyManager*)InstanceManager::getDefault("TurnoutManager"));
             editLayoutSlipTurnoutAComboBox->setToolTip(tr("Select a turnout, used turnouts are excluded from the list."));
             LayoutEditor::setupComboBox(editLayoutSlipTurnoutAComboBox, false, true, false);
             turnoutNameLabel->setLabelFor(editLayoutSlipTurnoutAComboBox);
@@ -65,7 +66,7 @@
             panel1a->setLayout(new FlowLayout());
             JLabel* turnoutBNameLabel = new JLabel(tr("BeanNameTurnout") + " B");  // NOI18N
             panel1a->layout()->addWidget(turnoutBNameLabel);
-            editLayoutSlipTurnoutBComboBox = new NamedBeanComboBox((TurnoutManager*)InstanceManager::getDefault("TurnoutManager"));
+            editLayoutSlipTurnoutBComboBox = new NamedBeanComboBox((AbstractProxyManager*)InstanceManager::getDefault("TurnoutManager"));
             editLayoutSlipTurnoutBComboBox->setToolTip(tr("Select a turnout, used turnouts are excluded from the list."));
             LayoutEditor::setupComboBox(editLayoutSlipTurnoutBComboBox, false, true, false);
             turnoutBNameLabel->setLabelFor(editLayoutSlipTurnoutBComboBox);
@@ -151,7 +152,7 @@
             contentPane->layout()->addWidget(panel5);
         }
 
-        editLayoutSlipHiddenBox->setChecked(layoutSlip->isHidden());
+        editLayoutSlipHiddenBox->setChecked(layoutSlipView->isHidden());
 
         // Set up for Edit
         QList<Turnout*> currentTurnouts = QList<Turnout*>();
@@ -195,11 +196,11 @@
      */
     /*private*/ void LayoutSlipEditor::drawSlipState(QPainter* g2, int state)
     {
-     QPointF cenP = layoutSlip->getCoordsCenter();
-     QPointF A = MathUtil::subtract(layoutSlip->getCoordsA(), cenP);
-     QPointF B = MathUtil::subtract(layoutSlip->getCoordsB(), cenP);
-     QPointF C = MathUtil::subtract(layoutSlip->getCoordsC(), cenP);
-     QPointF D = MathUtil::subtract(layoutSlip->getCoordsD(), cenP);
+     QPointF cenP = layoutSlipView->getCoordsCenter();
+     QPointF A = MathUtil::subtract(layoutSlipView->getCoordsA(), cenP);
+     QPointF B = MathUtil::subtract(layoutSlipView->getCoordsB(), cenP);
+     QPointF C = MathUtil::subtract(layoutSlipView->getCoordsC(), cenP);
+     QPointF D = MathUtil::subtract(layoutSlipView->getCoordsD(), cenP);
 
      QPointF ctrP = QPointF(20.0, 20.0);
      A = MathUtil::add(MathUtil::normalize(A, 18.0), ctrP);
@@ -474,9 +475,9 @@
         }
 
         // set hidden
-        bool oldHidden = layoutSlip->isHidden();
+        bool oldHidden = layoutSlipView->isHidden();
         layoutSlip->setHidden(editLayoutSlipHiddenBox->isChecked());
-        if (oldHidden != layoutSlip->isHidden()) {
+        if (oldHidden != layoutSlipView->isHidden()) {
             editLayoutSlipNeedsRedraw = true;
         }
 

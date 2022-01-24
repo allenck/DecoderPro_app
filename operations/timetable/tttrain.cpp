@@ -18,7 +18,7 @@ namespace TimeTable
     /*public*/ TTTrain::TTTrain(int scheduleId,QObject *parent) : QObject(parent) {
      _dm = TimeTableDataManager::getDataManager();
         if (_dm->getSchedule(scheduleId) == nullptr) {
-            throw IllegalArgumentException(TimeTableDataManager::TRAIN_ADD_FAIL);
+            throw new IllegalArgumentException(TimeTableDataManager::TRAIN_ADD_FAIL);
         }
         _trainId = _dm->getNextId("Train");  // NOI18N
         _scheduleId = scheduleId;
@@ -87,7 +87,7 @@ namespace TimeTable
         try {
             _dm->calculateTrain(_trainId, false);
             _dm->calculateTrain(_trainId, true);
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             _defaultSpeed = oldSpeed;  // Roll back default speed change
             throw ex;
         }
@@ -109,7 +109,7 @@ namespace TimeTable
         try {
             _dm->calculateTrain(_trainId, false);
             _dm->calculateTrain(_trainId, true);
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             _startTime = oldStartTime;  // Roll back start time change
             throw ex;
         }

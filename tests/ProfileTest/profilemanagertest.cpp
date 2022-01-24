@@ -27,7 +27,7 @@ ProfileManagerTest::ProfileManagerTest(QObject *parent) : QObject(parent)
 }
 
 //@Test
-/*public*/ void ProfileManagerTest::testSetActiveProfile_Profile() throw (IOException) {
+/*public*/ void ProfileManagerTest::testSetActiveProfile_Profile() /*throw (IOException)*/ {
     ProfileManager* pm = new ProfileManager();
     // null profile
     pm->setActiveProfile(nullptr);
@@ -41,7 +41,7 @@ ProfileManagerTest::ProfileManagerTest(QObject *parent) : QObject(parent)
 }
 
 //@Test
-/*public*/ void ProfileManagerTest::testSetActiveProfile_String() throw (IOException) {
+/*public*/ void ProfileManagerTest::testSetActiveProfile_String() /*throw (IOException)*/ {
     ProfileManager* pm = new ProfileManager();
     // null profile
     pm->setActiveProfile("");

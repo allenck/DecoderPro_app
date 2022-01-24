@@ -2,16 +2,27 @@
 #include "eventobject.h"
 #include "itemlistener.h"
 #include "itemevent.h"
+#include "exceptions.h"
+#include "vptr.h"
 
 JComboBox::JComboBox(QWidget* parent) : QComboBox(parent)
 {
  connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(currentIndexChanged(int)));
+ cbModel = new QStringListModel();
+ setModel(cbModel);
 }
 
 JComboBox::JComboBox(QStringList list, QWidget* parent) : QComboBox(parent)
 {
- addItems(list);
  connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(currentIndexChanged(int)));
+ cbModel = new QStringListModel();
+ setModel(cbModel);
+ addItems(list);
+}
+
+JComboBox::JComboBox(ComboBoxModel* model, QWidget* parent)
+{
+
 }
 
 /*public*/ bool JComboBox::isOpaque()
@@ -47,7 +58,8 @@ JComboBox::JComboBox(QStringList list, QWidget* parent) : QComboBox(parent)
 void JComboBox::currentIndexChanged(int)
 {
  ItemEvent* itemEvent = new ItemEvent(this);
- itemEvent->setItem(currentData());
+// if(currentData().isValid())
+//  itemEvent->setItem(currentData());
  emit itemStateChanged(itemEvent);
 }
 
@@ -89,4 +101,80 @@ void JComboBox::currentIndexChanged(int)
 /*public*/ void JComboBox::addItemListener(ItemListener* listener)
 {
  connect(this, SIGNAL(itemStateChanged(ItemEvent*)), listener, SLOT(itemStateChanged(ItemEvent*)));
+}
+
+/*public*/ QStringList JComboBox::itemList(){
+ return cbModel->stringList();
+}
+
+/*public*/ QVariant JComboBox::getItemAt(int i)
+{
+ //return itemData(i);
+ return map.value(itemText(i));
+}
+
+/*public*/ void JComboBox::clear()
+{
+ map.clear();
+ QComboBox::clear();
+}
+
+/*public*/ QVariant JComboBox::currentData() {
+ return map.value(QComboBox::currentText());
+}
+
+/*public*/ QVariant JComboBox::itemData(int index)
+{
+ if(index >= QComboBox::count())
+  throw new IndexOutOfBoundsException();
+ QVariant v = QComboBox::itemData(index);
+ if(v.isValid())
+  return v;
+ return map.value(itemText(index));
+}
+
+
+/*public*/ void JComboBox::addItem(QString text,  QVariant data)
+{
+ if(data.isValid())
+ {
+  map.insert(text, data);
+ }
+ QComboBox::addItem(text, data);
+}
+
+/*public*/ void JComboBox::addItem(QVariant t)
+{
+ if(t.canConvert<QString>())
+  QComboBox::addItem(t.toString());
+    else
+ {
+  QObject* o = VPtr<QObject>::asPtr(t);
+  if(o)
+  {
+   QString text;
+   if(!QMetaObject::invokeMethod(o, "toString", Qt::DirectConnection, Q_RETURN_ARG(QString, text)))
+   {
+    throw new IllegalArgumentException("Invalid QVariant parameter for JComboBox; class has no 'toString' method");
+   }
+   else {
+     addItem(text, t);
+    }
+  }
+ }
+}
+
+
+/*public*/ void JComboBox::setSelectedItem(QVariant t)
+{
+ if(t.canConvert<QString>())
+  QComboBox::setCurrentText(t.toString());
+    else
+  QComboBox::setCurrentIndex(QComboBox::findData(t));
+}
+
+
+/*public*/ bool JComboBox::isSelected()
+{
+ return  (currentIndex() >= -1);
 }

@@ -54,7 +54,7 @@ DefaultRouteManagerXml::DefaultRouteManagerXml(QObject *parent) :
           Logger::error("System name NULL during store");
       }
       log->debug("system name is " + sname);
-      Route* r = tm->getBySystemName(sname);
+      Route* r = (Route*)tm->getBySystemName(sname);
       QString cTurnout = r->getControlTurnout();
       int addedDelay = r->getRouteCommandDelay();
       bool routeLocked = r->getLocked();
@@ -62,10 +62,12 @@ DefaultRouteManagerXml::DefaultRouteManagerXml(QObject *parent) :
 
       QDomElement elem = doc.createElement("route");
 //              elem.setAttribute("systemName", sname);
-      elem.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(sname)));
+      QDomElement e1 = doc.createElement("systemName");
+      e1.appendChild(doc.createTextNode(sname));
+      elem.appendChild(e1);
 
       // store common parts
-      storeCommon(r, elem);
+      storeCommon((NamedBean*)r, elem);
 
       if (cTurnout != NULL && cTurnout != "") {
           elem.setAttribute("controlTurnout", cTurnout);
@@ -208,10 +210,10 @@ return routes;
  routes.setAttribute("class", "jmri.managers.configurexml.DefaultRouteManagerXml");
 }
 
-/*public*/ void DefaultRouteManagerXml::load(QDomElement /*element*/, QObject* /*o*/) throw (Exception)
-{
- Logger::error("Invalid method called");
-}
+///*public*/ void DefaultRouteManagerXml::load(QDomElement /*element*/, QObject* /*o*/) throw (Exception)
+//{
+// Logger::error("Invalid method called");
+//}
 
 /**
 * Create a RouteManager object of the correct class, then register and fill
@@ -220,11 +222,11 @@ return routes;
 * @param routes Top level QDomElement to unpack.
 * @return true if successful
 */
-/*public*/ bool DefaultRouteManagerXml::load(QDomElement routes) throw (Exception) {
+/*public*/ bool DefaultRouteManagerXml::load(QDomElement sharedRoutes, QDomElement /*perNodeRoutes*/ ) throw (JmriConfigureXmlException) {
  // create the master object
  replaceRouteManager();
  // load individual routes
- loadRoutes(routes);
+ loadRoutes(sharedRoutes);
  return true;
 }
 
@@ -241,31 +243,38 @@ return routes;
  if (log->isDebugEnabled()) {
   log->debug("Found " + QString::number(routeList.size()) + " routes");
  }
- RouteManager* tm = InstanceManager::routeManagerInstance();
+ RouteManager* tm = (RouteManager*)InstanceManager::getDefault("RouteManager");
  int namesChanged = 0;
 
  for (int i = 0; i < routeList.size(); i++)
  {
   QDomElement el = routeList.at(i).toElement();
   QString sysName = getSystemName(el);
-  if (sysName == NULL)
+  if (sysName.isNull())
   {
    log->warn("unexpected NULL in systemName " + el.tagName());
       break;
   }
   // convert typeLetter from R to tm.typeLetter()
+  QString s = tm->getSystemPrefix() + 'R';
   if (sysName.startsWith(tm->getSystemPrefix() + 'R')) {
       QString old = sysName;
       sysName = tm->getSystemNamePrefix() + sysName.mid(tm->getSystemNamePrefix().length());
-      log->warn(tr("Converting route system name %1 to %2").arg(old).arg(sysName));
-      namesChanged++;
+      if(sysName != old)
+      {
+       log->warn(tr("Converting route system name %1 to %2").arg(old).arg(sysName));
+       namesChanged++;
+      }
   }
   // prepend systemNamePrefix if missing
   if (!sysName.startsWith(tm->getSystemNamePrefix())) {
       QString old = sysName;
       sysName = tm->getSystemNamePrefix() + sysName;
-      log->warn(tr("Converting route system name %1 to %2").arg(old).arg(sysName));
-      namesChanged++;
+      if(sysName != old)
+      {
+       log->warn(tr("Converting route system name %1 to %2").arg(old).arg(sysName));
+       namesChanged++;
+      }
   }
 
   QString userName = getUserName(el);
@@ -310,12 +319,12 @@ return routes;
   try
   {
    r = tm->provideRoute(sysName, userName);
-  } catch (IllegalArgumentException ex) {
+  } catch (IllegalArgumentException* ex) {
       log->error(tr("failed to create Route: %1").arg(sysName));
       return;
   }
   // load common parts
-  loadCommon(r, el);
+  loadCommon((NamedBean*)r, el);
 
   if (r != NULL)
   {
@@ -540,27 +549,26 @@ return routes;
  */
 /*protected*/ void DefaultRouteManagerXml::replaceRouteManager()
 {
- RouteManager* current = InstanceManager::routeManagerInstance();
- if (current != NULL && current->metaObject()->className()
+ RouteManager* current = (RouteManager*)InstanceManager::getNullableDefault("RouteManager");
+ if (current != NULL && QString(current->metaObject()->className())
      ==("DefaultRouteManager")) {
      return;
  }
  // if old manager exists, remove it from configuration process
  if (current != NULL)
  {
-  static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->deregister(
-             current);
+  ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->deregister(current);
+  InstanceManager::deregister(current, "RouteManager");
  }
 
  // register new one with InstanceManager
- InstanceManager::deregister(current, "RouteManager");
- DefaultRouteManager* pManager = DefaultRouteManager::instance();
+ DefaultRouteManager* pManager = (DefaultRouteManager*)InstanceManager::getDefault("DefaultRouteManager");
  InstanceManager::store((QObject*)pManager, "RouteManager");
  // register new one for configuration
- static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)pManager, Manager::ROUTES);
+ qobject_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerConfig((QObject*)pManager, Manager::ROUTES);
 }
 
 /*public*/ int DefaultRouteManagerXml::loadOrder() const {
-    return InstanceManager::routeManagerInstance()->getXMLOrder();
+    return ((RouteManager*)InstanceManager::getDefault("RouteManager"))->getXMLOrder();
 }
 

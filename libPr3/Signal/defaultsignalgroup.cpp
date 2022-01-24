@@ -9,6 +9,7 @@
 #include "turnout.h"
 #include "sensor.h"
 #include "defaultsignalmastmanager.h"
+#include "abstractsignalheadmanager.h"
 
 //DefaultSignalGroup::DefaultSignalGroup(QObject *parent) :
 //    AbstractNamedBean(parent)
@@ -39,7 +40,8 @@
 
 // *public*/ class DefaultSignalGroup extends AbstractNamedBean implements jmri.SignalGroup{
 
-/*public*/ DefaultSignalGroup::DefaultSignalGroup(QString systemName, QString userName, QObject *parent) : SignalGroup(systemName, userName, parent)
+/*public*/ DefaultSignalGroup::DefaultSignalGroup(QString systemName, QString userName, QObject *parent)
+ : SignalGroup(systemName, userName, parent)
 {
   //super(systemName, userName);
  _signalMast = NULL;
@@ -48,7 +50,7 @@
   enabled=true;
   log = new Logger("DefaultSignalGroup");
   _signalHeadItem =  QList<SignalHeadItem*>();
-  pcs = new PropertyChangeSupport(this);
+  pcs = new SwingPropertyChangeSupport(this, nullptr);
 }
 
 ///*public*/ DefaultSignalGroup(String systemName) {
@@ -160,8 +162,8 @@
     Add a new signalhead to the group
 */
 /*public*/ void DefaultSignalGroup::addSignalHead(QString pName){
-    SignalHead* mHead = (SignalHead*)((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(pName);
-    if (mHead == NULL) mHead = (SignalHead*)((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getByUserName(pName);
+    SignalHead* mHead = (SignalHead*)((AbstractSignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getBySystemName(pName);
+    if (mHead == NULL) mHead = (SignalHead*)((AbstractSignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getByUserName(pName);
     if (mHead == NULL) log->warn("did not find a SignalHead named "+pName);
     else {
         addSignalHead(new NamedBeanHandle<SignalHead*>(pName, mHead));
@@ -174,20 +176,20 @@
 
 //protected PropertyChangeListener mSignalMastListener = NULL;
 
-/*public*/ void DefaultSignalGroup::setSignalHeadAlignTurnout(SignalHead* mHead, Turnout* mTurn, int state){
-    SignalHeadItem* sh = getSignalHeadItem(mHead);
+/*public*/ void DefaultSignalGroup::setHeadAlignTurnout(SignalHead* mHead, Turnout* mTurn, int state){
+    SignalHeadItem* sh = getHeadItem(mHead);
     sh->addTurnout(mTurn, state);
 }
 
-/*public*/ void DefaultSignalGroup::setSignalHeadAlignSensor(SignalHead* mHead, Sensor* mSen, int state){
-    SignalHeadItem* sh = getSignalHeadItem(mHead);
+/*public*/ void DefaultSignalGroup::setHeadAlignSensor(SignalHead* mHead, Sensor* mSen, int state){
+    SignalHeadItem* sh = getHeadItem(mHead);
     sh->addSensor(mSen, state);
 }
 
 /*
 Returns the 'n' signalheaditem
 */
-/*private*/ SignalHeadItem* DefaultSignalGroup::getSignalHeadItemByIndex(int n)
+/*private*/ SignalHeadItem* DefaultSignalGroup::getHeadItemByIndex(int n)
 {
     try {
         return _signalHeadItem.at(n);
@@ -197,19 +199,19 @@ Returns the 'n' signalheaditem
 }
 
 
-/*public*/ QString DefaultSignalGroup::getSignalHeadItemNameByIndex(int n)
+/*public*/ QString DefaultSignalGroup::getHeadItemNameByIndex(int n)
 {
     try {
-        return getSignalHeadItemByIndex(n)->getName();
+        return getHeadItemByIndex(n)->getName();
     } catch (IndexOutOfBoundsException ioob) {
         return NULL;
     }
 }
 
-/*public*/ SignalHead* DefaultSignalGroup::getSignalHeadItemBeanByIndex(int n)
+/*public*/ SignalHead* DefaultSignalGroup::getHeadItemBeanByIndex(int n)
 {
     try {
-        return getSignalHeadItemByIndex(n)->getSignal();
+        return getHeadItemByIndex(n)->getSignal();
     } catch (IndexOutOfBoundsException ioob) {
         return NULL;
     }
@@ -218,61 +220,61 @@ Returns the 'n' signalheaditem
 /*
     Returns the number of signalheads in this group
 */
-/*public*/ int DefaultSignalGroup::getNumSignalHeadItems() {
+/*public*/ int DefaultSignalGroup::getNumHeadItems() {
     return _signalHeadItem.size();
 }
 
-/*public*/ int DefaultSignalGroup::getSignalHeadOffState(SignalHead* bean){
+/*public*/ int DefaultSignalGroup::getHeadOffState(SignalHead* bean){
     try {
-        return getSignalHeadItem(bean)->getOffAppearance();
-    } catch (NullPointerException e) {
+        return getHeadItem(bean)->getOffAppearance();
+    } catch (NullPointerException* e) {
         return -1;
     }
 }
 
-/*public*/ int DefaultSignalGroup::getSignalHeadOnState(SignalHead* bean){
+/*public*/ int DefaultSignalGroup::getHeadOnState(SignalHead* bean){
     try {
-        return getSignalHeadItem(bean)->getOnAppearance();
-    } catch (NullPointerException e) {
+        return getHeadItem(bean)->getOnAppearance();
+    } catch (NullPointerException* e) {
         return -1;
     }
 }
 
-/*public*/ int DefaultSignalGroup::getSignalHeadOnStateByIndex(int n){
+/*public*/ int DefaultSignalGroup::getHeadOnStateByIndex(int n){
     try {
-        return getSignalHeadItemByIndex(n)->getOnAppearance();
+        return getHeadItemByIndex(n)->getOnAppearance();
     } catch (IndexOutOfBoundsException ioob) {
         return -1;
     }
 }
 
-/*public*/ int DefaultSignalGroup::getSignalHeadOffStateByIndex(int n){
+/*public*/ int DefaultSignalGroup::getHeadOffStateByIndex(int n){
     try {
-        return getSignalHeadItemByIndex(n)->getOffAppearance();
+        return getHeadItemByIndex(n)->getOffAppearance();
     } catch (IndexOutOfBoundsException ioob) {
         return -1;
     }
 }
 
 /*public*/ void DefaultSignalGroup::deleteSignalHead(SignalHead* pSignal){
-    _signalHeadItem.removeOne(getSignalHeadItem(pSignal));
+    _signalHeadItem.removeOne(getHeadItem(pSignal));
 }
 
 /*public*/ void DefaultSignalGroup::deleteSignalHead(NamedBeanHandle<SignalHead*>* sh){
-    _signalHeadItem.removeOne(getSignalHeadItem(sh->getName()));
+    _signalHeadItem.removeOne(getHeadItem(sh->getName()));
 }
 
-/*public*/ void DefaultSignalGroup::setSignalHeadOnState(SignalHead* head, int state){
-    getSignalHeadItem(head)->setOnAppearance(state);
+/*public*/ void DefaultSignalGroup::setHeadOnState(SignalHead* head, int state){
+    getHeadItem(head)->setOnAppearance(state);
     firePropertyChange("UpdateCondition", QVariant(),QVariant());
 }
 
-/*public*/ void DefaultSignalGroup::setSignalHeadOffState(SignalHead* head, int state){
-    getSignalHeadItem(head)->setOffAppearance(state);
+/*public*/ void DefaultSignalGroup::setHeadOffState(SignalHead* head, int state){
+    getHeadItem(head)->setOffAppearance(state);
     firePropertyChange("UpdateCondition", QVariant(),QVariant());
 }
 
-/*public*/ bool DefaultSignalGroup::isSignalIncluded(SignalHead* bean)
+/*public*/ bool DefaultSignalGroup::isHeadIncluded(SignalHead* bean)
 {
  for (int i=0; i<_signalHeadItem.size(); i++)
  {
@@ -288,7 +290,7 @@ Returns the 'n' signalheaditem
 /*
     Returns a signalhead item
 */
-/*private*/ SignalHeadItem* DefaultSignalGroup::getSignalHeadItem(QString name) {
+/*private*/ SignalHeadItem* DefaultSignalGroup::getHeadItem(QString name) {
     for (int i=0; i<_signalHeadItem.size(); i++) {
         if ( _signalHeadItem.at(i)->getName()==(name) ) {
             return _signalHeadItem.at(i);
@@ -297,7 +299,7 @@ Returns the 'n' signalheaditem
     return NULL;
 }
 
-/*private*/ SignalHeadItem* DefaultSignalGroup::getSignalHeadItem(NamedBean* bean) {
+/*private*/ SignalHeadItem* DefaultSignalGroup::getHeadItem(NamedBean* bean) {
     for (int i=0; i<_signalHeadItem.size(); i++) {
         if ( _signalHeadItem.at(i)->getSignal()==(bean) ) {
             return _signalHeadItem.at(i);
@@ -307,11 +309,11 @@ Returns the 'n' signalheaditem
 }
 
 /*public*/ bool DefaultSignalGroup::isTurnoutIncluded(SignalHead* pSignal, Turnout* pTurnout){
-    return getSignalHeadItem(pSignal)->isTurnoutIncluded(pTurnout);
+    return getHeadItem(pSignal)->isTurnoutIncluded(pTurnout);
 }
 
 /*public*/ int DefaultSignalGroup::getTurnoutState(SignalHead* pSignal, Turnout* pTurnout){
-    SignalHeadItem* sig = getSignalHeadItem(pSignal);
+    SignalHeadItem* sig = getHeadItem(pSignal);
     if (sig != NULL)
         return sig->getTurnoutState(pTurnout);
     return -1;
@@ -319,7 +321,7 @@ Returns the 'n' signalheaditem
 
 /*public*/ int DefaultSignalGroup::getTurnoutStateByIndex(int x, Turnout* pTurnout){
     try {
-        return getSignalHeadItemByIndex(x)->getTurnoutState(pTurnout);
+        return getHeadItemByIndex(x)->getTurnoutState(pTurnout);
     } catch (IndexOutOfBoundsException ioob) {
         return -1;
     }
@@ -327,14 +329,14 @@ Returns the 'n' signalheaditem
 
 /*public*/ int DefaultSignalGroup::getTurnoutStateByIndex(int x, int pTurnout){
     try {
-        return getSignalHeadItemByIndex(x)->getTurnoutState(pTurnout);
+        return getHeadItemByIndex(x)->getTurnoutState(pTurnout);
     } catch (IndexOutOfBoundsException ioob) {
         return -1;
     }
 }
 /*public*/ QString DefaultSignalGroup::getTurnoutNameByIndex(int x, int pTurnout){
     try {
-        return getSignalHeadItemByIndex(x)->getTurnoutName(pTurnout);
+        return getHeadItemByIndex(x)->getTurnoutName(pTurnout);
     } catch (IndexOutOfBoundsException ioob) {
         return NULL;
     }
@@ -342,7 +344,7 @@ Returns the 'n' signalheaditem
 
 /*public*/ Turnout* DefaultSignalGroup::getTurnoutByIndex(int x, int pTurnout){
     try {
-        return getSignalHeadItemByIndex(x)->getTurnout(pTurnout);
+        return getHeadItemByIndex(x)->getTurnout(pTurnout);
     } catch (IndexOutOfBoundsException ioob) {
         return NULL;
     }
@@ -350,7 +352,7 @@ Returns the 'n' signalheaditem
 
 /*public*/ int DefaultSignalGroup::getSensorStateByIndex(int x, int pSensor){
     try {
-        return getSignalHeadItemByIndex(x)->getSensorState(pSensor);
+        return getHeadItemByIndex(x)->getSensorState(pSensor);
     } catch (IndexOutOfBoundsException ioob) {
         return -1;
     }
@@ -358,7 +360,7 @@ Returns the 'n' signalheaditem
 
 /*public*/ QString DefaultSignalGroup::getSensorNameByIndex(int x, int pSensor){
     try {
-        return getSignalHeadItemByIndex(x)->getSensorName(pSensor);
+        return getHeadItemByIndex(x)->getSensorName(pSensor);
     } catch (IndexOutOfBoundsException ioob) {
         return NULL;
     }
@@ -366,41 +368,41 @@ Returns the 'n' signalheaditem
 
 /*public*/ Sensor* DefaultSignalGroup::getSensorByIndex(int x, int pSensor){
     try {
-        return getSignalHeadItemByIndex(x)->getSensor(pSensor);
+        return getHeadItemByIndex(x)->getSensor(pSensor);
     } catch (IndexOutOfBoundsException ioob) {
         return NULL;
     }
 }
 
 /*public*/ bool DefaultSignalGroup::isSensorIncluded(SignalHead* pSignal, Sensor* pSensor){
-    return getSignalHeadItem(pSignal)->isSensorIncluded(pSensor);
+    return getHeadItem(pSignal)->isSensorIncluded(pSensor);
 }
 
 /*public*/ int DefaultSignalGroup::getSensorState(SignalHead* pSignal, Sensor* pSensor){
-    SignalHeadItem* sig = getSignalHeadItem(pSignal);
+    SignalHeadItem* sig = getHeadItem(pSignal);
     if (sig != NULL)
         return sig->getSensorState(pSensor);
     return -1;
 }
 
 /*public*/ bool DefaultSignalGroup::getSensorTurnoutOper(SignalHead* pSignal){
-    return getSignalHeadItem(pSignal)->getSensorTurnoutOper();
+    return getHeadItem(pSignal)->getSensorTurnoutOper();
 }
 
 /*public*/ bool DefaultSignalGroup::getSensorTurnoutOperByIndex(int x){
-    return getSignalHeadItemByIndex(x)->getSensorTurnoutOper();
+    return getHeadItemByIndex(x)->getSensorTurnoutOper();
 }
 
 /*public*/ void DefaultSignalGroup::setSensorTurnoutOper(SignalHead* pSignal, bool boo){
-    getSignalHeadItem(pSignal)->setSensorTurnoutOper(boo);
+    getHeadItem(pSignal)->setSensorTurnoutOper(boo);
     firePropertyChange("UpdateCondition", QVariant(),QVariant());
 }
 
 /*public*/ void DefaultSignalGroup::clearSignalTurnout(SignalHead* pSignal){
-    getSignalHeadItem(pSignal)->clearSignalTurnouts();
+    getHeadItem(pSignal)->clearSignalTurnouts();
 }
 /*public*/ void DefaultSignalGroup::clearSignalSensor(SignalHead* pSignal){
-    getSignalHeadItem(pSignal)->clearSignalSensors();
+    getHeadItem(pSignal)->clearSignalSensors();
 }
 
 /*private*/ void DefaultSignalGroup::resetHeads(){
@@ -424,18 +426,18 @@ Returns the 'n' signalheaditem
     }
 }
 
-/*public*/ int DefaultSignalGroup::getNumSignalHeadSensorsByIndex(int x){
+/*public*/ int DefaultSignalGroup::getNumHeadSensorsByIndex(int x){
     try {
 
-        return getSignalHeadItemByIndex(x)->getNumSensors();
+        return getHeadItemByIndex(x)->getNumSensors();
     } catch (IndexOutOfBoundsException ioob) {
         return -1;
     }
 }
 
-/*public*/ int DefaultSignalGroup::getNumSignalHeadTurnoutsByIndex(int x){
+/*public*/ int DefaultSignalGroup::getNumHeadTurnoutsByIndex(int x){
     try {
-        return getSignalHeadItemByIndex(x)->getNumTurnouts();
+        return getHeadItemByIndex(x)->getNumTurnouts();
     } catch (IndexOutOfBoundsException ioob) {
         return -1;
     }
@@ -725,7 +727,7 @@ bool SignalHeadItem::isSensorIncluded(Sensor* pSensor)
 }
 
 /*public*/ /*synchronized*/ void DefaultSignalGroup::addPropertyChangeListener(PropertyChangeListener* l) {
-    pcs->addPropertyChangeListener(l);
+    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 }
 
 /*public*/ /*synchronized*/ void DefaultSignalGroup::removePropertyChangeListener(PropertyChangeListener* l) {
@@ -746,4 +748,30 @@ bool SignalHeadItem::isSensorIncluded(Sensor* pSensor)
    resetHeads();
   }
  }
+}
+
+//@Override
+/*public*/ QList<NamedBeanUsageReport*> DefaultSignalGroup::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+    if (bean != nullptr) {
+        if (bean->equals(getSignalMast())) {
+            report.append(new NamedBeanUsageReport("SignalGroupMast"));  // NOI18N
+        }
+        for (int i = 0; i < getNumHeadItems(); i++) {
+            if (bean->equals(getHeadItemBeanByIndex(i))) {
+                report.append(new NamedBeanUsageReport("SignalGroupHead"));  // NOI18N
+            }
+            for (int j = 0; j < getNumHeadSensorsByIndex(i); j++) {
+                if (bean->equals(getSensorByIndex(i, j))) {
+                    report.append(new NamedBeanUsageReport("SignalGroupHeadSensor"));  // NOI18N
+                }
+            }
+            for (int k = 0; k < getNumHeadTurnoutsByIndex(i); k++) {
+                if (bean->equals(getTurnoutByIndex(i, k))) {
+                    report.append(new NamedBeanUsageReport("SignalGroupHeadTurnout"));  // NOI18N
+                }
+            }
+        }
+    }
+    return report;
 }

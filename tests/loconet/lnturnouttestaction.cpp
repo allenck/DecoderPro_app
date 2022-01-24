@@ -70,9 +70,9 @@ void LnTurnoutTestAction::actionPerformed()
 //     }
      JUnitUtil::runTests(test, testList);
     }
-    catch (AssertionError er)
+    catch (AssertionError* er)
     {
-        JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
+        JOptionPane::showMessageDialog(nullptr, er->getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
     }
 }
 Logger* LnTurnoutTestAction::log = LoggerFactory::getLogger("LnTurnoutTestAction");

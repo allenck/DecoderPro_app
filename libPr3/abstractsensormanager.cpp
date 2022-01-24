@@ -5,7 +5,7 @@
 
 
 AbstractSensorManager::AbstractSensorManager(QObject *parent) :
-    SensorManager(nullptr, parent)
+    AbstractManager(nullptr, parent)
 {
  sensorDebounceGoingActive = 0L;
  sensorDebounceGoingInActive = 0L;
@@ -14,7 +14,7 @@ AbstractSensorManager::AbstractSensorManager(QObject *parent) :
 }
 
 AbstractSensorManager::AbstractSensorManager(SystemConnectionMemo* memo, QObject *parent) :
-    SensorManager(memo, parent)
+    AbstractManager(memo, parent)
 {
  sensorDebounceGoingActive = 0L;
  sensorDebounceGoingInActive = 0L;
@@ -37,19 +37,19 @@ AbstractSensorManager::AbstractSensorManager(SystemConnectionMemo* memo, QObject
     return Manager::SENSORS;
 }
 
-/*public*/ char AbstractSensorManager::typeLetter() const { return 'S'; }
+/*public*/ QChar AbstractSensorManager::typeLetter() { return 'S'; }
 
 /*public*/ Sensor* AbstractSensorManager::provideSensor(QString name)
 {
  Sensor* t = getSensor(name);
  if (t!=nullptr) return t;
  if (isNumber(name))
-     return newSensor(makeSystemName(name), nullptr);
+     return newSensor(AbstractManager::makeSystemName(name), nullptr);
  else
      return newSensor(name, nullptr);
 }
 
-/*public*/ Sensor* AbstractSensorManager::getSensor(QString name) const
+/*public*/ Sensor* AbstractSensorManager::getSensor(QString name)
 {
  Sensor* t = ( Sensor*)getByUserName(name);
  if (t!=nullptr) return t;
@@ -77,9 +77,9 @@ bool AbstractSensorManager::isNumber(QString s) const
  return(list.count()==1);
 }
 
-/*public*/ NamedBean* AbstractSensorManager::getBySystemName(QString key) const{
+/*public*/ NamedBean* AbstractSensorManager::getBySystemName(QString key) {
  if (isNumber(key))
-  key = makeSystemName(key);
+  key = AbstractManager::makeSystemName(key);
  QString name = normalizeSystemName(key);
  if(!_tsys->contains(name))
   return nullptr;
@@ -89,12 +89,12 @@ bool AbstractSensorManager::isNumber(QString s) const
  return s;
 }
 
-/*protected*/ QObject* AbstractSensorManager::getInstanceBySystemName(QString systemName)
+/*protected*/ NamedBean* AbstractSensorManager::getInstanceBySystemName(QString systemName)
 {
  return getBySystemName(systemName);
 }
 
-/*public*/ NamedBean* AbstractSensorManager::getByUserName(QString key) const
+/*public*/ NamedBean* AbstractSensorManager::getByUserName(QString key)
 {
  if(_tuser == nullptr)
   return nullptr;
@@ -115,10 +115,10 @@ bool AbstractSensorManager::isNumber(QString s) const
  {
   log->error("SystemName cannot be NULL. UserName was "
              +( (userName=="") ? "null" : userName));
-  throw IllegalArgumentException(QString("SystemName cannot be NULL. UserName was %1").arg(( (userName=="") ? "NULL" : userName)));
+  throw new IllegalArgumentException(QString("SystemName cannot be NULL. UserName was %1").arg(( (userName=="") ? "NULL" : userName)));
  }
 
- systemName = validateSystemNameFormat(sysName);
+ systemName = AbstractManager::validateSystemNameFormat(sysName);
  // return existing if there is one
   NamedBean* s = nullptr;
   if ((userName != "") && ((s = getByUserName(userName)) != nullptr))
@@ -148,7 +148,7 @@ bool AbstractSensorManager::isNumber(QString s) const
  if (s == nullptr) throw  IllegalArgumentException();
 
  // save in the maps
- Register(s);
+ AbstractManager::Register(s);
  emit propertyChange(new PropertyChangeEvent((QObject*)this, "length", QVariant(), QVariant(_tsys->size()))); // is this necessary here?
  //emit newSensorCreated(this, s);
  return (Sensor*)s;
@@ -160,6 +160,13 @@ bool AbstractSensorManager::isNumber(QString s) const
     return tr(plural ? "Sensors" : "Sensor");
 }
 
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ QString AbstractSensorManager::getNamedBeanClass() const {
+    return "Sensor";
+}
 /**
  * Requests status of all layout sensors under this Sensor Manager.
  * This method may be invoked whenever the status of sensors needs to be updated from
@@ -176,7 +183,7 @@ bool AbstractSensorManager::isNumber(QString s) const
 
 /*public*/ bool AbstractSensorManager::allowMultipleAdditions(QString systemName) { return false;  }
 
-/*public*/ QString AbstractSensorManager::createSystemName(QString curAddress, QString prefix)const throw (JmriException){
+/*public*/ QString AbstractSensorManager::createSystemName(QString curAddress, QString prefix) /*throw (JmriException)*/{
  try
  {
   bool bOk;
@@ -184,7 +191,7 @@ bool AbstractSensorManager::isNumber(QString s) const
   //Integer.parseInt(curAddress);
   if(!bOk) throw new NumberFormatException("Hardware Address passed should be a number");
  }
- catch (NumberFormatException ex)
+ catch (NumberFormatException* ex)
  {
   log->error(tr("Hardware Address passed should be a number"));
   throw new JmriException("Hardware Address passed should be a number");
@@ -200,7 +207,7 @@ bool AbstractSensorManager::isNumber(QString s) const
 
 //        try {
  tmpSName = createSystemName(curAddress, prefix);
-//        } catch (JmriException ex) {
+//        } catch (JmriException* ex) {
 //            jmri.InstanceManager.getDefault(jmri.UserPreferencesManager.class).
 //                    showInfoMessage("Error","Unable to convert " + curAddress + " to a valid Hardware Address",""+ex, "",true, false, org.apache.log4j.Level.ERROR);
 //            return NULL;
@@ -216,7 +223,7 @@ bool AbstractSensorManager::isNumber(QString s) const
  //try {
     //iName = Integer.parseInt(curAddress);
  iName = curAddress.toInt();
-//        } catch (NumberFormatException ex) {
+//        } catch (NumberFormatException* ex) {
 //            log.error("Unable to convert " + curAddress + " Hardware Address to a number");
 //            jmri.InstanceManager.getDefault(jmri.UserPreferencesManager.class).
 //                                showInfoMessage("Error","Unable to convert " + curAddress + " to a valid Hardware Address",""+ex, "",true, false, org.apache.log4j.Level.ERROR);
@@ -255,7 +262,7 @@ bool AbstractSensorManager::isNumber(QString s) const
   return;
  sensorDebounceGoingActive=timer;
  //Enumeration<QString> en = _tsys.keys();
- QHashIterator<QString, NamedBean*> en(*_tsys);
+ QMapIterator<QString, NamedBean*> en(*_tsys);
  //QMapIterator<QString, Sensor*> en(sensorMap);
  while (en.hasNext())
  {
@@ -274,7 +281,7 @@ bool AbstractSensorManager::isNumber(QString s) const
   return;
  sensorDebounceGoingInActive=timer;
  //Enumeration<String> en = _tsys.keys();
- QHashIterator<QString, NamedBean*> en(*_tsys);
+ QMapIterator<QString, NamedBean*> en(*_tsys);
  //QMapIterator<QString, Sensor*> en(sensorMap);
  while (en.hasNext())
   {

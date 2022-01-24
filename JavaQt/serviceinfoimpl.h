@@ -52,8 +52,8 @@ public:
  /*public*/ void setDns(JmDNSImpl* dns);
  /*public*/ JmDNSImpl* getDns() ;
  /*public*/ bool isPersistent();
- /*public*/ void setText(QByteArray text) throw (IllegalStateException);
- /*public*/ void setText(QMap<QString, QVariant> props) throw (IllegalStateException);
+ /*public*/ void setText(QByteArray text) /*throw (IllegalStateException)*/;
+ /*public*/ void setText(QMap<QString, QVariant> props) /*throw (IllegalStateException)*/;
  /*public*/ QList<Inet4Address*> getInet4Addresses() ;
  /*public*/ QList<Inet6Address*> getInet6Addresses();
 

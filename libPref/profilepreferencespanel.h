@@ -8,7 +8,7 @@ class Logger;
 class ProfilesTable;
 class File;
 class ListSelectionEvent;
-class ActionEvent;
+class JActionEvent;
 class QAction;
 class QListView;
 class QTabWidget;
@@ -74,17 +74,17 @@ private:
     Logger* log;
 
 private slots:
-    /*private*/ void renameMIActionPerformed(ActionEvent* evt = 0);
-    /*private*/ void chkStartWithActiveProfileActionPerformed(ActionEvent* evt = 0);
-    /*private*/ void btnOpenExistingProfileActionPerformed(ActionEvent* evt = 0);
-    /*private*/ void btnDeleteProfileActionPerformed(ActionEvent* evt = 0);
-    /*private*/ void btnCreateNewProfileActionPerformed(ActionEvent* evt = 0);
-    /*private*/ void btnActivateProfileActionPerformed(ActionEvent* evt = 0);
-    /*private*/ void btnExportProfileActionPerformed(ActionEvent* evt = 0);
-    /*private*/ void btnCopyProfileActionPerformed(ActionEvent* evt = 0);
+    /*private*/ void renameMIActionPerformed(JActionEvent* evt = 0);
+    /*private*/ void chkStartWithActiveProfileActionPerformed(JActionEvent* evt = 0);
+    /*private*/ void btnOpenExistingProfileActionPerformed(JActionEvent* evt = 0);
+    /*private*/ void btnDeleteProfileActionPerformed(JActionEvent* evt = 0);
+    /*private*/ void btnCreateNewProfileActionPerformed(JActionEvent* evt = 0);
+    /*private*/ void btnActivateProfileActionPerformed(JActionEvent* evt = 0);
+    /*private*/ void btnExportProfileActionPerformed(JActionEvent* evt = 0);
+    /*private*/ void btnCopyProfileActionPerformed(JActionEvent* evt = 0);
     /*private*/ void searchPathsValueChanged(ListSelectionEvent* evt =0);
-    /*private*/ void btnRemoveSearchPathActionPerformed(ActionEvent* evt = 0);
-    /*private*/ void btnAddSearchPathActionPerformed(ActionEvent* evt = 0);
+    /*private*/ void btnRemoveSearchPathActionPerformed(JActionEvent* evt = 0);
+    /*private*/ void btnAddSearchPathActionPerformed(JActionEvent* evt = 0);
 };
 
 //class ProfilesTable : public QTableView

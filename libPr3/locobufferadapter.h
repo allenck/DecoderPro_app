@@ -17,7 +17,7 @@ public:
     LocoBufferAdapter(LocoNetSystemConnectionMemo* adapterMemo = new LocoNetSystemConnectionMemo(), QObject *parent = 0);
     ~LocoBufferAdapter(){}
     /*public*/ QVector<QString> getPortNames();
-    /*public*/ QString openPort(QString portName, QString appName)throw(NoSuchPortException);
+    /*public*/ QString openPort(QString portName, QString appName)/*throw(NoSuchPortException)*/;
     /**
      * Can the port accept additional characters?
      * The state of CTS determines this, as there seems to
@@ -88,7 +88,7 @@ protected:
     /**
      * Local method to do specific configuration, overridden in class
      */
-    /*protected*/  void setSerialPort(SerialPort* activeSerialPort) throw(UnsupportedCommOperationException);
+    /*protected*/  void setSerialPort(SerialPort* activeSerialPort) /*throw(UnsupportedCommOperationException)*/;
     /*protected*/ QStringList validSpeeds;// = new String[]{"19,200 baud (J1 on 1&2)", "57,600 baud (J1 on 2&3)"};
     /*protected*/ QVector<int> validSpeedValues; // = new int[]{19200, 57600};
 

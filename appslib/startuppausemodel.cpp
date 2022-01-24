@@ -52,14 +52,14 @@ StartupPauseModel::StartupPauseModel(QObject* parent) :AbstractStartupModel(pare
 }
 
 //@Override
-/*public*/ void StartupPauseModel::performAction(QString) throw (JmriException) {
+/*public*/ void StartupPauseModel::performAction() /*throw (JmriException)*/ {
     if (delay > 0) {
         log->info(tr("Pausing startup actions processing for %1 seconds.").arg(delay));
         try {
             // delay is in seconds ; sleep takes long, not int
             //Thread.sleep(delay * (long) 1000);
          SleeperThread::msleep(delay * (long) 1000);
-        } catch (InterruptedException ex) {
+        } catch (InterruptedException* ex) {
             // warn the user that the pause was not as long as expected
             // this does not throw an error displayed to the user; should it?
             log->warn("Pause in startup actions interrupted.");

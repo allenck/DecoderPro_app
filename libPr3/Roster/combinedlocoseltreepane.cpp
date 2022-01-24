@@ -111,14 +111,14 @@ void CombinedLocoSelTreePane::common()
 //    };
  dTree->setToolTip("Select decoder");
 
- QList<DecoderFile*>* decoders = DecoderIndexFile::instance()->matchingDecoderList("", "", "", "", "", "");
- int len = decoders->size();
+ QList<DecoderFile*> decoders = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", "", "", "", "", "");
+ int len = decoders.size();
  DecoderTreeNode* mfgElement = NULL;
  DecoderTreeNode* familyElement = NULL;
  QMap<QString, DecoderTreeNode*> familyNameNode =  QMap<QString, DecoderTreeNode*>();
  for (int i = 0; i<len; i++)
  {
-  DecoderFile* decoder = decoders->at(i);
+  DecoderFile* decoder = decoders.at(i);
   QString mfg = decoder->getMfg();
   QString family = decoder->getFamily();
   QString model = decoder->getModel();
@@ -134,14 +134,14 @@ void CombinedLocoSelTreePane::common()
    QList<QVariant> data;
    data << mfg;
    mfgElement = new DecoderTreeNode(data, mfg,
-                "CV8 = "+DecoderIndexFile::instance()->mfgIdFromName(mfg), "", dRoot);
+                "CV8 = "+((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->mfgIdFromName(mfg), "", dRoot);
    //dModel.insertNodeInto(mfgElement, dRoot, dRoot->childCount());
    dRoot->appendChild(mfgElement);
    familyNameNode =  QMap<QString, DecoderTreeNode*>();
    familyElement = NULL;
   }
-  QString famComment = decoders->at(i)->getFamilyComment();
-  QString verString = decoders->at(i)->getVersionsAsString();
+  QString famComment = decoders.at(i)->getFamilyComment();
+  QString verString = decoders.at(i)->getVersionsAsString();
   QString hoverText = "";
   if (famComment == "" || famComment == NULL)
   {
@@ -168,8 +168,8 @@ void CombinedLocoSelTreePane::common()
    // to see if its the same, or if a single-decoder family
    // appears to have decoder names separate from the family name
    if ( (i+2>=len) ||
-            decoders->at(i+2)->getFamily()==(family) ||
-            decoders->at(i+1)->getModel()!=(family)
+            decoders.at(i+2)->getFamily()==(family) ||
+            decoders.at(i+1)->getModel()!=(family)
         )
    {
     // normal here; insert the new family element & exit
@@ -178,7 +178,7 @@ void CombinedLocoSelTreePane::common()
     data << family;
     familyElement = new DecoderTreeNode(data, family,
                                             hoverText,
-                                            decoders->at(i)->titleString(),mfgElement);
+                                            decoders.at(i)->titleString(),mfgElement);
     //dModel.insertNodeInto(familyElement, mfgElement, mfgElement->childCount());
     mfgElement->appendChild(familyElement);
     familyNameNode.insert(family, familyElement);
@@ -188,14 +188,14 @@ void CombinedLocoSelTreePane::common()
    {
     // this is short case; insert decoder entry (next) here
     log->debug("short case, i="+QString::number(i)+" family="+family+" next "+
-                decoders->at(i+1)->getModel() );
+                decoders.at(i+1)->getModel() );
     if (i+1 > len) log->error("Unexpected single entry for family: "+family);
-    family = decoders->at(i+1)->getModel();
+    family = decoders.at(i+1)->getModel();
     QList<QVariant> data;
     data << family;
     familyElement = new DecoderTreeNode(data, family,
                                         hoverText,
-                                        decoders->at(i)->titleString(),mfgElement);
+                                        decoders.at(i)->titleString(),mfgElement);
     //dModel.insertNodeInto(familyElement, mfgElement, mfgElement->childCount());
     mfgElement->appendChild(familyElement);
     familyNameNode.insert(family, familyElement);
@@ -211,7 +211,7 @@ void CombinedLocoSelTreePane::common()
 //   dModel->insertNodeInto(new DecoderTreeNode(model,                                                    hoverText, decoders->at(i)->titleString()),familyElement, familyElement->childCount());
    QList<QVariant> data;
    data << model;
-   DecoderTreeNode* node = new DecoderTreeNode(data, model, hoverText, decoders->at(i)->titleString(),familyElement);
+   DecoderTreeNode* node = new DecoderTreeNode(data, model, hoverText, decoders.at(i)->titleString(),familyElement);
    familyElement->appendChild(node);
   }
  }  // end of loop over decoders
@@ -655,7 +655,7 @@ void CombinedLocoSelTreePane::setDecoderSelectionFromLoco(QString loco)
     QString titleString = DecoderFile::titleString(modelString, familyString);
 
     // find the decoder mfg
-    DecoderIndexFile::instance()->fileFromTitle(titleString)->getMfg();
+    ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->fileFromTitle(titleString)->getMfg();
 
     // close the entire GUI (not currently done, users want left open)
     //collapseAll();
@@ -1026,7 +1026,7 @@ DecoderTreeNode*  InvisibleTreeModel::getRoot() {return rootItem;}
         return super.getChildAt(index);
     }
     if (children == NULL) {
-        throw ArrayIndexOutOfBoundsException("node has no children");
+        throw new ArrayIndexOutOfBoundsException("node has no children");
     }
 
     int realIndex = -1;
@@ -1043,7 +1043,7 @@ DecoderTreeNode*  InvisibleTreeModel::getRoot() {return rootItem;}
         }
     }
 
-    throw  ArrayIndexOutOfBoundsException("index unmatched");
+    throw new  ArrayIndexOutOfBoundsException("index unmatched");
     //return (TreeNode)children.elementAt(index);
 }
 

@@ -38,6 +38,7 @@ public:
     QString text;
     /*public*/ void addFocusListener(FocusListener *l);
     /*public*/ void removeFocusListener(FocusListener* l);
+    /*public*/ QString getText();
 
 public slots:
 

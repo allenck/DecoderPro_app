@@ -201,7 +201,7 @@ ControlPanelEditor::~ControlPanelEditor()
  setMenuBar(_menuBar);
  addHelpMenu("package.jmri.jmrit.display.ControlPanelEditor", true);
 
- Editor::setTargetPanel((EditScene*)nullptr, nullptr);
+ Editor::setTargetPanel((QGraphicsView*)nullptr, nullptr);
  Editor::setTargetPanelSize(300, 300);
 // if(editScene == nullptr)
 // {
@@ -378,16 +378,15 @@ ControlPanelEditor::~ControlPanelEditor()
      sm->setMapping(aboutItem,aboutItem);
      HelpUtil::getGlobalHelpBroker()->enableHelpOnButton(aboutItem, "package.jmri.jmrit.logix.OBlockTable", nullptr);
      _warrantMenu->addAction(aboutItem);
-     aboutItem = new QAction(tr("AboutCircuitMenu"),this);
+     aboutItem = new QAction(tr("About Circuit Builder"),this);
      sm->setMapping(aboutItem,aboutItem);
      HelpUtil::getGlobalHelpBroker()->enableHelpOnButton(aboutItem, "package.jmri.jmrit.display.CircuitBuilder", nullptr);
      _warrantMenu->addAction(aboutItem);
      //aboutItem.addActionListener((ActionEvent event) -> {
-//     connect(sm, &QSignalMapper::mapped, [=]{
-//         makeCircuitMenu(true);
-////                openCircuitWindow();
-//     });
-     connect(sm, SIGNAL(mapped(QObject*)), this, SLOT(on_makeCircuitMenu()));
+     connect(aboutItem, &QAction::triggered, [=]{
+         makeCircuitMenu(true);
+//                openCircuitWindow();
+     });
 #endif
  } else {
      makeCircuitMenu(edit);
@@ -505,7 +504,6 @@ ControlPanelEditor::~ControlPanelEditor()
   editPanel->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
   editPanel->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
  });
- connect(scrollBoth, SIGNAL(triggered()), this, SLOT(on_scrollBoth_triggered()));
  scrollGroup->addAction(scrollNone);
  scrollMenu->addAction(scrollNone);
 // scrollNone.addActionListener(new ActionListener() {
@@ -580,11 +578,10 @@ ControlPanelEditor::~ControlPanelEditor()
 //    editItem.addActionListener(new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent event) {
     connect(editItem, &QAction::triggered, [=]{
-                changeView("jmri.jmrit.display.panelEditor.PanelEditor");
-                _itemPalette->dispose();
+            changeView("jmri.jmrit.display.panelEditor.PanelEditor");
+            _itemPalette->dispose();
 //            }
-        });
-    connect(editItem, SIGNAL(triggered()), this, SLOT(changePEViewAction()));
+    });
     _fileMenu->addSeparator();
     QAction* deleteItem = new QAction(tr("Delete This Panel..."),this);
     _fileMenu->addAction(deleteItem);
@@ -607,7 +604,7 @@ ControlPanelEditor::~ControlPanelEditor()
 //            }
         });
 }
-void CPEditItemActionListener::actionPerformed(ActionEvent *)
+void CPEditItemActionListener::actionPerformed(JActionEvent *)
 {
     ImageIndexEditor* ii = ImageIndexEditor::instance(panelEd);
     ii->pack();
@@ -1138,13 +1135,13 @@ void ControlPanelEditor::selectAllAction()
  if (_pastePending && !bPopupTrigger && !bMetaDown && !bAltDown) {
      return getCopySelection(event);
  }
- QList <Positionable*>* selections = getSelectedItems(event);
- if(selections->count() > 0)
-  log->debug(tr("getCurrentSelection: %1 selections").arg(selections->count()));
- if( (_disableShapeSelection || _disablePortalSelection) && selections->count())
+ QList <Positionable*> selections = getSelectedItems(event);
+ if(selections.count() > 0)
+  log->debug(tr("getCurrentSelection: %1 selections").arg(selections.count()));
+ if( (_disableShapeSelection || _disablePortalSelection) && selections.count())
  {
-  QList<Positionable*>* list = new QList<Positionable*>();
-  QListIterator<Positionable*> it(*selections);
+  QList<Positionable*> list = QList<Positionable*>();
+  QListIterator<Positionable*> it(selections);
   while (it.hasNext())
   {
    Positionable* pos = it.next();
@@ -1154,16 +1151,16 @@ void ControlPanelEditor::selectAllAction()
    if (_disablePortalSelection && qobject_cast<PortalIcon*>(pos->self())) {
        continue;
    }
-   list->append(pos);
+   list.append(pos);
   }
   selections = list;
  }
  Positionable* selection = nullptr;
- if (selections->size() > 0)
+ if (selections.size() > 0)
  {
   if (bControlDown)
   {
-   if (bShiftDown && selections->size() > 3)
+   if (bShiftDown && selections.size() > 3)
    {
     if (_manualSelection) {
         // selection made - don't change it
@@ -1171,8 +1168,8 @@ void ControlPanelEditor::selectAllAction()
         return _currentSelection;
     }
     // show list
-    QVector<QString> selects = QVector<QString>(selections->size());
-    QListIterator<Positionable*> iter(*selections);
+    QVector<QString> selects = QVector<QString>(selections.size());
+    QListIterator<Positionable*> iter(selections);
     int i = 0;
     while (iter.hasNext())
     {
@@ -1191,7 +1188,7 @@ void ControlPanelEditor::selectAllAction()
             QIcon(), vl, QVariant());
     if (select != QVariant())
     {
-     QListIterator<Positionable*> iter(*selections);
+     QListIterator<Positionable*> iter(selections);
      while (iter.hasNext())
      {
       Positionable* pos = iter.next();
@@ -1207,21 +1204,21 @@ void ControlPanelEditor::selectAllAction()
       }
      }
     } else {
-        selection = selections->at(selections->size() - 1);
+        selection = selections.at(selections.size() - 1);
     }
    } else {
        // select bottom-most item over the background, otherwise take the background item
-       selection = selections->at(selections->size() - 1);
-       if (selection->getDisplayLevel() <= BKG && selections->size() > 1) {
-           selection = selections->at(selections->size() - 2);
+       selection = selections.at(selections.size() - 1);
+       if (selection->getDisplayLevel() <= BKG && selections.size() > 1) {
+           selection = selections.at(selections.size() - 2);
        }
 //              _manualSelection = false;
    }
   } else {
-      if (bShiftDown && selections->size() > 1) {
-          selection = selections->at(1);
+      if (bShiftDown && selections.size() > 1) {
+          selection = selections.at(1);
       } else {
-          selection = selections->at(0);
+          selection = selections.at(0);
       }
       if (selection->getDisplayLevel() <= BKG) {
           selection = nullptr;
@@ -1893,7 +1890,7 @@ void ControlPanelEditor::abortPasteItems() {
 //        }
 //    }.init(p));
     popup->addAction(edit);
-    connect(edit, SIGNAL(triggered()), dal, SLOT(actionPerformed()));
+    connect(edit, SIGNAL(triggered()), dal->self(), SLOT(actionPerformed()));
 }
 
 //@Override
@@ -2045,7 +2042,7 @@ void ControlPanelEditor::abortPasteItems() {
 //        new ColorDialog(this, pos, type, null);
 //    });
     CPEEditListener* listener = new CPEEditListener(type, pos, this);
-    connect(edit, SIGNAL(triggered(bool)), listener, SLOT(actionPerformed()));
+    connect(edit, SIGNAL(triggered(bool)), listener->self(), SLOT(actionPerformed()));
     popup->addAction(edit);
 }
 
@@ -2055,7 +2052,7 @@ DuplicateActionListener* DuplicateActionListener::init(Positionable* pos, Contro
  this->edit = edit;
  return this;
 }
-void DuplicateActionListener::actionPerformed(ActionEvent *)
+void DuplicateActionListener::actionPerformed(JActionEvent *)
 {
  edit->copyItem(comp);
 }
@@ -2165,7 +2162,7 @@ void DuplicateActionListener::actionPerformed(ActionEvent *)
         _positionableDataFlavor = new DataFlavor(POSITIONABLE_FLAVOR);
         _namedIconDataFlavor = new DataFlavor(ImageIndexEditor::IconDataFlavorMime);
         _positionableListDataFlavor = new DataFlavor(POSITIONABLE_LIST_FLAVOR);
-    } catch (ClassNotFoundException cnfe) {
+    } catch (ClassNotFoundException* cnfe) {
 //        cnfe.printStackTrace();
     }
 //    new DropTarget(this, DnDConstants.ACTION_COPY_OR_MOVE, this);
@@ -2273,7 +2270,7 @@ static /*protected*/ class PositionableListDnD implements Transferable {
         _sourceEditor = source;
         try {
             _dataFlavor = new DataFlavor(POSITIONABLE_LIST_FLAVOR);
-        } catch (ClassNotFoundException cnfe) {
+        } catch (ClassNotFoundException* cnfe) {
             cnfe.printStackTrace();
         }
     }

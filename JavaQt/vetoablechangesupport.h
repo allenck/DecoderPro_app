@@ -6,53 +6,45 @@
 #include "vetoablechangelistener.h"
 #include <QVector>
 #include <QMap>
+#include "jvetoablechangesupport.h"
+#include "propertychangesupport.h"
+#include "vetoablechangeprovider.h"
+#include "vetoablechangefirer.h"
 
 class VetoableChangeListenerMap;
 class VetoableChangeListener;
 class PropertyChangeEvent;
-class VetoableChangeSupport : public QObject
+class VetoableChangeSupport :  public PropertyChangeSupport, public VetoableChangeProvider, public VetoableChangeFirer
 {
- Q_OBJECT
+  Q_OBJECT
+  Q_INTERFACES( VetoableChangeProvider VetoableChangeFirer PropertyChangeProvider)
+
 public:
- explicit VetoableChangeSupport(QObject *source);
- /*public*/ void addVetoableChangeListener(VetoableChangeListener* listener);
- /*public*/ void removeVetoableChangeListener(VetoableChangeListener* listener);
+  explicit VetoableChangeSupport( QObject* parent=nullptr);
+  /*public*/ void addVetoableChangeListener(VetoableChangeListener* listener) override;
+  /*public*/ void addVetoableChangeListener(/*@CheckForNull*/ QString propertyName,/* @CheckForNull*/ VetoableChangeListener* listener) override;
+  /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners() override;
+  /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName) override;
+  /*public*/ void removeVetoableChangeListener(VetoableChangeListener* listener)override;
+  /*public*/ void removeVetoableChangeListener(/*@CheckForNull*/ QString propertyName, /*@CheckForNull*/ VetoableChangeListener* listener)override;
 
- /*public*/ void fireVetoableChange(QString propertyName, QVariant oldValue, QVariant newValue);
-//         throws PropertyVetoException;
- /*public*/ void fireVetoableChange(QString propertyName, int oldValue, int newValue);
-//         throws PropertyVetoException ;
- /*public*/ void fireVetoableChange(QString propertyName, bool oldValue, bool newValue);
-//         throws PropertyVetoException
- /*public*/ void fireVetoableChange(PropertyChangeEvent* event);
- /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners();
- /*public*/ void addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
- /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
- /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName);
- /*public*/ /*final*/ VetoableChangeListener* extract(VetoableChangeListener* listener) ;
- /*public*/ bool hasListeners(QString propertyName);
+  /*public*/ void fireVetoableChange(QString propertyName, bool oldValue, bool newValue) /*throw (PropertyVetoException)*/ override;
+  /*public*/ void fireVetoableChange(PropertyChangeEvent* event) /*throw (PropertyVetoException)*/ override;
+  /*public*/ void fireVetoableChange(QString propertyName, int oldValue, int newValue) /*throw (PropertyVetoException)*/ override;
+  /*public*/ void fireVetoableChange(QString propertyName, QVariant oldValue, QVariant newValue) /*throw (PropertyVetoException)*/ override;
 
+  QObject* self() override{return (QObject*)this;}
 signals:
- void vetoablePropertyChange(PropertyChangeEvent*);
 
 public slots:
 private:
- QObject* source;
- VetoableChangeListenerMap* map = nullptr;
+
+ protected:
+ /**
+  * Provide a {@link java.beans.VetoableChangeSupport} helper.
+  */
+ /*protected*/ /*final*/ JVetoableChangeSupport* vetoableChangeSupport = new JVetoableChangeSupport(this->self());
 };
 
-/*private*/ /*static*/ /*final*/ class VetoableChangeListenerMap : public ChangeListenerMap<VetoableChangeListener*>
-{
- Q_OBJECT
-    /*private*/ static /*final*/ QVector<VetoableChangeListener*> EMPTY;// = {};
-public:
- /*public*/ /*final*/ VetoableChangeListener* extract(VetoableChangeListener* listener);
- QObject* self() {return (QObject*)this;}
-
-protected:
-    /*protected*/ QVector<VetoableChangeListener*> newArray(int length);
-    /*protected*/ VetoableChangeListener* newProxy(QString name, VetoableChangeListener* listener);
-
-};
-
+Q_DECLARE_INTERFACE(VetoableChangeSupport, "VetoableChangeSupport")
 #endif // VETOABLECHANGESUPPORT_H

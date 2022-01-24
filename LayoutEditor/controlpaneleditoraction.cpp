@@ -37,7 +37,7 @@ void ControlPanelEditorAction::common()
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
-/*public*/ void ControlPanelEditorAction::actionPerformed(ActionEvent* /*e*/) {
+/*public*/ void ControlPanelEditorAction::actionPerformed(JActionEvent* /*e*/) {
  QString name = "Control Panel";
  for (int i = 2; i < 100; i++)
  {

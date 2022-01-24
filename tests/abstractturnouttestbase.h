@@ -24,14 +24,14 @@ public:
     /*public*/ void testDispose();
     /*public*/ void testCommandClosed() throw (InterruptedException) ;
     /*public*/ void testCommandThrown() throw (InterruptedException);
-    /*public*/ void testRequestUpdate() throw (JmriException);
+    /*public*/ void testRequestUpdate() /*throw (JmriException)*/;
     /*public*/ void testGetAndSetInverted();
     /*public*/ void testInvertedCommandClosed() throw (InterruptedException);
     /*public*/ void testInvertedCommandThrown() throw (InterruptedException) ;
-    /*public*/ void testProvideFirstFeedbackSensor() throw (JmriException);
-    /*public*/ void testProvideSecondFeedbackSensor() throw (JmriException);
-    /*public*/ void testOneSensorFeedback() throw (JmriException);
-    /*public*/ void testTwoSensorFeedback() throw (JmriException);
+    /*public*/ void testProvideFirstFeedbackSensor() /*throw (JmriException)*/;
+    /*public*/ void testProvideSecondFeedbackSensor() /*throw (JmriException)*/;
+    /*public*/ void testOneSensorFeedback() /*throw (JmriException)*/;
+    /*public*/ void testTwoSensorFeedback() /*throw (JmriException)*/;
     /*public*/ void testDirectFeedback() throw (Exception);
     /*public*/ void testGetBeanType();
 
@@ -46,12 +46,12 @@ protected:
  friend class ListenO1;
 };
 
-/*public*/ class ListenO1 : public PropertyChangeListener {
+/*public*/ class ListenO1 : public QObject, public PropertyChangeListener {
 Q_OBJECT
-    AbstractTurnoutTestBase* base;
+   Q_INTERFACES(PropertyChangeListener) AbstractTurnoutTestBase* base;
 public:
     ListenO1(AbstractTurnoutTestBase* base) {this->base = base;}
-public slots:
+QObject* self() {return (QObject*)this;}public slots:
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* e) {
         base->listenerResult = true;

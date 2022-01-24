@@ -1,9 +1,11 @@
 #ifndef LAYOUTEDITORACTION_H
 #define LAYOUTEDITORACTION_H
 
-#include <QAction>
+#include "abstractaction.h"
+#include "actionevent.h"
+#include "liblayouteditor_global.h"
 
-class LayoutEditorAction : public QAction
+class LIBLAYOUTEDITORSHARED_EXPORT LayoutEditorAction : public AbstractAction
 {
  Q_OBJECT
 public:
@@ -13,7 +15,7 @@ public:
 signals:
 
 public slots:
- /*public*/ void actionPerformed(ActionEvent* e = 0);
+ /*public*/ void actionPerformed(JActionEvent* e = 0)override;
 private:
  void common();
 };

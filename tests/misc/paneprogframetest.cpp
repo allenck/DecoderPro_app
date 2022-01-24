@@ -49,13 +49,13 @@ PaneProgFrameTest::PaneProgFrameTest(QObject *parent) : QObject(parent)
     JUnitUtil::dispose(f);
 }
 //@Override
-/*protected*/ QWidget* PaneProgFrameO2::getModePane()
+/*protected*/ JPanel *PaneProgFrameO2::getModePane()
 {
-    return new QWidget();
+    return new JPanel();
 }
 
 //@Override
-/*protected*/ QWidget* PaneProgFrameO3::getModePane()
+/*protected*/ JPanel *PaneProgFrameO3::getModePane()
 {
     return nullptr;
 }

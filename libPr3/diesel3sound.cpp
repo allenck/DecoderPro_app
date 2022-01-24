@@ -145,7 +145,7 @@
     /*protected*/ QTimer* Diesel3Sound::newTimer(long time, bool repeat, ActionListener* al) {
         time = qMax((long)1, time);  // make sure the time is > zero
         t = new QTimer(/*(int) time, al*/);
-        connect(t, SIGNAL(timeout()), al, SLOT(actionPerformed()));
+        connect(t, SIGNAL(timeout()), al->self(), SLOT(actionPerformed()));
         t->setInterval((int) time);
         t->setSingleShot(!repeat);
         return (t);
@@ -467,7 +467,7 @@
             //try {
                 int n = s.toInt();
                 return (n);
-//            } catch (NumberFormatException e) {
+//            } catch (NumberFormatException* e) {
 //                log->debug("Invalid integer: " + s);
 //                return (0);
 //            }
@@ -480,7 +480,7 @@
             //try {
                 float f = s.toFloat() / 100.0f;
                 return (f);
-//            } catch (NumberFormatException e) {
+//            } catch (NumberFormatException* e) {
 //                log->debug("Invalid float: " + s);
 //                return (0.0f);
 //            }

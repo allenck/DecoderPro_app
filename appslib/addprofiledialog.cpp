@@ -113,7 +113,7 @@ AddProfileDialog::AddProfileDialog(QWidget* parent, bool modal, bool setNextProf
 
     lblProfileLocation->setText(tr("Profile Location:")); // NOI18N
 
-    profileLocation->setText(ProfileManager::defaultManager()->getDefaultSearchPath()->getPath());
+    profileLocation->setText(ProfileManager::getDefault()->getDefaultSearchPath()->getPath());
     profileLocation->setMinimumSize( QSize(14, 128));
 //    profileLocation.addFocusListener(new FocusAdapter() {
 //        /*public*/ void focusLost(FocusEvent evt) {
@@ -134,7 +134,7 @@ AddProfileDialog::AddProfileDialog(QWidget* parent, bool modal, bool setNextProf
 //    });
     connect(profileLocation, SIGNAL(textEdited(QString)), this, SLOT(profileNameActionPerformed()));
 
-    profileFolder->setText(ProfileManager::defaultManager()->getDefaultSearchPath()->getPath());
+    profileFolder->setText(ProfileManager::getDefault()->getDefaultSearchPath()->getPath());
 //    profileFolder.addActionListener(new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent evt) {
 //            profileFolderActionPerformed(evt);
@@ -256,7 +256,7 @@ AddProfileDialog::AddProfileDialog(QWidget* parent, bool modal, bool setNextProf
     adjustSize();
 }// </editor-fold>
 
-/*private*/ void AddProfileDialog::profileNameActionPerformed(ActionEvent* )
+/*private*/ void AddProfileDialog::profileNameActionPerformed(JActionEvent* )
 {
  QString location = this->profileLocation->text();
  if (!location.endsWith(File::separator)) {
@@ -266,7 +266,7 @@ AddProfileDialog::AddProfileDialog(QWidget* parent, bool modal, bool setNextProf
  this->profileFolder->setText(location + this->profileId);
 }
 
-/*private*/ void AddProfileDialog::btnBrowseActionPerformed(ActionEvent* )
+/*private*/ void AddProfileDialog::btnBrowseActionPerformed(JActionEvent* )
 {
  JFileChooser* chooser = new JFileChooser(this->profileLocation->text());
  chooser->setFileSelectionMode(JFileChooser::DIRECTORIES_ONLY);
@@ -277,33 +277,33 @@ AddProfileDialog::AddProfileDialog(QWidget* parent, bool modal, bool setNextProf
   {
    this->profileLocation->setText(chooser->getSelectedFile()->getCanonicalPath());
    this->profileNameActionPerformed();
-  } catch (IOException ex) {
+  } catch (IOException* ex) {
       Logger::error("Error selecting profile location", ex);
   }
  }
 }
 
-/*private*/ void AddProfileDialog::profileFolderActionPerformed(ActionEvent* ) {
+/*private*/ void AddProfileDialog::profileFolderActionPerformed(JActionEvent* ) {
     this->profileNameActionPerformed();
 }
 
-/*private*/ void AddProfileDialog::profileLocationActionPerformed(ActionEvent* ) {
+/*private*/ void AddProfileDialog::profileLocationActionPerformed(JActionEvent* ) {
     this->profileNameActionPerformed();
 }
 
-/*private*/ void AddProfileDialog::btnCancelActionPerformed(ActionEvent* )
+/*private*/ void AddProfileDialog::btnCancelActionPerformed(JActionEvent* )
 {
  this->reject();
  this->close();
 }
 
-/*private*/ void AddProfileDialog::btnOkActionPerformed(ActionEvent* evt)
+/*private*/ void AddProfileDialog::btnOkActionPerformed(JActionEvent* evt)
 {
  try
  {
   setCursor(Qt::WaitCursor);
   Profile* p = new Profile(this->profileName->text(), this->profileId, new File(this->profileFolder->text()));
-ProfileManager::defaultManager()->addProfile(p);
+ProfileManager::getDefault()->addProfile(p);
   if (this->source != NULL)
   {
    // TODO: if source is active profile, save source first
@@ -312,10 +312,10 @@ ProfileManager::defaultManager()->addProfile(p);
   }
   if (this->setNextProfile)
   {
-   ProfileManager::defaultManager()->setNextActiveProfile(p);
+   ProfileManager::getDefault()->setNextActiveProfile(p);
   }
   else {
-   ProfileManager::defaultManager()->setActiveProfile(p);
+   ProfileManager::getDefault()->setActiveProfile(p);
   }
   ProfileManager::getDefault()->saveActiveProfile(p, ProfileManager::getDefault()->isAutoStartActiveProfile());
   if (this->source != NULL)
@@ -331,14 +331,14 @@ ProfileManager::defaultManager()->addProfile(p);
   this->accept();
   this->close();
  }
- catch (IOException /*IllegalArgumentException*/ ex)
+ catch (IOException* /*IllegalArgumentException*/ ex)
  {
-//        JOptionPane.showMessageDialog(this, ex.getLocalizedMessage(), "Error Creating Profile", JOptionPane.ERROR_MESSAGE);
+//        JOptionPane.showMessageDialog(this, ex->getLocalizedMessage(), "Error Creating Profile", JOptionPane.ERROR_MESSAGE);
   log->error("Error saving profile", ex);
  }
- catch (IllegalArgumentException ex)
+ catch (IllegalArgumentException* ex)
  {
-  JOptionPane::showMessageDialog(this, ex.getLocalizedMessage(), "Error Creating Profile", JOptionPane::ERROR_MESSAGE);
+  JOptionPane::showMessageDialog(this, ex->getLocalizedMessage(), "Error Creating Profile", JOptionPane::ERROR_MESSAGE);
   log->error("Error saving profile", ex);
  }
 }

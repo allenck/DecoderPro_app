@@ -12,7 +12,7 @@ namespace Operations
  {
   Q_OBJECT
  public:
-  TrainByCarTypeFrame(QWidget* parent = 0);
+  TrainByCarTypeFrame(Train* train, QWidget* parent = 0);
   /*public*/ void initComponents(Train* train);
   /*public*/ void dispose();
   /*public*/ QString getClassName();
@@ -27,7 +27,7 @@ namespace Operations
   LocationManager* locationManager;// = LocationManager.instance();
 
   // panels
-  QWidget* pRoute;// = new JPanel();
+  JPanel* pRoute;// = new JPanel();
 
   // radio buttons
   // combo boxes

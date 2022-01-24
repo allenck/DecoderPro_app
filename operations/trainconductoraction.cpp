@@ -1,5 +1,4 @@
 #include "trainconductoraction.h"
-#include "trainconductorframe.h"
 
 namespace Operations
 {
@@ -18,12 +17,12 @@ namespace Operations
  }
 
  //@Override
- /*public*/ void TrainConductorAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void TrainConductorAction::actionPerformed(JActionEvent* /*e*/) {
      // create a copy train frame
      if (f == NULL || !f->isVisible()) {
          f = new TrainConductorFrame(train);
      } else {
-         //f.setExtendedState(Frame.NORMAL);
+         f->setExtendedState(JFrame::NORMAL);
      }
      f->setVisible(true);	// this also brings the frame into focus
  }

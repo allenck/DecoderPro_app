@@ -17,6 +17,7 @@
 #include "speedstepmode.h"
 #include <QAbstractButton>
 
+class RosterEntry;
 class ThrottlesPreferences;
 class MySlider;
 class JSlider;
@@ -38,7 +39,7 @@ class ControlPanel : public QDockWidget, public AddressListener
  Q_INTERFACES(AddressListener)
 public:
     //explicit ControlPanel(QWidget *parent = 0);
-    /*public*/ ControlPanel(QWidget *parent);
+    /*public*/ ControlPanel(QWidget *parent = 0);
     /*public*/ void setAddressPanel(AddressPanel* addressPanel);
     /*public*/  ~ControlPanel();
     /*public*/ void destroy();
@@ -50,8 +51,14 @@ public:
     /*public*/ void accelerate10();
     /*public*/ void decelerate1();
     /*public*/ void decelerate10();
- /*public*/ QDomElement getXml();
- /*public*/ void setXml(QDomElement e);
+    /*public*/ QDomElement getXml();
+    /*public*/ void setXml(QDomElement e);
+    /*public*/ QWidget* getContentPane() {return widget();}
+    /*public*/ void setForwardDirection(bool fwd);
+    /*public*/ JSlider* getSpeedSlider();
+    /*public*/ JSlider* getSpeedSliderContinuous();
+    /*public*/ void toFront() { raise();}
+
  enum SPEEDS
  {
   /* Constants for speed selection method */
@@ -68,6 +75,7 @@ public:
  /*public*/ void setTrackSlider(bool track);
  /*public*/ bool getTrackSlider();
  QObject* self() {return (QObject*)this;}
+ /*public*/ void saveToRoster(RosterEntry* re);
 
 signals:
 
@@ -116,7 +124,7 @@ private:
 
     // LocoNet really only has 126 speed steps i.e. 0..127 - 1 for em stop
     /*private*/ int MAX_SPEED;// = 126;
-    Logger* log;
+    static Logger* log;
     /*private*/ void initGUI();
     /*private*/ void speedSetting(float speed);
 //    /*private*/ void configureAvailableSpeedStepModes();
@@ -169,6 +177,7 @@ private slots:
     void on_editProperties();
     void on_menu_requested();
 
+    friend class ControlPanelTest;
 };
 #if 0
 class ButtonFrame : public QWidget

@@ -10,6 +10,7 @@
 #include "warrantmanager.h"
 #include "opath.h"
 #include "vptr.h"
+#include "path.h"
 
 //OBlock::OBlock(QObject *parent) :
 //    Block(parent)
@@ -215,10 +216,10 @@ return _statusNameMap.value(str);
  }
  else
  {
-  sensor = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getByUserName(pName);
+  sensor = (Sensor*)((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::getByUserName(pName);
   if (sensor == NULL)
   {
-   sensor = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getBySystemName(pName);
+   sensor = (Sensor*)((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::getBySystemName(pName);
   }
   if (sensor == NULL)
   {
@@ -261,10 +262,10 @@ return _statusNameMap.value(str);
   _errNamedSensor = NULL;
   return true;
  }
- Sensor* sensor = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getByUserName(pName);
+ Sensor* sensor = (Sensor*)((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::getByUserName(pName);
  if (sensor == NULL)
  {
-  sensor = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getBySystemName(pName);
+  sensor = (Sensor*)((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::getBySystemName(pName);
  }
  if (sensor == NULL)
  {
@@ -729,7 +730,7 @@ return _statusNameMap.value(str);
  int oldPathSize = getPaths()->size();
  if (portal != NULL)
  {
-  //String name = portal.getName();
+  //String name = portal->getName();
   QVectorIterator <Path*> iter(*getPaths());
   while (iter.hasNext())
   {
@@ -1006,4 +1007,79 @@ return _statusNameMap.value(str);
 //    return java.text.MessageFormat.format(
 //        WarrantTableAction.tr("BlockDescription"), getDisplayName());
     return tr("OBlock \"%1\"").arg(getDisplayName());
+}
+
+
+//@Override
+/*public*/ QList<NamedBeanUsageReport*> OBlock::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+    QList<NamedBean*> duplicateCheck = QList<NamedBean*>();
+    if (bean != nullptr) {
+        if (log->isDebugEnabled()) {
+            Sensor* s = getSensor();
+            log->debug(tr("oblock: %1, sensor = %2").arg(getDisplayName(), (s==nullptr?"Dark OBlock":s->getDisplayName())));  // NOI18N
+        }
+        if (bean->equals(getSensor())) {
+            report.append(new NamedBeanUsageReport("OBlockSensor"));  // NOI18N
+        }
+        if (bean->equals(getErrorSensor())) {
+            report.append(new NamedBeanUsageReport("OBlockSensorError"));  // NOI18N
+        }
+        if (bean->equals(getWarrant())) {
+            report.append(new NamedBeanUsageReport("OBlockWarant"));  // NOI18N
+        }
+
+        //getPortals().forEach((portal) ->
+        for(Portal* portal : getPortals())
+        {
+            log->debug(tr("    portal: %1, fb = %2, tb = %3, fs = %4, ts = %5").arg(  // NOI18N
+                    portal->getName(), portal->getFromBlockName(), portal->getToBlockName(),
+                    portal->getFromSignalName(), portal->getToSignalName()));
+            if (bean->equals(portal->getFromBlock()) || bean->equals(portal->getToBlock())) {
+                report.append(new NamedBeanUsageReport("OBlockPortalNeighborOBlock", portal->getName()));  // NOI18N
+            }
+            if (bean->equals(portal->getFromSignal()) || bean->equals(portal->getToSignal())) {
+                report.append(new NamedBeanUsageReport("OBlockPortalSignal", portal->getName()));  // NOI18N
+            }
+
+            //portal->getFromPaths().forEach((path) ->
+            for(OPath* path : *portal->getFromPaths())
+            {
+                log->debug(tr("        from path = %1").arg(path->getName()));  // NOI18N
+                //path->getSettings().forEach((setting) ->
+                for(BeanSetting* setting : path->getSettings())
+                {
+                    log->debug(tr("            turnout = %1").arg(setting->getBean()->getDisplayName()));  // NOI18N
+                    if (bean->equals(setting->getBean())) {
+                        if (!duplicateCheck.contains(bean)) {
+                            report.append(new NamedBeanUsageReport("OBlockPortalPathTurnout", portal->getName()));  // NOI18N
+                            duplicateCheck.append(bean);
+                        }
+                    }
+                }//);
+            }//);
+            //portal->getToPaths().forEach((path) ->
+            for(OPath* path : *portal->getToPaths() )           {
+                log->debug(tr("        to path   = %1").arg(path->getName()));  // NOI18N
+                //path->getSettings().forEach((setting) ->
+                for(BeanSetting* setting : path->getSettings())
+                {
+                    log->debug(tr("            turnout = %1").arg(setting->getBean()->getDisplayName()));  // NOI18N
+                    if (bean->equals(setting->getBean())) {
+                        if (!duplicateCheck.contains(bean)) {
+                            report.append(new NamedBeanUsageReport("OBlockPortalPathTurnout", portal->getName()));  // NOI18N
+                            duplicateCheck.append(bean);
+                        }
+                    }
+                }//);
+            }//);
+        }//);
+    }
+    return report;
+}
+
+//@Override
+//@Nonnull
+/*public*/ QString OBlock::getBeanType() {
+    return tr("OBlock");
 }

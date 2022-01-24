@@ -46,7 +46,7 @@ public:
     static /*final*/ QString resume;// = tr("Resume");
     static /*final*/ QString abort;// = tr("Abort");
     static /*final*/ QStringList controls;// = {halt, resume, abort};
-    /*public*/ void actionPerformed(ActionEvent* e = 0);
+    /*public*/ void actionPerformed(JActionEvent* e = 0) override;
 //    /*synchronized*/ /*public*/ static void closeWarrantFrame(QString key);
     /*synchronized*/ static /*public*/ void mouseClickedOnBlock(OBlock* block);
     /*public*/ static bool checkSharedTurnouts(OBlock* block);
@@ -64,9 +64,9 @@ private:
     /*private*/ static QHash <QString, WarrantFrame*>* _frameMap;// = new HashMap <String, WarrantFrame> ();
     /*private*/ static WarrantTableAction* _instance;
     /*private*/ static QMap <QString, Warrant*> _warrantMap;// = new HashMap <String, Warrant> ();
-    /*private*/ static JTextArea* _textArea;
+    ///*private*/ static JTextArea* _textArea;
     /*private*/ static bool _hasErrors;// = false;
-    /*private*/ static JDialog* _errorDialog;
+    /*private*/ static JmriJFrame* _errorDialog;
     static JTextField*  _startWarrant;// = new JTextField(30);
     static JTextField*  _endWarrant;// = new JTextField(30);
     static JTextField*  _status;// = new JTextField(90);
@@ -75,7 +75,7 @@ private:
     //static WarrantTableAction* editWarrantAction;
     Logger* log;
     /*private*/ void concatenate();
-    void common();
+    void common(QString menuOption);
     QString command;
 
     /*private*/ static WarrantTableFrame* _tableFrame;
@@ -85,6 +85,7 @@ private:
     /*private*/ static bool sharedTO(OPath* myPath, OPath* path);
     void on_createWarrant_triggered();
     /*private*/ bool _logging = false;
+    QTimer* timer = nullptr;
 
 protected:
     /*protected*/ static TrackerTableAction* _trackerTable;
@@ -119,22 +120,25 @@ protected:
 };
 Q_DECLARE_METATYPE(WarrantTableAction)
 
-class MyListener : /*java.awt.event.WindowAdapter implements*/ public ActionListener
-{
- Q_OBJECT
- JDialog* _errorDialog;
+//class MyListener : public QObject,  public ActionListener
+//{
+// Q_OBJECT
+//  Q_INTERFACES(ActionListener)
+// JmriJFrame* _errorDialog;
 
-public:
- MyListener(JDialog* _errorDialog) { this->_errorDialog = _errorDialog;}
-//       /*  java.awt.Window _w;
-//         myListener(java.awt.Window w) {
-//             _w = w;
-//         }  */
- /*public*/ void actionPerformed(ActionEvent* /*e*/)
- {
-     WarrantTableFrame::getDefault();
- }
-};
+//public:
+// MyListener(JmriJFrame* _errorDialog) { this->_errorDialog = _errorDialog;}
+////       /*  java.awt.Window _w;
+////         myListener(java.awt.Window w) {
+////             _w = w;
+////         }  */
+// QObject* self() override {return (QObject*)this;}
+//public slots:
+// /*public*/ void actionPerformed(JActionEvent* /*e*/=0) override
+// {
+//     _errorDialog->dispose();
+// }
+//};
 /*static*/ class CreateWarrantFrame : public JFrame
 {
  Q_OBJECT
@@ -191,35 +195,18 @@ public:
 
 
 
-class CreateNXWarrantActionListener : public ActionListener
+class CreateNXWarrantActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
 
 public:
 
 public slots:
- void actionPerformed(ActionEvent */*e */= 0)
+ void actionPerformed(JActionEvent */*e */= 0)
  {
   WarrantTableFrame::nxAction();
  }
 };
-//class CreateNewWarrantActionListener : public ActionListener
-//{
-// Q_OBJECT
-
-//public:
-
-//public slots:
-// void actionPerformed(ActionEvent *e = 0)
-// {
-//  CreateWarrantFrame* f = new CreateWarrantFrame();
-//  try
-//  {
-//   f->initComponents();
-//  } catch (Exception ex ) {/*bogus*/ }
-//  f->setVisible(true);
-// }
-//};
-
 
 #endif // WARRANTTABLEACTION_H

@@ -156,10 +156,13 @@ void AbstractAudioListener::common()
 #endif
  }
 }
-/*private*/ /*static*/ /*final*/ AudioFactory* AbstractAudioListener::activeAudioFactory = ((AudioManager*) InstanceManager::getDefault("AudioManager"))->getActiveAudioFactory();
+/*private*/ /*static*/ /*final*/ AudioFactory* AbstractAudioListener::activeAudioFactory = nullptr;//((AudioManager*) InstanceManager::getDefault("AudioManager"))->getActiveAudioFactory();
 
 //@Override
 /*public*/ void AbstractAudioListener::resetCurrentPosition() {
+ if(activeAudioFactory == nullptr)
+  activeAudioFactory = ((AudioManager*) InstanceManager::getDefault("AudioManager"))->getActiveAudioFactory();
+
     activeAudioFactory->audioCommandQueue(new AudioCommand(this, Audio::CMD_RESET_POSITION));
     activeAudioFactory->getCommandThread()->exit();
 }

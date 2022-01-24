@@ -4,9 +4,9 @@
 #include "loggerfactory.h"
 
 AbstractReporterManager::AbstractReporterManager(SystemConnectionMemo* memo, QObject *parent) :
-    ReporterManager(memo, parent)
+    AbstractManager(memo, parent)
 {
- setProperty("JavaClassName", "jmri.managers.AbstractReporterManager");
+ //setProperty("JavaClassName", "jmri.managers.AbstractReporterManager");
 
  //registerSelf();
 }
@@ -24,40 +24,44 @@ int AbstractReporterManager::getXMLOrder() const{
     return Manager::REPORTERS;
 }
 
-char AbstractReporterManager::typeLetter() const  { return 'R'; }
+QChar AbstractReporterManager::typeLetter()   { return 'R'; }
 
 Reporter* AbstractReporterManager::provideReporter(QString sName) {
     Reporter* t = getReporter(sName);
     if (t!=nullptr) return t;
-    if (sName.startsWith(getSystemPrefix()+typeLetter()))
+    if (sName.startsWith(AbstractManager::getSystemPrefix()+typeLetter()))
         return newReporter(sName, nullptr);
     else
-        return newReporter(makeSystemName(sName), "");
+        return newReporter(AbstractManager::makeSystemName(sName), "");
 }
 
-Reporter* AbstractReporterManager::getReporter(QString name) const {
+Reporter* AbstractReporterManager::getReporter(QString name)  {
     Reporter* t = (Reporter*)getByUserName(name);
     if (t!=nullptr) return t;
 
     return (Reporter*)getBySystemName(name);
 }
-#if 0
+
+/** {@inheritDoc} */
+//@Override
+//@Nonnull
+/*public*/ QString AbstractReporterManager::getBeanTypeHandled(bool plural) const{
+    return tr(plural ? "Reporters" : "Reporter");
+}
+
+#if 1
 NamedBean *AbstractReporterManager::getBySystemName(QString name)
 {
     return (Reporter*)_tsys->value(name);
 }
 
-NamedBean *AbstractReporterManager::getByUserName(QString key) {
+NamedBean *AbstractReporterManager::getByUserName(QString key){
     return _tuser->value(key);
 }
 #endif
 /** {@inheritDoc} */
-//@Override
-/*public*/ QString AbstractReporterManager::getBeanTypeHandled(bool plural) const {
-    return (plural ? tr("Reporters") : tr("Reporter"));
-}
 
-Reporter* AbstractReporterManager::getByDisplayName(QString key) const {
+Reporter* AbstractReporterManager::getByDisplayName(QString key)  {
 // First try to find it in the user list.
 // If that fails, look it up in the system list
 Reporter* retv = (Reporter*)this->getByUserName(key);
@@ -68,14 +72,14 @@ if (retv == nullptr) {
 return(retv);
 }
 
-Reporter* AbstractReporterManager::newReporter(QString systemName, QString userName) const throw(IllegalArgumentException) {
+Reporter* AbstractReporterManager::newReporter(QString systemName, QString userName)  /*throw(IllegalArgumentException)*/ {
  if (log->isDebugEnabled()) log->debug(tr("new Reporter:")
                                         +( (systemName==NULL) ? "NULL" : systemName)
                                         +";"+( (userName==NULL) ? "NULL" : userName));
     if (systemName == NULL){
         log->error("SystemName cannot be NULL. UserName was "
                 +( (userName==NULL) ? "NULL" : userName));
-        throw  IllegalArgumentException("SystemName cannot be NULL. UserName was "
+        throw new IllegalArgumentException("SystemName cannot be NULL. UserName was "
                 +( (userName==NULL) ? "NULL" : userName));
     }
     // return existing if there is one
@@ -98,7 +102,7 @@ Reporter* AbstractReporterManager::newReporter(QString systemName, QString userN
 
     //emit newReporterCreated(this, r);
     // save in the maps
-    Register(r);
+    AbstractManager::Register(r);
 
 
     // if that failed, blame it on the input arguements
@@ -119,9 +123,9 @@ Reporter* AbstractReporterManager::newReporter(QString systemName, QString userN
 * of turnouts in numerical order eg 10 to 30
 **/
 
-bool AbstractReporterManager::allowMultipleAdditions(QString systemName) const { return false;  }
-
-QString AbstractReporterManager::getNextValidAddress(QString curAddress, QString prefix) const
+bool AbstractReporterManager::allowMultipleAdditions(QString systemName) { return false;  }
+#if 1
+QString AbstractReporterManager::getNextValidAddress(QString curAddress, QString prefix)
 {
  //If the hardware address past does not already exist then this can
  //be considered the next valid address.
@@ -135,7 +139,7 @@ QString AbstractReporterManager::getNextValidAddress(QString curAddress, QString
  int iName = 0;
 //        try {
 //            iName = Integer.parseInt(curAddress);
-//        } catch (NumberFormatException ex) {
+//        } catch (NumberFormatException* ex) {
 //            log->error("Unable to convert " + curAddress + " Hardware Address to a number");
 //            jmri.InstanceManager.getDefault(jmri.UserPreferencesManager.class).
 //                                showInfoMessage("Error","Unable to convert " + curAddress + " to a valid Hardware Address",""+ex, "",true, false, org.apache.log4j.Level.ERROR);
@@ -170,6 +174,7 @@ QString AbstractReporterManager::getNextValidAddress(QString curAddress, QString
   return QString("%1").arg(iName);
  }
 }
+#endif
 //static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractReporterManager.class.getName());
 // Utility method to create a concrete AbstractReporter
 ///*private*/ Reporter* AbstractReporterManager::createNewReporter(QString systemName, QString userName)

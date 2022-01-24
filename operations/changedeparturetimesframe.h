@@ -14,7 +14,7 @@ namespace Operations
   /*public*/ QString getClassName();
 
  private:
-  QPushButton* changeButton;// = new javax.swing.JButton(Bundle.getMessage("Change"));
+  JButton* changeButton;// = new javax.swing.JButton(Bundle.getMessage("Change"));
 
   // combo boxes
   JComboBox* hourBox;// = new javax.swing.JComboBox<>();

@@ -202,7 +202,7 @@ void DefaultConditionalAction::common()
    }
    break;
   case Conditional::ITEM_TYPE_LIGHT:
-   bean = ((AbstractLightManager*)InstanceManager::lightManagerInstance())->getLight(devName);
+   bean = (NamedBean*)((AbstractLightManager*)InstanceManager::lightManagerInstance())->getLight(devName);
    if (bean == NULL)
    {
         log->error("invalid light name= \""+_deviceName+"\" in conditional action");
@@ -216,7 +216,7 @@ void DefaultConditionalAction::common()
    }
    break;
   case Conditional::ITEM_TYPE_SIGNALHEAD:
-   bean = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(devName);
+   bean = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(devName);
    if (bean == NULL)
    {
         log->error("invalid signal head name= \""+_deviceName+"\" in conditional action");
@@ -246,7 +246,7 @@ case Conditional::ITEM_TYPE_ENTRYEXIT:
    break;
 default:
    if (getType() == Conditional::ACTION_TRIGGER_ROUTE) {
-           bean = static_cast<RouteManager*>(InstanceManager::getDefault("RouteManager"))->getRoute(devName);
+           bean = (NamedBean*)static_cast<RouteManager*>(InstanceManager::getDefault("RouteManager"))->getRoute(devName);
            if (bean == NULL)
            {
            log->error(tr("invalid Route name= \"%1\" in conditional action").arg(devName));
@@ -254,7 +254,7 @@ default:
    }
   }
  }
- catch (NumberFormatException ex)
+ catch (NumberFormatException* ex)
  {
             //Can be considered normal if the logixs are loaded prior to any other beans
  }
@@ -930,7 +930,7 @@ default:
        try {
            _actionString.toInt();
            str = str + _actionString + " " + tr("Seconds")+ ".";
-       } catch (NumberFormatException nfe) {
+       } catch (NumberFormatException* nfe) {
            str = str + _actionString + " " + tr("(Memory's Value)")
                 + " " + tr("Seconds") + ".";
        }
@@ -940,7 +940,7 @@ default:
        try {
            //int t = Integer.parseInt(_actionString);
            str = str + " " + tr("to")+ " "+ _actionString + ".";
-       } catch (NumberFormatException nfe) {
+       } catch (NumberFormatException* nfe) {
            str = str + " " + tr("to") + " " + _actionString + " "
                + tr("(Memory's Value)") + ".";
        }

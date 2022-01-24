@@ -22,13 +22,15 @@ private:
  /*private*/ /*final*/ QMap<QString, TrainListener*> trains;// = new HashMap<>();
 friend class TrainListener;
 };
-/*private*/ class TrainListener : public PropertyChangeListener {
+/*private*/ class TrainListener : public QObject,public PropertyChangeListener {
 
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  JsonOperationsSocketService* joss;
 public :
 public slots:
- /*public*/ void propertyChange(PropertyChangeEvent* e);
+ /*public*/ void propertyChange(PropertyChangeEvent* e) override;
+ QObject* self() override{return (QObject*)this;}
 
 protected:
     /*protected*/ /*final*/ Operations::Train* train;

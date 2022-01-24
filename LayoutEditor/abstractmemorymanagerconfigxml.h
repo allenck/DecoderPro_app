@@ -9,11 +9,10 @@ class LIBLAYOUTEDITORSHARED_EXPORT AbstractMemoryManagerConfigXML : public Abstr
     Q_OBJECT
 public:
     explicit AbstractMemoryManagerConfigXML(QObject *parent = 0);
-    ~AbstractMemoryManagerConfigXML();
-    /*public*/ QDomElement store(QObject* o);
+    ~AbstractMemoryManagerConfigXML()override;
+    /*public*/ QDomElement store(QObject* o)override;
     /*abstract*/ /*public*/ virtual void setStoreElementClass(QDomElement memories) = 0;
-    /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
-    /*abstract*/ /*public*/ virtual bool load(QDomElement sharedMemories, QDomElement perNodeMemories) throw (JmriConfigureXmlException) = 0;
+    /*public*/ bool load(QDomElement sharedMemories, QDomElement perNodeMemories) =0;
     /*public*/ void loadMemories(QDomElement memories);
     /*public*/ int loadOrder() const override;
     void loadValue(QDomElement memory, Memory* m);

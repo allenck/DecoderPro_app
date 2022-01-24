@@ -26,11 +26,11 @@ namespace Operations
   JComboBox* comboBox;
 
   // major buttons
-  QPushButton* addButton;// = new JButton(Bundle.getMessage("Add"));
-  QPushButton* deleteButton;// = new JButton(Bundle.getMessage("Delete"));
-  QPushButton* replaceButton;// = new JButton(Bundle.getMessage("Replace"));
+  JButton* addButton;// = new JButton(Bundle.getMessage("Add"));
+  JButton* deleteButton;// = new JButton(Bundle.getMessage("Delete"));
+  JButton* replaceButton;// = new JButton(Bundle.getMessage("Replace"));
 
-  QPushButton* restoreButton;// = new JButton(Bundle.getMessage("Restore"));
+  JButton* restoreButton;// = new JButton(Bundle.getMessage("Restore"));
 
   TrainScheduleManager* trainScheduleManager;// = TrainScheduleManager.instance();
  };

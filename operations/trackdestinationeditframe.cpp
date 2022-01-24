@@ -1,8 +1,7 @@
 #include "trackdestinationeditframe.h"
 #include "locationmanager.h"
 #include <QVBoxLayout>
-#include <QPushButton>
-#include <QGroupBox>
+#include "jbutton.h"
 #include "track.h"
 #include "gridbaglayout.h"
 #include <QScrollArea>
@@ -26,6 +25,8 @@
 #include "car.h"
 #include "carmanager.h"
 #include "router.h"
+#include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -53,16 +54,16 @@ namespace Operations
  log = new Logger("TrackDestinationEditFrame");
       _track = NULL;
 
-      locationManager = LocationManager::instance();
+      locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
 
      // panels
-     pControls = new QWidget();
-     panelDestinations = new QWidget();
+     pControls = new JPanel();
+     panelDestinations = new JPanel();
      paneDestinations = new QScrollArea(/*panelDestinations*/);
 
      // major buttons
-     saveTrackButton = new QPushButton(tr("SaveTrack"));
-     checkDestinationsButton = new QPushButton(tr("CheckDestinations"));
+     saveTrackButton = new JButton(tr("SaveTrack"));
+     checkDestinationsButton = new JButton(tr("CheckDestinations"));
 
      // radio buttons
      destinationsAll = new QRadioButton(tr("AcceptAll"));
@@ -78,41 +79,35 @@ namespace Operations
      // property changes
      // the following code sets the frame's initial state
      //getContentPane()->setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
+     QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      // Set up the panels
      // Layout the panel by rows
      // row 1
-     QGroupBox* p1 = new QGroupBox();
+     JPanel* p1 = new JPanel();
      p1->setLayout(new QHBoxLayout);//(p1, BoxLayout.X_AXIS));
      p1->setMaximumSize(QSize(2000, 250));
 
      // row 1a
-     QGroupBox* pTrackName = new QGroupBox();
+     JPanel* pTrackName = new JPanel();
      pTrackName->setLayout(new GridBagLayout());
-     //pTrackName->setBorder(BorderFactory.createTitledBorder(tr("Track")));
-     pTrackName->setStyleSheet(gbStyleSheet);
-     pTrackName->setTitle(tr("Track"));
+     pTrackName->setBorder(BorderFactory::createTitledBorder(tr("Track")));
      addItem(pTrackName, trackName, 0, 0);
 
      // row 1b
-     QGroupBox* pLocationName = new QGroupBox();
+     JPanel* pLocationName = new JPanel();
      pLocationName->setLayout(new GridBagLayout());
-     //pLocationName->setBorder(BorderFactory.createTitledBorder(tr("Location")));
-     pLocationName->setStyleSheet(gbStyleSheet);
-     pLocationName->setTitle(tr("Location"));
+     pLocationName->setBorder(BorderFactory::createTitledBorder(tr("Location")));
      addItem(pLocationName, new QLabel(_track->getLocation()->getName()), 0, 0);
 
      p1->layout()->addWidget(pTrackName);
      p1->layout()->addWidget(pLocationName);
 
      // row 3
-     QGroupBox* p3Frame = new QGroupBox;
+     JPanel* p3Frame = new JPanel;
      QWidget* p3 = new QWidget();
      p3->setLayout(new QVBoxLayout);//(p3, BoxLayout.Y_AXIS));
      QScrollArea* pane3 = new QScrollArea(/*p3*/);
-     //pane3->setBorder(BorderFactory.createTitledBorder(tr("DestinationTrack")));
-     p3Frame->setStyleSheet(gbStyleSheet);
-     p3Frame->setTitle(tr("Destination Track"));
+     p3Frame->setBorder(BorderFactory::createTitledBorder(tr("Destination Track")));
      pane3->setMaximumSize(QSize(2000, 400));
 
      QWidget* pRadioButtons = new QWidget();
@@ -125,14 +120,12 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      p3->layout()->addWidget(pRadioButtons);
 
      // row 4
-     QGroupBox* panelDestinationsFrame = new QGroupBox;
+     JPanel* panelDestinationsFrame = new JPanel;
      panelDestinationsFrame->setLayout(new QVBoxLayout);
      panelDestinationsFrame->layout()->addWidget(paneDestinations);
      paneDestinations->setWidgetResizable(true);
      panelDestinations->setLayout(new GridBagLayout());
-     //paneDestinations->setBorder(BorderFactory.createTitledBorder(tr("Destinations")));
-     panelDestinationsFrame->setStyleSheet(gbStyleSheet);
-     panelDestinationsFrame->setTitle(tr("Destinations"));
+     panelDestinationsFrame->setBorder(BorderFactory::createTitledBorder(tr("Destinations")));
 
      QButtonGroup* bGroup = new QButtonGroup();
      bGroup->addButton(destinationsAll);
@@ -140,10 +133,9 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      bGroup->addButton(destinationsExclude);
 
      // row 12
-     QGroupBox* panelButtons = new QGroupBox();
+     JPanel* panelButtons = new JPanel();
      panelButtons->setLayout(new GridBagLayout());
-     //panelButtons->setBorder(BorderFactory.createTitledBorder(""));
-     panelButtons->setStyleSheet(gbStyleSheet);
+     panelButtons->setBorder(BorderFactory::createTitledBorder(""));
      //panelButtons->setTitle(tr(""));
      panelButtons->setMaximumSize(QSize(2000, 200));
 
@@ -168,8 +160,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      // load fields and enable buttons
      if (_track != NULL) {
-         //_track->addPropertyChangeListener(this);
-      connect(_track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      _track->SwingPropertyChangeSupport::addPropertyChangeListener(this);
          trackName->setText(_track->getName());
          enableButtons(true);
      } else {
@@ -178,8 +169,8 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      updateDestinations();
 
-     //locationManager->addPropertyChangeListener(this);
-     connect(locationManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //locationManager->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+     connect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      // build menu
      // JMenuBar menuBar = new JMenuBar();
@@ -194,7 +185,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
      if (_track == NULL) {
          return;
      }
-     QPushButton* source = (QPushButton*)ae;
+     JButton* source = (JButton*)ae;
      if (source == saveTrackButton) {
          log->debug("track save button activated");
          OperationsXml::save();
@@ -344,7 +335,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
                  continue;
              }
              // now check to see if the track's rolling stock is accepted by the destination
-             checkTypes: foreach (QString type, CarTypes::instance()->getNames()) {
+             checkTypes: foreach (QString type, ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames()) {
                  if (!_track->acceptsTypeName(type)) {
                      continue;
                  }
@@ -376,7 +367,7 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
                  return false; // done
              }
              // now check road names
-             checkRoads: foreach (QString road, CarRoads::instance()->getNames())
+             checkRoads: foreach (QString road, ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->getNames())
              {
               if (!_track->acceptsRoadName(road))
               {
@@ -406,11 +397,11 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
               return false; // done
              }
              // now check load names
-             foreach (QString type, CarTypes::instance()->getNames()) {
+             foreach (QString type, ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames()) {
                  if (!_track->acceptsTypeName(type)) {
                      continue;
                  }
-                 QList<QString> loads = CarLoads::instance()->getNames(type);
+                 QList<QString> loads = ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getNames(type);
                  checkLoads: foreach (QString load, loads) {
                      if (!_track->acceptsLoadName(load)) {
                          continue;
@@ -467,22 +458,22 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
              // need to check all car types, loads, and roads that this track services
              Car* car = new Car();
              car->setLength(QString::number(-RollingStock::COUPLER)); // set car length to net out to zero
-             foreach (QString type, CarTypes::instance()->getNames()) {
+             foreach (QString type, ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames()) {
                  if (!_track->acceptsTypeName(type)) {
                      continue;
                  }
-                 QStringList loads = CarLoads::instance()->getNames(type);
+                 QStringList loads = ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getNames(type);
                  foreach (QString load, loads) {
                      if (!_track->acceptsLoad(load, type)) {
                          continue;
                      }
-                     foreach (QString road, CarRoads::instance()->getNames()) {
+                     foreach (QString road, ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->getNames()) {
                          if (!_track->acceptsRoadName(road)) {
                              continue;
                          }
                          // is there a car with this road?
                          bool foundCar = false;
-                         foreach (RollingStock* rs, *CarManager::instance()->getList()) {
+                         foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getList()) {
                              if (rs->getTypeName()==(type) && rs->getRoadName()==(road)) {
                                  foundCar = true;
                                  break;
@@ -556,11 +547,10 @@ QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
  /*public*/ void TrackDestinationEditFrame::dispose() {
      if (_track != NULL) {
-         //_track->removePropertyChangeListener(this);
-      disconnect(_track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      _track->removePropertyChangeListener(this);
      }
      //locationManager.removePropertyChangeListener(this);
-     disconnect(locationManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      OperationsFrame::dispose();
  }
 

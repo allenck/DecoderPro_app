@@ -15,6 +15,9 @@ signals:
 
 public slots:
 
+ private:
+    static Logger* log;
+
 };
 Q_DECLARE_METATYPE(RawTurnoutOperationXml)
 #endif // RAWTURNOUTOPERATIONXML_H

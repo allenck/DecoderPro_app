@@ -31,6 +31,7 @@
 #include "mockshutdownmanager.h"
 #include "jmriuserinterfaceconfigurationprovider.h"
 #include "debugprogrammermanager.h"
+#include "blockmanager.h"
 
 JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
 {
@@ -168,9 +169,9 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
         // individual tests can turn off as needed
         Log4JUtil.setDeprecatedLogging(true);
 #endif
-    } catch (Throwable e) {
+    } catch (Throwable* e) {
 //        System.err.println("Could not start JUnitAppender, but test continues:\n" + e);
-        qDebug() << "Could not start JUnitAppender, but test continues:\n" + e.getMessage();
+        qDebug() << "Could not start JUnitAppender, but test continues:\n" + e->getMessage();
     }
 
     // clear the backlog and reset the UnexpectedMessageFlags so that
@@ -401,12 +402,38 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
 
   Assert::fail("\"" + name + "\" did not occur in time", file, line);
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
-  Assert::fail("Exception while waiting for \"" + name + "\" " + ex.getMessage(), file, line);
+  Assert::fail("Exception while waiting for \"" + name + "\" " + ex->getMessage(), file, line);
  }
 }
 
+/*static*/ /*public*/ void JUnitUtil::waitFor(bool (*condition)(), QString name,
+                                              QString file, int line)
+{
+
+ int delay = 0;
+ try
+ {
+  while (delay < WAITFOR_MAX_DELAY)
+  {
+   if ((*condition)())
+   {
+    log->debug(tr("return delay = %1").arg(delay));
+    return;
+   }
+   SleeperThread::msleep(WAITFOR_DELAY_STEP);
+   delay += WAITFOR_DELAY_STEP;
+   qApp->processEvents();
+  }
+
+  Assert::fail("\"" + name + "\" did not occur in time", file, line);
+ }
+ catch (Exception* ex)
+ {
+  Assert::fail("Exception while waiting for \"" + name + "\" " + ex->getMessage(), file, line);
+ }
+}
 /**
  * Wait for a specific condition to be true, without having to wait longer
  * <p>
@@ -444,7 +471,7 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
             }
         }
         return false;
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log.error("Exception in waitFor condition.", ex);
         return false;
     }
@@ -460,8 +487,8 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
         }
 
         Assert::fail("did not occur in time", file, line);
-    } catch (Exception ex) {
-        Assert::fail("Exception while waiting for  " + ex.getMessage(), file, line);
+    } catch (Exception* ex) {
+        Assert::fail("Exception while waiting for  " + ex->getMessage(), file, line);
     }
 
 }
@@ -499,12 +526,12 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
          qApp->processEvents();
         }
         return;
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log->error("Exception in waitFor condition.", ex);
         return;
     }
 }
-#if 0
+
 /**
  * Wait for a specific condition to be true, without having to wait longer
  * <p>
@@ -518,34 +545,37 @@ JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
  * @param name      name of condition being waited for; will appear in
  *                  Assert.fail if condition not true fast enough
  */
-static /*public*/ void fasterWaitFor(ReleaseUntil condition, String name) {
-    if (javax.swing.SwingUtilities.isEventDispatchThread()) {
-        log.error("Cannot use waitFor on Swing thread", new Exception());
-        return;
-    }
+/*static*/ /*public*/ bool JUnitUtil::fasterWaitFor(ReleaseUntil* condition, QString name, QString file, int line){
+//    if (javax.swing.SwingUtilities.isEventDispatchThread()) {
+//        log.error("Cannot use waitFor on Swing thread", new Exception());
+//        return;
+//    }
     int delay = 0;
     try {
         while (delay < 1000) {
-            if (condition.ready()) {
-                return;
+            if (condition->ready()) {
+                return true;
             }
-            int priority = Thread.currentThread().getPriority();
-            try {
-                Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
-                Thread.sleep(5);
-                delay += 5;
-            } catch (InterruptedException e) {
-                Assert.fail("failed due to InterruptedException");
-            } finally {
-                Thread.currentThread().setPriority(priority);
-            }
+//            int priority = Thread.currentThread().getPriority();
+//            try {
+//                Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
+//                Thread.sleep(5);
+//                delay += 5;
+//            } catch (InterruptedException e) {
+//                Assert.fail("failed due to InterruptedException");
+//            } finally {
+//                Thread.currentThread().setPriority(priority);
+//            }
+            SleeperThread::msleep(5);
+            delay += 5;
+            qApp->processEvents();
         }
-        Assert.fail("\"" + name + "\" did not occur in time");
-    } catch (Exception ex) {
-        Assert.fail("Exception while waiting for \"" + name + "\" " + ex);
+        Assert::fail("\"" + name + "\" did not occur in time", file, line);
+    } catch (Exception* ex) {
+        Assert::fail("Exception while waiting for \"" + name + "\" " + ex->getMessage(), file, line);
     }
 }
-
+#if 0
 /**
  * Wait at most 1 second for a specific condition to be true, without having to wait longer
  * <p>
@@ -582,7 +612,7 @@ static /*public*/ bool fasterWaitFor(ReleaseUntil condition) {
             }
         }
         return false;
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log.error("Exception in waitFor condition.", ex);
         return false;
     }
@@ -627,7 +657,7 @@ static /*public*/ void setBeanState(NamedBean bean, int state) {
                 () -> {
                     try {
                         bean.setState(state);
-                    } catch (JmriException e) {
+                    } catch (JmriException* e) {
                         log.error("Threw exception while setting state: ", e);
                     }
                 }
@@ -715,7 +745,7 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 /*public*/ /*static*/ void JUnitUtil::initReporterManager() {
     ReporterManager* m = new InternalReporterManager((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"));
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m, Manager::REPORTERS);
+        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m->self(), Manager::REPORTERS);
     }
 }
 
@@ -726,6 +756,14 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
     }
 }
 
+/*public*/ /*static*/ void JUnitUtil::deregisterBlockManagerShutdownTask() {
+        if (! InstanceManager::isInitialized("ShutDownManager")) return;
+        if (! InstanceManager::isInitialized("BlockManager")) return;
+
+        ((ShutDownManager*)InstanceManager
+                ::getDefault("ShutDownManager"))
+                ->deregister(((BlockManager*)InstanceManager::getDefault("BlockManager"))->shutDownTask);
+    }
 /*public*/ /*static*/ void JUnitUtil::initWarrantManager() {
     WarrantManager* w = new WarrantManager();
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
@@ -755,10 +793,10 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 }
 
 /*public*/ /*static*/ void JUnitUtil::initInternalSignalHeadManager() {
-    SignalHeadManager* m = new AbstractSignalHeadManager(InstanceManager::getDefault("InternalSystemConnectionMemo"));
-    InstanceManager::setDefault("SignalHeadManager", m);
+    SignalHeadManager* m = new AbstractSignalHeadManager((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"));
+    InstanceManager::setDefault("SignalHeadManager", m->self());
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m, Manager::SIGNALHEADS);
+        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m->self(), Manager::SIGNALHEADS);
     }
 }
 
@@ -790,7 +828,7 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 #endif
 /*public*/ /*static*/ void JUnitUtil::initDebugThrottleManager() {
     ThrottleManager* m = new DebugThrottleManager();
-    InstanceManager::store(m, "ThrottleManager");
+    InstanceManager::store((QObject*)m, "ThrottleManager");
 }
 
 /*public*/ /*static*/ void JUnitUtil::initDebugProgrammerManager() {
@@ -816,7 +854,7 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 }
 #endif
 /*public*/ /*static*/ void JUnitUtil::initLogixManager() {
-    LogixManager* m = new DefaultLogixManager(InstanceManager::getDefault("InternalSystemConnectionMemo"));
+    DefaultLogixManager* m = new DefaultLogixManager(InstanceManager::getDefault("InternalSystemConnectionMemo"));
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
         ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m, Manager::LOGIXS);
     }
@@ -959,7 +997,7 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
     RosterConfigManager* manager = new RosterConfigManager();
     try {
         manager->initialize(ProfileManager::getDefault()->getActiveProfile());
-    } catch (InitializationException ex) {
+    } catch (InitializationException* ex) {
         log->error("Failed to initialize RosterConfigManager", ex);
     }
     InstanceManager::setDefault("RosterConfigManager", manager);
@@ -1027,13 +1065,13 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
     try {
         Profile* profile = new NullProfile("TestProfile", "00000000", FileUtil::getFile(FileUtil::SETTINGS));
         resetProfileManager(profile);
-    } catch (FileNotFoundException ex) {
+    } catch (FileNotFoundException* ex) {
         log->error(tr("Settings directory \"%1\" does not exist").arg(FileUtil::SETTINGS));
     }
-    catch (IOException  ex) {
+    catch (IOException*  ex) {
         log->error("Unable to create profile", ex);
     }
-    catch ( IllegalArgumentException ex) {
+    catch ( IllegalArgumentException* ex) {
         log->error("Unable to create profile", ex);
     }
 }
@@ -1382,19 +1420,19 @@ static void checkThreads() {
    testClassName = testName;
    log->info(tr("begin '%1'").arg(testName));
    if(!QMetaObject::invokeMethod(test, "setUp", Qt::DirectConnection))
-    throw Exception(tr("can't invoke 'setup' method when running test '%1").arg(testName));
+    throw new Exception(tr("can't invoke 'setup' method when running test '%1").arg(testName));
    if(!QMetaObject::invokeMethod(test, testName.toLocal8Bit(), Qt::DirectConnection))
-    throw Exception(tr("can't invoke '%1' method when running test ").arg(testName));
+    throw new Exception(tr("can't invoke '%1' method when running test ").arg(testName));
    log->info(tr("end '%1'").arg(testName));
    if(!QMetaObject::invokeMethod(test, "tearDown", Qt::DirectConnection))
-    throw Exception(tr("can't invoke 'tearDown' method when running test '%1").arg(testName));
+    throw new Exception(tr("can't invoke 'tearDown' method when running test '%1").arg(testName));
   }
   log->info(tr("Tests complete!"));
  }
- catch(Exception ex)
+ catch(Exception* ex)
  {
   JOptionPane::showMessageDialog(nullptr, tr("Unhandled exception while running test '%1'\n%2")
-     .arg(testClassName).arg(ex.getMessage()), "Unhandled Exception",  JOptionPane::WARNING_MESSAGE);
+     .arg(testClassName).arg(ex->getMessage()), "Unhandled Exception",  JOptionPane::WARNING_MESSAGE);
  }
 }
 /*private*/ /*final*/ /*static*/ Logger* JUnitUtil::log = LoggerFactory::getLogger("JUnitUtil");

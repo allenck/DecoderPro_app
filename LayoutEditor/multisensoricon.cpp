@@ -346,7 +346,7 @@ void MultiSensorIcon::updateItem()
 //            updateSensor();
 //        }
 //    };
- AddIconActionListener* addIconAction = new AddIconActionListener(this);
+ MSIAddIconActionListener* addIconAction = new MSIAddIconActionListener(this);
  //connect(addIconAction, SIGNAL(triggered()), this, SLOT(updateSensor()));
  iconEditor->complete(addIconAction, true, true, true);
 #else
@@ -491,8 +491,8 @@ void MultiSensorIcon::updateSensor()
     try {
         ((AbstractSensor*)entries->at(next)->namedSensor->getBean())->setKnownState(Sensor::ACTIVE);
         if (drop >= 0 && drop != next) ((AbstractSensor*)entries->at(drop)->namedSensor->getBean())->setKnownState(Sensor::INACTIVE);
-    } catch (JmriException ex) {
-        log->error("Click failed to set sensor: "+ex.getMessage());
+    } catch (JmriException* ex) {
+        log->error("Click failed to set sensor: "+ex->getMessage());
     }
 }
 

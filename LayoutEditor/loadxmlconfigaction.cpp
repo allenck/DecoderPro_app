@@ -6,6 +6,8 @@
 #include "logger.h"
 #include "configxmlmanager.h"
 #include "jmriconfigurationmanager.h"
+#include "loggerfactory.h"
+#include "appsconfigurationmanager.h"
 
 //LoadXmlConfigAction::LoadXmlConfigAction(QObject *parent) :
 //  LoadStoreBaseAction(parent)
@@ -51,7 +53,7 @@ void LoadXmlConfigAction::common()
  log = new Logger("LoadXmlConfigAction");
 }
 
-/*public*/ void LoadXmlConfigAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void LoadXmlConfigAction::actionPerformed(JActionEvent* /*e*/)
 {
  loadFile(this->getConfigFileChooser());
 }
@@ -64,15 +66,16 @@ void LoadXmlConfigAction::common()
 /*protected*/ bool LoadXmlConfigAction::loadFile(JFileChooser* fileChooser)
 {
  bool results = false;
+ fileChooser->settimeout(15); // 15 sec timeout
  File* file = getFile(fileChooser);
  if (file != nullptr)
  {
   try
   {
-   ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+   ConfigureManager* cm = (AppsConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
    if (cm == nullptr)
    {
-       log->error("Failed to get default configure manager");
+    log->error("Failed to get default configure manager");
    }
    else
    {
@@ -87,8 +90,8 @@ void LoadXmlConfigAction::common()
     }
     currentFile = "";
    }
-  } catch (JmriException e) {
-         log->error("Unhandled problem in loadFile: " + e.getMessage());
+  } catch (JmriException* e) {
+         log->error("Unhandled problem in loadFile: " + e->getMessage());
   }
  }
  else
@@ -107,7 +110,6 @@ void LoadXmlConfigAction::common()
 
 /*static*/ /*public*/ File* LoadXmlConfigAction::getFileCustom(JFileChooser* fileChooser)
 {
- Logger* log = new Logger("LoadXmlConfigAction");
  //fileChooser.rescanCurrentDirectory();
  int retVal = fileChooser->showDialog(nullptr, "");
  if (retVal != JFileChooser::APPROVE_OPTION) {
@@ -118,3 +120,6 @@ void LoadXmlConfigAction::common()
  }
  return fileChooser->getSelectedFile();
 }
+
+// initialize logging
+/*private*/ /*final*/ /*static*/ Logger* LoadXmlConfigAction::log = LoggerFactory::getLogger("LoadXmlConfigAction");

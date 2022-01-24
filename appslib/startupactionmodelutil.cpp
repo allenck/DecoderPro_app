@@ -64,7 +64,7 @@ StartupActionModelUtil::StartupActionModelUtil(QObject* parent) : Bean(parent)
    //return this->getActionName(Class::forName(className));
    return className;
   }
-  catch (ClassNotFoundException ex)
+  catch (ClassNotFoundException* ex)
   {
    log->error(tr("Did not find class \"%1\"").arg(className));
   }
@@ -85,7 +85,7 @@ StartupActionModelUtil::StartupActionModelUtil(QObject* parent) : Bean(parent)
     if (!className.isEmpty()) {
         try {
             return this->isSystemConnectionAction(Class::forName(className));
-        } catch (ClassNotFoundException ex) {
+        } catch (ClassNotFoundException* ex) {
             log->error(tr("Did not find class \"%1\"").arg(className));
         }
     }
@@ -142,14 +142,14 @@ entry.next();
  return actions->keys().toVector();
 }
 
-/*public*/ void StartupActionModelUtil::addAction(/*@NonNULL*/ QString strClass, /*@NonNULL*/ QString name) throw (ClassNotFoundException)
+/*public*/ void StartupActionModelUtil::addAction(/*@NonNULL*/ QString strClass, /*@NonNULL*/ QString name)
 {
  this->prepareActionsHashMap();
  this->actionNames = NULL;
  Class* clazz;
  try {
      clazz = Class::forName(strClass);
- } catch (ClassNotFoundException ex) {
+ } catch (ClassNotFoundException* ex) {
      log->error(tr("Did not find class \"%1\"").arg(strClass));
      throw ex;
  }
@@ -165,14 +165,14 @@ entry.next();
  this->firePropertyChange("length", QVariant(), QVariant());
 }
 
-/*public*/ void StartupActionModelUtil::removeAction(/*@NonNULL*/ QString strClass) throw (ClassNotFoundException)
+/*public*/ void StartupActionModelUtil::removeAction(/*@NonNULL*/ QString strClass)
 {
  this->prepareActionsHashMap();
  this->actionNames = NULL;
  /*Class<?>*/Class* clazz;
  try {
      clazz = Class::forName(strClass);
- } catch (ClassNotFoundException ex) {
+ } catch (ClassNotFoundException* ex) {
      log->error(tr("Did not find class \"%1\"").arg(strClass));
      throw ex;
  }
@@ -193,7 +193,7 @@ entry.next();
 //             Class<?> clazz = Class.forName(key);
 //             ActionAttributes attrs = new ActionAttributes(rb.getString(key), clazz);
 //             this->actions.put(clazz, attrs);
-//         } catch (ClassNotFoundException ex) {
+//         } catch (ClassNotFoundException* ex) {
 //             log->error(tr{"Did not find class \"%1\"").arg(key));
 //         }
 //     });
@@ -283,8 +283,11 @@ entry.next();
     actions->insert(clazz, attrs);
     if(key == "LocoNetMenuStartupAction")
      ((AbstractAction*)clazz)->setText(key);
-   } catch (ClassNotFoundException ex) {
-    log->error(tr("Did not find class \"%1\"").arg(key));
+   } catch (ClassNotFoundException* ex) {
+    log->error(tr("Did not find class \"%1\" %2").arg(key).arg(ex->getMessage()));
+   }
+   catch(Exception* ex) {
+    log->error(tr("Unable to load class \"%1\" %2").arg(key).arg(ex->getMessage()));
    }
   }
 
@@ -303,7 +306,7 @@ entry.next();
      ActionAttributes* attrs = new ActionAttributes(clazz, (Class*)factory);
      this->actions->insert(clazz, attrs);
     }
-    catch (FileNotFoundException ex)
+    catch (FileNotFoundException* ex)
     {
      log->error(tr("Did not find class \"%1\"").arg(clazz));
     }

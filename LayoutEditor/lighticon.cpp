@@ -92,7 +92,7 @@
 {
  if (light != NULL)
  {
-  light->removePropertyChangeListener((PropertyChangeListener*)this);
+  ((AbstractLight*)light->self())->removePropertyChangeListener((PropertyChangeListener*)this);
 //  AbstractLight* l = (AbstractLight*)light;
 //  disconnect(l->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
@@ -100,7 +100,7 @@
  if (light != NULL)
  {
   displayState(lightState());
-  light->addPropertyChangeListener((PropertyChangeListener*)this);
+  ((AbstractLight*)light->self())->addPropertyChangeListener((PropertyChangeListener*)this);
   //connect(light->pcs,SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
@@ -187,10 +187,10 @@ void LightIcon::propertyChange(QString propertyName, int old, int now)
 {
  QString name;
  if (light == NULL) name = tr("<Not connected>");
- else if (light->getUserName()!=NULL)
-  name = light->getUserName()+" ("+light->getSystemName()+")";
+ else if (((AbstractNamedBean*)light->self())->getUserName()!=NULL)
+  name = ((AbstractNamedBean*)light->self())->getUserName()+" ("+((AbstractNamedBean*)light->self())->getSystemName()+")";
  else
-  name = light->getSystemName();
+  name = ((AbstractNamedBean*)light->self())->getSystemName();
  return name;
 }
 
@@ -241,7 +241,7 @@ void LightIcon::propertyChange(QString propertyName, int old, int now)
 //    };
  LightIconActionListener* addIconAction = new LightIconActionListener(this);
  _iconEditor->complete(addIconAction, true, true, true);
- _iconEditor->setSelection(light);
+ _iconEditor->setSelection(((AbstractNamedBean*)light->self()));
 }
 
 LightIconActionListener::LightIconActionListener(LightIcon * icon)
@@ -249,7 +249,7 @@ LightIconActionListener::LightIconActionListener(LightIcon * icon)
  this->icon = icon;
 }
 
-void LightIconActionListener::actionPerformed(ActionEvent *e)
+void LightIconActionListener::actionPerformed(JActionEvent *e)
 {
  icon->update();
 }
@@ -273,8 +273,9 @@ void LightIcon::updateLight()
  */
 void LightIcon::displayState(int state)
 {
- if (log->isDebugEnabled()) log->debug(getNameString() +" displayState "+QString("%1").arg(state));
-  updateSize();
+ if (log->isDebugEnabled())
+  log->debug(getNameString() +" displayState "+QString("%1").arg(state));
+ updateSize();
  switch (state)
  {
   case Light::OFF:
@@ -291,10 +292,10 @@ void LightIcon::displayState(int state)
   break;
  }
 //    _editor->repaint();
- if(light != NULL)
-//    _editor->addToTarget((Positionable*)this);
-  updateScene();
- return;
+// if(light != NULL)
+////    _editor->addToTarget((Positionable*)this);
+//  updateScene();
+// return;
 }
 
 NamedIcon* LightIcon::getIcon(int state)
@@ -354,7 +355,7 @@ NamedIcon* LightIcon::getIcon(QString sState)
 {
  if (light != NULL)
  {
-  light->removePropertyChangeListener((PropertyChangeListener*)this);
+  ((AbstractNamedBean*)light->self())->removePropertyChangeListener((PropertyChangeListener*)this);
 //  AbstractLight* l = (AbstractLight*)light;
 //  disconnect(l, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }

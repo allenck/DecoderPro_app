@@ -1,14 +1,16 @@
 #ifndef LAYOUTBLOCKTHROUGHPATHSTABLEMODEL_H
 #define LAYOUTBLOCKTHROUGHPATHSTABLEMODEL_H
 #include "abstracttablemodel.h"
+#include "propertychangelistener.h"
 
 class Logger;
 class Manager;
 class PropertyChangeEvent;
 class LayoutBlock;
-class LayoutBlockThroughPathsTableModel : public AbstractTableModel
+class LayoutBlockThroughPathsTableModel : public AbstractTableModel, public  PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
  //explicit LayoutBlockThroughPathsTableModel(QObject *parent = 0);
 enum COLUMNS
@@ -18,20 +20,21 @@ enum COLUMNS
  ACTIVECOL = 2
 };
 /*public*/ LayoutBlockThroughPathsTableModel(bool editable, LayoutBlock* lBlock, QObject *parent = 0);
-/*public*/ int rowCount(const QModelIndex &parent) const;
-/*public*/ int columnCount(const QModelIndex &parent) const;
-/*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-/*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
-/*public*/ QVariant data(const QModelIndex &index, int role) const;
-/*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
+/*public*/ int rowCount(const QModelIndex &parent) const override;
+/*public*/ int columnCount(const QModelIndex &parent) const override;
+/*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+/*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
+/*public*/ QVariant data(const QModelIndex &index, int role) const override;
+/*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 /*public*/ int getPreferredWidth(int column);
 /*public*/ void dispose();
 /*public*/ Manager* getManager();
+QObject* self() override {return (QObject*)this;}
 
 signals:
 
 public slots:
-/*public*/ void propertyChange(PropertyChangeEvent* e = 0);
+/*public*/ void propertyChange(PropertyChangeEvent* e = 0) override;
 
 private:
  LayoutBlock* lBlock;

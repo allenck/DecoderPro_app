@@ -6,7 +6,7 @@
 #include <QRadioButton>
 #include <QCheckBox>
 #include <QSpinBox>
-#include <QComboBox>
+#include  "jcombobox.h"
 #include <QSortFilterProxyModel>
 #include <jtable.h>
 #include "logger.h"
@@ -52,19 +52,9 @@ namespace Operations
  {
        //super();
   setObjectName("OperationsPanel");
-  buttonMapper = new QSignalMapper();
   OperationsFrame* owner = (OperationsFrame*)this->parent();
-  Q_ASSERT(owner != NULL);
-  connect(buttonMapper, SIGNAL(mapped(QWidget*)), owner, SLOT(buttonActionPerformed(QWidget*)));
-  radioButtonMapper = new QSignalMapper();
-  connect(radioButtonMapper, SIGNAL(mapped(QWidget*)), this, SLOT(radioButtonActionPerformed(QWidget*)));
-  checkBoxMapper = new QSignalMapper();
-  connect(checkBoxMapper, SIGNAL(mapped(QWidget*)), this, SLOT(checkBoxActionPerformed(QWidget*)));
-  comboBoxMapper = new QSignalMapper();
-  connect(comboBoxMapper, SIGNAL(mapped(QWidget*)), this, SLOT(comboBoxActionPerformed(QWidget*)));
+  //Q_ASSERT(owner != NULL);
   log = new Logger("OperationsPanel");
-  gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 5px; margin-top: 1ex; /* leave space at the top for the title */} "
-                 "QGroupBox::title { subcontrol-origin: margin; subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
  }
 
  /*public*/ void OperationsPanel::initMinimumSize() {
@@ -79,7 +69,7 @@ namespace Operations
      // The default method does nothing.
  }
 
- /*protected*/ void OperationsPanel::addItem(QWidget* c, int x, int y) {
+ /*protected*/ void OperationsPanel::addItem(QWidget *c, int x, int y) {
      GridBagConstraints gc = GridBagConstraints();
      gc.gridx = x;
      gc.gridy = y;
@@ -88,107 +78,57 @@ namespace Operations
      ((QGridLayout*)this->layout())->addWidget(c, gc.gridy, gc.gridx, gc.rowSpan(), gc.colSpan(), gc.align());
  }
 
- /*protected*/ void OperationsPanel::addItemLeft(QWidget* c, int x, int y) {
-     GridBagConstraints gc = GridBagConstraints();
-     gc.gridx = x;
-     gc.gridy = y;
-     gc.weightx = 100.0;
-     gc.weighty = 100.0;
-     gc.anchor = GridBagConstraints::WEST;
-     ((QGridLayout*)this->layout())->addWidget(c, gc.gridy, gc.gridx, gc.rowSpan(), gc.colSpan(), gc.align());
- }
-
- /*protected*/ void OperationsPanel::addItemWidth(QWidget* c, int width, int x, int y) {
-     GridBagConstraints gc =  GridBagConstraints();
-     gc.gridx = x;
-     gc.gridy = y;
-     gc.gridwidth = width;
-     gc.weightx = 100.0;
-     gc.weighty = 100.0;
-     ((QGridLayout*)this->layout())->addWidget(c, gc.gridy, gc.gridx, gc.rowSpan(), gc.colSpan(), gc.align());
- }
-
- /*protected*/ void OperationsPanel::addItem(QWidget* p, QWidget* c, int x, int y)
-{
-  GridBagConstraints gc = GridBagConstraints();
-  if(p->layout() ==NULL)
-   p->setLayout(new QGridLayout);
-  //else
+ /*protected*/ void OperationsPanel::addItem(JPanel* p, QWidget* c, int x, int y)
+ {
+  if(!p->layout())
+   throw new NullPointerException(tr("Jpanel is missing layout!"));
+  else
   {
-   if(x == 0 && y == 0)
-   {
-    p->layout()->addWidget(c);
-    return;
-   }
-   Q_ASSERT(qobject_cast<QGridLayout*>(p->layout()) != NULL);
+   if(!qobject_cast<GridBagLayout*>(p->layout()))
+    throw new IllegalArgumentException(tr("Jpanel is missing Gridbag layout!"));
   }
+  GridBagConstraints gc = GridBagConstraints();
   gc.gridx = x;
   gc.gridy = y;
   gc.weightx = 100.0;
   gc.weighty = 100.0;
-  ((QGridLayout*)p->layout())->addWidget(c, gc.gridy, gc.gridx, gc.rowSpan(), gc.colSpan(), gc.align());
+  ((GridBagLayout*)p->layout())->addWidget(c, gc);
  }
 
- /*protected*/ void OperationsPanel::addItemLeft(QWidget* p, QWidget* c, int x, int y)
+ /*protected*/ void OperationsPanel::addItemLeft(JPanel* p, QWidget* c, int x, int y)
  {
   GridBagConstraints gc = GridBagConstraints();
-  if(p->layout() ==NULL)
-   p->setLayout(new QGridLayout);
-  else
-   Q_ASSERT(qobject_cast<QGridLayout*>(p->layout()) != NULL);
   gc.gridx = x;
   gc.gridy = y;
   gc.weightx = 100.0;
   gc.weighty = 100.0;
   gc.anchor = GridBagConstraints::WEST;
-  if(qobject_cast<GridBagLayout*>(p->layout()) !=NULL)
-   ((GridBagLayout*)p->layout())->addWidget(c, gc);
-   else
-  ((QGridLayout*)p->layout())->addWidget(c, gc.gridy, gc.gridx, gc.rowSpan(), gc.colSpan(), gc.align());
-  //log->debug(tr("layout has %1 boxes").arg(p->layout()->children().count()));
+  ((GridBagLayout*)p->layout())->addWidget(c, gc);
  }
 
- /*protected*/ void OperationsPanel::addItemTop(QWidget* p, QWidget* c, int x, int y) {
+ /*protected*/ void OperationsPanel::addItemTop(JPanel* p, QWidget* c, int x, int y) {
      GridBagConstraints gc =  GridBagConstraints();
-     if(p->layout() ==NULL)
-      p->setLayout(new QGridLayout);
-     else
-      Q_ASSERT(qobject_cast<QGridLayout*>(p->layout()) != NULL);
      gc.gridx = x;
      gc.gridy = y;
      gc.weightx = 100;
      gc.weighty = 100;
      gc.anchor = GridBagConstraints::NORTH;
-     ((QGridLayout*)p->layout())->addWidget(c, gc.gridy, gc.gridx, gc.rowSpan(), gc.colSpan(), gc.align());
+     ((GridBagLayout*)p->layout())->addWidget(c, gc);
  }
 
- /*protected*/ void OperationsPanel::addItemWidth(QWidget* p, QWidget* c, int width, int x, int y) {
+ /*protected*/ void OperationsPanel::addItemWidth(JPanel* p, QWidget* c, int width, int x, int y) {
      GridBagConstraints gc =  GridBagConstraints();
-     if(p->layout() ==NULL)
-      p->setLayout(new QGridLayout);
-     else
-      Q_ASSERT(qobject_cast<QGridLayout*>(p->layout()) != NULL);
      gc.gridx = x;
      gc.gridy = y;
      gc.gridwidth = width;
      gc.weightx = 100.0;
      gc.weighty = 100.0;
      gc.anchor = GridBagConstraints::WEST;
-     ((QGridLayout*)p->layout())->addWidget(c, gc.gridy, gc.gridx, gc.rowSpan(), gc.colSpan(), gc.align());
+     ((GridBagLayout*)p->layout())->addWidget(c, gc);
  }
 
  /*private*/ /*static*/ /*final*/ int OperationsPanel::MIN_CHECKBOXES = 5;
  /*private*/ /*static*/ /*final*/ int OperationsPanel::MAX_CHECKBOXES = 11;
-
- /**
-  * Gets the number of checkboxes(+1) that can fix in one row see
-  * OperationsFrame.minCheckboxes and OperationsFrame.maxCheckboxes
-  *
-  * @return the number of checkboxes, minimum is 5 (6 checkboxes)
-  */
- /*protected*/ int OperationsPanel::getNumberOfCheckboxesPerLine() {
-     return getNumberOfCheckboxesPerLine(this->sizeHint());
- }
 
  /*protected*/ int OperationsPanel::getNumberOfCheckboxesPerLine(QSize size) {
  if (size == QSize()) {
@@ -196,7 +136,7 @@ namespace Operations
      }
      QString padding = QString("X");
 
-     for (int i = 0; i < CarTypes::instance()->getMaxFullNameLength(); i++) {
+     for (int i = 0; i < ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getMaxFullNameLength(); i++) {
          padding.append("X");
      }
 
@@ -213,12 +153,9 @@ namespace Operations
 
  /*protected*/ void OperationsPanel::addButtonAction(QPushButton* b) {
 //        b.addActionListener((ActionEvent e) -> {
-//            buttonActionPerformed(e);
-//        });
- Q_ASSERT(b != NULL);
-  connect(b, SIGNAL(clicked()), buttonMapper, SLOT(map()));
-  buttonMapper->setMapping(b,b);
-
+  connect(b, &QPushButton::clicked, [=]{
+            buttonActionPerformed(b);
+        });
  }
 
  /*protected*/ void OperationsPanel::buttonActionPerformed(QWidget* /*b*/) {
@@ -227,11 +164,9 @@ namespace Operations
 
  /*protected*/ void OperationsPanel::addRadioButtonAction(QRadioButton* b) {
 //        b.addActionListener((ActionEvent e) -> {
-//            radioButtonActionPerformed(e);
-//        });
- //connect(radioButtonMapper, SIGNAL(mapped(QObject*)), this, SLOT(radioButtonActionPerformed(QWidget* )));
- connect(b, SIGNAL(clicked()), radioButtonMapper, SLOT(map()));
- radioButtonMapper->setMapping(b,b);
+  connect(b, &QRadioButton::clicked, [=]{
+            radioButtonActionPerformed(b);
+        });
  }
 
  /*protected*/ void OperationsPanel::radioButtonActionPerformed(QWidget* /*b*/) {
@@ -240,11 +175,9 @@ namespace Operations
 
  /*protected*/ void OperationsPanel::addCheckBoxAction(QCheckBox* b) {
 //     b.addActionListener((ActionEvent e) -> {
-//         checkBoxActionPerformed(e);
-//     });
- //connect(checkBoxMapper, SIGNAL(mapped(int)),this, SLOT(checkBoxActionPerformed(QWidget* )));
- connect(b, SIGNAL(clicked()), checkBoxMapper, SLOT(map()));
-  checkBoxMapper->setMapping(b,b);
+  connect(b, &QCheckBox::toggled, [=]{
+         checkBoxActionPerformed(b);
+     });
  }
 
 /*protected*/ void OperationsPanel::checkBoxActionPerformed(QWidget* /*b*/) {
@@ -253,29 +186,28 @@ namespace Operations
 
  /*protected*/ void OperationsPanel::addSpinnerChangeListerner(QSpinBox* s) {
 //     s.addChangeListener((ChangeEvent e) -> {
-//         spinnerChangeEvent(e);
-//     });
- connect(s, SIGNAL(valueChanged(int)), this, SLOT(spinnerChangeEvent()));
-
+  void (QSpinBox::*mySignal)(int) = &QSpinBox::valueChanged;
+  connect(s, mySignal, [=](int){
+         spinnerChangeEvent(s);
+     });
  }
 
- /*protected*/ void OperationsPanel::spinnerChangeEvent(ChangeEvent* ae) {
+ /*protected*/ void OperationsPanel::spinnerChangeEvent(QWidget* /*ae*/) {
      log->debug("spinner action not overridden");
  }
 
- /*protected*/ void OperationsPanel::addComboBoxAction(QComboBox* b) {
+ /*protected*/ void OperationsPanel::addComboBoxAction(JComboBox* b) {
 //     b.addActionListener((ActionEvent e) -> {
-//         comboBoxActionPerformed(e);
-//     });
- connect(b, SIGNAL(currentIndexChanged(int)), comboBoxMapper, SLOT(map()));
- comboBoxMapper->setMapping(b,b);
+   connect(b, &JComboBox::currentIndexChanged, [=]{
+         comboBoxActionPerformed(b);
+     });
  }
 
- /*protected*/ void OperationsPanel::comboBoxActionPerformed(QWidget* ae) {
+ /*protected*/ void OperationsPanel::comboBoxActionPerformed(QWidget* /*ae*/) {
      log->debug("combobox action not overridden");
  }
 
- /*protected*/ void OperationsPanel::selectNextItemComboBox(QComboBox*  b) {
+ /*protected*/ void OperationsPanel::selectNextItemComboBox(JComboBox *b) {
      int newIndex = b->currentIndex() + 1;
      if (newIndex < b->count()) {
          b->setCurrentIndex(newIndex);
@@ -340,7 +272,7 @@ namespace Operations
      String tableref = getWindowFrameRef() + ":table"; // NOI18N
      try {
          sorter = (TableSorter) table.getModel();
-     } catch (Exception e) {
+     } catch (Exception* e) {
          log->debug("table " + tableref + " doesn't use sorter");
      }
 
@@ -451,7 +383,7 @@ namespace Operations
      QSortFilterProxyModel* sorter = NULL;
      //try {
          sorter = (QSortFilterProxyModel*) table->model();
-//     } catch (Exception e) {
+//     } catch (Exception* e) {
 //         log->debug("table doesn't use sorter");
 //     }
      if (sorter == NULL) {

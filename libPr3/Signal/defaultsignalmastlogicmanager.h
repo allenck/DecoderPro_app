@@ -11,22 +11,23 @@
 class SignalSpeedMap;
 class SignalMastLogic;
 class SignalMast;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class PropertyChangeListener;
 class PropertyBlockManagerListener;
-class LIBPR3SHARED_EXPORT DefaultSignalMastLogicManager : public SignalMastLogicManager
+class LIBPR3SHARED_EXPORT DefaultSignalMastLogicManager : public AbstractManager, public SignalMastLogicManager
 {
     Q_OBJECT
+    Q_INTERFACES(SignalMastLogicManager)
 public:
     explicit DefaultSignalMastLogicManager(QObject *parent = 0);
     ~DefaultSignalMastLogicManager() {}
-    DefaultSignalMastLogicManager(const DefaultSignalMastLogicManager&) : SignalMastLogicManager() {}
+    DefaultSignalMastLogicManager(const DefaultSignalMastLogicManager&) : AbstractManager() {}
     /*public*/ int getXMLOrder() const override;
     /*public*/ /*final*/ static SignalSpeedMap* getSpeedMap();
     /*public*/ SignalMastLogic* getSignalMastLogic(SignalMast* source) override;
     /*public*/ SignalMastLogic* newSignalMastLogic(SignalMast* source) override;
-    /*public*/ void replaceSignalMast(SignalMast* oldMast, SignalMast* newMast);
-    /*public*/ void swapSignalMasts(SignalMast* mastA, SignalMast* mastB);
+    /*public*/ void replaceSignalMast(SignalMast* oldMast, SignalMast* newMast) override;
+    /*public*/ void swapSignalMasts(SignalMast* mastA, SignalMast* mastB) override;
     /*public*/ QList<SignalMastLogic*> getLogicsByDestination(SignalMast* destination) override;
     /*public*/ QList<SignalMastLogic*> getSignalMastLogicList() override;
     /*public*/ bool isSignalMastUsed(SignalMast* mast) override;
@@ -38,29 +39,36 @@ public:
     /*public*/ void initialise() override;
     /*public*/ NamedBean* getBeanBySystemName(QString systemName)const override;
     /*public*/ NamedBean* getBeanByUserName(QString userName)const override;
-    /*public*/ NamedBean* getNamedBean(QString name)const override;
-    /*public*/ QString getSystemPrefix()const override ;
-    /*public*/ char typeLetter() const override;
-    /*public*/ QString makeSystemName(QString s)const override ;
+    /*public*/ NamedBean* getNamedBean(QString name) override;
+    /*public*/ QString getSystemPrefix() override ;
+    /*public*/ QChar typeLetter()  override;
     /*public*/ QStringList getSystemNameArray()  override;
     /*public*/ QStringList getSystemNameList() override;
 //    /*public*/ QSet<NamedBean*> getNamedBeanSet() override;
-    /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) override;
-    /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) override;
-    /*public*/ void Register(NamedBean* n)const override ;
-    /*public*/ void deregister(NamedBean* n)const override;
+//    /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) ;
+//    /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) ;
+    /*public*/ void Register(NamedBean* n) override ;
+    /*public*/ void deregister(NamedBean* n) override;
     /*public*/ long getSignalLogicDelay() override;
     /*public*/ void setSignalLogicDelay(long l)override;
-    /*public*/ void discoverSignallingDest(SignalMast* source, LayoutEditor* layout) throw (JmriException) override;
-    /*public*/ void automaticallyDiscoverSignallingPairs() throw (JmriException) override;
+    /*public*/ void discoverSignallingDest(SignalMast* source, LayoutEditor* layout) /*throw (JmriException)*/ override;
+    /*public*/ void automaticallyDiscoverSignallingPairs() /*throw (JmriException)*/ override;
     /*public*/ void generateSection();
-    QObject* self() {return (QObject*)this;}
-    /*public*/ QString getNamedBeanClass()const override {
-        return "SignalMastLogic";
-    }
+    QObject* self() override{return (QObject*)this;}
+    /*public*/ QString getBeanTypeHandled(bool plural) const override;
+    /*public*/ /*Class<SignalMastLogic>*/QString getNamedBeanClass() const override;
+    /*public*/ int setupSignalMastsDirectionSensors() override;
+    /*public*/ void removeSignalMastsDirectionSensors() override;
+
+    /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
+    /*public*/ NamedBean* getBySystemName(QString name) override {return AbstractManager::getBySystemName(name);}
+    /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::addPropertyChangeListener(l);}
+    /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::removePropertyChangeListener(l);}
+
+
 signals:
     void on_newSignalMastLogicCreated(SignalMastLogic*);
-    void propertyChange(PropertyChangeEvent*);
+    void propertyChange(PropertyChangeEvent*) override;
 
 public slots:
 private:
@@ -80,14 +88,18 @@ protected:
 };
 Q_DECLARE_METATYPE(DefaultSignalMastLogicManager)
 
-class PropertyBlockManagerListener : public PropertyChangeListener
+class PropertyBlockManagerListener : public QObject,public PropertyChangeListener
 {
+  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
+
 public:
  PropertyBlockManagerListener(DefaultSignalMastLogicManager* dsmlm)
  {
   this->dsmlm = dsmlm;
  }
- /*public*/ void propertyChange(PropertyChangeEvent* e)
+public slots:
+ /*public*/ void propertyChange(PropertyChangeEvent* e) override
  {
   if(e->getPropertyName()==("topology"))
   {
@@ -104,7 +116,7 @@ public:
      try
      {
             dsmlm->automaticallyDiscoverSignallingPairs();
-     } catch (JmriException je)
+     } catch (JmriException* je)
      {
          //Considered normal if routing not enabled
      }
@@ -112,6 +124,7 @@ public:
    }
   }
  }
+ QObject* self() override{return (QObject*)this;}
 private:
  DefaultSignalMastLogicManager* dsmlm;
 };

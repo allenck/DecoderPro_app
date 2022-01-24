@@ -27,7 +27,7 @@ namespace Operations
   JTextField* trainNameTextField;// = new javax.swing.JTextField(Control.max_len_string_train_name);
 
   // major buttons
-  QPushButton* copyButton;// = new javax.swing.JButton(Bundle.getMessage("Copy"));
+  JButton* copyButton;// = new javax.swing.JButton(Bundle.getMessage("Copy"));
 
   // combo boxes
   QComboBox* trainBox;// = TrainManager.instance().getTrainComboBox();

@@ -661,7 +661,7 @@ void MemoryIcon::on_editMemoryValueAction_triggered()
 //            editMemory();
 //        }
 //    };
- AddIconActionListener*  addIconAction = new AddIconActionListener(this);
+ MIAddIconActionListener*  addIconAction = new MIAddIconActionListener(this);
  _iconEditor->complete(addIconAction, false, true, true);
  _iconEditor->setSelection(getMemory());
 }
@@ -675,15 +675,6 @@ void MemoryIcon::editMemory() {
  update();
 }
 
-MemoryIcon::AddIconActionListener::AddIconActionListener(MemoryIcon *parent)
-{
- this->parent = parent;
-}
-
-void MemoryIcon::AddIconActionListener::actionPerformed(ActionEvent */*e*/)
-{
- parent->editMemory();
-}
 
 /*public*/ void MemoryIcon::dispose() {
     getMemory()->removePropertyChangeListener((PropertyChangeListener*)this);

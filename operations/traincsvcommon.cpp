@@ -8,6 +8,7 @@
 #include "routelocation.h"
 #include "carmanager.h"
 #include "setup.h"
+#include "instancemanager.h"
 
 using namespace Operations;
 
@@ -264,7 +265,7 @@ TrainCsvCommon::TrainCsvCommon()
 /*protected*/ void TrainCsvCommon::printTrackComments(PrintWriter* fileOut, RouteLocation* rl, QList<Car*>* carList) {
     Location* location = rl->getLocation();
     if (location != NULL) {
-        QList<Track*> tracks = location->getTrackByNameList(NULL);
+        QList<Track*> tracks = location->getTracksByNameList(NULL);
         for (Track* track : tracks) {
             // any pick ups or set outs to this track?
             bool pickup = false;
@@ -301,7 +302,7 @@ TrainCsvCommon::TrainCsvCommon()
 }
 
 /*protected*/ void TrainCsvCommon::listCarsLocationUnknown(PrintWriter* fileOut) {
-    QList<Car*>* cars = CarManager::instance()->getCarsLocationUnknown();
+    QList<Car*>* cars = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getCarsLocationUnknown();
     if (cars->size() == 0) {
         return; // no cars to search for!
     }

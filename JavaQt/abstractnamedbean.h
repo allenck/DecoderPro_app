@@ -2,17 +2,18 @@
 #define ABSTRACTNAMEDBEAN_H
 #include "namedbean.h"
 #include "logger.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include <QSet>
 #include "javaqt_global.h"
 #include "exceptions.h"
 #include "propertyvetoexception.h"
 
-class JAVAQTSHARED_EXPORT AbstractNamedBean :  public NamedBean
+class JAVAQTSHARED_EXPORT AbstractNamedBean : /* public QObject,*/ public NamedBean
 {
     Q_OBJECT
+    //Q_INTERFACES(NamedBean)
 public:
-    explicit AbstractNamedBean(QObject *parent = 0);
+    /*explicit*/ AbstractNamedBean(QObject *parent = 0);
     /**
      * Get associated comment text.
      */
@@ -24,7 +25,7 @@ public:
      * @param comment Null means no comment associated.
      */
     void setComment(QString comment) override;
-    QString getDisplayName();
+    QString getDisplayName() override;
     /*final*/ /*public*/ QString getDisplayName(DisplayOptions displayOptions) override;
 
     /*public*/ QString getFullyFormattedDisplayName() override;
@@ -37,8 +38,8 @@ public:
     /*public synchronized*/  void removePropertyChangeListener(PropertyChangeListener* listener) override;
     /*public*/ /*synchronized*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
     /*public*/ /*synchronized*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
-    virtual/*public synchronized*/ QVector<PropertyChangeListener*> getPropertyChangeListeners();
-    virtual /*public synchronized*/  QVector<PropertyChangeListener*> getPropertyChangeListeners(QString name);
+    /*public synchronized*/ QVector<PropertyChangeListener*> getPropertyChangeListeners() const override;
+    /*public synchronized*/  QVector<PropertyChangeListener*> getPropertyChangeListeners(QString name)override;
     /* This allows a meaning full list of places where the bean is in use!*/
     /*public synchronized*/  QList<QString>* getListenerRefs() override;
     /*public synchronized*/ void updateListenerRef(PropertyChangeListener* l, QString newName) override;
@@ -50,21 +51,21 @@ public:
     /*public synchronized*/ int getNumPropertyChangeListeners() override;
     /*public*/ /*synchronized*/ QVector<PropertyChangeListener*> getPropertyChangeListenersByReference(QString propertyName) override;
 
-    /*public*/ QString getSystemName() const override;
+    /*public*/ QString getSystemName() const override ;
     /*public*/ QString getUserName() const override;
-    /*public*/ void setUserName(QString s) throw (NamedBean::BadUserNameException)  override;
+    /*public*/ void setUserName(QString s) /*throw (NamedBean::BadUserNameException) */ override;
     /*public*/ void dispose() override;
     /*public*/ void setProperty(QString key, QVariant value) override;
     /*public*/ QVariant getProperty(QString key) override;
 
     /*public java.util.*/QSet<QString> getPropertyKeys() override;
-    PropertyChangeSupport* pcs = nullptr;
+    SwingPropertyChangeSupport* pcs = nullptr;
     /*public*/ void removeProperty(QString key) override;
-    /*public*/ QString describeState(int state);
+    /*public*/ QString describeState(int state) override;
     Q_INVOKABLE /*public*/ bool equals(QObject* obj) override;
     /*public*/ int compareSystemNameSuffix(/*@Nonnull*/ QString suffix1, /*@Nonnull*/ QString suffix2, /*@Nonnull*/ NamedBean* n) override;
-    /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) override;
-    /*public*/ uint hashCode() { return qHash(mSystemName, qGlobalQHashSeed());}
+    /*public*/ void vetoableChange(PropertyChangeEvent* /*evt*/) /*throw (PropertyVetoException)*/ override;
+    /*public*/ uint hashCode() override { return qHash(mSystemName, qGlobalQHashSeed());}
     inline bool operator ==(const AbstractNamedBean &e2)
     {
      return mSystemName == e2.mSystemName;
@@ -80,15 +81,16 @@ public:
      return hashCode();
     }
 
+//    /*public*/ QObject* self() override {return (QObject*)this;}
 signals:
 
 public slots:
 private:
     /*private*/ static Logger* log;// = LoggerFactory::getLogger("AbstractNamedBean");
 
- void common(QString sys, QString user, QObject *parent);
+ void common(QString sys, QString user);
  QString comment;
- QMap<QString, QVariant>* parameters;
+ QMap<QString, QVariant>* parameters = nullptr;
  // implementing classes will typically have a function/listener to get
  // updates from the layout, which will then call
  //		public void firePropertyChange(String propertyName,
@@ -96,12 +98,12 @@ private:
  //						Object newValue)
  // _once_ if anything has changed state
 
- // since we can't do a "super(this)" in the ctor to inherit from PropertyChangeSupport, we'll
+ // since we can't do a "super(this)" in the ctor to inherit from SwingPropertyChangeSupport, we'll
  // reflect to it
- //PropertyChangeSupport* pcs;
+ //SwingPropertyChangeSupport* pcs;
  QHash<PropertyChangeListener*, QString>* _register;
  QHash<PropertyChangeListener*, QString>* listenerRefs;
- QObject* parent;
+ //QObject* parent;
 
 
  protected:

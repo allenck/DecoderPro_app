@@ -1,16 +1,20 @@
 #include "defaultroutemanager.h"
 #include "decimalformat.h"
 
-DefaultRouteManager::DefaultRouteManager(QObject *parent) : RouteManager(parent)
+DefaultRouteManager::DefaultRouteManager(InternalSystemConnectionMemo* memo, QObject *parent) : AbstractRouteManager((SystemConnectionMemo*)memo, parent)
 {
  setObjectName("DefaultRouteManager");
  setProperty("JavaClassName", "jmri.managers.DefaultRouteManager");
- lastAutoRouteRef = 0;
+ //lastAutoRouteRef = 0;
  //_instance = NULL;
  this->parent = parent;
  log = new Logger("DefaultRouteManager");
  paddedNumber = new DecimalFormat("0000");
  registerSelf();
+
+ InstanceManager::turnoutManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
+ InstanceManager::sensorManagerInstance()->addVetoableChangeListener((VetoableChangeListener*)this);
+
 }
 /**
  * Basic Implementation of a RouteManager.
@@ -31,8 +35,8 @@ DefaultRouteManager::DefaultRouteManager(QObject *parent) : RouteManager(parent)
     return Manager::ROUTES;
 }
 
-/*public*/ QString DefaultRouteManager::getSystemPrefix() const { return "I"; }
-/*public*/ char DefaultRouteManager::typeLetter() const { return 'R'; }
+///*public*/ QString DefaultRouteManager::getSystemPrefix() const { return "I"; }
+/*public*/ QChar DefaultRouteManager::typeLetter() { return 'O'; }
 
 /**
  * Method to provide a  Route
@@ -40,50 +44,28 @@ DefaultRouteManager::DefaultRouteManager(QObject *parent) : RouteManager(parent)
  */
 /*public*/ Route* DefaultRouteManager::provideRoute(QString systemName, QString userName)
 {
- Route* r;
- r = getByUserName(systemName);
+ DefaultRoute* r;
+ r = (DefaultRoute*)getByUserName(systemName);
  if (r!=NULL) return r;
- r = getBySystemName(systemName);
+ r = (DefaultRoute*)getBySystemName(systemName);
  if (r!=NULL) return r;
  // Route does not exist, create a new route
- r = (Route*)new DefaultRoute(systemName,userName);
+ r = new DefaultRoute(systemName,userName);
  // save in the maps
- AbstractManager::Register(r);
- /*The following keeps trace of the last created auto system name.
-  currently we do not reuse numbers, although there is nothing to stop the
-  user from manually recreating them*/
- if (systemName.startsWith("IR:AUTO:"))
- {
-  try
-  {
-   bool bOk;
-   int autoNumber = systemName.mid(8).toInt(&bOk);
-   if(!bOk) throw new NumberFormatException();
-   if (autoNumber > lastAutoRouteRef)
-   {
-    lastAutoRouteRef = autoNumber;
-   }
-  }
-  catch (NumberFormatException e)
-  {
-   log->warn("Auto generated SystemName "+ systemName + " is not in the correct format");
-  }
- }
- emit newRouteCreated((Route*)r);
+ AbstractManager::Register((NamedBean*)r);
+
+ updateAutoNumber(systemName);
+
  return r;
 }
 
 /*public*/ Route* DefaultRouteManager::newRoute(QString userName)
 {
- int nextAutoRouteRef = lastAutoRouteRef+1;
- QString b = "IR:AUTO:";
- QString nextNumber = paddedNumber->format(nextAutoRouteRef);
-    b.append(nextNumber);
-    return provideRoute(b, userName);
+    return provideRoute(getAutoSystemName(), userName);
 }
 
-int DefaultRouteManager::getLastAutoRouteRef()
-{ return lastAutoRouteRef;}
+//int DefaultRouteManager::getLastAutoRouteRef()
+//{ return lastAutoRouteRef;}
 
 /**
  * Remove an existing route. Route must have been deactivated
@@ -99,18 +81,18 @@ int DefaultRouteManager::getLastAutoRouteRef()
  *      that name is a System Name.  If both fail, returns NULL.
  */
 /*public*/ Route* DefaultRouteManager::getRoute(QString name) {
-    Route* r = getByUserName(name);
+    Route* r = (Route*)getByUserName(name);
     if (r!=NULL) return r;
-    return getBySystemName(name);
+    return (Route*)getBySystemName(name);
 }
 
-/*public*/ Route* DefaultRouteManager::getBySystemName(QString name) {
-    return (Route*)_tsys->value(name);
-}
+///*public*/ Route* DefaultRouteManager::getBySystemName(QString name) {
+//    return (Route*)_tsys->value(name);
+//}
 
-/*public*/ Route* DefaultRouteManager::getByUserName(QString key) {
-    return (Route*)_tuser->value(key);
-}
+///*public*/ Route* DefaultRouteManager::getByUserName(QString key) {
+//    return (Route*)_tuser->value(key);
+//}
 
 /*static*/ /*public*/ DefaultRouteManager* DefaultRouteManager::instance()
 {

@@ -5,6 +5,7 @@
 #include "identifydecoder.h"
 #include "libPr3_global.h"
 #include "progmodeselector.h"
+#include "propertychangelistener.h"
 
 class RosterEntry;
 class DecoderFile;
@@ -13,14 +14,15 @@ class QPushButton;
 class JToggleButton;
 class QComboBox;
 class GlobalRosterEntryComboBox;
-class LIBPR3SHARED_EXPORT CombinedLocoSelPane : public LocoSelPane
+class LIBPR3SHARED_EXPORT CombinedLocoSelPane : public LocoSelPane, public PropertyChangeListener
 {
     Q_OBJECT
-public:
+Q_INTERFACES(PropertyChangeListener)
+ public:
     explicit CombinedLocoSelPane(QWidget *parent = 0);
     /*public*/ CombinedLocoSelPane(QLabel* s, ProgModeSelector* selector, QWidget *parent = 0);
     /*public*/ void init();
-
+QObject* self() override {(QObject*)this;}
 signals:
 
 public slots:
@@ -29,7 +31,7 @@ public slots:
     void On_locoBoxPropertyChange();
     void On_idloco_clicked();
     void On_go2_clicked();
-    /*public*/ void propertyChange(PropertyChangeEvent* ev);
+    /*public*/ void propertyChange(PropertyChangeEvent* ev) override;
 
 private:
     /*private*/ QComboBox* decoderBox;// = null;       // private because children will override this
@@ -42,7 +44,7 @@ private:
     virtual void setDecoderSelectionFromLoco(QString loco);
     virtual bool isDecoderSelected();
    Logger* log;
-   virtual void updateForDecoderTypeID(QList<DecoderFile*>* pList);
+   virtual void updateForDecoderTypeID(QList<DecoderFile *> pList);
    virtual void updateForDecoderMfgID(QString pMfg, int pMfgID, int pModelID);
    virtual void updateForDecoderNotID(int pMfgID, int pModelID);
    ProgModeSelector* selector;
@@ -80,6 +82,7 @@ class CLSIdentifyLoco : public IdentifyLoco
  /*private*/ CombinedLocoSelPane* who;
 public:
  CLSIdentifyLoco(Programmer* programmer, CombinedLocoSelPane* who);
+ QObject* self() {return (QObject*)this;}
  protected:
  /*protected*/ void done(int dccAddress);
  /*protected*/ void message(QString m);
@@ -93,6 +96,7 @@ class CLSIdentifyDecoder : public IdentifyDecoder
     /*private*/ CombinedLocoSelPane* who;
 public:
     CLSIdentifyDecoder(Programmer* p, CombinedLocoSelPane* who);
+    QObject* self() {return (QObject*)this;}
 protected:
     /*protected*/ void done(int mfg, int model, int productID);
     /*protected*/ void message(QString m) ;

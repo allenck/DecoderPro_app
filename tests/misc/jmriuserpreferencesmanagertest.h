@@ -26,8 +26,8 @@ public:
 signals:
 
 public slots:
- /*public*/ void testGetInstance();
- /*public*/ void testGetDefault();
+// /*public*/ void testGetInstance();
+// /*public*/ void testGetDefault();
  /*public*/ void testAllowSave();
  /*public*/ void testDisallowSave();
  /*public*/ void testSetSaveAllowed();
@@ -90,8 +90,8 @@ public slots:
  /*public*/ void testGetClassName();
  /*public*/ void testGetClassPreferences();
  /*public*/ void testGetPreferencesSize();
- /*public*/ void testReadUserPreferences() throw (IOException);
- /*public*/ void testSaveElement() throw (IOException);
+ /*public*/ void testReadUserPreferences() /*throw (IOException)*/;
+ /*public*/ void testSaveElement() /*throw (IOException)*/;
 private:
  static Logger* log;
  /*private*/ /*final*/ QString strClass;// = JmriUserPreferencesManagerTest.class.getName();
@@ -125,12 +125,12 @@ protected:
  friend class JmriUserPreferencesManagerTest;
 };
 
-/*private*/ /*static*/ class JUPMListener : public PropertyChangeListener {
+/*private*/ /*static*/ class JUPMListener : public QObject, public PropertyChangeListener {
  Q_OBJECT
- JmriUserPreferencesManagerTest* test;
+ Q_INTERFACES(PropertyChangeListener)JmriUserPreferencesManagerTest* test;
 public:
  JUPMListener(JmriUserPreferencesManagerTest* test) {this->test = test;}
- /*public*/ PropertyChangeEvent* event = nullptr;
+ QObject* self() {return (QObject*)this;}/*public*/ PropertyChangeEvent* event = nullptr;
 public slots:
  //@Override
  /*public*/ void propertyChange(PropertyChangeEvent* evt);
@@ -142,6 +142,7 @@ class JUPMReleaseUntil : public ReleaseUntil
  JUPMListener* l;
 public:
  JUPMReleaseUntil(JUPMListener* l) {this->l = l;}
- bool ready() throw (Exception) {return l->event != nullptr && l->event->getPropertyName() == (UserPreferencesManager::PREFERENCES_UPDATED);}
+ bool ready() /*throw (Exception)*/
+ {return l->event != nullptr && l->event->getPropertyName() == (UserPreferencesManager::PREFERENCES_UPDATED);}
 };
 #endif // JMRIUSERPREFERENCESMANAGERTEST_H

@@ -1,4 +1,4 @@
-#include "signallingpanel.h"
+﻿#include "signallingpanel.h"
 #include "instancemanager.h"
 #include "signalmast.h"
 #include "abstractsignalmast.h"
@@ -8,20 +8,23 @@
 #include "defaultsignalmastmanager.h"
 #include "signalspeedmap.h"
 #include <QVBoxLayout>
-#include "../Tables/jmribeancombobox.h"
 #include "defaultsignalmastlogicmanager.h"
 #include "proxyturnoutmanager.h"
 #include "block.h"
-#include <QTableView>
 #include "QHeaderView"
 #include "../LayoutEditor/layoutblockmanager.h"
 #include <QMessageBox>
 #include <QVBoxLayout>
+#include "joptionpane.h"
+#include "box.h"
+#include "stringutil.h"
+#include "jtabbedpane.h"
+#include "tablecolumnmodel.h"
+#include "tablecolumn.h"
+#include "tablerowsorter.h"
+#include "alphanumcomparator.h"
+#include "rowsorterutil.h"
 
-//SignallingPanel::SignallingPanel(QWidget *parent) :
-//    QWidget(parent)
-//{
-//}
 /**
  *
  * @author	Kevin Dickerson Copyright (C) 2011
@@ -41,6 +44,7 @@
 /*private*/ /*static*/ QString SignallingPanel::SET_TO_ANY = tr("Any State");
 
 /*private*/ /*static*/ int SignallingPanel::ROW_HEIGHT = 0;
+// /*private*/ /*static*/ /*final*/ JButton* SignallingPanel::sizer = new JButton("Sizer");  // NOI18N
 
 void SignallingPanel::init()
 {
@@ -49,13 +53,11 @@ void SignallingPanel::init()
  sourceMastLabel = new QLabel(tr("Source Mast"));
  destMastLabel = new QLabel(tr("Destination Mast"));
  updateButton = new QPushButton(tr("Update Signal Logic"));
- useLayoutEditor = new QCheckBox(tr("Use Layout Editor Paths"));
- useLayoutEditorTurnout = new QCheckBox(tr("Use Turnout Details From Layout Editor"));
- useLayoutEditorBlock = new QCheckBox(tr("Use Block Details From Layout Editor"));
- allowAutoMastGeneration = new QCheckBox(tr("Allow the Logic to Automatically Determine ConflictingSignalMasts"));
- lockTurnouts = new QCheckBox(tr("Lock Turnouts when SignalMast Logic is Active"));
-
- smm = (SignalMastManager*)InstanceManager::getDefault("SignalMastManager");
+ useLayoutEditor = new JCheckBox(tr("Use Layout Editor Paths"));
+ useLayoutEditorTurnout = new JCheckBox(tr("Use Turnout Details From Layout Editor"));
+ useLayoutEditorBlock = new JCheckBox(tr("Use Block Details From Layout Editor"));
+ allowAutoMastGeneration = new JCheckBox(tr("Allow the Logic to Automatically Determine ConflictingSignalMasts"));
+ lockTurnouts = new JCheckBox(tr("Lock Turnouts when SignalMast Logic is Active"));
 
  nbhm = (NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager");
 
@@ -81,27 +83,34 @@ void SignallingPanel::init()
  sml= NULL;
 }
 
-/*public*/ SignallingPanel::SignallingPanel(QFrame* frame, QWidget* parent) : QWidget(parent)
+/*public*/ SignallingPanel::SignallingPanel(JFrame* frame, QWidget* parent) : JmriPanel(parent)
 {
  common(NULL, NULL, frame);
 }
 
-/*public*/ SignallingPanel::SignallingPanel(SignalMast* source, SignalMast* dest, QFrame* frame, QWidget* parent) : QWidget(parent)
+/*public*/ SignallingPanel::SignallingPanel(SignalMast* source, SignalMast* dest, JFrame *frame, QWidget* parent) : JmriPanel(parent)
 {
  //super();
  jFrame = frame;
  common(source, dest, frame);
 }
-void SignallingPanel::common(SignalMast* source, SignalMast* dest, QFrame* /*frame*/)
+
+void SignallingPanel::common(SignalMast* source, SignalMast* dest, JFrame* frame)
 {
  init();
- QLabel* mastSpeed = new QLabel();
+ JButton* cancelButton = new JButton(tr("Cancel"));  // NOI18N
+ JButton* updateButton = new JButton(tr("Update Signal Logic"));  // NOI18N
+ JButton* applyButton = new JButton(tr("Apply"));  // NOI18N
+ JLabel* mastSpeed = new JLabel();
 
  if (source!=NULL)
  {
   this->sourceMast = source;
-  this->sml = ((DefaultSignalMastLogicManager*)InstanceManager::signalMastLogicManagerInstance())->getSignalMastLogic(source);
+  this->sml = ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->getSignalMastLogic(source);
   fixedSourceMastLabel = new QLabel(sourceMast->getDisplayName());
+  // if (dest != null) {
+  //   frame->setTitle(source.getDisplayName() + " to " + dest.getDisplayName());
+  // }
  }
  if ((dest!=NULL) && (sml!=NULL))
  {
@@ -127,9 +136,9 @@ void SignallingPanel::common(SignalMast* source, SignalMast* dest, QFrame* /*fra
   {
    QString speed = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getNamedSpeed(pathSpeed);
    if (speed != NULL)
-        mastSpeed->setText(tr("PathSpeed") + " : " + speed);
+        mastSpeed->setText(tr("Path Speed") + " : " + speed);
    else
-        mastSpeed->setText(tr("PathSpeed") + " : " + QString::number(pathSpeed));
+        mastSpeed->setText(tr("Path Speed") + " : " + QString::number(pathSpeed));
   }
  }
  else if (dest==NULL)
@@ -137,31 +146,48 @@ void SignallingPanel::common(SignalMast* source, SignalMast* dest, QFrame* /*fra
   sml=NULL;
  }
 
- sourceMastBox = new JmriBeanComboBox(smm, sourceMast, JmriBeanComboBox::DISPLAYNAME);
- destMastBox = new JmriBeanComboBox(smm, destMast, JmriBeanComboBox::DISPLAYNAME);
- //signalMastCombo(sourceMastBox, sourceMast);
- //signalMastCombo(destMastBox, destMast);
+ SignalMastManager* smm = (SignalMastManager*)InstanceManager::getDefault("SignalMastManager");
+ sourceMastBox = new NamedBeanComboBox(smm, sourceMast, NamedBean::DISPLAYNAME);
+ sourceMastBox->setMaximumSize(sourceMastBox->sizeHint());
+ destMastBox = new NamedBeanComboBox(smm, destMast, NamedBean::DISPLAYNAME);
+ destMastBox->setMaximumSize(destMastBox->sizeHint());
 
-// QWidget* containerPanel = new QWidget();
-// containerPanel->setLayout(new /*BorderLayout()*/QVBoxLayout());
- QVBoxLayout* containerPanelLayout = new QVBoxLayout;
+// JComboBoxUtil->setupComboBoxMaxRows(sourceMastBox);
+// JComboBoxUtil->setupComboBoxMaxRows(destMastBox);
 
-// QWidget* header = new QWidget();
+ // directly add sub-panes onto JFrame's content pane to allow resizing (2018)
+ //QWidget* contentPane = frame->getContentPane();
+ //QWidget* containerPanel = new QWidget();
+ QVBoxLayout* containerPanelLayout = (QVBoxLayout*)frame->getContentPane(true)->layout();
+
+ JPanel* header = new JPanel();
 // header->setLayout(new QVBoxLayout(header/*, BoxLayout.Y_AXIS*/));
  QVBoxLayout* headerLayout = new QVBoxLayout;
+ header->setLayout(headerLayout);
 
-// QWidget* sourcePanel = new QWidget();
+ JPanel* mastGrid = new JPanel();
+ QGridLayout* layout = new QGridLayout();//2, 2, 10, 0); // (int rows, int cols, int hgap, int vgap)
+ mastGrid->setLayout(layout);
+ // row 1
+ mastGrid->layout()->addWidget(sourceMastLabel);
+
+ JPanel* sourcePanel = new JPanel();
 // sourcePanel->setLayout(new QHBoxLayout());
  QHBoxLayout* sourcePanelLayout = new QHBoxLayout;
+ sourcePanel->setLayout(sourcePanelLayout);
  sourcePanelLayout->addWidget(sourceMastLabel);
  sourcePanelLayout->addWidget(sourceMastBox);
  sourcePanelLayout->addWidget(fixedSourceMastLabel);
+ mastGrid->layout()->addWidget(sourcePanel);
+ // row 2
+ mastGrid->layout()->addWidget(destMastLabel);
 
  headerLayout->addLayout(sourcePanelLayout);
 
-// QWidget* destPanel = new QWidget();
+ JPanel* destPanel = new JPanel();
 // destPanel->setLayout(new QHBoxLayout());
  QHBoxLayout* destPanelLayout = new QHBoxLayout;
+ destPanel->setLayout(destPanelLayout);
  destPanelLayout->addWidget(destMastLabel);
  destPanelLayout->addWidget(destMastBox);
  destPanelLayout->addWidget(fixedDestMastLabel);
@@ -182,15 +208,17 @@ void SignallingPanel::common(SignalMast* source, SignalMast* dest, QFrame* /*fra
 //        }
 //    });
  connect(destMastBox, SIGNAL(currentIndexChanged(int)), this, SLOT(on_destMastBox_currentSelectionChanged(int)));
- headerLayout->addLayout(destPanelLayout);
+
+ mastGrid->layout()->addWidget(destPanel);
+ header->layout()->addWidget(mastGrid);
+
  headerLayout->addWidget(mastSpeed);
 
-//        QWidget* srcSigSpeed = new QWidget();
-
- //QWidget* editor = new QWidget();
+ JPanel* editor = new JPanel();
  QVBoxLayout* editorLayout = new QVBoxLayout;
  //editor->setLayout(editorLayout = new QVBoxLayout(editor/*, BoxLayout.Y_AXIS*/));
- editorLayout->addWidget(useLayoutEditor);
+ editor->setLayout(editorLayout);
+ editorLayout->addWidget(useLayoutEditor,0, Qt::AlignLeft);
 
  editorLayout->addWidget(useLayoutEditorTurnout);
  editorLayout->addWidget(useLayoutEditorBlock);
@@ -238,10 +266,55 @@ void SignallingPanel::common(SignalMast* source, SignalMast* dest, QFrame* /*fra
 
 //    });
  connect(useLayoutEditor, SIGNAL(toggled(bool)), this, SLOT(on_useLayoutEditor_toggled(bool)));
- headerLayout->addLayout(editorLayout);
+
+ JPanel* useLayoutEditorSubPanel = new JPanel(); // indent 2 options connected to LayoutEditor choice
+ useLayoutEditorSubPanel->setLayout(new QVBoxLayout());//useLayoutEditorSubPanel, BoxLayout.Y_AXIS));
+ useLayoutEditorSubPanel->setBorder(BorderFactory::createEmptyBorder(0, 20, 0, 0));
+ useLayoutEditorSubPanel->layout()->addWidget(useLayoutEditorTurnout);
+ useLayoutEditorSubPanel->layout()->addWidget(useLayoutEditorBlock);
+ editorLayout->addWidget(useLayoutEditorSubPanel);
+ useLayoutEditorSubPanel->setVisible(false);
+
+ //useLayoutEditor.addActionListener(e -> {
+ connect(useLayoutEditor, &JCheckBox::clicked, [=]{
+     useLayoutEditorSubPanel->setVisible(useLayoutEditor->isChecked());
+     // Setup for display of all Turnouts, if needed
+     bool valid;
+     if (useLayoutEditor->isChecked()) {
+         jFrame->pack();
+         if (!((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled()) {
+             int response;
+
+             response = JOptionPane::showConfirmDialog(nullptr, tr("Layout Block Routing is not enabled.\nDo you want to enable it?"));  // NOI18N
+             if (response == 0) {
+                 ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->enableAdvancedRouting(true);
+                 JOptionPane::showMessageDialog(nullptr, tr("Layout Block Routing has been enabled.\nPlease close and reopen this window for the changes to take effect."));  // NOI18N
+             }
+         }
+
+         if ((sml != nullptr) && (destMast != nullptr)) {
+             try {
+                 sml->useLayoutEditor(useLayoutEditor->isChecked(), destMast);
+             } catch (JmriException* je) {
+                 JOptionPane::showMessageDialog(nullptr, je->toString());
+             }
+             try {
+                 valid = ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(VPtr<LayoutBlock>::asPtr(sourceMastBox->currentData()),
+                         VPtr<LayoutBlock>::asPtr(destMastBox->currentData()), LayoutBlockConnectivityTools::Routing::MASTTOMAST);
+                 if (!valid) {
+                     JOptionPane::showMessageDialog(nullptr, tr("The Destination Mast is not directly reachable from the Source Mast"));
+                 }
+             } catch (JmriException* je) {
+                 JOptionPane::showMessageDialog(nullptr, tr("It has not been possible to validate the path between the two Signal Masts"));
+             }
+         }
+     }
+ });
+ headerLayout->addWidget(editor);
  headerLayout->addWidget(allowAutoMastGeneration);
  headerLayout->addWidget(lockTurnouts);
- QWidget* py = new QWidget();
+
+ JPanel* py = new JPanel();
  py->setLayout(new QHBoxLayout());
  py->layout()->addWidget(new QLabel(tr("Show")));
  selGroup = new QButtonGroup();
@@ -282,22 +355,26 @@ void SignallingPanel::common(SignalMast* source, SignalMast* dest, QFrame* /*fra
  py->layout()->addWidget(new QLabel("  " + tr("Turnouts and Sensors")));
  headerLayout->addWidget(py);
 
- containerPanelLayout->addLayout(headerLayout/*, BorderLayout.NORTH*/);
+ containerPanelLayout->addWidget(header);
 
-//        QWidget* sensorPanel = new QWidget();
-//        QWidget* signalMastPanel = new QWidget();
+ // build_x_Panel() returns a JScrollFrame
+ JTabbedPane* detailsTab = new JTabbedPane();
+ detailsTab->addTab(tr("Blocks"), buildBlocksPanel());
+ detailsTab->addTab(tr("Turnouts"),buildTurnoutPanel());
+ detailsTab->addTab(tr("Sensors"), buildSensorPanel());
+ detailsTab->addTab(tr("Signal Masts"), buildSignalMastPanel());
 
-    QTabWidget* detailsTab = new QTabWidget();
-    detailsTab->addTab( buildBlocksPanel(),tr(("Blocks")));
-    detailsTab->addTab(buildTurnoutPanel(), tr("Turnouts"));
-    detailsTab->addTab( buildSensorPanel(),tr(("Sensors")));
-    detailsTab->addTab(buildSignalMastPanel(), tr(("SignalMasts")));
+ containerPanelLayout->addWidget(detailsTab);
 
-    containerPanelLayout->addWidget(detailsTab/*, BorderLayout.CENTER*/);
+ JPanel* footer = new JPanel();
+ footer->setLayout(new QHBoxLayout());
 
-    QWidget* footer = new QWidget();
-    footer->setLayout(new QHBoxLayout());
-    footer->layout()->addWidget(updateButton);
+ // Cancel button
+ footer->layout()->addWidget(cancelButton);
+ //cancelButton.addActionListener(this::cancelPressed);
+ connect(cancelButton, &JButton::clicked, [=]{cancelPressed();});
+
+ footer->layout()->addWidget(updateButton);
 //    updateButton->layout()->addWidgetActionListener(new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent e) {
 //            updatePressed(e);
@@ -305,19 +382,18 @@ void SignallingPanel::common(SignalMast* source, SignalMast* dest, QFrame* /*fra
 //    });
  updateButton->setToolTip(tr("Change this Route and leave Edit mode"));
  updateButton->setVisible(true);
- QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
- sizePolicy.setHorizontalStretch(0);
- sizePolicy.setVerticalStretch(0);
- sizePolicy.setHeightForWidth(updateButton->sizePolicy().hasHeightForWidth());
- updateButton->setSizePolicy(sizePolicy);
  connect(updateButton, SIGNAL(clicked()), this, SLOT(updatePressed()));
 
- containerPanelLayout->addWidget(footer/*, BorderLayout.SOUTH*/);
- QVBoxLayout* thisLayout;
- if(layout()== NULL)
-  setLayout(thisLayout =new QVBoxLayout());
- else thisLayout = (QVBoxLayout*)layout();
-thisLayout->addLayout(containerPanelLayout);
+ // Apply (and Close) button
+ footer->layout()->addWidget(applyButton);
+ //applyButton.addActionListener(this::applyPressed);
+ connect(applyButton, &JButton::clicked, [=]{applyPressed();});
+ applyButton->setToolTip(tr("Change this Signal Mast Logic and leave Edit mode"));  // NOI18N
+ applyButton->setVisible(true);
+
+ containerPanelLayout->addWidget(Box::createVerticalGlue()); // glue above buttons
+ containerPanelLayout->addWidget(footer);
+
  if(sourceMast!=NULL)
  {
   fixedSourceMastLabel->setVisible(true);
@@ -355,14 +431,14 @@ QWidget* SignallingPanel::buildBlocksPanel()
  blockPanel->setLayout(blockPanelLayout = new QVBoxLayout(blockPanel/*, BoxLayout.Y_AXIS*/));
 
  BlockManager* bm = ((BlockManager*)InstanceManager::getDefault("BlockManager"));
- QStringList systemNameList = bm->getSystemNameList();
+ QStringList systemNameList = bm->AbstractManager::getSystemNameList();
  _manualBlockList =  QList<ManualBlockList*> (); //systemNameList.size());
  QStringListIterator iter(systemNameList);
  while (iter.hasNext())
  {
   QString systemName = iter.next();
   //String userName = bm.getBySystemName(systemName).getUserName();
-  _manualBlockList.append(new ManualBlockList((Block*)bm->getBySystemName(systemName),this));
+  _manualBlockList.append(new ManualBlockList((Block*)bm->AbstractManager::getBySystemName(systemName),this));
  }
 
  if ((sml!=NULL) && (destMast!=NULL))
@@ -397,24 +473,19 @@ QWidget* SignallingPanel::buildBlocksPanel()
  p2xcLayout->addLayout(p21cLayout);
 
  _blockModel = new BlockModel(this);
- JTable* manualBlockTable = new JTable(_blockModel);
- QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
- sizePolicy.setHorizontalStretch(0);
- sizePolicy.setVerticalStretch(0);
- sizePolicy.setHeightForWidth(manualBlockTable->sizePolicy().hasHeightForWidth());
- manualBlockTable->setSizePolicy(sizePolicy);
- //jmri.util.JTableUtil.sortableDataModel(_blockModel);
-//    try
-//    {
-//        jmri.util.com.sun.TableSorter tmodel = ((jmri.util.com.sun.TableSorter)manualBlockTable.getModel());
-//        tmodel.setColumnComparator(String.class, new jmri.util.SystemNameComparator());
-//        tmodel.setSortingStatus(BlockModel.SNAME_COLUMN, jmri.util.com.sun.TableSorter.ASCENDING);
-//    } catch (ClassCastException e3) {}  // if not a sortable table model
- //manualBlockTable->setModel(_blockModel);
- manualBlockTable->setSelectionMode(QAbstractItemView::SingleSelection);
+ manualBlockTable = new JTable(/*_blockModel*/);
+ TableRowSorter/*<BlockModel>*/* manualBlockSorter = new TableRowSorter(_blockModel);
+ // configure row height for comboBox
+ manualBlockTable->setRowHeight(JButton("sizer").sizeHint().height() - 2); // row height has to be greater than for plain tables
+ manualBlockSorter->setComparator(BlockModel::SNAME_COLUMN, new AlphanumComparator());
+ manualBlockSorter->setComparator(BlockModel::UNAME_COLUMN, new AlphanumComparator());
+ RowSorterUtil::setSortOrder(manualBlockSorter, BlockModel::SNAME_COLUMN, SortOrder::ASCENDING);manualBlockTable->setSelectionMode(QAbstractItemView::SingleSelection);
  manualBlockTable->setSelectionBehavior(QAbstractItemView::SelectRows);
  manualBlockTable->setEnabled(true);
- //manualBlockTable.setPreferredScrollableViewportSize(new java.awt.Dimension(480,100));
+ manualBlockTable->setRowSorter(manualBlockSorter);
+ manualBlockTable->setSortingEnabled(true);
+ manualBlockTable->setModel(manualBlockSorter);
+ //manualBlockTable->setPreferredScrollableViewportSize(new java.awt.Dimension(480,100));
  manualBlockTable->setMinimumSize(280,100);
 // QComboBox* stateCCombo = new QComboBox();
 // stateCCombo->addItem(SET_TO_UNOCCUPIED);
@@ -423,27 +494,27 @@ QWidget* SignallingPanel::buildBlocksPanel()
  QStringList blockStates;
  blockStates << SET_TO_UNOCCUPIED << SET_TO_OCCUPIED << SET_TO_ANY;
  //manualBlockTable->setItemDelegateForColumn(BlockModel::STATE_COLUMN, new SPComboBoxDelegate(blockStates));
- _blockModel->setColumnToHoldDelegate(manualBlockTable, BlockModel::STATE_COLUMN, new SPComboBoxDelegate(blockStates));
+ _blockModel->setColumnToHoldDelegate(manualBlockTable, BlockModel::STATE_COLUMN, new JComboBoxEditor(blockStates, true));
 
-// TableColumnModel _manualBlockColumnModel = manualBlockTable.getColumnModel();
-// TableColumn includeColumnC = _manualBlockColumnModel.
-//                                        getColumn(BlockModel.INCLUDE_COLUMN);
+ TableColumnModel* _manualBlockColumnModel = manualBlockTable->getColumnModel();
+ TableColumn* includeColumnC = _manualBlockColumnModel->
+                                        getColumn(BlockModel::INCLUDE_COLUMN);
  manualBlockTable->setColumnWidth(BlockModel::INCLUDE_COLUMN, 60);
- //includeColumnC.setResizable(false);
- //includeColumnC.setMinWidth(50);
- //includeColumnC.setMaxWidth(60);
-//    TableColumn sNameColumnC = _manualBlockColumnModel.
-//                                        getColumn(BlockModel.SNAME_COLUMN);
-//    sNameColumnC.setResizable(true);
-//    sNameColumnC.setMinWidth(75);
-//    sNameColumnC.setMaxWidth(95);
+ includeColumnC->setResizable(false);
+ includeColumnC->setMinWidth(50);
+ includeColumnC->setMaxWidth(60);
+ TableColumn* sNameColumnC = _manualBlockColumnModel->
+                                     getColumn(BlockModel::SNAME_COLUMN);
+ sNameColumnC->setResizable(true);
+ sNameColumnC->setMinWidth(75);
+ sNameColumnC->setMaxWidth(95);
 
-//    TableColumn stateColumnC = _manualBlockColumnModel.
-//                                        getColumn(BlockModel.STATE_COLUMN);
-//    stateColumnC.setCellEditor(new DefaultCellEditor(stateCCombo));
-//    stateColumnC.setResizable(false);
-//    stateColumnC.setMinWidth(90);
-//    stateColumnC.setMaxWidth(100);
+ TableColumn* stateColumnC = _manualBlockColumnModel->
+                                     getColumn(BlockModel::STATE_COLUMN);
+ //stateColumnC->setCellEditor(new DefaultCellEditor(stateCCombo));
+ stateColumnC->setResizable(false);
+ stateColumnC->setMinWidth(90);
+ stateColumnC->setMaxWidth(100);
 
  //_manualBlockScrollPane = new JScrollPane(manualBlockTable);
  //p2xc.add(_manualBlockScrollPane,BorderLayout.CENTER);
@@ -472,33 +543,32 @@ QWidget* SignallingPanel::buildBlocksPanel()
  p2xbLayout->addLayout(p21aLayout);
 
  _autoBlockModel = new AutoBlockModel(this);
- QTableView* autoBlockTable = new QTableView();
- autoBlockTable->setSizePolicy(sizePolicy);
+ autoBlockTable = new JTable(_autoBlockModel);
  //jmri.util.JTableUtil.sortableDataModel(_autoBlockModel);
- autoBlockTable->setModel(_autoBlockModel);
-//    try
-//    {
-//        jmri.util.com.sun.TableSorter tmodel = ((jmri.util.com.sun.TableSorter)autoBlockTable.getModel());
-//        tmodel.setColumnComparator(String.class, new jmri.util.SystemNameComparator());
-//        tmodel.setSortingStatus(AutoBlockModel.SNAME_COLUMN, jmri.util.com.sun.TableSorter.ASCENDING);
-//    } catch (ClassCastException e3) {}  // if not a sortable table model
- autoBlockTable->setSelectionMode(QAbstractItemView::NoSelection);
-//    autoBlockTable.setPreferredScrollableViewportSize(new java.awt.Dimension(480,100));
+ TableRowSorter/*<AutoBlockModel>*/* autoBlockSorter = new TableRowSorter(_autoBlockModel);
+ autoBlockSorter->setComparator(AutoBlockModel::SNAME_COLUMN, new AlphanumComparator());
+ autoBlockSorter->setComparator(AutoBlockModel::UNAME_COLUMN, new AlphanumComparator());
+ RowSorterUtil::setSortOrder(autoBlockSorter, AutoBlockModel::SNAME_COLUMN, SortOrder::ASCENDING);
+ autoBlockTable->setRowSorter(autoBlockSorter);
+ autoBlockTable->setRowSelectionAllowed(false);
+ autoBlockTable->setSortingEnabled(true);
+ autoBlockTable->setModel(autoBlockSorter);
+ //    autoBlockTable->setPreferredScrollableViewportSize(new java.awt.Dimension(480,100));
  autoBlockTable->setMinimumSize(280,100);
 
-//    TableColumnModel _autoBlockColumnModel = autoBlockTable.getColumnModel();
-//    TableColumn sNameColumnA = _autoBlockColumnModel.
-//                                        getColumn(AutoBlockModel::SNAME_COLUMN);
-//    sNameColumnA.setResizable(true);
-//    sNameColumnA.setMinWidth(75);
-//    sNameColumnA.setMaxWidth(95);
+    TableColumnModel* _autoBlockColumnModel = autoBlockTable->getColumnModel();
+    TableColumn* sNameColumnA = _autoBlockColumnModel->
+                                        getColumn(AutoBlockModel::SNAME_COLUMN);
+    sNameColumnA->setResizable(true);
+    sNameColumnA->setMinWidth(75);
+    sNameColumnA->setMaxWidth(95);
 
-//    TableColumn stateColumnA = _autoBlockColumnModel.
-//                                        getColumn(AutoBlockModel.STATE_COLUMN);
-//    //stateColumnA.setCellEditor(new DefaultCellEditor(stateCCombo));
-//    stateColumnA.setResizable(false);
-//    stateColumnA.setMinWidth(90);
-//    stateColumnA.setMaxWidth(100);
+    TableColumn* stateColumnA = _autoBlockColumnModel->
+                                        getColumn(AutoBlockModel::STATE_COLUMN);
+    //stateColumnA->setCellEditor(new DefaultCellEditor(stateCCombo));
+    stateColumnA->setResizable(false);
+    stateColumnA->setMinWidth(90);
+    stateColumnA->setMaxWidth(100);
 
  //autoBlockScrollPane = new JScrollPane(autoBlockTable);
  //p2xb.add(_autoBlockScrollPane,BorderLayout.CENTER);
@@ -506,7 +576,7 @@ QWidget* SignallingPanel::buildBlocksPanel()
  blockPanelLayout->addWidget(p2xb);
  p2xb->setVisible(true);
 
- ROW_HEIGHT = autoBlockTable->rowHeight(0);
+ //ROW_HEIGHT = autoBlockTable->rowHeight(0);
  p2xaSpace->setVisible(false);
 #endif
 
@@ -518,16 +588,14 @@ void SignallingPanel::on_destMastBox_currentSelectionChanged(int)
  {
   try
   {
-   bool valid = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(sourceMastBox->getSelectedBean(),
-                            destMastBox->getSelectedBean(), LayoutBlockConnectivityTools::MASTTOMAST);
+   bool valid = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(sourceMastBox->getSelectedItem(),
+                            destMastBox->getSelectedItem(), LayoutBlockConnectivityTools::MASTTOMAST);
    if(!valid)
-    //JOptionPane.showMessageDialog(NULL, tr("ErrorUnReachableDestination"));
-       QMessageBox::critical(this, tr("Error"), tr("The Destination Mast is not directly reachable from the source Mast"));
+    JOptionPane::showMessageDialog(NULL, tr("The Destination Mast is not directly reachable from the source Mast"));
   }
-  catch (JmriException je)
+  catch (JmriException* je)
   {
-   //JOptionPane.showMessageDialog(NULL, tr("WarningUnabletoValidate"));
-   QMessageBox::critical(this, tr("Error"), tr("It has not been possible to validate the path between the two SignalMasts"));
+   JOptionPane::showMessageDialog(NULL, tr("It has not been possible to validate the path between the two SignalMasts"));
   }
  }
 }
@@ -570,19 +638,12 @@ void SignallingPanel::on_useLayoutEditor_toggled(bool)
   //jFrame->pack();
   if (!static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->isAdvancedRoutingEnabled())
   {
-//   int response;
-//   response = JOptionPane.showConfirmDialog(NULL, tr("EnableLayoutBlockRouting"));
-   switch(QMessageBox::question(this, tr("Question"), tr("Layout block routing is not enabled\n                                                     Do you want to enable it?"), QMessageBox::Yes | QMessageBox::No))
+   int response;
+   response = JOptionPane::showConfirmDialog(NULL, tr("Layout Block Routing is not enabled.\nDo you want to enable it?"));
+   if(response == 0)
    {
-   case QMessageBox::Yes:
-    {
      static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->enableAdvancedRouting(true);
-       //JOptionPane.showMessageDialog(NULL, tr("LayoutBlockRoutingEnabled"));
-     QMessageBox::information(this, tr("Information"), tr(" Please close and reopen this window for the changes to take effect."));
-    }
-    break;
-    default:
-        break;
+       JOptionPane::showMessageDialog(nullptr, tr(" Please close and reopen this window for the changes to take effect."));
    }
   }
 
@@ -592,25 +653,22 @@ void SignallingPanel::on_useLayoutEditor_toggled(bool)
    {
     ((DefaultSignalMastLogic*)sml)->useLayoutEditor(useLayoutEditor->isChecked(), destMast);
    }
-   catch (JmriException je)
+   catch (JmriException* je)
    {
-    //JOptionPane.showMessageDialog(NULL, je.toString());
-    QMessageBox::critical(this, tr("Error"), je.getMessage());
+    JOptionPane::showMessageDialog(NULL, je->toString());
    }
    try
    {
-    valid = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(sourceMastBox->getSelectedBean(),
-                destMastBox->getSelectedBean(), LayoutBlockConnectivityTools::MASTTOMAST);
+    valid = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getLayoutBlockConnectivityTools()->checkValidDest(sourceMastBox->getSelectedItem(),
+                destMastBox->getSelectedItem(), LayoutBlockConnectivityTools::MASTTOMAST);
     if(!valid)
     {
-     //JOptionPane.showMessageDialog(NULL, tr("ErrorUnReachableDestination"));
-     QMessageBox::critical(this, tr("Error"), tr("The Destination Mast is not directly reachable from the source Mast"));
+     JOptionPane::showMessageDialog(NULL, tr("The Destination Mast is not directly reachable from the source Mast"));
     }
    }
-   catch (JmriException je)
+   catch (JmriException* je)
    {
-    //JOptionPane.showMessageDialog(NULL, tr("WarningUnabletoValidate"));
-    QMessageBox::critical(this, tr("Error"), je.getMessage());
+    JOptionPane::showMessageDialog(NULL, tr("It has not been possible to validate the path between the two Signal Masts"));
    }
   }
  }
@@ -624,12 +682,12 @@ QWidget* SignallingPanel::buildTurnoutPanel(){
     turnoutPanel->setLayout(new QVBoxLayout(turnoutPanel/*, BoxLayout.Y_AXIS*/));
 
     TurnoutManager* bm = InstanceManager::turnoutManagerInstance();
-    QStringList systemNameList = ((ProxyTurnoutManager*)bm)->getSystemNameList();
+    QStringList systemNameList = ((ProxyTurnoutManager*)bm)->AbstractProxyManager::getSystemNameList();
     _manualTurnoutList =  QList <ManualTurnoutList*> (); //systemNameList.size());
     QStringListIterator iter(systemNameList);
     while (iter.hasNext()) {
         QString systemName = iter.next();
-        QString userName = ((ProxyTurnoutManager*)bm)->getBySystemName(systemName)->getUserName();
+        QString userName = ((ProxyTurnoutManager*)bm)->AbstractProxyManager::getBySystemName(systemName)->getUserName();
         _manualTurnoutList.append(new ManualTurnoutList(systemName, userName,this));
     }
 
@@ -663,18 +721,18 @@ QWidget* SignallingPanel::buildTurnoutPanel(){
     p2xtLayout->addLayout(p21cLayout);
 
     _turnoutModel = new TurnoutModel(this);
-    JTable* manualTurnoutTable = new JTable(_turnoutModel);
-    manualTurnoutTable->setSizePolicy(sizePolicy());
-    //jmri.util.JTableUtil.sortableDataModel(_turnoutModel);
-    //manualTurnoutTable->setModel(_turnoutModel);
-//    try {
-//        jmri.util.com.sun.TableSorter tmodel = ((jmri.util.com.sun.TableSorter)manualTurnoutTable.getModel());
-//        tmodel.setColumnComparator(String.class, new jmri.util.SystemNameComparator());
-//        tmodel.setSortingStatus(TurnoutModel.SNAME_COLUMN, jmri.util.com.sun.TableSorter.ASCENDING);
-//    } catch (ClassCastException e3) {}  // if not a sortable table model
-    manualTurnoutTable->setSelectionMode(QAbstractItemView::SingleSelection);
-    manualTurnoutTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    //manualTurnoutTable.setPreferredScrollableViewportSize(new java.awt.Dimension(480,100));
+    manualTurnoutTable = new JTable(_turnoutModel);
+    TableRowSorter/*<TurnoutModel*/* manualTurnoutSorter = new TableRowSorter(_turnoutModel);
+    // configure row height for comboBox
+    manualTurnoutTable->setRowHeight(JButton("sizer").sizeHint().height() - 2); // row height has to be greater than for plain tables
+    manualTurnoutSorter->setComparator(TurnoutModel::SNAME_COLUMN, new AlphanumComparator());
+    manualTurnoutSorter->setComparator(TurnoutModel::UNAME_COLUMN, new AlphanumComparator());
+    RowSorterUtil::setSortOrder(manualTurnoutSorter, TurnoutModel::SNAME_COLUMN, SortOrder::ASCENDING);
+    //_turnoutModel->configStateColumn(manualTurnoutTable); // create static comboBox in State column
+    manualTurnoutTable->setRowSorter(manualTurnoutSorter);
+    manualTurnoutTable->setRowSelectionAllowed(false);
+    manualBlockTable->setSortingEnabled(true);
+    manualBlockTable->setModel(manualTurnoutSorter);//manualTurnoutTable->setPreferredScrollableViewportSize(new java.awt.Dimension(480,100));
     manualTurnoutTable->setMinimumSize(280, 100);
 //    QComboBox* stateCCombo = new QComboBox();
 //    stateCCombo->addItem(SET_TO_THROWN);
@@ -683,26 +741,26 @@ QWidget* SignallingPanel::buildTurnoutPanel(){
     QStringList statesList;
     statesList << SET_TO_THROWN <<SET_TO_CLOSED << SET_TO_ANY;
     //manualTurnoutTable->setItemDelegateForColumn(SPTableModel::STATE_COLUMN, new SPComboBoxDelegate(statesList));
-    _turnoutModel->setColumnToHoldDelegate(manualTurnoutTable, SPTableModel::STATE_COLUMN, new SPComboBoxDelegate(statesList));
+    _turnoutModel->setColumnToHoldDelegate(manualTurnoutTable, SPTableModel::STATE_COLUMN, new JComboBoxEditor(statesList, true));
 
-//    TableColumnModel _manualTurnoutColumnModel = manualTurnoutTable.getColumnModel();
-//    TableColumn includeColumnC = _manualTurnoutColumnModel.
-//                                        getColumn(TurnoutModel.INCLUDE_COLUMN);
-//    includeColumnC.setResizable(false);
-//    includeColumnC.setMinWidth(50);
-//    includeColumnC.setMaxWidth(60);
-//    TableColumn sNameColumnC = _manualTurnoutColumnModel.
-//                                        getColumn(TurnoutModel.SNAME_COLUMN);
-//    sNameColumnC.setResizable(true);
-//    sNameColumnC.setMinWidth(75);
-//    sNameColumnC.setMaxWidth(95);
+    TableColumnModel* _manualTurnoutColumnModel = manualTurnoutTable->getColumnModel();
+    TableColumn* includeColumnC = _manualTurnoutColumnModel->
+                                        getColumn(TurnoutModel::INCLUDE_COLUMN);
+    includeColumnC->setResizable(false);
+    includeColumnC->setMinWidth(50);
+    includeColumnC->setMaxWidth(60);
+    TableColumn* sNameColumnC = _manualTurnoutColumnModel->
+                                        getColumn(TurnoutModel::SNAME_COLUMN);
+    sNameColumnC->setResizable(true);
+    sNameColumnC->setMinWidth(75);
+    sNameColumnC->setMaxWidth(95);
 
-//    TableColumn stateColumnC = _manualTurnoutColumnModel.
-//                                        getColumn(TurnoutModel.STATE_COLUMN);
-//    stateColumnC.setCellEditor(new DefaultCellEditor(stateCCombo));
-//    stateColumnC.setResizable(false);
-//    stateColumnC.setMinWidth(90);
-//    stateColumnC.setMaxWidth(100);
+    TableColumn* stateColumnC = _manualTurnoutColumnModel->
+                                        getColumn(TurnoutModel::STATE_COLUMN);
+    //stateColumnC->setCellEditor(new DefaultCellEditor(stateCCombo));
+    stateColumnC->setResizable(false);
+    stateColumnC->setMinWidth(90);
+    stateColumnC->setMaxWidth(100);
 
     //_manualTurnoutScrollPane = new JScrollPane(manualTurnoutTable);
     p2xt->layout()->addWidget(manualTurnoutTable);
@@ -730,35 +788,29 @@ QWidget* SignallingPanel::buildTurnoutPanel(){
     p2xaLayout->addLayout(p21aLayout);
 
     _autoTurnoutModel = new AutoTurnoutModel(this);
-    QTableView* autoTurnoutTable = new QTableView(); //) jmri.util.JTableUtil.sortableDataModel(_autoTurnoutModel);
-    QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-    sizePolicy.setHorizontalStretch(0);
-    sizePolicy.setVerticalStretch(0);
-    sizePolicy.setHeightForWidth(autoTurnoutTable->sizePolicy().hasHeightForWidth());
-    autoTurnoutTable->setSizePolicy(sizePolicy);
-    autoTurnoutTable->setModel(_autoTurnoutModel);
+    autoTurnoutTable = new JTable(_autoTurnoutModel); //) jmri.util.JTableUtil.sortableDataModel(_autoTurnoutModel);
 //    try {
 //        jmri.util.com.sun.TableSorter tmodel = ((jmri.util.com.sun.TableSorter)autoTurnoutTable.getModel());
-//        tmodel.setColumnComparator(String.class, new jmri.util.SystemNameComparator());
-//        tmodel.setSortingStatus(AutoTurnoutModel.SNAME_COLUMN, jmri.util.com.sun.TableSorter.ASCENDING);
+//        tmodel->setColumnComparator(String.class, new jmri.util.SystemNameComparator());
+//        tmodel->setSortingStatus(AutoTurnoutModel.SNAME_COLUMN, jmri.util.com.sun.TableSorter.ASCENDING);
 //    } catch (ClassCastException e3) {}  // if not a sortable table model
     autoTurnoutTable->setSelectionMode(QAbstractItemView::NoSelection);
-    //autoTurnoutTable.setPreferredScrollableViewportSize(new java.awt.Dimension(480,100));
+    //autoTurnoutTable->setPreferredScrollableViewportSize(new java.awt.Dimension(480,100));
     autoTurnoutTable->setMinimumSize(280,100);
 
-//    TableColumnModel _autoTurnoutColumnModel = autoTurnoutTable.getColumnModel();
-//    TableColumn sNameColumnA = _autoTurnoutColumnModel.
-//                                        getColumn(AutoTurnoutModel.SNAME_COLUMN);
-//    sNameColumnA.setResizable(true);
-//    sNameColumnA.setMinWidth(75);
-//    sNameColumnA.setMaxWidth(95);
+    TableColumnModel* _autoTurnoutColumnModel = autoTurnoutTable->getColumnModel();
+    TableColumn* sNameColumnA = _autoTurnoutColumnModel->
+                                        getColumn(AutoTurnoutModel::SNAME_COLUMN);
+    sNameColumnA->setResizable(true);
+    sNameColumnA->setMinWidth(75);
+    sNameColumnA->setMaxWidth(95);
 
-//    TableColumn stateColumnA = _autoTurnoutColumnModel.
-//                                        getColumn(AutoTurnoutModel.STATE_COLUMN);
-//    //stateColumnA.setCellEditor(new DefaultCellEditor(stateCCombo));
-//    stateColumnA.setResizable(false);
-//    stateColumnA.setMinWidth(90);
-//    stateColumnA.setMaxWidth(100);
+    TableColumn* stateColumnA = _autoTurnoutColumnModel->
+                                        getColumn(AutoTurnoutModel::STATE_COLUMN);
+    //stateColumnA->setCellEditor(new DefaultCellEditor(stateCCombo));
+    stateColumnA->setResizable(false);
+    stateColumnA->setMinWidth(90);
+    stateColumnA->setMaxWidth(100);
 
     //_autoTurnoutScrollPane = new JScrollPane(autoTurnoutTable);
     p2xaLayout->addWidget(autoTurnoutTable);
@@ -766,7 +818,7 @@ QWidget* SignallingPanel::buildTurnoutPanel(){
     turnoutPanel->layout()->addWidget(p2xa);
     p2xa->setVisible(true);
 
-    ROW_HEIGHT = autoTurnoutTable->rowHeight(0);
+    //ROW_HEIGHT = autoTurnoutTable->rowHeight(0);
     p2xaSpace->setVisible(false);
 
 #endif
@@ -779,12 +831,12 @@ QWidget* SignallingPanel::buildSensorPanel(){
     sensorPanel->setLayout(new QVBoxLayout(sensorPanel/*, BoxLayout.Y_AXIS*/));
 
     SensorManager* bm = InstanceManager::sensorManagerInstance();
-    QStringList systemNameList = ((ProxySensorManager*)bm)->getSystemNameList();
+    QStringList systemNameList = ((ProxySensorManager*)bm)->AbstractProxyManager::getSystemNameList();
     _manualSensorList =  QList <ManualSensorList*> (); //systemNameList.size());
     QStringListIterator iter (systemNameList);
     while (iter.hasNext()) {
         QString systemName = iter.next();
-        QString userName = ((ProxySensorManager*)bm)->getBySystemName(systemName)->getUserName();
+        QString userName = ((ProxySensorManager*)bm)->AbstractProxyManager::getBySystemName(systemName)->getUserName();
         _manualSensorList.append(new ManualSensorList(systemName, userName, this));
     }
 
@@ -804,22 +856,18 @@ QWidget* SignallingPanel::buildSensorPanel(){
     p2xsLayout->addLayout(p21cLayout);
 
     _sensorModel = new SensorModel(this);
-    JTable* manualSensorTable = new JTable(_sensorModel);
-    QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-    sizePolicy.setHorizontalStretch(0);
-    sizePolicy.setVerticalStretch(0);
-    sizePolicy.setHeightForWidth(manualSensorTable->sizePolicy().hasHeightForWidth());
-    manualSensorTable->setSizePolicy(sizePolicy);
-    //manualSensorTable->setModel(_sensorModel);
-            //jmri.util.JTableUtil.sortableDataModel(_sensorModel);
-//    try {
-//        jmri.util.com.sun.TableSorter tmodel = ((jmri.util.com.sun.TableSorter)manualSensorTable.getModel());
-//        tmodel.setColumnComparator(String.class, new jmri.util.SystemNameComparator());
-//        tmodel.setSortingStatus(SensorModel.SNAME_COLUMN, jmri.util.com.sun.TableSorter.ASCENDING);
-//    } catch (ClassCastException e3) {}  // if not a sortable table model
-    manualSensorTable->setSelectionMode(QAbstractItemView::SingleSelection);
-    manualSensorTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    //manualSensorTable.setPreferredScrollableViewportSize(new java.awt.Dimension(480,100));
+    manualSensorTable = new JTable(_sensorModel);
+    TableRowSorter/*<SensorModel>*/* manualSensorSorter = new TableRowSorter(_sensorModel);
+    // configure row height for comboBox
+    manualSensorTable->setRowHeight(JButton("sizer").sizeHint().height() - 2); // row height has to be greater than for plain tables
+    manualSensorSorter->setComparator(SensorModel::SNAME_COLUMN, new AlphanumComparator());
+    manualSensorSorter->setComparator(SensorModel::UNAME_COLUMN, new AlphanumComparator());
+    RowSorterUtil::setSortOrder(manualSensorSorter, SensorModel::SNAME_COLUMN, SortOrder::ASCENDING);
+//    _sensorModel.configStateColumn(manualSensorTable); // create static comboBox in State column
+    manualSensorTable->setRowSorter(manualSensorSorter);
+    manualSensorTable->setRowSelectionAllowed(false);
+    manualSensorTable->setSortingEnabled(true);
+    manualSensorTable->setModel(manualSensorSorter);//manualSensorTable->setPreferredScrollableViewportSize(new java.awt.Dimension(480,100));
     manualSensorTable->setMinimumSize(280,100);
 //    QComboBox* stateCCombo = new QComboBox();
 //    stateCCombo->addItem(SET_TO_INACTIVE);
@@ -827,26 +875,26 @@ QWidget* SignallingPanel::buildSensorPanel(){
     QStringList statesList;
     statesList << SET_TO_INACTIVE << SET_TO_ACTIVE;
     //manualSensorTable->setItemDelegateForColumn(SPTableModel::STATE_COLUMN, new SPComboBoxDelegate( statesList));
-    _sensorModel->setColumnToHoldDelegate(manualSensorTable, SPTableModel::STATE_COLUMN, new SPComboBoxDelegate( statesList) );
+    _sensorModel->setColumnToHoldDelegate(manualSensorTable, SPTableModel::STATE_COLUMN, new JComboBoxEditor( statesList, true) );
 
-//    TableColumnModel _manualSensorColumnModel = manualSensorTable.getColumnModel();
-//    TableColumn includeColumnC = _manualSensorColumnModel.
-//                                        getColumn(SensorModel.INCLUDE_COLUMN);
-//    includeColumnC.setResizable(false);
-//    includeColumnC.setMinWidth(50);
-//    includeColumnC.setMaxWidth(60);
-//    TableColumn sNameColumnC = _manualSensorColumnModel.
-//                                        getColumn(SensorModel.SNAME_COLUMN);
-//    sNameColumnC.setResizable(true);
-//    sNameColumnC.setMinWidth(75);
-//    sNameColumnC.setMaxWidth(95);
+    TableColumnModel* _manualSensorColumnModel = manualSensorTable->getColumnModel();
+    TableColumn* includeColumnC = _manualSensorColumnModel->
+                                        getColumn(SensorModel::INCLUDE_COLUMN);
+    includeColumnC->setResizable(false);
+    includeColumnC->setMinWidth(50);
+    includeColumnC->setMaxWidth(60);
+    TableColumn* sNameColumnC = _manualSensorColumnModel->
+                                        getColumn(SensorModel::SNAME_COLUMN);
+    sNameColumnC->setResizable(true);
+    sNameColumnC->setMinWidth(75);
+    sNameColumnC->setMaxWidth(95);
 
-//    TableColumn stateColumnC = _manualSensorColumnModel.
-//                                        getColumn(SensorModel.STATE_COLUMN);
-//    stateColumnC.setCellEditor(new DefaultCellEditor(stateCCombo));
-//    stateColumnC.setResizable(false);
-//    stateColumnC.setMinWidth(90);
-//    stateColumnC.setMaxWidth(100);
+    TableColumn* stateColumnC = _manualSensorColumnModel->
+                                        getColumn(SensorModel::STATE_COLUMN);
+    //stateColumnC->setCellEditor(new DefaultCellEditor(stateCCombo));
+    stateColumnC->setResizable(false);
+    stateColumnC->setMinWidth(90);
+    stateColumnC->setMaxWidth(100);
 
     //_manualSensorScrollPane = new JScrollPane(manualSensorTable);
     p2xs->layout()->addWidget(manualSensorTable);
@@ -893,33 +941,28 @@ QWidget* SignallingPanel::buildSignalMastPanel(){
     _signalMastModel = new SignalMastModel(this);
 
 //    TableSorter sorter = new TableSorter(_signalMastModel);
-    QTableView* manualSignalMastTable = new QTableView();
-    QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-    sizePolicy.setHorizontalStretch(0);
-    sizePolicy.setVerticalStretch(0);
-    sizePolicy.setHeightForWidth(manualSignalMastTable->sizePolicy().hasHeightForWidth());
-    manualSignalMastTable->setSizePolicy(sizePolicy);
+    manualSignalMastTable = new JTable(_signalMastModel);
     //_signalMastModel.makeJTable(sorter);
-    //sorter.setTableHeader(manualSignalMastTable.getTableHeader());
-    manualSignalMastTable->setModel(_signalMastModel);
+    //sorter->setTableHeader(manualSignalMastTable.getTableHeader());
+    //manualSignalMastTable->setModel(_signalMastModel);
 
     manualSignalMastTable->setSelectionMode(QAbstractItemView::SingleSelection);
     manualSignalMastTable->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-    //manualSignalMastTable.setPreferredScrollableViewportSize(new java.awt.Dimension(480,100));
+    //manualSignalMastTable->setPreferredScrollableViewportSize(new java.awt.Dimension(480,100));
     manualSignalMastTable->setMinimumSize(280,100);
 
-//    TableColumnModel _manualSignalMastColumnModel = manualSignalMastTable.getColumnModel();
-//    TableColumn includeColumnC = _manualSignalMastColumnModel.
-//                                        getColumn(SignalMastModel.INCLUDE_COLUMN);
-//    includeColumnC.setResizable(false);
-//    includeColumnC.setMinWidth(50);
-//    includeColumnC.setMaxWidth(60);
-//    TableColumn sNameColumnC = _manualSignalMastColumnModel.
-//                                        getColumn(SignalMastModel.SNAME_COLUMN);
-//    sNameColumnC.setResizable(true);
-//    sNameColumnC.setMinWidth(75);
-//    sNameColumnC.setMaxWidth(95);
+    TableColumnModel* _manualSignalMastColumnModel = manualSignalMastTable->getColumnModel();
+    TableColumn* includeColumnC = _manualSignalMastColumnModel->
+                                        getColumn(SignalMastModel::INCLUDE_COLUMN);
+    includeColumnC->setResizable(false);
+    includeColumnC->setMinWidth(50);
+    includeColumnC->setMaxWidth(60);
+    TableColumn* sNameColumnC = _manualSignalMastColumnModel->
+                                        getColumn(SignalMastModel::SNAME_COLUMN);
+    sNameColumnC->setResizable(true);
+    sNameColumnC->setMinWidth(75);
+    sNameColumnC->setMaxWidth(95);
     manualSignalMastTable->setItemDelegateForColumn(SPTableModel::STATE_COLUMN, new SignalMastComboBoxDelegate(this));
 
     //_manualSignalMastScrollPane = new JScrollPane(manualSignalMastTable);
@@ -928,7 +971,7 @@ QWidget* SignallingPanel::buildSignalMastPanel(){
     signalMastPanel->layout()->addWidget(p2xm);
     p2xm->setVisible(true);
 
-    ROW_HEIGHT = manualSignalMastTable->rowHeight(0);
+//    ROW_HEIGHT = manualSignalMastTable->rowHeight(0);
     p2xmSpace->setVisible(false);
 
 
@@ -948,32 +991,30 @@ QWidget* SignallingPanel::buildSignalMastPanel(){
     p2xsmLayout->addLayout(p21aLayout);
 
     _autoSignalMastModel = new AutoMastModel(this);
-    QTableView* autoMastTable = new QTableView();
-    autoMastTable->setSizePolicy(sizePolicy);
+    JTable* autoMastTable = new JTable(_autoSignalMastModel);
     //jmri.util.JTableUtil.sortableDataModel(_autoSignalMastModel);
 //    try {
 //        jmri.util.com.sun.TableSorter tmodel = ((jmri.util.com.sun.TableSorter)autoMastTable.getModel());
-//        tmodel.setColumnComparator(String.class, new jmri.util.SystemNameComparator());
-//        tmodel.setSortingStatus(AutoMastModel.SNAME_COLUMN, jmri.util.com.sun.TableSorter.ASCENDING);
+//        tmodel->setColumnComparator(String.class, new jmri.util.SystemNameComparator());
+//        tmodel->setSortingStatus(AutoMastModel.SNAME_COLUMN, jmri.util.com.sun.TableSorter.ASCENDING);
 //    } catch (ClassCastException e3) {}  // if not a sortable table model
-    autoMastTable->setModel(_autoSignalMastModel);
     autoMastTable->setSelectionMode(QAbstractItemView::SingleSelection);
-    //autoMastTable.setPreferredScrollableViewportSize(new java.awt.Dimension(480,100));
+    //autoMastTable->setPreferredScrollableViewportSize(new java.awt.Dimension(480,100));
     autoMastTable->setMinimumSize(280,100);
 
-//    TableColumnModel _autoMastColumnModel = autoMastTable.getColumnModel();
-//    TableColumn sNameColumnA = _autoMastColumnModel.
-//                                        getColumn(AutoMastModel.SNAME_COLUMN);
-//    sNameColumnA.setResizable(true);
-//    sNameColumnA.setMinWidth(75);
-//    sNameColumnA.setMaxWidth(95);
+    TableColumnModel* _autoMastColumnModel = autoMastTable->getColumnModel();
+    TableColumn* sNameColumnA = _autoMastColumnModel->
+                                        getColumn(AutoMastModel::SNAME_COLUMN);
+    sNameColumnA->setResizable(true);
+    sNameColumnA->setMinWidth(75);
+    sNameColumnA->setMaxWidth(95);
 
-//    TableColumn stateColumnA = _autoMastColumnModel.
-//                                        getColumn(AutoMastModel.STATE_COLUMN);
-//    //stateColumnA.setCellEditor(new DefaultCellEditor(stateCCombo));
-//    stateColumnA.setResizable(false);
-//    stateColumnA.setMinWidth(90);
-//    stateColumnA.setMaxWidth(100);
+    TableColumn* stateColumnA = _autoMastColumnModel->
+                                        getColumn(AutoMastModel::STATE_COLUMN);
+    //stateColumnA->setCellEditor(new DefaultCellEditor(stateCCombo));
+    stateColumnA->setResizable(false);
+    stateColumnA->setMinWidth(90);
+    stateColumnA->setMaxWidth(100);
 
     //_autoSignalMastScrollPane = new JScrollPane(autoMastTable);
     p2xsm->layout()->addWidget(autoMastTable);
@@ -981,7 +1022,7 @@ QWidget* SignallingPanel::buildSignalMastPanel(){
     signalMastPanel->layout()->addWidget(p2xsm);
     p2xsm->setVisible(true);
 
-    ROW_HEIGHT = autoMastTable->rowHeight(0);
+    //ROW_HEIGHT = autoMastTable->rowHeight(0);
     p2xaSpace->setVisible(false);
 
     return signalMastPanel;
@@ -989,8 +1030,8 @@ QWidget* SignallingPanel::buildSignalMastPanel(){
 
 void SignallingPanel::updatePressed(/*ActionEvent e*/)
 {
- sourceMast = (SignalMast*)sourceMastBox->getSelectedBean();
- destMast = (SignalMast*)destMastBox->getSelectedBean();
+ sourceMast = (SignalMast*)sourceMastBox->getSelectedItem();
+ destMast = (SignalMast*)destMastBox->getSelectedItem();
 
  if((sml==NULL) && (useLayoutEditor->isChecked()))
  {
@@ -1006,17 +1047,17 @@ void SignallingPanel::updatePressed(/*ActionEvent e*/)
    return;
   }
  }
- catch (JmriException je)
+ catch (JmriException* je)
   {
    //JOptionPane.showMessageDialog(NULL,  tr("WarningUnabletoValidate"));
-   QMessageBox::critical(this, tr("Error"), je.getMessage());
+   QMessageBox::critical(this, tr("Error"), je->getMessage());
 
   }
  }
 
  if (sml==NULL)
  {
-  sml = ((DefaultSignalMastLogicManager*)InstanceManager::signalMastLogicManagerInstance())->newSignalMastLogic(sourceMast);
+  sml = ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->newSignalMastLogic(sourceMast);
   ((DefaultSignalMastLogic*)sml)->setDestinationMast(destMast);
   fixedSourceMastLabel->setText(sourceMast->getDisplayName());
   fixedDestMastLabel->setText(destMast->getDisplayName());
@@ -1035,10 +1076,10 @@ void SignallingPanel::updatePressed(/*ActionEvent e*/)
  {
   ((DefaultSignalMastLogic*)sml)->useLayoutEditor(useLayoutEditor->isChecked(), destMast);
  }
- catch (JmriException je)
+ catch (JmriException* je)
  {
   //JOptionPane.showMessageDialog(NULL, je.toString());
-  QMessageBox::critical(this, tr("Error"), je.getMessage());
+  QMessageBox::critical(this, tr("Error"), je->getMessage());
 
   layouteditorgen=false;
  }
@@ -1050,12 +1091,12 @@ void SignallingPanel::updatePressed(/*ActionEvent e*/)
    ((DefaultSignalMastLogic*)sml)->useLayoutEditorDetails(useLayoutEditorTurnout->isChecked(), useLayoutEditorBlock->isChecked(), destMast);
   }
  }
- catch (JmriException ji)
+ catch (JmriException* ji)
  {
   if (layouteditorgen)
   {
    //JOptionPane.showMessageDialog(NULL, ji.toString());
-   QMessageBox::critical(this, tr("Error"), ji.getMessage());
+   QMessageBox::critical(this, tr("Error"), ji->getMessage());
 
   }
  }
@@ -1065,7 +1106,7 @@ void SignallingPanel::updatePressed(/*ActionEvent e*/)
    Block* blk = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBlock(_includedManualBlockList.at(i)->getSysName());
         hashBlocks.insert(blk, _includedManualBlockList.at(i)->getState());
  }
- ((DefaultSignalMastLogic*)sml)->setBlocks(hashBlocks, destMast);
+ ((DefaultSignalMastLogic*)sml->self())->setBlocks(hashBlocks, destMast);
 
  QHash<NamedBeanHandle<Turnout*>*, int> hashTurnouts =  QHash<NamedBeanHandle<Turnout*>*, int>();
  for(int i = 0; i<_includedManualTurnoutList.size(); i++)
@@ -1118,28 +1159,67 @@ void SignallingPanel::updatePressed(/*ActionEvent e*/)
  ((DefaultSignalMastLogic*)sml)->allowTurnoutLock(lockTurnouts->isChecked(), destMast);
  ((DefaultSignalMastLogic*)sml)->initialise(destMast);
 }
+void SignallingPanel::setAssociatedSection(SignalMast* destMast){
+        SectionManager* sm = (SectionManager*)InstanceManager::getDefault("SectionManager");
+        if (!sml->getAutoBlocksBetweenMasts(destMast).isEmpty()) {
+            Section* sec = sm->createNewSection(sml->getSourceMast()->getDisplayName() + ":" + destMast->getDisplayName());
+            if (sec == nullptr) {
+                //A Section already exists, lets grab it and check that it is one used with the SML, if so carry on using that.
+                sec = sm->getSection(sml->getSourceMast()->getDisplayName() + ":" + destMast->getDisplayName());
+                if (sec->getSectionType() != Section::SIGNALMASTLOGIC) {
+                    return;
+                }
+            }
+            sml->setAssociatedSection(sec, destMast);
+        }
+    }
 
-///*public*/ void initComponents(){
+/**
+    * When Apply button is pressed, call updatePressed and afterwards close the
+    * edit pane.
+    *
+    * @param e the event heard
+    */
+   void SignallingPanel::applyPressed(/*ActionEvent e*/) {
+       updatePressed(/*e*/); // store edits
+       if (destOK) { // enable user to correct configuration if warned the destMast is incorrect by skipping pane closing
+           cancelPressed(/*e*/); // close panel signaling acceptance of edits/Apply to the user
+       }
+   }
+
+   /**
+    * Clean up when Cancel button is pressed.
+    *
+    * @param e the event heard
+    */
+   void SignallingPanel::cancelPressed(/*ActionEvent e*/) {
+       if (jFrame != nullptr) {
+           jFrame->setVisible(false);
+           jFrame->dispose();
+       }
+       jFrame = nullptr;
+   }
+
+   int SignallingPanel::blockModeFromBox(JComboBox* box) {
+       QString mode =  box->getSelectedItem();
+       int result = StringUtil::getStateFromName(mode, blockInputModeValues.toVector(), blockInputModes.toVector());
+
+       if (result < 0) {
+           log->warn(tr("unexpected mode string in blockMode: %1").arg(mode));  // NOI18N
+           throw  IllegalArgumentException();
+       }
+       return result;
+   }
+
+   void SignallingPanel::setBlockModeBox(int mode, JComboBox/*<String>*/* box) {
+       QString result = StringUtil::getNameFromState(mode, blockInputModeValues.toVector(), blockInputModes);
+       box->setSelectedItem(result);
+   }
+
+   ///*public*/ void initComponents(){
 
 //}
-#if 0
-int blockModeFromBox(JComboBox box) {
-    String mode = (String)box.getSelectedItem();
-    int result = jmri.util.StringUtil.getStateFromName(mode, blockInputModeValues, blockInputModes);
 
-    if (result<0) {
-        log.warn("unexpected mode string in sensorMode: "+mode);
-        throw  IllegalArgumentException();
-    }
-    return result;
-}
-
-void setBlockModeBox(int mode, JComboBox box) {
-    String result = jmri.util.StringUtil.getNameFromState(mode, blockInputModeValues, blockInputModes);
-    box.setSelectedItem(result);
-}
-
-#endif
 void SignallingPanel::initializeIncludedList()
 {
  _includedManualBlockList = QList <ManualBlockList*>();
@@ -1249,111 +1329,114 @@ void signalMastCombo(JComboBox box, SignalMast select){
     for(int i = 0; i<displayList.length; i++){
         box.addItem(displayList[i]);
         if ((select!=NULL) && (displayList[i].equals(select.getDisplayName()))){
-            box.setSelectedIndex(i);
+            box->setSelectedIndex(i);
         }
     }
 }
 #endif
 
 void SignallingPanel::editDetails(){
-#if 0
+
     int setRow = 0;
     for (int i=_manualBlockList.size()-1; i>=0; i--) {
-        ManualBlockList block = _manualBlockList.get(i);
-        String tSysName = block.getSysName();
-        Block blk = InstanceManager.blockManagerInstance().getBlock(tSysName);
+        ManualBlockList* block = _manualBlockList.at(i);
+        QString tSysName = block->getSysName();
+        Block* blk = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBlock(tSysName);
         if (((DefaultSignalMastLogic*)sml)->isBlockIncluded(blk, destMast)) {
-            block.setIncluded(true);
-            block.setState(((DefaultSignalMastLogic*)sml)->getBlockState(blk, destMast));
+            block->setIncluded(true);
+            block->setState(((DefaultSignalMastLogic*)sml)->getBlockState(blk, destMast));
             setRow = i;
         } else {
-            block.setIncluded(false);
-            block.setState(Block.UNOCCUPIED);
+            block->setIncluded(false);
+            block->setState(Block::UNOCCUPIED);
         }
     }
     setRow -= 1;
     if (setRow < 0) {
         setRow = 0;
     }
-    _manualBlockScrollPane.getVerticalScrollBar().setValue(setRow*ROW_HEIGHT);
-    _blockModel.fireTableDataChanged();
+    //_manualBlockScrollPane->getVerticalScrollBar()->setValue(setRow*ROW_HEIGHT);
+    manualBlockTable->scrollTo(_blockModel->index(setRow,0));
+    _blockModel->fireTableDataChanged();
 
     setRow = 0;
     for (int i=_manualTurnoutList.size()-1; i>=0; i--) {
-        ManualTurnoutList turnout = _manualTurnoutList.get(i);
-        String tSysName = turnout.getSysName();
-        Turnout turn = InstanceManager.turnoutManagerInstance().getTurnout(tSysName);
+        ManualTurnoutList* turnout = _manualTurnoutList.at(i);
+        QString tSysName = turnout->getSysName();
+        Turnout* turn = InstanceManager::turnoutManagerInstance()->getTurnout(tSysName);
         if (((DefaultSignalMastLogic*)sml)->isTurnoutIncluded(turn, destMast)) {
-            turnout.setIncluded(true);
-            turnout.setState(((DefaultSignalMastLogic*)sml)->getTurnoutState(turn, destMast));
+            turnout->setIncluded(true);
+            turnout->setState(((DefaultSignalMastLogic*)sml)->getTurnoutState(turn, destMast));
             setRow = i;
         } else {
-            turnout.setIncluded(false);
-            turnout.setState(Turnout.CLOSED);
+            turnout->setIncluded(false);
+            turnout->setState(Turnout::CLOSED);
         }
     }
     setRow -= 1;
     if (setRow < 0) {
         setRow = 0;
     }
-    _manualSensorScrollPane.getVerticalScrollBar().setValue(setRow*ROW_HEIGHT);
-    _sensorModel.fireTableDataChanged();
+    //_manualSensorScrollPane.getVerticalScrollBar()->setValue(setRow*ROW_HEIGHT);
+    manualSensorTable->scrollTo(_sensorModel->index(setRow,0));
+    _sensorModel->fireTableDataChanged();
 
     setRow = 0;
     for (int i=_manualSensorList.size()-1; i>=0; i--) {
-        ManualSensorList sensor = _manualSensorList.get(i);
-        String tSysName = sensor.getSysName();
-        Sensor sen = InstanceManager.sensorManagerInstance().getSensor(tSysName);
+        ManualSensorList* sensor = _manualSensorList.at(i);
+        QString tSysName = sensor->getSysName();
+        Sensor* sen = InstanceManager::sensorManagerInstance()->getSensor(tSysName);
         if (((DefaultSignalMastLogic*)sml)->isSensorIncluded(sen, destMast)) {
-            sensor.setIncluded(true);
-            sensor.setState(((DefaultSignalMastLogic*)sml)->getSensorState(sen, destMast));
+            sensor->setIncluded(true);
+            sensor->setState(((DefaultSignalMastLogic*)sml)->getSensorState(sen, destMast));
             setRow = i;
         } else {
-            sensor.setIncluded(false);
-            sensor.setState(Sensor.INACTIVE);
+            sensor->setIncluded(false);
+            sensor->setState(Sensor::INACTIVE);
         }
     }
     setRow -= 1;
     if (setRow < 0) {
         setRow = 0;
     }
-    _manualSensorScrollPane.getVerticalScrollBar().setValue(setRow*ROW_HEIGHT);
-    _sensorModel.fireTableDataChanged();
+    //_manualSensorScrollPane.getVerticalScrollBar()->setValue(setRow*ROW_HEIGHT);
+    manualSensorTable->scrollTo(_sensorModel->index(setRow,0));
+    _sensorModel->fireTableDataChanged();
 
     setRow = 0;
     for (int i=_manualSignalMastList.size()-1; i>=0; i--) {
-        ManualSignalMastList mast = _manualSignalMastList.get(i);
-        SignalMast sigMast = _manualSignalMastList.get(i).getMast();
+        ManualSignalMastList* mast = _manualSignalMastList.at(i);
+        SignalMast* sigMast = _manualSignalMastList.at(i)->getMast();
         if (((DefaultSignalMastLogic*)sml)->isSignalMastIncluded(sigMast, destMast)) {
-            mast.setIncluded(true);
-            mast.setSetToState(((DefaultSignalMastLogic*)sml)->getSignalMastState(sigMast, destMast));
+            mast->setIncluded(true);
+            mast->setSetToState(((DefaultSignalMastLogic*)sml)->getSignalMastState(sigMast, destMast));
             setRow = i;
         } else {
-            mast.setIncluded(false);
+            mast->setIncluded(false);
         }
     }
     setRow -= 1;
     if (setRow < 0) {
         setRow = 0;
     }
-    _manualSignalMastScrollPane.getVerticalScrollBar().setValue(setRow*ROW_HEIGHT);
-    _signalMastModel.fireTableDataChanged();
-#endif
+    //_manualSignalMastScrollPane.getVerticalScrollBar()->setValue(setRow*ROW_HEIGHT);
+    manualSignalMastTable->scrollTo(_signalMastModel->index(setRow, 0));
+    _signalMastModel->fireTableDataChanged();
 }
-#if 1
+
 //private abstract class SignalMastElement {
 
-    SignalMastElement::SignalMastElement(SignallingPanel* self)
+    SignalMastElement::SignalMastElement(SignallingPanel* signallingPanel)
     {
-        this->self = self;
+        this->signallingPanel = signallingPanel;
     }
 
-    SignalMastElement::SignalMastElement(QString sysName, QString userName, SignallingPanel* self) {
+    SignalMastElement::SignalMastElement(QString sysName, QString userName, SignallingPanel* signallingPanel) {
         _sysName = sysName;
         _userName = userName;
         _included = false;
         _setToState = Sensor::INACTIVE;
-        this->self = self;
+        this->signallingPanel = signallingPanel;
     }
 
     QString SignalMastElement::getSysName() {
@@ -1389,9 +1472,9 @@ void SignallingPanel::editDetails(){
         _setToState = state;
     }
 //}
-#endif
+
 //private class ManualBlockList extends SignalMastElement {
-    ManualBlockList::ManualBlockList(Block* block, SignallingPanel* self) : SignalMastElement(self) {
+    ManualBlockList::ManualBlockList(Block* block, SignallingPanel* signallingPanel) : SignalMastElement(signallingPanel) {
         this->block = block;
     }
 
@@ -1413,17 +1496,17 @@ void SignallingPanel::editDetails(){
     QString ManualBlockList::getSetToState() {
         switch (_setToState) {
             case Block::OCCUPIED:
-                return self->SET_TO_OCCUPIED;
+                return signallingPanel->SET_TO_OCCUPIED;
             case Block::UNOCCUPIED:
-                return self->SET_TO_UNOCCUPIED;
+                return signallingPanel->SET_TO_UNOCCUPIED;
         }
-        return self->SET_TO_ANY;
+        return signallingPanel->SET_TO_ANY;
     }
 
     void ManualBlockList::setSetToState(QString state) {
-        if (self->SET_TO_UNOCCUPIED==(state)) {
+        if (signallingPanel->SET_TO_UNOCCUPIED==(state)) {
             _setToState = Block::UNOCCUPIED;
-        } else if (self->SET_TO_OCCUPIED==(state)) {
+        } else if (signallingPanel->SET_TO_OCCUPIED==(state)) {
             _setToState = Block::OCCUPIED;
         } else _setToState = 0x03;
     }
@@ -1445,17 +1528,17 @@ void SignallingPanel::editDetails(){
     QString ManualTurnoutList::getSetToState() {
         switch (_setToState) {
             case Turnout::THROWN:
-                return self->SET_TO_THROWN;
+                return signallingPanel->SET_TO_THROWN;
             case Turnout::CLOSED:
-                return self->SET_TO_CLOSED;
+                return signallingPanel->SET_TO_CLOSED;
         }
-        return self->SET_TO_ANY;
+        return signallingPanel->SET_TO_ANY;
     }
 
     void ManualTurnoutList::setSetToState(QString state) {
-        if (self->SET_TO_THROWN==(state)) {
+        if (signallingPanel->SET_TO_THROWN==(state)) {
             _setToState = Turnout::THROWN;
-        } else if (self->SET_TO_CLOSED==(state)) {
+        } else if (signallingPanel->SET_TO_CLOSED==(state)) {
             _setToState = Turnout::CLOSED;
         } else{
             _setToState= 0x00;
@@ -1480,18 +1563,18 @@ void SignallingPanel::editDetails(){
     QString ManualSensorList::getSetToState() {
         switch (_setToState) {
             case Sensor::INACTIVE:
-                return self->SET_TO_INACTIVE;
+                return signallingPanel->SET_TO_INACTIVE;
             case Sensor::ACTIVE:
-                return self->SET_TO_ACTIVE;
+                return signallingPanel->SET_TO_ACTIVE;
         }
         return "";
     }
     void ManualSensorList::setSetToState(QString state)
     {
-        if (self->SET_TO_INACTIVE==(state))
+        if (signallingPanel->SET_TO_INACTIVE==(state))
         {
             _setToState = Sensor::INACTIVE;
-        } else if (self->SET_TO_ACTIVE==(state)) {
+        } else if (signallingPanel->SET_TO_ACTIVE==(state)) {
             _setToState = Sensor::ACTIVE;
         }
     }
@@ -1536,9 +1619,9 @@ void SignallingPanel::editDetails(){
 
 //abstract class TableModel extends AbstractTableModel implements PropertyChangeListener
 //{
-    SPTableModel::SPTableModel(SignallingPanel *self)
+    SPTableModel::SPTableModel(SignallingPanel *signallingPanel)
     {
-     this->self = self;
+     this->signallingPanel = signallingPanel;
     }
 
 //    /*public*/ QVariant SignallingPanel::TableModel::data(const QModelIndex &index, int role) const
@@ -1560,13 +1643,67 @@ void SignallingPanel::editDetails(){
     /*public*/ void SPTableModel::propertyChange(PropertyChangeEvent* e) {
         if (e->getPropertyName()==("length")) {
             // a new NamedBean is available in the manager
-            fireTableDataChanged();
+         if(qobject_cast<BlockManager*>(e->getSource()))
+         {
+          BlockManager* bm = ((BlockManager*)InstanceManager::getDefault("BlockManager"));
+          QStringList systemNameList = bm->AbstractManager::getSystemNameList();
+          signallingPanel->_manualBlockList =  QList<ManualBlockList*> (); //systemNameList.size());
+          QStringListIterator iter(systemNameList);
+          while (iter.hasNext())
+          {
+           QString systemName = iter.next();
+           //String userName = bm.getBySystemName(systemName).getUserName();
+           signallingPanel->_manualBlockList.append(new ManualBlockList((Block*)bm->AbstractManager::getBySystemName(systemName),signallingPanel));
+          }
+          signallingPanel->initializeIncludedList();
+          fireTableDataChanged();
+         }
+         else if(qobject_cast<SensorManager*>(e->getSource()))
+         {
+          SensorManager* bm = InstanceManager::sensorManagerInstance();
+          QStringList systemNameList = ((ProxySensorManager*)bm)->AbstractProxyManager::getSystemNameList();
+          signallingPanel->_manualSensorList =  QList <ManualSensorList*> (); //systemNameList.size());
+          QStringListIterator iter (systemNameList);
+          while (iter.hasNext()) {
+              QString systemName = iter.next();
+              QString userName = ((ProxySensorManager*)bm)->AbstractProxyManager::getBySystemName(systemName)->getUserName();
+              signallingPanel->_manualSensorList.append(new ManualSensorList(systemName, userName, signallingPanel));
+          }
+          signallingPanel->initializeIncludedList();
+          fireTableDataChanged();
+         }
+         else if(qobject_cast<TurnoutManager*>(e->getSource()))
+         {
+          TurnoutManager* bm = InstanceManager::turnoutManagerInstance();
+          QStringList systemNameList = ((ProxyTurnoutManager*)bm)->AbstractProxyManager::getSystemNameList();
+          signallingPanel->_manualTurnoutList =  QList <ManualTurnoutList*> (); //systemNameList.size());
+          QStringListIterator iter(systemNameList);
+          while (iter.hasNext()) {
+              QString systemName = iter.next();
+              QString userName = ((ProxyTurnoutManager*)bm)->AbstractProxyManager::getBySystemName(systemName)->getUserName();
+              signallingPanel->_manualTurnoutList.append(new ManualTurnoutList(systemName, userName,signallingPanel));
+          }
+          signallingPanel->initializeIncludedList();
+          fireTableDataChanged();
+         }
+         else if(qobject_cast<SignalMastManager*>(e->getSource()))
+         {
+          SignalMastManager* bm = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"));
+          QStringList systemNameList = ((DefaultSignalMastManager*)bm)->getSystemNameList();
+          signallingPanel->_manualSignalMastList = QList <ManualSignalMastList*> (); //systemNameList.size());
+          QStringListIterator iter (systemNameList);
+          while (iter.hasNext()) {
+              QString systemName = iter.next();
+              signallingPanel->_manualSignalMastList.append(new ManualSignalMastList(((DefaultSignalMastManager*)bm)->getBySystemName(systemName),signallingPanel));
+          }
+          signallingPanel->initializeIncludedList();
+          fireTableDataChanged();
+         }
         }
     }
 
     /*public*/ void SPTableModel::dispose() {
-        //jmri.InstanceManager.turnoutManagerInstance().removePropertyChangeListener(this);
-
+        InstanceManager::turnoutManagerInstance()->removePropertyChangeListener(this);
     }
 
     /*public*/ QVariant SPTableModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -1611,17 +1748,18 @@ void SignallingPanel::editDetails(){
 
 //class BlockModel extends TableModel
 //{
-    BlockModel::BlockModel(SignallingPanel* self) : SPTableModel(self)
+    BlockModel::BlockModel(SignallingPanel* signallingPanel) : SPTableModel(signallingPanel)
     {
-     BlockManager* mgr = static_cast<BlockManager*>(InstanceManager::getDefault("BlockMamager")); //.addPropertyChangeListener(this);
+     BlockManager* mgr = qobject_cast<BlockManager*>(InstanceManager::getDefault("BlockManager")); //.addPropertyChangeListener(this);
+     mgr->PropertyChangeSupport::addPropertyChangeListener(this);
      connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
 
     /*public*/ int BlockModel::rowCount(const QModelIndex &/*parent*/) const{
-        if (self->showAll)
-            return self->_manualBlockList.size();
+        if (signallingPanel->showAll)
+            return signallingPanel->_manualBlockList.size();
         else
-            return self->_includedManualBlockList.size();
+            return signallingPanel->_includedManualBlockList.size();
     }
 
 //    /*public*/ static final int SPEED_COLUMN = 4;
@@ -1634,10 +1772,10 @@ void SignallingPanel::editDetails(){
      int c = index.column();
      int r = index.row();
      QList <ManualBlockList*> blockList = QList <ManualBlockList*>();
-     if (self->showAll)
-      blockList = self->_manualBlockList;
+     if (signallingPanel->showAll)
+      blockList = signallingPanel->_manualBlockList;
      else
-      blockList = self->_includedManualBlockList;
+      blockList = signallingPanel->_includedManualBlockList;
      if(role == Qt::CheckStateRole)
      {
       if(c == INCLUDE_COLUMN)
@@ -1659,18 +1797,19 @@ void SignallingPanel::editDetails(){
             return blockList.at(r)->getBlockSpeed();
 //        case PERMISSIVE_COLUMN:
 //            return blockList.at(r)->getPermissiveWorking();
-      default: QVariant();
+      default:
+       break;
        }
      }
      return QVariant();
     }
 
-//    /*public*/ Class<?> getColumnClass(int c) {
-//        if (c == PERMISSIVE_COLUMN) {
-//            return Boolean.class;
-//        }
-//        return super.getColumnClass(c);
-//    }
+    /*public*/ QString BlockModel::getColumnClass(int c) const{
+        if (c == PERMISSIVE_COLUMN) {
+            return "Boolean";
+        }
+        return SPTableModel::getColumnClass(c);
+    }
 
     /*public*/ QVariant BlockModel::headerData(int section, Qt::Orientation orientation, int role) const
      {
@@ -1695,10 +1834,10 @@ void SignallingPanel::editDetails(){
         QList <ManualBlockList*> blockList = QList <ManualBlockList*> ();
        if(role == Qt::EditRole)
        {
-        if (self->showAll)
-            blockList = self->_manualBlockList;
+        if (signallingPanel->showAll)
+            blockList = signallingPanel->_manualBlockList;
         else
-            blockList = self->_includedManualBlockList;
+            blockList = signallingPanel->_includedManualBlockList;
         switch (c) {
             case STATE_COLUMN:
                 blockList.at(r)->setSetToState(value.toString());
@@ -1710,8 +1849,8 @@ void SignallingPanel::editDetails(){
        {
         if( c ==INCLUDE_COLUMN)
         {
-               blockList.at(r)->setIncluded(value.toBool());
-               return true;
+         blockList.at(r)->setIncluded(value.toBool());
+         return true;
         }
       }
       return false;
@@ -1739,10 +1878,10 @@ void SignallingPanel::editDetails(){
 
     /*public*/ int  TurnoutModel::rowCount(const QModelIndex &/*parent*/) const
     {
-        if (self->showAll)
-            return self->_manualTurnoutList.size();
+        if (signallingPanel->showAll)
+            return signallingPanel->_manualTurnoutList.size();
         else
-            return self->_includedManualTurnoutList.size();
+            return signallingPanel->_includedManualTurnoutList.size();
     }
 
     /*public*/ QVariant TurnoutModel::data(const QModelIndex &index, int role) const
@@ -1750,10 +1889,10 @@ void SignallingPanel::editDetails(){
      int c= index.column();
      int r = index.column();
      QList <ManualTurnoutList*> turnoutList = QList <ManualTurnoutList*>();
-     if (self->showAll)
-         turnoutList = self->_manualTurnoutList;
+     if (signallingPanel->showAll)
+         turnoutList = signallingPanel->_manualTurnoutList;
      else
-         turnoutList = self->_includedManualTurnoutList;
+         turnoutList = signallingPanel->_includedManualTurnoutList;
      if(role == Qt::CheckStateRole)
      {
       if(c == INCLUDE_COLUMN)
@@ -1784,11 +1923,11 @@ void SignallingPanel::editDetails(){
      QList <ManualTurnoutList*> turnoutList = QList <ManualTurnoutList*>();
      if(role == Qt::EditRole)
      {
-        if (self->showAll) {
-            turnoutList = self->_manualTurnoutList;
+        if (signallingPanel->showAll) {
+            turnoutList = signallingPanel->_manualTurnoutList;
         }
         else {
-            turnoutList = self->_includedManualTurnoutList;
+            turnoutList = signallingPanel->_includedManualTurnoutList;
         }
         switch (c) {
             case STATE_COLUMN:
@@ -1831,10 +1970,10 @@ void SignallingPanel::editDetails(){
 
     /*public*/ int SensorModel::rowCount(const QModelIndex &/*parent*/) const
     {
-        if (self->showAll)
-            return self->_manualSensorList.size();
+        if (signallingPanel->showAll)
+            return signallingPanel->_manualSensorList.size();
         else
-            return self->_includedManualSensorList.size();
+            return signallingPanel->_includedManualSensorList.size();
     }
 
     /*public*/ QVariant SensorModel::data(const QModelIndex &index, int role) const
@@ -1842,10 +1981,10 @@ void SignallingPanel::editDetails(){
      int r = index.row();
      int c = index.column();
      QList <ManualSensorList*> sensorList = QList <ManualSensorList*>();
-     if (self->showAll)
-         sensorList = self->_manualSensorList;
+     if (signallingPanel->showAll)
+         sensorList = signallingPanel->_manualSensorList;
      else
-         sensorList = self->_includedManualSensorList;
+         sensorList = signallingPanel->_includedManualSensorList;
      if(role == Qt::CheckStateRole)
      {
       if(c == INCLUDE_COLUMN)
@@ -1882,12 +2021,12 @@ void SignallingPanel::editDetails(){
        int c= index.column();
        int r = index.row();
         QList <ManualSensorList*> sensorList = QList <ManualSensorList*>();
-        if (self->showAll) {
-            sensorList = self->_manualSensorList;
+        if (signallingPanel->showAll) {
+            sensorList = signallingPanel->_manualSensorList;
         }
         else
         {
-            sensorList = self->_includedManualSensorList;
+            sensorList = signallingPanel->_includedManualSensorList;
         }
         switch (c) {
             case INCLUDE_COLUMN:
@@ -1921,10 +2060,10 @@ void SignallingPanel::editDetails(){
 
     /*public*/ int SignalMastModel::rowCount(const QModelIndex &/*parent*/) const
     {
-        if (self->showAll)
-            return self->_manualSignalMastList.size();
+        if (signallingPanel->showAll)
+            return signallingPanel->_manualSignalMastList.size();
         else
-            return self->_includedManualSignalMastList.size();
+            return signallingPanel->_includedManualSignalMastList.size();
     }
 
     /*public*/ QVariant SignalMastModel::data(const QModelIndex &index, int role) const
@@ -1932,10 +2071,10 @@ void SignallingPanel::editDetails(){
      int r = index.row();
      int c = index.column();
      QList <ManualSignalMastList*> signalMastList = QList <ManualSignalMastList*>();
-     if (self->showAll)
-      signalMastList = self->_manualSignalMastList;
+     if (signallingPanel->showAll)
+      signalMastList = signallingPanel->_manualSignalMastList;
      else
-      signalMastList = self->_includedManualSignalMastList;
+      signalMastList = signallingPanel->_includedManualSignalMastList;
      if(role == Qt::CheckStateRole)
      {
       if(c == INCLUDE_COLUMN)
@@ -1982,13 +2121,13 @@ void SignallingPanel::editDetails(){
 
       if(role == Qt::EditRole)
       {
-       if (self->showAll)
+       if (signallingPanel->showAll)
        {
-        signalMastList = self->_manualSignalMastList;
+        signalMastList = signallingPanel->_manualSignalMastList;
        }
        else
        {
-        signalMastList = self->_includedManualSignalMastList;
+        signalMastList = signallingPanel->_includedManualSignalMastList;
        }
 
        switch (c)
@@ -2093,18 +2232,18 @@ void SignallingPanel::editDetails(){
 //abstract class AutoTableModel extends AbstractTableModel implements PropertyChangeListener
 //{
 
-    AutoTableModel::AutoTableModel(SignallingPanel* self)
+    AutoTableModel::AutoTableModel(SignallingPanel* signallingPanel)
     {
-     this->self = self;
+     this->signallingPanel = signallingPanel;
         smlValid();
     }
 
     /*public*/ void AutoTableModel::smlValid()
     {
-     if (self->sml!=NULL)
+     if (signallingPanel->sml!=NULL)
      {
-//            ((DefaultSignalMastLogic*)sml)->addPropertyChangeListener(this);
-      DefaultSignalMastLogic* l = (DefaultSignalMastLogic*)self->sml;
+//            ((DefaultSignalMastLogic*)sml)->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+      DefaultSignalMastLogic* l = (DefaultSignalMastLogic*)signallingPanel->sml;
       connect(l, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
 
@@ -2164,10 +2303,10 @@ void SignallingPanel::editDetails(){
     AutoBlockModel::AutoBlockModel(SignallingPanel* self) : AutoTableModel(self)
     {
      //this->self = self;
-     if (this->self->sml!=NULL)
+     if (this->signallingPanel->sml!=NULL)
      {
-      //((DefaultSignalMastLogic*)sml)->addPropertyChangeListener(this);
-      DefaultSignalMastLogic* l = (DefaultSignalMastLogic*)this->self->sml;
+      //((DefaultSignalMastLogic*)sml)->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+      DefaultSignalMastLogic* l = (DefaultSignalMastLogic*)this->signallingPanel->sml;
       connect(l, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
     }
@@ -2192,20 +2331,20 @@ void SignallingPanel::editDetails(){
     /*public*/ void AutoBlockModel::propertyChange(PropertyChangeEvent* e) {
         if (e->getPropertyName()==("autoblocks")) {
             // a new NamedBean is available in the manager
-            self->initializeIncludedList();
+            signallingPanel->initializeIncludedList();
             fireTableDataChanged();
         }
     }
 
-//    /*public*/ Class<?> getColumnClass(int c) {
-//        if (c == PERMISSIVE_COLUMN) {
-//            return Boolean.class;
-//        }
-//        return super.getColumnClass(c);
-//    }
+    /*public*/ QString AutoBlockModel::getColumnClass(int c) {
+        if (c == PERMISSIVE_COLUMN) {
+            return "Boolean";
+        }
+        return AutoTableModel::getColumnClass(c);
+    }
 
     /*public*/ int AutoBlockModel::rowCount(const QModelIndex &/*parent*/) const {
-        return self->_automaticBlockList->size();
+        return signallingPanel->_automaticBlockList->size();
     }
 
     /*public*/ QVariant AutoBlockModel::data(const QModelIndex &index, int role) const
@@ -2217,13 +2356,13 @@ void SignallingPanel::editDetails(){
         switch (c)
         {
             case SNAME_COLUMN:  // slot number
-                return self->_automaticBlockList->at(r)->getSysName();
+                return signallingPanel->_automaticBlockList->at(r)->getSysName();
             case UNAME_COLUMN:  //
-                return self->_automaticBlockList->at(r)->getUserName();
+                return signallingPanel->_automaticBlockList->at(r)->getUserName();
             case STATE_COLUMN:
-                return self->_automaticBlockList->at(r)->getSetToState();
+                return signallingPanel->_automaticBlockList->at(r)->getSetToState();
             case SPEED_COLUMN:
-                return self->_automaticBlockList->at(r)->getBlockSpeed();
+                return signallingPanel->_automaticBlockList->at(r)->getBlockSpeed();
             default:
                 break;
         }
@@ -2233,7 +2372,7 @@ void SignallingPanel::editDetails(){
       if( c == PERMISSIVE_COLUMN)
       {
              //return new Boolean(_automaticBlockList.get(r).getPermissiveWorking());
-             return self->_automaticBlockList->at(r)->getPermissiveWorking()?Qt::Checked:Qt::Unchecked;
+             return signallingPanel->_automaticBlockList->at(r)->getPermissiveWorking()?Qt::Checked:Qt::Unchecked;
      }
     }
      return QVariant();
@@ -2260,13 +2399,13 @@ void SignallingPanel::editDetails(){
     }
 
     /*public*/ int AutoTurnoutModel::rowCount(const QModelIndex &/*parent*/) const{
-        return self->_automaticTurnoutList->size();
+        return signallingPanel->_automaticTurnoutList->size();
     }
 
     /*public*/ void AutoTurnoutModel::propertyChange(PropertyChangeEvent* e) {
         if (e->getPropertyName()==("autoturnouts")) {
             // a new NamedBean is available in the manager
-            self->initializeIncludedList();
+            signallingPanel->initializeIncludedList();
             fireTableDataChanged();
         }
     }
@@ -2279,11 +2418,11 @@ void SignallingPanel::editDetails(){
       int r = index.row();
         switch (c) {
             case SNAME_COLUMN:  // slot number
-                return self->_automaticTurnoutList->at(r)->getSysName();
+                return signallingPanel->_automaticTurnoutList->at(r)->getSysName();
             case UNAME_COLUMN:  //
-                return self->_automaticTurnoutList->at(r)->getUserName();
+                return signallingPanel->_automaticTurnoutList->at(r)->getUserName();
             case STATE_COLUMN:
-                return self->_automaticTurnoutList->at(r)->getSetToState();
+                return signallingPanel->_automaticTurnoutList->at(r)->getSetToState();
             default:
                 break;
         }
@@ -2301,13 +2440,13 @@ void SignallingPanel::editDetails(){
 
     /*public*/ int AutoMastModel::rowCount(const QModelIndex &parent) const
     {
-        return self->_automaticSignalMastList->size();
+        return signallingPanel->_automaticSignalMastList->size();
     }
 
     /*public*/ void AutoMastModel::propertyChange(PropertyChangeEvent* e) {
         if (e->getPropertyName()==("automasts")) {
             // a new NamedBean is available in the manager
-            self->initializeIncludedList();
+            signallingPanel->initializeIncludedList();
             fireTableDataChanged();
         }
     }
@@ -2321,11 +2460,11 @@ void SignallingPanel::editDetails(){
       switch (c)
       {
             case SNAME_COLUMN:  // slot number
-                return self->_automaticSignalMastList->at(r)->getSysName();
+                return signallingPanel->_automaticSignalMastList->at(r)->getSysName();
             case UNAME_COLUMN:  //
-                return self->_automaticSignalMastList->at(r)->getUserName();
+                return signallingPanel->_automaticSignalMastList->at(r)->getUserName();
             case STATE_COLUMN:
-                return self->_automaticSignalMastList->at(r)->getSetToState();
+                return signallingPanel->_automaticSignalMastList->at(r)->getSetToState();
       default:
                 break;
 
@@ -2349,7 +2488,7 @@ void SignallingPanel::editDetails(){
             bool isSelected, bool hasFocus, int row, int column) {
         if (isSelected) {
             setForeground(table.getSelectionForeground());
-            super.setBackground(table.getSelectionBackground());
+            super->setBackground(table.getSelectionBackground());
         } else {
             setForeground(table.getForeground());
             setBackground(table.getBackground());
@@ -2361,6 +2500,7 @@ void SignallingPanel::editDetails(){
     }
 }
 #endif
+#if 0
     SPComboBoxDelegate::SPComboBoxDelegate(QStringList items, QObject *parent)
     :QItemDelegate(parent)
     {
@@ -2392,9 +2532,9 @@ void SignallingPanel::editDetails(){
     {
       editor->setGeometry(option.rect);
     }
-
+#endif
     SignalMastComboBoxDelegate::SignalMastComboBoxDelegate(SignallingPanel* panel, QObject *parent)
-    :QItemDelegate(parent)
+    : JComboBoxEditor(false, parent)
     {
      this->panel = panel;
     }
@@ -2410,7 +2550,7 @@ void SignallingPanel::editDetails(){
       editor->addItems(((AbstractSignalMast*)signalMastList.at(index.row())->getMast())->getValidAspects().toList());
       return editor;
     }
-
+#if 0
     void SignalMastComboBoxDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
     {
       QComboBox *comboBox = static_cast<QComboBox*>(editor);
@@ -2428,7 +2568,7 @@ void SignallingPanel::editDetails(){
     {
       editor->setGeometry(option.rect);
     }
-
+#endif
 //    static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(SignallingPanel.class.getName());
 //}
 

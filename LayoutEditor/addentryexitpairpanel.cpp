@@ -15,6 +15,7 @@
 #include "joptionpane.h"
 #include "jtextfield.h"
 #include "propertychangeevent.h"
+#include "positionablepoint.h"
 
 //AddEntryExitPairPanel::AddEntryExitPairPanel(QWidget *parent) :
 //  JmriPanel(parent)
@@ -197,7 +198,7 @@ void AddEntryExitPairPanel::on_selectPanel_currentIndexChanged(QString)
  centralWidgetLayout->addLayout(panel1Layout);
  entryExitFrame->adjustSize();
  entryExitFrame->setVisible(true);
-    int retval = JOptionPane::showOptionDialog(NULL, tr("Do you want to automatically generate \nthe Entry Exit Pairs and Logic, based /nupon the track plan in the layout editor?"), tr("AutoGenEntryExitTitle"),
+    int retval = JOptionPane::showOptionDialog(NULL, tr("Do you want to automatically generate \nthe Entry Exit Pairs and Logic, based /nupon the track plan in the layout editor?"), tr("Auto Generate Entry Exit Pairs"),
             JOptionPane::YES_NO_OPTION,
             JOptionPane::QUESTION_MESSAGE/*, QIcon(), NULL, NULL*/);
     if (retval == 0) {
@@ -216,14 +217,14 @@ void AddEntryExitPairPanel::on_selectPanel_currentIndexChanged(QString)
 //        };
   try
   {
-   //nxPairs.addPropertyChangeListener(propertyNXListener);
-   connect(nxPairs->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertyNXListener, SLOT(propertyChange(PropertyChangeEvent*)));
+   nxPairs->addPropertyChangeListener(propertyNXListener);
+   //connect(nxPairs->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), propertyNXListener, SLOT(propertyChange(PropertyChangeEvent*)));
    nxPairs->automaticallyDiscoverEntryExitPairs(panels->at(selectPanel->currentIndex()), typeBox->currentIndex());
   }
-  catch (JmriException e)
+  catch (JmriException* e)
   {
-   //nxPairs->removePropertyChangeListener(propertyNXListener);
-   disconnect(nxPairs->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertyNXListener, SLOT(propertyChange(PropertyChangeEvent*)));
+   nxPairs->removePropertyChangeListener(propertyNXListener);
+   //disconnect(nxPairs->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertyNXListener, SLOT(propertyChange(PropertyChangeEvent*)));
    //OptionPane.showMessageDialog(NULL, e.toString());
    entryExitFrame->setVisible(false);
   }
@@ -366,7 +367,7 @@ AEPTableModel::AEPTableModel(LayoutEditor* panel, AddEntryExitPairPanel* parent)
 
  setPanel(panel);
  //nxPairs.addPropertyChangeListener(this);
- connect(parent->nxPairs->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(parent->nxPairs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  source = parent->nxPairs->getNxSource(panel);
  dest = parent->nxPairs->getNxDestination();
  log = new Logger("AEPTableModel");
@@ -443,15 +444,15 @@ QStringList AEPTableModel::NXTYPE_NAMES = QStringList() << "Turnout"<< "SignalMa
         case ACTIVECOL:
             return isPairActive(row);
         case BOTHWAYCOL:
-            return !parent->nxPairs->isUniDirection(source.at(row), panel, dest.at(row));
+            return !parent->nxPairs->isUniDirection((NamedBean*)source.at(row), panel, (NamedBean*)dest.at(row));
         case ENABLEDCOL:
-            return !parent->nxPairs->isEnabled(source.at(row), panel, dest.at(row));
+            return !parent->nxPairs->isEnabled((NamedBean*)source.at(row), panel, (NamedBean*)dest.at(row));
         case CLEARCOL:
             return tr("Clear");
         case DELETECOL:  //
             return tr("Delete");
         case TYPECOL:
-            return NXTYPE_NAMES[parent->nxPairs->getEntryExitType(source.at(row), panel, dest.at(row))];
+            return NXTYPE_NAMES[parent->nxPairs->getEntryExitType((NamedBean*)source.at(row), panel, (NamedBean*)dest.at(row))];
         default:
             return "";
     }
@@ -470,24 +471,24 @@ QStringList AEPTableModel::NXTYPE_NAMES = QStringList() << "Turnout"<< "SignalMa
         deleteEntryExit(row, col);
     }
     if (col == CLEARCOL) {
-        parent->nxPairs->cancelInterlock(source.at(row), panel, dest.at(row));
+        parent->nxPairs->cancelInterlock((NamedBean*)source.at(row), panel, (NamedBean*)dest.at(row));
     }
     if (col == BOTHWAYCOL) {
         bool b = !value.toBool();
-        parent->nxPairs->setUniDirection(source.at(row), panel, dest.at(row), b);
+        parent->nxPairs->setUniDirection((NamedBean*)source.at(row), panel, (NamedBean*)dest.at(row), b);
     }
     if (col == ENABLEDCOL) {
         bool b = !value.toBool();
-        parent->nxPairs->setEnabled(source.at(row), panel, dest.at(row), b);
+        parent->nxPairs->setEnabled((NamedBean*)source.at(row), panel, (NamedBean*)dest.at(row), b);
     }
     if (col == TYPECOL) {
         QString val =  value.toString();
         if (val==("Turnout")) {
-            parent->nxPairs->setEntryExitType(source.at(row), panel, dest.at(row), 0x00);
+            parent->nxPairs->setEntryExitType((NamedBean*)source.at(row), panel, (NamedBean*)dest.at(row), 0x00);
         } else if (val==("SignalMast")) {
-            parent->nxPairs->setEntryExitType(source.at(row), panel, dest.at(row), 0x01);
+            parent->nxPairs->setEntryExitType((NamedBean*)source.at(row), panel, (NamedBean*)dest.at(row), 0x01);
         } else if (val==("Full InterLock")) {
-            parent->nxPairs->setEntryExitType(source.at(row), panel, dest.at(row), 0x02);
+            parent->nxPairs->setEntryExitType((NamedBean*)source.at(row), panel, (NamedBean*)dest.at(row), 0x02);
         }
     }
     return true;
@@ -523,7 +524,7 @@ QStringList AEPTableModel::NXTYPE_NAMES = QStringList() << "Turnout"<< "SignalMa
 
 QString AEPTableModel::isPairActive(int row) const
 {
-    if (parent->nxPairs->isPathActive(source.at(row), dest.at(row), panel)) {
+    if (parent->nxPairs->isPathActive((NamedBean*)source.at(row), (NamedBean*)dest.at(row), panel)) {
         return ("yes");
     }
     return ("");
@@ -559,24 +560,24 @@ QString AEPTableModel::isPairActive(int row) const
  return QVariant();
 }
 
-///*public*/ Class<?> getColumnClass(int col) {
-//    switch (col) {
-//        case FROMPOINTCOL:
-//        case TOPOINTCOL:
-//        case ACTIVECOL:
-//            return String.class;
-//        case DELETECOL:
-//        case CLEARCOL:
-//            return JButton.class;
-//        case BOTHWAYCOL:
-//        case ENABLEDCOL:
-//            return Boolean.class;
-//        case TYPECOL:
-//            return String.class;
-//        default:
-//            return NULL;
-//    }
-//}
+/*public*/ QString AEPTableModel::getColumnClass(int col) {
+    switch (col) {
+        case FROMPOINTCOL:
+        case TOPOINTCOL:
+        case ACTIVECOL:
+            return "String";
+        case DELETECOL:
+        case CLEARCOL:
+            return "JButton";
+        case BOTHWAYCOL:
+        case ENABLEDCOL:
+            return "Boolean";
+        case TYPECOL:
+            return "String";
+        default:
+            return "";
+    }
+}
 
 /*public*/ Qt::ItemFlags AEPTableModel::flags(const QModelIndex &index) const
 {
@@ -596,7 +597,7 @@ QString AEPTableModel::isPairActive(int row) const
      return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     }
    }
-   if (!parent->nxPairs->canBeBiDirectional(source.at(row), panel, dest.at(row)))
+   if (!parent->nxPairs->canBeBiDirectional((NamedBean*)source.at(row), panel, (NamedBean*)dest.at(row)))
    {
     JOptionPane::showMessageDialog(NULL, tr("Both Way Operation can not be used if a Signal is present at both Entry and Exit points"));
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
@@ -730,7 +731,7 @@ QString AEPTableModel::isPairActive(int row) const
  * Utility methods for converting between string and color Note: These names
  * are only used internally, so don't need a resource bundle
  */
-/*protected*/ void AddEntryExitPairPanel::optionWindow(ActionEvent* /*e*/)
+/*protected*/ void AddEntryExitPairPanel::optionWindow(JActionEvent* /*e*/)
 {
  if (optionsFrame == NULL)
  {

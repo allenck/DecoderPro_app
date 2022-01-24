@@ -8,7 +8,7 @@
 #include "routeeditframe.h"
 #include "setup.h"
 #include "jtable.h"
-#include <QMessageBox>
+#include "joptionpane.h"
 #include "jdialog.h"
 #include <QBoxLayout>
 #include "flowlayout.h"
@@ -67,8 +67,7 @@ namespace Operations
   routeList = _route->getLocationsBySequenceList();
   // and add them back in
   foreach (RouteLocation* rl, *routeList) {
-      //rl->addPropertyChangeListener(this);
-   connect(rl->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      rl->addPropertyChangeListener(this);
   }
  }
 
@@ -78,8 +77,7 @@ namespace Operations
      _table = table;
      _route = route;
      if (_route != NULL) {
-         //_route.addPropertyChangeListener(this);
-      connect(_route->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         _route->addPropertyChangeListener(this);
      }
      initTable(table);
  }
@@ -100,8 +98,8 @@ namespace Operations
      tcm->getColumn(DOWN_COLUMN)->setCellEditor(buttonEditor);
      tcm->getColumn(DELETE_COLUMN)->setCellRenderer(buttonRenderer);
      tcm->getColumn(DELETE_COLUMN)->setCellEditor(buttonEditor);
-     table->setDefaultRenderer(JComboBox.class, new jmri.jmrit.symbolicprog.ValueRenderer());
-     table->setDefaultEditor(JComboBox.class, new jmri.jmrit.symbolicprog.ValueEditor());
+     table->setDefaultRenderer("JComboBox", new jmri.jmrit.symbolicprog.ValueRenderer());
+     table->setDefaultEditor("JComboBox", new jmri.jmrit.symbolicprog.ValueEditor());
 #endif
      table->setItemDelegateForColumn(COMMENT_COLUMN, new MyDelegate());
      table->setItemDelegateForColumn(UP_COLUMN, new MyDelegate());
@@ -109,8 +107,8 @@ namespace Operations
      table->setItemDelegateForColumn(DELETE_COLUMN, new MyDelegate());
 
      QStringList yesNo = QStringList() << "yes" << "no";
-     table->setItemDelegateForColumn(PICKUP_COLUMN, new RETComboBoxDelegate(this, yesNo));
-     table->setItemDelegateForColumn(DROP_COLUMN, new RETComboBoxDelegate(this, yesNo));
+     table->setItemDelegateForColumn(PICKUP_COLUMN, new JComboBoxEditor(yesNo, this));
+     table->setItemDelegateForColumn(DROP_COLUMN, new JComboBoxEditor(yesNo, this));
      if(!_showWait)
      {
       QStringList times;
@@ -134,7 +132,7 @@ namespace Operations
            times.append(hour + ":" + minute);
        }
       }
-      table->setItemDelegateForColumn(WAIT_COLUMN, new RETComboBoxDelegate(this, times));
+      table->setItemDelegateForColumn(WAIT_COLUMN, new JComboBoxEditor(times, this));
      }
      QStringList randomControlList = QStringList();
      randomControlList.append(RouteLocation::DISABLED);
@@ -142,7 +140,7 @@ namespace Operations
      for (int i = 10; i < 101; i = i + 10) {
          randomControlList.append(QString::number(i));
      }
-     table->setItemDelegateForColumn(RANDOM_CONTROL_COLUMN, new RETComboBoxDelegate(this, randomControlList));
+     table->setItemDelegateForColumn(RANDOM_CONTROL_COLUMN, new JComboBoxEditor(randomControlList, this));
 
 
      setPreferredWidths(table);
@@ -156,9 +154,9 @@ namespace Operations
 
  /*private*/ void RouteEditTableModel::setPreferredWidths(JTable* table) {
      // set column preferred widths
-     if (_frame->loadTableDetails(table)) {
-         return; // done
-     }
+//     if (_frame->loadTableDetails(table)) {
+//         return; // done
+//     }
      table->getColumnModel()->getColumn(ID_COLUMN)->setPreferredWidth(40);
      table->getColumnModel()->getColumn(NAME_COLUMN)->setPreferredWidth(150);
      table->getColumnModel()->getColumn(TRAIN_DIRECTION_COLUMN)->setPreferredWidth(95);
@@ -233,49 +231,49 @@ namespace Operations
   return QVariant();
  }
 
-// /*public*/ Class<?> getColumnClass(int col) {
-//     switch (col) {
-//         case ID_COLUMN:
-//             return String.class;
-//         case NAME_COLUMN:
-//             return String.class;
-//         case TRAIN_DIRECTION_COLUMN:
-//             return JComboBox.class;
-//         case MAXMOVES_COLUMN:
-//             return String.class;
-//         case RANDOM_CONTROL_COLUMN:
-//             return JComboBox.class;
-//         case PICKUP_COLUMN:
-//             return JComboBox.class;
-//         case DROP_COLUMN:
-//             return JComboBox.class;
-//         case WAIT_COLUMN: {
-//             if (_showWait) {
-//                 return String.class;
-//             } else {
-//                 return JComboBox.class;
-//             }
-//         }
-//         case MAXLENGTH_COLUMN:
-//             return String.class;
-//         case GRADE:
-//             return String.class;
-//         case TRAINICONX:
-//             return String.class;
-//         case TRAINICONY:
-//             return String.class;
-//         case COMMENT_COLUMN:
-//             return JButton.class;
-//         case UP_COLUMN:
-//             return JButton.class;
-//         case DOWN_COLUMN:
-//             return JButton.class;
-//         case DELETE_COLUMN:
-//             return JButton.class;
-//         default:
-//             return NULL;
-//     }
-// }
+ /*public*/ QString RouteEditTableModel::getColumnClass(int col) const {
+     switch (col) {
+         case ID_COLUMN:
+             return "String";
+         case NAME_COLUMN:
+             return "String";
+         case TRAIN_DIRECTION_COLUMN:
+             return "JComboBox";
+         case MAXMOVES_COLUMN:
+             return "String";
+         case RANDOM_CONTROL_COLUMN:
+             return "JComboBox";
+         case PICKUP_COLUMN:
+             return "JComboBox";
+         case DROP_COLUMN:
+             return "JComboBox";
+         case WAIT_COLUMN: {
+             if (_showWait) {
+                 return "String";
+             } else {
+                 return "JComboBox";
+             }
+         }
+         case MAXLENGTH_COLUMN:
+             return "String";
+         case GRADE:
+             return "String";
+         case TRAINICONX:
+             return "String";
+         case TRAINICONY:
+             return "String";
+         case COMMENT_COLUMN:
+             return "JButton";
+         case UP_COLUMN:
+             return "JButton";
+         case DOWN_COLUMN:
+             return "JButton";
+         case DELETE_COLUMN:
+             return "JButton";
+         default:
+             return QString();
+     }
+ }
 
  /*public*/ Qt::ItemFlags RouteEditTableModel::flags(const QModelIndex &index) const{
      switch (index.column()) {
@@ -504,9 +502,7 @@ namespace Operations
          rl->setMaxCarMoves(moves);
          _maxTrainMoves = moves;
      } else {
-//         JOptionPane.showMessageDialog(NULL, tr("MaximumLocationMoves"), Bundle
-//                 .getMessage("CanNotChangeMoves"), JOptionPane.ERROR_MESSAGE);
-      QMessageBox::critical(NULL, tr("CanNotChangeMoves"), tr("MaximumLocationMoves"));
+         JOptionPane::showMessageDialog(NULL, tr("Location moves can not exceed 500"), tr("Can not change number of moves!"), JOptionPane::ERROR_MESSAGE);
      }
  }
 
@@ -538,9 +534,7 @@ namespace Operations
      if(!ok)
      {
          log->error("Location wait must be a number");
-//         JOptionPane.showMessageDialog(NULL, tr("EnterWaitTimeMinutes"), Bundle
-//                 .getMessage("WaitTimeNotValid"), JOptionPane.ERROR_MESSAGE);
-         QMessageBox::critical(NULL, tr("WaitTimeNotValid"), tr("EnterWaitTimeMinutes"));
+         JOptionPane::showMessageDialog(NULL, tr("Enter wait time in minutes"), tr("Wait time isn't valid"), JOptionPane::ERROR_MESSAGE);
          return;
      }
      routeList->at(row)->setWait(wait);
@@ -569,20 +563,17 @@ namespace Operations
      if (length < 500 && Setup::getLengthUnit()==(Setup::FEET) || length < 160
              && Setup::getLengthUnit()==(Setup::METER)) {
          // warn that train length might be too short
-//         if (JOptionPane.showConfirmDialog(NULL, MessageFormat.format(tr("LimitTrainLength"),
-//                 new Object[]{length, Setup.getLengthUnit().toLowerCase(), rl->getName()}), Bundle
-//                 .getMessage("WarningTooShort"), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.CANCEL_OPTION) {
-         if(QMessageBox::warning(NULL, tr("WarningTooShort"), tr("LimitTrainLength"),QMessageBox::Ok | QMessageBox::Cancel) == QMessageBox::Cancel)
+         if (JOptionPane::showConfirmDialog(nullptr, tr("Are you sure that you want to limit your trains to %1 scale %2 when departing %3?").arg(
+                 length).arg(Setup::getLengthUnit().toLower()).arg(rl->getName()), tr("Warning: train length might be too short!"), JOptionPane::OK_CANCEL_OPTION) == JOptionPane::CANCEL_OPTION)
          {
              return;
          }
      }
      if (length > Setup::getMaxTrainLength()) {
          log->error("Maximum departure length can not exceed maximum train length");
-//         JOptionPane.showMessageDialog(NULL, MessageFormat.format(tr("DepartureLengthNotExceed"),
-//                 new Object[]{length, Setup.getMaxTrainLength()}), tr("CanNotChangeMaxLength"),
-//                 JOptionPane.ERROR_MESSAGE);
-         QMessageBox::critical(NULL,tr("CanNotChangeMaxLength"), tr("DepartureLengthNotExceed"));
+         JOptionPane::showMessageDialog(nullptr, tr("Maximum departure train length (%1) can not exceed maximum train length (%2)").arg(
+                 length).arg(Setup::getMaxTrainLength()), tr("Can not change maximum train length!"),
+                 JOptionPane::ERROR_MESSAGE);
          return;
      } else {
          rl->setMaxTrainLength(length);
@@ -604,9 +595,8 @@ namespace Operations
          routeList->at(row)->setGrade(grade);
      } else {
          log->error("Maximum grade is 6 percent");
-//         JOptionPane.showMessageDialog(NULL, tr("MaxGrade"), tr("CanNotChangeGrade"),
-//                 JOptionPane.ERROR_MESSAGE);
-         QMessageBox::critical(NULL,tr("CanNotChangeGrade"), tr("MaxGrade") );
+         JOptionPane::showMessageDialog(NULL, tr("Maximum grade is 6 percent"), tr("Can not change grade!"),
+                 JOptionPane::ERROR_MESSAGE);
      }
  }
 
@@ -775,8 +765,7 @@ namespace Operations
 
  /*private*/ void RouteEditTableModel::removePropertyChangeRouteLocations() {
      foreach (RouteLocation* rl, *routeList) {
-         //rl->removePropertyChangeListener(this);
-      disconnect(rl->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         rl->removePropertyChangeListener(this);
      }
  }
 
@@ -786,20 +775,18 @@ namespace Operations
      }
      removePropertyChangeRouteLocations();
      if (_route != NULL) {
-         //_route.removePropertyChangeListener(this);
-      disconnect(_route->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         _route->removePropertyChangeListener(this);
      }
      routeList->clear();
      fireTableDataChanged();
  }
-
+#if 0
  RETComboBoxDelegate::RETComboBoxDelegate(RouteEditTableModel* model, QStringList items, QObject *parent)
   : QStyledItemDelegate(parent)
  {
   this->model  = model;
   this->items = items;
  }
-
 
  QWidget *RETComboBoxDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &/* option */, const QModelIndex &index ) const
  {
@@ -845,4 +832,5 @@ namespace Operations
  {
    editor->setGeometry(option.rect);
  }
+#endif
 }

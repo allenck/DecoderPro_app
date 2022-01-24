@@ -115,7 +115,7 @@ CmdStnConfigPane::CmdStnConfigPane(QWidget *parent) :
   LabelTop = rb->getString("LabelTop");
   read = rb->getString("ButtonRead");
   write = rb->getString("ButtonWrite");
-// catch (Exception e)
+// catch (Exception* e)
 // {
 //  log->error("Failed to load values from /"+name+"/ properties");
 // }
@@ -241,13 +241,13 @@ void CmdStnConfigPane::updateVisibility(bool show)
  //revalidate();
 }
 
-/*public*/ void CmdStnConfigPane::readButtonActionPerformed(ActionEvent* /*e*/)
+/*public*/ void CmdStnConfigPane::readButtonActionPerformed(JActionEvent* /*e*/)
 {
  // format and send request
  start();
 }
 
-/*public*/ void CmdStnConfigPane::writeButtonActionPerformed(ActionEvent* /*e*/)
+/*public*/ void CmdStnConfigPane::writeButtonActionPerformed(JActionEvent* /*e*/)
 {
  LocoNetMessage* msg = new LocoNetMessage(14);
  msg->setElement(0, LnConstants::OPC_WR_SL_DATA);

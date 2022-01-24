@@ -44,7 +44,7 @@
     }
     // create a Dispatcher window or activate the existing one
     if (f == NULL) {
-        f = DispatcherFrame::instance();
+        f = (DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame");
         f->loadAtStartup();
     }
     f->setVisible(true);

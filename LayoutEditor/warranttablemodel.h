@@ -13,7 +13,7 @@ public:
  //explicit WarrantTableModel(QObject *parent = 0);
  /*public*/ WarrantTableModel(WarrantTableFrame* frame, QObject *parent = 0);
  /*public*/ void addHeaderListener(JTable* table);
- /*public*/ Manager* getManager();
+ /*public*/ AbstractManager *getManager() override;
  /*public*/ NamedBean* getBySystemName(QString name) const;
  /*public*/ QString getValue(QString name) ;
  /*public*/ NamedBean* getByUserName(QString name);
@@ -28,6 +28,7 @@ public:
  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
  /*public*/ QVariant data(const QModelIndex &index, int role) const;
  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
+ /*public*/ QString getColumnClass(int col);
  /*public*/ int getPreferredWidth(int col);
 
 signals:

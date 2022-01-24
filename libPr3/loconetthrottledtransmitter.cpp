@@ -142,10 +142,10 @@ ServiceThread::ServiceThread(LocoNetThrottledTransmitter *parent)
     parent->controller->sendLocoNetMessage(m->getMessage());
   }
         // and go round again
-  } catch (Exception e)
+  } catch (Exception* e)
   {
    // just report error and continue
-   log->error("Exception in ServiceThread: "+e.getMessage());
+   log->error("Exception in ServiceThread: "+e->getMessage());
    //e.printStackTrace();
   }
  }

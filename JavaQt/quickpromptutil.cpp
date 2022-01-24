@@ -83,7 +83,7 @@ QuickPromptUtil::QuickPromptUtil(QObject *parent) : QObject(parent)
 //    int newValue = promptForData(parentComponent, message, title, oldValue, validator, (val) -> {
 //        try {
 //            return Integer.valueOf(Integer.parseInt(val));
-//        } catch (NumberFormatException ex) {
+//        } catch (NumberFormatException* ex) {
 //            // original exception ignored; wrong message.
 //            throw new NumberFormatException(Bundle.getMessage("InputDialogNotNumber"));
 //        }
@@ -120,13 +120,13 @@ QuickPromptUtil::QuickPromptUtil(QObject *parent) : QObject(parent)
      * @return the updated value, or the original one.
      */
     /*public*/ /*static*/ int QuickPromptUtil::promptForInteger(Component* parentComponent, /*@Nonnull*/ QString message, /*@Nonnull*/ QString title,
-                                           int oldValue, /*@CheckForNull*/ Predicate<int> validator) {
+                                           int oldValue, /*@CheckForNull*/ Predicate<int> /*validator*/) {
         int result = oldValue;
         int newValue = 0;
 //        int newValue = promptForData(parentComponent, message, title, oldValue, validator, (val) -> {
 //            try {
 //                return Integer.valueOf(Integer.parseInt(val));
-//            } catch (NumberFormatException ex) {
+//            } catch (NumberFormatException* ex) {
 //                // original exception ignored; wrong message.
 //                throw new NumberFormatException(Bundle.getMessage("InputDialogNotNumber"));
 //            }
@@ -143,6 +143,7 @@ QuickPromptUtil::QuickPromptUtil(QObject *parent) : QObject(parent)
         }
         return result;
     }
+
 #if 0
 template<class T>
 /*private*/ static  T promptForData(Component* parentComponent,
@@ -215,7 +216,7 @@ static /*public*/ float promptForFloat(Component parentComponent, String message
     if (newValue != null) {
         try {
             result = Float.parseFloat(newValue);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException* e) {
             result = oldValue;
         }
     }
@@ -236,7 +237,7 @@ static /*public*/ double promptForDouble(Component parentComponent, String messa
     if (newValue != null) {
         try {
             result = Double.parseDouble(newValue);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException* e) {
             result = oldValue;
         }
     }

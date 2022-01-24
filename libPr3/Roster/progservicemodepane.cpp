@@ -50,7 +50,7 @@
 void ProgServiceModePane::init()
 {
  modeGroup 		= new QButtonGroup();
- buttonMap = new QMap<ProgrammingMode*, QRadioButton*>();
+ buttonMap = new QMap<QString, QRadioButton*>();
  buttonPool = new QList<QRadioButton*>();
  log = new Logger("ProgServiceModePane");
 }
@@ -159,9 +159,9 @@ void ProgServiceModePane::init()
   // configure buttons
   int index = 0;
   if (getProgrammer() == NULL) return;
-  QList<ProgrammingMode*> modes = getProgrammer()->getSupportedModes();
+  QList<QString> modes = getProgrammer()->getSupportedModes();
   log->debug("   has {} modes"+ QString::number(modes.size()));
-  foreach (ProgrammingMode* mode, modes)
+  foreach (QString mode, modes)
   {
    QRadioButton* button;
    // need a new button?
@@ -176,11 +176,11 @@ void ProgServiceModePane::init()
     layout->addWidget(button); // add to GUI
    }
    // configure next button in pool
-   log->debug("   set for {}"+ mode->toString());
+   log->debug("   set for "+ mode);
    button = buttonPool->value(index++);
    button->setVisible(true);
    modeGroup->addButton(button);
-   button->setText(mode->toString());
+   button->setText(mode);
    buttonMap->insert(mode, button);
   }
   setGuiFromProgrammer();
@@ -189,20 +189,20 @@ void ProgServiceModePane::init()
  /**
   * Listen to buttons for mode changes
   */
- /*public*/ void ProgServiceModePane::actionPerformed(ActionEvent* /*e*/)
+ /*public*/ void ProgServiceModePane::actionPerformed(JActionEvent* /*e*/)
  {
   // find selected button
   //log->debug("Selected button: {}", e.getActionCommand());
   //foreach (ProgrammingMode* mode, buttonMap->keys() )
-  QMapIterator<ProgrammingMode*, QRadioButton*> iter(*buttonMap);
+  QMapIterator<QString, QRadioButton*> iter(*buttonMap);
   while(iter.hasNext())
   {
    iter.next();
    //if (mode->toString()==(e->getActionCommand()))
    if(iter.value()->isChecked())
    {
-    log->debug("      set mode {} on {}"+iter.key()->toString() + getProgrammer()->self()->metaObject()->className());
-    getProgrammer()->setMode(iter.key());
+    log->debug("      set mode {} on {}"+iter.key() + getProgrammer()->self()->metaObject()->className());
+    getProgrammer()->setMode(new ProgrammingMode(iter.key()));
     return; // 1st match
    }
   }
@@ -226,9 +226,9 @@ void ProgServiceModePane::init()
 
  void ProgServiceModePane::setGuiFromProgrammer()
  {
-  ProgrammingMode* mode = getProgrammer()->getMode();
+  QString mode = getProgrammer()->getMode()->getStandardName();
   QRadioButton* button = buttonMap->value(mode);
-  log->debug("  setting button for mode {}"+ mode->getStandardName());
+  log->debug("  setting button for mode "+ mode);
   if (button == NULL)
   {
    log->debug("   didn't find button, returning");

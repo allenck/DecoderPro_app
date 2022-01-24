@@ -1,9 +1,9 @@
 #include "jmrijframeinterface.h"
-#include <jmrijframe.h>
+#include <../LayoutEditor/jmrijframe.h>
 #include "jmripanel.h"
 #include "QMenuBar"
 #include "windowinterface.h"
-#include "panelmenu.h"
+//#include "panelmenu.h"
 
 JmriJFrameInterface::JmriJFrameInterface(QWidget *parent) :   WindowInterface(parent)
 {

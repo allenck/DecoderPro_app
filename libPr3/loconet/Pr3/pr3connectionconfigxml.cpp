@@ -40,6 +40,6 @@ Pr3ConnectionConfigXml::Pr3ConnectionConfigXml(QObject *parent) :
 /*protected*/ void Pr3ConnectionConfigXml::_register()
 {
  ConnectionConfig* c;
- static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerPref(c = (ConnectionConfig*)new Pr3ConnectionConfig((PR3Adapter*)adapter, NULL));
+ qobject_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerPref(c = (ConnectionConfig*)new Pr3ConnectionConfig((PR3Adapter*)adapter, NULL));
  AbstractConnectionConfigXml::_register(c);
 }

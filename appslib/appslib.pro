@@ -12,7 +12,17 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 QT += xml sql network websockets
 
 MOC_DIR = moc_obj
-OBJECTS_DIR += moc_obj
+OBJECTS_DIR = moc_obj
+
+# Windows and Unix get the suffix "d" to indicate a debug version of the library.
+# Mac OS gets the suffix "_debug".
+CONFIG(debug, debug|release) {
+    win32:      TARGET = $$join(TARGET,,,d)
+    mac:        TARGET = $$join(TARGET,,,_debug)
+    unix:!mac:  TARGET = $$join(TARGET,,,d)
+    MOC_DIR = moc_objd
+    OBJECTS_DIR = moc_objd
+}
 
 PROJ_DIR=$$(PROJ_DIR) # get project directory from env
 isEmpty( PROJ_DIR ) {
@@ -20,27 +30,33 @@ isEmpty( PROJ_DIR ) {
   unix:PROJ_DIR=/home/allen/Projects
 }
 
-
 DEFINES += APPSLIB_LIBRARY
 
-PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
-isEmpty( PYTHONQT_PREFIX ) {
-  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
-  unix:PYTHONQT_PREFIX=$${PROJ_DIR}/PythonQt/pythonqt-code
-}
+include(../scripts_config.prf)
 
-include($$PYTHONQT_PREFIX/build/python.prf)
 
-win32:exists("C:/Program Files (x86)/local/lib/PythonQt.dll") {
- ENABLE_SCRIPTING = "Y"
-}
+#include(../jmri_libs.prf)
 
-unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so) {
- ENABLE_SCRIPTING = "Y"
- message(appslib: found $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so)
-} else {
- message(appslib: not found $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so)
-}
+message(appslib: PWD = $$PWD)
+
+#PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
+#isEmpty( PYTHONQT_PREFIX ) {
+#  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
+#  unix:PYTHONQT_PREFIX=$${PROJ_DIR}/PythonQt/pythonqt-code
+#}
+
+#include($$PYTHONQT_PREFIX/build/python.prf)
+
+#win32:exists("C:/Program Files (x86)/local/lib/PythonQt.dll") {
+# ENABLE_SCRIPTING = "Y"
+#}
+
+#unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so) {
+# ENABLE_SCRIPTING = "Y"
+# message(appslib: found $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so)
+#} else {
+# message(appslib: not found $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so)
+#}
 #CONFIG += scripts
 equals(ENABLE_SCRIPTING, "Y") {
     DEFINES += SCRIPTING_ENABLED
@@ -57,6 +73,10 @@ HEADERS += jynstrument.h \
 }
 
 SOURCES += appslib.cpp \
+#    abstractsystemconnectionaction.cpp \
+    appspreferencesactionfactory.cpp \
+    jmripreferencesactionfactory.cpp \
+    manager.cpp \
     metatypes.cpp \
     instancemanager.cpp \
     apps.cpp \
@@ -64,15 +84,17 @@ SOURCES += appslib.cpp \
     appsbase.cpp \
     defaultinstanceinitializer.cpp \
     jmripreferencesprovider.cpp \
+    namedbean.cpp \
     nodeidentity.cpp \
     properties.cpp \
-    profilemanager.cpp \
-    profile.cpp \
     fileutil.cpp \
     fileutilsupport.cpp \
+    profilemanager.cpp \
+    profile.cpp \
     myapplication.cpp \
     createbuttonmodel.cpp \
     splashwindow.cpp \
+    systemnamevalidator.cpp \
     toolsmenu.cpp \
     jlist.cpp \
     powerpanelaction.cpp \
@@ -103,17 +125,13 @@ SOURCES += appslib.cpp \
     xml.cpp \
     printdecoderlistaction.cpp \
     debugmenu.cpp \
-    vsdecoderframe.cpp \
-    vsdecoderpane.cpp \
     vsdecodercreationaction.cpp \
     loadvsdfileaction.cpp \
     vsdmanagerevent.cpp \
     vsdpreferencesaction.cpp \
     vsdecoderpreferencespane.cpp \
-    loadxmlvsdecoderaction.cpp \
     installdecoderurlaction.cpp \
     installdecoderfileaction.cpp \
-    vsdsoundspanel.cpp \
     vsdoptionpanel.cpp \
     profileutils.cpp \
     jmriconfigurationprovider.cpp \
@@ -203,14 +221,22 @@ SOURCES += appslib.cpp \
     routewhereused.cpp \
     sectionwhereused.cpp \
     warrantwhereused.cpp \
-    transferactionlistener.cpp
+    transferactionlistener.cpp \
+    appsconfigurationmanager.cpp
 
 HEADERS += appslib.h\
+    abstractsystemconnectionaction.h \
     appslib_global.h \
     apps.h \
+    appspreferencesactionfactory.h \
+    jmripreferencesactionfactory.h \
+    manager.h \
     myapplication.h \
     createbuttonmodel.h \
+    namedbean.h \
+    proxymanager.h \
     splashwindow.h \
+    systemnamevalidator.h \
     toolsmenu.h \
     powerpanelaction.h \
     simpleturnoutctrlaction.h \
@@ -243,17 +269,13 @@ HEADERS += appslib.h\
     xml.h \
     printdecoderlistaction.h \
     debugmenu.h \
-    vsdecoderframe.h \
-    vsdecoderpane.h \
     vsdecodercreationaction.h \
     loadvsdfileaction.h \
     vsdmanagerevent.h \
     vsdpreferencesaction.h \
     vsdecoderpreferencespane.h \
-    loadxmlvsdecoderaction.h \
     installdecoderurlaction.h \
     installdecoderfileaction.h \
-    vsdsoundspanel.h \
     vsdoptionpanel.h \
     profileutils.h \
     auxiliaryconfiguration.h \
@@ -337,7 +359,7 @@ HEADERS += appslib.h\
     firsttimestartupwizardaction.h \
     profileconfiguration.h \
     nullprofile.h \
-   jlist.h \
+    jlist.h \
     jlisttablemodel.h \
     fileutil.h \
     fileutilsupport.h \
@@ -361,7 +383,8 @@ HEADERS += appslib.h\
     routewhereused.h \
     sectionwhereused.h \
     warrantwhereused.h \
-    transferactionlistener.h
+    transferactionlistener.h \
+    appsconfigurationmanager.h
 
 unix:!symbian {
     maemo5 {
@@ -374,7 +397,8 @@ unix:!symbian {
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPr3/release/ -lPr3
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPr3/debug/ -lPr3
-else:unix: LIBS += -L$$PWD/../libPr3/ -lPr3
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPr3/ -lPr3
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPr3/ -lPr3d
 
 INCLUDEPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Throttle \
     $$PWD/../libPr3/loconet $$PWD/../libPr3/LocoIO $$PWD/../libPr3/Json \
@@ -387,7 +411,8 @@ DEPENDPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Throttle \
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPref/release/ -lPref
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPref/debug/ -lPref
-else:unix: LIBS += -L$$PWD/../libPref/ -lPref
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPref/ -lPref
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPref/ -lPrefd
 
 INCLUDEPATH += $$PWD/../libPref
 DEPENDPATH += $$PWD/../libPref
@@ -395,7 +420,9 @@ DEPENDPATH += $$PWD/../libPref
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Tables/release/ -lTables
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Tables/debug/ -lTables
-else:unix: LIBS += -L$$PWD/../Tables/ -lTables
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../Tables/ -lTables
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Tables/ -lTablesd
+
 
 INCLUDEPATH += $$PWD/../Tables
 DEPENDPATH += $$PWD/../Tables
@@ -404,7 +431,8 @@ DEPENDPATH += $$PWD/../Tables
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../LayoutEditor/release/ -lLayoutEditor
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LayoutEditor/debug/ -lLayoutEditor
-else:unix: LIBS += -L$$PWD/../LayoutEditor/ -lLayoutEditor
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../LayoutEditor/ -lLayoutEditor
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LayoutEditor/ -lLayoutEditord
 
 INCLUDEPATH += $$PWD/../LayoutEditor $$PWD/../LayoutEditor/scripts
 DEPENDPATH += $$PWD/../LayoutEditor $$PWD/../LayoutEditor/scripts
@@ -413,7 +441,9 @@ OTHER_FILES +=
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../LocoIO/release/ -lLocoIO
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LocoIO/debug/ -lLocoIO
-else:unix: LIBS += -L$$PWD/../LocoIO/ -lLocoIO
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../LocoIO/ -lLocoIO
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../LocoIO/ -lLocoIOd
+
 
 INCLUDEPATH += $$PWD/../LocoIO
 DEPENDPATH += $$PWD/../LocoIO
@@ -424,7 +454,9 @@ TRANSLATIONS += \
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../JavaQt/release/ -lJavaQt
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../JavaQt/debug/ -lJavaQt
-else:unix: LIBS += -L$$PWD/../JavaQt/ -lJavaQt
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../JavaQt/ -lJavaQt
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../JavaQt/ -lJavaQtd
+
 
 INCLUDEPATH += $$PWD/../JavaQt
 DEPENDPATH += $$PWD/../JavaQt
@@ -444,14 +476,17 @@ DEPENDPATH += "C:/Program Files (x86)/local/include/quazip"
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../operations/release/ -loperations
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../operations/debug/ -loperations
-else:unix: LIBS += -L$$PWD/../operations/ -loperations
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../operations/ -loperations
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../operations/ -loperationsd
+
 
 INCLUDEPATH += $$PWD/../operations
 DEPENDPATH += $$PWD/../operations
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../tests/release/ -ltests
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../tests/debug/ -ltests
-else:unix: LIBS += -L$$PWD/../tests/ -ltests
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../tests/ -ltests
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../tests/ -ltestsd
 
 INCLUDEPATH += $$PWD/../tests
 DEPENDPATH += $$PWD/../tests

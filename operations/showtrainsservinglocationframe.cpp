@@ -6,7 +6,7 @@
 #include "track.h"
 #include "train.h"
 #include "control.h"
-#include <QGroupBox>
+#include "jpanel.h"
 #include <QScrollArea>
 #include <QCheckBox>
 #include "jcombobox.h"
@@ -14,7 +14,8 @@
 #include "route.h"
 #include "cartypes.h"
 #include <QLabel>
-
+#include "instancemanager.h"
+#include "borderfactory.h"
 namespace Operations
 {
  /**
@@ -49,19 +50,15 @@ namespace Operations
      QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
      // Set up the panels
-     QGroupBox* pOptions = new QGroupBox();
+     JPanel* pOptions = new JPanel();
      pOptions->setLayout(new GridBagLayout());
-     //pOptions.setBorder(BorderFactory.createTitledBorder(tr("Options")));
-     pOptions->setStyleSheet(gbStyleSheet);
-     pOptions->setTitle(tr("Options"));
+     pOptions->setBorder(BorderFactory::createTitledBorder(tr("Options")));
 
      addItem(pOptions, showAllTrainsCheckBox, 0, 0);
 
-     QGroupBox* pCarType = new QGroupBox();
+     JPanel* pCarType = new JPanel();
      pCarType->setLayout(new GridBagLayout());
-     //pCarType.setBorder(BorderFactory.createTitledBorder(tr("Type")));
-     pCarType->setStyleSheet(gbStyleSheet);
-     pCarType->setTitle(tr("Type"));
+     pCarType->setBorder(BorderFactory::createTitledBorder(tr("Type")));
      pCarType->setMaximumSize(QSize(2000, 50));
 
      addItem(pCarType, typeComboBox, 0, 0);
@@ -69,9 +66,7 @@ namespace Operations
      pTrains->setLayout(new GridBagLayout());
      QScrollArea* trainsPane = new QScrollArea(/*pTrains*/);
      //trainsPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-     //trainsPane.setBorder(BorderFactory.createTitledBorder(tr("Trains")));
-     pTrains->setStyleSheet(gbStyleSheet);
-     pTrains->setTitle(tr("Trains"));
+     pTrains->setBorder(BorderFactory::createTitledBorder(tr("Trains")));
 
      thisLayout->addWidget(pOptions);
      thisLayout->addWidget(pCarType);
@@ -100,12 +95,12 @@ namespace Operations
      updateTrainPane();
 
      //location.addPropertyChangeListener(this);
-     connect(location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      addPropertyChangeAllTrains();
 
      if (_track != NULL) {
          //_track.addPropertyChangeListener(this);
-      connect(_track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      connect(_track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
          setTitle(tr("Show Trains Servicing %1").arg(_track->getName()));
      } else {
@@ -127,7 +122,7 @@ namespace Operations
    delete item;
   }
   int y = 0;
-  foreach (Train* train, TrainManager::instance()->getTrainsByNameList())
+  foreach (Train* train, ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainsByNameList())
   {
    Route* route = train->getRoute();
    if (route == NULL) {
@@ -141,9 +136,9 @@ namespace Operations
      bool setout = false;
      // monitor move count in the route for this location
      //train.getRoute().removePropertyChangeListener(this);
-     disconnect(train->getRoute()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(train->getRoute(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //train.getRoute().addPropertyChangeListener(this);
-     connect(train->getRoute()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(train->getRoute(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      if(rl->isPickUpAllowed()
              && rl->getMaxCarMoves() > 0
              && !train->skipsLocation(rl->getId())
@@ -208,7 +203,7 @@ namespace Operations
  /*private*/ void ShowTrainsServingLocationFrame::updateComboBox() {
      log->debug("update combobox");
      typeComboBox->setEnabled(false);
-     CarTypes::instance()->updateComboBox(typeComboBox);
+     ((CarTypes*)InstanceManager::getDefault("CarTypes"))->updateComboBox(typeComboBox);
      // remove car types not serviced by this location and track
      for (int i = typeComboBox->count() - 1; i >= 0; i--) {
          QString type = typeComboBox->itemText(i);
@@ -235,14 +230,14 @@ namespace Operations
 
  /*public*/ void ShowTrainsServingLocationFrame::dispose() {
      //_location.removePropertyChangeListener(this);
- disconnect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(_location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      if (_track != NULL) {
          //_track->removePropertyChangeListener(this);
-      disconnect(_track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      disconnect(_track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
 
      //CarTypes.instance().removePropertyChangeListener(this);
-     disconnect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
      removePropertyChangeAllTrains();
      OperationsFrame::dispose();
@@ -250,23 +245,23 @@ namespace Operations
 
  /*public*/ void ShowTrainsServingLocationFrame::addPropertyChangeAllTrains()
  {
-  //TrainManager::instance().addPropertyChangeListener(this);
-  connect(TrainManager::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     foreach (Train* train, TrainManager::instance()->getTrainsByNameList()) {
+  //((TrainManager*)InstanceManager::getDefault("Operations::TrainManager")).addPropertyChangeListener(this);
+  connect(((TrainManager*)InstanceManager::getDefault("Operations::TrainManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     foreach (Train* train, ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainsByNameList()) {
          //train.addPropertyChangeListener(this);
-      connect(train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      connect(train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
  }
 
  /*public*/ void ShowTrainsServingLocationFrame::removePropertyChangeAllTrains() {
      //TrainManager.instance().removePropertyChangeListener(this);
- disconnect(TrainManager::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     foreach (Train* train, TrainManager::instance()->getTrainsByNameList()) {
+ disconnect(((TrainManager*)InstanceManager::getDefault("Operations::TrainManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     foreach (Train* train, ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainsByNameList()) {
          //train.removePropertyChangeListener(this);
-      disconnect(train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      disconnect(train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          if (train->getRoute() != NULL) {
              //train.getRoute().removePropertyChangeListener(this);
-          connect(train->getRoute()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          connect(train->getRoute(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          }
      }
  }

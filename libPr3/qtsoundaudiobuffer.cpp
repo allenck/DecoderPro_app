@@ -146,7 +146,7 @@ void QtSoundAudioBuffer::common()
 //    } catch (UnsupportedAudioFileException ex) {
 //        log->error("Unsupported audio file format when loading buffer:" + ex);
 //        return false;
-//    } catch (IOException ex) {
+//    } catch (IOException* ex) {
 //        log->error("Error loading buffer:" + ex);
 //        return false;
 //    }
@@ -175,7 +175,7 @@ void QtSoundAudioBuffer::common()
 // } catch (UnsupportedAudioFileException ex) {
 //     log->error("Unsupported audio file format when loading buffer:" + ex);
 //     return false;
-// } catch (IOException ex) {
+// } catch (IOException* ex) {
 //     log->error("Error loading buffer:" + ex);
 //     return false;
 // }
@@ -225,9 +225,9 @@ void QtSoundAudioBuffer::common()
     totalBytesRead += bytesRead;
    }
   }
-  catch (IOException ex)
+  catch (IOException* ex)
   {
-   log->error("Error when reading QtSoundAudioBuffer (" + this->getSystemName() + ") " + ex.getMessage());
+   log->error("Error when reading QtSoundAudioBuffer (" + this->getSystemName() + ") " + ex->getMessage());
    return false;
   }
 

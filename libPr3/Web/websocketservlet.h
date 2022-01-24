@@ -18,7 +18,7 @@ private:
 // /*private*/ /*final*/ Queue<MessageDigest> sha1Helpers =
 //         new ConcurrentLinkedQueue<MessageDigest>();
  /*private*/ QList<QString> getTokensFromHeader(HttpServletRequest* req, QString headerName);
- /*private*/ QString getWebSocketAccept(QString key) throw (ServletException);
+ /*private*/ QString getWebSocketAccept(QString key) /*throw (ServletException)*/;
  /*private*/ bool headerContainsToken(HttpServletRequest* req, QString headerName, QString target);
 
 

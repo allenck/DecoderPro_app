@@ -48,7 +48,7 @@
 //    implements java.io.Serializable {
 
 /*public*/ AbstractVariableLight::AbstractVariableLight(QString systemName, QString userName, QObject *parent)
- : AbstractLight(systemName, userName, parent)
+ : VariableLight(systemName, userName, parent)
 {
  //super(systemName, userName);
  init();
@@ -58,7 +58,7 @@
  }
 }
 
-/*public*/ AbstractVariableLight::AbstractVariableLight(QString systemName, QObject *parent) : AbstractLight(systemName, parent)
+/*public*/ AbstractVariableLight::AbstractVariableLight(QString systemName, QObject *parent) : VariableLight(systemName, parent)
 {
  //super(systemName);
  init();
@@ -248,7 +248,7 @@ void AbstractVariableLight::init()
 //        } ;
  {
   ((SimpleTimebase*)internalClock)->addMinuteChangeListener(minuteChangeListener);
-  connect(internalClock, SIGNAL(minuteTick()), this, SLOT(newInternalMinute()));
+  //connect(internalClock, SIGNAL(minuteTick()), this, SLOT(newInternalMinute()));
  }
 }
 
@@ -402,6 +402,207 @@ void AbstractVariableLight::init()
         return false;
     }
 }
+
+/**
+ * Get the current intensity value. If the Light is currently transitioning,
+ * this may be either an intermediate or final value.
+ * <p>
+ * A value of 0.0 corresponds to full off, and a value of 1.0 corresponds to
+ * full on.
+ *
+ * @return current intensity
+ */
+//@Override
+/*public*/ double AbstractVariableLight::getCurrentIntensity() {
+    return mCurrentIntensity;
+}
+
+/**
+ * Get the target intensity value for the current transition, if any. If the
+ * Light is not currently transitioning, this is the current intensity
+ * value.
+ * <p>
+ * A value of 0.0 corresponds to full off, and a value of 1.0 corresponds to
+ * full on.
+ * <p>
+ * Bound property
+ *
+ * @return target intensity
+ */
+//@Override
+/*public*/ double AbstractVariableLight::getTargetIntensity() {
+    return mCurrentIntensity;
+}
+
+//@Override
+/*public*/ void AbstractVariableLight::setCommandedAnalogValue(double value) /*throw (JmriException)*/ {
+    int origState = mState;
+    double origCurrent = mCurrentIntensity;
+
+    if (mCurrentIntensity >= getMaxIntensity()) {
+        mState = DigitalIO::ON;
+        mCurrentIntensity = getMaxIntensity();
+    } else if (mCurrentIntensity <= getMinIntensity()) {
+        mState = DigitalIO::OFF;
+        mCurrentIntensity = getMinIntensity();
+    } else {
+        mState = INTERMEDIATE;
+        mCurrentIntensity = value;
+    }
+
+    mTransitionTargetIntensity = mCurrentIntensity;
+
+    // first, send the on command
+    sendOnOffCommand(mState);
+
+    // command new intensity
+    sendIntensity(mCurrentIntensity);
+    if (log->isDebugEnabled()) {
+        log->debug(tr("set analog value: ^1").arg(value));
+    }
+
+    firePropertyChange("CurrentIntensity", origCurrent, mCurrentIntensity);
+    if (log->isDebugEnabled()) {
+        log->debug(tr("firePropertyChange intensity %1 -> %2").arg(origCurrent, mCurrentIntensity));
+    }
+
+    if (origState != mState) {
+        firePropertyChange("KnownState", origState, mState);
+        if (log->isDebugEnabled()) {
+            log->debug(tr("firePropertyChange intensity %1 -> %2").arg(origCurrent, mCurrentIntensity));
+        }
+    }
+}
+
+/**
+ * Get the current value of the minIntensity property.
+ * <p>
+ * A value of 0.0 corresponds to full off, and a value of 1.0 corresponds to
+ * full on.
+ *
+ * @return min intensity value
+ */
+//@Override
+/*public*/ double AbstractVariableLight::getMinIntensity() {
+    return mMinIntensity;
+}
+
+/**
+ * Set the value of the minIntensity property.
+ * <p>
+ * Bound property between 0 and 1.
+ * <p>
+ * A value of 0.0 corresponds to full off, and a value of 1.0 corresponds to
+ * full on.
+ *
+ * @param intensity intensity value
+ * @throws IllegalArgumentException when intensity is less than 0.0 or more
+ *                                  than 1.0
+ * @throws IllegalArgumentException when intensity is not less than the
+ *                                  current value of the maxIntensity
+ *                                  property
+ */
+//@SuppressFBWarnings(value = "FE_FLOATING_POINT_EQUALITY", justification = "OK to compare floating point")
+//@Override
+/*public*/ void AbstractVariableLight::setMinIntensity(double intensity) {
+    if (intensity < 0.0 || intensity > 1.0) {
+        throw  IllegalArgumentException("Illegal intensity value: " + QString::number(intensity));
+    }
+    if (intensity >= mMaxIntensity) {
+        throw  IllegalArgumentException("Requested intensity " + QString::number(intensity) + " should be less than maxIntensity " + QString::number(mMaxIntensity));
+    }
+
+    double oldValue = mMinIntensity;
+    mMinIntensity = intensity;
+
+    if (oldValue != intensity) {
+        firePropertyChange("MinIntensity", (oldValue), (intensity));
+    }
+}
+
+/**
+ * Get the current value of the maxIntensity property.
+ * <p>
+ * A value of 0.0 corresponds to full off, and a value of 1.0 corresponds to
+ * full on.
+ *
+ * @return max intensity
+ */
+//@Override
+/*public*/ double AbstractVariableLight::getMaxIntensity() {
+    return mMaxIntensity;
+}
+
+/**
+ * Set the value of the maxIntensity property.
+ * <p>
+ * Bound property between 0 and 1.
+ * <p>
+ * A value of 0.0 corresponds to full off, and a value of 1.0 corresponds to
+ * full on.
+ *
+ * @param intensity max intensity
+ * @throws IllegalArgumentException when intensity is less than 0.0 or more
+ *                                  than 1.0
+ * @throws IllegalArgumentException when intensity is not greater than the
+ *                                  current value of the minIntensity
+ *                                  property
+ */
+//@SuppressFBWarnings(value = "FE_FLOATING_POINT_EQUALITY", justification = "OK to compare floating point")
+//@Override
+/*public*/ void AbstractVariableLight::setMaxIntensity(double intensity) {
+    if (intensity < 0.0 || intensity > 1.0) {
+        throw  IllegalArgumentException("Illegal intensity value: " + QString::number(intensity));
+    }
+    if (intensity <= mMinIntensity) {
+        throw new IllegalArgumentException("Requested intensity " + QString::number(intensity) + " must be higher than minIntensity " + QString::number(mMinIntensity));
+    }
+
+    double oldValue = mMaxIntensity;
+    mMaxIntensity = intensity;
+
+    if (oldValue != intensity) {
+        firePropertyChange("MaxIntensity", oldValue, intensity);
+    }
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ double AbstractVariableLight::getState(double v) {
+    return getCommandedAnalogValue();
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ void AbstractVariableLight::setState(double newState) /*throw (JmriException)*/ {
+    setCommandedAnalogValue(newState);
+}
+
+//@Override
+/*public*/ double AbstractVariableLight::getResolution() {
+    return 1.0 / getNumberOfSteps();
+}
+
+//@Override
+/*public*/ double AbstractVariableLight::getCommandedAnalogValue() {
+    return getCurrentIntensity();
+}
+
+//@Override
+/*public*/ double AbstractVariableLight::getMin() {
+    return getMinIntensity();
+}
+
+//@Override
+/*public*/ double AbstractVariableLight::getMax() {
+    return getMaxIntensity();
+}
+
+//@Override
+/*public*/ AnalogIO::AbsoluteOrRelative::TYPE AbstractVariableLight::getAbsoluteOrRelative() {
+    return AnalogIO::AbsoluteOrRelative::TYPE::ABSOLUTE;
+}
+
 /*protected*/ void AbstractVariableLight::forwardCommandChangeToLayout(int /*s*/) {}
 /*protected*/ void AbstractVariableLight::sendIntensity(double /*intensity*/) {}
 /*protected*/ void AbstractVariableLight::sendOnOffCommand(int /*newState*/) {}

@@ -1,8 +1,10 @@
 #include "decvariablevalue.h"
 #include "decvarslider.h"
 #include "actionlistener.h"
-#include "vartextfield.h"
 #include <QIntValidator>
+#include "jslider.h"
+#include "jlabel.h"
+#include "math.h"
 
 //DecVariableValue::DecVariableValue(QObject *parent) :
 //    VariableValue(parent)
@@ -18,7 +20,7 @@
 ///*public*/ class DecVariableValue extends VariableValue
 //    implements ActionListener, PropertyChangeListener, FocusListener {
 
-/*public*/ DecVariableValue::DecVariableValue(QString name, QString comment, QString cvName, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString cvNum, QString mask, int minVal, int maxVal, QMap<QString,CvValue*>* v, QLabel* status, QString stdname, QObject *parent)
+/*public*/ DecVariableValue::DecVariableValue(QString name, QString comment, QString cvName, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString cvNum, QString mask, int minVal, int maxVal, QMap<QString,CvValue*>* v, JLabel* status, QString stdname, QObject *parent)
     : VariableValue(name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cvNum, mask, v, status, stdname)
 {
  //super(name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cvNum, mask, v, status, stdname);
@@ -56,17 +58,18 @@
 }
 
 
-//int fieldLength()
-//{
-// if (_maxVal <= 255) return 3;
-//  return (int) qCeil(qLn10(_maxVal))+1;
-//}
+int DecVariableValue::fieldLength()
+{
+ if (_maxVal <= 255)
+  return 3;
+  return (int) qCeil(log10(_maxVal))+1;
+}
 
-/*public*/ QVector<CvValue*>* DecVariableValue::usesCVs()
+/*public*/ QVector<CvValue *> DecVariableValue::usesCVs()
 {
  //return new CvValue[]{_cvVector.elementAt(getCvNum())};
- QVector<CvValue*>* list = new QVector<CvValue*>();
- list->append(_cvMap->value(getCvNum()));
+ QVector<CvValue*> list = QVector<CvValue*>();
+ list.append(_cvMap->value(getCvNum()));
  return list;
 }
 
@@ -118,17 +121,16 @@ void DecVariableValue::updatedTextField()
  // compute new cv value by combining old and request
  int oldCv = cv->getValue();
  int newVal = 0;
-//    try {
- newVal = (_value->text()).toInt();
-//    }
-//    catch (java.lang.NumberFormatException ex) { newVal = 0; }
- int newCv = newValue(oldCv, newVal, getMask());
+ bool bOk;
+ newVal = (_value->text()).toInt(&bOk);
+if(!bOk) { newVal = 0; }
+int newCv = setValueInCV(oldCv, newVal, getMask(), _maxVal);
  if (oldCv != newCv)
    cv->setValue(newCv);
 }
 
 /** ActionListener implementations */
-/*public*/ void DecVariableValue::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void DecVariableValue::actionPerformed(/*JActionEvent* e*/)
 {
  if (log->isDebugEnabled()) log->debug("actionPerformed");
 
@@ -208,20 +210,47 @@ else if (format==("hslider"))
   updateRepresentation(b);
   return b;
  }
+ else if (format == ("hslider-percent")) {
+     DecVarSlider* b = new DecVarSlider(this, _minVal, _maxVal);
+     b->setOrientation(/*JSlider::HORIZONTAL*/Qt::Horizontal);
+     if (_maxVal > 20) {
+         b->setMajorTickSpacing(_maxVal / 2);
+//         b->setMinorTickSpacing((_maxVal + 1) / 8);
+     } else {
+         b->setMajorTickSpacing(5);
+//         b->setMinorTickSpacing(1); // because JSlider does not SnapToValue
+//         b->setSnapToTicks(true);   // like it should, we fake it here
+     }
+     b->resize(b->width(), 28);
+     QMap<int, JLabel*> labelTable = QMap<int, JLabel*>();
+     labelTable.insert((0), new JLabel("0%"));
+     if (_maxVal == 63) {   // this if for the QSI mute level, not very universal, needs work
+         labelTable.insert((_maxVal / 2), new JLabel("25%"));
+         labelTable.insert((_maxVal), new JLabel("50%"));
+     } else {
+         labelTable.insert((_maxVal / 2), new JLabel("50%"));
+         labelTable.insert((_maxVal), new JLabel("100%"));
+     }
+     b->setLabelTable(labelTable);
+     b->setPaintTicks(true);
+     b->setPaintLabels(true);
+     sliders->append(b);
+     updateRepresentation(b);
+     if (!getAvailable()) {
+         b->setVisible(false);
+     }
+     return b;
+ }
  else
  {
-   VarTextField * value = new VarTextField(_value->getDocument(),_value->text(), 3, this);
-  _value->setVisible(false);
-  value->setVisible(true);
-  if (getReadOnly() || getInfoOnly())
-  {
-   //value->setEditable(false);
-   value->setReadOnly(true);
-  }
-  reps->append(value);
-  updateRepresentation(value);
-  return value;
- }
+  JTextField* value = new DecVarTextField(_value->getDocument(), _value->text(), fieldLength(), this);
+   if (getReadOnly() || getInfoOnly()) {
+       value->setEditable(false);
+   }
+   reps->append(value);
+   updateRepresentation(value);
+   return value;
+}
 }
 
 
@@ -233,9 +262,12 @@ else if (format==("hslider"))
 /*public*/ void DecVariableValue::setValue(int value)
 {
  int oldVal;
- //try {
- oldVal = (_value->text()).toInt();
-    //} catch (java.lang.NumberFormatException ex) { oldVal = -999; }
+ bool bOk;
+ oldVal = (_value->text()).toInt(&bOk);
+ if(!bOk)
+ {
+  oldVal = -999;
+ }
  if (value < _minVal) value = _minVal;
  if (value > _maxVal) value = _maxVal;
  if (log->isDebugEnabled()) log->debug("setValue with new value "+QString::number(value)+" old value "+QString::number(oldVal));
@@ -248,6 +280,10 @@ else if (format==("hslider"))
  }
 }
 
+// implement an abstract member to set colors
+QColor DecVariableValue::getDefaultColor() {
+    return _defaultColor;
+}
 
 // implement an abstract member to set colors
 QColor DecVariableValue::getColor()
@@ -276,6 +312,7 @@ QColor DecVariableValue::getColor()
     }
     return QColor();
 }
+
 void DecVariableValue::setColor(QColor c)
 {
  if(log->isDebugEnabled()) log->debug(QString("set color: r(%1), g(%2), b(%3) CV=%4, state=%6, value= %5").arg(c.red()).arg(c.green()).arg(c.blue()).arg(getCvNum()).arg(getIntValue()).arg(_cvMap->value(getCvNum())->getState()));
@@ -333,20 +370,20 @@ void DecVariableValue::setColor(QColor c)
  if (log->isDebugEnabled()) log->debug("Property changed: "+e->getPropertyName()+ " oldVal= "+ e->getOldValue().toString()+" newVal= "+ e->getNewValue().toString());
  if (e->getPropertyName()==("Busy"))
  {
-  if ((e->getNewValue())==false)
+  if ((e->getNewValue().toBool())==false)
   {
    setToRead(false);
    setToWrite(false);  // some programming operation just finished
    setBusy(false);
-   CvValue* cv = _cvMap->value(getCvNum());
-   _value->setBackground(cv->getStateColor());
   }
  }
  else if (e->getPropertyName()==("State"))
  {
   CvValue* cv = _cvMap->value(getCvNum());
-  if (cv->getState() == STORED) setToWrite(false);
-  if (cv->getState() == READ) setToRead(false);
+  if (cv->getState() == STORED)
+   setToWrite(false);
+  if (cv->getState() == READ)
+   setToRead(false);
   setState(cv->getState());
   if (log->isDebugEnabled()) log->debug(cv->getStateColor());
   //_value->setBackground(cv->getStateColor());
@@ -355,7 +392,8 @@ void DecVariableValue::setColor(QColor c)
  {
   // update value of Variable
   CvValue* cv = _cvMap->value(getCvNum());
-  int newVal = (cv->getValue() & maskVal(getMask())) >> offsetVal(getMask());
+  //int newVal = (cv->getValue() & maskVal(getMask())) >> offsetVal(getMask());
+  int newVal = getValueInCV(cv->getValue(), getMask(), _maxVal);
   setValue(newVal);  // check for duplicate done inside setVal
  }
 }
@@ -373,6 +411,85 @@ void DecVariableValue::setColor(QColor c)
 void DecVariableValue::value_changed()
 {
   //updatedTextField();
- actionPerformed(NULL);
+ actionPerformed(/*NULL*/);
 }
 
+/* Internal class extends a JTextField so that its color is consistent with
+ * an underlying variable
+ *
+ * @author   Bob Jacobsen   Copyright (C) 2001
+ */
+// /*public*/ class VarTextField extends JTextField {
+
+    DecVarTextField::DecVarTextField(Document* doc, QString text, int col, DecVariableValue* var)
+     : JTextField(doc, text, col)
+    {
+        //super(doc, text, col);
+        _var = var;
+        _var->log->setDebugEnabled(true);
+        // get the original color right
+        setBackground(_var->_value->getBackground());
+        // listen for changes to ourself
+//        addActionListener(new java.awt.event.ActionListener() {
+//            @Override
+//            public void actionPerformed(java.awt.event.ActionEvent e) {
+//                thisActionPerformed(e);
+//            }
+//        });
+        connect(this, &DecVarTextField::textEdited, [=]{
+         thisActionPerformed();
+        });
+//        addFocusListener(new java.awt.event.FocusListener() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//                if (log.isDebugEnabled()) {
+//                    log.debug("focusGained");
+//                }
+//                enterField();
+//            }
+         connect(this, &DecVarTextField::focusGained, [=]{
+           if (_var->log->isDebugEnabled()) {
+               _var->log->debug("focusGained");
+           }
+           enterField();
+         });
+
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                if (log.isDebugEnabled()) {
+//                    log.debug("focusLost");
+//                }
+//                exitField();
+//            }
+//        });
+         connect(this, &DecVarTextField::focusLost, [=]{
+           if (_var->log->isDebugEnabled()) {
+               _var->log->debug("focusLost");
+           }
+           leaveField();
+         });
+        // listen for changes to original state
+//        _var.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(java.beans.PropertyChangeEvent e) {
+         connect(this->_var->prop, &SwingPropertyChangeSupport::propertyChange, [=](PropertyChangeEvent* e) {
+                originalPropertyChanged(e);
+//            }
+        });
+    }
+
+    void DecVarTextField::thisActionPerformed(/*java.awt.event.ActionEvent e*/) {
+        // tell original
+        _var->actionPerformed(/*e*/);
+    }
+
+    void DecVarTextField::originalPropertyChanged(PropertyChangeEvent* e) {
+        // update this color from original state
+        if (e->getPropertyName() == ("State")) {
+            setBackground(_var->_value->getBackground());
+        }
+        if(e->getPropertyName() == "Value")
+         setText(e->getNewValue().toString());
+    }
+
+//}

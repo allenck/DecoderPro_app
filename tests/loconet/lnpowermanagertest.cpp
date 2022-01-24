@@ -132,7 +132,7 @@ LnPowerManagerTest::LnPowerManagerTest()
 
     //@Override
     //@Test
-    /*public*/ void LnPowerManagerTest::testStateIdle() throw (JmriException) {
+    /*public*/ void LnPowerManagerTest::testStateIdle() /*throw (JmriException)*/ {
         hearOn();  // set up an initial state
         // DCS51 does not implement IDLE power state
         memo->configureCommandStation(LnCommandStationType::getByName("DCS200"), false, false, false);
@@ -150,7 +150,7 @@ LnPowerManagerTest::LnPowerManagerTest()
 
     //@Test
     //@Override
-    /*public*/ void LnPowerManagerTest::testSetPowerIdle() throw (JmriException) {
+    /*public*/ void LnPowerManagerTest::testSetPowerIdle() /*throw (JmriException)*/ {
         memo->configureCommandStation(LnCommandStationType::getByName("DCS200)"), false, false, false);
         Assert::assertTrue("LocoNet implements IDLE", p->implementsIdle(), __FILE__, __LINE__);
         int initialSent = outboundSize();

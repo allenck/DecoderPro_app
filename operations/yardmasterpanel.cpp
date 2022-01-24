@@ -18,6 +18,9 @@
 #include "routelocation.h"
 #include "htmltextedit.h"
 #include <QScrollArea>
+#include "instancemanager.h"
+#include "borderfactory.h"
+#include "jpanel.h"
 
 namespace Operations
 {
@@ -59,14 +62,14 @@ namespace Operations
   textSwitchListComment = new HtmlTextEdit();
 
       // combo boxes
-  trainComboBox = new QComboBox();
-  trainVisitComboBox = new QComboBox();
+  trainComboBox = new JComboBox();
+  trainVisitComboBox = new JComboBox();
 
       // buttons
   nextButton = new QPushButton(tr("Next"));
 
    // panels
-   pTrainVisit = new QGroupBox();
+   pTrainVisit = new JPanel();
   initComponents();
   _location = location;
 
@@ -90,18 +93,15 @@ namespace Operations
   pRow6->setLayout(new QHBoxLayout);
 
   // row 6a (train name)
-  QGroupBox* pTrainName = new QGroupBox();
-  //pTrainName->setBorder(BorderFactory.createTitledBorder(tr("Train")));
-  pTrainName->setStyleSheet(gbStyleSheet);
-  pTrainName->setTitle(tr("Train"));
+  JPanel* pTrainName = new JPanel();
+  pTrainName->setBorder(BorderFactory::createTitledBorder(tr("Train")));
   pTrainName->setLayout(new QHBoxLayout);
   pTrainName->layout()->addWidget(trainComboBox);
   // add next button for web server
   pTrainName->layout()->addWidget(nextButton);
 
   // row 6b (train visit)
-  //pTrainVisit->setBorder(BorderFactory.createTitledBorder(tr("Visit")));
-  pTrainVisit->setStyleSheet(gbStyleSheet);
+  pTrainVisit->setBorder(BorderFactory::createTitledBorder(tr("Visit")));
   pTrainVisit->setLayout(new QHBoxLayout);
   pTrainVisit->layout()->addWidget(trainVisitComboBox);
 
@@ -307,7 +307,7 @@ namespace Operations
      QVariant selectedItem = trainComboBox->currentData();
      trainComboBox->setVisible(false); // used as a flag to ignore updates
      trainComboBox->clear();
-     trainComboBox->addItem(NULL);
+     trainComboBox->addItem("");
      if (_location != NULL) {
          QList<Train*> trains = trainManager->getTrainsArrivingThisLocationList(_location);
 //         trains.stream().filter((train) -> (TrainCommon::isThereWorkAtLocation(train, _location))).forEach(
@@ -330,7 +330,7 @@ namespace Operations
 
  /*private*/ void YardmasterPanel::addTrainListeners() {
      log->debug("Adding train listerners");
-     QList<Train*> trains = TrainManager::instance()->getTrainsByIdList();
+     QList<Train*> trains = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainsByIdList();
 //     trains.stream().forEach((train) -> {
 //         Train::addPropertyChangeListener(this);
 //     });
@@ -340,8 +340,7 @@ namespace Operations
      }
 
      // listen for new trains being added
-     //TrainManager::instance().addPropertyChangeListener(this);
-     connect(TrainManager::instance()->pcs,SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->addPropertyChangeListener(this);
  }
 #if 0
  private void removeTrainListeners() {
@@ -370,10 +369,7 @@ log->debug(tr("Property change: (%1) old: (%2) new: (%3)").arg(e->getPropertyNam
          // remove car from list
          if (e->getSource()->metaObject()->className()==("Car")) {
              Car* car = (Car*) e->getSource();
-             checkBoxes.remove("p" + car->getId());
-             checkBoxes.remove("s" + car->getId());
-             checkBoxes.remove("m" + car->getId());
-             log->debug(tr("Car (%1) removed from list").arg(car->toString()));
+             removeCarFromList(car);
          }
          update();
      }

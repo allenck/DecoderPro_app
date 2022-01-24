@@ -119,9 +119,9 @@ void PrintRosterAction::common()
    writer->write(s, 0, s.length());
   }
  }
- catch (IOException ex)
+ catch (IOException* ex)
  {
-  log->warn("error during printing: " + ex.getMessage());
+  log->warn("error during printing: " + ex->getMessage());
  }
 
  // Loop through the Roster, printing as needed

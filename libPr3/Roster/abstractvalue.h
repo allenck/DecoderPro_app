@@ -2,7 +2,7 @@
 #define ABSTRACTVALUE_H
 
 #include <QObject>
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include <QColor>
 #include <QString>
 #include "libPr3_global.h"
@@ -76,23 +76,20 @@ signals:
 
 public slots:
 private:
-    PropertyChangeSupport* prop;// = new PropertyChangeSupport(this);
-    /*private*/ bool _toWrite;// = false;
-    /*private*/ bool available;// = true;
-    /*private*/ bool _toRead;// = false;
+    SwingPropertyChangeSupport* prop;// = new SwingPropertyChangeSupport(this, nullptr);
+    /*private*/ bool _toWrite = false;
+    /*private*/ bool available = true;
+    /*private*/ bool _toRead = false;
  friend class CvValue;
  friend class VariableValue;
  friend class EnumVariableValue;
  friend class CompositeVariableValue;
  friend class DecVariableValue;
  friend class HexVariableValue;
- friend class IndexedEnumVariableValue;
- friend class IndexedVariableValue;
  friend class LongAddrVariableValue;
  friend class SpeedTableVarValue;
  friend class SplitVariableValue;
  friend class ConstantValue;
- friend class IndexedPairVariableValue;
  friend class PaneProgPane;
  friend class ResetTableModel;
  friend class DccAddressPanel;
@@ -105,6 +102,9 @@ private:
  friend class DecVarSlider;
  friend class PaneProgFrame;
  friend class PaneProgDp3Action;
+ friend class DecVarTextField;
+ friend class LAVarTextField;
+ friend class SPVarTextField;
 };
 
 #endif // ABSTRACTVALUE_H

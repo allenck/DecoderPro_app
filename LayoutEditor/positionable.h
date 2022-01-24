@@ -13,9 +13,10 @@
 #include "exceptions.h"
 #include "jcomponent.h"
 #include "editscene.h"
+#include "liblayouteditor_global.h"
 
 class Border;
-class MyGraphicsItemGroup : public QGraphicsItemGroup
+class LIBLAYOUTEDITORSHARED_EXPORT MyGraphicsItemGroup : public QGraphicsItemGroup
 {
  QString _name;
 public:
@@ -67,7 +68,22 @@ class Positionable //: public QLabel
      * @version $Revision: 21256 $
      */
 //    /*public*/ interface Positionable extends Cloneable  {
+     /**
+       * Sets the Id of this Positionable
+       * @param id the id or null if no id
+       * @throws jmri.jmrit.display.Positionable.DuplicateIdException if another
+       *         Positionable in the editor already has this id
+       */
+     virtual void setId(QString /*id*/) /*throw (Positionable::DuplicateIdException)*/ {}
+
+      /**
+       * Gets the Id of this Positionable
+       * @return id the id or null if no id
+       */
+     virtual QString getId() {return "";}
+
      /*public*/ virtual void setPositionable(bool /*enabled*/) =0;
+
      /*public*/ virtual bool isPositionable() =0;
 
      /*public*/ virtual void setEditable(bool /*enabled*/) =0;
@@ -164,7 +180,7 @@ class Positionable //: public QLabel
      */
      /*public*/ virtual PositionablePopupUtil* getPopupUtility() {return NULL;}
      /*public*/ virtual void setPopupUtility(PositionablePopupUtil* /*tu*/) {}
-     /*public*/ virtual NamedBean* getNamedBean() {throw NullPointerException();}
+     /*public*/ virtual NamedBean* getNamedBean() {throw new NullPointerException();}
      // Mouse-handling events.  See
      // Editor class for more information on how these are used.
      /*public*/ virtual void doMousePressed(QGraphicsSceneMouseEvent* /*event*/) {}
@@ -214,7 +230,8 @@ class Positionable //: public QLabel
      virtual bool updateScene() { return false;}
      virtual void setLevel(int /*level*/) {}
      virtual void paint(EditScene*) {}
-
+     /*public*/ /*static*/ class DuplicateIdException : public JmriException {
+         };
  private:
      bool _bVisible = true;
 };

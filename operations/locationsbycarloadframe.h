@@ -31,15 +31,15 @@ namespace Operations
 
   // checkboxes track id as the checkbox name
   QList<QCheckBox*> trackCheckBoxList;//= new ArrayList<JCheckBox>();
-  QWidget* locationCheckBoxes;//= new JPanel();
+  JPanel* locationCheckBoxes;//= new JPanel();
 
   // panels
-  QWidget* pLocations;
+  JPanel* pLocations;
 
   // major buttons
-  QPushButton* clearButton;//= new JButton(Bundle.getMessage("Clear"));
-  QPushButton* setButton;//= new JButton(Bundle.getMessage("Select"));
-  QPushButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
+  JButton* clearButton;//= new JButton(Bundle.getMessage("Clear"));
+  JButton* setButton;//= new JButton(Bundle.getMessage("Select"));
+  JButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
 
   // check boxes
   // JCheckBox copyCheckBox;//= new JCheckBox(Bundle.getMessage("Copy"));

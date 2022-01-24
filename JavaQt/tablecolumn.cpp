@@ -1,5 +1,6 @@
 #include "tablecolumn.h"
 #include "propertychangeevent.h"
+#include "vptr.h"
 
 //TableColumn::TableColumn(QObject *parent) :
 //  QObject(parent)
@@ -102,11 +103,11 @@
                        QObject(parent)
 {
  //   this(0);
+ common();
  this->modelIndex = 0;
  preferredWidth = this->width = qMax(width, 0);
  this->cellEditor = NULL;
  this->cellRenderer = NULL;
- common();
 }
 
 /**
@@ -117,12 +118,12 @@
 /*public*/ TableColumn::TableColumn(int modelIndex, QObject *parent) :
   QObject(parent)
 {
+ common();
  //this(modelIndex, 75, NULL, NULL);
  this->modelIndex = modelIndex;
  preferredWidth = this->width = qMax(width, 0);
  this->cellRenderer = NULL;
  this->cellEditor = NULL;
- common();
 }
 
 /**
@@ -133,12 +134,12 @@
 /*public*/ TableColumn::TableColumn(int modelIndex, int width, QObject *parent) :
   QObject(parent)
 {
+ common();
  //this(modelIndex, width, NULL, NULL);
  this->modelIndex = modelIndex;
  preferredWidth = this->width = qMax(width, 0);
  this->cellRenderer = NULL;
  this->cellEditor = NULL;
- common();
 }
 
 /**
@@ -183,12 +184,12 @@
                              TableCellEditor* cellEditor, QObject *parent) :
                        QObject(parent){
     //super();
+ common();
     this->modelIndex = modelIndex;
     preferredWidth = this->width = qMax(width, 0);
 
     this->cellRenderer = cellRenderer;
     this->cellEditor = cellEditor;
-    common();
 }
 void TableColumn::common()
 {
@@ -196,7 +197,6 @@ void TableColumn::common()
     minWidth = qMin(15, this->width);
     maxWidth = /*Integer.MAX_VALUE*/65535;
     isResizable = true;
-    resizedPostingDisableCount = 0;
     headerValue = QVariant();
     changeSupport = NULL;
 }
@@ -353,7 +353,7 @@ void TableColumn::common()
 /*public*/ TableCellRenderer getHeaderRenderer() {
     return headerRenderer;
 }
-
+#endif
 /**
  * Sets the <code>TableCellRenderer</code> used by <code>JTable</code>
  * to draw individual values for this column.
@@ -364,10 +364,10 @@ void TableColumn::common()
  *  bound: true
  *  description: The renderer to use for cell values.
  */
-/*public*/ void setCellRenderer(TableCellRenderer cellRenderer) {
-    TableCellRenderer old = this->cellRenderer;
+/*public*/ void TableColumn::setCellRenderer(TableCellRenderer* cellRenderer) {
+    TableCellRenderer* old = this->cellRenderer;
     this->cellRenderer = cellRenderer;
-    firePropertyChange("cellRenderer", old, cellRenderer);
+    firePropertyChange("cellRenderer", VPtr<TableCellRenderer>::asQVariant(old), VPtr<TableCellRenderer>::asQVariant(cellRenderer));
 }
 
 /**
@@ -385,7 +385,7 @@ void TableColumn::common()
  * @see     #setCellRenderer
  * @see     JTable#setDefaultRenderer
  */
-/*public*/ TableCellRenderer getCellRenderer() {
+/*public*/ TableCellRenderer* TableColumn::getCellRenderer() {
     return cellRenderer;
 }
 
@@ -398,10 +398,10 @@ void TableColumn::common()
  *  bound: true
  *  description: The editor to use for cell values.
  */
-/*public*/ void setCellEditor(TableCellEditor cellEditor){
-    TableCellEditor old = this->cellEditor;
+/*public*/ void TableColumn::setCellEditor(TableCellEditor* cellEditor){
+    TableCellEditor* old = this->cellEditor;
     this->cellEditor = cellEditor;
-    firePropertyChange("cellEditor", old, cellEditor);
+    firePropertyChange("cellEditor", VPtr<TableCellEditor>::asQVariant(old), VPtr<TableCellEditor>::asQVariant(cellEditor));
 }
 
 /**
@@ -416,10 +416,10 @@ void TableColumn::common()
  * @see     #setCellEditor
  * @see     JTable#setDefaultEditor
  */
-/*public*/ TableCellEditor getCellEditor() {
+/*public*/ TableCellEditor* TableColumn::getCellEditor() {
     return cellEditor;
 }
-#endif
+
 /**
  * This method should not be used to set the widths of columns in the
  * <code>JTable</code>, use <code>setPreferredWidth</code> instead.
@@ -684,9 +684,9 @@ void TableColumn::common()
 /*public*/ /*synchronized*/ void TableColumn::addPropertyChangeListener(
                             PropertyChangeListener* listener) {
     if (changeSupport == NULL) {
-        changeSupport = new PropertyChangeSupport(this);
+        changeSupport = new SwingPropertyChangeSupport(this, nullptr);
     }
-    changeSupport->addPropertyChangeListener(listener);
+    changeSupport->SwingPropertyChangeSupport::addPropertyChangeListener(listener);
     //connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 

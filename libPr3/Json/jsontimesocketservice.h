@@ -8,8 +8,8 @@ class JsonTimeSocketService : public JsonSocketService
 {
 public:
  JsonTimeSocketService(JsonConnection* connection, QObject* parent = 0);
- /*public*/ void onMessage(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException);
- /*public*/ void onList(QString type, QJsonObject data, QLocale locale) throw (JsonException);
+ /*public*/ void onMessage(QString type, QJsonObject data, QLocale locale) /*throw (IOException, JmriException, JsonException)*/;
+ /*public*/ void onList(QString type, QJsonObject data, QLocale locale) /*throw (JsonException)*/;
  /*public*/ void onClose();
 public slots:
  /*public*/ void propertyChange(PropertyChangeEvent* evt);

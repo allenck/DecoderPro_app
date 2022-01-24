@@ -35,7 +35,7 @@
      */
 ///*private*/ /*static*/ final long serialVersionUID = -984900360787361666L;
 
-/*private*/ /*static*/ /*final*/ AudioFactory* AbstractAudioSource::activeAudioFactory = ((AudioManager*) InstanceManager::getDefault("AudioManager"))->getActiveAudioFactory();
+/*private*/ /*static*/ /*final*/ AudioFactory* AbstractAudioSource::activeAudioFactory = nullptr;//((AudioManager*) InstanceManager::getDefault("AudioManager"))->getActiveAudioFactory();
 
 /*private*/ /*static*/ float AbstractAudioSource::metersPerUnit = 1; //AbstractAudioSource::activeAudioFactory->getActiveAudioListener()->getMetersPerUnit();
 
@@ -89,6 +89,8 @@ _rollOffFactor = 1.0;
  pendingBufferQueue =  QQueue<AudioBuffer*>();
  _buffer = NULL;
  log = new Logger("AbstractAudioSource");
+ if(activeAudioFactory == nullptr)
+  activeAudioFactory = ((AudioManager*) InstanceManager::getDefault("AudioManager"))->getActiveAudioFactory();
 }
 
 //@Override
@@ -99,6 +101,7 @@ _rollOffFactor = 1.0;
 //@Override
 /*public*/ bool AbstractAudioSource::queueBuffers(QQueue<AudioBuffer*> audioBuffers)
  {
+
  // Note: Cannot queue buffers to a Source that has a bound buffer.
  if (!_bound)
  {

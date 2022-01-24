@@ -85,8 +85,8 @@ bool Transmitter::checkInit() {
         return false;
     }
     // request throttle
-    InstanceManager::throttleManagerInstance()->requestThrottle(address, longAddress, (ThrottleListener*)this);
-    return false;
+    InstanceManager::throttleManagerInstance()->requestThrottle(
+                new DccLocoAddress(address, longAddress), (ThrottleListener*)this, false);    return false;
 }
 
 //@Override

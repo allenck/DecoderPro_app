@@ -22,8 +22,8 @@ signals:
 public slots:
  /*public*/ void testCTor();
  /*public*/ void testSetBlock();
- /*public*/ void testSignalSequence() throw (JmriException);
-// /*public*/ void DefaultCabSignalTest::testSignalSequenceIdTag() throw (JmriException);
+ /*public*/ void testSignalSequence() /*throw (JmriException)*/;
+// /*public*/ void DefaultCabSignalTest::testSignalSequenceIdTag() /*throw (JmriException)*/;
 
 private:
  static Logger* log;
@@ -31,7 +31,7 @@ private:
 
 protected:
  DefaultCabSignal* cs = nullptr;
- /*protected*/ void runSequence(QVariant initialBlockContents) throw (JmriException);
+ /*protected*/ void runSequence(QVariant initialBlockContents) /*throw (JmriException)*/;
  /*protected*/ void checkBlock(CabSignal* lcs,QString currentBlock,QString nextBlock,QString mastName);
 
 };
@@ -56,7 +56,8 @@ class ReleaseUntil_dcst1 : public ReleaseUntil
  DefaultCabSignalTest* test;
 public:
  ReleaseUntil_dcst1(DefaultCabSignalTest* test) {this->test = test;}
-  bool ready() throw (Exception)
+  bool ready() /*throw (Exception)*/
+
  {
   return InstanceManager::sensorManagerInstance()->provideSensor("IS_ROUTING_DONE")->getKnownState() == Sensor::ACTIVE;
  }
@@ -68,7 +69,8 @@ class ReleaseUntil_dcst2 : public ReleaseUntil
  DefaultCabSignal* lcs;
 public:
  ReleaseUntil_dcst2(CabSignal* lcs, DefaultCabSignalTest* test) {this->test = test;}
-  bool ready() throw (Exception)
+  bool ready() /*throw (Exception)*/
+
  {
   return "Clear" == (lcs->getNextMast()->getAspect());
  }

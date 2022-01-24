@@ -96,6 +96,11 @@
 #include "application.h"
 #include "fileutilsupport.h"
 #include "testsmenu.h"
+#include "appsconfigurationmanager.h"
+#include "appspreferencesactionfactory.h"
+#include "guilafpreferencesmanager.h"
+#include "../operations/metatypes.h"
+#include "connectionconfigmanager.h"
 
 //Apps::Apps(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -123,6 +128,7 @@ bool Apps::configOK = false;
 bool Apps::configDeferredLoadOK = false;
 /*static*/ QString Apps::nameString = "JMRI program";
 //    @edu.umd.cs.findbugs.annotations.SuppressWarnings({"ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD", "SC_START_IN_CTOR"})//"only one application at a time. The thread is only called to help improve user experiance when opening the preferences, it is not critical for it to be run at this stage"
+
 /*public*/ Apps::Apps(JFrame* frame, QWidget *parent) :
     QWidget(parent)
 {
@@ -141,6 +147,7 @@ bool Apps::configDeferredLoadOK = false;
  connection = QVector<ConnectionConfig*>(4,nullptr);
 
  new Metatypes();
+ new Operations::Metatypes();
  QString path = FileUtil::getProgramPath();
  QString curDir = QDir::currentPath();
 
@@ -158,19 +165,13 @@ bool Apps::configDeferredLoadOK = false;
     setJynstrumentSpace();
 #endif
 
-    log->trace("setLogo");
-    Application::setLogo(logo());
-    log->trace("setURL");
-    Application::setURL(line2());
-#if 0
-    // Enable proper snapping of JSliders
-    SliderSnap.init();
-
-    // Prepare font lists
-    prepareFontLists();
-#endif
+ log->trace("setLogo");
+ Application::setLogo(logo());
+ log->trace("setURL");
+ Application::setURL(line2());
 
  // Get configuration profile
+ log->trace("start to get configuration profile - locate files");
  // Needs to be done before loading a ConfigManager or UserPreferencesManager
  FileUtil::createDirectory(FileUtil::getPreferencesPath());
  // Needs to be declared final as we might need to
@@ -190,7 +191,7 @@ bool Apps::configDeferredLoadOK = false;
  {
   profileFile = new File(profileFilename);
  }
- ProfileManager::defaultManager()->setConfigFile(profileFile);
+ ProfileManager::getDefault()->setConfigFile(profileFile);
  // See if the profile to use has been specified on the command line as
  // a system property jmri.profile as a profile id.
  if (System::getProperties()->containsKey(/*ProfileManager::SYSTEM_PROPERTY)*/"org.jmri.profile"))
@@ -204,7 +205,7 @@ bool Apps::configDeferredLoadOK = false;
   log->trace(tr("profileFile %1 doesn't exist").arg(profileFile->toString()));
   try
   {
-   if (ProfileManager::defaultManager()->migrateToProfiles(configFilename))
+   if (ProfileManager::getDefault()->migrateToProfiles(configFilename))
    { // migration or first use
      // notify user of change only if migration occurred
      // TODO: a real migration message
@@ -214,21 +215,22 @@ bool Apps::configDeferredLoadOK = false;
              JOptionPane::INFORMATION_MESSAGE);
    }
   }
-  catch (IOException ex)
+  catch (IOException* ex)
   {
    JOptionPane::showMessageDialog(sp,
-           ex.getLocalizedMessage(),
+           ex->getLocalizedMessage(),
            QApplication::applicationName(),
            JOptionPane::ERROR_MESSAGE);
-   log->error(ex.getMessage());
-  } catch (IllegalArgumentException ex) {
-  JOptionPane::showMessageDialog(sp,
-          ex.getLocalizedMessage(),
+   log->error(ex->getMessage());
+  } catch (IllegalArgumentException* ex) {
+   JOptionPane::showMessageDialog(sp,
+          ex->getLocalizedMessage(),
           QApplication::applicationName(),
           JOptionPane::ERROR_MESSAGE);
-  log->error(ex.getMessage());
+   log->error(ex->getMessage());
   }
  }
+ log->trace("about to try getStartingProfile");
  try
  {
   ProfileManagerDialog::getStartingProfile(sp);
@@ -239,65 +241,33 @@ bool Apps::configDeferredLoadOK = false;
   Profile* profile = ProfileManager::getDefault()->getActiveProfile();
   if(profile != nullptr)
   {
-   log->info(tr("Starting with profile %1").arg(  ProfileManager::defaultManager()->getActiveProfile()->getId()));
+   log->info(tr("Starting with profile %1").arg(  ProfileManager::getDefault()->getActiveProfile()->getId()));
   }
   else {
    log->info("Starting without a profile");
   }
   // rapid language set; must follow up later with full setting as part of preferences
-  //apps.gui.GuiLafPreferencesManager.setLocaleMinimally(profile);
-
+  GuiLafPreferencesManager::setLocaleMinimally(profile);
  }
- catch (IOException ex)
+ catch (IOException* ex)
  {
-   log->info("Profiles not configurable. Using fallback per-application configuration. Error: {}"/*, ex.getMessage()*/);
+   log->info("Profiles not configurable. Using fallback per-application configuration. Error: {}"/*, ex->getMessage()*/);
  }
 
- // add the default shutdown task to save blocks
- // as a special case, register a ShutDownTask to write out blocks
- ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->
-         _register(new WriteBlocksShutdownTask("Writing Blocks"));
-
-// _register(new AbstractShutDownTask("Writing Blocks"));
-
-// {
-//             @Override
-//             public boolean execute() {
-//                 // Save block values prior to exit, if necessary
-//                 log.debug("Start writing block info");
-//                 try {
-//                     new BlockValueFile().writeBlockValues();
-//                 } //catch (org.jdom2.JDOMException jde) { log.error("Exception writing blocks: {}", jde); }
-//                 catch (IOException ioe) {
-//                     log.error("Exception writing blocks: {}", ioe.getMessage());
-//                 }
-
-//                 // continue shutdown
-//                 return true;
-//             }
-//         });
+ // install a Preferences Action Factory.
+ InstanceManager::store(new AppsPreferencesActionFactory(), "JmriPreferencesActionFactory");
 
  // Install configuration manager and Swing error handler
-  ConfigureManager* cm = (ConfigureManager*)InstanceManager::setDefault("ConfigureManager", new JmriConfigurationManager());
+ // Constructing the AppsConfigurationManager also loads various configuration services
+ JmriConfigurationManager* cm = nullptr;
+ if((cm = (JmriConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager")) == nullptr)
+   cm = (JmriConfigurationManager*)InstanceManager::setDefault("ConfigureManager", new AppsConfigurationManager());
 
-  ConfigXmlManager::setErrorHandler(new DialogErrorHandler());
+  //ConfigXmlManager::setErrorHandler(new DialogErrorHandler());
   //InstanceManager::setConfigureManager(cm);
 
-  // Install a history manager
-  InstanceManager::store(new FileHistory(), "FileHistory");
-     // record startup
+  // record startup
   ((FileHistory*)InstanceManager::getDefault("FileHistory"))->addOperation("app", nameString, NULL);
-
-  // Install a user preferences manager
-  InstanceManager::store(JmriUserPreferencesManager::getDefault(), "UserPreferencesManager");
-  InstanceManager::store(new NamedBeanHandleManager(), "NamedBeanHandleManager");
-  // Install an IdTag manager
-  InstanceManager::store(new DefaultIdTagManager(), "IdTagManager");
-  //Install Entry Exit Pairs Manager
-  InstanceManager::store(new EntryExitPairs(), "EntryExitPairs");
-
-  // install preference manager
-  InstanceManager::store(new TabbedPreferences(), "TabbedPreferences");
 
   // Install abstractActionModel
   InstanceManager::store(new CreateButtonModel(), "CreateButtonModel");
@@ -305,9 +275,9 @@ bool Apps::configDeferredLoadOK = false;
   // find preference file and set location in configuration manager
   // Needs to be declared final as we might need to
   // refer to this on the Swing thread
-  File* file;
-  File* singleConfig;
-  File* sharedConfig = NULL;
+  File* file = nullptr;
+  File* singleConfig = nullptr;
+  File* sharedConfig = nullptr;
   // decide whether name is absolute or relative
   if (!(new File(configFilename))->isAbsolute())
   {
@@ -328,7 +298,7 @@ bool Apps::configDeferredLoadOK = false;
     sharedConfig = NULL;
    }
   }
-  catch (FileNotFoundException ex) {
+  catch (FileNotFoundException* ex) {
    // ignore - sharedConfig will remain null in this case
   }
   // load config file if it exists
@@ -340,7 +310,15 @@ bool Apps::configDeferredLoadOK = false;
   {
    file = singleConfig;
   }
-
+#if 1
+  // ensure the UserPreferencesManager has loaded. Done on GUI
+  // thread as it can modify GUI objects
+  log->debug(tr("*** About to getDefault(jmri.UserPreferencesManager.class) with file %1").arg(file->toString()));
+//  ThreadingUtil.runOnGUI(() -> {
+      InstanceManager::getDefault("UserPreferencesManager");
+//  });
+  log->debug("*** Done");
+#endif
   // now (attempt to) load the config file
   log->debug(tr("Using config file(s) %1").arg(file->getPath()));
   if (file->exists())
@@ -350,7 +328,7 @@ bool Apps::configDeferredLoadOK = false;
    {
     configOK = cm->load(file, true);
    }
-   catch (JmriException e)
+   catch (JmriException* e)
    {
     log->error("Unhandled problem loading configuration", e);
     configOK = false;
@@ -401,9 +379,9 @@ bool Apps::configDeferredLoadOK = false;
    //sleep(_sleep);
    SleeperThread::msleep(_sleep);
   }
-  catch (InterruptedException e)
+  catch (InterruptedException* e)
   {
-   log->error(e.getMessage());
+   log->error(e->getMessage());
   }
  }
 
@@ -421,7 +399,7 @@ bool Apps::configDeferredLoadOK = false;
    //Thread.sleep(1000);
   SleeperThread::msleep(1000);
 //        } catch (InterruptedException e) {
-//            log->error(e.getLocalizedMessage(), e);
+//            log->error(e->getLocalizedMessage(), e);
 //        }
  }
 
@@ -449,7 +427,7 @@ bool Apps::configDeferredLoadOK = false;
 //     }
 //    });
 //   }
-//   catch (Exception ex)
+//   catch (Exception* ex)
 //   {
 //    log->error("Exception creating system console frame", ex);
 //   }
@@ -489,8 +467,8 @@ bool Apps::configDeferredLoadOK = false;
 //        /*public*/ void run() {
 //            try {
 //                InstanceManager::tabbedPreferencesInstance().init();
-//            } catch (Exception ex) {
-//                log->error("Error trying to setup preferences {}", ex.getLocalizedMessage(), ex);
+//            } catch (Exception* ex) {
+//                log->error("Error trying to setup preferences {}", ex->getLocalizedMessage(), ex);
 //            }
 //        }
 //    };
@@ -505,7 +483,7 @@ bool Apps::configDeferredLoadOK = false;
 //        /*public*/ void run() {
 //            try {
 //                DecoderIndexFile.instance();
-//            } catch (Exception ex) {
+//            } catch (Exception* ex) {
 //                log->error("Error in trying to initialize decoder index file {}", ex.toString());
 //            }
 //        }
@@ -520,7 +498,7 @@ bool Apps::configDeferredLoadOK = false;
             /*public*/ void run() {
                 try {
                     PythonInterp.getPythonInterpreter();
-                } catch (Exception ex) {
+                } catch (Exception* ex) {
                     log->error("Error in trying to initialize python interpreter {}", ex.toString());
                 }
             }
@@ -545,6 +523,11 @@ bool Apps::configDeferredLoadOK = false;
  InstanceManager::getDefault("LayoutBlockManager");
  DefaultCatalogTreeManagerXml().readCatalogTrees();
 
+#if 0
+ LogixNG_Manager* logixNG_Manager =
+                 InstanceManager::getDefault("LogixNG_Manager");
+ logixNG_Manager->setupAllLogixNGs();
+#endif
  StartupActionsManager* mgr = (StartupActionsManager*)InstanceManager::getDefault("StartupActionsManager");
  QTimer::singleShot(100, (StartupActionsManager*)mgr, SLOT(loadFactories()));
 
@@ -603,19 +586,19 @@ void Apps::initGui() // must be called after Constructor is complete!
 /*public*/ void Apps::Run1::run() {
     try {
         ((TabbedPreferences*)InstanceManager::getDefault("TabbedPreferences"))->init();
-    } catch (Exception ex) {
-        Logger::error("Error trying to setup preferences {}"+ ex.getMessage());
+    } catch (Exception* ex) {
+        Logger::error("Error trying to setup preferences {}"+ ex->getMessage());
     }
 }
 /*public*/ void Apps::Run2::run()
 {
  try
  {
-  DecoderIndexFile::instance();
+  (DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile");
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
-  Logger::error("Error in trying to initialize decoder index file {}"+ ex.getMessage());
+  Logger::error("Error in trying to initialize decoder index file "+ ex->getMessage());
  }
 }
 
@@ -625,7 +608,7 @@ void Apps::initGui() // must be called after Constructor is complete!
  log->debug("start deferred load from config file " + file->getPath());
  try
  {
-  ConfigureManager* cmOD = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+  AppsConfigurationManager* cmOD = (AppsConfigurationManager*)InstanceManager::getNullableDefault("ConfigureManager");
   if (cmOD != NULL) {
       result = cmOD->loadDeferred(file);
   } else {
@@ -633,9 +616,9 @@ void Apps::initGui() // must be called after Constructor is complete!
       result = false;
   }
  }
- catch (JmriException e)
+ catch (JmriException* e)
  {
-  log->error("Unhandled problem loading deferred configuration"+ e.getMessage());
+  log->error("Unhandled problem loading deferred configuration"+ e->getMessage());
   result = false;
  }
  log->debug(QString("end deferred load from config file, OK=") + ( result?"true":"false"));
@@ -936,7 +919,7 @@ void Apps::On_handleQuit()
 #endif
 /*protected*/ void Apps::helpMenu(QMenuBar* menuBar, WindowInterface* wi)
 {
- //try {
+ try {
 
 
  // create menu and standard items
@@ -948,9 +931,9 @@ void Apps::On_handleQuit()
  // use as main help menu
  menuBar->addMenu(helpMenu);
 
-//    } catch (Throwable e3) {
-//        log->error("Unexpected error creating help.", e3);
-//    }
+    } catch (Throwable* e3) {
+        log->error("Unexpected error creating help.", e3);
+    }
 
 }
 
@@ -1030,7 +1013,7 @@ void Apps::On_handleQuit()
  {
   name = conn->getManufacturer();
  }
- if (ConnectionStatus::instance()->isConnectionOk(conn->getInfo()))
+ if (ConnectionStatus::instance()->isConnectionOk(name, conn->getInfo()))
  {
   //cs->setForeground(QColor::black());
   cs->setStyleSheet("QLabel { color: black};");
@@ -1083,7 +1066,7 @@ void Apps::On_handleQuit()
  QHBoxLayout* pane1Layout;
  pane1->setLayout(pane1Layout = new QHBoxLayout); //(pane1, BoxLayout.X_AXIS));
  log->debug(tr("Fetch main logo: %1").arg(logo()));
- // TODO: pane1Layout->addWidget(new QLabel(new ImageIcon(getToolkit().getImage(logo()), "JMRI logo"), JLabel.LEFT));
+ // pane1Layout->addWidget(new QLabel(new ImageIcon(getToolkit().getImage(logo()), "JMRI logo"), JLabel.LEFT));
  pane1Layout->addWidget(new JLabel("JMRI logo", new ImageIcon(logo(), "JMRI logo"),JLabel::LEFT),0, Qt::AlignCenter);
  //    pane1Layout->addWidget(Box.createRigidArea(new Dimension(15, 0))); // Some spacing between logo and status panel
 
@@ -1103,28 +1086,17 @@ void Apps::On_handleQuit()
  {
   pane2Layout->addWidget(new QLabel(tr("Failed Profile:")));
  }
- // add listerner for Com port updates
- //ConnectionStatus::instance().addPropertyChangeListener(this);
- connect(ConnectionStatus::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this,  SLOT(propertyChange(PropertyChangeEvent*)));
- //ArrayList<Object> connList = InstanceManager::configureManagerInstance().getInstanceList(ConnectionConfig.class);
- QObjectList connList = ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->getInstanceList("ConnectionConfig");
-
+ // add listener for Com port updates
+ ConnectionStatus::instance()->addPropertyChangeListener(this);
  int i = 0;
- if (!connList.isEmpty())
- {
-  for (int x = 0; x < connList.size(); x++)
-  {
-   ConnectionConfig* conn = (ConnectionConfig*) connList.at(x);
-   if (!conn->getDisabled())
-   {
-    connection[i] = conn;
-    i++;
-   }
-   if (i > 3)
-   {
-    break;
-   }
-  }
+ foreach (ConnectionConfig* conn, ((ConnectionConfigManager*)InstanceManager::getDefault("ConnectionConfigManager"))->getConnections()) {
+     if (!conn->getDisabled()) {
+         connection[i] = conn;
+         i++;
+     }
+     if (i > 3) {
+         break;
+     }
  }
  buildLine4(pane2);
  buildLine5(pane2);
@@ -1192,8 +1164,8 @@ void Apps::On_handleQuit()
         } else if (current != (value)) {
             log->warn(tr("JMRI property %1 already set to %2, skipping reset to %3").arg(key).arg(current).arg(value));
         }
-    } catch (Exception e) {
-        log->error(tr("Unable to set JMRI property %1 to %2 due to execption %3").arg(key).arg(value).arg(e.getMessage()));
+    } catch (Exception* e) {
+        log->error(tr("Unable to set JMRI property %1 to %2 due to execption %3").arg(key).arg(value).arg(e->getMessage()));
     }
 }
 
@@ -1462,7 +1434,7 @@ static /*protected*/ void loadFile(String name) {
     if (pFile != NULL) {
         try {
             InstanceManager::configureManagerInstance().load(pFile);
-        } catch (JmriException e) {
+        } catch (JmriException* e) {
             log->error("Unhandled problem in loadFile", e);
         }
     } else {
@@ -1484,7 +1456,7 @@ static /*protected*/ void loadFile(String name) {
 /*protected*/ static void setApplication(String name) {
     try {
         jmri.Application.setApplicationName(name);
-    } catch (IllegalArgumentException ex) {
+    } catch (IllegalArgumentException* ex) {
         log->warn("Unable to set application name", ex);
     } catch (IllegalAccessException ex) {
         log->warn("Unable to set application name", ex);
@@ -1516,7 +1488,7 @@ static /*protected*/ void loadFile(String name) {
     // Set the application name
 //    try {
 //        jmri.Application.setApplicationName(name);
-//    } catch (IllegalArgumentException ex) {
+//    } catch (IllegalArgumentException* ex) {
 //        log->warn("Unable to set application name", ex);
 //    } catch (IllegalAccessException ex) {
 //        log->warn("Unable to set application name", ex);
@@ -1575,7 +1547,7 @@ bool Apps::MyAbstractShutDownTask::execute()
     try {
         new BlockValueFile().writeBlockValues();
     } //catch (org.jdom2.JDOMException jde) { log->error("Exception writing blocks: {}", jde); }
-    catch (IOException ioe) {
+    catch (IOException* ioe) {
         log->error("Exception writing blocks: {}", ioe);
     }
 
@@ -1598,9 +1570,9 @@ bool WriteBlocksShutdownTask::execute()
   BlockValueFile* f = new BlockValueFile();
   f->writeBlockValues();
  } //catch (org.jdom2.JDOMException jde) { log->error("Exception writing blocks: {}", jde); }
- catch (IOException ioe)
+ catch (IOException* ioe)
  {
-  log->error(tr("Exception writing blocks: %1").arg(ioe.getMessage()));
+  log->error(tr("Exception writing blocks: %1").arg(ioe->getMessage()));
  }
 
 // continue shutdown

@@ -2,17 +2,20 @@
 #define OPTIONACTION_H
 
 #include "abstractaction.h"
+#include "optionframe.h"
+#include <QPointer>
+
 namespace Operations
 {
  class OptionFrame;
  class OptionAction : public AbstractAction
  {
  public:
-  /*public*/ OptionAction(QString s, QObject* parent);
+  /*public*/ OptionAction(QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* /*e*/);
+  /*public*/ void actionPerformed(JActionEvent* /*e*/);
  private:
-  OptionFrame* f;// = null;
+  QPointer<OptionFrame> f;// = null;
 
  };
 }

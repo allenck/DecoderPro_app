@@ -55,8 +55,8 @@ WarrantManager::WarrantManager(QObject *parent) :
     return Manager::WARRANTS;
 }
 
-/*public*/ QString WarrantManager::getSystemPrefix()const { return "I"; }
-/*public*/ char WarrantManager::typeLetter()const { return 'W'; }
+/*public*/ QString WarrantManager::getSystemPrefix() { return "I"; }
+/*public*/ QChar WarrantManager::typeLetter() { return 'W'; }
 
 /**
  * Method to create a new Warrant if it does not exist Returns null if a
@@ -108,15 +108,15 @@ WarrantManager::WarrantManager(QObject *parent) :
     return (Warrant*)getBySystemName(name);
 }
 
-/*public*/ NamedBean *WarrantManager::getBySystemName(QString name) const {
+/*public*/ NamedBean *WarrantManager::getBySystemName(QString name) {
     if (name==NULL || name.trimmed().length()==0) { return NULL; }
     QString key = name.toUpper();
-    return (Warrant*)_tsys->value(key);
+    return (NamedBean*)_tsys->value(key);
 }
 
-/*public*/ NamedBean *WarrantManager::getByUserName(QString key) const{
+/*public*/ NamedBean *WarrantManager::getByUserName(QString key){
     if (key==NULL || key.trimmed().length()==0) { return NULL; }
-    return (Warrant*)_tuser->value(key);
+    return (NamedBean*)_tuser->value(key);
 }
 
 /*public*/ Warrant* WarrantManager::provideWarrant(QString name) {
@@ -350,15 +350,8 @@ WarrantManager::WarrantManager(QObject *parent) :
 
 //@Override
 //@Nonnull
-/*public*/ QString WarrantManager::getBeanTypeHandled(bool plural) {
+/*public*/ QString WarrantManager::getBeanTypeHandled(bool plural) const{
     return tr(plural ? "Warrants" : "Warrant");
-}
-/**
- * {@inheritDoc}
- */
-//@Override
-/*public*/ QString WarrantManager::getNamedBeanClass() {
-    return "Warrant";
 }
 
 /*protected*/ void WarrantManager::setSpeedProfiles(QString id, RosterSpeedProfile* merge, RosterSpeedProfile* session) {

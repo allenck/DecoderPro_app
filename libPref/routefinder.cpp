@@ -14,7 +14,7 @@
 //}
 ///*public*/ class RouteFinder implements Runnable {
 
-//    java.beans.PropertyChangeSupport _pcs = new java.beans.PropertyChangeSupport(this);
+//    java.beans.SwingPropertyChangeSupport _pcs = new java.beans.SwingPropertyChangeSupport(this,this);
 
 /*protected*/ RouteFinder::RouteFinder(WarrantRoute* f, BlockOrder* origin, BlockOrder* dest,
         BlockOrder* via, BlockOrder* avoid, int maxB, QObject *parent) :

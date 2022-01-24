@@ -21,13 +21,16 @@ private:
  /*private*/ QLocale locale;
 friend class SignalMastListener;
 };
-/*private*/ class SignalMastListener : public PropertyChangeListener {
+
+/*private*/ class SignalMastListener : public QObject,public PropertyChangeListener {
 Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 /*protected*/ /*final*/ SignalMast* signalMast;
 private:
  JsonSignalMastSocketService* jsmss;
 public:
 /*public*/ SignalMastListener(SignalMast* signalMast, JsonSignalMastSocketService* jsmss);
+ QObject* self() override{return (QObject*)this;}
 public slots:
 /*public*/ void propertyChange(PropertyChangeEvent* e);
  friend class JsonSignalMastSocketService;

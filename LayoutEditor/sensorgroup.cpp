@@ -36,7 +36,7 @@ SensorGroup::SensorGroup(QString name,QObject *parent) :
  log = new Logger("SensorGroup");
  this->name = name;
  // find suitable
- RouteManager* rm = InstanceManager::routeManagerInstance();
+ RouteManager* rm = (RouteManager*)InstanceManager::getDefault("RouteManager");
  QString group = name.toUpper();
  QStringList l = rm->getSystemNameList();
  QString prefix = (namePrefix + group + nameDivider).toUpper();
@@ -54,7 +54,7 @@ SensorGroup::SensorGroup(QString name,QObject *parent) :
 
 void SensorGroup::addPressed() {
     log->debug("start with " + QString::number(sensorList.size()) + " lines");
-    RouteManager* rm = InstanceManager::routeManagerInstance();
+    RouteManager* rm = (RouteManager*)InstanceManager::getDefault("RouteManager");
     QString group = name.toUpper();
 
     // remove the old routes
@@ -65,7 +65,7 @@ void SensorGroup::addPressed() {
         QString routeName = l.at(i);
         if (routeName.startsWith(prefix)) {
             // OK, kill this one
-            Route* r = rm->getBySystemName(l.at(i));
+            Route* r = (Route*)rm->getBySystemName(l.at(i));
             r->deActivateRoute();
             rm->deleteRoute(r);
         }
@@ -89,6 +89,6 @@ void SensorGroup::addPressed() {
         }
         // make it persistant & activate
         r->activateRoute();
-        rm->Register(r);
+        rm->Register((NamedBean*)r);
     }
 }

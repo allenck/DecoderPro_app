@@ -820,7 +820,7 @@ TransferHandler::TransferHandler(QObject *parent) :
                     Object[] args = { value };
                     MethodUtil.invoke(writer, comp, args);
                     return true;
-                } catch (Exception ex) {
+                } catch (Exception* ex) {
                     System.err.println("Invocation failed");
                     // invocation code
                 }
@@ -1095,7 +1095,7 @@ TransferHandler::TransferHandler(QObject *parent) :
             String mimeType = DataFlavor.javaJVMLocalObjectMimeType + ";class=" + propertyType.getName();
             try {
                 flavors[0] = new DataFlavor(mimeType);
-            } catch (ClassNotFoundException cnfe) {
+            } catch (ClassNotFoundException* cnfe) {
                 flavors = new DataFlavor[0];
             }
             return flavors;
@@ -1138,7 +1138,7 @@ TransferHandler::TransferHandler(QObject *parent) :
             Object value = null;
             try {
                 value = MethodUtil.invoke(reader, component, (Object[])null);
-            } catch (Exception ex) {
+            } catch (Exception* ex) {
                 throw new IOException("Property read failed: " + property.getName());
             }
             return value;

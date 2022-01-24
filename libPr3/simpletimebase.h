@@ -7,12 +7,13 @@
 #include "clockcontrol.h"
 #include "exceptions.h"
 #include "timebase.h"
+#include "internalsystemconnectionmemo.h"
 
 class LIBPR3SHARED_EXPORT SimpleTimebase : public Timebase
 {
     Q_OBJECT
 public:
-    explicit SimpleTimebase(QObject *parent = 0);
+    explicit SimpleTimebase(InternalSystemConnectionMemo* memo, QObject *parent = 0);
     ~SimpleTimebase();
     /*public*/ QString getBeanType() override;
     /*public*/ virtual QDateTime getTime();
@@ -57,9 +58,9 @@ public:
     /*public*/ void addMinuteChangeListener(PropertyChangeListener* l) override;
     /*public*/ void removeMinuteChangeListener(PropertyChangeListener* l) override;
     /*public*/ QVector<PropertyChangeListener *> getMinuteChangeListeners() override;
-    /*public*/ void setState(int s) throw (JmriException) override;
+    /*public*/ void setState(int s) /*throw (JmriException)*/ override;
     /*public*/ int getState() override;
-    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+    SwingPropertyChangeSupport* pcs;// = new SwingPropertyChangeSupport(this, nullptr);
     /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
 
 signals:
@@ -102,9 +103,10 @@ private:
     /*private*/ bool notInitialized;// = true;  // true before initialization received from start up
 
 //    SimpleDateFormat timeStorageFormat = NULL;
+    InternalSystemConnectionMemo* memo;
 
     QTimer* timer;// = NULL;
-    //PropertyChangeSupport* pcMinutes;// = new PropertyChangeSupport(this);
+    //SwingPropertyChangeSupport* pcMinutes;// = new SwingPropertyChangeSupport(this, nullptr);
     int oldMinutes;// = 0;
     /*private*/ void clockSensorChanged();
  Logger* log;
@@ -114,12 +116,14 @@ protected:
   friend class ClockSensorPropertChangeListener;
 };
 
-class ClockSensorPropertChangeListener : public PropertyChangeListener
+class ClockSensorPropertChangeListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  SimpleTimebase* stb;
 public:
  ClockSensorPropertChangeListener(SimpleTimebase* stb) {this->stb = stb;}
+ QObject* self() override{return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent*);
 };

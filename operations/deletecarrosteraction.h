@@ -9,10 +9,9 @@ namespace Operations
  class DeleteCarRosterAction : public AbstractAction
  {
  public:
-  /*public*/ DeleteCarRosterAction(QString actionName, QWidget* frame);
   /*public*/ DeleteCarRosterAction(CarsTableFrame* carsTableFrame);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* ae);
+  /*public*/ void actionPerformed(JActionEvent *ae =0);
 
  private:
   Logger* log;

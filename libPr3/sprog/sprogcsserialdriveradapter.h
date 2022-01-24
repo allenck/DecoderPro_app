@@ -1,10 +1,10 @@
 #ifndef SPROGCSSERIALDRIVERADAPTER_H
 #define SPROGCSSERIALDRIVERADAPTER_H
-#include "serialdriveradapter.h"
+#include "sprogserialdriveradapter.h"
 
 namespace Sprog
 {
- class SprogCSSerialDriverAdapter : public SerialDriverAdapter
+ class SprogCSSerialDriverAdapter : public SprogSerialDriverAdapter
  {
  public:
   SprogCSSerialDriverAdapter(QObject* parent = 0);

@@ -16,7 +16,7 @@
  * and {@code PropertyChangeListenerProxy} objects.
  *
  * @see java.util.EventListenerProxy
- * @see PropertyChangeSupport#getPropertyChangeListeners
+ * @see SwingPropertyChangeSupport#getPropertyChangeListeners
  * @since 1.4
  */
 //public class PropertyChangeListenerProxy

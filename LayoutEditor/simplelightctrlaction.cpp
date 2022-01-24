@@ -36,7 +36,7 @@ void SimpleLightCtrlAction::common()
  common();
 }
 
-/*public*/ void SimpleLightCtrlAction::actionPerformed(ActionEvent* /*e*/) {
+/*public*/ void SimpleLightCtrlAction::actionPerformed(JActionEvent * /*e*/) {
 
     SimpleLightCtrlFrame* f = new SimpleLightCtrlFrame();
     f->setVisible(true);

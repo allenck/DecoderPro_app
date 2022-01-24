@@ -2,8 +2,9 @@
 #include "jcolorchooser.h"
 #include <QFontMetrics>
 #include <QPainter>
+#include <QPaintEvent>
 
-DefaultPreviewPanel::DefaultPreviewPanel(QWidget *parent)
+DefaultPreviewPanel::DefaultPreviewPanel(QWidget *parent) : JPanel(parent)
 {
 
 }

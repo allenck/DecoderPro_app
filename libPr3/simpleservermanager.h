@@ -2,12 +2,15 @@
 #define SIMPLESERVERMANAGER_H
 
 #include <QObject>
+#include "instancemanagerautodefault.h"
 
 class SimpleServerPreferences;
 class SimpleServer;
-class SimpleServerManager : public QObject
+class SimpleServerManager : public QObject, public InstanceManagerAutoDefault
 {
  Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault)
+
 public:
  explicit SimpleServerManager(QObject *parent = nullptr);
  /*public*/ static SimpleServerManager* getInstance();

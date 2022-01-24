@@ -14,13 +14,13 @@
 
 QString IdTagManagerXml::idTagDirectoryName = "idtags";
 /*private*/ QString IdTagManagerXml::idTagBaseFileName = "IdTags.xml"; // NOI18N
-QString IdTagManagerXml::fileLocation = FileUtil::getUserFilesPath();
+QString IdTagManagerXml::fileLocation = nullptr;//FileUtil::getUserFilesPath();
 bool IdTagManagerXml::_loaded = false;
 IdTagManagerXml* IdTagManagerXml::_instance = NULL;
 
 
 DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
-    IdTagManager(parent)
+    AbstractManager(parent)
 {
  log = new Logger(this->metaObject()->className());
  log->setDebugEnabled(true);
@@ -53,7 +53,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 }
 
 //@Override
-/*public*/ void DefaultIdTagManager::init() const
+/*public*/ void DefaultIdTagManager::init()
 {
  log->debug("init called");
  if (!_initialised && !_loading )
@@ -94,32 +94,35 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 /*protected*/ void DefaultIdTagManager::registerSelf() {}
 
 //@Override
-/*public*/ char DefaultIdTagManager::typeLetter() const { return 'D'; }
+/*public*/ QChar DefaultIdTagManager::typeLetter()  { return 'D'; }
 
 //@Override
-/*public*/ DefaultIdTag* DefaultIdTagManager::provide(QString name) throw (IllegalArgumentException) {
+/*public*/ DefaultIdTag* DefaultIdTagManager::provide(QString name)  {
     return provideIdTag(name);
 }
 
 //@Override
-/*public*/ QString DefaultIdTagManager::getSystemPrefix() const { return "I"; }
+/*public*/ QString DefaultIdTagManager::getSystemPrefix() { return "I"; }
 
 //@Override
 /*public*/ DefaultIdTag* DefaultIdTagManager::provideIdTag(QString name) {
-    if (!_initialised && !_loading) init();
+    if (!_initialised && !_loading) {
+     init();
+    }
     DefaultIdTag* t = getIdTag(name);
-    if (t!=NULL) return t;
+    if (t!=NULL)
+     return t;
     if (name.startsWith(getSystemPrefix()+typeLetter()))
         return newIdTag(name, QString());
     else
-        return newIdTag(makeSystemName(name), QString());
+        return newIdTag(AbstractManager::makeSystemName(name), QString());
 }
 
 //@Override
 /*public*/ DefaultIdTag* DefaultIdTagManager::getIdTag(QString name) {
     if (!_initialised && !_loading) init();
 
-    NamedBean* t = getBySystemName(makeSystemName(name));
+    NamedBean* t = getBySystemName(AbstractManager::makeSystemName(name));
     if (t!=NULL) return (DefaultIdTag*)t;
 
     t = getByUserName(name);
@@ -129,13 +132,13 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 }
 
 //@Override
-/*public*/ NamedBean* DefaultIdTagManager::getBySystemName(QString name) const {
+/*public*/ NamedBean* DefaultIdTagManager::getBySystemName(QString name) {
     if (!_initialised && !_loading) init();
     return (NamedBean*)_tsys->value(name);
 }
 
 //@Override
-/*public*/ NamedBean *DefaultIdTagManager::getByUserName(QString key)const {
+/*public*/ NamedBean *DefaultIdTagManager::getByUserName(QString key) {
     if (!_initialised && !_loading) init();
     return (NamedBean*)_tuser->value(key);
 }
@@ -143,7 +146,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 //@Override
 /*public*/ DefaultIdTag *DefaultIdTagManager::getByTagID(QString tagID) {
     if (!_initialised && !_loading) init();
-    return (DefaultIdTag*)getBySystemName(makeSystemName(tagID));
+    return (DefaultIdTag *)getBySystemName(AbstractManager::makeSystemName(tagID));
 }
 
 /*protected*/ NamedBean* DefaultIdTagManager::createNewIdTag(QString systemName, QString userName) {
@@ -197,13 +200,13 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
  emit newIdTagCreated((DefaultIdTag*)s);
 
  // if that failed, blame it on the input arguements
- if (s == NULL) throw IllegalArgumentException();
+ if (s == NULL) throw new IllegalArgumentException();
 
  return s;
 }
 
 //@Override
-/*public*/ void DefaultIdTagManager::Register(NamedBean* s) const
+/*public*/ void DefaultIdTagManager::Register(NamedBean* s)
 {
  //super.register(s);
  AbstractManager::Register(s);
@@ -211,7 +214,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 }
 
 //@Override
-/*public*/ void DefaultIdTagManager::deregister(NamedBean* s) const{
+/*public*/ void DefaultIdTagManager::deregister(NamedBean* s) {
     //super.deregister(s);
     AbstractManager::deregister(s);
     IdTagManagerXml::instance()->setDirty(true);
@@ -224,7 +227,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
     IdTagManagerXml::instance()->setDirty(true);
 }
 
-/*public*/ void DefaultIdTagManager::writeIdTagDetails()  //throw (IOException)
+/*public*/ void DefaultIdTagManager::writeIdTagDetails()  ///*throw (IOException)*/
 {
     IdTagManagerXml::instance()->store();
     log->debug("...done writing IdTag details");
@@ -347,14 +350,14 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
    _loaded = true;
    setDirty(false);
   }
-  catch (Exception ex)
+  catch (Exception* ex)
   {
-   log->error("Exception during IdTag file reading: " + ex.getMessage());
+   log->error("Exception during IdTag file reading: " + ex->getMessage());
   }
  }
 }
 
-/*protected*/ void IdTagManagerXml::store() //throw (IOException)
+/*protected*/ void IdTagManagerXml::store() ///*throw (IOException)*/
 {
  if (_dirty)
  {
@@ -365,9 +368,9 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
   try {
    writeFile(getDefaultIdTagFileName());
   }
-  catch (FileNotFoundException ex)
+  catch (FileNotFoundException* ex)
   {
-   log->error(tr("File not found while writing IdTag file, may not be complete: ") + ex.getMessage());
+   log->error(tr("File not found while writing IdTag file, may not be complete: ") + ex->getMessage());
   }
  }
  else
@@ -412,9 +415,9 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
    file->open(QIODevice::WriteOnly);
   }
  }
- catch (IOException ex)
+ catch (IOException* ex)
  {
-  log->error("Exception while creating IdTag file, may not be complete: " + ex.getMessage());
+  log->error("Exception while creating IdTag file, may not be complete: " + ex->getMessage());
  }
  return file;
 }
@@ -424,7 +427,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
  if(log->isDebugEnabled()) log->debug("writeFile "+fileName);
  // This is taken in large part from "Java and XML" page 368
  QDomDocument doc;// = QDomDocument("IdTags");
- QFile* file = findFile(fileName);
+ QFile* file = findFile(fileName)->toQfile();
  if (file == NULL)
  {
   file = new QFile(fileName);
@@ -463,7 +466,7 @@ doc.appendChild(root);
 
    // Loop through RfidTags
    root.appendChild(values = doc.createElement("idtags")); // NOI18N
-   QStringList idTagList = manager->getSystemNameList();
+   QStringList idTagList = manager->AbstractManager::getSystemNameList();
    for (int i=0; i<idTagList.size(); i++)
    {
     IdTag* t = (IdTag*)manager->getBySystemName(idTagList.at(i));
@@ -551,7 +554,9 @@ doc.appendChild(root);
  * @return path to location
  */
 /*public*/ /*static*/ QString IdTagManagerXml::getFileLocation() {
-    return fileLocation;
+ if(fileLocation == nullptr)
+  fileLocation = FileUtil::getUserFilesPath();
+ return fileLocation;
 }
 
 

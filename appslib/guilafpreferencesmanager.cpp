@@ -4,30 +4,20 @@
 #include "profileutils.h"
 #include <QSet>
 #include "logger.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "language.h"
 #include "exceptions.h"
+#include "loggerfactory.h"
 
 GuiLafPreferencesManager::GuiLafPreferencesManager()
 {
- log = new Logger("GuiLafPreferencesManager");
  setObjectName("GuiLafPreferencesManager");
- // preferences with default values
- locale = QLocale();
- fontSize = 0;
- defaultFontSize = 0;
- nonStandardMouseEvent = false;
- verticalToolBar = false;
- lookAndFeel = "na"; //UIManager.getLookAndFeel().getClass().getName();
- toolTipDismissDelay = 20; //ToolTipManager.sharedInstance().getDismissDelay();
- dirty = false;
- restartRequired = false;
+
  /*
   * Unlike most PreferencesProviders, the GUI Look & Feel preferences should
   * be per-application instead of per-profile.
   */
  initialized = false;
- exceptions = new QList<Exception*>();
 }
 /**
  *
@@ -39,8 +29,9 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
 /*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::LOCALE = "locale";
 /*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::LOOK_AND_FEEL = "lookAndFeel";
 /*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::NONSTANDARD_MOUSE_EVENT = "nonstandardMouseEvent";
-/*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::GRAPHICTABLESTATE = "graphicTableState";
-/*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::VERTICAL_TOOLBAR = "verticalToolBar";
+/*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::GRAPHIC_TABLE_STATE = "graphicTableState";
+// Classic OBlock editor or tabbed tables
+/*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::OBLOCK_EDIT_TABBED = "oblockEditTabbed";/*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::VERTICAL_TOOLBAR = "verticalToolBar";
 /*public*/ /*final*/ /*static*/ QString GuiLafPreferencesManager::SHOW_TOOL_TIP_TIME = "showToolTipDismissDelay";
 /*public*/ /*final*/ /*static*/ QString GuiLafPreferencesManager::EDITOR_USE_OLD_LOC_SIZE= "editorUseOldLocSize";
 
@@ -61,8 +52,10 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
 /*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::PROP_DIRTY = "dirty";
 /*public*/ /*static*/ /*final*/ QString GuiLafPreferencesManager::PROP_RESTARTREQUIRED = "restartRequired";
 
+/*private*/ /*static*/ /*final*/ Logger* GuiLafPreferencesManager::log = LoggerFactory::getLogger("GuiLafPreferencesManager");
+
 //@Override
-/*public*/ void GuiLafPreferencesManager::initialize(Profile* profile) throw (InitializationException)
+/*public*/ void GuiLafPreferencesManager::initialize(Profile* profile)
 {
     if (!this->initialized) {
         Preferences* preferences = ProfileUtils::getPreferences(profile, "apps.gui.GuiLafPreferencesManager", true);
@@ -74,7 +67,8 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
             this->setFontSize(this->getDefaultFontSize());
         }
         this->setNonStandardMouseEvent(preferences->getBoolean(NONSTANDARD_MOUSE_EVENT, this->isNonStandardMouseEvent()));
-        this->setGraphicTableState(preferences->getBoolean(GRAPHICTABLESTATE, this->isGraphicTableState()));
+        this->setGraphicTableState(preferences->getBoolean(GRAPHIC_TABLE_STATE, this->isGraphicTableState()));
+        this->setOblockEditTabbed(preferences->getBoolean(OBLOCK_EDIT_TABBED, this->isOblockEditTabbed()));
         this->setEditorUseOldLocSize(preferences->getBoolean(EDITOR_USE_OLD_LOC_SIZE, this->isEditorUseOldLocSize()));
         this->setToolTipDismissDelay(preferences->getInt(SHOW_TOOL_TIP_TIME, this->getToolTipDismissDelay()));
 //        Locale.setDefault(this->getLocale());
@@ -90,19 +84,19 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
 
 //@Override
 /*public*/ bool GuiLafPreferencesManager::isInitialized(Profile* /*profile*/) {
-    return this->initialized && this->exceptions->isEmpty();
+    return this->initialized && this->exceptions.isEmpty();
 }
 
 //@Override
-/*public*/ /*Iterable<Class<? extends PreferencesManager>> */ QSet<QString>* GuiLafPreferencesManager::getRequires() {
-    return new QSet<QString>();
+/*public*/ /*Iterable<Class<? extends PreferencesManager>> */ QSet<QString> GuiLafPreferencesManager::getRequires() {
+    return QSet<QString>();
 }
 
 //@Override
-/*public*/ /*Iterable<Class<?>>*/ QSet<QString>* GuiLafPreferencesManager::getProvides() {
+/*public*/ /*Iterable<Class<?>>*/ QSet<QString> GuiLafPreferencesManager::getProvides() {
     //Set<Class<?>> provides = new HashSet<>();
- QSet<QString>* provides = new QSet<QString>();
-    provides->insert(this->metaObject()->className());
+ QSet<QString> provides = QSet<QString>();
+    provides.insert(this->metaObject()->className());
     return provides;
 }
 
@@ -120,12 +114,13 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
      preferences->putInt(FONT_SIZE, temp);
  }
  preferences->putBoolean(NONSTANDARD_MOUSE_EVENT, this->isNonStandardMouseEvent());
- preferences->putBoolean(GRAPHICTABLESTATE, this->isGraphicTableState()); // use graphic icons in bean table state column
+ preferences->putBoolean(GRAPHIC_TABLE_STATE, this->isGraphicTableState()); // use graphic icons in bean table state column
+ preferences->putBoolean(OBLOCK_EDIT_TABBED, this->isOblockEditTabbed());
  preferences->putBoolean(EDITOR_USE_OLD_LOC_SIZE, this->isEditorUseOldLocSize());
  preferences->putInt(SHOW_TOOL_TIP_TIME, this->getToolTipDismissDelay());
  try {
      preferences->sync();
- } catch (BackingStoreException ex) {
+ } catch (BackingStoreException* ex) {
      log->error("Unable to save preferences->", ex);
  }
  this->setDirty(false);
@@ -282,9 +277,24 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
     this->graphicTableState = graphicTableState;
     this->setDirty(true);
     this->setRestartRequired(true);
-    firePropertyChange(GRAPHICTABLESTATE, oldGraphicTableState, graphicTableState);
+    firePropertyChange(GRAPHIC_TABLE_STATE, oldGraphicTableState, graphicTableState);
 }
 
+/**
+* @return the graphicTableState
+*/
+/*public*/ bool GuiLafPreferencesManager::isOblockEditTabbed() {
+   return oblockEditTabbed;
+}
+
+/**
+* @param tabbed the Editor interface to set (fasle  = desktop)
+*/
+/*public*/ void GuiLafPreferencesManager::setOblockEditTabbed(bool tabbed) {
+   bool oldOblockTabbed = this->oblockEditTabbed;
+   this->oblockEditTabbed = tabbed;
+   firePropertyChange(OBLOCK_EDIT_TABBED, oldOblockTabbed, tabbed);
+}
 /**
  * @return the editorUseOldLocSize value
  */
@@ -338,7 +348,7 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
             log->debug("Apply look and feel \"{}\" ({})", this->lookAndFeel, lafClassName);
             try {
                 UIManager.setLookAndFeel(lafClassName);
-            } catch (ClassNotFoundException ex) {
+            } catch (ClassNotFoundException* ex) {
                 log->error("Could not find look and feel \"{}\".", this->lookAndFeel);
             } catch (IllegalAccessException | InstantiationException ex) {
                 log->error("Could not load look and feel \"{}\".", this->lookAndFeel);
@@ -378,6 +388,23 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
         }
     }
 #endif
+}
+
+/**
+ * Stand-alone service routine to set the default Locale.
+ * <p>
+ * Intended to be invoked early, as soon as a profile is available, to
+ * ensure the correct language is set as startup proceeds. Must be followed
+ * eventually by a complete {@link #setLocale}.
+ *
+ * @param profile The profile to get the locale from
+ */
+/*public*/ /*static*/ void GuiLafPreferencesManager::setLocaleMinimally(Profile* profile) {
+    // en is default if a locale preference has not been set
+//    QString name = ((GuiLafPreferencesManager*)ProfileUtils::getPreferences(profile, "GuiLafPreferencesManager", true))->get("locale", "en");
+//    log->debug("setLocaleMinimally found language {}, setting", name);
+//    Locale.setDefault(new Locale(name));
+//    javax.swing.JComponent.setDefaultLocale(new Locale(name));
 }
 
 /**
@@ -437,10 +464,10 @@ GuiLafPreferencesManager::GuiLafPreferencesManager()
 
 //@Override
 /*public*/ bool GuiLafPreferencesManager::isInitializedWithExceptions(Profile* /*profile*/) {
-    return this->initialized && !this->exceptions->isEmpty();
+    return this->initialized && !this->exceptions.isEmpty();
 }
 
 //@Override
-/*public*/ QList<Exception*>* GuiLafPreferencesManager::getInitializationExceptions(Profile* /*profile*/) {
-    return new QList<Exception*>(*this->exceptions);
+/*public*/ QList<Exception*> GuiLafPreferencesManager::getInitializationExceptions(Profile* /*profile*/) {
+    return  QList<Exception*>(this->exceptions);
 }

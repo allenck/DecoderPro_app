@@ -4,9 +4,10 @@
 #include "logger.h"
 
 
-class TwoIndexTcsProgrammerFacade : public AbstractProgrammerFacade
+class TwoIndexTcsProgrammerFacade : public AbstractProgrammerFacade, public ProgListener
 {
     Q_OBJECT
+  Q_INTERFACES(ProgListener)
 public:
     //explicit TwoIndexProgrammerFacade(QObject *parent = 0);
     /*public*/ TwoIndexTcsProgrammerFacade(Programmer* prog, QObject *parent = 0);

@@ -17,11 +17,8 @@
 #include <QUrl>
 #include "rosterentry.h"
 
-//VSDecoderPreferencesPane::VSDecoderPreferencesPane(QWidget *parent) :
-//  QWidget(parent)
-//{
-//}
-/*
+/**
+ * Pane to show VSDecoder Preferences.
  * <hr>
  * This file is part of JMRI.
  * <P>
@@ -39,24 +36,6 @@
  * @author			Mark Underwood Copyright (C) 2011
  * @version			$Revision: 28746 $
  */
-//import java.awt.GridBagConstraints;
-//import java.awt.GridBagLayout;
-//import java.awt.Insets;
-//import java.beans.PropertyChangeEvent;
-//import java.beans.PropertyChangeListener;
-//import java.net.URI;
-//import javax.swing.BorderFactory;
-//import javax.swing.BoxLayout;
-//import javax.swing.ButtonGroup;
-//import QPushButton;
-//import javax.swing.JFileChooser;
-//import javax.swing.JFrame;
-//import QLabel;
-//import javax.swing.QWidget;
-//import javax.swing.JRadioButton;
-//import jmri.jmrit.vsdecoder.VSDecoderManager;
-//import jmri.jmrit.vsdecoder.VSDecoderPreferences;
-
 //class VSDecoderPreferencesPane extends javax.swing.QWidget*implements PropertyChangeListener {
 
     ///*private*/ static final long serialVersionUID = -5473594799045080011L;
@@ -307,7 +286,7 @@ QWidget(parent) {
      */
 }
 
-/*private*/ void VSDecoderPreferencesPane::jbPathBrowseActionPerformed(ActionEvent* /*evt*/) {
+/*private*/ void VSDecoderPreferencesPane::jbPathBrowseActionPerformed(JActionEvent* /*evt*/) {
     // Browse for a path.  Update the UI
     // use the path currently in the window text field, if possible.
     QString path;
@@ -320,15 +299,15 @@ QWidget(parent) {
     fc->setFileSelectionMode(JFileChooser::DIRECTORIES_ONLY);
     int rv = fc->showOpenDialog(this);
     if (rv == JFileChooser::APPROVE_OPTION) {
-        //try {
+        try {
             tfDefaultVSDFilePath->setText(fc->getSelectedFile()->getCanonicalPath());
-//        } catch (java.io.IOException e) {
-//            // do nothing.
-//        }
+        } catch (IOException* e) {
+            // do nothing.
+        }
     }
 }
 
-/*private*/ void VSDecoderPreferencesPane::jbFileBrowseActionPerformed(ActionEvent* /*evt*/) {
+/*private*/ void VSDecoderPreferencesPane::jbFileBrowseActionPerformed(JActionEvent* /*evt*/) {
     // Browse for a file. Update the UI
     QString path;
     if (tfDefaultVSDFilePath->text() != NULL) {
@@ -360,11 +339,11 @@ QWidget(parent) {
     }
 }
 
-/*private*/ void VSDecoderPreferencesPane::jbApplyActionPerformed(ActionEvent* /*evt*/) {
+/*private*/ void VSDecoderPreferencesPane::jbApplyActionPerformed(JActionEvent* /*evt*/) {
     VSDecoderManager::instance()->getVSDecoderPreferences()->set(getVSDecoderPreferences());
 }
 
-/*public*/ void VSDecoderPreferencesPane::jbSaveActionPerformed(ActionEvent* /*evt*/) {
+/*public*/ void VSDecoderPreferencesPane::jbSaveActionPerformed(JActionEvent* /*evt*/) {
     VSDecoderManager::instance()->getVSDecoderPreferences()->set(getVSDecoderPreferences());
     VSDecoderManager::instance()->getVSDecoderPreferences()->save();
     if (m_container != NULL) {
@@ -374,7 +353,7 @@ QWidget(parent) {
     }
 }
 
-/*private*/ void VSDecoderPreferencesPane::jbCancelActionPerformed(ActionEvent* /*evt*/) {
+/*private*/ void VSDecoderPreferencesPane::jbCancelActionPerformed(JActionEvent* /*evt*/) {
     setComponents(VSDecoderManager::instance()->getVSDecoderPreferences());
     checkConsistency();
     if (m_container != NULL) {

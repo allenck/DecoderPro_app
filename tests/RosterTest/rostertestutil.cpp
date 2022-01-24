@@ -37,7 +37,7 @@ RosterTestUtil::RosterTestUtil(QObject *parent) : QObject(parent)
  * @return a roster with entries.
  * @throws java.io.IOException if unable to create a test roster
  */
-/*public*/ /*static*/ Roster* RosterTestUtil::createTestRoster(File* rosterDir, QString rosterFileName) throw (IOException) {
+/*public*/ /*static*/ Roster* RosterTestUtil::createTestRoster(File* rosterDir, QString rosterFileName) /*throw (IOException)*/ {
     FileUtil::createDirectory(rosterDir);
 
     // create a roster with known contents
@@ -103,16 +103,16 @@ RosterTestUtil::RosterTestUtil(QObject *parent) : QObject(parent)
     // locate a decoder like that.
     //QList<DecoderFile*>* l = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", decoderFamily, "", "", "", decoderModel);
     // NOTE: DecoderIndex File needs to be updated to use InstanceInitialze interface.
-    QList<DecoderFile*>* l = DecoderIndexFile::instance()->matchingDecoderList("", decoderFamily, "", "", "", decoderModel);
-    log->debug(tr("found %1 matches").arg(l->size()));
-    if (l->isEmpty()) {
+    QList<DecoderFile*> l = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", decoderFamily, "", "", "", decoderModel);
+    log->debug(tr("found %1 matches").arg(l.size()));
+    if (l.isEmpty()) {
         log->debug(tr("Loco uses %1 %2 decoder, but no such decoder defined").arg(decoderFamily).arg(decoderModel));
         // fall back to use just the decoder name, not family
         l = ((DecoderIndexFile*)InstanceManager::getDefault("DecoderIndexFile"))->matchingDecoderList("", "", "", "", "", decoderModel);
-        log->debug(tr("found %1 matches without family key").arg(l->size()));
+        log->debug(tr("found %1 matches without family key").arg(l.size()));
     }
-    if (!l->isEmpty()) {
-        DecoderFile* d = l->at(0);
+    if (!l.isEmpty()) {
+        DecoderFile* d = l.at(0);
         loadDecoderFile(d, r, varTable);
     } else {
         if (decoderModel ==("")) {

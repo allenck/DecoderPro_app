@@ -30,6 +30,8 @@ LnTurnoutManager::LnTurnoutManager(LnTrafficController* fastcontroller, LnTraffi
  : AbstractTurnoutManager(memo, parent)
 {
     //super(memo);
+ setObjectName("LnTurnoutManager");
+ setProperty("JavaClassName", "jmri.jmrix.loconet.LnTurnoutManager");
     this->fastcontroller = memo->getLnTrafficController();
     this->throttledcontroller = throttledcontroller;
     this->mTurnoutNoRetry = mTurnoutNoRetry;
@@ -67,17 +69,17 @@ void LnTurnoutManager::dispose()
  //super.dispose();
 }
 
-Turnout* LnTurnoutManager::createNewTurnout(QString systemName, QString userName) const
+Turnout* LnTurnoutManager::createNewTurnout(QString systemName, QString userName)
 {
  int addr;
  bool bok;
         //addr = Integer.valueOf(systemName.substring(getSystemPrefix().length()+1)).intValue();
-  addr = systemName.mid(getSystemPrefix().length()+1).toInt(&bok);
+  addr = systemName.mid(AbstractManager::getSystemPrefix().length()+1).toInt(&bok);
  if(!bok)
  {
-  throw IllegalArgumentException("Can't convert "+systemName.mid(getSystemPrefix().length()+1)+" to LocoNet turnout address");
+  throw new IllegalArgumentException("Can't convert "+systemName.mid(AbstractManager::getSystemPrefix().length()+1)+" to LocoNet turnout address");
  }
- LnTurnout* t = new LnTurnout(getSystemPrefix(), addr, throttledcontroller);
+ LnTurnout* t = new LnTurnout(AbstractManager::getSystemPrefix(), addr, throttledcontroller);
  t->setUserName(userName);
  return (Turnout*)t;
 }

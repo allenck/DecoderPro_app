@@ -273,7 +273,7 @@ void LocoStatsPanel::report(QString msg) {
 
    updateRequestPending = false;
   }
-  catch (Exception e)
+  catch (Exception* e)
   {
    log->error("Error parsing update: " + msg->toString());
   }

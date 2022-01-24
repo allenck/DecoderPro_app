@@ -16,12 +16,13 @@
 #include "userpreferencesmanager.h"
 #include "profilemanager.h"
 #include "vptr.h"
+#include "joptionpane.h"
 
 /** record the single instance of Roster **/
 //Roster* Roster::_instance = NULL;
 /*private*/ /*static*/ QString Roster::rosterFileName = "roster.xml";
 //QString Roster::fileLocation = FileUtil::getUserFilesPath();
-QString Roster::fileLocation = QDir::homePath() + QDir::separator() + ".jmri" + QDir::separator();
+//QString Roster::fileLocation = QDir::homePath() + QDir::separator() + ".jmri" + QDir::separator();
 /**
  * Name of the default roster index file. {@value #DEFAULT_ROSTER_INDEX}
  */
@@ -79,7 +80,7 @@ Roster::Roster(QObject *parent) :
 {
  setObjectName("Roster");
  _list = new QList<RosterEntry*>();
- pcs = new PropertyChangeSupport(this);
+ //pcs = new SwingPropertyChangeSupport(this, nullptr);
  //schemaVersion = "";
  defaultRosterGroup = "";
  rosterGroups = QMap<QString, RosterGroup*>();
@@ -222,7 +223,7 @@ Roster* Roster::getRoster(/*@CheckForNull*/ Profile* profile) {
 /*public*/ void Roster::addEntry(RosterEntry* e)
 {
  if(e == nullptr)
-  throw (NullPointerException("Roster is null"));
+  throw new NullPointerException("Roster is null");
  if (log->isDebugEnabled()) log->debug("Add entry "+e->getFileName());
  /*synchronized (_list)*/ {
   QMutexLocker locker(&mutex);
@@ -333,7 +334,7 @@ Roster* Roster::getRoster(/*@CheckForNull*/ Profile* profile) {
  */
 /*public*/ RosterEntry* Roster::getEntry(int i ) {
  if(i < 0 || i >= _list->size())
-  throw IndexOutOfBoundsException(tr("index %1 out of range").arg(i));
+  throw new IndexOutOfBoundsException(tr("index %1 out of range").arg(i));
  return _list->at(i);
 }
 /**
@@ -464,6 +465,63 @@ Roster* Roster::getRoster(/*@CheckForNull*/ Profile* profile) {
 
 /**
  * Get a List of {@link RosterEntry} objects in Roster matching some
+ * information. The list will be empty if there are no matches.
+ *
+ * @param roadName      road name of entry or null for any road name
+ * @param roadNumber    road number of entry of null for any number
+ * @param dccAddress    address of entry or null for any address
+ * @param mfg           manufacturer of entry or null for any manufacturer
+ * @param decoderModel  decoder model of entry or null for any model
+ * @param decoderFamily decoder family of entry or null for any family
+ * @param id            id of entry or null for any id
+ * @param group         group entry is member of or null for any group
+ * @param developerID   developerID of entry, or null for any developerID
+ * @param manufacturerID   manufacturerID of entry, or null for any manufacturerID
+ * @param productID   productID of entry, or null for any productID
+ * @return List of matching RosterEntries or an empty List
+ */
+//@Nonnull
+/*public*/ QList<RosterEntry*> Roster::getEntriesMatchingCriteria(QString roadName, QString roadNumber, QString dccAddress,
+        QString mfg, QString decoderModel, QString decoderFamily, QString id, QString group,
+        QString developerID, QString manufacturerID, QString productID) {
+        // specifically updated for SV2
+//        return findMatchingEntries(RosterComparator(this));
+//            (RosterEntry r) -> {
+//                return checkEntry(r, roadName, roadNumber, dccAddress,
+//                        mfg, decoderModel, decoderFamily,
+//                        id, group, developerID, manufacturerID, productID);
+//            }
+//    );
+ QList<RosterEntry*> rslt = QList<RosterEntry*>();
+ foreach (RosterEntry* re, *_list)
+ {
+    if(checkEntry(re, roadName, roadNumber, dccAddress,
+                                          mfg, decoderModel, decoderFamily,
+                                          id, group, developerID, manufacturerID, productID))
+     rslt.append(re);
+ }
+ return rslt;
+}
+
+/**
+ * Internal method works with #RosterComparator to provide a common
+ * search-match-return capability.
+ */
+/*private*/ QList<RosterEntry*> Roster::findMatchingEntries(RosterComparator c) {
+    QList<RosterEntry*> l = QList<RosterEntry*>();
+    /*synchronized (_list)*/ {
+        //_list.stream().filter((r) -> (c.check(r))).forEachOrdered((r) -> {
+//     foreach(Roster* r, *_list)
+//     {
+//      if(c.check(r))
+//        l.append(r);
+//     }//);
+    }
+    return l;
+}
+
+/**
+ * Get a List of {@link RosterEntry} objects in Roster matching some
  * information. The list may have NULL contents if there are no matches.
  */
 /*public*/ QList<RosterEntry*> Roster::getEntriesMatchingCriteria(QString roadName, QString roadNumber, QString dccAddress,
@@ -495,6 +553,28 @@ Roster* Roster::getRoster(/*@CheckForNull*/ Profile* profile) {
     return this->getEntriesMatchingCriteria(roadName, roadNumber, dccAddress, mfg, decoderMfgID, decoderVersionID, id, NULL);
 }
 
+/**
+     * Get a List of {@link RosterEntry} objects in Roster matching some
+     * information. The list will be empty if there are no matches.
+     * <p>
+     * This method calls {@link #getEntriesMatchingCriteria(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * }
+     * with a null group.
+     * This pattern is specifically for LNCV (since 4.22).
+     *
+     * @param dccAddress    address of entry or null for any address
+     * @param productID     productID number
+     * @return List of matching RosterEntries or an empty List
+     * @see #getEntriesMatchingCriteria(java.lang.String, java.lang.String,
+     * java.lang.String, java.lang.String, java.lang.String, java.lang.String,
+     * java.lang.String, java.lang.String)
+     */
+    //@Nonnull
+    /*public*/ QList<RosterEntry*> Roster::matchingList(QString dccAddress, QString productID) {
+        return this->getEntriesMatchingCriteria("", "", dccAddress,
+                "", "", "", "", "", "",
+                "", productID);
+    }
 /**
  * Check if an entry is consistent with specific properties.
  *<P>
@@ -533,7 +613,68 @@ Roster* Roster::getRoster(/*@CheckForNull*/ Profile* profile) {
     }
     return true;
 }
-#if 1
+/**
+ * Check if an entry is consistent with specific properties.
+ * <p>
+ * A null String argument always matches. Strings are used for convenience
+ * in GUI building.
+ *
+ * @param r             the roster entry being checked
+ * @param roadName      road name of entry or null for any road name
+ * @param roadNumber    road number of entry of null for any number
+ * @param dccAddress    address of entry or null for any address
+ * @param mfg           manufacturer of entry or null for any manufacturer
+ * @param decoderModel  decoder model of entry or null for any model
+ * @param decoderFamily decoder family of entry or null for any family
+ * @param id            id of entry or null for any id
+ * @param group         group entry is member of or null for any group
+ * @param developerID   developerID of entry, or null for any developerID
+ * @param manufacturerID   manufacturerID of entry, or null for any manufacturerID
+ * @param productID     productID of entry, or null for any productID
+ * @return True if the entry matches
+ */
+/*public*/ bool Roster::checkEntry(RosterEntry* r, QString roadName, QString roadNumber, QString dccAddress,
+        QString mfg, QString decoderModel, QString decoderFamily,
+        QString id, QString group, QString developerID,
+            QString manufacturerID, QString productID) {
+    // specifically updated for SV2!
+
+    if (id != "" && id != (r->getId())) {
+        return false;
+    }
+    if (roadName != "" && roadName != (r->getRoadName())) {
+        return false;
+    }
+    if (roadNumber != "" && roadNumber != (r->getRoadNumber())) {
+        return false;
+    }
+    if (dccAddress != "" && dccAddress != (r->getDccAddress())) {
+        return false;
+    }
+    if (mfg != "" && mfg != (r->getMfg())) {
+        return false;
+    }
+    if (decoderModel != "" && decoderModel != (r->getDecoderModel())) {
+        return false;
+    }
+    if (decoderFamily != "" && decoderFamily != (r->getDecoderFamily())) {
+        return false;
+    }
+    if (developerID != "" && developerID != (r->getDeveloperID())) {
+        return false;
+    }
+    if (manufacturerID != "" && manufacturerID != (r->getManufacturerID())) {
+        return false;
+    }
+    if (productID != "" && productID != (r->getProductID())) {
+        return false;
+    }
+    return (group == ""
+            || Roster::ALLENTRIES == (group)
+            || (r->getAttribute(Roster::getRosterGroupProperty(group)) != ""
+            && r->getAttribute(Roster::getRosterGroupProperty(group)) ==("yes")));
+}
+
 /**
  * Write the entire roster to a file.
  *
@@ -544,11 +685,11 @@ Roster* Roster::getRoster(/*@CheckForNull*/ Profile* profile) {
  * @throws FileNotFoundException
  * @throws IOException
  */
-void Roster::writeFile(QString name) //throw (FileNotFoundException, IOException)
+void Roster::writeFile(QString name) //throw new (FileNotFoundException, IOException)
 {
     if (log->isDebugEnabled()) log->debug("writeFile "+name);
     // This is taken in large part from "Java and XML" page 368
-    QFile* file = findFile(name);
+    QFile* file = findFile(name)->toQfile();
     if (file == NULL) {
         file = new QFile(name);
     }
@@ -568,7 +709,7 @@ void Roster::writeFile(QString name) //throw (FileNotFoundException, IOException
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="SBSC_USE_STRINGBUFFER_CONCATENATION")
 // Only used occasionally, so inefficient QString processing not really a problem
 // though it would be good to fix it if you're working in this area
-void Roster::writeFile (QFile* file) //throw (IOException)
+void Roster::writeFile (QFile* file) ///*throw new (IOException)*/
 {
  // create root element
  QDomDocument doc = QDomDocument("roster-config");
@@ -582,7 +723,7 @@ void Roster::writeFile (QFile* file) //throw (IOException)
 //        org.jdom.Namespace.getNamespace("xsi",
 //          "http://www.w3.org/2001/XMLSchema-instance"));
  root.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
- root.setAttribute("xsi:noNamespaceSchemaLocation", "http://jmri.org/xml/schema/roster.xsd");
+ root.setAttribute("xsi:noNamespaceSchemaLocation", "http://jmri.org/xml/schema/roster" + schemaVersion + ".xsd");
  //doc = newDocument(root);
  //doc.appendChild(root);
  // add XSLT processing instruction
@@ -679,17 +820,17 @@ void Roster::writeFile (QFile* file) //throw (IOException)
 
  if(_rosterGroupList.size()>=1)
  {
-        QDomElement rosterGroup = doc.createElement("rosterGroup");
-        for (int i=0; i<_rosterGroupList.size(); i++){
-            QDomElement group = doc.createElement("group");
-            if(_rosterGroupList.at(i)!=(ALLENTRIES))
-            {
-             QDomText text = doc.createTextNode(_rosterGroupList.at(i));
-                group.appendChild(text);
-                rosterGroup.appendChild(group);
-            }
-        }
-        root.appendChild(rosterGroup);
+   QDomElement rosterGroup = doc.createElement("rosterGroup");
+   for (int i=0; i<_rosterGroupList.size(); i++){
+       QDomElement group = doc.createElement("group");
+       if(_rosterGroupList.at(i)!=(ALLENTRIES))
+       {
+        QDomText text = doc.createTextNode(_rosterGroupList.at(i));
+           group.appendChild(text);
+           rosterGroup.appendChild(group);
+       }
+   }
+   root.appendChild(rosterGroup);
  }
  doc.appendChild(root);
  writeXML(file, doc);
@@ -749,7 +890,7 @@ void Roster::writeFile (QFile* file) //throw (IOException)
  setDirty(false);
  firePropertyChange(SAVED, QVariant(false), QVariant(true));
 }
-#endif
+
 /**
  * Name a valid roster entry filename from an entry name.
  * <p>
@@ -787,7 +928,7 @@ void Roster::writeFile (QFile* file) //throw (IOException)
 //@edu.umd.cs.findbugs.annotations.SuppressWarnings(value="SBSC_USE_STRINGBUFFER_CONCATENATION")
 // Only used occasionally, so inefficient QString processing not really a problem
 // though it would be good to fix it if you're working in this area
-bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOException {
+bool Roster::readFile(QString name) //throw new org.jdom.JDOMException, java.io.IOException {
 {
  QFile file(name);
  // roster exists?
@@ -916,14 +1057,13 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
  {
   Roster::getDefault()->writeFile(this->getRosterIndexPath());
  }
- catch (Exception e) {
-        log->error("Exception while writing the new roster file, may not be complete: "+e.getMessage());
+ catch (Exception* e) {
+        log->error("Exception while writing the new roster file, may not be complete: "+e->getMessage());
 //        try {
-//            JOptionPane.showMessageDialog(NULL,
-//                    ResourceBundle.getBundle("jmri.jmrit.roster.JmritRosterBundle").getQString("ErrorSavingText")+"\n"+e.getMessage(),
-//                    ResourceBundle.getBundle("jmri.jmrit.roster.JmritRosterBundle").getQString("ErrorSavingTitle"),
-//                    JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(0,tr("Error saving Roster"), tr("Exception while writing the new roster file, may not be complete"));
+  JOptionPane::showMessageDialog(NULL,
+          tr("Exception while writing the new roster file, may not be complete")+"\n"+e->getMessage(),
+          tr("Error saving Roster"),
+          JOptionPane::ERROR_MESSAGE);
         }
 //        catch (HeadlessException he)
 //        {
@@ -947,16 +1087,16 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
           re->setFileName(fileName);
           roster->addEntry(re);
       }
-  } catch (JDOMException /*| IOException*/ ex) {
-   log->error(tr("Exception while loading loco XML file: %1 execption: %2").arg(fileName).arg(ex.getMessage()));
+  } catch (JDOMException* /*| IOException*/ ex) {
+   log->error(tr("Exception while loading loco XML file: %1 execption: %2").arg(fileName).arg(ex->getMessage()));
   }
  }
 
  this->makeBackupFile(this->getRosterIndexPath());
  try {
      roster->writeFile(this->getRosterIndexPath());
- } catch (IOException ex) {
-     log->error(tr("Exception while writing the new roster file, may not be complete: %1").arg(ex.getMessage()));
+ } catch (IOException* ex) {
+     log->error(tr("Exception while writing the new roster file, may not be complete: %1").arg(ex->getMessage()));
  }
  this->reloadRosterFile();
  log->info(tr("Roster rebuilt, stored in %1").arg(this->getRosterIndexPath()));
@@ -975,9 +1115,9 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
  {
   this->readFile(this->getRosterIndexPath());
  }
- catch (Exception e)
+ catch (Exception* e)
  {
-  log->error("Exception during roster reading: "+e.getMessage());
+  log->error("Exception during roster reading: "+e->getMessage());
  }
 }
 
@@ -1018,7 +1158,7 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
      } else {
          p = FileUtil::getAbsoluteFilename(p);
          if (p == "") {
-             throw IllegalArgumentException(tr("\"%1\" is not a valid path").arg(f)); // NOI18N
+             throw new IllegalArgumentException(tr("\"%1\" is not a valid path").arg(f)); // NOI18N
          }
          if (!p.endsWith(File::separator)) {
              p = p + File::separator;
@@ -1055,11 +1195,11 @@ bool Roster::readFile(QString name) //throw org.jdom.JDOMException, java.io.IOEx
 //@Override
 /*public*/ /*synchronized*/ void Roster::addPropertyChangeListener(PropertyChangeListener* l)
 {
-    pcs->addPropertyChangeListener(l);
+    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 }
 
 /*public*/ /*synchronized*/ void Roster::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-    pcs->addPropertyChangeListener(propertyName, listener);
+    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
 }
 
 /*protected*/ void Roster::firePropertyChange(QString p, QVariant old, QVariant n) {

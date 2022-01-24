@@ -38,8 +38,8 @@
     try {
         ((RfidPanelInterface*) p)->initComponents(memo);
         return p;
-    } catch (Exception ex) {
-        log->warn(tr("could not init pane class: %1").arg(paneClass)+ ex.getMessage());
+    } catch (Exception* ex) {
+        log->warn(tr("could not init pane class: %1").arg(paneClass)+ ex->getMessage());
     }
 
     return p;

@@ -1,6 +1,6 @@
 #include "guilafconfigpanexml.h"
 #include "guilafconfigpane.h"
-#include <QCheckBox>
+#include "jcheckbox.h"
 #include "instancemanager.h"
 #include "tabbedpreferences.h"
 #include "guilafpreferencesmanager.h"
@@ -55,6 +55,8 @@ GuiLafConfigPaneXml::GuiLafConfigPaneXml(QObject *parent) :
             (g->mouseEvent->isChecked() ?"yes":"no"));
     e.setAttribute("graphicTableState",
                     (g->graphicStateDisplay->isChecked() ? "yes" : "no"));
+    e.setAttribute("tabbedOblockEditor",
+                    (g->tabbedOblockEditor->isChecked() ? "yes" : "no"));
     return e;
 }
 
@@ -63,7 +65,7 @@ GuiLafConfigPaneXml::GuiLafConfigPaneXml(QObject *parent) :
  * @param e Top level QDomElement to unpack.
  * @return true if successful
   */
-/*public*/ bool GuiLafConfigPaneXml::load(QDomElement e) throw (Exception){
+/*public*/ bool GuiLafConfigPaneXml::load(QDomElement shared, QDomElement perNode){
     bool result = true;
 #if 0
     UIManager.LookAndFeelInfo[] plafs = UIManager.getInstalledLookAndFeels();
@@ -83,33 +85,40 @@ GuiLafConfigPaneXml::GuiLafConfigPaneXml(QObject *parent) :
                 updateLookAndFeel(name, className);
             } else
                 log->debug("skip updateLAF as already has className=="+className);
-        } catch (Exception ex) {
-            log->error("Exception while setting GUI look & feel: "+ex.getMessage());
+        } catch (Exception* ex) {
+            log->error("Exception while setting GUI look & feel: "+ex->getMessage());
             result = false;
         }
     }
 #endif
-    QString langAttr = e.attribute("LocaleLanguage");
-    QString countryAttr = e.attribute("LocaleCountry");
-    QString varAttr = e.attribute("LocaleVariant");
-    if (countryAttr!="" && langAttr!="" && varAttr!="")
+    QString langAttr = shared.attribute("LocaleLanguage");
+    QString countryAttr = shared.attribute("LocaleCountry");
+    QString varAttr = shared.attribute("LocaleVariant");
+//    if (countryAttr!="" && langAttr!="" && varAttr!="")
 //        Locale.setDefault(new Locale(langAttr,countryAttr,
 //                            varAttr));
 //     QLocale::setDefault();
 
-    QString clickAttr = e.attribute("nonStandardMouseEvent");
-//    if (clickAttr != "")
-//        SwingSettings.setNonStandardMouseEvent(clickAttr==("yes"));
-    QString graphicAttr = e.attribute("graphicTableState");
+    QString clickAttr = shared.attribute("nonStandardMouseEvent");
+    if (clickAttr != "") {
+        bool nonStandardMouseEvent = clickAttr == ("yes");
+        ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->setNonStandardMouseEvent(nonStandardMouseEvent);
+    }
+    QString graphicAttr = shared.attribute("graphicTableState");
     if (!graphicAttr.isNull())
     {
      bool graphicTableState = graphicAttr == ("yes");
      ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->setGraphicTableState(graphicTableState);
     }
+    QString oBlockTable = shared.attribute("tabbedOblockEditor");
+    if (oBlockTable != "") {
+        bool tabbedOblockEditor = oBlockTable == ("yes");
+        ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->setOblockEditTabbed(tabbedOblockEditor);
+    }
     GuiLafConfigPane* g = new GuiLafConfigPane();
     ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerPref(g);
 
-    QString fontsize = e.attribute("fontsize");
+    QString fontsize = shared.attribute("fontsize");
     if (fontsize != "")
     {
      int size = fontsize.toInt();
@@ -148,7 +157,7 @@ GuiLafConfigPaneXml::GuiLafConfigPaneXml(QObject *parent) :
 #if 0
         UIManager.setLookAndFeel(className);
 #endif
-//    } catch (Exception e) {
+//    } catch (Exception* e) {
 //        QString errMsg = "The " + name + " look-and-feel ";
 //        if (e instanceof UnsupportedLookAndFeelException){
 //            errMsg += "is not supported on this platform.";

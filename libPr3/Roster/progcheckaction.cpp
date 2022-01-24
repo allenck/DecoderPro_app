@@ -136,8 +136,8 @@ void ProgCheckAction::warnMissingNames(File* file) {
             return "";
         }
 
-    } catch (Exception ex) {
-        return "Error parsing programmer file: " + ex.getMessage();
+    } catch (Exception* ex) {
+        return "Error parsing programmer file: " + ex->getMessage();
     }
 }
 
@@ -210,8 +210,8 @@ void ProgCheckAction::warnIncompleteComprehensive(File* file) {
         }
 
         return warnings;
-    } catch (Exception ex) {
-        return "Error parsing programmer file: " + ex.getMessage();
+    } catch (Exception* ex) {
+        return "Error parsing programmer file: " + ex->getMessage();
     }
 }
 

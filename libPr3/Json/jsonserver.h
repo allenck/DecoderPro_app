@@ -20,8 +20,8 @@ public:
  /*public*/ static JsonServer* getDefault();
  /*public*/ void start();
  /*public*/ void stop();
- /*public*/ void handleClient(QTextStream* inStream, QTextStream* outStream) throw (IOException);
- /*public*/ void stopClient(QTextStream* inStream, QTextStream* outStream) throw (IOException);
+ /*public*/ void handleClient(QTextStream* inStream, QTextStream* outStream) /*throw (IOException)*/;
+ /*public*/ void stopClient(QTextStream* inStream, QTextStream* outStream) /*throw (IOException)*/;
 
 public slots:
  void on_newConnection();

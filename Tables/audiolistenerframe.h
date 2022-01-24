@@ -3,7 +3,8 @@
 #include "abstractaudioframe.h"
 #include "libtables_global.h"
 
-class ActionEvent;
+class JSpinner;
+class JActionEvent;
 class LIBTABLESSHARED_EXPORT AudioListenerFrame : public AbstractAudioFrame
 {
  Q_OBJECT
@@ -18,7 +19,7 @@ public:
 signals:
 
 public slots:
- void okPressed(ActionEvent* /*e*/ = 0);
+ void applyPressed(JActionEvent* /*e*/ = 0);
 private:
  JPanelVector3f* position;// = new JPanelVector3f(rba.getString("LabelPosition"),
 //         rba.getString("UnitUnits"));
@@ -29,8 +30,9 @@ private:
  QLabel* oriUpLabel;// = new JLabel(rba.getString("LabelOrientationUp"));
  JPanelVector3f* oriUp;// = new JPanelVector3f("", rba.getString("UnitUnits"));
  JPanelSliderf* gain;// = new JPanelSliderf(rba.getString("LabelGain"), 0.0f, 1.0f, 5, 4);
- QSpinBox* metersPerUnit;// = new JSpinner();
+ JSpinner* metersPerUnit;// = new JSpinner();
  QLabel* metersPerUnitLabel;// = new JLabel(rba.getString("UnitM/U"));
+ /*private*/ /*final*/ static QString PREFIX;// = "IAL";
 
 };
 

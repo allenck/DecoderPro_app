@@ -80,6 +80,6 @@
 
 // never invoked, because we overrode actionPerformed above
 //@Override
-/*public*/ JmriPanel* makePanel() {
+/*public*/ JmriPanel* WiThrottleCreationAction::makePanel() {
     throw new IllegalArgumentException("Should not be invoked");
 }

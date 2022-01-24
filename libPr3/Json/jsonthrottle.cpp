@@ -10,6 +10,7 @@
 #include "propertychangeevent.h"
 #include "dccthrottle.h"
 #include "rosterentry.h"
+#include "abstractthrottle.h"
 
 // /*public*/ class JsonThrottle implements ThrottleListener, PropertyChangeListener {
 
@@ -87,7 +88,7 @@
  * @throws jmri.server.json.JsonException if unable to get the requested
  *                                        {@link jmri.Throttle}
  */
-/*public*/ /*static*/ JsonThrottle* JsonThrottle::getThrottle(QString /*throttleId*/, QJsonObject data, JsonThrottleSocketService* server) throw (JsonException)
+/*public*/ /*static*/ JsonThrottle* JsonThrottle::getThrottle(QString /*throttleId*/, QJsonObject data, JsonThrottleSocketService* server) /*throw (JsonException)*/
 {
  DccLocoAddress* address = NULL;
  QLocale locale = server->getConnection()->getLocale();
@@ -103,21 +104,21 @@
   else
   {
       log->warn(tr("Address \"%1\" is not a valid address.").arg( data.value(ADDRESS).toInt()));
-      throw JsonException(HttpServletResponse::SC_BAD_REQUEST, tr(/*locale,*/ "The address %1 is invalid.").arg(data.value(ADDRESS).toInt())); // NOI18N
+      throw new JsonException(HttpServletResponse::SC_BAD_REQUEST, tr(/*locale,*/ "The address %1 is invalid.").arg(data.value(ADDRESS).toInt())); // NOI18N
   }
  }
  else if (!data.value(JSON::ID).isUndefined())
  {
   try {
       address = Roster::getDefault()->getEntryForId(data.value(JSON::ID).toString())->getDccLocoAddress();
-  } catch (NullPointerException ex) {
+  } catch (NullPointerException* ex) {
       log->warn(tr("Roster entry \"%1\" does not exist.").arg(data.value(JSON::ID).toString()));
-      throw JsonException(HttpServletResponse::SC_NOT_FOUND, tr(/*locale,*/ "Unable to create throttle for roster entry %1. Perhaps it does not exist?").arg( data.value(JSON::ID).toString())); // NOI18N
+      throw new JsonException(HttpServletResponse::SC_NOT_FOUND, tr(/*locale,*/ "Unable to create throttle for roster entry %1. Perhaps it does not exist?").arg( data.value(JSON::ID).toString())); // NOI18N
   }
  }
  else {
      log->warn("No address specified");
-     throw JsonException(HttpServletResponse::SC_BAD_REQUEST, tr(/*locale,*/ "Throttles must be requested with an address.")); // NOI18N
+     throw new JsonException(HttpServletResponse::SC_BAD_REQUEST, tr(/*locale,*/ "Throttles must be requested with an address.")); // NOI18N
  }
  if (manager->containsKey(address)) {
      JsonThrottle* throttle = manager->get(address);
@@ -131,7 +132,7 @@
      JsonThrottle* throttle = new JsonThrottle(address, server);
      if (!manager->requestThrottle(address, (ThrottleListener*)throttle)) {
          log->error(tr("Unable to get throttle for \"%1\".").arg(address->toString()));
-         throw JsonException(HttpServletResponse::SC_INTERNAL_SERVER_ERROR, /*server->getConnection()->getLocale(),*/ tr("Unable to get throttle for %1.").arg(address->toString()));
+         throw new JsonException(HttpServletResponse::SC_INTERNAL_SERVER_ERROR, /*server->getConnection()->getLocale(),*/ tr("Unable to get throttle for %1.").arg(address->toString()));
      }
      manager->put(address, throttle);
      manager->put(throttle, server);
@@ -156,7 +157,7 @@
         if (manager->getServers(this)->size() == 1) {
             this->throttle->release((ThrottleListener*)this);
 //            this->throttle->removePropertyChangeListener(this);
-         disconnect(throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         disconnect((AbstractThrottle*)throttle->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
             this->throttle = NULL;
         }
         if (notifyClient) {
@@ -326,13 +327,13 @@
 /*public*/ void JsonThrottle::sendMessage(QJsonObject data, JsonThrottleSocketService* server) {
     try {
         server->sendMessage(this, data);
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         this->close(server, false);
-        log->warn(tr("Unable to send message, closing connection: %1").arg(ex.getMessage()));
+        log->warn(tr("Unable to send message, closing connection: %1").arg(ex->getMessage()));
         try {
             server->getConnection()->close();
-        } catch (IOException e1) {
-            log->warn("Unable to close connection." + e1.getMessage());
+        } catch (IOException* e1) {
+            log->warn("Unable to close connection." + e1->getMessage());
         }
     }
 }
@@ -362,9 +363,9 @@
     log->debug(tr("Found throttle %1").arg(throttle->getLocoAddress()->toString()));
     try {
         this->throttle = throttle;
-//        throttle->addPropertyChangeListener(this);
-     connect(throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-        switch (throttle->getSpeedStepMode()->mode) {
+//        throttle->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+     connect((AbstractThrottle*)throttle->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+        switch (throttle->getSpeedStepMode()) {
             case DccThrottle::SpeedStepMode14:
                 this->speedSteps = 14;
                 break;
@@ -381,13 +382,13 @@
                 break;
         }
         this->sendStatus();
-    } catch (Exception e) {
-        log->debug(e.getLocalizedMessage() +  e.getMessage());
+    } catch (Exception* e) {
+        log->debug(e->getLocalizedMessage() +  e->getMessage());
     }
 }
 
 //@Override
-/*public*/ void JsonThrottle::notifyFailedThrottleRequest(DccLocoAddress* address, QString reason) {
+/*public*/ void JsonThrottle::notifyFailedThrottleRequest(LocoAddress *address, QString reason) {
     JsonThrottleManager* manager = JsonThrottleManager::getDefault();
     foreach (JsonThrottleSocketService* server, *manager->getServers(this)/*.toArray(new JsonThrottleSocketService[manager->getServers(this).size()])*/) {
         this->sendErrorMessage(JsonException(512, /*server->getConnection()->getLocale(),*/tr( "Unable to get throttle for %1 because: %2.").arg(address->toString()).arg(reason)), server);
@@ -398,12 +399,12 @@
 /*private*/ void JsonThrottle::sendErrorMessage(JsonException message, JsonThrottleSocketService* server) {
     try {
         server->getConnection()->sendMessage(message.getJsonMessage());
-    } catch (IOException e) {
-        log->warn("Unable to send message, closing connection. " + e.getMessage());
+    } catch (IOException* e) {
+        log->warn("Unable to send message, closing connection. " + e->getMessage());
         try {
             server->getConnection()->close();
-        } catch (IOException e1) {
-            log->warn("Unable to close connection."+ e1.getMessage());
+        } catch (IOException* e1) {
+            log->warn("Unable to close connection."+ e1->getMessage());
         }
     }
 }

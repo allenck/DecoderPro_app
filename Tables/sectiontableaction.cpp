@@ -148,7 +148,7 @@ SectionTableDataModel::SectionTableDataModel(SectionTableAction *act)
  this->act = act;
  log = new Logger("SectionTableAction");
  setManager(act->sectionManager);
- connect(act->sectionManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(act->sectionManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  init();
 }
 
@@ -156,7 +156,7 @@ SectionTableDataModel::SectionTableDataModel(SectionTableAction *act)
 {
     return "";
 }
-/*public*/ Manager* SectionTableDataModel::getManager() { return ((SectionManager*)InstanceManager::getDefault("SectionManager")); }
+/*public*/ AbstractManager *SectionTableDataModel::getManager() { return ((SectionManager*)InstanceManager::getDefault("SectionManager")); }
 /*public*/ NamedBean* SectionTableDataModel::getBySystemName(QString name) const
 {
     return ((SectionManager*)InstanceManager::getDefault("SectionManager"))->getBySystemName(name);
@@ -333,7 +333,7 @@ public void setDisplayDeleteMsg(int boo) { ((DefaultUserMessagePreferences*)Inst
  */
 /*protected*/ void SectionTableAction::addPressed() {
     editMode = false;
-    if ((blockManager->getSystemNameList().size()) > 0) {
+    if ((blockManager->AbstractManager::getSystemNameList().size()) > 0) {
         addEditPressed();
     }
     else {
@@ -521,7 +521,7 @@ void SectionTableAction::addEditPressed()
 //        addFrameLayout->add(p33);
 //        p33->setVisible(true);
   addFrameLayout->addWidget(entryPointTable);
-  entryPointTable->setItemDelegateForColumn(EntryPointTableModel::DIRECTION_COLUMN, new ItemDelegate(dirList,this));
+  entryPointTable->setItemDelegateForColumn(EntryPointTableModel::DIRECTION_COLUMN, new JComboBoxEditor(dirList,this));
   entryPointTable->resizeColumnsToContents();
 //        JPanel p34 = new JPanel();
 //        p34.setLayout(new FlowLayout());
@@ -930,7 +930,7 @@ void SectionTableAction::addBlockPressed() {
 }
 /*private*/ void SectionTableAction::initializeBlockCombo()
 {
- QStringList allBlocks = (QStringList)blockManager->getSystemNameList();
+ QStringList allBlocks = (QStringList)blockManager->AbstractManager::getSystemNameList();
  blockBox->clear();
  for (int j=blockBoxList.size(); j>0; j--) blockBoxList.removeAt(j-1);
  if (blockList.size()==0)
@@ -939,7 +939,7 @@ void SectionTableAction::addBlockPressed() {
   for (int i=0; i<allBlocks.size(); i++)
   {
    QString bName = allBlocks.at(i);
-   Block* b = (Block*)blockManager->getBySystemName(bName);
+   Block* b = (Block*)blockManager->AbstractManager::getBySystemName(bName);
    if (b!=NULL)
    {
     if ( (b->getUserName()!=NULL) && (b->getUserName()!=("")) )
@@ -955,7 +955,7 @@ void SectionTableAction::addBlockPressed() {
   for (int i=0; i<allBlocks.size(); i++)
   {
    QString bName = allBlocks.at(i);
-   Block* b = (Block*)blockManager->getBySystemName(bName);
+   Block* b = (Block*)blockManager->AbstractManager::getBySystemName(bName);
    if (b!=NULL)
    {
     if ( (!inSection(b)) && connected(b,endBlock) )
@@ -1173,7 +1173,7 @@ void SectionTableAction::addBlockPressed() {
     //        }
     //    });
  NoButtonActionListener* noButtonListener = new NoButtonActionListener(dialog);
- connect(noButton, SIGNAL(clicked()), noButtonListener, SLOT(actionPerformed()));
+ connect(noButton, SIGNAL(clicked()), noButtonListener->self(), SLOT(actionPerformed()));
 
 //    yesButton.addActionListener(new ActionListener(){
 //        /*public*/ void actionPerformed(ActionEvent e) {
@@ -1183,7 +1183,7 @@ void SectionTableAction::addBlockPressed() {
 //        }
 //    });
  YesButtonActionListener* addActionListener = new YesButtonActionListener(dialog, s);
- connect(yesButton, SIGNAL(clicked()), addActionListener, SLOT(actionPerformed()));
+ connect(yesButton, SIGNAL(clicked()), addActionListener->self(), SLOT(actionPerformed()));
  dialog->pack();
  dialog->setModal(true);
  dialog->setVisible(true);
@@ -1195,7 +1195,7 @@ YesButtonActionListener::YesButtonActionListener(JDialog* dlg, Section *s)
  this->s = s;
 }
 
-void YesButtonActionListener::actionPerformed(ActionEvent* )
+void YesButtonActionListener::actionPerformed(JActionEvent* )
 {
  ((SectionManager*)InstanceManager::getDefault("SectionManager"))->deregister(s);
  s->dispose();
@@ -1206,7 +1206,7 @@ NoButtonActionListener::NoButtonActionListener(JDialog* dlg)
  this->dlg = dlg;
 }
 
-void NoButtonActionListener::actionPerformed(ActionEvent*)
+void NoButtonActionListener::actionPerformed(JActionEvent*)
 {
  dlg->close();
 }
@@ -1476,8 +1476,8 @@ void SectionTableAction::OnRemoveDirSensors()
 {
     //super();
 this->act = act;
-    act->blockManager->addPropertyChangeListener((PropertyChangeListener*)this);
-    connect(act->blockManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    act->blockManager->PropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
+    connect(act->blockManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 /*public*/ void BlockTableModel::propertyChange(PropertyChangeEvent* e) {
@@ -1587,11 +1587,11 @@ this->act = act;
     this->act = act;
 }
 
-///*public*/ Class<?> getColumnClass(int c) {
-//    if (c == DIRECTION_COLUMN)
-//        return JComboBox.class;
-//    return String.class;
-//}
+/*public*/ QString EntryPointTableModel::getColumnClass(int c) {
+    if (c == DIRECTION_COLUMN)
+        return "JComboBox";
+    return "String";
+}
 
 /*public*/ int EntryPointTableModel::columnCount(const QModelIndex &/*parent*/) const
 {

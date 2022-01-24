@@ -44,7 +44,7 @@
 /*protected*/ void DefaultSignalSystemManager::registerSelf() {}
 
 /*public*/ QString DefaultSignalSystemManager::getSystemPrefix() { return "I"; }
-/*public*/ char DefaultSignalSystemManager::typeLetter() { return 'F'; }
+/*public*/ QChar DefaultSignalSystemManager::typeLetter() { return 'F'; }
 
 /*public*/ SignalSystem* DefaultSignalSystemManager::getSystem(QString name) {
     SignalSystem* t = getByUserName(name);
@@ -134,8 +134,8 @@ SignalSystem* DefaultSignalSystemManager::makeBean(QString name) {
    DefaultSignalSystem* s = new DefaultSignalSystem(name);
    loadBean(s, root);
    return s;
-  } catch (Exception e) {
-   log->error("Could not parse aspect file \""+filename+"\" due to: "+e.getMessage());
+  } catch (Exception* e) {
+   log->error("Could not parse aspect file \""+filename+"\" due to: "+e->getMessage());
   }
  }
 
@@ -153,8 +153,8 @@ SignalSystem* DefaultSignalSystemManager::makeBean(QString name) {
    DefaultSignalSystem* s = new DefaultSignalSystem(name);
    loadBean(s, root);
    return s;
-  } catch (Exception e) {
-   log->error("Could not parse aspect file \""+filename+"\" due to: "+e.getMessage());
+  } catch (Exception* e) {
+   log->error("Could not parse aspect file \""+filename+"\" due to: "+e->getMessage());
   }
  }
 

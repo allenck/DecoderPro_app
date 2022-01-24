@@ -2,6 +2,7 @@
 #define BEANTABLEITEM_H
 
 #include <QWidget>
+#include "abstractaction.h"
 
 class ActionListener;
 class BeanEditItem;
@@ -12,16 +13,16 @@ public:
     ~BeanItemPanel();
     /*public*/ void saveItem();
     /*public*/ void resetField();
-    /*public*/ void setSaveItem(ActionListener* save);
-    /*public*/ void setResetItem(ActionListener* reset);
+    /*public*/ void setSaveItem(AbstractAction *save);
+    /*public*/ void setResetItem(AbstractAction *reset);
     /*public*/ void addItem(BeanEditItem* bei);
     /*public*/ QList<BeanEditItem*> getListOfItems();
     /*public*/ void setName(QString name);
     /*public*/ QString getName();
 
 private:
-    ActionListener* save;
-    ActionListener* reset;
+    AbstractAction* save;
+    AbstractAction* reset;
 
     QList<BeanEditItem*> items;// = new QList<BeanEditItem*>();
     QString name;

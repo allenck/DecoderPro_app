@@ -77,17 +77,17 @@ DccSignalMastXml::DccSignalMastXml(QObject *parent) :
  * @param element Top level QDomElement to unpack.
  * @return true if successful
  */
-/*public*/  bool DccSignalMastXml::load(QDomElement element)  throw(Exception)
+/*public*/  bool DccSignalMastXml::load(QDomElement shared, QDomElement perNode)  throw(JmriConfigureXmlException)
 {
  DccSignalMast* m;
- QString sys = getSystemName(element);
+ QString sys = getSystemName(shared);
  m = new DccSignalMast(sys);
 
- if (getUserName(element) != NULL) {
-     m->setUserName(getUserName(element));
+ if (getUserName(shared) != NULL) {
+     m->setUserName(getUserName(shared));
  }
 
- return loadCommonDCCMast(m, element);
+ return loadCommonDCCMast(m, shared);
 }
 
 /*protected*/ bool DccSignalMastXml::loadCommonDCCMast(DccSignalMast* m, QDomElement element)

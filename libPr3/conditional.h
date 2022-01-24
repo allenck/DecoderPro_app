@@ -29,7 +29,7 @@ public:
   };
   AntecedentOperator(int val)
   {
-   if(val < 0 || val >= values.count()) throw IllegalArgumentException("ItemType is unknown");
+   if(val < 0 || val >= values.count()) throw new IllegalArgumentException("ItemType is unknown");
 
    _value = val;
    _string = values.at(val);
@@ -50,7 +50,7 @@ public:
       }
 
       /*public*/ static AntecedentOperator getOperatorFromIntValue(int value) {
-//       if(value < 0 || value >= values.count()) throw IllegalArgumentException("ItemType is unknown");
+//       if(value < 0 || value >= values.count()) throw new IllegalArgumentException("ItemType is unknown");
 //          for (AntecedentOperator antecedentOperators : values()) {
 //              if (antecedentOperators.getIntValue() == value) {
 //                  return antecedentOperators;

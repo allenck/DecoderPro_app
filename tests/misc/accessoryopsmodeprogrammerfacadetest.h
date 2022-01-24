@@ -36,12 +36,14 @@ private:
  friend class ProgListenerO10;
 };
 
-class  ProgListenerO10 :  public  ProgListener
+class  ProgListenerO10 :  public QObject, public  ProgListener
 {
  Q_OBJECT
+ Q_INTERFACES(ProgListener)
  AccessoryOpsModeProgrammerFacadeTest* test;
 public:
  ProgListenerO10(AccessoryOpsModeProgrammerFacadeTest* test) {this->test = test;}
+ QObject* self() {return (QObject*)this;}
 public slots:
  //@Override
  /*public*/ void programmingOpReply(int value, int status);

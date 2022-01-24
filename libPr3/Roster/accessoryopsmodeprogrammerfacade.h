@@ -4,28 +4,29 @@
 #include "logger.h"
 
 class AddressedProgrammer;
-class AccessoryOpsModeProgrammerFacade : public AbstractProgrammerFacade
+class AccessoryOpsModeProgrammerFacade : public AbstractProgrammerFacade, public ProgListener
 {
-    Q_OBJECT
+  Q_OBJECT
+  Q_INTERFACES(ProgListener)
 public:
     //explicit AccessoryOpsModeProgrammerFacade(QObject *parent = 0);
  /*public*/ AccessoryOpsModeProgrammerFacade(Programmer* prog, /*@Nonnull */QString addrType, int delay, AddressedProgrammer* baseProg, QObject *parent= 0);
-    /*public*/ QList<ProgrammingMode*> getSupportedModes();
-    /*public*/ void setMode(ProgrammingMode* p);
-    /*public*/ bool getCanRead();
-    /*public*/ bool getCanRead(QString addr);
-    /*public*/ bool getCanWrite();
-    /*public*/ bool getCanWrite(QString addr);
-    /*synchronized*/ /*public*/ void writeCV(QString cv, int val, ProgListener* p) throw (ProgrammerException);
-    /*synchronized*/ /*public*/ void confirmCV(QString cv, int val, ProgListener* p) throw (ProgrammerException);
-    /*synchronized*/ /*public*/ void readCV(QString cv, ProgListener* p) throw (ProgrammerException);
- /*public*/ QObject* self() {return (QObject*)this;}
+    /*public*/ QList<QString> getSupportedModes()override;
+    /*public*/ void setMode(ProgrammingMode* p)override;
+    /*public*/ bool getCanRead()override;
+    /*public*/ bool getCanRead(QString addr)override;
+    /*public*/ bool getCanWrite()override;
+    /*public*/ bool getCanWrite(QString addr)override;
+    /*synchronized*/ /*public*/ void writeCV(QString cv, int val, ProgListener* p) /*throw (ProgrammerException)*/override;
+    /*synchronized*/ /*public*/ void confirmCV(QString cv, int val, ProgListener* p) /*throw (ProgrammerException)*/override;
+    /*synchronized*/ /*public*/ void readCV(QString cv, ProgListener* p) /*throw (ProgrammerException)*/override;
+ /*public*/ QObject* self() override{return (QObject*)this;}
 
 
 signals:
 
 public slots:
-    /*public*/ void programmingOpReply(int value, int status);
+    /*public*/ void programmingOpReply(int value, int status)override;
 private:
     // ops accessory mode can't read locally
     ProgrammingMode* mode;
@@ -36,12 +37,12 @@ private:
     QString _addrType;               // remember the address type: ("decoder" or null) or ("accessory" or "output")
     int _delay;                     // remember the programming delay, in milliseconds
     AddressedProgrammer* _baseProg;   // remember the underlying programmer
-    /*private*/ ProgListener* _usingProgrammer;// = null;
+    /*private*/ ProgListener* _usingProgrammer = nullptr;
     enum ProgState { PROGRAMMING, NOTPROGRAMMING };
     ProgState state;// = ProgState.NOTPROGRAMMING;
     Logger* log;
 protected:
-    /*protected*/ void useProgrammer(ProgListener* p) throw (ProgrammerException);
+    /*protected*/ void useProgrammer(ProgListener* p) /*throw (ProgrammerException)*/;
  friend class DelayWorker;
 };
 

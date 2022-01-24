@@ -50,7 +50,7 @@ ServletUtil::ServletUtil(QObject *parent) : QObject(parent)
  * @return an HTML footer
  * @throws IOException if template cannot be located
  */
-/*public*/ QString ServletUtil::getFooter(QLocale locale, QString context) throw (IOException)
+/*public*/ QString ServletUtil::getFooter(QLocale locale, QString context) /*throw (IOException)*/
 {
     // Should return a built NavBar with li class for current context set to "active"
  QString format = QString("-->") + FileUtil::readURL(FileUtil::findURL(StringUtil::stringFormat(locale, "web/servlet/Footer.html"))) + "<!--";
@@ -77,7 +77,7 @@ ServletUtil::ServletUtil(QObject *parent) : QObject(parent)
  * @return an HTML navigation bar
  * @throws IOException if template cannot be located
  */
-/*public*/ QString ServletUtil::getNavBar(QLocale /*locale*/, QString context) throw (IOException)
+/*public*/ QString ServletUtil::getNavBar(QLocale /*locale*/, QString context) /*throw (IOException)*/
 {
     // Should return a built NavBar with li class for current context set to "active"
 //    QString navBar = StringUtil::stringFormat(locale,
@@ -136,7 +136,7 @@ ServletUtil::ServletUtil(QObject *parent) : QObject(parent)
  * @param contentType file mime content type
  * @throws java.io.IOException if communications lost with client
  */
-/*public*/ void ServletUtil::writeFile(HttpServletResponse* response, File* file, QString contentType) throw (IOException)
+/*public*/ void ServletUtil::writeFile(HttpServletResponse* response, File* file, QString contentType) /*throw (IOException)*/
 {
  if (file->exists())
  {

@@ -159,7 +159,7 @@ http://grepcode.com/file_/repo1.maven.org/maven2/org.apache.tomcat/tomcat-catali
 }
 
 
-/*private*/ QString WebSocketServlet::getWebSocketAccept(QString key) throw (ServletException) {
+/*private*/ QString WebSocketServlet::getWebSocketAccept(QString key) /*throw (ServletException)*/ {
 
 #if 0
     MessageDigest sha1Helper = sha1Helpers.poll();

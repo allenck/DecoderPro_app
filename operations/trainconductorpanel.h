@@ -24,7 +24,7 @@ namespace Operations
   QLabel* textNextLocationName;// = new JLabel();
 
   // panels
-  QGroupBox* pTrainDepartureTime;// = new JPanel();
+  JPanel* pTrainDepartureTime = new JPanel();
   void common(Train* train);
   /*private*/ void clearAndUpdate();
   /*private*/ void update();

@@ -13,7 +13,7 @@ public:
     QT_DEPRECATED InternalSensorManager(QObject* parent = nullptr);
     InternalSensorManager(InternalSystemConnectionMemo *memo, QObject* parent = nullptr);
 
-    /*public*/ InternalSensorManager(QString prefix);
+    /*public*/ InternalSensorManager(QString prefix, QObject* parent = nullptr);
     /*public*/ static /*synchronized*/ void setDefaultStateForNewSensors(int defaultSetting);
     /*public*/ static /*synchronized*/ int getDefaultStateForNewSensors();
     /*public*/ bool allowMultipleAdditions(QString systemName) override;
@@ -24,6 +24,7 @@ public:
     /*public*/ QString getNamedBeanClass()const override {
         return "Sensor";
     }
+    /*public*/ QString toString() override {return "InternalSensorManager";}
 
 private:
  static Logger* log;

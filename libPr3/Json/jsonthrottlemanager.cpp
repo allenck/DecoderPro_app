@@ -81,7 +81,7 @@
 }
 
 /*public*/ bool JsonThrottleManager::requestThrottle(DccLocoAddress* address, ThrottleListener* listener) {
-    return ((ThrottleManager*)InstanceManager::getDefault("ThrottleManager"))->requestThrottle(address, listener);
+    return ((ThrottleManager*)InstanceManager::getDefault("ThrottleManager"))->requestThrottle(address, listener,true);
 }
 
 /*public*/ void JsonThrottleManager::attachListener(DccLocoAddress* address, JsonThrottle*throttle) {

@@ -95,10 +95,13 @@ AbstractIdentify::AbstractIdentify(Programmer* programmer, QObject *parent) :
      statusUpdate("No programmer connected");
 
   state = 0;
+  retry = 0;
   error();
   return;
  }
- // we abort if the status isn't normal
+ log->debug(tr("Entering programmingOpReply, state %1, isOptionalCv %2,retry %3, value %4, status %5").arg(state).arg(isOptionalCv()?"true":"false").arg(retry).arg(value).arg(programmer->decodeErrorCode(status)));
+
+ // we check if the status isn't normal
  if (status != ProgListener::OK)
  {
   if (retry < RETRY_COUNT) {
@@ -106,34 +109,44 @@ AbstractIdentify::AbstractIdentify(Programmer* programmer, QObject *parent) :
               + programmer->decodeErrorCode(status));
       state--;
       retry++;
-  } else if (!programmer->getMode()->equals(ProgrammingMode::PAGEMODE)
-          && programmer->getSupportedModes().contains(ProgrammingMode::PAGEMODE)) {
+      value = lastValue;  // Restore the last good value. Needed for retries.
+  } else if (state ==1 && !programmer->getMode()->equals(ProgrammingMode::PAGEMODE)
+          && programmer->getSupportedModes().contains("PAGEMODE")) {
       programmer->setMode(ProgrammingMode::PAGEMODE);
       retry = 0;
       state--;
+      value = lastValue;  // Restore the last good value. Needed for retries.
       log->warn(programmer->decodeErrorCode(status)
               + ", trying " + programmer->getMode()->toString() + " mode");
   } else {
-      log->warn("Stopping due to error: "
-              + programmer->decodeErrorCode(status));
-      statusUpdate("Stopping due to error: "
-              + programmer->decodeErrorCode(status));
-      if (!programmer->getMode()->equals(savedMode)) {  // restore original mode
-          log->warn("Restoring " + savedMode->toString() + " mode");
-          programmer->setMode(savedMode);
-      }
-      state = 0;
-      retry = 0;
-      error();
-      return;
+   retry = 0;
+   if (programmer->getMode() != savedMode) {  // restore original mode
+       log->warn(tr("Restoring %1 mode").arg(savedMode->toString()));
+       programmer->setMode(savedMode);
+   }
+   if (isOptionalCv()) {
+       log->warn(tr("CV %1 is optional. Will assume not present...").arg(cvToRead));
+       statusUpdate("CV " + cvToRead + " is optional. Will assume not present...");
+   } else {
+       log->warn(tr("Stopping due to error: %1").arg(programmer->decodeErrorCode(status)));
+       statusUpdate("Stopping due to error: "
+               + programmer->decodeErrorCode(status));
+       state = 0;
+       error();
+       return;
+   }
   }
  } else {
      retry = 0;
+     lastValue = value;  // Save the last good value. Needed for retries.
+     setOptionalCv(false); // successful read clears flag
  }
  // continuing for normal operation
  // this should eventually be something smarter, maybe using reflection,
  // but for now...
- switch (state)
+ log->debug(tr("Was state %1, switching to state %2, test%3, isOptionalCv %4,retry %5, value %6, status %7").arg(
+              state).arg(state + 1).arg(state + 1).arg(isOptionalCv()).arg(retry).arg(value).arg(programmer->decodeErrorCode(status)));
+     switch (state)
  {
   case 1:
    state = 2;
@@ -194,7 +207,7 @@ default:
 /**
  * Access a single CV for the next step
  */
-/*protected*/ void AbstractIdentify::readCV(int cv)
+/*protected*/ void AbstractIdentify::readCV(QString cv)
 {
  if (programmer == NULL)
  {
@@ -202,13 +215,15 @@ default:
  }
  else
  {
+  cvToRead = cv;
+  log->debug(tr("Invoking readCV %1").arg(cvToRead));
   try
   {
-   programmer->readCV(QString::number(cv), (ProgListener*)this);
+   programmer->readCV(cv, (ProgListener*)this);
   }
-  catch (ProgrammerException ex)
+  catch (ProgrammerException* ex)
   {
-   statusUpdate(ex.getMessage());
+   statusUpdate(ex->getMessage());
   }
  }
 }
@@ -221,13 +236,40 @@ default:
  }
  else
  {
+  cvToWrite = cv;
+  log->debug(tr("Invoking writeCV %1").arg(cvToWrite));
   try
   {
    programmer->writeCV(cv, value, (ProgListener*)this);
-  } catch (ProgrammerException ex) {
-      statusUpdate(ex.getMessage());
+  } catch (ProgrammerException* ex) {
+      statusUpdate(ex->getMessage());
   }
  }
+}
+
+/**
+ * Check the current status of the {@code optionalCv} flag.
+ * <ul>
+ * <li>If {@code true}, prevents the next CV read from aborting the
+ * identification process.</li>
+ * <li>Always {@code false} after a successful read.</li>
+ * </ul>
+ *
+ * @return the current status of the {@code optionalCv} flag
+ */
+/*public*/ bool AbstractIdentify::isOptionalCv() {
+    return optionalCv;
+}
+
+/**
+ *
+ * Specify whether the next CV read may legitimately fail in some cases.
+ *
+ * @param flag Set {@code true} to indicate that the next read may fail. A
+ *             successful read will automatically set to {@code false}.
+ */
+/*public*/ void AbstractIdentify::setOptionalCv(bool flag) {
+    this->optionalCv = flag;
 }
 
 // initialize logging

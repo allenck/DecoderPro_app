@@ -4,10 +4,12 @@
 #include <QBoxLayout>
 #include "gridbaglayout.h"
 #include "operationssetupxml.h"
-#include <QGroupBox>
+#include "jpanel.h"
 #include <QScrollArea>
 #include "trainswitchlisttext.h"
 #include "setup.h"
+#include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -65,170 +67,131 @@ namespace Operations
   setLayout(new QVBoxLayout); //(this, BoxLayout.Y_AXIS));
 
   // manifest text fields
-  QGroupBox* pSwitchListFrame = new QGroupBox;
+  JPanel* pSwitchListFrame = new JPanel;
   QWidget* pSwitchList = new QWidget();
   QScrollArea* pSwitchListPane = new QScrollArea(/*pSwitchList*/);
-  //pSwitchListPane->setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutSwitchList")));
-  pSwitchListFrame->setStyleSheet(gbStyleSheet);
-  pSwitchListFrame->setTitle(tr("Switch List Text"));
+  pSwitchListFrame->setBorder(BorderFactory::createTitledBorder(tr("Switch List Text")));
   pSwitchListPane->setWidgetResizable(true);
   pSwitchListFrame->setLayout(new QVBoxLayout);
   pSwitchListFrame->layout()->addWidget(pSwitchListPane);
   pSwitchList->setLayout(new QHBoxLayout);//(pSwitchList, BoxLayout.Y_AXIS));
 
-  QGroupBox* pSwitchListForTextField = new QGroupBox();
-//  pSwitchListForTextField->setBorder(BorderFactory.createTitledBorder(rb
-//          .getString("SwitchListFor")));
-  pSwitchListForTextField->setStyleSheet(gbStyleSheet);
-  pSwitchListForTextField->setTitle(tr("Switch List for %0").arg("%0"));
+  JPanel* pSwitchListForTextField = new JPanel();
+  pSwitchListForTextField->setBorder(BorderFactory::createTitledBorder(tr("Switch List for %0").arg("%0")));
   pSwitchListForTextField->layout()->addWidget(switchListForTextField);
   switchListForTextField->setText(TrainSwitchListText::getStringSwitchListFor());
   switchListForTextField->setToolTip(tr("1 = Location name."));
   pSwitchList->layout()->addWidget(pSwitchListForTextField);
 
-  QGroupBox* pScheduledWorkTextField = new QGroupBox();
-  //pScheduledWorkTextField->setBorder(BorderFactory.createTitledBorder(tr("ScheduledWork")));
-  pScheduledWorkTextField->setStyleSheet(gbStyleSheet);
-  pScheduledWorkTextField->setTitle(tr("Scheduled work for train (%1) %2").arg("%1").arg("%2"));
+  JPanel* pScheduledWorkTextField = new JPanel();
+  pScheduledWorkTextField->setBorder(BorderFactory::createTitledBorder(tr("Scheduled work for train (%1) %2").arg("%1").arg("%2")));
   pScheduledWorkTextField->layout()->addWidget(scheduledWorkTextField);
   scheduledWorkTextField->setText(TrainSwitchListText::getStringScheduledWork());
   scheduledWorkTextField->setToolTip(tr("1 = Train name. 2 = Train description."));
   pSwitchList->layout()->addWidget(pScheduledWorkTextField);
 
-  QGroupBox* pDepartsAtTextField = new QGroupBox();
-//  pDepartsAtTextField->setBorder(BorderFactory.createTitledBorder(rb
-//          .getString("DepartsAt")));
-  pDepartsAtTextField->setStyleSheet(gbStyleSheet);
-  pDepartsAtTextField->setTitle(tr("Departs %1 %2bound at %3").arg("%1").arg("%2").arg("%3"));
+  JPanel* pDepartsAtTextField = new JPanel();
+  pDepartsAtTextField->setBorder(BorderFactory::createTitledBorder(tr("Departs %1 %2bound at %3").arg("%1").arg("%2").arg("%3")));
   pDepartsAtTextField->layout()->addWidget(departsAtTextField);
   departsAtTextField->setText(TrainSwitchListText::getStringDepartsAt());
   departsAtTextField->setToolTip(tr("1 = Location name. 2 = Train direction. 3 = Time."));
   pSwitchList->layout()->addWidget(pDepartsAtTextField);
 
-  QGroupBox* pDepartsAtExpectedArrivalTextField = new QGroupBox();
-//  pDepartsAtExpectedArrivalTextField
-//          ->setBorder(BorderFactory.createTitledBorder(tr("DepartsAtExpectedArrival")));
-  pDepartsAtExpectedArrivalTextField->setStyleSheet(gbStyleSheet);
-  pDepartsAtExpectedArrivalTextField->setTitle(tr("Departs %1 at %2 expected arrival %3, arrives %4bound").arg("%1").arg("%2").arg("%3").arg("%4"));
+  JPanel* pDepartsAtExpectedArrivalTextField = new JPanel();
+  pDepartsAtExpectedArrivalTextField->setBorder(BorderFactory::createTitledBorder(tr("Departs %1 at %2 expected arrival %3, arrives %4bound").arg("%1").arg("%2").arg("%3").arg("%4")));
   pDepartsAtExpectedArrivalTextField->layout()->addWidget(departsAtExpectedArrivalTextField);
   departsAtExpectedArrivalTextField->setText(TrainSwitchListText::getStringDepartsAtExpectedArrival());
   pSwitchList->layout()->addWidget(pDepartsAtExpectedArrivalTextField);
 
-  QGroupBox* pDepartedExpectedTextField = new QGroupBox();
-//  pDepartedExpectedTextField->setBorder(BorderFactory.createTitledBorder(rb
-//          .getString("DepartedExpected")));
-  pDepartedExpectedTextField->setStyleSheet(gbStyleSheet);
-  pDepartedExpectedTextField->setTitle(tr("Departed %1, expect to arrive in %3, arrives %4bound").arg("%1").arg("%2").arg("%3").arg("%4"));
+  JPanel* pDepartedExpectedTextField = new JPanel();
+  pDepartedExpectedTextField->setBorder(BorderFactory::createTitledBorder(tr("Departed %1, expect to arrive in %3, arrives %4bound").arg("%1").arg("%2").arg("%3").arg("%4")));
   pDepartedExpectedTextField->layout()->addWidget(departedExpectedTextField);
   departedExpectedTextField->setText(TrainSwitchListText::getStringDepartedExpected());
   pSwitchList->layout()->addWidget(pDepartedExpectedTextField);
 
-  QGroupBox* pVisitNumber = new QGroupBox();
-//  pVisitNumber->setBorder(BorderFactory.createTitledBorder(tr("VisitNumber")));
-  pVisitNumber->setStyleSheet(gbStyleSheet);
-  pVisitNumber->setTitle(tr("Visit number %1 for train (%2) expected arrival %3, arrives %4bound").arg("%1").arg("%2").arg("%3").arg("%4"));
+  JPanel* pVisitNumber = new JPanel();
+  pVisitNumber->setBorder(BorderFactory::createTitledBorder(tr("Visit number %1 for train (%2) expected arrival %3, arrives %4bound").arg("%1").arg("%2").arg("%3").arg("%4")));
   pVisitNumber->layout()->addWidget(visitNumberTextField);
   visitNumberTextField->setText(TrainSwitchListText::getStringVisitNumber());
   visitNumberTextField->setToolTip(tr("1 = Visit Number. 2 = Train name. 3 = Time. 4 = Train direction. 5 = Train description."));
   pSwitchList->layout()->addWidget(pVisitNumber);
 
-  QGroupBox* pVisitNumberDeparted = new QGroupBox();
-  //pVisitNumberDeparted->setBorder(BorderFactory.createTitledBorder(tr("VisitNumberDeparted")));
-  pVisitNumberDeparted->setStyleSheet(gbStyleSheet);
-  pVisitNumberDeparted->setTitle(tr("Visit number %1 for train (%2) expect to arrive in %3, arrives %4bound"));
+  JPanel* pVisitNumberDeparted = new JPanel();
+  pVisitNumberDeparted->setBorder(BorderFactory::createTitledBorder(tr("Visit number %1 for train (%2) expect to arrive in %3, arrives %4bound")));
   pVisitNumberDeparted->layout()->addWidget(visitNumberDepartedTextField);
   visitNumberDepartedTextField->setText(TrainSwitchListText::getStringVisitNumberDeparted());
   visitNumberDepartedTextField->setToolTip(tr("1 = Visit Number. 2 = Train name. 3 = Time. 4 = Train direction. 5 = Train description."));
   pSwitchList->layout()->addWidget(pVisitNumberDeparted);
 
-  QGroupBox* pVisitNumberTerminates = new QGroupBox();
-  //pVisitNumberTerminates->setBorder(BorderFactory.createTitledBorder(tr("VisitNumberTerminates")));
-  pVisitNumberTerminates->setStyleSheet(gbStyleSheet);
-  pVisitNumberTerminates->setTitle(tr("Visit number %1 for train (%2) expected arrival %3, terminates %4"));
+  JPanel* pVisitNumberTerminates = new JPanel();
+  pVisitNumberTerminates->setBorder(BorderFactory::createTitledBorder(tr("Visit number %1 for train (%2) expected arrival %3, terminates %4")));
   pVisitNumberTerminates->layout()->addWidget(visitNumberTerminatesTextField);
   visitNumberTerminatesTextField->setText(TrainSwitchListText::getStringVisitNumberTerminates());
   pSwitchList->layout()->addWidget(pVisitNumberTerminates);
 
-  QGroupBox* pVisitNumberTerminatesDepartedTextField = new QGroupBox();
-//  pVisitNumberTerminatesDepartedTextField->setBorder(BorderFactory.createTitledBorder(rb
-//          .getString("VisitNumberTerminatesDeparted")));
+  JPanel* pVisitNumberTerminatesDepartedTextField = new JPanel();
+  pVisitNumberTerminatesDepartedTextField->setBorder(BorderFactory::createTitledBorder(tr("Visit number %1 for train (%2) expect to arrive in %3, terminates %4")));
   pVisitNumberTerminatesDepartedTextField->layout()->addWidget(visitNumberTerminatesDepartedTextField);
   visitNumberTerminatesDepartedTextField->setText(TrainSwitchListText::getStringVisitNumberTerminatesDeparted());
   pSwitchList->layout()->addWidget(pVisitNumberTerminatesDepartedTextField);
 
-  QGroupBox* pVisitNumberDone = new QGroupBox();
-  //pVisitNumberDone->setBorder(BorderFactory.createTitledBorder(tr("VisitNumberDone")));
+  JPanel* pVisitNumberDone = new JPanel();
+  pVisitNumberDone->setBorder(BorderFactory::createTitledBorder(tr("Visit number %1 for train (%2)")));
   pVisitNumberDone->layout()->addWidget(visitNumberDoneTextField);
   visitNumberDoneTextField->setText(TrainSwitchListText::getStringVisitNumberDone());
   pSwitchList->layout()->addWidget(pVisitNumberDone);
 
-  QGroupBox* pTrainDirectionChange = new QGroupBox();
-  //pTrainDirectionChange->setBorder(BorderFactory.createTitledBorder(tr("TrainDirectionChange")));
-  pTrainDirectionChange->setStyleSheet(gbStyleSheet);
-  pTrainDirectionChange->setTitle(tr("Train (%1) direction change, departs %2bound").arg("%1").arg("%2"));
+  JPanel* pTrainDirectionChange = new JPanel();
+  pTrainDirectionChange->setBorder(BorderFactory::createTitledBorder(tr("Train (%1) direction change, departs %2bound").arg("%1").arg("%2")));
   pTrainDirectionChange->layout()->addWidget(trainDirectionChangeTextField);
   trainDirectionChangeTextField->setText(TrainSwitchListText::getStringTrainDirectionChange());
   trainDirectionChangeTextField->setToolTip(tr("1 = Train name. 2 = Train direction. 3 = Train description. 4 = Terminal name."));
   pSwitchList->layout()->addWidget(pTrainDirectionChange);
 
-  QGroupBox* pNoCarPickUps = new QGroupBox();
-  //pNoCarPickUps->setBorder(BorderFactory.createTitledBorder(tr("NoCarPickUps")));
-  pNoCarPickUps->setStyleSheet(gbStyleSheet);
-  pNoCarPickUps->setTitle(tr("No car pick ups for train (%1) at this location").arg("%1"));
+  JPanel* pNoCarPickUps = new JPanel();
+  pNoCarPickUps->setBorder(BorderFactory::createTitledBorder(tr("No car pick ups for train (%1) at this location").arg("%1")));
   pNoCarPickUps->layout()->addWidget(noCarPickUpsTextField);
   noCarPickUpsTextField->setText(TrainSwitchListText::getStringNoCarPickUps());
   noCarPickUpsTextField->setToolTip(tr("1 = Train name. 2 = Train description. 3 = Location name.").arg("%1").arg("%2").arg("%3"));
   pSwitchList->layout()->addWidget(pNoCarPickUps);
 
-  QGroupBox* pNoCarDrops = new QGroupBox();
-  //pNoCarDrops->setBorder(BorderFactory.createTitledBorder(tr("NoCarDrops")));
-  pNoCarDrops->setStyleSheet(gbStyleSheet);
-  pNoCarDrops->setTitle(tr(""));
+  JPanel* pNoCarDrops = new JPanel();
+  pNoCarDrops->setBorder(BorderFactory::createTitledBorder(tr("No car set outs for train (%1) at this location")));
   pNoCarDrops->layout()->addWidget(noCarDropsTextField);
   noCarDropsTextField->setText(TrainSwitchListText::getStringNoCarDrops());
   noCarDropsTextField->setToolTip(tr("0 = Train name. 1 = Train description. 2 = Location name.").arg("%1").arg("%2").arg("%3"));
   pSwitchList->layout()->addWidget(pNoCarDrops);
 
-  QGroupBox* pTrainDone = new QGroupBox();
-  //pTrainDone->setBorder(BorderFactory.createTitledBorder(tr("TrainDone")));
-  pTrainDone->setStyleSheet(gbStyleSheet);
-  pTrainDone->setTitle(tr(""));
+  JPanel* pTrainDone = new JPanel();
+  pTrainDone->setBorder(BorderFactory::createTitledBorder(tr("Train ({0}) has serviced this location")));
   pTrainDone->layout()->addWidget(trainDoneTextField);
   trainDoneTextField->setText(TrainSwitchListText::getStringTrainDone());
   trainDoneTextField->setToolTip(tr("0 = Train name. 1 = Train description. 2 = Location name.").arg("%1").arg("%2").arg("%3"));
   pSwitchList->layout()->addWidget(pTrainDone);
 
-  QGroupBox* pTrainDepartsCars = new QGroupBox();
-  //pTrainDepartsCars->setBorder(BorderFactory.createTitledBorder(tr("TrainDepartsCars")));
-  pTrainDepartsCars->setStyleSheet(gbStyleSheet);
-  pTrainDepartsCars->setTitle(tr(""));
+  JPanel* pTrainDepartsCars = new JPanel();
+  pTrainDepartsCars->setBorder(BorderFactory::createTitledBorder(tr("Train departs %1 %2 with %3 cars, %4 %5, %6 tons")));
   pTrainDepartsCars->layout()->addWidget(trainDepartsCarsTextField);
   trainDepartsCarsTextField->setText(TrainSwitchListText::getStringTrainDepartsCars());
   trainDepartsCarsTextField->setToolTip(tr("1 = Location name. 2 = Train direction. 4 = Train length. 5 = feet or meters. 6 = Train weight. 7 = Terminal name. 8 = Train name."));
   pSwitchList->layout()->addWidget(pTrainDepartsCars);
 
-  QGroupBox* pTrainDepartsLoadsTextField = new QGroupBox();
-  //pTrainDepartsLoadsTextField->setBorder(BorderFactory.createTitledBorder(tr("TrainDepartsLoads")));
-  pTrainDepartsLoadsTextField->setStyleSheet(gbStyleSheet);
-  pTrainDepartsLoadsTextField->setTitle(tr(""));
+  JPanel* pTrainDepartsLoadsTextField = new JPanel();
+  pTrainDepartsLoadsTextField->setBorder(BorderFactory::createTitledBorder(tr("Train departs %1 %2 with %3 loads, %4 %5, %6 tons")));
   pTrainDepartsLoadsTextField->layout()->addWidget(trainDepartsLoadsTextField);
   trainDepartsLoadsTextField->setText(TrainSwitchListText::getStringTrainDepartsLoads());
   trainDepartsLoadsTextField->setToolTip(tr("0 = Location name. 1 = Train direction. 4 = Train length. 5 = feet or meters. 6 = Train weight. 7 = Terminal name. 8 = Train name."));
   pSwitchList->layout()->addWidget(pTrainDepartsLoadsTextField);
 
-  QGroupBox* pSwitchListByTrackTextField = new QGroupBox();
-  //pSwitchListByTrackTextField->setBorder(BorderFactory.createTitledBorder(tr("SwitchListByTrack")));
-  pSwitchListByTrackTextField->setStyleSheet(gbStyleSheet);
-  pSwitchListByTrackTextField->setTitle(tr(""));
+  JPanel* pSwitchListByTrackTextField = new JPanel();
+  pSwitchListByTrackTextField->setBorder(BorderFactory::createTitledBorder(tr("Switch List by Track")));
   pSwitchListByTrackTextField->layout()->addWidget(switchListByTrackTextField);
   switchListByTrackTextField->setText(TrainSwitchListText::getStringSwitchListByTrack());
   switchListByTrackTextField->setToolTip(tr("1 = Location name."));
   pSwitchList->layout()->addWidget(pSwitchListByTrackTextField);
 
-  QGroupBox* pHoldCarTextField = new QGroupBox();
-  //pHoldCarTextField->setBorder(BorderFactory.createTitledBorder(tr("HoldCar")));
-  pHoldCarTextField->setStyleSheet(gbStyleSheet);
-  pHoldCarTextField->setTitle(tr("Hold %1 %2 %3").arg("%1").arg("%2").arg("%3").arg("%4"));
+  JPanel* pHoldCarTextField = new JPanel();
+  pHoldCarTextField->setBorder(BorderFactory::createTitledBorder(tr("Hold %1 %2 %3").arg("%1").arg("%2").arg("%3").arg("%4")));
   pHoldCarTextField->layout()->addWidget(holdCarTextField);
   holdCarTextField->setText(TrainSwitchListText::getStringHoldCar());
   holdCarTextField->setToolTip(tr("1 = Road. 2 = Number. 3 = Type. 4 = Length. 5 = Load. 6 = Track name. 7 = Color."));
@@ -238,10 +201,8 @@ namespace Operations
   saveButton->setToolTip(tr("Writes this window's settings to file"));
 
   // row 11
-  QGroupBox* pControl = new QGroupBox();
-  //pControl->setBorder(BorderFactory.createTitledBorder(""));
-  pControl->setStyleSheet(gbStyleSheet);
-  pControl->setLayout(new GridBagLayout());
+  JPanel* pControl = new JPanel();
+  pControl->setBorder(BorderFactory::createTitledBorder(""));
   addItem(pControl, resetButton, 0, 0);
   addItem(pControl, saveButton, 1, 0);
 
@@ -327,7 +288,7 @@ namespace Operations
   TrainSwitchListText::setStringSwitchListByTrack(switchListByTrackTextField->text());
   TrainSwitchListText::setStringHoldCar(holdCarTextField->text());
 
-  OperationsSetupXml::instance()->writeOperationsFile();
+  ((Operations::OperationsSetupXml*)InstanceManager::getDefault("OperationsSetupXml"))->writeOperationsFile();
  }
 
  //@Override

@@ -4,7 +4,7 @@
 #include "appslib_global.h"
 
 class JComboBox;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class JTextField;
 class QLabel;
 class QPushButton;
@@ -18,10 +18,9 @@ namespace Operations
  public:
   explicit EngineAttributeEditFrame(QWidget *parent = 0);
   /*public*/ void initComponents(QString comboboxName) ;
-  /*public*/ void initComponents(QString comboboxName, QString name);
+  /*public*/ void initComponents(QString comboboxName, QString name) override;
   /*public*/ void dispose() override;
-  PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
-  /*public*/ QString getClassName();
+  /*public*/ QString getClassName() override;
   // valid attributes for this frame
   /*public*/ static /*final*/ QString ROAD;// = tr("Road");
   /*public*/ static /*final*/ QString MODEL;// = tr("Model");
@@ -30,6 +29,8 @@ namespace Operations
   /*public*/ static /*final*/ QString LENGTH;// = tr("Length");
   /*public*/ static /*final*/ QString OWNER;// = tr("Owner");
   /*public*/ static /*final*/ QString CONSIST;// = tr("Consist");
+
+  QObject* self() override {return (QObject*)this; }
 
  signals:
 

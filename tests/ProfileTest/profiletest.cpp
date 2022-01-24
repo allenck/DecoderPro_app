@@ -45,11 +45,11 @@ ProfileTest::ProfileTest(QObject *parent) : QObject(parent)
     Assert::assertEquals("Name has no extension", "test", instance->getName(),__FILE__, __LINE__);
     Assert::assertEquals("Path name has extension", "test" + Profile::EXTENSION, instance->getPath()->getName(),__FILE__, __LINE__);
  }
- catch (IOException  ex) {
-    Assert::fail(ex.getMessage(), __FILE__, __LINE__);
+ catch (IOException*  ex) {
+    Assert::fail(ex->getMessage(), __FILE__, __LINE__);
  }
- catch ( IllegalArgumentException ex) {
-    Assert::fail(ex.getMessage(), __FILE__, __LINE__);
+ catch ( IllegalArgumentException* ex) {
+    Assert::fail(ex->getMessage(), __FILE__, __LINE__);
  }
 }
 
@@ -59,7 +59,7 @@ ProfileTest::ProfileTest(QObject *parent) : QObject(parent)
 * @throws java.io.IOException on any unanticipated errors setting up test
 */
 //@Test
-/*public*/ void ProfileTest::testSave() throw (IOException) {
+/*public*/ void ProfileTest::testSave() /*throw (IOException)*/ {
     File* profileFolder = new File(folder->newFolder(Profile::PROFILE), "test");
     Profile* instance = new Profile("test", "test", profileFolder);
     instance->setName("saved");
@@ -76,11 +76,11 @@ ProfileTest::ProfileTest(QObject *parent) : QObject(parent)
         File* profileFolder = new File(folder->newFolder(Profile::PROFILE), "test");
         Profile* instance = new Profile("test", "test", profileFolder);
         Assert::assertEquals("test", instance->getName(),__FILE__, __LINE__);
-    } catch (IOException  ex) {
-        Assert::fail(ex.toString(),__FILE__, __LINE__);
+    } catch (IOException*  ex) {
+        Assert::fail(ex->toString(),__FILE__, __LINE__);
     }
-    catch (IOException  ex) {
-            Assert::fail(ex.toString(),__FILE__, __LINE__);
+    catch (IOException*  ex) {
+            Assert::fail(ex->toString(),__FILE__, __LINE__);
         }
 }
 
@@ -94,11 +94,11 @@ try {
     Profile* instance = new Profile("test", "test", profileFolder);
     instance->setName("changed");
     Assert::assertEquals("changed", instance->getName(),__FILE__, __LINE__);
-    } catch (IOException ex) {
-        Assert::fail(ex.toString(),__FILE__, __LINE__);
+    } catch (IOException* ex) {
+        Assert::fail(ex->toString(),__FILE__, __LINE__);
     }
-    catch ( IllegalArgumentException ex) {
-        Assert::fail(ex.toString(),__FILE__, __LINE__);
+    catch ( IllegalArgumentException* ex) {
+        Assert::fail(ex->toString(),__FILE__, __LINE__);
     }}
 
 /**
@@ -111,11 +111,11 @@ try {
         Profile* instance = new Profile("test", "test", profileFolder);
         QString id = (new ProfileProperties(instance->getPath()))->get(Profile::ID, true);
         Assert::assertEquals(id, instance->getId(),__FILE__, __LINE__);
-    } catch (IOException  ex) {
-    Assert::fail(ex.toString(),__FILE__, __LINE__);
+    } catch (IOException*  ex) {
+    Assert::fail(ex->toString(),__FILE__, __LINE__);
     }
-    catch ( IllegalArgumentException ex) {
-        Assert::fail(ex.toString(),__FILE__, __LINE__);
+    catch ( IllegalArgumentException* ex) {
+        Assert::fail(ex->toString(),__FILE__, __LINE__);
     }
 }
 
@@ -130,11 +130,11 @@ try {
         Profile* instance = new Profile("test", "test", profileFolder);
         Assert::assertNotEquals(profileFolder, instance->getPath(),__FILE__, __LINE__);
         Assert::assertEquals(profileExtFolder, instance->getPath(),__FILE__, __LINE__);
-    } catch (IOException  ex) {
-        Assert::fail(ex.toString(),__FILE__, __LINE__);
+    } catch (IOException*  ex) {
+        Assert::fail(ex->toString(),__FILE__, __LINE__);
     }
-    catch (IllegalArgumentException ex) {
-        Assert::fail(ex.toString(),__FILE__, __LINE__);
+    catch (IllegalArgumentException* ex) {
+        Assert::fail(ex->toString(),__FILE__, __LINE__);
     }
 }
 
@@ -147,11 +147,11 @@ try {
     File* profileFolder = new File(folder->newFolder(Profile::PROFILE), "test");
     Profile* instance = new Profile("test", "test", profileFolder);
     Assert::assertEquals(instance->getName(), instance->toString(),__FILE__, __LINE__);
-    } catch (IOException  ex) {
-        Assert::fail(ex.toString(),__FILE__, __LINE__);
+    } catch (IOException*  ex) {
+        Assert::fail(ex->toString(),__FILE__, __LINE__);
     }
-    catch ( IllegalArgumentException ex) {
-            Assert::fail(ex.toString(),__FILE__, __LINE__);
+    catch ( IllegalArgumentException* ex) {
+            Assert::fail(ex->toString(),__FILE__, __LINE__);
         }
 }
 
@@ -165,11 +165,11 @@ try {
     Profile* instance = new Profile("test", "test", profileFolder);
     QString id = (new ProfileProperties(profileFolder))->get(Profile::ID, true);
 //    Assert::assertEquals(71 * 7 + id.hashCode(), instance.hashCode());
-    } catch (IOException  ex) {
-        Assert::fail(ex.toString(),__FILE__, __LINE__);
+    } catch (IOException*  ex) {
+        Assert::fail(ex->toString(),__FILE__, __LINE__);
     }
-    catch ( IllegalArgumentException ex) {
-            Assert::fail(ex.toString(),__FILE__, __LINE__);
+    catch ( IllegalArgumentException* ex) {
+            Assert::fail(ex->toString(),__FILE__, __LINE__);
         }
 }
 
@@ -193,11 +193,11 @@ try {
     Assert::assertFalse(instance->equals(instance2),__FILE__, __LINE__);
     Assert::assertTrue(instance->equals(instance3),__FILE__, __LINE__);
  }
- catch (IllegalArgumentException ex) {
-     Assert::fail(ex.toString(),__FILE__, __LINE__);
+ catch (IllegalArgumentException* ex) {
+     Assert::fail(ex->toString(),__FILE__, __LINE__);
  }
- catch (IOException  ex) {
-     Assert::fail(ex.toString(),__FILE__, __LINE__);
+ catch (IOException*  ex) {
+     Assert::fail(ex->toString(),__FILE__, __LINE__);
  }
 }
 
@@ -211,11 +211,11 @@ try {
     File* profileFolder = new File(folder->newFolder(Profile::PROFILE), "test");
     Profile* instance = new Profile("test", "test", profileFolder);
     Assert::assertTrue(instance->isComplete(),__FILE__, __LINE__);
-  } catch (IOException ex) {
-      Assert::fail(ex.toString(),__FILE__, __LINE__);
+  } catch (IOException* ex) {
+      Assert::fail(ex->toString(),__FILE__, __LINE__);
   }
-  catch (IOException  ex) {
-      Assert::fail(ex.toString(),__FILE__, __LINE__);
+  catch (IOException*  ex) {
+      Assert::fail(ex->toString(),__FILE__, __LINE__);
   }
 }
 
@@ -230,11 +230,11 @@ try {
     QString id = (new ProfileProperties(profileFolder))->get(Profile::ID, true);
     id = id.mid(id.lastIndexOf(".") + 1);
     Assert::assertEquals(id, instance->getUniqueId(),__FILE__, __LINE__);
-    } catch (IOException  ex) {
-        Assert::fail(ex.toString(),__FILE__, __LINE__);
+    } catch (IOException*  ex) {
+        Assert::fail(ex->toString(),__FILE__, __LINE__);
     }
-    catch (IllegalArgumentException ex) {
-        Assert::fail(ex.toString(),__FILE__, __LINE__);
+    catch (IllegalArgumentException* ex) {
+        Assert::fail(ex->toString(),__FILE__, __LINE__);
     }}
 
 /**
@@ -250,11 +250,11 @@ try {
     new Profile("test", "test", profileFolder);
     Assert::assertTrue(Profile::containsProfile(rootFolder),__FILE__, __LINE__);
     Assert::assertFalse(Profile::containsProfile(rootFolder2),__FILE__, __LINE__);
-} catch (IOException ex) {
-    Assert::fail(ex.toString(),__FILE__, __LINE__);
+} catch (IOException* ex) {
+    Assert::fail(ex->toString(),__FILE__, __LINE__);
 }
-    catch (IllegalArgumentException ex) {
-        Assert::fail(ex.toString(),__FILE__, __LINE__);
+    catch (IllegalArgumentException* ex) {
+        Assert::fail(ex->toString(),__FILE__, __LINE__);
     }
 }
 
@@ -272,11 +272,11 @@ try {
     new Profile("test", "test", profileFolder);
     Assert::assertTrue(Profile::inProfile(innerFolder),__FILE__, __LINE__);
     Assert::assertFalse(Profile::inProfile(rootFolder2),__FILE__, __LINE__);
-    } catch (IOException ex) {
-        Assert::fail(ex.toString(),__FILE__, __LINE__);
+    } catch (IOException* ex) {
+        Assert::fail(ex->toString(),__FILE__, __LINE__);
     }
-    catch (IllegalArgumentException ex) {
-        Assert::fail(ex.toString(),__FILE__, __LINE__);
+    catch (IllegalArgumentException* ex) {
+        Assert::fail(ex->toString(),__FILE__, __LINE__);
     }
 }
 
@@ -294,11 +294,11 @@ try {
     Assert::assertTrue(Profile::isProfile(profileFolder),__FILE__, __LINE__);
     Assert::assertFalse(Profile::isProfile(rootFolder),__FILE__, __LINE__);
     Assert::assertFalse(Profile::isProfile(innerFolder),__FILE__, __LINE__);
-    } catch (IOException ex) {
-        Assert::fail(ex.toString(),__FILE__, __LINE__);
+    } catch (IOException* ex) {
+        Assert::fail(ex->toString(),__FILE__, __LINE__);
     }
-    catch (IllegalArgumentException ex) {
-        Assert::fail(ex.toString(),__FILE__, __LINE__);
+    catch (IllegalArgumentException* ex) {
+        Assert::fail(ex->toString(),__FILE__, __LINE__);
     }
 }
 
@@ -320,10 +320,10 @@ try {
     Assert::assertTrue(-1 >= instance->compareTo(instance2),__FILE__, __LINE__);
     Assert::assertEquals(0, instance->compareTo(instance3),__FILE__, __LINE__);
     Assert::assertTrue(1 <= instance2->compareTo(instance),__FILE__, __LINE__);
-    } catch (IOException ex) {
-        Assert::fail(ex.toString(),__FILE__, __LINE__);
+    } catch (IOException* ex) {
+        Assert::fail(ex->toString(),__FILE__, __LINE__);
     }
-    catch (IllegalArgumentException ex) {
-        Assert::fail(ex.toString(),__FILE__, __LINE__);
+    catch (IllegalArgumentException* ex) {
+        Assert::fail(ex->toString(),__FILE__, __LINE__);
     }
 }

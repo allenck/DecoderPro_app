@@ -22,19 +22,7 @@ using namespace Sprog;
 
     // cache settings.
     this->speedSetting = 0;
-    this->f0 = false;
-    this->f1 = false;
-    this->f2 = false;
-    this->f3 = false;
-    this->f4 = false;
-    this->f5 = false;
-    this->f6 = false;
-    this->f7 = false;
-    this->f8 = false;
-    this->f9 = false;
-    this->f10 = false;
-    this->f11 = false;
-    this->f12 = false;
+
     this->address = ((DccLocoAddress*) address);
     this->isForward = true;
 
@@ -107,7 +95,7 @@ using namespace Sprog;
  */
 //@Override
 /*public*/ void SprogCSThrottle::setSpeedSetting(float speed) {
-    int mode = getSpeedStepMode()->mode;
+    int mode = getSpeedStepMode();
     if ((mode & DccThrottle::SpeedStepMode28) != 0) {
         // 28 step mode speed commands are
         // stop, estop, stop, estop, 4, 5, ..., 31
@@ -125,7 +113,7 @@ using namespace Sprog;
         }
         commandStation->setSpeed(DccThrottle::SpeedStepMode28, address, value, isForward);
         if (qAbs(oldSpeed - this->speedSetting) > 0.0001) {
-            notifyPropertyChangeListener("SpeedSetting", oldSpeed, this->speedSetting);
+            firePropertyChange("SpeedSetting", oldSpeed, this->speedSetting);
         }
     } else {
         // 128 step mode speed commands are
@@ -144,7 +132,7 @@ using namespace Sprog;
         }
         commandStation->setSpeed(DccThrottle::SpeedStepMode128, address, value, isForward);
         if (qAbs(oldSpeed - this->speedSetting) > 0.0001) {
-            notifyPropertyChangeListener("SpeedSetting", oldSpeed, this->speedSetting);
+            firePropertyChange("SpeedSetting", oldSpeed, this->speedSetting);
         }
     }
     record(speed);
@@ -156,7 +144,7 @@ using namespace Sprog;
     isForward = forward;
     setSpeedSetting(speedSetting);  // Update the speed setting
     if (old != isForward) {
-        notifyPropertyChangeListener("IsForward", old, isForward);
+        firePropertyChange("IsForward", old, isForward);
     }
 }
 

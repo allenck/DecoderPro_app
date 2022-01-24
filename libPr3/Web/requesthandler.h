@@ -11,6 +11,7 @@
 #include "httpserver/httpresponse.h"
 #include "httpservlet.h"
 #include "httpserver/staticfilecontroller.h"
+#include <QWebSocket>
 
 class HttpServlet;
 //using namespace stefanfrings;

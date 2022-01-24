@@ -21,7 +21,7 @@
 
 /*public*/ DefaultCabSignal::DefaultCabSignal(LocoAddress* address, QObject *parent) : QObject(parent){
    _address = address;
-   pcs = new PropertyChangeSupport(this);
+   pcs = new SwingPropertyChangeSupport(this, nullptr);
 
 }
 
@@ -91,7 +91,7 @@
 /*synchronized*/ /*public*/ void DefaultCabSignal::setBlock()
 {
     BlockManager* bmgr = (BlockManager*)InstanceManager::getDefault("BlockManager");
-    QSet</*Block*/NamedBean*> blockSet = bmgr->getNamedBeanSet();
+    QSet</*Block*/NamedBean*> blockSet = bmgr->AbstractManager::getNamedBeanSet();
     LocoAddress* addr = getCabSignalAddress();
     for (/*Block*/NamedBean* bv : blockSet) {
      Block* blockVal = (Block*)bv;
@@ -226,7 +226,7 @@
         if ( _nextMast != nullptr)
         {
             // add signal changelistener
-//                _nextMast->addPropertyChangeListener(_cconSignalMastListener = (PropertyChangeEvent e) -> {
+//                _nextMast->SwingPropertyChangeSupport::addPropertyChangeListener(_cconSignalMastListener = (PropertyChangeEvent e) -> {
             // aspect changed?, need to notify
 //                firePropertyChange("MastChanged",e.getNewValue(),e.getOldValue());
 //                forwardCabSignalToLayout();
@@ -343,7 +343,7 @@
  */
 //@Override
 /*public*/ /*synchronized*/ void DefaultCabSignal::addPropertyChangeListener(PropertyChangeListener* l) {
-    pcs->addPropertyChangeListener(l);
+    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 }
 
 /**
@@ -383,7 +383,7 @@
    }
    if(qobject_cast<SignalMast*>(event->getSource()))
    {
-    //_nextMast->addPropertyChangeListener(_cconSignalMastListener = (PropertyChangeEvent e) -> {
+    //_nextMast->SwingPropertyChangeSupport::addPropertyChangeListener(_cconSignalMastListener = (PropertyChangeEvent e) -> {
     // aspect changed?, need to notify
     firePropertyChange("MastChanged",event->getNewValue(),event->getOldValue());
     forwardCabSignalToLayout();

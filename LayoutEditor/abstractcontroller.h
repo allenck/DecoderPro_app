@@ -40,9 +40,9 @@ private:
  Controller::PortType portType;
 
  /*protected*/ AbstractController(QString name, QVector<UsbComponent*>* components, QVector<Usb::Controller*>* children, QVector<Rumbler*>* rumblers);
- /*protected*/ void setDeviceEventQueueSize(int size) throw (IOException);
- /*protected*/ /*abstract*/ virtual bool getNextDeviceEvent(Event* event) throw (IOException);
- /*protected*/ void pollDevice() throw (IOException);
+ /*protected*/ void setDeviceEventQueueSize(int size) /*throw (IOException)*/;
+ /*protected*/ /*abstract*/ virtual bool getNextDeviceEvent(Event* event) /*throw (IOException)*/;
+ /*protected*/ void pollDevice() /*throw (IOException)*/;
  friend class LinuxAbstractController;
  friend class Keyboard;
 };

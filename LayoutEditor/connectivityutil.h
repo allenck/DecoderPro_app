@@ -192,11 +192,10 @@ private:
     /*private*/ LayoutEditor* layoutEditor;// = NULL;
     /*private*/ LayoutEditorAuxTools* auxTools;// = NULL;
     /*private*/ LayoutBlockManager* layoutBlockManager;// = NULL;
-    /*private*/ LayoutEditorTools* leTools;// = NULL;
     /*private*/ QVector<int>* companion;// = NULL;
     /*private*/ TrackSegment* ts;// = NULL;
     /*private*/ TrackSegment* _tr = nullptr;
-    /*private*/ int prevConnectType;// = 0;
+    /*private*/ HitPointType prevConnectType = HitPointType::NONE;
     /*private*/	QObject* prevConnectObject;// = NULL;
     /*private*/ LayoutBlock* currLayoutBlock = nullptr;
     /*private*/ LayoutBlock* nextLayoutBlock = nullptr;
@@ -206,7 +205,7 @@ private:
      * Initializes the setting (as an object), sets the new track segment (if in Block), and sets the
      *    prevConnectType.
      */
-    /*private*/ int getTurnoutSetting(LayoutTurnout* lt, int cType, bool suppress);
+    /*private*/ int getTurnoutSetting(LayoutTurnout* lt, HitPointType &cType, bool suppress);
     /**
      * This method follows the track from a beginning track segment to its exits
      *	from the current LayoutBlock 'lb' until the track connects to the designated
@@ -215,7 +214,7 @@ private:
      */
     /*private*/ bool trackSegmentLeadsTo(TrackSegment* tsg, QObject* ob);
     /*private*/ bool turnoutConnectivity;// = true;
-    /*private*/ void setupOpposingTrackSegment(LevelXing* x, int cType);
+    /*private*/ void setupOpposingTrackSegment(LevelXing* x, HitPointType &cType);
 Logger log;
 };
 

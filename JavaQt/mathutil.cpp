@@ -597,6 +597,18 @@ MathUtil::MathUtil()
 /*public*/ /*static*/ QPointF MathUtil::infinityPoint2D() {
     return QPointF(INFINITY, INFINITY);
 }
+/**
+ * @param a the first number
+ * @param b the second number
+ * @return the greatest common divisor of a and b
+ */
+/*public*/ /*static*/ int MathUtil::gcd(int a, int b) {
+    int result = b;
+    if (a != 0) {
+        result = gcd(b % a, a);
+    }
+    return result;
+}
 
 /**
  * Convert Point to Point2D.
@@ -1098,5 +1110,9 @@ MathUtil::MathUtil()
     return (a * p3X + b * p3Y + c) / qSqrt(a * a + b * b);
 }
 
+/*public*/ /*static*/ double MathUtil::hypot(double a, double b)
+{
+ return qSqrt((a*a) + (b*b));
+}
 /*private*/ /*final*/ /*static*/ Logger* MathUtil::log = LoggerFactory::getLogger("MathUtil");
 

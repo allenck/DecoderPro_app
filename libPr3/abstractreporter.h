@@ -14,15 +14,15 @@ public:
     explicit AbstractReporter(QObject *parent = 0);
     AbstractReporter(QString systemName, QObject *parent = 0);
     AbstractReporter(QString systemName, QString userName, QObject *parent = 0);
-    /*public*/ QString getBeanType();
-    ReporterVariant getCurrentReport();
-    ReporterVariant getLastReport();
+    /*public*/ QString getBeanType() override;
+    ReporterVariant getCurrentReport()override;
+    ReporterVariant getLastReport()override;
     /**
      * Provide a general method for updating the report.
      */
-    void setReport(QVariant r);
-    /*public*/ int getState() { return state; }
-    /*public*/ void setState(int s) { state = s; }
+    void setReport(QVariant r)override;
+    /*public*/ int getState() override{ return state; }
+    /*public*/ void setState(int s) override{ state = s; }
 
 signals:
     void propertyChange(AbstractReporter*, QString pName, QVariant o, QVariant n);

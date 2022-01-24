@@ -7,7 +7,6 @@
 #include "jmrijframe.h"
 
 class ThrottlePreferencesFrame;
-class ThrottlesListFrame;
 class ThrottlesListPanel;
 class QMainWindow;
 //class ThrottlesListPanel;
@@ -53,7 +52,7 @@ private:
 
     /*private*/ ThrottlesPreferences* throttlesPref = nullptr;
     /*private*/ ThrottlePreferencesFrame* throttlePreferencesFrame = nullptr;
-    /*private*/ ThrottlesListFrame* throttlesListFrame = nullptr;
+    /*private*/ JmriJFrame* throttlesListFrame = nullptr;
     /*private*/ ThrottlesListPanel* throttlesListPanel = nullptr;
     /*private*/ void destroyThrottleWindow(ThrottleWindow* window);
     /*private*/ void requestFocusForNextFrame();
@@ -67,13 +66,14 @@ private slots:
 };
 Q_DECLARE_METATYPE(ThrottleFrameManager)
 
-class ThrottlesListFrame : public  JmriJFrame
+class ThrottlesListFrame : public  JmriJFrameX
 {
  Q_OBJECT
 public:
- /*public*/ ThrottlesListFrame(QString name) : JmriJFrame(name) {}
+ /*public*/ ThrottlesListFrame(QString name) : JmriJFrameX(name) {}
  /*public*/ QString getClassName() {return "jmri.jmrit.throttle.ThrottleFrameManager:ThrottlesListFrame";}
 };
+
 class ThrottlePreferencesFrame : public  JmriJFrame
 {
  Q_OBJECT

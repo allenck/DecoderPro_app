@@ -4,6 +4,7 @@
 #include "abstracttablemodel.h"
 #include <QVector>
 #include <QItemDelegate>
+#include "propertychangelistener.h"
 
 class QSignalMapper;
 class JTable;
@@ -12,9 +13,10 @@ class PropertyChangeEvent;
 class JTextField;
 class LocoIOData;
 class Logger;
-class LocoIOTableModel : public AbstractTableModel
+class LocoIOTableModel : public AbstractTableModel, public PropertyChangeListener
 {
     Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
 public:
     //explicit LocoIOTableModel(QObject *parent = 0);
  /**
@@ -35,21 +37,22 @@ public:
  static int   HIGHESTCOLUMN;// = WRITECOLUMN + 1
  /*public*/ LocoIOTableModel(LocoIOData* ldata, QObject *parent = 0);
  // basic methods for AbstractTableModel implementation
- /*public*/ int rowCount(const QModelIndex &parent) const;
- /*public*/ int columnCount(const QModelIndex &parent) const;
- /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
- /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
- /*public*/ QVariant data(const QModelIndex &index, int role) const;
+ /*public*/ int rowCount(const QModelIndex &parent) const override;
+ /*public*/ int columnCount(const QModelIndex &parent) const override;
+ /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+ /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
+ /*public*/ QVariant data(const QModelIndex &index, int role) const override;
  /*public*/ int getPreferredWidth(int col);
  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
  /*public*/ void dispose();
  /*public*/ void setColumnToHoldButton(JTable* table, int column, QPushButton* /*sample*/);
+ QObject* self() override {return (QObject*)this;}
 
 signals:
  void buttonClicked(QModelIndex*);
 
 public slots:
- /*public*/ void propertyChange(PropertyChangeEvent* evt);
+ /*public*/ void propertyChange(PropertyChangeEvent* evt) override;
 
 private:
  /*private*/ static Logger* log;// = LoggerFactory::getLogger("LocoIOTableModel");

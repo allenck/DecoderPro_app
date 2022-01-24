@@ -2,19 +2,21 @@
 #define YARDMASTERBYTRACKPANEL_H
 #include "commonconductoryardmasterpanel.h"
 #include "track.h"
-
+#include "propertychangelistener.h"
 
 namespace Operations
 {
 
 
- class YardmasterByTrackPanel : public CommonConductorYardmasterPanel
+ class YardmasterByTrackPanel : public CommonConductorYardmasterPanel//, public PropertyChangeListener
  {
   Q_OBJECT
+//   Q_INTERFACES(PropertyChangeListener)
  public:
   YardmasterByTrackPanel(QWidget* parent = nullptr);
   /*public*/ YardmasterByTrackPanel(Location* location, QWidget* parent = nullptr);
   /*public*/ void dispose();
+  QObject* self() override {return (QObject*)this; }
 
  public slots:
   /*public*/ void buttonActionPerformed(QWidget* ae) ;
@@ -29,7 +31,7 @@ namespace Operations
   HtmlTextEdit* textTrackCommentWorkPane;// = new JTextPane();
 
   // combo boxes
-  QComboBox* trackComboBox;// = new QComboBox(); // <Track>
+  JComboBox* trackComboBox;// = new QComboBox(); // <Track>
 
   // buttons
   QPushButton* nextButton;// = new JButton(Bundle.getMessage("Next"));

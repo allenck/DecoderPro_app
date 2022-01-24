@@ -19,7 +19,7 @@ bool CsvImportAction::launchImporter(File* file, CvTableModel* tableModel) {
             // ctor launches operation
             new CsvImporter(file, mModel);
             return true;
-        } catch (IOException ex) {
+        } catch (IOException* ex) {
             return false;
     }
 }

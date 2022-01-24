@@ -5,13 +5,14 @@
 #include "jcombobox.h"
 #include "jtextfield.h"
 #include "control.h"
-#include <QPushButton>
+#include "jbutton.h"
 
 namespace Operations
 {
-    class RollingStockAttributeEditFrame : public OperationsFrame
+    class RollingStockAttributeEditFrame : public OperationsFrame, public PropertyChangeListener
     {
       Q_OBJECT
+      Q_INTERFACES(PropertyChangeListener)
     public:
         RollingStockAttributeEditFrame(QObject* parent = 0);
         // labels
@@ -20,9 +21,9 @@ namespace Operations
         /*public*/ JLabel* quanity = new JLabel("0");
 
         // major buttons
-        /*public*/ QPushButton* addButton = new QPushButton(tr("Add"));
-        /*public*/ QPushButton* deleteButton = new QPushButton(tr("Delete"));
-        /*public*/ QPushButton* replaceButton = new QPushButton(tr("Replace"));
+        /*public*/ JButton* addButton = new JButton(tr("Add"));
+        /*public*/ JButton* deleteButton = new JButton(tr("Delete"));
+        /*public*/ JButton* replaceButton = new JButton(tr("Replace"));
 
         // combo box
         /*public*/ JComboBox/*<String>*/* comboBox;
@@ -37,14 +38,14 @@ namespace Operations
         /*public*/ bool showQuanity = false;
         /*public*/ static /*final*/ QString DISPOSE;// = "dispose"; // NOI18N
         /*public*/ QString _attribute; // used to determine which attribute is being edited
-        /*public*/ void initComponents(QString attribute, QString name);
-        /*public*/ void buttonActionPerformed(/*ActionEvent ae*/);
+        /*public*/ virtual void initComponents(QString attribute, QString name);
+        /*public*/ void buttonActionPerformed(QWidget* ae) override;
         /*public*/ static /*final*/ QString FAILED;// = "failed";
         /*public*/ QString convertLength(QString addItem);
-        /*public*/ void dispose();
+        /*public*/ void dispose() override;
 
      public slots:
-        /*public*/ virtual void propertyChange(PropertyChangeEvent* e);
+        /*public*/ virtual void propertyChange(PropertyChangeEvent* e)override;
 
     private:
         static Logger* log;

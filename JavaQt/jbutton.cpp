@@ -123,7 +123,7 @@ void JButton::common(QString, QIcon)
 }
 void JButton::on_clicked()
 {
- emit actionPerformed(new ActionEvent((QObject*)this, 0, this->text()));
+ emit actionPerformed(new JActionEvent((QObject*)this, 0, this->text()));
 }
 
 void JButton::setAction(Action*)
@@ -320,4 +320,10 @@ void JButton::setAction(Action*)
 ///*public*/ void JButton::setIcon(const QIcon &icon)
 //{
 // QPushButton::setIcon(icon);
+// this->icon = icon;
 //}
+///*public*/ void JButton::setRolloverIcon(QIcon icon)
+//{
+// this->rolloverIcon = icon;
+//}
+

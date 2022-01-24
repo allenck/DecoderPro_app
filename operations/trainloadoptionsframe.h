@@ -30,8 +30,8 @@ namespace Operations
 
   Train* _train;// = null;
 
-  QWidget* pLoadControls;// =new JPanel();
-  QWidget* panelLoads;// =new JPanel();
+  JPanel* pLoadControls;// =new JPanel();
+  JPanel* panelLoads;// =new JPanel();
   QScrollArea* paneLoads;// =new JScrollPane(panelLoads);
 
   // labels
@@ -39,10 +39,10 @@ namespace Operations
   QLabel* trainDescription;// =new JLabel();
 
   // major buttons
-  QPushButton* addLoadButton;// =new JButton(Bundle.getMessage("AddLoad"));
-  QPushButton* deleteLoadButton;// =new JButton(Bundle.getMessage("DeleteLoad"));
-  QPushButton* deleteAllLoadsButton;// =new JButton(Bundle.getMessage("DeleteAll"));
-  QPushButton* saveTrainButton;// =new JButton(Bundle.getMessage("SaveTrain"));
+  JButton* addLoadButton;// =new JButton(Bundle.getMessage("AddLoad"));
+  JButton* deleteLoadButton;// =new JButton(Bundle.getMessage("DeleteLoad"));
+  JButton* deleteAllLoadsButton;// =new JButton(Bundle.getMessage("DeleteAll"));
+  JButton* saveTrainButton;// =new JButton(Bundle.getMessage("SaveTrain"));
 
   // radio buttons
   QRadioButton* loadNameAll;// =new JRadioButton(Bundle.getMessage("AcceptAll"));

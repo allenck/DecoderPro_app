@@ -1,7 +1,7 @@
 #include "carloadeditframe.h"
 #include "carloads.h"
 #include <QLabel>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QGroupBox>
 #include <QBoxLayout>
 #include "jcombobox.h"
@@ -22,6 +22,8 @@
 #include "schedulemanager.h"
 #include "printcarloadsaction.h"
 #include "carloadattributeaction.h"
+#include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -45,17 +47,17 @@ namespace Operations
  {
   log = new Logger("CarEditFrame");
   setObjectName("CarEditFrame");
-  carLoads = CarLoads::instance();
+  carLoads = ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"));
 
   // labels
   textSep = new QLabel();
   quanity = new QLabel("0");
 
   // major buttons
-  addButton = new QPushButton(tr("Add"));
-  deleteButton = new QPushButton(tr("Delete"));
-  replaceButton = new QPushButton(tr("Replace"));
-  saveButton = new QPushButton(tr("Save"));
+  addButton = new JButton(tr("Add"));
+  deleteButton = new JButton(tr("Delete"));
+  replaceButton = new JButton(tr("Replace"));
+  saveButton = new JButton(tr("Save"));
 
   // text boxes
   addTextBox = new JTextField(10);
@@ -98,11 +100,9 @@ namespace Operations
   quanity->setVisible(showQuanity);
 
   // load panel
-  QGroupBox* pLoad = new QGroupBox();
+  JPanel* pLoad = new JPanel();
   pLoad->setLayout(new GridBagLayout());
-  pLoad->setStyleSheet(gbStyleSheet);
-  pLoad->setTitle(tr("Load"));
-  //pLoad.setBorder(BorderFactory.createTitledBorder(tr("Load")));
+  pLoad->setBorder(BorderFactory::createTitledBorder(tr("Load")));
 
   // row 2
   addItem(pLoad, addTextBox, 2, 2);
@@ -117,40 +117,32 @@ namespace Operations
   addItem(pLoad, replaceButton, 3, 4);
 
   // row 6
-  QGroupBox* pLoadType = new QGroupBox();
+  JPanel* pLoadType = new JPanel();
   pLoadType->setLayout(new GridBagLayout); //(pLoadType, BoxLayout.Y_AXIS));
-  //pLoadType.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutLoadType")));
-  pLoadType->setStyleSheet(gbStyleSheet);
-  pLoadType->setTitle(tr("Load Type"));
+  pLoadType->setBorder(BorderFactory::createTitledBorder(tr("Load Type")));
   addItem(pLoadType, loadTypeComboBox, 0, 0);
 
   // row 8
-  QGroupBox* pPriority = new QGroupBox();
+  JPanel* pPriority = new JPanel();
   pPriority->setLayout(new GridBagLayout); //(pPriority, BoxLayout.Y_AXIS));
-  //pPriority.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutPriority")));
-  pPriority->setStyleSheet(gbStyleSheet);
-  pPriority->setTitle(tr("Priority"));
+  pPriority->setBorder(BorderFactory::createTitledBorder(tr("tPriority")));
   addItem(pPriority, priorityComboBox, 0, 0);
 
   // row 10
   // optional panel
-  QGroupBox* pOptionalPickup = new QGroupBox();
+  JPanel* pOptionalPickup = new JPanel();
   pOptionalPickup->setLayout(new QVBoxLayout); //(pOptionalPickup, BoxLayout.Y_AXIS));
-  //pOptionalPickup.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutOptionalPickup")));
-  pOptionalPickup->setStyleSheet(gbStyleSheet);
-  pOptionalPickup->setTitle(tr("Optional Pickup"));
+  pOptionalPickup->setBorder(BorderFactory::createTitledBorder(tr("Optional Pickup")));
   addItem(pOptionalPickup, pickupCommentTextField, 0, 0);
 
   // row 12
-  QGroupBox* pOptionalDrop = new QGroupBox();
+  JPanel* pOptionalDrop = new JPanel();
   pOptionalDrop->setLayout(new QVBoxLayout); //(pOptionalDrop, BoxLayout.Y_AXIS));
-  //pOptionalDrop.setBorder(BorderFactory.createTitledBorder(tr("BorderLayoutOptionalDrop")));
-  pOptionalDrop->setStyleSheet(gbStyleSheet);
-  pOptionalDrop->setTitle(tr("Optional Drop"));
+  pOptionalDrop->setBorder(BorderFactory::createTitledBorder(tr("Optional Drop")));
   addItem(pOptionalDrop, dropCommentTextField, 0, 0);
 
   // row 14
-  QWidget* pControl = new QWidget();
+  JPanel* pControl = new JPanel();
   pControl->setLayout(new QVBoxLayout); //(pControl, BoxLayout.Y_AXIS));
   addItem(pControl, saveButton, 0, 0);
 
@@ -176,8 +168,8 @@ namespace Operations
   QMenuBar* menuBar = new QMenuBar();
   QMenu* toolMenu = new QMenu(tr("Tools"));
   toolMenu->addAction(new CarLoadAttributeAction(tr("CarQuanity"), this));
-  toolMenu->addAction(new PrintCarLoadsAction(tr("Preview"), true, this));
-  toolMenu->addAction(new PrintCarLoadsAction(tr("Print"), false, this));
+  toolMenu->addAction(new PrintCarLoadsAction(true, this));
+  toolMenu->addAction(new PrintCarLoadsAction(false, this));
 
   menuBar->addMenu(toolMenu);
   setMenuBar(menuBar);
@@ -190,7 +182,7 @@ namespace Operations
 
  // add, delete, replace, and save buttons
  /*public*/ void CarLoadEditFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == addButton) {
          QString addLoad = addTextBox->text().trimmed();
          if (addLoad==(NONE)) {
@@ -307,7 +299,7 @@ namespace Operations
 
  // replace the default empty and load for all car types
  /*private*/ void CarLoadEditFrame::replaceAllLoads(QString oldLoad, QString newLoad) {
-     foreach (QString type, CarTypes::instance()->getNames()) {
+     foreach (QString type, ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames()) {
          addLoadToCombobox(type, newLoad);
          replaceLoad(type, oldLoad, newLoad);
          deleteLoadFromCombobox(type, oldLoad);
@@ -324,21 +316,21 @@ namespace Operations
 
  /*private*/ void CarLoadEditFrame::replaceLoad(QString type, QString oldLoad, QString newLoad) {
      // adjust all cars
-     CarManager::instance()->replaceLoad(type, oldLoad, newLoad);
+     ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->replaceLoad(type, oldLoad, newLoad);
      // now adjust schedules
 
-     ScheduleManager::instance()->replaceLoad(type, oldLoad, newLoad);
+     ((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"))->replaceLoad(type, oldLoad, newLoad);
 
      // now adjust trains
-     TrainManager::instance()->replaceLoad(type, oldLoad, newLoad);
+     ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->replaceLoad(type, oldLoad, newLoad);
      // now adjust tracks
-     LocationManager::instance()->replaceLoad(type, oldLoad, newLoad);
+     ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->replaceLoad(type, oldLoad, newLoad);
  }
 
 /*private*/ void CarLoadEditFrame::loadComboboxes() {
      loadComboBox = carLoads->getComboBox(_type);
      //carLoads.addPropertyChangeListener(this);
-     connect(carLoads->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(carLoads, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
      priorityComboBox = carLoads->getPriorityComboBox();
  }
 
@@ -358,7 +350,7 @@ namespace Operations
      }
      int number = 0;
      QString item =  loadComboBox->currentText();
-     foreach (RollingStock* rs, *CarManager::instance()->getList()) {
+     foreach (RollingStock* rs, *((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getList()) {
          Car* car = (Car*) rs;
          if (car->getLoadName()==(item)) {
              number++;
@@ -373,7 +365,7 @@ namespace Operations
         int ix = loadTypeComboBox->findText(loadType);
         loadTypeComboBox->setCurrentIndex(ix);
         if (loadName != NULL
-                && (loadName==(CarLoads::instance()->getDefaultEmptyName()) || loadName==(CarLoads::instance()
+                && (loadName==(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getDefaultEmptyName()) || loadName==(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))
                         ->getDefaultLoadName()))) {
             loadTypeComboBox->setEnabled(false);
         } else {
@@ -392,7 +384,7 @@ namespace Operations
 
  /*public*/ void CarLoadEditFrame::dispose() {
      //carLoads.removePropertyChangeListener(this);
- disconnect(carLoads->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(carLoads, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
      OperationsFrame::dispose();
  }
 

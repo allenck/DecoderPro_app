@@ -12,9 +12,10 @@
 class NamedIcon;
 class AbstractNamedBean;
 //class PositionableLabel;
-class LIBLAYOUTEDITORSHARED_EXPORT MemoryIcon : public PositionableLabel
+class LIBLAYOUTEDITORSHARED_EXPORT MemoryIcon : public PositionableLabel, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     //explicit DisplayMemoryIcon(QObject *parent = 0);
     /*public*/ MemoryIcon(QString s, Editor* editor, QObject *parent = 0);
@@ -57,7 +58,7 @@ public:
     //QGraphicsItem* item;
     /*public*/ void setSelectable(bool b);
     /*public*/ bool isSelectable();
-    /*public*/ bool showPopUp(QMenu* popup);
+    /*public*/ bool showPopUp(QMenu* popup) override;
     /*public*/ bool setTextEditMenu(QMenu* popup);
     /*public*/ void updateSize();
     /*public*/ void updateBlockValueOnChange(bool boo);
@@ -68,6 +69,7 @@ public:
     /*public*/ bool setEditIconMenu(QMenu* popup);
     /*public*/ void dispose();
     /*public*/ QString getGroupName();
+    QObject* self() override {return (QObject*)this;}
 
 signals:
     
@@ -104,16 +106,6 @@ void editMemory();
 /*protected*/ void editMemoryValue();
 /*protected*/ void displayState(QVariant key);
 
-class AddIconActionListener : public ActionListener
-{
-// Q_OBJECT
- MemoryIcon* parent;
-public:
- AddIconActionListener(MemoryIcon* parent);
-
-public:
- void actionPerformed(ActionEvent *e = 0);
-};
 
 protected slots:
 /*protected*/ void edit();
@@ -121,6 +113,22 @@ protected slots:
 friend class LEMemoryIcon;
 friend class AddIconActionListener;
 friend class BlockContentsIcon;
+friend class MIAddIconActionListener;
+};
+
+class MIAddIconActionListener : public QObject, public ActionListener
+{
+ Q_OBJECT
+  Q_INTERFACES(ActionListener)
+ MemoryIcon* parent;
+public:
+ MIAddIconActionListener(MemoryIcon* parent) {this->parent = parent;};
+ QObject* self() override {return (QObject*)this;}
+public slots:
+ void actionPerformed(JActionEvent */*e*/ = 0)override
+ {
+  parent->editMemory();
+ }
 };
 
 #endif // DISPLAYMEMORYICON_H

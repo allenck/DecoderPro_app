@@ -38,18 +38,18 @@
 }
 
 //@Override
-/*public*/ void AbstractProgrammerFacade::writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
+/*public*/ void AbstractProgrammerFacade::writeCV(QString CV, int val, ProgListener* p) /*throw (ProgrammerException)*/
 {
     prog->writeCV(CV, val, p);
 }
 //@Override
-/*public*/ void AbstractProgrammerFacade::readCV(QString CV, ProgListener* p) throw (ProgrammerException)
+/*public*/ void AbstractProgrammerFacade::readCV(QString CV, ProgListener* p) /*throw (ProgrammerException)*/
 {
     prog->readCV(CV, p);
 }
 
 //@Override
-/*public*/ void AbstractProgrammerFacade::confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException)
+/*public*/ void AbstractProgrammerFacade::confirmCV(QString CV, int val, ProgListener* p) /*throw (ProgrammerException)*/
 {
     prog->confirmCV(CV, val, p);
 }
@@ -57,7 +57,7 @@
 //@Override
 /*public*/ ProgrammingMode* AbstractProgrammerFacade::getMode() { return prog->getMode(); }
 //@Override
-/*public*/ QList<ProgrammingMode*> AbstractProgrammerFacade::getSupportedModes()
+/*public*/ QList<QString> AbstractProgrammerFacade::getSupportedModes()
 { return prog->getSupportedModes(); }
 //@Override
 /*public*/ void AbstractProgrammerFacade::setMode(ProgrammingMode* p)

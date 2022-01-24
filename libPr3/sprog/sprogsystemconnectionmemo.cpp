@@ -2,7 +2,7 @@
 #include "loggerfactory.h"
 #include "sprogconnectiontypelist.h"
 #include "instancemanager.h"
-#include "serialdriveradapter.h"
+#include "sprogserialdriveradapter.h"
 #include "globalprogrammermanager.h"
 #include "sprogversionquery.h"
 #include "sprogversion.h"
@@ -27,7 +27,7 @@ using namespace Sprog;
 // /*public*/ class SprogSystemConnectionMemo extends jmrix.SystemConnectionMemo {
 
 /*public*/ SprogSystemConnectionMemo::SprogSystemConnectionMemo(SprogTrafficController* st, SprogConstants::SprogMode sm, QObject* parent)
- : SystemConnectionMemo(st->getController()->getSystemConnectionMemo()->getSystemPrefix(), SprogConnectionTypeList::SPROG, parent)
+ : DefaultSystemConnectionMemo(st->getController()->getSystemConnectionMemo()->getSystemPrefix(), SprogConnectionTypeList::SPROG, parent)
 {
     //super(st.getController().getSystemConnectionMemo().getSystemPrefix(), SprogConnectionTypeList.SPROG);
     if (log->isDebugEnabled()) {
@@ -38,7 +38,7 @@ using namespace Sprog;
 }
 
 /*public*/ SprogSystemConnectionMemo::SprogSystemConnectionMemo(SprogConstants::SprogMode sm, QObject* parent)
- : SystemConnectionMemo("S", SprogConnectionTypeList::SPROG, parent)
+ : DefaultSystemConnectionMemo("S", SprogConnectionTypeList::SPROG, parent)
 {
     //super("S", SprogConnectionTypeList::SPROG); // default to S
  common(sm);
@@ -62,7 +62,8 @@ void SprogSystemConnectionMemo::common(SprogConstants::SprogMode sm)
  InstanceManager::store(cf = new SprogComponentFactory(this), "ComponentFactory");
 }
 
-/*public*/ SprogSystemConnectionMemo::SprogSystemConnectionMemo(SprogConstants::SprogMode sm, SprogType* type, QObject* parent) : SystemConnectionMemo("S", SprogConnectionTypeList::SPROG, parent)
+/*public*/ SprogSystemConnectionMemo::SprogSystemConnectionMemo(SprogConstants::SprogMode sm, SprogType* type, QObject* parent)
+ : DefaultSystemConnectionMemo("S", SprogConnectionTypeList::SPROG, parent)
 {
     //super("S", SprogConnectionTypeList::SPROG); // default to S
     common(sm);
@@ -160,7 +161,7 @@ void SprogSystemConnectionMemo::common(SprogConstants::SprogMode sm)
   case SprogConstants::SERVICE:
    break;
   default:
-   log->error("Unhandled sprogMode: {}", sprogMode);
+   log->error(tr("Unhandled sprogMode: %1").arg(sprogMode));
    break;
  }
 }

@@ -8,7 +8,6 @@
 #include <QComboBox>
 #include <QCheckBox>
 #include <QBoxLayout>
-#include <QMessageBox>
 #include "flowlayout.h"
 #include "userpreferencesmanager.h"
 #include "jseparator.h"
@@ -20,6 +19,7 @@
 #include "transitsectionaction.h"
 #include <QRadioButton>
 #include <QButtonGroup>
+#include "joptionpane.h"
 
 //TransitTableAction::TransitTableAction()
 //{
@@ -84,7 +84,7 @@ void TransitTableAction::common()
  sectionList = new QList<Section*>();
  direction = new QVector<int>(150);
  sequence = new QVector<int>(150);
- action = new QVector<QList<TransitSectionAction*>*>(150);
+ action =  QVector<QList<TransitSectionAction*>*>(150);
  alternate = new QVector<bool>(150);
  maxSections = 150;  // must be equal to the dimension of the above arrays
  primarySectionBoxList = new QList<Section*>();
@@ -169,6 +169,7 @@ void TransitTableAction::common()
  * Create the JTable DataModel, along with the changes for the specific case
  * of Transit objects
  */
+//@Override
 /*protected*/ void TransitTableAction::createModel()
 {
     m = new TransitTableDataModel(this);
@@ -195,8 +196,8 @@ TransitTableDataModel::TransitTableDataModel(TransitTableAction* act)
     return "Transit";
 }
 
-/*public*/ Manager* TransitTableDataModel::getManager() {
-    return ((Manager*)InstanceManager::getNullableDefault("TransitManager"));
+/*public*/ AbstractManager *TransitTableDataModel::getManager() {
+    return ((AbstractManager*)InstanceManager::getNullableDefault("TransitManager"));
 }
 
 /*public*/ NamedBean* TransitTableDataModel::getBySystemName(QString name) const {
@@ -384,12 +385,12 @@ TransitTableDataModel::TransitTableDataModel(TransitTableAction* act)
     return "Transit";
 }
 
-
-#
+//@Override
 /*protected*/ void TransitTableAction::setTitle() {
     f->setTitle(tr("Transit Table"));
 }
 
+//@Override
 /*protected*/ QString TransitTableAction::helpTarget() {
     return "package.jmri.jmrit.beantable.TransitTable";
 }
@@ -398,16 +399,15 @@ TransitTableDataModel::TransitTableDataModel(TransitTableAction* act)
 /**
  * Responds to the Add... button and the Edit buttons in Transit Table
  */
-/*protected*/ void TransitTableAction::addPressed(ActionEvent* /*e*/) {
+//@Override
+/*protected*/ void TransitTableAction::addPressed(JActionEvent *) {
     editMode = false;
     duplicateMode = false;
     if ((sectionManager->getSystemNameList().size()) > 0) {
         addEditPressed();
     } else {
-//        javax.swing.JOptionPane.showMessageDialog(NULL, rbx
-//                .getString("Message21"), tr("ErrorTitle"),
-//                javax.swing.JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(NULL, tr("Error"), tr("Transits require Sections. Please define Sections before attempting to create Transits."));
+        JOptionPane::showMessageDialog(NULL, tr("Transits require Sections. Please define Sections before attempting to create Transits."), tr("Error"),
+                JOptionPane::ERROR_MESSAGE);
     }
 }
 
@@ -706,16 +706,17 @@ void TransitTableAction::addEditPressed()
     if (curTransit != NULL)
     {
         userName->setText(curTransit->getUserName());
-        QList<TransitSection*>* tsList = curTransit->getTransitSectionList();
-        for (int i = 0; i < tsList->size(); i++) {
-            TransitSection* ts = tsList->at(i);
+        QList<TransitSection*> tsList = curTransit->getTransitSectionList();
+        for (int i = 0; i < tsList.size(); i++) {
+            TransitSection* ts = tsList.at(i);
             if (ts != NULL) {
                 sectionList->append(ts->getSection());
                 sequence->replace(i, ts->getSequenceNumber());
                 direction->replace(i,  ts->getDirection());
-                action->replace(i, ts->getTransitSectionActionList());
+                action.replace(i, ts->getTransitSectionActionList());
                 alternate->replace(i, ts->isAlternate());
-            }
+                safe.replace(i, ts->isSafe());
+                sensorStopAllocation[i] = ts->getStopAllocatingSensor();}
         }
         int index = sectionList->size() - 1;
         while (alternate->at(index) && (index > 0)) {
@@ -745,7 +746,7 @@ void TransitTableAction::addEditPressed()
     for (int i = 0; i < maxSections; i++) {
         direction->replace(i,  Section::FORWARD);
         sequence->replace(i,  0);
-        action->replace(i,  NULL);
+        action.replace(i,  NULL);
         alternate->replace(i,  false);
     }
     curSection = NULL;
@@ -759,18 +760,13 @@ void TransitTableAction::addEditPressed()
 
 void TransitTableAction::addNextSectionPressed(ActionEvent* /*e*/) {
     if (sectionList->size() > maxSections) {
-//        javax.swing.JOptionPane.showMessageDialog(addFrame, rbx
-//                .getString("Message23"), tr("ErrorTitle"),
-//                javax.swing.JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(addFrame, tr("Error"), tr("A Transit may not have more than 150 Sections assigned to it."));
+     JOptionPane::showMessageDialog(addFrame, tr("A Transit may not have more than 150 Sections assigned to it."), tr("Error"),
+             JOptionPane::ERROR_MESSAGE);
         return;
     }
     if (primarySectionBoxList->size() == 0) {
-//        javax.swing.JOptionPane.showMessageDialog(addFrame, rbx
-//                .getString("Message25"), tr("ErrorTitle"),
-//                javax.swing.JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(addFrame, tr("Error"), tr("Error - No section to add."));
-
+     JOptionPane::showMessageDialog(addFrame, tr("Error - No section to add."), tr("Error"),
+                JOptionPane::ERROR_MESSAGE);
         return;
     }
     int index = primarySectionBox->currentIndex();
@@ -781,7 +777,7 @@ void TransitTableAction::addNextSectionPressed(ActionEvent* /*e*/) {
         direction->replace(j, priSectionDirection->at(index));
         curSequenceNum++;
         sequence->replace(j, curSequenceNum);
-        action->replace(j, NULL);
+        action.replace(j, NULL);
         alternate->replace(j, false);
         if ((sectionList->size() == 2) && (curSection != NULL)) {
             if (forwardConnected(curSection, s, 0)) {
@@ -824,17 +820,13 @@ void TransitTableAction::removeLastSectionPressed(ActionEvent* /*e*/) {
 
 void TransitTableAction::insertAtBeginningPressed(ActionEvent* /*e*/) {
     if (sectionList->size() > maxSections) {
-//        javax.swing.JOptionPane.showMessageDialog(addFrame, rbx
-//                .getString("Message23"), tr("ErrorTitle"),
-//                javax.swing.JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(addFrame, tr("Error"), tr("A Transit may not have more than 150 Sections assigned to it."));
+        JOptionPane::showMessageDialog(addFrame,tr("A Transit may not have more than 150 Sections assigned to it."), tr("Error"),
+                JOptionPane::ERROR_MESSAGE);
         return;
     }
     if (insertAtBeginningBoxList->size() == 0) {
-//        javax.swing.JOptionPane.showMessageDialog(addFrame, rbx
-//                .getString("Message35"), tr("ErrorTitle"),
-//                javax.swing.JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(addFrame, tr("Error"), tr("Message35"));
+        JOptionPane::showMessageDialog(addFrame, tr("Error - No Section to insert at beginning."), tr("Error"),
+                JOptionPane::ERROR_MESSAGE);
         return;
     }
     int index = insertAtBeginningBox->currentIndex();
@@ -844,14 +836,14 @@ void TransitTableAction::insertAtBeginningPressed(ActionEvent* /*e*/) {
         for (int i = sectionList->size() - 2; i > 0; i--) {
             direction->replace(i + 1, direction->at(i));
             alternate->replace(i + 1, alternate->at(i));
-            action->replace(i + 1, action->at(i));
+            action.replace(i + 1, action.at(i));
             sequence->replace(i + 1, sequence->at(i) + 1);
         }
         direction->replace(0, insertAtBeginningDirection->at(index));
         curSequenceNum++;
         sequence->replace(0, 1);
         alternate->replace(0, false);
-        action->replace(0, NULL);
+        action.replace(0, NULL);
         if (curSequenceNum == 2) {
             prevSectionDirection = direction->at(0);
             prevSection = s;
@@ -872,7 +864,7 @@ void TransitTableAction::removeFirstSectionPressed(ActionEvent* /*e*/) {
         for (int i = keep, j = 0; i < sectionList->size(); i++, j++) {
             sequence->replace(j, sequence->at(i) - 1);
             direction->replace(j, direction->at(i));
-            action->replace(j, action->at(i));
+            action.replace(j, action.at(i));
             alternate->replace(j, alternate->at(i));
         }
         for (int k = 0; k < keep; k++) {
@@ -984,11 +976,9 @@ void TransitTableAction::replacePrimaryForSeqPressed(ActionEvent* /*e*/) {
         }
     }
     if (possibles.size() == 0) {
-//        javax.swing.JOptionPane.showMessageDialog(addFrame,
-//                java.text.MessageFormat.format(tr("Message36"),
-//                        new Object[]{"" + seq}), tr("ErrorTitle"),
-//                javax.swing.JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(addFrame, tr("Error"), tr("Message36"));
+        JOptionPane::showMessageDialog(addFrame,
+                tr("Sorry, no Section found to replace the Primary Section at \"%1\".").arg(seq), tr("Error"),
+                JOptionPane::ERROR_MESSAGE);
         return;
     }
     int k = 0;
@@ -1047,10 +1037,8 @@ int TransitTableAction::getSeqNum() {
         log->error("Unable to convert " + seqNum->text() + " to a number");
     }
     if ((n < 1) || (n > curSequenceNum)) {
-//        javax.swing.JOptionPane.showMessageDialog(NULL, rbx
-//                .getString("Message34"), tr("ErrorTitle"),
-//                javax.swing.JOptionPane.ERROR_MESSAGE);
-            QMessageBox::critical(addFrame, tr("Error"), tr("Message34"));
+     JOptionPane::showMessageDialog(NULL, tr("Valid order number must be entered before attempting to edit by order number.\n Please try again."), tr("Error"),
+             JOptionPane::ERROR_MESSAGE);
         return 0;
     }
     return n;
@@ -1069,7 +1057,7 @@ void TransitTableAction::deleteAlternateForSeqPressed(ActionEvent* /*e*/) {
                 for (int j = i; j < sectionList->size() - 1; j++) {
                     sequence->replace(j,sequence->at(j + 1));
                     direction->replace(j, direction->at(j + 1));
-                    action->replace(j, action->at(j + 1));
+                    action.replace(j, action.at(j + 1));
                     alternate->replace(j, alternate->at(j + 1));
                 }
                 sectionList->removeAt(i);
@@ -1082,10 +1070,8 @@ void TransitTableAction::deleteAlternateForSeqPressed(ActionEvent* /*e*/) {
 
 void TransitTableAction::addAlternateForSeqPressed(ActionEvent* /*e*/) {
     if (sectionList->size() > maxSections) {
-//        javax.swing.JOptionPane.showMessageDialog(addFrame, rbx
-//                .getString("Message23"), tr("ErrorTitle"),
-//                javax.swing.JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(addFrame, tr("Error"), tr("A Transit may not have more than 150 Sections assigned to it."));
+     JOptionPane::showMessageDialog(addFrame, tr("A Transit may not have more than 150 Sections assigned to it."), tr("Error"),
+             JOptionPane::ERROR_MESSAGE);
         return;
     }
     int seq = getSeqNum();
@@ -1185,11 +1171,10 @@ void TransitTableAction::addAlternateForSeqPressed(ActionEvent* /*e*/) {
         }
     }
     if (possibles.size() == 0) {
-//        javax.swing.JOptionPane.showMessageDialog(addFrame,
-//                java.text.MessageFormat.format(tr("Message37"),
-//                        new Object[]{"" + seq}), tr("ErrorTitle"),
-//                javax.swing.JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(addFrame, tr("Error"), tr("Sorry, no new alternate Section found for the Primary Section at \"%1\".").arg(seq));
+      JOptionPane::showMessageDialog(addFrame,
+                tr("Sorry, no new alternate Section found for the Primary Section at \"%1\".").arg(seq),
+                         tr("Error"),
+                JOptionPane::ERROR_MESSAGE);
         return;
     }
     int k = 0;
@@ -1220,13 +1205,13 @@ void TransitTableAction::addAlternateForSeqPressed(ActionEvent* /*e*/) {
     for (int i = sectionList->size() - 2; i >= index; i--) {
         direction->replace(i + 1, direction->at(i));
         alternate->replace(i + 1, alternate->at(i));
-        action->replace(i + 1, action->at(i));
+        action.replace(i + 1, action.at(i));
         sequence->replace(i + 1, sequence->at(i));
     }
     direction->replace(index, possiblesDirection.at(k));
     sequence->replace(index, sequence->at(index - 1));
     alternate->replace(index, true);
-    action->replace(index, new QList<TransitSectionAction*>());
+    action.replace(index, new QList<TransitSectionAction*>());
     initializeSectionCombos();
 
     sectionTableModel->fireTableDataChanged();
@@ -1234,17 +1219,13 @@ void TransitTableAction::addAlternateForSeqPressed(ActionEvent* /*e*/) {
 
 void TransitTableAction::addAlternateSectionPressed(ActionEvent* /*e*/) {
     if (sectionList->size() > maxSections) {
-//        javax.swing.JOptionPane.showMessageDialog(addFrame, rbx
-//                .getString("Message23"), tr("ErrorTitle"),
-//                javax.swing.JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(addFrame, tr("Error"), tr("A Transit may not have more than 150 Sections assigned to it."));
+     JOptionPane::showMessageDialog(addFrame, tr("A Transit may not have more than 150 Sections assigned to it."), tr("Error"),
+               JOptionPane::ERROR_MESSAGE);
         return;
     }
     if (alternateSectionBoxList->size() == 0) {
-//        javax.swing.JOptionPane.showMessageDialog(addFrame, rbx
-//                .getString("Message24"), tr("ErrorTitle"),
-//                javax.swing.JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(addFrame, tr("Error"), tr("Error - No alternate section to add."));
+        JOptionPane::showMessageDialog(addFrame, tr("Error - No alternate section to add."), tr("Error"),
+                JOptionPane::ERROR_MESSAGE);
         return;
     }
     int index = alternateSectionBox->currentIndex();
@@ -1254,7 +1235,7 @@ void TransitTableAction::addAlternateSectionPressed(ActionEvent* /*e*/) {
         sectionList->append(s);
         direction->replace(j, altSectionDirection->at(index));
         sequence->replace(j, curSequenceNum);
-        action->replace(j, new QList<TransitSectionAction*>());
+        action.replace(j, new QList<TransitSectionAction*>());
         alternate->replace(j, true);
         initializeSectionCombos();
     }
@@ -1278,10 +1259,8 @@ void TransitTableAction::createPressed(ActionEvent* /*e*/) {
         curTransit = transitManager->createNewTransit(sName, uName);
     }
     if (curTransit == NULL) {
-//        javax.swing.JOptionPane.showMessageDialog(addFrame, rbx
-//                .getString("Message22"), tr("ErrorTitle"),
-//                javax.swing.JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(addFrame, tr("Error"), tr("Error - Cannot create a new Transit. System name or user name is not unique."));
+        JOptionPane::showMessageDialog(addFrame, tr("Error - Cannot create a new Transit. System name or user name is not unique."), tr("Error"),
+                JOptionPane::ERROR_MESSAGE);
         return;
     }
     sysName->setText(curTransit->getSystemName());
@@ -1309,10 +1288,8 @@ void TransitTableAction::updatePressed(ActionEvent* /*e*/) {
         // check that new user name is unique
         Transit* tTransit = transitManager->getByUserName(uName);
         if (tTransit != NULL) {
-//            javax.swing.JOptionPane.showMessageDialog(addFrame, rbx
-//                    .getString("Message22"), tr("ErrorTitle"),
-//                    javax.swing.JOptionPane.ERROR_MESSAGE);
-            QMessageBox::critical(addFrame, tr("Error"), tr("Error - Cannot create a new Transit. System name or user name is not unique."));
+            JOptionPane::showMessageDialog(addFrame, tr("Error - Cannot create a new Transit. System name or user name is not unique."), tr("Error"),
+                    JOptionPane::ERROR_MESSAGE);
             return;
         }
     }
@@ -1326,16 +1303,15 @@ void TransitTableAction::updatePressed(ActionEvent* /*e*/) {
 }
 
 /*private*/ bool TransitTableAction::checkTransitInformation() {
-    if ((sectionList->size() <= 1) || (curSequenceNum <= 1)) {
-//        javax.swing.JOptionPane.showMessageDialog(addFrame, rbx
-//                .getString("Message26"), tr("ErrorTitle"),
-//                javax.swing.JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(addFrame, tr("Error"), tr("A Transit requires at least two primary Sections. Please add Sections before attempting to create/update this Transit."));
-
-        return false;
-    }
-// djd debugging - need to add code to check Transit Information
-// add code here as needed
+ //transits can now be of length 1 segmant.
+ //With these the route has to start outside the transit
+ /*
+ if ((sectionList.size() <= 1) || (curSequenceNum <= 1)) {
+     JOptionPane.showMessageDialog(addFrame, rbx
+             .getString("Message26"), Bundle.getMessage("ErrorTitle"),
+             JOptionPane.ERROR_MESSAGE);
+     return false;
+ }   */
     return true;
 }
 
@@ -1352,7 +1328,7 @@ void TransitTableAction::updatePressed(ActionEvent* /*e*/) {
             log->error("Trouble creating TransitSection");
             return false;
         }
-        QList<TransitSectionAction*>* list = action->at(i);
+        QList<TransitSectionAction*>* list = action.at(i);
         if (list != NULL) {
             for (int j = 0; j < list->size(); j++) {
                 ts->addAction(list->at(j));
@@ -1986,7 +1962,7 @@ void AEFWindowListener::windowClosing(QCloseEvent *e)
     if (curTSA == NULL) {
         log->error("Failure when creating new TransitSectionAction");
     }
-    QList<TransitSectionAction*>* list = action->at(activeRow);
+    QList<TransitSectionAction*>* list = action.at(activeRow);
     list->append(curTSA);
     actionTableModel->fireTableDataChanged();
     addEditActionFrame->setVisible(false);
@@ -2026,17 +2002,15 @@ void AEFWindowListener::windowClosing(QCloseEvent *e)
         bool bOk;
             tWhenData = s.toInt(&bOk);
         if(!bOk) {
-//            JOptionPane.showMessageDialog(addEditActionFrame, (tr("DelayError") + "\n" + e),
-//                    tr("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
-            QMessageBox::critical(addEditActionFrame, tr("Error"), tr("Error in Optional Delay entry -"));
+            JOptionPane::showMessageDialog(addEditActionFrame, tr("Error in Optional Delay entry -"),
+                    tr("Error"), JOptionPane::ERROR_MESSAGE);
 
             log->error("Exception when parsing Field: " /*+ e*/);
             return false;
         }
         if ((tWhenData < 0) || (tWhenData > 65500)) {
-//            JOptionPane.showMessageDialog(addEditActionFrame, (tr("DelayRangeError")),
-//                    tr("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
-            QMessageBox::critical(addEditActionFrame, tr("Error"), tr("Entered Optional Delay is not within the allowed 1 - 65500 millisecond range."));
+            JOptionPane::showMessageDialog(addEditActionFrame, tr("Entered Optional Delay is not within the allowed 1 - 65500 millisecond range."),
+                    tr("Error"), JOptionPane::ERROR_MESSAGE);
             return false;
         }
     }
@@ -2057,20 +2031,16 @@ void AEFWindowListener::windowClosing(QCloseEvent *e)
     // check if anything entered
     if (sName.length() < 1) {
         // no sensor entered
-//        JOptionPane.showMessageDialog(addEditActionFrame, (tr("NoSensorError")),
-//                tr("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(addEditActionFrame, tr("Error"), tr("Error - no Sensor name was entered."));
-
+        JOptionPane::showMessageDialog(addEditActionFrame, tr("Error - no Sensor name was entered."),
+                tr("Error"), JOptionPane::ERROR_MESSAGE);
         return false;
     }
     // get the sensor corresponding to this name
     Sensor* s = InstanceManager::sensorManagerInstance()->getSensor(sName);
     if (s == NULL) {
         // There is no sensor corresponding to this name
-//        JOptionPane.showMessageDialog(addEditActionFrame, (tr("SensorEntryError")),
-//                tr("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(addEditActionFrame, tr("Error"), tr("Entered Sensor name does not correspond to a Sensor in the Sensor Table."));
-
+        JOptionPane::showMessageDialog(addEditActionFrame, tr("Entered Sensor name does not correspond to a Sensor in the Sensor Table."),
+                tr("ErrorTitle"), JOptionPane::ERROR_MESSAGE);
         return false;
     }
     if (sName != (s->getUserName())) {
@@ -2136,9 +2106,8 @@ void AEFWindowListener::windowClosing(QCloseEvent *e)
             }
             tWhatString = whatStringField->text();
             if ((tWhatString == NULL) || tWhatString == "" || (tWhatString.length() < 1)) {
-//                JOptionPane.showMessageDialog(addEditActionFrame, (tr("MissingPattern")),
-//                        tr("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
-                QMessageBox::critical(addEditActionFrame, tr("Error"), tr("Error - pattern for horn sounding was not entered."));
+                JOptionPane::showMessageDialog(addEditActionFrame, tr("Error - pattern for horn sounding was not entered."),
+                        tr("Error"), JOptionPane::ERROR_MESSAGE);
 
                 return false;
             }
@@ -2146,9 +2115,8 @@ void AEFWindowListener::windowClosing(QCloseEvent *e)
             for (int i = 0; i < tWhatString.length(); i++) {
                 QChar c = tWhatString.at(i);
                 if ((c != 's') && (c != 'l')) {
-//                    JOptionPane.showMessageDialog(addEditActionFrame, (tr("ErrorPattern")),
-//                            tr("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
-                    QMessageBox::critical(addEditActionFrame, tr("Error"), tr("Error - bad character in horn pattern. Only \"s\" and \"l\" are allowed."));
+                    JOptionPane::showMessageDialog(addEditActionFrame, tr("Error - bad character in horn pattern. Only \"s\" and \"l\" are allowed."),
+                            tr("Error"), JOptionPane::ERROR_MESSAGE);
                     return false;
                 }
             }
@@ -2177,32 +2145,26 @@ void AEFWindowListener::windowClosing(QCloseEvent *e)
 /*private*/ bool TransitTableAction::readWhatData1(QString err, int min, int max) {
     QString s = whatData1Field->text();
     if ((s == NULL) || (s == (""))) {
-//        JOptionPane.showMessageDialog(addEditActionFrame,
-//                java.text.MessageFormat.format(tr("MissingEntryError"),
-//                        new Object[]{err}),
-//                tr("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(addEditActionFrame, tr("Error"), tr("Error - the required \"%1\" entry was not found.").arg(err));
+        JOptionPane::showMessageDialog(addEditActionFrame,
+                tr("Error - the required \"%1\" entry was not found.").arg(err),
+                tr("Error"), JOptionPane::ERROR_MESSAGE);
 
         return false;
     }
     bool bOk;
         tWhatData1 = s.toInt(&bOk);
     if(!bOk) {
-//        JOptionPane.showMessageDialog(addEditActionFrame,
-//                java.text.MessageFormat.format(tr("EntryError") + e,
-//                        new Object[]{err}),
-//                tr("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(addEditActionFrame, tr("Error"), tr("Error in \"%1\" entry -").arg(err));
+        JOptionPane::showMessageDialog(addEditActionFrame,
+                tr("Error in \"%1\" entry -").arg(err),
+                tr("Error"), JOptionPane::ERROR_MESSAGE);
 
         log->error("Exception when parsing " + err + " Field: " /*+ e*/);
         return false;
     }
     if ((tWhatData1 < min) || (tWhatData1 > max)) {
-//        JOptionPane.showMessageDialog(addEditActionFrame,
-//                java.text.MessageFormat.format(tr("EntryRangeError"),
-//                        new Object[]{err, "" + min, "" + max}),
-//                tr("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(addEditActionFrame, tr("Error"), tr("\"%1\" entry is not in the allowed range of \"%2\" through \"%3\"").arg(err).arg(min).arg(max));
+        JOptionPane::showMessageDialog(addEditActionFrame,
+                tr("\"%1\" entry is not in the allowed range of \"%2\" through \"%3\"").arg(err).arg(min).arg(max),
+                tr("Error"), JOptionPane::ERROR_MESSAGE);
 
         return false;
     }
@@ -2212,31 +2174,26 @@ void AEFWindowListener::windowClosing(QCloseEvent *e)
 /*private*/ bool TransitTableAction::readWhatData2(QString err, int min, int max) {
     QString s = whatData2Field->text();
     if ((s == NULL) || (s == (""))) {
-//        JOptionPane.showMessageDialog(addEditActionFrame,
-//                java.text.MessageFormat.format(tr("MissingEntryError"),
-//                        new Object[]{err}),
-//                tr("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(addEditActionFrame, tr("Error"), tr("Error - the required \"%1\" entry was not found.").arg(err));
+        JOptionPane::showMessageDialog(addEditActionFrame,
+                tr("Error - the required \"%1\" entry was not found.").arg(err),
+                tr("Error"), JOptionPane::ERROR_MESSAGE);
         return false;
     }
     bool bOk;
         tWhatData2 = s.toInt(&bOk);
     if(!bOk) {
-//        JOptionPane.showMessageDialog(addEditActionFrame,
-//                java.text.MessageFormat.format(tr("EntryError") + e,
-//                        new Object[]{err}),
-//                tr("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(addEditActionFrame, tr("Error"), tr("Error in \"%1\" entry -").arg(err));
+        JOptionPane::showMessageDialog(addEditActionFrame,
+                tr("Error in \"%1\" entry -").arg(err),
+                tr("ErrorTitle"), JOptionPane::ERROR_MESSAGE);
 
         log->error("Exception when parsing " + err + " Field: " /*+ e*/);
         return false;
     }
     if ((tWhatData2 < min) || (tWhatData2 > max)) {
-//        JOptionPane.showMessageDialog(addEditActionFrame,
-//                java.text.MessageFormat.format(tr("EntryRangeError"),
-//                        new Object[]{err, "" + min, "" + max}),
-//                tr("ErrorTitle"), JOptionPane.ERROR_MESSAGE);
-        QMessageBox::critical(addEditActionFrame, tr("Error"), tr("\"%1\" entry is not in the allowed range of \"%2\" through \"%3\""));
+        JOptionPane::showMessageDialog(addEditActionFrame,
+                tr("\"%1\" entry is not in the allowed range of \"%2\" through \"%3\"").arg(
+                        err,  min,  max),
+                tr("Error"), JOptionPane::ERROR_MESSAGE);
 
         return false;
     }
@@ -2341,14 +2298,14 @@ void AEFWindowListener::windowClosing(QCloseEvent *e)
 }
 
 /*private*/ void TransitTableAction::editAction(int r) {
-    curTSA = action->at(activeRow)->at(r);
+    curTSA = action.at(activeRow)->at(r);
     editActionMode = true;
     addEditActionWindow();
 }
 
 /*private*/ void TransitTableAction::deleteAction(int r) {
-    TransitSectionAction* tsa = action->at(activeRow)->at(r);
-    action->at(activeRow)->removeAt(r);
+    TransitSectionAction* tsa = action.at(activeRow)->at(r);
+    action.at(activeRow)->removeAt(r);
     tsa->dispose();
     actionTableModel->fireTableDataChanged();
 }
@@ -2360,7 +2317,7 @@ void AEFWindowListener::windowClosing(QCloseEvent *e)
 
 /*private*/ QString TransitTableAction::getWhenText(int r)
 {
-    TransitSectionAction* tsa = action->at(activeRow)->at(r);
+    TransitSectionAction* tsa = action.at(activeRow)->at(r);
     switch (tsa->getWhenCode()) {
         case TransitSectionAction::ENTRY:
             if (tsa->getDataWhen() > 0) {
@@ -2436,7 +2393,7 @@ void AEFWindowListener::windowClosing(QCloseEvent *e)
  */
 
 /*private*/ QString TransitTableAction::getWhatText(int r) {
-    TransitSectionAction* tsa = action->at(activeRow)->at(r);
+    TransitSectionAction* tsa = action.at(activeRow)->at(r);
     switch (tsa->getWhatCode())
     {
         case TransitSectionAction::PAUSE:
@@ -2512,7 +2469,7 @@ void AEFWindowListener::windowClosing(QCloseEvent *e)
     //super();
     this->act = act;
     //sectionManager.addPropertyChangeListener(this);
-    connect(act->sectionManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+    connect(act->sectionManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 /*public*/ void SectionTableModel::propertyChange(PropertyChangeEvent* e) {
@@ -2646,7 +2603,7 @@ void AEFWindowListener::windowClosing(QCloseEvent *e)
     //super();
  this->act = act;
  //sectionManager.addPropertyChangeListener(this);
- connect(this->act->sectionManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(this->act->sectionManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 /*public*/ void SpecialActionTableModel::propertyChange(PropertyChangeEvent* e) {
@@ -2679,7 +2636,7 @@ void AEFWindowListener::windowClosing(QCloseEvent *e)
 
 /*public*/ int SpecialActionTableModel::rowCount(const QModelIndex &parent) const
 {
-    return (act->action->at(act->activeRow)->size());
+    return (act->action.at(act->activeRow)->size());
 }
 
 /*public*/ Qt::ItemFlags SpecialActionTableModel::flags(const QModelIndex &index) const

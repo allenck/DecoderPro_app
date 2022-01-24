@@ -3,6 +3,7 @@
 
 #include "abstractaction.h"
 #include "operationsframe.h"
+#include <QPointer>
 
 class HardcopyWriter;
 namespace Operations
@@ -20,7 +21,7 @@ namespace Operations
   /*public*/ void printLocations();
 
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e = 0);
+  /*public*/ void actionPerformed(JActionEvent* e = 0)override;
 
  private:
   static /*final*/ QString NEW_LINE;//= "\n"; // NOI18N
@@ -37,7 +38,7 @@ namespace Operations
   bool _isPreview;
   Location* _location;//= NULL;
   HardcopyWriter* writer;
-  LocationPrintOptionFrame* lpof;//= NULL;
+  QPointer<LocationPrintOptionFrame> lpof= NULL;
   Logger* log;
   /*private*/ int charactersPerLine;// = 70;
   QCheckBox* _printLocations;//= new JCheckBox(tr("PrintLocations"));
@@ -46,7 +47,7 @@ namespace Operations
   QCheckBox* printDetails;//= new JCheckBox(tr("PrintDetails"));
   QCheckBox* printAnalysis;//= new JCheckBox(tr("PrintAnalysis"));
 
-  QPushButton* okayButton;//= new JButton(tr("ButtonOkay"));
+  JButton* okayButton;//= new JButton(tr("ButtonOkay"));
   void common();
   /*private*/ void printLocationsSelected();// //throws IOException
   /*private*/ void printSchedulesSelected();// //throws IOException
@@ -78,11 +79,11 @@ namespace Operations
   PrintLocationsAction* pla;
 public:
   /*public*/ LocationPrintOptionFrame(PrintLocationsAction* pla);
-  /*public*/ void initComponents();
-  /*public*/ QString getClassName();
+  /*public*/ void initComponents()override;
+  /*public*/ QString getClassName()override;
 
 public slots:
-  /*public*/ void buttonActionPerformed(QWidget* ae);
+  /*public*/ void buttonActionPerformed(QWidget* ae)override;
  };
 
 }

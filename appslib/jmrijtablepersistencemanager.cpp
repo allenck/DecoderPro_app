@@ -13,8 +13,9 @@
 #include "rowsorterutil.h"
 #include "exceptions.h"
 
-JmriJTablePersistenceManager::JmriJTablePersistenceManager() :JTablePersistenceManager()
+JmriJTablePersistenceManager::JmriJTablePersistenceManager(QObject* parent) :AbstractPreferencesManager(parent)
 {
+ setObjectName("JmriJTablePersistenceManager");
  log = new Logger("JmriJTablePersistenceManager");
  listeners = new QMap<QString, JTableListener*>();
  columns = new QMap<QString, QMap<QString, TableColumnPreferences*>*>();
@@ -41,25 +42,28 @@ JmriJTablePersistenceManager::JmriJTablePersistenceManager() :JTablePersistenceM
  * to be added to the table.
  */
 //@Override
-/*public*/ void JmriJTablePersistenceManager::persist(/*@NonNULL*/ JTable* table) //throws IllegalArgumentException, NullPointerException
+/*public*/ void JmriJTablePersistenceManager::persist(/*@NonNULL*/ JTable* table, bool resetState) //throws IllegalArgumentException, NullPointerException
 {
 //    Objects.requireNonNull(table->getName(), "Table name must be nonNULL");
  if ( this->listeners->contains(table->getName()) && this->listeners->value(table->getName())->getTable() != (table))
  {
   throw  IllegalArgumentException("Table name must be unique");
  }
+ if (resetState) {
+     this->resetState(table);
+ }
  if (! this->listeners->contains(table->getName())) {
   JTableListener* listener = new JTableListener(table, this);
    this->listeners->insert(table->getName(), listener);
 #if 1
   //if (!Arrays.asList(table->getPropertyChangeListeners()).contains(this))
-
   {
-   //table->addPropertyChangeListener(this);
+   //table->SwingPropertyChangeSupport::addPropertyChangeListener(this);
    connect(table, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-   //table->addPropertyChangeListener(listener);
+   //table->SwingPropertyChangeSupport::addPropertyChangeListener(listener);
    connect(table, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
-   table->getColumnModel()->addColumnModelListener(listener);
+   if(qobject_cast<TableColumnModelListener*>(listener))
+    table->getColumnModel()->addColumnModelListener(listener);
 #if 1
    RowSorter* sorter = table->getRowSorter();
    if (sorter != NULL) {
@@ -124,7 +128,7 @@ JmriJTablePersistenceManager::JmriJTablePersistenceManager() :JTablePersistenceM
     RowSorter* sorter = table->getRowSorter();
     //bool isXModel = model instanceof XTableColumnModel;
     bool isXModel = false;
-    if(qobject_cast<XTableColumnModel*>(model) != NULL)
+    if(static_cast<XTableColumnModel*>(model) != NULL)
        isXModel = true;
     QListIterator<TableColumn*> e = model->getColumns();
     while (e.hasNext()) {
@@ -143,7 +147,7 @@ JmriJTablePersistenceManager::JmriJTablePersistenceManager() :JTablePersistenceM
         SortOrder sorted = UNSORTED;
         if (sorter != NULL) {
             sorted = RowSorterUtil::getSortOrder(sorter, index);
-            log->trace(tr("Column %1 (model index %2) is %3").arg(name).arg(index, sorted));
+//            log->trace(tr("Column %1 (model index %2) is %3").arg(name).arg(index).arg(sorted));
         }
          this->setPersistedState(table->getName(), name, index, width, sorted, hidden);
 #endif
@@ -168,7 +172,7 @@ JmriJTablePersistenceManager::JmriJTablePersistenceManager() :JTablePersistenceM
     RowSorter* sorter = table->getRowSorter();
 #endif
     //bool isXModel = model instanceof XTableColumnModel;
-    bool isXModel = qobject_cast<XTableColumnModel*>(model) != NULL;
+    bool isXModel = qobject_cast<XTableColumnModel*>(model->self()) != NULL;
 
 //    QListIterator<TableColumn*> e = QListIterator<TableColumn*>();
 //    if (isXModel) {
@@ -353,7 +357,7 @@ JmriJTablePersistenceManager::JmriJTablePersistenceManager() :JTablePersistenceM
   }
  }
      }//);
-//    } catch (NullPointerException ex) {
+//    } catch (NullPointerException* ex) {
 //        log.info("Table preferences not found.\nThis is expected on the first time the \"{}\" profile is used on this computer.",
 //                ProfileManager.getDefault().getActiveProfile().getName());
 //    }
@@ -421,7 +425,7 @@ JmriJTablePersistenceManager::JmriJTablePersistenceManager() :JTablePersistenceM
  try {
      ProfileUtils::getUserInterfaceConfiguration(ProfileManager::getDefault()->getActiveProfile())
              ->putConfigurationFragment(/*JDOMUtil.toW3CElement*/(element), false);
- } catch (JDOMException ex) {
+ } catch (JDOMException* ex) {
      log->error("Unable to save user preferences"/*, ex*/);
  }
  this->dirty = false;
@@ -435,10 +439,10 @@ JmriJTablePersistenceManager::JmriJTablePersistenceManager() :JTablePersistenceM
     return provides;
 }
 #else
-/*public*/ QSet<QString>* JmriJTablePersistenceManager::getProvides()
+/*public*/ QSet<QString> JmriJTablePersistenceManager::getProvides()
 {
- QSet<QString>* provides = AbstractPreferencesManager::getProvides();
- provides->insert("JTablePersistenceManager");
+ QSet<QString> provides = AbstractPreferencesManager::getProvides();
+ provides.insert("JTablePersistenceManager");
  return provides;
 }
 #endif
@@ -614,9 +618,9 @@ JmriJTablePersistenceManager::JmriJTablePersistenceManager() :JTablePersistenceM
 log = new Logger("JTableListener");
      this->table = table;
      this->manager = manager;
- connect(table->getColumnModel(),SIGNAL(notifycolumnadded(TableColumnModelEvent*)), this, SLOT(columnAdded(TableColumnModelEvent*)));
-   connect(table->getColumnModel(),SIGNAL(notifycolumnremoved(TableColumnModelEvent*)), this, SLOT(columnRemoved(TableColumnModelEvent*)));
-   connect(table->getColumnModel(),SIGNAL(notifycolumnmoved(TableColumnModelEvent*)), this, SLOT(columnMoved(TableColumnModelEvent*)));
+// connect(table->getColumnModel(),SIGNAL(notifycolumnadded(TableColumnModelEvent*)), this, SLOT(columnAdded(TableColumnModelEvent*)));
+//   connect(table->getColumnModel(),SIGNAL(notifycolumnremoved(TableColumnModelEvent*)), this, SLOT(columnRemoved(TableColumnModelEvent*)));
+//   connect(table->getColumnModel(),SIGNAL(notifycolumnmoved(TableColumnModelEvent*)), this, SLOT(columnMoved(TableColumnModelEvent*)));
 
 }
 

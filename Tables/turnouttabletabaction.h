@@ -20,10 +20,10 @@ public slots:
 private:
     void common();
 protected:
-    /*protected*/ Manager* getManager();
-    /*protected*/ QString getClassName() ;
-    /*protected*/ AbstractTableAction* getNewTableAction (QString choice);
-    /*protected*/ QString helpTarget();
+    /*protected*/ Manager* getManager() override;
+    /*protected*/ QString getClassName() override;
+    /*protected*/ AbstractTableAction* getNewTableAction (QString choice)override;
+    /*protected*/ QString helpTarget()override;
 
 };
 Q_DECLARE_METATYPE(TurnoutTableTabAction)

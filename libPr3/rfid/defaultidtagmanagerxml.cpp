@@ -29,22 +29,22 @@
         try {
             readFile(getDefaultIdTagFileName());
         }
-        catch (JDOMException ex) {
-            log->error(tr("Exception during IdTag file reading: %1").arg(ex.getMessage()));
+        catch (JDOMException* ex) {
+            log->error(tr("Exception during IdTag file reading: %1").arg(ex->getMessage()));
         }
-        catch ( IOException ex) {
-         log->error(tr("Exception during IdTag file reading: %1").arg(ex.getMessage()));
+        catch ( IOException* ex) {
+         log->error(tr("Exception during IdTag file reading: %1").arg(ex->getMessage()));
         }
     }
 
-    /*public*/ void DefaultIdTagManagerXml::store() throw (IOException) {
+    /*public*/ void DefaultIdTagManagerXml::store() /*throw (IOException)*/ {
             log->debug("Storing...");
             log->debug(tr("Using file: %1").arg(getDefaultIdTagFileName()));
             createFile(getDefaultIdTagFileName(), true);
             try {
                 writeFile(getDefaultIdTagFileName());
-            } catch (FileNotFoundException ex) {
-                log->error(tr("File not found while writing IdTag file, may not be complete: %1").arg( ex.getMessage()));
+            } catch (FileNotFoundException* ex) {
+                log->error(tr("File not found while writing IdTag file, may not be complete: %1").arg( ex->getMessage()));
             }
     }
 
@@ -70,8 +70,8 @@
            } else {
               file = new File(fileName);
            }
-       } catch (IOException ex) {
-          log->error(tr("Exception while creating IdTag file, may not be complete: %1").arg(ex.getMessage()));
+       } catch (IOException* ex) {
+          log->error(tr("Exception while creating IdTag file, may not be complete: %1").arg(ex->getMessage()));
        }
        return file;
    }
@@ -79,7 +79,7 @@
    /*private*/ void DefaultIdTagManagerXml::writeFile(QString fileName) throw (FileNotFoundException, IOException) {
         log->debug(tr("writeFile %1").arg(fileName));
         // This is taken in large part from "Java and XML" page 368
-        QFile* file = findFile(fileName);
+        QFile* file = findFile(fileName)->toQfile();
         if (file == nullptr) {
            file = new QFile(fileName);
         }
@@ -112,9 +112,9 @@
 
         // Loop through RfidTags
         root.appendChild(values = doc.createElement("idtags")); // NOI18N
-        for (/*IdTag*/NamedBean* t : manager->getNamedBeanSet()) {
+        for (/*IdTag*/NamedBean* t : manager->AbstractManager::getNamedBeanSet()) {
            log->debug(tr("Writing IdTag: %1").arg(t->getSystemName()));
-           values.appendChild(((IdTag*)t)->store(manager->isStateStored()));
+           values.appendChild(((IdTag*)t)->store(doc, manager->isStateStored()));
         }
          writeXML(file, doc);
       }

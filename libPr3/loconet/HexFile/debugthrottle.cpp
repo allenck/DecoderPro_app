@@ -24,23 +24,11 @@
     // cache settings. It would be better to read the
     // actual state, but I don't know how to do this
     this->speedSetting = 0;
-    this->f0           = false;
-    this->f1           = false;
-    this->f2           = false;
-    this->f3           = false;
-    this->f4           = false;
-    this->f5           = false;
-    this->f6           = false;
-    this->f7           = false;
-    this->f8           = false;
-    this->f9           = false;
-    this->f10           = false;
-    this->f11           = false;
-    this->f12           = false;
+
     this->isForward    = true;
 
     this->address      = address;
-    setSpeedStepMode( new SpeedStepMode(SpeedStepMode::NMRA_DCC_128) );
+    setSpeedStepMode( SpeedStepMode::NMRA_DCC_128);
 }
 
 
@@ -85,7 +73,7 @@
     }
     this->speedSetting = speed;
     if (oldSpeed != this->speedSetting)
-        notifyPropertyChangeListener("SpeedSetting", oldSpeed, this->speedSetting );
+        firePropertyChange("SpeedSetting", oldSpeed, this->speedSetting );
     record(speed);
 }
 
@@ -94,7 +82,7 @@
     isForward = forward;
     setSpeedSetting(speedSetting);  // send the command
     if (old != isForward)
-        notifyPropertyChangeListener("IsForward", old, isForward );
+        firePropertyChange("IsForward", old, isForward );
 }
 
 /*protected*/ void DebugThrottle::throttleDispose(){

@@ -49,7 +49,7 @@ public slots:
   /*public*/ /*abstract*/ virtual void propertyChange(PropertyChangeEvent* e);
  void on_dccNumBox();
  void on_rosterBoxCurrentIndexChanged(QString);
- /*public*/ void actionPerformed(ActionEvent* /*e*/); // actionEvent required!
+ /*public*/ void actionPerformed(JActionEvent* /*e*/); // actionEvent required!
  void onButton();
 
 private:
@@ -158,7 +158,7 @@ public slots:
     void on_pathBox_currentIndexChanged(int);
     void on_portalBox_currentIndexChanged(int);
 signals:
-    void actionPerformed(ActionEvent *e);
+    void actionPerformed(JActionEvent *e);
 
 private:
     /*private*/ QWidget* makePanel(QString title, QString tooltip, QString box1Name, QString box2Name, WarrantRoute* parent);
@@ -210,10 +210,12 @@ public:
     /*public*/ int rowCount(const QModelIndex &parent) const;
     /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
+    /*public*/ QString getColumnClass(int col);
     /*public*/ int getPreferredWidth(int col);
     /*public*/ QVariant data(const QModelIndex &index, int role) const;
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
 };
+
 class PRWindowListener :public WindowListener
 {
  Q_OBJECT
@@ -226,16 +228,17 @@ public:
  }
 };
 
-class SelectActionListener : public ActionListener
+class SelectActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  QButtonGroup* buts;
  JDialog* dialog;
  QList <DefaultMutableTreeNode*>* dNodes;
  DefaultTreeModel* tree;
  WarrantRoute* caller;
 public slots:
- /*public*/ void actionPerformed(ActionEvent* /*e*/ = 0)
+ /*public*/ void actionPerformed(JActionEvent* /*e*/ = 0)
  {
   if (buts->checkedButton()!=NULL)
   {
@@ -259,16 +262,19 @@ public:
  this->caller = caller;
  return this;
  }
+ QObject* self() override {return (QObject*)this;}
 };
-class ShowActionListener : public ActionListener
+
+class ShowActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  QButtonGroup* buts;
  QList <DefaultMutableTreeNode*>* destinationNodes;
  DefaultTreeModel* tree;
  WarrantRoute* caller;
 public slots:
- /*public*/ void actionPerformed(ActionEvent* /*e*/ = 0)
+ /*public*/ void actionPerformed(JActionEvent* /*e*/ = 0)
  {
   if (buts->checkedButton()!=NULL)
   {
@@ -290,5 +296,6 @@ public:
      this->caller = caller;
      return this;
  }
+ QObject* self() override {return (QObject*)this;}
 };
 #endif // WARRANTROUTE_H

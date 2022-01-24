@@ -6,18 +6,18 @@
 
 AbstractNamedBean::AbstractNamedBean(QObject *parent) : NamedBean(parent)
 {
- common("", "", parent);
+ common("", ""/*, parent*/);
 }
 
-void AbstractNamedBean::common(QString sys, QString user, QObject *parent)
+void AbstractNamedBean::common(QString sys, QString user/*, QObject *parent*/)
 {
- this->parent = parent;
+ //this->parent = parent;
  this->mSystemName = sys;
  this->mUserName = user;
  parameters = NULL;
  _register = new QHash<PropertyChangeListener*, QString>();
  listenerRefs = new QHash<PropertyChangeListener*, QString>();
- pcs = new PropertyChangeSupport((QObject*)this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
 }
 
 /**
@@ -30,19 +30,19 @@ void AbstractNamedBean::common(QString sys, QString user, QObject *parent)
  */
 //public abstract class AbstractNamedBean implements NamedBean, java.io.Serializable {
 
-AbstractNamedBean::AbstractNamedBean(QString sys, QObject* parent) : NamedBean(sys, parent)
+AbstractNamedBean::AbstractNamedBean(QString sys, QObject* parent) : NamedBean(parent)
 {
  //Q_ASSERT(!sys.isEmpty());
  setObjectName(sys);
- common(sys, "", parent );
+ common(sys, ""/*, parent*/ );
  setObjectName(sys);
 }
 
-AbstractNamedBean:: AbstractNamedBean(QString sysName, QString user, QObject* parent) : NamedBean(sysName,parent)
+AbstractNamedBean:: AbstractNamedBean(QString sysName, QString user, QObject* parent) : NamedBean(parent)
 {
  //Q_ASSERT(!sysName.isEmpty());
- common(sysName, user, parent);
- setUserName(user);
+ common(sysName, user/*, parent*/);
+ //setUserName(user);
  setObjectName(sysName+"/"+user);
 }
 
@@ -102,7 +102,7 @@ QString AbstractNamedBean::getDisplayName()
                                                                           const QString beanRef,
                                                                           QString listenerRef)
 {
- pcs->addPropertyChangeListener(l);
+ pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
  //connect(this->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),l, SLOT(propertyChange(PropertyChangeEvent*)));
  if(beanRef!=NULL)
      _register->insert(l, beanRef);
@@ -117,8 +117,8 @@ QString AbstractNamedBean::getDisplayName()
                                                    /*@Nonnull*/ PropertyChangeListener* l,
                                                        QString beanRef, QString listenerRef)
 {
- QPointer<PropertyChangeListener> listener = l;
-    pcs->addPropertyChangeListener(propertyName, listener);
+ //QPointer<PropertyChangeListener> listener = (PropertyChangeListener*)l->self();
+    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(propertyName, /*listener*/l);
     if (beanRef != "") {
         _register->insert(l, beanRef);
     }
@@ -131,21 +131,21 @@ QString AbstractNamedBean::getDisplayName()
 //@OverridingMethodsMustInvokeSuper
 /*public synchronized*/ void AbstractNamedBean::addPropertyChangeListener(PropertyChangeListener* l)
 {
- pcs->addPropertyChangeListener(l);
+ pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
  //connect(this->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),l, SLOT(propertyChange(PropertyChangeEvent*)), Qt::DirectConnection);
 }
 
 //@Override
 //@OverridingMethodsMustInvokeSuper
 /*public*/ /*synchronized*/ void AbstractNamedBean::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-    pcs->addPropertyChangeListener(propertyName, listener);
+    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
 }
 
 ////@Override
 ////@OverridingMethodsMustInvokeSuper
 ///*public*/ /*synchronized*/ void AbstractNamedBean::addPropertyChangeListener(QString propertyName,
 //                                                                              PropertyChangeListener* listener) {
-//    pcs->addPropertyChangeListener(propertyName, listener);
+//    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(propertyName, listener);
 //}
 
 /*public synchronized*/ void AbstractNamedBean::removePropertyChangeListener(PropertyChangeListener* listener)
@@ -238,11 +238,17 @@ QString AbstractNamedBean::getDisplayName()
     return pcs->getPropertyChangeListeners().length();
 }
 
-/*public synchronized*/ QVector<PropertyChangeListener*> AbstractNamedBean::getPropertyChangeListeners() {
+/*public synchronized*/ QVector<PropertyChangeListener*> AbstractNamedBean::getPropertyChangeListeners() const {
     return pcs->getPropertyChangeListeners();
 }
 
-/*public*/ QString AbstractNamedBean::getSystemName()const  {return mSystemName;}
+/** {@inheritDoc} */
+//@Override
+//@Nonnull
+/*final*/ /*public*/ QString AbstractNamedBean::getSystemName() const{
+    return mSystemName;
+}
+
 /*public*/ QString AbstractNamedBean::getUserName()const {return mUserName;}
 
 ///*public*/ void AbstractNamedBean::setSysName(QString s)
@@ -252,7 +258,7 @@ QString AbstractNamedBean::getDisplayName()
 
 //@Override
 //@OverridingMethodsMustInvokeSuper
-/*public*/ void AbstractNamedBean::setUserName(QString s) throw (NamedBean::BadUserNameException) {
+/*public*/ void AbstractNamedBean::setUserName(QString s) /*throw (NamedBean::BadUserNameException)*/ {
     QString old = mUserName;
     mUserName = NamedBean::normalizeUserName(s);
     firePropertyChange("UserName", old, mUserName);
@@ -308,7 +314,7 @@ QString AbstractNamedBean::getDisplayName()
 }
 
 //@Override
-/*public*/ void AbstractNamedBean::vetoableChange(PropertyChangeEvent* /*evt*/) throw (PropertyVetoException)
+/*public*/ void AbstractNamedBean::vetoableChange(PropertyChangeEvent* /*evt*/) /*throw (PropertyVetoException)*/
 {
 }
 
@@ -329,7 +335,7 @@ QString AbstractNamedBean::getDisplayName()
  if (obj == this) return true;  // for efficiency
  if (obj == nullptr) return false; // by contract
 
- if (qobject_cast<AbstractNamedBean*>(obj))
+ if (static_cast<AbstractNamedBean*>(obj))
  {  // NamedBeans are not equal to things of other types
      AbstractNamedBean* b = (AbstractNamedBean*) obj;
      return this->getSystemName() == (b->getSystemName());
@@ -363,8 +369,8 @@ QString AbstractNamedBean::getDisplayName()
  */
 //@CheckReturnValue
 /*public*/ int AbstractNamedBean::compareSystemNameSuffix(/*@Nonnull*/ QString suffix1, /*@Nonnull*/ QString suffix2, /*@Nonnull*/ NamedBean* /*n*/) {
-    AlphanumComparator ac = AlphanumComparator();
-    return ac.compare(suffix1, suffix2);
+    AlphanumComparator* ac = new AlphanumComparator();
+    return ac->compare(suffix1, suffix2);
 }
 
 /*private*/ /*static*/ Logger* AbstractNamedBean::log = LoggerFactory::getLogger("AbstractNamedBean");

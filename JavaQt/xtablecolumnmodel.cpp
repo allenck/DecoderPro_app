@@ -1,12 +1,8 @@
 #include "xtablecolumnmodel.h"
 #include "exceptions.h"
 #include "tablecolumn.h"
+#include "jtable.h"
 
-XTableColumnModel::XTableColumnModel(QObject *parent) :
-  DefaultTableColumnModel(parent)
-{
- allTableColumns =  QVector<TableColumn*>();
-}
 /**
  * Taken from http://www.stephenkelvin.de/XTableColumnModel/
  * <code>XTableColumnModel</code> extends the DefaultTableColumnModel . It
@@ -38,8 +34,11 @@ XTableColumnModel::XTableColumnModel(QObject *parent) :
 /**
  * Creates an extended table column model.
  */
-//    /*public*/ XTableColumnModel() {
-//    }
+XTableColumnModel::XTableColumnModel(JTable *parent) :
+  DefaultTableColumnModel(parent)
+{
+ allTableColumns =  QVector<TableColumn*>();
+}
 
 /**
  * Sets the visibility of the specified TableColumn. The call is ignored if
@@ -53,10 +52,17 @@ XTableColumnModel::XTableColumnModel(QObject *parent) :
 // listeners will receive columnAdded()/columnRemoved() event
 /*public*/ void XTableColumnModel::setColumnVisible(TableColumn* column, bool visible)
 {
+ JTable* table = (JTable*)parent();
+ bool visibility = !table->isColumnHidden(column->getModelIndex());
+ if(visibility == visible)
+  return;
+ if(visible)
+  table->showColumn(column->getModelIndex());
+ else
+  table->hideColumn(column->getModelIndex());
  if (!visible)
  {
   DefaultTableColumnModel::removeColumn(column);
-
  }
  else
  {
@@ -209,7 +215,7 @@ XTableColumnModel::XTableColumnModel(QObject *parent) :
 /*public*/ void XTableColumnModel::moveColumn(int columnIndex, int newIndex, bool onlyVisible) {
     if ((columnIndex < 0) || (columnIndex >= getColumnCount(onlyVisible))
             || (newIndex < 0) || (newIndex >= getColumnCount(onlyVisible))) {
-        throw  IllegalArgumentException("moveColumn() - Index out of range");
+        throw new IllegalArgumentException("moveColumn() - Index out of range");
     }
 
     if (onlyVisible) {
@@ -252,8 +258,7 @@ XTableColumnModel::XTableColumnModel(QObject *parent) :
  * @see	#getColumns
  */
 /*public*/ int XTableColumnModel::getColumnCount(bool onlyVisible) {
-    QVector<TableColumn*> columns = (onlyVisible ? tableColumns : allTableColumns);
-    return columns.size();
+    return getColumnList(onlyVisible).size();
 }
 
 /**
@@ -263,13 +268,9 @@ XTableColumnModel::XTableColumnModel(QObject *parent) :
  *                    enumeration.
  * @return an <code>Enumeration</code> of the columns in the model
  */
-/*public*/ QListIterator<TableColumn*> XTableColumnModel::getColumns(bool onlyVisible)
+/*public*/ QListIterator<TableColumn *> XTableColumnModel::getColumns(bool onlyVisible)
 {
- QVector<TableColumn*> columns = (onlyVisible ? tableColumns : allTableColumns);
- QList<TableColumn*> colList = columns.toList();
-
- //return columns.elements();
- return QListIterator<TableColumn*>(colList);
+ return QListIterator<TableColumn*>(getColumnList(onlyVisible).toList());
 }
 
 /**
@@ -296,7 +297,7 @@ XTableColumnModel::XTableColumnModel(QObject *parent) :
   throw new IllegalArgumentException("Identifier is NULL");
  }
 
- QVector<TableColumn*> columns = (onlyVisible ? tableColumns : allTableColumns);
+ QVector<TableColumn*> columns = getColumnList(onlyVisible);
  int noColumns = columns.size();
  TableColumn* column;
 
@@ -326,5 +327,17 @@ XTableColumnModel::XTableColumnModel(QObject *parent) :
  *         <code>columnIndex</code>
  */
 /*public*/ TableColumn* XTableColumnModel::getColumn(int columnIndex, bool onlyVisible) {
-    return tableColumns.at(columnIndex);
+    return getColumnList(onlyVisible).at(columnIndex);
+}
+
+/**
+ * Get the list of columns. This list may be only the visible columns or may
+ * be the list of all columns.
+ *
+ * @param onlyVisible true if the list should only contain visible columns;
+ *                    false otherwise
+ * @return the list of columns
+ */
+/*private*/ QVector<TableColumn*> XTableColumnModel::getColumnList(bool onlyVisible) {
+    return (onlyVisible ? tableColumns : allTableColumns);
 }

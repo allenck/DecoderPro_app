@@ -145,7 +145,6 @@ public:
     RetrySetup(DccLocoAddress* address, LnThrottleManager* list) {
      this->address = address;
      this->list = list;
-     //this->lnThrottleManager = lnThrottleManager;
     }
 public slots:
         //@Override
@@ -156,6 +155,8 @@ public slots:
         while (attempts <= maxAttempts) {
             try {
                 //Thread.sleep(1000); // wait one second
+          if(QThread::currentThread()->isInterruptionRequested())
+           return;
              SleeperThread::sleep(1000);
             } catch (InterruptedException ex) {
                 return; // stop waiting if slot is found or error occurs
@@ -175,7 +176,7 @@ public slots:
     }
     void interrupted()
     {
-     throw InterruptedException();
+     throw new InterruptedException();
     }
 signals:
     void finished();

@@ -20,34 +20,42 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
     return Manager::MEMORIES;
 }
 
-/*public*/ char AbstractMemoryManager::typeLetter() const { return 'M'; }
+/*public*/ QChar AbstractMemoryManager::typeLetter() { return 'M'; }
 
-/*public*/ Memory* AbstractMemoryManager::provideMemory(QString sName) const
+/*public*/ Memory* AbstractMemoryManager::provideMemory(QString sName)
 {
- Memory* t = getMemory(sName);
- if (t!=NULL) return t;
- if (sName.startsWith(getSystemPrefix()+typeLetter()))
-  return newMemory(sName, "");
- else
-  return newMemory(makeSystemName(sName), "");
+ Memory* m = getMemory(sName);
+ if (m != nullptr) {
+     return m;
+ }
+ if (sName.startsWith(getSystemNamePrefix())) {
+     return newMemory(sName, nullptr);
+ } else {
+     return newMemory(makeSystemName(sName), nullptr);
+ }
 }
 
-/*public*/ Memory* AbstractMemoryManager::getMemory(QString name) const {
-    Memory* t = getByUserName(name);
-    if (t!=NULL) return t;
-
-    return getBySystemName(name);
+/*public*/ Memory* AbstractMemoryManager::getMemory(QString sName)  {
+    Memory* m = getByUserName(sName);
+    if (m != nullptr) {
+        return m;
+    }
+    if (sName.startsWith(getSystemNamePrefix())) {
+        return newMemory(sName, nullptr);
+    } else {
+        return newMemory(makeSystemName(sName), nullptr);
+    }
 }
 
-/*public*/ Memory* AbstractMemoryManager::getBySystemName(QString name) const {
-    return (Memory*)_tsys->value(name);
+/*public*/ Memory* AbstractMemoryManager::getBySystemName(QString name)  {
+    getBeanBySystemName(name);
 }
 
-/*public*/ Memory* AbstractMemoryManager::getByUserName(QString key) const {
-    return (Memory*)_tuser->value(key);
+/*public*/ Memory* AbstractMemoryManager::getByUserName(QString key)  {
+    getBeanByUserName(key);
 }
 
-/*public*/ Memory* AbstractMemoryManager::newMemory(QString systemName, QString userName) const
+/*public*/ Memory* AbstractMemoryManager::newMemory(QString systemName, QString userName)
 {
     if (log.isDebugEnabled()) log.debug("new Memory:"
                                         +( (systemName==NULL) ? "NULL" : systemName)
@@ -55,7 +63,7 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
     if (systemName == NULL){
         log.error("SystemName cannot be NULL. UserName was "
                 +( (userName==NULL) ? "NULL" : userName));
-        throw IllegalArgumentException("SystemName cannot be NULL. UserName was "
+        throw new IllegalArgumentException("SystemName cannot be NULL. UserName was "
                 +( (userName==NULL) ? "NULL" : userName));
     }
     // return existing if there is one
@@ -77,7 +85,7 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
     s = createNewMemory(systemName, userName);
 
     // if that failed, blame it on the input arguements
-    if (s == NULL) throw IllegalArgumentException();
+    if (s == NULL) throw new IllegalArgumentException();
 
     // save in the maps
     Register(s);
@@ -96,14 +104,14 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
             {
                 lastAutoMemoryRef = autoNumber;
             }
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException* e){
             log.warn("Auto generated SystemName "+ systemName + " is not in the correct format");
         }
     }
     return s;
 }
 
-/*public*/ Memory* AbstractMemoryManager::newMemory(QString userName) const
+/*public*/ Memory* AbstractMemoryManager::newMemory(QString userName)
 {
     int nextAutoMemoryRef = lastAutoMemoryRef+1;
     QString b =  QString("IM:AUTO:");
@@ -133,7 +141,7 @@ AbstractMemoryManager::AbstractMemoryManager(QObject *parent) :
 
 //@Override
 //@Nonnull
-/*public*/ Memory* AbstractMemoryManager::provide(QString name) const throw (IllegalArgumentException) {
+/*public*/ Memory* AbstractMemoryManager::provide(QString name)  throw (IllegalArgumentException) {
     return provideMemory(name);
 }
 

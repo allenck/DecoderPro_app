@@ -20,6 +20,7 @@
 #include "locationmanager.h"
 #include "trainschedulemanager.h"
 #include "trainschedule.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -62,13 +63,11 @@ namespace Operations
          // TODO the following two property changes could be moved to ScheduleItem
          // covers the cases where destination or track is deleted
          if (si->getDestination() != NULL ) {
-             //.getDestination().addPropertyChangeListener(this);
-          connect(si->getDestination()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+             si->getDestination()->SwingPropertyChangeSupport::addPropertyChangeListener(this);
 
          }
          if (si->getDestinationTrack() != NULL ) {
-             //si.getDestinationTrack().addPropertyChangeListener(this);
-          connect(si->getDestinationTrack()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          si->getDestinationTrack()->SwingPropertyChangeSupport::addPropertyChangeListener(this);
          }
      }
  }
@@ -86,17 +85,15 @@ namespace Operations
          //_schedule.addPropertyChangeListener(this);
       connect(_schedule->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
-     //_location.addPropertyChangeListener(this);
-     connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //_track.addPropertyChangeListener(this);
-     connect(_track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     _location->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+     _track->SwingPropertyChangeSupport::addPropertyChangeListener(this);
      initTable(table);
  }
 
  /*private*/ void ScheduleTableModel::initTable(JTable* table) {
      // Install the button handlers
 
-  XTableColumnModel* tcm = new XTableColumnModel((AbstractTableModel*)table->model());
+  XTableColumnModel* tcm = new XTableColumnModel(/*(AbstractTableModel*)table->model()*/table);
   table->setColumnModel(tcm);
   table->createDefaultColumnsFromModel();
 #if 0
@@ -108,8 +105,8 @@ namespace Operations
      tcm.getColumn(DOWN_COLUMN)->setCellEditor(buttonEditor);
      tcm.getColumn(DELETE_COLUMN)->setCellRenderer(buttonRenderer);
      tcm.getColumn(DELETE_COLUMN)->setCellEditor(buttonEditor);
-     table->setDefaultRenderer(JComboBox.class, new jmri.jmrit.symbolicprog.ValueRenderer());
-     table->setDefaultEditor(JComboBox.class, new jmri.jmrit.symbolicprog.ValueEditor());
+     table->setDefaultRenderer("JComboBox", new jmri.jmrit.symbolicprog.ValueRenderer());
+     table->setDefaultEditor("JComboBox", new jmri.jmrit.symbolicprog.ValueEditor());
 #endif
      table->setItemDelegateForColumn(UP_COLUMN, new MyDelegate());
      table->setItemDelegateForColumn(DOWN_COLUMN, new MyDelegate());
@@ -138,9 +135,9 @@ namespace Operations
  }
 #if 1
  /*private*/ void ScheduleTableModel::setPreferredWidths(JTable* table) {
-     if (_frame->loadTableDetails(table)) {
-         return; // done
-     }
+//     if (_frame->loadTableDetails(table)) {
+//         return; // done
+//     }
      log->debug("Setting preferred widths");
      // set column preferred widths
      table->getColumnModel()->getColumn(ID_COLUMN)->setPreferredWidth(35);
@@ -220,44 +217,44 @@ namespace Operations
   return QVariant();
  }
 
-// /*public*/ Class<?> getColumnClass(int col) {
-//     switch (col) {
-//         case ID_COLUMN:
-//             return String.class;
-//         case CURRENT_COLUMN:
-//             return String.class;
-//         case TYPE_COLUMN:
-//             return String.class;
-//         case RANDOM_COLUMN:
-//             return JComboBox.class;
-//         case SETOUT_DAY_COLUMN:
-//             return JComboBox.class;
-//         case ROAD_COLUMN:
-//             return JComboBox.class;
-//         case LOAD_COLUMN:
-//             return JComboBox.class;
-//         case SHIP_COLUMN:
-//             return JComboBox.class;
-//         case DEST_COLUMN:
-//             return JComboBox.class;
-//         case TRACK_COLUMN:
-//             return JComboBox.class;
-//         case PICKUP_DAY_COLUMN:
-//             return JComboBox.class;
-//         case COUNT_COLUMN:
-//             return String.class;
-//         case WAIT_COLUMN:
-//             return String.class;
-//         case UP_COLUMN:
-//             return JButton.class;
-//         case DOWN_COLUMN:
-//             return JButton.class;
-//         case DELETE_COLUMN:
-//             return JButton.class;
-//         default:
-//             return NULL ;
-//     }
-// }
+ /*public*/ QString ScheduleTableModel::getColumnClass(int col) const{
+     switch (col) {
+         case ID_COLUMN:
+             return "String";
+         case CURRENT_COLUMN:
+             return "String";
+         case TYPE_COLUMN:
+             return "String";
+         case RANDOM_COLUMN:
+             return "JComboBox";
+         case SETOUT_DAY_COLUMN:
+             return "JComboBox";
+         case ROAD_COLUMN:
+             return "JComboBox";
+         case LOAD_COLUMN:
+             return "JComboBox";
+         case SHIP_COLUMN:
+             return "JComboBox";
+         case DEST_COLUMN:
+             return "JComboBox";
+         case TRACK_COLUMN:
+             return "JComboBox";
+         case PICKUP_DAY_COLUMN:
+             return "JComboBox";
+         case COUNT_COLUMN:
+             return "String";
+         case WAIT_COLUMN:
+             return "String";
+         case UP_COLUMN:
+             return "JButton";
+         case DOWN_COLUMN:
+             return "JButton";
+         case DELETE_COLUMN:
+             return "JButton";
+         default:
+             return "" ;
+     }
+ }
 
  /*public*/ Qt::ItemFlags ScheduleTableModel::flags(const QModelIndex &index) const
  {
@@ -445,8 +442,8 @@ namespace Operations
 
  /*private*/ QComboBox* ScheduleTableModel::getSetoutDayComboBox(ScheduleItem* si)
  {
-     QComboBox* cb = TrainScheduleManager::instance()->getSelectComboBox();
-     TrainSchedule* sch = TrainScheduleManager::instance()->getScheduleById(si->getSetoutTrainScheduleId());
+     QComboBox* cb = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getSelectComboBox();
+     TrainSchedule* sch = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(si->getSetoutTrainScheduleId());
      if (sch != NULL )
      {
       cb->setCurrentIndex(cb->findText(sch->toString()));
@@ -466,11 +463,11 @@ namespace Operations
   // log->debug("getRoadComboBox for ScheduleItem "+si->getType());
   QComboBox* cb = new QComboBox();
   cb->addItem(ScheduleItem::NONE);
-  foreach (QString roadName, CarRoads::instance()->getNames())
+  foreach (QString roadName, ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->getNames())
   {
    if (getTrack()->acceptsRoadName(roadName))
    {
-    Car* car = CarManager::instance()->getByTypeAndRoad(si->getTypeName(), roadName);
+    Car* car = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getByTypeAndRoad(si->getTypeName(), roadName);
     if (car != NULL )
     {
      cb->addItem(roadName);
@@ -489,7 +486,7 @@ namespace Operations
 
  /*private*/ QComboBox* ScheduleTableModel::getLoadComboBox(ScheduleItem* si) {
      // log->debug("getLoadComboBox for ScheduleItem "+si->getType());
-     QComboBox* cb = CarLoads::instance()->getSelectComboBox(si->getTypeName());
+     QComboBox* cb = ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getSelectComboBox(si->getTypeName());
      filterLoads(si, cb); // remove loads not accepted by this track
      cb->setCurrentIndex(cb->findText(si->getReceiveLoadName()));
      if (cb->currentText()!=(si->getReceiveLoadName())) {
@@ -503,8 +500,8 @@ namespace Operations
 
 
  /*private*/ QComboBox* ScheduleTableModel::getPickupDayComboBox(ScheduleItem* si) {
-     QComboBox* cb = TrainScheduleManager::instance()->getSelectComboBox();
-     TrainSchedule* sch = TrainScheduleManager::instance()->getScheduleById(si->getPickupTrainScheduleId());
+     QComboBox* cb = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getSelectComboBox();
+     TrainSchedule* sch = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(si->getPickupTrainScheduleId());
      if (sch != NULL ) {
          cb->setCurrentIndex(cb->findText(sch->toString()));
      } else if (si->getPickupTrainScheduleId()!=(ScheduleItem::NONE)) {
@@ -519,7 +516,7 @@ namespace Operations
 
  /*private*/ QComboBox* ScheduleTableModel::getShipComboBox(ScheduleItem* si) {
      // log->debug("getShipComboBox for ScheduleItem "+si->getType());
-     QComboBox* cb = CarLoads::instance()->getSelectComboBox(si->getTypeName());
+     QComboBox* cb = ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getSelectComboBox(si->getTypeName());
      cb->setCurrentIndex(cb->findText(si->getShipLoadName()));
      if (cb->currentText()!=(si->getShipLoadName())) {
          QString notValid = tr("Not Valid <%1>").arg(si->getShipLoadName());
@@ -531,7 +528,7 @@ namespace Operations
 
  /*private*/ QComboBox* ScheduleTableModel::getDestComboBox(ScheduleItem* si) {
      // log->debug("getDestComboBox for ScheduleItem "+si->getType());
-     QComboBox* cb = LocationManager::instance()->getComboBox();
+     QComboBox* cb = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getComboBox();
      filterDestinations(cb, si->getTypeName());
      if (si->getDestination() != NULL  && cb->currentIndex() == -1) {
          // user deleted destination
@@ -797,12 +794,10 @@ namespace Operations
          //si->removePropertyChangeListener(this);
       disconnect(si->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          if (si->getDestination() != NULL ) {
-             //si->getDestination().removePropertyChangeListener(this);
-          disconnect(si->getDestination()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          si->getDestination()->removePropertyChangeListener(this);
          }
          if (si->getDestinationTrack() != NULL ) {
-             //si->getDestinationTrack().removePropertyChangeListener(this);
-          disconnect(si->getDestinationTrack()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          si->getDestinationTrack()->removePropertyChangeListener(this);
          }
      }
  }
@@ -816,17 +811,15 @@ namespace Operations
          //_schedule.removePropertyChangeListener(this);
          disconnect(_schedule->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
-     //_location.removePropertyChangeListener(this);
-     connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //_track.removePropertyChangeListener(this);
-     connect(_track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     _location->removePropertyChangeListener(this);
+     _track->removePropertyChangeListener(this);
 
  }
  /*public*/ Track* ScheduleTableModel::getTrack() {return _track;}
 
 
  STMComboBoxDelegate::STMComboBoxDelegate(ScheduleTableModel* model,  QObject *parent)
-  : QStyledItemDelegate(parent)
+  : JComboBoxEditor(parent)
  {
   this->model  = model;
   this->items = QStringList();
@@ -870,22 +863,22 @@ namespace Operations
   return editor;
  }
 
- void STMComboBoxDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
- {
-   QComboBox *comboBox = static_cast<QComboBox*>(editor);
-   int value = index.model()->data(index, Qt::EditRole).toUInt();
-   comboBox->setCurrentIndex(value);
- }
+// void STMComboBoxDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+// {
+//   QComboBox *comboBox = static_cast<QComboBox*>(editor);
+//   int value = index.model()->data(index, Qt::EditRole).toUInt();
+//   comboBox->setCurrentIndex(value);
+// }
 
- void STMComboBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
- {
-   QComboBox *comboBox = static_cast<QComboBox*>(editor);
-   model->setData(index, comboBox->currentText(), Qt::EditRole);
- }
+// void STMComboBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+// {
+//   QComboBox *comboBox = static_cast<QComboBox*>(editor);
+//   model->setData(index, comboBox->currentText(), Qt::EditRole);
+// }
 
- void STMComboBoxDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
- {
-   editor->setGeometry(option.rect);
- }
+// void STMComboBoxDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &/* index */) const
+// {
+//   editor->setGeometry(option.rect);
+// }
 
 }

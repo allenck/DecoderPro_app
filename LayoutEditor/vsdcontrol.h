@@ -1,9 +1,11 @@
 #ifndef VSDCONTROL_H
 #define VSDCONTROL_H
 
-#include <QFrame>
+#include "jpanel.h"
 #include "liblayouteditor_global.h"
-class ActionEvent;
+#include "propertychangelistener.h"
+
+class JActionEvent;
 class QGridLayout;
 class Logger;
 class Insets;
@@ -13,9 +15,10 @@ class SoundEvent;
 class QPushButton;
 class QLabel;
 class VSDConfig;
-class LIBLAYOUTEDITORSHARED_EXPORT VSDControl : public QFrame
+class LIBLAYOUTEDITORSHARED_EXPORT VSDControl : public JPanel, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
  explicit VSDControl(QWidget *parent = 0);
  static /*public*/ QWidget* generateBlank();
@@ -29,9 +32,10 @@ public:
  /*public*/ VSDControl(VSDConfig* c, QWidget *parent = 0);
  /*public*/ void addSoundButtons(QList<SoundEvent*> elist);
  /*public*/ void firePropertyChange(PropertyChangeID id, QVariant oldProp, QVariant newProp);
+ QObject* self() override {return (QObject*)this;}
 
 signals:
- void propertyChange(PropertyChangeEvent*);
+ void propertyChange(PropertyChangeEvent*) override;
 public slots:
 private:
  QString address;
@@ -57,9 +61,9 @@ private:
 protected:
  /*protected*/ void initComponents(QString title);
 protected slots:
- /*protected*/ void optionButtonPressed(ActionEvent* e = 0);
- /*protected*/ void configButtonPressed(ActionEvent* e = 0);
- /*protected*/ void deleteButtonPressed(ActionEvent* e = 0);
+ /*protected*/ void optionButtonPressed(JActionEvent* e = 0);
+ /*protected*/ void configButtonPressed(JActionEvent* e = 0);
+ /*protected*/ void deleteButtonPressed(JActionEvent* e = 0);
  /*protected*/ void configDialogPropertyChange(PropertyChangeEvent* event);
  /*protected*/ void optionsDialogPropertyChange(PropertyChangeEvent* event);
 

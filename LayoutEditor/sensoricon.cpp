@@ -143,9 +143,6 @@ void SensorIcon::common()
   if (sensor != NULL)
   {
    setSensor(((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(pName, sensor));
-   //   if(!connect(((LnSensor*)sensor), SIGNAL(propertyChange(QString,int,int)), this, SLOT(propertyChange(QString,int,int))))
-//   if(!connect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*))))
-//       qDebug()<< "connect failed!";
   }
   else
   {
@@ -175,8 +172,8 @@ void SensorIcon::common()
   {
    makeIconMap();
   }
-  displayState(sensorState());
-  qDebug() << QString("Sensor state = %1").arg(sensorState());
+//  displayState(sensorState());
+//  qDebug() << QString("Sensor state = %1").arg(sensorState());
   getSensor()->addPropertyChangeListener((PropertyChangeListener*)this, s->getName(), "SensorIcon on Panel " /*+ _editor->getName()*/);
   setName(namedSensor->getName());  // Swing name for e.g. tests
  }
@@ -339,7 +336,7 @@ void SensorIcon::propertyChange(PropertyChangeEvent* e)
  {
   int now = (int) e->getNewValue().toInt();
   displayState(now);
-  //_editor->repaint();
+  _editor->repaint();
   //_editor->addToTarget((Positionable*)this);
   updateScene();
  }
@@ -485,7 +482,7 @@ JCheckBoxMenuItem  momentaryItem = new JCheckBoxMenuItem(Bundle.getMessage("Mome
  {
   switch (state)
   {
-    case /*Sensor::UNKNOWN*/0x01:
+    case Sensor::UNKNOWN:
         PositionableIcon::setText(unknownText);
         getPopupUtility()->setBackgroundColor(backgroundColorUnknown);
         getPopupUtility()->setForeground(textColorUnknown);
@@ -506,11 +503,11 @@ JCheckBoxMenuItem  momentaryItem = new JCheckBoxMenuItem(Bundle.getMessage("Mome
         getPopupUtility()->setForeground(textColorInconsistent);
         break;
    }
-   rotate(getDegrees());
+//   rotate(getDegrees());
   }
 
   updateSize();
-  editor->redrawPanel(); // to update track occupancy displayed.
+//  editor->redrawPanel(); // to update track occupancy displayed.
 }
 
 /*public*/ bool SensorIcon::setEditItemMenu(QMenu* popup)
@@ -538,7 +535,7 @@ void SensorIcon::on_editSensorItemAction_triggered()
   this->parent = parent;
  }
 
- /*public*/ void UpdateActionListener::actionPerformed(ActionEvent* /*a*/)
+ /*public*/ void UpdateActionListener::actionPerformed(JActionEvent* /*a*/)
  {
   parent->updateItem();
  }
@@ -660,7 +657,7 @@ EditActionListener::EditActionListener(SensorIcon *parent)
  this->parent = parent;
 }
 
-void EditActionListener::actionPerformed(ActionEvent */*a*/ )
+void EditActionListener::actionPerformed(JActionEvent */*a*/ )
 {
  parent->updateSensor();
 }
@@ -750,9 +747,9 @@ void SensorIcon::updateSensor()
   try
   {
    ((AbstractSensor*)getSensor())->setKnownState(Sensor::INACTIVE);
-  } catch (JmriException reason)
+  } catch (JmriException* reason)
   {
-   log->warn("Exception setting momentary sensor: "+reason.toString());
+   log->warn("Exception setting momentary sensor: "+reason->toString());
   }
  }
  //super.doMouseReleased(e);
@@ -776,9 +773,9 @@ void SensorIcon::updateSensor()
     else
         ((AbstractSensor*)getSensor())->setKnownState(Sensor::INACTIVE);
     qDebug() << tr("sensor %1 state set to %2 (%3)" ).arg(getSensor()->getDisplayName()).arg(((AbstractSensor*)getSensor())->getKnownState()).arg(((AbstractSensor*)getSensor())->getStateName(((AbstractSensor*)getSensor())->getKnownState()));
-   } catch (JmriException reason)
+   } catch (JmriException* reason)
    {
-    log->warn("Exception flipping sensor: "+reason.toString());
+    log->warn("Exception flipping sensor: "+reason->toString());
    }
   }
  }

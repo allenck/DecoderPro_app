@@ -3,6 +3,7 @@
 #include "rollingstock.h"
 #include <QtXml>
 #include "appslib_global.h"
+#include "propertychangelistener.h"
 
 class PropertyChangeEvent;
 class QDomElement;
@@ -11,9 +12,10 @@ namespace Operations
 {
  class EngineModels;
  class Consist;
- class APPSLIBSHARED_EXPORT Engine : public RollingStock
+ class APPSLIBSHARED_EXPORT Engine : public RollingStock//, public PropertyChangeListener
  {
   Q_OBJECT
+  //Q_INTERFACES(PropertyChangeListener)
  public:
   //explicit Engine(QObject *parent = 0);
   /*public*/ Engine(QString road, QString number, QObject *parent = 0);
@@ -37,13 +39,15 @@ namespace Operations
   /*public*/ void dispose();
   /*public*/ static /*final*/ int NCE_REAR_BLOCK_NUMBER;// = 8;
   /*public*/ static /*final*/ int B_UNIT_BLOCKING;// = 10; // block B Units after NCE Consists
+  /*public*/ static /*final*/ QString HP_CHANGED_PROPERTY;// = "hp"; // NOI18N
   /*public*/ void setBunit(bool bUnit) ;
   /*public*/ bool isBunit();
 
+   QObject* self() override {return (QObject*)this; }
  signals:
 
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
  private:
   /*private*/ Consist* _consist;// = null;
@@ -52,7 +56,7 @@ namespace Operations
   EngineModels* engineModels;// = EngineModels::instance();
   Logger* log;
   /*private*/ void addPropertyChangeListeners();
-  bool verboseStore;// = false;
+  bool verboseStore = false;
 
  protected:
   /*protected*/ void setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n);

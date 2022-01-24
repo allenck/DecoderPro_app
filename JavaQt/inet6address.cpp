@@ -178,7 +178,7 @@
         }
 
         void Inet6AddressHolder::init(QByteArray addr, QNetworkInterface nif)
-            throw (UnknownHostException)
+
         {
             setAddr(addr);
 
@@ -428,7 +428,7 @@
     }
 #endif
     /*private*/ void Inet6Address::initif(QString hostName,QByteArray addr, QNetworkInterface nif)
-        throw (UnknownHostException)
+
     {
         int family = -1;
         holder6->init(addr, nif);

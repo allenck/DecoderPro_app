@@ -172,37 +172,44 @@ public:
     Sensor* getSensor();
 
 };
-class StartListenerA : public PropertyChangeListener
+class StartListenerA : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  SpeedProfilePanel* panel;
 
 public:
  StartListenerA(SpeedProfilePanel* panel);
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void propertyChange(PropertyChangeEvent *e);
+ void propertyChange(PropertyChangeEvent *e) override;
 
 };
-class StartListenerB : public PropertyChangeListener
+
+class StartListenerB : public QObject,public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  SpeedProfilePanel* panel;
 
 public:
  StartListenerB(SpeedProfilePanel* panel);
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void propertyChange(PropertyChangeEvent *e);
+ void propertyChange(PropertyChangeEvent *e)override;
 
 };
-class FinishListener : public PropertyChangeListener
+class FinishListener : public QObject,public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  SpeedProfilePanel* panel;
 
 public:
  FinishListener(SpeedProfilePanel* panel);
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void propertyChange(PropertyChangeEvent *e);
+ void propertyChange(PropertyChangeEvent *e)override;
 private:
 
 };

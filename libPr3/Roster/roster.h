@@ -4,7 +4,7 @@
 #include <QObject>
 //#include "rosterentry.h"
 #include <QtXml/QDomDocument>
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "logger.h"
 #include <QVector>
 #include "xmlfile.h"
@@ -12,14 +12,15 @@
 #include "propertychangelistener.h"
 #include <QMutex>
 #include "propertychangeprovider.h"
+#include "propertychangelistener.h"
 
 class Profile;
 class RosterGroup;
 class RosterEntry;
-class LIBPR3SHARED_EXPORT Roster : public XmlFile, public PropertyChangeProvider
+class LIBPR3SHARED_EXPORT Roster : public XmlFile, public PropertyChangeProvider, public PropertyChangeListener
 {
     Q_OBJECT
- Q_INTERFACES(PropertyChangeProvider)
+ Q_INTERFACES(PropertyChangeProvider PropertyChangeListener)
 public:
     explicit Roster(QObject *parent = 0);
     /** record the single instance of Roster **/
@@ -77,13 +78,21 @@ public:
     /*public*/ QSet<QString> getAllAttributeKeys();
     /*public*/ QList<RosterEntry*> getEntriesInGroup(QString group);
     /*public*/ QList<RosterEntry*> getEntriesMatchingCriteria(QString roadName, QString roadNumber, QString dccAddress,
+            QString mfg, QString decoderModel, QString decoderFamily, QString id, QString group,
+            QString developerID, QString manufacturerID, QString productID);
+    /*public*/ QList<RosterEntry*> getEntriesMatchingCriteria(QString roadName, QString roadNumber, QString dccAddress,
             QString mfg, QString decoderMfgID, QString decoderVersionID, QString id, QString group);
     /*public*/ QList<RosterEntry*> matchingList(QString roadName, QString roadNumber, QString dccAddress,
             QString mfg, QString decoderMfgID, QString decoderVersionID, QString id);
+    /*public*/ QList<RosterEntry*> matchingList(QString dccAddress, QString productID);
     /*public*/ bool checkEntry(int i, QString roadName, QString roadNumber, QString dccAddress, QString mfg, QString decoderModel, QString decoderFamily, QString id, QString group);
     /*public*/ bool checkEntry(QList<RosterEntry*> list, int i, QString roadName, QString roadNumber, QString dccAddress, QString mfg, QString decoderModel, QString decoderFamily, QString id, QString group);
+    /*public*/ bool checkEntry(RosterEntry* r, QString roadName, QString roadNumber, QString dccAddress,
+            QString mfg, QString decoderModel, QString decoderFamily,
+            QString id, QString group, QString developerID,
+                QString manufacturerID, QString productID);
     void writeFile(QString name); // throw (FileNotFoundException, IOException);
-    void writeFile (QFile* file); //throw (IOException);
+    void writeFile (QFile* file); ///*throw (IOException)*/;
     static QString _rosterGroupPrefix;// = "RosterGroup:";
     /*public*/ static QString getRosterGroupName(QString rosterGroup);
     /*public*/ static QString getRosterGroupProperty(QString name);
@@ -144,18 +153,19 @@ public:
     static const QString schemaVersion;// = "";
     /*public*/ QMap<QString, RosterGroup*> getRosterGroups();
     /*public*/ void rosterGroupRenamed(QString oldName, QString newName);
-    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+    SwingPropertyChangeSupport* pcs = new SwingPropertyChangeSupport(this, nullptr);
     /*public*/ void addRosterGroup(RosterGroup* rg);
     /*public*/ void addRosterGroup(QString str);
     /*public*/ QString getRosterFilesLocation();
     /*public*/ void addRosterGroups(QList<RosterGroup*> groups);
     /*public*/ void removeRosterGroup(RosterGroup* rg);
 
+    QObject* self() override {return (QObject*)this;}
 signals:
     //void propertyChange(QString text, QObject* o, QObject* n);
 
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent *evt);
+    /*public*/ void propertyChange(PropertyChangeEvent *evt) override;
     /*public*/ void reloadRosterFile();
 
 
@@ -166,6 +176,22 @@ private:
  /*private*/ QString defaultRosterGroup;// = NULL;
  bool readFile(QString name);
  /*private*/ bool dirty;// = false;
+ /**
+  * Internal interface works with #findMatchingEntries to provide a common
+  * search-match-return capability.
+  */
+ /*private*/ /*interface*/class  RosterComparator {
+   Roster* r;
+  public:
+   RosterComparator(Roster* r) {this->r = r;}
+     ///*public*/ bool check(RosterEntry* r);
+     #if 0
+     return r->checkEntry(r, roadName, roadNumber, dccAddress,
+                           mfg, decoderModel, decoderFamily,
+                           id, group, developerID, manufacturerID, productID);
+#endif
+ };
+ /*private*/ QList<RosterEntry*> findMatchingEntries(RosterComparator c);
  /*
   * This should only be non-null if explictly set to a non-default location.
   */
@@ -174,7 +200,7 @@ private:
  bool isDirty() {return dirty;}
  QDomDocument doc;
  /*private*/ static QString rosterFileName;// = "roster.xml";
- /*private*/ static QString fileLocation;//  = FileUtil.getUserFilesPath();
+ ///*private*/ static QString fileLocation;//  = FileUtil.getUserFilesPath();
   /*private*/ void delRosterGroupList(QString rg, bool notify);
   static QStringList getAllFileNames();
   /*private*/ /*final*/ QMap<QString, RosterGroup*> rosterGroups;// = new HashMap<>();
@@ -190,12 +216,15 @@ protected:
 
   friend class RosterTest;
 };
-class RosterPropertyChangeListener : public PropertyChangeListener
+
+class RosterPropertyChangeListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  Roster* roster;
 public:
  RosterPropertyChangeListener(Roster* roster) { this->roster = roster;}
+ QObject* self() {return (QObject*)this;}
 
 public slots:
  void propertyChange(PropertyChangeEvent*);

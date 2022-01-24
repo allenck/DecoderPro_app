@@ -42,6 +42,7 @@ public:
     /** State value mask representing status where output is changing due to a request to transition. */
     /*public*/ static /*final*/ const  int TRANSITIONING         = 0x010;
 
+    //QObject* self() override {return this;}
 signals:
 
 public slots:

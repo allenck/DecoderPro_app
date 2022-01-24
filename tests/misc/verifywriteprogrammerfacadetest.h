@@ -44,14 +44,19 @@ public:
     //@Override
     /*public*/ bool getCanRead() { return false; }
     //@Override
-    /*public*/ void readCV(QString cv, ProgListener* p) throw (ProgrammerException) { test->readCount++; ProgDebugger::readCV(cv, p); }
+    /*public*/ void readCV(QString cv, ProgListener* p) throw (ProgrammerException) {
+  test->readCount++;
+  ProgDebugger::readCV(cv, p);
+ }
 };
 
-class ProgListenerO8 :public ProgListener {
+class ProgListenerO8 : public QObject, public ProgListener {
  Q_OBJECT
+ Q_INTERFACES(ProgListener)
  VerifyWriteProgrammerFacadeTest* test;
 public:
 ProgListenerO8(VerifyWriteProgrammerFacadeTest* test) {this->test = test;}
+QObject* self() {return (QObject*)this;}
 public slots:
     //@Override
     /*public*/ void programmingOpReply(int value, int status);

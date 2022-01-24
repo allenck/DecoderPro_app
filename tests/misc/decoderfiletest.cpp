@@ -98,7 +98,7 @@ DecoderFileTest::DecoderFileTest(QObject *parent) : QObject(parent)
         setupDecoder();
 
         // this test should probably be done in terms of a test class instead of the real one...
-        QLabel* progStatus = new QLabel(" OK ");
+        JLabel* progStatus = new JLabel(" OK ");
         CvTableModel* cvModel = new CvTableModel(progStatus, p);
         VariableTableModel* variableModel = new VariableTableModel(progStatus,
                 QStringList() <<"Name"<< "Value", cvModel);
@@ -267,7 +267,7 @@ DecoderFileTest::DecoderFileTest(QObject *parent) : QObject(parent)
         setupDecoder();
 
         // this test should probably be done in terms of a test class instead of the real one...
-        QLabel* progStatus = new QLabel(" OK ");
+        JLabel* progStatus = new JLabel(" OK ");
         CvTableModel* cvModel = new CvTableModel(progStatus, p);
         VariableTableModel* variableModel = new VariableTableModel(progStatus,
                 QStringList()<<"Name"<< "Value", cvModel);
@@ -283,7 +283,7 @@ DecoderFileTest::DecoderFileTest(QObject *parent) : QObject(parent)
         setupDecoder();
 
         // this test should probably be done in terms of a test class instead of the real one...
-        QLabel* progStatus = new QLabel(" OK ");
+        JLabel* progStatus = new JLabel(" OK ");
         CvTableModel* cvModel = new CvTableModel(progStatus, p);
         VariableTableModel* variableModel = new VariableTableModel(progStatus,
                 QStringList()<<"Name"<< "Value", cvModel);

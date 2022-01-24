@@ -26,9 +26,12 @@
 #include "lnmultimeter.h"
 #include <QDebug>
 #include "lncabsignalmanager.h"
+#include "lnpredefinedmeters.h"
+#include "lncvdevicesmanager.h"
+#include <QMetaEnum>
 
 LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(LnTrafficController* lt, SlotManager* sm, QObject* parent)
- : SystemConnectionMemo("L","LocoNet", parent)
+ : DefaultSystemConnectionMemo("L","LocoNet", parent)
 {
  //super("L", "LocoNet");
  common();
@@ -37,12 +40,12 @@ LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(LnTrafficController* lt
 }
 
 LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(QObject* parent)
- : SystemConnectionMemo("L","LocoNet", parent)
+ : DefaultSystemConnectionMemo("L","LocoNet", parent)
 {
  common();
 }
 /*public*/ LocoNetSystemConnectionMemo::LocoNetSystemConnectionMemo(/*@Nonnull*/ QString prefix, /*@Nonnull*/ QString name)
- : SystemConnectionMemo(prefix, name)
+ : DefaultSystemConnectionMemo(prefix, name)
 {
  //super(prefix, name); // NOI18N
  common();
@@ -98,7 +101,7 @@ LocoNetSystemConnectionMemo::~LocoNetSystemConnectionMemo()
  */
 /*public*/ SlotManager* LocoNetSystemConnectionMemo::getSlotManager() {
     if (sm == nullptr) {
-        log->debug("slot manager is null, but there should always be a valid SlotManager",  Exception("Traceback"));
+        log->debug("slot manager is null, but there should always be a valid SlotManager",  new Exception("Traceback"));
     }
     return sm;
 }
@@ -147,18 +150,18 @@ void LocoNetSystemConnectionMemo::setLnTrafficController(LnTrafficController* lt
      // store as CommandStation object
      InstanceManager::store(sm, "CommandStation");
     }
-    _register();
+//    _register();
 }
 
 /**
  * Provides access to the SlotManager for this
  * particular connection.
  */
-void LocoNetSystemConnectionMemo::setSlotManager(SlotManager* sm)
-{
- this->sm = sm;
- if (sm != NULL) sm->setThrottledTransmitter(tm, mTurnoutNoRetry);
-}
+//void LocoNetSystemConnectionMemo::setSlotManager(SlotManager* sm)
+//{
+// this->sm = sm;
+// if (sm != NULL) sm->setThrottledTransmitter(tm, mTurnoutNoRetry);
+//}
 
 LnMessageManager* LocoNetSystemConnectionMemo::getLnMessageManager()
 {
@@ -183,6 +186,9 @@ void LocoNetSystemConnectionMemo::setProgrammerManager(DefaultProgrammerManager*
     programmerManager = p;
 }
 
+/*public*/ void LocoNetSystemConnectionMemo::setLncvDevicesManager(LncvDevicesManager* lncvdm) {
+    this->lncvdm = lncvdm;
+}
 
 /**
  * Tells which managers this provides by class
@@ -225,7 +231,7 @@ void LocoNetSystemConnectionMemo::setProgrammerManager(DefaultProgrammerManager*
  }
  return false; // nothing, by default
 }
-
+#if 0
 //@SuppressWarnings("unchecked")
 //@Override
 /*public*/ Manager*  LocoNetSystemConnectionMemo::get(QString T)
@@ -270,7 +276,7 @@ void LocoNetSystemConnectionMemo::setProgrammerManager(DefaultProgrammerManager*
 
  return NULL; // nothing, by default
 }
-
+#endif
 
 /**
  * Configure the common managers for LocoNet connections.
@@ -284,47 +290,52 @@ void LocoNetSystemConnectionMemo::configureManagers()
  if (sm != NULL)
  {
   sm->setThrottledTransmitter(tm, mTurnoutNoRetry);
-  log->debug("set turnout retry: "+mTurnoutNoRetry);
+  log->debug(tr("set turnout retry: %1").arg(mTurnoutNoRetry?"true":"false"));
  }
 
  InstanceManager::store(getPowerManager(), "PowerManager");
 
- InstanceManager::setSensorManager(
-  (SensorManager*)getSensorManager());
+ InstanceManager::setSensorManager(getSensorManager());
 
- InstanceManager::setTurnoutManager(
-  (TurnoutManager*)getTurnoutManager());
+ InstanceManager::setTurnoutManager(getTurnoutManager());
 
- InstanceManager::setLightManager(
-  (LightManager*)getLightManager());
+ InstanceManager::setLightManager(getLightManager());
 
- InstanceManager::setThrottleManager(
-  getThrottleManager());
+ InstanceManager::setThrottleManager(getThrottleManager());
 
- if (getProgrammerManager()->isAddressedModePossible())
+ DefaultProgrammerManager* programmerManager = getProgrammerManager();
+
+ if (programmerManager->isAddressedModePossible())
  {
-  InstanceManager::store(getProgrammerManager(), "AddressedProgrammerManager");
+  store((AbstractManager*)programmerManager, "AddressedProgrammerManager");
+  InstanceManager::store(programmerManager, "AddressedProgrammerManager");
  }
- if (getProgrammerManager()->isGlobalProgrammerAvailable())
+ if (programmerManager->isGlobalProgrammerAvailable())
  {
-  InstanceManager::store(getProgrammerManager(), "GlobalProgrammerManager");
+  store((AbstractManager*)programmerManager, "GlobalProgrammerManager");
+  InstanceManager::store(programmerManager, "GlobalProgrammerManager");
  }
 
- InstanceManager::setReporterManager((ReporterManager*)getReporterManager());
-#if 0 // TOO
+ InstanceManager::setReporterManager((AbstractReporterManager*)getReporterManager()->self());
+
  InstanceManager::setDefault("CabSignalManager",getCabSignalManager());
-#endif
- InstanceManager::setConsistManager(new LocoNetConsistManager(this));
+
+ InstanceManager::setDefault("ConsistManager", new LocoNetConsistManager(this));
 
  ClockControl* cc = getClockControl();
  // make sure InstanceManager knows about that
  InstanceManager::setDefault("ClockControl", cc);
 
- //MultiMeter mm = getMultiMeter();
- InstanceManager::store(getMultiMeter(), "MultiMeter");
+// //MultiMeter mm = getMultiMeter();
+// InstanceManager::store(getMultiMeter(), "MultiMeter");
 
  getIdTagManager();
 
+ // register this SystemConnectionMemo to connect to rest of system
+ _register();
+
+ // This must be done after the memo is registered
+ getPredefinedMeters();
 }
 
 LnPowerManager* LocoNetSystemConnectionMemo::getPowerManager()
@@ -340,11 +351,22 @@ LnPowerManager* LocoNetSystemConnectionMemo::getPowerManager()
 
 
 ThrottleManager* LocoNetSystemConnectionMemo::getThrottleManager() {
-    if (getDisabled())
-        return NULL;
-    if (throttleManager == NULL)
-        throttleManager = (ThrottleManager*)new LnThrottleManager(this);
-    return throttleManager;
+ if (getSlotManager() != nullptr) {
+//     log->debug(tr("GetThrottleManager for %1").arg(QMetaEnum::fromType<LnCommandStationType::LnCommandStationTypes>().valueToKey(getSlotManager()->getCommandStationType())));
+ }
+ if (getDisabled()) {
+     return nullptr;
+ }
+ ThrottleManager* throttleManager = (ThrottleManager*)get("ThrottleManager");
+ if (throttleManager == nullptr && getSlotManager() != nullptr) {
+     // ask command station type for specific throttle manager
+     LnCommandStationType* cmdstation = getSlotManager()->getCommandStationType();
+     log->debug(tr("getThrottleManager constructs for %1").arg(cmdstation->getName()));
+     throttleManager = cmdstation->getThrottleManager(this);
+     log->debug(tr("result was type {}").arg(throttleManager->self()->metaObject()->className()));
+     store((AbstractManager*)throttleManager,"ThrottleManager");
+ }
+ return throttleManager;
 }
 
 void LocoNetSystemConnectionMemo::setThrottleManager(ThrottleManager* t) {
@@ -399,6 +421,40 @@ LnLightManager* LocoNetSystemConnectionMemo::getLightManager()
  return lightManager;
 }
 
+/*public*/ LncvDevicesManager* LocoNetSystemConnectionMemo::getLncvDevicesManager() {
+    if (getDisabled()) {
+        return nullptr;
+    }
+    if (lncvdm == nullptr) {
+        setLncvDevicesManager(new LncvDevicesManager(this));
+        log->debug("Auto create of LncvDevicesManager for initial configuration");
+    }
+    return lncvdm;
+}
+
+/*public*/ LnPredefinedMeters* LocoNetSystemConnectionMemo::getPredefinedMeters() {
+    if (getDisabled()) {
+        log->warn("Aborting getPredefinedMeters account is disabled!");
+        return nullptr;
+    }
+//        switch (getSlotManager().commandStationType) {
+//            case COMMAND_STATION_USB_DCS240_ALONE:
+//            case COMMAND_STATION_DCS240:
+//            case COMMAND_STATION_DCS210:
+//            case COMMAND_STATION_USB_DCS52_ALONE:
+//            case COMMAND_STATION_DCS052:
+//                break;
+//            default:
+//                // The command station does not support these meters
+//                return null;
+//        }
+    if (predefinedMeters == nullptr) {
+        predefinedMeters = new LnPredefinedMeters(this);
+    }
+    return predefinedMeters;
+}
+
+#if 0
 LocoNetConsistManager* LocoNetSystemConnectionMemo::getConsistManager() {
     if (getDisabled())
         return NULL;
@@ -416,12 +472,18 @@ LocoNetConsistManager* LocoNetSystemConnectionMemo::getConsistManager() {
     }
     return multiMeter;
 }
-
+#endif
 ResourceBundle* LocoNetSystemConnectionMemo::getActionModelResourceBundle()
 {
  ResourceBundle* rb = new ResourceBundle;
  return rb->getBundle("src/jmri/jmrix/loconet/LocoNetActionListBundle.properties");
 }
+
+//@Override
+///*public*/ <B extends NamedBean> Comparator<B> getNamedBeanComparator(Class<B> type) {
+//    return new NamedBeanComparator<B>();
+//}
+
 // yes, tagManager is static.  Tags can move between system connections.
 // when readers are not all on the same LocoNet
 // this manager is loaded on demand.
@@ -488,7 +550,7 @@ ResourceBundle* LocoNetSystemConnectionMemo::getActionModelResourceBundle()
         InstanceManager::deregister(turnoutManager, "LnTurnoutManager");
     }
     if (lightManager != nullptr) {
-        lightManager->dispose();
+        lightManager->AbstractManager::dispose();
         InstanceManager::deregister(lightManager, "LnLightManager");
     }
     if (sensorManager != nullptr) {
@@ -500,9 +562,9 @@ ResourceBundle* LocoNetSystemConnectionMemo::getActionModelResourceBundle()
         InstanceManager::deregister(reporterManager, "LnReporterManager");
     }
     if (throttleManager != nullptr) {
-        if (qobject_cast<LnThrottleManager*>(throttleManager)) {
+        if (qobject_cast<LnThrottleManager*>(throttleManager->self())) {
             InstanceManager::deregister(((LnThrottleManager*) throttleManager), "LnThrottleManager");
-        } else if (qobject_cast<DebugThrottleManager*>(throttleManager)) {
+        } else if (qobject_cast<DebugThrottleManager*>(throttleManager->self())) {
             InstanceManager::deregister(((DebugThrottleManager*) throttleManager), "DebugThrottleManager");
         }
     }

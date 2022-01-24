@@ -432,7 +432,7 @@ QDomElement NceConsistRosterEntry::store(QDomDocument doc) {
             }
         }
         w.write(newLine,0,1);
-    } catch (IOException e) {
+    } catch (IOException* e) {
         log->error("Error printing ConsistRosterEntry: " + e);
     }
 }

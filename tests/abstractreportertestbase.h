@@ -36,13 +36,13 @@ public slots:
  friend class LnReporterTest;
  friend class TestReporterListenerO1;
 };
-/*public*/ class TestReporterListenerO1 : public PropertyChangeListener
+/*public*/ class TestReporterListenerO1 : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
- AbstractReporterTestBase* base;
+ Q_INTERFACES(PropertyChangeListener)AbstractReporterTestBase* base;
 public:
  TestReporterListenerO1(AbstractReporterTestBase* base) { this->base = base;}
-public slots:
+QObject* self() {return (QObject*)this;}public slots:
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* e);
 };

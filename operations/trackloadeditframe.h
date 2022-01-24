@@ -36,25 +36,25 @@ namespace Operations
   QMenu* _toolMenu;//= null;
 
   // panels
-  QWidget* pLoadControls;//= new JPanel();
-  QWidget* panelLoads;//= new JPanel();
+  JPanel* pLoadControls;//= new JPanel();
+  JPanel* panelLoads;//= new JPanel();
   QScrollArea* paneLoads;//= new JScrollPane(panelLoads);
 
-  QGroupBox* pShipLoadControls;//= new JPanel();
-  QGroupBox* panelShipLoads;//= new JPanel();
+  JPanel* pShipLoadControls;//= new JPanel();
+  JPanel* panelShipLoads;//= new JPanel();
   QScrollArea* paneShipLoadControls;
   QScrollArea* paneShipLoads;//= new JScrollPane(panelShipLoads);
 
   // major buttons
-  QPushButton* saveTrackButton;//= new JButton(Bundle.getMessage("SaveTrack"));
+  JButton* saveTrackButton;//= new JButton(Bundle.getMessage("SaveTrack"));
 
-  QPushButton* addLoadButton;//= new JButton(Bundle.getMessage("AddLoad"));
-  QPushButton* deleteLoadButton;//= new JButton(Bundle.getMessage("DeleteLoad"));
-  QPushButton* deleteAllLoadsButton;//= new JButton(Bundle.getMessage("DeleteAll"));
+  JButton* addLoadButton;//= new JButton(Bundle.getMessage("AddLoad"));
+  JButton* deleteLoadButton;//= new JButton(Bundle.getMessage("DeleteLoad"));
+  JButton* deleteAllLoadsButton;//= new JButton(Bundle.getMessage("DeleteAll"));
 
-  QPushButton* addShipLoadButton;//= new JButton(Bundle.getMessage("AddLoad"));
-  QPushButton* deleteShipLoadButton;//= new JButton(Bundle.getMessage("DeleteLoad"));
-  QPushButton* deleteAllShipLoadsButton;//= new JButton(Bundle.getMessage("DeleteAll"));
+  JButton* addShipLoadButton;//= new JButton(Bundle.getMessage("AddLoad"));
+  JButton* deleteShipLoadButton;//= new JButton(Bundle.getMessage("DeleteLoad"));
+  JButton* deleteAllShipLoadsButton;//= new JButton(Bundle.getMessage("DeleteAll"));
 
   // check boxes
   QCheckBox* loadAndTypeCheckBox;//= new JCheckBox(Bundle.getMessage("TypeAndLoad"));

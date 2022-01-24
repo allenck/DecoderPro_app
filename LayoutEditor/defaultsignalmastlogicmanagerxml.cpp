@@ -32,10 +32,10 @@ DefaultSignalMastLogicManagerXml::DefaultSignalMastLogicManagerXml(QObject *pare
 {
  QDomElement signalMastLogic = doc.createElement("signalmastlogics");
  setStoreElementClass(signalMastLogic);
- SignalMastLogicManager* smlm = (SignalMastLogicManager*) o;
+ DefaultSignalMastLogicManager* smlm = (DefaultSignalMastLogicManager*) o;
  QDomElement e1;
  signalMastLogic.appendChild(e1=doc.createElement("logicDelay"));
- e1.appendChild(doc.createTextNode(QString::number(((DefaultSignalMastLogicManager*)smlm)->getSignalLogicDelay())));
+ e1.appendChild(doc.createTextNode(QString::number(smlm->getSignalLogicDelay())));
  QList<SignalMastLogic*> sml = ((DefaultSignalMastLogicManager*)smlm)->getSignalMastLogicList();
  for(int i = 0; i<sml.size(); i++)
  {
@@ -235,9 +235,9 @@ DefaultSignalMastLogicManagerXml::DefaultSignalMastLogicManagerXml(QObject *pare
     log->error("Invalid method called");
 }
 
-/*public*/ bool DefaultSignalMastLogicManagerXml::load(QDomElement signalMastLogic) throw (Exception){
+/*public*/ bool DefaultSignalMastLogicManagerXml::load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException){
     // load individual Transits
-    loadSignalMastLogic(signalMastLogic);
+    loadSignalMastLogic(shared);
     return true;
 }
 
@@ -248,13 +248,13 @@ DefaultSignalMastLogicManagerXml::DefaultSignalMastLogicManagerXml(QObject *pare
  if (log->isDebugEnabled()) log->debug("Found "+QString::number(logicList.size())+" signal mast logics");
 
  SignalMastManager* sm = (SignalMastManager*)InstanceManager::getDefault("SignalMastManager");
- SignalMastLogicManager* smlm = (SignalMastLogicManager*) InstanceManager::getDefault("SignalMastLogicManager");
+ SignalMastLogicManager* smlm = (DefaultSignalMastLogicManager*) InstanceManager::getDefault("SignalMastLogicManager");
  try
  {
      QString logicDelay = signalMastLogic.firstChildElement("logicDelay").text();
-     ((DefaultSignalMastLogicManager*)smlm)->setSignalLogicDelay((logicDelay.toLong()));
+     ((DefaultSignalMastLogicManager*)smlm->self())->setSignalLogicDelay((logicDelay.toLong()));
  }
- catch (NullPointerException e){
+ catch (NullPointerException* e){
      //Considered normal if it doesn't exists
  }
  bool loadOk = true;
@@ -313,7 +313,7 @@ DefaultSignalMastLogicManagerXml::DefaultSignalMastLogicManagerXml(QObject *pare
      {
       ((DefaultSignalMastLogic*)logic)->useLayoutEditorDetails(useLayoutEditorTurnout, useLayoutEditorBlock, dest);
      }
-     catch (JmriException ex)
+     catch (JmriException* ex)
      {
 
      }
@@ -327,7 +327,7 @@ DefaultSignalMastLogicManagerXml::DefaultSignalMastLogicManagerXml(QObject *pare
        else
         ((DefaultSignalMastLogic*)logic)->useLayoutEditor(false, dest);
       }
-      catch (JmriException e)
+      catch (JmriException* e)
       {
        //Considered normal if layout editor hasn't yet been set up.
       }
@@ -411,13 +411,14 @@ DefaultSignalMastLogicManagerXml::DefaultSignalMastLogicManagerXml(QObject *pare
            else if (state==("unoccupied"))
                value = Block::UNOCCUPIED;
 
-           Block* blk = ((BlockManager*)((BlockManager*)InstanceManager::getDefault("BlockManager")))->getBlock(block);
+           BlockManager* bm = (BlockManager*)InstanceManager::getDefault("BlockManager");
+           Block* blk = bm->getBlock(block);
            if (blk!=NULL)
                list.insert(blk, value);
            else if (debug)
                log->debug("Unable to add Block " + block + " as it does not exist in the panel file");
        }
-       ((DefaultSignalMastLogic*)logic)->setBlocks(list, dest);
+       ((DefaultSignalMastLogic*)logic->self())->setBlocks(list, dest);
       }
      }
      QDomElement mastElem = d.firstChildElement("masts");

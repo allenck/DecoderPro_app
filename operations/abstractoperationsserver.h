@@ -11,9 +11,10 @@ namespace Operations
  class TrainManager;
  class LocationManager;
  class TrainListener;
- class AbstractOperationsServer : public QObject
+ class AbstractOperationsServer : public QObject, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   explicit AbstractOperationsServer(QObject *parent = 0);
   /*public*/ /*abstract*/ virtual void sendTrainList();
@@ -35,6 +36,8 @@ namespace Operations
   /*abstract*/ /*public*/ virtual void sendErrorStatus(QString errorStatus); //throws IOException;
   /*abstract*/ /*public*/ virtual void parseStatus(QString statusString); //throws JmriException, IOException;
 
+   QObject* self() override {return (QObject*)this;}
+
  signals:
 
  public slots:
@@ -55,16 +58,19 @@ namespace Operations
   /*protected*/ TrainListener* getListener(QString trainId);
   friend class TrainListener;
  };
- /*protected*/ class TrainListener : public PropertyChangeListener
+ /*protected*/ class TrainListener : public QObject, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
      /*private*/ /*final*/ Train* train;
   AbstractOperationsServer* parent;
   Logger* log;
   protected:
      /*protected*/ TrainListener(QString trainId, AbstractOperationsServer* parent);
+  QObject* self() {return (QObject*)this;}
   public slots:
      /*public*/ void propertyChange(PropertyChangeEvent* e);
+
   friend class AbstractOperationsServer;
  };
 

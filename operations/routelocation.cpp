@@ -7,6 +7,7 @@
 #include "control.h"
 #include "colorutil.h"
 #include "traincommon.h"
+#include "instancemanager.h"
 
 //RouteLocation::RouteLocation(QObject *parent) :
 //  QObject(parent)
@@ -46,16 +47,15 @@ namespace Operations
 
  /*public*/ /*static final*/ QString RouteLocation::DISABLED = "Off";
 
- /*public*/ RouteLocation::RouteLocation(QString id, Location* location, QObject *parent) :
-QObject(parent)
+ /*public*/ RouteLocation::RouteLocation(QString id, Location* location, QObject *parent)
+   : SwingPropertyChangeSupport(this, parent)
  {
   common();
   log->debug(tr("New route location (%1) id: %2").arg(location->getName()).arg(id));
    _location = location;
    _id = id;
    // listen for name change or delete
-   //location.addPropertyChangeListener(this);
-   connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+   location->SwingPropertyChangeSupport::addPropertyChangeListener(this);
 
  }
  void RouteLocation::common()
@@ -80,7 +80,6 @@ QObject(parent)
   _trainWeight = 0; // total car weight departing this location
   _trainLength = 0; // train length departing this location
   _location = NULL;
-  pcs = new PropertyChangeSupport(this);
  }
 
  // for combo boxes
@@ -121,6 +120,14 @@ QObject(parent)
  /*public*/ void RouteLocation::setSequenceId(int sequence) {
      // property change not needed
      _sequenceId = sequence;
+ }
+
+ /*public*/ int RouteLocation::getBlockingOrder() {
+         return _blockingOrder;
+ }
+
+ /*public*/ void RouteLocation::setBlockingOrder(int order) {
+     _blockingOrder = order;
  }
 
  /*public*/ void RouteLocation::setComment(QString comment) {
@@ -421,7 +428,7 @@ QObject(parent)
 * Coordinates are dependent on the train's departure direction.
 */
 /*public*/ void RouteLocation::setTrainIconCoordinates() {
- Location* l = LocationManager::instance()->getLocationByName(getName());
+ Location* l = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationByName(getName());
  if ((getTrainDirection() & Location::EAST) > 0) {
   setTrainIconX(l->getTrainIconEast().x());
   setTrainIconY(l->getTrainIconEast().y());
@@ -446,8 +453,7 @@ QObject(parent)
 
 /*public*/ void RouteLocation::dispose() {
      if (_location != NULL) {
-         //_location.removePropertyChangeListener(this);
-      disconnect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         _location->removePropertyChangeListener(this);
      }
      firePropertyChange(DISPOSE, QVariant(), DISPOSE);
  }
@@ -458,7 +464,7 @@ QObject(parent)
   *
   * @param e Consist XML element
   */
- /*public*/ RouteLocation::RouteLocation(QDomElement e)
+ /*public*/ RouteLocation::RouteLocation(QDomElement e, QObject* parent) : SwingPropertyChangeSupport(this, parent)
  {
   common();
      // if (log->isDebugEnabled()) log->debug("ctor from element "+e);
@@ -470,21 +476,19 @@ QObject(parent)
      }
      if ((a = e.attribute (Xml::LOCATION_ID)) != NULL) {
          _locationId = a;
-         _location = LocationManager::instance()->getLocationById(a);
+         _location = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationById(a);
          if (_location != NULL)
          {
-             //_location.addPropertyChangeListener(this);
-          connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          _location->SwingPropertyChangeSupport::addPropertyChangeListener(this);
          }
      } // old way of storing a route location
      else if ((a = e.attribute (Xml::NAME)) != NULL) {
-         _location = LocationManager::instance()->getLocationByName(a);
+         _location = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationByName(a);
          if (_location != NULL) {
-             //_location.addPropertyChangeListener(this);
-          connect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          _location->SwingPropertyChangeSupport::addPropertyChangeListener(this);
          }
          // force rewrite of route file
-         RouteManagerXml::instance()->setDirty(true);
+         ((RouteManagerXml*)InstanceManager::getDefault("RouteManagerXml"))->setDirty(true);
      }
      if ((a = e.attribute (Xml::TRAIN_DIRECTION)) != NULL) {
          // early releases had text for train direction
@@ -494,7 +498,7 @@ QObject(parent)
          } else {
              try {
                  _trainDir = a.toInt();
-             } catch (NumberFormatException ee) {
+             } catch (NumberFormatException* ee) {
                  log->error(tr("Route location (%1) direction (%2) is unknown").arg(getName()).arg(a));
              }
          }
@@ -502,21 +506,21 @@ QObject(parent)
      if ((a = e.attribute (Xml::MAX_TRAIN_LENGTH)) != NULL) {
          try {
              _maxTrainLength = a.toInt();
-         } catch (NumberFormatException ee) {
+         } catch (NumberFormatException* ee) {
              log->error(tr("Route location (%1) maximum train length (%2) isn't a valid number").arg(getName()).arg(a));
          }
      }
      if ((a = e.attribute (Xml::GRADE)) != NULL) {
          try {
              _grade = (a.toDouble());
-         } catch (NumberFormatException ee) {
+         } catch (NumberFormatException* ee) {
              log->error(tr("Route location (%1) grade ({%2) isn't a valid number").arg(getName()).arg(a));
          }
      }
      if ((a = e.attribute (Xml::MAX_CAR_MOVES)) != NULL) {
          try {
              _maxCarMoves = a.toInt();
-         } catch (NumberFormatException ee) {
+         } catch (NumberFormatException* ee) {
              log->error(tr("Route location (%1) maximum car moves (%2) isn't a valid number").arg(getName()).arg(a));
          }
      }
@@ -532,7 +536,7 @@ QObject(parent)
      if ((a = e.attribute (Xml::WAIT)) != NULL) {
          try {
              _wait = a.toInt();
-         } catch (NumberFormatException ee) {
+         } catch (NumberFormatException* ee) {
              log->error(tr("Route location (%1) wait (%2) isn't a valid number").arg(getName()).arg(a));
          }
      }
@@ -542,21 +546,21 @@ QObject(parent)
      if ((a = e.attribute (Xml::TRAIN_ICON_X)) != NULL) {
          try {
              _trainIconX = a.toInt();
-         } catch (NumberFormatException ee) {
+         } catch (NumberFormatException* ee) {
              log->error(tr("Route location (%1) icon x (%2) isn't a valid number").arg(getName()).arg(a));
          }
      }
      if ((a = e.attribute (Xml::TRAIN_ICON_Y)) != NULL) {
          try {
              _trainIconY = a.toInt();
-         } catch (NumberFormatException ee) {
+         } catch (NumberFormatException* ee) {
              log->error(tr("Route location (%1) icon y (%2) isn't a valid number").arg(getName()).arg(a));
          }
      }
      if ((a = e.attribute (Xml::SEQUENCE_ID)) != NULL) {
          try {
              _sequenceId = a.toInt();
-         } catch (NumberFormatException ee) {
+         } catch (NumberFormatException* ee) {
              log->error(tr("Route location (%1) sequence id %2 isn't a valid number").arg(getName()).arg(a));
          }
      }
@@ -601,8 +605,7 @@ QDomElement e = doc.createElement(Xml::LOCATION);
      }
      if (e->getPropertyName()==(Location::DISPOSE_CHANGED_PROPERTY)) {
          if (_location != NULL) {
-             //_location.removePropertyChangeListener(this);
-          disconnect(_location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          _location->removePropertyChangeListener(this);
          }
          _location = NULL;
      }
@@ -612,21 +615,12 @@ QDomElement e = doc.createElement(Xml::LOCATION);
      }
  }
 
-#if 0
- /*public*/ synchronized void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.addPropertyChangeListener(l);
- }
-
- /*public*/ synchronized void removePropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.removePropertyChangeListener(l);
- }
-#endif
  /*protected*/ void RouteLocation::firePropertyChange(QString p, QVariant old, QVariant n) {
-     pcs->firePropertyChange(p, old, n);
+     firePropertyChange(p, old, n);
  }
 
  /*protected*/ void RouteLocation::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
-     RouteManagerXml::instance()->setDirty(true);
+     ((Operations::RouteManagerXml*)InstanceManager::getDefault("RouteManagerXml"))->setDirty(true);
      firePropertyChange(p, old, n);
  }
 

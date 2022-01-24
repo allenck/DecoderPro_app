@@ -42,7 +42,7 @@ LocoNetMessageException::LocoNetMessageException(QString s)
 {
  msg = s;
 }
-
+JmriException::JmriException() {}
 JmriException::JmriException(QString s)
 {
  msg = s;
@@ -106,6 +106,7 @@ FileNotFoundException::FileNotFoundException(QString s){msg=s;}
 ParseException::ParseException(QString s){msg=s;}
 PortInUseException::PortInUseException(QString s) {msg=s;}
 JmriConfigureXmlException::JmriConfigureXmlException(QString s) : JmriException(s) {msg =s;}
+JmriConfigureXmlException::JmriConfigureXmlException(QString s, Throwable e) : JmriException(s) {msg =s; this->e = e;}
 ClassNotFoundException::ClassNotFoundException(QString s) {msg=s;}
 NoClassDefFoundError::NoClassDefFoundError(QString s) {msg=s;}
 IllegalAccessException::IllegalAccessException(QString s) {msg=s;}

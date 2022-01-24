@@ -220,9 +220,11 @@ static Protocol getByPeopleName(QString pName) {
       if (this->getProtocol() != other->getProtocol()) return false;
        return true;
      }
-     catch (std::exception e)
+     catch (std::exception* e)
      { return false; }
     }
+
+virtual int hashCode() const {return 0;}
 
 signals:
     
@@ -232,12 +234,17 @@ inline bool operator<(const LocoAddress &e2) const
 {
     if (getNumber() != e2.getNumber())
         return getNumber() < e2.getNumber();
+    return getProtocol() < e2.getProtocol();
 }
 inline bool operator==(const LocoAddress &e2)
 {
   return getNumber() == e2.getNumber();
 }
 
+//inline uint qHash(const LocoAddress &key, uint seed)
+//{
+// return qHash(key.hashCode(), seed);
+//}
 
 };
 //QString LocoAddress::getShortName(LocoAddress::Protocol);

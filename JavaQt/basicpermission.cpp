@@ -48,12 +48,12 @@
  */
 /*private*/ void BasicPermission::init(QString name) {
     if (name == NULL)
-        throw  NullPointerException("name can't be NULL");
+        throw new NullPointerException("name can't be NULL");
 
     int len = name.length();
 
     if (len == 0) {
-        throw  IllegalArgumentException("name can't be empty");
+        throw new IllegalArgumentException("name can't be empty");
     }
 
     QChar last = name.at(len - 1);
@@ -316,7 +316,7 @@ implements java.io.Serializable
  */
 /*public*/ void add(Permission permission) {
     if (! (permission instanceof BasicPermission))
-        throw  IllegalArgumentException("invalid permission: "+
+        throw new IllegalArgumentException("invalid permission: "+
                                            permission);
     if (isReadOnly())
         throw new SecurityException("attempt to add a Permission to a readonly PermissionCollection");

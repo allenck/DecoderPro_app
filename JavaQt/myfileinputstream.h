@@ -11,8 +11,8 @@ class MyFileInputStream : public QObject
  Q_OBJECT
 public:
  explicit MyFileInputStream(File *file, QObject *parent = nullptr);
- /*public*/ char read() throw (IOException);
- /*public*/ void close() throw (IOException);
+ /*public*/ char read() /*throw (IOException)*/;
+ /*public*/ void close() /*throw (IOException)*/;
 
 signals:
 
@@ -21,7 +21,7 @@ private:
  QFile* f =nullptr;
  QDataStream* stream = nullptr;
  /*private*/ void open(QString name) throw (FileNotFoundException);
- /*private*/ /*native*/ int read0() throw (IOException);
+ /*private*/ /*native*/ int read0() /*throw (IOException)*/;
 
 };
 

@@ -3,10 +3,10 @@
 #include "apps.h"
 #include "logger.h"
 #include "backupbase.h"
-#include <QMessageBox>
 #include "jfilechooser.h"
 #include "file.h"
 #include "defaultbackup.h"
+#include "joptionpane.h"
 
 namespace Operations
 {
@@ -26,38 +26,42 @@ namespace Operations
 // static Logger log = LoggerFactory
 //         .getLogger(BackupFilesAction.class.getName());
 
- /*public*/ BackupFilesAction::BackupFilesAction(QString s, QObject* parent)
-     : AbstractAction(s, parent)
+ /*public*/ BackupFilesAction::BackupFilesAction(QObject* parent)
+     : AbstractAction(tr("Backup"), parent)
  {
   //super(s);
   connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void BackupFilesAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void BackupFilesAction::actionPerformed(JActionEvent * /*e*/) {
      backUp();
  }
 
  /*private*/ void BackupFilesAction::backUp() {
      // check to see if files are dirty
-     if (OperationsXml::areFilesDirty()) {
-//         if (JOptionPane.showConfirmDialog(null,
-//                 Bundle.getMessage("OperationsFilesModified"),
-//                 Bundle.getMessage("SaveOperationFiles"),
-//                 JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-      if(QMessageBox::question(NULL, tr("Save operation files?"), tr("Operations files have been modified, do you want to save them?"), QMessageBox::Yes | QMessageBox::No)==QMessageBox::Yes)
-
+     if (OperationsXml::areFilesDirty())
+     {
+      if (JOptionPane::showConfirmDialog(nullptr,
+              tr("Operations files have been modified, do you want to save them?"),
+              tr("Save operation files?"),
+              JOptionPane::YES_NO_OPTION) == JOptionPane::YES_OPTION)
       {
        OperationsXml::save();
-         }
+      }
      }
      BackupBase* backup = new DefaultBackup();
 
      // get directory to write to
-     JFileChooser* fc = new JFileChooser(backup->getBackupRoot());
+     JFileChooser* fc = new JFileChooser(backup->getBackupRoot(), this->parent());
      //fc->addChoosableFileFilter(/*new fileFilter()*/"xml files(*.xml)");
-     fc->setFileFilter("xml files(*.xml)");
+     fc->setFileFilter("xml files (*.xml);;all files (*.*);");
+     fc->setDialogTitle(tr("Select backup directory name"));
+     fc->setApproveButtonText(tr("&B Backup"));
+     fc->setApproveButtonToolTipText(tr("Click to save files to the backup folder."));
+     fc->setFileNameToolTipText(tr("Enter the new backup directory name. "));
+     //fc->setFileSelectionMode(JFileChooser::DIRECTORIES_ONLY);
 
-     File* fs = new File(backup->suggestBackupSetName());
+     File* fs = new File(backup->getBackupRoot()->getPath() + File::separator + backup->suggestBackupSetName());
      fc->setSelectedFile(fs);
 
      int retVal = fc->showSaveDialog(NULL);
@@ -72,7 +76,7 @@ namespace Operations
      // Fix this later....... UGH!!
      try {
          backup->backupFilesToDirectory(directory);
-     } catch (Exception ex) {
+     } catch (Exception* ex) {
   }
  }
 #if 0

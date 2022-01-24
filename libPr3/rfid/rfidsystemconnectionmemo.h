@@ -1,12 +1,12 @@
 #ifndef RFIDSYSTEMCONNECTIONMEMO_H
 #define RFIDSYSTEMCONNECTIONMEMO_H
-#include "systemconnectionmemo.h"
+#include "defaultsystemconnectionmemo.h"
 
 class RfidTrafficController;
 class RfidProtocol;
 class RfidSensorManager;
 class RfidReporterManager;
-class RfidSystemConnectionMemo : public SystemConnectionMemo
+class RfidSystemConnectionMemo : public DefaultSystemConnectionMemo
 {
 public:
  RfidSystemConnectionMemo(RfidTrafficController* rt, QObject* parent = nullptr);

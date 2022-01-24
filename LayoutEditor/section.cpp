@@ -196,7 +196,7 @@ Section::Section(QObject *parent) :
                     getReverseBlockingSensor()->setKnownState(Sensor::INACTIVE);
                 if ( (getForwardBlockingSensor()!=nullptr) && (getForwardBlockingSensor()->getState()!=Sensor::ACTIVE) )
                     getForwardBlockingSensor()->setKnownState(Sensor::ACTIVE);
-            } catch (JmriException reason) {
+            } catch (JmriException* reason) {
                 log.error ("Exception when setting Sensors for Section "+getSystemName());
             }
         }
@@ -206,7 +206,7 @@ Section::Section(QObject *parent) :
                     getForwardBlockingSensor()->setKnownState(Sensor::ACTIVE);
                 if ( (getReverseBlockingSensor()!=nullptr) && (getReverseBlockingSensor()->getState()!=Sensor::ACTIVE) )
                     getReverseBlockingSensor()->setKnownState(Sensor::ACTIVE);
-            } catch (JmriException reason) {
+            } catch (JmriException* reason) {
                 log.error ("Exception when setting Sensors for Section "+getSystemName());
             }
         }
@@ -669,6 +669,22 @@ void Section::propertyChange(PropertyChangeEvent* e)
     if ( (blockIndex>mBlockEntries->size()) || (blockIndex<=0) ) return nullptr;
     return mBlockEntries->at(blockIndex-1);
 }
+
+/*public*/ Block* Section::getExitBlock() {
+    if (initializationNeeded) {
+        initializeBlocks();
+    }
+    if (mBlockEntries->size() <= 0) {
+        return nullptr;
+    }
+    if (mState == REVERSE) {
+        blockIndex = 1;
+    } else {
+        blockIndex = mBlockEntries->size();
+    }
+    return mBlockEntries->at(blockIndex - 1);
+}
+
 /*public*/ bool Section::containsBlock(Block* b) {
     for (int i = 0; i<mBlockEntries->size(); i++) {
         if (b == mBlockEntries->at(i)) return true;
@@ -692,20 +708,23 @@ void Section::propertyChange(PropertyChangeEvent* e)
  * Access methods for beginning and ending block names
  */
 /*public*/ QString Section::getBeginBlockName() {
-    if (initializationNeeded) initializeBlocks();
-    QString s = mFirstBlock->getSystemName();
-    QString uName = mFirstBlock->getUserName();
-    if ( (uName!=nullptr) && (uName!=("")) )
-        return (s+"( "+uName+" )");
-    return s;
+ if (initializationNeeded) {
+     initializeBlocks();
+ }
+ if (mFirstBlock == nullptr) {
+     return "unknown";
+ }
+ return mFirstBlock->getDisplayName();
 }
+
 /*public*/ QString Section::getEndBlockName() {
-    if (initializationNeeded) initializeBlocks();
-    QString s = mLastBlock->getSystemName();
-    QString uName = mLastBlock->getUserName();
-    if ( (uName!=nullptr) && (uName!=("")) )
-        return (s+"( "+uName+" )");
-    return s;
+ if (initializationNeeded) {
+     initializeBlocks();
+ }
+ if (mLastBlock == nullptr) {
+     return "unknown";
+ }
+ return mLastBlock->getDisplayName();
 }
 
 /**
@@ -2370,36 +2389,36 @@ void Section::propertyChange(PropertyChangeEvent* e)
     return tr("Section");
 }
 
-/*public*/ void Section::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException)
+/*public*/ void Section::vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/
 {
     if ("CanDelete" == (evt->getPropertyName())) { //IN18N
         NamedBean* nb = (NamedBean*) VPtr<NamedBean*>::asPtr( evt->getOldValue());
         //if (nb instanceof Sensor) {
-        if(qobject_cast<Sensor*>(nb)!= nullptr)
+        if(static_cast<Sensor*>(nb)!= nullptr)
         {
             if (nb == (getForwardBlockingSensor())) {
                 PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
-                //throw new java.beans.PropertyVetoException(Bundle.getMessage("VetoBlockingSensor", nb.getBeanType(), Bundle.getMessage("Forward"), Bundle.getMessage("Blocking"), getDisplayName()), e); //IN18N
+                throw new PropertyVetoException(tr("Is in use as a %2 %3 %1 in Section %4").arg(nb->getBeanType(), tr("Forward"), tr("Blocking"), getDisplayName()), e); //IN18N
             }
             if (nb == (getForwardStoppingSensor())) {
                 PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
-                //throw new java.beans.PropertyVetoException(Bundle.getMessage("VetoBlockingSensor", nb.getBeanType(), Bundle.getMessage("Forward"), Bundle.getMessage("Stopping"), getDisplayName()), e);
+                throw new PropertyVetoException(tr("Is in use as a %2 %3 %1 in Section %4").arg(nb->getBeanType(), tr("Forward"), tr("Stopping"), getDisplayName()), e);
             }
             if (nb == (getReverseBlockingSensor())) {
              PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
-                //throw new java.beans.PropertyVetoException(Bundle.getMessage("VetoBlockingSensor", nb.getBeanType(), Bundle.getMessage("Reverse"), Bundle.getMessage("Blocking"), getDisplayName()), e);
+                throw new PropertyVetoException(tr("Is in use as a %2 %3 %1 in Section %4").arg(nb->getBeanType(), tr("Reverse"), tr("Blocking"), getDisplayName()), e);
             }
             if (nb == (getReverseStoppingSensor())) {
                 PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
-                //throw new java.beans.PropertyVetoException(Bundle.getMessage("VetoBlockingSensor", nb.getBeanType(), Bundle.getMessage("Reverse"), Bundle.getMessage("Stopping"), getDisplayName()), e);
+                throw new PropertyVetoException(tr("Is in use as a %2 %3 %1 in Section %4").arg(nb->getBeanType(), tr("Reverse"), tr("Stopping"), getDisplayName()), e);
             }
         }
         //if (nb instanceof Block) {
-        if(qobject_cast<Block*>(nb) != nullptr)
+        if(static_cast<Block*>(nb) != nullptr)
         {
             if (getBlockList()->contains((Block*)nb)) {
                 PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
-                throw  PropertyVetoException(tr("Block is in use with Section \"%1\"").arg( getDisplayName()), e);
+                throw new PropertyVetoException(tr("Block is in use with Section \"%1\"").arg( getDisplayName()), e);
             }
         }
     } else if ("DoDelete" == (evt->getPropertyName())) { //IN18N
@@ -2407,5 +2426,30 @@ void Section::propertyChange(PropertyChangeEvent* e)
     }
 }
 
-
+//@Override
+/*public*/ QList<NamedBeanUsageReport*> Section::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+    if (bean != nullptr) {
+        //getBlockList().forEach((block) ->
+        for(Block* block : *getBlockList())
+        {
+            if (bean->equals(block)) {
+                report.append(new NamedBeanUsageReport("SectionBlock"));
+            }
+        }//);
+        if (bean->equals(getForwardBlockingSensor())) {
+            report.append(new NamedBeanUsageReport("SectionSensorForwardBlocking"));
+        }
+        if (bean->equals(getForwardStoppingSensor())) {
+            report.append(new NamedBeanUsageReport("SectionSensorForwardStopping"));
+        }
+        if (bean->equals(getReverseBlockingSensor())) {
+            report.append(new NamedBeanUsageReport("SectionSensorReverseBlocking"));
+        }
+        if (bean->equals(getReverseStoppingSensor())) {
+            report.append(new NamedBeanUsageReport("SectionSensorReverseStopping"));
+        }
+    }
+    return report;
+}
 //    static final org.apache.log4j.Logger log = org.apache.log4j.Logger->atLogger(Section.class->atName());

@@ -13,9 +13,11 @@ public:
  /*public*/ static /*final*/ QString USER_FILES;// = "user-files"; // NOI18N
  /*public*/ static /*final*/ QString SCRIPTS;// = "scripts"; // NOI18N
  /*public*/ static /*final*/ QString JMRIPROGRAM;// = "scripts"; // NOI18N
- /*public*/ void initialize(Profile* profile)throw (InitializationException);
- /*public*/ QSet<QString/* extends PreferencesManager*/>* getRequires();
- /*public*/ void savePreferences(Profile* profile);
+ /*public*/ void initialize(Profile* profile)/*throw (InitializationException)*/override;
+ /*public*/ QSet<QString/* extends PreferencesManager*/> getRequires()override;
+ /*public*/ void savePreferences(Profile* profile)override;
+
+ QObject* self() override {return (QObject*)this;}
 
 };
 Q_DECLARE_METATYPE(FileLocationsPreferences)

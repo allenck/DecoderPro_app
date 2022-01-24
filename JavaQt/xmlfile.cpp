@@ -33,6 +33,8 @@ XmlFile::XmlFile(QObject *parent) :
  //dtdLocation = defaultDtdLocation;
  validate = defaultValidate;
 
+ if(log == nullptr)
+  log = new Logger("XmlFile");
 }
 /**
  * Handle common aspects of XML files. <P> JMRI needs to be able to operate
@@ -59,7 +61,7 @@ XmlFile::XmlFile(QObject *parent) :
  * @throws java.io.FileNotFoundException
  * @return NULL if not found, else root element of located file
      */
-/*public*/ QDomElement XmlFile::rootFromName(QString name) throw (JDOMException)
+/*public*/ QDomElement XmlFile::rootFromName(QString name) /*throw (JDOMException)*/
 {
  currFile = name;
  QFile* fp = new QFile(name);
@@ -81,7 +83,7 @@ XmlFile::XmlFile(QObject *parent) :
          return this->rootFromName("xml" + File::separator + name);
      }
      log->warn("Did not find file or resource " + name);
-     throw FileNotFoundException("Did not find file or resource " + name);
+     throw  new FileNotFoundException("Did not find file or resource " + name);
  }
 }
 
@@ -109,7 +111,7 @@ XmlFile::XmlFile(QObject *parent) :
  return rootFromFile(new QFile(file->getAbsolutePath()));
 }
 
-/*public*/ QDomElement XmlFile::rootFromFile(QFile* file) throw (JDOMException)
+/*public*/ QDomElement XmlFile::rootFromFile(QFile* file) /*throw (JDOMException)*/
 {
  QFileInfo info(file->fileName());
  if (log && log->isDebugEnabled())
@@ -119,7 +121,7 @@ XmlFile::XmlFile(QObject *parent) :
  currFile = file->fileName();
  if(!file->exists())
  {
-  //throw FileNotFoundException(tr("file %1 does not exist").arg(file->fileName()));
+  throw  new FileNotFoundException(tr("file %1 does not exist").arg(file->fileName()));
   log->error(tr("file %1 does not exist").arg(file->fileName()));
   return QDomElement();
  }
@@ -173,7 +175,7 @@ XmlFile::XmlFile(QObject *parent) :
  * @return root element from the file. This should never be NULL, as an
  * exception should be thrown if anything goes wrong.
  */
-/*public*/ QDomElement XmlFile::rootFromURL(QUrl* url) throw (JDOMException)
+/*public*/ QDomElement XmlFile::rootFromURL(QUrl* url) /*throw (JDOMException)*/
 {
  if (log->isDebugEnabled())
  {
@@ -226,7 +228,7 @@ XmlFile::XmlFile(QObject *parent) :
  *
  * @since 3.1.5
  */
-///*protected*/ QDomElement XmlFile::getRoot(bool verify, InputStreamReader reader) throw (JDOMException)
+///*protected*/ QDomElement XmlFile::getRoot(bool verify, InputStreamReader reader) /*throw (JDOMException)*/
 //{
 //    if (log->isDebugEnabled()) {
 //        log->debug("getRoot from reader with encoding " + reader.getEncoding());
@@ -236,7 +238,7 @@ XmlFile::XmlFile(QObject *parent) :
 //    // find root
 //    return doc.getRootElement();
 //}
-/*public*/ void XmlFile::writeXML(File* file, QDomDocument doc) throw (FileNotFoundException)
+/*public*/ void XmlFile::writeXML(File* file, QDomDocument doc)
 {
  writeXML(new QFile(file->getPath()), doc);
 }
@@ -249,7 +251,7 @@ XmlFile::XmlFile(QObject *parent) :
  * @param file File to be created.
  * @param doc Document to be written out. This should never be NULL.
  */
-/*public*/ void XmlFile::writeXML(QFile* file, QDomDocument doc) const throw (FileNotFoundException)
+/*public*/ void XmlFile::writeXML(QFile* file, QDomDocument doc) const
 {
  QFileInfo info(file->fileName());
  // ensure parent directory exists
@@ -317,24 +319,24 @@ XmlFile::XmlFile(QObject *parent) :
  * "decoders/Mine.xml")
  * @return NULL if file found, otherwise the located File
  */
-/*protected*/ QFile* XmlFile::findFile(QString name) const
+/*protected*/ File* XmlFile::findFile(QString name) const
 {
- QFile* fp =  new QFile(FileUtil::getUserFilesPath() + name);
+ File* fp =  new File(FileUtil::getUserFilesPath() + name);
  if (fp->exists())
  {
   return fp;
  }
- fp = new QFile(name);
+ fp = new File(name);
  if (fp->exists())
  {
   return fp;
  }
- fp = new QFile(FileUtil::getProgramPath() + name);
+ fp = new File(FileUtil::getProgramPath() + name);
  if (fp->exists())
  {
   return fp;
  }
- fp = new QFile(xmlDir() + name);
+ fp = new File(xmlDir() + name);
  if (fp->exists())
  {
   return fp;
@@ -366,7 +368,7 @@ XmlFile::XmlFile(QObject *parent) :
  */
 /*public*/ void XmlFile::makeBackupFile(QString name) const
 {
- QFile* file = findFile(name);
+ File * file = findFile(name);
  if (file == NULL)
  {
   log->info("No " + name + " file to backup");
@@ -376,15 +378,15 @@ XmlFile::XmlFile(QObject *parent) :
   QFileInfo info(file->fileName());
 
   QString backupName = backupFileName(info.absoluteFilePath());
-  QFile* backupFile = findFile(backupName);
+  File* backupFile = findFile(backupName);
   if (backupFile != NULL)
   {
-   if (backupFile->remove())
+   if (backupFile->toQfile()->remove())
    {
     log->debug("deleted backup file " + backupName);
    }
   }
-  if (file->rename(backupName))
+  if (file->toQfile()->rename(backupName))
   {
    log->debug("created new backup file " + backupName);
   }
@@ -418,7 +420,9 @@ XmlFile::XmlFile(QObject *parent) :
    log->debug("new backup file: " + backupFullName);
   }
 
-  QFile* backupFile = findFile(backupFullName);
+  QFile* backupFile;
+  File* f = new File(backupFullName);
+  backupFile = f->toQfile();
   if (backupFile != NULL)
   {
    if (backupFile->remove())
@@ -473,12 +477,12 @@ XmlFile::XmlFile(QObject *parent) :
  * pathname for either the xml or preferences directory.
  */
 /*public*/ void XmlFile::revertBackupFile(QString name) {
-    QFile* file = findFile(name);
+    QFile* file = findFile(name)->toQfile();
     if (file == NULL) {
         log->info("No " + name + " file to revert");
     } else {
         QString backupName = QFileInfo(name).absolutePath();
-        QFile* backupFile = findFile(backupName);
+        QFile* backupFile = findFile(backupName)->toQfile();
         if (backupFile != NULL) {
             log->info("No " + backupName + " backup file to revert");
             if (file->remove()) {
@@ -741,7 +745,7 @@ XmlFile::XmlFile(QObject *parent) :
         // parse namespaces, including the noNamespaceSchema
         builder.setFeature("http://xml.org/sax/features/namespaces", true);
 
-    } catch (Exception e) {
+    } catch (Exception* e) {
         log->warn("Could not set schema validation feature: " + e);
     }
     return builder;

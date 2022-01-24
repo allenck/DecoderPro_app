@@ -283,39 +283,45 @@ protected:
 /**
  * Listener for _actionTypeBox.
  */
-class CTEActionTypeListener : public ActionListener {
+class CTEActionTypeListener : public QObject, public ActionListener {
 Q_OBJECT
+    Q_INTERFACES(ActionListener)
     int _itemType;
  ConditionalTreeEdit* cte;
 public slots:
-    /*public*/ void actionPerformed(ActionEvent* e = 0) ;
+    /*public*/ void actionPerformed(JActionEvent* e = 0) override;
 public:
     CTEActionTypeListener(ConditionalTreeEdit* cte);
     /*public*/ void setItemType(int type) ;
+    QObject* self() override{return (QObject*)this;}
 };
 
-class ActionSignalHeadNameListener : public ActionListener
+class ActionSignalHeadNameListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  ConditionalTreeEdit* cte;
 public:
  ActionSignalHeadNameListener(ConditionalTreeEdit* cte);
+ QObject* self() override{return (QObject*)this;}
 //transient ActionListener actionSignalHeadNameListener = new ActionListener() {
 public slots:
     //@Override
-    /*public*/ void actionPerformed(ActionEvent* e =0);
+    /*public*/ void actionPerformed(JActionEvent* e =0)override;
 };
 
-class ActionSignalMastNameListener : public ActionListener
+class ActionSignalMastNameListener :public QObject,  public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  ConditionalTreeEdit* cte;
 //transient ActionListener actionSignalMastNameListener = new ActionListener() {
 public:
  ActionSignalMastNameListener(ConditionalTreeEdit* cte);
+ QObject* self() override{return (QObject*)this;}
 public slots:
     //@Override
-    /*public*/ void actionPerformed(ActionEvent* e = 0) ;
+    /*public*/ void actionPerformed(JActionEvent* e = 0) override;
 };
 
 // ============ Conditional Tree Node Definition ============
@@ -339,74 +345,86 @@ public:
 
 // ------------ Variable detail listeners ------------
 //transient ActionListener variableSignalHeadNameListener = new ActionListener() {
-class VariableSignalHeadNameListener : public ActionListener
+class VariableSignalHeadNameListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  ConditionalTreeEdit* cte;
 public:
  VariableSignalHeadNameListener(ConditionalTreeEdit* cfe);
+ QObject* self() override{return (QObject*)this;}
     //@Override
 public slots:
-    /*public*/ void actionPerformed();
+    /*public*/ void actionPerformed(JActionEvent */*e*/ = 0)override;
 };
 
 //transient ActionListener variableSignalMastNameListener = new ActionListener() {
-class VariableSignalMastNameListener : public ActionListener
+class VariableSignalMastNameListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  ConditionalTreeEdit* cte;
 public:
  VariableSignalMastNameListener(ConditionalTreeEdit* cte);
+ QObject* self() override{return (QObject*)this;}
 public slots:
     //@Override
-    /*public*/ void actionPerformed() ;
+    /*public*/ void actionPerformed(JActionEvent */*e*/ = 0)override ;
 };
 
 //transient ActionListener variableSignalTestStateListener = new ActionListener() {
-class CTEVariableSignalTestStateListener : public ActionListener
+class CTEVariableSignalTestStateListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  ConditionalTreeEdit* cte;
 public:
  CTEVariableSignalTestStateListener(ConditionalTreeEdit* cte);
+ QObject* self() override{return (QObject*)this;}
 public slots:
     //@Override
-    /*public*/ void actionPerformed() ;
+    /*public*/ void actionPerformed(JActionEvent */*e*/ = 0) override;
 };
 
 //transient ActionListener selectLogixBoxListener = new ActionListener() {
-class SelectLogixBoxListener : public ActionListener
+class SelectLogixBoxListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  ConditionalTreeEdit* cte;
 public:
  SelectLogixBoxListener(ConditionalTreeEdit* cte);
+ QObject* self() override{return (QObject*)this;}
 public slots:
     //@Override
-    /*public*/ void actionPerformed();
+    /*public*/ void actionPerformed(JActionEvent */*e*/ = 0)override;
 };
 
 //transient ActionListener selectConditionalBoxListener = new ActionListener() {
-class SelectConditionalBoxListener : public ActionListener
+class SelectConditionalBoxListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  ConditionalTreeEdit* cte;
 public:
  SelectConditionalBoxListener(ConditionalTreeEdit*cte);
+ QObject* self() override{return (QObject*)this;}
 public slots:
      //@Override
-    /*public*/ void actionPerformed();
+    /*public*/ void actionPerformed(JActionEvent */*e*/ = 0) override;
 };
 
 //transient ActionListener compareTypeBoxListener = new ActionListener() {
-class CompareTypeBoxListener : public ActionListener
+class CompareTypeBoxListener : public QObject, public ActionListener
 {
   Q_OBJECT
+    Q_INTERFACES(ActionListener)
   ConditionalTreeEdit* cte;
  public:
   CompareTypeBoxListener(ConditionalTreeEdit* cte);
+  QObject* self() override{return (QObject*)this;}
     //@Override
-    /*public*/ void actionPerformed() ;
+    /*public*/ void actionPerformed(JActionEvent */*e*/ = 0) override;
 };
 
 class CTEWindowListener : public WindowListener

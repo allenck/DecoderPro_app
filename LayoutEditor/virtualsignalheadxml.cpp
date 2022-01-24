@@ -60,7 +60,7 @@ VirtualSignalHeadXml::VirtualSignalHeadXml(QObject *parent) :
 
     loadCommon(h, shared);
 
-    static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(h);
+    qobject_cast<AbstractSignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->AbstractManager::Register(h);
     return true;
 }
 

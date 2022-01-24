@@ -3,7 +3,8 @@
 
 #include <QObject>
 #include "abstractportcontroller.h"
-#include "systemconnectionmemo.h"
+#include "defaultsystemconnectionmemo.h"
+
 
 class AbstractPortController;
 class AbstractPortControllerTestBase : public QObject
@@ -29,7 +30,7 @@ protected:
     Q_OBJECT
 
 public:
-    /*public*/ AbstractPortControllerScaffold() : AbstractPortController(new SystemConnectionMemo("",""))
+    /*public*/ AbstractPortControllerScaffold() : AbstractPortController(new DefaultSystemConnectionMemo("",""))
     {
 //        //super(new SystemConnectionMemo("", "") {
 

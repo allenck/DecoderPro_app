@@ -56,7 +56,7 @@ chooser by implementing this method.
                     model->setName(this->chooser->getSelectedFile()->getCanonicalPath());
                     ((StartupActionsManager*)InstanceManager::getDefault("StartupActionsManager"))->setRestartRequired();
                 }
-            } catch (IOException ex) {
+            } catch (IOException* ex) {
                 log->error(tr("File %1 does not exist.").arg(this->chooser->getSelectedFile()->toString()));
             }
         }

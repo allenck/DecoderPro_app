@@ -26,19 +26,19 @@ public:
 
 public slots:
     /*public*/ void testCreate();
-    /*public*/ void testAddListener() throw (JmriException);
+    /*public*/ void testAddListener() /*throw (JmriException)*/;
     /*public*/ void testRemoveListener();
-    /*public*/ void testDispose() throw (JmriException);
-    /*public*/ void testCommandInactive() throw (JmriException);
-    /*public*/ void testCommandActive() throw (JmriException);
-    /*public*/ void testInvertAfterInactive() throw (JmriException) ;
-    /*public*/ void testInvertAfterActive() throw (JmriException);
-    /*public*/ void testDebounceSettings() throw (JmriException) ;
-    /*public*/ void testDebounce() throw (JmriException);
+    /*public*/ void testDispose() /*throw (JmriException)*/;
+    /*public*/ void testCommandInactive() /*throw (JmriException)*/;
+    /*public*/ void testCommandActive() /*throw (JmriException)*/;
+    /*public*/ void testInvertAfterInactive() /*throw (JmriException)*/ ;
+    /*public*/ void testInvertAfterActive() /*throw (JmriException)*/;
+    /*public*/ void testDebounceSettings() /*throw (JmriException)*/ ;
+    /*public*/ void testDebounce() /*throw (JmriException)*/;
     /*public*/ void testGetPullResistance();
     /*public*/ void testGetBeanType();
     /*public*/ void testSensorStatusRequest();
-    /*public*/ void testSensor() throw (JmriException);
+    /*public*/ void testSensor() /*throw (JmriException)*/;
 signals:
 
 public slots:
@@ -50,12 +50,13 @@ protected:
  friend class ReleaseUntilO9;
 };
 
-/*protected*/ class ListenO2 : public PropertyChangeListener {
+/*protected*/ class ListenO2 : public QObject, public PropertyChangeListener {
 Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
     AbstractSensorTestBase* test;
 public:
     ListenO2(AbstractSensorTestBase* test) {this->test = test;}
-public slots:
+QObject* self() {return (QObject*)this;}public slots:
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* e);
 };
@@ -67,7 +68,8 @@ class  ReleaseUntilO8 : public ReleaseUntil
     int i;
 public:
     ReleaseUntilO8(AbstractSensorTestBase* test) {this->i = i; this->test = test;}
-    bool ready() throw (Exception) {return test->t->getState() == test->t->getRawState();}
+    bool ready() /*throw (Exception)*/
+ {return test->t->getState() == test->t->getRawState();}
 };
 
 class  ReleaseUntilO9 : public ReleaseUntil
@@ -81,7 +83,8 @@ public:
      this->i = i;
      this->test = test;
     }
-    bool ready() throw (Exception) {return test->t->getState() == i;}
+    bool ready() /*throw (Exception)*/
+ {return test->t->getState() == i;}
 };
 
 #endif // ABSTRACTSENSORTESTBASE_H

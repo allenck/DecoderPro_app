@@ -127,7 +127,7 @@ void VSDFile::common()
 //        _statusMsg = "IO Error auto-loading VSD File: " + VSDXmlFileName + " " + ioe.toString();
 //        log->warn(_statusMsg);
 //        return (false);
-//    } catch (NullPointerException npe) {
+//    } catch (NullPointerException* npe) {
 //        _statusMsg = "NP Error auto-loading VSD File: path = " + VSDXmlFileName + " " + npe.toString();
 //        log->warn(_statusMsg);
 //        return (false);
@@ -158,10 +158,10 @@ void VSDFile::common()
 //                }
 //            }
 //            rv = getInputStream(this.getEntry(name));
-//        } catch (IOException e) {
+//        } catch (IOException* e) {
 //            log->error("IOException caught " + e);
 //            rv = NULL;
-//        } catch (NullPointerException ne) {
+//        } catch (NullPointerException* ne) {
 //            log->error("Null Pointer Exception caught. name=" + name, ne);
 //            rv = NULL;
 //        }
@@ -191,7 +191,7 @@ void VSDFile::common()
 
  File* f = new File(e.getFileName());
  return (f);
-//        } catch (NullPointerException e) {
+//        } catch (NullPointerException* e) {
 //            return (NULL);
 #else
  return NULL;
@@ -211,10 +211,10 @@ void VSDFile::common()
             // return the name of the tempfile.
             return (t.getPath());
 
-        } catch (NullPointerException e) {
+        } catch (NullPointerException* e) {
             log->warn("Null pointer exception", e);
             return (NULL);
-        } catch (IOException e) {
+        } catch (IOException* e) {
             log->warn("IO exception", e);
             return (NULL);
         }

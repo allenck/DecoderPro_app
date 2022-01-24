@@ -1,6 +1,6 @@
 #include "abstractprogrammer.h"
 //#include "bundle.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "defaultprogrammermanager.h"
 #include "programmingmode.h"
 #include "vptr.h" // for VPtr
@@ -15,7 +15,7 @@ AbstractProgrammer::AbstractProgrammer(QObject *parent) /*:
  timer = NULL;
  log = new Logger();
   propListeners= new QVector<PropertyChangeListener*>();
-  propertyChangeSupport = new PropertyChangeSupport(this);
+  propertyChangeSupport = new SwingPropertyChangeSupport(this, nullptr);
   mode = ProgrammingMode::PAGEMODE;
 }
 QString AbstractProgrammer::decodeErrorCode(int code)
@@ -61,7 +61,7 @@ QString AbstractProgrammer::decodeErrorCode(int code)
 //    if (!propListeners->contains(l)) {
 //        propListeners->append(l);
 //    }
- propertyChangeSupport->addPropertyChangeListener(listener);
+ propertyChangeSupport->SwingPropertyChangeSupport::addPropertyChangeListener(listener);
 }
 
 /*public synchronized*/ void AbstractProgrammer::removePropertyChangeListener(PropertyChangeListener* listener) {
@@ -106,7 +106,7 @@ QString AbstractProgrammer::decodeErrorCode(int code)
 
 //@Override
 /*public*/ /*final*/ void AbstractProgrammer::setMode(ProgrammingMode* m) {
- QList<ProgrammingMode*> validModes = getSupportedModes();
+ QList<QString> validModes = getSupportedModes();
 
  if (m == nullptr) {
      if (validModes.size()>0) {
@@ -118,20 +118,43 @@ QString AbstractProgrammer::decodeErrorCode(int code)
      }
  }
 
- if (validModes.contains(m)) {
+ //if (validModes.contains(m->getStandardName()))
+ for(QString vm : validModes)
+ {
+  if(vm == m->getStandardName())
+  {
      ProgrammingMode* oldMode = mode;
      mode = m;
      notifyPropertyChange("Mode", VPtr<ProgrammingMode>::asQVariant(oldMode), VPtr<ProgrammingMode>::asQVariant(m));
- } else {
+     return;
+  }
+ }
   log->error("Invalid requested mode: " + m->getStandardName());
      throw  IllegalArgumentException("Invalid requested mode: " + m->getStandardName());
- }
+
 }
+
+/**
+ * Define the "best" programming mode, which provides the initial setting.
+ * <p>
+ * The definition of "best" is up to the specific-system developer.
+ * By default, this is the first of the available methods from getSupportedModes;
+ * override this method to change that.
+ *
+ * @return The recommended ProgrammingMode or null if none exists or is defined.
+ */
+/*public*/ ProgrammingMode* AbstractProgrammer::getBestMode() {
+    if (!getSupportedModes().isEmpty()) {
+        return new ProgrammingMode(getSupportedModes().at(0));
+    }
+    return nullptr;
+}
+
 /*public*/ /*final*/ ProgrammingMode* AbstractProgrammer::getMode() { return mode; }
 
 //@Override
-/*abstract*/ /*public*/ QList<ProgrammingMode*> AbstractProgrammer::getSupportedModes()
-{ return QList<ProgrammingMode*>();}
+/*abstract*/ /*public*/ QList<QString> AbstractProgrammer::getSupportedModes()
+{ return QList<QString>();}
 
 /**
  * Basic implementation.

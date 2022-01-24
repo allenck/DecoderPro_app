@@ -64,11 +64,20 @@
 #include "systemconnectionmemomanager.h"
 #include "listedtableframe.h"
 #include "lnprogrammermanager.h"
-#include "signalspeedmap.h"
 #include "decoderindexfile.h"
 #include "rfid/proxyidtagmanager.h"
 #include "proxylightmanager.h"
 #include "editormanager.h"
+#include "proxymetermanager.h"
+#include "ctc/ctcmanager.h"
+#include "ctc/ctcexceptionbuffer.h"
+#include "appsconfigurationmanager.h"
+#include "warrantpreferences.h"
+#include "jmriclient/jmriclientsystemconnectionmemo.h"
+#include "../operations/routemanager.h"
+#include "defaultvariablelightmanager.h"
+#include "defaultlightcontrol.h"
+#include "jmriconfigurationmanager.h"
 
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {
@@ -103,61 +112,66 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
          type == "ConditionalManager" ||
          type ==  "LogixManager" ||
          type == "MemoryManager" ||
-         type == "RouteManager" ||
+         type == "RouteManager" || type == "DefaultRouteManager" ||
          type == "SignalGroupManager" ||
-         type == "SignalHeadManager" ||
          type == "SignalHeadManager" ||
          type == "SignalMastLogicManager" ||
          type == "SignalMastManager" ||
-         type == "SignalSystemManager")
+         type == "SignalSystemManager" ||
+         type == "Timebase")
   memo = (InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo");
     // In order for getDefault() to create a new object, the manager also
     // needs to be added to the method getInitalizes() below.
  if (type == "AudioManager")
  {
   DefaultAudioManager* dam =  new DefaultAudioManager(memo);
-  InstanceManager::store(dam,type);
+  //InstanceManager::store(dam,type);
   return dam;
  }
 
  if (type == "ClockControl") {
     DefaultClockControl* cc =new DefaultClockControl();
-    InstanceManager::store(cc,type);
+    //InstanceManager::store(cc,type);
     return cc;
  }
 
  if (type == "BlockManager")
  {
   BlockManager* bm = new BlockManager();
-  InstanceManager::store(bm,type);
+  //InstanceManager::store(bm,type);
   return bm;
  }
 
  if (type == "ConditionalManager") {
      DefaultConditionalManager* cm = new DefaultConditionalManager(memo);
-     InstanceManager::store(cm, type);
+     //InstanceManager::store(cm, type);
      return cm;
  }
 
  if (type == "LightManager")
  {
   ProxyLightManager* lm = new ProxyLightManager();
-  InstanceManager::store(lm,type);
+  //InstanceManager::store(lm,type);
   return lm;
  }
 
  if (type == "LogixManager") {
      DefaultLogixManager* lm = new DefaultLogixManager(memo);
-     InstanceManager::store(lm, type);
+     //InstanceManager::store(lm, type);
      return lm;
  }
 
  if (type == "MemoryManager") {
     DefaultMemoryManager* mm = new DefaultMemoryManager(memo);
-    InstanceManager::store(mm,type);
+    //InstanceManager::store(mm,type);
     return mm;
  }
 
+ if (type == "MeterManager") {
+  ProxyMeterManager* mm = new ProxyMeterManager();
+  //InstanceManager::store(mm,type);
+  return mm;
+ }
 // if (type == RailComManager.class) {
 //             return new DefaultRailComManager();
 //         }
@@ -165,7 +179,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  if (type == "ReporterManager")
  {
   ProxyReporterManager* rm = new ProxyReporterManager();
-  InstanceManager::store(rm,type);
+  //InstanceManager::store(rm,type);
   return rm;
  }
 
@@ -173,12 +187,19 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
   return new DefaultRouteManager(memo);
  }
 
+ if (type == "Operations::RouteManager") {
+  Operations::RouteManager* mgr = new Operations::RouteManager();
+  mgr->initialize();
+  //InstanceManager::store(mgr, type);
+  return mgr;
+ }
+
  if (type == "SensorManager")
  {
   //return new ProxySensorManager();
   ProxySensorManager* psm = new ProxySensorManager();
-  InstanceManager::store(psm, type);
-  return psm;
+  //InstanceManager::store(psm, type);
+  return /*(QObject*)*/psm;
  }
 
  if (type == "SignalGroupManager")
@@ -186,7 +207,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
   // ensure signal mast manager exists first
   InstanceManager::getDefault("SignalMastManager");
   DefaultSignalGroupManager* sgm = new DefaultSignalGroupManager(memo);
-  InstanceManager::store(sgm, type);
+  //InstanceManager::store(sgm, type);
   return sgm;
  }
 
@@ -207,7 +228,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  if (type == "EditorManager")
  {
   EditorManager* em = new EditorManager();
-  InstanceManager::store(em, type);
+  //InstanceManager::store(em, type);
   return em;
  }
 
@@ -216,7 +237,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
    // ensure signal head manager exists first
    InstanceManager::getDefault("SignalHeadManager");
    QObject* o =  new DefaultSignalMastManager(memo);
-   InstanceManager::store(o, "SignalMastManager");
+   //InstanceManager::store(o, "SignalMastManager");
    return o;
  }
 
@@ -229,9 +250,11 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
 
  if (type == "Timebase")
  {
-  Timebase* timebase = static_cast<Timebase*>(new SimpleTimebase(/*this*/));
-  if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr)
-   static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerConfig(timebase, Manager::TIMEBASE);
+  Timebase* timebase = qobject_cast<Timebase*>(new SimpleTimebase(memo));
+  //InstanceManager.getOptionalDefault(ConfigureManager.class).ifPresent(cm -> cm.registerConfig(timebase, Manager.TIMEBASE));
+  AppsConfigurationManager* cm = (AppsConfigurationManager*)InstanceManager::getOptionalDefault("ConfigureManager");
+  if(cm)
+   cm->registerConfig(timebase, Manager::TIMEBASE);
   return timebase;
 //        return new SimpleTimebase();
  }
@@ -239,7 +262,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  if (type == "TurnoutManager")
  {
   ProxyTurnoutManager* tm = new ProxyTurnoutManager();
-  InstanceManager::store(tm, type);
+  //InstanceManager::store(tm, type);
   return tm;
  }
 
@@ -253,7 +276,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  //***************************** added by ACK ***************
  if (type == "CatalogTreeManager") {
      DefaultCatalogTreeManager* ctm = new DefaultCatalogTreeManager();
-     InstanceManager::store(ctm,type);
+     //InstanceManager::store(ctm,type);
      return ctm;
  }
 
@@ -262,23 +285,23 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  if(type == "JmriJTablePersistenceManager")
  {
   JmriJTablePersistenceManager* jjtpm = new JmriJTablePersistenceManager();
-  InstanceManager::store (jjtpm, type);
-  InstanceManager::store(jjtpm, "JTablePersistenceManager");
+//  InstanceManager::store (jjtpm, type);
+//  InstanceManager::store(jjtpm, "JTablePersistenceManager");
   return jjtpm;
  }
 
  if (type == "IdTagManager")
  {
-  DefaultIdTagManager* tm =new DefaultIdTagManager();
-  InstanceManager::store(tm, type);
-  return tm;
+  ProxyIdTagManager* tm =new ProxyIdTagManager();
+  //InstanceManager::store(tm, type);
+  return (QObject*)tm;
  }
 
  if (type == "DefaultIdTagManager")
  {
   DefaultIdTagManager* tm =new DefaultIdTagManager();
-  InstanceManager::store(tm, type);
-  return tm;
+  //InstanceManager::store(tm, type);
+  return (QObject*)tm;
  }
 
 // if (type == "LayoutBlockManager")
@@ -291,14 +314,14 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  if (type == "OBlockManager")
  {
   OBlockManager* bm = new OBlockManager();
-  InstanceManager::store(bm,type);
+  //InstanceManager::store(bm,type);
   return bm;
  }
 
  if (type == "PortalManager")
  {
   PortalManager* pm = new PortalManager();
-  InstanceManager::store(pm,type);
+  //InstanceManager::store(pm,type);
   return pm;
  }
 #if 0
@@ -317,6 +340,13 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  }
 #endif
 
+ if (type == "GlobalProgrammerManager")
+ {
+  DefaultProgrammerManager* lnpm = new DefaultProgrammerManager();
+  InstanceManager::store(lnpm,type);
+  return lnpm;
+ }
+
  if (type == "RosterIconFactory") {
      return RosterIconFactory::instance();
  }
@@ -324,21 +354,21 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
 
  if (type == "PanelMenu") {
   PanelMenu* pm =  new PanelMenu();
-  InstanceManager::store(pm, type);
+  //InstanceManager::store(pm, type);
   return pm; }
 
 
  if (type == "SectionManager")
  {
   SectionManager* sm = new SectionManager();
-  InstanceManager::store(sm, type);
+  //InstanceManager::store(sm, type);
   return sm;
  }
 
  if(type == "JTablePersistenceManager")
  {
   JmriJTablePersistenceManager* jtpm = new JmriJTablePersistenceManager();
-  InstanceManager::store(jtpm, type);
+  //InstanceManager::store(jtpm, type);
   return jtpm;
  }
 
@@ -346,35 +376,35 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
 
  if (type == "TransitManager") {
   TransitManager* tm =new TransitManager();
-  InstanceManager::store(tm,type);
+  //InstanceManager::store(tm,type);
   return tm;
 
  }
  if (type == "EntryExitPairs") {
   EntryExitPairs* eep =new EntryExitPairs();
-  InstanceManager::store(eep,type);
+  //InstanceManager::store(eep,type);
   return eep;
 
  }
 
  if (type == "SystemConnectionMemoManager") {
   SystemConnectionMemoManager* scmm =new SystemConnectionMemoManager();
-  InstanceManager::store(scmm,type);
+  //InstanceManager::store(scmm,type);
   return scmm;
 
  }
 
+// if(type == "ConfigureManager")
+// {
+//  ConfigXmlManager* cm = new ConfigXmlManager();
+//  InstanceManager::store(cm,type);
+//  return cm;
+// }
+
  if(type == "ConfigureManager")
  {
-  ConfigXmlManager* cm = new ConfigXmlManager();
-  InstanceManager::store(cm,type);
-  return cm;
- }
-
- if(type == "JmriConfigurationManager")
- {
-  ConfigXmlManager* cm = new ConfigXmlManager();
-  InstanceManager::store(cm,type);
+  AppsConfigurationManager* cm = new AppsConfigurationManager();
+  //InstanceManager::store(cm,type);
   return cm;
  }
 
@@ -384,88 +414,88 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  if(type == "WarrantManager")
  {
   WarrantManager* wm = new WarrantManager();
-  InstanceManager::store(wm,type);
+  //InstanceManager::store(wm,type);
   return wm;
  }
 
  if(type == "StartupActionModelUtil")
  {
   StartupActionModelUtil* samu = new StartupActionModelUtil();
-  InstanceManager::store(samu,type);
+  //InstanceManager::store(samu,type);
   return samu;
  }
 
  if(type == "StartupActionsManager")
  {
   StartupActionsManager* sam = new StartupActionsManager();
-  InstanceManager::store(sam,type);
+  //InstanceManager::store(sam,type);
   return sam;
  }
 
  if(type == "ConnectionConfigManager")
  {
   ConnectionConfigManager* ccm = new ConnectionConfigManager();
-  InstanceManager::store(ccm,type);
+  //InstanceManager::store(ccm,type);
   return ccm;
  }
 
  if(type == "SystemConsolePreferencesManager")
  {
   SystemConsolePreferencesManager* scpm = new SystemConsolePreferencesManager();
-  InstanceManager::store(scpm,type);
+  //InstanceManager::store(scpm,type);
   return scpm;
  }
  if(type == "ProgrammerConfigManager")
  {
   ProgrammerConfigManager* pcm = new ProgrammerConfigManager();
-  InstanceManager::store(pcm,type);
+  //InstanceManager::store(pcm,type);
   return pcm;
  }
 
  if(type == "RosterConfigManager")
  {
   RosterConfigManager* rcm = new RosterConfigManager();
-  InstanceManager::store(rcm,type);
+  //InstanceManager::store(rcm,type);
   return rcm;
  }
 
  if(type == "FileLocationsPreferences")
  {
   FileLocationsPreferences* flp = new FileLocationsPreferences();
-  InstanceManager::store(flp,type);
+  //InstanceManager::store(flp,type);
   return flp;
  }
  if(type == "FileHistory")
  {
   FileHistory* fh = new FileHistory();
-  InstanceManager::store(fh,type);
+  //InstanceManager::store(fh,type);
   return fh;
  }
 
  if(type == "GuiLafPreferencesManager")
  {
   GuiLafPreferencesManager* glpm = new GuiLafPreferencesManager();
-  InstanceManager::store(glpm,type);
+  //InstanceManager::store(glpm,type);
   return glpm;
  }
 
  if(type == "WiThrottlePreferences")
  {
   WiThrottlePreferences* wtp = new WiThrottlePreferences();
-  InstanceManager::store(wtp,type);
+  //InstanceManager::store(wtp,type);
   return wtp;
  }
  if(type == "ThrottlesPreferences")
  {
   ThrottlesPreferences* wtp = new ThrottlesPreferences();
-  InstanceManager::store(wtp,type);
+  //InstanceManager::store(wtp,type);
   return wtp;
  }
 
  if(type == "WebServerPreferences")
  {
   WebServerPreferences* wtp = new WebServerPreferences();
-  InstanceManager::store(wtp,type);
+  //InstanceManager::store(wtp,type);
   return wtp;
  }
 
@@ -477,73 +507,88 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
 //  return itcm;
 // }
 
+ if(type == "JMRIClientSystemConnectionMemo")
+ {
+  JMRIClientSystemConnectionMemo* memo = new JMRIClientSystemConnectionMemo();
+  //InstanceManager::store(memo,type);
+  //InstanceManager::store(itcm, "SystemConnectionMemo");
+  return memo;
+ }
+
  if(type == "ManagerDefaultSelector")
  {
   ManagerDefaultSelector* mds = new ManagerDefaultSelector();
-  InstanceManager::store(mds,type);
+  //InstanceManager::store(mds,type);
   return mds;
  }
  if(type == "PerformActionModelFactory")
  {
   PerformActionModelFactory* pamf = new PerformActionModelFactory();
-  InstanceManager::store(pamf,type);
+  //InstanceManager::store(pamf,type);
   return pamf;
  }
  if(type == "StartupPauseFactory")
  {
   StartupPauseFactory* supf = new StartupPauseFactory();
-  InstanceManager::store(supf,type);
-  return supf;
+  //InstanceManager::store(supf,type);
+  return supf->self();
  }
  if(type == "CreateButtonModelFactory")
  {
   CreateButtonModelFactory* supf = new CreateButtonModelFactory();
-  InstanceManager::store(supf,type);
-  return supf;
+  //InstanceManager::store(supf,type);
+  return supf->self();
  }
  if(type == "TriggerRouteModelFactory")
  {
   TriggerRouteModelFactory* supf = new TriggerRouteModelFactory();
-  InstanceManager::store(supf,type);
-  return supf;
+  InstanceManager::store(supf->self(),type);
+  return supf->self();
  }
  if(type == "ScriptButtonModelFactory")
  {
   ScriptButtonModelFactory* supf = new ScriptButtonModelFactory();
-  InstanceManager::store(supf,type);
-  return supf;
+  //InstanceManager::store(supf,type);
+  return supf->self();
  }
 
  if(type == "PerformFileModelFactory")
  {
   PerformFileModelFactory* supf = new PerformFileModelFactory();
-  InstanceManager::store(supf,type);
-  return supf;
+  //InstanceManager::store(supf,type);
+  return supf->self();
  }
 
  if(type == "RestartStartupActionFactory")
  {
   RestartStartupActionFactory* rsaf = new RestartStartupActionFactory();
-  InstanceManager::store(rsaf,type);
+  //InstanceManager::store(rsaf,type);
   return rsaf;
+ }
+
+ if(type == "SignalMastLogicManager")
+ {
+  SignalMastLogicManager* slm = new DefaultSignalMastLogicManager();
+  //InstanceManager::store(slm,type);
+  return (QObject*)slm;
  }
 
  if(type == "JsonServerPreferences")
  {
   JsonServerPreferences* jsp = new JsonServerPreferences();
-  InstanceManager::store(jsp,type);
+  //InstanceManager::store(jsp,type);
   return jsp;
  }
 
  if (type == "CatalogTreeModel") {
      CatalogTreeModel* ctm = new CatalogTreeModel();
-     InstanceManager::store(ctm, type);
+     //InstanceManager::store(ctm, type);
      return ctm;
  }
 
  if (type == "ThrottleFrameManager") {
      ThrottleFrameManager* tfm = new ThrottleFrameManager();
-     InstanceManager::store(tfm, type);
+     //InstanceManager::store(tfm, type);
      return tfm;
  }
 
@@ -557,15 +602,22 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  if(type == "TurnoutOperationManager")
  {
   TurnoutOperationManager* tom = new TurnoutOperationManager();
-  InstanceManager::store(tom,type);
+//  InstanceManager::store(tom,type);
   return tom;
  }
 
  if(type == "ProxyIdTagManager")
  {
   ProxyIdTagManager* pitm = new ProxyIdTagManager();
-  InstanceManager::store(pitm,type);
+//  InstanceManager::store(pitm,type);
   return pitm;
+ }
+
+ if(type == "WarrantPreferences")
+ {
+  WarrantPreferences* wp = new WarrantPreferences();
+//  InstanceManager::store(wp,type);
+  return wp;
  }
 
 // if(type == "ConsistManager")
@@ -574,12 +626,37 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
 //  InstanceManager::store(lncm,type);
 //  return pitm;
 // }
+ if (type == "CtcManager")
+ {
+  CtcManager* m = new CtcManager();
+//  InstanceManager::store(m, type);
+  return m;
+ }
 
+ // if (type == "ThrottleManager")
+ // {
+ //  DirectSystemConnectionMemo* memo = new DirectSystemConnectionMemo();
+ //  AbstractThrottleManager* m = new AbstractThrottleManager(memo);
+ //  InstanceManager::store(m, type);
+ //  return m;
+ // }
+
+ if (type == "DefaultRouteManager")
+ {
+  DefaultRouteManager* m = new DefaultRouteManager(memo);
+  return m;
+ }
+
+ if (type == "VariableLightManager") {
+   return (new DefaultVariableLightManager(memo))->init();
+ }
 
  // this is an error!
  //throw new IllegalArgumentException("Cannot create object of type "+type);
- log->warn("DefaultInstanceInitializer: Cannot create object of type " + type);
+ if(log)
+  log->warn("DefaultInstanceInitializer: Cannot create object of type " + type);
  return nullptr;
 }
+
 
 /*static*/ Logger* DefaultInstanceInitializer::log = LoggerFactory::getLogger("DefaultInstanceInitializer");

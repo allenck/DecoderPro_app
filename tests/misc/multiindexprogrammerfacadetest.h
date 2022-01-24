@@ -45,12 +45,14 @@ private:
  friend class ProgListenerO5;
 };
 
-class ProgListenerO5 : public ProgListener {
+class ProgListenerO5 : public QObject, public ProgListener {
  Q_OBJECT
+  Q_INTERFACES(ProgListener)
     //@Override
  MultiIndexProgrammerFacadeTest* test;
 public:
  ProgListenerO5(MultiIndexProgrammerFacadeTest* test) {this->test = test;}
+ QObject* self() {return (QObject*)this;}
 public slots:
  /*public*/ void programmingOpReply(int value, int status);
 };

@@ -241,7 +241,7 @@ void SpeedProfilePanel::setupProfile()
  {
 //        try {
   sensorA = new SensorDetails((Sensor*) sensorAPanel->getNamedBean());
-//        } catch (Exception e) {
+//        } catch (Exception* e) {
   if(sensorA == NULL)
   {
    //JOptionPane.showMessageDialog(NULL, tr("ErrorSensorNotFound", "Start"));
@@ -255,7 +255,7 @@ void SpeedProfilePanel::setupProfile()
   Sensor* tmpSen = NULL;
 //        try {
   tmpSen = (Sensor*) sensorAPanel->getNamedBean();
-//        } catch (Exception e) {
+//        } catch (Exception* e) {
   if(tmpSen == NULL)
   {
 //            JOptionPane.showMessageDialog(NULL, tr("ErrorSensorNotFound", "Start"));
@@ -273,7 +273,7 @@ void SpeedProfilePanel::setupProfile()
  {
 //        try {
   sensorB = new SensorDetails((Sensor*) sensorBPanel->getNamedBean());
-//        } catch (Exception e) {
+//        } catch (Exception* e) {
   if(sensorB == NULL)
   {
 //            JOptionPane.showMessageDialog(NULL, tr("ErrorSensorNotFound", "Finish"));
@@ -287,7 +287,7 @@ void SpeedProfilePanel::setupProfile()
   Sensor* tmpSen = NULL;
 //        try {
   tmpSen = (Sensor*) sensorBPanel->getNamedBean();
-//        } catch (Exception e) {
+//        } catch (Exception* e) {
   if(tmpSen == NULL)
   {
             //JOptionPane.showMessageDialog(NULL, tr("ErrorSensorNotFound", "Finish"));
@@ -305,7 +305,7 @@ void SpeedProfilePanel::setupProfile()
  {
 //        try {
   middleBlockSensor = new SensorDetails((Sensor*) sensorCPanel->getNamedBean());
-//        } catch (Exception e) {
+//        } catch (Exception* e) {
   if(middleBlockSensor == NULL)
   {
 //            JOptionPane.showMessageDialog(NULL, tr("ErrorSensorNotFound", "Block"));
@@ -319,7 +319,7 @@ void SpeedProfilePanel::setupProfile()
   Sensor* tmpSen = NULL;
 //        try {
   tmpSen = (Sensor*) sensorCPanel->getNamedBean();
-//        } catch (Exception e) {
+//        } catch (Exception* e) {
   if(tmpSen == NULL)
   {
 //            JOptionPane.showMessageDialog(NULL, tr("ErrorSensorNotFound", "Block"));
@@ -347,7 +347,7 @@ void SpeedProfilePanel::setupProfile()
   t = NULL;
  }
  re = reBox->getSelectedRosterEntries()->at(0);
- bool ok = InstanceManager::throttleManagerInstance()->requestThrottle(re, (ThrottleListener*)this);
+ bool ok = InstanceManager::throttleManagerInstance()->requestThrottle(re, (ThrottleListener*)this,true);
  if (!ok)
  {
   log->warn("Throttle for locomotive " + re->getId() + " could not be setup.");
@@ -375,7 +375,7 @@ void SpeedProfilePanel::setupProfile()
  AbstractThrottle* at = (AbstractThrottle*)t;
  connect(at, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
- int speedStepMode = t->getSpeedStepMode()->mode;
+ int speedStepMode = t->getSpeedStepMode();
  profileIncrement = t->getSpeedIncrement();
  if (speedStepMode == DccThrottle::SpeedStepMode14)
  {
@@ -447,7 +447,7 @@ void SpeedProfilePanel::setupProfile()
 //  };
   startListener = new StartListenerB(this);
   //startSensor.addPropertyChangeListener(startListener);
-  connect(startSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), startListener, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(startSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), startListener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
   int startstep = speedStepFrom->text().toInt();
   Q_ASSERT(startstep > 0 && startstep <= 126);
   isForward = true;
@@ -557,10 +557,10 @@ void SpeedProfilePanel::startProfile()
  }
  startSensor = middleBlockSensor->getSensor();
  //startSensor.addPropertyChangeListener(startListener);
- connect(startSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), startListener, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(startSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), startListener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
 
  //finishSensor.addPropertyChangeListener(finishListener);
- connect(finishSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), finishListener, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect(finishSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), finishListener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
  t->setIsForward(isForward);
  log->debug("Set speed to " + QString::number(profileSpeed) + " isForward " + (isForward?"yes":"no"));
  t->setSpeedSetting(profileSpeed);
@@ -582,7 +582,7 @@ void SpeedProfilePanel::stopCurrentSpeedStep()
  timerDuration = durationTimer->nsecsElapsed();
  stepCalculated = true;
  //finishSensor.removePropertyChangeListener(finishListener);
- disconnect(finishSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), finishListener, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(finishSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), finishListener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
  sourceLabel->setText(tr("Calculating Speed"));
  if (profileStep >= 4)
  {
@@ -599,9 +599,9 @@ void SpeedProfilePanel::stopLoco()
  }
 
  //startSensor.removePropertyChangeListener(startListener);
- disconnect(startSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), startListener, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(startSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), startListener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
  //finishSensor.removePropertyChangeListener(finishListener);
- disconnect(finishSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), finishListener, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(finishSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), finishListener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
 
  isForward = !isForward;
  if (isForward)
@@ -703,17 +703,17 @@ void SpeedProfilePanel::on_cancelButton_clicked()
  if (startSensor != NULL)
  {
   //startSensor.removePropertyChangeListener(startListener);
-  disconnect(startSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), startListener, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(startSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), startListener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
  }
  if (finishSensor != NULL)
  {
   //finishSensor.removePropertyChangeListener(finishListener);
-  disconnect(finishSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), finishListener, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(finishSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), finishListener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
  }
  if (middleListener != NULL)
  {
   //middleBlockSensor->getSensor().removePropertyChangeListener(middleListener);
-  disconnect(middleBlockSensor->getSensor(), SIGNAL(propertyChange(PropertyChangeEvent*)), middleListener, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect(middleBlockSensor->getSensor(), SIGNAL(propertyChange(PropertyChangeEvent*)), middleListener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
  }
  setButtonStates(true);
 
@@ -723,10 +723,8 @@ void SpeedProfilePanel::on_cancelButton_clicked()
 void SpeedProfilePanel::on_testButton_clicked()
 {
  //Should also test that the step is no greater than those available on the throttle.
- //try {
  bool bOk;
  int s =speedStepFrom->text().toInt(&bOk);
-// } catch (Exception e) {
  if(!bOk || s == 0 || s > finishSpeedStep )
  {
      //JOptionPane.showMessageDialog(NULL, tr("ErrorSpeedStep"));
@@ -749,7 +747,7 @@ void SpeedProfilePanel::stopTrainTest()
     re->getSpeedProfile()->changeLocoSpeed(t, sectionlength, 0.0f);
     setButtonStates(true);
     //startSensor->removePropertyChangeListener(startListener);
-    disconnect(startSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), startListener, SLOT(propertyChange(PropertyChangeEvent*)));
+    disconnect(startSensor, SIGNAL(propertyChange(PropertyChangeEvent*)), startListener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 
@@ -815,7 +813,7 @@ void SpeedProfilePanel::stopTrainTest()
  log->debug("notifyThrottleDisposed");
  if (t != NULL)
  {
-  t->removePropertyChangeListener((PropertyChangeListener*)this);
+  ((AbstractThrottle*)t)->removePropertyChangeListener((PropertyChangeListener*)this);
   AbstractThrottle* at = (AbstractThrottle*)t;
   disconnect(at, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
@@ -851,7 +849,7 @@ BlockSensorComboBox::BlockSensorComboBox(QWidget* parent) : QComboBox(parent)
 }
 Sensor* BlockSensorComboBox::getNamedBean()
 {
- return ((ProxySensorManager*) InstanceManager::sensorManagerInstance())->getBySystemName(this->currentText());
+ return (Sensor*)((ProxySensorManager*) InstanceManager::sensorManagerInstance())->AbstractProxyManager::getBySystemName(this->currentText());
 }
 LayoutBlock* BlockSensorComboBox::getBlock()
 {
@@ -1014,17 +1012,17 @@ LayoutBlock* BlockSensorComboBox::getBlock()
             {
                 case FORWARD_SPEED_COL:
                     entry.value()->setForwardSpeed(value.toFloat(&bok));
-                    if(!bok) throw NumberFormatException();
+                    if(!bok) throw new NumberFormatException();
                     return true;
                 case REVERSE_SPEED_COL:
                     entry.value()->setReverseSpeed(value.toFloat(&bok));
-                    if(!bok) throw NumberFormatException();
+                    if(!bok) throw new NumberFormatException();
                     return true;
                 default:
                     // fall out
                     break;
             }
-            } catch (NumberFormatException nfe) {
+            } catch (NumberFormatException* nfe) {
                 SpeedProfilePanel::log->error(tr("SpeedTableModel (%1, %2) value=%3").arg(row).arg(index.column()).arg(value.toString()));
             }
             return false;

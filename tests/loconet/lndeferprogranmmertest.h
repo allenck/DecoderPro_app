@@ -81,8 +81,9 @@ protected:
     }
 };
 
-class ProgListenerO4 : public ProgListener{
+class ProgListenerO4 : public QObject, public ProgListener{
  Q_OBJECT
+  Q_INTERFACES(ProgListener)
  LnDeferProgrammerTest* test;
 public:
  ProgListenerO4(LnDeferProgrammerTest* test) { this->test = test;}
@@ -92,6 +93,7 @@ public:
         test->status = stat;
         test->value = val;
     }
+ QObject* self() {return (QObject*)this;}
 };
 
 class ReleaseUntilO10 : public ReleaseUntil
@@ -100,7 +102,8 @@ class ReleaseUntilO10 : public ReleaseUntil
     LnDeferProgrammerTest* lompt;
 public:
     ReleaseUntilO10(LnDeferProgrammerTest* lompt) {this->lompt = lompt;}
-    bool ready() throw (Exception) {return lompt->startedShortTimer;}
+    bool ready() /*throw (Exception)*/
+ {return lompt->startedShortTimer;}
 };
 
 class ReleaseUntilO11 : public ReleaseUntil
@@ -109,7 +112,8 @@ class ReleaseUntilO11 : public ReleaseUntil
     LnDeferProgrammerTest* lompt;
 public:
     ReleaseUntilO11(LnDeferProgrammerTest* lompt) {this->lompt = lompt;}
-    bool ready() throw (Exception) {return lompt->value == 35;}
+    bool ready() /*throw (Exception)*/
+ {return lompt->value == 35;}
 };
 
 class ReleaseUntilO12 : public ReleaseUntil
@@ -118,7 +122,8 @@ class ReleaseUntilO12 : public ReleaseUntil
     LnDeferProgrammerTest* lompt;
 public:
     ReleaseUntilO12(LnDeferProgrammerTest* lompt) {this->lompt = lompt;}
-    bool ready() throw (Exception) {return lompt->startedLongTimer;}
+    bool ready() /*throw (Exception)*/
+ {return lompt->startedLongTimer;}
 };
 
 class ReleaseUntilO13 : public ReleaseUntil
@@ -127,7 +132,8 @@ class ReleaseUntilO13 : public ReleaseUntil
     LnDeferProgrammerTest* lompt;
 public:
     ReleaseUntilO13(LnDeferProgrammerTest* lompt) {this->lompt = lompt;}
-    bool ready() throw (Exception) {return (lompt->value == -1);}
+    bool ready() /*throw (Exception)*/
+ {return (lompt->value == -1);}
 };
 
 #endif // LnDeferProgrammerTest_H

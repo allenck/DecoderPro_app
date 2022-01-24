@@ -38,6 +38,7 @@
 #include <QFile>
 #include <QUrl>
 #include "loggerfactory.h"
+#include "signalmastaddpane.h"
 
 //AddSignalMastPanel::AddSignalMastPanel(QWidget *parent) :
 //    QWidget(parent)
@@ -97,7 +98,7 @@ void AddSignalMastPanel::init()
  // get the list of possible signal types (as shown by panes)
  // SignalMastAddPane::SignalMastAddPaneProvider::getInstancesCollection().forEach(
  //     (provider)->
- foreach(SignalMastAddPane::SignalMastAddPaneProvider* provider, SignalMastAddPane::SignalMastAddPaneProvider::getInstancesCollection())
+ foreach(SignalMastAddPaneProvider* provider, SignalMastAddPaneProvider::getInstancesCollection())
  {
   if (provider->isAvailable()) {
       panes.append(provider->getNewPane());
@@ -287,7 +288,7 @@ void AddSignalMastPanel::selection(QString view) {
    mastBoxPassive = false;
    if (mapTypeToName.value(mast->getMastType()) == nullptr ) {
        log->error(tr("About to set mast to null, which shouldn't happen. mast.getMastType() is %1").arg(mast->getMastType()),
-                Exception("Traceback Exception")); // NOI18N
+                new Exception("Traceback Exception")); // NOI18N
    }
    log->trace(tr("set mastBox to \"%1\" from \"%2\"").arg( mapTypeToName.value(mast->getMastType())).arg(mast->getMastType())); // NOI18N
    mastBox->setCurrentText(mapTypeToName.value(mast->getMastType()));
@@ -376,13 +377,13 @@ void AddSignalMastPanel::loadMastDefinitions()
   else {
    log->error("Unexpected null list of signal definition files"); // NOI18N
   }
- } catch (JDOMException e)
+ } catch (JDOMException* e)
  {
   mastBox->addItem("Failed to create definition, did you select a system?");
-  log->warn("in loadMastDefinitions"+ e.getMessage());
- } catch (IOException e) {
+  log->warn("in loadMastDefinitions"+ e->getMessage());
+ } catch (IOException* e) {
   mastBox->addItem("Failed to read definition, did you select a system?");
-  log->warn("in loadMastDefinitions" + e.getMessage());
+  log->warn("in loadMastDefinitions" + e->getMessage());
  }
 
  try
@@ -427,11 +428,11 @@ void AddSignalMastPanel::loadMastDefinitions()
      log->warn("No mast definition files found");
     }
   }
- } catch (JDOMException e) {
-        log->warn("in loadMastDefinitions"+ e.getMessage());
- } catch (IOException e) {
+ } catch (JDOMException* e) {
+        log->warn("in loadMastDefinitions"+ e->getMessage());
+ } catch (IOException* e) {
         //Can be considered normal
-        log->warn("in loadMastDefinitions"+ e.getMessage());
+        log->warn("in loadMastDefinitions"+ e->getMessage());
  }
 //    mastBox->addItemListener(new ItemListener(){
 //        /*public*/ void itemStateChanged(ItemEvent e) {
@@ -522,7 +523,7 @@ void AddSignalMastPanel::okPressed()
 
  // get and validate entered global information
  if ( (mastBox->currentIndex() < 0) || ( mastFiles.value(mastBox->currentIndex()) == nullptr) ) {
-     issueDialogFailMessage( RuntimeException("There's something wrong with the mast type selection"));
+     issueDialogFailMessage( new RuntimeException("There's something wrong with the mast type selection"));
      return;
  }
  QString mastname = mastFiles.value(mastBox->currentIndex())->getName();
@@ -539,7 +540,7 @@ void AddSignalMastPanel::okPressed()
  // ask top-most pane to make a signal
  try {
      success = currentPane->createMast(sigsysname,mastname,user);
- } catch (RuntimeException ex) {
+ } catch (RuntimeException* ex) {
      issueDialogFailMessage(ex);
      return; // without clearing panel, so user can try again
  }
@@ -558,11 +559,11 @@ int AddSignalMastPanel::issueNoUserNameGiven() {
                 JOptionPane::YES_NO_OPTION);
     }
 
-void AddSignalMastPanel::issueDialogFailMessage(RuntimeException ex) {
+void AddSignalMastPanel::issueDialogFailMessage(RuntimeException* ex) {
 // This is intrinsically swing, so pop a dialog
 log->error("Failed during createMast", ex); // NOI18N
 JOptionPane::showMessageDialog(this,
-    tr("Failed during createMast %1").arg(ex.getMessage()), // NOI18N
+    tr("Failed during createMast %1").arg(ex->getMessage()), // NOI18N
     tr("Create Failed"),  // title of box // NOI18N
     JOptionPane::ERROR_MESSAGE);
 }

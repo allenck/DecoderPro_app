@@ -191,7 +191,7 @@
             return ((MixerProvider*)providers->at(i))->getMixer(info);
 
         } catch (IllegalArgumentException e) {
-        } catch (NullPointerException e) {
+        } catch (NullPointerException* e) {
             // $$jb 08.20.99:  If the strings in the info object aren't
             // set, then Netscape (using jdk1.1.5) tends to throw
             // NPE's when doing some string manipulation.  This is
@@ -216,7 +216,7 @@
                     }
                 }
             } catch (IllegalArgumentException e) {
-            } catch (NullPointerException e) {
+            } catch (NullPointerException* e) {
             }
         }
     }

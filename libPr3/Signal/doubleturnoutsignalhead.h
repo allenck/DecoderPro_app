@@ -49,23 +49,27 @@ protected:
  friend class TurnoutPropertyChangeListener;
 };
 
-class TimerActionListener : public ActionListener
+class TimerActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  DoubleTurnoutSignalHead* dtsh;
 public:
  TimerActionListener( DoubleTurnoutSignalHead* dtsh) {this->dtsh = dtsh;}
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent */*e*/ = 0)override;
 };
 
-class TurnoutPropertyChangeListener : public PropertyChangeListener
+class TurnoutPropertyChangeListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  DoubleTurnoutSignalHead* dtsh;
 public:
  TurnoutPropertyChangeListener(DoubleTurnoutSignalHead* dtsh) {this->dtsh = dtsh;}
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void propertyChange(PropertyChangeEvent*);
+ void propertyChange(PropertyChangeEvent*)override;
 };
 #endif // DOUBLETURNOUTSIGNALHEAD_H

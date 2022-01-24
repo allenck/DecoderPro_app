@@ -256,7 +256,7 @@ ConsistToolFrameTest::ConsistToolFrameTest(QObject *parent) : QObject(parent)
 }
 
 //@Before
-/*public*/ void ConsistToolFrameTest::setUp() throw (IOException) {
+/*public*/ void ConsistToolFrameTest::setUp() /*throw (IOException)*/ {
     JUnitUtil::setUp();
     Profile* profile = new NullProfile(folder->newFolder(Profile::PROFILE));
     JUnitUtil::resetProfileManager(profile);

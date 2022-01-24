@@ -6,17 +6,22 @@
 
 class PropertyChangeListener;
 class PropertyChangeEvent;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 
 class Bean : public UnboundBean, public PropertyChangeProvider
 {
  Q_OBJECT
  Q_INTERFACES(PropertyChangeProvider)
 public:
- explicit Bean(QObject *parent = 0);
- virtual /*public*/ void addPropertyChangeListener(PropertyChangeListener* listener);
- virtual /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener);
- virtual /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners();
+  Bean(QObject *parent = 0);
+  /*protected*/
+  Bean(bool notifyOnEDT, QObject *parent = 0);
+  ~Bean() {}
+  Bean(const Bean&) : UnboundBean() {}
+
+ virtual /*public*/ void addPropertyChangeListener(PropertyChangeListener* listener)override;
+ virtual /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
+ virtual /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners() const override;
  virtual /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName);
  virtual /*public*/ void removePropertyChangeListener(PropertyChangeListener* listener);
  virtual /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener);
@@ -28,9 +33,9 @@ signals:
 public slots:
 protected:
  /**
-  * Provide a {@link java.beans.PropertyChangeSupport} helper.
+  * Provide a {@link java.beans.SwingPropertyChangeSupport} helper.
   */
- /*protected*/ /*final*/ PropertyChangeSupport* propertyChangeSupport;// = new PropertyChangeSupport(this);
+ /*protected*/ /*final*/ SwingPropertyChangeSupport* propertyChangeSupport;// = new SwingPropertyChangeSupport(this, nullptr);
  /*protected*/ void firePropertyChange(QString key, int oldValue, int value);
  /*protected*/ void firePropertyChange(QString key, QVariant oldValue, QVariant value);
  /*protected*/ void fireIndexedPropertyChange(QString propertyName, int index, QVariant oldValue, QVariant newValue);
@@ -44,6 +49,7 @@ friend class SATableModel;
 friend class ManagerDefaultSelector;
 friend class UserMessagePreferencesPane;
 friend class AmpMeterFrame;
+friend class RosterFrame;
 };
-
+Q_DECLARE_METATYPE(Bean)
 #endif // BEAN_H

@@ -2,8 +2,8 @@
 #define SCHEDULESTABLEMODEL_H
 
 #include "abstracttablemodel.h"
-#include <QStyledItemDelegate>
-
+#include "tabledelegates.h"
+#include "propertychangelistener.h"
 class Logger;
 class JComboBox;
 class PropertyChangeEvent;
@@ -14,26 +14,29 @@ namespace Operations
  class ScheduleEditFrame;
  class SchedulesTableFrame;
  class ScheduleManager;
- class SchedulesTableModel : public AbstractTableModel
+ class SchedulesTableModel : public AbstractTableModel, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   SchedulesTableModel(QObject* parent = 0);
   /*public*/ /*final*/ int SORTBYNAME;// = 1;
   /*public*/ /*final*/ int SORTBYID;// = 2;
   /*public*/ void setSort(int sort);
-  /*public*/ int rowCount(const QModelIndex &parent) const;
-  /*public*/ int columnCount(const QModelIndex &parent) const;
-  /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
-  /*public*/ QVariant data(const QModelIndex &index, int role) const;
+  /*public*/ int rowCount(const QModelIndex &parent) const override;
+  /*public*/ int columnCount(const QModelIndex &parent) const override;
+  /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+  /*public*/ QString getColumnClass(int col) const  override;
+  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
+  /*public*/ QVariant data(const QModelIndex &index, int role) const override;
   /*public*/ void dispose();
-  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
-  /*public*/ int getRowCount() {return rowCount(QModelIndex());}
-  /*public*/ int getColumnCount() {return columnCount(QModelIndex());}
+  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+  /*public*/ int getRowCount() const  override{return rowCount(QModelIndex());}
+  /*public*/ int getColumnCount() const  override {return columnCount(QModelIndex());}
+  QObject* self() override {return (QObject*)this; }
 
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent *e);
+  /*public*/ void propertyChange(PropertyChangeEvent *e) override;
  private:
   enum COLUMNS
   {
@@ -79,15 +82,15 @@ namespace Operations
 
  typedef JComboBox* (*GETCOMBO1)(Schedule*, SchedulesTableModel* );
 
- class STMSComboBoxDelegate : public QStyledItemDelegate
+ class STMSComboBoxDelegate : public JComboBoxEditor
  {
  Q_OBJECT
  public:
    STMSComboBoxDelegate(SchedulesTableModel* model,  GETCOMBO1, QObject *parent = 0);
    QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const;
-   void setEditorData(QWidget *editor, const QModelIndex &index) const;
-   void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
-   void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
+//   void setEditorData(QWidget *editor, const QModelIndex &index) const;
+//   void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const;
+//   void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const;
    //void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
  private:

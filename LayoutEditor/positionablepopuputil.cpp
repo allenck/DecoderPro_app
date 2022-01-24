@@ -110,8 +110,6 @@ void PositionablePopupUtil::init()
  _showBorder = true;
  justification=CENTRE; //Default is always Centre
  orientation = HORIZONTAL;
- editAdditionalMenu = new QVector<QMenu*>();
- viewAdditionalMenu = new QVector<QMenu*>();
  _textComponent = NULL;
 }
 
@@ -635,7 +633,7 @@ void PositionablePopupUtil::setFontWeight(int weight)
  addColorMenuEntry(colorMenu, buttonGrp, tr("LightGray"),QColor(Qt::lightGray), type);
  addColorMenuEntry(colorMenu, buttonGrp, tr("White"),QColor(Qt::white), type);
  addColorMenuEntry(colorMenu, buttonGrp, tr("Red"),QColor(Qt::red), type);
- addColorMenuEntry(colorMenu, buttonGrp, tr("Orange"),QColor(255,170,0), type);
+ addColorMenuEntry(colorMenu, buttonGrp, tr("Orange"),QColor(255,165,0), type);
  addColorMenuEntry(colorMenu, buttonGrp, tr("Yellow"),QColor(Qt::yellow), type);
  addColorMenuEntry(colorMenu, buttonGrp, tr("Green"),QColor(Qt::green), type);
  addColorMenuEntry(colorMenu, buttonGrp, tr("Blue"),QColor(Qt::blue), type);
@@ -646,7 +644,7 @@ void PositionablePopupUtil::setFontWeight(int weight)
  }
 }
 
-void AddColorMenuEntryActionListener::actionPerformed()
+void AddColorMenuEntryActionListener::actionPerformed(JActionEvent *)
 {
  switch(colorType)
  {
@@ -745,7 +743,7 @@ void AddColorMenuEntryActionListener::actionPerformed()
 
   QAction* r = new QAction(name, this);
   r->setCheckable(true);
-  connect(r, SIGNAL(triggered(bool)), a, SLOT(actionPerformed()));
+  connect(r, SIGNAL(triggered(bool)), a->self(), SLOT(actionPerformed()));
   if (debug)
   {
       log->debug("setColorButton: colorType=" + QString::number(colorType));
@@ -988,9 +986,9 @@ void PositionablePopupUtil::on_setTextOrientation_triggered(QAction *act)
 */
 /*public*/ void PositionablePopupUtil::addEditPopUpMenu(QMenu* menu)
 {
- if(!editAdditionalMenu->contains(menu))
+ if(!editAdditionalMenu.contains(menu))
  {
-  editAdditionalMenu->append(menu);
+  editAdditionalMenu.append(menu);
  }
 }
 
@@ -998,11 +996,11 @@ void PositionablePopupUtil::on_setTextOrientation_triggered(QAction *act)
 *  Add a menu item to be displayed when the popup menu is called for
 *  when in view mode.
 */
-/*public*/ void PositionablePopupUtil::addViewPopUpMenu(QMenu* menu)
+/*public*/ void PositionablePopupUtil::addViewPopUpMenu(QMenu *menu)
 {
- if(!viewAdditionalMenu->contains(menu))
+ if(!viewAdditionalMenu.contains(menu))
  {
-  viewAdditionalMenu->append(menu);
+  viewAdditionalMenu.append(menu);
  }
 }
 
@@ -1011,10 +1009,10 @@ void PositionablePopupUtil::on_setTextOrientation_triggered(QAction *act)
 */
 /*public*/ void PositionablePopupUtil::setAdditionalEditPopUpMenu(QMenu* popup)
 {
- if(editAdditionalMenu == NULL ||editAdditionalMenu->isEmpty())
+ if(/*editAdditionalMenu == NULL ||*/editAdditionalMenu.isEmpty())
   return;
  popup->addSeparator();
- foreach (QMenu* mi, *editAdditionalMenu)
+ foreach (QMenu* mi, editAdditionalMenu)
  {
   popup->addMenu(mi);
  }
@@ -1025,9 +1023,9 @@ void PositionablePopupUtil::on_setTextOrientation_triggered(QAction *act)
 */
 /*public*/ void PositionablePopupUtil::setAdditionalViewPopUpMenu(QMenu* popup)
 {
- if(viewAdditionalMenu->isEmpty())
+ if(viewAdditionalMenu.isEmpty())
   return;
- foreach(QMenu* mi, *viewAdditionalMenu)
+ foreach(QMenu* mi, viewAdditionalMenu)
  {
   popup->addMenu(mi);
  }

@@ -14,8 +14,8 @@ public:
     Q_INVOKABLE/*public*/ void tearDown();
 public slots:
     /*public*/ void testCTor();
-    /*public*/ void testSetActiveProfile_Profile() throw (IOException);
-    /*public*/ void testSetActiveProfile_String() throw (IOException);
+    /*public*/ void testSetActiveProfile_Profile() /*throw (IOException)*/;
+    /*public*/ void testSetActiveProfile_String() /*throw (IOException)*/;
 
 signals:
 

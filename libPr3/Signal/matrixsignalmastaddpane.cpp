@@ -349,7 +349,7 @@
     // copy bits from UnLitPanel var unLitPanelBits
     try {
         currentMast ->setUnLitBits(trimUnLitBits());
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         log->error("failed to read and copy unLitPanelBits");
     }
 
@@ -754,7 +754,7 @@ QComboBox* MatrixSignalMastAddPane::copyFromMastSelection() {
 
     for (QString name : names) {
         // only accept MatrixSignalMast masts
-        if (qobject_cast<MatrixSignalMast*>(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getNamedBean(name))!= nullptr) {
+        if (static_cast<MatrixSignalMast*>(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getNamedBean(name))!= nullptr) {
             SignalMast* m = (SignalMast*) static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getNamedBean(name);
             if (m!=nullptr) {
                 mastSelect->addItem(m->getDisplayName());
@@ -1016,7 +1016,7 @@ QString MatrixSignalMastAddPane::stringValueOf(QByteArray ba)
    QByteArray rslt = QByteArray(aspectBits);
    rslt.chop(addPane->bitNum);
    return rslt;
-  } catch (Exception ex) {
+  } catch (Exception* ex) {
       addPane->log->error("failed to read and copy aspectBits");
       return nullptr;
   }

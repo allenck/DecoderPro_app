@@ -9,7 +9,8 @@
 #include "propertychangeevent.h"
 //#include <QtZeroConf/qzeroconf.h>
 #include "zeroconfservice.h"
-
+#include "clientrxhandler.h"
+#include "propertychangelistener.h"
 
 class LnTcpPreferences;
 class QZeroConf;
@@ -18,30 +19,24 @@ class ServerListner;
 //class QTcpServer;
 class ClientRxHandler;
 
-class LnTcpServer : public QTcpServer
+class LocoNetSystemConnectionMemo;
+class LnTcpServer : public QTcpServer, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
- explicit LnTcpServer(QObject *parent = 0);
- QT_DEPRECATED
- QT_DEPRECATED /*public*/ void setStateListner(ServerListner* l);
- QT_DEPRECATED /*public*/ static /*synchronized*/ LnTcpServer* getInstance();
- QT_DEPRECATED /*public*/ bool getAutoStart() ;
- QT_DEPRECATED /*public*/ void setAutoStart(bool start);
- QT_DEPRECATED /*public*/ int getPortNumber() ;
- QT_DEPRECATED /*public*/ void setPortNumber(int port);
+ explicit LnTcpServer(LocoNetSystemConnectionMemo *memo, QObject *parent = 0);
  /*public*/ bool isEnabled();
  /*public*/ bool isSettingChanged();
  /*public*/ void enable();
  /*public*/ void disable();
  /*public*/ void updateServerStateListener();
  /*public*/ void updateClientStateListener();
- // /*public*/ void saveSettings();
  /*public*/ int getClientCount();
  /*public*/ int getPort();
  /*public*/ static /*synchronized*/ LnTcpServer* getDefault();
 
-
+  QObject* self() override { return (QObject*)this;}
 signals:
  void serverStateChanged(LnTcpServer*);
  void error(QAbstractSocket::SocketError);
@@ -49,18 +44,18 @@ signals:
 
 public slots:
  void on_newConnection();
- void propertyChange(PropertyChangeEvent*);
+ void propertyChange(PropertyChangeEvent*)override;
  void servicePublished();
  void error(QZeroConf::error_t);
 
 private:
- static LnTcpServer* self;
- QLinkedList<ClientRxHandler*>* clients;
- QThread* socketListener;
- QTcpServer* serverSocket;
- bool settingsLoaded;// = false;
- ServerListner* stateListner;
- bool settingsChanged;// = false;
+ static LnTcpServer* lntcpserver;
+ QLinkedList<ClientRxHandler*>* clients = new QLinkedList<ClientRxHandler*>();
+ QThread* socketListener = nullptr;
+ QTcpServer* serverSocket = nullptr;
+ bool settingsLoaded = false;
+ ServerListner* stateListner = nullptr;
+ bool settingsChanged = false;
  QuietShutDownTask* shutDownTask;
  //QZeroConf* service;// = null;
  ZeroConfService* service = nullptr;
@@ -69,12 +64,12 @@ private:
  static /*final*/ QString SETTINGS_FILE_NAME;// = "LocoNetOverTcpSettings.ini";
  /*private*/ bool autoStart;
  // /*private*/ void loadSettings();
- int connectionNbr;
+ int connectionNbr = 1;
  LnTcpPreferences* pm;
-
- Logger* log;
- /*private*/ int portNumber;// = 1234;
- bool bIsEnabled;
+ LnTrafficController* tc = nullptr;
+ static Logger* log;
+ /*private*/ int portNumber = 1234;
+ bool bIsEnabled = false;
  QString buildName(void);
 
 protected:
@@ -93,7 +88,7 @@ public:
  ServerQuietShutDownTask(QString name, LnTcpServer* server) : QuietShutDownTask(name) { this->server = server;}
  /*public*/ bool execute()
  {
-  LnTcpServer::getInstance()->disable();
+  LnTcpServer::getDefault()->disable();
   return true;
  }
 };

@@ -2,6 +2,9 @@
 #define TRAINSSCHEDULEACTION_H
 
 #include "abstractaction.h"
+#include "trainsscheduletableframe.h"
+#include <QPointer>
+
 namespace Operations
 {
  class TrainsScheduleTableFrame;
@@ -11,9 +14,9 @@ namespace Operations
  public:
   TrainsScheduleAction(QString s, QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e = 0);
+  /*public*/ void actionPerformed(JActionEvent *e = 0);
  private:
-  TrainsScheduleTableFrame* f;// = null;
+  QPointer<TrainsScheduleTableFrame> f;// = null;
 
  };
 }

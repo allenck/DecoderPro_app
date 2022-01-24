@@ -61,6 +61,7 @@ friend class Calibrater;
 friend class SpeedUtil;
 friend class SCWarrant;
 friend class WarrantManager;
+friend class RouteBoxCellEditor;
 };
 
 #endif // BLOCKORDER_H

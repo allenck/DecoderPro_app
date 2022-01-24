@@ -54,7 +54,7 @@
  try
  {
   _connect();
- } catch (Exception e)
+ } catch (Exception* e)
  {
   throw e;
  }
@@ -89,34 +89,34 @@
 
   if (m_port != 0)
   {
-   ConnectionStatus::instance()->setConnectionState(
+   ConnectionStatus::instance()->setConnectionState(getUserName(),
                m_HostName + ":" + QString::number(m_port), ConnectionStatus::CONNECTION_DOWN);
   }
   else
   {
-   ConnectionStatus::instance()->setConnectionState(
+   ConnectionStatus::instance()->setConnectionState(getUserName(),
                m_HostName, ConnectionStatus::CONNECTION_DOWN);
   }
   if (opened && m_port != 0)
   {
-   ConnectionStatus::instance()->setConnectionState(
-              m_HostName + ":" + m_port, ConnectionStatus::CONNECTION_UP);
+   ConnectionStatus::instance()->setConnectionState(getUserName(),
+              m_HostName + ":" + QString::number(m_port), ConnectionStatus::CONNECTION_UP);
   }
   else if (opened)
   {
-   ConnectionStatus::instance()->setConnectionState(
+   ConnectionStatus::instance()->setConnectionState(getUserName(),
               m_HostName, ConnectionStatus::CONNECTION_UP);
   }
  }
 #if 1
 //     opened = true;
- catch (IOException e) {
-     log->error("error opening network connection: " + e.getMessage());
+ catch (IOException* e) {
+     log->error("error opening network connection: " + e->getMessage());
      if (m_port != 0) {
-         ConnectionStatus::instance()->setConnectionState(
-                 m_HostName + ":" + m_port, ConnectionStatus::CONNECTION_DOWN);
+         ConnectionStatus::instance()->setConnectionState(getUserName(),
+                 m_HostName + ":" + QString::number(m_port), ConnectionStatus::CONNECTION_DOWN);
      } else {
-         ConnectionStatus::instance()->setConnectionState(
+         ConnectionStatus::instance()->setConnectionState(getUserName(),
                  m_HostName, ConnectionStatus::CONNECTION_DOWN);
      }
      throw (e);
@@ -134,12 +134,12 @@ void AbstractNetworkPortController::on_socketConn_connected()
  opened = true;
  if (opened && m_port != 0)
  {
-  ConnectionStatus::instance()->setConnectionState(
+  ConnectionStatus::instance()->setConnectionState(getUserName(),
              m_HostName + ":" + QString::number(m_port),  ConnectionStatus::CONNECTION_UP);
  }
  else if (opened)
  {
-  ConnectionStatus::instance()->setConnectionState(
+  ConnectionStatus::instance()->setConnectionState(getUserName(),
              m_HostName, ConnectionStatus::CONNECTION_UP);
  }
  if(msg != NULL)
@@ -180,12 +180,12 @@ void AbstractNetworkPortController::on_socketConn_disconnected()
 {
  if (m_port != 0)
  {
-  ConnectionStatus::instance()->setConnectionState(
+  ConnectionStatus::instance()->setConnectionState(getUserName(),
               m_HostName + ":" + QString::number(m_port), ConnectionStatus::CONNECTION_DOWN);
  }
  else
  {
-  ConnectionStatus::instance()->setConnectionState(
+  ConnectionStatus::instance()->setConnectionState(getUserName(),
               m_HostName, ConnectionStatus::CONNECTION_DOWN);
  }
  recover();
@@ -368,12 +368,12 @@ void AbstractNetworkPortController::on_socketConn_disconnected()
   log->error("AbstractNetworkPortController::getInputStream called before load(), stream not available");
   if (m_port != 0)
   {
-   ConnectionStatus::instance()->setConnectionState(
+   ConnectionStatus::instance()->setConnectionState(getUserName(),
               m_HostName + ":" + m_port, ConnectionStatus::CONNECTION_DOWN);
   }
   else
   {
-   ConnectionStatus::instance()->setConnectionState(
+   ConnectionStatus::instance()->setConnectionState(getUserName(),
               m_HostName, ConnectionStatus::CONNECTION_DOWN);
   }
  }
@@ -440,7 +440,7 @@ void AbstractNetworkPortController::on_socketConn_disconnected()
  {
   socketConn->close();
  }
- catch (IOException e) { }
+ catch (IOException* e) { }
  reconnect();
 }
 
@@ -543,7 +543,7 @@ void Reconnectwait::checkSocket() // [slot]
    //self->_connect();
    //emit _connect();
   }
-  catch (Exception e)
+  catch (Exception* e)
   {
   }
 

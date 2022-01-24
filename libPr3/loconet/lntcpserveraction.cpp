@@ -26,7 +26,7 @@
  //super(s);
  // Get a server instance to cause the config to be read and the server
  // started if necessary
- LnTcpServer::getInstance();
+ LnTcpServer::getDefault();
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
@@ -36,11 +36,11 @@
  //this("LocoNetOverTcp Server");
  // Get a server instance to cause the config to be read and the server
  // started if necessary
- LnTcpServer::getInstance();
+ LnTcpServer::getDefault();
  connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
 }
 
-/*public*/ void LnTcpServerAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void LnTcpServerAction::actionPerformed(JActionEvent * /*e*/)
 {
  LnTcpServer::getDefault()->enable();
  LnTcpServerFrame::getDefault()->setVisible(true);

@@ -40,7 +40,7 @@
 
          //PrintStream str = new PrintStream(new FileOutputStream(file));
       QFile f(file->getPath());
-      if(!f.open(QIODevice::WriteOnly))  throw IOException();
+      if(!f.open(QIODevice::WriteOnly))  throw new IOException();
       QTextStream* str = new QTextStream(&f);
 
 
@@ -57,8 +57,8 @@
          str->device()->close();
 
 
-     } catch (IOException ex) {
-         log->error("Error writing file: " + ex.getMessage());
+     } catch (IOException* ex) {
+         log->error("Error writing file: " + ex->getMessage());
      }
  }
 }

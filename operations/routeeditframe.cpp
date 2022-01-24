@@ -6,7 +6,7 @@
 #include "locationmanager.h"
 #include "routelocation.h"
 #include "train.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include <QCheckBox>
 #include <QRadioButton>
 #include <QButtonGroup>
@@ -31,6 +31,11 @@
 #include "routecopyaction.h"
 #include "settrainiconrouteaction.h"
 #include "printrouteaction.h"
+#include "instancemanager.h"
+#include "borderfactory.h"
+#include "routeblockingordereditframeaction.h"
+#include "route.h"
+
 namespace Operations
 {
 /**
@@ -56,17 +61,17 @@ namespace Operations
      //super(tr("TitleRouteEdit"));
   routeModel = new RouteEditTableModel();
   routeTable = new JTable(routeModel);
-  locationManager = LocationManager::instance();
+  locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
 
   _route = NULL;
   _routeLocation = NULL;
   _train = NULL;
 
   // major buttons
-  addLocationButton = new QPushButton(tr("Add Location"));
-  saveRouteButton = new QPushButton(tr("Save Route"));
-  deleteRouteButton = new QPushButton(tr("Delete Route"));
-  addRouteButton = new QPushButton(tr("Add Route"));
+  addLocationButton = new JButton(tr("Add Location"));
+  saveRouteButton = new JButton(tr("Save Route"));
+  deleteRouteButton = new JButton(tr("Delete Route"));
+  addRouteButton = new JButton(tr("Add Route"));
 
   // check boxes
   checkBox = new QCheckBox();
@@ -85,7 +90,7 @@ namespace Operations
   commentTextField = new JTextField(35);
 
   // combo boxes
-  locationBox = LocationManager::instance()->getComboBox();
+  locationBox = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getComboBox();
 
  }
 
@@ -100,14 +105,13 @@ namespace Operations
      QString routeName = NULL;
 
      // load managers
-     routeManager = RouteManager::instance();
+     routeManager = ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"));
 
      // Set up the jtable in a Scroll Pane..
-     routePane = new QGroupBox(/*routeTable*/);
+     routePane = new JPanel();
      //routePane->setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-     //routePane->setBorder(BorderFactory.createTitledBorder(""));
-     routePane->setStyleSheet(gbStyleSheet);
      QVBoxLayout* routePaneLayout = new QVBoxLayout(routePane);
+     routePane->setBorder(BorderFactory::createTitledBorder(""));
      routePaneLayout->addWidget(routeTable);
 
      if (_route != NULL) {
@@ -137,19 +141,15 @@ namespace Operations
      p1Pane->setFrameStyle(QFrame::Panel | QFrame::Plain);
 
      // name panel
-     QGroupBox* pName = new QGroupBox();
+     JPanel* pName = new JPanel();
      pName->setLayout(new GridBagLayout());
-     //pName->setBorder(BorderFactory.createTitledBorder(tr("Name")));
-     pName->setStyleSheet(gbStyleSheet);
-     pName->setTitle(tr("Name"));
+     pName->setBorder(BorderFactory::createTitledBorder(tr("Name")));
      addItem(pName, routeNameTextField, 0, 0);
 
      // comment panel
-     QGroupBox* pComment = new QGroupBox();
+     JPanel* pComment = new JPanel();
      pComment->setLayout(new GridBagLayout());
-     //pComment->setBorder(BorderFactory.createTitledBorder(tr("Comment")));
-     pComment->setStyleSheet(gbStyleSheet);
-     pComment->setTitle(tr("Comment"));
+     pComment->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
      addItem(pComment, commentTextField, 0, 0);
 
      p1->layout()->addWidget(pName);
@@ -165,15 +165,13 @@ namespace Operations
      p2Pane->verticalScrollBar()->setEnabled(false);
      p2Pane->setMinimumSize(QSize(300, 3 * routeNameTextField->sizeHint().height()));
      p2Pane->setMaximumSize(QSize(2000, 200));
-     //p2Pane->setBorder(BorderFactory.createTitledBorder(""));
+     //p2Pane->setBorder(BorderFactory:createTitledBorder(""));
      p2Pane->setFrameStyle(QFrame::Panel | QFrame::Plain);
 
      // location panel
-     QGroupBox* pLoc = new QGroupBox();
+     JPanel* pLoc = new JPanel();
      pLoc->setLayout(new GridBagLayout());
-     //pLoc->setBorder(BorderFactory.createTitledBorder(tr("Location")));
-     pLoc->setStyleSheet(gbStyleSheet);
-     pLoc->setTitle(tr("Location"));
+     pLoc->setBorder(BorderFactory::createTitledBorder(tr("Location")));
      addItem(pLoc, locationBox, 0, 1);
      addItem(pLoc, addLocationButton, 1, 1);
      addItem(pLoc, addLocAtTop, 2, 1);
@@ -183,11 +181,9 @@ namespace Operations
      addLocAtBottom->setChecked(true);
 
      // Wait or Depart Time panel
-     QGroupBox* pWait = new QGroupBox();
+     JPanel* pWait = new JPanel();
      pWait->setLayout(new GridBagLayout());
-     //pWait->setBorder(BorderFactory.createTitledBorder(tr("Display")));
-     pWait->setStyleSheet(gbStyleSheet);
-     pWait->setTitle(tr("Display"));
+     pWait->setBorder(BorderFactory::createTitledBorder(tr("Display")));
      addItem(pWait, showWait, 0, 1);
      addItem(pWait, showDepartTime, 1, 1);
      groupTime->addButton(showWait);
@@ -199,7 +195,7 @@ namespace Operations
      p2Pane->setWidgetResizable(true);
 
      // row 12 buttons
-     QWidget* pB = new QWidget();
+     JPanel* pB = new JPanel();
      pB->setLayout(new GridBagLayout());
      QScrollArea* pBPane = new QScrollArea(/*pB*/);
      //pBPane->setWidget(pB);
@@ -234,26 +230,30 @@ namespace Operations
 
      // build menu
      QMenuBar* menuBar = new QMenuBar();
-     QMenu* toolMenu = new QMenu(tr("Tools"));
-
-     toolMenu->addAction(new RouteCopyAction(tr("Copy Route"), routeName ,this));
-     toolMenu->addAction(new SetTrainIconRouteAction(tr("Set Train Icons Coordinates for this Route"), routeName,this));
-     toolMenu->addAction(new PrintRouteAction(tr("Print"), false, _route,this));
-     toolMenu->addAction(new PrintRouteAction(tr("Preview"), true, _route,this));
+     loadToolMenu();
      menuBar->addMenu(toolMenu);
      setMenuBar(menuBar);
      addHelpMenu("package.jmri.jmrit.operations.Operations_EditRoute", true); // NOI18N
 
      // get notified if combo box gets modified
-     //LocationManager::instance().addPropertyChangeListener(this);
-     connect(LocationManager::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")).addPropertyChangeListener(this);
+     connect(((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      // set frame size and route for display
      initMinimumSize(QSize(Control::panelWidth700, Control::panelHeight400));
  }
 
+ /*private*/ void RouteEditFrame::loadToolMenu() {
+  toolMenu->addAction(new RouteBlockingOrderEditFrameAction(_route,this));
+  toolMenu->addAction(new RouteCopyAction(_route,this));
+  toolMenu->addAction(new SetTrainIconRouteAction(_route,this));
+  toolMenu->addSeparator();
+  toolMenu->addAction(new PrintRouteAction(false, _route,this));
+  toolMenu->addAction(new PrintRouteAction(true, _route,this));
+ }
+
  // Save, Delete, Add
  /*public*/ void RouteEditFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == addLocationButton) {
          log->debug("route add location button activated");
          if (locationBox->currentText() != NULL) {

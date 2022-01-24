@@ -8,6 +8,7 @@
 #include "train.h"
 #include <QCheckBox>
 #include "route.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -25,7 +26,7 @@ namespace Operations
  /*public*/ PrintTrainsAction::PrintTrainsAction(QString actionName, JFrame* mframe, bool preview, JFrame* frame)
      : PrintTrainAction(actionName, mframe, preview, frame)
  {
-     trainManager = TrainManager::instance();
+     trainManager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
      connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
@@ -66,7 +67,7 @@ namespace Operations
            printTrain(writer, train);
           }
          }
-     } catch (IOException e1) {
+     } catch (IOException* e1) {
          log->error("Exception in print train details");
      }
 
@@ -101,7 +102,7 @@ namespace Operations
     writer->write(s, 0, s.length());
    }
   }
-//     } catch (IOException we) {
+//     } catch (IOException* we) {
 //         log->error("Error printing trains summary");
 //     }
  }

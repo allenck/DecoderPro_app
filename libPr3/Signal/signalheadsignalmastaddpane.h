@@ -43,8 +43,12 @@ protected slots:
 };
 
 //@ServiceProvider(service = SignalMastAddPane.SignalMastAddPaneProvider.class)
-/*static*/ /*public*/ class SignalHeadSignalHeadSignalMastAddPaneProvider : public SignalMastAddPane::SignalMastAddPaneProvider {
-    /** {@inheritDoc} */
+/*static*/ /*public*/ class SignalHeadSignalHeadSignalMastAddPaneProvider : public SignalMastAddPaneProvider {
+  Q_OBJECT
+  Q_INTERFACES(SignalMastAddPaneProvider)
+ public:
+  SignalHeadSignalHeadSignalMastAddPaneProvider() {}
+  /** {@inheritDoc} */
     //@Override
     /*@Nonnull*/ /*public*/ QString getPaneName() {
         return tr("Signal Head Controlled Mast");
@@ -54,7 +58,7 @@ protected slots:
     /*@Nonnull*/ /*public*/ SignalMastAddPane* getNewPane() {
         return new SignalHeadSignalMastAddPane();
     }
- friend class SignalMastAddPane::SignalMastAddPaneProvider;
+ friend class SignalMastAddPaneProvider;
 };
 
 #endif // SIGNALHEADSIGNALMASTADDPANE_H

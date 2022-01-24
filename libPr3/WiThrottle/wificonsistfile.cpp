@@ -24,8 +24,8 @@
         log->debug("Has " + fileName + " file.");
         try {
             readFile(getFileLocation() + fileName);
-        } catch (Exception e) {
-            log->warn("error reading consist file: " + e.getMessage());
+        } catch (Exception* e) {
+            log->warn("error reading consist file: " + e->getMessage());
         }
     } else {
         log->debug("No " + fileName + " file, will check for default file.");
@@ -33,8 +33,8 @@
             log->debug("Has default consist.xml file, will read it.");
             try {
                 readFile();
-            } catch (Exception e) {
-                log->warn("error reading consist file: " + e.getMessage());
+            } catch (Exception* e) {
+                log->warn("error reading consist file: " + e->getMessage());
             }
         } else {
             log->debug("No consist files found, will create if needed.");

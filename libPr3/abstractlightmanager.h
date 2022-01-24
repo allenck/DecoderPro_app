@@ -6,14 +6,15 @@
 #include "abstractlight.h"
 
 class SystemConnectionMemo;
-class LIBPR3SHARED_EXPORT AbstractLightManager : public  LightManager
+class LIBPR3SHARED_EXPORT AbstractLightManager : public  AbstractManager, public LightManager
 {
     Q_OBJECT
+  Q_INTERFACES(LightManager)
 public:
     //explicit AbstractLightManager(QObject *parent = 0);
  /*public*/ AbstractLightManager(SystemConnectionMemo* memo, QObject *parent = 0);
     /*public*/ virtual int getXMLOrder() const override;
-    /*public*/ virtual char typeLetter() const override;
+    /*public*/ virtual QChar typeLetter()  override;
     /**
      * Locate via user name, then system name if needed.
      * If that fails, create a new Light: If the name
@@ -34,16 +35,16 @@ public:
      * @return null if no match found
      */
     /*public*/ Light* getLight(QString name) override;
-#if 0
+
     /**
      * Locate a Light by its system name
      */
-    /*public*/ Light* getBySystemName(QString name);
+    /*public*/ NamedBean *getBySystemName(QString name) const override;
     /**
      * Locate a Light by its user name
      */
-    /*public*/ Light* getByUserName(QString key);
-#endif
+    /*public*/ NamedBean* getByUserName(QString key)  override;
+
     /**
      * Return an instance with the specified system and user names.
      * Note that two calls with the same arguments will get the same instance;
@@ -67,7 +68,7 @@ public:
      * be looking them up.
      * @return requested Light object (never NULL)
      */
-    /*public*/ Light* newLight(QString systemName, QString userName) override;
+    /*public*/ Light *newLight(QString systemName, QString userName) override;
     /**
      * Activate the control mechanism for each Light controlled by
      *    this LightManager.  Note that some Lights don't require
@@ -111,10 +112,12 @@ public:
     /*public*/ bool allowMultipleAdditions(QString systemName) override;
     /*public*/ QString getBeanTypeHandled(bool plural)const override;
     /*public*/ QString getEntryToolTip() override;
+  QObject* self() override{return (QObject*)this;}
+  QString getNamedBeanClass() const override {return "AbstractLightManager";}
 
 
 signals:
- void newLightCreated(AbstractLightManager*,Light*);
+ //void newLightCreated(AbstractLightManager*,Light*);
 
 public slots:
 private:

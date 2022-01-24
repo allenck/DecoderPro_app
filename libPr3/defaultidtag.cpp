@@ -4,10 +4,6 @@
 #include "rosterentry.h"
 #include "clockcontrol.h"
 
-//DefaultIdTag::DefaultIdTag(QObject *parent) :
-//    AbstractIdTag(parent)
-//{
-//}
 /**
  * Concrete implementation of the {@link jmri.IdTag} interface
  * for the Internal system.
@@ -82,13 +78,13 @@ void DefaultIdTag::init()
 /*private*/ void DefaultIdTag::setCurrentState(int state) {
     try {
         setState(state);
-    } catch (JmriException ex) {
+    } catch (JmriException* ex) {
         log.warn("Problem setting state of IdTag " + getSystemName());
     }
 }
 
 //@Override
-/*public*/ void DefaultIdTag::setState(int s) throw (JmriException) {
+/*public*/ void DefaultIdTag::setState(int s) /*throw (JmriException)*/ {
     this->_currentState = s;
 }
 
@@ -157,9 +153,9 @@ void DefaultIdTag::init()
    {
     this->_whenLastSeen = QDateTime::fromString(e.firstChildElement("whenLastSeen").text()); //NOI18N
    }
-   catch (ParseException ex)
+   catch (ParseException* ex)
    {
-    log.warn("Error parsing when last seen: " + ex.getMessage());
+    log.warn("Error parsing when last seen: " + ex->getMessage());
    }
   }
   if (!e.firstChildElement("rosterid").isNull()) //NOI18N

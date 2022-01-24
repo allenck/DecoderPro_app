@@ -12,10 +12,11 @@ class JMRIClientLight : public AbstractLight
 public:
  JMRIClientLight(int number, JMRIClientSystemConnectionMemo* memo, QObject* parent = nullptr);
  /*public*/ int getNumber();
- /*public*/ void requestUpdateFromLayout();
+ /*public*/ void requestUpdateFromLayout() override;
  /*public*/ /*synchronized*/ void doNewState(int oldState, int s);
  /*public*/ /*synchronized*/ void reply(JMRIClientReply* m);
  /*public*/ void message(JMRIClientMessage* m);
+ //QObject* self() override {return this;}
 
 private:
  static Logger* log;

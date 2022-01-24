@@ -7,6 +7,8 @@
 #include <QPushButton>
 #include "conditionalvariable.h"
 #include "actionevent.h"
+#include "abstracttablemodel.h"
+#include "propertychangelistener.h"
 
 class CLESelectLogixBoxListener;
 class CLESelectConditionalBoxListener;
@@ -29,11 +31,11 @@ public:
  /*public*/ ConditionalListEdit(QString sName, QObject* parent = 0);
 
 public slots:
- void calculatePressed(ActionEvent* e = 0);
- void donePressed(ActionEvent* e = 0);
- void deletePressed(ActionEvent* e = 0);
- /*public*/ void variableSignalTestStateListener(ActionEvent* /*e*/ = 0);
- /*public*/ void variableSignalHeadNameListener(ActionEvent* /*e*/ = 0);
+ void calculatePressed(JActionEvent* e = 0);
+ void donePressed(JActionEvent* e = 0);
+ void deletePressed(JActionEvent* e = 0);
+ /*public*/ void variableSignalTestStateListener(JActionEvent* /*e*/ = 0);
+ /*public*/ void variableSignalHeadNameListener(JActionEvent* /*e*/ = 0);
  /*public*/ void bringToFront();
 
 private:
@@ -184,20 +186,20 @@ CLESelectLogixBoxListener* selectLogixBoxListener = nullptr;
 CLESelectConditionalBoxListener* selectConditionalBoxListener = nullptr;
 
 private slots:
- void newConditionalPressed(ActionEvent* /*e*/ = 0);
+ void newConditionalPressed(JActionEvent* /*e*/ = 0);
  void editConditionalPressed(int rx);
- void addVariablePressed(ActionEvent* /*e*/ = 0);
- void checkVariablePressed(ActionEvent* /*e*/ = 0);
+ void addVariablePressed(JActionEvent* /*e*/ = 0);
+ void checkVariablePressed(JActionEvent* /*e*/ = 0);
  void variableNegationChanged(int row, QString oper);
  void variableOperatorChanged(int row, QString oper);
- void addActionPressed(ActionEvent* /*e*/ = 0);
- void reorderActionPressed(ActionEvent* /*e*/ = 0);
+ void addActionPressed(JActionEvent* /*e*/ = 0);
+ void reorderActionPressed(JActionEvent* /*e*/ = 0);
  void swapActions(int row);
  void updateConditionalPressed();
- void cancelConditionalPressed(ActionEvent* /*e*/= 0);
+ void cancelConditionalPressed(JActionEvent* /*e*/= 0);
  void on_deleteConditionalPressed();
- bool logicTypeChanged(ActionEvent* /*e*/= 0);
- void helpPressed(ActionEvent* /*e*/= 0);
+ bool logicTypeChanged(JActionEvent* /*e*/= 0);
+ void helpPressed(JActionEvent* /*e*/= 0);
  void updateVariablePressed();
  void cancelEditActionPressed();
  void deleteVariablePressed();
@@ -205,10 +207,10 @@ private slots:
  void variableSignalMastNameListener(); // SLOT[]
  void updateActionPressed();
  void cancelEditVariablePressed();
- void setFileLocation(ActionEvent* e =0);
+ void setFileLocation(JActionEvent* e =0);
  //void actionTypeListener(int type); // SLOT[]
  void actionSignalMastNameListener(); // SLOT[]
- void reorderPressed(ActionEvent* /*e*/ =0);
+ void reorderPressed(JActionEvent* /*e*/ =0);
  void variableItemStateChanged(int);
  void itemStateChanged(int);
  void deleteActionPressed();
@@ -232,11 +234,12 @@ protected:
  friend class CLESelectLogixBoxListener;
 };
 
-/*public*/ class LIBTABLESSHARED_EXPORT ConditionalTableModel : public  QAbstractTableModel //implements PropertyChangeListener
+/*public*/ class LIBTABLESSHARED_EXPORT ConditionalTableModel : public  AbstractTableModel, public PropertyChangeListener
 {
  Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
     QMutex mutex;
-    ConditionalListEdit* self;
+    ConditionalListEdit* _self;
 public:
   enum COLUMNS
   {
@@ -248,25 +251,27 @@ public:
   /*public*/ ConditionalTableModel(QObject* parent) ;
   /*synchronized*/ void updateConditionalListeners();
   bool matchPropertyName(PropertyChangeEvent* e);
-  ///*public*/ Class<?> getColumnClass(int c);
-  /*public*/ int columnCount(const QModelIndex &parent) const;
-  /*public*/ int rowCount(const QModelIndex &parent) const;
-  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
-  /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+  /*public*/ QString getColumnClass(int c) const override;
+  /*public*/ int columnCount(const QModelIndex &parent) const override;
+  /*public*/ int rowCount(const QModelIndex &parent) const override;
+  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
+  /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 //  /*public*/ int getPreferredWidth(int col) ;
-  /*public*/ QVariant data(const QModelIndex &index, int role) const;
-  /*public*/ bool  setData(const QModelIndex &index, const QVariant &value, int role);
-  void fireTableRowsUpdated(int r1, int r2);
-  void fireTableDataChanged();
-  void fireTableRowsInserted(int r1, int r2);
-  void fireTableRowsDeleted(int r1, int r2);
+  /*public*/ QVariant data(const QModelIndex &index, int role) const override;
+  /*public*/ bool  setData(const QModelIndex &index, const QVariant &value, int role) override;
+  void fireTableRowsUpdated(int r1, int r2) override;
+  void fireTableDataChanged() override;
+  void fireTableRowsInserted(int r1, int r2) override;
+  void fireTableRowsDeleted(int r1, int r2) override;
+  QObject* self() override {return (QObject*)this;}
+
 public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
   friend class WindowMaker;
 };
 
-/*public*/ class LIBTABLESSHARED_EXPORT LVariableTableModel : public QAbstractTableModel
+/*public*/ class LIBTABLESSHARED_EXPORT LVariableTableModel : public AbstractTableModel
 {
  Q_OBJECT
 public:
@@ -282,6 +287,7 @@ public:
      DELETE_COLUMN = 7
     };
     LVariableTableModel(QObject* parent);
+    /*public*/ QString getColumnClass(int c);
     /*public*/ int columnCount(const QModelIndex &parent) const;
     /*public*/ int rowCount(const QModelIndex &parent) const;
     /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
@@ -295,13 +301,13 @@ public:
     void fireTableRowsUpdated(int, int);
 
 private:
-    ConditionalListEdit* self;
+    ConditionalListEdit* _self;
 };
 
-/*public*/ class ActionTableModel : public QAbstractTableModel
+/*public*/ class ActionTableModel : public AbstractTableModel
 {
     Q_OBJECT
-    ConditionalListEdit* self;
+    ConditionalListEdit* _self;
 public:
     enum COLUMNS
     {
@@ -310,6 +316,7 @@ public:
      DELETE_COLUMN = 2
     };
     ActionTableModel(QObject* parent);
+    /*public*/ QString getColumnClass(int c);
     /*public*/ int columnCount(const QModelIndex &parent) const;
     /*public*/ int rowCount(const QModelIndex &parent) const;
     /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
@@ -325,7 +332,7 @@ public slots:
 class ECFWindowListener : public WindowListener
 {
  Q_OBJECT
- ConditionalListEdit* self;
+ ConditionalListEdit* _self;
 public:
  ECFWindowListener(ConditionalListEdit* self);
  void windowClosing(QCloseEvent *e);
@@ -334,7 +341,7 @@ public:
 class ActionTypeListener : public /*ActionListener*/ QObject
 {
     Q_OBJECT
-    ConditionalListEdit* self;
+    ConditionalListEdit* _self;
     int _itemType;
 
 public:
@@ -349,15 +356,15 @@ public slots:
 class VariableSignalTestStateListener : public QObject
 {
  Q_OBJECT
-    ConditionalListEdit* self;
+    ConditionalListEdit* _self;
 public:
     VariableSignalTestStateListener(ConditionalListEdit* self);
-    /*public*/ void actionPerformed(ActionEvent* e = 0) ;
+    /*public*/ void actionPerformed(JActionEvent* e = 0) ;
 };
 class EditLogixFrameWindowListener : public WindowListener
 {
   Q_OBJECT
- ConditionalListEdit* self;
+ ConditionalListEdit* _self;
 public:
  EditLogixFrameWindowListener(ConditionalListEdit* self);
  void windowClosing(QCloseEvent *e);
@@ -368,7 +375,7 @@ public:
 class EditActionFrameWindowListener : public WindowListener
 {
     Q_OBJECT
-   ConditionalListEdit* self;
+   ConditionalListEdit* _self;
   public:
    EditActionFrameWindowListener(ConditionalListEdit* self);
    void windowClosing(QCloseEvent *e);
@@ -379,7 +386,7 @@ class EditActionFrameWindowListener : public WindowListener
 class EditVariableFrameWindowListener : public WindowListener
 {
   Q_OBJECT
- ConditionalListEdit* self;
+ ConditionalListEdit* _self;
 public:
  EditVariableFrameWindowListener(ConditionalListEdit* self);
  void windowClosing(QCloseEvent *e);
@@ -387,24 +394,28 @@ public:
  void windowIconified(QResizeEvent *){}
 };
 
-class CLESelectLogixBoxListener : public ActionListener
+class CLESelectLogixBoxListener : public QObject, public ActionListener
 {
  Q_OBJECT
- ConditionalListEdit* self;
+    Q_INTERFACES(ActionListener)
+ ConditionalListEdit* _self;
 public:
- CLESelectLogixBoxListener(ConditionalListEdit* self);
+ CLESelectLogixBoxListener(ConditionalListEdit* _self);
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent */*e*/ = 0)override;
 };
 
-class CLESelectConditionalBoxListener : public ActionListener
+class CLESelectConditionalBoxListener : public QObject, public ActionListener
 {
  Q_OBJECT
- ConditionalListEdit* self;
+    Q_INTERFACES(ActionListener)
+ ConditionalListEdit* _self;
 public:
  CLESelectConditionalBoxListener(ConditionalListEdit* self);
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent */*e*/ = 0)override;
 };
 
 #endif // CONDITIONALLISTEDIT_H

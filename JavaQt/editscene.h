@@ -13,6 +13,8 @@ class EditScene : public QGraphicsScene
 public:
     explicit EditScene(QObject *parent = 0);
     EditScene(QRectF, QObject* parent = 0);
+    EditScene(qreal x, qreal y, qreal width, qreal height, QObject *parent=0);
+
     void repaint();
     QColor getBackground();
     /*public*/ QWidget* getTopLevelAncestor();

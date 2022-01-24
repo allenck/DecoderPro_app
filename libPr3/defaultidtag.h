@@ -7,16 +7,18 @@ class LIBPR3SHARED_EXPORT DefaultIdTag : public AbstractIdTag
 {
     Q_OBJECT
 public:
- explicit DefaultIdTag(QObject *parent = 0) : AbstractIdTag(parent) {}
+    /*explicit*/ DefaultIdTag(QObject *parent = 0) : AbstractIdTag(parent) {}
     /*public*/ DefaultIdTag(QString systemName, QObject *parent = 0);
     /*public*/ DefaultIdTag(QString systemName, QString userName, QObject *parent = 0);
-    /*public*/ void setState(int s) throw (JmriException);
-    /*public*/ int getState() ;
-    /*public*/ QDomElement store(QDomDocument doc, bool storeState) ;
-    /*public*/ void load(QDomElement e);
-    /*public*/ /*final*/ void setWhereLastSeen(Reporter* r);
+    ~DefaultIdTag() {}
+    DefaultIdTag(const DefaultIdTag&): AbstractIdTag() {}
+    /*public*/ void setState(int s) override/*throw (JmriException)*/;
+    /*public*/ int getState() override;
+    /*public*/ void load(QDomElement e)override;
+    /*public*/ /*final*/ void setWhereLastSeen(Reporter* r)override;
     void setRosterId(int id);
     int rosterId();
+    /*public*/ QDomElement store(QDomDocument doc, bool storeState);
 
 signals:
     //void propertyChange(DefaultIdTag* tag, QString propertyName, QObject* o, QObject* n);

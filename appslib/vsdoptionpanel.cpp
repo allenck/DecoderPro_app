@@ -1,11 +1,10 @@
 #include "vsdoptionpanel.h"
-#include "vsdecoderpane.h"
 #include <QGridLayout>
 #include <QBoxLayout>
 #include <QLabel>
 #include <QComboBox>
 #include "trainmanager.h"
-
+#include "instancemanager.h"
 //VSDOptionPanel::VSDOptionPanel(QWidget *parent) :
 //  JmriPanel(parent)
 //{
@@ -73,7 +72,7 @@ QGridLayout* g = new QGridLayout(this);
     QHBoxLayout* xLayout = new QHBoxLayout(x);
     x->setText("Operations Train: ");
     g->addWidget(x, 0, 0, 0, 0);
-    opsTrainComboBox = Operations::TrainManager::instance()->getTrainComboBox();
+    opsTrainComboBox = ((Operations::TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainComboBox();
     g->addWidget(opsTrainComboBox,0,1,0,0);
 //        opsTrainComboBox.addActionListener(new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent e) {
@@ -101,7 +100,7 @@ QGridLayout* g = new QGridLayout(this);
     g->addWidget(y,2,1,0,0);
 }
 
-/*public*/ void VSDOptionPanel::opsTrainSelectAction(ActionEvent* /*e*/) {
+/*public*/ void VSDOptionPanel::opsTrainSelectAction(JActionEvent* /*e*/) {
 #if 0
 if (opsTrainComboBox->itemData(opsTrainComboBox->currentIndex()) != QVariant()) {
         if (selected_train != NULL) {

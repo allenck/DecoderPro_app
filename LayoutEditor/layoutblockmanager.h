@@ -4,19 +4,21 @@
 #include "layoutblock.h"
 //#include "signalhead.h"
 #include "runnable.h"
+#include "instancemanagerautodefault.h"
 
 class SignalHead;
 class SignalMast;
 class LayoutBlockConnectivityTools;
-class LIBLAYOUTEDITORSHARED_EXPORT LayoutBlockManager : public AbstractManager
+class LIBLAYOUTEDITORSHARED_EXPORT LayoutBlockManager : public AbstractManager, public InstanceManagerAutoDefault
 {
  Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault)
 public:
  explicit LayoutBlockManager(QObject *parent = 0);
  ~LayoutBlockManager() {}
  LayoutBlockManager(const LayoutBlockManager&) : AbstractManager() {}
  /*public*/ int getXMLOrder() const override;
- /*public*/ char typeLetter() const override{ return 'B'; }
+ /*public*/ QChar typeLetter()  override{ return 'B'; }
 /**
  * Method to create a new LayoutBlock if the LayoutBlock does not exist
  *   Returns null if a LayoutBlock with the same systemName or userName
@@ -72,7 +74,7 @@ public:
  */
  /*public*/ LayoutBlock* getBlockWithSensorAssigned(Sensor* s);
  void setLastRoutingChange();
- /*public*/ void setStabilisedSensor(QString pName) throw (JmriException);
+ /*public*/ void setStabilisedSensor(QString pName) /*throw (JmriException)*/;
  /*public*/ Sensor* getStabilisedSensor();
  /*public*/ NamedBeanHandle <Sensor*>* getNamedStabilisedSensor();
  /*public*/ bool routingStablised();
@@ -101,9 +103,13 @@ public:
      return "LayoutBlock";
  }
  /*public*/ QString getBeanTypeHandled(bool plural)const override;
+ /*public*/ NamedBean *getBySystemName(QString name)  override;
+ /*public*/ NamedBean *getByUserName(QString key) override;
+
+ QObject* self() override{return (QObject*)this;}
 
 signals:
- void propertyChange(PropertyChangeEvent *e);
+ void propertyChange(PropertyChangeEvent *e) override;
 
 public slots:
  void passPropertyChange(PropertyChangeEvent*);

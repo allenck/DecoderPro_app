@@ -14,32 +14,32 @@
 /*public*/ HexVariableValue::HexVariableValue(QString name, QString comment, QString cvName,
                         bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly,
                         QString cvNum, QString mask, int minVal, int maxVal,
-                        QMap<QString, CvValue*>* v, QLabel* status, QString stdname, QObject *parent) :    DecVariableValue(name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cvNum, mask, minVal, maxVal, v, status, stdname, parent)
+                        QMap<QString, CvValue*>* v, JLabel* status, QString stdname, QObject *parent) :    DecVariableValue(name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cvNum, mask, minVal, maxVal, v, status, stdname, parent)
 
 {
     //super(name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cvNum, mask, minVal, maxVal, v, status, stdname);
     log = new Logger("HexVariableValue");
 }
 
-void HexVariableValue::updatedTextField()
-{
- if (log->isDebugEnabled()) log->debug("updatedTextField");
- // called for new values - set the CV as needed
- CvValue* cv = _cvMap->value(getCvNum());
- // compute new cv value by combining old and request
- int oldCv = cv->getValue();
- int newVal;
-//        try {
- newVal = _value->text().toInt(0,16);
-//                }
-//                catch (java.lang.NumberFormatException ex) { newVal = 0; }
- int newCv = newValue(oldCv, newVal, getMask());
- if (oldCv != newCv)
-  cv->setValue(newCv);
-}
+//void HexVariableValue::updatedTextField()
+//{
+// if (log->isDebugEnabled()) log->debug("updatedTextField");
+// // called for new values - set the CV as needed
+// CvValue* cv = _cvMap->value(getCvNum());
+// // compute new cv value by combining old and request
+// int oldCv = cv->getValue();
+// int newVal;
+////        try {
+// newVal = _value->text().toInt(0,16);
+////                }
+////                catch (java.lang.NumberFormatException ex) { newVal = 0; }
+// int newCv = newValue(oldCv, newVal, getMask());
+// if (oldCv != newCv)
+//  cv->setValue(newCv);
+//}
 
 /** ActionListener implementations */
-/*public*/ void HexVariableValue::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void HexVariableValue::actionPerformed(JActionEvent* /*e*/)
 {
  if (log->isDebugEnabled()) log->debug("actionPerformed");
  int newVal = _value->text().toInt(0,16);

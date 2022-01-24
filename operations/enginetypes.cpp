@@ -3,6 +3,7 @@
 #include "control.h"
 #include "xml.h"
 #include "enginemanagerxml.h"
+#include "instancemanager.h"
 
 //EngineTypes::EngineTypes(QObject *parent) :
 //  RollingStockAttribute(parent)
@@ -29,27 +30,6 @@ RollingStockAttribute(parent) {
   log = new Logger("EngineTypes");
   setProperty("InstanceManagerAutoDefault", "yes");
 
- }
-
- /**
-  * record the single instance *
-  */
- /*private*/ /*static*/ EngineTypes* EngineTypes::_instance = NULL;
-
- /*public*/ /*static*/ /*synchronized*/ EngineTypes* EngineTypes::instance()
- {
-  Logger* log = new Logger("EngineTypes");
-     if (_instance == NULL) {
-         if (log->isDebugEnabled()) {
-             log->debug("EngineTypes creating instance");
-         }
-         // create and load
-         _instance = new EngineTypes();
-     }
-     if (Control::showInstance) {
-         log->debug(tr("EngineTypes returns instance %1}").arg(_instance->metaObject()->className()));
-     }
-     return _instance;
  }
 
  /*protected*/ QString EngineTypes::getDefaultNames() {
@@ -88,7 +68,7 @@ RollingStockAttribute(parent) {
 
  /*protected*/ void EngineTypes::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      // Set dirty
-     EngineManagerXml::instance()->setDirty(true);
+     ((Operations::EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml"))->setDirty(true);
      RollingStockAttribute::firePropertyChange(p, old, n);
  }
 }

@@ -8,7 +8,7 @@
 #include "control.h"
 #include <QComboBox>
 #include <vptr.h>
-
+#include "instancemanager.h"
 namespace Operations
 {
 // Route::Route(QObject *parent) :
@@ -35,14 +35,17 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ int Route::SOUTH = 8;
 
  /*public*/ /*static*/ /*final*/ QString Route::LISTCHANGE_CHANGED_PROPERTY = "routeListChange"; // NOI18N
+ /*public*/ /*static*/ /*final*/ QString Route::ROUTE_STATUS_CHANGED_PROPERTY = "routeStatusChange"; // NOI18N
+ /*public*/ /*static*/ /*final*/ QString Route::ROUTE_BLOCKING_CHANGED_PROPERTY = "routeBlockingChange"; // NOI18N
  /*public*/ /*static*/ /*final*/ QString Route::DISPOSE = "routeDispose"; // NOI18N
 
  /*public*/ /*static*/ /*final*/ QString Route::OKAY = tr("Okay");
+ /*public*/ /*static*/ /*final*/ QString Route::TRAIN_BUILT = tr("Train Built");
  /*public*/ /*static*/ /*final*/ QString Route::ORPHAN = tr("Orphan");
  /*public*/ /*static*/ /*final*/ QString Route::ERROR = tr("Error");
 
  /*public*/ Route::Route(QString id, QString name, QObject *parent):
-                  QObject(parent)
+                  SwingPropertyChangeSupport(this, parent)
  {
   common();
   log->debug(tr("New route (%1) id: %2").arg(name).arg(id));
@@ -53,7 +56,6 @@ namespace Operations
  void Route::common()
  {
   log = new Logger("Route");
-  pcs = new PropertyChangeSupport(this);
   _id = NONE;
   _name = NONE;
   _comment = NONE;
@@ -120,7 +122,7 @@ namespace Operations
      setDirtyAndFirePropertyChange(LISTCHANGE_CHANGED_PROPERTY, old, (_routeHashTable.size()));
      // listen for drop and pick up changes to forward
      //rl.addPropertyChangeListener(this);
-     connect(rl->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(rl, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      return rl;
  }
 
@@ -164,7 +166,7 @@ namespace Operations
   setDirtyAndFirePropertyChange(LISTCHANGE_CHANGED_PROPERTY, old, (_routeHashTable.size()));
   // listen for drop and pick up changes to forward
   //rl.addPropertyChangeListener(this);
-  connect(rl->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(rl, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 
  /**
@@ -175,7 +177,7 @@ namespace Operations
  /*public*/ void Route::deleteLocation(RouteLocation* rl) {
      if (rl != NULL) {
          //rl.removePropertyChangeListener(this);
-      disconnect(rl->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      disconnect(rl, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          // subtract from the locations's available track length
          QString id = rl->getId();
          rl->dispose();
@@ -285,32 +287,91 @@ while (en.hasNext()) {
 return out;
 }
 
-/**
-* Get a list of RouteLocations sorted by route order
-*
-* @return list of RouteLocations ordered by sequence
-*/
-/*public*/ QList<RouteLocation*>* Route::getLocationsBySequenceList()
-{
- // now re-sort
- QList<RouteLocation*>* out = new QList<RouteLocation*>();
- foreach (RouteLocation* rl, getLocationsByIdList())
+ /**
+ * Get a list of RouteLocations sorted by route order
+ *
+ * @return list of RouteLocations ordered by sequence
+ */
+ /*public*/ QList<RouteLocation*>* Route::getLocationsBySequenceList()
  {
-  for (int j = 0; j < out->size(); j++)
+  // now re-sort
+  QList<RouteLocation*>* out = new QList<RouteLocation*>();
+  foreach (RouteLocation* rl, getLocationsByIdList())
   {
-   if (rl->getSequenceId() < out->value(j)->getSequenceId())
+   for (int j = 0; j < out->size(); j++)
    {
-    out->insert(j, rl);
-    break;
+    if (rl->getSequenceId() < out->value(j)->getSequenceId())
+    {
+     out->insert(j, rl);
+     break;
+    }
+   }
+   if (!out->contains(rl))
+   {
+     out->append(rl);
    }
   }
-  if (!out->contains(rl))
-  {
-    out->append(rl);
-  }
+  return out;
  }
- return out;
-}
+
+ /*public*/ QList<RouteLocation*> Route::getBlockingOrder() {
+         // now re-sort
+     QList<RouteLocation*> out = QList<RouteLocation*>();
+     for (RouteLocation* rl : *getLocationsBySequenceList()) {
+         if (rl->getBlockingOrder() == 0) {
+             rl->setBlockingOrder(out.size() + 1);
+         }
+         for (int j = 0; j < out.size(); j++) {
+             if (rl->getBlockingOrder() < out.at(j)->getBlockingOrder()) {
+                 out.insert(j, rl);
+                 break;
+             }
+         }
+         if (!out.contains(rl)) {
+             out.append(rl);
+         }
+     }
+     return out;
+    }
+
+    /*public*/ void Route::setBlockingOrderUp(RouteLocation* rl) {
+     QList<RouteLocation*> blockingOrder = getBlockingOrder();
+     int order = rl->getBlockingOrder();
+     if (--order < 1) {
+         order = size();
+         for (RouteLocation* rlx : blockingOrder) {
+             rlx->setBlockingOrder(rlx->getBlockingOrder() - 1);
+         }
+     } else {
+         RouteLocation* rlx = blockingOrder.at(order - 1);
+         rlx->setBlockingOrder(order + 1);
+     }
+     rl->setBlockingOrder(order);
+     setDirtyAndFirePropertyChange(ROUTE_BLOCKING_CHANGED_PROPERTY, order + 1, order);
+    }
+
+    /*public*/ void Route::setBlockingOrderDown(RouteLocation* rl) {
+     QList<RouteLocation*> blockingOrder = getBlockingOrder();
+     int order = rl->getBlockingOrder();
+     if (++order > size()) {
+         order = 1;
+         for (RouteLocation* rlx : blockingOrder) {
+             rlx->setBlockingOrder(rlx->getBlockingOrder() + 1);
+         }
+     } else {
+         RouteLocation* rlx = blockingOrder.at(order - 1);
+         rlx->setBlockingOrder(order - 1);
+     }
+     rl->setBlockingOrder(order);
+     setDirtyAndFirePropertyChange(ROUTE_BLOCKING_CHANGED_PROPERTY, order - 1, order);
+    }
+
+    /*public*/ void Route::resetBlockingOrder() {
+     for (RouteLocation* rl : getLocationsByIdList()) {
+         rl->setBlockingOrder(0);
+     }
+     setDirtyAndFirePropertyChange(ROUTE_BLOCKING_CHANGED_PROPERTY, "Order", "Reset");
+    }
 
  /**
   * Places a RouteLocation earlier in the route.
@@ -383,7 +444,7 @@ return out;
          }
      }
      // check to see if this route is used by a train
-     foreach (Train* train, TrainManager::instance()->getTrainsByIdList()) {
+     foreach (Train* train, ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainsByIdList()) {
          if (train->getRoute() == this) {
              return OKAY;
          }
@@ -413,7 +474,7 @@ return out;
   *
   * @param e Consist XML element
   */
- /*public*/ Route::Route(QDomElement e)
+ /*public*/ Route::Route(QDomElement e) : SwingPropertyChangeSupport(this,this)
  {
   common();
   // if (log->isDebugEnabled()) log->debug("ctor from element "+e);
@@ -477,19 +538,10 @@ return out;
       setDirtyAndFirePropertyChange(LISTCHANGE_CHANGED_PROPERTY, QVariant(), "RouteLocation"); // NOI18N
   }
  }
-#if 0
 
- /*public*/ synchronized void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.addPropertyChangeListener(l);
- }
-
- /*public*/ synchronized void removePropertyChangeListener(java.beans.PropertyChangeListener l) {
-     pcs.removePropertyChangeListener(l);
- }
-#endif
  /*protected*/ void Route::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
-     RouteManagerXml::instance()->setDirty(true);
-     pcs->firePropertyChange(p, old, n);
+     ((RouteManagerXml*)InstanceManager::getDefault("RouteManagerXml"))->setDirty(true);
+     firePropertyChange(p, old, n);
  }
 
 } // end namespace

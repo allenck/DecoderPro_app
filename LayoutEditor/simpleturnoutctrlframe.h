@@ -2,29 +2,32 @@
 #define SIMPLETURNOUTCTRLFRAME_H
 #include "jmrijframe.h"
 #include "liblayouteditor_global.h"
+#include "propertychangelistener.h"
 
 class Exception;
 class AbstractTurnout;
-class ActionEvent;
+class JActionEvent;
 class QLabel;
 class QPushButton;
 class JTextField;
 class Turnout;
-class LIBLAYOUTEDITORSHARED_EXPORT SimpleTurnoutCtrlFrame : public JmriJFrame
+class LIBLAYOUTEDITORSHARED_EXPORT SimpleTurnoutCtrlFrame : public JmriJFrame, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     explicit SimpleTurnoutCtrlFrame(QWidget *parent = 0);
- /*public*/ QString getClassName();
+ /*public*/ QString getClassName() override;
+  QObject* self() override {return (QObject*)this;}
 
 signals:
 
 public slots:
-    /*public*/ void closeButtonActionPerformed(ActionEvent* e = 0);
-    /*public*/ void throwButtonActionPerformed(ActionEvent* e = 0);
-    /*public*/ void lockButtonActionPerformed(ActionEvent* e = 0);
-    /*public*/ void lockPushButtonActionPerformed(ActionEvent* e = 0);
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void closeButtonActionPerformed(JActionEvent* e = 0);
+    /*public*/ void throwButtonActionPerformed(JActionEvent* e = 0);
+    /*public*/ void lockButtonActionPerformed(JActionEvent* e = 0);
+    /*public*/ void lockPushButtonActionPerformed(JActionEvent* e = 0);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 private:
     // GUI member declarations
@@ -49,7 +52,7 @@ private:
     /*private*/ static /*final*/ QString UNLOCKED;// = "Normal";
     /*private*/ void updateTurnoutStatusFields();
     Logger* log;
-    void invalidTurnout(QString name, Exception ex);
+    void invalidTurnout(QString name, Exception *ex);
 private slots:
     void on_adrTextField_textEdited(QString);
     void on_adrTextField_editingFinished();

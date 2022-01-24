@@ -21,7 +21,7 @@
 /*public*/ EnumVariableValue::EnumVariableValue(QString name, QString comment, QString cvName,
                          bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly,
                          QString cvNum, QString mask, int minVal, int maxVal,
-                         QMap<QString,CvValue*>* v, QLabel* status, QString stdname, QObject *parent) : VariableValue(name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cvNum, mask, v, status, stdname, parent)
+                         QMap<QString,CvValue*>* v, JLabel* status, QString stdname, QObject *parent) : VariableValue(name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cvNum, mask, v, status, stdname, parent)
 {
     //super(name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cvNum, mask, v, status, stdname);
     _maxVal = maxVal;
@@ -54,10 +54,10 @@
     comboRBs = new QList<ComboRadioButtons*>();
 }
 
-/*public*/ QVector<CvValue*>* EnumVariableValue::usesCVs()
+/*public*/ QVector<CvValue *> EnumVariableValue::usesCVs()
 {
-    QVector<CvValue*>* list = new QVector<CvValue*>;
-    list->append(_cvMap->value(getCvNum()));
+    QVector<CvValue*> list = QVector<CvValue*>();
+    list.append(_cvMap->value(getCvNum()));
     return list;
 }
 
@@ -180,7 +180,7 @@ void EnumVariableValue::on_currentIndex_changed(int i)
     actionPerformed();
 }
 
-/*public*/ void EnumVariableValue::actionPerformed(ActionEvent* e)
+/*public*/ void EnumVariableValue::actionPerformed(JActionEvent* e)
 {
  if(e != NULL)
  {
@@ -207,7 +207,7 @@ void EnumVariableValue::on_currentIndex_changed(int i)
  // compute new cv value by combining old and request
  int oldCv = cv->getValue();
  int newVal = getIntValue();
- int newCv = newValue(oldCv, newVal, getMask());
+ int newCv = setValueInCV(oldCv, newVal, getMask(), _maxVal-1);
  if (newCv != oldCv)
  {
   cv->setValue(newCv);  // to prevent CV going EDITED during loading of decoder file
@@ -445,7 +445,7 @@ void EnumVariableValue::setBackground(QColor c)
     } else if (e->getPropertyName()==("Value")) {
         // update value of Variable
         CvValue* cv = _cvMap->value(getCvNum());
-        int newVal = (cv->getValue() & maskVal(getMask())) >> offsetVal(getMask());
+        int newVal = getValueInCV(cv->getValue(), getMask(), _maxVal-1); // _maxVal value is count of possibles, i.e. radix
         setValue(newVal);  // check for duplicate done inside setVal
     }
 }

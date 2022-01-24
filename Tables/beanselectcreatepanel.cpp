@@ -7,7 +7,7 @@
 #include "jtextfield.h"
 #include "defaultmemorymanager.h"
 #include "blockmanager.h"
-#include "jmribeancombobox.h"
+#include "namedbeancombobox.h"
 #include "flowlayout.h"
 #include "jmriuserpreferencesmanager.h"
 #include "connectionnamefromsystemname.h"
@@ -32,8 +32,6 @@
  systemSelectionCombo = "jmri.util.swing.BeanSelectCreatePanel.SystemSelected";
 
  _manager = manager;
- prefixBox = new QComboBox();
- hardwareAddress = new JTextField();
  QValidator* v = new QIntValidator(0,1027);
  hardwareAddress->setValidator(v);
 
@@ -57,13 +55,13 @@
  selectcreate = new QButtonGroup();
  selectcreate->addButton(existingItem);
  selectcreate->addButton(newItem);
- existingCombo = new JmriBeanComboBox(_manager, defaultSelect, JmriBeanComboBox::USERNAMESYSTEMNAME);
+ existingCombo = new NamedBeanComboBox(_manager, defaultSelect, NamedBean::DisplayOptions::USERNAME_SYSTEMNAME);
  //If the combo list is empty we go straight to creation.
  if (existingCombo->count()==0)
  {
   newItem->setChecked(true);
  }
- existingCombo->setFirstItemBlank(true);
+ existingCombo->setAllowNull(true);
  QWidget* radio = new QWidget();
  //radio->setLayout(new FlowLayout(/*FlowLayout::Center, 5, 0*/));
  QHBoxLayout* radioHLayout;
@@ -75,28 +73,43 @@
  radioHLayout->addWidget(existingItem);
  radioHLayout->addWidget(newItem);
 
- if ( qobject_cast<ProxyManager*>(_manager)!=NULL)
+ if ( qobject_cast<ProxyManager*>(_manager->self())!=NULL)
  {
   QList<Manager*> managerList;
-  if(qobject_cast<ProxyTurnoutManager*>(_manager)!=NULL)
+  if(qobject_cast<ProxyTurnoutManager*>(_manager->self())!=NULL)
   {
    ProxyTurnoutManager* proxy = (ProxyTurnoutManager*) InstanceManager::turnoutManagerInstance();
-   managerList = proxy->getManagerList();
+   prefixBox->setManagers(proxy->getManagerList(), proxy->getDefaultManager());
+   if (p->getComboBoxLastSelection(systemSelectionCombo) != "") {
+       prefixBox->setSelectedItem(p->getComboBoxLastSelection(systemSelectionCombo));
+   }
   }
-  else if (qobject_cast<ProxySensorManager*>(_manager)!=NULL)
+  else if (qobject_cast<ProxySensorManager*>(_manager->self())!=NULL)
   {
    ProxySensorManager* proxy = (ProxySensorManager*) InstanceManager::sensorManagerInstance();
-   managerList = proxy->getManagerList();
+   prefixBox->setManagers(proxy->getManagerList(), proxy->getDefaultManager());
+   if (p->getComboBoxLastSelection(systemSelectionCombo) != "") {
+       prefixBox->setSelectedItem(p->getComboBoxLastSelection(systemSelectionCombo));
+   }
+
   }
-  else if (qobject_cast<ProxyLightManager*>(_manager)!=NULL)
+  else if (qobject_cast<ProxyLightManager*>(_manager->self())!=NULL)
   {
    ProxyLightManager* proxy = (ProxyLightManager*) InstanceManager::lightManagerInstance();
-   managerList = proxy->getManagerList();
+   prefixBox->setManagers(proxy->getManagerList(), proxy->getDefaultManager());
+   if (p->getComboBoxLastSelection(systemSelectionCombo) != "") {
+       prefixBox->setSelectedItem(p->getComboBoxLastSelection(systemSelectionCombo));
+   }
+
   }
-  else if (qobject_cast<ProxyReporterManager*>(_manager)!=NULL)
+  else if (qobject_cast<ProxyReporterManager*>(_manager->self())!=NULL)
   {
-   ProxyReporterManager* proxy = (ProxyReporterManager*) InstanceManager::reporterManagerInstance();
-   managerList = proxy->getManagerList();
+   ProxyReporterManager* proxy = (ProxyReporterManager*) InstanceManager::getDefault("ReporterManager");
+   prefixBox->setManagers(proxy->getManagerList(), proxy->getDefaultManager());
+   if (p->getComboBoxLastSelection(systemSelectionCombo) != "") {
+       prefixBox->setSelectedItem(p->getComboBoxLastSelection(systemSelectionCombo));
+   }
+
   }
 
   for(int x = 0; x < managerList.size(); x++)
@@ -162,7 +175,7 @@ void BeanSelectCreatePanel::update(){
 }
 
 /*public*/ void BeanSelectCreatePanel::refresh(){
-    existingCombo->refreshCombo();
+    // do nothing
 }
 
 /**
@@ -172,7 +185,7 @@ void BeanSelectCreatePanel::update(){
 /*public*/ QString BeanSelectCreatePanel::getDisplayName()
 {
  if(existingItem->isChecked()){
-     return existingCombo->getSelectedDisplayName();
+     return existingCombo->getSelectedItemDisplayName();
  }
  else
  {
@@ -181,7 +194,7 @@ void BeanSelectCreatePanel::update(){
    NamedBean* nBean = createBean();
    return nBean->getDisplayName();
   }
-  catch (JmriException e){
+  catch (JmriException* e){
    return "";
   }
  }
@@ -192,31 +205,31 @@ void BeanSelectCreatePanel::update(){
 * has been created
 */
 
-/*public*/ NamedBean* BeanSelectCreatePanel::getNamedBean() throw (JmriException)
+/*public*/ NamedBean* BeanSelectCreatePanel::getNamedBean() /*throw (JmriException)*/
 {
  if(existingItem->isChecked())
  {
-  return existingCombo->getSelectedBean();
+  return existingCombo->getSelectedItem();
  }
- //try {
+ try {
  return createBean();
-//    } catch (JmriException e){
-//        throw e;
-//    }
+    } catch (JmriException* e){
+        throw e;
+    }
 }
 
-/*private*/ NamedBean* BeanSelectCreatePanel::createBean() throw (JmriException)
+/*private*/ NamedBean* BeanSelectCreatePanel::createBean() /*throw (JmriException)*/
 {
  QString prefix = /*ConnectionNameFromSystemName.getPrefixFromName((QString) prefixBox->getSelectedItem());*/ "L";
  NamedBean* nBean = NULL;
- if (qobject_cast<ProxyTurnoutManager*>(_manager)!=NULL)
+ if (qobject_cast<ProxyTurnoutManager*>(_manager->self())!=NULL)
  {
   QString sName = "";
   try
   {
    sName=((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->createSystemName(hardwareAddress->text(), prefix);
   }
-  catch (JmriException e)
+  catch (JmriException* e)
   {
    throw e;
   }
@@ -224,27 +237,27 @@ void BeanSelectCreatePanel::update(){
   {
    nBean = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->provideTurnout(sName);
   }
-  catch (IllegalArgumentException ex)
+  catch (IllegalArgumentException* ex)
   {
    // user input no good
    throw new JmriException("ErrorTurnoutAddFailed");
   }
  }
- else if (qobject_cast<ProxySensorManager*>(_manager)!=NULL)
+ else if (qobject_cast<ProxySensorManager*>(_manager->self())!=NULL)
  {
   QString sName = "";
   try
   {
-   sName=((ProxySensorManager*)InstanceManager::sensorManagerInstance())->createSystemName(hardwareAddress->text(), prefix);
+   sName=((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::createSystemName(hardwareAddress->text(), prefix);
   }
-  catch (JmriException e)
+  catch (JmriException* e)
   {
    throw e;
   }
   try
   {
    nBean = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->provideSensor(sName);
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             // user input no good
             throw new JmriException("ErrorSensorAddFailed");
         }
@@ -252,19 +265,19 @@ void BeanSelectCreatePanel::update(){
     else
     {
         QString sName = _manager->makeSystemName(hardwareAddress->text());
-        if(qobject_cast<MemoryManager*>(_manager)!=NULL)
+        if(qobject_cast<MemoryManager*>(_manager->self())!=NULL)
         {
             try {
                 nBean = ((DefaultMemoryManager*)InstanceManager::memoryManagerInstance())->provideMemory(sName);
-            } catch (IllegalArgumentException ex) {
+            } catch (IllegalArgumentException* ex) {
                 // user input no good
                 throw new JmriException("ErrorMemoryAddFailed");
             }
         }
-        else if (qobject_cast<BlockManager*>(_manager)!=NULL) {
+        else if (qobject_cast<BlockManager*>(_manager->self())!=NULL) {
             try {
                 nBean = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->provideBlock(sName);
-            } catch (IllegalArgumentException ex) {
+            } catch (IllegalArgumentException* ex) {
                 // user input no good
                 throw new JmriException("ErrorBlockAddFailed");
             }
@@ -292,13 +305,13 @@ void BeanSelectCreatePanel::update(){
 */
 /*public*/ void BeanSelectCreatePanel::setDefaultNamedBean(NamedBean* nBean){
     _defaultSelect = nBean;
-    existingCombo->setSelectedBean(_defaultSelect);
+    existingCombo->setSelectedItem(_defaultSelect);
     existingItem->setChecked(true);
     update();
 }
 
 /*public*/ void BeanSelectCreatePanel::dispose(){
-    //existingCombo->dispose();
+    existingCombo->dispose();
 }
 
 

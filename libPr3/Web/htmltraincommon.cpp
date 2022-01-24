@@ -13,6 +13,7 @@
 #include "location.h"
 #include "trainschedulemanager.h"
 #include "trainschedule.h"
+#include "instancemanager.h"
 
 /**
  *
@@ -24,7 +25,7 @@ namespace Operations
 
 /*static*/ /*private*/ /*final*/ Logger* HtmlTrainCommon::log = LoggerFactory::getLogger("HtmlTrainCommon");
 
-/*public*/ HtmlTrainCommon::HtmlTrainCommon(QLocale locale, Operations::Train* train, QObject* parent) throw (IOException)  : TrainCommon(parent)
+/*public*/ HtmlTrainCommon::HtmlTrainCommon(QLocale locale, Operations::Train* train, QObject* parent) /*throw (IOException)*/  : TrainCommon(parent)
 {
  this->locale = locale;
  this->train = train;
@@ -35,14 +36,14 @@ namespace Operations
   if(!f.open(QIODevice::ReadOnly))
   {
    log->error(tr("file not found %1").arg(f.fileName()));
-   throw FileNotFoundException("file not found %1" + f.fileName());
+   throw  new FileNotFoundException("file not found %1" + f.fileName());
   }
   QTextStream is(&f);
 //        is = new FileInputStream(Bundle.getMessage(locale, "ManifestStrings.properties"));
   strings->load(&is);
   f.close();
  }
- catch (IOException ex)
+ catch (IOException* ex)
  {
 //        if (is != NULL) {
   f.close();
@@ -278,7 +279,7 @@ namespace Operations
 /*protected*/ QString HtmlTrainCommon::getTrackComments(RouteLocation* location, QList<Car*>* cars) {
     QString builder;// = new StringBuilder();
     if (location->getLocation() != NULL) {
-        QList<Track*> tracks = location->getLocation()->getTrackByNameList(NULL);
+        QList<Track*> tracks = location->getLocation()->getTracksByNameList(NULL);
         for (Track* track : tracks) {
             // any pick ups or set outs to this track?
              bool pickup = false;
@@ -309,7 +310,7 @@ namespace Operations
 {
  if (Operations::Setup::isPrintTimetableNameEnabled()) {
      return String::format(locale, strings->getProperty("ManifestValidityWithSchedule"), getDate(true),
-             TrainScheduleManager::instance()->getScheduleById(train->getId())->toString());
+             ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getScheduleById(train->getId())->toString());
  } else {
      return String::format(locale, strings->getProperty("ManifestValidity"), getDate(true));
  }

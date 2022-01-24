@@ -300,7 +300,7 @@
 //        }.init(stateName));
         EditIconActionListener* eal = new EditIconActionListener();
         eal->init(stateName, this);
-        connect(button, SIGNAL(clicked()), eal, SLOT(actionPerformed()));
+        connect(button, SIGNAL(clicked()), eal->self(), SLOT(actionPerformed()));
         button->setToolTip(tr("Press to change the icons of the current icon set or to add and delete icon sets"));
         panel->layout()->addWidget(button);
 //        gridbag.setConstraints(panel, c);
@@ -357,7 +357,7 @@
     return true;
 }
 
-void EditIconActionListener::actionPerformed(ActionEvent */*a*/)
+void EditIconActionListener::actionPerformed(JActionEvent */*a*/)
 {
     parent->openStatusEditDialog(key);
 }

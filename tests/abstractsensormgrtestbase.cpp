@@ -31,7 +31,7 @@ AbstractSensorMgrTestBase::AbstractSensorMgrTestBase(QObject *parent) : Abstract
     // test creation - real work is in the setup() routine
     //@Test
     /*public*/ void AbstractSensorMgrTestBase::testCreate() {
-       Assert::assertNotNull("Sensor Manager Exists",l, __FILE__, __LINE__);
+       Assert::assertNotNull("Sensor Manager Exists",l->self(), __FILE__, __LINE__);
     }
 
     //@Test
@@ -97,7 +97,7 @@ AbstractSensorMgrTestBase::AbstractSensorMgrTestBase(QObject *parent) : Abstract
     /*public*/ void AbstractSensorMgrTestBase::testProvideFailure() {
         try {
             l->provideSensor("");
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             JUnitAppender::assertErrorMessage("Invalid system name for Sensor: System name must start with \"" + l->getSystemNamePrefix() + "\".", __FILE__, __LINE__);
             throw ex;
         }

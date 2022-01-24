@@ -8,6 +8,7 @@
 #include "engine.h"
 #include "control.h"
 #include <QMessageBox>
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -25,7 +26,7 @@ namespace Operations
 
  ImportRosterEngines::ImportRosterEngines(QObject *parent) : QObject(parent)
  {
-  manager = EngineManager::instance();
+  manager = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"));
   log = new Logger("ImportRosterEngines");
 //  textEngine = new QLabel();
 //  textId = new QLabel();
@@ -66,9 +67,9 @@ namespace Operations
                  road = road.mid(0, Control::max_len_string_attibute);
              }
              textId= (road + " " + re->getRoadNumber());
-             Engine* engine = manager->getByRoadAndNumber(road, re->getRoadNumber());
+             Engine* engine = (Engine*)manager->getByRoadAndNumber(road, re->getRoadNumber());
              if (engine == NULL) {
-                 engine = manager->newEngine(road, re->getRoadNumber());
+                 engine = (Engine*)manager->newRS(road, re->getRoadNumber());
                  QString model = re->getModel();
                  if (model.length() > Control::max_len_string_attibute) {
                      model = model.mid(0, Control::max_len_string_attibute);

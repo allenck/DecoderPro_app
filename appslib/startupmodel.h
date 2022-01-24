@@ -46,7 +46,7 @@ public:
   * @throws jmri.JmriException if there is an exception thrown initializing
   *                            the startup item
   */
- /*public*/ virtual void performAction(QString) throw (JmriException) {}
+ /*public*/ virtual void performAction() /*throw (JmriException)*/ {}
 
  /**
   * Get the exceptions thrown by the startup model.

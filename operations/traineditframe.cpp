@@ -10,7 +10,7 @@
 #include "setup.h"
 #include "control.h"
 #include <QCheckBox>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QRadioButton>
 #include <QButtonGroup>
 #include "gridbaglayout.h"
@@ -19,7 +19,7 @@
 #include "jtextarea.h"
 #include "enginemodels.h"
 #include <QScrollArea>
-#include <QGroupBox>
+#include "jpanel.h"
 #include "routelocation.h"
 #include <QMenu>
 #include <QMenuBar>
@@ -52,6 +52,8 @@
 #include "trainmanifestoptionaction.h"
 #include "trainbycartypeaction.h"
 #include "trainscriptaction.h"
+#include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -78,11 +80,11 @@ namespace Operations
    typeCarCheckBoxes = QList<QCheckBox*>();
   typeEngineCheckBoxes = QList<QCheckBox*>();
    locationCheckBoxes = QList<QCheckBox*>();
-  typeCarPanelCheckBoxes = new QWidget();
+  typeCarPanelCheckBoxes = new JPanel();
   typeCarPanelCheckBoxes->setObjectName("typeCarPanelCheckBoxes");
-  typeEnginePanelCheckBoxes = new QWidget();
-  roadAndLoadStatusPanel = new QWidget();
-  locationPanelCheckBoxes = new QWidget();
+  typeEnginePanelCheckBoxes = new JPanel();
+  roadAndLoadStatusPanel = new JPanel();
+  locationPanelCheckBoxes = new JPanel();
 
   // labels
   textRouteStatus = new QLabel();
@@ -94,13 +96,13 @@ namespace Operations
   textEngine = new QLabel(tr("Engines"));
 
   // major buttons
-  editButton = new QPushButton(tr("Edit"));	// edit route
-  clearButton = new QPushButton(tr("Clear"));
-  setButton = new QPushButton(tr("Select"));
-  resetButton = new QPushButton(tr("Reset Train"));
-  saveTrainButton = new QPushButton(tr("Save Train"));
-  deleteTrainButton = new QPushButton(tr("Delete Train"));
-  addTrainButton = new QPushButton(tr("Add Train"));
+  editButton = new JButton(tr("Edit"));	// edit route
+  clearButton = new JButton(tr("Clear"));
+  setButton = new JButton(tr("Select"));
+  resetButton = new JButton(tr("Reset Train"));
+  saveTrainButton = new JButton(tr("Save Train"));
+  deleteTrainButton = new JButton(tr("Delete Train"));
+  addTrainButton = new JButton(tr("Add Train"));
 
   // radio buttons
   noneRadioButton = new QRadioButton(tr("None"));
@@ -128,58 +130,47 @@ namespace Operations
   // combo boxes
    hourBox = new JComboBox();
    minuteBox = new JComboBox();
-   routeBox = RouteManager::instance()->getComboBox();
+   routeBox = ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"))->getComboBox();
    roadCabooseBox = new JComboBox();
    roadEngineBox = new JComboBox();
-   modelEngineBox = EngineModels::instance()->getComboBox();
+   modelEngineBox = ((EngineModels*)InstanceManager::getDefault("EngineModels"))->getComboBox();
    numEnginesBox = new JComboBox();
    ref = NULL;
 
   // Set up the jtable in a Scroll Pane..
-  QGroupBox* locationsPaneFrame = new QGroupBox;
+  JPanel* locationsPaneFrame = new JPanel;
   locationsPaneFrame->setObjectName("locationsPaneFrame");
   locationsPaneFrame->setLayout(new QVBoxLayout);
   locationsPane = new QScrollArea(/*locationPanelCheckBoxes*/);
   //locationsPane->setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-  //locationsPane->setBorder(BorderFactory.createTitledBorder(tr("Stops")));
-  locationsPaneFrame->setStyleSheet(gbStyleSheet);
-  locationsPaneFrame->setTitle(tr("Stops"));
   locationsPaneFrame->layout()->addWidget(locationsPane);
+  locationsPaneFrame->setBorder(BorderFactory::createTitledBorder(tr("Stops")));
   locationsPane->setWidgetResizable(true);
 
-  QGroupBox* typeCarPaneFrame = new QGroupBox;
+  JPanel* typeCarPaneFrame = new JPanel;
   typeCarPaneFrame->setObjectName("typeCarPaneFrame");
   typeCarPaneFrame->setLayout(new QVBoxLayout);
   typeCarPane = new QScrollArea(/*typeCarPanelCheckBoxes*/);
-  //typeCarPane->setBorder(BorderFactory.createTitledBorder(tr("TypesCar")));
-  typeCarPaneFrame->setStyleSheet(gbStyleSheet);
-  typeCarPaneFrame->setTitle(tr("Car Types"));
+  typeCarPaneFrame->setBorder(BorderFactory::createTitledBorder(tr("Car")));
   //typeCarPane->setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
   typeCarPaneFrame->layout()->addWidget(typeCarPane);
   typeCarPane->setWidgetResizable(true);
 
-  QGroupBox* typeEnginePaneFrame = new QGroupBox;
+  JPanel* typeEnginePaneFrame = new JPanel;
   typeEnginePaneFrame->setObjectName("typeEnginePaneFrame");
   typeEnginePaneFrame->setLayout(new QVBoxLayout);
   typeEnginePane = new QScrollArea(/*typeEnginePanelCheckBoxes*/);
   //typeEnginePane->setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-  //typeEnginePane->setBorder(BorderFactory.createTitledBorder(tr("TypesEngine")));
-  typeEnginePaneFrame->setStyleSheet(gbStyleSheet);
-  typeEnginePaneFrame->setTitle(tr("Engine Types"));
+  typeEnginePaneFrame->setBorder(BorderFactory::createTitledBorder(tr("Engine")));
   typeEnginePaneFrame->layout()->addWidget(typeEnginePane);
   typeEnginePane->setWidgetResizable(true);
 
   _train = train;
 
   // load managers
-  trainManager = TrainManager::instance();
-  routeManager = RouteManager::instance();
-  boxMapper = new QSignalMapper();
-  connect(boxMapper, SIGNAL(mapped(QWidget*)), this, SLOT(locationCheckBoxActionPerformed(QWidget*)));
-  typeCheckBoxMapper = new QSignalMapper;
-  connect(typeCheckBoxMapper, SIGNAL(mapped(QWidget*)), this, SLOT(typeCheckBoxActionPerformed(QWidget*)));
+  trainManager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
+  routeManager = ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"));
   children = QList<JmriJFrame*>();
-
 
   //getContentPane()->setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
   QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
@@ -189,27 +180,23 @@ namespace Operations
   p->setLayout(new QVBoxLayout); //(p, BoxLayout.Y_AXIS));
   QScrollArea* pPane = new QScrollArea(/*p*/);
   pPane->setMinimumSize(QSize(300, 5 * trainNameTextField->sizeHint().height()));
-  //pPane->setBorder(BorderFactory.createTitledBorder(""));
+  //pPane->setBorder(BorderFactory::createTitledBorder(""));
   pPane->setFrameStyle(QFrame::Panel | QFrame::Plain);
   // Layout the panel by rows
   // row 1
   QWidget* p1 = new QWidget();
   p1->setLayout(new QHBoxLayout);//(p1, BoxLayout.X_AXIS));
   // row 1a
-  QGroupBox* pName = new QGroupBox();
+  JPanel* pName = new JPanel();
   pName->setObjectName("pName");
   pName->setLayout(new GridBagLayout());
-  //pName->setBorder(BorderFactory.createTitledBorder(tr("Name")));
-  pName->setStyleSheet(gbStyleSheet);
-  pName->setTitle(tr("Name"));
+  pName->setBorder(BorderFactory::createTitledBorder(tr("Name")));
   addItem(pName, trainNameTextField, 0, 0);
   // row 1b
-  QGroupBox* pDesc = new QGroupBox();
+  JPanel* pDesc = new JPanel();
   pDesc->setObjectName("pDesc");
   pDesc->setLayout(new GridBagLayout());
-  //pDesc->setBorder(BorderFactory.createTitledBorder(tr("Description")));
-  pDesc->setStyleSheet(gbStyleSheet);
-  pDesc->setTitle(tr("Description"));
+  pDesc->setBorder(BorderFactory::createTitledBorder(tr("Description")));
   trainDescriptionTextField->setToolTip("%1 = lead engine number, %2 = departure direction, %3 = lead engine road");
   addItem(pDesc, trainDescriptionTextField, 0, 0);
 
@@ -220,12 +207,10 @@ namespace Operations
   QWidget* p2 = new QWidget();
   p2->setLayout(new QHBoxLayout);//(p2, BoxLayout.X_AXIS));
   // row 2a
-  QGroupBox* pdt = new QGroupBox();
+  JPanel* pdt = new JPanel();
   pdt->setObjectName("pdt");
   pdt->setLayout(new GridBagLayout());
-  //pdt->setBorder(BorderFactory.createTitledBorder(tr("DepartTime")));
-  pdt->setStyleSheet(gbStyleSheet);
-  pdt->setTitle(tr("Depart time"));
+  pdt->setBorder(BorderFactory::createTitledBorder(tr("DepartTime")));
   // build hour and minute menus
   for (int i = 0; i < 24; i++) {
       if (i < 10) {
@@ -251,12 +236,10 @@ namespace Operations
 
   // row 2b
   // BUG! routeBox needs its own panel when resizing frame!
-  QGroupBox* pr = new QGroupBox();
+  JPanel* pr = new JPanel();
   pr->setObjectName("pr");
   pr->setLayout(new GridBagLayout());
-  //pr->setBorder(BorderFactory.createTitledBorder(tr("Route")));
-  pr->setStyleSheet(gbStyleSheet);
-  pr->setTitle(tr("Route"));
+  pr->setBorder(BorderFactory::createTitledBorder(tr("Route")));
   addItem(pr, routeBox, 0, 5);
   addItem(pr, space4, 1, 5);
   addItem(pr, editButton, 2, 5);
@@ -280,20 +263,16 @@ namespace Operations
 
   // status panel for roads and loads
   roadAndLoadStatusPanel->setLayout(new QHBoxLayout); //(roadAndLoadStatusPanel, BoxLayout.X_AXIS));
-  QGroupBox* pRoadOption = new QGroupBox();
+  JPanel* pRoadOption = new JPanel();
   pRoadOption->setObjectName("pRoadOption");
   pRoadOption->setLayout(new QVBoxLayout);
-  //pRoadOption->setBorder(BorderFactory.createTitledBorder(tr("RoadOption")));
-  pRoadOption->setStyleSheet(gbStyleSheet);
-  pRoadOption->setTitle(tr("Road Option"));
+  pRoadOption->setBorder(BorderFactory::createTitledBorder(tr("Road Option")));
   pRoadOption->layout()->addWidget(roadOption);
 
-  QGroupBox* pLoadOption = new QGroupBox();
+  JPanel* pLoadOption = new JPanel();
   pLoadOption->setObjectName("pLoadOption");
   pLoadOption->setLayout(new QVBoxLayout);
-  //pLoadOption->setBorder(BorderFactory.createTitledBorder(tr("LoadOption")));
-  pLoadOption->setStyleSheet(gbStyleSheet);
-  pLoadOption->setTitle(tr("Load Option"));
+  pLoadOption->setBorder(BorderFactory::createTitledBorder(tr("Load Option")));
   pLoadOption->layout()->addWidget(loadOption);
 
   roadAndLoadStatusPanel->layout()->addWidget(pRoadOption);
@@ -301,12 +280,10 @@ namespace Operations
   roadAndLoadStatusPanel->setVisible(false); // don't show unless there's a restriction
 
   // row 10
-  QGroupBox* trainReq = new QGroupBox();
+  JPanel* trainReq = new JPanel();
   trainReq->setObjectName("trainReq");
   trainReq->setLayout(new GridBagLayout());
-  //trainReq->setBorder(BorderFactory.createTitledBorder(tr("TrainRequires")));
-  trainReq->setStyleSheet(gbStyleSheet);
-  trainReq->setTitle(tr("Optional train requirements"));
+  trainReq->setBorder(BorderFactory::createTitledBorder(tr("Optional train requirements")));
 
   for (int i = 0; i < Setup::getMaxNumberEngines() + 1; i++) {
       numEnginesBox->addItem(QString::number(i));
@@ -345,19 +322,17 @@ namespace Operations
   noneRadioButton->setChecked(true);
 
   // row 13 comment
-  QGroupBox* pC = new QGroupBox();
+  JPanel* pC = new JPanel();
   pC->setObjectName("pC");
-  //pC->setBorder(BorderFactory.createTitledBorder(tr("Comment")));
-  pC->setStyleSheet(gbStyleSheet);
-  pC->setTitle(tr("Comment"));
   pC->setLayout(new GridBagLayout());
+  pC->setBorder(BorderFactory::createTitledBorder(tr("Comment")));
   addItem(pC, /*commentScroller*/commentTextArea, 1, 0);
 
   // adjust text area width based on window size
   adjustTextAreaColumnWidth(/*commentScroller*/pC, commentTextArea);
 
   // row 15 buttons
-  QWidget* pB = new QWidget();
+  JPanel* pB = new JPanel();
   pB->setLayout(new GridBagLayout());
   addItem(pB, deleteTrainButton, 0, 0);
   addItem(pB, resetButton, 1, 0);
@@ -404,13 +379,13 @@ namespace Operations
       updateDepartureTime();
       enableButtons(true);
       // listen for train changes
-      //_train->addPropertyChangeListener(this);
-      connect(_train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      //_train->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+      connect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
       // listen for route changes
       Route* route = _train->getRoute();
       if (route != NULL) {
           //route.addPropertyChangeListener(this);
-       connect(route->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+       connect(route, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
            if(_train->getTrainDepartsRouteLocation() != NULL && !_train->getTrainDepartsRouteLocation()->getLocation()->isStaging())
               numEnginesBox->addItem(Train::AUTO_HPT);
       }
@@ -435,7 +410,7 @@ namespace Operations
       toolMenu->addAction(new TrainCopyAction(tr("Copy Train"), _train, this));
   }
   toolMenu->addAction(new TrainScriptAction(tr("Scripts"), this));
-  toolMenu->addAction(new TrainByCarTypeAction(tr("Show Car Types"), _train, this));
+  toolMenu->addAction(new TrainByCarTypeAction(_train, this));
   if (_train != NULL) {
       toolMenu->addAction(new TrainConductorAction(tr("Train Conductor"), _train, this));
   }
@@ -467,18 +442,18 @@ namespace Operations
 
   // get notified if combo box gets modified
   //routeManager.addPropertyChangeListener(this);
-  connect(routeManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(routeManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   // get notified if car types or roads gets modified
   //CarTypes::instance().addPropertyChangeListener(this);
-  connect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarRoads.instance().addPropertyChangeListener(this);
-  connect(CarRoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((CarRoads*)InstanceManager::getDefault("Operations::CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //EngineTypes.instance().addPropertyChangeListener(this);
-  connect(EngineTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((EngineTypes*)InstanceManager::getDefault("EngineTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //EngineModels.instance().addPropertyChangeListener(this);
-  connect(EngineModels::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((EngineModels*)InstanceManager::getDefault("EngineModels")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //LocationManager.instance().addPropertyChangeListener(this);
-  connect(LocationManager::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
   packFrame();
  }
@@ -486,7 +461,7 @@ namespace Operations
  // Save, Delete, Add, Edit, Reset, Set, Clear
  /*public*/ void TrainEditFrame::buttonActionPerformed(QWidget* ae)
  {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == saveTrainButton) {
          log->debug("train save button activated");
          Train* train = trainManager->getTrainByName(trainNameTextField->text());
@@ -582,8 +557,8 @@ namespace Operations
      Train* train = trainManager->newTrain(trainNameTextField->text());
      _train = train;
      if (_train != NULL) {
-         //_train->addPropertyChangeListener(this);
-      connect(_train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         //_train->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+      connect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
      // update check boxes
      updateCarTypeCheckboxes();
@@ -669,7 +644,7 @@ namespace Operations
      if (numEnginesBox->currentText()==("0") || model==(NONE)) {
          return true;
      }
-     QString type = EngineModels::instance()->getModelType(model);
+     QString type = ((EngineModels*)InstanceManager::getDefault("EngineModels"))->getModelType(model);
      if (!_train->acceptsTypeName(type)) {
 //         JOptionPane.showMessageDialog(this, MessageFormat.format(tr("TrainModelService"),
 //                 new Object[]{model, type}), MessageFormat.format(tr("CanNot"),
@@ -693,7 +668,7 @@ namespace Operations
      if (numEnginesBox->currentText()==("0") || road==(NONE) || model!=(NONE)) {
          return true;
      }
-     foreach (RollingStock* rs, *EngineManager::instance()->getList()) {
+     foreach (RollingStock* rs, *((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getList()) {
          if (!_train->acceptsTypeName(rs->getTypeName())) {
              continue;
          }
@@ -749,14 +724,14 @@ namespace Operations
          checkBox->setChecked(enable);
          if (_train != NULL) {
              //_train->removePropertyChangeListener(this);
-          disconnect(_train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          disconnect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              if (enable) {
                  _train->addTypeName(checkBox->text());
              } else {
                  _train->deleteTypeName(checkBox->text());
              }
-             //_train->addPropertyChangeListener(this);
-             connect(_train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+             //_train->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+             connect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          }
      }
  }
@@ -779,14 +754,14 @@ namespace Operations
              Route* route = _train->getRoute();
              if (route != NULL) {
                  //route.removePropertyChangeListener(this);
-              disconnect(route->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+              disconnect(route, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              }
              QVariant selected = routeBox->currentData();
              if (selected != QVariant()) {
                  route = (Route*) VPtr<Route*>::asPtr(selected);
                  _train->setRoute(route);
                  //route.addPropertyChangeListener(this);
-                 connect(route->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+                 connect(route, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              } else {
                  _train->setRoute(NULL);
              }
@@ -811,8 +786,9 @@ namespace Operations
 //             locationCheckBoxActionPerformed(e);
 //         }
 //     });
-  boxMapper->setMapping(b,b);
-  connect(b, SIGNAL(clicked(bool)), boxMapper, SLOT(map()));
+  connect(b, &QCheckBox::toggled, [=]{
+   locationCheckBoxActionPerformed(b);
+  });
  }
 
  /*public*/ void TrainEditFrame::locationCheckBoxActionPerformed(QWidget* ae)
@@ -861,7 +837,7 @@ namespace Operations
   int numberOfCheckboxes = getNumberOfCheckboxesPerLine();	// number per line
   int x = 0;
   int y = 1; // vertical position in panel
-  foreach (QString type, CarTypes::instance()->getNames())
+  foreach (QString type, ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames())
   {
    QCheckBox* checkBox = new QCheckBox();
    typeCarCheckBoxes.append(checkBox);
@@ -911,7 +887,7 @@ namespace Operations
   int numberOfCheckboxes = getNumberOfCheckboxesPerLine();	// number per line
   int x = 0;
   int y = 1;
-  foreach (QString type, EngineTypes::instance()->getNames())
+  foreach (QString type, ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->getNames())
   {
    QCheckBox* checkBox = new QCheckBox();
    typeEngineCheckBoxes.append(checkBox);
@@ -949,9 +925,9 @@ namespace Operations
   roadCabooseBox->setEnabled(true);
   QStringList roads;
   if (cabooseRadioButton->isChecked()) {
-      roads = CarManager::instance()->getCabooseRoadNames();
+      roads = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getCabooseRoadNames();
   } else {
-      roads = CarManager::instance()->getFredRoadNames();
+      roads = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getFredRoadNames();
   }
 //     for (String road : roads) {
 //         roadCabooseBox.addItem(road);
@@ -969,7 +945,7 @@ namespace Operations
      }
      roadEngineBox->clear();
      roadEngineBox->addItem(NONE);
-     QStringList roads = EngineManager::instance()->getEngineRoadNames(engineModel);
+     QStringList roads = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getEngineRoadNames(engineModel);
 //     for (String roadName : roads) {
 //         roadEngineBox.addItem(roadName);
 //     }
@@ -985,8 +961,9 @@ namespace Operations
 //             typeCheckBoxActionPerformed(e);
 //         }
 //     });
-  typeCheckBoxMapper->setMapping(b,b);
-  connect(b,SIGNAL(clicked(bool)), typeCheckBoxMapper, SLOT(map()));
+  connect(b, &QCheckBox::toggled, [=]{
+   typeCheckBoxActionPerformed(b);
+  });
  }
 
  /*public*/ void TrainEditFrame::typeCheckBoxActionPerformed(QWidget* ae) {
@@ -1040,15 +1017,15 @@ namespace Operations
     checkBox->setText(rl->toString());
     checkBox->setText(rl->getId());
     addItemLeft(locationPanelCheckBoxes, checkBox, 0, y++);
-    Location* loc = LocationManager::instance()->getLocationByName(rl->getName());
+    Location* loc = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationByName(rl->getName());
     // does the location exist?
     if (loc != NULL)
     {
      // need to listen for name and direction changes
      //loc.removePropertyChangeListener(this);
-     disconnect(loc->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(loc, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //loc.addPropertyChangeListener(this);
-     connect(loc->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     connect(loc, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      bool services = false;
      // does train direction service location?
      if ((rl->getTrainDirection() & loc->getTrainDirections()) > 0)
@@ -1164,17 +1141,17 @@ namespace Operations
 
  /*public*/ void TrainEditFrame::dispose() {
 //     LocationManager.instance().removePropertyChangeListener(this);
- disconnect(LocationManager::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(((LocationManager*)InstanceManager::getDefault("Operations::LocationManager")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     EngineTypes.instance().removePropertyChangeListener(this);
- disconnect(EngineTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(((EngineTypes*)InstanceManager::getDefault("EngineTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     EngineModels.instance().removePropertyChangeListener(this);
- disconnect(EngineModels::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(((EngineModels*)InstanceManager::getDefault("EngineModels")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     CarTypes::instance().removePropertyChangeListener(this);
- disconnect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(((EngineTypes*)InstanceManager::getDefault("EngineTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     CarRoads.instance().removePropertyChangeListener(this);
- disconnect(CarRoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(((CarRoads*)InstanceManager::getDefault("Operations::CarRoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //     routeManager.removePropertyChangeListener(this);
- disconnect(routeManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ disconnect(routeManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      foreach (JmriJFrame* frame, children)
      {
          frame->dispose();
@@ -1182,17 +1159,17 @@ namespace Operations
      if (_train != NULL)
      {
          //_train->removePropertyChangeListener(this);
-      disconnect(_train->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      disconnect(_train, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          Route* route = _train->getRoute();
          if (route != NULL) {
              //route.removePropertyChangeListener(this);
-          disconnect(route->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          disconnect(route, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              QList<RouteLocation*>* routeList = route->getLocationsBySequenceList();
              for (int i = 0; i < routeList->size(); i++) {
-                 Location* loc = LocationManager::instance()->getLocationByName(routeList->at(i)->getName());
+                 Location* loc = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationByName(routeList->at(i)->getName());
                  if (loc != NULL) {
                      //loc.removePropertyChangeListener(this);
-                  disconnect(loc->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+                  disconnect(loc, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
                  }
              }
          }
@@ -1226,7 +1203,7 @@ namespace Operations
          updateRoadComboBoxes();
      }
      if (e->getPropertyName()==(EngineModels::ENGINEMODELS_CHANGED_PROPERTY)) {
-         EngineModels::instance()->updateComboBox(modelEngineBox);
+         ((EngineModels*)InstanceManager::getDefault("EngineModels"))->updateComboBox(modelEngineBox);
          modelEngineBox->insertItem(0,NONE);
          modelEngineBox->setCurrentIndex(0);
          if (_train != NULL) {

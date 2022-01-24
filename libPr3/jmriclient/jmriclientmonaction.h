@@ -12,7 +12,7 @@
 {
  Q_OBJECT
 public:
- JMRIClientMonAction(QObject* parent= 0) : JmriNamedPaneActionDefault(parent) {}
+ Q_INVOKABLE JMRIClientMonAction(QObject* parent= 0) : JmriNamedPaneActionDefault(parent) {}
  ~JMRIClientMonAction() {}
  JMRIClientMonAction(const JMRIClientMonAction&) : JmriNamedPaneActionDefault() {}
 };

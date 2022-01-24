@@ -1,7 +1,7 @@
 #ifndef COLORCHOOSERPANEL_H
 #define COLORCHOOSERPANEL_H
 #include "abstractcolorchooserpanel.h"
-
+#include "propertychangelistener.h"
 class ChangeEvent;
 class QColorDialog;
 class PropertyChangeEvent;
@@ -11,23 +11,25 @@ class JTextField;
 class DiagramComponent;
 class ColorModel;
 class ColorPanel;
-class ColorChooserPanel : public AbstractColorChooserPanel
+class ColorChooserPanel : public AbstractColorChooserPanel, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
  ColorChooserPanel();
- /*public*/ void setEnabled(bool enabled);
- /*public*/ void updateChooser();
- /*public*/ QString getDisplayName();
+ /*public*/ void setEnabled(bool enabled) override;
+ /*public*/ void updateChooser() override;
+ /*public*/ QString getDisplayName() override;
  /*public*/ int getMnemonic();
  /*public*/ int getDisplayedMnemonicIndex();
- /*public*/ QIcon getSmallDisplayIcon();
- /*public*/ QIcon getLargeDisplayIcon();
- /*public*/ void installChooserPanel(JColorChooser *enclosingChooser);
- /*public*/ QString getTitle();
+ /*public*/ QIcon getSmallDisplayIcon() override;
+ /*public*/ QIcon getLargeDisplayIcon() override;
+ /*public*/ void installChooserPanel(JColorChooser *enclosingChooser) override;
+ /*public*/ QString getTitle() override;
+ QObject* self() override {return (QObject*)this;}
 
 public slots:
- /*public*/ void propertyChange(PropertyChangeEvent* event);
+ /*public*/ void propertyChange(PropertyChangeEvent* event) override;
  /*public*/ void colorSelected(QColor);
  /*public*/ void stateChanged(ChangeEvent*);
 

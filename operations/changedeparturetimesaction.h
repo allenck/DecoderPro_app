@@ -2,6 +2,9 @@
 #define CHANGEDEPARTURETIMESACTION_H
 
 #include "abstractaction.h"
+#include "changedeparturetimesframe.h"
+#include <QPointer>
+
 namespace Operations
 {
  class ChangeDepartureTimesFrame;
@@ -11,9 +14,9 @@ namespace Operations
  public:
   ChangeDepartureTimesAction(QString s,QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e = 0);
+  /*public*/ void actionPerformed(JActionEvent* e = 0);
  private:
-  ChangeDepartureTimesFrame* f;// = null;
+  QPointer<ChangeDepartureTimesFrame> f;// = null;
 
  };
 }

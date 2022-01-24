@@ -1,9 +1,10 @@
 ﻿#include "turnoutoperationmanagerxml.h"
 #include "turnoutoperationxml.h"
 #include "turnoutoperationmanager.h"
+#include "loggerfactory.h"
 
 TurnoutOperationManagerXml::TurnoutOperationManagerXml(QObject *parent) :
-    QObject(parent)
+    AbstractXmlAdapter(parent)
 {
 }
 
@@ -22,29 +23,29 @@ TurnoutOperationManagerXml::TurnoutOperationManagerXml(QObject *parent) :
     elem.setAttribute("class", "jmri.configurexml.turnoutoperations.NoFeedbackTurnoutOperationXml");
 }
 
-/*public*/ void TurnoutOperationManagerXml::load(QDomElement /*element*/, QObject /*o*/)
-{
- log.error("Invalid method called");
-}
+///*public*/ void TurnoutOperationManagerXml::load(QDomElement /*element*/, QObject /*o*/)
+//{
+// log->error("Invalid method called");
+//}
 
 //@SuppressWarnings("unchecked")
-/*public*/ bool TurnoutOperationManagerXml::load(QDomElement operationsElement)
+/*public*/ bool TurnoutOperationManagerXml::load(QDomElement sharedOperations, QDomElement perNodeOperations) throw (JmriConfigureXmlException)
 {
  bool result = true;
  TurnoutOperationManager* manager = TurnoutOperationManager::getInstance();
- if (!operationsElement.attribute("automate").isNull())
+ if (!sharedOperations.attribute("automate").isNull())
  {
 //  try
 //  {
-   manager->setDoOperations(operationsElement.attribute("automate")==("true"));
+   manager->setDoOperations(sharedOperations.attribute("automate")==("true"));
 //  }
 //  catch(NumberFormatException ex)
 //  {
 //   result = false;
 //  }
  }
- QDomNodeList operationsList = operationsElement.elementsByTagName("operation");
- if (log.isDebugEnabled()) log.debug("Found "+QString("%1").arg(operationsList.size())+" operations");
+ QDomNodeList operationsList = sharedOperations.elementsByTagName("operation");
+ if (log->isDebugEnabled()) log->debug("Found "+QString("%1").arg(operationsList.size())+" operations");
  for (int i=0; i<operationsList.size(); i++)
  {
   TurnoutOperationXml::loadOperation(operationsList.at(i).toElement());
@@ -52,7 +53,7 @@ TurnoutOperationManagerXml::TurnoutOperationManagerXml(QObject *parent) :
  return result;
 }
 
-/*public*/ QDomElement TurnoutOperationManagerXml::store(QDomDocument doc, QObject* o)
+/*public*/ QDomElement TurnoutOperationManagerXml::store(QObject* o)
 {
  QDomElement elem = doc.createElement("operations");
  //if (o instanceof TurnoutOperationManager)
@@ -83,5 +84,5 @@ TurnoutOperationManagerXml::TurnoutOperationManagerXml(QObject *parent) :
  return elem;
 }
 
-//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(TurnoutOperationManagerXml.class.getName());
+/*static*/ Logger* TurnoutOperationManagerXml::log = LoggerFactory::getLogger("TurnoutOperationManagerXml");
 //}

@@ -248,7 +248,6 @@
     /*public*/ static Border createSoftBevelBorder(int type, Color highlight, Color shadow) {
         return new SoftBevelBorder(type, highlight, shadow);
     }
-
     /**
      * Creates a beveled border of the specified type with softened corners,
      * using the specified colors for the inner and outer edges
@@ -267,14 +266,15 @@
      * @see BevelBorder#BevelBorder(int, Color, Color, Color, Color)
      * @since 1.7
      */
-    /*public*/ static Border createSoftBevelBorder(int type, Color highlightOuter, Color highlightInner, Color shadowOuter, Color shadowInner) {
+    /*public*/ static Border createSoftBevelBorder(int type, QColor highlightOuter, QColor highlightInner, QColor shadowOuter, QColor shadowInner) {
         return new SoftBevelBorder(type, highlightOuter, highlightInner, shadowOuter, shadowInner);
     }
-
+#endif
+#if 1
 //// EtchedBorder ///////////////////////////////////////////////////////////
 
-    static final Border sharedEtchedBorder = new EtchedBorder();
-    /*private*/ static Border sharedRaisedEtchedBorder;
+    /*static*/ /*final*/ Border* BorderFactory::sharedEtchedBorder = nullptr;//new EtchedBorder();
+    /*private*/ /*static*/ Border* BorderFactory::sharedRaisedEtchedBorder;
 
     /**
      * Creates a border with an "etched" look using
@@ -283,7 +283,9 @@
      *
      * @return the <code>Border</code> object
      */
-    /*public*/ static Border createEtchedBorder()    {
+    /*public*/ /*static*/ Border* BorderFactory::createEtchedBorder()    {
+     if(sharedEtchedBorder == nullptr)
+      sharedEtchedBorder = new EtchedBorder();
         return sharedEtchedBorder;
     }
 
@@ -295,7 +297,7 @@
      * @param shadow     a <code>Color</code> object for the border shadows
      * @return the <code>Border</code> object
      */
-    /*public*/ static Border createEtchedBorder(Color highlight, Color shadow)    {
+    /*public*/ /*static*/ Border* BorderFactory::createEtchedBorder(QColor highlight, QColor shadow)    {
         return new EtchedBorder(highlight, shadow);
     }
 
@@ -312,15 +314,17 @@
      *                  <code>EtchedBorder.LOWERED</code>
      * @since 1.3
      */
-    /*public*/ static Border createEtchedBorder(int type)    {
+    /*public*/ /*static*/ Border* BorderFactory::createEtchedBorder(int type)    {
         switch (type) {
-        case EtchedBorder.RAISED:
-            if (sharedRaisedEtchedBorder == null) {
+        case EtchedBorder::RAISED:
+            if (sharedRaisedEtchedBorder == nullptr) {
                 sharedRaisedEtchedBorder = new EtchedBorder
-                                           (EtchedBorder.RAISED);
+                                           (EtchedBorder::RAISED);
             }
             return sharedRaisedEtchedBorder;
-        case EtchedBorder.LOWERED:
+        case EtchedBorder::LOWERED:
+         if(sharedEtchedBorder == nullptr)
+          sharedEtchedBorder = new EtchedBorder();
             return sharedEtchedBorder;
         default:
             throw new IllegalArgumentException("type must be one of EtchedBorder.RAISED or EtchedBorder.LOWERED");
@@ -338,8 +342,8 @@
      * @return the <code>Border</code> object
      * @since 1.3
      */
-    /*public*/ static Border createEtchedBorder(int type, Color highlight,
-                                            Color shadow)    {
+    /*public*/ /*static*/ Border* BorderFactory::createEtchedBorder(int type, QColor highlight,
+                                            QColor shadow)    {
         return new EtchedBorder(type, highlight, shadow);
     }
 #endif
@@ -547,7 +551,7 @@
                                                 int bottom, int right) {
         return new EmptyBorder(top, left, bottom, right);
     }
-#if 0
+#if 1
 //// CompoundBorder ////////////////////////////////////////////////////////
     /**
      * Creates a compound border with a <code>null</code> inside edge and a
@@ -555,7 +559,7 @@
      *
      * @return the <code>CompoundBorder</code> object
      */
-    /*public*/ static CompoundBorder createCompoundBorder() {
+    /*public*/ /*static*/ CompoundBorder* BorderFactory::createCompoundBorder() {
         return new CompoundBorder();
     }
 
@@ -569,8 +573,8 @@
      *                          edge of the compound border
      * @return the <code>CompoundBorder</code> object
      */
-    /*public*/ static CompoundBorder createCompoundBorder(Border outsideBorder,
-                                                Border insideBorder) {
+    /*public*/ /*static*/ CompoundBorder* BorderFactory::createCompoundBorder(Border* outsideBorder,
+                                                Border* insideBorder) {
         return new CompoundBorder(outsideBorder, insideBorder);
     }
 #endif

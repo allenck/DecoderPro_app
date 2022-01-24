@@ -2,7 +2,7 @@
 #define APPCONTEXT_H
 
 #include <QObject>
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 
 class AppContext : public QObject
 {
@@ -30,7 +30,7 @@ signals:
 public slots:
 
 private:
- /*private*/ PropertyChangeSupport* changeSupport;// = null;
+ /*private*/ SwingPropertyChangeSupport* changeSupport;// = null;
  /*private*/ bool _isDisposed;// = false; // true if AppContext is disposed
 
 #if 0

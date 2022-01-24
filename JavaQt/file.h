@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "javaqt_global.h"
+#include <QFile>
 
 class QDateTime;
 class FilenameFilter;
@@ -78,7 +79,7 @@ public:
     /*public*/ QDateTime lastModified();
     /*public*/ QString fileName();
     /*public*/ QString absoluteFilePath();
-
+    /*public*/ QFile* toQfile();
 signals:
 
 public slots:
@@ -90,7 +91,7 @@ private:
      *
      * @serial
      */
-    /*private*/ /*final*/ QString path;
+    /*private*/ /*final*/ QString path = QString();
     /**
      * Enum type that indicates the status of a file path.
      */

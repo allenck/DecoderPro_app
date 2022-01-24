@@ -13,6 +13,7 @@ public:
     /*public*/ QString getSystemPrefix();
     /*public*/ void dispose();
     /*public*/ void message(/*RfidMessage*/QString m);
+  QObject* self() {return (QObject*)this;}
 
 signals:
     

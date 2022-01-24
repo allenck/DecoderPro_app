@@ -2,6 +2,9 @@
 #define TRAINCONDUCTORACTION_H
 
 #include "abstractaction.h"
+#include "trainconductorframe.h"
+#include <QPointer>
+
 namespace Operations
 {
  class TrainConductorFrame;
@@ -12,11 +15,11 @@ namespace Operations
  public:
   /*public*/ TrainConductorAction(QString s, Train* train, QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* /*e*/);
+  /*public*/ void actionPerformed(JActionEvent * /*e*/);
 
  private:
   Train* train;
-  TrainConductorFrame* f;// = NULL;
+  QPointer<TrainConductorFrame> f;// = NULL;
 
  };
 }

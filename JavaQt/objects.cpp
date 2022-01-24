@@ -28,6 +28,6 @@
 template<class T>
 /*public*/ /*static <T>*/ T requireNonNull(T obj, QString message) {
     if (obj == nullptr)
-        throw NullPointerException(message);
+        throw new NullPointerException(message);
     return obj;
 }

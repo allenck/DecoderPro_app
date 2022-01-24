@@ -2,6 +2,7 @@
 #define LOCATIONCOPYFRAME_H
 
 #include "operationsframe.h"
+#include "propertychangelistener.h"
 
 class JComboBox;
 class JTextField;
@@ -10,16 +11,18 @@ namespace Operations
  class RollingStockManager;
  class Track;
  class LocationManager;
- class LocationCopyFrame : public OperationsFrame
+ class LocationCopyFrame : public OperationsFrame, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   LocationCopyFrame(QWidget* parent = 0);
-  /*public*/ void dispose();
-  /*public*/ QString getClassName();
+  /*public*/ void dispose()override;
+  /*public*/ QString getClassName()override;
+  QObject* self() override {return (QObject*)this; }
 
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
  private:
   LocationManager* locationManager;//= LocationManager.instance();
 
@@ -27,8 +30,8 @@ namespace Operations
   JTextField* locationNameTextField;//= new javax.swing.JTextField(Control.max_len_string_location_name);
 
   // major buttons
-  QPushButton* copyButton;//= new javax.swing.JButton(Bundle.getMessage("Copy"));
-  QPushButton* saveButton;//= new javax.swing.JButton(Bundle.getMessage("Save"));
+  JButton* copyButton;//= new javax.swing.JButton(Bundle.getMessage("Copy"));
+  JButton* saveButton;//= new javax.swing.JButton(Bundle.getMessage("Save"));
 
   // combo boxes
   JComboBox* locationBox;//= locationManager.getComboBox();

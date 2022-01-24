@@ -27,7 +27,6 @@ namespace Operations
 ///*public*/ final class OperationsManager {
 
 
-//    /*static*/ /*private*/ OperationsManager* OperationsManager::instance = nullptr;
     //static private final Logger log = LoggerFactory.getLogger(OperationsManager.class);
 
 /*public*/ OperationsManager::OperationsManager(QObject *parent) :
@@ -46,34 +45,26 @@ void OperationsManager::initialize()
  // ensure the default instance of all operations managers
  // are initialized by calling their instance() methods
  // Is there a different, more optimal order for this?
- CarManager::instance();
- EngineManager::instance();
- TrainManager::instance();
- LocationManager::instance();
- RouteManager::instance();
- ScheduleManager::instance();
- TrainScheduleManager::instance();
+ ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
+ ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"));
+ ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
+ ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
+ ((Operations::RouteManager*)InstanceManager::getDefault("Operations::RouteManager"));
+ ((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"));
+ (TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager");
  this->setShutDownTask(this->getDefaultShutDownTask());
  // auto backup?
  if (Setup::isAutoBackupEnabled()) {
      try {
          AutoBackup* backup = new AutoBackup();
          backup->autoBackup();
-     } catch (Exception ex) {
+     } catch (Exception* ex) {
          log->debug("Auto backup after enabling Auto Backup flag."/*, ex*/);
      }
  }
 
 }
 
-    /**
-     * Get the OperationsManager.
-     *
-     * @return The OperationsManager default instance.
-     */
-    /*public*/ /*static*/ OperationsManager* OperationsManager::getInstance() {
-        return static_cast<OperationsManager*>(InstanceManager::getDefault("OperationsManager"));
-    }
 
     /**
      * Get the path to the Operations folder, rooted in the User's file path, as
@@ -149,7 +140,7 @@ void OperationsManager::initialize()
     //            /*public*/ bool execute() {
     //                try {
     //                    OperationsXml::save();
-    //                } catch (Exception ex) {
+    //                } catch (Exception* ex) {
     //                    log->warn("Error saving operations state: {}", ex);
     //                    log->debug("Details follow: ", ex);
     //                }

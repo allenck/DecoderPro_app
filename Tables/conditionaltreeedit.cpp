@@ -2200,9 +2200,9 @@ connect(_variableItemBox, SIGNAL(currentIndexChanged(int)), this, SLOT(on_variab
      _selectLogixBox->addItem("XXXXXXXXXXXXXXXXXXXXX");  // NOI18N
      _selectConditionalBox->addItem("XXXXXXXXXXXXXXXXXXXXX");  // NOI18N
      //_selectLogixBox::addActionListener(selectLogixBoxListener);
-     connect(_selectLogixBox, SIGNAL(currentIndexChanged(int)), selectLogixBoxListener, SLOT(actionPerformed()));
+     connect(_selectLogixBox, SIGNAL(currentIndexChanged(int)), selectLogixBoxListener->self(), SLOT(actionPerformed()));
      //_selectConditionalBox::addActionListener(selectConditionalBoxListener);
-     connect(_selectConditionalBox, SIGNAL(currentIndexChanged(int)), selectConditionalBoxListener, SLOT(actionPerformed()));
+     connect(_selectConditionalBox, SIGNAL(currentIndexChanged(int)), selectConditionalBoxListener->self(), SLOT(actionPerformed()));
 
      // State Box
      _variableStateBox = new QComboBox();
@@ -2224,7 +2224,7 @@ connect(_variableItemBox, SIGNAL(currentIndexChanged(int)), this, SLOT(on_variab
          _variableCompareTypeBox->addItem(ConditionalVariable::describeState(Conditional::ITEM_TO_MEMORY_TEST[i]));
      }
      //_variableCompareTypeBox::addActionListener(compareTypeBoxListener);
-     connect(_variableCompareTypeBox, SIGNAL(currentIndexChanged(int)), compareTypeBoxListener, SLOT(actionPerformed()));
+     connect(_variableCompareTypeBox, SIGNAL(currentIndexChanged(int)), compareTypeBoxListener->self(), SLOT(actionPerformed()));
 
      // Data 1
      _variableData1Field = new JTextField(10);
@@ -2629,11 +2629,11 @@ connect(_variableItemBox, SIGNAL(currentIndexChanged(int)), this, SLOT(on_variab
      }
      _variableStateBox->clear();
 //     _variableNameField.removeActionListener(variableSignalHeadNameListener);
-     disconnect(_variableNameField, SIGNAL(editingFinished()), variableSignalHeadNameListener, SLOT(actionPerformed()));
+     disconnect(_variableNameField, SIGNAL(editingFinished()), variableSignalHeadNameListener->self(), SLOT(actionPerformed()));
 //     _variableNameField.removeActionListener(variableSignalMastNameListener);
-     disconnect(_variableNameField, SIGNAL(editingFinished()), variableSignalMastNameListener, SLOT(actionPerformed()));
+     disconnect(_variableNameField, SIGNAL(editingFinished()), variableSignalMastNameListener->self(), SLOT(actionPerformed()));
 //     _variableStateBox::removeActionListener(variableSignalTestStateListener);
-     disconnect(_variableNameField, SIGNAL(editingFinished()), variableSignalTestStateListener, SLOT(actionPerformed()));
+     disconnect(_variableNameField, SIGNAL(editingFinished()), variableSignalTestStateListener->self(), SLOT(actionPerformed()));
      _detailGrid->setVisible(false);
 
      if (_comboNameBox !=  NULL) {
@@ -2701,17 +2701,17 @@ connect(_variableItemBox, SIGNAL(currentIndexChanged(int)), this, SLOT(on_variab
              }
 
 //             _variableNameField.addActionListener(variableSignalHeadNameListener);
-             connect(_variableNameField, SIGNAL(editingFinished()), variableSignalHeadNameListener, SLOT(actionPerformed()));
+             connect(_variableNameField, SIGNAL(editingFinished()), variableSignalHeadNameListener->self(), SLOT(actionPerformed()));
 //             _variableStateBox::addActionListener(variableSignalTestStateListener);
-             connect(_variableStateBox, SIGNAL(currentIndexChanged(int)), variableSignalTestStateListener, SLOT(actionPerformed()));
+             connect(_variableStateBox, SIGNAL(currentIndexChanged(int)), variableSignalTestStateListener->self(), SLOT(actionPerformed()));
              break;
 
          case Conditional::ITEM_TYPE_SIGNALMAST:
              _variableNameLabel->setToolTip(tr("Enter Name (system or user) for Signal Mast and hit Enter/Return to load aspects"));  // NOI18N
 //             _variableNameField.addActionListener(variableSignalMastNameListener);
-             connect(_variableNameField, SIGNAL(editingFinished()), variableSignalMastNameListener, SLOT(actionPerformed()));
+             connect(_variableNameField, SIGNAL(editingFinished()), variableSignalMastNameListener->self(), SLOT(actionPerformed()));
 //             _variableStateBox::addActionListener(variableSignalTestStateListener);
-             connect(_variableStateBox, SIGNAL(currentIndexChanged(int)), variableSignalTestStateListener, SLOT(actionPerformed()));
+             connect(_variableStateBox, SIGNAL(currentIndexChanged(int)), variableSignalTestStateListener->self(), SLOT(actionPerformed()));
              loadJComboBoxWithMastAspects(_variableSignalBox, _variableNameField->text().trimmed());
 
              for (int i = 0; i < Conditional::ITEM_TO_SIGNAL_MAST_TEST.length(); i++) {
@@ -2741,9 +2741,9 @@ connect(_variableItemBox, SIGNAL(currentIndexChanged(int)), this, SLOT(on_variab
              loadSelectLogixBox();
              makeDetailGrid("ConditionalVariable");  // NOI18N
 //             _selectLogixBox::addActionListener(selectLogixBoxListener);
-             connect(_selectLogixBox, SIGNAL(currentIndexChanged(int)), selectLogixBoxListener, SLOT(actionPerformed()));
+             connect(_selectLogixBox, SIGNAL(currentIndexChanged(int)), selectLogixBoxListener->self(), SLOT(actionPerformed()));
 //             _selectConditionalBox::addActionListener(selectConditionalBoxListener);
-             connect(_selectConditionalBox, SIGNAL(currentIndexChanged(int)),selectConditionalBoxListener, SLOT(actionPerformed()) );
+             connect(_selectConditionalBox, SIGNAL(currentIndexChanged(int)),selectConditionalBoxListener->self(), SLOT(actionPerformed()) );
              break;
 
          case Conditional::ITEM_TYPE_WARRANT:
@@ -2807,7 +2807,7 @@ connect(_variableItemBox, SIGNAL(currentIndexChanged(int)), this, SLOT(on_variab
 //     _comboNameBox->setCheckedBeanByName(_curVariable->getName());
 //     _comboNameBox::addActionListener(new NameBoxListener(_variableNameField));
      NameBoxListener* listener = new NameBoxListener(_variableNameField, this);
-     connect(_comboNameBox, SIGNAL(currentIndexChanged(int)), listener, SLOT(actionPerformed()));
+     connect(_comboNameBox, SIGNAL(currentIndexChanged(int)), listener->self(), SLOT(actionPerformed()));
      _comboNameBox->installEventFilter(this);
  }
 
@@ -3314,7 +3314,7 @@ bool ConditionalTreeEdit::validateVariable() {
 // transient ActionListener  = new ActionListener() {
  VariableSignalHeadNameListener::VariableSignalHeadNameListener(ConditionalTreeEdit *cfe) { this->cte = cte;}
      //@Override
-     /*public*/ void VariableSignalHeadNameListener::actionPerformed() {
+     /*public*/ void VariableSignalHeadNameListener::actionPerformed(JActionEvent *) {
          // fired when signal head name changes, but only
          // while in signal head mode
          cte->log->debug("variableSignalHeadNameListener fires; _variableNameField : " + cte->_variableNameField->text().trimmed());  // NOI18N
@@ -3325,7 +3325,7 @@ bool ConditionalTreeEdit::validateVariable() {
  //transient ActionListener variableSignalMastNameListener = new ActionListener() {
  VariableSignalMastNameListener::VariableSignalMastNameListener(ConditionalTreeEdit *cte) { this->cte = cte;}
      //@Override
-     /*public*/ void VariableSignalMastNameListener::actionPerformed() {
+     /*public*/ void VariableSignalMastNameListener::actionPerformed(JActionEvent *) {
          // fired when signal mast name changes, but only
          // while in signal mast mode
          cte->log->debug("variableSignalMastNameListener fires; _variableNameField : " + cte->_variableNameField->text().trimmed());  // NOI18N
@@ -3336,7 +3336,7 @@ bool ConditionalTreeEdit::validateVariable() {
  //transient ActionListener variableSignalTestStateListener = new ActionListener() {
  CTEVariableSignalTestStateListener::CTEVariableSignalTestStateListener(ConditionalTreeEdit *cte) { this->cte = cte;}
      //@Override
-     /*public*/ void CTEVariableSignalTestStateListener::actionPerformed() {
+     /*public*/ void CTEVariableSignalTestStateListener::actionPerformed(JActionEvent *) {
          cte->log->debug("variableSignalTestStateListener fires; _variableItemBox->currentIndex()= " // NOI18N
                  + QString::number(cte->_variableItemBox->currentIndex())
                  + "\" _variableStateBox->currentIndex()= \"" + QString::number(cte->_variableStateBox->currentIndex()) + "\"");
@@ -3366,7 +3366,7 @@ bool ConditionalTreeEdit::validateVariable() {
  //transient ActionListener selectLogixBoxListener = new ActionListener() {
  SelectLogixBoxListener::SelectLogixBoxListener(ConditionalTreeEdit *cte){this->cte = cte;}
      //@Override
-     /*public*/ void SelectLogixBoxListener::actionPerformed() {
+     /*public*/ void SelectLogixBoxListener::actionPerformed(JActionEvent *) {
          int lgxIndex = cte->_selectLogixBox->currentIndex();
          if (lgxIndex >= 0 && lgxIndex < cte->_selectLogixList->size()) {
              QString lgxName = cte->_selectLogixList->value(lgxIndex);
@@ -3378,7 +3378,7 @@ bool ConditionalTreeEdit::validateVariable() {
  //transient ActionListener selectConditionalBoxListener = new ActionListener() {
  SelectConditionalBoxListener::SelectConditionalBoxListener(ConditionalTreeEdit *cte) {this->cte = cte;}
      //@Override
-     /*public*/ void SelectConditionalBoxListener::actionPerformed() {
+     /*public*/ void SelectConditionalBoxListener::actionPerformed(JActionEvent *) {
          int cdlIndex = cte->_selectConditionalBox->currentIndex();
          if (cdlIndex > 0 && cdlIndex < cte->_selectConditionalList->size()) {
              QString cdlName = cte->_selectConditionalList->value(cdlIndex);
@@ -3390,7 +3390,7 @@ bool ConditionalTreeEdit::validateVariable() {
  //transient ActionListener compareTypeBoxListener = new ActionListener() {
  CompareTypeBoxListener::CompareTypeBoxListener(ConditionalTreeEdit *cte){this->cte = cte;}
      //@Override
-     /*public*/ void CompareTypeBoxListener::actionPerformed() {
+     /*public*/ void CompareTypeBoxListener::actionPerformed(JActionEvent *) {
          int selection = cte->_variableCompareTypeBox->currentIndex();
          cte->compareTypeChanged(Conditional::ITEM_TO_MEMORY_TEST[selection]);
      }
@@ -3905,7 +3905,7 @@ connect(_actionSetButton, SIGNAL(clicked(bool)), this, SLOT(on_actionSetButton_c
              break;
 
          default:
-             log->error("Unhandled type: {}", itemType);  // NOI18N
+             log->error(tr("Unhandled type: %1").arg(itemType));  // NOI18N
              break;
      }
      _actionOptionBox->setCurrentIndex(_curAction->getOption() - 1);
@@ -3925,7 +3925,7 @@ connect(_actionSetButton, SIGNAL(clicked(bool)), this, SLOT(on_actionSetButton_c
      }
      _detailGrid->setVisible(false);
      //_actionTypeBox::removeActionListener(_actionTypeListener);
-     disconnect(_actionTypeBox, SIGNAL(currentIndexChanged(int)), _actionTypeListener, SLOT(actionPerformed()));
+     disconnect(_actionTypeBox, SIGNAL(currentIndexChanged(int)), _actionTypeListener->self(), SLOT(actionPerformed()));
      _shortActionString->setText("");
      _longActionString->setText("");
      _actionTypeBox->clear();
@@ -3940,9 +3940,9 @@ connect(_actionSetButton, SIGNAL(clicked(bool)), this, SLOT(on_actionSetButton_c
      }
 
      //_actionNameField.removeActionListener(actionSignalHeadNameListener);
-     disconnect(_actionNameField, SIGNAL(editingFinished()), actionSignalHeadNameListener, SLOT(actionPerformed()));
+     disconnect(_actionNameField, SIGNAL(editingFinished()), actionSignalHeadNameListener->self(), SLOT(actionPerformed()));
      //_actionNameField.removeActionListener(actionSignalMastNameListener);
-     disconnect(_actionNameField, SIGNAL(editingFinished()), actionSignalMastNameListener, SLOT(actionPerformed()));
+     disconnect(_actionNameField, SIGNAL(editingFinished()), actionSignalMastNameListener->self(), SLOT(actionPerformed()));
 
      if (_comboNameBox !=  NULL) {
 //         for (ActionListener* item : _comboNameBox::getActionListeners()) {
@@ -4039,7 +4039,7 @@ connect(_actionSetButton, SIGNAL(clicked(bool)), this, SLOT(on_actionSetButton_c
              _actionNameLabel->setToolTip(tr("Enter Name (system or user) for Signal Head (e.g. IH34)"));  // NOI18N
              QString signalHeadGrid = "NameTypeAction";  // NOI18N
              //_actionNameField.addActionListener(actionSignalHeadNameListener);
-             connect(_actionNameField, SIGNAL(editingFinished()), actionSignalHeadNameListener, SLOT(actionPerformed()) );
+             connect(_actionNameField, SIGNAL(editingFinished()), actionSignalHeadNameListener->self(), SLOT(actionPerformed()) );
 
              for (int i = 0; i < Conditional::ITEM_TO_SIGNAL_HEAD_ACTION.length(); i++) {
                  _actionTypeBox->addItem(
@@ -4064,7 +4064,7 @@ connect(_actionSetButton, SIGNAL(clicked(bool)), this, SLOT(on_actionSetButton_c
              _actionNameLabel->setToolTip(tr("Enter Name (system or user) for Signal Mast and hit Enter/Return to load aspects"));  // NOI18N
              QString signalMastGrid = "NameTypeAction";  // NOI18N
              //_actionNameField.addActionListener(actionSignalMastNameListener);
-             connect(_actionNameField, SIGNAL(editingFinished()), actionSignalMastNameListener, SLOT(actionPerformed()));
+             connect(_actionNameField, SIGNAL(editingFinished()), actionSignalMastNameListener->self(), SLOT(actionPerformed()));
 
              for (int i = 0; i < Conditional::ITEM_TO_SIGNAL_MAST_ACTION.length(); i++) {
                  _actionTypeBox->addItem(
@@ -4330,7 +4330,7 @@ connect(_actionSetButton, SIGNAL(clicked(bool)), this, SLOT(on_actionSetButton_c
      }
      _actionTypeListener->setItemType(itemType);
      //_actionTypeBox::addActionListener(_actionTypeListener);
-     connect(_actionTypeBox, SIGNAL(currentIndexChanged(int)), _actionTypeListener, SLOT(actionPerformed()));
+     connect(_actionTypeBox, SIGNAL(currentIndexChanged(int)), _actionTypeListener->self(), SLOT(actionPerformed()));
  }
 
  /**
@@ -4352,7 +4352,7 @@ connect(_actionSetButton, SIGNAL(clicked(bool)), this, SLOT(on_actionSetButton_c
 //     _comboNameBox->setCheckedBeanByName(_curAction->getDeviceName());
      NameBoxListener* nameBoxListener;
      //_comboNameBox::addActionListener(new NameBoxListener(_actionNameField));
-     connect(_comboNameBox, SIGNAL(currentIndexChanged(int)), nameBoxListener, SLOT(actionPerformed()));
+     connect(_comboNameBox, SIGNAL(currentIndexChanged(int)), nameBoxListener->self(), SLOT(actionPerformed()));
      _comboNameBox->installEventFilter(this);
  }
 
@@ -4895,7 +4895,7 @@ else if(itemType == Conditional::ITEM_TYPE_OTHER)
 //     int _itemType;
 CTEActionTypeListener::CTEActionTypeListener(ConditionalTreeEdit *cte) {this->cte = cte;}
      //@Override
-     /*public*/ void CTEActionTypeListener::actionPerformed(ActionEvent* /*e*/) {
+     /*public*/ void CTEActionTypeListener::actionPerformed(JActionEvent* /*e*/) {
          int select1 = cte->_actionItemBox->currentIndex();
          int select2 = cte->_actionTypeBox->currentIndex() - 1;
          if (cte->log->isDebugEnabled()) {
@@ -4926,7 +4926,7 @@ CTEActionTypeListener::CTEActionTypeListener(ConditionalTreeEdit *cte) {this->ct
 
  ActionSignalHeadNameListener::ActionSignalHeadNameListener(ConditionalTreeEdit *cte) { this->cte = cte;}
      //@Override
-     /*public*/ void ActionSignalHeadNameListener::actionPerformed(ActionEvent* /*e*/) {
+     /*public*/ void ActionSignalHeadNameListener::actionPerformed(JActionEvent* /*e*/) {
          // fired when signal head name changes, but only
          // while in signal head mode
          cte->log->debug("actionSignalHeadNameListener fires; _actionNameField : " + cte->_actionNameField->text().trimmed());  // NOI18N
@@ -4937,7 +4937,7 @@ CTEActionTypeListener::CTEActionTypeListener(ConditionalTreeEdit *cte) {this->ct
 ActionSignalMastNameListener::ActionSignalMastNameListener(ConditionalTreeEdit *cte) {this->cte = cte;}
 
 //@Override
-/*public*/ void ActionSignalMastNameListener::actionPerformed(ActionEvent* /*e*/) {
+/*public*/ void ActionSignalMastNameListener::actionPerformed(JActionEvent* /*e*/) {
     // fired when signal mast name changes, but only
     // while in signal mast mode
     cte->log->debug("actionSignalMastNameListener fires; _actionNameField : " + cte->_actionNameField->text().trimmed());  // NOI18N

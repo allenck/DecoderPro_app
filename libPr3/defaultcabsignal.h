@@ -21,7 +21,7 @@ public:
  /*public*/ bool isCabSignalActive();
  /*public*/ void setCabSignalActive(bool active);
  /*public*/ void setMasterCabSigPauseActive (bool active);
- PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+ SwingPropertyChangeSupport* pcs;// = new SwingPropertyChangeSupport(this, nullptr);
  /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
  /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) ;
  QObject* self() {return(QObject*)this;}

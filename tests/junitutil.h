@@ -22,8 +22,10 @@ public:
     /*public*/ static void initRosterConfigManager();
     /*public*/ static void resetProfileManager(Profile* profile);
     static /*public*/ void waitFor(ReleaseUntil *condition, QString name, QString file = __FILE__, int line = __LINE__);
+    static /*public*/ void waitFor(bool (*condition)(), QString name, QString file, int line);
     static /*public*/ bool waitFor(ReleaseUntil* condition, QString file = __FILE__, int line = __LINE__);
     static /*public*/ void waitFor(int time);
+    static /*public*/ bool fasterWaitFor(ReleaseUntil* condition, QString name, QString file, int line);
     /*public*/ static void runTests(QObject *test, QStringList testList);
     static QString getTestClassName();
     /*public*/ static void resetInstanceManager();
@@ -37,6 +39,7 @@ public:
     /*public*/ static void initMemoryManager();
     /*public*/ static void initReporterManager();
     /*public*/ static void initOBlockManager();
+    /*public*/ static void deregisterBlockManagerShutdownTask();
     /*public*/ static void initWarrantManager();
     /*public*/ static void initSignalMastLogicManager();
     /*public*/ static void initLayoutBlockManager();
@@ -112,7 +115,7 @@ class /*interface*/ ReleaseUntil : public QObject
 {
     Q_OBJECT
 public:
-    /*public*/ virtual bool ready() throw (Exception) =0;
+    /*public*/ virtual bool ready() /*throw (Exception)*/ =0;
 
 };
 #endif // JUNITUTIL_H

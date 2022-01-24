@@ -20,7 +20,7 @@ private:
  /*private*/ /*final*/ QString prefix;
  /*private*/ void attach();
  static Logger* log;
-
+QObject* self() override {return (QObject*)this;}
 protected:
  /*protected*/ Reporter* createNewReporter(QString systemName, QString userName);
 

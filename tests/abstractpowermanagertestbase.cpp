@@ -33,7 +33,7 @@ AbstractPowerManagerTestBase::AbstractPowerManagerTestBase(QObject *parent) : QO
 
     // test setting power on, off, then getting reply from system
     //@Test
-    /*public*/ void AbstractPowerManagerTestBase::testSetPowerOn() throw (JmriException) {
+    /*public*/ void AbstractPowerManagerTestBase::testSetPowerOn() /*throw (JmriException)*/ {
         int initialSent = outboundSize();
         p->setPower(PowerManager::ON);
         // check one message sent, correct form, unknown state
@@ -46,7 +46,7 @@ AbstractPowerManagerTestBase::AbstractPowerManagerTestBase(QObject *parent) : QO
     }
 
     //@Test
-    /*public*/ void AbstractPowerManagerTestBase::testSetPowerOff() throw (JmriException) {
+    /*public*/ void AbstractPowerManagerTestBase::testSetPowerOff() /*throw (JmriException)*/ {
         int startingMessages = outboundSize();
         p->setPower(PowerManager::OFF);
         // check one message sent, correct form
@@ -60,7 +60,7 @@ AbstractPowerManagerTestBase::AbstractPowerManagerTestBase(QObject *parent) : QO
     }
 
     //@Test
-    /*public*/ void AbstractPowerManagerTestBase::testSetPowerIdle() throw (JmriException){
+    /*public*/ void AbstractPowerManagerTestBase::testSetPowerIdle() /*throw (JmriException)*/{
         if (p->implementsIdle()) {
             Assert::assertTrue("LocoNet implements IDLE", p->implementsIdle(), __FILE__, __LINE__);
             int initialSent = outboundSize();
@@ -76,19 +76,19 @@ AbstractPowerManagerTestBase::AbstractPowerManagerTestBase(QObject *parent) : QO
     }
 
     //@Test
-    /*public*/ void AbstractPowerManagerTestBase::testStateOn() throw (JmriException){
+    /*public*/ void AbstractPowerManagerTestBase::testStateOn() /*throw (JmriException)*/{
         hearOn();
         Assert::assertEquals("power state", PowerManager::ON, p->getPower(), __FILE__, __LINE__);
     }
 
     //@Test
-    /*public*/ void AbstractPowerManagerTestBase::testStateOff() throw (JmriException){
+    /*public*/ void AbstractPowerManagerTestBase::testStateOff() /*throw (JmriException)*/{
         hearOff();
         Assert::assertEquals("power state", PowerManager::OFF, p->getPower(), __FILE__, __LINE__);
     }
 
     //@Test
-    /*public*/ void AbstractPowerManagerTestBase::testStateIdle() throw (JmriException){
+    /*public*/ void AbstractPowerManagerTestBase::testStateIdle() /*throw (JmriException)*/{
         if (p->implementsIdle()) {
             hearIdle();
             Assert::assertEquals("power state", PowerManager::IDLE, p->getPower(), __FILE__, __LINE__);
@@ -96,7 +96,7 @@ AbstractPowerManagerTestBase::AbstractPowerManagerTestBase(QObject *parent) : QO
     }
 
     //@Test
-    /*public*/ void AbstractPowerManagerTestBase::testAddListener() throw (JmriException){
+    /*public*/ void AbstractPowerManagerTestBase::testAddListener() /*throw (JmriException)*/{
         p->addPropertyChangeListener(new Listen(this));
         listenerResult = false;
         p->setPower(PowerManager::ON);
@@ -120,7 +120,7 @@ AbstractPowerManagerTestBase::AbstractPowerManagerTestBase(QObject *parent) : QO
     }
 
     //@Test
-    /*public*/ void AbstractPowerManagerTestBase::testDispose1() throw (JmriException){
+    /*public*/ void AbstractPowerManagerTestBase::testDispose1() /*throw (JmriException)*/{
         p->setPower(PowerManager::ON); // in case registration is deferred
         int startingListeners = numListeners();
         p->getPower();
@@ -129,7 +129,7 @@ AbstractPowerManagerTestBase::AbstractPowerManagerTestBase(QObject *parent) : QO
     }
 
     //@Test
-    /*public*/ void AbstractPowerManagerTestBase::testDispose2() throw (JmriException){
+    /*public*/ void AbstractPowerManagerTestBase::testDispose2() /*throw (JmriException)*/{
         p->addPropertyChangeListener(new Listen(this));
         p->setPower(PowerManager::ON);
         sendOnReply();
@@ -137,7 +137,7 @@ AbstractPowerManagerTestBase::AbstractPowerManagerTestBase(QObject *parent) : QO
         p->dispose();
         try {
             p->setPower(PowerManager::OFF);
-        } catch (JmriException e) {
+        } catch (JmriException* e) {
             // this is OK branch, check message not sent
             Assert::assertEquals("messages sent", initialOutboundSize, outboundSize(), __FILE__, __LINE__); // just the first
             return;

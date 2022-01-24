@@ -3,6 +3,8 @@
 #include "abstracttableaction.h"
 #include "beantabledatamodel.h"
 #include "actionlistener.h"
+#include "instancemanager.h"
+#include "rfid/proxyidtagmanager.h"
 
 class AddNewDevicePanel;
 class JTextField;
@@ -34,13 +36,14 @@ private slots:
 
 
 protected:
-    /*protected*/ void createModel();
-    /*protected*/ QString getClassName();
-    /*protected*/ void setTitle();
-    /*protected*/ QString helpTarget();
+    /*protected*/ void createModel() override;
+    /*protected*/ QString getClassName() override;
+    /*protected*/ void setTitle() override;
+    /*protected*/ QString helpTarget() override;
+    /*protected*/ IdTagManager* tagManager = (ProxyIdTagManager*)InstanceManager::getDefault("IdTagManager");
 
 protected slots:
-    /*protected*/ void addPressed(ActionEvent* e);
+    /*protected*/ void addPressed(JActionEvent* =0) override;
 
  friend class IdTagBeanTableDataModel;
  friend class StateStoredActionListener;
@@ -50,6 +53,7 @@ protected slots:
 };
 Q_DECLARE_METATYPE(IdTagTableAction)
 
+#if 0
 class IdTagBeanTableDataModel : public BeanTableDataModel
 {
  Q_OBJECT
@@ -63,7 +67,7 @@ public:
      CLEARCOL = WHENCOL + 1
     };
     /*public*/ QString getValue(QString name) const;
-    /*public*/ Manager* getManager();
+    /*public*/ Manager *getManager();
     /*public*/ NamedBean* getBySystemName(QString name) const;
     /*public*/ NamedBean* getByUserName(QString name);
     /*public*/ void clickOn(NamedBean* t);
@@ -85,45 +89,54 @@ protected:
     /*protected*/ QString getBeanType();
 };
 
-class StateStoredActionListener : public ActionListener
+class StateStoredActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+ Q_INTERFACES(ActionListener)
  IdTagTableAction* act;
  StateStoredActionListener(IdTagTableAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent */*e*/ = 0)override;
 
  friend class IdTagTableAction;
 };
 
-class FastClockUsedActionListener : public ActionListener
+class FastClockUsedActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  IdTagTableAction* act;
  FastClockUsedActionListener(IdTagTableAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent */*e*/ = 0)override;
 
  friend class IdTagTableAction;
 };
-class IdTagOkListener : public ActionListener
+#endif
+class IdTagOkListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  IdTagTableAction* act;
  IdTagOkListener(IdTagTableAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent */*e*/ = 0)override;
 
  friend class IdTagTableAction;
 };
 
-class CancelListener : public ActionListener
+class CancelListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  IdTagTableAction* act;
  CancelListener(IdTagTableAction* act);
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void actionPerformed();
+ void actionPerformed(JActionEvent */*e*/ = 0)override;
 
  friend class IdTagTableAction;
 };

@@ -58,11 +58,11 @@
  sizePolicy.setHeightForWidth(ok->sizePolicy().hasHeightForWidth());
  ok->setSizePolicy(sizePolicy);
 // ok.addActionListener(listener);
- connect(ok, SIGNAL(clicked()), listener, SLOT(actionPerformed()));
+ connect(ok, SIGNAL(clicked()), listener->self(), SLOT(actionPerformed()));
  QPushButton* cancel = new QPushButton(tr("Cancel"));
  cancel->setSizePolicy(sizePolicy);
  layout()->addWidget(cancel);
- connect(cancel, SIGNAL(clicked()), cancelListener, SLOT(actionPerformed()));
+ connect(cancel, SIGNAL(clicked()), cancelListener->self(), SLOT(actionPerformed()));
 // ok.addActionListener(new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent a) {
 //            reset();

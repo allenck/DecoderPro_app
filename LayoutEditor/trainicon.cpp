@@ -98,6 +98,7 @@
     return _consistNumber;
 }
 
+
 #if 0
 private void createThrottle() {
     _tf = jmri.jmrit.throttle.ThrottleFrameManager.instance().createThrottleFrame();

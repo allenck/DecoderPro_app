@@ -1,5 +1,5 @@
 #include "memorymanager.h"
 
-MemoryManager::MemoryManager(QObject *parent) : AbstractManager(parent)
+MemoryManager::MemoryManager(QObject *parent) : QObject(parent)
 {
 }

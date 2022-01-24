@@ -3,6 +3,7 @@
 #include "layouteditor.h"
 
 #include <QObject>
+
 class LayoutConnectivity;
 class LayoutEditorAuxTools : public QObject
 {
@@ -11,7 +12,7 @@ class LayoutEditorAuxTools : public QObject
 public:
     //explicit LayoutEditorAuxTools(QObject *parent = 0);
     // constructor method
-    /*public*/ LayoutEditorAuxTools(LayoutEditor* thePanel);
+    /*public*/ LayoutEditorAuxTools(LayoutEditor* theModels);
 
     // register a change in block connectivity that may require an update of connectivity list
     /*public*/ void setBlockConnectivityChanged();
@@ -65,7 +66,7 @@ signals:
     
 public slots:
 private:
-    /*private*/ LayoutEditor* layoutEditor;// = NULL;
+    /*final*/ /*private*/ LayoutEditor* models;
     /*private*/ QVector<LayoutConnectivity*>* cList;// = new QVector<LayoutConnectivity*>(); //LayoutConnectivity list
     /*private*/ bool blockConnectivityChanged;// = false;  // true if block connectivity may have changed
     /*private*/ bool initialized;// = false;

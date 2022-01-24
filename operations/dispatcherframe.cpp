@@ -35,11 +35,13 @@
 #include "scale.h"
 #include "scalemanager.h"
 #include "optionsfile.h"
+#include "taskallocaterelease.h"
+#include "threadingutil.h"
+#include "tablecolumn.h"
+#include "tablecolumnmodel.h"
+#include "sleeperthread.h"
+#include "autoallocate.h"
 
-//DispatcherFrame::DispatcherFrame()
-//{
-
-//}
 /**
  * Dispatcher functionality, working with Sections, Transits and ActiveTrain::
  *
@@ -149,9 +151,6 @@
     openDispatcherWindow();
 
     autoTurnouts = new AutoTurnouts(this);
-    if (_LE != NULL) {
-        autoAllocate = new AutoAllocate(this);
-    }
     ((SectionManager*)InstanceManager::getDefault("SectionManager"))->initializeBlockingSensors();
     getActiveTrainFrame();
 
@@ -295,10 +294,10 @@ void DispatcherFrame::initializeOptions() {
     optionsRead = true;
     try {
         ((OptionsFile*)InstanceManager::getDefault("OptionsFile"))->readDispatcherOptions(this);
-    } catch (JDOMException jde) {
-        log->error("JDOM Exception when retreiving dispatcher options " + jde.getMessage());
-    } catch (IOException ioe) {
-        log->error("I/O Exception when retreiving dispatcher options " + ioe.getMessage());
+    } catch (JDOMException* jde) {
+        log->error("JDOM Exception when retreiving dispatcher options " + jde->getMessage());
+    } catch (IOException* ioe) {
+        log->error("I/O Exception when retreiving dispatcher options " + ioe->getMessage());
     }
 #endif
 }
@@ -308,10 +307,8 @@ void DispatcherFrame::openDispatcherWindow() {
         dispatcherFrame = this;
         dispatcherFrame->setTitle(tr("Dispatcher"));
         QMenuBar* menuBar = new QMenuBar();
-#if 0
         optionsMenu = new OptionsMenu(this);
         menuBar->addMenu(optionsMenu);
-#endif
         setMenuBar(menuBar);
         dispatcherFrame->addHelpMenu("package.jmri.jmrit.dispatcher.Dispatcher", true);
         contentPane = dispatcherFrame->getContentPane();
@@ -329,45 +326,46 @@ void DispatcherFrame::openDispatcherWindow() {
         p12->setLayout(p12Layout = new QVBoxLayout());
         activeTrainsTableModel = new ActiveTrainsTableModel(this);
         JTable* activeTrainsTable = new JTable(activeTrainsTableModel);
-#if 0
-        activeTrainsTable.setRowSelectionAllowed(false);
-        activeTrainsTable.setPreferredScrollableViewportSize(QSize(950, 160));
-        TableColumnModel activeTrainsColumnModel = activeTrainsTable.getColumnModel();
-        TableColumn transitColumn = activeTrainsColumnModel.getColumn(ActiveTrainsTableModel.TRANSIT_COLUMN);
-        transitColumn.setResizable(true);
-        transitColumn.setMinWidth(140);
-        transitColumn.setMaxWidth(220);
-        TableColumn trainColumn = activeTrainsColumnModel.getColumn(ActiveTrainsTableModel.TRAIN_COLUMN);
-        trainColumn.setResizable(true);
-        trainColumn.setMinWidth(90);
-        trainColumn.setMaxWidth(160);
-        TableColumn typeColumn = activeTrainsColumnModel.getColumn(ActiveTrainsTableModel.TYPE_COLUMN);
-        typeColumn.setResizable(true);
-        typeColumn.setMinWidth(130);
-        typeColumn.setMaxWidth(190);
-        TableColumn statusColumn = activeTrainsColumnModel.getColumn(ActiveTrainsTableModel.STATUS_COLUMN);
-        statusColumn.setResizable(true);
-        statusColumn.setMinWidth(90);
-        statusColumn.setMaxWidth(140);
-        TableColumn modeColumn = activeTrainsColumnModel.getColumn(ActiveTrainsTableModel.MODE_COLUMN);
-        modeColumn.setResizable(true);
-        modeColumn.setMinWidth(90);
-        modeColumn.setMaxWidth(140);
-        TableColumn allocatedColumn = activeTrainsColumnModel.getColumn(ActiveTrainsTableModel.ALLOCATED_COLUMN);
-        allocatedColumn.setResizable(true);
-        allocatedColumn.setMinWidth(120);
-        allocatedColumn.setMaxWidth(200);
-        TableColumn nextSectionColumn = activeTrainsColumnModel.getColumn(ActiveTrainsTableModel.NEXTSECTION_COLUMN);
-        nextSectionColumn.setResizable(true);
-        nextSectionColumn.setMinWidth(120);
-        nextSectionColumn.setMaxWidth(200);
-        TableColumn allocateButtonColumn = activeTrainsColumnModel.getColumn(ActiveTrainsTableModel.ALLOCATEBUTTON_COLUMN);
-        allocateButtonColumn.setCellEditor(new ButtonEditor(new JButton()));
-        allocateButtonColumn.setMinWidth(110);
-        allocateButtonColumn.setMaxWidth(190);
-        allocateButtonColumn.setResizable(false);
-        ButtonRenderer buttonRenderer = new ButtonRenderer();
-        activeTrainsTable.setDefaultRenderer(JButton.class, buttonRenderer);
+#if 1
+        activeTrainsTable->setRowSelectionAllowed(false);
+        //activeTrainsTable->setPreferredScrollableViewportSize(QSize(950, 160));
+        activeTrainsTable->resize(QSize(950, 160));
+        TableColumnModel* activeTrainsColumnModel = activeTrainsTable->getColumnModel();
+        TableColumn* transitColumn = activeTrainsColumnModel->getColumn(ActiveTrainsTableModel::TRANSIT_COLUMN);
+        transitColumn->setResizable(true);
+        transitColumn->setMinWidth(140);
+        transitColumn->setMaxWidth(220);
+        TableColumn* trainColumn = activeTrainsColumnModel->getColumn(ActiveTrainsTableModel::TRAIN_COLUMN);
+        trainColumn->setResizable(true);
+        trainColumn->setMinWidth(90);
+        trainColumn->setMaxWidth(160);
+        TableColumn* typeColumn = activeTrainsColumnModel->getColumn(ActiveTrainsTableModel::TYPE_COLUMN);
+        typeColumn->setResizable(true);
+        typeColumn->setMinWidth(130);
+        typeColumn->setMaxWidth(190);
+        TableColumn* statusColumn = activeTrainsColumnModel->getColumn(ActiveTrainsTableModel::STATUS_COLUMN);
+        statusColumn->setResizable(true);
+        statusColumn->setMinWidth(90);
+        statusColumn->setMaxWidth(140);
+        TableColumn* modeColumn = activeTrainsColumnModel->getColumn(ActiveTrainsTableModel::MODE_COLUMN);
+        modeColumn->setResizable(true);
+        modeColumn->setMinWidth(90);
+        modeColumn->setMaxWidth(140);
+        TableColumn* allocatedColumn = activeTrainsColumnModel->getColumn(ActiveTrainsTableModel::ALLOCATED_COLUMN);
+        allocatedColumn->setResizable(true);
+        allocatedColumn->setMinWidth(120);
+        allocatedColumn->setMaxWidth(200);
+        TableColumn* nextSectionColumn = activeTrainsColumnModel->getColumn(ActiveTrainsTableModel::NEXTSECTION_COLUMN);
+        nextSectionColumn->setResizable(true);
+        nextSectionColumn->setMinWidth(120);
+        nextSectionColumn->setMaxWidth(200);
+        TableColumn* allocateButtonColumn = activeTrainsColumnModel->getColumn(ActiveTrainsTableModel::ALLOCATEBUTTON_COLUMN);
+        allocateButtonColumn->setCellEditor(new ButtonEditor(new JButton()));
+        allocateButtonColumn->setMinWidth(110);
+        allocateButtonColumn->setMaxWidth(190);
+        allocateButtonColumn->setResizable(false);
+        ButtonRenderer* buttonRenderer = new ButtonRenderer();
+        activeTrainsTable->setDefaultRenderer("JButton", buttonRenderer);
 #endif
 //        QPushButton* sampleButton = new QPushButton(tr("Allocate Next"));
 //        activeTrainsTable.setRowHeight(sampleButton.getPreferredSize().height);
@@ -629,7 +627,7 @@ void DispatcherFrame::releaseAllocatedSectionFromTable(int index) {
 
 // allocate extra window variables
 
-/*public*/ void DispatcherFrame::allocateExtraSection(ActionEvent* /*e*/, ActiveTrain* at) {
+/*public*/ void DispatcherFrame::allocateExtraSection(JActionEvent* /*e*/, ActiveTrain* at) {
     allocateExtraSection(/*e*/);
     if (_ShortActiveTrainNames) {
         atSelectBox->setCurrentText(at->getTrainName());
@@ -699,31 +697,72 @@ void DispatcherFrame::releaseAllocatedSectionFromTable(int index) {
     extraFrame->setVisible(true);
 }
 
-/*private*/ void DispatcherFrame::handleAutoAllocateChanged(ActionEvent* /*e*/) {
+/*private*/ void DispatcherFrame::handleAutoAllocateChanged(JActionEvent* /*e*/) {
     setAutoAllocate(autoAllocateBox->isChecked());
+    stopStartAutoAllocateRelease();
+    if (autoAllocateBox != nullptr) {
+        autoAllocateBox->setChecked(_AutoAllocate);
+    }
+
     if (optionsMenu != NULL) {
         optionsMenu->initializeMenu();
     }
     if (_AutoAllocate) {
-        autoAllocate->scanAllocationRequestList(allocationRequests);
+     queueScanOfAllocationRequests();
     }
 }
 
-/*protected*/ void DispatcherFrame::forceScanOfAllocation() {
-
+/*
+ * Queue a scan
+ */
+/*protected*/ void DispatcherFrame::queueScanOfAllocationRequests() {
     if (_AutoAllocate) {
-        autoAllocate->scanAllocationRequestList(allocationRequests);
+        autoAllocate->scanAllocationRequests(new TaskAllocateRelease(TaskAllocateRelease::TaskAction::SCAN_REQUESTS));
     }
-
 }
 
-/*private*/ void DispatcherFrame::handleAutoReleaseChanged(ActionEvent* /*e*/) {
+/*
+ * Queue a release all reserved sections for a train.
+ */
+/*protected*/ void DispatcherFrame::queueReleaseOfReservedSections(QString trainName) {
+    if (_AutoRelease || _AutoAllocate) {
+        autoAllocate->scanAllocationRequests(new TaskAllocateRelease(TaskAllocateRelease::TaskAction::RELEASE_RESERVED, trainName));
+    }
+}
+
+/*
+ * Wait for the queue to empty
+ */
+/*protected*/ void DispatcherFrame::queueWaitForEmpty() {
+    if (_AutoAllocate) {
+        while (!autoAllocate->allRequestsDone()) {
+            try {
+                SleeperThread::msleep(10);
+            } catch (InterruptedException iex) {
+                // we closing do done
+                return;
+            }
+        }
+    }
+    return;
+}
+
+/*
+ * Queue a general release of completed sections
+ */
+/*protected*/ void DispatcherFrame::queueReleaseOfCompletedAllocations() {
+    if (_AutoRelease) {
+        autoAllocate->scanAllocationRequests(new TaskAllocateRelease(TaskAllocateRelease::TaskAction::AUTO_RELEASE));
+    }
+}
+
+/*private*/ void DispatcherFrame::handleAutoReleaseChanged(JActionEvent* /*e*/) {
     if (autoReleaseBox->isChecked()) {
         checkAutoRelease();
     }
 }
 
-/*private*/ void DispatcherFrame::handleATSelectionChanged(ActionEvent* /*e*/) {
+/*private*/ void DispatcherFrame::handleATSelectionChanged(JActionEvent* /*e*/) {
     atSelectedIndex = atSelectBox->currentIndex();
     initializeExtraComboBox();
     extraFrame->adjustSize();
@@ -755,15 +794,15 @@ void DispatcherFrame::releaseAllocatedSectionFromTable(int index) {
     }
     ActiveTrain* at = activeTrainsList->value(atSelectedIndex);
     //Transit t = at->getTransit();
-    QList<AllocatedSection*>* allocatedSectionList = at->getAllocatedSectionList();
+    QList<AllocatedSection*> allocatedSectionList = at->getAllocatedSectionList();
     QList<QString> allSections = ((SectionManager*) InstanceManager::getDefault("SectionManager"))->getSystemNameList();
     for (int j = 0; j < allSections.size(); j++) {
         Section* s =((SectionManager*) InstanceManager::getDefault("SectionManager"))->getSection(allSections.value(j));
         if (s->getState() == Section::FREE) {
             // not already allocated, check connectivity to this train's allocated sections
              bool _connected = false;
-            for (int k = 0; k < allocatedSectionList->size(); k++) {
-                if (connected(s, allocatedSectionList->value(k)->getSection())) {
+            for (int k = 0; k < allocatedSectionList.size(); k++) {
+                if (connected(s, allocatedSectionList.value(k)->getSection())) {
                     _connected = true;
                 }
             }
@@ -957,7 +996,7 @@ void cancelRestart(ActionEvent e) {
 }
 #endif
 // terminate an Active Train from the button in the Dispatcher window
-void DispatcherFrame::terminateTrain(ActionEvent* /*e*/) {
+void DispatcherFrame::terminateTrain(JActionEvent* /*e*/) {
     ActiveTrain* at = NULL;
     if (activeTrainsList->size() == 1) {
         at = activeTrainsList->at(0);
@@ -1230,7 +1269,7 @@ void DispatcherFrame::allocateNextRequested(int index) {
         //TODO: Need to check signalMasts as well
         // this train is OK, activate the AutoTrains window, if needed
         if (_autoTrainsFrame == NULL) {
-            _autoTrainsFrame = new AutoTrainsFrame(_instance);
+            _autoTrainsFrame = new AutoTrainsFrame(this);
         } else {
             _autoTrainsFrame->setVisible(true);
         }
@@ -1265,7 +1304,7 @@ void DispatcherFrame::allocateNextRequested(int index) {
     //}
     activeTrainsList->append(at);
 //    PropertyChangeListener* listener = NULL;
-//    at->addPropertyChangeListener(listener = new PropertyChangeListener() {
+//    at->SwingPropertyChangeSupport::addPropertyChangeListener(listener = new PropertyChangeListener() {
 //        @Override
 //        /*public*/ void propertyChange(PropertyChangeEvent e) {
 //            handleActiveTrainChange(e);
@@ -1351,7 +1390,7 @@ void DispatcherFrame::allocateNextRequested(int index) {
             if (at == allocatedSections->at(k - 1)->getActiveTrain()) {
                 releaseAllocatedSection(allocatedSections->at(k - 1), true);
             }
-//        } catch (Exception e) {
+//        } catch (Exception* e) {
 //            log->warn("releaseAllocatedSection failed - maybe the AllocatedSection was removed due to a terminating train??",e.toString());
 //            continue;
 //        }
@@ -1904,48 +1943,48 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
         heldMasts->removeOne(hmd);
     }
 }
-#if 0
+#if 1
 /*
  * This is used to determine if the blocks in a section we want to allocate are already allocated to a section, or if they are now free.
  */
-/*protected*/ Section checkBlocksNotInAllocatedSection(Section s, AllocationRequest ar) {
-    for (AllocatedSection as : allocatedSections) {
-        if (as.getSection() != s) {
-            QList<Block> blas = as.getSection().getBlockList();
-            for (Block b : s.getBlockList()) {
-                if (blas.contains(b)) {
-                    if (as.getSection().getOccupancy() == Block.OCCUPIED) {
+/*protected*/ Section* DispatcherFrame::checkBlocksNotInAllocatedSection(Section* s, AllocationRequest* ar) {
+    for (AllocatedSection* as : *allocatedSections) {
+        if (as->getSection() != s) {
+            QVector<Block*>* blas = as->getSection()->getBlockList();
+            for (Block* b : *s->getBlockList()) {
+                if (blas->contains(b)) {
+                    if (as->getSection()->getOccupancy() == Block::OCCUPIED) {
                         //The next check looks to see if the block has already been passed or not and therefore ready for allocation.
-                        if (as.getSection().getState() == Section.FORWARD) {
-                            for (int i = 0; i < blas.size(); i++) {
+                        if (as->getSection()->getState() == Section::FORWARD) {
+                            for (int i = 0; i < blas->size(); i++) {
                                 //The block we get to is occupied therefore the subsequent blocks have not been entered
-                                if (blas.get(i).getState() == Block.OCCUPIED) {
+                                if (blas->at(i)->getState() == Block::OCCUPIED) {
                                     if (ar != NULL) {
                                          ar->setWaitingOnBlock(b);
                                     }
-                                    return as.getSection();
-                                } else if (blas.get(i) == b) {
+                                    return as->getSection();
+                                } else if (blas->at(i) == b) {
                                     break;
                                 }
                             }
                         } else {
-                            for (int i = blas.size(); i >= 0; i--) {
+                            for (int i = blas->size(); i >= 0; i--) {
                                 //The block we get to is occupied therefore the subsequent blocks have not been entered
-                                if (blas.get(i).getState() == Block.OCCUPIED) {
+                                if (blas->at(i)->getState() == Block::OCCUPIED) {
                                     if (ar != NULL) {
                                          ar->setWaitingOnBlock(b);
                                     }
-                                    return as.getSection();
-                                } else if (blas.get(i) == b) {
+                                    return as->getSection();
+                                } else if (blas->at(i) == b) {
                                     break;
                                 }
                             }
                         }
-                    } else if (as.getSection().getOccupancy() != Section.FREE) {
+                    } else if (as->getSection()->getOccupancy() != Section::FREE) {
                         if (ar != NULL) {
                              ar->setWaitingOnBlock(b);
                         }
-                        return as.getSection();
+                        return as->getSection();
                     }
                 }
             }
@@ -1955,8 +1994,8 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
 }
 
 // automatically make a choice of next section
-/*private*/ Section autoChoice(QList<Section> sList, AllocationRequest ar) {
-    Section tSection = autoAllocate.autoNextSectionChoice(sList, ar);
+/*private*/ Section* DispatcherFrame::autoChoice(QList<Section*> sList, AllocationRequest* ar) {
+    Section* tSection = autoAllocate->autoNextSectionChoice(sList, ar);
     if (tSection != NULL) {
         return tSection;
     }
@@ -1965,36 +2004,36 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
 }
 
 // manually make a choice of next section
-/*private*/ Section dispatcherChoice(QList<Section> sList, AllocationRequest ar) {
-    Object choices[] = new Object[sList.size()];
+/*private*/ Section* DispatcherFrame::dispatcherChoice(QList<Section*> sList, AllocationRequest* ar) {
+    QVector<QVariant> choices = QVector<QVariant>(sList.size());
     for (int i = 0; i < sList.size(); i++) {
-        Section s = sList.get(i);
-        String txt = s.getSystemName();
-        String user = s.getUserName();
-        if ((user != NULL) && (!user  == ("")) && (!user  == (txt))) {
+        Section* s = sList.at(i);
+        QString txt = s->getSystemName();
+        QString user = s->getUserName();
+        if ((user != NULL) && (user  != ("")) && (user  != (txt))) {
             txt = txt + "(" + user + ")";
         }
         choices[i] = txt;
     }
-    Object secName = JOptionPane.showInputDialog(dispatcherFrame,
+    QVariant secName = JOptionPane::showInputDialog(dispatcherFrame,
             tr("ExplainChoice") + " " +  ar->getSectionName() + ".",
-            tr("ChoiceFrameTitle"), JOptionPane.QUESTION_MESSAGE, NULL, choices, choices[0]);
-    if (secName == NULL) {
-        JOptionPane.showMessageDialog(dispatcherFrame, tr("WarnCancel"));
-        return sList.get(0);
+            tr("ChoiceFrameTitle"), JOptionPane::QUESTION_MESSAGE, QIcon(), choices.toList(), choices[0]);
+    if (secName == QVariant()) {
+        JOptionPane::showMessageDialog(dispatcherFrame, tr("WarnCancel"));
+        return sList.at(0);
     }
     for (int j = 0; j < sList.size(); j++) {
         if (secName  == (choices[j])) {
-            return sList.get(j);
+            return sList.at(j);
         }
     }
-    return sList.get(0);
+    return sList.at(0);
 }
 
 // submit an AllocationRequest for the next Section of an ActiveTrain
-/*private*/ void requestNextAllocation(ActiveTrain at) {
+/*private*/ void DispatcherFrame::requestNextAllocation(ActiveTrain* at) {
     // set up an Allocation Request
-    Section next = at->getNextSectionToAllocate();
+    Section* next = at->getNextSectionToAllocate();
     if (next == NULL) {
         return;
     }
@@ -2008,7 +2047,7 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
  * allocated sections need to be released
  */
 /*private*/ void DispatcherFrame::checkAutoRelease() {
-#if 0
+#if 1
     if ((autoReleaseBox != NULL) && (autoReleaseBox->isChecked())) {
         // Auto release of exited sections has been requested - because of possible noise in block detection
         //    hardware, allocated sections are automatically released in the order they were allocated only
@@ -2017,34 +2056,34 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
         //    the exited Section to be released.
         // Extra allocated sections are not automatically released (allocation number = -1).
          bool foundOne = true;
-        while ((allocatedSections.size() > 0) && foundOne) {
+        while ((allocatedSections->size() > 0) && foundOne) {
             try {
                 foundOne = false;
-                AllocatedSection as = NULL;
-                for (int i = 0; (i < allocatedSections.size()) && !foundOne; i++) {
-                    as = allocatedSections.get(i);
-                    if (as.getExited() && (as.getSection().getOccupancy() != Section.OCCUPIED)
-                            && (as.getAllocationNumber() != -1)) {
+                AllocatedSection* as = NULL;
+                for (int i = 0; (i < allocatedSections->size()) && !foundOne; i++) {
+                    as = allocatedSections->at(i);
+                    if (as->getExited() && (as->getSection()->getOccupancy() != Section::OCCUPIED)
+                            && (as->getAllocationNumber() != -1)) {
                         // possible candidate for deallocation - check order
                         foundOne = true;
-                        for (int j = 0; (j < allocatedSections.size()) && foundOne; j++) {
+                        for (int j = 0; (j < allocatedSections->size()) && foundOne; j++) {
                             if (j != i) {
-                                AllocatedSection asx = allocatedSections.get(j);
-                                if ((asx.getActiveTrain() == as.getActiveTrain())
-                                        && (asx.getAllocationNumber() != -1)
-                                        && (asx.getAllocationNumber() < as.getAllocationNumber())) {
+                                AllocatedSection* asx = allocatedSections->at(j);
+                                if ((asx->getActiveTrain() == as->getActiveTrain())
+                                        && (asx->getAllocationNumber() != -1)
+                                        && (asx->getAllocationNumber() < as->getAllocationNumber())) {
                                     foundOne = false;
                                 }
                             }
                         }
                         if (foundOne) {
                             // check if the next section is allocated to the same train and has been entered
-                            ActiveTrain at = as.getActiveTrain();
-                            Section ns = as.getNextSection();
-                            AllocatedSection nas = NULL;
-                            for (int k = 0; (k < allocatedSections.size()) && (nas == NULL); k++) {
-                                if (allocatedSections.get(k).getSection() == ns) {
-                                    nas = allocatedSections.get(k);
+                            ActiveTrain* at = as->getActiveTrain();
+                            Section* ns = as->getNextSection();
+                            AllocatedSection* nas = NULL;
+                            for (int k = 0; (k < allocatedSections->size()) && (nas == NULL); k++) {
+                                if (allocatedSections->at(k)->getSection() == ns) {
+                                    nas = allocatedSections->at(k);
                                 }
                             }
                             if ((nas == NULL) || (at->getStatus() == ActiveTrain::WORKING)
@@ -2059,34 +2098,34 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
                                     foundOne = true;
                                 }
                             } else {
-                                if ((nas.getActiveTrain() != as.getActiveTrain()) || (!nas.getEntered())) {
+                                if ((nas->getActiveTrain() != as->getActiveTrain()) || (!nas->getEntered())) {
                                     foundOne = false;
                                 }
                             }
                             if (foundOne) {
                                 // have section to release - delay before release
                                 try {
-                                    Thread.sleep(500);
+                                    SleeperThread::msleep(500);
                                 } catch (InterruptedException e) {
                                     // ignore this exception
                                 }
                                 // if section is still allocated, release it
                                 foundOne = false;
-                                for (int m = 0; m < allocatedSections.size(); m++) {
-                                    if ((allocatedSections.get(m) == as) && (as.getActiveTrain() == at)) {
+                                for (int m = 0; m < allocatedSections->size(); m++) {
+                                    if ((allocatedSections->at(m) == as) && (as->getActiveTrain() == at)) {
                                         foundOne = true;
                                     }
                                 }
                                 if (foundOne) {
-                                    log->debug("{}: releasing {}", at->getTrainName(), as.getSectionName());
+                                    log->debug(tr("%1: releasing %2").arg(at->getTrainName(), as->getSectionName()));
                                     releaseAllocatedSection(as, false);
                                 }
                             }
                         }
                     }
                 }
-            } catch (Exception e) {
-                log->warn("checkAutoRelease failed  - maybe the AllocatedSection was removed due to a terminating train?? "+e.toString());
+            } catch (Exception* e) {
+                log->warn("checkAutoRelease failed  - maybe the AllocatedSection was removed due to a terminating train?? "+e->toString());
                 continue;
             }
         }
@@ -2254,28 +2293,39 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
     return _AutoAllocate;
 }
 
-/*protected*/ void DispatcherFrame::setAutoAllocate( bool set) {
-    if (set && (autoAllocate == NULL)) {
-        if (_LE != NULL) {
-            autoAllocate = new AutoAllocate(this);
+/*protected*/ void DispatcherFrame::stopStartAutoAllocateRelease() {
+    if (_AutoAllocate || _AutoRelease) {
+        if (_LE != nullptr) {
+            if (autoAllocate == nullptr) {
+                autoAllocate = new AutoAllocate(this, allocationRequests);
+                autoAllocateThread = ThreadingUtil::newThread(autoAllocate, "Auto Allocator ");
+                autoAllocateThread->start();
+            }
         } else {
-//            JOptionPane.showMessageDialog(dispatcherFrame, tr("Error39"),
-//                    tr("MessageTitle"), JOptionPane.INFORMATION_MESSAGE);
-         QMessageBox::information(dispatcherFrame, tr("Information"), tr("AutoAllocate requires a Layout Editor panel. Please select\na Layout Editor panel in Options window and try again."));
+            JOptionPane::showMessageDialog(dispatcherFrame, tr("was specified in the Dispatcher Options."),
+                    tr("Message"), JOptionPane::INFORMATION_MESSAGE);
             _AutoAllocate = false;
-            if (autoAllocateBox != NULL) {
+            if (autoAllocateBox != nullptr) {
                 autoAllocateBox->setChecked(_AutoAllocate);
             }
             return;
         }
+    } else {
+        //no need for autoallocateRelease
+        if (autoAllocate != nullptr) {
+            autoAllocate->setAbort();
+            autoAllocate = nullptr;
+        }
     }
-    _AutoAllocate = set;
-    if ((!_AutoAllocate) && (autoAllocate != NULL)) {
-        autoAllocate->clearAllocationPlans();
-    }
-    if (autoAllocateBox != NULL) {
-        autoAllocateBox->setChecked(_AutoAllocate);
-    }
+
+}
+
+/*protected*/ void DispatcherFrame::setAutoAllocate( bool set) {
+     _AutoAllocate = set;
+     stopStartAutoAllocateRelease();
+     if (autoAllocateBox != nullptr) {
+         autoAllocateBox->setChecked(_AutoAllocate);
+     }
 }
 
 /*protected*/  bool DispatcherFrame::getAutoTurnouts() {
@@ -2441,7 +2491,7 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
     {
         try {
             fastClockSensor->setState(Sensor::ACTIVE);
-        } catch (JmriException reason) {
+        } catch (JmriException* reason) {
             log->error("Exception when setting fast clock sensor");
         }
     }
@@ -2451,16 +2501,6 @@ AllocatedSection allocateSection(ActiveTrain at, Section s, int seqNum, Section 
 // Protection changed to /*public*/ to allow access via scripting
 /*public*/ AutoTrainsFrame* DispatcherFrame::getAutoTrainsFrame() {
     return _autoTrainsFrame;
-}
-
-/*static*/ DispatcherFrame* DispatcherFrame::_instance = NULL;
-
-/*static*/ /*public*/ DispatcherFrame* DispatcherFrame::instance() {
-    if (_instance == NULL) {
-        _instance = new DispatcherFrame();
-        InstanceManager::store(_instance, "DispatcherFrame");
-    }
-    return (_instance);
 }
 
 /**

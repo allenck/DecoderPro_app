@@ -3,7 +3,7 @@
 #include "trainmanagerxml.h"
 #include "train.h"
 #include "control.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "jcombobox.h"
 #include "rosterentry.h"
 #include <QStringList>
@@ -19,6 +19,9 @@
 #include <QThread>
 #include "car.h"
 #include "instancemanager.h"
+#include "loggerfactory.h"
+#include "traincustommanifest.h"
+#include "traincustomswitchlist.h"
 
 //TrainManager::TrainManager(QObject *parent) :
 //  QObject(parent)
@@ -48,11 +51,11 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString TrainManager::ACTIVE_TRAIN_SCHEDULE_ID = "ActiveTrainScheduleId"; // NOI18N
  /*public*/ /*static*/ /*final*/ QString TrainManager::ROW_COLOR_NAME_CHANGED_PROPERTY = "TrainsRowColorChange"; // NOI18N
  /*public*/ /*static*/ /*final*/ QString TrainManager::TRAINS_BUILT_CHANGED_PROPERTY = "TrainsBuiltChange"; // NOI18N
+ /*public*/ /*static*/ /*final*/ QString TrainManager::TRAINS_SHOW_FULL_NAME_PROPERTY = "TrainsShowFullName"; // NOI18N
 
  /*public*/ TrainManager::TrainManager(QObject *parent) :
- QObject(parent)
+ PropertyChangeSupport(parent)
  {
-  log = new Logger("TrainManager");
   setObjectName("TrainManager");
   // Train frame attributes
   _trainAction = TrainsTableFrame::MOVE; // Trains frame table button action
@@ -84,19 +87,9 @@ namespace Operations
   _id = 0; // train ids
   // stores known Train instances by id
   _trainHashTable = QMap<QString, Train*>();
-  pcs = new PropertyChangeSupport(this);
+  //pcs = new SwingPropertyChangeSupport(this, nullptr);
 
 
- }
-
- /**
-  * record the single instance *
-  */
-// /*private*/ /*static*/ TrainManager* TrainManager::_instance = nullptr;
-
- /*public*/ /*static*/ /*synchronized*/ TrainManager* TrainManager::instance()
- {
-  return static_cast<TrainManager*>(InstanceManager::getDefault("TrainManager"));
  }
 
  /**
@@ -181,6 +174,65 @@ namespace Operations
              enable ? "Preview" : "Print"); // NOI18N
  }
 
+// /*public*/ QString TrainManager::getTrainsFrameTrainAction() {
+//     return _trainAction;
+// }
+
+// /*public*/ void TrainManager::setTrainsFrameTrainAction(QString action) {
+//     QString old = _trainAction;
+//     _trainAction = action;
+//     if (old!=(action)) {
+//         setDirtyAndFirePropertyChange(TRAIN_ACTION_CHANGED_PROPERTY, old, action);
+//     }
+// }
+
+// /**
+//  *
+//  * @return get an array of table column widths for the trains frame
+//  */
+// /*public*/ QList<int> TrainManager::getTrainsFrameTableColumnWidths()
+// {
+//     //return _tableColumnWidths.clone();
+//  return QList<int>(_tableColumnWidths);
+// }
+
+// /*public*/ QList<int> TrainManager::getTrainScheduleFrameTableColumnWidths() {
+//     //return _tableScheduleColumnWidths.clone();
+//  return QList<int>(_tableScheduleColumnWidths);
+// }
+
+// /**
+//  * Sets the selected schedule id
+//  *
+//  * @param id Selected schedule id
+//  */
+// /*public*/ void TrainManager::setTrainSecheduleActiveId(QString id) {
+//     QString old = _trainScheduleActiveId;
+//     _trainScheduleActiveId = id;
+//     if (old!=(id)) {
+//         setDirtyAndFirePropertyChange(ACTIVE_TRAIN_SCHEDULE_ID, old, id);
+//     }
+// }
+
+// /*public*/ QString TrainManager::getTrainScheduleActiveId() {
+//     return _trainScheduleActiveId;
+// }
+
+ /**
+  * When true show entire location name including hyphen
+  *
+  * @return true when showing entire location name
+  */
+ /*public*/ bool TrainManager::isShowLocationHyphenNameEnabled() {
+     return _showLocationHyphenName;
+ }
+
+ /*public*/ void TrainManager::setShowLocationHyphenNameEnabled(bool enable) {
+     bool old = _showLocationHyphenName;
+     _showLocationHyphenName = enable;
+     setDirtyAndFirePropertyChange(TRAINS_SHOW_FULL_NAME_PROPERTY, old, enable);
+ }
+
  /*public*/ QString TrainManager::getTrainsFrameTrainAction() {
      return _trainAction;
  }
@@ -192,39 +244,6 @@ namespace Operations
          setDirtyAndFirePropertyChange(TRAIN_ACTION_CHANGED_PROPERTY, old, action);
      }
  }
-
- /**
-  *
-  * @return get an array of table column widths for the trains frame
-  */
- /*public*/ QList<int> TrainManager::getTrainsFrameTableColumnWidths()
- {
-     //return _tableColumnWidths.clone();
-  return QList<int>(_tableColumnWidths);
- }
-
- /*public*/ QList<int> TrainManager::getTrainScheduleFrameTableColumnWidths() {
-     //return _tableScheduleColumnWidths.clone();
-  return QList<int>(_tableScheduleColumnWidths);
- }
-
- /**
-  * Sets the selected schedule id
-  *
-  * @param id Selected schedule id
-  */
- /*public*/ void TrainManager::setTrainSecheduleActiveId(QString id) {
-     QString old = _trainScheduleActiveId;
-     _trainScheduleActiveId = id;
-     if (old!=(id)) {
-         setDirtyAndFirePropertyChange(ACTIVE_TRAIN_SCHEDULE_ID, old, id);
-     }
- }
-
- /*public*/ QString TrainManager::getTrainScheduleActiveId() {
-     return _trainScheduleActiveId;
- }
-
  /**
   * Add a script to run after trains have been loaded
   *
@@ -250,15 +269,24 @@ namespace Operations
  }
 
  /*public*/ void TrainManager::runStartUpScripts() {
-     foreach (QString scriptPathName, getStartUpScripts()) {
 #if 0
-         try {
-             JmriScriptEngineManager.getDefault().runScript(new File(jmri.util.FileUtil.getExternalFilename(scriptPathName)));
-         } catch (Exception e) {
-             log->error("Problem with script: {}", scriptPathName);
-         }
+  // use thread to prevent object (Train) thread lock
+         Thread scripts = jmri.util.ThreadingUtil.newThread(new Runnable() {
+             @Override
+             public void run() {
+                 for (String scriptPathName : getStartUpScripts()) {
+                     try {
+                         JmriScriptEngineManager.getDefault()
+                                 .runScript(new File(jmri.util.FileUtil.getExternalFilename(scriptPathName)));
+                     } catch (Exception e) {
+                         log.error("Problem with script: {}", scriptPathName);
+                     }
+                 }
+             }
+         });
+         scripts.setName("Startup Scripts"); // NOI18N
+         scripts.start();
 #endif
-     }
  }
 
  /**
@@ -290,11 +318,47 @@ namespace Operations
 #if 0 // TODO:
          try {
              JmriScriptEngineManager.getDefault().runScript(new File(jmri.util.FileUtil.getExternalFilename(scriptPathName)));
-         } catch (Exception e) {
+         } catch (Exception* e) {
              log->error("Problem with script: {}", scriptPathName);
          }
 #endif
      }
+ }
+
+ /*public*/ bool TrainManager::isBuiltRestricted() {
+     for (Train* train : getList()) {
+         if (train->getBuiltStartYear()!=(Train::NONE) || train->getBuiltEndYear()!=(Train::NONE)) {
+             return true;
+         }
+     }
+     return false;
+ }
+
+ /*public*/ bool TrainManager::isLoadRestricted() {
+     for (Train* train : getList()) {
+         if (train->getLoadOption()!=(Train::ALL_LOADS)) {
+             return true;
+         }
+     }
+     return false;
+ }
+
+ /*public*/ bool TrainManager::isRoadRestricted() {
+     for (Train* train : getList()) {
+         if (train->getRoadOption()!=(Train::ALL_ROADS)) {
+             return true;
+         }
+     }
+     return false;
+ }
+
+ /*public*/ bool TrainManager::isOwnerRestricted() {
+     for (Train* train : getList()) {
+         if (train->getOwnerOption()!=(Train::ALL_OWNERS)) {
+             return true;
+         }
+     }
+     return false;
  }
 
  //@edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD")
@@ -310,7 +374,7 @@ namespace Operations
 */
 /*public*/ Train* TrainManager::getTrainByName(QString name)
 {
- if (!TrainManagerXml::instance()->isTrainFileLoaded()) {
+ if (!((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->isTrainFileLoaded()) {
      log->error("TrainManager getTrainByName called before trains completely loaded!");
  }
  Train* train;
@@ -328,7 +392,7 @@ namespace Operations
 }
 
 /*public*/ Train* TrainManager::getTrainById(QString id) {
- if (!TrainManagerXml::instance()->isTrainFileLoaded()) {
+ if (!((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->isTrainFileLoaded()) {
      log->error("TrainManager getTrainById called before trains completely loaded!");
  }
  return _trainHashTable.value(id);
@@ -598,7 +662,7 @@ namespace Operations
 }
 
 /*private*/ QList<Train*> TrainManager::getList() {
- if (!TrainManagerXml::instance()->isTrainFileLoaded()) {
+ if (!((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->isTrainFileLoaded()) {
      log->error("TrainManager getList called before trains completely loaded!");
  }
  QList<Train*> out = QList<Train*>();
@@ -895,29 +959,21 @@ namespace Operations
  }
 
  /*public*/ void TrainManager::buildSelectedTrains(/*final*/ QList<Train*> trains) {
-#if 0
+#if 1
      // use a thread to allow table updates during build
-     Thread build = new Thread(new Runnable() {
-         /*public*/ void run() {
-             for (Train train : trains) {
-                 train.buildIfSelected();
-             }
-             setDirtyAndFirePropertyChange(TRAINS_BUILT_CHANGED_PROPERTY, false, true);
-         }
-     });
-     build.setName("Build Trains"); // NOI18N
-     build.start();
+     Thread* build = new Thread(new TMRunnable(trains, this));
+//     {
+//         /*public*/ void run() {
+//             for (Train train : trains) {
+//                 train.buildIfSelected();
+//             }
+//             setDirtyAndFirePropertyChange(TRAINS_BUILT_CHANGED_PROPERTY, false, true);
+//         }
+//     });
+     build->setName("Build Trains"); // NOI18N
+     build->start();
 #endif
-     QThread* thread = new QThread();
-     thread->setObjectName("Build Trains");
-     MyBuild* build = new MyBuild(trains, this);
-     connect(thread, SIGNAL(started()), build, SLOT(process()));
-     connect(build, SIGNAL(finished()), thread, SLOT(quit()));
-     connect(build, SIGNAL(finished()), build, SLOT(deleteLater()));
-     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-     connect(build, SIGNAL(error(QString,QString)), this, SLOT(onError(QString,QString)));
-     build->moveToThread(thread);
-     thread->start();
+
  }
 
  void TrainManager::onError(QString title, QString msg)
@@ -996,16 +1052,23 @@ namespace Operations
      return status;
  }
 
+ /*public*/ void TrainManager::resetBuildFailedTrains() {
+         for (Train* train : getList()) {
+             if (train->isBuildFailed())
+                 train->reset();
+         }
+     }
+
  /*public*/ void TrainManager::load(QDomElement root)
      {
-      if (root.firstChildElement(Xml::OPTIONS) != QDomElement())
+      if (!root.firstChildElement(Xml::OPTIONS).isNull())
       {
          QDomElement options = root.firstChildElement(Xml::OPTIONS);
-//            TrainCustomManifest.load(options);
-//            TrainCustomSwitchList.load(options);
+         ((TrainCustomManifest*)InstanceManager::getDefault("TrainCustomManifest"))->load(options);
+         ((TrainCustomSwitchList*)InstanceManager::getDefault("TrainCustomSwitchList"))->load(options);
          QDomElement e = options.firstChildElement(Xml::TRAIN_OPTIONS);
          QString a;
-         if (e != QDomElement()) {
+         if (!e .isNull()) {
           if ((a = e.attribute (Xml::BUILD_MESSAGES)) != "") {
                  _buildMessages = a==(Xml::_TRUE);
              }
@@ -1036,7 +1099,7 @@ namespace Operations
                  for (int i = 0; i < widths.length(); i++) {
                      try {
                    _tableColumnWidths.replace(i, widths.at(i).toInt());
-                     } catch (NumberFormatException ee) {
+                     } catch (NumberFormatException* ee) {
                          log->error("Number format exception when reading trains column widths");
                      }
                  }
@@ -1078,32 +1141,34 @@ namespace Operations
                      try {
                          //_tableScheduleColumnWidths[i] = Integer.parseInt(widths[i]);
                    temp.replace(i, widths.at(i).toInt());
-                     } catch (NumberFormatException ee) {
+                     } catch (NumberFormatException* ee) {
                          log->error("Number format exception when reading trains column widths");
                      }
                  }
                  _tableScheduleColumnWidths = temp.toList();
              }
          }
-#if 0
+
          // check for scripts
          if (options.firstChildElement(Xml::SCRIPTS) != QDomElement()) {
              //@SuppressWarnings("unchecked")
-             QDomNodeList lm = options.firstChildElement(Xml::SCRIPTS).firstChildElementren(Xml::START_UP);
-             for (Element es : lm) {
-                 if ((a = es.attribute (Xml::NAME)) != NULL) {
+             QDomNodeList lm = options.firstChildElement(Xml::SCRIPTS).elementsByTagName(Xml::START_UP);
+             for (int i=0; i < lm.size(); i++) {
+              QDomElement es =  lm.at(i).toElement();
+                 if ((a = es.attribute (Xml::NAME)) != "") {
                      addStartUpScript(a);
                  }
              }
              //@SuppressWarnings("unchecked")
-             QDomNodeList lt = options.firstChildElement(Xml::SCRIPTS).firstChildElementren(Xml::SHUT_DOWN);
-             for (Element es : lt) {
-                 if ((a = es.attribute (Xml::NAME)) != NULL) {
+             QDomNodeList lt = options.firstChildElement(Xml::SCRIPTS).elementsByTagName(Xml::SHUT_DOWN);
+             for (int i=0; i < lt.size(); i++) {
+              QDomElement es =  lt.at(i).toElement();
+                 if ((a = es.attribute (Xml::NAME)) != "") {
                      addShutDownScript(a);
                  }
              }
          }
-#endif
+
      }
       if (root.firstChildElement(Xml::TRAINS) != QDomElement()) {
          //@SuppressWarnings("unchecked")
@@ -1135,6 +1200,12 @@ namespace Operations
      e.setAttribute(Xml::TRAIN_ACTION, getTrainsFrameTrainAction());
      options.appendChild(e);
 
+     // Conductor options
+     e = doc.createElement(Xml::CONDUCTOR_OPTIONS);
+     e.setAttribute(Xml::SHOW_HYPHEN_NAME, isShowLocationHyphenNameEnabled() ? Xml::_TRUE : Xml::_FALSE);
+     options.appendChild(e);
+
+
      // Trains table row color options
      //e = doc.createElement(Xml::ROW_COLOR_OPTIONS);
      e = doc.createElement(Xml::ROW_COLOR_OPTIONS);
@@ -1143,11 +1214,6 @@ namespace Operations
      e.setAttribute(Xml::ROW_COLOR_BUILT, getRowColorNameForBuilt());
      e.setAttribute(Xml::ROW_COLOR_TRAIN_EN_ROUTE, getRowColorNameForTrainEnRoute());
      e.setAttribute(Xml::ROW_COLOR_TERMINATED, getRowColorNameForTerminated());
-     options.appendChild(e);
-
-     // now save train schedule options
-     e = doc.createElement(Xml::TRAIN_SCHEDULE_OPTIONS);
-     e.setAttribute(Xml::ACTIVE_ID, getTrainScheduleActiveId());
      options.appendChild(e);
 
      if (getStartUpScripts().size() > 0 || getShutDownScripts().size() > 0) {
@@ -1195,7 +1261,6 @@ namespace Operations
      // }
  }
 #if 0
-
  /*public*/ synchronized void addPropertyChangeListener(java.beans.PropertyChangeListener l) {
      pcs.addPropertyChangeListener(l);
  }
@@ -1205,12 +1270,13 @@ namespace Operations
  }
 #endif
  /*private*/ void TrainManager::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
-     TrainManagerXml::instance()->setDirty(true);
-     pcs->firePropertyChange(p, old, n);
+     ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->setDirty(true);
+     firePropertyChange(p, old, n);
  }
  //@Override
  /*public*/ void TrainManager::initialize() {
-     static_cast<OperationsSetupXml*>(InstanceManager::getDefault("OperationsSetupXml")); // load setup
-     static_cast<TrainManagerXml*>(InstanceManager::getDefault("TrainManagerXml")); // load trains
+     (OperationsSetupXml*)InstanceManager::getDefault("OperationsSetupXml"); // load setup
+     (TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"); // load trains
  }
+  /*private*/ /*final*/ /*static*/ Logger* TrainManager::log = LoggerFactory::getLogger("TrainManager");
 } // end namespace

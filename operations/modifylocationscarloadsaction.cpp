@@ -1,5 +1,4 @@
 #include "modifylocationscarloadsaction.h"
-#include "locationsbycarloadframe.h"
 namespace Operations
 {
  /**
@@ -36,13 +35,13 @@ namespace Operations
   connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void ModifyLocationsCarLoadsAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void ModifyLocationsCarLoadsAction::actionPerformed(JActionEvent* /*e*/) {
      // create a frame
      if (f == NULL || !f->isVisible()) {
          f = new LocationsByCarLoadFrame();
          f->initComponents(_location);
      }
-     //f.setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setVisible(true);	// this also brings the frame into focus
  }
 }

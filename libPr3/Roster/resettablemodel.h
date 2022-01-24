@@ -6,26 +6,23 @@
 #include <QtXml>
 #include "actionevent.h"
 
+class ProgrammingMode;
 class LIBPR3SHARED_EXPORT ResetTableModel : public AbstractTableModel
 {
     Q_OBJECT
 public:
     //explicit ResetTableModel(QObject *parent = 0);
     /*public*/ ResetTableModel(QLabel* status, Programmer* pProgrammer, QObject *parent = 0);
-    /*public*/ int rowCount(const QModelIndex &parent) const;
-    /*public*/ int columnCount(const QModelIndex &parent) const;
-    /*public*/ QVariant data(const QModelIndex &index, int role) const;
+    /*public*/ int rowCount(const QModelIndex &parent) const override;
+    /*public*/ int columnCount(const QModelIndex &parent) const override;
+    /*public*/ QVariant data(const QModelIndex &index, int role) const override;
     QVariant dataAt(int row, int col) const;
     /*public*/ void setProgrammer(Programmer* p);
-    /*public*/ void setPiCv(QString piCv) ;
-    /*public*/ void setSiCv(QString siCv);
-    /*public*/ void setRow(int row, QDomElement e);
-    /*public*/ void setIndxRow(int row, QDomElement e);
-    /*public*/ void actionPerformed(ActionEvent* /*e*/);
-    /*public*/ void indexedWrite() ;
+    /*public*/ void setRow(int row, QDomElement e, QDomElement p, QString model);
+    /*public*/ void actionPerformed(JActionEvent* /*e*/);
     /*public*/ void dispose();
-    /*public*/ int getRowCount() {return rowCount(QModelIndex());}
-    /*public*/ int getColumnCount() {return columnCount(QModelIndex());}
+    /*public*/ int getRowCount() const override {return rowCount(QModelIndex());}
+    /*public*/ int getColumnCount() const override{return columnCount(QModelIndex());}
 
 signals:
 
@@ -40,14 +37,20 @@ private:
 
     /*private*/ QVector<CvValue*>* rowVector;//   = new QVector<CvValue>(); // vector of Reset items
     /*private*/ QVector<QString>* labelVector;// = new QVector<QString>(); // vector of related labels
+    /*private*/ QList<QList<QString>*> modeVector = QList<QList<QString>*>(); // vector of related modes
 
     /*private*/ QVector<QPushButton*>* _writeButtons;// = new QVector<QPushButton*>();
 
-    /*private*/ CvValue* _iCv;// = NULL;
-    /*private*/ QLabel* _status;// = NULL;
-    /*private*/ Programmer* mProgrammer;
+    /*private*/ CvValue* _iCv = nullptr;
+    /*private*/ QLabel* _status = nullptr;
+    /*private*/ Programmer* mProgrammer = nullptr;
     /*private*/ QString _piCv;
     /*private*/ QString _siCv;
+    /*private*/ ProgrammingMode* savedMode = nullptr;
+    /*private*/ QString decoderModel;
+    bool badModeOk(QString currentMode, QString resetModes, QString availableModes);
+    bool opsResetOk();
+
 protected:
     /*protected*/ void performReset(int row);
     /*private*/ int _progState;// = 0;

@@ -67,7 +67,7 @@ void WiThrottlePrefsPanel::common()
     turnoutCB->setChecked(localPrefs->isAllowTurnout());
     routeCB->setChecked(localPrefs->isAllowRoute());
     consistCB->setChecked(localPrefs->isAllowConsist());
-//    InstanceManager::getDefault("StartupActionsManager")->addPropertyChangeListener((PropertyChangeEvent* evt) -> {
+//    InstanceManager::getDefault("StartupActionsManager")->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeEvent* evt) -> {
 //        startupCB->setChecked(isStartUpAction());
 //    });
     wifiRB->setChecked(localPrefs->isUseWiFiConsist());
@@ -90,7 +90,7 @@ void WiThrottlePrefsPanel::common()
     int portNum;
     try {
         portNum = (int) port->value();
-    } catch (NumberFormatException NFE) { //  Not a number
+    } catch (NumberFormatException* NFE) { //  Not a number
         portNum = 0;
     }
     if ((portNum < 1) || (portNum > 65535)) { //  Invalid port value

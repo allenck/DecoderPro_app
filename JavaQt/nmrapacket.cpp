@@ -224,7 +224,7 @@
     if (addr < 1 || addr>511) {
         log->error(tr("invalid address %1").arg(addr));
         //return null;
-        throw  IllegalArgumentException();
+        throw new IllegalArgumentException();
     }
     if (active < 0 || active>1) {
         log->error(tr("invalid active (C) bit %1").arg(addr));
@@ -241,7 +241,7 @@
     QByteArray retVal = QByteArray(3,0);
 
     retVal[0] = (0x80 | lowAddr);
-    retVal[1] = (0x80 | (highAddr << 4 ) | ( active << 3) | outputChannel&0x07);
+    retVal[1] = ((0x80 | (highAddr << 4 )) | (( active << 3) | outputChannel&0x07));
     retVal[2] = (retVal[0] ^ retVal[1]);
 
     return retVal;
@@ -259,7 +259,7 @@
  /*public*/ /*static*/ QByteArray NmraPacket::accDecoderPktOpsMode(int addr, int active, int outputChannel, int cvNum, int data) {
     if (addr < 1 || addr>511) {
      log->error(tr("invalid address %1").arg(addr));
-     throw  IllegalArgumentException();
+     throw new IllegalArgumentException();
     }
     if (active < 0 || active>1) {
      log->error(tr("invalid active (C) bit %1").arg(addr));
@@ -642,7 +642,7 @@ return accSignalDecoderPktCommon(lowAddr, boardAddr, aspect);
  * @return true if a Signal Decoder Packet; false otherwise
  */
 /*public*/ /*static*/ bool NmraPacket::isAccSignalDecoderPkt(QByteArray packet) {
-    if (packet.isNull() || packet.length() != 3 && packet.length() != 4) {
+    if ((packet.isNull()) || (packet.length() != 3 && packet.length() != 4)) {
         return false;   // allow ECC to be present or not
     }
     if ((packet[0] & 0xC0) != 0x80) {
@@ -1380,9 +1380,9 @@ return accSignalDecoderPktCommon(lowAddr, boardAddr, aspect);
  * @throws IllegalArgumentException if packet array can't be decoded, e.g.
  *                                  is too short or null
  */
-/*static*/ /*public*/ QString NmraPacket::toString(QByteArray p) throw (IllegalArgumentException) {
+/*static*/ /*public*/ QString NmraPacket::toString(QByteArray p) /*throw (IllegalArgumentException)*/ {
     if (p.isNull() || p.length() == 0) {
-        throw  IllegalArgumentException("Content required");
+        throw new IllegalArgumentException("Content required");
     }
     QMetaEnum metaEnum = QMetaEnum::fromType<NmraPacket::DccAddressType>();
     return tr("%1 type: %2 to addr %3").arg(metaEnum.valueToKey(extractAddressType(p))).arg(extractInstruction(p)).arg(extractAddressNumber(p));

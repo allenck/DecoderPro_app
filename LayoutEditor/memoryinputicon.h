@@ -9,38 +9,40 @@
 #include "actionlistener.h"
 
 class MyIconAdder;
-class ActionEvent;
+class JActionEvent;
 class QSpinBox;
 class QLineEdit;
 class JTextField;
-class MemoryInputIcon : public PositionableJPanel
+class MemoryInputIcon : public PositionableJPanel, public  PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     //explicit MemoryInputIcon(QWidget *parent = 0);
     /*public*/ MemoryInputIcon(int nCols, Editor* editor, QWidget *parent = 0);
-    /*public*/ Positionable* deepClone();
+    /*public*/ Positionable* deepClone() override;
     /*public*/ Positionable* finishClone(MemoryInputIcon *pos);
-    /*public*/ JComponent *getTextComponent();
-    /*public*/ void mouseExited(QGraphicsSceneMouseEvent* e);
+    /*public*/ JComponent *getTextComponent() override;
+    /*public*/ void mouseExited(QGraphicsSceneMouseEvent* e) override;
      /*public*/ void setMemory(QString pName);
     /*public*/ void setMemory(NamedBeanHandle<Memory*>* m);
     /*public*/ void setNumColumns(int nCols);
     /*public*/ NamedBeanHandle<Memory*>* getNamedMemory();
     /*public*/ Memory* getMemory();
     /*public*/ int getNumColumns();
-    /*public*/ QString getNameString();
-    /*public*/ bool setEditIconMenu(QMenu* popup) ;
+    /*public*/ QString getNameString() override;
+    /*public*/ bool setEditIconMenu(QMenu* popup)  override;
     void editMemory();
     /*public*/ void displayState();
     void cleanup();
-    void doMousePressed(QGraphicsSceneMouseEvent*);
-    /*public*/ MyGraphicsProxyWidget* getWidget() {return widget;}
+    void doMousePressed(QGraphicsSceneMouseEvent*) override;
+    /*public*/ MyGraphicsProxyWidget* getWidget()  override{return widget;}
+    QObject* self() override {return (QObject*)this;}
 
 signals:
 
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
     //void on_propertyChange(QString sType, QVariant sOld, QVariant sNew);
 
 private:
@@ -65,6 +67,7 @@ friend class Editor;
 friend class MyIconAdder;
 friend class MemoryItemPanel;
 };
+
 class MyIconAdder : public IconAdder
 {
     Q_OBJECT
@@ -75,14 +78,17 @@ public:
 protected:
  /*protected*/ void addAdditionalButtons(QWidget* p);
 };
-class MiiActionListener : public ActionListener
+
+class MiiActionListener : public QObject, public ActionListener
 {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
     MemoryInputIcon* parent;
 public:
     MiiActionListener(MemoryInputIcon* parent);
+    QObject* self() override {return (QObject*)this;}
 public slots:
-  /*public*/ void actionPerformed(ActionEvent* a = 0);
+  /*public*/ void actionPerformed(JActionEvent* a = 0)override;
 };
 
 #endif // MEMORYINPUTICON_H

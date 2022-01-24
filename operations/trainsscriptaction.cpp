@@ -1,6 +1,4 @@
 #include "trainsscriptaction.h"
-#include "trainsscriptframe.h"
-#include "trainstableframe.h"
 
 namespace Operations
 {
@@ -28,7 +26,7 @@ namespace Operations
 
 
 
- /*public*/ void TrainsScriptAction::actionPerformed(ActionEvent *e) {
+ /*public*/ void TrainsScriptAction::actionPerformed(JActionEvent *e) {
      // create a train scripts frame
      if (f != NULL && f->isVisible()) {
          f->dispose();
@@ -36,7 +34,7 @@ namespace Operations
      f = new TrainsScriptFrame();
      f->move(frame->pos().x(),frame->pos().y());
      f->initComponents();
-     //f->setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setTitle(tr("Scripts"));
  }
 }

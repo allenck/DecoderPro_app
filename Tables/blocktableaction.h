@@ -4,8 +4,16 @@
 #include "beantabledatamodel.h"
 #include "actionlistener.h"
 #include "libtables_global.h"
+#include "jlabel.h"
+#include "jcheckbox.h"
+#include "spinnernumbermodel.h"
+#include "jspinner.h"
+#include "jtextfield.h"
+#include "windowadapter.h"
+#include "instancemanager.h"
+#include "userpreferencesmanager.h"
+#include <QRadioButton>
 
-class BufferedImage;
 class Block;
 class UserPreferencesManager;
 class QComboBox;
@@ -21,163 +29,110 @@ public:
  ~BlockTableAction() {}
  BlockTableAction(const BlockTableAction& other) : AbstractTableAction(other.text(), other.parent()) {}
  Q_INVOKABLE/*public*/ BlockTableAction(QString actionName, QObject *parent);
- /*public*/ void addToFrame(BeanTableFrame* f);
-/*public*/ void setMenuBar(BeanTableFrame* f);
- /*public*/ void dispose();
- Q_INVOKABLE /*public*/ QString getClassDescription();
- Q_INVOKABLE /*public*/ void setMessagePreferencesDetails();
+ /*public*/ void addToFrame(BeanTableFrame* f) override;
+/*public*/ void setMenuBar(BeanTableFrame* f) override;
+ Q_INVOKABLE /*public*/ QString getClassDescription() override;
+ /*public*/ /*final*/ static QString BLOCK_METRIC_PREF;// = BlockTableAction.class.getName() + ":LengthUnitMetric"; // NOI18N
+
 signals:
 
 public slots:
- void on_deletePaths();
- void inchBoxChanged();
- void centimeterBoxChanged();
- void on_defaultSpeeds();
- void okPressed(ActionEvent* e = 0);
- void cancelPressed(ActionEvent* e = 0);
+ void okPressed(JActionEvent* e = 0);
+ void cancelPressed(JActionEvent *e = 0);
 
 
 private:
  void common();
- /*private*/ QString noneText;// = tr("BlockNone");
- /*private*/ QString gradualText;// = tr("BlockGradual");
- /*private*/ QString tightText;// = tr("BlockTight");
- /*private*/ QString severeText;// = tr("BlockSevere");
- /*private*/ QStringList curveOptions;// = {noneText, gradualText, tightText, severeText};
- /*private*/ QVector<QString> speedList;// = new java.util.Vector<String>();
- /*private*/ QStringList sensorList;
- /*private*/ DecimalFormat* twoDigit;// = new DecimalFormat("0.00");
- QString defaultBlockSpeedText;
- QCheckBox* inchBox;// = new JCheckBox(tr("LengthInches"));
- QCheckBox* centimeterBox;// = new JCheckBox(tr("LengthCentimeters"));
- /*private*/ void updateSensorList();
- /*private*/ void updateSpeedList();
- JmriJFrame* addFrame;// = NULL;
- JTextField* sysName;// = new JTextField(5);
- JTextField* userName;// = new JTextField(5);
- QLabel* sysNameLabel;// = new JLabel(tr("LabelSystemName"));
- QLabel* userNameLabel;// = new JLabel(tr("LabelUserName"));
+ JmriJFrame* addFrame = NULL;
+ JTextField* sysName = new JTextField(20);
+ JTextField* userName = new JTextField(20);
+ JLabel* sysNameLabel = new JLabel(tr("SystemName"));
+ JLabel* userNameLabel = new JLabel(tr("UserName"));
+
+ SpinnerNumberModel* numberToAddSpinnerNumberModel = new SpinnerNumberModel(1, 1, 100, 1); // maximum 100 items
+ JSpinner* numberToAddSpinner = new JSpinner(numberToAddSpinnerNumberModel);
+ JCheckBox* addRangeCheckBox = new JCheckBox(tr("Add a sequential range"));
+ JCheckBox* _autoSystemNameCheckBox = new JCheckBox(tr("Automatically generate System Name"));
+ JLabel* statusBar = new JLabel(tr("Enter a System Name and (optional) User Name."), JLabel::LEADING);
+ /*private*/ JButton* newButton = nullptr;
+
 
  QComboBox* cur;// = new QComboBox*(curveOptions);
- JTextField* lengthField;// = new JTextField(7);
- JTextField* blockSpeed;// = new JTextField(7);
- QCheckBox* checkPerm;// = new QCheckBox(tr("BlockPermColName"));
+ JTextField* lengthField = new JTextField(7);
+ JTextField* blockSpeed = new JTextField(7);
+ QCheckBox* checkPerm = new QCheckBox(tr("Permissive"));
 
- JTextField* numberToAdd;// = new JTextField(10);
- QCheckBox* range;// = new JCheckBox(tr("LabelNumberToAdd"));
- QCheckBox* _autoSystemName ;//= new JCheckBox(tr("LabelAutoSysName"));
  UserPreferencesManager* pref;
 
- QComboBox* speeds;// = new QComboBox*();
- QWidget* additionalAddOption();
+ QComboBox* speeds = new QComboBox();
  QString systemNameAuto;// = this.getClass().getName() + ".AutoSystemName";
- bool validateNumericalInput(QString text);
- Logger* log;
+ static Logger* log;
  void handleCreateException(QString sysName);
  void deletePaths(JmriJFrame* f);
  JmriJFrame* finalF;
 
  // for icon state col
  bool _graphicState = false; // updated from prefs
+ /*private*/ /*final*/ QRadioButton* inchBox = new QRadioButton(tr("Length in Inches")); // NOI18N
+ /*private*/ /*final*/ QRadioButton* centimeterBox = new QRadioButton(tr("Length in Centimeters")); // NOI18N
+ /*private*/ void initRadioButtons();
+ /*private*/ void metricSelectionChanged(/*ActionEvent e*/);
 
 protected:
- /*protected*/ void createModel();
- /*protected*/ void setTitle();
- /*protected*/ void setDefaultSpeeds(JFrame* _who);
- /*protected*/ QString helpTarget();
+ /*protected*/ void createModel() override;
+ /*protected*/ void setTitle() override;
+ /*protected*/ QString helpTarget() override;
+ /*protected*/ Manager/*<Block>*/* getManager();
+
 protected slots:
- /*protected*/ void addPressed(ActionEvent* /*e*/);
- /*protected*/ QString getClassName();
+ /*protected*/ void addPressed(JActionEvent * /*e*/);
+ /*protected*/ QString getClassName() override;
 
 friend class BlockTableDataModel;
 };
 Q_DECLARE_METATYPE(BlockTableAction)
 
-class BlockTableDataModel : public BeanTableDataModel
+
+
+class BTActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  BlockTableAction* blockTableAction;
 public:
- //BlockTableDataModel(BlockTableAction*);
- BlockTableDataModel(QCheckBox* inchBox, BlockTableAction* blockTableAction);
- /**
-  *
-  */
- enum COLUMNS
+ BTActionListener(BlockTableAction* blockTableAction) {this->blockTableAction = blockTableAction;}
+ QObject* self() override{return (QObject*)this;}
+public slots:
+ void actionPerformed(JActionEvent* = 0)override
  {
-  EDITCOL = NUMCOLUMN,
-  DIRECTIONCOL = EDITCOL + 1,
-  LENGTHCOL = DIRECTIONCOL + 1,
-  CURVECOL = LENGTHCOL + 1,
-  STATECOL = CURVECOL + 1,
-  SENSORCOL = STATECOL + 1,
-  REPORTERCOL = SENSORCOL + 1,
-  CURRENTREPCOL = REPORTERCOL + 1,
-  PERMISCOL = CURRENTREPCOL + 1,
-  SPEEDCOL = PERMISCOL + 1\
- };
-
- /*public*/ QString getValue(QString name) const;
- /*public*/ Manager* getManager();
- /*public*/ NamedBean* getBySystemName(QString name) const;
- /*public*/ NamedBean* getByUserName(QString name);
- /*public*/ void clickOn(NamedBean* t);
- //Permissive and speed columns are temp disabled
- /*public*/ int columnCount(const QModelIndex &parent) const;
- /*public*/ QVariant data(const QModelIndex &index, int role) const;
- /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
- /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
- /*public*/ int getPreferredWidth(int col);
- /*public*/ void configValueColumn(JTable* table);
- /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
- /*public*/ void configureTable(JTable* table);
- /*public*/ QPushButton* configureButton();
- /*synchronized*/ /*public*/ void dispose();
-public slots:
- /*public*/ void propertyChange(PropertyChangeEvent* e);
-private:
- Logger* log;
- void editButton(Block* b);
- QCheckBox* inchBox;
- /*private*/ DecimalFormat* twoDigit;// = new DecimalFormat("0.00");
- void common();
- QStringList speedList;
- QMap<int, QString> curveOptions;
-
-  protected:
-  /*protected*/ QString getMasterClassName() ;
- /*protected*/ QString rootPath = "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
- /*protected*/ char beanTypeChar;// = 'S'; // for Sensor
- /*protected*/ QString onIconPath;// = rootPath + beanTypeChar + "-on-s.png";
- /*protected*/ QString offIconPath;// = rootPath + beanTypeChar + "-off-s.png";
- /*protected*/ BufferedImage* onImage;
- /*protected*/ BufferedImage* offImage;
- /*protected*/ QPixmap onIcon;
- /*protected*/ QPixmap offIcon;
- /*protected*/ int iconHeight = -1;
- /*protected*/ void loadIcons();
-
- /*protected*/ QString getBeanType();
-  protected slots:
- /*protected*/ bool matchPropertyName(PropertyChangeEvent* e);
+     blockTableAction->okPressed();
+ }
 };
-class BTActionListener : public ActionListener
+class BTCancelListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  BlockTableAction* blockTableAction;
 public:
- BTActionListener(BlockTableAction* blockTableAction);
+ BTCancelListener(BlockTableAction* blockTableAction) {this->blockTableAction = blockTableAction;}
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void actionPerformed(ActionEvent* = 0);
-};
-class BTCancelListener : public ActionListener
-{
- Q_OBJECT
- BlockTableAction* blockTableAction;
-public:
- BTCancelListener(BlockTableAction* blockTableAction);
-public slots:
- void actionPerformed(ActionEvent* = 0);
+ void actionPerformed(JActionEvent* = 0) override
+ {
+     blockTableAction->cancelPressed();
+ }
 };
 
+class ABWindowListener : public WindowAdapter
+{
+  Q_OBJECT
+  BlockTableAction* blockTableAction;
+ public:
+  ABWindowListener(BlockTableAction* blockTableAction) {this->blockTableAction = blockTableAction;}
+  void windowClosed(QCloseEvent */*e*/) override
+  {
+   blockTableAction->cancelPressed();
+  }
+  void windowClosing(QEvent*)override{}
+};
 #endif // BLOCKTABLEACTION_H

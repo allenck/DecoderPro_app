@@ -16,13 +16,13 @@ public:
  /*public*/ SystemConnectionMemo* getSystemConnectionMemo();
  /*public*/ void setTurnoutHandling(QString value);
  /*public*/ void setTranspondingAvailable(QString value);
- /*public*/ void configureOption3(QString value);
+ /*public*/ void configureOption3(QString value) override;
  QTcpSocket* getSocket();
 
- /*public*/ void setServiceType(QString);
- /*public*/ QString getServiceType();
- /*public*/ void setMdnsConfigure(bool bMdnsConfigure);
- /*public*/ bool getMdnsConfigure();
+ /*public*/ void setServiceType(QString) override;
+ /*public*/ QString getServiceType() override;
+ /*public*/ void setMdnsConfigure(bool bMdnsConfigure) override;
+ /*public*/ bool getMdnsConfigure() override;
 
 signals:
  void updated();

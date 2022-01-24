@@ -486,7 +486,7 @@ void AudioInputStream::common()
         try {
             return line.read(b, off, len);
         } catch (IllegalArgumentException e) {
-            throw new IOException(e.getMessage());
+            throw new IOException(e->getMessage());
         }
     }
 };

@@ -52,7 +52,7 @@ DebugThrottleManager::DebugThrottleManager(QObject *parent) : AbstractThrottleMa
 /*public*/ bool DebugThrottleManager::addressTypeUnique() { return false; }
 
 /*public*/ bool DebugThrottleManager::disposeThrottle(DccThrottle* t, ThrottleListener* l){
-    log->debug("disposeThrottle called for " + t->objectName());
+    log->debug("disposeThrottle called for " + t->self()->objectName());
     if ( AbstractThrottleManager::disposeThrottle(t, l)){
         DebugThrottle* lnt = (DebugThrottle*) t;
         lnt->throttleDispose();

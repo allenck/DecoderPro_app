@@ -2,11 +2,14 @@
 #include "rpsreporter.h"
 #include "distributor.h"
 #include "rpssystemconnectionmemo.h"
+#include "loggerfactory.h"
+#include "rpssystemconnectionmemo.h"
 
 RpsReporterManager::RpsReporterManager(RpsSystemConnectionMemo* memo, QObject* parent) : AbstractReporterManager(memo, parent)
 {
 
 }
+
 /**
  * RPS implementation of a ReporterManager.
  *
@@ -14,29 +17,6 @@ RpsReporterManager::RpsReporterManager(RpsSystemConnectionMemo* memo, QObject* p
   * @since 2.3.1
  */
 // /*public*/ class RpsReporterManager extends AbstractReporterManager {
-
-//@Override
-/*public*/ QString RpsReporterManager::getSystemPrefix()const {
-    return "R";
-}
-
-//@Override
-/*protected*/ Reporter* RpsReporterManager::createNewReporter(QString systemName, QString userName) const {
-    RpsReporter* r = new RpsReporter(systemName, userName);
-    //Distributor::instance()->addMeasurementListener(r);
-    connect(Distributor::instance(), SIGNAL(newMeasurement(Measurement*)), r, SLOT(notify(Measurement*)));
-    return (Reporter*)r;
-}
-
-///*static*/ /*public*/ RpsReporterManager* RpsReporterManager::instance() {
-//    if (_instance == NULL) {
-//        _instance = new RpsReporterManager(this);
-//    }
-//    return _instance;
-//}
-
-///*static*/ RpsReporterManager* RpsReporterManager::_instance = NULL;
-
 /**
  * {@inheritDoc}
  */
@@ -44,13 +24,55 @@ RpsReporterManager::RpsReporterManager(RpsSystemConnectionMemo* memo, QObject* p
 /*public*/ SystemConnectionMemo *RpsReporterManager::getMemo() {
     return  memo;
 }
-#if 0
-static { // class initialization
-    // now want a ReporterManager always, not just when RPS is created
-    if (_instance == null) {
-        _instance = new RpsReporterManager();
-        jmri.InstanceManager.setReporterManager(jmri.jmrix.rps.RpsReporterManager.instance());
-        // log.warn("Setting RpsSensorManager instance at startup time!");
-    }
+
+
+//@Override
+/*protected*/ Reporter* RpsReporterManager::createNewReporter(QString systemName, QString userName)  {
+    RpsReporter* r = new RpsReporter(systemName, userName);
+    //Distributor::instance()->addMeasurementListener(r);
+    connect(Distributor::instance(), SIGNAL(newMeasurement(Measurement*)), r, SLOT(notify(Measurement*)));
+    return (Reporter*)r;
 }
-#endif
+
+//@Override
+/*public*/ QString RpsReporterManager::createSystemName(QString curAddress, QString prefix) /*throw (JmriException)*/ {
+    if (prefix != (AbstractManager::getSystemPrefix())) {
+        log->warn("prefix does not match memo.prefix");
+        throw new JmriException("Unable to convert " + curAddress + ", Prefix does not match");
+    }
+    QString sys = AbstractManager::getSystemPrefix() + typeLetter() + curAddress;
+    // first, check validity
+    try {
+        validSystemNameFormat(sys);
+    } catch (IllegalArgumentException* e) {
+        throw new JmriException(e->getMessage());
+    }
+    return sys;
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+//@Nonnull
+/*public*/ QString RpsReporterManager::validateSystemNameFormat(/*@Nonnull*/ QString name, /*@Nonnull*/ QLocale locale) {
+    return ((RpsSystemConnectionMemo*) getMemo())->validateSystemNameFormat(name, (AbstractManager*)this, locale);
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ RpsReporterManager::NameValidity RpsReporterManager::validSystemNameFormat(/*@Nonnull*/ QString systemName) {
+    return ((RpsSystemConnectionMemo*) getMemo())->validSystemNameFormat(systemName, typeLetter());
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ QString RpsReporterManager::getEntryToolTip() {
+    return tr("<html>A set of at least 3 (x,y,z) point coordinates that form a Region, e.g.<br>(0,0,0);(1,0,0);(1,1,0);(0,1,0)</html>");
+}
+
+/*private*/ /*final*/ /*static*/ Logger* RpsReporterManager::log = LoggerFactory::getLogger("RpsReporterManager");

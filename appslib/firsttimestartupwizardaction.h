@@ -4,7 +4,7 @@
 
 class Apps3;
 class JmriJFrame;
-class ActionEvent;
+class JActionEvent;
 class FirstTimeStartUpWizardAction : public JmriAbstractAction
 {
  Q_OBJECT

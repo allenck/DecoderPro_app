@@ -65,8 +65,8 @@
 //        {
 //            log->debug("Invalid event value. " + cce);
 //        }
-        catch (IndexOutOfBoundsException oob) {
-            log->debug("Invalid event name. " + oob.getMessage());
+        catch (IndexOutOfBoundsException* oob) {
+            log->debug("Invalid event name. " + oob->getMessage());
         }
 
         foreach (ControllerInterface* listener, *controllerListeners) {
@@ -127,14 +127,14 @@
             }
         }
 
-    } catch (NoSuchMethodException ea) {
-        log->warn(ea.getLocalizedMessage(), ea);
+    } catch (NoSuchMethodException* ea) {
+        log->warn(ea->getLocalizedMessage(), ea);
         return;
     } catch (IllegalAccessException eb) {
-        log->warn(eb.getLocalizedMessage(), eb);
+        log->warn(eb->getLocalizedMessage(), eb);
         return;
     } catch (InvocationTargetException ec) {
-        log->warn(ec.getLocalizedMessage(), ec);
+        log->warn(ec->getLocalizedMessage(), ec);
         return;
     }
 #endif
@@ -164,7 +164,7 @@
 /*protected*/ void MultiThrottleController::sendSpeedStepMode(DccThrottle* t) {
     QString message =  QString(buildPacketWithChar('A'));
     message.append("s");
-    message.append(throttle->getSpeedStepMode()->mode);
+    message.append(throttle->getSpeedStepMode());
     foreach (ControllerInterface* listener, *controllerListeners) {
         listener->sendPacketToDevice(message);
     }
@@ -190,14 +190,14 @@
             }
         }
 
-    } catch (NoSuchMethodException ea) {
-        log->warn(ea.getLocalizedMessage(), ea);
+    } catch (NoSuchMethodException* ea) {
+        log->warn(ea->getLocalizedMessage(), ea);
         return;
     } catch (IllegalAccessException eb) {
-        log->warn(eb.getLocalizedMessage(), eb);
+        log->warn(eb->getLocalizedMessage(), eb);
         return;
     } catch (InvocationTargetException ec) {
-        log->warn(ec.getLocalizedMessage(), ec);
+        log->warn(ec->getLocalizedMessage(), ec);
         return;
     }
 #endif

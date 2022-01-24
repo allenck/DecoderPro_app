@@ -5,7 +5,7 @@
 #include "defaultlistselectionmodel.h"
 
 class EventListenerList;
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class RowMapper;
 class JAVAQTSHARED_EXPORT DefaultTreeSelectionModel : public TreeSelectionModel
 {
@@ -37,7 +37,7 @@ public:
  /*public*/ /*synchronized*/ void removePropertyChangeListener( PropertyChangeListener* listener);
  /*public*/ QVector<PropertyChangeListener *> getPropertyChangeListeners();
  /*public*/ QString toString();
- /*public*/ QObject* clone() throw (CloneNotSupportedException);
+ /*public*/ QObject* clone() /*throw (CloneNotSupportedException)*/;
 // template<class T>
 // /*public*/ /*<T extends EventListener>*/ QVector<T*> getListeners(QString listenerType);
  /*public*/ TreePath* getLeadSelectionPath();
@@ -54,7 +54,7 @@ private:
 protected:
 
  /** Used to messaged registered listeners. */
- /*protected*/ PropertyChangeSupport*     changeSupport;
+ /*protected*/ SwingPropertyChangeSupport*     changeSupport = nullptr;
 
  /** Paths that are currently selected.  Will be null if nothing is
    * currently selected. */

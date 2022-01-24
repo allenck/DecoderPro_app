@@ -5,6 +5,7 @@
 #include "joptionpane.h"
 #include "connectionstatus.h"
 #include "serialport.h"
+#include "loggerfactory.h"
 
 Option::Option()
 {
@@ -103,7 +104,7 @@ public:
       openPort(asp->mPort, "jmri");
      }
     }
-   }catch (Exception e) {}
+   }catch (Exception* e) {}
    reply=!asp->opened;
    if (count >=asp->retryAttempts){
     log->error("Unable to reconnect after " + QString("%1").arg(count) + " Attempts, increasing duration of retries");
@@ -164,14 +165,14 @@ QString AbstractSerialPortController::getOptionState(QString option)
 /**
  * Standard error handling for port-busy case
  */
-/*public*/ QString AbstractSerialPortController::handlePortBusy(PortInUseException p,
+/*public*/ QString AbstractSerialPortController::handlePortBusy(PortInUseException* p,
             QString portName,
             Logger* log)
 {
- log->error(portName+" port is in use: "+p.getMessage());
+ log->error(portName+" port is in use: "+p->getMessage());
  JOptionPane::showMessageDialog(NULL, "Port is in use",
                                 "Error", JOptionPane::ERROR_MESSAGE);
- ConnectionStatus::instance()->setConnectionState(portName, ConnectionStatus::CONNECTION_DOWN);
+ ConnectionStatus::instance()->setConnectionState(this->getSystemPrefix(), portName, ConnectionStatus::CONNECTION_DOWN);
  return portName+" port is in use";
 }
 
@@ -184,7 +185,7 @@ QString AbstractSerialPortController::getOptionState(QString option)
             log->error("Serial port "+portName+" not found");
             JOptionPane::showMessageDialog(NULL, "Serial port "+portName+" not found",
                                             "Error", JOptionPane::ERROR_MESSAGE);
- ConnectionStatus::instance()->setConnectionState(portName, ConnectionStatus::CONNECTION_DOWN);
+ ConnectionStatus::instance()->setConnectionState(this->getSystemPrefix(), portName, ConnectionStatus::CONNECTION_DOWN);
             return portName+" not found";
 }
 
@@ -238,7 +239,7 @@ QString AbstractSerialPortController::getOptionState(QString option)
         if (flow != SerialPort::FLOWCONTROL_NONE) {
             serialPort->setFlowControlMode(flow);
         }
-    } catch (UnsupportedCommOperationException e) {
+    } catch (UnsupportedCommOperationException* e) {
         log->warn("Could not set flow control, ignoring");
     }
     if (flow!=SerialPort::FLOWCONTROL_RTSCTS_OUT) serialPort->setRTS(rts);  // not connected in some serial ports and adapters
@@ -377,25 +378,25 @@ QStringList AbstractSerialPortController::validBaudRates()
 
     try {
         port.notifyOnFramingError(true);
-    } catch (Exception e) {
+    } catch (Exception* e) {
         log.debug("Could not notifyOnFramingError: " + e); // NOI18N
     }
 
     try {
         port.notifyOnBreakInterrupt(true);
-    } catch (Exception e) {
+    } catch (Exception* e) {
         log.debug("Could not notifyOnBreakInterrupt: " + e); // NOI18N
     }
 
     try {
         port.notifyOnParityError(true);
-    } catch (Exception e) {
+    } catch (Exception* e) {
         log.debug("Could not notifyOnParityError: " + e); // NOI18N
     }
 
     try {
         port.notifyOnOverrunError(true);
-    } catch (Exception e) {
+    } catch (Exception* e) {
         log.debug("Could not notifyOnOverrunError: " + e); // NOI18N
     }
 
@@ -448,12 +449,12 @@ However this is in place until all the other code has been refactored */
     opened = false;
     try {
         closeConnection();
-    } catch (Exception e) { }
+    } catch (Exception* e) { }
     reconnect();
 }
 /*Each serial port adapter should handle this and it should be abstract.
  However this is in place until all the other code has been refactored */
-/*protected*/ void AbstractSerialPortController::closeConnection() throw(Exception) { log->error("crap Called"); }
+/*protected*/ void AbstractSerialPortController::closeConnection() /*throw(Exception)*/ { log->error("crap Called"); }
 
 /*Each port adapter should handle this and it should be abstract.
  However this is in place until all the other code has been refactored */
@@ -473,7 +474,7 @@ However this is in place until all the other code has been refactored */
     try{
         thread->join();
     } catch (InterruptedException e) {
-        log->error("Unable to join to the reconnection thread " + e.getMessage());
+        log->error("Unable to join to the reconnection thread " + e->getMessage());
     }
 #endif
     if (!opened){
@@ -486,4 +487,4 @@ However this is in place until all the other code has been refactored */
 
 
 
-    //final static protected org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractSerialPortController.class.getName());
+    /*final*/ /*static*/ /*protected*/ Logger* AbstractSerialPortController::log = LoggerFactory::getLogger("AbstractSerialPortController");

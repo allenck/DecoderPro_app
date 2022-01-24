@@ -1,5 +1,5 @@
 #include "preferencesbean.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "profile.h"
 
 /**

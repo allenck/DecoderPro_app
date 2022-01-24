@@ -12,7 +12,7 @@
  <enum-type name ="MyGraphicsItemGroup::enum_1" />
  <enum-type name ="LocoAddress::Protocol" />
  <enum-type name ="SignalHead::eState" />
- <enum-type name ="Manager::NameValidity" />
+ <!--enum-type name ="Manager::NameValidity" /-->
  <enum-type name ="JTable::OPTIONS" />
  <enum-type name ="JTable::PrintMode" />
  <enum-type name ="FileUtil::Location" />
@@ -42,6 +42,10 @@
  <rejection class="JLabel" function-name="deepClone" />
  <rejection class="JLabel" function-name="doMouseClicked" />
  <rejection class="LayoutTrack" />
+ <rejection class="LogixManager" />
+ <rejection class="MemoryManager" />
+  <rejection class="Editor" />
+
  <object-type name="NamedBean" />
  <object-type name="AbstractNamedBean" />
  <object-type name="Turnout" />
@@ -59,28 +63,28 @@
  <object-type name="LocoNetMessage" />
  <object-type name="LnTrafficController" />
  <object-type name="LnPacketizer" />
- <object-type name="Manager" />
+ <!--object-type name="Manager" /-->
  <rejection class="Manager" function-name="getNamedBeanList" />
- <object-type name="InstanceManager" />
+ <!--object-type name="InstanceManager" />
  <object-type name="ProxyTurnoutManager" />
  <object-type name="ProxySensorManager" />
  <object-type name="SignalHeadManager" />
  <object-type name="SignalMastManager" />
  <object-type name="ProxyLightManager" />
- <object-type name="LightManager" />
- <object-type name="AbstractLightManager" />
- <object-type name="CommandStation" />
+ <object-type name="LightManager" /-->
+ <!--object-type name="AbstractLightManager" /-->
+ <!--object-type name="CommandStation" />
  <object-type name="ReporterManager" />
  <object-type name="MemoryManager" />
  <object-type name="Route" />
  <object-type name="RouteManager" />
- <object-type name="PowerManager" />
+ <object-type name="PowerManager" /-->
  <!--object-type name="ProgrammerManager" /-->
- <object-type name="ShutDownManager" />
+ <!--object-type name="ShutDownManager" />
  <object-type name="AudioManager" />
  <object-type name="BlockManager" />
  <object-type name="LayoutBlockManager" />
- <object-type name="WarrantmManager" />
+ <object-type name="WarrantmManager" /-->
  <object-type name="FlowLayout" />
  <object-type name="PanelMenu" />
  <object-type name="Editor" />
@@ -94,9 +98,9 @@
  <object-type name="AudioSource" />
  <object-type name="SignalHead" />
  <object-type name="SignalMast" />
- <object-type name="Light" />
- <object-type name="AbstractManager" />
- <rejection class="AbstractManager" function-name="getNamedBeanList" />
+ <!--object-type name="Light" /-->
+ <!--object-type name="AbstractManager" />
+ <rejection class="AbstractManager" function-name="getNamedBeanList" /-->
  <!--object-type name="AbstractProxyManager" />
  <rejection class="AbstractProxyManager" function-name="getNamedBeanList" /-->
  <object-type name="LocoAddress" />
@@ -108,9 +112,9 @@
  <object-type name="PropertyChangeListener" />
  <object-type name="Protocol" />
  <object-type name="LnPortController" />
- <object-type name="RfidSensorManager" />
- <object-type name="SensorManager" />
- <object-type name="AbstractSensorManager" />
+ <!--object-type name="RfidSensorManager" /-->
+ <!--object-type name="SensorManager" /-->
+ <!--object-type name="AbstractSensorManager" /-->
  <object-type name="LocoNetInterface" />
  <object-type name="EventObject" />
  <object-type name="Positionable" />
@@ -122,11 +126,11 @@
  <object-type name="JOptionPanel" />
  <object-type name="JTextArea" />
  <object-type name="ScriptOutput" />
- <object-type name="LogixManager" />
+ <!--object-type name="LogixManager" />
  <object-type name="DefaultLogixManager" />
- <!--object-type name="AbstractMemoryManager" /-->
+ <object-type name="AbstractMemoryManager" />
  <object-type name="DefaultMemoryManager" />
- <object-type name="LnPowerManager" />
+ <object-type name="LnPowerManager" /-->
  <object-type name="JfileChooser" />
  <object-type name="Block" />
  <object-type name="GlobalProgrammer" />
@@ -146,10 +150,10 @@
  <object-type name="LnCommandStationType" />
  <object-type name="JFrameItem" />
  <object-type name="ProgListener" />
- <object-type name="AbstractPowerManager" />
- <object-type name="TurnoutManager" />
- <object-type name="LnTurnoutManager" />
- <object-type name="LnReporterManager" />
+ <!--object-type name="AbstractPowerManager" /-->
+ <!--object-type name="TurnoutManager" /-->
+ <!--object-type name="LnTurnoutManager" />
+ <object-type name="LnReporterManager" /-->
  <object-type name="BeanInterface" />
  <object-type name="RosterObject" />
  <object-type name="RosterGroup" />
@@ -158,17 +162,17 @@
  <object-type name="DefaultProgrammerManager" />
  <object-type name="LnClockControl" />
  <object-type name="LnLightManager" />
- <object-type name="ThrottleManager" />
- <object-type name="LnSensorManager" />
+ <object-type name="LnThrottleManager" />
+ <!--object-type name="LnSensorManager" /-->
  <object-type name="LocoNetThrottledTransmitter" />
  <object-type name="WindowInterface" />
  <object-type name="AbstractPortController" />
- <object-type name="AbstractReporterManager" />
+ <!--object-type name="AbstractReporterManager" /-->
  <object-type name="ProgrammingMode" />
  <object-type name="TableColumn" />
  <object-type name="TableColumnModel" />
  <object-type name="TableCellEditor" />
- <object-type name="AbstractTurnoutManager" />
+ <!--object-type name="AbstractTurnoutManager" /-->
  <object-type name="ListSelectionModel" />
  <object-type name="PortAdapter" />
  <object-type name="NetworkPortAdapter" />

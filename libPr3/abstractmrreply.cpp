@@ -119,7 +119,7 @@ void AbstractMRReply::init()
     bool bOk = false;
     try {
         val = s.toInt(&bOk);
-    } catch (Exception e) {
+    } catch (Exception* e) {
         log->error("Unable to get number from reply: \""+s+"\" index: "+index
                   +" message: \""+toString()+"\"");
     }
@@ -139,7 +139,7 @@ void AbstractMRReply::init()
     {
         val = /*Integer.parseInt(s,16);*/s.toInt(&bOk,16);
         if(!bOk) throw new Exception();
-    } catch (Exception e) {
+    } catch (Exception* e) {
         log->error("Unable to get number from reply: \""+s+"\" index: "+index
                   +" message: \""+toString()+"\"");
     }

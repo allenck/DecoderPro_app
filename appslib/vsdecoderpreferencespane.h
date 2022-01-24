@@ -3,9 +3,10 @@
 
 #include <QWidget>
 #include "appslib_global.h"
+#include "propertychangelistener.h"
 
 class Insets;
-class ActionEvent;
+class JActionEvent;
 class GridBagConstraints;
 class JFrame;
 class VSDecoderPreferences;
@@ -16,20 +17,21 @@ class JTextField;
 class QLabel;
 class QRadioButton;
 class PropertyChangeEvent;
-class APPSLIBSHARED_EXPORT VSDecoderPreferencesPane : public QWidget
+class APPSLIBSHARED_EXPORT VSDecoderPreferencesPane : public QWidget, public PropertyChangeListener
 {
  Q_OBJECT
+Q_INTERFACES(PropertyChangeListener)
 public:
  explicit VSDecoderPreferencesPane(QWidget *parent = 0);
  /*public*/ VSDecoderPreferencesPane(VSDecoderPreferences* tp,QWidget *parent = 0);
  /*public*/ void setContainer(JFrame* f);
-
+QObject* self() override {(QObject*)this;}
 signals:
 
 public slots:
  void checkConsistency();
- /*public*/ void jbSaveActionPerformed(ActionEvent* evt = 0);
- /*public*/ void propertyChange(PropertyChangeEvent* evt);
+ /*public*/ void jbSaveActionPerformed(JActionEvent* evt = 0);
+ /*public*/ void propertyChange(PropertyChangeEvent* evt) override;
 
 private:
  /*private*/ QCheckBox* cbAutoStartEngine;
@@ -53,10 +55,10 @@ private:
  /*private*/ VSDecoderPreferences* getVSDecoderPreferences();
 
 private slots:
- /*private*/ void jbPathBrowseActionPerformed(ActionEvent* evt = 0);
- /*private*/ void jbFileBrowseActionPerformed(ActionEvent* evt = 0);
- /*private*/ void jbApplyActionPerformed(ActionEvent* evt= 0);
- /*private*/ void jbCancelActionPerformed(ActionEvent* evt = 0);
+ /*private*/ void jbPathBrowseActionPerformed(JActionEvent* evt = 0);
+ /*private*/ void jbFileBrowseActionPerformed(JActionEvent* evt = 0);
+ /*private*/ void jbApplyActionPerformed(JActionEvent* evt= 0);
+ /*private*/ void jbCancelActionPerformed(JActionEvent* evt = 0);
 
 };
 

@@ -74,43 +74,35 @@ void SplitButtonColorChooserPanel::stateChanged(ChangeEvent *)
 
     setButton = new JSplitButton(tr("SetColor") + "      ",QIcon(QPixmap::fromImage(image)));  // NOI18N
 //    setButton.addButtonClickedActionListener((ActionEvent e) -> {
-//        Color desiredColor = JColorChooser.showDialog(setButton.getParent(),
-//                Bundle.getMessage("SetColor"), // NOI18N
-//                getColorFromModel());
-//        if (desiredColor != null) {
-//            getColorSelectionModel().setSelectedColor(desiredColor);
-//        }
-//    });
-    setButton->addButtonActionListener((ActionListener*)this);
-
-//    setButton->addSplitButtonClickedActionListener((ActionEvent e) -> {
-        //Color desiredColor = JColorChooser.showDialog(this,
-        //                     Bundle.getMessage("SetColor"),
-        //                     getColorFromModel());
-        //if (desiredColor!=null) {
-        //    getColorSelectionModel().setSelectedColor(desiredColor);
-//    });
+    connect(setButton, &JSplitButton::clicked, [=]{
+        QColor desiredColor = JColorChooser::showDialog((Component*)setButton->parent(),
+                tr("SetColor"), // NOI18N
+                getColorFromModel());
+        if (desiredColor != nullptr) {
+            getColorSelectionModel()->setSelectedColor(desiredColor);
+        }
+    });
 
     //setButton.setImage(image);
     setButton->setPopupMenu(new ColorListPopupMenu(getColorSelectionModel()));
     this->layout()->addWidget(setButton);
 }
 
-void SplitButtonColorChooserPanel::buttonClicked(ActionEvent*)
-{
-// QColor desiredColor = JColorChooser::showDialog((Component*)setButton->parent(),
-//        tr("SetColor"), // NOI18N
-//        getColorFromModel());
-// if (!desiredColor.isValid())
-// {
-//     getColorSelectionModel()->setSelectedColor(desiredColor);
-// }
-}
+//void SplitButtonColorChooserPanel::buttonClicked(JActionEvent*)
+//{
+//// QColor desiredColor = JColorChooser::showDialog((Component*)setButton->parent(),
+////        tr("SetColor"), // NOI18N
+////        getColorFromModel());
+//// if (!desiredColor.isValid())
+//// {
+////     getColorSelectionModel()->setSelectedColor(desiredColor);
+//// }
+//}
 
-void SplitButtonColorChooserPanel::splitButtonClicked(ActionEvent* e)
-{
- buttonClicked(e);
-}
+//void SplitButtonColorChooserPanel::splitButtonClicked(JActionEvent* e)
+//{
+// buttonClicked(e);
+//}
 
 
 //@Override

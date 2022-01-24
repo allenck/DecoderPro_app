@@ -9,6 +9,9 @@
 #include "defaultbackup.h"
 #include "operationsxml.h"
 #include <QMessageBox>
+#include "unexpectedexceptioncontext.h"
+#include "exceptiondisplayframe.h"
+#include "runtimeexception.h"
 
 //BackupDialog::BackupDialog(QWidget *parent) :
 //  JDialog(parent)
@@ -159,12 +162,12 @@ namespace Operations
      }
  }
 
- /*protected*/ void BackupDialog::do_backupButton_actionPerformed(ActionEvent* /*e*/)
+ /*protected*/ void BackupDialog::do_backupButton_actionPerformed(JActionEvent* /*e*/)
  {
   // Do the backup of the files...
   QString setName = "";
 
-//     try {
+     try {
          log->debug("backup button activated");
 
          setName = setNameTextField->text();
@@ -199,33 +202,33 @@ namespace Operations
          backup->backupFilesToSetName(setName);
          //dispose();
          close();
-//     } catch (IOException ex) {
-//         ExceptionContext context = new ExceptionContext(
-//                 ex,
-//                 tr("BackupDialog.BackingUp") + " " + setName,
-//                 tr("BackupDialog.Ensure"));
-//         new ExceptionDisplayFrame(context);
+     } catch (IOException* ex) {
+         ExceptionContext* context = new ExceptionContext(
+                 ex,
+                 tr("Backing up Operations files to:") + " " + setName,
+                 tr("Ensure that the name is a valid directory name and that you have permission to create files there, and try again."));
+         new ExceptionDisplayFrame(context, this);
 
-//     } catch (RuntimeException ex) {
-//         // ex.printStackTrace();
-//         log.error("Doing backup...", ex);
+     } catch (RuntimeException* ex) {
+         // ex.printStackTrace();
+         log->error("Doing backup...", ex);
 
-//         UnexpectedExceptionContext context = new UnexpectedExceptionContext(
-//                 ex, tr("BackupDialog.BackingUp") + " " + setName);
+         UnexpectedExceptionContext* context = new UnexpectedExceptionContext(
+                 ex, tr("BackupDialog.BackingUp") + " " + setName,this);
 
-//         new ExceptionDisplayFrame(context);
-//     } catch (Exception ex) {
-//         // ex.printStackTrace();
-//         log.error("Doing backup...", ex);
+         new ExceptionDisplayFrame(context, this);
+     } catch (Exception* ex) {
+         // ex.printStackTrace();
+         log->error("Doing backup...", ex);
 
-//         UnexpectedExceptionContext context = new UnexpectedExceptionContext(
-//                 ex, tr("BackupDialog.BackingUp") + " " + setName);
+         UnexpectedExceptionContext* context = new UnexpectedExceptionContext(
+                 ex, tr("BackupDialog.BackingUp") + " " + setName, this);
 
-//         new ExceptionDisplayFrame(context);
-//     }
+         new ExceptionDisplayFrame(context, this);
+     }
  }
 
- /*protected*/ void BackupDialog::do_cancelButton_actionPerformed(ActionEvent* arg0) {
+ /*protected*/ void BackupDialog::do_cancelButton_actionPerformed(JActionEvent* arg0) {
      //dispose();
  close();
  }
@@ -237,7 +240,7 @@ namespace Operations
      backupButton->setEnabled(s.length() > 0);
  }
 
- /*protected*/ void BackupDialog::do_helpButton_actionPerformed(ActionEvent* /*e*/) {
+ /*protected*/ void BackupDialog::do_helpButton_actionPerformed(JActionEvent* /*e*/) {
      // Not implemented yet.
  }
 

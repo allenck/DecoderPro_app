@@ -156,7 +156,7 @@ HexFileFrame::HexFileFrame(QWidget *parent) :
 }
 
 
-/*public*/ void HexFileFrame::openHexFileButtonActionPerformed(ActionEvent* /*e*/)
+/*public*/ void HexFileFrame::openHexFileButtonActionPerformed(JActionEvent* /*e*/)
 {
     // select the file
     // start at current file, show dialog
@@ -233,7 +233,7 @@ InstanceManager::setThrottleManager(
 }
 
 //@SuppressWarnings("deprecation")
-/*public*/ void HexFileFrame::filePauseButtonActionPerformed(ActionEvent* /*e*/)
+/*public*/ void HexFileFrame::filePauseButtonActionPerformed(JActionEvent* /*e*/)
 {
  //sourceThread.suspend();
  sourceThread->quit();
@@ -241,13 +241,13 @@ InstanceManager::setThrottleManager(
 }
 
 //@SuppressWarnings("deprecation")
-/*public*/ void HexFileFrame::jButton1ActionPerformed(ActionEvent* /*e*/) {  // resume button
+/*public*/ void HexFileFrame::jButton1ActionPerformed(JActionEvent* /*e*/) {  // resume button
 //sourceThread.resume();
     sourceThread->start();
     // sinkThread.resume();
 }
 
-/*public*/ void HexFileFrame::delayFieldActionPerformed(ActionEvent* /*e*/) {
+/*public*/ void HexFileFrame::delayFieldActionPerformed(JActionEvent* /*e*/) {
     // if the hex file has been started, change its delay
     if (port!=NULL) port->setDelay(delayField->text().toInt());
 }

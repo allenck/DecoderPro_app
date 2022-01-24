@@ -390,7 +390,7 @@ bool AbstractBoardProgPanel::setAddress(int maxValid) /*throws Exception*/
  //try {
  bool bOK;
  address = ((addrField->text().toInt(&bOK)) - 1);
- //} catch (Exception e) {
+ //} catch (Exception* e) {
  if(!bOK)
  {
   readAllButton->setSelected(false);
@@ -399,7 +399,7 @@ bool AbstractBoardProgPanel::setAddress(int maxValid) /*throws Exception*/
 //        JOptionPane.showMessageDialog(this, tr("STATUS_INVALID_ADDRESS"),
 //                tr("STATUS_TYPE_ERROR"), JOptionPane.ERROR_MESSAGE);
   QMessageBox::critical(this, tr("Error"), tr("Input Error"));
-  log->error(tr("Exception when parsing Address Field:") + " " /*+ e.getMessage()*/);
+  log->error(tr("Exception when parsing Address Field:") + " " /*+ e->getMessage()*/);
   //      throw e;
   return bOK;
  }
@@ -416,7 +416,7 @@ bool AbstractBoardProgPanel::setAddress(int maxValid) /*throws Exception*/
 //                "Error", JOptionPane.ERROR_MESSAGE);
   QMessageBox::critical(this, tr("Error"), tr("Address out of range, must be") +" 1 " + tr("to") + " " + QString::number(maxValid));
   log->error("Invalid address value");
-  throw JmriException(tr("ERROR_INVALID_ADDRESS") + " " + QString::number(address));
+  throw new JmriException(tr("ERROR_INVALID_ADDRESS") + " " + QString::number(address));
   return false;
  }
  return true;  // OK
@@ -452,7 +452,7 @@ bool AbstractBoardProgPanel::setAddress(int maxValid) /*throws Exception*/
  {
   if (log->isDebugEnabled())
   {
-   log->debug(tr("ERROR_WRITEALL_ABORTED") + " " /*+ e.getMessage()*/);
+   log->debug(tr("ERROR_WRITEALL_ABORTED") + " " /*+ e->getMessage()*/);
   }
   readAllButton->setSelected(false);
   writeAllButton->setSelected(false);
@@ -495,7 +495,7 @@ bool AbstractBoardProgPanel::setAddress(int maxValid) /*throws Exception*/
  {
   if (log->isDebugEnabled())
   {
-   log->debug(tr("ERROR_WRITEONE_ABORTED") + " " /*+ e.getMessage()*/);
+   log->debug(tr("ERROR_WRITEONE_ABORTED") + " " /*+ e->getMessage()*/);
   }
   readAllButton->setSelected(false);
   writeAllButton->setSelected(false);

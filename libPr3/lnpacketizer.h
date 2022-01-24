@@ -65,12 +65,14 @@ public:
 
   // data members to hold the streams. These are public so the inner classes defined here
      // can access whem with a Java 1.1 compiler
-  QDataStream* istream;
-  QDataStream* ostream;
+  QDataStream* istream = nullptr;
+  QDataStream* ostream = nullptr;
   //QBuffer* iBuf;
-  QByteArray* baStream;
+  QByteArray* baStream = nullptr;
   static QWaitCondition* dataAvailable;
 
+  QThread* rcvThread = nullptr;
+  QThread* xmtThread = nullptr;
  /*
   * Make connection to existing LnPortController object.
   * @param p Port controller for connected. Save this for a later
@@ -141,19 +143,19 @@ signals:
  void sendMessage(LocoNetMessage *);
 
 private:
- /*final*/ /*static*/ bool fulldebug;
+ /*final*/ /*static*/ bool fulldebug = false;
     bool debug;
     // Defined this way to reduce new object creation
     /*private*/ char rcvBuffer[1];
  Logger* log;
- QSerialPort* serial;
+ QSerialPort* serial = nullptr;
  QMutex mutex1; // used for QWaitCondition in RcvHandler
  QMutex mutex2;
  QMutex mutex3;
- LocoNetMessage* priorMsg; //=NULL;
+ LocoNetMessage* priorMsg = nullptr; //=NULL;
  //LlnMon* monitor;
  QObject* parent;
- LocoNetSystemConnectionMemo *memo;
+ LocoNetSystemConnectionMemo *memo = nullptr;
 
 private slots:
 #ifndef USE_THREAD
@@ -171,12 +173,12 @@ private slots:
     /**
      * XmtHandler (a local class) object to implement the transmit thread
      */
-    /*protected*/ QThread* xmtHandler ;
+    /*protected*/ QThread* xmtHandler  = nullptr;
 
     /**
      * RcvHandler (a local class) object to implement the receive thread
      */
-    /*protected*/ QThread* rcvHandler ;
+    /*protected*/ QThread* rcvHandler  = nullptr;
     /**
      * Read a single byte, protecting against various timeouts, etc.
      * <P>

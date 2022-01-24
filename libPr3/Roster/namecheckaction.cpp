@@ -106,8 +106,8 @@
              JOptionPane::showMessageDialog(_who, "No mismatched items found");
          }
 
-     } catch (/*HeadlessException | IOException | JDOMException ex*/Exception ex) {
-         JOptionPane::showMessageDialog(_who, "Error parsing decoder file: " + ex.getMessage());
+     } catch (/*HeadlessException | IOException | JDOMException ex*/Exception* ex) {
+         JOptionPane::showMessageDialog(_who, "Error parsing decoder file: " + ex->getMessage());
      }
 
     } else {

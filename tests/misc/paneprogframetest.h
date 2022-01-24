@@ -47,7 +47,7 @@ public:
 protected:
  // dummy implementations
  //@Override
- /*protected*/ QWidget* getModePane() override;
+ /*protected*/ JPanel* getModePane() override;
 };
 
 class PaneProgFrameO3 : public PaneProgFrame
@@ -62,7 +62,7 @@ public:
 protected:
  // dummy implementations
  //@Override
- /*protected*/ QWidget *getModePane() override;
+ /*protected*/ JPanel *getModePane() override;
 };
 
 #endif // PANEPROGFRAMETEST_H

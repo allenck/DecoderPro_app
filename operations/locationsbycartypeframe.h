@@ -41,13 +41,13 @@ namespace Operations
   QWidget* locationCheckBoxes;// = new JPanel();
 
   // panels
-  QWidget* pLocations;
+  JPanel* pLocations;
   QScrollArea* locationPane;
 
   // major buttons
-  QPushButton* clearButton;// = new JButton(Bundle.getMessage("Clear"));
-  QPushButton* setButton;// = new JButton(Bundle.getMessage("Select"));
-  QPushButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
+  JButton* clearButton;// = new JButton(Bundle.getMessage("Clear"));
+  JButton* setButton;// = new JButton(Bundle.getMessage("Select"));
+  JButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
 
   // check boxes
   QCheckBox* copyCheckBox;// = new QCheckBox(Bundle.getMessage("Copy"));

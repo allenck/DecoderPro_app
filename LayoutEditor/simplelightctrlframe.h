@@ -1,31 +1,35 @@
 #ifndef SIMPLELIGHTCTRLFRAME_H
 #define SIMPLELIGHTCTRLFRAME_H
 #include "jmrijframe.h"
+#include "propertychangelistener.h"
+#include "namedbeancombobox.h"
+#include "jlabel.h"
 
 class Logger;
-class ActionEvent;
+class JActionEvent;
 class QCheckBox;
 class QPushButton;
 class DecimalFormat;
 class Light;
 class JTextField;
-class QLabel;
-class SimpleLightCtrlFrame : public JmriJFrame
+class SimpleLightCtrlFrame : public JmriJFrame, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
  explicit SimpleLightCtrlFrame(QWidget *parent = 0);
- /*public*/ QString getClassName();
+ /*public*/ QString getClassName() override;
+  QObject* self() override {return (QObject*)this;}
 
 signals:
 
 public slots:
- /*public*/ void offButtonActionPerformed(ActionEvent* e = 0);
- /*public*/ void onButtonActionPerformed(ActionEvent* e = 0);
- /*public*/ void intensityButtonActionPerformed(ActionEvent* e = 0);
- /*public*/ void applyButtonActionPerformed(ActionEvent* e = 0);
- /*public*/ void statusButtonActionPerformed(ActionEvent* e = 0);
- /*public*/ void propertyChange(PropertyChangeEvent* e);
+ /*public*/ void offButtonActionPerformed(JActionEvent* e = 0);
+ /*public*/ void onButtonActionPerformed(JActionEvent* e = 0);
+ /*public*/ void intensityButtonActionPerformed(JActionEvent* e = 0);
+ /*public*/ void applyButtonActionPerformed(JActionEvent* e = 0);
+ /*public*/ void statusButtonActionPerformed(JActionEvent* e = 0);
+ /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 private:
  DecimalFormat* threeDigits; // newDecimalFormat("000");
@@ -45,6 +49,7 @@ private:
 
  QLabel* textStateLabel; // newjavax.swing.JLabel();
  QLabel* nowStateTextField; // newjavax.swing.JLabel();
+ JLabel* nowControllersTextField = new JLabel();
  QLabel* textIsEnabledLabel; // newjavax.swing.JLabel();
  QCheckBox* statusIsEnabledCheckBox; // newjavax.swing.JCheckBox();
  QLabel* textIsVariableLabel; // newjavax.swing.JLabel();
@@ -69,8 +74,28 @@ private:
  JTextField* transitionTimeTextField; // newjavax.swing.JTextField(4);
 
  QPushButton* applyButton; // newjavax.swing.JButton();
+ /*private*/ /*final*/ NamedBeanComboBox/*<Light>*/* to1;
+ /*private*/ PropertyChangeListener* _parentLightListener = nullptr;
+ /*private*/ void setControlFrameActive(bool showLight);
+
  Logger* log;
+ /*private*/ void resetLightToCombo();
  /*private*/ void updateLightStatusFields(bool flag);
+ friend class SLCFPropertyChangeListener;
+};
+
+class SLCFPropertyChangeListener : public QObject, public PropertyChangeListener
+{
+  Q_OBJECT
+  SimpleLightCtrlFrame* slcf;
+ public:
+  SLCFPropertyChangeListener(SimpleLightCtrlFrame* slcf) {this->slcf = slcf;}
+  QObject* self() override {return (QObject*)this;}
+ public slots:
+  /*public*/ void propertyChange(PropertyChangeEvent* e)override {
+      slcf->log->debug(tr("recv propChange: %1 %2 -> %3").arg(e->getPropertyName(), e->getOldValue().toString(), e->getNewValue().toString()));
+      slcf->updateLightStatusFields(false);
+  }
 };
 
 #endif // SIMPLELIGHTCTRLFRAME_H

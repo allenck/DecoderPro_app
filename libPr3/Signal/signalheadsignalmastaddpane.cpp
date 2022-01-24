@@ -113,7 +113,7 @@
  }
  for (int i = 0; i < count; i++)
  {
-  JmriBeanComboBox* head = new JmriBeanComboBox(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")));
+  JmriBeanComboBox* head = new JmriBeanComboBox(qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")));
   head->excludeItems(alreadyUsed);
   headList.append(head);
   signalHeadPanel->layout()->addWidget(head);
@@ -187,7 +187,7 @@
     //signalHeadPanel->setLayout(new QVBoxLayout());
     signalHeadPanel->setLayout(new QGridLayout(/*count + 1, 1*/));
     for (int i = 0; i < count; i++) {
-        JmriBeanComboBox* head = new JmriBeanComboBox(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")));
+        JmriBeanComboBox* head = new JmriBeanComboBox(qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager")));
         head->excludeItems(alreadyUsed);
         headList.append(head);
 
@@ -238,7 +238,7 @@
             try {
                 // now create it
                 currentMast = (SignalHeadSignalMast*)static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->provideSignalMast(name);
-            } catch (IllegalArgumentException ex) {
+            } catch (IllegalArgumentException* ex) {
                 // user input no good
                 handleCreateException(name);
                 return false; // without creating

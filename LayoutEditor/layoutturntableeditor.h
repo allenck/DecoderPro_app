@@ -21,7 +21,7 @@ class LayoutTurntableEditor : public LayoutTrackEditor
   Q_OBJECT
  public:
   /*public*/ LayoutTurntableEditor(/*@Nonnull*/ LayoutEditor* layoutEditor);
-  /*public*/ void editLayoutTrack(/*@Nonnull*/ LayoutTrack* layoutTrack) override;
+  /*public*/ void editLayoutTrack(/*@Nonnull*/ LayoutTrackView* layoutTrack) override;
 
  private:
   static Logger* log;
@@ -32,7 +32,7 @@ class LayoutTurntableEditor : public LayoutTrackEditor
   /*private*/ /*final*/ JTextField* editLayoutTurntableRadiusTextField = new JTextField(8);
   /*private*/ /*final*/ JTextField* editLayoutTurntableAngleTextField = new JTextField(8);
   /*private*/ /*final*/ NamedBeanComboBox/*<Block>*/* editLayoutTurntableBlockNameComboBox = new NamedBeanComboBox(
-           (BlockManager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
+           (Manager*)InstanceManager::getDefault("BlockManager"), nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
   /*private*/ QPushButton* editLayoutTurntableSegmentEditBlockButton;
 
   /*private*/ JPanel* editLayoutTurntableRayPanel;
@@ -97,25 +97,31 @@ public:
   friend class LayoutTurntableEditor;
 };
 
-class LTTE_editLayoutTurntableDonePressed : public ActionListener
+class LTTE_editLayoutTurntableDonePressed : public QObject, public ActionListener
 {
   Q_OBJECT
+    Q_INTERFACES(ActionListener)
   LayoutTurntableEditor* editor;
 public:
   LTTE_editLayoutTurntableDonePressed(LayoutTurntableEditor* editor) {this->editor = editor;}
-  void actionPerformed()
+  QObject* self() override {return (QObject*)this;}
+public slots:
+  void actionPerformed(JActionEvent */*e*/ = 0) override
   {
    editor->editLayoutTurntableDonePressed();
   }
 };
 
-class LTTE_turntableEditCancelPressed : public ActionListener
+class LTTE_turntableEditCancelPressed : public QObject, public ActionListener
 {
   Q_OBJECT
+    Q_INTERFACES(ActionListener)
   LayoutTurntableEditor* editor;
 public:
   LTTE_turntableEditCancelPressed(LayoutTurntableEditor* editor) {this->editor = editor;}
-  void actionPerformed()
+  QObject* self() override {return (QObject*)this;}
+public slots:
+  void actionPerformed(JActionEvent */*e*/ = 0)override
   {
    editor->turntableEditCancelPressed();
   }

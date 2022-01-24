@@ -23,7 +23,7 @@
  * Always use flow control, not considered a user-setable option
  */
 //@Override
-/*protected*/ void PR2Adapter::setSerialPort(SerialPort* activeSerialPort) throw (UnsupportedCommOperationException) {
+/*protected*/ void PR2Adapter::setSerialPort(SerialPort* activeSerialPort) /*throw (UnsupportedCommOperationException)*/ {
     // find the baud rate value, configure comm options
     int baud = 57600;  // default, but also defaulted in the initial value of selectedSpeed
     for (int i = 0; i < validBaudNumbers().length(); i++) {

@@ -1,11 +1,11 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
-#include <QWidget>
+#include "jpanel.h"
 //#include <QObject>
 
 class DropTarget;
-class Component : public QWidget
+class Component : public JPanel
 {
     Q_OBJECT
 public:

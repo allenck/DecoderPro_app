@@ -98,7 +98,7 @@
 
  //             // We have to add one here because line numbers start at 0 for getLineOfOffset and we want it to start at 1 for display.
  //             linenum += 1;
- //         } catch (Exception ex) {
+ //         } catch (Exception* ex) {
  //         }
 
  //         // Once we know the position of the line and the column, pass it to a helper function for updating the status bar.
@@ -215,7 +215,7 @@ try {
     // We have to add one here because line numbers start at 0 for getLineOfOffset and we want it to start at 1 for display.
     linenum += 1;
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
  }
 
@@ -265,9 +265,9 @@ try {
 
    area->setText(fileData/*.toString()*/);
 
-  } catch (Exception e)
+  } catch (Exception* e)
   {
-   log->error("Unhandled problem in loadFile: " + e.getMessage());
+   log->error("Unhandled problem in loadFile: " + e->getMessage());
   }
  }
  else
@@ -310,7 +310,7 @@ try {
   {
    QTextStream* stream = new QTextStream(&f);
    *stream << fileData;
-  } //catch (Exception e) {
+  } //catch (Exception* e) {
   else
   {
    log->error("Unhandled problem in storeFile: " /*+ e.get*/ + f.errorString());
@@ -433,7 +433,7 @@ void InputWindow::buttonPressed()
  {
   JmriScriptEngineManager::getDefault()->eval(area->text, JmriScriptEngineManager::getDefault()->getEngineByName((QString) languages->currentText()));
  } catch (ScriptException ex) {
-     log->error("Error executing script", ex);
+     log->error("Error executing script", &ex);
  }
 }
 

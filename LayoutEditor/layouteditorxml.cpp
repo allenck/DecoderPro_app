@@ -13,11 +13,14 @@
 #include <QMenuBar>
 #include "guilafpreferencesmanager.h"
 #include "userpreferencesmanager.h"
+#include "positionablepoint.h"
+#include "classmigration.h"
 
 LayoutEditorXml::LayoutEditorXml(QObject *parent) :
   AbstractXmlAdapter(parent)
 {
- log = new Logger("LayoutEditorXml");log->setDebugEnabled(true);
+ log = new Logger("LayoutEditorXml");
+ log->setDebugEnabled(true);
  setObjectName("LayoutEditorXml");
 }
 /**
@@ -50,19 +53,19 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  panel.setAttribute("name", p->getLayoutName());
  if (((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isEditorUseOldLocSize())
  {
-   panel.setAttribute("x", "" + p->gContext->getUpperLeftX());
-   panel.setAttribute("y", "" + p->gContext->getUpperLeftY());
-   panel.setAttribute("windowheight", "" + p->gContext->getWindowHeight());
-   panel.setAttribute("windowwidth", "" + p->gContext->getWindowWidth());
+   panel.setAttribute("x", QString::number(p->gContext->getUpperLeftX()));
+   panel.setAttribute("y", QString::number(p->gContext->getUpperLeftY()));
+   panel.setAttribute("windowheight", QString::number(p->gContext->getWindowHeight()));
+   panel.setAttribute("windowwidth", QString::number(p->gContext->getWindowWidth()));
  } else {
    // Use real location and size
    QPoint loc = p->getLocation();
-   panel.setAttribute("x", "" + loc.x());
-   panel.setAttribute("y", "" + loc.y());
+   panel.setAttribute("x", QString::number(loc.x()));
+   panel.setAttribute("y", QString::number(loc.y()));
 
    QSize size = p->size();
-   panel.setAttribute("windowheight", "" + size.height());
-   panel.setAttribute("windowwidth", "" + size.width());
+   panel.setAttribute("windowheight", QString::number(size.height()));
+   panel.setAttribute("windowwidth", QString::number(size.width()));
  }
  panel.setAttribute("panelheight", p->gContext->getLayoutHeight());
  panel.setAttribute("panelwidth", p->gContext->getLayoutWidth());
@@ -72,7 +75,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  panel.setAttribute("positionable", (p->allPositionable() ? "yes" : "no"));
  panel.setAttribute("controlling", (p->allControlling() ? "yes" : "no"));
  panel.setAttribute("animating", (p->isAnimating() ? "yes" : "no"));
- //panel.setAttribute("showhelpbar", (p->getShowHelpBar() ? "yes" : "no"));
+ panel.setAttribute("showhelpbar", (p->getShowHelpBar() ? "yes" : "no"));
  panel.setAttribute("drawgrid", (p->getDrawGrid() ? "yes" : "no"));
  panel.setAttribute("snaponadd", (p->getSnapOnAdd() ? "yes" : "no"));
  panel.setAttribute("snaponmove", (p->getSnapOnMove() ? "yes" : "no"));
@@ -126,114 +129,86 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
      if (!e .isNull()) {
          panel.appendChild(e);
      }
- } catch (Exception e) {
-     log->error("Error storing contents element: " + e.getMessage());
+ } catch (Exception* e) {
+     log->error("Error storing contents element: " + e->getMessage());
  }
+
+ // note: moving zoom attribute into per-window user preference
+ //panel.setAttribute("zoom", Double.toString(p.getZoom()));
+ int num;
 
  // include contents (Icons and Labels)
  QList<Positionable*> contents = p->getContents();
- int num = contents.size();
- if (num > 0)
+ for (Positionable* sub : contents)
  {
-  for (int i = 0; i < num; i++)
+  if (sub != nullptr && sub->storeItem())
   {
-   Positionable* sub = contents.at(i);
-   if (sub != nullptr && sub->storeItem())
+   try
    {
-    try
+    QDomElement e = ConfigXmlManager::elementFromObject(sub->self());
+    if (!e.isNull())
     {
-     QDomElement e = ConfigXmlManager::elementFromObject(sub->self());
-     if (!e.isNull())
-     {
-      panel.appendChild(e);
-     }
-    }
-    catch (Exception e)
-    {
-     log->error("Error storing panel contents element: " + e.getMessage());
+     panel.appendChild(e);
     }
    }
-   else
+   catch (Exception* e)
    {
-    log->warn("Null entry found when storing panel contents.");
+    log->error("Error storing panel contents element: " + e->getMessage());
    }
+  }
+  else
+  {
+   log->warn("Null entry found when storing panel contents.");
   }
  }
 
+
  // include LayoutTracks
-    QList<LayoutTrack*>* layoutTracks = p->getLayoutTracks();
-    num = layoutTracks->size();
-    if (log->isDebugEnabled()) {
-        log->debug("N LayoutTrack elements: " + QString::number(num));
-    }
+  QList<LayoutTrack*> layoutTracks = p->getLayoutTracks();
+  num = layoutTracks.size();
+  if (log->isDebugEnabled()) {
+      log->debug(tr("N LayoutTrack elements: %1").arg(num));
+  }
 
-    // Because some people (like me) like to edit their panel.xml files
-    // directly we're going to group the layout tracks by class before
-    // storing them. Note: No other order is effected; They should exist
-    // in the saved file in the order that they were created (ether at
-    // panel file load time or later by the users in the editor).
-//    QList<LayoutTrack*> orderedList = layoutTracks.stream() // next line excludes LayoutSlips
-//            .filter(item -> ((item instanceof LayoutTurnout) && !(item instanceof LayoutSlip)))
-//            .map(item -> (LayoutTurnout) item)
-//            .collect(Collectors.toList());
-    QList<LayoutTrack*> orderedList = QList<LayoutTrack*>();
-    for(LayoutTrack* lt : *layoutTracks) {
-     if(qobject_cast<LayoutTurnout*>(lt) && !qobject_cast<LayoutSlip*>(lt))
-      orderedList.append(lt);
-    }
-//    orderedList.addAll(layoutTracks.stream()
-//            .filter(item -> item instanceof TrackSegment)
-//            .map(item -> (TrackSegment) item)
-//            .collect(Collectors.toList()));
-    for(LayoutTrack* lt : *layoutTracks) {
-     if(qobject_cast<TrackSegment*>(lt))
-      orderedList.append(lt);
-    }
-//    orderedList.addAll(layoutTracks.stream()
-//            .filter(item -> item instanceof PositionablePoint)
-//            .map(item -> (PositionablePoint) item)
-//            .collect(Collectors.toList()));
-    for(LayoutTrack* lt : *layoutTracks) {
-     if(qobject_cast<PositionablePoint*>(lt))
-      orderedList.append(lt);
-    }
-//    orderedList.addAll(layoutTracks.stream()
-//            .filter(item -> item instanceof LevelXing)
-//            .map(item -> (LevelXing) item)
-//            .collect(Collectors.toList()));
-    for(LayoutTrack* lt : *layoutTracks) {
-     if(qobject_cast<LevelXing*>(lt))
-      orderedList.append(lt);
-    }
-//    orderedList.addAll(layoutTracks.stream()
-//            .filter(item -> item instanceof LayoutSlip)
-//            .map(item -> (LayoutSlip) item)
-//            .collect(Collectors.toList()));
-    for(LayoutTrack* lt : *layoutTracks) {
-     if(qobject_cast<LayoutSlip*>(lt))
-      orderedList.append(lt);
-    }
-//    orderedList.addAll(layoutTracks.stream()
-//            .filter(item -> item instanceof LayoutTurntable)
-//            .map(item -> (LayoutTurntable) item)
-//            .collect(Collectors.toList()));
-    for(LayoutTrack* lt : *layoutTracks) {
-     if(qobject_cast<LayoutTurntable*>(lt))
-      orderedList.append(lt);
-    }
 
-    for (LayoutTrack* lt : orderedList) {
-        try {
-            QDomElement e = ConfigXmlManager::elementFromObject(lt);
-            if (!e.isNull()) {
-                panel.appendChild(e);
-            }
-        } catch (Exception e) {
-            log->error("Error storing layoutturnout element: " + e.getMessage());
-        }
-    }
-    return panel;
-}   // store
+
+  // Previous write order was
+  //   LayoutTurnout) && !(item instanceof LayoutSlip)
+  //   TrackSegment
+  //   PositionablePoint
+  //   LevelXing
+  //   LayoutSlip
+  //   LayoutTurntable
+
+  // write order specified for compatibility
+  for (LayoutTrackView* lv : p->getLayoutTurnoutViews()) {
+      if (! (qobject_cast<LayoutSlipView*>(lv)) )
+          storeOne(panel, lv);
+  }
+  for (LayoutTrackView* lv : p->getTrackSegmentViews())         {storeOne(panel, lv); }
+  for (LayoutTrackView* lv : p->getPositionablePointViews())    {storeOne(panel, (QObject*)lv); }
+  for (LayoutTrackView* lv : p->getLevelXingViews())            {storeOne(panel, lv); }
+  for (LayoutTrackView* lv : p->getLayoutSlipViews())           {storeOne(panel, lv); }
+  for (LayoutTrackView* lv : p->getLayoutTurntableViews())      {storeOne(panel, lv); }
+
+  // include Layout Shapes
+  for (LayoutShape* ls : p->getLayoutShapes()) {storeOne(panel, (QObject*)ls); }
+
+  return panel;
+ }   // store
+
+
+ /*private*/ void LayoutEditorXml::storeOne(QDomElement panel, QObject* item) {
+     try {
+         QDomElement e = ConfigXmlManager::elementFromObject(item);
+         if (e != QDomElement()) {
+             panel.appendChild(e);
+         }
+     } catch (Exception* ex) {
+         log->error(tr("Error storing layout item: %1").arg(item->metaObject()->className()), ex);
+     }
+ }
+
 
 /*public*/ void LayoutEditorXml::load(QDomElement /*element*/, QObject* /*o*/) throw (Exception)
 {
@@ -262,35 +237,36 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  int mainlinetrackwidth = 3;
  try
  {
-  x = shared.attribute("x").toInt();
-  y = shared.attribute("y").toInt();
+  bool ok;
+  x = shared.attribute("x").toInt(&ok); if(!ok) throw new DataConversionException();
+  y = shared.attribute("y").toInt(&ok); if(!ok) throw new DataConversionException();
   // For compatibility with previous versions, try and see if height and width tags are contained in the file
-  if ((a = shared.attribute("height")) != nullptr) {
-      windowHeight = a.toInt();
+  if ((a = shared.attribute("height")) != "") {
+      windowHeight = a.toInt(&ok); if(!ok) throw new DataConversionException();
       panelHeight = windowHeight - 60;
   }
-  if ((a = shared.attribute("width")) != nullptr) {
-      windowWidth = a.toInt();
+  if ((a = shared.attribute("width")) != "") {
+      windowWidth = a.toInt(&ok); if(!ok) throw new DataConversionException();
       panelWidth = windowWidth - 18;
   }
   // For files created by the new version, retrieve window and panel sizes
-  if ((a = shared.attribute("windowheight")) != nullptr) {
-      windowHeight = a.toInt();
+  if ((a = shared.attribute("windowheight")) != "") {
+      windowHeight = a.toInt(&ok); if(!ok) throw new DataConversionException();
   }
-  if ((a = shared.attribute("windowwidth")) != nullptr) {
-      windowWidth = a.toInt();
+  if ((a = shared.attribute("windowwidth")) != "") {
+      windowWidth = a.toInt(&ok); if(!ok) throw new DataConversionException();
   }
-  if ((a = shared.attribute("panelheight")) != nullptr) {
-      panelHeight = a.toInt();
+  if ((a = shared.attribute("panelheight")) != "") {
+      panelHeight = a.toInt(&ok); if(!ok) throw new DataConversionException();
   }
-  if ((a = shared.attribute("panelwidth")) != nullptr) {
-      panelWidth = a.toInt();
+  if ((a = shared.attribute("panelwidth")) != "") {
+      panelWidth = a.toInt(&ok); if(!ok) throw new DataConversionException();
   }
 
   mainlinetrackwidth = shared.attribute("mainlinetrackwidth").toInt();
   sidetrackwidth = shared.attribute("sidetrackwidth").toInt();
  }
- catch (DataConversionException e)
+ catch (DataConversionException* e)
  {
      log->error("failed to convert LayoutEditor's attribute");
      result = false;
@@ -299,33 +275,34 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  double yScale = 1.0;
  a = shared.attribute("xscale");
  bool bok;
- if (a != nullptr)
+ if (a != "")
  {
   try
   {
    xScale = a.toFloat(&bok);
-   if(!bok) throw Exception();
+   if(!bok) throw new Exception();
   }
-  catch (Exception e)
+  catch (Exception* e)
   {
    log->error("failed to convert to float - " + a);
    result = false;
   }
  }
  a = shared.attribute("yscale");
- if (a != nullptr)
+ if (a != "")
  {
   try
   {
    yScale = a.toFloat(&bok);
-   if(!bok) throw Exception();
+   if(!bok) throw new Exception();
   }
-  catch (Exception e)
+  catch (Exception* e)
   {
    log->error("failed to convert to float - " + a);
    result = false;
   }
  }
+
  // find the name and default track color
  QString name = "";
  if (shared.attribute("name") != nullptr)
@@ -360,7 +337,7 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
          }
 
          QSize prefsWindowSize = prefsMgr->getWindowSize(windowFrameRef);
-         if (!prefsWindowSize.isNull() && prefsWindowSize.height() != 0 && prefsWindowSize.width() != 0) {
+         if (prefsWindowSize.isValid() && prefsWindowSize.height() != 0 && prefsWindowSize.width() != 0) {
              windowHeight = (int) prefsWindowSize.height();
              windowWidth = (int) prefsWindowSize.width();
          }
@@ -376,29 +353,39 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  //panel->setFilename(LoadXmlConfigAction::currentFile);
  panel->gContext->setMainlineTrackWidth(mainlinetrackwidth);
  panel->gContext->setSidelineTrackWidth(sidetrackwidth);
- // panel->setXScale(xScale);
- // panel->setYScale(yScale);
- //panel->setScale(xScale, yScale);
- QString defaultColor = ColorUtil::ColorDarkGray;
+ panel->gContext->setXScale(xScale);
+ panel->gContext->setYScale(yScale);
+
+ QString color = ColorUtil::ColorDarkGray;
  if ((a = shared.attribute("defaulttrackcolor")) != "") {
-     defaultColor = a;
+     color = a;
  }
- panel->setDefaultTrackColor(ColorUtil::stringToColor(defaultColor));
+ panel->setDefaultTrackColor(ColorUtil::stringToColor(color));
 
- QString defaultTextColor = ColorUtil::ColorBlack;
+ color = ColorUtil::ColorBlack;
  if ((a = shared.attribute("defaulttextcolor")) != "") {
-     defaultTextColor = a;
+     color = a;
  }
- panel->setDefaultTextColor(ColorUtil::stringToColor(defaultTextColor));
+ panel->setDefaultTextColor(ColorUtil::stringToColor(color));
 
- QString turnoutCircleColor = "track";  //default to using use default track color for circle color
+ color = "track";  //default to using use default track color for circle color
  if ((a = shared.attribute("turnoutcirclecolor")) != "") {
-     turnoutCircleColor = a;
+     color = a;
  }
- panel->setTurnoutCircleColor(ColorUtil::stringToColor(turnoutCircleColor));
+ panel->setTurnoutCircleColor(ColorUtil::stringToColor(color));
 
- if ((a = shared.attribute("turnoutcirclesize")) != "")
- {
+ // default to using turnout circle color just set
+ if ((a = shared.attribute("turnoutcirclethrowncolor")) != "") {
+     color = a;
+ }
+ panel->setTurnoutCircleThrownColor(ColorUtil::stringToColor(color));
+
+ // the "turnoutfillcontrolcircles" attribute has a default="no" value in the schema;
+ // it will always return a "no" attribute if the attribute is not present.
+ panel->setTurnoutFillControlCircles(shared.attribute("turnoutfillcontrolcircles")=="yes");
+
+if ((a = shared.attribute("turnoutcirclesize")) != "")
+{
      bool bok;
          panel->setTurnoutCircleSize(a.toInt(&bok));
      if(!bok) {
@@ -409,91 +396,97 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  try {
      panel->setTurnoutDrawUnselectedLeg(shared.attribute("turnoutdrawunselectedleg")=="true");
  }
- catch (DataConversionException e) {
+ catch (DataConversionException* e) {
      log->warn("unable to convert turnoutdrawunselectedleg attribute");
  }
- catch (NullPointerException e) {  // considered normal if the attribute is not present
+ catch (NullPointerException* e) {  // considered normal if the attribute is not present
  }
 
  // turnout size parameters
  double sz = 20.0;
  a = shared.attribute("turnoutbx");
- if (a != nullptr)
+ if (a != "")
  {
   try
   {
    sz = a.toFloat();
    panel->setTurnoutBX(sz);
-  } catch (Exception e)
+  } catch (Exception* e)
   {
    log->error("failed to convert to float - " + a);
    result = false;
   }
  }
  a = shared.attribute("turnoutcx");
- if (a != nullptr) {
+ if (a != "") {
      try {
          sz = a.toFloat();
          panel->setTurnoutCX(sz);
-     } catch (Exception e) {
+     } catch (Exception* e) {
          log->error("failed to convert to float - " + a);
          result = false;
      }
  }
  a = shared.attribute("turnoutwid");
- if (a != nullptr) {
+ if (a != "") {
      try {
          sz = a.toFloat();;
          panel->setTurnoutWid(sz);
-     } catch (Exception e) {
+     } catch (Exception* e) {
          log->error("failed to convert to float - " + a);
          result = false;
      }
  }
  a = shared.attribute("xoverlong");
- if (a != nullptr) {
+ if (a != "") {
      try {
          sz = a.toFloat();;
          panel->setXOverLong(sz);
-     } catch (Exception e) {
+     } catch (Exception* e) {
          log->error("failed to convert to float - " + a);
          result = false;
      }
  }
  a = shared.attribute("xoverhwid");
- if (a != nullptr) {
+ if (a != "") {
      try {
          sz = a.toFloat();;
          panel->setXOverHWid(sz);
-     } catch (Exception e) {
+     } catch (Exception* e) {
          log->error("failed to convert to float - " + a);
          result = false;
      }
  }
  a = shared.attribute("xovershort");
- if (a != nullptr) {
+ if (a != "") {
      try {
          sz = a.toFloat();;
          panel->setXOverShort(sz);
-     } catch (Exception e) {
+     } catch (Exception* e) {
          log->error("failed to convert to float - " + a);
          result = false;
      }
  }
+ // grid size parameter
+ if ((a = shared.attribute("gridSize")) != "") {
+     bool ok;
+         panel->gContext->setGridSize(a.toInt(&ok));
+     if(!ok) {
+         log->error(tr("failed to convert gridSize to int - %1").arg(a));
+         result = false;
+     }
+ }
 
- // set contents state
- QString slValue = "both";
- if ((a = shared.attribute("sliders")) != nullptr && a==("no")) {
-     slValue = "none";
- }
- if ((a = shared.attribute("scrollable")) != nullptr) {
-     slValue = a;
+ // second grid size parameter
+ if ((a = shared.attribute("gridSize2nd")) != "") {
+     bool ok;
+         panel->gContext->setGridSize2nd(a.toInt(&ok));
+     if(!ok) {
+         log->error(tr("failed to convert gridSize2nd to int - %1").arg(a));
+         result = false;
+     }
  }
 
- bool edValue = true;
- if ((a = shared.attribute("editable")) != nullptr && a==("no")) {
-     edValue = false;
- }
 
  bool value = true;
  if ((a = shared.attribute("positionable")) != nullptr && a==("no")) {
@@ -514,80 +507,102 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  }
  panel->setTurnoutAnimation(value);
 
- bool hbValue = true;
- if ((a = shared.attribute("showhelpbar")) != nullptr && a==("no")) {
-     hbValue = false;
+ try {
+     panel->setDrawGrid(getBooleanValue(shared.attribute("drawgrid")));
+ } catch (DataConversionException* e) {
+     log->warn("unable to convert drawgrid attribute");
+ } catch (NullPointerException* e) {  // considered normal if the attribute is not present
+     log->debug("missing drawgrid attribute");
  }
 
- bool dgValue = false;
- if ((a = shared.attribute("drawgrid")) != nullptr && a==("yes")) {
-     dgValue = true;
+ try {
+     panel->setSnapOnAdd(getBooleanValue(shared.attribute("snaponadd")));
+ } catch (DataConversionException* e) {
+     log->warn("unable to convert snaponadd attribute");
+ } catch (NullPointerException* e) {  // considered normal if the attribute is not present
+     log->debug("missing snaponadd attribute");
  }
 
- bool sgaValue = false;
- if ((a = shared.attribute("snaponadd")) != nullptr && a==("yes")) {
-     sgaValue = true;
+ try {
+     panel->setSnapOnMove(getBooleanValue(shared.attribute("snaponmove")));
+ } catch (DataConversionException* e) {
+     log->warn("unable to convert snaponmove attribute");
+ } catch (NullPointerException* e) {  // considered normal if the attribute is not present
+     log->debug("missing snaponmove attribute");
  }
 
- bool sgmValue = false;
- if ((a = shared.attribute("snaponmove")) != nullptr && a==("yes")) {
-     sgmValue = true;
+ try {
+     panel->setTurnoutCircles(getBooleanValue(shared.attribute("turnoutcircles")));
+ } catch (DataConversionException* e) {
+     log->warn("unable to convert turnoutcircles attribute");
+ } catch (NullPointerException* e) {  // considered normal if the attribute is not present
+     log->debug("missing turnoutcircles attribute");
  }
 
- bool aaValue = false;
- if ((a = shared.attribute("antialiasing")) != nullptr && a==("yes")) {
-     aaValue = true;
+ try {
+     panel->setTooltipsNotEdit(getBooleanValue(shared.attribute("tooltipsnotedit")));
+ } catch (DataConversionException* e) {
+     log->warn("unable to convert tooltipsnotedit attribute");
+ } catch (NullPointerException* e) {  // considered normal if the attribute is not present
+     log->debug("missing tooltipsnotedit attribute");
  }
 
- value = false;
- if ((a = shared.attribute("turnoutcircles")) != nullptr && a==("yes")) {
-     value = true;
+ try {
+     panel->setAutoBlockAssignment(getBooleanValue(shared.attribute("autoblkgenerate")));
+ } catch (DataConversionException* e) {
+     log->warn("unable to convert autoblkgenerate attribute");
+ } catch (NullPointerException* e) {  // considered normal if the attribute is not present
+     log->debug("missing autoblkgenerate attribute");
  }
- panel->setTurnoutCircles(value);
 
- value = false;
- if ((a = shared.attribute("tooltipsnotedit")) != nullptr && a==("yes")) {
-     value = true;
+ try {
+     panel->setTooltipsInEdit(getBooleanValue(shared.attribute("tooltipsinedit")));
+ } catch (DataConversionException* e) {
+     log->warn("unable to convert tooltipsinedit attribute");
+ } catch (NullPointerException* e) {  // considered normal if the attribute is not present
+     log->debug("missing tooltipsinedit attribute");
  }
- panel->setTooltipsNotEdit(value);
-
- value = false;
- if ((a = shared.attribute("autoblkgenerate")) != nullptr && a==("yes")) {
-     value = true;
- }
- panel->setAutoBlockAssignment(value);
-
- value = true;
- if ((a = shared.attribute("tooltipsinedit")) != nullptr && a==("no")) {
-     value = false;
- }
- panel->setTooltipsInEdit(value);
 
  // set default track color
- if ((a = shared.attribute("defaulttrackcolor")) != nullptr) {
-     panel->setDefaultTrackColor(a);
+ if ((a = shared.attribute("defaulttrackcolor")) != "") {
+     try {
+         panel->setDefaultTrackColor(ColorUtil::stringToColor(a));
+     } catch (IllegalArgumentException e) {
+         panel->setDefaultTrackColor(Qt::darkGray);
+         log->error(tr("Invalid defaulttrackcolor %1; using 'darkGray'").arg(a));
+     }
  }
- // set default track color
- if ((a = shared.attribute("defaultoccupiedtrackcolor")) != nullptr) {
-  panel->setDefaultOccupiedTrackColor(a);
+ // set default occupied track color
+ if ((a = shared.attribute("defaultoccupiedtrackcolor")) != "") {
+     try {
+         panel->setDefaultOccupiedTrackColor(ColorUtil::stringToColor(a));
+     } catch (IllegalArgumentException e) {
+         panel->setDefaultOccupiedTrackColor(Qt::red);
+         log->error(tr("Invalid defaultoccupiedtrackcolor %1; using 'red'").arg(a));
+     }
  }
- // set default track color
- if ((a = shared.attribute("defaultalternativetrackcolor")) != nullptr) {
-   panel->setDefaultAlternativeTrackColor(a);
+ // set default alternative track color
+ if ((a = shared.attribute("defaultalternativetrackcolor")) != "") {
+     try {
+         panel->setDefaultAlternativeTrackColor(ColorUtil::stringToColor(a));
+     } catch (IllegalArgumentException e) {
+         panel->setDefaultAlternativeTrackColor(Qt::white);
+         log->error(tr("Invalid defaultalternativetrackcolor %1; using 'white'").arg(a));
+     }
  }
  try {
   bool bok;
      int red = shared.attribute("redBackground").toInt(&bok);
-     if(!bok) throw DataConversionException();
+     if(!bok) throw new DataConversionException();
      int blue = shared.attribute("blueBackground").toInt(&bok);
-     if(!bok) throw DataConversionException();
+     if(!bok) throw new DataConversionException();
      int green = shared.attribute("greenBackground").toInt(&bok);
-     if(!bok) throw DataConversionException();
+     if(!bok) throw new DataConversionException();
      panel->setDefaultBackgroundColor(ColorUtil::colorToString( QColor(red, green, blue)));
      panel->setBackgroundColor( QColor(red, green, blue));
- } catch (DataConversionException e) {
+ } catch (DataConversionException* e) {
      log->warn("Could not parse color attributes!");
- } catch (NullPointerException e) {  // considered normal if the attributes are not present
+ } catch (NullPointerException* e) {  // considered normal if the attributes are not present
  }
  if (shared.attribute("useDirectTurnoutControl") != nullptr)
  {
@@ -616,13 +631,16 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
     id = item.attribute("name");
     log->debug("Load " + id + " for [" + panel->getName() + "] via " + adapterName);
    }
-   catch (Exception e) {
+   catch (Exception* e) {
    }
   }
   try
   {
+   adapterName = ClassMigration::migrateName(adapterName);
+
    XmlAdapter* adapter;// = (XmlAdapter*) Class.forName(adapterName).newInstance();
    QString className = adapterName.mid(adapterName.lastIndexOf(".") +1);
+
    int typeId = QMetaType::type(className.toLocal8Bit());
    if(typeId > 0)
    {
@@ -641,9 +659,9 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
     }
    }
   }
-  catch (ClassNotFoundException e)
+  catch (ClassNotFoundException* e)
   {
-   log->error("Exception while loading " + item.tagName() + ":" + e.getMessage());
+   log->error("Exception while loading " + item.tagName() + ":" + e->getMessage());
    result = false;
          //e.printStackTrace();
   }
@@ -654,20 +672,51 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
  panel->setConnections();
 
  // display the results
- panel->setAllEditable(edValue);  // set first since other attribute use this setting
- panel->setShowHelpBar(hbValue);
- panel->setDrawGrid(dgValue);
- panel->setSnapOnAdd(sgaValue);
- panel->setSnapOnMove(sgmValue);
- panel->setAntialiasingOn(aaValue);
- //panel->setScroll(slValue);
- panel->setLayoutDimensions(windowWidth, windowHeight, x, y, panelWidth, panelHeight);
- panel->editScene->setSceneRect(0,0,panelWidth, panelHeight);
- panel->editPanel->scale(xScale, yScale); // added ACK
+ try {
+     // set first since other attribute use this setting
+     panel->setAllEditable(getBooleanValue(shared.attribute("editable")));
+ } catch (DataConversionException* e) {
+     log->warn("unable to convert editable attribute");
+ } catch (NullPointerException* e) {  // considered normal if the attribute is not present
+     log->debug("missing editable attribute");
+ }
+ try {
+     panel->setShowHelpBar(getBooleanValue(shared.attribute("showhelpbar")));
+ } catch (DataConversionException* e) {
+     log->warn("unable to convert showhelpbar attribute");
+ } catch (NullPointerException* e) {  // considered normal if the attribute is not present
+     log->debug("missing showhelpbar attribute");
+ }
+ try {
+     panel->setAntialiasingOn(getBooleanValue(shared.attribute("antialiasing")));
+ } catch (DataConversionException* e) {
+     log->warn("unable to convert antialiasing attribute");
+ } catch (NullPointerException* e) {  // considered normal if the attribute is not present
+     log->debug("missing antialiasing attribute");
+ }
+
+ // set contents state
+ QString slValue = "both";
+ try {
+     bool value = getBooleanValue(shared.attribute("sliders"));
+     slValue = value ? "both" : "none";
+ } catch (DataConversionException* e) {
+     log->warn("unable to convert sliders attribute");
+ } catch (NullPointerException* e) {  // considered normal if the attribute is not present
+     log->debug("missing sliders attribute");
+ }
+ if ((a = shared.attribute("scrollable")) != "") {
+     slValue = a;
+ }
+ panel->setScroll(slValue);
+
  panel->pack();
  panel->setLayoutDimensions(windowWidth, windowHeight, x, y, panelWidth, panelHeight);
+ panel->editScene->setSceneRect(0,0,panelWidth, panelHeight);
+ //panel->editPanel->scale(xScale, yScale); // added ACK
  panel->setVisible(true);    // always show the panel
  panel->resetDirty();
+
  panel->getTargetFrame()->menuBar()->setVisible(true);
  panel->menuBox->setChecked(true);
 
@@ -675,21 +724,24 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
 
 
  // register the resulting panel for later configuration
- static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerUser(panel);
- //if (InstanceManager::transitManagerInstance()->getSystemNameList().size() > 0)
+ ConfigureManager* cm = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+ if (cm != nullptr) {
+     cm->registerUser(panel);
+ }
+ //open Dispatcher frame if any Transits are defined, and open Dispatcher flag set on
  if(((TransitManager*)InstanceManager::getNullableDefault("TransitManager")))
  {
-  if (shared.attribute("openDispatcher") != nullptr)
-  {
-   if (shared.attribute("openDispatcher")==("yes"))
-   {
-    panel->setOpenDispatcherOnLoad(true);
-    DispatcherFrame::instance();
-   }
-   else
-   {
-    panel->setOpenDispatcherOnLoad(false);
-   }
+  try {
+      bool value = getBooleanValue(shared.attribute("openDispatcher"));
+      panel->setOpenDispatcherOnLoad(value);
+      if (value) {
+          DispatcherFrame* df = (DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame");
+          df->loadAtStartup();
+      }
+  } catch (DataConversionException* e) {
+      log->warn("unable to convert openDispatcher attribute");
+  } catch (NullPointerException* e) {  // considered normal if the attribute is not present
+      log->debug("missing openDispatcher attribute");
   }
  }
  return result;
@@ -697,4 +749,14 @@ LayoutEditorXml::LayoutEditorXml(QObject *parent) :
 
 /*public*/ int LayoutEditorXml::loadOrder() const{
     return Manager::PANELFILES;
+}
+
+/*private*/ bool LayoutEditorXml::getBooleanValue(QString val)
+{
+ QString txt = val.trimmed().toLower();
+ if(txt == "yes" || txt == "true" )
+  return true;
+ if(txt == "no" || txt == "false" )
+  return false;
+ throw new DataConversionException();
 }

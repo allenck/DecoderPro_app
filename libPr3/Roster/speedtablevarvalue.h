@@ -17,11 +17,10 @@ public:
     /*public*/ SpeedTableVarValue(QString name, QString comment, QString cvName,
                               bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly,
                               QString cvNum, QString mask, int minVal, int maxVal,
-                              QMap<QString,CvValue*>* v, QLabel* status, QString stdname, int entries, bool mfxFlag, QObject *parent = 0);
+                              QMap<QString,CvValue*>* v, JLabel *status, QString stdname, int entries, bool mfxFlag, QObject *parent = 0);
     /*public*/ SpeedTableVarValue(QObject *parent = 0);
-    /*public*/ QVariant rangeVal() ;
-    /*public*/ QVector<CvValue*>* usesCVs() ;
-    // /*public*/ void stateChanged(ChangeEvent* e);
+    /*public*/ QVariant rangeVal() override;
+    /*public*/ QVector<CvValue*> usesCVs() override;
     void setModel(int i, int value) ;
     void forceMonotonic(int modifiedStepIndex, int value);
     void matchPoints(int modifiedStepIndex);
@@ -29,36 +28,36 @@ public:
     void matchPointsRight(int modifiedStepIndex);
     void enforceEndPointsMfx();
     /*public*/ int getState() ;
-    /*public*/ QString getValueString();
-    /*public*/ void setIntValue(int i);
-    /*public*/ int getIntValue() ;
-    /*public*/ QVariant getValueObject();
-    /*public*/ QWidget* getCommonRep();
+    /*public*/ QString getValueString() override;
+    /*public*/ void setIntValue(int i) override;
+    /*public*/ int getIntValue()  override;
+    /*public*/ QVariant getValueObject() override;
+    /*public*/ QWidget* getCommonRep() override;
     /*public*/ void setValue(int value);
     void setColor(QColor c);
-    /*public*/ QWidget* getNewRep(QString format);
+    /*public*/ QWidget* getNewRep(QString format) override;
     void initStepCheckBoxes() ;
-    /*public*/ void setCvState(int state);
-    /*public*/ bool isChanged();
-    /*public*/ void readChanges() ;
-    /*public*/ void writeChanges();
-    /*public*/ void readAll();
-    /*public*/ void writeAll() ;
+    /*public*/ void setCvState(int state) override;
+    /*public*/ bool isChanged() override;
+    /*public*/ void readChanges()  override;
+    /*public*/ void writeChanges() override;
+    /*public*/ void readAll() override;
+    /*public*/ void writeAll()  override;
     void readNext();
     void writeNext() ;
-    /*public*/ void dispose();
+    /*public*/ void dispose() override;
 signals:
 
 public slots:
-    void doForceStraight(ActionEvent* e = 0);
-    void doMatchEnds(ActionEvent* e = 0);
-    void doRatioCurve(ActionEvent* e = 0);
-    void doLogCurve(ActionEvent* e = 0);
-    void doShiftLeft(ActionEvent* e = 0) ;
-    void doShiftRight(ActionEvent* e = 0);
+    void doForceStraight(JActionEvent* e = 0);
+    void doMatchEnds(JActionEvent* e = 0);
+    void doRatioCurve(JActionEvent* e = 0);
+    void doLogCurve(JActionEvent* e = 0);
+    void doShiftLeft(JActionEvent* e = 0) ;
+    void doShiftRight(JActionEvent* e = 0);
     /*public*/ void stateChanged(QWidget*);
     // handle incoming parameter notification
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 private:
     static /*final*/ const QString VSTART_CV;// = 2;
@@ -74,7 +73,6 @@ private:
     bool mfx;
 
     QList<QCheckBox*> stepCheckBoxes;
-    QList<JSlider*> stepSliders;
     QColor _defaultColor;
 
     /**
@@ -82,7 +80,7 @@ private:
      * indicates the index of the CV to handle when the current programming operation
      * finishes.
      */
-    /*private*/ int _progState;// = IDLE;
+    /*private*/ int _progState = IDLE;
 
     /*private*/ static /*final*/ const int IDLE = -1;
     bool isReading;
@@ -91,7 +89,7 @@ private:
     /**
      * Count number of retries done
      */
-    /*private*/ int retries;// = 0;
+    /*private*/ int retries = 0;
 
     /**
      * Define maximum number of retries of read/write operations before moving on
@@ -101,7 +99,7 @@ private:
     bool onlyChanges;// = false;
     Logger* logit;
 };
-#if 1
+
 /* Internal class extends a JSlider so that its color is consistent with
  * an underlying CV; we return one of these in getNewRep.
  *<P>
@@ -127,7 +125,7 @@ private:
    // tooltip label
     setToolTip(tr("TextStep") +" "+QString::number(step)+" CV "+(var->number()));
    // listen for changes to original state
-   //_var->addPropertyChangeListener(new PropertyChangeListener() {
+   //_var->SwingPropertyChangeSupport::addPropertyChangeListener(new PropertyChangeListener() {
     var->addPropertyChangeListener((PropertyChangeListener*)this);
     connect(var, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(originalPropertyChanged(PropertyChangeEvent*)));
 //                /*public*/ void propertyChange(java.beans.PropertyChangeEvent e) {
@@ -148,6 +146,10 @@ public slots:
    if (e->getPropertyName()==("State"))
    {
     setBackground(_var->getColor());
+   }
+   if (e->getPropertyName()==("Value"))
+   {
+    setValue(e->getNewValue().toInt());
    }
   }
 private:
@@ -188,6 +190,5 @@ private:
   }
   Logger* log;
 };  // end class definition
-#endif
 
 #endif // SPEEDTABLEVARVALUE_H

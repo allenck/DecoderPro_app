@@ -1,9 +1,13 @@
 #include "loaddemoaction.h"
 #include "operationsxml.h"
-#include <QMessageBox>
+#include "joptionpane.h"
 #include "autobackup.h"
 #include "operationsmanager.h"
 #include "apps.h"
+#include "instancemanager.h"
+#include "exceptioncontext.h"
+#include "exceptiondisplayframe.h"
+
 /**
  * Swing action to load the operation demo files.
  *
@@ -23,7 +27,7 @@
 
 namespace Operations
 {
- /*public*/ LoadDemoAction::LoadDemoAction(QString s, QObject* parent)  : AbstractAction(s, parent)
+ /*public*/ LoadDemoAction::LoadDemoAction(QObject* parent)  : AbstractAction(tr("Load Demo"), parent)
  {
      //super(s);
   backup = new Operations::AutoBackup();
@@ -32,29 +36,27 @@ namespace Operations
  }
 
  //@Override
- /*public*/ void LoadDemoAction::actionPerformed(ActionEvent* /*e*/)
+ /*public*/ void LoadDemoAction::actionPerformed(JActionEvent * /*e*/)
  {
      // check to see if files are dirty
   if (OperationsXml::areFilesDirty())
   {
- //        if (JOptionPane.showConfirmDialog(null, Bundle.getMessage("OperationsFilesModified"),
- //                Bundle.getMessage("SaveOperationFiles"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
-   if(QMessageBox::question(NULL, tr("Save operation files?"), tr("Operations files have been modified, do you want to save them?"), QMessageBox::Yes | QMessageBox::No)== QMessageBox::Yes)
+   if (JOptionPane::showConfirmDialog(nullptr, tr("Operations files have been modified, do you want to save them?"),
+           tr("Save operation files?"), JOptionPane::YES_NO_OPTION) == JOptionPane::YES_OPTION)
    {
            OperationsXml::save();
    }
   }
 
- // int results = JOptionPane.showConfirmDialog(null, Bundle.getMessage("AreYouSureDemoFiles"),
- //         Bundle.getMessage("LoadDemo"), JOptionPane.OK_CANCEL_OPTION);
- // if (results != JOptionPane.OK_OPTION) {
-  if(QMessageBox::question(NULL, tr("Load Demo Files"), tr("Are you sure you want to load the demo operation files?"), QMessageBox::Ok |QMessageBox::Cancel)!= QMessageBox::Ok)
+  int results = JOptionPane::showConfirmDialog(nullptr, tr("Are you sure you want to load the demo operation files?"),
+          tr("Load Demo Files"), JOptionPane::OK_CANCEL_OPTION);
+  if (results != JOptionPane::OK_OPTION)
   {
       return;
   }
 
 
-  //try {
+  try {
       backup->autoBackup();
 
       backup->loadDemoFiles();
@@ -62,17 +64,16 @@ namespace Operations
       // now deregister shut down task
       // If Trains window was opened, then task is active
       // otherwise it is normal to not have the task running
-      OperationsManager::getInstance()->setShutDownTask(NULL);
+      ((Operations::OperationsManager*)InstanceManager::getDefault("Operations::OperationsManager"))->setShutDownTask(NULL);
 
- //     JOptionPane.showMessageDialog(null, Bundle.getMessage("YouMustRestartAfterLoadDemo"),
- //             Bundle.getMessage("LoadDemoSuccessful"), JOptionPane.INFORMATION_MESSAGE);
-      QMessageBox::information(NULL, tr("Demo load successful!"), tr("You must restart JMRI to complete the load demo operation"));
+      JOptionPane::showMessageDialog(nullptr, tr("You must restart JMRI to complete the load demo operation"),
+              tr("Demo load successful!"), JOptionPane::INFORMATION_MESSAGE);
       Apps::handleRestart();
 
- // } catch (Exception ex) {
- //     ExceptionContext context = new ExceptionContext(ex, Bundle.getMessage("LoadingDemoFiles"),
- //             Bundle.getMessage("LoadingDemoMakeSure"));
- //     new ExceptionDisplayFrame(context);
- // }
+  } catch (Exception* ex) {
+      ExceptionContext* context = new ExceptionContext(ex, tr("Loading Demo Files"),
+              tr("Make sure that all of the demo files exist and can be read."));
+      new ExceptionDisplayFrame(context);
+  }
  }
 }

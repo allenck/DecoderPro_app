@@ -1,4 +1,4 @@
-﻿#include "fileutilsupport.h"
+#include "fileutilsupport.h"
 #include <QDir>
 #include "file.h"
 #include "system.h"
@@ -14,10 +14,12 @@
 #include "vptr.h"
 #include "profile.h"
 #include "profilemanager.h"
+#include <QAbstractAnimation>
+#include <QCheckBox>
 
 /**
  * Support the {@link jmri.util.FileUtil } static API while providing
- * {@link java.beans.PropertyChangeSupport} for listening to changes in the
+ * {@link java.beans.SwingPropertyChangeSupport} for listening to changes in the
  * paths.
  *
  * @author Randall Wood (C) 2015
@@ -31,9 +33,10 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _program, ("program:"))
 Q_GLOBAL_STATIC_WITH_ARGS(const char*, _settings, ("settings:"))
 Q_GLOBAL_STATIC_WITH_ARGS(const char*, _home, ("home:"))
 Q_GLOBAL_STATIC_WITH_ARGS(const char*, _scripts, ("scripts:"))
-Q_GLOBAL_STATIC_WITH_ARGS(const char*, _resource, ("resource:"))
-Q_GLOBAL_STATIC_WITH_ARGS(const char*, _file, ("file:"))
+//Q_GLOBAL_STATIC_WITH_ARGS(const char*, _resource, ("resource:"))
+//Q_GLOBAL_STATIC_WITH_ARGS(const char*, _file, ("file:"))
 
+Q_GLOBAL_STATIC_WITH_ARGS(FileUtilSupport*, _instancePtr, (new FileUtilSupport()))
 
 
 
@@ -98,23 +101,26 @@ Q_GLOBAL_STATIC_WITH_ARGS(const char*, _file, ("file:"))
 //  QString realPath = pathFromPortablePath(profile, path);
 //  QFileInfo info(realPath);
 //  if(!info.exists())
-//   throw FileNotFoundException(realPath);
+//   throw  new FileNotFoundException(realPath);
 //  file = new File(realPath);
 //  if(!file->exists())
-//   throw FileNotFoundException(tr("File not found: %s").arg(file->getPath()));
+//   throw  new FileNotFoundException(tr("File not found: %s").arg(file->getPath()));
 // }
-// catch (NullPointerException ex)
+// catch (NullPointerException* ex)
 // {
 //  throw  FileNotFoundException("Cannot find file at " + path);
 // }
-// catch (IOException ex)
+// catch (IOException* ex)
 // {
 //  throw  FileNotFoundException("Cannot find file at " + path);
 // }
 // return file;
+ QFileInfo info(this->pathFromPortablePath(profile, path));
+ if(!info.exists())
+  throw  FileNotFoundException("Cannot find file at " + info.filePath());
  try {
      return new File(this->pathFromPortablePath(profile, path));
- } catch (NullPointerException ex) {
+ } catch (NullPointerException* ex) {
      throw  FileNotFoundException("Cannot find file at " + path);
  }
 
@@ -174,7 +180,7 @@ public URL getURL(URI uri) {
     } catch (MalformedURLException | IllegalArgumentException ex) {
         log->warn("Unable to get URL from {}", uri.toString());
         return null;
-    } catch (NullPointerException ex) {
+    } catch (NullPointerException* ex) {
         log->warn("Unable to get URL from null object.", ex);
         return null;
     }
@@ -489,7 +495,7 @@ public URL getURL(URI uri) {
     }
 
     if (filename == nullptr) {
-        throw IllegalArgumentException("File \"" + file->toString() + "\" has a null absolute path which is not allowed");
+        throw new IllegalArgumentException("File \"" + file->toString() + "\" has a null absolute path which is not allowed");
     }
 
     // compare full path name to see if same as preferences
@@ -636,7 +642,7 @@ public URL getURL(URI uri) {
 /*public*/ QString FileUtilSupport::getHomePath() {
 // homePath = QDir::homePath() + File::separator;
 //    return homePath;
- return QDir::homePath() + File::separator;
+ return QDir::homePath() + /*File::separator*/'/';
 }
 
 /**
@@ -649,6 +655,7 @@ public URL getURL(URI uri) {
 /*public*/ QString FileUtilSupport::getUserFilesPath() {
  return getUserFilesPath(ProfileManager::getDefault()->getActiveProfile());
 }
+
 /**
  * Get the user's files directory. If not set by the user, this is the same
  * as the profile path. Note that if the profile path has been set to null,
@@ -816,7 +823,7 @@ public URL getURL(URI uri) {
 //     if(paths->size() > 1)
 //      return SelectProgramPath(paths);
      if(!paths->isEmpty())
-      this->programPath = (paths->at(0) + File::separator);
+      this->programPath = (paths->at(0) + /*File::separator*/'/');
     }
     return programPath;
 }
@@ -831,19 +838,22 @@ public URL getURL(URI uri) {
  foreach (QString str, *stringList) {
   list->addItem(new QListWidgetItem(str));
  }
-
  widget->layout()->addWidget(list);
+ QCheckBox* cb = new QCheckBox(tr("Don't show this again"));
+ widget->layout()->addWidget(cb);
+
  QVariantList buttons = QVariantList() << tr("Ok") << tr("Cancel");
  while (true)
  {
   int retval = JOptionPane::showOptionDialog(nullptr, VPtr<QWidget>::asQVariant(widget),
-                                             "Select path", JOptionPane::QUESTION_MESSAGE, JOptionPane::OK_CANCEL_OPTION, QIcon(), buttons, QVariant());
+                                             "Select path",  JOptionPane::OK_CANCEL_OPTION,JOptionPane::QUESTION_MESSAGE, QIcon(), /*buttons*/QVariantList(), QVariant());
   if(retval == JOptionPane::CANCEL_OPTION)
    return "";
   QList<QListWidgetItem*> items = list->selectedItems();
   if(items.count()>0)
   {
    setProgramPath(items.at(0)->text());
+   qputenv("JMRIPROJECT", items.at(0)->text().toLocal8Bit());
    return items.at(0)->text();
   }
  }
@@ -876,14 +886,14 @@ public URL getURL(URI uri) {
  QString old = this->programPath;
  try {
      this->programPath = (path)->getCanonicalPath() + File::separator;
- } catch (IOException ex) {
+ } catch (IOException* ex) {
      log->error("Unable to get JMRI program directory.", ex);
  }
  if ((old != NULL && old != (this->programPath))
          || (this->programPath != NULL && this->programPath !=(old)))
  {
-  FileUtil::Property* oldProperty = new FileUtil::Property(ProfileManager::defaultManager()->getActiveProfile(), old);
-  FileUtil::Property* newProperty = new FileUtil::Property(ProfileManager::defaultManager()->getActiveProfile(), this->programPath);
+  FileUtil::Property* oldProperty = new FileUtil::Property(ProfileManager::getDefault()->getActiveProfile(), old);
+  FileUtil::Property* newProperty = new FileUtil::Property(ProfileManager::getDefault()->getActiveProfile(), this->programPath);
 
      //this->firePropertyChange(*_program, old, this->programPath);
   this->firePropertyChange(*_program, VPtr<FileUtil::Property>::asQVariant(oldProperty), VPtr<FileUtil::Property>::asQVariant(newProperty));
@@ -1019,7 +1029,7 @@ public URL getURL(URI uri) {
     }
     try {
         return new JarFile(jarPath);
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         log->error("Unable to open jmri.jar", ex);
         return NULL;
     }
@@ -1051,7 +1061,7 @@ public URL getURL(URI uri) {
 /*public*/ void FileUtilSupport::rotate(/*@NonNULL*/ File* file, int max, QString extension) //throws IOException
 {
     if (max < 1) {
-        throw IllegalArgumentException();
+        throw new IllegalArgumentException();
     }
     QString name = file->getName();
     if (extension != "") {
@@ -1075,10 +1085,15 @@ public URL getURL(URI uri) {
 }
 
 /*public*/ /*static*/ FileUtilSupport* FileUtilSupport::getDefault() {
-    if (FileUtilSupport::defaultInstance == nullptr) {
-        FileUtilSupport::defaultInstance = new FileUtilSupport();
-    }
-    return FileUtilSupport::defaultInstance;
+//    if (FileUtilSupport::defaultInstance == nullptr) {
+//        FileUtilSupport::defaultInstance = new FileUtilSupport();
+//    }
+//    return FileUtilSupport::defaultInstance;
+//    if(_instancePtr.exists())
+//        return *_instancePtr;
+//    return nullptr;
+    FileUtilSupport* instance = *_instancePtr;
+    return instance;
 }
 
 /**
@@ -1183,8 +1198,15 @@ public URL getURL(URI uri) {
  {
   if ((new File(path.mid(QString(*_settings).length())))->isAbsolute()) {
       path = path.mid(QString(*_settings).length());
-  } else {
-      path = path.replace(*_settings, Matcher::quoteReplacement(this->getPreferencesPath()));
+  } else
+  {
+   QString path1;
+//   path1 = QString(path).replace(*_settings, Matcher::quoteReplacement(this->getPreferencesPath()));
+//   if(!QFileInfo(path1).exists())
+//   {
+    path1 = QString(path).replace(*_settings, Matcher::quoteReplacement(this->getProfilePath()));
+//   }
+   path = path1;
   }
  }
  else if (path.startsWith(*_home))
@@ -1206,15 +1228,15 @@ public URL getURL(URI uri) {
      QFileInfo info(path);
      if(!info.exists())
      {
-      //throw FileNotFoundException(path);
+      //throw  new FileNotFoundException(path);
       QString msg = tr("can't convert '%1' to '%2'").arg(path_save).arg(path);
       //log->error(msg);
-      //throw NullPointerException(msg);  // throw IOException??
-      throw IOException(msg);
+      //throw new NullPointerException(msg);  // throw new IOException??
+      throw new IOException(msg);
      }
      return (new File(path.replace(*_separator, File::separatorChar)))->getCanonicalPath();
- } catch (IOException ex) {
-     //log->warn(tr("Cannot convert %1 into a usable filename.").arg(path)+ ex.getMessage());
+ } catch (IOException* ex) {
+     //log->warn(tr("Cannot convert %1 into a usable filename.").arg(path)+ ex->getMessage());
      return "";
  }
 }
@@ -1262,7 +1284,7 @@ public URL getURL(URI uri) {
     if(names.contains("catalog.xml") && names.contains("names.xml") && names.contains("decoderIndex.xml") && !(info.filePath().contains(".jmri")))
     {
      paths->append(info.path());
-     names = QDir(info.absolutePath() + File::separator + "web").entryList(filters,QDir::AllDirs);
+     names = QDir(info.absolutePath() + /*File::separator*/'/' + "web").entryList(filters,QDir::AllDirs);
      if(names.contains("xml") && names.contains("prefs") && names.contains("dist"))
       continue;
      if(!names.contains("xml"))
@@ -1323,7 +1345,7 @@ public URL getURL(URI uri) {
  * @return The contents of the file.
  * @throws java.io.IOException if the URL cannot be read
  */
-/*public*/ QString FileUtilSupport::readURL(QUrl url) throw (IOException) {
+/*public*/ QString FileUtilSupport::readURL(QUrl url) /*throw (IOException)*/ {
     try {
         QString builder;
 //        try (InputStreamReader in = new InputStreamReader(url.openStream(), StandardCharsets.UTF_8);
@@ -1336,7 +1358,7 @@ public URL getURL(URI uri) {
 //        }
 //        return builder.toString();
     if(url.path() == "")
-     throw NullPointerException("invalid URL");
+     throw new NullPointerException("invalid URL");
     QFile* f = new QFile(url.path());
     if(f->open(QIODevice::ReadOnly))
     {
@@ -1345,7 +1367,7 @@ public URL getURL(URI uri) {
      return builder;
     }
  }
- catch (NullPointerException ex) {
+ catch (NullPointerException* ex) {
         return "";
  }
  return "";
@@ -1429,7 +1451,7 @@ public URL getURL(URI uri) {
  * @param dest   must be the file or directory, not the containing directory
  * @throws java.io.IOException if file cannot be copied
  */
-/*public*/ void FileUtilSupport::copy(File* source, File* dest) throw (IOException)
+/*public*/ void FileUtilSupport::copy(File* source, File* dest) /*throw (IOException)*/
 {
  if (!source->exists()) {
      log->error(tr("Attempting to copy non-existant file: %1").arg(source->getPath()));
@@ -1450,7 +1472,7 @@ public URL getURL(URI uri) {
    if (!ok)
    {
     log->error(tr("Could not create destination file %1 ").arg(dest->getPath()));
-    throw IOException(tr("Could not create destination file %1 ").arg(dest->getPath()));
+    throw new IOException(tr("Could not create destination file %1 ").arg(dest->getPath()));
    }
   }
  }
@@ -1461,7 +1483,7 @@ public URL getURL(URI uri) {
   f.remove();
  if(! copyRecursively(srcPath, dstPath))
  {
-  throw IOException(tr("error copying %1 to %2").arg(srcPath).arg(dstPath));
+  throw new IOException(tr("error copying %1 to %2").arg(srcPath).arg(dstPath));
  }
 }
 
@@ -1502,7 +1524,7 @@ public URL getURL(URI uri) {
  * @param text Text to append
  * @throws java.io.IOException if file cannot be written to
  */
-/*public*/ void FileUtilSupport::appendTextToFile(File* file, QString text) throw (IOException)
+/*public*/ void FileUtilSupport::appendTextToFile(File* file, QString text) /*throw (IOException)*/
 {
 //    try (PrintWriter pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file, true), StandardCharsets.UTF_8))) {
 //        pw.println(text);
@@ -1522,7 +1544,7 @@ public URL getURL(URI uri) {
   f.close();
  }
  else
-    throw IOException();
+    throw new IOException();
 }
 
 /**
@@ -1559,10 +1581,10 @@ public URL getURL(URI uri) {
         try {
             //return file->openStream();
       QFile f(path);
-      if(!f.open(QIODevice::ReadOnly)) throw IOException(f.fileName());
+      if(!f.open(QIODevice::ReadOnly)) throw new IOException(f.fileName());
       return new QTextStream(&f);
-        } catch (IOException ex) {
-            log->error(ex.getLocalizedMessage(), ex);
+        } catch (IOException* ex) {
+            log->error(ex->getLocalizedMessage(), ex);
         }
     }
     return nullptr;
@@ -1676,7 +1698,7 @@ public URL getURL(URI uri) {
     if (this->isPortableFilename(path)) {
         try {
             return this->findExternalFilename(path);
-        } catch (NullPointerException ex) {
+        } catch (NullPointerException* ex) {
             // do nothing
         }
     }
@@ -1685,10 +1707,10 @@ public URL getURL(URI uri) {
         searchPaths.append(getProgramPath());
     for (QString searchPath : searchPaths)
     {
-        QFileInfo info(/*getProgramPath() +*/ searchPath + File::separator + path);
+        QFileInfo info(/*getProgramPath() +*/ searchPath + /*File::separator*/'/' + path);
         if(info.exists())
         {
-            resource = this->findURI( /*getProgramPath() +*/ searchPath + File::separator + path);
+            resource = this->findURI( /*getProgramPath() +*/ searchPath + QDir::separator() + path);
             if (resource != "") {
                 return resource;
             }
@@ -1860,8 +1882,8 @@ public URL getURL(URI uri) {
         try {
             //return file.toURL();
          return QUrl(file);
-        } catch (MalformedURLException ex) {
-            log->error(ex.getLocalizedMessage(), ex);
+        } catch (MalformedURLException* ex) {
+            log->error(ex->getLocalizedMessage(), ex);
         }
     }
     return QUrl();

@@ -30,7 +30,7 @@ namespace Operations
   Track* _track;// = null;
 
   // panels
-  QGroupBox* pTrains;// = new JPanel();
+  JPanel* pTrains;// = new JPanel();
 
   // radio buttons
   // for padding out panel

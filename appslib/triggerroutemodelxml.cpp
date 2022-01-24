@@ -48,7 +48,7 @@
 }
 
 //@Override
-/*public*/ bool TriggerRouteModelXml::load(QDomElement shared, QDomElement perNode) throw (JmriException) {
+/*public*/ bool TriggerRouteModelXml::load(QDomElement shared, QDomElement perNode) /*throw (JmriException)*/ {
     bool result = true;
     QString userName = shared.attribute("name");
 

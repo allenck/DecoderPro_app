@@ -22,13 +22,13 @@
      * Protocol Specific Abstract Functions
      */
     //@Override
-    /*public*/ void SimpleSignalHeadServer::sendStatus(QString signalHeadName, int Status) throw (IOException) {
+    /*public*/ void SimpleSignalHeadServer::sendStatus(QString signalHeadName, int Status) /*throw (IOException)*/ {
         this->addSignalHeadToList(signalHeadName);
         this->sendMessage("SIGNALHEAD " + signalHeadName + " " + this->nameForAppearance(Status) + "\n");
     }
 
     //@Override
-    /*public*/ void SimpleSignalHeadServer::sendErrorStatus(QString signalHeadName) throw (IOException) {
+    /*public*/ void SimpleSignalHeadServer::sendErrorStatus(QString signalHeadName) /*throw (IOException)*/ {
         this->sendMessage("SIGNALHEAD ERROR\n");
     }
 
@@ -38,7 +38,7 @@
         if (status.length() == 3) {
             this->setSignalHeadAppearance(status[1], status[2]);
         } else {
-            SignalHead* signalHead = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(status[1]);
+            SignalHead* signalHead = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(status[1]);
             if(signalHead != nullptr) {
                this->sendStatus(signalHead->getSystemName(), signalHead->getAppearance());
             } else {
@@ -47,7 +47,7 @@
         }
     }
 
-     /*private*/ void SimpleSignalHeadServer::sendMessage(QString message) throw (IOException) {
+     /*private*/ void SimpleSignalHeadServer::sendMessage(QString message) /*throw (IOException)*/ {
         if (this->output != nullptr) {
             this->output->writeBytes(message.toLocal8Bit().data(),message.length());
         } else {

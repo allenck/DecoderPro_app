@@ -69,7 +69,7 @@
 /*public*/ QJsonObject JsonReporterHttpService::doPut(QString type, QString name, QJsonObject data, QLocale locale) throw (JsonException) {
     try {
         ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->provideReporter(name);
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         throw new JsonException(500, tr(/*locale,*/ "ErrorCreatingObject").arg(JsonReporter::REPORTER).arg(name));
     }
     return this->doPost(type, name, data, locale);

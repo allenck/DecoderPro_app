@@ -22,11 +22,11 @@ Logger::Logger(const Logger & other) : QObject()
  this->bInfoEnabled = other.bInfoEnabled;
  this->name = other.name;
 }
-/*static*/ void Logger::error(QString s, QVariant ex)
-{
- LoggerBase::error(s, ex);
-}
-/*static*/ void Logger::error(QString s, Throwable ex)
+///*static*/ void Logger::error(QString s, QVariant ex)
+//{
+// LoggerBase::error(s, ex);
+//}
+/*static*/ void Logger::error(QString s, Throwable* ex)
 {
  LoggerBase::error(s, ex);
 }
@@ -44,7 +44,7 @@ void Logger::debug(QString s) const
 {
  LoggerBase::debug(name, s);
 }
-void Logger::debug(QString s, Throwable throwable)
+void Logger::debug(QString s, Throwable* throwable)
 {
  LoggerBase::debug(name, s, throwable);
 }
@@ -54,7 +54,7 @@ void Logger::warn(QString s) const
  LoggerBase::warn(name, s);
 }
 
-void Logger::warn(QString s, Throwable ex)
+void Logger::warn(QString s, Throwable* ex)
 {
  LoggerBase::warn(name, s, ex);
 }

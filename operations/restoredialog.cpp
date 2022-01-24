@@ -16,11 +16,10 @@
 #include "backupset.h"
 #include "operationsmanager.h"
 #include "apps.h"
+#include "instancemanager.h"
+#include "exceptiondisplayframe.h"
+#include "unexpectedexceptioncontext.h"
 
-//RestoreDialog::RestoreDialog(QWidget *parent) :
-//  JDialog(parent)
-//{
-//}
 namespace Operations
 {
  // /*public*/ class RestoreDialog extends JDialog {
@@ -143,17 +142,17 @@ namespace Operations
  }
 
  // Event handlers
- /*protected*/ void RestoreDialog::do_automaticBackupsRadioButton_actionPerformed(ActionEvent* /*e*/) {
+ /*protected*/ void RestoreDialog::do_automaticBackupsRadioButton_actionPerformed(JActionEvent* /*e*/) {
      backup = new AutoBackup();
      loadComboBox();
  }
 
- /*protected*/ void RestoreDialog::do_defaultBackupsRadioButton_actionPerformed(ActionEvent* /*e*/) {
+ /*protected*/ void RestoreDialog::do_defaultBackupsRadioButton_actionPerformed(JActionEvent* /*e*/) {
      backup = new DefaultBackup();
      loadComboBox();
  }
 
- /*protected*/ void RestoreDialog::do_cancelButton_actionPerformed(ActionEvent* /*arg0*/) {
+ /*protected*/ void RestoreDialog::do_cancelButton_actionPerformed(JActionEvent* /*arg0*/) {
      //dispose();
   reject();
   close();
@@ -185,11 +184,11 @@ namespace Operations
    \
  }
 
- /*protected*/ void RestoreDialog::do_helpButton_actionPerformed(ActionEvent* /*arg0*/) {
+ /*protected*/ void RestoreDialog::do_helpButton_actionPerformed(JActionEvent* /*arg0*/) {
      // Not implemented yet.
  }
 
- /*protected*/ void RestoreDialog::do_restoreButton_actionPerformed(ActionEvent* /*e*/) {
+ /*protected*/ void RestoreDialog::do_restoreButton_actionPerformed(JActionEvent* /*e*/) {
      log->debug("restore button activated");
 
      // check to see if files are dirty
@@ -203,7 +202,7 @@ namespace Operations
      }
 
      // first backup the users data in case they forgot
-     //try {
+     try {
          AutoBackup* _auto = new AutoBackup();
          _auto->autoBackup();
 
@@ -219,7 +218,7 @@ namespace Operations
          // now deregister shut down task
          // If Trains window was opened, then task is active
          // otherwise it is normal to not have the task running
-         OperationsManager::getInstance()->setShutDownTask(NULL);
+         ((Operations::OperationsManager*)InstanceManager::getDefault("Operations::OperationsManager"))->setShutDownTask(NULL);
 
 //         JOptionPane.showMessageDialog(this, tr("YouMustRestartAfterRestore"),
 //                 tr("RestoreSuccessful"), JOptionPane.INFORMATION_MESSAGE);
@@ -228,21 +227,21 @@ namespace Operations
          close();
 
          Apps::handleRestart();
-//     } // These may need to be enhanced to show the backup store being used,
-//       // auto or default.
-//     catch (IOException ex) {
-//         ExceptionContext context = new ExceptionContext(ex, tr("RestoreDialog.restoring")
-//                 + " " + setName, "Hint about checking valid names, etc."); // NOI18N
-//         new ExceptionDisplayFrame(context);
+     } // These may need to be enhanced to show the backup store being used,
+       // auto or default.
+     catch (IOException* ex) {
+         ExceptionContext* context = new ExceptionContext(ex, tr("RestoreDialog.restoring")
+                 + " " + setName, "Hint about checking valid names, etc."); // NOI18N
+         new ExceptionDisplayFrame(context);
 
-//     } catch (Exception ex) {
-//         log.error("Doing restore from " + setName, ex);
+     } catch (Exception* ex) {
+         log->error("Doing restore from " + setName, ex);
 
-//         UnexpectedExceptionContext context = new UnexpectedExceptionContext(ex,
-//                 tr("RestoreDialog.restoring") + " " + setName);
+         UnexpectedExceptionContext* context = new UnexpectedExceptionContext(ex,
+                 tr("RestoreDialog.restoring") + " " + setName, this);
 
-//         new ExceptionDisplayFrame(context);
-//     }
+         new ExceptionDisplayFrame(context);
+     }
  }
 
  /**

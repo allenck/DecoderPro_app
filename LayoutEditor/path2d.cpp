@@ -2598,7 +2598,7 @@ QVector<char>* Path2D::copyOf(QVector<char> *src, int newLength)
     try {
         setWindingRule(s.readByte());
     } catch (IllegalArgumentException iae) {
-        throw new java.io.InvalidObjectException(iae.getMessage());
+        throw new java.io.InvalidObjectException(iae->getMessage());
     }
 
     pointTypes = new byte[(nT < 0) ? INIT_SIZE : nT];

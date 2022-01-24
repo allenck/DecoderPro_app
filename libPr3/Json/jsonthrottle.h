@@ -67,13 +67,13 @@ public:
   * {@value #CLIENTS}
   */
  /*public*/ static /*final*/ QString CLIENTS;// = "clients"; // NOI18N
- /*public*/ static JsonThrottle* getThrottle(QString throttleId, QJsonObject data, JsonThrottleSocketService* server) throw (JsonException);
+ /*public*/ static JsonThrottle* getThrottle(QString throttleId, QJsonObject data, JsonThrottleSocketService* server) /*throw (JsonException)*/;
  /*public*/ void close(JsonThrottleSocketService* server, bool notifyClient);
  /*public*/ void release(JsonThrottleSocketService* server, bool notifyClient);
  /*public*/ void onMessage(QLocale locale, QJsonObject data, JsonThrottleSocketService* server);
  /*public*/ void sendMessage(QJsonObject data);
  /*public*/ void sendMessage(QJsonObject data, JsonThrottleSocketService* server);
- /*public*/ void notifyFailedThrottleRequest(DccLocoAddress* address, QString reason);
+ /*public*/ void notifyFailedThrottleRequest(LocoAddress* address, QString reason)override;
  /*private*/ QJsonObject getStatus();
  /*public*/QObject* self() {return (QObject*)this;}
 

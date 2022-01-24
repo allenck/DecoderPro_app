@@ -23,8 +23,8 @@ using namespace Sprog;
     SprogVersionFrame* f = new SprogVersionFrame(_memo);
     try {
         f->initComponents();
-    } catch (Exception ex) {
-        log->warn("SprogIIUpdateAction starting SprogIIUpdateFrame: Exception: " + ex.getMessage());
+    } catch (Exception* ex) {
+        log->warn("SprogIIUpdateAction starting SprogIIUpdateFrame: Exception: " + ex->getMessage());
     }
 //        f.setVisible(true);
 }

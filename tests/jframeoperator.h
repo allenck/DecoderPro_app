@@ -15,6 +15,10 @@
 #include "jspinner.h"
 #include "jtextfield.h"
 #include "functionbutton.h"
+#include "jcombobox.h"
+#include "jcheckbox.h"
+#include "jtabbedpane.h"
+#include "jtable.h"
 
 class JDialogOperator;
 class NameComponentChooser;
@@ -29,6 +33,7 @@ public:
  JmriJFrame* getFrame();
  void requestClose() { }
  void waitClosed();
+ static JmriJFrame* waitJFrame(QString, bool, bool);
 signals:
 
 public slots:
@@ -229,7 +234,8 @@ public:
  JTextFieldOperator(QObject* parent, QString name);
  JTextFieldOperator(QObject *);
  void typeText(QString);
-
+ void setText(QString);
+ void clickMouse();
 };
 
 class JInternalFrameOperator : public QObject
@@ -242,6 +248,37 @@ public:
  JInternalFrameOperator(QObject* parent, QString name );
  QWidget* result() {return _result;}
  void clickForPopup();
+};
+
+class JComboBoxOperator : public QObject
+{
+  Q_OBJECT
+  QObject* parent= nullptr;
+  JComboBox* comboBox = nullptr;
+ public:
+  JComboBoxOperator(QObject* parent, int index );
+  void setSelectedItem(QString s);
+  void setSelectedIndex(int);
+};
+
+class JTabbedPaneOperator :public QObject
+{
+  Q_OBJECT
+  QObject* parent= nullptr;
+  JTabbedPane* jTabbedPane = nullptr;
+ public:
+  JTabbedPaneOperator(QObject* parent);
+  QWidget* selectPage(QString);
+};
+
+class JTableOperator :public QObject
+{
+  Q_OBJECT
+  QObject* parent= nullptr;
+  JTable* jTable = nullptr;
+ public:
+  JTableOperator(QObject *parent);
+  void clickOnCell(int r, int col);
 };
 
 #endif // JFRAMEOPERATOR_H

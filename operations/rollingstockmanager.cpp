@@ -1,8 +1,10 @@
 #include "rollingstockmanager.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "rollingstock.h"
 #include <QVariant>
 #include "stringutil.h"
+#include "xml.h"
+#include <algorithm>
 
 //RollingStockManager::RollingStockManager(QObject *parent) :
 //  QObject(parent)
@@ -24,11 +26,10 @@ namespace Operations
  /*public*/ /*static*/ /*final*/ QString RollingStockManager::LISTLENGTH_CHANGED_PROPERTY = "RollingStockListLength"; // NOI18N
 
  /*public*/ RollingStockManager::RollingStockManager(QObject *parent) :
-   QObject(parent)
+   RollingStock(parent)
  {
   // RollingStock
   _hashTable = QHash<QString, RollingStock*>();
-  pcs = new PropertyChangeSupport(this);
 
  }
 
@@ -217,7 +218,7 @@ namespace Operations
             //try {
                 rsNumber = rs->getNumber().toInt();
                 rs->number = rsNumber;
-//            } catch (NumberFormatException e) {
+//            } catch (NumberFormatException* e) {
 //                // maybe rolling stock number in the format nnnn-N
 //                try {
 //                    number = rs.getNumber().split("-");
@@ -225,7 +226,7 @@ namespace Operations
 //                    rs.number = rsNumber;
 //                    // two possible exceptions, ArrayIndexOutOfBoundsException on split, and NumberFormatException on
 //                    // parseInt
-//                } catch (Exception e2) {
+//                } catch (Exception* e2) {
 //                    rs.number = notInteger;
 //                    // sort alphanumeric numbers at the end of the out list
 //                    String numberIn = rs.getNumber();
@@ -239,7 +240,7 @@ namespace Operations
 //                            out.add(k + 1, rs);
 //                            rsAdded = true;
 //                            break;
-//                        } catch (NumberFormatException e3) {
+//                        } catch (NumberFormatException* e3) {
 //                            if (numberIn.compareToIgnoreCase(numberOut) >= 0) {
 //                                out.add(k + 1, rs);
 //                                rsAdded = true;
@@ -427,17 +428,116 @@ namespace Operations
 
     /*private*/ /*static*/ /*final*/ int RollingStockManager::pageSize = 64;
 
-    /*protected*/ QList<RollingStock*>* RollingStockManager::getByList(QList<RollingStock*>* sortIn, int attribute) {
+    /*protected*/ QList<RollingStock*>* RollingStockManager::getByList(QList<RollingStock*>* sortIn, SORTBY attribute) {
         QList<RollingStock*>* out = new QList<RollingStock*>();
         //sortIn.forEach(n -> out.add(n));
         foreach(RollingStock* rs, *sortIn)
+        {
          out->append(rs);
+        }
 #if 0 // TODO:
         Collections.sort(out, getComparator(attribute));
+#else
+//        auto property = attribute;
+//        auto sortRuleLambda = [property] (RollingStock const* r1, RollingStock const* r2) -> bool
+//        {
+//         switch(property) {
+//          case SORTBY::BY_NUMBER:
+//            return r1->getNumber().compare( r2->getNumber(),Qt::CaseInsensitive) < 0;
+//            break;
+//          case BY_ROAD:
+//              return r1->getRoadName().compare( r2->getRoadName(),Qt::CaseInsensitive) < 0;
+//          case BY_TYPE:
+//              return r1->getTypeName().compare(  r2->getTypeName(),Qt::CaseInsensitive) < 0;
+//          case BY_COLOR:
+//              return r1->getColor().compare(r2->getColor(),Qt::CaseInsensitive) < 0;
+//          case BY_LOCATION:
+//              return (r1->getStatus() + r1->getLocationName() + r1->getTrackName())
+//                   .compare(r2->getStatus()
+//                           + r2->getLocationName()
+//                           + r2->getTrackName(),Qt::CaseInsensitive) < 0;
+//          case BY_DESTINATION:
+//              return (r1->getDestinationName() + r1->getDestinationTrackName())
+//                      .compare(r2->getDestinationName()
+//                              + r2->getDestinationTrackName(),Qt::CaseInsensitive) < 0;
+//          case BY_TRAIN:
+//              return (r1->getTrainName().compare(r2->getTrainName()),Qt::CaseInsensitive) < 0;
+//          case BY_MOVES:
+//              return (r1->getMoves() - r2->getMoves());
+//          case BY_BUILT:
+//              //return  (convertBuildDate(r1->getBuilt()).compare(convertBuildDate(r2->getBuilt())),Qt::CaseInsensitive) < 0;
+//              return r1->getBuilt() < r2->getBuilt();
+//          case BY_OWNER:
+//              return (r1->getOwner().compare(r2->getOwner()),Qt::CaseInsensitive) < 0;
+//          case BY_RFID:
+//              return (r1->getRfid().compare(r2->getRfid()),Qt::CaseInsensitive) < 0;
+//          case BY_VALUE:
+//              return (r1->getValue().compare(r2->getValue()),Qt::CaseInsensitive) < 0;
+//          case BY_LAST:
+//              return (r1->getLastMoveDate() < (r2->getLastMoveDate()));
+//          case BY_BLOCKING:
+//           return r1->getBlocking() - r2->getBlocking();
+//          default:
+//           return (r1->getRoadName() + r1->getNumber()).compare( (r2->getRoadName() +
+//                   r2->getNumber()),Qt::CaseInsensitive) < 0;
+//         }
+//        };
+//        std::sort ( out->begin(), out->end(), sortRuleLambda);
+        sortOut(out, attribute);
 #endif
         return out;
     }
 
+    /*public*/ void RollingStockManager::sortOut(QList<RollingStock*>* out, RollingStockManager::SORTBY attribute)
+    {
+     auto property = attribute;
+     auto sortRuleLambda = [property] (RollingStock const* r1, RollingStock const* r2) -> bool
+     {
+      switch(property) {
+       case RollingStockManager::SORTBY::BY_NUMBER:
+         return r1->getNumber().compare( r2->getNumber(),Qt::CaseInsensitive) < 0;
+         break;
+       case RollingStockManager::SORTBY::BY_ROAD:
+           return r1->getRoadName().compare( r2->getRoadName(),Qt::CaseInsensitive) < 0;
+       case RollingStockManager::SORTBY::BY_TYPE:
+           return r1->getTypeName().compare(  r2->getTypeName(),Qt::CaseInsensitive) < 0;
+       case RollingStockManager::SORTBY::BY_COLOR:
+           return r1->getColor().compare(r2->getColor(),Qt::CaseInsensitive) < 0;
+       case RollingStockManager::SORTBY::BY_LOCATION:
+           return (r1->getStatus() + r1->getLocationName() + r1->getTrackName())
+                .compare(r2->getStatus()
+                        + r2->getLocationName()
+                        + r2->getTrackName(),Qt::CaseInsensitive) < 0;
+       case RollingStockManager::SORTBY::BY_DESTINATION:
+           return (r1->getDestinationName() + r1->getDestinationTrackName())
+                   .compare(r2->getDestinationName()
+                           + r2->getDestinationTrackName(),Qt::CaseInsensitive) < 0;
+       case RollingStockManager::SORTBY::BY_TRAIN:
+           return (r1->getTrainName().compare(r2->getTrainName()),Qt::CaseInsensitive) < 0;
+       case RollingStockManager::SORTBY::BY_MOVES:
+           return (r1->getMoves() - r2->getMoves());
+       case RollingStockManager::SORTBY::BY_BUILT:
+           //return  (convertBuildDate(r1->getBuilt()).compare(convertBuildDate(r2->getBuilt())),Qt::CaseInsensitive) < 0;
+           return r1->getBuilt() < r2->getBuilt();
+       case RollingStockManager::SORTBY::BY_OWNER:
+           return (r1->getOwner().compare(r2->getOwner()),Qt::CaseInsensitive) < 0;
+       case RollingStockManager::SORTBY::BY_RFID:
+           return (r1->getRfid().compare(r2->getRfid()),Qt::CaseInsensitive) < 0;
+       case RollingStockManager::SORTBY::BY_VALUE:
+           return (r1->getValue().compare(r2->getValue()),Qt::CaseInsensitive) < 0;
+       case RollingStockManager::SORTBY::BY_LAST:
+           return (r1->getLastMoveDate() < (r2->getLastMoveDate()));
+       case RollingStockManager::SORTBY::BY_BLOCKING:
+        return r1->getBlocking() - r2->getBlocking();
+       default:
+        return (r1->getRoadName() + r1->getNumber()).compare( (r2->getRoadName() +
+                r2->getNumber()),Qt::CaseInsensitive) < 0;
+      }
+     };
+     std::sort ( out->begin(), out->end(), sortRuleLambda);
+    }
+
+#if 0
     // The various sort options for RollingStock
     // see CarManager and EngineManger for other values
     /*protected*/ /*static*/ /*final*/ int RollingStockManager::BY_NUMBER = 0;
@@ -464,62 +564,68 @@ namespace Operations
     /*protected*/ /*static*/ /*final*/ int RollingStockManager::BY_BLOCKING = 18;
 
     // BY_PICKUP = 19
-#if 0
-    /*protected*/ java.util.Comparator<RollingStock> getComparator(int attribute) {
+#endif
+#if 1
+//    /*protected*/ ComparatorT<RollingStock*> RollingStockManager::getComparator(int attribute) {
+      /*static*/ bool RollingStockManager::lessthan(RollingStock* r1, RollingStock* r2, SORTBY attribute) {
         switch (attribute) {
             case BY_NUMBER:
-                return (r1, r2) -> (r1.getNumber().compareToIgnoreCase(r2.getNumber()));
-            case BY_ROAD:
-                return (r1, r2) -> (r1.getRoadName().compareToIgnoreCase(r2.getRoadName()));
-            case BY_TYPE:
-                return (r1, r2) -> (r1.getTypeName().compareToIgnoreCase(r2.getTypeName()));
-            case BY_COLOR:
-                return (r1, r2) -> (r1.getColor().compareToIgnoreCase(r2.getColor()));
-            case BY_LOCATION:
-                return (r1, r2) -> (r1.getStatus() + r1.getLocationName() + r1.getTrackName()).compareToIgnoreCase(r2.getStatus() +
-                        r2.getLocationName() +
-                        r2.getTrackName());
-            case BY_DESTINATION:
-                return (r1, r2) -> (r1.getDestinationName() + r1.getDestinationTrackName()).compareToIgnoreCase(r2.getDestinationName() +
-                        r2.getDestinationTrackName());
-            case BY_TRAIN:
-                return (r1, r2) -> (r1.getTrainName().compareToIgnoreCase(r2.getTrainName()));
-            case BY_MOVES:
-                return (r1, r2) -> (r1.getMoves() - r2.getMoves());
-            case BY_BUILT:
-                return (r1, r2) -> (convertBuildDate(r1.getBuilt()).compareToIgnoreCase(convertBuildDate(r2.getBuilt())));
-            case BY_OWNER:
-                return (r1, r2) -> (r1.getOwner().compareToIgnoreCase(r2.getOwner()));
-            case BY_RFID:
-                return (r1, r2) -> (r1.getRfid().compareToIgnoreCase(r2.getRfid()));
-            case BY_VALUE:
-                return (r1, r2) -> (r1.getValue().compareToIgnoreCase(r2.getValue()));
-            case BY_LAST:
-                return (r1, r2) -> (r1.getLastMoveDate().compareTo(r2.getLastMoveDate()));
-            case BY_BLOCKING:
-                return (r1, r2) -> (r1.getBlocking() - r2.getBlocking());
-            default:
-                return (r1, r2) -> ((r1.getRoadName() + r1.getNumber()).compareToIgnoreCase(r2.getRoadName() +
-                        r2.getNumber()));
-        }
+         return r1->getNumber().compare(r2->getNumber(), Qt::CaseInsensitive) < 0;
+        case BY_ROAD:
+            return r1->getRoadName().compare( r2->getRoadName(),Qt::CaseInsensitive) < 0;
+        case BY_TYPE:
+            return r1->getTypeName().compare(  r2->getTypeName(),Qt::CaseInsensitive) < 0;
+        case BY_COLOR:
+            return r1->getColor().compare(r2->getColor(),Qt::CaseInsensitive) < 0;
+        case BY_LOCATION:
+            return (r1->getStatus() + r1->getLocationName() + r1->getTrackName())
+                 .compare(r2->getStatus()
+                         + r2->getLocationName()
+                         + r2->getTrackName(),Qt::CaseInsensitive) < 0;
+        case BY_DESTINATION:
+            return (r1->getDestinationName() + r1->getDestinationTrackName())
+                    .compare(r2->getDestinationName()
+                            + r2->getDestinationTrackName(),Qt::CaseInsensitive) < 0;
+        case BY_TRAIN:
+            return (r1->getTrainName().compare(r2->getTrainName()),Qt::CaseInsensitive) < 0;
+        case BY_MOVES:
+            return (r1->getMoves() - r2->getMoves());
+        case BY_BUILT:
+            //return  (convertBuildDate(r1->getBuilt()).compare(convertBuildDate(r2->getBuilt())),Qt::CaseInsensitive) < 0;
+            return r1->getBuilt() < r2->getBuilt();
+        case BY_OWNER:
+            return (r1->getOwner().compare(r2->getOwner()),Qt::CaseInsensitive) < 0;
+        case BY_RFID:
+            return (r1->getRfid().compare(r2->getRfid()),Qt::CaseInsensitive) < 0;
+        case BY_VALUE:
+            return (r1->getValue().compare(r2->getValue()),Qt::CaseInsensitive) < 0;
+        case BY_LAST:
+            return (r1->getLastMoveDate() < (r2->getLastMoveDate()));
+        case BY_BLOCKING:
+         return r1->getBlocking() - r2->getBlocking();
+        default:
+         return (r1->getRoadName() + r1->getNumber()).compare( (r2->getRoadName() +
+                 r2->getNumber()),Qt::CaseInsensitive) < 0;
+       }
     }
-
-    private String convertBuildDate(String date) {
-        String[] built = date.split("-");
-        if (built.length > 1) {
+#endif
+    /*private*/ QString RollingStockManager::convertBuildDate(QString date) const {
+        QStringList built = date.split("-");
+        if (built.length() > 1) {
             try {
-                int d = Integer.parseInt(built[1]);
+          bool ok;
+          int d = built[1].toInt(); if(!ok) throw new NumberFormatException();
                 if (d < 100) {
                     d = d + 1900;
                 }
-                return Integer.toString(d);
-            } catch (NumberFormatException e2) {
-                log.debug("Unable to parse car built date {}", date);
+                return QString::number(d);
+            } catch (NumberFormatException* e2) {
+                log->debug(tr("Unable to parse car built date %1").arg(date));
             }
         }
         return date;
     }
-#endif
+
     /**
      * Get a list of rolling stocks assigned to a train ordered by location
      *
@@ -548,19 +654,21 @@ namespace Operations
         }
         return out;
     }
-#if 0
+#if 1
     /**
      * Returns a list (no order) of RollingStock at a location.
      *
      * @param location location to search for.
      * @return list of RollingStock
      */
-    /*public*/ QList<RollingStock*>* getList(Location location) {
-        QList<RollingStock*>* out = new ArrayList<RollingStock>();
-        _hashTable.forEach((key, rs) -> {
-            if (rs.getLocation() == location)
-                out.add(rs);
-        });
+    /*public*/ QList<RollingStock*> RollingStockManager::getList(Location* location) {
+        QList<RollingStock*> out = QList<RollingStock*>();
+        //_hashTable.forEach((key, rs) -> {
+        foreach(RollingStock* rs, _hashTable.values())
+        {
+            if (rs->getLocation() == location)
+                out.append(rs);
+        }//);
         return out;
     }
 
@@ -570,25 +678,28 @@ namespace Operations
      * @param track Track to search for.
      * @return list of RollingStock
      */
-    /*public*/ QList<RollingStock*>* getList(Track track) {
-        QList<RollingStock*>* out = new ArrayList<RollingStock>();
-        _hashTable.forEach((key, rs) -> {
-            if (rs.getTrack() == track)
-                out.add(rs);
-        });
+    /*public*/ QList<RollingStock*> RollingStockManager::getList(Track* track) {
+        QList<RollingStock*> out = QList<RollingStock*>();
+        //_hashTable.forEach((key, rs) ->
+        foreach(RollingStock* rs, _hashTable.values())
+        {
+            if (rs->getTrack() == track)
+                out.append(rs);
+        }//);
         return out;
     }
 
 #endif
-    /*public*/ /*synchronized*/ void RollingStockManager::addPropertyChangeListener(PropertyChangeListener* l) {
-        pcs->addPropertyChangeListener(l);
-    }
-
-    /*public*/ /*synchronized*/ void RollingStockManager::removePropertyChangeListener(PropertyChangeListener* l) {
-        pcs->removePropertyChangeListener(l);
-    }
-
-    /*protected*/ void RollingStockManager::firePropertyChange(QString p, QVariant old, QVariant n) {
-        pcs->firePropertyChange(p, old, n);
-    }
+ //@Override
+ //@OverridingMethodsMustInvokeSuper
+ /*public*/ void RollingStockManager::propertyChange(PropertyChangeEvent* evt) {
+     if (evt->getPropertyName() ==(Xml::ID)) {
+         //@SuppressWarnings("unchecked")
+         RollingStock* rs = /*(T)*/ (RollingStock*)evt->getSource(); // unchecked cast to T
+         _hashTable.remove(evt->getOldValue().toString());
+         _hashTable.insert(rs->getId(), rs);
+         // fire so listeners that rebuild internal lists get signal of change in id, even without change in size
+         firePropertyChange(LISTLENGTH_CHANGED_PROPERTY, _hashTable.size(), _hashTable.size());
+     }
+ }
 }

@@ -51,11 +51,11 @@ ScaleConfigXML::ScaleConfigXML(QObject *parent) : QObject(parent)
 
         try {
             x->writeXML(file, doc);
-        } catch (FileNotFoundException ex) {
-            log->error("File not found when writing: " + ex.getMessage());  // NOI18N
+        } catch (FileNotFoundException* ex) {
+            log->error("File not found when writing: " + ex->getMessage());  // NOI18N
             return false;
-        } catch (IOException ex) {
-            log->error("IO Exception when writing: " + ex.getMessage());  // NOI18N
+        } catch (IOException* ex) {
+            log->error("IO Exception when writing: " + ex->getMessage());  // NOI18N
             return false;
         }
 
@@ -95,11 +95,11 @@ ScaleConfigXML::ScaleConfigXML(QObject *parent) : QObject(parent)
                 ScaleManager::addScale(scaleName, userName, scaleRatio);
             }
 
-        } catch (JDOMException ex) {
-            log->error("File invalid: " + ex.getMessage());  // NOI18N
+        } catch (JDOMException* ex) {
+            log->error("File invalid: " + ex->getMessage());  // NOI18N
             return false;
-        } catch (IOException ex) {
-            log->error("Error reading file: " + ex.getMessage());  // NOI18N
+        } catch (IOException* ex) {
+            log->error("Error reading file: " + ex->getMessage());  // NOI18N
             return false;
         }
 
@@ -107,8 +107,8 @@ ScaleConfigXML::ScaleConfigXML(QObject *parent) : QObject(parent)
     }
 
 //    /*private*/ /*static*/ class ScaleXmlFile : public XmlFile {
-        /*private*/ /*static*/ QString ScaleXmlFile::prodPath = FileUtil::getProgramPath() + "resources/scales/";  // NOI18N
-        /*private*/ /*static*/ QString ScaleXmlFile::userPath = FileUtil::getUserFilesPath() + "resources/scales/";  // NOI18N
+        /*private*/ /*static*/ QString ScaleXmlFile::prodPath = "";//FileUtil::getProgramPath() + "resources/scales/";  // NOI18N
+        /*private*/ /*static*/ QString ScaleXmlFile::userPath = "";//FileUtil::getUserFilesPath() + "resources/scales/";  // NOI18N
         /*private*/ /*static*/ QString ScaleXmlFile::fileName = "ScaleData.xml";  // NOI18N
 
         /*public*/ /*static*/ QString ScaleXmlFile::getStoreFileName() {
@@ -129,7 +129,7 @@ ScaleConfigXML::ScaleConfigXML(QObject *parent) : QObject(parent)
             } else {
                 try {
                     FileUtil::rotate(file, 4, "bup");  // NOI18N
-                } catch (IOException ex) {
+                } catch (IOException* ex) {
                      ScaleConfigXML::log->warn("Rotate failed, reverting to xml backup");  // NOI18N
                     makeBackupFile(getStoreFileName());
                 }
@@ -138,9 +138,9 @@ ScaleConfigXML::ScaleConfigXML(QObject *parent) : QObject(parent)
         }
 
         /*public*/ File* ScaleXmlFile::getLoadFile() {
-            QFile* file = findFile(userPath + fileName);
+            QFile* file = findFile(userPath + fileName)->toQfile();
             if (file == nullptr) {
-                file = findFile(prodPath + fileName);
+                file = findFile(prodPath + fileName)->toQfile();
             }
             return new File(file->fileName());
         }

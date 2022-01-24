@@ -3,6 +3,8 @@
 #include "abstractaudiomanager.h"
 #include "quietshutdowntask.h"
 #include "libPr3_global.h"
+#include "namedbean.h"
+#include <QSet>
 
 class QStringList;
 class AudioFactory;
@@ -15,17 +17,19 @@ public:
  ~DefaultAudioManager() {}
  DefaultAudioManager(const DefaultAudioManager&) : AbstractAudioManager() {}
  /*public*/ int getXMLOrder()const override;
- /*public*/ QString getSystemPrefix()const override;
+ /*public*/ QString getSystemPrefix() override;
  /*public*/ static DefaultAudioManager* instance();
- /*public*/ Q_DECL_DEPRECATED QStringList getSystemNameList(int subType);
- /*public*/ QStringList getSystemNameList(QChar subType)override;
+ /*public*/ QT_DEPRECATED QStringList getSystemNameList(int subType);
+ /*public*/ QSet<NamedBean*> getNamedBeanSet(QChar subType) override;
+ /*public*/ QT_DEPRECATED QStringList getSystemNameList(QChar subType)override;
  /*public*/ /*synchronized*/ void init()override;
- /*public*/ void deregister(NamedBean* s)const override;
+ /*public*/ void deregister(NamedBean* s) override;
  /*public*/ void cleanUp();
  /*public*/ AudioFactory* getActiveAudioFactory()override;
  /*public*/ QString getNamedBeanClass()const override {
      return "Audio";
  }
+ QObject* self() override {return (QObject*)this;}
 
 signals:
 
@@ -34,7 +38,9 @@ private:
  /*private*/ static int countListeners;// = 0;
  /*private*/ static int countSources;// = 0;
  /*private*/ static int countBuffers;// = 0;
-
+ /*private*/ /*final*/ QSet<NamedBean*> listeners;// = new TreeSet<>(new jmri.util.NamedBeanComparator<>());
+ /*private*/ /*final*/ QSet<NamedBean*> buffers;// = new TreeSet<>(new jmri.util.NamedBeanComparator<>());
+ /*private*/ /*final*/ QSet<NamedBean*> sources;// = new TreeSet<>(new jmri.util.NamedBeanComparator<>());
  /**
   * Reference to the currently active AudioFactory
   */

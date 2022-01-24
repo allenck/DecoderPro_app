@@ -9,7 +9,7 @@ class APPSLIBSHARED_EXPORT SystemConsoleAction : public JmriAbstractAction
 {
  Q_OBJECT
 public:
- explicit SystemConsoleAction(QObject *parent = 0);
+ explicit SystemConsoleAction(QObject *parent =0);
  /*public*/  SystemConsoleAction(QString s, WindowInterface* wi);
  /*public*/  SystemConsoleAction(QString s, QIcon i, WindowInterface* wi);
  ~SystemConsoleAction() {}
@@ -17,7 +17,7 @@ public:
 signals:
 
 public slots:
- /*public*/  void actionPerformed(ActionEvent* e = 0);
+ /*public*/  void actionPerformed(JActionEvent* e = 0)override;
 
 private:
  void common();

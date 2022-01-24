@@ -6,7 +6,10 @@
 class LayoutWyeView : public LayoutTurnoutView
 {
  public:
-  /*public*/ LayoutWyeView(/*@Nonnull*/ LayoutWye* wye);
+  /*public*/ LayoutWyeView(/*@Nonnull*/ LayoutWye *wye,
+         /*@Nonnull*/ QPointF c, double rot,
+         double xFactor, double yFactor,
+         /*@Nonnull*/ LayoutEditor* layoutEditor);
 
 };
 

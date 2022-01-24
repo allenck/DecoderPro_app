@@ -32,6 +32,11 @@
 #include "system.h"
 #include <QClipboard>
 #include "hasconnectionbutunabletoconnectexception.h"
+#include "abstractpreferencesmanager.h"
+#include "jmripreferencesactionfactory.h"
+#include "atomic"
+#include "guilafpreferencesmanager.h"
+#include "systemconsolepreferencesmanager.h"
 
 //JmriConfigurationManager::JmriConfigurationManager()
 //{
@@ -46,12 +51,10 @@
 /*private*/ /*final*/ /*static*/ Logger* JmriConfigurationManager::log = LoggerFactory::getLogger("JmriConfigurationManager");
 
 //@SuppressWarnings("unchecked") // For types in InstanceManager.store()
-/*public*/ JmriConfigurationManager::JmriConfigurationManager(QObject* parent) : ConfigXmlManager(parent)
+/*public*/ JmriConfigurationManager::JmriConfigurationManager(QObject* parent) : QObject(parent)
 {
  setObjectName("JmriConfigurationManager");
  legacy = new ConfigXmlManager();
- initializationExceptions = new QHash<PreferencesManager*, InitializationException*>();
- initialized = new QList<PreferencesManager*>();
 
  //ServiceLoader<PreferencesManager> sl = ServiceLoader.load(PreferencesManager.class);
 #if 0
@@ -79,7 +82,27 @@
 //  }
   if(pp == NULL)
    continue;
-  InstanceManager::store(pp, "PreferencesManager");
+  InstanceManager::store((QObject*)pp->self(), "PreferencesManager");
+  QSet<QString> provides;
+  QObject* pobj;
+  if(QString(pp->self()->metaObject()->className()) == "GuiLafPreferencesManager")
+  {
+   provides = qobject_cast<GuiLafPreferencesManager*>(pp->self())->getProvides();
+   pobj = qobject_cast<GuiLafPreferencesManager*>(pp->self());
+  }
+  else
+   if(QString(pp->self()->metaObject()->className()) == "SystemConsolePreferencesManager")
+   {
+    provides = qobject_cast<SystemConsolePreferencesManager*>(pp->self())->getProvides();
+    pobj = qobject_cast<SystemConsolePreferencesManager*>(pp->self());
+   }
+  else
+   {
+   provides = qobject_cast<AbstractPreferencesManager*>(pp->self())->getProvides();
+   pobj = qobject_cast<AbstractPreferencesManager*>(pp->self());
+   }
+  foreach(QString provided, provides)
+   InstanceManager::store(pobj, provided);
  }
 #endif
  Profile* profile = ProfileManager::getDefault()->getActiveProfile();
@@ -101,11 +124,11 @@
   this->legacy->registerPref(o);
   return;
  }
-    if(qobject_cast<PreferencesManager*>(o) != NULL)
-    {
-        InstanceManager::store((PreferencesManager*) o, "PreferencesManager");
-    }
-    this->legacy->registerPref(o);
+ if(qobject_cast<PreferencesManager*>(o) != NULL)
+ {
+  InstanceManager::store(/*(PreferencesManager*)*/ o, "PreferencesManager");
+ }
+ this->legacy->registerPref(o);
 }
 
 //@Override
@@ -176,7 +199,7 @@
  foreach (QObject* o, *InstanceManager::getList("PreferencesManager"))
  {
   log->debug(tr("Saving preferences for %1").arg(o->metaObject()->className()));
-  ((PreferencesManager*)o)->savePreferences(profile);
+  ((AbstractPreferencesManager*)o)->savePreferences(profile);
  }
 }
 
@@ -207,7 +230,7 @@
 }
 
 //@Override
-/*public*/ bool JmriConfigurationManager::load(File* file)  throw (JmriException)
+/*public*/ bool JmriConfigurationManager::load(File* file)  /*throw (JmriException)*/
 {
     return this->load(file, false);
 }
@@ -220,13 +243,13 @@
 
 //@Override
 /*public*/ bool JmriConfigurationManager::
-load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
+load(File* file, bool registerDeferred)  /*throw (JmriConfigureXmlException)*/
 {
     return this->load(FileUtil::fileToURL(file), registerDeferred);
 }
 
 //@Override
-/*public*/ bool JmriConfigurationManager::load(QUrl file, bool registerDeferred)  throw (JmriConfigureXmlException)
+/*public*/ bool JmriConfigurationManager::load(QUrl file, bool registerDeferred)
 {
  log->debug(tr("loading %1 ...").arg(file.path()));
  try {
@@ -239,77 +262,32 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
    //providers.stream().forEach((provider) -> {
    foreach(QObject* provider, *providers)
    {
-    this->initializeProvider((PreferencesManager*)provider, profile);
+    //this->initializeProvider((PreferencesManager*)provider, profile);
+    if(provider->metaObject()->className() == "GuiLafPreferencesManager")
+       this->initializeProvider((GuiLafPreferencesManager*)provider, profile);
+    else
+     if(provider->metaObject()->className() == "SystemConsolePreferencesManager")
+        this->initializeProvider((SystemConsolePreferencesManager*)provider, profile);
+     else
+      this->initializeProvider((AbstractPreferencesManager*)provider, profile);
    }//);
    //foreach(QObject* provider, *providers)
-   if (!this->initializationExceptions->isEmpty())
+   if (!this->initializationExceptions.isEmpty())
    {
-//                if (!GraphicsEnvironment.isHeadless()) {
-
-    bool isUnableToConnect = false;
-
-    QStringList* errors = new QStringList();
-    //this.initialized.forEach((provider) ->
-    foreach(PreferencesManager* provider, *this->initialized)
-    {
-     QList<Exception*>* exceptions = provider->getInitializationExceptions(profile);
-     if (!exceptions->isEmpty()) {
-         //exceptions.forEach((exception) ->
-      foreach(Exception* exception, *exceptions)
-      {
-       if (static_cast<HasConnectionButUnableToConnectException*>(exception)) {
-           isUnableToConnect/*.set*/ =(true);
-       }
-       errors->append(exception->getLocalizedMessage());
-      } //);
-     } else if (this->initializationExceptions->value(provider) != NULL)
-     {
-         Exception *ex = this->initializationExceptions->value(provider);
-         QString localizedMessage = ex->getLocalizedMessage();
-         errors->append(localizedMessage);
-     }
-    } //);
-    QVariant list;
-     if (errors->size() == 1) {
-         list = errors->at(0);
-     } else {
-      QVector<QString> v = QVector<QString>(errors->size(),"");
-         list = VPtr<JList>::asQVariant(new JList(*errors));
-     }
-
-     if (isUnableToConnect/*.get()*/) {
-         handleConnectionError(errors, list);
-     }
-     else
-     {
-      QString msg;
-          //qobject_cast<JList*>(list) != nullptr ? tr("The following errors occurred in the order listed:") : ""  + "\n";
-        msg = tr("The following errors occurred in the order listed:");
-        foreach(QString str, *errors)
-           msg = msg + str + "\n";
-          msg = msg +"<html><br></html>"; // Add a visual break between list of errors and notes // NOI18N
-          msg = msg +tr("Please check the logs for more details.") + "\n"; // NOI18N
-          msg = msg +tr("The Preferences window will open so this can be fixed.");/* */// NOI18N
-
-      JOptionPane::showMessageDialog(nullptr, msg,
-        tr("Error initializing %1").arg(QApplication::applicationName()), // NOI18N
-        JOptionPane::ERROR_MESSAGE);
-      (new TabbedPreferencesAction())->actionPerformed();
-//        }
-    }
+    handleInitializationExceptions(profile);
    }
    if (!file.isEmpty() && (File(file.toDisplayString())).getName() == ("ProfileConfig.xml"))
    { // NOI18N
     log->debug("Loading legacy configuration...");
     return this->legacy->load(file, registerDeferred);
    }
-   return this->initializationExceptions->isEmpty();
+   return this->initializationExceptions.isEmpty();
   }
  }
- catch (/*URISyntax*/Exception ex)
+ catch (/*URISyntax*/Exception* ex)
  {
      log->error(tr("Unable to get File* for %1").arg(file.toDisplayString()));
-     throw JmriException(ex.getMessage()+ex.getLocalizedMessage());
+     throw new JmriException(ex->getMessage()+ex->getLocalizedMessage());
  }
  // make this url the default "Store Panels..." file
  JFileChooser* ufc = StoreXmlUserAction::getUserFileChooser();
@@ -319,22 +297,91 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
  // return true; // always return true once legacy support is dropped
 }
 
+/*private*/ void JmriConfigurationManager::handleInitializationExceptions(Profile* profile) {
+//    if (!GraphicsEnvironment.isHeadless()) {
+
+  //bool isUnableToConnect = false;//new AtomicBoolean(false);
+  std::atomic<bool> isUnableToConnect(false);
+
+  QList<QString> errors =  QList<QString>();
+  //this.initialized.forEach((provider) -> {
+  foreach(PreferencesManager* provider, this->initialized)
+  {
+   QList<Exception*> exceptions;
+   if(QString(provider->self()->metaObject()->className())== "GuiLafPreferencesManager")
+       exceptions = ((GuiLafPreferencesManager*)provider->self())->getInitializationExceptions(profile);
+   else    if(QString(provider->self()->metaObject()->className())== "SystemConsolePreferencesManager")
+       exceptions = ((GuiLafPreferencesManager*)provider->self())->getInitializationExceptions(profile);
+   else
+       exceptions = ((AbstractPreferencesManager*)provider->self())->getInitializationExceptions(profile);
+   if (!exceptions.isEmpty()) {
+       //exceptions.forEach((exception) -> {
+    foreach(Exception* exception, exceptions)
+    {
+     if (static_cast<HasConnectionButUnableToConnectException*>(exception)) {
+         isUnableToConnect=true;
+     }
+     errors.append(exception->getLocalizedMessage());
+    }//);
+   } else if (this->initializationExceptions.value(provider) != nullptr) {
+       errors.append(this->initializationExceptions.value(provider)->getLocalizedMessage());
+   }
+  }//);
+  QVariant list = getErrorListObject(errors);
+
+  if (isUnableToConnect.load()) {
+      handleConnectionError(errors, list);
+  } else {
+      displayErrorListDialog(list);
+  }
+//    }
+}
+
+/*private*/ QVariant JmriConfigurationManager::getErrorListObject(QList<QString> errors) {
+    QVariant list;
+    if (errors.size() == 1) {
+        list = errors.at(0);
+    } else {
+        //list = new JList<>(errors.toArray(new String[0]));
+     QVector<QString> v = QVector<QString>(errors.size(),"");
+        list = VPtr<JList>::asQVariant(new JList(errors));
+    }
+    return list;
+}
+
+/*protected*/ void JmriConfigurationManager::displayErrorListDialog(QVariant list) {
+    JOptionPane::showMessageDialog(nullptr,
+            QVariantList {
+                /*(list instanceof JList)*/VPtr<JList*>::asPtr(list) ? tr("The following errors occurred in the order listed:") : "",
+                list,
+                "<html><br></html>", // Add a visual break between list of errors and notes // NOI18N
+                tr("Please check the logs for more details."), // NOI18N
+                tr("The Preferences window will open so this can be fixed."), // NOI18N
+            },
+            tr("Error initializing %1").arg(QApplication::applicationName()), // NOI18N
+            JOptionPane::ERROR_MESSAGE);
+#if 1
+        ((JmriPreferencesActionFactory*)InstanceManager::getDefault("JmriPreferencesActionFactory"))
+                ->getDefaultAction()->actionPerformed(new JActionEvent(this,JActionEvent::ACTION_PERFORMED,""));
+#endif
+}
+
 /**
  * Show a dialog with options Quit, Restart, Change profile, Edit connections
  * @param errors the list of error messages
  * @param list A JList or a String with error message(s)
  */
-/*private*/ void JmriConfigurationManager::handleConnectionError(QList<QString>* errors, QVariant list) {
-    QList<QString>* errorList = errors;
+/*private*/ void JmriConfigurationManager::handleConnectionError(QList<QString> errors, QVariant list) {
+    QList<QString> errorList = errors;
 
-    errorList->append(" "); // blank line below errors
-    errorList->append(tr("Please check the logs for more details."));
+    errorList.append(" "); // blank line below errors
+    errorList.append(tr("Please check the logs for more details."));
 #if 1 // TODO:
     QVariantList options = QVariantList {
-                tr("Quit %1").arg(QApplication::applicationName()),
-                tr("Continue"),
-                tr("Edit connections")
-            };
+        tr("Quit %1").arg(QApplication::applicationName()),
+        tr("Continue"),
+        tr("Edit connections")
+    };
 
  JList* jlist = nullptr;
  if (jlist = VPtr<JList>::asPtr(list))
@@ -345,7 +392,7 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
      //copyMenuItem->setActionCommand( TransferHandler.getCopyAction().getValue(Action::NAME));
      copyMenuItem->setData("copyAll");
      //copyMenuItem.addActionListener(copyActionListener);
-     connect(copyMenuItem, SIGNAL(triggered(bool)), copyActionListener, SLOT(actionPerformed(ActionEvent*)));
+     connect(copyMenuItem, SIGNAL(triggered()), copyActionListener, SLOT(actionPerformed()));
 //     if (SystemType.isMacOSX()) {
 //         copyMenuItem.setAccelerator(
 //                 KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.META_MASK));
@@ -391,57 +438,100 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
 //         copyMenuItem->setEnabled(((JList*)e.getSource()).getSelectedIndex() != -1);
 //     });
      jlist->addListSelectionListener(new ListSelectionListener1(copyMenuItem, this));
+
  }
 
  JOptionPane* pane = new JOptionPane(
-         QVariantList() = {
-             (VPtr<JList>::asPtr(list)) ? tr("The following errors occurred in the order listed:") : nullptr,
-             list,
-             "<html><br></html>", // Add a visual break between list of errors and notes // NOI18N
-             tr("Please check the logs for more details."), // NOI18N
-             tr("If you need to plug in or turn on anything, do so before restarting"), // NOI18N
-         },
-         JOptionPane::ERROR_MESSAGE,
-         JOptionPane::DEFAULT_OPTION,
-         QIcon(),
-         options
- );
+          QVariantList() = {
+              (VPtr<QWidget>::asPtr(list)) ? tr("The following errors occurred in the order listed:") : nullptr,
+              list,
+              "<html><br></html>", // Add a visual break between list of errors and notes // NOI18N
+              tr("Please check the logs for more details."), // NOI18N
+              tr("If you need to plug in or turn on anything, do so before restarting"), // NOI18N
+          },
+          JOptionPane::ERROR_MESSAGE,
+          JOptionPane::DEFAULT_OPTION,
+          QIcon(),
+          options
+  );
+
 
  JDialog* dialog = pane->createDialog(nullptr, tr("Error initializing %1").arg(QApplication::applicationName())); // NOI18N
+ dialog->setModal(false);
  dialog->setVisible(true);
+ dialog->exec();
  QVariant selectedValue = pane->getValue();
 
- if (tr("Quit %1").arg(QApplication::applicationName()) == (selectedValue)) {
-     // Exit program
-     AppsBase::handleQuit();
-
- } else if (tr("Continue") == (selectedValue)) {
-     // Do nothing. Let the program continue
-
- } else if (tr("Edit connections") == (selectedValue)) {
-    if (EditConnectionPreferencesDialog::showDialog()) {
-         // Restart program
-         AppsBase::handleRestart();
-     } else {
-         // Quit program
-         AppsBase::handleQuit();
-     }
-
- } else {
-     // Exit program
-     AppsBase::handleQuit();
- }
+ handleRestartSelection(selectedValue);
 #endif
 }
 
+/*private*/ void JmriConfigurationManager::handleRestartSelection(QVariant selectedValue) {
+    if (tr("Quit %1").arg(QApplication::applicationName())== (selectedValue)) {
+        // Exit program
+        handleQuit();
+
+    } else if (tr("Continue") == (selectedValue)) {
+        // Do nothing. Let the program continue
+
+    } else if (tr("Edit connections") ==(selectedValue)) {
+       if (isEditDialogRestart()) {
+           handleRestart();
+       } else {
+            // Quit program
+            handleQuit();
+        }
+
+    } else {
+        // Exit program
+        handleQuit();
+    }
+}
+/*protected*/ bool JmriConfigurationManager::isEditDialogRestart() {
+    return false;
+}
+
+/*protected*/ void JmriConfigurationManager::handleRestart() {
+    // Restart program
+    try {
+        ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->restart();
+    } catch (Exception* er) {
+        log->error("Continuing after error in handleRestart", er);
+    }
+}
+
+/*private*/ JOptionPane* JmriConfigurationManager::getJOptionPane(QVariant list, QVariantList options) {
+ JOptionPane* pane = new JOptionPane(
+           QVariantList() = {
+               (VPtr<JList>::asPtr(list)) ? tr("The following errors occurred in the order listed:") : nullptr,
+               list,
+               "<html><br></html>", // Add a visual break between list of errors and notes // NOI18N
+               tr("Please check the logs for more details."), // NOI18N
+               tr("If you need to plug in or turn on anything, do so before restarting"), // NOI18N
+           },
+           JOptionPane::ERROR_MESSAGE,
+           JOptionPane::DEFAULT_OPTION,
+           QIcon(),
+           options
+   );
+}
+
+/*protected*/ void JmriConfigurationManager::handleQuit(){
+    try {
+        ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->shutdown();
+    } catch (Exception* e) {
+        log->error("Continuing after error in handleQuit", e);
+    }
+}
+
 //@Override
-/*public*/ bool JmriConfigurationManager::loadDeferred(File* file)  throw (JmriException)
+/*public*/ bool JmriConfigurationManager::loadDeferred(File* file)  /*throw (JmriException)*/
 {
     return this->legacy->loadDeferred(file);
 }
 
 //@Override
-/*public*/ bool JmriConfigurationManager::loadDeferred( QUrl file)  throw (JmriConfigureXmlException)
+/*public*/ bool JmriConfigurationManager::loadDeferred( QUrl file)
 {
     return this->legacy->loadDeferred(file);
 }
@@ -458,51 +548,62 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
 
 /*private*/ void JmriConfigurationManager::initializeProvider( PreferencesManager* provider, Profile* profile)
 {
- if (!provider->isInitialized(profile) && !provider->isInitializedWithExceptions(profile))
- {
-  log->debug(tr("Initializing provider %1").arg(provider->metaObject()->className()));
-//        foreach (QString extends PreferencesManager> c : provider.getRequires()) {
-//            InstanceManager.getList(c).stream().forEach((p) -> {
-//                this.initializeProvider(p, profile);
-//            });
-//        }
-  foreach(QString classname, *provider->getRequires())
+ if (!initializing.contains(provider) && !provider->isInitialized(profile) && !provider->isInitializedWithExceptions(profile)) {
+  initializing.insert(provider);
+  log->debug(tr("Initializing provider %1").arg(provider->self()->metaObject()->className()));
+//  provider.getRequires()
+//          .forEach(c -> InstanceManager.getList(c)
+//                  .forEach(p -> initializeProvider(p, profile)));
+  QSet<QString> requires;// = provider->getRequires();
+  if(QString(provider->self()->metaObject()->className()) == "GuiLafPreferencesManager")
+   requires = qobject_cast<GuiLafPreferencesManager*>(provider->self())->getProvides();
+  else
+   if(QString(provider->self()->metaObject()->className()) == "SystemConsolePreferencesManager")
+    requires = qobject_cast<SystemConsolePreferencesManager*>(provider->self())->getProvides();
+  else
+   requires = qobject_cast<AbstractPreferencesManager*>(provider->self())->getProvides();
+  foreach(QString c, requires )
   {
-   PreferencesManager* p = (PreferencesManager*) InstanceManager::getDefault(classname);
-   if(p != NULL)
-   this->initializeProvider(p,profile);
+   foreach(QObject* obj, *InstanceManager::getList(c))
+   {
+    PreferencesManager* p = (PreferencesManager*)obj;
+    initializeProvider(p, profile);
+   }
   }
   try {
-      provider->initialize(profile);
+      //provider->initialize(profile);
+   if(provider->self()->metaObject()->className() == "GuiLafPreferencesManager")
+    ((GuiLafPreferencesManager*)provider->self())->initialize(profile);
+   else
+    if(provider->self()->metaObject()->className() == "SystemConsolePreferencesManager")
+     ((SystemConsolePreferencesManager*)provider->self())->initialize(profile);
+   else
+    ((AbstractPreferencesManager*)provider->self())->initialize(profile);
+  } catch (InitializationException* ex) {
+      // log all initialization exceptions, but only retain for GUI display the
+      // first initialization exception for a provider
+      //if (this->initializationExceptions.putIfAbsent(provider, ex) == null) {
+      if(!this->initializationExceptions.contains(provider))
+       this->initializationExceptions.insert(provider,ex);
+      if(this->initializationExceptions.count() == 1)
+      {
+          log->error(tr("Exception initializing %1: %2").arg(provider->self()->metaObject()->className(), ex->getMessage()));
+      } else {
+          log->error(tr("Additional exception initializing %1: %2").arg(provider->self()->metaObject()->className(), ex->getMessage()));
+      }
   }
-  catch (InitializationException ex)
-  {
-   // log all initialization exceptions, but only retain for GUI display the
-   // first initialization exception for a provider
-   //            InitializationException put = this->initializationExceptions->putIfAbsent(provider, ex);
-   bool bPut = this->initializationExceptions->contains(provider);
-   if(!bPut)
-   {
-    InitializationException* newException = new InitializationException(ex.getMessage(), ex.getLocalizedMessage(), nullptr);
-    this->initializationExceptions->insert((PreferencesManager*)provider, newException);
-   }
-   log->error(tr("Exception initializing %1: %2").arg(provider->metaObject()->className()).arg(ex.getMessage()));
-   if (bPut)
-   {
-       log->error(tr("Additional exception initializing %1: %1").arg(provider->metaObject()->className()).arg(ex.getMessage()));
-   }
-  }
-  this->initialized->append(provider);
-  log->debug(tr("Initialized provider %1").arg(provider->metaObject()->className()));
+  this->initialized.append(provider);
+  log->debug(tr("Initialized provider %1").arg(provider->self()->metaObject()->className()));
+  initializing.remove(provider);
  }
 }
 
 /*public*/ QHash<PreferencesManager*, InitializationException*> JmriConfigurationManager::getInitializationExceptions() {
-    return QHash<PreferencesManager*, InitializationException*> (*initializationExceptions);
+    return QHash<PreferencesManager*, InitializationException*> (initializationExceptions);
 }
 
 //@Override
-/*public*/ void JmriConfigurationManager::setValidate(Validate v) {
+/*public*/ void JmriConfigurationManager::setValidate(XmlFile::Validate v) {
     legacy->setValidate(v);
 }
 
@@ -511,7 +612,7 @@ load(File* file, bool registerDeferred)  throw (JmriConfigureXmlException)
     return legacy->getValidate();
 }
 
-
+#if 0
 
 //private static final class ErrorDialog extends JDialog {
 
@@ -630,3 +731,4 @@ void ErrorDialog::onEditConnections()
  result = Result::EDIT_CONNECTIONS;
  dispose();
 }
+#endif

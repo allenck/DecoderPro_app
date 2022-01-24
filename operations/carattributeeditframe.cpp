@@ -13,7 +13,7 @@
 #include <QMessageBox>
 #include "trainmanager.h"
 #include "carroads.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "cartypes.h"
 #include "carmanager.h"
 #include "carattributeaction.h"
@@ -68,8 +68,7 @@ namespace Operations
  {
   setObjectName("CarAttributeEditFrame");
   log = new Logger("CarAttributeEditFrame");
-  pcs = new PropertyChangeSupport(this);
-  carManager = CarManager::instance();
+  carManager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
  }
 
 
@@ -82,7 +81,7 @@ namespace Operations
   RollingStockAttributeEditFrame::initComponents(attribute, name);
 
        setTitle(tr("Edit Car %1").arg(attribute ));
-       carManager->addPropertyChangeListener((PropertyChangeListener*)this);
+       carManager->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
 
        addComboBoxAction(comboBox);
 
@@ -110,7 +109,7 @@ namespace Operations
            ((CarTypes*)InstanceManager::getDefault("CarTypes"))->deleteName(deleteItem);
        }
        if (_attribute == (COLOR)) {
-           ((CarColors*)InstanceManager::getDefault("CarColors"))->deleteName(deleteItem);
+           ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->deleteName(deleteItem);
        }
        if (_attribute == (LENGTH)) {
            ((CarLengths*)InstanceManager::getDefault("CarLengths"))->deleteName(deleteItem);
@@ -154,7 +153,7 @@ namespace Operations
            }
        }
        if (_attribute == (COLOR)) {
-           ((CarColors*)InstanceManager::getDefault("CarColors"))->addName(addItem);
+           ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->addName(addItem);
        }
        if (_attribute == (LENGTH)) {
            QString length = convertLength(addItem);
@@ -167,7 +166,7 @@ namespace Operations
            carManager->newKernel(addItem);
        }
        if (_attribute == (OWNER)) {
-           ((CarOwners*)InstanceManager::getDefault("CarOwners"))->addName(addItem);
+           ((CarOwners*)InstanceManager::getDefault("Operations::CarOwners"))->addName(addItem);
        }
    }
 
@@ -181,13 +180,13 @@ namespace Operations
        // now adjust cars, locations and trains
        if (_attribute == (TYPE)) {
            ((CarTypes*)InstanceManager::getDefault("CarTypes"))->replaceName(oldItem, newItem);
-           ((CarLoads*)InstanceManager::getDefault("CarLoads"))->replaceType(oldItem, newItem);
+           ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->replaceType(oldItem, newItem);
        }
        if (_attribute == (LENGTH)) {
            ((CarLengths*)InstanceManager::getDefault("CarLengths"))->replaceName(oldItem, newItem);
        }
        if (_attribute == (COLOR)) {
-           ((CarColors*)InstanceManager::getDefault("CarColors"))->replaceName(oldItem, newItem);
+           ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->replaceName(oldItem, newItem);
        }
    }
 
@@ -196,15 +195,15 @@ namespace Operations
        RollingStockAttributeEditFrame::loadCombobox();
        if (_attribute == (TYPE)) {
            comboBox = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getComboBox();
-           ((CarTypes*)InstanceManager::getDefault("CarTypes"))->addPropertyChangeListener((PropertyChangeListener*)this);
+           ((CarTypes*)InstanceManager::getDefault("CarTypes"))->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
        }
        if (_attribute == (COLOR)) {
-           comboBox = ((CarColors*)InstanceManager::getDefault("CarColors"))->getComboBox();
-           ((CarColors*)InstanceManager::getDefault("CarColors"))->addPropertyChangeListener((PropertyChangeListener*)this);
+           comboBox = ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->getComboBox();
+           ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
        }
        if (_attribute == (LENGTH)) {
            comboBox = ((CarLengths*)InstanceManager::getDefault("CarLengths"))->getComboBox();
-           ((CarLengths*)InstanceManager::getDefault("CarLengths"))->addPropertyChangeListener((PropertyChangeListener*)this);
+           ((CarLengths*)InstanceManager::getDefault("CarLengths"))->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
        }
        if (_attribute == (KERNEL)) {
            comboBox = carManager->getKernelComboBox();
@@ -262,7 +261,7 @@ namespace Operations
        if (number == 0 && deleteUnused) {
            // need to check if an engine is using the road name
            if (_attribute == (ROAD)) {
-               for (RollingStock* rs : *((EngineManager*)InstanceManager::getDefault("EngineManager"))->getList()) {
+               for (RollingStock* rs : *((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getList()) {
                    if (rs->getRoadName() == (item)) {
                        log->info(tr("Engine (%1 %2) is assigned road name (%3)").arg(rs->getRoadName()).arg(rs->getNumber()).arg(item)); // NOI18N
                        return;
@@ -271,7 +270,7 @@ namespace Operations
            }
            // need to check if an engine is using the road name
            if (_attribute == (OWNER)) {
-               for (RollingStock* rs : *((EngineManager*)InstanceManager::getDefault("EngineManager"))->getList()) {
+               for (RollingStock* rs : *((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getList()) {
                    if (rs->getOwner() == (item)) {
                        log->info(tr("Engine (%1 %2) is assigned owner name (%3)").arg(rs->getRoadName()).arg(rs->getNumber()).arg(item)); // NOI18N
                        return;
@@ -313,7 +312,7 @@ namespace Operations
    //@Override
    /*public*/ void CarAttributeEditFrame::dispose() {
        ((CarTypes*)InstanceManager::getDefault("CarTypes"))->removePropertyChangeListener((PropertyChangeListener*)this);
-       ((CarColors*)InstanceManager::getDefault("CarColors"))->removePropertyChangeListener((PropertyChangeListener*)this);
+       ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->removePropertyChangeListener((PropertyChangeListener*)this);
        ((CarLengths*)InstanceManager::getDefault("CarLengths"))->removePropertyChangeListener((PropertyChangeListener*)this);
        carManager->removePropertyChangeListener((PropertyChangeListener*)this);
        RollingStockAttributeEditFrame::dispose();
@@ -330,7 +329,7 @@ namespace Operations
            ((CarTypes*)InstanceManager::getDefault("CarTypes"))->updateComboBox(comboBox);
        }
        if ( e->getPropertyName() == (CarColors::CARCOLORS_CHANGED_PROPERTY)) {
-           ((CarColors*)InstanceManager::getDefault("CarColors"))->updateComboBox(comboBox);
+           ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->updateComboBox(comboBox);
        }
        if ( e->getPropertyName() == (CarLengths::CARLENGTHS_CHANGED_PROPERTY)) {
            ((CarLengths*)InstanceManager::getDefault("CarLengths"))->updateComboBox(comboBox);

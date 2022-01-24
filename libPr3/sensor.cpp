@@ -18,7 +18,7 @@ Sensor::Sensor(QString sysName, QString userName, QObject* parent) : AbstractNam
 {
  try {
      setState(s);
- } catch (JmriException ex) {
+ } catch (JmriException* ex) {
      log->error("setCommandedState", ex);
  }
 

@@ -32,8 +32,8 @@
         Light* light = ((ProxyLightManager*)InstanceManager::getDefault("LightManager"))->getLight(name);
         if (light != NULL) {
             LightListener* listener = new LightListener(light, this);
-            //light.addPropertyChangeListener(listener);
-            connect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+            ((AbstractNamedBean*)light->self())->addPropertyChangeListener(listener);
+            //connect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
             this->lights->insert(name, listener);
         }
     }
@@ -50,8 +50,8 @@
     //lights.values().stream().forEach((light) ->
     foreach(LightListener* listener, lights->values())
     {
-        //light.removePropertyChangeListener(light);
-     disconnect(listener->light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//     listener->removePropertyChangeListener(listener);
+     //disconnect(listener->light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
     }//);
     lights->clear();
@@ -72,16 +72,16 @@
         if (e->getPropertyName()==("KnownState")) {
             try {
                 try {
-                    jlss->connection->sendMessage(jlss->service->doGet(JSON::LIGHT, this->light->getSystemName(), jlss->locale));
+                    jlss->connection->sendMessage(jlss->service->doGet(JSON::LIGHT, ((AbstractNamedBean*)light->self())->getSystemName(), jlss->locale));
                 } catch (JsonException ex) {
                     jlss->connection->sendMessage(ex.getJsonMessage());
                 }
-            } catch (IOException ex) {
+            } catch (IOException* ex) {
                 // if we get an error, de-register
-                //light.removePropertyChangeListener(this);
-          disconnect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          ((AbstractNamedBean*)light->self())->removePropertyChangeListener(this);
+          //disconnect(light->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
-                jlss->lights->remove(this->light->getSystemName());
+                jlss->lights->remove(((AbstractNamedBean*)light->self())->getSystemName());
             }
         }
     }

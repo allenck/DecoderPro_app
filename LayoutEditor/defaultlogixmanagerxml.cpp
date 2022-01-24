@@ -191,19 +191,19 @@ DefaultLogixManagerXml::DefaultLogixManagerXml(QObject *parent) :
      return;
  }
  // if old manager exists, remove it from configuration process
- if (static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager")) != NULL)
-     static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->deregister(static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager")) );
+ if (qobject_cast<LogixManager*>(InstanceManager::getDefault("LogixManager")) != NULL)
+     qobject_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->deregister(qobject_cast<LogixManager*>(InstanceManager::getDefault("LogixManager") )->self());
 
  // register new one with InstanceManager
  DefaultLogixManager* pManager = DefaultLogixManager::instance();
  InstanceManager::store(pManager, "LogixManager");
  // register new one for configuration
- ConfigureManager* cmOD = static_cast<ConfigureManager*>(InstanceManager::getNullableDefault("ConfigureManager"));
+ ConfigureManager* cmOD = qobject_cast<ConfigureManager*>(InstanceManager::getNullableDefault("ConfigureManager"));
  if (cmOD != nullptr) {
   cmOD->registerConfig(pManager, Manager::LOGIXS);
  }
 }
 
 /*public*/ int DefaultLogixManagerXml::loadOrder() const{
-    return ((DefaultLogixManager*)static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager")))->getXMLOrder();
+    return ((DefaultLogixManager*)qobject_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->self())->getXMLOrder();
 }

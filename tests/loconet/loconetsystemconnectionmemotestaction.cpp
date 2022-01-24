@@ -31,9 +31,9 @@ void LoconetSystemConnectionMemoTestAction::actionPerformed()
 
  JUnitUtil::runTests(test, testList);
  }
- catch (AssertionError ex)
+ catch (AssertionError* ex)
  {
-  JOptionPane::showMessageDialog(nullptr, ex.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
+  JOptionPane::showMessageDialog(nullptr, ex->getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
  }
 }
 Logger* LoconetSystemConnectionMemoTestAction::log = LoggerFactory::getLogger("LoconetSystemConnectionMemoTestAction");

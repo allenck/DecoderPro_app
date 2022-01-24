@@ -7,7 +7,7 @@
 #include "blockmanager.h"
 
 
-/*private*/ /*static*/ QString BlockValueFile::defaultFileName = FileUtil::getUserFilesPath()+"blockvalues.xml";
+/*private*/ /*static*/ QString BlockValueFile::defaultFileName = "";//FileUtil::getUserFilesPath()+"blockvalues.xml";
 
 BlockValueFile::BlockValueFile(QObject *parent) :
     XmlFile(parent)
@@ -42,8 +42,11 @@ BlockValueFile::BlockValueFile(QObject *parent) :
 /*public*/ void BlockValueFile::readBlockValues() throw (JDOMException, IOException)
 {
  log->debug("entered readBlockValues");
- QStringList blocks = blockManager->getSystemNameList();
+ QStringList blocks = blockManager->AbstractManager::getSystemNameList();
  // check if file exists
+ if(defaultFileName == "")
+  defaultFileName = FileUtil::getUserFilesPath()+"blockvalues.xml";
+
  if (checkFile(defaultFileName))
  {
   // file is present,
@@ -67,7 +70,7 @@ BlockValueFile::BlockValueFile(QObject *parent) :
      }
      QString sysName = blockList.at(i).toElement().attribute("systemname");
      // get Block - ignore entry if block not found
-     Block* b = (Block*)blockManager->getBySystemName(sysName);
+     Block* b = (Block*)blockManager->AbstractManager::getBySystemName(sysName);
      if (b!=NULL)
      {
       // Block was found, set its value
@@ -96,7 +99,7 @@ BlockValueFile::BlockValueFile(QObject *parent) :
         dd = a.toInt(&bOk);
         if(!bOk) throw new DataConversionException();
        }
-       catch (DataConversionException e)
+       catch (DataConversionException* e)
        {
         log->error("failed to convert direction attribute");
        }
@@ -114,10 +117,10 @@ BlockValueFile::BlockValueFile(QObject *parent) :
  *  If there are no defined Blocks, no file is written.
  *  If none of the defined Blocks have values, no file is written.
  */
-/*public*/ void BlockValueFile::writeBlockValues() throw (IOException)
+/*public*/ void BlockValueFile::writeBlockValues() /*throw (IOException)*/
 {
  log->debug("entered writeBlockValues");
- QStringList blocks = blockManager->getSystemNameList();
+ QStringList blocks = blockManager->AbstractManager::getSystemNameList();
  if (blocks.size()>0)
  {
   // there are blocks defined, create root element
@@ -139,7 +142,7 @@ BlockValueFile::BlockValueFile(QObject *parent) :
   for (int i = 0; i<blocks.size(); i++)
   {
    QString sname = blocks.at(i);
-   Block* b = (Block*)blockManager->getBySystemName(sname);
+   Block* b = (Block*)blockManager->AbstractManager::getBySystemName(sname);
    if (b!=NULL)
    {
     QVariant o = b->getValue();
@@ -186,9 +189,9 @@ BlockValueFile::BlockValueFile(QObject *parent) :
     // write content to file
     writeXML(findFile(defaultFileName),doc);
    }
-   catch (IOException ioe)
+   catch (IOException* ioe)
    {
-    log->error("IO Exception "+ioe.getMessage());
+    log->error("IO Exception "+ioe->getMessage());
     throw (ioe);
    }
  }

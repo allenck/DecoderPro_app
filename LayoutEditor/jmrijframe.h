@@ -28,15 +28,15 @@ public:
 //    /*public*/ void pack();
 //    /*public*/ QSize getPreferredSize();
 //    /*public*/ QSize getMaximumSize();
-    /*public*/ void moveEvent(QMoveEvent* e);
-    /*public*/ void resizeEvent(QResizeEvent* e);
+    /*public*/ void moveEvent(QMoveEvent* e) override;
+    /*public*/ void resizeEvent(QResizeEvent* e) override;
     /*public*/ void generateWindowRef();
     /*public*/ QString getWindowFrameRef();
     /*public*/ void setModifiedFlag(bool flag);
     /*public*/ bool getModifiedFlag();
     /*final*/ static QString WINDOW_MODIFIED;// = "windowModified";
     /*public*/ void markWindowModified(bool yes);
-    /*public*/ void dispose();
+    /*public*/ void dispose() override;
     /*public*/ virtual void addHelpMenu(QString ref, bool direct);
     /*public*/ static QList<JmriJFrame*>* getFrameList();
     void init(bool saveSize, bool savePosition);
@@ -44,20 +44,20 @@ public:
     /*public*/ QString getName();
     /*public*/ void setName(QString name);
     void setWindowTitle(const QString &title);
-    void setTitle(QString _title);
+    void setTitle(QString _title) override;
     /*public*/ virtual void initComponents() /*throw (Exception)*/;
-    QString getTitle();
+    QString getTitle() override;
     JPanel *getContentPane();
-    JPanel *getContentPane(bool addLayout);
+    JPanel *getContentPane(bool addLayout)override;
     void setAlwaysOnTop(bool checked);
     void setContentPane(QWidget*);
     /*public*/ void setEscapeKeyAction(AbstractAction* action);
     /*public*/ AbstractAction* getEscapeKeyAction();
     /*public*/ void setEscapeKeyClosesWindow(bool closesWindow);
     /*public*/ bool getEscapeKeyClosesWindow();
-    bool eventFilter(QObject *target, QEvent *event);
-    /*public*/ void componentMoved(QMoveEvent* e);
-    /*public*/ void componentResized(QResizeEvent* e);
+    bool eventFilter(QObject *target, QEvent *event)override;
+    /*public*/ void componentMoved(QMoveEvent* e)override;
+    /*public*/ void componentResized(QResizeEvent* e)override;
     /*public*/ void setSavePosition(bool save);
     /*public*/ void setSaveSize(bool save);
     /*public*/ bool getSavePosition();
@@ -76,8 +76,9 @@ public:
     /*public*/ QWidget* getGlassPane();
     /*public*/ void setGlassPane(QWidget* glassPane);
     /*public*/ void setBorder(Border* border) override {this->_border = border;}
-    /*public*/ Border* getBorder() {return _border;}
+    /*public*/ Border* getBorder() override {return _border;}
     /*public*/ JRootPane* getRootPane() {return (JRootPane*)centralWidget();}
+    QString windowFrameRef = QString();
 
 
 signals:
@@ -88,7 +89,6 @@ public slots:
 
 private:
     static /*volatile*/ QList<JmriJFrame*>* frameList;// = new QList<JmriJFrame*>();
-    QString windowFrameRef = QString();
     void offSetFrameOnScreen(JmriJFrame* f);
     /*private*/ AbstractShutDownTask* task = nullptr;
     Logger* log;

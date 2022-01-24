@@ -102,8 +102,8 @@
     QString sys = getSystemName(shared);
     try {
     m = new MatrixSignalMast(sys);
-    } catch (Exception e) {
-        log->error("An error occurred while trying to create the signal '" + sys + "' " + e.getMessage());
+    } catch (Exception* e) {
+        log->error("An error occurred while trying to create the signal '" + sys + "' " + e->getMessage());
         return false;
     }
     if (getUserName(shared) != "") {

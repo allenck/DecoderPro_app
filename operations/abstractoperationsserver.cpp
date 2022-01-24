@@ -5,6 +5,7 @@
 #include "location.h"
 #include "logger.h"
 #include "engine.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -27,12 +28,10 @@ namespace Operations
   log = new Logger("AbstractOperationsServer");
   exactLocationName = true;
 
-     tm = TrainManager::instance();
-     //tm.addPropertyChangeListener(this);
-     connect(tm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(propertyChangeEvent*)));
-     lm = LocationManager::instance();
-     //lm.addPropertyChangeListener(this);
-     connect(lm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     tm = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
+     tm->addPropertyChangeListener(this);
+     lm = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
+     lm->addPropertyChangeListener(this);
      addPropertyChangeListeners();
      trains = QMap<QString, TrainListener*>();
  }
@@ -274,14 +273,14 @@ namespace Operations
      if (!trains.contains(trainId)) {
          trains.insert(trainId, new TrainListener(trainId, this));
          //TrainManager::instance()->getTrainById(trainId).addPropertyChangeListener(trains.get(trainId));
-         connect(TrainManager::instance()->getTrainById(trainId)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         connect(((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainById(trainId)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
  }
 
  /*synchronized*/ /*protected*/ void AbstractOperationsServer::removeTrainFromList(QString trainId) {
      if (trains.contains(trainId)) {
          //TrainManager::instance().getTrainById(trainId).removePropertyChangeListener(trains.get(trainId));
-      disconnect(TrainManager::instance()->getTrainById(trainId)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      disconnect(((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainById(trainId)->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          trains.remove(trainId);
      }
  }
@@ -292,13 +291,12 @@ namespace Operations
 
  /*public*/ void AbstractOperationsServer::dispose() {
      if (tm != NULL) {
-         //tm.removePropertyChangeListener(this);
-      disconnect(tm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         tm->removePropertyChangeListener(this);
          removePropertyChangeListeners();
      }
      if (lm != NULL) {
-         //lm.removePropertyChangeListener(this);
-      disconnect(lm->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      lm->removePropertyChangeListener(this);
+//      disconnect(lm, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
      //for (Map.Entry<String, TrainListener> train : this.trains.entrySet()) {
      QMapIterator<QString, TrainListener*> it(this->trains);
@@ -306,7 +304,8 @@ namespace Operations
      {
       it.next();
       //TrainManager::instance()->getTrainById(train->getKey()).removePropertyChangeListener(train.getValue());
-      disconnect(TrainManager::instance()->getTrainById(it.key())->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->removePropertyChangeListener(this);
+//      disconnect(((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainById(it.key())->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      }
      this->trains.clear();
  }
@@ -330,7 +329,7 @@ namespace Operations
 //     private /*final*/ Train train;
 
      /*protected*/ TrainListener::TrainListener(QString trainId, AbstractOperationsServer* parent) {
-         this->train = TrainManager::instance()->getTrainById(trainId);
+         this->train = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainById(trainId);
       log = new Logger("TrainListener");
       this->parent = parent;
      }
@@ -339,7 +338,7 @@ namespace Operations
      /*public*/ void TrainListener::propertyChange(PropertyChangeEvent* e) {
          try {
              parent->sendFullStatus(this->train);
-         } catch (IOException ie) {
+         } catch (IOException* ie) {
              log->debug("Error Sending Status");
              // if we get an error, de-register
              //this->train.removePropertyChangeListener(this);

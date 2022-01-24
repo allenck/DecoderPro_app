@@ -13,7 +13,9 @@ public:
 //    /*abstract*/ /*public*/ QDomElement store(QObject* o);
     /*abstract*/ /*public*/ bool load(QDomElement e) throw (Exception);
     /*public*/ void load(QDomElement element, QObject* o) throw (Exception);
- /*public*/ QDomElement store(QObject* o, bool shared);
+    /*public*/ QDomElement store(QObject* o, bool shared);
+
+
 
 signals:
 
@@ -30,9 +32,9 @@ protected:
     /*protected*/ void saveOptions(QDomElement e, PortAdapter* adapter);
     /*protected*/ void loadOptions(QDomElement shared, QDomElement perNode, PortAdapter* adapter);
     ///*protected*/ void unpackElement(QDomElement e, );
- /*protected*/ void unpackElement(QDomElement shared, QDomElement perNode);
- /*protected*/ void _register(ConnectionConfig* c);
- QT_DEPRECATED /*protected*/ void checkAndWarnPrefix(QString prefix);
+    /*protected*/ void unpackElement(QDomElement shared, QDomElement perNode);
+    /*protected*/ void _register(ConnectionConfig* c);
+    QT_DEPRECATED /*protected*/ void checkAndWarnPrefix(QString prefix);
 
 };
 

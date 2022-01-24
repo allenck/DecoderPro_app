@@ -2,7 +2,7 @@
 #define LOADXMLUSERACTION_H
 #include "loadxmlconfigaction.h"
 
-class ActionEvent;
+class JActionEvent;
 class File;
 class LoadXmlUserAction : public LoadXmlConfigAction
 {
@@ -15,7 +15,7 @@ public:
 signals:
 
 public slots:
- /*public*/ void actionPerformed(ActionEvent* e = 0);
+ /*public*/ void actionPerformed(JActionEvent* e = 0) override;
 
 private:
  static File* currentFile;// = null;

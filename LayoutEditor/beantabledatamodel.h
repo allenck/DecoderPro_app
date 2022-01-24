@@ -6,6 +6,8 @@
 #include "logger.h"
 #include "liblayouteditor_global.h"
 #include <QItemDelegate>
+#include "propertychangelistener.h"
+#include "abstractmanager.h"
 
 class NamedBeanPropertyDescriptor;
 class RowSorter;
@@ -21,9 +23,10 @@ class QDialog;
 class PropertyChangeEvent;
 class NamedBean;
 class Manager;
-class LIBLAYOUTEDITORSHARED_EXPORT BeanTableDataModel : public AbstractTableModel
+class LIBLAYOUTEDITORSHARED_EXPORT BeanTableDataModel : public AbstractTableModel, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     explicit BeanTableDataModel(QObject *parent = 0);
  enum COLUMNS
@@ -42,17 +45,19 @@ public:
  /*public*/ int rowCount(const QModelIndex &parent) const override;
  /*public*/ int columnCount(const QModelIndex &parent) const override;
  /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+ /*public*/ QString getColumnClass(int col) const override;
  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
  /*public*/ QVariant data(const QModelIndex &index, int role) const override;
  virtual /*public*/ int getPreferredWidth(int col) ;
  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+ /*abstract*/ /*public*/ virtual QString getValue(QString systemName) {return QString();}
 
 // virtual void fireTableDataChanged();
 // virtual void fireTableRowsUpdated(int, int);
  /*public*/ int getDisplayDeleteMsg();
  /*public*/ void setDisplayDeleteMsg(int boo);
  virtual /*public*/ void configureTable(JTable* table);
- /*synchronized*/ /*public*/ void dispose();
+ virtual /*synchronized*/ /*public*/ void dispose();
  virtual /*public*/ QPushButton* configureButton();
 // /*public*/ void saveTableColumnDetails(JTable* table);
 // QT_DEPRECATED/*public*/ void saveTableColumnDetails(JTable* table, QString beantableref);
@@ -61,14 +66,17 @@ public:
 // /*public*/ void loadTableColumnDetails(JTable* table);
 // QT_DEPRECATED/*public*/ void loadTableColumnDetails(JTable* table, QString beantableref);
  /*public*/ void printTable(HardcopyWriter* w);
- /*public*/ JTable* makeJTable(/*@Nonnull */QString name, /*@Nonnull */TableModel* model, /*@Nullable*/ RowSorter* /*<? extends TableModel>*/ sorter);
- QT_DEPRECATED/*public*/ JTable* makeJTable(QSortFilterProxyModel* sorter);
+ /*public*/ virtual JTable* makeJTable(/*@Nonnull */QString name, /*@Nonnull */TableModel* model, /*@Nullable*/ RowSorter* /*<? extends TableModel>*/ sorter);
+ // QT_DEPRECATED/*public*/ JTable* makeJTable(QSortFilterProxyModel* sorter);
  /*public*/ void copyName(int);
  /*public*/ void renameBean(int);
  /*public*/ void removeName(int);
- /*public*/ void moveBean(int);
+ /*public*/ void moveBean(int, int col);
  virtual /*public*/ void addToPopUp(QMenu* popup);
  /*public*/ void setPropertyColumnsVisible(JTable* table, bool visible);
+ QObject* self() override {return (QObject*)this;}
+ /*public*/ void editComment(int row, int column);
+ /*public*/ QString getCellToolTip(JTable* table, int row, int col) const override;
 
 
 signals:
@@ -82,22 +90,21 @@ public slots:
  void On_copyName_triggered();
  void On_renameBean_triggered();
  void On_removeName_triggered();
- void On_moveBean_triggered();
- void On_deleteBean_triggered();
  virtual void /*public*/ init();
 
 private:
- Logger* log;
+ static Logger* log;
  bool noWarnDelete;// = false;
  virtual void doDelete(NamedBean* bean);
- QDialog* dialog;
- QCheckBox* remember;
+ QDialog* dialog = nullptr;
+ QCheckBox* remember = nullptr;
  NamedBeanHandleManager* nbMan;// = InstanceManager.getDefault("NamedBeanHandleManager");
- NamedBean* t;
+ NamedBean* t = nullptr;
  //QList<int> buttonMap;
- JTable* _table;
+ //JTable* _table = nullptr;
  int row;
  //void setPersistentButtons();
+ QString formatToolTip(QString comment) const;
 
 protected:
  /*abstract*/ /*protected*/ virtual Manager* getManager();
@@ -121,6 +128,9 @@ protected:
  /*protected*/ void showTableHeaderPopup(QMouseEvent* e, JTable* table);
  /*protected*/ int getPropertyColumnCount() const;
  /*protected*/ /*final*/ QList<NamedBeanPropertyDescriptor*>* propertyColumns = nullptr;
+ /*protected*/ NamedBeanPropertyDescriptor *getPropertyColumnDescriptor(int column);
+ /*protected*/ JTable* configureJTable(/*@Nonnull*/ QString name, /*@Nonnull*/ JTable* table, /*@CheckForNull*/ RowSorter/*<? extends TableModel>*/* sorter);
+ virtual /*protected*/ void setColumnIdentities(JTable* table);
 
 protected slots:
  void On_itemClicked(QModelIndex);
@@ -148,7 +158,37 @@ friend class LTFTabbedTableItem;
 friend class AbstractTableAction;
 friend class TurnoutTableDataModel;
 friend class SignalMastTableAction;
+friend class OBlockTableAction;
+friend class TTComboBoxDelegate;
+friend class SensorTableDataModel;
+friend class DeleteBeanWorker;
+friend class TurnoutTableAction;
+friend class LightTableDataModel;
+friend class LightTableAction;
+friend class ReporterTableAction;
 };
 
+class DeleteBeanWorker : public QObject//extends SwingWorker<Void, Void>
+{
+Q_OBJECT
+/*private*/ /*final*/ NamedBean* t;
+BeanTableDataModel *model;
+
+public:
+/*public*/ DeleteBeanWorker(NamedBean* bean, BeanTableDataModel *model);
+
+ signals:
+  void finished();
+
+ public slots:
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ void *doInBackground();
+ protected:
+
+/*protected*/ void done();
+};
 
 #endif // BEANTABLEDATAMODEL_H

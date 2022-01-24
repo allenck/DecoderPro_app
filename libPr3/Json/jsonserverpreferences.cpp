@@ -38,7 +38,7 @@
             log->info("No JsonServer preferences exist.");
             migrate = true;
         }
-    } catch (BackingStoreException ex) {
+    } catch (BackingStoreException* ex) {
         log->info("No preferences file exists.");
         migrate = true;
     }
@@ -46,7 +46,7 @@
         if (fileName != NULL) {
             try {
                 this->openFile(fileName);
-            } catch (FileNotFoundException ex) {
+            } catch (FileNotFoundException* ex) {
                 migrate = false;
             }
         } else {
@@ -58,7 +58,7 @@
         try {
             log->info(tr("Migrating from old JsonServer preferences in %1 to new format in %2.").arg(fileName).arg(FileUtil::getAbsoluteFilename("profile:profile")));
             sharedPreferences->sync();
-        } catch (BackingStoreException ex) {
+        } catch (BackingStoreException* ex) {
             log->error("Unable to write JsonServer preferences.", ex);
         }
     }
@@ -86,7 +86,7 @@
         try {
             this->setHeartbeatInterval(a.toInt());
             this->asLoadedHeartbeatInterval = this->getHeartbeatInterval();
-        } catch (DataConversionException e) {
+        } catch (DataConversionException* e) {
             this->setHeartbeatInterval(15000);
             log->error("Unable to read heartbeat interval. Setting to default value.", e);
         }
@@ -96,7 +96,7 @@
         try {
             this->setPort(a.toInt());
             this->asLoadedPort = this->getPort();
-        } catch (DataConversionException e) {
+        } catch (DataConversionException* e) {
             this->setPort(2056);
             log->error("Unable to read port. Setting to default value.", e);
         }
@@ -129,11 +129,11 @@ void JsonServerPreferences::common()
     QDomElement root;
     try {
         root = prefsXml->rootFromFile(file);
-    } catch (FileNotFoundException ea) {
+    } catch (FileNotFoundException* ea) {
         log->info("Could not find JSON Server preferences file.  Normal if preferences have not been saved before.");
         throw ea;
-    } catch (IOException /*| JDOMException*/ eb) {
-        log->error(tr("Exception while loading JSON server preferences: %1").arg(eb.getLocalizedMessage()));
+    } catch (IOException* /*| JDOMException*/ eb) {
+        log->error(tr("Exception while loading JSON server preferences: %1").arg(eb->getLocalizedMessage()));
         root = QDomElement();
     }
     if (root != QDomElement()) {

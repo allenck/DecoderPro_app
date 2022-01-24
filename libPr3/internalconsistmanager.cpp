@@ -44,7 +44,7 @@
     //if (! (address instanceof DccLocoAddress))
     if(qobject_cast<DccLocoAddress*>(address)== NULL)
     {
-        throw IllegalArgumentException("address is not a DccLocoAddress object");
+        throw new IllegalArgumentException("address is not a DccLocoAddress object");
     }
     if (consistTable->contains((DccLocoAddress*)address)) {
         return (consistTable->value((DccLocoAddress*)address));

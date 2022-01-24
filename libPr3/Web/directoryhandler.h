@@ -19,7 +19,7 @@ signals:
 
 public slots:
 protected:
- /*protected*/ void doDirectory(HttpServletRequest* request, HttpServletResponse* response, Resource* resource) throw (IOException);
+ /*protected*/ void doDirectory(HttpServletRequest* request, HttpServletResponse* response, Resource* resource) /*throw (IOException)*/;
 friend class RequestHandler;
 };
 

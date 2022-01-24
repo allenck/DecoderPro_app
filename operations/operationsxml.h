@@ -2,13 +2,15 @@
 #define OPERATIONSXML_H
 #include "xmlfile.h"
 #include "logger.h"
-#include "appslib_global.h"
+#include "operations_global.h"
 
-class APPSLIBSHARED_EXPORT OperationsXml : public XmlFile
+class OPERATIONSSHARED_EXPORT OperationsXml : public XmlFile
 {
  Q_OBJECT
 public:
- explicit OperationsXml(QObject *parent = 0);
+ Q_INVOKABLE explicit OperationsXml(QObject *parent = 0);
+  ~OperationsXml() {}
+  OperationsXml(const OperationsXml&) : XmlFile() {}
  /*public*/ void writeOperationsFile();
  /*abstract*/ /*public*/ virtual void readFile(QString filename);// throw (JDOMException, IOException);
  /*public*/ void setDirty(bool b);
@@ -31,17 +33,17 @@ signals:
 
 public slots:
 private:
- /*private*/ bool dirty;// = false;
+ /*private*/ bool dirty = false;
  /*private*/ static QString operationsDirectoryName;// = "operations"; // NOI18N
- /*private*/ QString operationsFileName;// = "DefaultOperations.xml"; // NOI18N should be overridden
+ /*private*/ QString operationsFileName = "DefaultOperations.xml"; // NOI18N should be overridden
 
  /*private*/ static QString fileLocation;// = FileUtil.getUserFilesPath();
  Logger* log;
 protected:
- /*protected*/ void load() throw (Exception);
+ /*protected*/ void load() /*throw (Exception)*/;
  /*protected*/ File* createFile(QString fullPathName, bool backupFile);
  /*protected*/ virtual void writeFile(QString filename);// throw (FileNotFoundException, IOException);
  friend class CarManagerXml;
 };
-
+Q_DECLARE_METATYPE(OperationsXml)
 #endif // OPERATIONSXML_H

@@ -33,12 +33,15 @@
 #include "storedefaultxmlthrottleslayoutaction.h"
 #include "loadxmlthrottleslayoutaction.h"
 #include "loaddefaultxmlthrottleslayoutaction.h"
-#include "ampmeteraction.h"
+//#include "ampmeteraction.h"
 #include "cabsignalaction.h"
 #include "whereusedaction.h"
 #include "timetable/timetableaction.h"
 #include "servermenu.h"
 #include "pragotronclockaction.h"
+#include "meteraction.h"
+#include "ctc/ctceditoraction.h"
+#include "ctc/ctcrunaction.h"
 
 //ToolsMenu::ToolsMenu(QWidget *parent) :
 //  QMenu(parent)
@@ -144,7 +147,7 @@ addAction(ta);
 
 
  // disable the throttle menu if there is no throttle Manager
- if (InstanceManager::throttleManagerInstance() == NULL)
+ if (InstanceManager::getNullableDefault("ThrottleManager") == nullptr)
  {
   throttleMenu->setEnabled(false);
  }
@@ -174,7 +177,8 @@ addAction(ta);
  addAction(new SimpleTurnoutCtrlAction(tr("Turnout Control..."),this));
  addAction(new SimpleLightCtrlAction(tr("Light Control..."),this));
  addAction(new SpeedometerAction(tr("Speedometer..."),this));
- addAction(new AmpMeterAction(tr("Amp Meter"),this));
+ //addAction(new AmpMeterAction(tr("Amp Meter"),this));
+ addAction(new MeterAction(tr("Voltage / Current meter"),this));
  addAction(new SensorGroupAction(tr("Sensor Groups..."),this));
  addAction(new BlockBossAction(tr("Simple Signal Logic"),this));
  addAction(new SendPacketAction(tr("Send DCC Packet"),this));
@@ -186,13 +190,13 @@ addAction(ta);
  addAction(new TimeTableAction(tr("Timetable"), this));
  addAction(new WhereUsedAction(tr("Where Used"), this));
  // CTC menu item with submenus
-#if 0
- JMenu ctcMenu = new JMenu(Bundle.getMessage("MenuCTC"));
- ctcMenu.add(new jmri.jmrit.ctc.editor.CtcEditorAction(Bundle.getMessage("MenuItemCTCEditor")));
- ctcMenu.add(new jmri.jmrit.ctc.CtcRunAction(Bundle.getMessage("MenuItemCTCMain")));
- add(ctcMenu);
+#if 1
+ QMenu* ctcMenu = new QMenu(tr("CTC"));
+ ctcMenu->addAction(new CtcEditorAction(tr("Open CTC Configuration Editor."),this));
+ ctcMenu->addAction(new CtcRunAction(tr("Run CTC"),this));
+ addMenu(ctcMenu);
  // US&S CTC subsystem tools
- add(new jmri.jmrit.ussctc.ToolsMenu());
+ //add(new jmri.jmrit.ussctc.ToolsMenu());
 #endif
          // add cab signals
  addAction(new CabSignalAction(this));

@@ -8,7 +8,7 @@ class LIBPREFSHARED_EXPORT ProgrammerConfigPaneXml : public AbstractXmlAdapter
 {
     Q_OBJECT
 public:
-    explicit ProgrammerConfigPaneXml(QObject *parent = 0);
+    Q_INVOKABLE explicit ProgrammerConfigPaneXml(QObject *parent = 0);
     ~ProgrammerConfigPaneXml() {}
     ProgrammerConfigPaneXml(const ProgrammerConfigPaneXml&) : AbstractXmlAdapter() {}
     /*public*/ QDomElement store(QObject* o);

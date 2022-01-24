@@ -116,27 +116,27 @@ virtual QString getMasterName() {return "";}
     virtual bool getStartStopped() {return false;}
 
  // methods for start up with clock stopped/started/nochange option
- /*public*/ virtual void setClockInitialRunState(ClockInitialRunState initialState) {}
+ /*public*/ virtual void setClockInitialRunState(ClockInitialRunState /*initialState*/) {}
  /**
   * Defines what to do with the fast clock when JMRI starts up.
   */
 
  /*public*/ virtual ClockInitialRunState getClockInitialRunState() {return DO_NOTHING;}
     // methods for start up with start/stop button displayed
-    /*public*/ virtual void setShowStopButton(bool displayed) {}
+    /*public*/ virtual void setShowStopButton(bool /*displayed*/) {}
 
-    /*public*/ virtual bool getShowStopButton() {}
+    /*public*/ virtual bool getShowStopButton() {return false;}
 
     // methods to get set time at start up option, and start up time
     virtual void setStartSetTime(bool /*set*/, QDateTime /*time*/) {}
     virtual bool getStartSetTime() {return false;}
 
     // What to set the rate at startup.
-    /*public*/ virtual void setStartRate(double factor) {}
+    /*public*/ virtual void setStartRate(double /*factor*/) {}
 
     /*public*/ virtual double getStartRate() {return 0;}
     // If true, the rate at startup will be set to the value of getStartRate().
-    /*public*/ virtual void setSetRateAtStart(bool set) {}
+    /*public*/ virtual void setSetRateAtStart(bool /*set*/) {}
 
     /*public*/ virtual bool getSetRateAtStart() {return false;}
 

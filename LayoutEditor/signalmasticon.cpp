@@ -19,7 +19,7 @@
 #include "joptionpane.h"
 
 SignalMastIcon::SignalMastIcon(QWidget* parent) :
-    PositionableIcon(parent)
+    PositionableIcon()
 {
 }
 /**
@@ -153,7 +153,7 @@ SignalMastIcon::SignalMastIcon(QWidget* parent) :
   try
   {
    n = new NamedIcon(s, s);
-  } catch (NullPointerException e)
+  } catch (NullPointerException* e)
   {
       JOptionPane::showMessageDialog(nullptr, tr("Unable to load %1 icon\n%2\nfor Signal Mast %3").arg(aspect).arg(s, getNameString()), tr("Error with Icons"), JOptionPane::ERROR_MESSAGE);
       log->error(tr("Unable to load %1 icon\n%2\nfor Signal Mast %3").arg(aspect).arg(s).arg(getNameString()));
@@ -434,9 +434,9 @@ void SignalMastIcon::onShowDarkIcon()
 //            updateItem();
 //        }
 //    };
- AddIconActionListener* updateAction = new AddIconActionListener(this);
+ SMIAddIconActionListener* updateAction = new SMIAddIconActionListener(this);
     // _iconMap keys with local names - Let SignalHeadItemPanel figure this out
-#if 0 // TODO:
+#if 1 // TODO:
  _itemPanel->init(updateAction, _iconMap);
 #endif
  _itemPanel->setSelection(getSignalMast());

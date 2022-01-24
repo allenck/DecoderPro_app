@@ -18,51 +18,52 @@ class LIBLAYOUTEDITORSHARED_EXPORT LayoutBlockConnectivityTools : public QObject
  Q_OBJECT
 public:
     LayoutBlockConnectivityTools();
-    /**
-     * Constant used in the getLayoutBlocks to represent a path from one Signal Mast
-     * to another and that no mast should be in the path.
-     */
-    /*public*/ /*final*/const static int MASTTOMAST = 0x01;
+    /*public*/ enum Routing {
+        /**
+         * Constant used in the getLayoutBlocks to represent a path from one Signal
+         * Mast to another and that no mast should be in the path.
+         */
+        MASTTOMAST,
 
-    /**
-     * Constant used in the getLayoutBlocks to represent a path from one Signal Head
-     * to another and that no head should be in the path.
-     */
-    /*public*/ /*final*/const static int HEADTOHEAD = 0x02;
+        /**
+         * Constant used in the getLayoutBlocks to represent a path from one Signal
+         * Head to another and that no head should be in the path.
+         */
+        HEADTOHEAD,
 
-    /**
-     * Constant used in the getLayoutBlocks to represent a path from one Sensor
-     * to another and that no sensor should be in the path.
-     */
-    /*public*/ /*final*/ const static int SENSORTOSENSOR = 0x04;
+        /**
+         * Constant used in the getLayoutBlocks to represent a path from one Sensor
+         * to another and that no sensor should be in the path.
+         */
+        SENSORTOSENSOR,
 
-    /**
-     * Constant used in the getLayoutBlocks to represent a path from either
-     * a Signal Mast or Head to another Signal Mast or Head and that no mast of
-     * head should be in the path.
-     */
-    /*public*/ /*final*/const static int ANY = 0x08;
+        /**
+         * Constant used in the getLayoutBlocks to represent a path from either a
+         * Signal Mast or Head to another Signal Mast or Head and that no mast of
+         * head should be in the path.
+         */
+        ANY,
 
-    /**
-     * Constant used in the getLayoutBlocks to indicate that the the system should
-     * not check for signal masts or heads on the path.
-     */
-    /*public*/ /*final*/const static int NONE = 0x00;
-
+        /**
+         * Constant used in the getLayoutBlocks to indicate that the system
+         * should not check for signal masts or heads on the path.
+         */
+        NONE
+    };
 
     /*public*/ /*final*/const static int HOPCOUNT = 0x00;
     /*public*/ /*final*/const static int METRIC = 0x01;
     /*public*/ /*final*/const static int DISTANCE = 0x02;
-    /*public*/ bool checkValidDest(LayoutBlock* currentBlock, LayoutBlock* nextBlock, LayoutBlock* destBlock, LayoutBlock* destProBlock, int pathMethod) throw (JmriException);
+    /*public*/ bool checkValidDest(LayoutBlock* currentBlock, LayoutBlock* nextBlock, LayoutBlock* destBlock, LayoutBlock* destProBlock, int pathMethod) /*throw (JmriException)*/;
     /*public*/ QList<NamedBean*> getBeansInPath(QList<LayoutBlock*> blocklist, LayoutEditor* panel, QString T);
-    /*public*/ bool checkValidDest(NamedBean* sourceBean, NamedBean* destBean, int pathMethod) throw (JmriException);
-    /*public*/ bool checkValidDest(LayoutBlock* currentBlock, LayoutBlock* nextBlock, LayoutBlock* destBlock, QList<LayoutBlock*> destBlockn1, int pathMethod) throw (JmriException);
-    /*public*/ bool checkValidDest(LayoutBlock* facing, LayoutBlock* protecting, FacingProtecting* dest, int pathMethod) throw (JmriException);
-    /*public*/ QList<LayoutBlock*> getLayoutBlocks(NamedBean* sourceBean, NamedBean* destBean, bool validateOnly, int pathMethod) throw (JmriException);
-    /*public*/ QList<LayoutBlock*> getLayoutBlocks(LayoutBlock* sourceLayoutBlock, LayoutBlock* destinationLayoutBlock, LayoutBlock* protectingLayoutBlock, bool validateOnly, int pathMethod) throw (JmriException);
+    /*public*/ bool checkValidDest(NamedBean* sourceBean, NamedBean* destBean, int pathMethod) /*throw (JmriException)*/;
+    /*public*/ bool checkValidDest(LayoutBlock* currentBlock, LayoutBlock* nextBlock, LayoutBlock* destBlock, QList<LayoutBlock*> destBlockn1, int pathMethod) /*throw (JmriException)*/;
+    /*public*/ bool checkValidDest(LayoutBlock* facing, LayoutBlock* protecting, FacingProtecting* dest, int pathMethod) /*throw (JmriException)*/;
+    /*public*/ QList<LayoutBlock*> getLayoutBlocks(NamedBean* sourceBean, NamedBean* destBean, bool validateOnly, int pathMethod) /*throw (JmriException)*/;
+    /*public*/ QList<LayoutBlock*> getLayoutBlocks(LayoutBlock* sourceLayoutBlock, LayoutBlock* destinationLayoutBlock, LayoutBlock* protectingLayoutBlock, bool validateOnly, int pathMethod) /*throw (JmriException)*/;
     /*public*/ QHash<NamedBean*, QList<NamedBean*> > discoverValidBeanPairs(LayoutEditor* editor, QString T, int pathMethod);
-    /*public*/ QList<NamedBean*> discoverPairDest(NamedBean* source, LayoutEditor* editor, QString T, int pathMethod) throw (JmriException);
-    QList<NamedBean*> discoverPairDest(NamedBean* source, LayoutBlock* lProtecting, LayoutBlock* lFacing, QList<FacingProtecting*> blockList, int pathMethod) throw (JmriException);
+    /*public*/ QList<NamedBean*> discoverPairDest(NamedBean* source, LayoutEditor* editor, QString T, int pathMethod) /*throw (JmriException)*/;
+    QList<NamedBean*> discoverPairDest(NamedBean* source, LayoutBlock* lProtecting, LayoutBlock* lFacing, QList<FacingProtecting*> blockList, int pathMethod) /*throw (JmriException)*/;
     QList<FacingProtecting*> generateBlocksWithBeans(LayoutEditor* editor, QString T);
 
 private:

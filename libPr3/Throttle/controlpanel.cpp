@@ -31,6 +31,8 @@
 #include <QSet>
 #include <QHash>
 #include "loggingutil.h"
+#include "roster.h"
+#include "loggerfactory.h"
 
 //ControlPanel::ControlPanel(QWidget *parent) :
 //    QDockWidget(parent)
@@ -60,6 +62,8 @@
 /*public*/ ControlPanel::ControlPanel(QWidget *parent) : QDockWidget(tr("Speed"),parent)
 {
  //super("Speed");
+ setObjectName("ControlPanel");
+ log->setDebugEnabled(true);
  _displaySlider = SLIDERDISPLAY;
  speedControllerEnable = false;
  _emergencyStop = false;
@@ -144,7 +148,7 @@
         addressPanel->removeAddressListener(this);
     }
     if (_throttle != nullptr) {
-        _throttle->removePropertyChangeListener((PropertyChangeListener*)this);
+        ((AbstractThrottle*)_throttle)->removePropertyChangeListener((PropertyChangeListener*)this);
         _throttle = nullptr;
     }
 }
@@ -158,7 +162,7 @@
     this->setEnabled(false);
     if (_throttle != NULL) {
         //throttle.removePropertyChangeListener(this);
-     disconnect(_throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect((AbstractThrottle*)_throttle->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
     _throttle = NULL;
     if (prevShuntingFn != NULL) {
@@ -183,10 +187,10 @@
  this->setSpeedValues(_throttle->getSpeedIncrement(), _throttle->getSpeedSetting());
 
  // Set speed steps
- this->setSpeedStepsMode(_throttle->getSpeedStepMode()->mode);
+ this->setSpeedStepsMode(_throttle->getSpeedStepMode());
 
  //this->throttle.addPropertyChangeListener(this);
- connect(this->_throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+ connect((AbstractThrottle*)this->_throttle->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  if (log->isDebugEnabled())
  {
      DccLocoAddress* Address = (DccLocoAddress*) _throttle->getLocoAddress();
@@ -228,6 +232,45 @@
   _throttle = NULL;
  }
  //super.dispose();
+}
+
+/**
+ * Intended for throttle scripting
+ *
+ * @param fwd direction: true for forward; false for reverse.
+ */
+/*public*/ void ControlPanel::setForwardDirection(bool fwd) {
+    if (fwd) {
+        if (forwardButton->isEnabled()) {
+            forwardButton->click();
+        } else {
+            log->error("setForwardDirection(true) with forwardButton disabled, failed");
+        }
+    } else {
+        if (reverseButton->isEnabled()) {
+            reverseButton->click();
+        } else {
+            log->error("setForwardDirection(false) with reverseButton disabled, failed");
+        }
+    }
+}
+
+/**
+ * Intended for throttle scripting
+ *
+ * @return The speed slider.
+ */
+/*public*/ JSlider* ControlPanel::getSpeedSlider() {
+    return speedSlider;
+}
+
+/**
+ * Intended for throttle scripting and testing.
+ *
+ * @return The continuous (shunting) speed slider.
+ */
+/*public*/ JSlider* ControlPanel::getSpeedSliderContinuous() {
+    return speedSliderContinuous;
 }
 
 // update the state of this panel if any of the properties change
@@ -416,10 +459,11 @@
 //    labelTable->insert((maxSpeed / 2), new QLabel("50%"));
 //    labelTable->insert((maxSpeed), new QLabel("100%"));
 //    labelTable->insert((0), new QLabel(tr("Stop")));
- QHash<int,QLabel*> labelTable = QHash<int,QLabel*>();
- labelTable.insert((maxSpeed / 2),new QLabel("100%"));
- labelTable.insert((maxSpeed),new QLabel("50%"));
- labelTable.insert((0), new QLabel(tr("Stop")));
+ speedSlider->setTickPosition(QSlider::TicksRight);
+ QMap<int,JLabel*> labelTable = QMap<int,JLabel*>();
+ labelTable.insert((0), new JLabel(tr("Stop")));
+ labelTable.insert((maxSpeed/2),new JLabel("50%"));
+ labelTable.insert((maxSpeed),new JLabel("100%"));
  speedSlider->setLabelTable(labelTable);
 //    speedSlider.setPaintTicks(true);
 //    speedSlider.setPaintLabels(true);
@@ -443,12 +487,12 @@
   }
   speedSliderContinuous->setValue((int) (oldSpeed * maxSpeed));
   speedSliderContinuous->setMajorTickSpacing(maxSpeed / 2);
-  QHash<int, QLabel*> labelTable =  QHash<int, QLabel*>();
-  labelTable.insert((maxSpeed / 2), new QLabel("50%"));
-  labelTable.insert((maxSpeed), new QLabel("100%"));
-  labelTable.insert((0), new QLabel(tr("Stop")));
-  labelTable.insert((-maxSpeed / 2), new QLabel("-50%"));
-  labelTable.insert((-maxSpeed), new QLabel("-100%"));
+  QMap<int, JLabel*> labelTable =  QMap<int, JLabel*>();
+  labelTable.insert((maxSpeed / 2), new JLabel("50%"));
+  labelTable.insert((maxSpeed), new JLabel("100%"));
+  labelTable.insert((0), new JLabel(tr("Stop")));
+  labelTable.insert((-maxSpeed / 2), new JLabel("-50%"));
+  labelTable.insert((-maxSpeed), new JLabel("-100%"));
   speedSliderContinuous->setLabelTable(labelTable);
 //        speedSliderContinuous.setPaintTicks(true);
 //        speedSliderContinuous.setPaintLabels(true);
@@ -637,60 +681,68 @@
     /*final*/ ThrottlesPreferences* preferences = ((ThrottleFrameManager*)
             InstanceManager::getDefault("ThrottleFrameManager"))->getThrottlesPreferences();
 
-    GridBagConstraints constraints = makeDefaultGridBagConstraints();
-    constraints.fill = GridBagConstraints::NONE;
+//    GridBagConstraints constraints = makeDefaultGridBagConstraints();
+//    constraints.fill = GridBagConstraints::NONE;
 
-    constraints.gridy = 10;
-    if (preferences->isUsingIcons()) {
-        constraints.gridx = 2;
-    }
-    buttonPanelLayout->addWidget(forwardButton, constraints);
+//    constraints.gridy = 10;
+//    if (preferences->isUsingIcons()) {
+//        constraints.gridx = 2;
+//    }
+//    buttonPanelLayout->addWidget(forwardButton, constraints);
+ buttonPanel->layout()->addWidget(forwardButton);
 
-    if (preferences->isUsingIcons()) {
-        constraints.gridx = 0;
-    } else {
-        constraints.gridy = 20;
-    }
-    buttonPanelLayout->addWidget(reverseButton, constraints);
 
-    if (preferences->isUsingIcons()) {
-        constraints.gridx = 1;
-    } else {
-        constraints.gridy = 30;
-    }
-    buttonPanelLayout->addWidget(idleButton, constraints);
-
-    if (preferences->isUsingIcons()) {
-        constraints.gridx = 1;
-    } else {
-        constraints.gridx = 0;
-    }
-    constraints.gridy = 40;
-    buttonPanelLayout->addWidget(stopButton, constraints);
+//    if (preferences->isUsingIcons()) {
+//        constraints.gridx = 0;
+//    } else {
+//        constraints.gridy = 20;
+//    }
+//    buttonPanelLayout->addWidget(reverseButton, constraints);
+ buttonPanel->layout()->addWidget(reverseButton);
+//    if (preferences->isUsingIcons()) {
+//        constraints.gridx = 1;
+//    } else {
+//        constraints.gridy = 30;
+//    }
+//    buttonPanelLayout->addWidget(idleButton, constraints);
+ buttonPanel->layout()->addWidget(idleButton);
+//    if (preferences->isUsingIcons()) {
+//        constraints.gridx = 1;
+//    } else {
+//        constraints.gridx = 0;
+//    }
+//    constraints.gridy = 40;
+//    buttonPanelLayout->addWidget(stopButton, constraints);
+ buttonPanel->layout()->addWidget(stopButton);
 }
 
 /*private*/ void ControlPanel::layoutSliderPanel() {
-    sliderPanel->setLayout(sliderPanelLayout =new GridBagLayout());
+//    sliderPanel->setLayout(sliderPanelLayout = new GridBagLayout());
 
-    GridBagConstraints constraints = makeDefaultGridBagConstraints();
+//    GridBagConstraints constraints = makeDefaultGridBagConstraints();
 
-    sliderPanelLayout->addWidget(speedSlider, constraints);
-
+//    sliderPanelLayout->addWidget(speedSlider, constraints);
+ sliderPanel->setLayout(new QVBoxLayout());
+ sliderPanel->layout()->addWidget(speedSlider);
 }
 
 /*private*/ void ControlPanel::layoutSpeedSliderContinuous() {
-    speedSliderContinuousPanel->setLayout(speedSliderContinuousPanelLayout = new GridBagLayout());
+//    speedSliderContinuousPanel->setLayout(speedSliderContinuousPanelLayout = new GridBagLayout());
 
-    GridBagConstraints constraints = makeDefaultGridBagConstraints();
+//    GridBagConstraints constraints = makeDefaultGridBagConstraints();
 
-    speedSliderContinuousPanelLayout->addWidget(speedSliderContinuous, constraints);
+//    speedSliderContinuousPanelLayout->addWidget(speedSliderContinuous, constraints);
+ speedSliderContinuousPanel->setLayout(new QVBoxLayout());
+ speedSliderContinuousPanel->layout()->addWidget(speedSliderContinuous);
 }
 
 /*private*/ void ControlPanel::layoutSpinnerPanel() {
-    spinnerPanel->setLayout(spinnerPanelLayout = new GridBagLayout());
-    GridBagConstraints constraints = makeDefaultGridBagConstraints();
+//    spinnerPanel->setLayout(spinnerPanelLayout = new GridBagLayout());
+//    GridBagConstraints constraints = makeDefaultGridBagConstraints();
 
-    spinnerPanelLayout->addWidget(speedSpinner, constraints);
+//    spinnerPanelLayout->addWidget(speedSpinner, constraints);
+ spinnerPanel->setLayout(new QVBoxLayout());
+ spinnerPanel->layout()->addWidget(speedSpinner);
 }
 
 /*private*/ void ControlPanel::setupButton(QAbstractButton* button, /*final*/ ThrottlesPreferences* preferences, /*final*/ QString iconPath,
@@ -735,7 +787,7 @@
  QHBoxLayout* speedControlPanelLayout;
  speedControlPanel->setLayout(speedControlPanelLayout = new QHBoxLayout());//speedControlPanel, BoxLayout.X_AXIS));
  //speedControlPanel.setOpaque(false);
- mainPanelLayout->addWidget(speedControlPanel, 0, Qt::AlignCenter); //BorderLayout.CENTER);
+ mainPanelLayout->addWidget(speedControlPanel, 1, Qt::AlignCenter); //BorderLayout.CENTER);
  sliderPanel = new JPanel();
  //sliderPanel.setOpaque(false);
  speedSlider = new JSlider(0, intSpeedSteps);
@@ -836,7 +888,7 @@
  speedControlPanelLayout->addWidget(sliderPanel);
  speedSlider->setOrientation(Qt::Vertical);
  speedSlider->setMajorTickSpacing(maxSpeed / 2);
- QHash<int, QLabel*>  labelTable = QHash<int, QLabel*>();
+ QMap<int, JLabel*>  labelTable = QMap<int, JLabel*>();
  labelTable.insert(maxSpeed / 2, new JLabel("50%"));
  labelTable.insert(maxSpeed, new JLabel("100%"));
  labelTable.insert(0, new JLabel(tr("Stop")));
@@ -889,7 +941,7 @@
  speedControlPanelLayout->addWidget(speedSliderContinuousPanel);
  speedSliderContinuous->setOrientation(Qt::Vertical);
  speedSliderContinuous->setMajorTickSpacing(maxSpeed / 2);
- labelTable = QHash<int,QLabel*> ();
+ labelTable = QMap<int,JLabel*> ();
  labelTable.insert(maxSpeed / 2, new JLabel("50%"));
  labelTable.insert(maxSpeed, new JLabel("100%"));
  labelTable.insert(0, new JLabel(tr("Stop")));
@@ -980,7 +1032,8 @@
  });
 
  buttonPanel = new JPanel();
- buttonPanel->setLayout(buttonPanelLayout = new GridBagLayout());
+ //buttonPanel->setLayout(buttonPanelLayout = new GridBagLayout());
+ buttonPanel->setLayout(new QVBoxLayout());
 // QSizePolicy bpsp = QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
 // buttonPanel->setSizePolicy(bpsp);
  mainPanelLayout->addWidget(buttonPanel, 0, Qt::AlignBottom); //BorderLayout.SOUTH);
@@ -1487,10 +1540,10 @@ void ControlPanel::on_menu_requested()
     try {
      bool bok;
         this->setSpeedController(e.attribute("displaySpeedSlider").toInt());
-     if(!bok) throw DataConversionException();
-    } catch (DataConversionException ex) {
-        log->error("DataConversionException in setXml: " + ex.getMessage());
-    } catch (Exception em) {
+     if(!bok) throw new DataConversionException();
+    } catch (DataConversionException* ex) {
+        log->error("DataConversionException in setXml: " + ex->getMessage());
+    } catch (Exception* em) {
         // in this case, recover by displaying the speed slider.
         this->setSpeedController(SLIDERDISPLAY);
     }
@@ -1503,9 +1556,9 @@ void ControlPanel::on_menu_requested()
        trackSlider = true;
       else if(tsAtt == "false")
        trackSlider = false;
-      else throw DataConversionException();
+      else throw new DataConversionException();
      }
-     catch (DataConversionException ex) {
+     catch (DataConversionException* ex) {
       trackSlider = trackSliderDefault;
      }
     } else {
@@ -1518,9 +1571,9 @@ void ControlPanel::on_menu_requested()
      {
       bool bok;
       trackSliderMinInterval = tsmiAtt.toLong(&bok);
-      if(!bok) throw DataConversionException();
+      if(!bok) throw new DataConversionException();
      }
-     catch (DataConversionException ex) {
+     catch (DataConversionException* ex) {
          trackSliderMinInterval = trackSliderMinIntervalDefault;
      }
      if (trackSliderMinInterval < trackSliderMinIntervalMin)
@@ -1557,12 +1610,12 @@ void ControlPanel::on_menu_requested()
 //            java.lang.reflect.Method getter = throttle.getClass().getMethod("get" + switchSliderFunction, (Class[]) null);
    QByteArray member = QMetaObject::normalizedSignature(QString("get"+switchSliderFunction).toLocal8Bit());
 
-   int methodIndex = _throttle->metaObject()->indexOfMethod(member);
-//   if(methodIndex < 0) throw Exception("invalid switchslider function "+ switchSliderFunction);
+   int methodIndex = _throttle->self()->metaObject()->indexOfMethod(member);
+//   if(methodIndex < 0) throw new Exception("invalid switchslider function "+ switchSliderFunction);
 
 //            bool state = (Boolean) getter.invoke(throttle, (Object[]) null);
    bool state;
-   if(QMetaObject::invokeMethod(_throttle, member, Qt::AutoConnection, Q_RETURN_ARG(bool, state)))
+   if(QMetaObject::invokeMethod(_throttle->self(), member, Qt::AutoConnection, Q_RETURN_ARG(bool, state)))
    {
     if (state) {
         setSpeedController(SLIDERDISPLAYCONTINUOUS);
@@ -1570,11 +1623,11 @@ void ControlPanel::on_menu_requested()
         setSpeedController(SLIDERDISPLAY);
     }
    }
-   else throw Exception(QString("error invoking method ") + member);
+   else throw new Exception(QString("error invoking method ") + member);
   }
-  catch (Exception ex)
+  catch (Exception* ex)
   {
-   log->debug("Exception in setSwitchSliderFunction: " + ex.getMessage() + " while looking for function " + switchSliderFunction);
+   log->debug("Exception in setSwitchSliderFunction: " + ex->getMessage() + " while looking for function " + switchSliderFunction);
   }
  }
 }
@@ -1596,3 +1649,20 @@ void ControlPanel::on_editProperties()
  editor->setVisible(true);
 
 }
+
+/*public*/ void ControlPanel::saveToRoster(RosterEntry* re) {
+    if (re == nullptr) {
+        return;
+    }
+    if ((re->getShuntingFunction() != nullptr) && (re->getShuntingFunction() != (getSwitchSliderFunction()))) {
+        re->setShuntingFunction(getSwitchSliderFunction());
+    } else if ((re->getShuntingFunction() == "") && (getSwitchSliderFunction() != "")) {
+        re->setShuntingFunction(getSwitchSliderFunction());
+    } else {
+        return;
+    }
+    Roster::getDefault()->writeRoster();
+}
+
+// initialize logging
+/*private*/ /*final*/ /*static*/ Logger* ControlPanel::log = LoggerFactory::getLogger("ControlPanel");

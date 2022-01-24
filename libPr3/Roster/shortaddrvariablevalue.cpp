@@ -23,7 +23,10 @@
  */
 // /*public*/ class ShortAddrVariableValue extends DecVariableValue {
 
-/*public*/ ShortAddrVariableValue::ShortAddrVariableValue(QString name, QString comment, QString cvName, bool readOnly, bool infoOnly, bool writeOnly, bool opsOnly, QString cvNum, QString mask, QMap<QString,CvValue*>* v, QLabel* status, QString stdname, QObject *parent)
+/*public*/ ShortAddrVariableValue::ShortAddrVariableValue(QString name, QString comment, QString cvName, bool readOnly,
+                                                          bool infoOnly, bool writeOnly, bool opsOnly, QString cvNum,
+                                                          QString mask, QMap<QString,CvValue*>* v, JLabel* status,
+                                                          QString stdname, QObject *parent)
     : DecVariableValue(name, comment, cvName, readOnly, infoOnly, writeOnly, opsOnly, cvNum, mask, 1, 127, v, status, stdname, parent)
 {
  // specify min, max value explicitly

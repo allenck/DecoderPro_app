@@ -78,7 +78,7 @@ VirtualSignalMastXml::VirtualSignalMastXml(QObject *parent) :
         }
     }
 
-    static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->Register(m);
+    static_cast<DefaultSignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->Register(m);
 
     return true;
 }

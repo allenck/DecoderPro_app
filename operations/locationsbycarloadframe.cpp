@@ -3,8 +3,7 @@
 #include "track.h"
 #include "location.h"
 #include <QCheckBox>
-#include <QPushButton>
-#include <QGroupBox>
+#include "jbutton.h"
 #include <QBoxLayout>
 #include "gridbaglayout.h"
 #include "jcombobox.h"
@@ -24,6 +23,8 @@
 #include <QMessageBox>
 #include "trackloadeditframe.h"
 #include "printlocationsbycartypesaction.h"
+#include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -47,12 +48,12 @@ namespace Operations
   log = new Logger("LocationsByCarLoadFrame");
   // checkboxes track id as the checkbox name
   trackCheckBoxList = QList<QCheckBox*>();
-  locationCheckBoxes = new QWidget();
+  locationCheckBoxes = new JPanel();
 
   // major buttons
-  clearButton = new QPushButton(tr("Clear"));
-  setButton = new QPushButton(tr("Select"));
-  saveButton = new QPushButton(tr("Save"));
+  clearButton = new JButton(tr("Clear"));
+  setButton = new JButton(tr("Select"));
+  saveButton = new JButton(tr("Save"));
 
   // check boxes
   // JCheckBox copyCheckBox = new JCheckBox(tr("Copy"));
@@ -61,8 +62,8 @@ namespace Operations
   // radio buttons
   // text field
   // combo boxes
-  typeComboBox = CarTypes::instance()->getComboBox();
-  loadComboBox = CarLoads::instance()->getComboBox(NULL);
+  typeComboBox = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getComboBox();
+  loadComboBox = ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getComboBox(NULL);
 
  }
 
@@ -74,46 +75,39 @@ namespace Operations
  /*public*/ void LocationsByCarLoadFrame::initComponents()
  {
   // load managers
-  locationManager = LocationManager::instance();
+  locationManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
 
   // general GUI config
   //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
   QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
 
   // Set up the panels
-  QGroupBox* pCarType = new QGroupBox();
+  JPanel* pCarType = new JPanel();
   pCarType->setLayout(new GridBagLayout());
-  //pCarType.setBorder(BorderFactory.createTitledBorder(tr("Type")));
-  pCarType->setStyleSheet(gbStyleSheet);
-  pCarType->setTitle(tr("Type"));
+  pCarType->setBorder(BorderFactory::createTitledBorder(tr("Type")));
   addItem(pCarType, typeComboBox, 0, 0);
 
-  QGroupBox* pLoad = new QGroupBox();
+  JPanel* pLoad = new JPanel();
   pLoad->setLayout(new GridBagLayout());
-  //pLoad.setBorder(BorderFactory.createTitledBorder(tr("Load")));
-  pLoad->setStyleSheet(gbStyleSheet);
-  pLoad->setTitle(tr("Load"));
+  pLoad->setBorder(BorderFactory::createTitledBorder(tr("Load")));
 
   addItem(pLoad, loadComboBox, 0, 0);
   addItem(pLoad, loadAndTypeCheckBox, 1, 0);
 
-  QGroupBox* pLocationsFrame = new QGroupBox;
+  JPanel* pLocationsFrame = new JPanel;
   pLocationsFrame->setLayout(new QVBoxLayout);
-  pLocations = new QWidget();
+  pLocations = new JPanel();
   pLocations->setLayout(new GridBagLayout());
   QScrollArea* locationPane = new QScrollArea(/*pLocations*/);
   locationPane->setWidgetResizable(true);
   pLocationsFrame->layout()->addWidget(locationPane);
   //locationPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-  //locationPane.setBorder(BorderFactory.createTitledBorder(tr("Locations")));
-  pLocationsFrame->setStyleSheet(gbStyleSheet);
-  pLocationsFrame->setTitle(tr("Locations"));
+  pLocationsFrame->setBorder(BorderFactory::createTitledBorder(tr("Locations")));
   updateLoadComboBox();
 
-  QGroupBox* pButtons = new QGroupBox();
+  JPanel* pButtons = new JPanel();
   pButtons->setLayout(new GridBagLayout());
-  //pButtons.setBorder(BorderFactory.createTitledBorder(""));
-  pButtons->setStyleSheet(gbStyleSheet);
+  pButtons->setBorder(BorderFactory::createTitledBorder(""));
 
   addItem(pButtons, clearButton, 0, 0);
   addItem(pButtons, setButton, 1, 0);
@@ -138,11 +132,11 @@ namespace Operations
   addCheckBoxAction(loadAndTypeCheckBox);
 
   //locationManager.addPropertyChangeListener(this);
-  connect(locationManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //CarTypes::instance().addPropertyChangeListener(this);
-  connect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  //CarLoads::instance().addPropertyChangeListener(this);
-  connect(CarLoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  connect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  //((CarLoads*)InstanceManager::getDefault("Operations::CarLoads")).addPropertyChangeListener(this);
+  connect(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
   // build menu
   QMenuBar* menuBar = new QMenuBar();
@@ -186,7 +180,7 @@ namespace Operations
 
  // Save, Delete, Add
  /*public*/ void LocationsByCarLoadFrame::buttonActionPerformed(QWidget* ae) {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
      if (source == saveButton) {
          save();
      }
@@ -237,15 +231,15 @@ namespace Operations
          if (_location != NULL && _location != location) {
              continue;
          }
-         //location->addPropertyChangeListener(this);
-         connect(location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+         //location->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+         connect(location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          QLabel* locationName = new QLabel(location->getName());
          addItemLeft(pLocations, locationName, 0, x++);
-         QList<Track*> tracks = location->getTrackByNameList(NULL);
+         QList<Track*> tracks = location->getTracksByNameList(NULL);
          foreach (Track* track, tracks)
          {
-             //track->addPropertyChangeListener(this);
-          connect(track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+             //track->SwingPropertyChangeSupport::addPropertyChangeListener(this);
+          connect(track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
              QCheckBox* cb = new QCheckBox(track->getName());
              cb->setObjectName(track->getId() + "-" + "r");
              addCheckBoxAction(cb);
@@ -285,7 +279,7 @@ namespace Operations
 
  /*private*/ void LocationsByCarLoadFrame::updateTypeComboBox() {
      log->debug("update type combobox");
-     CarTypes::instance()->updateComboBox(typeComboBox);
+     ((CarTypes*)InstanceManager::getDefault("CarTypes"))->updateComboBox(typeComboBox);
  }
 
  /*private*/ void LocationsByCarLoadFrame::updateLoadComboBox() {
@@ -294,7 +288,7 @@ namespace Operations
          QString type =  typeComboBox->currentText();
          QString load =  loadComboBox->currentText();
          log->debug(tr("Selected car type : (%1) load (%2)").arg(type).arg(load));
-         CarLoads::instance()->updateComboBox(type, loadComboBox);
+         ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->updateComboBox(type, loadComboBox);
          loadComboBox->setEnabled(false); // used as a flag to prevent updateLocations()
          if (load != NULL) {
              loadComboBox->setCurrentIndex(loadComboBox->findText(load));
@@ -452,11 +446,11 @@ namespace Operations
 {
      foreach (Location* location, locationManager->getList()) {
          //location->removePropertyChangeListener(this);
-      disconnect(location->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+      disconnect(location, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
          QList<Track*> tracks = location->getTrackList();
          foreach (Track* track, tracks) {
              //track->removePropertyChangeListener(this);
-          disconnect(track->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+          disconnect(track, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 
          }
      }
@@ -464,11 +458,11 @@ namespace Operations
 
  /*public*/ void LocationsByCarLoadFrame::dispose() {
      //locationManager.removePropertyChangeListener(this);
-     disconnect(locationManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(locationManager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      //CarTypes::instance().removePropertyChangeListener(this);
-     disconnect(CarTypes::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-     //CarLoads::instance().removePropertyChangeListener(this);
-     disconnect(CarLoads::instance()->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(((CarTypes*)InstanceManager::getDefault("CarTypes")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     //((CarLoads*)InstanceManager::getDefault("Operations::CarLoads")).removePropertyChangeListener(this);
+     disconnect(((CarLoads*)InstanceManager::getDefault("Operations::CarLoads")), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      removePropertyChangeLocations();
      OperationsFrame::dispose();
  }

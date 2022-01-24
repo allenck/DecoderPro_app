@@ -13,7 +13,17 @@ TEMPLATE = lib
 
 DEFINES += LIBLAYOUTEDITOR_LIBRARY
 MOC_DIR = moc_obj
-OBJECTS_DIR += moc_obj
+OBJECTS_DIR = moc_obj
+
+# Windows and Unix get the suffix "d" to indicate a debug version of the library.
+# Mac OS gets the suffix "_debug".
+CONFIG(debug, debug|release) {
+    win32:      TARGET = $$join(TARGET,,,d)
+    mac:        TARGET = $$join(TARGET,,,_debug)
+    unix:!mac:  TARGET = $$join(TARGET,,,d)
+    MOC_DIR = moc_objd
+    OBJECTS_DIR = moc_objd
+}
 
 PROJ_DIR=$$(PROJ_DIR) # get project directory from env
 isEmpty( PROJ_DIR ) {
@@ -21,24 +31,33 @@ isEmpty( PROJ_DIR ) {
   unix:PROJ_DIR=/home/allen/Projects
 }
 
+include(../scripts_config.prf)
 
-PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
-isEmpty( PYTHONQT_PREFIX ) {
-  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
-  unix:PYTHONQT_PREFIX=$${PROJ_DIR}/PythonQt/pythonqt-code
-}
+#PYTHONQT_PREFIX=$$(PYTHONQT_PREFIX)
+#isEmpty( PYTHONQT_PREFIX ) {
+#  win32:PYTHONQT_PREFIX=C:/Program Files (x86)/local/lib
+#  unix:PYTHONQT_PREFIX=$${PROJ_DIR}/PythonQt/pythonqt-code
+#}
 
-include($$PYTHONQT_PREFIX/build/python.prf)
+#include($$PYTHONQT_PREFIX/build/python.prf)
 
-win32:exists($$PYTHONQT_PREFIX/lib/PythonQt_d.dll){
-ENABLE_SCRIPTING = "Y"
-}
-unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so) {
-ENABLE_SCRIPTING = "Y"
-}
+#win32:exists($$PYTHONQT_PREFIX/lib/PythonQt_d.dll){
+#ENABLE_SCRIPTING = "Y"
+#}
+#unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so) {
+#ENABLE_SCRIPTING = "Y"
+#}
+
+#unix:exists($$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so){
+# ENABLE_SCRIPTING = "Y"
+# message($$TARGET: $$PYTHONQT_PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so + "found OK")
+#} else:unix: {
+# message($$TARGET: $$PREFIX/lib/libPythonQt-Qt5-Python$${PYTHON_VERSION}_d.so + "not found")
+#}
+
 equals(ENABLE_SCRIPTING, "Y") {
  DEFINES += SCRIPTING_ENABLED
- message("LayoutEditor: Scripting is enabled")
+ message("$$TARGET: Scripting is enabled")
  include($$PWD/generated_cpp/Jmri/Jmri.pri)
  SOURCES +=     jythonsiglet.cpp \
     jythonautomaton.cpp \
@@ -78,28 +97,57 @@ equals(ENABLE_SCRIPTING, "Y") {
 
     #include(../python.prf)
 
-    win32:CONFIG(debug, debug|release): LIBS += -L$$PYTHONQT_PREFIX/lib -lPythonQt
-    else:unix: LIBS += -L/$$PYTHONQT_PREFIX/lib/ -lPythonQt-Qt5-Python$${PYTHON_VERSION}_d
+#    win32:CONFIG(debug, debug|release): LIBS += -L$$PYTHONQT_PREFIX/lib -lPythonQt
+#    else:unix: LIBS += -L/$$PYTHONQT_PREFIX/lib/ -lPythonQt-Qt5-Python$${PYTHON_VERSION}_d -lPythonQt_QtAll-Qt5-Python$${PYTHON_VERSION}_d
 
-    INCLUDEPATH += $$PYTHONQT_PREFIX/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
-    DEPENDPATH +=  $$PYTHONQT_PREFIX/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
+#    INCLUDEPATH += $$PYTHONQT_PREFIX/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
+#    DEPENDPATH +=  $$PYTHONQT_PREFIX/src $$PYTHONQT_PREFIX/extensions/PythonQt_QtAll
 
 
 message("Qt path=" + $$(QTDIR))
 
 
 } else {
- message("LayoutEditor: Scripting is disabled")
+ message("$$TARGET: Scripting is disabled")
 }
 
 
 SOURCES += \
+    aboutaction.cpp \
+    aboutdialog.cpp \
+    checkforupdateaction.cpp \
+    connectionlabel.cpp \
+    defaultvariablelightmanager.cpp \
+    helpmenuprovider.cpp \
+    helputilpreferences.cpp \
+    helputilpreferencespanel.cpp \
+    issuereporter.cpp \
+    issuereporteraction.cpp \
+    jmenuitem.cpp \
+    jmriabstractaction.cpp \
     jmrijframe.cpp \
+    jmrijframeinterface.cpp \
+    jmripanel.cpp \
+    layoutdoubleslipviewxml.cpp \
+    layoutdoublexoverviewxml.cpp \
     layouteditorviewcontext.cpp \
+    layoutlhturnoutviewxml.cpp \
+    layoutlhxoverviewxml.cpp \
+    layoutrhturnoutviewxml.cpp \
+    layoutrhxoverviewxml.cpp \
+    layoutsingleslipviewxml.cpp \
+    layoutslipviewxml.cpp \
     layoutturnout.cpp \
+    layoutturnoutviewxml.cpp \
+    layoutturntableviewxml.cpp \
+    layoutwyeviewxml.cpp \
+    layoutxoverviewxml.cpp \
     levelxing.cpp \
     layoutblock.cpp \
     layoutconnectivity.cpp \
+    levelxingviewxml.cpp \
+    licenseaction.cpp \
+    positionablepointviewxml.cpp \
     tracknode.cpp \
     tracksegment.cpp \
     positionablepoint.cpp \
@@ -126,6 +174,7 @@ SOURCES += \
     editlevelxingdlg.cpp \
     layoutslip.cpp \
     memoryiconcoordinateedit.cpp \
+    tracksegmentviewxml.cpp \
     turnoutoperationmanagerxml.cpp \
     turnoutoperationxml.cpp \
     commonturnoutoperationxml.cpp \
@@ -217,7 +266,6 @@ SOURCES += \
     multisensoricon.cpp \
     multisensoriconxml.cpp \
     multisensoriconframe.cpp \
-    multisensoriconwidget.cpp \
     sensorentrywidget.cpp \
     droppushbutton.cpp \
     sensorlineedit.cpp \
@@ -340,10 +388,6 @@ SOURCES += \
     layouteditorxml.cpp \
     defaultroutemanagerxml.cpp \
     consisttoolframe.cpp \
-    tracksegmentxml.cpp \
-    positionablepointxml.cpp \
-    layoutturnoutxml.cpp \
-    levelxingxml.cpp \
     layoutturntable.cpp \
     lnlightmanagerxml.cpp \
     layoutblockroutetableaction.cpp \
@@ -354,7 +398,6 @@ SOURCES += \
     automattableaction.cpp \
     automattableframe.cpp \
     automattabledatamodel.cpp \
-    layoutslipxml.cpp \
     storexmlallaction.cpp \
     filehistoryaction.cpp \
     addentryexitpairaction.cpp \
@@ -380,17 +423,13 @@ SOURCES += \
     speedometeraction.cpp \
     sendpacketaction.cpp \
     sendpacketframe.cpp \
-    vsdconfigpanel.cpp \
     vsdconfigdialog.cpp \
     vsdcontrol.cpp \
     busydialog.cpp \
     vsdoptionsdialog.cpp \
     dragjlabel.cpp \
     dropjlabel.cpp \
-    jmriabstractaction.cpp \
-    jmrijframeinterface.cpp \
     layouteditorfinditems.cpp \
-    layoutturntablexml.cpp \
     layouteditor.cpp \
     xmlfilelocationaction.cpp \
     reportcontextaction.cpp \
@@ -403,7 +442,6 @@ SOURCES += \
     generalpath.cpp \
     path2d.cpp \
     transitmanagerxml.cpp \
-    jframe.cpp \
     hardcopywriter.cpp \
     jframeinterface.cpp \
     treeframe.cpp \
@@ -444,7 +482,6 @@ SOURCES += \
     multisensoricondialog.cpp \
     displayframe.cpp \
     portalitempanel.cpp \
-    jmripanel.cpp \
     switchboardeditoraction.cpp \
     switchboardeditor.cpp \
     switchboardeditorxml.cpp \
@@ -539,16 +576,49 @@ SOURCES += \
     layouteditorcomponent.cpp \
     entergridsizesdialog.cpp \
     moveselectiondialog.cpp \
-    ../JavaQt/jradiobuttonmenuitem.cpp
+    ../JavaQt/jradiobuttonmenuitem.cpp \
+    blockbosslogicprovider.cpp \
+    createxmlfiles.cpp \
+    hitpointtype.cpp \
+    abstractnamedbeanmanager.cpp
 
 HEADERS += liblayouteditor_global.h \
-    jmrijframeinterface.h \
+    aboutaction.h \
+    aboutdialog.h \
+    checkforupdateaction.h \
+    connectionlabel.h \
+    defaultvariablelightmanager.h \
+    helpmenuprovider.h \
+    helputilpreferences.h \
+    helputilpreferencespanel.h \
+    issuereporter.h \
+    issuereporteraction.h \
+    jmenuitem.h \
+    jmriabstractaction.h \
     jmrijframe.h \
+    jmrijframeinterface.h \
+    jmripanel.h \
+    layoutdoubleslipviewxml.h \
+    layoutdoublexoverviewxml.h \
     layouteditorviewcontext.h \
+    layoutlhturnoutviewxml.h \
+    layoutlhxoverviewxml.h \
+    layoutmodels.h \
+    layoutrhturnoutviewxml.h \
+    layoutrhxoverviewxml.h \
+    layoutsingleslipviewxml.h \
+    layoutslipviewxml.h \
     layoutturnout.h \
+    layoutturnoutviewxml.h \
+    layoutturntableviewxml.h \
+    layoutwyeviewxml.h \
+    layoutxoverviewxml.h \
     levelxing.h \
     layoutblock.h \
     layoutconnectivity.h \
+    levelxingviewxml.h \
+    licenseaction.h \
+    positionablepointviewxml.h \
     tracksegment.h \
     tracknode.h \
     positionablepoint.h \
@@ -576,6 +646,7 @@ HEADERS += liblayouteditor_global.h \
     editlevelxingdlg.h \
     layoutslip.h \
     memoryiconcoordinateedit.h \
+    tracksegmentviewxml.h \
     turnoutoperationmanagerxml.h \
     turnoutoperationxml.h \
     commonturnoutoperationxml.h \
@@ -586,6 +657,7 @@ HEADERS += liblayouteditor_global.h \
     configxmlmanager.h \
     errorhandler.h \
     errormemo.h \
+    variablelightmanager.h \
     xmladapter.h \
     locoiconxml.h \
     positionablelabelxml.h \
@@ -669,7 +741,6 @@ HEADERS += liblayouteditor_global.h \
     multisensoricon.h \
     multisensoriconxml.h \
     multisensoriconframe.h \
-    multisensoriconwidget.h \
     sensorentrywidget.h \
     droppushbutton.h \
     sensorlineedit.h \
@@ -792,10 +863,6 @@ HEADERS += liblayouteditor_global.h \
     layouteditorxml.h \
     defaultroutemanagerxml.h \
     consisttoolframe.h \
-    tracksegmentxml.h \
-    positionablepointxml.h \
-    layoutturnoutxml.h \
-    levelxingxml.h \
     layoutturntable.h \
     lnlightmanagerxml.h \
     layoutblockroutetableaction.h \
@@ -806,7 +873,6 @@ HEADERS += liblayouteditor_global.h \
     automattableaction.h \
     automattableframe.h \
     automattabledatamodel.h \
-    layoutslipxml.h \
     storexmlallaction.h \
     filehistoryaction.h \
     addentryexitpairaction.h \
@@ -832,16 +898,13 @@ HEADERS += liblayouteditor_global.h \
     speedometeraction.h \
     sendpacketaction.h \
     sendpacketframe.h \
-    vsdconfigpanel.h \
     vsdconfigdialog.h \
     vsdcontrol.h \
     busydialog.h \
     vsdoptionsdialog.h \
     dragjlabel.h \
     dropjlabel.h \
-    jmriabstractaction.h \
     layouteditorfinditems.h \
-    layoutturntablexml.h \
     layouteditor.h \
     xmlfilelocationaction.h \
     reportcontextaction.h \
@@ -856,8 +919,6 @@ HEADERS += liblayouteditor_global.h \
     generalpath.h \
     path2d.h \
     transitmanagerxml.h \
-    jframe.h \
-    windowinterface.h \
     hardcopywriter.h \
     jframeinterface.h \
     treeframe.h \
@@ -901,7 +962,6 @@ HEADERS += liblayouteditor_global.h \
     multisensoricondialog.h \
     displayframe.h \
     portalitempanel.h \
-    jmripanel.h \
     switchboardeditoraction.h \
     switchboardeditor.h \
     switchboardeditorxml.h \
@@ -997,7 +1057,11 @@ HEADERS += liblayouteditor_global.h \
     layouteditorcomponent.h \
     entergridsizesdialog.h \
     moveselectiondialog.h \
-    ../JavaQt/jradiobuttonmenuitem.h
+    ../JavaQt/jradiobuttonmenuitem.h \
+    blockbosslogicprovider.h \
+    createxmlfiles.h \
+    hitpointtype.h \
+    abstractnamedbeanmanager.h
 
 FORMS    += \
     createeditblock.ui \
@@ -1012,7 +1076,6 @@ FORMS    += \
     editlevelxingdlg.ui \
     paneleditor.ui \
     addpaneleditordialog.ui \
-    multisensoriconwidget.ui \
     sensorentrywidget.ui \
     itempalettewidget.ui \
     form.ui \
@@ -1032,7 +1095,9 @@ RESOURCES += \
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPr3/release/ -lPr3
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPr3/debug/ -lPr3
-else:unix:!macx: LIBS += -L$$PWD/../libPr3/ -lPr3
+else:unix:!macx:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPr3/ -lPr3
+else:unix:!macx:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPr3/ -lPr3d
+
 
 INCLUDEPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Signal \
  $$PWD/../Tables $$PWD/../libPr3/Throttle $$PWD/../libPr3/LocoIO $$PWD/../libPr3/loconet $$PWD/../libPr3/rfid
@@ -1054,7 +1119,9 @@ OTHER_FILES +=
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPref/release/ -lPref
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPref/debug/ -lPref
-else:unix: LIBS += -L$$PWD/../libPref/ -lPref
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPref/ -lPref
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPref/ -lPrefd
+
 
 INCLUDEPATH += $$PWD/../libPref
 DEPENDPATH += $$PWD/../libPref
@@ -1062,7 +1129,8 @@ DEPENDPATH += $$PWD/../libPref
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/release/ -lappslib
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/debug/ -lappslib
-else:unix: LIBS += -L$$PWD/../appslib/ -lappslib
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/ -lappslib
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/ -lappslibd
 
 INCLUDEPATH += $$PWD/../appslib
 DEPENDPATH += $$PWD/../appslib
@@ -1072,7 +1140,8 @@ DISTFILES += \
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../JavaQt/release/ -lJavaQt
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../JavaQt/debug/ -lJavaQt
-else:unix: LIBS += -L$$PWD/../JavaQt/ -lJavaQt
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../JavaQt/ -lJavaQt
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../JavaQt/ -lJavaQtd
 
 INCLUDEPATH += $$PWD/../JavaQt
 DEPENDPATH += $$PWD/../JavaQt
@@ -1085,7 +1154,8 @@ DEPENDPATH += $$PWD/../../../../../Python27/include
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Tables/release/ -lTables
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Tables/debug/ -lTables
-else:unix: LIBS += -L$$PWD/../Tables/ -lTables
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../Tables/ -lTables
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Tables/ -lTablesd
 
 INCLUDEPATH += $$PWD/../Tables/debug
 DEPENDPATH += $$PWD/../Tables/debug
@@ -1110,7 +1180,8 @@ message(LayoutEditor: $$PROJ_DIR/QtZeroConf-master/libQtZeroConf.so.1 not found)
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../operations/release/ -loperations
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../operations/debug/ -loperations
-else:unix: LIBS += -L$$PWD/../operations/ -loperations
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../operations/ -loperations
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../operations/ -loperationsd
 
 INCLUDEPATH += $$PWD/../operations
 DEPENDPATH += $$PWD/../operations

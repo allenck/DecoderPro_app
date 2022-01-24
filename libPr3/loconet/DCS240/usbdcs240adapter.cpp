@@ -73,7 +73,7 @@
         // it when creating a PR2 Packetizer.  (If create a new one, will
         // end up with two "LocoNet" menus...)
         LnPr2Packetizer* packets =
-                new LnPr2Packetizer(this->getSystemConnectionMemo());
+                new LnPr2Packetizer(this->getSystemConnectionMemo()->self());
         packets->connectPort(this);
 
         // set traffic controller and configure command station and mangers

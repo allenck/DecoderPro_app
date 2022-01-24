@@ -2,6 +2,7 @@
 #define SPEEDOMETERFRAME_H
 #include "jmrijframe.h"
 #include "xmlfile.h"
+#include "propertychangelistener.h"
 
 class SensorIcon;
 class QLabel;
@@ -9,9 +10,10 @@ class QPushButton;
 class QRadioButton;
 class QButtonGroup;
 class JTextField;
-class SpeedometerFrame : public JmriJFrame
+class SpeedometerFrame : public JmriJFrame, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
  explicit SpeedometerFrame(QWidget *parent = 0);
  /*public*/ void setInputs(QString start, QString stop1, QString stop2, QString d1, QString d2);
@@ -22,12 +24,13 @@ public:
  /*public*/ JTextField* stopSensor2; // newJTextField(5);
  /*public*/ void enableConfiguration(bool enable);
  /*public*/ int verifyInputs(bool warn);
- /*public*/ QString getClassName();
+ /*public*/ QString getClassName() override;
+  QObject* self() override {return (QObject*)this;}
 
 public slots:
  void on_clearButton_clicked();
  /*public*/ void setup();
- /*public*/ void propertyChange(PropertyChangeEvent* e);
+ /*public*/ void propertyChange(PropertyChangeEvent* e) override;
  /*public*/ void propertyChange1(PropertyChangeEvent* e);
  /*public*/ void propertyChange2(PropertyChangeEvent* e);
  /*public*/ void doStore();
@@ -91,6 +94,7 @@ private slots:
  void stopSensor1_propertyChange(PropertyChangeEvent*);
  void stopSensor2_propertyChange(PropertyChangeEvent*);
 };
+
 /*public*/ /*static*/ class SpeedometerXml : public XmlFile
 {
  Q_OBJECT

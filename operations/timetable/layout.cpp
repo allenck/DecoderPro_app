@@ -52,7 +52,7 @@ namespace TimeTable
      * The values are adjusted for scale and fast clock ratio.
      * The resulting value is the real feet or meters.
      * The final step is to re-calculate the train times.
-     * @throws IllegalArgumentException The calculate can throw an exception which will get re-thrown.
+     * @throws IllegalArgumentException The calculate can throw new an exception which will get re-thrown.
      */
     /*public*/ void Layout::setScaleMK() {
         double distance = (_metric) ? 1000 : 5280;
@@ -102,7 +102,7 @@ namespace TimeTable
         try {
             // Update the smile/skm which includes stop recalcs
             setScaleMK();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             _scale = oldScale;  // roll back scale and ratio
             _ratio = oldRatio;
             setScaleMK();
@@ -119,11 +119,11 @@ namespace TimeTable
      * Set a new fast clock speed, update smile/skm.
      * @param newClock The value to be used.
      * @throws IllegalArgumentException (CLOCK_LT_1) if the value is less than 1.
-     * will also re-throw a recalc error.
+     * will also re-throw new a recalc error.
      */
     /*public*/ void Layout::setFastClock(int newClock) {
         if (newClock < 1) {
-            throw  IllegalArgumentException(TimeTableDataManager::CLOCK_LT_1);
+            throw new  IllegalArgumentException(TimeTableDataManager::CLOCK_LT_1);
         }
         int oldClock = _fastClock;
         _fastClock = newClock;
@@ -131,7 +131,7 @@ namespace TimeTable
         try {
             // Update the smile/skm which includes stop recalcs
             setScaleMK();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             _fastClock = oldClock;  // roll back
             setScaleMK();
             throw ex;
@@ -150,12 +150,12 @@ namespace TimeTable
      */
     /*public*/ void Layout::setThrottles(int newThrottles) {
         if (newThrottles < 0) {
-            throw IllegalArgumentException(TimeTableDataManager::THROTTLES_LT_0);
+            throw new IllegalArgumentException(TimeTableDataManager::THROTTLES_LT_0);
         }
         for (TTSchedule* schedule : _dm->getSchedules(_layoutId, true)) {
             for (TTTrain* train : _dm->getTrains(schedule->getScheduleId(), 0, true)) {
                 if (train->getThrottle() > newThrottles) {
-                    throw  IllegalArgumentException(TimeTableDataManager::THROTTLES_IN_USE);
+                    throw new  IllegalArgumentException(TimeTableDataManager::THROTTLES_IN_USE);
                 }
             }
         }
@@ -178,7 +178,7 @@ namespace TimeTable
         try {
             // Update the smile/skm which includes stop recalcs
             setScaleMK();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             _metric = oldMetric;  // roll back
             setScaleMK();
             throw ex;
@@ -199,11 +199,11 @@ namespace TimeTable
      * @throws PropertyVetoException The message will depend on the actual error.
      */
     //@Override
-    /*public*/ void Layout::vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/ {
+    /*public*/ void Layout::vetoableChange(PropertyChangeEvent* evt) /*throw new (PropertyVetoException)*/ {
         log->debug(tr("scale change event: layout = %1, evt = %2").arg(_layoutName).arg(evt->toString()));
         double newRatio =  evt->getNewValue().toDouble();
         if (newRatio < 1.0) {
-            throw PropertyVetoException("Ratio is less than 1", evt);
+            throw new PropertyVetoException("Ratio is less than 1", evt);
         }
 
         double oldRatio = _ratio;
@@ -212,11 +212,11 @@ namespace TimeTable
         try {
             // Update the smile/skm which includes stop recalcs
             setScaleMK();
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             // Roll back the ratio change
             _ratio = oldRatio;
             setScaleMK();
-            throw PropertyVetoException("New ratio causes calc errors", evt);
+            throw new PropertyVetoException("New ratio causes calc errors", evt);
         }
 
         TimeTableFrame* frame = (TimeTableFrame*)InstanceManager::getNullableDefault("TimeTableFrame");

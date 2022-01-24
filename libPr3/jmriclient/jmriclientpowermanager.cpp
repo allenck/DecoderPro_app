@@ -16,7 +16,7 @@
 /*public*/ JMRIClientPowerManager::JMRIClientPowerManager(JMRIClientSystemConnectionMemo* memo, QObject* parent) {
     // connect to the TrafficManager
  // to hear of changes
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
 
     this->memo = memo;
     tc = this->memo->getJMRIClientTrafficController();
@@ -31,7 +31,7 @@
 
 
 //@Override
-/*public*/ void JMRIClientPowerManager::setPower(int v) throw (JmriException) {
+/*public*/ void JMRIClientPowerManager::setPower(int v) /*throw (JmriException)*/ {
     power = UNKNOWN; // while waiting for reply
     checkTC();
     if (v == ON) {
@@ -53,21 +53,21 @@
 
 // to free resources when no longer used
 //@Override
-/*public*/ void JMRIClientPowerManager::dispose() throw (JmriException) {
+/*public*/ void JMRIClientPowerManager::dispose() /*throw (JmriException)*/ {
     tc->removeJMRIClientListener((JMRIClientListener*)this);
     tc = nullptr;
 }
 
-/*private*/ void JMRIClientPowerManager::checkTC() throw (JmriException) {
+/*private*/ void JMRIClientPowerManager::checkTC() /*throw (JmriException)*/ {
     if (tc == nullptr) {
-        throw JmriException("attempt to use JMRIClientPowerManager after dispose");
+        throw new JmriException("attempt to use JMRIClientPowerManager after dispose");
     }
 }
 
 
 //@Override
 /*public*/  void JMRIClientPowerManager::addPropertyChangeListener(PropertyChangeListener* l) {
-    pcs->addPropertyChangeListener(l);
+    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 }
 
 /*protected*/ void JMRIClientPowerManager::firePropertyChange(QString p, QVariant old, QVariant n) {

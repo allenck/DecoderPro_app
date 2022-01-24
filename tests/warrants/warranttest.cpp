@@ -48,7 +48,7 @@ WarrantTest::WarrantTest(QObject *parent) : QObject(parent)
     //@Test
     /*public*/ void WarrantTest::testAddPropertyChangeListener() {
         PropertyChangeListener* listener = new WarrantListener(warrant);
-        Assert::assertNotNull("PropertyChangeListener", listener, __FILE__, __LINE__);
+        Assert::assertNotNull("PropertyChangeListener", listener->self(), __FILE__, __LINE__);
         warrant->addPropertyChangeListener(listener);
     }
 
@@ -59,7 +59,7 @@ WarrantTest::WarrantTest(QObject *parent) : QObject(parent)
             sEast->setState(Sensor::ACTIVE);
             sNorth->setState(Sensor::INACTIVE);
             sSouth->setState(Sensor::ACTIVE);
-        } catch (JmriException je) {
+        } catch (JmriException* je) {
         }
         bWest->allocate(warrant);
         bEast->allocate(warrant);
@@ -69,7 +69,7 @@ WarrantTest::WarrantTest(QObject *parent) : QObject(parent)
             sEast->setState(Sensor::INACTIVE);
             sSouth->setState(Sensor::INACTIVE);
             sNorth->setState(Sensor::ACTIVE);     // start block of warrant
-        } catch (JmriException je) {
+        } catch (JmriException* je) {
         }
         bWest->deAllocate(warrant);
         bEast->deAllocate(warrant);
@@ -83,7 +83,7 @@ WarrantTest::WarrantTest(QObject *parent) : QObject(parent)
             sEast->setState(Sensor::INACTIVE);
             sSouth->setState(Sensor::INACTIVE);
             sNorth->setState(Sensor::ACTIVE);     // start block of warrant
-        } catch (JmriException je) {
+        } catch (JmriException* je) {
         }
         QList<BlockOrder*>* orders = new QList<BlockOrder*>();
         orders->append(new BlockOrder(_OBlockMgr->getOBlock("North"), "NorthToWest", "", "NorthWest"));
@@ -111,7 +111,7 @@ WarrantTest::WarrantTest(QObject *parent) : QObject(parent)
             sEast->setState(Sensor::INACTIVE);
             sSouth->setState(Sensor::INACTIVE);
             sNorth->setState(Sensor::ACTIVE);     // start block of warrant
-        } catch (JmriException je) {
+        } catch (JmriException* je) {
         }
         QList<BlockOrder*>* orders = new QList<BlockOrder*>();
         orders->append(new BlockOrder(_OBlockMgr->getOBlock("North"), "NorthToWest", "", "NorthWest"));
@@ -145,7 +145,7 @@ WarrantTest::WarrantTest(QObject *parent) : QObject(parent)
     }
 
     //@Test
-    /*public*/ void WarrantTest::testWarrant() throw (JmriException) {
+    /*public*/ void WarrantTest::testWarrant() /*throw (JmriException)*/ {
         sEast->setState(Sensor::INACTIVE);
         sSouth->setState(Sensor::INACTIVE);
         sNorth->setState(Sensor::ACTIVE);     // start block of warrant
@@ -192,8 +192,8 @@ WarrantTest::WarrantTest(QObject *parent) : QObject(parent)
 //        jmri.util.ThreadingUtil.runOnLayout(() -> {
           try {
               sWest->setState(Sensor::ACTIVE);
-          } catch (JmriException e) {
-              Assert::fail("Unexpected Exception: " + e.getMessage(), __FILE__, __LINE__);
+          } catch (JmriException* e) {
+              Assert::fail("Unexpected Exception: " + e->getMessage(), __FILE__, __LINE__);
           }
 //        });
 //        jmri.util.JUnitUtil::releaseThread(this, 100); // What should we specifically waitFor?
@@ -201,8 +201,8 @@ WarrantTest::WarrantTest(QObject *parent) : QObject(parent)
 //        jmri.util.ThreadingUtil.runOnLayout(() -> {
             try {
                 sSouth->setState(Sensor::ACTIVE);
-            } catch (JmriException e) {
-                Assert::fail("Unexpected Exception: " + e.getMessage(), __FILE__, __LINE__);
+            } catch (JmriException* e) {
+                Assert::fail("Unexpected Exception: " + e->getMessage(), __FILE__, __LINE__);
             }
 //        });
 //        jmri.util.JUnitUtil::releaseThread(this, 100);

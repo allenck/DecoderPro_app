@@ -136,7 +136,7 @@
  editorContainer = nullptr;
  defaultTextColor = QColor(Qt::black);
  hideUnconnected = new QCheckBox(tr("Hide unconnected switches"));
- help2 = new QLabel(tr("Greyed out buttons are not connected to layout."));
+ help2 = new JTextArea(tr("Greyed out buttons are not connected to layout."));
  controllingBox = new QAction(tr("Panel items control layout"),this);
  controllingBox->setCheckable(true);
  hideUnconnectedBox->setCheckable(true);
@@ -221,10 +221,10 @@
     QLabel* beanManuTitle = new QLabel(tr("%1").arg(tr("Label")));
     beanSetupPaneLayout->addWidget(beanManuTitle);
     beanManuNames = new QComboBox();
-    if (qobject_cast<ProxyManager*>(getManager(beanTypeChar))!= nullptr)
+    if (qobject_cast<ProxyManager*>(getManager(beanTypeChar)->self())!= nullptr)
     { // from abstractTableTabAction
-        ProxyManager* proxy = qobject_cast<ProxyManager*>(getManager(beanTypeChar));
-        QList<Manager*> managerList = proxy->getManagerList(); // picks up all managers to fetch
+        ProxyManager* proxy = qobject_cast<ProxyManager*>(getManager(beanTypeChar)->self());
+        QList<AbstractManager*> managerList = proxy->getManagerList(); // picks up all managers to fetch
         for (int x = 0; x < managerList.size(); x++) {
             QString manuPrefix = managerList.value(x)->getSystemPrefix();
             log->debug(tr("Prefix = [%1]").arg(manuPrefix));
@@ -305,7 +305,7 @@
 //            Color.black, new Color(255, 250, 210), Color.black));
 
     // register the resulting panel for later configuration
-    ConfigureManager* cm = static_cast<ConfigureManager*>(InstanceManager::getNullableDefault("ConfigureManager"));
+    ConfigureManager* cm = qobject_cast<ConfigureManager*>(InstanceManager::getNullableDefault("ConfigureManager"));
     if (cm != nullptr) {
         cm->registerUser(this);
     }
@@ -559,7 +559,7 @@ void SwitchboardEditor::onUpdateButton()
     //innerBorderPanel.setBorder(TitleBorder);
     innerBorderPanelLayout->addWidget(new QLabel(tr("Click to set turnout etc.\nUse context menu to set details.")));
     // help2 explains: dimmed icons = unconnected
-    innerBorderPanelLayout->addWidget(help2 = new QLabel(tr("Greyed out buttons are not connected to layout.")));
+    innerBorderPanelLayout->addWidget(help2 = new JTextArea(tr("Greyed out buttons are not connected to layout.")));
     if (!getHideUnconnected()) {
         help2->setVisible(false); // hide this panel when hideUnconnected() is set to false from menu or checkbox
     }
@@ -1249,7 +1249,7 @@ void SwitchboardEditor::onOpenEditor()
             return InstanceManager::lightManagerInstance();
      else
             log->error(tr("Unexpected bean type character \"%1\" found.").arg(typeChar));
-            return nullptr;
+     return nullptr;
 }
 
 /**
@@ -1421,23 +1421,12 @@ void SwitchboardEditor::onAddAction()
 /*protected*/ void SwitchboardEditor::setSecondSelectionGroup(QList<Positionable*> list) {
     _secondSelectionGroup = list;
 }
-#if 0
-@Override
-/*protected*/ void paintTargetPanel(Graphics g) {
-    // needed to create PositionablePolygon
-    //_shapeDrawer.paint(g);
-    if (_secondSelectionGroup != null) {
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(new Color(150, 150, 255));
-        g2d.setStroke(new java.awt.BasicStroke(2.0f));
-        for (Positionable p : _secondSelectionGroup) {
-            if (!(p instanceof jmri.jmrit.display.controlPanelEditor.shape.PositionableShape)) {
-                g.drawRect(p.getX(), p.getY(), p.maxWidth(), p.maxHeight());
-            }
-        }
-    }
+
+//@Override
+/*protected*/ void SwitchboardEditor::paintTargetPanel(QGraphicsScene* g) {
+  // Switch shapes not directly available from switchboardEditor
 }
-#endif
+
 /**
  * Get a beanSwitch object from this switchBoard panel by a given name.
  *
@@ -1505,6 +1494,26 @@ void SwitchboardEditor::onAddAction()
 /*protected*/ QList<Positionable*>* SwitchboardEditor::getSelectionGroup() {
     return _selectionGroup;
 }
+
+//@Override
+/*public*/ QList<NamedBeanUsageReport*> SwitchboardEditor::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+    if (bean != nullptr) {
+        //getSwitches().forEach((beanSwitch) ->
+     for(BeanSwitch* beanSwitch : getSwitches())
+        {
+            if (bean->equals(beanSwitch->getNamedBean())) {
+                report.append(new NamedBeanUsageReport("SwitchBoard", getName()));
+            }
+        }//);
+    }
+    return report;
+}
+
+/*public*/ int SwitchboardEditor::getTileSize() { //tmp synchronized
+    return _tileSize; // initially 100
+}
+
 /*public*/ void SwitchboardEditor::setScroll(QString strState) {
     int state = SCROLL_BOTH;
     if (strState.toLower()=="none" || strState.toLower()=="no") state = SCROLL_NONE;

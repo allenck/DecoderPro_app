@@ -13,6 +13,7 @@ namespace Sprog
   /*public*/ LocoAddress* getLocoAddress();
   /*public*/ void setSpeedSetting(float speed);
   /*public*/ void setIsForward(bool forward);
+   QObject* self() {return(QObject*)this;}
 
  private:
   /*private*/ SprogCommandStation* commandStation;

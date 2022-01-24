@@ -25,18 +25,20 @@ protected:
 
 };
 
-class PropertyChangeListenerO2 : public PropertyChangeListener {
+class PropertyChangeListenerO2 : public QObject, public PropertyChangeListener {
 Q_OBJECT
+Q_INTERFACES(PropertyChangeListener)
     //@Override
-public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* /*evt*/);
+    QObject* self() {return (QObject*)this;}public slots:
 };
 
-class VetoableChangeListenerO1 : public VetoableChangeListener
+class VetoableChangeListenerO1 : public QObject, public VetoableChangeListener
 {
  Q_OBJECT
-public:
+Q_INTERFACES(VetoableChangeListener)public:
       //@Override
       /*public*/ void vetoableChange(PropertyChangeEvent* /*evt*/) throw (PropertyVetoException);
+QObject* self() {return (QObject*)this;}
 };
 #endif // ABSTRACTMANAGERTESTBASE_H

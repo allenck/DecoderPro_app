@@ -65,7 +65,7 @@ protected:
  friend class SetSaveItemAction;
 };
 
-class SetResetItemAction : public ActionListener
+class SetResetItemAction : public AbstractAction
 {
  Q_OBJECT
  BlockEditAction* act;
@@ -79,7 +79,7 @@ public slots:
  }
 };
 
-class SetSaveItemAction : public ActionListener
+class SetSaveItemAction : public AbstractAction
 {
  Q_OBJECT
  BlockEditAction* act;

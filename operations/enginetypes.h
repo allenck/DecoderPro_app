@@ -2,17 +2,20 @@
 #define ENGINETYPES_H
 #include "rollingstockattribute.h"
 #include "appslib_global.h"
+#include "instancemanagerautodefault.h"
 
 namespace Operations
 {
- class APPSLIBSHARED_EXPORT EngineTypes : public RollingStockAttribute
+ class APPSLIBSHARED_EXPORT EngineTypes : public RollingStockAttribute, public InstanceManagerAutoDefault
  {
   Q_OBJECT
+   Q_INTERFACES(InstanceManagerAutoDefault)
  public:
-  explicit EngineTypes(QObject *parent = 0);
+  Q_INVOKABLE explicit EngineTypes(QObject *parent = 0);
+   ~EngineTypes() {}
+   EngineTypes(const EngineTypes&) : RollingStockAttribute() {}
   /*public*/ static /*final*/ QString ENGINETYPES_CHANGED_PROPERTY;// = "EngineTypesLength"; // NOI18N
   /*public*/ static /*final*/ QString ENGINETYPES_NAME_CHANGED_PROPERTY;// = "EngineTypesName"; // NOI18N
-  /*public*/ static /*synchronized*/ EngineTypes* instance();
   /*public*/ void addName(QString type) ;
   /*public*/ void deleteName(QString type) ;
   /*public*/ void replaceName(QString oldName, QString newName) ;
@@ -35,4 +38,5 @@ namespace Operations
 
  };
 }
+Q_DECLARE_METATYPE(Operations::EngineTypes)
 #endif // ENGINETYPES_H

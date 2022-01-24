@@ -98,7 +98,7 @@ SpinnerNumberModel::SpinnerNumberModel(QObject *parent)
      : AbstractSpinnerModel(parent)
     {
     if ((value == QVariant()) || (stepSize == QVariant())) {
-            throw  IllegalArgumentException("value and stepSize must be non-null");
+            throw new IllegalArgumentException("value and stepSize must be non-null");
         }
 //    if (!(((minimum == QVariant()) || (minimum.compareTo(value) <= 0)) &&
 //              ((maximum == null) || (maximum.compareTo(value) >= 0)))) {

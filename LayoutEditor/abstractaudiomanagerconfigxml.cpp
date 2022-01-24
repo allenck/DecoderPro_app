@@ -2,6 +2,7 @@
 #include "instancemanager.h"
 #include "fileutil.h"
 #include "audiosource.h"
+#include "audiomanager.h"
 
 AbstractAudioManagerConfigXML::AbstractAudioManagerConfigXML(QObject *parent) :
   AbstractNamedBeanManagerConfigXML(parent)
@@ -56,35 +57,30 @@ AbstractAudioManagerConfigXML::AbstractAudioManagerConfigXML(QObject *parent) :
  AudioManager* am = (AudioManager*) o;
  if (am != NULL)
  {
-  QStringListIterator iter(am->getSystemNameList());
-
-  // don't return an element if there are not any audios to include
-  if (!iter.hasNext()) {
-   return QDomElement();
+  QSet<NamedBean*> audioList = ((AbstractManager*)am)->getNamedBeanSet();
+  // don't return an element if there are no audios to include
+  if (audioList.isEmpty()) {
+      return QDomElement();
   }
-
   // also, don't store if we don't have any Sources or Buffers
   // (no need to store the automatically created Listener object by itself)
-  if (am->getSystemNameList(Audio::SOURCE).isEmpty()
-      && am->getSystemNameList(Audio::BUFFER).isEmpty()) {
-   return QDomElement();
+  if (am->getNamedBeanSet(QChar(Audio::SOURCE)).isEmpty()
+          && am->getNamedBeanSet(QChar(Audio::BUFFER)).isEmpty()) {
+      return QDomElement();
   }
-
   // finally, don't store if the only Sources and Buffers are for the
   // virtual sound decoder (VSD)
   int vsdObjectCount = 0;
 
   // count all VSD objects
-  foreach (QString sname, am->getSystemNameList())
+  for (NamedBean* nb : audioList)
   {
-   if (log->isDebugEnabled())
-   {
-    log->debug("Check if " + sname + " is a VSD object");
-   }
-   if (sname.length() >= 8 && sname.mid(3, 8)== ("$VSD:"))
-   {
-    log->debug("...yes");
-    vsdObjectCount++;
+   Audio* a = (Audio*)nb;
+   QString aName = a->getSystemName();
+   log->debug(tr("Check if %1 is a VSD object").arg(aName));
+   if (aName.length() >= 8 && aName.mid(3, 8).toUpper() == ("$VSD:")) {
+       log->debug("...yes");
+       vsdObjectCount++;
    }
   }
 
@@ -109,10 +105,11 @@ AbstractAudioManagerConfigXML::AbstractAudioManagerConfigXML(QObject *parent) :
                      am->getActiveAudioFactory()->isDistanceAttenuated() ? "yes" : "no");
 
   // store the audios
-  while (iter.hasNext())
+  for (NamedBean* nb : audioList)
   {
-   QString sname = iter.next();
-   if (sname == NULL)
+   Audio* a = (Audio*)nb;
+   QString sname = a->getSystemName();
+   if (sname.isNull())
    {
     log->error("System name NULL during store");
     continue;
@@ -130,7 +127,7 @@ AbstractAudioManagerConfigXML::AbstractAudioManagerConfigXML(QObject *parent) :
     continue;
    }
 
-   Audio* a = am->getBySystemName(sname);
+   a = am->getBySystemName(sname);
 
    // Transient objects for current element and any children
    QDomElement e = QDomElement();
@@ -141,8 +138,10 @@ AbstractAudioManagerConfigXML::AbstractAudioManagerConfigXML(QObject *parent) :
    {
     AudioBuffer* ab = (AudioBuffer*) a;
     e = doc.createElement("audiobuffer");
-    e.setAttribute("systemName", sname);
-    e.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(sname)));
+    //e.setAttribute("systemName", sname);
+    QDomElement e1;
+    e.appendChild(e1=doc.createElement("systemName"));
+     e1.appendChild(doc.createTextNode(sname));
 
     // store common part
     storeCommon(ab, e);
@@ -165,8 +164,10 @@ AbstractAudioManagerConfigXML::AbstractAudioManagerConfigXML(QObject *parent) :
    {
     AudioListener* al = (AudioListener*) a;
     e = doc.createElement("audiolistener");
-    e.setAttribute("systemName", sname);
-    e.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(sname)));
+    //e.setAttribute("systemName", sname);
+    QDomElement e1;
+    e.appendChild(e1=doc.createElement("systemName"));
+     e1.appendChild(doc.createTextNode(sname));
 
     // store common part
     storeCommon(al, e);
@@ -205,8 +206,10 @@ AbstractAudioManagerConfigXML::AbstractAudioManagerConfigXML(QObject *parent) :
    {
     AudioSource* as = (AudioSource*) a;
     e = doc.createElement("audiosource");
-    e.setAttribute("systemName", sname);
-    e.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(sname)));
+    //e.setAttribute("systemName", sname);
+    QDomElement e1;
+    e.appendChild(e1=doc.createElement("systemName"));
+     e1.appendChild(doc.createTextNode(sname));
 
     // store common part
     storeCommon((NamedBean*)as, e);
@@ -370,9 +373,9 @@ AbstractAudioManagerConfigXML::AbstractAudioManagerConfigXML(QObject *parent) :
    }
 
   }
-  catch (AudioException ex)
+  catch (AudioException* ex)
   {
-   log->error("Error loading AudioBuffer (" + sysName + "): " + ex.getMessage());
+   log->error("Error loading AudioBuffer (" + sysName + "): " + ex->getMessage());
   }
  }
  loadedObjects += audioList.size();
@@ -488,8 +491,8 @@ AbstractAudioManagerConfigXML::AbstractAudioManagerConfigXML(QObject *parent) :
     as->setPositionRelative(ce.text()==("yes"));
    }
 
-  } catch (AudioException ex) {
-   log->error("Error loading AudioSource (" + sysName + "): " + ex.getMessage());
+  } catch (AudioException* ex) {
+   log->error("Error loading AudioSource (" + sysName + "): " + ex->getMessage());
   }
  }
  loadedObjects += audioList.size();
@@ -561,8 +564,8 @@ AbstractAudioManagerConfigXML::AbstractAudioManagerConfigXML(QObject *parent) :
      al->setMetersPerUnit(((ce.text().toFloat())));
     }
 
-   } catch (AudioException ex) {
-    log->error("Error loading AudioListener (" + sysName + "): " + ex.getMessage());
+   } catch (AudioException* ex) {
+    log->error("Error loading AudioListener (" + sysName + "): " + ex->getMessage());
    }
   }
   QString a;

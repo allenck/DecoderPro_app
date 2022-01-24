@@ -7,18 +7,20 @@
 #include "abstractmultimeter.h"
 
 class QPushButton;
-class AmpMeterFrame : public JmriJFrame
+class AmpMeterFrame : public JmriJFrame, public PropertyChangeListener
 {
  Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
 public:
  AmpMeterFrame(QWidget* parent = nullptr);
- /*public*/ void initComponents();
+ /*public*/ void initComponents() override;
  /*synchronized*/ /*public*/ void scaleImage();
- /*public*/ void dispose();
- /*public*/ QString getClassName() { return "jmri.jmrit.ampmeter.AmpMeterFrame";}
+ /*public*/ void dispose() override;
+ /*public*/ QString getClassName()  override{ return "jmri.jmrit.ampmeter.AmpMeterFrame";}
+ QObject* self() override {return (QObject*)this;}
 
 public slots:
- void propertyChange(PropertyChangeEvent*) { update();}
+ void propertyChange(PropertyChangeEvent*) override { update();}
 
 private:
  QPushButton* b;

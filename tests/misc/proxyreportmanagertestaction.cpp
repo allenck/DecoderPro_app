@@ -12,48 +12,48 @@ ProxyReporterManagerTestAction::ProxyReporterManagerTestAction(QObject* parent) 
 void ProxyReporterManagerTestAction::actionPerformed()
 {
  ProxyReporterManagerTest* test = new ProxyReporterManagerTest();
-     try
-     {
-      QStringList testList = QStringList()
-        // from AbstractManagerTestBase
-        << "testManagerDataListenerAddAndRemove"
-        << "testPropertyChangeListenerAddAndRemove"
-        << "testVetoableChangeListenerAddAndRemove"
-        << "testMakeSystemName"
+         try
+         {
+          QStringList testList = QStringList()
+            // from AbstractManagerTestBase
+            << "testManagerDataListenerAddAndRemove"
+            << "testPropertyChangeListenerAddAndRemove"
+            << "testVetoableChangeListenerAddAndRemove"
+            << "testMakeSystemName"
 
-        // from AbstractProvidingReporterManagerTestBase
-        << "testProvideEmpty()"
-        << "testRegisterDuplicateSystemName()"
+            // from AbstractProvidingReporterManagerTestBase
+            << "testProvideEmpty()"
+            << "testRegisterDuplicateSystemName()"
 
-           // from AbstractReporterMgrTestBase
-         << "testCreate"
-         << "testDispose"
-         << "testProvideName"
-         << "testReporterProvideReporter"
-         << "testProvideFailure"
-         << "testReporterGetBySystemName"
-         << "testReporterGetByUserName"
-         << "testReporterGetByDisplayName"
-         << "testReporterProvideByNumber"
-         << "testDefaultSystemName"
-         << "testSingleObject"
-         << "testMisses"
-         << "testUpperLower"
-         << "testRename"
+               // from AbstractReporterMgrTestBase
+             << "testCreate"
+             << "testDispose"
+             << "testProvideName"
+             << "testReporterProvideReporter"
+             << "testProvideFailure"
+             << "testReporterGetBySystemName"
+             << "testReporterGetByUserName"
+             << "testReporterGetByDisplayName"
+             << "testReporterProvideByNumber"
+             << "testDefaultSystemName"
+             << "testSingleObject"
+             << "testMisses"
+             << "testUpperLower"
+             << "testRename"
 
-         //   From ProxyReporterManagerTest
-         << "testReporterPutGet"
-         << "testTwoNames"
-         << "testDefaultNotInternal"
-         << "testProvideUser"
-         << "testInstanceManagerIntegration"
-        ;
+             //   From ProxyReporterManagerTest
+             << "testReporterPutGet"
+             << "testTwoNames"
+             << "testDefaultNotInternal"
+             << "testProvideUser"
+             << "testInstanceManagerIntegration"
+            ;
 
-      JUnitUtil::runTests(test, testList);
-}
-catch (AssertionError ex)
-{
-   JOptionPane::showMessageDialog(nullptr, ex.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
-}
+          JUnitUtil::runTests(test, testList);
+    }
+    catch (AssertionError* ex)
+    {
+       JOptionPane::showMessageDialog(nullptr, ex->getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
+    }
 }
 Logger* ProxyReporterManagerTestAction::log = LoggerFactory::getLogger("ProxyReporterManagerTestAction");

@@ -4,16 +4,22 @@
 #include "abstracttableaction.h"
 #include "beantabledatamodel.h"
 #include "windowlistener.h"
+#include "managercombobox.h"
+#include "jtextfield.h"
+#include "jlabel.h"
+#include "jcheckbox.h"
+#include "jspinner.h"
+#include "spinnernumbermodel.h"
+#include "systemnamevalidator.h"
+#include "lightcontroltablemodel.h"
 
+class LightIntensityPane;
 class BufferedImage;
 class LTAValidator;
 class QGroupBox;
-class LightControlTableModel;
+//class LightControlTableModel;
 class LightControl;
 class QLabel;
-class QComboBox;
-class QCheckBox;
-class JTextField;
 class Light;
 class DecimalFormat;
 class LightManager;
@@ -26,15 +32,15 @@ public:
     /*public*/ LightTableAction(QString s, QObject* parent);
     ~LightTableAction() {}
     LightTableAction(const LightTableAction&) : AbstractTableAction() {}
-    /*public*/ void setManager(Manager* man);
-    Q_INVOKABLE /*public*/ QString getClassDescription();
-    /*public*/ QString getControlTypeText(int type);
+    /*public*/ void setManager(Manager* man) override;
+    Q_INVOKABLE /*public*/ QString getClassDescription() override;
+//    /*public*/ QString getControlTypeText(int type);
     /*public*/ static QString getDescriptionText(LightControl* lc, int type);
     /*public*/ static QString lightControlTitle;// = Bundle.getMessage("LightControlBorder");
-    Q_INVOKABLE /*public*/ void setMessagePreferencesDetails();
+    Q_INVOKABLE /*public*/ void setMessagePreferencesDetails() override;
 
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* propertyChangeEvent);
+    /*public*/ void propertyChange(PropertyChangeEvent* propertyChangeEvent) override;
 
 private:
     void common();
@@ -49,12 +55,14 @@ private:
     /*private*/ bool lightControlChanged;// = false;
 
     // items of add frame
-    QLabel* systemLabel;// = new JLabel(tr("LightSystem"));
-    QComboBox* prefixBox;// = new JComboBox<String>();
-    QCheckBox* addRangeBox;// = new JCheckBox(tr("AddRangeBox"));
-    JTextField* hardwareAddressTextField;// = new JTextField(10);
-    JTextField* fieldNumToAdd;// = new JTextField(5);
-    QLabel* labelNumToAdd;// = new JLabel("   " + tr("LabelNumberToAdd"));
+    JLabel* systemLabel = new JLabel(tr("System connection:"));
+    ManagerComboBox* prefixBox = new ManagerComboBox/*<Light>*/();
+    JCheckBox* addRangeBox = new JCheckBox(tr("Add a sequential range"));
+    JTextField* hardwareAddressTextField = new JTextField(10);
+    SystemNameValidator* hardwareAddressValidator = nullptr;
+    SpinnerNumberModel* rangeSpinner = new SpinnerNumberModel(1, 1, 50, 1); // maximum 50 items
+    JSpinner* numberToAdd = new JSpinner(rangeSpinner);
+    JLabel* labelNumToAdd = new JLabel("   " + tr("Number to Add:"));
     QString systemSelectionCombo;// = this.getClass().getName() + ".SystemSelected";
     QWidget* panel1a;// = NULL;
     QGroupBox* varPanel;// = NULL;
@@ -78,7 +86,9 @@ private:
 
     QLabel* status1;// = new JLabel(tr("LightCreateInst"));
     QLabel* status2;// = new JLabel("");
-    QString connectionChoice = "";
+    Manager* connectionChoice = nullptr;
+    /*private*/ LightIntensityPane* lightIntensityPanel = nullptr;
+    /*private*/ LightControlPane* lightControlPanel = nullptr;
 
     // parts for supporting variable intensity, transition
     QLabel* labelMinIntensity;// = new JLabel(tr("LightMinIntensity") + "  ");
@@ -89,14 +99,13 @@ private:
     QLabel* labelMaxIntensityTail;// = new JLabel(" %   ");
     QLabel* labelTransitionTime;// = new JLabel(tr("LightTransitionTime") + "  ");
     JTextField* fieldTransitionTime;// = new JTextField(5);
-    /*private*/ void initializePrefixCombo();
     /*private*/ bool canAddRange();
     void setupVariableDisplay(bool showIntensity, bool showTransition);
     bool supportsVariableLights();
     Logger * log;
     /*private*/ void setLightControlInformation(Light* g);
-    /*private*/ void clearLightControls();
-    QString formatTime(int hour, int minute);
+//    /*private*/ void clearLightControls();
+//    QString formatTime(int hour, int minute);
     /*private*/ static QString getControlSensorSenseText(LightControl* lc);
     /*private*/ static QString getControlTurnoutStateText(LightControl* lc);
 
@@ -130,16 +139,16 @@ private:
     /*private*/ QPushButton* createControl;
     /*private*/ QPushButton* updateControl;
     /*private*/ QPushButton* cancelControl;
-    /*private*/ void addEditControlWindow();
+//    /*private*/ void addEditControlWindow();
     void setUpControlType(QString ctype);
-    /*private*/ bool setControlInformation(LightControl* g);
+//    /*private*/ bool setControlInformation(LightControl* g);
     QString addEntryToolTip;
     LTAValidator* validator;
     void handleCreateException(Exception ex, QString sysName);
 
 private slots:
     void createPressed(ActionEvent* e = nullptr);
-    void editPressed();
+//    void editPressed();
     void updatePressed(ActionEvent* e = nullptr);
     void cancelPressed(ActionEvent* e = nullptr);
     void controlTypeChanged();
@@ -147,33 +156,34 @@ private slots:
 
 protected:
     /*protected*/ LightManager* lightManager;// = InstanceManager.lightManagerInstance();
-    /*protected*/ void createModel();
-    /*protected*/ void setTitle();
-    /*protected*/ QString helpTarget();
+    /*protected*/ void createModel() override;
+    /*protected*/ void setTitle()override;
+    /*protected*/ QString helpTarget()override;
     ///*protected*/ BeanTableDataModel* m;
-    /*protected*/ QString getClassName();
+    /*protected*/ QString getClassName() override;
     // for icon state col
-    /*protected*/ bool _graphicState = false; // updated from prefs
+    // /*protected*/ bool _graphicState = false; // updated from prefs
 
 protected slots:
     /*protected*/ void addPressed(ActionEvent* e = 0);
-    /*protected*/ void editControlAction(int row);
-    /*protected*/ void deleteControlAction(int row);
-    /*protected*/ void createControlPressed(ActionEvent* e = 0);
-    /*protected*/ void updateControlPressed(ActionEvent* e = 0);
-    /*protected*/ void cancelControlPressed(ActionEvent* e = 0);
+//    /*protected*/ void editControlAction(int row);
+//    /*protected*/ void deleteControlAction(int row);
+//    /*protected*/ void createControlPressed(ActionEvent* e = 0);
+//    /*protected*/ void updateControlPressed(ActionEvent* e = 0);
+//    /*protected*/ void cancelControlPressed(ActionEvent* e = 0);
     /*protected*/ void addRangeChanged();
     /*protected*/ void prefixChanged();
-    /*protected*/ void addControlPressed(ActionEvent* e = 0);
+//    /*protected*/ void addControlPressed(ActionEvent* e = 0);
 
  friend class LTBeanTableDataModel;
  friend class LightControlTableModel;
  friend class LTAWindowListener;
  friend class ACFWindowListener;
  friend class LTAValidator;
+ friend class HAVPropertyChangeListener;
 };
 Q_DECLARE_METATYPE(LightTableAction)
-
+#if 0
 class LTBeanTableDataModel : public BeanTableDataModel
 {
     Q_OBJECT
@@ -194,7 +204,7 @@ public:
     /*public*/ QVariant data(const QModelIndex &index, int role) const;
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
     void doDelete(NamedBean* bean);
-    /*public*/ Manager* getManager();
+    /*public*/ AbstractManager *getManager();
     /*public*/ NamedBean* getBySystemName(QString name) const;
     /*public*/ NamedBean* getByUserName(QString name) ;
     /*public*/ void clickOn(NamedBean* t);
@@ -225,11 +235,12 @@ protected:
 
  friend class LTAValidator;
 };
-
-/*public*/ class LightControlTableModel : public AbstractTableModel //implements
-//        java.beans.PropertyChangeListener {
+#endif
+#if 0
+/*public*/ class LightControlTableModel : public AbstractTableModel, public PropertyChangeListener
 {
  Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
     LightTableAction* lta;
  public:
     enum COLUMNS
@@ -241,19 +252,20 @@ protected:
     };
 
     /*public*/ LightControlTableModel(LightTableAction* lta, QObject* parent = 0);
-    /*public*/ int rowCount(const QModelIndex &parent) const;
-    /*public*/ int columnCount(const QModelIndex &parent) const;
-    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
-    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    /*public*/ int rowCount(const QModelIndex &parent) const override;
+    /*public*/ int columnCount(const QModelIndex &parent) const override;
+    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
+    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
     /*public*/ int getPreferredWidth(int col);
-    /*public*/ QVariant data(const QModelIndex &index, int role) const;
-    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
+    /*public*/ QVariant data(const QModelIndex &index, int role) const override;
+    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+    QObject* self() override {return (QObject*)this;}
 
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 };
-
+#endif
 class LTAWindowListener : public WindowListener
 {
  Q_OBJECT
@@ -263,6 +275,7 @@ public:
  void windowClosing(QCloseEvent *e);
 
 };
+#if 0
 class ACFWindowListener : public WindowListener
 {
  Q_OBJECT
@@ -272,6 +285,7 @@ public:
  void windowClosing(QCloseEvent *e);
 
 };
+#endif
 class LTAValidator : public QValidator
 {
  Q_OBJECT
@@ -288,4 +302,35 @@ public slots:
  void prefixBoxChanged(QString txt);
 
 };
+
+class HAVPropertyChangeListener : public QObject, public PropertyChangeListener
+{
+  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
+  LightTableAction* lta;
+ public:
+  HAVPropertyChangeListener(LightTableAction* lta) {this->lta = lta;}
+  QObject* self() override {return (QObject*)this;}
+ public slots:
+  void propertyChange(PropertyChangeEvent* /*evt*/) override
+  {
+   Validation* validation = lta->hardwareAddressValidator->getValidation();
+   Validation::Type type = validation->getType();
+   lta->create->setEnabled(type != Validation::Type::WARNING && type != Validation::Type::DANGER);
+   QString message = validation->getMessage();
+   if (message == "") {
+       lta->status1->setText("");
+   } else {
+       message = message.trimmed();
+       if (message.startsWith("<html>") && message.contains("<br>")) {
+           message = message.mid(0, message.indexOf("<br>"));
+           if (!message.endsWith("</html>")) {
+               message = message + "</html>";
+           }
+       }
+       lta->status1->setText(message);
+   }
+  }
+};
+
 #endif // LIGHTTABLEACTION_H

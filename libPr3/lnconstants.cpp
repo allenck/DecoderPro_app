@@ -133,7 +133,7 @@ int LnConstants::OPC_LOCO_SPD_ESTOP = 0x01; /* emergency stop command           
 //int LnConstants::STAT2_ID_IS_ALIAS = STAT2_SL_NOT_ID;
 
 /* mask and values for consist determination */
-int LnConstants::CONSIST_MASK      = STAT1_SL_CONDN | STAT1_SL_CONUP;
+int LnConstants::CONSIST_MASK      = LnConstants::STAT1_SL_CONDN | LnConstants::STAT1_SL_CONUP;
 //const int LnConstants::CONSIST_MID       = STAT1_SL_CONDN | STAT1_SL_CONUP;
 //const int LnConstants::CONSIST_TOP       = STAT1_SL_CONDN;
 //const int LnConstants::CONSIST_SUB       = STAT1_SL_CONUP;
@@ -146,7 +146,7 @@ QString LnConstants::CONSIST_STAT(int s) {   // encode consisting status as a st
       }
 
 /* mask and values for locomotive use determination */
-int LnConstants::LOCOSTAT_MASK     = STAT1_SL_BUSY  | STAT1_SL_ACTIVE;
+int LnConstants::LOCOSTAT_MASK     = LnConstants::STAT1_SL_BUSY  | LnConstants::STAT1_SL_ACTIVE;
 //const int LnConstants::LOCO_IN_USE       = STAT1_SL_BUSY  | STAT1_SL_ACTIVE;
 //const int LnConstants::LOCO_IDLE         = STAT1_SL_BUSY;
 //const int LnConstants::LOCO_COMMON       = STAT1_SL_ACTIVE;
@@ -159,7 +159,7 @@ QString LnConstants::LOCO_STAT(int s)   { // encode loco status as a string
       }
 
 /* mask and values for decoder type encoding for this slot */
-int LnConstants::DEC_MODE_MASK     = STAT1_SL_SPDEX | STAT1_SL_SPD14 | STAT1_SL_SPD28;
+int LnConstants::DEC_MODE_MASK     = LnConstants::STAT1_SL_SPDEX | LnConstants::STAT1_SL_SPD14 | LnConstants::STAT1_SL_SPD28;
 /* Advanced consisting allowed for the next two */
 //int LnConstants::DEC_MODE_128A     = STAT1_SL_SPDEX | STAT1_SL_SPD14 | STAT1_SL_SPD28;
 //int LnConstants::DEC_MODE_28A      = STAT1_SL_SPDEX ;
@@ -431,57 +431,57 @@ int LnConstants::RE_LACK_SPEC_CASE2             = 0x00; // special case LACK res
 //int LnConstants::RE_MULTI_SENSE_DEV_TYPE_DS64   = 0x03;
 
 // Below data is assumed, based on firmware files available from RR-Cirkits web site
-int LnConstants::RE_IPL_MFR_RR_CIRKITS          = 87;
-int LnConstants::RE_IPL_RRCIRKITS_HOST_TC64     = 11;
-int LnConstants::RE_IPL_RRCIRKITS_SLAVE_ALL     = 00;
+//int LnConstants::RE_IPL_MFR_RR_CIRKITS          = 87;
+//int LnConstants::RE_IPL_RRCIRKITS_HOST_TC64     = 11;
+//int LnConstants::RE_IPL_RRCIRKITS_SLAVE_ALL     = 00;
 
 // Constants associated with OPC_PEER_XFR for Duplex operations
-int LnConstants::RE_DPLX_OP_TYPE_WRITE              = 0x00;
-int LnConstants::RE_DPLX_OP_TYPE_QUERY              = 0x08;
-int LnConstants::RE_DPLX_OP_TYPE_REPORT             = 0x10;
-int LnConstants::RE_DPLX_OP_LEN                     = 0x14;
-int LnConstants::RE_IPL_OP_LEN                      = 0x14;
-int LnConstants::RE_IPL_OP_QUERY                    = 0x08;
-int LnConstants::RE_IPL_OP_REPORT                   = 0x10;
-int LnConstants::RE_IPL_OP_SLV_QUERY                = 0x00;
-int LnConstants::RE_IPL_OP_HFW_QUERY                = 0x00;
-int LnConstants::RE_IPL_OP_HSNM_QUERY               = 0x00;
-int LnConstants::RE_IPL_OP_SFW_QUERY                = 0x00;
-int LnConstants::RE_IPL_OP_HSN0_QUERY               = 0x01;
-int LnConstants::RE_IPL_OP_HSN1_QUERY               = 0x00;
-int LnConstants::RE_IPL_OP_HSN2_QUERY               = 0x00;
-int LnConstants::RE_IPL_OP_SSNM_QUERY               = 0x00;
-int LnConstants::RE_IPL__OP_SSN0_QUERY              = 0x00;
-int LnConstants::RE_IPL_OP_SSN1_QUERY               = 0x00;
-int LnConstants::RE_IPL_OP_SSN2_QUERY               = 0x00;
-int LnConstants::RE_IPL_OP_SSN3_QUERY               = 0x00;
-int LnConstants::RE_DPLX_GP_CHAN_TYPE               = 2;
-int LnConstants::RE_DPLX_GP_NAME_TYPE               = 3;
-int LnConstants::RE_DPLX_GP_ID_TYPE                 = 4;
-int LnConstants::RE_DPLX_GP_PW_TYPE                 = 7;
-int LnConstants::RE_DPLX_OPC_BAD                    = 0x80;
-int LnConstants::RE_DPLX_MSB1_BIT                   = 1;
-int LnConstants::RE_DPLX_MSB2_BIT                   = 2;
-int LnConstants::RE_DPLX_MSB3_BIT                   = 4;
-int LnConstants::RE_DPLX_MSB4_BIT                   = 8;
-int LnConstants::RE_DPLX_BUMP_MSB1_BIT              = 7;
-int LnConstants::RE_DPLX_BUMP_MSB2_BIT              = 6;
-int LnConstants::RE_DPLX_BUMP_MSB3_BIT              = 5;
-int LnConstants::RE_DPLX_BUMP_MSB4_BIT              = 4;
-int LnConstants::RE_DPLX_7BITS_MAX                  = 127;
-int LnConstants::RE_DPLX_MAX_NOT_OPC                = 0x7F;
-int LnConstants::RE_DPLX_ALT_CH_MSB_BIT             = 0x4;
-int LnConstants::RE_DPLX_ALT_CH_MSB_SHIFT           = 0x5;
-int LnConstants::RE_DPLX_ALT_ID_MSB_BIT             = 0x8;
-int LnConstants::RE_DPLX_ALT_ID_MSB_SHIFT           = 0x4;
-int LnConstants::RE_DPLX_ALT_PW1_MSB_BIT            = 0x1;
-int LnConstants::RE_DPLX_ALT_PW1_MSB_SHIFT          = 0x3;
-int LnConstants::RE_DPLX_ALT_PW3_MSB_BIT            = 0x2;
-int LnConstants::RE_DPLX_ALT_PW3_MSB_SHIFT          = 0x2;
+//int LnConstants::RE_DPLX_OP_TYPE_WRITE              = 0x00;
+//int LnConstants::RE_DPLX_OP_TYPE_QUERY              = 0x08;
+//int LnConstants::RE_DPLX_OP_TYPE_REPORT             = 0x10;
+//int LnConstants::RE_DPLX_OP_LEN                     = 0x14;
+//int LnConstants::RE_IPL_OP_LEN                      = 0x14;
+//int LnConstants::RE_IPL_OP_QUERY                    = 0x08;
+//int LnConstants::RE_IPL_OP_REPORT                   = 0x10;
+//int LnConstants::RE_IPL_OP_SLV_QUERY                = 0x00;
+//int LnConstants::RE_IPL_OP_HFW_QUERY                = 0x00;
+//int LnConstants::RE_IPL_OP_HSNM_QUERY               = 0x00;
+//int LnConstants::RE_IPL_OP_SFW_QUERY                = 0x00;
+//int LnConstants::RE_IPL_OP_HSN0_QUERY               = 0x01;
+//int LnConstants::RE_IPL_OP_HSN1_QUERY               = 0x00;
+//int LnConstants::RE_IPL_OP_HSN2_QUERY               = 0x00;
+//int LnConstants::RE_IPL_OP_SSNM_QUERY               = 0x00;
+//int LnConstants::RE_IPL__OP_SSN0_QUERY              = 0x00;
+//int LnConstants::RE_IPL_OP_SSN1_QUERY               = 0x00;
+//int LnConstants::RE_IPL_OP_SSN2_QUERY               = 0x00;
+//int LnConstants::RE_IPL_OP_SSN3_QUERY               = 0x00;
+//int LnConstants::RE_DPLX_GP_CHAN_TYPE               = 2;
+//int LnConstants::RE_DPLX_GP_NAME_TYPE               = 3;
+//int LnConstants::RE_DPLX_GP_ID_TYPE                 = 4;
+//int LnConstants::RE_DPLX_GP_PW_TYPE                 = 7;
+//int LnConstants::RE_DPLX_OPC_BAD                    = 0x80;
+//int LnConstants::RE_DPLX_MSB1_BIT                   = 1;
+//int LnConstants::RE_DPLX_MSB2_BIT                   = 2;
+//int LnConstants::RE_DPLX_MSB3_BIT                   = 4;
+//int LnConstants::RE_DPLX_MSB4_BIT                   = 8;
+//int LnConstants::RE_DPLX_BUMP_MSB1_BIT              = 7;
+//int LnConstants::RE_DPLX_BUMP_MSB2_BIT              = 6;
+//int LnConstants::RE_DPLX_BUMP_MSB3_BIT              = 5;
+//int LnConstants::RE_DPLX_BUMP_MSB4_BIT              = 4;
+//int LnConstants::RE_DPLX_7BITS_MAX                  = 127;
+//int LnConstants::RE_DPLX_MAX_NOT_OPC                = 0x7F;
+//int LnConstants::RE_DPLX_ALT_CH_MSB_BIT             = 0x4;
+//int LnConstants::RE_DPLX_ALT_CH_MSB_SHIFT           = 0x5;
+//int LnConstants::RE_DPLX_ALT_ID_MSB_BIT             = 0x8;
+//int LnConstants::RE_DPLX_ALT_ID_MSB_SHIFT           = 0x4;
+//int LnConstants::RE_DPLX_ALT_PW1_MSB_BIT            = 0x1;
+//int LnConstants::RE_DPLX_ALT_PW1_MSB_SHIFT          = 0x3;
+//int LnConstants::RE_DPLX_ALT_PW3_MSB_BIT            = 0x2;
+//int LnConstants::RE_DPLX_ALT_PW3_MSB_SHIFT          = 0x2;
 
-int LnConstants::RE_DPLX_DATA_LS_NIBBLE             = 0x0F;
-int LnConstants::RE_DPLX_DATA_MS_NIBBLE             = 0x70;
-int LnConstants::RE_DPLX_DATA_MS_NIBBLE_SHIFT       = 4;
+//int LnConstants::RE_DPLX_DATA_LS_NIBBLE             = 0x0F;
+//int LnConstants::RE_DPLX_DATA_MS_NIBBLE             = 0x70;
+//int LnConstants::RE_DPLX_DATA_MS_NIBBLE_SHIFT       = 4;
 
 // Duplex Group Scan Operation Constants
 int LnConstants::RE_DPLX_SCAN_OP_LEN                = 0x14 ;
@@ -490,3 +490,6 @@ int LnConstants::RE_DPLX_SCAN_QUERY_B3              = 0x08 ;
 int LnConstants::RE_DPLX_SCAN_QUERY_B4              = 0x00 ;
 int LnConstants::RE_DPLX_SCAN_REPORT_B2             = 0x10 ;
 int LnConstants::RE_DPLX_SCAN_REPORT_B3             = 0x10 ;
+
+/*public*/ /*final*/ /*static*/ QString LnConstants::DIGITRAX_STRING = "Digitrax"; // NOI18N
+/*public*/ /*final*/ /*static*/ QString LnConstants::RR_CIRKITS_STRING = "RR-CirKits"; // NOI18N};

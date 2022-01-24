@@ -4,7 +4,7 @@
 #include <QBoxLayout>
 #include <QLabel>
 #include <QRadioButton>
-#include <QPushButton>
+#include "jbutton.h"
 #include <QButtonGroup>
 #include "jtextfield.h"
 #include "enginestablemodel.h"
@@ -25,11 +25,11 @@
 #include <QStatusBar>
 #include "operationsxml.h"
 #include "enginerostermenu.h"
+#include "instancemanager.h"
+#include "propertychangelistener.h"
+#include "borderfactory.h"
+#include "nceconsistengineaction.h"
 
-//EnginesTableFrame::EnginesTableFrame(QObject *parent) :
-//  OperationsFrame(parent)
-//{
-//}
 namespace Operations
 {
 /**
@@ -53,7 +53,7 @@ namespace Operations
         // general GUI config
  setObjectName("EnginesTableFrame");
  log = new Logger("EnginesTableFrame");
-  engineManager = EngineManager::instance();
+  engineManager = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"));
   // labels
   numEngines = new QLabel();
   textEngines = new QLabel();
@@ -79,9 +79,9 @@ namespace Operations
   QButtonGroup* group = new QButtonGroup();
 
   // major buttons
-  addButton = new QPushButton(tr("Add"));
-  findButton = new QPushButton(tr("Find"));
-  saveButton = new QPushButton(tr("Save"));
+  addButton = new JButton(tr("Add"));
+  findButton = new JButton(tr("Find"));
+  saveButton = new JButton(tr("Save"));
 
   findEngineTextBox = new JTextField(6);
   QVBoxLayout* thisLayout;
@@ -101,18 +101,14 @@ namespace Operations
 
   // load the number of engines and listen for changes
   numEngines->setText(QString::number(engineManager->getNumEntries()));
-  //engineManager.addPropertyChangeListener(this);
-  connect(engineManager->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+  engineManager->SwingPropertyChangeSupport::addPropertyChangeListener(this);
   textEngines->setText(tr("engines"));
 
   // Set up the control panel
   // row 1
-  QGroupBox* cp1 = new QGroupBox();
-  //cp1.setBorder(BorderFactory.createTitledBorder(tr("SortBy")));
-  QString     gbStyleSheet = "QGroupBox { border: 2px solid gray; border-radius: 3px;} QGroupBox::title { /*background-color: transparent;*/  subcontrol-position: top left; /* position at the top left*/  padding:0 0px;} ";
-  cp1->setStyleSheet(gbStyleSheet);
+  JPanel* cp1 = new JPanel();
   FlowLayout * cp1Layout = new FlowLayout(cp1);
-  cp1->setTitle(tr("Sort By"));
+  cp1->setBorder(BorderFactory::createTitledBorder(tr("Sort By")));
   cp1Layout->addWidget(sortByNumber);
   cp1Layout->addWidget(sortByRoad);
   cp1Layout->addWidget(sortByModel);
@@ -120,9 +116,9 @@ namespace Operations
   cp1Layout->addWidget(sortByLocation);
   cp1Layout->addWidget(sortByDestination);
   cp1Layout->addWidget(sortByTrain);
-  QFrame* movep = new QFrame();
-  //movep.setBorder(BorderFactory.createTitledBorder(""));
+  JPanel* movep = new JPanel();
   FlowLayout * movepLayout = new FlowLayout(movep);
+  movep->setBorder(BorderFactory::createTitledBorder(""));
   movepLayout->addWidget(sortByMoves);
   movepLayout->addWidget(sortByBuilt);
   movepLayout->addWidget(sortByOwner);
@@ -132,6 +128,7 @@ namespace Operations
   if (Setup::isRfidEnabled()) {
       movepLayout->addWidget(sortByRfid);
   }
+  movepLayout->addWidget(sortByDcc);
   movepLayout->addWidget(sortByLast);
   cp1Layout->addWidget(movep);
 
@@ -152,20 +149,18 @@ namespace Operations
   cp2AddLayout->addWidget(addButton);
   cp2Layout->addWidget(cp2Add);
 
-  QGroupBox* cp2Find = new QGroupBox();
-  //cp2Find.setBorder(BorderFactory.createTitledBorder(""));
-  cp2Find->setStyleSheet(gbStyleSheet);
-  cp2Find->setTitle("");
+  JPanel* cp2Find = new JPanel();
   FlowLayout* cp2FindLayout = new FlowLayout(cp2Find);
+  cp2Find->setBorder(BorderFactory::createTitledBorder(""));
   findButton->setToolTip(tr("Find locomotive by road number. Asterisk \"*\" = wild card."));
   findEngineTextBox->setToolTip(tr("Find locomotive by road number. Asterisk \"*\" = wild card."));
   cp2FindLayout->addWidget(findButton);
   cp2FindLayout->addWidget(findEngineTextBox);
   cp2Layout->addWidget(cp2Find);
 
-  QWidget* cp2Save = new QWidget();
-  //cp2Save.setBorder(BorderFactory.createTitledBorder(""));
+  JPanel* cp2Save = new JPanel();
   FlowLayout* cp2SaveLayout = new FlowLayout(cp2Save);
+  cp2Save->setBorder(BorderFactory::createTitledBorder(""));
   cp2SaveLayout->addWidget(saveButton);
   cp2Layout->addWidget(cp2Save);
 
@@ -205,6 +200,7 @@ namespace Operations
   addRadioButtonAction(sortByOwner);
   addRadioButtonAction(sortByValue);
   addRadioButtonAction(sortByRfid);
+  addRadioButtonAction(sortByDcc);
   addRadioButtonAction(sortByLast);
 
   group->addButton(sortByNumber);
@@ -219,13 +215,16 @@ namespace Operations
   group->addButton(sortByOwner);
   group->addButton(sortByValue);
   group->addButton(sortByRfid);
+  group->addButton(sortByDcc);
   group->addButton(sortByLast);
+
+  sortByDcc->setToolTip(tr("Loco DCC Address from JMRI Roster"));
 
   // build menu
   QMenuBar* menuBar = new QMenuBar();
   QMenu* toolMenu = new QMenu(tr("Tools"));
   toolMenu->addMenu(new EngineRosterMenu(tr("Engine Roster"), EngineRosterMenu::MAINMENU, this));
-//        toolMenu.add(new NceConsistEngineAction(tr("MenuItemNceSync"), this));
+  toolMenu->addAction(new NceConsistEngineAction(this));
   menuBar->addMenu(toolMenu);
   menuBar->addMenu(new OperationsMenu());
   setMenuBar(menuBar);
@@ -282,6 +281,10 @@ namespace Operations
   if (source == sortByLast) {
       enginesModel->setSort(EnginesTableModel::SORTBYLAST);
   }
+  if (source == sortByDcc) {
+      enginesModel->setSort(EnginesTableModel::SORTBY_DCC_ADDRESS);
+  }
+
   // clear any sorts by column
   clearTableSort(enginesTable);
  }
@@ -294,8 +297,8 @@ namespace Operations
  // add, save or find button
  /*public*/ void EnginesTableFrame::buttonActionPerformed(QWidget* obj) {
   // log->debug("engine button activated");
- QPushButton* source = (QPushButton*)obj;
-  if ((QPushButton*)source == findButton)
+ JButton* source = (JButton*)obj;
+  if ((JButton*)source == findButton)
   {
       int rowindex = enginesModel->findEngineByRoadNumber(findEngineTextBox->text());
       if (rowindex < 0) {

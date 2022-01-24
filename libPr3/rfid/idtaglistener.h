@@ -18,12 +18,13 @@
  * @author Matthew Harris Copyright (C) 2011
  * @since 2.11.4
  */
-/*public*/ /*interface*/class IdTagListener : public QObject{
-Q_OBJECT
+/*public*/ /*interface*/class IdTagListener //: public QObject
+{
+//Q_OBJECT
 public:
  explicit IdTagListener(QObject *parent = 0);
     /*public*/ virtual void notify(IdTag* r)=0;
 
 };
-//Q_DECLARE_INTERFACE(IdTagListener, "IdTagListener")
+Q_DECLARE_INTERFACE(IdTagListener, "IdTagListener")
 #endif // IDTAGLISTENER_H

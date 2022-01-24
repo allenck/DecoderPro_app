@@ -1,5 +1,4 @@
 #include "trainsbycartypeaction.h"
-#include "trainsbycartypeframe.h"
 
 namespace Operations
 {
@@ -34,7 +33,7 @@ namespace Operations
          f = new TrainsByCarTypeFrame();
          f->initComponents("");
      }
-     //f.setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setVisible(true);	// this also brings the frame into focus
  }
 }

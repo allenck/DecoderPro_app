@@ -2,11 +2,13 @@
 #define CAREDITFRAME_H
 
 #include <QObject>
-#include "operationsframe.h"
+#include "rollingstockeditframe.h"
 #include "appslib_global.h"
+#include "propertychangelistener.h"
+#include "resourcebundle.h"
 
 class QGroupBox;
-class QPushButton;
+class JButton;
 class QLabel;
 class JComboBox;
 class QCheckBox;
@@ -14,16 +16,28 @@ class JTextField;
 
 namespace Operations
 {
+ class CarResourceBundle : public ResourceBundle
+ {
+  public:
+   CarResourceBundle();
+   QString getString(QString key)
+   {
+    return map.value(key);
+   }
+  private:
+   QMap<QString, QString> map = QMap<QString, QString>();
+ };
  class CarAttributeEditFrame;
  class CarManagerXml;
  class CarManager;
  class LocationManager;
  class Car;
  class CarLoadEditFrame;
- class APPSLIBSHARED_EXPORT CarEditFrame : public OperationsFrame
+ class APPSLIBSHARED_EXPORT CarEditFrame : public RollingStockEditFrame//, public  PropertyChangeListener
  {
   Q_OBJECT
- public:
+ //Q_INTERFACES(PropertyChangeListener)
+  public:
   CarEditFrame(QWidget* parent = 0);
   /*public*/ static /*final*/ QString ROAD;//= tr("Road");
   /*public*/ static /*final*/ QString TYPE;//= tr("Type");
@@ -31,17 +45,18 @@ namespace Operations
   /*public*/ static /*final*/ QString LENGTH;//= tr("Length");
   /*public*/ static /*final*/ QString OWNER;//= tr("Owner");
   /*public*/ static /*final*/ QString KERNEL;//= tr("Kernel");
-  /*public*/ void initComponents();
-  /*public*/ void dispose();
-  /*public*/ void checkBoxActionPerformed(QWidget* ae);
-  /*public*/ void loadCar(Car* car);
-  /*public*/ QString getClassName();
+  /*public*/ void initComponents() override;
+  /*public*/ void dispose() override;
+  /*public*/ void checkBoxActionPerformed(QWidget* ae) override;
+  /*public*/ void load(Car* car);
+  /*public*/ QString getClassName() override;
+  QObject* self() override {return (QObject*)this; }
 
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
-  /*public*/ void buttonEditActionPerformed(QWidget* ae);
-  /*public*/ void buttonActionPerformed(QWidget* ae);
-  /*public*/ void comboBoxActionPerformed(QWidget* ae);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
+  /*public*/ void buttonEditActionPerformed(QWidget* ae) override;
+  /*public*/ void buttonActionPerformed(QWidget* ae) override;
+  /*public*/ void comboBoxActionPerformed(QWidget* ae) override;
 
  private:
   /**
@@ -51,7 +66,7 @@ namespace Operations
   CarManager* carManager;//= CarManager.instance();
   CarManagerXml* managerXml;//= CarManagerXml.instance();
   LocationManager* locationManager;//= LocationManager.instance();
-
+  CarAttributeEditFrame* carAttributeEditFrame = nullptr;
   Car* _car;
 
   // labels
@@ -59,19 +74,19 @@ namespace Operations
   QLabel* textWeightTons;//= new JLabel(Bundle.getMessage("WeightTons"));
 
   // major buttons
-  QPushButton* editRoadButton;//= new JButton(Bundle.getMessage("Edit"));
-  QPushButton* clearRoadNumberButton;//= new JButton(Bundle.getMessage("Clear"));
-  QPushButton* editTypeButton;//= new JButton(Bundle.getMessage("Edit"));
-  QPushButton* editColorButton;//= new JButton(Bundle.getMessage("Edit"));
-  QPushButton* editLengthButton;//= new JButton(Bundle.getMessage("Edit"));
-  QPushButton* fillWeightButton;//= new JButton(Bundle.getMessage("Calculate"));
-  QPushButton* editLoadButton;//= new JButton(Bundle.getMessage("Edit"));
-  QPushButton* editKernelButton;//= new JButton(Bundle.getMessage("Edit"));
-  QPushButton* editOwnerButton;//= new JButton(Bundle.getMessage("Edit"));
+  JButton* editRoadButton;//= new JButton(Bundle.getMessage("Edit"));
+  JButton* clearRoadNumberButton;//= new JButton(Bundle.getMessage("Clear"));
+  JButton* editTypeButton;//= new JButton(Bundle.getMessage("Edit"));
+  JButton* editColorButton;//= new JButton(Bundle.getMessage("Edit"));
+  JButton* editLengthButton;//= new JButton(Bundle.getMessage("Edit"));
+  JButton* fillWeightButton;//= new JButton(Bundle.getMessage("Calculate"));
+  JButton* editLoadButton;//= new JButton(Bundle.getMessage("Edit"));
+  JButton* editKernelButton;//= new JButton(Bundle.getMessage("Edit"));
+  JButton* editOwnerButton;//= new JButton(Bundle.getMessage("Edit"));
 
-  QPushButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
-  QPushButton* deleteButton;//= new JButton(Bundle.getMessage("Delete"));
-  QPushButton* addButton;//= new JButton(Bundle.getMessage("Add"));
+  JButton* saveButton;//= new JButton(Bundle.getMessage("Save"));
+  JButton* deleteButton;//= new JButton(Bundle.getMessage("Delete"));
+  JButton* addButton;//= new JButton(Bundle.getMessage("Add"));
 
   // check boxes
   QCheckBox* autoCheckBox;//= new JCheckBox(Bundle.getMessage("Auto"));
@@ -104,22 +119,28 @@ namespace Operations
   JComboBox* rfidComboBox;//= new JComboBox<IdTag>();
 
   // panels
-  QGroupBox* pBlocking;//= new JPanel();
+  JPanel* pBlocking;//= new JPanel();
 
-  CarLoadEditFrame* lef;//= NULL;
-  /*private*/ void addEditButtonAction(QPushButton* b);
+  CarLoadEditFrame* carLoadEditFrame = nullptr;
   Logger* log;
   /*private*/ void updateTrackLocationBox();
   /*private*/ bool editActive;// = false;
-  CarAttributeEditFrame* f;
   /*private*/ void removePropertyChangeListeners();
-  QSignalMapper* editButtonMapper;
   /*private*/ void calculateWeight();
-  /*private*/ void saveCar(bool isSave);
+  /*private*/ void save(bool isSave)override;
   /*private*/ void setLocation(Car* car);
   /*private*/ void writeFiles();
-  /*private*/ bool checkCar(Car* c);
+  ResourceBundle* rb = new CarResourceBundle();
+  protected:
+  /*protected*/ void addPropertyChangeListeners();
+  /*protected*/ ResourceBundle* getRb() override;
+  /*protected*/ RollingStockAttribute* getTypeManager() override;
+  /*protected*/ RollingStockAttribute* getLengthManager()override;
+  /*protected*/ void _delete()override;
+  /*private*/ bool check(RollingStock* c) override;
 
  };
+
+
 }
 #endif // CAREDITFRAME_H

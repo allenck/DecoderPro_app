@@ -6,6 +6,7 @@
 #include <QtXml>
 #include "rowsorter.h"
 #include "rowsorterlistener.h"
+#include "propertychangelistener.h"
 
 class RowSorterEvent;
 class QTimer;
@@ -14,34 +15,37 @@ class Logger;
 class SortKey;
 class TableColumnPreferences;
 class JTableListener;
-class JmriJTablePersistenceManager : public JTablePersistenceManager
+class JmriJTablePersistenceManager : public AbstractPreferencesManager, public JTablePersistenceManager, public PropertyChangeListener
 {
  Q_OBJECT
+Q_INTERFACES(JTablePersistenceManager PropertyChangeListener)
 public:
 #include "sortorder.h"
- JmriJTablePersistenceManager();
+ JmriJTablePersistenceManager(QObject* parent = nullptr);
  ~JmriJTablePersistenceManager() {}
- JmriJTablePersistenceManager(const JmriJTablePersistenceManager&)  : JTablePersistenceManager() {}
+ JmriJTablePersistenceManager(const JmriJTablePersistenceManager&)  : AbstractPreferencesManager() {}
  /*public*/ /*final*/ QString PAUSED;// = "paused";
  /*public*/ /*final*/ static QString TABLES_NAMESPACE;// = "http://jmri.org/xml/schema/auxiliary-configuration/table-details-4-3-5.xsd"; // NOI18N
  /*public*/ /*final*/ static QString TABLES_ELEMENT;// = "tableDetails"; // NOI18N
  /*public*/ /*final*/ static QString SORT_ORDER;// = "sortOrder"; // NOI18N
- /*public*/ virtual void persist(/*@NonNULL*/ JTable* table); //throws IllegalArgumentException, NullPointerException
- /*public*/ virtual void cacheState(JTable* table);
+ /*public*/ virtual void persist(/*@NonNULL*/ JTable* table, bool resetState =false)override ; //throws IllegalArgumentException, NullPointerException
+ /*public*/ virtual void cacheState(JTable* table) override;
  /*public*/ TableColumnPreferences* getTableColumnPreferences(/*@NonNULL*/ QString table, /*@NonNULL*/ QString column);
  QT_DEPRECATED /*public*/ QMap<QString, TableColumnPreferences*>* getTableColumnPreferences(/*@NonNULL*/ QString table);
  QT_DEPRECATED /*public*/ void setTableColumnPreferences(QString table, QString column, int order, int width, SortOrder sort, bool hidden);
- /*public*/ void stopPersisting(JTable* table);
- /*public*/ void clearState(JTable* table);
- /*public*/ void initialize(Profile* profile)throw (InitializationException);
- /*public*/ /*synchronized*/ void savePreferences(Profile* profile);
- /*public*/ QSet<QString>* getProvides();
- /*public*/ void resetState(JTable* table);
- /*public*/ void setPaused(bool paused);
- /*public*/ bool isPaused();
+ /*public*/ void stopPersisting(JTable* table) override;
+ /*public*/ void clearState(JTable* table) override;
+ /*public*/ void initialize(Profile* profile)throw (InitializationException) override;
+ /*public*/ /*synchronized*/ void savePreferences(Profile* profile) override;
+ /*public*/ QSet<QString> getProvides() override;
+ /*public*/ void resetState(JTable* table) override;
+ /*public*/ void setPaused(bool paused) override;
+ /*public*/ bool isPaused() override;
+
+ QObject* self() override {return (QObject*)this;}
 
 public slots:
- /*public*/ void propertyChange(PropertyChangeEvent* evt);
+ /*public*/ void propertyChange(PropertyChangeEvent* evt) override;
 
 private:
  /*private*/ bool paused;// = false;
@@ -76,13 +80,16 @@ Q_DECLARE_METATYPE(JmriJTablePersistenceManager)
     /*public*/ bool getHidden();
 };
 
-/*protected*/ /*final*/ /*static*/ class JTableListener : public RowSorterListener
+/*protected*/ /*final*/ /*static*/ class JTableListener : public QObject, public RowSorterListener
 {
  Q_OBJECT
+  Q_INTERFACES(RowSorterListener)
     /*private*/ /*final*/ JTable* table;
     /*private*/ /*final*/ JmriJTablePersistenceManager* manager;
     /*private*/ QTimer* delay = NULL;
  Logger* log;
+ QObject* self() {return (QObject*)this;}
+
 public:
     /*public*/ JTableListener(JTable* table, JmriJTablePersistenceManager* manager);
 #if 1

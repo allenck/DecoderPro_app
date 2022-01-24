@@ -109,8 +109,8 @@ SignalHeadSignalMastTest::SignalHeadSignalMastTest(QObject *parent) : QObject(pa
             Assert::fail("should have thrown exception", __FILE__, __LINE__);
         } catch (IllegalArgumentException e1) {
             JUnitAppender::assertErrorMessage("Did not find signal definition: notanaspect", __FILE__, __LINE__);
-        } catch (Exception e2) {
-            Assert::fail("wrong exception: " + e2.getMessage(), __FILE__, __LINE__);
+        } catch (Exception* e2) {
+            Assert::fail("wrong exception: " + e2->getMessage(), __FILE__, __LINE__);
         }
     }
 
@@ -151,8 +151,8 @@ SignalHeadSignalMastTest::SignalHeadSignalMastTest(QObject *parent) : QObject(pa
             Assert::fail("should have thrown exception", __FILE__, __LINE__);
         } catch (IllegalArgumentException e1) {
             JUnitAppender::assertWarnMessage("attempting to set invalid aspect: Not An Aspect, I Hope on mast: user");
-        } catch (Exception e2) {
-            Assert::fail("wrong exception: " + e2.getMessage(), __FILE__, __LINE__);
+        } catch (Exception* e2) {
+            Assert::fail("wrong exception: " + e2->getMessage(), __FILE__, __LINE__);
         }
 
         Assert::assertEquals("check clear", "Clear", s->getAspect(), __FILE__, __LINE__); // unchanged after failed request

@@ -9,7 +9,7 @@
 #include "route.h"
 #include "routelocation.h"
 #include <QMessageBox>
-
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -56,7 +56,7 @@ namespace Operations
           }
       }
       writeFile(defaultOperationsFilename());
-  } catch (Exception e) {
+  } catch (Exception* e) {
       log->error("Exception while writing the new CSV operations file, may not be complete: " /*+ e*/);
   }
  }
@@ -66,7 +66,7 @@ namespace Operations
          log->debug(tr("writeFile %1").arg(name));
      }
      // This is taken in large part from "Java and XML" page 368
-     QFile* file = findFile(name);
+     QFile* file = findFile(name)->toQfile();
      if (file == NULL) {
          file = new QFile(name);
      }
@@ -84,7 +84,7 @@ namespace Operations
      stream->setCodec("UTF-8");
      fileOut = new PrintWriter(stream);
 //         true); // NOI18N
-//     } catch (IOException e) {
+//     } catch (IOException* e) {
 //         log->error("Can not open export cars CSV file: " + file.getName());
 //         return;
 //     }
@@ -102,7 +102,7 @@ namespace Operations
 
      int count = 0;
 
-     foreach (Train* train, TrainManager::instance()->getTrainsByTimeList()) {
+     foreach (Train* train, ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainsByTimeList()) {
          if (!train->isBuildEnabled())
              continue;
          count++;
@@ -127,7 +127,7 @@ namespace Operations
              del + tr("Attributes");
      fileOut->println(header);
 
-     foreach (Train* train, TrainManager::instance()->getTrainsByTimeList()) {
+     foreach (Train* train, ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainsByTimeList()) {
          if (!train->isBuildEnabled())
              continue;
 

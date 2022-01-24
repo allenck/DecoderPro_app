@@ -3,9 +3,10 @@
 
 #include "operationsframe.h"
 #include "appslib_global.h"
+#include "propertychangelistener.h"
 
 class QLabel;
-class QPushButton;
+class JButton;
 class QRadioButton;
 class QSortFilterProxyModel;
 namespace Operations
@@ -18,9 +19,10 @@ namespace Operations
  class TrainManager;
  class LocationManager;
  class TrainsTableModel;
- class APPSLIBSHARED_EXPORT TrainsTableFrame : public OperationsFrame
+ class APPSLIBSHARED_EXPORT TrainsTableFrame : public OperationsFrame, public PropertyChangeListener
  {
   Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  public:
   TrainsTableFrame(QWidget* parent = 0);
   /*public*/ static /*final*/ QString MOVE;//= Bundle.getMessage("Move");
@@ -28,14 +30,15 @@ namespace Operations
   /*public*/ static /*final*/ QString RESET;//= Bundle.getMessage("Reset");
   /*public*/ static /*final*/ QString CONDUCTOR;//= Bundle.getMessage("Conductor");
   /*public*/ QList<Train*> getSortByList();
-  /*public*/ void dispose();
-  /*public*/ QString getClassName();
+  /*public*/ void dispose() override;
+  /*public*/ QString getClassName() override;
+  QObject* self() override {return (QObject*)this; }
 
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
-  /*public*/ void buttonActionPerformed(QWidget* ae);
-  /*public*/ void checkBoxActionPerformed(QWidget* ae);
-  /*public*/ void radioButtonActionPerformed(QWidget* ae);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
+  /*public*/ void buttonActionPerformed(QWidget* ae) override;
+  /*public*/ void checkBoxActionPerformed(QWidget* ae) override;
+  /*public*/ void radioButtonActionPerformed(QWidget* ae) override;
 
 
  private:
@@ -65,14 +68,14 @@ namespace Operations
   QRadioButton* conductorRB;//= new JRadioButton(CONDUCTOR);
 
   // major buttons
-  QPushButton* addButton;//= new JButton(tr("Add"));
-  QPushButton* buildButton;//= new JButton(tr("Build"));
-  QPushButton* printButton;//= new JButton(tr("Print"));
-  QPushButton* openFileButton;//= new JButton(tr("OpenFile"));
-  QPushButton* runFileButton;//= new JButton(tr("RunFile"));
-  QPushButton* switchListsButton;//= new JButton(tr("SwitchLists"));
-  QPushButton* terminateButton;//= new JButton(tr("Terminate"));
-  QPushButton* saveButton;//= new JButton(tr("SaveBuilds"));
+  JButton* addButton;//= new JButton(tr("Add"));
+  JButton* buildButton;//= new JButton(tr("Build"));
+  JButton* printButton;//= new JButton(tr("Print"));
+  JButton* openFileButton;//= new JButton(tr("OpenFile"));
+  JButton* runFileButton;//= new JButton(tr("RunFile"));
+  JButton* switchListsButton;//= new JButton(tr("SwitchLists"));
+  JButton* terminateButton;//= new JButton(tr("Terminate"));
+  JButton* saveButton;//= new JButton(tr("SaveBuilds"));
 
   // check boxes
   QCheckBox* buildMsgBox;//= new JCheckBox(tr("BuildMessages"));
@@ -94,8 +97,8 @@ namespace Operations
 
  protected:
   /*protected*/ QString getSortBy();
-  /*protected*/ void handleModified();
-  /*protected*/ void storeValues();
+  /*protected*/ void handleModified()override;
+  /*protected*/ void storeValues()override;
 
  friend class PrintTrainsAction;
  };

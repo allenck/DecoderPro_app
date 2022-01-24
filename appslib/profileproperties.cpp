@@ -40,7 +40,7 @@ ProfileProperties::ProfileProperties(File* path, QObject* parent) : AuxiliaryPro
     try {
         QStringList keys = JmriPreferencesProvider::getPreferences(path, NULL, shared)->node(Profile::PROFILE)->keys();
         return QList<QString>(keys);
-    } catch (BackingStoreException ex) {
+    } catch (BackingStoreException* ex) {
         log->error("Unable to read properties.", ex);
         return QList<QString>();
     }

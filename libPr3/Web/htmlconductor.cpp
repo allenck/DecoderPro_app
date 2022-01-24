@@ -10,6 +10,7 @@
 #include "location.h"
 #include "enginemanager.h"
 #include "stringescapeutils.h"
+#include "instancemanager.h"
 
 using namespace Operations;
 /**
@@ -20,12 +21,12 @@ using namespace Operations;
 
 /*private*/ /*final*/ /*static*/ Logger* HtmlConductor::log = LoggerFactory::getLogger("HtmlConductor");
 
-/*public*/ HtmlConductor::HtmlConductor(QLocale locale, Operations::Train* train, QObject* parent) throw (IOException): HtmlTrainCommon(locale, train, parent){
+/*public*/ HtmlConductor::HtmlConductor(QLocale locale, Operations::Train* train, QObject* parent) /*throw (IOException)*/: HtmlTrainCommon(locale, train, parent){
     //super(locale, train);
     this->resourcePrefix = "Conductor";  // NOI18N
 }
 #if 1
-/*public*/ QString HtmlConductor::getLocation() throw (IOException)
+/*public*/ QString HtmlConductor::getLocation() /*throw (IOException)*/
 {
  Operations::RouteLocation* location = train->getCurrentLocation();
  if (location == NULL)
@@ -44,8 +45,8 @@ using namespace Operations;
              QString::number(train->getStatusCode()));
     }
 
-    QList<Engine*>* engineList = EngineManager::instance()->getByTrainBlockingList(train);
-    QList<Car*>* carList = CarManager::instance()->getByTrainDestinationList(train);
+    QList<Engine*>* engineList = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"))->getByTrainBlockingList(train);
+    QList<Car*>* carList = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getByTrainDestinationList(train);
     log->debug(tr("Train has %1 cars assigned to it").arg(carList->size()));
 
     QString pickups = performWork(true, false); // pickup=true, local=false
@@ -133,7 +134,7 @@ using namespace Operations;
 
 /*private*/ QString HtmlConductor::getLocationComments()
 {
- QList<Car*>* carList = CarManager::instance()->getByTrainDestinationList(train);
+ QList<Car*>* carList = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getByTrainDestinationList(train);
  QString builder;// = new StringBuilder();
  RouteLocation* routeLocation = train->getCurrentLocation();
  bool work = isThereWorkAtLocation(train, routeLocation->getLocation());
@@ -256,8 +257,8 @@ using namespace Operations;
 /*private*/ QString HtmlConductor::pickupCars() {
     QString builder;// = new StringBuilder();
     RouteLocation* location = train->getCurrentLocation();
-    QList<Car*>* carList = CarManager::instance()->getByTrainDestinationList(train);
-    QList<Track*> tracks = location->getLocation()->getTrackByNameList(NULL);
+    QList<Car*>* carList = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getByTrainDestinationList(train);
+    QList<Track*> tracks = location->getLocation()->getTracksByNameList(NULL);
     QStringList trackNames = QStringList();
     QStringList pickedUp = QStringList();
     this->clearUtilityCarTypes();
@@ -296,8 +297,8 @@ using namespace Operations;
 /*private*/ QString HtmlConductor::dropCars(bool local) {
     QString builder;// = new StringBuilder();
     Operations::RouteLocation* location = train->getCurrentLocation();
-    QList<Operations::Car*>* carList = Operations::CarManager::instance()->getByTrainDestinationList(train);
-    QList<Operations::Track*> tracks = location->getLocation()->getTrackByNameList(NULL);
+    QList<Operations::Car*>* carList = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->getByTrainDestinationList(train);
+    QList<Operations::Track*> tracks = location->getLocation()->getTracksByNameList(NULL);
     QStringList trackNames = QStringList();
     QStringList dropped = QStringList();
     for (Operations::Track* track : tracks) {

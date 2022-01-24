@@ -1,5 +1,4 @@
 #include "locationcopyaction.h"
-#include "locationcopyframe.h"
 
 namespace Operations
 {
@@ -17,13 +16,13 @@ namespace Operations
  }
 
 
- /*public*/ void LocationCopyAction::actionPerformed(ActionEvent* /*e*/)
+ /*public*/ void LocationCopyAction::actionPerformed(JActionEvent* /*e*/)
  {
      // create a copy track frame
      if (f == NULL || !f->isVisible()) {
          f = new LocationCopyFrame();
      }
-     //f.setExtendedState(Frame.NORMAL);
+     f->setExtendedState(JFrame::NORMAL);
      f->setVisible(true);	// this also brings the frame into focus
  }
 }

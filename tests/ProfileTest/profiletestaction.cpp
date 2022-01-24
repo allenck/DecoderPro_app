@@ -38,9 +38,9 @@ void ProfileTestAction::actionPerformed()
         << "testCompareTo";
         JUnitUtil::runTests(pt, testList);
     }
-    catch (AssertionError ex)
+    catch (AssertionError* ex)
     {
-        JOptionPane::showMessageDialog(nullptr, ex.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
+        JOptionPane::showMessageDialog(nullptr, ex->getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
     }
 }
 Logger* ProfileTestAction::log = LoggerFactory::getLogger("ProfileTestAction");

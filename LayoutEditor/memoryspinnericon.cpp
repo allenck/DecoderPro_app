@@ -209,7 +209,7 @@ MSIActionListener::MSIActionListener(MemorySpinnerIcon *parent)
  this->parent = parent;
 }
 
-/*public*/ void MSIActionListener::actionPerformed(ActionEvent* /*a*/) {
+/*public*/ void MSIActionListener::actionPerformed(JActionEvent* /*a*/) {
     parent->editMemory();
 }
 
@@ -228,7 +228,7 @@ MSIActionListener::MSIActionListener(MemorySpinnerIcon *parent)
     if (v.canConvert<QString>()) {
         try {
             num =v.toInt();
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException* e) {
             return;
         }
     } else if (v.canConvert<int>()) {

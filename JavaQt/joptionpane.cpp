@@ -367,8 +367,8 @@
 /*public*/ /*static*/ QString JOptionPane::showInputDialog(QWidget* parentComponent,
     QVariant message) //throws HeadlessException
 {
-    return showInputDialog(parentComponent, message, /*UIManager.getString*/QString(
-        "OptionPane.inputDialogTitle"/*, parentComponent*/), QUESTION_MESSAGE);
+    return showInputDialog(parentComponent, message, tr(
+        "Enter new name:"), QUESTION_MESSAGE);
 }
 
 /**
@@ -476,7 +476,7 @@
 //        getRootFrame() : parentComponent).getComponentOrientation());
 
     int style = styleFromMessageType(messageType);
-    JDialog* dialog = pane->createDialog(parentComponent, title, style);
+    JDialog* dialog = pane->createDialog(parentComponent, title, style,0);
 
     pane->selectInitialValue();
     dialog->show();
@@ -593,7 +593,7 @@
  * @see java.awt.GraphicsEnvironment#isHeadless
  */
 /*public*/ /*static*/ int JOptionPane::showConfirmDialog(QWidget* parentComponent,
-    QVariant message) throw (HeadlessException)
+    QVariant message) /*throw (HeadlessException)*/
 {
     return showConfirmDialog(parentComponent, message,
                              /*UIManager.getString*/("OptionPane.titleText"),
@@ -623,7 +623,7 @@
  */
 /*public*/ /*static*/ int JOptionPane::showConfirmDialog(QWidget* parentComponent,
     QVariant message, QString title, int optionType)
-    throw (HeadlessException) {
+    /*throw (HeadlessException)*/ {
     return showConfirmDialog(parentComponent, message, title, optionType,
                              QUESTION_MESSAGE);
 }
@@ -662,7 +662,7 @@
  */
 /*public*/ /*static*/ int JOptionPane::showConfirmDialog(QWidget* parentComponent,
     QVariant message, QString title, int optionType, int messageType)
-    throw (HeadlessException) {
+    /*throw (HeadlessException)*/ {
     return showConfirmDialog(parentComponent, message, title, optionType,
                             messageType, QIcon());
 }
@@ -700,7 +700,7 @@
  */
 /*public*/ /*static*/ int JOptionPane::showConfirmDialog(QWidget* parentComponent,
     QVariant message, QString title, int optionType,
-    int messageType, QIcon icon) throw (HeadlessException) {
+    int messageType, QIcon icon)  {
     return showOptionDialog(parentComponent, message, title, optionType,
                             messageType, icon, QList<QVariant>(), QVariant());
 }
@@ -766,22 +766,32 @@
 {
  JOptionPane* pane = new JOptionPane(message, messageType,
                                      optionType, icon,
-                                     options, initialValue);
+                                     options, initialValue,parentComponent);
 
  pane->setInitialValue(initialValue);
 //    pane->setComponentOrientation(((parentComponent == NULL) ?
 //        getRootFrame() : parentComponent).getComponentOrientation());
 
  int style = styleFromMessageType(messageType);
- JDialog* dialog = pane->createDialog(parentComponent, title, style);
-
+ JDialog* dialog = pane->createDialog(parentComponent, title, style, optionType);
+ QWidget* w = VPtr<QListWidget>::asPtr(message);
+ if(w)
+ {
+  QListWidget* list = w->findChild<QListWidget*>();
+  if(list)
+  {
+   connect(list, &QListWidget::doubleClicked, [=]{
+    dialog->accept();
+   });
+  }
+ }
  pane->selectInitialValue();
 #if 1
  //dialog->show();
  int rslt = dialog->exec();
  //dialog->/*dispose*/close();
-if(options.count() >0)
- return rslt;
+ if(options.count() >0)
+  return rslt;
  QVariant selectedValue = pane->getValue();
 
  if(selectedValue == QVariant())
@@ -841,7 +851,7 @@ if(options.count() >0)
 /*public*/ JDialog* JOptionPane::createDialog(QWidget* parentComponent, QString title)
     /*throw HeadlessException*/ {
     int style = styleFromMessageType(getMessageType());
-    return createDialog(parentComponent, title, style);
+    return createDialog(parentComponent, title, style, 0);
 }
 
 /**
@@ -874,7 +884,7 @@ if(options.count() >0)
 }
 #endif
 /*private*/ JDialog* JOptionPane::createDialog(QWidget* parentComponent, QString title,
-        int style)
+        int style, int optionType)
         //throws HeadlessException
 {
 
@@ -900,6 +910,7 @@ if(options.count() >0)
         dialog.addWindowListener(ownerShutdownListener);
     }
 #endif
+    setOptionType(optionType);
     dialog = new JDialog(window, title, true);
     initDialog(dialog, style, parentComponent);
     return dialog;
@@ -967,7 +978,6 @@ if(options.count() >0)
 //    });
 
     //addPropertyChangeListener(listener);
-
 }
 /*public*/ void JOptionPane::propertyChange(PropertyChangeEvent* event) {
     // Let the defaultCloseOperation handle the closing
@@ -1277,7 +1287,7 @@ if(options.count() >0)
             method.invoke(dialog, (Object[])NULL);
         }
     } catch (IllegalAccessException ex) {
-    } catch (IllegalArgumentException ex) {
+    } catch (IllegalArgumentException* ex) {
     } catch (InvocationTargetException ex) {
     }
 
@@ -1430,7 +1440,7 @@ if(options.count() >0)
             method.invoke(dialog, (Object[])NULL);
         }
     } catch (IllegalAccessException ex) {
-    } catch (IllegalArgumentException ex) {
+    } catch (IllegalArgumentException* ex) {
     } catch (InvocationTargetException ex) {
     }
 
@@ -1515,7 +1525,7 @@ if(options.count() >0)
                     method.invoke(iFrame, (Object[])NULL);
                 }
             } catch (IllegalAccessException ex) {
-            } catch (IllegalArgumentException ex) {
+            } catch (IllegalArgumentException* ex) {
             } catch (InvocationTargetException ex) {
             }
 
@@ -1604,7 +1614,7 @@ if(options.count() >0)
  * @see java.awt.GraphicsEnvironment#isHeadless
  */
 /*static*/ QWidget* JOptionPane::getWindowForComponent(QWidget* parentComponent)
-    throw (HeadlessException) {
+     {
 //    if (parentComponent == NULL)
 //        return getRootFrame();
 //    if (parentComponent instanceof Frame || parentComponent instanceof Dialog)
@@ -1814,7 +1824,7 @@ private static /*final*/ Object sharedFrameKey = JOptionPane.class;
 void JOptionPane::common(QVariant message, int messageType, int optionType, QIcon icon, QList<QVariant> options, QVariant initialValue)
 {
  setObjectName("JOptionPane");
- changeSupport = new PropertyChangeSupport(this);
+ changeSupport = new SwingPropertyChangeSupport(this, nullptr);
  wantsInput = false;
     this->message = message;
     this->options = options;
@@ -1916,7 +1926,7 @@ void JOptionPane::common(QVariant message, int messageType, int optionType, QIco
  */
 /*protected*/ void JOptionPane::firePropertyChange(QString propertyName,
                                   QVariant oldValue, QVariant newValue) {
-//    PropertyChangeSupport changeSupport;
+//    SwingPropertyChangeSupport changeSupport;
 //    synchronized (getObjectLock()) {
 //        changeSupport = this.changeSupport;
 //    }
@@ -2367,6 +2377,14 @@ QWidget* JOptionPane::layoutPane(JDialog* dialog)
  QLabel* iconLabel = new QLabel();
  iconLabel->setPixmap(icon.pixmap(64,64));
  ll->addWidget(iconLabel);
+ if(message.canConvert<QVariantList>())
+ {
+  QList<QVariant> list = message.toList();
+  QVBoxLayout* vl = new QVBoxLayout();
+  foreach(QVariant v, list)
+   vl->addWidget(new QLabel(v.toString()));
+  ll->addLayout(vl);
+ }
  if(VPtr<QWidget>::asPtr(message) != NULL)
  {
   ll->addWidget(VPtr<QWidget>::asPtr(message));
@@ -2380,6 +2398,7 @@ QWidget* JOptionPane::layoutPane(JDialog* dialog)
   if(options.count() == 1)
   {
    f = new JTextField();
+   f->setEditable(true);
    if(getInitialValue() != QVariant())
     f->setText(getInitialValue().toString());
    ll->addWidget(f);
@@ -2430,17 +2449,29 @@ QWidget* JOptionPane::layoutPane(JDialog* dialog)
   btnYes = new QPushButton(tr("Yes"));
   btnYes->setObjectName("btnYes");
   fl->addWidget(btnYes);
-  connect(btnYes, SIGNAL(clicked(bool)), this, SLOT(handleYes()));
+  //connect(btnYes, SIGNAL(clicked(bool)), this, SLOT(handleYes()));
+  connect(btnYes, &QPushButton::clicked, [=]{
+   handleYes();
+   value = btnYes->text();
+  });
   btnNo = new QPushButton(tr("No"));
   btnNo->setObjectName("btnNo");
   fl->addWidget(btnNo);
-  connect(btnNo, SIGNAL(clicked(bool)), this, SLOT(handleNo()));
+  //connect(btnNo, SIGNAL(clicked(bool)), this, SLOT(handleNo()));
+  connect(btnNo, &QPushButton::clicked, [=]{
+   handleNo();
+   value = btnNo->text();
+  });
   if(optionType == YES_NO_CANCEL_OPTION)
   {
    btnCancel = new QPushButton(tr("Cancel"));
    btnCancel->setObjectName("btnCancel");
    fl->addWidget(btnCancel);
-   connect(btnCancel, SIGNAL(clicked(bool)), this, SLOT(handleCancel()));
+   //connect(btnCancel, SIGNAL(clicked(bool)), this, SLOT(handleCancel()));
+   connect(btnCancel, &QPushButton::clicked, [=]{
+    handleCancel();
+    value = btnCancel->text();
+   });
   }
   pLayout->addLayout(fl);
  }
@@ -2462,7 +2493,7 @@ QWidget* JOptionPane::layoutPane(JDialog* dialog)
 /*public*/ void JOptionPane::setValidator(QValidator* val)
 {
  if(!getWantsInput())
-  throw IllegalArgumentException(tr("can't set validator if not wanting input"));
+  throw new IllegalArgumentException(tr("can't set validator if not wanting input"));
  f->setValidator(val);
 }
 
@@ -2695,7 +2726,7 @@ private static class ModalPrivilegedAction implements PrivilegedAction<Method> {
         Method method = NULL;
         try {
             method = clazz.getDeclaredMethod(methodName, (Class[])NULL);
-        } catch (NoSuchMethodException ex) {
+        } catch (NoSuchMethodException* ex) {
         }
         if (method != NULL) {
             method.setAccessible(true);

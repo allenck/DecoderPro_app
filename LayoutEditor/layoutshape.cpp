@@ -297,7 +297,7 @@
  * @return the maximum number of points
  */
 /*public*/ int LayoutShape::getMaxNumberPoints() {
-    return LayoutTrack::SHAPE_POINT_OFFSET_MAX - LayoutTrack::SHAPE_POINT_OFFSET_MIN + 1;
+ return HitPointType::NUM_SHAPE_POINTS;
 }
 
 /**
@@ -325,8 +325,8 @@
  *                      circles for hit testing
  * @return the hit point type for the point (or NONE)
  */
-/*protected*/ int LayoutShape::findHitPointType(/*@Nonnull*/ QPointF hitPoint, bool useRectangles) {
-    int result = LayoutTrack::NONE;  // assume point not on shape
+/*protected*/ HitPointType::TYPES LayoutShape::findHitPointType(/*@Nonnull*/ QPointF hitPoint, bool useRectangles) {
+    HitPointType::TYPES result = HitPointType::NONE;  // assume point not on shape
 
     if (useRectangles) {
         // rather than create rectangles for all the points below and
@@ -336,11 +336,11 @@
         QRectF r = layoutEditor->layoutEditorControlRectAt(hitPoint);
 
         if (r.contains(getCoordsCenter())) {
-            result = LayoutTrack::SHAPE_CENTER;
+            result = HitPointType::SHAPE_CENTER;
         }
         for (int idx = 0; idx < shapePoints.size(); idx++) {
             if (r.contains(shapePoints.at(idx)->getPoint())) {
-                result = LayoutTrack::SHAPE_POINT_OFFSET_MIN + idx;
+                result = (HitPointType::TYPES)HitPointType::shapePointIndexedValue(idx);
                 break;
             }
         }
@@ -350,22 +350,22 @@
             distance = MathUtil::distance(shapePoints.at(idx)->getPoint(), hitPoint);
             if (distance < minDistance) {
                 minDistance = distance;
-                result = LayoutTrack::SHAPE_POINT_OFFSET_MIN + idx;
+                result = (HitPointType::TYPES)HitPointType::shapePointIndexedValue(idx);
             }
         }
     }
     return result;
 }   // findHitPointType
 
-/*public*/ /*static*/ bool LayoutShape::isShapeHitPointType(int t) {
-    return ((t == LayoutTrack::SHAPE_CENTER)
-            || isShapePointOffsetHitPointType(t));
+/*public*/ /*static*/ bool LayoutShape::isShapeHitPointType(HitPointType::TYPES t) {
+    return ((t == HitPointType::SHAPE_CENTER)
+            || HitPointType::isShapePointOffsetHitPointType(t));
 }
 
-/*public*/ /*static*/ bool LayoutShape::isShapePointOffsetHitPointType(int t) {
-    return ((t >= LayoutTrack::SHAPE_POINT_OFFSET_MIN)
-            && (t <= LayoutTrack::SHAPE_POINT_OFFSET_MAX));
-}
+///*public*/ /*static*/ bool LayoutShape::isShapePointOffsetHitPointType(int t) {
+//    return ((t >= LayoutTrack::SHAPE_POINT_OFFSET_MIN)
+//            && (t <= LayoutTrack::SHAPE_POINT_OFFSET_MAX));
+//}
 
 /**
  * get coordinates of center point of shape
@@ -447,14 +447,14 @@
 
 
 //@Nonnull
-/*protected*/ QMenu* LayoutShape::showShapePopUp(/*@CheckForNull*/ QGraphicsSceneMouseEvent* mouseEvent, int hitPointType) {
+/*protected*/ QMenu* LayoutShape::showShapePopUp(/*@CheckForNull*/ QGraphicsSceneMouseEvent* mouseEvent, HitPointType::TYPES hitPointType) {
     if (popup != nullptr) {
         popup->clear();
     } else {
         popup = new QMenu();
     }
     if (layoutEditor->isEditable()) {
-        pointIndex = hitPointType - LayoutTrack::SHAPE_POINT_OFFSET_MIN;
+        int pointIndex = HitPointType::shapePointIndex(hitPointType);
 
         //JMenuItem jmi = popup.add(tr("MakeLabel", tr("LayoutShape")) + getName());
         QAction* jmi = popup->addAction(tr("Shape Name: %1 (select to change)").arg(getName()));
@@ -525,7 +525,7 @@
         popup->addMenu(shapeTypeMenu);
 #if 1
         // Add "Change Shape Type from {0} to..." menu
-        if (hitPointType == LayoutTrack::SHAPE_CENTER) {
+        if (hitPointType == HitPointType::SHAPE_CENTER) {
             QMenu* shapePointTypeMenu = new QMenu(tr("Change all shape point types to"));
             QAction* jmi = new QAction(tr("Straight"),this);
             shapePointTypeMenu->addAction(jmi);
@@ -564,7 +564,7 @@
                         ? LayoutShapePointType(LayoutShapePointType::eCurve).getName() : LayoutShapePointType(LayoutShapePointType::eStraight).getName();
                 QAction* jmi = new QAction(tr("Change shape point type from %1 to %2").arg(LayoutShapePointType::typeName(lsp->getType())).arg(otherPointTypeName),this);
                 popup->addAction(jmi);
-                jmi->setChecked(hitPointType != LayoutTrack::SHAPE_CENTER);
+                jmi->setChecked(hitPointType != HitPointType::SHAPE_CENTER);
 #if 0
                 jmi->addActionListener((java.awt.event.ActionEvent e3) ->
                 {
@@ -650,7 +650,7 @@
         connect(jmi, SIGNAL(triggered(bool)), this, SLOT(on_lineWidth()));
 
         popup->addSeparator();//new JSeparator(JSeparator.HORIZONTAL));
-        if (hitPointType == LayoutTrack::SHAPE_CENTER) {
+        if (hitPointType == HitPointType::SHAPE_CENTER) {
             jmi = new QAction(tr("Duplicate shape"),this);
             popup->addAction(jmi);
 //            {
@@ -804,7 +804,7 @@ void LayoutShape::on_changeName()
     for (LayoutShapePoint* lsp : ls->getPoints()) {
         lsp->setPoint(MathUtil::add(lsp->getPoint(), delta));
     }
-    layoutEditor->getLayoutShapes()->append(ls);
+    layoutEditor->getLayoutShapes().append(ls);
     layoutEditor->clearSelectionGroups();
     layoutEditor->amendSelectionGroup(ls);
 }

@@ -10,8 +10,10 @@
 #include <QTimer>
 #include "source.h"
 #include "jpanel.h"
+#include "instancemanagerautodefault.h"
+#include "vetoablechangesupport.h"
+#include "propertychangelistener.h"
 
-class VetoableChangeSupport;
 class DeletePair;
 class JDialog;
 class StackNXPanel;
@@ -65,13 +67,14 @@ public:
     }
 };
 
-class LIBPR3SHARED_EXPORT EntryExitPairs : public Manager
+class /*LIBPR3SHARED_EXPORT*/ EntryExitPairs :  public VetoableChangeSupport, public Manager, public InstanceManagerAutoDefault, public PropertyChangeListener
 {
-    Q_OBJECT
+  Q_OBJECT
+  Q_INTERFACES( Manager InstanceManagerAutoDefault PropertyChangeListener)
 public:
     explicit EntryExitPairs(QObject *parent = 0);
  ~EntryExitPairs() {}
- EntryExitPairs(const EntryExitPairs&) : Manager() {}
+ EntryExitPairs(const EntryExitPairs&) : VetoableChangeSupport(this) {}
     /*public*/ int routingMethod;// = LayoutBlockConnectivityTools.METRIC;
     //Method to get delay between issuing Turnout commands
     /*public*/ int turnoutSetDelay;// = 0;
@@ -123,24 +126,30 @@ public:
     /*public*/ void addNXSourcePoint(NamedBean* source);
     /*public*/ void addNXSourcePoint(NamedBean* source, LayoutEditor* panel);
     /*public*/ QObject* getEndPointLocation(NamedBean* source, LayoutEditor* panel);
-    /*public*/ int getXMLOrder() const;
-    /*public*/ NamedBean* getBySystemName(QString systemName) const override;
-    /*public*/ NamedBean* getByUserName(QString systemName) const override;
+    /*public*/ int getXMLOrder() const override;
+    /*public*/ NamedBean *getBySystemName(QString systemName)  override;
+    /*public*/ NamedBean* getByUserName(QString systemName)  override;
 //    /*public*/ NamedBean* getBeanBySystemName(QString systemName) const override;
 //    /*public*/ NamedBean* getBeanByUserName(QString userName)const override;
-    /*public*/ NamedBean* getNamedBean(QString name) const override;
+    /*public*/ NamedBean* getNamedBean(QString name)  override;
 //    /*public*/ char systemLetter() const;
-    /*public*/ SystemConnectionMemo* getMemo();
-    /*public*/ QString getSystemPrefix()const override;
-    /*public*/ char typeLetter() const override;
-    /*public*/ QString makeSystemName(QString s)const override;
+    /*public*/ SystemConnectionMemo* getMemo()  override;
+    /*public*/ QString getSystemPrefix() override;
+    /*public*/ QChar typeLetter()  override;
+    /*public*/ QString makeSystemName(QString s) override;
     /*public*/ int getObjectCount() override;
 //    /*public*/ QStringList getSystemNameArray() override;
     /*public*/ QStringList getSystemNameList() override;
-    /*public*/ void Register(NamedBean* n)const override;
-    /*public*/ void deregister(NamedBean* n)const override;
+    /*public*/ void Register(NamedBean* n) override;
+    /*public*/ void deregister(NamedBean* n) override;
     /*public*/ void setClearDownOption(int i);
     /*public*/ int getClearDownOption();
+    /*public*/ void setOverlapOption(int i);
+    /*public*/ int getOverlapOption();
+    /*public*/ void setMemoryOption(QString memoryName);
+    /*public*/ QString getMemoryOption();
+    /*public*/ void setMemoryClearDelay(int secs) ;
+    /*public*/ int getMemoryClearDelay();
     /*public*/ void dispose() override;
     /*public*/ QObjectList* getSourceList(LayoutEditor* panel);
     /*public*/ Source* getSourceForPoint(PointDetails* pd);
@@ -152,22 +161,22 @@ public:
     /*public*/ QList<LayoutEditor*> getSourcePanelList();
     /*public*/ void addNXDestination(NamedBean* source, NamedBean* destination, LayoutEditor* panel);
     /*public*/ void addNXDestination(NamedBean* source, NamedBean* destination, LayoutEditor* panel, QString id);
-    /*public*/ QObjectList* getDestinationList(QObject* obj, LayoutEditor* panel);
+    /*public*/ QObjectList* getDestinationList(NamedBean *obj, LayoutEditor* panel);
     /*public*/ void removeNXSensor(Sensor* sensor);
     /*public*/ bool deleteNxPair(NamedBean* sensor);
     /*public*/ bool deleteNxPair(NamedBean* source, NamedBean* exitSensor, LayoutEditor* panel);
-    /*public*/ bool isDestinationValid(QObject* source, QObject* dest, LayoutEditor* panel);
-    /*public*/ bool isUniDirection(QObject* source, LayoutEditor* panel, QObject* dest);
-    /*public*/ void setUniDirection(QObject* source, LayoutEditor* panel, QObject* dest, bool set);
-    /*public*/ bool canBeBiDirectional(QObject* source, LayoutEditor* panel, QObject* dest);
-    /*public*/ bool isEnabled(QObject* source, LayoutEditor* panel, QObject* dest);
-    /*public*/ void setEnabled(QObject* source, LayoutEditor* panel, QObject* dest, bool set);
-    /*public*/ void setEntryExitType(QObject* source, LayoutEditor* panel, QObject* dest, int set);
-    /*public*/ int getEntryExitType(QObject* source, LayoutEditor* panel, QObject* dest);
-    /*public*/ QString getUniqueId(QObject* source, LayoutEditor* panel, QObject* dest);
+    /*public*/ bool isDestinationValid(NamedBean *source, NamedBean* dest, LayoutEditor* panel);
+    /*public*/ bool isUniDirection(NamedBean *source, LayoutEditor* panel, NamedBean *dest);
+    /*public*/ void setUniDirection(NamedBean *source, LayoutEditor* panel, NamedBean *dest, bool set);
+    /*public*/ bool canBeBiDirectional(NamedBean *source, LayoutEditor* panel, NamedBean *dest);
+    /*public*/ bool isEnabled(NamedBean *source, LayoutEditor* panel, NamedBean *dest);
+    /*public*/ void setEnabled(NamedBean *source, LayoutEditor* panel, NamedBean *dest, bool set);
+    /*public*/ void setEntryExitType(NamedBean *source, LayoutEditor* panel, NamedBean *dest, int set);
+    /*public*/ int getEntryExitType(NamedBean* source, LayoutEditor* panel, NamedBean* dest);
+    /*public*/ QString getUniqueId(NamedBean *source, LayoutEditor* panel, NamedBean *dest);
     /*public*/ QStringList getEntryExitList();
-    /*public*/ bool isPathActive(QObject* sourceObj, QObject* destObj, LayoutEditor* panel);
-    /*public*/ void cancelInterlock(QObject* source, LayoutEditor* panel, QObject* dest);
+    /*public*/ bool isPathActive(NamedBean* sourceObj, NamedBean* destObj, LayoutEditor* panel);
+    /*public*/ void cancelInterlock(NamedBean *source, LayoutEditor* panel, NamedBean *dest);
 
     /*public*/ /*final*/ static int CANCELROUTE;// = 0;
     /*public*/ /*final*/ static int CLEARROUTE;// = 1;
@@ -176,15 +185,15 @@ public:
     /*/*public*/ static void flashSensor(PointDetails* pd);
     /*public*/ static void stopFlashSensor(PointDetails* pd);
     /*synchronized*/ /*public*/ void setNXButtonState(PointDetails* nxPoint, int state);
-    /*public*/ PointDetails* getPointDetails(QObject* obj, LayoutEditor* panel);
+    /*public*/ PointDetails* getPointDetails(NamedBean *obj, LayoutEditor* panel);
     PointDetails* getPointDetails(LayoutBlock* source, QList<LayoutBlock *> destination, LayoutEditor* panel);
     //No point in have multiple copies of what is the same thing.
     /*public*/ QString getPointAsString(NamedBean* obj, LayoutEditor* panel);
     /*public*/ void removePropertyChangeListener(PropertyChangeListener* list, NamedBean* obj, LayoutEditor* panel);
-//    java.beans.PropertyChangeSupport pcs = new java.beans.PropertyChangeSupport(this);
+//    java.beans.SwingPropertyChangeSupport pcs = new java.beans.SwingPropertyChangeSupport(this,this);
     /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) override;
     /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l) override;
-    /*public*/ void automaticallyDiscoverEntryExitPairs(LayoutEditor* editor, int interlockType) throw (JmriException);
+    /*public*/ void automaticallyDiscoverEntryExitPairs(LayoutEditor* editor, int interlockType) /*throw (JmriException)*/;
     /*public*/ int getSettingTimer();
     /*public*/ void setSettingTimer(int i);
     /*public*/ bool useDifferentColorWhenSetting();
@@ -197,30 +206,36 @@ public:
     /*public*/ bool isRouteStacked(DestinationPoints* dp, bool reverse);
     /*synchronized*/ /*public*/ void cancelStackedRoute(DestinationPoints* dp, bool reverse);
     /*public*/ QList<QString> layoutBlockSensors(/*@Nonnull*/ LayoutBlock* layoutBlock);
-    /*public*/ /*synchronized*/ void addVetoableChangeListener(VetoableChangeListener* l) override;
-    /*public*/ /*synchronized*/ void removeVetoableChangeListener(VetoableChangeListener* l);
-    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener);
-    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners() override;
-    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName) override;
-    /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener);
-    /*public*/ void addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
-    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners() override;
-    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName) override;
-    /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener);
-    /*public*/ void deleteBean(DestinationPoints* bean, QString property) throw (PropertyVetoException);
+//    /*public*/ /*synchronized*/ void addVetoableChangeListener(VetoableChangeListener* l) override;
+//    /*public*/ /*synchronized*/ void removeVetoableChangeListener(VetoableChangeListener* l) override;
+    /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) override;
+//    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners()const override;
+//    /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName) override;
+//    /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener)override;
+//    /*public*/ void addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener)override;
+//    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners() override;
+//    /*public*/ QVector<VetoableChangeListener*> getVetoableChangeListeners(QString propertyName) override;
+//    /*public*/ void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener)override;
+    /*public*/ void deleteBean(DestinationPoints* bean, QString property) /*throw (PropertyVetoException)*/;
     /*public*/ QString getBeanTypeHandled(bool plural)const override;
-    /*public*/ void addDataListener(/*ManagerDataListener*/QObject *e) override;
-    /*public*/ void removeDataListener(QObject *e) override;
+    /*public*/ void addDataListener(ManagerDataListener*e) override;
+    /*public*/ void removeDataListener(ManagerDataListener *e) override;
     /*public*/ QString getNamedBeanClass()const override;
+
+    QObject* self() override {return (QObject*)this;}
+
 signals:
     //void propertyChange(PropertyChangeEvent*);
 public slots:
-    void propertyChange(PropertyChangeEvent*);
+    void propertyChange(PropertyChangeEvent*)override;
     /*public*/ void propertyDestinationPropertyChange(PropertyChangeEvent* e);
-    /*public*/ void vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException);
+    /*public*/ void vetoableChange(PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/;
 
 private:
     int routeClearOption;// = PROMPTUSER;
+    int routeOverlapOption = PROMPTUSER;
+    QString memoryOption = "";     // Optional memory variable to receive allocation messages
+    int memoryClearDelay = 0;     // Delay before clearing memory, 0 for clearing disabled
     /*private*/ PointDetails* providePoint(NamedBean* source, LayoutEditor* panel);
     Logger* log;
     QObjectList destinationList;// = new ArrayList<Object>();
@@ -256,10 +271,9 @@ private:
     /*private*/ void deleteNxPairs();
     QHash<PointDetails*, Source*> nxpair;// = new HashMap<>();
     void createDeletePairList(NamedBean* sensor);
-    VetoableChangeSupport* vcs;// = new VetoableChangeSupport(this);
-    /*final*/ QVector</*ManagerDataListener*/QObject*> listeners;// = new QVector<ManagerDataListener</*DestinationPoints*/NamedBean*>*>();
+    /*final*/ QVector<ManagerDataListener*> listeners;// = new QVector<ManagerDataListener</*DestinationPoints*/NamedBean*>*>();
     static QList<PointDetails*>* pointDetails;// = new ArrayList<PointDetails>();
-    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+    //SwingPropertyChangeSupport* pcs;// = new SwingPropertyChangeSupport(this, nullptr);
     SystemConnectionMemo* memo = nullptr;
 
 private slots:

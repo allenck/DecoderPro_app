@@ -12,7 +12,7 @@
 #include "roster.h"
 #include "defaultmutabletreenode.h"
 #include "defaulttreemodel.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "flowlayout.h"
 #include <QToolButton>
 #include "createrostergroupaction.h"
@@ -79,7 +79,7 @@
  newWindowMenuItemAction = NULL;
  groupsMenu = NULL;
  allEntriesMenu = NULL;
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
  //this->scrollPane = new QScrollArea(/*getTree()*/);
 //    this.scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     setGroupsMenu(defaultMenu(GROUPS_MENU));
@@ -698,7 +698,7 @@ class TransferHandler extends javax.swing.TransferHandler {
                     }
                     Roster.writeRosterFile();
                     setSelectedRosterGroup(p.getLastPathComponent().toString());
-                } catch (Exception e) {
+                } catch (Exception* e) {
                     log.warn("Exception dragging RosterEntries onto RosterGroups: " + e);
                 }
             }
@@ -707,7 +707,7 @@ class TransferHandler extends javax.swing.TransferHandler {
                 JmriAbstractAction a = new CreateRosterGroupAction("Create From Selection", scrollPane.getTopLevelAncestor());
                 a.setParameter("RosterEntries", RosterEntrySelection.getRosterEntries(t));
                 a.actionPerformed(NULL);
-            } catch (Exception e) {
+            } catch (Exception* e) {
                 log.warn("Exception creating RosterGroups from selection: " + e);
             }
         }

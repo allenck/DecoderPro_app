@@ -12,8 +12,10 @@ public:
  ~PerformFileModelFactory() {}
  PerformFileModelFactory(const PerformFileModelFactory&) : AbstractFileModelFactory() {}
  /*public*/ /*Class<? extends StartupModel>*/QString getModelClass();
- /*public*/ StartupModel* newModel();
- /*public*/ QString getDescription();
+ /*public*/ StartupModel* newModel()override;
+ /*public*/ QString getDescription()override;
+
+ QObject* self() override {return (QObject*)this;}
 
 protected:
  /*protected*/ JFileChooser* setFileChooser();

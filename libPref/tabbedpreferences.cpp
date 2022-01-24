@@ -35,6 +35,7 @@
 #include "instancemanager.h"
 #include "webserverpreferencespanel.h"
 #include <QSplitter>
+#include "helputilpreferencespanel.h"
 
 //TabbedPreferences::TabbedPreferences(QObject *parent) :
 //    AppConfigBase(parent)
@@ -215,6 +216,7 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
   << QString( "jmri.profile.ProfilePreferencesPanel") << QString("apps.startup.StartupActionsPreferencesPanel")
   << QString("jmri.jmrix.loconet.LnTcpPreferencesPanel") << QString("jmri.server.json.JsonServerPreferencesPanel")
   << QString( "jmri.web.server.RailroadNamePreferencesPanel")   << QString("jmri.jmrit.logix.WarrantPreferencesPanel")
+  << QString("jmri.util.HelpUtilPreferencesPanel")
   ;
 
  // add preference panels registered with the Instance Manager
@@ -263,12 +265,12 @@ bool tabDetailsCompare(QObject* o1, QObject* o2)
        this->addPreferencesPanel(qobject_cast<PreferencesPanel*>(panel));
    }
   }
-  //catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-  catch(ClassNotFoundException e)
+  //catch (ClassNotFoundException* | InstantiationException | IllegalAccessException e) {
+  catch(ClassNotFoundException* e)
   {
     log->error("Unable to add preferences class (" + className + ")"/*, e*/);
   }
-  catch(InstantiationException e)
+  catch(InstantiationException* e)
   {
     log->error("Unable to add preferences class (" + className + ")"/*, e*/);
   }

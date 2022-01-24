@@ -4,6 +4,7 @@
 #include <QObject>
 #include "component.h"
 #include "droptargetlistener.h"
+#include "jpanel.h"
 
 class MyDropTargetListener;
 class Logger;

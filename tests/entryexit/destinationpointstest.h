@@ -47,7 +47,8 @@ class ReleaseUntil_DPT1 : public ReleaseUntil
  int state;
 public:
  ReleaseUntil_DPT1(DestinationPoints* dp, int state) {this->dp = dp; this->state = state;}
- bool ready() throw (Exception)
+ bool ready() /*throw (Exception)*/
+
  {
   return dp->getState() == state;
  }

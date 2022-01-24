@@ -33,7 +33,7 @@ private:
  /*private*/ /*final*/ QPushButton* scaleTrackDiagramCancel;
  /*private*/ void scaleTrackDiagramDonePressed(/*@Nonnull ActionEvent event*/);
  static Logger* log;
- /*private*/ void showEntryErrorDialog(QWidget* parentComponent, NumberFormatException e);
+ /*private*/ void showEntryErrorDialog(QWidget* parentComponent, NumberFormatException *e);
  /*private*/ void scaleTrackDiagramCancelPressed(/*ActionEvent event*/);
  friend class MyWindowListener;
 };

@@ -8,7 +8,7 @@
 class JTextField;
 class JmriJFrame;
 class QMenu;
-class ActionEvent;
+class JActionEvent;
 class Turnout;
 class Sensor;
 class Light;
@@ -52,7 +52,7 @@ public:
 
 public slots:
  /*public*/ void propertyChange(PropertyChangeEvent* e);
- /*public*/ void actionPerformed(ActionEvent* e);
+ /*public*/ void actionPerformed(JActionEvent* e);
  void mouseClicked(QMouseEvent* e = nullptr);
  /*public*/ void doMouseClicked(QMouseEvent* e);
  void mousePressed(QMouseEvent*);
@@ -132,8 +132,8 @@ protected:
  ///*protected*/ void paintComponent(QPainter* g);
 
 protected slots:
- /*protected*/ void cancelAddPressed(ActionEvent* e = nullptr);
- /*protected*/ void okAddPressed(ActionEvent* e = nullptr);
+ /*protected*/ void cancelAddPressed(JActionEvent* e = nullptr);
+ /*protected*/ void okAddPressed(JActionEvent* e = nullptr);
 
  friend class IconSwitch;
  friend class OkActionListener;
@@ -180,27 +180,31 @@ private:
  friend class BeanSwitch;
 };
 
-class OkActionListener : public ActionListener
+class OkActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  BeanSwitch* bs;
 public:
  OkActionListener(BeanSwitch* bs) {this->bs = bs;}
+ QObject* self() override {return (QObject*)this;}
 public slots:
- void actionPerformed()
+ void actionPerformed(JActionEvent */*e*/ = 0) override
  {
   bs->okAddPressed();
  }
 };
 
-class CancelActionListener : public ActionListener
+class CancelActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  BeanSwitch* bs;
 public:
  CancelActionListener(BeanSwitch* bs) {this->bs = bs;}
+ QObject* self() override {return (QObject*)this;}
 public slots:
- void actionPerformed()
+ void actionPerformed(JActionEvent */*e*/ = 0) override
  {
   bs->cancelAddPressed();
  }

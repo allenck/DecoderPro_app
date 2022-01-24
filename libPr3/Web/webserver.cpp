@@ -327,7 +327,7 @@ WebServer::~WebServer()
         )) {
             ((ContextHandlerCollection) this->server.getHandler()).addHandler(handler);
         }
-    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
+    } catch (InstantiationException* | IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
         log->error("Unable to register servlet", ex);
     }
 #endif
@@ -412,7 +412,7 @@ static /*private*/ class ServerThread extends Thread {
         try {
             server.start();
             server.join();
-        } catch (Exception ex) {
+        } catch (Exception* ex) {
             log->error("Exception starting Web Server", ex);
         }
     }
@@ -435,7 +435,7 @@ static /*private*/ class ServerThread extends Thread {
         new Thread(() -> {
             try {
                 server.stop();
-            } catch (Exception ex) {
+            } catch (Exception* ex) {
                 // Error without stack trace
                 log->warn("Error shutting down WebServer: {}", ex);
                 // Full stack trace

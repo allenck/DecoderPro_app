@@ -71,7 +71,7 @@ TripleTurnoutSignalHeadXml::TripleTurnoutSignalHeadXml(QObject *parent) :
 
     loadCommon(h, element);
 
-    static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(h);
+    qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->Register(h);
     return true;
 }
 

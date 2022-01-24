@@ -10,8 +10,8 @@ namespace Operations
   Q_OBJECT
  public:
   PrintOptionFrame(QWidget* parent = 0);
-  /*public*/ void initComponents();
-  /*public*/ QString getClassName();
+  /*public*/ void initComponents() override;
+  /*public*/ QString getClassName() override;
 
  };
 }

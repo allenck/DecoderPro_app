@@ -52,7 +52,7 @@
     COMMAND_STATION_PR3_ALONE   ("PR3 standalone programmer",   true,   false,  "LnThrottleManager",    "SlotManager");
     COMMAND_STATION_STANDALONE  ("Stand-alone LocoNet",         false,  false,  "LnThrottleManager",    "SlotManager");  // NOI18N
 #endif
- /*static*/ QList<LnCommandStationType*> values =  QList<LnCommandStationType*>()
+ /*static*/ QList<LnCommandStationType*> LnCommandStationType::values =  QList<LnCommandStationType*>()
  <<  new LnCommandStationType(LnCommandStationType::COMMAND_STATION_DCS100, "DCS100 (Chief)",  // NOI18N
   LnCommandStationType::ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
   LnCommandStationType::ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
@@ -185,7 +185,7 @@
   LnCommandStationType::LocoResetSupport::NO_LOCO_RESET_SUPPORT);
     // Note that the convention is that the first word (space-separated token) of the name is the
     // name of a configuration file for loconet.cmdstnconfig
-QList<LnCommandStationType*> LnCommandStationType::values = QList<LnCommandStationType*>();
+//QList<LnCommandStationType*> LnCommandStationType::values = QList<LnCommandStationType*>();
 
  LnCommandStationType::LnCommandStationType(LnCommandStationTypes type, QString name, ReadsFromServiceModeTrack canRead,
          ProgDepowersTrack progEndOp,
@@ -229,151 +229,151 @@ QList<LnCommandStationType*> LnCommandStationType::values = QList<LnCommandStati
  {
   if (p->name==(name)) return p;
  }
- throw IllegalArgumentException("argument value ["+name+"] not valid");
+ throw new IllegalArgumentException("argument value ["+name+"] not valid");
 }
 
 /*static*/ /*public*/ LnCommandStationType* LnCommandStationType::getByType(LnCommandStationTypes type)
 {
- if(values.size() == 0)
- {
-   values
-   <<  new LnCommandStationType(COMMAND_STATION_DCS100, "DCS100 (Chief)",  // NOI18N
-    LnCommandStationType::ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
-    LnCommandStationType::ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
-    "LnThrottleManager", "SlotManager",  // NOI18N
-    LnCommandStationType::IdleSupport::SUPPORTS_OPC_IDLE,
-    LnCommandStationType::MultiMeterSupport::NO_MULTIMETER_SUPPORT,
-    LnCommandStationType::LocoResetSupport::NO_LOCO_RESET_SUPPORT)
-   << new LnCommandStationType(COMMAND_STATION_DCS240, "DCS240 (Advanced Command Station)",  // NOI18N
-    LnCommandStationType::ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
-    LnCommandStationType::ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
-    "LnThrottleManager", "SlotManager",  // NOI18N
-    LnCommandStationType::IdleSupport::SUPPORTS_OPC_IDLE,
-    LnCommandStationType::MultiMeterSupport::SUPPORTS_MULTIMETER_FUNCTION,
-    LnCommandStationType::LocoResetSupport::SUPPORTS_LOCO_RESET_FUNCTION)
-   << new LnCommandStationType(COMMAND_STATION_DCS210, "DCS210 (Evolution Command Station)",  // NOI18N
-    LnCommandStationType::ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
-    LnCommandStationType::ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
-    "LnThrottleManager", "SlotManager",  // NOI18N
-    LnCommandStationType::IdleSupport::SUPPORTS_OPC_IDLE,
-    LnCommandStationType::MultiMeterSupport::SUPPORTS_MULTIMETER_FUNCTION,
-    LnCommandStationType::LocoResetSupport::SUPPORTS_LOCO_RESET_FUNCTION)
-   << new LnCommandStationType(COMMAND_STATION_DCS200, "DCS200",  // NOI18N
-    LnCommandStationType::ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
-    LnCommandStationType::ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
-    "LnThrottleManager", "SlotManager",  // NOI18N
-    LnCommandStationType::IdleSupport::SUPPORTS_OPC_IDLE,
-    LnCommandStationType::MultiMeterSupport::NO_MULTIMETER_SUPPORT,
-    LnCommandStationType::LocoResetSupport::NO_LOCO_RESET_SUPPORT)
-   << new LnCommandStationType(COMMAND_STATION_DCS050, "DCS50 (Zephyr)",  // NOI18N
-    LnCommandStationType::ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
-    LnCommandStationType::ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
-    "LnThrottleManager", "SlotManager",  // NOI18N
-    LnCommandStationType::IdleSupport::NO_OPC_IDLE_SUPPORT,
-    LnCommandStationType::MultiMeterSupport::NO_MULTIMETER_SUPPORT,
-    LnCommandStationType::LocoResetSupport::NO_LOCO_RESET_SUPPORT)
-   << new LnCommandStationType(COMMAND_STATION_DCS051,"DCS51 (Zephyr Xtra)",  // NOI18N
-    LnCommandStationType::ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
-    LnCommandStationType::ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
-    "LnThrottleManager", "SlotManager",  // NOI18N
-    LnCommandStationType::IdleSupport::NO_OPC_IDLE_SUPPORT,
-    LnCommandStationType::MultiMeterSupport::NO_MULTIMETER_SUPPORT,
-    LnCommandStationType::LocoResetSupport::NO_LOCO_RESET_SUPPORT)
-   << new LnCommandStationType(COMMAND_STATION_DCS052,"DCS52 (Zephyr Express)", // NOI18N
-    LnCommandStationType::ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
-    LnCommandStationType::ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
-    "LnThrottleManager", "SlotManager",  // NOI18N
-    LnCommandStationType::IdleSupport::NO_OPC_IDLE_SUPPORT,
-    LnCommandStationType::MultiMeterSupport::NO_MULTIMETER_SUPPORT,
-    LnCommandStationType::LocoResetSupport::SUPPORTS_LOCO_RESET_FUNCTION)
-   << new LnCommandStationType(COMMAND_STATION_DB150, "DB150 (Empire Builder)", // NOI18N
-    LnCommandStationType::ReadsFromServiceModeTrack::NO_SVC_MODE_READS,
-    LnCommandStationType::ProgDepowersTrack::TRACK_ALIVE_WHEN_PROGRAMMING,
-    "LnThrottleManager", "SlotManager",  // NOI18N
-    LnCommandStationType::IdleSupport::SUPPORTS_OPC_IDLE,
-    LnCommandStationType::MultiMeterSupport::NO_MULTIMETER_SUPPORT,
-    LnCommandStationType::LocoResetSupport::NO_LOCO_RESET_SUPPORT)
+// if(values.size() == 0)
+// {
+//   values
+//   <<  new LnCommandStationType(COMMAND_STATION_DCS100, "DCS100 (Chief)",  // NOI18N
+//    LnCommandStationType::ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
+//    LnCommandStationType::ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
+//    "LnThrottleManager", "SlotManager",  // NOI18N
+//    LnCommandStationType::IdleSupport::SUPPORTS_OPC_IDLE,
+//    LnCommandStationType::MultiMeterSupport::NO_MULTIMETER_SUPPORT,
+//    LnCommandStationType::LocoResetSupport::NO_LOCO_RESET_SUPPORT)
+//   << new LnCommandStationType(COMMAND_STATION_DCS240, "DCS240 (Advanced Command Station)",  // NOI18N
+//    LnCommandStationType::ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
+//    LnCommandStationType::ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
+//    "LnThrottleManager", "SlotManager",  // NOI18N
+//    LnCommandStationType::IdleSupport::SUPPORTS_OPC_IDLE,
+//    LnCommandStationType::MultiMeterSupport::SUPPORTS_MULTIMETER_FUNCTION,
+//    LnCommandStationType::LocoResetSupport::SUPPORTS_LOCO_RESET_FUNCTION)
+//   << new LnCommandStationType(COMMAND_STATION_DCS210, "DCS210 (Evolution Command Station)",  // NOI18N
+//    LnCommandStationType::ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
+//    LnCommandStationType::ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
+//    "LnThrottleManager", "SlotManager",  // NOI18N
+//    LnCommandStationType::IdleSupport::SUPPORTS_OPC_IDLE,
+//    LnCommandStationType::MultiMeterSupport::SUPPORTS_MULTIMETER_FUNCTION,
+//    LnCommandStationType::LocoResetSupport::SUPPORTS_LOCO_RESET_FUNCTION)
+//   << new LnCommandStationType(COMMAND_STATION_DCS200, "DCS200",  // NOI18N
+//    LnCommandStationType::ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
+//    LnCommandStationType::ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
+//    "LnThrottleManager", "SlotManager",  // NOI18N
+//    LnCommandStationType::IdleSupport::SUPPORTS_OPC_IDLE,
+//    LnCommandStationType::MultiMeterSupport::NO_MULTIMETER_SUPPORT,
+//    LnCommandStationType::LocoResetSupport::NO_LOCO_RESET_SUPPORT)
+//   << new LnCommandStationType(COMMAND_STATION_DCS050, "DCS50 (Zephyr)",  // NOI18N
+//    LnCommandStationType::ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
+//    LnCommandStationType::ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
+//    "LnThrottleManager", "SlotManager",  // NOI18N
+//    LnCommandStationType::IdleSupport::NO_OPC_IDLE_SUPPORT,
+//    LnCommandStationType::MultiMeterSupport::NO_MULTIMETER_SUPPORT,
+//    LnCommandStationType::LocoResetSupport::NO_LOCO_RESET_SUPPORT)
+//   << new LnCommandStationType(COMMAND_STATION_DCS051,"DCS51 (Zephyr Xtra)",  // NOI18N
+//    LnCommandStationType::ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
+//    LnCommandStationType::ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
+//    "LnThrottleManager", "SlotManager",  // NOI18N
+//    LnCommandStationType::IdleSupport::NO_OPC_IDLE_SUPPORT,
+//    LnCommandStationType::MultiMeterSupport::NO_MULTIMETER_SUPPORT,
+//    LnCommandStationType::LocoResetSupport::NO_LOCO_RESET_SUPPORT)
+//   << new LnCommandStationType(COMMAND_STATION_DCS052,"DCS52 (Zephyr Express)", // NOI18N
+//    LnCommandStationType::ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
+//    LnCommandStationType::ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
+//    "LnThrottleManager", "SlotManager",  // NOI18N
+//    LnCommandStationType::IdleSupport::NO_OPC_IDLE_SUPPORT,
+//    LnCommandStationType::MultiMeterSupport::NO_MULTIMETER_SUPPORT,
+//    LnCommandStationType::LocoResetSupport::SUPPORTS_LOCO_RESET_FUNCTION)
+//   << new LnCommandStationType(COMMAND_STATION_DB150, "DB150 (Empire Builder)", // NOI18N
+//    LnCommandStationType::ReadsFromServiceModeTrack::NO_SVC_MODE_READS,
+//    LnCommandStationType::ProgDepowersTrack::TRACK_ALIVE_WHEN_PROGRAMMING,
+//    "LnThrottleManager", "SlotManager",  // NOI18N
+//    LnCommandStationType::IdleSupport::SUPPORTS_OPC_IDLE,
+//    LnCommandStationType::MultiMeterSupport::NO_MULTIMETER_SUPPORT,
+//    LnCommandStationType::LocoResetSupport::NO_LOCO_RESET_SUPPORT)
 
-  // the following command stations are assumed to not support "OPC_IDLE"
-   << new LnCommandStationType(COMMAND_STATION_LBPS,"LocoBuffer (PS)",  // NOI18N
-    LnCommandStationType::ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
-    LnCommandStationType::ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
-    "LnThrottleManager", "SlotManager",  // NOI18N
-    LnCommandStationType::IdleSupport::NO_OPC_IDLE_SUPPORT,
-    LnCommandStationType::MultiMeterSupport::NO_MULTIMETER_SUPPORT,
-    LnCommandStationType::LocoResetSupport::NO_LOCO_RESET_SUPPORT)
-   << new LnCommandStationType(COMMAND_STATION_MM,"Mix-Master",  // NOI18N
-    LnCommandStationType::ReadsFromServiceModeTrack::NO_SVC_MODE_READS,
-    LnCommandStationType::ProgDepowersTrack::TRACK_ALIVE_WHEN_PROGRAMMING,
-    "LnThrottleManager", "SlotManager",  // NOI18N
-    LnCommandStationType::IdleSupport::NO_OPC_IDLE_SUPPORT,
-    LnCommandStationType::MultiMeterSupport::NO_MULTIMETER_SUPPORT,
-    LnCommandStationType::LocoResetSupport::NO_LOCO_RESET_SUPPORT)
-   << new LnCommandStationType(COMMAND_STATION_IBX_TYPE_1,"Intellibox-I",  // NOI18N
-    LnCommandStationType::ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
-    LnCommandStationType::ProgDepowersTrack::TRACK_ALIVE_WHEN_PROGRAMMING,
-    "Ib1ThrottleManager", "SlotManager",  // NOI18N
-    LnCommandStationType::IdleSupport::NO_OPC_IDLE_SUPPORT,
-    LnCommandStationType::MultiMeterSupport::NO_MULTIMETER_SUPPORT,
-    LnCommandStationType::LocoResetSupport::NO_LOCO_RESET_SUPPORT)
-   << new LnCommandStationType(COMMAND_STATION_IBX_TYPE_2,"Intellibox-II",  // NOI18N
-    LnCommandStationType::ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
-    LnCommandStationType::ProgDepowersTrack::TRACK_ALIVE_WHEN_PROGRAMMING,
-    "Ib2ThrottleManager", "UhlenbrockSlotManager",  // NOI18N
-    LnCommandStationType::IdleSupport::NO_OPC_IDLE_SUPPORT,
-    LnCommandStationType::MultiMeterSupport::NO_MULTIMETER_SUPPORT,
-    LnCommandStationType::LocoResetSupport::NO_LOCO_RESET_SUPPORT)
+//  // the following command stations are assumed to not support "OPC_IDLE"
+//   << new LnCommandStationType(COMMAND_STATION_LBPS,"LocoBuffer (PS)",  // NOI18N
+//    LnCommandStationType::ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
+//    LnCommandStationType::ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
+//    "LnThrottleManager", "SlotManager",  // NOI18N
+//    LnCommandStationType::IdleSupport::NO_OPC_IDLE_SUPPORT,
+//    LnCommandStationType::MultiMeterSupport::NO_MULTIMETER_SUPPORT,
+//    LnCommandStationType::LocoResetSupport::NO_LOCO_RESET_SUPPORT)
+//   << new LnCommandStationType(COMMAND_STATION_MM,"Mix-Master",  // NOI18N
+//    LnCommandStationType::ReadsFromServiceModeTrack::NO_SVC_MODE_READS,
+//    LnCommandStationType::ProgDepowersTrack::TRACK_ALIVE_WHEN_PROGRAMMING,
+//    "LnThrottleManager", "SlotManager",  // NOI18N
+//    LnCommandStationType::IdleSupport::NO_OPC_IDLE_SUPPORT,
+//    LnCommandStationType::MultiMeterSupport::NO_MULTIMETER_SUPPORT,
+//    LnCommandStationType::LocoResetSupport::NO_LOCO_RESET_SUPPORT)
+//   << new LnCommandStationType(COMMAND_STATION_IBX_TYPE_1,"Intellibox-I",  // NOI18N
+//    LnCommandStationType::ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
+//    LnCommandStationType::ProgDepowersTrack::TRACK_ALIVE_WHEN_PROGRAMMING,
+//    "Ib1ThrottleManager", "SlotManager",  // NOI18N
+//    LnCommandStationType::IdleSupport::NO_OPC_IDLE_SUPPORT,
+//    LnCommandStationType::MultiMeterSupport::NO_MULTIMETER_SUPPORT,
+//    LnCommandStationType::LocoResetSupport::NO_LOCO_RESET_SUPPORT)
+//   << new LnCommandStationType(COMMAND_STATION_IBX_TYPE_2,"Intellibox-II",  // NOI18N
+//    LnCommandStationType::ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
+//    LnCommandStationType::ProgDepowersTrack::TRACK_ALIVE_WHEN_PROGRAMMING,
+//    "Ib2ThrottleManager", "UhlenbrockSlotManager",  // NOI18N
+//    LnCommandStationType::IdleSupport::NO_OPC_IDLE_SUPPORT,
+//    LnCommandStationType::MultiMeterSupport::NO_MULTIMETER_SUPPORT,
+//    LnCommandStationType::LocoResetSupport::NO_LOCO_RESET_SUPPORT)
 
-   // the following command stations are known to not support "OPC_IDLE"
-   << new LnCommandStationType(COMMAND_STATION_PR3_ALONE,"PR3 standalone programmer",  // NOI18N
-    ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
-    ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
-    "LnThrottleManager", "SlotManager",  // NOI18N
-    IdleSupport::NO_OPC_IDLE_SUPPORT,
-    MultiMeterSupport::NO_MULTIMETER_SUPPORT,
-    LocoResetSupport::NO_LOCO_RESET_SUPPORT)
-   << new LnCommandStationType(COMMAND_STATION_PR2_ALONE,"PR2 standalone programmer",  // NOI18N
-    ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
-    ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
-    "LnThrottleManager", "SlotManager",  // NOI18N
-    IdleSupport::NO_OPC_IDLE_SUPPORT,
-    MultiMeterSupport::NO_MULTIMETER_SUPPORT,
-    LocoResetSupport::NO_LOCO_RESET_SUPPORT)
-    << new LnCommandStationType(COMMAND_STATION_STANDALONE, "Stand-alone LocoNet",  // NOI18N
-            ReadsFromServiceModeTrack::NO_SVC_MODE_READS,
-            ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
-            "LnThrottleManager", "SlotManager",  // NOI18N
-            IdleSupport::NO_OPC_IDLE_SUPPORT,
-            MultiMeterSupport::NO_MULTIMETER_SUPPORT,
-            LocoResetSupport::NO_LOCO_RESET_SUPPORT)
-    << new LnCommandStationType(COMMAND_STATION_PR4_ALONE,"PR4 standalone programmer",  // NOI18N
-            ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
-            ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
-            "LnThrottleManager", "SlotManager",  // NOI18N
-            IdleSupport::NO_OPC_IDLE_SUPPORT,
-            MultiMeterSupport::NO_MULTIMETER_SUPPORT,
-            LocoResetSupport::NO_LOCO_RESET_SUPPORT)
-    << new LnCommandStationType(COMMAND_STATION_USB_DCS240_ALONE, "DCS240 USB interface as standalone programmer", // NOI18N
-            ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
-            ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
-            "LnThrottleManager", "SlotManager",  // NOI18N
-            IdleSupport::NO_OPC_IDLE_SUPPORT,
-            MultiMeterSupport::NO_MULTIMETER_SUPPORT,
-            LocoResetSupport::NO_LOCO_RESET_SUPPORT)
-    << new LnCommandStationType(COMMAND_STATION_USB_DCS52_ALONE,"DCS52 USB interface as standalone programmer",  // NOI18N
-            ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
-            ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
-            "LnThrottleManager", "SlotManager",
-            IdleSupport::NO_OPC_IDLE_SUPPORT, // NOI18N
-            MultiMeterSupport::NO_MULTIMETER_SUPPORT,
-            LocoResetSupport::NO_LOCO_RESET_SUPPORT);
+//   // the following command stations are known to not support "OPC_IDLE"
+//   << new LnCommandStationType(COMMAND_STATION_PR3_ALONE,"PR3 standalone programmer",  // NOI18N
+//    ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
+//    ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
+//    "LnThrottleManager", "SlotManager",  // NOI18N
+//    IdleSupport::NO_OPC_IDLE_SUPPORT,
+//    MultiMeterSupport::NO_MULTIMETER_SUPPORT,
+//    LocoResetSupport::NO_LOCO_RESET_SUPPORT)
+//   << new LnCommandStationType(COMMAND_STATION_PR2_ALONE,"PR2 standalone programmer",  // NOI18N
+//    ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
+//    ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
+//    "LnThrottleManager", "SlotManager",  // NOI18N
+//    IdleSupport::NO_OPC_IDLE_SUPPORT,
+//    MultiMeterSupport::NO_MULTIMETER_SUPPORT,
+//    LocoResetSupport::NO_LOCO_RESET_SUPPORT)
+//    << new LnCommandStationType(COMMAND_STATION_STANDALONE, "Stand-alone LocoNet",  // NOI18N
+//            ReadsFromServiceModeTrack::NO_SVC_MODE_READS,
+//            ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
+//            "LnThrottleManager", "SlotManager",  // NOI18N
+//            IdleSupport::NO_OPC_IDLE_SUPPORT,
+//            MultiMeterSupport::NO_MULTIMETER_SUPPORT,
+//            LocoResetSupport::NO_LOCO_RESET_SUPPORT)
+//    << new LnCommandStationType(COMMAND_STATION_PR4_ALONE,"PR4 standalone programmer",  // NOI18N
+//            ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
+//            ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
+//            "LnThrottleManager", "SlotManager",  // NOI18N
+//            IdleSupport::NO_OPC_IDLE_SUPPORT,
+//            MultiMeterSupport::NO_MULTIMETER_SUPPORT,
+//            LocoResetSupport::NO_LOCO_RESET_SUPPORT)
+//    << new LnCommandStationType(COMMAND_STATION_USB_DCS240_ALONE, "DCS240 USB interface as standalone programmer", // NOI18N
+//            ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
+//            ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
+//            "LnThrottleManager", "SlotManager",  // NOI18N
+//            IdleSupport::NO_OPC_IDLE_SUPPORT,
+//            MultiMeterSupport::NO_MULTIMETER_SUPPORT,
+//            LocoResetSupport::NO_LOCO_RESET_SUPPORT)
+//    << new LnCommandStationType(COMMAND_STATION_USB_DCS52_ALONE,"DCS52 USB interface as standalone programmer",  // NOI18N
+//            ReadsFromServiceModeTrack::CAN_READ_ON_SVC_TRACK,
+//            ProgDepowersTrack::TRACK_OFF_WHEN_PROGRAMMING,
+//            "LnThrottleManager", "SlotManager",
+//            IdleSupport::NO_OPC_IDLE_SUPPORT, // NOI18N
+//            MultiMeterSupport::NO_MULTIMETER_SUPPORT,
+//            LocoResetSupport::NO_LOCO_RESET_SUPPORT);
 
- }
+// }
  foreach (LnCommandStationType* p, values)
  {
   if (p->type==(type)) return p;
  }
- throw IllegalArgumentException("argument value ["+QString::number((int)type)+"] not valid");
+ throw new IllegalArgumentException("argument value ["+QString::number((int)type)+"] not valid");
 }
 /**
  * Get a new ThrottleManager of the right type for this command station.
@@ -399,9 +399,9 @@ QList<LnCommandStationType*> LnCommandStationType::values = QList<LnCommandStati
   return new LnThrottleManager(memo);
  }
  log->error(QString("Did not find a throttle ctor for %1").arg( name));
-//    } catch (ClassNotFoundException e1) {
+//    } catch (ClassNotFoundException* e1) {
 //        log->error("Could not find class for throttle manager from type {} in enum element {}", throttleClassName, name);
-//    } catch (InstantiationException e2) {
+//    } catch (InstantiationException* e2) {
 //        log->error("Could not create throttle manager object from type {} in enum element {}", throttleClassName, name, e2);
 //    } catch (IllegalAccessException e3) {
 //        log->error("Access error creating throttle manager object from type {} in enum element {}", throttleClassName, name, e3);
@@ -432,9 +432,9 @@ QList<LnCommandStationType*> LnCommandStationType::values = QList<LnCommandStati
   if(slotManagerClassName == "SlotManager")
    return new SlotManager(tc);
   log->error(QString("Did not find a slotmanager ctor for %1").arg(name));
-//    } catch (ClassNotFoundException e1) {
+//    } catch (ClassNotFoundException* e1) {
 //        log->error("Could not find class for slotmanager from type {} in enum element {}", slotManagerClassName, name);
-//    } catch (InstantiationException e2) {
+//    } catch (InstantiationException* e2) {
 //        log->error("Could not create slotmanager object from type {} in enum element {}", slotManagerClassName, name, e2);
 //    } catch (IllegalAccessException e3) {
 //        log->error("Access error creating slotmanager object from type {} in enum element {}", slotManagerClassName, name, e3);

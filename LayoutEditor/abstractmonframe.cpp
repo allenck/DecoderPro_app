@@ -75,7 +75,7 @@
     logFileChooser = new JFileChooser(FileUtil::getUserFilesPath());
 }
 
-/*public*/ void AbstractMonFrame::initComponents() throw (Exception)
+/*public*/ void AbstractMonFrame::initComponents() /*throw (Exception)*/
 {
 
     p = (UserPreferencesManager*) InstanceManager::getDefault("UserPreferencesManager");
@@ -410,7 +410,7 @@ void AMFWorker::process()
 
 }
 
-/*public*/ /*synchronized*/ void AbstractMonFrame::clearButtonActionPerformed(ActionEvent* e) {
+/*public*/ /*synchronized*/ void AbstractMonFrame::clearButtonActionPerformed(JActionEvent* e) {
     // clear the monitoring history
 //    synchronized( linesBuffer )
     {
@@ -419,19 +419,19 @@ void AMFWorker::process()
     }
 }
 
-/*public*/ /*synchronized*/ void AbstractMonFrame::startLogButtonActionPerformed(ActionEvent* e) {
+/*public*/ /*synchronized*/ void AbstractMonFrame::startLogButtonActionPerformed(JActionEvent* e) {
     // start logging by creating the stream
     if ( logStream==NULL) {  // successive clicks don't restart the file
         // start logging
         try {
 //            logStream = new PrintStream (new FileOutputStream(logFileChooser->getSelectedFile()));
-        } catch (Exception ex) {
-            log->error("exception "+ex.getMessage());
+        } catch (Exception* ex) {
+            log->error("exception "+ex->getMessage());
         }
     }
 }
 
-/*public*/ /*synchronized*/ void AbstractMonFrame::stopLogButtonActionPerformed(ActionEvent* e) {
+/*public*/ /*synchronized*/ void AbstractMonFrame::stopLogButtonActionPerformed(JActionEvent* e) {
     // stop logging by removing the stream
     if (logStream!=NULL) {
 //        synchronized (logStream)
@@ -443,7 +443,7 @@ void AMFWorker::process()
     }
 }
 
-/*public*/ void AbstractMonFrame::openFileChooserButtonActionPerformed(ActionEvent*e) {
+/*public*/ void AbstractMonFrame::openFileChooserButtonActionPerformed(JActionEvent*e) {
     // start at current file, show dialog
     int retVal = logFileChooser->showSaveDialog(this);
 
@@ -457,7 +457,7 @@ void AMFWorker::process()
     }
 }
 
-/*public*/ void AbstractMonFrame::enterButtonActionPerformed(ActionEvent* /*e*/) {
+/*public*/ void AbstractMonFrame::enterButtonActionPerformed(JActionEvent* /*e*/) {
     nextLine(entryField->text()+"\n", "");
 }
 

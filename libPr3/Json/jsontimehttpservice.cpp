@@ -15,7 +15,7 @@
 }
 #if 1
 //@Override
-/*public*/ QJsonValue JsonTimeHttpService::doGet(QString type, QString name, QLocale /*locale*/) throw (JsonException) {
+/*public*/ QJsonValue JsonTimeHttpService::doGet(QString type, QString name, QLocale /*locale*/) /*throw (JsonException)*/ {
     QJsonObject root = QJsonObject(); //this.mapper.createObjectNode();
     root.insert(JSON::TYPE, JSON::TIME);
     QJsonObject data = QJsonObject(); //root.putObject(DATA);
@@ -27,7 +27,7 @@
 }
 
 //@Override
-/*public*/ QJsonObject JsonTimeHttpService::doPost(QString type, QString name, QJsonObject data, QLocale locale) throw (JsonException) {
+/*public*/ QJsonObject JsonTimeHttpService::doPost(QString type, QString name, QJsonObject data, QLocale locale) /*throw (JsonException)*/ {
     try {
         if (data.value(JSON::TIME).isString()) {
             ((Timebase*)InstanceManager::getDefault("Timebase"))->setTime(QDateTime::fromString(data.value(JSON::TIME).toString(),Qt::ISODate));
@@ -39,13 +39,13 @@
             ((Timebase*)InstanceManager::getDefault("Timebase"))->setRun(data.value(JSON::STATE).toInt() == JSON::ON);
         }
     } catch (ParseException ex) {
-        throw JsonException(400, tr(/*locale,*/ "ErrorTimeFormat"));
+        throw new JsonException(400, tr(/*locale,*/ "ErrorTimeFormat"));
     }
     return this->doGet(type, name, locale).toObject();
 }
 
 //@Override
-/*public*/ QJsonValue JsonTimeHttpService::doGetList(QString type, QLocale locale) throw (JsonException) {
+/*public*/ QJsonValue JsonTimeHttpService::doGetList(QString type, QLocale locale) /*throw (JsonException)*/ {
     return this->doGet(type, "", locale);
 }
 #endif

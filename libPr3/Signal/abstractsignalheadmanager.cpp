@@ -2,15 +2,15 @@
 #include "signalhead.h"
 #include "abstractsignalhead.h"
 #include "instancemanager.h"
+#include "turnoutmanager.h"
 
-AbstractSignalHeadManager::AbstractSignalHeadManager(QObject *parent) :
-    SignalHeadManager(parent)
+AbstractSignalHeadManager::AbstractSignalHeadManager(InternalSystemConnectionMemo* memo, QObject *parent) :
+    AbstractManager(memo, parent)
 {
  setObjectName("AbstractSignalHeadManager");
  registerSelf();
  setProperty("JavaClassName", "jmri.managers.AbstractSignalHeadManager");
  // TODO: InstanceManager::turnoutManagerInstance()->addVetoableChangeListener(this);
-
 }
 /**
  * Abstract partial implementation of a SignalHeadManager.
@@ -32,40 +32,47 @@ AbstractSignalHeadManager::AbstractSignalHeadManager(QObject *parent) :
 //    //super();
 //}
 
+/*final*/ void AbstractSignalHeadManager::init(){
+    ((TurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->addVetoableChangeListener(this);
+}
+
 /*public*/ int AbstractSignalHeadManager::getXMLOrder() const{
     return Manager::SIGNALHEADS;
 }
 
-///*public*/ QString AbstractSignalHeadManager::getSystemPrefix() const { return "I"; }
-/*public*/ char AbstractSignalHeadManager::typeLetter() const { return 'H'; }
+/*public*/ QChar AbstractSignalHeadManager::typeLetter() { return 'H'; }
 
 /*public*/ SignalHead* AbstractSignalHeadManager::getSignalHead(QString name)
 {
- if (name==NULL || name.length()==0) { return NULL; }
- SignalHead* t = (SignalHead*)getByUserName(name);
- if (t!=NULL) return t;
+ if (name==NULL || name.trimmed().length()==0)
+ {
+  return NULL;
+ }
+ SignalHead* t = (SignalHead*)AbstractSignalHeadManager::getByUserName(name);
+ if (t!=NULL)
+  return t;
 
- return (SignalHead*)getBySystemName(name);
+ return (SignalHead*)AbstractSignalHeadManager::getBySystemName(name);
 }
 
 /** {@inheritDoc} */
 //@Override
 //@Nonnull
-/*public*/ QString AbstractSignalHeadManager::getBeanTypeHandled(bool plural) {
+/*public*/ QString AbstractSignalHeadManager::getBeanTypeHandled(bool plural) const {
     return tr(plural ? "SignalHeads" : "SignalHead");
 }
 #if 0
-/*public*/ SignalHead* AbstractSignalHeadManager::getBySystemName(QString name)
+/*public*/ SignalHead* AbstractSignalHeadManager::getBySystemName(QString name) const
 {
  return (SignalHead*)_tsys->value(name);
 }
 
-/*public*/ SignalHead* AbstractSignalHeadManager::getByUserName(QString key)
+/*public*/ SignalHead* AbstractSignalHeadManager::getByUserName(QString key) const
 {
  return (SignalHead*)_tuser->value(key);
 }
-#endif
-void AbstractSignalHeadManager::Register(NamedBean *s) const
+
+void AbstractSignalHeadManager::Register(NamedBean *s)
 {
  AbstractManager::Register(s);
 // emit newSignalHeadCreated((AbstractSignalHead*)s);
@@ -96,4 +103,11 @@ QCompleter* AbstractSignalHeadManager::getCompleter(QString text, bool bIncludeU
   }
  }
  return NULL;
+}
+
+
+#endif
+/*public*/ SystemConnectionMemo* AbstractSignalHeadManager::getMemo()
+{
+ throw new IllegalArgumentException();
 }

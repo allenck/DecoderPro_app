@@ -2,6 +2,9 @@
 #define EDITMANIFESTTEXTACTION_H
 
 #include "abstractaction.h"
+#include "editmanifesttextframe.h"
+#include <QPointer>
+
 namespace Operations
 {
  class EditManifestTextFrame;
@@ -12,9 +15,9 @@ namespace Operations
   EditManifestTextAction(QObject* parent);
   /*public*/ EditManifestTextAction(QString s, QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* /*e*/);
+  /*public*/ void actionPerformed(JActionEvent * /*e*/)override;
  private:
-  EditManifestTextFrame* f; // = NULL
+  QPointer<EditManifestTextFrame> f; // = NULL
   void common();
  };
 }

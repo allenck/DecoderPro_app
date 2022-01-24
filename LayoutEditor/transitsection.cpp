@@ -68,7 +68,6 @@ void TransitSection::common()
  mSection = NULL;
  mSequence = 0;
  mDirection = 0;
- mTransitSectionActionList = new QList<TransitSectionAction*>();
  mAlternate = false;
 
  // temporary variables and method for delayed initialization of Section
@@ -117,17 +116,32 @@ void TransitSection::common()
 /*public*/ int TransitSection::getDirection() { return mDirection; }
 /*public*/ int TransitSection::getSequenceNumber() { return mSequence; }
 /*public*/ void TransitSection::addAction( TransitSectionAction* act )
-{ mTransitSectionActionList->append(act); }
+{ mTransitSectionActionList.append(act); }
 /*public*/ bool TransitSection::isAlternate() { return mAlternate; }
 /*public*/ void TransitSection::setAlternate( bool alt )	{ mAlternate = alt; }
+/*public*/ bool TransitSection::isSafe() {
+    return mSafe;
+}
+
+/*public*/ void TransitSection::setSafe(bool safe) {
+    mSafe = safe;
+}
+
+/*public*/ QString TransitSection::getStopAllocatingSensor() {
+    return mStopAllocatingSensorName;
+}
+
+/*public*/ void TransitSection::setStopAllocatingSensor(QString stopAllocatingSensor ) {
+    mStopAllocatingSensorName = stopAllocatingSensor;
+}
 
 /** 
  * Get a copy of this TransitSection's TransitSectionAction list
  */
 /*public*/ QList<TransitSectionAction*>* TransitSection::getTransitSectionActionList() {
     QList<TransitSectionAction*>* list = new QList<TransitSectionAction*>();
-    for (int i = 0; i<mTransitSectionActionList->size(); i++)
-        list->append(mTransitSectionActionList->at(i));
+    for (int i = 0; i<mTransitSectionActionList.size(); i++)
+        list->append(mTransitSectionActionList.at(i));
     return list;
 }
 

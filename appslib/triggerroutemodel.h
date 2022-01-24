@@ -13,7 +13,7 @@ public:
  /*public*/ QString getUserName();
  /*public*/ void setUserName(QString name);
  /*public*/ Route* getRoute();
- /*public*/ void performAction(QString) throw (JmriException);
+ /*public*/ void performAction(QString) /*throw (JmriException)*/;
 
 private:
  /*private*/ /*final*/ static Logger* log;// = LoggerFactory.getLogger(TriggerRouteModel.class);

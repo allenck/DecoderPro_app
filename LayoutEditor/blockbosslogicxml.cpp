@@ -147,15 +147,15 @@ QDomElement BlockBossLogicXml::storeSensor(QString name)
  * @return true if successful
   */
 //@SuppressWarnings("unchecked")
-/*public*/ bool BlockBossLogicXml::load(QDomElement element) throw (Exception)
+/*public*/ bool BlockBossLogicXml::load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException)
 {
  bool result = true;
- QDomNodeList l = element.elementsByTagName("signalelement");
+ QDomNodeList l = shared.elementsByTagName("signalelement");
 
  // try old format if there are no new entries
  // this is for backward compatibility only
  if (l.size() == 0)
-  l = element.elementsByTagName("block");
+  l = shared.elementsByTagName("block");
 
  // process each item
  for (int i = 0; i<l.size(); i++)
@@ -378,9 +378,9 @@ QDomElement BlockBossLogicXml::storeSensor(QString name)
     bb->setComment(c);
    }
 
-  } catch (DataConversionException e)
+  } catch (DataConversionException* e)
   {
-   log->warn("error reading blocks from file"+e.getMessage());
+   log->warn("error reading blocks from file"+e->getMessage());
    result = false;
   }
   catch (IllegalArgumentException e)
@@ -393,7 +393,7 @@ QDomElement BlockBossLogicXml::storeSensor(QString name)
     bb->retain();
     bb->start();
    }
-   catch (NullPointerException e)
+   catch (NullPointerException* e)
    {
     log->error("An error occured trying to start the signal logic " + bb->getDrivenSignal());
     result = false;

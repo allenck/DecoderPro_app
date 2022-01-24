@@ -41,11 +41,13 @@ public:
          * the error-correction byte.  Must not be null.
          * @param repeats Number of times to repeat the transmission.
          */
-        virtual bool sendPacket(QByteArray /*packet*/, int /*repeats*/) {return false;}
+        virtual bool sendPacket(QByteArray /*packet*/, int /*repeats*/) =0;
 
-        virtual QString getUserName() {return "";}
+        virtual QString getUserName() =0;
 
-        virtual QString getSystemPrefix() {return "";}
+        virtual QString getSystemPrefix() =0;
+
+        virtual QObject* self() =0;
 
 signals:
     

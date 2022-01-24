@@ -85,5 +85,5 @@ void RosterFrameAction::common()
 // never invoked, because we overrode actionPerformed above
 //@Override
 /*public*/ JmriPanel* RosterFrameAction::makePanel() {
-    throw IllegalArgumentException("Should not be invoked");
+    throw new IllegalArgumentException("Should not be invoked");
 }

@@ -3,10 +3,10 @@
 
 #include "abstractaction.h"
 #include "windowinterface.h"
-#include "liblayouteditor_global.h"
+#include "javaqt_global.h"
 #include "jmripanel.h"
 
-class LIBLAYOUTEDITORSHARED_EXPORT JmriAbstractAction : public AbstractAction
+class JAVAQTSHARED_EXPORT JmriAbstractAction : public AbstractAction
 {
  Q_OBJECT
 public:
@@ -27,7 +27,7 @@ public:
 signals:
 
 public slots:
- /*public*/  virtual void actionPerformed(ActionEvent* e = 0);
+ /*public*/  void actionPerformed(JActionEvent* e = 0);
 
 private:
  //private static final long serialVersionUID = 373576744806206486L;

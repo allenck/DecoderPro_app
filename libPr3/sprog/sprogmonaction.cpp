@@ -23,8 +23,8 @@ using namespace Sprog;
     SprogMonFrame* f = new SprogMonFrame(_memo);
     try {
         f->initComponents();
-    } catch (Exception ex) {
-        log->warn("SprogMonAction starting SprogMonFrame: Exception: " + ex.getMessage());
+    } catch (Exception* ex) {
+        log->warn("SprogMonAction starting SprogMonFrame: Exception: " + ex->getMessage());
     }
     f->setVisible(true);
 }

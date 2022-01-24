@@ -12,8 +12,13 @@
      * Constructor method.
      * @param xover the layout double crossover to view.
      */
-    /*public*/ LayoutDoubleXOverView::LayoutDoubleXOverView(/*@Nonnull*/ LayoutDoubleXOver* xover) : LayoutXOverView(xover){
-        //super(xover);
+    /*public*/ LayoutDoubleXOverView::LayoutDoubleXOverView(/*@Nonnull*/ LayoutDoubleXOver* xover,
+                                  /*@Nonnull*/ QPointF c, double rot,
+                                  double xFactor, double yFactor,
+                                  /*@Nonnull*/ LayoutEditor* layoutEditor)
+     : LayoutXOverView(xover, c, rot, xFactor, yFactor, layoutEditor)
+     {
+        //super(xover, c, rot, xFactor, yFactor, layoutEditor);
         // this.xover = xover;
     }
 

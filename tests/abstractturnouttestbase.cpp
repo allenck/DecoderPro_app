@@ -116,7 +116,7 @@ AbstractTurnoutTestBase::AbstractTurnoutTestBase(QObject *parent) : QObject(pare
 
 
     //@Test
-    /*public*/ void AbstractTurnoutTestBase::testRequestUpdate() throw (JmriException) {
+    /*public*/ void AbstractTurnoutTestBase::testRequestUpdate() /*throw (JmriException)*/ {
         TestSensor* s1 = new TestSensor("IS1", "username1", this);
         TestSensor* s2 = new TestSensor("IS2", "username2",this);
         InstanceManager::sensorManagerInstance()->Register(s1);
@@ -172,19 +172,19 @@ AbstractTurnoutTestBase::AbstractTurnoutTestBase(QObject *parent) : QObject(pare
     }
 
     //@Test
-    /*public*/ void AbstractTurnoutTestBase::testProvideFirstFeedbackSensor() throw (JmriException) {
+    /*public*/ void AbstractTurnoutTestBase::testProvideFirstFeedbackSensor() /*throw (JmriException)*/ {
         t->provideFirstFeedbackSensor("IS1");
         Assert::assertNotNull("first feedback sensor", t->getFirstSensor(), __FILE__, __LINE__);
     }
 
     //@Test
-    /*public*/ void AbstractTurnoutTestBase::testProvideSecondFeedbackSensor() throw (JmriException) {
+    /*public*/ void AbstractTurnoutTestBase::testProvideSecondFeedbackSensor() /*throw (JmriException)*/ {
         t->provideSecondFeedbackSensor("IS2");
         Assert::assertNotNull("first feedback sensor", t->getSecondSensor(), __FILE__, __LINE__);
     }
 
     //@Test
-    /*public*/ void AbstractTurnoutTestBase::testOneSensorFeedback() throw (JmriException) {
+    /*public*/ void AbstractTurnoutTestBase::testOneSensorFeedback() /*throw (JmriException)*/ {
         Sensor* s1 = ((SensorManager*)InstanceManager::getDefault("SensorManager"))->provideSensor("IS1");
         t->setFeedbackMode(Turnout::ONESENSOR);
         listenStatus = Turnout::UNKNOWN;
@@ -199,7 +199,7 @@ AbstractTurnoutTestBase::AbstractTurnoutTestBase(QObject *parent) : QObject(pare
     }
 
     //@Test
-    /*public*/ void AbstractTurnoutTestBase::testTwoSensorFeedback() throw (JmriException) {
+    /*public*/ void AbstractTurnoutTestBase::testTwoSensorFeedback() /*throw (JmriException)*/ {
         Sensor* s1 = ((SensorManager*)InstanceManager::getDefault("SensorManager"))->provideSensor("IS1");
         Sensor* s2 = ((SensorManager*)InstanceManager::getDefault("SensorManager"))->provideSensor("IS2");
         t->provideFirstFeedbackSensor("IS1");

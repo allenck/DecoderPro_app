@@ -26,7 +26,7 @@ class JmriBeanComboBox;
 class Turnout;
 class BeanSelectCreatePanel;
 class DecimalFormat;
-class ActionEvent;
+class JActionEvent;
 class UserPreferencesManager;
 class LIBPR3SHARED_EXPORT AddSignalMastPanel : public QWidget
 {
@@ -106,7 +106,7 @@ private:
     void issueWarningUserName(QString nam);
     void issueWarningUserNameAsSystem(QString nam);
     int issueNoUserNameGiven();
-    void issueDialogFailMessage(RuntimeException ex);
+    void issueDialogFailMessage(RuntimeException *ex);
     void clearPanel();
 
 protected:

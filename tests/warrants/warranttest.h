@@ -33,7 +33,7 @@ public slots:
  /*public*/ void testSetRouteUsingViaOrders();
  /*public*/ void testSetRoute();
  /*public*/ void setThrottleCommands();
- /*public*/ void testWarrant() throw (JmriException);
+ /*public*/ void testWarrant() /*throw (JmriException)*/;
 
 protected:
  /*protected*/ OBlockManager* _OBlockMgr;
@@ -54,14 +54,14 @@ protected:
  friend class ReleaseUntilWT2;
 };
 
-class WarrantListener : public PropertyChangeListener {
+class WarrantListener : public QObject, public PropertyChangeListener {
 Q_OBJECT
-    Warrant* warrant;
+   Q_INTERFACES(PropertyChangeListener) Warrant* warrant;
 
     WarrantListener(Warrant* w) {
         warrant = w;
     }
-
+QObject* self() {return (QObject*)this;}
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* e);
     friend class WarrantTest;
@@ -73,7 +73,7 @@ class ReleaseUntilWT1 : public ReleaseUntil
  WarrantTest* test;
 public:
  ReleaseUntilWT1(WarrantTest* test) {this->test = test;}
- bool ready() throw (Exception)
+ bool ready() /*throw (Exception)*/
  {
   QString m = test->warrant->getRunningMessage();
   return m.endsWith("Cmd #2.") || m.endsWith("Cmd #3.");
@@ -86,7 +86,7 @@ class ReleaseUntilWT2 : public ReleaseUntil
  WarrantTest* test;
 public:
  ReleaseUntilWT2(WarrantTest* test) {this->test = test;}
- bool ready() throw (Exception)
+ bool ready() /*throw (Exception)*/
  {
   QString m = test->warrant->getRunningMessage();
   return m == "Idle";

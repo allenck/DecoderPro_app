@@ -31,7 +31,7 @@
     consistRequestState = LEADREQUESTSTATE;
     consistType = Consist::CS_CONSIST;
     needToWrite = QList<DccLocoAddress*>();
-    throttleManager->requestThrottle(consistAddress, (ThrottleListener*)this);
+    throttleManager->requestThrottle(consistAddress, this, false);
 }
 
 // Initialize a consist for the specific address
@@ -47,7 +47,7 @@
  consistRequestState = LEADREQUESTSTATE;
  consistType = Consist::CS_CONSIST;
  needToWrite = QList<DccLocoAddress*>();
- throttleManager->requestThrottle(consistAddress, (ThrottleListener*)this);
+ throttleManager->requestThrottle(consistAddress, this, false);
 }
 
 void LocoNetConsist::common()
@@ -283,7 +283,7 @@ void LocoNetConsist::common()
     //set the value in the roster entry for CV19
     setRosterEntryCVValue(LocoAddress);
     consistRequestState = LINKSTAGEONESTATE;
-    throttleManager->requestThrottle(LocoAddress, (ThrottleListener*)this);
+    throttleManager->requestThrottle(LocoAddress, this, false);
 }
 
 /*
@@ -322,7 +322,7 @@ void LocoNetConsist::common()
       notifyConsistListeners(LocoAddress,ConsistListener::OPERATION_SUCCESS);
       return;
     }
-    throttleManager->requestThrottle(LocoAddress, (ThrottleListener*)this);
+    throttleManager->requestThrottle(LocoAddress, this, false);
     // skip right to stage 2, we do not need to status edit.
     consistRequestState = LINKSTAGETWOSTATE;
 }
@@ -509,10 +509,13 @@ void LocoNetConsist::common()
     consistRequestState = IDLESTATE;
 }
 
+/**
+ * No steal or share decisions made locally
+ * <p>
+ * {@inheritDoc}
+ */
 //@Override
-/*public*/ void LocoNetConsist::notifyStealThrottleRequired(LocoAddress* address){
-    // this is an automatically stealing impelementation.
-    throttleManager->stealThrottleRequest(address, (ThrottleListener*)this, true);
+/*public*/ void LocoNetConsist::notifyDecisionRequired(LocoAddress* address, ThrottleListener::DecisionType question) {
 }
 
 /*private*/ /*final*/ /*static*/ Logger* LocoNetConsist::log = LoggerFactory::getLogger("LocoNetConsist");

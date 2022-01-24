@@ -9,9 +9,9 @@ class LIBLAYOUTEDITORSHARED_EXPORT BlockBossLogicXml : public AbstractXmlAdapter
 public:
     Q_INVOKABLE explicit BlockBossLogicXml(QObject *parent = 0);
     ~BlockBossLogicXml();
- BlockBossLogicXml(const BlockBossLogicXml&) : AbstractXmlAdapter() {}
+    BlockBossLogicXml(const BlockBossLogicXml&) : AbstractXmlAdapter() {}
     /*public*/ QDomElement store(QObject* o) override;
-    /*public*/ bool load(QDomElement element) throw (Exception) override;
+    /*public*/ bool load(QDomElement shared, QDomElement perNode) throw (JmriConfigureXmlException) override;
     /*public*/ void load(QDomElement element, QObject* o) throw (Exception) override;
     /*public*/ int loadOrder()const override;
 

@@ -42,7 +42,7 @@ void BlockBossAction::common()
  common();
 }
 
-/*public*/ void BlockBossAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void BlockBossAction::actionPerformed(JActionEvent* /*e*/)
 {
  // create the frame
  JFrame* f = new BlockBossFrame();

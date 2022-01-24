@@ -25,6 +25,7 @@
 #include "blockmanager.h"
 #include "positionablepoint.h"
 #include "entryexitpairs.h"
+#include "loggerfactory.h"
 
 /**
  * MVC root Editor component for LayoutTrack hierarchy objects.
@@ -77,7 +78,7 @@
         if (qobject_cast<LevelXing*>(layoutTrack)) { return new LevelXingEditor(layoutEditor); }
         if (qobject_cast<LayoutTurntable*>(layoutTrack)) { return new LayoutTurntableEditor(layoutEditor); }
 
-        log->error(tr("makeTrackEditor did not match type of %1").arg(layoutTrack->metaObject()->className()), Exception("traceback"));
+        log->error(tr("makeTrackEditor did not match type of %1").arg(layoutTrack->metaObject()->className()), new Exception("traceback"));
         return new LTE_LayoutTrackEditor(layoutEditor);
 //        {
 //            //@Override
@@ -100,14 +101,14 @@
         QPushButton* doneButton = new QPushButton(tr("Done"));
         target->layout()->addWidget(doneButton);  // NOI18N
         //doneButton->addActionListener(doneCallback);
-        connect(doneButton, SIGNAL(clicked(bool)), doneCallback, SLOT(actionPerformed()));
+        connect(doneButton, SIGNAL(clicked(bool)), doneCallback->self(), SLOT(actionPerformed()));
         doneButton->setToolTip(tr("Click [%1] to accept any changes made above and close this dialog.").arg(tr("Done")));  // NOI18N
 
         // Cancel
         QPushButton* cancelButton = new QPushButton(tr("Cancel")); // NOI18N
         target->layout()->addWidget(cancelButton);
         //cancelButton.addActionListener(cancelCallback);
-        connect(cancelButton, SIGNAL(clicked(bool)), cancelCallback, SLOT(actionPerformed()));
+        connect(cancelButton, SIGNAL(clicked(bool)), cancelCallback->self(), SLOT(actionPerformed()));
         cancelButton->setToolTip(tr("Click [%1] to dismiss this dialog without making changes.").arg(tr("Cancel")));  // NOI18N
 #if 0
         rp.setDefaultButton(doneButton);

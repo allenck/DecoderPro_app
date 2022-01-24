@@ -2,6 +2,8 @@
 #define COMMONCONDUCTORYARDMASTERPANEL_H
 #include "operationspanel.h"
 #include "appslib_global.h"
+#include "propertychangelistener.h"
+#include "jpanel.h"
 
 class QVBoxLayout;
 class QGroupBox;
@@ -11,6 +13,7 @@ class PropertyChangeEvent;
 class QLabel;
 namespace Operations
 {
+ class EngineSetFrame;
  class RouteLocation;
  class CarSetFrame;
  class RollingStock;
@@ -21,23 +24,27 @@ namespace Operations
  class CarManager;
  class TrainCommon;
  class Car;
- class APPSLIBSHARED_EXPORT CommonConductorYardmasterPanel : public OperationsPanel
+ class APPSLIBSHARED_EXPORT CommonConductorYardmasterPanel : public OperationsPanel, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   CommonConductorYardmasterPanel(QWidget* parent = 0);
   /*public*/ void initComponents();
+  QObject* self() override {return (QObject*)this; }
 
  public slots:
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
-  /*public*/ void buttonActionPerformed(QWidget* ae);
-  /*public*/ void setCarButtonActionPerfomed(QWidget* ae);
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
+  /*public*/ void buttonActionPerformed(QWidget* ae) override;
+  /*public*/ void carSetButtonActionPerfomed(QWidget* ae);
+  /*public*/ void engineSetButtonActionPerfomed(QWidget* ae);
 
  private:
   Logger* log;
-  CarSetFrame* csf;// = NULL;
+  CarSetFrame* csf = nullptr;
   QVBoxLayout* thisLayout;
   /*private*/ void addCarToTrain();
+  EngineSetFrame* esf = nullptr;
 
  protected:
   /*protected*/ static /*final*/ QString Tab;//= "     "; // used to space out headers
@@ -51,13 +58,13 @@ namespace Operations
   /*protected*/ TrainCommon* trainCommon;//= new TrainCommon();
   /*protected*/ void setCheckBoxFont(QCheckBox* checkBox);
 
-  QGroupBox* locoPaneFrame;
+  JPanel* locoPaneFrame;
   /*protected*/ QScrollArea* locoPane;
-  QGroupBox* pickupPaneFrame;
+  JPanel* pickupPaneFrame;
   /*protected*/ QScrollArea* pickupPane;
-  QGroupBox* setoutPaneFrame;
+  JPanel* setoutPaneFrame;
   /*protected*/ QScrollArea* setoutPane;
-  QGroupBox* movePaneFrame;
+  JPanel* movePaneFrame;
   /*protected*/ QScrollArea* movePane;
 
   // labels
@@ -74,19 +81,19 @@ namespace Operations
   /*protected*/ QPushButton* moveButton;//= new JButton(Bundle.getMessage("Move"));
 
   // text panes
-  QGroupBox* textLocationCommentGB;
+  JPanel* textLocationCommentGB;
   /*protected*/ HtmlTextEdit* textLocationCommentPane;//= new JTextPane();
-  QGroupBox* textTrainCommentGB;
+  JPanel* textTrainCommentGB;
   /*protected*/ HtmlTextEdit* textTrainCommentPane;//= new JTextPane();
-  QGroupBox* textTrainRouteCommentGB;
+  JPanel* textTrainRouteCommentGB;
   /*protected*/ HtmlTextEdit* textTrainRouteCommentPane;//= new JTextPane();
-  QGroupBox* textTrainRouteLocationCommentGB;
+  JPanel* textTrainRouteLocationCommentGB;
   /*protected*/ HtmlTextEdit* textTrainRouteLocationCommentPane;//= new JTextPane();
 
   // panels
-  /*protected*/ QGroupBox* pRailRoadName;//= new JPanel();
-  /*protected*/ QGroupBox* pTrainDescription;//= new JPanel();
-  /*protected*/ QGroupBox* pLocationName;//= new JPanel();
+  /*protected*/ JPanel* pRailRoadName;// = new JPanel();
+  /*protected*/ JPanel* pTrainDescription;//= new JPanel();
+  /*protected*/ JPanel* pLocationName = new JPanel();
   /*protected*/ QWidget* pLocos;//= new JPanel();
   /*protected*/ QWidget* pPickupLocos;//= new JPanel();
   /*protected*/ QWidget* pSetoutLocos;//= new JPanel();
@@ -94,8 +101,8 @@ namespace Operations
   /*protected*/ QWidget* pSetouts;//= new JPanel();
   /*protected*/ QWidget* pWorkPanes;//= new JPanel(); // place car pick ups and set outs side by side using two columns
   /*protected*/ QWidget* pMoves;//= new JPanel();
-  /*protected*/ QGroupBox* pStatus;//= new JPanel();
-  /*protected*/ QGroupBox* pButtons;//= new JPanel();
+  /*protected*/ JPanel* pStatus= new JPanel();
+  /*protected*/ JPanel* pButtons= new JPanel();
 
   // check boxes
   /*protected*/ QHash<QString, QCheckBox*> checkBoxes;//= new Hashtable<>();
@@ -104,6 +111,7 @@ namespace Operations
   /*protected*/ bool isSetMode;//= false; // when true, cars that aren't selected (checkbox) can be "set"
   /*protected*/ void initialize();
   /*protected*/ void setModifyButtonText();
+  /*protected*/ void removeCarFromList(Car* car);
   /*protected*/ void removePropertyChangeListerners();
   /*protected*/ void updateLocoPanes(RouteLocation* rl);
   /*protected*/ QString getStatus(RouteLocation* rl, bool isManifest);
@@ -113,7 +121,9 @@ namespace Operations
   /*protected*/ void checkBoxActionPerformed(QWidget* ae);
   /*protected*/ void blockCars(RouteLocation* rl, bool isManifest);
   /*protected*/ void setLabelFont(QLabel* label);
-  /*Protected*/ QWidget* addSet(Car* car);
+  /*Protected*/ JPanel* addSet(RollingStock *car);
+  /*protected*/ /*abstract*/ virtual void update();
+  /*protected*/ void clearAndUpdate();
 
  friend class YardmasterPanel;
  friend class TrainConductorPanel;

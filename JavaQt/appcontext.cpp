@@ -46,7 +46,7 @@ AppContext::AppContext(QObject *parent) : QObject(parent)
 //import java.util.Map;
 //import java.util.Set;
 //import java.util.HashSet;
-//import java.beans.PropertyChangeSupport;
+//import java.beans.SwingPropertyChangeSupport;
 //import java.beans.PropertyChangeListener;
 
 /**
@@ -360,7 +360,7 @@ AppContext::AppContext(QObject *parent) : QObject(parent)
             this.isDisposed = true;
         }
 
-        /*final*/ PropertyChangeSupport changeSupport = this.changeSupport;
+        /*final*/ SwingPropertyChangeSupport changeSupport = this.changeSupport;
         if (changeSupport != NULL) {
             changeSupport.firePropertyChange(DISPOSED_PROPERTY_NAME, false, true);
         }
@@ -668,7 +668,7 @@ AppContext::AppContext(QObject *parent) : QObject(parent)
      * @see      #addPropertyChangeListener
      * @see      #removePropertyChangeListener
      * @see      #getPropertyChangeListeners(java.lang.String)
-     * @see      java.beans.PropertyChangeSupport#getPropertyChangeListeners
+     * @see      java.beans.SwingPropertyChangeSupport#getPropertyChangeListeners
      * @since    1.4
      */
     /*public*/ synchronized PropertyChangeListener[] getPropertyChangeListeners() {
@@ -708,7 +708,7 @@ AppContext::AppContext(QObject *parent) : QObject(parent)
             return;
         }
         if (changeSupport == NULL) {
-            changeSupport = new PropertyChangeSupport(this);
+            changeSupport = new SwingPropertyChangeSupport(this, nullptr);
         }
         changeSupport.addPropertyChangeListener(propertyName, listener);
     }

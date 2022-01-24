@@ -2,15 +2,20 @@
 #define ROUTER_H
 
 #include "traincommon.h"
+#include "instancemanagerautodefault.h"
+
 namespace Operations
 {
  class Track;
  class Train;
- class Router : public TrainCommon
+ class Router : public TrainCommon, public InstanceManagerAutoDefault
  {
   Q_OBJECT
+   Q_INTERFACES(InstanceManagerAutoDefault)
  public:
-  Router(QObject* parent = 0);
+  Q_INVOKABLE Router(QObject* parent = 0);
+   ~Router() {}
+   Router(const Router&) : TrainCommon() {}
   /*public*/ static /*synchronized*/ Router* instance();
   /*public*/ QString getStatus();
   /*public*/ bool setDestination(Car* car, Train* train, PrintWriter* buildReport);
@@ -56,4 +61,5 @@ namespace Operations
 
  };
 }
+Q_DECLARE_METATYPE(Operations::Router);
 #endif // ROUTER_H

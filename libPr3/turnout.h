@@ -97,7 +97,6 @@ public:
       INCONSISTENT = 0x08
      };
      Q_ENUM(STATES)
-
         /**
          * Constant representing an "closed" state, either in readback
          * or as a commanded state. Note that it's possible to be
@@ -298,8 +297,8 @@ public:
          * sensors have been provided.
          */
         //virtual void provideFirstFeedbackSensor(NamedBeanHandle<Sensor>* /*s*/) {}
-        virtual void provideFirstFeedbackSensor(QString /*pName*/) throw (JmriException) {}
-        virtual void provideSecondFeedbackSensor(QString /*pName*/) throw (JmriException) {}
+        virtual void provideFirstFeedbackSensor(QString /*pName*/) /*throw (JmriException)*/ {}
+        virtual void provideSecondFeedbackSensor(QString /*pName*/) /*throw (JmriException)*/ {}
 
 
         /**
@@ -502,13 +501,104 @@ public:
         virtual float getDivergingLimit() {return 0;}
 
         virtual QString getDivergingSpeed() {return "";}
-        virtual void setDivergingSpeed(QString /*s*/) const throw (JmriException) {}
+        virtual void setDivergingSpeed(QString /*s*/) const /*throw (JmriException)*/ {}
 
         virtual float getStraightLimit()  {return 0;}
 
         virtual QString getStraightSpeed() {return "";}
-        virtual void setStraightSpeed(QString /*s*/) const  throw (JmriException) {}
+        virtual void setStraightSpeed(QString /*s*/) const  /*throw (JmriException)*/ {}
+        /**
+         * Check if this Turnout can follow the state of another Turnout.
+         *
+         * @return true if this Turnout is capable of following; false otherwise
+         */
+        // Note: not `canFollow()` to allow JavaBeans introspection to find
+        // the property "canFollow"
+        virtual /*public*/ bool isCanFollow() =0;
 
+        /**
+         * Get the Turnout this Turnout is following.
+         *
+         * @return the leading Turnout or null if none; null if
+         *         {@link #isCanFollow()} is false
+         */
+        //@CheckForNull
+        virtual /*public*/ Turnout* getLeadingTurnout() = 0;
+
+        /**
+         * Set the Turnout this Turnout will follow.
+         * <p>
+         * It is valid for two or more turnouts to follow each other in a circular
+         * pattern.
+         * <p>
+         * It is recommended that a following turnout's feedback mode be
+         * {@link #DIRECT}.
+         * <p>
+         * It is recommended to explicitly call
+         * {@link #setFollowingCommandedState(boolean)} after calling this method or
+         * to use {@link #setLeadingTurnout(jmri.Turnout, boolean)} to ensure this
+         * Turnout follows the leading Turnout in the expected manner.
+         *
+         * @param turnout the leading Turnout or null if this Turnout should not
+         *                follow another Turnout; silently ignored if
+         *                {@link #isCanFollow()} is false
+         */
+        virtual /*public*/ void setLeadingTurnout(/*@CheckForNull*/ Turnout* turnout)=0;
+
+        /**
+         * Set both the leading Turnout and if the commanded state of the leading
+         * Turnout is followed. This is a convenience method for calling both
+         * {@link #setLeadingTurnout(jmri.Turnout)} and
+         * {@link #setFollowingCommandedState(boolean)}.
+         *
+         * @param turnout                 the leading Turnout or null if this
+         *                                Turnout should not follow another Turnout;
+         *                                silently ignored if {@link #isCanFollow()}
+         *                                is false
+         * @param followingCommandedState true to have all states match leading
+         *                                turnout; false to only have non-commanded
+         *                                states match
+         */
+        virtual /*public*/ void setLeadingTurnout(/*@CheckForNull*/ Turnout* turnout, bool followingCommandedState) = 0;
+
+        /**
+         * Check if this Turnout is following all states or only the non-commanded
+         * states of the leading Turnout.
+         *
+         * @return true if following all states; false otherwise
+         */
+        virtual/*public*/ bool isFollowingCommandedState() = 0;
+
+        /**
+         * Set if this Turnout follows all states or only the non-commanded states
+         * of the leading Turnout.
+         * <p>
+         * A Turnout can be commanded to be {@link #THROWN} or {@link #CLOSED}, but
+         * can also have additional states {@link #INCONSISTENT} and
+         * {@link #UNKNOWN}. There are some use cases where a following Turnout
+         * should match all states of the leading Turnout, in which case this should
+         * be true, but there are also use cases where the following Turnout should
+         * only match the INCONSISTENT and UNKNOWN states of the leading Turnout,
+         * but should otherwise be independently commanded, in which case this
+         * should be false.
+         *
+         * @param following true to have all states match leading turnout; false to
+         *                  only have non-commanded states match
+         */
+        virtual /*public*/ void setFollowingCommandedState(bool following) =0;
+
+        /**
+         * Before setting commanded state, if required by manager, apply wait interval until
+         * outputIntervalEnds() to put less pressure on the connection.
+         * <p>
+         * Used to insert a delay before calling {@link #setCommandedState(int)} to spread out a series of
+         * output commands, as in {@link jmri.implementation.MatrixSignalMast#updateOutputs(char[])} and
+         * {@link jmri.implementation.DefaultRoute} class SetRouteThread#run().
+         * Interval value is kept in the Memo per hardware connection, default = 0
+         *
+         * @param s turnout state to forward
+         */
+        virtual /*public*/ void setCommandedStateAtInterval(int s) = 0;
 signals:
     
 public slots:

@@ -86,7 +86,7 @@ QObject(parent) // can only be created by instance() => /*private*/
 {
  if (frame != NULL)
  {
-  destroyThrottleWindow(frame);
+//  destroyThrottleWindow(frame);
   throttleWindows->removeAt(throttleWindows->indexOf(frame));
   if (throttleWindows->size() > 0)
   {

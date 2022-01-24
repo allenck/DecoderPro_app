@@ -62,7 +62,7 @@
                 try {
                     ((AbstractSensor*)sn)->setKnownState(action->getActionData());
                 }
-                catch (JmriException e) {
+                catch (JmriException* e) {
                     log->warn("Exception setting sensor "+action->getDeviceName()+" in action");
                 }
         }

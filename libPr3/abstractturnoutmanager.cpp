@@ -7,9 +7,10 @@
 #include "signalspeedmap.h"
 
 AbstractTurnoutManager::AbstractTurnoutManager(SystemConnectionMemo* memo, QObject *parent) :
-    TurnoutManager(memo, parent)
+    AbstractManager(memo, parent)
 {
  this->memo = memo;
+ turnoutInterval = memo->getOutputInterval();
  defaultClosedSpeed = "Normal";
  defaultThrownSpeed = "Restricted";
  //registerSelf(); //??
@@ -31,35 +32,34 @@ AbstractTurnoutManager::AbstractTurnoutManager(SystemConnectionMemo* memo, QObje
 //		TurnoutOperationManager.getInstance();		// force creation of an instance
 //	}
 
-// @Override
-/*public*/ SystemConnectionMemo* AbstractTurnoutManager::getMemo() {
-    return memo;
-}
+//// @Override
+///*public*/ SystemConnectionMemo* AbstractTurnoutManager::getMemo() {
+//    return memo;
+//}
 
 int AbstractTurnoutManager::getXMLOrder()const{
     return Manager::TURNOUTS;
 }
 
 //protected int xmlorder = 20;
-char AbstractTurnoutManager::typeLetter()const { return 'T'; }
+QChar AbstractTurnoutManager::typeLetter() { return 'T'; }
 
-Turnout* AbstractTurnoutManager::provideTurnout(QString name) const
+Turnout* AbstractTurnoutManager::provideTurnout(QString name)
 {
-    Turnout* t = getTurnout(name);
-    if (t!=nullptr) return t;
-    if (name.startsWith(getSystemPrefix().mid(0,1)+QString(typeLetter())))
-        return newTurnout(name, nullptr);
-    else
-        return newTurnout(makeSystemName(name, true, QLocale()), nullptr);
+ log->debug(tr("provide turnout %1").arg(name));
+ Turnout* result = getTurnout(name);
+ return result == nullptr ? newTurnout(AbstractManager::makeSystemName(name, true), nullptr) : result;
 }
 
-Turnout* AbstractTurnoutManager::getTurnout(QString name) const {
+//@Override
+//@CheckForNull
+Turnout* AbstractTurnoutManager::getTurnout(QString name)  {
     Turnout* t = (Turnout*)getByUserName(name);
     if (t!=nullptr) return t;
 
     return (Turnout*)getBySystemName(name);
 }
-#if 0
+#if 1
 Turnout* AbstractTurnoutManager::getBySystemName(QString name)
 {
  NamedBean* bean = _tsys->value(name);
@@ -87,24 +87,18 @@ Turnout* AbstractTurnoutManager::getByUserName(QString key)
 // return nullptr;
 }
 #endif
-Turnout* AbstractTurnoutManager::newTurnout(QString systemName, QString userName) const
+Turnout* AbstractTurnoutManager::newTurnout(QString systemName, QString userName)
 {
  // add normalize? see AbstractSensor
  if (log->isDebugEnabled()) log->debug(QString("newTurnout: %1").arg(( (systemName=="") ? "null" : systemName)));
 
  // is system name in correct format?
-#ifdef QT_DEBUG
- QString pfx = getSystemPrefix();
- char tl = typeLetter();
-#endif
- // is system name in correct format?
- if (!systemName.startsWith(getSystemPrefix() + typeLetter())
-     || !(systemName.length() > (getSystemPrefix() + typeLetter()).length()))
- {
-  log->error(tr("Invalid system name for turnout: %1 needed %2%3 followed by a suffix").arg(
-                      systemName).arg(getSystemPrefix()).arg(typeLetter()));
-  throw IllegalArgumentException("Invalid system name for turnout: " + systemName
-                                 + " needed " + getSystemPrefix() + typeLetter());
+ if (!systemName.startsWith(AbstractManager::getSystemNamePrefix())
+         || !(systemName.length() > (AbstractManager::getSystemNamePrefix()).length())) {
+     log->error(tr("Invalid system name for Turnout: %1 needed %2%3 followed by a suffix").arg(
+             systemName, AbstractManager::getSystemPrefix(), typeLetter()));
+     throw new IllegalArgumentException("Invalid system name for Turnout: " + systemName
+             + " needed " + AbstractManager::getSystemNamePrefix());
  }
 
  // return existing if there is one
@@ -128,26 +122,26 @@ Turnout* AbstractTurnoutManager::newTurnout(QString systemName, QString userName
  // if that failed, blame it on the input arguments
  if(t == nullptr)
  {
-  throw IllegalArgumentException(tr("Unable to create turnout from %1").arg(systemName));
+  throw new IllegalArgumentException(tr("Unable to create turnout from %1").arg(systemName));
  }
 
  // Some implementations of createNewTurnout() register the new bean,
  // some don't.
- if (getBeanBySystemName(t->getSystemName()) == nullptr) {
+ if (AbstractManager::getBeanBySystemName(t->getSystemName()) == nullptr) {
      // save in the maps if successful
-     Register(t);
+     AbstractManager::Register(t);
  }
 
  try {
      t->setStraightSpeed("Global");
- } catch (JmriException ex) {
-     log->error(ex.toString());
+ } catch (JmriException* ex) {
+     log->error(ex->toString());
  }
 
  try {
      t->setDivergingSpeed("Global");
- } catch (JmriException ex) {
-     log->error(ex.toString());
+ } catch (JmriException* ex) {
+     log->error(ex->toString());
  }
  return t;
 }
@@ -158,6 +152,13 @@ Turnout* AbstractTurnoutManager::newTurnout(QString systemName, QString userName
     return plural ? tr("Turnouts") : tr("Turnout");
 }
 
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*public*/ QString AbstractTurnoutManager::getNamedBeanClass() const{
+    return "Turnout";
+}
 /*\\\\\\\\\\\ * Get text to be used for the Turnout.CLOSED state in user communication.
  * Allows text other than "CLOSED" to be use with certain hardware system
  * to represent the Turnout.CLOSED state.
@@ -234,14 +235,14 @@ QStringList AbstractTurnoutManager::getValidOperationTypes()
 
 //bool AbstractTurnoutManager::allowMultipleAdditions(QString systemName) { return true;  }
 
-QString AbstractTurnoutManager::createSystemName(QString curAddress, QString prefix) const
+QString AbstractTurnoutManager::createSystemName(QString curAddress, QString prefix)
 // throws JmriException
 {
     try {
         //Integer.parseInt(curAddress);
     int i = curAddress.toInt();
     Q_UNUSED(i);
-    } catch (NumberFormatException *ex)
+    } catch (NumberFormatException* *ex)
     {
      log->warn(tr("Hardware Address passed should be a number, was %1").arg(curAddress));
      throw  JmriException("Hardware Address passed should be a number");
@@ -249,7 +250,7 @@ QString AbstractTurnoutManager::createSystemName(QString curAddress, QString pre
     return prefix+typeLetter()+curAddress;
 }
 
-QString AbstractTurnoutManager::getNextValidAddress(QString curAddress, QString prefix) const// throws JmriException
+QString AbstractTurnoutManager::getNextValidAddress(QString curAddress, QString prefix) // throws JmriException
 {
  //If the hardware address past does not already exist then this can
  //be considered the next valid address.
@@ -257,7 +258,7 @@ QString AbstractTurnoutManager::getNextValidAddress(QString curAddress, QString 
  try {
      tmpSName = createSystemName(curAddress, prefix);
  }
- catch (JmriException *ex)
+ catch (JmriException* *ex)
  {
   static_cast<UserPreferencesManager*>(InstanceManager::getDefault("UserPreferencesManager"))->showErrorMessage(tr("Error"),tr("Unable to convert %1 to a valid Hardware Address %2").arg(curAddress),nullptr, "", true, false);
   return nullptr;
@@ -303,7 +304,7 @@ QString AbstractTurnoutManager::getNextValidAddress(QString curAddress, QString 
 
 
 //    @edu.umd.cs.findbugs.annotations.SuppressWarnings(value="NP_nullptr_PARAM_DEREF", justification="We are validating user input however the value is stored in its original format")
-void AbstractTurnoutManager::setDefaultClosedSpeed(QString speed) const //throws JmriException
+void AbstractTurnoutManager::setDefaultClosedSpeed(QString speed)  //throws JmriException
 {
 //    if(speed==nullptr)
 //        throw new JmriException("Value of requested turnout default closed speed can not be nullptr");
@@ -326,18 +327,18 @@ void AbstractTurnoutManager::setDefaultClosedSpeed(QString speed) const //throws
    {
     static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(speed);
    }
-   catch (Exception ex)
+   catch (Exception* ex)
    {
-    throw JmriException("Value of requested turnout default closed speed is not valid");
+    throw new JmriException("Value of requested turnout default closed speed is not valid");
    }
   }
  }
  QString oldSpeed = defaultClosedSpeed;
  defaultClosedSpeed = speed;
- firePropertyChange("DefaultTurnoutClosedSpeedChange", oldSpeed, speed);
+ firePropertyChange("DefaultTurnoutClosedSpeedChange", QVariant(oldSpeed), QVariant(speed));
 }
 
-void AbstractTurnoutManager::setDefaultThrownSpeed(QString speed) const// throws JmriException
+void AbstractTurnoutManager::setDefaultThrownSpeed(QString speed)// throws JmriException
 {
 //    if(speed==nullptr)
 //        throw new JmriException("Value of requested turnout default thrown speed can not be nullptr");
@@ -359,7 +360,7 @@ void AbstractTurnoutManager::setDefaultThrownSpeed(QString speed) const// throws
   {
    try{
        static_cast<SignalSpeedMap*>(InstanceManager::getDefault("SignalSpeedMap"))->getSpeed(speed);
-   } catch (Exception ex){
+   } catch (Exception* ex){
        throw  JmriException("Value of requested turnout default thrown speed is not valid");
    }
   }
@@ -375,6 +376,48 @@ QString AbstractTurnoutManager::getDefaultThrownSpeed() const{
 
 QString AbstractTurnoutManager::getDefaultClosedSpeed() const{
     return defaultClosedSpeed;
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ QString AbstractTurnoutManager::getEntryToolTip() {
+    return tr("EnterNumber1to9999ToolTip");
+}
+
+/*private*/ void AbstractTurnoutManager::handleIntervalChange(int newVal) {
+    turnoutInterval = newVal;
+    log->debug(tr("in memo turnoutInterval changed to %1").arg(turnoutInterval));
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ int AbstractTurnoutManager::getOutputInterval() {
+    return turnoutInterval;
+}
+
+/** {@inheritDoc} */
+//@Override
+/*public*/ void AbstractTurnoutManager::setOutputInterval(int newInterval) {
+    memo->setOutputInterval(newInterval);
+    turnoutInterval = newInterval; // local field will hear change and update automatically?
+    log->debug(tr("turnoutInterval set to: %1").arg(newInterval));
+}
+
+
+
+/** {@inheritDoc} */
+//@Override
+//@Nonnull
+/*public*/ LocalDateTime* AbstractTurnoutManager::outputIntervalEnds() {
+#if 1 // TODO:
+    log->debug("outputIntervalEnds called in AbstractTurnoutManager");
+    if (waitUntil->isAfter(LocalDateTime::now())) {
+        waitUntil = waitUntil->plus(turnoutInterval, LocalDateTime::ChronoUnit::MILLIS);
+    } else {
+        waitUntil = LocalDateTime::now()->plus(turnoutInterval, LocalDateTime::ChronoUnit::MILLIS); // default interval = 250 Msec
+    }
+#endif
+    return waitUntil;
 }
 
 /*private*/ /*final*/ /*static*/ Logger* AbstractTurnoutManager::log = LoggerFactory::getLogger("AbstractTurnoutManager");

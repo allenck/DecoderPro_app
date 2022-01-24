@@ -4,10 +4,9 @@
 #include "jfilechooser.h"
 #include "train.h"
 #include <QBoxLayout>
-#include <QGroupBox>
 #include <QScrollArea>
 #include "gridbaglayout.h"
-#include <QPushButton>
+#include "jbutton.h"
 #include <QLabel>
 #include "trainmanager.h"
 #include "trainmanagerxml.h"
@@ -19,6 +18,8 @@
 #include <QSignalMapper>
 #include <QMessageBox>
 #include "jmriscriptenginemanager.h"
+#include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -43,42 +44,40 @@ namespace Operations
  _train = NULL;
 
  // script panels
- pBuildScript = new QWidget();
- pAfterBuildScript = new QWidget();
- pMoveScript = new QWidget();
- pTerminationScript = new QWidget();
+ pBuildScript = new JPanel();
+ pAfterBuildScript = new JPanel();
+ pMoveScript = new JPanel();
+ pTerminationScript = new JPanel();
 
 // labels
  trainName = new QLabel();
  trainDescription = new QLabel();
 
 // major buttons
- addBuildScriptButton = new QPushButton(tr("Add Script"));
- addAfterBuildScriptButton = new QPushButton(tr("Add Script"));
- addMoveScriptButton = new QPushButton(tr("Add Script"));
- addTerminationScriptButton = new QPushButton(tr("Add Script"));
+ addBuildScriptButton = new JButton(tr("Add Script"));
+ addAfterBuildScriptButton = new JButton(tr("Add Script"));
+ addMoveScriptButton = new JButton(tr("Add Script"));
+ addTerminationScriptButton = new JButton(tr("Add Script"));
 
- runBuildScriptButton = new QPushButton(tr("Run Scripts"));
- runAfterBuildScriptButton = new QPushButton(tr("Run Scripts"));
- runMoveScriptButton = new QPushButton(tr("Run Scripts"));
- runTerminationScriptButton = new QPushButton(tr("Run Scripts"));
+ runBuildScriptButton = new JButton(tr("Run Scripts"));
+ runAfterBuildScriptButton = new JButton(tr("Run Scripts"));
+ runMoveScriptButton = new JButton(tr("Run Scripts"));
+ runTerminationScriptButton = new JButton(tr("Run Scripts"));
 
- saveTrainButton = new QPushButton(tr("Save Train")); }
+ saveTrainButton = new JButton(tr("Save Train")); }
 
  /*public*/ void TrainScriptFrame::initComponents(TrainEditFrame* parent)
 {
   // Set up script options in a Scroll Pane..
-  QGroupBox* buildScriptFrame = new QGroupBox;
+  JPanel* buildScriptFrame = new JPanel;
   buildScriptFrame->setLayout(new QVBoxLayout);
   buildScriptPane = new QScrollArea(/*pBuildScript*/);
   buildScriptPane->setWidgetResizable(true);
   buildScriptFrame->layout()->addWidget(buildScriptPane);
   //buildScriptPane->setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-  //buildScriptPane->setBorder(BorderFactory.createTitledBorder(tr("ScriptsBeforeBuild")));
-  buildScriptFrame->setStyleSheet(gbStyleSheet);
-  buildScriptFrame->setTitle(tr("Run the following scripts before building this train"));
+  buildScriptFrame->setBorder(BorderFactory::createTitledBorder(tr("Run the following scripts before building this train")));
 
-  QGroupBox* afterBuildScriptFrame = new QGroupBox;
+  JPanel* afterBuildScriptFrame = new JPanel;
   afterBuildScriptFrame->setLayout(new QVBoxLayout);
   afterBuildScriptPane = new QScrollArea(/*pAfterBuildScript*/);
   afterBuildScriptPane->setWidgetResizable(true);
@@ -86,20 +85,18 @@ namespace Operations
  // afterBuildScriptPane->setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 //  afterBuildScriptPane->setBorder(BorderFactory.createTitledBorder(Bundle
 //          .getMessage("ScriptsAfterBuild")));
-  afterBuildScriptFrame->setStyleSheet(gbStyleSheet);
-  afterBuildScriptFrame->setTitle(tr("Run the following scripts after building this train"));
+  afterBuildScriptFrame->setBorder(BorderFactory::createTitledBorder(tr("Run the following scripts after building this train")));
 
-  QGroupBox* moveScriptFrame = new QGroupBox;
+  JPanel* moveScriptFrame = new JPanel;
   moveScriptFrame->setLayout(new QVBoxLayout);
   moveScriptPane = new QScrollArea(/*pMoveScript*/);
   moveScriptPane->setWidgetResizable(true);
   moveScriptFrame->layout()->addWidget(moveScriptPane);
 //  moveScriptPane->setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 //  moveScriptPane->setBorder(BorderFactory.createTitledBorder(tr("ScriptsWhenMoved")));
-  moveScriptFrame->setStyleSheet(gbStyleSheet);
-  moveScriptFrame->setTitle(tr("Run the following scripts after this train is moved"));
+  moveScriptFrame->setBorder(BorderFactory::createTitledBorder(tr("Run the following scripts after this train is moved")));
 
-  QGroupBox* terminationScriptFrame = new QGroupBox;
+  JPanel* terminationScriptFrame = new JPanel;
   terminationScriptFrame->setLayout(new QVBoxLayout);
   terminationScriptPane = new QScrollArea(/*pTerminationScript*/);
   terminationScriptPane->setWidgetResizable(true);
@@ -107,16 +104,15 @@ namespace Operations
 //  terminationScriptPane->setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 //  terminationScriptPane->setBorder(BorderFactory.createTitledBorder(Bundle
 //          .getMessage("ScriptsWhenTerminated")));
-  terminationScriptFrame->setStyleSheet(gbStyleSheet);
-  terminationScriptFrame->setTitle(tr("Run the following scripts after this train terminates"));
+  terminationScriptFrame->setBorder(BorderFactory::createTitledBorder(tr("Run the following scripts after this train terminates")));
 
   // remember who called us
   //parent->setChildFrame(this);
   _train = parent->_train;
 
   // load managers
-  manager = TrainManager::instance();
-  managerXml = TrainManagerXml::instance();
+  manager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
+  managerXml = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"));
 
   //getContentPane()->setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
   QVBoxLayout* thisLayout = new QVBoxLayout(getContentPane());
@@ -126,19 +122,15 @@ namespace Operations
   p1->setLayout(new QHBoxLayout);//(p1, BoxLayout.X_AXIS));
 
   // row 1a
-  QGroupBox* pName = new QGroupBox();
+  JPanel* pName = new JPanel();
   pName->setLayout(new GridBagLayout());
-  //pName->setBorder(BorderFactory.createTitledBorder(tr("Name")));
-  pName->setStyleSheet(gbStyleSheet);
-  pName->setTitle(tr("Name"));
+  pName->setBorder(BorderFactory::createTitledBorder(tr("Name")));
   addItem(pName, trainName, 0, 0);
 
   // row 1b
-  QGroupBox* pDesc = new QGroupBox();
+  JPanel* pDesc = new JPanel();
   pDesc->setLayout(new GridBagLayout());
-  //pDesc->setBorder(BorderFactory.createTitledBorder(tr("Description")));
-  pDesc->setStyleSheet(gbStyleSheet);
-  pDesc->setTitle(tr("Description"));
+  pDesc->setBorder(BorderFactory::createTitledBorder(tr("Description")));
   addItem(pDesc, trainDescription, 0, 0);
 
   p1->layout()->addWidget(pName);
@@ -157,7 +149,7 @@ namespace Operations
   updateTerminationScriptPanel();
 
   // row 8 buttons
-  QWidget* pB = new QWidget();
+  JPanel* pB = new JPanel();
   pB->setLayout(new GridBagLayout());
   addItem(pB, saveTrainButton, 3, 0);
 
@@ -223,7 +215,7 @@ namespace Operations
    }
    for (int i = 0; i < scripts.size(); i++)
    {
-    QPushButton* removeBuildScripts = new QPushButton(tr("Remove Script"));
+    JButton* removeBuildScripts = new JButton(tr("Remove Script"));
     removeBuildScripts->setObjectName(scripts.at(i));
 //    removeBuildScripts.addActionListener(new java.awt.event.ActionListener() {
 //        /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
@@ -265,7 +257,7 @@ namespace Operations
           addItem(pAfterBuildScript, runAfterBuildScriptButton, 1, 0);
       }
       for (int i = 0; i < scripts.size(); i++) {
-          QPushButton* removeAfterBuildScripts = new QPushButton(tr("RemoveScript"));
+          JButton* removeAfterBuildScripts = new JButton(tr("RemoveScript"));
           removeAfterBuildScripts->setObjectName(scripts.at(i));
 //             removeAfterBuildScripts.addActionListener(new java.awt.event.ActionListener() {
 //                 /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
@@ -307,7 +299,7 @@ namespace Operations
              addItem(pMoveScript, runMoveScriptButton, 1, 0);
          }
          for (int i = 0; i < scripts.size(); i++) {
-             QPushButton* removeMoveScripts = new QPushButton(tr("Remove Script"));
+             JButton* removeMoveScripts = new JButton(tr("Remove Script"));
              removeMoveScripts->setObjectName(scripts.at(i));
 //             removeMoveScripts.addActionListener(new java.awt.event.ActionListener() {
 //                 /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
@@ -351,7 +343,7 @@ namespace Operations
    }
    for (int i = 0; i < scripts.size(); i++)
    {
-    QPushButton* removeTerminationScripts = new QPushButton(tr("RemoveScript"));
+    JButton* removeTerminationScripts = new JButton(tr("RemoveScript"));
     removeTerminationScripts->setObjectName(scripts.at(i));
 //             removeTerminationScripts.addActionListener(new java.awt.event.ActionListener() {
 //                 /*public*/ void actionPerformed(java.awt.event.ActionEvent e) {
@@ -370,7 +362,7 @@ namespace Operations
  // Save train, add scripts buttons
  /*public*/ void TrainScriptFrame::buttonActionPerformed(QWidget* ae)
 {
- QPushButton* source = (QPushButton*)ae;
+ JButton* source = (JButton*)ae;
   if (_train != NULL) {
       if (source == addBuildScriptButton) {
           log->debug("train add build script button activated");
@@ -432,7 +424,7 @@ namespace Operations
 
  /*public*/ void TrainScriptFrame::buttonActionRemoveBuildScript(QWidget* ae) {
      if (_train != NULL) {
-         QPushButton* rbutton = (QPushButton*) ae;
+         JButton* rbutton = (JButton*) ae;
          log->debug("remove build script button activated " + rbutton->objectName());
          _train->deleteBuildScript(rbutton->objectName());
          updateBuildScriptPanel();
@@ -442,7 +434,7 @@ namespace Operations
 
  /*public*/ void TrainScriptFrame::buttonActionRemoveAfterBuildScript(QWidget* ae) {
      if (_train != NULL) {
-         QPushButton* rbutton = (QPushButton*) ae;
+         JButton* rbutton = (JButton*) ae;
          log->debug("remove after build script button activated " + rbutton->objectName());
          _train->deleteAfterBuildScript(rbutton->objectName());
          updateAfterBuildScriptPanel();
@@ -452,7 +444,7 @@ namespace Operations
 
  /*public*/ void TrainScriptFrame::buttonActionRemoveMoveScript(QWidget* ae) {
      if (_train != NULL) {
-         QPushButton* rbutton = (QPushButton*) ae;
+         JButton* rbutton = (JButton*) ae;
          log->debug("remove move script button activated " + rbutton->objectName());
          _train->deleteMoveScript(rbutton->objectName());
          updateMoveScriptPanel();
@@ -462,7 +454,7 @@ namespace Operations
 
  /*public*/ void TrainScriptFrame::buttonActionRemoveTerminationScript(QWidget* ae) {
      if (_train != NULL) {
-         QPushButton* rbutton = (QPushButton*) ae;
+         JButton* rbutton = (JButton*) ae;
          log->debug("remove termination script button activated " + rbutton->objectName());
          _train->deleteTerminationScript(rbutton->objectName());
          updateTerminationScriptPanel();

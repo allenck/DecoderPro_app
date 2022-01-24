@@ -11,13 +11,14 @@
 #include "enginemanager.h"
 #include "enginemodels.h"
 #include "engine.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "carroads.h"
 #include "enginelengths.h"
 #include "enginetypes.h"
 #include "setup.h"
 #include "carowners.h"
 #include "instancemanager.h"
+#include "consistmanager.h"
 
 //EngineAttributeEditFrame::EngineAttributeEditFrame(QWidget *parent) :
 //  OperationsFrame(parent)
@@ -50,7 +51,7 @@ namespace Operations
 {
  setObjectName("EngineAttributeEditFrame");
  log = new Logger("EngineAttributeEditFrame");
- engineManager = EngineManager::instance();
+ engineManager = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"));
 }
 
 
@@ -58,6 +59,12 @@ namespace Operations
      initComponents(attribute, NONE);
  }
 
+ /**
+  *
+  * @param attribute One of the seven possible attributes for an engine.
+  * @param name      The name of the attribute to edit.
+  */
+ //@Override
  /*public*/ void EngineAttributeEditFrame::initComponents(QString attribute, QString name)
  {
   RollingStockAttributeEditFrame::initComponents(attribute, name);
@@ -65,26 +72,24 @@ namespace Operations
 
   // add help menu to window
   addHelpMenu("package.jmri.jmrit.operations.Operations_Locomotives", true); // NOI18N
-
-  initMinimumSize(QSize(Control::panelWidth400, Control::panelHeight250));
  }
 
  //@Override
-     /*protected*/ void EngineAttributeEditFrame::deleteAttributeName(QString deleteItem) {
-         RollingStockAttributeEditFrame::deleteAttributeName(deleteItem);
-         if (_attribute == (MODEL)) {
-             ((EngineModels*)InstanceManager::getDefault("EngineModels"))->deleteName(deleteItem);
-         }
-         if (_attribute == (TYPE)) {
-             ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->deleteName(deleteItem);
-         }
-         if (_attribute == (LENGTH)) {
-             ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->deleteName(deleteItem);
-         }
-         if (_attribute == (CONSIST)) {
-             engineManager->deleteConsist(deleteItem);
-         }
+ /*protected*/ void EngineAttributeEditFrame::deleteAttributeName(QString deleteItem) {
+     RollingStockAttributeEditFrame::deleteAttributeName(deleteItem);
+     if (_attribute == (MODEL)) {
+         ((EngineModels*)InstanceManager::getDefault("EngineModels"))->deleteName(deleteItem);
      }
+     if (_attribute == (TYPE)) {
+         ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->deleteName(deleteItem);
+     }
+     if (_attribute == (LENGTH)) {
+         ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->deleteName(deleteItem);
+     }
+     if (_attribute == (CONSIST)) {
+         ((ConsistManager*)InstanceManager::getDefault("Operations::ConsistManager"))->deleteConsist(deleteItem);
+     }
+ }
 
      //@Override
      /*protected*/ void EngineAttributeEditFrame::addAttributeName(QString addItem) {
@@ -103,7 +108,7 @@ namespace Operations
              }
          }
          if (_attribute == (CONSIST)) {
-             engineManager->newConsist(addItem);
+             ((ConsistManager*)InstanceManager::getDefault("Operations::ConsistManager"))->newConsist(addItem);
          }
      }
 
@@ -135,7 +140,7 @@ namespace Operations
              ((EngineModels*)InstanceManager::getDefault("EngineModels"))->replaceName(oldItem, newItem);
          }
          if (_attribute == (CONSIST)) {
-             engineManager->replaceConsistName(oldItem, newItem);
+            ((ConsistManager*)InstanceManager::getDefault("Operations::ConsistManager"))->replaceConsistName(oldItem, newItem);
          }
          if (_attribute == (TYPE)) {
              ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->replaceName(oldItem, newItem);
@@ -150,19 +155,20 @@ namespace Operations
          RollingStockAttributeEditFrame::loadCombobox();
          if (_attribute == (MODEL)) {
              comboBox = ((EngineModels*)InstanceManager::getDefault("EngineModels"))->getComboBox();
-             ((EngineModels*)InstanceManager::getDefault("EngineModels"))->addPropertyChangeListener((PropertyChangeListener*)this);
+             ((EngineModels*)InstanceManager::getDefault("EngineModels"))->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
          }
          if (_attribute == (TYPE)) {
              comboBox = ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->getComboBox();
-             ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->addPropertyChangeListener((PropertyChangeListener*)this);
+             ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
          }
          if (_attribute == LENGTH) {
              comboBox = ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->getComboBox();
-             ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->addPropertyChangeListener((PropertyChangeListener*)this);
+             ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this);
          }
          if (_attribute ==(CONSIST)) {
-             comboBox = engineManager->getConsistComboBox();
-             engineManager->addPropertyChangeListener((PropertyChangeListener*)this);
+          comboBox = ((ConsistManager*)InstanceManager::getDefault("Operations::ConsistManager"))->getComboBox();
+             ((ConsistManager*)InstanceManager::getDefault("Operations::ConsistManager"))->addPropertyChangeListener(this);
+
          }
      }
 
@@ -191,8 +197,8 @@ namespace Operations
          if (e->getPropertyName() == (EngineLengths::ENGINELENGTHS_CHANGED_PROPERTY)) {
              ((EngineLengths*)InstanceManager::getDefault("EngineLengths"))->updateComboBox(comboBox);
          }
-         if (e->getPropertyName() == (EngineManager::CONSISTLISTLENGTH_CHANGED_PROPERTY)) {
-             engineManager->updateConsistComboBox(comboBox);
+         if (e->getPropertyName() == (ConsistManager::LISTLENGTH_CHANGED_PROPERTY)) {
+          ((ConsistManager*)InstanceManager::getDefault("Operations::ConsistManager"))->updateComboBox(comboBox);
          }
      }
 

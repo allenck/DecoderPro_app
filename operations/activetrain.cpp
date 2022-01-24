@@ -1,5 +1,5 @@
 #include "activetrain.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "transit.h"
 #include "rosterentry.h"
 #include "roster.h"
@@ -8,13 +8,14 @@
 #include "instancemanager.h"
 #include "dispatcherframe.h"
 #include "autoactivetrain.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "section.h"
 #include "allocationrequest.h"
 #include "vptr.h"
 #include "allocatedsection.h"
 #include "layouteditor.h"
 #include <QDateTime>
+#include "path.h"
 
 //ActiveTrain::ActiveTrain(QObject *parent) : QObject(parent)
 //{
@@ -162,7 +163,7 @@
   _holdAllocation = false;
 
   // Property Change Support
-  pcs = new PropertyChangeSupport(this);
+  pcs = new SwingPropertyChangeSupport(this, nullptr);
 
 
   mTransit = t;
@@ -188,7 +189,7 @@
     mStarted = true;
     mStatus = RUNNING;
     setStatus(WAITING);
-    if (mAutoActiveTrain != NULL && DispatcherFrame::instance()->getSignalType() == DispatcherFrame::SIGNALMAST) {
+    if (mAutoActiveTrain != NULL && ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getSignalType() == DispatcherFrame::SIGNALMAST) {
         mAutoActiveTrain->setupNewCurrentSignal(NULL);
     }
 }
@@ -249,7 +250,7 @@
             firePropertyChange("status", (old), (mStatus));
         }
         if (mStatus == DONE && terminateWhenFinished) {
-            DispatcherFrame::instance()->terminateActiveTrain(this);
+            ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->terminateActiveTrain(this);
         }
     } else {
         log->error("Invalid ActiveTrain status - " + status);
@@ -411,30 +412,47 @@
         log->error("Call to initialise delay on start sensor, but none specified");
         return;
     }
-#if 0
+#if 1
     if (delaySensorListener == NULL) {
-        /*final*/ ActiveTrain at = this;
-        delaySensorListener = new PropertyChangeListener() {
-            //@Override
-            /*public*/ void propertyChange(PropertyChangeEvent e) {
-                if (e.getPropertyName() == ("KnownState")) {
-                    if (((Integer) e.getNewValue()).intValue() == jmri.Sensor.ACTIVE) {
-                        getDelaySensor().removePropertyChangeListener(delaySensorListener);
-                        DispatcherFrame.instance().removeDelayedTrain(at);
-                        setStarted();
-                        DispatcherFrame.instance().forceScanOfAllocation();
-                        try {
-                            getDelaySensor().setKnownState(jmri.Sensor.INACTIVE);
-                        } catch (jmri.JmriException ex) {
-                            log.error("Error reseting start sensor back to in active");
-                        }
-                    }
-                }
-            }
-        };
+        /*final*/ ActiveTrain* at = this;
+        delaySensorListener = new DSLPropertyChangeListener(at);
+//        {
+//            //@Override
+//            /*public*/ void propertyChange(PropertyChangeEvent e) {
+//                if (e.getPropertyName() == ("KnownState")) {
+//                    if (((Integer) e.getNewValue()).intValue() == jmri.Sensor.ACTIVE) {
+//                        getDelaySensor().removePropertyChangeListener(delaySensorListener);
+//                        DispatcherFrame.instance().removeDelayedTrain(at);
+//                        setStarted();
+//                        DispatcherFrame.instance().forceScanOfAllocation();
+//                        try {
+//                            getDelaySensor().setKnownState(jmri.Sensor.INACTIVE);
+//                        } catch (jmri.JmriException ex) {
+//                            log.error("Error reseting start sensor back to in active");
+//                        }
+//                    }
+//                }
+//            }
+//        };
     }
-    getDelaySensor().addPropertyChangeListener(delaySensorListener);
+    getDelaySensor()->addPropertyChangeListener(delaySensorListener);
 #endif
+}
+
+/*public*/ void DSLPropertyChangeListener::propertyChange(PropertyChangeEvent* e) {
+    if (e->getPropertyName() == ("KnownState")) {
+        if (( e->getNewValue()).toInt() == Sensor::ACTIVE) {
+            at->getDelaySensor()->removePropertyChangeListener(at->delaySensorListener);
+            ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->removeDelayedTrain(at);
+            at->setStarted();
+            ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->queueScanOfAllocationRequests();
+            try {
+                at->getDelaySensor()->setKnownState(Sensor::INACTIVE);
+            } catch (JmriException* ex) {
+                at->log->error("Error reseting start sensor back to in active");
+            }
+        }
+    }
 }
 
 /*public*/ void ActiveTrain::initializeRestartSensor() {
@@ -442,31 +460,49 @@
         log->error("Call to initialise delay on start sensor, but none specified");
         return;
     }
-#if 0
+#if 1
     if (restartSensorListener == NULL) {
-        final ActiveTrain at = this;
-        restartSensorListener = new PropertyChangeListener() {
-            //@Override
-            /*public*/ void propertyChange(PropertyChangeEvent e) {
-                if (e.getPropertyName() == ("KnownState")) {
-                    if (((Integer) e.getNewValue()).intValue() == jmri.Sensor.ACTIVE) {
-                        getRestartSensor().removePropertyChangeListener(restartSensorListener);
-                        restartSensorListener = NULL;
-                        DispatcherFrame.instance().removeDelayedTrain(at);
-                        restart();
-                        DispatcherFrame.instance().forceScanOfAllocation();
-                        try {
-                            getRestartSensor().setKnownState(jmri.Sensor.INACTIVE);
-                        } catch (jmri.JmriException ex) {
-                            log.error("Error reseting start sensor back to in active");
-                        }
-                    }
-                }
-            }
-        };
+        /*final*/ ActiveTrain* at = this;
+        restartSensorListener = new RSLPropertyChangeListener(at);
+//        {
+//            //@Override
+//            /*public*/ void propertyChange(PropertyChangeEvent e) {
+//                if (e.getPropertyName() == ("KnownState")) {
+//                    if (((Integer) e.getNewValue()).intValue() == jmri.Sensor.ACTIVE) {
+//                        getRestartSensor().removePropertyChangeListener(restartSensorListener);
+//                        restartSensorListener = NULL;
+//                        DispatcherFrame.instance().removeDelayedTrain(at);
+//                        restart();
+//                        DispatcherFrame.instance().forceScanOfAllocation();
+//                        try {
+//                            getRestartSensor().setKnownState(jmri.Sensor.INACTIVE);
+//                        } catch (jmri.JmriException ex) {
+//                            log.error("Error reseting start sensor back to in active");
+//                        }
+//                    }
+//                }
+//            }
+//        };
     }
-    getRestartSensor().addPropertyChangeListener(restartSensorListener);
+    getRestartSensor()->addPropertyChangeListener(restartSensorListener);
 #endif
+}
+
+/*public*/ void RSLPropertyChangeListener::propertyChange(PropertyChangeEvent* e) {
+    if (e->getPropertyName() == ("KnownState")) {
+        if (( e->getNewValue()).toInt() == Sensor::ACTIVE) {
+            at->getRestartSensor()->removePropertyChangeListener(at->restartSensorListener);
+            at->restartSensorListener = NULL;
+            ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->removeDelayedTrain(at);
+            at->restart();
+            ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->queueScanOfAllocationRequests();
+            try {
+                at->getRestartSensor()->setKnownState(Sensor::INACTIVE);
+            } catch (JmriException* ex) {
+                at->log->error("Error reseting start sensor back to in active");
+            }
+        }
+    }
 }
 
 /*public*/ void ActiveTrain::setTrainType(int type) {
@@ -617,8 +653,8 @@
 }
 #endif
 /*private*/ void ActiveTrain::refreshPanel() {
-    if (DispatcherFrame::instance()->getLayoutEditor() != NULL) {
-        DispatcherFrame::instance()->getLayoutEditor()->redrawPanel();
+    if (((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getLayoutEditor() != NULL) {
+        ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getLayoutEditor()->redrawPanel();
     }
 }
 
@@ -641,7 +677,7 @@
     if (mAutoRun) {
         mAutoActiveTrain->removeAllocatedSection(as);
     }
-    if (DispatcherFrame::instance()->getNameInAllocatedBlock()) {
+    if (((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getNameInAllocatedBlock()) {
         as->getSection()->clearNameInUnoccupiedBlocks();
         as->getSection()->suppressNameUpdate(false);
     }
@@ -663,13 +699,13 @@
     setStatus(WAITING);
     setTransitReversed(false);
     QList<AllocatedSection*>* sectionsToRelease = new QList<AllocatedSection*>();
-    for (AllocatedSection* as : *DispatcherFrame::instance()->getAllocatedSectionsList()) {
+    for (AllocatedSection* as : *((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getAllocatedSectionsList()) {
         if (as->getActiveTrain() == this) {
             sectionsToRelease->append(as);
         }
     }
     for (AllocatedSection* as : *sectionsToRelease) {
-        DispatcherFrame::instance()->releaseAllocatedSection(as, true); // need to find Allocated Section
+        ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->releaseAllocatedSection(as, true); // need to find Allocated Section
         as->getSection()->setState(Section::FREE);
     }
     if (mLastAllocatedSection != NULL) {
@@ -680,23 +716,23 @@
     if (mAutoRun) {
         mAutoActiveTrain->allocateAFresh();
     }
-    DispatcherFrame::instance()->allocateNewActiveTrain(this);
+    ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->allocateNewActiveTrain(this);
 }
 
 /*public*/ void ActiveTrain::clearAllocations() {
-    for (AllocatedSection* as : *getAllocatedSectionList()) {
+    for (AllocatedSection* as : getAllocatedSectionList()) {
         removeAllocatedSection(as);
     }
 }
 
-/*public*/ QList<AllocatedSection*>* ActiveTrain::getAllocatedSectionList() {
-    QList<AllocatedSection*>* list = new QList<AllocatedSection*>();
+/*public*/ QList<AllocatedSection*> ActiveTrain::getAllocatedSectionList() {
+    QList<AllocatedSection*> list = QList<AllocatedSection*>();
     for (int i = 0; i < mAllocatedSections->size(); i++) {
-        list->append(mAllocatedSections->at(i));
+        list.append(mAllocatedSections->at(i));
     }
     return list;
 }
-#if 0
+#if 1
 /**
  * Returns list of all Blocks occupied by or allocated to this train.
  * They are in order from the tail of the train to the head
@@ -705,60 +741,60 @@
  * blocks.
  * TODO: doesn't handle reversing of adjacent mult-block sections well
  */
-/*public*/ java.util.ArrayList<Block> getBlockList() {
-    ArrayList<Block> list = new ArrayList<Block>();
-    for (int i = 0; i < mAllocatedSections.size(); i++) { // loop thru allocated sections, then all blocks for each section
-        Section s = mAllocatedSections.get(i).getSection();
-        ArrayList<Block> bl = s.getBlockList();
-        if (bl.size() > 1) { //sections with multiple blocks need extra logic
+/*public*/ QList<Block*> ActiveTrain::getBlockList() {
+    QList<Block*> list = QList<Block*>();
+    for (int i = 0; i < mAllocatedSections->size(); i++) { // loop thru allocated sections, then all blocks for each section
+        Section* s = mAllocatedSections->at(i)->getSection();
+        QVector<Block*>* bl = s->getBlockList();
+        if (bl->size() > 1) { //sections with multiple blocks need extra logic
 
             bool blocksConnected = true;
             //determine if blocks should be added in forward or reverse order based on connectivity
             if (i==0) { //for first section, compare last block to first of next section
-                if (mAllocatedSections.size() > 1 &&  //only one section, assume forward
-                        !connected(bl.get(bl.size()-1), mAllocatedSections.get(i+1).getSection().getBlockList().get(0))) {
+                if (mAllocatedSections->size() > 1 &&  //only one section, assume forward
+                        !connected(bl->at(bl->size()-1), mAllocatedSections->at(i+1)->getSection()->getBlockList()->at(0))) {
                     blocksConnected = false;
                 }
             } else { //not first section, check for connectivity between last block in list, and first block in this section
-                if (!connected(list.get(list.size()-1), bl.get(0))) { //last block is not connected to first block, add reverse
+                if (!connected(list.at(list.size()-1), bl->at(0))) { //last block is not connected to first block, add reverse
                     blocksConnected = false;
                 }
             }
             if (blocksConnected) { //blocks were connected, so add to outgoing in forward order
-                for (int j = 0; j < bl.size();j++) {
-                    Block b = bl.get(j);
-                    list.add(b);
-                    log.trace("block {} ({}) added to list for Section {} (fwd)", b.getDisplayName(),
-                            (b.getState()==Block.OCCUPIED?"OCCUPIED":"UNOCCUPIED"),
-                            s.getDisplayName());
+                for (int j = 0; j < bl->size();j++) {
+                    Block* b = bl->at(j);
+                    list.append(b);
+                    log->trace(tr("block %1 (%2) added to list for Section %3 (fwd)").arg(b->getDisplayName(),
+                            (b->getState()==Block::OCCUPIED?"OCCUPIED":"UNOCCUPIED"),
+                            s->getDisplayName()));
                 }
             } else { //not connected, add in reverse order
-                for (int j = bl.size()-1; j >= 0;j--) {
-                    Block b = bl.get(j);
-                    list.add(b);
-                    log.trace("block {} ({}) added to list for Section {} (rev)", b.getDisplayName(),
-                            (b.getState()==Block.OCCUPIED?"OCCUPIED":"UNOCCUPIED"),
-                            s.getDisplayName());
+                for (int j = bl->size()-1; j >= 0;j--) {
+                    Block* b = bl->at(j);
+                    list.append(b);
+                    log->trace(tr("block %1 (%2) added to list for Section %3 (rev)").arg(b->getDisplayName(),
+                            (b->getState()==Block::OCCUPIED?"OCCUPIED":"UNOCCUPIED"),
+                            s->getDisplayName()));
                 }
             }
 
         } else { //single block sections are simply added to the outgoing list
-            Block b = bl.get(0);
-            list.add(b);
-            log.trace("block {} ({}) added to list for Section {} (one)", b.getDisplayName(),
-                    (b.getState()==Block.OCCUPIED?"OCCUPIED":"UNOCCUPIED"),
-                    s.getDisplayName());
+            Block* b = bl->at(0);
+            list.append(b);
+            log->trace(tr("block %1 (%2) added to list for Section %3 (one)").arg(b->getDisplayName(),
+                    (b->getState()==Block::OCCUPIED?"OCCUPIED":"UNOCCUPIED"),
+                    s->getDisplayName()));
         }
     }
     return list;
 }
 
 /* copied from Section.java */
-/*private*/ bool connected(Block b1, Block b2) {
+/*private*/ bool ActiveTrain::connected(Block* b1, Block* b2) {
     if ((b1 != NULL) && (b2 != NULL)) {
-        List<Path> paths = b1.getPaths();
-        for (int i = 0; i < paths.size(); i++) {
-            if (paths.get(i).getBlock() == b2) {
+        QVector<Path*>* paths = b1->getPaths();
+        for (int i = 0; i < paths->size(); i++) {
+            if (paths->at(i)->getBlock() == b2) {
                 return true;
             }
         }
@@ -889,8 +925,8 @@
 /*public*/ void ActiveTrain::setAllocateAllTheWay(bool s) {
     mAllocateAllTheWay = s;
 }
-#if 0
-protected Section* getSecondAllocatedSection() {
+#if 1
+/*protected*/ Section* ActiveTrain::getSecondAllocatedSection() {
     return mSecondAllocatedSection;
 }
 #endif
@@ -921,30 +957,30 @@ protected Section* getSecondAllocatedSection() {
         log->error("ERROR - Insufficient information to initialize first allocation");
         return NULL;
     }
-    if (!DispatcherFrame::instance()->requestAllocation(this,
+    if (!((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->requestAllocation(this,
             mNextSectionToAllocate, mNextSectionDirection, mNextSectionSeqNumber, true, NULL)) {
         log->error("Allocation request failed for first allocation of " + getActiveTrainName());
     }
-    if (DispatcherFrame::instance()->getRosterEntryInBlock() && getRosterEntry() != NULL) {
+    if (((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getRosterEntryInBlock() && getRosterEntry() != NULL) {
         mStartBlock->setValue(VPtr<RosterEntry>::asQVariant(getRosterEntry()));
      //mStartBlock->setValue(QVariant(getRosterEntry()));
-    } else if (DispatcherFrame::instance()->getShortNameInBlock()) {
+    } else if (((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->getShortNameInBlock()) {
         mStartBlock->setValue(mTrainName);
     }
-    AllocationRequest* ar = DispatcherFrame::instance()->findAllocationRequestInQueue(mNextSectionToAllocate,
+    AllocationRequest* ar = ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->findAllocationRequestInQueue(mNextSectionToAllocate,
             mNextSectionSeqNumber, mNextSectionDirection, this);
     return ar;
 }
-#if 0
-protected bool addEndSection(Section* s, int seq) {
-    AllocatedSection as = mAllocatedSections.get(mAllocatedSections.size() - 1);
+#if 1
+/*protected*/ bool ActiveTrain::addEndSection(Section* s, int seq) {
+    AllocatedSection* as = mAllocatedSections->at(mAllocatedSections->size() - 1);
     if (!as->setNextSection(s, seq)) {
         return false;
     }
     setEndBlockSection(s);
     setEndBlockSectionSequenceNumber(seq);
     //At this stage the section direction hasn't been set, by default the exit block returned is the reverse if the section is free
-    setEndBlock(s.getExitBlock());
+    setEndBlock(s->getExitBlock());
     mNextSectionSeqNumber = seq;
     mNextSectionToAllocate = s;
     return true;
@@ -952,8 +988,8 @@ protected bool addEndSection(Section* s, int seq) {
 
 /*This is for use where the transit has been extended, then the last section has been cancelled no
  checks are performed, these should be done by a higher level code*/
-protected void removeLastAllocatedSection() {
-    AllocatedSection as = mAllocatedSections.get(mAllocatedSections.size() - 1);
+/*protected*/ void ActiveTrain::removeLastAllocatedSection() {
+    AllocatedSection* as = mAllocatedSections->at(mAllocatedSections->size() - 1);
     //Set the end block using the AllocatedSections exit block before clearing the next section in the allocatedsection
     setEndBlock(as->getExitBlock());
 
@@ -966,17 +1002,17 @@ protected void removeLastAllocatedSection() {
     mNextSectionToAllocate = NULL;
 }
 
-protected AllocatedSection reverseAllAllocatedSections() {
-    AllocatedSection aSec = NULL;
-    for (int i = 0; i < mAllocatedSections.size(); i++) {
-        aSec = mAllocatedSections.get(i);
-        int dir = mTransit.getDirectionFromSectionAndSeq(aSec.getSection(), aSec.getSequence());
-        if (dir == jmri.Section.FORWARD) {
-            aSec.getSection().setState(jmri.Section.REVERSE);
+/*protected*/ AllocatedSection* ActiveTrain::reverseAllAllocatedSections() {
+    AllocatedSection* aSec = NULL;
+    for (int i = 0; i < mAllocatedSections->size(); i++) {
+        aSec = mAllocatedSections->at(i);
+        int dir = mTransit->getDirectionFromSectionAndSeq(aSec->getSection(), aSec->getSequence());
+        if (dir == Section::FORWARD) {
+            aSec->getSection()->setState(Section::REVERSE);
         } else {
-            aSec.getSection().setState(jmri.Section.FORWARD);
+            aSec->getSection()->setState(Section::FORWARD);
         }
-        aSec.setStoppingSensors();
+        aSec->setStoppingSensors();
     }
     return aSec;
 }
@@ -1008,7 +1044,7 @@ protected AllocatedSection reverseAllAllocatedSections() {
         restartHr = nowHours + hours + ((nowMinutes + minutes) / 60);
         restartMin = ((nowMinutes + minutes) % 60);
     }
-    DispatcherFrame::instance()->addDelayedTrain(this);
+    ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->addDelayedTrain(this);
 }
 
 /*protected*/ void ActiveTrain::holdAllocation(bool boo) {
@@ -1031,25 +1067,25 @@ protected AllocatedSection reverseAllAllocatedSections() {
         mAutoActiveTrain->setupNewCurrentSignal(NULL);
     }
 }
-#if 0
-/*public*/ void terminate() {
-    DispatcherFrame.instance().removeDelayedTrain(this);
+#if 1
+/*public*/ void ActiveTrain::terminate() {
+    ((DispatcherFrame*)InstanceManager::getDefault("DispatcherFrame"))->removeDelayedTrain(this);
     if (getDelaySensor() != NULL && delaySensorListener != NULL) {
-        getDelaySensor().removePropertyChangeListener(delaySensorListener);
+        getDelaySensor()->removePropertyChangeListener(delaySensorListener);
     }
     if (getRestartSensor() != NULL && restartSensorListener != NULL) {
-        getRestartSensor().removePropertyChangeListener(restartSensorListener);
+        getRestartSensor()->removePropertyChangeListener(restartSensorListener);
     }
-    mTransit.setState(jmri.Transit.IDLE);
+    mTransit->setState(Transit::IDLE);
 }
 
-/*public*/ void dispose() {
-    getTransit().removeTemporarySections();
+/*public*/ void ActiveTrain::dispose() {
+    getTransit()->removeTemporarySections();
 }
 
 
-/*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener l) {
-    pcs.addPropertyChangeListener(l);
+/*public*/ /*synchronized*/ void ActiveTrain::addPropertyChangeListener(PropertyChangeListener* l) {
+    pcs->SwingPropertyChangeSupport::addPropertyChangeListener(l);
 }
 #endif
 /*protected*/ void ActiveTrain::firePropertyChange(QString p, QVariant old, QVariant n) {

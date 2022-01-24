@@ -1,26 +1,28 @@
 #ifndef PROXYTURNOUTMANAGER_H
 #define PROXYTURNOUTMANAGER_H
-#include "abstractproxyturnoutmanager.h"
+#include "abstractprovidingproxymanager.h"
 #include "turnoutmanager.h"
 #include "internalturnoutmanager.h"
 #include "exceptions.h"
+
 class QCompleter;
-class LIBPR3SHARED_EXPORT ProxyTurnoutManager : public AbstractProxyTurnoutManager/*, public TurnoutManager*/
+class LIBPR3SHARED_EXPORT ProxyTurnoutManager : public AbstractProvidingProxyManager, public TurnoutManager
 {
- Q_OBJECT
+  Q_OBJECT
+  Q_INTERFACES(TurnoutManager)
 public:
  ProxyTurnoutManager(QObject* parent = 0);
  /**
   * Revise superclass behavior: support TurnoutOperations
   */
- /*public*/ void addManager(Manager* m) override;
+ /*public*/ void addManager(AbstractManager* m) override;
  /**
   * Locate via user name, then system name if needed.
   *
   * @param name
   * @return Null if nothing by that name exists
   */
- /*public*/ Turnout* getTurnout(QString name)const override;
+ /*public*/ Turnout* getTurnout(QString name) override;
 #if 0
  /**
   * Locate an instance based on a system name.  Returns null if no
@@ -63,7 +65,7 @@ public:
   * be looking them up.
   * @return requested Sensor object (never null)
   */
- /*public*/ Turnout* newTurnout(QString systemName, QString userName)const override;
+ /*public*/ Turnout* newTurnout(QString systemName, QString userName) override;
  /**
   * Get text to be used for the Turnout.CLOSED state in user communication.
   * Allows text other than "CLOSED" to be use with certain hardware system
@@ -113,30 +115,41 @@ public:
   */
  /*public*/ QStringList getValidOperationTypes() override;
  /*public*/ bool allowMultipleAdditions(QString systemName) override;
- /*public*/ QString createSystemName(QString curAddress, QString prefix)const throw (JmriException) override;
- /*public*/ QString getNextValidAddress(QString curAddress, QString prefix)const throw (JmriException) override;
- /*public*/ void setDefaultClosedSpeed(QString speed)const throw (JmriException) override;
- /*public*/ void setDefaultThrownSpeed(QString speed)const throw (JmriException) override;
+ /*public*/ QString createSystemName(QString curAddress, QString prefix) /*throw (JmriException)*/ override;
+ /*public*/ QString getNextValidAddress(QString curAddress, QString prefix) /*throw (JmriException)*/ override;
+ /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) /*throws jmri.JmriException*/override;
+ /*public*/ void setDefaultClosedSpeed(QString speed) /*throw (JmriException)*/ override;
+ /*public*/ void setDefaultThrownSpeed(QString speed) /*throw (JmriException)*/ override;
  /*public*/ QString getDefaultThrownSpeed()const override;
  /*public*/ QString getDefaultClosedSpeed()const override;
  /*public*/ int getXMLOrder() const  override;
  QCompleter* getCompleter(QString text);
- /*public*/ Turnout* provideTurnout(QString name) const override;
- /*public*/ Turnout* provide(QString name) const throw (IllegalArgumentException) override;
+ /*public*/ Turnout* provideTurnout(QString name)  override;
+ /*public*/ Turnout* provide(QString name)  /*throw (IllegalArgumentException)*/ override;
  /*public*/ QString getNamedBeanClass()const override {
      return "Turnout";
  }
+ /*public*/ QString toString()override {return "ProxyTurnoutManager";}
+
+ /*public*/ SystemConnectionMemo* getMemo() override {return AbstractProxyManager::getMemo();}
+ /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractProxyManager::getNamedBeanSet();}
+ /*public*/ Turnout* getBySystemName(QString name) override {return (Turnout*)AbstractProxyManager::getBySystemName(name);}
+ /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractProxyManager::addPropertyChangeListener(l); }
+ QObject* self() override {return (QObject*)this;}
 
 public slots:
 
 
 signals:
- void propertyChange(PropertyChangeEvent *e);
+ void propertyChange(PropertyChangeEvent *e)override;
 private:
  Logger log;
+ /*private*/ QString defaultClosedSpeed = "Normal";
+ /*private*/ QString defaultThrownSpeed = "Restricted";
+
 protected:
- virtual /*protected*/ Manager* makeInternalManager() const ;
- virtual/*protected*/ NamedBean* makeBean(int i, QString systemName, QString userName) const;
+ virtual /*protected*/ AbstractManager* makeInternalManager()  override;
+ /*protected*/ Turnout* makeBean(AbstractManager/*<Turnout>*/* manager, QString systemName, QString userName) /*throws IllegalArgumentException*/ override;
  ///*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
 
  friend class AbstractProxyManager;

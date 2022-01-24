@@ -7,10 +7,11 @@
 #include "jpanel.h"
 #include "namedbeancombobox.h"
 #include "jlabel.h"
+#include "layouttrack.h"
+#include "layouttrackview.h"
 
 class LayoutBlock;
 class ActionListener;
-class LayoutTrack;
 class BlockManager;
 class LayoutEditor;
 class LayoutTrackEditor : public QObject
@@ -19,7 +20,7 @@ class LayoutTrackEditor : public QObject
  public:
   /*public*/ LayoutTrackEditor(/*@Nonnull*/ LayoutEditor* layoutEditor);
   static /*public*/ LayoutTrackEditor* makeTrackEditor(/*@Nonnull*/ LayoutTrack* layoutTrack, /*@Nonnull*/ LayoutEditor* layoutEditor);
-  /*abstract*/ /*public*/ virtual void editLayoutTrack(/*@Nonnull*/ LayoutTrack* layoutTrack) =0;
+  /*abstract*/ /*public*/ virtual void editLayoutTrack(/*@Nonnull*/ LayoutTrackView* layoutTrackView) =0;
 
  signals:
 
@@ -49,9 +50,9 @@ class LTE_LayoutTrackEditor : public LayoutTrackEditor
   Q_OBJECT
  public:
   LTE_LayoutTrackEditor(LayoutEditor* editor): LayoutTrackEditor(editor){}
-  /*public*/ void editLayoutTrack(/*@Nonnull*/ LayoutTrack* /*layoutTrack*/) override
+  /*public*/ void editLayoutTrack(/*@Nonnull*/ LayoutTrackView* /*layoutTrack*/) override
   {
-   log->error("Not a valid LayoutTrackEditor implementation",  Exception("traceback"));
+   log->error("Not a valid LayoutTrackEditor implementation",  new Throwable("traceback"));
   }
 
 };

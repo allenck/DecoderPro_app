@@ -25,13 +25,13 @@ public:
     /*public*/ bool isMultipleInstances();
     static QList<TabbedTableItemListArray*>* tabbedTableItemListArrayArray;// = new QList<TabbedTableItemListArray*>();
     /*public*/ ListedTableFrame(QString s, QWidget* parent = 0);
-    /*public*/ void initComponents();
+    /*public*/ void initComponents() override;
     /*public*/ void gotoListItem(QString selection);
     /*public*/ void addTable(QString aaClass, QString choice, bool stdModel);
-    /*public*/ void dispose();
+    /*public*/ void dispose() override;
     /*public*/ void setDividerLocation(int loc);
     /*public*/ int getDividerLocation();
-    /*public*/ QString getClassName();
+    /*public*/ QString getClassName() override;
     /*public*/ void setWindowSize();
 
 public slots:
@@ -155,9 +155,11 @@ public slots:
     /*protected*/ void addToBottomBox(QWidget* comp);
     friend class ListedTableFrame;
 };
-class LTFrameActionListener : public ActionListener
+
+class LTFrameActionListener : public QObject, public ActionListener
 {
   Q_OBJECT
+    Q_INTERFACES(ActionListener)
   ActionJList* ajl;
  int index;
 public:
@@ -165,8 +167,9 @@ public:
  {
   this->index = index;
  }
+ QObject* self() override{return (QObject*)this;}
 public slots:
- void actionPerformed()
+ void actionPerformed(JActionEvent */*e*/ = 0)override
  {
   ajl->openNewTableWindow(index);
  }

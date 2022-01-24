@@ -1,7 +1,7 @@
 #include "abstractactionmodel.h"
 #include <QStringList>
 #include "stringutil.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "fileutil.h"
 #include <QMap>
 #include <QTextStream>
@@ -13,6 +13,7 @@
 #include "connectionnamefromsystemname.h"
 #include "systemconnectionaction.h"
 #include "loconetmenustartupaction.h"
+#include <QTimer>
 
 //AbstractActionModel::AbstractActionModel(QObject *parent) :
 //    QObject(parent)
@@ -98,7 +99,7 @@
    Class::forName(className);
    return true;
   }
-  catch (ClassNotFoundException ex)
+  catch (ClassNotFoundException* ex)
   {
    return false;
   }
@@ -130,36 +131,41 @@
 }
 
 //@Override
-/*public*/ void AbstractActionModel::performAction(QString text) throw (JmriException)
+/*public*/ void AbstractActionModel::performAction() /*throw (JmriException)*/
 {
  log->debug(tr("Invoke Action from %1").arg(className));
  try
  {
   Action* action = (Action*) Class::forName(className)/*->newInstance()*/;
-  if(className == "LocoNetMenuStartupAction" || className.endsWith( "LocoNetMenuStartupAction"))
-   ((LocoNetMenuStartupAction*)action)->setTitle(text);
   //if (SystemConnectionAction.class.isAssignableFrom(action->getClass()))
   if(((Class*)action)->isAssignableFrom("SystemConnectionAction"))
   {
    SystemConnectionMemo* memo = ConnectionNameFromSystemName::getSystemConnectionMemoFromSystemPrefix(this->getSystemPrefix());
    if (memo != NULL) {
-       ((SystemConnectionAction*) action)->setSystemConnectionMemo(memo);
+       ((SystemConnectionAction/*<SystemConnectionMemo*>*/*) action)->setSystemConnectionMemo(memo);
    } else {
        log->warn(tr("Connection \"%1\" does not exist and cannot be assigned to action %2\nThis warning can be silenced by configuring the connection associated with the startup action.").arg(this->getSystemPrefix()).arg(className));
    }
   }
-  this->performAction(action);
- } catch (ClassNotFoundException ex) {
+//  jmri.util.ThreadingUtil.runOnLayout(() -> {
+//   try {
+//       this.performAction(action);
+//   } catch (JmriException ex) {
+//       log.error("Error while performing startup action for class: {}", className, ex);
+//   }
+// });
+  QTimer::singleShot(1000, [=]() {this->performAction(action);});
+ } catch (ClassNotFoundException* ex) {
      log->error(tr("Could not find specified class: %1").arg(className));
- } catch (IllegalAccessException ex) {
+ } catch (IllegalAccessException* ex) {
      log->error(tr("Unexpected access exception for class: %1").arg(className), ex);
-     throw JmriException(ex.getMessage());
- } catch (InstantiationException ex) {
+     throw new JmriException(ex->getMessage());
+ } catch (InstantiationException* ex) {
      log->error(tr("Could not instantiate specified class: %1").arg(className), ex);
-     throw JmriException(ex.getMessage());
- } catch (Exception ex) {
+     throw new JmriException(ex->getMessage());
+ } catch (Exception* ex) {
      log->error(tr("Error while performing startup action for class: %1").arg(className), ex);
-     throw JmriException(ex.getMessage());
+     throw new JmriException(ex->getMessage());
  }
 }
 
@@ -173,4 +179,4 @@
     this->exceptions->append(exception);
 }
 
-/*protected*/ /*abstract*/ void AbstractActionModel::performAction(Action* action) throw (JmriException) {}
+/*protected*/ /*abstract*/ void AbstractActionModel::performAction(Action* action) /*throw (JmriException)*/ {}

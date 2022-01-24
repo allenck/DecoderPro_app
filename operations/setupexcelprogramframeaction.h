@@ -1,6 +1,9 @@
 #ifndef SETUPEXCELPROGRAMFRAMEACTION_H
 #define SETUPEXCELPROGRAMFRAMEACTION_H
 #include "abstractaction.h"
+#include "setupexcelprogrammanifestframe.h"
+#include <QPointer>
+
 namespace Operations
 {
 
@@ -11,9 +14,9 @@ namespace Operations
  public:
   SetupExcelProgramFrameAction(QString s, QObject* parent);
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* e);
+  /*public*/ void actionPerformed(JActionEvent *e);
  private:
-  SetupExcelProgramManifestFrame* f;// = NULL;
+  QPointer<SetupExcelProgramManifestFrame> f;// = NULL;
 
  };
 }

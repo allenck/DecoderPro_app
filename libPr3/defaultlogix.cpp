@@ -101,7 +101,7 @@
  try
  {
   if(order < 0 || order >= _conditionalSystemNames->count())
-   throw IndexOutOfBoundsException("invalid order");
+   throw new IndexOutOfBoundsException("invalid order");
   return _conditionalSystemNames->at(order);
  }
  catch (IndexOutOfBoundsException ioob)
@@ -1058,7 +1058,7 @@ public void getStateVariableList(ArrayList <ConditionalVariable> varList, ArrayL
    nb->removePropertyChangeListener(listener);
    return;
   }
- } catch (Exception ex) {
+ } catch (Exception* ex) {
      log->error(tr("Bad name for listener on \"%1\": ").arg(listener->getDevName()), ex);  // NOI18N
  }
  log->error(tr("Bad name for ") + msg + " listener on \"" + listener->getDevName()  // NOI18N
@@ -1281,7 +1281,7 @@ ArrayList <String[]> loopGremlins = NULL;
     return;
 }
 //@Override
-/*public*/ void DefaultLogix::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException)
+/*public*/ void DefaultLogix::vetoableChange(PropertyChangeEvent* evt) /*throw  (PropertyVetoException)*/
 {
  if ("CanDelete" == (evt->getPropertyName()))
  {   // NOI18N
@@ -1290,7 +1290,7 @@ ArrayList <String[]> loopGremlins = NULL;
   {
    if (nb->equals(listener->getBean())) {
        PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());  // NOI18N
-       throw PropertyVetoException(tr("%1 is in use by Logix \"%2\" as a Trigger").arg(nb->getBeanType()).arg(getDisplayName()), e);   // NOI18N
+       throw new PropertyVetoException(tr("%1 is in use by Logix \"%2\" as a Trigger").arg(nb->getBeanType()).arg(getDisplayName()), e);   // NOI18N
    }
   }
 
@@ -1307,7 +1307,7 @@ ArrayList <String[]> loopGremlins = NULL;
      if (nb->equals(ca->getBean()))
      {
       PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());  // NOI18N
-      throw PropertyVetoException(tr("%1 is in use by Logix \"%2\" as a Trigger").arg(nb->getBeanType()).arg(getDisplayName()), e);   // NOI18N
+      throw new PropertyVetoException(tr("%1 is in use by Logix \"%2\" as a Trigger").arg(nb->getBeanType()).arg(getDisplayName()), e);   // NOI18N
      }
     }
     for (ConditionalVariable* v : *c->getCopyOfStateVariables())
@@ -1315,12 +1315,41 @@ ArrayList <String[]> loopGremlins = NULL;
      if (nb->equals(v->getBean()) || nb->equals(v->getNamedBeanData()))
      {
       PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());  // NOI18N
-      throw PropertyVetoException(tr("%1 is in use by Logix \"%2\" as a Trigger").arg(nb->getBeanType()).arg(getDisplayName()), e);   // NOI18N
+      throw new PropertyVetoException(tr("%1 is in use by Logix \"%2\" as a Trigger").arg(nb->getBeanType()).arg(getDisplayName()), e);   // NOI18N
      }
     }
    }
   }
  }
+}
+
+//@Override
+/*public*/ QList<NamedBeanUsageReport*> DefaultLogix::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+    if (bean != nullptr) {
+        for (int i = 0; i < getNumConditionals(); i++) {
+            DefaultConditional* cdl = (DefaultConditional*) getConditional(getConditionalByNumberOrder(i));
+            //cdl.getStateVariableList().forEach((variable) ->
+            for(ConditionalVariable* variable :  *cdl->getStateVariableList())
+            {
+                if (bean->equals(variable->getBean())) {
+                    report.append(new NamedBeanUsageReport("ConditionalVariable", cdl, variable->toString()));
+                }
+                if (bean->equals(variable->getNamedBeanData())) {
+                    report.append(new NamedBeanUsageReport("ConditionalVariableData", cdl, variable->toString()));
+                }
+            }//);
+            //cdl.getActionList().forEach((action) ->
+            for(ConditionalAction* action :cdl->getActionList())
+            {
+                if (bean->equals(action->getBean())) {
+                    bool triggerType = cdl->getTriggerOnChange();
+                    report.append(new NamedBeanUsageReport("ConditionalAction", cdl, action->description(triggerType)));
+                }
+            }//);
+        }
+    }
+    return report;
 }
 //    static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(DefaultLogix->class.getName());
 //}

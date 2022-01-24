@@ -6,9 +6,14 @@
 #include "turnoutoperation.h"
 #include <QMutex>
 #include <QLinkedList>
-class LIBPR3SHARED_EXPORT TurnoutOperationManager : public QObject
+#include "instancemanagerautodefault.h"
+
+
+class LIBPR3SHARED_EXPORT TurnoutOperationManager : public QObject,  public InstanceManagerAutoDefault
 {
-    Q_OBJECT
+  Q_OBJECT
+  Q_INTERFACES(InstanceManagerAutoDefault)
+
 public:
  explicit TurnoutOperationManager(QObject *parent = 0);
 /**
@@ -63,7 +68,7 @@ private:
  /*private*/ static TurnoutOperationManager* theInstance;
  QMutex mutex;
  /*private*/ void updateTypes(TurnoutOperation* op);
- PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+ SwingPropertyChangeSupport* pcs;// = new SwingPropertyChangeSupport(this, nullptr);
  static TurnoutOperationManager* getDefault();
 
 protected:

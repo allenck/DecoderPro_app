@@ -4,10 +4,15 @@
 #include <QObject>
 #include <QMap>
 #include <QStringList>
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "logger.h"
 #include "jcombobox.h"
 #include "appslib_global.h"
+#include "instancemanagerautodefault.h"
+#include "instancemanagerautoinitialize.h"
+#include "runnable.h"
+#include "train.h"
+#include "propertychangesupport.h"
 
 class PrintWriter;
 class QDomDocument;
@@ -17,11 +22,15 @@ namespace Operations
  class Location;
  class Car;
  class Train;
- class APPSLIBSHARED_EXPORT TrainManager : public QObject
+ class APPSLIBSHARED_EXPORT TrainManager :  public PropertyChangeSupport, public InstanceManagerAutoDefault, public InstanceManagerAutoInitialize
  {
   Q_OBJECT
+  Q_INTERFACES( InstanceManagerAutoDefault InstanceManagerAutoInitialize)
+
  public:
-  explicit TrainManager(QObject *parent = 0);
+  Q_INVOKABLE explicit TrainManager(QObject *parent = 0);
+   ~TrainManager() {}
+   TrainManager(const TrainManager&) : PropertyChangeSupport(this) {}
   // property changes
   /*public*/ static /*final*/ QString LISTLENGTH_CHANGED_PROPERTY;// = "TrainsListLength"; // NOI18N
   /*public*/ static /*final*/ QString PRINTPREVIEW_CHANGED_PROPERTY;// = "TrainsPrintPreview"; // NOI18N
@@ -31,10 +40,10 @@ namespace Operations
   /*public*/ static /*final*/ QString ACTIVE_TRAIN_SCHEDULE_ID;// = "ActiveTrainScheduleId"; // NOI18N
   /*public*/ static /*final*/ QString ROW_COLOR_NAME_CHANGED_PROPERTY;// = "TrainsRowColorChange"; // NOI18N
   /*public*/ static /*final*/ QString TRAINS_BUILT_CHANGED_PROPERTY;// = "TrainsBuiltChange"; // NOI18N
+   /*public*/ static /*final*/ QString TRAINS_SHOW_FULL_NAME_PROPERTY;// = "TrainsShowFullName"; // NOI18N
   /*public*/ int getNumEntries();
   /*public*/ bool isBuildMessagesEnabled();
   /*public*/ void setBuildMessagesEnabled(bool enable);
-  /*public*/ static /*synchronized*/ TrainManager* instance();
   /*public*/ JComboBox* getTrainComboBox();
   /*public*/ void updateTrainComboBox(JComboBox* box);
   /*public*/ QList<Train*> getTrainsByNameList();
@@ -45,6 +54,7 @@ namespace Operations
   /*public*/ void deregister(Train* train);
   /*public*/ void loadTrainIcons();
   /*public*/ QList<Train*> getTrainsByIdList();
+   /*public*/ void resetBuildFailedTrains();
   /*public*/ void load(QDomElement root);
   /*public*/ void store(QDomElement root, QDomDocument doc);
   /*public*/ QStringList getStartUpScripts() ;
@@ -52,18 +62,18 @@ namespace Operations
   /*public*/ void addShutDownScript(QString pathname);
   /*public*/ void deleteShutDownScript(QString pathname);
   /*public*/ QStringList getShutDownScripts();
-  PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
+  //SwingPropertyChangeSupport* pcs;// = new java.beans.SwingPropertyChangeSupport(this,this);
   /*public*/ void updateTrainComboBox(JComboBox* box, Car* car);
   /*public*/ int numEntries();
   /*public*/ QList<Train*> getTrainsArrivingThisLocationList(Location* location);
   /*public*/ QList<Train*> getTrainsByTimeList();
-  /*public*/ QString getTrainsFrameTrainAction();
+//  /*public*/ QString getTrainsFrameTrainAction();
   /*public*/ bool isBuildReportEnabled();
   /*public*/ bool isPrintPreviewEnabled();
   /*public*/ bool isOpenFileEnabled();
   /*public*/ void setOpenFileEnabled(bool enable);
   /*public*/ bool isRunFileEnabled();
-  /*public*/ QList<int> getTrainsFrameTableColumnWidths();
+//  /*public*/ QList<int> getTrainsFrameTableColumnWidths();
   /*public*/ void replaceLoad(QString type, QString oldLoadName, QString newLoadName);
   /*public*/ bool isAnyTrainBuilt();
  /*public*/ bool isAnyTrainBuilding();
@@ -71,7 +81,7 @@ namespace Operations
   /*public*/ void setBuildReportEnabled(bool enable);
   /*public*/ void setRunFileEnabled(bool enable);
   /*public*/ void setPrintPreviewEnabled(bool enable);
-  /*public*/ void setTrainsFrameTrainAction(QString action);
+//  /*public*/ void setTrainsFrameTrainAction(QString action);
   /*public*/ void runShutDownScripts();
   /*public*/ void dispose();
   /*public*/ bool isRowColorManual();
@@ -86,7 +96,7 @@ namespace Operations
   /*public*/ void setRowColorNameForTerminated(QString colorName);
   /*public*/ JComboBox* getRowColorComboBox();
   /*public*/ Train* copyTrain(Train* train, QString trainName);
-  /*public*/ QString getTrainScheduleActiveId();
+//  /*public*/ QString getTrainScheduleActiveId();
   /*public*/ bool printSelectedTrains(QList<Train*> trains);
   /*public*/ void setTrainsSwitchListStatus(QString status);
   /*public*/ void setTrainsModified();
@@ -97,11 +107,21 @@ namespace Operations
   /*public*/ QList<Train*> getTrainsByStatusList();
   /*public*/ Train* getTrainForCar(Car* car, PrintWriter* buildReport) ;
   /*public*/ Train* getTrainForCar(Car* car, Train* excludeTrain, PrintWriter* buildReport);
-  /*public*/ QList<int> getTrainScheduleFrameTableColumnWidths();
-  /*public*/ void setTrainSecheduleActiveId(QString id);
+//  /*public*/ QList<int> getTrainScheduleFrameTableColumnWidths();
+//  /*public*/ void setTrainSecheduleActiveId(QString id);
   /*public*/ void addStartUpScript(QString pathname) ;
   /*public*/ void deleteStartUpScript(QString pathname);
-  Q_INVOKABLE /*public*/ void initialize();
+   /*public*/ bool isShowLocationHyphenNameEnabled();
+   /*public*/ void setShowLocationHyphenNameEnabled(bool enable);
+   /*public*/ QString getTrainsFrameTrainAction();
+   /*public*/ void setTrainsFrameTrainAction(QString action);
+   /*public*/ bool isBuiltRestricted();
+   /*public*/ bool isLoadRestricted();
+   /*public*/ bool isRoadRestricted();
+   /*public*/ bool isOwnerRestricted();
+
+   Q_INVOKABLE /*public*/ void initialize()override;
+   //QObject* self() override{return (QObject*)this;}
 
  signals:
 
@@ -109,7 +129,7 @@ namespace Operations
   /*public*/ void propertyChange(PropertyChangeEvent* e);
 
  private:
-  Logger* log;
+  static Logger* log;
   /*private*/ static /*final*/ QString NONE;// = "";
   // Train frame attributes
   /*private*/ QString _trainAction;// = TrainsTableFrame.MOVE; // Trains frame table button action
@@ -118,6 +138,9 @@ namespace Operations
   /*private*/ bool _printPreview;// = false; // when true, preview train manifest
   /*private*/ bool _openFile;// = false; // when true, open CSV file manifest
   /*private*/ bool _runFile;// = false; // when true, run CSV file manifest
+
+  // Conductor attributes
+  /*private*/ bool _showLocationHyphenName = false;
 
   // Trains window row colors
   /*private*/ bool _rowColorManual;// = true; // when true train colors are manually assigned;// = NONE; // row color when train is built
@@ -160,6 +183,7 @@ namespace Operations
   /*protected*/ QStringList _shutDownScripts;// = new ArrayQStringList(); // list of script pathnames to run at shut down
 //  /*private*/ static TrainManager* _instance;// = null;
  friend class MyBuild;
+ friend class TMRunnable;
  };
 
  class MyBuild : public QObject
@@ -176,5 +200,24 @@ namespace Operations
    void finished();
    void error(QString title, QString msg);
  };
+
+ class TMRunnable : public Runnable
+ {
+   Q_OBJECT
+   QList<Train*> trains;
+   TrainManager* tm;
+  public:
+   TMRunnable(QList<Train*> trains, TrainManager* tm) {
+    this->trains = trains;
+   this->tm = tm;
+   }
+   /*public*/ void run() {
+       for (Train* train : trains) {
+           train->buildIfSelected();
+       }
+       tm->setDirtyAndFirePropertyChange(TrainManager::TRAINS_BUILT_CHANGED_PROPERTY, false, true);
+   }
+ };
 } // end operations
+Q_DECLARE_METATYPE(Operations::TrainManager)
 #endif // TRAINMANAGER_H

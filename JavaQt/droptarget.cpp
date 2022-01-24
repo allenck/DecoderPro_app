@@ -60,7 +60,7 @@ DropTarget::DropTarget(QObject *parent) :
  *            returns true
  * @see java.awt.GraphicsEnvironment#isHeadless
  */
-/*public*/ DropTarget::DropTarget(Component* c, int ops, DropTargetListener* dtl, bool act, FlavorMap* fm) throw (HeadlessException)
+/*public*/ DropTarget::DropTarget(Component* c, int ops, DropTargetListener* dtl, bool act, FlavorMap* fm)
 {
   dropTargetContext = createDropTargetContext();
   actions = DnDConstants::ACTION_COPY_OR_MOVE;
@@ -216,7 +216,7 @@ throw (HeadlessException)
  {
   c->setDropTarget(this);
  }
- catch (Exception e)
+ catch (Exception* e)
  { // undo the change
   if (old != NULL)
   {
@@ -673,13 +673,13 @@ protected static class DropTargetAutoScroller implements ActionListener {
 
         try {
             initial = (Integer)t.getDesktopProperty("DnD.Autoscroll.initialDelay");
-        } catch (Exception e) {
+        } catch (Exception* e) {
             // ignore
         }
 
         try {
             interval = (Integer)t.getDesktopProperty("DnD.Autoscroll.interval");
-        } catch (Exception e) {
+        } catch (Exception* e) {
             // ignore
         }
 
@@ -693,7 +693,7 @@ protected static class DropTargetAutoScroller implements ActionListener {
 
         try {
             hysteresis = ((Integer)t.getDesktopProperty("DnD.Autoscroll.cursorHysteresis")).intValue();
-        } catch (Exception e) {
+        } catch (Exception* e) {
             // ignore
         }
 

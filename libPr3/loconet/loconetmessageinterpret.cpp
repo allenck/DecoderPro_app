@@ -6,6 +6,7 @@
 #include "instancemanager.h"
 #include "proxyturnoutmanager.h"
 #include "lnsv2messagecontents.h"
+#include "lncvmessagecontents.h"
 
 LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(parent)
 {
@@ -1505,6 +1506,29 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
              }
          }
          return svReply;
+    }
+
+    /*private*/ static QString interpretLncvMessage(LocoNetMessage* l) {
+         QString lncvReply = "";
+         LncvMessageContents* cvmc = nullptr;
+         try {
+             // assume the message is an LNCV message
+             cvmc = new LncvMessageContents(l);
+         } catch (IllegalArgumentException e) {
+             // message is not an LNCV message.  Ignore the exception.
+         }
+         if (cvmc != nullptr) {
+             // the message was indeed an LNCV message
+             try {
+                 // get string representation of the message from an
+                 // available translation which is best suited to
+                 // the currently-active "locale"
+                 lncvReply = cvmc->toString();
+             } catch (IllegalArgumentException e) {
+                 // message is not a properly-formatted LNCV message.  Ignore the exception.
+             }
+         }
+         return lncvReply;
     }
 
     /*private*/ /*static*/ QString LocoNetMessageInterpret::interpretOpcPeerXfer10(LocoNetMessage* l) {

@@ -3,7 +3,7 @@
 #include "abstractaudioframe.h"
 #include "libtables_global.h"
 
-class ActionEvent;
+class JActionEvent;
 class QFileDialog;
 class QCheckBox;
 class QPushButton;
@@ -21,8 +21,8 @@ public:
 signals:
 
 public slots:
- void browsePressed(ActionEvent* e = 0);
- void okPressed(ActionEvent* e = 0);
+ void browsePressed(JActionEvent* e = 0);
+ void okPressed(JActionEvent* e = 0);
  void On_loopStart_valueChanged();
  void On_loopEnd_valueChanged();
 private:

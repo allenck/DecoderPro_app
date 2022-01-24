@@ -3,6 +3,8 @@
 
 #include "abstractaction.h"
 #include "appslib_global.h"
+#include "trainstableframe.h"
+#include <QPointer>
 
 namespace Operations
 {
@@ -15,10 +17,10 @@ namespace Operations
   /*public*/ TrainsTableAction(QString s, QObject* parent);
 
  public slots:
-  /*public*/ void actionPerformed(ActionEvent* /*e*/);
+  /*public*/ void actionPerformed(JActionEvent* /*e*/);
  private:
   void common();
-  static TrainsTableFrame* f;// = null;
+  static QPointer<TrainsTableFrame> f;// = null;
 
  };
 }

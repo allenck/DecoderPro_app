@@ -4,7 +4,7 @@
 #include <QButtonGroup>
 #include "namedbeanhandle.h"
 #include "Signal/signalhead.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 //#include "actionlistener.h"
 
 
@@ -14,9 +14,10 @@ class SignalHead;
 class NamedBean;
 class PropertyChangeEvent;
 class SignalHeadItemPanel;
-class LIBLAYOUTEDITORSHARED_EXPORT SignalHeadIcon : public PositionableIcon
+class LIBLAYOUTEDITORSHARED_EXPORT SignalHeadIcon : public PositionableIcon, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  public:
     //explicit SignalHeadIcon(QObject *parent = 0);
     QVector<QString> _validKey;
@@ -48,6 +49,8 @@ class LIBLAYOUTEDITORSHARED_EXPORT SignalHeadIcon : public PositionableIcon
     /*public*/ void doMouseClicked(QGraphicsSceneMouseEvent* e)  override;
     /*public*/ void performMouseClicked(QGraphicsSceneMouseEvent* e);
     /*public*/ void dispose() override;
+    QObject* self() override {return (QObject*)this;}
+
  signals:
 
  public slots:
@@ -70,23 +73,9 @@ class LIBLAYOUTEDITORSHARED_EXPORT SignalHeadIcon : public PositionableIcon
     QButtonGroup* litButtonGroup;// = NULL;
     SignalHeadItemPanel* _itemPanel;
     /*private*/ void setIcons(QMap<QString, NamedIcon *> *map);
-    PropertyChangeSupport* pcs;
+    SwingPropertyChangeSupport* pcs;
     void addPropertyChangeListener(PropertyChangeListener*);
     void removePropertyChangeListener(PropertyChangeListener*);
-    class AddIconActionListener : public ActionListener
-    {
-     SignalHeadIcon* parent;
-    public:
-     AddIconActionListener(SignalHeadIcon* parent)
-     {
-      this->parent = parent;
-     }
-     void actionPerformed(ActionEvent */*e*/ = 0)
-     {
-      parent->updateSignal();
-     }
-    };
-
  protected:
 #if 0 // not needed since scaling and rotating is done by QT's QGraphicsScene
     /*protected*/ void rotateOrthogonal();
@@ -98,19 +87,42 @@ class LIBLAYOUTEDITORSHARED_EXPORT SignalHeadIcon : public PositionableIcon
     /*protected*/ void editItem();
     /*protected*/ void edit();
     friend class SHIconDragJLabel;
+    friend class AddIconActionListener;
 };
 
-class MyActionListener : public ActionListener
+class SHIAddIconActionListener : public QObject, public ActionListener
 {
-  SignalHeadIcon* self;
+  Q_OBJECT
+  Q_INTERFACES(ActionListener)
+ SignalHeadIcon* parent;
+public:
+SHIAddIconActionListener(SignalHeadIcon* parent) {
+  this->parent = parent;
+ }
+ QObject* self() override {return (QObject*)this;}
+ public slots:
+ void actionPerformed(JActionEvent */*e*/ = 0)override
+ {
+  parent->updateSignal();
+ }
+};
+
+
+class MyActionListener : public QObject, public ActionListener
+{
+  Q_OBJECT
+  Q_INTERFACES(ActionListener)
+  SignalHeadIcon* shi;
  public:
-  MyActionListener(SignalHeadIcon* self)
+  MyActionListener(SignalHeadIcon* shi)
   {
-   this->self = self;
+   this->shi = shi;
   }
-  /*public*/ void actionPerformed(ActionEvent* /*a*/ = 0)
+  QObject* self() override {return (QObject*)this;}
+public slots:
+  /*public*/ void actionPerformed(JActionEvent* /*a*/ = 0)override
   {
-   self->updateItem();
+   shi->updateItem();
   }
 };
 

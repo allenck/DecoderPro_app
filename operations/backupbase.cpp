@@ -6,6 +6,9 @@
 #include "stringutil.h"
 #include "backupset.h"
 #include <QDir>
+#include "runtimeexception.h"
+#include "calendar.h"
+#include "loggerfactory.h"
 
 //BackupBase::BackupBase(QObject *parent) :
 //  QObject(parent)
@@ -47,36 +50,33 @@ namespace Operations
  /*protected*/ BackupBase::BackupBase(QString rootName, QObject *parent) :
 QObject(parent)
  {
-  testException = NULL;
-  _operationsRoot = NULL;
   _backupSetFileNames = QStringList() << "Operations.xml" << // NOI18N
   "OperationsCarRoster.xml" << "OperationsEngineRoster.xml" << // NOI18N
   "OperationsLocationRoster.xml" << "OperationsRouteRoster.xml" << // NOI18N
   "OperationsTrainRoster.xml"; // NOI18N
   _demoPanelFileName = "Operations Demo Panel.xml"; // NOI18N
-  log = new Logger("BackupBase");
 
-     // A root directory name for the backups must be supplied, which will be
-     // from the derived class constructors.
-     if (rootName == NULL) {
-         throw new IllegalArgumentException("Backup root name can't be NULL"); // NOI18N
-     }
-     _operationsRoot = new File(OperationsXml::getFileLocation(),
-             OperationsXml::getOperationsDirectoryName());
+  // A root directory name for the backups must be supplied, which will be
+  // from the derived class constructors.
+  if (rootName == NULL) {
+      throw new IllegalArgumentException("Backup root name can't be NULL"); // NOI18N
+  }
+  _operationsRoot = new File(OperationsXml::getFileLocation(),
+          OperationsXml::getOperationsDirectoryName());
 
-     _backupRoot = new File(_operationsRoot, rootName);
+  _backupRoot = new File(_operationsRoot, rootName);
 
-     // Make sure it exists
-     if (!_backupRoot->exists()) {
-         bool ok = _backupRoot->mkdirs();
-         if (!ok) {
-//             throw new RuntimeException("Unable to make directory: " // NOI18N
-//                     + _backupRoot->getAbsolutePath());
-          Logger::error("Unable to make directory:" );
-         }
-     }
+  // Make sure it exists
+  if (!_backupRoot->exists()) {
+      bool ok = _backupRoot->mkdirs();
+      if (!ok) {
+       Logger::error("Unable to make directory:" + _backupRoot->getAbsolutePath());
+       throw new RuntimeException("Unable to make directory: " // NOI18N
+                  + _backupRoot->getAbsolutePath());
+      }
+  }
 
-     // We maybe want to check if it failed and throw an exception.
+  // We maybe want to check if it failed and throw new an exception.
  }
 
  /**
@@ -165,7 +165,7 @@ QObject(parent)
          if (file->exists()) {
              return true;
          }
-     } catch (Exception e) {
+     } catch (Exception* e) {
          log->error("Exception during backup set directory exists check");
      }
      return false;
@@ -220,7 +220,7 @@ QObject(parent)
      // See how many Operations files we have. If they are all there, carry
      // on, if there are none, just return, any other number MAY be an error,
      // so just log it.
-     // We can't throw an exception, as this CAN be a valid state.
+     // We can't throw new an exception, as this CAN be a valid state.
      // There is no way to tell if a missing file is an error or not the way
      // the files are created.
 
@@ -240,7 +240,7 @@ QObject(parent)
 
      // Ensure destination directory exists
      if (!destDir->exists()) {
-         // Note that mkdirs does NOT throw an exception on error.
+         // Note that mkdirs does NOT throw new an exception on error.
          // It will return false if the directory already exists.
          bool result = destDir->mkdirs();
 
@@ -269,10 +269,10 @@ QObject(parent)
          }
 
      }
-#if 0
-     // Throw a test exception, if we have one.
+#if 1
+     // throw new a test exception, if we have one.
      if (testException != NULL) {
-         testException.fillInStackTrace();
+         //testException->fillInStackTrace();
          throw testException;
      }
 #endif
@@ -342,7 +342,7 @@ QObject(parent)
      for (int i = 0; i < 99; i++) {
          // Create the trial name, then see if it already exists.
          //fullName = QString.format("%s_%02d", baseName, i); // NOI18N
-      fullName = baseName+QString::number(i);
+      fullName = baseName + "_" + QString::number(i);
 
          bool foundFileNameMatch = false;
          foreach (QString name, dirNames) {
@@ -367,7 +367,7 @@ QObject(parent)
      }
 
      // If we get here, we have tried all 100 variants without success. This
-     // should probably throw an exception, but for now it just returns the
+     // should probably throw new an exception, but for now it just returns the
      // last file name tried.
      return fullName;
  }
@@ -398,7 +398,7 @@ QObject(parent)
          if (!file->_delete()) {
              log->debug("file not deleted");
          }
-         // TODO This should probably throw an exception if a delete fails.
+         // TODO This should probably throw new an exception if a delete fails.
      }
  }
 
@@ -408,18 +408,18 @@ QObject(parent)
  /*private*/ QString BackupBase::getDate() {
      // This could use some clean-up.... but works OK for now
 #if 0
-     Calendar now = Calendar.getInstance();
-     int month = now.get(Calendar.MONTH) + 1;
-     QString m = Integer.toString(month);
+     Calendar* now = Calendar::getInstance();
+     int month = now->get(Calendar::MONTH) + 1;
+     QString m = QString::number(month);
      if (month < 10) {
-         m = "0" + Integer.toString(month);
+         m = "0" + QString::number(month);
      }
-     int day = now.get(Calendar.DATE);
-     QString d = Integer.toString(day);
+     int day = now->get(Calendar::DATE);
+     QString d = QString::number(day);
      if (day < 10) {
-         d = "0" + Integer.toString(day);
+         d = "0" + QString::number(day);
      }
-     QString date = "" + now.get(Calendar.YEAR) + "_" + m + "_" + d;
+     QString date = QString() + now->get(Calendar::YEAR) + "_" + m + "_" + d;
      return date;
 #else
  return QDate::currentDate().toString("yyyy_MM_dd");
@@ -474,7 +474,7 @@ QObject(parent)
              while ((len = source.read(buffer)) > 0) {
                  dest.write(buffer, 0, len);
              }
-         } catch (Exception ex) {
+         } catch (Exception* ex) {
              if (source != NULL) {
                  source.close();
              }
@@ -502,4 +502,6 @@ QObject(parent)
      }
  }
 #endif
+ /*private*/ /*final*/ /*static*/ Logger* BackupBase::log = LoggerFactory::getLogger("BackupBase");
+
 }

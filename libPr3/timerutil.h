@@ -6,12 +6,14 @@
 #include "timertask.h"
 #include <QDebug>
 
-class Timer;
+class TUTimer;
 class TimerUtil : public QObject
 {
  Q_OBJECT
 public:
  static /*public*/ void scheduleAtFixedRate(/*@Nonnull*/ TimerTask* task, long delay, long period);
+ static /*public*/ void schedule(/*@Nonnull*/ TimerTask* task, long delay);
+ static /*public*/ void schedule(/*@Nonnull*/ TimerTask* task, long delay, long period);
 
 signals:
 
@@ -20,13 +22,13 @@ protected:
  explicit TimerUtil(QObject *parent = nullptr);
 
 private:
- /*final*/ static Timer* commonTimer;// = new QTimer("JMRI Common Timer", true);
+ /*final*/ static TUTimer* commonTimer;// = new QTimer("JMRI Common Timer", true);
 };
 
-class Timer : public QTimer
+class TUTimer : public QTimer
 {
  Q_OBJECT
- Timer(QString name, bool isDaemon)
+ TUTimer(QString name, bool isDaemon)
  {
   this->setObjectName(name);
  }
@@ -38,6 +40,18 @@ class Timer : public QTimer
   this->period = period;
   setSingleShot(false);
   setInterval(period);
+  connect(this, SIGNAL(timeout()), task, SLOT(run()));
+  start(delay);
+  qDebug() << tr("timer %1 started").arg(objectName());
+ }
+
+ /*public*/ void schedule(TimerTask* task, long delay)
+ {
+  this->task = task;
+  this->delay = delay;
+  this->period = 0;
+  setSingleShot(true);
+  //setInterval(period);
   connect(this, SIGNAL(timeout()), task, SLOT(run()));
   start(delay);
   qDebug() << tr("timer %1 started").arg(objectName());

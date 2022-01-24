@@ -34,7 +34,7 @@ class EnterGridSizesDialog : public QObject
   /*private*/ QPushButton* gridSizesCancel;
   // operational instance variables shared between dialogs
   /*private*/ LayoutEditor* layoutEditor = nullptr;
-  /*private*/ void showEntryErrorDialog(QWidget* parentComponent, NumberFormatException e);
+  /*private*/ void showEntryErrorDialog(QWidget* parentComponent, NumberFormatException *e);
 
  private slots:
   /*private*/ void gridSizesDonePressed(/*@Nonnull ActionEvent event*/);

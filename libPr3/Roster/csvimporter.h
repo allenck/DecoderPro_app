@@ -11,7 +11,7 @@ class CsvImporter : public QObject
 {
  Q_OBJECT
 public:
- /*public*/ CsvImporter(File* file, CvTableModel* cvModel, QObject* parent = nullptr) throw (IOException);
+ /*public*/ CsvImporter(File* file, CvTableModel* cvModel, QObject* parent = nullptr) /*throw (IOException)*/;
 
 
 signals:

@@ -1,6 +1,7 @@
 #include "sensoriconxml.h"
 #include "sensoricon.h"
 #include "editor.h"
+#include "loggerfactory.h"
 
 QHash<QString,QString>* SensorIconXml::_nameMap = new QHash<QString,QString>();
 //SensorIconXml::SensorIconXml(QObject *parent) :
@@ -18,7 +19,6 @@ QHash<QString,QString>* SensorIconXml::_nameMap = new QHash<QString,QString>();
 
 /*public*/ SensorIconXml::SensorIconXml(QObject *parent) : PositionableLabelXml(parent)
 {
- log = new Logger("SensorIconXml");
  setObjectName("SensorIconXml");
  //_nameMap = new QHash<QString,QString>();
 
@@ -311,7 +311,6 @@ void SensorIconXml::loadTextInfo(SensorIcon* l, QDomElement element)
 /*private*/ void SensorIconXml::loadSensorTextState(QString state, SensorIcon* l, QDomElement element)
 {
  QString name = "";
- bool bOk=true;
  bool bOk1;
 
  QColor clrText=QColor();
@@ -325,34 +324,25 @@ void SensorIconXml::loadTextInfo(SensorIcon* l, QDomElement element)
   name = elem.attribute("text");
 //  } catch ( NullPointerException e) {  // considered normal if the attributes are not present
 //  }
-  //try {
-  int red = elem.attribute("red","0").toInt(&bOk1);
-  if(!bOk1) bOk = false;
-  int blue = elem.attribute("blue","0").toInt(&bOk1);
-  if(!bOk1) bOk = false;
-  int green = elem.attribute("green","0").toInt(&bOk1);
-  if(!bOk1) bOk = false;
-  clrText = QColor(red, green, blue);
-  //} catch ( org.jdom.DataConversionException e) {
-  if(bOk)
+  try {
+   int red = elem.attribute("red","0").toInt(&bOk1); if(!bOk1) throw new DataConversionException();
+   int blue = elem.attribute("blue","0").toInt(&bOk1); if(!bOk1) throw new DataConversionException();
+   int green = elem.attribute("green","0").toInt(&bOk1); if(!bOk1) throw new DataConversionException();
+   clrText = QColor(red, green, blue);
+  } catch ( DataConversionException* e) {
    log->warn("Could not parse color attributes!");
-//    } catch ( NullPointerException e) {  // considered normal if the attributes are not present
-//    }
-//    try {
-  bOk = true;
-  red = elem.attribute("redBack","0").toInt(&bOk1);
-  if(!bOk1) bOk = false;
-  blue = elem.attribute("blueBack","0").toInt(&bOk1);
-  if(!bOk1) bOk = false;
-  green = elem.attribute("greenBack","0").toInt(&bOk1);
-  if(!bOk1) bOk = false;
-  clrBackground = QColor(red, green, blue);
-  //} catch ( org.jdom.DataConversionException e) {
-  if(bOk)
+  } catch ( NullPointerException e) {  // considered normal if the attributes are not present
+  }
+  try {
+   int red = elem.attribute("redBack","0").toInt(&bOk1); if(!bOk1) throw new DataConversionException();
+   int blue = elem.attribute("blueBack","0").toInt(&bOk1); if(!bOk1) throw new DataConversionException();
+   int green = elem.attribute("greenBack","0").toInt(&bOk1); if(!bOk1) throw new DataConversionException();
+   clrBackground = QColor(red, green, blue);
+  } catch ( DataConversionException e) {
    log->warn("Could not parse color attributes!");
-//    } catch ( NullPointerException e) {  // considered normal if the attributes are not present
-//    }
-
+  }
+  catch ( NullPointerException e) {  // considered normal if the attributes are not present
+  }
  }
  else
  {
@@ -360,34 +350,24 @@ void SensorIconXml::loadTextInfo(SensorIcon* l, QDomElement element)
   {
     name = element.attribute(state.toLower());
   }
-  //try {
-  bOk=true;
-  int red = element.attribute("red"+state,"0").toInt(&bOk1);
-  if(!bOk1) bOk = false;
-  int blue = element.attribute("blue"+state,"0").toInt(&bOk1);
-  if(!bOk1) bOk = false;
-  int green = element.attribute("green"+state,"0").toInt(&bOk1);
-  if(!bOk1) bOk = false;
-  clrText =  QColor(red, green, blue);
-  //} catch ( org.jdom.DataConversionException e) {
-  if(!bOk)
+  try {
+   int red = element.attribute("red"+state,"0").toInt(&bOk1); if(!bOk1) throw new DataConversionException();
+   int blue = element.attribute("blue"+state,"0").toInt(&bOk1); if(!bOk1) throw new DataConversionException();
+   int green = element.attribute("green"+state,"0").toInt(&bOk1); if(!bOk1) throw new DataConversionException();
+   clrText =  QColor(red, green, blue);
+  } catch ( DataConversionException e) {
    log->warn("Could not parse color attributes!");
-  //} catch ( NullPointerException e) {  // considered normal if the attributes are not present
-  //}
-  //try {
-   bOk = true;
-  red = element.attribute("red"+state+"Back","0").toInt(&bOk1);
-  if(!bOk1) bOk = false;
-  blue = element.attribute("blue"+state+"Back","0").toInt(&bOk1);
-  if(!bOk1) bOk = false;
-  green = element.attribute("green"+state+"Back","0").toInt(&bOk1);
-  if(!bOk1) bOk = false;
-  clrBackground =  QColor(red, green, blue);
-  //} catch ( org.jdom.DataConversionException e) {
-  if(!bOk)
+  } catch ( NullPointerException e) {  // considered normal if the attributes are not present
+  }
+  try {
+   int red = element.attribute("red"+state+"Back","0").toInt(&bOk1); if(!bOk1) throw new DataConversionException();
+   int blue = element.attribute("blue"+state+"Back","0").toInt(&bOk1); if(!bOk1) throw new DataConversionException();
+   int green = element.attribute("green"+state+"Back","0").toInt(&bOk1); if(!bOk1) throw new DataConversionException();
+   clrBackground =  QColor(red, green, blue);
+  } catch ( DataConversionException e) {
    log->warn("Could not parse color attributes!");
-  //} catch ( NullPointerException e) {  // considered normal if the attributes are not present
-  //}
+  } catch ( NullPointerException e) {  // considered normal if the attributes are not present
+  }
  }
  if (state==("Active"))
  {
@@ -415,6 +395,7 @@ void SensorIconXml::loadTextInfo(SensorIcon* l, QDomElement element)
  }
 }
 SensorIcon* SensorIconXml::getIcon() { return l;}
-//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(SensorIconXml.class.getName());
+
+/*static*/ Logger* SensorIconXml::log = LoggerFactory::getLogger("SensorIconXml");
 
 //}

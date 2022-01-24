@@ -47,12 +47,12 @@
 //        finally {
 //            fr.close();
 //        }
-    } catch (IOException  ex) {
-        log->error("Exception while creating Jynstrument: " + ex.getMessage());
+    } catch (IOException*  ex) {
+        log->error("Exception while creating Jynstrument: " + ex->getMessage());
         return NULL;
     }
-    catch ( ScriptException ex) {
-       log->error("Exception while creating Jynstrument: " + ex.getMessage());
+    catch ( ScriptException* ex) {
+       log->error("Exception while creating Jynstrument: " + ex->getMessage());
        return NULL;
     }
     fr->close();

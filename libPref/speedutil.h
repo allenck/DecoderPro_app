@@ -103,6 +103,7 @@ friend class WarrantFrame;
 friend class WarrantTest;
 friend class Engineer;
 friend class ThrottleRamp;
+friend class LearnSpeedPanel;
 };
 
 #endif // SPEEDUTIL_H

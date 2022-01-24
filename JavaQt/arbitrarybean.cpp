@@ -11,14 +11,14 @@ ArbitraryBean::ArbitraryBean(QObject* parent) : Bean(parent)
 
 /**
  * Generic implementation of {@link jmri.beans.BeanInterface} with a complete
- * implementation of {@link java.beans.PropertyChangeSupport} and support for
+ * implementation of {@link java.beans.SwingPropertyChangeSupport} and support for
  * arbitrary properties defined at runtime.
  * <p>
- * See the PropertyChangeSupport documentation for complete documentation of
+ * See the SwingPropertyChangeSupport documentation for complete documentation of
  * those methods.
  *
  * @author rhwood
- * @see java.beans.PropertyChangeSupport
+ * @see java.beans.SwingPropertyChangeSupport
  */
 // /*public*/ abstract class ArbitraryBean extends Bean {
 

@@ -2,7 +2,7 @@
 #include "hexfileframe.h"
 #include "hexfileserver.h"
 #include "serialportadapter.h"
-#include "systemconnectionmemo.h"
+#include "defaultsystemconnectionmemo.h"
 #include "connectionconfig.h"
 #include "instancemanager.h"
 #include "lnhexfileport.h"
@@ -85,7 +85,7 @@ HexFileConnectionConfigXml::HexFileConnectionConfigXml(QObject *parent) :
   {
    f->initComponents();
   }
-  catch (Exception ex)
+  catch (Exception* ex)
   {
    //log.error("starting HexFileFrame exception: "+ex.toString());
   }
@@ -185,7 +185,7 @@ HexFileConnectionConfigXml::HexFileConnectionConfigXml(QObject *parent) :
         f->setAdapter((LnHexFilePort*) adapter);
         try {
             f->initComponents();
-        } catch (Exception ex) {
+        } catch (Exception* ex) {
             //log.error("starting HexFileFrame exception: "+ex.toString());
         }
         f->pack();
@@ -216,7 +216,7 @@ HexFileConnectionConfigXml::HexFileConnectionConfigXml(QObject *parent) :
     try {
         manufacturer = shared.attribute("manufacturer"); // NOI18N
         adapter->setManufacturer(manufacturer);
-    } catch (NullPointerException ex) { //Considered normal if not present
+    } catch (NullPointerException* ex) { //Considered normal if not present
 
     }
     if (adapter->getSystemConnectionMemo() != NULL) {
@@ -225,7 +225,7 @@ HexFileConnectionConfigXml::HexFileConnectionConfigXml(QObject *parent) :
         }
 
         if (shared.attribute("systemPrefix") != NULL) { // NOI18N
-            adapter->getSystemConnectionMemo()->setSystemPrefix(shared.attribute("systemPrefix")); // NOI18N
+            ((DefaultSystemConnectionMemo*)adapter->getSystemConnectionMemo())->setSystemPrefix(shared.attribute("systemPrefix")); // NOI18N
         }
     }
     if (shared.attribute("disabled") != NULL) { // NOI18N

@@ -24,16 +24,16 @@ public:
  ~AudioTableAction() {}
  AudioTableAction(const AudioTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
  Q_INVOKABLE /*public*/ AudioTableAction(QString actionName,QObject *parent);
- /*public*/ void addToFrame(BeanTableFrame* f);
- /*public*/ QWidget* getPanel();
- /*public*/ void setMenuBar(BeanTableFrame* f);
- Q_INVOKABLE /*public*/ void setMessagePreferencesDetails();
- Q_INVOKABLE /*public*/ QString getClassDescription();
+ /*public*/ void addToFrame(BeanTableFrame* f)override;
+ /*public*/ QWidget* getPanel()override;
+ /*public*/ void setMenuBar(BeanTableFrame* f)override;
+ Q_INVOKABLE /*public*/ void setMessagePreferencesDetails()override;
+ Q_INVOKABLE /*public*/ QString getClassDescription()override;
 
 signals:
 
 public slots:
- /*public*/ void actionPerformed(ActionEvent* /*e*/ = 0);
+ /*public*/ void actionPerformed(JActionEvent* /*e*/ = 0) override;
 
 private:
  AudioTableDataModel* listener;
@@ -51,14 +51,16 @@ private slots:
  void addSourcePressed(ActionEvent* /*e*/ = 0);
  void addBufferPressed(ActionEvent* /*e*/ = 0);
  void common();
+
 protected:
- /*protected*/ void createModel();
- /*protected*/ void setTitle();
- /*protected*/ QString helpTarget();
+ /*protected*/ void createModel()override;
+ /*protected*/ void setTitle()override;
+ /*protected*/ QString helpTarget()override;
+
 protected slots:
- /*protected*/ void addPressed(ActionEvent* e = 0);
+ /*protected*/ void addPressed(JActionEvent* =0) override;
  /*protected*/ void editAudio(Audio* a);
- /*protected*/ QString getClassName();
+ /*protected*/ QString getClassName()override;
 
  friend class AudioTableDataModel;
  friend class AudioSourceTableDataModel;
@@ -79,27 +81,28 @@ QChar subType;
 AudioTableAction* act;
 /*public*/ static /*final*/ const int EDITCOL;// = NUMCOLUMN;
 /*public*/ AudioTableDataModel(QChar subType, AudioTableAction* act);
-/*public*/ Manager* getManager();
+/*public*/ AbstractManager* getManager()override;
  /*public*/ void setDisplayDeleteMsg(int boo);
-/*public*/ NamedBean* getBySystemName(QString name) const;
-/*public*/ NamedBean* getByUserName(QString name);
-/*public*/ int rowCount(const QModelIndex &parent) const;
-/*public*/ int columnCount(const QModelIndex &parent) const;
-/*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-/*public*/ QString getValue(QString systemName) const ;
-/*public*/ QVariant data(const QModelIndex &index, int role) const;
-/*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
-/*public*/ int getPreferredWidth(int col);
-/*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
+/*public*/ NamedBean* getBySystemName(QString name) const override;
+/*public*/ NamedBean* getByUserName(QString name)override;
+/*public*/ int rowCount(const QModelIndex &parent) const override;
+/*public*/ int columnCount(const QModelIndex &parent) const override;
+/*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+/*public*/ QString getColumnClass(int col) const override;
+/*public*/ QString getValue(QString systemName) const override ;
+/*public*/ QVariant data(const QModelIndex &index, int role) const override;
+/*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
+/*public*/ int getPreferredWidth(int col) override;
+/*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
 private:
  Logger* log;
 protected:
-/*protected*/ QString getMasterClassName();
+/*protected*/ QString getMasterClassName() override;
 /*protected*/ /*synchronized*/ void updateSpecificNameList(QChar subType);
-/*protected*/ void clickOn(NamedBean* t);
-/*protected*/ void configValueColumn(JTable* table);
+/*protected*/ void clickOn(NamedBean* t) override;
+/*protected*/ void configValueColumn(JTable* table) override;
 /*protected*/ void configEditColumn(JTable* table);
-/*protected*/ QString getBeanType();
+/*protected*/ QString getBeanType() override;
  friend class AudioListenerTableDataModel;
  friend class AudioSourceTableDataModel;
  friend class AudioBufferTableDataModel;

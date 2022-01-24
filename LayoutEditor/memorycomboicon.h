@@ -6,41 +6,44 @@
 #include "jtextfield.h"
 #include "iconadder.h"
 #include "actionlistener.h"
+#include "propertychangelistener.h"
 
 class DefaultListModel;
 class QListView;
 class JTextField;
 class QPushButton;
 class JComboBox;
-class MemoryComboIcon : public PositionableJPanel
+class MemoryComboIcon : public PositionableJPanel, public PropertyChangeListener
 {
     Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     //explicit MemoryComboIcon(QWidget *parent = 0);
     /*public*/ MemoryComboIcon(Editor* editor, QStringList list, QWidget *parent = 0);
-    /*public*/ Positionable* deepClone();
-    /*public*/ Positionable* finishClone(Positionable* p);
+    /*public*/ Positionable* deepClone() override;
+    /*public*/ Positionable* finishClone(Positionable* p) override;
      /*public*/ void setMemory(QString pName);
     /*public*/ void setMemory(NamedBeanHandle<Memory*>* m);
     /*public*/ NamedBeanHandle<Memory*>* getNamedMemory();
     /*public*/ Memory* getMemory();
     /*public*/ /*ComboModel*/QStringList getComboModel() ;
     // update icon as state of Memory changes
-    /*public*/ QString getNameString();
+    /*public*/ QString getNameString() override;
     /*private*/ void updateMemory();
-    /*public*/ bool setEditIconMenu(QMenu* popup);
+    /*public*/ bool setEditIconMenu(QMenu* popup) override;
     //DefaultListModel _listModel;
     void editMemory();
     /*public*/ void displayState();
-    /*public*/ void mouseExited(QGraphicsSceneMouseEvent* e);
+    /*public*/ void mouseExited(QGraphicsSceneMouseEvent* e) override;
     void cleanup();
-    /*public*/ MyGraphicsProxyWidget* getWidget() {return widget;}
+    /*public*/ MyGraphicsProxyWidget* getWidget()  override{return widget;}
+    QObject* self() override {return (QObject*)this;}
 
 signals:
 
 public slots:
     /*public*/ void actionPerformed(/*ActionEvent e*/);
-    /*public*/ void propertyChange(PropertyChangeEvent* e);
+    /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 
 private:
     JComboBox*	_comboBox;
@@ -75,14 +78,16 @@ protected:
     /*protected*/ void addAdditionalButtons(QWidget* p);
     friend class MemoryComboIcon;
 };
-class MCIActionListener : public ActionListener
+class MCIActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
     MemoryComboIcon* parent;
 public:
     MCIActionListener(MemoryComboIcon*);
+    QObject* self() override {return (QObject*)this;}
 public slots:
-    void actionPerformed(ActionEvent *e);
+    void actionPerformed(JActionEvent *e = 0)override;
 };
 
 #endif // MEMORYCOMBOICON_H

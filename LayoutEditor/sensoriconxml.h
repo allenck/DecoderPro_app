@@ -24,7 +24,7 @@ private:
     /*private*/ NamedIcon* loadSensorIcon(QString state, int rotation, SensorIcon* l, QDomElement element, QString name, Editor* ed);
     void loadTextInfo(SensorIcon* l, QDomElement element);
     /*private*/ void loadSensorTextState(QString state, SensorIcon* l, QDomElement element);
-Logger* log;
+    static Logger* log;
 protected:
     /*protected*/ void storeIconInfo(SensorIcon* p, QDomElement element);
     /*protected*/ void storeTextInfo(SensorIcon* p, QDomElement element);

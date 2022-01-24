@@ -216,20 +216,21 @@ dragMode = LIVE_DRAG_MODE;
 /*public*/ String getUIClassID() {
     return uiClassID;
 }
-
+#endif
 /**
  * Returns all <code>JInternalFrames</code> currently displayed in the
  * desktop. Returns iconified frames as well as expanded frames.
  *
  * @return an array of <code>JInternalFrame</code> objects
  */
-/*public*/ JInternalFrame[] getAllFrames() {
-    return getAllFrames(this).toArray(new JInternalFrame[0]);
+/*public*/ QList<JInternalFrame*> JDesktopPane::getAllFrames() {
+    return getAllFrames(this);//.toArray(new JInternalFrame[0]);
 }
 
-/*private*/ static Collection<JInternalFrame> getAllFrames(Container parent) {
+/*private*/ /*static*/ QList<JInternalFrame*> JDesktopPane::getAllFrames(JDesktopPane* parent) {
     int i, count;
-    Collection<JInternalFrame> results = new ArrayList<JInternalFrame>();
+    QList<JInternalFrame*> results = QList<JInternalFrame*>();
+#if 0
     count = parent.getComponentCount();
     for (i = 0; i < count; i++) {
         Component next = parent.getComponent(i);
@@ -244,9 +245,10 @@ dragMode = LIVE_DRAG_MODE;
             results.addAll(getAllFrames((Container) next));
         }
     }
+#endif
     return results;
 }
-
+#if 0
 /** Returns the currently active <code>JInternalFrame</code>
   * in this <code>JDesktopPane</code>, or <code>null</code>
   * if no <code>JInternalFrame</code> is currently active.
@@ -594,3 +596,9 @@ void setUIProperty(String propertyName, Object value) {
 }
 //}
 #endif
+
+void JDesktopPane::setBackground(QColor color)
+{
+ setStyleSheet(tr("JDesktopPane {background-color: rgb(%1, %2, %3)}").arg(color.red()).arg(color.green()).arg(color.blue()));
+
+}

@@ -15,7 +15,17 @@ TEMPLATE = lib
 DEFINES += JAVAQT_LIBRARY
 
 MOC_DIR = moc_obj
-OBJECTS_DIR += moc_obj
+OBJECTS_DIR = moc_obj
+
+# Windows and Unix get the suffix "d" to indicate a debug version of the library.
+# Mac OS gets the suffix "_debug".
+CONFIG(debug, debug|release) {
+    win32:      TARGET = $$join(TARGET,,,d)
+    mac:        TARGET = $$join(TARGET,,,_debug)
+    unix:!mac:  TARGET = $$join(TARGET,,,d)
+    MOC_DIR = moc_objd
+    OBJECTS_DIR = moc_objd
+}
 
 PROJ_DIR=$$(PROJ_DIR) # get project directory from env
 isEmpty( PROJ_DIR ) {
@@ -25,6 +35,19 @@ isEmpty( PROJ_DIR ) {
 
 
 SOURCES += javaqt.cpp \
+    classmigration.cpp \
+    csvformat.cpp \
+    csvprinter.cpp \
+    exceptioncontext.cpp \
+    exceptiondisplayframe.cpp \
+    filesystemview.cpp \
+    jeditorpane.cpp \
+    jframe.cpp \
+    jinputvalidator.cpp \
+    jinputvalidatorpreferences.cpp \
+    jscrollpane.cpp \
+    jtextpane.cpp \
+    jvetoablechangesupport.cpp \
     loggerfactory.cpp \
     loggerbase.cpp \
     logger.cpp \
@@ -42,19 +65,27 @@ SOURCES += javaqt.cpp \
     jtogglebutton.cpp \
     dataflavor.cpp \
     exceptions.cpp \
+    #systemtype.cpp \
+    physicallocation.cpp \
+    physicallocationpanel.cpp \
+    swingpropertychangesupport.cpp \
+    thread.cpp \
+    tristatejcheckbox.cpp \
+    uncheckedioexception.cpp \
+    unexpectedexceptioncontext.cpp \
+    validation.cpp \
+    validatorborder.cpp \
     xmlfile.cpp \
     tablecolumn.cpp \
     xtablecolumnmodel.cpp \
     propertychangeevent.cpp \
     propertychangelistenermap.cpp \
     propertychangelistenerproxy.cpp \
-    propertychangesupport.cpp \
     eventobject.cpp \
     defaultlistmodel.cpp \
     defaultlistselectionmodel.cpp \
     defaulttablecolumnmodel.cpp \
     bitset.cpp \
-    windowlistener.cpp \
     abstractshutdowntask.cpp \
     action.cpp \
     pushbuttondelegate.cpp \
@@ -91,7 +122,6 @@ SOURCES += javaqt.cpp \
     defaultmutabletreenode.cpp \
     catalogtreeleaf.cpp \
     abstractnamedbean.cpp \
-    namedbean.cpp \
     namedbeanhandle.cpp \
     treeselectionmodel.cpp \
     treeselectionevent.cpp \
@@ -164,7 +194,6 @@ SOURCES += javaqt.cpp \
     charbuffer.cpp \
     spliterator.cpp \
     printwriter.cpp \
-    manager.cpp \
     abstractlistmodel.cpp \
     compoundborder.cpp \
     listdataevent.cpp \
@@ -220,7 +249,6 @@ SOURCES += javaqt.cpp \
     collection.cpp \
     timer.cpp \
     beans.cpp \
-    systemnamevalidator.cpp \
     scalemanager.cpp \
     scale.cpp \
     scaleconfigxml.cpp \
@@ -247,24 +275,56 @@ SOURCES += javaqt.cpp \
     colorlistpopupmenu.cpp \
     externallinkcontentviewerui.cpp \
     propertychangelistener.cpp \
-    namedbeancombobox.cpp \
     jcheckbox.cpp \
     etchedborder.cpp \
     jcheckboxmenuitem.cpp \
     keyadapter.cpp \
-    loggingutil.cpp
+    loggingutil.cpp \
+    localdatetime.cpp \
+    jformattedtextfield.cpp \
+    threadingutil.cpp \
+    transferactionlistener.cpp \
+    togglebutton.cpp \
+    defaultcomboboxmodel.cpp
 
 HEADERS += javaqt.h\
+ classmigration.h \
+ csvformat.h \
+ csvprinter.h \
+ exceptioncontext.h \
+ exceptiondisplayframe.h \
+ filesystemview.h \
         javaqt_global.h \
     calendar.h \
     box.h \
     gridbaglayout.h \
+ jeditorpane.h \
+ jframe.h \
+ jinputvalidator.h \
+ jinputvalidatorpreferences.h \
+ jscrollpane.h \
     jtextarea.h \
     jseparator.h \
     abstractaction.h \
+ jtextpane.h \
+ jvetoablechangesupport.h \
     logger.h \
     gridbagconstraints.h \
     insets.h \
+ physicallocation.h \
+ physicallocationpanel.h \
+ preferNumericComparator.h \
+ #systemtype.h \
+ propertychangefirer.h \
+ swingpropertychangesupport.h \
+ thread.h \
+ tristatejcheckbox.h \
+ uncheckedioexception.h \
+ unexpectedexceptioncontext.h \
+ validation.h \
+ validatorborder.h \
+ vetoablechangefirer.h \
+ vetoablechangeprovider.h \
     vptr.h \
     jtextfield.h \
     tablemodel.h \
@@ -277,12 +337,12 @@ HEADERS += javaqt.h\
     exceptions.h \
     tablecolumn.h \
     tablecolumnmodel.h \
+ windowinterface.h \
     xtablecolumnmodel.h \
     propertychangeevent.h \
     propertychangelistener.h \
     propertychangelistenermap.h \
     propertychangelistenerproxy.h \
-    propertychangesupport.h \
     eventobject.h \
     defaultlistmodel.h \
     defaultlistselectionmodel.h \
@@ -337,9 +397,7 @@ HEADERS += javaqt.h\
     defaultmutabletreenode.h \
     catalogtreeleaf.h \
     abstractnamedbean.h \
-    namedbean.h \
     namedbeanhandle.h \
-    manager.h \
     treeselectionmodel.h \
     treeselectionevent.h \
     defaulttreeselectionmodel.h \
@@ -510,7 +568,6 @@ HEADERS += javaqt.h\
     providingmanager.h \
     nmrapacket.h \
     vetoablechangelistenerproxy.h \
-    proxymanager.h \
     predicate.h \
     comparatort.h \
     alphanumcomparator.h \
@@ -518,7 +575,6 @@ HEADERS += javaqt.h\
     discoverylistener.h \
     timer.h \
     beans.h \
-    systemnamevalidator.h \
     scalemanager.h \
     scale.h \
     scaleconfigxml.h \
@@ -547,7 +603,6 @@ HEADERS += javaqt.h\
     colorlistpopupmenu.h \
     splitbuttonactionlistener.h \
     externallinkcontentviewerui.h \
-    namedbeancombobox.h \
     namedbeanusernamecomparator.h \
     focuslistener.h \
     focusevent.h \
@@ -559,7 +614,18 @@ HEADERS += javaqt.h\
     jcheckboxmenuitem.h \
     keyadapter.h \
     keylistener.h \
-    loggingutil.h
+    loggingutil.h \
+    localdatetime.h \
+    jformattedtextfield.h \
+    threadingutil.h \
+    transferactionlistener.h \
+    tablecellrenderer.h \
+    tablecelleditor.h \
+    tabledelegates.h \
+    togglebutton.h \
+    defaultcomboboxmodel.h \
+    runnable.h \
+    comboboxmodel.h
 
 unix {
     target.path = /usr/lib
@@ -581,7 +647,8 @@ DEPENDPATH += $$PROJ_DIR/QtZeroConf-master
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/release/ -lappslib
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/debug/ -lappslib
-else:unix: LIBS += -L$$PWD/../appslib/ -lappslib
+else:unix:CONFIG(release, debug|release): LIBS += -L$$PWD/../appslib/ -lappslib
+else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../appslib/ -lappslibd
 
 INCLUDEPATH += $$PWD/../appslib
 DEPENDPATH += $$PWD/../appslib

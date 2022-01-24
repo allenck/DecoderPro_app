@@ -48,9 +48,9 @@ AbstractBorder::AbstractBorder(QWidget* parent) : QWidget(parent)
  * @param c  the component for which this border insets value applies
  * @return a new {@link Insets} object
  */
-///*public*/ Insets* AbstractBorder::getBorderInsets(QWidget* c)       {
-//    return getBorderInsets(c, new Insets(0, 0, 0, 0));
-//}
+/*public*/ Insets* AbstractBorder::getBorderInsets(QWidget* c)       {
+    return getBorderInsets(c, new Insets(0, 0, 0, 0));
+}
 
 /**
  * Reinitializes the insets parameter with this Border's current Insets.
@@ -130,7 +130,7 @@ AbstractBorder::AbstractBorder(QWidget* parent) : QWidget(parent)
  */
 /*public*/ int AbstractBorder::getBaseline(QWidget c, int width, int height) {
     if (width < 0 || height < 0) {
-        throw IllegalArgumentException(
+        throw new IllegalArgumentException(
                 "Width and height must be >= 0");
     }
     return -1;

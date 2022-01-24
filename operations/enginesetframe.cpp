@@ -8,6 +8,7 @@
 #include <QScrollArea>
 #include <QGroupBox>
 #include "consist.h"
+#include "instancemanager.h"
 
 //EngineSetFrame::EngineSetFrame()
 //{
@@ -35,8 +36,8 @@ namespace Operations
 
  /*public*/ EngineSetFrame::EngineSetFrame(QObject* parent) : RollingStockSetFrame(tr("Set Locomotive")) {
      //super(Bundle.getMessage("TitleEngineSet"));
-  manager = EngineManager::instance();
-  managerXml = EngineManagerXml::instance();
+  manager = ((EngineManager*)InstanceManager::getDefault("Operations::EngineManager"));
+  managerXml = ((EngineManagerXml*)InstanceManager::getDefault("EngineManagerXml"));
  }
 
  /*public*/ void EngineSetFrame::initComponents()
@@ -63,9 +64,9 @@ namespace Operations
      load(engine);
  }
 
-// /*protected*/ ResourceBundle getRb() {
-//     return rb;
-// }
+ /*protected*/ ResourceBundle* EngineSetFrame::getRb() {
+     return rb;
+ }
 
  /*protected*/ bool EngineSetFrame::save()
  {
@@ -99,4 +100,12 @@ namespace Operations
   return "jmri.jmrit.operations.rollingstock.engines.EngineSetFrame";
  }
 
+ ESResourceBundle::ESResourceBundle()
+ {
+  map.insert("rsType", "Locomotive");
+  map.insert("rsNeedToRemoveStaging", tr(""));
+  map.insert("rsInStaging", tr(""));
+  map.insert("rsTrainNotServType", tr(""));
+  map.insert("rsNotMove", tr(""));
+ }
 }

@@ -20,6 +20,7 @@
 #include <QPointer>
 #include <QPen>
 #include "displayframe.h"
+#include <QPointer>
 
 /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean);
 
@@ -199,9 +200,10 @@ class SensorIcon;
 class RosterEntrySelectorPanel;
 class Positionable;
 class SignalMastIcon;
-class LIBLAYOUTEDITORSHARED_EXPORT Editor : public JmriJFrame
+class LIBLAYOUTEDITORSHARED_EXPORT Editor : public JmriJFrame, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
 public:
     explicit Editor(QWidget *parent = 0);
     /*public*/ Editor(QString name, bool saveSize, bool savePosition, QWidget* parent=0);
@@ -319,7 +321,7 @@ public:
     //template<class T>
     /*synchronized*/ /*public*/ static /*<T extends Editor>*/ QList<Editor*> getEditors(/*@Nonnull*/ QString type);
     /*public*/ static Editor* getEditor(QString name);
-    /*public*/ void setScroll(QString strState);
+    /*public*/ virtual void setScroll(QString strState);
     /*public*/ QString getScrollable();
     /*public*/ JFrameItem* getIconFrame(QString name);
     /*public*/ void showToolTip(Positionable* selection, QGraphicsSceneMouseEvent* event);
@@ -355,17 +357,18 @@ public:
     /*abstract*/ virtual /*public*/ void mouseWheelMoved(QGraphicsSceneWheelEvent* /*event*/) {}
 
     //@Override
-    /*abstract*/ virtual /*public*/ void mouseExited(QGraphicsSceneMouseEvent* event){}
+    /*abstract*/ virtual /*public*/ void mouseExited(QGraphicsSceneMouseEvent* /*event*/){}
     /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean);
     /*public*/ void addPropertyChangeListener(PropertyChangeListener* listener);
     /*public*/ void addPropertyChangeListener(QString name, PropertyChangeListener* listener);
     /*public*/ void removePropertyChangeListener(PropertyChangeListener* listener);
     /*public*/ void removePropertyChangeListener(QString name, PropertyChangeListener* listener);
+    QObject* self() override {return (QObject*)this;}
 
-signals:
+ signals:
     
 public slots:
-    /*public*/ void propertyChange(PropertyChangeEvent *);
+    /*public*/ void propertyChange(PropertyChangeEvent *) override;
     /*public*/ virtual void vetoableChange(PropertyChangeEvent* evt) /*throws PropertyVetoException*/;
     /*public*/ virtual void setAllPositionable(bool state) ;
     /*public*/ void setShowHidden(bool state);
@@ -377,7 +380,7 @@ private:
     /*private*/ bool _debug = false;
     /*private*/ bool _loadFailed = false;
     bool bDirty = false;
-    PropertyChangeSupport* pcs = new PropertyChangeSupport(this);
+    SwingPropertyChangeSupport* pcs = new SwingPropertyChangeSupport(this, nullptr);
 
     bool showCloseInfoMessage = true;	//display info message when closing panel
     void commonInit();
@@ -479,7 +482,7 @@ private slots:
     * the interior class 'TargetPane' for its targetPanel
     */
     /*protected*/ void setTargetPanel(JLayeredPane* targetPanel, JmriJFrame* frame);
-    /*protected*/ void setTargetPanel(EditScene* targetPanel, JmriJFrame* frame);
+    /*protected*/ void setTargetPanel(QGraphicsView* targetPanel, JmriJFrame* frame);
     /*protected*/ void setTargetPanelSize(int w, int h);
     /*protected*/ QSize getTargetPanelSize();
 
@@ -507,8 +510,8 @@ private slots:
   /*protected*/ PositionableLabel* addLabel(QString text);
   /*protected*/ void removeFromTarget(Positionable* l);
   /*protected*/ void moveItem(Positionable* p, int deltaX, int deltaY);
-  /*protected*/ QList <Positionable*>* getSelectedItems(QGraphicsSceneMouseEvent* event);
-  /*protected*/ QList <Positionable*>* getSelectedItems(QPointF pt);
+  /*protected*/ QList <Positionable*> getSelectedItems(QGraphicsSceneMouseEvent* event);
+  /*protected*/ QList<Positionable *> getSelectedItems(QPointF pt);
   /*protected*/ void makeSelectionGroup(QGraphicsSceneMouseEvent* event);
   /*protected*/ void modifySelectionGroup(Positionable* selection, QGraphicsSceneMouseEvent* event);
   /*protected*/ bool setTextAttributes(Positionable* p, QMenu* popup);
@@ -548,21 +551,27 @@ private slots:
       Editor* editor;
   public:
       SignalHeadActionListener(Editor* editor) { this->editor = editor;}
-   void actionPerformed(ActionEvent */*e*/= 0) { editor->putSignalHead();}
+      QObject* self() override {return (QObject*)this;}
+
+   void actionPerformed(JActionEvent */*e*/= 0) override{ editor->putSignalHead();}
   };
   class SignalMastActionListener : public ActionListener
   {
       Editor* editor;
   public:
       SignalMastActionListener(Editor* editor) { this->editor = editor;}
-   void actionPerformed(ActionEvent */*e*/= 0) { editor->putSignalMast();}
+      QObject* self() override {return (QObject*)this;}
+
+   void actionPerformed(JActionEvent */*e*/= 0) { editor->putSignalMast();}
   };
   class MultisensorIconActionListener : public ActionListener
   {
       Editor* editor;
   public:
       MultisensorIconActionListener(Editor* editor) { this->editor = editor;}
-   void actionPerformed(ActionEvent */*e*/= nullptr) { editor->addMultiSensor();}
+      QObject* self() override {return (QObject*)this;}
+
+   void actionPerformed(JActionEvent */*e*/= nullptr) { editor->addMultiSensor();}
   };
   class MemoryIconAdder : public IconAdder
   {
@@ -621,16 +630,9 @@ protected slots:
   void putBackground();
   /*protected*/ Positionable* putIcon();
   /*public*/ MultiSensorIcon* addMultiSensor();
-  /**
-   * Editor Views should make calls to this class (Editor) to set popup menu
-   * items. See 'Popup Item Methods' above for the calls.
-   *
-   * @param p     the item containing or requiring the context menu
-   * @param event the event triggering the menu
-   */
-  virtual /*abstract*/ /*protected*/ void showPopUp(Positionable* /*p*/, QMouseEvent* /*event*/) {}
   /*protected*/ bool setSelectionsPositionable(bool enabled, Positionable* p);
   virtual /*abstract*/ /*protected*/ void paintTargetPanel(QGraphicsScene* g);
+  /*abstract*/ virtual /*protected*/ void copyItem(Positionable* /*p*/) {}
   /*protected*/ void deselectSelectionGroup();
   /*protected*/ void addBlockContentsEditor();
 
@@ -672,6 +674,7 @@ protected slots:
   friend class ColorDialog;
   friend class DecoratorPanel;
   friend class LayoutEditorComponent;
+  friend class LayoutEditorAuxTools;
 public:
   class AddRightTOActionListener : public ActionListener
   {
@@ -681,7 +684,9 @@ public:
    {
     this->parent = parent;
    }
-   void actionPerformed(ActionEvent *e = nullptr)
+   QObject* self() override {return (QObject*)this;}
+
+   void actionPerformed(JActionEvent *e = nullptr) override
    {
     Q_UNUSED(e);
     parent->  addTurnoutR();
@@ -695,7 +700,8 @@ public:
   {
    this->parent = parent;
   }
-  void actionPerformed(ActionEvent *e = 0)
+  QObject* self() override {return (QObject*)this;}
+  void actionPerformed(JActionEvent *e = 0) override
   {
    Q_UNUSED(e);
    parent->  addTurnoutL();
@@ -709,7 +715,8 @@ public:
   {
    this->parent = parent;
   }
-  void actionPerformed(ActionEvent *e = 0)
+  QObject* self() override {return (QObject*)this;}
+  void actionPerformed(JActionEvent *e = 0) override
   {
    Q_UNUSED(e);
    parent->  addSlip();
@@ -723,7 +730,8 @@ public:
   {
    this->parent = parent;
   }
-  void actionPerformed(ActionEvent *e = 0)
+  QObject* self() override {return (QObject*)this;}
+  void actionPerformed(JActionEvent *e = 0) override
   {
    Q_UNUSED(e);
    parent->  addReporter();
@@ -738,7 +746,8 @@ public:
   {
    this->parent = parent;
   }
-  void actionPerformed(ActionEvent *e = 0)
+  QObject* self() override {return (QObject*)this;}
+  void actionPerformed(JActionEvent *e = 0) override
   {
    Q_UNUSED(e);
    parent->  addLight();
@@ -752,7 +761,8 @@ public:
   {
    this->parent = parent;
   }
-  void actionPerformed(ActionEvent *e = 0)
+  QObject* self() override {return (QObject*)this;}
+  void actionPerformed(JActionEvent *e = 0)
   {
    Q_UNUSED(e);
    parent->  putBackground();
@@ -766,7 +776,8 @@ public:
   {
    this->parent = parent;
   }
-  void actionPerformed(ActionEvent *e = nullptr)
+  QObject* self() override {return (QObject*)this;}
+  void actionPerformed(JActionEvent *e = nullptr)
   {
    Q_UNUSED(e);
    parent->  putIcon();
@@ -780,7 +791,8 @@ public:
   {
    this->parent = parent;
   }
-  void actionPerformed(ActionEvent *e = nullptr)
+  QObject* self() override {return (QObject*)this;}
+  void actionPerformed(JActionEvent *e = nullptr)
   {
    Q_UNUSED(e);
    parent->  putMemory();
@@ -823,47 +835,58 @@ public:
     JFrameItem (QString name, IconAdder* editor, QWidget* parent = 0);
     /*public*/ IconAdder* getEditor();
     /*public*/ QString toString();
-    /*public*/ QString getClassName();
+    /*public*/ QString getClassName()override;
 
 };
 
-class SearchItemActionListener : public ActionListener
+class SearchItemActionListener : public QObject, public ActionListener
 {
     Q_OBJECT
+    Q_INTERFACES(ActionListener)
     IconAdder* ea;
 public slots:
-    /*public*/ void actionPerformed(ActionEvent *e = 0);
+    /*public*/ void actionPerformed(JActionEvent *e = 0);
 public:
     SearchItemActionListener* init(IconAdder* ed);
+    QObject* self() override {return (QObject*)this;}
 };
 
-class EditItemActionListener : public ActionListener
+class EditItemActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  Editor* editor;
 public slots:
- /*public*/ void actionPerformed();
+ /*public*/ void actionPerformed(JActionEvent* =0) override;
  EditItemActionListener* init(Editor* ed);
+ QObject* self() override {return (QObject*)this;}
+
 };
 
-class AddPanelIconActionListener : public ActionListener
+class AddPanelIconActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
     Editor* parent;
 public:
     AddPanelIconActionListener(Editor* parent);
-    void actionPerformed(ActionEvent *e = 0);
+    QObject* self() override {return (QObject*)this;}
+public slots:
+    void actionPerformed(JActionEvent *e = 0) override;
 };
-class ShowToolTipActionListener : public ActionListener
+
+class ShowToolTipActionListener : public QObject, public ActionListener
 {
  Q_OBJECT
+    Q_INTERFACES(ActionListener)
  Editor* editor;
  Positionable* comp;
  bool isChecked;
 public:
  ShowToolTipActionListener(Positionable* pos, bool isChecked, Editor* editor);
+ QObject* self() override {return (QObject*)this;}
 public slots:
- void actionPerformed(ActionEvent *e = 0);
+ void actionPerformed(JActionEvent *e = 0) override;
 };
 
 class AddIconFrameWindowListener : public WindowListener
@@ -1068,15 +1091,18 @@ protected:
   friend class CircuitBuilder;
  };
 
-  class AddBlockActionListener : public ActionListener
+  class AddBlockActionListener : public QObject, public ActionListener
   {
     Q_OBJECT
+      Q_INTERFACES(ActionListener)
     Editor* editor;
    public:
     AddBlockActionListener(Editor* editor) {this->editor = editor;}
+    QObject* self() override {return (QObject*)this;}
+
    public slots:
       //@Override
-      /*public*/ void actionPerformed(ActionEvent*  /*a*/ = 0) {
+      /*public*/ void actionPerformed(JActionEvent*  /*a*/ = 0) {
           editor->putBlockContents();
       }
   };

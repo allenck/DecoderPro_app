@@ -15,9 +15,10 @@ public:
  /*public*/ static Class* forName(QString className);
  /*public*/ bool isInstance(QObject* obj);
  /*public*/ QString getCanonicalName();
- /*public*/ Class* newInstance() throw (InstantiationException, IllegalAccessException);
+ /*public*/ Class* newInstance() /*throw (InstantiationException, IllegalAccessException)*/;
  /*public*/ /*native*/ bool isAssignableFrom(QString cls);
  ///*pubic*/ QString className();
+ /*public*/ static bool isAssignableFrom(QString clazz, QString type);
 private:
  /*private*/ static /*final*/ int ANNOTATION;//= 0x00002000;
  /*private*/ static /*final*/ int ENUM      ;//= 0x00004000;

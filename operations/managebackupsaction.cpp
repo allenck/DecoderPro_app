@@ -23,12 +23,12 @@ namespace Operations
 // static Logger log = LoggerFactory
 //   .getLogger(ManageBackupsAction.class.getName());
 
- /*public*/ ManageBackupsAction::ManageBackupsAction(QString s, QObject* parent) : AbstractAction(s, parent) {
+ /*public*/ ManageBackupsAction::ManageBackupsAction(QObject* parent) : AbstractAction(tr("Manage Backups"), parent) {
      //super(s);
  connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
  }
 
- /*public*/ void ManageBackupsAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void ManageBackupsAction::actionPerformed(JActionEvent* /*e*/) {
      ManageBackupsDialog* dlg = new ManageBackupsDialog();
      //dlg->setLocationRelativeTo(null);
      dlg->setVisible(true);

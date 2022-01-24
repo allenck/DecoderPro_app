@@ -71,7 +71,7 @@ Beans::Beans(QObject *parent) : QObject(parent)
  * @param index The element to use.
  * @param value The value to set.
  */
-/*public*/ /*static*/ void Beans::setIntrospectedIndexedProperty(QObject *bean, QString key, int index, QVariant value) {
+/*public*/ /*static*/ void Beans::setIntrospectedIndexedProperty(QObject *bean, QString key, int /*index*/, QVariant /*value*/) {
     if (bean!=nullptr && !key.isNull()) {
 //        try {
 //            PropertyDescriptor[] pds = Introspector.getBeanInfo(bean.getClass()).getPropertyDescriptors();
@@ -88,7 +88,7 @@ Beans::Beans(QObject *parent) : QObject(parent)
 //                IllegalArgumentException |
 //                InvocationTargetException |
 //                IntrospectionException ex) {
-//            log->warn(ex.getMessage(), ex);
+//            log->warn(ex->getMessage(), ex);
 //        }
     }
 }
@@ -128,7 +128,7 @@ Beans::Beans(QObject *parent) : QObject(parent)
  * @param index The element to return.
  * @return the value at <i>index</i> or null
  */
-/*public*/ /*static*/ QVariant Beans::getIntrospectedIndexedProperty(QObject* bean, QString key, int index) {
+/*public*/ /*static*/ QVariant Beans::getIntrospectedIndexedProperty(QObject* bean, QString key, int /*index*/) {
     if (bean!=nullptr && !key.isNull()) {
 #if 0
         try {
@@ -145,13 +145,13 @@ Beans::Beans(QObject *parent) : QObject(parent)
             if (tex instanceof RuntimeException) {
                 throw (RuntimeException) tex;
             } else {
-                log.error(ex.getMessage(), ex);
+                log.error(ex->getMessage(), ex);
             }
         } catch (
                 IllegalAccessException |
                 IllegalArgumentException |
                 IntrospectionException ex) {
-            log.warn(ex.getMessage(), ex);
+            log.warn(ex->getMessage(), ex);
         }
 #endif
     }
@@ -216,7 +216,7 @@ Beans::Beans(QObject *parent) : QObject(parent)
                 IllegalArgumentException |
                 InvocationTargetException |
                 IntrospectionException ex) {
-            log->warn(ex.getMessage(), ex);
+            log->warn(ex->getMessage(), ex);
         }
 #endif
                 bean->setProperty(key.toLocal8Bit().data(),value);
@@ -282,7 +282,7 @@ Beans::Beans(QObject *parent) : QObject(parent)
                 IllegalArgumentException |
                 InvocationTargetException |
                 IntrospectionException ex) {
-            log->warn(ex.getMessage(), ex);
+            log->warn(ex->getMessage(), ex);
         }
 #endif
     }
@@ -359,7 +359,7 @@ Beans::Beans(QObject *parent) : QObject(parent)
             }
             // catch only introspection-related exceptions, and allow all other to pass through
         } catch (IntrospectionException ex) {
-            log->warn(ex.getMessage(), ex);
+            log->warn(ex->getMessage(), ex);
         }
 #endif
     }
@@ -396,7 +396,7 @@ Beans::Beans(QObject *parent) : QObject(parent)
             }
             // catch only introspection-related exceptions, and allow all other to pass through
         } catch (IntrospectionException ex) {
-            log.warn(ex.getMessage(), ex);
+            log.warn(ex->getMessage(), ex);
         }
 #endif
     }
@@ -437,7 +437,7 @@ Beans::Beans(QObject *parent) : QObject(parent)
             }
             // catch only introspection-related exceptions, and allow all other to pass through
         } catch (IntrospectionException ex) {
-            log->warn(ex.getMessage(), ex);
+            log->warn(ex->getMessage(), ex);
         }
 #endif
     }
@@ -474,7 +474,7 @@ Beans::Beans(QObject *parent) : QObject(parent)
     for (PropertyChangeListener* listener : listeners) {
         if (listener == (needle)) {
             return true;
-        } else if (qobject_cast< PropertyChangeListenerProxy*>(listener)) {
+        } else if (qobject_cast< PropertyChangeListenerProxy*>(listener->self())) {
             if (((PropertyChangeListenerProxy*) listener)->getListener() == (needle)) {
                 return true;
             }

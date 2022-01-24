@@ -16,10 +16,10 @@ namespace Sprog
   Q_OBJECT
  public:
   SprogPowerManager(SprogSystemConnectionMemo* memo, QObject* parent = 0);
-  /*public*/ void setPower(int v) throw (JmriException);
+  /*public*/ void setPower(int v) /*throw (JmriException)*/;
   /*public*/ void notePowerState(int v);
   /*public*/ int getPower();
-  /*public*/ void dispose() throw (JmriException);
+  /*public*/ void dispose() /*throw (JmriException)*/;
 
  public slots:
   /*public*/ void notify(AbstractMessage* m);
@@ -33,7 +33,7 @@ namespace Sprog
 
   bool waiting;// = false;
   int onReply;// = UNKNOWN;
-  /*private*/ void checkTC() throw (JmriException);
+  /*private*/ void checkTC() /*throw (JmriException)*/;
 
  };
 }

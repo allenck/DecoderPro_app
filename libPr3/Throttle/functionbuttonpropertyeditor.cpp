@@ -221,7 +221,7 @@
 //        if ((id < 0) || id > 28) {
 //            throw new NumberFormatException("");
 //        }
-//    } catch (NumberFormatException ex) {
+//    } catch (NumberFormatException* ex) {
 //        errors.append(String.valueOf(++errorNumber));
 //        errors.append(". " + tr("ErrorFunctionKeyRange") + "\n");
 //    }
@@ -232,7 +232,7 @@
 //        if (size < 1) {
 //            throw new NumberFormatException("");
 //        }
-//    } catch (NumberFormatException ex) {
+//    } catch (NumberFormatException* ex) {
 //        errors.append(String.valueOf(++errorNumber));
 //        errors.append(". " + tr("ErrorFontSize"));
 //    }

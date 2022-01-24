@@ -74,7 +74,12 @@
     QString info = tr("Assert at line %1 in %2:\n %3\n").arg(line).arg(file).arg(JUnitUtil::getTestClassName());
         //throw AssertionError("unknown error");
     qDebug() << info;
-    JOptionPane::showMessageDialog(nullptr, info + message, "Assert error",  JOptionPane::WARNING_MESSAGE);
+    //JOptionPane::showMessageDialog(nullptr, info + message, "Assert error",  JOptionPane::WARNING_MESSAGE);
+    int retval = JOptionPane::showOptionDialog(NULL, info + message + "\nContinue testing?", tr("Assert error"),
+            JOptionPane::YES_NO_OPTION,
+            JOptionPane::QUESTION_MESSAGE/*, QIcon(), NULL, NULL*/);
+    if(retval != 0)
+     throw new Exception("Testing terminated");
     return;
 }
 
@@ -918,6 +923,20 @@ private static bool floatIsDifferent(float f1, float f2, float delta) {
         fail(tr("Not equal, expected %1 vs actual: %2 delta:%3").arg(QString::number(expected)).arg(QString::number(actual)).arg(QString::number(delta)), file, line);
 
 }
+/*public*/ /*static*/ void Assert::assertEquals(float expected, double actual, double delta, QString file, int line) {
+    // <editor-fold defaultstate="collapsed" desc="Compiled Code">
+    /* 0: aconst_null
+     * 1: fload_0
+     * 2: fload_1
+     * 3: fload_2
+     * 4: invokestatic  org/junit/Assert.assertEquals:(Ljava/lang/String;FFF)V
+     * 7: return
+     *  */
+    // </editor-fold>
+    if(! MathUtil::equals(expected, actual))
+        fail(tr("Not equal, expected %1 vs actual: %2 delta:%3").arg(QString::number(expected)).arg(QString::number(actual)).arg(QString::number(delta)), file, line);
+
+}
 
 /*public*/ /*static*/ void Assert::assertNotNull(QString message, QObject* object, QString file, int line) {
     // <editor-fold defaultstate="collapsed" desc="Compiled Code">
@@ -1018,17 +1037,19 @@ if(object.isNull())
         fail(tr("object is not null"), file, line);
 
 }
-/*public*/ /*static*/ void Assert::assertNull(QString object, QString file, int line) {
-if(!object.isNull())
+/*public*/ /*static*/ void Assert::assertNull(QString object, QString file, int line)
+{
+ if(!(object.isNull() || object.isEmpty()))
  fail(tr("string not Null: '%1'").arg(object), file, line);
 }
-/*public*/ /*static*/ void Assert::assertNull(QDomElement object, QString file, int line) {
-if(!object.isNull())
- fail("element not empty", file, line);
+/*public*/ /*static*/ void Assert::assertNull(QDomElement object, QString file, int line)
+{
+    if(!object.isNull())
+     fail("element not empty", file, line);
 }
 
 /*public*/ /*static*/ void Assert::assertNull(QString message, QString object, QString file, int line) {
-if(!object.isNull())
+if(!(object.isNull() || object.isEmpty()))
  fail(tr("%1, string not null: '%2'").arg(message).arg(object), file, line);
 }
 /*public*/ /*static*/ void Assert::assertNull(QString message, QVariant object, QString file, int line) {
@@ -1366,3 +1387,30 @@ AssertionError::AssertionError(QString s)
  msg = s;
 }
 
+/*public*/ /*static*/ void Assertions::assertNotNull(QObject* obj, QString msg, QString file,int line)
+{
+ Assert::assertNotNull(msg, obj, file, line);
+}
+
+/*public*/ /*static*/ void Assertions::assertEquals(QString s1, QString s2, QString msg, QString file,int line)
+{
+ Assert::assertEquals(msg, s1, s2, file, line);
+}
+
+/*public*/ /*static*/ void Assertions::assertTrue(bool condition, QString msg, QString file,int line){
+ Assert::assertTrue(msg, condition, file, line);
+}
+
+/*public*/ /*static*/ void Assertions::assertFalse(bool condition, QString msg, QString file,int line){
+ Assert::assertFalse(msg, condition, file, line);
+}
+
+/*public*/ /*static*/ void Assertions::assertNull(QObject* obj, QString msg, QString file,int line)
+{
+ Assert::assertNull(msg, obj, file, line);
+}
+
+/*public*/ /*static*/ void Assertions::assertEquals(int i1, int i2, QString msg, QString file,int line)
+{
+ Assert::assertEquals(msg, i1, i2, file, line);
+}

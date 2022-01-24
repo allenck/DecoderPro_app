@@ -9,10 +9,10 @@ class SimpleTurnoutServer : public AbstractTurnoutServer
 public:
  SimpleTurnoutServer(QTcpSocket* clientSocket, QObject* parent = nullptr) ;
  /*public*/ SimpleTurnoutServer(QDataStream* inStream, QDataStream* outStream, QObject* parent= nullptr);
- /*public*/ void sendStatus(QString turnoutName, int Status) throw (IOException);
- /*public*/ void sendErrorStatus(QString turnoutName) throw (IOException) ;
+ /*public*/ void sendStatus(QString turnoutName, int Status) /*throw (IOException)*/;
+ /*public*/ void sendErrorStatus(QString turnoutName) /*throw (IOException)*/ ;
  /*public*/ void parseStatus(QString statusString) throw (JmriException, IOException);
- /*private*/ void sendMessage(QString message) throw (IOException);
+ /*private*/ void sendMessage(QString message) /*throw (IOException)*/;
 
 private:
  static Logger* log;

@@ -316,9 +316,9 @@ Engineer::Engineer(Warrant* warrant, DccThrottle* throttle, QObject *parent) : Q
 //              });
     }
    }
-   catch (NumberFormatException nfe)
+   catch (NumberFormatException* nfe)
    {
-       log->error(tr("Command failed! %1 %2").arg(ts->toString()).arg(nfe.toString()));
+       log->error(tr("Command failed! %1 %2").arg(ts->toString()).arg(nfe->toString()));
    }
   }
   et = QDateTime::currentMSecsSinceEpoch()-et; //System.currentTimeMillis() - et;
@@ -719,8 +719,8 @@ ThrottleRamp* Engineer::getRamp() {
                     waitForClear.notify_all();
                     QString name =  _waitSensor->getDisplayName();    // save name, _waitSensor will be null 'eventually'
                     _warrant->fireRunStatus("SensorWaitCommand", "", name);
-                } catch (InterruptedException ie) {
-                    log->error("Engineer interrupted at _waitForSensor " + ie.getMessage());
+                } catch (InterruptedException* ie) {
+                    log->error("Engineer interrupted at _waitForSensor " + ie->getMessage());
                     _warrant->debugInfo();
                     //Thread.currentThread().interrupt();
                     thread()->quit();
@@ -767,7 +767,7 @@ ThrottleRamp* Engineer::getRamp() {
 
 /*private*/ void Engineer::runWarrant(ThrottleSetting* ts) {
     NamedBean* bean = ts->getNamedBeanHandle()->getBean();
-    if (!(qobject_cast<Warrant*>(bean))) {
+    if (!(static_cast<Warrant*>(bean))) {
         log->error(tr("runWarrant: %1 not a warrant!").arg(bean->getDisplayName()));
         return;
     }
@@ -891,7 +891,7 @@ ThrottleRamp* Engineer::getRamp() {
 //        ThreadingUtil.runOnLayoutEventually(() -> { // delay until current warrant can complete
             //WarrantTableFrame::getDefault()->setStatusText(m, c, true);
         if(!QMetaObject::invokeMethod(WarrantTableFrame::getDefault(), "setStatusTest", Qt::AutoConnection, Q_ARG(QString, m), Q_ARG(QColor, c), Q_ARG(bool, true)))
-         throw InvocationTargetException();
+         throw new InvocationTargetException();
 //        });
         emit finished();
     }
@@ -1094,7 +1094,7 @@ ThrottleRamp* Engineer::getRamp() {
                                 while (idx < _engineer->_commands->size()) {
                                     ThrottleSetting* ts = _engineer->_commands->value(idx);
                                     NamedBean* bean = ts->getNamedBeanHandle()->getBean();
-                                    if (qobject_cast<OBlock*>(bean)) {
+                                    if (static_cast<OBlock*>(bean)) {
                                         OBlock* blk = (OBlock*)bean;
                                         if (_endBlockIdx < _engineer->_warrant->getIndexOfBlock(blk, _endBlockIdx)) {
                                             // script is past end point, command should be NOOP
@@ -1258,7 +1258,7 @@ ThrottleRamp* Engineer::getRamp() {
             break;
         default:
             log->error("Function value " + QString::number(cmdNum )+ " out of range");
-            throw IllegalArgumentException("Function Value " + QString::number(cmdNum) + " out of range");
+            throw new IllegalArgumentException("Function Value " + QString::number(cmdNum) + " out of range");
     }
 }
 
@@ -1353,7 +1353,7 @@ ThrottleRamp* Engineer::getRamp() {
             break;
         default:
             log->error("Function value " + QString::number(cmdNum) + " out of range");
-            throw IllegalArgumentException("Function Value " + QString::number(cmdNum) + " out of range");
+            throw new IllegalArgumentException("Function Value " + QString::number(cmdNum) + " out of range");
     }
 }
 
@@ -1371,7 +1371,7 @@ ThrottleRamp* Engineer::getRamp() {
                 s->setKnownState(Sensor::INACTIVE);
             }
             _warrant->fireRunStatus("SensorSetCommand", act, s->getDisplayName());
-        } catch (JmriException e) {
+        } catch (JmriException* e) {
             log->warn("Exception setting sensor " + sensorName + " in action");
         }
     } else {

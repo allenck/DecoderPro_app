@@ -28,18 +28,18 @@ namespace Operations
  /*static*/ /*final*/ QString PrintRouteAction::TAB = "\t"; // NOI18N
  /*private*/ /*static*/ /*final*/ int PrintRouteAction::MAX_NAME_LENGTH = Control::max_len_string_location_name - 5;
 
- /*public*/ PrintRouteAction::PrintRouteAction(QString actionName, bool preview, Route* route, QObject* parent)
-    : AbstractAction(actionName, parent)
+ /*public*/ PrintRouteAction::PrintRouteAction(bool isPreview, Route* route, QObject* parent)
+    : AbstractAction(isPreview?tr("Preview"):tr("Print"), parent)
 {
      //super(actionName);
      mFrame = new JFrame();
-     isPreview = preview;
+     this->isPreview = isPreview;
      this->route = route;
      connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
  }
 
 
- /*public*/ void PrintRouteAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void PrintRouteAction::actionPerformed(JActionEvent * /*e*/) {
      if (route == NULL) {
          return;
      }
@@ -102,7 +102,7 @@ namespace Operations
    s = name + TAB + rl->getDepartureTime() + TAB + rl->getComment() + NEW_LINE;
    writer->write(s);
   }
-//     } catch (IOException we) {
+//     } catch (IOException* we) {
 //         log.error("Error printing route");
 //     }
  }

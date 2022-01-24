@@ -206,7 +206,7 @@ void JmriJFrameServlet::sendClick(QString /*name*/, QWidget* c, int xg, int yg, 
  {
   return Class::forName(type)->isAssignableFrom(c->metaObject()->className());
  }
- catch (ClassNotFoundException ex)
+ catch (ClassNotFoundException* ex)
  {
   return false;
  }
@@ -370,7 +370,7 @@ void JmriJFrameServlet::sendClick(QString /*name*/, QWidget* c, int xg, int yg, 
     QBuffer* buf = new QBuffer(&ba);
     if(!frame->getContentPane()->grab().save(buf, qPrintable(saveExtension)))
     {
-     throw IOException(tr("Error capturing %s").arg(frame->title()));
+     throw new IOException(tr("Error capturing %s").arg(frame->title()));
     }
     //response->setContentLength(ba.size());
     response->resp->write(ba,true);
@@ -654,7 +654,7 @@ void JmriJFrameServlet::sendClick(QString /*name*/, QWidget* c, int xg, int yg, 
       }
   }
  }
- catch (ClassNotFoundException ex) {} // ignore if not found
+ catch (ClassNotFoundException* ex) {} // ignore if not found
 }
 
 /*private*/ MyGraphicsItemGroup* JmriJFrameServlet::findGroup(QGraphicsItem* item)

@@ -2,7 +2,7 @@
 #include "usbnode.h"
 #include "logger.h"
 #include "controller.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include <QStringList>
 #include <QDebug>
 #include "linuxabstractcontroller.h"
@@ -40,7 +40,7 @@ namespace Usb
 {
  log = new Logger("UsbTreeModel");
  ca = new QVector<Usb::Controller*>();
- pcs = new PropertyChangeSupport(this);
+ pcs = new SwingPropertyChangeSupport(this, nullptr);
  devHash = QHash<qint16, DeviceFilter>();
 
     //super(new DefaultMutableTreeNode("Root"));
@@ -223,7 +223,7 @@ bool UsbTreeModel0::loadSystem() {
     try {
         ca = ControllerEnvironment.getDefaultEnvironment().getControllers();
         log->debug("Found " + ca.length + " controllers");
-    } catch (Exception ex) { // this is probably ClassNotFoundException, but that's not part of the interface
+    } catch (Exception* ex) { // this is probably ClassNotFoundException, but that's not part of the interface
         // could not load some component(s)
         log->debug("Found no controllers, handled Exception", ex);
         ca = NULL;
@@ -236,9 +236,9 @@ bool UsbTreeModel0::loadSystem() {
      QString name = dBusConn.name();
      QDBusReply<QStringList> reply = dBusConn.interface()->registeredServiceNames();
      if(!reply.isValid())
-      throw IOException("No Dbus interfaces available");
+      throw new IOException("No Dbus interfaces available");
      if(!reply.value().contains("org.example.TestServer"))
-      throw IOException("Required Dbus server available");
+      throw new IOException("Required Dbus server available");
      QDBusInterface* interface = new QDBusInterface("org.example.TestServer","/org/example/TestObject","org.example.TestInterface",dBusConn);
      int deviceCount;
      QDBusReply<int> reply2 = interface->call(QLatin1String("DeviceCount"));

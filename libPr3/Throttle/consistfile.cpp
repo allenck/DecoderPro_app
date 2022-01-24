@@ -44,7 +44,7 @@
         try {
             int number = Integer.parseInt(cnumber.getValue());
             consistAddress = new DccLocoAddress(number, isCLong.getValue().equals("yes"));
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException* e) {
             log->debug("Consist number not an integer");
             return;
         }
@@ -238,7 +238,7 @@
  * Write all consists to the default file name
  *
  */
-/*public*/ void ConsistFile::writeFile(QList<DccLocoAddress *>* consistList) throw (IOException) {
+/*public*/ void ConsistFile::writeFile(QList<DccLocoAddress *>* consistList) /*throw (IOException)*/ {
     writeFile(consistList, defaultConsistFilename());
 }
 
@@ -248,11 +248,11 @@
  * @param consistList an ArrayList of consists to write
  * @param fileName    - with location and file type
  */
-/*public*/ void ConsistFile::writeFile(QList<DccLocoAddress *>* consistList, QString fileName) throw (IOException) {
+/*public*/ void ConsistFile::writeFile(QList<DccLocoAddress *>* consistList, QString fileName) /*throw (IOException)*/ {
     // create root element
 #if 1
  if(consistList->isEmpty())
-  throw IOException("consist list is empty!");
+  throw new IOException("consist list is empty!");
  QDomDocument doc = QDomDocument();
     QDomElement root = doc.createElement("consist-roster-config");
     //QDomDocument doc = newDocument(root, dtdLocation + "consist-roster-config.dtd");
@@ -292,8 +292,8 @@
             }
         }
         writeXML(findFile(fileName), doc);
-    } catch (IOException ioe) {
-        log->error("IO Exception " + ioe.getMessage());
+    } catch (IOException* ioe) {
+        log->error("IO Exception " + ioe->getMessage());
         throw (ioe);
     }
 #endif
@@ -302,9 +302,11 @@
  * Defines the preferences subdirectory in which LocoFiles are kept by
  * default.
  */
-/*static*/ /*private*/ QString ConsistFile::fileLocation = FileUtil::getUserFilesPath() + "roster" + File::separator + "consist";
+/*static*/ /*private*/ QString ConsistFile::fileLocation = nullptr;//FileUtil::getUserFilesPath() + "roster" + QDir::separator() + "consist";
 
 /*static*/ /*public*/ QString ConsistFile::getFileLocation() {
+ if(fileLocation == nullptr)
+  fileLocation = FileUtil::getUserFilesPath() + "roster" + QDir::separator() + "consist";
     return fileLocation;
 }
 
@@ -332,7 +334,7 @@
         evt->getPropertyName()== (RosterConfigManager::DIRECTORY)) {
         try {
             this->writeFile(consistMan->getConsistList()->toList());
-        } catch (IOException ioe) {
+        } catch (IOException* ioe) {
             log->error("Unable to write consist information to new consist folder");
         }
     }

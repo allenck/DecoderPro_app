@@ -14,7 +14,7 @@
 
 AbstractProvidingTurnoutManagerTestBase::AbstractProvidingTurnoutManagerTestBase(QObject *parent)
 {
- l= qobject_cast<Manager*>(InstanceManager::turnoutManagerInstance());
+ l= qobject_cast<Manager*>(InstanceManager::turnoutManagerInstance()->self());
 }
 /**
  * Extension of AbstractManagerTestBase base for ProvidingManager test classes.
@@ -64,7 +64,7 @@ AbstractProvidingTurnoutManagerTestBase::AbstractProvidingTurnoutManagerTestBase
             e1 = (Turnout*)m->provide(s1);
             e2 = (Turnout*)m->provide(s2);
         } catch (
-                IllegalArgumentException /*|
+                IllegalArgumentException* /*|
                 com.pi4j.io.gpio.exception.GpioPinExistsException |
                 NullPointerException |
                 ArrayIndexOutOfBoundsException*/ ex) {
@@ -109,8 +109,8 @@ AbstractProvidingTurnoutManagerTestBase::AbstractProvidingTurnoutManagerTestBase
             // This should fail with an DuplicateSystemNameException.
             l->Register(e2);
             Assert::fail("Expected exception not thrown", __FILE__, __LINE__);
-        } catch (NamedBean::DuplicateSystemNameException ex) {
-            Assert::assertEquals("exception message is correct", expectedMessage, ex.getMessage(), __FILE__, __LINE__);
+        } catch (NamedBean::DuplicateSystemNameException* ex) {
+            Assert::assertEquals("exception message is correct", expectedMessage, ex->getMessage(), __FILE__, __LINE__);
             JUnitAppender::assertErrorMessage(expectedMessage, __FILE__, __LINE__);
         }
 

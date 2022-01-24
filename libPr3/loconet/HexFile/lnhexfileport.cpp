@@ -55,7 +55,7 @@
   outpipe = /*new DataOutputStream(new PipedOutputStream(tempPipe));*/ new QDataStream(tempPipe, QIODevice::WriteOnly);
   pout = outpipe;
  }
- catch (IOException e)
+ catch (IOException* e)
  {
   log->error("init (pipe): Exception: "/*+e.toString()*/);
  }
@@ -74,9 +74,9 @@
   //sFile = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
   sFile = new QTextStream(file);
  }
- catch (Exception e)
+ catch (Exception* e)
  {
-  log->error("load (pipe): Exception: "+e.getMessage());
+  log->error("load (pipe): Exception: "+e->getMessage());
  }
 }
 
@@ -89,7 +89,7 @@
  {
   f->initComponents();
  }
- catch (Exception ex)
+ catch (Exception* ex)
  {
         //log->error("starting HexFileFrame exception: "+ex.toString());
  }
@@ -172,9 +172,9 @@
    return;
   }
  }
- catch (Exception e)
+ catch (Exception* e)
  {
-  log->error("run: Exception: "+e.getMessage());
+  log->error("run: Exception: "+e->getMessage());
  }
  _running = false;
 }

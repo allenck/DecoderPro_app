@@ -1,7 +1,7 @@
 #ifndef JMRICLIENTPOWERMANAGER_H
 #define JMRICLIENTPOWERMANAGER_H
 #include "powermanager.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 
 class AbstractMRListener;
 class JMRIClientReply;
@@ -13,11 +13,11 @@ class JMRIClientPowerManager : public PowerManager
 public:
  /*public*/ JMRIClientPowerManager(JMRIClientSystemConnectionMemo* memo, QObject* parent = nullptr);
  /*public*/ QString getUserName();
- /*public*/ void setPower(int v) throw (JmriException);
+ /*public*/ void setPower(int v) /*throw (JmriException)*/;
  /*public*/ int getPower();
- /*public*/ void dispose() throw (JmriException);
+ /*public*/ void dispose() /*throw (JmriException)*/;
  // to hear of changes
- PropertyChangeSupport* pcs;// = new java.beans.PropertyChangeSupport(this);
+ SwingPropertyChangeSupport* pcs;// = new java.beans.SwingPropertyChangeSupport(this,this);
  /*public*/  void addPropertyChangeListener(PropertyChangeListener* l);
  /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
  /*public*/ void message(JMRIClientMessage* m);
@@ -28,7 +28,7 @@ private:
  /*private*/ JMRIClientTrafficController* tc = nullptr;
  /*private*/ JMRIClientSystemConnectionMemo* memo = nullptr;
  int power = UNKNOWN;
- /*private*/ void checkTC() throw (JmriException);
+ /*private*/ void checkTC() /*throw (JmriException)*/;
 
 protected:
  /*protected*/ void firePropertyChange(QString p, QVariant old, QVariant n);

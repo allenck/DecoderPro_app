@@ -55,7 +55,7 @@ public:
         //connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed(ActionEvent*))); // JmriNamedPaneAction does this
  }
 public slots:
-void actionPerformed()
+void actionPerformed(JActionEvent* e = 0)
 {
  JMRIClientMonPane* pane = new JMRIClientMonPane();
  pane->setVisible(true);

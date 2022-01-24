@@ -89,7 +89,7 @@ AddressPanel::~AddressPanel()
 { // Handle disposing of the throttle
     if (throttle != NULL) {
         DccLocoAddress* l = (DccLocoAddress*) throttle->getLocoAddress();
-        throttle->removePropertyChangeListener((PropertyChangeListener*)this);
+        ((AbstractThrottle*)throttle)->removePropertyChangeListener((PropertyChangeListener*)this);
         InstanceManager::throttleManagerInstance()->cancelThrottleRequest(l->getNumber(), (ThrottleListener*)this);
         InstanceManager::throttleManagerInstance()->releaseThrottle(throttle, (ThrottleListener*)this);
         notifyListenersOfThrottleRelease();
@@ -195,7 +195,7 @@ AddressPanel::~AddressPanel()
  {
   log->warn("Not correct address, asked for "+QString::number(currentAddress->getNumber())+" got "+ t->getLocoAddress()->getNumber()+", requesting again..." );
   bool requestOK =
-            InstanceManager::throttleManagerInstance()->requestThrottle(currentAddress->getNumber(), currentAddress->isLongAddress(), (ThrottleListener*)this);
+            InstanceManager::throttleManagerInstance()->requestThrottle(currentAddress->getNumber(), currentAddress->isLongAddress(), (ThrottleListener*)this, true);
   if (!requestOK)
   {
    JOptionPane::showMessageDialog(mainPanel, tr("Address in use by another throttle."));
@@ -207,7 +207,7 @@ AddressPanel::~AddressPanel()
  ui->releaseButton->setEnabled(true);
  currentAddress = (DccLocoAddress*) t->getLocoAddress();
  addrSelector->setAddress(currentAddress);
- throttle->addPropertyChangeListener((PropertyChangeListener*)this);
+ ((AbstractThrottle*)throttle)->addPropertyChangeListener((PropertyChangeListener*)this);
  //connect((AbstractThrottle*)throttle, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  //AbstractThrottle* at = (AbstractThrottle*)throttle;
  //connect(at, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -306,7 +306,7 @@ void AddressPanel::OnSetButton_clicked()
     //ui->conRosterBox->setEnabled(true);
     if (throttle != NULL)
     {
-     throttle->removePropertyChangeListener((PropertyChangeListener*)this);
+     ((AbstractThrottle*)throttle)->removePropertyChangeListener((PropertyChangeListener*)this);
      AbstractThrottle* at = (AbstractThrottle*)throttle;
      disconnect(at, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
     }
@@ -480,7 +480,7 @@ void AddressPanel::OnSetButton_clicked()
     int cA = 0;
     try {
         cA = cre->getConsistNumber().toInt();
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException* e) {
 
     }
     if (0 < cA && cA < 128) {
@@ -557,7 +557,7 @@ void AddressPanel::OnSetButton_clicked()
  }
 
  bool requestOK =
-     InstanceManager::throttleManagerInstance()->requestThrottle(consistAddress->getNumber(), consistAddress->isLongAddress(), (ThrottleListener*)this);
+     InstanceManager::throttleManagerInstance()->requestThrottle(consistAddress->getNumber(), consistAddress->isLongAddress(), (ThrottleListener*)this, true);
  if (!requestOK)
      //JOptionPane.showMessageDialog(mainPanel, Bundle.getMessage("AddressInUse"));
      QMessageBox::warning(mainPanel, tr("Warning"), tr("Address in use by another throttle."));

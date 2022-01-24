@@ -25,6 +25,7 @@
 #include "control.h"
 #include "carcolors.h"
 #include "cartypes.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -43,7 +44,7 @@ namespace Operations
  TrainSwitchLists::TrainSwitchLists(QObject* parent) : TrainCommon(parent)
  {
   messageFormatText = ""; // the text being formated in case there's an exception
-  trainManager = TrainManager::instance();
+  trainManager = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"));
   log = new Logger("TrainSwitchLists");
  }
  /**
@@ -70,7 +71,7 @@ namespace Operations
      log->debug(tr("Append: %1 for location (%2)").arg(append).arg(location->getName()));
 
      // create switch list file
-     File* file = TrainManagerXml::instance()->createSwitchListFile(location->getName());
+     File* file = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->createSwitchListFile(location->getName());
 
      PrintWriter* fileOut = NULL;
      //try {
@@ -84,7 +85,7 @@ namespace Operations
      }
 
      QTextStream* stream =  new QTextStream(qFile);
-//     } catch (IOException e) {
+//     } catch (IOException* e) {
 //         log->error("Can not open switchlist file: {}", file.getName());
 //         return;
 //     }
@@ -104,8 +105,7 @@ namespace Operations
          QString valid = QString(messageFormatText = TrainManifestText::getStringValid()).arg(
                  getDate(true));
          if (Setup::isPrintTimetableNameEnabled()) {
-             TrainSchedule* sch = TrainScheduleManager::instance()->getScheduleById(
-                     trainManager->getTrainScheduleActiveId());
+              TrainSchedule* sch = ((TrainScheduleManager*)InstanceManager::getDefault("Operations::TrainScheduleManager"))->getActiveSchedule();
              if (sch != NULL) {
                  valid = valid + " (" + sch->getName() + ")";
              }
@@ -333,7 +333,7 @@ namespace Operations
              foreach (Location* loc, locationManager->getLocationsByNameList()) {
                  if (splitString(loc->getName())!=(splitString(location->getName())))
                      continue;
-                 foreach (Track* track, loc->getTrackByNameList(NULL)) {
+                 foreach (Track* track, loc->getTracksByNameList(NULL)) {
                      if (trackName==(splitString(track->getName())))
                          continue;
                      QString trainName = "";
@@ -364,13 +364,13 @@ namespace Operations
                                  }
                              } else {
                                  newLine(fileOut, QString(messageFormatText = TrainSwitchListText::getStringHoldCar()).arg(
-                                         padAndTruncateString(car->getRoadName(), CarRoads::instance()->getMaxNameLength())).arg(
+                                         padAndTruncateString(car->getRoadName(), ((CarRoads*)InstanceManager::getDefault("Operations::CarRoads"))->getMaxNameLength())).arg(
                                                  padAndTruncateString(car->getNumber(), Control::max_len_string_print_road_number)).arg(
-                                                 padAndTruncateString(car->getTypeName().split("-")[0], CarTypes::instance()->getMaxNameLength())).arg(
+                                                 padAndTruncateString(car->getTypeName().split("-")[0], ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getMaxNameLength())).arg(
                                                  padAndTruncateString(car->getLength() + LENGTHABV, Control::max_len_string_length_name)).arg(
-                                                 padAndTruncateString(car->getLoadName(), CarLoads::instance()->getMaxNameLength())).arg(
+                                                 padAndTruncateString(car->getLoadName(), ((CarLoads*)InstanceManager::getDefault("Operations::CarLoads"))->getMaxNameLength())).arg(
                                                  padAndTruncateString(trackName, locationManager->getMaxTrackNameLength())).arg(
-                                                 padAndTruncateString(car->getColor(), CarColors::instance()->getMaxNameLength())));
+                                                 padAndTruncateString(car->getColor(), ((CarColors*)InstanceManager::getDefault("Operations::CarColors"))->getMaxNameLength())));
                              }
                          }
                      }
@@ -398,7 +398,7 @@ namespace Operations
 
 //     } catch (IllegalArgumentException e) {
 //         newLine(fileOut, QString(tr("ERROR! Window \"%1\" has an illegal argument. %2").arg(
-//                 tr("Edit Switch List Text")).arg(e.getLocalizedMessage()));
+//                 tr("Edit Switch List Text")).arg(e->getLocalizedMessage()));
 //         newLine(fileOut, messageFormatText);
 //         //e.printStackTrace();
 //     }
@@ -410,7 +410,7 @@ namespace Operations
  }
 
  /*public*/ void TrainSwitchLists::printSwitchList(Location* location, bool isPreview) {
-     File* buildFile = TrainManagerXml::instance()->getSwitchListFile(location->getName());
+     File* buildFile = ((TrainManagerXml*)InstanceManager::getDefault("TrainManagerXml"))->getSwitchListFile(location->getName());
      if (!buildFile->exists()) {
          log->warn(tr("Switch list file missing for location (%1)").arg(location->getName()));
          return;

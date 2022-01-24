@@ -13,15 +13,15 @@ public:
     /*public*/ QDomElement store(QObject* o) override;
     /*public*/ void setStoreElementClass(QDomElement sections);
     /*public*/ void load(QDomElement element, QObject* o)  throw (Exception) override;
-    /*public*/ bool load(QDomElement sections) throw (Exception) override;
-    /*public*/ void loadSections(QDomElement sections);
+    /*public*/ bool load(QDomElement sharedSections, QDomElement perNodeSections) throw (Exception) override;
+    /*public*/ void loadSections(QDomElement sharedSections, QDomElement perNodeSections);
     /*public*/ int loadOrder() const override;
 
 signals:
 
 public slots:
 private:
-    Logger* log;
+    static Logger* log;
 
 };
 Q_DECLARE_METATYPE(SectionManagerXml)

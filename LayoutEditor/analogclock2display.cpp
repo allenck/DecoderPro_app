@@ -507,11 +507,11 @@ void AnalogClock2Display::cleanup() {
             ExternalLinkContentViewerUI::activateURL(QUrl(_url));
         }
 #endif
-    } catch (IOException t) {
+    } catch (IOException* t) {
         log->error("Error handling link", t);
     }
 #if 0
-    catch (URISyntaxException t) {
+    catch (URISyntaxException* t) {
         log.error("Error handling link", t);
     }
 #endif

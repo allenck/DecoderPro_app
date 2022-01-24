@@ -493,7 +493,7 @@ void JTextArea::setTabSize(int size) { setTabStopWidth(size);}
         try {
             doc.insertString(pos, str, NULL);
         } catch (BadLocationException e) {
-            throw new IllegalArgumentException(e.getMessage());
+            throw new IllegalArgumentException(e->getMessage());
         }
     }
 }
@@ -518,10 +518,13 @@ void JTextArea::setTabSize(int size) { setTabStopWidth(size);}
 //        }
  }
 #endif
- if(str.endsWith('\n'))
-  QTextEdit::append(str.replace('\n', ' '));
-    else
- QTextEdit::append(str);
+ if(!str.isEmpty())
+ {
+//  if(str.endsWith('\n'))
+//   QTextEdit::append(str.replace('\n', ""));
+//     else
+  QTextEdit::append(str);
+ }
 }
 #if 0
 /**
@@ -553,7 +556,7 @@ void JTextArea::setTabSize(int size) { setTabStopWidth(size);}
                 doc.insertString(start, str, NULL);
             }
         } catch (BadLocationException e) {
-            throw new IllegalArgumentException(e.getMessage());
+            throw new IllegalArgumentException(e->getMessage());
         }
     }
 }
@@ -876,4 +879,9 @@ void JTextArea::setEditable(bool b)
 /*protected*/ void JTextArea::focusOutEvent(QFocusEvent* e)
 {
  emit focusLost(new FocusEvent());
+}
+
+/*public*/ QString JTextArea::getText()
+{
+ return toPlainText();
 }

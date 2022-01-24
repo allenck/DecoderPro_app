@@ -52,7 +52,7 @@ frame->close();
 
           // Click button to delete panel and close window
           bo.push();
-          } catch (Exception e) {
+          } catch (Exception* e) {
               // exceptions in this thread are not considered an error.
               return;
           }

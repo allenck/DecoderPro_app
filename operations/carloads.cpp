@@ -6,6 +6,7 @@
 #include "carmanagerxml.h"
 #include "cartypes.h"
 #include "stringutil.h"
+#include "instancemanager.h"
 
 //CarLoads::CarLoads()
 //{
@@ -37,33 +38,11 @@ namespace Operations
   list = new QHash<QString, QList<CarLoad*>*>();
   _emptyName = tr("E");
   _loadName = tr("L");
-  log = new Logger("CarLoads");
+  log = new Logger("Operations::CarLoads");
   setProperty("InstanceManagerAutoDefault", "yes");
 
  }
 
-/**
- * record the single instance *
- */
-/*private*/ /*static*/ CarLoads* CarLoads::_instance = NULL;
-
- /*public*/ /*static*/ /*synchronized*/ CarLoads* CarLoads::instance()
-{
- Logger* log = new Logger("");
- if (_instance == NULL)
- {
-  if (log->isDebugEnabled()) {
-      log->debug("CarLoads creating instance");
-  }
-  // create and load
-  _instance = new CarLoads();
- }
- if (Control::showInstance)
- {
-  log->debug(tr("CarLoads returns instance %1").arg(_instance->metaObject()->className()));
- }
- return _instance;
- }
 
  /**
   * Add a car type with specific loads
@@ -497,7 +476,7 @@ namespace Operations
   while (en.hasNext()) {
       QString carType = en.next();
       // check to see if car type still exists
-      if (!CarTypes::instance()->containsName(carType)) {
+      if (!((CarTypes*)InstanceManager::getDefault("CarTypes"))->containsName(carType)) {
           continue;
       }
       QList<CarLoad*>* loads = getSortedList(carType);
@@ -612,7 +591,7 @@ namespace Operations
 
  /*protected*/ void CarLoads::setDirtyAndFirePropertyChange(QString p, QVariant old, QVariant n) {
      // Set dirty
-     CarManagerXml::instance()->setDirty(true);
+     ((CarManagerXml*)InstanceManager::getDefault("CarManagerXml"))->setDirty(true);
      RollingStockAttribute::firePropertyChange(p, old, n);
  }
 

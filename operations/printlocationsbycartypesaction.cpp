@@ -6,6 +6,7 @@
 #include "cartypes.h"
 #include "location.h"
 #include "track.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -36,7 +37,7 @@ namespace Operations
 {
   //super(actionName);
  log = new Logger("PrintLocationsByCarTypesAction");
- locManager = LocationManager::instance();
+ locManager = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"));
 
   mFrame = frame;
   isPreview = preview;
@@ -57,7 +58,7 @@ namespace Operations
 
   // Loop through the car types showing which locations and tracks will
   // service that car type
-  QStringList carTypes = CarTypes::instance()->getNames();
+  QStringList carTypes = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames();
 
   QList<Location*> locations = locManager->getLocationsByNameList();
 
@@ -76,7 +77,7 @@ namespace Operations
                   s = TAB + location->getName() + NEW_LINE;
                   writer->write(s);
                   // tracks
-                  QList<Track*> tracks = location->getTrackByNameList(NULL);
+                  QList<Track*> tracks = location->getTracksByNameList(NULL);
                   foreach (Track* track, tracks) {
                       if (track->acceptsTypeName(type)) {
                           s = TAB + TAB + TAB + track->getName() + NEW_LINE;
@@ -88,7 +89,7 @@ namespace Operations
       }
       // and force completion of the printing
       writer->close();
-//  } catch (IOException we) {
+//  } catch (IOException* we) {
 //      log.error("Error printing PrintLocationAction: " + we);
 //  }
  }

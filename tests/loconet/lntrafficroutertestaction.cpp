@@ -25,9 +25,9 @@ void LnTrafficRouterTestAction::actionPerformed()
        QMetaObject::invokeMethod(test, testName.toLocal8Bit(), Qt::DirectConnection);
        log->info(tr("end '%1'").arg(testName));
       }}
-    catch (AssertionError er)
+    catch (AssertionError* er)
     {
-        JOptionPane::showMessageDialog(nullptr, er.getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
+        JOptionPane::showMessageDialog(nullptr, er->getMessage(), tr("Assertion Error"), JOptionPane::WARNING_MESSAGE);
     }
 
 }

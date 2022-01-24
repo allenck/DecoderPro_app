@@ -174,12 +174,12 @@ EventListenerList::EventListenerList(QObject *parent) :
         return;
     }
     //if (!t->isInstance(l))
-    QObject* obj = l->self();
+    //QObject* obj = l->self();
     if(QString(l->self()->metaObject()->superClass()->className()) != t )
     {
      log->warn("Listener " + QString(l->self()->metaObject()->className()) +
                  " is not of type " + t);
-//        throw IllegalArgumentException("Listener " + QString(l->metaObject()->className()) +
+//        throw new IllegalArgumentException("Listener " + QString(l->metaObject()->className()) +
 //        + " superclass " +   QString(l->metaObject()->superClass()->className())+                           " is not of type " + t);
     }
     if (listenerList == NULL_ARRAY) {
@@ -217,7 +217,7 @@ EventListenerList::EventListenerList(QObject *parent) :
     //if (!t.isInstance(l))
     if(l->self()->metaObject()->className() != t)
     {
-        throw IllegalArgumentException(QString("Listener ") + l->self()->metaObject()->className() +
+        throw new IllegalArgumentException(QString("Listener ") + l->self()->metaObject()->className() +
                                      " is not of type " + t);
     }
     // Is l on the list?

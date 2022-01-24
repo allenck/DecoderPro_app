@@ -3,12 +3,14 @@
 #include "operationsframe.h"
 #include "appslib_global.h"
 #include "jcombobox.h"
+#include "propertychangelistener.h"
+#include "resourcebundle.h"
 
-class ActionEvent;
+class JActionEvent;
 class QGroupBox;
 class QScrollArea;
 class QCheckbox;
-class QPushButton;
+class JButton;
 class QLabel;
 namespace Operations
 {
@@ -18,22 +20,25 @@ namespace Operations
  class TrainManager;
  class RollingStock;
  class RollingStockManager;
- class APPSLIBSHARED_EXPORT RollingStockSetFrame : public OperationsFrame
+ class APPSLIBSHARED_EXPORT RollingStockSetFrame : public OperationsFrame, public PropertyChangeListener
  {
   Q_OBJECT
+   Q_INTERFACES(PropertyChangeListener)
  public:
   /*public*/ RollingStockSetFrame(QWidget* parent= 0);
   /*public*/ RollingStockSetFrame(QString title, QWidget* parent = 0);
-  /*public*/ void initComponents();
+  /*public*/ void initComponents() override;
   /*public*/ void load(RollingStock* rs);
+   QObject* self() override {return (QObject*)this; }
+
  public slots:
-  /*public*/ void comboBoxActionPerformed(QWidget* ae);
-  /*public*/ void dispose();
-  /*public*/ void propertyChange(PropertyChangeEvent* e);
-  /*public*/ void checkBoxActionPerformed(QWidget* ae);
+  /*public*/ void comboBoxActionPerformed(QWidget* ae) override;
+  /*public*/ void dispose() override;
+  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
+  /*public*/ void checkBoxActionPerformed(QWidget* ae) override;
 
 public slots:
-  /*public*/ void buttonActionPerformed(QWidget* ae);
+  /*public*/ void buttonActionPerformed(QWidget* ae) override;
 
  private:
   RollingStockManager* manager;
@@ -63,8 +68,8 @@ public slots:
   QLabel* textType;// = new JLabel();
 
   // major buttons
-  /*protected*/ QPushButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
-  /*protected*/ QPushButton* ignoreAllButton;// = new JButton(Bundle.getMessage("IgnoreAll"));
+  /*protected*/ JButton* saveButton;// = new JButton(Bundle.getMessage("Save"));
+  /*protected*/ JButton* ignoreAllButton;// = new JButton(Bundle.getMessage("IgnoreAll"));
 
   // combo boxes
   /*protected*/ JComboBox* locationBox;//= LocationManager.instance().getComboBox();
@@ -91,9 +96,9 @@ public slots:
   /*protected*/ QCheckBox* ignoreTrainCheckBox;//= new JCheckBox(Bundle.getMessage("Ignore"));
 
   // optional panels
-  /*protected*/ QGroupBox* pOptional;//= new JPanel();
+  /*protected*/ JPanel* pOptional;//= new JPanel();
   /*protected*/ QScrollArea* paneOptional;//= new JScrollPane(pOptional);
-  /*protected*/ QGroupBox* pFinalDestination;//= new JPanel();
+  /*protected*/ JPanel* pFinalDestination;//= new JPanel();
   /*protected*/ void updateComboBoxes();
   /*protected*/ void updateLocationComboBoxes();
   /*protected*/ void updateLocationTrackComboBox();
@@ -108,6 +113,7 @@ public slots:
   /*protected*/ void setRouteLocationAndDestination(RollingStock* rs, Train* train, RouteLocation* rl,
  RouteLocation* rd);
   /*protected*/ bool updateGroup(QList<RollingStock*> list);
+  /*abstract*/ /*protected*/ virtual ResourceBundle* getRb() = 0;
 
  };
 }

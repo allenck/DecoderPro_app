@@ -130,6 +130,7 @@ void AbstractAction::common()
 {
  enabled = true;
  arrayTable = NULL;
+ changeSupport = new SwingPropertyChangeSupport(this, this);
 }
 
 /**
@@ -253,12 +254,12 @@ void AbstractAction::common()
  * <code>PropertyChangeListeners</code>.
  */
 /*protected*/  void AbstractAction::firePropertyChange(QString propertyName, QVariant oldValue, QVariant newValue) {
-//    if (changeSupport == NULL ||
-//        (oldValue != NULL && newValue != NULL && oldValue.equals(newValue))) {
-//        return;
-//    }
-    //changeSupport.firePropertyChange(propertyName, oldValue, newValue);
-    emit propertyChange(new PropertyChangeEvent(this, propertyName, oldValue, newValue));
+    if (changeSupport == NULL ||
+        (oldValue != QVariant() && newValue != QVariant()  && oldValue ==(newValue))) {
+        return;
+    }
+    changeSupport->firePropertyChange(propertyName, oldValue, newValue);
+//    emit propertyChange(new PropertyChangeEvent(this, propertyName, oldValue, newValue));
 }
 
 
@@ -278,11 +279,11 @@ void AbstractAction::common()
  * @see Action#addPropertyChangeListener
  */
 /*public*/  /*synchronized*/ void AbstractAction::addPropertyChangeListener(PropertyChangeListener* listener) {
-//    if (changeSupport == NULL) {
-//        changeSupport = new SwingPropertyChangeSupport(this);
-//    }
-//    changeSupport.addPropertyChangeListener(listener);
- connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+    if (changeSupport == NULL) {
+        changeSupport = new SwingPropertyChangeSupport(this, this);
+    }
+    changeSupport->SwingPropertyChangeSupport::addPropertyChangeListener(listener);
+// connect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 
@@ -296,11 +297,11 @@ void AbstractAction::common()
  * @see Action#removePropertyChangeListener
  */
 /*public*/  /*synchronized*/ void AbstractAction::removePropertyChangeListener(PropertyChangeListener* listener) {
-//    if (changeSupport == NULL) {
-//        return;
-//    }
-//    changeSupport.removePropertyChangeListener(listener);
- disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+    if (changeSupport == NULL) {
+        return;
+    }
+    changeSupport->removePropertyChangeListener(listener);
+// disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
 #if 0

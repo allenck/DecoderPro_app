@@ -71,16 +71,16 @@ JsonConsistListener::JsonConsistListener(JsonConsistSocketService* jcss) {this->
             } catch (JsonException ex) {
                 jcss->connection->sendMessage(ex.getJsonMessage());
             }
-        } catch (IOException ex) {
+        } catch (IOException* ex) {
             // this IO execption caused by broken comms with client
             jcss->service->manager->getConsist(locoaddress)->removeConsistListener(this);
             jcss->consists.remove(locoaddress);
         }
         try {
             (new ConsistFile())->writeFile(jcss->service->manager->getConsistList()->toList());
-        } catch (IOException ex) {
+        } catch (IOException* ex) {
             // this IO execption caused by unable to write file
-            jcss->log->error(tr("Unable to write consist file \"%1\": %2").arg( ConsistFile::defaultConsistFilename()).arg(ex.getMessage()));
+            jcss->log->error(tr("Unable to write consist file \"%1\": %2").arg( ConsistFile::defaultConsistFilename()).arg(ex->getMessage()));
         }
     }
 //}
@@ -96,15 +96,15 @@ JsonConsistListListener::JsonConsistListListener(JsonConsistSocketService* jcss)
             } catch (JsonException ex) {
                 jcss->connection->sendMessage(ex.getJsonMessage());
             }
-        } catch (IOException ex) {
+        } catch (IOException* ex) {
             // this IO execption caused by broken comms with client
             jcss->service->manager->removeConsistListListener(this);
         }
         try {
             (new ConsistFile())->writeFile(jcss->service->manager->getConsistList()->toList());
-        } catch (IOException ex) {
+        } catch (IOException* ex) {
             // this IO execption caused by unable to write file
-            jcss->log->error(tr("Unable to write consist file \"%1\": %2").arg( ConsistFile::defaultConsistFilename()).arg(ex.getMessage()));
+            jcss->log->error(tr("Unable to write consist file \"%1\": %2").arg( ConsistFile::defaultConsistFilename()).arg(ex->getMessage()));
         }
     }
 //}

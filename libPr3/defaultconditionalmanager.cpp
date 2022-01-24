@@ -55,8 +55,8 @@ DefaultConditionalManager::DefaultConditionalManager(QObject *parent) :
     return Manager::CONDITIONALS;
 }
 
-/*public*/ QString DefaultConditionalManager::getSystemPrefix()const { return "I"; }
-/*public*/ char DefaultConditionalManager::typeLetter() const { return 'X'; }
+/*public*/ QString DefaultConditionalManager::getSystemPrefix() { return "I"; }
+/*public*/ QChar DefaultConditionalManager::typeLetter() { return 'X'; }
 
 /**
  * Method to create a new Conditional if the Conditional does not exist
@@ -240,7 +240,7 @@ DefaultConditionalManager::DefaultConditionalManager(QObject *parent) :
 /*public*/ Conditional* DefaultConditionalManager::getByUserName(QString key) {
     if (key == NULL)  return NULL;
     LogixManager* logixManager = (LogixManager*)InstanceManager::getDefault("LogixManager");
-    QStringListIterator iter(((DefaultLogixManager*) logixManager)->getSystemNameList());
+    QStringListIterator iter(((DefaultLogixManager*) logixManager)->AbstractManager::getSystemNameList());
     while (iter.hasNext()) {
         // get the next Logix
         QString sName = iter.next();     //sName a logix nams

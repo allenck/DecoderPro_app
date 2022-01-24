@@ -16,34 +16,34 @@ class AbstractPreferences : public Preferences
  Q_OBJECT
 public:
  AbstractPreferences();
- /*public*/ void put(QString key, QString value);
- /*public*/ QString get(QString key, QString def);
- /*public*/ void remove(QString key);
- /*public*/ void clear();
- /*public*/ void putInt(QString key, int value);
- /*public*/ int getInt(QString key, int def);
- /*public*/ void putLong(QString key, long value);
- /*public*/ QString name();
- /*public*/ QString absolutePath();
- /*public*/ bool isUserNode();
- /*public*/ Preferences* node(QString path);
- /*public*/ QString toString();
- /*public*/ bool nodeExists(QString path) throw (BackingStoreException);
- /*public*/ void sync() throw (BackingStoreException);
- /*public*/ void flush() throw (BackingStoreException);
- /*public*/ void removeNode() throw (BackingStoreException);
- /*public*/ void exportNode(QTextStream* os) throw (IOException, BackingStoreException);
- /*public*/ void exportSubtree(QTextStream* os) throw (IOException, BackingStoreException);
- /*public*/ Preferences* parent();
- /*public*/ QStringList childrenNames() throw (BackingStoreException);
- /*public*/ long getLong(QString key, long def);
- /*public*/ void putBoolean(QString key, bool value);
- /*public*/ bool getBoolean(QString key, bool def);
- /*public*/ void putFloat(QString key, float value);
- /*public*/ float getFloat(QString key, float def);
- /*public*/ void putDouble(QString key, double value);
- /*public*/ double getDouble(QString key, double def);
- /*public*/ QStringList keys() throw (BackingStoreException);
+ /*public*/ void put(QString key, QString value)override;
+ /*public*/ QString get(QString key, QString def)override;
+ /*public*/ void remove(QString key)override;
+ /*public*/ void clear()override;
+ /*public*/ void putInt(QString key, int value)override;
+ /*public*/ int getInt(QString key, int def)override;
+ /*public*/ void putLong(QString key, long value)override;
+ /*public*/ QString name()override;
+ /*public*/ QString absolutePath()override;
+ /*public*/ bool isUserNode()override;
+ /*public*/ Preferences* node(QString path)override;
+ /*public*/ QString toString()override;
+ /*public*/ bool nodeExists(QString path) /*throw (BackingStoreException)*/ override;
+ /*public*/ void sync() /*throw (BackingStoreException)*/override;
+ /*public*/ void flush() /*throw (BackingStoreException)*/override;
+ /*public*/ void removeNode() override;
+ /*public*/ void exportNode(QTextStream* os) /*throw (IOException, BackingStoreException)*/override;
+ /*public*/ void exportSubtree(QTextStream* os) /*throw (IOException, BackingStoreException)*/override;
+ /*public*/ Preferences* parent()override;
+ /*public*/ QStringList childrenNames() override;
+ /*public*/ long getLong(QString key, long def)override;
+ /*public*/ void putBoolean(QString key, bool value)override;
+ /*public*/ bool getBoolean(QString key, bool def)override;
+ /*public*/ void putFloat(QString key, float value)override;
+ /*public*/ float getFloat(QString key, float def)override;
+ /*public*/ void putDouble(QString key, double value)override;
+ /*public*/ double getDouble(QString key, double def)override;
+ /*public*/ QStringList keys()override ;
 
 signals:
  void notifyPreferenceChanged(PreferenceChangeEvent*);
@@ -99,10 +99,10 @@ private:
  /*private*/ Preferences* node(StringTokenizer* path);
  /*private*/ void enqueueNodeAddedEvent(Preferences* child);
  /*private*/ static /*final*/ QLinkedList<EventObject*>* eventQueue;// = new QLinkedList<EventObject*>();
- /*private*/ void sync2() throw (BackingStoreException);
- /*private*/ void flush2() throw (BackingStoreException);
- /*private*/ bool nodeExists(StringTokenizer* path) throw (BackingStoreException);
- /*private*/ void removeNode2() throw (BackingStoreException);
+ /*private*/ void sync2() /*throw (BackingStoreException)*/;
+ /*private*/ void flush2() /*throw (BackingStoreException)*/;
+ /*private*/ bool nodeExists(StringTokenizer* path) /*throw (BackingStoreException)*/;
+ /*private*/ void removeNode2() /*throw (BackingStoreException)*/;
  /*private*/ void enqueueNodeRemovedEvent(Preferences* child);
  /*private*/ static /*final*/ QStringList EMPTY_STRING_ARRAY;// = new String[0];
 
@@ -130,14 +130,14 @@ protected:
  /*protected*/ /*abstract*/ virtual void putSpi(QString key, QString value);
  /*protected*/ /*abstract*/ virtual QString getSpi(QString key);
  /*protected*/ /*abstract*/ virtual void removeSpi(QString key);
- /*protected*/ /*abstract*/ virtual void removeNodeSpi()throw (BackingStoreException);
- /*protected*/ /*abstract*/ virtual QStringList keysSpi()throw (BackingStoreException);
- /*protected*/ /*abstract*/ virtual QStringList childrenNamesSpi() throw (BackingStoreException);
+ /*protected*/ /*abstract*/ virtual void removeNodeSpi()/*throw (BackingStoreException)*/;
+ /*protected*/ /*abstract*/ virtual QStringList keysSpi()/*throw (BackingStoreException)*/;
+ /*protected*/ /*abstract*/ virtual QStringList childrenNamesSpi() /*throw (BackingStoreException)*/;
  /*protected*/ /*abstract*/ virtual AbstractPreferences* childSpi(QString name);
- /*protected*/ /*abstract*/ virtual void flushSpi() throw (BackingStoreException);
+ /*protected*/ /*abstract*/ virtual void flushSpi() /*throw (BackingStoreException)*/;
  /*protected*/ bool isRemoved();
- /*protected*/ /*abstract*/ virtual void syncSpi() throw (BackingStoreException);
- /*protected*/ AbstractPreferences* getChild(QString nodeName) throw (BackingStoreException);
+ /*protected*/ /*abstract*/ virtual void syncSpi() /*throw (BackingStoreException)*/;
+ /*protected*/ AbstractPreferences* getChild(QString nodeName) /*throw (BackingStoreException)*/;
  /*protected*/ /*final*/ QList<AbstractPreferences*> cachedChildren();
  /*private*/ static /*final*/ QList<AbstractPreferences*> EMPTY_ABSTRACT_PREFS_ARRAY;//= new AbstractPreferences[0];
 

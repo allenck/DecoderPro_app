@@ -11,11 +11,11 @@ class Resource : public QObject
 public:
  explicit Resource(QObject *parent = nullptr);
  /*public*/ static bool __defaultUseCaches;// = true;
- /*public*/ virtual QString getListHTML(QString base, bool parent) throw (IOException);
+ /*public*/ virtual QString getListHTML(QString base, bool parent) /*throw (IOException)*/;
  /*public*/ static Resource* newResource(QString resource)
-     throw (MalformedURLException);
+     /*throw (MalformedURLException)*/;
  /*public*/ static Resource* newResource(QString resource, bool useCaches)
-     throw (MalformedURLException);
+     /*throw (MalformedURLException)*/;
  /*public*/ static Resource* newResource(QUrl url);
  /*public*/ QString getResourceString();
 

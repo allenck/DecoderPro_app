@@ -28,7 +28,7 @@ AbstractAudioManager::AbstractAudioManager(QObject *parent) :
 //        implements AudioManager {
 
 //@Override
-/*public*/ char AbstractAudioManager::typeLetter() const{
+/*public*/ QChar AbstractAudioManager::typeLetter(){
     return 'A';
 }
 
@@ -61,7 +61,7 @@ AbstractAudioManager::AbstractAudioManager(QObject *parent) :
 }
 
 //@Override
-/*public*/ Audio* AbstractAudioManager::getBySystemName(QString key)
+/*public*/ Audio* AbstractAudioManager::getBySystemName(QString key) const
 {
  //return (Audio)_tsys.get(key);
  NamedBean* bean = _tsys->value(key);
@@ -73,7 +73,7 @@ AbstractAudioManager::AbstractAudioManager(QObject *parent) :
 }
 
 //@Override
-/*public*/ Audio* AbstractAudioManager::getByUserName(QString key) {
+/*public*/ Audio* AbstractAudioManager::getByUserName(QString key) const {
     //return key==NULL?NULL:(Audio)_tuser.get(key);
     if (key == NULL) {
         return (NULL);
@@ -164,6 +164,6 @@ AbstractAudioManager::AbstractAudioManager(QObject *parent) :
  */
 /*abstract*/ /*protected*/ Audio* AbstractAudioManager::createNewAudio(QString systemName, QString userName) /*throws AudioException*/ {return NULL;}
 
-/*public*/ QString AbstractAudioManager::getBeanTypeHandled(bool plural) {
+/*public*/ QString AbstractAudioManager::getBeanTypeHandled(bool plural) const{
     return (plural ? tr("Audios") : tr("Audio"));
 }

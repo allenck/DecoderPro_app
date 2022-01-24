@@ -6,18 +6,19 @@
 
 class Logger;
 class Roster;
-class RosterConfigManager : public AbstractPreferencesManager
+class RosterConfigManager : public AbstractPreferencesManager, public PropertyChangeListener
 {
  Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
 public:
  Q_INVOKABLE RosterConfigManager();
  ~RosterConfigManager() {}
  RosterConfigManager(const RosterConfigManager&): AbstractPreferencesManager() {}
  /*public*/ static /*final*/ QString DIRECTORY;// = "directory";
  /*public*/ static /*final*/ QString DEFAULT_OWNER;// = "defaultOwner";
- /*public*/ void initialize(Profile* profile)throw (InitializationException);
- /*public*/ void savePreferences(Profile* profile);
- /*public*/ /*Set<Class<? extends PreferencesManager>>*/ QSet<QString>* getRequires();
+ /*public*/ void initialize(Profile* profile)/*throw (InitializationException)*/ override;
+ /*public*/ void savePreferences(Profile* profile) override;
+ /*public*/ /*Set<Class<? extends PreferencesManager>>*/ QSet<QString> getRequires() override;
  /*public*/ QString getDefaultOwner();
  /*public*/ QString getDefaultOwner(/*@CheckForNull*/ Profile* profile);
  /*public*/ void setDefaultOwner(Profile *profile, QString defaultOwner);
@@ -26,9 +27,10 @@ public:
  /*public*/ void setDirectory(/*@CheckForNull*/ Profile* profile, /*@CheckForNull*/ QString directory);
  /*public*/ Roster* getRoster(/*@CheckForNull*/ Profile* profile);
  /*public*/ Roster* setRoster(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ Roster* roster);
+ QObject* self() override {return (QObject*)this;}
 
 public slots:
- void propertyChange(PropertyChangeEvent*);
+ void propertyChange(PropertyChangeEvent*) override;
 
 private:
  Logger* log;

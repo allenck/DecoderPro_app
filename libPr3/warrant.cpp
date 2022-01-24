@@ -322,7 +322,7 @@
         if (l.size() > 0) {
             try {
                 _dccAddress = l.at(0)->getDccLocoAddress();
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException* e) {
                 return false;
             }
         } else {
@@ -334,7 +334,7 @@
             try {
                 int num = numId.toInt();
                 _dccAddress = new DccLocoAddress(num, isLong);
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException* e) {
                 return false;
             }
         }
@@ -392,7 +392,7 @@
                 _dccAddress = new DccLocoAddress(num, isLong);
                 _trainId = _dccAddress->toString();
            }
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException* e) {
             _dccAddress = nullptr;
             return false;
         }
@@ -424,7 +424,7 @@
 /*public*/ QString Warrant::setThrottleFactor(QString sFactor) {
     try {
         _throttleFactor =sFactor.toFloat();
-    } catch (NumberFormatException nfe) {
+    } catch (NumberFormatException* nfe) {
         return tr("Throttle adjustment factor must be a decimal number.");
     }
     return nullptr;
@@ -691,7 +691,7 @@
             break;
         default:
             log->error(tr("Unknown speed interpretation %1").arg(speedMap->getInterpretation()));
-            throw IllegalArgumentException("Unknown speed interpretation " + QString::number(speedMap->getInterpretation()));
+            throw new IllegalArgumentException("Unknown speed interpretation " + QString::number(speedMap->getInterpretation()));
     }
     return tr("%1 (%2%3)").arg(speedType).arg(qRound(speed)).arg(units);
 }
@@ -1570,7 +1570,7 @@
            property).arg(evt->getNewValue().toString()).arg(((NamedBean*) evt->getSource())->getDisplayName()).arg(getDisplayName()));
  }
 
-  if (_protectSignal != nullptr && _protectSignal == evt->getSource()) {
+  if (_protectSignal != nullptr && _protectSignal == (NamedBean*)evt->getSource()) {
       if (property == ("Aspect") || property == ("Appearance")) {
           // signal controlling warrant has changed.
           readStoppingSignal();
@@ -1631,7 +1631,7 @@
  }
 /*private*/ bool Warrant::readStoppingSignal() {
     QString speedType;
-    if (qobject_cast<SignalHead*>(_protectSignal)) {
+    if (static_cast<SignalHead*>(_protectSignal)) {
         SignalHead* head = (SignalHead*) _protectSignal;
         int appearance = head->getAppearance();
         speedType = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))
@@ -1753,7 +1753,7 @@
 //                try {
 //                    javax.swing.SwingUtilities.invokeAndWait(allocateBlocks);
 //                }
-//                catch (Exception e) {
+//                catch (Exception* e) {
 //                    e.printStackTrace();
 //                }
 //            }
@@ -1799,7 +1799,7 @@
         //javax.swing.SwingUtilities.invokeAndWait(allocateBlocks);
      QMetaObject::invokeMethod(allocateBlocks, "run", Qt::QueuedConnection);
     }
-    catch (Exception e) {
+    catch (Exception* e) {
 //        e.printStackTrace();
     }
 }
@@ -2395,7 +2395,7 @@
         {
             _stoppingSignal = bo->getSignal();
             _stoppingSignal->addPropertyChangeListener((PropertyChangeListener*)this);
-            connect(_stoppingSignal, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+            //connect(_stoppingSignal, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
         }
     } else {    //  if signal is configured, ignore block
         nextSpeed = nextBlock->getBlockSpeed();
@@ -2486,8 +2486,8 @@
         if (nextSpeed!=nullptr ) {
             if (nextSpeed==("Stop")) {
                 _stoppingSignal = bo->getSignal();
-                //_stoppingSignal.addPropertyChangeListener(this);
-                connect(_stoppingSignal, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent)));
+                _stoppingSignal->addPropertyChangeListener(this);
+                //connect(_stoppingSignal, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent)));
             }
             if(_debug) log->debug("signal indicates \""+nextSpeed+"\" entrance speed and \""+exitSpeed+
                     "\" exit speed on Warrant \""+getDisplayName()+"\".\n Set change speed Delay to "+
@@ -3101,7 +3101,7 @@ bool CommandDelay::doNotCancel(QString speedType, long startWait, int endBlockId
 /*public*/ bool Warrant::equals(QObject* obj) {
     if (obj == nullptr) return false; // by contract
 
-    if (qobject_cast< Warrant*>(obj)) {  // NamedBeans are not equal to things of other types
+    if (static_cast< Warrant*>(obj)) {  // NamedBeans are not equal to things of other types
         Warrant* b = (Warrant*) obj;
         DccLocoAddress* addr = this->_speedUtil->getDccAddress();
         if (addr == nullptr) {
@@ -3124,4 +3124,25 @@ bool CommandDelay::doNotCancel(QString speedType, long startWait, int endBlockId
 /*public*/ uint Warrant::hashCode() {
     //return (getSystemName().concat(_speedUtil->getDccAddress()->toString())).hashCode();
  return qHash(mSystemName+_speedUtil->getDccAddress()->toString(),qGlobalQHashSeed());
+}
+
+//@Override
+/*public*/ QList<NamedBeanUsageReport*> Warrant::getUsageReport(NamedBean* bean) {
+    QList<NamedBeanUsageReport*> report = QList<NamedBeanUsageReport*>();
+    if (bean != nullptr) {
+        if (bean->equals(getBlockingWarrant())) {
+            report.append(new NamedBeanUsageReport("WarrantBlocking"));
+        }
+        //getBlockOrders().forEach((blockOrder) ->
+        for(BlockOrder* blockOrder : *getBlockOrders())
+        {
+            if (bean->equals(blockOrder->getBlock())) {
+                report.append(new NamedBeanUsageReport("WarrantBlock"));
+            }
+            if (bean->equals(blockOrder->getSignal())) {
+                report.append(new NamedBeanUsageReport("WarrantSignal"));
+            }
+        }//);
+    }
+    return report;
 }

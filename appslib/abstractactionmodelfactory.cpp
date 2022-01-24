@@ -134,7 +134,7 @@ AbstractActionModelFactory::AbstractActionModelFactory()
 //                                });
 //                            });
 //                        }
-//                    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
+//                    } catch (ClassNotFoundException* | InstantiationException | IllegalAccessException ex) {
 //                        log->error("Unable to create Action", ex);
 //                    }
 //                }
@@ -188,15 +188,15 @@ void AbstractActionModelFactory::on_selected(/*ListSelectionEvent* e*/QModelInde
       }//);
      }
     }
-    catch (ClassNotFoundException  ex)
+    catch (ClassNotFoundException*  ex)
     {
      log->error("Unable to create Action", ex);
     }
-    catch ( InstantiationException  ex)
+    catch ( InstantiationException*  ex)
     {
      log->error("Unable to create Action", ex);
     }
-    catch ( IllegalAccessException ex)
+    catch ( IllegalAccessException* ex)
     {
      log->error("Unable to create Action", ex);
     }

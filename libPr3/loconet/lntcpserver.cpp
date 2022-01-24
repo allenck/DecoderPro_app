@@ -4,18 +4,18 @@
 #include "serverlistner.h"
 //#include <QThread>
 #include <QTextStream>
-#include "clientrxhandler.h"
 #include <QTcpSocket>
 #include "instancemanager.h"
 #include "loconetsystemconnectionmemo.h"
 #include "LnOverTcp/lntcppreferences.h"
 #include <QNetworkInterface>
+#include "loggerfactory.h"
 
 //Server::Server(QObject *parent) :
 //  QObject(parent)
 //{
 //}
-LnTcpServer* LnTcpServer::self = nullptr;
+LnTcpServer* LnTcpServer::lntcpserver = nullptr;
 /*static*/ /*final*/ QString LnTcpServer::AUTO_START_KEY = "AutoStart";
 /*static*/ /*final*/ QString LnTcpServer::PORT_NUMBER_KEY = "PortNumber";
 /*static*/ /*final*/ QString LnTcpServer::SETTINGS_FILE_NAME = "LocoNetOverTcpSettings.ini";
@@ -30,21 +30,10 @@ LnTcpServer* LnTcpServer::self = nullptr;
 // /*public*/ class Server {
 
 
-/*private*/ LnTcpServer::LnTcpServer(QObject *parent) :
+/*private*/ LnTcpServer::LnTcpServer(LocoNetSystemConnectionMemo* memo, QObject *parent) :
   QTcpServer(parent)
 {
- settingsLoaded = false;
- settingsChanged = false;
- service = nullptr;
- clients = new QLinkedList<ClientRxHandler*>();
- log = new Logger("Server");
- portNumber = 1234;
- stateListner = nullptr;
- socketListener = nullptr;
- bIsEnabled = false;
- connectionNbr = 1;
- serverSocket = nullptr;
-
+ tc = memo->getLnTrafficController(); // store tc in order to know where to send messages
  pm = LnTcpPreferences::getDefault();
  portNumber = pm->getPort();
 // pm.addPropertyChangeListener((PropertyChangeEvent evt) -> {
@@ -76,11 +65,6 @@ void LnTcpServer::propertyChange(PropertyChangeEvent * evt)
  }
 }
 
-//@Deprecated
-/*public*/ void LnTcpServer::setStateListner(ServerListner* l) {
- stateListner = l;
-}
-
 /**
  * Get the default server instance, creating it if necessary.
  *
@@ -89,128 +73,11 @@ void LnTcpServer::propertyChange(PropertyChangeEvent * evt)
 /*public*/ /*static*/ /*synchronized*/ LnTcpServer* LnTcpServer::getDefault() {
  LnTcpServer* server = (LnTcpServer*)InstanceManager::getOptionalDefault("LnTcpServer");
  if(server == nullptr)
-  server = (LnTcpServer*)InstanceManager::setDefault("LnTcpServer", new LnTcpServer());
+  server = (LnTcpServer*)InstanceManager::setDefault("LnTcpServer", new LnTcpServer((LocoNetSystemConnectionMemo*)InstanceManager::getDefault("LocoNetSystemConnectionMemo")));
  return server;
 }
 
-//@Deprecated
-/*public*/ /*static synchronized*/ LnTcpServer* LnTcpServer::getInstance()
-{
- LnTcpServer* server = (LnTcpServer*)InstanceManager::getOptionalDefault("LnTcpServer");
- if(server == nullptr)
- {
-  server = new LnTcpServer();
-  (LnTcpServer*)InstanceManager::setDefault("LnTcpServer", server);
- }
- return server;
-}
-#if 0
-/*private*/ void LnTcpServer::loadSettings()
-{
- if (!settingsLoaded)
- {
-  settingsLoaded = true;
-  Properties* settings = new Properties();
 
-  QString settingsFileName = FileUtil::getUserFilesPath() + SETTINGS_FILE_NAME;
-
-  //try {
-  log->debug("Server: opening settings file " + settingsFileName);
-//      java.io.InputStream settingsStream = new FileInputStream(settingsFileName);
-  try
-  {
-  QFile settingsFile(settingsFileName);
-  if(!settingsFile.exists())
-   return;
-  if(settingsFile.open(QFile::ReadOnly))
-  {
-   QTextStream settingsStream(&settingsFile);
-   settings->load(&settingsStream);
-  }
-  else
-  {
-   throw FileNotFoundException(settingsFileName);
-  }
-//      } finally {
-   settingsFile.close();
-
-   QString val = settings->getProperty(AUTO_START_KEY/*, "0"*/);
-   autoStart = (val==("1"));
-   val = settings->getProperty(PORT_NUMBER_KEY/*, "1234"*/);
-   portNumber = val.toInt(0, 10);
-  }
-  catch (FileNotFoundException ex) {
-      log->debug("Server: loadSettings file not found");
-  }
-//      catch (IOException ex) {
-//      log->debug("Server: loadSettings exception: ", ex);
-//  }
-//  }
-  updateServerStateListener();
- }
-}
-
-
-/*public*/ void LnTcpServer::saveSettings()
-{
-#if 1 // TODO:
-    // we can't use the store capabilities of java.util.Properties, as
-    // they are not present in Java 1.1.8
-    QString settingsFileName = FileUtil::getUserFilesPath() + SETTINGS_FILE_NAME;
-    log->debug("Server: saving settings file " + settingsFileName);
-
-    try {
-//        OutputStream outStream = new FileOutputStream(settingsFileName);
-//        PrintStream settingsStream = new PrintStream(outStream);
-     QFile f(settingsFileName);
-     if(f.open(QIODevice::WriteOnly))
-     {
-      QTextStream stream(&f);
-        //settingsStream.println("# LocoNetOverTcp Configuration Settings");
-      stream << "# LocoNetOverTcp Configuration Settings" << "\n";
-//        settingsStream.println(AUTO_START_KEY + " = " + (autoStart ? "1" : "0"));
-      stream << AUTO_START_KEY + " = " + (autoStart ? "1" : "0") << "\n";
-//        settingsStream.println(PORT_NUMBER_KEY + " = " + portNumber);
-      stream << PORT_NUMBER_KEY + " = " + QString::number(portNumber) << "\n";
-//        settingsStream.flush();
-      stream.flush();
-//        settingsStream.close();
-      f.close();
-        settingsChanged = false;
-     }
-     else
-      throw FileNotFoundException(settingsFileName);
-    } catch (FileNotFoundException ex) {
-        log->warn("Server: saveSettings exception: "+ ex.getMessage());
-    }
-#endif
- updateServerStateListener();
-}
-#endif
-/*public*/ bool LnTcpServer::getAutoStart()
-{
- return true;
-}
-
-/*public*/ void LnTcpServer::setAutoStart(bool start)
-{
- // do nothing
-}
-
-/*public*/ int LnTcpServer::getPortNumber()
-{
- return portNumber;
-}
-
-/*public*/ void LnTcpServer::setPortNumber(int port)
-{
- if ((port >= 1024) && (port <= 65535))
- {
-  portNumber = port;
-  settingsChanged = true;
-  updateServerStateListener();
- }
-}
 
 /*public*/ bool LnTcpServer::isEnabled()
 {
@@ -338,7 +205,7 @@ void LnTcpServer::on_newConnection()
  {
   QString remoteAddress = socket->peerAddress().toString();
   ClientRxHandler* rxHandler;
-  addClient(rxHandler = new ClientRxHandler(remoteAddress,socket, connectionNbr++));
+  addClient(rxHandler = new ClientRxHandler(remoteAddress,socket, tc, connectionNbr++));
 
   log->debug("New connection from "+ remoteAddress);
  }
@@ -356,7 +223,7 @@ void LnTcpServer::on_newConnection()
       serverSocket->close();
   }
  }
- catch (IOException ex) {
+ catch (IOException* ex) {
  }
 
  updateServerStateListener();
@@ -403,7 +270,31 @@ void LnTcpServer::on_newConnection()
 // }
  emit clientStateChanged(this, clients->count());
 }
+#if 0 // TODO:
+/*private*/ void updateServerStateListeners() {
+    synchronized (this) {
+        this.stateListeners.stream().filter((l) -> (l != null)).forEachOrdered((l) -> {
+            l.notifyServerStateChanged(this);
+        });
+    }
+}
 
+/*private*/ void updateClientStateListeners() {
+    synchronized (this) {
+        this.stateListeners.stream().filter((l) -> (l != null)).forEachOrdered((l) -> {
+            l.notifyClientStateChanged(this);
+        });
+    }
+}
+
+/*public*/ void addStateListener(LnTcpServerListener l) {
+    this.stateListeners.add(l);
+}
+
+/*public*/ bool removeStateListener(LnTcpServerListener* l) {
+    return this.stateListeners.remove(l);
+}
+#endif
 /**
  * Get the port this server is using.
  *
@@ -428,7 +319,7 @@ class ClientListener implements Runnable {
                 addClient(new ClientRxHandler(remoteAddress, newClientConnection));
             }
             serverSocket.close();
-        } catch (IOException ex) {
+        } catch (IOException* ex) {
             if (ex.toString().indexOf("socket closed") == -1) {
                 log->error("Server: IO Exception: ", ex);
             }
@@ -475,3 +366,5 @@ void Server::incomingConnection(int socketDescriptor)
  Server::addClient(clientRxHandler);
 }
 #endif
+
+/*private*/ /*final*/ /*static*/ Logger* LnTcpServer::log = LoggerFactory::getLogger("LnTcpServer");

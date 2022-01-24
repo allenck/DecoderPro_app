@@ -1,6 +1,6 @@
 #include "defaulttreeselectionmodel.h"
 #include <QHash>
-#include <propertychangesupport.h>
+#include "swingpropertychangesupport.h"
 #include "bitset.h"
 #include <rowmapper.h>
 #include "eventlistenerlist.h"
@@ -729,7 +729,7 @@
     listSelectionModel->clearSelection();
     if(!selection.isEmpty() && rowMapper != nullptr) {
         int               aRow;
-        int               validCount = 0;
+//        int               validCount = 0;
         QVector<int>             rows = rowMapper->getRowsForPaths(selection);
 
         for(int counter = 0, maxCounter = selection.length();
@@ -786,9 +786,9 @@
 /*public*/ /*synchronized*/ void DefaultTreeSelectionModel::addPropertyChangeListener(
                             PropertyChangeListener* listener) {
     if (changeSupport == nullptr) {
-        changeSupport = new PropertyChangeSupport(this);
+        changeSupport = new SwingPropertyChangeSupport(this, nullptr);
     }
-    changeSupport->addPropertyChangeListener(listener);
+    changeSupport->SwingPropertyChangeSupport::addPropertyChangeListener(listener);
 }
 
 /**
@@ -843,7 +843,7 @@
  */
 /*protected*/ void DefaultTreeSelectionModel::insureRowContinuity() {
     if(selectionMode == TreeSelectionModel::CONTIGUOUS_TREE_SELECTION &&
-       !selection.isEmpty() && !rowMapper != NULL) {
+       !selection.isEmpty() && rowMapper != NULL) {
         DefaultListSelectionModel* lModel = listSelectionModel;
         int                       min = lModel->getMinSelectionIndex();
 
@@ -896,7 +896,7 @@
         tempPath.append(paths.at(0));
         min = rowMapper->getRowsForPaths(tempPath).at(0);
         for(counter = 0; counter < pathCount; counter++) {
-            if(!paths.at(counter) != NULL) {
+            if(paths.at(counter) != NULL) {
                 tempPath.replace(0, paths[counter]);
                 QVector<int> rows = rowMapper->getRowsForPaths(tempPath);
                 if (rows.isEmpty()) {
@@ -1126,7 +1126,7 @@
  * @exception CloneNotSupportedException never thrown by instances of
  *                                       this class
  */
-/*public*/ QObject* DefaultTreeSelectionModel::clone() throw (CloneNotSupportedException) {
+/*public*/ QObject* DefaultTreeSelectionModel::clone() /*throw (CloneNotSupportedException)*/ {
 #if 0
     DefaultTreeSelectionModel        clone = (DefaultTreeSelectionModel)
                         TreeSelectionModel::clone();

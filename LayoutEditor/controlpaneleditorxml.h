@@ -11,10 +11,10 @@ class LIBLAYOUTEDITORSHARED_EXPORT ControlPanelEditorXml : public AbstractXmlAda
 public:
     Q_INVOKABLE explicit ControlPanelEditorXml(QObject *parent = 0);
     ~ControlPanelEditorXml() override;
- ControlPanelEditorXml(const ControlPanelEditorXml&) :AbstractXmlAdapter() {}
+    ControlPanelEditorXml(const ControlPanelEditorXml&) :AbstractXmlAdapter() {}
     /*public*/ QDomElement store(QObject* o) ;
     /*public*/ void load(QDomElement element, QObject* o)throw (Exception)  override;
-    /*public*/ bool load(QDomElement element)throw (Exception) override ;
+    /*public*/ bool load(QDomElement shared, QDomElement perNode)throw (JmriConfigureXmlException) override ;
     /*public*/ int loadOrder() const override;
  /*public*/ QDomElement storeIcon(QString elemName, NamedIcon* icon);
  /*public*/ NamedIcon* loadIcon(QString key, QDomElement element, Editor* ed);

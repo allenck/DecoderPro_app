@@ -43,13 +43,13 @@
 }
 
 //@Override
-/*public*/ void JsonRosterSocketService::onMessage(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException)
+/*public*/ void JsonRosterSocketService::onMessage(QString type, QJsonObject data, QLocale locale) /*throw new (IOException, JmriException, JsonException)*/
 {
  QString method = data.value(JSON::METHOD).toString();
  if (method== JSON::DELETE)
-   throw  JsonException(HttpServletResponse::SC_METHOD_NOT_ALLOWED, tr("Deleting %1 is not allowed.").arg(type));
+   throw new  JsonException(HttpServletResponse::SC_METHOD_NOT_ALLOWED, tr("Deleting %1 is not allowed.").arg(type));
  else if (method== JSON::POST || method == JSON::PUT)
-         throw JsonException(HttpServletResponse::SC_NOT_IMPLEMENTED, tr("Method %1 not implemented for type %2.").arg(method).arg(type));
+         throw new JsonException(HttpServletResponse::SC_NOT_IMPLEMENTED, tr("Method %1 not implemented for type %2.").arg(method).arg(type));
  else if (method== JSON::GET)
  {
   if(type == JsonRoster::ROSTER)
@@ -69,14 +69,14 @@
    this->connection->sendMessage(this->service->getRosterGroups(locale));}
   else
   {
-   throw JsonException(HttpServletResponse::SC_INTERNAL_SERVER_ERROR, tr("Unknown object type %1 was requested.").arg(type));
+   throw new JsonException(HttpServletResponse::SC_INTERNAL_SERVER_ERROR, tr("Unknown object type %1 was requested.").arg(type));
   }
  }
  this->listen();
 }
 
 //@Override
-/*public*/ void JsonRosterSocketService::onList(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException) {
+/*public*/ void JsonRosterSocketService::onList(QString type, QJsonObject data, QLocale locale) /*throw new (IOException, JmriException, JsonException)*/ {
     this->connection->sendMessage(service->doGetList(type, locale));
     this->listen();
 }
@@ -117,7 +117,7 @@ JsonRosterEntryListener::JsonRosterEntryListener( JsonRosterSocketService* jrss)
             jrss->log->debug(tr("Triggering change on %1 (%2 => %3)").arg(evt->getPropertyName()).arg( evt->getOldValue().toString()).arg(evt->getNewValue().toString()));
             jrss->connection->sendMessage(jrss->service->getRosterEntry(jrss->connection->getLocale(), (RosterEntry*) evt->getSource()));
         }
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         jrss->onClose();
     }
 }
@@ -164,7 +164,7 @@ JsonRosterListener::JsonRosterListener(JsonRosterSocketService* jrss)
             // catch all events other than SAVED
             jrss->connection->sendMessage(jrss->service->getRoster(jrss->connection->getLocale(), root));
         }
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
         jrss->onClose();
     }
 }

@@ -11,9 +11,10 @@ namespace Sprog
  public:
   /*public*/ SprogThrottle(SprogSystemConnectionMemo* memo, DccLocoAddress* address, QObject* parent = 0);
   /*public*/ LocoAddress* getLocoAddress();
-  /*public*/ void setSpeedStepMode(SpeedStepMode *Mode);
+  /*public*/ void setSpeedStepMode(SpeedStepMode::SSMODES Mode);
   /*public*/ void setSpeedSetting(float speed);
   /*public*/ void setIsForward(bool forward);
+   QObject* self() {return(QObject*)this;}
 
  private:
   SprogCommandStation* station;// = null;

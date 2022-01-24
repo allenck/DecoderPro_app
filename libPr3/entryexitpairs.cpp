@@ -21,11 +21,9 @@
 #include "conditionalaction.h"
 #include "joptionpane.h"
 #include "vetoablechangesupport.h"
+#include "appsconfigurationmanager.h"
+#include "defaultlogixmanager.h"
 
-//EntryExitPairs::EntryExitPairs(QObject *parent) :
-//    Manager(parent)
-//{
-//}
 /**
  * Implements an Entry Exit based method of setting turnouts, setting up signal logic and the
  * allocation of blocks through based upon the layout editor.
@@ -99,7 +97,7 @@ return (settingRouteColor == QColor() ? false : true);
 
 /*static*/ QWidget* EntryExitPairs::glassPane = NULL; //new QWidget();
 
-/*public*/ EntryExitPairs::EntryExitPairs(QObject */*parent*/)
+/*public*/ EntryExitPairs::EntryExitPairs(QObject *parent) : VetoableChangeSupport(parent)
 {
  setObjectName("EntryExitPairs");
  setProperty("JavaClassName", "jmri.jmrit.entryexit.EntryExitPairs");
@@ -122,14 +120,13 @@ return (settingRouteColor == QColor() ? false : true);
  connect(checkTimer, SIGNAL(timeout()), this, SLOT(checkRoute()));
  deletePairList = QList<DeletePair*>();
  nxpair = QHash<PointDetails*, Source*>();
- vcs = new VetoableChangeSupport(this);
- listeners = QVector</*ManagerDataListener*/QObject*>();
- pcs = new PropertyChangeSupport(this);
+ listeners = QVector<ManagerDataListener*>();
+ //pcs = new SwingPropertyChangeSupport(this, nullptr);
 
  memo = (SystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo");
  if(InstanceManager::getDefault("ConfigureManager")!=NULL)
-   static_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->registerUser(this);
- ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->addPropertyChangeListener(/*propertyBlockManagerListener*/(PropertyChangeListener*)this);
+   qobject_cast<AppsConfigurationManager*>(InstanceManager::getDefault("ConfigureManager"))->registerUser(this);
+ ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->PropertyChangeSupport::addPropertyChangeListener(/*propertyBlockManagerListener*/(PropertyChangeListener*)this);
  //connect(lbm, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
 
 //    glassPane.setOpaque(false);
@@ -209,27 +206,27 @@ return (settingRouteColor == QColor() ? false : true);
     return ENTRYEXIT;
 }
 
-/*public*/ NamedBean* EntryExitPairs::getBySystemName(QString systemName) const
+/*public*/ NamedBean* EntryExitPairs::getBySystemName(QString systemName)
 {
  foreach(Source* e,   nxpair.values())
  {
      DestinationPoints* pd = e->getByUniqueId(systemName);
      if(pd!=NULL)
-         return pd;
+         return (NamedBean*)pd;
  }
  return NULL;
 }
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ /*DestinationPoints*/NamedBean* EntryExitPairs::getByUserName(/*@Nonnull*/ QString userName) const {
+/*public*/ /*DestinationPoints*/NamedBean *EntryExitPairs::getByUserName(/*@Nonnull*/ QString userName) {
  if(userName=="")
-  throw NullPointerException(tr("userName is marked NonNull but is null"));
+  throw new NullPointerException(tr("userName is marked NonNull but is null"));
 
   for (Source* e : nxpair.values()) {
       DestinationPoints* pd = (DestinationPoints*)e->getByUserName(userName);
       if (pd != nullptr) {
-          return pd;
+          return (NamedBean*)pd;
       }
   }
   return nullptr;
@@ -248,7 +245,7 @@ return (settingRouteColor == QColor() ? false : true);
     return NULL;
 }
 #endif
-/*public*/ NamedBean* EntryExitPairs::getNamedBean(QString name) const{
+/*public*/ NamedBean* EntryExitPairs::getNamedBean(QString name){
     NamedBean* b = getByUserName(name);
     if(b!=NULL) return b;
     return getBySystemName(name);
@@ -256,7 +253,7 @@ return (settingRouteColor == QColor() ? false : true);
 #if 0
 //@Deprecated
 /*public*/ char EntryExitPairs::systemLetter()const {
-    throw  UnsupportedOperationException("Not supported yet.");
+    throw new  UnsupportedOperationException("Not supported yet.");
 }
 #endif
 /** {@inheritDoc} */
@@ -265,18 +262,18 @@ return (settingRouteColor == QColor() ? false : true);
 /*public*/ SystemConnectionMemo* EntryExitPairs::getMemo() {
     return memo;
 }
-/*public*/ QString EntryExitPairs::getSystemPrefix() const{
+/*public*/ QString EntryExitPairs::getSystemPrefix(){
  return memo->getSystemPrefix();
 }
 
-/*public*/ char EntryExitPairs::typeLetter() const {
-    throw  UnsupportedOperationException("Not supported yet.");
+/*public*/ QChar EntryExitPairs::typeLetter() {
+    throw new  UnsupportedOperationException("Not supported yet.");
 }
 
 //@Override
 //@Nonnull
-/*public*/ QString EntryExitPairs::makeSystemName(QString /*s*/)const {
-    throw UnsupportedOperationException("Not supported yet.");
+/*public*/ QString EntryExitPairs::makeSystemName(QString /*s*/) {
+    throw new UnsupportedOperationException("Not supported yet.");
 }
 
 /** {@inheritDoc} */
@@ -332,12 +329,12 @@ public List<DestinationPoints> getNamedBeanList() {
     return beanList;
 }
 
-/*public*/ void EntryExitPairs::Register(/*@Nonnull*/ NamedBean* /*n*/)const {
-    throw  UnsupportedOperationException("Not supported yet.");
+/*public*/ void EntryExitPairs::Register(/*@Nonnull*/ NamedBean* /*n*/) {
+    throw new  UnsupportedOperationException("Not supported yet.");
 }
 
-/*public*/ void EntryExitPairs::deregister(/*@Nonnull*/NamedBean* /*n*/)const {
-    throw  UnsupportedOperationException("Not supported yet.");
+/*public*/ void EntryExitPairs::deregister(/*@Nonnull*/NamedBean* /*n*/) {
+    throw new  UnsupportedOperationException("Not supported yet.");
 }
 
 /*public*/ void EntryExitPairs::setClearDownOption(int i){
@@ -346,6 +343,30 @@ public List<DestinationPoints> getNamedBeanList() {
 
 /*public*/ int EntryExitPairs::getClearDownOption(){
     return routeClearOption;
+}
+
+/*public*/ void EntryExitPairs::setOverlapOption(int i) {
+    routeOverlapOption = i;
+}
+
+/*public*/ int EntryExitPairs::getOverlapOption() {
+    return routeOverlapOption;
+}
+
+/*public*/ void EntryExitPairs::setMemoryOption(QString memoryName) {
+    memoryOption = memoryName;
+}
+
+/*public*/ QString EntryExitPairs::getMemoryOption() {
+    return memoryOption;
+}
+
+/*public*/ void EntryExitPairs::setMemoryClearDelay(int secs) {
+    memoryClearDelay = secs;
+}
+
+/*public*/ int EntryExitPairs::getMemoryClearDelay() {
+    return memoryClearDelay;
 }
 
 /** {@inheritDoc} */
@@ -393,7 +414,7 @@ public List<DestinationPoints> getNamedBeanList() {
     {
      e.next();
         //QObject* obj = (e.getKey()).getRefObject();
-     QObject* obj = e.key()->getRefObject();
+     NamedBean* obj = e.key()->getRefObject();
      LayoutEditor* pan = e.key()->getPanel();
      if(pan==panel)
      {
@@ -523,7 +544,7 @@ public List<DestinationPoints> getNamedBeanList() {
     }
    }
   }
-  catch (JmriException e) {
+  catch (JmriException* e) {
       //Can be considered normal if route is blocked
   }
  }
@@ -551,7 +572,7 @@ public List<DestinationPoints> getNamedBeanList() {
     currentDealing = routesToSet.at(0)->ref;
     routesToSet.removeAt(0);
 
-    //dp->addPropertyChangeListener(propertyDestinationListener);
+    //dp->SwingPropertyChangeSupport::addPropertyChangeListener(propertyDestinationListener);
     connect(dp->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyDestinationPropertyChange(PropertyChangeEvent*)));
     s->activeBean(dp, dir);
 }
@@ -655,20 +676,20 @@ public List<DestinationPoints> getNamedBeanList() {
  if (source==NULL)
  {
   log->error("no source Object provided");
-  throw NullPointerException("no source Object provided");
+  throw new NullPointerException("no source Object provided");
   //return;
  }
  if(destination==NULL)
  {
   log->error("no destination Object provided");
-  throw NullPointerException("no destination Object provided");
+  throw new NullPointerException("no destination Object provided");
   //return;
  }
  PointDetails* sourcePoint = providePoint(source, panel);
  if(sourcePoint==NULL)
  {
   log->error("source point for " + source->getDisplayName() + " not created addNXDes");
-  throw NullPointerException("source point for " + source->getDisplayName() + " not created addNXDes");
+  throw new NullPointerException("source point for " + source->getDisplayName() + " not created addNXDes");
   //return;
  }
 
@@ -692,7 +713,7 @@ public List<DestinationPoints> getNamedBeanList() {
  firePropertyChange("length", QVariant(), QVariant());
 }
 
-/*public*/ QObjectList* EntryExitPairs::getDestinationList(QObject* obj, LayoutEditor* panel){
+/*public*/ QObjectList* EntryExitPairs::getDestinationList(NamedBean* obj, LayoutEditor* panel){
     QObjectList* list = new QObjectList();
     if( nxpair.contains(getPointDetails(obj, panel)))
     {
@@ -760,14 +781,14 @@ public List<DestinationPoints> getNamedBeanList() {
  */
 /*private*/ bool EntryExitPairs::checkNxPairs()
 {
- LogixManager* mgr = static_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"));
+ DefaultLogixManager* mgr = static_cast<DefaultLogixManager*>(InstanceManager::getDefault("LogixManager"));
  QList<QString> conditionalReferences = QList<QString> ();
  for (DeletePair* dPair : deletePairList)
  {
   if (dPair->dp == nullptr) {
       continue;
   }
-  for (NamedBean* nb : mgr->getNamedBeanSet())
+  for (NamedBean* nb : mgr->AbstractManager::getNamedBeanSet())
   {
    Logix* lgx = (Logix*)nb;
    for (int i = 0; i < lgx->getNumConditionals(); i++)
@@ -912,7 +933,7 @@ void EntryExitPairs::createDeletePairList(NamedBean* sensor) {
 /*public*/ QList<QString> EntryExitPairs::layoutBlockSensors(/*@Nonnull*/ LayoutBlock* layoutBlock)
 {
  if(layoutBlock==nullptr)
-  throw NullPointerException(tr("layoutBlock is marked NonNull but is null"));
+  throw new NullPointerException(tr("layoutBlock is marked NonNull but is null"));
 
  log->debug(tr("layoutBlockSensors: %1").arg(layoutBlock->getDisplayName()));
  QList<QString> blockSensors = QList<QString>();
@@ -950,42 +971,42 @@ void EntryExitPairs::createDeletePairList(NamedBean* sensor) {
  return blockSensors;
 }
 
-/*public*/ bool EntryExitPairs::isDestinationValid(QObject* source, QObject* dest, LayoutEditor* panel){
+/*public*/ bool EntryExitPairs::isDestinationValid(NamedBean* source, NamedBean* dest, LayoutEditor* panel){
  if( nxpair.contains(getPointDetails(source, panel)))
   return  nxpair.value(getPointDetails(source, panel))->isDestinationValid(getPointDetails(dest, panel));
  return false;
 }
 
-/*public*/ bool EntryExitPairs::isUniDirection(QObject* source, LayoutEditor* panel, QObject* dest){
+/*public*/ bool EntryExitPairs::isUniDirection(NamedBean* source, LayoutEditor* panel, NamedBean* dest){
  if( nxpair.contains(getPointDetails(source, panel)))
   return  nxpair.value(getPointDetails(source, panel))->getUniDirection(dest, panel);
  return false;
 }
 
-/*public*/ void EntryExitPairs::setUniDirection(QObject* source, LayoutEditor* panel, QObject* dest, bool set){
+/*public*/ void EntryExitPairs::setUniDirection(NamedBean* source, LayoutEditor* panel, NamedBean* dest, bool set){
  if( nxpair.contains(getPointDetails(source, panel)))
   nxpair.value(getPointDetails(source, panel))->setUniDirection(dest, panel, set);
 }
 
-/*public*/ bool EntryExitPairs::canBeBiDirectional(QObject* source, LayoutEditor* panel, QObject* dest){
+/*public*/ bool EntryExitPairs::canBeBiDirectional(NamedBean* source, LayoutEditor* panel, NamedBean* dest){
  if( nxpair.contains(getPointDetails(source, panel)))
    return  nxpair.value(getPointDetails(source, panel))->canBeBiDirection(dest, panel);
  return false;
 }
 
-/*public*/ bool EntryExitPairs::isEnabled(QObject* source, LayoutEditor* panel, QObject* dest)
+/*public*/ bool EntryExitPairs::isEnabled(NamedBean* source, LayoutEditor* panel, NamedBean* dest)
 {
  if( nxpair.contains(getPointDetails(source, panel)))
   return  nxpair.value(getPointDetails(source, panel))->isEnabled(dest, panel);
  return false;
 }
 
-/*public*/ void EntryExitPairs::setEnabled(QObject* source, LayoutEditor* panel, QObject* dest, bool set){
+/*public*/ void EntryExitPairs::setEnabled(NamedBean* source, LayoutEditor* panel, NamedBean* dest, bool set){
  if( nxpair.contains(getPointDetails(source, panel)))
   nxpair.value(getPointDetails(source, panel))->setEnabled(dest, panel, set);
 }
 
-/*public*/ void EntryExitPairs::setEntryExitType(QObject* source, LayoutEditor* panel, QObject* dest, int set){
+/*public*/ void EntryExitPairs::setEntryExitType(NamedBean* source, LayoutEditor* panel, NamedBean* dest, int set){
  if( nxpair.contains(getPointDetails(source, panel)))
  {
   nxpair.value(getPointDetails(source, panel))->setEntryExitType(dest, panel, set);
@@ -993,13 +1014,13 @@ void EntryExitPairs::createDeletePairList(NamedBean* sensor) {
  }
 }
 
-/*public*/ int EntryExitPairs::getEntryExitType(QObject* source, LayoutEditor* panel, QObject* dest){
+/*public*/ int EntryExitPairs::getEntryExitType(NamedBean *source, LayoutEditor* panel, NamedBean *dest){
  if( nxpair.contains(getPointDetails(source, panel)))
   return  nxpair.value(getPointDetails(source, panel))->getEntryExitType(dest, panel);
  return 0x00;
 }
 
-/*public*/ QString EntryExitPairs::getUniqueId(QObject* source, LayoutEditor* panel, QObject* dest){
+/*public*/ QString EntryExitPairs::getUniqueId(NamedBean* source, LayoutEditor* panel, NamedBean* dest){
  if( nxpair.contains(getPointDetails(source, panel)))
   return  nxpair.value(getPointDetails(source, panel))->getUniqueId(dest, panel);
  return QString();
@@ -1016,7 +1037,7 @@ void EntryExitPairs::createDeletePairList(NamedBean* sensor) {
 //protecting helps us to determine which direction we are going in.
 //validateOnly flag is used, if all we are doing is simply checking to see if the source/destpoints are valid, when creating the pairs in the user GUI
 
-/*public*/ bool EntryExitPairs::isPathActive(QObject* sourceObj, QObject* destObj, LayoutEditor* panel)
+/*public*/ bool EntryExitPairs::isPathActive(NamedBean *sourceObj, NamedBean *destObj, LayoutEditor* panel)
 {
     PointDetails* pd = getPointDetails(sourceObj, panel);
  if( nxpair.contains(pd))
@@ -1027,7 +1048,7 @@ void EntryExitPairs::createDeletePairList(NamedBean* sensor) {
  return false;
 }
 
-/*public*/ void EntryExitPairs::cancelInterlock(QObject* source, LayoutEditor* panel, QObject* dest){
+/*public*/ void EntryExitPairs::cancelInterlock(NamedBean* source, LayoutEditor* panel, NamedBean* dest){
 if( nxpair.contains(getPointDetails(source, panel)))
 {
  nxpair.value(getPointDetails(source, panel))->cancelInterlock(dest, panel);
@@ -1090,14 +1111,14 @@ if( nxpair.contains(getPointDetails(source, panel)))
         nxPoint->removeSensorList();
         try {
             nxPoint->getSensor()->setKnownState(sensorState);
-        } catch (JmriException ex){
-            log->error(ex.getMessage());
+        } catch (JmriException* ex){
+            log->error(ex->getMessage());
         }
         nxPoint->addSensorList();
     }
 }
 
-/*public*/ PointDetails* EntryExitPairs::getPointDetails(QObject* obj, LayoutEditor* panel)
+/*public*/ PointDetails* EntryExitPairs::getPointDetails(NamedBean* obj, LayoutEditor* panel)
 {
   for (int i = 0; i<pointDetails->size(); i++)
   {
@@ -1264,17 +1285,17 @@ PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, QList<LayoutB
 //    }
 //}
 
-//java.beans.PropertyChangeSupport pcs = new java.beans.PropertyChangeSupport(this);
-/*public*/ /*synchronized*/ void EntryExitPairs::addPropertyChangeListener(PropertyChangeListener* /*l*/) {
-    //pcs.addPropertyChangeListener(l);
+//java.beans.SwingPropertyChangeSupport pcs = new java.beans.SwingPropertyChangeSupport(this,this);
+/*public*/ /*synchronized*/ void EntryExitPairs::addPropertyChangeListener(PropertyChangeListener* l) {
+    addPropertyChangeListener(l);
     //disconnect(this, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
 }
-/*public*/ /*synchronized*/ void EntryExitPairs::removePropertyChangeListener(PropertyChangeListener* /*l*/) {
-    //pcs.removePropertyChangeListener(l);
+/*public*/ /*synchronized*/ void EntryExitPairs::removePropertyChangeListener(PropertyChangeListener* l) {
+    removePropertyChangeListener(l);
 }
 /*protected*/ void EntryExitPairs::firePropertyChange(QString p, QVariant old, QVariant n)
 {
- pcs->firePropertyChange(p,old,n);
+ firePropertyChange(p,old,n);
  //emit propertyChange(new PropertyChangeEvent(this, p, old, n));
 }
 
@@ -1283,14 +1304,14 @@ PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, QList<LayoutB
 * Discover all possible valid source and destination signalmasts past pairs
 * on all layout editor panels.
 */
-/*public*/ void EntryExitPairs::automaticallyDiscoverEntryExitPairs(LayoutEditor* editor, int interlockType) throw (JmriException)
+/*public*/ void EntryExitPairs::automaticallyDiscoverEntryExitPairs(LayoutEditor* editor, int interlockType) /*throw new (JmriException)*/
 {
  //This is almost a duplicate of that in the DefaultSignalMastLogicManager
  runWhenStablised=false;
  LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
  if(!lbm->isAdvancedRoutingEnabled())
  {
-  throw JmriException("advanced routing not enabled");
+  throw new JmriException("advanced routing not enabled");
  }
  if(!lbm->routingStablised())
  {
@@ -1340,7 +1361,7 @@ PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, QList<LayoutB
     {
      automaticallyDiscoverEntryExitPairs(toUseWhenStable, interlockTypeToUseWhenStable);
     }
-    catch (JmriException je)
+    catch (JmriException* je)
     {
       //Considered normal if routing not enabled
     }
@@ -1349,64 +1370,64 @@ PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, QList<LayoutB
  }
 }
 
-/*public*/ void EntryExitPairs::vetoableChange(PropertyChangeEvent* evt) throw (PropertyVetoException) {
+/*public*/ void EntryExitPairs::vetoableChange(PropertyChangeEvent* /*evt*/) /*throw new (PropertyVetoException)*/ {
 
 }
 
 
 //@Override
-/*public*/ /*synchronized*/ void EntryExitPairs::addVetoableChangeListener(VetoableChangeListener* l) {
-    vcs->addVetoableChangeListener(l);
-}
+///*public*/ /*synchronized*/ void EntryExitPairs::addVetoableChangeListener(VetoableChangeListener* l) {
+//    vcs->addVetoableChangeListener(l);
+//}
 
 //@Override
-/*public*/ /*synchronized*/ void EntryExitPairs::removeVetoableChangeListener(VetoableChangeListener* l) {
-    vcs->removeVetoableChangeListener(l);
-}
+///*public*/ /*synchronized*/ void EntryExitPairs::removeVetoableChangeListener(VetoableChangeListener* l) {
+//    vcs->removeVetoableChangeListener(l);
+//}
 
 
 //@Override
 /*public*/ void EntryExitPairs::addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-    pcs->addPropertyChangeListener(propertyName, listener);
+    addPropertyChangeListener(propertyName, listener);
 }
 
 //@Override
-/*public*/ QVector<PropertyChangeListener*> EntryExitPairs::getPropertyChangeListeners() {
-    return pcs->getPropertyChangeListeners();
-}
+///*public*/ QVector<PropertyChangeListener*> EntryExitPairs::getPropertyChangeListeners() {
+//    return getPropertyChangeListeners();
+//}
 
 //@Override
-/*public*/ QVector<PropertyChangeListener*> EntryExitPairs::getPropertyChangeListeners(QString propertyName) {
-    return pcs->getPropertyChangeListeners(propertyName);
-}
+///*public*/ QVector<PropertyChangeListener*> EntryExitPairs::getPropertyChangeListeners(QString propertyName) {
+//    return getPropertyChangeListeners(propertyName);
+//}
 
 //@Override
-/*public*/ void EntryExitPairs::removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
-    pcs->removePropertyChangeListener(propertyName, listener);
-}
+///*public*/ void EntryExitPairs::removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener) {
+//   removePropertyChangeListener(propertyName, listener);
+//}
 
 //@Override
-/*public*/ void EntryExitPairs::addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
-    vcs->addVetoableChangeListener(propertyName, listener);
-}
+///*public*/ void EntryExitPairs::addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
+//    vcs->addVetoableChangeListener(propertyName, listener);
+//}
 
 //@Override
-/*public*/ QVector<VetoableChangeListener*> EntryExitPairs::getVetoableChangeListeners() {
-    return vcs->getVetoableChangeListeners();
-}
+///*public*/ QVector<VetoableChangeListener*> EntryExitPairs::getVetoableChangeListeners() {
+//    return vcs->getVetoableChangeListeners();
+//}
 
 //@Override
-/*public*/ QVector<VetoableChangeListener*> EntryExitPairs::getVetoableChangeListeners(QString propertyName) {
-    return vcs->getVetoableChangeListeners(propertyName);
-}
+///*public*/ QVector<VetoableChangeListener*> EntryExitPairs::getVetoableChangeListeners(QString propertyName) {
+//    return vcs->getVetoableChangeListeners(propertyName);
+//}
 
 //@Override
-/*public*/ void EntryExitPairs::removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
-    vcs->removeVetoableChangeListener(propertyName, listener);
-}
+///*public*/ void EntryExitPairs::removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) {
+//    vcs->removeVetoableChangeListener(propertyName, listener);
+//}
 
 //@Override
-/*public*/ void EntryExitPairs::deleteBean(DestinationPoints* bean, QString property) throw (PropertyVetoException) {
+/*public*/ void EntryExitPairs::deleteBean(DestinationPoints* bean, QString property) /*throw (PropertyVetoException)*/ {
 
 }
 
@@ -1425,13 +1446,13 @@ PointDetails* EntryExitPairs::getPointDetails(LayoutBlock* source, QList<LayoutB
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ void EntryExitPairs::addDataListener(QObject *e) {
+/*public*/ void EntryExitPairs::addDataListener(ManagerDataListener *e) {
     if (e != nullptr) listeners.append(e);
 }
 
 /** {@inheritDoc} */
 //@Override
-/*public*/ void EntryExitPairs::removeDataListener(/*ManagerDataListener*/QObject *e)  {
+/*public*/ void EntryExitPairs::removeDataListener(ManagerDataListener *e)  {
     if (e != nullptr) listeners.removeOne(e);
 }
 

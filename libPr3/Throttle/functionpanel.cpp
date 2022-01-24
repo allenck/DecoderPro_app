@@ -24,6 +24,7 @@ FunctionPanel::FunctionPanel(QWidget *parent) :
     ui(new Ui::FunctionPanel)
 {
  ui->setupUi(this);
+ log->setDebugEnabled(true);
  functionButton = QList<FunctionButton*>();
  functionButton.append(ui->btnLight);
  functionButton.append(ui->btnF1);
@@ -96,8 +97,7 @@ FunctionPanel::~FunctionPanel()
  if (mThrottle != NULL)
  {
   //mThrottle->removePropertyChangeListener((PropertyChangeListener*)this);
-  AbstractThrottle* at = (AbstractThrottle*)at;
-  disconnect(at, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+  disconnect((AbstractThrottle*)mThrottle->self(), SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
   mThrottle=NULL;
  }
 }
@@ -222,7 +222,7 @@ FunctionPanel::~FunctionPanel()
     this->addressPanel = addressPanel;
 
 }
-#if 0
+
 /*public*/ void FunctionPanel::saveFunctionButtonsToRoster (RosterEntry* rosterEntry)
 {
  log->debug("saveFunctionButtonsToRoster");
@@ -242,22 +242,21 @@ FunctionPanel::~FunctionPanel()
     text = "";		// reset button text to default
    rosterEntry->setFunctionLabel(functionNumber, text);
   }
-  if (rosterEntry->getFunctionLabel(functionNumber) != NULL && lockable != rosterEntry->getFunctionLockable(functionNumber))
-  {
-   rosterEntry->setFunctionLockable(functionNumber, lockable);
-  }
-  if (rosterEntry->getFunctionLabel(functionNumber) != NULL && imagePath!=NULL && imagePath.compare(rosterEntry->getFunctionImage(functionNumber))!=0)
-  {
-   rosterEntry->setFunctionImage(functionNumber, imagePath);
-  }
-  if (rosterEntry->getFunctionLabel(functionNumber) != NULL && imageSelectedPath!=NULL && imageSelectedPath.compare(rosterEntry->getFunctionSelectedImage(functionNumber))!=0)
-  {
-   rosterEntry->setFunctionSelectedImage(functionNumber, imageSelectedPath);
+  if (rosterEntry->getFunctionLabel(functionNumber) != "" ) {
+      if( lockable != rosterEntry->getFunctionLockable(functionNumber)) {
+         rosterEntry->setFunctionLockable(functionNumber, lockable);
+      }
+      if ( imagePath.compare(rosterEntry->getFunctionImage(functionNumber)) != 0) {
+         rosterEntry->setFunctionImage(functionNumber, imagePath);
+      }
+      if ( imageSelectedPath.compare(rosterEntry->getFunctionSelectedImage(functionNumber)) != 0) {
+         rosterEntry->setFunctionSelectedImage(functionNumber, imageSelectedPath);
+      }
   }
  }
- Roster::writeRosterFile();
+ Roster::getDefault()->writeRoster();
 }
-#endif
+
 /**
  * Place and initialize all the buttons.
  */
@@ -540,7 +539,7 @@ FunctionPanel::~FunctionPanel()
 
    functionButton.at(i)->setState(state); // reset button state
 //   }
-//   catch (NoSuchMethodException ex1)
+//   catch (NoSuchMethodException* ex1)
 //   {
 //    log->warn("Exception in notifyThrottleFound: " + ex1);
 //   } catch (IllegalAccessException ex2) {
@@ -716,10 +715,11 @@ FunctionPanel::~FunctionPanel()
  */
 /*public*/ void FunctionPanel::notifyAddressThrottleFound(DccThrottle* t)
 {
- if (log->isDebugEnabled()) log->debug("Throttle found");
+ if (log->isDebugEnabled())
+  log->debug("Throttle found");
  mThrottle = t;
  setEnabled(true);
- //mThrottle->addPropertyChangeListener(this);
+ //mThrottle->SwingPropertyChangeSupport::addPropertyChangeListener(this);
  AbstractThrottle* at = (AbstractThrottle*)t;
  connect(at, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  setFnButtons();

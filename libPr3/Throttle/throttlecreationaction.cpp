@@ -23,7 +23,7 @@ ThrottleCreationAction::ThrottleCreationAction(QObject *parent) :
 {
     //super(s, wi);
     // disable the ourselves if there is no throttle Manager
- if (InstanceManager::throttleManagerInstance()==NULL)
+ if (InstanceManager::getNullableDefault("ThrottleManager") == nullptr)
  {
   setEnabled(false);
  }
@@ -34,7 +34,7 @@ ThrottleCreationAction::ThrottleCreationAction(QObject *parent) :
 {
     //super(s, i, wi);
     // disable the ourselves if there is no throttle Manager
-    if (InstanceManager::throttleManagerInstance()==NULL) {
+  if (InstanceManager::getNullableDefault("ThrottleManager") == nullptr){
         setEnabled(false);
     }
     connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));

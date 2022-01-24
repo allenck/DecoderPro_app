@@ -9,7 +9,7 @@ LinuxAbstractController::LinuxAbstractController()
 ///*final*/ class LinuxAbstractController extends AbstractController {
 
 
-    /*protected*/ LinuxAbstractController::LinuxAbstractController(LinuxEventDevice* device, QVector<UsbComponent*>* components, QVector<Usb::Controller*>* children, QVector<Rumbler*>* rumblers, Usb::Controller::Type type) throw (IOException) : Usb::AbstractController("", components, children, rumblers)
+    /*protected*/ LinuxAbstractController::LinuxAbstractController(LinuxEventDevice* device, QVector<UsbComponent*>* components, QVector<Usb::Controller*>* children, QVector<Rumbler*>* rumblers, Usb::Controller::Type type) /*throw (IOException)*/ : Usb::AbstractController("", components, children, rumblers)
 {
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
         /* 0: aload_0
@@ -47,7 +47,7 @@ LinuxAbstractController::LinuxAbstractController()
         // </editor-fold>
     }
 
-    /*public*/ /*final*/ void LinuxAbstractController::pollDevice() throw (IOException) {
+    /*public*/ /*final*/ void LinuxAbstractController::pollDevice() /*throw (IOException)*/ {
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
         /* 0: aload_0
          * 1: getfield      net/java/games/input/LinuxAbstractController.device:Lnet/java/games/input/LinuxEventDevice;
@@ -57,7 +57,7 @@ LinuxAbstractController::LinuxAbstractController()
         // </editor-fold>
     }
 
-    /*protected*/ /*final*/ bool LinuxAbstractController::getNextDeviceEvent(Event* event) throw (IOException) {
+    /*protected*/ /*final*/ bool LinuxAbstractController::getNextDeviceEvent(Event* event) /*throw (IOException)*/ {
         // <editor-fold defaultstate="collapsed" desc="Compiled Code">
         /* 0: aload_1
          * 1: aload_0

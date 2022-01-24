@@ -5,7 +5,7 @@
 #include "logger.h"
 #include "libPr3_global.h"
 
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class LIBPR3SHARED_EXPORT ProgDebugger : public QObject, public AddressedProgrammer
 {
     Q_OBJECT
@@ -27,18 +27,15 @@ public:
     /*public*/ int getCvVal(int cv);
     /*public*/ bool hasBeenWritten(int cv);
     /*public*/ void clearHasBeenWritten(int cv);
-   /*public*/ QString decodeErrorCode(int i);
-   /*public*/ void writeCV(QString CV, int val, ProgListener* p) throw (ProgrammerException);
-   /*public*/ void writeCV(int CV, int val, ProgListener* p) throw (ProgrammerException);
+    /*public*/ QString decodeErrorCode(int i);
+    /*public*/ void writeCV(QString CVName, int val, ProgListener* p) throw (ProgrammerException);
     /*public*/ void nextRead(int r);
     /*public*/ int lastReadCv();
-    /*public*/ void confirmCV(QString CV, int val, ProgListener* p) throw (ProgrammerException) ;
-    /*public*/ void confirmCV(int CV, int val, ProgListener* p) throw (ProgrammerException);
-    /*public*/ void readCV(QString CV, ProgListener* p) throw (ProgrammerException) ;
-    /*public*/ void readCV(int CV, ProgListener* p) throw (ProgrammerException) ;
+    /*public*/ void confirmCV(QString CVName, int val, ProgListener* p) throw (ProgrammerException) ;
+    /*public*/ void readCV(QString CVName, ProgListener* p) throw (ProgrammerException) ;
     /*public*/ /*final*/ void setMode(ProgrammingMode* m) ;
     /*public*/ /*final*/ ProgrammingMode* getMode();
-    /*public*/ QList<ProgrammingMode*> getSupportedModes();
+    /*public*/ QList<QString> getSupportedModes();
     /*public*/ void setTestReadLimit(int lim);
     /*public*/ void setTestWriteLimit(int lim);
     /*public*/ bool getCanRead();
@@ -99,9 +96,9 @@ private:
     int readLimit;// = 256;
     bool confirmOK;  // cached result of last compare
     /**
-     * Provide a {@link java.beans.PropertyChangeSupport} helper.
+     * Provide a {@link java.beans.SwingPropertyChangeSupport} helper.
      */
-    /*private*/ /*final*/ PropertyChangeSupport* propertyChangeSupport;// = new PropertyChangeSupport(this);
+    /*private*/ /*final*/ SwingPropertyChangeSupport* propertyChangeSupport;// = new SwingPropertyChangeSupport(this, nullptr);
     static const bool IMMEDIATERETURN;// = false;
     static const int DELAY;// = 10;
     void sendReturn(Runnable* run);

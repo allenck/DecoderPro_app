@@ -74,8 +74,8 @@ bool CopyRosterItemAction::doTransfer() {
     QDomElement lroot = QDomElement();
     try {
         lroot = lf->rootFromName(mFullFromFilename);
-    } catch (Exception e) {
-        log->error("Exception while loading loco XML file: "+mFullFromFilename+" exception: "+e.getMessage());
+    } catch (Exception* e) {
+        log->error("Exception while loading loco XML file: "+mFullFromFilename+" exception: "+e->getMessage());
         return false;
     }
 

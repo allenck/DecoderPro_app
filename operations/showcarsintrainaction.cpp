@@ -1,5 +1,4 @@
 #include "showcarsintrainaction.h"
-#include "showcarsintrainframe.h"
 
 namespace Operations
 {
@@ -27,13 +26,13 @@ namespace Operations
  }
 
 
- /*public*/ void ShowCarsInTrainAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void ShowCarsInTrainAction::actionPerformed(JActionEvent* /*e*/) {
      // create a copy train frame
      if (f == NULL || !f->isVisible()) {
          f = new ShowCarsInTrainFrame();
          f->initComponents(train);
      } else {
-         //f.setExtendedState(Frame.NORMAL);
+         f->setExtendedState(JFrame::NORMAL);
          f->setVisible(true);	// this also brings the frame into focus
      }
  }

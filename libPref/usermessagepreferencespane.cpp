@@ -48,15 +48,15 @@
 
   //super();
   p = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
-//    p->addPropertyChangeListener((PropertyChangeEvent e) -> {
+//    p->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeEvent e) -> {
 //        if (e.getPropertyName()==("PreferencesUpdated")) {
 //            refreshOptions();
 //        }
 //    });
   p->addPropertyChangeListener((PropertyChangeListener*)this);
 
-  UserPreferencesManager* dp =(UserPreferencesManager*)p;
-  connect(dp->propertyChangeSupport, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//  UserPreferencesManager* dp =(UserPreferencesManager*)p;
+//  connect(dp->PropertyChangeSupport, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   QVBoxLayout* thisLayout;
   setLayout(thisLayout = new QVBoxLayout);//(this, BoxLayout.Y_AXIS));
 

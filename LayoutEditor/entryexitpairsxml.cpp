@@ -1,4 +1,4 @@
-#include "entryexitpairsxml.h"
+﻿#include "entryexitpairsxml.h"
 #include "entryexitpairs.h"
 #include "layouteditor.h"
 #include "signalhead.h"
@@ -35,10 +35,37 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
     QDomElement element = doc.createElement("entryexitpairs");
     setStoreElementClass(element);
     QList<LayoutEditor*> editors = p->getSourcePanelList();
-    if (editors.size()==0) return element;
+    if (editors.isEmpty())
+     return QDomElement();
+
     QDomElement e1;
     element.appendChild(e1=doc.createElement("cleardown"));
     e1.appendChild(doc.createTextNode(QString::number(p->getClearDownOption())));
+
+    int overLap = p->getOverlapOption();
+    if (overLap > 0) {
+        element.appendChild(e1=doc.createElement("overlap")); e1.appendChild(doc.createTextNode(QString::number(overLap)));  // NOI18N
+    }
+
+    int memoryClearDelay = p->getMemoryClearDelay();
+    if (memoryClearDelay > 0) {
+        element.appendChild(e1=doc.createElement("memorycleardelay")); e1.appendChild(doc.createTextNode(QString::number(memoryClearDelay)));  // NOI18N
+    }
+
+    QString memoryName = p->getMemoryOption();
+    if (!memoryName.isEmpty()) {
+        element.appendChild(e1=doc.createElement("memoryname")); e1.appendChild(doc.createTextNode(memoryName));  // NOI18N
+    }
+
+    if (p->getDispatcherIntegration()) {
+        element.appendChild(e1=doc.createElement("dispatcherintegration")); e1.appendChild(doc.createTextNode("yes"));  // NOI18N
+    }
+    if (p->useDifferentColorWhenSetting()) {
+        element.appendChild(e1=doc.createElement("colourwhilesetting")); e1
+                .appendChild(doc.createTextNode(ColorUtil::colorToColorName(p->getSettingRouteColor())));  // NOI18N
+        element.appendChild(e1=doc.createElement("settingTimer")); e1.appendChild(doc.createTextNode(QString::number(p->getSettingTimer())));  // NOI18N
+    }
+
     for (int k = 0; k<editors.size(); k++)
     {
         LayoutEditor* panel = editors.at(k);
@@ -76,7 +103,7 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
                 source.setAttribute("type", type);
                 source.setAttribute("item", item);
 
-                QObjectList* a = p->getDestinationList(key, panel);
+                QObjectList* a = p->getDestinationList((NamedBean*)key, panel);
                 for (int i = 0; i<a->size(); i++){
                     QObject* keyDest = a->at(i);
                     QString typeDest = "";
@@ -104,11 +131,11 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
                     QDomElement dest = doc.createElement("destination");
                     dest.setAttribute("type", typeDest);
                     dest.setAttribute("item", itemDest);
-                    if(!p->isUniDirection(key, panel, keyDest))
+                    if(!p->isUniDirection((NamedBean*)key, panel, (NamedBean*)keyDest))
                         dest.setAttribute("uniDirection", "no");
-                    if(!p->isEnabled(key, panel, keyDest))
+                    if(!p->isEnabled((NamedBean*)key, panel, (NamedBean*)keyDest))
                         dest.setAttribute("enabled", "no");
-                    int nxType = p->getEntryExitType(key, panel, keyDest);
+                    int nxType = p->getEntryExitType((NamedBean*)key, panel, (NamedBean*)keyDest);
                     switch (nxType){
                         case 0x00 : dest.setAttribute("nxType", "turnoutsetting");
                                     break;
@@ -119,8 +146,8 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
                         default   : dest.setAttribute("nxType", "turnoutsetting");
                                     break;
                     }
-                    if(p->getUniqueId(key, panel, keyDest)!=NULL)
-                        dest.setAttribute("uniqueid", p->getUniqueId(key, panel, keyDest));
+                    if(p->getUniqueId((NamedBean*)key, panel, (NamedBean*)keyDest)!=NULL)
+                        dest.setAttribute("uniqueid", p->getUniqueId((NamedBean*)key, panel, (NamedBean*)keyDest));
                     source.appendChild(dest);
                 }
                 panelElem.appendChild(source);
@@ -135,9 +162,9 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
     messages.setAttribute("class","jmri.jmrit.signalling.configurexml.EntryExitPairsXml");
 }
 
-/*public*/ void EntryExitPairsXml::load(QDomElement /*element*/, QObject* /*o*/)  throw (Exception){
-    log->error("Invalid method called");
-}
+///*public*/ void EntryExitPairsXml::load(QDomElement /*element*/, QObject* /*o*/)  throw (Exception){
+//    log->error("Invalid method called");
+//}
 
 /**
  * Load, starting with the layoutblock element, then
@@ -155,7 +182,7 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
   QString clearoption = shared.firstChildElement("cleardown").text();
   eep->setClearDownOption(clearoption.toInt());
  }
- catch (NullPointerException e)
+ catch (NullPointerException* e)
  {
      //Considered normal if it doesn't exists
  }
@@ -213,7 +240,7 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
     } else if (sourceType==("sensor")){
         source = ((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getSensor(sourceItem);
     } else if (sourceType==("signalHead")){
-        source = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(sourceItem);
+        source = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(sourceItem);
     }
 
     //These two could be subbed off.
@@ -235,7 +262,7 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
      NamedBean* dest = NULL;
      if(destType == ("signalMast"))
      {
-      dest = static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(destItem);
+      dest = qobject_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getSignalMast(destItem);
      }
      else if (destType==("sensor"))
      {
@@ -243,15 +270,15 @@ EntryExitPairsXml::EntryExitPairsXml(QObject *parent) :
      }
      else if (destType==("signalHead"))
      {
-      dest = static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(destItem);
+      dest = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(destItem);
      }
      try
      {
       eep->addNXDestination(source, dest, panel, id);
      }
-     catch (NullPointerException e)
+     catch (NullPointerException* e)
      {
-      log->error(tr("An error occured while trying to add a point") + ": "+ e.getMessage());
+      log->error(tr("An error occured while trying to add a point") + ": "+ e->getMessage());
      }
      if((destinationList.at(j).toElement().attribute("uniDirection")!="") && (destinationList.at(j).toElement().attribute("uniDirection")==("no")))
      {

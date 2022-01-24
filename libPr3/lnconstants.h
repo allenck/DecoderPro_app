@@ -342,6 +342,7 @@ enum PCMD
    OPC_GPOFF         = 0x82,
    OPC_GPON          = 0x83,
    OPC_IDLE          = 0x85,
+   OPC_RE_LOCORESET_BUTTON = 0x8A, // Undocumented name
    OPC_LOCO_SPD      = 0xa0,
    OPC_LOCO_DIRF     = 0xa1,
    OPC_LOCO_SND      = 0xa2,
@@ -483,6 +484,7 @@ enum PCMD
    RE_IPL_DIGITRAX_HOST_DB210    =0x15,
    RE_IPL_DIGITRAX_HOST_DCS210   =0x1b,
    RE_IPL_DIGITRAX_HOST_DB220    =0x16,
+   RE_IPL_DIGITRAX_HOST_DCS210PLUS=0x1a,
    RE_IPL_DIGITRAX_HOST_DCS240   =0x1c,
    RE_IPL_DIGITRAX_HOST_UR92     =0x5C,
    RE_IPL_DIGITRAX_HOST_DCS52    =0x34,
@@ -490,6 +492,7 @@ enum PCMD
    RE_IPL_DIGITRAX_HOST_BXPA1    =0x51,
    RE_IPL_DIGITRAX_HOST_DT402    =0x2A,
    RE_IPL_DIGITRAX_HOST_DT500    =0x32,
+   RE_IPL_DIGITRAX_HOST_DT602    =0x3E,
    RE_IPL_DIGITRAX_HOST_PR3      =0x23,
    RE_IPL_DIGITRAX_HOST_PR4      =0x24,
    RE_IPL_DIGITRAX_HOST_BXP88    =0x58,
@@ -517,58 +520,70 @@ enum PCMD
    };
 
    // Below data is assumed, based on firmware files available from RR-Cirkits web site
-   static int RE_IPL_MFR_RR_CIRKITS         ; //87;
-   static int RE_IPL_RRCIRKITS_HOST_TC64    ; //11;
-   static int RE_IPL_RRCIRKITS_SLAVE_ALL    ; //00;
+   enum RRCIRKITS
+   {
+    RE_IPL_MFR_RR_CIRKITS             = 87,
+    RE_IPL_RRCIRKITS_HOST_TC64        = 11,
+    RE_IPL_RRCIRKITS_HOST_LNCP        = 12,
+    RE_IPL_RRCIRKITS_HOST_SIGNALMAN   = 21,
+    RE_IPL_RRCIRKITS_HOST_TOWERMAN    = 22,
+    RE_IPL_RRCIRKITS_HOST_WATCHMAN    = 23,
+    RE_IPL_RRCIRKITS_HOST_TC64_MKII   = 24,
+    RE_IPL_RRCIRKITS_HOST_MOTORMAN    = 25,
+    RE_IPL_RRCIRKITS_HOST_MOTORMAN_II = 28,
+    RE_IPL_RRCIRKITS_SLAVE_ALL        = 100
+   };
 
    // Constants associated with OPC_PEER_XFR for Duplex operations
-   static int RE_DPLX_OP_TYPE_WRITE             ; //0x00;
-   static int RE_DPLX_OP_TYPE_QUERY             ; //0x08;
-   static int RE_DPLX_OP_TYPE_REPORT            ; //0x10;
-   static int RE_DPLX_OP_LEN                    ; //0x14;
-   static int RE_IPL_OP_LEN                     ; //0x14;
-   static int RE_IPL_OP_QUERY                   ; //0x08;
-   static int RE_IPL_OP_REPORT                  ; //0x10;
-   static int RE_IPL_OP_SLV_QUERY               ; //0x00;
-   static int RE_IPL_OP_HFW_QUERY               ; //0x00;
-   static int RE_IPL_OP_HSNM_QUERY              ; //0x00;
-   static int RE_IPL_OP_SFW_QUERY               ; //0x00;
-   static int RE_IPL_OP_HSN0_QUERY              ; //0x01;
-   static int RE_IPL_OP_HSN1_QUERY              ; //0x00;
-   static int RE_IPL_OP_HSN2_QUERY              ; //0x00;
-   static int RE_IPL_OP_SSNM_QUERY              ; //0x00;
-   static int RE_IPL__OP_SSN0_QUERY             ; //0x00;
-   static int RE_IPL_OP_SSN1_QUERY              ; //0x00;
-   static int RE_IPL_OP_SSN2_QUERY              ; //0x00;
-   static int RE_IPL_OP_SSN3_QUERY              ; //0x00;
-   static int RE_DPLX_GP_CHAN_TYPE              ; //2;
-   static int RE_DPLX_GP_NAME_TYPE              ; //3;
-   static int RE_DPLX_GP_ID_TYPE                ; //4;
-   static int RE_DPLX_GP_PW_TYPE                ; //7;
-   static int RE_DPLX_OPC_BAD                   ; //0x80;
-   static int RE_DPLX_MSB1_BIT                  ; //1;
-   static int RE_DPLX_MSB2_BIT                  ; //2;
-   static int RE_DPLX_MSB3_BIT                  ; //4;
-   static int RE_DPLX_MSB4_BIT                  ; //8;
-   static int RE_DPLX_BUMP_MSB1_BIT             ; //7;
-   static int RE_DPLX_BUMP_MSB2_BIT             ; //6;
-   static int RE_DPLX_BUMP_MSB3_BIT             ; //5;
-   static int RE_DPLX_BUMP_MSB4_BIT             ; //4;
-   static int RE_DPLX_7BITS_MAX                 ; //127;
-   static int RE_DPLX_MAX_NOT_OPC               ; //0x7F;
-   static int RE_DPLX_ALT_CH_MSB_BIT            ; //0x4;
-   static int RE_DPLX_ALT_CH_MSB_SHIFT          ; //0x5;
-   static int RE_DPLX_ALT_ID_MSB_BIT            ; //0x8;
-   static int RE_DPLX_ALT_ID_MSB_SHIFT          ; //0x4;
-   static int RE_DPLX_ALT_PW1_MSB_BIT           ; //0x1;
-   static int RE_DPLX_ALT_PW1_MSB_SHIFT         ; //0x3;
-   static int RE_DPLX_ALT_PW3_MSB_BIT           ; //0x2;
-   static int RE_DPLX_ALT_PW3_MSB_SHIFT         ; //0x2;
+   enum DUPLEX
+   {
+    RE_DPLX_OP_TYPE_WRITE             =0x00,
+    RE_DPLX_OP_TYPE_QUERY             =0x08,
+    RE_DPLX_OP_TYPE_REPORT            =0x10,
+    RE_DPLX_OP_LEN                    =0x14,
+    RE_IPL_OP_LEN                     =0x14,
+    RE_IPL_OP_QUERY                   =0x08,
+    RE_IPL_OP_REPORT                  =0x10,
+    RE_IPL_OP_SLV_QUERY               =0x00,
+    RE_IPL_OP_HFW_QUERY               =0x00,
+    RE_IPL_OP_HSNM_QUERY              =0x00,
+    RE_IPL_OP_SFW_QUERY               =0x00,
+    RE_IPL_OP_HSN0_QUERY              =0x01,
+    RE_IPL_OP_HSN1_QUERY              =0x00,
+    RE_IPL_OP_HSN2_QUERY              =0x00,
+    RE_IPL_OP_SSNM_QUERY              =0x00,
+    RE_IPL__OP_SSN0_QUERY             =0x00,
+    RE_IPL_OP_SSN1_QUERY              =0x00,
+    RE_IPL_OP_SSN2_QUERY              =0x00,
+    RE_IPL_OP_SSN3_QUERY              =0x00,
+    RE_DPLX_GP_CHAN_TYPE              =2,
+    RE_DPLX_GP_NAME_TYPE              =3,
+    RE_DPLX_GP_ID_TYPE                =4,
+    RE_DPLX_GP_PW_TYPE                =7,
+    RE_DPLX_OPC_BAD                   =0x80,
+    RE_DPLX_MSB1_BIT                  =1,
+    RE_DPLX_MSB2_BIT                  =2,
+    RE_DPLX_MSB3_BIT                  =4,
+    RE_DPLX_MSB4_BIT                  =8,
+    RE_DPLX_BUMP_MSB1_BIT             =7,
+    RE_DPLX_BUMP_MSB2_BIT             =6,
+    RE_DPLX_BUMP_MSB3_BIT             =5,
+    RE_DPLX_BUMP_MSB4_BIT             =4,
+    RE_DPLX_7BITS_MAX                 =127,
+    RE_DPLX_MAX_NOT_OPC               =0x7F,
+    RE_DPLX_ALT_CH_MSB_BIT            =0x4,
+    RE_DPLX_ALT_CH_MSB_SHIFT          =0x5,
+    RE_DPLX_ALT_ID_MSB_BIT            =0x8,
+    RE_DPLX_ALT_ID_MSB_SHIFT          =0x4,
+    RE_DPLX_ALT_PW1_MSB_BIT           =0x1,
+    RE_DPLX_ALT_PW1_MSB_SHIFT         =0x3,
+    RE_DPLX_ALT_PW3_MSB_BIT           =0x2,
+    RE_DPLX_ALT_PW3_MSB_SHIFT         =0x2,
 
-   static int RE_DPLX_DATA_LS_NIBBLE            ; //0x0F;
-   static int RE_DPLX_DATA_MS_NIBBLE            ; //0x70;
-   static int RE_DPLX_DATA_MS_NIBBLE_SHIFT      ; //4;
-
+    RE_DPLX_DATA_LS_NIBBLE            =0x0F,
+    RE_DPLX_DATA_MS_NIBBLE            =0x70,
+    RE_DPLX_DATA_MS_NIBBLE_SHIFT      =4
+   };
    // Duplex Group Scan Operation Constants
    static int RE_DPLX_SCAN_OP_LEN               ; //0x14 ;
    static int RE_DPLX_SCAN_QUERY_B2             ; //0x10 ;
@@ -656,6 +671,7 @@ enum PCMD
         RE_IB2_SPECIAL_F20_MASK = 0x20,
         RE_IB2_SPECIAL_F28_MASK = 0x40
    };
+   /*public*/ /*final*/ static QString DIGITRAX_STRING;// = "Digitrax"; // NOI18N
+   /*public*/ /*final*/ static QString RR_CIRKITS_STRING;// = "RR-CirKits"; // NOI18N};
 };
-
 #endif // LNCONSTANTS_H

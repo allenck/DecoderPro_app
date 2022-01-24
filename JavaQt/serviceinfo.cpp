@@ -609,7 +609,7 @@ return (ServiceInfo*)simpl;
  * @exception IllegalStateException
  *                if attempting to set the text for a non persistent service info.
  */
-/*public*/ /*abstract*/ void ServiceInfo::setText(/*final*/ QByteArray /*text*/) throw (IllegalStateException) {}
+/*public*/ /*abstract*/ void ServiceInfo::setText(/*final*/ QByteArray /*text*/)  {}
 /**
  * Set the text for the service. Setting the text will fore a re-announce of the service.
  *
@@ -618,7 +618,7 @@ return (ServiceInfo*)simpl;
  * @exception IllegalStateException
  *                if attempting to set the text for a non persistent service info.
  */
-/*public*/ /*abstract*/ void ServiceInfo::setText(/*final*/ QMap<QString, QVariant> /*props*/) throw (IllegalStateException) {}
+/*public*/ /*abstract*/ void ServiceInfo::setText(/*final*/ QMap<QString, QVariant> /*props*/)  {}
 
 /**
  * Returns <code>true</code> if ServiceListener.resolveService will be called whenever new new information is received.

@@ -12,11 +12,8 @@
 #include "lnprogrammermanager.h"
 #include <QMenu>
 #include <QDebug>
+#include "vptr.h"
 
-//ProgServiceModeComboBox::ProgServiceModeComboBox(QWidget *parent) :
-//    ProgModeSelector(parent)
-//{
-//}
 /**
  * Provide a JPanel with a JComboBox to configure the service mode programmer.
  * <P>
@@ -56,9 +53,15 @@
  */
 /*public*/ Programmer* ProgServiceModeComboBox::getProgrammer()
 {
- if (progBox == NULL) return NULL;
- GlobalProgrammerManager* pm = VPtr<GlobalProgrammerManager>::asPtr(progBox->itemData(progBox->currentIndex()));
- if (pm == NULL) return NULL;
+ if (progBox == NULL)
+  return NULL;
+ if(progBox->count() == 1)
+  progBox->setCurrentIndex(0);
+ log->debug(tr("progBox: %1 items, current index %2, current text '%3'").arg(progBox->count()).arg(progBox->currentIndex()).arg(progBox->currentText()));
+ QVariant v = progBox->itemData(progBox->currentIndex());
+ DefaultProgrammerManager* pm = VPtr<DefaultProgrammerManager>::asPtr(progBox->currentData());
+ if (pm == NULL)
+  return NULL;
  return pm->getGlobalProgrammer();
 }
 
@@ -70,15 +73,12 @@
     return true;
 }
 
-/*protected*/ QList<GlobalProgrammerManager*> getMgrList()
+/*protected*/ QList<DefaultProgrammerManager*> getMgrList()
 {
- //return InstanceManager::getList("GlobalProgrammerManager");
- QList<GlobalProgrammerManager*> list;
- QObjectList* objectList = InstanceManager::getList("GlobalProgrammerManager");
- foreach(QObject* o, *objectList)
+ QList<DefaultProgrammerManager*> list = QList<DefaultProgrammerManager*>();
+ for(QObject* o : *InstanceManager::getList("GlobalProgrammerManager"))
  {
-  GlobalProgrammerManager* globalProgrammerManager = qobject_cast<DefaultProgrammerManager*>(o);
-  list.append(globalProgrammerManager);
+  list.append((DefaultProgrammerManager*)o);
  }
  return list;
 }
@@ -101,79 +101,68 @@
  // create the programmer display combo box
  //progBox = new JComboBox<GlobalProgrammerManager>();
  progBox = new QComboBox();
- QVector<GlobalProgrammerManager*> v =  QVector<GlobalProgrammerManager*>();
- QList<GlobalProgrammerManager*> mgrList = getMgrList();
- if (!mgrList.isEmpty())
- {
-  foreach (GlobalProgrammerManager* pm, mgrList)
-  {
-   if (pm != NULL && pm->getGlobalProgrammer() != NULL)
-   {
-    v.append(pm);
-    progBox->addItem(((DefaultProgrammerManager*)pm)->getUserName());//, VPtr<LnProgrammerManager>::asQVariant((LnProgrammerManager*)pm->self()));
-    // listen for changes
-    // TODO : pm.getGlobalProgrammer().addPropertyChangeListener(this);
-    AbstractProgrammer* pgmr = (AbstractProgrammer*) ((DefaultProgrammerManager*)pm)->getGlobalProgrammer();
-    connect(pgmr->propertyChangeSupport, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-   }
-  }
- }
- layout->addWidget(progBox/* = new QComboBox<GlobalProgrammerManager>(v)*/);
- // if only one, don't show
- if (progBox->count()<2)
- {
-  progBox->setVisible(false);
- }
- else
- {
-  progBox->setCurrentIndex(progBox->findText(((DefaultProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->getUserName())); // set default
-//             progBox.addActionListener(new ActionListener(){
-//                 public void actionPerformed(ActionEvent e) {
-//                     // new programmer selection
-//                     programmerSelected();
-//                 }
-//             });
-  connect(progBox, SIGNAL(currentIndexChanged(int)), this, SLOT(programmerSelected()));
+ QVector<DefaultProgrammerManager*> v =  QVector<DefaultProgrammerManager*>();
+ // create the programmer display combo box
+ for (DefaultProgrammerManager* pm : getMgrList()) {
+     Programmer* globProg = nullptr;
+     if (pm != nullptr) {
+         globProg = pm->getGlobalProgrammer();
+     }
+     if (globProg != nullptr) {
+         v.append(pm);
+         log->debug(tr("ProgSMCombo added programmer %1 as item %2").arg(
+                 (pm != nullptr ? pm->metaObject()->className() : "null")).arg(v.size()));
+         // listen for changes
+         globProg->addPropertyChangeListener((PropertyChangeListener*)this);
+     }
  }
 
+ layout->addWidget(progLabel);
+ layout->addWidget(progBox = new QComboBox());
+ for(DefaultProgrammerManager* pm : v)
+ {
+  log->debug(tr("ProgBox add: '%1'").arg(pm->toString()));
+  const QVariant v = VPtr<DefaultProgrammerManager>::asQVariant(pm);
+  progBox->addItem(pm->toString(), v);
+  progBox->setItemData(progBox->currentIndex(), v);
+ }
+ // if only one, don't show is confusing to user, so show combo with just 1 choice)
+ QVariant v1 = progBox->itemData(progBox->currentIndex(), Qt::UserRole);
+ progBox->setCurrentText(((DefaultProgrammerManager*)InstanceManager::getDefault("GlobalProgrammerManager"))->toString()); // set default
+ log->debug(tr("progBox: %1 items, current index %2, current text '%3'").arg(progBox->count()).arg(progBox->currentIndex()).arg(progBox->currentText()));
+ if(progBox->count() == 1)
+  progBox->setCurrentIndex(0);
+// progBox.addActionListener(new ActionListener() {
+//     @Override
+//     public void actionPerformed(ActionEvent e) {
+ connect(progBox, &QComboBox::currentTextChanged, [=]{
+         // new programmer selection
+         programmerSelected();
+ });
+
  // install items in GUI
- layout->addWidget(new QLabel(tr("Programming Mode")));
+ layout->addWidget(new JLabel(tr("Mode:")));
 
  layout->addWidget(modeBox);
 
  // and execute the setup for 1st time
  programmerSelected();
 }
+
 /**
  * reload the interface with the new programmers
  */
 void ProgServiceModeComboBox::programmerSelected()
 {
-#if 0
- DefaultComboBoxModel<ProgrammingMode*>* model = new DefaultComboBoxModel<ProgrammingMode*>();
- Programmer* p = getProgrammer();
- if (p!=NULL)
- {
-  foreach (ProgrammingMode* mode, getProgrammer()->getSupportedModes())
-  {
-   model->addElement(mode);
-  }
- }
- //modeBox->setModel(model);
- for(int i = 0; i < model->getSize(); i++)
- {
-  ProgrammingMode* mode = model->getElementAt(i);
-  modeBox->addItem(mode->getStandardName(), VPtr<ProgrammingMode>::asQVariant(mode));
- }
-#endif
+ //DefaultComboBoxModel<ProgrammingMode*> model = new DefaultComboBoxModel<ProgrammingMode*>();
  modeBox->clear();
  Programmer* p = getProgrammer();
  if (p!=NULL)
  {
-  QList<ProgrammingMode*> modeList = getProgrammer()->getSupportedModes();
-  foreach(ProgrammingMode* mode, modeList )
+  QList<QString> modeList = getProgrammer()->getSupportedModes();
+  foreach(QString mode, modeList )
   {
-   modeBox->addItem(mode->getStandardName(), VPtr<ProgrammingMode>::asQVariant(mode));
+   modeBox->addItem(mode, VPtr<ProgrammingMode>::asQVariant(new ProgrammingMode(mode)));
   }
  }
 }
@@ -181,7 +170,7 @@ void ProgServiceModeComboBox::programmerSelected()
 /**
  * Listen to box for mode changes
  */
-/*public*/ void ProgServiceModeComboBox::actionPerformed(ActionEvent* /*e*/) {
+/*public*/ void ProgServiceModeComboBox::actionPerformed(JActionEvent* /*e*/) {
  // convey change to programmer
  log->debug("Selected mode: " + modeBox->currentText());
  getProgrammer()->setMode(VPtr<ProgrammingMode>::asPtr(modeBox->itemData(modeBox->currentIndex())));

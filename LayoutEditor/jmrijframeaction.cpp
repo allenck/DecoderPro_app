@@ -47,10 +47,10 @@ JmriJFrameAction::JmriJFrameAction(QObject* parent) : AbstractAction(parent)
             j = (JmriJFrame*) Class::forName(className); //.newInstance();
             j->initComponents();
             j->setVisible(true);
-        } catch (ClassNotFoundException ex1) {
-            log->error("Couldn't create window, because couldn't find class: " + ex1.getMessage());
-        } catch (Exception ex2) {
-            log->error("Exception creating frame: " + ex2.getMessage());
+        } catch (ClassNotFoundException* ex1) {
+            log->error("Couldn't create window, because couldn't find class: " + ex1->getMessage());
+        } catch (Exception* ex2) {
+            log->error("Exception creating frame: " + ex2->getMessage());
         }
     }
 }

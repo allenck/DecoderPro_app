@@ -5,7 +5,7 @@
 #include <QImage>
 
 
-class PropertyChangeSupport;
+class SwingPropertyChangeSupport;
 class Logger;
 class QImage;
 class QLabel;
@@ -25,7 +25,7 @@ public:
  /*public*/ QString getImagePath();
  /*public*/ void setImagePath(QString s);
  /*public*/ QImage getScaledImage();
- PropertyChangeSupport* pcs;
+ SwingPropertyChangeSupport* pcs;
 
 signals:
 

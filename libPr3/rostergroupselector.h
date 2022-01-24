@@ -3,8 +3,9 @@
 
 #include <QComboBox>
 #include "propertychangeevent.h"
+#include "propertychangelistener.h"
 
-class RosterGroupSelector //: public QComboBox
+class RosterGroupSelector
 {
  //Q_OBJECT
 public:
@@ -13,14 +14,14 @@ public:
 
  virtual /*public*/ QString getSelectedRosterGroup() {return "";}
 
-// /*public*/ void addPropertyChangeListener(PropertyChangeListener listener);
+ virtual /*public*/ void addPropertyChangeListener(PropertyChangeListener* listener){}
 
-// /*public*/ void addPropertyChangeListener(String propertyName, PropertyChangeListener listener);
+  virtual /*public*/ void addPropertyChangeListener(QString /*propertyName*/, PropertyChangeListener* /*listener*/) {}
 
-// /*public*/ void removePropertyChangeListener(PropertyChangeListener listener);
+  virtual /*public*/ void removePropertyChangeListener(PropertyChangeListener* listener){}
 
-// /*public*/ void removePropertyChangeListener(String propertyName, PropertyChangeListener listener);
-
+ virtual /*public*/ void removePropertyChangeListener(QString /*propertyName*/, PropertyChangeListener* /*listener*/) {}
+ virtual QObject* self() =0;
 
 signals:
  //void propertyChange(PropertyChangeEvent*);

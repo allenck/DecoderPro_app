@@ -15,20 +15,7 @@
 // /*public*/ class ComboRadioButtons extends JPanel {
 
 
-class NewListener : public PropertyChangeListener
-{
-public:
-    NewListener(ComboRadioButtons* parent)
-    {
-     this->parent = parent;
-    }
-    ComboRadioButtons* parent;
-public slots:
-    void propertyChange(PropertyChangeEvent *e)
-    {
-     parent->originalPropertyChanged(e);
-    }
-};
+
 
 ComboRadioButtons::ComboRadioButtons(QComboBox* box, EnumVariableValue* var, QWidget *parent) : QWidget(parent)
 {
@@ -39,15 +26,6 @@ ComboRadioButtons::ComboRadioButtons(QComboBox* box, EnumVariableValue* var, QWi
  init();
 }
 
-ComboRadioButtons::ComboRadioButtons(QComboBox* box, IndexedEnumVariableValue* var, QWidget *parent) : QWidget(parent)
-{
- //super();
-
- _var = var;
- _value = var->_value;
- _box = box;
- init();
-}
 
 void ComboRadioButtons::init()
 {
@@ -93,7 +71,7 @@ void ComboRadioButtons::init()
 //    });
  connect(_box, SIGNAL(currentIndexChanged(int)), this, SLOT(originalActionPerformed()));
     // listen for changes to original state
-    //_var->addPropertyChangeListener(p1 = new PropertyChangeListener());
+    //_var->SwingPropertyChangeSupport::addPropertyChangeListener(p1 = new PropertyChangeListener());
  NewListener* listener;
   _var->addPropertyChangeListener(listener = new NewListener(this));
   connect(_var->prop, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -118,7 +96,7 @@ void ComboRadioButtons::addToPanel(QRadioButton* b, int i) {
  vLayout->addWidget(b);
 }
 
-void ComboRadioButtons::thisActionPerformed(ActionEvent* e)
+void ComboRadioButtons::thisActionPerformed(JActionEvent* e)
 {
     // update original state to selected button
 //    _box->setSelectedItem(e.getActionCommand());
@@ -127,16 +105,10 @@ void ComboRadioButtons::thisActionPerformed(ActionEvent* e)
   qDebug() << e->getActionCommand();
   if(qobject_cast<EnumVariableValue*>(_var) != NULL)
    ((EnumVariableValue*)_var)->setIntValue(e->getModifiers());
-  else
-   ((IndexedEnumVariableValue*)_var)->setIntValue(e->getModifiers());
- }
- else
- {
-
  }
 }
 
-void ComboRadioButtons::originalActionPerformed(ActionEvent* /*e*/) {
+void ComboRadioButtons::originalActionPerformed(JActionEvent* /*e*/) {
     // update this state to original state if there's a button
     // that corresponds
     while (_box->currentIndex()+1>=v->size()) {
@@ -223,11 +195,6 @@ void ComboRadioButtons::propertyChange(PropertyChangeEvent* e)
  thisActionPerformed(NULL);
 }
 void ComboRadioButtons::on_valueChanged(EnumVariableValue * v)
-{
- emit valueChanged(v);
- b1->at(v->_value->currentIndex())->setChecked(true);
-}
-void ComboRadioButtons::on_valueChanged(IndexedEnumVariableValue * v)
 {
  emit valueChanged(v);
  b1->at(v->_value->currentIndex())->setChecked(true);

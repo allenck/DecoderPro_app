@@ -2,7 +2,7 @@
 #define CONFIGURABLESOUND_H
 #include "vsdsound.h"
 
-class ActionEvent;
+class JActionEvent;
 class Logger;
 class VSDFile;
 class SoundBite;
@@ -53,7 +53,7 @@ protected:
  /*protected*/ bool use_short_sound;// = false;
 
  protected slots:
- /*protected*/ void handleTimerPop(ActionEvent* e = 0);
+ /*protected*/ void handleTimerPop(JActionEvent* e = 0);
 
 };
 

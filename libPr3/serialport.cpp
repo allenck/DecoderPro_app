@@ -29,7 +29,7 @@ void SerialPort::OnError()
  log->error("SerialPort '" + serial->portName() + ":  error " + serial->errorString());
 }
 
-void SerialPort::setSerialPortParams(int baud, int databits, int stopbits, int parity ) throw(UnsupportedCommOperationException)
+void SerialPort::setSerialPortParams(int baud, int databits, int stopbits, int parity ) /*throw(UnsupportedCommOperationException)*/
 {
 
  QSerialPort::BaudRate rate;
@@ -52,7 +52,7 @@ void SerialPort::setSerialPortParams(int baud, int databits, int stopbits, int p
  if (!serial->setBaudRate(rate))
  {
   emit error(tr("Can't set baud rate %3 baud to port %1, error code %2").arg(serial->portName()).arg(serial->errorString()).arg(baud));
-  throw UnsupportedCommOperationException(tr("Can't set baud rate %3 baud to port %1, error code %2").arg(serial->portName()).arg(serial->errorString()).arg(baud));
+  throw new UnsupportedCommOperationException(tr("Can't set baud rate %3 baud to port %1, error code %2").arg(serial->portName()).arg(serial->errorString()).arg(baud));
 
   return;
  }
@@ -125,7 +125,7 @@ void SerialPort::setDTR(bool bDTR)
   return;
  }
 }
-void SerialPort::setFlowControlMode(int flow) throw (UnsupportedCommOperationException)
+void SerialPort::setFlowControlMode(int flow) /*throw new  (UnsupportedCommOperationException)*/
 {
  QSerialPort::FlowControl myFlow;
  switch (flow)

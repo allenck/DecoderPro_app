@@ -41,7 +41,7 @@
  */
 //abstract /*public*/ class AbstractMRTrafficController {
 
-/*public*/ AbstractMRTrafficController::AbstractMRTrafficController(QObject *parent) : RfidInterface(parent)
+/*public*/ AbstractMRTrafficController::AbstractMRTrafficController(QObject *parent) : QObject(parent)
 {
 // log = new Logger("AbstractMRTrafficController");
  if (log->isDebugEnabled()) log->debug("setting instance: "+QString("%1").arg(this->objectName()));
@@ -102,8 +102,8 @@
  }
  //if(qobject_cast<JMRIClientListener*>(l))
  {
-  connect(rcvHandler, SIGNAL(incomingMessage(AbstractMRMessage*)), l, SLOT(message(AbstractMRMessage*)));
-  connect(this, SIGNAL(messageSent(AbstractMRMessage*)), l, SLOT(reply(AbstractMRMessage*)) );
+  connect(rcvHandler, SIGNAL(incomingMessage(AbstractMRMessage*)), l->self(), SLOT(message(AbstractMRMessage*)));
+  connect(this, SIGNAL(messageSent(AbstractMRMessage*)), l->self(), SLOT(reply(AbstractMRMessage*)) );
  }
 }
 
@@ -114,10 +114,10 @@
   //cmdListeners->removeElement(l);
   cmdListeners->remove(cmdListeners->indexOf(l));
  }
- if(qobject_cast<JMRIClientListener*>(l))
+ if(qobject_cast<JMRIClientListener*>(l->self()))
  {
-  disconnect(this->rcvHandler, SIGNAL(incomingMessage(AbstractMRMessage*)), l, SLOT(message(AbstractMRMessage*)));
-  disconnect(this, SIGNAL(messageSent(AbstractMRMessage*)), l, SLOT(reply(AbstractMRMessage*)) );
+  disconnect(this->rcvHandler, SIGNAL(incomingMessage(AbstractMRMessage*)), l->self(), SLOT(message(AbstractMRMessage*)));
+  disconnect(this, SIGNAL(messageSent(AbstractMRMessage*)), l->self(), SLOT(reply(AbstractMRMessage*)) );
  }
 }
 
@@ -150,14 +150,14 @@
   AbstractMRListener* client = v->at(i);
   if (notMe != client)
   {
-   if (log->isDebugEnabled()) log->debug(tr("notify client: ")+client->metaObject()->className());
+   if (log->isDebugEnabled()) log->debug(tr("notify client: ")+client->self()->metaObject()->className());
    try
    {
     forwardMessage(client, m);
    }
    catch (Exception* e)
    {
-    log->warn(tr("notify: During message dispatch to ")+client->metaObject()->className()+"\nException "+e->getMessage());
+    log->warn(tr("notify: During message dispatch to ")+client->self()->metaObject()->className()+"\nException "+e->getMessage());
                 //e->printStackTrace();
    }
   }
@@ -243,14 +243,14 @@
     int cnt = v->size();
     for (int i=0; i < cnt; i++) {
         AbstractMRListener* client = v->at(i);
-        if (log->isDebugEnabled()) log->debug("notify client: "+client->objectName());
+        if (log->isDebugEnabled()) log->debug("notify client: "+client->self()->objectName());
         try {
             //skip dest for now, we'll send the message to there last.
 //    if(dest!=client)
 //                forwardReply(client, r);
         }
         catch (Exception* e) {
-            log->warn(tr("notify: During reply dispatch to ")+client->metaObject()->className()+"\nException "+e->getMessage());
+            log->warn(tr("notify: During reply dispatch to ")+client->self()->metaObject()->className()+"\nException "+e->getMessage());
             //e->printStackTrace();
         }
     }
@@ -661,7 +661,7 @@
             // no stream connected
             connectionWarn();
         }
- } catch (Exception e) {
+ } catch (Exception* e) {
         // TODO Currently there's no port recovery if an exception occurs
         // must restart JMRI to clear xmtException.
         xmtException = true;
@@ -674,12 +674,12 @@
 // TODO:    new Exception().printStackTrace();
 }
 
-/*protected*/ void AbstractMRTrafficController::portWarn(Exception e) {
-    log->warn("sendMessage: Exception: port warn "+e.getMessage());
+/*protected*/ void AbstractMRTrafficController::portWarn(Exception* e) {
+    log->warn("sendMessage: Exception: port warn "+e->getMessage());
 }
 
-/*protected*/ void AbstractMRTrafficController::portWarnTCP(Exception e) {
-    log->warn("Exception java net: "+e.getMessage());
+/*protected*/ void AbstractMRTrafficController::portWarnTCP(Exception *e) {
+    log->warn("Exception java net: "+e->getMessage());
     connectionError=true;
 }
 // methods to connect/disconnect to a source of data in a AbstractPortController
@@ -742,8 +742,8 @@
 #endif
         startThreads();
 
-    } catch (Exception e) {
-        log->error("Failed to start up communications. Error was "+e.getMessage());
+    } catch (Exception* e) {
+        log->error("Failed to start up communications. Error was "+e->getMessage());
     }
 
 }
@@ -761,8 +761,8 @@ XmitWorker::XmitWorker(AbstractMRTrafficController* amrtc)
  }
  catch (Throwable e)
  {
-   //amrtc->log->fatal("Transmit thread terminated prematurely by: "+e.getLocalizedMessage(), e.getMessage());
-   amrtc->log->error("Transmit thread terminated prematurely by: "+e.getLocalizedMessage(), e);
+   //amrtc->log->fatal("Transmit thread terminated prematurely by: "+e->getLocalizedMessage(), e->getMessage());
+   amrtc->log->error("Transmit thread terminated prematurely by: "+e->getLocalizedMessage(), e);
 
    emit finished();
  }
@@ -813,13 +813,13 @@ XmitWorker::XmitWorker(AbstractMRTrafficController* amrtc)
             handleOneIncomingReply();
             errorCount=0;
         }
-        catch (IOException e) {
+        catch (IOException* e) {
             rcvException = true;
             reportReceiveLoopException(e);
             break;
         }
-        catch (Exception e1) {
-            log->error("Exception in receive loop: "+e1.getMessage());
+        catch (Exception* e1) {
+            log->error("Exception in receive loop: "+e1->getMessage());
             //e1.printStackTrace();
             errorCount++;
             if(errorCount==maxRcvExceptionCount){
@@ -828,7 +828,7 @@ XmitWorker::XmitWorker(AbstractMRTrafficController* amrtc)
             }
         }
      if (!threadStopRequest) { // if e.g. unexpected end
-         ConnectionStatus::instance()->setConnectionState(controller->getCurrentPortName(), ConnectionStatus::CONNECTION_DOWN);
+         ConnectionStatus::instance()->setConnectionState(controller->getUserName(),controller->getCurrentPortName(), ConnectionStatus::CONNECTION_DOWN);
          log->error(tr("Exit from rcv loop in %1").arg(this->metaObject()->className()));
          recovery(); // see if you can restart
      }
@@ -849,10 +849,10 @@ XmitWorker::XmitWorker(AbstractMRTrafficController* amrtc)
  * Report error on receive loop. Separated so tests can suppress,
  * even though message is asynchronous.
  */
-/*protected*/ void AbstractMRTrafficController::reportReceiveLoopException(Exception e) {
-    log->error("run: Exception: "+e.getMessage());
-    log->error(tr("run: Exception: %1 in %2").arg(e.getMessage()).arg(this->metaObject()->className()).arg(e.getMessage()));
-    ConnectionStatus::instance()->setConnectionState(controller->getCurrentPortName(), ConnectionStatus::CONNECTION_DOWN);
+/*protected*/ void AbstractMRTrafficController::reportReceiveLoopException(Exception* e) {
+    log->error("run: Exception: "+e->getMessage());
+    log->error(tr("run: Exception: %1 in %2").arg(e->getMessage()).arg(this->metaObject()->className()).arg(e->getMessage()));
+    ConnectionStatus::instance()->setConnectionState(controller->getUserName(),controller->getCurrentPortName(), ConnectionStatus::CONNECTION_DOWN);
     if (qobject_cast<AbstractNetworkPortController*>(controller))
     {
         portWarnTCP(e);
@@ -867,7 +867,7 @@ XmitWorker::XmitWorker(AbstractMRTrafficController* amrtc)
  * have to skip some start-of-message characters.
  */
 //@SuppressWarnings("unused")
-/*protected*/ void AbstractMRTrafficController::waitForStartOfReply(QDataStream* istream) throw (IOException) {}
+/*protected*/ void AbstractMRTrafficController::waitForStartOfReply(QDataStream* istream) /*throw (IOException)*/ {}
 
 /**
  * Read a single byte, protecting against various timeouts, etc.
@@ -878,7 +878,7 @@ XmitWorker::XmitWorker(AbstractMRTrafficController* amrtc)
  * In that case, the read should be repeated to get the next real character.
  *
  */
-/*protected*/ char AbstractMRTrafficController::readByteProtected(QDataStream* istream) throw (IOException)
+/*protected*/ char AbstractMRTrafficController::readByteProtected(QDataStream* istream) /*throw (IOException)*/
 {
     while (true) { // loop will repeat until character found
         int nchars;
@@ -887,7 +887,7 @@ XmitWorker::XmitWorker(AbstractMRTrafficController* amrtc)
         nchars = istream->readRawData(temp, 1);
         if (nchars== -1) {
             // No more bytes can be read from the channel
-            throw IOException("Connection not terminated normally");
+            throw new IOException("Connection not terminated normally");
         }
         rcvBuffer->append(temp);
         if (nchars>0) return rcvBuffer->at(0);
@@ -910,7 +910,7 @@ XmitWorker::XmitWorker(AbstractMRTrafficController* amrtc)
  * @throws IOException when presented by the input source.
  */
 /*protected*/ void AbstractMRTrafficController::loadChars(AbstractMRReply* msg, QDataStream* istream)
-throw (IOException)
+/*throw (IOException)*/
 {
     int i;
     for (i = 0; i < msg->maxSize(); i++) {
@@ -950,7 +950,7 @@ throw (IOException)
  * Runs in the "Receive" thread.
  * @throws IOException
  */
-/*public*/ void AbstractMRTrafficController::handleOneIncomingReply() throw (IOException)
+/*public*/ void AbstractMRTrafficController::handleOneIncomingReply() /*throw (IOException)*/
 {
  // we sit in this until the message is complete, relying on
  // threading to let other stuff happen
@@ -977,9 +977,9 @@ throw (IOException)
  try
  {
  // TODO:       javax.swing.SwingUtilities.invokeAndWait(r);
- } catch (Exception e)
+ } catch (Exception* e)
  {
-  log->error("Unexpected exception in invokeAndWait:" +e.getMessage());
+  log->error("Unexpected exception in invokeAndWait:" +e->getMessage());
         //e.printStackTrace();
  }
  if (log->isDebugEnabled()) log->debug("dispatch thread invoked");

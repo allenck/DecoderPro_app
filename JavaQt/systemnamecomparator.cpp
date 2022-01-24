@@ -99,7 +99,7 @@ SystemNameComparator::SystemNameComparator(QObject *parent)
     }
 #endif
    }
-   catch (NumberFormatException nfe)
+   catch (NumberFormatException* nfe)
    {
     return o1.compare(o2);
    }

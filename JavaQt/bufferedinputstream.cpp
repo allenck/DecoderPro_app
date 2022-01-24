@@ -52,7 +52,7 @@
  * Check to make sure that underlying input stream has not been
  * NULLed out due to close; if not return it;
  */
-/*private*/ QDataStream* BufferedInputStream::getInIfOpen() throw (IOException) {
+/*private*/ QDataStream* BufferedInputStream::getInIfOpen() /*throw (IOException)*/ {
     QDataStream* input = in;
     if (input == NULL)
         throw new IOException("Stream closed");
@@ -63,7 +63,7 @@
  * Check to make sure that buffer has not been NULLed out due to
  * close; if not return it;
  */
-/*private*/ QByteArray BufferedInputStream::getBufIfOpen() throw (IOException) {
+/*private*/ QByteArray BufferedInputStream::getBufIfOpen() /*throw (IOException)*/ {
     QByteArray buffer = buf;
     if (buffer.isNull())
         throw new IOException("Stream closed");
@@ -108,7 +108,7 @@
   this->in = in;
 
     if (size <= 0) {
-        throw  IllegalArgumentException("Buffer size <= 0");
+        throw new IllegalArgumentException("Buffer size <= 0");
     }
     buf = QByteArray(size, '\0');
 }
@@ -120,7 +120,7 @@
  * This method also assumes that all data has already been read in,
  * hence pos > count.
  */
-/*private*/ void BufferedInputStream::fill() throw (IOException)
+/*private*/ void BufferedInputStream::fill() /*throw (IOException)*/
 {
  QByteArray buffer = getBufIfOpen();
  if (markpos < 0)
@@ -179,7 +179,7 @@
  *                          or an I/O error occurs.
  * @see        java.io.FilterInputStream#in
  */
-/*public*/ /*synchronized*/ int BufferedInputStream::read() throw (IOException) {
+/*public*/ /*synchronized*/ int BufferedInputStream::read() /*throw (IOException)*/ {
     if (pos >= count) {
         fill();
         if (pos >= count)

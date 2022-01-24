@@ -4,10 +4,10 @@
 #include "actionlistener.h"
 #include <QVector>
 #include "component.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "jdialog.h"
 #include "jcomponent.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 
 class ChangeEvent;
 class QTabWidget;
@@ -55,18 +55,18 @@ public:
 
  void addPropertyChangeListener(QString s, PropertyChangeListener* l);
  void removePropertyChangeListener(QString s, PropertyChangeListener* l);
- PropertyChangeSupport* pcs;
- /*public*/ QObject* jself() {return (QObject*)this;}
+ SwingPropertyChangeSupport* pcs;
+ /*public*/ QWidget* jself() override{return (QWidget*)this;}
 
- /*public*/ bool isOpaque() {return true;}
- QColor getForeground();
- /*public*/ QColor getBackground() {return QColor();}
- /*public*/ void setBackground(QColor) {}
- /*public*/ void setOpaque(bool) {}
- /*public*/ QFont getFont() {return QFont();}
- /*public*/ void setFont(QFont) {}
+ /*public*/ bool isOpaque() override{return true;}
+ QColor getForeground()override;
+ /*public*/ QColor getBackground() override{return QColor();}
+ /*public*/ void setBackground(QColor) override{}
+ /*public*/ void setOpaque(bool) override{}
+ /*public*/ QFont getFont() override{return QFont();}
+ /*public*/ void setFont(QFont) override{}
  /*public*/ void setBorder(Border* border) override {this->_border = border;}
- /*public*/ Border* getBorder() {return _border;}
+ /*public*/ Border* getBorder() override{return _border;}
  /*public*/ void setEnabled(bool b) override {QWidget::setEnabled(b);}
 signals:
 
@@ -99,8 +99,11 @@ protected:
 };
 
 
-class ColorTracker : public ActionListener/*, Serializable*/
+class ColorTracker : public QObject, public ActionListener/*, Serializable*/
 {
+  Q_OBJECT
+  Q_INTERFACES(ActionListener)
+
     JColorChooser* chooser;
     QColor color;
 public:
@@ -121,14 +124,16 @@ public:
  * This method resets the JColorChooser color to the initial color when the
  * action is performed.
  */
- /*static*/ class DefaultResetListener : public ActionListener
+ /*static*/ class DefaultResetListener : public QObject, public ActionListener
  {
- Q_OBJECT
+  Q_OBJECT
+  Q_INTERFACES(ActionListener)
   /** The JColorChooser to reset. */
   /*private*/ JColorChooser* chooser;
 
   /** The initial color. */
   /*private*/ QColor init;
+
 public:
   /**
    * Creates a new DefaultResetListener with the given JColorChooser.
@@ -141,13 +146,14 @@ public:
     this->chooser = chooser;
     init = chooser->getColor();
    }
-
+   QObject* self() override {return (QObject*)this;}
+ public slots:
    /**
     * This method resets the JColorChooser to its initial color.
     *
     * @param e The ActionEvent.
     */
-    /*public*/ void actionPerformed(/*ActionEvent e*/)
+    /*public*/ void actionPerformed(JActionEvent* =0)override
     {
      chooser->setColor(init);
     }
@@ -156,9 +162,10 @@ public:
 /**
  * A helper class that hides a JDialog when the action is performed.
  */
- /*static*/ class DefaultOKCancelListener : public ActionListener
+ /*static*/ class DefaultOKCancelListener : public QObject, public ActionListener
  {
- Q_OBJECT
+  Q_OBJECT
+  Q_INTERFACES(ActionListener)
   /** The JDialog to hide. */
   /*private*/ JDialog* dialog;
   bool bAccept;
@@ -174,13 +181,14 @@ public:
      this->dialog = dialog;
     bAccept = accept;
    }
+  QObject* self() override {return (QObject*)this;}
   public slots:
    /**
     * This method hides the JDialog when called.
     *
     * @param e The ActionEvent.
     */
-    /*public*/ void actionPerformed(/*ActionEvent e*/)
+    /*public*/ void actionPerformed(JActionEvent* =0)
     {
      dialog->hide();
      if(bAccept)

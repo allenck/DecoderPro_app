@@ -33,7 +33,7 @@ LnLightManagerXml::~LnLightManagerXml()
     Logger::error("Invalid method called");
 }
 
-/*public*/ bool LnLightManagerXml::load(QDomElement lights) throw (Exception) {
+/*public*/ bool LnLightManagerXml::load(QDomElement shared, QDomElement perNode) throw (Exception) {
     // load individual lights
-    return loadLights(lights);
+    return loadLights(shared);
 }

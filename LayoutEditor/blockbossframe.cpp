@@ -10,18 +10,16 @@
 #include "instancemanager.h"
 #include "gridbagconstraints.h"
 #include "abstractsignalheadmanager.h"
-#include <QMessageBox>
+#include "joptionpane.h"
 #include <QButtonGroup>
 #include "proxysensormanager.h"
 #include "abstractsignalheadmanager.h"
 #include "savemenu.h"
 #include "panelmenu.h"
-
-//BlockBossFrame::BlockBossFrame(QWidget *parent) :
-//    QMainWindow(parent)
-//{
-//}
-
+#include "loggerfactory.h"
+#include "storemenu.h"
+#include "gridbaglayout.h"
+#include "jseparator.h"
 /**
  * Provide a GUI for configuring "Simple Signal Logic" (BlockBossLogic) objects.
  * <P>
@@ -47,26 +45,30 @@
  *              Revisions to add facing point sensors, approach lighting,
  *              limited speed, changed layout, and tool tips.
  *                                                  Dick Bronson (RJB) 2006
+ */
 
-*/
+/*private*/ /*static*/ /*final*/ QString BlockBossFrame::SIMPLE_SIGNAL_LOGIC;// = "Simple_Signal_Logic";
+/*private*/ /*static*/ /*final*/ QString BlockBossFrame::LIMITED_SPEED = "Limited_Speed";
+/*private*/ /*static*/ /*final*/ QString BlockBossFrame::RESTRICTING_SPEED = "Restricting_Speed";
+/*private*/ /*static*/ /*final*/ QString BlockBossFrame::WITH_FLASHING_YELLOW = "With_Flashing_Yellow";
+/*private*/ /*static*/ /*final*/ QString BlockBossFrame::PROTECTS_SENSOR = "Protects Sensor/s:";
+/*private*/ /*static*/ /*final*/ QString BlockBossFrame::IS_DISTANT_SIGNAL = "Is_Distant_Signal";
+/*private*/ /*static*/ /*final*/ QString BlockBossFrame::PROTECTS_SIGNAL = "Protects Signal:";
 
 // /*public*/ class BlockBossFrame extends jmri.util.JmriJFrame {
 
-
-//    /*public*/ BlockBossFrame() { this(tr("Simple_Signal_Logic"));}
 /*public*/ BlockBossFrame::BlockBossFrame(QString frameName, QWidget *parent) : JmriJFrame(frameName, false, true, parent)
 {
 
- // create the frame
- //super(frameName, false, true);
-    init();
+ init();
+}
 
- //getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
- QWidget* centralWidget = new QWidget();
- QVBoxLayout* centralWidgetLayout;
- centralWidget->setLayout(centralWidgetLayout = new QVBoxLayout);
- setCentralWidget(centralWidget);
- resize(400,800);
+void BlockBossFrame::init()
+{
+ blockBossLogicProvider = (BlockBossLogicProvider*)InstanceManager::getDefault("BlockBossLogicProvider");
+
+ getContentPane()->setLayout(new QVBoxLayout());//getContentPane(), BoxLayout.Y_AXIS));
+
  // add save menu item
  QMenuBar* menuBar = new QMenuBar();
  setMenuBar(menuBar);
@@ -76,33 +78,38 @@
  fileMenu->addMenu(new SaveMenu());
  setMenuBar(menuBar);
  addHelpMenu(tr("package.jmri.jmrit.blockboss.BlockBossFrame"), true);
+
  // create GUI items
- sLimitBox  = new QCheckBox(tr("Limited Speed"));
- tmLimitBox = new QCheckBox(tr("Limited Speed"));
+ sLimitBox  = new JCheckBox(tr("Limited Speed"));
+ sRestrictingBox = new JCheckBox(tr("Restricting Speed"));
+ tmRestrictingBox = new JCheckBox(tr("Restricting Speed"));
+ //tmRestrictingBox->setModel(sRestrictingBox->getModel());
+ tmLimitBox = new JCheckBox(tr("Limited Speed"));
  //        tmLimitBox.setModel(sLimitBox.getModel());
- fmLimitBox  = new QCheckBox(tr("Limited Speed"));
+ fmLimitBox  = new JCheckBox(tr("Limited Speed"));
  //        fmLimitBox.setModel(sLimitBox.getModel());
 
- tdLimitBox = new QCheckBox(tr("Limited Speed"));
- fdLimitBox  = new QCheckBox(tr("Limited Speed"));
- //        fdLimitBox.setModel(tdLimitBox.getModel());
+ tdLimitBox = new JCheckBox(tr("Limited Speed"));
+ tdRestrictingBox = new JCheckBox(tr("Restricting Speed"));
+ fdLimitBox = new JCheckBox(tr("Limited Speed"));
+ //fdLimitBox.setModel(tdLimitBox.getModel());
+ fdRestrictingBox = new JCheckBox(tr("Restricting Speed"));
+ //fdRestrictingBox.setModel(tdRestrictingBox.getModel());
 
+ sFlashBox  = new JCheckBox(tr("With Flashing Yellow"));
+ tmFlashBox = new JCheckBox(tr("With Flashing Yellow"));
+ //        tmFlashBox.setModel(sFlashBox.getModel());
+ tdFlashBox = new JCheckBox(tr("With Flashing Yellow"));
+ //        tdFlashBox.setModel(sFlashBox.getModel());
+ fFlashBox  = new JCheckBox(tr("With Flashing Yellow"));
+ //        fFlashBox.setModel(sFlashBox.getModel());
 
-
- sFlashBox  = new QCheckBox(tr("With Flashing Yellow"));
- tmFlashBox = new QCheckBox(tr("With Flashing Yellow"));
-//        tmFlashBox.setModel(sFlashBox.getModel());
-tdFlashBox = new QCheckBox(tr("With Flashing Yellow"));
-//        tdFlashBox.setModel(sFlashBox.getModel());
-fFlashBox  = new QCheckBox(tr("With Flashing Yellow"));
-//        fFlashBox.setModel(sFlashBox.getModel());
-
-sDistantBox  = new QCheckBox(tr("Is Distant Signal"));
-tmDistantBox = new QCheckBox(tr("Is Distant Signal"));
+sDistantBox  = new JCheckBox(tr("Is Distant Signal"));
+tmDistantBox = new JCheckBox(tr("Is Distant Signal"));
 //        tmDistantBox.setModel(sDistantBox.getModel());
-tdDistantBox = new QCheckBox(tr("Is Distant Signal"));
+tdDistantBox = new JCheckBox(tr("Is Distant Signal"));
 //        tdDistantBox.setModel(sDistantBox.getModel());
-fDistantBox  = new QCheckBox(tr("Is Distant Signal"));
+fDistantBox  = new JCheckBox(tr("Is Distant Signal"));
 //        fDistantBox.setModel(sDistantBox.getModel());
 
  buttonSingle = new QRadioButton(tr("On Single Block"));
@@ -116,833 +123,829 @@ fDistantBox  = new QCheckBox(tr("Is Distant Signal"));
  g->addButton(buttonFacing);
 //        ActionListener a = new ActionListener() {
 //            /*public*/ void actionPerformed(ActionEvent e) {
-//                buttonClicked();
-//            }
-//        };
  //buttonSingle.addActionListener(a);
- connect(buttonSingle, SIGNAL(toggled(bool)), this, SLOT(buttonClicked()));
+ connect(buttonSingle, &JButton::clicked, [=]{ buttonClicked();});
  //buttonTrailMain.addActionListener(a);
- connect(buttonTrailMain, SIGNAL(toggled(bool)), this, SLOT(buttonClicked()));
+ connect(buttonTrailMain, &JButton::clicked, [=]{ buttonClicked();});
  //buttonTrailDiv.addActionListener(a);
- connect(buttonTrailDiv, SIGNAL(toggled(bool)), this, SLOT(buttonClicked()));
+ connect(buttonTrailDiv, &JButton::clicked, [=]{ buttonClicked();});
  //buttonFacing.addActionListener(a);
- connect(buttonFacing, SIGNAL(toggled(bool)), this, SLOT(buttonClicked()));
+ connect(buttonFacing, &JButton::clicked, [=]{ buttonClicked();});
 
-// share data models
-//tmSensorField1->setDocument(sSensorField1->getDocument());
-tmSensorField1->setShare(sSensorField1);
-//tdSensorField1->setDocument(sSensorField1->getDocument());
-tdSensorField1->setShare(sSensorField1);
-//fSensorField1->setDocument(sSensorField1->getDocument());
-fSensorField1->setShare(sSensorField1);
+ // share sensor data models
+ tmSensorComboBox1->setModel(sSensorComboBox1->getModel());
+ tdSensorComboBox1->setModel(sSensorComboBox1->getModel());
+ fSensorComboBox1->setModel(sSensorComboBox1->getModel());
 
-//tmSensorField2->setDocument(sSensorField2->getDocument());
-tmSensorField2->setShare(sSensorField2);
-//tdSensorField2->setDocument(sSensorField2->getDocument());
-tdSensorField2->setShare(sSensorField2);
-//fSensorField2->setDocument(sSensorField2->getDocument());
-fSensorField2->setShare(sSensorField2);
+ tmSensorComboBox2->setModel(sSensorComboBox2->getModel());
+ tdSensorComboBox2->setModel(sSensorComboBox2->getModel());
+ fSensorComboBox2->setModel(sSensorComboBox2->getModel());
 
-//tmSensorField3->setDocument(sSensorField3->getDocument());
-tmSensorField3->setShare(sSensorField3);
-//tdSensorField3->setDocument(sSensorField3->getDocument());
-tdSensorField3->setShare(sSensorField3);
-//fSensorField3->setDocument(sSensorField3->getDocument());
-fSensorField3->setShare(sSensorField3);
+ tmSensorComboBox3->setModel(sSensorComboBox3->getModel());
+ tdSensorComboBox3->setModel(sSensorComboBox3->getModel());
+ fSensorComboBox3->setModel(sSensorComboBox3->getModel());
 
-//tmSensorField4->setDocument(sSensorField4->getDocument());
-tmSensorField4->setShare(sSensorField4);
-//tdSensorField4->setDocument(sSensorField4->getDocument());
-tdSensorField4->setShare(sSensorField4);
-//fSensorField4->setDocument(sSensorField4->getDocument());
-fSensorField4->setShare(sSensorField4);
+ tmSensorComboBox4->setModel(sSensorComboBox4->getModel());
+ tdSensorComboBox4->setModel(sSensorComboBox4->getModel());
+ fSensorComboBox4->setModel(sSensorComboBox4->getModel());
 
-//tmSensorField5->setDocument(sSensorField5->getDocument());
-tmSensorField5->setShare(sSensorField5);
-//tdSensorField5->setDocument(sSensorField5->getDocument());
-tdSensorField5->setShare(sSensorField5);
-//fSensorField5->setDocument(sSensorField5->getDocument());
-fSensorField5->setShare(sSensorField5);
+ tmSensorComboBox5->setModel(sSensorComboBox5->getModel());
+ tdSensorComboBox5->setModel(sSensorComboBox5->getModel());
+ fSensorComboBox5->setModel(sSensorComboBox5->getModel());
+ // share turnout data model
+ tmProtectTurnoutComboBox->setModel(tdProtectTurnoutComboBox->getModel());
+ fProtectTurnoutComboBox->setModel(tdProtectTurnoutComboBox->getModel());
 
-//tdProtectTurnoutField->setDocument(tmProtectTurnoutField->getDocument());
-tdProtectTurnoutField->setShare(tmProtectTurnoutField);
-//fProtectTurnoutField->setDocument(tmProtectTurnoutField->getDocument());
-fProtectTurnoutField->setShare(tmProtectTurnoutField);
+ tdNextSignalComboBox1->setModel(sNextSignalComboBox1->getModel());
+ tdNextSignalComboBox1Alt->setModel(sNextSignalComboBox1Alt->getModel());
+ tmNextSignalComboBox1->setModel(sNextSignalComboBox1->getModel());
+ tmNextSignalComboBox1Alt->setModel(sNextSignalComboBox1Alt->getModel());
+ fNextSignalComboBox1->setModel(sNextSignalComboBox1->getModel());
+ fNextSignalComboBox1Alt->setModel(sNextSignalComboBox1Alt->getModel());
 
-//tdNextSignalField1->setDocument(sNextSignalField1->getDocument());
-tdNextSignalField1->setShare(sNextSignalField1);
-//tdNextSignalField1Alt->setDocument(sNextSignalField1Alt->getDocument());
-tdNextSignalField1Alt->setShare(sNextSignalField1Alt);
-//tmNextSignalField1->setDocument(sNextSignalField1->getDocument());
-tmNextSignalField1->setShare(sNextSignalField1);
-//tmNextSignalField1Alt->setDocument(sNextSignalField1Alt->getDocument());
-tmNextSignalField1->setShare(sNextSignalField1Alt);
-//fNextSignalField1->setDocument(sNextSignalField1->getDocument());
-fNextSignalField1->setShare(sNextSignalField1);
-//fNextSignalField1Alt->setDocument(sNextSignalField1Alt->getDocument());
-fNextSignalField1Alt->setShare(sNextSignalField1Alt);
+ // configure sensor combobox options
+ setupComboBox(sSensorComboBox1, false, true, true);
+ setupComboBox(sSensorComboBox2, false, true, true);
+ setupComboBox(sSensorComboBox3, false, true, true);
+ setupComboBox(sSensorComboBox4, false, true, true);
+ setupComboBox(sSensorComboBox5, false, true, true);
+ setupComboBox(tmSensorComboBox1, false, true, true);
+ setupComboBox(tmSensorComboBox2, false, true, true);
+ setupComboBox(tmSensorComboBox3, false, true, true);
+ setupComboBox(tmSensorComboBox4, false, true, true);
+ setupComboBox(tmSensorComboBox5, false, true, true);
+ setupComboBox(tdSensorComboBox1, false, true, true);
+ setupComboBox(tdSensorComboBox2, false, true, true);
+ setupComboBox(tdSensorComboBox3, false, true, true);
+ setupComboBox(tdSensorComboBox4, false, true, true);
+ setupComboBox(tdSensorComboBox5, false, true, true);
+ setupComboBox(fSensorComboBox1, false, true, true);
+ setupComboBox(fSensorComboBox2, false, true, true);
+ setupComboBox(fSensorComboBox3, false, true, true);
+ setupComboBox(fSensorComboBox4, false, true, true);
+ setupComboBox(fSensorComboBox5, false, true, true);
+ // configure turnout combobox options
+ setupComboBox(tdProtectTurnoutComboBox, false, true, true);
+ setupComboBox(tmProtectTurnoutComboBox, false, true, true);
+ setupComboBox(fProtectTurnoutComboBox, false, true, true);
+ // configure next signal combobox options
+ setupComboBox(sNextSignalComboBox1, false, true, true);
+ setupComboBox(sNextSignalComboBox1Alt, false, true, true);
+ setupComboBox(tdNextSignalComboBox1, false, true, true);
+ setupComboBox(tdNextSignalComboBox1Alt, false, true, true);
+ setupComboBox(tmNextSignalComboBox1, false, true, true);
+ setupComboBox(tmNextSignalComboBox1Alt, false, true, true);
+ setupComboBox(fNextSignalComboBox1, false, true, true);
+ setupComboBox(fNextSignalComboBox1Alt, false, true, true);
+ setupComboBox(fNextSignalComboBox2, false, true, true);
+ setupComboBox(fNextSignalComboBox2Alt, false, true, true);
+ // configure next sensor combobox options
+ setupComboBox(fNextSensorComboBox1, false, true, true);
+ setupComboBox(fNextSensorComboBox1Alt, false, true, true);
+ setupComboBox(fNextSensorComboBox2, false, true, true);
+ setupComboBox(fNextSensorComboBox2Alt, false, true, true);
 
  // add top part of GUI, holds signal head name to drive
- QWidget* line = new QWidget();
- line->setLayout(new QHBoxLayout());
- QHBoxLayout* lineHLayout = new QHBoxLayout;
- lineHLayout->addWidget(new   QLabel(tr("Signal Named ")));
- lineHLayout->addWidget(outSignalField= new JTextField(12));
-  outSignalField->setToolTip(outSignalFieldTooltip);
- //outSignalField.addActionListener(new ActionListener() {
- //    /*public*/ void actionPerformed(ActionEvent e) {
- //        // user hit enter, use this name to fill in the rest of the fields
- //        activate();
- //    }
- //});
-  //connect(outSignalField, SIGNAL(returnPressed()), this, SLOT(activate()));
-  connect(outSignalField, SIGNAL(editingFinished()), this, SLOT(activate()));
+ JPanel* line = new JPanel(new FlowLayout());
+ line->layout()->addWidget(new JLabel(tr("For Signal Head:")));
+ setupComboBox(outSignalHeadComboBox, true, true, true);
+ line->layout()->addWidget(outSignalHeadComboBox);
+ outSignalHeadComboBox->setToolTip(outSignalHeadTooltip);
+// outSignalHeadComboBox.addActionListener(e ->
+ connect(outSignalHeadComboBox, &NamedBeanComboBox::currentTextChanged, [=]{
+     // user hit enter, use this name to fill in the rest of the fields
+     activate();});
 
- //centralWidgetLayout->addL(line, Qt::AlignHCenter);
-  centralWidgetLayout->addLayout(lineHLayout);
+ getContentPane()->layout()->addWidget(line);
 
-// line = new QWidget();
-// line->setLayout(new QVBoxLayout(line/*, BoxLayout.Y_AXIS*/));
-  QVBoxLayout* lineVLayout = new QVBoxLayout;
+ line = new JPanel();
+ line->setLayout(new QVBoxLayout());//line, BoxLayout.Y_AXIS));
  buttonSingle->setToolTip(buttonSingleTooltip);
- lineVLayout->addWidget(buttonSingle, Qt::AlignHCenter);
+ line->layout()->addWidget(buttonSingle);
  buttonTrailMain->setToolTip(buttonTrailMainTooltip);
- lineVLayout->addWidget(buttonTrailMain, Qt::AlignHCenter);
+ line->layout()->addWidget(buttonTrailMain);
  buttonTrailDiv->setToolTip(buttonTrailDivTooltip);
- lineVLayout->addWidget(buttonTrailDiv, Qt::AlignHCenter);
+ line->layout()->addWidget(buttonTrailDiv);
  buttonFacing->setToolTip(buttonFacingTooltip);
- lineVLayout->addWidget(buttonFacing, Qt::AlignHCenter);
- //line->setAlignmentX(0.5f);
- //centralWidget->layout()->addWidget(line);
- centralWidgetLayout->addLayout(lineVLayout);
+ line->layout()->addWidget(buttonFacing);
+// line.setAlignmentX(0.5f);
+ getContentPane()->layout()->addWidget(line);
 
- QFrame* separator = new QFrame();
-   separator->setObjectName(QString::fromUtf8("line"));
-   separator->setGeometry(QRect(10, 30, 571, 16));
-   separator->setFrameShape(QFrame::HLine);
-   separator->setFrameShadow(QFrame::Sunken);
- centralWidgetLayout->addWidget(separator);
+ getContentPane()->layout()->addWidget(new JSeparator(/*Qt::Horizontal*/));
 
  // fill in the specific panels for the modes
- centralWidgetLayout->addWidget(fillModeSingle());
- centralWidgetLayout->addWidget(fillModeTrailMain());
- centralWidgetLayout->addWidget(fillModeTrailDiv());
- centralWidgetLayout->addWidget(fillModeFacing());
+ getContentPane()->layout()->addWidget(fillModeSingle());
+ getContentPane()->layout()->addWidget(fillModeTrailMain());
+ getContentPane()->layout()->addWidget(fillModeTrailDiv());
+ getContentPane()->layout()->addWidget(fillModeFacing());
 
-// line = new QWidget();
-// line->setLayout(new QHBoxLayout());
- lineHLayout = new QHBoxLayout;
- lineHLayout->addWidget(new QLabel(tr("Approach Lighting Sensor ")));
- lineHLayout->addWidget(approachSensorField1= new JTextField(6));
-approachSensorField1->setToolTip(approachSensor1Tooltip);
+ line = new JPanel();
+ line->layout()->addWidget(new JLabel(tr("Approach Lighting Sensor:")));
+ line->layout()->addWidget(approachSensor1ComboBox);
+ setupComboBox(approachSensor1ComboBox, false, true, true);
+ approachSensor1ComboBox->setToolTip(approachSensor1Tooltip);
 // line.setAlignmentX(0.5f);
- //centralWidget->layout()->addWidget(line);
- centralWidgetLayout->addLayout(lineHLayout);
+ getContentPane()->layout()->addWidget(line);
 
-// line = new QWidget();
-// line->setLayout(new QHBoxLayout());
- lineHLayout = new QHBoxLayout;
- lineHLayout->addWidget(new QLabel(tr("Comment: ")));
- lineHLayout->addWidget(commentField = new JTextField(30));
- centralWidgetLayout->addWidget(line, Qt::AlignHCenter);
+ // add comment element
+ line = new JPanel();
+ line->setLayout(new FlowLayout());
+ line->layout()->addWidget(new JLabel(tr("Comment")));
+ line->layout()->addWidget(commentField = new JTextField(30));
+ commentField->setToolTip(tr("Your notes will be stored with this SSL"));
+ getContentPane()->layout()->addWidget(line);
 
- //centralWidget->layout()->addWidget(new QFrame(separator));
- centralWidgetLayout->addLayout(lineHLayout);
+ // add status bar above buttons
+ line = new JPanel();
+ line->setLayout(new FlowLayout());
+ statusBar = new JLabel(tr("Start by selecting a Signal Head at the top"));
+ QFont f = statusBar->getFont();
+ f.setPointSize(.9 * commentField->getFont().pointSizeF());
+ statusBar->setFont(f); // a bit smaller
+ statusBar->setForeground(Qt::gray);
+ line->layout()->addWidget(statusBar);
+ getContentPane()->layout()->addWidget(line);
 
+ getContentPane()->layout()->addWidget(new JSeparator(/*SwingConstants.HORIZONTAL)*/));
+
+ JPanel* buttons = new JPanel();
+ buttons->setLayout(new FlowLayout());
  // add OK button at bottom
- QPushButton* b = new QPushButton(tr("Apply"));
- // b.setAlignmentX(0.5f);
- centralWidgetLayout->addWidget(b);
- centralWidgetLayout->setAlignment(b, Qt::AlignHCenter);
 
- //b.addActionListener(new ActionListener(){
- //    /*public*/ void actionPerformed(ActionEvent e) {
- //        okPressed();
- //    }
- //});
- connect(b, SIGNAL(clicked()),this, SLOT(okPressed()));
+ _delete = new JButton(tr("Delete"));
+ buttons->layout()->addWidget(_delete);
+ //delete.addActionListener(e -> deletePressed());
+ connect(_delete, &JButton::clicked, [=] {deletePressed();});
+ _delete->setEnabled(false);
+
+ cancel = new JButton(tr("Cancel"));
+ buttons->layout()->addWidget(cancel);
+ connect(cancel, &JButton::clicked, [=] {cancelPressed();});
+
+ apply = new JButton(tr("Apply"));
+ apply->setToolTip(tr("Press to create/update logic for this Signal Head."));
+ buttons->layout()->addWidget(apply);
+ apply->setEnabled(false);
+
+ connect(apply, &JButton::clicked, [=] { applyPressed();});
+ getContentPane()->layout()->addWidget(buttons);
+
  pack();
  // set a definite mode selection, which also repacks.
- buttonSingle->setChecked(true);buttonClicked();
+ buttonSingle->setChecked(true);
+ buttonClicked();
 }
-void BlockBossFrame::init()
-{
- log = new Logger("BlockBossFrame");
- modeSingle               = new QWidget();
- sSensorField1        = new JTextField(6);
- connect(sSensorField1, SIGNAL(textChanged(QString)), this, SLOT(on_sSensorField1_textChanged(QString)));
- sSensorField2        = new JTextField(6);
- connect(sSensorField2, SIGNAL(textChanged(QString)), this, SLOT(on_sSensorField1_textChanged(QString)));
- sSensorField3        = new JTextField(6);
- connect(sSensorField3, SIGNAL(textChanged(QString)), this, SLOT(on_sSensorField1_textChanged(QString)));
- sSensorField4        = new JTextField(6);
- connect(sSensorField4, SIGNAL(textChanged(QString)), this, SLOT(on_sSensorField1_textChanged(QString)));
- sSensorField5        = new JTextField(6);
- connect(sSensorField5, SIGNAL(textChanged(QString)), this, SLOT(on_sSensorField1_textChanged(QString)));
- sNextSignalField1    = new JTextField(10);
- connect(sNextSignalField1, SIGNAL(textChanged(QString)), this, SLOT(on_sNextSignalField1_textChanged(QString)));
- sNextSignalField1Alt = new JTextField(10);
- connect(sNextSignalField1Alt, SIGNAL(textChanged(QString)), this, SLOT(on_sNextSignalField1Alt_textChanged(QString)));
-
- modeTrailMain                = new QWidget();
- tmSensorField1           = new JTextField(6);
- tmSensorField2           = new JTextField(6);
- tmSensorField3           = new JTextField(6);
- tmSensorField4           = new JTextField(6);
- tmSensorField5           = new JTextField(6);
- tmProtectTurnoutField    = new JTextField(6);
- tmNextSignalField1       = new JTextField(10);
- tmNextSignalField1Alt    = new JTextField(10);
- connect(tmSensorField1, SIGNAL(textEdited(QString)), this, SLOT(on_tmSensorField1_textChanged(QString)));
- connect(tmSensorField2, SIGNAL(textEdited(QString)), this, SLOT(on_tmSensorField2_textChanged(QString)));
- connect(tmSensorField5, SIGNAL(textEdited(QString)), this, SLOT(on_tmSensorField3_textChanged(QString)));
- connect(tmSensorField5, SIGNAL(textEdited(QString)), this, SLOT(on_tmSensorField4_textChanged(QString)));
- connect(tmSensorField5, SIGNAL(textEdited(QString)), this, SLOT(on_tmSensorField5_textChanged(QString)));
- connect(tmProtectTurnoutField, SIGNAL(textEdited(QString)), this, SLOT(on_tmProtectTurnoutField_textChanged(QString)));
- connect(tmNextSignalField1, SIGNAL(textEdited(QString)), this, SLOT(on_tmNextSignalField1_textChanged(QString)));
- connect(tmNextSignalField1Alt, SIGNAL(textEdited(QString)), this, SLOT(on_tmNextSignalField1Alt_textChanged(QString)));
- modeTrailDiv                 = new QWidget();
- tdSensorField1           = new JTextField(6);
- tdSensorField2           = new JTextField(6);
- tdSensorField3           = new JTextField(6);
- tdSensorField4           = new JTextField(6);
- tdSensorField5           = new JTextField(6);
- tdProtectTurnoutField    = new JTextField(6);
- tdNextSignalField1       = new JTextField(6);
- tdNextSignalField1Alt    = new JTextField(6);
- connect(tdSensorField1, SIGNAL(textEdited(QString)), this, SLOT(on_tdSensorField1_textChanged(QString)));
- connect(tdSensorField2, SIGNAL(textEdited(QString)), this, SLOT(on_tdSensorField2_textChanged(QString)));
- connect(tdSensorField5, SIGNAL(textEdited(QString)), this, SLOT(on_tdSensorField3_textChanged(QString)));
- connect(tdSensorField5, SIGNAL(textEdited(QString)), this, SLOT(on_tdSensorField4_textChanged(QString)));
- connect(tdSensorField5, SIGNAL(textEdited(QString)), this, SLOT(on_tdSensorField5_textChanged(QString)));
- connect(tdProtectTurnoutField, SIGNAL(textEdited(QString)), this, SLOT(on_tdProtectTurnoutField_textChanged(QString)));
- connect(tdNextSignalField1, SIGNAL(textEdited(QString)), this, SLOT(on_tdNextSignalField1_textChanged(QString)));
- connect(tdNextSignalField1Alt, SIGNAL(textEdited(QString)), this, SLOT(on_tdNextSignalField1Alt_textChanged(QString)));
- modeFacing               = new QWidget();
- fSensorField1        = new JTextField(6);
- fSensorField2        = new JTextField(6);
- fSensorField3        = new JTextField(6);
- fSensorField4        = new JTextField(6);
- fSensorField5        = new JTextField(6);
- fProtectTurnoutField = new JTextField(6);
- fNextSignalField1    = new JTextField(10);
- fNextSignalField1Alt = new JTextField(10);
- fNextSignalField2    = new JTextField(10);
- fNextSignalField2Alt = new JTextField(10);
- fNextSensorField1    = new JTextField(6);
- fNextSensorField1Alt = new JTextField(6);
- fNextSensorField2    = new JTextField(6);
- fNextSensorField2Alt = new JTextField(6);
- connect(fSensorField1, SIGNAL(textEdited(QString)), this, SLOT(on_fSensorField1_textChanged(QString)));
- connect(fSensorField2, SIGNAL(textEdited(QString)), this, SLOT(on_fSensorField2_textChanged(QString)));
- connect(fSensorField3, SIGNAL(textEdited(QString)), this, SLOT(on_fSensorField3_textChanged(QString)));
- connect(fSensorField4, SIGNAL(textEdited(QString)), this, SLOT(on_fSensorField4_textChanged(QString)));
- connect(fSensorField5, SIGNAL(textEdited(QString)), this, SLOT(on_fSensorField5_textChanged(QString)));
- connect(fProtectTurnoutField, SIGNAL(textEdited(QString)), this, SLOT(on_fProtectTurnoutField_textChanged(QString)));
- connect(fNextSignalField1, SIGNAL(textEdited(QString)), this, SLOT(on_fNextSensorField1_textChanged(QString)));
- connect(fNextSignalField1Alt, SIGNAL(textEdited(QString)), this, SLOT(on_fNextSensorField1Alt_textChanged(QString)));
- connect(fNextSignalField2, SIGNAL(textEdited(QString)), this, SLOT(on_fNextSignalField2_textChanged(QString)));
- connect(fNextSignalField2Alt, SIGNAL(textEdited(QString)), this, SLOT(on_fNextSensorField2Alt_textChanged(QString)));
- connect(fNextSensorField1, SIGNAL(textEdited(QString)), this, SLOT(on_fNextSensorField1_textChanged(QString)));
- connect(fNextSensorField1Alt, SIGNAL(textEdited(QString)), this, SLOT(on_fNextSensorField1Alt_textChanged(QString)));
- connect(fNextSensorField2, SIGNAL(textEdited(QString)), this, SLOT(on_fNextSensorField2_textChanged(QString)));
- connect(fNextSensorField2Alt, SIGNAL(textEdited(QString)), this, SLOT(on_fNextSensorField2Alt_textChanged(QString)));
-
-
-  buttonSingleTooltip = tr("In direction of traffic");
-  buttonTrailMainTooltip = tr("Signal head for main track through turnout in either direction");
-  buttonTrailDivTooltip = tr("Signal head for branching track through turnout in either direction");
-  buttonFacingTooltip = tr("Single signal head on single track facing double track");
-  outSignalFieldTooltip =  tr("Enter a new signal head number, or enter an existing signal head number then hit return to load its information.");
-  approachSensor1Tooltip = tr("Enter sensor that lights this signal or leave blank for always on.");
-  sensorFieldTooltip =  tr("Sensor active sets this signal to Red.");
-  turnoutFieldTooltip = tr("Enter protected turnout number here.");
-  flashBoxTooltip = tr("One aspect faster than yellow displays flashing yellow, rather than green.");
-  limitBoxTooltip = tr("Limits the fastest aspect displayed to yellow, rather than green.");
-  nextSignalFieldTooltip = tr("Enter the low speed signal head for this track. For dual head signals the fastest aspect is protected.");
-  highSignalFieldTooltip = tr("Enter the high speed signal head for this track. For dual head signals the fastest aspect is protected.");
- distantBoxTooltip = tr("Mirrors the protected (following) signal's status unless over ridden by an intermediate stop sensor.");
-}
-
-// Panel arrangements all changed to use GridBagLayout format. RJB
 
 QWidget* BlockBossFrame::fillModeSingle()
 {
- QGridLayout* g;
- modeSingle->setLayout(g = new QGridLayout());
+ GridBagLayout* modeSingleLayout;
+ modeSingle->setLayout(modeSingleLayout = new GridBagLayout());
 
- GridBagConstraints* constraints = new GridBagConstraints();
-    constraints->anchor = GridBagConstraints::EAST;
-    constraints->gridheight = 1;
-    constraints->gridwidth = 1;
-    constraints->ipadx = 0;
-    constraints->ipady = 0;
+ GridBagConstraints constraints =  GridBagConstraints();
+    constraints.anchor = GridBagConstraints::EAST;
+    constraints.gridheight = 1;
+    constraints.gridwidth = 1;
+    constraints.ipadx = 0;
+    constraints.ipady = 0;
     Insets* insets = new Insets(2, 3, 2, 3); // top, left, bottom, right
-    constraints->insets = insets;
-    constraints->weightx = 1;
-    constraints->weighty = 1;
+    constraints.insets = insets;
+    constraints.weightx = 1;
+    constraints.weighty = 1;
 
-    constraints->fill = GridBagConstraints::NONE;
-    constraints->gridx = 0;
-    constraints->gridy = 0;
+    constraints.fill = GridBagConstraints::NONE;
+    constraints.gridx = 0;
+    constraints.gridy = 0;
     insets->top = 9;
     insets->bottom = 9;
 
-    //modeSingle->layout()->addWidget(new QLabel(tr("Protects_Sensor/s")), constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    g->addWidget(new QLabel(tr("Protects Sensor/s")),constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->fill = GridBagConstraints::HORIZONTAL;
-    constraints->gridx = 1;
-    sSensorField1->setToolTip(sensorFieldTooltip);
-    //modeSingle->layout()->addWidget(sSensorField1, constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    g->addWidget(sSensorField1, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 2;
-    sSensorField2->setToolTip(sensorFieldTooltip);
-    //modeSingle->layout()->addWidget(sSensorField2, constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    g->addWidget(sSensorField2, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 3;
-    sSensorField3->setToolTip(sensorFieldTooltip);
-    //modeSingle->layout()->addWidget(sSensorField3, constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    g->addWidget(sSensorField3, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 4;
-    sSensorField4->setToolTip(sensorFieldTooltip);
-    //modeSingle->layout()->addWidget(sSensorField4, constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    g->addWidget(sSensorField4, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 5;
-    sSensorField5->setToolTip(sensorFieldTooltip);
-    //modeSingle->layout()->addWidget(sSensorField5, constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    g->addWidget(sSensorField5, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
+    modeSingleLayout->addWidget(new JLabel(tr("Protects Sensor/s:")), constraints);
+    constraints.fill = GridBagConstraints::HORIZONTAL;
+    constraints.gridx = 1;
+    sSensorComboBox1->setToolTip(sensorFieldTooltip);
+    modeSingleLayout->addWidget(sSensorComboBox1, constraints);
+    constraints.gridx = 2;
+    sSensorComboBox2->setToolTip(sensorFieldTooltip);
+    modeSingleLayout->addWidget(sSensorComboBox2, constraints);
+    constraints.gridx = 3;
+    sSensorComboBox3->setToolTip(sensorFieldTooltip);
+    modeSingleLayout->addWidget(sSensorComboBox3, constraints);
+    constraints.gridx = 4;
+    sSensorComboBox4->setToolTip(sensorFieldTooltip);
+    modeSingleLayout->addWidget(sSensorComboBox4, constraints);
+    constraints.gridx = 5;
+    sSensorComboBox5->setToolTip(sensorFieldTooltip);
+    modeSingleLayout->addWidget(sSensorComboBox5, constraints);
 
     insets->top = 2;
-    constraints->gridx = 0;
-    constraints->gridy = 1;
-    constraints->fill = GridBagConstraints::NONE;
+    constraints.gridx = 0;
+    constraints.gridy = 1;
+    constraints.fill = GridBagConstraints::NONE;
 
-    //modeSingle->layout()->addWidget(new QLabel(tr("Protects_Signal")), constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-     g->addWidget(new QLabel(tr("Protects Signal")), constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-     constraints->fill = GridBagConstraints::HORIZONTAL;
-    constraints->gridx = 1;
-    sNextSignalField1->setToolTip(highSignalFieldTooltip);
-    //modeSingle->layout()->addWidget(sNextSignalField1, constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-     g->addWidget(sNextSignalField1, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-     constraints->gridx = 2;
-    sNextSignalField1Alt->setToolTip(nextSignalFieldTooltip);
-    //modeSingle->layout()->addWidget(sNextSignalField1Alt, constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    g->addWidget(sNextSignalField1Alt, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 3;
-    constraints->gridwidth = 2;
+    modeSingleLayout->addWidget(new JLabel(tr("Protects Signal:")), constraints);
+    constraints.fill = GridBagConstraints::HORIZONTAL;
+    constraints.gridx = 1;
+    sNextSignalComboBox1->setToolTip(highSignalFieldTooltip);
+    modeSingleLayout->addWidget(sNextSignalComboBox1, constraints);
+    constraints.gridx = 2;
+    sNextSignalComboBox1Alt->setToolTip(nextSignalFieldTooltip);
+    modeSingleLayout->addWidget(sNextSignalComboBox1Alt, constraints);
+    constraints.gridx = 3;
+    constraints.gridwidth = 2;
+    // ??
+    JPanel* q = new JPanel();
+    q->setLayout(new FlowLayout());
+    q->layout()->addWidget(sLimitBox);
+    q->layout()->addWidget(sRestrictingBox);
     sLimitBox->setToolTip(limitBoxTooltip);
-    //modeSingle->layout()->addWidget(sLimitBox, constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    g->addWidget(sLimitBox, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
+    sRestrictingBox->setToolTip(restrictingBoxTooltip);
+    modeSingleLayout->addWidget(q, constraints);
 
-    constraints->gridy = 6;
-    constraints->gridx = 1;
-    constraints->gridwidth = 2;
-    constraints->anchor = GridBagConstraints::WEST;
+    constraints.gridy = 6;
+    constraints.gridx = 1;
+    constraints.gridwidth = 2;
+    constraints.anchor = GridBagConstraints::WEST;
     insets->bottom = 9;
     sFlashBox->setToolTip(flashBoxTooltip);
-    //modeSingle->layout()->addWidget(sFlashBox, constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    g->addWidget(sFlashBox, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
+    modeSingleLayout->addWidget(sFlashBox, constraints);
 
-    constraints->gridx = 3;
+    constraints.gridx = 3;
     sDistantBox->setToolTip(distantBoxTooltip);
-    //modeSingle->layout()->addWidget(sDistantBox, constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    g->addWidget(sDistantBox, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
+    modeSingleLayout->addWidget(sDistantBox, constraints);
     return modeSingle;
 }
 
 QWidget* BlockBossFrame::fillModeTrailMain() {
-#if 1
-    QGridLayout* g;
+ GridBagLayout* modeTrailMainLayout;
+ modeTrailMain->setLayout(modeTrailMainLayout = new GridBagLayout());
 
-    modeTrailMain->setLayout(g = new QGridLayout());
+ GridBagConstraints constraints = GridBagConstraints();
+ constraints.anchor = GridBagConstraints::EAST;
+ constraints.gridheight = 1;
+ constraints.gridwidth = 1;
+ constraints.ipadx = 0;
+ constraints.ipady = 0;
+ Insets* insets = new Insets(2, 3, 2, 3); // top, left, bottom, right
+ constraints.insets = insets;
+ constraints.weightx = 1;
+ constraints.weighty = 1;
 
-    GridBagConstraints* constraints = new GridBagConstraints();
-    constraints->anchor = GridBagConstraints::EAST;
-    constraints->gridheight = 1;
-    constraints->gridwidth = 1;
-    constraints->ipadx = 0;
-    constraints->ipady = 0;
-    Insets* insets = new Insets(2, 3, 2, 3); // top, left, bottom, right
-    constraints->insets = insets;
-    constraints->weightx = 1;
-    constraints->weighty = 1;
+ constraints.fill = GridBagConstraints::NONE;
+ constraints.gridx = 0;
+ constraints.gridy = 0;
+ insets->top = 9;
+ insets->bottom = 9;
+ modeTrailMainLayout->addWidget(new JLabel(tr("Protects Sensor/s:")), constraints);
+ constraints.fill = GridBagConstraints::HORIZONTAL;
+ constraints.gridx = 1;
+ tmSensorComboBox1->setToolTip(sensorFieldTooltip);
+ modeTrailMainLayout->addWidget(tmSensorComboBox1, constraints);
+ constraints.gridx = 2;
+ tmSensorComboBox2->setToolTip(sensorFieldTooltip);
+ modeTrailMainLayout->addWidget(tmSensorComboBox2, constraints);
+ constraints.gridx = 3;
+ tmSensorComboBox3->setToolTip(sensorFieldTooltip);
+ modeTrailMainLayout->addWidget(tmSensorComboBox3, constraints);
+ constraints.gridx = 4;
+ tmSensorComboBox4->setToolTip(sensorFieldTooltip);
+ modeTrailMainLayout->addWidget(tmSensorComboBox4, constraints);
+ constraints.gridx = 5;
+ tmSensorComboBox5->setToolTip(sensorFieldTooltip);
+ modeTrailMainLayout->addWidget(tmSensorComboBox5, constraints);
 
-    constraints->fill = GridBagConstraints::NONE;
-    constraints->gridx = 0;
-    constraints->gridy = 0;
-    insets->top = 9;
-    insets->bottom = 9;
-    g->addWidget(new QLabel(tr("_Protects_Sensor/s")), constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->fill = GridBagConstraints::HORIZONTAL;
-    constraints->gridx = 1;
-    tmSensorField1->setToolTip(sensorFieldTooltip);
-    g->addWidget(tmSensorField1, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 2;
-    tmSensorField2->setToolTip(sensorFieldTooltip);
-    g->addWidget(tmSensorField2, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 3;
-    tmSensorField3->setToolTip(sensorFieldTooltip);
-    g->addWidget(tmSensorField3, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 4;
-    tmSensorField4->setToolTip(sensorFieldTooltip);
-    g->addWidget(tmSensorField4, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 5;
-    tmSensorField5->setToolTip(sensorFieldTooltip);
-    g->addWidget(tmSensorField5, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
+ insets->top = 2;
+ constraints.fill = GridBagConstraints::NONE;
+ constraints.gridx = 0;
+ constraints.gridy = 1;
+ insets->bottom = 9;
+ modeTrailMainLayout->addWidget(new JLabel(tr("Red when Turnout:")), constraints);
+ constraints.fill = GridBagConstraints::HORIZONTAL;
+ constraints.gridx = 1;
+ tmProtectTurnoutComboBox->setToolTip(turnoutFieldTooltip);
+ modeTrailMainLayout->addWidget(tmProtectTurnoutComboBox, constraints);
+ constraints.gridx = 2;
+ constraints.gridwidth = 2;
+ modeTrailMainLayout->addWidget(new JLabel(tr("state is: %1").arg(InstanceManager::turnoutManagerInstance()->getThrownText())), constraints);
+ constraints.gridwidth = 1;
 
-    insets->top = 2;
-    constraints->fill = GridBagConstraints::NONE;
-    constraints->gridx = 0;
-    constraints->gridy = 1;
-    insets->bottom = 9;
-    g->addWidget(new QLabel(tr("Red When Turnout")), constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->fill = GridBagConstraints::HORIZONTAL;
-    constraints->gridx = 1;
-    tmProtectTurnoutField->setToolTip(turnoutFieldTooltip);
-    g->addWidget(tmProtectTurnoutField, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 2;
-    constraints->gridwidth = 2;
-    g->addWidget(new QLabel(tr("Is ")+((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getThrownText()), constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridwidth = 1;
+ constraints.fill = GridBagConstraints::NONE;
+ constraints.gridx = 0;
+ constraints.gridy = 4;
+ insets->bottom = 2;
+ modeTrailMainLayout->addWidget(new JLabel(tr("Protects Signal:")), constraints);
+ constraints.fill = GridBagConstraints::HORIZONTAL;
+ constraints.gridx = 1;
+ tmNextSignalComboBox1->setToolTip(highSignalFieldTooltip);
+ modeTrailMainLayout->addWidget(tmNextSignalComboBox1, constraints);
+ constraints.gridx = 2;
+ tmNextSignalComboBox1Alt->setToolTip(nextSignalFieldTooltip);
+ modeTrailMainLayout->addWidget(tmNextSignalComboBox1Alt, constraints);
+ constraints.gridx = 3;
+ constraints.gridwidth = 2;
+ // ??
+ JPanel* q = new JPanel();
+ q->setLayout(new FlowLayout());
+ q->layout()->addWidget(tmLimitBox);
+ q->layout()->addWidget(tmRestrictingBox);
+ tmLimitBox->setToolTip(limitBoxTooltip);
+ tmRestrictingBox->setToolTip(restrictingBoxTooltip);
+ modeTrailMainLayout->addWidget(q, constraints);
 
-    constraints->fill = GridBagConstraints::NONE;
-    constraints->gridx = 0;
-    constraints->gridy = 4;
-    insets->bottom = 2;
-    g->addWidget(new QLabel(tr("Protects_Signal")), constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->fill = GridBagConstraints::HORIZONTAL;
-    constraints->gridx = 1;
-    tmNextSignalField1->setToolTip(highSignalFieldTooltip);
-    g->addWidget(tmNextSignalField1, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 2;
-    tmNextSignalField1Alt->setToolTip(nextSignalFieldTooltip);
-    g->addWidget(tmNextSignalField1Alt, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 3;
-    constraints->gridwidth = 2;
-    tmLimitBox->setToolTip(limitBoxTooltip);
-    g->addWidget(tmLimitBox, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
+ constraints.gridy = 6;
+ constraints.gridx = 1;
+ constraints.gridwidth = 2;
+ constraints.anchor = GridBagConstraints::WEST;
+ insets->bottom = 9;
+ tmFlashBox->setToolTip(flashBoxTooltip);
+ modeTrailMainLayout->addWidget(tmFlashBox, constraints);
 
-    constraints->gridy = 6;
-    constraints->gridx = 1;
-    constraints->gridwidth = 2;
-    constraints->anchor = GridBagConstraints::WEST;
-    insets->bottom = 9;
-    tmFlashBox->setToolTip(flashBoxTooltip);
-    g->addWidget(tmFlashBox, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-
-    constraints->gridx = 3;
-    tmDistantBox->setToolTip(distantBoxTooltip);
-    g->addWidget(tmDistantBox, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-#endif
-    return modeTrailMain;
+ constraints.gridx = 3;
+ tmDistantBox->setToolTip(distantBoxTooltip);
+ modeTrailMainLayout->addWidget(tmDistantBox, constraints);
+ return modeTrailMain;
 }
 
 QWidget* BlockBossFrame::fillModeTrailDiv() {
-#if 1
-    QGridLayout* g;
-    modeTrailDiv->setLayout(g = new QGridLayout());
+ GridBagLayout* modeTrailDivLayout;
+ modeTrailDiv->setLayout(modeTrailDivLayout = new GridBagLayout());
 
-    GridBagConstraints* constraints = new GridBagConstraints();
-    constraints->anchor = GridBagConstraints::EAST;
-    constraints->gridheight = 1;
-    constraints->gridwidth = 1;
-    constraints->ipadx = 0;
-    constraints->ipady = 0;
-    Insets* insets = new Insets(2, 3, 2, 3); // top, left, bottom, right
-    constraints->insets = insets;
-    constraints->weightx = 1;
-    constraints->weighty = 1;
+ GridBagConstraints constraints = GridBagConstraints();
+ constraints.anchor = GridBagConstraints::EAST;
+ constraints.gridheight = 1;
+ constraints.gridwidth = 1;
+ constraints.ipadx = 0;
+ constraints.ipady = 0;
+ Insets* insets = new Insets(2, 3, 2, 3); // top, left, bottom, right
+ constraints.insets = insets;
+ constraints.weightx = 1;
+ constraints.weighty = 1;
 
-    constraints->fill = GridBagConstraints::NONE;
-    constraints->gridx = 0;
-    constraints->gridy = 0;
-    insets->top = 9;
-    insets->bottom = 9;
-    g->addWidget(new QLabel(tr("_Protects_Sensor/s")), constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->fill = GridBagConstraints::HORIZONTAL;
-    constraints->gridx = 1;
-    tdSensorField1->setToolTip(sensorFieldTooltip);
-    g->addWidget(tdSensorField1, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 2;
-    tdSensorField2->setToolTip(sensorFieldTooltip);
-    g->addWidget(tdSensorField2, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 3;
-    tdSensorField3->setToolTip(sensorFieldTooltip);
-    g->addWidget(tdSensorField3, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 4;
-    tdSensorField4->setToolTip(sensorFieldTooltip);
-    g->addWidget(tdSensorField4, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 5;
-    tdSensorField5->setToolTip(sensorFieldTooltip);
-    g->addWidget(tdSensorField5, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
+ constraints.fill = GridBagConstraints::NONE;
+ constraints.gridx = 0;
+ constraints.gridy = 0;
+ insets->top = 9;
+ insets->bottom = 9;
+ modeTrailDivLayout->addWidget(new JLabel(tr("Protects Sensor/s:")), constraints);
+ constraints.fill = GridBagConstraints::HORIZONTAL;
+ constraints.gridx = 1;
+ tdSensorComboBox1->setToolTip(sensorFieldTooltip);
+ modeTrailDivLayout->addWidget(tdSensorComboBox1, constraints);
+ constraints.gridx = 2;
+ tdSensorComboBox2->setToolTip(sensorFieldTooltip);
+ modeTrailDivLayout->addWidget(tdSensorComboBox2, constraints);
+ constraints.gridx = 3;
+ tdSensorComboBox3->setToolTip(sensorFieldTooltip);
+ modeTrailDivLayout->addWidget(tdSensorComboBox3, constraints);
+ constraints.gridx = 4;
+ tdSensorComboBox4->setToolTip(sensorFieldTooltip);
+ modeTrailDivLayout->addWidget(tdSensorComboBox4, constraints);
+ constraints.gridx = 5;
+ tdSensorComboBox5->setToolTip(sensorFieldTooltip);
+ modeTrailDivLayout->addWidget(tdSensorComboBox5, constraints);
 
-    insets->top = 2;
-    constraints->fill = GridBagConstraints::NONE;
-    constraints->gridx = 0;
-    constraints->gridy = 1;
-    insets->bottom = 9;
-    g->addWidget(new QLabel(tr("Red When Turnout")), constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->fill = GridBagConstraints::HORIZONTAL;
-    constraints->gridx = 1;
-    tdProtectTurnoutField->setToolTip(turnoutFieldTooltip);
-    g->addWidget(tdProtectTurnoutField, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 2;
-    constraints->gridwidth = 2;
-    g->addWidget(new QLabel(tr("Is_")+((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getClosedText()), constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridwidth = 1;
+ insets->top = 2;
+ constraints.fill = GridBagConstraints::NONE;
+ constraints.gridx = 0;
+ constraints.gridy = 1;
+ insets->bottom = 9;
+ modeTrailDivLayout->addWidget(new JLabel(tr("Red_When_Turnout")), constraints);
+ constraints.fill = GridBagConstraints::HORIZONTAL;
+ constraints.gridx = 1;
+ tdProtectTurnoutComboBox->setToolTip(turnoutFieldTooltip);
+ modeTrailDivLayout->addWidget(tdProtectTurnoutComboBox, constraints);
+ constraints.gridx = 2;
+ constraints.gridwidth = 2;
+ modeTrailDivLayout->addWidget(new JLabel(tr("state is: %1").arg(InstanceManager::turnoutManagerInstance()->getClosedText())), constraints);
+ constraints.gridwidth = 1;
 
-    constraints->fill = GridBagConstraints::NONE;
-    constraints->gridx = 0;
-    constraints->gridy = 4;
-    insets->bottom = 2;
-    g->addWidget(new QLabel(tr("Protects_Signal")), constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->fill = GridBagConstraints::HORIZONTAL;
-    constraints->gridx = 1;
-    tdNextSignalField1->setToolTip(highSignalFieldTooltip);
-    g->addWidget(tdNextSignalField1, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 2;
-    tdNextSignalField1Alt->setToolTip(nextSignalFieldTooltip);
-    g->addWidget(tdNextSignalField1Alt, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 3;
-    constraints->gridwidth = 2;
-    tdLimitBox->setToolTip(limitBoxTooltip);
-    g->addWidget(tdLimitBox, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
+ constraints.fill = GridBagConstraints::NONE;
+ constraints.gridx = 0;
+ constraints.gridy = 4;
+ insets->bottom = 2;
+ modeTrailDivLayout->addWidget(new JLabel(tr("Protects Signal:")), constraints);
+ constraints.fill = GridBagConstraints::HORIZONTAL;
+ constraints.gridx = 1;
+ tdNextSignalComboBox1->setToolTip(highSignalFieldTooltip);
+ modeTrailDivLayout->addWidget(tdNextSignalComboBox1, constraints);
+ constraints.gridx = 2;
+ tdNextSignalComboBox1Alt->setToolTip(nextSignalFieldTooltip);
+ modeTrailDivLayout->addWidget(tdNextSignalComboBox1Alt, constraints);
+ constraints.gridx = 3;
+ constraints.gridwidth = 2;
+ // ??
+ JPanel* q = new JPanel();
+ q->setLayout(new FlowLayout());
+ q->layout()->addWidget(tdLimitBox);
+ q->layout()->addWidget(tdRestrictingBox);
+ tdLimitBox->setToolTip(limitBoxTooltip);
+ tdRestrictingBox->setToolTip(restrictingBoxTooltip);
+ modeTrailDivLayout->addWidget(q, constraints);
 
-    constraints->gridy = 6;
-    constraints->gridx = 1;
-    constraints->gridwidth = 2;
-    constraints->anchor = GridBagConstraints::WEST;
-    insets->bottom = 9;
-    tdFlashBox->setToolTip(flashBoxTooltip);
-    g->addWidget(tdFlashBox, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
+ constraints.gridy = 6;
+ constraints.gridx = 1;
+ constraints.gridwidth = 2;
+ constraints.anchor = GridBagConstraints::WEST;
+ insets->bottom = 9;
+ tdFlashBox->setToolTip(flashBoxTooltip);
+ modeTrailDivLayout->addWidget(tdFlashBox, constraints);
 
-    constraints->gridx = 3;
-    tdDistantBox->setToolTip(distantBoxTooltip);
-    g->addWidget(tdDistantBox, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
+ constraints.gridx = 3;
+ tdDistantBox->setToolTip(distantBoxTooltip);
+ modeTrailDivLayout->addWidget(tdDistantBox, constraints);
 
-#endif
-    return modeTrailDiv;
+ return modeTrailDiv;
 }
 
 QWidget* BlockBossFrame::fillModeFacing() {
-#if 1
-    QGridLayout* g;
-    modeFacing->setLayout(g =new QGridLayout());
+ GridBagLayout* modeFacingLayout;
+ modeFacing->setLayout(modeFacingLayout =new GridBagLayout());
 
-    GridBagConstraints* constraints = new GridBagConstraints();
-    constraints->anchor = GridBagConstraints::EAST;
-    constraints->gridheight = 1;
-    constraints->gridwidth = 1;
-    constraints->ipadx = 0;
-    constraints->ipady = 0;
-    Insets* insets = new Insets(2, 3, 2, 3); // top, left, bottom, right
-    constraints->insets = insets;
-    constraints->weightx = 1;
-    constraints->weighty = 1;
+        GridBagConstraints constraints =  GridBagConstraints();
+        constraints.anchor = GridBagConstraints::EAST;
+        constraints.gridheight = 1;
+        constraints.gridwidth = 1;
+        constraints.ipadx = 0;
+        constraints.ipady = 0;
+        Insets* insets = new Insets(2, 3, 2, 3); // top, left, bottom, right
+        constraints.insets = insets;
+        constraints.weightx = 1;
+        constraints.weighty = 1;
 
-    constraints->fill = GridBagConstraints::NONE;
-    constraints->gridx = 0;
-    constraints->gridy = 0;
-    insets->top = 9;
-    insets->bottom = 9;
-    g->addWidget(new QLabel(tr("Protects_Sensor/s")), constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->fill = GridBagConstraints::HORIZONTAL;
-    constraints->gridx = 1;
-    fSensorField1->setToolTip(sensorFieldTooltip);
-    g->addWidget(fSensorField1, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 2;
-    fSensorField2->setToolTip(sensorFieldTooltip);
-    g->addWidget(fSensorField2, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 3;
-    fSensorField3->setToolTip(sensorFieldTooltip);
-    g->addWidget(fSensorField3, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 4;
-    fSensorField4->setToolTip(sensorFieldTooltip);
-    g->addWidget(fSensorField4, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 5;
-    fSensorField5->setToolTip(sensorFieldTooltip);
-    g->addWidget(fSensorField5, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
+        constraints.fill = GridBagConstraints::NONE;
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        insets->top = 9;
+        insets->bottom = 9;
+        modeFacingLayout->addWidget(new JLabel(tr("Protects Sensor/s:")), constraints);
+        constraints.fill = GridBagConstraints::HORIZONTAL;
+        constraints.gridx = 1;
+        fSensorComboBox1->setToolTip(sensorFieldTooltip);
+        modeFacingLayout->addWidget(fSensorComboBox1, constraints);
+        constraints.gridx = 2;
+        fSensorComboBox2->setToolTip(sensorFieldTooltip);
+        modeFacingLayout->addWidget(fSensorComboBox2, constraints);
+        constraints.gridx = 3;
+        fSensorComboBox3->setToolTip(sensorFieldTooltip);
+        modeFacingLayout->addWidget(fSensorComboBox3, constraints);
+        constraints.gridx = 4;
+        fSensorComboBox4->setToolTip(sensorFieldTooltip);
+        modeFacingLayout->addWidget(fSensorComboBox4, constraints);
+        constraints.gridx = 5;
+        fSensorComboBox5->setToolTip(sensorFieldTooltip);
+        modeFacingLayout->addWidget(fSensorComboBox5, constraints);
 
-    insets->top = 2;
-    constraints->fill = GridBagConstraints::NONE;
-    constraints->gridx = 0;
-    constraints->gridy = 1;
-    insets->bottom = 9;
-    g->addWidget(new QLabel(tr("Watches_Turnout")), constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->fill = GridBagConstraints::HORIZONTAL;
-    constraints->gridx = 1;
-    fProtectTurnoutField->setToolTip(turnoutFieldTooltip);
-    g->addWidget(fProtectTurnoutField, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
+        insets->top = 2;
+        constraints.fill = GridBagConstraints::NONE;
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        insets->bottom = 9;
+        modeFacingLayout->addWidget(new JLabel(tr("Watches Turnout")), constraints);
+        constraints.fill = GridBagConstraints::HORIZONTAL;
+        constraints.gridx = 1;
+        fProtectTurnoutComboBox->setToolTip(turnoutFieldTooltip);
+        modeFacingLayout->addWidget(fProtectTurnoutComboBox, constraints);
 
-    constraints->fill = GridBagConstraints::NONE;
-    constraints->gridx = 0;
-    constraints->gridy = 2;
-    insets->bottom = 2;
-    g->addWidget(new QLabel(tr("To_Protect_Signal")), constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->fill = GridBagConstraints::HORIZONTAL;
-    constraints->gridx = 1;
-    fNextSignalField1->setToolTip(highSignalFieldTooltip);
-    g->addWidget(fNextSignalField1, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 2;
-    fNextSignalField1Alt->setToolTip(nextSignalFieldTooltip);
-    g->addWidget(fNextSignalField1Alt, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 3;
-    constraints->gridwidth = 2;
-    fmLimitBox->setToolTip(limitBoxTooltip);
-    g->addWidget(fmLimitBox, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
+        constraints.fill = GridBagConstraints::NONE;
+        constraints.gridx = 0;
+        constraints.gridy = 2;
+        insets->bottom = 2;
+        modeFacingLayout->addWidget(new JLabel(tr("To Protect Signal:")), constraints);
+        constraints.fill = GridBagConstraints::HORIZONTAL;
+        constraints.gridx = 1;
+        fNextSignalComboBox1->setToolTip(highSignalFieldTooltip);
+        modeFacingLayout->addWidget(fNextSignalComboBox1, constraints);
+        constraints.gridx = 2;
+        fNextSignalComboBox1Alt->setToolTip(nextSignalFieldTooltip);
+        modeFacingLayout->addWidget(fNextSignalComboBox1Alt, constraints);
+        constraints.gridx = 3;
+        constraints.gridwidth = 2;
+        // ??
+        JPanel* q = new JPanel();
+        q->setLayout(new FlowLayout());
+        q->layout()->addWidget(fmLimitBox);
+        q->layout()->addWidget(fmRestrictingBox);
+        fmLimitBox->setToolTip(limitBoxTooltip);
+        fmRestrictingBox->setToolTip(restrictingBoxTooltip);
+        modeFacingLayout->addWidget(q, constraints);
 
-    constraints->fill = GridBagConstraints::NONE;
-    constraints->gridwidth = 1;
-    constraints->gridx = 0;
-    constraints->gridy = 3;
-    insets->bottom = 9;
-    g->addWidget(new QLabel(tr("And Sensor/s")), constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->fill = GridBagConstraints::HORIZONTAL;
-    constraints->gridx = 1;
-    fNextSensorField1->setToolTip(sensorFieldTooltip);
-    g->addWidget(fNextSensorField1, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 2;
-    fNextSensorField1Alt->setToolTip(sensorFieldTooltip);
-    g->addWidget(fNextSensorField1Alt,constraints->gridy, constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 3;
-    constraints->gridwidth = 2;
-    g->addWidget(new QLabel(tr("When Turnout is ")+((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getClosedText()), constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridwidth = 1;
+        constraints.fill = GridBagConstraints::NONE;
+        constraints.gridwidth = 1;
+        constraints.gridx = 0;
+        constraints.gridy = 3;
+        insets->bottom = 9;
+        modeFacingLayout->addWidget(new JLabel(tr("and Sensor/s:")), constraints);
+        constraints.fill = GridBagConstraints::HORIZONTAL;
+        constraints.gridx = 1;
+        fNextSensorComboBox1->setToolTip(sensorFieldTooltip);
+        modeFacingLayout->addWidget(fNextSensorComboBox1, constraints);
+        constraints.gridx = 2;
+        fNextSensorComboBox1Alt->setToolTip(sensorFieldTooltip);
+        modeFacingLayout->addWidget(fNextSensorComboBox1Alt, constraints);
+        constraints.gridx = 3;
+        constraints.gridwidth = 2;
+        modeFacingLayout->addWidget(new JLabel(tr("When watched Turnout''s state is: %1").arg(InstanceManager::turnoutManagerInstance()->getClosedText())), constraints);
+        constraints.gridwidth = 1;
 
-    constraints->fill = GridBagConstraints::NONE;
-    constraints->gridx = 0;
-    constraints->gridy = 4;
-    insets->bottom = 2;
-    g->addWidget(new QLabel(tr("And Protect Signal")), constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->fill = GridBagConstraints::HORIZONTAL;
-    constraints->gridx = 1;
-    fNextSignalField2->setToolTip(highSignalFieldTooltip);
-    g->addWidget(fNextSignalField2, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 2;
-    fNextSignalField2Alt->setToolTip(nextSignalFieldTooltip);
-    g->addWidget(fNextSignalField2Alt, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 3;
-    constraints->gridwidth = 2;
-    fdLimitBox->setToolTip(limitBoxTooltip);
-    g->addWidget(fdLimitBox, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
+        constraints.fill = GridBagConstraints::NONE;
+        constraints.gridx = 0;
+        constraints.gridy = 4;
+        insets->bottom = 2;
+        modeFacingLayout->addWidget(new JLabel(tr("and Protect Signal:")), constraints);
+        constraints.fill = GridBagConstraints::HORIZONTAL;
+        constraints.gridx = 1;
+        fNextSignalComboBox2->setToolTip(highSignalFieldTooltip);
+        modeFacingLayout->addWidget(fNextSignalComboBox2, constraints);
+        constraints.gridx = 2;
+        fNextSignalComboBox2Alt->setToolTip(nextSignalFieldTooltip);
+        modeFacingLayout->addWidget(fNextSignalComboBox2Alt, constraints);
+        constraints.gridx = 3;
+        constraints.gridwidth = 2;
 
-    constraints->fill = GridBagConstraints::NONE;
-    constraints->gridwidth = 1;
-    constraints->gridx = 0;
-    constraints->gridy = 5;
-    insets->bottom = 9;
-    g->addWidget(new QLabel(tr("And_Sensor/s")), constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->fill = GridBagConstraints::HORIZONTAL;
-    constraints->gridx = 1;
-    fNextSensorField2->setToolTip(sensorFieldTooltip);
-    g->addWidget(fNextSensorField2, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 2;
-    fNextSensorField2Alt->setToolTip(sensorFieldTooltip);
-    g->addWidget(fNextSensorField2Alt, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridx = 3;
-    constraints->gridwidth = 2;
-    g->addWidget(new QLabel(tr("When Turnout is ")+((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getThrownText()), constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
-    constraints->gridwidth = 1;
+        q = new JPanel();
+        q->setLayout(new FlowLayout());
+        q->layout()->addWidget(fdLimitBox);
+        q->layout()->addWidget(fdRestrictingBox);
+        fdLimitBox->setToolTip(limitBoxTooltip);
+        fdRestrictingBox->setToolTip(restrictingBoxTooltip);
+        modeFacingLayout->addWidget(q, constraints);
 
-    constraints->gridy = 6;
-    constraints->gridx = 1;
-    constraints->gridwidth = 2;
-    constraints->anchor = GridBagConstraints::WEST;
-    insets->bottom = 9;
-    fFlashBox->setToolTip(flashBoxTooltip);
-    g->addWidget(fFlashBox, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
+        constraints.fill = GridBagConstraints::NONE;
+        constraints.gridwidth = 1;
+        constraints.gridx = 0;
+        constraints.gridy = 5;
+        insets->bottom = 9;
+        modeFacingLayout->addWidget(new JLabel(tr("and Sensor/s:")), constraints);
+        constraints.fill = GridBagConstraints::HORIZONTAL;
+        constraints.gridx = 1;
+        fNextSensorComboBox2->setToolTip(sensorFieldTooltip);
+        modeFacingLayout->addWidget(fNextSensorComboBox2, constraints);
+        constraints.gridx = 2;
+        fNextSensorComboBox2Alt->setToolTip(sensorFieldTooltip);
+        modeFacingLayout->addWidget(fNextSensorComboBox2Alt, constraints);
+        constraints.gridx = 3;
+        constraints.gridwidth = 2;
+        modeFacingLayout->addWidget(new JLabel(tr("When watched Turnout''s state is: %1").arg(InstanceManager::turnoutManagerInstance()->getThrownText())), constraints);
+        constraints.gridwidth = 1;
 
-    constraints->gridx = 3;
-    fDistantBox->setToolTip(distantBoxTooltip);
-    g->addWidget(fDistantBox, constraints->gridy,constraints->gridx,constraints->rowSpan(), constraints->colSpan());
+        constraints.gridy = 6;
+        constraints.gridx = 1;
+        constraints.gridwidth = 2;
+        constraints.anchor = GridBagConstraints::WEST;
+        insets->bottom = 9;
+        fFlashBox->setToolTip(flashBoxTooltip);
+        modeFacingLayout->addWidget(fFlashBox, constraints);
 
-#endif
-    return modeFacing;
+        constraints.gridx = 3;
+        fDistantBox->setToolTip(distantBoxTooltip);
+        modeFacingLayout->addWidget(fDistantBox, constraints);
+
+        return modeFacing;
 }
 
-void BlockBossFrame::okPressed()  // SLOT[]
-{
- // check signal head exists
- if (static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(outSignalField->text().trimmed())==NULL)
- {
-  setWindowTitle(tr("Simple Signal Logic"));
-    //    JOptionPane.showMessageDialog(this,tr("Signal_head_")+outSignalField->text()+tr(" is not defined yet"));
-  QMessageBox::critical(this, tr("Error"), tr("Signal head ")+outSignalField->text()+tr(" is not defined yet"));
-    return;
+/*private*/ void BlockBossFrame::applyPressed() {
+ SignalHead* head = sh; // temp used here for SignalHead being operated on
+
+ // check signal head selected
+ if (head == nullptr) {
+     head = (SignalHead*)(outSignalHeadComboBox->getSelectedItem());
+     statusBar->setText(tr("SSL created for Signal Head %1").arg(outSignalHeadComboBox->getSelectedItemDisplayName()));
+ } else {
+     statusBar->setText(tr("SSL updated for Signal Head %1").arg(outSignalHeadComboBox->getSelectedItemDisplayName()));
  }
-// it does
- try
- {
-  BlockBossLogic* b = BlockBossLogic::getStoppedObject(outSignalField->text().trimmed());
-  b->setApproachSensor1(approachSensorField1->text());
-  if (buttonSingle->isChecked())
-   loadSingle(b);
-  else if (buttonTrailMain->isChecked())
-   loadTrailMain(b);
-  else if (buttonTrailDiv->isChecked())
-   loadTrailDiv(b);
-  else if (buttonFacing->isChecked())
-   loadFacing(b);
-  else
-  {
-   log->error(tr("no button selected?"));
-   return;
-  }
+
+ try {
+     BlockBossLogic* b = BlockBossLogic::getStoppedObject(head->getDisplayName());
+     b->setApproachSensor1(approachSensor1ComboBox->getSelectedItemDisplayName());
+     if (buttonSingle->isChecked()) {
+         loadSingle(b);
+     } else if (buttonTrailMain->isChecked()) {
+         loadTrailMain(b);
+     } else if (buttonTrailDiv->isChecked()) {
+         loadTrailDiv(b);
+     } else if (buttonFacing->isChecked()) {
+         loadFacing(b);
+     } else {
+         log->error("no SSL type radio button was selected"); // NOI18N
+         return;
+     }
+     cancel->setText(tr("Close")); // when Apply has been clicked at least once, this is not Cancel
+ } catch (IllegalArgumentException* e) {
+     statusBar->setText(tr("An error occurred creating the Simple Signal Logic.\nCheck the Console log for more information."));
+     JOptionPane::showMessageDialog(this,
+             tr("An error occurred creating the Simple Signal Logic.\nCheck the Console log for more information."),
+             tr("Error"),
+             JOptionPane::ERROR_MESSAGE);
  }
- catch (Exception e)
- {
-  log->error("An error occured creating the boss logic " + e.getMessage());
-    //JOptionPane.showMessageDialog(this,"An error occured creating the Simple Signal Logic\nPlease check the console log for more information");
-  QMessageBox::critical(this, tr("Error"), tr("An error occured creating the Simple Signal Logic\nPlease check the console log for more information"));
- }
+}
+
+/*private*/ void BlockBossFrame::cancelPressed() {
+ // close pane
+ this->setVisible(false);
+ statusBar->setText("");
+ JmriJFrame::dispose();
+}
+
+/*private*/ void BlockBossFrame::deletePressed() {
+ BlockBossLogic* b = BlockBossLogic::getStoppedObject(outSignalHeadComboBox->getSelectedItemDisplayName());
+ blockBossLogicProvider->remove(b);
+ statusBar->setText(tr("SSL deleted for Signal Head %1").arg(outSignalHeadComboBox->getSelectedItemDisplayName()));
+ outSignalHeadComboBox->setSelectedIndex(-1);
+ clearFields();
 }
 
 void BlockBossFrame::loadSingle(BlockBossLogic* b) {
-    b->setSensor1(sSensorField1->text());
-    b->setSensor2(sSensorField2->text());
-    b->setSensor3(sSensorField3->text());
-    b->setSensor4(sSensorField4->text());
-    b->setSensor5(sSensorField5->text());
-    b->setMode(BlockBossLogic::SINGLEBLOCK);
+ b->setSensor1(sSensorComboBox1->getSelectedItemDisplayName());
+ b->setSensor2(sSensorComboBox2->getSelectedItemDisplayName());
+ b->setSensor3(sSensorComboBox3->getSelectedItemDisplayName());
+ b->setSensor4(sSensorComboBox4->getSelectedItemDisplayName());
+ b->setSensor5(sSensorComboBox5->getSelectedItemDisplayName());
+ b->setMode(BlockBossLogic::SINGLEBLOCK);
 
-    b->setWatchedSignal1(sNextSignalField1->text().trimmed(), sFlashBox->isChecked());
-    b->setWatchedSignal1Alt(sNextSignalField1Alt->text().trimmed());
-    b->setLimitSpeed1(sLimitBox->isChecked());
-    b->setDistantSignal(sDistantBox->isChecked());
+ b->setWatchedSignal1(sNextSignalComboBox1->getSelectedItemDisplayName(), sFlashBox->isSelected());
+ b->setWatchedSignal1Alt(sNextSignalComboBox1Alt->getSelectedItemDisplayName());
+ b->setLimitSpeed1(sLimitBox->isSelected());
+ b->setRestrictingSpeed1(sRestrictingBox->isSelected());
+ b->setDistantSignal(sDistantBox->isSelected());
 
-    b->setComment(commentField->text());
+ b->setComment(commentField->text());
 
-    b->retain();
-    b->start();
+ blockBossLogicProvider->_register(b);
+ b->start();
 }
 
 void BlockBossFrame::loadTrailMain(BlockBossLogic* b) {
-    b->setSensor1(tmSensorField1->text());
-    b->setSensor2(tmSensorField2->text());
-    b->setSensor3(tmSensorField3->text());
-    b->setSensor4(tmSensorField4->text());
-    b->setSensor5(tmSensorField5->text());
-    b->setMode(BlockBossLogic::TRAILINGMAIN);
+ b->setSensor1(tmSensorComboBox1->getSelectedItemDisplayName());
+ b->setSensor2(tmSensorComboBox2->getSelectedItemDisplayName());
+ b->setSensor3(tmSensorComboBox3->getSelectedItemDisplayName());
+ b->setSensor4(tmSensorComboBox4->getSelectedItemDisplayName());
+ b->setSensor5(tmSensorComboBox5->getSelectedItemDisplayName());
+ b->setMode(BlockBossLogic::TRAILINGMAIN);
 
-    b->setTurnout(tmProtectTurnoutField->text());
+ b->setTurnout(tmProtectTurnoutComboBox->getSelectedItemDisplayName());
 
-    b->setWatchedSignal1(tmNextSignalField1->text(), tmFlashBox->isChecked());
-    b->setWatchedSignal1Alt(tmNextSignalField1Alt->text());
-    b->setLimitSpeed1(tmLimitBox->isChecked());
-    b->setDistantSignal(tmDistantBox->isChecked());
+ b->setWatchedSignal1(tmNextSignalComboBox1->getSelectedItemDisplayName(), tmFlashBox->isSelected());
+ b->setWatchedSignal1Alt(tmNextSignalComboBox1Alt->getSelectedItemDisplayName());
+ b->setLimitSpeed1(tmLimitBox->isSelected());
+ b->setRestrictingSpeed1(tmRestrictingBox->isSelected());
+ b->setDistantSignal(tmDistantBox->isSelected());
 
-    b->setComment(commentField->text());
+ b->setComment(commentField->text());
 
-    b->retain();
-    b->start();
+ blockBossLogicProvider->_register(b);
+ b->start();
 }
+
 void BlockBossFrame::loadTrailDiv(BlockBossLogic* b) {
-    b->setSensor1(tdSensorField1->text());
-    b->setSensor2(tdSensorField2->text());
-    b->setSensor3(tdSensorField3->text());
-    b->setSensor4(tdSensorField4->text());
-    b->setSensor5(tdSensorField5->text());
-    b->setMode(BlockBossLogic::TRAILINGDIVERGING);
+ b->setSensor1(tdSensorComboBox1->getSelectedItemDisplayName());
+ b->setSensor2(tdSensorComboBox2->getSelectedItemDisplayName());
+ b->setSensor3(tdSensorComboBox3->getSelectedItemDisplayName());
+ b->setSensor4(tdSensorComboBox4->getSelectedItemDisplayName());
+ b->setSensor5(tdSensorComboBox5->getSelectedItemDisplayName());
+ b->setMode(BlockBossLogic::TRAILINGDIVERGING);
 
-    b->setTurnout(tdProtectTurnoutField->text());
+ b->setTurnout(tdProtectTurnoutComboBox->getSelectedItemDisplayName());
 
-    b->setWatchedSignal1(tdNextSignalField1->text(), tdFlashBox->isChecked());
-    b->setWatchedSignal1Alt(tdNextSignalField1Alt->text());
-    b->setLimitSpeed2(tdLimitBox->isChecked());
-    b->setDistantSignal(tdDistantBox->isChecked());
+ b->setWatchedSignal1(tdNextSignalComboBox1->getSelectedItemDisplayName(), tdFlashBox->isSelected());
+ b->setWatchedSignal1Alt(tdNextSignalComboBox1Alt->getSelectedItemDisplayName());
+ b->setLimitSpeed2(tdLimitBox->isSelected());
+ b->setRestrictingSpeed1(tdRestrictingBox->isSelected());
+ b->setDistantSignal(tdDistantBox->isSelected());
 
-    b->setComment(commentField->text());
+ b->setComment(commentField->text());
 
-    b->retain();
-    b->start();
+ blockBossLogicProvider->_register(b);
+ b->start();
 }
 
 void BlockBossFrame::loadFacing(BlockBossLogic* b) {
-    b->setSensor1(fSensorField1->text());
-    b->setSensor2(fSensorField2->text());
-    b->setSensor3(fSensorField3->text());
-    b->setSensor4(fSensorField4->text());
-    b->setSensor5(fSensorField5->text());
-    b->setMode(BlockBossLogic::FACING);
+ b->setSensor1(fSensorComboBox1->getSelectedItemDisplayName());
+ b->setSensor2(fSensorComboBox2->getSelectedItemDisplayName());
+ b->setSensor3(fSensorComboBox3->getSelectedItemDisplayName());
+ b->setSensor4(fSensorComboBox4->getSelectedItemDisplayName());
+ b->setSensor5(fSensorComboBox5->getSelectedItemDisplayName());
+ b->setMode(BlockBossLogic::FACING);
 
-    b->setTurnout(fProtectTurnoutField->text());
+ b->setTurnout(fProtectTurnoutComboBox->getSelectedItemDisplayName());
 
-    b->setWatchedSignal1(fNextSignalField1->text(), fFlashBox->isChecked());
-    b->setWatchedSignal1Alt(fNextSignalField1Alt->text());
-    b->setWatchedSignal2(fNextSignalField2->text());
-    b->setWatchedSignal2Alt(fNextSignalField2Alt->text());
-    b->setWatchedSensor1(fNextSensorField1->text());
-    b->setWatchedSensor1Alt(fNextSensorField1Alt->text());
-    b->setWatchedSensor2(fNextSensorField2->text());
-    b->setWatchedSensor2Alt(fNextSensorField2Alt->text());
-    b->setLimitSpeed1(fmLimitBox->isChecked());
-    b->setLimitSpeed2(fdLimitBox->isChecked());
+ b->setWatchedSignal1(fNextSignalComboBox1->getSelectedItemDisplayName(), fFlashBox->isSelected());
+ b->setWatchedSignal1Alt(fNextSignalComboBox1Alt->getSelectedItemDisplayName());
+ b->setWatchedSignal2(fNextSignalComboBox2->getSelectedItemDisplayName());
+ b->setWatchedSignal2Alt(fNextSignalComboBox2Alt->getSelectedItemDisplayName());
+ b->setWatchedSensor1(fNextSensorComboBox1->getSelectedItemDisplayName());
+ b->setWatchedSensor1Alt(fNextSensorComboBox1Alt->getSelectedItemDisplayName());
+ b->setWatchedSensor2(fNextSensorComboBox2->getSelectedItemDisplayName());
+ b->setWatchedSensor2Alt(fNextSensorComboBox2Alt->getSelectedItemDisplayName());
+ b->setLimitSpeed1(fmLimitBox->isSelected());
+ b->setRestrictingSpeed1(fmRestrictingBox->isSelected());
+ b->setLimitSpeed2(fdLimitBox->isSelected());
+ b->setRestrictingSpeed2(fdRestrictingBox->isSelected());
 
-    b->setDistantSignal(fDistantBox->isChecked());
+ b->setDistantSignal(fDistantBox->isSelected());
 
-    b->setComment(commentField->text());
+ b->setComment(commentField->text());
 
-    b->retain();
-    b->start();
+ blockBossLogicProvider->_register(b);
+ b->start();
 }
 
+/*private*/ void BlockBossFrame::clearFields() {
+  approachSensor1ComboBox->setSelectedIndex(-1);
+
+  sSensorComboBox1->setSelectedIndex(-1);
+  sSensorComboBox2->setSelectedIndex(-1);
+  sSensorComboBox3->setSelectedIndex(-1);
+  sSensorComboBox4->setSelectedIndex(-1);
+  sSensorComboBox5->setSelectedIndex(-1);
+
+  tmProtectTurnoutComboBox->setSelectedIndex(-1);
+
+  sNextSignalComboBox1->setSelectedIndex(-1);
+  sNextSignalComboBox1Alt->setSelectedIndex(-1);
+
+  fNextSignalComboBox2->setSelectedIndex(-1);
+  fNextSignalComboBox2Alt->setSelectedIndex(-1);
+
+  fNextSensorComboBox1->setSelectedIndex(-1);
+  fNextSensorComboBox1Alt->setSelectedIndex(-1);
+  fNextSensorComboBox2->setSelectedIndex(-1);
+  fNextSensorComboBox2Alt->setSelectedIndex(-1);
+
+  sLimitBox->setSelected(false);
+  sRestrictingBox->setSelected(false);
+  tdLimitBox->setSelected(false);
+  tdRestrictingBox->setSelected(false);
+  sFlashBox->setSelected(false);
+  sDistantBox->setSelected(false);
+
+  commentField->setText("");
+
+  buttonClicked();
+}
 void BlockBossFrame::activate() // SLOT[]
 {
  // check signal head exists
- if (static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(outSignalField->text())==NULL)
- {
-  setWindowTitle(tr("Simple Signal Logic"));
-  return;
+ if (sh == nullptr && outSignalHeadComboBox->getSelectedItem() == nullptr) {
+     // head not exist, just title the window and leave
+     setTitle(tr("Simple Signal Logic"));
+     apply->setEnabled(false);
+     _delete->setEnabled(false);
+     return;
  }
 
  // find existing logic
- BlockBossLogic* b = BlockBossLogic::getExisting(outSignalField->text());
- if (b==NULL)
- {
-  setWindowTitle(tr("Simple Signal Logic"));
-  return;
+ BlockBossLogic* b;
+ if (sh != nullptr) {
+     b = blockBossLogicProvider->provide(sh);
+ } else {
+     b = blockBossLogicProvider->provide(outSignalHeadComboBox->getSelectedItemDisplayName());
  }
+ apply->setEnabled(true);
+ _delete->setEnabled(true);
 
- setWindowTitle(tr("Signal logic for ")+outSignalField->text());
+ setTitle(tr("Simple Signal Logic for %1").arg(outSignalHeadComboBox->getSelectedItemDisplayName()));
 
- approachSensorField1->setText(b->getApproachSensor1());
+ approachSensor1ComboBox->setSelectedItemByName(b->getApproachSensor1());
 
- sSensorField1->setText(b->getSensor1());
- sSensorField2->setText(b->getSensor2());
- sSensorField3->setText(b->getSensor3());
- sSensorField4->setText(b->getSensor4());
- sSensorField5->setText(b->getSensor5());
+ sSensorComboBox1->setSelectedItemByName(b->getSensor1());
+ sSensorComboBox2->setSelectedItemByName(b->getSensor2());
+ sSensorComboBox3->setSelectedItemByName(b->getSensor3());
+ sSensorComboBox4->setSelectedItemByName(b->getSensor4());
+ sSensorComboBox5->setSelectedItemByName(b->getSensor5());
 
- tmProtectTurnoutField->setText(b->getTurnout());
+ tmProtectTurnoutComboBox->setSelectedItemByName(b->getTurnout());
 
- sNextSignalField1->setText(b->getWatchedSignal1());
- sNextSignalField1Alt->setText(b->getWatchedSignal1Alt());
 
- fNextSignalField2->setText(b->getWatchedSignal2());
- fNextSignalField2Alt->setText(b->getWatchedSignal2Alt());
+ sNextSignalComboBox1->setSelectedItemByName(b->getWatchedSignal1());
+ sNextSignalComboBox1Alt->setSelectedItemByName(b->getWatchedSignal1Alt());
 
- fNextSensorField1->setText(b->getWatchedSensor1());
- fNextSensorField1Alt->setText(b->getWatchedSensor1Alt());
- fNextSensorField2->setText(b->getWatchedSensor2());
- fNextSensorField2Alt->setText(b->getWatchedSensor2Alt());
+ fNextSignalComboBox2->setSelectedItemByName(b->getWatchedSignal2());
+ fNextSignalComboBox2Alt->setSelectedItemByName(b->getWatchedSignal2Alt());
 
- sLimitBox->setChecked(b->getLimitSpeed1());
+ fNextSensorComboBox1->setSelectedItemByName(b->getWatchedSensor1());
+ fNextSensorComboBox1Alt->setSelectedItemByName(b->getWatchedSensor1Alt());
+ fNextSensorComboBox2->setSelectedItemByName(b->getWatchedSensor2());
+ fNextSensorComboBox2Alt->setSelectedItemByName(b->getWatchedSensor2Alt());
+
+ sLimitBox->setSelected(b->getLimitSpeed1());
+ sRestrictingBox->setSelected(b->getRestrictingSpeed1());
  tdLimitBox->setChecked(b->getLimitSpeed2());
- sFlashBox->setChecked(b->getUseFlash());
- sDistantBox->setChecked(b->getDistantSignal());
+ tdRestrictingBox->setChecked(b->getRestrictingSpeed2());
+ sFlashBox->setSelected(b->getUseFlash());
+ sDistantBox->setSelected(b->getDistantSignal());
 
  commentField->setText(b->getComment());
 
  int mode = b->getMode();
- if (mode == BlockBossLogic::SINGLEBLOCK)
-  buttonSingle->setChecked(true);
- else if (mode == BlockBossLogic::TRAILINGMAIN)
-  buttonTrailMain->setChecked(true);
- else if (mode == BlockBossLogic::TRAILINGDIVERGING)
-  buttonTrailDiv->setChecked(true);
- else if (mode == BlockBossLogic::FACING)
-  buttonFacing->setChecked(true);
+ if (mode == BlockBossLogic::SINGLEBLOCK) {
+     buttonSingle->setChecked(true);
+ } else if (mode == BlockBossLogic::TRAILINGMAIN) {
+     buttonTrailMain->setChecked(true);
+ } else if (mode == BlockBossLogic::TRAILINGDIVERGING) {
+     buttonTrailDiv->setChecked(true);
+ } else if (mode == BlockBossLogic::FACING) {
+     buttonFacing->setChecked(true);
+ }
 
+ statusBar->setText(tr("Check or change the SSL configuration on this pane and click [%1]").arg(tr("Apply")));
  // do setup of visible panels
  buttonClicked();
 }
@@ -981,162 +984,39 @@ void BlockBossFrame::buttonClicked() // SLOT[]
  */
 /*public*/ void BlockBossFrame::setSignal(QString name)
 {
- outSignalField->setText(name);
+ sh = nullptr;
+ outSignalHeadComboBox->setSelectedItemByName(name);
+ outSignalHeadComboBox->setEnabled(true);
  activate();
-}
-
-void BlockBossFrame::on_sSensorField1_textChanged(QString s)
-{
- sSensorField1->setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_sSensorField2_textChanged(QString s)
-{
- sSensorField2->setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_sSensorField3_textChanged(QString s)
-{
- sSensorField3->setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_sSensorField4_textChanged(QString s)
-{
- sSensorField4->setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_sSensorField5_textChanged(QString s)
-{
- sSensorField5->setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_sNextSignalField1_textChanged(QString s)
-{
- sNextSignalField1->setCompleter(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getCompleter(s,true));
-}
-void BlockBossFrame::on_sNextSignalField1Alt_textChanged(QString s)
-{
- sNextSignalField1Alt->setCompleter(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getCompleter(s,true));
-}
-
-void BlockBossFrame::on_tmSensorField1_textChanged(QString s)
-{
- tmSensorField1->  setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_tmSensorField2_textChanged(QString s)
-{
- tmSensorField2->  setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_tmSensorField3_textChanged(QString s)
-{
- tmSensorField3->  setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_tmSensorField4_textChanged(QString s)
-{
- tmSensorField4->  setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_tmSensorField5_textChanged(QString s)
-{
- tmSensorField5->  setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_tmProtectTurnoutField_textChanged(QString s)
-{
- tmProtectTurnoutField->  setCompleter(((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_tmNextSignalField1_textChanged(QString s)
-{
- tmNextSignalField1->setCompleter(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getCompleter(s,true));
-}
-void BlockBossFrame::on_tmNextSignalField1Alt_textChanged(QString s)
-{
- tmNextSignalField1Alt->setCompleter(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getCompleter(s,true));
-}
-void BlockBossFrame::on_tdSensorField1_textChanged(QString s)
-{
- tdSensorField1->  setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_tdSensorField2_textChanged(QString s)
-{
- tdSensorField2->  setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_tdSensorField3_textChanged(QString s)
-{
- tdSensorField3->  setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_tdSensorField4_textChanged(QString s)
-{
- tdSensorField4->  setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_tdSensorField5_textChanged(QString s)
-{
- tdSensorField5->  setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_tdProtectTurnoutField_textChanged(QString s)
-{
- tdProtectTurnoutField->  setCompleter(((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_tdNextSignalField1_textChanged(QString s)
-{
- tdNextSignalField1->setCompleter(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getCompleter(s,true));
-}
-void BlockBossFrame::on_tdNextSignalField1Alt_textChanged(QString s)
-{
- tdNextSignalField1Alt->setCompleter(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getCompleter(s,true));
-}
-
-void BlockBossFrame::on_fSensorField1_textChanged(QString s)
-{
- fSensorField1->  setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_fSensorField2_textChanged(QString s)
-{
- fSensorField2->  setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_fSensorField3_textChanged(QString s)
-{
- fSensorField3->  setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_fSensorField4_textChanged(QString s)
-{
- fSensorField4->  setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_fSensorField5_textChanged(QString s)
-{
- fSensorField5->  setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_fProtectTurnoutField_textChanged(QString s)
-{
- fProtectTurnoutField->  setCompleter(((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_fNextSignalField1_textChanged(QString s)
-{
- fNextSignalField1->setCompleter(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getCompleter(s,true));
-}
-void BlockBossFrame::on_fNextSignalField1Alt_textChanged(QString s)
-{
- fNextSignalField1Alt->setCompleter(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getCompleter(s,true));
-}
-void BlockBossFrame::on_fNextSignalField2_textChanged(QString s)
-{
- fNextSignalField2->setCompleter(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getCompleter(s,true));
-}
-void BlockBossFrame::on_fNextSignalField2Alt_textChanged(QString s)
-{
- fNextSignalField2Alt->setCompleter(static_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getCompleter(s,true));
-}
-void BlockBossFrame::on_fNextSensorField1_textChanged(QString s)
-{
- fNextSensorField1->setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_fNextSensorField1Alt_textChanged(QString s)
-{
- fNextSensorField1Alt->setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_fNextSensorField2_textChanged(QString s)
-{
- fNextSensorField2->setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
-}
-void BlockBossFrame::on_fNextSensorField2Alt_textChanged(QString s)
-{
- fNextSensorField2Alt->setCompleter(((ProxySensorManager*)InstanceManager::sensorManagerInstance())->getCompleter(s));
 }
 
 /*public*/ QString BlockBossFrame::getClassName()
 {
  return "jmri.jmrit.blockboss.BlockBossFrame";
 }
+
+/**
+ * Set up editable NamedBeanComboBoxes for SSL pane.
+ * Copied from LayoutEditor
+ * @see jmri.jmrit.display.layoutEditor.LayoutEditor#setupComboBox(NamedBeanComboBox, boolean, boolean, boolean)
+ * @author G. Warner 2017
+ *
+ * @param inComboBox     the editable NamedBeanComboBoxes to set up
+ * @param inValidateMode boolean: if true, typed in text is validated; if
+ *                       false input text is not
+ * @param inEnable       boolean to enable / disable the NamedBeanComboBox
+ * @param inFirstBlank   boolean to enable / disable the first item being
+ *                       blank
+ */
+/*private*/ /*static*/ void BlockBossFrame::setupComboBox(/*@Nonnull*/ NamedBeanComboBox/*<?>*/* inComboBox, bool inValidateMode, bool inEnable, bool inFirstBlank) {
+    log->debug("SSL setupComboBox called");
+    inComboBox->setEnabled(inEnable);
+    inComboBox->setEditable(false);
+    inComboBox->setValidatingInput(inValidateMode);
+    inComboBox->setSelectedItem(nullptr);
+    inComboBox->setAllowNull(inFirstBlank);
+//    JComboBoxUtil::setupComboBoxMaxRows(inComboBox);
+    inComboBox->setSelectedIndex(-1);
+}
+
+/*private*/ /*static*/ /*final*/ Logger* BlockBossFrame::log = LoggerFactory::getLogger("BlockBossFrame");

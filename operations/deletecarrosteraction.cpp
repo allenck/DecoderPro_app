@@ -1,10 +1,11 @@
 #include "deletecarrosteraction.h"
-#include <QMessageBox>
+#include "joptionpane.h"
 #include "carstableframe.h"
 #include "carstablemodel.h"
 #include "track.h"
 #include "carmanager.h"
 #include "logger.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -18,12 +19,7 @@ namespace Operations
  ///*public*/ class DeleteCarRosterAction extends AbstractAction {
 
 
- /*public*/ DeleteCarRosterAction::DeleteCarRosterAction(QString actionName, QWidget* frame)
- : AbstractAction(actionName, frame)
- {
-  //super(actionName);
-  common();
- }
+
 
  /*public*/ DeleteCarRosterAction::DeleteCarRosterAction(CarsTableFrame* carsTableFrame)
     : AbstractAction(carsTableFrame->carsTableModel->trackName==""?tr("Delete"):tr("Delete cars on track"), carsTableFrame)
@@ -42,30 +38,27 @@ namespace Operations
  }
 
  //@Override
- /*public*/ void DeleteCarRosterAction::actionPerformed(ActionEvent* ae)
+ /*public*/ void DeleteCarRosterAction::actionPerformed(JActionEvent* /*ae*/)
  {
   if (_carsTableFrame->carsTableModel->trackName == NULL)
   {
-//         if (JOptionPane.showConfirmDialog(NULL, tr("carSureDelete"),
-//                 tr("carDeleteAll"), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-   if(QMessageBox::question(NULL, tr("Delete all cars?"), tr("Are you sure you want to delete all the cars in your roster?"),QMessageBox::Ok | QMessageBox::Cancel )== QMessageBox::Ok)
+   if (JOptionPane::showConfirmDialog(NULL,  tr("Are you sure you want to delete all the cars in your roster?"),
+             tr("Delete all cars?"), JOptionPane::OK_CANCEL_OPTION) == JOptionPane::OK_OPTION)
    {
     log->debug("removing all cars from roster");
-    CarManager::instance()->deleteAll();
+    ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->deleteAll();
    }
   }
   else
   {
-//         if (JOptionPane.showConfirmDialog(NULL, MessageFormat.format(tr("carDeleteCarsTrack"),
-//                 new Object[]{_carsTableFrame.carsTableModel.trackName}),
-//                 tr("carDeleteAll"), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-   if(QMessageBox::question(NULL, tr("Delete all cars?"), tr("Are you sure you want to delete all the cars on track %1?").arg(_carsTableFrame->carsTableModel->trackName),QMessageBox::Ok | QMessageBox::Cancel )== QMessageBox::Ok)
+ if (JOptionPane::showConfirmDialog(NULL, tr("Are you sure you want to delete all the cars on track %1?").arg(_carsTableFrame->carsTableModel->trackName),
+                 tr("Delete all cars?"), JOptionPane::OK_CANCEL_OPTION) == JOptionPane::OK_OPTION)
    {
-    foreach (RollingStock* car, *_carsTableFrame->carsTableModel->getSelectedCarList())
+    foreach (Car* car, *_carsTableFrame->carsTableModel->getSelectedCarList())
     {
-     CarManager::instance()->deregister(car);
+     ((CarManager*)InstanceManager::getDefault("Operations::CarManager"))->deregister((RollingStock*)car);
     }
    }
   }
  }
-}
+} // Operations namespace

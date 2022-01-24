@@ -1,5 +1,5 @@
 #include "scheduleitem.h"
-#include "propertychangesupport.h"
+#include "swingpropertychangesupport.h"
 #include "control.h"
 #include "propertychangeevent.h"
 #include "logger.h"
@@ -7,6 +7,7 @@
 #include "location.h"
 #include "xml.h"
 #include "locationmanager.h"
+#include "instancemanager.h"
 
 namespace Operations
 {
@@ -46,7 +47,7 @@ namespace Operations
  void ScheduleItem::common()
  {
   log = new Logger("ScheduleItem");
-  pcs = new PropertyChangeSupport(this);
+  pcs = new SwingPropertyChangeSupport(this, nullptr);
    _id = NONE;
   _sequenceId = 0; // used to determine order in schedule
    _random = NONE; // used to determine if random set out is needed
@@ -334,7 +335,7 @@ namespace Operations
          _ship = a;
      }
      if ((a = e.attribute(Xml::DESTINATION_ID)) != NULL) {
-         _destination = LocationManager::instance()->getLocationById(a);
+         _destination = ((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getLocationById(a);
      }
      if ((a = e.attribute(Xml::DEST_TRACK_ID)) != NULL && _destination != NULL) {
          _trackDestination = _destination->getTrackById(a);

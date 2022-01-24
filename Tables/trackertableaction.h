@@ -16,7 +16,9 @@ class LIBTABLESSHARED_EXPORT TrackerTableAction : public AbstractAction
 {
  Q_OBJECT
 public:
- explicit TrackerTableAction(QObject *parent = 0);
+ Q_INVOKABLE explicit TrackerTableAction(QObject *parent = 0);
+    ~TrackerTableAction() {}
+    TrackerTableAction(const TrackerTableAction&) : AbstractAction() {}
  static /*public*/ Tracker* markNewTracker(OBlock* block, QString name);
  static /*public*/ void stopTracker(Tracker* t) ;
  static /*public*/ void stopTrackerIn(OBlock* block);
@@ -25,7 +27,7 @@ public:
 signals:
 
 public slots:
- /*public*/ void actionPerformed(ActionEvent* e = 0);
+ /*public*/ void actionPerformed(JActionEvent* e = 0)override;
 
 private:
  static int STRUT_SIZE;// = 10;
@@ -40,10 +42,12 @@ friend class WarrantTableAction;
 friend class TableFrame;
 friend class TrackerTableModel;
 };
+Q_DECLARE_METATYPE(TrackerTableAction)
 
-class TableFrame : public JmriJFrame
+class TableFrame : public JmriJFrame, public PropertyChangeListener
 {
  Q_OBJECT
+    Q_INTERFACES(PropertyChangeListener)
  ///*private*/ static final long serialVersionUID = -56337259221744388L;
  /*private*/ TrackerTableModel* _model;
  /*private*/ JmriJFrame* _pickFrame;
@@ -67,12 +71,13 @@ TableFrame();
  /*public*/ void mouseExited(QMouseEvent* event);
  /*public*/ void mouseReleased(QMouseEvent* event);
  /*public*/ QString getClassName();
+ QObject* self() override {return (QObject*)this;}
 
 
 public slots:
  void on_doneButton_clicked();
  void on_refreshClicked();
- /*public*/ void propertyChange(PropertyChangeEvent* evt);
+ /*public*/ void propertyChange(PropertyChangeEvent* evt) override;
 
 private:
  /*private*/ void newTrackerDialog();

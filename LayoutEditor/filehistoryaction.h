@@ -12,7 +12,7 @@ public:
 signals:
 
 public slots:
- /*public*/ void actionPerformed(ActionEvent* /*e*/);
+ /*public*/ void actionPerformed(JActionEvent* /*e*/);
 private:
  void common();
 };

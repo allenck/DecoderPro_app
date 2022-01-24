@@ -4,7 +4,7 @@
 #include <QSlider>
 #include "propertychangeevent.h"
 #include "javaqt_global.h"
-#include <QLabel>
+#include "jlabel.h"
 #include <QBoxLayout>
 
 class ChangeListener;
@@ -28,7 +28,7 @@ public:
     /*public*/ void removeChangeListener(ChangeListener*);
     /*public*/ void setVisible(bool b);
     /*public*/ bool getValueIsAdjusting();
-    void setLabelTable(QHash<int,QLabel*> labelTable);
+    void setLabelTable(QMap<int, JLabel *> labelTable);
     void setMajorTickSpacing(int v);
     void setOrientation(Qt::Orientation);
     int value();
@@ -41,8 +41,6 @@ public:
     void setSingleStep(int v);
     void  setEnabled(bool b);
     bool isEnabled();
-    void sliderPressed();
-    void sliderReleased();
     bool getPaintTicks();
     bool getPaintLabels();
 
@@ -51,17 +49,19 @@ public:
 
 public slots:
     void onValueChanged(int v);
+    void sliderPressed();
+    void sliderReleased();
 
 private:
     /*private*/ void checkOrientation(int orientation);
     QVector<ChangeListener*> listeners;
-    QHash<int,QLabel*> labelTable;
+    QMap<int,JLabel*> labelTable;
     bool isAdjusting;
     bool bSetPaintTicks = true;
     bool bSetPaintLabels = true;
     void resizeEvent(QResizeEvent *event);
     QVBoxLayout* verticalLayout_2;
-    QHBoxLayout* horizontalLayout;
+    //QHBoxLayout* horizontalLayout;
     int tickSpacing;
     Qt::Orientation orientation;
     void layoutWidget();
@@ -71,7 +71,7 @@ private:
     int val;
     bool bPaintLabels;
     bool bPaintTicks;
-    void common();
+    void common(Qt::Orientation orientation);
 
  protected:
     /**

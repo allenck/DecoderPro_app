@@ -112,7 +112,7 @@ protected:
 };
 
 //@ServiceProvider(service = SignalMastAddPane.SignalMastAddPaneProvider.class)
-/*static*/ /*public*/ class MatrixSignalMastAddPaneProvider : public SignalMastAddPane::SignalMastAddPaneProvider {
+/*static*/ /*public*/ class MatrixSignalMastAddPaneProvider : public SignalMastAddPaneProvider {
  Q_OBJECT
 public:
     /** {@inheritDoc} */

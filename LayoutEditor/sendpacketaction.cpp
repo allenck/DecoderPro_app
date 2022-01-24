@@ -29,7 +29,7 @@ common();
 void SendPacketAction::common()
 {
     // disable ourself if there is no command Station object available
-    if (InstanceManager::getDefault("CommandStation") == nullptr) {
+    if (InstanceManager::getNullableDefault("CommandStation") == nullptr) {
         setEnabled(false);
     }
     connect(this, SIGNAL(triggered()), this, SLOT(actionPerformed()));
@@ -41,12 +41,12 @@ void SendPacketAction::common()
  common();
 }
 
-/*public*/ void SendPacketAction::actionPerformed(ActionEvent* /*e*/) {
+/*public*/ void SendPacketAction::actionPerformed(JActionEvent * /*e*/) {
     // create a SendPacketFrame
     SendPacketFrame* f = new SendPacketFrame();
     try {
         f->initComponents();
-    } catch (Exception ex) {
+    } catch (Exception* ex) {
         Logger::error("Exception: " /*+ ex.toString()*/);
     }
     f->setVisible(true);

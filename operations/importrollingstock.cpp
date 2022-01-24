@@ -46,7 +46,7 @@ namespace Operations
      QTextStream* in = NULL;
 //        try {
 //            in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8")); // NOI18N
-//        } catch (FileNotFoundException e) {
+//        } catch (FileNotFoundException* e) {
 //            return NULL;
 //        } catch (UnsupportedEncodingException e) {
 //            log.error("UTF-8 encoding not supported");

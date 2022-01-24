@@ -42,7 +42,7 @@ class TreePath;
 {
     Q_OBJECT
 public:
- TreeModel(QObject* parent) : QAbstractItemModel(parent) {}
+ TreeModel(QObject* parent = nullptr) : QAbstractItemModel(parent) {}
     /**
      * Returns the root of the tree.  Returns <code>null</code>
      * only if the tree has no nodes.

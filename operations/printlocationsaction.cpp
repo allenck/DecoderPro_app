@@ -7,7 +7,7 @@
 #include "setup.h"
 #include "control.h"
 #include <QCheckBox>
-#include <QPushButton>
+#include "jbutton.h"
 #include "cartypes.h"
 #include "enginetypes.h"
 #include "carmanager.h"
@@ -19,9 +19,10 @@
 #include "train.h"
 #include "routemanager.h"
 #include "route.h"
-#include <QGroupBox>
 #include <gridbaglayout.h>
 #include <QBoxLayout>
+#include "instancemanager.h"
+#include "borderfactory.h"
 
 namespace Operations
 {
@@ -77,7 +78,7 @@ namespace Operations
   printDetails = new QCheckBox(tr("Print Details"));
   printAnalysis = new QCheckBox(tr("Print Analysis"));
 
-  okayButton = new QPushButton(tr("Ok"));
+  okayButton = new JButton(tr("Ok"));
   charactersPerLine = 70;
   showStaging = false;
   lpof = NULL;
@@ -87,7 +88,7 @@ namespace Operations
 
  }
 
- /*public*/ void PrintLocationsAction::actionPerformed(ActionEvent* /*e*/) {
+ /*public*/ void PrintLocationsAction::actionPerformed(JActionEvent * /*e*/) {
      if (lpof == NULL) {
          lpof = new LocationPrintOptionFrame(this);
      } else {
@@ -138,7 +139,7 @@ namespace Operations
          {
              writer->close();
          }
-//     } catch (IOException we) {
+//     } catch (IOException* we) {
 //         log->error("Error printing PrintLocationAction: " + we);
 //     }
  }
@@ -174,7 +175,7 @@ namespace Operations
          usedLength += location->getUsedLength();
          numberRS += location->getNumberRS();
 
-         QList<Track*> yards = location->getTrackByNameList(Track::YARD);
+         QList<Track*> yards = location->getTracksByNameList(Track::YARD);
          if (yards.size() > 0) {
              // header
              writer->write(SPACE + tr("YardName") + NEW_LINE);
@@ -185,7 +186,7 @@ namespace Operations
              }
          }
 
-         QList<Track*> spurs = location->getTrackByNameList(Track::SPUR);
+         QList<Track*> spurs = location->getTracksByNameList(Track::SPUR);
          if (spurs.size() > 0) {
              // header
              writer->write(SPACE + tr("SpurName") + NEW_LINE);
@@ -196,7 +197,7 @@ namespace Operations
              }
          }
 
-         QList<Track*> interchanges = location->getTrackByNameList(Track::INTERCHANGE);
+         QList<Track*> interchanges = location->getTracksByNameList(Track::INTERCHANGE);
          if (interchanges.size() > 0) {
              // header
              writer->write(SPACE + tr("InterchangeName") + NEW_LINE);
@@ -207,7 +208,7 @@ namespace Operations
              }
          }
 
-         QList<Track*> stagingTracks = location->getTrackByNameList(Track::STAGING);
+         QList<Track*> stagingTracks = location->getTracksByNameList(Track::STAGING);
          if (stagingTracks.size() > 0) {
              // header
              writer->write(SPACE + tr("StagingName") + NEW_LINE);
@@ -248,13 +249,13 @@ namespace Operations
      QString s = padOutString(tr("Schedules"), MAX_NAME_LENGTH) + " " + tr("Location")
              + " - " + tr("SpurName") + NEW_LINE;
      writer->write(s);
-     QList<Schedule*> schedules = ScheduleManager::instance()->getSchedulesByNameList();
+     QList<Schedule*> schedules = ((ScheduleManager*)InstanceManager::getDefault("Operations::ScheduleManager"))->getSchedulesByNameList();
      foreach (Schedule* schedule, schedules) {
          foreach (Location* location, locations) {
              if (_location != NULL && location != _location) {
                  continue;
              }
-             QList<Track*> spurs = location->getTrackByNameList(Track::SPUR);
+             QList<Track*> spurs = location->getTracksByNameList(Track::SPUR);
              foreach (Track* spur, spurs) {
                  if (spur->getScheduleId()==(schedule->getId())) {
                      // pad out schedule name
@@ -320,7 +321,7 @@ namespace Operations
          writer->write(s);
          s = SPACE + location->getComment() + NEW_LINE;
          writer->write(s);
-         foreach (Track* track, location->getTrackByNameList(NULL)) {
+         foreach (Track* track, location->getTracksByNameList(NULL)) {
              if (track->getComment()!=(Track::NONE) || track->getCommentBoth()!=(Track::NONE) || track->getCommentPickup()!=(Track::NONE)
                      || track->getCommentSetout()!=(Track::NONE)) {
                  s = SPACE + track->getName() + NEW_LINE;
@@ -373,28 +374,28 @@ namespace Operations
          s = getLocationTypes(location);
          writer->write(s);
 
-         QList<Track*> yards = location->getTrackByNameList(Track::YARD);
+         QList<Track*> yards = location->getTracksByNameList(Track::YARD);
          if (yards.size() > 0) {
              s = SPACE + tr("YardName") + NEW_LINE;
              writer->write(s);
              printTrackInfo(location, yards);
          }
 
-         QList<Track*> spurs = location->getTrackByNameList(Track::SPUR);
+         QList<Track*> spurs = location->getTracksByNameList(Track::SPUR);
          if (spurs.size() > 0) {
              s = SPACE + tr("SpurName") + NEW_LINE;
              writer->write(s);
              printTrackInfo(location, spurs);
          }
 
-         QList<Track*> interchanges = location->getTrackByNameList(Track::INTERCHANGE);
+         QList<Track*> interchanges = location->getTracksByNameList(Track::INTERCHANGE);
          if (interchanges.size() > 0) {
              s = SPACE + tr("InterchangeName") + NEW_LINE;
              writer->write(s);
              printTrackInfo(location, interchanges);
          }
 
-         QList<Track*> stagings = location->getTrackByNameList(Track::STAGING);
+         QList<Track*> stagings = location->getTracksByNameList(Track::STAGING);
          if (stagings.size() > 0) {
              s = SPACE + tr("StagingName") + NEW_LINE;
              writer->write(s);
@@ -409,10 +410,10 @@ namespace Operations
 
  /*private*/ void PrintLocationsAction::printAnalysisSelected() //throws IOException
  {
-     CarManager* carManager = CarManager::instance();
+     CarManager* carManager = ((CarManager*)InstanceManager::getDefault("Operations::CarManager"));
      QList<Location*> locations = manager->getLocationsByNameList();
      QList<RollingStock*>* cars = carManager->getByLocationList();
-     QStringList carTypes = CarTypes::instance()->getNames();
+     QStringList carTypes = ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames();
 
      QString s = tr("Track Analysis") + NEW_LINE;
      writer->write(s);
@@ -494,7 +495,7 @@ namespace Operations
          if (_location != NULL && location != _location) {
              continue;
          }
-         QList<Track*> tracks = location->getTrackByNameList(trackType);
+         QList<Track*> tracks = location->getTracksByNameList(trackType);
          foreach (Track* track, tracks) {
              if (track->acceptsTypeName(carType)) {
                  trackLength = trackLength + track->getLength();
@@ -552,7 +553,7 @@ namespace Operations
              writer->write(getPickUpTrains(track));
              writer->write(getDestinations(track));
              writer->write(getSchedule(track));
-//         } catch (IOException we) {
+//         } catch (IOException* we) {
 //             log->error("Error printing PrintLocationAction: " + we);
 //         }
      }
@@ -565,7 +566,7 @@ namespace Operations
      int charCount = 0;
      int typeCount = 0;
 
-     foreach (QString type, CarTypes::instance()->getNames()) {
+     foreach (QString type, ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames()) {
          if (location->acceptsTypeName(type)) {
              typeCount++;
              charCount += type.length() + 2;
@@ -577,7 +578,7 @@ namespace Operations
          }
      }
 
-     foreach (QString type, EngineTypes::instance()->getNames()) {
+     foreach (QString type, ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->getNames()) {
          if (location->acceptsTypeName(type)) {
              typeCount++;
              charCount += type.length() + 2;
@@ -592,7 +593,7 @@ namespace Operations
          //buf = buf.mid(0, buf.length() - 2); // remove trailing separators
       buf = buf.mid(0, buf.length() - 2);
      }		// does this location accept all types?
-     if (typeCount == CarTypes::instance()->getNames().length() + EngineTypes::instance()->getNames().length()) {
+     if (typeCount == ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames().length() + ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->getNames().length()) {
          buf = QString(TAB + TAB + tr("LocationAcceptsAllTypes"));
      }
      buf.append(NEW_LINE);
@@ -604,7 +605,7 @@ namespace Operations
      int charCount = 0;
      int typeCount = 0;
 
-     foreach(QString type, CarTypes::instance()->getNames()) {
+     foreach(QString type, ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames()) {
          if (track->acceptsTypeName(type)) {
              typeCount++;
              charCount += type.length() + 2;
@@ -616,7 +617,7 @@ namespace Operations
          }
      }
 
-     foreach(QString type, EngineTypes::instance()->getNames()) {
+     foreach(QString type, ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->getNames()) {
          if (track->acceptsTypeName(type)) {
              typeCount++;
              charCount += type.length() + 2;
@@ -631,7 +632,7 @@ namespace Operations
          //buf = buf.mid(0, buf.length() - 2); // remove trailing separators
       buf = buf.mid(0,buf.length()-2);
      }		// does this track accept all types?
-     if (typeCount == CarTypes::instance()->getNames().length() + EngineTypes::instance()->getNames().length()) {
+     if (typeCount == ((CarTypes*)InstanceManager::getDefault("CarTypes"))->getNames().length() + ((EngineTypes*)InstanceManager::getDefault("EngineTypes"))->getNames().length()) {
          buf = QString(TAB + TAB + tr("TrackAcceptsAllTypes"));
      }
      buf.append(NEW_LINE);
@@ -751,7 +752,7 @@ namespace Operations
          }
          buf = QString(TAB + TAB + trainType + NEW_LINE + TAB + TAB);
          foreach (QString id, ids) {
-             Train* train = TrainManager::instance()->getTrainById(id);
+             Train* train = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainById(id);
              if (train == NULL) {
                  log->info("Could not find a train for id: " + id + " track (" + track->getName() + ")");
                  continue;
@@ -770,7 +771,7 @@ namespace Operations
          }
          buf = QString(TAB + TAB + routeType + NEW_LINE + TAB + TAB);
          foreach(QString id, ids) {
-             Route* route = RouteManager::instance()->getRouteById(id);
+             Route* route = ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"))->getRouteById(id);
              if (route == NULL) {
                  log->info("Could not find a route for id: " + id + " location (" + track->getLocation()->getName()
                          + ") track (" + track->getName() + ")"); // NOI18N
@@ -805,7 +806,7 @@ namespace Operations
          }
          buf = QString(TAB + TAB + trainType + NEW_LINE + TAB + TAB);
          foreach(QString id, ids) {
-             Train* train = TrainManager::instance()->getTrainById(id);
+             Train* train = ((TrainManager*)InstanceManager::getDefault("Operations::TrainManager"))->getTrainById(id);
              if (train == NULL) {
                  log->info("Could not find a train for id: " + id + " track (" + track->getName() + ")");
                  continue;
@@ -824,7 +825,7 @@ namespace Operations
          }
          buf = QString(TAB + TAB + routeType + NEW_LINE + TAB + TAB);
          foreach(QString id, ids) {
-             Route* route = RouteManager::instance()->getRouteById(id);
+             Route* route = ((RouteManager*)InstanceManager::getDefault("Operations::RouteManager"))->getRouteById(id);
              if (route == NULL) {
                  log->info("Could not find a route for id: " + id + " location (" + track->getLocation()->getName()
                          + ") track (" + track->getName() + ")"); // NOI18N
@@ -853,7 +854,7 @@ namespace Operations
              + tr("Destinations") + ":";
      if (track->getDestinationOption()==(Track::EXCLUDE_DESTINATIONS)) {
          op = tr("Exclude") + " "
-                 + (LocationManager::instance()->getNumberOfLocations() - track->getDestinationListSize()) + " "
+                 + QString::number(((LocationManager*)InstanceManager::getDefault("Operations::LocationManager"))->getNumberOfLocations() - track->getDestinationListSize()) + " "
                  + tr("Destinations") + ":";
      }
      QString buf = QString(TAB + TAB + op + NEW_LINE + TAB + TAB);
@@ -923,10 +924,9 @@ namespace Operations
          //super();
          this->pla = pla;
          // create panel
-         QGroupBox* pPanel = new QGroupBox();
+         JPanel* pPanel = new JPanel();
          pPanel->setLayout(new GridBagLayout());
-         //pPanel.setBorder(BorderFactory.createTitledBorder(tr("PrintOptions")));
-         pPanel->setStyleSheet(gbStyleSheet);
+         pPanel->setBorder(BorderFactory::createTitledBorder(tr("Print Options")));
          addItemLeft(pPanel, pla->_printLocations, 0, 0);
          addItemLeft(pPanel, pla->printSchedules, 0, 3);
          addItemLeft(pPanel, pla->printComments, 0, 5);
@@ -972,4 +972,4 @@ namespace Operations
   return "jmri.jmrit.operations.locations.tools.LocationPrintOptionFrame";
  }
 
-}
+} // Operations namespace

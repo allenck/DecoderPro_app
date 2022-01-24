@@ -13,15 +13,17 @@ public:
  /*public*/ InternalTurnoutManager(InternalSystemConnectionMemo* memo, QObject* parent = nullptr);
  /*public*/ SystemConnectionMemo* getMemo() override;
  /*public*/ bool allowMultipleAdditions(QString systemName) override;
- /*public*/ QString createSystemName(QString curAddress, QString prefix) const throw (JmriException) override;
+ /*public*/ QString createSystemName(QString curAddress, QString prefix)  /*throw (JmriException)*/ override;
  /*public*/ QStringList getValidOperationTypes() override;
  /*public*/ QString getEntryToolTip() override;
  /*public*/ QString getNamedBeanClass()const override {
      return "Turnout";
  }
+ /*public*/ QString toString() {return "InternalTurnoutManager";}
+  QObject* self() override {return (QObject*)this;}
 
 protected:
-/*protected*/ Turnout* createNewTurnout(QString systemName, QString userName) const;
+/*protected*/ Turnout* createNewTurnout(QString systemName, QString userName) ;
 /*protected*/ QString prefix; // = "I";
 
 };

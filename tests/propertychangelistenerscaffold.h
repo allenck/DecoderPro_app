@@ -2,18 +2,19 @@
 #define PROPERTYCHANGELISTENERSCAFFOLD_H
 #include "propertychangelistener.h"
 
-class PropertyChangeListenerScaffold : public PropertyChangeListener
+class PropertyChangeListenerScaffold : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+Q_INTERFACES(PropertyChangeListener)
 public:
- PropertyChangeListenerScaffold(QObject* parent = nullptr);
+ PropertyChangeListenerScaffold();
  /*public*/ void resetPropertyChanged();
  /*public*/ bool getPropertyChanged();
  /*public*/ int getCallCount();
  /*public*/ QString getLastProperty();
  /*public*/ QVariant getLastValue();
  /*public*/ void onChange(QString property, QVariant newValue);
-
+QObject* self() {return (QObject*)this;}
 public slots:
  //@Override
  /*public*/ void propertyChange(PropertyChangeEvent* propertyChangeEvent);

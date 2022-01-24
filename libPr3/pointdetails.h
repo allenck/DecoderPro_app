@@ -60,7 +60,7 @@ public:
     void setButtonState(int state);
     /*synchronized*/ /*public*/ void setNXButtonState(int state);
     /*public*/ void setRefObjectByPanel(NamedBean* refObs, LayoutEditor* pnl);
-    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+    SwingPropertyChangeSupport* pcs;// = new SwingPropertyChangeSupport(this, nullptr);
     /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l) ;
     /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
 
@@ -143,15 +143,17 @@ public:
     }
 };
 
-class NxButtonListener : public PropertyChangeListener
+class NxButtonListener : public QObject, public PropertyChangeListener
 {
  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
  PointDetails* pd;
 public:
  NxButtonListener(PointDetails* pd) {this->pd = pd;}
- void propertyChange(PropertyChangeEvent* e)
+ void propertyChange(PropertyChangeEvent* e) override
  {
   pd->nxButtonStateChange(e);
  }
+ QObject* self() override{return (QObject*)this;}
 };
 #endif // POINTDETAILS_H

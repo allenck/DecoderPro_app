@@ -47,7 +47,7 @@ void JmriServer::common(int port, int timeout)
 #if 0
     try {
         this.connectSocket = new ServerSocket(port);
-    } catch (IOException e) {
+    } catch (IOException* e) {
         log.error("Failed to connect to port " + port);
     }
 #endif
@@ -142,7 +142,7 @@ class newClientListener implements Runnable {
                 log.debug(" Client Connected from IP {} port {}", clientSocket.getInetAddress(), clientSocket.getPort());
                 addClient(new ClientListener(clientSocket));
             }
-        } catch (IOException e) {
+        } catch (IOException* e) {
             log.error("IOException while Listening for clients");
         }
     }
@@ -153,7 +153,7 @@ class newClientListener implements Runnable {
         try {
             listenSocket.close();
             log.debug("Listen Socket closed");
-        } catch (IOException e) {
+        } catch (IOException* e) {
             log.error("socket in ThreadedServer won't close");
         }
     }
@@ -180,7 +180,7 @@ try {
     inStream = new DataInputStream(clientSocket.getInputStream());
 
     outStream = new DataOutputStream(clientSocket.getOutputStream());
-} catch (IOException e) {
+} catch (IOException* e) {
     log->error("Error obtaining I/O Stream from socket.");
 }
 }
@@ -194,7 +194,7 @@ clientThread->start();
 try {
     server->stopClient(inStream, outStream);
     clientSocket.close();
-} catch (IOException e) {
+} catch (IOException* e) {
     // silently ignore, since we may be reacting to a closed socket
 }
 clientThread = NULL;
@@ -205,14 +205,14 @@ clientThread = NULL;
 // handle a client.
 try {
     handleClient(inStream, outStream);
-} catch (IOException ex) {
+} catch (IOException* ex) {
     // When we get an IO exception here, we're done
     log->debug("Server Exiting");
     // Unregister with the server
     removeClient(this);
-} catch (NullPointerException ex) {
+} catch (NullPointerException* ex) {
     // When we get an IO exception here, we're done with this client
-    log->debug("Client Disconnect", ex.getMessage());
+    log->debug("Client Disconnect", ex->getMessage());
     // Unregister with the server
     removeClient(this);
 }

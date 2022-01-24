@@ -1095,7 +1095,7 @@ void DecoratorPanel::on_bgColorBox()
 //                    DnDConstants.ACTION_COPY, this);
 //        try {
             dataFlavor = new DataFlavor(Editor::POSITIONABLE_FLAVOR);
-//        } catch (ClassNotFoundException cnfe) {
+//        } catch (ClassNotFoundException* cnfe) {
 //            cnfe.printStackTrace();
 //        }
     }

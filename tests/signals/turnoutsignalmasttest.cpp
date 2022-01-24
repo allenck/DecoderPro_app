@@ -47,7 +47,7 @@ TurnoutSignalMastTest::TurnoutSignalMastTest(QObject *parent) : QObject(parent)
 
         try {
             t->setAspect("Marblesnarb");
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             JUnitAppender::assertWarnMessage("attempting to set invalid aspect: Marblesnarb on mast: IF$tsm:basic:one-searchlight($1)", __FILE__, __LINE__);
             return;
         }
@@ -81,7 +81,7 @@ TurnoutSignalMastTest::TurnoutSignalMastTest(QObject *parent) : QObject(parent)
 
         try {
             t->setAspect("Marblesnarb");
-        } catch (IllegalArgumentException ex) {
+        } catch (IllegalArgumentException* ex) {
             JUnitAppender::assertWarnMessage("attempting to set invalid aspect: Marblesnarb on mast: IF$tsm:basic:one-searchlight($1)", __FILE__, __LINE__);
             return;
         }

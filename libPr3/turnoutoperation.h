@@ -8,9 +8,10 @@
 
 class Turnout;
 class TurnoutOperator;
-class LIBPR3SHARED_EXPORT TurnoutOperation  : public QObject//: Comparable<QObject>
+class LIBPR3SHARED_EXPORT TurnoutOperation  : public SwingPropertyChangeSupport//: Comparable<QObject>
 {
  Q_OBJECT
+  //Q_INTERFACES(SwingPropertyChangeSupport);
 public:
     explicit TurnoutOperation(QString n,QObject *parent = 0);
     TurnoutOperation(TurnoutOperation&);
@@ -90,10 +91,10 @@ public:
     /*
      * property change support
      */
-    PropertyChangeSupport* pcs;// = new PropertyChangeSupport(this);
+    SwingPropertyChangeSupport* pcs;// = new SwingPropertyChangeSupport(this, nullptr);
 
-    /*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
-    /*public synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
+//    /*public synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l);
+//    /*public synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l);
     /**
      * @param mode feedback mode for a turnout
      * @return	true iff this operation's feedback mode is one we know how to deal with
