@@ -12,10 +12,11 @@ PerformActionModel::PerformActionModel(QObject *parent) :
 /*protected*/ void PerformActionModel::performAction(Action* action) /*throw (JmriException)*/
 {
  QString prefs = QString("prefs");
- JActionEvent* event = new JActionEvent((QObject*)&prefs, 0, ""); // TODO:
- //action->actionPerformed(event);
- connect(this, SIGNAL(actionPerformed(JActionEvent*)), action, SLOT(actionPerformed(JActionEvent*)));
- emit actionPerformed(event);
+ JActionEvent* event = new JActionEvent((QObject*)&prefs, 0, "");
+ log->debug(tr("performAction '%1'").arg(action->text()));// TODO:
+ action->actionPerformed(event);
+// connect(this, SIGNAL(actionPerformed(JActionEvent*)), action, SLOT(actionPerformed(JActionEvent*)));
+// emit actionPerformed(event);
 }
 /**
  * Invokes a Swing Action

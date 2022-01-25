@@ -1,6 +1,6 @@
 #ifndef MODULEMANAGER_H
 #define MODULEMANAGER_H
-#include "manager.h"
+#include "../../appslib/manager.h"
 #include "module.h"
 #include "printwriter.h"
 
@@ -49,11 +49,11 @@ class MutableInt;
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ NamedBean* getByUserName(QString name) const override;
+    /*public*/ NamedBean* getByUserName(QString name)  override;
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ NamedBean* getBySystemName(QString name) const override;
+    /*public*/ NamedBean* getBySystemName(QString name)  override;
 
     /**
      * Create a new system name for a Module.

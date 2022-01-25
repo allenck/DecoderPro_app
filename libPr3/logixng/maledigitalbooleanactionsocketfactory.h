@@ -1,10 +1,6 @@
-#ifndef BASEMANAGER_H
-#define BASEMANAGER_H
-
-#include "../../appslib/manager.h"
-#include "malesocket.h"
-#include "malesocketfactory.h"
-
+#ifndef MALEDIGITALBOOLEANACTIONSOCKETFACTORY_H
+#define MALEDIGITALBOOLEANACTIONSOCKETFACTORY_H
+#include "basemanager.h"
 /**
  * Base interface for the LogixNG action and expression managers.
  *
@@ -13,9 +9,7 @@
  * @author Daniel Bergqvist 2020
  */
 template<class E>
-/*public*/ /*interface*/class BaseManager : public Manager/*<E>*/ /*<E extends NamedBean> extends Manager<E>*/
-{
-  Q_INTERFACES(Manager/*<E>*/)
+/*public*/ /*interface*/ BaseManager<E> /*extends NamedBean>*/ : Manager<E> {
 
     /**
      * Remember a NamedBean Object created outside the manager.
@@ -28,7 +22,7 @@ template<class E>
      *                                                system name is already registered in
      *                                                the manager
      */
-    /*public*/virtual E _registerBean(/*@Nonnull*/ E maleSocket)=0;
+    public E registerBean(@Nonnull E maleSocket);
 
     /**
      * Method for a UI to delete a bean.
@@ -49,25 +43,26 @@ template<class E>
      * @throws java.beans.PropertyVetoException If the recipients wishes the
      *                                          delete to be aborted (see above)
      */
-    /*public*/ virtual void deleteBean(/*@Nonnull*/ MaleSocket* maleSocket, /*@Nonnull*/ QString property) throw (PropertyVetoException)=0;
+    public void deleteBean(@Nonnull MaleSocket maleSocket, @Nonnull String property) throws PropertyVetoException;
 
     /**
      * Get the default male socket class
      * @return the class
      */
-    /*public*/ virtual Class/*<? extends MaleSocket>*/* getMaleSocketClass()=0;
+    public Class<? extends MaleSocket> getMaleSocketClass();
 
     /**
      * Get the last item registered in the mananger.
      * @return the last item
      */
-    /*public*/ virtual MaleSocket* getLastRegisteredMaleSocket()=0;
+    public MaleSocket getLastRegisteredMaleSocket();
 
     /**
      * Register a male socket factory.
      * @param factory the factory
      */
-    /*public*/ virtual void registerMaleSocketFactory(MaleSocketFactory<E> factory)=0;
+    public void registerMaleSocketFactory(MaleSocketFactory<E> factory);
 
 };
-#endif // BASEMANAGER_H
+
+#endif // MALEDIGITALBOOLEANACTIONSOCKETFACTORY_H

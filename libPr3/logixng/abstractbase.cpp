@@ -2,6 +2,8 @@
 #include "loggerfactory.h"
 #include "femalesocket.h"
 #include "runtimeexception.h"
+#include "conditionalng.h"
+#include "logixng.h"
 
 /**
  * The abstract class that is the base class for all LogixNG classes that
@@ -238,7 +240,7 @@
     /*protected*/ void AbstractBase::assertListenersAreNotRegistered(Logger* log, QString method) {
         if (_listenersAreRegistered) {
             RuntimeException* e = new RuntimeException(method + " must not be called when listeners are registered");
-            log->error(method + " must not be called when listeners are registered", *e);
+            log->error(method + " must not be called when listeners are registered", e);
             throw *e;
         }
     }

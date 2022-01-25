@@ -127,7 +127,6 @@ DEFINES += USE_THREAD
 
 ENABLE_LOGIXNG = "N" # change to "Y" to compile LogixNG modules
 SOURCES += \
- #abstractproxymanager.cpp \
  Signal/abstractmrnodetrafficcontroller.cpp \
  Signal/abstractnode.cpp \
  Signal/acelaaddress.cpp \
@@ -164,7 +163,7 @@ SOURCES += \
     lnconstants.cpp \
     llnmon.cpp \
     namedbeancombobox.cpp \
- otherconnectiontypelist.cpp \
+    otherconnectiontypelist.cpp \
     serialport.cpp \
     dccmanufacturerlist.cpp \
     lnconnectiontypelist.cpp \
@@ -211,7 +210,6 @@ SOURCES += \
     lnreporter.cpp \
     lnreportermanager.cpp \
     timebase.cpp \
-    #abstractproxymanager.cpp \
     pr3systemconnectionmemo.cpp \
     proxyreportermanager.cpp \
     proxysensormanager.cpp \
@@ -1130,10 +1128,12 @@ SOURCES += \
     logix/learnfunctionpanel.cpp \
     logix/learncontrolpanel.cpp \
     logix/learnspeedpanel.cpp
-#    Throttle/throttleframe.cpp
+
 
 equals(ENABLE_LOGIXNG, "Y") {
+ DEFINES += HAVE_LOGIXNG
  SOURCES += \
+ #logixng/manager.cpp\
  logixng/abortconditionalngexecutionexception.cpp \
  logixng/abstractmalesocket.cpp \
  logixng/base.cpp \
@@ -1141,6 +1141,8 @@ equals(ENABLE_LOGIXNG, "Y") {
  logixng/defaultlogixng.cpp \
  logixng/defaultlogixngmanager.cpp \
  logixng/defaultlogixngmanagerxml.cpp \
+ logixng/errorhandlingdialog.cpp \
+ logixng/errorhandlingdialog_multiline.cpp \
  logixng/logixng_thread.cpp \
  logixng/socketalreadyconnectedexception.cpp \
  logixng/abstractbase.cpp \
@@ -1148,6 +1150,7 @@ equals(ENABLE_LOGIXNG, "Y") {
  logixng/clipboardmany.cpp \
  logixng/defaultclipboard.cpp \
  logixng/defaultfemaleanysocket.cpp
+
 }
 
  !contains(FTDI, 1) {
@@ -1192,7 +1195,7 @@ HEADERS += \
     lnconstants.h \
     llnmon.h \
     namedbeancombobox.h \
- otherconnectiontypelist.h \
+    otherconnectiontypelist.h \
     serialport.h \
     dccmanufacturerlist.h \
     lnconnectiontypelist.h \
@@ -1252,7 +1255,6 @@ HEADERS += \
     reporter.h \
     lnreportermanager.h \
     timebase.h \
-    #abstractproxymanager.h \
     pr3systemconnectionmemo.h \
     proxyreportermanager.h \
     proxysensormanager.h \
@@ -2268,7 +2270,6 @@ HEADERS += \
     abstractprogrammerserver.h \
     searchbar.h \
     cvutil.h
-#    Throttle/throttleframe.h
 
 
  !contains(FTDI, 1) {
@@ -2277,6 +2278,64 @@ HEADERS += \
  equals(ENABLE_LOGIXNG, "Y") {
 
  HEADERS += \
+ #logixng/manager.h\
+ logixng/Table.h \
+ logixng/maleanalogactionsocketfactory.h \
+ logixng/maleanalogexpressionsocket.h \
+ logixng/maledigitalactionsocket.h \
+ logixng/maledigitalactionsocketfactory.h \
+ logixng/maledigitalbooleanactionsocketfactory.h \
+ logixng/maledigitalexpressionsocketfactory.h \
+ logixng/malestringactionsocket.h \
+ logixng/malestringactionsocketfactory.h \
+ logixng/malestringexpressionsocket.h \
+ logixng/malestringexpressionsocketfactory.h \
+ logixng/namedbeanaddressing.h \
+ logixng/namedtable.h \
+ logixng/stringaction.h \
+ logixng/stringactionbean.h \
+ logixng/stringactionfactory.h \
+ logixng/stringactionmanager.h \
+ logixng/stringexpressionbean.h \
+ logixng/stringexpressionfactory.h \
+ logixng/stringexpressionmanager.h \
+ logixng/tableroworcolumn.h \
+ logixng/Analogexpressionbean.h \
+ logixng/abortconditionalexecutionexception.h \
+ logixng/analogaction.h \
+ logixng/analogactionbean.h \
+ logixng/analogactionfactory.h \
+ logixng/analogactionmanager.h \
+ logixng/analogexpression.h \
+ logixng/analogexpressionfactory.h \
+ logixng/analogexpressionmanager.h \
+ logixng/anonymoustable.h \
+ logixng/digitalaction.h \
+ logixng/digitalactionbean.h \
+ logixng/digitalactionfactory.h \
+ logixng/digitalactionmanager.h \
+ logixng/digitalbooleanaction.h \
+ logixng/digitalbooleanactionbean.h \
+ logixng/digitalbooleanactionfactory.h \
+ logixng/digitalbooleanactionmanager.h \
+ logixng/digitalexpression.h \
+ logixng/digitalexpressionbean.h \
+ logixng/digitalexpressionmanager.h \
+ logixng/femaleanalogactionsocket.h \
+ logixng/femaleanalogexpressionsocket.h \
+ logixng/femaledigitalactionsocket.h \
+ logixng/femaledigitalbooleanactionsocket.h \
+ logixng/femaledigitalexpressionsocket.h \
+ logixng/femalegenericexpressionsocket.h \
+ logixng/femalesocketfactory.h \
+ logixng/femalestringactionsocket.h \
+ logixng/femalestringexpressionsocket.h \
+ logixng/is_isnot_enum.h \
+ logixng/maleanalogactionsocket.h \
+ logixng/maledigitalbooleanactionsocket.h \
+ logixng/maledigitalexpressionsocket.h \
+ logixng/stringexpression.h \
+ logixng/abstractlogixngeditor.h \
  logixng/abortconditionalngexecutionexception.h \
  logixng/abstractmalesocket.h \
  logixng/base.h \
@@ -2288,6 +2347,8 @@ HEADERS += \
  logixng/defaultlogixng.h \
  logixng/defaultlogixngmanager.h \
  logixng/defaultlogixngmanagerxml.h \
+ logixng/errorhandlingdialog.h \
+ logixng/errorhandlingdialog_multiline.h \
  logixng/femalesocket.h \
  logixng/femalesocketmanager.h \
  logixng/logixng.h \

@@ -40,6 +40,7 @@ public:
  /*public*/  virtual void addPropertyChangeListener(PropertyChangeListener* listener);
  /*public*/  virtual void removePropertyChangeListener(PropertyChangeListener* listener);
  /*public*/  virtual QVariant getValue(QString /*key*/) {return QVariant();}
+ /*public*/ virtual void setTitle(QString) {}
 
  QObject* self() override {return (QObject*)this;}
 signals:

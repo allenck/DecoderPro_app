@@ -14,6 +14,7 @@ class LogixNG_Thread;
  */
 /*public*/ /*interface*/class ConditionalNG /*extends*/ : public Base, public NamedBean {
  Q_INTERFACES(Base NamedBean)
+ public:
     /**
      * Get the thread that this conditionalNG executes on.
      * @return the thread

@@ -15,13 +15,12 @@ class DefaultLogixNGManager : public AbstractManager, public LogixNG_Manager
  public:
   DefaultLogixNGManager(QObject* parent =nullptr);
   /*public*/ int getXMLOrder() const override;
-  /*public*/ char typeLetter() const override;
-  /*public*/ NameValidity validSystemNameFormat(QString systemName)const override;
+  /*public*/ QChar typeLetter()  override;
   /*public*/ LogixNG* createLogixNG(QString systemName, QString userName) throw (IllegalArgumentException) override;
   /*public*/ LogixNG* createLogixNG(QString userName) throw (IllegalArgumentException) override;
   /*public*/ LogixNG* getLogixNG(QString name) override;
-  /*public*/ LogixNG* getByUserName(QString name)const override;
-  /*public*/ LogixNG* getBySystemName(QString name) const override;
+  /*public*/ LogixNG* getByUserName(QString name) override;
+  /*public*/ LogixNG* getBySystemName(QString name)  override;
   /*public*/ QString getBeanTypeHandled(bool plural) const override;
   /*public*/ void setupAllLogixNGs() override;
   /*public*/ void activateAllLogixNGs()override;

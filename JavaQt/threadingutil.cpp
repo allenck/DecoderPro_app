@@ -121,7 +121,7 @@ ThreadingUtil::ThreadingUtil(QObject *parent) : QObject(parent)
 //            }
 //        }
     }
-#if 0
+
     /**
      * Run some GUI-specific code before returning a value.
      * <p>
@@ -140,7 +140,9 @@ ThreadingUtil::ThreadingUtil(QObject *parent) : QObject(parent)
      * @param ta What to run, usually as a lambda expression
      * @return the value returned by ta
      */
-    static /*public*/ <E> E runOnGUIwithReturn(@Nonnull ReturningThreadAction<E> ta) {
+    template<class E>
+    /*static*/ /*public*/ /*<E>*/ E ThreadingUtil::runOnGUIwithReturn(/*@Nonnull*/ /*ReturningThreadAction<E>*/ThreadAction* ta) {
+#if 0 // TODO:
         if (isGUIThread()) {
             // run now
             return ta.run();
@@ -162,8 +164,9 @@ ThreadingUtil::ThreadingUtil(QObject *parent) : QObject(parent)
             }
             return result.get();
         }
+#endif
     }
-
+#if 0
     /**
      * Run some GUI-specific code at some later point.
      * <p>

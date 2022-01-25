@@ -137,7 +137,8 @@
  try
  {
   Action* action = (Action*) Class::forName(className)/*->newInstance()*/;
-  //if (SystemConnectionAction.class.isAssignableFrom(action->getClass()))
+  action->setTitle(title);
+   //if (SystemConnectionAction.class.isAssignableFrom(action->getClass()))
   if(((Class*)action)->isAssignableFrom("SystemConnectionAction"))
   {
    SystemConnectionMemo* memo = ConnectionNameFromSystemName::getSystemConnectionMemoFromSystemPrefix(this->getSystemPrefix());

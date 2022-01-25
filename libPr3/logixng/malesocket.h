@@ -6,11 +6,10 @@
 //#include "base.h"
 #include "debugable.h"
 #include "symboltable.h"
-
+#include "basemanager.h"
 
 class VariableData;
 class InitialValueType;
-class BaseManager;
 /**
  * A LogixNG male socket.
  *
@@ -182,7 +181,7 @@ class BaseManager;
      *
      * @return the manager
      */
-    /*public*/ virtual BaseManager/*<? extends NamedBean>*/* getManager()=0;
+    /*public*/ virtual BaseManager<NamedBean*>*/*<? extends NamedBean>*/* getManager()=0;
 
     /** {@inheritDoc} */
     //@Override

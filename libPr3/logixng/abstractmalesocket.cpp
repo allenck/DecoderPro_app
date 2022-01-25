@@ -6,7 +6,7 @@
 #include "threadingutil.h"
 #include "abortconditionalngexecutionexception.h"
 #include "loggerfactory.h"
-
+#include "errorhandlingdialog.h"
 /**
  * The abstract class that is the base class for all LogixNG classes that
  * implements the Base interface.
@@ -595,15 +595,15 @@
         switch (errorHandlingType) {
             case ErrorHandlingType::ShowDialogBox:
             {
-                bool abort = ThreadingUtil::runOnGUIwithReturn(() -> {
-                    ErrorHandlingDialog dialog = new ErrorHandlingDialog();
-                    return dialog.showDialog(item, message);
+                bool abort = ThreadingUtil::runOnGUIwithReturn([=]()  {
+                    ErrorHandlingDialog* dialog = new ErrorHandlingDialog();
+                    return dialog->showDialog(item, message);
                 });
                 if (abort) throw  AbortConditionalNGExecutionException(e);
                 break;
             }
             case ErrorHandlingType::LogError:
-                log->error(tr("item %1, %2 thrown an exception: %3").arg(item->toString(), getObject()->toString(), e->getMessage()), *e);
+                log->error(tr("item %1, %2 thrown an exception: %3").arg(item->toString(), getObject()->toString(), e->getMessage()), e);
                 break;
 
             case ErrorHandlingType::LogErrorOnce:
@@ -614,7 +614,7 @@
                 throw e;
 
             case ErrorHandlingType::AbortExecution:
-                log->error(tr("item %1, %2 thrown an exception: %3").arg(item->toString(), getObject()->toString(), e->getMessage()), *e);
+                log->error(tr("item %1, %2 thrown an exception: %3").arg(item->toString(), getObject()->toString(), e->getMessage()), e);
                 throw  AbortConditionalNGExecutionException(e);
 
             default:

@@ -14,6 +14,8 @@ class ThreadingUtil : public QObject
   static /*public*/ QThread* newThread(Runnable* runner);
   static /*public*/ QThread* newThread(Runnable* runner, QString name);
   static /*public*/ void runOnGUI(/*@Nonnull*/ ThreadAction* ta);
+  template<class E>
+  static /*public*/ /*<E>*/ E runOnGUIwithReturn(/*@Nonnull*/ /*ReturningThreadAction<E>*/ThreadAction* ta);
 
  signals:
 

@@ -10,7 +10,7 @@ public:
  LocoNetMenuStartupAction(QString title, QObject *parent = 0);
  ~LocoNetMenuStartupAction() {}
  LocoNetMenuStartupAction(const LocoNetMenuStartupAction& that) : AbstractAction(that.parent()){}
- void setTitle(QString);
+ void setTitle(QString)override;
 
 public slots:
  void actionPerformed(JActionEvent* = 0);
