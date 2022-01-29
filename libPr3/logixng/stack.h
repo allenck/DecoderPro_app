@@ -13,27 +13,27 @@
      * Pushes a value on the top of the stack so the stack grow.
      * @param value the value to push to the stack
      */
-    /*public*/ virtual void push(QObject* value)=0;
+    /*public*/ virtual void push(QVariant value)=0;
 
     /**
      * Pops the topmost value off the top of the stack so the stack shrinks.
      * @return the value that is on the top of the stack
      */
-    /*public*/ virtual QObject* pop()=0;
+    /*public*/ virtual QVariant pop()=0;
 
     /**
      * Get the value at an index
      * @param index the index from bottom of the table
      * @return value the new value
      */
-    /*public*/ virtual QObject getValueAtIndex(int index)=0;
+    /*public*/ virtual QVariant getValueAtIndex(int index)=0;
 
     /**
      * Set the value at an index
      * @param index the index from bottom of the table
      * @param value the new value
      */
-    /*public*/ virtual void setValueAtIndex(int index, QObject* value)=0;
+    /*public*/ virtual void setValueAtIndex(int index, QVariant value)=0;
 
     /**
      * Get the number of items on the stack

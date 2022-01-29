@@ -4,7 +4,7 @@
 #include "exceptions.h"
 #include <QSet>
 #include "printwriter.h"
-
+#include <QMetaEnum>
 class Stack;
 class VariableData;
 class Symbol;
@@ -15,24 +15,44 @@ class Symbol;
  */
 /*public*/ /*interface*/ class SymbolTable {
 
-    /**
+ public:
+  /**
+   * The definition of the symbol
+   */
+  /*public*/ /*interface*/class Symbol {
+   public:
+      /**
+       * The name of the symbol
+       * @return the name
+       */
+      /*public*/ virtual QString getName();
+
+      /**
+       * The index on the stack for this symbol
+       * @return the index
+       */
+      /*public*/ virtual int getIndex();
+
+  };
+
+  /**
      * The list of symbols in the table
      * @return the symbols
      */
-    /*public*/ virtual QMap<QString, Symbol> getSymbols()=0;
+    /*public*/ virtual QMap<QString, Symbol*> getSymbols()=0;
 
     /**
      * The list of symbols and their values in the table
      * @return the name of the symbols and their values
      */
-    /*public*/ virtual QMap<QString, QObject*> getSymbolValues()=0;
+    /*public*/ virtual QMap<QString, QVariant> getSymbolValues()=0;
 
     /**
      * Get the value of a symbol
      * @param name the name
      * @return the value
      */
-    /*public*/ virtual QObject* getValue(QString name)=0;
+    /*public*/ virtual QVariant getValue(QString name)=0;
 
     /**
      * Is the symbol in the symbol table?
@@ -46,7 +66,7 @@ class Symbol;
      * @param name the name
      * @param value the value
      */
-    /*public*/ virtual void setValue(QString name, QObject* value);
+    /*public*/ virtual void setValue(QString name, QVariant value);
 
     /**
      * Add new symbols to the symbol table
@@ -75,14 +95,14 @@ class Symbol;
      * @param symbolDefinitions the definitions of the symbols to be removed
      * @throws JmriException if an exception is thrown
      */
-    /*public*/ virtual void removeSymbols(/*Collection<? extends VariableData>*/QSet<VariableData*> symbolDefinitions)
-            /*throw (JmriException)*/;
+    /*public*/ virtual void removeSymbols(/*Collection<? extends VariableData>*/QSet<VariableData> symbolDefinitions)
+            /*throw (JmriException)*/=0;
 
     /**
      * Print the symbol table on a stream
      * @param stream the stream
      */
-    /*public*/ virtual void printSymbolTable(PrintWriter* stream);
+    /*public*/ virtual void printSymbolTable(PrintWriter* stream)=0;
 
     /**
      * Validates the name of a symbol
@@ -111,113 +131,91 @@ class Symbol;
 
 
 
+      /*public*/ /*static*/ class SymbolNotFound : public IllegalArgumentException {
+       public:
+          /*public*/ SymbolNotFound(QString message) :  IllegalArgumentException(message){
+              //super(message);
+          }
+      };
 
+      /**
+       * An enum that defines the types of initial value.
+       */
+      /*public*/ /*enum*/class InitialValueType {
+        Q_OBJECT
+      public:
+          enum TYPES {None, Integer, FloatingNumber, String, LocalVariable, Memory, Reference, Formula};
+          Q_ENUM(TYPES)
+      //        None(Bundle.getMessage("InitialValueType_None")),
+      //        Integer(Bundle.getMessage("InitialValueType_Integer")),
+      //        FloatingNumber(Bundle.getMessage("InitialValueType_FloatingNumber")),
+      //        String(Bundle.getMessage("InitialValueType_String")),
+      //        LocalVariable(Bundle.getMessage("InitialValueType_LocalVariable")),
+      //        Memory(Bundle.getMessage("InitialValueType_Memory")),
+      //        Reference(Bundle.getMessage("InitialValueType_Reference")),
+      //        Formula(Bundle.getMessage("InitialValueType_Formula"));
+      private:
+          /*private*/ /*final*/ QString _descr;
+          TYPES t;
+          QMap<QString, TYPES> map = {
+           {tr("None"), None}, {tr("Integer"), Integer}, {tr("Floating number"), FloatingNumber}, {tr("String"), String},
+           {tr("Local variable"), LocalVariable}, {tr("Memory"), Memory}, {tr("Reference"), Reference}, {tr("Formula"), Formula}
+          };
+          /*private*/ InitialValueType(QString descr) {
+              _descr = descr;
+              t=map.value(descr);
+          }
+      public:
+          //@Override
+          /*public*/ static QString toString(TYPES t) {
+             switch(t)
+             {
+              case None:
+                return tr("None");
+             case Integer:
+              return tr("Integer");
+             case FloatingNumber:
+              return tr("FloatigNumber");
+             case String:
+              return tr("String");
+             case LocalVariable:
+              return tr("Local variable");
+             case Memory:
+              return tr("Memory");
+             case Reference:
+              return tr("Reference");
+             case Formula:
+              return tr("Formula");
+             default:
+              return "??";
+             }
+          }
+//          /*private*/ static QString toString(TYPES t)
+//          {
+//           QMetaEnum metaEnum = QMetaEnum::fromType<InitialValueType::TYPES>();
+//           return metaEnum.valueToKey(t);
+//          }
+      };
 
-
-
-
-
-
-};
-/**
- * The definition of the symbol
- */
-/*public*/ /*interface*/class Symbol {
- public:
     /**
-     * The name of the symbol
-     * @return the name
+     * Data for a variable.
      */
-    /*public*/ virtual QString getName();
+    /*public*/ /*static*/ class VariableData : public QObject{
+    Q_OBJECT
+        public:
+        /*public*/ QString _name;
+        /*public*/ InitialValueType::TYPES _initalValueType = InitialValueType::None;
+        /*public*/ QString _initialValueData;
 
-    /**
-     * The index on the stack for this symbol
-     * @return the index
-     */
-    /*public*/ virtual int getIndex();
+        /*public*/ VariableData(
+                QString name,
+                InitialValueType::TYPES initalValueType,
+                QString initialValueData) {
 
-};
-Q_DECLARE_INTERFACE(Symbol, "Symbol");
-
-/*public*/ /*static*/ class SymbolNotFound : public IllegalArgumentException {
- public:
-    /*public*/ SymbolNotFound(QString message) :  IllegalArgumentException(message){
-        //super(message);
-    }
-};
-
-/**
- * An enum that defines the types of initial value.
- */
-/*public*/ /*enum*/class InitialValueType {
-  Q_OBJECT
-public:
-    enum TYPES {None, Integer, FloatingNumber, String, LocalVariable, Memory, Reference, Formula};
-
-//        None(Bundle.getMessage("InitialValueType_None")),
-//        Integer(Bundle.getMessage("InitialValueType_Integer")),
-//        FloatingNumber(Bundle.getMessage("InitialValueType_FloatingNumber")),
-//        String(Bundle.getMessage("InitialValueType_String")),
-//        LocalVariable(Bundle.getMessage("InitialValueType_LocalVariable")),
-//        Memory(Bundle.getMessage("InitialValueType_Memory")),
-//        Reference(Bundle.getMessage("InitialValueType_Reference")),
-//        Formula(Bundle.getMessage("InitialValueType_Formula"));
-private:
-    /*private*/ /*final*/ QString _descr;
-    TYPES t;
-    QMap<QString, TYPES> map = {
-     {tr("None"), None}, {tr("Integer"), Integer}, {tr("Floating number"), FloatingNumber}, {tr("String"), String},
-     {tr("Local variable"), LocalVariable}, {tr("Memory"), Memory}, {tr("Reference"), Reference}, {tr("Formula"), Formula}
-    };
-    /*private*/ InitialValueType(QString descr) {
-        _descr = descr;
-        t=map.value(descr);
-    }
-public:
-    //@Override
-    /*public*/ static QString toString(TYPES t) {
-       switch(t)
-       {
-        case None:
-          return tr("None");
-       case Integer:
-        return tr("Integer");
-       case FloatingNumber:
-        return tr("FloatigNumber");
-       case String:
-        return tr("String");
-       case LocalVariable:
-        return tr("Local variable");
-       case Memory:
-        return tr("Memory");
-       case Reference:
-        return tr("Reference");
-       case Formula:
-        return tr("Formula");
-       default:
-        return "??";
-       }
-    }
-};
-
-/**
- * Data for a variable.
- */
-/*public*/ /*static*/ class VariableData {
-    public:
-    /*public*/ QString _name;
-    /*public*/ InitialValueType::TYPES _initalValueType = InitialValueType::None;
-    /*public*/ QString _initialValueData;
-
-    /*public*/ VariableData(
-            QString name,
-            InitialValueType::TYPES initalValueType,
-            QString initialValueData) {
-
-        _name = name;
-        _initalValueType = initalValueType;
-        _initialValueData = initialValueData;
-    }
+            _name = name;
+            _initalValueType = initalValueType;
+            _initialValueData = initialValueData;
+        }
 
     /*public*/ VariableData(VariableData* variableData) {
         _name = variableData->_name;
@@ -240,6 +238,6 @@ public:
     /*public*/ QString getInitialValueData() {
         return _initialValueData;
     }
-
+ };
 };
 #endif // SYMBOLTABLE_H

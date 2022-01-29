@@ -1,12 +1,17 @@
 #ifndef ANALOGACTIONMANAGER_H
 #define ANALOGACTIONMANAGER_H
+#include "basemanager.h"
+#include "maleanalogactionsocket.h"
+#include "femaleanalogactionsocket.h"
+#include "femalesocketlistener.h"
+#include "category.h"
 /**
  * Manager for AnalogActionBean
  *
  * @author Dave Duchamp       Copyright (C) 2007
  * @author Daniel Bergqvist   Copyright (C) 2018
  */
-public interface AnalogActionManager extends BaseManager<MaleAnalogActionSocket> {
+/*public*/ /*interface*/ class AnalogActionManager : BaseManager<MaleAnalogActionSocket> {
 
     /**
      * Remember a NamedBean Object created outside the manager.
@@ -16,24 +21,24 @@ public interface AnalogActionManager extends BaseManager<MaleAnalogActionSocket>
      * @return the male socket for this action
      * @throws IllegalArgumentException if the action has an invalid system name
      */
-    public MaleAnalogActionSocket registerAction(@Nonnull AnalogActionBean action)
-            throws IllegalArgumentException;
+    /*public*/virtual  MaleAnalogActionSocket* registerAction(/*@Nonnull*/ AnalogActionBean* action)
+            /*throws IllegalArgumentException*/;
 
     /**
      * Create a new system name for an AnalogActionBean.
      * @return a new system name
      */
-    public String getAutoSystemName();
+    /*public*/ virtual QString getAutoSystemName()=0;
 
-    public FemaleAnalogActionSocket createFemaleSocket(
-            Base parent, FemaleSocketListener listener, String socketName);
+    /*public*/ FemaleAnalogActionSocket* createFemaleSocket(
+            Base* parent, FemaleSocketListener* listener, QString socketName);
 
     /**
      * Get a set of classes that implements the DigitalAction interface.
      *
      * @return a set of entries with category and class
      */
-    public Map<Category, List<Class<? extends Base>>> getActionClasses();
+    /*public*/ QMap<Category*, QList</*Class<? extends Base>*/QString > > getActionClasses();
 
     /*.*
      * Add an Action.
@@ -63,8 +68,8 @@ public interface AnalogActionManager extends BaseManager<MaleAnalogActionSocket>
      * The sub system prefix for the AnalogActionManager is
      * {@link #getSystemNamePrefix() } and "AA";
      */
-    @Override
-    public default String getSubSystemNamePrefix() {
+    //@Override
+    /*public*/ /*default*/virtual QString getSubSystemNamePrefix()  {
         return getSystemNamePrefix() + "AA";
     }
 
@@ -74,8 +79,8 @@ public interface AnalogActionManager extends BaseManager<MaleAnalogActionSocket>
      *
      * @param x the Action to delete
      */
-    public void deleteAnalogAction(MaleAnalogActionSocket x);
+    /*public*/ virtual void deleteAnalogAction(MaleAnalogActionSocket* x) =0;
 
-}
+};
 
 #endif // ANALOGACTIONMANAGER_H

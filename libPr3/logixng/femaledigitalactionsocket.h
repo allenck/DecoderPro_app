@@ -5,9 +5,10 @@
 /**
  * A female socket for DigitalAction
  */
-/*public*/ /*interface*/class FemaleDigitalActionSocket : FemaleSocket, DigitalAction {
+/*public*/ /*interface*/class FemaleDigitalActionSocket : public FemaleSocket, public DigitalAction {
 
   Q_INTERFACES(FemaleSocket DigitalAction)
+ public:
 };
 Q_DECLARE_INTERFACE(FemaleDigitalActionSocket, "FemaleDigitalActionSocket")
 #endif // FEMALEDIGITALACTIONSOCKET_H

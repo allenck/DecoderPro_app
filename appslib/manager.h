@@ -126,7 +126,7 @@ public:
  /*public*/ /*default*/ QString getSystemNamePrefix()  {
      return getSystemPrefix() + typeLetter();
  }
- /*public*/ /*default*/ QString getSubSystemNamePrefix()  {
+ /*public*/ /*default*/ virtual QString getSubSystemNamePrefix()  {
      return getSystemNamePrefix();
  }
  /**

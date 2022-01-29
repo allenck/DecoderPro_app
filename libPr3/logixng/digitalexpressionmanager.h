@@ -2,14 +2,17 @@
 #define DIGITALEXPRESSIONMANAGER_H
 #include "maledigitalexpressionsocket.h"
 #include "basemanager.h"
+#include "femaledigitalexpressionsocket.h"
+#include "femalesocketlistener.h"
 /**
  * Manager for DigitalExpressionBean
  *
  * @author Dave Duchamp       Copyright (C) 2007
  * @author Daniel Bergqvist   Copyright (C) 2018
  */
-/*public*/ /*interface*/class  DigitalExpressionManager :public BaseManager<MaleDigitalExpressionSocket> {
-
+/*public*/ /*interface*/class  DigitalExpressionManager :public BaseManager/*<MaleDigitalExpressionSocket>*/ {
+Q_INTERFACES(Manager)
+ public:
     /**
      * Remember a NamedBean Object created outside the manager.
      * This method creates a MaleActionSocket for the action.
@@ -18,17 +21,17 @@
      * @return the male socket for this expression
      * @throws IllegalArgumentException if the expression has an invalid system name
      */
-    public MaleDigitalExpressionSocket registerExpression(@Nonnull DigitalExpressionBean expression)
-            throws IllegalArgumentException;
+    /*public*/ virtual MaleDigitalExpressionSocket* registerExpression(/*@Nonnull*/ DigitalExpressionBean* expression)
+            /*throws IllegalArgumentException*/=0;
 
     /**
      * Create a new system name for an DigitalExpressionBean.
      * @return a new system name
      */
-    public String getAutoSystemName();
+    /*public*/ virtual QString getAutoSystemName()=0;
 
-    public FemaleDigitalExpressionSocket createFemaleSocket(
-            Base parent, FemaleSocketListener listener, String socketName);
+    /*public*/ virtual FemaleDigitalExpressionSocket* createFemaleSocket(
+            Base* parent, FemaleSocketListener* listener, QString socketName)=0;
 /*
     public FemaleDigitalExpressionSocket createFemaleExpressionSocket(
             Base parent,
@@ -41,7 +44,7 @@
      *
      * @return a set of entries with category and class
      */
-    public Map<Category, List<Class<? extends Base>>> getExpressionClasses();
+    /*public*/ virtual QMap<Category*, QList</*Class<? extends Base>*/QString> > getExpressionClasses()=0;
 
     /*.*
      * Add an DigitalExpressionBean.
@@ -71,8 +74,8 @@
      * The sub system prefix for the DigitalExpressionManager is
      * {@link #getSystemNamePrefix() } and "DE";
      */
-    @Override
-    default public String getSubSystemNamePrefix() {
+    //@Override
+    /*default*/ /*public*/ virtual QString getSubSystemNamePrefix() {
         return getSystemNamePrefix() + "DE";
     }
 

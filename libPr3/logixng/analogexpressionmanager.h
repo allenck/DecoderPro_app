@@ -1,12 +1,16 @@
 #ifndef ANALOGEXPRESSIONMANAGER_H
 #define ANALOGEXPRESSIONMANAGER_H
+#include "maleanalogexpressionsocket.h"
+#include "femaleanalogexpressionsocket.h"
+#include "femalesocketlistener.h"
+
 /**
  * Manager for Expression
  *
  * @author Dave Duchamp       Copyright (C) 2007
  * @author Daniel Bergqvist   Copyright (C) 2018
  */
-public interface AnalogExpressionManager extends BaseManager<MaleAnalogExpressionSocket> {
+/*public*/ /*interface*/class AnalogExpressionManager : BaseManager<MaleAnalogExpressionSocket> {
 
     /**
      * Remember a NamedBean Object created outside the manager.
@@ -16,14 +20,14 @@ public interface AnalogExpressionManager extends BaseManager<MaleAnalogExpressio
      * @return the male socket for this expression
      * @throws IllegalArgumentException if the expression has an invalid system name
      */
-    public MaleAnalogExpressionSocket registerExpression(@Nonnull AnalogExpressionBean expression)
-            throws IllegalArgumentException;
+    /*public*/ virtual MaleAnalogExpressionSocket* registerExpression(/*@Nonnull*/ AnalogExpressionBean* expression)
+            /*throws IllegalArgumentException*/=0;
 
     /**
      * Create a new system name for an Expression.
      * @return a new system name
      */
-    public String getAutoSystemName();
+    /*public*/ virtual QString getAutoSystemName()=0;
 
     /**
      * Create a female socket for analog expressions
@@ -32,15 +36,15 @@ public interface AnalogExpressionManager extends BaseManager<MaleAnalogExpressio
      * @param socketName the name of the new socket
      * @return the new female socket
      */
-    public FemaleAnalogExpressionSocket createFemaleSocket(
-            Base parent, FemaleSocketListener listener, String socketName);
+    /*public*/ virtual FemaleAnalogExpressionSocket* createFemaleSocket(
+            Base* parent, FemaleSocketListener* listener, QString socketName)=0;
 
     /**
      * Get a set of classes that implements the DigitalAction interface.
      *
      * @return a set of entries with category and class
      */
-    public Map<Category, List<Class<? extends Base>>> getExpressionClasses();
+    /*public*/ virtual QMap<Category, QList</*Class<? extends Base>*/QString>> getExpressionClasses()=0;
 
     /*.*
      * Add an Expression.
@@ -70,8 +74,8 @@ public interface AnalogExpressionManager extends BaseManager<MaleAnalogExpressio
      * The sub system prefix for the AnalogExpressionManager is
      * {@link #getSystemNamePrefix() } and "AE";
      */
-    @Override
-    public default String getSubSystemNamePrefix() {
+    //@Override
+    /*public*/ virtual /*default*/ QString getSubSystemNamePrefix() {
         return getSystemNamePrefix() + "AE";
     }
 
@@ -81,7 +85,7 @@ public interface AnalogExpressionManager extends BaseManager<MaleAnalogExpressio
      *
      * @param x the Expression to delete
      */
-    public void deleteAnalogExpression(MaleAnalogExpressionSocket x);
+    /*public*/ void deleteAnalogExpression(MaleAnalogExpressionSocket* x);
 
 };
 

@@ -10,8 +10,8 @@ public:
  /*public*/ JEditorPane(QUrl* initialPage, QWidget *parent = 0);
  /*public*/ JEditorPane(QString url, QWidget *parent = 0);
  /*public*/ JEditorPane(QString type, QString text, QWidget *parent = 0);
-  /*public*/ void setContentType(QString) {this->type = type;}
-
+ /*public*/ void setContentType(QString) {/*this->type = JTextComponent::type;*/}
+ /*public*/ void setEditable(bool b) {JTextComponent::setEnabled(b);}
 signals:
 
 public slots:

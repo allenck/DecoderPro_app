@@ -19,14 +19,6 @@ class FemaleSocket;
 class LogixNG;
 class ConditionalNG;
 class RunnableWithBase;
-/*public*/ /*static*/ class PrintTreeSettings {
- public:
-    PrintTreeSettings() {}
-    /*public*/ bool _printLineNumbers = false;
-    /*public*/ bool _printErrorHandling = true;
-    /*public*/ bool _printNotConnectedSockets = true;
-    /*public*/ bool _printLocalVariables = true;
-};
 
 /**
  * The base interface for LogixNG expressions and actions.
@@ -37,6 +29,14 @@ class RunnableWithBase;
 /*public*/ /*interface*/class Base : public PropertyChangeProvider {
  Q_INTERFACES(PropertyChangeProvider)
  public:
+  /*public*/ /*static*/ class PrintTreeSettings {
+   public:
+      PrintTreeSettings() {}
+      /*public*/ bool _printLineNumbers = false;
+      /*public*/ bool _printErrorHandling = true;
+      /*public*/ bool _printNotConnectedSockets = true;
+      /*public*/ bool _printLocalVariables = true;
+  };
 
     /**
      * The name of the property child count.
@@ -126,7 +126,7 @@ class RunnableWithBase;
      * Get the user name.
      * @param s the new user name
      */
-    /*public*/ virtual void setUserName(/*@CheckForNull*/ QString s) throw (NamedBean::BadUserNameException)=0;
+    /*public*/ virtual void setUserName(/*@CheckForNull*/ QString s) /*throw (NamedBean::BadUserNameException)*/=0;
 
     /**
      * Create a deep copy of myself and my children
@@ -267,7 +267,7 @@ class RunnableWithBase;
      * or equal with the value returned by getChildCount()
      */
     /*public*/ virtual FemaleSocket* getChild(int index)
-            throw (IllegalArgumentException, UnsupportedOperationException)=0;
+            /*throw (IllegalArgumentException, UnsupportedOperationException)*/=0;
 
     /**
      * Get the number of children.
@@ -281,13 +281,13 @@ class RunnableWithBase;
      * @param oper the operation to do
      * @return true if operation is allowed, false otherwise
      */
-    /*public*/ /*default*/ virtual bool isSocketOperationAllowed(int index, FemaleSocketOperation::TYPES oper)=0;
+    /*public*/ /*default*/ virtual bool isSocketOperationAllowed(int index, FemaleSocketOperation::TYPES oper);
     /**
      * Do an operation on a child
      * @param index the index of the child to do the operation on
      * @param oper the operation to do
      */
-    /*public*/ virtual /*default*/ void doSocketOperation(int index, FemaleSocketOperation::TYPES oper)=0;
+    /*public*/ virtual /*default*/ void doSocketOperation(int index, FemaleSocketOperation::TYPES oper);
 
     /**
      * Get the category.
@@ -505,7 +505,7 @@ class RunnableWithBase;
 
     /*public*/ virtual void updateListenerRef(/*@Nonnull*/ PropertyChangeListener* l, QString newName)=0;
 
-    /*public*/ virtual void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* evt) throw (PropertyVetoException)=0;
+    /*public*/ virtual void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/=0;
 
     /**
      * Get the textual reference for the specific listener

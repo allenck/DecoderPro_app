@@ -69,7 +69,7 @@ public:
     virtual /*public*/ QVariant getProperty(QString key);
     /*public*/ void makePrivateWindow();
     virtual /*public*/ void windowClosing(QCloseEvent* e);
-    /*public*/ virtual QString getClassName() = 0;
+    //*public*/ virtual QString getClassName() = 0;
     /*public*/ void addNotify();
     /*public*/ void setFrameLocation();
     QMenu* windowMenu;
@@ -79,7 +79,7 @@ public:
     /*public*/ Border* getBorder() override {return _border;}
     /*public*/ JRootPane* getRootPane() {return (JRootPane*)centralWidget();}
     QString windowFrameRef = QString();
-
+    virtual QString getClassName() {return "jmri.util.JmriJFrame";}
 
 signals:
 

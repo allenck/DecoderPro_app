@@ -2,9 +2,11 @@
 #define BASEMANAGER_H
 
 #include "../../appslib/manager.h"
-#include "malesocket.h"
-#include "malesocketfactory.h"
+//#include "malesocket.h"
+//#include "malesocketfactory.h"
 
+class MaleSocket;
+class MaleSocketFactory;
 /**
  * Base interface for the LogixNG action and expression managers.
  *
@@ -12,7 +14,7 @@
  *
  * @author Daniel Bergqvist 2020
  */
-template<class E>
+//template<class E>
 /*public*/ /*interface*/class BaseManager : public Manager/*<E>*/ /*<E extends NamedBean> extends Manager<E>*/
 {
   Q_INTERFACES(Manager/*<E>*/)
@@ -28,7 +30,7 @@ template<class E>
      *                                                system name is already registered in
      *                                                the manager
      */
-    /*public*/virtual E _registerBean(/*@Nonnull*/ E maleSocket)=0;
+    /*public*/virtual NamedBean* _registerBean(/*@Nonnull*/ NamedBean* maleSocket)=0;
 
     /**
      * Method for a UI to delete a bean.
@@ -49,13 +51,13 @@ template<class E>
      * @throws java.beans.PropertyVetoException If the recipients wishes the
      *                                          delete to be aborted (see above)
      */
-    /*public*/ virtual void deleteBean(/*@Nonnull*/ MaleSocket* maleSocket, /*@Nonnull*/ QString property) throw (PropertyVetoException)=0;
+    /*public*/ virtual void deleteBean(/*@Nonnull*/ MaleSocket* maleSocket, /*@Nonnull*/ QString property) /*throw (PropertyVetoException)*/=0;
 
     /**
      * Get the default male socket class
      * @return the class
      */
-    /*public*/ virtual Class/*<? extends MaleSocket>*/* getMaleSocketClass()=0;
+    /*public*/ virtual QString/*Class<? extends MaleSocket>*/* getMaleSocketClass()=0;
 
     /**
      * Get the last item registered in the mananger.
@@ -67,7 +69,8 @@ template<class E>
      * Register a male socket factory.
      * @param factory the factory
      */
-    /*public*/ virtual void registerMaleSocketFactory(MaleSocketFactory<E> factory)=0;
+    /*public*/ virtual void registerMaleSocketFactory(MaleSocketFactory/*<E>*/* factory)=0;
 
 };
+Q_DECLARE_INTERFACE(BaseManager, "BaseManager")
 #endif // BASEMANAGER_H

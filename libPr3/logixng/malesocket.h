@@ -8,8 +8,7 @@
 #include "symboltable.h"
 #include "basemanager.h"
 
-class VariableData;
-class InitialValueType;
+
 /**
  * A LogixNG male socket.
  *
@@ -145,14 +144,14 @@ class InitialValueType;
 
     /*public*/ virtual void addLocalVariable(
             QString name,
-            InitialValueType::TYPES initialValueType,
+            SymbolTable::InitialValueType::TYPES initialValueType,
             QString initialValueData)=0;
 
-    /*public*/ virtual void addLocalVariable(VariableData* variableData);
+    /*public*/ virtual void addLocalVariable(SymbolTable::VariableData* variableData);
 
     /*public*/ virtual void clearLocalVariables()=0;
 
-    /*public*/ virtual QList<VariableData*> getLocalVariables()=0;
+    /*public*/ virtual QList<SymbolTable::VariableData*> getLocalVariables()=0;
 
     /**
      * Get the error handling type for this socket.
@@ -181,7 +180,7 @@ class InitialValueType;
      *
      * @return the manager
      */
-    /*public*/ virtual BaseManager<NamedBean*>*/*<? extends NamedBean>*/* getManager()=0;
+    /*public*/ virtual BaseManager/*<NamedBean*>*/*/*<? extends NamedBean>*/* getManager()=0;
 
     /** {@inheritDoc} */
     //@Override

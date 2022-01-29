@@ -11,8 +11,8 @@ class AbstractBase : public AbstractNamedBean, public Base
   Q_OBJECT
   Q_INTERFACES(Base)
  public:
-  /*public*/ AbstractBase(QString sys, QObject* parent = nullptr) throw (BadSystemNameException) ;
-  /*public*/ AbstractBase(QString sys, QString user, QObject* parent = nullptr) throw (BadUserNameException, BadSystemNameException);
+  /*public*/ AbstractBase(QString sys, QObject* parent = nullptr) /*throw (BadSystemNameException)*/ ;
+  /*public*/ AbstractBase(QString sys, QString user, QObject* parent = nullptr) /*throw (BadUserNameException, BadSystemNameException)*/;
   /*public*/ Base* deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/;
   /*public*/ ConditionalNG* getConditionalNG()override;
   /*public*/ /*final*/ LogixNG* getLogixNG()override;
@@ -45,7 +45,7 @@ class AbstractBase : public AbstractNamedBean, public Base
   /*public*/ /*final*/ void dispose()override;
   /*public*/ void getListenerRefsIncludingChildren(QList<QString> list)override;
 
-
+  QObject* self() override {return (QObject*)this;}
  private:
   static Logger* log;
 

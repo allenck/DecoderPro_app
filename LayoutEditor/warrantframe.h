@@ -35,7 +35,7 @@ public:
     static int ROW_HEIGHT;
     /*public*/ WarrantFrame(QString warrantName, QWidget *parent = 0);
     /*public*/ WarrantFrame(Warrant* warrant, bool create, QWidget *parent = 0);
-    /*public*/ QString getClassName() override;
+    /*public*/ QString getClassName();
     /*public*/ bool isRunning();
     QObject* self() override {return (QObject*)this;}
 

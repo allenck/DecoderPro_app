@@ -47,6 +47,8 @@ public:
  /*public*/ void showWarningMessage(QString title, QString message, /*final*/ QString strClass, /*final*/ QString item, /*final*/ bool sessionOnly, /*final*/ bool alwaysRemember);
  /*public*/ QString getComboBoxLastSelection(QString comboBoxName) override;
  /*public*/ void setComboBoxLastSelection(QString comboBoxName, QString lastValue) override;
+ /*public*/ bool getCheckboxPreferenceState(QString name, bool defaultState)override;
+ /*public*/ void setCheckboxPreferenceState(QString name, bool state)override;
  /*public*/ /*synchronized*/ bool getChangeMade();
  /*public*/ /*synchronized*/ void setChangeMade(bool fireUpdate);
  /*public*/ /*synchronized*/ void resetChangeMade() override;
@@ -96,6 +98,8 @@ public:
 private:
  /*private*/ void readComboBoxLastSelections();
  /*private*/ void saveComboBoxLastSelections();
+ /*private*/ void readCheckBoxLastSelections();
+ /*private*/ void saveCheckBoxLastSelections();
  /*private*/ void readPreferencesState();
  /*private*/ void savePreferencesState();
  /*private*/ void readSimplePreferenceState();
@@ -111,6 +115,8 @@ private:
  /*private*/ /*final*/ static QString CLASSPREFS_ELEMENT; // = "classPreferences"; // NOI18N
  /*private*/ /*final*/ static QString COMBOBOX_NAMESPACE; // = "http://jmri.org/xml/schema/auxiliary-configuration/combobox-4-3-5.xsd"; // NOI18N
  /*private*/ /*final*/ static QString COMBOBOX_ELEMENT; // = "comboBoxLastValue"; // NOI18N
+ /*private*/ static /*final*/ QString CHECKBOX_NAMESPACE;// = "http://jmri.org/xml/schema/auxiliary-configuration/checkbox-4-21-3.xsd"; // NOI18N
+ /*private*/ static /*final*/ QString CHECKBOX_ELEMENT;// = "checkBoxLastValue"; // NOI18N
  /*private*/ /*final*/ static QString SETTINGS_NAMESPACE; // = "http://jmri.org/xml/schema/auxiliary-configuration/settings-4-3-5.xsd"; // NOI18N
  /*private*/ /*final*/ static QString SETTINGS_ELEMENT; // = "settings"; // NOI18N
  /*private*/ /*final*/ static QString WINDOWS_NAMESPACE; // = "http://jmri.org/xml/schema/auxiliary-configuration/window-details-4-3-5.xsd"; // NOI18N
@@ -132,6 +138,7 @@ private slots:
 
 protected:
  /*protected*/ /*final*/ QHash<QString, QString>* comboBoxLastSelection;// = new QHash<QString, QString>();
+ /*protected*/ /*final*/ QMap<QString, bool> checkBoxLastSelection = QMap<QString, bool>();
  virtual /*protected*/ void showMessage(QString title, QString message, /*final*/ QString strClass, /*final*/ QString item, /*final*/ bool sessionOnly, /*final*/ bool alwaysRemember, int type);
  virtual /*protected*/ bool isLoading();
  virtual /*protected*/ /*final*/ QString getClassName() ;

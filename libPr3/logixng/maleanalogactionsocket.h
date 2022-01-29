@@ -6,8 +6,10 @@
  * A LogixNG male AnalogActionBean socket.
  */
 /*public*/ /*interface*/class MaleAnalogActionSocket
-        : public MaleSocket, public AnalogActionBean {
-
+        : public AnalogActionBean, public MaleSocket  {
+Q_INTERFACES(MaleSocket )
+ public:
+  MaleAnalogActionSocket(QString name, QObject* parent = nullptr) : AnalogActionBean(name, parent) {}
     /**
      * {@inheritDoc}
      * <P>
@@ -15,9 +17,9 @@
      * infinity or positive infinity. If that is the case, it must throw an
      * IllegalArgumentException before checking if an error has occured.
      */
-    @Override
-    public void setValue(double value) throws JmriException;
+    //@Override
+    /*public*/  void setValue(double value) override/*throws JmriException*/=0;
 
 };
-
+Q_DECLARE_INTERFACE(MaleAnalogActionSocket, "MaleAnalogActionSocket")
 #endif // MALEANALOGACTIONSOCKET_H

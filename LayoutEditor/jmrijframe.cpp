@@ -218,10 +218,10 @@ void JmriJFrame::setupWindowRef()
  * so that preferences can be stored in a manner that either this app or the original
  * Java code can interpret save preferences equally.
  */
-/*public*/ QString JmriJFrame::getClassName()
-{
- return QString(metaObject()->className());
-}
+///*public*/ QString JmriJFrame::getClassName()
+//{
+// return QString(metaObject()->className());
+//}
 
 /**
   * This function does not exist in the original JMRI Java code. Because C++ subclasses

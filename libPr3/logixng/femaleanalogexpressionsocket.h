@@ -7,7 +7,8 @@
  */
 /*public*/ /*interface*/ class FemaleAnalogExpressionSocket
         : public FemaleSocket, public AnalogExpression {
+  Q_INTERFACES(FemaleSocket AnalogExpression)
 
 };
-
+Q_DECLARE_INTERFACE(FemaleAnalogExpressionSocket, "FemaleAnalogExpressionSocket")
 #endif // FEMALEANALOGEXPRESSIONSOCKET_H

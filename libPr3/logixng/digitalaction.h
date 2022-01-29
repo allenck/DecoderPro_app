@@ -6,8 +6,8 @@
  *
  * @author Daniel Bergqvist Copyright 2018
  */
-/*public*/ /*interface*/class  DigitalAction : public Base {
-Q_INTERFACES(Base)
+/*public*/ /*interface*/class  DigitalAction /*: public Base*/ {
+//Q_INTERFACES(Base)
  public:
     /**
      * Execute this DigitalActionBean.

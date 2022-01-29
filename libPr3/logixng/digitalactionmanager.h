@@ -2,14 +2,19 @@
 #define DIGITALACTIONMANAGER_H
 #include "basemanager.h"
 #include "maledigitalactionsocket.h"
+#include "femaledigitalactionsocket.h"
+#include "femalesocketlistener.h"
+#include "category.h"
+
 /**
  * Manager for DigitalActionBean
  *
  * @author Dave Duchamp       Copyright (C) 2007
  * @author Daniel Bergqvist   Copyright (C) 2018
  */
-/*public*/ /*interface*/ class DigitalActionManager : BaseManager<MaleDigitalActionSocket> {
+/*public*/ /*interface*/ class DigitalActionManager : public BaseManager/*<MaleDigitalActionSocket>*/ {
 
+ public:
     /**
      * Remember a NamedBean Object created outside the manager.
      * This method creates a MaleDigitalActionSocket for the action.
@@ -18,24 +23,24 @@
      * @return the male socket for this action
      * @throws IllegalArgumentException if the action has an invalid system name
      */
-    public MaleDigitalActionSocket registerAction(@Nonnull DigitalActionBean action)
-            throws IllegalArgumentException;
+    /*public*/ virtual MaleDigitalActionSocket* registerAction(/*@Nonnull*/ DigitalActionBean* action)
+            /*throws IllegalArgumentException*/=0;
 
     /**
      * Create a new system name for an DigitalActionBean.
      * @return a new system name
      */
-    public String getAutoSystemName();
+    /*public*/ virtual QString getAutoSystemName()=0;
 
-    public FemaleDigitalActionSocket createFemaleSocket(
-            Base parent, FemaleSocketListener listener, String socketName);
+    /*public*/ virtual FemaleDigitalActionSocket* createFemaleSocket(
+            Base* parent, FemaleSocketListener* listener, QString socketName)=0;
 
     /**
      * Get a set of classes that implements the DigitalActionBean interface.
      *
      * @return a set of entries with category and class
      */
-    public Map<Category, List<Class<? extends Base>>> getActionClasses();
+    /*public*/ virtual QMap<Category, QList</*Class<? extends Base>*/QString> > getActionClasses()=0;
 
     /**
      * {@inheritDoc}
@@ -43,8 +48,8 @@
      * The sub system prefix for the DigitalActionManager is
      * {@link #getSystemNamePrefix() } and "DA";
      */
-    @Override
-    public default String getSubSystemNamePrefix() {
+    //@Override
+    /*public*/ /*default*/ virtual QString getSubSystemNamePrefix() {
         return getSystemNamePrefix() + "DA";
     }
 
@@ -54,7 +59,7 @@
      *
      * @param x the DigitalActionBean to delete
      */
-    public void deleteDigitalAction(MaleDigitalActionSocket x);
+    /*public*/ virtual void deleteDigitalAction(MaleDigitalActionSocket* x)=0;
 
 };
 #endif // DIGITALACTIONMANAGER_H

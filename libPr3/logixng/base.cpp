@@ -70,7 +70,7 @@
  * @param index the index of the child to do the operation on
  * @param oper the operation to do
  */
-/*public*/ /*virtual*/ /*default*/ void Base::doSocketOperation(int index, FemaleSocketOperation::TYPES oper) {
+/*public*/ /*default*/ void Base::doSocketOperation(int index, FemaleSocketOperation::TYPES oper) {
     if (qobject_cast<MaleSocket*>(this->self())) {
         ((AbstractMaleSocket*)this->self())->getObject()->doSocketOperation(index, oper);
     }

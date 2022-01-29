@@ -12,6 +12,8 @@
 
   Q_OBJECT
   Q_INTERFACES(DigitalBooleanAction)
+ public:
+  DigitalBooleanActionBean(QString name, QObject* parent) : NamedBean(name, parent) {}
 };
 
 #endif // DIGITALBOOLEANACTIONBEAN_H

@@ -8,9 +8,11 @@
  *
  * @author Daniel Bergqvist Copyright 2018
  */
-/*public*/ /*interface*/class AnalogActionBean : NamedBean, AnalogAction {
+/*public*/ /*interface*/class AnalogActionBean : public NamedBean, public AnalogAction {
  Q_OBJECT
   Q_INTERFACES(AnalogAction)
+ public:
+  AnalogActionBean(QString name, QObject* parent = nullptr) : NamedBean(name, parent) {}
 };
 
 #endif // ANALOGACTIONBEAN_H

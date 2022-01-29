@@ -49,6 +49,7 @@ protected:
     virtual /*protected*/ /*abstract*/ void setTitle();
     /*protected*/ BeanTableFrame* f;
     virtual /*protected*/ void setManager(Manager* man);
+    /*protected*/ virtual Manager/*<E>*/* getManager();
     virtual/*protected*/ QString helpTarget();
     virtual /*protected*/ /*abstract*/ QString getClassName();
     /*protected*/ bool _includeAddButton = true;

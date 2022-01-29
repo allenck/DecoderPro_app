@@ -19,7 +19,7 @@
      *
      * @return a set of entries with category and class
      */
-    /*public*/ QSet<Map.Entry<Category, Class<? extends Base>>> getClasses();
+    /*public*/ virtual QSet</*Map.Entry<Category, Class<? extends Base>>*/QString> getClasses()=0;
 
 };
 Q_DECLARE_INTERFACE(DigitalBooleanActionFactory, "DigitalBooleanActionFactory")

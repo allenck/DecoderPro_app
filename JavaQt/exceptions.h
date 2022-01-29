@@ -183,7 +183,7 @@ private:
 class JAVAQTSHARED_EXPORT IllegalArgumentException : public Exception
 {
  public:
-    IllegalArgumentException(QString s="");
+    IllegalArgumentException(QString s="", Throwable* throwable=nullptr);
     ~IllegalArgumentException() throw()
     {
      name="IllegalArgumentException";

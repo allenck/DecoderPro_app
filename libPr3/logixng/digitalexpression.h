@@ -9,14 +9,14 @@
  * @author Daniel Bergqvist Copyright 2018
  */
 /*public*/ /*interface*/class DigitalExpression : public Base {
-
+public:
     /**
      * Evaluate this expression.
      *
      * @return the result of the evaluation
      * @throws JmriException when an exception occurs
      */
-    /*public*/virtual  boolean evaluate() /*throws JmriException*/=0;
+    /*public*/virtual  bool evaluate() /*throws JmriException*/=0;
 
 };
 Q_DECLARE_INTERFACE(DigitalExpression, "DigitalExpression")

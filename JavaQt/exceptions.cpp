@@ -58,9 +58,10 @@ NoSuchElementException::NoSuchElementException(QString s) {msg = s;}
 InterruptedException::InterruptedException()
 {
 }
-IllegalArgumentException::IllegalArgumentException(QString s)
+IllegalArgumentException::IllegalArgumentException(QString s, Throwable *throwable)
 {
  msg = s;
+ this->cause = throwable;
 }
 
 NumberFormatException::NumberFormatException(QString s)

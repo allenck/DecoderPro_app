@@ -6,7 +6,7 @@
 #include <QSet>
 #include "symboltable.h"
 
-class Parameter;
+
 /**
  * Represent a LogixNG module.
  * A module is similar to a ConditionalNG, except that it can be used by
@@ -16,6 +16,31 @@ class Parameter;
  */
 /*public*/ /*interface*/class Module : public Base, public NamedBean {
     Q_INTERFACES(Base NamedBean)
+ public:
+  /**
+   * The definition of a parameter.
+   */
+  /*public*/  /*interface*/class Parameter {
+   public:
+      /**
+       * The name of the parameter
+       * @return the name
+       */
+      /*public*/ virtual QString getName()=0;
+
+      /**
+       * Answer whenether or not the parameter is input to the module.
+       * @return true if the parameter is input, false otherwise
+       */
+      /*public*/ virtual bool isInput()=0;
+
+      /**
+       * Answer whenether or not the parameter is output to the module.
+       * @return true if the parameter is output, false otherwise
+       */
+      /*public*/ virtual bool isOutput()=0;
+
+  };
   class ReturnValueType;
 //    public void setRootSocketType(FemaleSocketManager.SocketType socketType);
 
@@ -27,13 +52,13 @@ class Parameter;
 
     /*public*/ virtual void addParameter(QString name, bool isInput, bool isOutput)=0;
 
-    /*public*/ virtual void addParameter(Parameter parameter);
+    /*public*/ virtual void addParameter(Parameter* parameter);
 
 //    public void removeParameter(String name);
 
     /*public*/ void addLocalVariable(
             QString name,
-            InitialValueType::TYPES initialValueType,
+            SymbolTable::InitialValueType::TYPES initialValueType,
             QString initialValueData);
 
 //    public void removeLocalVariable(String name);
@@ -43,30 +68,7 @@ class Parameter;
     /*public*/ virtual QSet<VariableData*> getLocalVariables()=0;
 
 
-    /**
-     * The definition of a parameter.
-     */
-    /*public*/  /*interface*/class Parameter {
-     public:
-        /**
-         * The name of the parameter
-         * @return the name
-         */
-        /*public*/ virtual QString getName()=0;
 
-        /**
-         * Answer whenether or not the parameter is input to the module.
-         * @return true if the parameter is input, false otherwise
-         */
-        /*public*/ virtual bool isInput()=0;
-
-        /**
-         * Answer whenether or not the parameter is output to the module.
-         * @return true if the parameter is output, false otherwise
-         */
-        /*public*/ virtual bool isOutput()=0;
-
-    };
 
 
    /**
@@ -102,14 +104,16 @@ class Parameter;
     /**
      * Data for a parameter.
      */
-    /*public*/ /*static*/ class ParameterData : public VariableData {
-        public:
+    /*public*/ /*static*/ class ParameterData : public SymbolTable::VariableData
+    {
+     public:
         /*public*/ ReturnValueType::TYPES _returnValueType = ReturnValueType::TYPES::None;
         /*public*/ QString _returnValueData;
 
+
         /*public*/ ParameterData(
                 QString name,
-                InitialValueType::TYPES initalValueType,
+                SymbolTable::InitialValueType::TYPES initalValueType,
                 QString initialValueData,
                 ReturnValueType::TYPES returnValueType,
                 QString returnValueData) : VariableData(name, initalValueType, initialValueData){

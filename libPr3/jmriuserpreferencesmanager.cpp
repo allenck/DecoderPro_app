@@ -43,6 +43,8 @@
 /*private*/ /*final*/ /*static*/ QString JmriUserPreferencesManager::CLASSPREFS_ELEMENT = "classPreferences"; // NOI18N
 /*private*/ /*final*/ /*static*/ QString JmriUserPreferencesManager::COMBOBOX_NAMESPACE = "http://jmri.org/xml/schema/auxiliary-configuration/combobox-4-3-5.xsd"; // NOI18N
 /*private*/ /*final*/ /*static*/ QString JmriUserPreferencesManager::COMBOBOX_ELEMENT = "comboBoxLastValue"; // NOI18N
+/*private*/ /*static*/ /*final*/ QString JmriUserPreferencesManager::CHECKBOX_NAMESPACE = "http://jmri.org/xml/schema/auxiliary-configuration/checkbox-4-21-3.xsd"; // NOI18N
+/*private*/ /*static*/ /*final*/ QString JmriUserPreferencesManager::CHECKBOX_ELEMENT = "checkBoxLastValue"; // NOI18N
 /*private*/ /*final*/ /*static*/ QString JmriUserPreferencesManager::SETTINGS_NAMESPACE = "http://jmri.org/xml/schema/auxiliary-configuration/settings-4-3-5.xsd"; // NOI18N
 /*private*/ /*final*/ /*static*/ QString JmriUserPreferencesManager::SETTINGS_ELEMENT = "settings"; // NOI18N
 /*private*/ /*final*/ /*static*/ QString JmriUserPreferencesManager::WINDOWS_NAMESPACE = "http://jmri.org/xml/schema/auxiliary-configuration/window-details-4-3-5.xsd"; // NOI18N
@@ -411,6 +413,19 @@
     setChangeMade(false);
     this->saveComboBoxLastSelections();
 }
+
+//@Override
+/*public*/ bool JmriUserPreferencesManager::getCheckboxPreferenceState(QString name, bool defaultState) {
+    return this->checkBoxLastSelection.value(name, defaultState);
+}
+
+//@Override
+/*public*/ void JmriUserPreferencesManager::setCheckboxPreferenceState(QString name, bool state) {
+    checkBoxLastSelection.insert(name, state);
+    setChangeMade(false);
+    this->saveCheckBoxLastSelections();
+}
+
 
 /*public*/ /*synchronized*/ bool JmriUserPreferencesManager::getChangeMade() {
     return dirty;
@@ -1148,7 +1163,6 @@
 
 /*private*/ void JmriUserPreferencesManager::saveComboBoxLastSelections()
 {
-#if 1
  this->setChangeMade(false);
  if (this->allowSave && !comboBoxLastSelection->isEmpty())
  {
@@ -1176,7 +1190,44 @@
      this->saveElement(element);
      this->resetChangeMade();
  }
-#endif
+}
+
+/*private*/ void JmriUserPreferencesManager::readCheckBoxLastSelections() {
+    QDomElement element = this->readElement(CHECKBOX_ELEMENT, CHECKBOX_NAMESPACE);
+    if (!element.isNull()) {
+//        element.getChildren("checkBox").stream().forEach(checkbox ->
+//            checkBoxLastSelection.put(checkbox.getAttributeValue("name"), "yes".equals(checkbox.getAttributeValue("lastChecked"))));
+     QDomNodeList list = element.elementsByTagName("checkBox");
+     for(int i=0; i < list.count(); i++){
+      QDomElement checkbox = list.at(i).toElement();
+      checkBoxLastSelection.insert(checkbox.attribute("name"), "yes" ==(checkbox.attribute("lastChecked")));
+     }
+    }
+}
+
+/*private*/ void JmriUserPreferencesManager::saveCheckBoxLastSelections() {
+    this->setChangeMade(false);
+    if (this->allowSave && !checkBoxLastSelection.isEmpty()) {
+        QDomElement element = doc.createElementNS(CHECKBOX_ELEMENT, CHECKBOX_NAMESPACE);
+        // Do not store blank last entered/selected values
+//        checkBoxLastSelection.entrySet().stream().
+//                filter(cbls -> (cbls.getValue() != null)).map(cbls -> {
+        QMapIterator<QString, bool> cbls(checkBoxLastSelection);
+        while(cbls.hasNext())
+        {
+         cbls.next();
+         if(cbls.value())
+         {
+            QDomElement checkbox = doc.createElement("checkBox");
+            checkbox.setAttribute("name", cbls.key());
+            checkbox.setAttribute("lastChecked", cbls.value() ? "yes" : "no");
+//            return checkbox;
+            element.appendChild(checkbox);
+        };//).forEach(element::addContent);
+        this->saveElement(element);
+        this->resetChangeMade();
+        }
+    }
 }
 
 /*private*/ void JmriUserPreferencesManager::readPreferencesState()
@@ -1239,7 +1290,6 @@
 
 /*private*/ void JmriUserPreferencesManager::savePreferencesState()
 {
-#if 1
  this->setChangeMade(true);
  if (this->allowSave)
  {
@@ -1285,7 +1335,6 @@
       this->saveElement(element);
   }
  }
-#endif
 }
 
 /*private*/ void JmriUserPreferencesManager::readSimplePreferenceState() {

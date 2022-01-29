@@ -1,5 +1,7 @@
 #ifndef ANONYMOUSTABLE_H
 #define ANONYMOUSTABLE_H
+#include "table.h"
+
 /**
  * Represent an anonymous table.
  * An anonymous table has no name. It can be assigned to a Memory or to a cell
@@ -8,16 +10,16 @@
  *
  * @author Daniel Bergqvist Copyright (C) 2019
  */
-public interface AnonymousTable extends Table {
+/*public*/ /*interface*/class AnonymousTable : Table {
 
-    public void insertColumn(int col);
+    /*public*/ virtual void insertColumn(int col)=0;
 
-    public void deleteColumn(int col);
+    /*public*/ virtual void deleteColumn(int col)=0;
 
-    public void insertRow(int row);
+    /*public*/ virtual void insertRow(int row)=0;
 
-    public void deleteRow(int row);
+    /*public*/ virtual void deleteRow(int row)=0;
 
 };
-
+Q_DECLARE_INTERFACE(AnonymousTable, "AnonymousTable")
 #endif // ANONYMOUSTABLE_H

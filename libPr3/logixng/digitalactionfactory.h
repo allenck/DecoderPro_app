@@ -1,5 +1,7 @@
 #ifndef DIGITALACTIONFACTORY_H
 #define DIGITALACTIONFACTORY_H
+#include "category.h"
+
 /**
  * Factory class for DigitalAction classes.
  *
@@ -17,7 +19,7 @@
      *
      * @return a set of entries with category and class
      */
-    /*public*/ QSet<Map.Entry<Category, Class<? extends DigitalActionBean>>> getActionClasses();
+    /*public*/ virtual QSet</*Map.Entry<Category, Class<? extends DigitalActionBean>>*/QString> getActionClasses()=0;
 
 };
 

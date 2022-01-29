@@ -10,6 +10,8 @@
 /*public*/ /*interface*/class AnalogExpressionBean : public NamedBean, public AnalogExpression {
   Q_OBJECT
   Q_INTERFACES(AnalogExpression)
+ public:
+  AnalogExpressionBean(QString name, QObject* parent = nullptr) : NamedBean(name, parent){}
 };
 
 #endif // ANALOGEXPRESSIONBEAN_H

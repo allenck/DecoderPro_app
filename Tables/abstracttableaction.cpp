@@ -198,6 +198,14 @@ void ATABeanTableFrame::extras()
  */
 /*protected*/ void AbstractTableAction::setManager(Manager* /*man*/) { }
 /**
+ * Get the Bean Manager in use by the TableAction.
+ * @return Bean Manager, could be Proxy or normal Manager, may be null.
+ */
+//@CheckForNull
+/*protected*/ Manager/*<E>*/* AbstractTableAction::getManager(){
+    return nullptr;
+}
+/**
  * Allow subclasses to add alter the frames Menubar
  * without have to actually subclass the BeanTableDataFrame
  */

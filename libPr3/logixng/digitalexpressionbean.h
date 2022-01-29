@@ -11,6 +11,9 @@
 /*public*/ /*interface*/class DigitalExpressionBean : public NamedBean, public DigitalExpression {
     Q_OBJECT
   Q_INTERFACES(DigitalExpression)
+ public:
+    DigitalExpressionBean(QString name, QObject* parent) : NamedBean(name, parent) {}
+
     /**
      * Constant representing an "false" state. It's returned from the method
      * getState() if the method evaluate() returned false the last time it was

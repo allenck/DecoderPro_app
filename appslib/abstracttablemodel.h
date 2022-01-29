@@ -41,18 +41,18 @@ public:
     bool isLegacy() const {return bLegacy;}
     void setLegacy(bool b) {bLegacy = b;}
     virtual /*public*/ void configureColumnDelegates(JTable*);
-signals:
-
-public slots:
- /*public*/ virtual void fireTableDataChanged();
-
-private:
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
     Qt::ItemFlags flags(const QModelIndex &index) const override;
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     int rowCount(const QModelIndex &parent) const override;
     int columnCount(const QModelIndex &parent) const override;
     QVariant data(const QModelIndex &index, int role) const override;
+signals:
+
+public slots:
+ /*public*/ virtual void fireTableDataChanged();
+
+private:
     JTable* _table = nullptr;
 //    QList<int> buttonMap;
     bool bLegacy = false;

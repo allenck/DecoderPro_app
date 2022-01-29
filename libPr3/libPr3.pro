@@ -125,7 +125,7 @@ equals(ENABLE_SCRIPTING, "Y") {
 DEFINES += USE_THREAD
 
 
-ENABLE_LOGIXNG = "N" # change to "Y" to compile LogixNG modules
+ENABLE_LOGIXNG = "Y" # change to "Y" to compile LogixNG modules
 SOURCES += \
  Signal/abstractmrnodetrafficcontroller.cpp \
  Signal/abstractnode.cpp \
@@ -1134,6 +1134,34 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+ logixng/logixngeditor.cpp \
+ logixng/logixngtableaction.cpp \
+ logixng/abstractdigitalaction.cpp \
+ logixng/abstractlogixngtableaction.cpp \
+ logixng/clockfunctions.cpp \
+ logixng/constant.cpp \
+ logixng/defaultstack.cpp \
+ logixng/defaultsymboltable.cpp \
+ logixng/expressionnodearithmeticoperator.cpp \
+ logixng/expressionnodeassignmentoperator.cpp \
+ logixng/expressionnodebooleanoperator.cpp \
+ logixng/expressionnodecomparingoperator.cpp \
+ logixng/expressionnodefloatingnumber.cpp \
+ logixng/expressionnodefunction.cpp \
+ logixng/expressionnodeidentifier.cpp \
+ logixng/expressionnodeintegernumber.cpp \
+ logixng/expressionnodestring.cpp \
+ logixng/expressionnodeternaryoperator.cpp \
+ logixng/functionmanager.cpp \
+ logixng/localvariableexpressionvariable.cpp \
+ logixng/logixngtabletableaction.cpp \
+ logixng/recursivedescentparser.cpp \
+ logixng/referenceutil.cpp \
+ logixng/stringfunctions.cpp \
+ logixng/tableeditor.cpp \
+ logixng/tableforeach.cpp \
+ logixng/tokenizer.cpp \
+ logixng/typeconversionutil.cpp \
  logixng/abortconditionalngexecutionexception.cpp \
  logixng/abstractmalesocket.cpp \
  logixng/base.cpp \
@@ -2276,10 +2304,48 @@ HEADERS += \
     HEADERS +=
  }
  equals(ENABLE_LOGIXNG, "Y") {
-
  HEADERS += \
+ logixng/logixngeditor.h \
+ logixng/logixngtableaction.h \
+ logixng/abstractdigitalaction.h \
+ logixng/abstractlogixngtableaction.h \
+ logixng/calculateexception.h \
+ logixng/clockfunctions.h \
+ logixng/constant.h \
+ logixng/defaultstack.h \
+ logixng/defaultsymboltable.h \
+ logixng/expressionnode.h \
+ logixng/expressionnodearithmeticoperator.h \
+ logixng/expressionnodeassignmentoperator.h \
+ logixng/expressionnodebooleanoperator.h \
+ logixng/expressionnodecomparingoperator.h \
+ logixng/expressionnodefloatingnumber.h \
+ logixng/expressionnodefunction.h \
+ logixng/expressionnodeidentifier.h \
+ logixng/expressionnodeintegernumber.h \
+ logixng/expressionnodestring.h \
+ logixng/expressionnodeternaryoperator.h \
+ logixng/function.h \
+ logixng/functionfactory.h \
+ logixng/functionmanager.h \
+ logixng/functionnotexistsexception.h \
+ logixng/invalidsyntaxexception.h \
+ logixng/localvariableexpressionvariable.h \
+ logixng/logixngtabletableaction.h \
+ logixng/namedtablemanager.h \
+ logixng/parserexception.h \
+ logixng/recursivedescentparser.h \
+ logixng/referenceutil.h \
+ logixng/stringfunctions.h \
+ logixng/tableeditor.h \
+ logixng/tableforeach.h \
+ logixng/token.h \
+ logixng/tokenizer.h \
+ logixng/tokentype.h \
+ logixng/typeconversionutil.h \
+ logixng/variable.h \
+ logixng/wrongnumberofparametersexception.h \
  #logixng/manager.h\
- logixng/Table.h \
  logixng/maleanalogactionsocketfactory.h \
  logixng/maleanalogexpressionsocket.h \
  logixng/maledigitalactionsocket.h \
@@ -2299,6 +2365,7 @@ HEADERS += \
  logixng/stringexpressionbean.h \
  logixng/stringexpressionfactory.h \
  logixng/stringexpressionmanager.h \
+ logixng/table.h \
  logixng/tableroworcolumn.h \
  logixng/Analogexpressionbean.h \
  logixng/abortconditionalexecutionexception.h \

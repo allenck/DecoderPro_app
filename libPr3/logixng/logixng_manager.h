@@ -130,7 +130,7 @@ public:
             QString indent,
             /*MutableInt*/int lineNumber) {
 
-        printTree(new PrintTreeSettings(), writer, indent, lineNumber);
+        printTree(new Base::PrintTreeSettings(), writer, indent, lineNumber);
     }
     /**
      * Print the tree to a stream.
@@ -160,7 +160,7 @@ public:
             QString indent,
             /*MutableInt*/int lineNumber) {
 
-        printTree(new PrintTreeSettings(), locale, writer, indent, lineNumber);
+        printTree(new Base::PrintTreeSettings(), locale, writer, indent, lineNumber);
     }
 
     /**

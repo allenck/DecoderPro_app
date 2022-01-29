@@ -14,12 +14,13 @@
 //        implements Base {
 
 
-    /*public*/ AbstractBase::AbstractBase(QString sys, QObject* parent) throw (BadSystemNameException) : AbstractNamedBean(sys, parent){
+    /*public*/ AbstractBase::AbstractBase(QString sys, QObject* parent) /*throw (BadSystemNameException)*/
+     : AbstractNamedBean(sys, parent){
         //super(sys);
     }
 
-    /*public*/ AbstractBase::AbstractBase(QString sys, QString user, QObject* parent)
-            throw (BadUserNameException, BadSystemNameException): AbstractNamedBean(sys, user, parent){
+    /*public*/ AbstractBase::AbstractBase(QString sys, QString user, QObject* parent) : AbstractNamedBean(sys, user, parent)
+            /*throw (BadUserNameException, BadSystemNameException)*/: AbstractNamedBean(sys, user, parent){
         //super(sys, user);
     }
 

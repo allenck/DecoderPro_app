@@ -1,6 +1,7 @@
 #ifndef ANALOGACTION_H
 #define ANALOGACTION_H
 #include "base.h"
+
 /**
  * A LogixNG analog action.
  *
