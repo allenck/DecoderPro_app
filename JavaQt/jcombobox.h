@@ -35,6 +35,8 @@ public:
  /*public*/ void addFocusListener(FocusListener *l);
  /*public*/ void removeFocusListener(FocusListener* l);
  /*public*/ void addItemListener(ItemListener* listener);
+ /*public*/ void removeItemListener(ItemListener* listener);
+ /*public*/ QList<ItemListener*> getItemListeners();
  /*public*/ void setEnabled(bool b) override {QComboBox::setEnabled(b);}
  /*public*/ QString getSelectedItem() {return currentText();}
  /*public*/ int getSelectedIndex() {return currentIndex();}
@@ -66,6 +68,7 @@ private:
  /*private*/ void focusOutEvent(QFocusEvent* e)override;
  QStringListModel* cbModel;
  QMap<QString, QVariant> map = QMap<QString, QVariant>();
+ QList<ItemListener*> listeners = QList<ItemListener*>();
 
 private slots:
  //void on_selected();

@@ -234,3 +234,8 @@ void JTabbedPane::setTabButton(int iTab, QToolButton * button)
 /*public*/ void JTabbedPane::setSelectedComponent(QWidget* w){
  setCurrentWidget(w);
 }
+
+/*public*/ QWidget* JTabbedPane::getSelectedComponent()
+{
+  return currentWidget();
+}

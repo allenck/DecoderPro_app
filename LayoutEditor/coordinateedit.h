@@ -25,6 +25,7 @@ public:
   explicit CoordinateEdit(QWidget* parent = 0);
   /*public*/ static QAction* getTextEditAction(/*const*/ Positionable* pos, const QString title, QObject* parent);
   /*public*/ static QAction* getLevelEditAction(/*final*/ Positionable* pos, QObject *parent);
+  /*public*/ static AbstractAction* getToolTipEditAction(/*final*/ Positionable* pos);
   /*public*/ static QAction* getCoordinateEditAction(/*final*/ Positionable* pos, QObject *parent);
   /*public*/ void init(QString title, Positionable* pos, bool showName);
   /*public*/ void initSetXY();
@@ -33,6 +34,8 @@ public:
   /*public*/ void initText();
   /*public*/ static QAction* getRotateEditAction(/*final*/ Positionable* pos, QObject *parent);
   /*public*/ static QAction* getScaleEditAction(/*final*/ Positionable* pos, CoordinateEdit* parent);
+  /*public*/ static AbstractAction* getIdEditAction(
+          /*final*/ Positionable* pos, /*final*/ QString title, /*final*/ Editor* editor);
   /*public*/ void initRotate();
   /*public*/ void initScale();
   /*public*/ static QAction* getMarginEditAction(/*final*/ Positionable* pos, PositionablePopupUtil* parent);

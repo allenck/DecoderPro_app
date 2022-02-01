@@ -57,7 +57,7 @@ class MaleSocketFactory;
      * Get the default male socket class
      * @return the class
      */
-    /*public*/ virtual QString/*Class<? extends MaleSocket>*/* getMaleSocketClass()=0;
+    /*public*/ virtual QString/*Class<? extends MaleSocket>*/ getMaleSocketClass()=0;
 
     /**
      * Get the last item registered in the mananger.
@@ -71,6 +71,7 @@ class MaleSocketFactory;
      */
     /*public*/ virtual void registerMaleSocketFactory(MaleSocketFactory/*<E>*/* factory)=0;
 
+  friend class TreeEditor;
 };
 Q_DECLARE_INTERFACE(BaseManager, "BaseManager")
 #endif // BASEMANAGER_H

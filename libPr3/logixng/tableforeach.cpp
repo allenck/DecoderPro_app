@@ -10,6 +10,7 @@
 #include "conditionalng.h"
 #include "namedtablemanager.h"
 #include "typeconversionutil.h"
+
 /**
  * Executes an action when the expression is True.
  *
@@ -53,7 +54,7 @@
 
     /*private*/ QString TableForEach::getNewRowOrColumnName() /*throws JmriException*/ {
 
-        switch (_rowOrColumnAddressing.type()) {
+        switch (_rowOrColumnAddressing) {
             case NamedBeanAddressing::TYPE::Direct:
                 return _rowOrColumnName;
 
@@ -75,7 +76,7 @@
                         : nullptr;
 
             default:
-                throw new IllegalArgumentException("invalid _rowOrColumnAddressing state: " + NamedBeanAddressing::toString(_rowOrColumnAddressing);
+                throw new IllegalArgumentException("invalid _rowOrColumnAddressing state: " + NamedBeanAddressing::toString(_rowOrColumnAddressing));
         }
     }
 
@@ -262,7 +263,7 @@
      * Get tableRowOrColumn.
      * @return tableRowOrColumn
      */
-    /*public*/  TableRowOrColumn* TableForEach::getRowOrColumn() {
+    /*public*/  TableRowOrColumn::TYPE TableForEach::getRowOrColumn() {
         return _tableRowOrColumn;
     }
 

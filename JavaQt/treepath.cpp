@@ -173,15 +173,14 @@ void TreePath::common()
  *
  * @return an array of the elements in this {@code TreePath}
  */
-/*public*/  QList<QObject*>* TreePath::getPath() {
+/*public*/  QVector<QObject *> *TreePath::getPath() {
     int            i = getPathCount();
     QVector<QObject*>*      result = new QVector<QObject*>(i--) ;//[i--];
 
     for(TreePath* path = this; path != NULL; path = path->getParentPath()) {
         result->replace(i--, path->getLastPathComponent());
     }
-    QList<QObject*> list = result->toList();
-    return &list;
+    return result;
 }
 
 /**

@@ -101,6 +101,18 @@ void JComboBox::currentIndexChanged(int)
 /*public*/ void JComboBox::addItemListener(ItemListener* listener)
 {
  connect(this, SIGNAL(itemStateChanged(ItemEvent*)), listener, SLOT(itemStateChanged(ItemEvent*)));
+ listeners.append(listener);
+}
+
+/*public*/ void JComboBox::removeItemListener(ItemListener* listener)
+{
+ disconnect(this, SIGNAL(itemStateChanged(ItemEvent*)), listener, SLOT(itemStateChanged(ItemEvent*)));
+ listeners.removeOne(listener);
+}
+
+/*public*/ QList<ItemListener*> JComboBox::getItemListeners()
+{
+ return listeners;
 }
 
 /*public*/ QStringList JComboBox::itemList(){

@@ -754,3 +754,13 @@ void JTree::rowExpanded(const QModelIndex index)
  TreeExpansionEvent* tee = new TreeExpansionEvent((QObject*)this, new TreePath(ol));
  emit treeExpanded(tee);
 }
+
+/*public*/ int  JTree::getRowCount(){
+    return model()->rowCount();
+}
+
+/*public*/ void JTree::setCellRenderer(TreeCellRenderer* r)
+{
+ _treeCellRenderer = r;
+}
+

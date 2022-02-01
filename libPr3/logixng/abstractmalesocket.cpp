@@ -253,7 +253,7 @@
     }
 
     //@Override
-    /*public*/ QList<VariableData*> AbstractMaleSocket::getLocalVariables() {
+    /*public*/ QSet<VariableData*> AbstractMaleSocket::getLocalVariables() {
         if (qobject_cast<MaleSocket*>(getObject()->self())) {
             return ((MaleSocket*)getObject())->getLocalVariables();
         } else {
@@ -262,7 +262,7 @@
     }
 
     //@Override
-    /*public*/ Base* AbstractMaleSocket::getParent() {
+    /*public*/ Base* AbstractMaleSocket::getParent()const{
         return _parent;
     }
 

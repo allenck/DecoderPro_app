@@ -17,10 +17,11 @@ public:
  /*public*/ TreeModelEvent(QObject* source, QVector<QObject*>* path, QObject* parent = 0);
  /*public*/ TreeModelEvent(QObject* source, TreePath* path, QObject* parent = 0);
  /*public*/ TreePath* getTreePath();
- /*public*/ QList<QObject*>* getPath();
+ /*public*/ QVector<QObject *> *getPath();
  /*public*/ QList<QObject*>* getChildren();
  /*public*/ QVector<int>* getChildIndices();
  /*public*/ QString toString();
+
 
 private:
  void common(TreePath* path, QVector<int>* childIndices, QVector<QObject*>* children);

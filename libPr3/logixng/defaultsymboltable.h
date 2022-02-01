@@ -23,13 +23,13 @@ class DefaultSymbolTable : public QObject, public SymbolTable
   /*public*/  QVariant getValue(QString name)override;
   /*public*/  bool hasValue(QString name)override;
   /*public*/  void setValue(QString name, QVariant value)override;
-  /*public*/  void printSymbolTable(PrintWriter* stream);
+  /*public*/  void printSymbolTable(PrintWriter* stream)override;
   /*private*/ RecursiveDescentParser* createParser() /*throws ParserException*/;
-  /*public*/  void createSymbols(/*Collection<? extends */QSet<VariableData*> symbolDefinitions) /*throws JmriException*//*override*/;
+  /*public*/  void createSymbols(/*Collection<? extends */QSet<VariableData*> symbolDefinitions) /*throws JmriException*/override;
   /*public*/  void createSymbols(SymbolTable* symbolTable,
                                  /*Collection<? extends*/ QSet<VariableData*> symbolDefinitions)
-                                 /*throws JmriException*/;
-  /*public*/  void removeSymbols(QSet<VariableData*> symbolDefinitions) /*throws JmriException*//*override*/;
+                                 /*throws JmriException*/override;
+  /*public*/  void removeSymbols(QSet<VariableData*> symbolDefinitions) /*throws JmriException*/override;
   /*public*/  Stack* getStack()override;
 
  private:

@@ -64,7 +64,7 @@ class AbstractFemaleSocket : public QObject, public FemaleSocket
   /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override;
   /*public*/ void addPropertyChangeListener(PropertyChangeListener* listener)override;
   /*public*/ void addPropertyChangeListener(QString propertyName, PropertyChangeListener* listener)override;
-  /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners()override;
+  /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners()const override;
   /*public*/ QVector<PropertyChangeListener*> getPropertyChangeListeners(QString propertyName) override;
   /*public*/ void removePropertyChangeListener(PropertyChangeListener* listener)override;
   /*public*/ void removePropertyChangeListener(QString propertyName, PropertyChangeListener* listener)override;
@@ -81,6 +81,7 @@ class AbstractFemaleSocket : public QObject, public FemaleSocket
   /*public*/ Base* deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/  override;
   /*public*/ void getListenerRefsIncludingChildren(QList<QString> list) override;
 
+  QObject* self() override {return (QObject*)this;}
  signals:
 
  private:

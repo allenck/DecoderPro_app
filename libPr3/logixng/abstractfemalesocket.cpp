@@ -376,7 +376,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ void AbstractFemaleSocket::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
+    /*public*/ void AbstractFemaleSocket::getUsageDetail(int /*level*/, NamedBean* /*bean*/, QList<NamedBeanUsageReport*> /*report*/, NamedBean* /*cdl*/) {
     }
 
     //@Override

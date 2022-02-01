@@ -318,6 +318,7 @@ HEADERS += javaqt.h\
  propertychangefirer.h \
  swingpropertychangesupport.h \
  thread.h \
+    treecellrenderer.h \
  tristatejcheckbox.h \
  uncheckedioexception.h \
  unexpectedexceptioncontext.h \

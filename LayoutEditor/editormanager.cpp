@@ -214,7 +214,25 @@ void EditorManager::notifyStoreNeeded() {
  Class* obj = Class::forName(type);
 return (QObject*)obj;
 }
-#if 0
+/**
+ * Get the editor with the given name.
+ *
+ * @param name the name of the editor
+ * @return the editor with the given name or null if no editor by that name
+ * exists
+ */
+//@CheckForNull
+/*public*/ Editor* EditorManager::getByName(/*@Nonnull*/ QString name) {
+    //return getAll().stream().filter(e -> e.getName().equals(name)).findFirst().orElse(null);
+ foreach(Editor* e, getAll())
+ {
+  if(e->getName() == name)
+   return e;
+  return nullptr;
+ }
+}
+
+#if 0 // TODO: ?
     /*private*/ /*final*/ SortedSet<Editor> editors = new TreeSet<>(new Comparator<Editor>() {
 
         @Override

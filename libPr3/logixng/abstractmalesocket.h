@@ -12,7 +12,7 @@ class AbstractMaleSocket : public QObject, public MaleSocket
   Q_OBJECT
   Q_INTERFACES(MaleSocket)
  public:
-  explicit AbstractMaleSocket(BaseManager<NamedBean*>/*<? extends NamedBean>*/* manager, Base* object, QObject *parent = nullptr);
+  explicit AbstractMaleSocket(BaseManager/*<NamedBean*>*//*<? extends NamedBean>*/* manager, Base* object, QObject *parent = nullptr);
   /*public*/ /*final*/ Base* getObject() override;
   /*public*/ /*final*/ Base* getRoot() override;
   /*public*/ bool isLocked()override;
@@ -48,11 +48,11 @@ class AbstractMaleSocket : public QObject, public MaleSocket
   /*public*/ bool getCatchAbortExecution()override;
   /*public*/ void setCatchAbortExecution(bool catchAbortExecution)override;
   /*public*/ void addLocalVariable(QString name,
-          InitialValueType::TYPES initialValueType,
+          SymbolTable::InitialValueType::TYPES initialValueType,
           QString initialValueData)override;
   /*public*/ void addLocalVariable(VariableData* variableData)override;
   /*public*/ void clearLocalVariables()override;
-  /*public*/ QList<VariableData*> getLocalVariables() override;
+  /*public*/ QSet<VariableData*> getLocalVariables() override;
   /*public*/ Base* getParent() const override;
   /*public*/ void setParent(Base* parent)override;
   /*public*/ /*final*/ ConditionalNG* getConditionalNG()override;
@@ -81,7 +81,7 @@ class AbstractMaleSocket : public QObject, public MaleSocket
           /*MutableInt*/int lineNumber)override;
   /*public*/ void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override;
   /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override;
-  /*public*/ BaseManager<NamedBean*>*/*<? extends NamedBean>*/* getManager()override;
+  /*public*/ BaseManager/*<NamedBean*>*/*/*<? extends NamedBean>*/* getManager()override;
   /*public*/ /*final*/ Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames)
           /*throw (JmriException)*/override;
   /*public*/ /*final*/ Base* deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/;
@@ -108,14 +108,14 @@ class AbstractMaleSocket : public QObject, public MaleSocket
   /*private*/ /*final*/ Base* _object;
   /*private*/ bool _locked = false;
   /*private*/ bool _system = false;
-  /*private*/ /*final*/ BaseManager<NamedBean*>*/*<? extends NamedBean>*/* _manager;
+  /*private*/ /*final*/ BaseManager/*<NamedBean*><? extends NamedBean>*/* _manager;
   /*private*/ Base* _parent;
   /*private*/ ErrorHandlingType::TYPES _errorHandlingType = ErrorHandlingType::Default;
   /*private*/ bool _catchAbortExecution;
   /*private*/ bool _listen = true;     // By default, actions and expressions listen
 
  protected:
-  /*protected*/ /*final*/ QList<VariableData*> _localVariables = QList<VariableData*>();
+  /*protected*/ /*final*/ QSet<VariableData*> _localVariables = QSet<VariableData*>();
   /*abstract*/virtual /*protected*/ void registerListenersForThisClass()=0;
   /*protected*/ void printTreeRow(
           PrintTreeSettings* settings,

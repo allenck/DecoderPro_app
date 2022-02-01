@@ -147,11 +147,11 @@
             SymbolTable::InitialValueType::TYPES initialValueType,
             QString initialValueData)=0;
 
-    /*public*/ virtual void addLocalVariable(SymbolTable::VariableData* variableData);
+    /*public*/ virtual void addLocalVariable(VariableData* variableData);
 
     /*public*/ virtual void clearLocalVariables()=0;
 
-    /*public*/ virtual QList<SymbolTable::VariableData*> getLocalVariables()=0;
+    /*public*/ virtual QSet<VariableData*> getLocalVariables()=0;
 
     /**
      * Get the error handling type for this socket.
@@ -195,7 +195,8 @@
      * @param clazz the type of the male socket we are looking for
      * @return the found male socket or null if not found
      */
-    /*public*/  /*default*/ MaleSocket* find(Class* clazz) {
+    /*public*/  /*default*/ MaleSocket* find(QString className) {
+    Class* clazz =Class::forName(className);
 
 //        if (! MaleSocket::isAssignableFrom(clazz)) {
 //            throw  IllegalArgumentException("clazz is not a MaleSocket");

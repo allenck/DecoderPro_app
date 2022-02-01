@@ -33,7 +33,7 @@ class TableForEach : public AbstractDigitalAction, public FemaleSocketListener, 
   /*public*/  QString getTableLocalVariable();
   /*public*/  void setTableFormula(/*@Nonnull*/ QString formula) /*throws ParserException */;
   /*public*/  QString getTableFormula();
-  /*public*/  TableRowOrColumn* getRowOrColumn();
+  /*public*/  TableRowOrColumn::TYPE getRowOrColumn();
   /*public*/  void setRowOrColumn(/*@Nonnull*/ TableRowOrColumn::TYPE tableRowOrColumn);
   /*public*/  void setRowOrColumnAddressing(NamedBeanAddressing addressing) /*throws ParserException*/ ;
   /*public*/  QString getRowOrColumnName();

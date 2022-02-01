@@ -11,8 +11,13 @@ class JMenuItem : public JmriAbstractAction
   explicit JMenuItem(QObject *parent);
   JMenuItem(QString text, QObject *parent);
   /*public*/ void addActionListener(JMenuItem *listener);
+  /*public*/ void setActionCommand(QString cmd);
+  /*public*/ QString getActionCommand();
  public slots:
   // /*public*/ void actionPerformed(JActionEvent* e = 0)override;
+ private:
+  QString actionCommand;
+
 };
 
 #endif // JMENUITEM_H

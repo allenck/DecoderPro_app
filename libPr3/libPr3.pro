@@ -1134,6 +1134,25 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+ logixng/editcommentdialog.cpp \
+ logixng/functionshelpdialog.cpp \
+ logixng/localvariabletablemodel.cpp \
+ logixng/abstractdebuggermalesocket.cpp \
+ logixng/abstractdigitalactionswing.cpp \
+ logixng/abstractswingconfigurator.cpp \
+ logixng/actionpositionable.cpp \
+ logixng/actionpositionableswing.cpp \
+ logixng/categorydisplay.cpp \
+ logixng/debuggersymboltablemodel.cpp \
+ logixng/swingconfiguratorinterface.cpp \
+ logixng/swingtools.cpp \
+ logixng/clipboardeditor.cpp \
+ logixng/conditionalngdebugger.cpp \
+ logixng/conditionalngeditor.cpp \
+ logixng/debugger.cpp \
+ logixng/treeeditor.cpp \
+ logixng/treepane.cpp \
+ logixng/treeviewer.cpp \
  logixng/logixngeditor.cpp \
  logixng/logixngtableaction.cpp \
  logixng/abstractdigitalaction.cpp \
@@ -2305,6 +2324,25 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+ logixng/editcommentdialog.h \
+ logixng/functionshelpdialog.h \
+ logixng/localvariabletablemodel.h \
+ logixng/abstractdebuggermalesocket.h \
+ logixng/abstractdigitalactionswing.h \
+ logixng/abstractswingconfigurator.h \
+ logixng/actionpositionable.h \
+ logixng/actionpositionableswing.h \
+ logixng/categorydisplay.h \
+ logixng/debuggersymboltablemodel.h \
+ logixng/swingconfiguratorinterface.h \
+ logixng/swingtools.h \
+ logixng/clipboardeditor.h \
+ logixng/conditionalngdebugger.h \
+ logixng/conditionalngeditor.h \
+ logixng/debugger.h \
+ logixng/treeeditor.h \
+ logixng/treepane.h \
+ logixng/treeviewer.h \
  logixng/logixngeditor.h \
  logixng/logixngtableaction.h \
  logixng/abstractdigitalaction.h \

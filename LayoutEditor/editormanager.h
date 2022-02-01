@@ -27,7 +27,7 @@ public:
  /*public*/ /*<T extends Editor>*/ QSet<Editor*> getAll(/*@Nonnull Class<T>*/QString type);
  /*public*/ Editor* get(/*@Nonnull*/ QString name);
  /*public*/ /*<T extends Editor>*/ QObject* get(/*@Nonnull*/ QString type, /*@Nonnull*/ QString name);
-
+ /*public*/ Editor* getByName(/*@Nonnull*/ QString name);
  /*synchronized*/ /*public*/ QList<Editor *> getEditorsList();
  /*public*/ QList<Editor*> getEditorsList(QString type);
  /*public*/ Editor* getEditor(QString name);

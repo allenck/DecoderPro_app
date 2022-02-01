@@ -23,6 +23,7 @@ public:
  /*public*/ void setEnabledAt(int tabIndex, bool enabled);
  /*public*/ void setToolTipTextAt(int i, QString txt);
  /*public*/ void setSelectedComponent(QWidget* w);
+ /*public*/ QWidget* getSelectedComponent();
 };
 
 #endif // JTABBEDPANE_H

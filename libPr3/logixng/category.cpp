@@ -63,7 +63,7 @@
     }
 
 
-    /*protected*/Category:: Category(QString name, QString description, int order) {
+    /*protected*/Category:: Category(QString name, QString description, int order, QObject* parent) : QObject(parent) {
         _name = name;
         _description = description;
         _order = order;

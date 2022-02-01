@@ -242,6 +242,7 @@ public:
     /*public*/ void disposeLoadData();
     /*public*/ bool loadOK();
     /*public*/ QList <Positionable*> getContents();
+    /*public*/ QMap<QString, Positionable*> getIdContents();
     /*public*/ void setDefaultToolTip(QString dtt);
 //    /*public*/ const JComponent* getTargetPanel();
     /*public*/ JFrame* getTargetFrame();
@@ -278,6 +279,9 @@ public:
     /*public*/ bool setShowAlignmentMenu(Positionable* p, QMenu* popup);
     /*public*/ void setDisplayLevelMenu(Positionable* p, QMenu* popup);
     /*public*/ void setHiddenMenu(Positionable* p, QMenu* popup);
+    /*public*/ void setEditIdMenu(Positionable* p, QMenu* popup);
+    /*public*/ void positionalIdChange(Positionable* p, QString newId);
+    /*public*/ void setShowToolTipMenu(Positionable* p, QMenu* popup);
     /*public*/ virtual void setRemoveMenu(Positionable* p, QMenu* popup);
     /*public*/ PositionableLabel* setUpBackground(QString name);
     /*public*/ void displayLevelChange(Positionable* l);
@@ -316,7 +320,6 @@ public:
 //                   ";class=jmri.jmrit.display.Positionable";
     /*public*/ QRectF getSelectRect();
     /*public*/ IconAdder* getIconEditor(QString name);
-    /*public*/ void setShowToolTipMenu(Positionable* p, QMenu* popup);
     /*synchronized*/ /*public*/ static QVector<Editor*> getEditors();
     //template<class T>
     /*synchronized*/ /*public*/ static /*<T extends Editor>*/ QList<Editor*> getEditors(/*@Nonnull*/ QString type);
@@ -433,16 +436,16 @@ private:
     /*private*/ int _x, _y;
     QString getUsageData(Positionable *pos);
 
+    /*private*/ QVector <Positionable*>* _contents = new QVector<Positionable*>();
+    /*private*/ QMap<QString, Positionable*> _idContents = QMap<QString, Positionable*>();
 
 private slots:
   void On_lockItemAction_toggled(bool);
   void On_actionHidden_toggled(bool bState); // [slot]
   void On_rosterBoxSelectionChanged(QString propertyName,QObject* o,QObject* n);
   //void On_textAttributesAction_triggered();
-  void On_removeMenuAction_triggered();
 
  protected:
-    /*protected*/ QVector <Positionable*>* _contents = new QVector<Positionable*>();
     /*protected*/ JLayeredPane* _targetPanel;
     /*protected*/ int _scrollState = SCROLL_NONE;
     /*protected*/ bool _editable = true;

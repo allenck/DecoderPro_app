@@ -141,7 +141,7 @@ public:
      * @param lineNumber the line number
      */
     /*public*/ virtual void printTree(
-            PrintTreeSettings* settings,
+            Base::PrintTreeSettings* settings,
             PrintWriter* writer,
             QString indent,
             /*MutableInt*/int lineNumber)=0;
@@ -173,7 +173,7 @@ public:
      * @param lineNumber the line number
      */
     /*public*/ virtual void printTree(
-            PrintTreeSettings* settings,
+            Base::PrintTreeSettings* settings,
             QLocale locale,
             PrintWriter* writer,
             QString indent,

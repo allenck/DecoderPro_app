@@ -13,7 +13,7 @@ class JAVAQTSHARED_EXPORT DefaultComboBoxModel : public AbstractListModel, publi
     //Q_OBJECT
   Q_INTERFACES(ComboBoxModel)
 public:
-    //explicit DefaultComboBoxModel(QObject *parent = 0);
+    explicit DefaultComboBoxModel(QObject *parent = 0);
     /**
      * Constructs an empty DefaultComboBoxModel object.
      */
@@ -29,7 +29,7 @@ public:
     /*public*/ void setSelectedItem(QString anObject);
     /*public*/ QString getSelectedItem();
     /*public*/ int getSize();
-//    /*public*/ QObject* getElementAt(int index);
+//    /*public*/ QObject* getElementAt(int index) const;
     /*public*/ int getIndexOf(QString anObject) ;
     /*public*/ void addElement(QString anObject) {
         objects.append(anObject);

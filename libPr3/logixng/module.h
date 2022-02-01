@@ -104,7 +104,7 @@
     /**
      * Data for a parameter.
      */
-    /*public*/ /*static*/ class ParameterData : public SymbolTable::VariableData
+    /*public*/ /*static*/ class ParameterData : public VariableData
     {
      public:
         /*public*/ ReturnValueType::TYPES _returnValueType = ReturnValueType::TYPES::None;

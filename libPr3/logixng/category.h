@@ -19,7 +19,8 @@ class Item;
  *
  * @author Daniel Bergqvist Copyright 2018
  */
-/*public*/ /*abstract*/ class Category : public QObject, Comparable<Category> {
+/*public*/ /*abstract*/ class Category : public QObject//, Comparable<Category>
+{
  Q_OBJECT
  public:
     /**
@@ -63,7 +64,7 @@ class Item;
     /*private*/ /*final*/ int _order;
 
  protected:
-    /*protected*/ Category(QString name, QString description, int order);
+    /*protected*/ Category(QString name, QString description, int order, QObject* parent = nullptr);
 
 };
     /*public*/ /*static*/ /*final*/ class Item : public Category {

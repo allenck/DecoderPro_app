@@ -150,7 +150,7 @@
             /*Collection<? extends SymbolTable.*/QSet<VariableData*> symbolDefinitions)
             /*throws JmriException */{
 
-        for (SymbolTable::VariableData* variable : symbolDefinitions) {
+        for (VariableData* variable : symbolDefinitions) {
             SymbolTable::Symbol* symbol = new DefaultSymbol(variable->getName(), _stack->getCount() - _firstSymbolIndex);
             QVariant initialValue = QVariant();
 

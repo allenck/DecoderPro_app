@@ -13,3 +13,12 @@ JMenuItem::JMenuItem(QString text, QObject *parent) : JmriAbstractAction(text, p
 {
  connect(listener, SIGNAL(triggered()), listener, SLOT(actionPerformed(JActionEvent*)));
 }
+
+/*public*/ void JMenuItem::setActionCommand(QString cmd)
+{
+ actionCommand = cmd;
+}
+
+/*public*/ QString JMenuItem::getActionCommand(){
+ return actionCommand;
+}

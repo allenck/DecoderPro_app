@@ -179,7 +179,7 @@
      *
      * @return a set of entries with category and class
      */
-    /*public*/ virtual QMap<Category*, QList</*Class<? extends*/ Base*>> getConnectableClasses()=0;
+    /*public*/ virtual QMap<Category*, QList</*Class<? extends*/ Base*> > getConnectableClasses()=0;
 
     /** {@inheritDoc} */
     //@Override
@@ -188,7 +188,7 @@
             getConnectedSocket()->setup();
         }
     }
-
+ QObject* self() =0;
 };
 Q_DECLARE_INTERFACE(FemaleSocket, "FemaleSocket");
 #endif // FEMALESOCKET_H

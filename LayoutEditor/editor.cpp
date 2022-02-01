@@ -78,6 +78,7 @@
 #include "placewindow.h"
 #include "abstractsignalheadmanager.h"
 #include "defaultsignalmastmanager.h"
+#include "jcheckboxmenuitem.h"
 
 //Editor::Editor(QWidget *parent) :
 //    JmriJFrame(parent)
@@ -313,6 +314,10 @@ if (_newIcon==nullptr)
   return _contents->toList();
 }
 
+/*public*/ QMap<QString, Positionable*> Editor::getIdContents() {
+        //return Collections.unmodifiableMap(_idContents);
+ return QMap<QString, Positionable*>(_idContents);
+}
 /*public*/ void Editor::setDefaultToolTip(QString dtt)
 {
  _defaultToolTip = dtt;
@@ -956,6 +961,7 @@ void Editor::closeEvent(QCloseEvent */*e*/)
   ed->init(getName());
 
   ed->_contents = _contents;
+  ed->_idContents = QMap<QString, Positionable*>(_idContents);
   for (int i = 0; i<_contents->size(); i++)
   {
    Positionable* p = _contents->at(i);
@@ -1317,13 +1323,66 @@ void Editor::On_lockItemAction_toggled(bool enabled) // SLOT[]
      saveP = p;
  }
 }
+/**
+ * Add a menu entry to edit Id of the Positionable item
+ *
+ * @param p     the item
+ * @param popup the menu to add the entry to
+ */
+/*public*/ void Editor::setEditIdMenu(Positionable* p, QMenu* popup) {
+    if (p->getDisplayLevel() == BKG) {
+        return;
+    }
+
+    popup->addAction(CoordinateEdit::getIdEditAction(p, "EditId", this));
+
+}
+
+/**
+ * Check if it's possible to change the id of the Positionable to the
+ * desired string.
+ * @param p the Positionable
+ * @param newId the desired new id
+ * @throws jmri.jmrit.display.Positionable.DuplicateIdException if another
+ *         Positionable in the editor already has this id
+ */
+/*public*/ void Editor::positionalIdChange(Positionable* p, QString newId)
+        /*throws Positionable.DuplicateIdException*/ {
+
+// TODO: ??    if (Objects.equals(newId, p->getId())) return;
+
+    if ((newId != nullptr) && (_idContents.contains(newId))) {
+        throw new Positionable::DuplicateIdException();
+    }
+
+    if (p->getId() != nullptr) _idContents.remove(p->getId());
+    if (newId != nullptr) _idContents.insert(newId, p);
+}
+
+
+/**
+ * Add an action to remove the Positionable item.
+ *
+ * @param p     the item to set the menu for
+ * @param popup the menu to add for p
+ */
+/*public*/ void Editor::setRemoveMenu(Positionable* p, QMenu* popup) {
+    AbstractAction* act = new AbstractAction(tr("Remove"),this);
+    connect(act, &AbstractAction::triggered, [=]{
+     p->remove();
+        removeSelections(p);
+    });
+
+    popup->addAction(act);
+}
+
 void Editor::On_actionHidden_toggled(bool bState) // [slot]
 {
  Positionable* comp =saveP;
  //comp.setHidden(checkBox.isSelected());
  setSelectionsHidden(bState, comp);
 }
-#if 1
+
 /**
 * Add a checkbox to display a tooltip for the Positionable item and
 * if showable, provide a dialog menu to edit it.
@@ -1366,35 +1425,6 @@ ShowToolTipActionListener::ShowToolTipActionListener(Positionable *pos, bool isC
 void ShowToolTipActionListener::actionPerformed(JActionEvent */*e*/)
 {
  comp->setShowToolTip(!isChecked);
-}
-
-#endif
-/**
-* Add an action to remove the Positionable item.
-*/
-/*public*/ void Editor::setRemoveMenu(Positionable* p, QMenu* popup)
-{
-    //  popup.add(new AbstractAction(tr("Remove")) {
-    //      Positionable comp;
-    //      /*public*/ void actionPerformed(ActionEvent e) {
-    //          comp.remove();
-    //          removeSelections(comp);
-    //      }
-    //      AbstractAction init(Positionable pos) {
-    //          comp = pos;
-    //          return this;
-    //      }
-    //  }.init(p));
-     //currComp = p;
-    saveP = p;
-     QAction* removeMenuAction = new QAction("Remove", this);
-     connect(removeMenuAction, SIGNAL(triggered()), this, SLOT(On_removeMenuAction_triggered()));
-     popup->addAction(removeMenuAction);
-}
-void Editor::On_removeMenuAction_triggered()
-{
- saveP->remove();
- removeSelections(saveP);
 }
 
 /************************* End Popup Methods ***********************/

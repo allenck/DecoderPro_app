@@ -94,7 +94,7 @@
             }
 
 
-            TokenType::TTYPE nextToken = getTokenType(currentToken, ch, nextChar, eatNextChar);
+            TokenType::TTYPE nextToken = getTokenType(currentToken, ch, nextChar, &eatNextChar);
 //            System.out.format("index %d: %s, %c%n", i, nextToken.name(), ch);
 
             if (nextToken == TokenType::SAME_AS_LAST) {
@@ -186,9 +186,9 @@
         return tokens;
     }
 
-    /*private*/ /*static*/ TokenType::TTYPE Tokenizer::getTokenType(Token* currentToken, QChar ch, QChar nextChar, std::atomic<bool> eatNextChar) {
+    /*private*/ /*static*/ TokenType::TTYPE Tokenizer::getTokenType(Token* currentToken, QChar ch, QChar nextChar, std::atomic<bool>* eatNextChar) {
 
-        eatNextChar=(false);
+        *eatNextChar=(false);
 
         if (ch == '"') {
             return TokenType::STRING;
@@ -204,7 +204,7 @@
 
         if ((ch == '.') && (nextChar == '.')) {
             if ((currentToken->_tokenType != TokenType::DOT_DOT)) {
-                eatNextChar=(true);
+                *eatNextChar=(true);
                 return TokenType::DOT_DOT;
             } else {
                 // Three dots in a row is an error
@@ -227,19 +227,19 @@
         if (nextChar == '=') {
             switch (ch.toLatin1()) {
                 case '+':
-                    eatNextChar=(true);
+                    *eatNextChar=(true);
                     return TokenType::ASSIGN_ADD;
                 case '-':
-                    eatNextChar = (true);
+                    *eatNextChar = (true);
                     return TokenType::ASSIGN_SUBTRACKT;
                 case '*':
-                    eatNextChar = (true);
+                    *eatNextChar = (true);
                     return TokenType::ASSIGN_MULTIPLY;
                 case '/':
-                    eatNextChar = (true);
+                    *eatNextChar = (true);
                     return TokenType::ASSIGN_DIVIDE;
                 case '%':
-                    eatNextChar = (true);
+                    *eatNextChar = (true);
                     return TokenType::ASSIGN_MODULO;
 //                default:
                     // Do nothing
@@ -249,10 +249,10 @@
         if (ch == '<') {
             switch (nextChar.toLatin1()) {
                 case '=':
-                    eatNextChar = (true);
+                    *eatNextChar = (true);
                     return TokenType::LESS_OR_EQUAL;
                 case '<':
-                    eatNextChar = (true);
+                    *eatNextChar = (true);
                     return TokenType::SHIFT_LEFT;
                 default:
                     return TokenType::LESS_THAN;
@@ -262,10 +262,10 @@
         if (ch == '>') {
             switch (nextChar.toLatin1()) {
                 case '=':
-                    eatNextChar = (true);
+                    *eatNextChar = (true);
                     return TokenType::GREATER_OR_EQUAL;
                 case '>':
-                    eatNextChar = (true);
+                    *eatNextChar = (true);
                     return TokenType::SHIFT_RIGHT;
                 default:
                     return TokenType::GREATER_THAN;
@@ -274,7 +274,7 @@
 
         if (ch == '=') {
             if (nextChar == '=') {
-                eatNextChar = (true);
+                *eatNextChar = (true);
                 return TokenType::EQUAL;
             } else {
                 return TokenType::ERROR;
@@ -283,7 +283,7 @@
 
         if (ch == '!') {
             if (nextChar == '=') {
-                eatNextChar = (true);
+                *eatNextChar = (true);
                 return TokenType::NOT_EQUAL;
             } else {
                 return TokenType::BOOLEAN_NOT;
@@ -292,7 +292,7 @@
 
         if (ch == '|') {
             if (nextChar == '|') {
-                eatNextChar = (true);
+                *eatNextChar = (true);
                 return TokenType::BOOLEAN_OR;
             } else {
                 return TokenType::BINARY_OR;
@@ -301,7 +301,7 @@
 
         if (ch == '&') {
             if (nextChar == '&') {
-                eatNextChar = (true);
+                *eatNextChar = (true);
                 return TokenType::BOOLEAN_AND;
             } else {
                 return TokenType::BINARY_AND;

@@ -27,7 +27,7 @@
 //    }
 
     //@Override
-    /*public*/ static QString toString(TYPES t) {
+    /*public*/ static QString toString(FemaleSocketOperation::TYPES t) {
         switch(t)
         {
         case Remove:
@@ -42,6 +42,10 @@
          return QString("Move socket down");
         }
     }
+ /*public*/ static QList<TYPES> values(){
+  QList<FemaleSocketOperation::TYPES> vals= {Remove, InsertBefore, InsertAfter, MoveUp, MoveDown};
+  return vals;
+ }
 
 };
 #endif // FEMALESOCKETOPERATION_H

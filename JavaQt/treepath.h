@@ -13,7 +13,7 @@ public:
     //explicit TreePath(QObject *parent = 0);
     /*public*/  TreePath(QVector<QObject*>* path, QObject* parent= 0);
     /*public*/  TreePath(TreeNode* lastPathComponent, QObject* parent= 0);
-    /*public*/  QList<QObject*>* getPath();
+    /*public*/  QVector<QObject*>* getPath();
     /*public*/  QObject* getLastPathComponent();
     /*public*/  int getPathCount();
     /*public*/  QObject* getPathComponent(int index);

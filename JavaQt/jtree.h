@@ -11,6 +11,7 @@
 #include "exceptions.h"
 #include "treeexpansionlistener.h"
 #include "treeselectionlistener.h"
+#include "treecellrenderer.h"
 
 class JAVAQTSHARED_EXPORT ExpandVetoException : public Exception
 {
@@ -98,7 +99,8 @@ public:
  /*public*/ TreePath* getPathForRow(int row);
  /*public*/ void removeSelectionPaths(QVector<TreePath*> paths);
  /*public*/ void addTreeExpansionListener(TreeExpansionListener* tel);
-
+ /*public*/ int  getRowCount();
+ /*public*/ void setCellRenderer(TreeCellRenderer*);
 
 signals:
  void treeCollapsed(TreeExpansionEvent*);
@@ -116,7 +118,7 @@ private:
  //TreeSelectionListener* _TSL; // note: only one listener supported at this time.
  SwingPropertyChangeSupport* pcs;
  /*private*/ static int                TEMP_STACK_SIZE;// = 11;
-
+ TreeCellRenderer* _treeCellRenderer = nullptr;
  /**
   * True if paths in the selection should be expanded.
   */

@@ -16,6 +16,7 @@ class ThreadingUtil : public QObject
   static /*public*/ void runOnGUI(/*@Nonnull*/ ThreadAction* ta);
   template<class E>
   static /*public*/ /*<E>*/ E runOnGUIwithReturn(/*@Nonnull*/ /*ReturningThreadAction<E>*/ThreadAction* ta);
+  static /*public*/ void runOnGUIEventually(/*@Nonnull*/ ThreadAction* ta) ;
 
  signals:
 

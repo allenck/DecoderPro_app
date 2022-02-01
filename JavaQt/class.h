@@ -19,6 +19,8 @@ public:
  /*public*/ /*native*/ bool isAssignableFrom(QString cls);
  ///*pubic*/ QString className();
  /*public*/ static bool isAssignableFrom(QString clazz, QString type);
+ /*public*/ QString getName() {return metaObject()->className();}
+
 private:
  /*private*/ static /*final*/ int ANNOTATION;//= 0x00002000;
  /*private*/ static /*final*/ int ENUM      ;//= 0x00004000;

@@ -316,7 +316,26 @@ void ScaleEditAction::on_getScaleEditAction_triggered()
  f->setVisible(true);
  //f.setLocationRelativeTo((Component)pos);
 }
+//////////////////////////////////////////////////////////////
 
+/*public*/ /*static*/ AbstractAction* CoordinateEdit::getIdEditAction(
+        /*final*/ Positionable* pos, /*final*/ QString title, /*final*/ Editor* editor) {
+
+    AbstractAction* act = new AbstractAction(QString(title) + "...", editor);
+//    {
+
+//        @Override
+//        public void actionPerformed(ActionEvent e) {
+    connect(act, &AbstractAction::triggered, [=]{
+            CoordinateEdit* f = new CoordinateEdit();
+            f->addHelpMenu("package.jmri.jmrit.display.CoordinateEdit", true);
+            f->init(title, pos, false);
+            f->initId(editor);
+            f->setVisible(true);
+//  TODO:          f->setLocationRelativeTo((QWidget*) pos);
+    });
+    return act;
+}
 //////////////////////////////////////////////////////////////
 
 /*public*/ /*static*/ QAction* CoordinateEdit::getTextEditAction(/*const*/ Positionable* pos, const QString title, QObject* parent)

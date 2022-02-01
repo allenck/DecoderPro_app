@@ -166,7 +166,7 @@ ThreadingUtil::ThreadingUtil(QObject *parent) : QObject(parent)
         }
 #endif
     }
-#if 0
+
     /**
      * Run some GUI-specific code at some later point.
      * <p>
@@ -182,11 +182,13 @@ ThreadingUtil::ThreadingUtil(QObject *parent) : QObject(parent)
      *
      * @param ta What to run, usually as a lambda expression
      */
-    static /*public*/ void runOnGUIEventually(@Nonnull ThreadAction ta) {
+    /*static*/ /*public*/ void ThreadingUtil::runOnGUIEventually(/*@Nonnull*/ ThreadAction* ta) {
         // dispatch to Swing
+#if 0
         SwingUtilities.invokeLater(ta);
+#endif
     }
-
+#if 0
     /**
      * Run some GUI-specific code at some later point, at least a known time in
      * the future.

@@ -208,7 +208,7 @@ void TreeModelEvent::common( TreePath* path, QVector<int>* childIndices, QVector
  *         stored at the root and the last object is the one
  *         stored at the node identified by the path
  */
-/*public*/ QList<QObject*>* TreeModelEvent::getPath() {
+/*public*/ QVector<QObject*>* TreeModelEvent::getPath() {
     if(path != NULL)
         return path->getPath();
     return NULL;

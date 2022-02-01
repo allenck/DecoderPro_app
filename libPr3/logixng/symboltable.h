@@ -95,7 +95,7 @@ class Symbol;
      * @param symbolDefinitions the definitions of the symbols to be removed
      * @throws JmriException if an exception is thrown
      */
-    /*public*/ virtual void removeSymbols(/*Collection<? extends VariableData>*/QSet<VariableData> symbolDefinitions)
+    /*public*/ virtual void removeSymbols(/*Collection<? extends VariableData>*/QSet<VariableData*> symbolDefinitions)
             /*throw (JmriException)*/=0;
 
     /**
@@ -190,13 +190,16 @@ class Symbol;
               return "??";
              }
           }
-//          /*private*/ static QString toString(TYPES t)
-//          {
-//           QMetaEnum metaEnum = QMetaEnum::fromType<InitialValueType::TYPES>();
-//           return metaEnum.valueToKey(t);
-//          }
+       /*public*/ static TYPES toType(QString s)
+          {
+           QMap<QString, TYPES> map = {
+            {tr("None"), None}, {tr("Integer"), Integer}, {tr("Floating number"), FloatingNumber}, {tr("String"), String},
+            {tr("Local variable"), LocalVariable}, {tr("Memory"), Memory}, {tr("Reference"), Reference}, {tr("Formula"), Formula}
+           };
+           return map.value(s);
+          }
       };
-
+};
     /**
      * Data for a variable.
      */
@@ -204,12 +207,12 @@ class Symbol;
     Q_OBJECT
         public:
         /*public*/ QString _name;
-        /*public*/ InitialValueType::TYPES _initalValueType = InitialValueType::None;
+        /*public*/ SymbolTable::InitialValueType::TYPES _initalValueType = SymbolTable::InitialValueType::None;
         /*public*/ QString _initialValueData;
 
         /*public*/ VariableData(
                 QString name,
-                InitialValueType::TYPES initalValueType,
+                SymbolTable::InitialValueType::TYPES initalValueType,
                 QString initialValueData) {
 
             _name = name;
@@ -231,7 +234,7 @@ class Symbol;
         return _name;
     }
 
-    /*public*/ InitialValueType::TYPES getInitalValueType() {
+    /*public*/ SymbolTable::InitialValueType::TYPES getInitalValueType() {
         return _initalValueType;
     }
 
@@ -239,5 +242,5 @@ class Symbol;
         return _initialValueData;
     }
  };
-};
+
 #endif // SYMBOLTABLE_H
