@@ -32,6 +32,8 @@
 #include "jmriuserinterfaceconfigurationprovider.h"
 #include "debugprogrammermanager.h"
 #include "blockmanager.h"
+#include "logixng_manager.h"
+#include "defaultlogixngmanager.h"
 
 JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
 {
@@ -713,6 +715,67 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 /*public*/ /*static*/ void JUnitUtil::initInternalTurnoutManager() {
     // now done automatically by InstanceManager's autoinit
     InstanceManager::turnoutManagerInstance();
+}
+/*public*/ /*static*/ void JUnitUtil::initLogixNGManager() {
+    initLogixNGManager(true);
+}
+
+/*public*/ /*static*/ void JUnitUtil::initLogixNGManager(bool activate) {
+    LogixNG_Manager* m1 = new DefaultLogixNGManager();
+    if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
+        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m1->self(), Manager::LOGIXNGS);
+    }
+    InstanceManager::setDefault("LogixNG_Manager", m1->self());
+#if 0
+    ConditionalNG_Manager m2 = new DefaultConditionalNGManager();
+    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
+        InstanceManager.getDefault(ConfigureManager.class).registerConfig(m2, jmri.Manager.LOGIXNG_CONDITIONALNGS);
+    }
+    InstanceManager.setDefault(ConditionalNG_Manager.class, m2);
+
+    AnalogActionManager m3 = new DefaultAnalogActionManager();
+    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
+        InstanceManager.getDefault(ConfigureManager.class).registerConfig(m3, jmri.Manager.LOGIXNG_ANALOG_ACTIONS);
+    }
+    InstanceManager.setDefault(AnalogActionManager.class, m3);
+
+    AnalogExpressionManager m4 = new DefaultAnalogExpressionManager();
+    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
+        InstanceManager.getDefault(ConfigureManager.class).registerConfig(m4, jmri.Manager.LOGIXNG_ANALOG_EXPRESSIONS);
+    }
+    InstanceManager.setDefault(AnalogExpressionManager.class, m4);
+
+    DigitalActionManager m5 = new DefaultDigitalActionManager();
+    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
+        InstanceManager.getDefault(ConfigureManager.class).registerConfig(m5, jmri.Manager.LOGIXNG_DIGITAL_ACTIONS);
+    }
+    InstanceManager.setDefault(DigitalActionManager.class, m5);
+
+    DigitalBooleanActionManager m6 = new DefaultDigitalBooleanActionManager();
+    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
+        InstanceManager.getDefault(ConfigureManager.class).registerConfig(m6, jmri.Manager.LOGIXNG_DIGITAL_BOOLEAN_ACTIONS);
+    }
+    InstanceManager.setDefault(DigitalBooleanActionManager.class, m6);
+
+    DigitalExpressionManager m7 = new DefaultDigitalExpressionManager();
+    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
+        InstanceManager.getDefault(ConfigureManager.class).registerConfig(m7, jmri.Manager.LOGIXNG_DIGITAL_EXPRESSIONS);
+    }
+    InstanceManager.setDefault(DigitalExpressionManager.class, m7);
+
+    StringActionManager m8 = new DefaultStringActionManager();
+    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
+        InstanceManager.getDefault(ConfigureManager.class).registerConfig(m8, jmri.Manager.LOGIXNG_STRING_ACTIONS);
+    }
+    InstanceManager.setDefault(StringActionManager.class, m8);
+
+    StringExpressionManager m9 = new DefaultStringExpressionManager();
+    if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {
+        InstanceManager.getDefault(ConfigureManager.class).registerConfig(m9, jmri.Manager.LOGIXNG_STRING_EXPRESSIONS);
+    }
+    InstanceManager.setDefault(StringExpressionManager.class, m9);
+#endif
+    if (activate) m1->activateAllLogixNGs(false, false);
 }
 
 /*public*/ /*static*/ void JUnitUtil::initInternalLightManager() {

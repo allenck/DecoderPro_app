@@ -33,6 +33,8 @@ public:
     /*public*/ static void initConfigureManager();
     /*public*/ static void initDefaultUserMessagePreferences();
     /*public*/ static void initInternalTurnoutManager();
+    /*public*/ static void initLogixNGManager();
+    /*public*/ static void initLogixNGManager(bool activate);
     /*public*/ static void initInternalLightManager();
     /*public*/ static void initInternalSensorManager();
     /*public*/ static void initRouteManager();

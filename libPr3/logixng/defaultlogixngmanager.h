@@ -15,6 +15,8 @@ class DefaultLogixNGManager : public AbstractManager, public LogixNG_Manager
   Q_INTERFACES(LogixNG_Manager)
  public:
   DefaultLogixNGManager(QObject* parent =nullptr);
+  ~DefaultLogixNGManager() {}
+  DefaultLogixNGManager(const DefaultLogixNGManager&) : AbstractManager() {}
   /*public*/ int getXMLOrder() const override;
   /*public*/ QChar typeLetter() const override;
   /*public*/ Manager::NameValidity validSystemNameFormat(QString systemName)  override;
@@ -66,6 +68,8 @@ class DefaultLogixNGManager : public AbstractManager, public LogixNG_Manager
 
   friend class DLMRunnable;
 };
+Q_DECLARE_METATYPE(DefaultLogixNGManager)
+
 class DLMRunnable : public QRunnable
 {
   //Q_OBJECT

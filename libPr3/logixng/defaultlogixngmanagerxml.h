@@ -7,7 +7,8 @@ class DefaultLogixNGManagerXml : public AbstractNamedBeanManagerConfigXML
 {
  public:
   explicit DefaultLogixNGManagerXml(QObject *parent = nullptr);
-  /*public*/ QDomElement store(QObject* o) override;
+  ~DefaultLogixNGManagerXml() {}
+  DefaultLogixNGManagerXml(const DefaultLogixNGManagerXml&) : AbstractNamedBeanManagerConfigXML() {}  /*public*/ QDomElement store(QObject* o) override;
   /*public*/ void setStoreElementClass(QDomElement logixngs);
   /*public*/ bool load(QDomElement sharedLogixNG, QDomElement perNodeLogixNG)override;
   /*public*/ int loadOrder()const override;
