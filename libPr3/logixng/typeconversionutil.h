@@ -8,7 +8,7 @@ class Logger;
  *
  * @author Daniel Bergqvist Copyright 2019
  */
-/*public*/ /*final*/ class TypeConversionUtil {
+/*public*/ /*final*/ class TypeConversionUtil : public QObject {
  Q_OBJECT
  public:
     /**

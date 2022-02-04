@@ -23,6 +23,7 @@
 // /*public*/  class TreePane extends JPanel implements PropertyChangeListener {
 
   /*private*/ /*static*/ /*final*/ QMap<QString, QColor> TreePane::FEMALE_SOCKET_COLORS =  QMap<QString, QColor>();
+  /*private*/ /*static*/ ImageIcon* FemaleSocketTreeRenderer::_lockIcon = nullptr;
 
 
     /**
@@ -61,7 +62,7 @@
 //        _tree->setRowHeight(0);
 //        ToolTipManager.sharedInstance().registerComponent(_tree);
         _tree->setModel(femaleSocketTreeModel);
-        _tree->setCellRenderer(new FemaleSocketTreeRenderer(decorator, this));
+        _tree->setCellRenderer(new FemaleSocketTreeRenderer(decorator));
 
         _tree->setRootVisible(_rootVisible);
         _tree->setShowsRootHandles(true);
@@ -259,7 +260,7 @@
         }
 
         //@Override
-        /*public*/  int getIndexOfChild(QObject* parent, QObject* child) {
+        /*public*/  int FemaleSocketTreeModel::getIndexOfChild(QObject* parent, QObject* child) {
             FemaleSocket* socket = (FemaleSocket*) parent;
             if (!socket->isConnected()) {
                 return -1;
@@ -307,8 +308,8 @@
         //@Override
         /*public*/  QWidget* FemaleSocketTreeRenderer::getTreeCellRendererComponent(JTree* tree, QVariant value,
                                                                                     bool selected, bool expanded,
-                                                                                    bool leaf, int row, bool hasFocus,
-                                                                                    TreePane* pane) {
+                                                                                    bool leaf, int row, bool hasFocus
+                                                                                    ) {
 
             //UIDefaults uiDefaults = javax.swing.UIManager.getDefaults();
 
@@ -338,14 +339,14 @@
             //socketLabel.setFont(font.deriveFont((float)(font.getSize2D()*1.7)));
             font.setPixelSize(font.pixelSize()*1.7);
             socketLabel->setFont(font);
-            socketLabel->setForeground(pane->FEMALE_SOCKET_COLORS.value(socket->self()->metaObject()->className()));
+            socketLabel->setForeground(TreePane::FEMALE_SOCKET_COLORS.value(socket->self()->metaObject()->className()));
 //            socketLabel.setForeground(Color.red);
             panelLayout->addWidget(socketLabel,0, Qt::AlignLeft);
 
             panelLayout->addWidget( Box::createRigidArea(QSize(5,0)), 0, Qt::AlignLeft);
 
             JLabel* socketNameLabel = new JLabel(socket->getName());
-            socketNameLabel->setForeground(pane->FEMALE_SOCKET_COLORS.value(socket->self()->metaObject()->className()));
+            socketNameLabel->setForeground(TreePane::FEMALE_SOCKET_COLORS.value(socket->self()->metaObject()->className()));
 //            socketNameLabel.setForeground(Color.red);
             panelLayout->addWidget(socketNameLabel, 0, Qt::AlignLeft);
 
@@ -411,7 +412,7 @@
                     JLabel* variableLabel = new JLabel(tr(
                             "Local variable \"%1\", init to %2 \"%3\"").arg(
                             variableData->_name,
-                            SymbolTable::InitialValueType::toString(variableData->_initalValueType),
+                            InitialValueType::toString(variableData->_initalValueType),
                             variableData->_initialValueData));
                     variableLabel->setAlignmentX(Qt::AlignLeft);
                     if (((LogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getTreeEditorHighlightRow()) {

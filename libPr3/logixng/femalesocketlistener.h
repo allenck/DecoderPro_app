@@ -13,13 +13,13 @@
      * The socket is connected.
      * @param socket the socket
      */
-    /*public*/ virtual void connected(FemaleSocket* socket)=0;
+  /*public*/ virtual void connected(FemaleSocket* socket) {}
 
     /**
      * The socket is disconnected.
      * @param socket the socket
      */
-    /*public*/ virtual void disconnected(FemaleSocket* socket)=0;
+  /*public*/ virtual void disconnected(FemaleSocket* socket) {}
 
     /**
      * The socket name is changed.
@@ -28,7 +28,7 @@
     /*public*/ virtual /*default*/ void socketNameChanged(FemaleSocket* /*socket*/) {
         // Do nothing
     }
-
+  virtual QObject* self() =0;
 };
-
+Q_DECLARE_INTERFACE(FemaleSocketListener, "FemaleSocketListener")
 #endif // FEMALESOCKETLISTENER_H

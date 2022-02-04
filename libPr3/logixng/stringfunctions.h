@@ -7,7 +7,7 @@
 class StringFunctions : public FunctionFactory
 {
  public:
-  StringFunctions();
+  StringFunctions(){}
   /*public*/ QString getModule()override;
   /*public*/ QSet<Function*> getFunctions()override;
   /*public*/ QSet<Constant*> getConstants()override;

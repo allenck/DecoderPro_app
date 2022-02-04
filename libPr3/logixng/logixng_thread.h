@@ -59,7 +59,7 @@ class LogixNG_Thread : public QThread
   friend class LNGTimerActionListener;
 };
 
-/*static*/ /*private*/ class ThreadEvent {
+/*static*/ /*private*/ class ThreadEvent : public QObject{
   Q_OBJECT
     /*private*/ /*final*/ ThreadAction* _threadAction;
     /*private*/ /*final*/ QObject* _lock;

@@ -25,7 +25,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
 //        super();
 //    }
 
-/*protected*/ AbstractManager *ProxyTurnoutManager::makeInternalManager()
+/*protected*/ AbstractManager *ProxyTurnoutManager::makeInternalManager() const
 {
  return ((InternalSystemConnectionMemo*) InstanceManager::getDefault("InternalSystemConnectionMemo"))->getTurnoutManager();
 }

@@ -48,8 +48,8 @@ OBlockManager::OBlockManager(QObject *parent) :
     return Manager::OBLOCKS;
 }
 
-/*public*/ QString OBlockManager::getSystemPrefix() { return "O"; }
-/*public*/ QChar OBlockManager::typeLetter() { return 'B'; }
+/*public*/ QString OBlockManager::getSystemPrefix() const { return "O"; }
+/*public*/ QChar OBlockManager::typeLetter() const { return 'B'; }
 
 /**
  * Method to create a new OBlock if it does not exist

@@ -57,7 +57,7 @@
     }
 
     //@Override
-    /*protected*/ AbstractLogixNGEditor/*<NamedTable>*/* getEditor(BeanTableFrame/*<NamedTable>*/* f, BeanTableDataModel/*<NamedTable>*/* m, QString sName) {
+    /*protected*/ AbstractLogixNGEditor/*<NamedTable>*/* LogixNGTableTableAction::getEditor(BeanTableFrame/*<NamedTable>*/* f, BeanTableDataModel/*<NamedTable>*/* m, QString sName) {
         return new TableEditor(m, sName);
     }
 
@@ -72,23 +72,23 @@
     }
 
     //@Override
-    /*protected*/ void LogixNGTableTableAction::setEnabled(NamedTable* bean, bool enable) {
+    /*protected*/ void LogixNGTableTableAction::setEnabled(NamedBean* bean, bool enable) {
         // Not used by the tables table
     }
 
     //@Override
-    /*protected*/ bool LogixNGTableTableAction::isEnabled(NamedTable* bean) {
+    /*protected*/ bool LogixNGTableTableAction::isEnabled(NamedBean* bean) {
         return true;
     }
 
     //@Override
-    /*protected*/ NamedTable* LogixNGTableTableAction::createBean(QString userName) {
+    /*protected*/ /*NamedTable**/NamedBean* LogixNGTableTableAction::createBean(QString userName) {
         QString systemName = ((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->getAutoSystemName();
         return createBean(systemName, userName);
     }
 
     //@Override
-    /*protected*/ NamedTable* LogixNGTableTableAction::createBean(QString systemName, QString userName) {
+    /*protected*/ /*NamedTable**/NamedBean* LogixNGTableTableAction::createBean(QString systemName, QString userName) {
         if (_typeExternalTable->isChecked()) {
             QString fileName = _csvFileName->text();
             if (fileName == "" || fileName.isEmpty()) {
@@ -97,7 +97,7 @@
                         JOptionPane::ERROR_MESSAGE);
                 return nullptr;
             }
-            return ((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))
+            return (NamedBean*)((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))
                     ->newCSVTable(systemName, userName, fileName);
         } else if (_typeInternalTable->isChecked()) {
             // Open table editor
@@ -145,13 +145,15 @@
         while (columnLine.length()+2 < maxColumnWidth) {
             columnLine.append("----------------------");
         }
-        QString columnPadding = asprintf("%"+QString::number(maxColumnWidth)+"s", "");
+        //QString columnPadding = asprintf(QString("%")+QString::number(maxColumnWidth)+"s", "");
+        QString columnPadding;
+        if(columnPadding.length()< maxColumnWidth) columnPadding.append(" ");
         QString sb;// = new StringBuilder();
         sb.append("+");
         for (int col=0; col <= bean->numColumns(); col++) {
             sb.append(columnLine.mid(0,columnWidth[col]+2));
             sb.append("+");
-            if (col == bean->numColumns()) sb.append(String.format("%n"));
+            if (col == bean->numColumns()) sb.append("%n");
         }
         for (int row=0; row <= bean->numRows(); row++) {
             sb.append("|");
@@ -159,13 +161,13 @@
                 sb.append(" ");
                 sb.append((cells[row][col]+columnPadding).mid(0,columnWidth[col]));
                 sb.append(" |");
-                if (col == bean->numColumns()) sb.append(String.format("%n"));
+                if (col == bean->numColumns()) sb.append(QString("%n"));
             }
             sb.append("+");
             for (int col=0; col <= bean->numColumns(); col++) {
                 sb.append(columnLine.mid(0,columnWidth[col]+2));
                 sb.append("+");
-                if (col == bean->numColumns()) sb.append(String.format("%n"));
+                if (col == bean->numColumns()) sb.append(QString("%n"));
             }
         }
         return sb/*.toString()*/;

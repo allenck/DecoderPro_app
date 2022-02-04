@@ -265,7 +265,7 @@ public:
          * Get a system-specific name.  This encodes the hardware addressing
          * information.
          */
-    virtual QString getSystemName() const =0;
+    virtual QString getSystemName() const {return "";}
         /*
         * return user name if it exists, otherwise return System name
         */

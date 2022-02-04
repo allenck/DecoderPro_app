@@ -13,8 +13,8 @@ class LIBPR3SHARED_EXPORT DefaultLogixManager : public AbstractManager, public L
 public:
     explicit DefaultLogixManager(QObject *parent = 0);
     int getXMLOrder() const override;
-    /*public*/ QString getSystemPrefix()  override;
-    /*public*/ QChar typeLetter()   override;
+    /*public*/ QString getSystemPrefix() const override;
+    /*public*/ QChar typeLetter() const  override;
     /*public*/ Logix* createNewLogix(QString systemName, QString userName) override;
     /*public*/ Logix* createNewLogix(QString userName) override;
     /*public*/ void deleteLogix(Logix* x) override;

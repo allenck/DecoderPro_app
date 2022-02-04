@@ -20,8 +20,8 @@ public:
  /*public*/ Portal* getPortal(int idx);
  /*public*/ int getIndexOf(Portal* portal);
  /*public*/ int getXMLOrder()const override;
- /*public*/ QString getSystemPrefix()  override;
- /*public*/ QChar typeLetter() override;
+ /*public*/ QString getSystemPrefix() const override;
+ /*public*/ QChar typeLetter() const override;
  /*public*/ Portal* createNewPortal(QString sName);
  /*public*/ QString generateSystemName();
  /*public*/ Portal* getPortal(QString name);

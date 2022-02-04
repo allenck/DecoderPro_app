@@ -134,8 +134,8 @@ public:
     /*public*/ NamedBean* getNamedBean(QString name)  override;
 //    /*public*/ char systemLetter() const;
     /*public*/ SystemConnectionMemo* getMemo()  override;
-    /*public*/ QString getSystemPrefix() override;
-    /*public*/ QChar typeLetter()  override;
+    /*public*/ QString getSystemPrefix()const override;
+    /*public*/ QChar typeLetter() const override;
     /*public*/ QString makeSystemName(QString s) override;
     /*public*/ int getObjectCount() override;
 //    /*public*/ QStringList getSystemNameArray() override;

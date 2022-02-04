@@ -263,11 +263,11 @@
     throw  UnsupportedOperationException("Not supported yet.");
 }
 
-/*public*/ QString DefaultSignalMastLogicManager::getSystemPrefix() {
+/*public*/ QString DefaultSignalMastLogicManager::getSystemPrefix() const {
     throw  UnsupportedOperationException("Not supported yet.");
 }
 
-/*public*/ QChar DefaultSignalMastLogicManager::typeLetter()  {
+/*public*/ QChar DefaultSignalMastLogicManager::typeLetter() const  {
     throw  UnsupportedOperationException("Not supported yet.");
 }
 

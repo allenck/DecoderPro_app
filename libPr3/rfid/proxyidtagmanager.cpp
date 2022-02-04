@@ -38,7 +38,7 @@
     }
 
     //@Override
-    /*protected*/ AbstractManager* ProxyIdTagManager::makeInternalManager()  {
+    /*protected*/ AbstractManager* ProxyIdTagManager::makeInternalManager() const  {
         // since this really is an internal tracking mechanisim,
         // build the new manager and add it here.
         DefaultIdTagManager* tagMan = new DefaultIdTagManager(InstanceManager::getDefault("InternalSystemConnectionMemo"));

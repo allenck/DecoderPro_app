@@ -14,7 +14,7 @@ public:
     //explicit AbstractLightManager(QObject *parent = 0);
  /*public*/ AbstractLightManager(SystemConnectionMemo* memo, QObject *parent = 0);
     /*public*/ virtual int getXMLOrder() const override;
-    /*public*/ virtual QChar typeLetter()  override;
+    /*public*/ virtual QChar typeLetter() const override;
     /**
      * Locate via user name, then system name if needed.
      * If that fails, create a new Light: If the name

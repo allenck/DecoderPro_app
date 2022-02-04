@@ -73,8 +73,8 @@
         _tabbedPanePositionableState->addTab(NamedBeanAddressing::toString(NamedBeanAddressing::Formula), _panelPositionableStateFormula);
 
         _isControllingComboBox = new JComboBox();
-        foreach (ActionPositionableSwing::Operation::TYPE e , ActionPositionableSwing::Operation::values()) {
-            _isControllingComboBox->addItem(ActionPositionableSwing::Operation::toString(e));
+        foreach (QString e, ActionPositionable::Operation::values()) {
+            _isControllingComboBox->addItem((e));
         }
 //        JComboBoxUtil::setupComboBoxMaxRows(_isControllingComboBox);
 
@@ -121,14 +121,14 @@
             _positionableStateFormulaTextField->setText(action->getStateFormula());
         }
 
-        QWidget* components[] = {
+        QList<JComponent*> components = {
             _editorComboBox,
-            _tabbedPanePositionable,
-            _tabbedPanePositionableState};
+            (JComponent*)_tabbedPanePositionable,
+            (JComponent*)_tabbedPanePositionableState};
 
         QList<JComponent*> componentList = SwingConfiguratorInterface::parseMessage(
-                tr("For panel %1, set positionable %2 to %3").arg(components[0]->text(), components[1]->title(),components[2)->title()));
-
+//                tr("For panel %1, set positionable %2 to %3").arg(components[0]->toString(), components[1]->toString(),components[2]->toString()));
+        tr("For panel %1, set positionable %2 to %3"), components);
         for (JComponent* c : componentList) panel->layout()->addWidget(c->jself());
     }
 
@@ -168,7 +168,7 @@
             if (_tabbedPanePositionableState->getSelectedComponent() == _panelPositionableStateReference) {
                 action->setStateReference(_positionableStateReferenceTextField->text());
             }
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException* e) {
             errorMessages.append(e->getMessage());
             return false;
         }
@@ -186,7 +186,7 @@
             } else {
                 throw new IllegalArgumentException("_tabbedPane has unknown selection");
             }
-        } catch (ParserException e) {
+        } catch (ParserException* e) {
             errorMessages.append("Cannot parse formula: " + e->getMessage());
         }
         return true;
@@ -204,14 +204,14 @@
     //@Override
     /*public*/  void ActionPositionableSwing::updateObject(/*@Nonnull*/ Base* object) {
         if (! (qobject_cast<ActionPositionable*>(object->self()))) {
-            throw new IllegalArgumentException("object must be an ActionPositionable but is a: "+object->self()->metaObject()->className());
+            throw new IllegalArgumentException(QString("object must be an ActionPositionable but is a: ")+object->self()->metaObject()->className());
         }
         ActionPositionable* action = (ActionPositionable*)object;
         if (_editorComboBox->getSelectedIndex() != -1) {
             action->setEditor(VPtr<Editor>::asPtr(_editorComboBox->getItemAt(_editorComboBox->getSelectedIndex()))->getName());
         }
         if (_tabbedPanePositionable->getSelectedComponent() == _panelPositionableDirect) {
-            action->setPositionable(VPtr<Editor>::asPtr(_positionableComboBox->getItemAt(_positionableComboBox->getSelectedIndex())));
+            action->setPositionable(_positionableComboBox->getItemAt(_positionableComboBox->getSelectedIndex()).toString());
         }
         try {
             if (_tabbedPanePositionable->getSelectedComponent() == _panelPositionableDirect) {
@@ -231,7 +231,7 @@
 
             if (_tabbedPanePositionableState->getSelectedComponent() == _panelPositionableStateDirect) {
                 action->setStateAddressing(NamedBeanAddressing::Direct);
-                action->setOperation(Operation::toType(_isControllingComboBox->getItemAt(_isControllingComboBox->getSelectedIndex()).toString()));
+                action->setOperation(ActionPositionable::Operation::valueOf(_isControllingComboBox->getItemAt(_isControllingComboBox->getSelectedIndex()).toString()));
             } else if (_tabbedPanePositionableState->getSelectedComponent() == _panelPositionableStateReference) {
                 action->setStateAddressing(NamedBeanAddressing::Reference);
                 action->setStateReference(_positionableStateReferenceTextField->text());

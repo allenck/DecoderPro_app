@@ -39,9 +39,9 @@ DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
  return Manager::SIGNALMASTS;
 }
 
-/*public*/ QString DefaultSignalMastManager::getSystemPrefix() { return "I"; }
+/*public*/ QString DefaultSignalMastManager::getSystemPrefix() const { return "I"; }
 
-/*public*/ QChar DefaultSignalMastManager::typeLetter() { return 'F'; }
+/*public*/ QChar DefaultSignalMastManager::typeLetter() const { return 'F'; }
 
 /*public*/ SignalMast* DefaultSignalMastManager::getSignalMast(QString name)
 {

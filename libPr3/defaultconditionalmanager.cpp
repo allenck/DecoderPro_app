@@ -55,8 +55,8 @@ DefaultConditionalManager::DefaultConditionalManager(QObject *parent) :
     return Manager::CONDITIONALS;
 }
 
-/*public*/ QString DefaultConditionalManager::getSystemPrefix() { return "I"; }
-/*public*/ QChar DefaultConditionalManager::typeLetter() { return 'X'; }
+/*public*/ QString DefaultConditionalManager::getSystemPrefix() const { return "I"; }
+/*public*/ QChar DefaultConditionalManager::typeLetter() const { return 'X'; }
 
 /**
  * Method to create a new Conditional if the Conditional does not exist

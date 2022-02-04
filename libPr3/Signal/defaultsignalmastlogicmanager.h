@@ -40,8 +40,8 @@ public:
     /*public*/ NamedBean* getBeanBySystemName(QString systemName)const override;
     /*public*/ NamedBean* getBeanByUserName(QString userName)const override;
     /*public*/ NamedBean* getNamedBean(QString name) override;
-    /*public*/ QString getSystemPrefix() override ;
-    /*public*/ QChar typeLetter()  override;
+    /*public*/ QString getSystemPrefix() const override ;
+    /*public*/ QChar typeLetter() const override;
     /*public*/ QStringList getSystemNameArray()  override;
     /*public*/ QStringList getSystemNameList() override;
 //    /*public*/ QSet<NamedBean*> getNamedBeanSet() override;

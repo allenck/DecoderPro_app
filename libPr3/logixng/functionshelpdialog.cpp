@@ -34,7 +34,7 @@
         }
     }
 
-    /*public*/  void showDialog() {
+    /*public*/  void FunctionsHelpDialog::showDialog() {
         #if 0
         if (_selectItemTypeDialog != null) {
             _selectItemTypeDialog.requestFocus();

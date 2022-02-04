@@ -8,14 +8,15 @@
  *
  * @author Daniel Bergqvist (C) 2020
  */
-/*public*/ /*interface*/class  Clipboard {
+/*public*/ /*interface*/class  Clipboard
+{
     public:
     /**
      * Is the clipboard empty?
      *
      * @return true if empty, false otherwise
      */
-    /*public*/ virtual bool isEmpty()=0;
+  /*public*/ virtual bool isEmpty(){return false;}
 
     /**
      * Add an item to the clipboard.
@@ -26,7 +27,7 @@
      * @param errors a list of potential errors
      * @return true if success, false otherwise
      */
-    /*public*/ virtual bool add(MaleSocket* maleSocket, QList<QString> errors)=0;
+  /*public*/ virtual bool add(MaleSocket* maleSocket, QList<QString> errors){return false;}
 
     /**
      * Get the top item on the clipboard and remove it from the clipboard.
@@ -35,7 +36,7 @@
      *
      * @return the top item
      */
-    /*public*/ virtual MaleSocket* fetchTopItem()=0;
+    /*public*/ virtual MaleSocket* fetchTopItem(){return nullptr;}
 
     /**
      * Get the top item on the clipboard without removing it from the clipboard.
@@ -44,14 +45,14 @@
      *
      * @return the top item
      */
-    /*public*/ virtual MaleSocket* getTopItem()=0;
+    /*public*/ virtual MaleSocket* getTopItem(){return nullptr;}
 
     /**
      * Get the female socket root of the clipboard tree.
      *
      * @return the root female socket
      */
-    /*public*/ virtual FemaleSocket* getFemaleSocket();
+  /*public*/ virtual FemaleSocket* getFemaleSocket() {return nullptr;}
 
     /**
      * Moves an item on the clipboard to the top of the clipboard.
@@ -61,13 +62,14 @@
      *
      * @param maleSocket the male socket to put on the top
      */
-    /*public*/ virtual void moveItemToTop(MaleSocket* maleSocket)=0;
+  /*public*/ virtual void moveItemToTop(MaleSocket* maleSocket){}
 
     /**
      * Setup this object and its children.
      * This method is used to lookup system names for child sockets.
      */
-    /*public*/ virtual void setup()=0;
+  /*public*/ virtual void setup(){}
+ virtual QObject* self() =0;
 };
 Q_DECLARE_INTERFACE(Clipboard, "Clipboard")
 #endif // CLIPBOARD_H

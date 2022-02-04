@@ -13,13 +13,13 @@ class JComponent // : public QWidget
 public:
  //explicit JComponent(QWidget *parent = nullptr);
  //virtual void dispose() {}
- virtual bool isOpaque() = 0;
- virtual QColor getForeground() = 0;
- virtual QColor getBackground() =0;
- virtual void setBackground(QColor) = 0;
- virtual void setOpaque(bool) =0;
- virtual QFont getFont() =0;
- virtual void setFont(QFont) =0;
+  virtual bool isOpaque() {return true;};
+  virtual QColor getForeground() {return Qt::black;}
+ virtual QColor getBackground() {return Qt::gray;}
+  virtual void setBackground(QColor) {}
+  virtual void setOpaque(bool) {}
+  virtual QFont getFont() {return QFont();}
+  virtual void setFont(QFont) {}
  virtual QWidget* jself() = 0;
  /*public*/ void setInheritsPopupMenu(bool value) {
      inheritsPopupMenu = value;
@@ -31,13 +31,16 @@ public:
  int getWidth() {return ((QWidget*)jself())->width();}
  int getHeight() {return ((QWidget*)jself())->height();}
  Insets* getInsets(Insets* insets) {return insets;}
- virtual void setBorder(Border*) =0;
- virtual Border* getBorder() =0;
+ virtual void setBorder(Border*) {}
+ virtual Border* getBorder() {return  nullptr;}
  virtual QFontMetrics getFontMetrics(QFont f) {return QFontMetrics (f);}
  virtual QFontMetrics getFontMetrics() {return QFontMetrics (getFont());}
- virtual void setEnabled(bool) =0;
+ virtual void setEnabled(bool) {}
  virtual void setSize(int, int) {}
-
+ virtual QString toString() {
+  if(!jself()->objectName().isEmpty()) return jself()->objectName();
+  else return jself()->metaObject()->className();
+ }
 signals:
 
 public slots:

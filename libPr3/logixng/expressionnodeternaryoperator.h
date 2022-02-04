@@ -3,7 +3,7 @@
 
 #include "expressionnode.h"
 
-class ExpressionNodeTernaryOperator : public ExpressionNode
+class ExpressionNodeTernaryOperator : public QObject, public ExpressionNode
 {
   Q_OBJECT
  public:

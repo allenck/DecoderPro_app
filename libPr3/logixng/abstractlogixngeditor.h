@@ -29,16 +29,17 @@
      *
      * @param listener The recipient
      */
-    /*public*/ virtual void addEditorEventListener(EditorEventListener* listener)=0;
+  /*public*/ virtual void addEditorEventListener(EditorEventListener* listener){}
 
     /**
      * Remove a listener -- not used.
      *
      * @param listener The recipient
      */
-    /*public*/ virtual void removeEditorEventListener(EditorEventListener* listener)=0;
+  /*public*/ virtual void removeEditorEventListener(EditorEventListener* listener){}
 
-    /*public*/ virtual void bringToFront()=0;
+  /*public*/ virtual void bringToFront(){}
 
 };
+Q_DECLARE_INTERFACE(AbstractLogixNGEditor, "AbstractLogixNGEditor")
 #endif // ABSTRACTLOGIXNGEDITOR_H

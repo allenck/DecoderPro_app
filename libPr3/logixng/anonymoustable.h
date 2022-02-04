@@ -10,7 +10,10 @@
  *
  * @author Daniel Bergqvist Copyright (C) 2019
  */
-/*public*/ /*interface*/class AnonymousTable : Table {
+/*public*/ /*interface*/class AnonymousTable : public Table {
+  Q_OBJECT
+ public:
+  AnonymousTable(QObject* parent = nullptr) : Table("Anonymous", "", parent){}
 
     /*public*/ virtual void insertColumn(int col)=0;
 

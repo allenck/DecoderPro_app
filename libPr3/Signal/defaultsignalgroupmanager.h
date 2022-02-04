@@ -13,8 +13,8 @@ public:
     ~DefaultSignalGroupManager() {}
     DefaultSignalGroupManager(const DefaultSignalGroupManager& other) : SignalGroupManager(other.memo) {}
     /*public*/ int getXMLOrder() const override;
-    /*public*/ QString getSystemPrefix() override;
-    /*public*/ QChar typeLetter() override;
+    /*public*/ QString getSystemPrefix() const override;
+    /*public*/ QChar typeLetter() const override;
     /*public*/ SignalGroup* getSignalGroup(QString name)override;
     /*public*/ SignalGroup* getBySystemName(QString key)const ;
     /*public*/ SignalGroup* getByUserName(QString key)const ;

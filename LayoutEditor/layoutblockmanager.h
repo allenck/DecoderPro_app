@@ -18,7 +18,7 @@ public:
  ~LayoutBlockManager() {}
  LayoutBlockManager(const LayoutBlockManager&) : AbstractManager() {}
  /*public*/ int getXMLOrder() const override;
- /*public*/ QChar typeLetter()  override{ return 'B'; }
+ /*public*/ QChar typeLetter() const override{ return 'B'; }
 /**
  * Method to create a new LayoutBlock if the LayoutBlock does not exist
  *   Returns null if a LayoutBlock with the same systemName or userName

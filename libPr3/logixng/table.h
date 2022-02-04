@@ -3,16 +3,17 @@
 #include <QVariant>
 #include "exceptions.h"
 #include "file.h"
-
+#include "abstractnamedbean.h"
 /**
  * Represent a Table.
  * A table is a two dimensional array where the rows and columns may have names.
  *
  * @author Daniel Bergqvist Copyright (C) 2019
  */
-/*public*/ /*interface*/class  Table {
-
+/*public*/ /*interface*/class  Table : public AbstractNamedBean {
+ Q_OBJECT
  public:
+  Table(QString name, QString user, QObject* parent = nullptr) : AbstractNamedBean(name, user, parent){}
     /**
      * Get the value of a cell.
      * If the table has both rows and columns, the value of the first column
@@ -73,7 +74,7 @@
      * @param column the column of the cell
      */
     //@CheckReturnValue
-    /*public*/ virtual void setCell(QVariant value, int row, int column);
+    /*public*/ virtual void setCell(QVariant value, int row, int column)=0;
     
     /**
      * Set the value of a cell.
@@ -195,7 +196,7 @@
 
 
     /*public*/ /*static*/ class ColumnNotFoundException : public IllegalArgumentException {
-
+      public:
         /**
          * Constructs a <code>ColumnNotFoundException</code>.
          *
@@ -223,7 +224,7 @@
         }
 
     };
-
+  friend class DefaultAnonymousTable;
 };
 Q_DECLARE_INTERFACE(Table, "Table")
 #endif // TABLE_H

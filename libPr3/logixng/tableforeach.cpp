@@ -10,7 +10,8 @@
 #include "conditionalng.h"
 #include "namedtablemanager.h"
 #include "typeconversionutil.h"
-
+#include "variable.h"
+#include "recursivedescentparser.h"
 /**
  * Executes an action when the expression is True.
  *
@@ -103,14 +104,14 @@
             case NamedBeanAddressing::LocalVariable:
             {
                 SymbolTable* symbolTable = getConditionalNG()->getSymbolTable();
-                table = ((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))
-                        ->(TypeConversionUtil::
+                table = (Table*) ((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))
+                        ->getNamedBean(TypeConversionUtil::
                                 convertToString(symbolTable->getValue(_tableLocalVariable), false));
                 break;
             }
             case NamedBeanAddressing::Formula:
                 table = _tableExpressionNode != nullptr ?
-                        ((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))
+                       (Table*) ((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))
                                 ->getNamedBean(TypeConversionUtil
                                         ::convertToString(_tableExpressionNode->calculate(
                                                 getConditionalNG()->getSymbolTable()), false))
@@ -135,11 +136,11 @@
             return;
         }
         if (rowOrColumnName.isEmpty()) {
-            log.error("rowOrColumnName is empty string");
+            log->error("rowOrColumnName is empty string");
             return;
         }
         if (_variableName == "") {
-            log.error("variableName is null");
+            log->error("variableName is null");
             return;
         }
         if (!_socket->isConnected()) {
@@ -147,28 +148,28 @@
             return;
         }
 
-        SymbolTable* symbolTable = getConditionalNG().getSymbolTable();
+        SymbolTable* symbolTable = getConditionalNG()->getSymbolTable();
 
-        if (_tableRowOrColumn == TableRowOrColumn.Row) {
-            int row = table.getRowNumber(rowOrColumnName);
-            for (int column=1; column <= table.numColumns(); column++) {
+        if (_tableRowOrColumn == TableRowOrColumn::Row) {
+            int row = table->getRowNumber(rowOrColumnName);
+            for (int column=1; column <= table->numColumns(); column++) {
                 // If the header is null or empty, treat the row as a comment
-                Object header = table.getCell(0, column);
+                QVariant header = table->getCell(0, column);
 //                System.out.format("Row header: %s%n", header);
-                if ((header != null) && (!header.toString().isEmpty())) {
-                    symbolTable.setValue(_variableName, table.getCell(row, column));
+                if ((header != QVariant()) && (!header.toString().isEmpty())) {
+                    symbolTable->setValue(_variableName, table->getCell(row, column));
 //                    System.out.format("Variable: %s, value: %s%n", _variableName, table.getCell(row, column));
                      _socket->execute();
                 }
             }
         } else {
-            int column = table.getColumnNumber(rowOrColumnName);
-            for (int row=1; row <= table.numRows(); row++) {
+            int column = table->getColumnNumber(rowOrColumnName);
+            for (int row=1; row <= table->numRows(); row++) {
                 // If the header is null or empty, treat the row as a comment
-                Object header = table.getCell(row, 0);
+                QVariant header = table->getCell(row, 0);
 //                System.out.format("Column header: %s%n", header);
-                if ((header != null) && (!header.toString().isEmpty())) {
-                    symbolTable.setValue(_variableName, table.getCell(row, column));
+                if ((header !=  QVariant()) && (!header.toString().isEmpty())) {
+                    symbolTable->setValue(_variableName, table->getCell(row, column));
 //                    System.out.format("Variable: %s, value: %s%n", _variableName, table.getCell(row, column));
                      _socket->execute();
                 }
@@ -179,24 +180,24 @@
     /*public*/  void TableForEach::setTable(/*@Nonnull*/ QString tableName) {
         assertListenersAreNotRegistered(log, "setTable");
         NamedTable* table = ((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->getNamedTable(tableName);
-        if (table != null) {
+        if (table != nullptr) {
             setTable(table);
         } else {
             removeTable();
-            log.error("turnout \"{}\" is not found", tableName);
+            log->error(tr("turnout \"%1\" is not found").arg(tableName));
         }
     }
 
-    /*public*/  void TableForEach::setAddressing(NamedBeanAddressing addressing) /*throws ParserException*/ {
+    /*public*/  void TableForEach::setAddressing(NamedBeanAddressing::TYPE addressing) /*throws ParserException*/ {
         _addressing = addressing;
         parseTableFormula();
     }
 
-    /*public*/  NamedBeanAddressing TableForEach::getAddressing() {
+    /*public*/  NamedBeanAddressing::TYPE TableForEach::getAddressing() {
         return _addressing;
     }
 
-    /*public*/  void TableForEach::setTable(/*@Nonnull*/ NamedBeanHandle<NamedTable*> handle) {
+    /*public*/  void TableForEach::setTable(/*@Nonnull*/ NamedBeanHandle<NamedTable*>* handle) {
         assertListenersAreNotRegistered(log, "setTable");
         _tableHandle = handle;
         ((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->addVetoableChangeListener(this);
@@ -204,8 +205,8 @@
 
     /*public*/  void TableForEach::setTable(/*@Nonnull*/ NamedTable* turnout) {
         assertListenersAreNotRegistered(log, "setTable");
-        setTable(((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->
-                getNamedBeanHandle(turnout->getDisplayName(), turnout));
+        setTable(((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->
+                getNamedBeanHandle(((Turnout*)turnout)->getDisplayName(), turnout));
     }
 
     /*public*/  void TableForEach::removeTable() {
@@ -249,13 +250,13 @@
     }
 
     /*private*/ void TableForEach::parseTableFormula() /*throws ParserException*/ {
-        if (_addressing == NamedBeanAddressing.Formula) {
-            Map<String, Variable> variables = new HashMap<>();
+        if (_addressing == NamedBeanAddressing::Formula) {
+            QMap<QString, Variable*> variables = QMap<QString, Variable*>();
 
-            RecursiveDescentParser parser = new RecursiveDescentParser(variables);
-            _tableExpressionNode = parser.parseExpression(_tableFormula);
+            RecursiveDescentParser* parser = new RecursiveDescentParser(variables);
+            _tableExpressionNode = parser->parseExpression(_tableFormula);
         } else {
-            _tableExpressionNode = null;
+            _tableExpressionNode = nullptr;
         }
     }
 
@@ -275,12 +276,12 @@
         _tableRowOrColumn = tableRowOrColumn;
     }
 
-    /*public*/  void TableForEach::setRowOrColumnAddressing(NamedBeanAddressing addressing) /*throws ParserException*/ {
+    /*public*/  void TableForEach::setRowOrColumnAddressing(NamedBeanAddressing::TYPE addressing) /*throws ParserException*/ {
         _rowOrColumnAddressing = addressing;
         parseRowOrColumnFormula();
     }
 
-    /*public*/  NamedBeanAddressing TableForEach::getRowOrColumnAddressing() {
+    /*public*/  NamedBeanAddressing::TYPE TableForEach::getRowOrColumnAddressing() {
         return _rowOrColumnAddressing;
     }
 
@@ -330,13 +331,13 @@
     }
 
     /*private*/ void TableForEach::parseRowOrColumnFormula() /*throws ParserException*/ {
-        if (_rowOrColumnAddressing == NamedBeanAddressing.Formula) {
-            Map<String, Variable> variables = new HashMap<>();
+        if (_rowOrColumnAddressing == NamedBeanAddressing::Formula) {
+            QMap<QString, Variable*> variables = QMap<QString, Variable*>();
 
-            RecursiveDescentParser parser = new RecursiveDescentParser(variables);
-            _rowOrColumnExpressionNode = parser.parseExpression(_rowOrColumnFormula);
+            RecursiveDescentParser* parser = new RecursiveDescentParser(variables);
+            _rowOrColumnExpressionNode = parser->parseExpression(_rowOrColumnFormula);
         } else {
-            _rowOrColumnExpressionNode = null;
+            _rowOrColumnExpressionNode = nullptr;
         }
     }
 
@@ -381,7 +382,7 @@
 
             default:
                 throw new IllegalArgumentException(
-                        String.format("index has invalid value: %d", index));
+                       tr("index has invalid value: %1").arg(index));
         }
     }
 
@@ -423,7 +424,7 @@
             {
                 QString tableName;
                 if (_tableHandle != nullptr) {
-                    tableName = _tableHandle->getBean()->getDisplayName();
+                    tableName = ((NamedBean*)_tableHandle->getBean())->getDisplayName();
                 } else {
                     tableName = tr(/*locale, */"''");
                 }
@@ -464,7 +465,7 @@
                 break;
 
             default:
-                throw new IllegalArgumentException("invalid _rowOrColumnAddressing state: " + TableRowOrColumn::toString(_rowOrColumnAddressing));
+                throw new IllegalArgumentException("invalid _rowOrColumnAddressing state: " + NamedBeanAddressing::toString(_rowOrColumnAddressing));
         }
 
         return tr(/*locale, */"Table: For each %1 of %2 \"%3\" in table \"%4\" set variable \"%5\" and execute action %6").arg(

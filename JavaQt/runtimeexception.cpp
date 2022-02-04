@@ -36,7 +36,7 @@
 /*public*/ RuntimeException::RuntimeException(QString message) : Exception(message){
     //super(message);
 }
-#if 0
+
 /**
  * Constructs a new runtime exception with the specified detail message and
  * cause.  <p>Note that the detail message associated with
@@ -51,10 +51,10 @@
  *         unknown.)
  * @since  1.4
  */
-/*public*/ RuntimeException(String message, Throwable cause) {
-    super(message, cause);
+/*public*/ RuntimeException::RuntimeException(QString message, Throwable* cause) {
+    Exception(message, cause);
 }
-
+#if 0
 /** Constructs a new runtime exception with the specified cause and a
  * detail message of <tt>(cause==null ? null : cause.toString())</tt>
  * (which typically contains the class and detail message of

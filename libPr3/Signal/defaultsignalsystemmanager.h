@@ -17,8 +17,8 @@ public:
     ~DefaultSignalSystemManager()  override{}
     DefaultSignalSystemManager(const DefaultSignalSystemManager&) : SignalSystemManager() {}
     /*public*/ int getXMLOrder()const  override;
-    QString getSystemPrefix() override;
-    /*public*/ QChar typeLetter() override;
+    QString getSystemPrefix() const override;
+    /*public*/ QChar typeLetter() const override;
     /*public*/ SignalSystem* getSystem(QString name)  override;
     /*public*/ SignalSystem* getBySystemName(QString key) const  override;
     /*public*/ SignalSystem* getByUserName(QString key)const  override;

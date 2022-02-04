@@ -21,9 +21,9 @@ class TableForEach : public AbstractDigitalAction, public FemaleSocketListener, 
   /*public*/  Category* getCategory();
   /*public*/  void execute() /*throws JmriException */;
   /*public*/  void setTable(/*@Nonnull*/ QString tableName);
-  /*public*/  void setAddressing(NamedBeanAddressing addressing) /*throws ParserException*/;
-  /*public*/  NamedBeanAddressing getAddressing();
-  /*public*/  void setTable(/*@Nonnull*/ NamedBeanHandle<NamedTable*> handle);
+  /*public*/  void setAddressing(NamedBeanAddressing::TYPE addressing) /*throws ParserException*/;
+  /*public*/  NamedBeanAddressing::TYPE getAddressing();
+  /*public*/  void setTable(/*@Nonnull*/ NamedBeanHandle<NamedTable *> *handle);
   /*public*/  void setTable(/*@Nonnull*/ NamedTable* turnout);
   /*public*/  void removeTable();
   /*public*/  NamedBeanHandle<NamedTable*>* getTable();
@@ -35,7 +35,8 @@ class TableForEach : public AbstractDigitalAction, public FemaleSocketListener, 
   /*public*/  QString getTableFormula();
   /*public*/  TableRowOrColumn::TYPE getRowOrColumn();
   /*public*/  void setRowOrColumn(/*@Nonnull*/ TableRowOrColumn::TYPE tableRowOrColumn);
-  /*public*/  void setRowOrColumnAddressing(NamedBeanAddressing addressing) /*throws ParserException*/ ;
+  /*public*/  void setRowOrColumnAddressing(NamedBeanAddressing::TYPE addressing) /*throws ParserException*/ ;
+  /*public*/  NamedBeanAddressing::TYPE getRowOrColumnAddressing();
   /*public*/  QString getRowOrColumnName();
   /*public*/  void setRowOrColumnName(/*@Nonnull*/ QString rowOrColumnName);
   /*public*/  void setRowOrColumnReference(/*@Nonnull*/ QString reference);

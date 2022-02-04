@@ -18,7 +18,7 @@ public:
     AbstractSensorManager(SystemConnectionMemo* memo, QObject *parent =nullptr);
 
     /*public*/ int getXMLOrder()const override;
-    /*public*/ QChar typeLetter()  override;
+    /*public*/ QChar typeLetter() const override;
     /*public*/ Sensor* provideSensor(QString name) override;
     /*public*/ Sensor* getSensor(QString name) override;
     /*public*/ NamedBean* getBySystemName(QString key) override;

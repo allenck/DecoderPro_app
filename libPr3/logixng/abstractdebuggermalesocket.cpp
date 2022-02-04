@@ -129,7 +129,7 @@
     //@Override
     /*public*/  void AbstractDebuggerMaleSocket::setParent(Base* parent) {
         AbstractMaleSocket::setParent(parent);
-        ((MaleSocket*)getObject())->setParent(this);
+        ((MaleSocket*)getObject())->Base::setParent(this);
     }
 
 

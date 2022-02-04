@@ -14,7 +14,7 @@ class LIBPR3SHARED_EXPORT AbstractTurnoutManager : public AbstractManager, publi
 public:
     explicit AbstractTurnoutManager(SystemConnectionMemo* memo, QObject *parent = 0);
     virtual int getXMLOrder() const override;
-    virtual QChar typeLetter()  override;
+    virtual QChar typeLetter() const override;
     Turnout* provideTurnout(QString name) override;
     Turnout* getTurnout(QString name) override;
     Turnout* newTurnout(QString systemName, QString userName) override;

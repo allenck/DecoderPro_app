@@ -47,7 +47,7 @@ Rules:
 */
 
 
-/*public*/ /*enum*/ class TokenType {
+/*public*/ /*enum*/ class TokenType  : public QObject{
   Q_OBJECT
  public:
     // For precedence, see: https://introcs.cs.princeton.edu/java/11precedence/

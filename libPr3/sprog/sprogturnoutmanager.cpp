@@ -21,7 +21,7 @@ using namespace Sprog;
 }
 
 //@Override
-/*public*/ QString SprogTurnoutManager::getSystemPrefix(){
+/*public*/ QString SprogTurnoutManager::getSystemPrefix() const{
     return _memo->getSystemPrefix();
 }
 

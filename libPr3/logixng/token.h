@@ -5,7 +5,7 @@
 /**
  * A token used by the tokenizer and the parser
  */
- /*public*/  /*final*/ class Token {
+ /*public*/  /*final*/ class Token  : public QObject{
 
     TokenType::TTYPE _tokenType = TokenType::NONE;
     QString _string;
@@ -23,9 +23,9 @@ public:
         _pos = pos;
     }
 
-    /*public*/  TokenType getTokenType() {
-        return _tokenType;
-    }
+//    /*public*/  TokenType getTokenType() {
+//        return _tokenType;
+//    }
 
     /*public*/  QString getString() {
         return _string;

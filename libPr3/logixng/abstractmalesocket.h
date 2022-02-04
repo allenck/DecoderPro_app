@@ -7,10 +7,10 @@
 #include "symboltable.h"
 #include "runtimeexception.h"
 
-class AbstractMaleSocket : public QObject, public MaleSocket
+class AbstractMaleSocket :  public MaleSocket
 {
   Q_OBJECT
-  Q_INTERFACES(MaleSocket)
+  //Q_INTERFACES(MaleSocket)
  public:
   explicit AbstractMaleSocket(BaseManager/*<NamedBean*>*//*<? extends NamedBean>*/* manager, Base* object, QObject *parent = nullptr);
   /*public*/ /*final*/ Base* getObject() override;
@@ -48,7 +48,7 @@ class AbstractMaleSocket : public QObject, public MaleSocket
   /*public*/ bool getCatchAbortExecution()override;
   /*public*/ void setCatchAbortExecution(bool catchAbortExecution)override;
   /*public*/ void addLocalVariable(QString name,
-          SymbolTable::InitialValueType::TYPES initialValueType,
+          InitialValueType::TYPES initialValueType,
           QString initialValueData)override;
   /*public*/ void addLocalVariable(VariableData* variableData)override;
   /*public*/ void clearLocalVariables()override;
@@ -81,12 +81,12 @@ class AbstractMaleSocket : public QObject, public MaleSocket
           /*MutableInt*/int lineNumber)override;
   /*public*/ void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override;
   /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override;
-  /*public*/ BaseManager/*<NamedBean*>*/*/*<? extends NamedBean>*/* getManager()override;
+  /*public*/ BaseManager/*<NamedBean*>*//*<? extends NamedBean>*/* getManager()override;
   /*public*/ /*final*/ Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames)
           /*throw (JmriException)*/override;
   /*public*/ /*final*/ Base* deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/;
   /*public*/ /*final*/ void dispose()override;
-  /*public*/ MaleSocket::ErrorHandlingType::TYPES getErrorHandlingType()override;
+  /*public*/ ErrorHandlingType::TYPES getErrorHandlingType()override;
   /*public*/ void setErrorHandlingType(ErrorHandlingType::TYPES errorHandlingType)override;
   /*public*/ void handleError(Base* item, QString message, JmriException *e, Logger* log) /*throw (JmriException)*/;
   /*public*/ void handleError(

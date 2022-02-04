@@ -37,7 +37,7 @@ AbstractSensorManager::AbstractSensorManager(SystemConnectionMemo* memo, QObject
     return Manager::SENSORS;
 }
 
-/*public*/ QChar AbstractSensorManager::typeLetter() { return 'S'; }
+/*public*/ QChar AbstractSensorManager::typeLetter() const { return 'S'; }
 
 /*public*/ Sensor* AbstractSensorManager::provideSensor(QString name)
 {

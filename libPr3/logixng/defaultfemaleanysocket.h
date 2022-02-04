@@ -17,6 +17,13 @@ class DefaultFemaleAnySocket : public AbstractFemaleSocket, public FemaleAnySock
   /*public*/ QMap<Category*, QList<Base*>> getConnectableClasses()override;
   /*public*/ QString getShortDescription(QLocale locale)override;
   /*public*/ QString getLongDescription(QLocale locale)override;
+
+  QObject* self() override {return (QObject*)this;}
+  /*public*/ QString getSystemName() const override {return AbstractFemaleSocket::getSystemName();}
+  /*public*/ QString getUserName() const override {return AbstractFemaleSocket::getUserName();}
+  /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)  override
+   {return AbstractFemaleSocket::getUsageDetail(level,bean, report, cdl );}
+
 };
 
 #endif // DEFAULTFEMALEANYSOCKET_H

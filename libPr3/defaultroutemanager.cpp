@@ -36,7 +36,7 @@ DefaultRouteManager::DefaultRouteManager(InternalSystemConnectionMemo* memo, QOb
 }
 
 ///*public*/ QString DefaultRouteManager::getSystemPrefix() const { return "I"; }
-/*public*/ QChar DefaultRouteManager::typeLetter() { return 'O'; }
+/*public*/ QChar DefaultRouteManager::typeLetter() const { return 'O'; }
 
 /**
  * Method to provide a  Route

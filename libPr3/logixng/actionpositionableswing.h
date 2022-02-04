@@ -53,6 +53,7 @@ class ActionPositionableSwing : public AbstractDigitalActionSwing
    }
    friend class ActionPositionableSwing;
   };
+#if 0
   /*public*/ class Operation {
 //          Disable(Bundle.getMessage("ActionPositionable_Disable")),
 //          Enable(Bundle.getMessage("ActionPositionable_Enable")),
@@ -61,27 +62,27 @@ class ActionPositionableSwing : public AbstractDigitalActionSwing
    public:
     enum TYPE {Disable, Enable, Hide, Show, None};
           //@Override
-          /*public*/ static QString toString(TYPE t) {
-              switch(t)
-              {
-              case Disable:
-               return tr("Disable");
-              case Enable:
-               return tr("Enable");
-              case Hide:
-               return tr("Hide");
-              case Show:
-               return tr("Show");
-              default:
-               return tr("None");
-              }
-          }
+    /*public*/ static QString toString(TYPE t) {
+        switch(t)
+        {
+        case Disable:
+         return tr("Disable");
+        case Enable:
+         return tr("Enable");
+        case Hide:
+         return tr("Hide");
+        case Show:
+         return tr("Show");
+        default:
+         return tr("None");
+        }
+    }
     /*public*/ static QList<TYPE> values()
     {
      QList<TYPE> val = {Disable, Enable, Hide, Show};
      return val;
     }
-    /*public*/ TYPE toType(QString s)
+    /*public*/ static TYPE toType(QString s)
     {
      if(s == "Disable") return Disable;
      if(s == "Enable") return Enable;
@@ -90,6 +91,7 @@ class ActionPositionableSwing : public AbstractDigitalActionSwing
      return None;
     }
   };
+#endif
   /*private*/ void updatePositionables(JActionEvent* e=0);
 
 

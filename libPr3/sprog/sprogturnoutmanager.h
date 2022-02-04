@@ -11,7 +11,7 @@ namespace Sprog
 
  public:
   SprogTurnoutManager(SprogSystemConnectionMemo*, QObject* parent = 0);
-  /*public*/ QString getSystemPrefix()  override;
+  /*public*/ QString getSystemPrefix() const override;
   /*public*/ Turnout* createNewTurnout(QString systemName, QString userName) override;
   /*public*/ int getBitFromSystemName(QString systemName);
   /*public*/ NameValidity validSystemNameFormat(QString systemName) override;

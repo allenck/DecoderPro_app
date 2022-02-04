@@ -26,6 +26,14 @@
 #include "userpreferencesmanager.h"
 #include "symboltable.h"
 #include "localvariabletablemodel.h"
+#include "jtable.h"
+#include "jbutton.h"
+#include "femalesocketoperation.h"
+#include "borderfactory.h"
+#include <QScrollArea>
+#include "basemanager.h"
+#include "abstractmalesocket.h"
+#include "itemevent.h"
 /**
  * Base class for LogixNG editors
  *
@@ -80,7 +88,7 @@
         menuBar->addMenu(toolsMenu);
 
 
-        TreeEditor::PopupMenu* popup = new TreeEditor::PopupMenu(this);
+        TEPopupMenu* popup = new TEPopupMenu(this);
         popup->init();
 /*
         // The JTree can get big, so allow it to scroll
@@ -100,30 +108,16 @@
 //        initMinimumSize(new Dimension(panelWidth700, panelHeight500));
 */
     }
-class TEClipboardListener : public ClipboardEventListener
-{
-  Q_OBJECT
-  TreeEditor* te;
- public:
-  TEClipboardListener(TreeEditor* te)
-  {
-   //_clipboardEditor->clipboardData.forEach((key, value) -> {
-   foreach(QString key, te->_clipboardEditor->clipboardData){
-       if (key == ("Finish")) {                  // NOI18N
-           te->_clipboardEditor = nullptr;
-       }
-   }
-  }
-  QObject* self() override {return (QObject*)this;}
-};
+
 
     /*final*/ /*public*/  void TreeEditor::openClipboard() {
         if (_clipboardEditor == nullptr) {
             _clipboardEditor = new ClipboardEditor();
             /*_clipboardEditor->*/initComponents();
             /*_clipboardEditor->*/setVisible(true);
-
+#if 0
             _clipboardEditor->addClipboardEventListener(new TEClipboardListener(this));
+#endif
 //             //);
 //            });
 
@@ -466,8 +460,8 @@ class TEClipboardListener : public ClipboardEventListener
                             errorMsg.append(s);
                         }
                         JOptionPane.showMessageDialog(null,
-                                Bundle.getMessage("ValidateErrorMessage", errorMsg),
-                                Bundle.getMessage("ValidateErrorTitle"),
+                                Bundle.getMessage("<html>Invalid data entered<br><br>%1", errorMsg),
+                                Bundle.getMessage("Data is not valid"),
                                 JOptionPane.ERROR_MESSAGE);
                     }
                     ThreadingUtil.runOnGUIEventually(() -> {
@@ -565,8 +559,8 @@ class TEClipboardListener : public ClipboardEventListener
                         }
                         ThreadingUtil.runOnGUIEventually(() -> {
                             JOptionPane.showMessageDialog(null,
-                                    Bundle.getMessage("ValidateErrorMessage", errorMsg),
-                                    Bundle.getMessage("ValidateErrorTitle"),
+                                    Bundle.getMessage("<html>Invalid data entered<br><br>%1", errorMsg),
+                                    Bundle.getMessage("Data is not valid"),
                                     JOptionPane.ERROR_MESSAGE);
                         });
                     }
@@ -674,7 +668,7 @@ class TEClipboardListener : public ClipboardEventListener
         QList<JPanel*> panels = QList<JPanel*>();
         if (femaleSocket->isConnected()) {
             object = femaleSocket->getConnectedSocket();
-            while (qobject_cast<MaleSocket*>(object->self())) {
+            while (qobject_cast<AbstractMaleSocket*>(object->self())) {
                 SwingConfiguratorInterface* swi =
                         SwingTools::getSwingConfiguratorForClass((Class*)object->self());
                 panels.append(swi->getConfigPanel(object, panel5));
@@ -809,33 +803,33 @@ class TEClipboardListener : public ClipboardEventListener
             connect(_edit, &JButton::clicked, [=] {
                 QList<QString> errorMessages = QList<QString>();
                 bool hasErrors = false;
-                for (VariableData v : _localVariableTableModel->getVariables()) {
-                    if (v.getName().isEmpty()) {
-                        errorMessages.add(Bundle.getMessage("VariableNameIsEmpty", v.getName()));
+                for (VariableData* v : _localVariableTableModel->getVariables()) {
+                    if (v->getName().isEmpty()) {
+                        errorMessages.append(tr("The name of the variable is empty"/*, v.getName()*/));
                         hasErrors = true;
                     }
-                    if (! SymbolTable.validateName(v.getName())) {
-                        errorMessages.add(Bundle.getMessage("VariableNameIsNotValid", v.getName()));
+                    if (! SymbolTable::validateName(v->getName())) {
+                        errorMessages.append(tr("The name of variable \"%1\" is not valid").arg(v->getName()));
                         hasErrors = true;
                     }
                 }
 
                 if (hasErrors) {
-                    StringBuilder errorMsg = new StringBuilder();
-                    for (String s : errorMessages) {
+                    QString errorMsg;// = new StringBuilder();
+                    for (QString s : errorMessages) {
                         if (errorMsg.length() > 0) errorMsg.append("<br>");
                         errorMsg.append(s);
                     }
-                    JOptionPane.showMessageDialog(null,
-                            Bundle.getMessage("ValidateErrorMessage", errorMsg),
-                            Bundle.getMessage("ValidateErrorTitle"),
-                            JOptionPane.ERROR_MESSAGE);
+                    JOptionPane::showMessageDialog(nullptr,
+                            tr("<html>Invalid data entered<br><br>%1").arg(errorMsg),
+                            tr("Data is not valid"),
+                            JOptionPane::ERROR_MESSAGE);
 
                 } else {
-                    _treePane._femaleRootSocket.unregisterListeners();
-
+                    _treePane->_femaleRootSocket->unregisterListeners();
+#if 0
                     runOnConditionalNGThreadOrGUIThreadEventually(
-                            _treePane._femaleRootSocket.getConditionalNG(),
+                            _treePane->_femaleRootSocket.getConditionalNG(),
                             () -> {
 
                         maleSocket.clearLocalVariables();
@@ -859,6 +853,7 @@ class TEClipboardListener : public ClipboardEventListener
                             _treePane._tree.updateUI();
                         });
                     });
+#endif
                 }
             });
 //            _edit->setToolTip(Bundle.getMessage("EditButtonHint"));  // NOI18N
@@ -867,65 +862,67 @@ class TEClipboardListener : public ClipboardEventListener
 
             _editLocalVariablesDialog = new JDialog(
                     this,
-                    Bundle.getMessage(
-                            "EditLocalVariablesDialogTitle",
+                    tr("Edit local variables for %1").arg(
                             femaleSocket->getLongDescription()),
                     true);
     //        frame.addHelpMenu(
     //                "package.jmri.jmrit.logixng.tools.swing.ConditionalNGAddEdit", true);     // NOI18N
-            Container contentPanel = _editLocalVariablesDialog.getContentPane();
-            contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+            QWidget* contentPanel = _editLocalVariablesDialog->getContentPane();
+            contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
 
-            JPanel* tablePanel = new JPanel();
-            JTable table = new JTable();
+            JPanel* tablePanel = new JPanel(new QVBoxLayout());
+            JTable* table = new JTable();
             _localVariableTableModel = new LocalVariableTableModel(maleSocket);
-            table.setModel(_localVariableTableModel);
-            table.setDefaultRenderer(InitialValueType.class,
-                    new LocalVariableTableModel.TypeCellRenderer());
-            table.setDefaultEditor(InitialValueType.class,
-                    new LocalVariableTableModel.TypeCellEditor());
-            table.setDefaultRenderer(LocalVariableTableModel.Menu.class,
-                    new LocalVariableTableModel.MenuCellRenderer());
-            table.setDefaultEditor(LocalVariableTableModel.Menu.class,
+            table->setModel(_localVariableTableModel);
+#if 0 // these need to be defined as table column delegates
+            table->setDefaultRenderer("InitialValueType",
+                    new LocalVariableTableModel::TypeCellRenderer());
+            table->setDefaultEditor("InitialValueType",
+                    new LocalVariableTableModel::TypeCellEditor());
+            table->setDefaultRenderer("LocalVariableTableModel.Menu",
+                    new LocalVariableTableModel::MenuCellRenderer());
+            table->setDefaultEditor("LocalVariableTableModel.Menu",
                     new LocalVariableTableModel.MenuCellEditor(table, _localVariableTableModel));
-            _localVariableTableModel.setColumnForMenu(table);
-            JScrollPane scrollpane = new JScrollPane(table);
-            scrollpane.setPreferredSize(new Dimension(400, 200));
-            tablePanel.add(scrollpane, BorderLayout.CENTER);
+#endif
+            _localVariableTableModel->setColumnForMenu(table);
+            //QScrollArea* scrollpane = new QScrollArea(table);
+//            scrollpane->setPreferredSize(QSize(400, 200));
+//            tablePanel.add(scrollpane, BorderLayout.CENTER);
+            ((QVBoxLayout*)tablePanel->layout())->addWidget(table, 1, Qt::AlignCenter);
             contentPanel->layout()->addWidget(tablePanel);
 
             // set up create and cancel buttons
             JPanel* buttonPanel = new JPanel();
-            buttonPanel.setLayout(new FlowLayout());
+            buttonPanel->setLayout(new FlowLayout());
 
             // Function help
-            JButton* showFunctionHelp = new JButton(tr("FunctionHelp"));    // NOI18N
-            buttonPanel.add(showFunctionHelp);
-            showFunctionHelpLayout->addWidgetActionListener((ActionEvent e) -> {
-                InstanceManager.getDefault(FunctionsHelpDialog.class).showDialog();
+            JButton* showFunctionHelp = new JButton(tr("Function Help"));    // NOI18N
+            buttonPanel->layout()->addWidget(showFunctionHelp);
+            connect(showFunctionHelp, &JButton::clicked, [=] {
+                ((FunctionsHelpDialog*)InstanceManager::getDefault("FunctionsHelpDialog"))->showDialog();
             });
 //            showFunctionHelp->setToolTip("FunctionHelpButtonHint");      // NOI18N
 
             // Add local variable
-            JButton* add = new JButton(Bundle.getMessage("TableAddVariable"));
-            buttonPanel.add(add);
-            add.addActionListener((ActionEvent e) -> {
-                _localVariableTableModel.add();
+            JButton* add = new JButton(tr("Add Variable"));
+            buttonPanel->layout()->addWidget(add);
+            connect(add, &JButton::clicked, [=] {
+                _localVariableTableModel->add();
             });
 
             // Cancel
             JButton* cancel = new JButton(tr("Cancel"));    // NOI18N
-            buttonPanel.add(cancel);
+            buttonPanel->layout()->addWidget(cancel);
             connect(cancel, &JButton::clicked, [=] {
-                _editLocalVariablesDialog.setVisible(false);
-                _editLocalVariablesDialog.dispose();
-                _editLocalVariablesDialog = null;
+                _editLocalVariablesDialog->setVisible(false);
+                _editLocalVariablesDialog->dispose();
+                _editLocalVariablesDialog = nullptr;
             });
     //        cancel->setToolTip(Bundle.getMessage("Press to return to Logix Table without any changes"));      // NOI18N
             cancel->setToolTip("Press to return to Logix Table without any changes");      // NOI18N
 
-            buttonPanel.add(_edit);
-
+            buttonPanel->layout()->addWidget(_edit);
+#if 0
             _editLocalVariablesDialog.addWindowListener(new java.awt.event.WindowAdapter() {
                 //@Override
                 /*public*/  void windowClosing(java.awt.event.WindowEvent e) {
@@ -934,17 +931,17 @@ class TEClipboardListener : public ClipboardEventListener
                     _editLocalVariablesDialog = null;
                 }
             });
-
+#endif
             contentPanel->layout()->addWidget(buttonPanel);
 
             connect(_autoSystemName, &JButton::clicked, [=] {
                 autoSystemName();
             });
     //        addLogixNGFrame.setLocationRelativeTo(component);
-            _editLocalVariablesDialog.pack();
-            _editLocalVariablesDialog.setLocationRelativeTo(null);
+            _editLocalVariablesDialog->pack();
+            _editLocalVariablesDialog->setLocationRelativeTo(nullptr);
 
-            _editLocalVariablesDialog.setVisible(true);
+            _editLocalVariablesDialog->setVisible(true);
         }
     }
 
@@ -958,29 +955,29 @@ class TEClipboardListener : public ClipboardEventListener
         // possible change
         _showReminder = true;
         // make an Edit Frame
-        if (_changeUsernameDialog == null) {
-            MaleSocket maleSocket = femaleSocket->getConnectedSocket();
+        if (_changeUsernameDialog == nullptr) {
+            MaleSocket* maleSocket = femaleSocket->getConnectedSocket();
 
             // Edit ConditionalNG
             _edit = new JButton(tr("OK"));  // NOI18N
-            _edit.addActionListener((ActionEvent e) -> {
+            connect(_edit, &JButton::clicked, [=] {
 
                 bool hasErrors = false;
                 if (hasErrors) {
-                    String errorMsg = "";
-                    JOptionPane.showMessageDialog(null,
-                            Bundle.getMessage("ValidateErrorMessage", errorMsg),
-                            Bundle.getMessage("ValidateErrorTitle"),
-                            JOptionPane.ERROR_MESSAGE);
+                    QString errorMsg = "";
+                    JOptionPane::showMessageDialog(nullptr,
+                            tr("<html>Invalid data entered<br><br>%1").arg(errorMsg),
+                            tr("Data is not valid"),
+                            JOptionPane::ERROR_MESSAGE);
 
                 } else {
-                    _treePane._femaleRootSocket.unregisterListeners();
-
+                    _treePane->_femaleRootSocket->unregisterListeners();
+#if 0
                     runOnConditionalNGThreadOrGUIThreadEventually(
                             _treePane._femaleRootSocket.getConditionalNG(),
                             () -> {
 
-                        String username = _usernameField->text();
+                        QString username = _usernameField->text();
                         if (username.equals("")) username = null;
 
                         // Only change user name if it's changed
@@ -1041,6 +1038,7 @@ class TEClipboardListener : public ClipboardEventListener
                             _treePane._tree.updateUI();
                         });
                     });
+#endif
                 }
             });
 //            _edit->setToolTip(Bundle.getMessage("EditButtonHint"));  // NOI18N
@@ -1049,40 +1047,38 @@ class TEClipboardListener : public ClipboardEventListener
 
             _changeUsernameDialog = new JDialog(
                     this,
-                    Bundle.getMessage(
-                            "EditLocalVariablesDialogTitle",
-                            femaleSocket->getLongDescription()),
+                    tr("Edit local variables for %1").arg(femaleSocket->getLongDescription()),
                     true);
     //        frame.addHelpMenu(
     //                "package.jmri.jmrit.logixng.tools.swing.ConditionalNGAddEdit", true);     // NOI18N
-            Container contentPanel = _changeUsernameDialog.getContentPane();
-            contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+            QWidget* contentPanel = _changeUsernameDialog->getContentPane();
+            contentPanel->setLayout(new QVBoxLayout());//contentPanel, BoxLayout.Y_AXIS));
 
 //            JPanel* tablePanel = new JPanel();
 
-            JLabel usernameLabel = new JLabel("Username");
-            _usernameField.setText(maleSocket.getUserName());
+            JLabel* usernameLabel = new JLabel("Username");
+            _usernameField->setText(maleSocket->getUserName());
 
             contentPanel->layout()->addWidget(usernameLabel);
             contentPanel->layout()->addWidget(_usernameField);
 
             // set up create and cancel buttons
             JPanel* buttonPanel = new JPanel();
-            buttonPanel.setLayout(new FlowLayout());
+            buttonPanel->setLayout(new FlowLayout());
 
             // Cancel
             JButton* cancel = new JButton(tr("Cancel"));    // NOI18N
-            buttonPanel.add(cancel);
+            buttonPanel->layout()->addWidget(cancel);
             connect(cancel, &JButton::clicked, [=] {
-                _changeUsernameDialog.setVisible(false);
-                _changeUsernameDialog.dispose();
-                _changeUsernameDialog = null;
+                _changeUsernameDialog->setVisible(false);
+                _changeUsernameDialog->dispose();
+                _changeUsernameDialog = nullptr;
             });
     //        cancel->setToolTip(Bundle.getMessage("Press to return to Logix Table without any changes"));      // NOI18N
             cancel->setToolTip("Press to return to Logix Table without any changes");      // NOI18N
 
-            buttonPanel.add(_edit);
-
+            buttonPanel->layout()->addWidget(_edit);
+#if 0
             _changeUsernameDialog.addWindowListener(new java.awt.event.WindowAdapter() {
                 //@Override
                 /*public*/  void windowClosing(java.awt.event.WindowEvent e) {
@@ -1091,7 +1087,7 @@ class TEClipboardListener : public ClipboardEventListener
                     _changeUsernameDialog = null;
                 }
             });
-
+#endif
             contentPanel->layout()->addWidget(buttonPanel);
 
             connect(_autoSystemName, &JButton::clicked, [=] {
@@ -1156,7 +1152,7 @@ class TEClipboardListener : public ClipboardEventListener
      * @param e The event heard
      */
     /*final*/ /*protected*/ void TreeEditor::cancelCreateItem(JActionEvent* e) {
-        _addItemDialog.setVisible(false);
+        _addItemDialog->setVisible(false);
         _addSwingConfiguratorInterface->dispose();
         _addItemDialog->dispose();
         _addItemDialog = nullptr;
@@ -1175,7 +1171,12 @@ class TEClipboardListener : public ClipboardEventListener
     /*final*/ /*protected*/ void TreeEditor::cancelEditPressed(JActionEvent* e) {
         _editActionExpressionDialog->setVisible(false);
 //        _editSwingConfiguratorInterface.dispose();
-        QMapIterator<SwingConfiguratorInterface*, Base*> entry (_swingConfiguratorInterfaceList);
+        //QListIterator<QMap<SwingConfiguratorInterface*, Base*> > entry (_swingConfiguratorInterfaceList);
+#if 0 // TODO:
+        foreach (QMap<SwingConfiguratorInterface*, Base*> map, _swingConfiguratorInterfaceList)
+        {
+         QMapIterator<QMap<SwingConfiguratorInterface*, Base*> > entry (map);
+
         while(entry.hasNext()){
          entry.next();
             entry.key()->dispose();
@@ -1183,10 +1184,11 @@ class TEClipboardListener : public ClipboardEventListener
 //        for (SwingConfiguratorInterface swi : _swingConfiguratorInterfaceList) {
 //            swi.dispose();
         }
+#endif
         _editActionExpressionDialog->dispose();
-        _editActionExpressionDialog = null;
+        _editActionExpressionDialog = nullptr;
 //        _inCopyMode = false;
-        this.setVisible(true);
+        this->setVisible(true);
     }
 
 
@@ -1209,23 +1211,24 @@ class TEClipboardListener : public ClipboardEventListener
 //        }
 
         //@Override
-        /*public*/  void TreeEditor::SortedComboBoxModel::addElement(QString element) {
+        /*public*/  void SortedComboBoxModel::addElement(QString element) {
             insertElementAt(element, 0);
         }
 
         //@SuppressWarnings("unchecked")
         //@Override
-        /*public*/  void TreeEditor::SortedComboBoxModel::insertElementAt(QString element, int index) {
+        /*public*/  void SortedComboBoxModel::insertElementAt(QString element, int index) {
             int size = getSize();
 
             //  Determine where to insert element to keep model in sorted order
             int i = 0;
             for (; i < size; i++) {
                 QVariant o = getElementAt(i);
-
-                if (comparator->compare(o, element) > 0) {
+#if 0
+                if (comparator->compare(o, element) > o) {
                     break;
                 }
+#endif
             }
 
             DefaultComboBoxModel::insertElementAt(element, i);
@@ -1240,31 +1243,31 @@ class TEClipboardListener : public ClipboardEventListener
 
 //    /*protected*/ class PopupMenu : QMenu //implements ActionListener {
 
-        /*private*/ /*static*/ /*final*/ QString TreeEditor::PopupMenu::ACTION_COMMAND_RENAME_SOCKET = "rename_socket";
-        /*private*/ /*static*/ /*final*/QString TreeEditor::PopupMenu::ACTION_COMMAND_ADD = "add";
-        /*private*/ /*static*/ /*final*/QString TreeEditor::PopupMenu::ACTION_COMMAND_REMOVE = "remove";
-        /*private*/ /*static*/ /*final*/QString TreeEditor::PopupMenu::ACTION_COMMAND_EDIT = "edit";
-        /*private*/ /*static*/ /*final*/QString TreeEditor::PopupMenu::ACTION_COMMAND_CUT = "cut";
-        /*private*/ /*static*/ /*final*/QString TreeEditor::PopupMenu::ACTION_COMMAND_COPY = "copy";
-        /*private*/ /*static*/ /*final*/QString TreeEditor::PopupMenu::ACTION_COMMAND_PASTE = "paste";
-        /*private*/ /*static*/ /*final*/QString TreeEditor::PopupMenu::ACTION_COMMAND_ENABLE = "enable";
-        /*private*/ /*static*/ /*final*/QString TreeEditor::PopupMenu::ACTION_COMMAND_DISABLE = "disable";
-        /*private*/ /*static*/ /*final*/QString TreeEditor::PopupMenu::ACTION_COMMAND_LOCK = "lock";
-        /*private*/ /*static*/ /*final*/QString TreeEditor::PopupMenu::ACTION_COMMAND_UNLOCK = "unlock";
-        /*private*/ /*static*/ /*final*/QString TreeEditor::PopupMenu::ACTION_COMMAND_LOCAL_VARIABLES = "local_variables";
-        /*private*/ /*static*/ /*final*/QString TreeEditor::PopupMenu::ACTION_COMMAND_CHANGE_USERNAME = "change_username";
-        /*private*/ /*static*/ /*final*/QString TreeEditor::PopupMenu::ACTION_COMMAND_EXECUTE_EVALUATE = "execute_evaluate";
+        /*private*/ /*static*/ /*final*/QString TEPopupMenu::ACTION_COMMAND_RENAME_SOCKET = "rename_socket";
+        /*private*/ /*static*/ /*final*/QString TEPopupMenu::ACTION_COMMAND_ADD = "add";
+        /*private*/ /*static*/ /*final*/QString TEPopupMenu::ACTION_COMMAND_REMOVE = "remove";
+        /*private*/ /*static*/ /*final*/QString TEPopupMenu::ACTION_COMMAND_EDIT = "edit";
+        /*private*/ /*static*/ /*final*/QString TEPopupMenu::ACTION_COMMAND_CUT = "cut";
+        /*private*/ /*static*/ /*final*/QString TEPopupMenu::ACTION_COMMAND_COPY = "copy";
+        /*private*/ /*static*/ /*final*/QString TEPopupMenu::ACTION_COMMAND_PASTE = "paste";
+        /*private*/ /*static*/ /*final*/QString TEPopupMenu::ACTION_COMMAND_ENABLE = "enable";
+        /*private*/ /*static*/ /*final*/QString TEPopupMenu::ACTION_COMMAND_DISABLE = "disable";
+        /*private*/ /*static*/ /*final*/QString TEPopupMenu::ACTION_COMMAND_LOCK = "lock";
+        /*private*/ /*static*/ /*final*/QString TEPopupMenu::ACTION_COMMAND_UNLOCK = "unlock";
+        /*private*/ /*static*/ /*final*/QString TEPopupMenu::ACTION_COMMAND_LOCAL_VARIABLES = "local_variables";
+        /*private*/ /*static*/ /*final*/QString TEPopupMenu::ACTION_COMMAND_CHANGE_USERNAME = "change_username";
+        /*private*/ /*static*/ /*final*/QString TEPopupMenu::ACTION_COMMAND_EXECUTE_EVALUATE = "execute_evaluate";
 //        /*private*/ static final String ACTION_COMMAND_EXPAND_TREE = "expandTree";
 
 
 
-        TreeEditor::PopupMenu::PopupMenu(TreeEditor* editor) {
+        TEPopupMenu::TEPopupMenu(TreeEditor* editor) {
          this->editor = editor;
             if (editor->_treePane->_tree == nullptr) throw new IllegalArgumentException("_tree is null");
             _tree = editor->_treePane->_tree;
         }
 
-        /*private*/ void TreeEditor::PopupMenu::init() {
+        /*private*/ void TEPopupMenu::init() {
             menuItemRenameSocket = new JMenuItem(tr("Rename Socket"),this);
             connect(menuItemRenameSocket, &JMenuItem::triggered, [=]{actionPerformed();});
             menuItemRenameSocket->setActionCommand(ACTION_COMMAND_RENAME_SOCKET);
@@ -1301,7 +1304,7 @@ class TEClipboardListener : public ClipboardEventListener
             for (FemaleSocketOperation::TYPES oper : FemaleSocketOperation::values()) {
                 JMenuItem* menuItem = new JMenuItem(FemaleSocketOperation::toString(oper),this);
                 connect(menuItem, &JMenuItem::triggered, [=]{actionPerformed();});
-                menuItem->setActionCommand(FemaleSocketOperation::TYPES::toString(oper));
+                menuItem->setActionCommand(FemaleSocketOperation::toString(oper));
                 addAction(menuItem);
                 menuItemFemaleSocketOperation.insert(oper, menuItem);
             }
@@ -1326,20 +1329,20 @@ class TEClipboardListener : public ClipboardEventListener
 
             addSeparator();
             menuItemLocalVariables = new JMenuItem(tr("Local Variables"),this);
-            menuItemLocalVariables->addActionListener(this);
+            connect(menuItemLocalVariables, &JMenuItem::triggered, [=]{actionPerformed();});
             menuItemLocalVariables->setActionCommand(ACTION_COMMAND_LOCAL_VARIABLES);
             addAction(menuItemLocalVariables);
 
             addSeparator();
-            menuItemChangeUsername = new JMenuItem(tr("Change Username"), this);
-            menuItemChangeUsername->addActionListener(this);
+            menuItemChangeUsername = new JMenuItem(tr("Chang, &JMenuItem::triggered, [=]{actionPerformed();});e Username"), this);
+            connect(menuItemChangeUsername, &JMenuItem::triggered, [=]{actionPerformed();});
             menuItemChangeUsername->setActionCommand(ACTION_COMMAND_CHANGE_USERNAME);
-            add(menuItemChangeUsername);
+            addAction(menuItemChangeUsername);
 
             if (editor->_enableExecuteEvaluate) {
                 addSeparator();
                 menuItemExecuteEvaluate = new JMenuItem(this);  // The text is set later
-                menuItemExecuteEvaluate->addActionListener(this);
+                connect(menuItemExecuteEvaluate, &JMenuItem::triggered, [=]{actionPerformed();});
                 menuItemExecuteEvaluate->setActionCommand(ACTION_COMMAND_EXECUTE_EVALUATE);
                 addAction(menuItemExecuteEvaluate);
             }
@@ -1353,8 +1356,8 @@ class TEClipboardListener : public ClipboardEventListener
 //            setOpaque(true);
 //            setLightWeightPopupEnabled(true);
 
-            /*final*/ PopupMenu* popupMenu = this;
-#if 1 // TODO:
+            /*final*/ TEPopupMenu* popupMenu = this;
+#if 0 // TODO:
             _tree->addMouseListener(
                     new MouseAdapter() {
 
@@ -1389,15 +1392,15 @@ class TEClipboardListener : public ClipboardEventListener
                             }
                         }
                     }
-   #endif
             );
+#endif
         }
 
-        /*private*/ void TreeEditor::PopupMenu::showPopup(int x, int y, FemaleSocket* femaleSocket, TreePath* path) {
+        /*private*/ void TEPopupMenu::showPopup(int x, int y, FemaleSocket* femaleSocket, TreePath* path) {
             _currentFemaleSocket = femaleSocket;
             _currentPath = path;
 
-            Clipboard* clipboard = ((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->getClipboard();
+            DefaultClipboard* clipboard = ((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->getClipboard();
 
             MaleSocket* topItem = clipboard->getTopItem();
 
@@ -1421,10 +1424,10 @@ class TEClipboardListener : public ClipboardEventListener
             bool isLocked = isConnected && femaleSocket->getConnectedSocket()->isLocked();
 
             Base* parent = femaleSocket->getParent();
-            while ((parent != nullptr) && !(qobject_cast<MaleSocket*>(parent->self()))) {
+            while ((parent != nullptr) && !(qobject_cast<AbstractMaleSocket*>(parent->self()))) {
                 parent = parent->getParent();
             }
-            bool parentIsLocked = (parent != nullptr) && ((MaleSocket*)parent->self())->isLocked();
+            bool parentIsLocked = (parent != nullptr) && ((AbstractMaleSocket*)parent->self())->isLocked();
 
             menuItemAdd->setEnabled(!isConnected && !parentIsLocked);
             menuItemRemove->setEnabled(isConnected && !isLocked && !parentIsLocked && !disableForRoot);
@@ -1442,19 +1445,30 @@ class TEClipboardListener : public ClipboardEventListener
             }
 
             for (FemaleSocketOperation::TYPES oper : FemaleSocketOperation::values()) {
-                JMenuItem menuItem = menuItemFemaleSocketOperation.get(oper);
-                menuItem.setEnabled(femaleSocket->isSocketOperationAllowed(oper) && !parentIsLocked);
+                JMenuItem* menuItem = menuItemFemaleSocketOperation.value(oper);
+                menuItem->setEnabled(femaleSocket->isSocketOperationAllowed(oper) && !parentIsLocked);
             }
 
             std::atomic<bool> isAnyLocked (false);
             std::atomic<bool> isAnyUnlocked(false);
 
-            _currentfemaleSocket->forEntireTree((item) -> {
-                if (item instanceof MaleSocket) {
-                    isAnyLocked.set(isAnyLocked.get() || ((MaleSocket)item).isLocked());
-                    isAnyUnlocked.set(isAnyUnlocked.get() || !((MaleSocket)item).isLocked());
-                }
-            });
+//            _currentFemaleSocket->forEntireTree((item) -> {
+//                if (item instanceof MaleSocket) {
+//                    isAnyLocked.set(isAnyLocked.get() || ((MaleSocket)item).isLocked());
+//                    isAnyUnlocked.set(isAnyUnlocked.get() || !((MaleSocket)item).isLocked());
+//                }
+//            });/                if (item instanceof MaleSocket) {
+            //                    isAnyLocked.set(isAnyLocked.get() || ((MaleSocket)item).isLocked());
+            //                    isAnyUnlocked.set(isAnyUnlocked.get() || !((MaleSocket)item).isLocked());
+            //                }
+            for (int i=0; i < _currentFemaleSocket->getChildCount(); i++) {
+              Base* item = ((Base*)_currentFemaleSocket->getChild(i));
+              if (qobject_cast<AbstractMaleSocket*>(item->self())) {
+                  isAnyLocked = (isAnyLocked) || ((MaleSocket*)item->self())->isLocked();
+                  isAnyUnlocked =(isAnyUnlocked || !((MaleSocket*)item->self())->isLocked());
+              }
+            }
+
             menuItemLock->setEnabled(isAnyUnlocked);
             menuItemUnlock->setEnabled(isAnyLocked);
 
@@ -1468,11 +1482,11 @@ class TEClipboardListener : public ClipboardEventListener
                 if (femaleSocket->isConnected()) {
                     Base* object = _currentFemaleSocket->getConnectedSocket();
                     if (object == nullptr) throw new NullPointerException("object is null");
-                    while (qobject_cast<MaleSocket*>(object->self())) {
-                        object = ((MaleSocket*)object->self())->getObject();
+                    while (qobject_cast<AbstractMaleSocket*>(object->self())) {
+                        object = ((AbstractMaleSocket*)object->self())->getObject();
                     }
                     menuItemExecuteEvaluate->setText(
-                            SwingTools::getSwingConfiguratorForClass(QString(object->self()->metaObject()->className()))
+                            SwingTools::getSwingConfiguratorForClass((Class*)(object->self()))
                                     ->getExecuteEvaluateMenuText());
                 }
             }
@@ -1485,7 +1499,7 @@ class TEClipboardListener : public ClipboardEventListener
          * Asks the user if edit a system node.
          * @return true if not edit system node, else return false
          */
-        /*private*/ bool TreeEditor::PopupMenu::abortEditAboutSystem(Base* b) {
+        /*private*/ bool TEPopupMenu::abortEditAboutSystem(Base* b) {
             int result = JOptionPane::showConfirmDialog(
                     this,
                     tr("This node is owned and maintained by the system. Do you want to change it?"),
@@ -1496,51 +1510,50 @@ class TEClipboardListener : public ClipboardEventListener
         }
 
         //@Override
-        /*public*/  void TreeEditor::PopupMenu::actionPerformed(JActionEvent* e) {
+        /*public*/  void TEPopupMenu::actionPerformed(JActionEvent* e) {
             Base* parent = _currentFemaleSocket->getParent();
-            while ((parent != nullptr) && !qobject_cast<MaleSocket*>(_currentFemaleSocket->getParent()->self())) {
+            while ((parent != nullptr) && !qobject_cast<AbstractMaleSocket*>(_currentFemaleSocket->getParent()->self())) {
                 parent = parent->getParent();
             }
-            bool parentIsSystem = (parent != nullptr) && ((MaleSocket*)parent->self())->isSystem();
+            bool parentIsSystem = (parent != nullptr) && ((AbstractMaleSocket*)parent->self())->isSystem();
             bool itemIsSystem = (_currentFemaleSocket->isConnected())
                     && _currentFemaleSocket->getConnectedSocket()->isSystem();
 
-            switch (e.getActionCommand()) {
-                case ACTION_COMMAND_RENAME_SOCKET:
-                    if (parentIsSystem && abortEditAboutSystem(_currentfemaleSocket->getParent())) break;
-                    renameSocketPressed(_currentFemaleSocket, _currentPath);
-                    break;
+            if(e->getActionCommand()== ACTION_COMMAND_RENAME_SOCKET)
+            {
+                    if (parentIsSystem && abortEditAboutSystem(_currentFemaleSocket->getParent())) return;
+                    editor->renameSocketPressed(_currentFemaleSocket, _currentPath);
+            }
+            else if(e->getActionCommand() == ACTION_COMMAND_ADD)
+            {
+                    if (parentIsSystem && abortEditAboutSystem(_currentFemaleSocket->getParent())) return;
+                    editor->addPressed(_currentFemaleSocket, _currentPath);
+            }
+            else if(e->getActionCommand() ==  ACTION_COMMAND_EDIT)
+            {
+                    if (itemIsSystem && abortEditAboutSystem(_currentFemaleSocket->getConnectedSocket())) return;
+            }
+            else if(e->getActionCommand() ==  ACTION_COMMAND_REMOVE)
+            {
+                    if ((parentIsSystem || itemIsSystem) && abortEditAboutSystem(_currentFemaleSocket->getConnectedSocket())) return;
+                    DeleteBeanWorker* worker = new DeleteBeanWorker(_currentFemaleSocket, _currentPath, this);
+// TODO                    worker->execute(); see class SwingWorker
+            }
+            else if(e->getActionCommand() ==  ACTION_COMMAND_CUT)
+            {
+                    if ((parentIsSystem || itemIsSystem) && abortEditAboutSystem(_currentFemaleSocket->getConnectedSocket())) return;
 
-                case ACTION_COMMAND_ADD:
-                    if (parentIsSystem && abortEditAboutSystem(_currentfemaleSocket->getParent())) break;
-                    addPressed(_currentFemaleSocket, _currentPath);
-                    break;
-
-                case ACTION_COMMAND_EDIT:
-                    if (itemIsSystem && abortEditAboutSystem(_currentfemaleSocket->getConnectedSocket())) break;
-                    editPressed(_currentFemaleSocket, _currentPath);
-                    break;
-
-                case ACTION_COMMAND_REMOVE:
-                    if ((parentIsSystem || itemIsSystem) && abortEditAboutSystem(_currentfemaleSocket->getConnectedSocket())) break;
-                    DeleteBeanWorker worker = new DeleteBeanWorker(_currentFemaleSocket, _currentPath);
-                    worker.execute();
-                    break;
-
-                case ACTION_COMMAND_CUT:
-                    if ((parentIsSystem || itemIsSystem) && abortEditAboutSystem(_currentfemaleSocket->getConnectedSocket())) break;
-
-                    if (_currentfemaleSocket->isConnected()) {
-                        _treePane._femaleRootSocket.unregisterListeners();
-
+                    if (_currentFemaleSocket->isConnected()) {
+                        editor->_treePane->_femaleRootSocket->unregisterListeners();
+#if 0
                         runOnConditionalNGThreadOrGUIThreadEventually(
                                 _treePane._femaleRootSocket.getConditionalNG(),
                                 () -> {
                             Clipboard clipboard =
                                     InstanceManager.getDefault(LogixNG_Manager.class).getClipboard();
                             List<String> errors = new ArrayList<>();
-                            MaleSocket maleSocket = _currentfemaleSocket->getConnectedSocket();
-                            _currentfemaleSocket->disconnect();
+                            MaleSocket maleSocket = _currentFemaleSocket->getConnectedSocket();
+                            _currentFemaleSocket->disconnect();
                             if (!clipboard.add(maleSocket, errors)) {
                                 JOptionPane.showMessageDialog(this,
                                         String.join("<br>", errors),
@@ -1552,17 +1565,18 @@ class TEClipboardListener : public ClipboardEventListener
                                 _treePane.updateTree(_currentFemaleSocket, _currentPath.getPath());
                             });
                         });
+#endif
                    } else {
-                        log.error("_currentFemaleSocket is not connected");
+                        editor->log->error("_currentFemaleSocket is not connected");
                     }
-                    break;
+            }
+            else if(e->getActionCommand() ==  ACTION_COMMAND_COPY)
+            {
+                    if ((parentIsSystem || itemIsSystem) && abortEditAboutSystem(_currentFemaleSocket->getConnectedSocket())) return;
 
-                case ACTION_COMMAND_COPY:
-                    if ((parentIsSystem || itemIsSystem) && abortEditAboutSystem(_currentfemaleSocket->getConnectedSocket())) break;
-
-                    if (_currentfemaleSocket->isConnected()) {
-                        _treePane._femaleRootSocket.unregisterListeners();
-
+                    if (_currentFemaleSocket->isConnected()) {
+                        editor->_treePane->_femaleRootSocket->unregisterListeners();
+#if 0
                         runOnConditionalNGThreadOrGUIThreadEventually(
                                 _treePane._femaleRootSocket.getConditionalNG(),
                                 () -> {
@@ -1573,14 +1587,14 @@ class TEClipboardListener : public ClipboardEventListener
                             try {
                                 List<String> errors = new ArrayList<>();
                                 if (!clipboard.add(
-                                        (MaleSocket) _currentfemaleSocket->getConnectedSocket().getDeepCopy(systemNames, userNames),
+                                        (MaleSocket) _currentFemaleSocket->getConnectedSocket().getDeepCopy(systemNames, userNames),
                                         errors)) {
                                     JOptionPane.showMessageDialog(this,
                                             String.join("<br>", errors),
                                             Bundle.getMessage("TitleError"),
                                             JOptionPane.ERROR_MESSAGE);
                                 }
-                            } catch (JmriException ex) {
+                            } catch (JmriException* ex) {
                                 log.error("getDeepCopy thrown exception: {}", ex, ex);
                                 ThreadingUtil.runOnGUIEventually(() -> {
                                     JOptionPane.showMessageDialog(null,
@@ -1590,28 +1604,28 @@ class TEClipboardListener : public ClipboardEventListener
                                 });
                             }
                         });
-
-                        _treePane._femaleRootSocket.registerListeners();
+#endif
+                        editor->_treePane->_femaleRootSocket->registerListeners();
                     } else {
-                        log.error("_currentFemaleSocket is not connected");
+                        editor->log->error("_currentFemaleSocket is not connected");
                     }
-                    break;
+            }
+            else if(e->getActionCommand() == ACTION_COMMAND_PASTE)
+            {
+                    if (parentIsSystem && abortEditAboutSystem(_currentFemaleSocket->getParent())) return;
 
-                case ACTION_COMMAND_PASTE:
-                    if (parentIsSystem && abortEditAboutSystem(_currentfemaleSocket->getParent())) break;
-
-                    if (! _currentfemaleSocket->isConnected()) {
-                        _treePane._femaleRootSocket.unregisterListeners();
-
+                    if (! _currentFemaleSocket->isConnected()) {
+                       editor->_treePane->_femaleRootSocket->unregisterListeners();
+#if 0
                         runOnConditionalNGThreadOrGUIThreadEventually(
                                 _treePane._femaleRootSocket.getConditionalNG(),
                                 () -> {
                             Clipboard clipboard =
                                     InstanceManager.getDefault(LogixNG_Manager.class).getClipboard();
                             try {
-                                _currentfemaleSocket->connect(clipboard.fetchTopItem());
+                                _currentFemaleSocket->connect(clipboard.fetchTopItem());
                                 List<String> errors = new ArrayList<>();
-                                if (!_currentfemaleSocket->setParentForAllChildren(errors)) {
+                                if (!_currentFemaleSocket->setParentForAllChildren(errors)) {
                                     JOptionPane.showMessageDialog(this,
                                             String.join("<br>", errors),
                                             Bundle.getMessage("TitleError"),
@@ -1625,15 +1639,17 @@ class TEClipboardListener : public ClipboardEventListener
                                 _treePane.updateTree(_currentFemaleSocket, _currentPath.getPath());
                             });
                         });
+#endif
                     } else {
-                        log.error("_currentFemaleSocket is connected");
+                        editor->log->error("_currentFemaleSocket is connected");
                     }
-                    break;
+            }
+            else if(e->getActionCommand() ==  ACTION_COMMAND_ENABLE)
+            {
+                    if (itemIsSystem && abortEditAboutSystem(_currentFemaleSocket->getConnectedSocket())) return;
 
-                case ACTION_COMMAND_ENABLE:
-                    if (itemIsSystem && abortEditAboutSystem(_currentfemaleSocket->getConnectedSocket())) break;
-
-                    _currentfemaleSocket->getConnectedSocket().setEnabled(true);
+                    _currentFemaleSocket->getConnectedSocket()->setEnabled(true);
+#if 0
                     runOnConditionalNGThreadOrGUIThreadEventually(
                             _treePane._femaleRootSocket.getConditionalNG(),
                             () -> {
@@ -1643,12 +1659,14 @@ class TEClipboardListener : public ClipboardEventListener
                             _treePane._femaleRootSocket.registerListeners();
                         });
                     });
-                    break;
+#endif
+            }
+            else if(e->getActionCommand() ==  ACTION_COMMAND_DISABLE)
+            {
+                    if (itemIsSystem && abortEditAboutSystem(_currentFemaleSocket->getConnectedSocket())) return;
 
-                case ACTION_COMMAND_DISABLE:
-                    if (itemIsSystem && abortEditAboutSystem(_currentfemaleSocket->getConnectedSocket())) break;
-
-                    _currentfemaleSocket->getConnectedSocket().setEnabled(false);
+                    _currentFemaleSocket->getConnectedSocket()->setEnabled(false);
+#if 0
                     runOnConditionalNGThreadOrGUIThreadEventually(
                             _treePane._femaleRootSocket.getConditionalNG(),
                             () -> {
@@ -1658,50 +1676,62 @@ class TEClipboardListener : public ClipboardEventListener
                             _treePane._femaleRootSocket.registerListeners();
                         });
                     });
-                    break;
+#endif
+            }
+            else if(e->getActionCommand() ==  ACTION_COMMAND_LOCK)
+            {
+                    if (itemIsSystem && abortEditAboutSystem(_currentFemaleSocket->getConnectedSocket())) return;
 
-                case ACTION_COMMAND_LOCK:
-                    if (itemIsSystem && abortEditAboutSystem(_currentfemaleSocket->getConnectedSocket())) break;
-
-                    _currentfemaleSocket->forEntireTree((item) -> {
-                        if (item instanceof MaleSocket) {
-                            ((MaleSocket)item).setLocked(true);
-                        }
-                    });
-                    _treePane.updateTree(_currentFemaleSocket, _currentPath.getPath());
-                    break;
-
-                case ACTION_COMMAND_UNLOCK:
-                    if (itemIsSystem && abortEditAboutSystem(_currentfemaleSocket->getConnectedSocket())) break;
-
-                    _currentfemaleSocket->forEntireTree((item) -> {
-                        if (item instanceof MaleSocket) {
-                            ((MaleSocket)item).setLocked(false);
-                        }
-                    });
-                    _treePane.updateTree(_currentFemaleSocket, _currentPath.getPath());
-                    break;
-
-                case ACTION_COMMAND_LOCAL_VARIABLES:
-                    if (itemIsSystem && abortEditAboutSystem(_currentfemaleSocket->getConnectedSocket())) break;
-                    editLocalVariables(_currentFemaleSocket, _currentPath);
-                    break;
-
-                case ACTION_COMMAND_CHANGE_USERNAME:
-                    if (itemIsSystem && abortEditAboutSystem(_currentfemaleSocket->getConnectedSocket())) break;
-                    changeUsername(_currentFemaleSocket, _currentPath);
-                    break;
-
-                case ACTION_COMMAND_EXECUTE_EVALUATE:
-                    Base object = _currentfemaleSocket->getConnectedSocket();
-                    if (object == null) throw new NullPointerException("object is null");
-                    while (object instanceof MaleSocket) {
-                        object = ((MaleSocket)object).getObject();
+//                    _currentFemaleSocket->forEntireTree((item) -> {
+//                        if (item instanceof MaleSocket) {
+//                            ((MaleSocket)item).setLocked(true);
+//                        }
+//                    });
+                    for(int i=0; i < _currentFemaleSocket->getChildCount(); i++)
+                    {
+                     Base* item = _currentFemaleSocket->getChild(i);
+                     if (qobject_cast<AbstractMaleSocket*>(item->self()))
+                     {
+                          ((AbstractMaleSocket*)item->self())->setLocked(true);
+                     }
                     }
-                    SwingConfiguratorInterface swi =
-                            SwingTools.getSwingConfiguratorForClass(object.getClass());
-                    executeEvaluate(swi, _currentfemaleSocket->getConnectedSocket());
-                    break;
+                    editor->_treePane->updateTree(_currentFemaleSocket, _currentPath->getPath());
+            }
+            else if(e->getActionCommand() ==  ACTION_COMMAND_UNLOCK)
+            {
+                    if (itemIsSystem && abortEditAboutSystem(_currentFemaleSocket->getConnectedSocket())) return;
+
+                    //_currentFemaleSocket->forEntireTree((item) -> {
+                    for(int i=0; i < _currentFemaleSocket->getChildCount(); i++)
+                    {
+                     Base* item = _currentFemaleSocket->getChild(i);
+                        if (qobject_cast<AbstractMaleSocket*>(item->self())) {
+                            ((AbstractMaleSocket*)item->self())->setLocked(false);
+                        }
+                    }
+                    editor->_treePane->updateTree(_currentFemaleSocket, _currentPath->getPath());
+            }
+            else if(e->getActionCommand() == ACTION_COMMAND_LOCAL_VARIABLES)
+            {
+                    if (itemIsSystem && abortEditAboutSystem(_currentFemaleSocket->getConnectedSocket())) return;
+                    editor->editLocalVariables(_currentFemaleSocket, _currentPath);
+            }
+            else if(e->getActionCommand() ==  ACTION_COMMAND_CHANGE_USERNAME)
+            {
+                    if (itemIsSystem && abortEditAboutSystem(_currentFemaleSocket->getConnectedSocket())) return;
+                    editor->changeUsername(_currentFemaleSocket, _currentPath);
+            }
+            else if(e->getActionCommand() ==  ACTION_COMMAND_EXECUTE_EVALUATE)
+            {
+                    Base* object = _currentFemaleSocket->getConnectedSocket();
+                    if (object == nullptr) throw new NullPointerException("object is null");
+                    while (qobject_cast<AbstractMaleSocket*>(object->self())) {
+                        object = ((AbstractMaleSocket*)object->self())->getObject();
+                    }
+                    SwingConfiguratorInterface* swi =
+                            SwingTools::getSwingConfiguratorForClass((Class*)object);
+                    editor->executeEvaluate(swi, _currentFemaleSocket->getConnectedSocket());
+            }
 
 /*
                 case ACTION_COMMAND_EXPAND_TREE:
@@ -1717,22 +1747,21 @@ class TEClipboardListener : public ClipboardEventListener
                     tree.updateUI();
                     break;
 */
-                default:
+                else
                     // Check if the action is a female socket operation
-                    if (! checkFemaleSocketOperation(_currentFemaleSocket, parentIsSystem, itemIsSystem, e.getActionCommand())) {
-                        log.error("e.getActionCommand() returns unknown value {}", e.getActionCommand());
+                    if (! checkFemaleSocketOperation(_currentFemaleSocket, parentIsSystem, itemIsSystem, e->getActionCommand())) {
+                        editor->log->error(tr("e.getActionCommand() returns unknown value %1").arg(e->getActionCommand()));
                     }
-            }
         }
 
-        /*private*/ bool checkFemaleSocketOperation(
-                FemaleSocket femaleSocket,
+        /*private*/ bool TEPopupMenu::checkFemaleSocketOperation(
+                FemaleSocket* femaleSocket,
                 bool parentIsSystem,
                 bool itemIsSystem,
-                String command) {
+                QString command) {
 
-            for (FemaleSocketOperation oper : FemaleSocketOperation.values()) {
-                if (oper.name().equals(command)) {
+            for (FemaleSocketOperation::TYPES oper : FemaleSocketOperation::values()) {
+                if (FemaleSocketOperation::toString(oper) == (command)) {
                     if ((parentIsSystem || itemIsSystem) && abortEditAboutSystem(femaleSocket->getParent())) return true;
                     femaleSocket->doSocketOperation(oper);
                     return true;
@@ -1740,38 +1769,41 @@ class TEClipboardListener : public ClipboardEventListener
             }
             return false;
         }
-    }
+//    }
 
 
-    // This class is copied from BeanTableDataModel
-    /*private*/ class DeleteBeanWorker extends SwingWorker<Void, Void> {
+//    // This class is copied from BeanTableDataModel
+//    /*private*/ class DeleteBeanWorker //: public SwingWorker<void, void> {
+//        {
 
-        /*private*/ final FemaleSocket _currentFemaleSocket;
-        /*private*/ final TreePath _currentPath;
-        MaleSocket _maleSocket;
-
-        /*public*/  DeleteBeanWorker(FemaleSocket currentFemaleSocket, TreePath currentPath) {
+//        /*private*/ /*final*/ FemaleSocket* _currentFemaleSocket;
+//        /*private*/ /*final*/ TreePath* _currentPath;
+//        MaleSocket* _maleSocket;
+//        TreeEditor* treeEditor;
+//      public:
+        /*public*/  DeleteBeanWorker::DeleteBeanWorker(FemaleSocket* currentFemaleSocket, TreePath* currentPath, TEPopupMenu* treeEditor) {
             _currentFemaleSocket = currentFemaleSocket;
             _currentPath = currentPath;
-            _maleSocket = _currentfemaleSocket->getConnectedSocket();
+            this->treeEditor = treeEditor;
+            _maleSocket = _currentFemaleSocket->getConnectedSocket();
         }
 
-        /*public*/  int getDisplayDeleteMsg() {
-            return InstanceManager.getDefault(UserPreferencesManager.class).getMultipleChoiceOption(TreeEditor.class.getName(), "deleteInUse");
+        /*public*/  int DeleteBeanWorker::getDisplayDeleteMsg() {
+            return ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->getMultipleChoiceOption("TreeEditor", "deleteInUse");
         }
 
-        /*public*/  void setDisplayDeleteMsg(int boo) {
-            InstanceManager.getDefault(UserPreferencesManager.class).setMultipleChoiceOption(TreeEditor.class.getName(), "deleteInUse", boo);
+        /*public*/  void DeleteBeanWorker::setDisplayDeleteMsg(int boo) {
+            ((UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager"))->setMultipleChoiceOption("TreeEditor", "deleteInUse", boo);
         }
 
-        /*public*/  void doDelete() {
+        /*public*/  void DeleteBeanWorker::doDelete() {
             try {
-                _currentfemaleSocket->disconnect();
+                _currentFemaleSocket->_disconnect();
 
-                _maleSocket.getManager().deleteBean(_maleSocket, "DoDelete");
-            } catch (PropertyVetoException e) {
+                _maleSocket->getManager()->deleteBean(_maleSocket, "DoDelete");
+            } catch (PropertyVetoException* e) {
                 //At this stage the DoDelete shouldn't fail, as we have already done a can delete, which would trigger a veto
-                log.error(e.getMessage());
+                treeEditor->editor->log->error(e->getMessage());
             }
         }
 
@@ -1779,145 +1811,155 @@ class TEClipboardListener : public ClipboardEventListener
          * {@inheritDoc}
          */
         //@Override
-        /*public*/  Void doInBackground() {
-            _treePane._femaleRootSocket.unregisterListeners();
+        /*public*/  void DeleteBeanWorker::doInBackground() {
+            treeEditor->editor->_treePane->_femaleRootSocket->unregisterListeners();
 
-            StringBuilder message = new StringBuilder();
+            QString message;// = new StringBuilder();
             try {
-                _maleSocket.getManager().deleteBean(_maleSocket, "CanDelete");  // NOI18N
-            } catch (PropertyVetoException e) {
-                if (e.getPropertyChangeEvent().getPropertyName().equals("DoNotDelete")) { // NOI18N
-                    log.warn(e.getMessage());
-                    message.append(Bundle.getMessage(
-                            "VetoDeleteBean",
-                            ((NamedBean)_maleSocket.getObject()).getBeanType(),
-                            ((NamedBean)_maleSocket.getObject()).getDisplayName(
-                                    NamedBean.DisplayOptions.USERNAME_SYSTEMNAME),
-                            e.getMessage()));
-                    JOptionPane.showMessageDialog(null, message.toString(),
-                            Bundle.getMessage("WarningTitle"),
-                            JOptionPane.ERROR_MESSAGE);
-                    return null;
+                _maleSocket->getManager()->deleteBean(_maleSocket, "CanDelete");  // NOI18N
+            } catch (PropertyVetoException* e) {
+                if (e->getPropertyChangeEvent()->getPropertyName() == ("DoNotDelete")) { // NOI18N
+                    treeEditor->editor->log->warn(e->getMessage());
+                    message.append(tr(
+                            "%1 %2 Can not be deleted\n%3").arg(
+                            ((NamedBean*)_maleSocket->getObject())->getBeanType(),
+                            ((NamedBean*)_maleSocket->getObject())->getDisplayName(
+                                    NamedBean::DisplayOptions::USERNAME_SYSTEMNAME),
+                            e->getMessage()));
+                    JOptionPane::showMessageDialog(nullptr, message/*.toString()*/,
+                            tr("Warning"),
+                            JOptionPane::ERROR_MESSAGE);
+                    return ;
                 }
-                message.append(e.getMessage());
+                message.append(e->getMessage());
             }
-            List<String> listenerRefs = new ArrayList<>();
-            _maleSocket.getListenerRefsIncludingChildren(listenerRefs);
+            QList<QString> listenerRefs = QList<QString>();
+            _maleSocket->getListenerRefsIncludingChildren(listenerRefs);
             int count = listenerRefs.size();
-            log.debug("Delete with {}", count);
-            if (getDisplayDeleteMsg() == 0x02 && message.toString().isEmpty()) {
+            treeEditor->editor->log->debug(tr("Delete with %1").arg(count));
+            if (getDisplayDeleteMsg() == 0x02 && message/*.toString()*/.isEmpty()) {
                 doDelete();
             } else {
-                final JDialog dialog = new JDialog();
-                dialog.setTitle(Bundle.getMessage("WarningTitle"));
-                dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                /*final*/ JDialog* dialog = new JDialog();
+                dialog->setTitle(tr("Warning"));
+                dialog->setDefaultCloseOperation(JFrame::DISPOSE_ON_CLOSE);
                 JPanel* container = new JPanel();
-                container.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-                container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+                container->setBorder(BorderFactory::createEmptyBorder(10, 10, 10, 10));
+                container->setLayout(new QVBoxLayout());//container, BoxLayout.Y_AXIS));
                 if (count > 0) { // warn of listeners attached before delete
 
-                    String prompt = _maleSocket.getChildCount() > 0 ? "DeleteWithChildrenPrompt" : "DeletePrompt";
-                    JLabel question = new JLabel(Bundle.getMessage(
-                            prompt,
-                            ((NamedBean)_maleSocket.getObject())
-                                    .getDisplayName(NamedBean.DisplayOptions.USERNAME_SYSTEMNAME)));
-                    question.setAlignmentX(Component.CENTER_ALIGNMENT);
-                    container.add(question);
+                    QString prompt = _maleSocket->getChildCount() > 0 ?
+                       tr("Are you sure you want to delete %1 and its children?") : tr("Are you sure you want to delete %1?");
+                    JLabel* question = new JLabel(QString(
+                            prompt).arg(
+                            ((NamedBean*)_maleSocket->getObject())
+                                    ->getDisplayName(NamedBean::DisplayOptions::USERNAME_SYSTEMNAME)));
+                    question->setAlignmentX(/*Component.CENTER_ALIGNMENT*/Qt::AlignCenter);
+                    container->layout()->addWidget(question);
 
-                    ArrayList<String> tempListenerRefs = new ArrayList<>();
+                    QList<QString> tempListenerRefs = QList<QString>();
 
-                    tempListenerRefs.addAll(listenerRefs);
+                    //tempListenerRefs.addAll(listenerRefs);
+                    foreach(QString ref, listenerRefs)
+                      tempListenerRefs.append(ref);
 
                     if (tempListenerRefs.size() > 0) {
-                        ArrayList<String> listeners = new ArrayList<>();
+                        QList<QString> listeners = QList<QString>();
                         for (int i = 0; i < tempListenerRefs.size(); i++) {
-                            if (!listeners.contains(tempListenerRefs.get(i))) {
-                                listeners.add(tempListenerRefs.get(i));
+                            if (!listeners.contains(tempListenerRefs.at(i))) {
+                                listeners.append(tempListenerRefs.at(i));
                             }
                         }
 
                         message.append("<br>");
-                        message.append(Bundle.getMessage("ReminderInUse", count));
+                        message.append(tr("RemiIt is in use by %1 other objects including.nderInUse").arg(count));
                         message.append("<ul>");
                         for (int i = 0; i < listeners.size(); i++) {
                             message.append("<li>");
-                            message.append(listeners.get(i));
+                            message.append(listeners.at(i));
                             message.append("</li>");
                         }
                         message.append("</ul>");
 
-                        JEditorPane pane = new JEditorPane();
-                        pane.setContentType("text/html");
-                        pane.setText("<html>" + message.toString() + "</html>");
-                        pane.setEditable(false);
-                        JScrollPane jScrollPane = new JScrollPane(pane);
-                        container.add(jScrollPane);
+                        JEditorPane* pane = new JEditorPane();
+                        pane->setContentType("text/html");
+                        pane->setText("<html>" + message/*.toString()*/ + "</html>");
+                        pane->setEditable(false);
+                        QScrollArea* jScrollPane = new QScrollArea(/*pane*/);
+                        jScrollPane->setWidget(pane);
+                        container->layout()->addWidget(jScrollPane);
                     }
                 } else {
-                    String prompt = _maleSocket.getChildCount() > 0 ? "DeleteWithChildrenPrompt" : "DeletePrompt";
-                    String msg = MessageFormat.format(Bundle.getMessage(prompt),
-                            new Object[]{_maleSocket.getSystemName()});
-                    JLabel question = new JLabel(msg);
-                    question.setAlignmentX(Component.CENTER_ALIGNMENT);
-                    container.add(question);
+                    QString prompt = _maleSocket->getChildCount() > 0 ? tr("Are you sure you want to delete %1 and its children?").arg(_maleSocket->getSystemName())
+                                                                      : tr("DeleAre you sure you want to delete %1?tePrompt").arg(_maleSocket->getSystemName());
+//                    QString msg = MessageFormat.format(Bundle.getMessage(prompt),
+//                            new Object[]{_maleSocket.getSystemName()});
+                    JLabel* question = new JLabel(prompt);
+                    question->setAlignmentX(/*Component.CENTER_ALIGNMENT*/Qt::AlignCenter);
+                    container->layout()->addWidget(question);
                 }
 
-                final JCheckBox remember = new JCheckBox(Bundle.getMessage("MessageRememberSetting"));
-                remember.setFont(remember.getFont().deriveFont(10f));
-                remember.setAlignmentX(Component.CENTER_ALIGNMENT);
+                /*final*/ JCheckBox* remember = new JCheckBox(tr("Remember this setting for next time?"));
+                QFont f = remember->font();
+                remember->setFont(/*remember.getFont().deriveFont(10f)*/f);
+//                remember->setAlignmentX(/*Component.CENTER_ALIGNMENT*/Qt::AlignCenter);
 
                 JButton* yesButton = new JButton(tr("Yes"));
                 JButton* noButton = new JButton(tr("No"));
-                JPanel* button = new JPanel();
-                button.setAlignmentX(Component.CENTER_ALIGNMENT);
-                button.add(yesButton);
-                button.add(noButton);
-                container.add(button);
+                JPanel* button = new JPanel(new FlowLayout());
+//                button->setAlignmentX(/*Component.CENTER_ALIGNMENT*/Qt::AlignCenter);
+                button->layout()->addWidget(yesButton);
+                button->layout()->addWidget(noButton);
+                container->layout()->addWidget(button);
 
-                noButton.addActionListener((ActionEvent e) -> {
+                connect(noButton, &JButton::clicked, [=] {
                     //there is no point in remembering this the user will never be
                     //able to delete a bean!
-                    dialog.dispose();
+                    dialog->dispose();
                 });
 
-                yesButton.addActionListener((ActionEvent e) -> {
-                    if (remember.isSelected()) {
+                connect(yesButton, &JButton::clicked, [=]  {
+                    if (remember->isSelected()) {
                         setDisplayDeleteMsg(0x02);
                     }
                     doDelete();
-                    dialog.dispose();
+                    dialog->dispose();
                 });
-                container.add(remember);
-                container.setAlignmentX(Component.CENTER_ALIGNMENT);
-                container.setAlignmentY(Component.CENTER_ALIGNMENT);
-                dialog.getContentPane().add(container);
-                dialog.pack();
-                dialog.setLocation(
-                        (Toolkit.getDefaultToolkit().getScreenSize().width) / 2 - dialog.getWidth() / 2,
-                        (Toolkit.getDefaultToolkit().getScreenSize().height) / 2 - dialog.getHeight() / 2);
-                dialog.setModal(true);
-                dialog.setVisible(true);
+                container->layout()->addWidget(remember);
+//                container.setAlignmentX(Component.CENTER_ALIGNMENT);
+//                container.setAlignmentY(Component.CENTER_ALIGNMENT);
+                dialog->getContentPane()->layout()->addWidget(container);
+                dialog->pack();
+//  TODO:              dialog->setLocation(
+//                        (Toolkit.getDefaultToolkit().getScreenSize().width) / 2 - dialog.getWidth() / 2,
+//                        (Toolkit.getDefaultToolkit().getScreenSize().height) / 2 - dialog.getHeight() / 2);
+                dialog->setModal(true);
+                dialog->setVisible(true);
             }
-            if (_treePane._femaleRootSocket.isActive()) {
-                _treePane._femaleRootSocket.registerListeners();
+            if (treeEditor->editor->_treePane->_femaleRootSocket->isActive()) {
+                treeEditor->editor->_treePane->_femaleRootSocket->registerListeners();
             }
-            return null;
+            return ;
         }
 
         /**
          * {@inheritDoc} Minimal implementation to catch and log errors
          */
         //@Override
-        /*protected*/ void done() {
+        /*protected*/ void DeleteBeanWorker::done() {
             try {
-                get();  // called to get errors
-            } catch (InterruptedException | java.util.concurrent.ExecutionException e) {
-                log.error("Exception while deleting bean", e);
+// TODO:               get();  // called to get errors (see SwingWorker!)
             }
-            _treePane.updateTree(_currentFemaleSocket, _currentPath.getPath());
+            catch (InterruptedException * e) {
+                treeEditor->editor->log->error("Exception while deleting bean", e);
+            }
+//           catch ( ExecutionException* e) {
+//               treeEditor->log->error("Exception while deleting bean", e);
+//           }
+           treeEditor->editor-> _treePane->updateTree(_currentFemaleSocket, _currentPath->getPath());
         }
-    }
+//    };
 
 
 
-    /*private*/ /*final*/ /*static*/ Logger TreeEditor::log =LoggerFactory::getLogger("TreeEditor");
+    /*private*/ /*final*/ /*static*/ Logger* TreeEditor::log =LoggerFactory::getLogger("TreeEditor");

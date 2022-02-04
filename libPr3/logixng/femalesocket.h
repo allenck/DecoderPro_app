@@ -20,12 +20,12 @@
      * @param socket the socket to connect
      * @throws SocketAlreadyConnectedException if the socket is already connected
      */
-    /*public*/ virtual void _connect(MaleSocket* socket) throw (SocketAlreadyConnectedException)=0;
+  /*public*/ virtual void _connect(MaleSocket* socket) /*throw (SocketAlreadyConnectedException)*/ {}
 
     /**
      * Disconnect the current connected male socket from this female socket.
      */
-    /*public*/ virtual void _disconnect()=0;
+  /*public*/ virtual void _disconnect() {}
 
     /**
      * Can a connected socket be disconnected?
@@ -39,13 +39,13 @@
      * Get the connected socket.
      * @return the male socket or null if not connected
      */
-    /*public*/ virtual MaleSocket* getConnectedSocket()=0;
+  /*public*/ virtual MaleSocket* getConnectedSocket() {return nullptr;}
 
     /**
      * Is a male socket connected to this female socket?
      * @return true if connected
      */
-    /*public*/ virtual bool isConnected()=0;
+  /*public*/ virtual bool isConnected(){return false;}
 
     /**
      * Is a particular male socket compatible with this female socket?
@@ -78,7 +78,7 @@
      *                              false otherwise
      * @return true if the name is valid, false otherwise
      */
-    /*public*/ virtual bool validateName(QString name, bool ignoreDuplicateErrors)=0;
+  /*public*/ virtual bool validateName(QString name, bool ignoreDuplicateErrors){}
 
     /**
      * Set the name of this socket.
@@ -102,14 +102,14 @@
      * @param ignoreDuplicateErrors true if duplicate names should be ignored,
      *                              false otherwise
      */
-    /*public*/ virtual void setName(QString name, bool ignoreDuplicateErrors)=0;
+  /*public*/ virtual void setName(QString name, bool ignoreDuplicateErrors) {}
 
     /**
      * Get the name of this socket.
      * @return the name
      */
     //@CheckForNull
-    /*public*/ virtual QString getName()=0;
+  /*public*/ virtual QString getName() {return "";}
 
     /**
      * Is the operation allowed on this socket?
@@ -150,7 +150,7 @@
      * has never listeners enabled.
      * @param enable true if listeners should be enabled, false otherwise
      */
-    /*public*/ virtual void setEnableListeners(bool enable)=0;
+  /*public*/ virtual void setEnableListeners(bool enable) {}
 
     /**
      * Gets whenever listeners are enabled or not.
@@ -158,7 +158,7 @@
      * has never listeners enabled.
      * @return true if listeners should be enabled, false otherwise
      */
-    /*public*/ virtual bool getEnableListeners()=0;
+  /*public*/ virtual bool getEnableListeners(){return false;}
 
     /**
      * Am I an ancestor to this maleSocket?

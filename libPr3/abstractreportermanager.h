@@ -13,7 +13,7 @@ class LIBPR3SHARED_EXPORT AbstractReporterManager :  public AbstractManager, pub
 public:
     explicit AbstractReporterManager(SystemConnectionMemo *memo, QObject *parent = 0);
     int getXMLOrder()const override;
-    QChar typeLetter()  override;
+    QChar typeLetter() const override;
     Reporter* provideReporter(QString sName)override;
     Reporter* getReporter(QString name) override;
     /*public*/ QString getBeanTypeHandled(bool plural) const override;

@@ -5,7 +5,7 @@
 #include "tokentype.h"
 #include <QObject>
 
-class ExpressionNodeBooleanOperator : public ExpressionNode
+class ExpressionNodeBooleanOperator : public QObject, public ExpressionNode
 {
   Q_OBJECT
  public:

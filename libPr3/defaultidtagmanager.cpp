@@ -94,7 +94,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 /*protected*/ void DefaultIdTagManager::registerSelf() {}
 
 //@Override
-/*public*/ QChar DefaultIdTagManager::typeLetter()  { return 'D'; }
+/*public*/ QChar DefaultIdTagManager::typeLetter() const  { return 'D'; }
 
 //@Override
 /*public*/ DefaultIdTag* DefaultIdTagManager::provide(QString name)  {
@@ -102,7 +102,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 }
 
 //@Override
-/*public*/ QString DefaultIdTagManager::getSystemPrefix() { return "I"; }
+/*public*/ QString DefaultIdTagManager::getSystemPrefix() const{ return "I"; }
 
 //@Override
 /*public*/ DefaultIdTag* DefaultIdTagManager::provideIdTag(QString name) {

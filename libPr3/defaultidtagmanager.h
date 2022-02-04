@@ -23,8 +23,8 @@ public:
     /*public*/ int getXMLOrder()const override;
     /*public*/ bool isInitialised()  override;
     /*public*/ void init()   override;
-    /*public*/ QChar typeLetter()  override ;
-    /*public*/ QString getSystemPrefix() override;
+    /*public*/ QChar typeLetter() const override ;
+    /*public*/ QString getSystemPrefix() const override;
     /*public*/ DefaultIdTag *provideIdTag(QString name)override;
     /*public*/ DefaultIdTag *getIdTag(QString name)override;
     /*public*/ NamedBean *getBySystemName(QString name) override;

@@ -13,6 +13,9 @@
 #include "jfilechooser.h"
 #include "borderfactory.h"
 #include "abstractlogixngtableaction.h"
+#include "logixngtableaction.h"
+#include <QScrollArea>
+
 /**
  * Swing action to create and register a LogixNG Table.
  * <p>
@@ -958,48 +961,49 @@
 //            }
 //        });
 
-        Container contentPane = condBrowserFrame.getContentPane();
-        contentPane.setLayout(new BorderLayout());
+        QWidget* contentPane = condBrowserFrame->getContentPane();
+        contentPane->setLayout(new QVBoxLayout());//BorderLayout());
 
         // bean header information
-        JPanel topPanel = new JPanel();
-        String tStr = tr("BrowserLogixNG") + " " + _curNamedBean.getSystemName() + "    " // NOI18N
-                + _curNamedBean.getUserName() + "    "
+        JPanel* topPanel = new JPanel(new FlowLayout());
+        QString tStr = tr("LogixNG:") + " " + _curNamedBean->getSystemName() + "    " // NOI18N
+                + _curNamedBean->getUserName() + "    "
                 + (isEnabled(_curNamedBean)
-                        ? tr("BrowserEnabled") // NOI18N
-                        : tr("BrowserDisabled"));  // NOI18N
-        topPanel.add(new JLabel(tStr));
-        contentPane.add(topPanel, BorderLayout.NORTH);
+                        ? tr("(Enabled)") // NOI18N
+                        : tr("(Disabled)"));  // NOI18N
+        topPanel->layout()->addWidget(new JLabel(tStr));
+        ((QVBoxLayout*)contentPane->layout())->addWidget(topPanel,0, Qt::AlignTop); //BorderLayout.NORTH);
 
         // Build the conditionalNGs listing
-        _textContent = new JTextArea(this.getBeanText(_curNamedBean));
+        _textContent = new JTextArea(this->getBeanText(_curNamedBean));
         if (browseMonoSpace()) {
-            _textContent.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+            _textContent->setFont(QFont("Monospace",12));//Font.MONOSPACED, Font.PLAIN, 12));
         }
-        JScrollPane scrollPane = new JScrollPane(_textContent);
-        contentPane.add(scrollPane);
+        QScrollArea* scrollPane = new QScrollArea(/*_textContent*/);
+        scrollPane->setWidget(_textContent);
+        ((QVBoxLayout*)contentPane->layout())->addWidget(scrollPane, 1, Qt::AlignCenter);
 
-        JPanel bottomPanel = new JPanel();
-        bottomPanel.setLayout(new BorderLayout());
-        JButton helpBrowse = new JButton(tr("MenuHelp"));   // NOI18N
-        bottomPanel.add(helpBrowse, BorderLayout.WEST);
-        helpBrowse.addActionListener((ActionEvent e) -> {
+        JPanel* bottomPanel = new JPanel();
+        bottomPanel->setLayout(new QHBoxLayout());//BorderLayout());
+        JButton* helpBrowse = new JButton(tr("Help"));   // NOI18N
+        ((QHBoxLayout*)bottomPanel->layout())->addWidget(helpBrowse, 0, Qt::AlignLeft);//BorderLayout.WEST);
+        connect(helpBrowse, &JButton::clicked, [=] {
             JOptionPane::showMessageDialog(condBrowserFrame,
                     tr("LogixNG_Browse_HelpText"),   // NOI18N
                     tr("BrowserHelpTitle"),  // NOI18N
                     JOptionPane::INFORMATION_MESSAGE);
         });
 
-        JPanel settingsPanel = getSettingsPanel();
-        bottomPanel.add(settingsPanel, BorderLayout.CENTER);
+        JPanel* settingsPanel = getSettingsPanel();
+        ((QHBoxLayout*)bottomPanel->layout())->addWidget(settingsPanel, 0, Qt::AlignCenter);//BorderLayout.CENTER);
 
-        JButton saveBrowse = new JButton(tr("BrowserSaveButton"));   // NOI18N
-        saveBrowse.setToolTipText(tr("BrowserSaveButtonHint"));      // NOI18N
-        bottomPanel.add(saveBrowse, BorderLayout.EAST);
-        saveBrowse.addActionListener((ActionEvent e) -> {
+        JButton* saveBrowse = new JButton(tr("Save to Text File"));   // NOI18N
+        saveBrowse->setToolTip(tr("Save the browser content to a text file"));      // NOI18N
+        ((QHBoxLayout*)bottomPanel->layout())->addWidget(saveBrowse, 0, Qt::AlignRight);//BorderLayout.EAST);
+        connect(saveBrowse, &JButton::clicked, [=]{
             saveBrowserPressed();
         });
-        contentPane.add(bottomPanel, BorderLayout.SOUTH);
+        ((QVBoxLayout*)contentPane->layout())->addWidget(bottomPanel, 0, Qt::AlignBottom);//BorderLayout.SOUTH);
 
         condBrowserFrame->pack();
         condBrowserFrame->setVisible(true);

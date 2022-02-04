@@ -77,7 +77,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
         return retval;
     }
 
-    /*public*/  AbstractManager/*<E>*/* AbstractProxyManager::getInternalManager()    {
+    /*public*/  AbstractManager/*<E>*/* AbstractProxyManager::getInternalManager() const    {
         initInternal();
         return internalManager;
     }
@@ -87,7 +87,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
      */
     //@Override
     //@Nonnull
-    /*public*/  AbstractManager/*<E>*/* AbstractProxyManager::getDefaultManager()
+    /*public*/  AbstractManager/*<E>*/* AbstractProxyManager::getDefaultManager() const
     {
         return defaultManager != nullptr ? defaultManager : getInternalManager();
     }
@@ -137,7 +137,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
         log->debug(QString("added manager %1").arg(QString(m->metaObject()->className())));
     }
 
-    /*protected*/ AbstractManager *AbstractProxyManager::initInternal()       {
+    /*protected*/ AbstractManager *AbstractProxyManager::initInternal() const       {
         if (internalManager == nullptr) {
             log->debug(QString("create internal manager when first requested")); // NOI18N
             internalManager = makeInternalManager();
@@ -577,7 +577,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
      */
     //@Override
     //@Nonnull
-    /*public*/  QString AbstractProxyManager::getSystemPrefix()   {
+    /*public*/  QString AbstractProxyManager::getSystemPrefix() const   {
         try {
             return getDefaultManager()->getSystemPrefix();
         } catch (IndexOutOfBoundsException* ie) {
@@ -589,7 +589,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
      * @return The type letter for for the primary implementation
      */
     //@Override
-    /*public*/  QChar AbstractProxyManager::typeLetter()   {
+    /*public*/  QChar AbstractProxyManager::typeLetter() const  {
         return getDefaultManager()->typeLetter();
     }
 

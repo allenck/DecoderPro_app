@@ -1,4 +1,4 @@
-#ifndef TABLEEDITOR_H
+﻿#ifndef TABLEEDITOR_H
 #define TABLEEDITOR_H
 
 #include "abstractlogixngeditor.h"
@@ -16,11 +16,13 @@
 #include "tablemodel.h"
 #include "jbutton.h"
 #include "jlist.h"
+#include "abstractnamedtable.h"
 
 class TableTableModel;
-class TableEditor : public AbstractLogixNGEditor
+class TableEditor : public QObject, public AbstractLogixNGEditor
 {
   Q_OBJECT
+  Q_INTERFACES(AbstractLogixNGEditor)
  public:
   TableEditor(BeanTableDataModel/*<NamedTable>*/* m, QString sName, QObject* parent = nullptr);
   /*public*/ void bringToFront()override;
@@ -29,7 +31,7 @@ class TableEditor : public AbstractLogixNGEditor
 
  private:
   /*private*/ NamedTableManager* _tableManager = nullptr;
-  /*private*/ NamedTable* _curTable = nullptr;
+  /*private*/ AbstractNamedTable* _curTable = nullptr;
   /*private*/ bool _inEditMode = false;
   /*private*/ bool _showReminder = false;
   /*private*/ /*final*/ SymbolTable* symbolTable = new DefaultSymbolTable();
@@ -93,6 +95,10 @@ class TableEditor : public AbstractLogixNGEditor
   /*private*/ void okPressed(JActionEvent* e=0);
  protected:
   QString getClassName();
+
+  friend class TEListSelectionListener;
+  friend class TableTableModel;
+  friend class RowHeaderListModel;
 };
 
 /*public*/ /*final*/ class TableTableModel : public AbstractTableModel {
@@ -115,11 +121,15 @@ class TableEditor : public AbstractLogixNGEditor
 
 /*private*/ class RowHeaderListModel : public AbstractListModel/*<Object>*/ {
   Q_OBJECT
-  TableEditor* editor;
+TableEditor* editor;
  public:
   RowHeaderListModel(TableEditor* editor) {this->editor = editor;}
   /*public*/ int getSize() const override;
   /*public*/ QVariant getElementAt(int index)const override;
+  /*public*/ int rowCount(const QModelIndex &parent) const {return getSize();}
+  /*public*/ QVariant data(const QModelIndex &index, int role) const {
+   //return getElementAt(index.row());
+  }
 
 };
 
@@ -130,6 +140,40 @@ class TableEditor : public AbstractLogixNGEditor
   RowHeaderRenderer(JTable *table);
   /*public*/ QWidget* getListCellRendererComponent(JList* list, QVariant value,
           int index, bool isSelected, bool cellHasFocus) ;
+};
+
+class TEListSelectionListener : public QObject, public ListSelectionListener
+{
+  Q_OBJECT
+ TableEditor* editor;
+ JTable* _tableTable;
+ JLabel* cellRefByIndexLabel;  // NOI18N
+ JTextField* cellRefByIndex;  // NOI18N
+ JButton* cellRefByIndexButton;
+ JButton* cellRefByHeaderButton;
+ JTextField* cellRefByHeader;
+ JLabel* cellRefByHeaderLabel;
+ public:
+ TEListSelectionListener(JTable* _tableTable,
+                         JLabel* cellRefByIndexLabel,
+                         JTextField* cellRefByIndex,
+                         JButton* cellRefByIndexButton,
+                         JButton* cellRefByHeaderButton,
+                         JLabel* cellRefByHeaderLabel,
+                         JTextField* cellRefByHeader,
+                         TableEditor* editor)
+ {
+  this->_tableTable = _tableTable;
+  this->cellRefByIndexLabel = cellRefByIndexLabel;
+  this->cellRefByIndex = cellRefByIndex;
+  this->cellRefByIndexButton = cellRefByIndexButton;
+  this->cellRefByHeaderButton =cellRefByHeaderButton;
+  this->cellRefByHeaderLabel = cellRefByHeaderLabel;
+  this->cellRefByHeader = cellRefByHeader;
+  this->editor = editor;
+ }
+ /*public*/ void valueChanged(ListSelectionEvent* /*e*/);
+ QObject* self() override{return (QObject*)this;}
 };
 
 #endif // TABLEEDITOR_H

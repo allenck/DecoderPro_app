@@ -16,8 +16,8 @@ class LIBPR3SHARED_EXPORT AbstractProxyManager :   public VetoableChangeSupport,
     AbstractProxyManager(QObject* parent = nullptr );
     /*public*/  QList<AbstractManager/*<E>*/*> getManagerList() override;
     /*public*/  QList<AbstractManager/*<E>*/*> getDisplayOrderManagerList() override;
-    /*public*/  AbstractManager *getInternalManager(); //not override!
-    /*public*/  AbstractManager *getDefaultManager() override;
+    /*public*/  AbstractManager *getInternalManager() const; //not override!
+    /*public*/  AbstractManager *getDefaultManager() const override;
     /*public*/  void addManager(/*@Nonnull*/ AbstractManager *m) override;
     /*public*/  /*E*/NamedBean* getNamedBean(/*@Nonnull*/ QString name) override;
     /*public*/  /*E*/NamedBean* getBySystemName(/*@Nonnull*/ QString systemName) override;
@@ -42,8 +42,8 @@ class LIBPR3SHARED_EXPORT AbstractProxyManager :   public VetoableChangeSupport,
     /*public*/  void addVetoableChangeListener(QString propertyName, VetoableChangeListener* listener) override;
     /*public*/  void removeVetoableChangeListener(QString propertyName, VetoableChangeListener* listener)override;
     /*public*/  SystemConnectionMemo* getMemo()override;
-    /*public*/  QString getSystemPrefix() override;
-    /*public*/  QChar typeLetter()  override;
+    /*public*/  QString getSystemPrefix() const override;
+    /*public*/  QChar typeLetter() const override;
     /*public*/  QString makeSystemName(/*@Nonnull*/ QString s) override;
     /*public*/  int getObjectCount()override ;
     QT_DEPRECATED/*public*/  QStringList getSystemNameList()  override;
@@ -76,7 +76,7 @@ private:
      */
     /*private*/ /*final*/ QList<QString> vetoablePropertyNames = QList<QString>();
     /*private*/ /*final*/ QSet<AbstractManager/*<E>*/*> mgrs = QSet<AbstractManager*>();//new TreeSet<>((Manager/*<E>*/* e1, Manager/*<E>*/* e2) -> e1.getSystemPrefix().compareTo(e2.getSystemPrefix()));
-    /*private*/ AbstractManager/*<E>*/* internalManager = nullptr;
+    /*private*/ mutable AbstractManager/*<E>*/* internalManager = nullptr;
     QString createSystemName(QString curAddress, QString prefix, QString beanType) /*throws JmriException */;
     virtual /*private*/ Manager/*<E>*/* createSystemManager(/*@Nonnull*/ QString systemPrefix);
     /*private*/ QSet<NamedBean*>* namedBeanSet = nullptr;
@@ -85,9 +85,9 @@ private:
 protected:
     /*protected*/ /*final*/ QMap<QString, bool> silencedProperties = QMap<QString, bool>();
     /*protected*/ /*final*/ QSet<QString> silenceableProperties = QSet<QString>();
-    /*protected*/ AbstractManager/*<E>*/* initInternal(); // no override!
+    /*protected*/ AbstractManager/*<E>*/* initInternal() const; // no override!
     /*protected*/ AbstractManager/*<E>*/* defaultManager = nullptr;
-    /*abstract*/virtual /*protected*/ AbstractManager/*<E>*/* makeInternalManager()  {return nullptr;}
+    /*abstract*/virtual /*protected*/ AbstractManager/*<E>*/* makeInternalManager()  const {return nullptr;}
     /*protected*/ AbstractManager *getManager(/*@Nonnull*/ QString systemName) ; // not override!
     /*protected*/ AbstractManager/*<E>*/* getManagerOrDefault(/*@Nonnull*/ QString systemName);
     virtual /*protected*/ AbstractManager/*<E>*/* createSystemManager(/*@Nonnull*/ SystemConnectionMemo* memo) ;

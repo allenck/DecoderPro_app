@@ -23,9 +23,9 @@ class MutableInt;
      * @param socketType the socket type
      * @return a new Module or null if unable to create
      */
-    /*public*/ virtual Module createModule(QString systemName, QString userName,
+    /*public*/ virtual Module* createModule(QString systemName, QString userName,
             FemaleSocketManager::SocketType* socketType)
-            throw (IllegalArgumentException)=0;
+            /*throw (IllegalArgumentException)*/=0;
 
     /**
      * For use with User GUI, to allow the auto generation of systemNames, where
@@ -36,7 +36,7 @@ class MutableInt;
      * @return a new Module or null if unable to create
      */
     /*public*/ virtual Module* createModule(QString userName, FemaleSocketManager::SocketType* socketType)
-            throw (IllegalArgumentException)=0;
+            /*throw (IllegalArgumentException)*/=0;
 
     /**
      * Locate via user name, then system name if needed. Does not create a new

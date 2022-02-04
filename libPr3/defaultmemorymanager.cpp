@@ -16,7 +16,7 @@ DefaultMemoryManager::DefaultMemoryManager(QObject *parent) :
  */
 //public class DefaultMemoryManager extends AbstractMemoryManager {
 
-/*public*/ QString DefaultMemoryManager::getSystemPrefix() { return "I"; }
+/*public*/ QString DefaultMemoryManager::getSystemPrefix()const { return "I"; }
 
 /*protected*/ Memory* DefaultMemoryManager::createNewMemory(QString systemName, QString userName){
     // we've decided to enforce that memory system

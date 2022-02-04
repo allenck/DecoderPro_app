@@ -262,11 +262,11 @@ return (settingRouteColor == QColor() ? false : true);
 /*public*/ SystemConnectionMemo* EntryExitPairs::getMemo() {
     return memo;
 }
-/*public*/ QString EntryExitPairs::getSystemPrefix(){
+/*public*/ QString EntryExitPairs::getSystemPrefix() const{
  return memo->getSystemPrefix();
 }
 
-/*public*/ QChar EntryExitPairs::typeLetter() {
+/*public*/ QChar EntryExitPairs::typeLetter() const {
     throw new  UnsupportedOperationException("Not supported yet.");
 }
 

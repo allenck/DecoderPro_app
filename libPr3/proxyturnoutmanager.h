@@ -148,7 +148,7 @@ private:
  /*private*/ QString defaultThrownSpeed = "Restricted";
 
 protected:
- virtual /*protected*/ AbstractManager* makeInternalManager()  override;
+ virtual /*protected*/ AbstractManager* makeInternalManager()  const override;
  /*protected*/ Turnout* makeBean(AbstractManager/*<Turnout>*/* manager, QString systemName, QString userName) /*throws IllegalArgumentException*/ override;
  ///*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
 

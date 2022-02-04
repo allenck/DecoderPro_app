@@ -9,15 +9,15 @@
 
 class Category;
 class ConditionalNG_Entry;
-class DefaultLogixNG : public AbstractNamedBean, public LogixNG
+class DefaultLogixNG : /*public AbstractNamedBean,*/ public LogixNG
 {
  Q_OBJECT
  Q_INTERFACES(LogixNG)
  public:
   explicit DefaultLogixNG(QString sys, QString user, QObject *parent = nullptr);
   ~DefaultLogixNG() {}
-  DefaultLogixNG(const DefaultLogixNG&) : AbstractNamedBean() {}
-  /*public*/ Base* getParent() override;
+  DefaultLogixNG(const DefaultLogixNG&) : LogixNG() {}
+  /*public*/ Base* getParent()const override;
   /*public*/ void setParent(Base* parent) override;
   /*public*/ QString getBeanType() override;
   /*public*/ void setState(int s) /*throw (JmriException)*/ override;
@@ -35,6 +35,8 @@ class DefaultLogixNG : public AbstractNamedBean, public LogixNG
   /*public*/ void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl);
   /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl);
   /*public*/ void getListenerRefsIncludingChildren(QList<QString> list)override;
+  /*public*/ QString getSystemName() const override {return AbstractNamedBean::getSystemName();}
+  /*public*/ QString getUserName() const override {return AbstractNamedBean::getUserName();}
 
  private:
   /*private*/ /*final*/ LogixNG_Manager* _manager = (LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager");
@@ -71,5 +73,5 @@ public:
   friend class DefaultLogixNG;
 };
 
-Q_DECLARE_METATYPE(DefaultLogixNG)
+//Q_DECLARE_METATYPE(DefaultLogixNG)
 #endif // DEFAULTLOGIXNG_H

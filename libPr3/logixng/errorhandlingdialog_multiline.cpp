@@ -70,7 +70,7 @@
 //        abortButton.setToolTipText("CancelLogixButtonHint");      // NOI18N
 
         // Continue
-        JButton* continueButton = new JButton(t("Continue"));    // NOI18N
+        JButton* continueButton = new JButton(tr("Continue"));    // NOI18N
         panel5->layout()->addWidget(continueButton);
         //continueButton.addActionListener((JActionEvent* e) -> {
         connect(continueButton, &JButton::clicked, [=](){

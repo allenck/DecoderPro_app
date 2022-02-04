@@ -37,5 +37,5 @@
     /*public*/ virtual bool getTriggerOnChange()=0;
 
 };
-
+Q_DECLARE_INTERFACE(AnalogExpression, "AnalogExpression")
 #endif // ANALOGEXPRESSION_H

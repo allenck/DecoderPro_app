@@ -15,7 +15,7 @@ class DefaultVariableLightManager : public AbstractManager, public VariableLight
   /*public*/ DefaultVariableLightManager* init();
   /*public*/ void dispose() override;
   /*public*/ int getXMLOrder()const override;
-  /*public*/ QChar typeLetter() override;
+  /*public*/ QChar typeLetter() const override;
   /*public*/ QString getBeanTypeHandled(bool plural)const override;
   /*public*/ /*Class<VariableLight>*/ QString getNamedBeanClass()const override;
   /*public*/ void Register(/*@Nonnull*/ NamedBean* s) override;

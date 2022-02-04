@@ -20,7 +20,7 @@
     }
 
     //@Override
-    /*public*/ QString JMRIClientLightManager::getSystemPrefix(){
+    /*public*/ QString JMRIClientLightManager::getSystemPrefix() const{
         return prefix;
     }
 

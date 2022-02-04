@@ -74,13 +74,13 @@
      * Set the default error handling type.
      * @param type the error handling type
      */
-    /*public*/ virtual void setErrorHandlingType(MaleSocket::ErrorHandlingType::TYPES type)=0;
+    /*public*/ virtual void setErrorHandlingType(ErrorHandlingType::TYPES type)=0;
 
     /**
      * Get the default error handling type.
      * @return the error handling type
      */
-    /*public*/ virtual MaleSocket::ErrorHandlingType::TYPES getErrorHandlingType()=0;
+    /*public*/ virtual ErrorHandlingType::TYPES getErrorHandlingType()=0;
 
     /**
      * Set whether row in tree editor should be highlighted or not.

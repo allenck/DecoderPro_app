@@ -15,7 +15,7 @@ public:
     DefaultRouteManager(const DefaultRouteManager& other) : AbstractRouteManager(other.memo) {}
     /*public*/ int getXMLOrder() const override;
 //    /*public*/ QString getSystemPrefix() const override;
-    /*public*/ QChar typeLetter()  override;
+    /*public*/ QChar typeLetter() const override;
 
     /**
      * Method to provide a  Route

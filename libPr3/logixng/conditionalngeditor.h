@@ -38,7 +38,7 @@ class ConditionalNGEditor : public TreeEditor
      Q_OBJECT
      Q_INTERFACES(EventListener)
  public:
-    /*public*/  void conditionalNGEventOccurred();
+  /*public*/  void conditionalNGEventOccurred() {}
 };
 class CNGEFemaleSocketListener : public QObject, public FemaleSocketListener
 {
@@ -52,6 +52,7 @@ class CNGEFemaleSocketListener : public QObject, public FemaleSocketListener
   /*public*/  void disconnected(FemaleSocket* socket)override {
       throw new UnsupportedOperationException("Not supported");
   }
+  QObject* self() override{return (QObject*)this;}
 };
 
 #endif // CONDITIONALNGEDITOR_H

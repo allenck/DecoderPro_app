@@ -7,33 +7,36 @@
 #include <QMetaEnum>
 class Stack;
 class VariableData;
-class Symbol;
+/*public*/ /*interface*/class Symbol  : public QObject{
+  Q_OBJECT
+ public:
+  Symbol(QObject* parent = nullptr) : QObject(parent) {}
+    /**
+     * The name of the symbol
+     * @return the name
+     */
+    /*public*/ virtual QString getName()=0;
+
+    /**
+     * The index on the stack for this symbol
+     * @return the index
+     */
+    /*public*/ virtual int getIndex()=0;
+
+};
 /**
  * A symbol table
  *
  * @author Daniel Bergqvist 2020
  */
-/*public*/ /*interface*/ class SymbolTable {
-
+/*public*/ /*interface*/ class SymbolTable  : public QObject{
+ Q_OBJECT
  public:
+  SymbolTable(QObject* parent = nullptr) : QObject(parent) {}
   /**
    * The definition of the symbol
    */
-  /*public*/ /*interface*/class Symbol {
-   public:
-      /**
-       * The name of the symbol
-       * @return the name
-       */
-      /*public*/ virtual QString getName();
 
-      /**
-       * The index on the stack for this symbol
-       * @return the index
-       */
-      /*public*/ virtual int getIndex();
-
-  };
 
   /**
      * The list of symbols in the table
@@ -66,7 +69,7 @@ class Symbol;
      * @param name the name
      * @param value the value
      */
-    /*public*/ virtual void setValue(QString name, QVariant value);
+    /*public*/ virtual void setValue(QString name, QVariant value)=0;
 
     /**
      * Add new symbols to the symbol table
@@ -137,11 +140,11 @@ class Symbol;
               //super(message);
           }
       };
-
+};
       /**
        * An enum that defines the types of initial value.
        */
-      /*public*/ /*enum*/class InitialValueType {
+      /*public*/ /*enum*/class InitialValueType  : public QObject{
         Q_OBJECT
       public:
           enum TYPES {None, Integer, FloatingNumber, String, LocalVariable, Memory, Reference, Formula};
@@ -199,20 +202,20 @@ class Symbol;
            return map.value(s);
           }
       };
-};
+
     /**
      * Data for a variable.
      */
-    /*public*/ /*static*/ class VariableData : public QObject{
+    /*public*/ /*static*/ class VariableData : public QObject {
     Q_OBJECT
         public:
         /*public*/ QString _name;
-        /*public*/ SymbolTable::InitialValueType::TYPES _initalValueType = SymbolTable::InitialValueType::None;
+        /*public*/ InitialValueType::TYPES _initalValueType = InitialValueType::None;
         /*public*/ QString _initialValueData;
 
         /*public*/ VariableData(
                 QString name,
-                SymbolTable::InitialValueType::TYPES initalValueType,
+                InitialValueType::TYPES initalValueType,
                 QString initialValueData) {
 
             _name = name;
@@ -234,7 +237,7 @@ class Symbol;
         return _name;
     }
 
-    /*public*/ SymbolTable::InitialValueType::TYPES getInitalValueType() {
+    /*public*/ InitialValueType::TYPES getInitalValueType() {
         return _initalValueType;
     }
 
@@ -242,5 +245,5 @@ class Symbol;
         return _initialValueData;
     }
  };
-
+Q_DECLARE_INTERFACE(SymbolTable, "SymbolTable")
 #endif // SYMBOLTABLE_H

@@ -52,7 +52,7 @@
                 elem.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(logixNG->Base::getSystemName())));  // NOI18N
 
                 // store common part
-                storeCommon(logixNG, elem);
+                storeCommon((NamedBean*)logixNG, elem);
 
                 QDomElement e = doc.createElement("ConditionalNGs");
                 for (int i=0; i < logixNG->getNumConditionalNGs(); i++) {
@@ -220,8 +220,10 @@
         if (initTableList.isEmpty()) return;
         QDomNodeList logixNGList = initTableList.at(0).childNodes();
         if (logixNGList.isEmpty()) return;
-        foreach (QDomNode n , logixNGList) {
-         QDomElement e = n.toElement();
+        //foreach (QDomNode n , logixNGList) {
+        for(int i=0; i < logixNGList.size(); i++)
+        {
+         QDomElement e = logixNGList.at(i).toElement();
             LogixNG* logixNG = (LogixNG*)tm->getBySystemName(e.text().trimmed());
             if (logixNG != nullptr) {
                 initializationManager->add(logixNG);

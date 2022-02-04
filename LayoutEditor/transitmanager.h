@@ -17,8 +17,8 @@ public:
     ~TransitManager() override{}
     TransitManager(const TransitManager&) : AbstractManager() {}
     int getXMLOrder() const override;
-    QString getSystemPrefix() override;
-    QChar typeLetter() override ;
+    QString getSystemPrefix() const override;
+    QChar typeLetter() const override ;
 
     /**
      * Method to create a new Transit if the Transit does not exist

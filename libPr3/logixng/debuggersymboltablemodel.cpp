@@ -25,9 +25,9 @@
 //        }
     }
 
-    /*public*/  void DebuggerSymbolTableModel::update(QMap<QString, SymbolTable::Symbol*> symbols) {
+    /*public*/  void DebuggerSymbolTableModel::update(QMap<QString, Symbol*> symbols) {
         _symbols.clear();
-        for (SymbolTable::Symbol* s : symbols.values()) {
+        for (Symbol* s : symbols.values()) {
             _symbols.append(s);
         }
         fireTableDataChanged();
@@ -90,7 +90,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  bool DebuggerSymbolTableModel::setData(const QModelIndex &index, const QVariant &value, int role) {
-        SymbolTable::Symbol* symbol = _symbols.value(index.row());
+        Symbol* symbol = _symbols.value(index.row());
      if(role == Qt::EditRole)
      {
         switch (index.column()) {

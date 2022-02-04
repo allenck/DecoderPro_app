@@ -5,6 +5,8 @@
 #include "defaultfemaleanysocket.h"
 #include "logixng_manager.h"
 #include "instancemanager.h"
+#include "vptr.h"
+#include "abstractmalesocket.h"
 
 /**
  * Have many items of any type.
@@ -18,13 +20,13 @@
 
 
     /*public*/ ClipboardMany::ClipboardMany(QString sys, QString user, QObject *parent)
-            throw (BadUserNameException, BadSystemNameException) : AbstractBase(sys, user, parent) {
+            /*throw (BadUserNameException, BadSystemNameException)*/ : AbstractBase(sys, user, parent) {
         //super(sys, user);
         _itemEntries.append(new ItemEntry(new DefaultFemaleAnySocket(this, this, getNewSocketName())));
     }
 
     /*public*/ ClipboardMany::ClipboardMany(QString sys, QString user, QList<ItemData*> itemSystemNames, QObject *parent)
-            throw (BadUserNameException, BadSystemNameException) : AbstractBase(sys, user, parent) {
+             : AbstractBase(sys, user, parent) {
         //super(sys, user);
         setItemSystemNames(itemSystemNames);
     }
@@ -38,7 +40,7 @@
             FemaleAnySocket* socket =
                     new DefaultFemaleAnySocket(this, this, itemData->_socketName);
 
-            _itemEntries.append(new ItemEntry(socket, itemData->_className, itemData._systemName));
+            _itemEntries.append(new ItemEntry(socket, itemData->_className, itemData->_systemName));
         }
     }
 
@@ -66,8 +68,8 @@
                                         ->getManager(ae->_itemManagerClass)->getBySystemName(socketSystemName);
 
                         if (namedBean != nullptr) {
-                            if (qobject_cast<MaleSocket*>(namedBean)) {
-                                MaleSocket* maleSocket = (MaleSocket*)namedBean;
+                            if (qobject_cast<AbstractMaleSocket*>(namedBean)) {
+                                AbstractMaleSocket* maleSocket = (AbstractMaleSocket*)namedBean;
                                 ae->_socket->_connect(maleSocket);
                                 maleSocket->setup();
                             } else {
@@ -96,7 +98,7 @@
     }
 
     //@Override
-    /*public*/ FemaleSocket* ClipboardMany::getChild(int index) throw (IllegalArgumentException, UnsupportedOperationException) {
+    /*public*/ FemaleSocket* ClipboardMany::getChild(int index)  {
         return _itemEntries.value(index)->_socket;
     }
 
@@ -111,9 +113,9 @@
                     new DefaultFemaleAnySocket(this, this, getNewSocketName());
             _itemEntries.insert(0, new ItemEntry(socket));
 
-            QList<FemaleSocket*> list = QList<FemaleSocket*>();
+            QList<DefaultFemaleAnySocket*> list = QList<DefaultFemaleAnySocket*>();
             list.append(socket);
-            firePropertyChange(Base::PROPERTY_CHILD_COUNT, QVariant(), list);
+            firePropertyChange(Base::PROPERTY_CHILD_COUNT, QVariant(), VPtr<QList<DefaultFemaleAnySocket*>>::asQVariant(&list));
         }
     }
 
@@ -141,7 +143,7 @@
                     QList<FemaleSocket*> list = QList<FemaleSocket*>();
                     list.append(socket);
                     _itemEntries.removeAt(i);
-                    firePropertyChange(Base::PROPERTY_CHILD_COUNT, list, QVariant());
+                    firePropertyChange(Base::PROPERTY_CHILD_COUNT, VPtr<QList<FemaleSocket*>>::asQVariant(&list), QVariant());
                 }
                 break;
             }
@@ -174,7 +176,7 @@
     }
 
     //@Override
-    /*public*/ Base* ClipboardMany::getParent() {
+    /*public*/ Base* ClipboardMany::getParent()const {
         return _parent;
     }
 

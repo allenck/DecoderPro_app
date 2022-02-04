@@ -19,7 +19,7 @@
     /**
      * Create a new instance of DefaultSymbolTable with no previous symbol table.
      */
-    /*public*/  DefaultSymbolTable::DefaultSymbolTable(QObject *parent) : QObject(parent){
+    /*public*/  DefaultSymbolTable::DefaultSymbolTable(QObject *parent) : SymbolTable(parent){
         _prevSymbolTable = nullptr;
         _stack = new DefaultStack();
         _firstSymbolIndex = _stack->getCount();
@@ -30,7 +30,7 @@
      * and the stack from a ConditionalNG.
      * @param currentConditionalNG the ConditionalNG
      */
-    /*public*/  DefaultSymbolTable::DefaultSymbolTable(ConditionalNG* currentConditionalNG, QObject *parent) {
+    /*public*/  DefaultSymbolTable::DefaultSymbolTable(ConditionalNG* currentConditionalNG, QObject *parent): SymbolTable( parent) {
         _prevSymbolTable = currentConditionalNG->getSymbolTable();
         _stack = currentConditionalNG->getStack();
         _firstSymbolIndex = _stack->getCount();
@@ -41,7 +41,7 @@
      * and a stack.
      * @param prevSymbolTable the previous symbol table
      */
-    /*public*/  DefaultSymbolTable::DefaultSymbolTable(SymbolTable* prevSymbolTable, QObject *parent) : QObject( parent){
+    /*public*/  DefaultSymbolTable::DefaultSymbolTable(SymbolTable* prevSymbolTable, QObject *parent) : SymbolTable( parent){
         _prevSymbolTable = nullptr;
         //_symbols.putAll(prevSymbolTable->getSymbols());
         QMapIterator<QString, Symbol*> iter(prevSymbolTable->getSymbols());
@@ -67,9 +67,9 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  QMap<QString, SymbolTable::Symbol *> DefaultSymbolTable::getSymbols() {
+    /*public*/  QMap<QString, Symbol *> DefaultSymbolTable::getSymbols() {
         //return Collections.unmodifiableMap(_symbols);
-         return QMap<QString, SymbolTable::Symbol*>(_symbols);
+         return QMap<QString, Symbol*>(_symbols);
     }
 
     /** {@inheritDoc} */
@@ -130,7 +130,7 @@
     /*private*/ RecursiveDescentParser* DefaultSymbolTable::createParser() /*throws ParserException */{
         QMap<QString, Variable*> variables = QMap<QString, Variable*>();
 
-        for (SymbolTable::Symbol* symbol : getSymbols().values()) {
+        for (Symbol* symbol : getSymbols().values()) {
             variables.insert(symbol->getName(),
                     new LocalVariableExpressionVariable(symbol->getName()));
         }
@@ -151,7 +151,7 @@
             /*throws JmriException */{
 
         for (VariableData* variable : symbolDefinitions) {
-            SymbolTable::Symbol* symbol = new DefaultSymbol(variable->getName(), _stack->getCount() - _firstSymbolIndex);
+            Symbol* symbol = new DefaultSymbol(variable->getName(), _stack->getCount() - _firstSymbolIndex);
             QVariant initialValue = QVariant();
 
             if (_symbols.contains(symbol->getName())) {

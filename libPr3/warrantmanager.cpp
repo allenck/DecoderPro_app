@@ -55,8 +55,8 @@ WarrantManager::WarrantManager(QObject *parent) :
     return Manager::WARRANTS;
 }
 
-/*public*/ QString WarrantManager::getSystemPrefix() { return "I"; }
-/*public*/ QChar WarrantManager::typeLetter() { return 'W'; }
+/*public*/ QString WarrantManager::getSystemPrefix() const { return "I"; }
+/*public*/ QChar WarrantManager::typeLetter() const { return 'W'; }
 
 /**
  * Method to create a new Warrant if it does not exist Returns null if a

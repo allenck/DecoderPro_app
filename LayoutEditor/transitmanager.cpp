@@ -56,8 +56,8 @@ TransitManager::TransitManager(QObject *parent) :
     return Manager::TRANSITS;
 }
 
-QString TransitManager::getSystemPrefix() { return "I"; }
-QChar TransitManager::typeLetter()  { return 'Z'; }
+QString TransitManager::getSystemPrefix() const { return "I"; }
+QChar TransitManager::typeLetter() const  { return 'Z'; }
 
 /**
  * Method to create a new Transit if the Transit does not exist

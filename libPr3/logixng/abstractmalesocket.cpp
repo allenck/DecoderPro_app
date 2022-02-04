@@ -8,6 +8,7 @@
 #include "loggerfactory.h"
 #include "errorhandlingdialog.h"
 #include "errorhandlingdialog_multiline.h"
+#include "abstractbase.h"
 
 /**
  * The abstract class that is the base class for all LogixNG classes that
@@ -18,7 +19,7 @@
 ///*public*/ abstract class AbstractMaleSocket implements MaleSocket {
 
 
-    /*public*/ AbstractMaleSocket::AbstractMaleSocket(BaseManager/*<? extends NamedBean>*/* manager, Base* object, QObject* parent): QObject(parent) {
+    /*public*/ AbstractMaleSocket::AbstractMaleSocket(BaseManager/*<? extends NamedBean>*/* manager, Base* object, QObject* parent): MaleSocket(parent) {
         _manager = manager;
         _object = object;
     }
@@ -38,8 +39,8 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/ bool AbstractMaleSocket::isLocked() {
-        if (qobject_cast<MaleSocket*>(_object->self())) {
-            return ((MaleSocket*)_object)->isLocked();
+        if (qobject_cast<AbstractMaleSocket*>(_object->self())) {
+            return ((AbstractMaleSocket*)_object)->isLocked();
         }
         return _locked;
     }
@@ -47,8 +48,8 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/ void AbstractMaleSocket::setLocked(bool locked) {
-        if (qobject_cast<MaleSocket*>(_object->self())) {
-            ((MaleSocket*)_object)->setLocked(locked);
+        if (qobject_cast<AbstractMaleSocket*>(_object->self())) {
+            ((AbstractMaleSocket*)_object)->setLocked(locked);
         }
         _locked = locked;
     }
@@ -56,8 +57,8 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/ bool AbstractMaleSocket::isSystem() {
-        if (qobject_cast<MaleSocket*>(_object->self())) {
-            return ((MaleSocket*)_object)->isSystem();
+        if (qobject_cast<AbstractMaleSocket*>(_object->self())) {
+            return ((AbstractMaleSocket*)_object)->isSystem();
         }
         return _system;
     }
@@ -65,8 +66,8 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/ void AbstractMaleSocket::setSystem(bool system) {
-        if (qobject_cast<MaleSocket*>(_object->self())) {
-            ((MaleSocket*)_object)->setSystem(system);
+        if (qobject_cast<AbstractMaleSocket*>(_object->self())) {
+            ((AbstractMaleSocket*)_object)->setSystem(system);
         }
         _system = system;
     }
@@ -114,12 +115,12 @@
 
     //@Override
     /*public*/ /*final*/ void AbstractMaleSocket::addPropertyChangeListener(PropertyChangeListener* l, QString name, QString listenerRef) {
-        _object->SwingPropertyChangeSupport::addPropertyChangeListener(l, name, listenerRef);
+        _object->addPropertyChangeListener(l, name, listenerRef);
     }
 
     //@Override
     /*public*/ /*final*/ void AbstractMaleSocket::addPropertyChangeListener(QString propertyName, PropertyChangeListener* l, QString name, QString listenerRef) {
-        _object->SwingPropertyChangeSupport::addPropertyChangeListener(propertyName, l, name, listenerRef);
+        _object->addPropertyChangeListener(propertyName, l, name, listenerRef);
     }
 
     //@Override
@@ -168,7 +169,7 @@
     }
 
     //@Override
-    /*public*/ /*final*/ /*synchronized*/ QVector<PropertyChangeListener*> AbstractMaleSocket::getPropertyChangeListeners() {
+    /*public*/ /*final*/ /*synchronized*/ QVector<PropertyChangeListener*> AbstractMaleSocket::getPropertyChangeListeners()const {
         return _object->getPropertyChangeListeners();
     }
 
@@ -194,8 +195,8 @@
 
     //@Override
     /*public*/ bool AbstractMaleSocket::getListen() {
-        if (qobject_cast<MaleSocket*>(getObject()->self())) {
-            return ((MaleSocket*)getObject())->getListen();
+        if (qobject_cast<AbstractMaleSocket*>(getObject()->self())) {
+            return ((AbstractMaleSocket*)getObject())->getListen();
         }
         return _listen;
     }
@@ -203,8 +204,8 @@
     //@Override
     /*public*/ void AbstractMaleSocket::setListen(bool listen)
     {
-        if (qobject_cast<MaleSocket*>(getObject()->self())) {
-            ((MaleSocket*)getObject())->setListen(listen);
+        if (qobject_cast<AbstractMaleSocket*>(getObject()->self())) {
+            ((AbstractMaleSocket*)getObject())->setListen(listen);
         }
         _listen = listen;
     }
@@ -226,27 +227,27 @@
             InitialValueType::TYPES initialValueType,
             QString initialValueData) {
 
-        if (qobject_cast<MaleSocket*>(getObject()->self())) {
-            ((MaleSocket*)getObject()->self())->addLocalVariable(name, initialValueType, initialValueData);
+        if (qobject_cast<AbstractMaleSocket*>(getObject()->self())) {
+            ((AbstractMaleSocket*)getObject()->self())->addLocalVariable(name, initialValueType, initialValueData);
         } else {
-            _localVariables.append(new VariableData(name, initialValueType, initialValueData));
+            _localVariables.insert(new VariableData(name, initialValueType, initialValueData));
         }
     }
 
     //@Override
     /*public*/ void AbstractMaleSocket::addLocalVariable(VariableData* variableData) {
 
-        if (qobject_cast<MaleSocket*>(getObject()->self())) {
-            ((MaleSocket*)getObject())->addLocalVariable(variableData);
+        if (qobject_cast<AbstractMaleSocket*>(getObject()->self())) {
+            ((AbstractMaleSocket*)getObject())->addLocalVariable(variableData);
         } else {
-            _localVariables.append(variableData);
+            _localVariables.insert(variableData);
         }
     }
 
     //@Override
     /*public*/ void AbstractMaleSocket::clearLocalVariables() {
-        if (qobject_cast<MaleSocket*>(getObject()->self())) {
-            ((MaleSocket*)getObject())->clearLocalVariables();
+        if (qobject_cast<AbstractMaleSocket*>(getObject()->self())) {
+            ((AbstractMaleSocket*)getObject())->clearLocalVariables();
         } else {
             _localVariables.clear();
         }
@@ -254,8 +255,8 @@
 
     //@Override
     /*public*/ QSet<VariableData*> AbstractMaleSocket::getLocalVariables() {
-        if (qobject_cast<MaleSocket*>(getObject()->self())) {
-            return ((MaleSocket*)getObject())->getLocalVariables();
+        if (qobject_cast<AbstractMaleSocket*>(getObject()->self())) {
+            return ((AbstractMaleSocket*)getObject())->getLocalVariables();
         } else {
             return _localVariables;
         }
@@ -292,7 +293,7 @@
             femaleSocket->setParent(this);
             if (femaleSocket->isConnected()) {
                 MaleSocket* connectedSocket = femaleSocket->getConnectedSocket();
-                connectedSocket->setParent(femaleSocket);
+                connectedSocket->Base::setParent(femaleSocket);
                 result = result && connectedSocket->setParentForAllChildren(errors);
             }
         }
@@ -318,7 +319,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/ /*final*/ void AbstractMaleSocket::registerListeners() {
-        if (qobject_cast<MaleSocket*>(getObject()->self())) {
+        if (qobject_cast<AbstractMaleSocket*>(getObject()->self())) {
             getObject()->registerListeners();
         } else {
             if (_listen) {
@@ -333,7 +334,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/ /*final*/ void AbstractMaleSocket::unregisterListeners() {
-        if (qobject_cast<MaleSocket*>(getObject()->self())) {
+        if (qobject_cast<AbstractMaleSocket*>(getObject()->self())) {
             getObject()->unregisterListeners();
         } else {
             unregisterListenersForThisClass();
@@ -482,7 +483,7 @@
             }
         }
 
-        if (qobject_cast<MaleSocket*>(getObject()->self())) {
+        if (qobject_cast<AbstractMaleSocket*>(getObject()->self())) {
             getObject()->printTree(settings, locale, writer, indent, currentIndent, lineNumber);
         } else {
             for (int i=0; i < getChildCount(); i++) {
@@ -499,7 +500,7 @@
             _object->getUsageDetail(level, bean, report, cdl);
         }
 
-        if (qobject_cast<MaleSocket*>(getObject()->self())) {
+        if (qobject_cast<AbstractMaleSocket*>(getObject()->self())) {
             getObject()->getUsageTree(level, bean, report, cdl);
         } else {
             level++;
@@ -565,9 +566,9 @@
     }
 
     //@Override
-    /*public*/ MaleSocket::ErrorHandlingType::TYPES AbstractMaleSocket::getErrorHandlingType() {
-        if (qobject_cast<MaleSocket*>(getObject()->self())) {
-            return ((MaleSocket*)getObject())->getErrorHandlingType();
+    /*public*/ ErrorHandlingType::TYPES AbstractMaleSocket::getErrorHandlingType() {
+        if (qobject_cast<AbstractMaleSocket*>(getObject()->self())) {
+            return ((AbstractMaleSocket*)getObject()->self())->getErrorHandlingType();
         } else {
             return _errorHandlingType;
         }
@@ -576,8 +577,8 @@
     //@Override
     /*public*/ void AbstractMaleSocket::setErrorHandlingType(ErrorHandlingType::TYPES errorHandlingType)
     {
-        if (qobject_cast<MaleSocket*>(getObject()->self())) {
-            ((MaleSocket*)getObject())->setErrorHandlingType(errorHandlingType);
+        if (qobject_cast<AbstractMaleSocket*>(getObject()->self())) {
+            ((AbstractMaleSocket*)getObject()->self())->setErrorHandlingType(errorHandlingType);
         } else {
             _errorHandlingType = errorHandlingType;
         }
@@ -597,11 +598,14 @@
         switch (errorHandlingType) {
             case ErrorHandlingType::ShowDialogBox:
             {
+#if 0
                 bool abort = ThreadingUtil::runOnGUIwithReturn([=]()  {
                     ErrorHandlingDialog* dialog = new ErrorHandlingDialog();
                     return dialog->showDialog(item, message);
                 });
+
                 if (abort) throw  AbortConditionalNGExecutionException(e);
+#endif
                 break;
             }
             case ErrorHandlingType::LogError:
@@ -641,11 +645,13 @@
         switch (errorHandlingType) {
         case ErrorHandlingType::ShowDialogBox:
         {
+#if 0
                 bool abort = ThreadingUtil::runOnGUIwithReturn([=]() {
                     ErrorHandlingDialog_MultiLine* dialog = new ErrorHandlingDialog_MultiLine();
                     return dialog->showDialog(item, message, messageList);
                 });
                 if (abort) throw  AbortConditionalNGExecutionException(e);
+#endif
                 break;
         }
             case ErrorHandlingType::LogError:
@@ -679,11 +685,13 @@
         switch (errorHandlingType) {
             case ErrorHandlingType::ShowDialogBox:
             {
+#if 0
                 bool abort = ThreadingUtil::runOnGUIwithReturn([=]() {
                     ErrorHandlingDialog* dialog = new ErrorHandlingDialog();
                     return dialog->showDialog(item, message);
                 });
                 if (abort) throw  AbortConditionalNGExecutionException(e);
+#endif
                 break;
             }
             case ErrorHandlingType::LogError:

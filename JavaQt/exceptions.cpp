@@ -85,6 +85,12 @@ UnsupportedOperationException::UnsupportedOperationException(QString s)
 {
  msg = s;
 }
+UnsupportedOperationException::UnsupportedOperationException(QString s, Throwable* cause)
+{
+ msg = s;
+ this->cause = cause;
+}
+
 NoSuchPortException::NoSuchPortException(QString s)
 {
  msg = s;

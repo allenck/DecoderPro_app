@@ -110,7 +110,7 @@ public:
     /*public*/ /*SortedSet<E>*/QSet<NamedBean*> getNamedBeanSet() override;
 
     /*public*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName)const override; //throws NamedBean.BadSystemNameException
-    /*public*/  QString getSystemPrefix()  /*final*/ override;
+    /*public*/  QString getSystemPrefix() const /*final*/ override;
     /*public*/ void setPropertyChangesSilenced(/*@Nonnull*/ QString propertyName, bool silenced) override;
     /*public*/ Manager::NameValidity validSystemNameFormat(QString systemName)  override;
     QT_DEPRECATED/*public*/ void setDataListenerMute(bool m) override;

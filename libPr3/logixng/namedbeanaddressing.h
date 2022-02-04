@@ -7,7 +7,7 @@
  *
  * @author Daniel Bergqvist Copyright 2020
  */
-/*public*/ /*enum*/class NamedBeanAddressing {
+/*public*/ /*enum*/class NamedBeanAddressing : public QObject {
   Q_OBJECT
     public:
   enum TYPE {Direct, Reference, LocalVariable, Formula};

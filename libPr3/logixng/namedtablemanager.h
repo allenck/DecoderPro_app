@@ -99,11 +99,11 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ NamedTable* getByUserName(QString name);
+    /*public*/ NamedBean* getByUserName(QString name)override; // NamedTable
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ NamedTable* getBySystemName(QString name);
+    /*public*/ NamedBean* getBySystemName(QString name);// NamedTable
 
     /**
      * Create a new system name for a LogixNG.
@@ -118,7 +118,7 @@
      * {@link #getSystemNamePrefix() } and "T";
      */
     //@Override
-    /*public*/ /*default*/ QString getSubSystemNamePrefix() override{
+    /*public*/ /*default*/ QString getSubSystemNamePrefix()const override{
         return getSystemNamePrefix() + "T";
     }
 

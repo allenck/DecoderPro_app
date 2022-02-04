@@ -50,7 +50,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ QChar DefaultVariableLightManager::typeLetter(){
+    /*public*/ QChar DefaultVariableLightManager::typeLetter() const{
         return 'L';
     }
 

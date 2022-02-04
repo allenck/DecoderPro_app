@@ -2,7 +2,7 @@
 #define TREEEDITOR_H
 
 #include "treeviewer.h"
-#include "femalesocket.h"
+//#include "femalesocket.h"
 #include "logixngpreferences.h"
 #include "instancemanager.h"
 #include "jdialog.h"
@@ -19,6 +19,8 @@
 #include "threadingutil.h"
 //#include "clipboardeditor.h"
 
+class TEPopupMenu;
+class FemaleSocket;
 class ClipboardEventListener;
 class ClipboardEditor;
 class JTree;
@@ -96,6 +98,11 @@ class TreeEditor : public TreeViewer
   /*private*/ /*final*/ bool _disableRootPopup;
   /*private*/ /*final*/ bool _enableExecuteEvaluate;
   /*private*/ void runOnConditionalNGThreadOrGUIThreadEventually(ConditionalNG* conditionalNG, ThreadAction* ta);
+  /*private*/ bool checkFemaleSocketOperation(
+    FemaleSocket* femaleSocket,
+    bool parentIsSystem,
+    bool itemIsSystem,
+    QString command);
 
  protected:
   /*protected*/ bool _showReminder = false;
@@ -120,18 +127,9 @@ class TreeEditor : public TreeViewer
 
  friend class TEClipboardListener;
  friend class PopupMenu;
-
- /*private*/ /*static*/ /*final*/ class SortedComboBoxModel/*<E>*/ :public DefaultComboBoxModel/*<E>*/ {
-  Q_OBJECT
-     /*private*/ /*final*/ Comparator/*<E>*/* comparator;
-  public:
-     /*
-      *  Create an empty model that will use the specified Comparator
-      */
-   /*public*/  SortedComboBoxModel(/*@Nonnull*/ Comparator/*<E>*/* comparator) : DefaultComboBoxModel(){}
-     /*public*/  void addElement(QString element);
-     /*public*/  void insertElementAt(QString element, int index) ;
- };
+ friend class DeleteBeanWorker;
+ friend class TEPopupMenu;
+ friend class DeleteBeanWorker;
 #if 0
  class TEClipboardListener : public ClipboardEventListener
  {
@@ -150,61 +148,118 @@ class TreeEditor : public TreeViewer
    QObject* self() override {return (QObject*)this;}
  };
 #endif
- /*protected*/ class PopupMenu : public QMenu, public  ActionListener {
-  Q_OBJECT
-   /*private*/ static /*final*/ QString ACTION_COMMAND_RENAME_SOCKET;// = "rename_socket";
-   /*private*/ static /*final*/ QString ACTION_COMMAND_ADD;// = "add";
-   /*private*/ static /*final*/ QString ACTION_COMMAND_REMOVE;// = "remove";
-   /*private*/ static /*final*/ QString ACTION_COMMAND_EDIT;// = "edit";
-   /*private*/ static /*final*/ QString ACTION_COMMAND_CUT;// = "cut";
-   /*private*/ static /*final*/ QString ACTION_COMMAND_COPY;// = "copy";
-   /*private*/ static /*final*/ QString ACTION_COMMAND_PASTE;// = "paste";
-   /*private*/ static /*final*/ QString ACTION_COMMAND_ENABLE;// = "enable";
-   /*private*/ static /*final*/ QString ACTION_COMMAND_DISABLE;// = "disable";
-   /*private*/ static /*final*/ QString ACTION_COMMAND_LOCK;// = "lock";
-   /*private*/ static /*final*/ QString ACTION_COMMAND_UNLOCK;// = "unlock";
-   /*private*/ static /*final*/ QString ACTION_COMMAND_LOCAL_VARIABLES;// = "local_variables";
-   /*private*/ static /*final*/ QString ACTION_COMMAND_CHANGE_USERNAME;// = "change_username";
-   /*private*/ static /*final*/ QString ACTION_COMMAND_EXECUTE_EVALUATE;// = "execute_evaluate";
-//        /*private*/ static final String ACTION_COMMAND_EXPAND_TREE = "expandTree";
- /*private*/ /*final*/ JTree* _tree;
-//        /*private*/ final FemaleSocketTreeModel _model;
- /*private*/ FemaleSocket* _currentFemaleSocket;
- /*private*/ TreePath* _currentPath;
-
- /*private*/ JMenuItem* menuItemRenameSocket;
- /*private*/ JMenuItem* menuItemAdd;
- /*private*/ JMenuItem* menuItemRemove;
- /*private*/ JMenuItem* menuItemEdit;
- /*private*/ JMenuItem* menuItemCut;
- /*private*/ JMenuItem* menuItemCopy;
- /*private*/ JMenuItem* menuItemPaste;
- /*private*/ /*final*/ QMap<FemaleSocketOperation::TYPES, JMenuItem*> menuItemFemaleSocketOperation
-         = QMap<FemaleSocketOperation::TYPES, JMenuItem*>();
- /*private*/ JMenuItem* menuItemEnable;
- /*private*/ JMenuItem* menuItemDisable;
- /*private*/ JMenuItem* menuItemLock;
- /*private*/ JMenuItem* menuItemUnlock;
- /*private*/ JMenuItem* menuItemLocalVariables;
- /*private*/ JMenuItem* menuItemChangeUsername;
- /*private*/ JMenuItem* menuItemExecuteEvaluate;
-//        /*private*/ JMenuItem* menuItemExpandTree;
- TreeEditor* editor;
- public:
- PopupMenu(TreeEditor* editor);
- /*public*/  void actionPerformed(JActionEvent* e = nullptr)override;
-
- QObject* self() override {return(QObject*)this;}
-
- private:
- /*private*/ void init();
- /*private*/ void showPopup(int x, int y, FemaleSocket* femaleSocket, TreePath* path);
- /*private*/ bool abortEditAboutSystem(Base* b);
-
-  protected:
-
- friend class TreePane;
- friend class TreeEditor;
- };
 };
+ // This class is copied from BeanTableDataModel
+ /*private*/ class DeleteBeanWorker : public QObject//: public SwingWorker<void, void> {
+ {
+   Q_OBJECT
+     /*private*/ /*final*/ FemaleSocket* _currentFemaleSocket;
+     /*private*/ /*final*/ TreePath* _currentPath;
+     MaleSocket* _maleSocket;
+     TEPopupMenu* treeEditor;
+
+  public:
+     /*public*/  DeleteBeanWorker(FemaleSocket* currentFemaleSocket, TreePath* currentPath, TEPopupMenu* treeEditor);
+     /*public*/  int getDisplayDeleteMsg();
+     /*public*/  void setDisplayDeleteMsg(int boo);
+     /*public*/  void doDelete();
+     /*public*/  void doInBackground();
+     /*protected*/ void done();
+
+ };
+
+
+/*private*/ /*static*/ /*final*/ class SortedComboBoxModel/*<E>*/ :  public DefaultComboBoxModel/*<E>*/ {
+ Q_OBJECT
+    /*private*/ /*final*/ Comparator/*<E>*/* comparator;
+ public:
+    /*
+     *  Create an empty model that will use the specified Comparator
+     */
+  /*public*/  SortedComboBoxModel(/*@Nonnull*/ Comparator/*<E>*/* comparator) : DefaultComboBoxModel(){}
+    /*public*/  void addElement(QString element);
+    /*public*/  void insertElementAt(QString element, int index) ;
+};
+/*protected*/ class TEPopupMenu : public QMenu, public  ActionListener {
+ Q_OBJECT
+  /*private*/ static /*final*/ QString ACTION_COMMAND_RENAME_SOCKET;// = "rename_socket";
+  /*private*/ static /*final*/ QString ACTION_COMMAND_ADD;// = "add";
+  /*private*/ static /*final*/ QString ACTION_COMMAND_REMOVE;// = "remove";
+  /*private*/ static /*final*/ QString ACTION_COMMAND_EDIT;// = "edit";
+  /*private*/ static /*final*/ QString ACTION_COMMAND_CUT;// = "cut";
+  /*private*/ static /*final*/ QString ACTION_COMMAND_COPY;// = "copy";
+  /*private*/ static /*final*/ QString ACTION_COMMAND_PASTE;// = "paste";
+  /*private*/ static /*final*/ QString ACTION_COMMAND_ENABLE;// = "enable";
+  /*private*/ static /*final*/ QString ACTION_COMMAND_DISABLE;// = "disable";
+  /*private*/ static /*final*/ QString ACTION_COMMAND_LOCK;// = "lock";
+  /*private*/ static /*final*/ QString ACTION_COMMAND_UNLOCK;// = "unlock";
+  /*private*/ static /*final*/ QString ACTION_COMMAND_LOCAL_VARIABLES;// = "local_variables";
+  /*private*/ static /*final*/ QString ACTION_COMMAND_CHANGE_USERNAME;// = "change_username";
+  /*private*/ static /*final*/ QString ACTION_COMMAND_EXECUTE_EVALUATE;// = "execute_evaluate";
+//        /*private*/ static final String ACTION_COMMAND_EXPAND_TREE = "expandTree";
+/*private*/ /*final*/ JTree* _tree;
+//        /*private*/ final FemaleSocketTreeModel _model;
+/*private*/ FemaleSocket* _currentFemaleSocket;
+/*private*/ TreePath* _currentPath;
+
+/*private*/ JMenuItem* menuItemRenameSocket;
+/*private*/ JMenuItem* menuItemAdd;
+/*private*/ JMenuItem* menuItemRemove;
+/*private*/ JMenuItem* menuItemEdit;
+/*private*/ JMenuItem* menuItemCut;
+/*private*/ JMenuItem* menuItemCopy;
+/*private*/ JMenuItem* menuItemPaste;
+/*private*/ /*final*/ QMap<FemaleSocketOperation::TYPES, JMenuItem*> menuItemFemaleSocketOperation
+        = QMap<FemaleSocketOperation::TYPES, JMenuItem*>();
+/*private*/ JMenuItem* menuItemEnable;
+/*private*/ JMenuItem* menuItemDisable;
+/*private*/ JMenuItem* menuItemLock;
+/*private*/ JMenuItem* menuItemUnlock;
+/*private*/ JMenuItem* menuItemLocalVariables;
+/*private*/ JMenuItem* menuItemChangeUsername;
+/*private*/ JMenuItem* menuItemExecuteEvaluate;
+//        /*private*/ JMenuItem* menuItemExpandTree;
+TreeEditor* editor;
+public:
+ TEPopupMenu(TreeEditor* editor);
+/*public*/  void actionPerformed(JActionEvent* e = nullptr)override;
+
+QObject* self() override {return(QObject*)this;}
+
+private:
+/*private*/ void init();
+/*private*/ void showPopup(int x, int y, FemaleSocket* femaleSocket, TreePath* path);
+/*private*/ bool abortEditAboutSystem(Base* b);
+/*private*/ bool checkFemaleSocketOperation(
+  FemaleSocket* femaleSocket,
+  bool parentIsSystem,
+  bool itemIsSystem,
+  QString command);
+
+ protected:
+
+friend class TreePane;
+friend class TreeEditor;
+friend class DeleteBeanWorker;
+};
+
+class TEClipboardListener : public QObject, public /*ClipboardEventListener*/EventListener
+{
+  Q_OBJECT
+  TreeEditor* te;
+ public:
+  TEClipboardListener(TreeEditor* te)
+  {
+#if 0
+   //_clipboardEditor->clipboardData.forEach((key, value) -> {
+   foreach(QString key, te->_clipboardEditor->clipboardData){
+       if (key == ("Finish")) {                  // NOI18N
+           te->_clipboardEditor = nullptr;
+       }
+   }
+#endif
+  }
+  QObject* self() override {return (QObject*)this;}
+};
+
 #endif // TREEEDITOR_H

@@ -17,8 +17,8 @@ public:
     ~DefaultSignalMastManager() {}
     DefaultSignalMastManager(const DefaultSignalMastManager&) : SignalMastManager() {}
     /*public*/ int getXMLOrder()const  override;
-    /*public*/ QString getSystemPrefix() override ;
-    /*public*/ QChar typeLetter()  override ;
+    /*public*/ QString getSystemPrefix() const override ;
+    /*public*/ QChar typeLetter() const override ;
     /*public*/ SignalMast* getSignalMast(QString name) override ;
     /*public*/ SignalMast* provideSignalMast(QString prefix, // nominally IF$shsm
                                         QString signalSystem,

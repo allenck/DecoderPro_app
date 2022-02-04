@@ -14,8 +14,8 @@ public:
     ~OBlockManager(){}
     OBlockManager(const OBlockManager&) : AbstractManager() {}
     /*public*/ int getXMLOrder()const  override;
-    /*public*/ QString getSystemPrefix()  override;
-    /*public*/ QChar typeLetter()  override ;
+    /*public*/ QString getSystemPrefix() const override;
+    /*public*/ QChar typeLetter() const override ;
     /*public*/ OBlock* createNewOBlock(QString systemName, QString userName);
     /*public*/ OBlock* createNewOBlock(/*@Nonnull*/ QString userName);
     /*public*/ OBlock* getOBlock(QString name);

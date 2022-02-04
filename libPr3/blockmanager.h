@@ -22,8 +22,8 @@ public:
     BlockManager(const BlockManager&) : AbstractManager() {}
     /*public*/ void dispose() override;
     /*public*/ int getXMLOrder() const override;
-    /*public*/ QString getSystemPrefix()  override;
-    /*public*/ QChar typeLetter() override;
+    /*public*/ QString getSystemPrefix() const override;
+    /*public*/ QChar typeLetter() const override;
     /*public*/ QString getNamedBeanClass()const override;
     /*public*/ bool isSavedPathInfo();
     /*public*/ void setSavedPathInfo(bool save);

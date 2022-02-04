@@ -1134,6 +1134,12 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+ logixng/actionsignalheadswing.cpp \
+ logixng/abstractbasemanager.cpp \
+ logixng/abstractnamedtable.cpp \
+ logixng/defaultanonymoustable.cpp \
+ logixng/defaultcsvnamedtable.cpp \
+ logixng/defaultlogixnginitializationmanager.cpp \
  logixng/editcommentdialog.cpp \
  logixng/functionshelpdialog.cpp \
  logixng/localvariabletablemodel.cpp \
@@ -2324,6 +2330,12 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+ logixng/actionsignalheadswing.h \
+ logixng/abstractbasemanager.h \
+ logixng/abstractnamedtable.h \
+ logixng/defaultanonymoustable.h \
+ logixng/defaultcsvnamedtable.h \
+ logixng/defaultlogixnginitializationmanager.h \
  logixng/editcommentdialog.h \
  logixng/functionshelpdialog.h \
  logixng/localvariabletablemodel.h \

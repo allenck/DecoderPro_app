@@ -28,7 +28,7 @@
      * {@inheritDoc}
      */
     //@Override
-    /*public*/ QChar AbstractMeterManager::typeLetter(){
+    /*public*/ QChar AbstractMeterManager::typeLetter() const{
         return 'V';
     }
 

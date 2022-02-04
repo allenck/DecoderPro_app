@@ -57,7 +57,7 @@ DefaultAudioManager::DefaultAudioManager(QObject *parent) :
 }
 
 //@Override
-/*public*/ QString DefaultAudioManager::getSystemPrefix() {
+/*public*/ QString DefaultAudioManager::getSystemPrefix() const {
     return "I";
 }
 

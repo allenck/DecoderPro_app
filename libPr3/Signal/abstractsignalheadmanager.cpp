@@ -40,7 +40,7 @@ AbstractSignalHeadManager::AbstractSignalHeadManager(InternalSystemConnectionMem
     return Manager::SIGNALHEADS;
 }
 
-/*public*/ QChar AbstractSignalHeadManager::typeLetter() { return 'H'; }
+/*public*/ QChar AbstractSignalHeadManager::typeLetter() const { return 'H'; }
 
 /*public*/ SignalHead* AbstractSignalHeadManager::getSignalHead(QString name)
 {

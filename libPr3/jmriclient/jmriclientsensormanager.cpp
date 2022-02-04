@@ -20,7 +20,7 @@
 }
 
 //@Override
-/*public*/ QString JMRIClientSensorManager::getSystemPrefix()  {
+/*public*/ QString JMRIClientSensorManager::getSystemPrefix() const  {
     return prefix;
 }
 

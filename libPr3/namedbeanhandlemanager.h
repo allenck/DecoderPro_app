@@ -68,8 +68,8 @@ template<class T>
 // to free resources when no longer used
 /*public*/ virtual void dispose()override;
 /*public*/ char systemLetter();
-/*public*/ QString getSystemPrefix()  override;
-/*public*/ QChar typeLetter()  override;
+/*public*/ QString getSystemPrefix() const override;
+/*public*/ QChar typeLetter() const override;
 /*public*/ QString makeSystemName(QString s) override;
 /*public*/ QStringList getSystemNameArray() override;
 /*public*/ QStringList getSystemNameList()override;

@@ -11,6 +11,7 @@
 #include "base.h"
 #include "conditionalng_manager.h"
 #include "vptr.h"
+#include "logixng_initializationmanager.h"
 
 /**
  * Class providing the basic logic of the LogixNG_Manager interface.
@@ -36,7 +37,7 @@
     }
 
     //@Override
-    /*public*/ char DefaultLogixNGManager::typeLetter() const{
+    /*public*/ QChar DefaultLogixNGManager::typeLetter() const {
         return 'Q';
     }
 
@@ -47,7 +48,7 @@
      * @return enum indicating current validity, which might be just as a prefix
      */
     //@Override
-    /*public*/ Manager::NameValidity DefaultLogixNGManager::validSystemNameFormat(QString systemName) const {
+    /*public*/ Manager::NameValidity DefaultLogixNGManager::validSystemNameFormat(QString systemName) {
         return LogixNG_Manager::validSystemNameFormat(
                 AbstractManager::getSubSystemNamePrefix(), systemName);
 //        if (systemName.matches(getSubSystemNamePrefix()+"(:AUTO:)?\\d+")) {
@@ -66,7 +67,7 @@
      */
     //@Override
     /*public*/ LogixNG* DefaultLogixNGManager::createLogixNG(QString systemName, QString userName)
-            throw new (IllegalArgumentException) {
+            /*throw new (IllegalArgumentException)*/ {
 
         // Check that LogixNG does not already exist
         LogixNG* x;
@@ -76,7 +77,7 @@
                 return nullptr;
             }
         }
-        x = getBySystemName(systemName);
+        x = (LogixNG*)getBySystemName(systemName);
         if (x != nullptr) {
             return nullptr;
         }
@@ -87,7 +88,7 @@
         // LogixNG does not exist, create a new LogixNG
         x = new DefaultLogixNG(systemName, userName);
         // save in the maps
-        AbstractManager::Register(x);
+        AbstractManager::Register((NamedBean*)x);
 
         // Keep track of the last created auto system name
         updateAutoNumber(systemName);
@@ -96,7 +97,7 @@
     }
 
     //@Override
-    /*public*/ LogixNG* DefaultLogixNGManager::createLogixNG(QString userName) throw new (IllegalArgumentException) {
+    /*public*/ LogixNG* DefaultLogixNGManager::createLogixNG(QString userName) /*throw new (IllegalArgumentException)*/ {
         return createLogixNG(LogixNG_Manager::getAutoSystemName(), userName);
     }
 
@@ -110,13 +111,13 @@
     }
 
     //@Override
-    /*public*/ LogixNG* DefaultLogixNGManager::getByUserName(QString name) const{
-        return (LogixNG*)_tuser->value(name);
+    /*public*/ NamedBean* DefaultLogixNGManager::getByUserName(QString name) {
+        return (NamedBean*)_tuser->value(name);
     }
 
     //@Override
-    /*public*/ LogixNG* DefaultLogixNGManager::getBySystemName(QString name) const{
-        return(LogixNG*) _tsys->value(name);
+    /*public*/ NamedBean* DefaultLogixNGManager::getBySystemName(QString name) {
+        return(NamedBean*) _tsys->value(name);
     }
 
     /** {@inheritDoc} */
@@ -241,43 +242,83 @@
 
         // This may take a long time so it must not be done on the GUI thread.
         // Therefore we create a new thread for this task.
-        Runnable runnable = () -> {
-            Set<LogixNG> activeLogixNGs = new HashSet<>();
+//        Runnable runnable = () -> {
+//            QSet<LogixNG*> activeLogixNGs = /*new HashSet<>*/();
 
-            // Activate and execute the initialization LogixNGs first.
-            List<LogixNG> initLogixNGs =
-                    InstanceManager.getDefault(LogixNG_InitializationManager.class)
-                            .getList();
+//            // Activate and execute the initialization LogixNGs first.
+//            QList<LogixNG*> initLogixNGs =
+//                    ((LogixNG_InitializationManager*)InstanceManager::getDefault("LogixNG_InitializationManager")
+//                            .getList();
 
-            for (LogixNG logixNG : initLogixNGs) {
-                if (logixNG.isActive()) {
-                    logixNG.registerListeners();
-                    logixNG.execute(false);
-                    activeLogixNGs.add(logixNG);
-                } else {
-                    logixNG.unregisterListeners();
-                }
-            }
+//            for (LogixNG logixNG : initLogixNGs) {
+//                if (logixNG.isActive()) {
+//                    logixNG.registerListeners();
+//                    logixNG.execute(false);
+//                    activeLogixNGs.add(logixNG);
+//                } else {
+//                    logixNG.unregisterListeners();
+//                }
+//            }
 
-            // Activate and execute all the rest of the LogixNGs.
-            _tsys.values().stream()
-                    .sorted()
-                    .filter((logixNG) -> !(activeLogixNGs.contains(logixNG)))
-                    .forEachOrdered((logixNG) -> {
+//            // Activate and execute all the rest of the LogixNGs.
+//            _tsys.values().stream()
+//                    .sorted()
+//                    .filter((logixNG) -> !(activeLogixNGs.contains(logixNG)))
+//                    .forEachOrdered((logixNG) -> {
 
-                if (logixNG.isActive()) {
-                    logixNG.registerListeners();
-                    logixNG.execute();
-                } else {
-                    logixNG.unregisterListeners();
-                }
-            });
-        };
+//                if (logixNG.isActive()) {
+//                    logixNG.registerListeners();
+//                    logixNG.execute();
+//                } else {
+//                    logixNG.unregisterListeners();
+//                }
+//            });
+//        };
+        QRunnable* runnable = new DLMRunnable(this);
 
-        if (runOnSeparateThread) new Thread(runnable).start();
-        else runnable.run();
+        if (runOnSeparateThread) //new Thread(runnable)->start();
+         QThreadPool::globalInstance()->start(runnable);
+        else runnable->run();
     }
 
+void DLMRunnable::run()
+{
+ QSet<LogixNG*> activeLogixNGs = QSet<LogixNG*>();
+
+ // Activate and execute the initialization LogixNGs first.
+ QList<LogixNG*> initLogixNGs =
+         ((LogixNG_InitializationManager*)InstanceManager::getDefault("LogixNG_InitializationManager"))
+                 ->getList();
+
+ for (LogixNG* logixNG : initLogixNGs) {
+     if (logixNG->isActive()) {
+         logixNG->registerListeners();
+         logixNG->execute(false);
+         activeLogixNGs.insert(logixNG);
+     } else {
+         logixNG->unregisterListeners();
+     }
+ }
+
+ // Activate and execute all the rest of the LogixNGs.
+// _tsys.values().stream()
+//         .sorted()
+//         .filter((logixNG) -> !(activeLogixNGs.contains(logixNG)))
+//         .forEachOrdered((logixNG) -> {
+     foreach(NamedBean* nb, dlm->_tsys->values())
+     {
+      LogixNG* logixNG = (LogixNG*)nb;
+      if(!(activeLogixNGs.contains(logixNG)))
+      {
+       if (logixNG->isActive()) {
+           logixNG->registerListeners();
+           logixNG->execute();
+       } else {
+           logixNG->unregisterListeners();
+       }
+      }
+     }
+ }
     /** {@inheritDoc} */
     //@Override
     /*public*/ void DefaultLogixNGManager::deActivateAllLogixNGs() {
@@ -298,20 +339,20 @@
     //@Override
     /*public*/ void DefaultLogixNGManager::deleteLogixNG(LogixNG* x) {
         // delete the LogixNG
-        AbstractManager::deregister(x);
+        AbstractManager::deregister((NamedBean*)x);
         x->Base::dispose();
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ void setLoadDisabled(bool s) {
+    /*public*/ void DefaultLogixNGManager::setLoadDisabled(bool s) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /** {@inheritDoc} */
     //@Override
     /*public*/ void DefaultLogixNGManager::printTree(
-            PrintTreeSettings* settings,
+            Base::PrintTreeSettings* settings,
             PrintWriter* writer,
             QString indent,
             /*MutableInt*/int lineNumber) {
@@ -322,7 +363,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/ void DefaultLogixNGManager::printTree(
-            PrintTreeSettings* settings,
+            Base::PrintTreeSettings* settings,
             QLocale locale,
             PrintWriter* writer,
             QString indent,
@@ -363,7 +404,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ Clipboard* DefaultLogixNGManager::getClipboard() {
+    /*public*/ DefaultClipboard* DefaultLogixNGManager::getClipboard() {
         return _clipboard;
     }
 
@@ -396,7 +437,7 @@
      *                                          delete to be aborted (see above)
      */
     //@OverridingMethodsMustInvokeSuper
-    /*public*/ void DefaultLogixNGManager::fireVetoableChange(QString p, QVariant old) throw new (PropertyVetoException) {
+    /*public*/ void DefaultLogixNGManager::fireVetoableChange(QString p, QVariant old) /*throw new (PropertyVetoException)*/ {
         PropertyChangeEvent* evt = new PropertyChangeEvent(this, p, old, QVariant());
         for (VetoableChangeListener* vc : vetoableChangeSupport->getVetoableChangeListeners()) {
             vc->vetoableChange(evt);
@@ -406,7 +447,7 @@
     /** {@inheritDoc} */
     //@Override
 //    @OverridingMethodsMustInvokeSuper
-    /*public*/ /*final*/ void DefaultLogixNGManager::deleteBean(/*@Nonnull*/ /*LogixNG*/ NamedBean* nb, /*@Nonnull*/  QString property) throw new (PropertyVetoException) {
+    /*public*/ /*final*/ void DefaultLogixNGManager::deleteBean(/*@Nonnull*/ /*LogixNG*/ NamedBean* nb, /*@Nonnull*/  QString property) /*throw new PropertyVetoException*/ {
      LogixNG*  logixNG =  (LogixNG*)nb;
      for (int i=0; i < logixNG->getNumConditionalNGs(); i++) {
             ConditionalNG* child = logixNG->getConditionalNG(i);
@@ -416,7 +457,7 @@
         // throws PropertyVetoException if vetoed
         fireVetoableChange(property, VPtr<LogixNG>::asQVariant(logixNG));
         if (property ==("DoDelete")) { // NOI18N
-            AbstractManager::deregister(logixNG);
+            AbstractManager::deregister((NamedBean*)logixNG);
             logixNG->Base::dispose();
         }
     }

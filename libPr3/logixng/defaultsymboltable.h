@@ -9,7 +9,7 @@
 #include "variable.h"
 
 class Logger;
-class DefaultSymbolTable : public QObject, public SymbolTable
+class DefaultSymbolTable : /*public QObject,*/ public SymbolTable
 {
   Q_OBJECT
   Q_INTERFACES(SymbolTable)
@@ -17,7 +17,7 @@ class DefaultSymbolTable : public QObject, public SymbolTable
   DefaultSymbolTable(QObject* parent = nullptr);
   /*public*/  DefaultSymbolTable(ConditionalNG* currentConditionalNG, QObject *parent=nullptr);
   /*public*/  DefaultSymbolTable(SymbolTable* prevSymbolTable, QObject* parent = nullptr);
-  /*public*/  QMap<QString, SymbolTable::Symbol*> getSymbols() override;
+  /*public*/  QMap<QString, Symbol*> getSymbols() override;
   /*public*/  SymbolTable* getPrevSymbolTable();
   /*public*/  QMap<QString, QVariant> getSymbolValues()override;
   /*public*/  QVariant getValue(QString name)override;
@@ -41,7 +41,7 @@ class DefaultSymbolTable : public QObject, public SymbolTable
 
 };
 
-/*public*/  /*static*/ class DefaultSymbol : public SymbolTable::Symbol {
+/*public*/  /*static*/ class DefaultSymbol : public Symbol {
 
     /*private*/ /*final*/ QString _name;
     /*private*/ /*final*/ int _index;

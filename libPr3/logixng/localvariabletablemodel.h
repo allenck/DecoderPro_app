@@ -4,7 +4,7 @@
 #include <abstracttablemodel.h>
 #include "symboltable.h"
 #include"malesocket.h"
-
+#include "actionevent.h"
 
 class LocalVariableTableModel : public AbstractTableModel
 {
@@ -25,6 +25,7 @@ class LocalVariableTableModel : public AbstractTableModel
   /*public*/  void setColumnForMenu(JTable* table);
   /*public*/  void add();
   /*public*/  QList<VariableData*> getVariables();
+  /*public*/  void actionPerformed(JActionEvent* event =0);
 
  private:
   /*private*/ /*final*/ QList<VariableData*> _variables = QList<VariableData*>();

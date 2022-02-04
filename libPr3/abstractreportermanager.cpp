@@ -24,7 +24,7 @@ int AbstractReporterManager::getXMLOrder() const{
     return Manager::REPORTERS;
 }
 
-QChar AbstractReporterManager::typeLetter()   { return 'R'; }
+QChar AbstractReporterManager::typeLetter() const   { return 'R'; }
 
 Reporter* AbstractReporterManager::provideReporter(QString sName) {
     Reporter* t = getReporter(sName);

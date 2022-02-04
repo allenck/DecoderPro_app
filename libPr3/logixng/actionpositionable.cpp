@@ -6,6 +6,10 @@
 #include "referenceutil.h"
 #include "recursivedescentparser.h"
 #include "categorydisplay.h"
+#include "conditionalng.h"
+#include "typeconversionutil.h"
+#include "runtimeexception.h"
+
 /**
  * This action controls various things of a Positionable on a panel.
  *
@@ -15,7 +19,8 @@
 
 
 
-    /*public*/  ActionPositionable::ActionPositionable(QString sys, QString user, QObject* parent) : AbstractDigitalAction(sys, user)
+    /*public*/  ActionPositionable::ActionPositionable(QString sys, QString user, QObject* parent)
+     : AbstractDigitalAction(sys, user)
             /*throws BadUserNameException, BadSystemNameException*/ {
         //super(sys, user);
     }
@@ -114,7 +119,7 @@
             QMap<QString, Variable*> variables = QMap<QString, Variable*>();
 
             RecursiveDescentParser* parser = new RecursiveDescentParser(variables);
-            _expressionNode = parser.parseExpression(_formula);
+            _expressionNode = parser->parseExpression(_formula);
         } else {
             _expressionNode = nullptr;
         }
@@ -129,7 +134,7 @@
         return _stateAddressing;
     }
 
-    /*public*/  void  ActionPositionable::setOperation(Operation::TYPE isControlling) {
+    /*public*/  void  ActionPositionable::setOperation(ActionPositionable::Operation::TYPE isControlling) {
         _operation = isControlling;
     }
 
@@ -205,175 +210,184 @@
     /*private*/ QString  ActionPositionable::getNewState() /*throws JmriException*/ {
 
         switch (_stateAddressing) {
-            case Reference:
-                return ReferenceUtil.getReference(
-                        getConditionalNG().getSymbolTable(), _stateReference);
+            case NamedBeanAddressing::Reference:
+                return ReferenceUtil::getReference(
+                        getConditionalNG()->getSymbolTable(), _stateReference);
 
-            case LocalVariable:
-                SymbolTable symbolTable = getConditionalNG().getSymbolTable();
-                return TypeConversionUtil
-                        .convertToString(symbolTable.getValue(_stateLocalVariable), false);
-
-            case Formula:
-                return _stateExpressionNode != null
-                        ? TypeConversionUtil.convertToString(
-                                _stateExpressionNode.calculate(
-                                        getConditionalNG().getSymbolTable()), false)
-                        : null;
+            case NamedBeanAddressing::LocalVariable:
+            {
+                SymbolTable* symbolTable = getConditionalNG()->getSymbolTable();
+                return TypeConversionUtil::
+                        convertToString(symbolTable->getValue(_stateLocalVariable), false);
+            }
+            case NamedBeanAddressing::Formula:
+                return _stateExpressionNode != nullptr
+                        ? TypeConversionUtil::convertToString(
+                                _stateExpressionNode->calculate(
+                                        getConditionalNG()->getSymbolTable()), false)
+                        : nullptr;
 
             default:
-                throw new IllegalArgumentException("invalid _addressing state: " + _stateAddressing.name());
+                throw new IllegalArgumentException("invalid _addressing state: " + NamedBeanAddressing::toString(_stateAddressing));
         }
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void execute() throws JmriException {
-        Positionable positionable;
+    /*public*/  void ActionPositionable::execute() /*throws JmriException*/ {
+        Positionable* positionable;
 
 //        System.out.format("ActionPositionable.execute: %s%n", getLongDescription());
 
         switch (_addressing) {
-            case Direct:
-                positionable = this._positionable;
+            case NamedBeanAddressing::Direct:
+                positionable = this->_positionable;
                 break;
 
-            case Reference:
-                String ref = ReferenceUtil.getReference(
-                        getConditionalNG().getSymbolTable(), _reference);
-                positionable = _editor.getIdContents().get(ref);
+            case NamedBeanAddressing::Reference:
+            {
+                QString ref = ReferenceUtil::getReference(
+                        getConditionalNG()->getSymbolTable(), _reference);
+                positionable = _editor->getIdContents().value(ref);
                 break;
-
-            case LocalVariable:
-                SymbolTable symbolTable = getConditionalNG().getSymbolTable();
-                positionable = _editor.getIdContents().get(TypeConversionUtil
-                                .convertToString(symbolTable.getValue(_localVariable), false));
+            }
+            case NamedBeanAddressing::LocalVariable:
+            {
+                SymbolTable* symbolTable = getConditionalNG()->getSymbolTable();
+                positionable = _editor->getIdContents().value(TypeConversionUtil::
+                                convertToString(symbolTable->getValue(_localVariable), false));
                 break;
-
-            case Formula:
-                positionable = _expressionNode != null ?
-                        _editor.getIdContents().get(TypeConversionUtil
-                                        .convertToString(_expressionNode.calculate(
-                                                getConditionalNG().getSymbolTable()), false))
-                        : null;
+            }
+            case NamedBeanAddressing::Formula:
+                positionable = _expressionNode != nullptr ?
+                        _editor->getIdContents().value(TypeConversionUtil::
+                                        convertToString(_expressionNode->calculate(
+                                                getConditionalNG()->getSymbolTable()), false))
+                        : nullptr;
                 break;
 
             default:
-                throw new IllegalArgumentException("invalid _addressing state: " + _addressing.name());
+                throw new IllegalArgumentException("invalid _addressing state: " + NamedBeanAddressing::toString(_addressing));
         }
 
 //        System.out.format("ActionPositionable.execute: positionable: %s%n", positionable);
 
-        if (positionable == null) {
-            log.error("positionable is null");
+        if (positionable == nullptr) {
+            log->error("positionable is null");
             return;
         }
 
-        String name = (_stateAddressing != NamedBeanAddressing.Direct)
-                ? getNewState() : null;
+        QString name = (_stateAddressing != NamedBeanAddressing::Direct)
+                ? getNewState() : nullptr;
 
-        Operation operation;
-        if ((_stateAddressing == NamedBeanAddressing.Direct)) {
+        Operation::TYPE operation;
+        if (_stateAddressing == NamedBeanAddressing::Direct) {
             operation = _operation;
         } else {
-            operation = Operation.valueOf(name);
+            operation = Operation::valueOf(name);
         }
 
-        ThreadingUtil.runOnLayout(() -> {
+        ThreadingUtil::runOnLayout(new MyThreadAction(operation, positionable, this));
+}
+
+        void MyThreadAction::run()
+        {
             switch (operation) {
-                case Disable:
-                    positionable.setControlling(false);
+                case ActionPositionable::Operation::TYPE::Disable:
+                    positionable->setControlling(false);
                     break;
-                case Enable:
-                    positionable.setControlling(true);
+                case ActionPositionable::Operation::Enable:
+                    positionable->setControlling(true);
                     break;
-                case Hide:
-                    positionable.setHidden(true);
+                case ActionPositionable::Operation::Hide:
+                    positionable->setHidden(true);
                     break;
-                case Show:
-                    positionable.setHidden(false);
+                case ActionPositionable::Operation::Show:
+                    positionable->setHidden(false);
                     break;
                 default:
-                    throw new RuntimeException("operation has invalid value: "+operation.name());
+                    throw new RuntimeException("operation has invalid value: "+ActionPositionable::Operation::toString(operation));
             }
-        });
-    }
+        };
+
+
 
     //@Override
-    /*public*/  FemaleSocket getChild(int index) throws IllegalArgumentException, UnsupportedOperationException {
+    /*public*/  FemaleSocket* ActionPositionable::getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/ {
         throw new UnsupportedOperationException("Not supported.");
     }
 
     //@Override
-    /*public*/  int getChildCount() {
+    /*public*/  int ActionPositionable::getChildCount() {
         return 0;
     }
 
     //@Override
-    /*public*/  String getShortDescription(Locale locale) {
-        return Bundle.getMessage(locale, "ActionPositionable_Short");
+    /*public*/  QString ActionPositionable::getShortDescription(QLocale locale) {
+        return tr(/*locale, */"Icon/Label on panel");
     }
 
     //@Override
-    /*public*/  String getLongDescription(Locale locale) {
-        String editorName = _editorName != null ? _editorName : Bundle.getMessage(locale, "BeanNotSelected");
-        String positonableName;
-        String state;
+    /*public*/  QString ActionPositionable::getLongDescription(QLocale locale) {
+        QString editorName = _editorName != nullptr ? _editorName : tr(/*locale,*/ "Bean Not Selected");
+        QString positonableName;
+        QString state;
 
         switch (_addressing) {
-            case Direct:
-                String positionableName;
-                if (this._positionableName != null) {
-                    positionableName = this._positionableName;
+            case NamedBeanAddressing::Direct:
+            {
+                QString positionableName;
+                if (this->_positionableName != "") {
+                    positionableName = this->_positionableName;
                 } else {
-                    positionableName = Bundle.getMessage(locale, "BeanNotSelected");
+                    positionableName = tr(/*locale,*/ "Bean Not Selected");
                 }
-                positonableName = Bundle.getMessage(locale, "AddressByDirect", positionableName);
+                positonableName = tr(/*locale,*/ "%1").arg(positionableName);
+                break;
+            }
+            case NamedBeanAddressing::Reference:
+                positonableName = tr(/*locale,*/ "by reference %1").arg(_reference);
                 break;
 
-            case Reference:
-                positonableName = Bundle.getMessage(locale, "AddressByReference", _reference);
+            case NamedBeanAddressing::LocalVariable:
+                positonableName = tr(/*locale, */"by local variable %1").arg(_localVariable);
                 break;
 
-            case LocalVariable:
-                positonableName = Bundle.getMessage(locale, "AddressByLocalVariable", _localVariable);
-                break;
-
-            case Formula:
-                positonableName = Bundle.getMessage(locale, "AddressByFormula", _formula);
+            case NamedBeanAddressing::Formula:
+                positonableName = tr(/*locale,*/ "by formula %1").arg(_formula);
                 break;
 
             default:
-                throw new IllegalArgumentException("invalid _addressing state: " + _addressing.name());
+                throw new IllegalArgumentException("invalid _addressing state: " + NamedBeanAddressing::toString(_addressing));
         }
 
         switch (_stateAddressing) {
-            case Direct:
-                state = Bundle.getMessage(locale, "AddressByDirect", _operation._text);
+            case NamedBeanAddressing::Direct:
+                state = tr(/*locale,*/ "by direct %1").arg(Operation::toString(_operation));
                 break;
 
-            case Reference:
-                state = Bundle.getMessage(locale, "AddressByReference", _stateReference);
+            case NamedBeanAddressing::Reference:
+                state = tr(/*locale,*/ "by reference %1").arg(_stateReference);
                 break;
 
-            case LocalVariable:
-                state = Bundle.getMessage(locale, "AddressByLocalVariable", _stateLocalVariable);
+            case NamedBeanAddressing::LocalVariable:
+                state = tr(/*locale,*/ "by local variable %1").arg(_stateLocalVariable);
                 break;
 
-            case Formula:
-                state = Bundle.getMessage(locale, "AddressByFormula", _stateFormula);
+            case NamedBeanAddressing::Formula:
+                state = tr(/*locale,*/ "by formula %1").arg(_stateFormula);
                 break;
 
             default:
-                throw new IllegalArgumentException("invalid _stateAddressing state: " + _stateAddressing.name());
+                throw new IllegalArgumentException("invalid _stateAddressing state: " + NamedBeanAddressing::toString(_stateAddressing));
         }
 
-        return Bundle.getMessage(locale, "ActionPositionable_Long", editorName, positonableName, state);
+        return tr(/*locale,*/ "Set icon/label \"%2\" on panel \"%1\" to \"%3\"").arg(editorName, positonableName, state);
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void setup() {
+    /*public*/  void ActionPositionable::setup() {
         // Do nothing
 /*
         if ((_editorName != null) && (_editor == null)) {
@@ -387,37 +401,37 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void registerListenersForThisClass() {
+    /*public*/  void ActionPositionable::registerListenersForThisClass() {
     }
 
     /** {@inheritDoc} */
     ////@Override
-    /*public*/  void unregisterListenersForThisClass() {
+    /*public*/  void ActionPositionable::unregisterListenersForThisClass() {
     }
 
     /** {@inheritDoc} */
     ////@Override
-    /*public*/  void disposeMe() {
+    /*public*/  void ActionPositionable::disposeMe() {
     }
 
 
-    /*public*/  enum Operation {
-        Disable(Bundle.getMessage("ActionPositionable_Disable")),
-        Enable(Bundle.getMessage("ActionPositionable_Enable")),
-        Hide(Bundle.getMessage("ActionPositionable_Hide")),
-        Show(Bundle.getMessage("ActionPositionable_Show"));
+//    /*public*/  enum Operation {
+//        Disable(Bundle.getMessage("ActionPositionable_Disable")),
+//        Enable(Bundle.getMessage("ActionPositionable_Enable")),
+//        Hide(Bundle.getMessage("ActionPositionable_Hide")),
+//        Show(Bundle.getMessage("ActionPositionable_Show"));
 
-        /*private*/ /*final*/ String _text;
+//        /*private*/ /*final*/ String _text;
 
-        /*private*/ Operation(String text) {
-            this._text = text;
-        }
+//        /*private*/ Operation(String text) {
+//            this._text = text;
+//        }
 
-        ////@Override
-        /*public*/  String toString() {
-            return _text;
-        }
+//        ////@Override
+//        /*public*/  String toString() {
+//            return _text;
+//        }
 
-    }
+//    }
 
-    /*private*/ /*final*/ /*static*/ Logger* log = LoggerFactory::getLogger("ActionPositionable");
+    /*private*/ /*final*/ /*static*/ Logger* ActionPositionable::log = LoggerFactory::getLogger("ActionPositionable");

@@ -15,7 +15,7 @@ public:
     explicit AbstractSignalHeadManager(InternalSystemConnectionMemo* memo, QObject *parent = 0);
     /*public*/ int getXMLOrder()const override;
 //    /*public*/ QString getSystemPrefix()const override;
-    /*public*/ QChar typeLetter() override ;
+    /*public*/ QChar typeLetter() const override ;
     /*public*/ SignalHead* getSignalHead(QString name) override;
     /*public*/ SignalHead* getBySystemName(QString name)
     {

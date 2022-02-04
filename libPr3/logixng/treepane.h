@@ -54,6 +54,8 @@ class TreePane : public JPanel, public PropertyChangeListener
   friend class ThreadAction2;
   friend class ConditionalNGDebugger;
   friend class TreeEditor;
+  friend class DeleteBeanWorker;
+  friend class TEPopupMenu;
 };
 
 class ThreadAction1 : public ThreadAction
@@ -117,18 +119,19 @@ protected:
   friend class PopupMenu;
   friend class ConditionalNGDebugger;
   friend class TreeEditor;
+  friend class DeleteBeanWorker;
 };
 
 /*private*/ /*static*/ /*final*/ class FemaleSocketTreeRenderer : public QObject, public TreeCellRenderer {
   Q_OBJECT
   Q_INTERFACES(TreeCellRenderer)
     /*private*/ /*final*/ FemaleSocketDecorator* _decorator;
-    /*private*/ static ImageIcon* _lockIcon;
+    /*private*/ static ImageIcon* _lockIcon;// = nullptr;
     public:
     /*public*/  FemaleSocketTreeRenderer(FemaleSocketDecorator* decorator);
     //@Override
     /*public*/  QWidget* getTreeCellRendererComponent(JTree* tree, QVariant value, bool selected, bool expanded,
-                                                      bool leaf, int row, bool hasFocus, TreePane *pane);
+                                                      bool leaf, int row, bool hasFocus)override;
 };
 
 /*public*/  /*interface*/ class FemaleSocketDecorator {

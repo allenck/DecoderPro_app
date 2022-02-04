@@ -13,7 +13,8 @@
 
 
 
-    /*public*/ AbstractFemaleSocket::AbstractFemaleSocket(Base* parent, FemaleSocketListener* listener, QString name, QObject* parentObject) : QObject(parentObject){
+    /*public*/ AbstractFemaleSocket::AbstractFemaleSocket(Base* parent, FemaleSocketListener* listener, QString name, QObject* parentObject)
+       : QObject(parentObject){
         if (!FemaleSocket::validateName(name)) {
             throw  IllegalArgumentException("the name is not valid: " + name);
         }
@@ -51,7 +52,7 @@
     //@Override
     /*public*/ bool AbstractFemaleSocket::setParentForAllChildren(QList<QString> errors) {
         if (isConnected()) {
-            getConnectedSocket()->setParent(this);
+            getConnectedSocket()->Base::setParent(this);
             return getConnectedSocket()->setParentForAllChildren(errors);
         }
         return true;
@@ -59,7 +60,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ void AbstractFemaleSocket::_connect(MaleSocket* socket) throw (SocketAlreadyConnectedException) {
+    /*public*/ void AbstractFemaleSocket::_connect(MaleSocket* socket) /*throw (SocketAlreadyConnectedException)*/ {
         if (socket == nullptr) {
             throw  NullPointerException("socket cannot be null");
         }
@@ -78,7 +79,7 @@
         }
 
         _socket = socket;
-        _socket->setParent(this);
+        _socket->Base::setParent(this);
         _listener->connected(this);
         pcs->firePropertyChange(new PropertyChangeEvent(this, Base::PROPERTY_SOCKET_CONNECTED, QVariant(), VPtr<MaleSocket>::asQVariant(_socket)));
 //        pcs->firePropertyChange(Base.PROPERTY_SOCKET_CONNECTED, null, _socket);
@@ -97,7 +98,7 @@
             throw  UnsupportedOperationException("A socket must not be disconnected when listeners are registered");
         }
 
-        _socket->setParent(nullptr);
+        _socket->Base::setParent(nullptr);
         _socket = nullptr;
         _listener->disconnected(this);
         pcs->firePropertyChange(new PropertyChangeEvent(this, Base::PROPERTY_SOCKET_DISCONNECTED, VPtr<MaleSocket>::asQVariant(maleSocket), QVariant()));
@@ -239,7 +240,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ FemaleSocket* AbstractFemaleSocket::getChild(int index) throw (IllegalArgumentException, UnsupportedOperationException) {
+    /*public*/ FemaleSocket* AbstractFemaleSocket::getChild(int index)  {
         throw  UnsupportedOperationException("Not supported.");
     }
 
@@ -257,7 +258,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ void AbstractFemaleSocket::setUserName(QString s) throw (NamedBean::BadUserNameException) {
+    /*public*/ void AbstractFemaleSocket::setUserName(QString s)  {
         throw  UnsupportedOperationException("Not supported.");
     }
 
@@ -390,7 +391,7 @@
     }
 
     //@Override
-    /*public*/ QVector<PropertyChangeListener*> AbstractFemaleSocket::getPropertyChangeListeners() {
+    /*public*/ QVector<PropertyChangeListener*> AbstractFemaleSocket::getPropertyChangeListeners() const{
         return pcs->getPropertyChangeListeners();
     }
 

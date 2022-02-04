@@ -17,6 +17,7 @@ class ThreadingUtil : public QObject
   template<class E>
   static /*public*/ /*<E>*/ E runOnGUIwithReturn(/*@Nonnull*/ /*ReturningThreadAction<E>*/ThreadAction* ta);
   static /*public*/ void runOnGUIEventually(/*@Nonnull*/ ThreadAction* ta) ;
+  static /*public*/ void runOnLayout(/*@Nonnull*/ ThreadAction* ta);
 
  signals:
 
@@ -30,6 +31,7 @@ class ThreadingUtil : public QObject
  */
 //@FunctionalInterface
 /*static*/ /*public*/ /*interface*/ class ThreadAction : public Runnable {
+  Q_OBJECT
  public:
     /**
      * {@inheritDoc}
@@ -37,6 +39,6 @@ class ThreadingUtil : public QObject
      * Must handle its own exceptions.
      */
     //@Override
-    /*public*/ void run();
+  /*public*/ void run() {}
 };
 #endif // THREADINGUTIL_H

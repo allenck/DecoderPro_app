@@ -7,7 +7,7 @@ class JMRIClientReporterManager : public AbstractReporterManager
 {
 public:
  JMRIClientReporterManager(JMRIClientSystemConnectionMemo* memo, QObject* parent = nullptr);
- /*public*/ QString getSystemPrefix() override;
+ /*public*/ QString getSystemPrefix() const override;
  /*public*/ Reporter* createNewReporter(QString systemName, QString userName) override;
  /*public*/ QString getNamedBeanClass()const override {
      return "Reporter";

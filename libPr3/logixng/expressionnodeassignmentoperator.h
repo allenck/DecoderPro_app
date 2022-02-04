@@ -4,7 +4,7 @@
 #include "expressionnode.h"
 #include "tokentype.h"
 
-class ExpressionNodeAssignmentOperator : public ExpressionNode
+class ExpressionNodeAssignmentOperator : public QObject, public ExpressionNode
 {
   Q_OBJECT
  public:

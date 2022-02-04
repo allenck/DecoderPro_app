@@ -11,6 +11,7 @@ class AbstractBase : public AbstractNamedBean, public Base
   Q_OBJECT
   Q_INTERFACES(Base)
  public:
+  /*public*/ AbstractBase(QObject* parent = nullptr) : AbstractNamedBean(parent) {}
   /*public*/ AbstractBase(QString sys, QObject* parent = nullptr) /*throw (BadSystemNameException)*/ ;
   /*public*/ AbstractBase(QString sys, QString user, QObject* parent = nullptr) /*throw (BadUserNameException, BadSystemNameException)*/;
   /*public*/ Base* deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/;
@@ -46,6 +47,14 @@ class AbstractBase : public AbstractNamedBean, public Base
   /*public*/ void getListenerRefsIncludingChildren(QList<QString> list)override;
 
   QObject* self() override {return (QObject*)this;}
+
+  QString getSystemName() const override {return AbstractNamedBean::getSystemName();}
+  QString getUserName() const override {return AbstractNamedBean::getUserName();}
+  QString getComment() override {return AbstractNamedBean::getComment();}
+  void setUserName(QString name) override {AbstractNamedBean::setUserName(name);}
+  void setComment(QString name) override {AbstractNamedBean::setComment(name);}
+
+  QString toString() override {return metaObject()->className();}
  private:
   static Logger* log;
 
@@ -57,7 +66,7 @@ class AbstractBase : public AbstractNamedBean, public Base
    * Important: This method may be called more than once. Methods overriding
    * this method must ensure that listeners are not registered more than once.
    */
-  /*abstract*/ virtual/*protected*/ void registerListenersForThisClass()=0;
+  /*abstract*/ virtual/*protected*/ void registerListenersForThisClass(){}
 
   /**
    * Unregister listeners if this object needs that.
@@ -65,7 +74,7 @@ class AbstractBase : public AbstractNamedBean, public Base
    * Important: This method may be called more than once. Methods overriding
    * this method must ensure that listeners are not unregistered more than once.
    */
-  /*abstract*/ virtual /*protected*/ void unregisterListenersForThisClass()=0;
+  /*abstract*/ virtual /*protected*/ void unregisterListenersForThisClass(){}
   /*protected*/ void printTreeRow(
           PrintTreeSettings* settings,
           QLocale locale,
@@ -77,7 +86,7 @@ class AbstractBase : public AbstractNamedBean, public Base
    * Listeners do not need to be unregistered by this method since they are
    * unregistered by dispose().
    */
-  /*abstract*/virtual  /*protected*/ void disposeMe()=0;
+  /*abstract*/virtual  /*protected*/ void disposeMe(){}
   /*protected*/ void assertListenersAreNotRegistered(Logger* log, QString method);
 
 };

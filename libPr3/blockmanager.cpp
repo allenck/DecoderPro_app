@@ -73,8 +73,8 @@ BlockManager::BlockManager(QObject *parent) :
         return Manager::BLOCKS;
     }
 
-    /*public*/ QString BlockManager::getSystemPrefix() { return "I"; }
-    /*public*/ QChar BlockManager::typeLetter()   { return 'B'; }
+    /*public*/ QString BlockManager::getSystemPrefix() const { return "I"; }
+    /*public*/ QChar BlockManager::typeLetter()  const { return 'B'; }
 
     //@Override
     /*public*/ QString BlockManager::getNamedBeanClass()const {

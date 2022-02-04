@@ -1,5 +1,5 @@
 #include "defaultclipboard.h"
-
+#include "runtimeexception.h"
 /**
  * Default implementation of the clipboard
  *
@@ -21,173 +21,173 @@
 //    }, "A");
 
 
-    /*public*/ DefaultClipboard() {
-        super("IQClipboard");
+    /*public*/ DefaultClipboard::DefaultClipboard(QObject* parent ) : AbstractBase("IQClipboard", parent) {
+        //super("IQClipboard");
 
         // Listeners should never be enabled for the clipboard
-        _femaleSocket.setEnableListeners(false);
+        _femaleSocket->setEnableListeners(false);
 
         try {
-            _femaleSocket.connect(new MaleRootSocket(null));
-        } catch (SocketAlreadyConnectedException ex) {
+            _femaleSocket->_connect(new MaleRootSocket(nullptr, this));
+        } catch (SocketAlreadyConnectedException* ex) {
             // This should never happen
             throw new RuntimeException("Program error", ex);
         }
-        if (!_femaleSocket.setParentForAllChildren(new ArrayList<>())) {
+        if (!_femaleSocket->setParentForAllChildren(QList<QString>())) {
             throw new RuntimeException("Failed to set parent for all children");
         }
-        _clipboardItems.setParent(_femaleSocket.getConnectedSocket());
+        _clipboardItems->setParent(_femaleSocket->getConnectedSocket());
     }
 
     //@Override
-    /*public*/ boolean isEmpty() {
-        return _clipboardItems.getChildCount() == 0;
+    /*public*/ bool DefaultClipboard::isEmpty() {
+        return _clipboardItems->getChildCount() == 0;
     }
 
     //@Override
-    /*public*/ boolean add(MaleSocket maleSocket, List<String> errors) {
-        _clipboardItems.ensureFreeSocketAtTop();
+    /*public*/ bool DefaultClipboard::add(MaleSocket* maleSocket, QList<QString> errors) {
+        _clipboardItems->ensureFreeSocketAtTop();
         try {
-            _clipboardItems.getChild(0).connect(maleSocket);
-            return _clipboardItems.setParentForAllChildren(errors);
-        } catch (SocketAlreadyConnectedException ex) {
+            _clipboardItems->getChild(0)->_connect(maleSocket);
+            return _clipboardItems->setParentForAllChildren(errors);
+        } catch (SocketAlreadyConnectedException* ex) {
             throw new RuntimeException("Cannot add socket", ex);
         }
     }
 
     //@Override
-    /*public*/ MaleSocket fetchTopItem() {
+    /*public*/ MaleSocket* DefaultClipboard::fetchTopItem() {
         if (!isEmpty()) {
-            MaleSocket maleSocket = _clipboardItems.getChild(0).getConnectedSocket();
-            _clipboardItems.getChild(0).disconnect();
+            MaleSocket* maleSocket = _clipboardItems->getChild(0)->getConnectedSocket();
+            _clipboardItems->getChild(0)->_disconnect();
             return maleSocket;
         } else {
-            return null;
+            return nullptr;
         }
     }
 
     //@Override
-    /*public*/ MaleSocket getTopItem() {
+    /*public*/ MaleSocket* DefaultClipboard::getTopItem() {
         if (!isEmpty()) {
-            return _clipboardItems.getChild(0).getConnectedSocket();
+            return _clipboardItems->getChild(0)->getConnectedSocket();
         } else {
-            return null;
+            return nullptr;
         }
     }
 
     //@Override
-    /*public*/ FemaleSocket getFemaleSocket() {
+    /*public*/ FemaleSocket* DefaultClipboard::getFemaleSocket() {
         return _femaleSocket;
     }
 
     //@Override
-    /*public*/ void moveItemToTop(MaleSocket maleSocket) {
-        _clipboardItems.ensureFreeSocketAtTop();
-        if (maleSocket.getParent() != null) {
-            if (!(maleSocket.getParent() instanceof FemaleSocket)) {
+    /*public*/ void DefaultClipboard::moveItemToTop(MaleSocket* maleSocket) {
+        _clipboardItems->ensureFreeSocketAtTop();
+        if (maleSocket->getParent() != nullptr) {
+            if (!(qobject_cast<AbstractFemaleSocket*>(maleSocket->getParent()->self()))) {
                 throw new UnsupportedOperationException("maleSocket.parent() is not a female socket");
             }
-            ((FemaleSocket)maleSocket.getParent()).disconnect();
+            ((AbstractFemaleSocket*)maleSocket->getParent()->self())->_disconnect();
         }
         try {
-            _clipboardItems.getChild(0).connect(maleSocket);
-        } catch (SocketAlreadyConnectedException ex) {
+            _clipboardItems->getChild(0)->_connect(maleSocket);
+        } catch (SocketAlreadyConnectedException* ex) {
             throw new UnsupportedOperationException("Cannot move item to clipboard", ex);
         }
     }
 
     //@Override
-    /*public*/ void setup() {
-        _clipboardItems.setup();
+    /*public*/ void DefaultClipboard::setup() {
+        _clipboardItems->setup();
     }
 
-    /*public*/ boolean replaceClipboardItems(ClipboardMany clipboardItems, List<String> errors) {
+    /*public*/ bool DefaultClipboard::replaceClipboardItems(ClipboardMany* clipboardItems, QList<QString> errors) {
         _clipboardItems = clipboardItems;
 
-        _femaleSocket.disconnect();
+        _femaleSocket->_disconnect();
 
         try {
-            _femaleSocket.connect(new MaleRootSocket(null));
-        } catch (SocketAlreadyConnectedException ex) {
+            _femaleSocket->_connect(new MaleRootSocket(nullptr, this));
+        } catch (SocketAlreadyConnectedException* ex) {
             // This should never happen
             throw new RuntimeException("Program error", ex);
         }
-        boolean result = _femaleSocket.setParentForAllChildren(errors);
-        _clipboardItems.setParent(_femaleSocket.getConnectedSocket());
+        bool result = _femaleSocket->setParentForAllChildren(errors);
+        _clipboardItems->setParent(_femaleSocket->getConnectedSocket());
         return result;
     }
 
     //@Override
-    protected void registerListenersForThisClass() {
+    /*protected*/ void DefaultClipboard::registerListenersForThisClass() {
         throw new UnsupportedOperationException("Not supported");
     }
 
     //@Override
-    protected void unregisterListenersForThisClass() {
+    /*protected*/ void DefaultClipboard::unregisterListenersForThisClass() {
         throw new UnsupportedOperationException("Not supported");
     }
 
     //@Override
-    protected void disposeMe() {
+    /*protected*/ void DefaultClipboard::disposeMe() {
         throw new UnsupportedOperationException("Not supported");
     }
 
     //@Override
-    /*public*/ void setState(int s) throws JmriException {
+    /*public*/ void DefaultClipboard::setState(int s) /*throws JmriException*/ {
         throw new UnsupportedOperationException("Not supported");
     }
 
     //@Override
-    /*public*/ int getState() {
+    /*public*/ int DefaultClipboard::getState() {
         throw new UnsupportedOperationException("Not supported");
     }
 
     //@Override
-    /*public*/ String getBeanType() {
+    /*public*/ QString DefaultClipboard::getBeanType() {
         throw new UnsupportedOperationException("Not supported");
     }
 
     //@Override
-    /*public*/ Base getDeepCopy(Map<String, String> systemNames, Map<String, String> userNames) throws JmriException {
+    /*public*/ Base* DefaultClipboard::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/ {
         throw new UnsupportedOperationException("Not supported");
     }
 
     //@Override
-    /*public*/ String getShortDescription(Locale locale) {
+    /*public*/ QString DefaultClipboard::getShortDescription(QLocale locale) {
         throw new UnsupportedOperationException("Not supported");
     }
 
     //@Override
-    /*public*/ String getLongDescription(Locale locale) {
+    /*public*/ QString DefaultClipboard::getLongDescription(QLocale locale) {
         throw new UnsupportedOperationException("Not supported");
     }
 
     //@Override
-    /*public*/ Base getParent() {
-        return null;
+    /*public*/ Base* DefaultClipboard::getParent() const {
+        return nullptr;
     }
 
     //@Override
-    /*public*/ void setParent(Base parent) {
+    /*public*/ void DefaultClipboard::setParent(Base* parent) {
         throw new UnsupportedOperationException("Not supported");
     }
 
     //@Override
-    /*public*/ FemaleSocket getChild(int index) throws IllegalArgumentException, UnsupportedOperationException {
+    /*public*/ FemaleSocket* DefaultClipboard::getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/ {
         throw new UnsupportedOperationException("Not supported");
     }
 
     //@Override
-    /*public*/ int getChildCount() {
+    /*public*/ int DefaultClipboard::getChildCount() {
         throw new UnsupportedOperationException("Not supported");
     }
 
     //@Override
-    /*public*/ Category getCategory() {
+    /*public*/ Category* DefaultClipboard::getCategory() {
         throw new UnsupportedOperationException("Not supported");
     }
 
-
+#if 0
     private class MaleRootSocket extends AbstractMaleSocket {
 
         /*public*/ MaleRootSocket(BaseManager<? extends NamedBean> manager) {
@@ -250,3 +250,4 @@
         }
 
     }
+#endif

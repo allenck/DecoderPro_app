@@ -212,6 +212,7 @@ class JAVAQTSHARED_EXPORT UnsupportedOperationException : public Exception
 {
  public:
     UnsupportedOperationException(QString s ="");
+    UnsupportedOperationException(QString s , Throwable* cause );
     ~UnsupportedOperationException() throw() {}
 };
 class JAVAQTSHARED_EXPORT NullPointerException : public Exception

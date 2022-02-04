@@ -58,7 +58,7 @@
 
     /*public*/ void addLocalVariable(
             QString name,
-            SymbolTable::InitialValueType::TYPES initialValueType,
+            InitialValueType::TYPES initialValueType,
             QString initialValueData);
 
 //    public void removeLocalVariable(String name);
@@ -113,7 +113,7 @@
 
         /*public*/ ParameterData(
                 QString name,
-                SymbolTable::InitialValueType::TYPES initalValueType,
+                InitialValueType::TYPES initalValueType,
                 QString initialValueData,
                 ReturnValueType::TYPES returnValueType,
                 QString returnValueData) : VariableData(name, initalValueType, initialValueData){

@@ -13,5 +13,5 @@
  public:
   AnalogExpressionBean(QString name, QObject* parent = nullptr) : NamedBean(name, parent){}
 };
-
+Q_DECLARE_INTERFACE(AnalogExpressionBean, "AnalogExpressionBean")
 #endif // ANALOGEXPRESSIONBEAN_H

@@ -77,8 +77,8 @@ class ConditionalNGDebugger : public JmriJFrame, public PropertyChangeListener
 
  protected:
   /*protected*/ /*final*/ ConditionalNG* _conditionalNG;
-
-
+ friend class PopupMenu;
+};
 
  /*protected*/ class PopupMenu : QMenu , public ActionListener {
   Q_OBJECT
@@ -105,7 +105,7 @@ class ConditionalNGDebugger : public JmriJFrame, public PropertyChangeListener
      /*public*/  void actionPerformed(JActionEvent* e = nullptr) ;
      friend class TreePane;
  };
-};
+
 Q_DECLARE_INTERFACE(ConditionalNGDebugger::ConditionalNGEventListener, "ConditionalNGEventListener")
 
 #endif // CONDITIONALNGDEBUGGER_H

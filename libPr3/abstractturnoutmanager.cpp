@@ -42,7 +42,7 @@ int AbstractTurnoutManager::getXMLOrder()const{
 }
 
 //protected int xmlorder = 20;
-QChar AbstractTurnoutManager::typeLetter() { return 'T'; }
+QChar AbstractTurnoutManager::typeLetter() const { return 'T'; }
 
 Turnout* AbstractTurnoutManager::provideTurnout(QString name)
 {

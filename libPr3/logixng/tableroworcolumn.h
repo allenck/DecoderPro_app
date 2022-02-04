@@ -7,7 +7,7 @@
  *
  * @author Daniel Bergqvist Copyright 2021
  */
-/*public*/  /*enum*/class TableRowOrColumn {
+/*public*/  /*enum*/class TableRowOrColumn  : public QObject{
   Q_OBJECT
  public:
   enum TYPE{Row, Column};

@@ -13,7 +13,7 @@
  */
 /*public*/ /*interface*/class DebugConfig {
     public:
-    /*public*/ DebugConfig* getCopy();
+    /*public*/ virtual DebugConfig* getCopy()=0;
 
 };
 Q_DECLARE_INTERFACE(DebugConfig, "DebugConfig")

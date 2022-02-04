@@ -20,6 +20,13 @@ class LogixNG;
 class ConditionalNG;
 class RunnableWithBase;
 
+class Base;
+/*public*/ /*interface*/class RunnableWithBase  : public QObject{
+  Q_OBJECT
+     public:
+  /*public*/ void run(/*@Nonnull*/ Base* b) {}
+    };
+
 /**
  * The base interface for LogixNG expressions and actions.
  * Used to simplify the user interface.
@@ -102,7 +109,7 @@ class RunnableWithBase;
      * Get the system name.
      * @return the system name
      */
-    /*public*/ virtual QString getSystemName() const=0;
+  /*public*/ virtual QString getSystemName() const {return "";}
 
     /**
      * Get the user name.
@@ -120,13 +127,13 @@ class RunnableWithBase;
      */
     //@CheckReturnValue
     //@CheckForNull
-    /*public*/ virtual QString getComment()=0;
+  /*public*/ virtual QString getComment(){return "";}
 
     /**
      * Get the user name.
      * @param s the new user name
      */
-    /*public*/ virtual void setUserName(/*@CheckForNull*/ QString s) /*throw (NamedBean::BadUserNameException)*/=0;
+  /*public*/ virtual void setUserName(/*@CheckForNull*/ QString s) /*throw (NamedBean::BadUserNameException)*/{}
 
     /**
      * Create a deep copy of myself and my children
@@ -140,7 +147,7 @@ class RunnableWithBase;
      * @throws jmri.JmriException in case of an error
      */
     /*public*/ virtual Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames)
-            /*throw (JmriException)*/=0;
+            /*throw (JmriException)*/ {return nullptr;}
 
     /**
      * Do a deep copy of children from the original to me.
@@ -155,7 +162,7 @@ class RunnableWithBase;
             Base* original,
             QMap<QString, QString> systemNames,
             QMap<QString, QString> userNames)
-            /*throw (JmriException)*/=0;
+            /*throw (JmriException)*/{return nullptr;}
 
     /**
      * Set associated comment text.
@@ -164,7 +171,7 @@ class RunnableWithBase;
      *
      * @param comment the comment or null to remove an existing comment
      */
-    /*public*/ virtual void setComment(/*@CheckForNull*/ QString comment)=0;
+  /*public*/ virtual void setComment(/*@CheckForNull*/ QString comment) {}
 
     /**
      * Get a short description of this item.
@@ -187,32 +194,32 @@ class RunnableWithBase;
      * @param locale The locale to be used
      * @return a short description
      */
-    /*public*/ virtual QString getShortDescription(QLocale locale)=0;
+  /*public*/ virtual QString getShortDescription(QLocale locale){return "";}
 
     /**
      * Get a long description of this item.
      * @param locale The locale to be used
      * @return a long description
      */
-    /*public*/ virtual QString getLongDescription(QLocale locale)=0;
+    /*public*/ virtual QString getLongDescription(QLocale locale){return "";}
 
     /**
      * Get the ConditionalNG of this item.
      * @return the ConditionalNG that owns this item
      */
-    /*public*/ virtual ConditionalNG* getConditionalNG()=0;
+    /*public*/ virtual ConditionalNG* getConditionalNG(){return nullptr;}
 
     /**
      * Get the LogixNG of this item.
      * @return the LogixNG that owns this item
      */
-    /*public*/ virtual LogixNG* getLogixNG()=0;
+    /*public*/ virtual LogixNG* getLogixNG(){return nullptr;}
 
     /**
      * Get the root of the tree that this item belongs to.
      * @return the top most item in the tree
      */
-    /*public*/ virtual Base* getRoot()=0;
+    /*public*/ virtual Base* getRoot(){return nullptr;}
 
     /**
      * Get the parent.
@@ -230,7 +237,7 @@ class RunnableWithBase;
      *
      * @return the parent of this object
      */
-    /*public*/ virtual Base* getParent() const =0;
+  /*public*/ virtual Base* getParent() const {return nullptr;}
 
     /**
      * Set the parent.
@@ -249,7 +256,7 @@ class RunnableWithBase;
      *
      * @param parent the new parent of this object
      */
-    /*public*/ virtual void setParent(Base* parent)=0;
+  /*public*/ virtual void setParent(Base* parent){}
 
     /**
      * Set the parent for all the children.
@@ -257,7 +264,7 @@ class RunnableWithBase;
      * @param errors a list of potential errors
      * @return true if success, false otherwise
      */
-    /*public*/ virtual bool setParentForAllChildren(QList<QString> errors)=0;
+  /*public*/ virtual bool setParentForAllChildren(QList<QString> errors){return false;}
 
     /**
      * Get a child of this item
@@ -267,13 +274,13 @@ class RunnableWithBase;
      * or equal with the value returned by getChildCount()
      */
     /*public*/ virtual FemaleSocket* getChild(int index)
-            /*throw (IllegalArgumentException, UnsupportedOperationException)*/=0;
+            /*throw (IllegalArgumentException, UnsupportedOperationException)*/ {return nullptr;}
 
     /**
      * Get the number of children.
      * @return the number of children
      */
-    /*public*/ virtual int getChildCount()=0;
+    /*public*/ virtual int getChildCount(){return -1;}
 
     /**
      * Is the operation allowed on this child?
@@ -293,21 +300,21 @@ class RunnableWithBase;
      * Get the category.
      * @return the category
      */
-    /*public*/ virtual Category* getCategory()=0;
+    /*public*/ virtual Category* getCategory(){return nullptr;}
 
     /**
      * Is this item active? If this item is enabled and all the parents are
      * enabled, this item is active.
      * @return true if active, false otherwise.
      */
-    /*public*/ virtual bool isActive()=0;
+  /*public*/ virtual bool isActive(){return false;}
 
     /**
      * Setup this object and its children.
      * This method is used to lookup system names for child sockets, turnouts,
      * sensors, and so on.
      */
-    /*public*/ virtual void setup()=0;
+  /*public*/ virtual void setup(){}
 
     /**
      * Deactivate this object, so that it releases as many resources as possible
@@ -326,7 +333,7 @@ class RunnableWithBase;
      * be keeping any other objects alive. Therefore, this method should null
      * out any references to other objects that this object contained.
      */
-    /*public*/ virtual void dispose()=0;  // remove _all_ connections!
+  /*public*/ virtual void dispose(){}  // remove _all_ connections!
 
     /**
      * Set whenether this object is enabled or disabled.
@@ -352,7 +359,7 @@ class RunnableWithBase;
      * Important: This method may be called more than once. Methods overriding
      * this method must ensure that listeners are not registered more than once.
      */
-    /*public*/ virtual void registerListeners()=0;
+  /*public*/ virtual void registerListeners(){}
 
     /**
      * Unregister listeners if this object needs that.
@@ -360,7 +367,7 @@ class RunnableWithBase;
      * Important: This method may be called more than once. Methods overriding
      * this method must ensure that listeners are not unregistered more than once.
      */
-    /*public*/ virtual void unregisterListeners()=0;
+  /*public*/ virtual void unregisterListeners() {}
 
     /**
      * Print the tree to a stream.
@@ -388,7 +395,7 @@ class RunnableWithBase;
             PrintTreeSettings* settings,
             PrintWriter* writer,
             QString indent,
-            /*MutableInt*/int lineNumber) =0;
+    /*MutableInt*/int lineNumber) {}
 
     /**
      * Print the tree to a stream.
@@ -420,7 +427,7 @@ class RunnableWithBase;
             QLocale locale,
             PrintWriter* writer,
             QString indent,
-            /*MutableInt*/int lineNumber)=0;
+    /*MutableInt*/int lineNumber){}
 
     /**
      * Print the tree to a stream.
@@ -438,7 +445,7 @@ class RunnableWithBase;
             PrintWriter* writer,
             QString indent,
             QString currentIndent,
-            /*MutableInt*/int lineNumber)=0;
+    /*MutableInt*/int lineNumber){}
 
     /**
      * Navigate the LogixNG tree.
@@ -448,7 +455,7 @@ class RunnableWithBase;
      * @param report A list of NamedBeanUsageReport usage reports.
      * @param cdl    The current ConditionalNG bean.  Null for Module searches since there is no conditional
      */
-    /*public*/ virtual void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)=0;
+  /*public*/ virtual void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl){}
 
     /**
      * Add a new NamedBeanUsageReport to the report list if there are any matches in this action or expresssion.
@@ -481,7 +488,7 @@ class RunnableWithBase;
      * @param listenerRef A textual reference for the listener, that can be
      *                        presented to the user when a delete is called
      */
-    /*public*/ virtual void addPropertyChangeListener(/*@Nonnull*/ PropertyChangeListener* listener, QString name, QString listenerRef)=0;
+  /*public*/ virtual void addPropertyChangeListener(/*@Nonnull*/ PropertyChangeListener* listener, QString name, QString listenerRef){}
 
     /**
      * Request a call-back when a bound property changes. Bound properties are
@@ -501,11 +508,11 @@ class RunnableWithBase;
      *                         presented to the user when a delete is called
      */
     /*public*/ virtual void addPropertyChangeListener(/*@Nonnull*/ QString propertyName, /*@Nonnull*/ PropertyChangeListener* listener,
-            QString name, QString listenerRef)=0;
+                                                      QString name, QString listenerRef){}
 
-    /*public*/ virtual void updateListenerRef(/*@Nonnull*/ PropertyChangeListener* l, QString newName)=0;
+  /*public*/ virtual void updateListenerRef(/*@Nonnull*/ PropertyChangeListener* l, QString newName){}
 
-    /*public*/ virtual void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/=0;
+  /*public*/ virtual void vetoableChange(/*@Nonnull*/ PropertyChangeEvent* evt) /*throw (PropertyVetoException)*/{}
 
     /**
      * Get the textual reference for the specific listener
@@ -514,7 +521,7 @@ class RunnableWithBase;
      * @return the textual reference
      */
     //@CheckReturnValue
-    /*public*/ virtual QString getListenerRef(/*@Nonnull*/ PropertyChangeListener* l)=0;
+  /*public*/ virtual QString getListenerRef(/*@Nonnull*/ PropertyChangeListener* l) {return "";}
 
     /**
      * Returns a list of all the listeners references
@@ -522,7 +529,7 @@ class RunnableWithBase;
      * @return a list of textual references
      */
     //@CheckReturnValue
-    /*public*/ virtual QList<QString> getListenerRefs()=0;
+  /*public*/ virtual QList<QString> getListenerRefs() {return QList<QString>();}
 
     /**
      * Returns a list of all the listeners references for this object
@@ -531,7 +538,7 @@ class RunnableWithBase;
      * @param list a list of textual references
      */
     //@CheckReturnValue
-    /*public*/ virtual void getListenerRefsIncludingChildren(QList<QString> list)=0;
+  /*public*/ virtual void getListenerRefsIncludingChildren(QList<QString> list){}
 
     /**
      * Number of current listeners. May return -1 if the information is not
@@ -540,7 +547,7 @@ class RunnableWithBase;
      * @return the number of listeners.
      */
     //@CheckReturnValue
-    /*public*/ virtual int getNumPropertyChangeListeners()=0;
+  /*public*/ virtual int getNumPropertyChangeListeners() {return 0;}
 
     /**
      * Get a list of all the property change listeners that are registered using
@@ -552,12 +559,9 @@ class RunnableWithBase;
      */
     //@CheckReturnValue
     //@Nonnull
-    /*public*/ virtual QList<PropertyChangeListener*> getPropertyChangeListenersByReference(/*@Nonnull*/ QString name)=0;
+    /*public*/ virtual QList<PropertyChangeListener*> getPropertyChangeListenersByReference(/*@Nonnull*/ QString name){return QList<PropertyChangeListener*>();}
 
-    /*public*/ /*interface*/class RunnableWithBase {
-     public:
-        /*public*/ void run(/*@Nonnull*/ Base* b);
-    };
+
 
     /**
      * Do something on every item in the sub tree of this item.
@@ -572,10 +576,9 @@ class RunnableWithBase;
 
     /*public*/ /*final*/ QString PRINT_LINE_NUMBERS_FORMAT = "%1:  ";
 
-    /*public*/ virtual QString toString()=0;
+  /*public*/ virtual QString toString(){return "";}
 
     virtual QObject* self() =0;
 };
-
 Q_DECLARE_INTERFACE(Base, "Base")
 #endif // BASE_H

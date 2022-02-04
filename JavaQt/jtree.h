@@ -89,7 +89,7 @@ public:
  /*public*/ void fireTreeExpanded(TreePath* path);
  /*public*/ void fireTreeWillCollapse(TreePath* path) /*throw (ExpandVetoException)*/;
  /*public*/ void fireTreeWillExpand(TreePath* path) /*throw (ExpandVetoException)*/;
- /*public*/ void expandRow(int row);
+ /*public*/ void expandRow(int row) {};
  /*public*/ void collapsePath(TreePath* path);
  /*public*/ void collapseRow(int row);
  /*public*/ bool isExpanded(int row);

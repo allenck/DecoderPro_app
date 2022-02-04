@@ -46,7 +46,7 @@ private:
  /*private*/ bool stateSaved = false;
 
 protected:
-/*protected*/ AbstractManager* makeInternalManager() override;
+/*protected*/ AbstractManager* makeInternalManager() const override;
 /*protected*/ NamedBean* makeBean(AbstractManager* m, QString systemName, QString userName)override;
 
 };

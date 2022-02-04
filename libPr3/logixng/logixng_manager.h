@@ -5,7 +5,7 @@
 #include "logixng.h"
 #include "clipboard.h"
 #include "base.h"
-
+#include "defaultclipboard.h"
 
 /**
  * Manager for LogixNG
@@ -24,7 +24,7 @@ public:
      * @return a new LogixNG or null if unable to create
      */
     /*public*/ virtual LogixNG* createLogixNG(QString systemName, QString userName)
-            throw (IllegalArgumentException) =0;
+            /*throw (IllegalArgumentException)*/ =0;
 
     /**
      * For use with User GUI, to allow the auto generation of systemNames, where
@@ -34,7 +34,7 @@ public:
      * @return a new LogixNG or null if unable to create
      */
     /*public*/ virtual LogixNG* createLogixNG(QString userName)
-            throw (IllegalArgumentException) =0;
+            /*throw (IllegalArgumentException)*/ =0;
 
     /**
      * Locate via user name, then system name if needed. Does not create a new
@@ -47,17 +47,17 @@ public:
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ /*LogixNG*/NamedBean* getByUserName(QString name)  override;
+//    /*public*/ /*LogixNG*/NamedBean* getByUserName(QString name)  override=0;
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ /*LogixNG*/NamedBean* getBySystemName(QString name)  override;
+    ///*public*/ /*LogixNG*/NamedBean* getBySystemName(QString name)  override;
 
     /**
      * Create a new system name for a LogixNG.
      * @return a new system name
      */
-    /*public*/ virtual QString getAutoSystemName() const =0;
+  /*public*/ virtual QString getAutoSystemName() const {return "";}
 
     /**
      * Setup all LogixNGs. This method is called after a configuration file is
@@ -218,7 +218,7 @@ public:
      * Get the clipboard
      * @return the clipboard
      */
-    /*public*/ virtual Clipboard* getClipboard()=0;
+    /*public*/ virtual DefaultClipboard* getClipboard()=0;
 
     /**
      * Register a manager for later retrieval by getManager()

@@ -125,7 +125,7 @@
      * @param do_i18n true if internationalization should be done, false otherwise
      * @return the boolean value
      */
-    /*public*/  static bool TypeConversionUtil::convertToBoolean(/*@CheckForNull*/ QVariant value, bool do_i18n) {
+    /*public*/  /*static*/ bool TypeConversionUtil::convertToBoolean(/*@CheckForNull*/ QVariant value, bool do_i18n) {
         if (value == QVariant()) {
             return false;
         }

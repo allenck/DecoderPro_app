@@ -7,6 +7,7 @@
 #include "swingpropertychangesupport.h"
 #include "base.h"
 #include "femalesocket.h"
+#include "abstractbase.h"
 
 class AbstractFemaleSocket : public QObject, public FemaleSocket
 {
@@ -19,7 +20,7 @@ class AbstractFemaleSocket : public QObject, public FemaleSocket
   /*public*/ Base* getParent() const override;
   /*public*/ void setParent(/*@Nonnull*/ Base* parent)override;
   /*public*/ bool setParentForAllChildren(QList<QString> errors)override;
-  /*public*/ void _connect(MaleSocket* socket) throw (SocketAlreadyConnectedException)override;
+  /*public*/ void _connect(MaleSocket* socket) /*throw (SocketAlreadyConnectedException)*/override;
   /*public*/ void _disconnect()override;
   /*public*/ MaleSocket* getConnectedSocket()override;
   /*public*/ bool isConnected()override;
@@ -32,10 +33,10 @@ class AbstractFemaleSocket : public QObject, public FemaleSocket
   /*public*/ void unregisterListeners() override;
   /*public*/ /*final*/ bool isActive()override;
   /*public*/ Category* getCategory() override;
-  /*public*/ FemaleSocket* getChild(int index)throw (IllegalArgumentException, UnsupportedOperationException) override;
+  /*public*/ FemaleSocket* getChild(int index)/*throw (IllegalArgumentException, UnsupportedOperationException)*/ override;
   /*public*/ int getChildCount() override;
   /*public*/ QString getUserName() const override;
-  /*public*/ void setUserName(QString s) throw (NamedBean::BadUserNameException)override;
+  /*public*/ void setUserName(QString s) /*throw (NamedBean::BadUserNameException)*/override;
   /*public*/ QString getComment()override;
   /*public*/ void setComment(QString s)override;
   /*public*/ QString getSystemName() const override;

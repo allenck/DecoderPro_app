@@ -210,12 +210,12 @@ template<class T>
 }
 
 //template<class T>
-/*public*/ QString NamedBeanHandleManager::getSystemPrefix() {
+/*public*/ QString NamedBeanHandleManager::getSystemPrefix() const {
     throw new UnsupportedOperationException("Not supported yet.");
 }
 
 //template<class T>
-/*public*/ QChar NamedBeanHandleManager::typeLetter(){
+/*public*/ QChar NamedBeanHandleManager::typeLetter() const{
     throw new UnsupportedOperationException("Not supported yet.");
 }
 

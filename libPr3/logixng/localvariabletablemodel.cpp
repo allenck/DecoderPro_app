@@ -4,6 +4,7 @@
 #include "jtable.h"
 #include "tablecolumnmodel.h"
 #include "tablecolumn.h"
+#include "jlabel.h"
 
 /**
  * Table model for local variables
@@ -88,7 +89,7 @@
                 variable->_name = value.toString();
                 break;
             case COLUMN_TYPE:
-                variable->_initalValueType = (SymbolTable::InitialValueType::toType(value.toString()));
+                variable->_initalValueType = (InitialValueType::toType(value.toString()));
                 break;
             case COLUMN_DATA:
                 variable->_initialValueData =  value.toString();
@@ -144,7 +145,7 @@
             case COLUMN_NAME:
                 return _variables.value(index.row())->getName();
             case COLUMN_TYPE:
-                return SymbolTable::InitialValueType::toString(_variables.value(index.row())->getInitalValueType());
+                return InitialValueType::toString(_variables.value(index.row())->getInitalValueType());
             case COLUMN_DATA:
                 return _variables.value(index.row())->getInitialValueData();
             case COLUMN_MENU:
@@ -165,7 +166,7 @@
 
     /*public*/  void LocalVariableTableModel::add() {
         int row = _variables.size();
-        _variables.append(new VariableData("", SymbolTable::InitialValueType::None, ""));
+        _variables.append(new VariableData("", InitialValueType::None, ""));
         fireTableRowsInserted(row, row);
     }
 
@@ -177,62 +178,64 @@
 
 #if 0
 
-    /*public*/  static class TypeCellRenderer extends DefaultTableCellRenderer {
+    /*public*/  /*static*/ class TypeCellRenderer : public  /*DefaultTableCellRenderer*/ JLabel{
 
         //@Override
-        /*public*/  Component getTableCellRendererComponent(JTable table, Object value,
-                boolean isSelected, boolean hasFocus, int row, int column) {
+        /*public*/  QWidget* getTableCellRendererComponent(JTable* table, QVariant value,
+                bool isSelected, bool hasFocus, int row, int column) {
 
-            if (value == null) value = InitialValueType.None;
+            if (value == QVariant()) value = InitialValueType::None;
 
-            if (! (value instanceof InitialValueType)) {
-                throw new IllegalArgumentException("value is not an InitialValueType: " + value.getClass().getName());
+            if (! (value.canConvert<InitialValueType>())) {
+                throw new IllegalArgumentException("value is not an InitialValueType: " + value.toString());
             }
-            setText(((InitialValueType) value).toString());
+            setText(value.toString());
             return this;
         }
-    }
+    };
 
 
-    /*public*/  static class MenuCellRenderer extends DefaultTableCellRenderer {
+    /*public*/  /*static*/ class MenuCellRenderer : public /*DefaultTableCellRenderer*/ JLabel{
 
         //@Override
-        /*public*/  Component getTableCellRendererComponent(JTable table, Object value,
-                boolean isSelected, boolean hasFocus, int row, int column) {
-
-            if (value == null) value = Menu.Select;
+        /*public*/  QWidget* getTableCellRendererComponent(JTable* table, QVariant value,
+                bool isSelected, bool hasFocus, int row, int column) {
+#if 0
+            if (value == QVariant()) value = Menu.Select;
 
             if (! (value instanceof Menu)) {
                 throw new IllegalArgumentException("value is not an Menu: " + value.getClass().getName());
             }
-            setText(((Menu) value).toString());
+#endif
+            setText((/*(Menu)*/ value).toString());
             return this;
         }
-    }
+    };
 
 
-    /*public*/  static class TypeCellEditor extends AbstractCellEditor
-            implements TableCellEditor, ActionListener {
+    /*public*/  /*static*/ class TypeCellEditor : public JLabel//public AbstractCellEditor
+//            implements TableCellEditor, ActionListener
+    {
 
-        /*private*/ InitialValueType _type;
+        /*private*/ InitialValueType::TYPES _type;
 
         //@Override
         /*public*/  QVariant getCellEditorValue() {
-            return this._type;
+            return this->_type;
         }
 
         //@Override
-        /*public*/  QWidgget* getTableCellEditorComponent(JTable* table, QVariant value,
-                boolean isSelected, int row, int column) {
+        /*public*/  QWidget* getTableCellEditorComponent(JTable* table, QVariant value,
+                bool isSelected, int row, int column) {
 
-            if (value == null) value = InitialValueType.None;
+            if (value != QVariant()) value = InitialValueType::None;
 
-            if (! (value instanceof InitialValueType)) {
-                throw new IllegalArgumentException("value is not an InitialValueType: " + value.getClass().getName());
+            if (! (value.canConvert<InitialValueType>())) {
+                throw new IllegalArgumentException("value is not an InitialValueType: " + value.toString());
             }
 
-            JComboBox<InitialValueType> typeComboBox = new JComboBox<>();
-
+            JComboBox/*<InitialValueType>*/* typeComboBox = new JComboBox();
+#if 0
             for (InitialValueType type : InitialValueType.values()) {
                 typeComboBox.addItem(type);
             }
@@ -240,22 +243,23 @@
 
             typeComboBox.setSelectedItem(value);
             typeComboBox.addActionListener(this);
-
+#endif
             return typeComboBox;
         }
 
         //@Override
         //@SuppressWarnings("unchecked")  // Not possible to check that event.getSource() is instanceof JComboBox<InitialValueType>
-        /*public*/  void actionPerformed(ActionEvent event) {
-            if (! (event.getSource() instanceof JComboBox)) {
+        /*public*/  void actionPerformed(JActionEvent* event) {
+#if 0
+            if (! (event->getSource() instanceof JComboBox)) {
                 throw new IllegalArgumentException("value is not an InitialValueType: " + event.getSource().getClass().getName());
             }
             JComboBox<InitialValueType> typeComboBox =
                     (JComboBox<InitialValueType>) event.getSource();
             _type = typeComboBox.getItemAt(typeComboBox.getSelectedIndex());
         }
-
-    }
+#endif
+    };
 
 
     /*public*/  static class MenuCellEditor extends AbstractCellEditor

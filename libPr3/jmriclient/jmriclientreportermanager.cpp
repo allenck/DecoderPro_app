@@ -22,7 +22,7 @@
     }
 
     //@Override
-    /*public*/ QString JMRIClientReporterManager::getSystemPrefix() {
+    /*public*/ QString JMRIClientReporterManager::getSystemPrefix() const {
         return prefix;
     }
 

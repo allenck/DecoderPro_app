@@ -72,12 +72,12 @@ class AbstractLogixNGTableAction : public AbstractTableAction
   void createPressed(JActionEvent* e=nullptr);
 
  protected:
-  /*protected*/ /*abstract*/ AbstractLogixNGEditor/*<E>*/* getEditor(BeanTableFrame/*<E>*/* f, BeanTableDataModel/*<E>*/* m, QString sName);
+  /*protected*/ /*abstract*/virtual AbstractLogixNGEditor/*<E>*/* getEditor(BeanTableFrame/*<E>*/* f, BeanTableDataModel/*<E>*/* m, QString sName)=0;
   /*protected*/ AbstractLogixNGEditor/*<E>*/* _editor = nullptr;
 
   //@Nonnull
   //@Override
-  /*protected*/ /*abstract*/ Manager/*<E>*/* getManager()override;
+  /*protected*/ /*abstract*/ Manager/*<E>*/* getManager()override =0;
   /*protected*/ /*abstract*/ virtual void enableAll(bool enable)=0;
   /*protected*/ /*abstract*/ virtual void setEnabled(NamedBean* bean, bool enable)=0;
   /*protected*/ /*abstract*/ virtual bool isEnabled(NamedBean* bean)=0;

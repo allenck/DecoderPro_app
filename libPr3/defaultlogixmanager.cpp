@@ -59,8 +59,8 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
     return Manager::LOGIXS;
 }
 
-/*public*/ QString DefaultLogixManager::getSystemPrefix() { return "I"; }
-/*public*/ QChar DefaultLogixManager::typeLetter() { return 'X'; }
+/*public*/ QString DefaultLogixManager::getSystemPrefix() const { return "I"; }
+/*public*/ QChar DefaultLogixManager::typeLetter() const { return 'X'; }
 
 /**
  * Method to create a new Logix if the Logix does not exist

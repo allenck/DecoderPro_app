@@ -20,7 +20,7 @@
     }
 
     /*public*/ AbstractBase::AbstractBase(QString sys, QString user, QObject* parent) : AbstractNamedBean(sys, user, parent)
-            /*throw (BadUserNameException, BadSystemNameException)*/: AbstractNamedBean(sys, user, parent){
+            /*throw (BadUserNameException, BadSystemNameException)*/{
         //super(sys, user);
     }
 
@@ -44,8 +44,8 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/ ConditionalNG* AbstractBase::getConditionalNG() {
-        if (qobject_cast<ConditionalNG*>(this->self() )) return (ConditionalNG*)this;
-        if (getParent() == nullptr) return nullptr;
+        if (static_cast<ConditionalNG*>(this->self() )) return (ConditionalNG*)this;
+        if (getParent()->self() == nullptr) return nullptr;
         return getParent()->getConditionalNG();
     }
 
@@ -89,7 +89,7 @@
                     femaleSocket->_disconnect();
                     result = false;
                 } else {
-                    connectedSocket->setParent(femaleSocket);
+                    connectedSocket->Base::setParent(femaleSocket);
                     result = result && connectedSocket->setParentForAllChildren(errors);
                 }
             }

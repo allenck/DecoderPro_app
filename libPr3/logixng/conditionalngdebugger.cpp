@@ -13,6 +13,7 @@
 #include "treemodelevent.h"
 #include "abstractdebuggermalesocket.h"
 #include "logixng_thread.h"
+#include "femalesocket.h"
 /**
  * Editor of ConditionalNG
  *
@@ -32,7 +33,8 @@
         _conditionalNG = conditionalNG;
 
         _treePane = new TreePane(conditionalNG->getFemaleSocket());
-        _treePane->initComponents([=](FemaleSocket* femaleSocket, JPanel* panel)  {
+#if 0 // TODO:
+        _treePane->initComponents(FemaleSocket* femaleSocket/*, JPanel* panel*/)  {
 
             if (femaleSocket->isConnected()) {
                 MaleSocket* maleSocket = femaleSocket->getConnectedSocket();
@@ -76,7 +78,7 @@
             }
             return panel;
         });
-
+#endif
         // build menu
         QMenuBar* menuBar = new QMenuBar();
 
@@ -323,7 +325,7 @@
                     _currentState = State::None;
 
 
-            QMap<QString, SymbolTable::Symbol*> symbols =
+            QMap<QString, Symbol*> symbols =
                     _conditionalNG->getSymbolTable()->getSymbols();
 
             QString infStr = infoString;
@@ -374,8 +376,8 @@
 
 //    /*protected*/ class PopupMenu : QMenu , public JActionListener {
 
-        /*private*/ /*static*/ /*final*/ QString ConditionalNGDebugger::PopupMenu::ACTION_COMMAND_BREAKPOINT_BEFORE = "breakpoint_before";
-        /*private*/ /*static*/ /*final*/ QString ConditionalNGDebugger::PopupMenu::ACTION_COMMAND_BREAKPOINT_AFTER = "breakpoint_after";
+        /*private*/ /*static*/ /*final*/ QString PopupMenu::ACTION_COMMAND_BREAKPOINT_BEFORE = "breakpoint_before";
+        /*private*/ /*static*/ /*final*/ QString PopupMenu::ACTION_COMMAND_BREAKPOINT_AFTER = "breakpoint_after";
 //        /*private*/ static /*final*/ String ACTION_COMMAND_EXPAND_TREE = "expandTree";
 
 //        /*private*/ /*final*/ JTree _tree;
@@ -386,14 +388,14 @@
 //        /*private*/ JMenuItem menuItemBreakpointAfter;
 ////        /*private*/ JMenuItem menuItemExpandTree;
 
-        ConditionalNGDebugger::PopupMenu::PopupMenu(ConditionalNGDebugger* debugger) {
+        PopupMenu::PopupMenu(ConditionalNGDebugger* debugger) {
          this->debugger = debugger;
             if (debugger->_treePane->_tree == nullptr) throw new IllegalArgumentException("_tree is null");
             _tree = debugger->_treePane->_tree;
 
         }
 
-        /*private*/ void ConditionalNGDebugger::PopupMenu::init() {
+        /*private*/ void PopupMenu::init() {
             menuItemBreakpointBefore = new JMenuItem(tr("Breakpoint before"),this);
             connect(menuItemBreakpointBefore, &JMenuItem::triggered, [=]{actionPerformed(new JActionEvent(menuItemBreakpointBefore));});
             menuItemBreakpointBefore->setActionCommand(ACTION_COMMAND_BREAKPOINT_BEFORE);
@@ -452,7 +454,7 @@
 #endif
         }
 
-        /*private*/ void ConditionalNGDebugger::PopupMenu::showPopup(int x, int y, FemaleSocket* femaleSocket, TreePath* path) {
+        /*private*/ void PopupMenu::showPopup(int x, int y, FemaleSocket* femaleSocket, TreePath* path) {
             _currentFemaleSocket = femaleSocket;
             _currentPath = path;
 
@@ -466,7 +468,7 @@
         }
 
         //@Override
-        /*public*/  void ConditionalNGDebugger::PopupMenu::actionPerformed(JActionEvent* e)
+        /*public*/  void PopupMenu::actionPerformed(JActionEvent* e)
         {
          if (e->getActionCommand() == ACTION_COMMAND_BREAKPOINT_BEFORE)
          {
@@ -478,7 +480,7 @@
           debugMaleSocket1->setBreakpointBefore(!debugMaleSocket1->getBreakpointBefore());
           for (TreeModelListener* l : debugger->_treePane->femaleSocketTreeModel->listeners) {
               QVector<QObject*>* ol= new QVector<QObject*>();
-              foreach (QObject* o, _currentPath->getPath()) ol->append(o);
+              foreach (QObject* o, *_currentPath->getPath()) ol->append(o);
               TreeModelEvent* tme = new TreeModelEvent(
                       _currentFemaleSocket->self(),
 //                      _currentPath->getPath(); //this list doesn' need tp be pointer!
@@ -490,7 +492,7 @@
          }
             else if(e->getActionCommand() ==ACTION_COMMAND_BREAKPOINT_AFTER)
             {
-                    MaleSocket* maleSocket2 = _currentFemaleSocket.getConnectedSocket();
+                    MaleSocket* maleSocket2 = _currentFemaleSocket->getConnectedSocket();
                     AbstractDebuggerMaleSocket* debugMaleSocket2 =
                             (AbstractDebuggerMaleSocket*) maleSocket2->find("AbstractDebuggerMaleSocket");
                     if (debugMaleSocket2 == nullptr) throw new RuntimeException("AbstractDebuggerMaleSocket is not found");
@@ -498,7 +500,7 @@
                     debugMaleSocket2->setBreakpointAfter(!debugMaleSocket2->getBreakpointAfter());
                     for (TreeModelListener* l : debugger->_treePane->femaleSocketTreeModel->listeners) {
                      QVector<QObject*>* ol= new QVector<QObject*>();
-                     foreach (QObject* o, _currentPath->getPath()) ol->append(o);TreeModelEvent* tme = new TreeModelEvent(
+                     foreach (QObject* o, *_currentPath->getPath()) ol->append(o);TreeModelEvent* tme = new TreeModelEvent(
                                 _currentFemaleSocket->self(),
 //                                _currentPath->getPath()
                         ol

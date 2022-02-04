@@ -16,7 +16,7 @@
 
 
     /*public*/ DefaultLogixNG::DefaultLogixNG(QString sys, QString user, QObject *parent) /*throw (BadUserNameException, BadSystemNameException)*/
-      : AbstractNamedBean(sys, user, parent)
+      : LogixNG(sys, user, parent)
     {
         //super(sys, user);
 
@@ -29,7 +29,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ Base* DefaultLogixNG::getParent() {
+    /*public*/ Base* DefaultLogixNG::getParent() const {
         return nullptr;
     }
 
@@ -62,7 +62,7 @@
 
     //@Override
     /*public*/ QString DefaultLogixNG::getLongDescription(QLocale locale) {
-        return "LogixNG: "+LogixNG::getDisplayName();
+        return "LogixNG: "+AbstractNamedBean::getDisplayName();
     }
 
     //@Override

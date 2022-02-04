@@ -1,6 +1,6 @@
 #ifndef CONDITIONALNG_MANAGER_H
 #define CONDITIONALNG_MANAGER_H
-#include "manager.h"
+#include "../../appslib/manager.h"
 #include "logixng.h"
 
 /**
@@ -10,7 +10,7 @@
  * @author Daniel Bergqvist   Copyright (C) 2018
  * @author Dave Sand          Copyright (C) 2021
  */
-/*public*/ /*interface*/class ConditionalNG_Manager : Manager/*<ConditionalNG>*/ {
+/*public*/ /*interface*/class ConditionalNG_Manager : public Manager/*<ConditionalNG>*/ {
  Q_INTERFACES(Manager)
  public:
     /**
@@ -87,11 +87,11 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ NamedBean* getByUserName(QString name) const override;
+    /*public*/ NamedBean* getByUserName(QString name)  override;
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ /*ConditionalNG*/NamedBean* getBySystemName(QString name)const override;
+    /*public*/ /*ConditionalNG*/NamedBean* getBySystemName(QString name) override;
 
     /**
      * {@inheritDoc}

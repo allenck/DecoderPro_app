@@ -5,6 +5,7 @@
 #include "editor.h"
 #include "namedbeanaddressing.h"
 #include "expressionnode.h"
+#include "threadingutil.h"
 
 
 class ActionPositionable : public AbstractDigitalAction, public VetoableChangeListener
@@ -12,12 +13,15 @@ class ActionPositionable : public AbstractDigitalAction, public VetoableChangeLi
   Q_OBJECT
   Q_INTERFACES(VetoableChangeListener)
  public:
-  explicit ActionPositionable(QString sys, QString user, QObject *parent = nullptr);
+  explicit ActionPositionable( QObject *parent = nullptr) : AbstractDigitalAction(parent) {}
+  ActionPositionable(QString sys, QString user, QObject *parent = nullptr);
+  ~ActionPositionable(){}
+  ActionPositionable(const ActionPositionable&) : AbstractDigitalAction() {}
   class Operation
   {
-    Q_OBJECT
+    //Q_OBJECT
    public:
-    enum TYPE {Disable, Enable, Hide, Show};
+    enum TYPE {Disable, Enable, Hide, Show, None};
     static QString toString(TYPE t){
      switch(t)
      {
@@ -26,9 +30,17 @@ class ActionPositionable : public AbstractDigitalAction, public VetoableChangeLi
       case Hide: return "Hide";
       case Show: return "Show";
     }
-        return tr("None");
+    return tr("None");
    }
-       static QList<QString> values () {return QList<QString> {"Disable", "Enable", "Hide", "Show"}; }
+    static TYPE valueOf(QString s)
+    {
+     if(s == "Disable") return Disable;
+     if(s == "Enable") return Enable;
+     if(s == "Hide") return Hide;
+     if(s == "Show") return Show;
+     return None;
+    }
+   static QList<QString> values () {return QList<QString> {"Disable", "Enable", "Hide", "Show"}; }
   };
   /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws ParserException*/override;
   /*public*/  void setEditor(/*@CheckForNull*/ QString editorName);
@@ -43,7 +55,7 @@ class ActionPositionable : public AbstractDigitalAction, public VetoableChangeLi
   /*public*/  QString getLocalVariable();
   /*public*/  void setFormula(/*@Nonnull*/ QString formula) /*throws ParserException */;
   /*public*/  QString getFormula();
-  /*public*/  void setStateAddressing(NamedBeanAddressing addressing) /*throws ParserException*/ ;
+  /*public*/  void setStateAddressing(NamedBeanAddressing::TYPE addressing) /*throws ParserException*/ ;
   /*public*/  NamedBeanAddressing::TYPE getStateAddressing();
   /*public*/  void setOperation(Operation::TYPE isControlling);
   /*public*/  Operation::TYPE getOperation();
@@ -65,7 +77,9 @@ class ActionPositionable : public AbstractDigitalAction, public VetoableChangeLi
   /*public*/  void unregisterListenersForThisClass()override;
   /*public*/  void disposeMe()override;
 
-  /*public*/  QString getSysteName() {return AbstractNamedBean::getSystemName();}
+//  void addPropertyChangeListener(PropertyChangeListener* l) override {Base::addPropertyChangeListener(l);}
+//  void addPropertyChangeListener(QString propertyName, PropertyChangeListener* l) override {AbstractNamedBean::addPropertyChangeListener(propertyName, l);}
+
  private:
   static Logger* log;
   /*private*/ QString _editorName;
@@ -89,4 +103,19 @@ class ActionPositionable : public AbstractDigitalAction, public VetoableChangeLi
   /*private*/ QString getNewState() /*throws JmriException */;
 
 };
+class MyThreadAction : public ThreadAction
+{
+  Q_OBJECT
+  ActionPositionable* ap;
+  ActionPositionable::Operation::TYPE operation;
+  Positionable* positionable;
+ public:
+  MyThreadAction(ActionPositionable::Operation::TYPE operation, Positionable* positionablem, ActionPositionable* ap) {
+   this->operation = operation;
+   this->positionable = positionable;
+   this->ap = ap;
+  }
+  void run();
+};
+
 #endif // ACTIONPOSITIONABLE_H

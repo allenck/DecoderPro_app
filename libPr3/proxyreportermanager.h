@@ -89,7 +89,7 @@ public slots:
 private:
  Logger log;
 protected:
- /*protected*/ AbstractManager* makeInternalManager() override;
+ /*protected*/ AbstractManager* makeInternalManager() const override;
  /*protected*/ NamedBean* makeBean(AbstractManager/*<Reporter>*/* manager, QString systemName,
                                    QString userName) /*throws IllegalArgumentException*/override;
 

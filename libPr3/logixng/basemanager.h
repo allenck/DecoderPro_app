@@ -17,8 +17,8 @@ class MaleSocketFactory;
 //template<class E>
 /*public*/ /*interface*/class BaseManager : public Manager/*<E>*/ /*<E extends NamedBean> extends Manager<E>*/
 {
-  Q_INTERFACES(Manager/*<E>*/)
-
+    Q_INTERFACES(Manager/*<E>*/)
+ public:
     /**
      * Remember a NamedBean Object created outside the manager.
      * <p>
@@ -70,6 +70,8 @@ class MaleSocketFactory;
      * @param factory the factory
      */
     /*public*/ virtual void registerMaleSocketFactory(MaleSocketFactory/*<E>*/* factory)=0;
+
+  virtual QObject* self() =0;
 
   friend class TreeEditor;
 };

@@ -8,7 +8,7 @@
 
 class SwingConfiguratorInterface
 {
-  Q_OBJECT
+  //Q_OBJECT
  public:
   //SwingConfiguratorInterface();
   /*public*/ virtual QString getExecuteEvaluateMenuText()=0;
@@ -89,7 +89,7 @@ class SwingConfiguratorInterface
   *
   * @param object the object to update
   */
- /*public*/virtual  void updateObject(/*@Nonnull*/ Base* object);
+ /*public*/virtual  void updateObject(/*@Nonnull*/ Base* object)=0;
 
  /**
   * Returns the name of the class that this class configures.
@@ -103,12 +103,12 @@ class SwingConfiguratorInterface
   * Dispose the panel and remove all the listeners that this class may have
   * registered.
   */
- /*public*/  void dispose();
+ /*public*/ virtual void dispose()=0;
 
   /*public*/  static QList<JComponent*> parseMessage(QString message, QList<JComponent*> components) ;
 
 
 };
 
-
+Q_DECLARE_INTERFACE(SwingConfiguratorInterface, "SwingConfiguratorInterface")
 #endif // SWINGCONFIGURATORINTERFACE_H

@@ -1,11 +1,13 @@
 #ifndef JTABBEDPANE_H
 #define JTABBEDPANE_H
 #include <QTableWidget>
+#include "jcomponent.h"
 
 class QToolButton;
-class JTabbedPane : public QTabWidget
+class JTabbedPane : public QTabWidget, public JComponent
 {
  Q_OBJECT
+  Q_INTERFACES(JComponent)
 public:
  JTabbedPane(QWidget *parent = nullptr);
  void setTabButton(int, QToolButton*);
@@ -24,6 +26,8 @@ public:
  /*public*/ void setToolTipTextAt(int i, QString txt);
  /*public*/ void setSelectedComponent(QWidget* w);
  /*public*/ QWidget* getSelectedComponent();
+
+ QWidget* jself() override {return  this;}
 };
 
 #endif // JTABBEDPANE_H

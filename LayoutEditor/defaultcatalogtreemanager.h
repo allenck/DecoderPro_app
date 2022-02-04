@@ -16,8 +16,8 @@ public:
     ~DefaultCatalogTreeManager(){}
     DefaultCatalogTreeManager(const DefaultCatalogTreeManager&) : CatalogTreeManager() {}
     /*public*/ int getXMLOrder()const override;
-    /*public*/ QString getSystemPrefix()  override;
-    /*public*/ QChar typeLetter() override ;
+    /*public*/ QString getSystemPrefix() const override;
+    /*public*/ QChar typeLetter() const override ;
     /*public*/ CatalogTree* getCatalogTree(QString name) override;
     /*public*/ NamedBean* getBySystemName(QString key) const override;
     /*public*/ NamedBean* getByUserName(QString key) const override;

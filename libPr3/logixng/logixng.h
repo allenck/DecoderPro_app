@@ -2,17 +2,20 @@
 #define LOGIXNG_H
 #include "namedbean.h"
 #include "base.h"
-
+#include "abstractnamedbean.h"
 /**
  * LogixNG.
  *
  * @author Daniel Bergqvist Copyright 2018
  * @author Dave Sand        Copyright 2021
  */
-/*public*/ /*interface*/ class LogixNG : public Base, public NamedBean
+/*public*/ /*interface*/ class LogixNG : public AbstractNamedBean, public Base
 {
-  Q_INTERFACES(Base NamedBean)
+  Q_OBJECT
+  Q_INTERFACES(Base /*NamedBean*/)
 public:
+  LogixNG() {}
+  LogixNG(QString sys, QString user, QObject *parent = nullptr) : AbstractNamedBean(sys, user, parent) {}
     /**
      * Set whenether this LogixNG is enabled or disabled.
      * <P>
@@ -36,21 +39,21 @@ public:
      * @param index index of the element to set the system name
      * @return the system name
      */
-    /*public*/ virtual QString getConditionalNG_SystemName(int index)=0;
+  /*public*/ virtual QString getConditionalNG_SystemName(int index){return "";}
 
     /**
      * Set the system name for the conditionalNG at the specified position in this list
      * @param index index of the element to set the system name
      * @param systemName the new system name
      */
-    /*public*/ virtual void setConditionalNG_SystemName(int index, QString systemName)=0;
+  /*public*/ virtual void setConditionalNG_SystemName(int index, QString systemName){}
 
     /**
      * Get number of ConditionalNGs for this LogixNG.
      *
      * @return the number of conditionals
      */
-    /*public*/ virtual int getNumConditionalNGs()=0;
+  /*public*/ virtual int getNumConditionalNGs(){return 0;}
 
     /**
      * Move 'row' to 'nextInOrder' and shift all between 'nextInOrder' and 'row'
@@ -59,7 +62,7 @@ public:
      * @param nextInOrder target order for ConditionalNG at row
      * @param row         position of ConditionalNG to move
      */
-    /*public*/ virtual void swapConditionalNG(int nextInOrder, int row);
+  /*public*/ virtual void swapConditionalNG(int nextInOrder, int row){}
 
     /**
      * Returns the conditionalNG that will calculate in the specified order.
@@ -70,7 +73,7 @@ public:
      * @param order order in which the ConditionalNG calculates
      * @return the conditionalNG or null
      */
-    /*public*/ virtual ConditionalNG* getConditionalNG(int order)=0;
+    /*public*/ virtual ConditionalNG* getConditionalNG(int order){return nullptr;}
 
     /**
      * Add a child ConditionalNG to the parent LogixNG.
@@ -83,7 +86,7 @@ public:
      * @param conditionalNG The ConditionalNG object.
      * @return true if the ConditionalNG was added, false otherwise.
      */
-    /*public*/ virtual bool addConditionalNG(ConditionalNG* conditionalNG)=0;
+  /*public*/ virtual bool addConditionalNG(ConditionalNG* conditionalNG){return false;}
 
     /**
      * Get a ConditionalNG belonging to this LogixNG.
@@ -91,7 +94,7 @@ public:
      * @param systemName The name of the ConditionalNG object.
      * @return the ConditionalNG object or null if not found.
      */
-    /*public*/ virtual ConditionalNG* getConditionalNG(QString systemName)=0;
+    /*public*/ virtual ConditionalNG* getConditionalNG(QString systemName){return nullptr;}
 
     /**
      * Get a ConditionalNG belonging to this LogixNG.
@@ -99,7 +102,7 @@ public:
      * @param userName The name of the ConditionalNG object.
      * @return the ConditionalNG object or null if not found.
      */
-    /*public*/ virtual ConditionalNG* getConditionalNGByUserName(QString userName)=0;
+    /*public*/ virtual ConditionalNG* getConditionalNGByUserName(QString userName){return nullptr;}
 
     /**
      * Delete a ConditionalNG from this LogixNG.
@@ -112,19 +115,20 @@ public:
      *
      * @param conditionalNG The ConditionalNG to delete
      */
-    /*public*/ virtual void deleteConditionalNG(ConditionalNG* conditionalNG)=0;
+  /*public*/ virtual void deleteConditionalNG(ConditionalNG* conditionalNG) {}
 
     /**
      * Execute all ConditionalNGs if the LogixNG is enabled and activated.
      */
-    /*public*/ virtual void execute();
+  /*public*/ virtual void execute(){}
 
     /**
      * Execute all ConditionalNGs if the LogixNG is enabled and activated.
      * @param allowRunDelayed true if it's ok to run delayed, false otherwise
      */
-    /*public*/ virtual void execute(bool allowRunDelayed);
+  /*public*/ virtual void execute(bool allowRunDelayed) {}
 
+  QObject* self() override{return (QObject*)this;}
 };
 Q_DECLARE_INTERFACE(LogixNG, "LogixNG")
 #endif // LOGIXNG_H

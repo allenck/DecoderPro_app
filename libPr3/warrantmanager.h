@@ -18,8 +18,8 @@ public:
     ~WarrantManager() {}
     WarrantManager(const WarrantManager&) : AbstractManager() {}
     /*public*/ int getXMLOrder()const override;
-    /*public*/ QString getSystemPrefix() override;
-    /*public*/ QChar typeLetter() override;
+    /*public*/ QString getSystemPrefix() const override;
+    /*public*/ QChar typeLetter() const override;
     /*public*/ Warrant* createNewWarrant(QString systemName, QString userName, bool SCWa, long TTP);
     /*public*/ Warrant* getWarrant(QString name);
     /*public*/ NamedBean* getBySystemName(QString name) override;

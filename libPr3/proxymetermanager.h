@@ -33,7 +33,7 @@ class ProxyMeterManager :  public AbstractProxyManager, public MeterManager
 
 
  protected:
-  /*protected*/ AbstractManager* makeInternalManager()  override;
+  /*protected*/ AbstractManager* makeInternalManager() const override;
   /*protected*/ AbstractManager *createSystemManager(/*@Nonnull*/ SystemConnectionMemo* memo)  override;
 
 };

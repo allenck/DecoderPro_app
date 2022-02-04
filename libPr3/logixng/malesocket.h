@@ -14,57 +14,59 @@
  *
  * @author Daniel Bergqvist Copyright 2018
  */
-/*public*/ /*interface*/ class MaleSocket : public Debugable
+class ErrorHandlingType : public QObject
 {
-  Q_INTERFACES(Debugable)
- public:
-   class ErrorHandlingType : public QObject
-   {
-     Q_OBJECT
-        public:
+  Q_OBJECT
+     public:
 //        Default(Bundle.getMessage("ErrorHandling_Default")),
 //        ShowDialogBox(Bundle.getMessage("ErrorHandling_ShowDialogBox")),
 //        LogError(Bundle.getMessage("ErrorHandling_LogError")),
 //        LogErrorOnce(Bundle.getMessage("ErrorHandling_LogErrorOnce")),
 //        ThrowException(Bundle.getMessage("ErrorHandling_ThrowException")),
 //        AbortExecution(Bundle.getMessage("ErrorHandling_AbortExecution"));
-        enum TYPES
-        {
-         Default,
-         ShowDialogBox,
-         LogError,
-         LogErrorOnce,
-         ThrowException,
-         AbortExecution
-        };
-   private:
-        /*private*/ /*final*/ QString _description;
+     enum TYPES
+     {
+      Default,
+      ShowDialogBox,
+      LogError,
+      LogErrorOnce,
+      ThrowException,
+      AbortExecution
+     };
+private:
+     /*private*/ /*final*/ QString _description;
 
-        /*private*/ ErrorHandlingType(QString description) {
-            _description = description;
-        }
-   public:
-        //@Override
-        /*public*/ static QString toString(TYPES t) {
-          switch(t)
-          {
-           case Default:
-            return tr("Use default");
-           case ShowDialogBox:
-            return "Show dialog box";
-           case LogError:
-           return "Log error";
-           case LogErrorOnce:
-           return "Log error once";
-           case ThrowException:
-            return "Throw exception";
-           case AbortExecution:
-           return "Abort execution";
-          default:
-           return "";
-          }
-        }
-    };
+     /*private*/ ErrorHandlingType(QString description) {
+         _description = description;
+     }
+public:
+     //@Override
+     /*public*/ static QString toString(TYPES t) {
+       switch(t)
+       {
+        case Default:
+         return tr("Use default");
+        case ShowDialogBox:
+         return "Show dialog box";
+        case LogError:
+        return "Log error";
+        case LogErrorOnce:
+        return "Log error once";
+        case ThrowException:
+         return "Throw exception";
+        case AbortExecution:
+        return "Abort execution";
+       default:
+        return "";
+       }
+     }
+ };
+/*public*/ /*interface*/ class MaleSocket : public QObject, public Debugable
+{
+  Q_OBJECT
+  Q_INTERFACES(Debugable)
+ public:
+MaleSocket(QObject* parent=nullptr) : QObject(parent){}
 
     /**
      * Set whenether this male socket is enabled or disabled.
@@ -104,31 +106,31 @@
      * Set whenether the node should listen to changes or not.
      * @param listen true if listen, false if not listen
      */
-    /*public*/ virtual void setListen(bool listen);
+    /*public*/ virtual void setListen(bool listen)=0;
 
     /**
      * Is the node locked?
      * @return true if locked, false otherwise
      */
-    /*public*/ virtual bool isLocked();
+    /*public*/ virtual bool isLocked()=0;
 
     /**
      * Set if the node is locked or not.
      * @param locked true if locked, false otherwise
      */
-    /*public*/ virtual void setLocked(bool locked);
+    /*public*/ virtual void setLocked(bool locked)=0;
 
     /**
      * Is the node a system node?
      * @return true if system, false otherwise
      */
-    /*public*/ virtual bool isSystem();
+    /*public*/ virtual bool isSystem()=0;
 
     /**
      * Set if the node is system or not.
      * @param system true if system, false otherwise
      */
-    /*public*/ virtual void setSystem(bool system);
+    /*public*/ virtual void setSystem(bool system)=0;
 
     /**
      * Is the node catching AbortExecution or not?
@@ -140,14 +142,14 @@
      * Set if the node should catch AbortExecution or not.
      * @param catchAbortExecution true if catch, false otherwise
      */
-    /*public*/ virtual void setCatchAbortExecution(bool catchAbortExecution);
+    /*public*/ virtual void setCatchAbortExecution(bool catchAbortExecution)=0;
 
     /*public*/ virtual void addLocalVariable(
             QString name,
-            SymbolTable::InitialValueType::TYPES initialValueType,
+            InitialValueType::TYPES initialValueType,
             QString initialValueData)=0;
 
-    /*public*/ virtual void addLocalVariable(VariableData* variableData);
+    /*public*/ virtual void addLocalVariable(VariableData* variableData)=0;
 
     /*public*/ virtual void clearLocalVariables()=0;
 
@@ -180,7 +182,7 @@
      *
      * @return the manager
      */
-    /*public*/ virtual BaseManager/*<NamedBean*>*/*/*<? extends NamedBean>*/* getManager()=0;
+    /*public*/ virtual BaseManager/*<NamedBean*>*//*<? extends NamedBean>*/* getManager()=0;
 
     /** {@inheritDoc} */
     //@Override
@@ -214,4 +216,5 @@
   virtual QObject* self()=0;
    friend class Base;
 };
+Q_DECLARE_INTERFACE(MaleSocket, "MaleSocket")
 #endif // MALESOCKET_H

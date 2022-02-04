@@ -4,7 +4,7 @@
 #include "expressionnode.h"
 #include "tokentype.h"
 
-class ExpressionNodeArithmeticOperator : public ExpressionNode
+class ExpressionNodeArithmeticOperator : public QObject, public ExpressionNode
 {
   Q_OBJECT
  public:

@@ -71,7 +71,7 @@
                 InstanceManager::getDefault("LogixNG_Manager"))
                         ->createLogixNG(userName);
         logixNG->setEnabled(true);
-        return logixNG;
+        return (NamedBean*)logixNG;
     }
 
     //@Override
@@ -80,7 +80,7 @@
                 InstanceManager::getDefault("LogixNG_Manager"))
                         ->createLogixNG(systemName, userName);
         logixNG->setEnabled(true);
-        return logixNG;
+        return (NamedBean*)logixNG;
     }
 
     //@Override

@@ -17,7 +17,7 @@ public:
  ~DefaultAudioManager() {}
  DefaultAudioManager(const DefaultAudioManager&) : AbstractAudioManager() {}
  /*public*/ int getXMLOrder()const override;
- /*public*/ QString getSystemPrefix() override;
+ /*public*/ QString getSystemPrefix()const override;
  /*public*/ static DefaultAudioManager* instance();
  /*public*/ QT_DEPRECATED QStringList getSystemNameList(int subType);
  /*public*/ QSet<NamedBean*> getNamedBeanSet(QChar subType) override;

@@ -61,7 +61,7 @@ int SectionManager::getXMLOrder() const{
 }
 
 //QString SectionManager::getSystemPrefix() { return "I"; }
-QChar SectionManager::typeLetter()  { return 'Y'; }
+QChar SectionManager::typeLetter() const { return 'Y'; }
 
 //@Override
 /*public*/ QString getNamedBeanClass() {

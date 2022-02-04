@@ -47,14 +47,14 @@ public:
 
  public:
   /*public*/ ClipboardMany(QString sys, QString user, QObject *parent = nullptr)
-          throw (BadUserNameException, BadSystemNameException);
+          ;
   /*public*/ ClipboardMany(QString sys, QString user, QList<ItemData*> itemSystemNames, QObject *parent = nullptr)
-          throw (BadUserNameException, BadSystemNameException);
+          /*throw (BadUserNameException, BadSystemNameException)*/;
   /*public*/ QString getItemSystemName(int index);
   /*public*/ void setup()override;
   /*public*/ Category* getCategory()override;
 
-  /*public*/ FemaleSocket* getChild(int index) throw (IllegalArgumentException, UnsupportedOperationException) override;
+  /*public*/ FemaleSocket* getChild(int index) /*throw (IllegalArgumentException, UnsupportedOperationException)*/ override;
   /*public*/ int getChildCount()override;
   /*public*/ void ensureFreeSocketAtTop();
   /*public*/ void connected(FemaleSocket* socket)override;
@@ -64,7 +64,7 @@ public:
   /*public*/ void setState(int s) /*throw (JmriException)*/override;
   /*public*/ int getState()override;
   /*public*/ QString getBeanType()override;
-  /*public*/ Base* getParent();
+  /*public*/ Base* getParent() const override;
   /*public*/ void setParent(Base* parent)override;
   /*public*/ Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) throw  (JmriException)override;
   /*public*/ Base* deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/override;

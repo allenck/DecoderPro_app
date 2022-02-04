@@ -23,7 +23,7 @@ ProxyReporterManager::ProxyReporterManager(QObject *parent) :
 //public class ProxyReporterManager extends AbstractProxyManager implements ReporterManager {
 
 //@Override
-/*protected*/ AbstractManager *ProxyReporterManager::makeInternalManager()
+/*protected*/ AbstractManager *ProxyReporterManager::makeInternalManager() const
 {
  return (AbstractManager*)((InternalSystemConnectionMemo*) InstanceManager::getDefault("InternalSystemConnectionMemo"))->getReporterManager();
 }

@@ -24,12 +24,14 @@
     /**
      * Common.
      */
-    /*public*/ static /*final*/ Common* COMMON = new Common();
+    /*public*/ /*static*/ /*final*/ Common* Category::COMMON = new Common();
 
     /**
      * Other things.
      */
-    /*public*/ static /*final*/ Other* OTHER = new Other();
+    /*public*/ /*static*/ /*final*/ Other* Category::OTHER = new Other();
+
+    /*private*/ /*static*/ /*volatile*/ QList<Category*>* Category::_categories = nullptr;
 
     /**
      * Get all the registered Categories

@@ -115,6 +115,7 @@ message("Qt path=" + $$(QTDIR))
 SOURCES += \
     aboutaction.cpp \
     aboutdialog.cpp \
+    beanselectpanel.cpp \
     checkforupdateaction.cpp \
     connectionlabel.cpp \
     defaultvariablelightmanager.cpp \
@@ -585,6 +586,7 @@ SOURCES += \
 HEADERS += liblayouteditor_global.h \
     aboutaction.h \
     aboutdialog.h \
+    beanselectpanel.h \
     checkforupdateaction.h \
     connectionlabel.h \
     defaultvariablelightmanager.h \

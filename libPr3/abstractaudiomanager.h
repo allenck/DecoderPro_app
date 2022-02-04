@@ -9,7 +9,7 @@ class LIBPR3SHARED_EXPORT AbstractAudioManager : public AudioManager
  Q_OBJECT
 public:
  explicit AbstractAudioManager(QObject *parent = 0);
- /*public*/ QChar typeLetter()  override;
+ /*public*/ QChar typeLetter() const override;
  /*public*/ Audio* provideAudio(QString name) override; //throws AudioException {
  /*public*/ Audio* getAudio(QString name)override;
  /*public*/ Audio* getBySystemName(QString key) const override;

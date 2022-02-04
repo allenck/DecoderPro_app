@@ -30,7 +30,7 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
 /**
  * Returns the second letter in the system name for a Light
  */
-/*public*/ QChar AbstractLightManager::typeLetter() { return 'L'; }
+/*public*/ QChar AbstractLightManager::typeLetter() const { return 'L'; }
 
 /**
  * Locate via user name, then system name if needed.

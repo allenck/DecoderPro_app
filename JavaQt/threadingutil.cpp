@@ -16,9 +16,9 @@ ThreadingUtil::ThreadingUtil(QObject *parent) : QObject(parent)
  *
  * @author Bob Jacobsen Copyright 2015
  */
-#if 0
-@ThreadSafe
-/*public*/ class ThreadingUtil {
+
+////@ThreadSafe
+///*public*/ class ThreadingUtil {
 
     /**
      * Run some layout-specific code before returning.
@@ -32,10 +32,10 @@ ThreadingUtil::ThreadingUtil(QObject *parent) : QObject(parent)
      *
      * @param ta What to run, usually as a lambda expression
      */
-    static /*public*/ void runOnLayout(@Nonnull ThreadAction ta) {
+    /*static*/ /*public*/ void ThreadingUtil::runOnLayout(/*@Nonnull*/ ThreadAction* ta) {
         runOnGUI(ta);
     }
-
+#if 0
     /**
      * Run some layout-specific code at some later point.
      * <p>

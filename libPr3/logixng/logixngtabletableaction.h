@@ -32,8 +32,8 @@ class LogixNGTableTableAction : public AbstractLogixNGTableAction
   /*protected*/ void enableAll(bool enable)override;
   /*protected*/ void setEnabled(NamedBean* bean, bool enable)override;
   /*protected*/ bool isEnabled(NamedBean* bean)override;
-  /*protected*/ NamedTable* createBean(QString userName)override;
-  /*protected*/ NamedTable* createBean(QString systemName, QString userName)override;
+  /*protected*/ /*NamedTable**/NamedBean* createBean(QString userName)override;
+  /*protected*/ /*NamedTable**/NamedBean* createBean(QString systemName, QString userName)override;
   /*protected*/ void deleteBean(NamedBean* bean)override;
   /*protected*/ bool browseMonoSpace();
   /*protected*/ QString getBeanText(NamedBean* bean)override;

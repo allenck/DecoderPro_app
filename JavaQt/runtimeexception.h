@@ -7,6 +7,7 @@ class RuntimeException : public Exception
 public:
  RuntimeException();
  /*public*/ RuntimeException(QString message);
+ /*public*/ RuntimeException(QString string, Throwable* thrwbl) ;
 
 };
 

@@ -743,7 +743,7 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
  * for four managers that have arbitrary prefixes.
  */
 //@Override
-/*public*/ /*final*/ QString AbstractManager::getSystemPrefix() {
+/*public*/ /*final*/ QString AbstractManager::getSystemPrefix() const {
    QString prefix =  memo->getSystemPrefix();
    return prefix.mid(0,1); // ACK hack to fiz incorrect prefix
 }
