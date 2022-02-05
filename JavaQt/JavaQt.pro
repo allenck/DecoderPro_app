@@ -35,6 +35,7 @@ isEmpty( PROJ_DIR ) {
 
 
 SOURCES += javaqt.cpp \
+    atomicboolean.cpp \
     classmigration.cpp \
     csvformat.cpp \
     csvprinter.cpp \
@@ -68,6 +69,7 @@ SOURCES += javaqt.cpp \
     #systemtype.cpp \
     physicallocation.cpp \
     physicallocationpanel.cpp \
+    stringwriter.cpp \
     swingpropertychangesupport.cpp \
     thread.cpp \
     tristatejcheckbox.cpp \
@@ -288,6 +290,7 @@ SOURCES += javaqt.cpp \
     defaultcomboboxmodel.cpp
 
 HEADERS += javaqt.h\
+ atomicboolean.h \
  classmigration.h \
  csvformat.h \
  csvprinter.h \
@@ -316,6 +319,7 @@ HEADERS += javaqt.h\
  preferNumericComparator.h \
  #systemtype.h \
  propertychangefirer.h \
+ stringwriter.h \
  swingpropertychangesupport.h \
  thread.h \
     treecellrenderer.h \

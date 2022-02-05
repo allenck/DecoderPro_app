@@ -78,6 +78,7 @@
 #include "defaultvariablelightmanager.h"
 #include "defaultlightcontrol.h"
 #include "jmriconfigurationmanager.h"
+#include "../libPr3/logixng/defaultlogixngpreferences.h"
 
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {
@@ -651,6 +652,14 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
    return (new DefaultVariableLightManager(memo))->init();
  }
 
+ // temp for testing
+ if(type == "LogixNGPreferences")
+ {
+
+  DefaultLogixNGPreferences* pref = new DefaultLogixNGPreferences();
+  InstanceManager::store(pref, type);
+  return pref;
+ }
  // this is an error!
  //throw new IllegalArgumentException("Cannot create object of type "+type);
  if(log)

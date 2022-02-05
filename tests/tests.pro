@@ -34,10 +34,10 @@ CONFIG(debug, debug|release) {
     MOC_DIR = moc_objd
     OBJECTS_DIR = moc_objd
 }
+include(../logixng_config.prf)
+#ENABLE_LOGIXNG = "Y" # change to "Y" to compile LogixNG modules
 
 SOURCES += \
-    logixng/symboltabletest.cpp \
-    logixng/symboltabletestaction.cpp \
         tests.cpp \
         junitutil.cpp \
         temporaryfolder.cpp \
@@ -277,9 +277,14 @@ SOURCES += \
     programmers/abstractprogrammertest.cpp \
     programmers/abstractprogrammertestaction.cpp
 
+equals(ENABLE_LOGIXNG, "Y") {
+SOURCES += \
+    logixng/logixng_initializationmanagertestaction.cpp \
+    logixng/symboltabletest.cpp \
+    logixng/symboltabletestaction.cpp \
+    logixng_initializationmanagertest.cpp
+}
 HEADERS += \
-    logixng/symboltabletest.h \
-    logixng/symboltabletestaction.h \
         tests.h \
         tests_global.h \
         junitutil.h \
@@ -520,6 +525,14 @@ HEADERS += \
     misc/fileutilsupporttestaction.h \
     programmers/abstractprogrammertest.h \
     programmers/abstractprogrammertestaction.h
+
+equals(ENABLE_LOGIXNG, "Y") {
+HEADERS += \
+    logixng/logixng_initializationmanagertestaction.h \
+    logixng/symboltabletest.h \
+    logixng/symboltabletestaction.h \
+    logixng_initializationmanagertest.h
+}
 
 unix {
     target.path = /usr/lib

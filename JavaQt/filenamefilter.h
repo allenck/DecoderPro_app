@@ -1,6 +1,7 @@
 #ifndef FILENAMEFILTER_H
 #define FILENAMEFILTER_H
-class File;
+#include "file.h"
+
 class QString;
 /**
  * Instances of classes that implement this interface are used to

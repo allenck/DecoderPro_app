@@ -116,5 +116,7 @@ class LogixNG_Thread;
      */
     /*public*/ virtual  void setSymbolTable(SymbolTable* symbolTable)=0;
 
+  virtual QObject* self() =0;
 };
+Q_DECLARE_INTERFACE(ConditionalNG, "ConditionalNG")
 #endif // CONDITIONALNG_H

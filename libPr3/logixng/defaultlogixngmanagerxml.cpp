@@ -77,8 +77,8 @@
             // Store items on the clipboard
             QDomElement elemClipboard = doc.createElement("Clipboard");  // NOI18N
             Clipboard* clipboard = tm->getClipboard();
-            if (clipboard->getFemaleSocket()->isConnected()) {
-                Base* rootObject = clipboard->getFemaleSocket()->getConnectedSocket()->getObject();
+            if (clipboard->getFemaleSocket()->AbstractFemaleSocket::isConnected()) {
+                Base* rootObject = clipboard->getFemaleSocket()->AbstractFemaleSocket::getConnectedSocket()->getObject();
                 try {
                     QDomElement e = ConfigXmlManager::elementFromObject(rootObject->self());
                     if (e != QDomElement()) {

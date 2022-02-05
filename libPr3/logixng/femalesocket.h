@@ -188,7 +188,7 @@
             getConnectedSocket()->setup();
         }
     }
- QObject* self() =0;
+ //virtual QObject* self() =0;
 };
 Q_DECLARE_INTERFACE(FemaleSocket, "FemaleSocket");
 #endif // FEMALESOCKET_H

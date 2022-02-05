@@ -15,7 +15,7 @@
      * Construct a ConditionalEditor.
      */
     /*public*/  ClipboardEditor::ClipboardEditor(QWidget *parent)
-        : TreeEditor(((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->getClipboard()->getFemaleSocket(),
+        : TreeEditor((FemaleSocket*)((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->getClipboard()->getFemaleSocket(),
                 EnableClipboard::DisableClipboard,
                 EnableRootRemoveCutCopy::EnableRootRemoveCutCopy,
                 EnableRootPopup::DisableRootPopup,

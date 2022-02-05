@@ -147,7 +147,7 @@
      *
      * @since  1.5
      */
-    /*public*/ PrintWriter::PrintWriter(QString fileName) throw (FileNotFoundException) {
+    /*public*/ PrintWriter::PrintWriter(QString fileName) /*throw (FileNotFoundException)*/ {
 //        this-(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName))),
 //             false);
      QFile* file = new QFile(fileName);
@@ -899,7 +899,13 @@
         }
         return this;
     }
-
+#endif
+/*public*/ void PrintWriter::format(const char *format, va_list arg)
+{
+ QString  result = QString::asprintf(format, arg);
+ write(result);
+}
+#if 0
     /**
      * Writes a formatted string to this writer using the specified format
      * string and arguments.  If automatic flushing is enabled, calls to this

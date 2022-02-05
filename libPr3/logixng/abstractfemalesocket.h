@@ -87,7 +87,7 @@ class AbstractFemaleSocket : public QObject, public FemaleSocket
 
  private:
   static Logger* log;
-  /*private*/ Base* _parent;
+  /*private*/ Base* _parent = nullptr;
   /*private*/ MaleSocket* _socket = nullptr;
   /*private*/ QString _name = nullptr;
   /*private*/ bool _listenersAreRegistered = false;

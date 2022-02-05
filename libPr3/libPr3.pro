@@ -124,8 +124,8 @@ equals(ENABLE_SCRIPTING, "Y") {
 
 DEFINES += USE_THREAD
 
-
-ENABLE_LOGIXNG = "Y" # change to "Y" to compile LogixNG modules
+include(../logixng_config.prf)
+#ENABLE_LOGIXNG = "Y" # change to "Y" to compile LogixNG modules
 SOURCES += \
  Signal/abstractmrnodetrafficcontroller.cpp \
  Signal/abstractnode.cpp \
@@ -162,7 +162,6 @@ SOURCES += \
     loconetmessage.cpp \
     lnconstants.cpp \
     llnmon.cpp \
- logixng/metatypes.cpp \
     namedbeancombobox.cpp \
     otherconnectiontypelist.cpp \
     serialport.cpp \
@@ -1132,9 +1131,17 @@ SOURCES += \
 
 
 equals(ENABLE_LOGIXNG, "Y") {
- DEFINES += HAVE_LOGIXNG
+ #DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+ logixng/actionatomicboolean.cpp \
+ logixng/defaultconditionalng.cpp \
+ logixng/defaultconditionalngscaffold.cpp \
+ logixng/defaultfemaledigitalactionsocket.cpp \
+ logixng/defaultlogixngpreferences.cpp \
+ logixng/executelock.cpp \
+ logixng/logixng_instanceinitializer.cpp \
+ logixng/metatypes.cpp \
  logixng/actionsignalheadswing.cpp \
  logixng/abstractbasemanager.cpp \
  logixng/abstractnamedtable.cpp \
@@ -1248,7 +1255,6 @@ HEADERS += \
     loconetmessage.h \
     lnconstants.h \
     llnmon.h \
- logixng/metatypes.h \
     namedbeancombobox.h \
     otherconnectiontypelist.h \
     serialport.h \
@@ -2332,6 +2338,14 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+ logixng/actionatomicboolean.h \
+ logixng/defaultconditionalng.h \
+ logixng/defaultconditionalngscaffold.h \
+ logixng/defaultfemaledigitalactionsocket.h \
+ logixng/defaultlogixngpreferences.h \
+ logixng/executelock.h \
+ logixng/logixng_instanceinitializer.h \
+ logixng/metatypes.h \
  logixng/actionsignalheadswing.h \
  logixng/abstractbasemanager.h \
  logixng/abstractnamedtable.h \
@@ -2642,7 +2656,8 @@ else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Tables/ -lTablesd
 INCLUDEPATH += $$PWD/../Tables
 DEPENDPATH += $$PWD/../Tables
 
-DISTFILES +=
+DISTFILES += \
+ ../logixng_config.prf
 
 #contains(WEBAPP, 1) {
 

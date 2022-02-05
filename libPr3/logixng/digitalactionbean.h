@@ -2,17 +2,17 @@
 #define DIGITALACTIONBEAN_H
 #include "namedbean.h"
 #include "digitalaction.h"
-
+#include "abstractbase.h"
 /**
  * A LogixNG digital action bean.
  *
  * @author Daniel Bergqvist Copyright 2018
  */
-/*public*/ /*interface*/class  DigitalActionBean : public DigitalAction {
- //Q_OBJECT
+/*public*/ /*interface*/class  DigitalActionBean :/* public AbstractBase,*/ public DigitalAction {
+  //Q_OBJECT
   Q_INTERFACES(DigitalAction)
  public:
-  //DigitalActionBean(QString name, QObject* parent = nullptr) : NamedBean(name, parent){}
+  //DigitalActionBean(QString name, QObject* parent = nullptr) : AbstractBase(name, parent){}
 };
 Q_DECLARE_INTERFACE(DigitalActionBean, "DigitalActionBean")
 #endif // DIGITALACTIONBEAN_H

@@ -7,19 +7,22 @@
 
 class Formatter;
 class PrintStream;
-class JAVAQTSHARED_EXPORT PrintWriter : public Writer
+class JAVAQTSHARED_EXPORT PrintWriter : public QObject, public Writer
 {
+  Q_OBJECT
+  Q_INTERFACES(Writer)
 public:
  /*public*/ PrintWriter(Writer* out);
  /*public*/ PrintWriter(Writer* out, bool autoFlush);
  /*public*/ PrintWriter(QTextStream* out);
  /*public*/ PrintWriter(QTextStream* out, bool autoFlush);
- /*public*/ PrintWriter(QString fileName) throw (FileNotFoundException);
+ /*public*/ PrintWriter(QString fileName) /*throw (FileNotFoundException)*/;
  /*public*/ void println();
  /*public*/ void flush();
  /*public*/ void print(const QString s);
  /*public*/ void println(const QString x);
  /*public*/ void close() /*throw (IOException)*/ override;
+ /*public*/ void format(const char *format, va_list);
 
 private:
  //void common(Writer* out, bool AutoFlush);

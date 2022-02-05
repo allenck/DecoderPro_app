@@ -44,7 +44,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/ ConditionalNG* AbstractBase::getConditionalNG() {
-        if (static_cast<ConditionalNG*>(this->self() )) return (ConditionalNG*)this;
+        if (qobject_cast<ConditionalNG*>(this->self() )) return (ConditionalNG*)this;
         if (getParent()->self() == nullptr) return nullptr;
         return getParent()->getConditionalNG();
     }

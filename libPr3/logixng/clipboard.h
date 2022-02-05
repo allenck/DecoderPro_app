@@ -2,6 +2,7 @@
 #define CLIPBOARD_H
 #include "malesocket.h"
 #include "femalesocket.h"
+#include "defaultfemaleanysocket.h"
 
 /**
  * The clipboard with actions and expressions
@@ -52,7 +53,7 @@
      *
      * @return the root female socket
      */
-  /*public*/ virtual FemaleSocket* getFemaleSocket() {return nullptr;}
+  /*public*/ virtual AbstractFemaleSocket* getFemaleSocket() {return nullptr;}
 
     /**
      * Moves an item on the clipboard to the top of the clipboard.

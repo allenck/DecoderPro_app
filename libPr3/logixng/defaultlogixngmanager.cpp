@@ -451,7 +451,7 @@ void DLMRunnable::run()
      LogixNG*  logixNG =  (LogixNG*)nb;
      for (int i=0; i < logixNG->getNumConditionalNGs(); i++) {
             ConditionalNG* child = logixNG->getConditionalNG(i);
-            ((ConditionalNG_Manager*)InstanceManager::getDefault("ConditionalNG_Manager"))->deleteBean(child, property);
+            ((ConditionalNG_Manager*)InstanceManager::getDefault("ConditionalNG_Manager"))->deleteBean((NamedBean*)child, property);
         }
 
         // throws PropertyVetoException if vetoed

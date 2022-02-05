@@ -92,7 +92,10 @@
 #include "misc/cvutiltestaction.h"
 #include "misc/fileutilsupporttestaction.h"
 #include "programmers/abstractprogrammertestaction.h"
+#ifdef HAVE_LOGIXNG
 #include "logixng/symboltabletestaction.h"
+#include "logixng/logixng_initializationmanagertestaction.h"
+#endif
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 {
@@ -262,8 +265,10 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     addMenu(layoutEditorMenu);
     layoutEditorMenu->addAction(new LayoutEditorToolsTestAction(this));
     layoutEditorMenu->addAction(new LayoutShapeTestAction(this));
-
+#ifdef HAVE_LOGIXNG
     QMenu* logixNGMenu = new QMenu("LogixNG");
     addMenu(logixNGMenu);
     logixNGMenu->addAction(new SymbolTableTestAction(this));
+    logixMenu->addAction(new LogixNG_InitializationManagerTestAction(this));
+#endif
 }

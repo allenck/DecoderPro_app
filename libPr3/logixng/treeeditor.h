@@ -18,6 +18,7 @@
 #include "jmenuitem.h"
 #include "threadingutil.h"
 //#include "clipboardeditor.h"
+#include "abstractfemalesocket.h"
 
 class TEPopupMenu;
 class FemaleSocket;

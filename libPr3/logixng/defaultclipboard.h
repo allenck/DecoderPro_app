@@ -109,7 +109,7 @@ class DefaultClipboard : public AbstractBase, public Clipboard
   /*public*/ bool add(MaleSocket* maleSocket, QList<QString> errors)override;
   /*public*/ MaleSocket* fetchTopItem()override;
   /*public*/ MaleSocket* getTopItem()override;
-  /*public*/ FemaleSocket* getFemaleSocket()override;
+  /*public*/ AbstractFemaleSocket *getFemaleSocket()override;
   /*public*/ void moveItemToTop(MaleSocket* maleSocket)override;
   /*public*/ void setup()override;
   /*public*/ bool replaceClipboardItems(ClipboardMany* clipboardItems, QList<QString> errors);
@@ -137,7 +137,7 @@ class DefaultClipboard : public AbstractBase, public Clipboard
   /*public*/ void disconnected(FemaleSocket* socket) {
       // Do nothing
   }
-  /*private*/ /*final*/ FemaleAnySocket* _femaleSocket = new MyDefaultFemaleAnySocket(this, new DCFemaleSocketListener(),"A");
+  /*private*/ /*final*/ DefaultFemaleAnySocket* _femaleSocket = new MyDefaultFemaleAnySocket(this, new DCFemaleSocketListener(),"A");
 
  protected:
   /*protected*/ void registerListenersForThisClass()override;
@@ -150,6 +150,7 @@ class DefaultClipboard : public AbstractBase, public Clipboard
 
 /*private*/ class MaleRootSocket : public AbstractMaleSocket {
   DefaultClipboard* defaultClipboard;
+  Q_OBJECT
 public:
         /*public*/ MaleRootSocket(BaseManager/*<? extends NamedBean>*/* manager, DefaultClipboard* defaultClipboard)
    : AbstractMaleSocket(manager, defaultClipboard->_clipboardItems) {

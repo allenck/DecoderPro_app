@@ -1,5 +1,7 @@
 #include "defaultclipboard.h"
 #include "runtimeexception.h"
+#include "defaultfemaleanysocket.h"
+
 /**
  * Default implementation of the clipboard
  *
@@ -25,18 +27,18 @@
         //super("IQClipboard");
 
         // Listeners should never be enabled for the clipboard
-        _femaleSocket->setEnableListeners(false);
+        _femaleSocket->AbstractFemaleSocket::setEnableListeners(false);
 
         try {
-            _femaleSocket->_connect(new MaleRootSocket(nullptr, this));
+            _femaleSocket->AbstractFemaleSocket::_connect(new MaleRootSocket(nullptr, this));
         } catch (SocketAlreadyConnectedException* ex) {
             // This should never happen
             throw new RuntimeException("Program error", ex);
         }
-        if (!_femaleSocket->setParentForAllChildren(QList<QString>())) {
+        if (!_femaleSocket->AbstractFemaleSocket::setParentForAllChildren(QList<QString>())) {
             throw new RuntimeException("Failed to set parent for all children");
         }
-        _clipboardItems->setParent(_femaleSocket->getConnectedSocket());
+        _clipboardItems->setParent(_femaleSocket->AbstractFemaleSocket::getConnectedSocket());
     }
 
     //@Override
@@ -76,7 +78,7 @@
     }
 
     //@Override
-    /*public*/ FemaleSocket* DefaultClipboard::getFemaleSocket() {
+    /*public*/ AbstractFemaleSocket* DefaultClipboard::getFemaleSocket() {
         return _femaleSocket;
     }
 
@@ -104,16 +106,16 @@
     /*public*/ bool DefaultClipboard::replaceClipboardItems(ClipboardMany* clipboardItems, QList<QString> errors) {
         _clipboardItems = clipboardItems;
 
-        _femaleSocket->_disconnect();
+        _femaleSocket->AbstractFemaleSocket::_disconnect();
 
         try {
-            _femaleSocket->_connect(new MaleRootSocket(nullptr, this));
+            _femaleSocket->AbstractFemaleSocket::_connect(new MaleRootSocket(nullptr, this));
         } catch (SocketAlreadyConnectedException* ex) {
             // This should never happen
             throw new RuntimeException("Program error", ex);
         }
-        bool result = _femaleSocket->setParentForAllChildren(errors);
-        _clipboardItems->setParent(_femaleSocket->getConnectedSocket());
+        bool result = _femaleSocket->AbstractFemaleSocket::setParentForAllChildren(errors);
+        _clipboardItems->setParent(_femaleSocket->AbstractFemaleSocket::getConnectedSocket());
         return result;
     }
 

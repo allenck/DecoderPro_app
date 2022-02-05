@@ -377,7 +377,7 @@ public:
         /**
          * Get associated comment text.
          */
-        virtual QString getComment();
+    virtual QString getComment();
 
         /**
          * Set associated comment text.
@@ -385,7 +385,7 @@ public:
          * Comments can be any valid text.
          * @param comment Null means no comment associated.
          */
-        virtual void setComment(QString /*comment*/);
+    virtual void setComment(QString /*comment*/);
 
         /**
          * Get a list of references for the specified bean.

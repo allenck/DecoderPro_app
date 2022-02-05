@@ -31,7 +31,8 @@ class ErrorHandlingType : public QObject
       LogError,
       LogErrorOnce,
       ThrowException,
-      AbortExecution
+      AbortExecution,
+      None
      };
 private:
      /*private*/ /*final*/ QString _description;
@@ -47,18 +48,28 @@ public:
         case Default:
          return tr("Use default");
         case ShowDialogBox:
-         return "Show dialog box";
+         return tr("Show dialog box");
         case LogError:
-        return "Log error";
+        return tr("Log error");
         case LogErrorOnce:
-        return "Log error once";
+        return tr("Log error once");
         case ThrowException:
-         return "Throw exception";
+         return tr("Throw exception");
         case AbortExecution:
-        return "Abort execution";
+        return tr("Abort execution");
        default:
         return "";
        }
+     }
+     /*public*/ static TYPES  valueOf(QString s)
+     {
+      if(s == tr("Use default")) return  Default;
+      if(s ==tr("Show dialog box")) return ShowDialogBox;
+      if(s ==tr("Log error") ) return LogError;
+      if(s == tr("Log error once")) return  LogErrorOnce;
+      if(s == tr("Throw exception")) return ThrowException;
+      if(s == tr("Abort execution")) return AbortExecution;
+      return None;
      }
  };
 /*public*/ /*interface*/ class MaleSocket : public QObject, public Debugable

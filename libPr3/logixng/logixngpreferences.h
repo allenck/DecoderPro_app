@@ -34,7 +34,7 @@
      * @param value true if LogixNG should start on program start or when a
      * panel is loaded, false otherwise
      */
-    /*public*/ virtual void setStartLogixNGOnStartup(bool value);
+    /*public*/ virtual void setStartLogixNGOnStartup(bool value)=0;
 
     /**
      * Get whenether LogixNG should be started when the program starts or a
@@ -94,6 +94,7 @@
      */
     /*public*/ virtual bool getTreeEditorHighlightRow()=0;
 
+    virtual QObject* self() =0;
 };
 Q_DECLARE_INTERFACE(LogixNGPreferences, "LogixNGPreferences")
 #endif // LOGIXNGPREFERENCES_H

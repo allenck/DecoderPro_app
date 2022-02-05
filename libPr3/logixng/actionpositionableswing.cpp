@@ -252,7 +252,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  QString ActionPositionableSwing::toString() {
-        return tr("Short");
+        return tr("Icon/Label on panel");
     }
 
     //@Override

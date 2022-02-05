@@ -416,7 +416,7 @@
 
         level++;
         for (int i=0; i < this->getNumConditionalNGs(); i++) {
-            getConditionalNG(i)->getUsageTree(level, bean, report, getConditionalNG(i));
+            getConditionalNG(i)->getUsageTree(level, bean, report, (NamedBean*)getConditionalNG(i));
         }
     }
 

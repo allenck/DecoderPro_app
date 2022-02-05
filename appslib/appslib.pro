@@ -34,8 +34,16 @@ DEFINES += APPSLIB_LIBRARY
 
 include(../scripts_config.prf)
 
-
+#LogixNG config:
+include(../logixng_config.prf)
+equals(ENABLE_LOGIXNG_INIT, "Y") {
+    DEFINES += HAVE_LOGIXNG
+    message("Appslib: LogixNG enabled")
+} else {
+ message("Appslib: LogixNG disabled")
+}
 #include(../jmri_libs.prf)
+
 
 message(appslib: PWD = $$PWD)
 
@@ -71,6 +79,8 @@ HEADERS += jynstrument.h \
 } else {
  message("Appslib: scripting disabled")
 }
+
+#LogixNG config:
 
 SOURCES += appslib.cpp \
 #    abstractsystemconnectionaction.cpp \
@@ -403,11 +413,11 @@ else:unix:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPr3/ -lPr3d
 INCLUDEPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Throttle \
     $$PWD/../libPr3/loconet $$PWD/../libPr3/LocoIO $$PWD/../libPr3/Json \
     $$PWD/../libPr3/WiThrottle $$PWD/../libPr3/Web $$PWD/../libPr3/Signal \
-    $$PWD/../libPr3/sprog $$PWD/../libPr3/loconet/HexFile
+    $$PWD/../libPr3/sprog $$PWD/../libPr3/loconet/HexFile $$PWD/../libPr3/logixng
 DEPENDPATH += $$PWD/../libPr3 $$PWD/../libPr3/Roster $$PWD/../libPr3/Throttle \
     $$PWD/../libPr3/loconet $$PWD/../libPr3/LocoIO $$PWD/../libPr3/Json \
     $$PWD/../libPr3/WiThrottle $$PWD/../libPr3/Web $$PWD/../libPr3/Signal \
-    $$PWD/../libPr3/sprog $$PWD/../libPr3/loconet/HexFile
+    $$PWD/../libPr3/sprog $$PWD/../libPr3/loconet/HexFile $$PWD/../libPr3/logixng
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../libPref/release/ -lPref
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../libPref/debug/ -lPref
