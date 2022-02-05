@@ -40,6 +40,7 @@ equals(ENABLE_LOGIXNG_INIT, "Y") {
     DEFINES += HAVE_LOGIXNG
     message("Appslib: LogixNG enabled")
 } else {
+DEFINES -= HAVE_LOGIXNG
  message("Appslib: LogixNG disabled")
 }
 #include(../jmri_libs.prf)

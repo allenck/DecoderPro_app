@@ -125,7 +125,11 @@ equals(ENABLE_SCRIPTING, "Y") {
 DEFINES += USE_THREAD
 
 include(../logixng_config.prf)
-#ENABLE_LOGIXNG = "Y" # change to "Y" to compile LogixNG modules
+equals(ENABLE_LOGIXNG, "Y" ) {
+   message("libPr3: LogixNG enabled")
+} else {
+   message("libPr3: LogixNG disabled")
+}
 SOURCES += \
  Signal/abstractmrnodetrafficcontroller.cpp \
  Signal/abstractnode.cpp \
@@ -1131,7 +1135,7 @@ SOURCES += \
 
 
 equals(ENABLE_LOGIXNG, "Y") {
- #DEFINES += HAVE_LOGIXNG
+ DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
  logixng/actionatomicboolean.cpp \
@@ -1211,7 +1215,8 @@ equals(ENABLE_LOGIXNG, "Y") {
  logixng/clipboardmany.cpp \
  logixng/defaultclipboard.cpp \
  logixng/defaultfemaleanysocket.cpp
-
+} else {
+DEFINES -= HAVE_LOGIXNG
 }
 
  !contains(FTDI, 1) {

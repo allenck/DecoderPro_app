@@ -35,7 +35,13 @@ CONFIG(debug, debug|release) {
     OBJECTS_DIR = moc_objd
 }
 include(../logixng_config.prf)
-#ENABLE_LOGIXNG = "Y" # change to "Y" to compile LogixNG modules
+equals(ENABLE_LOGIXNG, "Y") {
+    DEFINES += HAVE_LOGIXNG
+    message("tests: LogixNG enabled")
+} else {
+ message("tests: LogixNG disabled")
+}
+
 
 SOURCES += \
         tests.cpp \
@@ -278,11 +284,14 @@ SOURCES += \
     programmers/abstractprogrammertestaction.cpp
 
 equals(ENABLE_LOGIXNG, "Y") {
+DEFINES += HAVE_LOGIXNG
 SOURCES += \
     logixng/logixng_initializationmanagertestaction.cpp \
     logixng/symboltabletest.cpp \
     logixng/symboltabletestaction.cpp \
     logixng_initializationmanagertest.cpp
+} else {
+    DEFINES -= HAVE_LOGIXNG
 }
 HEADERS += \
         tests.h \

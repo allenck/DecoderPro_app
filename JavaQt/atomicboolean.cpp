@@ -3,7 +3,7 @@
 ///*public*/  class AtomicBoolean implements Serializable {
 
     /*private*/ /*static*/ /*final*/ long AtomicBoolean::serialVersionUID = 4654671469794556979L;
-    /*private*/ /*static*/ /*final*/ QAtomicInteger<int> unsafe;
+    /*private*/ /*static*/ /*final*/ QAtomicInteger<int> AtomicBoolean::unsafe;
     /*private*/ /*static*/ /*final*/ long AtomicBoolean::valueOffset;
 
 

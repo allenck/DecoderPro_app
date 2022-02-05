@@ -32,9 +32,10 @@
 #include "jmriuserinterfaceconfigurationprovider.h"
 #include "debugprogrammermanager.h"
 #include "blockmanager.h"
+#ifdef HAVE_LOGIXNG
 #include "logixng_manager.h"
 #include "defaultlogixngmanager.h"
-
+#endif
 JUnitUtil::JUnitUtil(QObject *parent) : QObject(parent)
 {
 
@@ -721,6 +722,7 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 }
 
 /*public*/ /*static*/ void JUnitUtil::initLogixNGManager(bool activate) {
+#ifdef HAVE_LOGIXNG
     LogixNG_Manager* m1 = new DefaultLogixNGManager();
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
         ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m1->self(), Manager::LOGIXNGS);
@@ -776,6 +778,7 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
     InstanceManager.setDefault(StringExpressionManager.class, m9);
 #endif
     if (activate) m1->activateAllLogixNGs(false, false);
+#endif
 }
 
 /*public*/ /*static*/ void JUnitUtil::initInternalLightManager() {

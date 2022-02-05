@@ -54,15 +54,17 @@
             throw new UnsupportedEncodingException(csn);
         }
     }
-
+#endif
     /**
      * Creates a new PrintWriter, without automatic line flushing.
      *
      * @param  out        A character-output stream
      */
-    /*public*/ PrintWriter (Writer out) {
-        this(out, false);
+    /*public*/ PrintWriter::PrintWriter (Writer* out) {
+        //this(out, false);
+     this->psOut = out;
     }
+
 
     /**
      * Creates a new PrintWriter.
@@ -72,15 +74,15 @@
      *                    <tt>printf</tt>, or <tt>format</tt> methods will
      *                    flush the output buffer
      */
-    /*public*/ PrintWriter(Writer out,
+    /*public*/ PrintWriter::PrintWriter(Writer* out,
                        bool autoFlush) {
-        super(out);
-        this.out = out;
-        this.autoFlush = autoFlush;
-        lineSeparator = java.security.AccessController.doPrivileged(
-            new sun.security.action.GetPropertyAction("line.separator"));
+        //super(out);
+        this->psOut = out;
+        this->autoFlush = autoFlush;
+//        lineSeparator = java.security.AccessController.doPrivileged(
+//            new sun.security.action.GetPropertyAction("line.separator"));
     }
-#endif
+
     /**
      * Creates a new PrintWriter, without automatic line flushing, from an
      * existing OutputStream.  This convenience constructor creates the

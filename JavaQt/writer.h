@@ -8,7 +8,7 @@
 
 class JAVAQTSHARED_EXPORT Writer : public QTextStream
 {
-  Q_OBJECT
+  //Q_OBJECT
 public:
     Writer();
     ///*abstract*/ /*public*/ virtual void flush() /*throw (IOException)*/;
