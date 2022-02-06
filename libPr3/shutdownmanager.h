@@ -6,6 +6,7 @@
 #include "liblayouteditor_global.h"
 #include "libPr3_global.h"
 
+class Runnable;
 class LIBPR3SHARED_EXPORT ShutDownManager : public QObject
 {
     Q_OBJECT
@@ -51,6 +52,14 @@ public:
          */
         virtual void _register(ShutDownTask* /*s*/) {}
 
+      /**
+       * Register a task that runs when JMRI is stopping. An attempt to
+       * register an already register task will be silently ignored.
+       *
+       * @param task the execution task
+       * @throws NullPointerException if the task is null
+       */
+      /*public*/ virtual void _register(/*@Nonnull*/ Runnable* /*task*/){}
         /**
          * Deregister a task object.
          * @throws IllegalArgumentException if task object not currently registered

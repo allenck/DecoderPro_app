@@ -26,9 +26,9 @@
  * @return true if the shutdown should continue, false
  * to abort.
  */
-/*public*/ bool QuietShutDownTask::execute() {
-    return doAction();
-}
+///*public*/ bool QuietShutDownTask::execute() {
+//    return doAction();
+//}
 
 /**
  * Provide a subclass-specific method to handle the

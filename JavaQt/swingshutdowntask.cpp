@@ -1,6 +1,9 @@
 #include "swingshutdowntask.h"
 #include <QMessageBox>
 #include <QPushButton>
+#include "loggerfactory.h"
+#include "joptionpane.h"
+
 
 //SwingShutDownTask::SwingShutDownTask(QObject *parent) :
 //    AbstractShutdownTask(parent)
@@ -37,9 +40,8 @@
  this->component = component;
  this->warning = warning;
  this->action = action;
- log = new Logger("SwingShutDownTask");
 }
-
+#if 0
 /**
  * Take the necessary action.
  * @return true if the shutdown should continue, false
@@ -108,7 +110,72 @@
  // break out of loop when ready to continue
  return true;
 }
+#endif
+/**
+ * {@inheritDoc}
+ *
+ * This implementation displays a dialog allowing a user continue stopping
+ * the app, abort stopping the app, or take a custom action. Closing the
+ * dialog without choosing any button is treated as aborting stopping the
+ * app.
+   *
+ * @see #doClose()
+ * @see #didPrompt()
+ * @see #doPrompt()
+ */
+//@Override
+/*public*/ /*final*/ bool SwingShutDownTask::call() {
+    if (!checkPromptNeeded()) {
+        // issue prompt
+        QVariantList possibleValues;
+        if (action != nullptr) {
+            possibleValues = {tr("Continue"),
+                tr("Abort"),
+                action};
+        } else {
+         possibleValues = {tr("Continue"),
+                tr("Abort")};
+        }
 
+        int selectedValue = JOptionPane::showOptionDialog(component,
+                warning,
+                tr("Program Quitting"),
+                JOptionPane::DEFAULT_OPTION,
+                JOptionPane::WARNING_MESSAGE, QIcon(),
+                possibleValues, possibleValues[possibleValues.length() - 1]);
+        switch (selectedValue) {
+            case 1:
+            case -1:
+                // abort quit
+                return false;
+            case 0:
+                // quit anyway
+                return true;
+            case 2:
+                // take action and try again
+                _didPrompt = true;
+                return doPrompt();
+            default:
+                // unexpected value, log but continue
+                log->error(tr("unexpected selection: %1").arg(selectedValue));
+                return true;
+        }
+    }
+    return true;
+}
+
+/**
+ * {@inheritDoc}
+ *
+ * This implementation calls {@link #didPrompt()} if the user took the
+ * prompt action.
+ */
+//@Override
+/*public*/ void SwingShutDownTask::run() {
+    if (_didPrompt) {
+        didPrompt();
+    }
+}
 
 /**
  * Provide a subclass-specific check as to whether it's
@@ -121,6 +188,15 @@
     return false;
 }
 
+/**
+ * Handle the request to address a potential blocker to stopping. This
+ * method is called in {@link #run()} and must not interact with the user.
+ * <p>
+ * This is a dummy implementation, intended to be overloaded.
+ */
+/*protected*/ void SwingShutDownTask::didPrompt() {
+    // do nothing
+}
 /**
  * Provide a subclass-specific method to handle the
  * request to fix the problem. This is a dummy implementation,
@@ -139,3 +215,5 @@
 /*protected*/ bool SwingShutDownTask::doClose() {
     return true;
 }
+
+/*private*/ /*final*/ /*static*/ Logger* SwingShutDownTask::log = LoggerFactory::getLogger("SwingShutDownTask");

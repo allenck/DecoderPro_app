@@ -10,8 +10,10 @@ class JAVAQTSHARED_EXPORT SwingShutDownTask : public AbstractShutDownTask
 public:
     //explicit SwingShutDownTask(QObject *parent = 0);
     /*public*/ SwingShutDownTask(QString name, QString warning, QString action, QWidget* component, QObject *parent = 0);
-    /*public*/ bool execute();
+//    /*public*/ bool execute();
     QWidget* component;
+    /*public*/ /*final*/ bool call()final override;
+    /*public*/ void run()override;
 
 signals:
 
@@ -19,11 +21,13 @@ public slots:
 private:
     QString warning;
     QString action;
-    Logger* log;
-protected:
-    /*protected*/ virtual bool checkPromptNeeded() ;
-    /*protected*/ virtual bool doPrompt();
-    /*protected*/ virtual bool doClose();
-};
+    static Logger* log;
+    /*private*/ bool _didPrompt = false;
 
+protected:
+    /*protected*/ bool checkPromptNeeded() ;
+    /*protected*/ void didPrompt();
+    /*protected*/ bool doPrompt();
+    QT_DEPRECATED/*protected*/ bool doClose();
+};
 #endif // SWINGSHUTDOWNTASK_H

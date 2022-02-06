@@ -6568,6 +6568,16 @@ int PythonQtShell_AbstractShutDownTask::qt_metacall(QMetaObject::Call call, int 
   int result = AbstractShutDownTask::qt_metacall(call, id, args);
   return result >= 0 ? PythonQt::priv()->handleMetaCall(this, _wrapper, call, id, args) : result;
 }
+bool  PythonQtWrapper_AbstractShutDownTask::isDoRun(AbstractShutDownTask* theWrappedObject)
+{
+  return ( theWrappedObject->isDoRun());
+}
+
+void PythonQtWrapper_AbstractShutDownTask::setDoRun(AbstractShutDownTask* theWrappedObject, bool  flag)
+{
+  ( theWrappedObject->setDoRun(flag));
+}
+
 
 
 PythonQtShell_AbstractTurnout::~PythonQtShell_AbstractTurnout() {

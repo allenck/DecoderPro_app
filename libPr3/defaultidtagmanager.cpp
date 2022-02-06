@@ -66,27 +66,28 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 
   // Create shutdown task to save
   log->debug("Register ShutDown task");
-//  InstanceManager::shutDownManagerInstance().Register(new AbstractShutDownTask("Writing IdTags");
-//  { // NOI18N
-//            //@Override
-//            /*public*/ bool execute() {
-//                // Save IdTag details prior to exit, if necessary
-//                log->debug("Start writing IdTag details...");
-//                try {
-//                    ((DefaultIdTagManager)InstanceManager.getDefault(IdTagManager.class)).writeIdTagDetails();
-//                    //new jmri.managers.DefaultIdTagManager().writeIdTagDetails();
-//                }
-//                catch (java.io.IOException ioe) { log->error("Exception writing IdTags: "+ioe); }
-
-//                // continue shutdown
-//                return true;
-//            }
-//  });
-//  ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->_register(new DefaultIdTagShutdownTask("Writing IdTags", this));
+  initShutdownTask();
   _initialised = true;
  }
 }
 
+/*protected*/ void DefaultIdTagManager::initShutdownTask(){
+    // Create shutdown task to save
+    log->debug("Register ShutDown task");
+    if (this->shutDownTask == nullptr) {
+//        this.shutDownTask = () -> {
+//            // Save IdTag details prior to exit, if necessary
+//            log.debug("Start writing IdTag details...");
+//            try {
+//                writeIdTagDetails();
+//            } catch (java.io.IOException ioe) {
+//                log.error("Exception writing IdTags: {}", (Object) ioe);
+//            }
+//        };
+        shutDownTask = new DefaultIdTagShutdownTask(this);
+        ((ShutDownManager*)InstanceManager::getDefault("ShutDownManager"))->_register(this->shutDownTask);
+    }
+}
 /**
  * Don't want to store this information
  */

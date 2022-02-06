@@ -140,8 +140,21 @@ class MyAbstractShutDownTask : public AbstractShutDownTask
 {
  Q_OBJECT
 public:
-    MyAbstractShutDownTask(QString windowTitle, JmriJFrame* frame, QObject* parent = 0);
-    /*public*/ bool execute();
+    MyAbstractShutDownTask(QString windowTitle, JmriJFrame* frame, QObject* parent = 0) : AbstractShutDownTask(windowTitle)
+    {
+     this->windowTitle = windowTitle;
+     this->frame = frame;
+
+    }
+    //@Override
+    /*public*/ bool call() override{
+        frame->handleModified();
+        return true;
+    }
+
+    //@Override
+    /*public*/ void run() override{
+    }
 
  private:
     JmriJFrame* frame;

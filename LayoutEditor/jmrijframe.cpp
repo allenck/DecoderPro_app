@@ -933,16 +933,6 @@ private bool escapeKeyActionClosesWindow = false;
   static_cast<ShutDownManager*>(InstanceManager::getDefault("ShutDownManager"))->_register(task);
  }
 }
-MyAbstractShutDownTask::MyAbstractShutDownTask(QString windowTitle, JmriJFrame *frame, QObject *parent) : AbstractShutDownTask(windowTitle, parent)
-{
- this->windowTitle = windowTitle;
- this->frame = frame;
-}
-bool MyAbstractShutDownTask::execute()
-{
- frame->handleModified();
- return true;
-}
 
 /**
  * When window is finally destroyed, remove it from the

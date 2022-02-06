@@ -51,7 +51,7 @@ public:
     /*public*/ QString getBeanTypeHandled(bool plural) const override;
     /*public*/ QList<Block*> getBlocksOccupiedByRosterEntry(/*@Nonnull*/ RosterEntry* re);
     QCompleter* getCompleter(QString text);
-    virtual /*public*/ NamedBean* provide(QString name) /*throw (IllegalArgumentException)*/ ;
+    virtual /*public*/ NamedBean* provide(QString name) /*throw (IllegalArgumentException)*/override ;
     /*public*/ qint64 timeSinceLastLayoutPowerOn()const;
     /*public*/ /*final*/ ShutDownTask* shutDownTask = new AbstractShutDownTask("Writing Blocks");
     QObject* self() override {return (QObject*)this;}

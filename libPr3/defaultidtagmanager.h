@@ -12,6 +12,7 @@
 #include "instancemanager.h"
 #include "abstractshutdowntask.h"
 #include "abstractmanager.h"
+#include "runnable.h"
 
 class DefaultIdTag;
 class DefaultIdTagManager : public AbstractManager, public IdTagManager
@@ -64,11 +65,14 @@ private:
  /*private*/ static bool _loading;// = false;
  /*private*/ static bool _storeState;// = false;
  /*private*/ static bool _useFastClock;// = false;
+ /*private*/ Runnable* shutDownTask = nullptr;
 
  protected:
  /*protected*/ void registerSelf();
  /*protected*/ virtual NamedBean *createNewIdTag(QString systemName, QString userName);
  /*protected*/ bool dirty = false;
+ /*protected*/ void initShutdownTask();
+ friend class DefaultIdTagShutdownTask;
 };
 
 class IdTagManagerXml : XmlFile
@@ -95,6 +99,11 @@ private:
     /*private*/ static bool _loaded;// = false;
 
     /*private*/ bool _dirty;// = false;
+    /*private*/ bool initialised = false;
+    /*private*/ bool loading = false;
+    /*private*/ bool storeState = false;
+    /*private*/ bool useFastClock = false;
+    /*private*/ Runnable* shutDownTask = nullptr;
     /*private*/ QFile* createFile(QString fileName, bool backup);
     /*private*/ void writeFile(QString fileName);// throw (FileNotFoundException);
     /*private*/ void readFile(QString fileName); //throw (JDOMException);
@@ -112,29 +121,23 @@ protected:
 friend class DefaultIdTagManager;
 };
 
-class DefaultIdTagShutdownTask : public AbstractShutDownTask
+class DefaultIdTagShutdownTask : public Runnable
 {
   Q_OBJECT
+  DefaultIdTagManager* mgr;
  public:
-    DefaultIdTagShutdownTask(QString name, QObject* parent = 0) : AbstractShutDownTask(name,parent)
-    { }
+    DefaultIdTagShutdownTask(DefaultIdTagManager* mgr)
+    { this->mgr = mgr;}
 
-    /*public*/ bool execute()
+    /*public*/ void run()
     {
      // Save IdTag details prior to exit, if necessary
-     log.debug("Start writing IdTag details...");
-//     try
-//     {
-//      ((DefaultIdTagManager*)InstanceManager::getDefault("IdTagManager"))->writeIdTagDetails();
-      //new jmri.managers.DefaultIdTagManager().writeIdTagDetails();
-//     }
-//     catch (IOException* ioe)
-//     {
-//      log.error("Exception writing IdTags: "+ioe->getMessage());
-//     }
-
-     // continue shutdown
-     return true;
+     mgr->log->debug("Start writing IdTag details...");
+     try {
+         mgr->writeIdTagDetails();
+     } catch (IOException* ioe) {
+         mgr->log->error(tr("Exception writing IdTags: %1").arg( ioe->toString()));
+     }
     }
  private:
  Logger log;

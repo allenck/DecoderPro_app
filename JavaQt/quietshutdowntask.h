@@ -8,7 +8,7 @@ class JAVAQTSHARED_EXPORT QuietShutDownTask : public AbstractShutDownTask
     Q_OBJECT
 public:
     explicit QuietShutDownTask(QString name, QObject *parent = 0);
-    /*public*/ bool execute();
+//    /*public*/ bool execute();
 
 signals:
 
