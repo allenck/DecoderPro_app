@@ -1288,7 +1288,7 @@ ArrayList <String[]> loopGremlins = NULL;
   NamedBean* nb =  VPtr<NamedBean>::asPtr(evt->getOldValue());
   for (JmriSimplePropertyListener* listener : *_listeners)
   {
-   if (nb->equals(listener->getBean())) {
+   if (nb->equals(listener->getBean()->self())) {
        PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());  // NOI18N
        throw new PropertyVetoException(tr("%1 is in use by Logix \"%2\" as a Trigger").arg(nb->getBeanType()).arg(getDisplayName()), e);   // NOI18N
    }
@@ -1304,7 +1304,7 @@ ArrayList <String[]> loopGremlins = NULL;
    {
     for (ConditionalAction* ca : *c->getCopyOfActions())
     {
-     if (nb->equals(ca->getBean()))
+     if (nb->equals(ca->getBean()->self()))
      {
       PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());  // NOI18N
       throw new PropertyVetoException(tr("%1 is in use by Logix \"%2\" as a Trigger").arg(nb->getBeanType()).arg(getDisplayName()), e);   // NOI18N
@@ -1312,7 +1312,7 @@ ArrayList <String[]> loopGremlins = NULL;
     }
     for (ConditionalVariable* v : *c->getCopyOfStateVariables())
     {
-     if (nb->equals(v->getBean()) || nb->equals(v->getNamedBeanData()))
+     if (nb->equals(v->getBean()->self()) || nb->equals(v->getNamedBeanData()->self()))
      {
       PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());  // NOI18N
       throw new PropertyVetoException(tr("%1 is in use by Logix \"%2\" as a Trigger").arg(nb->getBeanType()).arg(getDisplayName()), e);   // NOI18N
@@ -1332,17 +1332,17 @@ ArrayList <String[]> loopGremlins = NULL;
             //cdl.getStateVariableList().forEach((variable) ->
             for(ConditionalVariable* variable :  *cdl->getStateVariableList())
             {
-                if (bean->equals(variable->getBean())) {
+                if (bean->equals(variable->getBean()->self())) {
                     report.append(new NamedBeanUsageReport("ConditionalVariable", cdl, variable->toString()));
                 }
-                if (bean->equals(variable->getNamedBeanData())) {
+                if (bean->equals(variable->getNamedBeanData()->self())) {
                     report.append(new NamedBeanUsageReport("ConditionalVariableData", cdl, variable->toString()));
                 }
             }//);
             //cdl.getActionList().forEach((action) ->
             for(ConditionalAction* action :cdl->getActionList())
             {
-                if (bean->equals(action->getBean())) {
+                if (bean->equals(action->getBean()->self())) {
                     bool triggerType = cdl->getTriggerOnChange();
                     report.append(new NamedBeanUsageReport("ConditionalAction", cdl, action->description(triggerType)));
                 }

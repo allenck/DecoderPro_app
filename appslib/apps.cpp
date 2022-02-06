@@ -101,6 +101,7 @@
 #include "guilafpreferencesmanager.h"
 #include "../operations/metatypes.h"
 #include "connectionconfigmanager.h"
+#include "defaultlogixmanager.h"
 #ifdef HAVE_LOGIXNG
 #include "logixng_manager.h"
 #include "logixngpreferences.h"
@@ -522,7 +523,7 @@ bool Apps::configDeferredLoadOK = false;
  // Before starting to load preferences, make sure some managers are created.
  // This is needed because these aren't particularly well-behaved during
  // creation.
- ((LogixManager*)InstanceManager::getDefault("LogixManager"))->activateAllLogixs();
+ ((DefaultLogixManager*)InstanceManager::getDefault("LogixManager"))->activateAllLogixs();
  InstanceManager::getDefault("LayoutBlockManager");
  DefaultCatalogTreeManagerXml().readCatalogTrees();
 

@@ -26,7 +26,8 @@
 
 
     /*public*/ DefaultLogixNGManager::DefaultLogixNGManager(QObject* parent) :AbstractManager(parent) {
-        // The LogixNGPreferences class may load plugins so we must ensure
+       setObjectName("DefaultLogixNGManager");
+     // The LogixNGPreferences class may load plugins so we must ensure
         // it's loaded here.
         InstanceManager::getDefault("LogixNGPreferences");
     }

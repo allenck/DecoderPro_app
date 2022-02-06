@@ -1038,7 +1038,7 @@ return _statusNameMap.value(str);
             if (bean->equals(portal->getFromBlock()) || bean->equals(portal->getToBlock())) {
                 report.append(new NamedBeanUsageReport("OBlockPortalNeighborOBlock", portal->getName()));  // NOI18N
             }
-            if (bean->equals(portal->getFromSignal()) || bean->equals(portal->getToSignal())) {
+            if (bean->equals(portal->getFromSignal()->self()) || bean->equals(portal->getToSignal()->self())) {
                 report.append(new NamedBeanUsageReport("OBlockPortalSignal", portal->getName()));  // NOI18N
             }
 
@@ -1050,7 +1050,7 @@ return _statusNameMap.value(str);
                 for(BeanSetting* setting : path->getSettings())
                 {
                     log->debug(tr("            turnout = %1").arg(setting->getBean()->getDisplayName()));  // NOI18N
-                    if (bean->equals(setting->getBean())) {
+                    if (bean->equals(setting->getBean()->self())) {
                         if (!duplicateCheck.contains(bean)) {
                             report.append(new NamedBeanUsageReport("OBlockPortalPathTurnout", portal->getName()));  // NOI18N
                             duplicateCheck.append(bean);
@@ -1065,7 +1065,7 @@ return _statusNameMap.value(str);
                 for(BeanSetting* setting : path->getSettings())
                 {
                     log->debug(tr("            turnout = %1").arg(setting->getBean()->getDisplayName()));  // NOI18N
-                    if (bean->equals(setting->getBean())) {
+                    if (bean->equals(setting->getBean()->self())) {
                         if (!duplicateCheck.contains(bean)) {
                             report.append(new NamedBeanUsageReport("OBlockPortalPathTurnout", portal->getName()));  // NOI18N
                             duplicateCheck.append(bean);

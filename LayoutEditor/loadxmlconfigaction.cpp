@@ -8,6 +8,8 @@
 #include "jmriconfigurationmanager.h"
 #include "loggerfactory.h"
 #include "appsconfigurationmanager.h"
+#include "defaultlogixmanager.h"
+
 
 //LoadXmlConfigAction::LoadXmlConfigAction(QObject *parent) :
 //  LoadStoreBaseAction(parent)
@@ -84,7 +86,7 @@ void LoadXmlConfigAction::common()
     if (results)
     {
      // insure logix etc fire up
-     ((LogixManager*)InstanceManager::getDefault("LogixManager"))->activateAllLogixs();
+     ((DefaultLogixManager*)InstanceManager::getDefault("LogixManager"))->activateAllLogixs();
      ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->initializeLayoutBlockPaths();
      (new DefaultCatalogTreeManagerXml())->readCatalogTrees();
     }

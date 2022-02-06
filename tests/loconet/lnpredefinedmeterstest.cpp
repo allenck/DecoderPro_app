@@ -136,9 +136,9 @@ LnPredefinedMetersTest::LnPredefinedMetersTest(QObject *parent) : QObject(parent
             Assert::assertEquals("Number of beans at testSN() iteration "+QString::number(oneBitPos),
                     2*(oneBitPos+1), mm->getNamedBeanSet().size(), __FILE__, __LINE__);
             Assert::assertNotNull("Bean Name (amps) at testSN() iteration"+QString::number(oneBitPos),
-                    mm->getBySystemName("LVDCS52(s/n"+QString::number(serNum)+")InputCurrent"), __FILE__, __LINE__);
+                    mm->getBySystemName("LVDCS52(s/n"+QString::number(serNum)+")InputCurrent")->self(), __FILE__, __LINE__);
             Assert::assertNotNull("Bean Name (amps) at testSN() iteration"+QString::number(oneBitPos),
-                    mm->getBySystemName("LVDCS52(s/n"+QString::number(serNum)+")Voltage"), __FILE__, __LINE__);
+                    mm->getBySystemName("LVDCS52(s/n"+QString::number(serNum)+")Voltage")->self(), __FILE__, __LINE__);
         }
     }
 
@@ -163,9 +163,9 @@ LnPredefinedMetersTest::LnPredefinedMetersTest(QObject *parent) : QObject(parent
             Assert::assertEquals("Number of beans at testAmps() iteration "+QString::number(oneBitPos),
                     2, mm->getNamedBeanSet().size(), __FILE__, __LINE__);
             Assert::assertNotNull("Bean Name (amps) not null at testAmps() iteration "+QString::number(oneBitPos),
-                    mm->getBySystemName("LVDCS52(s/n130)InputCurrent"), __FILE__, __LINE__);
+                    mm->getBySystemName("LVDCS52(s/n130)InputCurrent")->self(), __FILE__, __LINE__);
             Assert::assertNotNull("Bean Name (volts) not null at testAmps() iteration "+QString::number(oneBitPos),
-                    mm->getBySystemName("LVDCS52(s/n130)Voltage"), __FILE__, __LINE__);
+                    mm->getBySystemName("LVDCS52(s/n130)Voltage")->self(), __FILE__, __LINE__);
             Assert::assertEquals("Bean current at testAmps() iteration "+QString::number(oneBitPos),
                     ampsVal*.1f, getBeanValue(lm, "LVDCS52(s/n130)InputCurrent"), 0.001, __FILE__, __LINE__);
             Assert::assertEquals("Bean voltage at testAmps() iteration "+QString::number(oneBitPos),
@@ -194,9 +194,9 @@ LnPredefinedMetersTest::LnPredefinedMetersTest(QObject *parent) : QObject(parent
             Assert::assertEquals("Number of beans at testVolts() iteration "+QString::number(oneBitPos),
                     2, mm->getNamedBeanSet().size(), __FILE__, __LINE__);
             Assert::assertNotNull("Bean Name (amps) not null at testVolts() iteration "+QString::number(oneBitPos),
-                    mm->getBySystemName("LVDCS52(s/n130)InputCurrent"), __FILE__, __LINE__);
+                    mm->getBySystemName("LVDCS52(s/n130)InputCurrent")->self(), __FILE__, __LINE__);
             Assert::assertNotNull("Bean Name (volts) not null at testVolts() iteration "+QString::number(oneBitPos),
-                    mm->getBySystemName("LVDCS52(s/n130)Voltage"), __FILE__, __LINE__);
+                    mm->getBySystemName("LVDCS52(s/n130)Voltage")->self(), __FILE__, __LINE__);
             Assert::assertEquals("Bean current at testVolts() iteration "+QString::number(oneBitPos),
                     0.0f, getBeanValue(lm, "LVDCS52(s/n130)InputCurrent"), 0.001, __FILE__, __LINE__);
             Assert::assertEquals("Bean voltage at testVolts() iteration "+QString::number(oneBitPos),

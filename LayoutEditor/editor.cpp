@@ -4279,12 +4279,12 @@ void UrlErrorDialog::cancelButton_clicked()
 
                 } else if (qobject_cast<LightIcon*>(pos->self())) {
                     LightIcon* icon = (LightIcon*) pos->self();
-                    if (bean->equals((NamedBean*)icon->getLight())) {
+                    if (bean->equals(icon->getLight())) {
                         report.append(new NamedBeanUsageReport("PositionalIcon", data));
                     }
 
                 } else {
-                    if (bean->equals((NamedBean*)pos->getNamedBean())) {
+                    if (bean->equals(pos->getNamedBean()->self())) {
                         report.append(new NamedBeanUsageReport("PositionalIcon", data));
                     }
                }

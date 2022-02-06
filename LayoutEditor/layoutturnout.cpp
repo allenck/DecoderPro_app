@@ -752,7 +752,7 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t,  LayoutEdit
         if (nb == nullptr) {
             return;
         }
-        if (qobject_cast<SignalMast*>(nb)) {
+        if (qobject_cast<SignalMast*>(nb->self())) {
             if (nb->equals(getSignalAMast())) {
                 setSignalAMast("");
                 return;
@@ -769,7 +769,7 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t,  LayoutEdit
                 setSignalDMast("null");
                 return;
             }
-        } else if (qobject_cast<Sensor*>(nb)) {
+        } else if (qobject_cast<Sensor*>(nb->self())) {
             if (nb->equals(getSensorA())) {
                 setSensorA("");
                 return;
@@ -786,7 +786,7 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t,  LayoutEdit
                 setSensorD("");
                 return;
             }
-        } else if (qobject_cast<SignalHead*>(nb)) {
+        } else if (qobject_cast<SignalHead*>(nb->self())) {
             if (nb->equals(getSignalHead(POINTA1))) {
                 setSignalA1Name("");
             }

@@ -8,7 +8,7 @@
 #include "exceptions.h"
 #include "propertyvetoexception.h"
 
-class JAVAQTSHARED_EXPORT AbstractNamedBean : /* public QObject,*/ public NamedBean
+class JAVAQTSHARED_EXPORT AbstractNamedBean :  public QObject, public NamedBean
 {
     Q_OBJECT
     //Q_INTERFACES(NamedBean)
@@ -81,7 +81,7 @@ public:
      return hashCode();
     }
 
-//    /*public*/ QObject* self() override {return (QObject*)this;}
+    /*public*/ QObject* self() override {return (QObject*)this;}
 signals:
 
 public slots:

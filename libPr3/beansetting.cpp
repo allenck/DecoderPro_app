@@ -103,7 +103,7 @@
      {
          return false;
      }
-     if (!p->getBean()->equals( this->getBean())) {
+     if (!p->getBean()->equals( this->getBean()->self())) {
          return false;
      }
     }

@@ -9043,7 +9043,7 @@ QString LayoutEditor::toString() {
          int count = 0;
 
          for (SensorIcon* si : *sensorList) {
-             if (nb->equals(si->getNamedBean())) {
+             if (nb->equals(si->getNamedBean()->self())) {
                  count++;
                  found = true;
              }
@@ -9134,7 +9134,7 @@ QString LayoutEditor::toString() {
              while (icon.hasNext()) {
                  SignalMastIcon* i = icon.next();
 
-                 if (i->getSignalMast()->equals(nb)) {
+                 if (i->getSignalMast()->equals(nb->self())) {
 //                     icon.remove();
                   icon.next();
                      Editor::removeFromContents(i);

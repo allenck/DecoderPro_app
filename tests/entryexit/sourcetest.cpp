@@ -89,9 +89,9 @@ SourceTest::SourceTest(QObject *parent) : QObject(parent)
     QList<LayoutBlock*> lbprot = src->getSourceProtecting();
     Assert::assertEquals("getSourceProtecting", 1, lbprot.size(), __FILE__, __LINE__);  // NOI18N
     NamedBean* srcsig = src->getSourceSignal();
-    Assert::assertNull("getSourceSignal", srcsig, __FILE__, __LINE__);  // NOI18N
+    Assert::assertNull("getSourceSignal", srcsig->self(), __FILE__, __LINE__);  // NOI18N
     NamedBean* srcobj = src->getSourceObject();
-    Assert::assertNotNull("getSourceObject", srcobj, __FILE__, __LINE__);  // NOI18N
+    Assert::assertNotNull("getSourceObject", srcobj->self(), __FILE__, __LINE__);  // NOI18N
 }
 
 //@BeforeClass

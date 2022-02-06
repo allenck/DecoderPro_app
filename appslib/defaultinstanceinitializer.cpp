@@ -159,7 +159,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
 
  if (type == "LogixManager") {
      DefaultLogixManager* lm = new DefaultLogixManager(memo);
-     //InstanceManager::store(lm, type);
+//     InstanceManager::store(lm, type);
      return lm;
  }
 

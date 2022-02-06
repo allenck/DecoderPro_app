@@ -44,7 +44,7 @@ ProxyLightManagerTest::ProxyLightManagerTest(QObject *parent) : QObject(parent)
         Light* t = l->newLight(getSystemName(getNumToTest1()), "mine");
         // check
         Assert::assertTrue("real object returned ", t != nullptr, __FILE__, __LINE__);
-        Assert::assertTrue("user name correct ", t->self() == l->getByUserName("mine"), __FILE__, __LINE__);
+        Assert::assertTrue("user name correct ", t->self() == l->getByUserName("mine")->self(), __FILE__, __LINE__);
         Assert::assertTrue("system name correct ", ((AbstractNamedBean*)t->self()) == l->getBySystemName(getSystemName(getNumToTest1())), __FILE__, __LINE__);
     }
 
@@ -54,7 +54,7 @@ ProxyLightManagerTest::ProxyLightManagerTest(QObject *parent) : QObject(parent)
         Light* t = l->provideLight("" + QString::number(getNumToTest1()));
         // check
         Assert::assertTrue("real object returned ", t != nullptr, __FILE__, __LINE__);
-        Assert::assertTrue("system name correct ", t->self() == l->getBySystemName(getSystemName(getNumToTest1())), __FILE__, __LINE__);
+        Assert::assertTrue("system name correct ", t->self() == l->getBySystemName(getSystemName(getNumToTest1()))->self(), __FILE__, __LINE__);
     }
 
     //@Test(expected=IllegalArgumentException.class)
@@ -104,7 +104,7 @@ ProxyLightManagerTest::ProxyLightManagerTest(QObject *parent) : QObject(parent)
         ((AbstractNamedBean*)t1->self())->setUserName("after");
         Light* t2 = (Light*)l->getByUserName("after");
         Assert::assertEquals("same object", t1, t2, __FILE__, __LINE__);
-        Assert::assertEquals("no old object", nullptr, l->getByUserName("before"), __FILE__, __LINE__);
+        Assert::assertEquals("no old object", nullptr, l->getByUserName("before")->self(), __FILE__, __LINE__);
     }
 
     //@Test

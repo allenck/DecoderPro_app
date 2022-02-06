@@ -8,15 +8,15 @@
 #include "propertyvetoexception.h"
 #include "propertychangeprovider.h"
 
-class JAVAQTSHARED_EXPORT NamedBean : public  QObject, public PropertyChangeProvider
+class JAVAQTSHARED_EXPORT NamedBean : /*public  QObject,*/ public PropertyChangeProvider
 {
- Q_OBJECT
+ //Q_OBJECT
   Q_INTERFACES(PropertyChangeProvider)
 public:
-    explicit NamedBean(QObject *parent = 0);
-    NamedBean(QString name, QObject *parent = 0);
-    NamedBean(const NamedBean&);
-    virtual ~NamedBean() {}
+//    explicit NamedBean(QObject *parent = 0);
+//    NamedBean(QString name, QObject *parent = 0);
+//    NamedBean(const NamedBean&);
+//    virtual ~NamedBean() {}
     /**
      * Parent class for a set of classes that describe if a user name or system
      * name is a bad name.
@@ -121,7 +121,19 @@ public:
       this->name = name;
       this->prefix = prefix;
      }
-    };
+     /**
+      * Create a localized exception, suitable for display to the user. This
+      * takes the non-localized message followed by the localized message.
+      * <p>
+      * Use {@link #getLocalizedMessage()} to display the message to the
+      * user, and use {@link #getMessage()} to record the message in logs.
+      *
+      * @param logging the English message for logging
+      * @param display the localized message for display
+      */
+     /*public*/ BadSystemNameException(QString logging, QString display) :
+         BadNameException(logging, display) {}
+     };
 
     class DuplicateSystemNameException : public IllegalArgumentException
     {
@@ -480,7 +492,7 @@ public:
     //@CheckReturnValue
     /*public*/ virtual int compareSystemNameSuffix(/*@Nonnull*/ QString suffix1,/* @Nonnull*/ QString suffix2, /*@Nonnull*/ NamedBean* n2);
 
-     // /*public*/ virtual QObject* self()=0;
+    /*public*/ virtual QObject* self()=0;
 signals:
 
 public slots:
@@ -496,5 +508,5 @@ private:
  friend class AbstractAudio;
 };
 
-//Q_DECLARE_INTERFACE(NamedBean, "NamedBean")
+Q_DECLARE_INTERFACE(NamedBean, "NamedBean")
 #endif // NAMEDBEAN_H

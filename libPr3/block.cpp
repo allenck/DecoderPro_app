@@ -1037,7 +1037,7 @@ return(PhysicalLocation::getBeanPhysicalLocation(this));
             }
             //path.getSettings().forEach((setting) ->
              for(BeanSetting* setting : path->getSettings())                          {
-                if (bean->equals(setting->getBean())) {
+                if (bean->equals(setting->getBean()->self())) {
                     report.append(new NamedBeanUsageReport("BlockPathTurnout"));  // NOI18N
                 }
             }//);

@@ -165,7 +165,7 @@
 
         if (static_cast<SignalHead*>(nb) || static_cast<SignalMast*>(nb)) {
             for (NBHSignal* signal : nbhSignals.values()) {
-                if (nb->equals(signal->getBean())) {
+                if (nb->equals(signal->getBean()->self())) {
                     found = true;
                     break;
                 }
@@ -226,7 +226,7 @@ bool CtcManager::findNBHforBean(NamedBean* nb) {
 
     if (static_cast<SignalHead*>(nb) || static_cast<SignalMast*>(nb)) {
         for (NBHSignal* signal : nbhSignals.values()) {
-            if (nb->equals(signal->getBean())) {
+            if (nb->equals(signal->getBean()->self())) {
                 foundSignal = signal;
                 found = true;
                 break;

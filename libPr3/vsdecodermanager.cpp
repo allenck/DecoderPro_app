@@ -397,7 +397,7 @@ void VSDecoderManager::fireMyEvent(VSDManagerEvent* evt) {
     QVector<PropertyChangeListener*> ll = b->getPropertyChangeListenersByReference(h->getName());
     if (ll.isEmpty()) {
         b->addPropertyChangeListener((PropertyChangeListener*)this, h->getName(), vsd_property_change_name);
-        log->debug("Added listener to bean " + b->getDisplayName() + " type " + b->metaObject()->className());
+        log->debug("Added listener to bean " + b->getDisplayName() + " type " + b->self()->metaObject()->className());
     }
 }
 

@@ -58,7 +58,7 @@ AbstractReporterMgrTestBase::AbstractReporterMgrTestBase()
         // Create
         Reporter* t = ((ReporterManager*)l)->provide("" + getNameToTest1());
         Assert::assertTrue("real object returned ", t != nullptr, __FILE__, __LINE__);
-        Assert::assertTrue("system name correct ", t->equals(((ProxyReporterManager*)l->self())->AbstractProxyManager::getBySystemName(getSystemName(getNameToTest1()))), __FILE__, __LINE__);
+        Assert::assertTrue("system name correct ", t->equals(((ProxyReporterManager*)l->self())->AbstractProxyManager::getBySystemName(getSystemName(getNameToTest1()))->self()), __FILE__, __LINE__);
     }
 
     //@Test
@@ -183,7 +183,7 @@ AbstractReporterMgrTestBase::AbstractReporterMgrTestBase()
         t1->setUserName("after");
         Reporter* t2 =(Reporter*) ((AbstractReporterManager*)l->self())->getByUserName("after");
         Assert::assertEquals("same object", t1, t2, __FILE__, __LINE__);
-        Assert::assertEquals("no old object", nullptr, ((AbstractReporterManager*)l->self())->getByUserName("before"), __FILE__, __LINE__);
+        Assert::assertEquals("no old object", nullptr, ((AbstractReporterManager*)l->self())->getByUserName("before")->self(), __FILE__, __LINE__);
     }
 
     /**

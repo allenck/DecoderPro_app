@@ -50,7 +50,7 @@ PointDetailsTest::PointDetailsTest(QObject *parent) : QObject(parent)
         Sensor* sensor = pd->getSensor();
         Assert::assertNotNull("getSensor", sensor, __FILE__, __LINE__);  // NOI18N
         NamedBean* signal = pd->getSignal();
-        Assert::assertNull("getSignal", signal, __FILE__, __LINE__);  // NOI18N
+        Assert::assertNull("getSignal", signal->self(), __FILE__, __LINE__);  // NOI18N
     }
 
     //@Test

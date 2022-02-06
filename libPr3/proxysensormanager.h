@@ -17,6 +17,7 @@ public:
  ProxySensorManager(QObject* parent = nullptr);
  /*public*/ Sensor* getSensor(QString name)  override;
  /*public*/ Sensor* provideSensor(QString sName) override;
+ /*public*/ Sensor* provide(/*@Nonnull*/ QString name) override;
  /**
   * Locate an instance based on a system name.  Returns null if no
   * instance already exists.
@@ -93,8 +94,8 @@ private:
 
 protected:
  ///*private*/ AbstractManager* getInternal();
- virtual /*protected*/ AbstractManager* makeInternalManager();
- virtual /*protected*/ Sensor* makeBean(AbstractManager *, QString systemName, QString userName);
+ virtual /*protected*/ AbstractManager* makeInternalManager() const override;
+ virtual /*protected*/ Sensor* makeBean(AbstractManager *, QString systemName, QString userName)override;
  // /*public*/ NamedBean* newNamedBean(QString systemName, QString userName);
  // /*protected*/ NamedBean* provideNamedBean(QString name);
 

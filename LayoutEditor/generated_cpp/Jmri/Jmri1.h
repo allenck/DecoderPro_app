@@ -300,7 +300,7 @@ inline void py_q_componentMoved(QMoveEvent*  e) { JmriJFrame::componentMoved(e);
 inline void py_q_componentResized(QResizeEvent*  e) { JmriJFrame::componentResized(e); }
 inline void py_q_dispose() { JmriJFrame::dispose(); }
 inline bool  py_q_eventFilter(QObject*  target, QEvent*  event) { return JmriJFrame::eventFilter(target, event); }
-inline QString  py_q_getClassName() { return this->getClassName(); }
+inline QString  py_q_getClassName() { return JmriJFrame::getClassName(); }
 inline QVariant  py_q_getProperty(QString  key) { return JmriJFrame::getProperty(key); }
 inline QString  py_q_getTitle() { return JmriJFrame::getTitle(); }
 inline void py_q_handleModified() { JmriJFrame::handleModified(); }
@@ -1254,15 +1254,10 @@ virtual void addPropertyChangeListener(PropertyChangeListener*  l, QString  bean
 virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  l, QString  beanRef, QString  listenerRef);
 virtual void addPropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual bool  canInvert();
-virtual void childEvent(QChildEvent*  event);
 virtual int  compareSystemNameSuffix(QString  suffix1, QString  suffix2, NamedBean*  n);
-virtual int  compareTo(NamedBean*  n2);
-virtual void customEvent(QEvent*  event);
 virtual QString  describeState(int  state);
 virtual void dispose();
 virtual bool  equals(QObject*  obj);
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual QString  getBeanType();
 virtual int  getCommandedState();
 virtual QString  getComment();
@@ -1290,6 +1285,7 @@ virtual void removeProperty(QString  key);
 virtual void removePropertyChangeListener(PropertyChangeListener*  listener);
 virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
 virtual void requestUpdateFromLayout() const;
+virtual QObject*  self();
 virtual void setCommandedState(int  s);
 virtual void setComment(QString  comment);
 virtual void setInverted(bool  inverted);
@@ -1300,7 +1296,6 @@ virtual void setSensorDebounceGoingInActiveTimer(long  time);
 virtual void setState(int  s);
 virtual void setUseDefaultTimerSettings(bool  boo);
 virtual void setUserName(QString  s);
-virtual void timerEvent(QTimerEvent*  event);
 virtual void updateListenerRef(PropertyChangeListener*  l, QString  newName);
 virtual bool  useDefaultTimerSettings();
 virtual void useDefaultTimerSettings(bool  boo);
@@ -1680,6 +1675,7 @@ class PythonQtShell_LocoNetSystemConnectionMemo : public LocoNetSystemConnection
 public:
     PythonQtShell_LocoNetSystemConnectionMemo(QObject*  parent = 0):LocoNetSystemConnectionMemo(parent),_wrapper(NULL) {}
     PythonQtShell_LocoNetSystemConnectionMemo(QString  prefix, QString  name):LocoNetSystemConnectionMemo(prefix, name),_wrapper(NULL) {}
+    PythonQtShell_LocoNetSystemConnectionMemo(const LocoNetSystemConnectionMemo&  arg__1):LocoNetSystemConnectionMemo(arg__1),_wrapper(NULL) {}
 
    ~PythonQtShell_LocoNetSystemConnectionMemo();
 
@@ -1705,6 +1701,7 @@ public:
 public slots:
 LocoNetSystemConnectionMemo* new_LocoNetSystemConnectionMemo(QObject*  parent = 0);
 LocoNetSystemConnectionMemo* new_LocoNetSystemConnectionMemo(QString  prefix, QString  name);
+LocoNetSystemConnectionMemo* new_LocoNetSystemConnectionMemo(const LocoNetSystemConnectionMemo&  arg__1);
 void delete_LocoNetSystemConnectionMemo(LocoNetSystemConnectionMemo* obj) { delete obj; } 
    void _register(LocoNetSystemConnectionMemo* theWrappedObject);
    void py_q__register(LocoNetSystemConnectionMemo* theWrappedObject){  (((PythonQtPublicPromoter_LocoNetSystemConnectionMemo*)theWrappedObject)->py_q__register());}
@@ -1886,9 +1883,7 @@ void delete_MyGraphicsItemGroup(MyGraphicsItemGroup* obj) { delete obj; }
 class PythonQtShell_NamedBean : public NamedBean
 {
 public:
-    PythonQtShell_NamedBean(QObject*  parent = 0):NamedBean(parent),_wrapper(NULL) {}
-    PythonQtShell_NamedBean(QString  name, QObject*  parent = 0):NamedBean(name, parent),_wrapper(NULL) {}
-    PythonQtShell_NamedBean(const NamedBean&  arg__1):NamedBean(arg__1),_wrapper(NULL) {}
+    PythonQtShell_NamedBean():NamedBean(),_wrapper(NULL) {}
 
    ~PythonQtShell_NamedBean();
 
@@ -1896,15 +1891,11 @@ virtual void addPropertyChangeListener(PropertyChangeListener*  arg__1);
 virtual void addPropertyChangeListener(PropertyChangeListener*  arg__1, QString  arg__2, const QString  arg__3);
 virtual void addPropertyChangeListener(QString  arg__1, PropertyChangeListener*  arg__2);
 virtual void addPropertyChangeListener(QString  arg__1, PropertyChangeListener*  arg__2, QString  arg__3, QString  arg__4);
-virtual void childEvent(QChildEvent*  event);
 virtual int  compareSystemNameSuffix(QString  suffix1, QString  suffix2, NamedBean*  n2);
 virtual int  compareTo(NamedBean*  n2);
-virtual void customEvent(QEvent*  event);
 virtual QString  describeState(int  arg__1);
 virtual void dispose();
 virtual bool  equals(QObject*  obj);
-virtual bool  event(QEvent*  event);
-virtual bool  eventFilter(QObject*  watched, QEvent*  event);
 virtual QString  getBeanType();
 virtual QString  getComment();
 virtual QString  getDisplayName();
@@ -1922,16 +1913,14 @@ virtual uint  hashCode();
 virtual void removeProperty(QString  arg__1);
 virtual void removePropertyChangeListener(PropertyChangeListener*  arg__1);
 virtual void removePropertyChangeListener(QString  arg__1, PropertyChangeListener*  arg__2);
+virtual QObject*  self();
 virtual void setComment(QString  arg__1);
 virtual void setProperty(QString  key, QVariant  arg__2);
 virtual void setState(int  arg__1);
 virtual void setUserName(QString  s);
-virtual void timerEvent(QTimerEvent*  event);
 virtual void updateListenerRef(PropertyChangeListener*  l, QString  arg__2);
 virtual void vetoableChange(PropertyChangeEvent*  arg__1);
 
-  const QMetaObject* metaObject() const;
-  int qt_metacall(QMetaObject::Call call, int id, void** args);
   PythonQtInstanceWrapper* _wrapper; 
 };
 
@@ -1957,12 +1946,13 @@ inline QVariant  py_q_getProperty(QString  key) { return NamedBean::getProperty(
 inline QVector<PropertyChangeListener* >  py_q_getPropertyChangeListenersByReference(QString  name) { return NamedBean::getPropertyChangeListenersByReference(name); }
 inline QSet<QString >  py_q_getPropertyKeys() { return NamedBean::getPropertyKeys(); }
 inline int  py_q_getState() { return NamedBean::getState(); }
-inline QString  py_q_getSystemName() const { return this->getSystemName(); }
+inline QString  py_q_getSystemName() const { return NamedBean::getSystemName(); }
 inline QString  py_q_getUserName() const { return NamedBean::getUserName(); }
 inline uint  py_q_hashCode() { return NamedBean::hashCode(); }
 inline void py_q_removeProperty(QString  arg__1) { NamedBean::removeProperty(arg__1); }
 inline void py_q_removePropertyChangeListener(PropertyChangeListener*  arg__1) { NamedBean::removePropertyChangeListener(arg__1); }
 inline void py_q_removePropertyChangeListener(QString  arg__1, PropertyChangeListener*  arg__2) { NamedBean::removePropertyChangeListener(arg__1, arg__2); }
+inline QObject*  py_q_self() { return this->self(); }
 inline void py_q_setComment(QString  arg__1) { NamedBean::setComment(arg__1); }
 inline void py_q_setProperty(QString  key, QVariant  arg__2) { NamedBean::setProperty(key, arg__2); }
 inline void py_q_setState(int  arg__1) { NamedBean::setState(arg__1); }
@@ -1978,9 +1968,7 @@ Q_ENUMS(STATES )
 enum STATES{
   UNKNOWN = NamedBean::UNKNOWN,   INCONSISTENT = NamedBean::INCONSISTENT};
 public slots:
-NamedBean* new_NamedBean(QObject*  parent = 0);
-NamedBean* new_NamedBean(QString  name, QObject*  parent = 0);
-NamedBean* new_NamedBean(const NamedBean&  arg__1);
+NamedBean* new_NamedBean();
 void delete_NamedBean(NamedBean* obj) { delete obj; } 
    void addPropertyChangeListener(NamedBean* theWrappedObject, PropertyChangeListener*  arg__1);
    void py_q_addPropertyChangeListener(NamedBean* theWrappedObject, PropertyChangeListener*  arg__1){  (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_addPropertyChangeListener(arg__1));}
@@ -2035,6 +2023,8 @@ void delete_NamedBean(NamedBean* obj) { delete obj; }
    void py_q_removePropertyChangeListener(NamedBean* theWrappedObject, PropertyChangeListener*  arg__1){  (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_removePropertyChangeListener(arg__1));}
    void removePropertyChangeListener(NamedBean* theWrappedObject, QString  arg__1, PropertyChangeListener*  arg__2);
    void py_q_removePropertyChangeListener(NamedBean* theWrappedObject, QString  arg__1, PropertyChangeListener*  arg__2){  (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_removePropertyChangeListener(arg__1, arg__2));}
+   QObject*  self(NamedBean* theWrappedObject);
+   QObject*  py_q_self(NamedBean* theWrappedObject){  return (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_self());}
    void setComment(NamedBean* theWrappedObject, QString  arg__1);
    void py_q_setComment(NamedBean* theWrappedObject, QString  arg__1){  (((PythonQtPublicPromoter_NamedBean*)theWrappedObject)->py_q_setComment(arg__1));}
    void setProperty(NamedBean* theWrappedObject, QString  key, QVariant  arg__2);

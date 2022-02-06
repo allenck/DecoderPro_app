@@ -285,7 +285,7 @@
         QString mastName = mast->getDisplayName(NamedBean::DisplayOptions::QUOTED_DISPLAYNAME);
         QString homeName = _homeBlock->getDisplayName(NamedBean::DisplayOptions::QUOTED_DISPLAYNAME);
         if (homeMast != nullptr) {
-            if (homeMast->equals(mast)) {
+            if (homeMast->equals(mast->self())) {
                 // no changes needed except for length.  So do it now and skip the rest of AddMast()
                 homePortal->setEntranceSpaceForBlock(_homeBlock, _lengthPanel->getLength());
                 return false;
@@ -436,7 +436,7 @@
             QString selMastName = selectedMast->getDisplayName(NamedBean::DisplayOptions::QUOTED_DISPLAYNAME);
             QString curPortalName = _currentPortal->getName();
             QString homeName = _homeBlock->getDisplayName(NamedBean::DisplayOptions::QUOTED_DISPLAYNAME);
-            if (!selectedMast->equals(currentMast)) {
+            if (!selectedMast->equals(currentMast->self())) {
                 if (currentMast != nullptr) {
                     Portal* selectedPortal = _parent->getSignalPortal(selectedMast);
                     if (selectedPortal != nullptr) {

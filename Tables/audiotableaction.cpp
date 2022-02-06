@@ -422,7 +422,7 @@ public void AudioTableDataModel::setDisplayDeleteMsg(int boo) { ((UserPreference
    if (b != nullptr)
    {
    // b.removePropertyChangeListener(this);
-    disconnect(b);
+    disconnect(b->self());
    }
   }
  }

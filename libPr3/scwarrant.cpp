@@ -539,7 +539,7 @@
         }
         QString property = evt->getPropertyName();
         log->debug(tr("%1 propertyChange \"%2\" new= %3 source= %4 - warrant= %5").arg(_trainName,property,evt->getNewValue().toString(),((NamedBean*)evt->getSource())->getDisplayName(),getDisplayName()));
-        if (_nextSignal != nullptr && _nextSignal == evt->getSource()) {
+        if (_nextSignal->self() != nullptr && _nextSignal->self() == evt->getSource()) {
             if (property == ("Aspect") || property == ("Appearance")) {
                 // The signal controlling this warrant has changed. Adjust the speed (in runSignalControlledTrain)
                 /*synchronized(this)*/ {

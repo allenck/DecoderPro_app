@@ -26,33 +26,44 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProvidingProxy
 //        super();
 //    }
 
-/*protected*/ AbstractManager* ProxySensorManager::makeInternalManager()
+//@Override
+/*protected*/ AbstractManager* ProxySensorManager::makeInternalManager() const
 {
  AbstractManager* manager = (AbstractManager*)((InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo"))->getSensorManager();
  return manager;
 }
 
 /**
- * Locate via user name, then system name if needed.
- *
- * @param name
- * @return Null if nothing by that name exists
- */
+     * Locate via user name, then system name if needed.
+     *
+     * @return Null if nothing by that name exists
+     */
+//@Override
+//@CheckForNull
 /*public*/ Sensor* ProxySensorManager::getSensor(QString name) {
  return (Sensor*)AbstractProxyManager::getNamedBean(name);
 }
 
+
+/** {@inheritDoc} */
+//@Override
+//@Nonnull
 /*protected*/ Sensor* ProxySensorManager::makeBean(AbstractManager* manager, QString systemName, QString userName)
 {
  return ((AbstractSensorManager*) manager)->newSensor(systemName, userName);
 }
 
+//@Override
+//@Nonnull
 /*public*/ Sensor* ProxySensorManager::provideSensor(QString sName)
 {
  return (Sensor*)(provideNamedBean(sName));
 }
 
-
+/** {@inheritDoc} */
+ //@Override
+ //@Nonnull
+ /*public*/ Sensor* ProxySensorManager::provide(/*@Nonnull*/ QString name) /*throws IllegalArgumentException*/ { return provideSensor(name); }
 /**
  * Locate an instance based on a system name.  Returns null if no
  * instance already exists.

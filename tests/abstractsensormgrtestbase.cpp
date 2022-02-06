@@ -74,7 +74,7 @@ AbstractSensorMgrTestBase::AbstractSensorMgrTestBase(QObject *parent) : Abstract
         } catch (PropertyVetoException e) {}
 
         // check for bean
-        Assert::assertNull("no bean", l->getBySystemName(getSystemName(getNumToTest1())), __FILE__, __LINE__);
+        Assert::assertNull("no bean", l->getBySystemName(getSystemName(getNumToTest1()))->self(), __FILE__, __LINE__);
         // check for lengths
         Assert::assertEquals(0, l->getNamedBeanList()->size(), __FILE__, __LINE__);
         Assert::assertEquals(0, l->getNamedBeanSet().size(), __FILE__, __LINE__);
@@ -129,8 +129,8 @@ AbstractSensorMgrTestBase::AbstractSensorMgrTestBase(QObject *parent) : Abstract
     //@Test
     /*public*/ void AbstractSensorMgrTestBase::testMisses() {
         // try to get nonexistant sensors
-        Assert::assertNull(l->getByUserName("foo"), __FILE__, __LINE__);
-        Assert::assertNull(l->getBySystemName("bar"), __FILE__, __LINE__);
+        Assert::assertNull(l->getByUserName("foo")->self(), __FILE__, __LINE__);
+        Assert::assertNull(l->getBySystemName("bar")->self(), __FILE__, __LINE__);
     }
 
     //@Test
@@ -165,7 +165,7 @@ AbstractSensorMgrTestBase::AbstractSensorMgrTestBase(QObject *parent) : Abstract
         t1->setUserName("after");
         Sensor* t2 = (Sensor*)l->getByUserName("after");
         Assert::assertEquals("same object", t1, t2, __FILE__, __LINE__);
-        Assert::assertNull("no old object", l->getByUserName("before"), __FILE__, __LINE__);
+        Assert::assertNull("no old object", l->getByUserName("before")->self(), __FILE__, __LINE__);
     }
 
     //@Test

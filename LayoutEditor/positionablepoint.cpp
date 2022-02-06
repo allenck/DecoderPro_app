@@ -784,13 +784,13 @@ return nullptr;
         if (nb == nullptr) {
             return;
         }
-        if (static_cast<SignalMast*>(nb)) {
-            if (nb->equals((NamedBean*)getWestBoundSignalMast())) {
+        if (static_cast<SignalMast*>(nb)->self()) {
+            if (nb->equals(getWestBoundSignalMast())) {
                 setWestBoundSignalMast(nullptr);
-            } else if (nb->equals((NamedBean*)getEastBoundSignalMast())) {
+            } else if (nb->equals(getEastBoundSignalMast())) {
                 setEastBoundSignalMast(nullptr);
             }
-        } else if (static_cast<Sensor*>(nb)) {
+        } else if (static_cast<Sensor*>(nb->self())) {
             if (nb->equals(getWestBoundSensor())) {
                 setWestBoundSignalMast(nullptr);
             } else if (nb->equals(getEastBoundSensor())) {

@@ -1208,13 +1208,13 @@ void DestinationPoints::setActiveEntryExit(bool boo){
         if (bean->equals(getSource()->getPoint()->getSensor())) {
             report.append(new NamedBeanUsageReport("EntryExitSourceSensor"));  // NOI18N
         }
-        if (bean->equals(getSource()->getPoint()->getSignal())) {
+        if (bean->equals(getSource()->getPoint()->getSignal()->self())) {
             report.append(new NamedBeanUsageReport("EntryExitSourceSignal"));  // NOI18N
         }
         if (bean->equals(getDestPoint()->getSensor())) {
             report.append(new NamedBeanUsageReport("EntryExitDestinationSensor"));  // NOI18N
         }
-        if (bean->equals(getDestPoint()->getSignal())) {
+        if (bean->equals(getDestPoint()->getSignal()->self())) {
             report.append(new NamedBeanUsageReport("EntryExitDesinationSignal"));  // NOI18N
         }
     }

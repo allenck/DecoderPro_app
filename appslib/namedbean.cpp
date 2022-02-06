@@ -27,27 +27,27 @@
  */
 /*public*/ /*static*/ /*final*/ QString NamedBean::PROPERTY_STATE = "state";
 
-NamedBean::NamedBean(QObject *parent) : QObject(parent)
-{
-// _parent = parent;
-// _state = UNKNOWN;
-}
+//NamedBean::NamedBean(QObject *parent) : QObject(parent)
+//{
+//// _parent = parent;
+//// _state = UNKNOWN;
+//}
 
-NamedBean::NamedBean(QString /*name*/, QObject *parent) : QObject(parent)
-{
-// _parent = parent;
-// _name = name;
-// _state = UNKNOWN;
-// _systemName = name;
-}
-NamedBean::NamedBean(const NamedBean & /*other*/): QObject()
-{
-// this->_parent = other._parent;
-// this->_name = other._name;
-// this->_state = other._state;
-// this->_systemName = other._systemName;
-// this->_userName = other._userName;
-}
+//NamedBean::NamedBean(QString /*name*/, QObject *parent) : QObject(parent)
+//{
+//// _parent = parent;
+//// _name = name;
+//// _state = UNKNOWN;
+//// _systemName = name;
+//}
+//NamedBean::NamedBean(const NamedBean & /*other*/): QObject()
+//{
+//// this->_parent = other._parent;
+//// this->_name = other._name;
+//// this->_state = other._state;
+//// this->_systemName = other._systemName;
+//// this->_userName = other._userName;
+//}
 
 QString NamedBean::getUserName()const { return "";}
 void NamedBean::setUserName(QString /*s*/) {}

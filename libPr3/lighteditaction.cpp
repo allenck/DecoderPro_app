@@ -110,7 +110,7 @@ BeanItemPanel* LightEditAction::lightIntensityPanel() {
     liPanel->setSaveItem(new LEASaveAction(this));
     bei.append(liPanel);
 
-    if (!(qobject_cast<VariableLight*>(bean))) {
+    if (!(qobject_cast<VariableLight*>(bean->self()))) {
         liPanel->setEnabled(false);
         liPanel->setToolTip(tr("%1 Lights do not support Variable Intensity.").arg(getBeanManagerSystemUserName()));
     }

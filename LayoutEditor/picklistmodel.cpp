@@ -484,18 +484,18 @@ bool systemNameComparator(QString o1, QString o2)
   NamedBean* bean = VPtr<NamedBean>::asPtr(e->getNewValue());
   for (int i=0; i<_pickList->size(); i++)
   {
-   if (bean->equals(_pickList->at(i)))
+   if (bean->equals(_pickList->at(i)->self()))
    {
     fireTableRowsUpdated(i, i);
    }
   }
  }
- else if (qobject_cast< NamedBean*>(e->getSource())) {
+ else if (qobject_cast< AbstractNamedBean*>(e->getSource())) {
   // a value changed.  Find it, to avoid complete redraw
   NamedBean* bean = (NamedBean*)e->getSource();
   for (int i=0; i<_pickList->size(); i++)
   {
-   if (bean->equals(_pickList->at(i)))
+   if (bean->equals(_pickList->at(i)->self()))
    {
     fireTableRowsUpdated(i, i);
    }

@@ -418,8 +418,8 @@ public List<DestinationPoints> getNamedBeanList() {
      LayoutEditor* pan = e.key()->getPanel();
      if(pan==panel)
      {
-      if (!list->contains(obj))
-       list->append(obj);
+      if (!list->contains(obj->self()))
+       list->append(obj->self());
      } // end while
     }
     return list;
@@ -626,8 +626,8 @@ public List<DestinationPoints> getNamedBeanList() {
    QList<PointDetails*> dest =  nxpair.value(key)->getDestinationPoints();
    for(int i = 0; i<dest.size(); i++)
    {
-    destinationList.append(dest.value(i)->getRefObject());
-    source.append(key->getRefObject());
+    destinationList.append(dest.value(i)->getRefObject()->self());
+    source.append(key->getRefObject()->self());
    }
   }
  }
@@ -719,7 +719,7 @@ public List<DestinationPoints> getNamedBeanList() {
     {
      QList<PointDetails*> from =  nxpair.value(getPointDetails(obj, panel))->getDestinationPoints();
      for(int i = 0; i<from.size(); i++){
-         list->append(from.at(i)->getRefObject());
+         list->append(from.at(i)->getRefObject()->self());
      }
     }
 

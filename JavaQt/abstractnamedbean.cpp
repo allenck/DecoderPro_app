@@ -4,7 +4,7 @@
 #include "beans.h"
 #include <QPointer>
 
-AbstractNamedBean::AbstractNamedBean(QObject *parent) : NamedBean(parent)
+AbstractNamedBean::AbstractNamedBean(QObject *parent) : QObject(parent)
 {
  common("", ""/*, parent*/);
 }
@@ -30,7 +30,7 @@ void AbstractNamedBean::common(QString sys, QString user/*, QObject *parent*/)
  */
 //public abstract class AbstractNamedBean implements NamedBean, java.io.Serializable {
 
-AbstractNamedBean::AbstractNamedBean(QString sys, QObject* parent) : NamedBean(parent)
+AbstractNamedBean::AbstractNamedBean(QString sys, QObject* parent) : QObject(parent)
 {
  //Q_ASSERT(!sys.isEmpty());
  setObjectName(sys);
@@ -38,7 +38,7 @@ AbstractNamedBean::AbstractNamedBean(QString sys, QObject* parent) : NamedBean(p
  setObjectName(sys);
 }
 
-AbstractNamedBean:: AbstractNamedBean(QString sysName, QString user, QObject* parent) : NamedBean(parent)
+AbstractNamedBean:: AbstractNamedBean(QString sysName, QString user, QObject* parent) : QObject(parent)
 {
  //Q_ASSERT(!sysName.isEmpty());
  common(sysName, user/*, parent*/);

@@ -649,7 +649,7 @@
         //mm->getNamedBeanSet().forEach((m) ->
         for(NamedBean* bean : mm->getNamedBeanSet())
         {
-         DefaultMeter* m = qobject_cast<DefaultMeter*>(bean);
+         DefaultMeter* m = qobject_cast<DefaultMeter*>(bean->self());
          QString n = bean->getDisplayName();
          if ((m != nullptr) && (qobject_cast<VoltageMeter*>(m))) {
              if (voltageMeters.contains(m)) {

@@ -1174,8 +1174,8 @@ void ControlPanelEditor::selectAllAction()
     while (iter.hasNext())
     {
      Positionable* pos = iter.next();
-     if (qobject_cast<NamedBean*>(pos->self())) {
-         selects.replace(i++, ((NamedBean*) pos->self())->getDisplayName());
+     if (qobject_cast<AbstractNamedBean*>(pos->self())) {
+         selects.replace(i++, ((AbstractNamedBean*) pos->self())->getDisplayName());
      } else {
          selects.replace(i++,pos->getNameString());
      }
@@ -1193,8 +1193,8 @@ void ControlPanelEditor::selectAllAction()
      {
       Positionable* pos = iter.next();
       QString name;
-      if (qobject_cast<NamedBean*>(pos->self())) {
-          name = ((NamedBean*) pos->self())->getDisplayName();
+      if (qobject_cast<AbstractNamedBean*>(pos->self())) {
+          name = ((AbstractNamedBean*) pos->self())->getDisplayName();
       } else {
           name = pos->getNameString();
       }

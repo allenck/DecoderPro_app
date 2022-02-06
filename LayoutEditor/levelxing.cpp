@@ -319,7 +319,7 @@
     if (nb == nullptr) {
         return;
     }
-    if (qobject_cast<SignalMast*>(nb)) {
+    if (qobject_cast<SignalMast*>(nb->self())) {
         if (nb->equals(getSignalAMast())) {
             setSignalAMast("");
             return;
@@ -337,7 +337,7 @@
             return;
         }
     }
-    if (qobject_cast<Sensor*>(nb)) {
+    if (qobject_cast<Sensor*>(nb->self())) {
         if (nb->equals(getSensorA())) {
             setSensorAName("");
             return;

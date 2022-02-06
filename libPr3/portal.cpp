@@ -258,9 +258,9 @@
     if (signal == nullptr) {
         return nullptr;
     }
-    if (signal->equals(_fromSignal)) {
+    if (signal->equals(_fromSignal->self())) {
         return _toBlock;
-    } else if (signal->equals(_toSignal)) {
+    } else if (signal->equals(_toSignal->self())) {
         return _fromBlock;
     }
     return nullptr;

@@ -145,16 +145,16 @@ LocoNetMessageInterpretTest::LocoNetMessageInterpretTest(QObject *parent) : QObj
                 "(BDL16x Board 2 RX4 zone D).\n",
                 LocoNetMessageInterpret::interpretMessage(l, "LT", "LS", "LR"), __FILE__, __LINE__);
 
-        Assert::assertNull("reporter not Created", lnrm->getBySystemName("LR23"), __FILE__, __LINE__);
+        Assert::assertNull("reporter not Created", lnrm->getBySystemName("LR23")->self(), __FILE__, __LINE__);
         lnrm->provideReporter("LR23");
 
-        Assert::assertNull("reporter is Not Yet Created", lnrm->getBySystemName("LR25"), __FILE__, __LINE__);
+        Assert::assertNull("reporter is Not Yet Created", lnrm->getBySystemName("LR25")->self(), __FILE__, __LINE__);
         l = new LocoNetMessage(QVector<int>() <<  0xE5<< 0x09<< 0x00<< 0x00<< 0x04<< 0x00<< 0x18<< 0x00<< 0x7F);
         Assert::assertEquals(" in D",
                 QString("Transponder Find report: address 4 (short) present at LR25 ")+
                 "(BDL16x Board 2 RX4 zone E).\n",
                 LocoNetMessageInterpret::interpretMessage(l, "LT", "LS", "LR"), __FILE__, __LINE__);
-        Assert::assertNull("reporter not Created", lnrm->getBySystemName("LR25"), __FILE__, __LINE__);
+        Assert::assertNull("reporter not Created", lnrm->getBySystemName("LR25")->self(), __FILE__, __LINE__);
         lnrm->provideReporter("LR25");
         ((LnReporter*) lnrm->getBySystemName("LR25"))->setUserName("Friendly name E");
         Assert::assertEquals("check setting of username", lnrm->getBySystemName("LR25")->getUserName(), "Friendly name E", __FILE__, __LINE__);

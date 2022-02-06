@@ -1952,7 +1952,7 @@
 
     NamedBean* prevSignal = _protectSignal;
     if (_protectSignal != nullptr) {
-        if (_protectSignal->equals(signal)) {
+        if (_protectSignal->equals(signal->self())) {
             // Must be the route coming back to the same block
             if (_idxProtectSignal < idx && idx >= 0) {
                 _idxProtectSignal = idx;
@@ -3139,7 +3139,7 @@ bool CommandDelay::doNotCancel(QString speedType, long startWait, int endBlockId
             if (bean->equals(blockOrder->getBlock())) {
                 report.append(new NamedBeanUsageReport("WarrantBlock"));
             }
-            if (bean->equals(blockOrder->getSignal())) {
+            if (bean->equals(blockOrder->getSignal()->self())) {
                 report.append(new NamedBeanUsageReport("WarrantSignal"));
             }
         }//);

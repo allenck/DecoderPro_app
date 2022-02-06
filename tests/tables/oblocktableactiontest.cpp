@@ -259,7 +259,7 @@ OBlockTableActionTest::OBlockTableActionTest(QObject *parent) : QObject(parent)
         (new JTextFieldOperator(addFrame, 0))->setText("19.05");  // NOI18N
         (new JButtonOperator(addFrame, tr("OK")))->push();  // NOI18N
 
-        Assert::assertNotNull("Verify Signal Added", port1->getToSignal(), __FILE__, __LINE__);  // NOI18N
+        Assert::assertNotNull("Verify Signal Added", port1->getToSignal()->self(), __FILE__, __LINE__);  // NOI18N
         Assert::assertEquals("Check signal name", "IF$vsm:basic:one-searchlight($1)", port1->getToSignal()->getSystemName(), __FILE__, __LINE__);  // NOI18N
         // TODO add Edit Signal test
         (new JFrameOperator(f))->requestClose();

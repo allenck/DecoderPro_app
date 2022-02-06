@@ -1502,7 +1502,7 @@ void SwitchboardEditor::onAddAction()
         //getSwitches().forEach((beanSwitch) ->
      for(BeanSwitch* beanSwitch : getSwitches())
         {
-            if (bean->equals(beanSwitch->getNamedBean())) {
+            if (bean->equals(beanSwitch->getNamedBean()->self())) {
                 report.append(new NamedBeanUsageReport("SwitchBoard", getName()));
             }
         }//);
