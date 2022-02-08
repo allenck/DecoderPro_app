@@ -78,12 +78,12 @@
 //        ((AbstractProxyMeterManager*)mm)->createSystemManager("L");
         //Meter* m = (DefaultMeter*)((AbstractMeterManager*)mm)->getBySystemName(voltSysName);
         NamedBean* m = mm->getBySystemName(voltSysName);
-        updateAddMeter((DefaultMeter*)m, voltSysName, valVolts, true);
+        updateAddMeter((DefaultMeter*)m->self(), voltSysName, valVolts, true);
 
         QString ampsSysName = createSystemName(srcDeviceType, srcSerNum, "InputCurrent"); // NOI18N
         //m = (DefaultMeter*)((AbstractMeterManager*)InstanceManager::getDefault("MeterManager"))->getBySystemName(ampsSysName);
         m = mm->getBeanBySystemName(ampsSysName);
-        updateAddMeter((DefaultMeter*)m, ampsSysName, valAmps, false);
+        updateAddMeter((DefaultMeter*)m->self(), ampsSysName, valAmps, false);
     }
 
     /*public*/ void LnPredefinedMeters::dispose() {

@@ -5,9 +5,8 @@
 /**
  * A LogixNG male AnalogExpressionBean socket.
  */
-/*public*/ /*interface*/class  MaleAnalogExpressionSocket
-        :  public AnalogExpressionBean, public MaleSocket {
-
+/*public*/ /*interface*/class  MaleAnalogExpressionSocket :  public AnalogExpressionBean, public MaleSocket {
+ public:
     /**
      * {@inheritDoc}
      * <P>
@@ -23,7 +22,8 @@
      * infinity or positive infinity
      */
     //@Override
-    public double evaluate() throws JmriException;
+    /*public*/ virtual double evaluate() /*throws JmriException*/=0;
 
 };
+Q_DECLARE_INTERFACE(MaleAnalogExpressionSocket, "MaleAnalogExpressionSocket")
 #endif // MALEANALOGEXPRESSIONSOCKET_H

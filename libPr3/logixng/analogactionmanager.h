@@ -11,8 +11,9 @@
  * @author Dave Duchamp       Copyright (C) 2007
  * @author Daniel Bergqvist   Copyright (C) 2018
  */
-/*public*/ /*interface*/ class AnalogActionManager : BaseManager<MaleAnalogActionSocket> {
+/*public*/ /*interface*/ class AnalogActionManager : BaseManager/*<MaleAnalogActionSocket>*/ {
 
+ public:
     /**
      * Remember a NamedBean Object created outside the manager.
      * This method creates a MaleAnalogActionSocket for the action.
@@ -38,7 +39,7 @@
      *
      * @return a set of entries with category and class
      */
-    /*public*/ QMap<Category*, QList</*Class<? extends Base>*/QString > > getActionClasses();
+    /*public*/ QMap<Category*, QList</*Class<? extends Base>*/Base* > > getActionClasses();
 
     /*.*
      * Add an Action.

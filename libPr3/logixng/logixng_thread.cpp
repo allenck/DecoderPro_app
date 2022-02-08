@@ -6,6 +6,7 @@
 #include "loggingutil.h"
 #include "loggerfactory.h"
 #include "runtimeexception.h"
+#include <QQueue>
 
 /**
  * Utilities for handling JMRI's LogixNG threading conventions.
@@ -113,30 +114,32 @@
     /*private*/ LogixNG_Thread::LogixNG_Thread(int threadID, QString name, QObject* parent) : QThread(parent){
         _threadID = threadID;
         _name = name;
-#if 0
-        /*synchronized(LogixNG_Thread.class)*/ {
+#if 1
+        /*synchronized(LogixNG_Thread.class)*/
+        {
 
-            _eventQueue = QQueue<ThreadEvent*>(1024);
-            _logixNGThread = new Thread(() -> {
-                while (!_stopThread) {
-                    try {
-                        ThreadEvent event = _eventQueue.take();
-                        if (event._lock != null) {
-                            synchronized(event._lock) {
-                                if (!_stopThread) event._threadAction.run();
-                                event._lock.notify();
-                            }
-                        } else {
-                            event._threadAction.run();
-                        }
-                    } catch (InterruptedException ex) {
-                        Thread.currentThread().interrupt();
-                    }
-                }
-                _threadIsStopped = true;
-            }, "JMRI LogixNGThread");
+            _eventQueue = new QQueue<ThreadEvent*>(/*1024*/);
+//            _logixNGThread = new Thread(() -> {
+//                while (!_stopThread) {
+//                    try {
+//                        ThreadEvent event = _eventQueue.take();
+//                        if (event._lock != null) {
+//                            synchronized(event._lock) {
+//                                if (!_stopThread) event._threadAction.run();
+//                                event._lock.notify();
+//                            }
+//                        } else {
+//                            event._threadAction.run();
+//                        }
+//                    } catch (InterruptedException ex) {
+//                        Thread.currentThread().interrupt();
+//                    }
+//                }
+//                _threadIsStopped = true;
+//            }, "JMRI LogixNGThread");
+            _logixNGThread = new Thread(new NGThread(this), "JMRI LogixNGThread");
 
-            _logixNGThread->setDaemon(true);
+            _logixNGThread->setTerminationEnabled(true);//setDaemon(true);
         }
 #endif
     }

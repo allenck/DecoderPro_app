@@ -68,7 +68,7 @@
                                         ->getManager(ae->_itemManagerClass)->getBySystemName(socketSystemName);
 
                         if (namedBean != nullptr) {
-                            if (qobject_cast<AbstractMaleSocket*>(namedBean)) {
+                            if (qobject_cast<AbstractMaleSocket*>(namedBean->self())) {
                                 AbstractMaleSocket* maleSocket = (AbstractMaleSocket*)namedBean;
                                 ae->_socket->_connect(maleSocket);
                                 maleSocket->setup();

@@ -30,7 +30,7 @@
         for (NamedBean* nb : ((AbstractManager*)lm->self())->getNamedBeanSet()) {
          Light* l = (Light*)nb;
             if (qobject_cast<VariableLight*>(l->self())) {
-                Register((VariableLight*) l);
+                Register((VariableLight*) l->self());
             }
         }
         return this;
@@ -98,13 +98,13 @@
 
             // A NamedBean is added
             if (e->getNewValue() != QVariant()
-                    && (qobject_cast<VariableLight*>(VPtr<VariableLight>::asPtr(e->getNewValue())))) {
+                    && (qobject_cast<VariableLight*>(VPtr<VariableLight>::asPtr(e->getNewValue())->Light::self()))) {
                 Register(VPtr<VariableLight>::asPtr(e->getNewValue()));
             }
 
             // A NamedBean is removed
             if (e->getOldValue() != QVariant()
-                    && (qobject_cast<VariableLight*>(VPtr<VariableLight>::asPtr(e->getOldValue())))) {
+                    && (qobject_cast<VariableLight*>(VPtr<VariableLight>::asPtr(e->getOldValue())->Light::self()))) {
                 deregister((VariableLight*) VPtr<VariableLight>::asPtr(e->getOldValue()));
             }
         }

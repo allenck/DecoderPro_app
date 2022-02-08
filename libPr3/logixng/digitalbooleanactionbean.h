@@ -10,10 +10,10 @@
  */
 /*public*/ /*interface*/class DigitalBooleanActionBean : public NamedBean, DigitalBooleanAction {
 
-  Q_OBJECT
-  Q_INTERFACES(DigitalBooleanAction)
+  //Q_OBJECT
+  Q_INTERFACES(NamedBean DigitalBooleanAction)
  public:
-  DigitalBooleanActionBean(QString name, QObject* parent) : NamedBean(name, parent) {}
+  //DigitalBooleanActionBean(QString name, QObject* parent) : NamedBean(name, parent) {}
 };
-
+Q_DECLARE_INTERFACE(DigitalBooleanActionBean, "DigitalBooleanActionBean")
 #endif // DIGITALBOOLEANACTIONBEAN_H

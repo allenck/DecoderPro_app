@@ -5,33 +5,40 @@
  * A generic female socket
  */
 /*public*/ /*interface*/class FemaleGenericExpressionSocket
-        : FemaleSocket {
+        : public FemaleSocket {
 Q_INTERFACES(FemaleSocket)
  public:
-    /*public*/ enum class SocketType {
-        DIGITAL("SocketTypeDigital"),
-        ANALOG("SocketTypeAnalog"),
-        STRING("SocketTypeString"),
-        GENERIC("SocketTypeGeneric");
+    /*public*/ enum  SocketType {DIGITAL, ANALOG, STRING, GENERIC};
+//        DIGITAL("SocketTypeDigital"),
+//        ANALOG("SocketTypeAnalog"),
+//        STRING("SocketTypeString"),
+//        GENERIC("SocketTypeGeneric");
 
-        /*private*/ final String _bundleName;
+        /*private*/ /*final*/ QString _bundleName;
 
-        /*private*/ SocketType(String bundleName) {
-            _bundleName = bundleName;
-        }
+//        /*private*/ SocketType(QString bundleName) {
+//            _bundleName = bundleName;
+//        }
 
         //@Override
-        /*public*/ QString toString() {
-            return Bundle.getMessage(_bundleName);
+        /*public*/static QString toString(SocketType t) {
+           switch(t)
+           {
+            case  DIGITAL: return QString("Digital");
+           case  ANALOG: return QString("Analog");
+            case  STRING: return QString("String");
+            case  GENERIC: return QString("Generic");
+           }
+           return QString("Unknown");
         }
 
-    };
+
 
     /**
      * Get the current active socket.
      * @return the currently active socket or null if no socket is active
      */
-    public FemaleSocket getCurrentActiveSocket();
+    /*public*/ FemaleSocket* getCurrentActiveSocket();
 
     /**
      * Set the type of the socket.
@@ -41,8 +48,8 @@ Q_INTERFACES(FemaleSocket)
      * connected and if the new type doesn't match the currently connected
      * socket.
      */
-    public void setSocketType(SocketType socketType)
-            throws SocketAlreadyConnectedException;
+    /*public*/ void setSocketType(SocketType socketType)
+            /*throws SocketAlreadyConnectedException*/;
 
     /**
      * Get the type of the socket.

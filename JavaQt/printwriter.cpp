@@ -4,6 +4,7 @@
 #include "outputstreamwriter.h"
 #include "fileoutputstream.h"
 #include <QFile>
+#include "stringwriter.h"
 
 /**
  * Prints formatted representations of objects to a text-output stream.  This
@@ -294,6 +295,9 @@
         try {
             /*synchronized (lock)*/ {
                 ensureOpen();
+                if(sw)
+                 sw->flush();
+                else
                 out->flush();
             }
         }
@@ -902,11 +906,13 @@
         return this;
     }
 #endif
-/*public*/ void PrintWriter::format(const char *format, va_list arg)
-{
- QString  result = QString::asprintf(format, arg);
- write(result);
-}
+///*public*/ void PrintWriter::format(const char *format, va_list arg)
+//{
+// QString  result = QString::asprintf(format, arg);
+// write(result);
+//}
+
+
 #if 0
     /**
      * Writes a formatted string to this writer using the specified format
@@ -1058,3 +1064,26 @@
         return this;
     }
 #endif
+
+/*Public*/ PrintWriter::PrintWriter(StringWriter* sw)
+{
+ this->sw = sw;
+}
+
+/*Public*/ void PrintWriter::format(const char* fmt, ...)
+{
+ char buffer[256];
+     va_list args;
+
+     va_start(args, fmt);
+     vsprintf(buffer, fmt, args);
+     printf("\n");
+     va_end(args);
+
+     if(sw)
+     {
+      sw->append(buffer);
+     }
+     else
+      *psOut << QString(buffer);
+}

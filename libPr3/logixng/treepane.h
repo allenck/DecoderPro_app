@@ -64,7 +64,7 @@ class ThreadAction1 : public ThreadAction
   QList<FemaleSocket*>* list;
   TreePane* pane;
  public:
-  ThreadAction1(QList<FemaleSocket*>* list, TreePane* pane) {this->list = list; this->pane = pane;}
+  ThreadAction1(QList<FemaleSocket*>* list, TreePane* pane) : ThreadAction() {this->list = list; this->pane = pane;}
   void run()
   {
    FemaleSocket* femaleSocket = list->at(list->size()-1);
@@ -83,7 +83,7 @@ class ThreadAction2 : public ThreadAction
   TreePane* pane;
   FemaleSocket* femaleSocket;
  public:
-  ThreadAction2(FemaleSocket* femaleSocket, QList<FemaleSocket*>* list, TreePane* pane) {
+  ThreadAction2(FemaleSocket* femaleSocket, QList<FemaleSocket*>* list, TreePane* pane) : ThreadAction() {
    this->list = list;
    this->pane = pane;
    this->femaleSocket = femaleSocket;

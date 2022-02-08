@@ -6,7 +6,7 @@
 #include "abstractlight.h"
 #include "variablelight.h"
 class PropertyChangeListener;
-class LIBPR3SHARED_EXPORT AbstractVariableLight : /*public AbstractLight,*/ public VariableLight
+class LIBPR3SHARED_EXPORT AbstractVariableLight : public AbstractLight, public VariableLight
 {
     Q_OBJECT
   //Q_INTERFACES(VariableLight);
@@ -35,7 +35,7 @@ public:
     /*public*/ double getMin() override;
     /*public*/ double getMax() override;
     /*public*/ AbsoluteOrRelative::TYPE getAbsoluteOrRelative() override;
-    QObject* self() override {return this;}
+    QObject* self() override {return (QObject*)this;}
     //QString getSystemName() const override{return AbstractNamedBean::getSystemName();}
 signals:
 

@@ -24,9 +24,9 @@ class DefaultConditionalNG : public AbstractBase, public  ConditionalNG, FemaleS
   /*public*/  FemaleDigitalActionSocket* getFemaleSocket() override;
   /*public*/  void setRunDelayed(bool value)override;
   /*public*/  bool getRunDelayed()override;
-  /*public*/ void execute();
+  /*public*/ void execute()override;
   /*public*/  void execute(bool allowRunDelayed)override;
-  /*public*/  void execute(FemaleDigitalActionSocket* socket);
+  /*public*/  void execute(FemaleDigitalActionSocket* socket)override;
   /*public*/  Stack* getStack() override;
   /*public*/  SymbolTable* getSymbolTable()override;
   /*public*/  void setSymbolTable(SymbolTable* symbolTable)override;
@@ -69,7 +69,7 @@ class DefaultConditionalNG : public AbstractBase, public  ConditionalNG, FemaleS
   /*private*/ static void internalExecute(ConditionalNG* conditionalNG, FemaleDigitalActionSocket* femaleSocket);
 
   friend class ExecuteTask;
-  friend class ThreadAction1;
+  friend class DCThreadAction;
 };
 /*private*/ /*static*/ class ExecuteTask : public ThreadAction {
 Q_OBJECT
@@ -93,13 +93,13 @@ Q_OBJECT
     }
     friend class DefaultConditionalNG;
 };
-class ThreadAction1 : public ThreadAction
+class DCThreadAction : public ThreadAction
 {
   Q_OBJECT
  public:
   DefaultConditionalNG* dcng;
   FemaleDigitalActionSocket* socket;
-  ThreadAction1 (FemaleDigitalActionSocket* socket,  DefaultConditionalNG* dcng) {this->socket = socket; this->dcng = dcng;}
+  DCThreadAction (FemaleDigitalActionSocket* socket,  DefaultConditionalNG* dcng) {this->socket = socket; this->dcng = dcng;}
   void run() {
    dcng->internalExecute(dcng, socket);
   }

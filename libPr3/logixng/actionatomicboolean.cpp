@@ -75,7 +75,7 @@
     }
 
     //@Override
-    /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException */{
+    /*public*/  FemaleSocket* ActionAtomicBoolean::getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException */{
         throw new UnsupportedOperationException("Not supported.");
     }
 

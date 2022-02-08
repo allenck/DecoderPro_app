@@ -10,6 +10,7 @@
  */
 /*public*/ /*interface*/class  AnalogExpression : public Base {
 
+ public:
     Q_INTERFACES(Base)
     /**
      * Evaluate this expression.

@@ -1138,6 +1138,27 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+ logixng/genericexpressionvariable.cpp \
+ logixng/abstractanalogexpression.cpp \
+ logixng/analogexpressionanalogio.cpp \
+ logixng/analogexpressionconstant.cpp \
+ logixng/analogexpressionmemory.cpp \
+ logixng/analogfactory.cpp \
+ logixng/analogformula.cpp \
+ logixng/debuggermaleanalogexpressionsocket.cpp \
+ logixng/defaultanalogexpressionmanager.cpp \
+ logixng/defaultfemaleanalogactionsocket.cpp \
+ logixng/defaultfemaleanalogactionsocketfactory.cpp \
+ logixng/defaultfemaleanalogexpressionsocket.cpp \
+ logixng/defaultfemaleanalogexpressionsocketfactory.cpp \
+ logixng/defaultfemaledigitalactionsocketfactory.cpp \
+ logixng/defaultfemaledigitalexpressionsocket.cpp \
+ logixng/defaultfemaledigitalexpressionsocketfactory.cpp \
+ logixng/defaultfemalegenericexpressionsocket.cpp \
+ logixng/defaultfemalesocketmanager.cpp \
+ logixng/defaultfemalestringactionsocketfactory.cpp \
+ logixng/defaultfemalestringexpressionsocketfactory.cpp \
+ logixng/timesincemidnight.cpp \
  logixng/actionatomicboolean.cpp \
  logixng/defaultconditionalng.cpp \
  logixng/defaultconditionalngscaffold.cpp \
@@ -2343,6 +2364,29 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+ logixng/genericexpressionvariable.h \
+ logixng/abstractanalogexpression.h \
+ logixng/analogexpressionanalogio.h \
+ logixng/analogexpressionconstant.h \
+ logixng/analogexpressionmemory.h \
+ logixng/analogfactory.h \
+ logixng/analogformula.h \
+ logixng/debuggermaleanalogexpressionfactory.h \
+ logixng/debuggermaleanalogexpressionsocket.h \
+ logixng/defaultanalogexpressionmanager.h \
+ logixng/defaultfemaleanalogactionsocket.h \
+ logixng/defaultfemaleanalogactionsocketfactory.h \
+ logixng/defaultfemaleanalogexpressionsocket.h \
+ logixng/defaultfemaleanalogexpressionsocketfactory.h \
+ logixng/defaultfemaledigitalactionsocketfactory.h \
+ logixng/defaultfemaledigitalexpressionsocket.h \
+ logixng/defaultfemaledigitalexpressionsocketfactory.h \
+ logixng/defaultfemalegenericexpressionsocket.h \
+ logixng/defaultfemalesocketmanager.h \
+ logixng/defaultfemalestringactionsocketfactory.h \
+ logixng/defaultfemalestringexpressionsocketfactory.h \
+ logixng/maleanalogexpressionsocketfactory.h \
+ logixng/timesincemidnight.h \
  logixng/actionatomicboolean.h \
  logixng/defaultconditionalng.h \
  logixng/defaultconditionalngscaffold.h \

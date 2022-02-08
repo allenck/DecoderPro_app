@@ -10,6 +10,9 @@
 #include "conditionalng_manager.h"
 #include "defaultconditionalngscaffold.h"
 #include "assert1.h"
+#include "sleeperthread.h"
+#include "digitalactionmanager.h"
+
 /**
  * Test LogixNG_InitializationManager
  *
@@ -60,14 +63,16 @@
         initManager->add(l7);
         initManager->add(l2);
         initManager->add(l8);
-
+#if 1
         // No LogixNG* has been executed yet.
         Assert::assertEquals("Strings are equal", "", stringWriter->toString(), __FILE__, __LINE__);
 
         ((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))
                 ->activateAllLogixNGs(true, true);
 
-        bool result = JUnitUtil::waitFor([=]() {return checkAB();});
+        //boolean result = JUnitUtil.waitFor(() -> {return checkAB();});
+        ReleaseUntil_LNGI* r1 = new ReleaseUntil_LNGI(this);
+        bool result = JUnitUtil::waitFor(r1, __FILE__, __LINE__);
         Assert::assertTrue(result, __FILE__, __LINE__);
 
         QString expectedResult =
@@ -78,7 +83,8 @@
                 "LogixNG* 2: end\n" \
                 "LogixNG* 8: start\n" \
                 "LogixNG* 8: end\n";
-        Assert::assertTrue(stringWriter.toString().startsWith(expectedResult), __FILE__, __LINE__);
+        Assert::assertTrue(stringWriter->toString().startsWith(expectedResult), __FILE__, __LINE__);
+ #endif
     }
 
     // The minimal setup for log4J
@@ -125,7 +131,7 @@
 //            System.out.format("%s: start\n", getUserName());
             _printWriter->format("%s: start\n", getUserName());
             try {
-                Thread.sleep(_delay);
+                SleeperThread::msleep(_delay);
             } catch (InterruptedException* ex) {
 //                ex.printStackTrace(_printWriter);
             }
@@ -153,17 +159,17 @@
                             ->getAutoSystemName();
             ConditionalNG* conditionalNG =
                     new DefaultConditionalNGScaffold(systemName, "", threadID);
-            InstanceManager.getDefault(ConditionalNG_Manager.class).register(conditionalNG);
-            conditionalNG.setEnabled(true);
-            logixNG.addConditionalNG(conditionalNG);
+            ((ConditionalNG_Manager*)InstanceManager::getDefault("ConditionalNG_Manager"))->Register(conditionalNG);
+            conditionalNG->setEnabled(true);
+            logixNG->addConditionalNG(conditionalNG);
 
-            MyAction action = new MyAction(userName, ab, printWriter, delay);
-            MaleSocket socket = InstanceManager.getDefault(DigitalActionManager.class).registerAction(action);
-            conditionalNG.getChild(0).connect(socket);
+            MyAction* action = new MyAction(userName, ab, printWriter, delay);
+            MaleSocket* socket = ((DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->registerAction(action);
+            conditionalNG->getChild(0)->_connect(socket);
 
-            logixNG.setEnabled(true);
+            logixNG->setEnabled(true);
 
             return logixNG;
         }
 
-    }
+

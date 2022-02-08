@@ -17,7 +17,7 @@ class AbstractBaseManager : public AbstractManager, public BaseManager
   /*public*/  void deregister(/*@Nonnull*/ NamedBean* s)override;
   /*public*/  /*final*/ NameValidity validSystemNameFormat(QString systemName)override;
   /*public*/  void Register(/*@Nonnull*/ NamedBean* s)override;
-  /*public*/  NamedBean* RegisterBean(/*@Nonnull*/ NamedBean* s);
+  /*public*/  NamedBean* registerBean(/*@Nonnull*/ NamedBean* s)override;
   /*public*/  void registerMaleSocketFactory(MaleSocketFactory/*<E>*/* factory)override;
 
   QObject* self() override {return (QObject*)this;}

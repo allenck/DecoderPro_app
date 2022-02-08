@@ -55,8 +55,8 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
 
 //@Override
 /** {@inheritDoc} */
-/*public*/ Light* ProxyLightManager::provide(/*@Nonnull*/ QString name)  {
- return provideLight(name);
+/*public*/ NamedBean* ProxyLightManager::provide(/*@Nonnull*/ QString name)  {
+ return (NamedBean*)provideLight(name);
 }
 
 /**

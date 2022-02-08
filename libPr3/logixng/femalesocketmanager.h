@@ -13,7 +13,7 @@ class BaseManager;
 /*public*/ /*interface*/class FemaleSocketManager {
     public:
     /*public*/ /*interface*/class SocketType {
-
+     public:
         /*public*/ virtual QString getName()=0;
 
         /*public*/ virtual QString getDescr()=0;

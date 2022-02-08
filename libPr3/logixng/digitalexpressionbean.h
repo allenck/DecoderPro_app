@@ -9,10 +9,10 @@
  * @author Daniel Bergqvist Copyright 2018
  */
 /*public*/ /*interface*/class DigitalExpressionBean : public NamedBean, public DigitalExpression {
-    Q_OBJECT
-  Q_INTERFACES(DigitalExpression)
+    //Q_OBJECT
+  Q_INTERFACES(NamedBean DigitalExpression)
  public:
-    DigitalExpressionBean(QString name, QObject* parent) : NamedBean(name, parent) {}
+    //DigitalExpressionBean(QString name, QObject* parent) : NamedBean(name, parent) {}
 
     /**
      * Constant representing an "false" state. It's returned from the method
@@ -37,5 +37,5 @@
     /*public*/ virtual void notifyChangedResult(bool oldResult, bool newResult)=0;
 
 };
-
+Q_DECLARE_INTERFACE(DigitalExpressionBean, "DigitalExpressionBean")
 #endif // DIGITALEXPRESSIONBEAN_H

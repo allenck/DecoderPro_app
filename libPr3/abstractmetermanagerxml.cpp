@@ -42,7 +42,7 @@
             }
             // store the meters
             for (NamedBean* nb : memList) {
-             DefaultMeter* m = static_cast<DefaultMeter*>(nb);
+             DefaultMeter* m = static_cast<DefaultMeter*>(nb->self());
                 QString mName = m->getSystemName();
                 log->debug(tr("system name is %1").arg(mName));
 

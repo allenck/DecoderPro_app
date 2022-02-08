@@ -229,7 +229,7 @@ LnPredefinedMetersTest::LnPredefinedMetersTest(QObject *parent) : QObject(parent
     }
 
     /*public*/ double LnPredefinedMetersTest::getBeanValue(LnPredefinedMeters* lm, QString meterName) {
-        Meter* meter = (DefaultMeter*)((MeterManager*)InstanceManager::getDefault("MeterManager"))->getBySystemName(meterName);
+        Meter* meter = (DefaultMeter*)((MeterManager*)InstanceManager::getDefault("MeterManager"))->getBySystemName(meterName)->self();
         if (meter == nullptr) {
             return -999.0f;
         }

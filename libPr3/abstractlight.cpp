@@ -55,13 +55,13 @@
 //    implements Light, java.io.Serializable {
 
 /*public*/ AbstractLight::AbstractLight(QString systemName, QString userName, QObject *parent)
- : Light(systemName.toUpper(), userName, parent)
+ : AbstractNamedBean(systemName.toUpper(), userName, parent)
 {
  //super(systemName.toUpperCase(), userName);
 }
 
 /*public*/ AbstractLight::AbstractLight(QString systemName,QObject *parent)
- : Light(systemName.toUpper(), parent)
+ : AbstractNamedBean(systemName.toUpper(), parent)
 {
  //super(systemName.toUpperCase());
 }

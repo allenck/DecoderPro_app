@@ -1,7 +1,7 @@
 #include "logixng_instanceinitializer.h"
 //#include "DefaultConditionalNGManager.h"
-//#include "DefaultFemaleSocketManager.h"
-//#include "defaultlogixng_initializationmanager.h"
+#include "defaultfemalesocketmanager.h"
+#include "defaultlogixnginitializationmanager.h"
 #include "defaultlogixngmanager.h"
 #include "defaultlogixngpreferences.h"
 //#include "DefaultNamedTableManager.h"
@@ -41,13 +41,13 @@
 //            return new DefaultConditionalNGManager();
 //        }
 
-//        if (type == "FemaleSocketManager") {
-//            return new DefaultFemaleSocketManager();
-//        }
+        if (type == "FemaleSocketManager") {
+            return new DefaultFemaleSocketManager();
+        }
 
-//        if (type == "LogixNG_InitializationManager") {
-//            return new DefaultLogixNGInitializationManager();
-//        }
+        if (type == "LogixNG_InitializationManager") {
+            return new DefaultLogixNGInitializationManager();
+        }
 
         if (type == "LogixNG_Manager") {
             return new DefaultLogixNGManager();

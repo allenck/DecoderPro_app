@@ -46,6 +46,6 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void disposeMe() {
+    /*public*/  void DefaultFemaleDigitalActionSocket::disposeMe() {
         // Do nothing
     }

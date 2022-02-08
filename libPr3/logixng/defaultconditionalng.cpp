@@ -129,7 +129,7 @@
     //@Override
     /*public*/  void DefaultConditionalNG::execute(FemaleDigitalActionSocket* socket) {
         //runOnLogixNG_Thread(() -> {internalExecute(this, socket);}, true);
-     runOnLogixNG_Thread(new ThreadAction1(socket, this),true);
+     runOnLogixNG_Thread(new DCThreadAction(socket, this),true);
     }
 
     /*private*/ /*static*/ void DefaultConditionalNG::internalExecute(ConditionalNG* conditionalNG, FemaleDigitalActionSocket* femaleSocket) {

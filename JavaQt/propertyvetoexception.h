@@ -6,7 +6,7 @@ class PropertyChangeEvent;
 class PropertyVetoException : public Exception
 {
 public:
- PropertyVetoException(QString mess, PropertyChangeEvent* evt);
+ PropertyVetoException(QString mess, PropertyChangeEvent* evt, Throwable* cause = nullptr);
  /*public*/ PropertyChangeEvent* getPropertyChangeEvent();
 
 private:

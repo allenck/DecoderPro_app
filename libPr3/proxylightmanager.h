@@ -26,7 +26,7 @@ public:
   /*public*/ QString getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting) /*throws jmri.JmriException*/ override;
  /*public*/ QString getEntryToolTip()override;
  /*public*/ QString getBeanTypeHandled(bool plural)const override;
- /*public*/ Light* provide(/*@Nonnull*/ QString name) /*throw (IllegalArgumentException)*/override;
+ /*public*/ NamedBean* provide(/*@Nonnull*/ QString name) /*throw (IllegalArgumentException)*/override;
  /*public*/ QString getNamedBeanClass()const override {
      return "Light";
  }

@@ -10,8 +10,9 @@
  * @author Dave Duchamp       Copyright (C) 2007
  * @author Daniel Bergqvist   Copyright (C) 2018
  */
-/*public*/ /*interface*/class AnalogExpressionManager : BaseManager<MaleAnalogExpressionSocket> {
+/*public*/ /*interface*/class AnalogExpressionManager : public BaseManager/*<MaleAnalogExpressionSocket>*/ {
 
+ public:
     /**
      * Remember a NamedBean Object created outside the manager.
      * This method creates a MaleAnalogExpressionSocket for the action.
@@ -44,7 +45,7 @@
      *
      * @return a set of entries with category and class
      */
-    /*public*/ virtual QMap<Category, QList</*Class<? extends Base>*/QString>> getExpressionClasses()=0;
+    /*public*/ virtual QMap<Category*, QList</*Class<? extends Base>*/Base*>> getExpressionClasses()=0;
 
     /*.*
      * Add an Expression.

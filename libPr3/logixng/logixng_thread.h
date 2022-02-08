@@ -5,6 +5,8 @@
 #include <QThread>
 #include <QQueue>
 #include "actionlistener.h"
+#include "exceptions.h"
+#include "threadingutil.h"
 
 class Timer;
 class ThreadEvent;
@@ -57,6 +59,7 @@ class LogixNG_Thread : public QThread
   /*private*/ void stopLogixNGThread();
 
   friend class LNGTimerActionListener;
+  friend class NGThread;
 };
 
 /*static*/ /*private*/ class ThreadEvent : public QObject{
@@ -74,6 +77,7 @@ public:
         _threadAction = threadAction;
         _lock = lock;
     }
+  friend class NGThread;
 };
 
 class LNGTimerActionListener: public QObject, public ActionListener
@@ -90,6 +94,35 @@ class LNGTimerActionListener: public QObject, public ActionListener
   {
    thr->_eventQueue->enqueue(new ThreadEvent(ta));
  }
+};
+
+class NGThread : public Runnable
+{
+  Q_OBJECT
+  LogixNG_Thread* thread;
+ public:
+  NGThread(LogixNG_Thread* thread) {this->thread = thread;}
+
+ public slots:
+  void process()
+  {
+   while (!thread->_stopThread) {
+       try {
+           ThreadEvent* event = thread->_eventQueue->dequeue();
+           if (event->_lock != nullptr) {
+              /* synchronized(event->_lock)*/ {
+                   if (!thread->_stopThread) event->_threadAction->run();
+//                   event->_lock->notify();
+               }
+           } else {
+               event->_threadAction->run();
+           }
+       } catch (InterruptedException* ex) {
+           QThread::currentThread()->quit();
+       }
+   }
+   thread->_threadIsStopped = true;
+  }
 };
 
 #endif // LOGIXNG_THREAD_H

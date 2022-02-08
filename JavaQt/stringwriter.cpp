@@ -1,6 +1,10 @@
 #include "stringwriter.h"
 
-StringWriter::StringWriter(QObject* parent) : Writer(parent)
+StringWriter::StringWriter() : QByteArray()
 {
+}
 
+/*public*/ QString StringWriter::toString()
+{
+ return QString::fromStdString(toStdString());
 }

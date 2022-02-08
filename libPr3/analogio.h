@@ -7,9 +7,10 @@
  *
  * @author Daniel Bergqvist Copyright (C) 2018
  */
-/*public*/ /*interface*/class AnalogIO //: public NamedBean
+/*public*/ /*interface*/class AnalogIO : public NamedBean
 {
   //Q_OBJECT
+  Q_INTERFACES(NamedBean)
  public:
 //    AnalogIO(QObject* parent = nullptr) : AbstractNamedBean(parent) {}
 //    AnalogIO(QString systemName, QObject* parent = nullptr) : AbstractNamedBean(systemName, parent) {}

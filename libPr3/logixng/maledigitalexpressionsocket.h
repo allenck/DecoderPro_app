@@ -8,7 +8,7 @@
  */
 /*public*/ /*interface*/class MaleDigitalExpressionSocket
         :  public DigitalExpressionBean, public MaleSocket {
-
+ public:
   Q_INTERFACES(MaleSocket )
     /**
      * {@inheritDoc}

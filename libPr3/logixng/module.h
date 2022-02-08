@@ -6,6 +6,37 @@
 #include <QSet>
 #include "symboltable.h"
 
+/**
+ * An enum that defines the types of initial value.
+ */
+/*public*/ /*enum*/class ReturnValueType  : public QObject{
+  Q_OBJECT
+ public:
+    enum TYPES
+    { None, LocalVariable, Memory};
+//        None(Bundle.getMessage("ReturnValueType_None")),
+//        LocalVariable(Bundle.getMessage("ReturnValueType_LocalVariable")),
+//        Memory(Bundle.getMessage("ReturnValueType_Memory"));
+
+//       /*private*/ /*final*/ QString _descr;
+
+//       /*private*/ ReturnValueType(QString descr) {
+//           _descr = descr;
+//       }
+
+    /*public*/ static QString getDescr(TYPES t) {
+        //return _descr;
+     switch (t) {
+     case None:
+      return tr("");
+     case LocalVariable:
+      return tr("Local Variable");
+     case Memory:
+      return tr("Memory");
+     }
+    }
+ };
+
 
 /**
  * Represent a LogixNG module.
@@ -40,8 +71,7 @@
        */
       /*public*/ virtual bool isOutput()=0;
 
-  };
-  class ReturnValueType;
+  }; // end Parameter
 //    public void setRootSocketType(FemaleSocketManager.SocketType socketType);
 
     /*public*/ virtual FemaleSocketManager::SocketType* getRootSocketType()=0;
@@ -71,35 +101,7 @@
 
 
 
-   /**
-    * An enum that defines the types of initial value.
-    */
-   /*public*/ /*enum*/class ReturnValueType {
-    public:
-       enum TYPES
-       { None, LocalVariable, Memory};
- //        None(Bundle.getMessage("ReturnValueType_None")),
- //        LocalVariable(Bundle.getMessage("ReturnValueType_LocalVariable")),
- //        Memory(Bundle.getMessage("ReturnValueType_Memory"));
 
-//       /*private*/ /*final*/ QString _descr;
-
-//       /*private*/ ReturnValueType(QString descr) {
-//           _descr = descr;
-//       }
-
-       /*public*/ static QString getDescr(TYPES t) {
-           //return _descr;
-        switch (t) {
-        case None:
-         return tr("");
-        case LocalVariable:
-         return tr("Local Variable");
-        case Memory:
-         return tr("Memory");
-        }
-       }
-    };
 
     /**
      * Data for a parameter.

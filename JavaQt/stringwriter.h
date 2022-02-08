@@ -3,13 +3,18 @@
 
 #include "writer.h"
 #include <QObject>
+#include <QByteArray>
 
-class StringWriter : public QObject, public Writer
+class StringWriter : public QByteArray
 {
-  Q_OBJECT
+  //Q_OBJECT
 
  public:
-  StringWriter(QObject* parent=nullptr);
+  StringWriter();
+  /*public*/ QString toString();
+  /*public*/ void flush() {}
+ private:
+
 };
 
 #endif // STRINGWRITER_H

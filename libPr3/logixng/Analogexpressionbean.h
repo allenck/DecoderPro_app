@@ -8,10 +8,10 @@
  * @author Daniel Bergqvist Copyright 2018
  */
 /*public*/ /*interface*/class AnalogExpressionBean : public NamedBean, public AnalogExpression {
-  Q_OBJECT
-  Q_INTERFACES(AnalogExpression)
+  //Q_OBJECT
+  Q_INTERFACES(NamedBean AnalogExpression)
  public:
-  AnalogExpressionBean(QString name, QObject* parent = nullptr) : NamedBean(name, parent){}
+  //AnalogExpressionBean(QString name, QObject* parent = nullptr) : NamedBean(name, parent){}
 };
 Q_DECLARE_INTERFACE(AnalogExpressionBean, "AnalogExpressionBean")
 #endif // ANALOGEXPRESSIONBEAN_H

@@ -10,7 +10,7 @@ Thread::Thread(QObject *runnable, QString name, QObject* parent) : QThread(paren
  else
  {
   if(runnable->metaObject()->indexOfMethod(QMetaObject::normalizedSignature("process()")) == -1)
-   throw new NoSuchMethodException(tr("worker %1 thread missing 'process' method."));
+   throw new NoSuchMethodException(tr("worker %1 thread missing 'process' method.").arg(name));
   connect(this, SIGNAL(started()), runnable, SLOT(process()));
  }
  connect(runnable, SIGNAL(finished()), this, SLOT(quit()));

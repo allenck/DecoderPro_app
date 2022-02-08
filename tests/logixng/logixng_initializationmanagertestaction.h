@@ -6,8 +6,9 @@
 class Logger;
 class LogixNG_InitializationManagerTestAction : public AbstractAction
 {
+    Q_OBJECT
 public:
-    explicit LogixNG_InitializationManagerTestAction(QObject *parent = nullptr);
+    explicit LogixNG_InitializationManagerTestAction(QObject *parent);
 public slots:
  void actionPerformed();
 private:

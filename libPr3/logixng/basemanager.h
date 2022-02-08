@@ -30,7 +30,7 @@ class MaleSocketFactory;
      *                                                system name is already registered in
      *                                                the manager
      */
-    /*public*/virtual NamedBean* _registerBean(/*@Nonnull*/ NamedBean* maleSocket)=0;
+    /*public*/virtual NamedBean* registerBean(/*@Nonnull*/ NamedBean* maleSocket)=0;
 
     /**
      * Method for a UI to delete a bean.

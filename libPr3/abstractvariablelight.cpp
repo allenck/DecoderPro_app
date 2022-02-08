@@ -48,7 +48,7 @@
 //    implements java.io.Serializable {
 
 /*public*/ AbstractVariableLight::AbstractVariableLight(QString systemName, QString userName, QObject *parent)
- : VariableLight(systemName, userName, parent)
+ : AbstractLight(systemName, userName, parent)
 {
  //super(systemName, userName);
  init();
@@ -58,7 +58,7 @@
  }
 }
 
-/*public*/ AbstractVariableLight::AbstractVariableLight(QString systemName, QObject *parent) : VariableLight(systemName, parent)
+/*public*/ AbstractVariableLight::AbstractVariableLight(QString systemName, QObject *parent) : AbstractLight(systemName, parent)
 {
  //super(systemName);
  init();

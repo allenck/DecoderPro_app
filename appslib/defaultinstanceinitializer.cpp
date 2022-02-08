@@ -80,6 +80,9 @@
 #include "jmriconfigurationmanager.h"
 #ifdef HAVE_LOGIXNG
 #include "../libPr3/logixng/defaultlogixngpreferences.h"
+#include "../libPr3/logixng/defaultlogixngmanager.h"
+#include "../libPr3/logixng/defaultlogixnginitializationmanager.h"
+#include "../libPr3/logixng/logixng_instanceinitializer.h"
 #endif
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {
@@ -661,6 +664,24 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
   InstanceManager::store(pref, type);
   return pref;
  }
+ if(type == "LogixNG_Manager")
+ {
+
+  DefaultLogixNGManager* mgr = new DefaultLogixNGManager();
+  InstanceManager::store(mgr, type);
+  return mgr;
+ }
+
+ if(type == "LogixNG_InitializationManager")
+ {
+  DefaultLogixNGInitializationManager* mgr = new DefaultLogixNGInitializationManager();
+  InstanceManager::store(mgr, type);
+  return mgr;
+ }
+ LogixNG_InstanceInitializer* lint = new LogixNG_InstanceInitializer();
+ QObject* obj = lint->getDefault(type);
+ if(obj)
+  return  obj;
 #endif
  // this is an error!
  //throw new IllegalArgumentException("Cannot create object of type "+type);

@@ -178,8 +178,8 @@ public:
      /*public*/ virtual bool allowMultipleAdditions(QString /*systemName*/) { return false;}
      /** {@inheritDoc} */
      //@Override
-     virtual/*default*/ /*public*/ Light* provide(/*@Nonnull*/ QString name) /*throw (IllegalArgumentException)*/
-     { return provideLight(name); }
+     virtual/*default*/ /*public*/ NamedBean* provide(/*@Nonnull*/ QString name) /*throw (IllegalArgumentException)*/
+     { return (NamedBean*)provideLight(name); }
 //     /*public*/ QString toString() {return "LightManager";}
   QString getNamedBeanClass() const {return "LightManager";}
   /**

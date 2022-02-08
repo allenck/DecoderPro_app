@@ -2,11 +2,12 @@
 # changing any of these options may require that the affected projects or files may need to be rebuilt!
 
 ENABLE_LOGIXNG = "N" # change to "Y" to compile LogixNG modules
-DEFINES += HAVE_LOGIXNG #used in source files to include specific LogixNG code
 
 equals(ENABLE_LOGIXNG, "Y") {
 #Enable the following line to initialize LogixNG in apps.cpp
- ENABLE_LOGIXNG_INIT = "Y" # change to "Y" to compile LogixNG modules in Apps
+ DEFINES += HAVE_LOGIXNG #used in source files to include specific LogixNG code
+ ENABLE_LOGIXNG_INIT = "Y" # change to "N" to disable LogixNG startup initialization ( for initial testing!)
 } else {
- ENABLE_LOGIXNG_INIT = "N"
+ DEFINES -= HAVE_LOGIXNG
+ ENABLE_LOGIXNG_INIT = "N" #do not change!
 }

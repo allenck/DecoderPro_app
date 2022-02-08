@@ -269,6 +269,6 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     QMenu* logixNGMenu = new QMenu("LogixNG");
     addMenu(logixNGMenu);
     logixNGMenu->addAction(new SymbolTableTestAction(this));
-    logixMenu->addAction(new LogixNG_InitializationManagerTestAction(this));
+    logixNGMenu->addAction(new LogixNG_InitializationManagerTestAction(this));
 #endif
 }

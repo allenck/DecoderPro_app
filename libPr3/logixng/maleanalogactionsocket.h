@@ -5,11 +5,10 @@
 /**
  * A LogixNG male AnalogActionBean socket.
  */
-/*public*/ /*interface*/class MaleAnalogActionSocket
-        : public AnalogActionBean, public MaleSocket  {
-Q_INTERFACES(MaleSocket )
+/*public*/ /*interface*/class MaleAnalogActionSocket : public AnalogActionBean, public MaleSocket  {
+Q_INTERFACES(AnalogActionBean MaleSocket )
  public:
-  MaleAnalogActionSocket(QString name, QObject* parent = nullptr) : AnalogActionBean(name, parent) {}
+ // MaleAnalogActionSocket(QString name, QObject* parent = nullptr) : QObject( parent) {}
     /**
      * {@inheritDoc}
      * <P>

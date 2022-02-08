@@ -44,7 +44,7 @@ Q_INTERFACES(Manager)
      *
      * @return a set of entries with category and class
      */
-    /*public*/ virtual QMap<Category*, QList</*Class<? extends Base>*/QString> > getExpressionClasses()=0;
+    /*public*/ virtual QMap<Category*, QList</*Class<? extends Base>*/Base*> > getExpressionClasses()=0;
 
     /*.*
      * Add an DigitalExpressionBean.
