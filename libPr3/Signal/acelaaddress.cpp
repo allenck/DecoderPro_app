@@ -331,7 +331,7 @@
         Light* lgt = nullptr;
         lgt = (Light*)InstanceManager::lightManagerInstance()->getBySystemName(systemName);
         if (lgt != nullptr) {
-            return ((AbstractLight*)lgt->self())->getUserName();
+            return ((AbstractLight*)lgt->self())->AbstractNamedBean::getUserName();
         } else {
             return ("");
         }

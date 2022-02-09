@@ -22,7 +22,7 @@ class LightTableDataModel : public BeanTableDataModel
   LightTableDataModel();
   /*public*/ LightTableDataModel(Manager/*<Light>*/* mgr);
   /*private*/ void initTable();
-  /*public*/ LightManager *getManager()  override;
+  /*public*/ Manager *getManager()  override;
   /*public*/ int columnCount(const QModelIndex& parent) const override;
   /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
   /*public*/ QString getColumnClass(int col) const override;
@@ -45,7 +45,7 @@ class LightTableDataModel : public BeanTableDataModel
  protected:
   // for icon state col
   /*protected*/ bool _graphicState = false; // updated from prefs
-  /*protected*/ /*final*/ void setManager(/*@Nonnull*/ Manager/*<Light>*/* manager) override;
+  /*protected*/ /*final*/ void setManager(/*@Nonnull*/ Manager *manager) override;
   /*protected*/ void doDelete(NamedBean* bean)override;
   /*protected*/ QString getMasterClassName() override;
   /*protected*/ void configValueColumn(JTable* table) override;

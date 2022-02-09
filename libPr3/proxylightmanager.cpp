@@ -10,7 +10,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
 {
  this->setObjectName("ProxyLightManager");
  //propertyChangeSupport = new SwingPropertyChangeSupport(this,this);
- log = new Logger("ProxyLightManager");
+ //log = new Logger("ProxyLightManager");
  //registerSelf();
 }
 /**
@@ -50,7 +50,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
 
 /*protected*/ NamedBean* ProxyLightManager::makeBean(AbstractManager *manager, QString systemName, QString userName)
 {
- return  (NamedBean*)((ProxyLightManager*)manager)->newLight(systemName, userName);
+ return  (NamedBean*)((AbstractLightManager*)manager->self())->newLight(systemName, userName);
 }
 
 //@Override
@@ -69,18 +69,12 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * @param name
  * @return Never null under normal circumstances
  */
+//@Override
+//@Nonnull
 /*public*/ Light* ProxyLightManager::provideLight(QString name) {
+ if(name.isEmpty()) throw new NullPointerException(tr("System Name is null"));
  return (Light*)AbstractProvidingProxyManager::provideNamedBean(name);
 }
-
-/**
- * Locate an instance based on a system name.  Returns null if no
- * instance already exists.
- * @return requested Light object or null if none exists
- */
-///*public*/ NamedBean *ProxyLightManager::getBySystemName(QString systemName) const {
-//    return (NamedBean*)AbstractProxyLightManager::getBeanBySystemName(systemName);
-//}
 
 /**
  * Locate an instance based on a user name.  Returns null if no
@@ -119,7 +113,10 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * be looking them up.
  * @return requested Light object (never null)
  */
-/*public*/ Light* ProxyLightManager::newLight(QString systemName, QString userName) {
+//@Override
+//@Nonnull
+/*public*/ Light* ProxyLightManager::newLight(/*@Nonnull*/QString systemName, QString userName) {
+ if(systemName.isEmpty()) throw new IllegalArgumentException(tr("System Name is null"));
     return (Light*) newNamedBean(systemName, userName);
 }
 ///*public*/ NamedBean* ProxyLightManager::newNamedBean(QString systemName, QString userName) {
@@ -155,7 +152,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  *      to the hardware configuration
  */
 /*public*/ bool ProxyLightManager::validSystemNameConfig(QString systemName) {
- LightManager* m = (LightManager*) getManager(systemName);
+ LightManager* m = (AbstractLightManager*) getManager(systemName);
  return (m == nullptr) ? false : m->validSystemNameConfig(systemName);
 }
 
@@ -179,7 +176,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * If a manager is found, return its determination of an alternate system name
  */
 /*public*/ QString ProxyLightManager::convertSystemNameToAlternate(QString systemName) {
- LightManager* m = (LightManager*) getManager(systemName);
+ LightManager* m = (AbstractLightManager*) getManager(systemName)->self();
     return (m == nullptr) ? "" : m->convertSystemNameToAlternate(systemName);}
 
 /**
@@ -190,7 +187,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
 /*public*/ void ProxyLightManager::activateAllLights() {
  //getManagerList().forEach(m -> ((LightManager) m).activateAllLights());
  for (Manager* m : getManagerList())
-  ((LightManager*) m)->activateAllLights();
+  ((AbstractLightManager*) m->self())->activateAllLights();
 }
 
 /**
@@ -199,7 +196,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * If a manager is found, return its determination of support for variable lights.
  */
 /*public*/ bool ProxyLightManager::supportsVariableLights(QString systemName) {
- LightManager* m = (LightManager*) getManager(systemName);
+ LightManager* m = (AbstractLightManager*) getManager(systemName)->self();
  return (m == nullptr) ? false : m->supportsVariableLights(systemName);
 }
 
@@ -208,7 +205,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * order eg 11 thru 18, primarily used to show/not show the add range box in the add Light window
  **/
 /*public*/ bool ProxyLightManager::allowMultipleAdditions(QString systemName) {
- LightManager* m = (LightManager*) getManager(systemName);
+ AbstractLightManager* m = (AbstractLightManager*) getManager(systemName);
  return (m == nullptr) ? false : m->allowMultipleAdditions(systemName);
 }
 

@@ -2,6 +2,7 @@
 #define PROXYLIGHTMANAGER_H
 #include "abstractprovidingproxymanager.h"
 #include "lightmanager.h"
+#include "libPr3_global.h"
 
 class Meter;
 class LIBPR3SHARED_EXPORT ProxyLightManager : public AbstractProvidingProxyManager, public LightManager
@@ -9,7 +10,7 @@ class LIBPR3SHARED_EXPORT ProxyLightManager : public AbstractProvidingProxyManag
   Q_OBJECT
   Q_INTERFACES(LightManager)
 public:
- explicit ProxyLightManager(QObject *parent = 0);
+  ProxyLightManager(QObject *parent = 0);
  /*public*/ int getXMLOrder() const override;
  /*public*/ Light* getLight(QString name)override;
  /*public*/ Light* provideLight(QString name)override;
@@ -31,10 +32,13 @@ public:
      return "Light";
  }
   /*public*/ QString toString() override {return "ProxyLightManager";}
+
+  QObject* self() override {return (QObject*)this;}
   /*public*/ SystemConnectionMemo* getMemo() override {return AbstractProxyManager::getMemo();}
   /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractProxyManager::getNamedBeanSet();}
-//  /*public*/ Light* getBySystemName(QString name)  {return (Light*)AbstractProxyManager::getBySystemName(name);}
-  QObject* self() override {return (QObject*)this;}
+  /*public*/ Light* getBySystemName(QString name) override {return (Light*)AbstractProxyManager::getBySystemName(name);}
+  /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{AbstractProxyManager::addPropertyChangeListener(l);}
+  /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{AbstractProxyManager::removePropertyChangeListener(l);}
 
 signals:
 

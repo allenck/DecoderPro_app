@@ -42,6 +42,7 @@
 #include "jeditorpane.h"
 #include <QThread>
 #include "xtablecolumnmodel.h"
+#include "abstractnamedbean.h"
 
 //BeanTableDataModel::BeanTableDataModel(QObject *parent) :
 //    QAbstractTableModel(parent)
@@ -165,9 +166,9 @@ void BeanTableDataModel::setManager(Manager *) {}
  {
   // a value changed.  Find it, to avoid complete redraw
   //if(e.getSource() instanceof NamedBean)
-  if(dynamic_cast<NamedBean*>(e->getSource())!= NULL)
+  if(qobject_cast<AbstractNamedBean*>(e->getSource())!= NULL)
   {
-   QString name = ((NamedBean*)e->getSource())->getSystemName();
+   QString name = ((AbstractNamedBean*)e->getSource())->getSystemName();
    if (log->isDebugEnabled()) log->debug("Update cell "+QString::number(sysNameList.indexOf(name))+"," +QString::number(VALUECOL)+" for "+name);
    // since we can add columns, the entire row is marked as updated
    int row = sysNameList.indexOf(name);

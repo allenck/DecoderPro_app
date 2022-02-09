@@ -1,10 +1,11 @@
 #ifndef LIGHTMANAGER_H
 #define LIGHTMANAGER_H
 #include "abstractmanager.h"
+#include "libPr3_global.h"
 #include "providingmanager.h"
 #include "light.h"
 
-class LightManager : public ProvidingManager
+class LIBPR3SHARED_EXPORT LightManager : public ProvidingManager
 {
     //Q_OBJECT
   Q_INTERFACES(ProvidingManager)
@@ -103,7 +104,7 @@ public:
         /**
          * Locate a Light by its system name
          */
-        virtual NamedBean* getBySystemName(QString /*s*/) const {return nullptr;}
+        virtual NamedBean* getBySystemName(QString /*s*/)  {return nullptr;}
 
 //        /**
 //         * Validate system name format

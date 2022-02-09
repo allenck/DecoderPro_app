@@ -5,10 +5,10 @@
 #include "digitalio.h"
 
 class LightControl;
-class Light :  /* public AbstractNamedBean,*/ public DigitalIO
+class Light :  /* public AbstractNamedBean,*/ public DigitalIO, public NamedBean
 {
     //Q_OBJECT
-  Q_INTERFACES(DigitalIO)
+  Q_INTERFACES(NamedBean DigitalIO)
 public:
 //  explicit Light(QObject *parent = 0) : AbstractNamedBean(parent) {}
 //  Light(QString sysName, QObject* parent=0) : AbstractNamedBean(sysName, parent) {}

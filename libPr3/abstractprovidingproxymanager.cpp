@@ -90,6 +90,7 @@
      */
     //@Nonnull
     /*public*/ /*E*/NamedBean* AbstractProvidingProxyManager::newNamedBean(/*@Nonnull*/ QString systemName, QString userName)  /*throws IllegalArgumentException*/ {
+        if(systemName.isEmpty()) throw new IllegalAccessException(tr("System Name is null"));
         // make sure internal present
         initInternal();
 

@@ -475,7 +475,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
     /*public*/  /*synchronized*/ void AbstractProxyManager::removePropertyChangeListener(PropertyChangeListener* l) {
         PropertyChangeSupport::removePropertyChangeListener(l);
         //mgrs.forEach(m -> m->removePropertyChangeListener(l));
-        for(Manager* m : mgrs)
+        foreach(Manager* m, mgrs)
          m->removePropertyChangeListener(l);
     }
 
@@ -648,8 +648,8 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
         if (namedBeanSet != nullptr) { // only maintain if requested
             namedBeanSet->clear();
             //mgrs.forEach(m -> namedBeanSet.addAll(m->getNamedBeanSet()));
-            for(Manager* m : mgrs)
-             for(NamedBean* b : m->getNamedBeanSet())
+            foreach(Manager* m, mgrs)
+             foreach(NamedBean* b, m->getNamedBeanSet())
               namedBeanSet->insert(b);
 
 

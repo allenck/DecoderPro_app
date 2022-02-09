@@ -6,8 +6,9 @@
  *
  * @author Daniel Bergqvist Copyright (C) 2018
  */
-/*public*/ class DigitalIO //: public NamedBean
+/*public*/ class DigitalIO /*: public NamedBean*/
 {
+  //Q_INTERFACES(NamedBean)
 public:
   //virtual ~DigitalIO() {}
   enum STATES

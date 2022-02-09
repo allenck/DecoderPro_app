@@ -34,8 +34,10 @@
 
     /*public*/ LightTableDataModel::LightTableDataModel(Manager/*<Light>*/* mgr) : BeanTableDataModel(){
         //super();
-        setManager((AbstractManager*)mgr->self());
+        common();
         setObjectName(QString("LightTableDataModel") + "_" + mgr->self()->metaObject()->className());
+        setManager(mgr);
+        init();
         initTable();
     }
 
@@ -57,7 +59,7 @@
      */
     //@Nonnull
     //@Override
-    /*public*/ LightManager *LightTableDataModel::getManager(){
+    /*public*/ Manager *LightTableDataModel::getManager(){
         if (lightManager == nullptr) {
             lightManager = (ProxyLightManager*)InstanceManager::getDefault("LightManager");
         }
@@ -69,7 +71,7 @@
      */
     //@Override
     /*protected*/ /*final*/ void LightTableDataModel::setManager(/*@Nonnull*/ Manager *manager) {
-        if (!(qobject_cast<LightManager*>(manager->self()))) {
+        if (!(static_cast<LightManager*>(manager))) {
             return;
         }
         getManager()->removePropertyChangeListener(this);
@@ -82,7 +84,7 @@
                 }
             }
         }
-        lightManager = qobject_cast<LightManager*>(manager->self());
+        lightManager = (LightManager*)manager;
         getManager()->addPropertyChangeListener(this);
         updateNameList();
     }
@@ -169,7 +171,12 @@
     // /*public*/ bool isCellEditable(int row, int col)
     /*public*/ Qt::ItemFlags LightTableDataModel::flags(const QModelIndex &mindex) const
     {
-     Light* l = ((Light*) getBySystemName(data(index(mindex.row(), SYSNAMECOL),Qt::DisplayRole).toString()));
+     //Light* l = ((Light*) getBySystemName(data(index(mindex.row(), SYSNAMECOL),Qt::DisplayRole).toString()));
+        Light* l;
+        if(qobject_cast<ProxyLightManager*>(lightManager->self()))
+         l = (AbstractLight*)   ((AbstractProxyManager*)lightManager->self())->getBySystemName(sysNameList.at(mindex.row()))->self();
+        else
+         l=   (AbstractLight*) lightManager->getBySystemName(sysNameList.at(mindex.row()))->self();
      if (l == nullptr){
          return Qt::NoItemFlags;
      }
@@ -209,7 +216,12 @@
     /*public*/ QVariant LightTableDataModel::data(const QModelIndex &mindex, int role) const
     {
      int col = mindex.column();
-     Light* l = (Light*)getBySystemName(sysNameList.at(mindex.row()));
+     Light* l;
+     if(qobject_cast<ProxyLightManager*>(lightManager->self()))
+      l = (AbstractLight*)   ((AbstractProxyManager*)lightManager->self())->getBySystemName(sysNameList.at(mindex.row()))->self();
+     else
+      l=  (AbstractLight*) lightManager->getBySystemName(sysNameList.at(mindex.row()))->self();
+
      if(role == Qt::DisplayRole)
      {
       switch(col)
@@ -281,7 +293,12 @@
     /*public*/ bool LightTableDataModel::setData(const QModelIndex &mindex, const QVariant &value, int role)
     {
         //Light* l = (Light*) getValueAt(row, SYSNAMECOL);
-        Light* l = ((Light*) getBySystemName(data(index(mindex.row(), SYSNAMECOL),Qt::DisplayRole).toString()));
+//        Light* l = ((Light*) getBySystemName(data(index(mindex.row(), SYSNAMECOL),Qt::DisplayRole).toString()));
+        Light* l;
+        if(qobject_cast<ProxyLightManager*>(lightManager->self()))
+         l = (AbstractLight*)   ((AbstractProxyManager*)lightManager->self())->getBySystemName(sysNameList.at(mindex.row()))->self();
+        else
+         l=   (AbstractLight*) lightManager->getBySystemName(sysNameList.at(mindex.row()))->self();
         if (l == nullptr){
             return false;
         }

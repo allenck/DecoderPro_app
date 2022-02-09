@@ -84,8 +84,8 @@ private:
     QString twoSensorControl;// = tr("LightTwoSensorControl");
     QString noControl;// = tr("LightNoControl");
 
-    QLabel* status1;// = new JLabel(tr("LightCreateInst"));
-    QLabel* status2;// = new JLabel("");
+    JLabel* status1;// = new JLabel(tr("LightCreateInst"));
+    JLabel* status2;// = new JLabel("");
     Manager* connectionChoice = nullptr;
     /*private*/ LightIntensityPane* lightIntensityPanel = nullptr;
     /*private*/ LightControlPane* lightControlPanel = nullptr;
@@ -155,7 +155,7 @@ private slots:
 
 
 protected:
-    /*protected*/ LightManager* lightManager;// = InstanceManager.lightManagerInstance();
+    /*protected*/ LightManager* lightManager = (LightManager*)InstanceManager::getNullableDefault("LightManager");
     /*protected*/ void createModel() override;
     /*protected*/ void setTitle()override;
     /*protected*/ QString helpTarget()override;

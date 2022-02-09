@@ -151,6 +151,7 @@
     }
 
     setUpControlType(0);
+    adjustSize();
 }
 
 /*private*/ JPanel* AddEditSingleLightControlFrame::getButtonPanel(){

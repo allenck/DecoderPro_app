@@ -67,7 +67,7 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
 /**
  * Locate a Light by its system name
  */
-/*public*/ NamedBean* AbstractLightManager::getBySystemName(QString name) const
+/*public*/ NamedBean* AbstractLightManager::getBySystemName(QString name)
 {
  return /*(Light*)*/(_tsys->value(name));
 }
@@ -80,76 +80,54 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
 }
 
 /**
- * Return an instance with the specified system and user names.
- * Note that two calls with the same arguments will get the same instance;
- * there is only one Light object representing a given physical Light
- * and therefore only one with a specific system or user name.
- *<P>
- * This will always return a valid object reference; a new object will be
- * created if necessary. In that case:
- *<UL>
- *<LI>If a NULL reference is given for user name, no user name will be associated
- *    with the Light object created; a valid system name must be provided
- *<LI>If both names are provided, the system name defines the
- *    hardware access of the desired sensor, and the user address
- *    is associated with it. The system name must be valid.
- *</UL>
- * Note that it is possible to make an inconsistent request if both
- * addresses are provided, but the given values are associated with
- * different objects.  This is a problem, and we don't have a
- * good solution except to issue warnings.
- * This will mostly happen if you're creating Lights when you should
- * be looking them up.
- * @return requested Light object (never NULL)
+ * Lookup Light by UserName, then provide by SystemName.
+ * {@inheritDoc}
  */
-/*public*/ Light* AbstractLightManager::newLight(QString systemName, QString userName)
+//@Override
+//@Nonnull
+/*public*/ Light* AbstractLightManager::newLight(/*@Nonnull*/QString systemName, QString userName)
 {
+ if(systemName.isEmpty())
+   throw new IllegalArgumentException("SystemName cannot be null. UserName was " + ((userName == "") ? "null" : userName));  // NOI18N)
  if (log->isDebugEnabled()) log->debug("newLight:"
                                         +( (systemName==NULL) ? "NULL" : systemName)
                                         +";"+( (userName==NULL) ? "NULL" : userName));
- if (systemName.isNull())
- {
-  log->error("SystemName cannot be NULL. UserName was "
-                                    +( (userName==NULL) ? "NULL" : userName));
-  return NULL;
- }
- // is system name in correct format?
- if ( AbstractManager::validSystemNameFormat(systemName) != NameValidity::VALID)
- {
-  log->error("Invalid system name for newLight: "+systemName);
-  return NULL;
- }
+ systemName = AbstractManager::validateSystemNameFormat(systemName);
  // return existing if there is one
- Light* s = NULL;
- if ( (userName!=NULL) && ((s = (Light*)getByUserName(userName)) != NULL))
- {
-  if (getBySystemName(systemName)!=(NamedBean*)s->self())
-   log->error("inconsistent user ("+userName+") and system name ("
-                    +systemName+") results; userName related to ("+((AbstractNamedBean*)s->self())->getSystemName()+")");
-  return s;
+ Light* l = nullptr;
+ if (userName != "") {
+     l = (Light*)getByUserName(userName);
+     if (l != nullptr) {
+         if ((Light*)getBySystemName(systemName) != l) {
+             log->error(tr("inconsistent user '%1' and system name '%2' results; user name related to %3").arg(
+                 userName, systemName, l->getSystemName()));
+         }
+         return l;
+     }
  }
- if ( (s = (Light*)getBySystemName(systemName)) != NULL)
- {
-  if ((((AbstractNamedBean*)s->self())->getUserName() == NULL) && (userName != NULL))
-   ((AbstractNamedBean*)s->self())->setUserName(userName);
-  else if (userName != NULL) log->warn("Found light via system name ("+systemName
-                                +") with non-NULL user name ("+userName+")");
-   return s;
+ l = (Light*)getBySystemName(systemName);
+ if (l != nullptr) {
+     if ((l->getUserName() == "") && (userName != "")) {
+         l->setUserName(userName);
+     } else if (userName != "") {
+         log->warn(tr("Found light via system name '%1' with non-null user name '%2'").arg(
+                 systemName, userName));
+     }
+     return l;
  }
-
  // doesn't exist, make a new one
- s = createNewLight(systemName, userName);
+ l = createNewLight(systemName, userName);
 
  // if that failed, blame it on the input arguements
- if (s == NULL)
+ if (l == NULL)
  {
   log->error("cannot create new light "+systemName);
   throw new IllegalArgumentException("cannot create new light "+systemName);
  }
  // save in the maps
- AbstractManager::Register(qobject_cast<NamedBean*>(s->self()));
+ AbstractManager::Register(qobject_cast<NamedBean*>(l->self()));
  //emit newLightCreated(this, s);
- return s;
+ return l;
 }
 
 /**

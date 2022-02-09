@@ -131,7 +131,7 @@ SystemNameValidator::SystemNameValidator(QObject *parent) : JInputValidator(null
     QValidator::State SystemNameValidator::validate(QString& text, int& pos) const
     {
      try {
-         if (static_cast<AbstractProxyManager*>(manager)) {
+         if (qobject_cast<AbstractProxyManager*>(manager->self())) {
              AbstractProxyManager/*<?>*/* proxyManager = (AbstractProxyManager/*<?>*/*) manager->self();
              proxyManager->validateSystemNameFormat(text, QLocale());
          } else {

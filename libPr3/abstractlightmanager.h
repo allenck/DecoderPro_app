@@ -39,7 +39,7 @@ public:
     /**
      * Locate a Light by its system name
      */
-    /*public*/ NamedBean *getBySystemName(QString name) const override;
+    /*public*/ NamedBean *getBySystemName(QString name)  override;
     /**
      * Locate a Light by its user name
      */

@@ -90,7 +90,7 @@ LocoNetSystemConnectionMemo::~LocoNetSystemConnectionMemo()
  */
 //@Override
 /*public*/ void LocoNetSystemConnectionMemo::_register() {
-    SystemConnectionMemo::_register(); // registers general type
+    DefaultSystemConnectionMemo::_register(); // registers general type
     InstanceManager::store(this, "LocoNetSystemConnectionMemo"); // also register as specific type
 }
 

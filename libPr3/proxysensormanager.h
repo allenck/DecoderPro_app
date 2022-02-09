@@ -7,9 +7,10 @@
 //#include <QDebug>
 #include <QCompleter>
 #include "abstractprovidingproxymanager.h"
+#include "libPr3_global.h"
 
 
-class ProxySensorManager :public AbstractProvidingProxyManager, public SensorManager
+class LIBPR3SHARED_EXPORT ProxySensorManager :public AbstractProvidingProxyManager, public SensorManager
 {
  Q_OBJECT
  Q_INTERFACES(SensorManager)

@@ -92,7 +92,7 @@
 {
  if (light != NULL)
  {
-  ((AbstractLight*)light->self())->removePropertyChangeListener((PropertyChangeListener*)this);
+  ((AbstractLight*)light->self())->AbstractNamedBean::removePropertyChangeListener((PropertyChangeListener*)this);
 //  AbstractLight* l = (AbstractLight*)light;
 //  disconnect(l->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
@@ -100,7 +100,7 @@
  if (light != NULL)
  {
   displayState(lightState());
-  ((AbstractLight*)light->self())->addPropertyChangeListener((PropertyChangeListener*)this);
+  ((AbstractLight*)light->self())->AbstractNamedBean::addPropertyChangeListener((PropertyChangeListener*)this);
   //connect(light->pcs,SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }

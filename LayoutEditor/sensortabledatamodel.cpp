@@ -92,8 +92,6 @@ void SensorTableDataModel::common()
    if (b!=nullptr)
    {
     b->removePropertyChangeListener((PropertyChangeListener*)this);
-    AbstractNamedBean* anb = (AbstractNamedBean*)b;
-//    disconnect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
    }
   }
  }

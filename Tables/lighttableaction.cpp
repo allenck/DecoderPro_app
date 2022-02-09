@@ -34,7 +34,7 @@
 #include "namedbean.h"
 #include "defaultlightcontrol.h"
 #include "borderfactory.h"
-
+#include "abstractproxymanager.h"
 /**
  * Swing action to create and register a LightTable GUI.
  * <P>
@@ -72,7 +72,6 @@
 void LightTableAction::common()
 {
  setObjectName("LightTableAction");
- lightManager = qobject_cast<ProxyLightManager*>(InstanceManager::getNullableDefault("LightManager"));
  oneDigit = new DecimalFormat("0");
  oneDotTwoDigit = new DecimalFormat("0.00");
  addFrame = nullptr;
@@ -107,8 +106,8 @@ void LightTableAction::common()
  twoSensorControl = tr("By Two Sensors");
  noControl = tr("None");
 
- status1 = new QLabel(tr("Select or enter data, then press Create for a new Light, or press Cancel."));
- status2 = new QLabel("");
+ status1 = new JLabel(tr("Select or enter data, then press Create for a new Light, or press Cancel."));
+ status2 = new JLabel("");
 
  // parts for supporting variable intensity, transition
  labelMinIntensity = new QLabel(tr("Minimum Intensity") + "  ");
@@ -139,7 +138,8 @@ void LightTableAction::common()
 }
 
 /*public*/ void LightTableAction::setManager(Manager* man) {
-    lightManager = qobject_cast<LightManager*>(man->self());
+    if(qobject_cast<LightManager*>(man->self()))
+     lightManager = qobject_cast<LightManager*>(man->self());
 }
 
 /**
@@ -151,300 +151,9 @@ void LightTableAction::common()
  // load graphic state column display preference
  //_graphicState = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState();
 
- //m = new LTBeanTableDataModel(this);
- //m = new LightTableDataModel(lightManager);
- m = new LightTableDataModel();
- m->setManager(lightManager);
-}
-#if 0
-LTBeanTableDataModel::LTBeanTableDataModel(LightTableAction* lta)
-    : BeanTableDataModel()
-{
- this->lta = lta;
- setObjectName("LTBeanTableDataModel");
- enabledString = tr("Enabled");
- intensityString = tr("Intensity");
- rootPath = FileUtil::getProgramPath() + "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
- beanTypeChar = 'L'; // for Light
- onIconPath = rootPath + beanTypeChar + "-on-s.png";
- offIconPath = rootPath + beanTypeChar + "-off-s.png";
- loadIcons();
-
- init();
-}
-//    m = new BeanTableDataModel() {
-//        static /*public*/ final int ENABLECOL = NUMCOLUMN;
-//        static /*public*/ final int INTENSITYCOL = ENABLECOL + 1;
-//        static /*public*/ final int EDITCOL = INTENSITYCOL + 1;
-//        /*protected*/ String enabledString = tr("ColumnHeadEnabled");
-//        /*protected*/ String intensityString = tr("ColumnHeadIntensity");
-
-/*public*/ int LTBeanTableDataModel::columnCount(const QModelIndex &parent) const
-{
- return NUMCOLUMN + 3;
+ m = new LightTableDataModel(lightManager);
 }
 
-/*public*/ QVariant LTBeanTableDataModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
- if(role == Qt::DisplayRole && orientation == Qt::Horizontal)
- {
-  int col = section;
-    if (col == EDITCOL) {
-        return "";    // no heading on "Edit"
-    }
-    if (col == INTENSITYCOL) {
-        return intensityString;
-    }
-    if (col == ENABLECOL) {
-        return enabledString;
-    }
- }
- return BeanTableDataModel::headerData(section, orientation, role);
-}
-
-///*public*/ Class<?> getColumnClass(int col) {
-//    if (col == EDITCOL) {
-//        return JButton.class;
-//    }
-//    if (col == INTENSITYCOL) {
-//        return Double.class;
-//    }
-//    if (col == ENABLECOL) {
-//        return Boolean.class;
-//    } else {
-//        return super.getColumnClass(col);
-//    }
-//}
-
-/*public*/ int LTBeanTableDataModel::getPreferredWidth(int col) {
-    // override default value for UserName column
-    if (col == USERNAMECOL) {
-        return  JTextField(16).sizeHint().width();
-    }
-    if (col == EDITCOL) {
-        return  JTextField(6).sizeHint().width();
-    }
-    if (col == INTENSITYCOL) {
-        return  JTextField(6).sizeHint().width();
-    }
-    if (col == ENABLECOL) {
-        return  JTextField(6).sizeHint().width();
-    } else {
-        return BeanTableDataModel::getPreferredWidth(col);
-    }
-}
-
-/*public*/ Qt::ItemFlags LTBeanTableDataModel::flags(const QModelIndex &mindex) const
-{
-    int col = mindex.column();
-    if (col == EDITCOL) {
-        return Qt::ItemIsEnabled | Qt::ItemIsEditable;
-    }
-    if (col == INTENSITYCOL) {
-        //return ((Light*) getBySystemName((String) getValueAt(row, SYSNAMECOL))).isIntensityVariable();
-        return ((Light*) getBySystemName(data(index(mindex.row(), SYSNAMECOL), Qt::DisplayRole).toString()))->isIntensityVariable()?Qt::ItemIsEnabled | Qt::ItemIsEditable: Qt::ItemIsEnabled ;
-    }
-    if (col == ENABLECOL) {
-        return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
-    } else {
-        return BeanTableDataModel::flags(mindex);
-    }
-}
-
-/*public*/ QString LTBeanTableDataModel::getValue(QString name) const
-{
- int val;
- if(qobject_cast<ProxyLightManager*>(lta->lightManager) != nullptr)
-  val = ((ProxyLightManager*)lta->lightManager)->getBySystemName(name)->getState();
- else
-  val = lta->lightManager->getBySystemName(name)->getState();
- switch (val)
- {
-     case Light::ON:
-         return tr("On");
-     case Light::INTERMEDIATE:
-         return tr("Intermediate");
-     case Light::OFF:
-         return tr("Off");
-     case Light::TRANSITIONINGTOFULLON:
-         return tr("Transitioning To Full On");
-     case Light::TRANSITIONINGHIGHER:
-         return tr("Transitioning Higher");
-     case Light::TRANSITIONINGLOWER:
-         return tr("Transitioning Lower");
-     case Light::TRANSITIONINGTOFULLOFF:
-         return tr("Transitioning To Full Off");
-     default:
-         return "Unexpected value: " + val;
- }
-}
-
-/*public*/ QVariant LTBeanTableDataModel::data(const QModelIndex &mindex, int role) const
-{
- int col = mindex.column();
-
- if(role == Qt::DisplayRole)
- {
-    if (col == EDITCOL) {
-        return tr("Edit");
-    } else if (col == INTENSITYCOL) {
-        //return Double.valueOf(((Light) getBySystemName((String) getValueAt(row, SYSNAMECOL))).getTargetIntensity());
-        return ((Light*) getBySystemName(data(index(mindex.row(), SYSNAMECOL),Qt::DisplayRole).toString()))->getTargetIntensity();
-    }
- }
- if(role == Qt::CheckStateRole)
- {
-  if (col == ENABLECOL) {
-        //return Boolean.valueOf(((Light) getBySystemName((String) getValueAt(row, SYSNAMECOL))).getEnabled());
-      return ((Light*) getBySystemName(data(index(mindex.row(), SYSNAMECOL),Qt::DisplayRole).toString()))->getEnabled()? Qt::Checked : Qt::Unchecked;
-    }
- }
- if(lta->_graphicState && role == Qt::DecorationRole )
- {
-  if(mindex.column() == ENABLECOL)
-  {
-   return ((Light*) getBySystemName(data(index(mindex.row(), SYSNAMECOL),Qt::DisplayRole).toString()))->getEnabled()? onIcon : offIcon;
-
-  }
- }
- return BeanTableDataModel::data(mindex, role);
-}
-
-/*public*/ bool LTBeanTableDataModel::setData(const QModelIndex &mindex, const QVariant &value, int role)
-{
- int col = mindex.column();
- int row = mindex.row();
- if(role == Qt::EditRole)
- {
-    if (col == EDITCOL)
-    {
-        // Use separate Runnable so window is created on top
-//        class WindowMaker implements Runnable {
-
-//            int row;
-
-//            WindowMaker(int r) {
-//                row = r;
-//            }
-
-//            /*public*/ void run() {
-                // set up to edit
-                lta->addPressed(nullptr);
-                lta->fixedSystemName->setText(data(index(row, SYSNAMECOL),Qt::DisplayRole).toString());
-                lta->editPressed(); // don't really want to stop Light w/o user action
-//            }
-//        }
-//        WindowMaker t = new WindowMaker(row);
-//        javax.swing.SwingUtilities.invokeLater(t);
-    } else if (col == INTENSITYCOL) {
-        // alternate
-        try {
-            Light* l = (Light*) getBySystemName(data(index(row, SYSNAMECOL),Qt::DisplayRole).toString());
-            double intensity =  value.toDouble();
-            if (intensity < 0) {
-                intensity = 0;
-            }
-            if (intensity > 1.0) {
-                intensity = 1.0;
-            }
-            l->setTargetIntensity(intensity);
-        } catch (IllegalArgumentException e1) {
-            lta->status1->setText(tr("Intensity out of range"));
-        }
-    }
- }
- if(role == Qt::CheckStateRole)
- {
-   if (col == ENABLECOL)
-   {
-        // alternate
-        Light* l = (Light*) getBySystemName(data(index(row, SYSNAMECOL),Qt::DisplayRole).toString());
-        bool v = l->getEnabled();
-        l->setEnabled(!v);
-        return true;
-   }
- }
- BeanTableDataModel::setData(mindex, value, role);
-}
-
-/**
- * Delete the bean after all the checking has been done.
- * <P>
- * Deactivate the light, then use the superclass to delete it.
- */
-void LTBeanTableDataModel::doDelete(NamedBean* bean) {
-    ((Light*) bean)->deactivateLight();
-    BeanTableDataModel::doDelete(bean);
-}
-
-// all properties update for now
-/*protected*/ bool LTBeanTableDataModel::matchPropertyName(PropertyChangeEvent* e) {
-    return true;
-}
-
-/*public*/ AbstractManager* LTBeanTableDataModel::getManager() {
-    return lta->lightManager;
-}
-
-/*public*/ NamedBean* LTBeanTableDataModel::getBySystemName(QString name) const
-{
-    //return lta->lightManager->getBySystemName(name);
-    if(qobject_cast<AbstractProxyLightManager*>(lta->lightManager))
-     return ((AbstractProxyLightManager*)lta->lightManager)->getBeanBySystemName(name);
-    else
-     return ((AbstractTurnoutManager*)lta->lightManager)->getBeanBySystemName(name);
-}
-
-/*public*/ NamedBean* LTBeanTableDataModel::getByUserName(QString name) {
-  // return lta->lightManager->getByUserName(name);
-    if(qobject_cast<AbstractProxyLightManager*>(lta->lightManager))
-     return ((AbstractProxyLightManager*)lta->lightManager)->getBeanByUserName(name);
-    else
-     return ((AbstractTurnoutManager*)lta->lightManager)->getBeanByUserName(name);
-}
-
-/*/*public int getDisplayDeleteMsg() { return InstanceManager::getDefault(jmri.UserPreferencesManager.class).getWarnLightInUse(); }
- public void setDisplayDeleteMsg(int boo) { InstanceManager::getDefault(jmri.UserPreferencesManager.class)->setWarnLightInUse(boo); }*/
-
-/*protected*/ QString LTBeanTableDataModel::getMasterClassName() {
-    return lta->getClassName();
-}
-
-/*public*/ void LTBeanTableDataModel::clickOn(NamedBean* t) {
-    int oldState = ((Light*) t)->getState();
-    int newState;
-    switch (oldState) {
-        case Light::ON:
-            newState = Light::OFF;
-            break;
-        case Light::OFF:
-            newState = Light::ON;
-            break;
-        default:
-            newState = Light::OFF;
-             log->warn("Unexpected Light state " + QString::number(oldState) + " becomes OFF");
-            break;
-    }
-    ((Light*) t)->setState(newState);
-    fireTableDataChanged();
-}
-
-/*public*/ QPushButton* LTBeanTableDataModel::configureButton() {
-    return new QPushButton(" " + tr("Off") + " ");
-}
-
-/*public*/ void LTBeanTableDataModel::configureTable(JTable *table)
-{
- setColumnToHoldButton(table, EDITCOL);
- BeanTableDataModel::configureTable(table);
-}
-
-/*protected*/ QString LTBeanTableDataModel::getBeanType() {
-    return tr("BeanNameLight");
-}
-//};
-//}
-#endif
 /*protected*/ void LightTableAction::setTitle() {
     f->setTitle(tr("Light Table"));
 }
@@ -663,7 +372,7 @@ void LTAWindowListener::windowClosing(QCloseEvent *e)
      // get tooltip from ProxyLightManager
      QString systemPrefix = connectionChoice->getSystemPrefix();
      addEntryToolTip = connectionChoice->getEntryToolTip();
-     addRangeBox->setEnabled(((LightManager*) connectionChoice)->allowMultipleAdditions(systemPrefix));
+     addRangeBox->setEnabled(((AbstractLightManager*) connectionChoice->self())->allowMultipleAdditions(systemPrefix));
      log->debug(tr("DefaultLightManager tip: %1").arg(addEntryToolTip));
      // show Hardware address field tooltip in the Add Light pane to match system connection selected from combobox
      if (addEntryToolTip != "") {
@@ -735,6 +444,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
         log->warn("Hardware Address was not entered");
         status1->setText(tr("Error: No Hardware Address was entered."));
         status2->setVisible(false);
+        hardwareAddressTextField->setBackground(Qt::red);
         addFrame->adjustSize();
         addFrame->setVisible(true);
         return;
@@ -745,12 +455,13 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
         uName = "";   // a blank field means no user name
     }
     // Does System Name have a valid format
-    if (qobject_cast<LightManager*>(InstanceManager::getDefault("LightManager"))->validSystemNameFormat(suName)!= Manager::NameValidity::VALID) {
+    if (qobject_cast<AbstractProxyManager*>(InstanceManager::getDefault("LightManager"))->validSystemNameFormat(suName)!= Manager::NameValidity::VALID) {
         // Invalid System Name format
         log->warn("Invalid Light system name format entered: " + suName);
         status1->setText(tr("Error: System Name has an invalid format."));
         status2->setText(tr("Please revise System Name and try again."));
         status2->setVisible(true);
+        hardwareAddressTextField->setBackground(Qt::red);
         addFrame->adjustSize();
         addFrame->setVisible(true);
         return;
@@ -763,6 +474,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
     if (g != NULL) {
         // Light already exists
         status1->setText(tr("Error: an element with this System Name already exists."));
+        status1->setForeground(Qt::red);
         status2->setText(tr("Press Edit to see User Name and Control information."));
         status2->setVisible(true);
         addFrame->adjustSize();
@@ -777,7 +489,9 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
             // Light already exists
             status1->setText(tr("Error: Light") + " '" + altName + "' "
                     + tr("exists and is the same address."));
+            status1->setForeground(Qt::red);
             status2->setVisible(false);
+            hardwareAddressTextField->setBackground(Qt::red);
             addFrame->adjustSize();
             addFrame->setVisible(true);
             return;
@@ -789,6 +503,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
         if (g != NULL) {
             // Light with this user name already exists
             status1->setText(tr("Error: an element with this User Name already exists."));
+            status1->setForeground(Qt::red);
             status2->setText(tr("Please revise User Name and try again."));
             status2->setVisible(true);
             addFrame->adjustSize();
@@ -796,8 +511,8 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
             return;
         }
     }
-    // Does System Name correspond to configured hardware
-    if (!mgr->validSystemNameConfig(sName)) {
+    // check if System Name corresponds to configured hardware
+    if (!mgr->validSystemNameConfig(suName)) {
         // System Name not in configured hardware
         status1->setText(tr("Error: System Name doesn't refer to configured hardware."));
         status2->setText(tr("Please revise System Name and try again."));
@@ -867,6 +582,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
             testAdd = lightPrefix + add;
             if (mgr->AbstractProxyManager::getBySystemName(testAdd) != NULL) {
                 status1->setText(tr("Error: Requested range of hardware addresses is not free."));
+                status1->setForeground(Qt::red);
                 status2->setVisible(true);
                 addFrame->adjustSize();
                 addFrame->setVisible(true);
@@ -876,6 +592,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
             testAdd = turnoutPrefix + add;
             if (((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->AbstractProxyManager::getBySystemName(testAdd) != NULL) {
                 status1->setText(tr("Error: Requested range of hardware addresses is not free."));
+                status1->setForeground(Qt::red);
                 status2->setVisible(true);
                 addFrame->adjustSize();
                 addFrame->setVisible(true);
@@ -888,7 +605,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
 
     // Create a single new Light, or the first Light of a range
     try {
-        g = mgr->newLight(sName, uName);
+        g = mgr->newLight(suName, uName);
     } catch (IllegalArgumentException* ex) {
         // user input no good
         handleCreateException(ex, sName);
@@ -929,6 +646,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
         feedback = feedback + " - " + sxName + ", " + uxName;
     }
     status1->setText(feedback);
+    status1->setForeground(Qt::gray);
     status2->setText("");
     status2->setVisible(false);
     addFrame->adjustSize();
@@ -1099,168 +817,6 @@ void LightTableAction::cancelPressed(ActionEvent* /*e*/) {
  }
 }
 
-///*private*/ void LightTableAction::clearLightControls() {
-//    for (int i = controlList.size(); i > 0; i--) {
-//        controlList.removeAt(i - 1);
-//    }
-//    if(lightControlTableModel)
-//     lightControlTableModel->fireTableDataChanged();
-//}
-
-
-#if 0
-/**
- * Responds to the Add Control button
- */
-/*protected*/ void LightTableAction::addControlPressed(ActionEvent* /*e*/) {
-    if (inEditControlMode) {
-        // cancel Edit and reactivate the edited light
-        cancelControlPressed(NULL);
-    }
-    // set up to edit. Use separate Runnable so window is created on top
-//    class WindowMaker implements Runnable {
-
-//        WindowMaker() {
-//        }
-
-//        /*public*/ void run() {
-            addEditControlWindow();
-//        }
-//    }
-//    WindowMaker t = new WindowMaker();
-//    javax.swing.SwingUtilities.invokeLater(t);
-}
-
-/**
- * Creates the Add/Edit control window
- */
-/*private*/ void LightTableAction::addEditControlWindow() {
-#if 1
-    if (addControlFrame == NULL) {
-        addControlFrame = new JmriJFrameX(tr("Add Light Control"), false, true);
-        addControlFrame->addHelpMenu("package.jmri.jmrit.beantable.LightAddEdit", true);
-        addControlFrame->setLocation(120, 40);
-        QWidget* contentPane = addControlFrame->getContentPane();
-        contentPane->setLayout(new QVBoxLayout); //(contentPane, BoxLayout.Y_AXIS));
-        QGroupBox* panel3 = new QGroupBox();
-        QVBoxLayout* panel3Layout = new QVBoxLayout(panel3);
-        //panel3->setLayout(new BoxLayout(panel3, BoxLayout.Y_AXIS));
-        QWidget* panel31 = new QWidget();
-        FlowLayout* panel31Layout;
-        panel31->setLayout(panel31Layout = new FlowLayout());
-        panel31Layout->addWidget(typeBoxLabel);
-        panel31Layout->addWidget(typeBox = new QComboBox()); //(new String[]{noControl,
-//            sensorControl, fastClockControl, turnoutStatusControl, timedOnControl, twoSensorControl
-//        }));
-        QStringList l = QStringList() << noControl << sensorControl<< fastClockControl<<turnoutStatusControl<<timedOnControl<<twoSensorControl;
-        typeBox->addItems(l);
-        noControlIndex = 0;
-        sensorControlIndex = 1;
-        fastClockControlIndex = 2;
-        turnoutStatusControlIndex = 3;
-        timedOnControlIndex = 4;
-        twoSensorControlIndex = 5;
-//        typeBox.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent e) {
-//                controlTypeChanged();
-//            }
-//        });
-        connect(typeBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(controlTypeChanged()));
-        typeBox->setToolTip(tr("Select how the new Light is to be controlled"));
-        QWidget* panel32 = new QWidget();
-        FlowLayout* panel32Layout;
-        panel32->setLayout(panel32Layout = new FlowLayout());
-        panel32Layout->addWidget(f1Label);
-        panel32Layout->addWidget(field1a);
-        panel32Layout->addWidget(field1a2);
-        panel32Layout->addWidget(field1b);
-        panel32Layout->addWidget(field1c);
-        panel32Layout->addWidget(field1d);
-        field1a->setText("");
-        field1a2->setText("");
-        field1b->setText("00:00");
-        field1c->setText("");
-        field1d->setText("");
-        field1b->setVisible(false);
-        field1c->setVisible(false);
-        field1d->setVisible(false);
-        field1a->setToolTip(tr("Enter name of Sensor controlling this Light"));
-        field1a2->setToolTip(tr("Enter name of both Sensors controlling this Light"));
-        QWidget* panel33 = new QWidget();
-        FlowLayout* panel33Layout;
-        panel33->setLayout(panel33Layout = new FlowLayout());
-        panel33Layout->addWidget(f2Label);
-        panel33Layout->addWidget(stateBox = new QComboBox()); //new JComboBox<String>(new String[]{
-//            tr("SensorStateActive"), tr("SensorStateInactive"),}));
-        QStringList ll = QStringList() << tr("Active") << tr("Inactive");
-        stateBox->addItems(ll);
-        stateBox->setToolTip(tr("Select Sensor state corresponding to Light ON"));
-        panel33Layout->addWidget(field2a);
-        panel33Layout->addWidget(field2b);
-        field2a->setText("00:00");
-        field2a->setVisible(false);
-        field2b->setText("0");
-        field2b->setVisible(false);
-        panel3Layout->addWidget(panel31);
-        panel3Layout->addWidget(panel32);
-        panel3Layout->addWidget(panel33);
-//        Border panel3Border = BorderFactory.createEtchedBorder();
-//        panel3->setBorder(panel3Border);
-        panel3->setStyleSheet(gbStyleSheet);
-        contentPane->layout()->addWidget(panel3);
-        QWidget* panel5 = new QWidget();
-        FlowLayout* panel5Layout = new FlowLayout(panel5);
-        //panel5->setLayout(new FlowLayout(FlowLayout.TRAILING));
-        panel5Layout->addWidget(cancelControl = new QPushButton(tr("Cancel")));
-//        cancelControl.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent e) {
-//                cancelControlPressed(e);
-//            }
-//        });
-        connect(cancelControl, SIGNAL(clicked(bool)), this, SLOT(cancelControlPressed()));
-        cancelControl->setToolTip(tr("Press Cancel to leave unchanged"));
-        panel5Layout->addWidget(createControl = new QPushButton(tr("Create")));
-//        createControl.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent e) {
-//                createControlPressed(e);
-//            }
-//        });
-        connect(createControl, SIGNAL(clicked(bool)),this, SLOT(createControlPressed()));
-        createControl->setToolTip(tr("Press Create to create a new Light Control"));
-        panel5Layout->addWidget(updateControl = new QPushButton(tr("Update")));
-//        updateControl.addActionListener(new ActionListener() {
-//            /*public*/ void actionPerformed(ActionEvent e) {
-//                updateControlPressed(e);
-//            }
-//        });
-        connect(updateControl, SIGNAL(clicked(bool)), this, SLOT(updateControlPressed()));
-        updateControl->setToolTip(tr("Press Update to change the Light Control"));
-        cancelControl->setVisible(true);
-        updateControl->setVisible(false);
-        createControl->setVisible(true);
-        contentPane->layout()->addWidget(panel5);
-//        addControlFrame.addWindowListener(new java.awt.event.WindowAdapter() {
-//            /*public*/ void windowClosing(java.awt.event.WindowEvent e) {
-//                cancelControlPressed(NULL);
-//            }
-//        });
-        addControlFrame->addWindowListener(new ACFWindowListener(this));
-    }
-    typeBox->setCurrentIndex(defaultControlIndex);  // force GUI status consistent
-    addControlFrame->adjustSize();
-    addControlFrame->setVisible(true);
-#endif
-}
-ACFWindowListener::ACFWindowListener(LightTableAction *lta)
-{
- this->lta = lta;
-}
-
-void ACFWindowListener::windowClosing(QCloseEvent *e)
-{
- lta->cancelControlPressed();
-}
-#endif
 /**
  * Reacts to a control type change
  */
