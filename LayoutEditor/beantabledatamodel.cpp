@@ -77,7 +77,7 @@ void /*public*/ BeanTableDataModel::init() // SLOT
  Manager* manager = getManager();
  if(manager != NULL)
  {
-  manager->addPropertyChangeListener((PropertyChangeListener*)this);
+  manager->addPropertyChangeListener(this);
   updateNameList();
 //  connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   //connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -128,13 +128,15 @@ void BeanTableDataModel::setManager(Manager *) {}
 
    if (b!=NULL)
    {
-    b->removePropertyChangeListener((PropertyChangeListener*)this);
+    b->removePropertyChangeListener(this);
    }
   }
  }
- //sysNameList = mgr->getSystemNameList();
+ sysNameList = mgr->getSystemNameList();
  //sysNameList = getManager().getNamedBeanSet().stream().map(NamedBean::getSystemName).collect( java.util.stream.Collectors.toList() );
- QSet<NamedBean*> nbs = getManager()->getNamedBeanSet();
+ //QSet<NamedBean*> nbs = getManager()->getNamedBeanSet();
+
+ QSet<NamedBean*> nbs = mgr->getNamedBeanSet();
  sysNameList.clear();
  if(!nbs.isEmpty())
  {
@@ -743,13 +745,13 @@ void BeanTableDataModel::OnButtonClicked(QObject* o)
 
 /*synchronized*/ /*public*/ void BeanTableDataModel::dispose()
 {
- ((AbstractManager*)getManager())->VetoableChangeSupport::removePropertyChangeListener((PropertyChangeListener*)this);
+ ((AbstractManager*)getManager())->VetoableChangeSupport::removePropertyChangeListener(this);
  if (!sysNameList.isEmpty())
  {
   for (int i = 0; i< sysNameList.size(); i++)
   {
    NamedBean* b = getBySystemName(sysNameList.at(i));
-   if (b!=NULL) b->removePropertyChangeListener((PropertyChangeListener*)this);
+   if (b!=NULL) b->removePropertyChangeListener(this);
   }
  }
 }

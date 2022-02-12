@@ -47,7 +47,7 @@ ProxyReporterManager::ProxyReporterManager(QObject *parent) :
 //@Override
 //@Nonnull
 /*protected*/ NamedBean* ProxyReporterManager::makeBean(AbstractManager *manager, QString systemName, QString userName) /*throws IllegalArgumentException*/ {
-    return ((ReporterManager*) manager)->newReporter(systemName, userName);
+    return (NamedBean*)((ReporterManager*) manager)->newReporter(systemName, userName);
 }
 
 /*public*/ Reporter* ProxyReporterManager::provideReporter(QString sName)
@@ -58,7 +58,7 @@ ProxyReporterManager::ProxyReporterManager(QObject *parent) :
 
 //@Override
 /** {@inheritDoc} */
-/*public*/ Reporter* ProxyReporterManager::provide(/*@Nonnull*/ QString name) /*throw (IllegalArgumentException) */{ return provideReporter(name); }
+/*public*/ NamedBean *ProxyReporterManager::provide(/*@Nonnull*/ QString name) /*throw (IllegalArgumentException) */{ return (NamedBean*)provideReporter(name); }
 
 ///**
 // * Locate an instance based on a system name.  Returns NULL if no

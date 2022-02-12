@@ -7,14 +7,15 @@
 //#include "rfid/reportervariant.h"
 
 class ReporterVariant;
-class Reporter : /*virtual*/ public AbstractNamedBean
+class Reporter /*:  public AbstractNamedBean*/
 {
-    Q_OBJECT
+    //Q_OBJECT
+  //Q_INTERFACES(NamedBean)
 public:
     //explicit Reporter(QObject *parent = 0);
-    Reporter(QObject* parent =0) : AbstractNamedBean(parent) {}
-    Reporter(QString systemName, QObject* parent) : AbstractNamedBean(systemName, parent) {}
-    Reporter(QString systemName, QString userName, QObject* parent) : AbstractNamedBean(systemName, userName, parent) {}
+//    Reporter(QObject* parent =0) : AbstractNamedBean(parent) {}
+//    Reporter(QString systemName, QObject* parent) : AbstractNamedBean(systemName, parent) {}
+//    Reporter(QString systemName, QString userName, QObject* parent) : AbstractNamedBean(systemName, userName, parent) {}
 
     /**
      * Represent a device that can report identification information.
@@ -95,7 +96,7 @@ public:
          */
         virtual int getState()  {return 0;}
  //SwingPropertyChangeSupport* pcs;
-
+  virtual QObject* self() =0;
 signals:
     //void propertyChange(PropertyChangeEvent*);
 public slots:

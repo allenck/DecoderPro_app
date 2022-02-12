@@ -11,7 +11,7 @@ class LIBPR3SHARED_EXPORT ProxyReporterManager : public  AbstractProvidingProxyM
     Q_OBJECT
     Q_INTERFACES(ReporterManager)
 public:
-    explicit ProxyReporterManager(QObject *parent = 0);
+    ProxyReporterManager(QObject *parent = 0);
     /*public*/ int getXMLOrder()const  override;
     /**
      * Locate via user name, then system name if needed.
@@ -21,7 +21,7 @@ public:
      */
     /*public*/ Reporter* getReporter(QString name) override;
     /*public*/ Reporter *provideReporter(QString sName) override;
-    /*public*/ Reporter* provide(/*@Nonnull*/ QString name) /*throw (IllegalArgumentException)*/ override;
+    /*public*/ NamedBean* provide(/*@Nonnull*/ QString name) /*throw (IllegalArgumentException)*/ override;
 //    /**
 //     * Locate an instance based on a system name.  Returns null if no
 //     * instance already exists.
@@ -75,13 +75,15 @@ public:
         return "Reporter";
     }
     /*public*/ QString toString() override {return "ProxyReporterManager";}
+
+    QObject* self() override {return (QObject*)this;}
     /*public*/ SystemConnectionMemo* getMemo() override {return AbstractProxyManager::getMemo();}
-    /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractProxyManager::getNamedBeanSet();}
-    /*public*/ Reporter* getBySystemName(QString name) override {return (Reporter*)AbstractProxyManager::getBySystemName(name);}
+//    /*public*/ QSet<NamedBean*> getNamedBeanSet() const override {return AbstractProxyManager::getNamedBeanSet();}
+    /*public*/ NamedBean* getBySystemName(QString name) override {return AbstractProxyManager::getBySystemName(name);}
     /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{AbstractProxyManager::addPropertyChangeListener(l);}
     /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{AbstractProxyManager::removePropertyChangeListener(l);}
 
-    QObject* self() override {return (QObject*)this;}
+
 
 signals:
     

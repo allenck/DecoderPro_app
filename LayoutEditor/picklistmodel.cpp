@@ -1076,10 +1076,10 @@ ReporterPickModel::ReporterPickModel (QObject *parent) : PickListModel(parent)
     return ((AbstractReporterManager*)manager)->getBySystemName(name);
 }
 /*public*/ NamedBean* ReporterPickModel::addBean(QString name) {
-    return((AbstractReporterManager*)manager)->provideReporter(name);
+    return (NamedBean*)((AbstractReporterManager*)manager)->provideReporter(name);
 }
 /*public*/ NamedBean* ReporterPickModel::addBean(QString sysName, QString userName) {
-    return ((ProxyReporterManager*)manager)->newReporter(sysName, userName);
+    return (NamedBean*)((ProxyReporterManager*)manager)->newReporter(sysName, userName);
 }
 /*public*/ bool ReporterPickModel::canAddBean() {
     return true;

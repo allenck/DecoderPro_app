@@ -200,7 +200,7 @@ public:
     /*public*/ QColor getSettingRouteColor();
     /*public*/ void setSettingRouteColor(QColor col);
     /*public*/ bool isAssignableFromType() {return true;}
-    /*public*/ QSet<NamedBean*> getNamedBeanSet() override;
+    /*public*/ QSet<NamedBean*> getNamedBeanSet() const override;
     /*synchronized*/ /*public*/ void stackNXRoute(DestinationPoints* dp, bool reverse);
     /*public*/ QList<DestinationPoints*> getStackedInterlocks();
     /*public*/ bool isRouteStacked(DestinationPoints* dp, bool reverse);

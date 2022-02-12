@@ -35,7 +35,7 @@
 
 /*public*/ Positionable* ReporterIcon::finishClone(Positionable* p) {
     ReporterIcon* pos = (ReporterIcon*)p;
-    pos->setReporter(reporter->getSystemName());
+    pos->setReporter(((NamedBean*)reporter)->getSystemName());
     return PositionableLabel::finishClone((Positionable*)pos);
 }
 
@@ -75,7 +75,7 @@
  if (reporter != NULL)
  {
   displayState();
-  reporter->addPropertyChangeListener((PropertyChangeListener*)this);
+  ((NamedBean*)reporter)->addPropertyChangeListener((PropertyChangeListener*)this);
   //AbstractReporter* ar = (AbstractReporter*)r;
 //  connect(ar, SIGNAL(propertyChange(AbstractReporter*,QString,QObject*,QObject*)), this, SLOT(on_propertyChange(AbstractReporter*,QString,QObject*,QObject*)));
 //  connect(ar->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(on_propertyChange(PropertyChangeEvent*)));
@@ -119,10 +119,10 @@ void ReporterIcon::on_propertyChange(PropertyChangeEvent*e)
 {
  QString name;
  if (reporter == NULL) name = tr("<Not connected>");
- else if (reporter->getUserName()!=NULL)
-  name = reporter->getUserName()+" ("+reporter->getSystemName()+")";
+ else if (((NamedBean*)reporter)->getUserName()!=NULL)
+  name = ((NamedBean*)reporter)->getUserName()+" ("+((NamedBean*)reporter)->getSystemName()+")";
  else
-  name = reporter->getSystemName();
+  name = ((NamedBean*)reporter)->getSystemName();
  return name;
 }
 
@@ -159,7 +159,7 @@ void ReporterIcon::displayState()
 //    };
  AddReporterIconActionListener* addIconAction = new AddReporterIconActionListener(this);
  _iconEditor->complete(addIconAction, false, true, true);
- _iconEditor->setSelection(reporter);
+ _iconEditor->setSelection((NamedBean*)reporter);
 
 }
 void ReporterIcon::editReporter() {

@@ -79,7 +79,7 @@ OBlockManagerXml::OBlockManagerXml(QObject *parent) :
          }
          if (block->getReporter() != nullptr) {
              QDomElement se = doc.createElement("reporter");
-             se.setAttribute("systemName", block->getReporter()->getSystemName());
+             se.setAttribute("systemName", ((NamedBean*)block->getReporter())->getSystemName());
              se.setAttribute("reportCurrent", block->isReportingCurrent() ? "true" : "false");
              elem.appendChild(se);
          }

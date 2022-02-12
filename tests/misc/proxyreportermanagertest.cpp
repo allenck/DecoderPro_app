@@ -31,8 +31,8 @@ ProxyReporterManagerTest::ProxyReporterManagerTest(QObject* parent)
         Reporter* t = ((ProxyReporterManager*)l->self())->newReporter(getSystemName(getNameToTest1()), "mine");
         // check
         Assert::assertTrue("real object returned ", t != nullptr, __FILE__, __LINE__);
-        Assert::assertTrue("user name correct ", t == ((ProxyReporterManager*)l->self())->AbstractProxyManager::getByUserName("mine"), __FILE__, __LINE__);
-        Assert::assertTrue("system name correct ", t == ((ProxyReporterManager*)l->self())->AbstractProxyManager::getBySystemName(getSystemName(getNameToTest1())), __FILE__, __LINE__);
+        Assert::assertTrue("user name correct ", ((NamedBean*)t->self()) == ((ProxyReporterManager*)l->self())->AbstractProxyManager::getByUserName("mine"), __FILE__, __LINE__);
+        Assert::assertTrue("system name correct ", ((NamedBean*)t->self()) == ((ProxyReporterManager*)l->self())->AbstractProxyManager::getBySystemName(getSystemName(getNameToTest1())), __FILE__, __LINE__);
     }
 
     //@Test
@@ -40,8 +40,8 @@ ProxyReporterManagerTest::ProxyReporterManagerTest(QObject* parent)
         Reporter* ir211 = ((ProxyReporterManager*)l->self())->provideReporter("LR211");
         Reporter* lr211 = ((ProxyReporterManager*)l->self())->provideReporter("IR211");
 
-        Assert::assertNotNull(ir211, __FILE__, __LINE__);
-        Assert::assertNotNull(lr211, __FILE__, __LINE__);
+        Assert::assertNotNull(ir211->self(), __FILE__, __LINE__);
+        Assert::assertNotNull(lr211->self(), __FILE__, __LINE__);
         Assert::assertTrue(ir211 != lr211, __FILE__, __LINE__);
     }
 
@@ -49,26 +49,26 @@ ProxyReporterManagerTest::ProxyReporterManagerTest(QObject* parent)
     /*public*/ void ProxyReporterManagerTest::testDefaultNotInternal() {
         Reporter* lut = ((ProxyReporterManager*)l->self())->provideReporter("211");
 
-        Assert::assertNotNull(lut, __FILE__, __LINE__);
-        Assert::assertEquals("IR211", lut->getSystemName(), __FILE__, __LINE__);
+        Assert::assertNotNull(lut->self(), __FILE__, __LINE__);
+        Assert::assertEquals("IR211", ((NamedBean*)lut->self())->getSystemName(), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void ProxyReporterManagerTest::testProvideUser() {
         Reporter* l1 = ((ProxyReporterManager*)l->self())->provideReporter("211");
-        l1->setUserName("user 1");
+        ((NamedBean*)l1->self())->setUserName("user 1");
         Reporter* l2 = ((ProxyReporterManager*)l->self())->provideReporter("user 1");
         Reporter* l3 = ((ProxyReporterManager*)l->self())->getReporter("user 1");
 
-        Assert::assertNotNull(l1, __FILE__, __LINE__);
-        Assert::assertNotNull(l2, __FILE__, __LINE__);
-        Assert::assertNotNull(l3, __FILE__, __LINE__);
+        Assert::assertNotNull(l1->self(), __FILE__, __LINE__);
+        Assert::assertNotNull(l2->self(), __FILE__, __LINE__);
+        Assert::assertNotNull(l3->self(), __FILE__, __LINE__);
         Assert::assertEquals(l1, l2, __FILE__, __LINE__);
         Assert::assertEquals(l3, l2, __FILE__, __LINE__);
         Assert::assertEquals(l1, l3, __FILE__, __LINE__);
 
         Reporter* l4 = ((ProxyReporterManager*)l->self())->getReporter("JLuser 1");
-        Assert::assertNull(l4, __FILE__, __LINE__);
+        Assert::assertNull(l4->self(), __FILE__, __LINE__);
     }
 
     //@Test
@@ -81,13 +81,13 @@ ProxyReporterManagerTest::ProxyReporterManagerTest(QObject* parent)
         Assert::assertTrue(qobject_cast<ProxyReporterManager*>(InstanceManager::getDefault("ReporterManager")), __FILE__, __LINE__);
 
         Assert::assertNotNull(InstanceManager::getDefault("ReporterManager"), __FILE__, __LINE__);
-        Assert::assertNotNull(((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->provideReporter("IR1"), __FILE__, __LINE__);
+        Assert::assertNotNull(((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->provideReporter("IR1")->self(), __FILE__, __LINE__);
 
         ReporterManager* m = new InternalReporterManager(new InternalSystemConnectionMemo("J", "Juliet"));
         InstanceManager::setReporterManager(((AbstractManager*)m->self()));
 
-        Assert::assertNotNull(((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->provideReporter("JR1"), __FILE__, __LINE__);
-        Assert::assertNotNull(((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->provideReporter("IR2"), __FILE__, __LINE__);
+        Assert::assertNotNull(((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->provideReporter("JR1")->self(), __FILE__, __LINE__);
+        Assert::assertNotNull(((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->provideReporter("IR2")->self(), __FILE__, __LINE__);
     }
 
 

@@ -36,8 +36,7 @@
   if (reporter != NULL)
   {
    ReporterListener* listener = new ReporterListener(reporter, this);
-   //reporter.addPropertyChangeListener(listener);
-   connect(reporter->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), listener, SLOT(propertyChange(PropertyChangeEvent*)));
+   ((NamedBean*)reporter->self())->addPropertyChangeListener(listener);
    this->reporters->insert(name, listener);
   }
  }
@@ -54,8 +53,7 @@
      //reporters.values().stream().forEach((reporter) ->
 foreach(ReporterListener* reporter, reporters->values())
      {
-         //reporter.reporter.removePropertyChangeListener(reporter);
-disconnect(reporter->reporter->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), reporter, SLOT(propertyChange(PropertyChangeEvent*)));
+         ((NamedBean*)reporter->self())->removePropertyChangeListener(reporter);
      }//);
      reporters->clear();
  }
@@ -75,15 +73,14 @@ this->jrss = jrss;
  if (e->getPropertyName() == ("currentReport")) {
      try {
          try {
-             jrss->connection->sendMessage(jrss->service->doGet(JsonReporter::REPORTER, this->reporter->getSystemName(), jrss->locale));
+             jrss->connection->sendMessage(jrss->service->doGet(JsonReporter::REPORTER, ((NamedBean*)reporter->self())->getSystemName(), jrss->locale));
          } catch (JsonException ex) {
              jrss->connection->sendMessage(ex.getJsonMessage());
          }
      } catch (IOException* ex) {
          // if we get an error, de-register
-         //reporter.removePropertyChangeListener(this);
-   disconnect(reporter->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this,SLOT(propertyChange(PropertyChangeEvent*)));
-         jrss->reporters->remove(this->reporter->getSystemName());
+         ((NamedBean*)reporter->self())->removePropertyChangeListener(this);
+         jrss->reporters->remove(((NamedBean*)reporter->self())->getSystemName());
      }
  }
 }

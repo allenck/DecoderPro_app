@@ -1264,6 +1264,7 @@ HEADERS += \
  abstractproxymanager.h \
  acelasignalheadxml.h \
  addeditsinglelightcontrolframe.h \
+ collectingReporter.h \
  defaultlightcontrol.h \
  digitalio.h \
 # direct/defaultthrottle.h \

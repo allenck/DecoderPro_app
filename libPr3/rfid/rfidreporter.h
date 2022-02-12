@@ -23,6 +23,8 @@ public:
     /*public*/ PhysicalLocation* getPhysicalLocation(QString s);
 #endif
   /*public*/ void notify(IdTag* id) {return AbstractIdTagReporter::notify(id);}
+
+  QObject* self() override{return (QObject*)this;}
 signals:
     
 public slots:

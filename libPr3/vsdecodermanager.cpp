@@ -376,9 +376,9 @@ void VSDecoderManager::fireMyEvent(VSDManagerEvent* evt) {
         return;
     }
     // Make sure we aren't already registered.
-    QVector<PropertyChangeListener*> ll = r->getPropertyChangeListeners(h->getName());
+    QVector<PropertyChangeListener*> ll = ((NamedBean*)r)->getPropertyChangeListeners(h->getName());
     if (ll.isEmpty()) {
-        r->addPropertyChangeListener((PropertyChangeListener*)this, h->getName(), vsd_property_change_name);
+        ((NamedBean*)r)->addPropertyChangeListener((PropertyChangeListener*)this, h->getName(), vsd_property_change_name);
     }
 }
 
@@ -433,7 +433,7 @@ void VSDecoderManager::fireMyEvent(VSDManagerEvent* evt) {
     QSet<NamedBean*> reporterSet = ((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->getNamedBeanSet();
     for (NamedBean* r : reporterSet) {
         if (r != nullptr) {
-            registerReporterListener(((Reporter*)r)->getSystemName());
+            registerReporterListener(r->getSystemName());
         }
     }
 

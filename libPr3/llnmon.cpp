@@ -2661,7 +2661,7 @@ QString LlnMon::displayMessage(LocoNetMessage l)
 
                 Reporter* reporter = ((ProxyReporterManager*) InstanceManager::getDefault("ReporterManager"))->provideReporter(reporterSystemName);
 
-                QString uname = reporter->getUserName();
+                QString uname = ((NamedBean*)reporter)->getUserName();
                 if ((uname != NULL) && (!uname.isEmpty())) {
                     return tr("Transponder Find report: address %1 present at %2 (%3) (BDL16x Board %4 RX4 zone %5).").arg(
                             locoAddr).arg(
@@ -3138,7 +3138,7 @@ QString LlnMon::displayMessage(LocoNetMessage l)
 
                 Reporter* reporter = ((ProxyReporterManager*) InstanceManager::getDefault("ReporterManager"))->provideReporter(reporterSystemName);
         reporterUserName = "";
-        QString uname = reporter->getUserName();
+        QString uname = ((NamedBean*)reporter)->getUserName();
         if ((uname != NULL) && (!uname.isEmpty())) {
             reporterUserName = uname;
         }

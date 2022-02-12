@@ -52,7 +52,7 @@ AbstractReporterManagerConfigXML::AbstractReporterManagerConfigXML(QObject *pare
             elem.setAttribute("systemName", sname); // deprecated for 2.9.* series
             elem.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(sname)));
             // store common parts
-            storeCommon(r, elem);
+            storeCommon((NamedBean*)r, elem);
 
             log->debug("store Reporter "+sname);
             reporters.appendChild(elem);
@@ -105,7 +105,7 @@ AbstractReporterManagerConfigXML::AbstractReporterManagerConfigXML(QObject *pare
 
         if (log->isDebugEnabled()) log->debug("create Reporter: ("+sysName+")("+(userName=="" ?"<null>":userName)+")");
         Reporter* r = tm->newReporter(sysName, userName);
-        loadCommon(r, reporterList.at(i).toElement());
+        loadCommon((NamedBean*)r, reporterList.at(i).toElement());
     }
     return result;
 }

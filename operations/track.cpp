@@ -2892,7 +2892,7 @@ if (loads.length() == 0) {
 
  /*public*/ QString Track::getReporterName() {
      if (getReporter() != nullptr) {
-         return getReporter()->getDisplayName();
+         return ((NamedBean*)getReporter()->self())->getDisplayName();
      }
      return "";
  }

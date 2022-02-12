@@ -52,7 +52,7 @@ Reporter* AbstractReporterManager::getReporter(QString name)  {
 #if 1
 NamedBean *AbstractReporterManager::getBySystemName(QString name)
 {
-    return (Reporter*)_tsys->value(name);
+    return /*(Reporter*)*/_tsys->value(name);
 }
 
 NamedBean *AbstractReporterManager::getByUserName(QString key){
@@ -85,13 +85,13 @@ Reporter* AbstractReporterManager::newReporter(QString systemName, QString userN
     // return existing if there is one
     Reporter* r;
     if ( (userName!=NULL) && ((r = (Reporter*)getByUserName(userName)) != NULL)) {
-        if (getBySystemName(systemName)!=r)
-            log->error("inconsistent user ("+userName+") and system name ("+systemName+") results; userName related to ("+r->getSystemName()+")");
+        if (getBySystemName(systemName)!=((NamedBean*)r))
+            log->error("inconsistent user ("+userName+") and system name ("+systemName+") results; userName related to ("+((NamedBean*)r)->getSystemName()+")");
         return r;
     }
     if ( (r = (Reporter*)getBySystemName(systemName)) != NULL) {
-        if ((r->getUserName() == NULL) && (userName != NULL))
-            r->setUserName(userName);
+        if ((((NamedBean*)r)->getUserName() == NULL) && (userName != NULL))
+            ((NamedBean*)r)->setUserName(userName);
         else if (userName != NULL) log->warn("Found reporter via system name ("+systemName
                                 +") with non-NULL user name ("+userName+")");
         return r;
@@ -102,7 +102,7 @@ Reporter* AbstractReporterManager::newReporter(QString systemName, QString userN
 
     //emit newReporterCreated(this, r);
     // save in the maps
-    AbstractManager::Register(r);
+    AbstractManager::Register(((NamedBean*)r));
 
 
     // if that failed, blame it on the input arguements

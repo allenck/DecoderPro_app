@@ -161,7 +161,7 @@ BlockManagerXml::~BlockManagerXml()
     if (r!=NULL)
     {
      QDomElement re = doc.createElement("reporter");
-     re.setAttribute("systemName", ((AbstractReporter*)r)->getSystemName());
+     re.setAttribute("systemName", ((AbstractReporter*)r)->AbstractNamedBean::getSystemName());
      re.setAttribute("useCurrent", b->isReportingCurrent()?"yes":"no");
      elem.appendChild(re);
     }

@@ -14,10 +14,21 @@ AbstractTurnoutManager::AbstractTurnoutManager(SystemConnectionMemo* memo, QObje
  defaultClosedSpeed = "Normal";
  defaultThrownSpeed = "Restricted";
  //registerSelf(); //??
- TurnoutOperationManager::getInstance();		// force creation of an instance
- // ((SensorManager*)InstanceManager::sensorManagerInstance())->addVetoableChangeListener(this);
- // TODO:: connect(InstanceManager::sensorManagerInstance()->vcs, SIGNAL(vetoablePropertyChange(PropertyChangeEvent*)), this, SLOT(vetoableChange(PropertyChangeEvent*)));
+ InstanceManager::getDefault("TurnoutOperationManager"); // force creation of an instance
+ InstanceManager::sensorManagerInstance()->addVetoableChangeListener(this);
+
+ // set listener for changes in memo
+// memo.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+//     @Override
+//     public void propertyChange(java.beans.PropertyChangeEvent e) {
+//         if (e.getPropertyName().equals(SystemConnectionMemo.INTERVAL)) {
+//             handleIntervalChange((Integer) e.getNewValue());
+//         }
+//     }
+// });
+ memo->addPropertyChangeListener(new MemoPropertyChangeListener(this));
 }
+
 /**
  * Abstract partial implementation of a TurnoutManager.
  *
@@ -261,7 +272,7 @@ QString AbstractTurnoutManager::getNextValidAddress(QString curAddress, QString 
  catch (JmriException* *ex)
  {
   static_cast<UserPreferencesManager*>(InstanceManager::getDefault("UserPreferencesManager"))->showErrorMessage(tr("Error"),tr("Unable to convert %1 to a valid Hardware Address %2").arg(curAddress),nullptr, "", true, false);
-  return nullptr;
+  return QString();
  }
 
  Turnout* t = (Turnout*)getBySystemName(tmpSName);

@@ -45,9 +45,11 @@ TurnoutTableDataModel::TurnoutTableDataModel(QObject *parent)
     //super();
  common();
  setObjectName(QString("TurnoutTableDataModel") + " " + mgr->self()->metaObject()->className());
+ saveManager = mgr;
  setManager(mgr);
  init();
  initTable();
+ //updateNameList();
 }
 
 /*private*/ void TurnoutTableDataModel::initTable() {
@@ -63,7 +65,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(QObject *parent)
     defaultClosedSpeedText = (tr("Use %1").arg("Global") + " " + turnoutManager->getDefaultClosedSpeed());
 
     //This following must contain the word Block for a correct match in the abstract turnout
-    useBlockSpeed = tr("UseGlobal", "Block Speed");
+    useBlockSpeed = tr("Use %1").arg("Block Speed");
 
     speedListClosed.append(defaultClosedSpeedText);
     speedListThrown.append(defaultThrownSpeedText);
@@ -113,9 +115,8 @@ TurnoutTableDataModel::TurnoutTableDataModel(QObject *parent)
     default:
       break;
   }
-  return BeanTableDataModel::headerData(section,orientation, role);
  }
- return QVariant();
+ return BeanTableDataModel::headerData(section,orientation, role);
 }
 
 //@Override
@@ -212,15 +213,17 @@ TurnoutTableDataModel::TurnoutTableDataModel(QObject *parent)
 {
  int row = index.row();
  QString name = sysNameList.at(row);
- TurnoutManager* manager = turnoutManager;
- Turnout* t = manager->getBySystemName(name);
+// //TurnoutManager* manager = turnoutManager;
+// QObject* tto = turnoutManager->self();
+// Turnout* t = (Turnout*)turnoutManager->getBySystemName(name);
+ Turnout* t = getBySystemName(name);
  if (t == NULL)
  {
   log->debug("error NULL turnout!");
   return "error";
  }
- if(qobject_cast<AbstractTurnout*>(t) == NULL)
-  return QVariant();
+// if(qobject_cast<AbstractTurnout*>(t->self()) == NULL)
+//  return QVariant();
  if(role == Qt::CheckStateRole)
  {
   switch (index.column())
@@ -704,7 +707,10 @@ TurnoutTableDataModel::TurnoutTableDataModel(QObject *parent)
 
 /*public*/ Turnout* TurnoutTableDataModel::getBySystemName(QString name) const
 {
-  return turnoutManager->getBySystemName(name);
+ if(qobject_cast<AbstractManager*>(turnoutManager->self()) != nullptr)
+  return (Turnout*)((AbstractManager*)turnoutManager->self())->getBySystemName(name);
+ else
+  return ((TurnoutManager*)turnoutManager)->getBySystemName(name);
 }
 
 /*public*/ NamedBean* TurnoutTableDataModel::getByUserName(QString name)

@@ -7,11 +7,12 @@
 #include "rfid/transpondingtag.h"
 #include "rfid/reportervariant.h"
 
-class LIBPR3SHARED_EXPORT AbstractReporter : public Reporter
+class LIBPR3SHARED_EXPORT AbstractReporter : public AbstractNamedBean, public Reporter/*, public NamedBean*/
 {
  Q_OBJECT
+  Q_INTERFACES(Reporter/* NamedBean*/)
 public:
-    explicit AbstractReporter(QObject *parent = 0);
+    //AbstractReporter(QObject *parent = 0);
     AbstractReporter(QString systemName, QObject *parent = 0);
     AbstractReporter(QString systemName, QString userName, QObject *parent = 0);
     /*public*/ QString getBeanType() override;

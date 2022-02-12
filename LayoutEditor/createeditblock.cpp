@@ -86,7 +86,7 @@ void CreateEditBlock::on_blockEditDone_clicked()
   {
 //   QString msg = java.text.MessageFormat.format(rb.getString("BlockAssignReporter"), new Object[] { layoutBlock->getOccupancySensor().getDisplayName(), layoutBlock->getOccupancySensor().getReporter().getDisplayName() });
 //   if(JOptionPane.showConfirmDialog(editLayoutBlockFrame,                                             msg,rb.getString("BlockAssignReporterTitle"),                                             JOptionPane.YES_NO_OPTION)==0)
-    if(QMessageBox::question(this, tr("New reporter"), tr("Add reporter %1 for sensor %2").arg(layoutBlock->getOccupancySensor()->getReporter()->getDisplayName()).arg(sensor->getDisplayName()),QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+    if(QMessageBox::question(this, tr("New reporter"), tr("Add reporter %1 for sensor %2").arg(((NamedBean*)layoutBlock->getOccupancySensor()->getReporter())->getDisplayName()).arg(sensor->getDisplayName()),QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
     layoutBlock->block->setReporter(sensor->getReporter());
    }
   }

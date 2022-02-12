@@ -105,6 +105,25 @@ protected:
   virtual Turnout* createNewTurnout(QString systemName, QString userName) =0;
   //QMap<QString, Turnout*> turnoutMap; // key = systemName!
   /*protected*/ /*final*/ SystemConnectionMemo* memo;
+
+  friend class MemoPropertyChangeListener;
+};
+
+class MemoPropertyChangeListener  : public QObject, public PropertyChangeListener
+{
+  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
+  AbstractTurnoutManager* atm;
+ public:
+  MemoPropertyChangeListener(AbstractTurnoutManager* atm) {this->atm = atm;}
+  QObject* self() override{return (QObject*)this;}
+ public slots:
+  //@Override
+  /*public*/ void propertyChange(PropertyChangeEvent* e) {
+      if (e->getPropertyName() == (SystemConnectionMemo::INTERVAL)) {
+          atm->handleIntervalChange( e->getNewValue().toInt());
+      }
+  }
 };
 
 #endif // ABSTRACTTURNOUTMANAGER_H

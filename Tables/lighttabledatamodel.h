@@ -39,7 +39,7 @@ class LightTableDataModel : public BeanTableDataModel
 
  private:
   static Logger* log;
-  /*private*/ LightManager* lightManager;
+  /*private*/ LightManager* lightManager = nullptr;
   /*private*/ void editButton(Light* bean);
  void common();
  protected:

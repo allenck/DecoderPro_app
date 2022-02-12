@@ -46,7 +46,7 @@
     }
 
     if (log->isDebugEnabled()) {
-        log->debug("starting " + getSystemName());
+        log->debug("starting " + AbstractNamedBean::getSystemName());
     }
     if (region->isInside(p)) {
         notifyInRegion(id);
@@ -155,9 +155,8 @@ void RpsReporter::notifyArriving(int id) {
  * anywhere retrievable. NOT DONE YET
  */
 /*public*/ PhysicalLocation* RpsReporter::getPhysicalLocation() {
-    return (PhysicalLocation::getBeanPhysicalLocation(this));
+    return PhysicalLocation::getBeanPhysicalLocation((NamedBean*)this);
 }
-
 /**
  * getPhysicalLocation(String s)
  *

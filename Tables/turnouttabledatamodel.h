@@ -67,6 +67,8 @@ class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
     /*public*/ void showTurnoutSpeedChanged(bool visible, JTable* table);
     /*public*/ void showStateForgetAndQueryChanged(bool visible, JTable* table);
 
+    QObject* self() override {return (QObject*)this;}
+
  public slots:
     /*public*/ void comboBoxAction(JActionEvent* e = 0);
     /*public*/ void propertyChange(PropertyChangeEvent* e) override;
@@ -81,10 +83,11 @@ class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
 //    TTEditDelegate* sensorsColDelegate = nullptr;
 //    /*private*/ JTable* makeJTable(TableModel* model);
     /*private*/ void initTable();
-    QString closedText;
-    QString thrownText;
-    /*private*/ bool _graphicState;
+    QString closedText="";
+    QString thrownText="";
+    /*private*/ bool _graphicState = false;
     /*private*/ TurnoutManager* turnoutManager = nullptr;
+    Manager* saveManager = nullptr;
     QString useBlockSpeed;
     QString bothText = "Both";
     QString cabOnlyText = "Cab only";
@@ -101,7 +104,7 @@ class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
     /*protected*/ QString getBeanType() override;
     /*protected*/ bool matchPropertyName(PropertyChangeEvent* e) override;
     /*protected*/ QString rootPath = "resources/icons/misc/switchboard/"; // also used in display.switchboardEditor
-    /*protected*/ char beanTypeChar;// = 'S'; // for Sensor
+    /*protected*/ QChar beanTypeChar = 'T'; // for Turnout
     /*protected*/ QString onIconPath;// = rootPath + beanTypeChar + "-on-s.png";
     /*protected*/ QString offIconPath;// = rootPath + beanTypeChar + "-off-s.png";
     /*protected*/ BufferedImage* onImage;

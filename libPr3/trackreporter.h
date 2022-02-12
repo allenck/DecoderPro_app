@@ -18,6 +18,7 @@ public:
  /*public*/ QVariant pullEast();
  /*public*/ QVariant pullWest();
 
+  QObject* self() override{return (QObject*)this;}
 private:
  // /*private*/ Deque* collection = nullptr;
  /*private*/ Collection* collection = nullptr;

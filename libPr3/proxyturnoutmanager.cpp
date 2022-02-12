@@ -57,7 +57,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
 //@Override
 //@Nonnull
 /*protected*/ Turnout* ProxyTurnoutManager::makeBean(AbstractManager *manager, QString systemName, QString userName) /*throws IllegalArgumentException*/ {
-    return ((AbstractTurnoutManager*) manager)->newTurnout(systemName, userName);
+    return ((AbstractTurnoutManager*) manager->self())->newTurnout(systemName, userName);
 }
 
 /*public*/ Turnout * ProxyTurnoutManager::provideTurnout(QString name)  {

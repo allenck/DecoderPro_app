@@ -5,18 +5,21 @@
 #include "reportermanager.h"
 #include "reporter.h"
 #include "abstractreporter.h"
+#include "libtables_global.h"
 
-class ReporterTableDataModel : public BeanTableDataModel
+class LIBTABLESSHARED_EXPORT ReporterTableDataModel : public BeanTableDataModel
 {
   Q_OBJECT
  public:
   explicit ReporterTableDataModel();
+  ~ReporterTableDataModel() override {}
+  ReporterTableDataModel(const ReporterTableDataModel&) : BeanTableDataModel() {}
   /*public*/ ReporterTableDataModel(Manager *mgr, QObject* parent = nullptr);
   /*public*/ QString getValue(QString name) override;
   /*public*/ /*final*/ void setManager(/*Manager<Reporter>*/Manager* rm) override;
   /*public*/ Manager *getManager() override;
   /*public*/ NamedBean *getBySystemName(/*@Nonnull*/ QString name) const override;
-  /*public*/ Reporter* getByUserName(/*@Nonnull*/ QString name)override;
+  /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString name)override;
   /*public*/ void clickOn(NamedBean* t) override;
   /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
   /*public*/ int columnCount(const QModelIndex& index) const override;
@@ -38,5 +41,6 @@ class ReporterTableDataModel : public BeanTableDataModel
   /*protected*/ bool matchPropertyName(PropertyChangeEvent* e) override;
 
 };
+Q_DECLARE_METATYPE(ReporterTableDataModel)
 
 #endif // REPORTERTABLEDATAMODEL_H

@@ -13,7 +13,7 @@
 #include "joptionpane.h"
 #include "limits.h"
 #include "joptionpane.h"
-
+#include "abstractreporter.h"
 
 QVector<int>* LayoutBlock::updateReferences = new QVector<int>();
 long LayoutBlock::time=0;
@@ -1043,7 +1043,7 @@ void LayoutBlock::blockEditDonePressed(JActionEvent*) {
         if (reporter != nullptr && block != nullptr) {
             QString msg = tr("Sensor %1 has Reporter %2 associated with it; do you want to use the Reporter with this block?").arg(
                     s->getDisplayName(),
-                        reporter->getDisplayName());
+                        ((AbstractReporter*)reporter)->getDisplayName());
             if (JOptionPane::showConfirmDialog(editLayoutBlockFrame,
                     msg, tr("Assign Reporter to Block"),
                     JOptionPane::YES_NO_OPTION) == 0) {

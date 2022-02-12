@@ -1673,7 +1673,7 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
 
                  Reporter* reporter = ((ProxyReporterManager*) InstanceManager::getDefault("ReporterManager"))->provideReporter(reporterSystemName);
 
-                 QString uname = reporter->getUserName();
+                 QString uname = ((NamedBean*)reporter->self())->getUserName();
                  if ((uname != "") && (!uname.isEmpty())) {
                      return tr("Transponder Find report: address %1 present at %2 (%3) (BDL16x Board %4 RX4 zone %5).").arg(
                              locoAddr).arg(
@@ -2142,7 +2142,7 @@ LocoNetMessageInterpret::LocoNetMessageInterpret(QObject *parent) : QObject(pare
 
                  Reporter* reporter = ((ProxyReporterManager*) InstanceManager::getDefault("ReporterManager"))->provideReporter(reporterSystemName);
          reporterUserName = "";
-         QString uname = reporter->getUserName();
+         QString uname = ((NamedBean*)reporter->self())->getUserName();
          if ((uname != "") && (!uname.isEmpty())) {
              reporterUserName = uname;
          }

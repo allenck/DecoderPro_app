@@ -234,6 +234,7 @@ private:
     /*private*/ QString _blockSpeed;// = "";
     /*private*/ int maxInfoMessages = 5;
     /*private*/ int infoMessageCount = 0;
+    friend class BPropertyChangeListener;
 };
 
 class BlockSensorListener : public QObject, public PropertyChangeListener
@@ -248,4 +249,21 @@ public:
 public slots:
  void propertyChange(PropertyChangeEvent*)override;
 };
+
+class BPropertyChangeListener : public QObject, public PropertyChangeListener
+{
+  Q_OBJECT
+  Q_INTERFACES(PropertyChangeListener)
+  Block* block;
+ public:
+  BPropertyChangeListener(Block* block) {this->block = block;}
+  QObject* self() override{return (QObject*)this;}
+ public slots:
+  void PropertyChange(PropertyChangeEvent* e)
+  {
+   block->handleReporterChange(e);
+  }
+};
+
 #endif // BLOCK_H
+

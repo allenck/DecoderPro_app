@@ -36,7 +36,7 @@ ReporterIconXml::ReporterIconXml(QObject *parent) :
  // include contents
  if(p->getReporter()== NULL)
   return QDomElement();
- element.setAttribute("reporter", p->getReporter()->getSystemName());
+ element.setAttribute("reporter", ((NamedBean*)p->getReporter())->getSystemName());
  storeCommonAttributes((Positionable*)p, element);
 
  storeTextInfo((Positionable*)p, element);

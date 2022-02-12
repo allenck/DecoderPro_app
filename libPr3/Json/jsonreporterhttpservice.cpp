@@ -25,10 +25,10 @@
     if (reporter == NULL) {
         throw new JsonException(404, tr(/*locale,*/ "Unable to access %1 %2.").arg(JsonReporter::REPORTER).arg(name));
     }
-    data.insert(JSON::NAME, reporter->getSystemName());
-    data.insert(JSON::USERNAME, reporter->getUserName());
+    data.insert(JSON::NAME, ((NamedBean*)reporter->self())->getSystemName());
+    data.insert(JSON::USERNAME, ((NamedBean*)reporter->self())->getUserName());
     data.insert(JSON::STATE, reporter->getState());
-    data.insert(JSON::COMMENT, reporter->getComment());
+    data.insert(JSON::COMMENT, ((NamedBean*)reporter->self())->getComment());
     if (reporter->getCurrentReport() != QVariant()) {
         data.insert(JSON::REPORT, reporter->getCurrentReport().toString());
     } else {
@@ -50,10 +50,10 @@
         throw new JsonException(404, tr(/*locale,*/ "Unable to access %1 %2.").arg(JsonReporter::REPORTER).arg(name));
     }
     if (data.value(JSON::USERNAME).isString()) {
-        reporter->setUserName(data.value(JSON::USERNAME).toString());
+        ((NamedBean*)reporter->self())->setUserName(data.value(JSON::USERNAME).toString());
     }
     if (data.value(JSON::COMMENT).isString()) {
-        reporter->setComment(data.value(JSON::COMMENT).toString());
+        ((NamedBean*)reporter->self())->setComment(data.value(JSON::COMMENT).toString());
     }
     if (!data.value(JSON::REPORT).isUndefined()) {
         if (data.value(JSON::REPORT).isNull()) {

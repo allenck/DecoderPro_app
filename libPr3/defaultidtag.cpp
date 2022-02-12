@@ -115,7 +115,7 @@ void DefaultIdTag::init()
  if (this->getWhereLastSeen()!=nullptr && storeState)
  {
   e.appendChild(e1 = doc.createElement("whereLastSeen"));
-  e1.appendChild(doc.createTextNode(this->getWhereLastSeen()->getSystemName())); //NOI18N
+  e1.appendChild(doc.createTextNode(((AbstractNamedBean*)this->getWhereLastSeen())->getSystemName())); //NOI18N
  }
  if (!this->getWhenLastSeen().isNull() && storeState)
  {

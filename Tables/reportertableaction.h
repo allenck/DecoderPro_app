@@ -50,12 +50,13 @@ private:
     QString systemSelectionCombo;// = this.getClass().getName() + ".SystemSelected";
     /*private*/ JButton* addButton;
     QString userNameError;// = this.getClass().getName() + ".DuplicateUserName";
-    QString connectionChoice;// = "";
+    /*private*/ Manager/*<Reporter>*/* connectionChoice = nullptr;
     JLabel* statusBarLabel;// = new JLabel(Bundle.getMessage("HardwareAddStatusEnter"), JLabel.LEADING);
     /*private*/ QString addEntryToolTip;
     UserPreferencesManager* pref;
     /*private*/ SystemNameValidator* hardwareAddressValidator;
     static Logger* log;
+    void handleCreateException(Exception* ex, QString sysName);
 
 private slots:
     void cancelPressed(ActionEvent* e = 0);
@@ -64,12 +65,11 @@ private slots:
 
 
 protected:
-    /*protected*/ ReporterManager* reporterManager = (ReporterManager*)InstanceManager::getDefault("ReporterManager");
+    /*protected*/ ReporterManager* reporterManager = (ProxyReporterManager*)InstanceManager::getDefault("ReporterManager");
     /*protected*/ void createModel()override;
-    /*protected*/ void setTitle();
-    /*protected*/ QString helpTarget();
-    /*protected*/ QString getClassName();
-    void handleCreateException(QString sysName);
+    /*protected*/ void setTitle()override;
+    /*protected*/ QString helpTarget()override;
+    /*protected*/ QString getClassName()override;
 
 protected slots:
     /*protected*/ void addPressed(JActionEvent* e = 0)override;

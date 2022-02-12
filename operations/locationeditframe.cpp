@@ -209,11 +209,11 @@ namespace Operations
     readerSelector->addItem(""); // add an empty entry.
     foreach (NamedBean* r, *((ReporterManager*)InstanceManager::getDefault("ReporterManager"))->getNamedBeanList())
     {
-     readerSelector->addItem(((Reporter*) r)->getDisplayName());
+     readerSelector->addItem(r->getDisplayName());
     }
 
     //try {
-    readerSelector->setCurrentIndex(readerSelector->findText(_location->getReporter()->getDisplayName()));
+    readerSelector->setCurrentIndex(readerSelector->findText(((NamedBean*)_location->getReporter()->self())->getDisplayName()));
 //             } catch (NullPointerException* e) {
 //                 // if there is no reader set, getReporter
 //                 // will return NULL, so set a blank.

@@ -1,5 +1,6 @@
 #ifndef MEASUREMENTLISTENER_H
 #define MEASUREMENTLISTENER_H
+#include <QtCore>
 
 class Measurement;
 /**
@@ -8,7 +9,7 @@ class Measurement;
  * @author	Bob Jacobsen Copyright (C) 2006
  */
 /*public*/ class MeasurementListener {
-
+ public:
  /*public*/ virtual void notify(Measurement* /*r*/) {}
 
 };

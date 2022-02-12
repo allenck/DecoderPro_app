@@ -112,7 +112,7 @@ void SensorTableDataModel::common()
  if(qobject_cast<AbstractManager*>(senManager->self()) != nullptr)
   return ((AbstractManager*)senManager->self())->getBySystemName(name);
  else
-  return ((SensorManager*)senManager)->getBySystemName(name);
+  return ((ProxySensorManager*)senManager)->getBySystemName(name);
 }
 /*protected*/ NamedBean* SensorTableDataModel::getByUserName(QString name) {
  return ((AbstractProxyManager*)senManager->self())->getByUserName(name);

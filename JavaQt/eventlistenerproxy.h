@@ -1,11 +1,13 @@
 #ifndef EVENTLISTENERPROXY_H
 #define EVENTLISTENERPROXY_H
 
-#include <QObject>
+#include <QtCore>
 
 template<class T>
 class EventListenerProxy : public QObject
 {
+ public:
+  //EventListenerProxy(QObject* parent = nullptr) : QObject(parent) {}
 /**
  * An abstract wrapper class for an {@code EventListener} class
  * which associates a set of additional parameters with the listener.
@@ -55,7 +57,7 @@ public:
  /*public*/ T getListener() {
     return this->listener;
  }
-
+ virtual QObject* self() =0;
 };
-
+//Q_DECLARE_INTERFACE(EventListenerProxy, "EventListenerProxy")
 #endif // EVENTLISTENERPROXY_H

@@ -6,7 +6,7 @@
 #include "lnsensor.h"
 #include "signalspeedmap.h"
 #include "path.h"
-
+#include "abstractreporter.h"
 
 ///*static*/ const int Block::OCCUPIED = Sensor::ACTIVE;
 ///*static*/ const int Block::UNOCCUPIED = Sensor::INACTIVE;
@@ -239,7 +239,7 @@ void BlockSensorListener::propertyChange(PropertyChangeEvent* e)
   // remove reporter listener
   if (_reporterListener != NULL)
   {
-   _reporter->removePropertyChangeListener(_reporterListener);
+   ((NamedBean*)_reporterListener)->removePropertyChangeListener(_reporterListener);
    _reporterListener = NULL;
   }
  }
@@ -247,7 +247,7 @@ void BlockSensorListener::propertyChange(PropertyChangeEvent* e)
  if (_reporter != NULL)
  {
   // attach listener
- // _reporter->SwingPropertyChangeSupport::addPropertyChangeListener(_reporterListener = new PropertyChangeListener());
+  ((AbstractReporter*)_reporter->self())->addPropertyChangeListener(_reporterListener = new BPropertyChangeListener(this));
 
 // #if 0
 //  {
@@ -256,7 +256,6 @@ void BlockSensorListener::propertyChange(PropertyChangeEvent* e)
 //        });
 
 //#endif
-  connect(_reporter, SIGNAL(signalPropertyChange(PropertyChangeEvent*)), this, SLOT(handleReporterChange(PropertyChangeEvent*)));
  }
 }
 
@@ -1025,7 +1024,7 @@ return(PhysicalLocation::getBeanPhysicalLocation(this));
         if (bean->equals(getSensor())) {
             report.append(new NamedBeanUsageReport("BlockSensor"));  // NOI18N
         }
-        if (bean->equals(getReporter())) {
+        if (bean->equals(getReporter()->self())) {
             report.append(new NamedBeanUsageReport("BlockReporter"));  // NOI18N
         }
         // Block paths

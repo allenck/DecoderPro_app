@@ -29,8 +29,7 @@
         reporters.insert(reporterName, new ARSReporterListener(reporterName, this));
         Reporter* reporter = qobject_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->getReporter(reporterName);
         if(reporter!=nullptr) {
-           //reporter.addPropertyChangeListener(reporters.get(reporterName));
-           connect(reporter->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+           ((NamedBean*)reporter->self())->addPropertyChangeListener(reporters.value(reporterName));
         }
     }
 }
@@ -39,8 +38,7 @@
     if (reporters.contains(reporterName)) {
         Reporter* reporter = qobject_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->getReporter(reporterName);
         if(reporter!=nullptr) {
-           //reporter.removePropertyChangeListener(reporters.get(reporterName));
-           disconnect(reporter->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+           ((NamedBean*)reporter->self())->removePropertyChangeListener(reporters.value(reporterName));
         }
         reporters.remove(reporterName);
     }
@@ -83,8 +81,7 @@
   entry.next();
         Reporter* reporter = qobject_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->getReporter(entry.key());
         if(reporter!=nullptr) {
-           //reporter.removePropertyChangeListener(entry.getValue());
-         disconnect(reporter->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+           ((NamedBean*)reporter->self())->removePropertyChangeListener(entry.value());
         }
     }
     this->reporters.clear();

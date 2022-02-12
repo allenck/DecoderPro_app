@@ -64,7 +64,6 @@ void ReporterTableAction::common()
  userNameLabel = new JLabel(tr("User Name"));
  systemSelectionCombo = QString(metaObject()->className()) + ".SystemSelected";
  userNameError = QString(this->metaObject()->className()) + ".DuplicateUserName";
- connectionChoice = "";
  statusBarLabel = new JLabel(tr("Enter a Hardware Address and (optional) User Name.")/*, JLabel.LEADING*/);
 }
 
@@ -72,166 +71,13 @@ void ReporterTableAction::common()
  * Create the JTable DataModel, along with the changes for the specific case
  * of Reporters
  */
+//@Override
 /*protected*/ void ReporterTableAction::createModel()
 {
- m = new ReporterTableDataModel();
- m->setManager(reporterManager);
-}
-#if 0
-RtBeanTableDataModel::RtBeanTableDataModel(ReporterTableAction* act)
-{
-    this->act = act;
-    log = new Logger("RtBeanTableDataModel");
-    init();
-}
-/*public*/ /*static*/ /*final*/ int RtBeanTableDataModel::LASTREPORTCOL = RtBeanTableDataModel::NUMCOLUMN;
-
-/*public*/ QString RtBeanTableDataModel::getValue(QString name) const
-{
-   QVariant value;
-   Reporter* r = (Reporter*)act->reporterManager->getBySystemName(name);
-   if (r == nullptr) {
-       return "";
-   }
-   value = r->getCurrentReport();
-   if(value == QVariant()) {
-      return "";
-   }
-   //else if(value instanceof jmri.Reportable)
-   //if(value.canConvert<Reportable*>())
-   QObject* obj = VPtr<QObject>::asPtr(value);
-   if(obj)
-   {
-      //return ((jmri.Reportable)value).toReportString();
-       //return value.convert<Reportable>();
-       return VPtr<Reportable>::asPtr(value)->toReportString();
-   } else {
-      return value.toString();
-   }
+ m = new ReporterTableDataModel(reporterManager);
+ //m->setManager(reporterManager);
 }
 
-/*public*/ Manager *RtBeanTableDataModel::getManager() {
-    return act->reporterManager;
-}
-
-/*public*/ NamedBean* RtBeanTableDataModel::getBySystemName(QString name)  const
-{
-    return ((ProxyReporterManager*)act->reporterManager)->AbstractProxyManager::getBySystemName(name);
-}
-
-/*public*/ NamedBean* RtBeanTableDataModel::getByUserName(QString name) {
-    return act->reporterManager->getByUserName(name);
-}
-/*public int getDisplayDeleteMsg() { return InstanceManager.getDefault(jmri.UserPreferencesManager.class).getMultipleChoiceOption(getClassName(),"delete"); }
- public void setDisplayDeleteMsg(int boo) { InstanceManager.getDefault(jmri.UserPreferencesManager.class).setMultipleChoiceOption(getClassName(), "delete", boo); }*/
-
-/*protected*/ QString RtBeanTableDataModel::getMasterClassName() {
-    return act->getClassName();
-}
-
-/*public*/ void RtBeanTableDataModel::clickOn(NamedBean* t) {
-    // don't do anything on click; not used in this class, because
-    // we override setValueAt
-}
-
-/*public*/ bool RtBeanTableDataModel::setData(const QModelIndex &index, const QVariant &value, int role)
-{
-    int col = index.column();
-    int row = index.row();
-
-  if(role == Qt::EditRole)
-  {
-
-    if (col == VALUECOL) {
-        Reporter* t = (Reporter*) getBySystemName(sysNameList.at(row));
-        t->setReport(value);
-        fireTableRowsUpdated(row, row);
-    }
-    if (col == LASTREPORTCOL) {
-        // do nothing
-    }
-  }
-  BeanTableDataModel::setData(index, value,role);
-}
-
-/*public*/ int RtBeanTableDataModel::columnCount(const QModelIndex &parent) const
-{
-    return LASTREPORTCOL + 1;
-}
-
-/*public*/ QVariant RtBeanTableDataModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
- int col = section;
- if(role == Qt::DisplayRole && orientation == Qt::Horizontal)
- {
-    if (col == VALUECOL) {
-        return tr("Report");
-    }
-    if (col == LASTREPORTCOL) {
-        return tr("Last Report");
-    }
- }
-    return BeanTableDataModel::headerData(section, orientation, role);
-}
-
-///*public*/ Class<?> getColumnClass(int col) {
-//    if (col == VALUECOL) {
-//        return String.class;
-//    }
-//    if (col == LASTREPORTCOL) {
-//        return String.class;
-//    }
-//    return super.getColumnClass(col);
-//}
-
-/*public*/ Qt::ItemFlags RtBeanTableDataModel::flags(const QModelIndex &index) const
-{
- int col = index.column();
-    if (col == LASTREPORTCOL) {
-        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-    }
-    return BeanTableDataModel::flags(index);
-}
-
-/*public*/ QVariant RtBeanTableDataModel::data(const QModelIndex &index, int role) const
-{
- if(role == Qt::DisplayRole)
- {
-  int col = index.column();
-  int row = index.row();
-    if (col == LASTREPORTCOL) {
-        Reporter* t = (Reporter*) getBySystemName(sysNameList.at(row));
-        return t->getLastReport();
-    }
- }
-    return BeanTableDataModel::data(index, role);
-}
-
-/*public*/ int RtBeanTableDataModel::getPreferredWidth(int col) {
-    if (col == LASTREPORTCOL) {
-        return BeanTableDataModel::getPreferredWidth(VALUECOL);
-    }
-    return BeanTableDataModel::getPreferredWidth(col);
-}
-
-/*public*/ void RtBeanTableDataModel::configValueColumn(JTable* table) {
-    // value column isn't button, so config is NULL
-}
-
-/*protected*/ bool RtBeanTableDataModel::matchPropertyName(PropertyChangeEvent* e) {
-    return true;
-    // return (e.getPropertyName().indexOf("Report")>=0);
-}
-
-/*public*/ QPushButton* RtBeanTableDataModel::configureButton() {
-    log->error("configureButton should not have been called");
-    return NULL;
-}
-
-/*protected*/ QString RtBeanTableDataModel::getBeanType() {
-    return tr("Reporter");
-}
-#endif
 /*protected*/ void ReporterTableAction::setTitle() {
     f->setTitle(tr("TitleReporterTable"));
 }
@@ -241,7 +87,6 @@ RtBeanTableDataModel::RtBeanTableDataModel(ReporterTableAction* act)
 }
 
 /*protected*/ void ReporterTableAction::addPressed(JActionEvent* /*e*/) {
-#if 1
     pref = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
     if (addFrame == NULL) {
         addFrame = new JmriJFrameX(tr("Add Reporter"), false, true);
@@ -289,12 +134,13 @@ RtBeanTableDataModel::RtBeanTableDataModel(ReporterTableAction* act)
 
     addFrame->pack();
     addFrame->setVisible(true);
-#endif
 }
+
 RTACreateListener::RTACreateListener(ReporterTableAction* act) { this->act = act;}
 /*public*/ void RTACreateListener::actionPerformed(JActionEvent* /*e*/) {
     act->createPressed();
 }
+
 RTACancelActionListener::RTACancelActionListener(ReporterTableAction *act) { this->act = act;}
 /*public*/ void RTACancelActionListener::actionPerformed(JActionEvent* /*e*/) { act->cancelPressed(); }
 
@@ -319,11 +165,12 @@ void ReporterTableAction::createPressed(ActionEvent* /*e*/)
 
  }
  if (numberOfReporters >= 65) {
-        if (JOptionPane::showConfirmDialog(addFrame,
-                tr("You are about to add %1 Reporters into the configuration\nAre you sure?").arg(numberOfReporters),
-                tr("Warning"),
-                JOptionPane::YES_NO_OPTION) == 1) {
-      return;
+  if (JOptionPane::showConfirmDialog(addFrame,
+          tr("You are about to add %1 Reporters into the configuration\nAre you sure?").arg(numberOfReporters),
+          tr("Warning"),
+          JOptionPane::YES_NO_OPTION) == 1)
+  {
+   return;
   }
  }
 
@@ -343,11 +190,11 @@ void ReporterTableAction::createPressed(ActionEvent* /*e*/)
   }
  // Add some entry pattern checking, before assembling sName and handing it to the ReporterManager
  QString statusMessage = tr("New %1(s) added:").arg(tr("Reporter"));
- QString errorMessage = "";
+ QString uName = userNameTextField->text();
  for (int x = 0; x < numberOfReporters; x++)
  {
   try {
-  curAddress = reporterManager->getNextValidAddress(curAddress, reporterPrefix, false);
+  curAddress = ((ProxyReporterManager*)reporterManager->self())->getNextValidAddress(curAddress, reporterPrefix, false);
   }
   catch (Exception* ex) {
     displayHwError(curAddress, ex);
@@ -356,61 +203,45 @@ void ReporterTableAction::createPressed(ActionEvent* /*e*/)
     statusBarLabel->setForeground(Qt::red);
     return;
   }
-#if 0
-  if (curAddress == "") {
-   log->debug("Error converting HW or getNextValidAddress");
-   errorMessage = (tr("Requested Turnout(s) were not created. Check your entry against pattern (see ToolTip)."));
-   statusBarLabel->setStyleSheet("QEditLine {color: red}");
-   // The next address returned an error, therefore we stop this attempt and go to the next address.
-  }
-#endif
+
   // Compose the proposed system name from parts:
-  rName = reporterPrefix + reporterManager->typeLetter() + curAddress;
+  rName = reporterPrefix + ((ProxyReporterManager*)reporterManager->self())->AbstractProxyManager::typeLetter() + curAddress;
   Reporter* r = nullptr;
-  //try {
-      r = ((ProxyReporterManager*)reporterManager)->provideReporter(rName);
-  if(r == nullptr)
-  {
-      // user input no good
-   handleCreateException(rName); // displays message dialog to the user
-   // add to statusBar as well
-   errorMessage = tr("Requested Turnout(s) were not created. Check your entry against pattern (see ToolTip).");
-   statusBarLabel->setText(errorMessage);
-   statusBarLabel->setStyleSheet("QLabel {color: red}");
-      return; // without creating
+  try {
+      r = ((ProxyReporterManager*)reporterManager->self())->provideReporter(rName);
+  } catch (IllegalArgumentException* ex) {
+   // user input no good
+   handleCreateException(ex, rName); // displays message dialog to the user
+   return; // without creating
   }
-  if (r != nullptr)
-  {
-      QString user = userNameTextField->text().trimmed();
-      if ((x != 0) && user != "" && user != ("")) {
-          user = userNameTextField->text() + ":" + x;
+  if (!uName.isEmpty()) {
+      if ((reporterManager->getByUserName(uName) == nullptr)) {
+          ((AbstractNamedBean*)r->self())->setUserName(uName);
+      } else {
+          pref->showErrorMessage(tr("Error"),
+          tr("The specified user name \"%1\" is already in use and therefore will not be set.").arg(uName), userNameError, "", false, true);
       }
-      if (user != "" && user != ("") && (reporterManager->getByUserName(user) == nullptr)) {
-          r->setUserName(user);
-      } else if (((ProxyReporterManager*)reporterManager)->AbstractProxyManager::getByUserName(user) != nullptr && !pref->getPreferenceState(getClassName(), userNameError))
-      {
-          pref->showErrorMessage("Duplicate UserName", "The username " + user + " specified is already in use and therefore will not be set", userNameError, "", false, true);
-      }
+
       // add first and last names to statusMessage user feedback string
+                  // only mention first and last of rangeCheckBox added
       if (x == 0 || x == numberOfReporters - 1) {
-          statusMessage = statusMessage + " " + rName + " (" + user + ")";
+          statusMessage = statusMessage + " " + rName + " (" + uName + ")";
       }
       if (x == numberOfReporters - 2) {
           statusMessage = statusMessage + " " + tr("up to") + " ";
       }
-      // only mention first and last of range added
 
-      // end of for loop creating range of Reporters
+      // bump user name
+      if (!uName.isEmpty()) {
+          uName = nextName(uName);
+      }
+
+      // end of for loop creating rangeCheckBox of Reporters
   }
  }
- // provide feedback to user
- if (errorMessage == "") {
-     statusBarLabel->setText(statusMessage);
-     statusBarLabel->setStyleSheet("QLabel {color: gray}");
- } else {
-     statusBarLabel->setText(errorMessage);
-     // statusBar.setForeground(Color.red); // handled when errorMassage is set to differentiate urgency
- }
+ // provide success feedback to uName
+ statusBarLabel->setText(statusMessage);
+ statusBarLabel->setForeground(Qt::gray);
 
  pref->setComboBoxLastSelection(systemSelectionCombo, prefixBox->currentText());
  addFrame->setVisible(false);
@@ -422,43 +253,29 @@ void ReporterTableAction::createPressed(ActionEvent* /*e*/)
 {
  rangeCheckBox->setEnabled(false);
  rangeCheckBox->setChecked(false);
- connectionChoice =  prefixBox->currentText(); // store in Field for CheckedTextField
- if (connectionChoice == "") {
-     // Tab All or first time opening, default tooltip
-     connectionChoice = "TBD";
+ if (prefixBox->getSelectedIndex() == -1) {
+     prefixBox->setSelectedIndex(0);
  }
- if (QString(reporterManager->self()->metaObject()->className()).contains("ProxyReporterManager"))
- {
-  ProxyReporterManager* proxy = (ProxyReporterManager*) reporterManager;
-  QList<AbstractManager*> managerList = proxy->getManagerList();
-  QString systemPrefix = ConnectionNameFromSystemName::getPrefixFromName(connectionChoice);
-  for (int x = 0; x < managerList.size(); x++) {
-      ReporterManager* mgr = (ReporterManager*) managerList.at(x);
-      QString sp = mgr->getSystemPrefix();
-      bool bam = mgr->allowMultipleAdditions(systemPrefix);
-      if (mgr->getSystemPrefix() == (systemPrefix) && mgr->allowMultipleAdditions(systemPrefix)) {
-          rangeCheckBox->setEnabled(true);
-          addEntryToolTip = mgr->getEntryToolTip();
-          log->debug("R add box set");
-          break;
-      }
-  }
- } else if (reporterManager->allowMultipleAdditions(ConnectionNameFromSystemName::getPrefixFromName( prefixBox->currentText()))) {
-     rangeCheckBox->setEnabled(true);
-     log->debug("R add box enabled2");
-     // get tooltip from sensor manager
-     addEntryToolTip = reporterManager->getEntryToolTip();
-     log->debug("ReporterManager tip");
- }
+ connectionChoice = prefixBox->getSelectedItem(); // store in Field for CheckedTextField
+ QString systemPrefix = connectionChoice->getSystemPrefix();
+ rangeCheckBox->setEnabled(((ReporterManager*) connectionChoice)->allowMultipleAdditions(systemPrefix));
+ addEntryToolTip = connectionChoice->getEntryToolTip();
  // show hwAddressTextField field tooltip in the Add Reporter pane that matches system connection selected from combobox
- hardwareAddressTextField->setToolTip("<html>"
-         + tr("For %1 %2 use one of these patterns:").arg(connectionChoice).arg(tr("Sensors"))
-         + "<br>" + addEntryToolTip + "</html>");
- hardwareAddressTextField->setStyleSheet("QEditLine { background-color: yellow};"); // reset
+ hardwareAddressTextField->setToolTip(
+         tr("<html>%1 %2 use one of these patterns:<br>%3</html>").arg(
+                 connectionChoice->getMemo()->getUserName(),
+                 tr("Reporters"),
+                 addEntryToolTip));
+ //hardwareAddressValidator->setToolTip(hardwareAddressTextField->toolTip());
+ hardwareAddressValidator->verify(hardwareAddressTextField);
 }
 
-void ReporterTableAction::handleCreateException(QString sysName) {
-    JOptionPane::showMessageDialog(addFrame,
+void ReporterTableAction::handleCreateException(Exception* ex, QString sysName) {
+ statusBarLabel->setText(ex->getLocalizedMessage());
+ statusBarLabel->setForeground(Qt::red);
+// QString err = Bundle.getMessage("ErrorBeanCreateFailed",
+//     InstanceManager.getDefault(ReporterManager.class).getBeanTypeHandled(),sysName);
+ JOptionPane::showMessageDialog(addFrame,
                     tr("Could not create Reporter %1 to add it. Check that number/name is OK.").arg(sysName),
             tr("Error"),
             JOptionPane::ERROR_MESSAGE);
@@ -616,7 +433,7 @@ RTAValidator::RTAValidator(JTextField *fld, ReporterTableAction *act)
  this->fld = fld;
  this->act = act;
  connect(act->prefixBox, SIGNAL(currentTextChanged(QString)), this, SLOT(prefixBoxChanged(QString)));
- prefix = ConnectionNameFromSystemName::getPrefixFromName(act->connectionChoice);
+ prefix = ConnectionNameFromSystemName::getPrefixFromName(act->prefixBox->currentText());
  mark = ColorUtil::stringToColor("orange");
 }
 

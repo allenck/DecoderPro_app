@@ -616,11 +616,11 @@ void AbstractTurnout::setKnownStateToCommanded()
 /*public*/ void AbstractTurnout::setTurnoutOperation(TurnoutOperation* toper) {
     TurnoutOperation* oldOp = myTurnoutOperation;
     if (myTurnoutOperation != NULL) {
-        myTurnoutOperation->removePropertyChangeListener((PropertyChangeListener*)this);
+        myTurnoutOperation->removePropertyChangeListener(this);
     }
     myTurnoutOperation = toper;
     if (myTurnoutOperation != NULL) {
-        myTurnoutOperation->addPropertyChangeListener((PropertyChangeListener*)this);
+        myTurnoutOperation->addPropertyChangeListener(this);
     }
     firePropertyChange("TurnoutOperationState", VPtr<TurnoutOperation>::asQVariant(oldOp), VPtr<TurnoutOperation>::asQVariant(myTurnoutOperation));
 }
@@ -711,7 +711,7 @@ void AbstractTurnout::setKnownStateToCommanded()
 {
  if (getFirstSensor() != NULL)
  {
-  (getFirstSensor())->removePropertyChangeListener((PropertyChangeListener*)this);
+  (getFirstSensor())->removePropertyChangeListener(this);
   Sensor* anb = getFirstSensor();
   disconnect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
@@ -721,7 +721,7 @@ void AbstractTurnout::setKnownStateToCommanded()
  // if need be, set listener
  if (getFirstSensor() != NULL)
  {
-  ((AbstractNamedBean*)getFirstSensor())->addPropertyChangeListener((PropertyChangeListener*)this, s->getName(), "Feedback Sensor for " + getDisplayName());
+  ((AbstractNamedBean*)getFirstSensor())->addPropertyChangeListener(this, s->getName(), "Feedback Sensor for " + getDisplayName());
   Sensor* anb = getFirstSensor();
   connect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
@@ -774,7 +774,7 @@ void AbstractTurnout::setKnownStateToCommanded()
  // if need be, clean listener
  if (getSecondSensor() != NULL)
  {
-  ((AbstractSensor*)getSecondSensor())->removePropertyChangeListener((PropertyChangeListener*)this);
+  ((AbstractSensor*)getSecondSensor())->removePropertyChangeListener(this);
   Sensor* anb = getSecondSensor();
   disconnect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
@@ -784,7 +784,7 @@ void AbstractTurnout::setKnownStateToCommanded()
  // if need be, set listener
  if (getSecondSensor() != NULL)
  {
-  ((AbstractNamedBean*)getSecondSensor())->addPropertyChangeListener((PropertyChangeListener*)this, s->getName(), "Feedback Sensor for " + getDisplayName());
+  ((AbstractNamedBean*)getSecondSensor())->addPropertyChangeListener(this, s->getName(), "Feedback Sensor for " + getDisplayName());
   Sensor* anb = getSecondSensor();
   connect(anb->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
@@ -934,12 +934,12 @@ void AbstractTurnout::setKnownStateToCommanded()
 {
  if (getFirstSensor() != NULL)
  {
-  ((AbstractSensor*)getFirstSensor())->removePropertyChangeListener((PropertyChangeListener*)this);
+  ((AbstractSensor*)getFirstSensor())->removePropertyChangeListener(this);
  }
  _firstNamedSensor = NULL;
  if (getSecondSensor() != NULL)
  {
-  ((AbstractSensor*)getSecondSensor())->removePropertyChangeListener((PropertyChangeListener*)this);
+  ((AbstractSensor*)getSecondSensor())->removePropertyChangeListener(this);
     }
     _secondNamedSensor = NULL;
 //    super.dispose();

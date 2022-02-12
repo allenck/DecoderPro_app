@@ -93,8 +93,8 @@
      * {@inheritDoc}
      */
     //@Override
-    /*public*/ Reporter* ReporterTableDataModel::getByUserName(/*@Nonnull*/ QString name) {
-        return (Reporter*)((ProxyReporterManager*)getManager()->self())->AbstractProxyManager::getByUserName(name);
+    /*public*/ NamedBean* ReporterTableDataModel::getByUserName(/*@Nonnull*/ QString name) {
+        return ((ProxyReporterManager*)getManager()->self())->AbstractProxyManager::getByUserName(name);
     }
 
     /**
@@ -164,7 +164,8 @@
         if (col == LASTREPORTCOL) {
             return tr("Last Report");
         }
-      }
+     }
+     return BeanTableDataModel::headerData(section, orientation, role);
     }
 
 
@@ -212,7 +213,7 @@
            return t->getLastReport();
        }
     }
-       return BeanTableDataModel::data(index, role);
+    return BeanTableDataModel::data(index, role);
    }
 
 

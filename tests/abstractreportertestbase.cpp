@@ -2,6 +2,7 @@
 #include "assert1.h"
 #include "reporter.h"
 #include "rfid/reportervariant.h"
+#include "abstractreporter.h"
 
 AbstractReporterTestBase::AbstractReporterTestBase(QObject *parent) : QObject(parent)
 {
@@ -32,7 +33,7 @@ AbstractReporterTestBase::AbstractReporterTestBase(QObject *parent) : QObject(pa
     //@Test
     /*public*/ void AbstractReporterTestBase::testCtor() {
         // Check that it is not a null object
-        Assert::assertNotNull("Created Reporter not null", r, __FILE__, __LINE__);
+        Assert::assertNotNull("Created Reporter not null", r->self(), __FILE__, __LINE__);
         // Check that CurrentReport and LastReport return a null object
         Assert::assertNull("CurrentReport at initialisation is 'null'", r->getCurrentReport(), __FILE__, __LINE__);
         Assert::assertNull("LastReport at initialisation is 'null'", r->getLastReport(), __FILE__, __LINE__);
@@ -57,16 +58,16 @@ AbstractReporterTestBase::AbstractReporterTestBase(QObject *parent) : QObject(pa
 
     //@Test
     /*public*/ void AbstractReporterTestBase::testGetBeanType(){
-         Assert::assertEquals("bean type",r->getBeanType(),tr("Reporter"), __FILE__, __LINE__);
+         Assert::assertEquals("bean type",((AbstractReporter*)r->self())->getBeanType(),tr("Reporter"), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void AbstractReporterTestBase::testPropertyChange() {
         currentReportSeen = false;
         lastReportSeen = false;
-        r->addPropertyChangeListener(new TestReporterListenerO1(this));
+       ((AbstractNamedBean*)r->self())->addPropertyChangeListener(new TestReporterListenerO1(this));
         // Report a String
-        r->setReport(generateObjectToReport());
+        ((AbstractReporter*)r->self())->setReport(generateObjectToReport());
         // Check that both CurrentReport and LastReport were seen
         Assert::assertTrue("CurrentReport seen", currentReportSeen, __FILE__, __LINE__);
         Assert::assertTrue("LastReport seen", lastReportSeen, __FILE__, __LINE__);

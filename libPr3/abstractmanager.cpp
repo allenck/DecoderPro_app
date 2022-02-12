@@ -161,7 +161,7 @@ NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
 /** {@inheritDoc} */
 //@Override
 /*public*/ NamedBean* AbstractManager::getBySystemName(/*@Nonnull*/ QString systemName) {
-    return (NamedBean*)_tsys->value(systemName);
+    return (NamedBean*)_tsys->value(systemName, nullptr);
 }
 
 /** {@inheritDoc} */
@@ -184,7 +184,7 @@ NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
      * @return requested NamedBean object or NULL if none exists
      */
     /*public*/ NamedBean* AbstractManager::getBeanBySystemName(QString systemName)const{
-        return _tsys->value(systemName);
+        return _tsys->value(systemName, nullptr);
     }
 
 //    /**
@@ -496,7 +496,7 @@ bool sortLessThanconst( NamedBean* s1,  NamedBean* s2)
 }
 /** {@inheritDoc} */
 //@Override
-/*public*/ /*SortedSet<E>*/QSet<NamedBean*> AbstractManager::getNamedBeanSet() {
+/*public*/ /*SortedSet<E>*/QSet<NamedBean*> AbstractManager::getNamedBeanSet() const {
     //return Collections.unmodifiableSortedSet(_beans);
  //return QList<NamedBean*>(_tsys->values().toSet());
  QList<NamedBean*> list = QList<NamedBean*>(_tsys->values());

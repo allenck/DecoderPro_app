@@ -129,7 +129,7 @@ class OBTSaveItemAction2 : public AbstractAction
   OBTSaveItemAction2(OBlockEditAction* act) {this->act = act;}
   //@Override
   /*public*/ void actionPerformed(JActionEvent* e) override{
-      act->reporterComboBox->setSelectedItem(((Block*)act->bean)->getReporter());
+      act->reporterComboBox->setSelectedItem((NamedBean*)((Block*)act->bean)->getReporter());
       act->useCurrent->setChecked(((Block*)act->bean)->isReportingCurrent());
   }
 };

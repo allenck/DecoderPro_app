@@ -11,7 +11,7 @@
 class JAVAQTSHARED_EXPORT AbstractNamedBean :  public QObject, public NamedBean
 {
     Q_OBJECT
-    //Q_INTERFACES(NamedBean)
+    Q_INTERFACES(NamedBean)
 public:
     /*explicit*/ AbstractNamedBean(QObject *parent = 0);
     /**

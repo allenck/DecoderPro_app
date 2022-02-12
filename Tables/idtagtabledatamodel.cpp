@@ -148,7 +148,7 @@
                 if ( t !=nullptr ){
                     r = ((IdTag*)t)->getWhereLastSeen();
                     if (r!=nullptr){
-                        return r->getDisplayName();
+                        return ((NamedBean*)r->self())->getDisplayName();
                     }
                 }
                 return QVariant();

@@ -85,7 +85,7 @@ signals:
 public slots:
  void on_yesButton_clicked();
  void on_noButton_clicked();
- /*public*/ virtual void propertyChange(PropertyChangeEvent* e);
+ /*public*/ virtual void propertyChange(PropertyChangeEvent* e)override;
  void OnButtonClicked(QObject*);
  void On_copyName_triggered();
  void On_renameBean_triggered();
@@ -94,7 +94,7 @@ public slots:
 
 private:
  static Logger* log;
- bool noWarnDelete;// = false;
+ bool noWarnDelete = false;
  virtual void doDelete(NamedBean* bean);
  QDialog* dialog = nullptr;
  QCheckBox* remember = nullptr;

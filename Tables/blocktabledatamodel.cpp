@@ -168,7 +168,7 @@
             JComboBox* rs = new JComboBox(reporterList.toList());
             QString repname = "";
             if (reporter != nullptr) {
-                repname = reporter->getDisplayName();
+                repname = ((NamedBean*)reporter->self())->getDisplayName();
             }
 //            rs->setSelectedItem(repname);
 ////            JComboBoxUtil.setupComboBoxMaxRows(rs);
@@ -583,20 +583,20 @@ void BlockTableDataModel::editButton(Block* b) {
     sensorList = QVector<QString>(displayList.length() + 1);
     sensorList[0] = "";
     i = 1;
-    for (QString name : displayList) {
+    foreach (QString name, displayList) {
         sensorList[i] = name;
         i++;
     }
 }
 
 /*private*/ void BlockTableDataModel::updateReporterList() {
-    QSet<NamedBean*> nameSet = ((ProxyReporterManager*)InstanceManager::getDefault("ReporterManager"))->getNamedBeanSet();
+    QSet<NamedBean*> nameSet = ((ProxyReporterManager*)InstanceManager::getDefault("ReporterManager"))->AbstractProxyManager::getNamedBeanSet();
     QVector<QString> displayList = QVector<QString>(nameSet.size());
     int i = 0;
     foreach (NamedBean* nb, nameSet) {
      Reporter* nBean = (Reporter*)nb;
         if (nBean != nullptr) {
-            displayList[i++] = nBean->getDisplayName();
+            displayList[i++] = ((NamedBean*)nBean->self())->getDisplayName();
         }
     }
     //Arrays.sort(displayList);

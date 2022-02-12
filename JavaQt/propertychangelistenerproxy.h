@@ -28,7 +28,7 @@ public:
      * @return the name of the named property associated with the listener
      */
     QString getPropertyName();
-
+    QObject* self() override {return (QObject*)this;}
 signals:
     
 public slots:

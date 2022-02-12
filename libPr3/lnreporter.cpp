@@ -300,7 +300,7 @@ int LnReporter::getNumber() { return _number; }
       * {@inheritDoc}
       */
      //Override
-     /*public*/ ReporterVariantEntrySet LnReporter::getCollection(){
+     /*public*/ Collection LnReporter::getCollection(){
         return entrySet;
      }
     //@SuppressWarnings("unused")

@@ -32,7 +32,7 @@ AbstractReporterTest::AbstractReporterTest(QObject *parent) : QObject(parent)
     //@Test
     /*public*/ void AbstractReporterTest::testCtor() {
         // Check that it is not a null object
-        Assert::assertNotNull("Created Reporter not null", r, __FILE__, __LINE__);
+        Assert::assertNotNull("Created Reporter not null", r->self(), __FILE__, __LINE__);
         // Check that CurrentReport and LastReport return a null object
         Assert::assertNull("CurrentReport at initialisation is 'null'", r->getCurrentReport(), __FILE__, __LINE__);
         Assert::assertNull("LastReport at initialisation is 'null'", r->getLastReport(), __FILE__, __LINE__);
@@ -57,14 +57,14 @@ AbstractReporterTest::AbstractReporterTest(QObject *parent) : QObject(parent)
 
     //@Test
     /*public*/ void AbstractReporterTest::testGetBeanType(){
-         Assert::assertEquals("bean type",r->getBeanType(),tr("Reporter"),__FILE__, __LINE__);
+         Assert::assertEquals("bean type",((NamedBean*)r->self())->getBeanType(),tr("Reporter"),__FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void AbstractReporterTest::testPropertyChange() {
         currentReportSeen = false;
         lastReportSeen = false;
-        r->addPropertyChangeListener(new TestReporterListener(this));
+       ((NamedBean*)r->self())->addPropertyChangeListener(new TestReporterListener(this));
         // Report a String
         r->setReport(generateObjectToReport());
         // Check that both CurrentReport and LastReport were seen

@@ -163,7 +163,7 @@ void TurnoutTableAction::common()
 /*public*/ void TurnoutTableAction::setManager(Manager* man)
 {
 // log->debug(tr("setting manager of TTAction %1 to %2").arg(this->objectName(),man->self()->metaObject->classname()));
- turnoutManager = qobject_cast<TurnoutManager*>(man->self());
+ turnoutManager = static_cast<TurnoutManager*>(man);
  if (m!=nullptr){ // also update Table Model
      m->setManager(man);
  }
@@ -671,7 +671,7 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
  {
   try
   {
-   curAddress = ((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->getNextValidAddress(curAddress, prefix);
+   curAddress = InstanceManager::turnoutManagerInstance()->getNextValidAddress(curAddress, prefix);
   }
   catch (JmriException* ex)
   {

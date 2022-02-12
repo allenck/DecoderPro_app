@@ -1,6 +1,8 @@
 #include "lnreportermanager.h"
 #include "lnreporter.h"
 #include "loconetsystemconnectionmemo.h"
+#include "loggerfactory.h"
+
 /**
  * LnReporterManager implements the ReporterManager.
  * <P>
@@ -33,7 +35,7 @@ LnReporterManager::LnReporterManager(LocoNetSystemConnectionMemo* memo, QObject 
   connect(tc, SIGNAL(messageProcessed(LocoNetMessage*)), this, SLOT(message(LocoNetMessage*)));
  }
  else
-  log.error("No layout connection, Reporter manager can't function");
+  log->error("No layout connection, Reporter manager can't function");
 }
 
 //public class LnReporterManager extends jmri.managers.AbstractReporterManager implements LocoNetListener {
@@ -57,15 +59,14 @@ void LnReporterManager::dispose()
 
 Reporter* LnReporterManager::createNewReporter(QString systemName, QString userName)
 {
- Reporter* t;
+ NamedBean* t;
 //        int addr = Integer.valueOf(systemName.substring(prefix.length()+1)).intValue();
  int addr = QString(systemName.mid(AbstractManager::getSystemPrefix().length()+1)).toInt();
- t = (Reporter*)(new LnReporter(addr, tc, AbstractManager::getSystemPrefix()));
- t->setUserName(userName);
- t->addPropertyChangeListener((PropertyChangeListener*)this);
- connect(t->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)),this, SLOT(propertyChange(PropertyChangeEvent*)));
+ t = (NamedBean*)(new LnReporter(addr, tc, AbstractManager::getSystemPrefix()));
+ ((NamedBean*)t)->setUserName(userName);
+ ((NamedBean*)t)->addPropertyChangeListener(this);
 
- return t;
+ return (Reporter*)t;
 }
 
 /**
@@ -78,7 +79,7 @@ Reporter* LnReporterManager::createNewReporter(QString systemName, QString userN
     // validate the system Name leader characters
     if ((!systemName.startsWith(AbstractManager::getSystemPrefix())) || (!systemName.startsWith(AbstractManager::getSystemPrefix() + "R"))) {
         // here if an illegal LocoNet Reporter system name
-        log.error(tr("invalid character in header field of loconet reporter system name: %1").arg(systemName));
+        log->error(tr("invalid character in header field of loconet reporter system name: %1").arg(systemName));
         return (0);
     }
     // name must be in the LRnnnnn format (L is user configurable)
@@ -87,14 +88,14 @@ Reporter* LnReporterManager::createNewReporter(QString systemName, QString userN
         num = systemName.mid(
                 AbstractManager::getSystemPrefix().length() + 1, systemName.length()).toInt(&bok);
     if(!bok) {
-        log.warn(tr("invalid character in number field of system name: %1").arg(systemName));
+        log->warn(tr("invalid character in number field of system name: %1").arg(systemName));
         return (0);
     }
     if (num <= 0) {
-        log.warn(tr("invalid loconet reporter system name: %1").arg(systemName));
+        log->warn(tr("invalid loconet reporter system name: %1").arg(systemName));
         return (0);
     } else if (num > 4096) {
-        log.warn(tr("bit number out of range in loconet reporter system name: %1").arg(systemName));
+        log->warn(tr("bit number out of range in loconet reporter system name: %1").arg(systemName));
         return (0);
     }
     return (num);
@@ -151,9 +152,11 @@ void LnReporterManager::message(LocoNetMessage* l)
       default:
           return;
   }
-  log.debug(tr("Reporter[%1]").arg(addr));
+  log->debug(tr("Reporter[%1]").arg(addr));
   LnReporter* r = (LnReporter*) provideReporter(AbstractManager::getSystemNamePrefix() + QString::number(addr)); // NOI18N
   r->messageFromManager(l); // make sure it got the message
 }
-
-//static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(LnReporterManager.class.getName());
+///home/allen/Projects/DecoderPro/fossil/DecoderPro_app/libPr3/lnreportermanager.cpp:156: error: ambiguous cast from base 'Reporter' to derived 'LnReporter':
+//    class Reporter -> class AbstractReporter -> class AbstractIdTagReporter -> class LnReporter
+//    class Reporter -> class CollectingReporter -> class LnReporter
+/*static*/ Logger* LnReporterManager::log = LoggerFactory::getLogger("LnReporterManager");

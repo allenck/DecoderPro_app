@@ -42,14 +42,14 @@ public:
     /*public*/ SensorTableAction(QString actionName, QObject *parent);
     ~SensorTableAction() {}
     SensorTableAction(const SensorTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
-    /*public*/ void setManager(Manager* man);
-    /*public*/ void setMenuBar(JmriJFrame* f);
+    /*public*/ void setManager(Manager* man)override;
+    /*public*/ void setMenuBar(BeanTableFrame* f)override;
 //    /*public*/ void setEnabled(bool newValue);
-    /*public*/ void addToFrame(BeanTableFrame* f);
-    Q_INVOKABLE /*public*/ void setMessagePreferencesDetails();
-    Q_INVOKABLE /*public*/ QString getClassDescription();
+    /*public*/ void addToFrame(BeanTableFrame* f)override;
+    Q_INVOKABLE /*public*/ void setMessagePreferencesDetails()override;
+    Q_INVOKABLE /*public*/ QString getClassDescription()override;
     static QString getName();
-    /*public*/ void addToPanel(AbstractTableTabAction* f);
+    /*public*/ void addToPanel(AbstractTableTabAction* f)override;
 
 signals:
 //    void propertyChange(PropertyChangeEvent*);
@@ -94,18 +94,18 @@ private slots:
     void createPressed();
 
 protected:
-    /*protected*/ void createModel();
-    /*protected*/ void setTitle();
-    /*protected*/ QString helpTarget();
+    /*protected*/ void createModel()override;
+    /*protected*/ void setTitle()override;
+    /*protected*/ QString helpTarget()override;
     /*protected*/ void setDefaultDebounce(JFrame* _who);
-    /*protected*/ QString getClassName();
+    /*protected*/ QString getClassName()override;
     /*protected*/ void setDefaultState(JFrame* _who);
     /*protected*/ SensorManager* sensorManager = (SensorManager*)InstanceManager::getDefault("SensorManager");
-    /*protected*/ void configureTable(JTable* table);
+    /*protected*/ void configureTable(JTable* table)override;
     /*protected*/ void columnsVisibleUpdated(QVector<bool> colsVisible) override;
 
 protected slots:
-    /*protected*/ void addPressed();
+    /*protected*/ void addPressed(JActionEvent* =nullptr)override;
     void cancelPressed(ActionEvent* e = 0);
 
 

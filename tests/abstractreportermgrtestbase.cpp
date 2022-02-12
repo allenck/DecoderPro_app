@@ -56,23 +56,23 @@ AbstractReporterMgrTestBase::AbstractReporterMgrTestBase()
     //@Test
     /*public*/ void AbstractReporterMgrTestBase::testProvideName() {
         // Create
-        Reporter* t = ((ReporterManager*)l)->provide("" + getNameToTest1());
-        Assert::assertTrue("real object returned ", t != nullptr, __FILE__, __LINE__);
-        Assert::assertTrue("system name correct ", t->equals(((ProxyReporterManager*)l->self())->AbstractProxyManager::getBySystemName(getSystemName(getNameToTest1()))->self()), __FILE__, __LINE__);
+        Reporter* t = (Reporter*)((ReporterManager*)l)->provide("" + getNameToTest1());
+        Assert::assertTrue("real object returned ", t->self() != nullptr, __FILE__, __LINE__);
+        Assert::assertTrue("system name correct ", ((NamedBean*)t->self())->equals (((ProxyReporterManager*)l->self())->AbstractProxyManager::getBySystemName(getSystemName(getNameToTest1()))->self()), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void AbstractReporterMgrTestBase::testReporterProvideReporter() {
         // Create
         Reporter* t = ((AbstractReporterManager*)l->self())->provideReporter("" + getNameToTest1());
-        t->setUserName("Fred");
+        ((NamedBean*)t->self())->setUserName("Fred");
         // check
         Assert::assertTrue("real object returned ", t != nullptr, __FILE__, __LINE__);
-        Assert::assertTrue("user name correct ", t == ((AbstractReporterManager*)l->self())->getByUserName("Fred"), __FILE__, __LINE__);
-        Assert::assertTrue("system name correct ", t == ((AbstractReporterManager*)l->self())->getBySystemName(getSystemName(getNameToTest1())), __FILE__, __LINE__);
+        Assert::assertTrue("user name correct ", ((NamedBean*)t->self()) == ((AbstractReporterManager*)l->self())->getByUserName("Fred"), __FILE__, __LINE__);
+        Assert::assertTrue("system name correct ", ((NamedBean*)t->self()) == ((AbstractReporterManager*)l->self())->getBySystemName(getSystemName(getNameToTest1())), __FILE__, __LINE__);
 
         // Check that "providing" an already-created Reporter* returns the same object.
-        Reporter* t2 = ((AbstractReporterManager*)l->self())->provideReporter(t->getSystemName());
+        Reporter* t2 = ((AbstractReporterManager*)l->self())->provideReporter(((NamedBean*)t->self())->getSystemName());
         Assert::assertTrue("provided same object ", t == t2, __FILE__, __LINE__);
     }
 
@@ -90,7 +90,7 @@ AbstractReporterMgrTestBase::AbstractReporterMgrTestBase()
     /*public*/ void AbstractReporterMgrTestBase::testReporterGetBySystemName() {
         // Create
         Reporter* t = ((AbstractReporterManager*)l->self())->provideReporter("" + getNameToTest1());
-        t->setUserName("Fred");
+        ((NamedBean*)t->self())->setUserName("Fred");
 
         // Try a successful one
         t = (Reporter*)((AbstractReporterManager*)l->self())->getBySystemName(getSystemName(getNameToTest1()));
@@ -106,7 +106,7 @@ AbstractReporterMgrTestBase::AbstractReporterMgrTestBase()
     /*public*/ void AbstractReporterMgrTestBase::testReporterGetByUserName() {
         // Create
         Reporter* t = ((AbstractReporterManager*)l->self())->provideReporter("" + getNameToTest1());
-        t->setUserName("Fred");
+        ((NamedBean*)t->self())->setUserName("Fred");
 
         // Try a successful one
         t = (Reporter*)((AbstractReporterManager*)l->self())->getByUserName("Fred");
@@ -121,7 +121,7 @@ AbstractReporterMgrTestBase::AbstractReporterMgrTestBase()
     /*public*/ void AbstractReporterMgrTestBase::testReporterGetByDisplayName() {
         // Create
         Reporter* t = ((AbstractReporterManager*)l->self())->provideReporter("" + getNameToTest1());
-        t->setUserName("Fred");
+        ((NamedBean*)t->self())->setUserName("Fred");
 
         // Try a successful one
         t = ((AbstractReporterManager*)l->self())->getByDisplayName(getSystemName(getNameToTest1()));
@@ -135,7 +135,7 @@ AbstractReporterMgrTestBase::AbstractReporterMgrTestBase()
     /*public*/ void AbstractReporterMgrTestBase::testReporterProvideByNumber() {
         // Create
         Reporter* t = ((AbstractReporterManager*)l->self())->provideReporter("1");
-        Assert::assertNotNull("provide by number", t, __FILE__, __LINE__);
+        Assert::assertNotNull("provide by number", t->self(), __FILE__, __LINE__);
     }
 
     //@Test
@@ -144,7 +144,7 @@ AbstractReporterMgrTestBase::AbstractReporterMgrTestBase()
         Reporter* t = ((AbstractReporterManager*)l->self())->provideReporter("" + getNameToTest1());
         // check
         Assert::assertTrue("real object returned ", t != nullptr, __FILE__, __LINE__);
-        Assert::assertTrue("system name correct ", t == ((AbstractReporterManager*)l->self())->getBySystemName(getSystemName(getNameToTest1())), __FILE__, __LINE__);
+        Assert::assertTrue("system name correct ", ((NamedBean*)t->self()) == ((AbstractReporterManager*)l->self())->getBySystemName(getSystemName(getNameToTest1())), __FILE__, __LINE__);
     }
 
     //@Test
@@ -152,8 +152,8 @@ AbstractReporterMgrTestBase::AbstractReporterMgrTestBase()
         // test that you always get the same representation
         Reporter* t1 = ((ProxyReporterManager*)l->self())->newReporter(getSystemName(getNameToTest1()), "mine");
         Assert::assertTrue("t1 real object returned ", t1 != nullptr, __FILE__, __LINE__);
-        Assert::assertTrue("same by user ", t1 == ((AbstractReporterManager*)l->self())->getByUserName("mine"), __FILE__, __LINE__);
-        Assert::assertTrue("same by system ", t1 == ((AbstractReporterManager*)l->self())->getBySystemName(getSystemName(getNameToTest1())), __FILE__, __LINE__);
+        Assert::assertTrue("same by user ", ((NamedBean*)t1->self()) == ((AbstractReporterManager*)l->self())->getByUserName("mine"), __FILE__, __LINE__);
+        Assert::assertTrue("same by system ", ((NamedBean*)t1->self()) == ((AbstractReporterManager*)l->self())->getBySystemName(getSystemName(getNameToTest1())), __FILE__, __LINE__);
 
         Reporter* t2 = ((AbstractReporterManager*)l->self())->newReporter(getSystemName(getNameToTest1()), "mine");
         Assert::assertTrue("t2 real object returned ", t2 != nullptr, __FILE__, __LINE__);
@@ -171,16 +171,16 @@ AbstractReporterMgrTestBase::AbstractReporterMgrTestBase()
     //@Test
     /*public*/ void AbstractReporterMgrTestBase::testUpperLower() {
         Reporter* t = ((AbstractReporterManager*)l->self())->provideReporter("" + getNameToTest1());
-        QString name = t->getSystemName();
-        Assert::assertNull(((AbstractReporterManager*)l->self())->getReporter(name.toLower()), __FILE__, __LINE__);
+        QString name = ((NamedBean*)t->self())->getSystemName();
+        Assert::assertNull(((AbstractReporterManager*)l->self())->getReporter(name.toLower())->self(), __FILE__, __LINE__);
     }
 
     //@Test
     /*public*/ void AbstractReporterMgrTestBase::testRename() {
         // get reporter
         Reporter* t1 = ((ProxyReporterManager*)l->self())->newReporter(getSystemName(getNameToTest1()), "before");
-        Assert::assertNotNull("t1 real object ", t1, __FILE__, __LINE__);
-        t1->setUserName("after");
+        Assert::assertNotNull("t1 real object ", t1->self(), __FILE__, __LINE__);
+        ((NamedBean*)t1->self())->setUserName("after");
         Reporter* t2 =(Reporter*) ((AbstractReporterManager*)l->self())->getByUserName("after");
         Assert::assertEquals("same object", t1, t2, __FILE__, __LINE__);
         Assert::assertEquals("no old object", nullptr, ((AbstractReporterManager*)l->self())->getByUserName("before")->self(), __FILE__, __LINE__);

@@ -17,6 +17,8 @@ public:
  /*public*/ void message(JMRIClientMessage* m);
  /*public*/ void setState(int s);
  /*public*/ int getState();
+
+ QObject* self() override{return (QObject*)this;}
 private:
  static Logger* log;
  /*private*/ int state = UNKNOWN;

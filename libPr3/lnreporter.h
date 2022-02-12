@@ -5,9 +5,11 @@
 #include "locoaddress.h"
 #include "dcclocoaddress.h"
 #include "physicallocationreporter.h"
+#include "collectingReporter.h"
 
-class ReporterVariantEntrySet : public QSet<TranspondingTag*>
+class ReporterVariantEntrySet : public QSet<TranspondingTag*>, public Collection
 {
+  Q_INTERFACES( Collection)
 public:
  bool contains(ReporterVariant rv) const
  {
@@ -29,15 +31,16 @@ public:
  {
   return contains(VPtr<TranspondingTag>::asQVariant(tag));
  }
+ void insert(TranspondingTag* tag) {QSet::insert(tag);}
 };
 
 class IdTag;
 class TranspondingTag;
-class LnReporter : public AbstractIdTagReporter /*, public PhysicalLocationReporter*/
+class LnReporter : public AbstractIdTagReporter, public CollectingReporter
 
 {
-    Q_OBJECT
-  Q_INTERFACES(Reporter)
+  Q_OBJECT
+  Q_INTERFACES(CollectingReporter)
 public:
     //explicit LnReporter(QObject *parent = 0);
     LnReporter(int number, LnTrafficController* tc, QString prefix, QObject* parent= nullptr); // a human-readable Reporter number must be specified!
@@ -58,9 +61,9 @@ public:
     * other locomotive in the transponding zone!
     * @return -1 if the last message specified exiting
     */
-   int getState();
-   void setState(int s);
-   void dispose();
+   int getState()override;
+   void setState(int s)override;
+   void dispose()override;
 #if 0
    // parseReport()
    // Parses out a (possibly old) LnReporter-generated report string to extract info used by
@@ -83,11 +86,12 @@ public:
    PhysicalLocation* getPhysicalLocation()override;
    PhysicalLocation* getPhysicalLocation(QString s)override;
    /*public*/ int getLocoAddrFromTranspondingMsg(LocoNetMessage* l);
-   /*public*/ ReporterVariantEntrySet getCollection();
+   /*public*/ Collection getCollection() override;
 
    ReporterVariant getCurrentReport()override {return AbstractReporter::getCurrentReport();}
    ReporterVariant getLastReport()override {return AbstractReporter::getLastReport();}
 
+   QObject* self() override {return (QObject*)this;}
 signals:
     
 public slots:

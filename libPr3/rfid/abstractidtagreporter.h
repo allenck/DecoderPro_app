@@ -9,7 +9,7 @@ class IdTag;
 class AbstractIdTagReporter : public AbstractReporter, public IdTagListener, public PhysicalLocationReporter
 {
  Q_OBJECT
- //Q_INTERFACES(IdTagListener)
+ Q_INTERFACES(IdTagListener PhysicalLocationReporter)
 public:
  /*public*/ AbstractIdTagReporter(QString systemName, QObject* parent = nullptr);
  /*public*/ AbstractIdTagReporter(QString systemName, QString userName, QObject* parent = nullptr);

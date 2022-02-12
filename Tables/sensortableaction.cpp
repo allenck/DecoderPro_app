@@ -94,7 +94,7 @@ SensorTableAction::SensorTableAction(QObject *parent) :
 }
 
 
-/*protected*/ void SensorTableAction::addPressed()
+/*protected*/ void SensorTableAction::addPressed(JActionEvent *)
 {
 #if 1
  p = (UserPreferencesManager*) InstanceManager::getDefault("UserPreferencesManager");
@@ -430,7 +430,7 @@ void SensorTableAction::handleCreateException(QString sysName) {
  }
 }
 
-/*public*/ void SensorTableAction::setMenuBar(JmriJFrame* f)
+/*public*/ void SensorTableAction::setMenuBar(BeanTableFrame* f)
 {
     JmriJFrame* finalF = f;			// needed for anonymous ActionListener class
     QMenuBar* menuBar = f->menuBar();

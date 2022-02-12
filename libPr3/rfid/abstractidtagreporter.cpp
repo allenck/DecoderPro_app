@@ -72,9 +72,9 @@
 }
 
 /*private*/ void AbstractIdTagReporter::notifyPreviousReporter(Reporter* r, IdTag* id) {
-        log->debug(tr("Previous reporter: %1").arg(r->getSystemName()));
-        if (!(r->equals(this)) && r->getCurrentReport() == VPtr<IdTag>::asQVariant(id)
-           && (qobject_cast<IdTagListener*>(r))) {
+        log->debug(tr("Previous reporter: %1").arg(((NamedBean*)r->self())->getSystemName()));
+        if ((r->self()!=(this)) && r->getCurrentReport() == VPtr<IdTag>::asQVariant(id)
+           && (qobject_cast<IdTagListener*>(r->self()))) {
             log->debug("Notify previous");
             ((IdTagListener*)r)->notify(nullptr);
         } else {

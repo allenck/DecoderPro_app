@@ -82,36 +82,36 @@ AbstractProvidingReporterManagerTestBase::AbstractProvidingReporterManagerTestBa
         f1.setAccessible(true);
         f1.set(e2, e1.getSystemName());
 #else
-        e2->mSystemName = e1->getSystemName();
+        ((AbstractNamedBean*)e2->self())->mSystemName = ((NamedBean*)e1->self())->getSystemName();
 #endif
 
         // Remove bean if it's already registered
-        if (l->getBeanBySystemName(e1->getSystemName()) != nullptr) {
-            l->deregister(e1);
+        if (l->getBeanBySystemName(((NamedBean*)e1->self())->getSystemName()) != nullptr) {
+            l->deregister((NamedBean*)e1);
         }
         // Remove bean if it's already registered
-        if (l->getBeanBySystemName(e2->getSystemName()) != nullptr) {
-            l->deregister(e2);
+        if (l->getBeanBySystemName(((NamedBean*)e2->self())->getSystemName()) != nullptr) {
+            l->deregister((NamedBean*)e2);
         }
 
         // Register the bean once. This should be OK.
-        l->Register(e1);
+        l->Register((NamedBean*)e1);
 
         // Register bean twice. This gives only a debug message.
-        l->Register(e1);
+        l->Register((NamedBean*)e1);
 
-        QString expectedMessage = "systemName is already registered: " + e1->getSystemName();
+        QString expectedMessage = "systemName is already registered: " + ((NamedBean*)e1->self())->getSystemName();
         try {
             // Register different bean with existing systemName.
             // This should fail with an DuplicateSystemNameException.
-            ((ReporterManager*)l)->Register(e2);
+            ((ReporterManager*)l)->Register((NamedBean*)e2);
             Assert::fail("Expected exception not thrown", __FILE__, __LINE__);
         } catch (NamedBean::DuplicateSystemNameException* ex) {
             Assert::assertEquals("exception message is correct", expectedMessage, ex->getMessage(), __FILE__, __LINE__);
             JUnitAppender::assertErrorMessage(expectedMessage, __FILE__, __LINE__);
         }
 
-        ((ReporterManager*)l)->deregister(e1);
+        ((ReporterManager*)l)->deregister((NamedBean*)e1);
     }
 #if 0
     protected Field getField(Class c, String fieldName) {

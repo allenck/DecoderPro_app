@@ -108,9 +108,9 @@ protected:
 //    /*protected*/ void setTurnoutOperation(Turnout* t, JComboBox *cb);
 //    /*protected*/ void editTurnoutOperation(Turnout* t, QString val);
     /*protected*/ void setDefaultSpeeds(JFrame* _who);
-    // for icon state col
+    // for icon state colturnoutManager
     /*protected*/ bool _graphicState = false; // updated from prefs
-    /*protected*/ TurnoutManager* turnoutManager = (ProxyTurnoutManager*)InstanceManager::getDefault("TurnoutManager");
+    /*protected*/ TurnoutManager* turnoutManager = (TurnoutManager*)InstanceManager::getDefault("TurnoutManager");
     /*protected*/ void configureTable(JTable* table) override;
     /*protected*/ void columnsVisibleUpdated(QVector<bool> colsVisible) override;
 

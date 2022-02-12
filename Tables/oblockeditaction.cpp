@@ -143,7 +143,7 @@
         BeanItemPanel* reporter = new BeanItemPanel();
         reporter->setName(tr("Reporter"));
 
-        reporterComboBox = new NamedBeanComboBox((ReporterManager*)InstanceManager::getDefault("ReporterManager"), ((OBlock*)bean)->getReporter(), NamedBean::DisplayOptions::DISPLAYNAME);
+        reporterComboBox = new NamedBeanComboBox((ReporterManager*)InstanceManager::getDefault("ReporterManager"),(NamedBean*) ((OBlock*)bean)->getReporter(), NamedBean::DisplayOptions::DISPLAYNAME);
         reporterComboBox->setAllowNull(true);
 
         reporter->addItem(new BeanEditItem(reporterComboBox, tr("Reporter"), tr("BlockReporterText")));

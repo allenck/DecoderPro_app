@@ -1320,7 +1320,7 @@ if (types.length() == 0) {
 
  /*public*/ QString Location::getReporterName() {
    if (getReporter() != nullptr) {
-       return getReporter()->getDisplayName();
+       return ((NamedBean*)getReporter()->self())->getDisplayName();
    }
    return "";
  }
@@ -1537,7 +1537,7 @@ if (types.length() == 0) {
          e.setAttribute(Xml::SOUTH_TRAIN_ICON_Y, QString::number(getTrainIconSouth().y()));
      }
      if (_reader != (NULL)) {
-         e.setAttribute(Xml::READER, _reader->getDisplayName());
+         e.setAttribute(Xml::READER, ((NamedBean*)_reader->self())->getDisplayName());
      }
      // build list of rolling stock types for this location
      QStringList types = getTypeNames();

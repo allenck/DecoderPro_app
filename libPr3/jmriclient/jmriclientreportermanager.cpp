@@ -31,6 +31,6 @@
         Reporter* t;
         int addr = (systemName.mid(prefix.length() + 1).toInt());
         t = new JMRIClientReporter(addr, memo);
-        t->setUserName(userName);
+        ((NamedBean*)t->self())->setUserName(userName);
         return t;
     }

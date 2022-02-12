@@ -15,9 +15,9 @@ class BlockEditAction : public BeanEditAction
  Q_OBJECT
 public:
  explicit BlockEditAction(QObject *parent = 0);
- /*public*/ QString helpTarget();
- /*public*/ QString getBeanType();
- /*public*/ NamedBean* getByUserName(QString name);
+ /*public*/ QString helpTarget()override;
+ /*public*/ QString getBeanType()override;
+ /*public*/ NamedBean* getByUserName(QString name)override;
 
 signals:
 
@@ -59,7 +59,7 @@ private slots:
 
 
 protected:
- /*protected*/ void initPanels();
+ /*protected*/ void initPanels()override;
 
  friend class SetResetItemAction;
  friend class SetSaveItemAction;
@@ -72,9 +72,9 @@ class SetResetItemAction : public AbstractAction
 public:
  SetResetItemAction(BlockEditAction* act) {this->act = act;}
 public slots:
- void actionPerformed()
+ void actionPerformed(JActionEvent* =0) override
  {
-  act->reporterComboBox->setSelectedItem(((Block*) act->bean)->getReporter());
+  act->reporterComboBox->setSelectedItem((NamedBean*)((Block*) act->bean)->getReporter());
   act->useCurrent->setChecked(((Block*) act->bean)->isReportingCurrent());
  }
 };

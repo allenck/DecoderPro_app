@@ -90,7 +90,7 @@ void ListedTableFrame::common()
     addTable("jmri.jmrit.beantable.SignalMastTableAction", tr("Signal Mast Table"), true);
     addTable("jmri.jmrit.beantable.SignalGroupTableAction", tr("Signal Group Table"), true);
     addTable("jmri.jmrit.beantable.SignalMastLogicTableAction", tr("Signal MastLogic Table"), true);
-//    addTable("jmri.jmrit.beantable.ReporterTableAction", tr("Reporter Table"), true);
+    addTable("jmri.jmrit.beantable.ReporterTableAction", tr("Reporter Table"), true);
     addTable("jmri.jmrit.beantable.MemoryTableAction", tr("Memory Table"), true);
     addTable("jmri.jmrit.beantable.RouteTableAction", tr("Route Table"), true);
     addTable("jmri.jmrit.beantable.LRouteTableAction", tr("LRoute Table"), true);

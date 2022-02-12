@@ -318,7 +318,7 @@ public List<DestinationPoints> getNamedBeanList() {
  */
 //@Override
 //@Nonnull
-/*public*/ QSet<NamedBean*> EntryExitPairs::getNamedBeanSet() {
+/*public*/ QSet<NamedBean*> EntryExitPairs::getNamedBeanSet() const {
     QSet<NamedBean*> beanList = QSet<NamedBean*>();//new TreeSet<>(new jmri.util.NamedBeanComparator());
     for (Source* e :  nxpair.values()) {
         QStringList uidList = e->getDestinationUniqueId();

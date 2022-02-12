@@ -13,5 +13,5 @@ public:
  QVariant removeFirst();
  QVariant removeLast();
 };
-
+Q_DECLARE_INTERFACE(Collection, "Collection")
 #endif // COLLECTION_H

@@ -13,16 +13,17 @@ class RpsReporter : public AbstractReporter, MeasurementListener
 public:
  /*public*/ RpsReporter(QString systemName, QObject* parent = 0) ;
  /*public*/ RpsReporter(QString systemName, QString userName, QObject* parent = 0);
- /*public*/ int getState();
- /*public*/ void setState(int i);
- /*public*/ void dispose();
+ /*public*/ int getState()override;
+ /*public*/ void setState(int i)override;
+ /*public*/ void dispose()override;
  /*public*/ LocoAddress* getLocoAddress(QString rep);
  /*public*/ PhysicalLocationReporter::Direction getDirection(QString rep);
  /*public*/ PhysicalLocation* getPhysicalLocation();
  /*public*/ PhysicalLocation* getPhysicalLocation(QString s);
 
+  QObject* self() override{return (QObject*)this;}
 public slots:
- void notify(Measurement*);
+ void notify(Measurement*)override;
 private:
      /*private*/ /*final*/ static Logger* log;// = LoggerFactory.getLogger("RpsReporter");
  /*transient*/ Region* region;

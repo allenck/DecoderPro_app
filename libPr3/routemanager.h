@@ -83,7 +83,7 @@ public:
  QObject* self() override{return (QObject*)this;}
  QString getNamedBeanClass() const override{return "RouteManager";}
 
- /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
+// /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
 // /*public*/ NamedBean* getBySystemName(QString name) override {return AbstractManager::getBySystemName(name);}
 // /*public*/ NamedBean* getByUserName(QString name) override {return AbstractManager::getByUserName(name);}
  /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::addPropertyChangeListener(l);}

@@ -17,6 +17,7 @@
 #include "loggingutil.h"
 #include "vptr.h"
 #include "namedbeancomparator.h"
+#include "abstractturnoutmanager.h"
 /**
  * Implementation of a Manager that can serves as a proxy for multiple
  * system-specific implementations.
@@ -308,13 +309,13 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
 
     //@SuppressWarnings("deprecation") // user warned by actual manager class
     /*public*/  QString AbstractProxyManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*//@Nonnull*/ QString prefix, QChar typeLetter) /*throws jmri.JmriException*/ {
-        for (Manager/*<E>*/* m : mgrs) {
+        for (AbstractManager/*<E>*/* m : mgrs) {
             log->debug(QString("NextValidAddress requested for %1").arg(curAddress));
             if (prefix == (m->getSystemPrefix()) && typeLetter == m->typeLetter()) {
                 try {
                     switch (typeLetter.toLatin1()) { // use #getDefaultManager() instead?
                         case 'T':
-                            return ((TurnoutManager*) m)->getNextValidAddress(curAddress, prefix);
+                            return ((AbstractTurnoutManager*) m)->getNextValidAddress(curAddress, prefix);
                         case 'S':
                             return ((SensorManager*) m)->getNextValidAddress(curAddress, prefix);
                         case 'R':
@@ -331,19 +332,19 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
     }
 
     /*public*/  QString AbstractProxyManager::getNextValidAddress(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix, bool ignoreInitialExisting, QChar typeLetter) /*throws jmri.JmriException*/ {
-        for (Manager/*<E>*/* m : mgrs) {
+        for (AbstractManager/*<E>*/* m : mgrs) {
             log->debug(QString("NextValidAddress requested for %1").arg(curAddress));
             if (prefix == (m->getSystemPrefix()) && typeLetter == m->typeLetter()) {
                 try {
                     switch (typeLetter.toLatin1()) { // use #getDefaultManager() instead?
                         case 'T':
-                            return ((TurnoutManager*) m)->getNextValidAddress(curAddress, prefix, ignoreInitialExisting);
+                            return m->getNextValidAddress(curAddress, prefix, ignoreInitialExisting);
                         case 'S':
-                            return ((SensorManager*) m)->getNextValidAddress(curAddress, prefix, ignoreInitialExisting);
+                            return m->getNextValidAddress(curAddress, prefix, ignoreInitialExisting);
                         case 'L':
-                            return ((LightManager*) m)->getNextValidAddress(curAddress, prefix, ignoreInitialExisting);
+                            return m->getNextValidAddress(curAddress, prefix, ignoreInitialExisting);
                         case 'R':
-                            return ((ReporterManager*) m)->getNextValidAddress(curAddress, prefix, ignoreInitialExisting);
+                            return m->getNextValidAddress(curAddress, prefix, ignoreInitialExisting);
                         default:
                             return nullptr;
                     }
@@ -436,6 +437,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
      */
     //@Override
     /*public*/  void AbstractProxyManager::deregister(/*@Nonnull*/ /*E*/NamedBean* s) {
+     if(s==nullptr) throw NullPointerException("null NamedBean");
         Manager/*<E>*/* m = getManager(s->getSystemName());
         if (m != nullptr) {
             m->deregister(s);
@@ -644,7 +646,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
         return new QList<NamedBean*>(tl);
     }
 
-    /*protected*/ void AbstractProxyManager::recomputeNamedBeanSet() {
+    /*protected*/ void AbstractProxyManager::recomputeNamedBeanSet() const {
         if (namedBeanSet != nullptr) { // only maintain if requested
             namedBeanSet->clear();
             //mgrs.forEach(m -> namedBeanSet.addAll(m->getNamedBeanSet()));
@@ -665,7 +667,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
     /** {@inheritDoc} */
     //@Override
     //@Nonnull
-    /*public*/  QSet<NamedBean*> AbstractProxyManager::getNamedBeanSet() {
+    /*public*/  QSet<NamedBean*> AbstractProxyManager::getNamedBeanSet() const {
         if (namedBeanSet == nullptr) {
             namedBeanSet = new QSet<NamedBean*>();//TreeSet<>(new NamedBeanComparator<>());
 //            std::sort(namedBeanSet->begin(), namedBeanSet->end(), sortLessThanconst4);

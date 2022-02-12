@@ -327,7 +327,7 @@ void OBlockTableModel::initTempRow()
     if (r == NULL) {
         return "";
     }
-    return r->getDisplayName();
+    return ((NamedBean*)r->self())->getDisplayName();
    }
    return tempRow[col];
  case REPORT_CURRENTCOL:

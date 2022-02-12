@@ -69,8 +69,8 @@ public:
 
         //@Override
         /** {@inheritDoc} */
-        virtual /*default*/ /*public*/ Reporter* provide(/*@Nonnull*/ QString name) /*throw (IllegalArgumentException)*/
-        { return provideReporter(name); }
+        virtual /*default*/ /*public*/ NamedBean* provide(/*@Nonnull*/ QString name) /*throw (IllegalArgumentException)*/
+        { return (NamedBean*)provideReporter(name); }
 
         /**
          * Locate via user name, then system name if needed.
