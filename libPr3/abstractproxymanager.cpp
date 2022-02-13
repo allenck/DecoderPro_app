@@ -667,7 +667,7 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
     /** {@inheritDoc} */
     //@Override
     //@Nonnull
-    /*public*/  QSet<NamedBean*> AbstractProxyManager::getNamedBeanSet() const {
+    /*public*/  QSet<NamedBean*> AbstractProxyManager::getNamedBeanSet() {
         if (namedBeanSet == nullptr) {
             namedBeanSet = new QSet<NamedBean*>();//TreeSet<>(new NamedBeanComparator<>());
 //            std::sort(namedBeanSet->begin(), namedBeanSet->end(), sortLessThanconst4);

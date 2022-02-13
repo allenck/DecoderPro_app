@@ -17,18 +17,22 @@ public:
     Q_INVOKABLE /*public*/ IdTagTableAction(QString actionName, QObject* parent);
     ~IdTagTableAction() {}
     IdTagTableAction(const IdTagTableAction& that) : AbstractTableAction(that.text(), that.parent()) {}
-    Q_INVOKABLE /*public*/ QString getClassDescription();
-    /*public*/ void addToFrame(BeanTableFrame* f);
-    /*public*/ void addToPanel(AbstractTableTabAction* f);
+    Q_INVOKABLE /*public*/ QString getClassDescription()override;
+    /*public*/ void addToFrame(BeanTableFrame* f)override;
+    /*public*/ void addToPanel(AbstractTableTabAction* f)override;
+    /*public*/ void setManager(/*@Nonnull*/ Manager/*<IdTag>*/* t)override;
+
+    QObject* self() override {return (QObject*)this;}
 
 private:
-    JmriJFrame* addFrame;// = NULL;
+    JmriJFrame* addFrame = nullptr;
     JTextField* sysName;// = new JTextField(12);
     JTextField* userName;// = new JTextField(15);
     QCheckBox* isStateStored;// = new JCheckBox(tr("IdStoreState"));
     QCheckBox* isFastClockUsed;// = new JCheckBox(tr("IdUseFastClock"));
-    void handleCreateException(QString sysName);
+    void handleCreateException(QString sysName, IllegalArgumentException* ex);
     Logger* log;
+    /*final*/ void init();
 
 private slots:
     void cancelPressed(ActionEvent* /*e*/= 0);
@@ -53,68 +57,6 @@ protected slots:
 };
 Q_DECLARE_METATYPE(IdTagTableAction)
 
-#if 0
-class IdTagBeanTableDataModel : public BeanTableDataModel
-{
- Q_OBJECT
-    IdTagTableAction* act;
-public:
-    IdTagBeanTableDataModel(IdTagTableAction* act);
-    enum COLUMNS
-    {
-     WHERECOL = NUMCOLUMN,
-     WHENCOL = WHERECOL + 1,
-     CLEARCOL = WHENCOL + 1
-    };
-    /*public*/ QString getValue(QString name) const;
-    /*public*/ Manager *getManager();
-    /*public*/ NamedBean* getBySystemName(QString name) const;
-    /*public*/ NamedBean* getByUserName(QString name);
-    /*public*/ void clickOn(NamedBean* t);
-    /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
-    /*public*/ int columnCount(const QModelIndex &parent) const;
-    /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-    /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
-    /*public*/ QVariant data(const QModelIndex &index, int role) const;
-    /*public*/ int getPreferredWidth(int col);
-    /*public*/ void configValueColumn(JTable* table);
-    /*public*/ QPushButton* configureButton();
-    void configureTable(JTable *table);
-
-private:
-    Logger* log;
-protected:
-    /*protected*/ bool matchPropertyName(PropertyChangeEvent* e);
-    /*protected*/ QString getMasterClassName();
-    /*protected*/ QString getBeanType();
-};
-
-class StateStoredActionListener : public QObject, public ActionListener
-{
- Q_OBJECT
- Q_INTERFACES(ActionListener)
- IdTagTableAction* act;
- StateStoredActionListener(IdTagTableAction* act);
- QObject* self() override{return (QObject*)this;}
-public slots:
- void actionPerformed(JActionEvent */*e*/ = 0)override;
-
- friend class IdTagTableAction;
-};
-
-class FastClockUsedActionListener : public QObject, public ActionListener
-{
- Q_OBJECT
-    Q_INTERFACES(ActionListener)
- IdTagTableAction* act;
- FastClockUsedActionListener(IdTagTableAction* act);
- QObject* self() override{return (QObject*)this;}
-public slots:
- void actionPerformed(JActionEvent */*e*/ = 0)override;
-
- friend class IdTagTableAction;
-};
-#endif
 class IdTagOkListener : public QObject, public ActionListener
 {
  Q_OBJECT

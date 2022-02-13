@@ -48,7 +48,7 @@ class LIBPR3SHARED_EXPORT AbstractProxyManager :   public VetoableChangeSupport,
     /*public*/  int getObjectCount()override ;
     QT_DEPRECATED/*public*/  QStringList getSystemNameList()  override;
     /*public*/  QList<NamedBean*>* getNamedBeanList() override;
-    /*public*/  QSet<NamedBean*> getNamedBeanSet() const override;
+    /*public*/  QSet<NamedBean*> getNamedBeanSet()  override;
     /*public*/  void setPropertyChangesSilenced(QString propertyName, bool silenced) override;
     /*public*/  void addDataListener(Manager::ManagerDataListener/*<E>*/* e)override;
     /*public*/  void removeDataListener(Manager::ManagerDataListener/*<E>*/* e)override;
@@ -86,7 +86,7 @@ protected:
     /*protected*/ /*final*/ QMap<QString, bool> silencedProperties = QMap<QString, bool>();
     /*protected*/ /*final*/ QSet<QString> silenceableProperties = QSet<QString>();
     /*protected*/ AbstractManager/*<E>*/* initInternal() const; // no override!
-    /*protected*/ AbstractManager/*<E>*/* defaultManager = nullptr;
+    /*protected*/ mutable AbstractManager/*<E>*/* defaultManager = nullptr;
     /*abstract*/virtual /*protected*/ AbstractManager/*<E>*/* makeInternalManager()  const {return nullptr;}
     /*protected*/ AbstractManager *getManager(/*@Nonnull*/ QString systemName) ; // not override!
     /*protected*/ AbstractManager/*<E>*/* getManagerOrDefault(/*@Nonnull*/ QString systemName);

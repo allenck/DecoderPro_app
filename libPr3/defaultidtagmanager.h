@@ -28,8 +28,8 @@ public:
     /*public*/ QString getSystemPrefix() const override;
     /*public*/ DefaultIdTag *provideIdTag(QString name)override;
     /*public*/ DefaultIdTag *getIdTag(QString name)override;
-    /*public*/ NamedBean *getBySystemName(QString name) override;
-    /*public*/ NamedBean* getByUserName(QString key) override;
+    /*public*/ DefaultIdTag *getBySystemName(QString name) override;
+    /*public*/ DefaultIdTag* getByUserName(QString key) override;
     /*public*/ DefaultIdTag* getByTagID(QString tagID)override;
     /*public*/ virtual DefaultIdTag *newIdTag(QString systemName, QString userName)override;
     /*public*/ void Register(NamedBean* s) override;
@@ -55,7 +55,6 @@ public:
 
 
 signals:
-    void newIdTagCreated(DefaultIdTag* tag);
 
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e)override;

@@ -107,7 +107,7 @@ public:
      * information.  Override to change that.
      **/
     QT_DEPRECATED /*public*/ QList<NamedBean*> *getNamedBeanList() override;
-    /*public*/ /*SortedSet<E>*/QSet<NamedBean*> getNamedBeanSet() const override;
+    /*public*/ /*SortedSet<E>*/QSet<NamedBean*> getNamedBeanSet() override;
 
     /*public*/ QString normalizeSystemName(/*@Nonnull*/ QString inputName)const override; //throws NamedBean.BadSystemNameException
     /*public*/  QString getSystemPrefix() const /*final*/ override;

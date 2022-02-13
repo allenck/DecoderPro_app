@@ -45,7 +45,6 @@ private:
     /*private*/ /*final*/ SpinnerNumberModel* rangeSpinner = new SpinnerNumberModel(1, 1, 100, 1); // maximum 100 items
     /*private*/ /*final*/ JSpinner* numberToAddSpinner = new JSpinner(rangeSpinner);
     JCheckBox* rangeCheckBox = new JCheckBox(tr("Add a range"));
-    JLabel* sysNameLabel;// = new JLabel("Hardware Address");
     JLabel* userNameLabel;// = new JLabel(tr("LabelUserName"));
     QString systemSelectionCombo;// = this.getClass().getName() + ".SystemSelected";
     /*private*/ JButton* addButton;

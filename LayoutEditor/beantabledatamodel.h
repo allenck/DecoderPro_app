@@ -152,7 +152,6 @@ friend class WarrantTableModel;
 friend class WarrantTableFrame;
 friend class JInternalFrame;
 friend class TableFrames;
-friend class LTBeanTableDataModel;
 friend class LogixWidget;
 friend class LTFTabbedTableItem;
 friend class AbstractTableAction;
@@ -166,6 +165,7 @@ friend class TurnoutTableAction;
 friend class LightTableDataModel;
 friend class LightTableAction;
 friend class ReporterTableAction;
+friend class IdTagTableAction;
 };
 
 class DeleteBeanWorker : public QObject//extends SwingWorker<Void, Void>

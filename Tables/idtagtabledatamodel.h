@@ -25,11 +25,13 @@ class IdTagTableDataModel : public BeanTableDataModel
   /*public*/ int columnCount(const QModelIndex &parent) const override;
   /*public*/ QString getColumnName(int col) const override;
   /*public*/ QString getColumnClass(int col)const override;
-  /*public*/ bool isCellEditable(int row, int col) const override;
+  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
   /*public*/ QVariant data(const QModelIndex &index, int role) const override;
   /*public*/ int getPreferredWidth(int col) override;
   /*public*/ void configValueColumn(JTable* table) override;
   /*public*/ QPushButton* configureButton() override;
+
+  QObject* self() override {return (QObject*)this;}
 
  private:
   static Logger* log;

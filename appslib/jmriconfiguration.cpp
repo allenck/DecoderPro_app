@@ -86,7 +86,7 @@ JmriConfiguration::JmriConfiguration() : AuxiliaryConfiguration() {
  }
  File* file = this->getConfigurationFile(shared);
  doc = QDomDocument();
- if (file != NULL && file->canRead())
+ if (file != NULL && file->canRead() && file->exists())
  {
   QFile* qFile = new QFile(file->getPath());
   if(qFile->open(QIODevice::ReadOnly))
@@ -106,6 +106,7 @@ JmriConfiguration::JmriConfiguration() : AuxiliaryConfiguration() {
    if(!content.isEmpty())
     doc.setContent(content);
   }
+  else(throw new FileNotFoundException(tr("File not found %1").arg(file->getPath())));
  }
  QDomElement root;
  if (doc.documentElement().isNull())

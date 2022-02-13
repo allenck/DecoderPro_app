@@ -43,7 +43,6 @@
  */
 /*public*/ /*interface*/class IdTagManager : public ProvidingManager
 {
- //
   Q_INTERFACES(ProvidingManager)
 public:
 //     IdTagManager(QObject* parent = 0) : AbstractManager(parent) {}
@@ -81,7 +80,7 @@ public:
      * @param systemName system name being requested
      * @return requested IdTag object or null if none exists
      */
-    /*public*/ virtual NamedBean* getBySystemName(QString /*systemName*/)  override{return NULL;}
+    /*public*/ virtual IdTag* getBySystemName(QString /*systemName*/)  override{return NULL;}
 
     /**
      * Locate an instance based on a user name.  Returns null if no
@@ -89,7 +88,7 @@ public:
      * @param userName user name being requested
      * @return requested IdTag object or null if none exists
      */
-    /*public*/ virtual NamedBean* getByUserName(QString /*userName*/) const {return NULL;}
+    /*public*/ virtual IdTag* getByUserName(QString /*userName*/) {return nullptr;}
 
     /**
      * Locate an instance based on a tag ID.  Returns null if no
@@ -179,6 +178,7 @@ public:
     /*public*/ virtual bool isInitialised()  {return false;}
     //virtual /*public*/ NamedBean* provide(QString name) /*throw (IllegalArgumentException)*/ =0;
 
+  //QObject* self() override {return (QObject*)this;}
  friend class IdTagManagerXml;
 };
 Q_DECLARE_INTERFACE(IdTagManager, "IdTagManager")

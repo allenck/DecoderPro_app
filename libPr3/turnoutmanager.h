@@ -10,7 +10,6 @@
 
 class TurnoutManager :   public ProvidingManager
 {
-  //Q_OBJECT
   Q_INTERFACES(ProvidingManager)
 public:
     //explicit TurnoutManager(SystemConnectionMemo*memo, QObject *parent = nullptr) : AbstractManager(memo, parent) {}

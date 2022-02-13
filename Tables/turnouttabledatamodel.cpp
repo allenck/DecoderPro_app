@@ -57,13 +57,26 @@ TurnoutTableDataModel::TurnoutTableDataModel(QObject *parent)
     // load graphic state column display preference
     _graphicState = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState();
 
-    closedText = turnoutManager->getClosedText();
-    thrownText = turnoutManager->getThrownText();
+    if(qobject_cast<AbstractManager*>(turnoutManager->self()) != nullptr)
+ //    return (Turnout*)((AbstractManager*)turnoutManager->self())->getBySystemName(name);
+    {
+     closedText = ((AbstractTurnoutManager*)turnoutManager->self())->getClosedText();
+     thrownText = ((AbstractTurnoutManager*)turnoutManager->self())->getThrownText();
 
-    //This following must contain the word Global for a correct match in the abstract turnout
-    defaultThrownSpeedText = (tr("Use %1").arg("Global") + " " + turnoutManager->getDefaultThrownSpeed());
-    defaultClosedSpeedText = (tr("Use %1").arg("Global") + " " + turnoutManager->getDefaultClosedSpeed());
+     //This following must contain the word Global for a correct match in the abstract turnout
+     defaultThrownSpeedText = (tr("Use %1").arg("Global") + " " + ((AbstractTurnoutManager*)turnoutManager->self())->getDefaultThrownSpeed());
+     defaultClosedSpeedText = (tr("Use %1").arg("Global") + " " + ((AbstractTurnoutManager*)turnoutManager->self())->getDefaultClosedSpeed());
+    }
+    else
+    {
+     closedText = ((TurnoutManager*)turnoutManager)->getClosedText();
+     thrownText = ((TurnoutManager*)turnoutManager)->getThrownText();
 
+     //This following must contain the word Global for a correct match in the abstract turnout
+     defaultThrownSpeedText = (tr("Use %1").arg("Global") + " " + ((TurnoutManager*)turnoutManager)->getDefaultThrownSpeed());
+     defaultClosedSpeedText = (tr("Use %1").arg("Global") + " " + ((TurnoutManager*)turnoutManager)->getDefaultClosedSpeed());
+
+    }
     //This following must contain the word Block for a correct match in the abstract turnout
     useBlockSpeed = tr("Use %1").arg("Block Speed");
 

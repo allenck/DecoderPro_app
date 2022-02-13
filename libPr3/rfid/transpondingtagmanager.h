@@ -19,7 +19,7 @@ private:
  static Logger* log;
 
 protected:
- /*protected*/ NamedBean* createNewIdTag(QString systemName, QString userName);
+ /*protected*/ NamedBean* createNewIdTag(QString systemName, QString userName)override;
 
 };
 

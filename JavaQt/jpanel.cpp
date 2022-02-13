@@ -43,6 +43,8 @@ JPanel::JPanel(FlowLayout* layout, QWidget* parent) :  QFrame(parent)
   if (oldBorder == newBorder)
     return;
 
+  if(layout()==nullptr)
+   return;
   border = newBorder;
 //  if(qobject_cast<TitledBorder*>(border->self()))
 //  {

@@ -496,7 +496,7 @@ bool sortLessThanconst( NamedBean* s1,  NamedBean* s2)
 }
 /** {@inheritDoc} */
 //@Override
-/*public*/ /*SortedSet<E>*/QSet<NamedBean*> AbstractManager::getNamedBeanSet() const {
+/*public*/ /*SortedSet<E>*/QSet<NamedBean*> AbstractManager::getNamedBeanSet() {
     //return Collections.unmodifiableSortedSet(_beans);
  //return QList<NamedBean*>(_tsys->values().toSet());
  QList<NamedBean*> list = QList<NamedBean*>(_tsys->values());

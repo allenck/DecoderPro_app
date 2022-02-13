@@ -264,6 +264,7 @@
      */
     virtual/*public*/ bool isTransitioning() = 0;
 
+  virtual QObject* self() =0;
 };
 Q_DECLARE_INTERFACE(VariableLight, "VariableLight")
 #endif // VARIABLELIGHT_H

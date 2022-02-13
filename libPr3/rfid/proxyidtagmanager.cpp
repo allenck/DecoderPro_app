@@ -26,7 +26,7 @@
     }
 
     //@Override
-    /*public*/ void ProxyIdTagManager::init()  {
+    /*public*/ void ProxyIdTagManager::init() {
         if (!isInitialised()) {
             getDefaultManager();
         }
@@ -34,9 +34,28 @@
 
     //@Override
     /*public*/ bool ProxyIdTagManager::isInitialised() {
-        return InstanceManager::getNullableDefault("IdTagManager") != nullptr;
+//     return defaultManager!= nullptr &&
+//                 getManagerList().stream().noneMatch(o->((IdTagManager)o).isInitialised());
+     bool isInit = false;
+     foreach(AbstractManager* o, getManagerList())
+     {
+      if(((IdTagManager*) o)->isInitialised())
+       isInit= true;
+     }
+     return defaultManager!= nullptr && !isInit;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    //@Override
+    //@Nonnull
+    /*public*/ AbstractManager/*<IdTag>*/* ProxyIdTagManager::getDefaultManager() const {
+        if(defaultManager != getInternalManager()){
+           defaultManager = getInternalManager();
+        }
+        return defaultManager;
+    }
     //@Override
     /*protected*/ AbstractManager* ProxyIdTagManager::makeInternalManager() const  {
         // since this really is an internal tracking mechanisim,
@@ -57,10 +76,18 @@
      return (DefaultIdTag *)AbstractProxyManager::getNamedBean(name);
     }
 
+    /** {@inheritDoc} */
     //@Override
-    /*protected*/ NamedBean *ProxyIdTagManager::makeBean(AbstractManager *m, QString systemName, QString userName) {
+    //@Nonnull
+    /*public*/ /*SortedSet<IdTag>*/QSet<NamedBean*> ProxyIdTagManager::getNamedBeanSet(){
+        init();
+        return AbstractProxyManager::getNamedBeanSet();
+    }
+
+    //@Override
+    /*protected*/ DefaultIdTag *ProxyIdTagManager::makeBean(AbstractManager *m, QString systemName, QString userName) {
      init();
-     return ((IdTagManager*) m)->newIdTag(systemName, userName);
+     return ((DefaultIdTagManager*) m)->newIdTag(systemName, userName);
     }
 
     //@Override
@@ -102,8 +129,8 @@
      * @return requested Turnout object or null if none exists
      */
     //@Override
-    /*public*/ NamedBean *ProxyIdTagManager::getByUserName(QString userName) const {
-        return AbstractProxyManager::getBeanByUserName(userName);
+    /*public*/ DefaultIdTag *ProxyIdTagManager::getByUserName(QString userName)  {
+        return (DefaultIdTag*)AbstractProxyManager::getBeanByUserName(userName);
     }
 
     /**

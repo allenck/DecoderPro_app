@@ -133,15 +133,15 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 }
 
 //@Override
-/*public*/ NamedBean* DefaultIdTagManager::getBySystemName(QString name) {
+/*public*/ DefaultIdTag* DefaultIdTagManager::getBySystemName(QString name) {
     if (!_initialised && !_loading) init();
-    return (NamedBean*)_tsys->value(name);
+    return (DefaultIdTag*)_tsys->value(name);
 }
 
 //@Override
-/*public*/ NamedBean *DefaultIdTagManager::getByUserName(QString key) {
+/*public*/ DefaultIdTag *DefaultIdTagManager::getByUserName(QString key)  {
     if (!_initialised && !_loading) init();
-    return (NamedBean*)_tuser->value(key);
+    return (DefaultIdTag*)_tuser->value(key);
 }
 
 //@Override
@@ -198,11 +198,6 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
  // save in the maps
  Register((NamedBean*)s);
 
- emit newIdTagCreated((DefaultIdTag*)s);
-
- // if that failed, blame it on the input arguements
- if (s == NULL) throw new IllegalArgumentException();
-
  return s;
 }
 
@@ -244,6 +239,9 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 //@Override
 /*public*/ void DefaultIdTagManager::setStateStored(bool state)
 {
+ if (!_initialised && !_loading) {
+     init();
+ }
  if (state!=_storeState)
  {
   IdTagManagerXml::instance()->setDirty(true);
@@ -254,12 +252,18 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 //@Override
 /*public*/ bool DefaultIdTagManager::isStateStored()
 {
+ if (!_initialised && !_loading) {
+     init();
+ }
  return _storeState;
 }
 
 //@Override
 /*public*/ void DefaultIdTagManager::setFastClockUsed(bool fastClock)
 {
+ if (!_initialised && !_loading) {
+     init();
+ }
  if (fastClock != _useFastClock)
  {
   IdTagManagerXml::instance()->setDirty(true);
@@ -269,7 +273,10 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 
 //@Override
 /*public*/ bool DefaultIdTagManager::isFastClockUsed() {
-    return _useFastClock;
+ if (!_initialised && !_loading) {
+     init();
+ }
+ return _useFastClock;
 }
 
 //@Override

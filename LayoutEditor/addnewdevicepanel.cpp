@@ -1,9 +1,9 @@
 #include "addnewdevicepanel.h"
 #include "jtextfield.h"
-#include <QGridLayout>
+#include "gridbaglayout.h"
 #include "gridbagconstraints.h"
-#include <QPushButton>
-#include <QLabel>
+#include "jbutton.h"
+#include "jlabel.h"
 #include "actionlistener.h"
 
 //AddNewDevicePanel::AddNewDevicePanel(QWidget *parent) :
@@ -23,45 +23,36 @@
 
 /*public*/ AddNewDevicePanel::AddNewDevicePanel(JTextField* sys, JTextField* userName,QString addButtonLabel, ActionListener* listener, ActionListener* cancelListener, QWidget *parent) : JmriPanel(parent)
 {
- sysNameLabel = new QLabel(tr("System Name:"));
- userNameLabel = new QLabel(tr("User Name:"));
-
  sysName = sys;
  setLayout(new QVBoxLayout(/*this*/));
- QWidget* p;
- p = new QWidget();
+ JPanel* p;
+ p = new JPanel();
  //p.setLayout(new FlowLayout());
- QGridLayout* g;
- p->setLayout(g = new QGridLayout());
- GridBagConstraints* c = new GridBagConstraints();
- c->gridwidth  = 1;
- c->gridheight = 1;
- c->gridx = 0;
- c->gridy = 0;
- c->anchor = GridBagConstraints::EAST;
- g->addWidget(sysNameLabel,c->gridy, c->gridx, 1,1);
- c->gridy = 1;
- g->addWidget(userNameLabel,c->gridy, c->gridx, 1,1);
- c->gridx = 1;
- c->gridy = 0;
- c->anchor = GridBagConstraints::WEST;
- c->weightx = 1.0;
- c->fill = GridBagConstraints::HORIZONTAL;  // text field will expand
- g->addWidget(sysName,c->gridy, c->gridx, 1,1);
- c->gridy = 1;
- g->addWidget(userName,c->gridy, c->gridx, 1,1);
+ GridBagLayout* g;
+ p->setLayout(g = new GridBagLayout());
+ GridBagConstraints c =  GridBagConstraints();
+ c.gridwidth  = 1;
+ c.gridheight = 1;
+ c.gridx = 0;
+ c.gridy = 0;
+ c.anchor = GridBagConstraints::EAST;
+ g->addWidget(sysNameLabel,c);
+ c.gridy = 1;
+ g->addWidget(userNameLabel,c);
+ c.gridx = 1;
+ c.gridy = 0;
+ c.anchor = GridBagConstraints::WEST;
+ c.weightx = 1.0;
+ c.fill = GridBagConstraints::HORIZONTAL;  // text field will expand
+ g->addWidget(sysName,c);
+ c.gridy = 1;
+ g->addWidget(userName,c);
  layout()->addWidget(p);
- layout()->addWidget(ok = new QPushButton((addButtonLabel)));
- QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
- sizePolicy.setHorizontalStretch(0);
- sizePolicy.setVerticalStretch(0);
- sizePolicy.setHeightForWidth(ok->sizePolicy().hasHeightForWidth());
- ok->setSizePolicy(sizePolicy);
+ ((QVBoxLayout*)layout())->addWidget(ok = new QPushButton((addButtonLabel)),0);
 // ok.addActionListener(listener);
  connect(ok, SIGNAL(clicked()), listener->self(), SLOT(actionPerformed()));
  QPushButton* cancel = new QPushButton(tr("Cancel"));
- cancel->setSizePolicy(sizePolicy);
- layout()->addWidget(cancel);
+ ((QVBoxLayout*)layout())->addWidget(cancel, 0);
  connect(cancel, SIGNAL(clicked()), cancelListener->self(), SLOT(actionPerformed()));
 // ok.addActionListener(new ActionListener() {
 //        /*public*/ void actionPerformed(ActionEvent a) {

@@ -53,12 +53,12 @@
     // only add a Cancel button when the the OKbutton string is OK (so don't show on Picker Panels)
     if (addButtonLabel == ("OK")) {
         panelBottomLayout->addWidget(cancel = new QPushButton(tr("Cancel")));
-//        cancel.addActionListener(cancelListener);
+        connect(cancel, &QPushButton::clicked, [=] { cancelListener->actionPerformed();});
     }
 
     panelBottomLayout->addWidget(ok = new QPushButton(addButtonLabel));
 //    ok->addActionListener(okListener);
-connect(ok, SIGNAL(clicked(bool)), okListener->self(), SLOT(actionPerformed()));
+    connect(ok, SIGNAL(clicked(bool)), okListener->self(), SLOT(actionPerformed()));
 //    ok.addActionListener(new ActionListener() {
 //        @Override
 //        /*public*/ void actionPerformed(ActionEvent a) {

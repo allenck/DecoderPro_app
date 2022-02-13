@@ -227,7 +227,13 @@ void TurnoutTableAction::common()
   //addButton->addActionListener(createListener);
   connect(addButton, &QPushButton::clicked, [=]{createPressed();});
   // create panel
-  hardwareAddressValidator = new SystemNameValidator(hardwareAddressTextField, prefixBox->getSelectedItem(), true);
+
+  if (hardwareAddressValidator==nullptr){
+      hardwareAddressValidator = new SystemNameValidator(hardwareAddressTextField, /*Objects.requireNonNull*/(prefixBox->getSelectedItem()), true);
+  } else {
+      hardwareAddressValidator->setManager(prefixBox->getSelectedItem());
+  }
+
   centralWidget->layout()->addWidget(new AddNewHardwareDevicePanel(hardwareAddressTextField, hardwareAddressValidator, userNameTextField, prefixBox,
           numberToAddSpinner, rangeBox, addButton, cancelListener, rangeListener, statusBarLabel));
   // tooltip for hardwareAddressTextField will be assigned next by canAddRange()

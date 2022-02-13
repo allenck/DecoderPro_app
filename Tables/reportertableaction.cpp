@@ -60,7 +60,6 @@ void ReporterTableAction::common()
 {
 
  addFrame = NULL;
- sysNameLabel = new JLabel("Hardware Address");
  userNameLabel = new JLabel(tr("User Name"));
  systemSelectionCombo = QString(metaObject()->className()) + ".SystemSelected";
  userNameError = QString(this->metaObject()->className()) + ".DuplicateUserName";
@@ -117,7 +116,13 @@ void ReporterTableAction::common()
         addButton = new JButton(tr("Create"));
         //addButton.addActionListener(createListener);
         connect(addButton, &JButton::clicked, [=]{createListener->actionPerformed();});
-        hardwareAddressValidator = new SystemNameValidator(hardwareAddressTextField, prefixBox->getSelectedItem(), true);
+
+        if (hardwareAddressValidator==nullptr){
+            hardwareAddressValidator = new SystemNameValidator(hardwareAddressTextField, /*java.util.Objects.requireNonNull*/(prefixBox->getSelectedItem()), true);
+        } else {
+            hardwareAddressValidator->setManager(prefixBox->getSelectedItem());
+        }
+
         // create panel
         addFrameLayout->addWidget(new AddNewHardwareDevicePanel(hardwareAddressTextField, hardwareAddressValidator, userNameTextField, prefixBox,
                                                                 numberToAddSpinner, rangeCheckBox, addButton, cancelListener, rangeListener, statusBarLabel));

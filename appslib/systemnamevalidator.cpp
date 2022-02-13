@@ -58,6 +58,8 @@ SystemNameValidator::SystemNameValidator(QObject *parent) : JInputValidator(null
                                                         /*@Nonnull*/ Manager* manager, bool required) : JInputValidator(component)
     {
         //super(component, true, required);
+     if(component == nullptr) throw new NullPointerException("JComponent is null!");
+     if(manager == nullptr) throw new NullPointerException("Manager is null!");
         setManager(manager);
         this->required = required;
     }
@@ -68,35 +70,37 @@ SystemNameValidator::SystemNameValidator(QObject *parent) : JInputValidator(null
     }
 #if 1
     //@Override
-    /*protected*/ Validation* SystemNameValidator::getValidation(/*JComponent*/JComponent *component, JInputValidatorPreferences* preferences) {
-        //if (component instanceof JTextComponent)
-        if(qobject_cast<JTextField*>(component->jself()))
-        {
-         //JTextComponent jtc = (JTextComponent) component;
-         JTextField* jtc = (JTextField*)component->jself();
-         QString text = jtc->text();
-            if (!text .isNull() && !text.isEmpty()) {
-                try {
-                    if (qobject_cast<AbstractProxyManager*>(manager->self())) {
-                        AbstractProxyManager/*<?>*/* proxyManager = (AbstractProxyManager/*<?>*/*) manager->self();
-                        proxyManager->validateSystemNameFormat(text, QLocale());
-                    } else {
-                        manager->makeSystemName(text, false);
-                    }
-                } catch (NamedBean::BadSystemNameException* ex) {
-                    if (manager->validSystemNameFormat(text) == Manager::NameValidity::VALID_AS_PREFIX_ONLY) {
-                        return new Validation(Validation::Type::WARNING, tr("<html>\"%1\" is an incomplete system name for a %2.<br><br>%3</html>").arg(text, manager->getBeanTypeHandled(),
-                                trimHtmlTags(getToolTipText())), preferences);
-                    }
-                    return new Validation(Validation::Type::DANGER, tr("<html>{0}<br><br>{1}</html>").arg(ex->getMessage(), trimHtmlTags(getToolTipText())), preferences);
-                }
-                return new Validation(Validation::Type::SUCCESS, getToolTipText(), preferences);
-            }
+    /*protected*/ Validation* SystemNameValidator::getValidation(/*JComponent*/JComponent *component,
+                                                                 JInputValidatorPreferences* preferences)
+    {
+     //if (component instanceof JTextComponent)
+     if(qobject_cast<JTextField*>(component->jself()))
+     {
+      //JTextComponent jtc = (JTextComponent) component;
+      JTextField* jtc = (JTextField*)component->jself();
+      QString text = jtc->text();
+      if (!text.isNull() && !text.isEmpty()) {
+       try {
+        if (qobject_cast<AbstractProxyManager*>(manager->self())) {
+            AbstractProxyManager/*<?>*/* proxyManager = (AbstractProxyManager/*<?>*/*) manager->self();
+            proxyManager->validateSystemNameFormat(text, QLocale());
+        } else {
+            manager->makeSystemName(text, false);
         }
-        if (required) {
-            return new Validation(Validation::Type::WARNING, tr("<html>A system name is required.<br><br>%1</html>").arg(trimHtmlTags(getToolTipText())), preferences);
+       } catch (NamedBean::BadSystemNameException* ex) {
+        if (manager->validSystemNameFormat(text) == Manager::NameValidity::VALID_AS_PREFIX_ONLY) {
+         return new Validation(Validation::Type::WARNING, tr("<html>\"%1\" is an incomplete system name for a %2.<br><br>%3</html>").arg(text, manager->getBeanTypeHandled(),
+                 trimHtmlTags(getToolTipText())), preferences);
         }
-        return getNoneValidation();
+        return new Validation(Validation::Type::DANGER, tr("<html>%1<br><br>%2</html>").arg(ex->getMessage(), trimHtmlTags(getToolTipText())), preferences);
+       }
+       return new Validation(Validation::Type::SUCCESS, getToolTipText(), preferences);
+      }
+     }
+     if (required) {
+         return new Validation(Validation::Type::WARNING, tr("<html>A system name is required.<br><br>%1</html>").arg(trimHtmlTags(getToolTipText())), preferences);
+     }
+     return getNoneValidation();
     }
 #endif
     /*public*/ bool SystemNameValidator::isRequired() {

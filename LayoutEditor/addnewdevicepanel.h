@@ -3,8 +3,8 @@
 
 #include "jmripanel.h"
 #include "liblayouteditor_global.h"
+#include "jlabel.h"
 
-class QLabel;
 class JTextField;
 class QPushButton;
 class ActionListener;
@@ -29,8 +29,8 @@ public slots:
 private:
     QPushButton* ok;
     JTextField* sysName;
-    QLabel* sysNameLabel;// = new QLabel(tr("System Name:"));
-    QLabel* userNameLabel;// = new QLabel(tr("User Name:"));
+    JLabel* sysNameLabel = new JLabel(tr("System Name:"));
+    JLabel* userNameLabel = new JLabel(tr("User Name:"));
 
 //        static final ResourceBundle rb = ResourceBundle.getBundle("jmri.jmrit.beantable.BeanTableBundle");
 //        static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AddNewDevicePanel.class.getName());

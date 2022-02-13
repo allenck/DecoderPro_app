@@ -40,7 +40,7 @@ public slots:
 private:
     /*private*/ WindowInterface* wi;// = NULL;
     void reSizeToFitOnScreen();
-    Logger* log;
+    static Logger* log;
     bool reuseFrameSavedPosition;
     bool reuseFrameSavedSized;
     QString windowFrameRef;

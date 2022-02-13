@@ -79,8 +79,6 @@ void /*public*/ BeanTableDataModel::init() // SLOT
  {
   manager->addPropertyChangeListener(this);
   updateNameList();
-//  connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  //connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
 }
 
@@ -136,7 +134,8 @@ void BeanTableDataModel::setManager(Manager *) {}
  //sysNameList = getManager().getNamedBeanSet().stream().map(NamedBean::getSystemName).collect( java.util.stream.Collectors.toList() );
  //QSet<NamedBean*> nbs = getManager()->getNamedBeanSet();
 
- QSet<NamedBean*> nbs = mgr->getNamedBeanSet();
+ QSet<NamedBean*>nbs = mgr->getNamedBeanSet();
+
  sysNameList.clear();
  if(!nbs.isEmpty())
  {

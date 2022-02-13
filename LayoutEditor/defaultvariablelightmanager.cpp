@@ -98,13 +98,13 @@
 
             // A NamedBean is added
             if (e->getNewValue() != QVariant()
-                    && (qobject_cast<VariableLight*>(VPtr<VariableLight>::asPtr(e->getNewValue())->Light::self()))) {
+                    && (qobject_cast<VariableLight*>(VPtr<VariableLight>::asPtr(e->getNewValue())->self()))) {
                 Register(VPtr<VariableLight>::asPtr(e->getNewValue()));
             }
 
             // A NamedBean is removed
             if (e->getOldValue() != QVariant()
-                    && (qobject_cast<VariableLight*>(VPtr<VariableLight>::asPtr(e->getOldValue())->Light::self()))) {
+                    && (qobject_cast<VariableLight*>(VPtr<VariableLight>::asPtr(e->getOldValue())->self()))) {
                 deregister((VariableLight*) VPtr<VariableLight>::asPtr(e->getOldValue()));
             }
         }

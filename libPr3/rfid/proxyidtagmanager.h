@@ -14,13 +14,15 @@ public:
  ~ProxyIdTagManager()  override{}
  ProxyIdTagManager(const ProxyIdTagManager& ) : AbstractProvidingProxyManager() {}
  /*public*/ int getXMLOrder()const  override;
- /*public*/ void init() override;
- /*public*/ bool isInitialised()  override;
+ /*public*/ void init()  override;
+ /*public*/ bool isInitialised() override;
+ /*public*/ AbstractManager/*<IdTag>*/* getDefaultManager() const override;
  /*public*/ DefaultIdTag* getIdTag(QString name)override;
+ /*public*/ /*SortedSet<IdTag>*/QSet<NamedBean*> getNamedBeanSet() override;
  /*public*/ DefaultIdTag* provide(/*@Nonnull */QString name) /*throw (IllegalArgumentException)*/ override;
  /*public*/ DefaultIdTag* provideIdTag(QString name) throw (IllegalArgumentException) override;
- /*public*/ DefaultIdTag *getBySystemName(QString systemName) override;
- /*public*/ NamedBean* getByUserName(QString userName)const override;
+ /*public*/ DefaultIdTag* getBySystemName(QString systemName) override;
+ /*public*/ DefaultIdTag* getByUserName(QString userName) override;
  /*public*/ DefaultIdTag* newIdTag(QString systemName, QString userName) override;
  /*public*/ DefaultIdTag *getByTagID(QString tagID) override;
  /*public*/ QString getEntryToolTip() override;
@@ -34,7 +36,6 @@ public:
      return "ProxyIdTag";
  }
  /*public*/ SystemConnectionMemo* getMemo() override {return AbstractProxyManager::getMemo();}
-// /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractProxyManager::getNamedBeanSet();}
  /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{AbstractProxyManager::addPropertyChangeListener(l);}
  /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{AbstractProxyManager::removePropertyChangeListener(l);}
 
@@ -47,7 +48,7 @@ private:
 
 protected:
 /*protected*/ AbstractManager* makeInternalManager() const override;
-/*protected*/ NamedBean* makeBean(AbstractManager* m, QString systemName, QString userName)override;
+/*protected*/ DefaultIdTag* makeBean(AbstractManager* m, QString systemName, QString userName)override;
 
 };
 Q_DECLARE_METATYPE(ProxyIdTagManager)

@@ -5,12 +5,12 @@
 #include "userpreferencesmanager.h"
 #include "../appslib/instancemanager.h"
 #include "windowinterface.h"
+#include "loggerfactory.h"
 
 JmriPanel::JmriPanel(QWidget *parent) :
     JPanel(parent)
 {
  wi = nullptr;
- log = new Logger("JmriPanel");
 
  reuseFrameSavedPosition = true;
  reuseFrameSavedSized = true;
@@ -376,3 +376,5 @@ void JmriPanel::resizeEvent(QResizeEvent*)
  this->windowFrameRef = ref;
  setFrameLocation();
 }
+
+/*private*/ /*static*/ Logger* JmriPanel::log = LoggerFactory::getLogger("");

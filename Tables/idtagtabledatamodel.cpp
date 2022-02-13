@@ -24,13 +24,13 @@
         //super();
         setManager(mgr);
         setObjectName(QString("IdTagTableDataModel") + "_" + mgr->self()->metaObject()->className());
-        init();
+        //init();
     }
 
     //@Override
     /*protected*/ /*final*/ void IdTagTableDataModel::setManager(/*Manager<IdTag>*/Manager* mgr){
-        if ( static_cast<IdTagManager*>(mgr)){
-            tagManager = (IdTagManager*)mgr;
+        if ( qobject_cast<IdTagManager*>(mgr->self())){
+            tagManager = (IdTagManager*)mgr->self();
         }
     }
 
@@ -50,7 +50,7 @@
 
     //@Override
     /*public*/ NamedBean* IdTagTableDataModel::getBySystemName(/*@Nonnull*/ QString name)  const{
-     return ((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->getBySystemName(name);
+     return ((DefaultIdTagManager*)InstanceManager::getDefault("IdTagManager"))->getBySystemName(name);
     }
 
     //@Override
@@ -118,17 +118,18 @@
     }
 
     //@Override
-    /*public*/ bool IdTagTableDataModel::isCellEditable(int row, int col) const{
-        switch (col) {
+    /*public*/ Qt::ItemFlags IdTagTableDataModel::flags(const QModelIndex &index) const{
+        switch (index.column()) {
             case VALUECOL:
             case WHERECOL:
             case WHENCOL:
-                return false;
+                return Qt::ItemIsEnabled;
             case CLEARCOL:
-                return true;
+                return Qt::ItemIsEnabled | Qt::ItemIsEditable;
             default:
-                return BeanTableDataModel::isCellEditable(row, col);
+                break;
         }
+        return BeanTableDataModel::flags(index);
     }
 
     //@Override
@@ -165,8 +166,8 @@
          break;
         }
                 //return super.getValueAt(row, col);
-        BeanTableDataModel::data(index, role);
         }
+     BeanTableDataModel::data(index, role);
     }
 
     //@Override

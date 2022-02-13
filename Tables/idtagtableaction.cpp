@@ -51,12 +51,33 @@
     if (((IdTagManager*)InstanceManager::getDefault("IdTagManager")) == NULL) {
         setEnabled(false);
     }
-
+ init();
 }
 
 /*public*/ IdTagTableAction::IdTagTableAction(QObject* parent) : AbstractTableAction(tr("IdTag Table"), parent)
 {
 //this(tr("TitleIdTagTable"));
+ init();
+}
+
+/*final*/ void IdTagTableAction::init(){
+    tagManager->addPropertyChangeListener(this);
+}
+
+/**
+ * {@inheritDoc}
+ */
+//@Override
+/*final*/ void IdTagTableAction::setManager(/*@Nonnull*/ Manager/*<IdTag>*/* t) {
+    tagManager->removePropertyChangeListener(this);
+    if (qobject_cast<IdTagManager*>(t->self())) {
+        tagManager = (IdTagManager*) t->self();
+        if (m != nullptr) {
+            m->setManager(tagManager);
+        }
+    }
+    // if t is not an instance of IdTagManager, tagManager may not change.
+    tagManager->addPropertyChangeListener(this);
 }
 
 /**
@@ -68,213 +89,6 @@
 {
  m = new IdTagTableDataModel(tagManager);
 }
-#if 0
-IdTagBeanTableDataModel::IdTagBeanTableDataModel(IdTagTableAction *act)
-{
- this->act = act;
- log = new Logger("IdTagBeanTableDataModel");
- init();
-}
-
-//@Override
-/*public*/ QString IdTagBeanTableDataModel::getValue(QString name) const
-{
-    DefaultIdTag* tag =(DefaultIdTag*)((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->getBySystemName(name);
-    if (tag == NULL) {
-        return "?";
-    }
-    QVariant t = tag->getTagID();
-    if (!t.isNull()) {
-        return t.toString();
-    } else {
-        return "";
-    }
-}
-
-//@Override
-/*public*/ Manager* IdTagBeanTableDataModel::getManager() {
-    IdTagManager* m = (ProxyIdTagManager*)InstanceManager::getDefault("IdTagManager");
-    if (!m->isInitialised()) {
-        m->init();
-    }
-    return m;
-}
-
-//@Override
-/*public*/ NamedBean* IdTagBeanTableDataModel::getBySystemName(QString name) const
-{
-    return ((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->getBySystemName(name);
-}
-
-//@Override
-/*public*/ NamedBean* IdTagBeanTableDataModel::getByUserName(QString name) {
-    return ((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->getByUserName(name);
-}
-/*public int getDisplayDeleteMsg() { return InstanceManager::getDefault("UserPreferencesManager")->getWarnMemoryInUse(); }
- public void setDisplayDeleteMsg(int boo) { InstanceManager::getDefault(jmri.UserPreferencesManager.class).setWarnMemoryInUse(boo); }*/
-
-//@Override
-/*public*/ void IdTagBeanTableDataModel::clickOn(NamedBean* t) {
-    // don't do anything on click; not used in this class, because
-    // we override setValueAt
-}
-
-//@Override
-/*public*/ bool IdTagBeanTableDataModel::setData(const QModelIndex &index, const QVariant &value, int role)
-{
- if(role == Qt::DisplayRole)
- {
-  int col = index.column();
-  int row = index.row();
-    if (col == CLEARCOL) {
-        IdTag* t = (IdTag*) getBySystemName(sysNameList.at(row));
-        if (log->isDebugEnabled()) {
-            log->debug("Clear where & when last seen for " + ((NamedBean*)t->self())->getSystemName());
-        }
-        t->setWhereLastSeen(NULL);
-        fireTableRowsUpdated(row, row);
-    }
- }
- return BeanTableDataModel:: setData(index, value, role);
-}
-
-//@Override
-/*public*/ int IdTagBeanTableDataModel::columnCount(const QModelIndex &parent) const
-{
-    return CLEARCOL + 1;
-}
-
-//@Override
-/*public*/ QVariant IdTagBeanTableDataModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
- int col = section;
- if(role == Qt::DisplayRole && orientation == Qt::Horizontal)
- {
-    switch (col) {
-        case VALUECOL:
-            return tr("IdTagID");
-        case WHERECOL:
-            return tr("IdWhere");
-        case WHENCOL:
-            return tr("IdWhen");
-        case CLEARCOL:
-            return "";
-        default:
-        break;
-    }
-  }
- return BeanTableDataModel::headerData(section, orientation, role);
-}
-
-//@Override
-///*public*/ Class<?> getColumnClass(int col) {
-//    switch (col) {
-//        case VALUECOL:
-//        case WHERECOL:
-//        case WHENCOL:
-//            return String.class;
-//        case CLEARCOL:
-//            return JButton.class;
-//        default:
-//            return super.getColumnClass(col);
-//    }
-//}
-
-//@Override
-/*public*/ Qt::ItemFlags IdTagBeanTableDataModel::flags(const QModelIndex &index) const
-{
-    int col = index.column();
-    switch (col) {
-        case VALUECOL:
-        case WHERECOL:
-        case WHENCOL:
-            return Qt::ItemIsEnabled;
-        case CLEARCOL:
-            return Qt::ItemIsEnabled | Qt::ItemIsEditable;
-        default:
-        break;
-    }
-  return BeanTableDataModel::flags(index);
-
-}
-
-//@Override
-/*public*/ QVariant IdTagBeanTableDataModel::data(const QModelIndex &index, int role) const
-{
-    DefaultIdTag* t;
-    int col = index.column();
-    int row = index.row();
-    if(role == Qt::DisplayRole)
-    {
-    switch (col)
-    {
-     case WHERECOL:
-        Reporter* r;
-        t = (DefaultIdTag*) getBySystemName(sysNameList.at(row));
-        return (t != NULL) ? (((r = t->getWhereLastSeen()) != NULL) ? r->getSystemName() : QVariant()) : QVariant();
-     case WHENCOL:
-     {
-        QDateTime d;
-        t = (DefaultIdTag*) getBySystemName(sysNameList.at(row));
-        return (t != NULL) ? (((d = t->getWhenLastSeen()) != QDateTime())
-                ? /*DateFormat.getDateTimeInstance(DateFormat.SHORT*/ QDateTime::currentDateTime().toString(), /*DateFormat.MEDIUM).format(d)*/d.toString() : QVariant()) : QVariant();
-     }
-     case CLEARCOL:
-            return tr("Clear");
-        default:
-            break;
-    }
- }
-  return BeanTableDataModel::data(index, role);
-}
-
-//@Override
-/*public*/ int IdTagBeanTableDataModel::getPreferredWidth(int col) {
-    switch (col) {
-        case SYSNAMECOL:
-        case WHERECOL:
-        case WHENCOL:
-            return  JTextField(12).sizeHint().width();;
-        case VALUECOL:
-            return  JTextField(10).sizeHint().width();;
-        case CLEARCOL:
-            return  QPushButton(tr("Clear")).sizeHint().width(); + 4;
-        default:
-            return BeanTableDataModel::getPreferredWidth(col);
-    }
-}
-
-//@Override
-/*public*/ void IdTagBeanTableDataModel::configValueColumn(JTable* table) {
-    // value column isn't button, so config is NULL
-}
-void IdTagBeanTableDataModel::configureTable(JTable *table)
-{
- setColumnToHoldButton(table,CLEARCOL);
-}
-
-//@Override
-/*protected*/ bool IdTagBeanTableDataModel::matchPropertyName(PropertyChangeEvent* e) {
-    return true;
-    // return (e.getPropertyName().indexOf("alue")>=0);
-}
-
-//@Override
-/*public*/ QPushButton* IdTagBeanTableDataModel::configureButton() {
-    log->error("configureButton should not have been called");
-    return NULL;
-}
-
-//@Override
-/*protected*/ QString IdTagBeanTableDataModel::getMasterClassName() {
-    return /*act->getClassName();*/ "jmri.jmrit.beantable.IdTagTableAction";
-}
-
-//@Override
-/*protected*/ QString IdTagBeanTableDataModel::getBeanType() {
-    return "ID Tag";
-}
-#endif
 //@Override
 /*protected*/ void IdTagTableAction::setTitle() {
     f->setTitle(tr("TitleIdTagTable"));
@@ -288,7 +102,7 @@ void IdTagBeanTableDataModel::configureTable(JTable *table)
 
 //@Override
 /*protected*/ void IdTagTableAction::addPressed(JActionEvent *) {
-    if (addFrame == NULL) {
+    if (addFrame == nullptr) {
         addFrame = new JmriJFrameX(tr("Add Id Tag"), false, true);
         addFrame->addHelpMenu("package.jmri.jmrit.beantable.IdTagAddEdit", true);
         QVBoxLayout* thisLayout;
@@ -325,15 +139,14 @@ void IdTagTableAction::okPressed(ActionEvent* /*e*/) {
 //        if (tag.equals("")) tag=NULL;
     QString sName = sysName->text();
     try {
-        if(((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->newIdTag(sName, user)== NULL)
-      ((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->newIdTag(sName, user);
-    } catch (IllegalArgumentException* ex)
-        {
+        tagManager->newIdTag(sName, user);
+    } catch (IllegalArgumentException* ex) {
         // user input no good
-        handleCreateException(sName);
+        handleCreateException(sName, ex);
     }
-    addFrame->close();
+    //addFrame->close();
 }
+
 //private boolean noWarn = false;
 IdTagOkListener::IdTagOkListener(IdTagTableAction *act)
 {
@@ -350,9 +163,10 @@ void CancelListener::actionPerformed(JActionEvent */*e*/)
     act->cancelPressed();
 }
 
-void IdTagTableAction::handleCreateException(QString sysName) {
+void IdTagTableAction::handleCreateException(QString sysName, IllegalArgumentException* ex) {
     JOptionPane::showMessageDialog(addFrame,
-            tr("Could not create ID tag \"%1\" to add it. Check that number/name is OK.").arg(sysName),
+            tr("Error: Could not create ID tag \%1\" to add it.rIdTagAddFailed").arg(sysName) + "\n" + tr("Check that number/name is OK and not in use.")
+            + "\n" + ex->getLocalizedMessage() ,
             tr("Error"),
             JOptionPane::ERROR_MESSAGE);
 }

@@ -237,7 +237,7 @@ public:
    */
   //@CheckReturnValue
   //@Nonnull
-  /*public*/ /*SortedSet<E>*/virtual QSet<NamedBean*> getNamedBeanSet() const {return QSet<NamedBean*>();}
+  /*public*/ /*SortedSet<E>*/virtual QSet<NamedBean*> getNamedBeanSet() {return QSet<NamedBean*>();}
 
      /**
       * Locate an instance based on a system name.  Returns null if no
