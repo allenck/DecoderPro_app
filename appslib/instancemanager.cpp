@@ -74,7 +74,7 @@
 #include "proxylightmanager.h"
 #include "proxymetermanager.h"
 #include "instancemanagerautoinitialize.h"
-
+#include "rfid/proxyidtagmanager.h"
 class ManagerLists : public QHash<QString,QObjectList*>
 {
 
@@ -745,10 +745,11 @@ MemoryManager* InstanceManager::memoryManagerInstance()
 //@SuppressWarnings("unchecked") // AbstractProxyManager of the right type is type-safe by definition
 /*static*/ /*public*/ void InstanceManager::setIdTagManager(IdTagManager *p) {
     log->debug(" setIdTagManager");
-#if 0
-    IdTagManager* apm = (IdTagManager*)getDefault("IdTagManager");
-    if (qobject_cast< ProxyManager*>(apm)) { // <?> due to type erasure
-        ((ProxyManager*) apm)->addManager(p);
+#if 0 // TODO:
+    log->debug(" setIdTagManager");
+    IdTagManager* apm = (ProxyIdTagManager*)getDefault("IdTagManager");
+    if (qobject_cast<AbstractProxyManager*>(apm->self())) { // <?> due to type erasure
+        ((AbstractProxyManager*) apm->self())->addManager((AbstractManager*)p);
     } else {
         log->error("Incorrect setup: IdTagManager default isn't an AbstractProxyManager<IdTag>");
     }

@@ -239,7 +239,6 @@ SOURCES += \
     picklistmodel.cpp \
     pickpanel.cpp \
     treeset.cpp \
-    addnewdevicepanel.cpp \
     beantabledatamodel.cpp \
     blockmanagerxml.cpp \
     abstractmemorymanagerconfigxml.cpp \
@@ -715,7 +714,6 @@ HEADERS += liblayouteditor_global.h \
     pickpanel.h \
     treeset.h \
     navigablemap.h \
-    addnewdevicepanel.h \
     beantabledatamodel.h \
     blockmanagerxml.h \
     abstractmemorymanagerconfigxml.h \

@@ -32,6 +32,7 @@
         if ( qobject_cast<IdTagManager*>(mgr->self())){
             tagManager = (IdTagManager*)mgr->self();
         }
+        getManager()->addPropertyChangeListener(this);
     }
 
     //@Override
@@ -207,6 +208,11 @@
     /*protected*/ QString IdTagTableDataModel::getMasterClassName() {
        // return IdTagTableAction.class.getName();
      return  "jmri.jmrit.beantable.IdTagTableAction";
+    }
+
+    /*public*/ void IdTagTableDataModel::propertyChange(PropertyChangeEvent* e)
+    {
+     BeanTableDataModel::propertyChange(e);
     }
 
     /*private*/ /*static*/ /*final*/ Logger* IdTagTableDataModel::log = LoggerFactory::getLogger("IdTagTableDataModel");

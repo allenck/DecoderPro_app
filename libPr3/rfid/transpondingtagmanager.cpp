@@ -18,6 +18,11 @@
      : DefaultIdTagManager(new ConflictingSystemConnectionMemo("L", "LocoNet", parent))
     {
         //super(new jmri.jmrix.ConflictingSystemConnectionMemo("L", "LocoNet")); // NOI18N
+        setObjectName("TranspondingTagManager");
+        storeInstance();
+    }
+
+    /*final*/ void TranspondingTagManager::storeInstance(){
         InstanceManager::store(this, "TranspondingTagManager");
     }
 
@@ -37,25 +42,27 @@
                     + ";" + ((userName == "") ? "null" : userName));
         }
         // return existing if there is one
-        NamedBean* s;
-        if ((userName != "") && ((s = (TranspondingTag*)getByUserName(userName)) != nullptr)) {
-            if (getBySystemName(systemName) != s) {
-                log->error("inconsistent user (" + userName + ") and system name (" + systemName + ") results; userName related to (" + s->getSystemName() + ")");
+        TranspondingTag* s;
+        if (userName != "") {
+            s = (TranspondingTag*)getByUserName(userName);
+            if (s != nullptr) {
+                if (getBySystemName(systemName) != s) {
+                    log->error(tr("inconsistent user (%1) and system name (%2) results; userName related to (%3)").arg(userName, systemName, s->getSystemName()));
+                }
+                return s;
             }
-            return (DefaultIdTag*)s;
         }
-        if ((s = (TranspondingTag*) getBySystemName(systemName)) != nullptr) {
+        s = (TranspondingTag*) getBySystemName(systemName);
+        if (s != nullptr) {
             if ((s->getUserName() == "") && (userName != "")) {
                 s->setUserName(userName);
             } else if (userName != "") {
-                log->warn("Found IdTag via system name (" + systemName
-                        + ") with non-null user name (" + userName + ")");
+                log->warn(tr("Found IdTag via system name (%1) with non-null user name (%2)").arg(systemName, userName));
             }
-            return (DefaultIdTag*)s;
+            return s;
         }
-
         // doesn't exist, make a new one
-        s = createNewIdTag(systemName, userName);
+        s =(TranspondingTag*) createNewIdTag(systemName, userName);
 
         // save in the maps
         Register(s);

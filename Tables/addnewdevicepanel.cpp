@@ -14,7 +14,7 @@
 
 /*public*/ AddNewDevicePanel::AddNewDevicePanel(JTextField* sys, JTextField* userName,
         QString addButtonLabel, ActionListener* okListener, ActionListener* cancelListener, QWidget *parent)
- : QWidget(parent)
+ : JmriPanel(parent)
 {
  sysNameLabel = new QLabel(tr("System Name"));
  userNameLabel = new QLabel(tr("User Name"));
@@ -65,20 +65,29 @@
 //            reset();
 //        }
 //    });
-
+    connect(ok,&QPushButton::clicked, [=]{reset();});
     thisLayout->addWidget(panelBottom);
 
     reset();
-#if 0
-    sysName.addKeyListener(new KeyAdapter() {
-        @Override
-        /*public*/ void keyReleased(KeyEvent a) {
-            if (sysName.getText().length() > 0) {
-                setOK();
-            }
-        }
-    });
-#endif
+
+//    sysName.addKeyListener(new KeyAdapter() {
+//        @Override
+//        /*public*/ void keyReleased(KeyEvent a) {
+//            if (sysName.getText().length() > 0) {
+//                setOK();
+//            }
+//        }
+//    });
+ connect(sysName, SIGNAL(textEdited(QString)), this, SLOT(sysName_textEdited(QString)));
+}
+
+void AddNewDevicePanel::sysName_textEdited(QString txt)
+{
+ if (txt.length() > 0)
+ {
+  ok->setEnabled(true);
+  ok->setToolTip("");
+ }
 }
 
 void AddNewDevicePanel::reset() {

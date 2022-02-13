@@ -27,6 +27,8 @@ class JAVAQTSHARED_EXPORT PropertyChangeSupport :  public QObject, public Proper
     /** {@inheritDoc} */
     //@Override
     /*public*/ virtual void addPropertyChangeListener(/*@CheckForNull*/ PropertyChangeListener* listener) override{
+        if(propertyChangeSupport == nullptr)
+            propertyChangeSupport = new SwingPropertyChangeSupport(this, nullptr);
         propertyChangeSupport->addPropertyChangeListener(listener);
     }
 

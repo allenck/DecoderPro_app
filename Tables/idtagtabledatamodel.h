@@ -33,6 +33,9 @@ class IdTagTableDataModel : public BeanTableDataModel
 
   QObject* self() override {return (QObject*)this;}
 
+ public slots:
+  /*public*/ void propertyChange(PropertyChangeEvent* e);
+
  private:
   static Logger* log;
   /*private*/ IdTagManager* tagManager = nullptr;

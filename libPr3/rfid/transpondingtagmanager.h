@@ -17,6 +17,7 @@ public:
 
 private:
  static Logger* log;
+ /*final*/ void storeInstance();
 
 protected:
  /*protected*/ NamedBean* createNewIdTag(QString systemName, QString userName)override;

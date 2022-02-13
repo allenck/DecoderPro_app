@@ -1,12 +1,12 @@
 #ifndef ADDNEWDEVICEPANEL_H
 #define ADDNEWDEVICEPANEL_H
 
-#include <QWidget>
+#include "jmripanel.h"
 #include "jtextfield.h"
 #include <QLabel>
 #include <QPushButton>
 
-class AddNewDevicePanel : public QWidget
+class AddNewDevicePanel : public JmriPanel
 {
  Q_OBJECT
 public:
@@ -19,6 +19,7 @@ public:
 signals:
 
 public slots:
+  void sysName_textEdited(QString txt);
 
 private:
  QPushButton* ok;
