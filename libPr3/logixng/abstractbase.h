@@ -9,7 +9,7 @@ class Logger;
 class AbstractBase : public AbstractNamedBean, public Base
 {
   Q_OBJECT
-  //Q_INTERFACES(Base)
+  Q_INTERFACES(Base)
  public:
   /*public*/ AbstractBase(QObject* parent = nullptr) : AbstractNamedBean(parent) {}
   /*public*/ AbstractBase(QString sys, QObject* parent = nullptr) /*throw (BadSystemNameException)*/ ;

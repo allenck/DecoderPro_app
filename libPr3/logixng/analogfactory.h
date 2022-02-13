@@ -11,7 +11,7 @@ class AnalogFactory : public AnalogExpressionFactory
   Q_INTERFACES(AnalogExpressionFactory)
  public:
   AnalogFactory();
-  /*public*/ const QSet<QMap<Category*, /*Class<? extends Base>*/Base*> > getClasses();
+  /*public*/ const QSet<QMap<Category*, /*Class<? extends Base>*/QString> > getClasses();
 };
 
 #endif // ANALOGFACTORY_H

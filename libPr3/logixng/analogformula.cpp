@@ -31,7 +31,6 @@
         _expressionEntries
                 .append(new ExpressionEntry(createFemaleSocket(this, this, getNewSocketName())));
     }
-
     /**
      * Create a new instance of Formula with system name and user name.
      * @param sys the system name

@@ -82,7 +82,7 @@ class AnalogFormula : public AbstractAnalogExpression, public FemaleSocketListen
   /*private*/ bool _disableCheckForUnconnectedSocket = false;
   /*private*/ FemaleGenericExpressionSocket* createFemaleSocket(
         Base* parent, FemaleSocketListener* listener, QString socketName);
-  /*private*/ ExpressionEntry(FemaleGenericExpressionSocket* socket);
+  ///*private*/ ExpressionEntry(FemaleGenericExpressionSocket* socket);
 
   friend class ExpressionEntry;
 };
