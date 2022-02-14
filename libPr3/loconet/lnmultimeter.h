@@ -13,12 +13,13 @@ class LnMultiMeter : public AbstractMultiMeter
 public:
  LnMultiMeter(LocoNetSystemConnectionMemo* scm, QObject* parent = nullptr);
  ~LnMultiMeter() {}
- /*public*/ void initializeHardwareMeter();
- /*public*/ QString getHardwareMeterName();
- /*public*/ bool hasCurrent();
- /*public*/ bool hasVoltage();
- /*public*/ CurrentUnits getCurrentUnits();
- QObject* self() {return (QObject*)this;}
+ /*public*/ void initializeHardwareMeter()override;
+ /*public*/ QString getHardwareMeterName()override;
+ /*public*/ bool hasCurrent()override;
+ /*public*/ bool hasVoltage()override;
+ /*public*/ CurrentUnits getCurrentUnits()override;
+
+ QObject* self() override{return (QObject*)this;}
 
 public slots:
  /*public*/ void message(LocoNetMessage* msg);
@@ -30,7 +31,7 @@ private:
  /*private*/ LnTrafficController* tc = nullptr;
 
 protected:
- /*protected*/ void requestUpdateFromLayout();
+ /*protected*/ void requestUpdateFromLayout()override;
 
 };
 

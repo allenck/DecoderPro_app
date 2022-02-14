@@ -1,7 +1,7 @@
 #include "appsconfigurationmanager.h"
 #include "editconnectionpreferencesdialog.h"
 
-AppsConfigurationManager::AppsConfigurationManager(QObject *parent) :JmriConfigurationManager(parent)
+AppsConfigurationManager::AppsConfigurationManager(QObject *parent) : JmriConfigurationManager(parent)
 {
  setObjectName("AppsConfigurationManager");
 }

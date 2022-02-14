@@ -169,7 +169,7 @@
         voltageMetersMenu = new QMenu(tr("Voltage Meters"));
         menuBar->addMenu(voltageMetersMenu);
         for (Meter* m : voltageMeters) {
-            QAction* item = new SelectMeterAction(((AbstractNamedBean*)m)->getDisplayName(), m, this);
+            QAction* item = new SelectMeterAction(((AbstractNamedBean*)m->self())->getDisplayName(), m, this);
             item->setCheckable(true);
             voltageMetersMenu->addAction(item);
             meter_MenuItemMap.insert(m, item);
@@ -178,7 +178,7 @@
         currentMetersMenu = new QMenu(tr("Current Meters"));
         menuBar->addMenu(currentMetersMenu);
         for (Meter* m : currentMeters) {
-            QAction* item = new SelectMeterAction(((AbstractNamedBean*)m)->getDisplayName(), m, this);
+            QAction* item = new SelectMeterAction(((AbstractNamedBean*)m->self())->getDisplayName(), m, this);
             item->setCheckable(true);
             currentMetersMenu->addAction(item);
             meter_MenuItemMap.insert(m, item);
@@ -645,9 +645,9 @@
             return;
         }
         log->debug(tr("attempting to add all meters.  There are %1 meters to add.").arg(
-                mm->getNamedBeanSet().size()));
+                ((AbstractProxyManager*)mm)->getNamedBeanSet().size()));
         //mm->getNamedBeanSet().forEach((m) ->
-        for(NamedBean* bean : mm->getNamedBeanSet())
+        for(NamedBean* bean : ((AbstractProxyManager*)mm)->getNamedBeanSet())
         {
          DefaultMeter* m = qobject_cast<DefaultMeter*>(bean->self());
          QString n = bean->getDisplayName();

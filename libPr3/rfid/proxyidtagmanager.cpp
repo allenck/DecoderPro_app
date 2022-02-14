@@ -198,7 +198,7 @@
     /*public*/ bool ProxyIdTagManager::isStateStored() {
         stateSaved = true;
         for (Manager* mgr: getManagerList()) {
-            if(!((IdTagManager*) mgr)->isStateStored()) {
+            if(!((DefaultIdTagManager*) mgr->self())->isStateStored()) {
                 stateSaved = false;
                 break;
             }

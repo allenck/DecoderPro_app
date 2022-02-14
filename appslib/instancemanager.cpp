@@ -745,11 +745,11 @@ MemoryManager* InstanceManager::memoryManagerInstance()
 //@SuppressWarnings("unchecked") // AbstractProxyManager of the right type is type-safe by definition
 /*static*/ /*public*/ void InstanceManager::setIdTagManager(IdTagManager *p) {
     log->debug(" setIdTagManager");
-#if 0 // TODO:
+#if 1 // TODO:
     log->debug(" setIdTagManager");
     IdTagManager* apm = (ProxyIdTagManager*)getDefault("IdTagManager");
     if (qobject_cast<AbstractProxyManager*>(apm->self())) { // <?> due to type erasure
-        ((AbstractProxyManager*) apm->self())->addManager((AbstractManager*)p);
+        ((AbstractProxyManager*) apm->self())->addManager((AbstractManager*)p->self());
     } else {
         log->error("Incorrect setup: IdTagManager default isn't an AbstractProxyManager<IdTag>");
     }
