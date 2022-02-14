@@ -40,7 +40,7 @@ class DefaultAnalogExpressionManager : public AbstractBaseManager, public Instan
   /*private*/ /*final*/ QMap<Category*, QList</*Class<? extends Base*/Base*>> expressionClassList = QMap<Category*, QList</*Class<? extends Base*/Base*>>();
   /*private*/ MaleSocket* _lastRegisteredBean;
   static /*volatile*/ DefaultAnalogExpressionManager* _instance;// = nullptr;
-  QList<AnalogExpressionFactory*> aList;
+  QList<QString> aList; //list of classes derived from AnalogExpressionFactory*
 //                                       = {new AnalogExpressionAnalogIO(),
 //                                          new AnalogExpressionConstant(),
 //                                          new AnalogExpressionMemory(),

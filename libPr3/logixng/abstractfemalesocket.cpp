@@ -234,7 +234,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ Category* AbstractFemaleSocket::getCategory() {
+    /*public*/ Category::TYPE AbstractFemaleSocket::getCategory() {
         throw  UnsupportedOperationException("Not supported.");
     }
 

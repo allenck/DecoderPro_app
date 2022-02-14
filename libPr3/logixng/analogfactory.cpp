@@ -8,14 +8,14 @@ class Base;
 //public class AnalogFactory implements AnalogExpressionFactory {
 
     //@Override
-    /*public*/ QSet<QMap<Category*, /*Class<? extends Base>*/QString>> getClasses() {
-        QSet<QMap<Category*, /*Class<? extends Base>>*/QString >> analogExpressionClasses = QSet<QMap<Category*, /*Class<? extends Base>>*/QString>>();
+    /*public*/ QSet<QMap<Category::TYPE, /*Class<? extends Base>*/QString>> getClasses() {
+        QSet<QMap<Category::TYPE, /*Class<? extends Base>>*/QString >> analogExpressionClasses = QSet<QMap<Category::TYPE, /*Class<? extends Base>>*/QString>>();
 #if 1
-        analogExpressionClasses.insert(QMap<Category*, QString> {{Category::ITEM, "AnalogExpressionAnalogIO"}});
-        analogExpressionClasses.insert(QMap<Category*, QString> {{Category::ITEM, "AnalogExpressionConstant"}});
-        analogExpressionClasses.insert(QMap<Category*, QString> {{Category::ITEM, "AnalogExpressionMemory"}});
-        analogExpressionClasses.insert(QMap<Category*, QString> {{Category::COMMON, "AnalogFormula"}});
-        analogExpressionClasses.insert(QMap<Category*, QString> {{Category::ITEM, "TimeSinceMidnight"}});
+        analogExpressionClasses.insert(QMap<Category::TYPE, QString> {{Category::TYPE::ITEM, "AnalogExpressionAnalogIO"}});
+        analogExpressionClasses.insert(QMap<Category::TYPE, QString> {{Category::TYPE::ITEM, "AnalogExpressionConstant"}});
+        analogExpressionClasses.insert(QMap<Category::TYPE, QString> {{Category::TYPE::ITEM, "AnalogExpressionMemory"}});
+        analogExpressionClasses.insert(QMap<Category::TYPE, QString> {{Category::TYPE::COMMON, "AnalogFormula"}});
+        analogExpressionClasses.insert(QMap<Category::TYPE, QString> {{Category::TYPE::ITEM, "TimeSinceMidnight"}});
 #endif
         return analogExpressionClasses;
     }

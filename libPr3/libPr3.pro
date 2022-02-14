@@ -1138,6 +1138,7 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+ logixng/defaultfemalestringexpressionsocket.cpp \
  logixng/genericexpressionvariable.cpp \
  logixng/abstractanalogexpression.cpp \
  logixng/analogexpressionanalogio.cpp \
@@ -1264,6 +1265,7 @@ HEADERS += \
  abstractproxymanager.h \
  acelasignalheadxml.h \
  addeditsinglelightcontrolframe.h \
+ analogiomanager.h \
  collectingReporter.h \
  defaultlightcontrol.h \
  digitalio.h \
@@ -2365,6 +2367,7 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+ logixng/defaultfemalestringexpressionsocket.h \
  logixng/genericexpressionvariable.h \
  logixng/abstractanalogexpression.h \
  logixng/analogexpressionanalogio.h \

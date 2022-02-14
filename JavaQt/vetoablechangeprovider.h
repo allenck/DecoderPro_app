@@ -29,7 +29,7 @@ public:
      *
      * @param listener The VetoableChangeListener to be added
      */
-  virtual /*public*/ void addVetoableChangeListener(/*@CheckForNull*/ VetoableChangeListener* /*listener*/) {}
+    virtual /*public*/ void addVetoableChangeListener(/*@CheckForNull*/ VetoableChangeListener* /*listener*/) {}
 
     /**
      * Add a {@link java.beans.VetoableChangeListener} for a specific property.

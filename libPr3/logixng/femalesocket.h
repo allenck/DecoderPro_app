@@ -179,7 +179,7 @@
      *
      * @return a set of entries with category and class
      */
-    /*public*/ virtual QMap<Category*, QList</*Class<? extends*/ Base*> > getConnectableClasses()=0;
+    /*public*/ virtual QMap<Category::TYPE, QList</*Class<? extends Base>*/ QString> > getConnectableClasses()=0;
 
     /** {@inheritDoc} */
     //@Override

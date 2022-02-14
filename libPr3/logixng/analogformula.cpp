@@ -10,6 +10,7 @@
 #include "parserexception.h"
 #include "typeconversionutil.h"
 #include "logixng_manager.h"
+#include "genericexpressionvariable.h"
 
 /**
  * Evaluates to True if the formula evaluates to true
@@ -92,7 +93,7 @@
         QMap<QString, Variable*> variables = QMap<QString, Variable*>();
         RecursiveDescentParser* parser = new RecursiveDescentParser(variables);
         for (int i=0; i < getChildCount(); i++) {
-            Variable* v = new GenericExpressionVariable((FemaleGenericExpressionSocket)getChild(i));
+            Variable* v = new GenericExpressionVariable((FemaleGenericExpressionSocket*)getChild(i));
             variables.insert(v->getName(), v);
         }
         _expressionNode = parser.parseExpression(formula);

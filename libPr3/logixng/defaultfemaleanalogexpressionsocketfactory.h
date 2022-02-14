@@ -5,6 +5,7 @@
 #include "femalesocketfactory.h"
 #include "analogexpressionmanager.h"
 #include "instancemanager.h"
+#include "defaultfemaleanalogexpressionsocket.h"
 
 class DefaultFemaleAnalogExpressionSocketFactory : public QObject, public FemaleSocketFactory
 {
@@ -33,8 +34,8 @@ class DefaultFemaleAnalogExpressionSocketFactory : public QObject, public Female
       }
 
       //@Override
-      /*public*/  FemaleSocket createSocket(Base* parent, FemaleSocketListener* listener, QString name) {
-          return new DefaultFemaleAnalogExpressionSocket(parent, listener, name);
+      /*public*/  FemaleSocket* createSocket(Base* parent, FemaleSocketListener* listener, QString name) {
+          return (FemaleSocket*)(new DefaultFemaleAnalogExpressionSocket(parent, listener, name))->self();
       }
 
       //@Override

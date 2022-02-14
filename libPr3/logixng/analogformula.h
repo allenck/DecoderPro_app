@@ -21,7 +21,7 @@ class AnalogFormula : public AbstractAnalogExpression, public FemaleSocketListen
   /*public*/  QString getExpressionManager(int index);
   /*public*/  /*final*/ void setFormula(QString formula) /*throws ParserException*/;
   /*public*/  QString getFormula();
-  /*public*/  Category* getCategory()override;
+  /*public*/  Category::TYPE getCategory()override;
   /*public*/  double evaluate() /*throws JmriException*/ override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/override;
   /*public*/  int getChildCount()override;
@@ -71,7 +71,7 @@ class AnalogFormula : public AbstractAnalogExpression, public FemaleSocketListen
   /*private*/ QString _formula = "";
   /*private*/ ExpressionNode* _expressionNode;
   /*private*/ /*final*/ QList<ExpressionEntry*> _expressionEntries =  QList<ExpressionEntry*>();
-  /*private*/ void setExpressionSystemNames(QList<SocketData> systemNames);
+  /*private*/ void setExpressionSystemNames(QList<SocketData*> systemNames);
   /*private*/ void parseFormula();
   /*private*/ void setNumSockets(int num);
   /*private*/ void checkFreeSocket() ;

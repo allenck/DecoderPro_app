@@ -1,13 +1,22 @@
 #ifndef STRINGEXPRESSIONMANAGER_H
 #define STRINGEXPRESSIONMANAGER_H
+#include "basemanager.h"
+#include "category.h"
+
 /**
  * Manager for Expression
  * 
  * @author Dave Duchamp       Copyright (C) 2007
  * @author Daniel Bergqvist   Copyright (C) 2018
  */
-/*public*/ interface StringExpressionManager extends BaseManager<MaleStringExpressionSocket> {
-
+class Base;
+class FemaleSocketListener;
+class FemaleStringExpressionSocket;
+class MaleStringExpressionSocket;
+class StringExpressionBean;
+/*public*/ /*interface*/class StringExpressionManager : BaseManager/*<MaleStringExpressionSocket>*/ {
+Q_INTERFACES(BaseManager)
+ public:
     /**
      * Remember a NamedBean Object created outside the manager.
      * This method creates a MaleStringExpressionSocket for the action.
@@ -16,14 +25,14 @@
      * @return the male socket for this expression
      * @throws IllegalArgumentException if the expression has an invalid system name
      */
-    public MaleStringExpressionSocket registerExpression(@Nonnull StringExpressionBean expression)
-            throws IllegalArgumentException;
+    /*public*/ virtual MaleStringExpressionSocket* registerExpression(/*@Nonnull*/ StringExpressionBean* expression)
+            /*throws IllegalArgumentException*/=0;
     
     /**
      * Create a new system name for an Expression.
      * @return a new system name
      */
-    public String getAutoSystemName();
+    /*public*/ virtual QString getAutoSystemName()=0;
 
     /**
      * Create a female socket for analog expressions
@@ -32,15 +41,15 @@
      * @param socketName the name of the new socket
      * @return the new female socket
      */
-    public FemaleStringExpressionSocket createFemaleSocket(
-            Base parent, FemaleSocketListener listener, String socketName);
+    /*public*/ virtual FemaleStringExpressionSocket* createFemaleSocket(
+            Base* parent, FemaleSocketListener* listener, QString socketName)=0;
     
     /**
      * Get a set of classes that implements the DigitalAction interface.
      * 
      * @return a set of entries with category and class
      */
-    public Map<Category, List<Class<? extends Base>>> getExpressionClasses();
+    /*public*/ virtual QMap<Category::TYPE, QList</*Class<? extends Base>*/QString>> getExpressionClasses()=0;
 
     /*.*
      * Add an Expression.
@@ -70,8 +79,8 @@
      * The sub system prefix for the StringExpressionManager is
      * {@link #getSystemNamePrefix() } and "SE";
      */
-    @Override
-    public default String getSubSystemNamePrefix() {
+    //@Override
+    /*public*/ /*default*/ QString getSubSystemNamePrefix() const override {
         return getSystemNamePrefix() + "SE";
     }
 
@@ -81,7 +90,8 @@
      *
      * @param x the StringExpression to delete
      */
-    /*public*/ virtual void deleteStringExpression(MaleStringExpressionSocket x)=0;
+    /*public*/ virtual void deleteStringExpression(MaleStringExpressionSocket* x)=0;
 
 };
+Q_DECLARE_INTERFACE(StringExpressionManager, "StringExpressionManager")
 #endif // STRINGEXPRESSIONMANAGER_H

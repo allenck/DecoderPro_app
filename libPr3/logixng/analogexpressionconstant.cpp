@@ -34,7 +34,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* AnalogExpressionConstant::getCategory() {
+    /*public*/  Category::TYPE AnalogExpressionConstant::getCategory() {
         return Category::ITEM;
     }
 

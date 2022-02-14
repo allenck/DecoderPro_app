@@ -19,8 +19,8 @@ class AbstractMaleSocket :  public MaleSocket
   /*public*/ void setLocked(bool locked)override;
   /*public*/ bool isSystem()override;
   /*public*/ void setSystem(bool system) override;
-  /*public*/ /*final*/ Category* getCategory() override;
-  /*public*/ /*final*/ FemaleSocket* getChild(int index) throw (IllegalArgumentException, UnsupportedOperationException) override;
+  /*public*/ /*final*/ Category::TYPE getCategory() override;
+  /*public*/ /*final*/ FemaleSocket* getChild(int index) /*throw (IllegalArgumentException, UnsupportedOperationException)*/ override;
   /*public*/ /*final*/ int getChildCount()override;
   /*public*/ /*final*/ QString getShortDescription(QLocale locale) override;
   /*public*/ /*final*/ QString getLongDescription(QLocale locale) override;

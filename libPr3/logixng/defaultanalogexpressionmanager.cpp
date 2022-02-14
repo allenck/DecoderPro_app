@@ -12,6 +12,8 @@
 #include "analogexpressionfactory.h"
 #include "category.h"
 #include "defaultfemaleanalogexpressionsocketfactory.h"
+#include "maleanalogexpressionsocketfactory.h"
+#include "defaultfemaleanalogexpressionsocket.h"
 
 /**
  * Class providing the basic logic of the ExpressionManager interface.
@@ -26,17 +28,17 @@
     /*public*/  DefaultAnalogExpressionManager::DefaultAnalogExpressionManager(QObject* parent) : AbstractBaseManager(parent) {
         ((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->registerManager(this);
 
-        aList = {new AnalogExpressionAnalogIO(),
-          new AnalogExpressionConstant(),
-          new AnalogExpressionMemory(),
-          new AnalogFormula(),
-          new TimeSinceMidnight()};
+        aList = {"AnalogExpressionAnalogIO",
+           "AnalogExpressionConstant",
+           "AnalogExpressionMemory",
+           "AnalogFormula",
+           "TimeSinceMidnight"};
 
         for (AnalogExpressionFactory* expressionFactory : /*ServiceLoader.load("AnalogExpressionFactory")*/aList) {
             expressionFactory->init();
         }
 
-        for (Category* category : Category::values()) {
+        for (Category::TYPE category : Category::values()) {
             expressionClassList.insert(category, QList</*Class<? extends Base*/Base*>());
         }
 
@@ -135,12 +137,12 @@
         return 'Q';
     }
 
-    /*.*
+    /***
      * Test if parameter is a properly formatted system name.
      *
      * @param systemName the system name
      * @return enum indicating current validity, which might be just as a prefix
-     *./
+     **/
     //@Override
     /*public*/  Manager::NameValidity DefaultAnalogExpressionManager::validSystemNameFormat(QString systemName) {
         return LogixNG_Manager::validSystemNameFormat(

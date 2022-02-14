@@ -4,7 +4,10 @@
 #include "namedbean.h"
 #include "vptr.h"
 #include "analogio.h"
-
+#include "analogiomanager.h"
+#include "loggerfactory.h"
+#include "typeconversionutil.h"
+#include "conditionalng.h"
 
 /**
  * Reads a AnalogIO.
@@ -38,14 +41,14 @@
     /*public*/  void AnalogExpressionAnalogIO::vetoableChange(PropertyChangeEvent* evt) /*throws PropertyVetoException*/ {
         if ("CanDelete" == (evt->getPropertyName())) { // No I18N
             if (VPtr<AnalogIO>::asPtr(evt->getOldValue())) {
-                if (VPtr<AnalogIO>::asPtr(evt->getOldValue())->equals(getAnalogIO()->getBean())) {
+                if (VPtr<AnalogIO>::asPtr(evt->getOldValue()) == (getAnalogIO()->getBean())) {
                     PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
                     throw new PropertyVetoException(tr("AnalogIO is in use by AnalogIO expression \"%1\"").arg(AbstractNamedBean::getDisplayName()), e); // NOI18N
                 }
             }
         } else if ("DoDelete" ==(evt->getPropertyName())) { // No I18N
             if (VPtr<AnalogIO>::asPtr(evt->getOldValue())) {
-                if (VPtr<AnalogIO>::asPtr(evt.getOldValue()) ==(getAnalogIO().getBean())) {
+                if (VPtr<AnalogIO>::asPtr(evt->getOldValue()) ==(getAnalogIO()->getBean())) {
                     removeAnalogIO();
                 }
             }
@@ -54,50 +57,50 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* getCategory() {
-        return Category::ITEM;
+    /*public*/  Category::TYPE AnalogExpressionAnalogIO::getCategory() {
+        return Category::TYPE::ITEM;
     }
 
-    /*public*/  void setAnalogIO(/*@Nonnull*/ QString analogIOName) {
+    /*public*/  void AnalogExpressionAnalogIO::setAnalogIO(/*@Nonnull*/ QString analogIOName) {
         assertListenersAreNotRegistered(log, "setAnalogIO");
-        AnalogIO analogIO = InstanceManager.getDefault(AnalogIOManager.class).getNamedBean(analogIOName);
-        if (analogIO != null) {
+        AnalogIO* analogIO = (AnalogIO*)((AnalogIOManager*)InstanceManager::getDefault("AnalogIOManager"))->getNamedBean(analogIOName);
+        if (analogIO != nullptr) {
             setAnalogIO(analogIO);
         } else {
             removeAnalogIO();
-            log.error("analogIO \"{}\" is not found", analogIOName);
+            log->error(tr("analogIO \"%1\" is not found").arg(analogIOName));
         }
     }
 
-    /*public*/  void setAnalogIO(/*@Nonnull*/ NamedBeanHandle<AnalogIO> handle) {
+    /*public*/  void AnalogExpressionAnalogIO::setAnalogIO(/*@Nonnull*/ NamedBeanHandle<AnalogIO*>* handle) {
         assertListenersAreNotRegistered(log, "setAnalogIO");
         _analogIOHandle = handle;
-        InstanceManager.getDefault(AnalogIOManager.class).addVetoableChangeListener(this);
+        ((AnalogIOManager*)InstanceManager::getDefault("AnalogIOManager"))->addVetoableChangeListener(this);
     }
 
-    /*public*/  void setAnalogIO(/*@Nonnull*/ AnalogIO analogIO) {
+    /*public*/  void AnalogExpressionAnalogIO::setAnalogIO(/*@Nonnull*/ AnalogIO* analogIO) {
         assertListenersAreNotRegistered(log, "setAnalogIO");
-        setAnalogIO(InstanceManager.getDefault(NamedBeanHandleManager.class)
-                .getNamedBeanHandle(analogIO.getDisplayName(), analogIO));
+        setAnalogIO(((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))
+                ->getNamedBeanHandle(analogIO->getDisplayName(), analogIO));
     }
 
-    /*public*/  void removeAnalogIO() {
+    /*public*/  void AnalogExpressionAnalogIO::removeAnalogIO() {
         assertListenersAreNotRegistered(log, "setAnalogIO");
-        if (_analogIOHandle != null) {
-            InstanceManager.getDefault(AnalogIOManager.class).removeVetoableChangeListener(this);
-            _analogIOHandle = null;
+        if (_analogIOHandle != nullptr) {
+            ((AnalogIOManager*)InstanceManager::getDefault("AnalogIOManager"))->removeVetoableChangeListener(this);
+            _analogIOHandle = nullptr;
         }
     }
 
-    /*public*/  NamedBeanHandle<AnalogIO> getAnalogIO() {
+    /*public*/  NamedBeanHandle<AnalogIO*>* AnalogExpressionAnalogIO::getAnalogIO() {
         return _analogIOHandle;
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  double evaluate() {
-        if (_analogIOHandle != null) {
-            return jmri.util.TypeConversionUtil.convertToDouble(_analogIOHandle.getBean().getKnownAnalogValue(), false);
+    /*public*/  double AnalogExpressionAnalogIO::evaluate() {
+        if (_analogIOHandle != nullptr) {
+            return TypeConversionUtil::convertToDouble(_analogIOHandle->getBean()->getKnownAnalogValue(), false);
         } else {
             return 0.0;
         }
@@ -105,62 +108,62 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  FemaleSocket getChild(int index)
-            throws IllegalArgumentException, UnsupportedOperationException {
+    /*public*/  FemaleSocket* AnalogExpressionAnalogIO::getChild(int index)
+            /*throws IllegalArgumentException, UnsupportedOperationException */{
         throw new UnsupportedOperationException("Not supported.");
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  int getChildCount() {
+    /*public*/  int AnalogExpressionAnalogIO::getChildCount() {
         return 0;
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  String getShortDescription(Locale locale) {
-        return Bundle.getMessage(locale, "AnalogExpressionAnalogIO_Short");
+    /*public*/  QString AnalogExpressionAnalogIO::getShortDescription(QLocale locale) {
+        return tr(/*locale,*/ "AnalogIO");
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  String getLongDescription(Locale locale) {
-        if (_analogIOHandle != null) {
-            return Bundle.getMessage(locale, "AnalogExpressionAnalogIO_Long", _analogIOHandle.getBean().getDisplayName());
+    /*public*/  QString AnalogExpressionAnalogIO::getLongDescription(QLocale locale) {
+        if (_analogIOHandle != nullptr) {
+            return tr(/*locale, */"Get analog constant %1", _analogIOHandle->getBean()->getDisplayName());
         } else {
-            return Bundle.getMessage(locale, "AnalogExpressionAnalogIO_Long", "none");
+            return tr(/*locale,*/ "Get analog constant %1").arg("none");
         }
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void setup() {
+    /*public*/  void AnalogExpressionAnalogIO::setup() {
         // Do nothing
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void registerListenersForThisClass() {
-        if ((! _listenersAreRegistered) && (_analogIOHandle != null)) {
-            _analogIOHandle.getBean().addPropertyChangeListener("value", this);
+    /*public*/  void AnalogExpressionAnalogIO::registerListenersForThisClass() {
+        if ((! _listenersAreRegistered) && (_analogIOHandle != nullptr)) {
+            _analogIOHandle->getBean()->addPropertyChangeListener("value", this);
             _listenersAreRegistered = true;
         }
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void unregisterListenersForThisClass() {
+    /*public*/  void AnalogExpressionAnalogIO::unregisterListenersForThisClass() {
         if (_listenersAreRegistered) {
-            _analogIOHandle.getBean().removePropertyChangeListener("value", this);
+            _analogIOHandle->getBean()->removePropertyChangeListener("value", this);
             _listenersAreRegistered = false;
         }
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void propertyChange(PropertyChangeEvent evt) {
+    /*public*/  void AnalogExpressionAnalogIO::propertyChange(PropertyChangeEvent* evt) {
         if (getTriggerOnChange()) {
-            getConditionalNG().execute();
+            AbstractBase::getConditionalNG()->execute();
         }
     }
 
@@ -172,10 +175,10 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  void AnalogExpressionAnalogIO::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
-        log->debug(tr("getUsageReport :: AnalogExpressionAnalogIO: bean = %1, report = %2").arg(cdl.get, report);
-        if (getAnalogIO() != null && bean.equals(getAnalogIO().getBean())) {
-            report.add(new NamedBeanUsageReport("LogixNGExpression", cdl, getLongDescription()));
+        log->debug(tr("getUsageReport :: AnalogExpressionAnalogIO: bean = %1, report = %2").arg(cdl->get, report));
+        if (getAnalogIO() != nullptr && bean->equals(getAnalogIO()->getBean()->self())) {
+            report.append(new NamedBeanUsageReport("LogixNGExpression", cdl, getLongDescription()));
         }
     }
 
-    /*private*/ /*final*/ static Logger* AnalogExpressionAnalogIO::log = LoggerFactory::getLogger("AnalogExpressionAnalogIO");
+    /*private*/ /*final*/ /*static*/ Logger* AnalogExpressionAnalogIO::log = LoggerFactory::getLogger("AnalogExpressionAnalogIO");

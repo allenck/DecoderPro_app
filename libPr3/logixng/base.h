@@ -8,12 +8,13 @@
 #include "femalesocketoperation.h"
 //#include "conditionalng.h"
 //#include "logixng.h"
+#include "category.h"
 
 class MaleSocket;
 class PrintTreeSettings;
 class MutableInt;
 class PrintWriter;
-class Category;
+//class Category;
 //class FemaleSocketOperation;
 class FemaleSocket;
 class LogixNG;
@@ -117,7 +118,7 @@ class Base;
      */
     //@CheckReturnValue
     //@CheckForNull
-    /*public*/ virtual QString getUserName() const =0;
+  /*public*/ virtual QString getUserName() const {return "";}
 
     /**
      * Get associated comment text.
@@ -300,7 +301,7 @@ class Base;
      * Get the category.
      * @return the category
      */
-    /*public*/ virtual Category* getCategory(){return nullptr;}
+    /*public*/ virtual Category::TYPE getCategory(){return Category::TYPE::OTHER;}
 
     /**
      * Is this item active? If this item is enabled and all the parents are
@@ -471,7 +472,7 @@ class Base;
      * @param report A list of NamedBeanUsageReport usage reports.
      * @param cdl    The current ConditionalNG bean.  Null for Module searches since there is no conditional
      */
-    /*public*/ virtual void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)=0;
+  /*public*/ virtual void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl){}
 
     /**
      * Request a call-back when a bound property changes. Bound properties are

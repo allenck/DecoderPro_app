@@ -23,6 +23,7 @@ class Item;
 {
  Q_OBJECT
  public:
+  enum class TYPE {ITEM, COMMON, OTHER};
     /**
      * A item on the layout, for example turnout, sensor and signal mast.
      */

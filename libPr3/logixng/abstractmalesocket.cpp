@@ -74,12 +74,12 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ /*final*/ Category* AbstractMaleSocket::getCategory() {
+    /*public*/ /*final*/ Category::TYPE AbstractMaleSocket::getCategory() {
         return _object->getCategory();
     }
 
     //@Override
-    /*public*/ /*final*/ FemaleSocket* AbstractMaleSocket::getChild(int index) throw (IllegalArgumentException, UnsupportedOperationException) {
+    /*public*/ /*final*/ FemaleSocket* AbstractMaleSocket::getChild(int index)  {
         return _object->getChild(index);
     }
 

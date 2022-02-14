@@ -53,7 +53,7 @@ class MyDefaultFemaleAnySocket : public DefaultFemaleAnySocket
    /*public*/ void registerListeners()override {AbstractFemaleSocket::registerListeners();}
    /*public*/ void unregisterListeners() override {AbstractFemaleSocket::unregisterListeners();}
    /*public*/ /*final*/ bool isActive()override {return AbstractFemaleSocket::isActive();}
-  /*public*/ Category* getCategory() override {return AbstractFemaleSocket::getCategory();}
+  /*public*/ Category::TYPE getCategory() override {return AbstractFemaleSocket::getCategory();}
   /*public*/ void printTree(
           PrintTreeSettings* settings,
           PrintWriter* writer,
@@ -123,7 +123,7 @@ class DefaultClipboard : public AbstractBase, public Clipboard
   /*public*/ void setParent(Base* parent)override;
   /*public*/ FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/override;
   /*public*/ int getChildCount() override;
-  /*public*/ Category* getCategory()override;
+  /*public*/ Category::TYPE getCategory()override;
   QObject* self() override {return (QObject*)this;}
 
 

@@ -45,7 +45,7 @@
     }
 
     //@Override
-    /*public*/  QMap<Category*, QList</*Class<? extends Base>*/Base*>> DefaultFemaleDigitalExpressionSocket::getConnectableClasses() {
+    /*public*/  QMap<Category::TYPE, QList<QString> > DefaultFemaleDigitalExpressionSocket::getConnectableClasses() {
         return ((DigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->getExpressionClasses();
     }
 

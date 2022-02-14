@@ -32,7 +32,7 @@ class AbstractFemaleSocket : public QObject, public FemaleSocket
   /*public*/ void registerListeners()override;
   /*public*/ void unregisterListeners() override;
   /*public*/ /*final*/ bool isActive()override;
-  /*public*/ Category* getCategory() override;
+  /*public*/ Category::TYPE getCategory() override;
   /*public*/ FemaleSocket* getChild(int index)/*throw (IllegalArgumentException, UnsupportedOperationException)*/ override;
   /*public*/ int getChildCount() override;
   /*public*/ QString getUserName() const override;

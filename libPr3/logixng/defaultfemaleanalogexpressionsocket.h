@@ -18,7 +18,9 @@ class DefaultFemaleAnalogExpressionSocket : public AbstractFemaleSocket, public 
   /*public*/  void setTriggerOnChange(bool triggerOnChange)override;
   /*public*/  QString getShortDescription(QLocale locale)override;
   /*public*/  QString getLongDescription(QLocale locale)override;
-  /*public*/  QMap<Category*, QList</*Class<? extends Base>*/Base*>> getConnectableClasses() override;
+  /*public*/  QMap<Category::TYPE, QList</*Class<? extends Base>*/QString>> getConnectableClasses() override;
   /*public*/  void disposeMe()override;
+
+  QObject* self() override{return (QObject*)this;}
 };
 #endif // DEFAULTFEMALEANALOGEXPRESSIONSOCKET_H

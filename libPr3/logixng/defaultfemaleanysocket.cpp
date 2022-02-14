@@ -24,8 +24,8 @@
     }
 
     //@Override
-    /*public*/ QMap<Category *, QList<Base*> > DefaultFemaleAnySocket::getConnectableClasses() {
-     return QMap<Category*, QList<Base*> >();
+    /*public*/ QMap<Category::TYPE, QList<QString> > DefaultFemaleAnySocket::getConnectableClasses() {
+     return QMap<Category::TYPE, QList<QString> >();
     }
 
     //@Override

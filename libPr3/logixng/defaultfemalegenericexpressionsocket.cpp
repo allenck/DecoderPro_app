@@ -1,4 +1,16 @@
 #include "defaultfemalegenericexpressionsocket.h"
+#include "runtimeexception.h"
+#include "femalegenericexpressionsocket.h"
+#include "maledigitalexpressionsocket.h"
+#include "maleanalogexpressionsocket.h"
+#include "malestringexpressionsocket.h"
+#include "analogexpressionmanager.h"
+#include "digitalexpressionmanager.h"
+#include "instancemanager.h"
+#include "stringexpressionmanager.h"
+#include "defaultfemaleanalogexpressionsocket.h"
+#include "defaultfemaledigitalexpressionsocket.h"
+#include "defaultfemalestringexpressionsocket.h"
 
 /**
  * Default implementation of the FemaleGenericExpressionSocket
@@ -8,19 +20,22 @@
 //        implements FemaleGenericExpressionSocket, FemaleSocketListener {
 
 
-    /*public*/  DefaultFemaleGenericExpressionSocket(
+    /*public*/  DefaultFemaleGenericExpressionSocket::DefaultFemaleGenericExpressionSocket(
             SocketType socketType,
-            Base parent,
-            FemaleSocketListener listener,
-            String name) {
+            Base* parent,
+            FemaleSocketListener* listener,
+            QString name, QObject* parentObject) : AbstractFemaleSocket(parent, listener, name, parentObject){
 
-        super(parent, listener, name);
+        //super(parent, listener, name);
+        _analogSocket = new DefaultFemaleAnalogExpressionSocket(this, this, "A");
+        _digitalSocket = new DefaultFemaleDigitalExpressionSocket(this, this, "D");
+        _stringSocket = new DefaultFemaleStringExpressionSocket(this, this, "S");
 
         _socketType = socketType;
         _currentSocketType = socketType;
 
         switch (_socketType) {
-            case ANALOG:
+            case SocketType::ANALOG:
                 _currentActiveSocket = _analogSocket;
                 break;
 
@@ -33,7 +48,7 @@
                 break;
 
             case GENERIC:
-                _currentActiveSocket = null;
+                _currentActiveSocket = nullptr;
                 break;
 
             default:
@@ -44,14 +59,14 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  FemaleSocket getCurrentActiveSocket() {
+    /*public*/  FemaleSocket* DefaultFemaleGenericExpressionSocket::getCurrentActiveSocket() {
         return _currentActiveSocket;
     }
 
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  boolean isCompatible(MaleSocket socket) {
+    /*public*/  bool DefaultFemaleGenericExpressionSocket::isCompatible(MaleSocket* socket) {
         return (socket instanceof MaleAnalogExpressionSocket)
                 || (socket instanceof MaleDigitalExpressionSocket)
                 || (socket instanceof MaleStringExpressionSocket);
@@ -59,40 +74,40 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void setSocketType(SocketType socketType)
-            throws SocketAlreadyConnectedException {
+    /*public*/  void DefaultFemaleGenericExpressionSocket::setSocketType(SocketType socketType)
+            /*throws SocketAlreadyConnectedException*/ {
 
         if (socketType == _socketType) {
             return;
         }
 
-        if ((_currentActiveSocket != null) && (_currentActiveSocket.isConnected())) {
+        if ((_currentActiveSocket != nullptr) && (_currentActiveSocket->isConnected())) {
             throw new SocketAlreadyConnectedException("Socket is already connected");
         }
 
         switch (socketType) {
             case DIGITAL:
-                _socketType = SocketType.DIGITAL;
-                _currentSocketType = SocketType.DIGITAL;
+                _socketType = SocketType::DIGITAL;
+                _currentSocketType = SocketType::DIGITAL;
                 _currentActiveSocket = _digitalSocket;
                 break;
 
             case ANALOG:
-                _socketType = SocketType.ANALOG;
-                _currentSocketType = SocketType.ANALOG;
+                _socketType = SocketType::ANALOG;
+                _currentSocketType = SocketType::ANALOG;
                 _currentActiveSocket = _analogSocket;
                 break;
 
             case STRING:
-                _socketType = SocketType.STRING;
-                _currentSocketType = SocketType.STRING;
+                _socketType = SocketType::STRING;
+                _currentSocketType = SocketType::STRING;
                 _currentActiveSocket = _stringSocket;
                 break;
 
             case GENERIC:
-                _socketType = SocketType.GENERIC;
-                _currentSocketType = SocketType.GENERIC;
-                _currentActiveSocket = null;
+                _socketType = SocketType::GENERIC;
+                _currentSocketType = SocketType::GENERIC;
+                _currentActiveSocket = nullptr;
                 break;
 
             default:
@@ -102,100 +117,100 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  SocketType getSocketType() {
+    /*public*/  SocketType DefaultFemaleGenericExpressionSocket::getSocketType() {
         return _socketType;
     }
 
-    /*public*/  void setDoI18N(boolean do_i18n) {
+    /*public*/  void DefaultFemaleGenericExpressionSocket::setDoI18N(bool do_i18n) {
         _do_i18n = do_i18n;
     }
 
-    /*public*/  boolean getDoI18N() {
+    /*public*/  bool DefaultFemaleGenericExpressionSocket::getDoI18N() {
         return _do_i18n;
     }
 
     //@Override
-    @CheckForNull
-    /*public*/  Object evaluateGeneric() throws JmriException {
-        if (isConnected()) {
+    //@CheckForNull
+    /*public*/  QVariant DefaultFemaleGenericExpressionSocket::evaluateGeneric() /*throws JmriException*/ {
+        if (AbstractFemaleSocket::isConnected()) {
             switch (_currentSocketType) {
                 case DIGITAL:
-                    return ((MaleDigitalExpressionSocket)getConnectedSocket())
-                            .evaluate();
+                    return ((MaleDigitalExpressionSocket*)AbstractFemaleSocket::getConnectedSocket())
+                            ->evaluate();
 
                 case ANALOG:
-                    return ((MaleAnalogExpressionSocket)getConnectedSocket())
-                            .evaluate();
+                    return ((MaleAnalogExpressionSocket*)AbstractFemaleSocket::getConnectedSocket())
+                            ->evaluate();
 
                 case STRING:
-                    return ((MaleStringExpressionSocket)getConnectedSocket())
-                            .evaluate();
+                    return ((MaleStringExpressionSocket*)AbstractFemaleSocket::getConnectedSocket())
+                            ->evaluate();
 
                 default:
                     throw new RuntimeException("_currentSocketType has invalid value: "+_currentSocketType.name());
             }
         } else {
-            return null;
+            return QVariant();
         }
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  String getShortDescription(Locale locale) {
-        return Bundle.getMessage(locale, "DefaultFemaleGenericExpressionSocket_Short");
+    /*public*/  QString DefaultFemaleGenericExpressionSocket::getShortDescription(QLocale locale) {
+        return tr(/*locale,*/ "?*");
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  String getLongDescription(Locale locale) {
-        return Bundle.getMessage(locale, "DefaultFemaleGenericExpressionSocket_Long", getName());
+    /*public*/  QString DefaultFemaleGenericExpressionSocket::getLongDescription(QLocale locale) {
+        return tr(/*locale,*/ "?~ %1").arg(getName());
     }
 
-    /*private*/ void addClassesToMap(
-            Map<Category, List<Class<? extends Base>>> destinationClasses,
-            Map<Category, List<Class<? extends Base>>> sourceClasses) {
+    /*private*/ void DefaultFemaleGenericExpressionSocket::addClassesToMap(
+     QMap<Category::TYPE, QList</*Class<? extends Base>*/QString>> destinationClasses,
+     QMap<Category::TYPE, QList</*Class<? extends Base>*/QString>> sourceClasses){
 
-        for (Category category : Category.values()) {
+        for (Category::TYPE category : Category::values()) {
             // Some categories might not have any expression.
-            if (sourceClasses.get(category) == null) continue;
+            if (sourceClasses.value(category) == nullptr) continue;
 
-            for (Class<? extends Base> clazz : sourceClasses.get(category)) {
-                destinationClasses.get(category).add(clazz);
+            for (/*Class<? extends Base>*/QString clazz : sourceClasses.value(category)) {
+                destinationClasses.value(category).append(clazz);
             }
         }
     }
 
     //@Override
-    /*public*/  Map<Category, List<Class<? extends Base>>> getConnectableClasses() {
-        Map<Category, List<Class<? extends Base>>> classes = new HashMap<>();
+    /*public*/  QMap<Category::TYPE, QList</*Class<? extends Base>*/QString>> DefaultFemaleGenericExpressionSocket::getConnectableClasses() {
+        QMap<Category::TYPE, QList</*Class<? extends Base>*/QString>> classes = QMap<Category::TYPE, QList</*Class<? extends Base>*/QString>>();
 
-        for (Category category : Category.values()) {
-            classes.put(category, new ArrayList<>());
+        for (Category::TYPE category : Category::values()) {
+            classes.insert(category, new QList<QString>());
         }
 
-        addClassesToMap(classes, InstanceManager.getDefault(AnalogExpressionManager.class).getExpressionClasses());
-        addClassesToMap(classes, InstanceManager.getDefault(DigitalExpressionManager.class).getExpressionClasses());
-        addClassesToMap(classes, InstanceManager.getDefault(StringExpressionManager.class).getExpressionClasses());
+        addClassesToMap(classes, ((AnalogExpressionManager*)InstanceManager::getDefault(/*AnalogExpressionManager*/))->getExpressionClasses());
+        addClassesToMap(classes, ((DigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->getExpressionClasses());
+        addClassesToMap(classes, ((StringExpressionManager*)InstanceManager::getDefault("StringExpressionManager"))->getExpressionClasses());
 
         return classes;
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void connect(MaleSocket socket) throws SocketAlreadyConnectedException {
+    /*public*/  void DefaultFemaleGenericExpressionSocket::_connect(MaleSocket* socket) /*throws SocketAlreadyConnectedException*/ {
 
-        if (socket == null) {
+        if (socket == nullptr) {
             throw new NullPointerException("socket cannot be null");
         }
 
         // If _currentActiveSocket is not null, the socket is either connected
         // or locked to a particular type.
-        if (_currentActiveSocket != null) {
-            if (_currentActiveSocket.isConnected()) {
+        if (_currentActiveSocket != nullptr) {
+            if (_currentActiveSocket->isConnected()) {
                 throw new SocketAlreadyConnectedException("Socket is already connected");
             } else {
                 _currentActiveSocket.connect(socket);
-                _listener.connected(this);
+                _listener->connected(this);
                 return;
             }
         }
@@ -203,64 +218,64 @@
         // If we are here, the socket is not connected and is not locked to a
         // particular type.
 
-        if (_digitalSocket.isCompatible(socket)) {
-            _currentSocketType = SocketType.DIGITAL;
+        if (_digitalSocket->isCompatible(socket)) {
+            _currentSocketType = SocketType::DIGITAL;
             _currentActiveSocket = _digitalSocket;
-        } else if (_analogSocket.isCompatible(socket)) {
-            _currentSocketType = SocketType.ANALOG;
+        } else if (_analogSocket->isCompatible(socket)) {
+            _currentSocketType = SocketType::ANALOG;
             _currentActiveSocket = _analogSocket;
         } else if (_stringSocket.isCompatible(socket)) {
-            _currentSocketType = SocketType.STRING;
+            _currentSocketType = SocketType::STRING;
             _currentActiveSocket = _stringSocket;
         } else {
             throw new IllegalArgumentException("Socket is not compatible");
         }
-        _currentActiveSocket.connect(socket);
-        _listener.connected(this);
+        _currentActiveSocket->_connect(socket);
+        _listener->connected(this);
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void disconnect() {
-        if ((_currentActiveSocket != null)
-                && _currentActiveSocket.isConnected()) {
+    /*public*/  void DefaultFemaleGenericExpressionSocket::_disconnect() {
+        if ((_currentActiveSocket != nullptr)
+                && _currentActiveSocket->isConnected()) {
 
-            _currentActiveSocket.disconnect();
+            _currentActiveSocket->_disconnect();
             _listener.disconnected(this);
         }
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  MaleSocket* getConnectedSocket() {
-        if (_currentActiveSocket != null) {
-            return _currentActiveSocket.getConnectedSocket();
+    /*public*/  MaleSocket* DefaultFemaleGenericExpressionSocket::getConnectedSocket() {
+        if (_currentActiveSocket != nullptr) {
+            return _currentActiveSocket->getConnectedSocket();
         } else {
-            return null;
+            return nullptr;
         }
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  boolean isConnected() {
-        return (_currentActiveSocket != null) && _currentActiveSocket.isConnected();
+    /*public*/  bool DefaultFemaleGenericExpressionSocket::isConnected() {
+        return (_currentActiveSocket != nullptr) && _currentActiveSocket->isConnected();
     }
 
     //@Override
-    /*public*/  void connected(FemaleSocket socket) {
+    /*public*/  void DefaultFemaleGenericExpressionSocket::connected(FemaleSocket* socket) {
         // Do nothing
     }
 
     //@Override
-    /*public*/  void disconnected(FemaleSocket socket) {
-        if (_socketType == SocketType.GENERIC) {
-            _currentActiveSocket = null;
+    /*public*/  void DefaultFemaleGenericExpressionSocket::disconnected(FemaleSocket* socket) {
+        if (_socketType == SocketType::GENERIC) {
+            _currentActiveSocket = nullptr;
         }
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void disposeMe() {
+    /*public*/  void DefaultFemaleGenericExpressionSocket::disposeMe() {
         // Do nothing
     }
 
