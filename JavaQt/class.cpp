@@ -3682,4 +3682,16 @@
          return TypeAnnotationParser.buildAnnotatedInterfaces(getRawTypeAnnotations(), getConstantPool(), this);
     }
 #endif
+    /*public*/  Class* Class::getConstructor(){
+     Class* obj;
+     try{
+      obj = newInstance();
+      if(!obj)
+       throw new NoSuchMethodException();
+     } catch (InvocationTargetException* ex){
+      throw new NoSuchMethodException();
+     }
+     return obj;
+    }
+
 /*static*/ /*private*/ Logger * Class::log = LoggerFactory::getLogger("Class");

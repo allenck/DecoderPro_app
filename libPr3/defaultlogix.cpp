@@ -28,6 +28,7 @@
 #include "destinationpoints.h"
 #include "conditionalaction.h"
 #include "vptr.h"
+#include "jmriexception.h"
 
 //DefaultLogix::DefaultLogix(QObject *parent) :
 //    AbstractNamedBean(parent)

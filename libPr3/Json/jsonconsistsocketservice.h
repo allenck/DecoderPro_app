@@ -4,6 +4,7 @@
 #include "dcclocoaddress.h"
 #include "consistlistener.h"
 #include "consistlistlistener.h"
+#include "jmriexception.h"
 
 class JsonConsistHttpService;
 class JsonConsistListener;
@@ -13,8 +14,8 @@ class JsonConsistSocketService : public JsonSocketService
  Q_OBJECT
 public:
  JsonConsistSocketService(JsonConnection* connection, QObject* parent = 0);
- /*public*/ void onMessage(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException);
- /*public*/ void onList(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException);
+ /*public*/ void onMessage(QString type, QJsonObject data, QLocale locale) /*throw (IOException, JmriException, JsonException)*/;
+ /*public*/ void onList(QString type, QJsonObject data, QLocale locale) /*throw (IOException, JmriException, JsonException)*/;
  /*public*/ void onClose();
 
 private:

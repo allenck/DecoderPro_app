@@ -15,6 +15,7 @@
 #include "speedutil.h"
 #include "learnspeedpanel.h"
 #include "loggerfactory.h"
+#include "jmriexception.h"
 
 //LearnThrottleFrame::LearnThrottleFrame(QWidget *parent) :
 //    JmriJFrame(parent)

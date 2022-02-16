@@ -10,6 +10,7 @@
 #include "allocatedsection.h"
 #include "signalmastmanager.h"
 #include "signalheadmanager.h"
+#include "jmriexception.h"
 
 //AutoTrainAction::AutoTrainAction(QObject *parent) : QObject(parent)
 //{

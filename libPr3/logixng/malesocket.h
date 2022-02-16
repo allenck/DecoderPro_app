@@ -72,12 +72,12 @@ public:
       return None;
      }
  };
-/*public*/ /*interface*/ class MaleSocket : public QObject, public Debugable
+/*public*/ /*interface*/ class MaleSocket : /*public QObject,*/ public Debugable
 {
-  Q_OBJECT
+  //Q_OBJECT
   Q_INTERFACES(Debugable)
  public:
-MaleSocket(QObject* parent=nullptr) : QObject(parent){}
+//MaleSocket(QObject* parent=nullptr) : QObject(parent){}
 
     /**
      * Set whenether this male socket is enabled or disabled.
@@ -111,72 +111,72 @@ MaleSocket(QObject* parent=nullptr) : QObject(parent){}
      * Get whenether the node should listen to changes or not.
      * @return true if listen, false if not listen
      */
-    /*public*/ virtual bool getListen()=0;
+  /*public*/ virtual bool getListen() {return false;}
 
     /**
      * Set whenether the node should listen to changes or not.
      * @param listen true if listen, false if not listen
      */
-    /*public*/ virtual void setListen(bool listen)=0;
+  /*public*/ virtual void setListen(bool /*listen*/) {}
 
     /**
      * Is the node locked?
      * @return true if locked, false otherwise
      */
-    /*public*/ virtual bool isLocked()=0;
+    /*public*/ virtual bool isLocked(){return false;}
 
     /**
      * Set if the node is locked or not.
      * @param locked true if locked, false otherwise
      */
-    /*public*/ virtual void setLocked(bool locked)=0;
+  /*public*/ virtual void setLocked(bool locked) {}
 
     /**
      * Is the node a system node?
      * @return true if system, false otherwise
      */
-    /*public*/ virtual bool isSystem()=0;
+    /*public*/ virtual bool isSystem(){return false;}
 
     /**
      * Set if the node is system or not.
      * @param system true if system, false otherwise
      */
-    /*public*/ virtual void setSystem(bool system)=0;
+  /*public*/ virtual void setSystem(bool /*system*/) {}
 
     /**
      * Is the node catching AbortExecution or not?
      * @return true if catching, false otherwise
      */
-    /*public*/ virtual bool getCatchAbortExecution()=0;
+    /*public*/ virtual bool getCatchAbortExecution(){return false;}
 
     /**
      * Set if the node should catch AbortExecution or not.
      * @param catchAbortExecution true if catch, false otherwise
      */
-    /*public*/ virtual void setCatchAbortExecution(bool catchAbortExecution)=0;
+  /*public*/ virtual void setCatchAbortExecution(bool catchAbortExecution){}
 
     /*public*/ virtual void addLocalVariable(
             QString name,
             InitialValueType::TYPES initialValueType,
-            QString initialValueData)=0;
+    QString initialValueData){}
 
-    /*public*/ virtual void addLocalVariable(VariableData* variableData)=0;
+  /*public*/ virtual void addLocalVariable(VariableData* variableData) {}
 
-    /*public*/ virtual void clearLocalVariables()=0;
+  /*public*/ virtual void clearLocalVariables() {}
 
-    /*public*/ virtual QSet<VariableData*> getLocalVariables()=0;
+  /*public*/ virtual QSet<VariableData*> getLocalVariables() {return QSet<VariableData*>();}
 
     /**
      * Get the error handling type for this socket.
      * @return the error handling type
      */
-    /*public*/ virtual ErrorHandlingType::TYPES getErrorHandlingType()=0;
+  /*public*/ virtual ErrorHandlingType::TYPES getErrorHandlingType() {return ErrorHandlingType::None;}
 
     /**
      * Set the error handling type for this socket.
      * @param errorHandlingType the error handling type
      */
-    /*public*/ virtual void setErrorHandlingType(ErrorHandlingType::TYPES errorHandlingType)=0;
+  /*public*/ virtual void setErrorHandlingType(ErrorHandlingType::TYPES errorHandlingType){}
 
     /**
      * Get the object that this male socket holds.
@@ -185,7 +185,7 @@ MaleSocket(QObject* parent=nullptr) : QObject(parent){}
      * @return the object this male socket holds
      */
     //@Nonnull
-    /*public*/ virtual Base* getObject()=0;
+    /*public*/ virtual Base* getObject(){return nullptr;}
 
     /**
      * Get the manager that stores this socket.
@@ -193,7 +193,7 @@ MaleSocket(QObject* parent=nullptr) : QObject(parent){}
      *
      * @return the manager
      */
-    /*public*/ virtual BaseManager/*<NamedBean*>*//*<? extends NamedBean>*/* getManager()=0;
+    /*public*/ virtual BaseManager/*<NamedBean*>*//*<? extends NamedBean>*/* getManager(){return nullptr;}
 
     /** {@inheritDoc} */
     //@Override

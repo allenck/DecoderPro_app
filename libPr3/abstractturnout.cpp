@@ -10,6 +10,7 @@
 #include "signalspeedmap.h"
 #include "vptr.h"
 #include "signalspeedmap.h"
+#include "jmriexception.h"
 
 AbstractTurnout::AbstractTurnout(QObject *parent) :
     Turnout(parent)

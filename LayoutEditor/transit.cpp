@@ -11,6 +11,7 @@
 #include "signalmastmanager.h"
 #include "transitsection.h"
 #include "transitsectionaction.h"
+#include "jmriexception.h"
 
 //Transit::Transit(QObject *parent) :
 //    AbstractNamedBean(parent)

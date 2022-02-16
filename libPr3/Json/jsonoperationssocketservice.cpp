@@ -4,6 +4,7 @@
 #include "json.h"
 #include "jsonoperationshttpservice.h"
 #include "instancemanager.h"
+#include "jmriexception.h"
 
 /**
  *
@@ -20,7 +21,7 @@
 }
 
 //@Override
-/*public*/ void JsonOperationsSocketService::onMessage(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException)
+/*public*/ void JsonOperationsSocketService::onMessage(QString type, QJsonObject data, QLocale locale) /*throw (IOException, JmriException, JsonException)*/
 {
  this->locale = locale;
  QString id;
@@ -46,7 +47,7 @@
 }
 
 //@Override
-/*public*/ void JsonOperationsSocketService::onList(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException) {
+/*public*/ void JsonOperationsSocketService::onList(QString type, QJsonObject data, QLocale locale)  {
     this->locale = locale;
     this->connection->sendMessage(this->service->doGetList(type, locale));
 }

@@ -13,7 +13,7 @@ class AbstractProgrammerServer : public QObject, public ProgListener
   explicit AbstractProgrammerServer(QObject *parent = nullptr);
   /*abstract*/ virtual /*public*/ void sendStatus(int CV, int value, int status) /*throw (IOException)*/ =0;
   /*abstract*/ virtual /*public*/ void sendNotAvailableStatus() /*throw (IOException)*/ =0;
-  /*abstract*/ virtual /*public*/ void parseRequest(QString statusString) throw (JmriException, IOException) = 0;
+  /*abstract*/ virtual /*public*/ void parseRequest(QString statusString) /*throw (JmriException, IOException) */= 0;
   /*public*/ void writeCV(ProgrammingMode* mode, int CV, int value);
   /*public*/ void readCV(ProgrammingMode* mode, int CV);
   /*public*/ void programmingOpReply(int value, int status) override;

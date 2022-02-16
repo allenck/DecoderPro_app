@@ -3,6 +3,7 @@
 #include "instancemanager.h"
 #include <QDataStream>
 #include <QTcpSocket>
+#include "jmriexception.h"
 
 /**
  * Simple Server interface between the JMRI turnout manager and a network
@@ -48,7 +49,7 @@
 }
 
 //@Override
-/*public*/ void SimpleTurnoutServer::parseStatus(QString statusString) throw (JmriException, IOException) {
+/*public*/ void SimpleTurnoutServer::parseStatus(QString statusString) /*throw (JmriException, IOException)*/ {
     int index;
     index = statusString.indexOf(" ") + 1;
     log->debug(statusString);

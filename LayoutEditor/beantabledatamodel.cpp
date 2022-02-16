@@ -43,6 +43,7 @@
 #include <QThread>
 #include "xtablecolumnmodel.h"
 #include "abstractnamedbean.h"
+#include "jmriexception.h"
 
 //BeanTableDataModel::BeanTableDataModel(QObject *parent) :
 //    QAbstractTableModel(parent)

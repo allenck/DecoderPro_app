@@ -5,6 +5,8 @@
 #include "loggerfactory.h"
 #include "userpreferencesmanager.h"
 #include "signalspeedmap.h"
+#include "jmriexception.h"
+
 
 AbstractTurnoutManager::AbstractTurnoutManager(SystemConnectionMemo* memo, QObject *parent) :
     AbstractManager(memo, parent)

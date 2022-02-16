@@ -9,6 +9,7 @@
 #include "../libPr3/configuremanager.h"
 #include "liblayouteditor_global.h"
 #include "xmlfile.h"
+#include "jmriconfigurexmlexception.h"
 
 class File;
 class XmlAdapter;

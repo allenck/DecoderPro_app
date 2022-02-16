@@ -322,7 +322,7 @@
             PrintTreeSettings* settings,
             PrintWriter* writer,
             QString indent,
-            /*MutableInt*/int  lineNumber) {
+            /*MutableInt*/int*  lineNumber) {
 
         throw  UnsupportedOperationException("Not supported.");
     }
@@ -334,20 +334,19 @@
             QLocale locale,
             PrintWriter* writer,
             QString indent,
-            /*MutableInt*/int  lineNumber) {
+            /*MutableInt*/int*  lineNumber) {
 
         throw  UnsupportedOperationException("Not supported.");
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ void AbstractFemaleSocket::printTree(
-            PrintTreeSettings* settings,
+    /*public*/ void AbstractFemaleSocket::printTree(PrintTreeSettings* settings,
             QLocale locale,
             PrintWriter* writer,
             QString indent,
             QString currentIndent,
-            /*MutableInt*/int  lineNumber) {
+            /*MutableInt*/int *lineNumber) {
 
         printTreeRow(settings, locale, writer, currentIndent, lineNumber);
 

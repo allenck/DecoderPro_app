@@ -6,8 +6,10 @@
 #include "json.h"
 #include "httpservletresponse.h"
 #include "jsonqt.h"
+#include "jmriexception.h"
 
-/**
+/**#include "jmriexception.h"
+
  * JSON HTTP Service for {@link jmri.Sensor}s.
  *
  * @author Randall Wood

@@ -11,7 +11,7 @@ public:
  SimpleReporterServer(QTcpSocket* connection, QObject* parent = nullptr);
  /*public*/ void sendReport(QString reporterName, QVariant r) /*throw (IOException)*/;
  /*public*/ void sendErrorStatus(QString reporterName) /*throw (IOException)*/;
- /*public*/ void parseStatus(QString statusString) throw (JmriException, IOException);
+ /*public*/ void parseStatus(QString statusString) /*throw (JmriException, IOException)*/;
 
 private:
  static Logger* log;

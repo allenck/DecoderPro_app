@@ -15,7 +15,7 @@
 #include "turnouttableaction.h"
 #include "signalspeedmap.h"
 #include "beanedititem.h"
-
+#include "jmriexception.h"
 
 TurnoutEditAction::TurnoutEditAction(QModelIndex index, QObject* parent) : BeanEditAction(parent)
 {

@@ -12,6 +12,7 @@
  */
 /*public*/ /*interface*/class AnalogExpressionManager : public BaseManager/*<MaleAnalogExpressionSocket>*/ {
 
+  Q_INTERFACES(BaseManager)
  public:
     /**
      * Remember a NamedBean Object created outside the manager.
@@ -86,8 +87,8 @@
      *
      * @param x the Expression to delete
      */
-    /*public*/ void deleteAnalogExpression(MaleAnalogExpressionSocket* x);
+    /*public*/ virtual void deleteAnalogExpression(MaleAnalogExpressionSocket* x)=0;
 
 };
-
+Q_DECLARE_INTERFACE(AnalogExpressionManager, "AnalogExpressionManager")
 #endif // ANALOGEXPRESSIONMANAGER_H

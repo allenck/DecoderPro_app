@@ -4,6 +4,7 @@
 #include "loggerfactory.h"
 #include "sensormanager.h"
 #include "instancemanager.h"
+#include "jmriexception.h"
 
 /**
  * Simple Server interface between the JMRI Sensor manager and a network
@@ -47,7 +48,7 @@
 }
 
 //@Override
-/*public*/ void SimpleSensorServer::parseStatus(QString statusString) throw (JmriException, IOException) {
+/*public*/ void SimpleSensorServer::parseStatus(QString statusString) /*throw (JmriException, IOException)*/ {
     int index;
     index = statusString.indexOf(" ") + 1;
     if (statusString.contains("INACTIVE")) {

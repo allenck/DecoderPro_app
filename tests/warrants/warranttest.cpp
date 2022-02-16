@@ -13,6 +13,7 @@
 #include "beansetting.h"
 #include "opath.h"
 #include "throttlesetting.h"
+#include "jmriexception.h"
 
 WarrantTest::WarrantTest(QObject *parent) : QObject(parent)
 {

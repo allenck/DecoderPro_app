@@ -17,8 +17,8 @@ public:
 
  /*abstract*/ virtual /*public*/ void sendErrorStatus(QString sensor) /*throw (IOException)*/ {}
 
- /*abstract*/ virtual /*public*/ void parseStatus(QString statusString) throw (JmriException, IOException) {}
- /*public*/ Sensor* initSensor(QString sensorName) throw (IllegalArgumentException);
+ /*abstract*/ virtual /*public*/ void parseStatus(QString statusString) /*throw (JmriException, IOException)*/ {}
+ /*public*/ Sensor* initSensor(QString sensorName) /*throw (IllegalArgumentException)*/;
  /*public*/ void setSensorActive(QString sensorName);
  /*public*/ void setSensorInactive(QString sensorName);
  /*public*/ void dispose();

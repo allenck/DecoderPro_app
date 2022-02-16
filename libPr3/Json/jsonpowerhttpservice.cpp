@@ -3,6 +3,7 @@
 #include "json.h"
 #include "instancemanager.h"
 #include "powermanager.h"
+#include "jmriexception.h"
 
 /**
  *

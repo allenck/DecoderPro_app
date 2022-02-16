@@ -2,6 +2,7 @@
 #define JSONUTILSOCKETSERVICE_H
 #include "jsonsocketservice.h"
 #include "json.h"
+#include "jmriexception.h"
 
 class JsonUtilHttpService;
 class JsonUtilSocketService : public JsonSocketService

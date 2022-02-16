@@ -32,6 +32,7 @@
 #include "globalprogrammermanager.h"
 #include "defaultprogrammermanager.h"
 #include "printdecoderlistaction.h"
+#include "jmriexception.h"
 
 PaneProgDp3Action::PaneProgDp3Action()
  : JmriAbstractAction("New Loco", (WindowInterface*)NULL)

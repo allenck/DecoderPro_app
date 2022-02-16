@@ -20,12 +20,12 @@ public:
  ///*pubic*/ QString className();
  /*public*/ static bool isAssignableFrom(QString clazz, QString type);
  /*public*/ QString getName() {return metaObject()->className();}
-
+ /*public*/ Class *getConstructor();
 private:
  /*private*/ static /*final*/ int ANNOTATION;//= 0x00002000;
  /*private*/ static /*final*/ int ENUM      ;//= 0x00004000;
  /*private*/ static /*final*/ int SYNTHETIC ;//= 0x00001000;
-// QString _name;
+ QString _name;
 // void setName(QString);
  /*private*/ static /*native*/ void registerNatives();
  /*private*/ Class(ClassLoader* loader);

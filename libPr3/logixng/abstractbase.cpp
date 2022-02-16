@@ -144,7 +144,7 @@
             QLocale locale,
             PrintWriter* writer,
             QString currentIndent,
-            /*MutableInt*/int lineNumber) {
+            /*MutableInt*/int* lineNumber) {
 
         if (settings->_printLineNumbers) {
             writer->print(QString(PRINT_LINE_NUMBERS_FORMAT).arg(lineNumber/*.addAndGet(1)*/++));
@@ -160,7 +160,7 @@
             PrintTreeSettings* settings,
             PrintWriter* writer,
             QString indent,
-            /*MutableInt*/int lineNumber) {
+            /*MutableInt*/int* lineNumber) {
 
         printTree(settings, QLocale(), writer, indent, "", lineNumber);
     }
@@ -172,20 +172,19 @@
             QLocale locale,
             PrintWriter* writer,
             QString indent,
-            /*MutableInt*/int lineNumber) {
+            /*MutableInt*/int* lineNumber) {
 
         printTree(settings, locale, writer, indent, "", lineNumber);
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ void AbstractBase::printTree(
-            PrintTreeSettings* settings,
+    /*public*/ void AbstractBase::printTree(PrintTreeSettings* settings,
             QLocale locale,
             PrintWriter* writer,
             QString indent,
             QString currentIndent,
-            /*MutableInt*/int lineNumber) {
+            /*MutableInt*/int *lineNumber) {
 
         printTreeRow(settings, locale, writer, currentIndent, lineNumber);
 

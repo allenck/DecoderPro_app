@@ -6,6 +6,7 @@
 #include "block.h"
 #include "blockmanager.h"
 #include "instancemanager.h"
+#include "jmriexception.h"
 
 /**
  *
@@ -23,7 +24,7 @@
 }
 
 //@Override
-/*public*/ void JsonBlockSocketService::onMessage(QString type, QJsonObject data,  QLocale locale) throw (IOException, JmriException, JsonException) {
+/*public*/ void JsonBlockSocketService::onMessage(QString type, QJsonObject data,  QLocale locale)  {
     this->locale = locale;
     QString name = data.value(JSON::NAME).toString();
     if (data.value(JSON::METHOD).toString() == (JSON::PUT)) {
@@ -43,7 +44,7 @@
 }
 
 //@Override
-/*public*/ void JsonBlockSocketService::onList(QString type, QJsonObject /*data*/,  QLocale locale) throw (IOException, JmriException, JsonException) {
+/*public*/ void JsonBlockSocketService::onList(QString type, QJsonObject /*data*/,  QLocale locale) /*throw (IOException, JmriException, JsonException)*/ {
     this->locale = locale;
     this->connection->sendMessage(this->service->doGetList(type, locale));
 }

@@ -1,6 +1,7 @@
 #include "powerbuttonaction.h"
 #include "abstractpowermanager.h"
 #include "instancemanager.h"
+#include "jmriexception.h"
 
 /**
  * Swing action to create and register a PowerPanelFrame object.

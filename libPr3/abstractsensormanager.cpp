@@ -2,6 +2,7 @@
 #include <QDebug>
 #include "abstractmanager.h"
 #include "sensor.h"
+#include "jmriexception.h"
 
 
 AbstractSensorManager::AbstractSensorManager(QObject *parent) :

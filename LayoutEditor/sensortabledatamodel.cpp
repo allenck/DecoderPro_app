@@ -18,6 +18,7 @@
 #include "sensoreditaction.h"
 #include "xtablecolumnmodel.h"
 #include "loggerfactory.h"
+#include "jmriexception.h"
 
 SensorTableDataModel::SensorTableDataModel(QObject *parent) :
     BeanTableDataModel(parent)

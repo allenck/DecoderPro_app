@@ -19,6 +19,7 @@
 #include "bufferedimage.h"
 #include "guilafpreferencesmanager.h"
 #include "fileutil.h"
+#include "jmriexception.h"
 
 /**
  *

@@ -2,6 +2,7 @@
 #include "instancemanager.h"
 #include "lnpr2throttlemanager.h"
 #include "lnopsmodeprogrammer.h"
+#include "jmriexception.h"
 
 /**
  * PowerManager implementation for controlling layout power via PR2.

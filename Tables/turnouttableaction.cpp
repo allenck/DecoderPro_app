@@ -49,6 +49,7 @@
 #include <QHeaderView>
 #include "systemnamevalidator.h"
 #include "turnouttabledatamodel.h"
+#include "jmriexception.h"
 
 TurnoutTableAction::TurnoutTableAction(QObject *parent) :
     AbstractTableAction("Turnout Table", parent)

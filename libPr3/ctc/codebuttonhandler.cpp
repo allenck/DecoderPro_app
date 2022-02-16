@@ -15,6 +15,7 @@
 #include "turnoutlock.h"
 #include "indicationlockingsignals.h"
 #include "trafficlocking.h"
+#include "jmriexception.h"
 
 
 CodeButtonHandler::CodeButtonHandler(QObject *parent) : QObject(parent)

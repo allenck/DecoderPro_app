@@ -40,11 +40,8 @@
 #include "scriptoutput.h"
 #include "scriptexception.h"
 #include "../JavaQt/bitset.h"
+#include "jmriexception.h"
 
-//DefaultConditional::DefaultConditional(QObject *parent) :
-//    AbstractNamedBean(parent)
-//{
-//}
 /**
  * Class providing the basic logic of the Conditional interface.
  * This file is part of JMRI.

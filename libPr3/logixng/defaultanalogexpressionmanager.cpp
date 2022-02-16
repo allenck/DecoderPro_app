@@ -14,6 +14,7 @@
 #include "defaultfemaleanalogexpressionsocketfactory.h"
 #include "maleanalogexpressionsocketfactory.h"
 #include "defaultfemaleanalogexpressionsocket.h"
+#include "defaultmaleanalogexpressionsocket.h"
 
 /**
  * Class providing the basic logic of the ExpressionManager interface.
@@ -56,7 +57,7 @@
 
         bList = {new MaleAnalogExpressionSocketFactory()};
         for (MaleAnalogExpressionSocketFactory* maleSocketFactory : /*ServiceLoader.load(MaleAnalogExpressionSocketFactory.class)*/bList) {
-            _maleSocketFactories.>append(maleSocketFactory);
+            _maleSocketFactories.append(maleSocketFactory);
         }
     }
 
@@ -68,7 +69,7 @@
 
     /*protected*/ MaleAnalogExpressionSocket* DefaultAnalogExpressionManager::createMaleAnalogExpressionSocket(AnalogExpressionBean* expression) {
         MaleAnalogExpressionSocket* socket = new DefaultMaleAnalogExpressionSocket(this, expression);
-        expression->setParent((MaleAnalogExpressionSocket*)socket->self());
+        expression->setParent((MaleAnalogExpressionSocket*)socket->Base::self());
         return socket;
     }
 
@@ -80,9 +81,9 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  MaleAnalogExpressionSocket* DefaultAnalogExpressionManager::registerBean(MaleAnalogExpressionSocket* maleSocket) {
+    /*public*/  MaleAnalogExpressionSocket* DefaultAnalogExpressionManager::registerBean(/*MaleAnalogExpressionSocket*/NamedBean* maleSocket) {
         MaleAnalogExpressionSocket* bean = (MaleAnalogExpressionSocket*)AbstractBaseManager::registerBean(maleSocket);
-        _lastRegisteredBean = maleSocket;
+        _lastRegisteredBean = (MaleSocket*)maleSocket;
         return bean;
     }
 

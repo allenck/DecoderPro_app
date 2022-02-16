@@ -4,6 +4,7 @@
 #include "proxylightmanager.h"
 #include "light.h"
 #include "instancemanager.h"
+#include "jmriexception.h"
 
 /**
  *
@@ -20,7 +21,7 @@
 }
 
 //@Override
-/*public*/ void JsonLightSocketService::onMessage(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException) {
+/*public*/ void JsonLightSocketService::onMessage(QString type, QJsonObject data, QLocale locale) /*throw (IOException, JmriException, JsonException)*/ {
     this->locale = locale;
     QString name = data.value(JSON::NAME).toString();
     if (data.value(JSON::METHOD).toString()==(JSON::PUT)) {
@@ -40,7 +41,7 @@
 }
 
 //@Override
-/*public*/ void JsonLightSocketService::onList(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException) {
+/*public*/ void JsonLightSocketService::onList(QString type, QJsonObject data, QLocale locale)  {
     this->locale = locale;
     this->connection->sendMessage(this->service->doGetList(type, locale));
 }

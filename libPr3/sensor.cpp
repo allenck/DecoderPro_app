@@ -1,5 +1,6 @@
 #include "sensor.h"
 #include "loggerfactory.h"
+#include "jmriexception.h"
 
 //Sensor::Sensor(QObject *parent)
 //{

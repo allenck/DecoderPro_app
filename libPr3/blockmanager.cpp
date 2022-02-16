@@ -10,6 +10,8 @@
 #include "loggerfactory.h"
 #include "abstractsensormanager.h"
 #include "abstractreportermanager.h"
+#include "jmriexception.h"
+
 /**
  * Basic Implementation of a BlockManager.
  * <P>

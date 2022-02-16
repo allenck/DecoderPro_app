@@ -26,6 +26,7 @@
 #include "instancemanager.h"
 #include "joptionpane.h"
 #include "rampdata.h"
+#include "jmriexception.h"
 
 //NXFrame::NXFrame(QWidget *parent) :
 //  WarrantRoute(parent)

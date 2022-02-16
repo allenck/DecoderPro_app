@@ -51,7 +51,7 @@
     }
 }
 
-/*public*/ Turnout* AbstractTurnoutServer::initTurnout(QString turnoutName) throw (IllegalArgumentException) {
+/*public*/ Turnout* AbstractTurnoutServer::initTurnout(QString turnoutName)  {
     Turnout* turnout = InstanceManager::turnoutManagerInstance()->provideTurnout(turnoutName);
     this->addTurnoutToList(turnoutName);
     return turnout;

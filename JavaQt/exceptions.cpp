@@ -8,17 +8,17 @@
 
 //QString Exception::getLocalizedMessage() { return "default localized message!";}
 
-LocoNetException::LocoNetException(QString m) : JmriException(m)
-{
- msg = m;
-}
+//LocoNetException::LocoNetException(QString m) : JmriException(m)
+//{
+// msg = m;
+//}
 /**
  *  LocoNet-specific exception
  *
  * @author			Bob Jacobsen  Copyright (C) 2001
  * @version	$Revision: 17977 $
  */
-QString LocoNetException::getText() {return msg;}
+//QString LocoNetException::getText() {return msg;}
 
 EOFException::EOFException(QString msg)
 {
@@ -42,16 +42,16 @@ LocoNetMessageException::LocoNetMessageException(QString s)
 {
  msg = s;
 }
-JmriException::JmriException() {}
-JmriException::JmriException(QString s)
-{
- msg = s;
-}
+//JmriException::JmriException() {}
+//JmriException::JmriException(QString s)
+//{
+// msg = s;
+//}
 
-QString JmriException::toString()
-{
- return msg;
-}
+//QString JmriException::toString()
+//{
+// return msg;
+//}
 
 NoSuchElementException::NoSuchElementException(QString s) {msg = s;}
 
@@ -112,8 +112,8 @@ JDOMException::JDOMException(QString s){msg = s;}
 FileNotFoundException::FileNotFoundException(QString s){msg=s;}
 ParseException::ParseException(QString s){msg=s;}
 PortInUseException::PortInUseException(QString s) {msg=s;}
-JmriConfigureXmlException::JmriConfigureXmlException(QString s) : JmriException(s) {msg =s;}
-JmriConfigureXmlException::JmriConfigureXmlException(QString s, Throwable e) : JmriException(s) {msg =s; this->e = e;}
+//JmriConfigureXmlException::JmriConfigureXmlException(QString s) : JmriException(s) {msg =s;}
+//JmriConfigureXmlException::JmriConfigureXmlException(QString s, Throwable e) : JmriException(s) {msg =s; this->e = e;}
 ClassNotFoundException::ClassNotFoundException(QString s) {msg=s;}
 NoClassDefFoundError::NoClassDefFoundError(QString s) {msg=s;}
 IllegalAccessException::IllegalAccessException(QString s) {msg=s;}

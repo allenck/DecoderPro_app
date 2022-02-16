@@ -5,6 +5,7 @@
 #include "instancemanagerautodefault.h"
 #include "Analogexpressionbean.h"
 #include "maleanalogexpressionsocket.h"
+#include "analogexpressionmanager.h"
 
 class MaleAnalogExpressionSocketFactory;
 class AnalogExpressionAnalogIO;
@@ -13,16 +14,16 @@ class FemaleSocketListener;
 class FemaleAnalogExpressionSocket;
 class Base;
 class Category;
-class DefaultAnalogExpressionManager : public AbstractBaseManager, public InstanceManagerAutoDefault
+class DefaultAnalogExpressionManager : public AbstractBaseManager, public AnalogExpressionManager, public InstanceManagerAutoDefault
 {
   Q_OBJECT
-  Q_INTERFACES(InstanceManagerAutoDefault)
+  Q_INTERFACES(AnalogExpressionManager InstanceManagerAutoDefault)
  public:
   explicit DefaultAnalogExpressionManager(QObject *parent = nullptr);
-  /*public*/  /*Class<? extends MaleSocket>*/QString getMaleSocketClass();
+  /*public*/  /*Class<? extends MaleSocket>*/QString getMaleSocketClass()override;
   /*public*/  MaleSocket* getLastRegisteredMaleSocket()override;
-  /*public*/  MaleAnalogExpressionSocket* registerBean(MaleAnalogExpressionSocket* maleSocket);
-  /*public*/  MaleAnalogExpressionSocket* registerExpression(/*@Nonnull*/ AnalogExpressionBean* expression);
+  /*public*/  MaleAnalogExpressionSocket* registerBean(/*MaleAnalogExpressionSocket**/NamedBean* maleSocket)override;
+  /*public*/  MaleAnalogExpressionSocket* registerExpression(/*@Nonnull*/ AnalogExpressionBean* expression)override;
   /*public*/  int getXMLOrder() const override;
   /*public*/  QString getBeanTypeHandled() const override;
   /*public*/  void deleteAnalogExpression(MaleAnalogExpressionSocket* x);

@@ -76,16 +76,16 @@ ThreadingUtil::ThreadingUtil(QObject *parent) : QObject(parent)
     static /*public*/ Timer runOnLayoutDelayed(@Nonnull ThreadAction ta, int delay) {
         return runOnGUIDelayed(ta, delay);
     }
-
+#endif
     /**
      * Check if on the layout-operation thread.
      *
      * @return true if on the layout-operation thread
      */
-    static /*public*/ bool isLayoutThread() {
+    /*static*/ /*public*/ bool ThreadingUtil::isLayoutThread() {
         return isGUIThread();
     }
-#endif
+
     /**
      * Run some GUI-specific code before returning
      * <p>
@@ -217,16 +217,17 @@ ThreadingUtil::ThreadingUtil(QObject *parent) : QObject(parent)
         timer.start();
         return timer;
     }
-
+#endif
     /**
      * Check if on the GUI event dispatch thread.
      *
      * @return true if on the event dispatch thread
      */
-    static /*public*/ bool isGUIThread() {
-        return SwingUtilities.isEventDispatchThread();
+    /*static*/ /*public*/ bool ThreadingUtil::isGUIThread() {
+        //return SwingUtilities.isEventDispatchThread();
+     return QThread::currentThread() == QCoreApplication::instance()->thread();
     }
-#endif
+
     /**
      * Create a new thread in the JMRI group
      * @param runner Runnable.

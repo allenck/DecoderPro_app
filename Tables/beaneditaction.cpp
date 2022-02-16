@@ -29,6 +29,7 @@
 #include "jtabbedpane.h"
 #include "userpreferencesmanager.h"
 #include "jtextpane.h"
+#include "jmriexception.h"
 
 BeanEditAction::BeanEditAction(QObject *parent) :
   AbstractAction("Bean Edit", parent)

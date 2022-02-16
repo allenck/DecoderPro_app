@@ -23,7 +23,7 @@
 }
 
 //@Override
-/*public*/ void JsonConsistSocketService::onMessage(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException) {
+/*public*/ void JsonConsistSocketService::onMessage(QString type, QJsonObject data, QLocale locale)  {
     this->locale = locale;
     if (JSON::CONSISTS == (type)) {
         this->connection->sendMessage(this->service->doGetList(type, locale));
@@ -43,7 +43,7 @@
 }
 
 //@Override
-/*public*/ void JsonConsistSocketService::onList(QString type, QJsonObject data, QLocale /*locale*/) throw (IOException, JmriException, JsonException) {
+/*public*/ void JsonConsistSocketService::onList(QString type, QJsonObject data, QLocale /*locale*/) /*throw (IOException, JmriException, JsonException)*/ {
     this->locale = locale;
     this->connection->sendMessage(this->service->doGetList(type, locale));
 }

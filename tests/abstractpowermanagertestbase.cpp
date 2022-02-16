@@ -1,6 +1,7 @@
 #include "abstractpowermanagertestbase.h"
 #include "assert1.h"
 #include "powermanager.h"
+#include "jmriexception.h"
 
 AbstractPowerManagerTestBase::AbstractPowerManagerTestBase(QObject *parent) : QObject(parent)
 {

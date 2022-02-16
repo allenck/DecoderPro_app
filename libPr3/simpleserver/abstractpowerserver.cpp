@@ -3,6 +3,7 @@
 #include "powermanager.h"
 #include "instancemanager.h"
 #include "propertychangeevent.h"
+#include "jmriexception.h"
 
 /**
  * Abstract interface between the JMRI power manager and a network connection

@@ -1,6 +1,7 @@
 #include "namedbeanhandlemanager.h"
 #include "swingpropertychangesupport.h"
 #include "abstractnamedbean.h"
+#include "jmriexception.h"
 
 NamedBeanHandleManager::NamedBeanHandleManager(QObject *parent) :
     AbstractNamedBeanHandleManager(parent)

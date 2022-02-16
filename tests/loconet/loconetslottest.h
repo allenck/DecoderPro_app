@@ -4,6 +4,7 @@
 #include <QObject>
 #include "exceptions.h"
 #include "slotlistener.h"
+#include "loconetexception.h"
 
 class LocoNetInterfaceScaffold;
 class LocoNetSlotTest : public QObject

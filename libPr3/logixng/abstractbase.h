@@ -26,20 +26,20 @@ class AbstractBase : public AbstractNamedBean, public Base
           PrintTreeSettings* settings,
           PrintWriter* writer,
           QString indent,
-          /*MutableInt*/int lineNumber)override;
+          /*MutableInt*/int* lineNumber)override;
   /*public*/ void printTree(
           PrintTreeSettings* settings,
           QLocale locale,
           PrintWriter* writer,
           QString indent,
-          /*MutableInt*/int lineNumber)override;
+          /*MutableInt*/int* lineNumber)override;
   /*public*/ void printTree(
           PrintTreeSettings* settings,
           QLocale locale,
           PrintWriter* writer,
           QString indent,
           QString currentIndent,
-          /*MutableInt*/int lineNumber)override;
+          /*MutableInt*/int* lineNumber)override;
   /*public*/ void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override;
   /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override;
   /*public*/ int compareSystemNameSuffix(/*@Nonnull*/ QString suffix1, /*@Nonnull*/ QString suffix2, /*@Nonnull*/ NamedBean* n)override;

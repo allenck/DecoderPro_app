@@ -19,7 +19,7 @@
 }
 
 //@Override
-/*public*/ void JsonSignalHeadSocketService::onMessage(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException)
+/*public*/ void JsonSignalHeadSocketService::onMessage(QString type, QJsonObject data, QLocale locale)
 {
  this->locale = locale;
  QString name = data.value(JSON::NAME).toString();
@@ -45,7 +45,7 @@
 }
 
 //@Override
-/*public*/ void JsonSignalHeadSocketService::onList(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException) {
+/*public*/ void JsonSignalHeadSocketService::onList(QString type, QJsonObject data, QLocale locale) /*throw (IOException, JmriException, JsonException)*/ {
     this->locale = locale;
     this->connection->sendMessage(this->service->doGetList(type, locale));
 }

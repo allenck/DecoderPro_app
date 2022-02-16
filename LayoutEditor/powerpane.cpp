@@ -5,6 +5,7 @@
 #include "powermanager.h"
 #include <QGridLayout>
 #include "abstractpowermanager.h"
+#include "jmriexception.h"
 
 //PowerPane::PowerPane(QWidget *parent) :
 //    JmriPanel(parent)

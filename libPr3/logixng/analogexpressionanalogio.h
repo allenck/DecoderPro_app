@@ -41,7 +41,7 @@ class AnalogExpressionAnalogIO : public AbstractAnalogExpression, public Propert
 
  private:
   /*private*/ NamedBeanHandle<AnalogIO*>* _analogIOHandle;
-
+ static Logger* log;
  protected:
 };
 

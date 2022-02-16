@@ -17,8 +17,8 @@ public:
 
  /*abstract*/ virtual  /*public*/ void sendErrorStatus(QString turnoutName) /*throw (IOException)*/ {}
 
- /*abstract*/ virtual  /*public*/ void parseStatus(QString statusString) throw (JmriException, IOException) {}
- /*public*/ Turnout* initTurnout(QString turnoutName) throw (IllegalArgumentException);
+ /*abstract*/ virtual  /*public*/ void parseStatus(QString statusString) /*throw (JmriException, IOException)*/ {}
+ /*public*/ Turnout* initTurnout(QString turnoutName) /*throw (IllegalArgumentException)*/;
  /*public*/ void closeTurnout(QString turnoutName);
  /*public*/ void throwTurnout(QString turnoutName);
  /*public*/ void dispose();

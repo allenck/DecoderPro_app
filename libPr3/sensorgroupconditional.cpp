@@ -4,10 +4,8 @@
 #include "instancemanager.h"
 #include "proxysensormanager.h"
 #include "conditionalaction.h"
-//SensorGroupConditional::SensorGroupConditional(QObject *parent) :
-//    DefaultConditional(parent)
-//{
-//}
+#include "jmriexception.h"
+
 /**
  * Conditional.java
  *

@@ -8,11 +8,12 @@
 #include "loconetconsist.h"
 #include "assert1.h"
 #include "consistpreferencesmanager.h"
+#include "loconetexception.h"
 
 LocoNetConsistTest::LocoNetConsistTest(QObject *parent) : AbstractConsistTestBase(parent)
 {
-
 }
+
 /**
  *
  * @author	Paul Bender Copyright (C) 2016,2017

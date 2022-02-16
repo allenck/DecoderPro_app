@@ -36,6 +36,7 @@
 #include "printwriter.h"
 #include <QDesktopServices>
 #include <QPushButton>
+#include "jmriexception.h"
 
 /* static private*/ HelpUtil* HelpUtil::thisMenu = NULL;
 HelpBroker*  HelpUtil::globalHelpBroker = NULL;

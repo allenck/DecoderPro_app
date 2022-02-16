@@ -3,6 +3,7 @@
 #include "instancemanager.h"
 #include "projectscommonsubs.h"
 #include "ctcmanager.h"
+#include "jmriexception.h"
 
 /**
  * This object attempts to "extend" (implements) Sensor functionality that

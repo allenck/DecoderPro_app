@@ -19,6 +19,7 @@
 #include "beaneditaction.h"
 #include <QMessageBox>
 #include "beanedititem.h"
+#include "jmriexception.h"
 
 BlockEditAction::BlockEditAction(QObject *parent) :
   BeanEditAction(parent)

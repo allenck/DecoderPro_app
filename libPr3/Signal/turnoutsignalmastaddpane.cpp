@@ -11,6 +11,7 @@
 #include <QGroupBox>
 #include "turnoutsignalmast.h"
 #include "signalmastmanager.h"
+#include "jmriexception.h"
 
 /**
  * A pane for configuring TurnoutSignalMast objects

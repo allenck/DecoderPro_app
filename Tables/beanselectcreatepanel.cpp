@@ -13,6 +13,7 @@
 #include "connectionnamefromsystemname.h"
 #include "proxymanager.h"
 #include "proxylightmanager.h"
+#include "jmriexception.h"
 
 //BeanSelectCreatePanel::BeanSelectCreatePanel(QWidget *parent) :
 //    QWidget(parent)

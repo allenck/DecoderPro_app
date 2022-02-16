@@ -14,6 +14,7 @@
 #include "joptionpane.h"
 #include "oblock.h"
 #include "sensordebounceeditaction.h"
+#include "jmriexception.h"
 
 class OBlockEditAction : public BeanEditAction
 {

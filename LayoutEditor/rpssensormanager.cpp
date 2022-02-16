@@ -3,6 +3,8 @@
 #include "loggerfactory.h"
 #include "rpssensor.h"
 #include "distributor.h"
+#include "jmriexception.h"
+
 /**
  * Manage the RPS-specific Sensor implementation.
  * <p>

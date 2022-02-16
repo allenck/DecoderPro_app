@@ -6,6 +6,7 @@
 #include "flowlayout.h"
 #include <QScrollArea>
 #include <QMessageBox>
+#include "jmriexception.h"
 
 AbstractBoardProgPanel::AbstractBoardProgPanel(QWidget *parent) :
   LnPanel(parent)

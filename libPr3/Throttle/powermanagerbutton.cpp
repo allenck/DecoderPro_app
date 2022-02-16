@@ -2,6 +2,7 @@
 #include "instancemanager.h"
 #include "../../LayoutEditor/powerpane.h"
 #include "abstractpowermanager.h"
+#include "jmriexception.h"
 
 PowerManagerButton::PowerManagerButton(QWidget *parent) :
     QToolButton(parent)

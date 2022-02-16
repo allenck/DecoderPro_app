@@ -5,6 +5,7 @@
 #include "instancemanager.h"
 #include "proxysensormanager.h"
 #include "sensor.h"
+#include "jmriexception.h"
 
 /**
  * JSON Socket service for {@link jmri.Sensor}s.
@@ -22,7 +23,7 @@
 }
 
 //@Override
-/*public*/ void JsonSensorSocketService::onMessage(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException) {
+/*public*/ void JsonSensorSocketService::onMessage(QString type, QJsonObject data, QLocale locale) /*throw (IOException, JmriException, JsonException)*/ {
     this->locale = locale;
     QString name = data.value(JSON::NAME).toString();
     if (data.value(JSON::METHOD).toString() == (JSON::PUT))
@@ -44,7 +45,7 @@
 }
 
 //@Override
-/*public*/ void JsonSensorSocketService::onList(QString type, /*JsonNode*/ QJsonObject /*data*/, QLocale locale) throw (IOException, JmriException, JsonException) {
+/*public*/ void JsonSensorSocketService::onList(QString type, /*JsonNode*/ QJsonObject /*data*/, QLocale locale)  {
     this->locale = locale;
     this->connection->sendMessage(this->service->doGetList(type, locale));
 }

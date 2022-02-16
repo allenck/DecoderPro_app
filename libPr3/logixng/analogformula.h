@@ -14,8 +14,20 @@ class AnalogFormula : public AbstractAnalogExpression, public FemaleSocketListen
   Q_OBJECT
   Q_INTERFACES(FemaleSocketListener)
  public:
-  explicit AnalogFormula(/*@Nonnull*/ QString sys, /*@CheckForNull*/ QString user, QObject* parent=nullptr);
-  /*public*/AnalogFormula(/*@Nonnull*/ QString sys, /*@CheckForNull*/ QString user, QList<SocketData*> expressionSystemNames, QObject *parent = nullptr);
+  /*public*/  /*static*/ class SocketData {
+      /*public*/  /*final*/ QString _socketName;
+      /*public*/  /*final*/ QString _socketSystemName;
+      /*public*/  /*final*/ QString _manager;
+
+      /*public*/  SocketData(QString socketName, QString socketSystemName, QString manager) {
+          _socketName = socketName;
+          _socketSystemName = socketSystemName;
+          _manager = manager;
+      }
+     friend class AnalogFormula;
+  };
+   AnalogFormula(/*@Nonnull*/ QString sys, /*@CheckForNull*/ QString user, QObject* parent=nullptr);
+  /*public*/ AnalogFormula(/*@Nonnull*/ QString sys, /*@CheckForNull*/ QString user, QList<SocketData*> expressionSystemNames, QObject *parent = nullptr);
   /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/override;
   /*public*/  QString getExpressionSystemName(int index);
   /*public*/  QString getExpressionManager(int index);
@@ -37,17 +49,6 @@ class AnalogFormula : public AbstractAnalogExpression, public FemaleSocketListen
   /*public*/  void registerListenersForThisClass()override;
   /*public*/  void unregisterListenersForThisClass()override;
   /*public*/  void disposeMe() override;
-  /*public*/  /*static*/ class SocketData {
-      /*public*/  /*final*/ QString _socketName;
-      /*public*/  /*final*/ QString _socketSystemName;
-      /*public*/  /*final*/ QString _manager;
-
-      /*public*/  SocketData(QString socketName, QString socketSystemName, QString manager) {
-          _socketName = socketName;
-          _socketSystemName = socketSystemName;
-          _manager = manager;
-      }
-  };
   /* This class is public since ExpressionFormulaXml needs to access it. */
   /*public*/ /*static*/ class ExpressionEntry {
       /*private*/ /*final*/ FemaleGenericExpressionSocket* _socket;
@@ -65,6 +66,7 @@ class AnalogFormula : public AbstractAnalogExpression, public FemaleSocketListen
       }
    friend class AnalogFormula;
   };
+   QObject* self() override{return (QObject*)this;}
 
  private:
   static Logger* log;

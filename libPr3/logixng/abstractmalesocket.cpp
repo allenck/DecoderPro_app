@@ -450,7 +450,7 @@
     /*public*/ void AbstractMaleSocket::printTree(PrintTreeSettings *settings,
             PrintWriter* writer,
             QString indent,
-            /*MutableInt*/int lineNumber) {
+            /*MutableInt*/int *lineNumber) {
         printTree(settings, QLocale(), writer, indent, "", lineNumber);
     }
 
@@ -461,7 +461,7 @@
             QLocale locale,
             PrintWriter* writer,
             QString indent,
-            /*MutableInt*/int lineNumber) {
+            /*MutableInt*/int* lineNumber) {
         printTree(settings, locale, writer, indent, "", lineNumber);
     }
 
@@ -473,7 +473,7 @@
             PrintWriter* writer,
             QString indent,
             QString currentIndent,
-            /*MutableInt*/int lineNumber) {
+            /*MutableInt*/int* lineNumber) {
 
         printTreeRow(settings, locale, writer, currentIndent, lineNumber);
 

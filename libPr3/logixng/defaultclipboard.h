@@ -58,20 +58,20 @@ class MyDefaultFemaleAnySocket : public DefaultFemaleAnySocket
           PrintTreeSettings* settings,
           PrintWriter* writer,
           QString indent,
-    /*MutableInt*/int  lineNumber)override {return AbstractFemaleSocket::printTree(settings, writer, indent, lineNumber);}
+    /*MutableInt*/int*  lineNumber)override {return AbstractFemaleSocket::printTree(settings, writer, indent, lineNumber);}
   /*public*/ void printTree(
           PrintTreeSettings* settings,
           QLocale locale,
           PrintWriter* writer,
           QString indent,
-          /*MutableInt*/int  lineNumber)override {return AbstractFemaleSocket::printTree(settings, locale,writer,indent, lineNumber );}
+          /*MutableInt*/int*  lineNumber)override {return AbstractFemaleSocket::printTree(settings, locale,writer,indent, lineNumber );}
   /*public*/ void printTree(
           PrintTreeSettings* settings,
           QLocale locale,
           PrintWriter* writer,
           QString indent,
           QString currentIndent,
-          /*MutableInt*/int  lineNumber)override {return AbstractFemaleSocket::printTree(settings, locale, writer,indent, lineNumber);}
+          /*MutableInt*/int*  lineNumber)override {return AbstractFemaleSocket::printTree(settings, locale, writer,indent, lineNumber);}
   /*public*/ void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override
     {return AbstractFemaleSocket::getUsageTree(level,  bean, report, cdl);}
   /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override

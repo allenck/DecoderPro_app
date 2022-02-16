@@ -380,7 +380,7 @@ class Base;
     /*public*/ /*default*/ void printTree(
             PrintWriter* writer,
             QString indent,
-            /*MutableInt*/int lineNumber) {
+            /*MutableInt*/int* lineNumber) {
         printTree(new PrintTreeSettings(), writer, indent, lineNumber);
     }
 
@@ -396,7 +396,7 @@ class Base;
             PrintTreeSettings* settings,
             PrintWriter* writer,
             QString indent,
-    /*MutableInt*/int lineNumber) {}
+    /*MutableInt*/int* lineNumber) {}
 
     /**
      * Print the tree to a stream.
@@ -410,7 +410,7 @@ class Base;
             QLocale locale,
             PrintWriter* writer,
             QString indent,
-            /*MutableInt*/int lineNumber) {
+            /*MutableInt*/int* lineNumber) {
         printTree(new PrintTreeSettings(), locale, writer, indent, lineNumber);
     }
 
@@ -428,7 +428,7 @@ class Base;
             QLocale locale,
             PrintWriter* writer,
             QString indent,
-    /*MutableInt*/int lineNumber){}
+    /*MutableInt*/int* lineNumber){}
 
     /**
      * Print the tree to a stream.
@@ -446,7 +446,7 @@ class Base;
             PrintWriter* writer,
             QString indent,
             QString currentIndent,
-    /*MutableInt*/int lineNumber){}
+    /*MutableInt*/int* lineNumber){}
 
     /**
      * Navigate the LogixNG tree.

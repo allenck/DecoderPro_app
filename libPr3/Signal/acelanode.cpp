@@ -5,6 +5,7 @@
 #include "acelamessage.h"
 #include "acelareply.h"
 #include "acelatrafficcontroller.h"
+#include "jmriexception.h"
 
 /**
  *

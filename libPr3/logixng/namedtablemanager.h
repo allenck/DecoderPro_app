@@ -127,7 +127,7 @@
      *
      * @param x the NamedTable to delete
      */
-    void deleteNamedTable(NamedTable* x);
+    virtual void deleteNamedTable(NamedTable* x)=0;
 
     /**
      * Print the tree to a stream.

@@ -18,6 +18,8 @@
 #include "vptr.h"
 #include "namedbeancomparator.h"
 #include "abstractturnoutmanager.h"
+#include "jmriexception.h"
+
 /**
  * Implementation of a Manager that can serves as a proxy for multiple
  * system-specific implementations.

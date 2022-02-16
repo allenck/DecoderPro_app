@@ -56,7 +56,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  Category::TYPE AnalogExpressionMemory::getCategory() {
-        return Category::ITEM;
+        return Category::TYPE::ITEM;
     }
 
     /*public*/  void AnalogExpressionMemory::setMemory(/*@Nonnull*/ QString memoryName) {

@@ -6,6 +6,7 @@
 #include "focuslistener.h"
 #include "jtextfield.h"
 #include "propertychangelistener.h"
+#include "jmriexception.h"
 
 class PropertyChangeEvent;
 class JLabel;

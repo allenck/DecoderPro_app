@@ -4,6 +4,7 @@
 #include "logger.h"
 #include "loggerfactory.h"
 #include "controllerinterface.h"
+#include "jmriexception.h"
 
 /**
  * Handle two-way communications regarding track power.

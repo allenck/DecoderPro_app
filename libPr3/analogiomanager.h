@@ -6,8 +6,9 @@
  *
  * @author Daniel Bergqvist Copyright (C) 2020
  */
-/*public*/  /*interface*/class AnalogIOManager : Manager/*<AnalogIO>*/ {
+/*public*/  /*interface*/class AnalogIOManager : public Manager/*<AnalogIO>*/ {
 Q_INTERFACES(Manager)
+ public:
     /**
      * Add a type of NamedBean, for example VariableLight, that should be also registred in AnalogIOManager.
      * @param clazz the NamedBean class that should be registered in this manager

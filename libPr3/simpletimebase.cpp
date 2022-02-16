@@ -8,6 +8,7 @@
 //#include "../LayoutEditor/lcdclockframe.h"
 //#include "../LayoutEditor/analogclock2display.h"
 #include "defaultclockcontrol.h"
+#include "jmriexception.h"
 
 //SimpleTimebase::SimpleTimebase(QObject *parent) :
 //    AbstractNamedBean(parent)

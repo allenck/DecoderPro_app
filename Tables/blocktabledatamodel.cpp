@@ -14,6 +14,7 @@
 #include "imageio.h"
 #include "file.h"
 #include "fileutil.h"
+#include "jmriexception.h"
 
 /**
  * Data model for a Block Table.

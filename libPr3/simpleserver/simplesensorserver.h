@@ -13,7 +13,7 @@ public:
  /*public*/ SimpleSensorServer(QDataStream* inStream, QDataStream* outStream, QObject* parent= nullptr);
  /*public*/ void sendStatus(QString sensorName, int Status) /*throw (IOException)*/;
  /*public*/ void sendErrorStatus(QString sensorName) /*throw (IOException)*/;
- /*public*/ void parseStatus(QString statusString) throw (JmriException, IOException);
+ /*public*/ void parseStatus(QString statusString) /*throw (JmriException, IOException)*/;
 
 
 private:

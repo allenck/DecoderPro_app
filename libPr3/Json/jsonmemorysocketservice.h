@@ -12,8 +12,8 @@ class JsonMemorySocketService : public JsonSocketService
  Q_OBJECT
 public:
  JsonMemorySocketService(JsonConnection* connection, QObject* parent = 0);
- /*public*/ void onMessage(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException);
- /*public*/ void onList(QString type, JsonNode data, QLocale locale) throw (IOException, JmriException, JsonException);
+ /*public*/ void onMessage(QString type, QJsonObject data, QLocale locale) /*throw (IOException, JmriException, JsonException)*/;
+ /*public*/ void onList(QString type, JsonNode data, QLocale locale) /*throw (IOException, JmriException, JsonException)*/;
  /*public*/ void onClose();
 
 private:

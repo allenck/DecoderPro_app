@@ -6,6 +6,7 @@
 #include "basemanager.h"
 #include "symboltable.h"
 #include "runtimeexception.h"
+#include "jmriexception.h"
 
 class AbstractMaleSocket :  public MaleSocket
 {
@@ -65,20 +66,19 @@ class AbstractMaleSocket :  public MaleSocket
           PrintTreeSettings* settings,
           PrintWriter* writer,
           QString indent,
-          /*MutableInt*/int lineNumber)override;
+          /*MutableInt*/int* lineNumber)override;
   /*public*/ void printTree(
           PrintTreeSettings* settings,
           QLocale locale,
           PrintWriter* writer,
           QString indent,
-          /*MutableInt*/int lineNumber) override;
-  /*public*/ void printTree(
-          PrintTreeSettings* settings,
+          /*MutableInt*/int* lineNumber) override;
+  /*public*/ void printTree(PrintTreeSettings* settings,
           QLocale locale,
           PrintWriter* writer,
           QString indent,
           QString currentIndent,
-          /*MutableInt*/int lineNumber)override;
+          /*MutableInt*/int *lineNumber)override;
   /*public*/ void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override;
   /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override;
   /*public*/ BaseManager/*<NamedBean*>*//*<? extends NamedBean>*/* getManager()override;

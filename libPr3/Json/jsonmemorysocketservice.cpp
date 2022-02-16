@@ -3,6 +3,8 @@
 #include "jsonmemoryhttpservice.h"
 #include "memorymanager.h"
 #include "instancemanager.h"
+#include "jmriexception.h"
+
 /**
  *
  * @author Randall Wood
@@ -18,7 +20,7 @@
 }
 
 //@Override
-/*public*/ void JsonMemorySocketService::onMessage(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException)
+/*public*/ void JsonMemorySocketService::onMessage(QString type, QJsonObject data, QLocale locale) /*throw (IOException, JmriException, JsonException)*/
 {
  this->locale = locale;
  QString name = data.value(JSON::NAME).toString();
@@ -44,7 +46,7 @@
 }
 
 //@Override
-/*public*/ void JsonMemorySocketService::onList(QString type, JsonNode /*data*/, QLocale locale) throw (IOException, JmriException, JsonException) {
+/*public*/ void JsonMemorySocketService::onList(QString type, JsonNode /*data*/, QLocale locale)  {
  this->locale = locale;
  this->connection->sendMessage(this->service->doGetList(type, locale));
  }

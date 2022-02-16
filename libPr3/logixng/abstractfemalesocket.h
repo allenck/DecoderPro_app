@@ -47,20 +47,20 @@ class AbstractFemaleSocket : public QObject, public FemaleSocket
           PrintTreeSettings* settings,
           PrintWriter* writer,
           QString indent,
-          /*MutableInt*/int  lineNumber)override;
+          /*MutableInt*/int*  lineNumber)override;
   /*public*/ void printTree(
           PrintTreeSettings* settings,
           QLocale locale,
           PrintWriter* writer,
           QString indent,
-          /*MutableInt*/int  lineNumber)override;
+          /*MutableInt*/int*  lineNumber)override;
   /*public*/ void printTree(
           PrintTreeSettings* settings,
           QLocale locale,
           PrintWriter* writer,
           QString indent,
           QString currentIndent,
-          /*MutableInt*/int  lineNumber)override;
+          /*MutableInt*/int*  lineNumber)override;
   /*public*/ void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override;
   /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override;
   /*public*/ void addPropertyChangeListener(PropertyChangeListener* listener)override;

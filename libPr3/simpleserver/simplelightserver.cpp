@@ -1,6 +1,7 @@
 #include "simplelightserver.h"
 #include <QTcpSocket>
 #include "loggerfactory.h"
+#include "jmriexception.h"
 
 /**
  * Simple Server interface between the JMRI light manager and a network
@@ -42,7 +43,7 @@
     }
 
     //@Override
-    /*public*/ void SimpleLightServer::parseStatus(QString statusString) throw (JmriException, IOException) {
+    /*public*/ void SimpleLightServer::parseStatus(QString statusString)  {
         int index;
         index = statusString.indexOf(" ") + 1;
         if (statusString.contains("ON")) {

@@ -46,9 +46,12 @@ SOURCES += javaqt.cpp \
     jframe.cpp \
     jinputvalidator.cpp \
     jinputvalidatorpreferences.cpp \
+    jmriconfigurexmlexception.cpp \
+    jmriexception.cpp \
     jscrollpane.cpp \
     jtextpane.cpp \
     jvetoablechangesupport.cpp \
+    loconetexception.cpp \
     loggerfactory.cpp \
     loggerbase.cpp \
     logger.cpp \
@@ -305,12 +308,15 @@ HEADERS += javaqt.h\
  jframe.h \
  jinputvalidator.h \
  jinputvalidatorpreferences.h \
+ jmriconfigurexmlexception.h \
+ jmriexception.h \
  jscrollpane.h \
     jtextarea.h \
     jseparator.h \
     abstractaction.h \
  jtextpane.h \
  jvetoablechangesupport.h \
+ loconetexception.h \
     logger.h \
     gridbagconstraints.h \
     insets.h \

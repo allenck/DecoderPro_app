@@ -4,6 +4,7 @@
 #include "sound.h"
 #include "jmriscriptenginemanager.h"
 #include "fileutil.h"
+#include "jmriexception.h"
 
 //DefaultRoute::DefaultRoute(QObject *parent) :
 //    AbstractNamedBean(parent)

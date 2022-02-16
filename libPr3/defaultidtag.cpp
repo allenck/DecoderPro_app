@@ -3,6 +3,7 @@
 #include "defaultidtagmanager.h"
 #include "rosterentry.h"
 #include "clockcontrol.h"
+#include "jmriexception.h"
 
 /**
  * Concrete implementation of the {@link jmri.IdTag} interface

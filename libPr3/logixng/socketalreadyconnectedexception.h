@@ -1,7 +1,7 @@
 #ifndef SOCKETALREADYCONNECTEDEXCEPTION_H
 #define SOCKETALREADYCONNECTEDEXCEPTION_H
-#include "exceptions.h"
-
+#include "jmriexception.h"
+#
 class SocketAlreadyConnectedException : public JmriException
 {
  public:

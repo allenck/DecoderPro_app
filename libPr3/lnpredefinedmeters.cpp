@@ -9,6 +9,8 @@
 #include "lniplimplementation.h"
 #include "defaultmeter.h"
 #include "proxymetermanager.h"
+#include "jmriexception.h"
+
 /**
  * Provide access to current and voltage meter from some LocoNet command stations
  *

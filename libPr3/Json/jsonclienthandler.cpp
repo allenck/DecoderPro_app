@@ -21,6 +21,7 @@
 #include "jsonreporterservicefactory.h"
 #include "jsonoperationsservicefactory.h"
 #include "jsonconsistservicefactory.h"
+#include "jmriexception.h"
 
 /**
  * When used as a parameter to {@link #onMessage(java.lang.String)}, will

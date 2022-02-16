@@ -9,6 +9,7 @@
 #include "sensor.h"
 #include "lnsensor.h"
 #include "junitappender.h"
+#include "jmriexception.h"
 
 LnSensorManagerTest::LnSensorManagerTest()
 {

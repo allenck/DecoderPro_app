@@ -14,6 +14,7 @@
 #include "jcomponent.h"
 #include "editscene.h"
 #include "liblayouteditor_global.h"
+#include "jmriexception.h"
 
 class Border;
 class LIBLAYOUTEDITORSHARED_EXPORT MyGraphicsItemGroup : public QGraphicsItemGroup

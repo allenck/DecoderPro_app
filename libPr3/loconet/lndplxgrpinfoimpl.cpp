@@ -3,6 +3,7 @@
 #include "loconetsystemconnectionmemo.h"
 #include "lndplxgrpinfoimplconstants.h"
 #include "lniplimplementation.h"
+#include "loconetexception.h"
 
 /**
  * Provides a low-level interface to Digitrax Duplex Group Identity information.

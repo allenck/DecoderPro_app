@@ -6,6 +6,7 @@
 #include "signalheadmanager.h"
 #include "vetoablechangesupport.h"
 #include "abstractsignalheadmanager.h"
+#include "jmriexception.h"
 
 DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
     SignalMastManager(parent)

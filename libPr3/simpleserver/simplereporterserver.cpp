@@ -53,7 +53,7 @@
 }
 
 //@Override
-/*public*/ void SimpleReporterServer::parseStatus(QString statusString) throw (JmriException, IOException) {
+/*public*/ void SimpleReporterServer::parseStatus(QString statusString)  {
     int index, index2;
     index = statusString.indexOf(" ") + 1;
     index2 = statusString.indexOf(" ", index + 1);

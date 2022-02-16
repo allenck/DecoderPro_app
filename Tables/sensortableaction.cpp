@@ -24,6 +24,7 @@
 #include "joptionpane.h"
 #include "colorutil.h"
 #include "internalsensormanager.h"
+#include "jmriexception.h"
 
 SensorTableAction::SensorTableAction(QObject *parent) :
     AbstractTableAction(tr("Sensor Table"), parent)

@@ -18,6 +18,8 @@ class ThreadingUtil : public QObject
   static /*public*/ /*<E>*/ E runOnGUIwithReturn(/*@Nonnull*/ /*ReturningThreadAction<E>*/ThreadAction* ta);
   static /*public*/ void runOnGUIEventually(/*@Nonnull*/ ThreadAction* ta) ;
   static /*public*/ void runOnLayout(/*@Nonnull*/ ThreadAction* ta);
+  static /*public*/ bool isLayoutThread();
+  static /*public*/ bool isGUIThread();
 
  signals:
 

@@ -12,6 +12,7 @@
 #include "simpleserver/simplelightserver.h"
 #include "simpleserver/simplesignalheadserver.h"
 #include "simpleserver/simplereporterserver.h"
+#include "jmriexception.h"
 
 /**
  * This is an implementation of a simple server for JMRI. There is currently no

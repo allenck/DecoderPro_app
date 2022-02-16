@@ -4,6 +4,7 @@
 #include "rpssystemconnectionmemo.h"
 #include "loggerfactory.h"
 #include "rpssystemconnectionmemo.h"
+#include "jmriexception.h"
 
 RpsReporterManager::RpsReporterManager(RpsSystemConnectionMemo* memo, QObject* parent) : AbstractReporterManager(memo, parent)
 {

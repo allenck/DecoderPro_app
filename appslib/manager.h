@@ -115,7 +115,7 @@ public:
  *
  * @return the class supported by this Manager.
  */
-/*public*/ /*abstract*/ virtual QString getNamedBeanClass()const =0;
+/*public*/ /*abstract*/ virtual QString getNamedBeanClass()const {return "";}
  /**
   * Get the prefix and type for the system name of the NamedBeans handled by
   * this manager.

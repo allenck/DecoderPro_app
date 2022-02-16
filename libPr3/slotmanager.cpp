@@ -8,6 +8,7 @@
 #include "csopswaccess.h"
 #include "timer.h"
 #include "timerutil.h"
+#include "loconetexception.h"
 
 /*final static protected*/ int SlotManager::NUM_SLOTS = 128;
 /*static*/ /*public*/ int SlotManager::postProgDelay = 100; // this is public to allow changes via script

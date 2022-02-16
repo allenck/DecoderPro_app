@@ -1,6 +1,8 @@
 #include "abstractanalogio.h"
 #include "limits.h"
 #include "math.h"
+#include "jmriexception.h"
+
 /**
  * Base implementation of the AnalogIO interface.
  *

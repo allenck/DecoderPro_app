@@ -3,6 +3,7 @@
 #include "instancemanager.h"
 #include "level.h"
 #include "userpreferencesmanager.h"
+#include "jmriexception.h"
 
 /**
  * Manage the LocoNet-specific Sensor implementation.

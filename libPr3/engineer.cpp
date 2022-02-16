@@ -13,6 +13,7 @@
 #include "blockorder.h"
 #include "warranttablemodel.h"
 #include "loggerfactory.h"
+#include "jmriexception.h"
 
 //Engineer::Engineer(QObject *parent) :
 //    QThread(parent)

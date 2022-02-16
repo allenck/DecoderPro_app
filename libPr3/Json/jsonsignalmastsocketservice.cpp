@@ -5,6 +5,8 @@
 #include "json.h"
 #include "signalmastmanager.h"
 #include "instancemanager.h"
+#include "jmriexception.h"
+
 /**
  *
  * @author Randall Wood (C) 2016
@@ -21,7 +23,7 @@
 }
 
 //@Override
-/*public*/ void JsonSignalMastSocketService::onMessage(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException) {
+/*public*/ void JsonSignalMastSocketService::onMessage(QString type, QJsonObject data, QLocale locale)  {
     this->locale = locale;
     QString name = data.value(JSON::NAME).toString();
     if (data.value(JSON::METHOD).toString() == (JSON::PUT)) {
@@ -41,7 +43,7 @@
 }
 
 //@Override
-/*public*/ void JsonSignalMastSocketService::onList(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException) {
+/*public*/ void JsonSignalMastSocketService::onList(QString type, QJsonObject data, QLocale locale) /*throw (IOException, JmriException, JsonException)*/ {
     this->locale = locale;
     this->connection->sendMessage(this->service->doGetList(type, locale));
 }

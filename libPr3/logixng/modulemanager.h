@@ -15,6 +15,7 @@ class MutableInt;
  */
 /*public*/ /*interface*/class ModuleManager : public Manager/*<Module>*/ {
  Q_INTERFACES(Manager)
+ public:
     /**
      * Create a new Module if the Module does not exist.
      *
@@ -59,7 +60,7 @@ class MutableInt;
      * Create a new system name for a Module.
      * @return a new system name
      */
-    /*public*/ virtual QString getAutoSystemName()=0;
+  /*public*/ virtual QString getAutoSystemName() {return "";}
 
     /**
      * Resolve all the Module trees.
@@ -114,7 +115,7 @@ class MutableInt;
             PrintTreeSettings* settings,
             PrintWriter* writer,
             QString indent,
-            MutableInt* lineNumber);
+            /*MutableInt*/int* lineNumber)=0;
 
     /**
      * Print the tree to a stream.
@@ -125,12 +126,12 @@ class MutableInt;
      * @param indent the indentation of each level
      * @param lineNumber the line number
      */
-    /*public*/ void printTree(
+    /*public*/ virtual void printTree(
             PrintTreeSettings* settings,
             QLocale locale,
             PrintWriter* writer,
             QString indent,
-            MutableInt lineNumber);
+            /*MutableInt*/int* lineNumber)=0;
 
     /**
      * Test if parameter is a properly formatted system name.

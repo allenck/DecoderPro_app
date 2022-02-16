@@ -1,6 +1,7 @@
 #include "abstractsensorserver.h"
 #include "instancemanager.h"
 #include "loggerfactory.h"
+#include "jmriexception.h"
 
 /**
  * Abstract interface between the a JMRI sensor and a network connection
@@ -46,7 +47,7 @@
     }
 }
 
-/*public*/ Sensor* AbstractSensorServer::initSensor(QString sensorName) throw (IllegalArgumentException) {
+/*public*/ Sensor* AbstractSensorServer::initSensor(QString sensorName)  {
     Sensor* sensor = InstanceManager::sensorManagerInstance()->provideSensor(sensorName);
     this->addSensorToList(sensorName);
     return sensor;

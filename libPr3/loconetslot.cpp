@@ -2,6 +2,7 @@
 #include "lnconstants.h"
 #include "Throttle/throttlewindow.h"
 #include "loggerfactory.h"
+#include "loconetexception.h"
 
 LocoNetSlot::LocoNetSlot(int slotNum, QObject *parent) :
     QObject(parent)

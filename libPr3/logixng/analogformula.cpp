@@ -11,6 +11,7 @@
 #include "typeconversionutil.h"
 #include "logixng_manager.h"
 #include "genericexpressionvariable.h"
+#include "conditionalng.h"
 
 /**
  * Evaluates to True if the formula evaluates to true
@@ -40,7 +41,7 @@
      * this formula uses
      */
     /*public*/  AnalogFormula::AnalogFormula(/*@Nonnull*/ QString sys, /*@CheckForNull*/ QString user,
-            QList<SocketData*> expressionSystemNames, QObject* parent) : AbstractAnalogExpression(sys, user, parent){
+            QList<AnalogFormula::SocketData*> expressionSystemNames, QObject* parent) : AbstractAnalogExpression(sys, user, parent){
         //super(sys, user);
         setExpressionSystemNames(expressionSystemNames);
     }
@@ -48,14 +49,14 @@
     //@Override
     /*public*/  Base* AnalogFormula::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/ {
         AnalogExpressionManager* manager = (AnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager");
-        QString sysName = systemNames.value(NamedBean::getSystemName());
-        QString userName = userNames.value(NamedBean::getSystemName());
+        QString sysName = systemNames.value(AbstractBase::getSystemName());
+        QString userName = userNames.value(AbstractBase::getSystemName());
         if (sysName == "") sysName = manager->getAutoSystemName();
         AnalogFormula* copy = new AnalogFormula(sysName, userName);
-        copy->NamedBean::setComment(NamedBean::getComment());
+        copy->AbstractBase::setComment(AbstractBase::getComment());
         copy->setNumSockets(getChildCount());
         copy->setFormula(_formula);
-        return manager->registerExpression(copy)->deepCopyChildren(this, systemNames, userNames);
+        return manager->registerExpression(copy)->MaleAnalogExpressionSocket::deepCopyChildren(this, systemNames, userNames);
     }
 
     /*private*/ void AnalogFormula::setExpressionSystemNames(QList<SocketData*> systemNames) {
@@ -96,7 +97,7 @@
             Variable* v = new GenericExpressionVariable((FemaleGenericExpressionSocket*)getChild(i));
             variables.insert(v->getName(), v);
         }
-        _expressionNode = parser.parseExpression(formula);
+        _expressionNode = parser->parseExpression(formula);
         // parseExpression() may throw an exception and we don't want to set
         // the field _formula until we now parseExpression() has succeeded.
         _formula = formula;
@@ -116,8 +117,8 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category* AnalogFormula::getCategory() {
-        return Category::COMMON;
+    /*public*/  Category::TYPE AnalogFormula::getCategory() {
+        return Category::TYPE::COMMON;
     }
 
     /** {@inheritDoc} */
@@ -165,7 +166,7 @@
             addList.append(socket);
         }
         parseFormula();
-        firePropertyChange(Base::PROPERTY_CHILD_COUNT, removeList, addList);
+        firePropertyChange(Base::PROPERTY_CHILD_COUNT, QVariant::fromValue(removeList), QVariant::fromValue(addList));
     }
 
     //@Override
@@ -194,24 +195,24 @@
             addList.append(socket);
         }
         parseFormula();
-        firePropertyChange(Base::PROPERTY_CHILD_COUNT, QVariant(), QVariant(addList));
+        firePropertyChange(Base::PROPERTY_CHILD_COUNT, QVariant(), QVariant::fromValue(addList));
     }
 
     /*private*/ void AnalogFormula::checkFreeSocket() {
         bool hasFreeSocket = false;
 
         for (ExpressionEntry* entry : _expressionEntries) {
-            hasFreeSocket |= !entry._socket.isConnected();
+            hasFreeSocket |= !entry->_socket->isConnected();
         }
         if (!hasFreeSocket) {
-            FemaleGenericExpressionSocket socket =
+            FemaleGenericExpressionSocket* socket =
                     createFemaleSocket(this, this, getNewSocketName());
             _expressionEntries.append(new ExpressionEntry(socket));
 
             QList<FemaleSocket*> list = QList<FemaleSocket*>();
             list.append(socket);
             parseFormula();
-            firePropertyChange(Base::PROPERTY_CHILD_COUNT, QVariant(), list);
+            firePropertyChange(Base::PROPERTY_CHILD_COUNT, QVariant(), QVariant::fromValue(list));
         }
     }
 
@@ -220,7 +221,7 @@
     /*public*/  bool AnalogFormula::isSocketOperationAllowed(int index, FemaleSocketOperation::TYPES oper) {
         switch (oper) {
             case FemaleSocketOperation::TYPES::Remove:        // Possible if socket is not connected
-                return ! getChild(index).isConnected();
+                return ! getChild(index)->isConnected();
             case FemaleSocketOperation::TYPES::InsertBefore:
                 return true;    // Always possible
             case FemaleSocketOperation::TYPES::InsertAfter:
@@ -237,19 +238,21 @@
     /*private*/ void AnalogFormula::insertNewSocket(int index) {
         FemaleGenericExpressionSocket* socket =
                 createFemaleSocket(this, this, getNewSocketName());
-        _expressionEntries.append(index, new ExpressionEntry(socket));
+        _expressionEntries.insert(index, new ExpressionEntry(socket));
 
         QList<FemaleSocket*> addList = QList<FemaleSocket*>();
         addList.append(socket);
         parseFormula();
-        firePropertyChange(Base.PROPERTY_CHILD_COUNT, QVariant, addList);
+        firePropertyChange(Base::PROPERTY_CHILD_COUNT, QVariant(), QVariant::fromValue(addList));
     }
 
     /*private*/ void AnalogFormula::removeSocket(int index) {
         QList<FemaleSocket*> removeList = QList<FemaleSocket*>();
-        removeList.append(_expressionEntries.remove(index)._socket);
+        //removeList.add(_expressionEntries.remove(index)._socket);
+        ExpressionEntry* s = _expressionEntries.at(index);
+        removeList.append(s->_socket);
         parseFormula();
-        firePropertyChange(Base.PROPERTY_CHILD_COUNT, removeList, QVariant());
+        firePropertyChange(Base::PROPERTY_CHILD_COUNT, QVariant::fromValue(removeList), QVariant());
     }
 
     /*private*/ void AnalogFormula::moveSocketDown(int index) {
@@ -261,7 +264,7 @@
         list.append(_expressionEntries.at(index)->_socket);
         list.append(_expressionEntries.at(index)->_socket);
         parseFormula();
-        firePropertyChange(Base::PROPERTY_CHILD_REORDER, QVariant(), list);
+        firePropertyChange(Base::PROPERTY_CHILD_REORDER, QVariant(), QVariant::fromValue(list));
     }
 
     /** {@inheritDoc} */
@@ -269,7 +272,7 @@
     /*public*/  void AnalogFormula::doSocketOperation(int index, FemaleSocketOperation::TYPES oper) {
         switch (oper) {
             case FemaleSocketOperation::TYPES::Remove:
-                if (getChild(index).isConnected()) throw new UnsupportedOperationException("Socket is connected");
+                if (getChild(index)->isConnected()) throw new UnsupportedOperationException("Socket is connected");
                 removeSocket(index);
                 break;
             case FemaleSocketOperation::TYPES::InsertBefore:
@@ -333,7 +336,7 @@
         for (ExpressionEntry* ee : _expressionEntries) {
             try {
                 if ( !ee->_socket->isConnected()
-                        || ee->_socket.getConnectedSocket()->getSystemName()
+                        || ee->_socket->getConnectedSocket()->getSystemName()
                                  != (ee->_socketSystemName)) {
 
                     QString socketSystemName = ee->_socketSystemName;
@@ -343,12 +346,12 @@
                         Manager/*<? extends MaleSocket>*/* m =
                                 ((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))
                                         ->getManager(manager);
-                        MaleSocket* maleSocket = m.getBySystemName(socketSystemName);
+                        MaleSocket* maleSocket = (MaleSocket*)(MaleRootSocket*)m->getBySystemName(socketSystemName);
                         if (maleSocket != nullptr) {
-                            ee->_socket->connect(maleSocket);
+                            ee->_socket->_connect(maleSocket);
                             maleSocket->setup();
                         } else {
-                            log.error("cannot load analog expression " + socketSystemName);
+                            log->error("cannot load analog expression " + socketSystemName);
                         }
                     }
                 } else {
@@ -382,9 +385,6 @@
     //@Override
     /*public*/  void AnalogFormula::disposeMe() {
     }
-
-
-
 
 
     /*private*/ /*final*/ /*static*/ Logger* AnalogFormula::log = LoggerFactory::getLogger("AnalogFormula");

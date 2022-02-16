@@ -6,6 +6,7 @@
 #include <QMutex>
 #include "logger.h"
 #include "signalmastlogic.h"
+#include "jmriexception.h"
 
 
 class SignalSpeedMap;

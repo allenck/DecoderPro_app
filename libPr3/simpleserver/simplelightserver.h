@@ -9,7 +9,7 @@ public:
  SimpleLightServer(QTcpSocket* connection, QObject* parent = nullptr);
  /*public*/ void sendStatus(QString lightName, int Status) /*throw (IOException)*/;
  /*public*/ void sendErrorStatus(QString lightName) /*throw (IOException)*/;
- /*public*/ void parseStatus(QString statusString) throw (JmriException, IOException);
+ /*public*/ void parseStatus(QString statusString) /*throw (JmriException, IOException)*/;
 
 private:
  /*private*/ QDataStream* output = nullptr;

@@ -6,6 +6,7 @@
  * A LogixNG male AnalogExpressionBean socket.
  */
 /*public*/ /*interface*/class  MaleAnalogExpressionSocket :  public AnalogExpressionBean, public MaleSocket {
+  Q_INTERFACES(AnalogExpressionBean MaleSocket)
  public:
     /**
      * {@inheritDoc}

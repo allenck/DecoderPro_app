@@ -1,6 +1,7 @@
 #include "triggerroutemodel.h"
 #include "loggerfactory.h"
 #include "instancemanager.h"
+#include "jmriexception.h"
 
 TriggerRouteModel::TriggerRouteModel()
 {

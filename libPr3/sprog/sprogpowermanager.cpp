@@ -1,4 +1,5 @@
 #include "sprogpowermanager.h"
+#include "jmriexception.h"
 
 using namespace Sprog;
 /**

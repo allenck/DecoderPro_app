@@ -33,7 +33,7 @@
     }
 
     //@Override
-    /*public*/ void SimpleSignalHeadServer::parseStatus(QString statusString) throw (JmriException, IOException) {
+    /*public*/ void SimpleSignalHeadServer::parseStatus(QString statusString) /*throw (JmriException, IOException)*/ {
         QStringList status = statusString.split(QRegExp("\\s+"));
         if (status.length() == 3) {
             this->setSignalHeadAppearance(status[1], status[2]);

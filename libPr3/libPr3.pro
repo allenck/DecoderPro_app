@@ -1138,6 +1138,22 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+ logixng/defaultnamedtablemanager.cpp \
+ logixng/defaultmodule.cpp \
+ logixng/defaultmodulemanager.cpp \
+ logixng/defaultmodulexml.cpp \
+ logixng/abstractmanagerxml.cpp \
+ logixng/defaultanalogactionmanagerxml.cpp \
+ logixng/defaultanalogexpressionmanagerxml.cpp \
+ logixng/defaultdigitalactionmanagerxml.cpp \
+ logixng/defaultdigitalbooleanactionmanagerxml.cpp \
+ logixng/defaultdigitalexpressionmanagerxml.cpp \
+ logixng/defaultmalestringexpressionsocket.cpp \
+ logixng/defaultmodulemanagerxml.cpp \
+ logixng/defaultnamedtablemanagerxml.cpp \
+ logixng/defaultstringactionmanagerxml.cpp \
+ logixng/defaultstringexpressionmanagerxml.cpp \
+ logixng/defaultmaleanalogexpressionsocket.cpp \
  logixng/defaultfemalestringexpressionsocket.cpp \
  logixng/genericexpressionvariable.cpp \
  logixng/abstractanalogexpression.cpp \
@@ -2367,6 +2383,23 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+ logixng/defaultnamedtablemanager.h \
+ logixng/defaultmodule.h \
+ logixng/defaultmodulemanager.h \
+ logixng/defaultmodulexml.h \
+ logixng/abstractmanagerxml.h \
+ logixng/defaultanalogactionmanagerxml.h \
+ logixng/defaultanalogexpressionmanagerxml.h \
+ logixng/defaultdigitalactionmanagerxml.h \
+ logixng/defaultdigitalbooleanactionmanagerxml.h \
+ logixng/defaultdigitalexpressionmanagerxml.h \
+ logixng/defaultmalestringexpressionsocket.h \
+ logixng/defaultmodulemanagerxml.h \
+ logixng/defaultnamedtablemanagerxml.h \
+ logixng/defaultstringactionmanagerxml.h \
+ logixng/defaultstringexpressionmanagerxml.h \
+ logixng/malesocketxml.h \
+ logixng/defaultmaleanalogexpressionsocket.h \
  logixng/defaultfemalestringexpressionsocket.h \
  logixng/genericexpressionvariable.h \
  logixng/abstractanalogexpression.h \

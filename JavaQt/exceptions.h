@@ -86,6 +86,8 @@ public:
  Exception(QString msg, QString localMsg, Exception* exception) : Throwable(msg, localMsg, exception)
  {}
  Exception(Exception* exception) : Throwable(exception) {}
+ Exception(Throwable* exception) : Throwable(exception) {}
+
 };
 
 ;
@@ -156,30 +158,30 @@ class JAVAQTSHARED_EXPORT InterruptedException : public Exception
     InterruptedException();
     ~InterruptedException() throw() {}
 };
-class JAVAQTSHARED_EXPORT JmriException : public Exception
-{
-public:
-    JmriException();
-    ~JmriException() throw() {}
-    JmriException(QString s);
-    JmriException(Exception ex) : Exception(ex) {}
-    QString toString();
-};
-class JAVAQTSHARED_EXPORT LocoNetException : public JmriException
-{
-    //Q_OBJECT
-public:
-    /*explicit*/ LocoNetException( QString m=""/*, QObject *parent = 0*/);
-    QString getText();
-    ~LocoNetException() throw()
-    {}
-signals:
+//class JAVAQTSHARED_EXPORT JmriException : public Exception
+//{
+//public:
+//    JmriException();
+//    ~JmriException() throw() {}
+//    JmriException(QString s);
+//    JmriException(Exception ex) : Exception(ex) {}
+//    QString toString();
+//};
+//class JAVAQTSHARED_EXPORT LocoNetException : public JmriException
+//{
+//    //Q_OBJECT
+//public:
+//    /*explicit*/ LocoNetException( QString m=""/*, QObject *parent = 0*/);
+//    QString getText();
+//    ~LocoNetException() throw()
+//    {}
+//signals:
 
-public slots:
-private:
- QString text;
+//public slots:
+//private:
+// QString text;
 
-};
+//};
 class JAVAQTSHARED_EXPORT IllegalArgumentException : public Exception
 {
  public:
@@ -227,14 +229,14 @@ class JAVAQTSHARED_EXPORT TurnoutOperatorException : public Exception
     TurnoutOperatorException(QString s ="");
     ~TurnoutOperatorException() throw() {}
 };
-class JAVAQTSHARED_EXPORT JmriConfigureXmlException : public JmriException
-{
-  Throwable e;
- public:
-    JmriConfigureXmlException(QString s ="");
-    JmriConfigureXmlException(QString s, Throwable e);
-    ~JmriConfigureXmlException() throw() {}
-};
+//class JAVAQTSHARED_EXPORT JmriConfigureXmlException : public JmriException
+//{
+//  Throwable e;
+// public:
+//    JmriConfigureXmlException(QString s ="");
+//    JmriConfigureXmlException(QString s, Throwable e);
+//    ~JmriConfigureXmlException() throw() {}
+//};
 class JAVAQTSHARED_EXPORT DataConversionException : public Exception
 {
  public:

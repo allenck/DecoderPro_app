@@ -5,6 +5,7 @@
 #include "jmriuserpreferencesmanager.h"
 #include "internalsystemconnectionmemo.h"
 #include "loggerfactory.h"
+#include "jmriexception.h"
 
 /**
  * Implementation of the InternalSensorManager interface.

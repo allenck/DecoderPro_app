@@ -9,6 +9,7 @@
 #include "connectionstatus.h"
 #include "joptionpane.h"
 #include <QApplication>
+#include "jmriexception.h"
 
 using namespace Sprog;
 

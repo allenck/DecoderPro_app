@@ -3,6 +3,7 @@
 #include "jmriclientsystemconnectionmemo.h"
 #include "jmriclientmessage.h"
 #include "jmriclientreply.h"
+#include "jmriexception.h"
 
 /**
  * PowerManager implementation for controlling layout power

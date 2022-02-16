@@ -20,7 +20,7 @@
      * @param maleSocket the male socket to be encapsulated
      * @return the new male socket that encapsulates the old male socket
      */
-    /*public*/ virtual NamedBean* encapsulateMaleSocket(BaseManager/*<T>*/* manager, NamedBean* maleSocket)=0;
+  /*public*/ virtual NamedBean* encapsulateMaleSocket(BaseManager/*<T>*/* manager, NamedBean* maleSocket) {return nullptr;}
 
 };
 Q_DECLARE_INTERFACE(MaleSocketFactory, "MaleSocketFactory")

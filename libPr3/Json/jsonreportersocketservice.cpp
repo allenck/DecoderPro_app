@@ -4,6 +4,7 @@
 #include "json.h"
 #include "instancemanager.h"
 #include "reportermanager.h"
+#include "jmriexception.h"
 
 /**
  *
@@ -21,7 +22,7 @@
 }
 
  //@Override
- /*public*/ void JsonReporterSocketService::onMessage(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException)
+ /*public*/ void JsonReporterSocketService::onMessage(QString type, QJsonObject data, QLocale locale) /*throw (IOException, JmriException, JsonException)*/
 {
  this->locale = locale;
  QString name = data.value(JSON::NAME).toString();
@@ -43,7 +44,7 @@
 }
 
  //@Override
- /*public*/ void JsonReporterSocketService::onList(QString type, QJsonObject data, QLocale locale) throw (IOException, JmriException, JsonException) {
+ /*public*/ void JsonReporterSocketService::onList(QString type, QJsonObject data, QLocale locale)  {
      this->locale = locale;
      this->connection->sendMessage(this->service->doGetList(type, locale));
  }

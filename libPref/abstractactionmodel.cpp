@@ -14,6 +14,7 @@
 #include "systemconnectionaction.h"
 #include "loconetmenustartupaction.h"
 #include <QTimer>
+#include "jmriexception.h"
 
 //AbstractActionModel::AbstractActionModel(QObject *parent) :
 //    QObject(parent)

@@ -8,7 +8,7 @@ public:
  SimpleSignalHeadServer(QTcpSocket* connection, QObject* parent = nullptr);
  /*public*/ void sendStatus(QString signalHeadName, int Status) /*throw (IOException)*/;
  /*public*/ void sendErrorStatus(QString signalHeadName) /*throw (IOException)*/;
- /*public*/ void parseStatus(QString statusString) throw (JmriException, IOException);
+ /*public*/ void parseStatus(QString statusString) /*throw (JmriException, IOException)*/;
 
 private:
  /*private*/ QDataStream* output;

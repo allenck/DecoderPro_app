@@ -86,10 +86,10 @@
 
 //    public void removeParameter(String name);
 
-    /*public*/ void addLocalVariable(
+    /*public*/virtual void addLocalVariable(
             QString name,
             InitialValueType::TYPES initialValueType,
-            QString initialValueData);
+            QString initialValueData)=0;
 
 //    public void removeLocalVariable(String name);
 
