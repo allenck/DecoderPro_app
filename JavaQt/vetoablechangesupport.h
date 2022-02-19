@@ -33,7 +33,7 @@ public:
   /*public*/ void fireVetoableChange(QString propertyName, int oldValue, int newValue) /*throw (PropertyVetoException)*/ override;
   /*public*/ void fireVetoableChange(QString propertyName, QVariant oldValue, QVariant newValue) /*throw (PropertyVetoException)*/ override;
 
-  QObject* self() override{return (QObject*)this;}
+  QObject* vself() override{return (QObject*)this;}
 signals:
 
 public slots:
@@ -43,7 +43,7 @@ private:
  /**
   * Provide a {@link java.beans.VetoableChangeSupport} helper.
   */
- /*protected*/ /*final*/ JVetoableChangeSupport* vetoableChangeSupport = new JVetoableChangeSupport(this->self());
+ /*protected*/ /*final*/ JVetoableChangeSupport* vetoableChangeSupport = new JVetoableChangeSupport(this->vself());
 };
 
 Q_DECLARE_INTERFACE(VetoableChangeSupport, "VetoableChangeSupport")

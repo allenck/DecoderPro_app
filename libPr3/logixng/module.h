@@ -142,6 +142,7 @@
 
   };
 
-
+  virtual QObject* bself() =0;
 };
+Q_DECLARE_INTERFACE(Module, "Module")
 #endif // MODULE_H

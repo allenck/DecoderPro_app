@@ -1,5 +1,9 @@
 #include "defaultdigitalactionmanagerxml.h"
 #include "loggerfactory.h"
+#include "digitalactionmanager.h"
+#include "instancemanager.h"
+#include "runtimeexception.h"
+#include "defaultmaledigitalactionsocket.h"
 
 /**
  * Provides the functionality for configuring ActionManagers
@@ -7,11 +11,10 @@
  * @author Dave Duchamp Copyright (c) 2007
  * @author Daniel Bergqvist Copyright (c) 2018
  */
-/*public*/  class DefaultDigitalActionManagerXml extends AbstractManagerXml {
+///*public*/  class DefaultDigitalActionManagerXml extends AbstractManagerXml {
 
-    /*private*/ /*final*/Map<String, Class<?>> xmlClasses = new HashMap<>();
 
-    /*public*/  DefaultDigitalActionManagerXml() {
+    /*public*/  DefaultDigitalActionManagerXml::DefaultDigitalActionManagerXml(QObject* parent) : AbstractManagerXml(parent){
     }
 
     /**
@@ -21,31 +24,32 @@
      * @return Element containing the complete info
      */
     //@Override
-    /*public*/  Element store(Object o) {
-        Element actions = new Element("LogixNGDigitalActions");
+    /*public*/  QDomElement DefaultDigitalActionManagerXml::store(QObject* o) {
+        QDomElement actions = doc.createElement("LogixNGDigitalActions");
         setStoreElementClass(actions);
-        DigitalActionManager tm = (DigitalActionManager) o;
-        if (tm != null) {
-            if (tm.getNamedBeanSet().isEmpty()) return null;
-            for (MaleDigitalActionSocket action : tm.getNamedBeanSet()) {
-                log.debug("action system name is " + action.getSystemName());  // NOI18N
+        DigitalActionManager* tm = (DigitalActionManager*) o;
+        if (tm != nullptr) {
+            if (tm->getNamedBeanSet().isEmpty()) return QDomElement();
+            for (NamedBean* nb : tm->getNamedBeanSet()) {
+             MaleDigitalActionSocket* action = (MaleDigitalActionSocket*)nb;
+                log->debug("action system name is " + action->NamedBean::getSystemName());  // NOI18N
                 try {
-                    List<Element> elements = new ArrayList<>();
+                    QList<QDomElement> elements = QList<QDomElement>();
                     // The male socket may be embedded in other male sockets
-                    MaleDigitalActionSocket a = action;
-                    while (!(a instanceof DefaultMaleDigitalActionSocket)) {
-                        elements.add(storeMaleSocket(a));
-                        a = (MaleDigitalActionSocket) a.getObject();
+                    MaleDigitalActionSocket* a = action;
+                    while (!(static_cast<DefaultMaleDigitalActionSocket*>(a))) {
+                        elements.append(storeMaleSocket(a));
+                        a = (MaleDigitalActionSocket*) a->getObject()->bself();
                     }
-                    Element e = jmri.configurexml.ConfigXmlManager.elementFromObject(a.getObject());
-                    if (e != null) {
-                        for (Element ee : elements) e.addContent(ee);
-                        actions.addContent(e);
+                    QDomElement e = ConfigXmlManager::elementFromObject(a->getObject()->bself());
+                    if (!e.isNull()) {
+                        for (QDomElement ee : elements) e.appendChild(ee);
+                        actions.appendChild(e);
                     } else {
-                        throw new RuntimeException("Cannot load xml configurator for " + a.getObject().getClass().getName());
+                        throw new RuntimeException(QString("Cannot load xml configurator for ") + a->getObject()->bself()->metaObject()->className());
                     }
-                } catch (RuntimeException e) {
-                    log.error("Error storing action: {}", e, e);
+                } catch (RuntimeException* e) {
+                    log->error(tr("Error storing action: %1").arg(e->toString()), e);
                 }
             }
         }
@@ -59,8 +63,8 @@
      *
      * @param actions The top-level element being created
      */
-    /*public*/  void setStoreElementClass(Element actions) {
-        actions.setAttribute("class", this.getClass().getName());  // NOI18N
+    /*public*/  void DefaultDigitalActionManagerXml::setStoreElementClass(QDomElement actions) {
+        actions.setAttribute("class", "jmri.jmrit.logixng.implementation.configurexml.DefaultDigitalActionManagerXml");  // NOI18N
     }
 
     /**
@@ -72,7 +76,7 @@
      * @return true if successful
      */
     //@Override
-    /*public*/  boolean load(Element sharedAction, Element perNodeAction) {
+    /*public*/  bool DefaultDigitalActionManagerXml::load(QDomElement sharedAction, QDomElement perNodeAction) {
         // create the master object
         replaceActionManager();
         // load individual sharedAction
@@ -87,50 +91,50 @@
      *
      * @param actions Element containing the DigitalActionBean elements to load.
      */
-    /*public*/  void loadActions(Element actions) {
+    /*public*/  void DefaultDigitalActionManagerXml::loadActions(QDomElement actions) {
 
-        List<Element> actionList = actions.getChildren();  // NOI18N
-        log.debug("Found " + actionList.size() + " actions");  // NOI18N
+        QDomNodeList actionList = actions.childNodes();  // NOI18N
+        log->debug("Found " + QString::number(actionList.size()) + " actions");  // NOI18N
 
         for (int i = 0; i < actionList.size(); i++) {
 
-            String className = actionList.get(i).getAttribute("class").getValue();
+            QString className = actionList.at(i).toElement().attribute("class");
 //            log.error("className: " + className);
 
-            Class<?> clazz = xmlClasses.get(className);
+            Class/*<?>*/* clazz = xmlClasses.value(className);
 
-            if (clazz == null) {
+            if (clazz == nullptr) {
                 try {
-                    clazz = Class.forName(className);
-                    xmlClasses.put(className, clazz);
-                } catch (ClassNotFoundException ex) {
-                    log.error("cannot load class " + className, ex);
+                    clazz = Class::forName(className);
+                    xmlClasses.insert(className, clazz);
+                } catch (ClassNotFoundException* ex) {
+                    log->error("cannot load class " + className, ex);
                 }
             }
 
-            if (clazz != null) {
-                Constructor<?> c = null;
+            if (clazz != nullptr) {
+                /*Constructor<?>*/Class* c = nullptr;
                 try {
-                    c = clazz.getConstructor();
-                } catch (NoSuchMethodException | SecurityException ex) {
-                    log.error("cannot create constructor", ex);
+                    c = clazz->getConstructor();
+                } catch (NoSuchMethodException* /*| SecurityException*/ ex) {
+                    log->error("cannot create constructor", ex);
                 }
 
-                if (c != null) {
+                if (c != nullptr) {
                     try {
-                        AbstractNamedBeanManagerConfigXML o = (AbstractNamedBeanManagerConfigXML)c.newInstance();
+                        AbstractNamedBeanManagerConfigXML* o = (AbstractNamedBeanManagerConfigXML*)c->newInstance();
 
-                        MaleSocket oldLastItem = InstanceManager.getDefault(DigitalActionManager.class).getLastRegisteredMaleSocket();
-                        o.load(actionList.get(i), null);
+                        MaleSocket* oldLastItem = ((DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->getLastRegisteredMaleSocket();
+                        o->load(actionList.at(i).toElement(), QDomElement());
 
                         // Load male socket data if a new bean has been registered
-                        MaleSocket newLastItem = InstanceManager.getDefault(DigitalActionManager.class).getLastRegisteredMaleSocket();
-                        if (newLastItem != oldLastItem) loadMaleSocket(actionList.get(i), newLastItem);
-                        else throw new RuntimeException("No new bean has been added. This class: "+getClass().getName());
-                    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                        log.error("cannot create object", ex);
-                    } catch (JmriConfigureXmlException ex) {
-                        log.error("cannot load action", ex);
+                        MaleSocket* newLastItem = ((DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->getLastRegisteredMaleSocket();
+                        if (newLastItem != oldLastItem) loadMaleSocket(actionList.at(i).toElement(), newLastItem);
+                        else throw new RuntimeException(QString("No new bean has been added. This class: ")+metaObject()->className());
+                    } catch (InstantiationException* /*| IllegalAccessException | IllegalArgumentException | InvocationTargetException */ex) {
+                        log->error("cannot create object", ex);
+                    } catch (JmriConfigureXmlException* ex) {
+                        log->error("cannot load action", ex);
                     }
                 }
             }
@@ -142,20 +146,20 @@
      * created during a load operation. This is skipped if they are of the same
      * absolute type.
      */
-    protected void replaceActionManager() {
-        if (InstanceManager.getDefault(jmri.jmrit.logixng.DigitalActionManager.class).getClass().getName()
-                .equals(DefaultDigitalActionManager.class.getName())) {
+    /*protected*/ void DefaultDigitalActionManagerXml::replaceActionManager() {
+        if (QString(InstanceManager::getDefault("DigitalActionManager")->metaObject()->className())
+                 == ("DefaultDigitalActionManager")) {
             return;
         }
-        // if old manager exists, remove it from configuration process
-        if (InstanceManager.getNullableDefault(jmri.jmrit.logixng.DigitalActionManager.class) != null) {
-            ConfigureManager cmOD = InstanceManager.getNullableDefault(jmri.ConfigureManager.class);
-            if (cmOD != null) {
-                cmOD.deregister(InstanceManager.getDefault(jmri.jmrit.logixng.DigitalActionManager.class));
+        // if old manager exists, remove it from configuration process)
+        if (InstanceManager::getNullableDefault("DigitalActionManager") != nullptr) {
+            ConfigureManager* cmOD = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+            if (cmOD != nullptr) {
+                cmOD->deregister(InstanceManager::getDefault("DigitalActionManager"));
             }
 
         }
-
+#if 0 // TODO:
         ThreadingUtil.runOnGUI(() -> {
             // register new one with InstanceManager
             DefaultDigitalActionManager pManager = DefaultDigitalActionManager.instance();
@@ -166,11 +170,12 @@
                 cmOD.registerConfig(pManager, jmri.Manager.LOGIXNG_DIGITAL_ACTIONS);
             }
         });
+#endif
     }
 
     //@Override
-    /*public*/  int loadOrder() {
-        return InstanceManager.getDefault(jmri.jmrit.logixng.DigitalActionManager.class).getXMLOrder();
+    /*public*/  int DefaultDigitalActionManagerXml::loadOrder() const {
+        return ((DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->getXMLOrder();
     }
 
     /*private*/ /*final*//*static*/Logger* DefaultDigitalActionManagerXml::log = LoggerFactory::getLogger("DefaultDigitalActionManagerXml");

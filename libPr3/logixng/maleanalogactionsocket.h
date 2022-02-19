@@ -5,7 +5,7 @@
 /**
  * A LogixNG male AnalogActionBean socket.
  */
-/*public*/ /*interface*/class MaleAnalogActionSocket : public AnalogActionBean, public MaleSocket  {
+/*public*/ /*interface*/class MaleAnalogActionSocket : public AnalogActionBean, public virtual MaleSocket  {
 Q_INTERFACES(AnalogActionBean MaleSocket )
  public:
  // MaleAnalogActionSocket(QString name, QObject* parent = nullptr) : QObject( parent) {}

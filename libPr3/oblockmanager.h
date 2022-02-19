@@ -34,6 +34,8 @@ public:
      return tr(plural?"OBlocks":"OBlock");
     }
     QObject* self() override{return (QObject*)this;}
+    QObject* vself() override {return (QObject*)this;}
+
     /*public*/ SystemConnectionMemo* getMemo() override {return AbstractManager::getMemo();}
 //    /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
     /*public*/ NamedBean* getBySystemName(QString name) override {return AbstractManager::getBySystemName(name);}

@@ -38,6 +38,8 @@ class DefaultLogixNG : /*public AbstractNamedBean,*/ public LogixNG
   /*public*/ QString getSystemName() const override {return AbstractNamedBean::getSystemName();}
   /*public*/ QString getUserName() const override {return AbstractNamedBean::getUserName();}
 
+  QObject* bself() override{return (QObject*)this;}
+
  private:
   /*private*/ /*final*/ LogixNG_Manager* _manager = (LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager");
   /*private*/ bool _enabled = false;

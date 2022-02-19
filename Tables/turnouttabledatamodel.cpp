@@ -701,7 +701,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(QObject *parent)
  */
 //@Override
 /*protected*/ /*final*/ void TurnoutTableDataModel::setManager(/*@Nonnull*/ Manager *manager) {
-    if (!(static_cast<TurnoutManager*>(manager))) {
+    if (!(qobject_cast<TurnoutManager*>(manager->self()))) {
         return;
     }
     getManager()->removePropertyChangeListener(this);
@@ -714,7 +714,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(QObject *parent)
             }
         }
     }
-    turnoutManager =  (TurnoutManager*)manager;
+    turnoutManager =  (TurnoutManager*)manager->self();
     getManager()->addPropertyChangeListener(this);
     updateNameList();
 }

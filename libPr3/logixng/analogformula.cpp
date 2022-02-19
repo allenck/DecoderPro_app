@@ -12,6 +12,7 @@
 #include "logixng_manager.h"
 #include "genericexpressionvariable.h"
 #include "conditionalng.h"
+#include "vptr.h"
 
 /**
  * Evaluates to True if the formula evaluates to true
@@ -31,7 +32,7 @@
     {
         //super(sys, user);
         _expressionEntries
-                .append(new ExpressionEntry(createFemaleSocket(this, this, getNewSocketName())));
+                .append(new ExpressionEntry(createFemaleSocket((AbstractBase*)this, this, getNewSocketName())));
     }
     /**
      * Create a new instance of Formula with system name and user name.
@@ -56,7 +57,7 @@
         copy->AbstractBase::setComment(AbstractBase::getComment());
         copy->setNumSockets(getChildCount());
         copy->setFormula(_formula);
-        return manager->registerExpression(copy)->MaleAnalogExpressionSocket::deepCopyChildren(this, systemNames, userNames);
+        return manager->registerExpression(copy)->Base::deepCopyChildren(this, systemNames, userNames);
     }
 
     /*private*/ void AnalogFormula::setExpressionSystemNames(QList<SocketData*> systemNames) {
@@ -66,7 +67,7 @@
 
         for (SocketData* socketData : systemNames) {
             FemaleGenericExpressionSocket* socket =
-                    createFemaleSocket(this, this, socketData->_socketName);
+                    createFemaleSocket((AbstractBase*)this, this, socketData->_socketName);
 //            FemaleGenericExpressionSocket socket =
 //                    InstanceManager.getDefault(AnalogExpressionManager.class)
 //                            .createFemaleSocket(this, this, entry.getKey());
@@ -94,7 +95,7 @@
         QMap<QString, Variable*> variables = QMap<QString, Variable*>();
         RecursiveDescentParser* parser = new RecursiveDescentParser(variables);
         for (int i=0; i < getChildCount(); i++) {
-            Variable* v = new GenericExpressionVariable((FemaleGenericExpressionSocket*)getChild(i));
+            Variable* v = new GenericExpressionVariable((FemaleGenericExpressionSocket*)getChild(i)->bself());
             variables.insert(v->getName(), v);
         }
         _expressionNode = parser->parseExpression(formula);
@@ -117,8 +118,8 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category::TYPE AnalogFormula::getCategory() {
-        return Category::TYPE::COMMON;
+    /*public*/  Category* AnalogFormula::getCategory() {
+        return Category::COMMON;
     }
 
     /** {@inheritDoc} */
@@ -161,12 +162,16 @@
         // Is there not enough children?
         while (_expressionEntries.size() < count) {
             FemaleGenericExpressionSocket* socket =
-                    createFemaleSocket(this, this, getNewSocketName());
+                    createFemaleSocket((AbstractBase*)this, this, getNewSocketName());
             _expressionEntries.append(new ExpressionEntry(socket));
             addList.append(socket);
         }
         parseFormula();
-        firePropertyChange(Base::PROPERTY_CHILD_COUNT, QVariant::fromValue(removeList), QVariant::fromValue(addList));
+        QVariantList vRemoveList;
+        foreach(FemaleSocket* s, removeList) vRemoveList.append(VPtr<FemaleSocket>::asQVariant(s));
+        QVariantList vAddList;
+        foreach(FemaleSocket* s, addList) vAddList.append(VPtr<FemaleSocket>::asQVariant(s));
+        firePropertyChange(Base::PROPERTY_CHILD_COUNT, vRemoveList, vAddList);
     }
 
     //@Override
@@ -190,12 +195,14 @@
         // Is there not enough children?
         while (_expressionEntries.size() < num) {
             FemaleGenericExpressionSocket* socket =
-                    createFemaleSocket(this, this, getNewSocketName());
+                    createFemaleSocket((AbstractBase*)this, this, getNewSocketName());
             _expressionEntries.append(new ExpressionEntry(socket));
             addList.append(socket);
         }
         parseFormula();
-        firePropertyChange(Base::PROPERTY_CHILD_COUNT, QVariant(), QVariant::fromValue(addList));
+        QVariantList vAddList;
+        foreach(FemaleSocket* s, addList) vAddList.append(VPtr<FemaleSocket>::asQVariant(s));
+        firePropertyChange(Base::PROPERTY_CHILD_COUNT, QVariant(), vAddList);
     }
 
     /*private*/ void AnalogFormula::checkFreeSocket() {
@@ -206,13 +213,15 @@
         }
         if (!hasFreeSocket) {
             FemaleGenericExpressionSocket* socket =
-                    createFemaleSocket(this, this, getNewSocketName());
+                    createFemaleSocket((AbstractBase*)this, this, getNewSocketName());
             _expressionEntries.append(new ExpressionEntry(socket));
 
             QList<FemaleSocket*> list = QList<FemaleSocket*>();
             list.append(socket);
             parseFormula();
-            firePropertyChange(Base::PROPERTY_CHILD_COUNT, QVariant(), QVariant::fromValue(list));
+            QVariantList vList;
+            foreach(FemaleSocket* s, list) vList.append(VPtr<FemaleSocket>::asQVariant(s));
+            firePropertyChange(Base::PROPERTY_CHILD_COUNT, QVariant(), vList);
         }
     }
 
@@ -237,13 +246,16 @@
 
     /*private*/ void AnalogFormula::insertNewSocket(int index) {
         FemaleGenericExpressionSocket* socket =
-                createFemaleSocket(this, this, getNewSocketName());
+                createFemaleSocket((AbstractBase*)this, this, getNewSocketName());
         _expressionEntries.insert(index, new ExpressionEntry(socket));
 
         QList<FemaleSocket*> addList = QList<FemaleSocket*>();
         addList.append(socket);
         parseFormula();
-        firePropertyChange(Base::PROPERTY_CHILD_COUNT, QVariant(), QVariant::fromValue(addList));
+        QVariantList vAddList;
+        foreach(FemaleSocket* s, addList) vAddList.append(VPtr<FemaleSocket>::asQVariant(s));
+
+        firePropertyChange(Base::PROPERTY_CHILD_COUNT, QVariant(),vAddList);
     }
 
     /*private*/ void AnalogFormula::removeSocket(int index) {
@@ -252,7 +264,9 @@
         ExpressionEntry* s = _expressionEntries.at(index);
         removeList.append(s->_socket);
         parseFormula();
-        firePropertyChange(Base::PROPERTY_CHILD_COUNT, QVariant::fromValue(removeList), QVariant());
+        QVariantList vRemoveList;
+        foreach(FemaleSocket* s, removeList) vRemoveList.append(VPtr<FemaleSocket>::asQVariant(s));
+        firePropertyChange(Base::PROPERTY_CHILD_COUNT, vRemoveList, QVariant());
     }
 
     /*private*/ void AnalogFormula::moveSocketDown(int index) {
@@ -264,7 +278,9 @@
         list.append(_expressionEntries.at(index)->_socket);
         list.append(_expressionEntries.at(index)->_socket);
         parseFormula();
-        firePropertyChange(Base::PROPERTY_CHILD_REORDER, QVariant(), QVariant::fromValue(list));
+        QVariantList vList;
+        foreach(FemaleSocket* s, list) vList.append(VPtr<FemaleSocket>::asQVariant(s));
+        firePropertyChange(Base::PROPERTY_CHILD_REORDER, QVariant(), vList);
     }
 
     /** {@inheritDoc} */

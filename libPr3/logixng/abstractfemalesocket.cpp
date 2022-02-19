@@ -74,7 +74,7 @@
         }
 
         if (!isCompatible(socket)) {
-            throw  IllegalArgumentException("Socket "+QString(socket->self()->metaObject()->className())+" is not compatible with "+ QString(this->self()->metaObject()->className()));
+            throw  IllegalArgumentException("Socket "+QString(socket->bself()->metaObject()->className())+" is not compatible with "+ QString(this->bself()->metaObject()->className()));
 //            throw new IllegalArgumentException("Socket "+socket.getClass().getName()+" is not compatible with "+this.getClass().getName()+". Socket.getObject: "+socket.getObject().getClass().getName());
         }
 
@@ -234,7 +234,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ Category::TYPE AbstractFemaleSocket::getCategory() {
+    /*public*/ Category* AbstractFemaleSocket::getCategory() {
         throw  UnsupportedOperationException("Not supported.");
     }
 
@@ -306,10 +306,10 @@
             QLocale locale,
             PrintWriter* writer,
             QString currentIndent,
-            /*MutableInt*/int  lineNumber) {
+            /*MutableInt*/int*  lineNumber) {
 
         if (settings->_printLineNumbers) {
-            writer->print(QString(PRINT_LINE_NUMBERS_FORMAT).arg(lineNumber/*.addAndGet(1)*/++));
+            writer->print(QString(PRINT_LINE_NUMBERS_FORMAT).arg(*lineNumber/*.addAndGet(1)*/++));
         }
         writer->print(currentIndent);
         writer->print(getLongDescription(locale));
@@ -354,7 +354,7 @@
             getConnectedSocket()->printTree(settings, locale, writer, indent, currentIndent+indent, lineNumber);
         } else {
             if (settings->_printLineNumbers) {
-                writer->print(QString(PRINT_LINE_NUMBERS_FORMAT).arg(lineNumber/*.addAndGet(1)*/++));
+                writer->print(QString(PRINT_LINE_NUMBERS_FORMAT).arg(*lineNumber/*.addAndGet(1)*/++));
             }
             writer->print(currentIndent);
             writer->print(indent);

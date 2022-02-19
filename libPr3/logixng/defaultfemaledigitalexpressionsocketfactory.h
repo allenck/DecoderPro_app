@@ -6,10 +6,12 @@
 #include "instancemanager.h"
 #include "digitalexpressionmanager.h"
 #include "femalesocketmanager.h"
+#include "defaultfemaledigitalexpressionsocket.h"
 
 class DefaultFemaleDigitalExpressionSocketFactory : public FemaleSocketFactory
 {
-  Q_OBJECT
+    //Q_OBJECT
+    Q_INTERFACES(FemaleSocketFactory)
   /*private*/ /*static*/ class SocketType : public FemaleSocketManager::SocketType {
 
       //@Override
@@ -19,7 +21,7 @@ class DefaultFemaleDigitalExpressionSocketFactory : public FemaleSocketFactory
 
       //@Override
       /*public*/  QString getDescr() {
-          return tr("Digital expression socket");
+          return QString("Digital expression socket");
       }
 
       //@Override
@@ -28,7 +30,7 @@ class DefaultFemaleDigitalExpressionSocketFactory : public FemaleSocketFactory
       }
 
       //@Override
-      /*public*/  FemaleSocket createSocket(Base parent, FemaleSocketListener listener, QString name) {
+      /*public*/  FemaleSocket* createSocket(Base* parent, FemaleSocketListener* listener, QString name) {
           return new DefaultFemaleDigitalExpressionSocket(parent, listener, name);
       }
 
@@ -39,6 +41,7 @@ class DefaultFemaleDigitalExpressionSocketFactory : public FemaleSocketFactory
   };
  public:
   DefaultFemaleDigitalExpressionSocketFactory();
+  /*public*/  FemaleSocketManager::SocketType* getFemaleSocketType();
 
  private:
   /*private*/ static /*final*/ FemaleSocketManager::SocketType* _femaleSocketType;// = new SocketType();

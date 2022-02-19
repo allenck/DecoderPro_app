@@ -1,5 +1,11 @@
 #include "defaultanalogexpressionmanagerxml.h"
 #include "loggerfactory.h"
+#include "analogexpressionmanager.h"
+#include "instancemanager.h"
+#include "threadingutil.h"
+#include "loggingutil.h"
+#include "class.h"
+#include "defaultmaleanalogexpressionsocket.h"
 
 /**
  * Provides the functionality for configuring ExpressionManagers
@@ -7,11 +13,11 @@
  * @author Dave Duchamp Copyright (c) 2007
  * @author Daniel Bergqvist Copyright (c) 2018
  */
-/*public*/  class DefaultAnalogExpressionManagerXml extends AbstractManagerXml {
+///*public*/  class DefaultAnalogExpressionManagerXml extends AbstractManagerXml {
 
-    /*private*/ final Map<String, Class<?>> xmlClasses = new HashMap<>();
+    /*private*/ /*final*/ QMap<QString, Class/*<?>*/*> xmlClasses = QMap<QString, Class/*<?>*/*>();
 
-    /*public*/  DefaultAnalogExpressionManagerXml() {
+    /*public*/  DefaultAnalogExpressionManagerXml::DefaultAnalogExpressionManagerXml(QObject* parent) : AbstractManagerXml(parent) {
     }
 
     /**
@@ -21,31 +27,32 @@
      * @return Element containing the complete info
      */
     //@Override
-    /*public*/  QDomElement store(QObject* o) {
-        QDomElement expressions = new Element("LogixNGAnalogExpressions");
+    /*public*/  QDomElement DefaultAnalogExpressionManagerXml::store(QObject* o) {
+        QDomElement expressions = doc.createElement("LogixNGAnalogExpressions");
         setStoreElementClass(expressions);
-        AnalogExpressionManager tm = (AnalogExpressionManager) o;
-        if (tm != null) {
-            if (tm.getNamedBeanSet().isEmpty()) return null;
-            for (MaleAnalogExpressionSocket expression : tm.getNamedBeanSet()) {
-                log.debug("expression system name is " + expression.getSystemName());  // NOI18N
+        AnalogExpressionManager* tm = (AnalogExpressionManager*) o;
+        if (tm != nullptr) {
+            if (tm->getNamedBeanSet().isEmpty()) return QDomElement();
+            for (NamedBean* nb : tm->getNamedBeanSet()) {
+             MaleAnalogExpressionSocket* expression = (MaleAnalogExpressionSocket*)nb;
+                log->debug("expression system name is " + expression->NamedBean::getSystemName());  // NOI18N
                 try {
-                    List<Element> elements = new ArrayList<>();
+                    QList<QDomElement> elements = QList<QDomElement>();
                     // The male socket may be embedded in other male sockets
-                    MaleAnalogExpressionSocket a = expression;
-                    while (!(a instanceof DefaultMaleAnalogExpressionSocket)) {
-                        elements.add(storeMaleSocket(a));
-                        a = (MaleAnalogExpressionSocket) a.getObject();
+                    MaleAnalogExpressionSocket* a = expression;
+                    while (!(static_cast<DefaultMaleAnalogExpressionSocket*>(a))) {
+                        elements.append(storeMaleSocket(a));
+                        a = (MaleAnalogExpressionSocket*) a->getObject()->bself();
                     }
-                    Element e = jmri.configurexml.ConfigXmlManager.elementFromObject(a.getObject());
-                    if (e != null) {
-                        for (Element ee : elements) e.addContent(ee);
-                        expressions.addContent(e);
+                    QDomElement e = ConfigXmlManager::elementFromObject(a->getObject()->bself());
+                    if (e != QDomElement()) {
+                        for (QDomElement ee : elements) e.appendChild(ee);
+                        expressions.appendChild(e);
                     } else {
-                        throw new RuntimeException("Cannot load xml configurator for " + a.getObject().getClass().getName());
+                        throw new RuntimeException(QString("Cannot load xml configurator for ") + a->getObject()->bself()->metaObject()->className());
                     }
-                } catch (RuntimeException e) {
-                    log.error("Error storing action: {}", e, e);
+                } catch (RuntimeException* e) {
+                    log->error(tr("Error storing action: %1").arg(e->toString()), e);
                 }
             }
         }
@@ -59,8 +66,8 @@
      *
      * @param expressions The top-level element being created
      */
-    /*public*/  void setStoreElementClass(Element expressions) {
-        expressions.setAttribute("class", this.getClass().getName());  // NOI18N
+    /*public*/  void DefaultAnalogExpressionManagerXml::setStoreElementClass(QDomElement expressions) {
+        expressions.setAttribute("class", "jmri.jmrit.logixng.implementation.configurexml.DefaultAnalogExpressionManagerXml");  // NOI18N
     }
 
     /**
@@ -72,7 +79,7 @@
      * @return true if successful
      */
     //@Override
-    /*public*/  boolean load(Element sharedExpression, Element perNodeExpression) {
+    /*public*/  bool DefaultAnalogExpressionManagerXml::load(QDomElement sharedExpression, QDomElement perNodeExpression) {
         // create the master object
         replaceExpressionManager();
         // load individual sharedLogix
@@ -87,50 +94,50 @@
      *
      * @param expressions Element containing the Logix elements to load.
      */
-    /*public*/  void loadExpressions(Element expressions) {
+    /*public*/  void DefaultAnalogExpressionManagerXml::loadExpressions(QDomElement expressions) {
 
-        List<Element> expressionList = expressions.getChildren();  // NOI18N
-        log.debug("Found " + expressionList.size() + " actions");  // NOI18N
+        QDomNodeList expressionList = expressions.childNodes();  // NOI18N
+        log->debug("Found " + QString::number(expressionList.size()) + " actions");  // NOI18N
 
         for (int i = 0; i < expressionList.size(); i++) {
 
-            String className = expressionList.get(i).getAttribute("class").getValue();
+            QString className = expressionList.at(i).toElement().attribute("class");
 //            log.error("className: " + className);
 
-            Class<?> clazz = xmlClasses.get(className);
+            Class/*<?>*/* clazz = xmlClasses.value(className);
 
-            if (clazz == null) {
+            if (clazz == nullptr) {
                 try {
-                    clazz = Class.forName(className);
-                    xmlClasses.put(className, clazz);
-                } catch (ClassNotFoundException ex) {
-                    log.error("cannot load class " + className, ex);
+                    clazz = Class::forName(className);
+                    xmlClasses.insert(className, clazz);
+                } catch (ClassNotFoundException* ex) {
+                    log->error("cannot load class " + className, ex);
                 }
             }
 
-            if (clazz != null) {
-                Constructor<?> c = null;
+            if (clazz != nullptr) {
+                /*Constructor<?>*/Class* c = nullptr;
                 try {
-                    c = clazz.getConstructor();
-                } catch (NoSuchMethodException | SecurityException ex) {
-                    log.error("cannot create constructor", ex);
+                    c = clazz->getConstructor();
+                } catch (NoSuchMethodException* /*| SecurityException*/ ex) {
+                    log->error("cannot create constructor", ex);
                 }
 
-                if (c != null) {
+                if (c != nullptr) {
                     try {
-                        AbstractNamedBeanManagerConfigXML o = (AbstractNamedBeanManagerConfigXML)c.newInstance();
+                        AbstractNamedBeanManagerConfigXML* o = (AbstractNamedBeanManagerConfigXML*)c->newInstance();
 
-                        MaleSocket oldLastItem = InstanceManager.getDefault(AnalogExpressionManager.class).getLastRegisteredMaleSocket();
-                        o.load(expressionList.get(i), null);
+                        MaleSocket* oldLastItem = ((AnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager"))->getLastRegisteredMaleSocket();
+                        o->load(expressionList.at(i).toElement(), QDomElement());
 
                         // Load male socket data if a new bean has been registered
-                        MaleSocket newLastItem = InstanceManager.getDefault(AnalogExpressionManager.class).getLastRegisteredMaleSocket();
-                        if (newLastItem != oldLastItem) loadMaleSocket(expressionList.get(i), newLastItem);
-                        else throw new RuntimeException("No new bean has been added. This class: "+getClass().getName());
-                    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                        log.error("cannot create object", ex);
-                    } catch (JmriConfigureXmlException ex) {
-                        log.error("cannot load action", ex);
+                        MaleSocket* newLastItem = ((AnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager"))->getLastRegisteredMaleSocket();
+                        if (newLastItem != oldLastItem) loadMaleSocket(expressionList.at(i).toElement(), newLastItem);
+                        else throw new RuntimeException(QString("No new bean has been added. This class: ")+metaObject()->className());
+                    } catch (InstantiationException* /*| IllegalAccessException | IllegalArgumentException | InvocationTargetException */ex) {
+                        log->error("cannot create object", ex);
+                    } catch (JmriConfigureXmlException* ex) {
+                        log->error("cannot load action", ex);
                     }
                 }
             }
@@ -142,21 +149,21 @@
      * during a load operation. This is skipped if they are of the same absolute
      * type.
      */
-    protected void replaceExpressionManager() {
-        if (InstanceManager.getDefault(AnalogExpressionManager.class).getClass().getName()
-                .equals(DefaultAnalogExpressionManager.class.getName())) {
+    /*protected*/ void DefaultAnalogExpressionManagerXml::replaceExpressionManager() {
+        if (QString(InstanceManager::getDefault("AnalogExpressionManager")->metaObject()->className())
+                 == ("DefaultAnalogExpressionManager")) {
             return;
         }
         // if old manager exists, remove it from configuration process
-        if (InstanceManager.getNullableDefault(AnalogExpressionManager.class) != null) {
-            ConfigureManager cmOD = InstanceManager.getNullableDefault(jmri.ConfigureManager.class);
-            if (cmOD != null) {
-                cmOD.deregister(InstanceManager.getDefault(AnalogExpressionManager.class));
+        if (InstanceManager::getNullableDefault("AnalogExpressionManager") != nullptr) {
+            ConfigureManager* cmOD = ((ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager"));
+            if (cmOD != nullptr) {
+                cmOD->deregister(InstanceManager::getDefault("AnalogExpressionManager"));
             }
 
         }
-
-        ThreadingUtil.runOnGUI(() -> {
+#if 0 //TODO:
+        ThreadingUtil::runOnGUI(() -> {
             // register new one with InstanceManager
             DefaultAnalogExpressionManager pManager = DefaultAnalogExpressionManager.instance();
             InstanceManager.store(pManager, AnalogExpressionManager.class);
@@ -166,11 +173,12 @@
                 cmOD.registerConfig(pManager, jmri.Manager.LOGIXNG_ANALOG_EXPRESSIONS);
             }
         });
+#endif
     }
 
     //@Override
-    /*public*/  int loadOrder() {
-        return InstanceManager.getDefault(AnalogExpressionManager.class).getXMLOrder();
+    /*public*/  int DefaultAnalogExpressionManagerXml::loadOrder() const {
+        return ((AnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager"))->getXMLOrder();
     }
 
-    /*private*/ final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DefaultAnalogExpressionManagerXml.class);
+    /*private*/ /*final*/ /*static*/ Logger* DefaultAnalogExpressionManagerXml::log = LoggerFactory::getLogger("DefaultAnalogExpressionManagerXml");

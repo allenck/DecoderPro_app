@@ -1959,8 +1959,8 @@ virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners() const;
 virtual QVector<PropertyChangeListener* >  getPropertyChangeListeners(QString  propertyName);
 virtual void removePropertyChangeListener(PropertyChangeListener*  listener);
 virtual void removePropertyChangeListener(QString  propertyName, PropertyChangeListener*  listener);
-virtual QObject*  self();
 virtual void timerEvent(QTimerEvent*  event);
+virtual QObject*  vself();
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -1973,7 +1973,7 @@ inline void py_q_fireVetoableChange(PropertyChangeEvent*  event) { VetoableChang
 inline void py_q_fireVetoableChange(QString  propertyName, QVariant  oldValue, QVariant  newValue) { VetoableChangeSupport::fireVetoableChange(propertyName, oldValue, newValue); }
 inline void py_q_fireVetoableChange(QString  propertyName, bool  oldValue, bool  newValue) { VetoableChangeSupport::fireVetoableChange(propertyName, oldValue, newValue); }
 inline void py_q_fireVetoableChange(QString  propertyName, int  oldValue, int  newValue) { VetoableChangeSupport::fireVetoableChange(propertyName, oldValue, newValue); }
-inline QObject*  py_q_self() { return VetoableChangeSupport::self(); }
+inline QObject*  py_q_vself() { return VetoableChangeSupport::vself(); }
 };
 
 class PythonQtWrapper_VetoableChangeSupport : public QObject
@@ -1990,8 +1990,8 @@ void delete_VetoableChangeSupport(VetoableChangeSupport* obj) { delete obj; }
    void py_q_fireVetoableChange(VetoableChangeSupport* theWrappedObject, QString  propertyName, bool  oldValue, bool  newValue){  (((PythonQtPublicPromoter_VetoableChangeSupport*)theWrappedObject)->py_q_fireVetoableChange(propertyName, oldValue, newValue));}
    void fireVetoableChange(VetoableChangeSupport* theWrappedObject, QString  propertyName, int  oldValue, int  newValue);
    void py_q_fireVetoableChange(VetoableChangeSupport* theWrappedObject, QString  propertyName, int  oldValue, int  newValue){  (((PythonQtPublicPromoter_VetoableChangeSupport*)theWrappedObject)->py_q_fireVetoableChange(propertyName, oldValue, newValue));}
-   QObject*  self(VetoableChangeSupport* theWrappedObject);
-   QObject*  py_q_self(VetoableChangeSupport* theWrappedObject){  return (((PythonQtPublicPromoter_VetoableChangeSupport*)theWrappedObject)->py_q_self());}
+   QObject*  vself(VetoableChangeSupport* theWrappedObject);
+   QObject*  py_q_vself(VetoableChangeSupport* theWrappedObject){  return (((PythonQtPublicPromoter_VetoableChangeSupport*)theWrappedObject)->py_q_vself());}
 };
 
 

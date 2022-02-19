@@ -13,7 +13,7 @@ class MutableInt;
  * @author Dave Duchamp       Copyright (C) 2007
  * @author Daniel Bergqvist   Copyright (C) 2020
  */
-/*public*/ /*interface*/class ModuleManager : public Manager/*<Module>*/ {
+/*public*/ /*interface*/class ModuleManager : public virtual Manager/*<Module>*/ {
  Q_INTERFACES(Manager)
  public:
     /**
@@ -112,7 +112,7 @@ class MutableInt;
      * @param lineNumber the line number
      */
     /*public*/ virtual void printTree(
-            PrintTreeSettings* settings,
+            Base::PrintTreeSettings* settings,
             PrintWriter* writer,
             QString indent,
             /*MutableInt*/int* lineNumber)=0;
@@ -127,7 +127,7 @@ class MutableInt;
      * @param lineNumber the line number
      */
     /*public*/ virtual void printTree(
-            PrintTreeSettings* settings,
+            Base::PrintTreeSettings* settings,
             QLocale locale,
             PrintWriter* writer,
             QString indent,
@@ -180,4 +180,5 @@ class MutableInt;
     }
 
 };
+Q_DECLARE_INTERFACE(ModuleManager, "ModuleManager")
 #endif // MODULEMANAGER_H

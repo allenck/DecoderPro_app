@@ -34,6 +34,8 @@ public:
   /*public*/ QString toString() override {return "ProxyLightManager";}
 
   QObject* self() override {return (QObject*)this;}
+  QObject* vself() override {return (QObject*)this;}
+
   /*public*/ SystemConnectionMemo* getMemo() override {return AbstractProxyManager::getMemo();}
   /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractProxyManager::getNamedBeanSet();}
   /*public*/ Light* getBySystemName(QString name) override {return (Light*)AbstractProxyManager::getBySystemName(name);}

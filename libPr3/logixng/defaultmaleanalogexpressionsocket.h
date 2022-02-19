@@ -26,7 +26,7 @@ class DefaultMaleAnalogExpressionSocket : public AbstractMaleSocket, public Male
   /*public*/  QString describeState(int state)override;
   /*public*/  QString getComment()override;
   /*public*/  void setComment(QString comment)override;
-  /*public*/  void setProperty(QString key, QVariant value);
+  /*public*/  void setProperty(QString key, QVariant value)override;
   /*public*/  QVariant getProperty(QString key)override;
   /*public*/  void removeProperty(QString key)override;
   /*public*/  QSet<QString> getPropertyKeys()override;

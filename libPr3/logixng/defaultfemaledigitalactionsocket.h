@@ -14,10 +14,10 @@ class DefaultFemaleDigitalActionSocket : public AbstractFemaleSocket, public Fem
   /*public*/  void execute() /*throws JmriException*/override;
   /*public*/  QString getShortDescription(QLocale locale)override;
   /*public*/  QString getLongDescription(QLocale locale)override;
-  /*public*/  QMap<Category *, QList<Base *> > getConnectableClasses()override;
+  /*public*/  QMap<Category *, QList<QString>* > getConnectableClasses()override;
   /*public*/  void disposeMe()override;
 
-  QObject* self() override{return(QObject*)this;}
+  QObject* bself() override{return(QObject*)this;}
   QString getUserName() const override{return AbstractFemaleSocket::getUserName();}
   /*public*/ void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override
   {AbstractFemaleSocket::getUsageDetail(level,bean, report,cdl );}

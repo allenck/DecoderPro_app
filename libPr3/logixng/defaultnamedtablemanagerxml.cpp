@@ -31,8 +31,9 @@
     setStoreElementClass(tables);
     DefaultNamedTableManager* tm = (DefaultNamedTableManager*) o;
     if (tm != nullptr) {
-        if (tm->AbstractManager::getNamedBeanSet().isEmpty()) return nullptr;
-        for (NamedTable* table : tm->AbstractManager::getNamedBeanSet()) {
+        if (tm->AbstractManager::getNamedBeanSet().isEmpty()) return QDomElement();
+        for (NamedBean* nb: tm->AbstractManager::getNamedBeanSet()) {
+         NamedTable* table = (NamedTable*)nb;
             log->debug("table system name is " + table->getSystemName());  // NOI18N
             try {
                 QDomElement e = ConfigXmlManager::elementFromObject(table);
@@ -99,7 +100,7 @@
                 clazz = Class::forName(className);
                 xmlClasses.insert(className, clazz);
             } catch (ClassNotFoundException* ex) {
-                log.error("cannot load class " + className, ex);
+                log->error("cannot load class " + className, ex);
             }
         }
 
@@ -137,7 +138,7 @@
     }
     // if old manager exists, remove it from configuration process
     if (InstanceManager::getNullableDefault("NamedTableManager") != nullptr) {
-        ConfigureManager* cmOD = InstanceManager::getNullableDefault("ConfigureManager");
+        ConfigureManager* cmOD = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
         if (cmOD != nullptr) {
             cmOD->deregister(InstanceManager::getDefault("NamedTableManager"));
         }

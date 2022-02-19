@@ -113,7 +113,7 @@
     }
 
     //@Override
-    /*public*/  NamedBean* AbstractBaseManager::RegisterBean(/*@Nonnull*/ NamedBean* s) {
+    /*public*/  NamedBean* AbstractBaseManager::registerBean(/*@Nonnull*/ NamedBean* s) {
         NamedBean* bean = s;
         for (MaleSocketFactory/*<E>*/* factory : _maleSocketFactories) {
             bean = factory->encapsulateMaleSocket(this, bean);

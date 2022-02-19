@@ -15,7 +15,8 @@ class DefaultStringActionManagerXml : public AbstractManagerXml
 
  private:
   static Logger* log;
-  /*private*/ /*final*/ QMap<QString,/* Class<?>*/QString> xmlClasses = QMap<QString,/* Class<?>*/QString>();
+  /*private*/ /*final*/ QMap<QString, Class/*<?>*/*> xmlClasses = QMap<QString, Class/*<?>*/*>();
+  /*public*/  int loadOrder()const override;
 
  protected:
   /*protected*/ void replaceActionManager();

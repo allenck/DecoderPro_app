@@ -7,7 +7,7 @@
  *
  * @author Daniel Bergqvist (C) 2020
  */
-/*public*/ /*interface*/class FemaleAnySocket : public FemaleSocket {
+/*public*/ /*interface*/class FemaleAnySocket : public virtual FemaleSocket {
     Q_INTERFACES(FemaleSocket)
 };
 Q_DECLARE_INTERFACE(FemaleAnySocket, "FemaleAnySocket")

@@ -11,7 +11,7 @@
  * @author Bob Jacobsen Copyright (C) 2003
  */
 
-class  ProvidingManager : public Manager
+class  ProvidingManager : public virtual Manager
 {
   Q_INTERFACES(Manager)
     /**

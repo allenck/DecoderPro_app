@@ -27,7 +27,7 @@ class DefaultFemaleGenericExpressionSocket : public AbstractFemaleSocket, public
   /*public*/  QVariant evaluateGeneric() /*throws JmriException*/override;
   /*public*/  QString getShortDescription(QLocale locale)override;
   /*public*/  QString getLongDescription(QLocale locale)override;
-  /*public*/  QMap<Category::TYPE, QList</*Class<? extends Base>*/QString>> getConnectableClasses()override;
+  /*public*/  QMap<Category *, QList<QString> *> getConnectableClasses()override;
   /*public*/  void _connect(MaleSocket* socket) /*throws SocketAlreadyConnectedException*/override;
   /*public*/  void _disconnect()override;
   /*public*/  MaleSocket* getConnectedSocket() override;
@@ -36,8 +36,9 @@ class DefaultFemaleGenericExpressionSocket : public AbstractFemaleSocket, public
   /*public*/  void disconnected(FemaleSocket* socket)override;
   /*public*/  void disposeMe()override;
 
-  QObject* self() override{return (QObject*)this;
-                          }
+  QObject* self() override{return (QObject*)this;}
+  QObject* bself() override{return (QObject*)this;}
+
  private:
   /*private*/ SocketType _socketType;             // The type of the socket the user has selected
   /*private*/ SocketType _currentSocketType;      // The current type of the socket.
@@ -47,8 +48,8 @@ class DefaultFemaleGenericExpressionSocket : public AbstractFemaleSocket, public
   /*private*/ /*final*/ FemaleStringExpressionSocket* _stringSocket;// = new DefaultFemaleStringExpressionSocket(this, this, "S");
   /*private*/ bool _do_i18n;
   /*private*/ void addClassesToMap(
-    QMap<Category::TYPE, QList</*Class<? extends Base>*/QString>> destinationClasses,
-    QMap<Category::TYPE, QList</*Class<? extends Base>*/QString>> sourceClasses);
+    QMap<Category*, QList</*Class<? extends Base>*/QString>* > destinationClasses,
+    QMap<Category*, QList</*Class<? extends Base>*/QString>* > sourceClasses);
 
 };
 

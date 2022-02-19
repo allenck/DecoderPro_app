@@ -5,7 +5,7 @@
  * A generic female socket
  */
 /*public*/ /*interface*/class FemaleGenericExpressionSocket
-        : public FemaleSocket {
+        : public virtual FemaleSocket {
 Q_INTERFACES(FemaleSocket)
  public:
     /*public*/ enum  SocketType {DIGITAL, ANALOG, STRING, GENERIC};

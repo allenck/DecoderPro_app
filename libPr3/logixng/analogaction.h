@@ -8,7 +8,7 @@
  * @author Daniel Bergqvist Copyright 2018
  */
 /*public*/ /*interface*/ class AnalogAction : public Base {
-
+public:
   Q_INTERFACES()
     /**
      * Set an analog value.

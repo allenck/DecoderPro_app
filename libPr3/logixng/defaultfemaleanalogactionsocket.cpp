@@ -19,12 +19,12 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  bool DefaultFemaleAnalogActionSocket::isCompatible(MaleSocket* socket) {
-        return qobject_cast<MaleAnalogActionSocket*>(socket->self());
+        return qobject_cast<MaleAnalogActionSocket*>(socket->bself());
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  QMap<Category*, QList</*Class<? extends Base>*/Base*>> DefaultFemaleAnalogActionSocket::getConnectableClasses() {
+    /*public*/  QMap<Category*, QList</*Class<? extends Base>*/QString>*> DefaultFemaleAnalogActionSocket::getConnectableClasses() {
         return ((AnalogActionManager*)InstanceManager::getDefault("AnalogActionManager"))->getActionClasses();
     }
 
@@ -32,7 +32,7 @@
     //@Override
     /*public*/  void DefaultFemaleAnalogActionSocket::setValue(double value) /*throws JmriException*/ {
         if (AbstractFemaleSocket::isConnected()) {
-            ((MaleAnalogActionSocket*)AbstractFemaleSocket::getConnectedSocket())->setValue(value);
+            ((MaleAnalogActionSocket*)AbstractFemaleSocket::getConnectedSocket()->bself())->setValue(value);
         }
     }
 

@@ -222,7 +222,7 @@
                     }
                     log->error("                                                                 ");
                     QList<QString> cliperrors = QList<QString>();
-                    _clipboard->add((MaleSocket*) b, cliperrors);
+                    _clipboard->add((MaleSocket*) b->bself(), cliperrors);
                 }
             }
             messageDialog("ParentErrorsTitle", msgs, "NoParentHelp");
@@ -356,7 +356,7 @@ void DLMRunnable::run()
             Base::PrintTreeSettings* settings,
             PrintWriter* writer,
             QString indent,
-            /*MutableInt*/int lineNumber) {
+            /*MutableInt*/int* lineNumber) {
 
         printTree(settings, QLocale(), writer, indent, lineNumber);
     }
@@ -368,7 +368,7 @@ void DLMRunnable::run()
             QLocale locale,
             PrintWriter* writer,
             QString indent,
-            /*MutableInt*/int lineNumber) {
+            /*MutableInt*/int* lineNumber) {
 
         for (/*LogixNG* logixNG*/NamedBean* nb : AbstractManager::getNamedBeanSet()) {
          LogixNG* logixNG = (LogixNG*)nb;

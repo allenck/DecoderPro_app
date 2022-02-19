@@ -20,20 +20,20 @@
 /** {@inheritDoc} */
 //@Override
 /*public*/  bool DefaultMaleAnalogExpressionSocket::getTriggerOnChange() {
-    return ((AnalogExpressionBean*)AbstractMaleSocket::getObject())->getTriggerOnChange();
+    return ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->getTriggerOnChange();
 }
 
 /** {@inheritDoc} */
 //@Override
 /*public*/  void DefaultMaleAnalogExpressionSocket::setTriggerOnChange(bool triggerOnChange) {
-    ((AnalogExpressionBean*)AbstractMaleSocket::getObject())->setTriggerOnChange(triggerOnChange);
+    ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->setTriggerOnChange(triggerOnChange);
 }
 
 /**
  * Get the value of the AnalogExpressionBean.
  */
 /*private*/ double DefaultMaleAnalogExpressionSocket::internalEvaluate() /*throws JmriException*/ {
-    double result = ((AnalogExpressionBean*)AbstractMaleSocket::getObject())->evaluate();
+    double result = ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->evaluate();
 
     if (/*Double.isNaN*/std::isnan(result)) {
         throw new IllegalArgumentException("The result is NaN");
@@ -68,13 +68,13 @@
         conditionalNG->getSymbolTable()->createSymbols(_localVariables);
         result = internalEvaluate();
     } catch (JmriException* e) {
-        if (e->getErrors() != nullptr) {
-            handleError(this, tr("An exception has occurred during evaluate:"), e.getErrors(), e, log);
+        if (!e->getErrors().isEmpty()) {
+            handleError((AbstractMaleSocket*)this, tr("An exception has occurred during evaluate:"), e->getErrors(), e, log);
         } else {
-            handleError(this, tr("An exception has occurred during evaluate: %1").arg(e->getLocalizedMessage()), e, log);
+            handleError((AbstractMaleSocket*)this, tr("An exception has occurred during evaluate: %1").arg(e->getLocalizedMessage()), e, log);
         }
     } catch (RuntimeException* e) {
-        handleError(this, tr("An exception has occurred during evaluate: %1", e->getLocalizedMessage()), e, log);
+        handleError((AbstractMaleSocket*)this, tr("An exception has occurred during evaluate: %1").arg(e->getLocalizedMessage()), e, log);
     }
 
     conditionalNG->getStack()->setCount(currentStackPos);
@@ -85,25 +85,25 @@
 
 //@Override
 /*public*/  int DefaultMaleAnalogExpressionSocket::getState() {
-    return ((AnalogExpressionBean*)AbstractMaleSocket::getObject())->getState();
+    return ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->getState();
 }
 
 //@Override
 /*public*/  QString DefaultMaleAnalogExpressionSocket::getDisplayName() {
-    return ((AnalogExpressionBean*)AbstractMaleSocket::getObject())->getDisplayName();
+    return ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->getDisplayName();
 }
 
 //@Override
 /*public*/  void DefaultMaleAnalogExpressionSocket::disposeMe() {
-    ((AnalogExpressionBean*)AbstractMaleSocket::getObject())->dispose();
+    ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->NamedBean::dispose();
 }
 
 /**
  * Register listeners if this object needs that.
  */
 //@Override
-/*public*/  void registerListenersForThisClass() {
-    ((AnalogExpressionBean*)AbstractMaleSocket::getObject())->registerListeners();
+/*public*/  void DefaultMaleAnalogExpressionSocket::registerListenersForThisClass() {
+    ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->registerListeners();
 }
 
 /**
@@ -111,12 +111,12 @@
  */
 //@Override
 /*public*/  void DefaultMaleAnalogExpressionSocket::unregisterListenersForThisClass() {
-    ((AnalogExpressionBean*)AbstractMaleSocket::getObject())->unregisterListeners();
+    ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->unregisterListeners();
 }
 
 //@Override
 /*public*/  void DefaultMaleAnalogExpressionSocket::setState(int s) /*throws JmriException*/ {
-    ((AnalogExpressionBean*)AbstractMaleSocket::getObject())->setState(s);
+    ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->setState(s);
 }
 
 //@Override
@@ -126,42 +126,42 @@
 
 //@Override
 /*public*/  QString AbstractMaleSocket::getComment() {
-    return ((AnalogExpressionBean*)AbstractMaleSocket::getObject())->NamedBean::getComment();
+    return ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->NamedBean::getComment();
 }
 
 //@Override
 /*public*/  void AbstractMaleSocket::setComment(QString comment) {
-    ((AnalogExpressionBean*)AbstractMaleSocket::getObject())->NamedBean::setComment(comment);
+    ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->NamedBean::setComment(comment);
 }
 
 //@Override
 /*public*/  void DefaultMaleAnalogExpressionSocket::setProperty(QString key, QVariant value) {
-    ((AnalogExpressionBean*)AbstractMaleSocket::getObject())->setProperty(key, value);
+    ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->setProperty(key, value);
 }
 
 //@Override
 /*public*/  QVariant DefaultMaleAnalogExpressionSocket::getProperty(QString key) {
-    return ((AnalogExpressionBean*)AbstractMaleSocket::getObject())->getProperty(key);
+    return ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->getProperty(key);
 }
 
 //@Override
 /*public*/  void DefaultMaleAnalogExpressionSocket::removeProperty(QString key) {
-    ((AnalogExpressionBean*)AbstractMaleSocket::getObject())->removeProperty(key);
+    ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->removeProperty(key);
 }
 
 //@Override
-/*public*/  QSet<QString> AbstractMaleSocket::getPropertyKeys() {
-    return ((AnalogExpressionBean*)AbstractMaleSocket::getObject())->getPropertyKeys();
+/*public*/  QSet<QString> DefaultMaleAnalogExpressionSocket::getPropertyKeys() {
+    return ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->getPropertyKeys();
 }
 
 //@Override
 /*public*/  QString DefaultMaleAnalogExpressionSocket::getBeanType() {
-    return ((AnalogExpressionBean*)AbstractMaleSocket::getObject())->getBeanType();
+    return ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->getBeanType();
 }
 
 //@Override
 /*public*/  int DefaultMaleAnalogExpressionSocket::compareSystemNameSuffix(QString suffix1, QString suffix2, NamedBean* n2) {
-    return ((AnalogExpressionBean*)AbstractMaleSocket::getObject())->compareSystemNameSuffix(suffix1, suffix2, n2);
+    return ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
 }
 
 /** {@inheritDoc} */
@@ -172,13 +172,13 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  DebugConfig* DefaultMaleAnalogExpressionSocket::getDebugConfig() {
+/*public*/  MaleSocket::DebugConfig* DefaultMaleAnalogExpressionSocket::getDebugConfig() {
     return _debugConfig;
 }
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  DebugConfig* DefaultMaleAnalogExpressionSocket::createDebugConfig() {
+/*public*/  MaleSocket::DebugConfig* DefaultMaleAnalogExpressionSocket::createDebugConfig() {
     return new AnalogExpressionDebugConfig();
 }
 
@@ -186,10 +186,10 @@
 //@Override
 /*public*/  void DefaultMaleAnalogExpressionSocket::setEnabled(bool enable) {
     _enabled = enable;
-    if (isActive()) {
-        registerListeners();
+    if (AbstractMaleSocket::isActive()) {
+        AbstractMaleSocket::registerListeners();
     } else {
-        unregisterListeners();
+        AbstractMaleSocket::unregisterListeners();
     }
 }
 
@@ -204,8 +204,5 @@
 /*public*/  bool DefaultMaleAnalogExpressionSocket::isEnabled() {
     return _enabled;
 }
-
-
-
 
 /*private*/ /*final*/ /*static*/ Logger* DefaultMaleAnalogExpressionSocket::log = LoggerFactory::getLogger("DefaultMaleAnalogExpressionSocket");

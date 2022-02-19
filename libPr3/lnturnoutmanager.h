@@ -23,6 +23,8 @@ public:
     /*public*/ QString getDefaultThrownSpeed()const  override {return AbstractTurnoutManager::getDefaultThrownSpeed();}
 
     QObject* self() override { return (QObject*)this;}
+    QObject* vself() override { return (QObject*)this;}
+
    // /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
     /*public*/ Turnout* getBySystemName(QString name) override {return (Turnout*)AbstractManager::getBySystemName(name);}
     /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::addPropertyChangeListener(l);}

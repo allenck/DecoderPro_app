@@ -1,7 +1,7 @@
 #ifndef PARSEREXCEPTION_H
 #define PARSEREXCEPTION_H
 #include "exceptions.h"
-
+#include "jmriexception.h"
 /**
  * The parent of all parser exceptions.
  *

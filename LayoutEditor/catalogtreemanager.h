@@ -77,7 +77,7 @@ public:
     /*public*/ SystemConnectionMemo* getMemo() override;
 
     QObject* self() override{return (QObject*)this;}
-
+    QObject* vself() override {return (QObject*)this;}
 signals:
 
 public slots:

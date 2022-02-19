@@ -1,5 +1,8 @@
 #include "defaultanalogactionmanagerxml.h"
 #include "loggerfactory.h"
+#include "instancemanager.h"
+#include "analogactionmanager.h"
+#include "defaultmaleanalogactionsocket.h"
 
 /**
  * Provides the functionality for configuring ActionManagers
@@ -7,11 +10,10 @@
  * @author Dave Duchamp Copyright (c) 2007
  * @author Daniel Bergqvist Copyright (c) 2018
  */
-/*public*/  class DefaultAnalogActionManagerXml extends AbstractManagerXml {
+///*public*/  class DefaultAnalogActionManagerXml extends AbstractManagerXml {
 
-    /*private*/ /*final*/ Map<String, Class<?>> xmlClasses = new HashMap<>();
 
-    /*public*/  DefaultAnalogActionManagerXml() {
+    /*public*/  DefaultAnalogActionManagerXml::DefaultAnalogActionManagerXml(QObject*parent) : AbstractManagerXml(parent){
     }
 
     /**
@@ -21,31 +23,32 @@
      * @return Element containing the complete info
      */
     //@Override
-    /*public*/  Element store(Object o) {
-        Element actions = new Element("LogixNGAnalogActions");
+    /*public*/  QDomElement DefaultAnalogActionManagerXml::store(QObject* o) {
+        QDomElement actions = doc.createElement("LogixNGAnalogActions");
         setStoreElementClass(actions);
-        AnalogActionManager tm = (AnalogActionManager) o;
-        if (tm != null) {
-            if (tm.getNamedBeanSet().isEmpty()) return null;
-            for (MaleAnalogActionSocket action : tm.getNamedBeanSet()) {
-                log.debug("action system name is " + action.getSystemName());  // NOI18N
+        AnalogActionManager* tm = (AnalogActionManager*) o;
+        if (tm != nullptr) {
+            if (tm->getNamedBeanSet().isEmpty()) return QDomElement();
+            for (NamedBean* nb: tm->getNamedBeanSet()) {
+             MaleAnalogActionSocket* action  = (MaleAnalogActionSocket*)nb;
+                log->debug("action system name is " + action->NamedBean::getSystemName());  // NOI18N
                 try {
-                    List<Element> elements = new ArrayList<>();
+                    QList<QDomElement> elements = QList<QDomElement>();
                     // The male socket may be embedded in other male sockets
-                    MaleAnalogActionSocket a = action;
-                    while (!(a instanceof DefaultMaleAnalogActionSocket)) {
-                        elements.add(storeMaleSocket(a));
-                        a = (MaleAnalogActionSocket) a.getObject();
+                    MaleAnalogActionSocket* a = action;
+                    while (!(static_cast<DefaultMaleAnalogActionSocket*>(a))) {
+                        elements.append(storeMaleSocket(a));
+                        a = (MaleAnalogActionSocket*) a->getObject()->bself();
                     }
-                    Element e = jmri.configurexml.ConfigXmlManager.elementFromObject(a.getObject());
-                    if (e != null) {
-                        for (Element ee : elements) e.addContent(ee);
-                        actions.addContent(e);
+                    QDomElement e = ConfigXmlManager::elementFromObject(a->getObject()->bself());
+                    if (e != QDomElement()) {
+                        for (QDomElement ee : elements) e.appendChild(ee);
+                        actions.appendChild(e);
                     } else {
-                        throw new RuntimeException("Cannot load xml configurator for " + a.getObject().getClass().getName());
+                        throw new RuntimeException(QString("Cannot load xml configurator for ") + a->getObject()->bself()->metaObject()->className());
                     }
-                } catch (RuntimeException e) {
-                    log.error("Error storing action: {}", e, e);
+                } catch (RuntimeException* e) {
+                    log->error(tr("Error storing action: %1").arg(e->toString()), e);
                 }
             }
         }
@@ -59,8 +62,8 @@
      *
      * @param actions The top-level element being created
      */
-    /*public*/  void setStoreElementClass(Element actions) {
-        actions.setAttribute("class", this.getClass().getName());  // NOI18N
+    /*public*/  void  DefaultAnalogActionManagerXml::setStoreElementClass(QDomElement actions) {
+        actions.setAttribute("class", "jmri.jmrit.loggixng,implementation.configut=rexml.DefaultAnalogActionManagerXml");  // NOI18N
     }
 
     /**
@@ -72,7 +75,7 @@
      * @return true if successful
      */
     //@Override
-    /*public*/  boolean load(Element sharedAction, Element perNodeAction) {
+    /*public*/  bool  DefaultAnalogActionManagerXml::load(QDomElement sharedAction, QDomElement perNodeAction) {
         // create the master object
         replaceActionManager();
         // load individual sharedAction
@@ -87,50 +90,50 @@
      *
      * @param actions Element containing the AnalogActionBean elements to load.
      */
-    /*public*/  void loadActions(Element actions) {
+    /*public*/  void  DefaultAnalogActionManagerXml::loadActions(QDomElement actions) {
 
-        List<Element> actionList = actions.getChildren();  // NOI18N
-        log.debug("Found {} actions", actionList.size());  // NOI18N
+        QDomNodeList actionList = actions.childNodes();  // NOI18N
+        log->debug(tr("Found %1 actions").arg(actionList.size()));  // NOI18N
 
         for (int i = 0; i < actionList.size(); i++) {
 
-            String className = actionList.get(i).getAttribute("class").getValue();
+            QString className = actionList.at(i).toElement().attribute("class");
 //            log.error("className: " + className);
 
-            Class<?> clazz = xmlClasses.get(className);
+            Class/*<?>*/* clazz = xmlClasses.value(className);
 
-            if (clazz == null) {
+            if (clazz == nullptr) {
                 try {
-                    clazz = Class.forName(className);
-                    xmlClasses.put(className, clazz);
-                } catch (ClassNotFoundException ex) {
-                    log.error("cannot load class {}", className, ex);
+                    clazz = Class::forName(className);
+                    xmlClasses.insert(className, clazz);
+                } catch (ClassNotFoundException* ex) {
+                    log->error(tr("cannot load class %1").arg(className), ex);
                 }
             }
 
-            if (clazz != null) {
-                Constructor<?> c = null;
+            if (clazz != nullptr) {
+                /*Constructor<?>*/Class* c = nullptr;
                 try {
-                    c = clazz.getConstructor();
-                } catch (NoSuchMethodException | SecurityException ex) {
-                    log.error("cannot create constructor", ex);
+                    c = clazz->getConstructor();
+                } catch (NoSuchMethodException* /*| SecurityException*/ ex) {
+                    log->error("cannot create constructor", ex);
                 }
 
-                if (c != null) {
+                if (c != nullptr) {
                     try {
-                        AbstractNamedBeanManagerConfigXML o = (AbstractNamedBeanManagerConfigXML)c.newInstance();
+                        AbstractNamedBeanManagerConfigXML* o = (AbstractNamedBeanManagerConfigXML*)c->newInstance();
 
-                        MaleSocket oldLastItem = InstanceManager.getDefault(AnalogActionManager.class).getLastRegisteredMaleSocket();
-                        o.load(actionList.get(i), null);
+                        MaleSocket* oldLastItem = ((AnalogActionManager*)InstanceManager::getDefault("AnalogActionManager"))->getLastRegisteredMaleSocket();
+                        o->load(actionList.at(i).toElement(), QDomElement());
 
                         // Load male socket data if a new bean has been registered
-                        MaleSocket newLastItem = InstanceManager.getDefault(AnalogActionManager.class).getLastRegisteredMaleSocket();
-                        if (newLastItem != oldLastItem) loadMaleSocket(actionList.get(i), newLastItem);
-                        else throw new RuntimeException("No new bean has been added. This class: "+getClass().getName());
-                    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                        log.error("cannot create object", ex);
-                    } catch (JmriConfigureXmlException ex) {
-                        log.error("cannot load action", ex);
+                        MaleSocket* newLastItem = ((AnalogActionManager*)InstanceManager::getDefault("AnalogActionManager"))->getLastRegisteredMaleSocket();
+                        if (newLastItem != oldLastItem) loadMaleSocket(actionList.at(i).toElement(), newLastItem);
+                        else throw new RuntimeException(QString("No new bean has been added. This class: ")+metaObject()->className());
+                    } catch (InstantiationException* /*| IllegalAccessException | IllegalArgumentException | InvocationTargetException */ex) {
+                        log->error("cannot create object", ex);
+                    } catch (JmriConfigureXmlException* ex) {
+                        log->error("cannot load action", ex);
                     }
                 }
             }
@@ -142,20 +145,20 @@
      * created during a load operation. This is skipped if they are of the same
      * absolute type.
      */
-    protected void replaceActionManager() {
-        if (InstanceManager.getDefault(jmri.jmrit.logixng.AnalogActionManager.class).getClass().getName()
-                .equals(DefaultAnalogActionManager.class.getName())) {
+    /*protected*/ void  DefaultAnalogActionManagerXml::replaceActionManager() {
+        if (QString(InstanceManager::getDefault("AnalogActionManager")->metaObject()->className())
+                 == ("DefaultAnalogActionManager")) {
             return;
         }
         // if old manager exists, remove it from configuration process
-        if (InstanceManager.getNullableDefault(jmri.jmrit.logixng.AnalogActionManager.class) != null) {
-            ConfigureManager cmOD = InstanceManager.getNullableDefault(jmri.ConfigureManager.class);
-            if (cmOD != null) {
-                cmOD.deregister(InstanceManager.getDefault(jmri.jmrit.logixng.AnalogActionManager.class));
+        if (InstanceManager::getNullableDefault("AnalogActionManager") != nullptr) {
+            ConfigureManager* cmOD = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+            if (cmOD != nullptr) {
+                cmOD->deregister(InstanceManager::getDefault("AnalogActionManager"));
             }
 
         }
-
+#if 0 // TODO:
         ThreadingUtil.runOnGUI(() -> {
             // register new one with InstanceManager
             DefaultAnalogActionManager pManager = DefaultAnalogActionManager.instance();
@@ -166,11 +169,12 @@
                 cmOD.registerConfig(pManager, jmri.Manager.LOGIXNG_ANALOG_ACTIONS);
             }
         });
+#endif
     }
 
     //@Override
-    /*public*/  int loadOrder() {
-        return InstanceManager.getDefault(jmri.jmrit.logixng.AnalogActionManager.class).getXMLOrder();
+    /*public*/  int  DefaultAnalogActionManagerXml::loadOrder() const {
+        return ((AnalogActionManager*)InstanceManager::getDefault("AnalogActionManager"))->getXMLOrder();
     }
 
     /*private*/ /*final*/ /*static*/ Logger* DefaultAnalogActionManagerXml::log = LoggerFactory::getLogger("DefaultAnalogActionManagerXml");

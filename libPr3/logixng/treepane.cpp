@@ -42,7 +42,7 @@
 //            b->addPropertyChangeListener(this);
 //        });
         for (int i=0; i < _femaleRootSocket->getChildCount(); i++) {
-            ((AbstractBase*)_femaleRootSocket->getChild(i)->self())->AbstractNamedBean::addPropertyChangeListener(this);
+            ((AbstractBase*)_femaleRootSocket->getChild(i)->bself())->AbstractNamedBean::addPropertyChangeListener(this);
         }
 
     }
@@ -101,7 +101,7 @@
      */
     /*protected*/ void TreePane::getPath(Base* base, QList<FemaleSocket*>* list) {
         for (Base* b = base; b != nullptr; b = b->getParent()) {
-            if (qobject_cast<FemaleSocket*>(b->self())) list->insert(0, (FemaleSocket*)b->self());
+            if (qobject_cast<FemaleSocket*>(b->bself())) list->insert(0, (FemaleSocket*)b->bself());
         }
     }
 
@@ -123,7 +123,7 @@
             if (evt->getNewValue() != QVariant()) {
                 if (! VPtr<QList<FemaleSocket*> >::asPtr(evt->getNewValue())) throw new RuntimeException("New value is not a list");
                 foreach (FemaleSocket* socket, *VPtr<QList<FemaleSocket*> >::asPtr(evt->getNewValue())) {
-                    ((AbstractFemaleSocket*)socket)->addPropertyChangeListener(this);
+                    ((AbstractFemaleSocket*)socket->bself())->addPropertyChangeListener(this);
                 }
             }
 
@@ -208,7 +208,7 @@
 //            b->addPropertyChangeListener(TreePane.this);
 //        });
       for (int i=0; i < _femaleRootSocket->getChildCount(); i++) {
-          ((AbstractBase*)_femaleRootSocket->getChild(i)->self())->AbstractNamedBean::removePropertyChangeListener(this);
+          ((AbstractBase*)_femaleRootSocket->getChild(i)->bself())->AbstractNamedBean::removePropertyChangeListener(this);
       }
     }
 
@@ -339,14 +339,14 @@
             //socketLabel.setFont(font.deriveFont((float)(font.getSize2D()*1.7)));
             font.setPixelSize(font.pixelSize()*1.7);
             socketLabel->setFont(font);
-            socketLabel->setForeground(TreePane::FEMALE_SOCKET_COLORS.value(socket->self()->metaObject()->className()));
+            socketLabel->setForeground(TreePane::FEMALE_SOCKET_COLORS.value(socket->bself()->metaObject()->className()));
 //            socketLabel.setForeground(Color.red);
             panelLayout->addWidget(socketLabel,0, Qt::AlignLeft);
 
             panelLayout->addWidget( Box::createRigidArea(QSize(5,0)), 0, Qt::AlignLeft);
 
             JLabel* socketNameLabel = new JLabel(socket->getName());
-            socketNameLabel->setForeground(TreePane::FEMALE_SOCKET_COLORS.value(socket->self()->metaObject()->className()));
+            socketNameLabel->setForeground(TreePane::FEMALE_SOCKET_COLORS.value(socket->bself()->metaObject()->className()));
 //            socketNameLabel.setForeground(Color.red);
             panelLayout->addWidget(socketNameLabel, 0, Qt::AlignLeft);
 

@@ -18,7 +18,7 @@ public:
      return "Light";
  }
   /*public*/ QString toString() override {return "InternalLightManager";}
-
+  QObject* vself() override { return (QObject*)this;}
 
 signals:
 

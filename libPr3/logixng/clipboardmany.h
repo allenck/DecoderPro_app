@@ -13,7 +13,9 @@ class ClipboardMany : public AbstractBase, public FemaleSocketListener
   Q_OBJECT
   Q_INTERFACES(FemaleSocketListener)
 public:
+  QObject* bself() override {return (QObject*)this;}
   QObject* self() override {return (QObject*)this;}
+
  private:
   /*private*/ /*static*/ class ItemEntry {
       /*private*/ QString _socketSystemName;
@@ -52,7 +54,7 @@ public:
           /*throw (BadUserNameException, BadSystemNameException)*/;
   /*public*/ QString getItemSystemName(int index);
   /*public*/ void setup()override;
-  /*public*/ Category::TYPE getCategory()override;
+  /*public*/ Category* getCategory()override;
 
   /*public*/ FemaleSocket* getChild(int index) /*throw (IllegalArgumentException, UnsupportedOperationException)*/ override;
   /*public*/ int getChildCount()override;

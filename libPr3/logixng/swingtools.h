@@ -13,7 +13,7 @@ class SwingTools : public QObject
   /*public*/  static QString adapterNameForObject(QObject* o);
   /*public*/  static QString adapterNameForClass(QString c);
   static /*public*/  SwingConfiguratorInterface* getSwingConfiguratorForObject(QObject* object);
-  static /*public*/  SwingConfiguratorInterface* getSwingConfiguratorForClass(Class* clazz);
+  static /*public*/  SwingConfiguratorInterface* getSwingConfiguratorForClass(QString clazz);
 
  signals:
 

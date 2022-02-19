@@ -23,10 +23,11 @@ class DefaultVariableLightManager : public AbstractManager, public VariableLight
   /*public*/ void deleteBean(/*@Nonnull*/ NamedBean* n, /*@Nonnull*/ QString property) override;
 
   QObject* self() override {return this;}
+  QObject* vself() override {return (QObject*)this;}
 
-  /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString s) const override;
-  /*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString s)const override;
-  /*public*/ SystemConnectionMemo* getMemo()  override;
+  /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString s) const override {return AbstractManager::getBeanByUserName(s);}
+  /*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString s) const override {return AbstractManager::getBeanBySystemName(s);}
+  /*public*/ SystemConnectionMemo* getMemo()  override {return AbstractManager::getMemo();}
  public slots:
   //@Override
   /*public*/ void propertyChange(PropertyChangeEvent* e) override;

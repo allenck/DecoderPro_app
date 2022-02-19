@@ -17,6 +17,7 @@ class AbstractManagerXml : public AbstractNamedBeanManagerConfigXML
   /*private*/ /*final*/ QMap<QString, /*Class<?>*/Class*> xmlClasses = QMap<QString, /*Class<?>*/Class*>();
   static Logger* log;
 
+  friend class DefaultAnalogExpressionManagerXml;
 };
 
 #endif // ABSTRACTMANAGERXML_H

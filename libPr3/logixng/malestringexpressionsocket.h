@@ -7,7 +7,7 @@
  * A LogixNG male StringExpressionBean socket.
  */
 /*public*/ /*interface*/class MaleStringExpressionSocket
-        : public MaleSocket, public StringExpressionBean {
+        : public virtual MaleSocket, public StringExpressionBean {
 Q_INTERFACES(MaleSocket StringExpressionBean)
  public:
     /**

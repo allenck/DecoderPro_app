@@ -8,7 +8,7 @@
 #include "defaultfemaleanalogactionsocket.h"
 
 class SocketType;
-class DefaultFemaleAnalogActionSocketFactory : public QObject, FemaleSocketFactory
+class DefaultFemaleAnalogActionSocketFactory : public QObject, public FemaleSocketFactory
 {
   Q_OBJECT
  public:

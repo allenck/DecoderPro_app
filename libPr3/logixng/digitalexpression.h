@@ -8,7 +8,7 @@
  *
  * @author Daniel Bergqvist Copyright 2018
  */
-/*public*/ /*interface*/class DigitalExpression : public Base {
+/*public*/ /*interface*/class DigitalExpression : public virtual Base {
 public:
     /**
      * Evaluate this expression.

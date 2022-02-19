@@ -56,7 +56,7 @@ AbstractReporterMgrTestBase::AbstractReporterMgrTestBase()
     //@Test
     /*public*/ void AbstractReporterMgrTestBase::testProvideName() {
         // Create
-        Reporter* t = (Reporter*)((ReporterManager*)l)->provide("" + getNameToTest1());
+        Reporter* t = (Reporter*)((ReporterManager*)l->self())->provide("" + getNameToTest1());
         Assert::assertTrue("real object returned ", t->self() != nullptr, __FILE__, __LINE__);
         Assert::assertTrue("system name correct ", ((NamedBean*)t->self())->equals (((ProxyReporterManager*)l->self())->AbstractProxyManager::getBySystemName(getSystemName(getNameToTest1()))->self()), __FILE__, __LINE__);
     }

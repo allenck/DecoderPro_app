@@ -39,7 +39,7 @@ class DefaultSymbolTable : /*public QObject,*/ public SymbolTable
   /*private*/ /*final*/ int _firstSymbolIndex;
   /*private*/ /*final*/ QMap<QString, Symbol*> _symbols = QMap<QString, Symbol*>();
 
-};
+public:
 
 /*public*/  /*static*/ class DefaultSymbol : public Symbol {
 
@@ -69,7 +69,7 @@ public:
     /*private*/ QString _name;
     /*private*/ bool _isInput;
     /*private*/ bool _isOutput;
-
+public:
     /*public*/  DefaultParameter(QString name, bool isInput, bool isOutput) {
         _name = name;
         _isInput = isInput;
@@ -111,6 +111,6 @@ public:
     /*public*/  void setIsOutput(bool value) {
         _isOutput = value;
     }
-
+ };
 };
 #endif // DEFAULTSYMBOLTABLE_H

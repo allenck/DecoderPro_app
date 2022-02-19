@@ -10,7 +10,7 @@
  *
  * @author Daniel Bergqvist Copyright 2019
  */
-/*public*/ /*interface*/class Debugable : public Base {
+/*public*/ /*interface*/class Debugable : public virtual Base {
   Q_INTERFACES(Base)
 public:
   /**

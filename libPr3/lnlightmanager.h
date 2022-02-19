@@ -51,6 +51,7 @@ public:
   /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::removePropertyChangeListener(l);}
 
 
+  QObject* vself() override { return (QObject*)this;}
 signals:
     
 public slots:

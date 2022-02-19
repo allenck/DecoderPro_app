@@ -1286,7 +1286,7 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t,  LayoutEdit
  {
   Manager* mgr = (Manager*)InstanceManager::turnoutManagerInstance();
   QStringList sysNames = mgr->getSystemNameList();
-   turnout = ((TurnoutManager*)mgr)->getTurnout(turnoutName);
+   turnout = ((TurnoutManager*)mgr->self())->getTurnout(turnoutName);
  }
  if (turnout!=nullptr)
  {

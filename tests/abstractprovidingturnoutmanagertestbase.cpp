@@ -31,7 +31,7 @@ AbstractProvidingTurnoutManagerTestBase::AbstractProvidingTurnoutManagerTestBase
 
     //@Test(expected = IllegalArgumentException.class)
     /*public*/ void AbstractProvidingTurnoutManagerTestBase::testProvideEmpty() throw (IllegalArgumentException) {
-        TurnoutManager* m = (TurnoutManager*)l;
+        TurnoutManager* m = (TurnoutManager*)l->self();
         try {
             m->provide(""); // this should throw an IllegalArgumentException.
         } catch (IllegalArgumentException iae) {
@@ -43,7 +43,7 @@ AbstractProvidingTurnoutManagerTestBase::AbstractProvidingTurnoutManagerTestBase
     //@Test
     /*public*/ void AbstractProvidingTurnoutManagerTestBase::testRegisterDuplicateSystemName() throw (PropertyVetoException, /*NoSuchFieldException,
             NoSuchFieldException,*/ IllegalArgumentException, IllegalAccessException ){
-        TurnoutManager* m = (TurnoutManager*)l;
+        TurnoutManager* m = (TurnoutManager*)l->self();
         QString s1 = l->makeSystemName("1");
         QString s2 = l->makeSystemName("2");
         testRegisterDuplicateSystemName(m, s1, s2);

@@ -10,7 +10,7 @@
  * @author Dave Duchamp       Copyright (C) 2007
  * @author Daniel Bergqvist   Copyright (C) 2018
  */
-/*public*/ /*interface*/class AnalogExpressionManager : public BaseManager/*<MaleAnalogExpressionSocket>*/ {
+/*public*/ /*interface*/class AnalogExpressionManager : public virtual BaseManager/*<MaleAnalogExpressionSocket>*/ {
 
   Q_INTERFACES(BaseManager)
  public:
@@ -29,7 +29,7 @@
      * Create a new system name for an Expression.
      * @return a new system name
      */
-    /*public*/ virtual QString getAutoSystemName()=0;
+  /*public*/ virtual QString getAutoSystemName() {return "?";}
 
     /**
      * Create a female socket for analog expressions
@@ -46,7 +46,7 @@
      *
      * @return a set of entries with category and class
      */
-    /*public*/ virtual QMap<Category*, QList</*Class<? extends Base>*/Base*>> getExpressionClasses()=0;
+    /*public*/ virtual QMap<Category*, QList</*Class<? extends Base>*/QString>*> getExpressionClasses()=0;
 
     /*.*
      * Add an Expression.

@@ -13,7 +13,7 @@ class AnalogExpressionMemory : public AbstractAnalogExpression, public PropertyC
  public:
   explicit AnalogExpressionMemory(QString sys, QString user, QObject *parent = nullptr);
   /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException */override;
-  /*public*/  Category::TYPE getCategory()override;
+  /*public*/  Category* getCategory()override;
   /*public*/  void setMemory(/*@Nonnull*/ QString memoryName) ;
   /*public*/  void setMemory(/*@Nonnull*/ NamedBeanHandle<Memory*>* handle) ;
   /*public*/  void setMemory(/*@Nonnull*/ Memory* memory);
@@ -32,6 +32,8 @@ class AnalogExpressionMemory : public AbstractAnalogExpression, public PropertyC
   /*public*/  void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override;
 
   QObject* self() override {return (QObject*)this;}
+  QObject* bself() override {return (QObject*)this;}
+
   QString getUserName()const override {return AbstractBase::getUserName();}
  public slots:
   /*public*/  void vetoableChange(PropertyChangeEvent* evt) /*throws PropertyVetoException*/ override;

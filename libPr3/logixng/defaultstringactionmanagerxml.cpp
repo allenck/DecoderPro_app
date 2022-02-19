@@ -3,7 +3,8 @@
 #include "instancemanager.h"
 #include "stringactionmanager.h"
 #include "runtimeexception.h"
-
+#include "malestringactionsocket.h"
+#include "defaultmalestringactionsocket.h"
 /**
  * Provides the functionality for configuring ActionManagers
  *
@@ -29,27 +30,28 @@
         StringActionManager* tm = (StringActionManager*) o;
         if (tm != nullptr) {
             if (tm->getNamedBeanSet().isEmpty()) return QDomElement();
-            for (MaleStringActionSocket* action : tm->getNamedBeanSet()) {
-                log->debug("action system name is " + action->getSystemName());  // NOI18N
+            for (NamedBean* nb : tm->getNamedBeanSet()) {
+             MaleStringActionSocket* action = (MaleStringActionSocket*)nb;
+                log->debug("action system name is " + action->NamedBean::getSystemName());  // NOI18N
 //                log.error("action system name is " + action.getSystemName() + ", " + action.getLongDescription());  // NOI18N
                 try {
-                    QDomNodeList elements = new ArrayList<>();
+                    QList<QDomElement> elements = QList<QDomElement>();
                     // The male socket may be embedded in other male sockets
                     MaleStringActionSocket* a = action;
-                    while (!(a instanceof DefaultMaleStringActionSocket)) {
-                        elements.add(storeMaleSocket(a));
-                        a = (MaleStringActionSocket) a.getObject();
+                    while (!(static_cast<DefaultMaleStringActionSocket*>(a))) {
+                        elements.append(storeMaleSocket(a));
+                        a = (MaleStringActionSocket*) a->getObject()->bself();
                     }
-                    Element e = jmri.configurexml.ConfigXmlManager.elementFromObject(a.getObject());
-                    if (e != null) {
-                        for (Element ee : elements) e.addContent(ee);
+                    QDomElement e = ConfigXmlManager::elementFromObject(a->getObject()->bself());
+                    if (!e.isNull()) {
+                        for (QDomElement ee : elements) e.appendChild(ee);
 //                        e.addContent(storeMaleSocket(a));
-                        actions.addContent(e);
+                        actions.appendChild(e);
                     } else {
-                        throw new RuntimeException("Cannot load xml configurator for " + a.getObject().getClass().getName());
+                        throw new RuntimeException(QString("Cannot load xml configurator for ") + a->getObject()->bself()->metaObject()->className());
                     }
                 } catch (RuntimeException* e) {
-                    log.error("Error storing action: {}", e, e);
+                    log->error(tr("Error storing action: %1").arg(e->toString()), e);
                 }
             }
         }
@@ -64,7 +66,7 @@
      * @param actions The top-level element being created
      */
     /*public*/  void DefaultStringActionManagerXml::setStoreElementClass(QDomElement actions) {
-        actions.setAttribute("class", this.getClass().getName());  // NOI18N
+        actions.setAttribute("class", "jmri.jmrit.logixng.implementation.configurexml.DefaultStringActionManagerXml");  // NOI18N
     }
 
     /**
@@ -93,48 +95,48 @@
      */
     /*public*/  void DefaultStringActionManagerXml::loadActions(QDomElement actions) {
 
-        QDomNodeList actionList = actions.getChildren();  // NOI18N
-        log.debug("Found " + actionList.size() + " actions");  // NOI18N
+        QDomNodeList actionList = actions.childNodes();  // NOI18N
+        log->debug("Found " + QString::number(actionList.size()) + " actions");  // NOI18N
 
         for (int i = 0; i < actionList.size(); i++) {
 
-            String className = actionList.get(i).getAttribute("class").getValue();
+            QString className = actionList.at(i).toElement().attribute("class");
 //            log.error("className: " + className);
 
-            Class<?> clazz = xmlClasses.get(className);
+            Class/*<?>*/* clazz = xmlClasses.value(className);
 
-            if (clazz == null) {
+            if (clazz == nullptr) {
                 try {
-                    clazz = Class.forName(className);
-                    xmlClasses.put(className, clazz);
-                } catch (ClassNotFoundException ex) {
-                    log.error("cannot load class " + className, ex);
+                    clazz = Class::forName(className);
+                    xmlClasses.insert(className, clazz);
+                } catch (ClassNotFoundException* ex) {
+                    log->error("cannot load class " + className, ex);
                 }
             }
 
-            if (clazz != null) {
-                Constructor<?> c = null;
+            if (clazz != nullptr) {
+                /*Constructor<?>*/Class* c = nullptr;
                 try {
-                    c = clazz.getConstructor();
-                } catch (NoSuchMethodException | SecurityException ex) {
-                    log.error("cannot create constructor", ex);
+                    c = clazz->getConstructor();
+                } catch (NoSuchMethodException* /*| SecurityException*/ ex) {
+                    log->error("cannot create constructor", ex);
                 }
 
-                if (c != null) {
+                if (c != nullptr) {
                     try {
-                        AbstractNamedBeanManagerConfigXML o = (AbstractNamedBeanManagerConfigXML)c.newInstance();
+                        AbstractNamedBeanManagerConfigXML* o = (AbstractNamedBeanManagerConfigXML*)c->newInstance();
 
-                        MaleSocket oldLastItem = InstanceManager.getDefault(StringActionManager.class).getLastRegisteredMaleSocket();
-                        o.load(actionList.get(i), null);
+                        MaleSocket* oldLastItem = ((StringActionManager*)InstanceManager::getDefault("StringActionManager"))->getLastRegisteredMaleSocket();
+                        o->load(actionList.at(i).toElement(), QDomElement());
 
                         // Load male socket data if a new bean has been registered
-                        MaleSocket newLastItem = InstanceManager.getDefault(StringActionManager.class).getLastRegisteredMaleSocket();
-                        if (newLastItem != oldLastItem) loadMaleSocket(actionList.get(i), newLastItem);
-                        else throw new RuntimeException("No new bean has been added. This class: "+getClass().getName());
-                    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                        log.error("cannot create object", ex);
-                    } catch (JmriConfigureXmlException ex) {
-                        log.error("cannot load action", ex);
+                        MaleSocket* newLastItem = ((StringActionManager*)InstanceManager::getDefault("StringActionManager"))->getLastRegisteredMaleSocket();
+                        if (newLastItem != oldLastItem) loadMaleSocket(actionList.at(i).toElement(), newLastItem);
+                        else throw new RuntimeException(QString("No new bean has been added. This class: ")+metaObject()->className());
+                    } catch (InstantiationException* /*| IllegalAccessException | IllegalArgumentException | InvocationTargetException*/ ex) {
+                        log->error("cannot create object", ex);
+                    } catch (JmriConfigureXmlException* ex) {
+                        log->error("cannot load action", ex);
                     }
                 }
             }
@@ -146,20 +148,20 @@
      * created during a load operation. This is skipped if they are of the same absolute
      * type.
      */
-    /*protected*/ void replaceActionManager() {
-        if (InstanceManager.getDefault(jmri.jmrit.logixng.StringActionManager.class).getClass().getName()
-                .equals(DefaultStringActionManager.class.getName())) {
+    /*protected*/ void DefaultStringActionManagerXml::replaceActionManager() {
+        if (QString(InstanceManager::getDefault("StringActionManager")->metaObject()->className())
+                 == ("DefaultStringActionManager")) {
             return;
         }
         // if old manager exists, remove it from configuration process
-        if (InstanceManager.getNullableDefault(jmri.jmrit.logixng.StringActionManager.class) != null) {
-            ConfigureManager cmOD = InstanceManager.getNullableDefault(jmri.ConfigureManager.class);
-            if (cmOD != null) {
-                cmOD.deregister(InstanceManager.getDefault(jmri.jmrit.logixng.StringActionManager.class));
+        if (InstanceManager::getNullableDefault("StringActionManager") != nullptr) {
+            ConfigureManager* cmOD = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+            if (cmOD != nullptr) {
+                cmOD->deregister(InstanceManager::getDefault("StringActionManager"));
             }
 
         }
-
+#if 0 // TODO:
         ThreadingUtil.runOnGUI(() -> {
             // register new one with InstanceManager
             DefaultStringActionManager pManager = DefaultStringActionManager.instance();
@@ -170,11 +172,12 @@
                 cmOD.registerConfig(pManager, jmri.Manager.LOGIXNG_STRING_ACTIONS);
             }
         });
+#endif
     }
 
     //@Override
-    /*public*/  int loadOrder() {
-        return InstanceManager::getDefault("StringActionManager").getXMLOrder();
+    /*public*/  int DefaultStringActionManagerXml::loadOrder() const {
+        return ((StringActionManager*)InstanceManager::getDefault("StringActionManager"))->getXMLOrder();
     }
 
-    /*private*/ final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(DefaultStringActionManagerXml.class);
+    /*private*/ /*final*/ /*static*/ Logger* DefaultStringActionManagerXml::log = LoggerFactory::getLogger("DefaultStringActionManagerXml");

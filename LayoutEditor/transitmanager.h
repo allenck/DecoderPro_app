@@ -40,6 +40,7 @@ public:
     /*public*/ void dispose() override;
 
     QObject* self() override{return (QObject*)this;}
+    QObject* vself() override {return (QObject*)this;}
 
 signals:
     

@@ -5,7 +5,7 @@
 /**
  * A LogixNG male AnalogExpressionBean socket.
  */
-/*public*/ /*interface*/class  MaleAnalogExpressionSocket :  public AnalogExpressionBean, public MaleSocket {
+/*public*/ /*interface*/class  MaleAnalogExpressionSocket :public virtual MaleSocket,  public AnalogExpressionBean  {
   Q_INTERFACES(AnalogExpressionBean MaleSocket)
  public:
     /**

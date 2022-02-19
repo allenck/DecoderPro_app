@@ -18,14 +18,14 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  bool DefaultFemaleDigitalExpressionSocket::isCompatible(MaleSocket* socket) {
-        return qobject_cast<MaleDigitalExpressionSocket*>(socket->self());
+        return dynamic_cast<MaleDigitalExpressionSocket*>(socket->bself());
     }
 
     /** {@inheritDoc} */
     //@Override
     /*public*/  bool DefaultFemaleDigitalExpressionSocket::evaluate() /*throws JmriException*/ {
         if (AbstractFemaleSocket::isConnected()) {
-            return ((MaleDigitalExpressionSocket*)AbstractFemaleSocket::getConnectedSocket())
+            return ((MaleDigitalExpressionSocket*)AbstractFemaleSocket::getConnectedSocket()->bself())
                     ->evaluate();
         } else {
             return false;
@@ -45,7 +45,7 @@
     }
 
     //@Override
-    /*public*/  QMap<Category::TYPE, QList<QString> > DefaultFemaleDigitalExpressionSocket::getConnectableClasses() {
+    /*public*/  QMap<Category*, QList<QString>* > DefaultFemaleDigitalExpressionSocket::getConnectableClasses() {
         return ((DigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->getExpressionClasses();
     }
 

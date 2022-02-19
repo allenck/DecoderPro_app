@@ -25,6 +25,7 @@ public:
         return "Sensor";
     }
     /*public*/ QString toString() override {return "InternalSensorManager";}
+    QObject* vself() override { return (QObject*)this;}
 
 private:
  static Logger* log;

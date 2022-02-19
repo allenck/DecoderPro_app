@@ -83,6 +83,8 @@ SwingPropertyChangeSupport* pcs; // = new SwingPropertyChangeSupport(this, nullp
 ///*public*/ NamedBean* getByUserName(QString /*userName*/) const override{return nullptr;}
 /*public*/ QString getBeanTypeHandled(bool plural) const override;
 /*public*/ /*Class<NamedBean>*/QString getNamedBeanClass() const override;
+
+QObject* vself() override{return (QObject*)this;}
 signals:
 
 public slots:

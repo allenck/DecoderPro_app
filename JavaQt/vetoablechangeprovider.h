@@ -74,7 +74,7 @@ public:
      */
     virtual /*public*/ void removeVetoableChangeListener(/*@CheckForNull*/ QString /*propertyName*/, /*@CheckForNull*/ VetoableChangeListener* /*listener*/) {}
 
-  virtual QObject* self() = 0;
+  virtual QObject* vself() = 0;
 };
 Q_DECLARE_INTERFACE(VetoableChangeProvider, "VetoableChangeProvider")
 #endif // VETOABLECHANGEPROVIDER_H

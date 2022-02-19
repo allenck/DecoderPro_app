@@ -104,14 +104,14 @@ AbstractProvidingReporterManagerTestBase::AbstractProvidingReporterManagerTestBa
         try {
             // Register different bean with existing systemName.
             // This should fail with an DuplicateSystemNameException.
-            ((ReporterManager*)l)->Register((NamedBean*)e2);
+            ((ReporterManager*)l->self())->Register((NamedBean*)e2);
             Assert::fail("Expected exception not thrown", __FILE__, __LINE__);
         } catch (NamedBean::DuplicateSystemNameException* ex) {
             Assert::assertEquals("exception message is correct", expectedMessage, ex->getMessage(), __FILE__, __LINE__);
             JUnitAppender::assertErrorMessage(expectedMessage, __FILE__, __LINE__);
         }
 
-        ((ReporterManager*)l)->deregister((NamedBean*)e1);
+        ((ReporterManager*)l->self())->deregister((NamedBean*)e1);
     }
 #if 0
     protected Field getField(Class c, String fieldName) {

@@ -299,14 +299,14 @@
                 }
             }
         } else {
-            _femaleSocket->setup();
+            _femaleSocket->FemaleSocket::setup();
         }
     }
 
     /** {@inheritDoc} */
     //@Override
     /*final*/ /*public*/  void DefaultConditionalNG::disposeMe() {
-        _femaleSocket->dispose();
+        _femaleSocket->FemaleSocket::dispose();
     }
 
     /** {@inheritDoc} */

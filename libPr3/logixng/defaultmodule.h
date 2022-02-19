@@ -26,7 +26,7 @@ class DefaultModule : public AbstractBase, public Module, public FemaleSocketLis
   /*public*/  QString getLongDescription(QLocale locale)override;
   /*public*/  FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/override;
   /*public*/  int getChildCount()override;
-  /*public*/  Category::TYPE getCategory()override;
+  /*public*/  Category* getCategory()override;
   /*public*/  void printTree(
           PrintTreeSettings* settings,
           PrintWriter* writer,
@@ -64,6 +64,9 @@ class DefaultModule : public AbstractBase, public Module, public FemaleSocketLis
   /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames)override;
   /*public*/  QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean)override;
   /*public*/  void getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override;
+
+  QObject* self() override{return (QObject*)this;}
+  QObject* bself() override{return (QObject*)this;}
 
  private:
   /*private*/ /*final*/ FemaleSocketManager::SocketType* _rootSocketType;

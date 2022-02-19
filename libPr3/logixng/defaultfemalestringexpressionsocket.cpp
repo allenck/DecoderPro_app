@@ -17,14 +17,14 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/   bool DefaultFemaleStringExpressionSocket::isCompatible(MaleSocket* socket) {
-        return static_cast<MaleStringExpressionSocket*>(socket);
+        return qobject_cast<MaleStringExpressionSocket*>(socket->bself());
     }
 
     /** {@inheritDoc} */
     //@Override
     /*public*/   QString DefaultFemaleStringExpressionSocket::evaluate() /*throws JmriException*/ {
         if (AbstractFemaleSocket::isConnected()) {
-            return ((MaleStringExpressionSocket*)AbstractFemaleSocket::getConnectedSocket())->evaluate();
+            return ((MaleStringExpressionSocket*)AbstractFemaleSocket::getConnectedSocket()->bself())->evaluate();
         } else {
             return "";
         }
@@ -56,7 +56,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/   QMap<Category::TYPE, QList</*Class<? extends Base>*/QString>> DefaultFemaleStringExpressionSocket::getConnectableClasses() {
+    /*public*/   QMap<Category*, QList</*Class<? extends Base>*/QString>*> DefaultFemaleStringExpressionSocket::getConnectableClasses() {
         return ((StringExpressionManager*)InstanceManager::getDefault("StringExpressionManager"))->getExpressionClasses();
     }
 

@@ -103,7 +103,7 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
 {
   this->act = act;
   log = new Logger("SmlBeanTableDataModel");
-  source = ((DefaultSignalMastLogicManager*)getManager())->getSignalMastLogicList();
+  source = ((DefaultSignalMastLogicManager*)getManager()->self())->getSignalMastLogicList();
   act->signalMastLogicList = new QList<QHash<SignalMastLogic*, SignalMast*>*>();
  init();
 }

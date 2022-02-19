@@ -14,7 +14,7 @@ class FemaleSocketListener;
 class FemaleStringExpressionSocket;
 class MaleStringExpressionSocket;
 class StringExpressionBean;
-/*public*/ /*interface*/class StringExpressionManager : BaseManager/*<MaleStringExpressionSocket>*/ {
+/*public*/ /*interface*/class StringExpressionManager : public BaseManager/*<MaleStringExpressionSocket>*/ {
 Q_INTERFACES(BaseManager)
  public:
     /**
@@ -49,7 +49,7 @@ Q_INTERFACES(BaseManager)
      * 
      * @return a set of entries with category and class
      */
-    /*public*/ virtual QMap<Category::TYPE, QList</*Class<? extends Base>*/QString>> getExpressionClasses()=0;
+    /*public*/ virtual QMap<Category*, QList</*Class<? extends Base>*/QString>*> getExpressionClasses()=0;
 
     /*.*
      * Add an Expression.

@@ -80,7 +80,7 @@ void SensorTableDataModel::common()
 }
 /*protected*/ void SensorTableDataModel::setManager(Manager *manager)
 {
- if (!(static_cast<SensorManager*>(manager))) {
+ if (!(qobject_cast<SensorManager*>(manager->self()))) {
      return;
  }
  getManager()->removePropertyChangeListener(this);
@@ -96,7 +96,7 @@ void SensorTableDataModel::common()
    }
   }
  }
- senManager = (SensorManager*)manager;
+ senManager = (SensorManager*)manager->self();
  getManager()->addPropertyChangeListener(this);
  updateNameList();
 }

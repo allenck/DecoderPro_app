@@ -780,6 +780,7 @@ virtual void timerEvent(QTimerEvent*  event);
 class PythonQtPublicPromoter_AbstractShutDownTask : public AbstractShutDownTask
 { public:
 inline bool  py_q_call() { return AbstractShutDownTask::call(); }
+inline bool  py_q_execute() { return AbstractShutDownTask::execute(); }
 inline QString  py_q_getName() { return AbstractShutDownTask::getName(); }
 inline bool  py_q_isComplete() { return AbstractShutDownTask::isComplete(); }
 inline bool  py_q_isParallel() { return AbstractShutDownTask::isParallel(); }
@@ -793,6 +794,7 @@ public slots:
 AbstractShutDownTask* new_AbstractShutDownTask(QString  name, QObject*  parent = 0);
 void delete_AbstractShutDownTask(AbstractShutDownTask* obj) { delete obj; } 
    bool  py_q_call(AbstractShutDownTask* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractShutDownTask*)theWrappedObject)->py_q_call());}
+   bool  py_q_execute(AbstractShutDownTask* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractShutDownTask*)theWrappedObject)->py_q_execute());}
    QString  py_q_getName(AbstractShutDownTask* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractShutDownTask*)theWrappedObject)->py_q_getName());}
    bool  py_q_isComplete(AbstractShutDownTask* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractShutDownTask*)theWrappedObject)->py_q_isComplete());}
    bool  isDoRun(AbstractShutDownTask* theWrappedObject);

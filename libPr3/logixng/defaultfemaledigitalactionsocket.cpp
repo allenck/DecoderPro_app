@@ -19,13 +19,13 @@
 
     //@Override
     /*public*/  bool DefaultFemaleDigitalActionSocket::isCompatible(MaleSocket* socket) {
-        return qobject_cast<MaleDigitalActionSocket*>(socket->self());
+        return qobject_cast<MaleDigitalActionSocket*>(socket->bself());
     }
 
     //@Override
     /*public*/  void DefaultFemaleDigitalActionSocket::execute() /*throws JmriException*/ {
         if (AbstractFemaleSocket::isConnected()) {
-            ((MaleDigitalActionSocket*)AbstractFemaleSocket::getConnectedSocket())->execute();
+            ((MaleDigitalActionSocket*)AbstractFemaleSocket::getConnectedSocket()->bself())->execute();
         }
     }
 
@@ -40,7 +40,7 @@
     }
 
     //@Override
-    /*public*/  QMap<Category*, QList</*Class<? extends Base>*/Base*>> DefaultFemaleDigitalActionSocket::getConnectableClasses() {
+    /*public*/  QMap<Category *, QList<QString>* > DefaultFemaleDigitalActionSocket::getConnectableClasses() {
         return ((DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->getActionClasses();
     }
 

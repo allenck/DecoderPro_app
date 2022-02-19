@@ -745,7 +745,7 @@ void BeanTableDataModel::OnButtonClicked(QObject* o)
 
 /*synchronized*/ /*public*/ void BeanTableDataModel::dispose()
 {
- ((AbstractManager*)getManager())->VetoableChangeSupport::removePropertyChangeListener(this);
+ ((AbstractManager*)getManager()->self())->VetoableChangeSupport::removePropertyChangeListener(this);
  if (!sysNameList.isEmpty())
  {
   for (int i = 0; i< sysNameList.size(); i++)

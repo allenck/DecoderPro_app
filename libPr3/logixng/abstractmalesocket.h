@@ -8,10 +8,10 @@
 #include "runtimeexception.h"
 #include "jmriexception.h"
 
-class AbstractMaleSocket :  public MaleSocket
+class AbstractMaleSocket :  public QObject, public virtual MaleSocket
 {
   Q_OBJECT
-  //Q_INTERFACES(MaleSocket)
+  Q_INTERFACES(MaleSocket)
  public:
   explicit AbstractMaleSocket(BaseManager/*<NamedBean*>*//*<? extends NamedBean>*/* manager, Base* object, QObject *parent = nullptr);
   /*public*/ /*final*/ Base* getObject() override;
@@ -20,7 +20,7 @@ class AbstractMaleSocket :  public MaleSocket
   /*public*/ void setLocked(bool locked)override;
   /*public*/ bool isSystem()override;
   /*public*/ void setSystem(bool system) override;
-  /*public*/ /*final*/ Category::TYPE getCategory() override;
+  /*public*/ /*final*/ Category* getCategory() override;
   /*public*/ /*final*/ FemaleSocket* getChild(int index) /*throw (IllegalArgumentException, UnsupportedOperationException)*/ override;
   /*public*/ /*final*/ int getChildCount()override;
   /*public*/ /*final*/ QString getShortDescription(QLocale locale) override;
@@ -100,7 +100,8 @@ class AbstractMaleSocket :  public MaleSocket
   /*public*/ void getListenerRefsIncludingChildren(QList<QString> list)override;
   /*public*/ QString toString()override;
 
-  QObject* self() override {return (QObject*)this;}
+  QObject* bself() override {return (QObject*)this;}
+
  signals:
 
  private:
@@ -117,18 +118,16 @@ class AbstractMaleSocket :  public MaleSocket
  protected:
   /*protected*/ /*final*/ QSet<VariableData*> _localVariables = QSet<VariableData*>();
   /*abstract*/virtual /*protected*/ void registerListenersForThisClass()=0;
-  /*protected*/ void printTreeRow(
-          PrintTreeSettings* settings,
+  /*protected*/ void printTreeRow(PrintTreeSettings* settings,
           QLocale locale,
           PrintWriter* writer,
           QString currentIndent,
-          /*MutableInt*/int lineNumber);
-  /*protected*/ void printLocalVariable(
-          PrintTreeSettings* settings,
+          /*MutableInt*/int *lineNumber);
+  /*protected*/ void printLocalVariable(PrintTreeSettings* settings,
           QLocale locale,
           PrintWriter* writer,
           QString currentIndent,
-          /*MutableInt*/int lineNumber,
+          /*MutableInt*/int *lineNumber,
           VariableData* localVariable);
   /*abstract*/ /*protected*/virtual void unregisterListenersForThisClass()=0;
   /*abstract*/ /*protected*/ virtual void disposeMe()=0;

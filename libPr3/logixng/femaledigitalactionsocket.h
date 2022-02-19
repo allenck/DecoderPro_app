@@ -5,7 +5,7 @@
 /**
  * A female socket for DigitalAction
  */
-/*public*/ /*interface*/class FemaleDigitalActionSocket : public FemaleSocket, public DigitalAction {
+/*public*/ /*interface*/class FemaleDigitalActionSocket : public virtual FemaleSocket, public DigitalAction {
 
   Q_INTERFACES(FemaleSocket DigitalAction)
  public:

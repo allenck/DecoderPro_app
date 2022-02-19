@@ -1,4 +1,5 @@
 #include "abortconditionalngexecutionexception.h"
+#include "jmriexception.h"
 
 /**
  * This exception is thrown when the current excection of a ConditionalNG
@@ -27,6 +28,6 @@
      * with a cause exception.
      * @param e the cause of this exception
      */
-    /*public*/ AbortConditionalNGExecutionException::AbortConditionalNGExecutionException(Exception e) : JmriException(e){
+    /*public*/ AbortConditionalNGExecutionException::AbortConditionalNGExecutionException(Exception* e) : JmriException(e){
         //super(e);
     }

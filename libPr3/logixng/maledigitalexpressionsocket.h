@@ -7,7 +7,8 @@
  * A LogixNG male DigitalExpressionBean socket.
  */
 /*public*/ /*interface*/class MaleDigitalExpressionSocket
-        :  public DigitalExpressionBean, public MaleSocket {
+        :  public DigitalExpressionBean, public virtual MaleSocket {
+  //Q_OBJECT
  public:
   Q_INTERFACES(MaleSocket )
     /**
@@ -27,4 +28,5 @@
     /*public*/ virtual bool getLastResult()=0 ;
 
 };
+Q_DECLARE_INTERFACE(MaleDigitalExpressionSocket, "MaleDigitalExpressionSocket")
 #endif // MALEDIGITALEXPRESSIONSOCKET_H

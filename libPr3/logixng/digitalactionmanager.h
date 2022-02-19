@@ -40,7 +40,7 @@
      *
      * @return a set of entries with category and class
      */
-    /*public*/ virtual QMap<Category*, QList</*Class<? extends Base>*/Base*> > getActionClasses()=0;
+    /*public*/ virtual QMap<Category*, QList</*Class<? extends Base>*/QString>* > getActionClasses()=0;
 
     /**
      * {@inheritDoc}

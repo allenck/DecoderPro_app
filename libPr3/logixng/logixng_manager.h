@@ -128,7 +128,7 @@ public:
     /*public*/ virtual /*default*/ void printTree(
             PrintWriter* writer,
             QString indent,
-            /*MutableInt*/int lineNumber) {
+            /*MutableInt*/int* lineNumber) {
 
         printTree(new Base::PrintTreeSettings(), writer, indent, lineNumber);
     }
@@ -144,7 +144,7 @@ public:
             Base::PrintTreeSettings* settings,
             PrintWriter* writer,
             QString indent,
-            /*MutableInt*/int lineNumber)=0;
+            /*MutableInt*/int* lineNumber)=0;
 
     /**
      * Print the tree to a stream.
@@ -158,7 +158,7 @@ public:
             QLocale locale,
             PrintWriter* writer,
             QString indent,
-            /*MutableInt*/int lineNumber) {
+            /*MutableInt*/int* lineNumber) {
 
         printTree(new Base::PrintTreeSettings(), locale, writer, indent, lineNumber);
     }
@@ -177,7 +177,7 @@ public:
             QLocale locale,
             PrintWriter* writer,
             QString indent,
-            /*MutableInt*/int lineNumber)=0;
+            /*MutableInt*/int* lineNumber)=0;
 
     /**
      * Test if parameter is a properly formatted system name.

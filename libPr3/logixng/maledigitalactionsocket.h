@@ -6,7 +6,7 @@
 /**
  * A LogixNG male DigitalActionBean socket.
  */
-/*public*/ /*interface*/class MaleDigitalActionSocket : public MaleSocket, public DigitalActionBean {
+/*public*/ /*interface*/class MaleDigitalActionSocket : public virtual MaleSocket, public DigitalActionBean {
 
   Q_INTERFACES(MaleSocket DigitalActionBean)
  public:

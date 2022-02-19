@@ -7,6 +7,8 @@
 #include "defaultfemaledigitalexpressionsocketfactory.h"
 #include "defaultfemalestringactionsocketfactory.h"
 #include "defaultfemalestringexpressionsocketfactory.h"
+#include "defaultfemaleanalogexpressionsocketfactory.h"
+
 class DefaultFemaleSocketManager : public QObject, public FemaleSocketManager
 {
   Q_OBJECT

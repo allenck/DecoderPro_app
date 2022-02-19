@@ -2,18 +2,19 @@
 #include "loggerfactory.h"
 #include "instancemanager.h"
 #include "defaultdigitalexpressionmanagerxml.h"
-
+#include "digitalexpressionmanager.h"
+#include "runtimeexception.h"
+#include "defaultmaledigitalexpressionsocket.h"
 /**
  * Provides the functionality for configuring ExpressionManagers
  *
  * @author Dave Duchamp Copyright (c) 2007
  * @author Daniel Bergqvist Copyright (c) 2018
  */
-/*public*/  class DefaultDigitalExpressionManagerXml extends AbstractManagerXml {
+///*public*/  class DefaultDigitalExpressionManagerXml extends AbstractManagerXml {
 
-    /*private*/ /*final*/ Map<String, Class<?>> xmlClasses = new HashMap<>();
 
-    /*public*/  DefaultDigitalExpressionManagerXml() {
+    /*public*/  DefaultDigitalExpressionManagerXml::DefaultDigitalExpressionManagerXml(QObject* parent) : AbstractManagerXml(parent){
     }
 
     /**
@@ -23,31 +24,32 @@
      * @return Element containing the complete info
      */
     //@Override
-    /*public*/  Element store(Object o) {
-        Element expressions = new Element("LogixNGDigitalExpressions");
+    /*public*/  QDomElement DefaultDigitalExpressionManagerXml::store(QObject* o) {
+        QDomElement expressions = doc.createElement("LogixNGDigitalExpressions");
         setStoreElementClass(expressions);
-        DigitalExpressionManager tm = (DigitalExpressionManager) o;
-        if (tm != null) {
-            if (tm.getNamedBeanSet().isEmpty()) return null;
-            for (MaleDigitalExpressionSocket expression : tm.getNamedBeanSet()) {
-                log.debug("action system name is " + expression.getSystemName());  // NOI18N
+        DigitalExpressionManager* tm = (DigitalExpressionManager*) o;
+        if (tm != nullptr) {
+            if (tm->getNamedBeanSet().isEmpty()) return QDomElement();
+            for (NamedBean* nb : tm->getNamedBeanSet()) {
+             MaleDigitalExpressionSocket* expression = (MaleDigitalExpressionSocket*)nb;
+                log->debug("action system name is " + expression->NamedBean::getSystemName());  // NOI18N
                 try {
-                    List<Element> elements = new ArrayList<>();
+                    QList<QDomElement> elements = QList<QDomElement>();
                     // The male socket may be embedded in other male sockets
-                    MaleDigitalExpressionSocket a = expression;
-                    while (!(a instanceof DefaultMaleDigitalExpressionSocket)) {
-                        elements.add(storeMaleSocket(a));
-                        a = (MaleDigitalExpressionSocket) a.getObject();
+                    MaleDigitalExpressionSocket* a = expression;
+                    while (!(static_cast<DefaultMaleDigitalExpressionSocket*>(a))) {
+                        elements.append(storeMaleSocket(a));
+                        a = (MaleDigitalExpressionSocket*) a->getObject()->bself();
                     }
-                    Element e = jmri.configurexml.ConfigXmlManager.elementFromObject(a.getObject());
-                    if (e != null) {
-                        for (Element ee : elements) e.addContent(ee);
-                        expressions.addContent(e);
+                    QDomElement e = ConfigXmlManager::elementFromObject(a->getObject()->bself());
+                    if (!e.isNull()) {
+                        for (QDomElement ee : elements) e.appendChild(ee);
+                        expressions.appendChild(e);
                     } else {
-                        throw new RuntimeException("Cannot load xml configurator for " + a.getObject().getClass().getName());
+                        throw new RuntimeException(QString("Cannot load xml configurator for ") + a->getObject()->bself()->metaObject()->className());
                     }
-                } catch (RuntimeException e) {
-                    log.error("Error storing action: {}", e, e);
+                } catch (RuntimeException* e) {
+                    log->error(tr("Error storing action: %1").arg(e->toString()), e);
                 }
             }
         }
@@ -61,8 +63,8 @@
      *
      * @param expressions The top-level element being created
      */
-    /*public*/  void setStoreElementClass(Element expressions) {
-        expressions.setAttribute("class", this.getClass().getName());  // NOI18N
+    /*public*/  void DefaultDigitalExpressionManagerXml::setStoreElementClass(QDomElement expressions) {
+        expressions.setAttribute("class", "jmri.jmrit.lohixng.implementation.configurexml.DefaultDigitalExpressionManagerXml");  // NOI18N
     }
 
     /**
@@ -74,7 +76,7 @@
      * @return true if successful
      */
     //@Override
-    /*public*/  boolean load(Element sharedExpression, Element perNodeExpression) {
+    /*public*/  bool DefaultDigitalExpressionManagerXml::load(QDomElement sharedExpression, QDomElement perNodeExpression) {
         // create the master object
         replaceExpressionManager();
         // load individual sharedLogix
@@ -89,51 +91,51 @@
      *
      * @param expressions Element containing the Logix elements to load.
      */
-    /*public*/  void loadExpressions(Element expressions) {
+    /*public*/  void DefaultDigitalExpressionManagerXml::loadExpressions(QDomElement expressions) {
 
-        List<Element> expressionList = expressions.getChildren();  // NOI18N
-        log.debug("Found " + expressionList.size() + " expressions");  // NOI18N
+        QDomNodeList expressionList = expressions.childNodes();  // NOI18N
+        log->debug("Found " + QString::number(expressionList.size()) + " expressions");  // NOI18N
 //        DigitalExpressionManager tm = InstanceManager.getDefault(jmri.jmrit.logixng.DigitalExpressionManager.class);
 
         for (int i = 0; i < expressionList.size(); i++) {
 
-            String className = expressionList.get(i).getAttribute("class").getValue();
+            QString className = expressionList.at(i).toElement().attribute("class");
 //            log.warn("className: " + className);
 
-            Class<?> clazz = xmlClasses.get(className);
+            Class/*<?>*/* clazz = xmlClasses.value(className);
 
-            if (clazz == null) {
+            if (clazz == nullptr) {
                 try {
-                    clazz = Class.forName(className);
-                    xmlClasses.put(className, clazz);
-                } catch (ClassNotFoundException ex) {
-                    log.error("cannot load class " + className, ex);
+                    clazz = Class::forName(className);
+                    xmlClasses.insert(className, clazz);
+                } catch (ClassNotFoundException* ex) {
+                    log->error("cannot load class " + className, ex);
                 }
             }
 
-            if (clazz != null) {
-                Constructor<?> c = null;
+            if (clazz != nullptr) {
+                /*Constructor<?>*/Class* c = nullptr;
                 try {
-                    c = clazz.getConstructor();
-                } catch (NoSuchMethodException | SecurityException ex) {
-                    log.error("cannot create constructor", ex);
+                    c = clazz->getConstructor();
+                } catch (NoSuchMethodException* /*| SecurityException */ex) {
+                    log->error("cannot create constructor", ex);
                 }
 
-                if (c != null) {
+                if (c != nullptr) {
                     try {
-                        AbstractNamedBeanManagerConfigXML o = (AbstractNamedBeanManagerConfigXML)c.newInstance();
+                        AbstractNamedBeanManagerConfigXML* o = (AbstractNamedBeanManagerConfigXML*)c->newInstance();
 
-                        MaleSocket oldLastItem = InstanceManager.getDefault(DigitalExpressionManager.class).getLastRegisteredMaleSocket();
-                        o.load(expressionList.get(i), null);
+                        MaleSocket* oldLastItem = ((DigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->getLastRegisteredMaleSocket();
+                        o->load(expressionList.at(i).toElement(), QDomElement());
 
                         // Load male socket data if a new bean has been registered
-                        MaleSocket newLastItem = InstanceManager.getDefault(DigitalExpressionManager.class).getLastRegisteredMaleSocket();
-                        if (newLastItem != oldLastItem) loadMaleSocket(expressionList.get(i), newLastItem);
-                        else throw new RuntimeException("No new bean has been added. This class: "+getClass().getName()+", new class: "+className);
-                    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                        log.error("cannot create object", ex);
-                    } catch (JmriConfigureXmlException ex) {
-                        log.error("cannot load action", ex);
+                        MaleSocket* newLastItem = ((DigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->getLastRegisteredMaleSocket();
+                        if (newLastItem != oldLastItem) loadMaleSocket(expressionList.at(i).toElement(), newLastItem);
+                        else throw new RuntimeException(QString("No new bean has been added. This class: ")+metaObject()->className()+", new class: "+className);
+                    } catch (InstantiationException* /*| IllegalAccessException | IllegalArgumentException | InvocationTargetException*/ ex) {
+                        log->error("cannot create object", ex);
+                    } catch (JmriConfigureXmlException* ex) {
+                        log->error("cannot load action", ex);
                     }
                 }
             }
@@ -145,21 +147,21 @@
      * during a load operation. This is skipped if they are of the same absolute
      * type.
      */
-    protected void replaceExpressionManager() {
-        if (InstanceManager.getDefault(jmri.jmrit.logixng.DigitalExpressionManager.class).getClass().getName()
-                .equals(DefaultDigitalExpressionManager.class.getName())) {
+    /*protected*/ void DefaultDigitalExpressionManagerXml::replaceExpressionManager() {
+        if (QString(InstanceManager::getDefault("DigitalExpressionManager")->metaObject()->className())
+                 == ("DefaultDigitalExpressionManager")) {
             return;
         }
         // if old manager exists, remove it from configuration process
-        if (InstanceManager.getNullableDefault(jmri.jmrit.logixng.DigitalExpressionManager.class) != null) {
-            ConfigureManager cmOD = InstanceManager.getNullableDefault(jmri.ConfigureManager.class);
-            if (cmOD != null) {
-                cmOD.deregister(InstanceManager.getDefault(jmri.jmrit.logixng.DigitalExpressionManager.class));
+        if (InstanceManager::getNullableDefault("DigitalExpressionManager") != nullptr) {
+            ConfigureManager* cmOD = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+            if (cmOD != nullptr) {
+                cmOD->deregister(InstanceManager::getDefault("DigitalExpressionManager"));
             }
 
         }
 
-
+#if 0 // TODO:
         ThreadingUtil.runOnGUI(() -> {
             // register new one with InstanceManager
             DefaultDigitalExpressionManager pManager = DefaultDigitalExpressionManager.instance();
@@ -170,11 +172,12 @@
                 cmOD.registerConfig(pManager, jmri.Manager.LOGIXNG_DIGITAL_EXPRESSIONS);
             }
         });
+#endif
     }
 
     //@Override
-    /*public*/  int loadOrder() {
-        return InstanceManager::getDefault("DigitalExpressionManager").getXMLOrder();
+    /*public*/  int DefaultDigitalExpressionManagerXml::loadOrder() const {
+        return ((DigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager"))->getXMLOrder();
     }
 
     /*private*/ /*final*/ /*static*/ Logger* DefaultDigitalExpressionManagerXml::log = LoggerFactory::getLogger("DefaultDigitalExpressionManagerXml");

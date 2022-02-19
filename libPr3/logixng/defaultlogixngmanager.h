@@ -37,13 +37,12 @@ class DefaultLogixNGManager : public AbstractManager, public LogixNG_Manager
           Base::PrintTreeSettings* settings,
           PrintWriter* writer,
           QString indent,
-          /*MutableInt*/int lineNumber)override;
-  /*public*/ void printTree(
-          Base::PrintTreeSettings* settings,
+          /*MutableInt*/int* lineNumber)override;
+  /*public*/ void printTree(Base::PrintTreeSettings* settings,
           QLocale locale,
           PrintWriter* writer,
           QString indent,
-          /*MutableInt*/int lineNumber)override;
+          /*MutableInt*/int *lineNumber)override;
   static /*public*/ DefaultLogixNGManager* instance();
   /*public*/ QString getNamedBeanClass()const override;
   /*public*/ DefaultClipboard* getClipboard()override;
@@ -54,7 +53,7 @@ class DefaultLogixNGManager : public AbstractManager, public LogixNG_Manager
   //Register(NamedBean *s) const override();
 
   QObject* self() override {return (QObject*)this;}
-  //QString getSystemName() const {return AbstractManager::getSystemName();}
+  QObject* vself() override {return (QObject*)this;}
 
  private:
   static Logger* log;

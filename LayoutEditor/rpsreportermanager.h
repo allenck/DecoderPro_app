@@ -16,6 +16,7 @@ public:
      return "Reporter";
  }
  QObject* self() override{return (QObject*)this;}
+ QObject* vself() override {return (QObject*)this;}
 
  private:
  static Logger* log;

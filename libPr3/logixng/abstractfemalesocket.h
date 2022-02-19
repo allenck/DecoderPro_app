@@ -9,7 +9,7 @@
 #include "femalesocket.h"
 #include "abstractbase.h"
 
-class AbstractFemaleSocket : public QObject, public FemaleSocket
+class AbstractFemaleSocket : public QObject, public virtual FemaleSocket
 {
   Q_OBJECT
   Q_INTERFACES(FemaleSocket)
@@ -27,12 +27,12 @@ class AbstractFemaleSocket : public QObject, public FemaleSocket
   /*public*/ /*final*/ bool validateName(QString name, bool ignoreDuplicateErrors)override;
   /*public*/ void setName(QString name, bool ignoreDuplicateErrors)override;
   /*public*/ QString getName()override;
-  /*abstract*/ virtual /*public*/ void disposeMe()=0;
+  /*abstract*/ virtual /*public*/ void disposeMe(){}
   /*public*/ /*final*/ void dispose()override;
   /*public*/ void registerListeners()override;
   /*public*/ void unregisterListeners() override;
   /*public*/ /*final*/ bool isActive()override;
-  /*public*/ Category::TYPE getCategory() override;
+  /*public*/ Category* getCategory() override;
   /*public*/ FemaleSocket* getChild(int index)/*throw (IllegalArgumentException, UnsupportedOperationException)*/ override;
   /*public*/ int getChildCount() override;
   /*public*/ QString getUserName() const override;
@@ -82,7 +82,7 @@ class AbstractFemaleSocket : public QObject, public FemaleSocket
   /*public*/ Base* deepCopyChildren(Base* original, QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throw (JmriException)*/  override;
   /*public*/ void getListenerRefsIncludingChildren(QList<QString> list) override;
 
-  QObject* self() override {return (QObject*)this;}
+  //QObject* bself() override {return (QObject*)this;}
  signals:
 
  private:
@@ -98,12 +98,11 @@ class AbstractFemaleSocket : public QObject, public FemaleSocket
   /*protected*/ /*final*/ FemaleSocketListener* _listener;
   /*protected*/ void registerListenersForThisClass();
   /*protected*/ void unregisterListenersForThisClass() ;
-  /*protected*/ void printTreeRow(
-          PrintTreeSettings* settings,
+  /*protected*/ void printTreeRow(PrintTreeSettings* settings,
           QLocale locale,
           PrintWriter* writer,
           QString currentIndent,
-          /*MutableInt*/int  lineNumber);
+          /*MutableInt*/int *lineNumber);
 
 };
 

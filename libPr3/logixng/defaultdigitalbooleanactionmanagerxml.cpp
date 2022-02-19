@@ -1,17 +1,19 @@
 #include "defaultdigitalbooleanactionmanagerxml.h"
 #include "loggerfactory.h"
-
+#include "instancemanager.h"
+#include "digitalbooleanactionmanager.h"
+#include "runtimeexception.h"
+#include "defaultmaledigitalbooleanactionsocket.h"
 /**
  * Provides the functionality for configuring ActionManagers
  *
  * @author Dave Duchamp Copyright (c) 2007
  * @author Daniel Bergqvist Copyright (c) 2018
  */
-/*public*/  class DefaultDigitalBooleanActionManagerXml extends AbstractManagerXml {
+///*public*/  class DefaultDigitalBooleanActionManagerXml extends AbstractManagerXml {
 
-    /*private*/ /*final*/ Map<String, Class<?>> xmlClasses = new HashMap<>();
 
-    /*public*/  DefaultDigitalBooleanActionManagerXml() {
+    /*public*/  DefaultDigitalBooleanActionManagerXml::DefaultDigitalBooleanActionManagerXml(QObject* parent) :AbstractManagerXml(parent){
     }
 
     /**
@@ -21,31 +23,32 @@
      * @return Element containing the complete info
      */
     //@Override
-    /*public*/  Element store(Object o) {
-        Element actions = new Element("LogixNGDigitalBooleanActions");
+    /*public*/  QDomElement DefaultDigitalBooleanActionManagerXml::store(QObject* o) {
+        QDomElement actions = doc.createElement("LogixNGDigitalBooleanActions");
         setStoreElementClass(actions);
-        DigitalBooleanActionManager tm = (DigitalBooleanActionManager) o;
-        if (tm != null) {
-            if (tm.getNamedBeanSet().isEmpty()) return null;
-            for (MaleDigitalBooleanActionSocket action : tm.getNamedBeanSet()) {
-                log.debug("action system name is " + action.getSystemName());  // NOI18N
+        DigitalBooleanActionManager* tm = (DigitalBooleanActionManager*) o;
+        if (tm != nullptr) {
+            if (tm->getNamedBeanSet().isEmpty()) return QDomElement();
+            for (NamedBean* nb : tm->getNamedBeanSet()) {
+             MaleDigitalBooleanActionSocket* action = (MaleDigitalBooleanActionSocket*)nb;
+                log->debug("action system name is " + action->NamedBean::getSystemName());  // NOI18N
                 try {
-                    List<Element> elements = new ArrayList<>();
+                    QList<QDomElement> elements = QList<QDomElement>();
                     // The male socket may be embedded in other male sockets
-                    MaleDigitalBooleanActionSocket a = action;
-                    while (!(a instanceof DefaultMaleDigitalBooleanActionSocket)) {
-                        elements.add(storeMaleSocket(a));
-                        a = (MaleDigitalBooleanActionSocket) a.getObject();
+                    MaleDigitalBooleanActionSocket* a = action;
+                    while (!(static_cast<DefaultMaleDigitalBooleanActionSocket*>(a))) {
+                        elements.append(storeMaleSocket(a));
+                        a = (MaleDigitalBooleanActionSocket*) a->getObject()->bself();
                     }
-                    Element e = jmri.configurexml.ConfigXmlManager.elementFromObject(a.getObject());
-                    if (e != null) {
-                        for (Element ee : elements) e.addContent(ee);
-                        actions.addContent(e);
+                    QDomElement e = ConfigXmlManager::elementFromObject(a->getObject()->bself());
+                    if (!e.isNull()) {
+                        for (QDomElement ee : elements) e.appendChild(ee);
+                        actions.appendChild(e);
                     } else {
-                        throw new RuntimeException("Cannot load xml configurator for " + a.getObject().getClass().getName());
+                        throw new RuntimeException(QString("Cannot load xml configurator for ") + a->getObject()->bself()->metaObject()->className());
                     }
-                } catch (RuntimeException e) {
-                    log.error("Error storing action: {}", e, e);
+                } catch (RuntimeException* e) {
+                    log->error(tr("Error storing action: %1").arg(e->toString()), e);
                 }
             }
         }
@@ -59,8 +62,8 @@
      *
      * @param actions The top-level element being created
      */
-    /*public*/  void setStoreElementClass(Element actions) {
-        actions.setAttribute("class", this.getClass().getName());  // NOI18N
+    /*public*/  void DefaultDigitalBooleanActionManagerXml::setStoreElementClass(QDomElement actions) {
+        actions.setAttribute("class", "jmri.jmrit.logixng,implementation.configurexml.DefaultMaleDigitalBooleanActionSocket");  // NOI18N
     }
 
     /**
@@ -72,7 +75,7 @@
      * @return true if successful
      */
     //@Override
-    /*public*/  boolean load(Element sharedAction, Element perNodeAction) {
+    /*public*/  bool DefaultDigitalBooleanActionManagerXml::load(QDomElement sharedAction, QDomElement perNodeAction) {
         // create the master object
         replaceActionManager();
         // load individual sharedAction
@@ -87,50 +90,50 @@
      *
      * @param actions Element containing the DigitalBooleanActionBean elements to load.
      */
-    /*public*/  void loadActions(Element actions) {
+    /*public*/  void DefaultDigitalBooleanActionManagerXml::loadActions(QDomElement actions) {
 
-        List<Element> actionList = actions.getChildren();  // NOI18N
-        log.debug("Found " + actionList.size() + " actions");  // NOI18N
+        QDomNodeList actionList = actions.childNodes();  // NOI18N
+        log->debug("Found " + QString::number(actionList.size()) + " actions");  // NOI18N
 
         for (int i = 0; i < actionList.size(); i++) {
 
-            String className = actionList.get(i).getAttribute("class").getValue();
+            QString className = actionList.at(i).toElement().attribute("class");
 //            log.error("className: " + className);
 
-            Class<?> clazz = xmlClasses.get(className);
+            Class/*<?>*/* clazz = xmlClasses.value(className);
 
-            if (clazz == null) {
+            if (clazz == nullptr) {
                 try {
-                    clazz = Class.forName(className);
-                    xmlClasses.put(className, clazz);
-                } catch (ClassNotFoundException ex) {
-                    log.error("cannot load class " + className, ex);
+                    clazz = Class::forName(className);
+                    xmlClasses.insert(className, clazz);
+                } catch (ClassNotFoundException* ex) {
+                    log->error("cannot load class " + className, ex);
                 }
             }
 
-            if (clazz != null) {
-                Constructor<?> c = null;
+            if (clazz != nullptr) {
+                /*Constructor<?>*/Class* c = nullptr;
                 try {
-                    c = clazz.getConstructor();
-                } catch (NoSuchMethodException | SecurityException ex) {
-                    log.error("cannot create constructor", ex);
+                    c = clazz->getConstructor();
+                } catch (NoSuchMethodException* /*| SecurityException */ex) {
+                    log->error("cannot create constructor", ex);
                 }
 
-                if (c != null) {
+                if (c != nullptr) {
                     try {
-                        AbstractNamedBeanManagerConfigXML o = (AbstractNamedBeanManagerConfigXML)c.newInstance();
+                        AbstractNamedBeanManagerConfigXML* o = (AbstractNamedBeanManagerConfigXML*)c->newInstance();
 
-                        MaleSocket oldLastItem = InstanceManager.getDefault(DigitalBooleanActionManager.class).getLastRegisteredMaleSocket();
-                        o.load(actionList.get(i), null);
+                        MaleSocket* oldLastItem = ((DigitalBooleanActionManager*)InstanceManager::getDefault("DigitalBooleanActionManager"))->getLastRegisteredMaleSocket();
+                        o->load(actionList.at(i).toElement(), QDomElement());
 
                         // Load male socket data if a new bean has been registered
-                        MaleSocket newLastItem = InstanceManager.getDefault(DigitalBooleanActionManager.class).getLastRegisteredMaleSocket();
-                        if (newLastItem != oldLastItem) loadMaleSocket(actionList.get(i), newLastItem);
-                        else throw new RuntimeException("No new bean has been added. This class: "+getClass().getName());
-                    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                        log.error("cannot create object", ex);
-                    } catch (JmriConfigureXmlException ex) {
-                        log.error("cannot load action", ex);
+                        MaleSocket* newLastItem = ((DigitalBooleanActionManager*)InstanceManager::getDefault("DigitalBooleanActionManager"))->getLastRegisteredMaleSocket();
+                        if (newLastItem != oldLastItem) loadMaleSocket(actionList.at(i).toElement(), newLastItem);
+                        else throw new RuntimeException(QString("No new bean has been added. This class: ")+metaObject()->className());
+                    } catch (InstantiationException* /*| IllegalAccessException | IllegalArgumentException | InvocationTargetException*/ ex) {
+                        log->error("cannot create object", ex);
+                    } catch (JmriConfigureXmlException* ex) {
+                        log->error("cannot load action", ex);
                     }
                 }
             }
@@ -142,20 +145,20 @@
      * created during a load operation. This is skipped if they are of the same
      * absolute type.
      */
-    protected void replaceActionManager() {
-        if (InstanceManager.getDefault(jmri.jmrit.logixng.DigitalBooleanActionManager.class).getClass().getName()
-                .equals(DefaultDigitalBooleanActionManager.class.getName())) {
+    /*protected*/ void DefaultDigitalBooleanActionManagerXml::replaceActionManager() {
+        if (QString(InstanceManager::getDefault("DigitalBooleanActionManager")->metaObject()->className()
+)                 == ("DefaultDigitalBooleanActionManager")) {
             return;
         }
         // if old manager exists, remove it from configuration process
-        if (InstanceManager.getNullableDefault(jmri.jmrit.logixng.DigitalBooleanActionManager.class) != null) {
-            ConfigureManager cmOD = InstanceManager.getNullableDefault(jmri.ConfigureManager.class);
-            if (cmOD != null) {
-                cmOD.deregister(InstanceManager.getDefault(jmri.jmrit.logixng.DigitalBooleanActionManager.class));
+        if (InstanceManager::getNullableDefault("DigitalBooleanActionManager") != nullptr) {
+            ConfigureManager* cmOD = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+            if (cmOD != nullptr) {
+                cmOD->deregister(InstanceManager::getDefault("DigitalBooleanActionManager"));
             }
 
         }
-
+#if 0 // TODO:
         ThreadingUtil.runOnGUI(() -> {
             // register new one with InstanceManager
             DefaultDigitalBooleanActionManager pManager = DefaultDigitalBooleanActionManager.instance();
@@ -166,11 +169,12 @@
                 cmOD.registerConfig(pManager, jmri.Manager.LOGIXNG_DIGITAL_BOOLEAN_ACTIONS);
             }
         });
+#endif
     }
 
     //@Override
-    /*public*/  int loadOrder() {
-        return InstanceManager.getDefault(jmri.jmrit.logixng.DigitalBooleanActionManager.class).getXMLOrder();
+    /*public*/  int DefaultDigitalBooleanActionManagerXml::loadOrder()const {
+        return ((DigitalBooleanActionManager*)InstanceManager::getDefault("DigitalBooleanActionManager"))->getXMLOrder();
     }
 
     /*private*/ /*final*/ /*static*/ Logger* DefaultDigitalBooleanActionManagerXml::log = LoggerFactory::getLogger("DefaultDigitalBooleanActionManagerXml");

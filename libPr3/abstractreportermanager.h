@@ -28,6 +28,7 @@ public:
     bool allowMultipleAdditions(QString systemName) override;
     QString getNextValidAddress(QString curAddress, QString prefix) override;
 
+    QObject* self() override {return (QObject*)this;}
 signals:
     void newReporterCreated(AbstractReporterManager*, Reporter*);
     

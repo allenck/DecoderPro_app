@@ -2,7 +2,10 @@
 #include "instancemanager.h"
 #include "loggerfactory.h"
 #include "modulemanager.h"
-#include "DefaultModuleManager.
+#include "defaultmodulemanager.h"
+#include "runtimeexception.h"
+#include "class.h"
+
 /**
  * Provides the functionality for configuring DefaultModuleManager
  *
@@ -22,20 +25,21 @@
  * @return Element containing the complete info
  */
 //@Override
-/*public*/  QDomElement store(QObject* o) {
-    QDomElement expressions = new Element("LogixNGModules");
+/*public*/  QDomElement DefaultModuleManagerXml::store(QObject* o) {
+    QDomElement expressions = doc.createElement("LogixNGModules");
     setStoreElementClass(expressions);
     DefaultModuleManager* tm = (DefaultModuleManager*) o;
-    if (tm != null) {
-        if (tm.getNamedBeanSet().isEmpty()) return null;
-        for (Module module : tm.getNamedBeanSet()) {
+    if (tm != nullptr) {
+        if (tm->AbstractManager::getNamedBeanSet().isEmpty()) return QDomElement();
+        for (NamedBean* nb : tm->AbstractManager::getNamedBeanSet()) {
+         Module* module = (Module*)nb;
             try {
-                Element e = jmri.configurexml.ConfigXmlManager.elementFromObject(module);
-                if (e != null) {
-                    expressions.addContent(e);
+                QDomElement e = ConfigXmlManager::elementFromObject(module->self());
+                if (!e.isNull()) {
+                    expressions.appendChild(e);
                 }
-            } catch (RuntimeException e) {
-                log.error("Error storing action: {}", e, e);
+            } catch (RuntimeException* e) {
+                log->error(tr("Error storing action: %1").arg(e->toString()), e);
             }
         }
     }
@@ -49,8 +53,8 @@
  *
  * @param expressions The top-level element being created
  */
-/*public*/  void setStoreElementClass(Element expressions) {
-    expressions.setAttribute("class", this.getClass().getName());  // NOI18N
+/*public*/  void DefaultModuleManagerXml::setStoreElementClass(QDomElement expressions) {
+    expressions.setAttribute("class", "jmri.jmrit.logixng.implementation.configurexml.DefaultModuleManagerXml");  // NOI18N
 }
 
 /**
@@ -62,7 +66,7 @@
  * @return true if successful
  */
 //@Override
-/*public*/  boolean load(Element sharedExpression, Element perNodeExpression) {
+/*public*/  bool DefaultModuleManagerXml::load(QDomElement sharedExpression, QDomElement perNodeExpression) {
     // create the master object
     replaceExpressionManager();
     // load individual sharedLogix
@@ -77,43 +81,43 @@
  *
  * @param expressions Element containing the Logix elements to load.
  */
-/*public*/  void loadTables(Element expressions) {
+/*public*/  void DefaultModuleManagerXml::loadTables(QDomElement expressions) {
 
-    List<Element> expressionList = expressions.getChildren();  // NOI18N
-    log.debug("Found " + expressionList.size() + " tables");  // NOI18N
+    QDomNodeList expressionList = expressions.childNodes();  // NOI18N
+    log->debug("Found " + QString::number(expressionList.size()) + " tables");  // NOI18N
 
     for (int i = 0; i < expressionList.size(); i++) {
 
-        String className = expressionList.get(i).getAttribute("class").getValue();
+        QString className = expressionList.at(i).toElement().attribute("class");
 //            log.error("className: " + className);
 
-        Class<?> clazz = xmlClasses.get(className);
+        Class/*<?>*/* clazz = xmlClasses.value(className);
 
-        if (clazz == null) {
+        if (clazz == nullptr) {
             try {
-                clazz = Class.forName(className);
-                xmlClasses.put(className, clazz);
-            } catch (ClassNotFoundException ex) {
-                log.error("cannot load class " + className, ex);
+                clazz = Class::forName(className);
+                xmlClasses.insert(className, clazz);
+            } catch (ClassNotFoundException* ex) {
+                log->error("cannot load class " + className, ex);
             }
         }
 
-        if (clazz != null) {
-            Constructor<?> c = null;
+        if (clazz != nullptr) {
+           /* Constructor<?> */Class* c = nullptr;
             try {
-                c = clazz.getConstructor();
-            } catch (NoSuchMethodException | SecurityException ex) {
-                log.error("cannot create constructor", ex);
+                c = clazz->getConstructor();
+            } catch (NoSuchMethodException* /*| SecurityException*/ ex) {
+                log->error("cannot create constructor", ex);
             }
 
-            if (c != null) {
+            if (c != nullptr) {
                 try {
-                    AbstractNamedBeanManagerConfigXML o = (AbstractNamedBeanManagerConfigXML)c.newInstance();
-                    o.load(expressionList.get(i), null);
-                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                    log.error("cannot create object", ex);
-                } catch (JmriConfigureXmlException ex) {
-                    log.error("cannot load action", ex);
+                    AbstractNamedBeanManagerConfigXML* o = (AbstractNamedBeanManagerConfigXML*)c->newInstance();
+                    o->load(expressionList.at(i).toElement(), QDomElement());
+                } catch (InstantiationException* /*| IllegalAccessException | IllegalArgumentException | InvocationTargetException */ex) {
+                    log->error("cannot create object", ex);
+                } catch (JmriConfigureXmlException* ex) {
+                    log->error("cannot load action", ex);
                 }
             }
         }
@@ -125,20 +129,20 @@
  * during a load operation. This is skipped if they are of the same absolute
  * type.
  */
-protected void replaceExpressionManager() {
-    if (InstanceManager.getDefault(ModuleManager.class).getClass().getName()
-            .equals(DefaultModuleManager.class.getName())) {
+/*protected*/ void DefaultModuleManagerXml::replaceExpressionManager() {
+    if (QString(InstanceManager::getDefault("ModuleManager")->metaObject()->className())
+             == ("DefaultModuleManager")) {
         return;
     }
     // if old manager exists, remove it from configuration process
-    if (InstanceManager.getNullableDefault(ModuleManager.class) != null) {
-        ConfigureManager cmOD = InstanceManager.getNullableDefault(jmri.ConfigureManager.class);
-        if (cmOD != null) {
-            cmOD.deregister(InstanceManager.getDefault(ModuleManager.class));
+    if (InstanceManager::getNullableDefault("ModuleManager") != nullptr) {
+        ConfigureManager* cmOD = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+        if (cmOD != nullptr) {
+            cmOD->deregister(InstanceManager::getDefault("ModuleManager"));
         }
 
     }
-
+#if 0
     ThreadingUtil.runOnGUI(() -> {
         // register new one with InstanceManager
         DefaultModuleManager pManager = DefaultModuleManager.instance();
@@ -149,10 +153,11 @@ protected void replaceExpressionManager() {
             cmOD.registerConfig(pManager, jmri.Manager.LOGIXNG_TABLES);
         }
     });
+#endif
 }
 
 ////@Override
-/*public*/  int loadOrder() {
+/*public*/  int DefaultModuleManagerXml::loadOrder() const {
     return ((ModuleManager*)InstanceManager::getDefault("ModuleManager"))->getXMLOrder();
 }
 

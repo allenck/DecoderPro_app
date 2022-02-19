@@ -6,6 +6,7 @@
 #include "memorymanager.h"
 #include "typeconversionutil.h"
 #include "conditionalng.h"
+#include "maleanalogexpressionsocket.h"
 
 /**
  * Reads a Memory.
@@ -31,7 +32,7 @@
         AnalogExpressionMemory* copy = new AnalogExpressionMemory(sysName, userName);
         copy->AbstractBase::setComment(AbstractBase::getComment());
         if (_memoryHandle != nullptr) copy->setMemory(_memoryHandle);
-        return manager->registerExpression(copy)->deepCopyChildren(this, systemNames, userNames);
+        return manager->registerExpression(copy)->Base::deepCopyChildren(this, systemNames, userNames);
     }
 
     /** {@inheritDoc} */
@@ -55,8 +56,8 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category::TYPE AnalogExpressionMemory::getCategory() {
-        return Category::TYPE::ITEM;
+    /*public*/  Category* AnalogExpressionMemory::getCategory() {
+        return Category::ITEM;
     }
 
     /*public*/  void AnalogExpressionMemory::setMemory(/*@Nonnull*/ QString memoryName) {
@@ -167,7 +168,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void disposeMe() {
+    /*public*/  void AnalogExpressionMemory::disposeMe() {
     }
 
     /** {@inheritDoc} */
@@ -175,7 +176,7 @@
     /*public*/  void AnalogExpressionMemory::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
         log->debug(tr("getUsageReport :: AnalogExpressionMemory: bean = %1, report = %2").arg(cdl->getDisplayName()).arg(report.size()));
         if (getMemory() != nullptr && bean->equals(getMemory()->getBean())) {
-            report.append(new NamedBeanUsageReport("LogixNGExpression", cdl, getLongDescription()));
+            report.append(new NamedBeanUsageReport("LogixNGExpression", cdl, getLongDescription(QLocale())));
         }
     }
 

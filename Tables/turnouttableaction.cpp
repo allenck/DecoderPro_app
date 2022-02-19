@@ -164,7 +164,7 @@ void TurnoutTableAction::common()
 /*public*/ void TurnoutTableAction::setManager(Manager* man)
 {
 // log->debug(tr("setting manager of TTAction %1 to %2").arg(this->objectName(),man->self()->metaObject->classname()));
- turnoutManager = static_cast<TurnoutManager*>(man);
+ turnoutManager = qobject_cast<TurnoutManager*>(man->self());
  if (m!=nullptr){ // also update Table Model
      m->setManager(man);
  }
@@ -641,7 +641,7 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
  QVariant currData = prefixBox->getItemAt(prefixBox->currentIndex());//prefixBox->currentData(Qt::UserRole);
  QString currText = prefixBox->currentText();
  Manager* mgr = VPtr<Manager>::asPtr(currData);
- prefix = ((TurnoutManager*)mgr)->getSystemPrefix();
+ prefix = ((TurnoutManager*)mgr->self())->getSystemPrefix();
  QString curAddress = hardwareAddressTextField->text();
  // initial check for empty entry
  if (curAddress.length() < 1)
@@ -839,7 +839,7 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
  if (prefixBox->getSelectedIndex() == -1) {
      prefixBox->setSelectedIndex(0);
  }
- TurnoutManager* manager = (TurnoutManager*)prefixBox->getSelectedItem();
+ TurnoutManager* manager = (TurnoutManager*)prefixBox->getSelectedItem()->self();
  Q_ASSERT( manager != nullptr);
  QString systemPrefix = manager->getSystemPrefix();
  rangeBox->setEnabled(((AbstractTurnoutManager*)manager->self())->allowMultipleAdditions(systemPrefix));

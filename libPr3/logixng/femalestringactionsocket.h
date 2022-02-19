@@ -5,7 +5,7 @@
 /**
  * A female socket for StringAction
  */
-/*public*/ /*interface*/ class FemaleStringActionSocket : public FemaleSocket, public StringAction {
+/*public*/ /*interface*/ class FemaleStringActionSocket : public virtual FemaleSocket, public StringAction {
 Q_INTERFACES(FemaleSocket StringAction)
 };
 Q_DECLARE_INTERFACE(FemaleStringActionSocket, "FemaleStringActionSocket")

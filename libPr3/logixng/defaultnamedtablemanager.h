@@ -39,13 +39,19 @@ class DefaultNamedTableManager : public AbstractManager, public NamedTableManage
   /*public*/  void deleteNamedTable(NamedTable* x)override;
   /*public*/  void printTree(PrintWriter* writer, QString indent)override;
   /*public*/  void printTree(QLocale locale, PrintWriter* writer, QString indent)override;
+  static /*public*/  DefaultNamedTableManager* instance();
   /*public*/  /*Class<NamedTable>*/QString getNamedBeanClass() const override;
   /*public*/  void fireVetoableChange(QString p, QVariant old) /*throws PropertyVetoException*/;
   /*public*/  /*final*/ void deleteBean(/*@Nonnull*/ NamedTable* namedTable, /*@Nonnull*/ QString property) /*throws PropertyVetoException*/;
 
+  QObject* self() override {return (QObject*)this;}
+  QObject* vself() override {return (QObject*)this;}
+
  private:
   DecimalFormat* paddedNumber = new DecimalFormat("0000");
-  static volatile DefaultNamedTableManager* _instance;// = null;
+  static /*volatile*/ DefaultNamedTableManager* _instance;// = null;
+  static Logger* log;
+
 };
 
 

@@ -106,7 +106,7 @@
              setManagers(((ProxyReporterManager*)manager->self())->getDisplayOrderManagerList(), ((ProxyReporterManager*)manager->self())->getDefaultManager());
         } else {
             QList<AbstractManager/*<B>*/*> list = QList<AbstractManager/*<B>*/*>();
-            list.append((AbstractManager*)manager);
+            list.append((AbstractManager*)manager->self());
             setManagers(list, manager);
         }
     }

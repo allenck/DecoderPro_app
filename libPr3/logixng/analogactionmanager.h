@@ -11,8 +11,8 @@
  * @author Dave Duchamp       Copyright (C) 2007
  * @author Daniel Bergqvist   Copyright (C) 2018
  */
-/*public*/ /*interface*/ class AnalogActionManager : BaseManager/*<MaleAnalogActionSocket>*/ {
-
+/*public*/ /*interface*/ class AnalogActionManager : public BaseManager/*<MaleAnalogActionSocket>*/ {
+     Q_INTERFACES(BaseManager)
  public:
     /**
      * Remember a NamedBean Object created outside the manager.
@@ -39,7 +39,7 @@
      *
      * @return a set of entries with category and class
      */
-    /*public*/ QMap<Category*, QList</*Class<? extends Base>*/Base* > > getActionClasses();
+    /*public*/ QMap<Category*, QList</*Class<? extends Base>*/QString >* > getActionClasses();
 
     /*.*
      * Add an Action.
@@ -83,5 +83,5 @@
     /*public*/ virtual void deleteAnalogAction(MaleAnalogActionSocket* x) =0;
 
 };
-
+Q_DECLARE_INTERFACE(AnalogActionManager, "AnalogActionManager")
 #endif // ANALOGACTIONMANAGER_H

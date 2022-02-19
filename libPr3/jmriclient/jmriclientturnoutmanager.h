@@ -16,6 +16,7 @@ public:
      return "Turnout";
  }
  QObject* self() override {return (QObject*)this;}
+ QObject* vself() override { return (QObject*)this;}
 
 private:
  /*private*/ JMRIClientSystemConnectionMemo* memo = nullptr;

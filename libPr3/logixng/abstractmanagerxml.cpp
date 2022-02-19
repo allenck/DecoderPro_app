@@ -26,15 +26,15 @@
         QDomElement element = doc.createElement("MaleSocket");
 
         Base* m = maleSocket;
-        while (static_cast<MaleSocket*>(m)) {
-            MaleSocket* ms = (MaleSocket*) m;
+        while (qobject_cast<MaleSocket*>(m->bself())) {
+            MaleSocket* ms = (MaleSocket*) m->bself();
 
             try {
-                QDomElement e = ConfigXmlManager::elementFromObject(ms->self());
+                QDomElement e = ConfigXmlManager::elementFromObject(ms->bself());
                 if (!e.isNull()) {
                     element.appendChild(e);
                 } else {
-                    throw new RuntimeException(QString("Cannot load xml configurator for ") + ms->self()->metaObject()->className());
+                    throw new RuntimeException(QString("Cannot load xml configurator for ") + ms->bself()->metaObject()->className());
                 }
             } catch (RuntimeException* e) {
                 log->error(tr("Error storing maleSocket: %1").arg(e->toString()), e);
@@ -105,10 +105,10 @@
         }
 
         Base* m = maleSocket;
-        while (static_cast<MaleSocket*>(m)) {
-            MaleSocket* ms = (MaleSocket*) m;
+        while (qobject_cast<MaleSocket*>(m->bself())) {
+            MaleSocket* ms = (MaleSocket*) m->bself();
 
-            QString cName = ConfigXmlManager::adapterName(ms->self());
+            QString cName = ConfigXmlManager::adapterName(ms->bself());
             QMapIterator<MaleSocketXml*, QDomElement> entry(maleSocketXmlClasses.value(cName));
 
             try {

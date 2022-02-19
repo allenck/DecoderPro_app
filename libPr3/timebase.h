@@ -94,7 +94,7 @@ virtual void userSetRate(double /*factor*/) {}// throws TimebaseRateException;
     virtual bool getInternalMaster() {return false;}
     // the following provide for choosing among hardware clocks if hardware master
     virtual void setMasterName(QString /*name*/) {}
-virtual QString getMasterName() {return "";}
+    virtual QString getMasterName() {return "";}
 
     // methods for setting and getting synchronize option
     virtual void setSynchronize(bool /*synchronize*/, bool /*update*/) {}
@@ -184,6 +184,7 @@ virtual QString getMasterName() {return "";}
      * Request a call-back when the minutes place of the time changes.
      */
     virtual void addMinuteChangeListener(PropertyChangeListener* /*l*/) {}
+    virtual void addPropertyChangeListener(QString /*propertyName*/, PropertyChangeListener* /*l*/) {}
 
     /**
      * Remove a request for call-back when the minutes place of the time changes.

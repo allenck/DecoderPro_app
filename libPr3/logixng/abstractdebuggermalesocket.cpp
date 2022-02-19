@@ -73,63 +73,63 @@
 
     //@Override
     /*protected*/ /*final*/ void AbstractDebuggerMaleSocket::registerListenersForThisClass() {
-        ((MaleSocket*)getObject())->registerListeners();
+        ((MaleSocket*)getObject()->bself())->registerListeners();
     }
 
     //@Override
     /*protected*/ /*final*/ void AbstractDebuggerMaleSocket::unregisterListenersForThisClass() {
-        ((MaleSocket*)getObject())->unregisterListeners();
+        ((MaleSocket*)getObject()->bself())->unregisterListeners();
     }
 
     //@Override
     /*protected*/ /*final*/ void AbstractDebuggerMaleSocket::disposeMe() {
-        ((MaleSocket*)getObject())->dispose();
+        ((MaleSocket*)getObject()->bself())->dispose();
     }
 
     //@Override
     /*public*/  /*final*/ void AbstractDebuggerMaleSocket::setEnabled(bool enable) {
-        ((MaleSocket*)getObject())->setEnabled(enable);
+        ((MaleSocket*)getObject()->bself())->setEnabled(enable);
     }
 
     //@Override
     /*public*/  void AbstractDebuggerMaleSocket::setEnabledFlag(bool enable) {
-        ((MaleSocket*)getObject())->setEnabledFlag(enable);
+        ((MaleSocket*)getObject()->bself())->setEnabledFlag(enable);
     }
 
     //@Override
     /*public*/  /*final*/ bool AbstractDebuggerMaleSocket::isEnabled() {
-        return ((MaleSocket*)getObject())->isEnabled();
+        return ((MaleSocket*)getObject()->bself())->isEnabled();
     }
 
     //@Override
     /*public*/  /*final*/ void AbstractDebuggerMaleSocket::setDebugConfig(DebugConfig* config) {
-        ((MaleSocket*)getObject())->setDebugConfig(config);
+        ((MaleSocket*)getObject()->bself())->setDebugConfig(config);
     }
 
     //@Override
-    /*public*/  /*final*/ DebugConfig* AbstractDebuggerMaleSocket::getDebugConfig() {
-        return ((MaleSocket*)getObject())->getDebugConfig();
+    /*public*/  /*final*/ MaleSocket::DebugConfig* AbstractDebuggerMaleSocket::getDebugConfig() {
+        return ((MaleSocket*)getObject()->bself())->getDebugConfig();
     }
 
     //@Override
-    /*public*/  /*final*/ DebugConfig* AbstractDebuggerMaleSocket::createDebugConfig() {
-        return ((MaleSocket*)getObject())->createDebugConfig();
+    /*public*/  /*final*/ MaleSocket::DebugConfig* AbstractDebuggerMaleSocket::createDebugConfig() {
+        return ((MaleSocket*)getObject()->bself())->createDebugConfig();
     }
 
     //@Override
     /*public*/  /*final*/ QString AbstractDebuggerMaleSocket::getComment() {
-        return ((MaleSocket*)getObject())->getComment();
+        return ((MaleSocket*)getObject()->bself())->getComment();
     }
 
     //@Override
     /*public*/  /*final*/ void AbstractDebuggerMaleSocket::setComment(QString comment) {
-        ((MaleSocket*)getObject())->setComment(comment);
+        ((MaleSocket*)getObject()->bself())->setComment(comment);
     }
 
     //@Override
     /*public*/  void AbstractDebuggerMaleSocket::setParent(Base* parent) {
         AbstractMaleSocket::setParent(parent);
-        ((MaleSocket*)getObject())->Base::setParent(this);
+        ((MaleSocket*)getObject()->bself())->Base::setParent(this);
     }
 
 

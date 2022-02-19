@@ -23,12 +23,12 @@ class DefaultFemaleDigitalActionSocketFactory : public QObject, public FemaleSoc
       }
 
       //@Override
-      /*public*/  BaseManager/*<? extends MaleSocket>*/* getManager() {
-          return ((DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager");
+      /*public*/  BaseManager/*<? extends MaleSocket>*/* getManager()override {
+          return (DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager");
       }
 
       //@Override
-      /*public*/  FemaleSocket* createSocket(Base* parent, FemaleSocketListener* listener, QString name) {
+      /*public*/  FemaleSocket* createSocket(Base* parent, FemaleSocketListener* listener, QString name) override {
           return new DefaultFemaleDigitalActionSocket(parent, listener, name);
       }
 
@@ -37,10 +37,10 @@ class DefaultFemaleDigitalActionSocketFactory : public QObject, public FemaleSoc
           return getDescr();
       }
   };
-   public:
+ public:
   explicit DefaultFemaleDigitalActionSocketFactory(QObject *parent = nullptr);
 
- signals:
+  private:
   /*private*/ static /*final*/ FemaleSocketManager::SocketType* _femaleSocketType;// = new SocketType();
 
 };

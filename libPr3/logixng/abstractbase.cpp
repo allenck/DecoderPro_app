@@ -35,7 +35,7 @@
             // Copy the child
             if (original->getChild(i)->isConnected()) {
                 Base* childTree = original->getChild(i)->getConnectedSocket()->getDeepCopy(systemNames, userNames);
-                getChild(i)->_connect((MaleSocket*) childTree);
+                getChild(i)->_connect((MaleSocket*) childTree->bself());
             }
         }
         return this;
@@ -45,7 +45,7 @@
     //@Override
     /*public*/ ConditionalNG* AbstractBase::getConditionalNG() {
         if (qobject_cast<ConditionalNG*>(this->self() )) return (ConditionalNG*)this;
-        if (getParent()->self() == nullptr) return nullptr;
+        if (getParent()->bself() == nullptr) return nullptr;
         return getParent()->getConditionalNG();
     }
 
@@ -147,7 +147,7 @@
             /*MutableInt*/int* lineNumber) {
 
         if (settings->_printLineNumbers) {
-            writer->print(QString(PRINT_LINE_NUMBERS_FORMAT).arg(lineNumber/*.addAndGet(1)*/++));
+            writer->print(QString(PRINT_LINE_NUMBERS_FORMAT).arg(*lineNumber/*.addAndGet(1)*/++));
         }
         writer->print(currentIndent);
         writer->print(getLongDescription(locale));

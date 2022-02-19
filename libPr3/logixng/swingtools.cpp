@@ -87,7 +87,7 @@
      * @param clazz The class to get a SwingConfiguratorInterface of
      * @return a SwingConfiguratorInterface object
      */
-    /*static*/ /*public*/  SwingConfiguratorInterface* SwingTools::getSwingConfiguratorForClass(Class* clazz) {
+    /*static*/ /*public*/  SwingConfiguratorInterface* SwingTools::getSwingConfiguratorForClass(QString clazz) {
         SwingConfiguratorInterface* adapter = nullptr;
         try {
 #if 0 // TODO:
@@ -96,24 +96,24 @@
         }
 
         catch (ClassNotFoundException* ex) {
-            log->error(tr("Cannot load SwingConfiguratorInterface adapter for %1").arg(clazz->getName()), ex);
+            log->error(tr("Cannot load SwingConfiguratorInterface adapter for %1").arg(clazz), ex);
         }
         catch (IllegalAccessException* ex) {
-            log->error(tr("Cannot load SwingConfiguratorInterface adapter for %1").arg(clazz->getName()), ex);
+            log->error(tr("Cannot load SwingConfiguratorInterface adapter for %1").arg(clazz), ex);
         }
         catch ( InstantiationException* ex) {
-            log->error(tr("Cannot load SwingConfiguratorInterface adapter for %1").arg(clazz->getName()), ex);
+            log->error(tr("Cannot load SwingConfiguratorInterface adapter for %1").arg(clazz), ex);
         }
         catch (NoSuchMethodException* ex) {
-            log->error(tr("Cannot load SwingConfiguratorInterface adapter for %1").arg(clazz->getName()), ex);
+            log->error(tr("Cannot load SwingConfiguratorInterface adapter for %1").arg(clazz), ex);
         }
         catch (InvocationTargetException* ex) {
-            log->error(tr("Cannot load SwingConfiguratorInterface adapter for %1").arg(clazz->getName()), ex);
+            log->error(tr("Cannot load SwingConfiguratorInterface adapter for %1").arg(clazz), ex);
         }
         if (adapter != nullptr) {
             return adapter;
         } else {
-            log->error(tr("Cannot load SwingConfiguratorInterface for %1").arg(clazz->getName()));
+            log->error(tr("Cannot load SwingConfiguratorInterface for %1").arg(clazz));
             return nullptr;
         }
     }

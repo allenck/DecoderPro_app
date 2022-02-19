@@ -15,6 +15,8 @@
 #include "maleanalogexpressionsocketfactory.h"
 #include "defaultfemaleanalogexpressionsocket.h"
 #include "defaultmaleanalogexpressionsocket.h"
+#include "class.h"
+#include "exceptions.h"
 
 /**
  * Class providing the basic logic of the ExpressionManager interface.
@@ -35,26 +37,40 @@
            "AnalogFormula",
            "TimeSinceMidnight"};
 
-        for (AnalogExpressionFactory* expressionFactory : /*ServiceLoader.load("AnalogExpressionFactory")*/aList) {
-            expressionFactory->init();
+//        for (AnalogExpressionFactory* expressionFactory : /*ServiceLoader.load("AnalogExpressionFactory")*/aList) {
+//            expressionFactory->init();
+        foreach(QString name, aList)
+        {
+         try {
+           Class* clazz = Class::forName(name);
+          }  catch (ClassNotFoundException* ex) {
+
+          }
         }
 
-        for (Category::TYPE category : Category::values()) {
-            expressionClassList.insert(category, QList</*Class<? extends Base*/Base*>());
+        for (Category* category : Category::values()) {
+            expressionClassList.insert(category, new QList</*Class<? extends Base*/QString>());
         }
-
+#if 0 // TODO:
 //        System.out.format("Read expressions%n");
         for (AnalogExpressionFactory* expressionFactory : /*ServiceLoader.load(AnalogExpressionFactory.class)*/aList) {
             //expressionFactory.getClasses().forEach((entry) ->
-             QMapIterator<Category*, QList<Base*> > entry(expressionFactory->getClasses());
-            while(entry.hasNext()
+             QMapIterator<Category*, QList<QString> > entry(expressionFactory->getClasses());
+             foreach(QString name, aList)
+             {
+              try {
+                Class* clazz = Class::forName(name);
+               }  catch (ClassNotFoundException* ex) {
+
+               }
+             }while(entry.hasNext()
 )            {
               entry.next();
 //                System.out.format("Add expression: %s, %s%n", entry.getKey().name(), entry.getValue().getName());
               expressionClassList.value(entry.key()).append(entry.value());
             }//);
         }
-
+#endif
         bList = {new MaleAnalogExpressionSocketFactory()};
         for (MaleAnalogExpressionSocketFactory* maleSocketFactory : /*ServiceLoader.load(MaleAnalogExpressionSocketFactory.class)*/bList) {
             _maleSocketFactories.append(maleSocketFactory);
@@ -69,7 +85,7 @@
 
     /*protected*/ MaleAnalogExpressionSocket* DefaultAnalogExpressionManager::createMaleAnalogExpressionSocket(AnalogExpressionBean* expression) {
         MaleAnalogExpressionSocket* socket = new DefaultMaleAnalogExpressionSocket(this, expression);
-        expression->setParent((MaleAnalogExpressionSocket*)socket->Base::self());
+        expression->setParent((MaleAnalogExpressionSocket*)socket->Base::bself());
         return socket;
     }
 
@@ -97,7 +113,7 @@
     /*public*/  MaleAnalogExpressionSocket* DefaultAnalogExpressionManager::registerExpression(/*@Nonnull*/ AnalogExpressionBean* expression)
             /*throws IllegalArgumentException*/ {
 
-        if (qobject_cast<MaleAnalogExpressionSocket*>(expression->Base::self())) {
+        if (qobject_cast<MaleAnalogExpressionSocket*>(expression->bself())) {
             throw new IllegalArgumentException("registerExpression() cannot register a MaleAnalogExpressionSocket. Use the method register() instead.");
         }
 
@@ -129,7 +145,7 @@
     //@Override
     /*public*/  void DefaultAnalogExpressionManager::deleteAnalogExpression(MaleAnalogExpressionSocket* x) {
         // delete the MaleAnalogExpressionSocket
-        deregister(x);
+        AbstractBaseManager::deregister(x);
         x->NamedBean::dispose();
     }
 
@@ -147,7 +163,7 @@
     //@Override
     /*public*/  Manager::NameValidity DefaultAnalogExpressionManager::validSystemNameFormat(QString systemName) {
         return LogixNG_Manager::validSystemNameFormat(
-                AbstractBaseManager::getSubSystemNamePrefix(), systemName);
+                AbstractManager::getSubSystemNamePrefix(), systemName);
     }
 
     //@Override
@@ -158,13 +174,13 @@
     }
 
     //@Override
-    /*public*/  QMap<Category*, QList</*Class<? extends Base>*/Base*>> DefaultAnalogExpressionManager::getExpressionClasses() {
+    /*public*/  QMap<Category *, QList<QString> *> DefaultAnalogExpressionManager::getExpressionClasses() {
         return expressionClassList;
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  QString DefaultAnalogExpressionManager::getBeanTypeHandled(bool plural) {
+    /*public*/  QString DefaultAnalogExpressionManager::getBeanTypeHandled(bool plural)const {
         return tr(plural ? "AnalogExpressions" : "AnalogExpression");
     }
 
@@ -183,13 +199,13 @@
     }
 
     //@Override
-    /*public*/  /*Class<MaleAnalogExpressionSocket>*/QString getNamedBeanClass() {
+    /*public*/  /*Class<MaleAnalogExpressionSocket>*/QString DefaultAnalogExpressionManager::getNamedBeanClass()const {
         return "MaleAnalogExpressionSocket";
     }
 
     //@Override
     /*protected*/ MaleAnalogExpressionSocket* DefaultAnalogExpressionManager::castBean(MaleSocket* maleSocket) {
-        return (MaleAnalogExpressionSocket*)maleSocket;
+        return (MaleAnalogExpressionSocket*)maleSocket->bself();
     }
 
 

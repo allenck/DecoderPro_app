@@ -5,7 +5,7 @@
 #include "malesocketfactory.h"
 #include "basemanager.h"
 
-class AbstractBaseManager : public AbstractManager, public BaseManager
+class AbstractBaseManager : public AbstractManager, public virtual BaseManager
 {
   Q_OBJECT
   Q_INTERFACES(BaseManager)
@@ -20,7 +20,7 @@ class AbstractBaseManager : public AbstractManager, public BaseManager
   /*public*/  NamedBean* registerBean(/*@Nonnull*/ NamedBean* s)override;
   /*public*/  void registerMaleSocketFactory(MaleSocketFactory/*<E>*/* factory)override;
 
-  QObject* self() override {return (QObject*)this;}
+  //QObject* self() override {return (QObject*)this;}
  private:
 
  protected:

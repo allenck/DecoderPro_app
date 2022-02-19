@@ -35,7 +35,7 @@ class DefaultFemaleAnalogExpressionSocketFactory : public QObject, public Female
 
       //@Override
       /*public*/  FemaleSocket* createSocket(Base* parent, FemaleSocketListener* listener, QString name) {
-          return (FemaleSocket*)(new DefaultFemaleAnalogExpressionSocket(parent, listener, name))->self();
+          return (FemaleSocket*)(new DefaultFemaleAnalogExpressionSocket(parent, listener, name))->bself();
       }
 
       //@Override
@@ -43,6 +43,9 @@ class DefaultFemaleAnalogExpressionSocketFactory : public QObject, public Female
           return getDescr();
       }
   };
+  /*public*/  FemaleSocketManager::SocketType* getFemaleSocketType();
+
+ private:
   /*private*/ static /*final*/ FemaleSocketManager::SocketType* _femaleSocketType;// = new SocketType();
 
 };

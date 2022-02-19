@@ -30,7 +30,7 @@
         for (NamedBean* nb : ((AbstractManager*)lm->self())->getNamedBeanSet()) {
          Light* l = (Light*)nb;
             if (qobject_cast<VariableLight*>(l->self())) {
-                Register((VariableLight*) l->self());
+                Register((NamedBean*) l->self());
             }
         }
         return this;
@@ -99,28 +99,28 @@
             // A NamedBean is added
             if (e->getNewValue() != QVariant()
                     && (qobject_cast<VariableLight*>(VPtr<VariableLight>::asPtr(e->getNewValue())->self()))) {
-                Register(VPtr<VariableLight>::asPtr(e->getNewValue()));
+                Register((NamedBean*)VPtr<VariableLight>::asPtr(e->getNewValue())->self());
             }
 
             // A NamedBean is removed
             if (e->getOldValue() != QVariant()
                     && (qobject_cast<VariableLight*>(VPtr<VariableLight>::asPtr(e->getOldValue())->self()))) {
-                deregister((VariableLight*) VPtr<VariableLight>::asPtr(e->getOldValue()));
+                deregister((NamedBean*) VPtr<VariableLight>::asPtr(e->getOldValue())->self());
             }
         }
     }
 
-    /*public*/ NamedBean* DefaultVariableLightManager::getByUserName(/*@Nonnull*/ QString s) const
-    {
-     return (VariableLight*)getByUserName(s);
-    }
+//    /*public*/ NamedBean* DefaultVariableLightManager::getByUserName(/*@Nonnull*/ QString s)
+//    {
+//     return AbstractManager::getByUserName(s);
+//    }
 
-    /*public*/ NamedBean* DefaultVariableLightManager::getBySystemName(/*@Nonnull*/ QString s) const
-    {
-     return getBySystemName(s);
-    }
+//    /*public*/ NamedBean* DefaultVariableLightManager::getBySystemName(/*@Nonnull*/ QString s)
+//    {
+//     return AbstractManager::getBySystemName(s);
+//    }
 
-    /*public*/ SystemConnectionMemo* DefaultVariableLightManager::getMemo()
-    {
-     return  memo;
-    }
+//    /*public*/ SystemConnectionMemo* DefaultVariableLightManager::getMemo()
+//    {
+//     return  memo;
+//    }

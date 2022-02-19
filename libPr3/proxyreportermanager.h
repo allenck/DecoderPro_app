@@ -77,6 +77,8 @@ public:
     /*public*/ QString toString() override {return "ProxyReporterManager";}
 
     QObject* self() override {return (QObject*)this;}
+    QObject* vself() override {return (QObject*)this;}
+
     /*public*/ SystemConnectionMemo* getMemo() override {return AbstractProxyManager::getMemo();}
 //    /*public*/ QSet<NamedBean*> getNamedBeanSet() const override {return AbstractProxyManager::getNamedBeanSet();}
     /*public*/ NamedBean* getBySystemName(QString name) override {return AbstractProxyManager::getBySystemName(name);}

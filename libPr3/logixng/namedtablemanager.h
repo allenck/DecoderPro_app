@@ -109,7 +109,7 @@
      * Create a new system name for a LogixNG.
      * @return a new system name
      */
-    /*public*/ virtual QString getAutoSystemName()=0;
+  /*public*/ virtual QString getAutoSystemName() {return "?";}
 
     /**
      * {@inheritDoc}

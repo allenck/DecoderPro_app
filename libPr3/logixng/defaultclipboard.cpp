@@ -86,10 +86,10 @@
     /*public*/ void DefaultClipboard::moveItemToTop(MaleSocket* maleSocket) {
         _clipboardItems->ensureFreeSocketAtTop();
         if (maleSocket->getParent() != nullptr) {
-            if (!(qobject_cast<AbstractFemaleSocket*>(maleSocket->getParent()->self()))) {
+            if (!(qobject_cast<AbstractFemaleSocket*>(maleSocket->getParent()->bself()))) {
                 throw new UnsupportedOperationException("maleSocket.parent() is not a female socket");
             }
-            ((AbstractFemaleSocket*)maleSocket->getParent()->self())->_disconnect();
+            ((AbstractFemaleSocket*)maleSocket->getParent()->bself())->_disconnect();
         }
         try {
             _clipboardItems->getChild(0)->_connect(maleSocket);
@@ -185,7 +185,7 @@
     }
 
     //@Override
-    /*public*/ Category::TYPE DefaultClipboard::getCategory() {
+    /*public*/ Category *DefaultClipboard::getCategory() {
         throw new UnsupportedOperationException("Not supported");
     }
 

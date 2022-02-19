@@ -8,14 +8,31 @@ class Base;
 //public class AnalogFactory implements AnalogExpressionFactory {
 
     //@Override
-    /*public*/ QSet<QMap<Category::TYPE, /*Class<? extends Base>*/QString>> getClasses() {
-        QSet<QMap<Category::TYPE, /*Class<? extends Base>>*/QString >> analogExpressionClasses = QSet<QMap<Category::TYPE, /*Class<? extends Base>>*/QString>>();
+    /*public*/ QSet<QHash<Category*, /*Class<? extends Base>*/QString> > getClasses() {
+        QSet<QHash<Category*, /*Class<? extends Base>>*/QString > > analogExpressionClasses = QSet<QHash<Category*, /*Class<? extends Base>>*/QString> >();
 #if 1
-        analogExpressionClasses.insert(QMap<Category::TYPE, QString> {{Category::TYPE::ITEM, "AnalogExpressionAnalogIO"}});
-        analogExpressionClasses.insert(QMap<Category::TYPE, QString> {{Category::TYPE::ITEM, "AnalogExpressionConstant"}});
-        analogExpressionClasses.insert(QMap<Category::TYPE, QString> {{Category::TYPE::ITEM, "AnalogExpressionMemory"}});
-        analogExpressionClasses.insert(QMap<Category::TYPE, QString> {{Category::TYPE::COMMON, "AnalogFormula"}});
-        analogExpressionClasses.insert(QMap<Category::TYPE, QString> {{Category::TYPE::ITEM, "TimeSinceMidnight"}});
+        analogExpressionClasses.insert(QHash<Category*, QString> {{Category::ITEM, "AnalogExpressionAnalogIO"}});
+        analogExpressionClasses.insert(QHash<Category*, QString> {{Category::ITEM, "AnalogExpressionConstant"}});
+        analogExpressionClasses.insert(QHash<Category*, QString> {{Category::ITEM, "AnalogExpressionMemory"}});
+        analogExpressionClasses.insert(QHash<Category*, QString> {{Category::COMMON, "AnalogFormula"}});
+        analogExpressionClasses.insert(QHash<Category*, QString> {{Category::ITEM, "TimeSinceMidnight"}});
+#else
+        QMap<Category*, /*Class<? extends Base>>*/QString > map = QMap<Category*, /*Class<? extends Base>>*/QString >();
+        map.insert(Category::ITEM, "AnalogExpressionAnalogIO");
+        analogExpressionClasses.insert(map);
+        map.clear();
+        map.insert(Category::ITEM, "AnalogExpressionConstant");
+        analogExpressionClasses.insert(map);
+        map.clear();
+        map.insert(Category::ITEM, "AnalogExpressionMemory");
+        analogExpressionClasses.insert(map);
+        map.clear();
+        map.insert(Category::COMMON, "AnalogFormula");
+        analogExpressionClasses.insert(map);
+        map.clear();
+        map.insert(Category::ITEM, "TimeSinceMidnight");
+        analogExpressionClasses.insert(map);
+
 #endif
         return analogExpressionClasses;
     }

@@ -7,7 +7,7 @@
  * A female socket for StringExpression
  */
 /*public*/ /*interface*/ class FemaleStringExpressionSocket
-        : public FemaleSocket, public StringExpression {
+        : public virtual FemaleSocket, public StringExpression {
 Q_INTERFACES(FemaleSocket StringExpression)
 };
 Q_DECLARE_INTERFACE(FemaleStringExpressionSocket, "FemaleStringExpressionSocket")

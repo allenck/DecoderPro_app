@@ -3,7 +3,7 @@
 #include "variablelight.h"
 #include "manager.h"
 
-/*public*/ /*interface*/class  VariableLightManager : public Manager/*<VariableLight>*/
+/*public*/ /*interface*/class  VariableLightManager : public virtual Manager/*<VariableLight>*/
 {
   Q_INTERFACES(Manager)
  public:

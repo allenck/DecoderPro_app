@@ -8,9 +8,9 @@
  *
  * @author Daniel Bergqvist Copyright 2018
  */
-/*public*/ /*interface*/class  DigitalActionBean :/* public AbstractBase,*/ public DigitalAction {
+/*public*/ /*interface*/class  DigitalActionBean : public  NamedBean, public DigitalAction {
   //Q_OBJECT
-  Q_INTERFACES(DigitalAction)
+  Q_INTERFACES(NamedBean DigitalAction)
  public:
   //DigitalActionBean(QString name, QObject* parent = nullptr) : AbstractBase(name, parent){}
 };

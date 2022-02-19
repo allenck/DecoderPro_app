@@ -138,6 +138,7 @@ public:
  /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override {AbstractProxyManager::removePropertyChangeListener(l); }
 
  QObject* self() override {return (QObject*)this;}
+ QObject* vself() override {return (QObject*)this;}
 
 public slots:
 

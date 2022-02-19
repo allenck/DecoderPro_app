@@ -18,7 +18,7 @@ public:
  /*public*/ QString getNamedBeanClass()const override {
      return "Sensor";
  }
-
+    QObject* vself() override {return (QObject*)this;}
 private:
  static Logger* log;
 };

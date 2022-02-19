@@ -22,7 +22,7 @@ class MyDefaultFemaleAnySocket : public DefaultFemaleAnySocket
    : DefaultFemaleAnySocket((Base*)defaultClipboard, listener, name)
   {
   }
-  QObject* self() override {return (QObject*)this;}
+  QObject* bself() override {return (QObject*)this;}
   //@Override
   /*public*/ void connected(FemaleSocket* socket) {
       // Do nothing
@@ -53,7 +53,7 @@ class MyDefaultFemaleAnySocket : public DefaultFemaleAnySocket
    /*public*/ void registerListeners()override {AbstractFemaleSocket::registerListeners();}
    /*public*/ void unregisterListeners() override {AbstractFemaleSocket::unregisterListeners();}
    /*public*/ /*final*/ bool isActive()override {return AbstractFemaleSocket::isActive();}
-  /*public*/ Category::TYPE getCategory() override {return AbstractFemaleSocket::getCategory();}
+  /*public*/ Category* getCategory() override {return AbstractFemaleSocket::getCategory();}
   /*public*/ void printTree(
           PrintTreeSettings* settings,
           PrintWriter* writer,
@@ -123,9 +123,9 @@ class DefaultClipboard : public AbstractBase, public Clipboard
   /*public*/ void setParent(Base* parent)override;
   /*public*/ FemaleSocket* getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/override;
   /*public*/ int getChildCount() override;
-  /*public*/ Category::TYPE getCategory()override;
+  /*public*/ Category* getCategory()override;
   QObject* self() override {return (QObject*)this;}
-
+ QObject* bself() override {return (QObject*)this;}
 
  private:
   /*private*/ ClipboardMany* _clipboardItems = new ClipboardMany("", nullptr);

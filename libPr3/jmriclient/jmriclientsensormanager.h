@@ -14,6 +14,7 @@ public:
      return "Sensor";
  }
  /*public*/ SystemConnectionMemo* getMemo() override {return AbstractManager::getMemo();}
+ QObject* vself() override { return (QObject*)this;}
 
 private:
  /*private*/ JMRIClientSystemConnectionMemo* memo = nullptr;

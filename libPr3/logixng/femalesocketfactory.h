@@ -2,6 +2,7 @@
 #define FEMALESOCKETFACTORY_H
 #include <QtCore>
 #include "femalesocketmanager.h"
+
 /**
  * Factory class for FemaleSocket classes.
  *
@@ -9,7 +10,7 @@
  */
 /*public*/ /*interface*/class  FemaleSocketFactory {
 public:
-    /*public*/ virtual FemaleSocketManager::SocketType* getFemaleSocketType()=0;
+  /*public*/ virtual FemaleSocketManager::SocketType* getFemaleSocketType() {return nullptr;}
 
 };
 Q_DECLARE_INTERFACE(FemaleSocketFactory, "FemaleSocketFactory");

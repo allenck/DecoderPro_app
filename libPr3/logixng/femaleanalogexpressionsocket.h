@@ -6,7 +6,7 @@
  * A female socket for AnalogExpression
  */
 /*public*/ /*interface*/ class FemaleAnalogExpressionSocket
-        : public FemaleSocket, public AnalogExpression {
+        : public virtual FemaleSocket, public AnalogExpression {
   Q_INTERFACES(FemaleSocket AnalogExpression)
 
 };

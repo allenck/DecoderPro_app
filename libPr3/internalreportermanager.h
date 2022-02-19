@@ -19,6 +19,8 @@ public:
     /*public*/ QString toString() {return "InternalReporterManager";}
 
     QObject* self() override {return (QObject*)this;}
+    QObject* vself() override { return (QObject*)this;}
+
 signals:
     
 public slots:

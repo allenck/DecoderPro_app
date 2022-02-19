@@ -15,6 +15,7 @@ class InternalMeterManager : public AbstractMeterManager
   /*public*/ NamedBean* getBySystemName(QString name) override{return AbstractManager::getBySystemName(name);}
   /*public*/ NamedBean* getByUserName(QString name) override{return AbstractManager::getByUserName(name);}
 
+  QObject* vself() override { return (QObject*)this;}
 };
 
 #endif // INTERNALMETERMANAGER_H

@@ -71,7 +71,7 @@
      */
     //@Override
     /*protected*/ /*final*/ void LightTableDataModel::setManager(/*@Nonnull*/ Manager *manager) {
-        if (!(static_cast<LightManager*>(manager))) {
+        if (!(qobject_cast<LightManager*>(manager->self()))) {
             return;
         }
         getManager()->removePropertyChangeListener(this);
@@ -84,7 +84,7 @@
                 }
             }
         }
-        lightManager = (LightManager*)manager;
+        lightManager = (LightManager*)manager->self();
         getManager()->addPropertyChangeListener(this);
         updateNameList();
     }

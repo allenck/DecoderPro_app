@@ -1,7 +1,7 @@
 #include "actionatomicboolean.h"
 #include "digitalactionmanager.h"
 #include "instancemanager.h"
-
+#include "atomicboolean.h"
 
 /**
  * This action sets the value of an AtomicBoolean. It is mostly used for tests.
@@ -38,11 +38,11 @@
     //@Override
     /*public*/  Base* ActionAtomicBoolean::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) {
         DigitalActionManager* manager = (DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager");
-        QString sysName = systemNames.value(getSystemName());
-        QString userName = userNames.value(getSystemName());
+        QString sysName = systemNames.value(AbstractBase::getSystemName());
+        QString userName = userNames.value(AbstractBase::getSystemName());
         if (sysName == "") sysName = manager->getAutoSystemName();
         DigitalActionBean* copy = new ActionAtomicBoolean(sysName, userName, new AtomicBoolean, _newValue);
-// TODO:        copy->setComment(getComment());
+// TODO:        copy->NamedBean::setComment(NamedBean::getComment());
         return manager->registerAction(copy);
     }
 

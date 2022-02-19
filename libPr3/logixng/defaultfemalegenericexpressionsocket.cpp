@@ -52,7 +52,7 @@
                 break;
 
             default:
-                throw new RuntimeException("_socketType has invalid value: "+socketType.name());
+                throw new RuntimeException(QString("_socketType has invalid value: ")+FemaleGenericExpressionSocket::toString(socketType));
         }
     }
 
@@ -67,9 +67,9 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  bool DefaultFemaleGenericExpressionSocket::isCompatible(MaleSocket* socket) {
-        return (socket instanceof MaleAnalogExpressionSocket)
-                || (socket instanceof MaleDigitalExpressionSocket)
-                || (socket instanceof MaleStringExpressionSocket);
+        return (qobject_cast<MaleAnalogExpressionSocket*>(socket->bself()))
+                || (dynamic_cast<MaleDigitalExpressionSocket*>(socket->bself()))
+                || (qobject_cast<MaleStringExpressionSocket*>(socket->bself()));
     }
 
     /** {@inheritDoc} */
@@ -111,13 +111,13 @@
                 break;
 
             default:
-                throw new RuntimeException("socketType has invalid value: "+socketType.name());
+                throw new RuntimeException(QString("socketType has invalid value: ")+FemaleGenericExpressionSocket::toString(socketType));
         }
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  SocketType DefaultFemaleGenericExpressionSocket::getSocketType() {
+    /*public*/  FemaleGenericExpressionSocket::SocketType DefaultFemaleGenericExpressionSocket::getSocketType() {
         return _socketType;
     }
 
@@ -135,19 +135,19 @@
         if (AbstractFemaleSocket::isConnected()) {
             switch (_currentSocketType) {
                 case DIGITAL:
-                    return ((MaleDigitalExpressionSocket*)AbstractFemaleSocket::getConnectedSocket())
+                    return ((MaleDigitalExpressionSocket*)AbstractFemaleSocket::getConnectedSocket()->bself())
                             ->evaluate();
 
                 case ANALOG:
-                    return ((MaleAnalogExpressionSocket*)AbstractFemaleSocket::getConnectedSocket())
+                    return ((MaleAnalogExpressionSocket*)AbstractFemaleSocket::getConnectedSocket()->bself())
                             ->evaluate();
 
                 case STRING:
-                    return ((MaleStringExpressionSocket*)AbstractFemaleSocket::getConnectedSocket())
+                    return ((MaleStringExpressionSocket*)AbstractFemaleSocket::getConnectedSocket()->bself())
                             ->evaluate();
 
                 default:
-                    throw new RuntimeException("_currentSocketType has invalid value: "+_currentSocketType.name());
+                    throw new RuntimeException(QString("_currentSocketType has invalid value: ")+FemaleGenericExpressionSocket::toString(_currentSocketType));
             }
         } else {
             return QVariant();
@@ -167,24 +167,24 @@
     }
 
     /*private*/ void DefaultFemaleGenericExpressionSocket::addClassesToMap(
-     QMap<Category::TYPE, QList</*Class<? extends Base>*/QString>> destinationClasses,
-     QMap<Category::TYPE, QList</*Class<? extends Base>*/QString>> sourceClasses){
+     QMap<Category*, QList</*Class<? extends Base>*/QString>* > destinationClasses,
+     QMap<Category*, QList</*Class<? extends Base>*/QString>* > sourceClasses){
 
-        for (Category::TYPE category : Category::values()) {
+        for (Category* category : Category::values()) {
             // Some categories might not have any expression.
-            if (sourceClasses.value(category) == nullptr) continue;
+            if (sourceClasses.value(category) ->isEmpty()) continue;
 
-            for (/*Class<? extends Base>*/QString clazz : sourceClasses.value(category)) {
-                destinationClasses.value(category).append(clazz);
+            for (/*Class<? extends Base>*/QString clazz : *sourceClasses.value(category)) {
+                destinationClasses.value(category)->append(clazz);
             }
         }
     }
 
     //@Override
-    /*public*/  QMap<Category::TYPE, QList</*Class<? extends Base>*/QString>> DefaultFemaleGenericExpressionSocket::getConnectableClasses() {
-        QMap<Category::TYPE, QList</*Class<? extends Base>*/QString>> classes = QMap<Category::TYPE, QList</*Class<? extends Base>*/QString>>();
+    /*public*/  QMap<Category*, QList</*Class<? extends Base>*/QString>*> DefaultFemaleGenericExpressionSocket::getConnectableClasses() {
+        QMap<Category*, QList</*Class<? extends Base>*/QString>*> classes = QMap<Category*, QList</*Class<? extends Base>*/QString>*>();
 
-        for (Category::TYPE category : Category::values()) {
+        for (Category* category : Category::values()) {
             classes.insert(category, new QList<QString>());
         }
 
@@ -209,7 +209,7 @@
             if (_currentActiveSocket->isConnected()) {
                 throw new SocketAlreadyConnectedException("Socket is already connected");
             } else {
-                _currentActiveSocket.connect(socket);
+                _currentActiveSocket->_connect(socket);
                 _listener->connected(this);
                 return;
             }
@@ -224,7 +224,7 @@
         } else if (_analogSocket->isCompatible(socket)) {
             _currentSocketType = SocketType::ANALOG;
             _currentActiveSocket = _analogSocket;
-        } else if (_stringSocket.isCompatible(socket)) {
+        } else if (_stringSocket->isCompatible(socket)) {
             _currentSocketType = SocketType::STRING;
             _currentActiveSocket = _stringSocket;
         } else {
@@ -241,7 +241,7 @@
                 && _currentActiveSocket->isConnected()) {
 
             _currentActiveSocket->_disconnect();
-            _listener.disconnected(this);
+            _listener->disconnected(this);
         }
     }
 

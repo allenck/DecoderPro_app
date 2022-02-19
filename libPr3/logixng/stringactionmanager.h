@@ -15,7 +15,7 @@ class Base;
 class StringActionBean;
 class MaleStringActionSocket;
 class FemaleStringActionSocket;
-/*public*/  /*interface*/class StringActionManager : BaseManager/*<MaleStringActionSocket>*/ {
+/*public*/  /*interface*/class StringActionManager : public BaseManager/*<MaleStringActionSocket>*/ {
   Q_INTERFACES(BaseManager)
 public:
     /**
@@ -43,7 +43,7 @@ public:
      *
      * @return a set of entries with category and class
      */
-    /*public*/ virtual QMap<Category::TYPE, QList</*Class<? extends Base>*/QString>> getActionClasses()=0;
+    /*public*/ virtual QMap<Category*, QList</*Class<? extends Base>*/QString>*> getActionClasses()=0;
 
     /*.*
      * Add an Action.
@@ -84,7 +84,7 @@ public:
      *
      * @param x the StringAction to delete
      */
-    /*public*/ virtual void deleteStringAction(MaleStringActionSocket x)=0;
+    /*public*/ virtual void deleteStringAction(MaleStringActionSocket* x)=0;
     };
 Q_DECLARE_INTERFACE(StringActionManager, "StringActionManager")
 #endif // STRINGACTIONMANAGER_H

@@ -19,7 +19,7 @@
 
     //@Override
     /*protected*/ void ActionPositionableSwing::createPanel(/*@CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) {
-        ActionPositionable* action = (ActionPositionable*)object;
+        ActionPositionable* action = (ActionPositionable*)object->bself();
 
         panel = new JPanel();
 
@@ -203,10 +203,10 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  void ActionPositionableSwing::updateObject(/*@Nonnull*/ Base* object) {
-        if (! (qobject_cast<ActionPositionable*>(object->self()))) {
-            throw new IllegalArgumentException(QString("object must be an ActionPositionable but is a: ")+object->self()->metaObject()->className());
+        if (! (qobject_cast<ActionPositionable*>(object->bself()))) {
+            throw new IllegalArgumentException(QString("object must be an ActionPositionable but is a: ")+object->bself()->metaObject()->className());
         }
-        ActionPositionable* action = (ActionPositionable*)object;
+        ActionPositionable* action = (ActionPositionable*)object->bself();
         if (_editorComboBox->getSelectedIndex() != -1) {
             action->setEditor(VPtr<Editor>::asPtr(_editorComboBox->getItemAt(_editorComboBox->getSelectedIndex()))->getName());
         }

@@ -52,7 +52,7 @@
      */
     //@Override
     /*public*/ /*final*/ void ReporterTableDataModel::setManager(/*Manager<Reporter>*/Manager *rm) {
-        if (!(static_cast<ReporterManager*>(rm))) {
+        if (!(qobject_cast<ReporterManager*>(rm->self()))) {
             return;
         }
         getManager()->removePropertyChangeListener(this);
@@ -65,7 +65,7 @@
                 }
             }
         }
-        reporterManager = (ReporterManager*) rm;
+        reporterManager = (ReporterManager*) rm->self();
         getManager()->addPropertyChangeListener(this);
         updateNameList();
     }

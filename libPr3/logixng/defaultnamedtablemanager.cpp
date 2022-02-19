@@ -2,6 +2,12 @@
 #include "loggerfactory.h"
 #include "logixng_manager.h"
 #include "abstractnamedtable.h"
+#include "defaultinternalnamedtable.h"
+#include "defaultanonymoustable.h"
+#include "defaultcsvnamedtable.h"
+#include "threadingutil.h"
+#include "loggingutil.h"
+#include "vptr.h"
 
 /**
  * Class providing the basic logic of the NamedTable_Manager interface.
@@ -70,13 +76,13 @@
     try {
         // NamedTable does not exist, create a new NamedTable
         x = AbstractNamedTable::loadTableFromCSV_File(systemName, userName, fileName, true);
-    } catch (IOException ex) {
+    } catch (IOException* ex) {
 //            Exceptions.printStackTrace(ex);
-        log.error("Cannot load table due to I/O error", ex);
-        return null;
+        log->error("Cannot load table due to I/O error", ex);
+        return nullptr;
     }
     // save in the maps
-    register(x);
+    AbstractManager::Register(x);
 
     // Keep track of the last created auto system name
     updateAutoNumber(systemName);
@@ -88,29 +94,29 @@
  * {@inheritDoc}
  */
 //@Override
-/*public*/  NamedTable newInternalTable(String systemName, String userName, int numRows, int numColumns)
-        throws IllegalArgumentException {
+/*public*/  NamedTable* DefaultNamedTableManager::newInternalTable(QString systemName, QString userName, int numRows, int numColumns)
+        /*throws IllegalArgumentException*/ {
 
     // Check that NamedTable does not already exist
-    NamedTable x;
-    if (userName != null && !userName.equals("")) {
+    NamedTable* x;
+    if (userName != "" /*&& !userName.equals("")*/) {
         x = getByUserName(userName);
-        if (x != null) {
-            return null;
+        if (x != nullptr) {
+            return nullptr;
         }
     }
     x = getBySystemName(systemName);
-    if (x != null) {
-        return null;
+    if (x != nullptr) {
+        return nullptr;
     }
     // Check if system name is valid
-    if (this.validSystemNameFormat(systemName) != NameValidity.VALID) {
+    if (this->validSystemNameFormat(systemName) != NameValidity::VALID) {
         throw new IllegalArgumentException("SystemName " + systemName + " is not in the correct format");
     }
     // Table does not exist, create a new NamedTable
     x = new DefaultInternalNamedTable(systemName, userName, numRows, numColumns);
     // save in the maps
-    register(x);
+    AbstractManager::Register(x);
 
     // Keep track of the last created auto system name
     updateAutoNumber(systemName);
@@ -122,8 +128,8 @@
  * {@inheritDoc}
  */
 //@Override
-/*public*/  AnonymousTable newAnonymousTable(int numRows, int numColumns)
-        throws IllegalArgumentException {
+/*public*/  AnonymousTable* DefaultNamedTableManager::newAnonymousTable(int numRows, int numColumns)
+        /*throws IllegalArgumentException*/ {
 
     // Check that NamedTable does not already exist
     // NamedTable does not exist, create a new NamedTable
@@ -134,41 +140,41 @@
  * {@inheritDoc}
  */
 //@Override
-/*public*/  NamedTable loadTableFromCSVData(
-        /*@Nonnull*/ String sys, @CheckForNull String user, /*@Nonnull*/ String text)
-        throws NamedBean.BadUserNameException, NamedBean.BadSystemNameException {
-    return AbstractNamedTable.loadTableFromCSV_Text(sys, user, text, true);
+/*public*/  NamedTable* DefaultNamedTableManager::loadTableFromCSVData(
+        /*@Nonnull*/ QString sys, /*@CheckForNull*/ QString user, /*@Nonnull*/ QString text)
+        /*throws NamedBean.BadUserNameException, NamedBean.BadSystemNameException*/ {
+    return AbstractNamedTable::loadTableFromCSV_Text(sys, user, text, true);
 }
 
 /**
  * {@inheritDoc}
  */
 //@Override
-/*public*/  NamedTable loadTableFromCSV(
-        /*@Nonnull*/ String sys, @CheckForNull String user,
-        /*@Nonnull*/ String fileName)
-        throws NamedBean.BadUserNameException, NamedBean.BadSystemNameException, IOException {
-    return AbstractNamedTable.loadTableFromCSV_File(sys, user, fileName, true);
+/*public*/  NamedTable* DefaultNamedTableManager::loadTableFromCSV(
+        /*@Nonnull*/ QString sys, /*@CheckForNull*/ QString user,
+        /*@Nonnull*/ QString fileName)
+        /*throws NamedBean.BadUserNameException, NamedBean.BadSystemNameException, IOException*/ {
+    return AbstractNamedTable::loadTableFromCSV_File(sys, user, fileName, true);
 }
 
 /**
  * {@inheritDoc}
  */
 //@Override
-/*public*/  NamedTable loadTableFromCSV(
-        /*@Nonnull*/ String sys, @CheckForNull String user,
-        /*@Nonnull*/ File file)
-        throws NamedBean.BadUserNameException, NamedBean.BadSystemNameException, IOException {
-    return AbstractNamedTable.loadTableFromCSV_File(sys, user, file, true);
+/*public*/  NamedTable* DefaultNamedTableManager::loadTableFromCSV(
+        /*@Nonnull*/ QString sys, /*@CheckForNull*/ QString user,
+        /*@Nonnull*/ File* file)
+        /*throws NamedBean.BadUserNameException, NamedBean.BadSystemNameException, IOException*/ {
+    return AbstractNamedTable::loadTableFromCSV_File(sys, user, file, true);
 }
 
 /**
  * {@inheritDoc}
  */
 //@Override
-/*public*/  NamedTable getNamedTable(String name) {
-    NamedTable x = getByUserName(name);
-    if (x != null) {
+/*public*/  NamedTable* DefaultNamedTableManager::getNamedTable(QString name) {
+    NamedTable* x = getByUserName(name);
+    if (x != nullptr) {
         return x;
     }
     return getBySystemName(name);
@@ -178,74 +184,75 @@
  * {@inheritDoc}
  */
 //@Override
-/*public*/  NamedTable getByUserName(String name) {
-    return _tuser.get(name);
+/*public*/  NamedTable* DefaultNamedTableManager::getByUserName(QString name) {
+    return (NamedTable*)_tuser->value(name);
 }
 
 /**
  * {@inheritDoc}
  */
 //@Override
-/*public*/  NamedTable getBySystemName(String name) {
-    return _tsys.get(name);
+/*public*/  NamedTable* DefaultNamedTableManager::getBySystemName(QString name) {
+    return (NamedTable*)_tsys->value(name);
 }
 
 /**
  * {@inheritDoc}
  */
 //@Override
-/*public*/  String getBeanTypeHandled(boolean plural) {
-    return Bundle.getMessage(plural ? "BeanNameNamedTables" : "BeanNameNamedTable");
+/*public*/  QString DefaultNamedTableManager::getBeanTypeHandled(bool plural)const {
+    return plural ? tr("NamedTables") : tr("NamedTable");
 }
 
 /**
  * {@inheritDoc}
  */
 //@Override
-/*public*/  void deleteNamedTable(NamedTable x) {
+/*public*/  void DefaultNamedTableManager::deleteNamedTable(NamedTable* x) {
     // delete the NamedTable
-    deregister(x);
-    x.dispose();
+    AbstractManager::deregister(x);
+    x->dispose();
 }
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  void printTree(PrintWriter writer, String indent) {
-    printTree(Locale.getDefault(), writer, indent);
+/*public*/  void DefaultNamedTableManager::printTree(PrintWriter* writer, QString indent) {
+    printTree(QLocale(), writer, indent);
 }
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  void printTree(Locale locale, PrintWriter writer, String indent) {
-    for (NamedTable namedTable : getNamedBeanSet()) {
-        if (namedTable instanceof DefaultCsvNamedTable) {
-            DefaultCsvNamedTable csvTable = (DefaultCsvNamedTable)namedTable;
-            writer.append(String.format(
-                    "Named table: System name: %s, User name: %s, File name: %s, Num rows: %d, Num columns: %d",
-                    csvTable.getSystemName(), csvTable.getUserName(),
-                    csvTable.getFileName(), csvTable.numRows(), csvTable.numColumns()));
-        } if (namedTable != null) {
-            writer.append(String.format(
-                    "Named table: System name: %s, User name: %s, Num rows: %d, Num columns: %d",
-                    namedTable.getSystemName(), namedTable.getUserName(),
-                    namedTable.numRows(), namedTable.numColumns()));
+/*public*/  void DefaultNamedTableManager::printTree(QLocale locale, PrintWriter* writer, QString indent) {
+    for (NamedBean* nb : AbstractManager::getNamedBeanSet()) {
+     NamedTable* namedTable = (NamedTable*)nb;
+        if (qobject_cast<DefaultCsvNamedTable*>(namedTable)) {
+            DefaultCsvNamedTable* csvTable = (DefaultCsvNamedTable*)namedTable;
+            writer->write(QString(
+                    "Named table: System name: %1, User name: %2, File name: %3, Num rows: %4, Num columns: %5").arg(
+                    csvTable->getSystemName(), csvTable->getUserName(),
+                    csvTable->getFileName()).arg(csvTable->numRows(), csvTable->numColumns()));
+        } if (namedTable != nullptr) {
+            writer->write(QString(
+                    "Named table: System name: %1, User name: %2, Num rows: %3, Num columns: %4").arg(
+                    namedTable->getSystemName(), namedTable->getUserName()).arg(
+                    namedTable->numRows(), namedTable->numColumns()));
         } else {
             throw new NullPointerException("namedTable is null");
         }
-        writer.println();
-        writer.println();
+        writer->println();
+        writer->println();
     }
 }
 
-static volatile DefaultNamedTableManager _instance = null;
+/*static*/ /*volatile*/ DefaultNamedTableManager* DefaultNamedTableManager::_instance = nullptr;
 
-@InvokeOnGuiThread  // this method is not thread safe
-static /*public*/  DefaultNamedTableManager instance() {
-    if (!ThreadingUtil.isGUIThread()) {
-        LoggingUtil.warnOnce(log, "instance() called on wrong thread");
+//@InvokeOnGuiThread  // this method is not thread safe
+/*static*/ /*public*/  DefaultNamedTableManager* DefaultNamedTableManager::instance() {
+    if (!ThreadingUtil::isGUIThread()) {
+        LoggingUtil::warnOnce(log, "instance() called on wrong thread");
     }
 
-    if (_instance == null) {
+    if (_instance == nullptr) {
         _instance = new DefaultNamedTableManager();
     }
     return (_instance);
@@ -255,8 +262,8 @@ static /*public*/  DefaultNamedTableManager instance() {
  * {@inheritDoc}
  */
 //@Override
-/*public*/  Class<NamedTable> getNamedBeanClass() {
-    return NamedTable.class;
+/*public*/  /*Class<NamedTable>*/QString DefaultNamedTableManager::getNamedBeanClass() const {
+    return "NamedTable";
 }
 
 /**
@@ -277,7 +284,7 @@ static /*public*/  DefaultNamedTableManager instance() {
  */
 //@OverridingMethodsMustInvokeSuper
 /*public*/  void DefaultNamedTableManager::fireVetoableChange(QString p, QVariant old) /*throws PropertyVetoException */{
-    PropertyChangeEvent evt = new PropertyChangeEvent(this, p, old, null);
+    PropertyChangeEvent* evt = new PropertyChangeEvent(this, p, old, QVariant());
     for (VetoableChangeListener* vc : vetoableChangeSupport->getVetoableChangeListeners()) {
         vc->vetoableChange(evt);
     }
@@ -286,12 +293,12 @@ static /*public*/  DefaultNamedTableManager instance() {
 /** {@inheritDoc} */
 //@Override
 //    @OverridingMethodsMustInvokeSuper
-/*public*/  /*final*/ void DefaultNamedTableManager::deleteBean(/*@Nonnull*/ NamedTable* namedTable, /*@Nonnull*/ String property) throws PropertyVetoException {
+/*public*/  /*final*/ void DefaultNamedTableManager::deleteBean(/*@Nonnull*/ NamedTable* namedTable, /*@Nonnull*/ QString property) /*throws PropertyVetoException*/ {
     // throws PropertyVetoException if vetoed
-    fireVetoableChange(property, namedTable);
-    if (property.equals("DoDelete")) { // NOI18N
-        deregister(namedTable);
-        namedTable.dispose();
+    fireVetoableChange(property, VPtr<NamedTable>::asQVariant(namedTable));
+    if (property == ("DoDelete")) { // NOI18N
+        AbstractManager::deregister(namedTable);
+        namedTable->dispose();
     }
 }
 

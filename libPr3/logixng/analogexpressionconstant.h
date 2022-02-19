@@ -10,7 +10,7 @@ class AnalogExpressionConstant : public AbstractAnalogExpression
  public:
   explicit AnalogExpressionConstant(QString sys, QString user, QObject *parent = nullptr);
   /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames)override;
-  /*public*/  Category::TYPE getCategory()override;
+  /*public*/  Category* getCategory()override;
   /*public*/  void setValue(double value);
   /*public*/  double getValue();
   /*public*/  double evaluate()override;
@@ -25,6 +25,8 @@ class AnalogExpressionConstant : public AbstractAnalogExpression
   /*public*/  void disposeMe()override;
 
   QObject* self() override{return (QObject*)this;}
+  QObject* bself() override{return (QObject*)this;}
+
   QString getUserName() const override {return AbstractNamedBean::getUserName();}
   /*public*/  void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override
   {return AbstractBase::getUsageDetail(level,bean, report, cdl);}

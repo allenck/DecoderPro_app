@@ -6,7 +6,7 @@
 #include "namedbean.h"
 
 class Logger;
-class AbstractBase : public AbstractNamedBean, public Base
+class AbstractBase : public AbstractNamedBean, public virtual Base
 {
   Q_OBJECT
   Q_INTERFACES(Base)
@@ -80,7 +80,7 @@ class AbstractBase : public AbstractNamedBean, public Base
           QLocale locale,
           PrintWriter* writer,
           QString currentIndent,
-          /*MutableInt*/int lineNumber);
+          /*MutableInt*/int* lineNumber);
   /**
    * Dispose this class.
    * Listeners do not need to be unregistered by this method since they are

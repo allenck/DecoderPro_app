@@ -25,6 +25,7 @@ namespace Sprog
   /*public*/ SystemConnectionMemo* getMemo() override {return AbstractManager::getMemo();}
 
   QObject* self() override {return (QObject*)this;}
+  QObject* vself() override { return (QObject*)this;}
 
  private:
   /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("SprogTurnoutManager");

@@ -41,6 +41,7 @@ public:
 
 
  QObject* self() override {return (QObject*)this;}
+ QObject* vself() override {return (QObject*)this;}
 
 private:
 /*private*/ bool useFastClock = false;

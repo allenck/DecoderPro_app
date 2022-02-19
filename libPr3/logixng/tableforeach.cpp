@@ -362,7 +362,7 @@
         if ("CanDelete" == (evt->getPropertyName())) { // No I18N
             if (VPtr<NamedTable>::asPtr(evt->getOldValue())) {
                 if (VPtr<NamedTable>::asPtr(evt->getOldValue()) == (getTable()->getBean())) {
-                    throw new PropertyVetoException(getDisplayName(), evt);
+                    throw new PropertyVetoException(AbstractNamedBean::getDisplayName(), evt);
                 }
             }
         } else if ("DoDelete" == (evt->getPropertyName())) { // No I18N

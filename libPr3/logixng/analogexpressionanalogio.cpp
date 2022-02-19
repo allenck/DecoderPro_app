@@ -57,8 +57,8 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category::TYPE AnalogExpressionAnalogIO::getCategory() {
-        return Category::TYPE::ITEM;
+    /*public*/  Category* AnalogExpressionAnalogIO::getCategory() {
+        return Category::ITEM;
     }
 
     /*public*/  void AnalogExpressionAnalogIO::setAnalogIO(/*@Nonnull*/ QString analogIOName) {
@@ -129,7 +129,7 @@
     //@Override
     /*public*/  QString AnalogExpressionAnalogIO::getLongDescription(QLocale locale) {
         if (_analogIOHandle != nullptr) {
-            return tr(/*locale, */"Get analog constant %1", _analogIOHandle->getBean()->getDisplayName());
+            return tr(/*locale, */"Get analog constant %1").arg(_analogIOHandle->getBean()->getDisplayName());
         } else {
             return tr(/*locale,*/ "Get analog constant %1").arg("none");
         }
@@ -169,13 +169,13 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void disposeMe() {
+    /*public*/  void AnalogExpressionAnalogIO::disposeMe() {
     }
 
     /** {@inheritDoc} */
     //@Override
     /*public*/  void AnalogExpressionAnalogIO::getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
-        log->debug(tr("getUsageReport :: AnalogExpressionAnalogIO: bean = %1, report = %2").arg(cdl->getDisplayName(), report));
+        log->debug(tr("getUsageReport :: AnalogExpressionAnalogIO: bean = %1, report = %2").arg(cdl->getDisplayName()).arg(report.size()));
         if (getAnalogIO() != nullptr && bean->equals(getAnalogIO()->getBean()->self())) {
             report.append(new NamedBeanUsageReport("LogixNGExpression", cdl, getLongDescription(QLocale())));
         }

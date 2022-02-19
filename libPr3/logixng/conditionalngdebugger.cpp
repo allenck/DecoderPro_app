@@ -474,7 +474,7 @@
          {
           MaleSocket* maleSocket1 = _currentFemaleSocket->getConnectedSocket();
           AbstractDebuggerMaleSocket* debugMaleSocket1 =
-                            (AbstractDebuggerMaleSocket*) maleSocket1->find("AbstractDebuggerMaleSocket");
+                            (AbstractDebuggerMaleSocket*) maleSocket1->find("AbstractDebuggerMaleSocket")->bself();
           if (debugMaleSocket1 == nullptr) throw new RuntimeException("AbstractDebuggerMaleSocket is not found");
           // Invert breakpoint setting
           debugMaleSocket1->setBreakpointBefore(!debugMaleSocket1->getBreakpointBefore());
@@ -482,7 +482,7 @@
               QVector<QObject*>* ol= new QVector<QObject*>();
               foreach (QObject* o, *_currentPath->getPath()) ol->append(o);
               TreeModelEvent* tme = new TreeModelEvent(
-                      _currentFemaleSocket->self(),
+                      _currentFemaleSocket->bself(),
 //                      _currentPath->getPath(); //this list doesn' need tp be pointer!
                  ol
               );
@@ -494,14 +494,14 @@
             {
                     MaleSocket* maleSocket2 = _currentFemaleSocket->getConnectedSocket();
                     AbstractDebuggerMaleSocket* debugMaleSocket2 =
-                            (AbstractDebuggerMaleSocket*) maleSocket2->find("AbstractDebuggerMaleSocket");
+                            (AbstractDebuggerMaleSocket*) maleSocket2->find("AbstractDebuggerMaleSocket")->bself();
                     if (debugMaleSocket2 == nullptr) throw new RuntimeException("AbstractDebuggerMaleSocket is not found");
                     // Invert breakpoint setting
                     debugMaleSocket2->setBreakpointAfter(!debugMaleSocket2->getBreakpointAfter());
                     for (TreeModelListener* l : debugger->_treePane->femaleSocketTreeModel->listeners) {
                      QVector<QObject*>* ol= new QVector<QObject*>();
                      foreach (QObject* o, *_currentPath->getPath()) ol->append(o);TreeModelEvent* tme = new TreeModelEvent(
-                                _currentFemaleSocket->self(),
+                                _currentFemaleSocket->bself(),
 //                                _currentPath->getPath()
                         ol
                         );

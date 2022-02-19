@@ -205,7 +205,7 @@ LogixTableAction::LogixTableAction(const LogixTableAction & that) : AbstractTabl
 /*protected*/ void LogixTableAction::createModel()
 {
  m = new LogixTableModel(this);
- AbstractManager* manager = (AbstractManager*)m->getManager();
+ AbstractManager* manager = (AbstractManager*)m->getManager()->self();
  connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), m, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 

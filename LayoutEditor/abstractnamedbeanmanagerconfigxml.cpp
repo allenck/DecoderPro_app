@@ -176,7 +176,7 @@ void AbstractNamedBeanManagerConfigXML::checkNameNormalization(/*@Nonnull*/ QStr
                     rawUserName).arg(rawSystemName).arg(normalizedUserName));
         }
         if (!normalizedUserName.isNull()) {
-            NamedBean* bean = ((AbstractManager*)manager)->getBeanByUserName(normalizedUserName);
+            NamedBean* bean = ((AbstractManager*)manager->self())->getBeanByUserName(normalizedUserName);
             if (bean != nullptr && bean->getSystemName() != (rawSystemName)) {
                 log->warn(tr("User name \"%1\" already exists as system name \"%2\"").arg(normalizedUserName).arg(bean->getSystemName()));
             }

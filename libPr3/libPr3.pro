@@ -1138,6 +1138,22 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+ logixng/abstractdebuggermalesocketswing.cpp \
+ logixng/abstractdigitalexpressionswing.cpp \
+ logixng/abstractstringactionswing.cpp \
+ logixng/abstractstringexpressionswing.cpp \
+ logixng/defaultfemalestringactionsocket.cpp \
+ logixng/defaultmoduleswing.cpp \
+ logixng/abstractbooleanactionswing.cpp \
+ logixng/abstractanalogexpressionswing.cpp \
+ logixng/abstractmalesocketswing.cpp \
+ logixng/analogexpressionmemoryswing.cpp \
+ logixng/defaultinternalnamedtable.cpp \
+ logixng/defaultmaleanalogactionsocket.cpp \
+ logixng/defaultmaledigitalactionsocket.cpp \
+ logixng/defaultmaledigitalbooleanactionsocket.cpp \
+ logixng/defaultmaledigitalexpressionsocket.cpp \
+ logixng/defaultmalestringactionsocket.cpp \
  logixng/defaultnamedtablemanager.cpp \
  logixng/defaultmodule.cpp \
  logixng/defaultmodulemanager.cpp \
@@ -2383,6 +2399,23 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+ logixng/abstractdebuggermalesocketswing.h \
+ logixng/abstractdigitalexpressionswing.h \
+ logixng/abstractstringactionswing.h \
+ logixng/abstractstringexpressionswing.h \
+ logixng/defaultfemalestringactionsocket.h \
+ logixng/defaultmoduleswing.h \
+ logixng/abstractbooleanactionswing.h \
+ logixng/abstractanalogexpressionswing.h \
+ logixng/abstractmalesocketswing.h \
+ logixng/analogexpressionmemoryswing.h \
+ logixng/defaultinternalnamedtable.h \
+ logixng/defaultmaleanalogactionsocket.h \
+ logixng/defaultmaledigitalactionsocket.h \
+ logixng/defaultmaledigitalbooleanactionsocket.h \
+ logixng/defaultmaledigitalexpressionsocket.h \
+ logixng/defaultmalestringactionsocket.h \
+ logixng/defaultmalestringactionsocketswing.h \
  logixng/defaultnamedtablemanager.h \
  logixng/defaultmodule.h \
  logixng/defaultmodulemanager.h \

@@ -61,7 +61,9 @@ class TableForEach : public AbstractDigitalAction, public FemaleSocketListener, 
   /*public*/  void unregisterListenersForThisClass()override;
   /*public*/  void disposeMe()override;
 
+  QObject* bself() override{return (QObject*)this;}
   QObject* self() override{return (QObject*)this;}
+
 
   QString getSystemName() const override{return AbstractNamedBean::getSystemName();}
   QString getComment()  override{return AbstractNamedBean::getComment();}

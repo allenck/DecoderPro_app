@@ -59,8 +59,8 @@
  * @return true if operation is allowed, false otherwise
  */
 /*public*/ /*default*/ bool Base::isSocketOperationAllowed(int index, FemaleSocketOperation::TYPES oper) {
-    if (qobject_cast<AbstractMaleSocket*>(this->self())) {
-        return ((AbstractMaleSocket*)this->self())->getObject()->isSocketOperationAllowed(index, oper);
+    if (qobject_cast<AbstractMaleSocket*>(this->bself())) {
+        return ((AbstractMaleSocket*)this->bself())->getObject()->isSocketOperationAllowed(index, oper);
     }
     return false;
 }
@@ -71,8 +71,8 @@
  * @param oper the operation to do
  */
 /*public*/ /*default*/ void Base::doSocketOperation(int index, FemaleSocketOperation::TYPES oper) {
-    if (qobject_cast<AbstractMaleSocket*>(this->self())) {
-        ((AbstractMaleSocket*)this->self())->getObject()->doSocketOperation(index, oper);
+    if (qobject_cast<AbstractMaleSocket*>(this->bself())) {
+        ((AbstractMaleSocket*)this->bself())->getObject()->doSocketOperation(index, oper);
     }
     // By default, do nothing if not a male socket
 }

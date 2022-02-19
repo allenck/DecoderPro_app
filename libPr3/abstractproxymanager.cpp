@@ -283,15 +283,15 @@ AbstractProxyManager::AbstractProxyManager(QObject* parent ) : VetoableChangeSup
             if (prefix == (m->getSystemPrefix()) && beanType == (m->getNamedBeanClass())) {
                 try {
                     if (beanType == "Turnout") {
-                        return ((TurnoutManager*) m)->createSystemName(curAddress, prefix);
+                        return ((TurnoutManager*) m->self())->createSystemName(curAddress, prefix);
                     } else if (beanType == "Sensor") {
-                        return ((SensorManager*) m)->createSystemName(curAddress, prefix);
+                        return ((SensorManager*) m->self())->createSystemName(curAddress, prefix);
                     }
                     else if (beanType == "Light") {
-                        return ((LightManager*) m)->createSystemName(curAddress, prefix);
+                        return ((LightManager*) m->self())->createSystemName(curAddress, prefix);
                     }
                     else if (beanType == "Reporter") {
-                        return ((ReporterManager*) m)->createSystemName(curAddress, prefix);
+                        return ((ReporterManager*) m->self())->createSystemName(curAddress, prefix);
                     }
                     else {
                         log->warn("createSystemName requested for incompatible Manager");

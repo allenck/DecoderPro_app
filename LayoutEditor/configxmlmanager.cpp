@@ -712,7 +712,7 @@ File userPrefsFile;*/
 {
     return load(fi, false);
 }
-/*public*/ bool ConfigXmlManager::load(QUrl url) throw (JmriConfigureXmlException)
+/*public*/ bool ConfigXmlManager::load(QUrl url)
 {
     return load(url, false);
 }

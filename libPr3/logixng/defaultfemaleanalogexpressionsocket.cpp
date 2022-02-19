@@ -20,14 +20,14 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  bool DefaultFemaleAnalogExpressionSocket::isCompatible(MaleSocket* socket) {
-        return qobject_cast<MaleAnalogExpressionSocket*>(socket->self());
+        return qobject_cast<MaleAnalogExpressionSocket*>(socket->bself());
     }
 
     /** {@inheritDoc} */
     //@Override
     /*public*/  double DefaultFemaleAnalogExpressionSocket::evaluate() /*throws JmriException*/ {
-        if (isConnected()) {
-            return ((MaleAnalogExpressionSocket)getConnectedSocket()).evaluate();
+        if (AbstractFemaleSocket::isConnected()) {
+            return ((MaleAnalogExpressionSocket*)AbstractFemaleSocket::getConnectedSocket()->bself())->evaluate();
         } else {
             return 0.0;
         }
@@ -59,7 +59,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  QMap<Category*, QList</*Class<? extends Base>*/Base*>> DefaultFemaleAnalogExpressionSocket::getConnectableClasses() {
+    /*public*/  QMap<Category*, QList</*Class<? extends Base>*/QString>*> DefaultFemaleAnalogExpressionSocket::getConnectableClasses() {
         return ((AnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager"))->getExpressionClasses();
     }
 

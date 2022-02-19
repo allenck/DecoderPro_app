@@ -52,12 +52,12 @@
         result = ((StringExpressionBean*)AbstractMaleSocket::getObject())->evaluate();
     } catch (JmriException* e) {
         if (!e->getErrors().isEmpty()) {
-            handleError(this, tr("An exception has occurred during evaluate:"), e->getErrors(), e, log);
+            handleError((AbstractMaleSocket*)this, tr("An exception has occurred during evaluate:"), e->getErrors(), e, log);
         } else {
-            handleError(this, tr("An exception has occurred during evaluate: %1").arg(e->getLocalizedMessage()), e, log);
+            handleError((AbstractMaleSocket*)this, tr("An exception has occurred during evaluate: %1").arg(e->getLocalizedMessage()), e, log);
         }
     } catch (RuntimeException* e) {
-        handleError(this, tr("An exception has occurred during evaluate: %1").arg(e->getLocalizedMessage()), e, log);
+        handleError((AbstractMaleSocket*)this, tr("An exception has occurred during evaluate: %1").arg(e->getLocalizedMessage()), e, log);
     }
 
     currentConditionalNG->getStack()->setCount(currentStackPos);

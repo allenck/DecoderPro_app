@@ -20,6 +20,8 @@ class ProxyMeterManager :  public AbstractProxyManager, public MeterManager
   /*public*/ void dispose()override;
   /*public*/ QString getNamedBeanClass() const override {return "jmri.managers.ProxyMeterManager";}
   QObject* self() override{return (QObject*)this;}
+  QObject* vself() override {return (QObject*)this;}
+
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e)override;
   /*public*/ SystemConnectionMemo* getMemo() override {return AbstractProxyManager::getMemo();}

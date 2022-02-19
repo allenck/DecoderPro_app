@@ -31,6 +31,7 @@ public:
     /*public*/ SystemConnectionMemo* getMemo() override {return AbstractManager::getMemo();}
 
     QObject* self() override {return (QObject*)this;}
+    QObject* vself() override {return (QObject*)this;}
 
 signals:
 

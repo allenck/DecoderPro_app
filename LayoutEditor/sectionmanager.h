@@ -70,6 +70,7 @@ public:
      */
     /*public*/ void initializeBlockingSensors ();
     QObject* self() override {return (QObject*)this;}
+    QObject* vself() override{return (QObject*)this;}
 
     
 public slots:

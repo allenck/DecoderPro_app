@@ -6,9 +6,9 @@
  *
  * @author Daniel Bergqvist Copyright 2018
  */
-/*public*/ /*interface*/class  DigitalAction /*: public Base*/ {
+/*public*/ /*interface*/class  DigitalAction : public virtual Base   {
 
-    //Q_INTERFACES(Base)
+    Q_INTERFACES(Base)
  public:
     /**
      * Execute this DigitalActionBean.

@@ -8,7 +8,7 @@
  *
  * @author Daniel Bergqvist Copyright 2018
  */
-/*public*/ /*interface*/class  AnalogExpression : public Base {
+/*public*/ /*interface*/class  AnalogExpression : public virtual Base {
 
  public:
     Q_INTERFACES(Base)

@@ -13,8 +13,8 @@
     /*private*/ void AbstractSwingConfigurator::getSymbols(/*@Nonnull*/ Base* object, SymbolTable* symbolTable) /*throws JmriException*/ {
         if (object->getParent() != nullptr) getSymbols(object->getParent(), symbolTable);
 
-        if (qobject_cast<AbstractMaleSocket*>(object->self())) {
-            symbolTable->createSymbols(symbolTable, ((AbstractMaleSocket*)object->self())->getLocalVariables());
+        if (dynamic_cast<AbstractMaleSocket*>(object->bself())) {
+            symbolTable->createSymbols(symbolTable, ((AbstractMaleSocket*)object->bself())->getLocalVariables());
         }
     }
 

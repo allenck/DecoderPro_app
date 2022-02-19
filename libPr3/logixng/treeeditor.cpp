@@ -216,7 +216,7 @@
                 cancelRenameSocketPressed(nullptr);
                 for (TreeModelListener* l : _treePane->femaleSocketTreeModel->listeners) {
                     TreeModelEvent* tme = new TreeModelEvent(
-                            femaleSocket->self(),
+                            femaleSocket->bself(),
                             path->getPath()
                     );
                     l->treeNodesChanged(tme);
@@ -247,7 +247,7 @@
      */
     /*final*/ /*protected*/ void TreeEditor::addPressed(FemaleSocket* femaleSocket, TreePath* path) {
 
-        QMap<Category*, QList</*Class<? extends Base>*/Base*> > connectableClasses =
+        QMap<Category*, QList</*Class<? extends Base>*/QString>* > connectableClasses =
                 femaleSocket->getConnectableClasses();
 
         _categoryComboBox->clear();
@@ -265,14 +265,14 @@
         connect(_categoryComboBox, &JComboBox::itemStateChanged, [=] {
             Category* category = VPtr<Category>::asPtr(_categoryComboBox->getItemAt(_categoryComboBox->getSelectedIndex()));
             _swingConfiguratorComboBox->clear();
-            QList</*Class<? extends Base>*/Base*> classes = connectableClasses.value(category);
-            if (!classes.isEmpty()) {
-                for (/*Class<? extends Base>*/Base* clazz : classes) {
-                    SwingConfiguratorInterface* sci = SwingTools::getSwingConfiguratorForClass((Class*)clazz);
+            QList</*Class<? extends Base>*/QString>* classes = connectableClasses.value(category);
+            if (!classes->isEmpty()) {
+                for (/*Class<? extends Base>*/QString clazz : *classes) {
+                    SwingConfiguratorInterface* sci = SwingTools::getSwingConfiguratorForClass( clazz);
                     if (sci != nullptr) {
                         _swingConfiguratorComboBox->addItem(VPtr<SwingConfiguratorInterface>::asQVariant(sci));
                     } else {
-                        log->error(tr("Class %1 has no swing configurator interface").arg(clazz->self()->metaObject()->className()));
+                        log->error(tr("Class %1 has no swing configurator interface").arg(clazz));
                     }
                 }
 // TODO:                JComboBoxUtil.setupComboBoxMaxRows(_swingConfiguratorComboBox);
@@ -668,18 +668,18 @@
         QList<JPanel*> panels = QList<JPanel*>();
         if (femaleSocket->isConnected()) {
             object = femaleSocket->getConnectedSocket();
-            while (qobject_cast<AbstractMaleSocket*>(object->self())) {
+            while (dynamic_cast<AbstractMaleSocket*>(object->bself())) {
                 SwingConfiguratorInterface* swi =
-                        SwingTools::getSwingConfiguratorForClass((Class*)object->self());
+                        SwingTools::getSwingConfiguratorForClass(object->bself()->metaObject()->className());
                 panels.append(swi->getConfigPanel(object, panel5));
                 QMap<SwingConfiguratorInterface*, Base*> entry;
                 entry.insert(swi, object);
                 _swingConfiguratorInterfaceList.append(entry);
-                object = ((MaleSocket*)object->self())->getObject();
+                object = ((MaleSocket*)object->bself())->getObject();
             }
             if (object != nullptr) {
                 _editSwingConfiguratorInterface =
-                        SwingTools::getSwingConfiguratorForClass((Class*)object);
+                        SwingTools::getSwingConfiguratorForClass(object->bself()->metaObject()->className());
                 panels.append(_editSwingConfiguratorInterface->getConfigPanel(object, panel5));
                 QMap<SwingConfiguratorInterface*, Base*> entry;
                 entry.insert(_editSwingConfiguratorInterface, object);
@@ -1424,10 +1424,10 @@
             bool isLocked = isConnected && femaleSocket->getConnectedSocket()->isLocked();
 
             Base* parent = femaleSocket->getParent();
-            while ((parent != nullptr) && !(qobject_cast<AbstractMaleSocket*>(parent->self()))) {
+            while ((parent != nullptr) && !(qobject_cast<AbstractMaleSocket*>(parent->bself()))) {
                 parent = parent->getParent();
             }
-            bool parentIsLocked = (parent != nullptr) && ((AbstractMaleSocket*)parent->self())->isLocked();
+            bool parentIsLocked = (parent != nullptr) && ((AbstractMaleSocket*)parent->bself())->isLocked();
 
             menuItemAdd->setEnabled(!isConnected && !parentIsLocked);
             menuItemRemove->setEnabled(isConnected && !isLocked && !parentIsLocked && !disableForRoot);
@@ -1463,9 +1463,9 @@
             //                }
             for (int i=0; i < _currentFemaleSocket->getChildCount(); i++) {
               Base* item = ((Base*)_currentFemaleSocket->getChild(i));
-              if (qobject_cast<AbstractMaleSocket*>(item->self())) {
-                  isAnyLocked = (isAnyLocked) || ((MaleSocket*)item->self())->isLocked();
-                  isAnyUnlocked =(isAnyUnlocked || !((MaleSocket*)item->self())->isLocked());
+              if (qobject_cast<AbstractMaleSocket*>(item->bself())) {
+                  isAnyLocked = (isAnyLocked) || ((MaleSocket*)item->bself())->isLocked();
+                  isAnyUnlocked =(isAnyUnlocked || !((MaleSocket*)item->bself())->isLocked());
               }
             }
 
@@ -1482,11 +1482,11 @@
                 if (femaleSocket->isConnected()) {
                     Base* object = _currentFemaleSocket->getConnectedSocket();
                     if (object == nullptr) throw new NullPointerException("object is null");
-                    while (qobject_cast<AbstractMaleSocket*>(object->self())) {
-                        object = ((AbstractMaleSocket*)object->self())->getObject();
+                    while (qobject_cast<AbstractMaleSocket*>(object->bself())) {
+                        object = ((AbstractMaleSocket*)object->bself())->getObject();
                     }
                     menuItemExecuteEvaluate->setText(
-                            SwingTools::getSwingConfiguratorForClass((Class*)(object->self()))
+                            SwingTools::getSwingConfiguratorForClass(object->bself()->metaObject()->className())
                                     ->getExecuteEvaluateMenuText());
                 }
             }
@@ -1512,10 +1512,10 @@
         //@Override
         /*public*/  void TEPopupMenu::actionPerformed(JActionEvent* e) {
             Base* parent = _currentFemaleSocket->getParent();
-            while ((parent != nullptr) && !qobject_cast<AbstractMaleSocket*>(_currentFemaleSocket->getParent()->self())) {
+            while ((parent != nullptr) && !qobject_cast<AbstractMaleSocket*>(_currentFemaleSocket->getParent()->bself())) {
                 parent = parent->getParent();
             }
-            bool parentIsSystem = (parent != nullptr) && ((AbstractMaleSocket*)parent->self())->isSystem();
+            bool parentIsSystem = (parent != nullptr) && ((AbstractMaleSocket*)parent->bself())->isSystem();
             bool itemIsSystem = (_currentFemaleSocket->isConnected())
                     && _currentFemaleSocket->getConnectedSocket()->isSystem();
 
@@ -1690,9 +1690,9 @@
                     for(int i=0; i < _currentFemaleSocket->getChildCount(); i++)
                     {
                      Base* item = _currentFemaleSocket->getChild(i);
-                     if (qobject_cast<AbstractMaleSocket*>(item->self()))
+                     if (qobject_cast<AbstractMaleSocket*>(item->bself()))
                      {
-                          ((AbstractMaleSocket*)item->self())->setLocked(true);
+                          ((AbstractMaleSocket*)item->bself())->setLocked(true);
                      }
                     }
                     editor->_treePane->updateTree(_currentFemaleSocket, _currentPath->getPath());
@@ -1705,8 +1705,8 @@
                     for(int i=0; i < _currentFemaleSocket->getChildCount(); i++)
                     {
                      Base* item = _currentFemaleSocket->getChild(i);
-                        if (qobject_cast<AbstractMaleSocket*>(item->self())) {
-                            ((AbstractMaleSocket*)item->self())->setLocked(false);
+                        if (qobject_cast<AbstractMaleSocket*>(item->bself())) {
+                            ((AbstractMaleSocket*)item->bself())->setLocked(false);
                         }
                     }
                     editor->_treePane->updateTree(_currentFemaleSocket, _currentPath->getPath());
@@ -1725,11 +1725,11 @@
             {
                     Base* object = _currentFemaleSocket->getConnectedSocket();
                     if (object == nullptr) throw new NullPointerException("object is null");
-                    while (qobject_cast<AbstractMaleSocket*>(object->self())) {
-                        object = ((AbstractMaleSocket*)object->self())->getObject();
+                    while (qobject_cast<AbstractMaleSocket*>(object->bself())) {
+                        object = ((AbstractMaleSocket*)object->bself())->getObject();
                     }
                     SwingConfiguratorInterface* swi =
-                            SwingTools::getSwingConfiguratorForClass((Class*)object);
+                            SwingTools::getSwingConfiguratorForClass(object->bself()->metaObject()->className());
                     editor->executeEvaluate(swi, _currentFemaleSocket->getConnectedSocket());
             }
 

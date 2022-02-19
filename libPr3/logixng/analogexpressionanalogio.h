@@ -15,7 +15,7 @@ class AnalogExpressionAnalogIO : public AbstractAnalogExpression, public Propert
  public:
   AnalogExpressionAnalogIO(QString sys, QString user, QObject* parent = nullptr);
   /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/override;
-  /*public*/  Category::TYPE getCategory()override ;
+  /*public*/  Category* getCategory()override ;
   /*public*/  void setAnalogIO(/*@Nonnull*/ QString analogIOName) ;
   /*public*/  void setAnalogIO(/*@Nonnull*/ NamedBeanHandle<AnalogIO*>* handle);
   /*public*/  void setAnalogIO(/*@Nonnull*/ AnalogIO* analogIO);
@@ -33,6 +33,8 @@ class AnalogExpressionAnalogIO : public AbstractAnalogExpression, public Propert
   /*public*/  void disposeMe()override;
   /*public*/  void getUsageDetail(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl)override;
   QObject* self() override{return (QObject*)this;}
+  QObject* bself() override{return (QObject*)this;}
+
   QString getUserName()const override {return AbstractBase::getUserName();}
 
  public slots:

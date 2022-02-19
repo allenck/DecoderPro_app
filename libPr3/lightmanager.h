@@ -54,7 +54,7 @@ public:
       virtual /*public*/ Light* provideLight(/*@Nonnull*/ QString name) /*throws IllegalArgumentException*/=0;
 
         // to free resources when no longer used
-      virtual void dispose() {}
+      //virtual void dispose() {}
 
         /**
          * Locate via user name, then system name if needed.

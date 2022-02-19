@@ -202,7 +202,7 @@ if(!log)
     Manager* object = get(c);
     if (object != nullptr) {
         InstanceManager::deregister(object->self(), c);
-        deregister((AbstractManager*)object, c);
+        deregister((AbstractManager*)object->self(), c);
         disposeIfPossible(c, object);
     }
 }

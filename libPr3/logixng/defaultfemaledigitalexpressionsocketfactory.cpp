@@ -8,11 +8,11 @@
 //@ServiceProvider(service = FemaleSocketFactory.class)
 ///*public*/  class DefaultFemaleDigitalExpressionSocketFactory implements FemaleSocketFactory {
 
-    /*private*/ static /*final*/ FemaleSocketManager::SocketType* _femaleSocketType = new SocketType();
+    /*private*/ /*static*/ /*final*/ FemaleSocketManager::SocketType* DefaultFemaleDigitalExpressionSocketFactory::_femaleSocketType = new SocketType();
 
 
     //@Override
-    /*public*/  FemaleSocketManager.SocketType getFemaleSocketType() {
+    /*public*/  FemaleSocketManager::SocketType* DefaultFemaleDigitalExpressionSocketFactory::getFemaleSocketType() {
         return _femaleSocketType;
     }
 

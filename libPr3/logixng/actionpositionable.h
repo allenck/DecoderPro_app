@@ -77,6 +77,9 @@ class ActionPositionable : public AbstractDigitalAction, public VetoableChangeLi
   /*public*/  void unregisterListenersForThisClass()override;
   /*public*/  void disposeMe()override;
 
+  QObject* bself() override {return (QObject*)this;}
+  QObject* self() override {return (QObject*)this;}
+
 //  void addPropertyChangeListener(PropertyChangeListener* l) override {Base::addPropertyChangeListener(l);}
 //  void addPropertyChangeListener(QString propertyName, PropertyChangeListener* l) override {AbstractNamedBean::addPropertyChangeListener(propertyName, l);}
 

@@ -33,6 +33,7 @@ public:
     /*public*/ QString getBeanTypeHandled(bool plural) const override;
 
     QObject* self() override{return (QObject*)this;}
+    QObject* vself() override {return (QObject*)this;}
 
 signals:
  void propertyChange(PropertyChangeEvent *e);

@@ -44,7 +44,7 @@ Q_INTERFACES(Manager)
      *
      * @return a set of entries with category and class
      */
-    /*public*/ virtual QMap<Category::TYPE, QList</*Class<? extends Base>*/QString> > getExpressionClasses()=0;
+    /*public*/ virtual QMap<Category*, QList</*Class<? extends Base>*/QString>* > getExpressionClasses()=0;
 
     /*.*
      * Add an DigitalExpressionBean.
@@ -75,7 +75,7 @@ Q_INTERFACES(Manager)
      * {@link #getSystemNamePrefix() } and "DE";
      */
     //@Override
-    /*default*/ /*public*/ virtual QString getSubSystemNamePrefix() {
+    /*default*/ /*public*/ QString getSubSystemNamePrefix() const override{
         return getSystemNamePrefix() + "DE";
     }
 
@@ -85,7 +85,8 @@ Q_INTERFACES(Manager)
      *
      * @param x the DigitalExpression to delete
      */
-    public void deleteDigitalExpression(MaleDigitalExpressionSocket x);
+    /*public*/ virtual void deleteDigitalExpression(MaleDigitalExpressionSocket* x)=0;
 
 };
+Q_DECLARE_INTERFACE(DigitalExpressionManager, "DigitalExpressionManager")
 #endif // DIGITALEXPRESSIONMANAGER_H

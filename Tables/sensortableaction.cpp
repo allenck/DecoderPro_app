@@ -69,7 +69,7 @@ SensorTableAction::SensorTableAction(QObject *parent) :
 //@Override
 /*public*/ void SensorTableAction::setManager(Manager* man)
 {
- sensorManager = static_cast<SensorManager*>(man);
+ sensorManager = qobject_cast<SensorManager*>(man->self());
  if (m!=nullptr)
   m->setManager(sensorManager);;
 }
@@ -327,7 +327,7 @@ void SensorTableAction::createPressed()
   }
   connectionChoice = prefixBox->getSelectedItem(); // store in Field for CheckedTextField
   QString systemPrefix = connectionChoice->getSystemPrefix();
-  rangeBox->setEnabled(((SensorManager*) connectionChoice)->allowMultipleAdditions(systemPrefix));
+  rangeBox->setEnabled(((SensorManager*) connectionChoice->self())->allowMultipleAdditions(systemPrefix));
   addEntryToolTip = connectionChoice->getEntryToolTip();
   // show hwAddressTextField field tooltip in the Add Sensor pane that matches system connection selected from combobox
   hardwareAddressTextField->setToolTip(

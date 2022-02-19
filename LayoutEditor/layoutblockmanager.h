@@ -107,6 +107,7 @@ public:
  /*public*/ NamedBean *getByUserName(QString key) override;
 
  QObject* self() override{return (QObject*)this;}
+ QObject* vself() override {return (QObject*)this;}
 
 signals:
  void propertyChange(PropertyChangeEvent *e) override;

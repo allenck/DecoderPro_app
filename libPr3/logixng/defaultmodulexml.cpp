@@ -76,7 +76,7 @@
         DefaultModule* h = (DefaultModule*) ((ModuleManager*)InstanceManager::getDefault("ModuleManager"))
                 ->createModule(sys, uname, socketType);
 
-        loadCommon(h, shared);
+        loadCommon((NamedBean*)h->self(), shared);
 
         QDomNodeList parameterList = shared.firstChildElement("Parameters").childNodes();  // NOI18N
         log->debug("Found " + QString::number(parameterList.size()) + " parameters");  // NOI18N

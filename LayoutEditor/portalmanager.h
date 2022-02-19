@@ -36,7 +36,7 @@ public:
  }
  /*public*/ QSet<Portal*> getPortalSet();
  QObject* self() {return (QObject*)this;}
-
+    QObject* vself() override {return (QObject*)this;}
 signals:
 
 public slots:

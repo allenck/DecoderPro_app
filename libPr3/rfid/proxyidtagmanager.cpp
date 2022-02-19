@@ -190,7 +190,7 @@
     /*public*/ void ProxyIdTagManager::setStateStored(bool state) {
         stateSaved = state;
         for (Manager* mgr : getManagerList()) {
-            ((IdTagManager*) mgr)->setStateStored(state);
+            ((IdTagManager*) mgr->self())->setStateStored(state);
         }
     }
 
@@ -211,7 +211,7 @@
     /*public*/ void ProxyIdTagManager::setFastClockUsed(bool fastClock) {
         useFastClock = fastClock;
         for (Manager* mgr : getManagerList()) {
-            ((IdTagManager*) mgr)->setFastClockUsed(fastClock);
+            ((IdTagManager*) mgr->self())->setFastClockUsed(fastClock);
         }
     }
 
@@ -219,7 +219,7 @@
     /*public*/ bool ProxyIdTagManager::isFastClockUsed() {
         useFastClock = true;
         for (Manager* mgr: getManagerList()) {
-            if (!((IdTagManager*) mgr)->isFastClockUsed()) {
+            if (!((IdTagManager*) mgr->self())->isFastClockUsed()) {
                useFastClock = false;
                break;
             }

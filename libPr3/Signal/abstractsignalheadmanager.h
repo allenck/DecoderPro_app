@@ -34,6 +34,8 @@ public:
   /*public*/ SystemConnectionMemo* getMemo() override;
 
     QObject* self() override{return (QObject*)this;}
+    QObject* vself() override {return (QObject*)this;}
+
 //    /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
 //    /*public*/ SignalHead* getBySystemName(QString name) override {return (SignalHead*)AbstractManager::getBySystemName(name);}
     /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::addPropertyChangeListener(l);}

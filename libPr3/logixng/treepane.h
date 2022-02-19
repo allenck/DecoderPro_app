@@ -70,7 +70,7 @@ class ThreadAction1 : public ThreadAction
    FemaleSocket* femaleSocket = list->at(list->size()-1);
    QVector<QObject*>* oList = new QVector<QObject*>();
    foreach(FemaleSocket* femaleSocket, *list)
-    oList->append((AbstractFemaleSocket*)femaleSocket);
+    oList->append((AbstractFemaleSocket*)femaleSocket->bself());
    pane->updateTree(femaleSocket, oList);
 
   }
@@ -92,7 +92,7 @@ class ThreadAction2 : public ThreadAction
   {
    QVector<QObject*>* oList = new QVector<QObject*>();
    foreach(FemaleSocket* femaleSocket, *list)
-    oList->append((AbstractFemaleSocket*)femaleSocket);
+    oList->append((AbstractFemaleSocket*)femaleSocket->bself());
    pane->updateTree(femaleSocket, oList);
   }
 };

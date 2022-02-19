@@ -16,7 +16,7 @@ class DefaultNamedTableManagerXml : public AbstractManagerXml
 
  private:
   static Logger* log;
-  /*private*/ /*final*/ QMap<QString, Class/*<?>*/> xmlClasses = QMap<QString, Class/*<?>*/>();
+  /*private*/ /*final*/ QMap<QString, Class/*<?>*/*> xmlClasses = QMap<QString, Class/*<?>*/*>();
 
  protected:
   /*protected*/ void replaceExpressionManager();

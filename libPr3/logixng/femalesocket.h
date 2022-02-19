@@ -12,7 +12,7 @@
  *
  * @author Daniel Bergqvist Copyright 2018
  */
-/*public*/ /*interface*/ class FemaleSocket : public Base {
+/*public*/ /*interface*/ class FemaleSocket : public virtual Base {
   Q_INTERFACES(Base)
  public:
     /**
@@ -179,7 +179,7 @@
      *
      * @return a set of entries with category and class
      */
-    /*public*/ virtual QMap<Category::TYPE, QList</*Class<? extends Base>*/ QString> > getConnectableClasses()=0;
+    /*public*/ virtual QMap<Category*, QList</*Class<? extends Base>*/ QString>* > getConnectableClasses()=0;
 
     /** {@inheritDoc} */
     //@Override

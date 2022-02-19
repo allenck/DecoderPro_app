@@ -19,7 +19,7 @@
 ///*public*/ abstract class AbstractMaleSocket implements MaleSocket {
 
 
-    /*public*/ AbstractMaleSocket::AbstractMaleSocket(BaseManager/*<? extends NamedBean>*/* manager, Base* object, QObject* parent): MaleSocket(parent) {
+    /*public*/ AbstractMaleSocket::AbstractMaleSocket(BaseManager/*<? extends NamedBean>*/* manager, Base* object, QObject* parent): QObject(parent) {
         _manager = manager;
         _object = object;
     }
@@ -39,8 +39,8 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/ bool AbstractMaleSocket::isLocked() {
-        if (qobject_cast<AbstractMaleSocket*>(_object->self())) {
-            return ((AbstractMaleSocket*)_object)->isLocked();
+        if (qobject_cast<AbstractMaleSocket*>(_object->bself())) {
+            return ((AbstractMaleSocket*)_object->bself())->isLocked();
         }
         return _locked;
     }
@@ -48,8 +48,8 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/ void AbstractMaleSocket::setLocked(bool locked) {
-        if (qobject_cast<AbstractMaleSocket*>(_object->self())) {
-            ((AbstractMaleSocket*)_object)->setLocked(locked);
+        if (qobject_cast<AbstractMaleSocket*>(_object->bself())) {
+            ((AbstractMaleSocket*)_object->bself())->setLocked(locked);
         }
         _locked = locked;
     }
@@ -57,8 +57,8 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/ bool AbstractMaleSocket::isSystem() {
-        if (qobject_cast<AbstractMaleSocket*>(_object->self())) {
-            return ((AbstractMaleSocket*)_object)->isSystem();
+        if (qobject_cast<AbstractMaleSocket*>(_object->bself())) {
+            return ((AbstractMaleSocket*)_object->bself())->isSystem();
         }
         return _system;
     }
@@ -66,15 +66,15 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/ void AbstractMaleSocket::setSystem(bool system) {
-        if (qobject_cast<AbstractMaleSocket*>(_object->self())) {
-            ((AbstractMaleSocket*)_object)->setSystem(system);
+        if (qobject_cast<AbstractMaleSocket*>(_object->bself())) {
+            ((AbstractMaleSocket*)_object->bself())->setSystem(system);
         }
         _system = system;
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ /*final*/ Category::TYPE AbstractMaleSocket::getCategory() {
+    /*public*/ /*final*/ Category* AbstractMaleSocket::getCategory() {
         return _object->getCategory();
     }
 
@@ -195,8 +195,8 @@
 
     //@Override
     /*public*/ bool AbstractMaleSocket::getListen() {
-        if (qobject_cast<AbstractMaleSocket*>(getObject()->self())) {
-            return ((AbstractMaleSocket*)getObject())->getListen();
+        if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
+            return ((AbstractMaleSocket*)getObject()->bself())->getListen();
         }
         return _listen;
     }
@@ -204,8 +204,8 @@
     //@Override
     /*public*/ void AbstractMaleSocket::setListen(bool listen)
     {
-        if (qobject_cast<AbstractMaleSocket*>(getObject()->self())) {
-            ((AbstractMaleSocket*)getObject())->setListen(listen);
+        if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
+            ((AbstractMaleSocket*)getObject()->bself())->setListen(listen);
         }
         _listen = listen;
     }
@@ -227,8 +227,8 @@
             InitialValueType::TYPES initialValueType,
             QString initialValueData) {
 
-        if (qobject_cast<AbstractMaleSocket*>(getObject()->self())) {
-            ((AbstractMaleSocket*)getObject()->self())->addLocalVariable(name, initialValueType, initialValueData);
+        if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
+            ((AbstractMaleSocket*)getObject()->bself())->addLocalVariable(name, initialValueType, initialValueData);
         } else {
             _localVariables.insert(new VariableData(name, initialValueType, initialValueData));
         }
@@ -237,8 +237,8 @@
     //@Override
     /*public*/ void AbstractMaleSocket::addLocalVariable(VariableData* variableData) {
 
-        if (qobject_cast<AbstractMaleSocket*>(getObject()->self())) {
-            ((AbstractMaleSocket*)getObject())->addLocalVariable(variableData);
+        if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
+            ((AbstractMaleSocket*)getObject()->bself())->addLocalVariable(variableData);
         } else {
             _localVariables.insert(variableData);
         }
@@ -246,8 +246,8 @@
 
     //@Override
     /*public*/ void AbstractMaleSocket::clearLocalVariables() {
-        if (qobject_cast<AbstractMaleSocket*>(getObject()->self())) {
-            ((AbstractMaleSocket*)getObject())->clearLocalVariables();
+        if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
+            ((AbstractMaleSocket*)getObject()->bself())->clearLocalVariables();
         } else {
             _localVariables.clear();
         }
@@ -255,8 +255,8 @@
 
     //@Override
     /*public*/ QSet<VariableData*> AbstractMaleSocket::getLocalVariables() {
-        if (qobject_cast<AbstractMaleSocket*>(getObject()->self())) {
-            return ((AbstractMaleSocket*)getObject())->getLocalVariables();
+        if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
+            return ((AbstractMaleSocket*)getObject()->bself())->getLocalVariables();
         } else {
             return _localVariables;
         }
@@ -319,7 +319,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/ /*final*/ void AbstractMaleSocket::registerListeners() {
-        if (qobject_cast<AbstractMaleSocket*>(getObject()->self())) {
+        if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
             getObject()->registerListeners();
         } else {
             if (_listen) {
@@ -334,7 +334,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/ /*final*/ void AbstractMaleSocket::unregisterListeners() {
-        if (qobject_cast<AbstractMaleSocket*>(getObject()->self())) {
+        if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
             getObject()->unregisterListeners();
         } else {
             unregisterListenersForThisClass();
@@ -373,16 +373,16 @@
             QLocale locale,
             PrintWriter* writer,
             QString currentIndent,
-            /*MutableInt*/int lineNumber) {
+            /*MutableInt*/int* lineNumber) {
 
-        if (!qobject_cast<AbstractMaleSocket*>(getObject()->self() )) {
+        if (!qobject_cast<AbstractMaleSocket*>(getObject()->bself() )) {
             QString comment = getComment();
             if (comment != "") {
                 comment = comment.replace("\\r\\n", "\\n");
                 comment = comment.replace("\\r", "\\n");
                 for (QString s : comment.split("\\n"/*, 0*/)) {
                     if (settings->_printLineNumbers) {
-                        writer->print(QString(PRINT_LINE_NUMBERS_FORMAT).arg(lineNumber/*->addAndGet(1)*/++, 8));
+                     writer->print(QString(PRINT_LINE_NUMBERS_FORMAT).arg(*lineNumber/*->addAndGet(1)*/++, 8));
                     }
                     writer->print(currentIndent);
                     writer->print("// ");
@@ -391,7 +391,7 @@
                 }
             }
             if (settings->_printLineNumbers) {
-                writer->print(QString(PRINT_LINE_NUMBERS_FORMAT).arg(lineNumber/*.addAndGet(1)*/++, 8));
+                writer->print(QString(PRINT_LINE_NUMBERS_FORMAT).arg(*lineNumber/*.addAndGet(1)*/++, 8));
             }
             writer->print(currentIndent);
             writer->print(getLongDescription(locale));
@@ -428,11 +428,11 @@
             QLocale locale,
             PrintWriter* writer,
             QString currentIndent,
-            /*MutableInt*/int lineNumber,
+            /*MutableInt*/int* lineNumber,
             VariableData* localVariable) {
 
         if (settings->_printLineNumbers) {
-            writer->print(QString(PRINT_LINE_NUMBERS_FORMAT).arg(lineNumber/*.addAndGet(1)*/++,8));
+            writer->print(QString(PRINT_LINE_NUMBERS_FORMAT).arg(*lineNumber/*.addAndGet(1)*/++,8));
         }
         writer->print(currentIndent);
         writer->print("   ::: ");
@@ -483,7 +483,7 @@
             }
         }
 
-        if (qobject_cast<AbstractMaleSocket*>(getObject()->self())) {
+        if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
             getObject()->printTree(settings, locale, writer, indent, currentIndent, lineNumber);
         } else {
             for (int i=0; i < getChildCount(); i++) {
@@ -495,12 +495,12 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/ void AbstractMaleSocket::getUsageTree(int level, NamedBean* bean, QList<NamedBeanUsageReport*> report, NamedBean* cdl) {
-        if (!(qobject_cast<AbstractMaleSocket*>(getObject()->self()))) {
+        if (!(qobject_cast<AbstractMaleSocket*>(getObject()->bself()))) {
             log->debug(tr("*@ %1 :: %2").arg(level).arg(this->getLongDescription(QLocale())));
             _object->getUsageDetail(level, bean, report, cdl);
         }
 
-        if (qobject_cast<AbstractMaleSocket*>(getObject()->self())) {
+        if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
             getObject()->getUsageTree(level, bean, report, cdl);
         } else {
             level++;
@@ -524,7 +524,7 @@
     /*public*/ /*final*/ Base* AbstractMaleSocket::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames)
             /*throw (JmriException)*/ {
 
-        MaleSocket* maleSocket = (MaleSocket*)getObject()->getDeepCopy(systemNames, userNames);
+        MaleSocket* maleSocket = (MaleSocket*)getObject()->getDeepCopy(systemNames, userNames)->bself();
 
         maleSocket->setComment(this->getComment());
         if (maleSocket->getDebugConfig() != nullptr) {
@@ -567,8 +567,8 @@
 
     //@Override
     /*public*/ ErrorHandlingType::TYPES AbstractMaleSocket::getErrorHandlingType() {
-        if (qobject_cast<AbstractMaleSocket*>(getObject()->self())) {
-            return ((AbstractMaleSocket*)getObject()->self())->getErrorHandlingType();
+        if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
+            return ((AbstractMaleSocket*)getObject()->bself())->getErrorHandlingType();
         } else {
             return _errorHandlingType;
         }
@@ -577,8 +577,8 @@
     //@Override
     /*public*/ void AbstractMaleSocket::setErrorHandlingType(ErrorHandlingType::TYPES errorHandlingType)
     {
-        if (qobject_cast<AbstractMaleSocket*>(getObject()->self())) {
-            ((AbstractMaleSocket*)getObject()->self())->setErrorHandlingType(errorHandlingType);
+        if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
+            ((AbstractMaleSocket*)getObject()->bself())->setErrorHandlingType(errorHandlingType);
         } else {
             _errorHandlingType = errorHandlingType;
         }

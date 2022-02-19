@@ -1,5 +1,13 @@
 #include "timesincemidnight.h"
 #include "loggerfactory.h"
+#include "instancemanager.h"
+#include "analogexpressionmanager.h"
+#include "timebase.h"
+#include "calendar.h"
+#include "runtimeexception.h"
+#include "timerutil.h"
+#include "system.h"
+#include "conditionalng.h"
 /**
  * This expression returns the number of minutes since midnight for the fast
  * clock or the system clock.
@@ -9,100 +17,98 @@
  */
 // /*public*/  class TimeSinceMidnight extends AbstractAnalogExpression implements PropertyChangeListener {
 
-
-
     /*public*/  TimeSinceMidnight::TimeSinceMidnight(QString sys, QString user, QObject *parent) : AbstractAnalogExpression(sys, user, parent) {
         //super(sys, user);
     }
 
     //@Override
-    /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/ {
-        AnalogExpressionManager manager = InstanceManager.getDefault(AnalogExpressionManager.class);
-        String sysName = systemNames.get(getSystemName());
-        String userName = userNames.get(getSystemName());
-        if (sysName == null) sysName = manager.getAutoSystemName();
-        TimeSinceMidnight copy = new TimeSinceMidnight(sysName, userName);
-        copy.setComment(getComment());
-        copy.setType(_type);
-        return manager.registerExpression(copy).deepCopyChildren(this, systemNames, userNames);
+    /*public*/  Base* TimeSinceMidnight::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/ {
+        AnalogExpressionManager* manager = (AnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager");
+        QString sysName = systemNames.value(AbstractBase::getSystemName());
+        QString userName = userNames.value(AbstractBase::getSystemName());
+        if (sysName == "") sysName = manager->getAutoSystemName();
+        TimeSinceMidnight* copy = new TimeSinceMidnight(sysName, userName);
+        copy->AbstractBase::setComment(AbstractBase::getComment());
+        copy->setType(_type);
+        return manager->registerExpression(copy)->deepCopyChildren(this, systemNames, userNames);
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  Category getCategory() {
-        return Category.ITEM;
+    /*public*/  Category* TimeSinceMidnight::getCategory() {
+        return Category::ITEM;
     }
 
-    /*public*/  void setType(Type type) {
+    /*public*/  void TimeSinceMidnight::setType(Type::TYPE type) {
         assertListenersAreNotRegistered(log, "setType");
         _type = type;
 
-        if (_type == Type.FastClock) {
-            _fastClock = InstanceManager.getDefault(jmri.Timebase.class);
+        if (_type == Type::FastClock) {
+            _fastClock = (Timebase*)InstanceManager::getDefault("Timebase");
         } else {
-            _fastClock = null;
+            _fastClock = nullptr;
         }
     }
 
-    /*public*/  Type getType() {
+    /*public*/  TimeSinceMidnight::Type::TYPE TimeSinceMidnight::getType() {
         return _type;
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  double evaluate() {
-        Calendar currentTime = null;
+    /*public*/  double TimeSinceMidnight::evaluate() {
+        Calendar* currentTime = nullptr;
 
         switch (_type) {
-            case SystemClock:
-                currentTime = Calendar.getInstance();
+            case Type::TYPE::SystemClock:
+                currentTime = Calendar::getInstance();
                 break;
 
-            case FastClock:
-                if (_fastClock == null) return 0;
-                currentTime = Calendar.getInstance();
-                currentTime.setTime(_fastClock.getTime());
+            case Type::TYPE::FastClock:
+                if (_fastClock == nullptr) return 0;
+                currentTime = Calendar::getInstance();
+                currentTime->setTime(_fastClock->getTime());
                 break;
 
             default:
-                throw new UnsupportedOperationException("_type has unknown value: " + _type.name());
+                throw new UnsupportedOperationException("_type has unknown value: " + Type::toString(_type));
         }
 
-        return (currentTime.get(Calendar.HOUR_OF_DAY) * 60) + currentTime.get(Calendar.MINUTE);
+        return (currentTime->get(Calendar::HOUR_OF_DAY) * 60) + currentTime->get(Calendar::MINUTE);
     }
 
     //@Override
-    /*public*/  FemaleSocket getChild(int index) throws IllegalArgumentException, UnsupportedOperationException {
+    /*public*/  FemaleSocket* TimeSinceMidnight::getChild(int index) /*throws IllegalArgumentException, UnsupportedOperationException*/ {
         throw new UnsupportedOperationException("Not supported.");
     }
 
     //@Override
-    /*public*/  int getChildCount() {
+    /*public*/  int TimeSinceMidnight::getChildCount() {
         return 0;
     }
 
     //@Override
-    /*public*/  String getShortDescription(Locale locale) {
-        return Bundle.getMessage(locale, "TimeSinceMidnight_Short");
+    /*public*/  QString TimeSinceMidnight::getShortDescription(QLocale locale) {
+        return tr(/*locale,*/ "Minutes since midnight");
     }
 
     //@Override
-    /*public*/  String getLongDescription(Locale locale) {
+    /*public*/  QString TimeSinceMidnight::getLongDescription(QLocale locale) {
         switch (_type) {
-            case SystemClock:
-                return Bundle.getMessage(locale, "TimeSinceMidnight_Long_SystemClock");
+            case Type::SystemClock:
+                return tr(/*locale,*/ "Minutes since midnight system clock");
 
-            case FastClock:
-                return Bundle.getMessage(locale, "TimeSinceMidnight_Long_FastClock");
+            case Type::FastClock:
+                return tr(/*locale, */"Minutes since midnight by fast clock");
 
             default:
-                throw new RuntimeException("Unknown value of _timerType: "+_type.name());
+                throw new RuntimeException(QString("Unknown value of _timerType: "+Type::toString(_type)));
         }
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void setup() {
+    /*public*/  void TimeSinceMidnight::setup() {
         // Do nothing
     }
 
@@ -111,19 +117,19 @@
      * enabled timer processing.
      */
     //@Override
-    /*public*/  void registerListenersForThisClass() {
+    /*public*/  void TimeSinceMidnight::registerListenersForThisClass() {
         if (!_listenersAreRegistered) {
             switch (_type) {
-                case SystemClock:
+                case Type::SystemClock:
                     scheduleTimer();
                     break;
 
-                case FastClock:
-                    _fastClock.addPropertyChangeListener("time", this);
+                case Type::FastClock:
+                    _fastClock->addPropertyChangeListener("time", this);
                     break;
 
                 default:
-                    throw new UnsupportedOperationException("_type has unknown value: " + _type.name());
+                    throw new UnsupportedOperationException(QString("_type has unknown value: " + Type::toString(_type)));
             }
 
             _listenersAreRegistered = true;
@@ -135,62 +141,67 @@
      * timer keeps running for the duration of the JMRI session.
      */
     //@Override
-    /*public*/  void unregisterListenersForThisClass() {
+    /*public*/  void TimeSinceMidnight::unregisterListenersForThisClass() {
         if (_listenersAreRegistered) {
             switch (_type) {
-                case SystemClock:
-                    if (timerTask != null) timerTask.cancel();
+                case Type::SystemClock:
+                    if (timerTask != nullptr) timerTask->cancel();
                     break;
 
-                case FastClock:
-                    if (_fastClock != null) _fastClock.removePropertyChangeListener("time", this);
+                case Type::FastClock:
+                    if (_fastClock != nullptr) _fastClock->removePropertyChangeListener("time", this);
                     break;
 
                 default:
-                    throw new UnsupportedOperationException("_type has unknown value: " + _type.name());
+                    throw new UnsupportedOperationException(QString("_type has unknown value: " +Type::toString(_type)));
             }
 
             _listenersAreRegistered = false;
         }
     }
 
-    /*private*/ void scheduleTimer() {
+    /*private*/ void TimeSinceMidnight::scheduleTimer() {
+#if 0
+
         timerTask = new TimerTask() {
             //@Override
+
             /*public*/  void run() {
-                propertyChange(null);
+                propertyChange(nullptr);
             }
         };
-        TimerUtil.schedule(timerTask, System.currentTimeMillis() % millisInAMinute, millisInAMinute);
+#endif
+
+        TimerUtil::schedule(timerTask, System::currentTimeMillis() % millisInAMinute, millisInAMinute);
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void propertyChange(PropertyChangeEvent evt) {
-        getConditionalNG().execute();
+    /*public*/  void TimeSinceMidnight::propertyChange(PropertyChangeEvent* evt) {
+        getConditionalNG()->execute();
     }
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  void disposeMe() {
-        if (timerTask != null) timerTask.cancel();
+    /*public*/  void TimeSinceMidnight::disposeMe() {
+        if (timerTask != nullptr) timerTask->cancel();
     }
 
-    /*public*/  enum Type {
-        FastClock(Bundle.getMessage("ClockTypeFastClock")),
-        SystemClock(Bundle.getMessage("ClockTypeSystemClock"));
+//    /*public*/  enum Type {
+//        FastClock(Bundle.getMessage("ClockTypeFastClock")),
+//        SystemClock(Bundle.getMessage("ClockTypeSystemClock"));
 
-        /*private*/ /*final*/ String _text;
+//        /*private*/ /*final*/ String _text;
 
-        /*private*/ Type(QString text) {
-            this._text = text;
-        }
+//        /*private*/ Type(QString text) {
+//            this._text = text;
+//        }
 
-        //@Override
-        /*public*/  QString toString() {
-            return _text;
-        }
+//        //@Override
+//        /*public*/  QString toString() {
+//            return _text;
+//        }
 
-    }
+//    }
 
     /*private*/ /*final*/ /*static*/ Logger* TimeSinceMidnight::log = LoggerFactory::getLogger("TimeSinceMidnight");

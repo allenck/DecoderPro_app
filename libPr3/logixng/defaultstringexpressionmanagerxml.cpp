@@ -2,7 +2,9 @@
 #include "stringexpressionmanager.h"
 #include "instancemanager.h"
 #include "loggerfactory.h"
-#include "DefaultMaleStringExpressionSocket
+#include "defaultmalestringexpressionsocket.h"
+#include "runtimeexception.h"
+#include "class.h"
 /**
  * Provides the functionality for configuring ExpressionManagers
  *
@@ -27,28 +29,33 @@
     setStoreElementClass(expressions);
     StringExpressionManager* tm = (StringExpressionManager*) o;
     if (tm != nullptr) {
-        if (tm->getNamedBeanSet().isEmpty()) return nullptr;
-        for (MaleStringExpressionSocket* expression : tm->getNamedBeanSet()) {
-            log->debug("expression system name is " + expression->getSystemName());  // NOI18N
+        if (tm->getNamedBeanSet().isEmpty()) return QDomElement();
+        for (NamedBean* nb : tm->getNamedBeanSet()) {
+         MaleStringExpressionSocket* expression = (MaleStringExpressionSocket*)nb;
+            log->debug("expression system name is " + expression->NamedBean::getSystemName());  // NOI18N
 //                log.error("expression system name is " + expression.getSystemName() + ", " + expression.getLongDescription());  // NOI18N
             try {
-                QDomNodeList elements = QDomNodeList();
+                QList<QDomElement> elements = QList<QDomElement>();
                 // The male socket may be embedded in other male sockets
                 MaleStringExpressionSocket* a = expression;
                 while (!(static_cast<DefaultMaleStringExpressionSocket*>(a))) {
-                    elements.add(storeMaleSocket(a));
-                    a = (MaleStringExpressionSocket) a.getObject();
+                    elements.append(storeMaleSocket(a));
+                    a = (MaleStringExpressionSocket*) a->getObject()->bself();
                 }
-                Element e = jmri.configurexml.ConfigXmlManager.elementFromObject(a.getObject());
-                if (e != null) {
-                    for (Element ee : elements) e.addContent(ee);
+                QDomElement e = ConfigXmlManager::elementFromObject(a->getObject()->bself());
+                if (e != QDomElement()) {
+                    for (int i=0; i <  elements.size(); i++)
+                    {
+                     QDomElement ee = elements.at(i).toElement();
+                     e.appendChild(ee);
+                    }
 //                        e.addContent(storeMaleSocket(expression));
-                    expressions.addContent(e);
+                    expressions.appendChild(e);
                 } else {
-                    throw new RuntimeException("Cannot load xml configurator for " + a.getObject().getClass().getName());
+                    throw new RuntimeException(QString("Cannot load xml configurator for ") + a->getObject()->bself()->metaObject()->className());
                 }
-            } catch (RuntimeException e) {
-                log.error("Error storing action: {}", e, e);
+            } catch (RuntimeException* e) {
+                log->error(tr("Error storing action: %1").arg(e->toString()), e);
             }
         }
     }
@@ -62,8 +69,8 @@
  *
  * @param expressions The top-level element being created
  */
-/*public*/  void setStoreElementClass(Element expressions) {
-    expressions.setAttribute("class", this.getClass().getName());  // NOI18N
+/*public*/  void DefaultStringExpressionManagerXml::setStoreElementClass(QDomElement expressions) {
+    expressions.setAttribute("class", "jmri.jmrit.logixng,implementation.configurexml.DefaultStringExpressionManagerXml");  // NOI18N
 }
 
 /**
@@ -75,7 +82,7 @@
  * @return true if successful
  */
 //@Override
-/*public*/  boolean load(Element sharedExpression, Element perNodeExpression) {
+/*public*/  bool DefaultStringExpressionManagerXml::load(QDomElement sharedExpression, QDomElement perNodeExpression) {
     // create the master object
     replaceExpressionManager();
     // load individual sharedLogix
@@ -90,50 +97,50 @@
  *
  * @param expressions Element containing the Logix elements to load.
  */
-/*public*/  void loadExpressions(Element expressions) {
+/*public*/  void DefaultStringExpressionManagerXml::loadExpressions(QDomElement expressions) {
 
-    List<Element> expressionList = expressions.getChildren();  // NOI18N
-    log.debug("Found " + expressionList.size() + " actions");  // NOI18N
+    QDomNodeList expressionList = expressions.childNodes();  // NOI18N
+    log->debug("Found " + QString::number(expressionList.size()) + " actions");  // NOI18N
 
     for (int i = 0; i < expressionList.size(); i++) {
 
-        String className = expressionList.get(i).getAttribute("class").getValue();
+        QString className = expressionList.at(i).toElement().attribute("class");
 //            log.error("className: " + className);
 
-        Class<?> clazz = xmlClasses.get(className);
+        Class/*<?>*/* clazz = xmlClasses.value(className);
 
-        if (clazz == null) {
+        if (clazz == nullptr) {
             try {
-                clazz = Class.forName(className);
-                xmlClasses.put(className, clazz);
-            } catch (ClassNotFoundException ex) {
-                log.error("cannot load class " + className, ex);
+                clazz = Class::forName(className);
+                xmlClasses.insert(className, clazz);
+            } catch (ClassNotFoundException* ex) {
+                log->error("cannot load class " + className, ex);
             }
         }
 
-        if (clazz != null) {
-            Constructor<?> c = null;
+        if (clazz != nullptr) {
+            /*Constructor<?>*/Class* c = nullptr;
             try {
-                c = clazz.getConstructor();
-            } catch (NoSuchMethodException | SecurityException ex) {
-                log.error("cannot create constructor", ex);
+                c = clazz->getConstructor();
+            } catch (NoSuchMethodException* /*| SecurityException*/ ex) {
+                log->error("cannot create constructor", ex);
             }
 
-            if (c != null) {
+            if (c != nullptr) {
                 try {
-                    AbstractNamedBeanManagerConfigXML o = (AbstractNamedBeanManagerConfigXML)c.newInstance();
+                    AbstractNamedBeanManagerConfigXML* o = (AbstractNamedBeanManagerConfigXML*)c->newInstance();
 
-                    MaleSocket oldLastItem = InstanceManager.getDefault(StringExpressionManager.class).getLastRegisteredMaleSocket();
-                    o.load(expressionList.get(i), null);
+                    MaleSocket* oldLastItem = ((StringExpressionManager*)InstanceManager::getDefault("StringExpressionManager"))->getLastRegisteredMaleSocket();
+                    o->load(expressionList.at(i).toElement(), QDomElement());
 
                     // Load male socket data if a new bean has been registered
-                    MaleSocket newLastItem = InstanceManager.getDefault(StringExpressionManager.class).getLastRegisteredMaleSocket();
-                    if (newLastItem != oldLastItem) loadMaleSocket(expressionList.get(i), newLastItem);
-                    else throw new RuntimeException("No new bean has been added. This class: "+getClass().getName());
-                } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                    log.error("cannot create object", ex);
-                } catch (JmriConfigureXmlException ex) {
-                    log.error("cannot load action", ex);
+                    MaleSocket* newLastItem = ((StringExpressionManager*)InstanceManager::getDefault("StringExpressionManager"))->getLastRegisteredMaleSocket();
+                    if (newLastItem != oldLastItem) loadMaleSocket(expressionList.at(i).toElement(), newLastItem);
+                    else throw new RuntimeException(QString("No new bean has been added. This class: ")+metaObject()->className());
+                } catch (InstantiationException* /*| IllegalAccessException | IllegalArgumentException | InvocationTargetException*/ ex) {
+                    log->error("cannot create object", ex);
+                } catch (JmriConfigureXmlException* ex) {
+                    log->error("cannot load action", ex);
                 }
             }
         }
@@ -145,22 +152,22 @@
  * during a load operation. This is skipped if they are of the same absolute
  * type.
  */
-protected void replaceExpressionManager() {
-    if (InstanceManager.getDefault(StringExpressionManager.class).getClass().getName()
-            .equals(DefaultStringExpressionManager.class.getName())) {
+/*protected*/ void DefaultStringExpressionManagerXml::replaceExpressionManager() {
+    if (QString(InstanceManager::getDefault("StringExpressionManager")->metaObject()->className())
+             == ("DefaultStringExpressionManager")) {
         return;
     }
     // if old manager exists, remove it from configuration process
-    if (InstanceManager.getNullableDefault(StringExpressionManager.class) != null) {
-        ConfigureManager cmOD = InstanceManager.getNullableDefault(jmri.ConfigureManager.class);
-        if (cmOD != null) {
-            cmOD.deregister(InstanceManager.getDefault(StringExpressionManager.class));
+    if (InstanceManager::getNullableDefault("StringExpressionManager") != nullptr) {
+        ConfigureManager* cmOD = (ConfigureManager*)InstanceManager::getNullableDefault("ConfigureManager");
+        if (cmOD != nullptr) {
+            cmOD->deregister(InstanceManager::getDefault("StringExpressionManager"));
         }
 
     }
 
-
-    ThreadingUtil.runOnGUI(() -> {
+#if 0// TODO:
+    ThreadingUtil::runOnGUI(() -> {
         // register new one with InstanceManager
         DefaultStringExpressionManager pManager = DefaultStringExpressionManager.instance();
         InstanceManager.store(pManager, StringExpressionManager.class);
@@ -170,11 +177,12 @@ protected void replaceExpressionManager() {
             cmOD.registerConfig(pManager, jmri.Manager.LOGIXNG_STRING_EXPRESSIONS);
         }
     });
+#endif
 }
 
 //@Override
-/*public*/  int loadOrder() {
-    return InstanceManager.getDefault(StringExpressionManager.class).getXMLOrder();
+/*public*/  int DefaultStringExpressionManagerXml::loadOrder() const {
+    return ((StringExpressionManager*)InstanceManager::getDefault("StringExpressionManager"))->getXMLOrder();
 }
 
 /*private*/ /*final*/ /*static*/ Logger* DefaultStringExpressionManagerXml::log = LoggerFactory::getLogger("DefaultStringExpressionManagerXml");

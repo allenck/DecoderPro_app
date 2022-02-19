@@ -71,6 +71,10 @@ public:
       if(s == tr("Abort execution")) return AbortExecution;
       return None;
      }
+     /*public*/ static QList<TYPES> values()
+     {
+      return QList<TYPES> {Default, ShowDialogBox, LogError, LogErrorOnce,ThrowException, AbortExecution} ;
+     }
  };
 /*public*/ /*interface*/ class MaleSocket : /*public QObject,*/ public Debugable
 {
@@ -214,17 +218,24 @@ public:
 //        if (! MaleSocket::isAssignableFrom(clazz)) {
 //            throw  IllegalArgumentException("clazz is not a MaleSocket");
 //        }
-
+        if(!clazz->isAssignableFrom("MaleSocket"))
+          throw  IllegalArgumentException("clazz is not a MaleSocket");
         Base* item = this;
 
-        while ((static_cast< MaleSocket*>(item)) && !clazz->isInstance(item->self())) {
-            item = item->getParent();
+//        while ((static_cast<MaleSocket*>(item)) && !clazz->isInstance(item->self())) {
+//            item = item->getParent();
+//        }
+        while(((Class*)item)->isAssignableFrom("MaleSocket"))
+        {
+          item = item->getParent();
         }
 
-        if (clazz->isInstance(item->self())) return (MaleSocket*)item;
+        if (clazz->isInstance(item->bself())) return (MaleSocket*)item->bself();
         else return nullptr;
     }
-  virtual QObject* self()=0;
+  //virtual QObject* bself()=0;
+  QObject* bself() override{return (QObject*)this;}
+
    friend class Base;
 };
 Q_DECLARE_INTERFACE(MaleSocket, "MaleSocket")

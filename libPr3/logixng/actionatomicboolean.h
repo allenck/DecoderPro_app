@@ -27,6 +27,9 @@ class ActionAtomicBoolean : public AbstractDigitalAction
   /*public*/  void unregisterListenersForThisClass() override;
   /*public*/  void disposeMe()override;
 
+  QObject* bself() override {return (QObject*)this;}
+  QObject* self() override {return (QObject*)this;}
+
  private:
   /*private*/ AtomicBoolean* _atomicBoolean;
   /*private*/ bool _newValue;

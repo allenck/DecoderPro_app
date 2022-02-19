@@ -295,6 +295,7 @@ SOURCES += javaqt.cpp \
 HEADERS += javaqt.h\
  atomicboolean.h \
  classmigration.h \
+ comparablet.h \
  csvformat.h \
  csvprinter.h \
  exceptioncontext.h \

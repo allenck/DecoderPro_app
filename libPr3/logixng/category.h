@@ -19,78 +19,66 @@ class Item;
  *
  * @author Daniel Bergqvist Copyright 2018
  */
+class Item;
+class Common;
+class Other;
 /*public*/ /*abstract*/ class Category : public QObject//, Comparable<Category>
 {
  Q_OBJECT
+ protected:
+  /*protected*/ Category(QString name, QString description, int order, QObject* parent = nullptr) ;
+
  public:
-  enum class TYPE {ITEM, COMMON, OTHER};
-    /**
-     * A item on the layout, for example turnout, sensor and signal mast.
-     */
-    /*public*/ static /*final*/ Item* ITEM;// = new Item();
+  /*public*/  static /*final*/ Item* ITEM;// = new Item();
+  /*public*/  static /*final*/ Common* COMMON;// = new Common();
+  /*public*/  static /*final*/ Other* OTHER;// = new Other();
 
-    /**
-     * Common.
-     */
-    /*public*/ static /*final*/ Common* COMMON;// = new Common();
+  /*public*/  QString name() const;
+  /*public*/  /*final*/ QString toString();
+  /*public*/  int order();
+//  /*public*/  bool operator==(QObject* o);
+  /*public*/  uint hashCode();
+  inline bool operator==(const Category &e1)
+  {
+    return _description ==(e1._description) && _name == (e1._name);
+  }
 
-    /**
-     * Other things.
-     */
-    /*public*/ static /*final*/ Other* OTHER;// = new Other();
-
-    /**
-     * Get all the registered Categories
-     * @return a list of categories
-     */
-    /*public*/ static QList<Category*> values();
-
-    /**
-     * Register a category
-     * @param category the category
-     */
-    /*public*/ static void registerCategory(Category* category);
-  /*public*/  QString name();
-  /*public*/ /*final*/ QString toString() ;
-  /*public*/ int order();
-  /*public*/ bool equals(QObject* o);
-  /*public*/ int hashCode();
-  /*public*/ int compareTo(Category* c);
+//  inline uint qHash(const Category &key, uint seed) const
+//  {
+//      return key._order;
+//  }
+  /*public*/  int compareTo(Category* c);
+  /*public*/  static QList<Category*> values();
+  /*public*/  static void registerCategory(Category* category);
 
  private:
-    /*private*/ static /*volatile*/ QList<Category*>* _categories;
+  /*private*/ static /*volatile*/ QList<Category*> _categories;
 
-    /*private*/ /*final*/ QString _name;
-    /*private*/ /*final*/ QString _description;
-    /*private*/ /*final*/ int _order;
+  /*private*/ /*final*/ QString _name;
+  /*private*/ /*final*/ QString _description;
+  /*private*/ /*final*/ int _order;
 
- protected:
-    /*protected*/ Category(QString name, QString description, int order, QObject* parent = nullptr);
 
 };
-    /*public*/ /*static*/ /*final*/ class Item : public Category {
-     public:
-        /*public*/ Item(): Category("ITEM", tr("Item"), 100){
-            //super("ITEM", Bundle.getMessage("CategoryItem"), 100);
-        }
-    };
 
+/*public*/  /*static*/ /*final*/ class Item : public Category {
+public:
+    /*public*/  Item() : Category("ITEM", tr("Item"), 100){
+        //super("ITEM", Bundle.getMessage("CategoryItem"), 100);
+    }
+};
 
-    /*public*/ /*static*/ /*final*/ class Common : public Category {
-     public:
-        /*public*/ Common() : Category("COMMON", tr("Common"), 200){
-            //super("COMMON", Bundle.getMessage("CategoryCommon"), 200);
-        }
-    };
+/*public*/  /*static*/ /*final*/ class Common : public Category {
+public:
+    /*public*/  Common() : Category("COMMON", tr("Common"), 200){
+        //super("COMMON", Bundle.getMessage("CategoryCommon"), 200);
+    }
+};
 
-
-    /*public*/ /*static*/ /*final*/ class Other : public Category {
-     public:
-        /*public*/ Other() : Category("OTHER", tr("Other"), 300) {
-            //super("OTHER", Bundle.getMessage("CategoryOther"), 300);
-        }
-    };
-
-
-
+/*public*/  /*static*/ /*final*/ class Other : public Category {
+public:
+    /*public*/  Other() : Category("OTHER", tr("Other"),300) {
+        //super("OTHER", Bundle.getMessage("CategoryOther"), 300);
+    }
+};
 #endif // CATEGORY_H

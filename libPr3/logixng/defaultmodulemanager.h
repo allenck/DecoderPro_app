@@ -27,22 +27,24 @@ class DefaultModuleManager : public AbstractManager, public ModuleManager
   /*public*/  void setupAllModules()override;
   /*public*/  void deleteModule(Module* x) override;
   /*public*/  void printTree(
-          PrintTreeSettings* settings,
+          Base::PrintTreeSettings* settings,
           PrintWriter* writer,
           QString indent,
           /*MutableInt*/int* lineNumber) override;
   /*public*/  void printTree(
-          PrintTreeSettings* settings,
+          Base::PrintTreeSettings* settings,
           QLocale locale,
           PrintWriter* writer,
           QString indent,
           /*MutableInt*/int* lineNumber)override;
   static /*public*/  DefaultModuleManager* instance();
-  /*public*/  /*Class<Module>*/QString getNamedBeanClass()override;
-  /*public*/  void fireVetoableChange(QString p, QVariant old) /*throws PropertyVetoException*/override;
-  /*public*/  /*final*/ void deleteBean(/*@Nonnull*/ Module* module, /*@Nonnull*/ QString property) /*throws PropertyVetoException*/override;
+  /*public*/  /*Class<Module>*/QString getNamedBeanClass() const override;
+  /*public*/  void fireVetoableChange(QString p, QVariant old) /*throws PropertyVetoException*/;
+  /*public*/  /*final*/ void deleteBean(/*@Nonnull*/ /*Module**/NamedBean* module, /*@Nonnull*/ QString property) /*throws PropertyVetoException*/override;
 
   QObject* self() override {return (QObject*)this;}
+  QObject* vself() override {return (QObject*)this;}
+
  private:
   static /*volatile*/ DefaultModuleManager* _instance;// = nullptr;
   static Logger* log;

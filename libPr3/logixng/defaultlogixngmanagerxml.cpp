@@ -80,7 +80,7 @@
             if (clipboard->getFemaleSocket()->AbstractFemaleSocket::isConnected()) {
                 Base* rootObject = clipboard->getFemaleSocket()->AbstractFemaleSocket::getConnectedSocket()->getObject();
                 try {
-                    QDomElement e = ConfigXmlManager::elementFromObject(rootObject->self());
+                    QDomElement e = ConfigXmlManager::elementFromObject(rootObject->bself());
                     if (e != QDomElement()) {
                         elemClipboard.appendChild(e);
                     }

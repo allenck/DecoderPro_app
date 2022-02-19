@@ -47,7 +47,7 @@
 
 /*public*/ void ReporterTableAction::setManager(Manager* man) {
  if(qobject_cast<ReporterManager*>(man->self()))
-    reporterManager = static_cast<ReporterManager*>(man);
+    reporterManager = qobject_cast<ReporterManager*>(man->self());
 }
 
 /*public*/ ReporterTableAction::ReporterTableAction(QObject* parent) : AbstractTableAction(tr("TitleReporterTable"), parent)
@@ -263,7 +263,7 @@ void ReporterTableAction::createPressed(ActionEvent* /*e*/)
  }
  connectionChoice = prefixBox->getSelectedItem(); // store in Field for CheckedTextField
  QString systemPrefix = connectionChoice->getSystemPrefix();
- rangeCheckBox->setEnabled(((ReporterManager*) connectionChoice)->allowMultipleAdditions(systemPrefix));
+ rangeCheckBox->setEnabled(((ReporterManager*) connectionChoice->self())->allowMultipleAdditions(systemPrefix));
  addEntryToolTip = connectionChoice->getEntryToolTip();
  // show hwAddressTextField field tooltip in the Add Reporter pane that matches system connection selected from combobox
  hardwareAddressTextField->setToolTip(

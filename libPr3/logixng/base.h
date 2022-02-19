@@ -301,7 +301,7 @@ class Base;
      * Get the category.
      * @return the category
      */
-    /*public*/ virtual Category::TYPE getCategory(){return Category::TYPE::OTHER;}
+    /*public*/ virtual Category* getCategory(){return Category::OTHER;}
 
     /**
      * Is this item active? If this item is enabled and all the parents are
@@ -315,7 +315,7 @@ class Base;
      * This method is used to lookup system names for child sockets, turnouts,
      * sensors, and so on.
      */
-  /*public*/ virtual void setup(){}
+  /*public*/ virtual void setup() {}
 
     /**
      * Deactivate this object, so that it releases as many resources as possible
@@ -579,7 +579,7 @@ class Base;
 
   /*public*/ virtual QString toString(){return "";}
 
-    virtual QObject* self() =0;
+    virtual QObject* bself() =0;
 };
 Q_DECLARE_INTERFACE(Base, "Base")
 #endif // BASE_H

@@ -143,7 +143,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  void DefaultModuleManager::printTree(
-            PrintTreeSettings* settings,
+            Base::PrintTreeSettings* settings,
             PrintWriter* writer,
             QString indent,
             /*MutableInt*/int* lineNumber) {
@@ -154,7 +154,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  void DefaultModuleManager::printTree(
-            PrintTreeSettings* settings,
+            Base::PrintTreeSettings* settings,
             QLocale locale,
             PrintWriter* writer,
             QString indent,
@@ -184,7 +184,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  /*Class<Module>*/QString DefaultModuleManager::getNamedBeanClass() {
+    /*public*/  /*Class<Module>*/QString DefaultModuleManager::getNamedBeanClass()const {
         return "Module";
     }
 
@@ -215,9 +215,9 @@
     /** {@inheritDoc} */
     //@Override
 //    @OverridingMethodsMustInvokeSuper
-    /*public*/  /*final*/ void DefaultModuleManager::deleteBean(/*@Nonnull*/ Module* module, /*@Nonnull*/ QString property) /*throws PropertyVetoException*/ {
-        for (int i=0; i < module->getChildCount(); i++) {
-            FemaleSocket* child = module->getChild(i);
+    /*public*/  /*final*/ void DefaultModuleManager::deleteBean(/*@Nonnull*/ /*Module**/NamedBean* module, /*@Nonnull*/ QString property) /*throws PropertyVetoException*/ {
+        for (int i=0; i < ((Module*)module)->getChildCount(); i++) {
+            FemaleSocket* child = ((Module*)module)->getChild(i);
             if (child->isConnected()) {
                 MaleSocket* maleSocket = child->getConnectedSocket();
                 maleSocket->getManager()->deleteBean(maleSocket, property);
@@ -225,7 +225,7 @@
         }
 
         // throws PropertyVetoException if vetoed
-        fireVetoableChange(property, VPtr<Module>::asQVariant(module));
+        fireVetoableChange(property, VPtr<Module>::asQVariant(((Module*)module)));
         if (property == ("DoDelete")) { // NOI18N
             AbstractManager::deregister(module);
             module->NamedBean::dispose();

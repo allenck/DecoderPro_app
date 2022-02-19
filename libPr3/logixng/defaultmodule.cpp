@@ -5,7 +5,8 @@
 #include "modulemanager.h"
 #include "instancemanager.h"
 #include "runtimeexception.h"
-
+#include "defaultsymboltable.h"
+#include "defaultmodulemanager.h"
 /**
  * The default implementation of Module.
  *
@@ -23,14 +24,14 @@
     //super(sys, user);
 
     _rootSocketType = socketType;
-    _femaleRootSocket = socketType->createSocket(this, (FemaleSocketListener*)this, "Root");
+    _femaleRootSocket = socketType->createSocket((AbstractBase*)this, (FemaleSocketListener*)this, "Root");
 
     // Listeners should never be enabled for a module
     _femaleRootSocket->setEnableListeners(false);
 
     // Do this test here to ensure all the tests are using correct system names
-    Manager::NameValidity isNameValid = ((ModuleManager*)InstanceManager::getDefault("ModuleManager"))->validSystemNameFormat(mSystemName);
-    if (isNameValid != Manager.NameValidity.VALID) {
+    Manager::NameValidity isNameValid = ((DefaultModuleManager*)InstanceManager::getDefault("ModuleManager"))->validSystemNameFormat(mSystemName);
+    if (isNameValid != Manager::NameValidity::VALID) {
         throw new IllegalArgumentException("system name is not valid");
     }
 }
@@ -38,7 +39,7 @@
 //@Override
 /*public*/  void DefaultModule::setCurrentConditionalNG(ConditionalNG* conditionalNG) {
     /*synchronized(this)*/ {
-        _currentConditionalNG.insert(Thread.currentThread(), conditionalNG);
+        _currentConditionalNG.insert(QThread::currentThread(), conditionalNG);
     }
 }
 
@@ -84,7 +85,7 @@
 
 //@Override
 /*public*/  QString DefaultModule::getLongDescription(QLocale locale) {
-    QString sb = tr("Module: %1").arg(getDisplayName()));
+    QString sb = tr("Module: %1").arg(AbstractNamedBean::getDisplayName());
     if (! _parameters.isEmpty()) {
         QList<QString> inParams = QList<QString>();
         QList<QString> outParams = QList<QString>();
@@ -147,8 +148,8 @@
 }
 
 //@Override
-/*public*/  Category::TYPE getCategory() {
-    return Category::TYPE::OTHER;
+/*public*/  Category* getCategory() {
+    return Category::OTHER;
 }
 /*
 protected void printTreeRow(Locale locale, PrintWriter writer, String currentIndent) {
@@ -159,13 +160,13 @@ protected void printTreeRow(Locale locale, PrintWriter writer, String currentInd
 */
 /** {@inheritDoc} */
 //@Override
-/*public*/  voidDefaultModule:: printTree(
+/*public*/  void DefaultModule::printTree(
         PrintTreeSettings* settings,
         PrintWriter* writer,
         QString indent,
         /*MutableInt*/int* lineNumber) {
 
-    printTree(settings, Locale.getDefault(), writer, indent, "", lineNumber);
+    printTree(settings, QLocale(), writer, indent, "", lineNumber);
 }
 
 /** {@inheritDoc} */
@@ -192,7 +193,7 @@ protected void printTreeRow(Locale locale, PrintWriter writer, String currentInd
 
     printTreeRow(settings, locale, writer, currentIndent, lineNumber);
 
-    _femaleRootSocket.printTree(settings, locale, writer, indent, currentIndent+indent, lineNumber);
+    _femaleRootSocket->printTree(settings, locale, writer, indent, currentIndent+indent, lineNumber);
 }
 /*
 //@Override
@@ -219,12 +220,12 @@ public  void DefaultModule::setRootSocketType(FemaleSocketManager::SocketType* s
 
 //@Override
 /*public*/  void DefaultModule::addParameter(QString name, bool isInput, bool isOutput) {
-    _parameters.append(new DefaultSymbolTable::DefaultParameter(name, isInput, isOutput));
+    _parameters.insert(new DefaultSymbolTable::DefaultParameter(name, isInput, isOutput));
 }
 
 //@Override
 /*public*/  void DefaultModule::addParameter(Module::Parameter* parameter) {
-    _parameters.append(parameter);
+    _parameters.insert(parameter);
 }
 
 //    //@Override
@@ -238,7 +239,7 @@ public  void DefaultModule::setRootSocketType(FemaleSocketManager::SocketType* s
         InitialValueType::TYPES initialValueType,
         QString initialValueData) {
 
-    _localVariables.append(new VariableData(
+    _localVariables.insert(new VariableData(
             name,
             initialValueType,
             initialValueData));
@@ -250,7 +251,7 @@ public  void DefaultModule::setRootSocketType(FemaleSocketManager::SocketType* s
 //    }
 
 //@Override
-/*public*/  QSet<Parameter*> DefaultModule::getParameters() {
+/*public*/  QSet<Module::Parameter*> DefaultModule::getParameters() {
     return _parameters;
 }
 
@@ -269,9 +270,9 @@ public  void DefaultModule::setRootSocketType(FemaleSocketManager::SocketType* s
     _socketSystemName = nullptr;
 }
 
-/*public*/  void setSocketSystemName(QString systemName) {
+/*public*/  void DefaultModule::setSocketSystemName(QString systemName) {
     if ((systemName == "") || (systemName!=(_socketSystemName))) {
-        _femaleRootSocket._disconnect();
+        _femaleRootSocket->_disconnect();
     }
     _socketSystemName = systemName;
 }
@@ -295,7 +296,7 @@ public  void DefaultModule::setRootSocketType(FemaleSocketManager::SocketType* s
                         (MaleSocket*)_rootSocketType->getManager()
                                 ->getBySystemName(_socketSystemName);
                 if (maleSocket != nullptr) {
-                    _femaleRootSocket._connect(maleSocket);
+                    _femaleRootSocket->_connect(maleSocket);
                     maleSocket->setup();
                 } else {
                     log->error("digital action is not found: " + _socketSystemName);

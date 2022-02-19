@@ -5,42 +5,17 @@
  *
  * @author Daniel Bergqvist Copyright 2020
  */
-@ServiceProvider(service = FemaleSocketFactory.class)
-public class DefaultFemaleStringExpressionSocketFactory implements FemaleSocketFactory {
+//@ServiceProvider(service = FemaleSocketFactory.class)
+///*public*/  class DefaultFemaleStringExpressionSocketFactory : public FemaleSocketFactory {
 
-    private static final FemaleSocketManager.SocketType _femaleSocketType = new SocketType();
+    /*private*/ /*static*/ /*final*/ FemaleSocketManager::SocketType* DefaultFemaleStringExpressionSocketFactory::_femaleSocketType =
+      new FemaleSocketManager::SocketType();
 
 
     //@Override
-    public FemaleSocketManager.SocketType getFemaleSocketType() {
+    /*public*/  FemaleSocketManager::SocketType* DefaultFemaleStringExpressionSocketFactory::getFemaleSocketType() {
         return _femaleSocketType;
     }
 
 
-    private static class SocketType implements FemaleSocketManager.SocketType {
 
-        //@Override
-        public String getName() {
-            return "DefaultFemaleStringExpressionSocket";
-        }
-
-        //@Override
-        public String getDescr() {
-            return Bundle.getMessage("FemaleStringExpressionSocket_Descr");
-        }
-
-        //@Override
-        public BaseManager<? extends MaleSocket> getManager() {
-            return InstanceManager.getDefault(StringExpressionManager.class);
-        }
-
-        //@Override
-        public FemaleSocket createSocket(Base parent, FemaleSocketListener listener, String name) {
-            return new DefaultFemaleStringExpressionSocket(parent, listener, name);
-        }
-
-        //@Override
-        public String toString() {
-            return getDescr();
-        }
-    }

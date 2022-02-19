@@ -7,7 +7,7 @@
 /**
  * A female socket for AnalogAction
  */
-/*public*/ /*interface*/ class FemaleAnalogActionSocket : public FemaleSocket, public AnalogAction {
+/*public*/ /*interface*/ class FemaleAnalogActionSocket : public virtual FemaleSocket, public AnalogAction {
 
   Q_INTERFACES(FemaleSocket AnalogAction)
 

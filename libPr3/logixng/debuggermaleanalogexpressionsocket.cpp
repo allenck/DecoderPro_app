@@ -30,62 +30,62 @@
     //@Override
     /*public*/  double DebuggerMaleAnalogExpressionSocket::evaluate() /*throws JmriException*/ {
         before();
-        _lastResult = ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->self())->evaluate();
+        _lastResult = ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->bself())->evaluate();
         after();
         return _lastResult;
     }
 
     //@Override
     /*public*/  void DebuggerMaleAnalogExpressionSocket::setState(int s) /*throws JmriException*/ {
-        ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->self())->setState(s);
+        ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->bself())->setState(s);
     }
 
     //@Override
     /*public*/  int DebuggerMaleAnalogExpressionSocket::getState() {
-        return ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->self())->getState();
+        return ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->bself())->getState();
     }
 
     //@Override
     /*public*/  QString DebuggerMaleAnalogExpressionSocket::describeState(int state) {
-        return ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->self())->describeState(state);
+        return ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->bself())->describeState(state);
     }
 
     //@Override
     /*public*/  void DebuggerMaleAnalogExpressionSocket::setProperty(QString key, QVariant value) {
-        ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->self())->NamedBean::setProperty(key, value);
+        ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->bself())->NamedBean::setProperty(key, value);
     }
 
     //@Override
     /*public*/  QVariant DebuggerMaleAnalogExpressionSocket::getProperty(QString key) {
-        return ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->self())->getProperty(key);
+        return ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->bself())->getProperty(key);
     }
 
     //@Override
     /*public*/  void DebuggerMaleAnalogExpressionSocket::removeProperty(QString key) {
-        ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->self())->removeProperty(key);
+        ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->bself())->removeProperty(key);
     }
 
     //@Override
     /*public*/  QSet<QString> DebuggerMaleAnalogExpressionSocket::getPropertyKeys() {
-        return ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->self())->getPropertyKeys();
+        return ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->bself())->getPropertyKeys();
     }
 
     //@Override
     /*public*/  QString DebuggerMaleAnalogExpressionSocket::getBeanType() {
-        return ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->self())->getBeanType();
+        return ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->bself())->getBeanType();
     }
 
     //@Override
     /*public*/  int DebuggerMaleAnalogExpressionSocket::compareSystemNameSuffix(QString suffix1, QString suffix2, NamedBean* n2) {
-        return ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->self())->compareSystemNameSuffix(suffix1, suffix2, n2);
+        return ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
     }
 
     //@Override
     /*public*/  void DebuggerMaleAnalogExpressionSocket::setTriggerOnChange(bool triggerOnChange) {
-        ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->self())->setTriggerOnChange(triggerOnChange);
+        ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->bself())->setTriggerOnChange(triggerOnChange);
     }
 
     //@Override
     /*public*/  bool DebuggerMaleAnalogExpressionSocket::getTriggerOnChange() {
-        return ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->self())->getTriggerOnChange();
+        return ((MaleAnalogExpressionSocket*)AbstractMaleSocket::getObject()->bself())->getTriggerOnChange();
     }
