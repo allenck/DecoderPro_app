@@ -12,6 +12,7 @@
 #include "vptr.h"
 #include "stringutil.h"
 #include "appsconfigurationmanager.h"
+#include "loggerfactory.h"
 
 /**
  * Abstract partial implementation for all Manager-type classes.
@@ -24,8 +25,6 @@
  */
 AbstractManager::AbstractManager(QObject *parent) : VetoableChangeSupport(parent)
 {
-  Q_UNUSED(parent);
-  log = new Logger("AbstractManager");
  _tsys = new QMap<QString, NamedBean*>;   // stores known Turnout instances by system name
  _tuser = new QMap<QString, NamedBean*>;   // stores known Turnout instances by user name
  _beans = QSet<NamedBean*>( _beans);
@@ -42,7 +41,7 @@ AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : 
  if(propertyChangeSupport == nullptr)
   propertyChangeSupport = new SwingPropertyChangeSupport(this, this);
 
-  log = new Logger("AbstractManager");
+ log = new Logger("AbstractManager");
  _tsys = new QMap<QString, NamedBean*>;   // stores known Turnout instances by system name
  _tuser = new QMap<QString, NamedBean*>;   // stores known Turnout instances by user name
  _beans = QSet<NamedBean*>( _beans);
@@ -979,4 +978,5 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
     }
     return newIncrement;
 }
-//    static org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(AbstractManager.class.getName());
+
+/*static*/ Logger* AbstractManager::log = LoggerFactory::getLogger("AbstractManager");

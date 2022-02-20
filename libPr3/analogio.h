@@ -7,10 +7,10 @@
  *
  * @author Daniel Bergqvist Copyright (C) 2018
  */
-/*public*/ /*interface*/class AnalogIO : public NamedBean
+/*public*/ /*interface*/class AnalogIO //: public NamedBean
 {
   //Q_OBJECT
-  Q_INTERFACES(NamedBean)
+  //Q_INTERFACES(NamedBean)
  public:
 //    AnalogIO(QObject* parent = nullptr) : AbstractNamedBean(parent) {}
 //    AnalogIO(QString systemName, QObject* parent = nullptr) : AbstractNamedBean(systemName, parent) {}
@@ -157,7 +157,7 @@
      */
     virtual /*default*/ /*public*/ void requestUpdateFromLayout() {
     }
-    virtual QObject* self() =0;
+    //virtual QObject* self() =0;
 };
 Q_DECLARE_INTERFACE(AnalogIO, "AnalogIO")
 #endif // ANALOGIO_H

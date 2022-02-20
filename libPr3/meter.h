@@ -53,7 +53,7 @@ class Meter
        */
       //@Override
   /*public*/ virtual void dispose() {}
-  virtual QObject* self() =0;
+  virtual QObject* mself() =0;
 };
 Q_DECLARE_INTERFACE(Meter, "Meter")
 #endif // METER_H

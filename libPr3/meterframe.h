@@ -267,7 +267,7 @@ public:
     /*private*/ /*final*/ Meter* m;
   MeterFrame* f;
  public:
-    /*public*/ SelectMeterAction(QString actionName, Meter* meter, MeterFrame* f)
+    /*public*/ SelectMeterAction(QString actionName, Meter* meter, MeterFrame* f) : AbstractAction(actionName, f)
     {
         //super(actionName);
         this->m = meter;

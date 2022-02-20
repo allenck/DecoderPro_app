@@ -58,24 +58,26 @@ TurnoutTableDataModel::TurnoutTableDataModel(QObject *parent)
     // load graphic state column display preference
     _graphicState = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState();
 
-    if(qobject_cast<AbstractManager*>(turnoutManager->self()) != nullptr)
+    QObject* o = turnoutManager->self();
+    //if(qobject_cast<AbstractManager*>(turnoutManager->self()) != nullptr)
+    if(QString(o->metaObject()->className())== "ProxyTurnoutManager")
  //    return (Turnout*)((AbstractManager*)turnoutManager->self())->getBySystemName(name);
     {
-     closedText = ((AbstractTurnoutManager*)turnoutManager->self())->getClosedText();
-     thrownText = ((AbstractTurnoutManager*)turnoutManager->self())->getThrownText();
+     closedText = ((ProxyTurnoutManager*)o)->getClosedText();
+     thrownText = ((ProxyTurnoutManager*)o)->getThrownText();
 
      //This following must contain the word Global for a correct match in the abstract turnout
-     defaultThrownSpeedText = (tr("Use %1").arg("Global") + " " + ((AbstractTurnoutManager*)turnoutManager->self())->getDefaultThrownSpeed());
-     defaultClosedSpeedText = (tr("Use %1").arg("Global") + " " + ((AbstractTurnoutManager*)turnoutManager->self())->getDefaultClosedSpeed());
+     defaultThrownSpeedText = (tr("Use %1").arg("Global") + " " + ((ProxyTurnoutManager*)o)->getDefaultThrownSpeed());
+     defaultClosedSpeedText = (tr("Use %1").arg("Global") + " " + ((ProxyTurnoutManager*)o)->getDefaultClosedSpeed());
     }
     else
     {
-     closedText = ((TurnoutManager*)turnoutManager)->getClosedText();
-     thrownText = ((TurnoutManager*)turnoutManager)->getThrownText();
+     closedText = ((AbstractTurnoutManager*)o)->getClosedText();
+     thrownText = ((AbstractTurnoutManager*)o)->getThrownText();
 
      //This following must contain the word Global for a correct match in the abstract turnout
-     defaultThrownSpeedText = (tr("Use %1").arg("Global") + " " + ((TurnoutManager*)turnoutManager)->getDefaultThrownSpeed());
-     defaultClosedSpeedText = (tr("Use %1").arg("Global") + " " + ((TurnoutManager*)turnoutManager)->getDefaultClosedSpeed());
+     defaultThrownSpeedText = (tr("Use %1").arg("Global") + " " + ((AbstractTurnoutManager*)o)->getDefaultThrownSpeed());
+     defaultClosedSpeedText = (tr("Use %1").arg("Global") + " " + ((AbstractTurnoutManager*)o)->getDefaultClosedSpeed());
 
     }
     //This following must contain the word Block for a correct match in the abstract turnout
@@ -714,17 +716,27 @@ TurnoutTableDataModel::TurnoutTableDataModel(QObject *parent)
             }
         }
     }
-    turnoutManager =  (TurnoutManager*)manager->self();
+    QObject* o = manager->self();
+    if(QString(o->metaObject()->className())== "ProxyTurnoutManager")
+     turnoutManager = (ProxyTurnoutManager*)o;
+    else
+     turnoutManager =  (AbstractTurnoutManager*)o;
     getManager()->addPropertyChangeListener(this);
     updateNameList();
 }
 
 /*public*/ Turnout* TurnoutTableDataModel::getBySystemName(QString name) const
 {
- if(qobject_cast<AbstractManager*>(turnoutManager->self()) != nullptr)
-  return (Turnout*)((AbstractManager*)turnoutManager->self())->getBySystemName(name);
+ QObject* o = turnoutManager->self();
+ if(QString(o->metaObject()->className()) == "ProxyTurnoutManager")
+  return (Turnout*)((ProxyTurnoutManager*)o)->getBySystemName(name);
  else
-  return ((TurnoutManager*)turnoutManager)->getBySystemName(name);
+  return (Turnout*) ((AbstractManager*)o)->getBySystemName(name);
+
+// if(qobject_cast<AbstractManager*>(turnoutManager->self()) != nullptr)
+//  return (Turnout*)((AbstractManager*)turnoutManager->self())->getBySystemName(name);
+// else
+// return ((TurnoutManager*)turnoutManager)->getBySystemName(name);
 }
 
 /*public*/ NamedBean* TurnoutTableDataModel::getByUserName(QString name)

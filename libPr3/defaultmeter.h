@@ -6,7 +6,7 @@
 #include "voltagemeter.h"
 
 class MeterUpdateTask;
-class DefaultMeter : public AbstractAnalogIO, public Meter
+class DefaultMeter : public AbstractAnalogIO, public  Meter
 {
   Q_OBJECT
   Q_INTERFACES(Meter)
@@ -18,17 +18,17 @@ class DefaultMeter : public AbstractAnalogIO, public Meter
           /*@Nonnull*/ MeterUpdateTask* updateTask, QObject* parent = nullptr);
   /*public*/ void enable() override;
   /*public*/ void disable()override;
-  /*public*/ int getState();
+  /*public*/ int getState()override;
   /*public*/ QString getBeanType()override;
   /*public*/ Unit getUnit()override;
   /*public*/ double getMin()override;
   /*public*/ double getMax()override;
   /*public*/ double getResolution()override;
   /*public*/ AbsoluteOrRelative::TYPE getAbsoluteOrRelative()override;
-  //QObject* self() {return (QObject*)this;}
-  /*public*/ void dispose();
-  /*public*/ void requestUpdateFromLayout();
-  QString getSystemName() const {return AbstractNamedBean::getSystemName();}
+  QObject* mself()override {return (QObject*)this;}
+  /*public*/ void dispose()override;
+  /*public*/ void requestUpdateFromLayout()override;
+  QString getSystemName() const override{return AbstractNamedBean::getSystemName();}
 
  private:
   static Logger* log;
@@ -58,7 +58,7 @@ class DefaultMeter : public AbstractAnalogIO, public Meter
         //super(sys, unit, min, max, resolution, updateTask);
    setObjectName(sys);
     }
-  QObject* self() {return (QObject*)this;}
+  QObject* mself() {return (QObject*)this;}
 };
 
 
@@ -76,7 +76,7 @@ class DefaultMeter : public AbstractAnalogIO, public Meter
         //super(sys, unit, min, max, resolution, updateTask);
    setObjectName(sys);
   }
-  QObject* self() {return (QObject*)this;}
+  QObject* mself() {return (QObject*)this;}
 };
 
 #endif // DEFAULTMETER_H

@@ -1282,11 +1282,8 @@ void LayoutTurnout::common(QString id, LayoutTurnout::TurnoutType t,  LayoutEdit
   deactivateTurnout();
  turnoutName = tName;
  Turnout* turnout = nullptr;
- if (!turnoutName.isNull() && !turnoutName.isEmpty())
- {
-  Manager* mgr = (Manager*)InstanceManager::turnoutManagerInstance();
-  QStringList sysNames = mgr->getSystemNameList();
-   turnout = ((TurnoutManager*)mgr->self())->getTurnout(turnoutName);
+ if (!turnoutName.isEmpty()) {
+     turnout = InstanceManager::turnoutManagerInstance()->getTurnout(turnoutName);
  }
  if (turnout!=nullptr)
  {

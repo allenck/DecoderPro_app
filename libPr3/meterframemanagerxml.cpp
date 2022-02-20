@@ -85,7 +85,7 @@
                  log->error(tr("uuid: %1, meter: %2, meter: %3, systemName: %4")
                            .arg(frame->getUUID().toString())
                            .arg(((AbstractNamedBean*)meter)->getDisplayName())
-                           .arg(((DefaultMeter*)frame->getMeter()->self())->getSystemName())
+                           .arg(((DefaultMeter*)frame->getMeter()->mself())->getSystemName())
                            .arg(meterSystemName));
             }
             if (meter != nullptr) frame->setMeter(meter);

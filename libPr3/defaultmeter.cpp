@@ -17,6 +17,7 @@
             /*@Nonnull*/ MeterUpdateTask* updateTask, QObject *parent)
         : AbstractAnalogIO(sys, true, parent) {
         //super(sys, true);
+ setObjectName("DefaultMeter");
         this->_unit = unit;
         this->_updateTask = updateTask;
         this->_min = min;

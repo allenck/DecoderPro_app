@@ -13,6 +13,7 @@
         : AbstractMeterManager(memo, parent)
     {
         //super(memo);
+     setObjectName("InternalMeterManager");
     }
 
     /**

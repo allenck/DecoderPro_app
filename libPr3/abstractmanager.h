@@ -154,7 +154,7 @@ private:
     mutable QSet<NamedBean*> _beans;
     /*private*/ int getPosition(NamedBean* s) const ;
     /*private*/ bool muted = false;
-    Logger* log;
+    static Logger* log;
     /*final*/ QList<Manager::ManagerDataListener/*<E>*/*> listeners;// = new ArrayList<>();
     SystemConnectionMemo* memo = nullptr;
     //QAtomicInteger<int> lastAutoNamedBeanRef;

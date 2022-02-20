@@ -110,13 +110,15 @@ void SensorTableDataModel::common()
 
 /*protected*/ NamedBean* SensorTableDataModel::getBySystemName(QString name) const
 {
- if(qobject_cast<AbstractManager*>(senManager->self()) != nullptr)
-  return ((AbstractManager*)senManager->self())->getBySystemName(name);
+ QObject* o = senManager->self();
+ //if(static_cast<AbstractManager*>(senManager) != nullptr)
+ if(QString(o->metaObject()->className())== "ProxySensorManager")
+  return ((ProxySensorManager*)o)->getBySystemName(name);
  else
-  return ((ProxySensorManager*)senManager)->getBySystemName(name);
+  return ((AbstractManager*)o)->getBySystemName(name);
 }
 /*protected*/ NamedBean* SensorTableDataModel::getByUserName(QString name) {
- return ((AbstractProxyManager*)senManager->self())->getByUserName(name);
+ return  ((AbstractProxyManager*)InstanceManager::getDefault("SensorManager"))->getByUserName(name);
 }
 
 /*protected*/ QString SensorTableDataModel::getMasterClassName() { return getClassName(); }
@@ -222,7 +224,12 @@ void SensorTableDataModel::common()
  int row = index.row();
  //if (col==INVERTCOL) return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
  QString name = sysNameList.at(row);
-  Sensor* sen = (Sensor*)senManager->getBySystemName(name);
+ QObject* o = senManager->self();
+ Sensor* sen;
+ if(QString(o->metaObject()->className())== "ProxySensorManager")
+  sen = (AbstractSensor*)((ProxySensorManager*)o)->getBySystemName(name);
+ else
+  sen = (AbstractSensor*)((AbstractManager*)o)->getBySystemName(name);
   if (sen == nullptr) {
       return Qt::ItemIsEnabled;
   }
@@ -255,11 +262,15 @@ void SensorTableDataModel::common()
 /*public*/ QVariant SensorTableDataModel::data(const QModelIndex &index, int role) const
 {
  QString name = sysNameList.at(index.row());
+ QObject* o = senManager->self();
  Sensor* s;
 // if(qobject_cast<AbstractManager*>(senManager->self()) != 0)
 //  s = (AbstractSensor*)((AbstractManager*)senManager->self())->getBySystemName(name);
 // else
-  s = (Sensor*)senManager->getBySystemName(name);
+ if(QString(o->metaObject()->className())== "ProxySensorManager")
+  s = (AbstractSensor*)((ProxySensorManager*)o)->getBySystemName(name);
+ else
+  s = (AbstractSensor*)((AbstractManager*)o)->getBySystemName(name);
 
  if(role == Qt::CheckStateRole)
  {

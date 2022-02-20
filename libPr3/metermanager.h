@@ -2,7 +2,7 @@
 #define METERMANAGER_H
 #include "abstractmanager.h"
 
-class MeterManager : public Manager
+class MeterManager : public virtual Manager
 {
   //Q_OBJECT
   Q_INTERFACES(Manager)

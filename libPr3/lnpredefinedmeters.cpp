@@ -76,7 +76,7 @@
         int srcSerNum = msg->getElement(18)+128*msg->getElement(19);
 
         QString voltSysName = createSystemName(srcDeviceType, srcSerNum, "Voltage"); // NOI18N
-        Meter* m = (Meter*)((ProxyMeterManager*)InstanceManager::getDefault("MeterManager"))->getBySystemName(voltSysName);
+        Meter* m = (DefaultMeter*)((ProxyMeterManager*)InstanceManager::getDefault("MeterManager"))->getBySystemName(voltSysName);
         updateAddMeter(m, voltSysName, valVolts, true);
 
         QString ampsSysName = createSystemName(srcDeviceType, srcSerNum, "InputCurrent"); // NOI18N
@@ -110,7 +110,7 @@
 
     /*private*/ void LnPredefinedMeters::updateAddMeter(Meter* m, QString sysName, float value, bool typeVolt ) {
         if (m == nullptr) {
-            DefaultMeter* newMeter;
+            DefaultMeter* newMeter= nullptr;
             if (typeVolt) {
                 // voltMeter not (yet) registered
                 newMeter = new /*DefaultMeter::*/DefaultVoltageMeter(sysName,
@@ -133,8 +133,11 @@
                     sysName).arg(value));
         } else {
             try {
-             log->debug(tr("meter %1").arg(((DefaultMeter*)m->self())->objectName()));
-             ((AbstractAnalogIO*)m->self())->setCommandedAnalogValue(value);
+          QObject* mo = m->mself();
+          if(!mo) throw new JmriException();
+          QString mos = mo->metaObject()->className();
+          log->debug(tr("meter %1").arg(((DefaultMeter*)m->mself())->objectName()));
+             ((DefaultMeter*)m)->setCommandedAnalogValue(value);
             } catch (JmriException* e) {
                 log->debug(tr("Exception setting %1Meter %2 to value %3: %4").arg(
                         (typeVolt?"volt":"current")).arg( // NOI18N
