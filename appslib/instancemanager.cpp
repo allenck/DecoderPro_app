@@ -148,7 +148,8 @@ InstanceManager::InstanceManager(QObject *parent) :
   log->trace(tr("Get list of type %1").arg(type/*.getName()*/));
  /*synchronized (type)*/
  {
-  if (managerLists.value(type) == nullptr) {
+  QMutexLocker locker(&_mutex);
+  if (managerLists.value(type,nullptr) == nullptr) {
       managerLists.insert(type, new QObjectList());
       pcs->fireIndexedPropertyChange(getListPropertyName(type), 0, QVariant(), QVariant());
   }

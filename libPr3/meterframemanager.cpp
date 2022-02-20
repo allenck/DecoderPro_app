@@ -2,7 +2,7 @@
 #include "loggerfactory.h"
 #include "instancemanager.h"
 #include "configuremanager.h"
-
+#include "jmriconfigurationmanager.h"
 /**
  * Default implementation of a MeterFrameManager.
  * This class is only used by jmri.jmrit.swing.meter.MeterFrame and
@@ -37,7 +37,7 @@
     {
         log->debug(tr("registerSelf for config of type %1").arg(/*getClass()*/metaObject()->className()));
         ConfigureManager* cm = nullptr;
-        if(cm = ((ConfigureManager*)InstanceManager::getOptionalDefault("ConfigureManager"))){
+        if((cm = ((JmriConfigurationManager*)InstanceManager::getOptionalDefault("ConfigureManager")))){
             cm->registerConfig(this, getXMLOrder());
             log->debug(tr("registering for config of type %1").arg(/*getClass()*/metaObject()->className()));
         }//);

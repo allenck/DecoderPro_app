@@ -78,7 +78,8 @@
         currentMeters = QList<Meter*>();
 
         /*MeterManager**/ mm = (MeterManager*)InstanceManager::getNullableDefault("MeterManager");
-        if (mm == nullptr) throw new RuntimeException("No meter manager exists");
+        if (mm == nullptr)
+         throw new RuntimeException("No meter manager exists");
 
         addAllMeters();
 
@@ -411,7 +412,7 @@
     }
 
     /*private*/ void MeterFrame::updateMenuUnits() {
-        bool isPercent = (meter != nullptr) && (((DefaultMeter*)meter->mself())->getUnit() == Meter::Unit::Percent);
+        bool isPercent = (meter != nullptr) && (((DefaultMeter*)meter)->getUnit() == Meter::Unit::Percent);
         bool isVoltage = (meter != nullptr) && (qobject_cast<VoltageMeter*>(meter->mself())) && !isPercent;
         bool isCurrent = (meter != nullptr) && (qobject_cast<CurrentMeter*>(meter->mself())) && !isPercent;
 

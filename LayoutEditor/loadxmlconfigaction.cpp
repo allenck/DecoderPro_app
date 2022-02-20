@@ -52,6 +52,7 @@
 
 void LoadXmlConfigAction::common()
 {
+ setObjectName("LoadXmlConfigAction");
  log = new Logger("LoadXmlConfigAction");
 }
 

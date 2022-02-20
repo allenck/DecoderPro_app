@@ -270,7 +270,7 @@ private:
  /*private*/ static /*final*/ QString traceFileName;// = "instanceManagerSequence.txt";  // use a standalone name
  /*private*/ static PrintWriter* traceFileWriter;
  /*private*/ void traceFilePrint(QString msg);
-
+ QMutex _mutex;
 protected:
 
  /**
