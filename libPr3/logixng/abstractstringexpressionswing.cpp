@@ -2,37 +2,38 @@
 #include "instancemanager.h"
 #include "runtimeexception.h"
 #include "loggerfactory.h"
+#include "stringexpressionmanager.h"
+#include "defaultsymboltable.h"
 
 AbstractStringExpressionSwing::AbstractStringExpressionSwing(QObject *parent) : AbstractSwingConfigurator(parent)
 {
 
 }
-#if 0
+
 /**
  * Abstract class for SwingConfiguratorInterface
  *
  * @author Daniel Bergqvist Copyright 2021
  */
-public abstract class AbstractStringExpressionSwing extends AbstractSwingConfigurator {
+// /*public*/  abstract class AbstractStringExpressionSwing extends AbstractSwingConfigurator {
 
-    protected JPanel panel;
 
     /** {@inheritDoc} */
-    @Override
-    public String getExecuteEvaluateMenuText() {
-        return Bundle.getMessage("MenuText_ExecuteEvaluate");
+    //@Override
+    /*public*/  QString AbstractStringExpressionSwing::getExecuteEvaluateMenuText() {
+        return tr("Evaluate");
     }
 
     /** {@inheritDoc} */
-    @Override
-    public void executeEvaluate(@Nonnull Base object) {
-        ConditionalNG conditionalNG = object.getConditionalNG();
-        if (conditionalNG == null) throw new RuntimeException("Not supported yet");
+    //@Override
+    /*public*/  void AbstractStringExpressionSwing::executeEvaluate(/*@Nonnull*/ Base* object) {
+        ConditionalNG* conditionalNG = object->getConditionalNG();
+        if (conditionalNG == nullptr) throw new RuntimeException("Not supported yet");
 
-        SymbolTable symbolTable = new DefaultSymbolTable();
+        SymbolTable* symbolTable = new DefaultSymbolTable();
         getAllSymbols(object, symbolTable);
-
-        conditionalNG.getCurrentThread().runOnLogixNGEventually(() -> {
+#if 0
+        conditionalNG->getCurrentThread().runOnLogixNGEventually(() -> {
             SymbolTable oldSymbolTable = conditionalNG.getSymbolTable();
 
             try {
@@ -51,42 +52,42 @@ public abstract class AbstractStringExpressionSwing extends AbstractSwingConfigu
 
             conditionalNG.setSymbolTable(oldSymbolTable);
         });
+#endif
     }
 
     /** {@inheritDoc} */
-    @Override
-    public BaseManager<? extends NamedBean> getManager() {
-        return InstanceManager.getDefault(StringExpressionManager.class);
+    //@Override
+    /*public*/  BaseManager/*<? extends NamedBean>*/* AbstractStringExpressionSwing::getManager() {
+        return (StringExpressionManager*)InstanceManager::getDefault("StringExpressionManager");
     }
 
     /** {@inheritDoc} */
-    @Override
-    public JPanel getConfigPanel(@Nonnull JPanel buttonPanel) throws IllegalArgumentException {
-        createPanel(null, buttonPanel);
+    //@Override
+    /*public*/  JPanel* AbstractStringExpressionSwing::getConfigPanel(/*@Nonnull*/ JPanel* buttonPanel) /*throws IllegalArgumentException*/ {
+        createPanel(nullptr, buttonPanel);
         return panel;
     }
 
     /** {@inheritDoc} */
-    @Override
-    public JPanel getConfigPanel(@Nonnull Base object, @Nonnull JPanel buttonPanel) throws IllegalArgumentException {
+    //@Override
+    /*public*/  JPanel* AbstractStringExpressionSwing::getConfigPanel(/*@Nonnull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) /*throws IllegalArgumentException*/ {
         createPanel(object, buttonPanel);
         return panel;
     }
 
-    protected abstract void createPanel(@CheckForNull Base object, @Nonnull JPanel buttonPanel);
+    //protected abstract void createPanel(@CheckForNull Base object, @Nonnull JPanel buttonPanel);
 
     /** {@inheritDoc} */
-    @Override
-    public String getExampleSystemName() {
-        return InstanceManager.getDefault(StringExpressionManager.class).getSystemNamePrefix() + "SE10";
+    //@Override
+    /*public*/  QString getExampleSystemName() {
+        return ((StringExpressionManager*)InstanceManager::getDefault("StringExpressionManager"))->getSystemNamePrefix() + "SE10";
     }
 
     /** {@inheritDoc} */
-    @Override
-    public String getAutoSystemName() {
-        return InstanceManager.getDefault(StringExpressionManager.class).getAutoSystemName();
+    //@Override
+    /*public*/  QString AbstractStringExpressionSwing::getAutoSystemName() {
+        return ((StringExpressionManager*)InstanceManager::getDefault("StringExpressionManager"))->getAutoSystemName();
     }
 
 
-    private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(AbstractStringExpressionSwing.class);
-    #endif
+    /*private*/ /*final*/ /*static*/ Logger* AbstractStringExpressionSwing::log = LoggerFactory::getLogger("AbstractStringExpressionSwing");

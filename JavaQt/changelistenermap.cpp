@@ -3,7 +3,7 @@
 
 template<class L>
 ChangeListenerMap<L>::ChangeListenerMap(QObject *parent) :
-    EventListener(parent)
+    QObject(parent)
 {
  map = new QMap<QString, QVector<L>* >;
  //map = NULL;
@@ -40,7 +40,7 @@ ChangeListenerMap<L>::ChangeListenerMap(QObject *parent) :
      */
 template<class L>
     void ChangeListenerMap<L>::add(QString name, L listener) {
-     QMutexLocker locker(&mutex);
+     QMutexLocker locker(mutex);
      if (this->map == NULL)
      {
       this->map = new QMap<QString, QVector<L>* >;
@@ -69,7 +69,7 @@ template<class L>
      */
     template<class L>
     /*public final synchronized */void ChangeListenerMap<L>::remove(QString name, L listener) {
-     QMutexLocker locker(&mutex);
+     QMutexLocker locker(mutex);
      if (this->map != NULL)
      {
       QVector<L>* array = this->map->value(name);
@@ -82,14 +82,23 @@ template<class L>
          int size = array->length() - 1;
          if (size > 0)
          {
-    //      QVector<L> clone; // = newArray(size);
-    //      //System.arraycopy(array, 0, clone, 0, i);
-    //      foreach(L val, array )
-    //       clone.append(val);
-    //      //System.arraycopy(array, i + 1, clone, i, size - i);
-    //      this->map->insert(name, clone);
+#if 0
+//      QVector<L> clone; // = newArray(size);
+//      //System.arraycopy(array, 0, clone, 0, i);
+//      foreach(L val, array )
+//       clone.append(val);
+//      //System.arraycopy(array, i + 1, clone, i, size - i);
+//      this->map->insert(name, clone);
 
-          this->map->value(name)->removeAt(i);
+      this->map.value(name)->removeAt(i);
+#else
+      QVector<L>* clone = new QVector<L>(size);
+      //System.arraycopy(array, 0, clone, 0, i)
+      for(int j=0; j<i; j++) clone->replace(j, array->at(j));
+      //System.arraycopy(array, i + 1, clone, i, size - i)
+      for(int j=i+1; j < array->size(); j++) clone->replace(j-1, array->at(j));
+      this->map.insert(name, clone);
+#endif
          }
          else
          {
@@ -115,7 +124,7 @@ template<class L>
     template<class L>
     /*public final synchronized*/ QVector<L> ChangeListenerMap<L>::get(QString name)
      {
-      QMutexLocker locker(&mutex);
+      QMutexLocker locker(mutex);
 
       return (this->map != NULL && !this->map->isEmpty())
                  ? (this->map->contains(name)? *this->map->value(name): QVector<L>())
@@ -155,7 +164,7 @@ template<class L>
     template<class L>
     /*public final synchronized*/ QVector<L> ChangeListenerMap<L>::getListeners()
     {
-      QMutexLocker locker(&mutex);
+      QMutexLocker locker(mutex);
       QVector<L> listeners = QVector<L>();
       if(map!= nullptr && !map->values().isEmpty)
       {
@@ -197,7 +206,7 @@ template<class L>
      */
     template<class L>
     /*public final synchronized*/ bool ChangeListenerMap<L>::hasListeners(QString name) {
-     QMutexLocker locker(&mutex);
+     QMutexLocker locker(mutex);
      if (this->map == NULL)
      {
       return false;

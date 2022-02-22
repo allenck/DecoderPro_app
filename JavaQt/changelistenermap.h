@@ -52,7 +52,7 @@ void add(QString name, L listener) {
 
 /*public final synchronized */
 void remove(QString name, L listener) {
- QMutexLocker locker(mutex1);
+ QMutexLocker locker(mutex);
  if (!this->map.isEmpty())
  {
   QVector<L>* array = this->map.value(name, new  QVector<L>());
@@ -65,6 +65,7 @@ void remove(QString name, L listener) {
      int size = array->length() - 1;
      if (size > 0)
      {
+#if 0
 //      QVector<L> clone; // = newArray(size);
 //      //System.arraycopy(array, 0, clone, 0, i);
 //      foreach(L val, array )
@@ -73,6 +74,14 @@ void remove(QString name, L listener) {
 //      this->map->insert(name, clone);
 
       this->map.value(name)->removeAt(i);
+#else
+      QVector<L>* clone = new QVector<L>(size);
+      //System.arraycopy(array, 0, clone, 0, i)
+      for(int j=0; j<i; j++) clone->replace(j, array->at(j));
+      //System.arraycopy(array, i + 1, clone, i, size - i)
+      for(int j=i+1; j < array->size(); j++) clone->replace(j-1, array->at(j));
+      this->map.insert(name, clone);
+#endif
      }
      else
      {
@@ -96,7 +105,7 @@ void remove(QString name, L listener) {
  */
 /*public final synchronized*/
 QVector<L> get(QString name) {
- QMutexLocker locker(mutex2);
+ QMutexLocker locker(mutex);
 
  return (!this->map.isEmpty())
             ? (this->map.contains(name)? *this->map.value(name): QVector<L>())
@@ -135,7 +144,7 @@ void set(QString name, QVector<L> *listeners) {
  */
 /*public final synchronized*/
 QVector<L> getListeners(){
- QMutexLocker locker(mutex3);
+ QMutexLocker locker(mutex);
  QVector<L> listeners = QVector<L>();
  if( !map.values().isEmpty())
  {
@@ -176,7 +185,7 @@ QVector<L> getListeners(QString name){
  */
 /*public final synchronized*/
 bool hasListeners(QString name){
- QMutexLocker locker(mutex4);
+ QMutexLocker locker(mutex);
  if (this->map.isEmpty())
  {
   return false;
@@ -216,10 +225,10 @@ public slots:
 private:
  QHash<QString, QVector<L>* > map = QHash<QString, QVector<L>* >();
  QMutex* mutex = new QMutex();
- QMutex* mutex1= new QMutex();
- QMutex* mutex2= new QMutex();
- QMutex* mutex3= new QMutex();
- QMutex* mutex4= new QMutex();
+// QMutex* mutex1= new QMutex();
+// QMutex* mutex2= new QMutex();
+// QMutex* mutex3= new QMutex();
+// QMutex* mutex4= new QMutex();
 
 protected:
 /**

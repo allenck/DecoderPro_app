@@ -193,7 +193,10 @@ long LayoutBlock::time=0;
          jmriblknum++;
 
          // Find an unused system name
-         block = (Block*)bm->AbstractManager::getBySystemName(s)->self();
+         if(bm->AbstractManager::getBySystemName(s))
+          block = (Block*)bm->AbstractManager::getBySystemName(s)->self();
+         else
+          block = nullptr;
          if (block != nullptr) {
              log->debug(tr("System name is already used: %1").arg(s));
              continue;

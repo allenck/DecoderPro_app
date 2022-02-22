@@ -36,6 +36,7 @@ isEmpty( PROJ_DIR ) {
 
 SOURCES += javaqt.cpp \
     atomicboolean.cpp \
+    #changelistenermap.cpp \
     classmigration.cpp \
     csvformat.cpp \
     csvprinter.cpp \
