@@ -103,13 +103,15 @@ BlockManager::BlockManager(QObject *parent) :
 {
  // Check that Block does not already exist
  Block* r ;
+ NamedBean* nb;
  if (!userName.isNull() && !userName.isEmpty())
  {
-  r = (Block*)AbstractManager::getByUserName(userName);
-  if (r!=NULL) return NULL;
+  nb = AbstractManager::getByUserName(userName);
+  if (nb) return(Block*)nb->self();
  }
- r = (Block*)AbstractManager::getBySystemName(systemName);
- if (r!=NULL) return NULL;
+ nb = AbstractManager::getBySystemName(systemName);
+ if (nb) return(Block*)nb->self();
+
  // Block does not exist, create a new Block
  QString sName = systemName.toUpper();
  r = new Block(sName,userName);
@@ -159,9 +161,15 @@ BlockManager::BlockManager(QObject *parent) :
  *      that name is a System Name.  If both fail, returns NULL.
  */
 /*public*/ Block* BlockManager::getBlock(QString name) {
-    Block* r = (Block*)AbstractManager::getByUserName(name);
-    if (r!=NULL) return r;
-    return (Block*)AbstractManager::getBySystemName(name);
+    NamedBean* nb = AbstractManager::getByUserName(name);
+    if (nb)
+     return (Block*)nb->self();
+    nb = AbstractManager::getBySystemName(name);
+    if (!nb)
+     return nullptr;
+    else
+     return (Block*)nb->self();
+
 }
 #if 0
 /*public*/ Block *BlockManager::getBySystemName(QString name) const {
@@ -177,10 +185,10 @@ BlockManager::BlockManager(QObject *parent) :
 {
  // First try to find it in the user list.
  // If that fails, look it up in the system list
- Block* retv = (Block*)this->AbstractManager::getByUserName(key);
+ Block* retv = (Block*)this->AbstractManager::getByUserName(key)->self();
  if (retv == NULL)
  {
-     retv = (Block*)this->AbstractManager::getBySystemName(key);
+     retv = (Block*)this->AbstractManager::getBySystemName(key)->self();
  }
  // If it's not in the system list, go ahead and return NULL
  return (retv);
@@ -250,12 +258,12 @@ BlockManager::BlockManager(QObject *parent) :
     foreach(NamedBean* b, AbstractManager::getNamedBeanSet())
     {
         if (b != nullptr) {
-            QVariant val = ((Block*)b)->getValue();
+            QVariant val = ((Block*)b->self())->getValue();
             RosterEntry* obj = VPtr<RosterEntry>::asPtr(val) ;
             if ((obj && obj == re) ||
                     obj->toString() == (re->getId()) ||
                     obj->toString() == (re->getDccAddress())) {
-                blockList.append((Block*)b);
+                blockList.append((Block*)b->self());
             }
         }
     }//);
@@ -271,7 +279,7 @@ QCompleter* BlockManager::getCompleter(QString text)
   QStringList completerList;
   foreach(QString systemName, nameList)
   {
-   Block* b = (Block*)AbstractManager::getBySystemName(systemName);
+   Block* b = (Block*)AbstractManager::getBySystemName(systemName)->self();
    if(b->getUserName().startsWith(text))
     completerList.append(b->getUserName());
   }

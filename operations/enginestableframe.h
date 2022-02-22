@@ -26,7 +26,7 @@ namespace Operations
   explicit EnginesTableFrame(QWidget *parent = 0);
   /*public*/ QList<RollingStock*>* getSortByList();
   /*public*/ QString getClassName() override;
-   QObject* self() override {return (QObject*)this; }
+   QObject* pself() override {return (QObject*)this; }
 
  signals:
 

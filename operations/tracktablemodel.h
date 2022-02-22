@@ -31,7 +31,7 @@ namespace Operations
   /*public*/ QVariant data(const QModelIndex &index, int role) const override;
   /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
   /*public*/ void dispose();
-  QObject* self() override {return (QObject*)this; }
+  QObject* pself() override {return (QObject*)this; }
 
  public slots:
   /*public*/ virtual void propertyChange(PropertyChangeEvent* e) override;

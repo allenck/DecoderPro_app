@@ -51,7 +51,7 @@ Q_OBJECT
    Q_INTERFACES(PropertyChangeListener) AbstractTurnoutTestBase* base;
 public:
     ListenO1(AbstractTurnoutTestBase* base) {this->base = base;}
-QObject* self() {return (QObject*)this;}public slots:
+QObject* pself() {return (QObject*)this;}public slots:
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* e) {
         base->listenerResult = true;

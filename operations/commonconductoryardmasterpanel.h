@@ -31,7 +31,7 @@ namespace Operations
  public:
   CommonConductorYardmasterPanel(QWidget* parent = 0);
   /*public*/ void initComponents();
-  QObject* self() override {return (QObject*)this; }
+  QObject* pself() override {return (QObject*)this; }
 
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e) override;

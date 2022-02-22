@@ -99,6 +99,8 @@ public:
     virtual /*public*/ void columnAdded(TableColumnModelEvent* e)override;
     virtual /*public*/ void columnRemoved(TableColumnModelEvent* e)override;
     QObject* self() override {return this;}
+    QObject* pself() override{return (QObject*)this;}
+
 protected:
     /*protected*/ void addToBottomBox(QWidget* comp);
     /*protected*/ void dispose();

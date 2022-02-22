@@ -114,7 +114,7 @@ public:
     /*public*/ bool setEditIconMenu(QMenu* popup) override;
     /*public*/ bool updateScene() override;
     QObject* self() override {return (QObject*)this;}
-
+    QObject* pself() override{return (QObject*)this;}
 signals:
     
 public slots:

@@ -53,7 +53,7 @@ namespace Operations {
   /*public*/ int getColumnCount() const override {return columnCount(QModelIndex());}
   /*public*/ QString getColumnClass(int col)const override;
 
-  QObject* self() override {return (QObject*)this; }
+  QObject* pself() override {return (QObject*)this; }
 
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e) override;

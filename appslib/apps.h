@@ -42,7 +42,7 @@ void initGui();
 #ifdef SCRIPTING_ENABLED
 /*public*/ static void ynstrument(QString path);
 #endif
-QObject* self() override {return (QObject*)this;}
+QObject* pself() override {return (QObject*)this;}
 
 
 signals:

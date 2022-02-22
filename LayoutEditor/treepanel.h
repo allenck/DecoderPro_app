@@ -20,7 +20,7 @@ class TreePanel : public QWidget, public PropertyChangeListener
   Q_INTERFACES(PropertyChangeListener)
 public:
  explicit TreePanel(QWidget *parent = 0);
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
 
 signals:
 

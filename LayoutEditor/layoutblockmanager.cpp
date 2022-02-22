@@ -72,14 +72,14 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
 {
  // Check that LayoutBlock does not already exist
  LayoutBlock* result = NULL;
-
+ NamedBean* nb;
  if (userName == NULL || userName==(""))
  {
   log.error("Attempt to create a LayoutBlock with no user name");
   return NULL;
  }
- result = (LayoutBlock*)getByUserName(userName);
- if (result!=NULL) return NULL;
+ nb =getByUserName(userName);
+ if (nb!=NULL) return (LayoutBlock*)nb->self();
  // here if not found under user name
  QString sName = "";
  if (systemName.isEmpty())
@@ -90,16 +90,16 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
   {
    sName = "ILB"+QString("%1").arg(blkNum);
    blkNum++;
-   result = (LayoutBlock*)getBySystemName(sName);
-   if (result==NULL)
+   nb = getBySystemName(sName);
+   if (nb==NULL)
     found = false;
   }
  }
  else
  {
   // try the supplied system name
-  result = (LayoutBlock*)getBySystemName((systemName.toUpper()));
-  if (result!=NULL) return NULL;
+  nb = getBySystemName((systemName.toUpper()));
+  if (nb!=NULL) return (LayoutBlock*)nb->self();
   sName = systemName.toUpper();
  }
  // LayoutBlock does not exist, create a new LayoutBlock
@@ -114,7 +114,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     bool found = true;
     while (found) {
         QString sName = "ILB"+QString("%1").arg(blkNum);
-        LayoutBlock* block = (LayoutBlock*)getBySystemName(sName);
+        LayoutBlock* block = (LayoutBlock*)getBySystemName(sName)->self();
         if (block==NULL){
             found = false;
             QString uName = "AUTOBLK:"+QString("%1").arg(blkNum);
@@ -140,15 +140,17 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
  *      that name is a System Name.  If both fail, returns NULL.
  */
 /*public*/ LayoutBlock* LayoutBlockManager::getLayoutBlock(QString name) {
-    LayoutBlock* block = (LayoutBlock*)getByUserName(name);
+    LayoutBlock* block = (LayoutBlock*)getByUserName(name)->self();
     if (block!=NULL) return block;
-    return (LayoutBlock*)getBySystemName(name);
+    return (LayoutBlock*)getBySystemName(name)->self();
 }
 
 /*public*/ LayoutBlock* LayoutBlockManager::getLayoutBlock(Block* block){
     foreach(NamedBean* nb, getNamedBeanSet())
     {
-      if (((LayoutBlock*)nb)->getBlock() == block) return (LayoutBlock*)nb;
+     LayoutBlock* lb = (LayoutBlock*)nb->self();
+      if (lb->getBlock()==(block))
+       return lb;
     }
     return nullptr;
 }
@@ -172,7 +174,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
   }
   else
   {
-   LayoutBlock* block = (LayoutBlock*)getBySystemName(sName);
+   LayoutBlock* block = (LayoutBlock*)getBySystemName(sName)->self();
    if (block->getOccupancySensor() == s) return block;
   }
  }
@@ -196,7 +198,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
   }
   else
   {
-   LayoutBlock* block = (LayoutBlock*)getBySystemName(sName);
+   LayoutBlock* block = (LayoutBlock*)getBySystemName(sName)->self();
    if (block->getMemory() == m) return block;
   }
  }
@@ -216,7 +218,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
  {
   QString sName = iter.next();
   if (sName.isNull()) log.error("System name NULL during 1st initialization of LayoutBlocks");
-  LayoutBlock* b = (LayoutBlock*)getBySystemName(sName);
+  LayoutBlock* b = (LayoutBlock*)getBySystemName(sName)->self();
   b->initializeLayoutBlock();
  }
  // cycle through all LayoutBlocks, updating Paths of associated jmri.Blocks
@@ -227,7 +229,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
   QString sName = iter.next();
   if (sName==NULL) log.error("System name NULL during 2nd initialization of LayoutBlocks");
   log.debug("LayoutBlock initialization - system name = "+sName);
-  LayoutBlock* b = (LayoutBlock*)getBySystemName(sName);
+  LayoutBlock* b = (LayoutBlock*)getBySystemName(sName)->self();
   b->updatePaths();
   if (!b->getBlock()->getValue().isNull()) b->getBlock()->setValue(QVariant());
  }
@@ -286,8 +288,8 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         return NULL;
     }
     // non-NULL - check if input corresponds to Blocks in a Layout Editor panel.
-    LayoutBlock* fLayoutBlock = (LayoutBlock*)getByUserName(facingBlock->getUserName());
-    LayoutBlock* pLayoutBlock = (LayoutBlock*)getByUserName(protectedBlock->getUserName());
+    LayoutBlock* fLayoutBlock = (LayoutBlock*)getByUserName(facingBlock->getUserName())->self();
+    LayoutBlock* pLayoutBlock = (LayoutBlock*)getByUserName(protectedBlock->getUserName())->self();
     if ( (fLayoutBlock==NULL) || (pLayoutBlock==NULL) ) {
         if (fLayoutBlock==NULL) log.error("Block "+facingBlock->getSystemName()+"is not on a Layout Editor panel.");
         if (pLayoutBlock==NULL) log.error("Block "+protectedBlock->getSystemName()+"is not on a Layout Editor panel.");
@@ -1144,7 +1146,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         log.error ("NULL block in call to getFacingSignalMast");
         return NULL;
     }
-    LayoutBlock* fLayoutBlock = (LayoutBlock*)getByUserName(facingBlock->getUserName());
+    LayoutBlock* fLayoutBlock = (LayoutBlock*)getByUserName(facingBlock->getUserName())->self();
     if (fLayoutBlock==NULL){
         log.error("Block "+facingBlock->getSystemName()+"is not on a Layout Editor panel.");
         return NULL;
@@ -1190,7 +1192,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
   log.error ("NULL block in call to getFacingSensor");
   return NULL;
  }
- LayoutBlock* fLayoutBlock = (LayoutBlock*)getByUserName(facingBlock->getUserName());
+ LayoutBlock* fLayoutBlock = (LayoutBlock*)getByUserName(facingBlock->getUserName())->self();
  if (fLayoutBlock==NULL)
  {
   log.error("Block "+facingBlock->getSystemName()+"is not on a Layout Editor panel.");
@@ -1263,8 +1265,8 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         return NULL;
     }
     // non-NULL - check if input corresponds to Blocks in a Layout Editor panel.
-    LayoutBlock* fLayoutBlock = (LayoutBlock*)getByUserName(facingBlock->getUserName());
-    LayoutBlock* pLayoutBlock = (LayoutBlock*)getByUserName(protectedBlock->getUserName());
+    LayoutBlock* fLayoutBlock = (LayoutBlock*)getByUserName(facingBlock->getUserName())->self();
+    LayoutBlock* pLayoutBlock = (LayoutBlock*)getByUserName(protectedBlock->getUserName())->self();
     if ( (fLayoutBlock==NULL) || (pLayoutBlock==NULL) ) {
         if (fLayoutBlock==NULL) log.error("Block "+facingBlock->getSystemName()+" is not on a Layout Editor panel.");
         if (pLayoutBlock==NULL) log.error("Block "+protectedBlock->getSystemName()+" is not on a Layout Editor panel.");
@@ -1444,8 +1446,8 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         return NULL;
     }
     // non-NULL - check if input corresponds to Blocks in a Layout Editor panel.
-    LayoutBlock* fLayoutBlock = (LayoutBlock*)getByUserName(facingBlock->getUserName());
-    LayoutBlock* pLayoutBlock = (LayoutBlock*)getByUserName(protectedBlock->getUserName());
+    LayoutBlock* fLayoutBlock = (LayoutBlock*)getByUserName(facingBlock->getUserName())->self();
+    LayoutBlock* pLayoutBlock = (LayoutBlock*)getByUserName(protectedBlock->getUserName())->self();
     if ( (fLayoutBlock==NULL) || (pLayoutBlock==NULL) ) {
         if (fLayoutBlock==NULL) log.error("Block "+facingBlock->getSystemName()+"is not on a Layout Editor panel.");
         if (pLayoutBlock==NULL) log.error("Block "+protectedBlock->getSystemName()+"is not on a Layout Editor panel.");
@@ -1644,8 +1646,8 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
  if(panel == nullptr)
   throw new NullPointerException("panel is marked @nonnull but is null");
 
- if (static_cast<SignalHead*>(nb)) {
-     return getProtectedBlock((SignalHead*) nb, panel);
+ if (static_cast<SignalHead*>(nb->self())) {
+     return getProtectedBlock((SignalHead*) nb->self(), panel);
  }
  QList<LayoutBlock*> proBlocks = getProtectingBlocksByBean(nb, panel);
 
@@ -1668,9 +1670,9 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
  QList<LayoutBlock*> ret = QList<LayoutBlock*>();
 
  //if (nb instanceof SignalHead)
- if(static_cast<SignalHead*>(nb))
+ if(static_cast<SignalHead*>(nb->self()))
  {
-  ret.append(getProtectedBlock((SignalHead*) nb, panel));
+  ret.append(getProtectedBlock((SignalHead*) nb->self(), panel));
   return ret;
  }
  return getProtectingBlocksByBean(nb, panel);
@@ -1725,7 +1727,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
  QList<LayoutBlock*> protectingBlocks = QList<LayoutBlock*>();
 
  //if (!(bean instanceof SignalMast) && !(bean instanceof Sensor))
- if(static_cast<SignalMast*>(bean) == nullptr && static_cast<Sensor*>(bean)== nullptr)
+ if(static_cast<SignalMast*>(bean->self()) == nullptr && static_cast<Sensor*>(bean->self())== nullptr)
  {
   log.error("Incorrect class type called, must be either SignalMast or Sensor");
   return protectingBlocks;
@@ -1773,7 +1775,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
  if (l != nullptr)
  {
      //if (bean instanceof SignalMast)
-  if(static_cast<SignalMast*>(bean))
+  if(static_cast<SignalMast*>(bean->self()))
   {
       if (l->getSignalAMast() == bean) {
           protectingBlocks.append(l->getLayoutBlockAC());
@@ -1786,7 +1788,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
       }
   }
   //else if (bean instanceof Sensor)
-  else if(static_cast<Sensor*>(bean))
+  else if(static_cast<Sensor*>(bean->self()))
   {
       if (l->getSensorA() == bean) {
           protectingBlocks.append(l->getLayoutBlockAC());
@@ -1938,20 +1940,20 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
  * @return The block that the bean object is facing
  */
 /*public*/ LayoutBlock* LayoutBlockManager::getFacingBlockByNamedBean(NamedBean* nb, LayoutEditor* panel){
-    if(static_cast<TurnoutSignalMast*>(nb)!= NULL){
-        return getFacingBlockByMast((SignalMast*)nb, panel);
+    if(static_cast<TurnoutSignalMast*>(nb->self())!= NULL){
+        return getFacingBlockByMast((SignalMast*)nb->self(), panel);
     }
-    if(static_cast<VirtualSignalMast*>(nb)!= NULL){
-        return getFacingBlockByMast((SignalMast*)nb, panel);
+    if(static_cast<VirtualSignalMast*>(nb->self())!= NULL){
+        return getFacingBlockByMast((SignalMast*)nb->self(), panel);
     }
-    if(static_cast<SignalMast*>(nb)!= NULL){
-        return getFacingBlockByMast((SignalMast*)nb, panel);
+    if(static_cast<SignalMast*>(nb->self())!= NULL){
+        return getFacingBlockByMast((SignalMast*)nb->self(), panel);
     }
-    if(static_cast<SignalHead*>(nb)!= NULL){
-        return getFacingBlock((SignalHead*)nb, panel);
+    if(static_cast<SignalHead*>(nb->self())!= NULL){
+        return getFacingBlock((SignalHead*)nb->self(), panel);
     }
-    if(static_cast<Sensor*>(nb)!= NULL){
-        return getFacingBlockBySensor((Sensor*)nb, panel);
+    if(static_cast<Sensor*>(nb->self())!= NULL){
+        return getFacingBlockBySensor((Sensor*)nb->self(), panel);
     }
     return NULL;
 }
@@ -2050,7 +2052,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
         log.debug("found signalmast at turnout " + t->getTurnout()->getDisplayName());
         QObject* connect = nullptr;
 
-        if (static_cast<SignalMast*>(bean)) {
+        if (static_cast<SignalMast*>(bean->self())) {
             if (t->getSignalAMast() == bean) {
                 connect = t->getConnectA();
             } else if (t->getSignalBMast() == bean) {
@@ -2060,7 +2062,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
             } else {
                 connect = t->getConnectD();
             }
-        } else if (static_cast<Sensor*>(bean)) {
+        } else if (static_cast<Sensor*>(bean->self())) {
             if (t->getSensorA() == bean) {
                 connect = t->getConnectA();
             } else if (t->getSensorB() == bean) {
@@ -2085,7 +2087,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     if (l != nullptr) {
         QObject* connect = nullptr;
 
-        if (static_cast<SignalMast*>(bean)) {
+        if (static_cast<SignalMast*>(bean->self())) {
             if (l->getSignalAMast() == bean) {
                 connect = l->getConnectA();
             } else if (l->getSignalBMast() == bean) {
@@ -2095,7 +2097,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
             } else {
                 connect = l->getConnectD();
             }
-        } else if (static_cast<Sensor*>(bean)) {
+        } else if (static_cast<Sensor*>(bean->self())) {
             if (l->getSensorA() == bean) {
                 connect = l->getConnectA();
             } else if (l->getSensorB() == bean) {
@@ -2120,7 +2122,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
     if (ls != nullptr) {
         QObject* connect = nullptr;
 
-        if (static_cast<SignalMast*>(bean)) {
+        if (static_cast<SignalMast*>(bean->self())) {
             if (ls->getSignalAMast() == bean) {
                 connect = ls->getConnectA();
             } else if (ls->getSignalBMast() == bean) {
@@ -2130,7 +2132,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
             } else {
                 connect = ls->getConnectD();
             }
-        } else if (static_cast<Sensor*>(bean)) {
+        } else if (static_cast<Sensor*>(bean->self())) {
             if (ls->getSensorA() == bean) {
                 connect = ls->getConnectA();
             } else if (ls->getSensorB() == bean) {
@@ -2257,7 +2259,7 @@ LayoutBlockManager::LayoutBlockManager(QObject *parent) :
  while (en.hasNext())
  {
   en.next();
-  ((LayoutBlock*)en.value())->initializeLayoutBlockRouting();
+  ((LayoutBlock*)en.value()->self())->initializeLayoutBlockRouting();
  }
 }
 
@@ -2460,7 +2462,7 @@ QCompleter* LayoutBlockManager::getCompleter(QString text, bool bIncludeUserName
   QStringList completerList;
   foreach(QString systemName, nameList)
   {
-   LayoutBlock* b = (LayoutBlock*)getBySystemName(systemName);
+   LayoutBlock* b = (LayoutBlock*)getBySystemName(systemName)->self();
    if(systemName.toUpper().startsWith(text.toUpper()))
     completerList.append(b->getUserName());
    else if(bIncludeUserNames)

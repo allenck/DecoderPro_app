@@ -74,8 +74,8 @@ public:
 public slots:
  void actionPerformed(JActionEvent* =0) override
  {
-  act->reporterComboBox->setSelectedItem((NamedBean*)((Block*) act->bean)->getReporter());
-  act->useCurrent->setChecked(((Block*) act->bean)->isReportingCurrent());
+  act->reporterComboBox->setSelectedItem((NamedBean*)((Block*) act->bean->self())->getReporter());
+  act->useCurrent->setChecked(((Block*) act->bean->self())->isReportingCurrent());
  }
 };
 
@@ -87,7 +87,7 @@ public:
  SetSaveItemAction(BlockEditAction* act) {this->act = act;}
 public slots:
  /*public*/ void actionPerformed() {
-     Block* blk = (Block*) act->bean;
+     Block* blk = (Block*) act->bean->self();
      blk->setReporter((Reporter*) act->reporterComboBox->getSelectedItem());
      blk->setReportingCurrent(act->useCurrent->isChecked());
  }

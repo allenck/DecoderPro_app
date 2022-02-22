@@ -67,7 +67,7 @@ PushbuttonPacket::PushbuttonPacket(QObject *parent) :
 
 /*public*/ /*static*/ QByteArray PushbuttonPacket::pushbuttonPkt(QString prefix, int turnoutNum, bool locked)
 {
- AbstractTurnout* t = (AbstractTurnout*)((ProxyTurnoutManager*) InstanceManager::turnoutManagerInstance())->AbstractProxyManager::getBySystemName(prefix + turnoutNum);
+ AbstractTurnout* t = (AbstractTurnout*)((ProxyTurnoutManager*) InstanceManager::turnoutManagerInstance())->AbstractProxyManager::getBySystemName(prefix + turnoutNum)->self();
  QByteArray bl;
 
  if (t->getDecoderName()==(unknown))
@@ -125,7 +125,7 @@ PushbuttonPacket::PushbuttonPacket(QObject *parent) :
   // set the default for one button in case the turnout doesn't exist
   int button = oneButton;
   modTurnoutNum++;
-  AbstractTurnout* t = (AbstractTurnout*)((ProxyTurnoutManager*) InstanceManager::turnoutManagerInstance())->AbstractProxyManager::getBySystemName(prefix + modTurnoutNum);
+  AbstractTurnout* t = (AbstractTurnout*)((ProxyTurnoutManager*) InstanceManager::turnoutManagerInstance())->AbstractProxyManager::getBySystemName(prefix + modTurnoutNum)->self();
   if (t != NULL)
   {
    if (t->getDecoderName()==(CVP_1Bname))

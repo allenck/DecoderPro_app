@@ -24,7 +24,7 @@ namespace Operations
   /*public*/ static /*final*/ QString TIME;// = Bundle.getMessage("Time");
   /*public*/ void dispose() override;
   /*public*/ QString getClassName() override;
-  QObject* self() override {return (QObject*)this; }
+  QObject* pself() override {return (QObject*)this; }
 
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e) override;

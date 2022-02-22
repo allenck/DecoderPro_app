@@ -67,6 +67,8 @@ public:
     /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::removePropertyChangeListener(l);}
 
     QObject* vself() override {return (QObject*)this;}
+    QObject* pself() override {return (QObject*)this;}
+
 signals:
     void on_newSignalMastLogicCreated(SignalMastLogic*);
     void propertyChange(PropertyChangeEvent*) override;
@@ -125,7 +127,7 @@ public slots:
    }
   }
  }
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 private:
  DefaultSignalMastLogicManager* dsmlm;
 };

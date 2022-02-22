@@ -120,7 +120,7 @@ MtBeanTableDataModel::MtBeanTableDataModel(MemoryTableAction* mt)
 
     if (col == VALUECOL)
     {
-        Memory* t = (Memory*) getBySystemName(sysNameList.at(row));
+        Memory* t = (Memory*) getBySystemName(sysNameList.at(row))->self();
         t->setValue(value);
         fireTableRowsUpdated(row, row);
         return true;

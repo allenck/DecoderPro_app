@@ -24,6 +24,7 @@ class DefaultVariableLightManager : public AbstractManager, public VariableLight
 
   QObject* self() override {return this;}
   QObject* vself() override {return (QObject*)this;}
+  QObject* pself() override{return (QObject*)this;}
 
   /*public*/ NamedBean* getByUserName(/*@Nonnull*/ QString s) const override {return AbstractManager::getBeanByUserName(s);}
   /*public*/ NamedBean* getBySystemName(/*@Nonnull*/ QString s) const override {return AbstractManager::getBeanBySystemName(s);}

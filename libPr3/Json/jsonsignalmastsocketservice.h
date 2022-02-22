@@ -30,7 +30,7 @@ private:
  JsonSignalMastSocketService* jsmss;
 public:
 /*public*/ SignalMastListener(SignalMast* signalMast, JsonSignalMastSocketService* jsmss);
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 public slots:
 /*public*/ void propertyChange(PropertyChangeEvent* e);
  friend class JsonSignalMastSocketService;

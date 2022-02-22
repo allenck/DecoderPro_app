@@ -15,7 +15,7 @@ Q_INTERFACES(PropertyChangeListener)
  /*public*/ void onList(QString type, QJsonObject data, QLocale locale) /*throw (JsonException)*/ override;
  /*public*/ void onClose() override;
 
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
 public slots:
  /*public*/ void propertyChange(PropertyChangeEvent* evt) override;
 

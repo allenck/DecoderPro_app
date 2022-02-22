@@ -33,7 +33,7 @@
     if (tm != nullptr) {
         if (tm->AbstractManager::getNamedBeanSet().isEmpty()) return QDomElement();
         for (NamedBean* nb: tm->AbstractManager::getNamedBeanSet()) {
-         NamedTable* table = (NamedTable*)nb;
+         NamedTable* table = (NamedTable*)nb->self();
             log->debug("table system name is " + table->getSystemName());  // NOI18N
             try {
                 QDomElement e = ConfigXmlManager::elementFromObject(table);

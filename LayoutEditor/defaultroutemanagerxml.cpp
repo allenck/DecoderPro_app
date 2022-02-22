@@ -54,7 +54,7 @@ DefaultRouteManagerXml::DefaultRouteManagerXml(QObject *parent) :
           Logger::error("System name NULL during store");
       }
       log->debug("system name is " + sname);
-      Route* r = (Route*)tm->getBySystemName(sname);
+      Route* r = (Route*)tm->getBySystemName(sname)->self();
       QString cTurnout = r->getControlTurnout();
       int addedDelay = r->getRouteCommandDelay();
       bool routeLocked = r->getLocked();

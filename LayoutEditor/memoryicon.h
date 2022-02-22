@@ -70,6 +70,7 @@ public:
     /*public*/ void dispose();
     /*public*/ QString getGroupName();
     QObject* self() override {return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 
 signals:
     

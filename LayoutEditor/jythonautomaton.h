@@ -11,9 +11,11 @@ class JythonAutomaton : public AbstractAutomaton
  Q_OBJECT
 public:
  //explicit JythonAutomaton(QObject *parent = 0);
- /*public*/ JythonAutomaton(QString file, QObject *parent = 0);
+  /*public*/ JythonAutomaton(QString file, QObject *parent = 0);
 
-signals:
+  QObject* pself() override{return (QObject*)this;}
+
+ signals:
 
 public slots:
  void On_stdErr(QString);

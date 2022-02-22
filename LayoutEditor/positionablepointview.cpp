@@ -579,19 +579,19 @@
     if (nb == nullptr) {
         return;
     }
-    if (static_cast<SignalMast*>(nb)) {
+    if (static_cast<SignalMast*>(nb->self())) {
         if (nb->equals(getWestBoundSignalMast())) {
             setWestBoundSignalMast(nullptr);
         } else if (nb->equals(getEastBoundSignalMast())) {
             setEastBoundSignalMast(nullptr);
         }
-    } else if (static_cast<Sensor*>(nb)) {
+    } else if (static_cast<Sensor*>(nb->self())) {
         if (nb->equals(getWestBoundSensor())) {
             setWestBoundSignalMast(nullptr);
         } else if (nb->equals(getEastBoundSensor())) {
             setEastBoundSignalMast(nullptr);
         }
-    } else if (static_cast<SignalHead*>(nb)) {
+    } else if (static_cast<SignalHead*>(nb->self())) {
         if (nb->equals(getWestBoundSignalHead())) {
             setWestBoundSignal(nullptr);
         }

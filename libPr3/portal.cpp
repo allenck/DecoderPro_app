@@ -484,18 +484,18 @@
     QString blockName = block->getDisplayName();
     if (block->equals(_toBlock)) {
         if (_fromSignal != nullptr) {
-            if (static_cast<SignalHead*>(_fromSignal)) {
-                speed = getPermissibleSignalSpeed((SignalHead*) _fromSignal, entrance);
+            if (static_cast<SignalHead*>(_fromSignal->self())) {
+                speed = getPermissibleSignalSpeed((SignalHead*) _fromSignal->self(), entrance);
             } else {
-                speed = getPermissibleSignalSpeed((SignalMast*) _fromSignal, entrance);
+                speed = getPermissibleSignalSpeed((SignalMast*) _fromSignal->self(), entrance);
             }
         }
     } else if (block->equals(_fromBlock)) {
         if (_toSignal != nullptr) {
-            if (static_cast<SignalHead*>(_toSignal)) {
-                speed = getPermissibleSignalSpeed((SignalHead*) _toSignal, entrance);
+            if (static_cast<SignalHead*>(_toSignal->self())) {
+                speed = getPermissibleSignalSpeed((SignalHead*) _toSignal->self(), entrance);
             } else {
-                speed = getPermissibleSignalSpeed((SignalMast*) _toSignal, entrance);
+                speed = getPermissibleSignalSpeed((SignalMast*) _toSignal->self(), entrance);
             }
         }
     } else {

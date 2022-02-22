@@ -10,7 +10,7 @@ public:
     //explicit PanelPro(QObject *parent = 0);
     PanelPro(JFrame* p, QWidget *parent = 0);
     /*public*/ static void main(char *argv[]);
-    QObject* self() override {return (QObject*)this;}
+    QObject* pself() override {return (QObject*)this;}
 signals:
 
 public slots:

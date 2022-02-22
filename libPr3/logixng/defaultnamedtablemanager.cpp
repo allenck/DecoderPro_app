@@ -185,7 +185,7 @@
  */
 //@Override
 /*public*/  NamedTable* DefaultNamedTableManager::getByUserName(QString name) {
-    return (NamedTable*)_tuser->value(name);
+    return (NamedTable*)_tuser->value(name)->self();
 }
 
 /**
@@ -193,7 +193,7 @@
  */
 //@Override
 /*public*/  NamedTable* DefaultNamedTableManager::getBySystemName(QString name) {
-    return (NamedTable*)_tsys->value(name);
+    return (NamedTable*)_tsys->value(name)->self();
 }
 
 /**
@@ -224,7 +224,7 @@
 //@Override
 /*public*/  void DefaultNamedTableManager::printTree(QLocale locale, PrintWriter* writer, QString indent) {
     for (NamedBean* nb : AbstractManager::getNamedBeanSet()) {
-     NamedTable* namedTable = (NamedTable*)nb;
+     NamedTable* namedTable = (NamedTable*)nb->self();
         if (qobject_cast<DefaultCsvNamedTable*>(namedTable)) {
             DefaultCsvNamedTable* csvTable = (DefaultCsvNamedTable*)namedTable;
             writer->write(QString(

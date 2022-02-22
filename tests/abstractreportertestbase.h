@@ -42,7 +42,7 @@ public slots:
  Q_INTERFACES(PropertyChangeListener)AbstractReporterTestBase* base;
 public:
  TestReporterListenerO1(AbstractReporterTestBase* base) { this->base = base;}
-QObject* self() {return (QObject*)this;}public slots:
+QObject* pself() {return (QObject*)this;}public slots:
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* e);
 };

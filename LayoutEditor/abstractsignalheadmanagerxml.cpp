@@ -50,7 +50,7 @@ AbstractSignalHeadManagerXml::~AbstractSignalHeadManagerXml()
     }
     for (NamedBean* nb : shList)
     {
-     SignalHead* sh = (SignalHead*)nb;
+     SignalHead* sh = (SignalHead*)nb->self();
      QString sname = sh->getSystemName();
      if (sname=="") log->error("System name NULL during store");
      log->debug("system name is "+sname);

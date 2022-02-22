@@ -34,7 +34,7 @@ public:
  /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
  /*public*/ int getPreferredWidth(int col);
  /*public*/ QString getColumnClass(int col);
- QObject* self() override {return (QObject*)this;}
+ QObject* pself() override {return (QObject*)this;}
 
 signals:
 

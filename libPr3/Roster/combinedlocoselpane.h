@@ -22,7 +22,7 @@ Q_INTERFACES(PropertyChangeListener)
     explicit CombinedLocoSelPane(QWidget *parent = 0);
     /*public*/ CombinedLocoSelPane(QLabel* s, ProgModeSelector* selector, QWidget *parent = 0);
     /*public*/ void init();
-QObject* self() override {(QObject*)this;}
+QObject* pself() override {(QObject*)this;}
 signals:
 
 public slots:

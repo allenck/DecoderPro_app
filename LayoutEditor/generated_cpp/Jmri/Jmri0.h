@@ -119,6 +119,7 @@ public:
 
 virtual bool  handle();
 virtual void init();
+virtual QObject*  pself();
 virtual QObject*  self();
 
   const QMetaObject* metaObject() const;
@@ -132,6 +133,7 @@ inline bool  promoted_handle() { return this->handle(); }
 inline void promoted_wait(int  milliseconds) { this->wait(milliseconds); }
 inline bool  py_q_handle() { return AbstractAutomaton::handle(); }
 inline void py_q_init() { AbstractAutomaton::init(); }
+inline QObject*  py_q_pself() { return AbstractAutomaton::pself(); }
 inline QObject*  py_q_self() { return AbstractAutomaton::self(); }
 };
 
@@ -156,6 +158,8 @@ void delete_AbstractAutomaton(AbstractAutomaton* obj) { delete obj; }
    void notifyAll(AbstractAutomaton* theWrappedObject);
    void notifyFailedThrottleRequest(AbstractAutomaton* theWrappedObject, DccLocoAddress*  address, QString  reason);
    void notifyThrottleFound(AbstractAutomaton* theWrappedObject, DccThrottle*  t);
+   QObject*  pself(AbstractAutomaton* theWrappedObject);
+   QObject*  py_q_pself(AbstractAutomaton* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractAutomaton*)theWrappedObject)->py_q_pself());}
    int  readServiceModeCV(AbstractAutomaton* theWrappedObject, QString  CV);
    QObject*  self(AbstractAutomaton* theWrappedObject);
    QObject*  py_q_self(AbstractAutomaton* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractAutomaton*)theWrappedObject)->py_q_self());}
@@ -578,6 +582,7 @@ inline long  py_q_getSensorDebounceGoingActiveTimer() const { return AbstractSen
 inline long  py_q_getSensorDebounceGoingInActiveTimer() const { return AbstractSensor::getSensorDebounceGoingInActiveTimer(); }
 inline int  py_q_getState() { return AbstractSensor::getState(); }
 inline bool  py_q_getUseDefaultTimerSettings() { return AbstractSensor::getUseDefaultTimerSettings(); }
+inline QObject*  py_q_self() { return AbstractSensor::self(); }
 inline void py_q_setInverted(bool  inverted) { AbstractSensor::setInverted(inverted); }
 inline void py_q_setKnownState(int  s) { AbstractSensor::setKnownState(s); }
 inline void py_q_setSensorDebounceGoingActiveTimer(long  time) const { AbstractSensor::setSensorDebounceGoingActiveTimer(time); }
@@ -609,6 +614,7 @@ void delete_AbstractSensor(AbstractSensor* obj) { delete obj; }
    int  py_q_getState(AbstractSensor* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_getState());}
    QString  getStateName(AbstractSensor* theWrappedObject, int  arg__1);
    bool  py_q_getUseDefaultTimerSettings(AbstractSensor* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_getUseDefaultTimerSettings());}
+   QObject*  py_q_self(AbstractSensor* theWrappedObject){  return (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_self());}
    void sensorDebounce(AbstractSensor* theWrappedObject);
    void py_q_setInverted(AbstractSensor* theWrappedObject, bool  inverted){  (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_setInverted(inverted));}
    void py_q_setKnownState(AbstractSensor* theWrappedObject, int  s){  (((PythonQtPublicPromoter_AbstractSensor*)theWrappedObject)->py_q_setKnownState(s));}
@@ -1877,8 +1883,8 @@ virtual QVariant  headerData(int  section, Qt::Orientation  orientation, int  ro
 virtual void init();
 virtual bool  matchPropertyName(PropertyChangeEvent*  e);
 virtual void propertyChange(PropertyChangeEvent*  e);
+virtual QObject*  pself();
 virtual int  rowCount(const QModelIndex&  parent) const;
-virtual QObject*  self();
 virtual void setColumnIdentities(JTable*  table);
 virtual bool  setData(const QModelIndex&  index, const QVariant&  value, int  role);
 virtual void updateNameList();
@@ -1932,8 +1938,8 @@ inline QVariant  py_q_headerData(int  section, Qt::Orientation  orientation, int
 inline void py_q_init() { BeanTableDataModel::init(); }
 inline bool  py_q_matchPropertyName(PropertyChangeEvent*  e) { return BeanTableDataModel::matchPropertyName(e); }
 inline void py_q_propertyChange(PropertyChangeEvent*  e) { BeanTableDataModel::propertyChange(e); }
+inline QObject*  py_q_pself() { return BeanTableDataModel::pself(); }
 inline int  py_q_rowCount(const QModelIndex&  parent) const { return BeanTableDataModel::rowCount(parent); }
-inline QObject*  py_q_self() { return BeanTableDataModel::self(); }
 inline void py_q_setColumnIdentities(JTable*  table) { BeanTableDataModel::setColumnIdentities(table); }
 inline bool  py_q_setData(const QModelIndex&  index, const QVariant&  value, int  role) { return BeanTableDataModel::setData(index, value, role); }
 inline void py_q_updateNameList() { BeanTableDataModel::updateNameList(); }
@@ -1997,11 +2003,11 @@ void delete_BeanTableDataModel(BeanTableDataModel* obj) { delete obj; }
    void moveBean(BeanTableDataModel* theWrappedObject, int  arg__1, int  col);
    void persistTable(BeanTableDataModel* theWrappedObject, JTable*  table);
    void py_q_propertyChange(BeanTableDataModel* theWrappedObject, PropertyChangeEvent*  e){  (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_propertyChange(e));}
+   QObject*  py_q_pself(BeanTableDataModel* theWrappedObject){  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_pself());}
    void removeName(BeanTableDataModel* theWrappedObject, int  arg__1);
    void renameBean(BeanTableDataModel* theWrappedObject, int  arg__1);
    int  rowCount(BeanTableDataModel* theWrappedObject, const QModelIndex&  parent) const;
    int  py_q_rowCount(BeanTableDataModel* theWrappedObject, const QModelIndex&  parent) const{  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_rowCount(parent));}
-   QObject*  py_q_self(BeanTableDataModel* theWrappedObject){  return (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_self());}
    void setColumnIdentities(BeanTableDataModel* theWrappedObject, JTable*  table);
    void py_q_setColumnIdentities(BeanTableDataModel* theWrappedObject, JTable*  table){  (((PythonQtPublicPromoter_BeanTableDataModel*)theWrappedObject)->py_q_setColumnIdentities(table));}
    void setColumnToHoldButton(BeanTableDataModel* theWrappedObject, JTable*  table, int  column, QPushButton*  sample = NULL);

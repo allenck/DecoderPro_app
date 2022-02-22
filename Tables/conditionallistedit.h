@@ -263,7 +263,7 @@ public:
   void fireTableDataChanged() override;
   void fireTableRowsInserted(int r1, int r2) override;
   void fireTableRowsDeleted(int r1, int r2) override;
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
 
 public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e) override;

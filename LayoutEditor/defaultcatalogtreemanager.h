@@ -33,7 +33,7 @@ public:
     }
     SystemConnectionMemo* getMemo() override {return nullptr;}
 
-    QObject* self() override{return (QObject*)this;}
+    QObject* mself() override{return (QObject*)this;}
 
 signals:
 

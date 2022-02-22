@@ -72,9 +72,9 @@ WarrantManager::WarrantManager(QObject *parent) :
     // Check that Warrant does not already exist
     Warrant* r;
     if (userName != "" && userName.trimmed().length() > 0) {
-        r = (Warrant*)getByUserName(userName);
+        r = (Warrant*)getByUserName(userName)->self();
         if (r == nullptr) {
-            r = (Warrant*)getBySystemName(systemName);
+            r = (Warrant*)getBySystemName(systemName)->self();
         }
         if (r != nullptr) {
             log->warn("Warrant " + r->getDisplayName() + "  exits.");
@@ -103,9 +103,9 @@ WarrantManager::WarrantManager(QObject *parent) :
  *      that name is a System Name.  If both fail, returns NULL.
  */
 /*public*/ Warrant* WarrantManager::getWarrant(QString name) {
-    Warrant* r = (Warrant*)getByUserName(name);
+    Warrant* r = (Warrant*)getByUserName(name)->self();
     if (r!=NULL) return r;
-    return (Warrant*)getBySystemName(name);
+    return (Warrant*)getBySystemName(name)->self();
 }
 
 /*public*/ NamedBean *WarrantManager::getBySystemName(QString name) {
@@ -121,9 +121,9 @@ WarrantManager::WarrantManager(QObject *parent) :
 
 /*public*/ Warrant* WarrantManager::provideWarrant(QString name) {
     if (name==NULL || name.trimmed().length()==0) { return NULL; }
-    Warrant* w = (Warrant*)getByUserName(name);
+    Warrant* w = (Warrant*)getByUserName(name)->self();
     if (w==NULL) {
-        w = (Warrant*)getBySystemName(name);
+        w = (Warrant*)getBySystemName(name)->self();
     }
     if (w==NULL) {
         w = createNewWarrant(name, NULL, false, 0);
@@ -244,7 +244,7 @@ WarrantManager::WarrantManager(QObject *parent) :
 }
 /*synchronized*/ /*protected*/ void WarrantManager::portalNameChange(QString oldName, QString newName) {
     for (NamedBean* nb : getNamedBeanSet()) {
-     Warrant* w = (Warrant*)nb;
+     Warrant* w = (Warrant*)nb->self();
         QList<BlockOrder*>* orders = w->getBlockOrders();
         QListIterator<BlockOrder*> it(*orders);
         while (it.hasNext()) {
@@ -262,7 +262,7 @@ WarrantManager::WarrantManager(QObject *parent) :
 /*protected*/ QList<Warrant*> WarrantManager::warrantsUsing(OBlock* block) {
     QList<Warrant*> list = QList<Warrant*>();
     for (NamedBean* nb : getNamedBeanSet()) {
-     Warrant* w = (Warrant*)nb;
+     Warrant* w = (Warrant*)nb->self();
         QList<BlockOrder*>* orders = w->getBlockOrders();
         QListIterator<BlockOrder*> it(*orders);
         while (it.hasNext()) {
@@ -277,7 +277,7 @@ WarrantManager::WarrantManager(QObject *parent) :
     QList<Warrant*> list = QList<Warrant*>();
     QString name = portal->getName();
     for (NamedBean* nb : getNamedBeanSet()) {
-     Warrant* w = (Warrant*)nb;
+     Warrant* w = (Warrant*)nb->self();
         QList<BlockOrder*>* orders = w->getBlockOrders();
         QListIterator<BlockOrder*> it(*orders);
         while (it.hasNext()) {
@@ -309,7 +309,7 @@ WarrantManager::WarrantManager(QObject *parent) :
     QList<Warrant*> list = QList<Warrant*>();
     QString name = path->getName();
     for (NamedBean* nb : getNamedBeanSet()) {
-     Warrant* w = (Warrant*)nb;
+     Warrant* w = (Warrant*)nb->self();
         QList<BlockOrder*>* orders = w->getBlockOrders();
         QListIterator<BlockOrder*> it(*orders);
         while (it.hasNext()) {
@@ -323,7 +323,7 @@ WarrantManager::WarrantManager(QObject *parent) :
 }
 /*synchronized*/ /*protected*/ void WarrantManager::pathNameChange(OBlock* block, QString oldName, QString newName) {
  for (NamedBean* nb : getNamedBeanSet()) {
-  Warrant* w = (Warrant*)nb;
+  Warrant* w = (Warrant*)nb->self();
         QList<BlockOrder*>* orders = w->getBlockOrders();
         QListIterator<BlockOrder*> it(*orders);
         while (it.hasNext()) {

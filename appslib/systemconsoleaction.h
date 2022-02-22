@@ -14,6 +14,8 @@ public:
  /*public*/  SystemConsoleAction(QString s, QIcon i, WindowInterface* wi);
  ~SystemConsoleAction() {}
  SystemConsoleAction(const SystemConsoleAction&) : JmriAbstractAction() {}
+
+ QObject* pself() override{return (QObject*)this;}
 signals:
 
 public slots:

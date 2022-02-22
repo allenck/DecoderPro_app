@@ -85,11 +85,11 @@ DefaultSignalMastManager::DefaultSignalMastManager(QObject *parent) :
 }
 
 /*public*/ SignalMast* DefaultSignalMastManager::getBySystemName(QString key) {
-    return (SignalMast*)_tsys->value(key);
+    return (SignalMast*)_tsys->value(key)->self();
 }
 
 /*public*/ SignalMast* DefaultSignalMastManager::getByUserName(QString key) {
-    return (SignalMast*)_tuser->value(key);
+    return (SignalMast*)_tuser->value(key)->self();
 }
 //@Override
 //@Nonnull

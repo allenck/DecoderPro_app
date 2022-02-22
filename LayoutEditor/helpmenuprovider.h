@@ -13,6 +13,7 @@ class HelpMenuProvider : public QObject, public MenuProvider
   /*public*/ QList<JMenuItem*> getHelpMenuItems() override;
 
    QObject* self() override {return (QObject*)this;}
+
  signals:
 private:
    static Logger* log;

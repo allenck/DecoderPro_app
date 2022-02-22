@@ -19,7 +19,7 @@ class SimpleLightCtrlFrame : public JmriJFrame, public PropertyChangeListener
 public:
  explicit SimpleLightCtrlFrame(QWidget *parent = 0);
  /*public*/ QString getClassName() override;
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
 
 signals:
 
@@ -90,7 +90,7 @@ class SLCFPropertyChangeListener : public QObject, public PropertyChangeListener
   SimpleLightCtrlFrame* slcf;
  public:
   SLCFPropertyChangeListener(SimpleLightCtrlFrame* slcf) {this->slcf = slcf;}
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e)override {
       slcf->log->debug(tr("recv propChange: %1 %2 -> %3").arg(e->getPropertyName(), e->getOldValue().toString(), e->getNewValue().toString()));

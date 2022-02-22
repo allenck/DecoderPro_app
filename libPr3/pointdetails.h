@@ -154,6 +154,6 @@ public:
  {
   pd->nxButtonStateChange(e);
  }
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 };
 #endif // POINTDETAILS_H

@@ -82,7 +82,7 @@ BeanItemPanel* BlockEditAction::reporterDetails()
     BeanItemPanel* reporter = new BeanItemPanel();
     reporter->setName(tr("Reporter"));
 
-    reporterComboBox = new NamedBeanComboBox(((ReporterManager*)InstanceManager::getDefault("ReporterManager")), (NamedBean*)((Block*) bean)->getReporter(), NamedBean::DISPLAYNAME);
+    reporterComboBox = new NamedBeanComboBox(((ReporterManager*)InstanceManager::getDefault("ReporterManager")), (NamedBean*)((Block*) bean->self())->getReporter(), NamedBean::DISPLAYNAME);
     reporterComboBox->setAllowNull(true);
 
     reporter->addItem(new BeanEditItem(reporterComboBox, tr("Reporter"), tr("Set the reporter used to identify trains in the block")));
@@ -207,7 +207,7 @@ BeanItemPanel* BlockEditAction::physcialDetails() {
     basic->addItem(new BeanEditItem(speedField, tr("Speed"), tr("Set the maximum speed through the Block")));
     basic->addItem(new BeanEditItem(permissiveField, tr("Permissive"), tr("Can another train enter the Block when it is occupied")));
 
-    permissiveField->setChecked(((Block*) bean)->getPermissiveWorking());
+    permissiveField->setChecked(((Block*) bean->self())->getPermissiveWorking());
 
 //    basic->setSaveItem(new AbstractAction() {
 //        /**
@@ -298,7 +298,7 @@ BeanItemPanel* BlockEditAction::physcialDetails() {
 
 void BlockEditAction::on_setSaveItem()
 {
- Block* blk = (Block*) bean;
+ Block* blk = (Block*) bean->self();
  QString cName = curvatureField->currentText();
  if (cName==(noneText))
  {
@@ -346,8 +346,8 @@ void BlockEditAction::on_setSaveItem()
 
 void BlockEditAction::on_setResetItem()
 {
- Block* blk = (Block*) bean;
- lengthField->setText(twoDigit->format(((Block*) bean)->getLengthMm()));
+ Block* blk = (Block*) bean->self();
+ lengthField->setText(twoDigit->format(((Block*) bean->self())->getLengthMm()));
 
  if (blk->getCurvature() == Block::NONE) {
      curvatureField->setCurrentIndex(0);
@@ -373,7 +373,7 @@ void BlockEditAction::on_setResetItem()
      len = blk->getLengthCm();
  }
  lengthField->setText(twoDigit->format(len));
- permissiveField->setChecked(((Block*) bean)->getPermissiveWorking());
+ permissiveField->setChecked(((Block*) bean->self())->getPermissiveWorking());
 }
 
 void BlockEditAction::on_reporterComboBox_currentIndexChanged(QString s)
@@ -390,7 +390,7 @@ void BlockEditAction::on_reporterComboBox_currentIndexChanged(QString s)
 
 /*private*/ void BlockEditAction::updateLength() {
     double len = 0.0;
-    Block* blk = (Block*) bean;
+    Block* blk = (Block*) bean->self();
     if (inch->isChecked()) {
         len = blk->getLengthIn();
     } else {
@@ -405,7 +405,7 @@ BeanItemPanel* BlockEditAction::sensor() {
     BeanItemPanel* basic = new BeanItemPanel();
     basic->setName(tr("Sensor"));
 
-    sensorComboBox = new NamedBeanComboBox(InstanceManager::sensorManagerInstance(), ((Block*) bean)->getSensor(), NamedBean::DISPLAYNAME);
+    sensorComboBox = new NamedBeanComboBox(InstanceManager::sensorManagerInstance(), ((Block*) bean->self())->getSensor(), NamedBean::DISPLAYNAME);
     sensorComboBox->setAllowNull(true);
     basic->addItem(new BeanEditItem(sensorComboBox, tr("Sensor"), tr("Set the sensor that is used to determine the occupancy state of the block")));
 

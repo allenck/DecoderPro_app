@@ -445,7 +445,7 @@ void ConditionalVariable::common()
      case Conditional::ITEM_TYPE_SENSOR:
      {
       //Sensor sn = InstanceManager::sensorManagerInstance().provideSensor(getName());
-      Sensor* sn = (Sensor*) getBean();
+      Sensor* sn = (Sensor*) getBean()->self();
       if (sn == nullptr) {
         log->error("invalid sensor name= \""+getName()+"\" in state variable");
         return (false);
@@ -461,7 +461,7 @@ void ConditionalVariable::common()
     }
     case Conditional::ITEM_TYPE_TURNOUT:
     {
-            Turnout* t = (Turnout*) getBean();
+            Turnout* t = (Turnout*) getBean()->self();
             if (t == nullptr) {
                 log->error("invalid turnout name= \""+getName()+"\" in state variable");
                 return (false);
@@ -493,7 +493,7 @@ void ConditionalVariable::common()
     }
     case Conditional::ITEM_TYPE_SIGNALMAST:
     {
-            SignalMast* f = (SignalMast*) getBean();
+            SignalMast* f = (SignalMast*) getBean()->self();
             if (f == nullptr) {
                 log->error("invalid signal mast name= \""+getName()+"\" in state variable");
                 return (false);
@@ -514,7 +514,7 @@ void ConditionalVariable::common()
     }
     case Conditional::ITEM_TYPE_SIGNALHEAD:
     {
-            SignalHead* h = (SignalHead*) getBean();
+            SignalHead* h = (SignalHead*) getBean()->self();
             if (h == nullptr) {
                 log->error("invalid signal head name= \""+getName()+"\" in state variable");
                 return (false);
@@ -570,7 +570,7 @@ void ConditionalVariable::common()
     }
     case Conditional::ITEM_TYPE_MEMORY:
     {
-            Memory* m = (Memory*) getBean();
+            Memory* m = (Memory*) getBean()->self();
             if (m == nullptr) {
                 log->error("invalid memory name= \""+getName()+"\" in state variable");
                 return (false);

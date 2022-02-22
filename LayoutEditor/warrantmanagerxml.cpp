@@ -43,7 +43,7 @@ WarrantManagerXml::WarrantManagerXml(QObject *parent) :
     QStringListIterator iter(manager->getSystemNameList());
     while (iter.hasNext()) {
         QString sname = iter.next();
-        Warrant* warrant = (Warrant*)manager->getBySystemName(sname);
+        Warrant* warrant = (Warrant*)manager->getBySystemName(sname)->self();
         QString uname = warrant->getUserName();
         if (log->isDebugEnabled())
             log->debug("Warrant: sysName= "+sname+", userName= "+uname);

@@ -471,7 +471,7 @@ void IconAdder::makeIconMap(NamedBean* bean)
   _iconMap = new QHash <QString, JToggleButton*>(); //(12);
   int k=0;
   QVector <CatalogTreeLeaf*>* list = _defaultIcons->getLeaves();
-  QVector<QString> states = ((SignalHead*)bean)->getValidStateNames();
+  QVector<QString> states = ((SignalHead*)bean->self())->getValidStateNames();
   for (int i=0; i<list->size(); i++)
   {
    CatalogTreeLeaf* leaf = list->at(i);

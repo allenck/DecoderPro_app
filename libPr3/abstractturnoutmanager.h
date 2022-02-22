@@ -81,6 +81,7 @@ public:
       /*public*/ int getOutputInterval()override;
       /*public*/ void setOutputInterval(int newInterval)override;
       /*public*/ LocalDateTime *outputIntervalEnds() override;
+      QObject* mself() override {return (QObject*)this;}
 
 signals:
       void newTurnoutCreated(AbstractTurnoutManager* mgr, Turnout* t);
@@ -116,7 +117,7 @@ class MemoPropertyChangeListener  : public QObject, public PropertyChangeListene
   AbstractTurnoutManager* atm;
  public:
   MemoPropertyChangeListener(AbstractTurnoutManager* atm) {this->atm = atm;}
-  QObject* self() override{return (QObject*)this;}
+  QObject* pself() override{return (QObject*)this;}
  public slots:
   //@Override
   /*public*/ void propertyChange(PropertyChangeEvent* e) {

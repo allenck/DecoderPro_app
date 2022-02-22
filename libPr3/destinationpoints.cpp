@@ -279,7 +279,7 @@ void DestinationPoints::setEntryExitType(int type){
    src->pd->setNXButtonState(EntryExitPairs::NXBUTTONINACTIVE);
    if(sml!=NULL && getEntryExitType()==EntryExitPairs::FULLINTERLOCK){
        ((AbstractSignalMast*)((DefaultSignalMastLogic*)sml)->getSourceMast())->setHeld(true);
-       SignalMast* mast = (SignalMast*) getSignal();
+       SignalMast* mast = (SignalMast*) getSignal()->self();
        if (((DefaultSignalMastLogic*)sml)->getStoreState(mast)==SignalMastLogic::STORENONE)
            ((DefaultSignalMastLogic*)sml)->removeDestination(mast);
    }
@@ -329,9 +329,9 @@ void DestinationPoints::setRoute(bool state){
   setRouteTo(false);
   setRouteFrom(false);
   //if((getSignal() instanceof SignalMast) && (getEntryExitType()!=EntryExitPairs::FULLINTERLOCK))
-  if(static_cast<SignalMast*>(getSignal())!= NULL && (getEntryExitType()!=EntryExitPairs::FULLINTERLOCK))
+  if(static_cast<SignalMast*>(getSignal()->self())!= NULL && (getEntryExitType()!=EntryExitPairs::FULLINTERLOCK))
   {
-   SignalMast* mast = (SignalMast*) getSignal();
+   SignalMast* mast = (SignalMast*) getSignal()->self();
          ((AbstractSignalMast*)mast)->setHeld(false);
      }
      /*synchronized(this)*/{
@@ -517,10 +517,10 @@ void DestinationPoints::setRoute(bool state){
         }
     }
     //if((src->sourceSignal instanceof SignalMast) && (getSignal() instanceof SignalMast))
-    if(static_cast<SignalMast*>(p->src->sourceSignal) && static_cast<SignalMast*>(p->getSignal()))
+    if(static_cast<SignalMast*>(p->src->sourceSignal->self()) && static_cast<SignalMast*>(p->getSignal()->self()))
     {
-        SignalMast* smSource = (SignalMast*) p->src->sourceSignal;
-        SignalMast* smDest = (SignalMast*) p->getSignal();
+        SignalMast* smSource = (SignalMast*) p->src->sourceSignal->self();
+        SignalMast* smDest = (SignalMast*) p->getSignal()->self();
         /*synchronized(this)*/{
             p->sml = ((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->newSignalMastLogic(smSource);
             if(!p->sml->isDestinationValid(smDest)){
@@ -557,13 +557,13 @@ void DestinationPoints::setRoute(bool state){
         p->src->pd->extendedtime=true;
         p->point->extendedtime=true;
     } else {
-        if (static_cast<SignalMast*>(p->src->sourceSignal)){
-            SignalMast* mast = (SignalMast*) p->src->sourceSignal;
+        if (static_cast<SignalMast*>(p->src->sourceSignal->self())){
+            SignalMast* mast = (SignalMast*) p->src->sourceSignal->self();
             mast->setHeld(false);
         }
         //else if (src->sourceSignal instanceof SignalHead){
-        else if (static_cast<SignalHead*>(p->src->sourceSignal)){
-    SignalHead* head = (SignalHead*) p->src->sourceSignal;
+        else if (static_cast<SignalHead*>(p->src->sourceSignal->self())){
+    SignalHead* head = (SignalHead*) p->src->sourceSignal->self();
             head->setHeld(false);
         }
         p->setRouteFrom(true);
@@ -592,7 +592,7 @@ void DestinationPoints::setRoute(bool state){
      setRouteFrom(true);
      setRouteTo(true);
  }
-#if 0
+#if 0 // TODO
  /**
       * Remove the hold on the mast when all of the turnouts have completed moving.
       * This only applies to turnouts using ONESENSOR feedback.  TWOSENSOR has an
@@ -603,9 +603,9 @@ void DestinationPoints::setRoute(bool state){
       * @param mast The signal mast that will be released.
       * @param turnoutSettings The turnouts that are being set for the current NX route.
       */
-     private void releaseMast(SignalMast mast, Hashtable<Turnout, Integer> turnoutSettings) {
-         Hashtable<Turnout, Integer> turnoutList = new Hashtable<>(turnoutSettings);
-         Runnable r = new Runnable() {
+     /*private*/ void releaseMast(SignalMast* mast, QHash<Turnout*, int> turnoutSettings) {
+         QHash<Turnout*, int> turnoutList = QHash<Turnout*, int>(turnoutSettings);
+         Runnable* r = new Runnable() {
              @Override
              public void run() {
                  try {
@@ -760,16 +760,16 @@ void DestinationPoints::cancelClearInterlock(int cancelClear)
  }
  src->setMenuEnabled(false);
  //if (src->sourceSignal instanceof SignalMast){
- if(static_cast<SignalMast*>(src->sourceSignal)  != NULL)
+ if(static_cast<SignalMast*>(src->sourceSignal->self())  != NULL)
  {
-  SignalMast* mast = (SignalMast*) src->sourceSignal;
+  SignalMast* mast = (SignalMast*) src->sourceSignal->self();
   mast->setAspect(mast->getAppearanceMap()->getSpecificAppearance(SignalAppearanceMap::DANGER));
   mast->setHeld(true);
  }
  //else if (src->sourceSignal instanceof SignalHead){
- else if(static_cast<SignalHead*>(src->sourceSignal)!= NULL)
+ else if(static_cast<SignalHead*>(src->sourceSignal->self())!= NULL)
  {
-  SignalHead* head = (SignalHead*) src->sourceSignal;
+  SignalHead* head = (SignalHead*) src->sourceSignal->self();
   head->setHeld(true);
  }
  else
@@ -781,9 +781,9 @@ void DestinationPoints::cancelClearInterlock(int cancelClear)
 // synchronized(this)
  {
   //if((getSignal() instanceof SignalMast) && (sml!=NULL)){
-  if(static_cast<SignalMast*>(getSignal())!= NULL)
+  if(static_cast<SignalMast*>(getSignal()->self())!= NULL)
   {
-   SignalMast* mast = (SignalMast*) getSignal();
+   SignalMast* mast = (SignalMast*) getSignal()->self();
    if (sml->getStoreState(mast)==SignalMastLogic::STORENONE)
     sml->removeDestination(mast);
   }

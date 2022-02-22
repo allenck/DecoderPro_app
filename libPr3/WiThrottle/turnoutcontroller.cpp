@@ -38,7 +38,7 @@ bool TurnoutController::verifyCreation() {
 /*public*/ void TurnoutController::filterList() {
     QStringList tempList = QStringList();
     foreach (QString sysName, sysNameList) {
-        Turnout* t = (Turnout*)manager->AbstractProxyManager::getBySystemName(sysName);
+        Turnout* t = (Turnout*)manager->AbstractProxyManager::getBySystemName(sysName)->self();
         QVariant o = t->getProperty("WifiControllable");
         if ((o == QVariant()) || (o.toString()/*.equalsIgnoreCase*/ !=("false"))) {
             //  Only skip if 'false'
@@ -53,18 +53,18 @@ void TurnoutController::handleMessage(QString message) {
     try {
         if (message.at(0) == 'A') {
             if (message.at(1) == '2') {
-                Turnout* t =(Turnout*) manager->AbstractProxyManager::getBySystemName(message.mid(2));
+                Turnout* t =(Turnout*) manager->AbstractProxyManager::getBySystemName(message.mid(2))->self();
                 if (t->getCommandedState() == Turnout::CLOSED) {
                     t->setCommandedState(Turnout::THROWN);
                 } else {
                     t->setCommandedState(Turnout::CLOSED);
                 }
             } else if (message.at(1) == 'C') {
-                Turnout* t = (Turnout*)manager->AbstractProxyManager::getBySystemName(message.mid(2));
+                Turnout* t = (Turnout*)manager->AbstractProxyManager::getBySystemName(message.mid(2))->self();
                 t->setCommandedState(Turnout::CLOSED);
 
             } else if (message.at(1) == 'T') {
-                Turnout* t =(Turnout*) manager->AbstractProxyManager::getBySystemName(message.mid(2));
+                Turnout* t =(Turnout*) manager->AbstractProxyManager::getBySystemName(message.mid(2))->self();
                 t->setCommandedState(Turnout::THROWN);
 
             } else {
@@ -111,7 +111,7 @@ void TurnoutController::handleMessage(QString message) {
         return;
     }
     if (canBuildList) {
-        buildList((Manager*)manager->self());
+        buildList((Manager*)manager->mself());
     }
 
     if (sysNameList.isEmpty()) {
@@ -121,7 +121,7 @@ void TurnoutController::handleMessage(QString message) {
     QString list = QString("PTL");  //  Panel Turnout List
 
     foreach (QString sysName, sysNameList) {
-        Turnout* t = (Turnout*)manager->AbstractProxyManager::getBySystemName(sysName);
+        Turnout* t = (Turnout*)manager->AbstractProxyManager::getBySystemName(sysName)->self();
         list.append("]\\[" + sysName);
         list.append("}|{");
         if (t->getUserName() != NULL) {
@@ -165,7 +165,7 @@ void TurnoutController::handleMessage(QString message) {
 //@Override
 /*public*/ void TurnoutController::_register() {
     foreach (QString sysName, sysNameList) {
-        Turnout* t = (Turnout*)manager->AbstractProxyManager::getBySystemName(sysName);
+        Turnout* t = (Turnout*)manager->AbstractProxyManager::getBySystemName(sysName)->self();
         if (t != NULL) {
             //t.addPropertyChangeListener(this);
          connect(t, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
@@ -184,7 +184,7 @@ void TurnoutController::handleMessage(QString message) {
     }
 
     foreach (QString sysName, sysNameList) {
-        Turnout* t = (Turnout*)manager->AbstractProxyManager::getBySystemName(sysName);
+        Turnout* t = (Turnout*)manager->AbstractProxyManager::getBySystemName(sysName)->self();
 
         if (t != NULL) {
             //t->removePropertyChangeListener(this);

@@ -32,7 +32,7 @@ private:
  JsonLayoutBlockSocketService* jlbss;
  public:
  /*public*/ LayoutBlockListener(LayoutBlock* layoutblock, JsonLayoutBlockSocketService* jlbss);
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 public slots:
  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
  friend class JsonLayoutBlockSocketService;

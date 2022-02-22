@@ -293,7 +293,7 @@ class MFPropertyChangeListener : public QObject,public PropertyChangeListener
   MeterFrame* f;
  public:
   MFPropertyChangeListener(MeterFrame* f) {this->f = f;}
-  QObject* self() override{return (QObject*)this;}
+  QObject* pself() override{return (QObject*)this;}
 
 };
 #endif // METERFRAME_H

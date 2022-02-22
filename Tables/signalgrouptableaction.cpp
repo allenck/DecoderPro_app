@@ -217,7 +217,7 @@ SGBeanTableDataModel::SGBeanTableDataModel(SignalGroupTableAction *act)
  {
   if(col == ENABLECOL)
   {
-   if(((SignalGroup*)getBySystemName(data(index(row, (int)SYSNAMECOL),Qt::DisplayRole).toString()))->getEnabled())
+   if(((SignalGroup*)getBySystemName(data(index(row, (int)SYSNAMECOL),Qt::DisplayRole).toString())->self())->getEnabled())
     return Qt::Checked;
    else
     return Qt::Unchecked;
@@ -255,7 +255,7 @@ SGBeanTableDataModel::SGBeanTableDataModel(SignalGroupTableAction *act)
    if (col==ENABLECOL)
    {
      // alternate
-     SignalGroup* r = (SignalGroup*)getBySystemName(data(index(row, SYSNAMECOL),Qt::DisplayRole).toString());
+     SignalGroup* r = (SignalGroup*)getBySystemName(data(index(row, SYSNAMECOL),Qt::DisplayRole).toString())->self();
      bool v = r->getEnabled();
      r->setEnabled(!v);
      return true;
@@ -423,7 +423,7 @@ void SignalGroupTableAction::setSignalStateBox(int mode, QComboBox* box) {
  _signalHeadsList = new QList<SignalGroupSignalHead*>();
  // create list of all available Single Output Signal Heads to choose from
  for (NamedBean* nb : shm->getNamedBeanSet()) {
-  SignalHead* sh = (SignalHead*)nb;
+  SignalHead* sh = (SignalHead*)nb->self();
      QString systemName = sh->getSystemName();
      if (QString(sh->metaObject()->className()).contains("SingleTurnoutSignalHead")) {
          QString userName = sh->getUserName();
@@ -856,7 +856,7 @@ bool SignalGroupTableAction::checkNewNamesOK() {
         }
     }
     // check if a SignalGroup with this system name already exists
-    g = (SignalGroup*)static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"))->getBySystemName(sName);
+    g = (SignalGroup*)static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"))->getBySystemName(sName)->self();
     if (g!=NULL) {
         // SignalGroup already exists
 //        javax.swing.JOptionPane.showMessageDialog(NULL,"A SignalGroup with this system name already exists","System Name Error",javax.swing.JOptionPane.WARNING_MESSAGE);
@@ -868,7 +868,7 @@ bool SignalGroupTableAction::checkNewNamesOK() {
 
 bool SignalGroupTableAction::checkValidSignalMast()
 {
- SignalMast* mMast = (SignalMast*) mainSignalComboBox->getSelectedItem();
+ SignalMast* mMast = (SignalMast*) mainSignalComboBox->getSelectedItem()->self();
  if (mMast == NULL)
  {
   log->warn("Signal Mast not selected");
@@ -958,7 +958,7 @@ void SignalGroupTableAction::setMastAspectInformation(SignalGroup* g) {
 
 void SignalGroupTableAction::setValidSignalAspects()
 {
- SignalMast* sh = (SignalMast*) mainSignalComboBox->getSelectedItem();
+ SignalMast* sh = (SignalMast*) mainSignalComboBox->getSelectedItem()->self();
  if (sh==NULL)
    return;
  QVector<QString> appear = sh->getValidAspects();
@@ -1003,7 +1003,7 @@ void SignalGroupTableAction::cancelEdit() {
 void SignalGroupTableAction::editPressed(ActionEvent* /*e*/) {
     // identify the SignalGroup with this name if it already exists
     QString sName = _systemName->text().toUpper();
-    SignalGroup* g = (SignalGroup*)static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"))->getBySystemName(sName);
+    SignalGroup* g = (SignalGroup*)static_cast<SignalGroupManager*>(InstanceManager::getDefault("SignalGroupManager"))->getBySystemName(sName)->self();
     if (g==NULL) {
         // SignalGroup does not exist, so cannot be edited
         return;
@@ -1111,7 +1111,7 @@ void SignalGroupTableAction::updatePressed(ActionEvent* /*e*/, bool newSignalGro
  setHeadInformation(g);
  setMastAspectInformation(g);
 
- ((DefaultSignalGroup*)g)->setSignalMast((SignalMast*)mainSignalComboBox->getSelectedItem(), mainSignalComboBox->getSelectedItemDisplayName());
+ ((DefaultSignalGroup*)g)->setSignalMast((SignalMast*)mainSignalComboBox->getSelectedItem()->self(), mainSignalComboBox->getSelectedItemDisplayName());
  if(close)
      finishUpdate();
 }

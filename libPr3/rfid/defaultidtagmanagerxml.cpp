@@ -114,7 +114,7 @@
         root.appendChild(values = doc.createElement("idtags")); // NOI18N
         for (/*IdTag*/NamedBean* t : manager->AbstractManager::getNamedBeanSet()) {
            log->debug(tr("Writing IdTag: %1").arg(t->getSystemName()));
-           values.appendChild(((IdTag*)t)->store(doc, manager->isStateStored()));
+           values.appendChild(((IdTag*)t->self())->store(doc, manager->isStateStored()));
         }
          writeXML(file, doc);
       }

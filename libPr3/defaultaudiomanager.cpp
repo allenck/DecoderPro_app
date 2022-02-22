@@ -275,7 +275,7 @@ bool AudioShutDownTask::doAction()
 //        default:
 //            throw new IllegalArgumentException();
 //    }
-    QChar st = ((Audio*) s)->getSubType();
+    QChar st = ((Audio*) s->self())->getSubType();
     if(st == Audio::BUFFER)
      countBuffers--;
     if(st== Audio::SOURCE)

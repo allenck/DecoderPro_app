@@ -48,7 +48,7 @@ namespace Operations
   /*public*/ void initComponents() override;
   /*public*/ void load(Engine* engine);
   /*public*/ QString getClassName() override;
-   QObject* self() override {return (QObject*)this; }
+   QObject* pself() override {return (QObject*)this; }
 
   signals:
 

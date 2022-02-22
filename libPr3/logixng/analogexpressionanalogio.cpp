@@ -63,7 +63,7 @@
 
     /*public*/  void AnalogExpressionAnalogIO::setAnalogIO(/*@Nonnull*/ QString analogIOName) {
         assertListenersAreNotRegistered(log, "setAnalogIO");
-        AnalogIO* analogIO = (AnalogIO*)((AnalogIOManager*)InstanceManager::getDefault("AnalogIOManager"))->getNamedBean(analogIOName);
+        AnalogIO* analogIO = (AnalogIO*)((AnalogIOManager*)InstanceManager::getDefault("AnalogIOManager"))->getNamedBean(analogIOName)->self();
         if (analogIO != nullptr) {
             setAnalogIO(analogIO);
         } else {

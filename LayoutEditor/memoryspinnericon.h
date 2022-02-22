@@ -36,6 +36,7 @@ public:
     void cleanup();
     /*public*/ MyGraphicsProxyWidget* getWidget() override {return widget;}
     QObject* self() override {return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 
 signals:
 

@@ -11,22 +11,24 @@ class LIBPR3SHARED_EXPORT DefaultLogix : public Logix
 public:
     //explicit DefaultLogix(QObject *parent = 0);
     /*public*/ DefaultLogix(QString systemName, QString userName = "", QObject *parent = 0);
-    /*public*/ int getNumConditionals();
-    /*public*/ void swapConditional(int nextInOrder, int row) ;
-    /*public*/ QString getConditionalByNumberOrder(int order) ;
-    /*public*/ bool addConditional(QString systemName, int order);
-    /*public*/ bool addConditional(QString systemName, Conditional* conditional);
-    /*public*/ void setEnabled(bool state);
-    /*public*/ bool getEnabled();
-    /*public*/ QStringList* deleteConditional(QString systemName);
-    /*public*/ void calculateConditionals();
-    /*public*/ void activateLogix();
-    /*public*/ void deActivateLogix();
-    /*public*/ int getState();
-    /*public*/ void setState(int state);
-    /*public*/ Conditional* getConditional(QString systemName) ;
-    /*public*/ void setGuiNames();
-  /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean);
+    /*public*/ int getNumConditionals()override;
+    /*public*/ void swapConditional(int nextInOrder, int row) override;
+    /*public*/ QString getConditionalByNumberOrder(int order)override ;
+    /*public*/ bool addConditional(QString systemName, int order)override;
+    /*public*/ bool addConditional(QString systemName, Conditional* conditional)override;
+    /*public*/ void setEnabled(bool state)override;
+    /*public*/ bool getEnabled()override;
+    /*public*/ QStringList* deleteConditional(QString systemName)override;
+    /*public*/ void calculateConditionals()override;
+    /*public*/ void activateLogix()override;
+    /*public*/ void deActivateLogix()override;
+    /*public*/ int getState()override;
+    /*public*/ void setState(int state)override;
+    /*public*/ Conditional* getConditional(QString systemName)override ;
+    /*public*/ void setGuiNames()override;
+    /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean)override;
+
+    QObject* self() override{return (QObject*)this;}
 
 signals:
 

@@ -74,7 +74,7 @@ public:
  /*public*/ void moveBean(int, int col);
  virtual /*public*/ void addToPopUp(QMenu* popup);
  /*public*/ void setPropertyColumnsVisible(JTable* table, bool visible);
- QObject* self() override {return (QObject*)this;}
+ QObject* pself() override {return (QObject*)this;}
  /*public*/ void editComment(int row, int column);
  /*public*/ QString getCellToolTip(JTable* table, int row, int col) const override;
 

@@ -23,21 +23,21 @@
     /*public*/ IdTagTableDataModel::IdTagTableDataModel(Manager/*<IdTag>*/* mgr, QObject* parent) : BeanTableDataModel(parent){
         //super();
         setManager(mgr);
-        setObjectName(QString("IdTagTableDataModel") + "_" + mgr->self()->metaObject()->className());
+        setObjectName(QString("IdTagTableDataModel") + "_" + mgr->mself()->metaObject()->className());
         //init();
     }
 
     //@Override
     /*protected*/ /*final*/ void IdTagTableDataModel::setManager(/*Manager<IdTag>*/Manager* mgr){
-        if ( qobject_cast<IdTagManager*>(mgr->self())){
-            tagManager = (IdTagManager*)mgr->self();
+        if ( qobject_cast<IdTagManager*>(mgr->mself())){
+            tagManager = (IdTagManager*)mgr->mself();
         }
         getManager()->addPropertyChangeListener(this);
     }
 
     //@Override
     /*public*/ QString IdTagTableDataModel::getValue(QString name) {
-        IdTag* tag = (IdTag*)getManager()->getBySystemName(name);
+        IdTag* tag = (IdTag*)getManager()->getBySystemName(name)->self();
         if (tag == nullptr) {
             return "?";
         }
@@ -76,7 +76,7 @@
       if (col == CLEARCOL) {
           NamedBean* t = getBySystemName(sysNameList.at(row));
           log->debug(tr("Clear where & when last seen for %1").arg(t->getSystemName()));
-          ((IdTag*)t)->setWhereLastSeen(nullptr);
+          ((IdTag*)t->self())->setWhereLastSeen(nullptr);
           fireTableRowsUpdated(row, row);
       }
       BeanTableDataModel::setData(index,value, role);
@@ -148,7 +148,7 @@
                 Reporter* r;
                 t = getBySystemName(sysNameList.at(row));
                 if ( t !=nullptr ){
-                    r = ((IdTag*)t)->getWhereLastSeen();
+                    r = ((IdTag*)t->self())->getWhereLastSeen();
                     if (r!=nullptr){
                         return ((NamedBean*)r->self())->getDisplayName();
                     }
@@ -157,8 +157,8 @@
             case WHENCOL:
         {
              QDateTime d;
-             t = (DefaultIdTag*) getBySystemName(sysNameList.at(row));
-             return (t != NULL) ? (((d = ((IdTag*)t)->getWhenLastSeen()) != QDateTime())
+             t = (DefaultIdTag*) getBySystemName(sysNameList.at(row))->self();
+             return (t != NULL) ? (((d = ((IdTag*)t->self())->getWhenLastSeen()) != QDateTime())
                      ? /*DateFormat.getDateTimeInstance(DateFormat.SHORT*/ QDateTime::currentDateTime().toString(), /*DateFormat.MEDIUM).format(d)*/d.toString() : QVariant()) : QVariant();
         }
             case CLEARCOL:

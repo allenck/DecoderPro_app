@@ -47,7 +47,7 @@ public:
         name = lightName;
         light = InstanceManager::lightManagerInstance()->getLight(lightName);
     }
-    QObject* self() override{return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 public slots:
     // update state as state of light changes
     //@Override

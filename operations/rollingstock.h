@@ -144,7 +144,7 @@ namespace Operations
   /*public*/ Q_DECL_DEPRECATED QString getType();
   /*public*/ void setLength(QString length);
 
-  QObject* self() override {return (QObject*)this; }
+  QObject* pself() override {return (QObject*)this; }
 
  signals:
 
@@ -213,7 +213,7 @@ namespace Operations
   RollingStock* parent;
  public:
   IdTagPropertyChangeListener(RollingStock* parent);
-  QObject* self() {return (QObject*)this;}
+  QObject* pself() {return (QObject*)this;}
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e) ;
  };

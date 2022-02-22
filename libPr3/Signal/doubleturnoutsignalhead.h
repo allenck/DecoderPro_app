@@ -68,7 +68,7 @@ class TurnoutPropertyChangeListener : public QObject, public PropertyChangeListe
  DoubleTurnoutSignalHead* dtsh;
 public:
  TurnoutPropertyChangeListener(DoubleTurnoutSignalHead* dtsh) {this->dtsh = dtsh;}
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent*)override;
 };

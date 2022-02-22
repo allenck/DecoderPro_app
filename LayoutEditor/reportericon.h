@@ -46,6 +46,7 @@ public:
  /*public*/ Positionable* finishClone(Positionable* p) override;
     /*public*/ void dispose() override;
   QObject* self() override {return (QObject*)this;}
+  QObject* pself() override{return (QObject*)this;}
 
 signals:
 
@@ -75,7 +76,8 @@ class AddReporterIconActionListener : public QObject, public ActionListener
 public:
  AddReporterIconActionListener(ReporterIcon* ri) {this->ri = ri;}
  QObject* self() override {return (QObject*)this;}
-public slots:
+
+ public slots:
  void actionPerformed(JActionEvent */*e*/ = 0) override{ ri->editReporter();}
 };
 

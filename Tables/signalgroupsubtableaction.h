@@ -185,7 +185,7 @@ public:
     };
 
     /*public*/ QVariant data(const QModelIndex &index, int role) const override;
-    QObject* self() override {return (QObject*)this;}
+    QObject* pself() override {return (QObject*)this;}
 
 };
 /**

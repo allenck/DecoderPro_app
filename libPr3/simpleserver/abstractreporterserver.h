@@ -46,7 +46,7 @@ public:
         name = reporterName;
         reporter = qobject_cast<ReporterManager*>(InstanceManager::getDefault("ReporterManager"))->getReporter(reporterName);
     }
-    QObject* self() override{return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 
     // update state as state of reporter changes
     //@Override

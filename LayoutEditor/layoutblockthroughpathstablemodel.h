@@ -29,7 +29,7 @@ enum COLUMNS
 /*public*/ int getPreferredWidth(int column);
 /*public*/ void dispose();
 /*public*/ Manager* getManager();
-QObject* self() override {return (QObject*)this;}
+QObject* pself() override {return (QObject*)this;}
 
 signals:
 

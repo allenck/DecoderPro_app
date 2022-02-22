@@ -59,7 +59,7 @@ class ControlListen : public QObject, public PropertyChangeListener
  Q_INTERFACES(PropertyChangeListener)LightControlTest* test;
 public:
  ControlListen(LightControlTest* test) { this->test = test;}
-QObject* self() {return (QObject*)this;}public slots:
+QObject* pself() {return (QObject*)this;}public slots:
  //@Override
  /*public*/ void propertyChange(PropertyChangeEvent* e);
 

@@ -241,6 +241,8 @@ public:
      */
     /*public*/ virtual PullResistance::PULLRESISTANCE getPullResistance() {return PullResistance::PULL_OFF;}
 
+    QObject* self() override {return (QObject*)this;}
+
  signals:
     
 public slots:

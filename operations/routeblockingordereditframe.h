@@ -21,7 +21,7 @@ namespace Operations {
  public:
      RouteBlockingOrderEditFrame(Route* route, QWidget* parent=nullptr);
      /*public*/  void dispose()override;
-     QObject* self() override {return (QObject*)this;}
+     QObject* pself() override {return (QObject*)this;}
      QString getClassName() override {return "jmri.jmrit.operations.routes.tools.RouteBlockingOrderEditFrame";}
  public slots:
      /*public*/  void buttonActionPerformed(QWidget* b )override;

@@ -25,7 +25,7 @@ public:
  /*public*/ void enableConfiguration(bool enable);
  /*public*/ int verifyInputs(bool warn);
  /*public*/ QString getClassName() override;
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
 
 public slots:
  void on_clearButton_clicked();

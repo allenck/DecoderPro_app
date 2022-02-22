@@ -186,11 +186,11 @@
             QString aspect = "none";
             if (_nextSignal != nullptr) {
                 signal = _nextSignal->getDisplayName();
-                if (static_cast<SignalHead*>(_nextSignal ) ) {
-                    int appearance = ((SignalHead*) _nextSignal)->getAppearance();
-                    aspect = "appearance "+appearance;
+                if (static_cast<SignalHead*>(_nextSignal->self() ) ) {
+                    int appearance = ((SignalHead*) _nextSignal->self())->getAppearance();
+                    aspect = "appearance "+ QString::number(appearance);
                 } else {
-                    aspect = ((SignalMast*) _nextSignal)->getAspect();
+                    aspect = ((SignalMast*) _nextSignal->self())->getAspect();
                 }
             }
             return tr("Block: %1 (index %2) Speed: {2,number,#.#} Signal: %3 showing %4").arg(block).arg(_idxCurrentOrder).arg(_throttle->getSpeedSetting()).arg(signal,aspect);
@@ -345,14 +345,14 @@
         if (_nextSignal == nullptr) {
             _throttle->setSpeedSetting(speedFactor*SPEED_UNSIGNALLED);
         } else {
-            if (static_cast<SignalHead*>(_nextSignal)) {
-                int appearance = ((SignalHead*) _nextSignal)->getAppearance();
-                speed = _speedMap->getAppearanceSpeed(((SignalHead*) _nextSignal)->getAppearanceName(appearance));
-                log->debug(tr("%1 SignalHead %2 shows appearance %3 which maps to speed %4").arg(_trainName).arg(((SignalHead*) _nextSignal)->getDisplayName()).arg(appearance).arg(speed));
+            if (static_cast<SignalHead*>(_nextSignal->self())) {
+                int appearance = ((SignalHead*) _nextSignal->self())->getAppearance();
+                speed = _speedMap->getAppearanceSpeed(((SignalHead*) _nextSignal->self())->getAppearanceName(appearance));
+                log->debug(tr("%1 SignalHead %2 shows appearance %3 which maps to speed %4").arg(_trainName).arg(((SignalHead*) _nextSignal->self())->getDisplayName()).arg(appearance).arg(speed));
             } else {
-                QString aspect = ((SignalMast*) _nextSignal)->getAspect();
-                speed = _speedMap->getAspectSpeed(aspect, ((SignalMast*) _nextSignal)->getSignalSystem());
-                log->debug(tr(" SignalMast %1 shows aspect %2 which maps to speed ").arg(_trainName).arg(((SignalMast*) _nextSignal)->getDisplayName()).arg(aspect).arg(speed));
+                QString aspect = ((SignalMast*) _nextSignal->self())->getAspect();
+                speed = _speedMap->getAspectSpeed(aspect, ((SignalMast*) _nextSignal->self())->getSignalSystem());
+                log->debug(tr(" SignalMast %1 shows aspect %2 which maps to speed ").arg(_trainName).arg(((SignalMast*) _nextSignal->self())->getDisplayName()).arg(aspect).arg(speed));
             }
             float speed_f = (float) (_speedMap->getSpeed(speed) / 125.);
             // Ease the speed, if we are approaching the destination block

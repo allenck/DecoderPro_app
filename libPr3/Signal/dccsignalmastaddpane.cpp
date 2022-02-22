@@ -332,7 +332,7 @@ static /*public*/ class SignalMastAddPaneProvider extends SignalMastAddPane.Sign
     QList<QString> names = static_cast<SignalMastManager*>( InstanceManager::getDefault("SignalMastManager"))->getSystemNameList();
     for (QString name : names)
     {
-     if( static_cast<DccSignalMast*>(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getNamedBean(name)) != nullptr)
+     if( static_cast<DccSignalMast*>(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getNamedBean(name)->self()) != nullptr)
      {
             mastSelect->addItem(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getNamedBean(name)->getDisplayName());
         }
@@ -373,7 +373,7 @@ static /*public*/ class SignalMastAddPaneProvider extends SignalMastAddPane.Sign
  * Copy aspects by name from another DccSignalMast
  */
 void DccSignalMastAddPane::copyFromAnotherDCCMastAspect(/*@Nonnull*/ QString strMast) {
-    DccSignalMast* mast = (DccSignalMast* )static_cast<SignalMastManager*>( InstanceManager::getDefault("SignalMastManager"))->getNamedBean(strMast);
+    DccSignalMast* mast = (DccSignalMast* )static_cast<SignalMastManager*>( InstanceManager::getDefault("SignalMastManager"))->getNamedBean(strMast)->self();
     if (mast == nullptr) {
         log->error(tr("can't copy from another mast because %1 doesn't exist").arg(strMast));
         return;

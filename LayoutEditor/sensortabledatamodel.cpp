@@ -55,7 +55,7 @@ void SensorTableDataModel::common()
  //super();
  common();
  setManager(manager); // updates name list
- setObjectName(QString("SensorTableDataModel") + "_" + manager->self()->metaObject()->className());
+ setObjectName(QString("SensorTableDataModel") + "_" + manager->mself()->metaObject()->className());
  // load graphic state column display preference
  _graphicState = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState();
  init();
@@ -65,10 +65,10 @@ void SensorTableDataModel::common()
 /*public*/ QString SensorTableDataModel::getValue(QString name) const
 {
  Sensor* sen;
- if(qobject_cast<SensorManager*>(senManager->self())!= nullptr)
-  sen = (Sensor*)((SensorManager*)senManager->self())->getBySystemName(name);
+ if(qobject_cast<SensorManager*>(senManager->mself())!= nullptr)
+  sen = (Sensor*)((SensorManager*)senManager->mself())->getBySystemName(name)->self();
  else
-  sen = (Sensor*)senManager->getBeanBySystemName(name);
+  sen = (Sensor*)senManager->getBeanBySystemName(name)->self();
  int val = sen->getKnownState();
  switch (val) {
  case Sensor::ACTIVE: return tr("Active");
@@ -80,7 +80,7 @@ void SensorTableDataModel::common()
 }
 /*protected*/ void SensorTableDataModel::setManager(Manager *manager)
 {
- if (!(qobject_cast<SensorManager*>(manager->self()))) {
+ if (!(qobject_cast<SensorManager*>(manager->mself()))) {
      return;
  }
  getManager()->removePropertyChangeListener(this);
@@ -96,7 +96,7 @@ void SensorTableDataModel::common()
    }
   }
  }
- senManager = (SensorManager*)manager->self();
+ senManager = (SensorManager*)manager->mself();
  getManager()->addPropertyChangeListener(this);
  updateNameList();
 }
@@ -110,10 +110,10 @@ void SensorTableDataModel::common()
 
 /*protected*/ NamedBean* SensorTableDataModel::getBySystemName(QString name) const
 {
- QObject* o = senManager->self();
+ QObject* o = senManager->mself();
  //if(static_cast<AbstractManager*>(senManager) != nullptr)
  if(QString(o->metaObject()->className())== "ProxySensorManager")
-  return ((ProxySensorManager*)o)->getBySystemName(name);
+  return ((ProxySensorManager*)o)->AbstractProxyManager::getBySystemName(name);
  else
   return ((AbstractManager*)o)->getBySystemName(name);
 }
@@ -125,9 +125,9 @@ void SensorTableDataModel::common()
 /*protected*/ void SensorTableDataModel::clickOn(NamedBean* t)
 {
  try {
-        int state = ((AbstractSensor*)t)->getKnownState();
-        if (state==Sensor::INACTIVE) ((AbstractSensor*)t)->setKnownState(Sensor::ACTIVE);
-        else ((AbstractSensor*)t)->setKnownState(Sensor::INACTIVE);
+        int state = ((AbstractSensor*)t->self())->getKnownState();
+        if (state==Sensor::INACTIVE) ((AbstractSensor*)t->self())->setKnownState(Sensor::ACTIVE);
+        else ((AbstractSensor*)t->self())->setKnownState(Sensor::INACTIVE);
     } catch (JmriException* e) { log->warn("Error setting state: "+e->getMessage()); }
 }
 
@@ -224,12 +224,12 @@ void SensorTableDataModel::common()
  int row = index.row();
  //if (col==INVERTCOL) return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
  QString name = sysNameList.at(row);
- QObject* o = senManager->self();
+ QObject* o = senManager->mself();
  Sensor* sen;
  if(QString(o->metaObject()->className())== "ProxySensorManager")
-  sen = (AbstractSensor*)((ProxySensorManager*)o)->getBySystemName(name);
+  sen = (AbstractSensor*)((ProxySensorManager*)o)->AbstractProxyManager::getBySystemName(name)->self();
  else
-  sen = (AbstractSensor*)((AbstractManager*)o)->getBySystemName(name);
+  sen = (AbstractSensor*)((AbstractManager*)o)->getBySystemName(name)->self();
   if (sen == nullptr) {
       return Qt::ItemIsEnabled;
   }
@@ -262,15 +262,15 @@ void SensorTableDataModel::common()
 /*public*/ QVariant SensorTableDataModel::data(const QModelIndex &index, int role) const
 {
  QString name = sysNameList.at(index.row());
- QObject* o = senManager->self();
+ QObject* o = senManager->mself();
  Sensor* s;
 // if(qobject_cast<AbstractManager*>(senManager->self()) != 0)
 //  s = (AbstractSensor*)((AbstractManager*)senManager->self())->getBySystemName(name);
 // else
  if(QString(o->metaObject()->className())== "ProxySensorManager")
-  s = (AbstractSensor*)((ProxySensorManager*)o)->getBySystemName(name);
+  s = (AbstractSensor*)((ProxySensorManager*)o)->AbstractProxyManager::getBySystemName(name)->self();
  else
-  s = (AbstractSensor*)((AbstractManager*)o)->getBySystemName(name);
+  s = (AbstractSensor*)((AbstractManager*)o)->getBySystemName(name)->self();
 
  if(role == Qt::CheckStateRole)
  {
@@ -376,10 +376,10 @@ void SensorTableDataModel::common()
  }
  QString name = sysNameList.at(row);
  Sensor* s;
- if(qobject_cast<AbstractManager*>(senManager->self()) != nullptr)
-  s = (Sensor*)((AbstractManager*)senManager->self())->getBySystemName(name);
+ if(qobject_cast<AbstractManager*>(senManager->mself()) != nullptr)
+  s = (Sensor*)((AbstractManager*)senManager->mself())->getBySystemName(name)->self();
  else
-  s = (Sensor*)((AbstractManager*)senManager->self())->getBySystemName(name);
+  s = (Sensor*)((AbstractManager*)senManager->mself())->getBySystemName(name)->self();
 
  if (s == nullptr)
  {

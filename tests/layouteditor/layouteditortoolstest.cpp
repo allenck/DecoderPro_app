@@ -601,7 +601,7 @@ LayoutEditorToolsTest::LayoutEditorToolsTest(QObject *parent) : QObject(parent)
             //layoutBlocks = ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getNamedBeanSet().stream().collect(Collectors.toList());
             layoutBlocks = QList<LayoutBlock*>();
             foreach (NamedBean* b, ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getNamedBeanSet()) {
-             layoutBlocks.append((LayoutBlock*)b);
+             layoutBlocks.append((LayoutBlock*)b->self());
             }
 
             for (int i = 0; i < 5; i++) {
@@ -611,7 +611,7 @@ LayoutEditorToolsTest::LayoutEditorToolsTest(QObject *parent) : QObject(parent)
             //turnouts = InstanceManager::getDefault("TurnoutManager").getNamedBeanSet().stream().collect(Collectors.toList());
             turnouts = QList<Turnout*>();
             foreach (NamedBean*b, ((TurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->getNamedBeanSet()) {
-             turnouts.append((Turnout*)b);
+             turnouts.append((Turnout*)b->self());
             }
 
             for (int i = 0; i < 5; i++) {
@@ -622,7 +622,7 @@ LayoutEditorToolsTest::LayoutEditorToolsTest(QObject *parent) : QObject(parent)
             //sensors = InstanceManager.getDefault(SensorManager.class).getNamedBeanSet().stream().collect(Collectors.toList());
             sensors = QList<Sensor*>();
             foreach (NamedBean* b, ((ProxySensorManager*)InstanceManager::getDefault("SensorManager"))->AbstractProxyManager::getNamedBeanSet()) {
-             sensors.append((Sensor*)b);
+             sensors.append((Sensor*)b->self());
             }
 
             for (int i = 0; i < 5; i++) {
@@ -635,7 +635,7 @@ LayoutEditorToolsTest::LayoutEditorToolsTest(QObject *parent) : QObject(parent)
             signalHeads = QList<SignalHead*>();
             foreach(NamedBean* b, ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getNamedBeanSet())
             {
-             signalHeads.append((SignalHead*)b);
+             signalHeads.append((SignalHead*)b->self());
             }
         }
     }

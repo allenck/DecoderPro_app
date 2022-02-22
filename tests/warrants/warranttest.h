@@ -61,7 +61,7 @@ Q_OBJECT
     WarrantListener(Warrant* w) {
         warrant = w;
     }
-QObject* self() {return (QObject*)this;}
+QObject* pself() {return (QObject*)this;}
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* e);
     friend class WarrantTest;

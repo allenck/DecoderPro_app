@@ -218,7 +218,8 @@ public:
   this->parent = parent;
 
  }
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
+
  public slots:
  void propertyChange(PropertyChangeEvent *e) override
  {
@@ -296,7 +297,7 @@ class RosterEntryUpdateListener : public QObject, public PropertyChangeListener
   Q_INTERFACES(PropertyChangeListener)
  public:
     RosterEntryUpdateListener(RosterFrame* f);
-    QObject* self() override{return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 public slots:
     void propertyChange(PropertyChangeEvent *);
 
@@ -352,7 +353,7 @@ class DefaultFilePropertyChangeListener :public QObject, public PropertyChangeLi
  RosterFrame* frame;
 public:
  DefaultFilePropertyChangeListener(RosterFrame* frame) {this->frame = frame;}
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent* evt);
 };

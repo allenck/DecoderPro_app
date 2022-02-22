@@ -92,14 +92,14 @@ void JMRIClientSystemConnectionMemo::common()
 //        ((JMRIClientTurnout)(turn)).requestUpdateFromLayout();
 //    });
     foreach(NamedBean* turn, getTurnoutManager()->getNamedBeanSet())
-     ((JMRIClientTurnout*)(turn))->requestUpdateFromLayout();
+     ((JMRIClientTurnout*)(turn)->self())->requestUpdateFromLayout();
 
 //    getSensorManager().getNamedBeanSet().forEach((sen) -> {
 //        ((JMRIClientSensor)(sen)).requestUpdateFromLayout();
 //    });
     foreach(NamedBean* sen, getSensorManager()->AbstractManager::getNamedBeanSet())
-     ((JMRIClientSensor*)(sen))->requestUpdateFromLayout();
-#if 0
+     ((JMRIClientSensor*)(sen)->self())->requestUpdateFromLayout();
+#if 0 //TODO:
     getLightManager().getNamedBeanSet().forEach((light) -> {
         ((JMRIClientLight)light).requestUpdateFromLayout();
     });

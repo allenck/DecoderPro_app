@@ -7,7 +7,7 @@ AbstractBlockManager::AbstractBlockManager(QObject *parent) : AbstractManager(pa
 
 /*public*/ Block* AbstractBlockManager::getBySystemName(QString name) const
 {
- return  (Block*)_tsys->value(name);
+ return  (Block*)_tsys->value(name)->self();
 }
 
 /*public*/ Block* AbstractBlockManager::getByUserName(QString userName)const
@@ -17,6 +17,6 @@ AbstractBlockManager::AbstractBlockManager(QObject *parent) : AbstractManager(pa
  NamedBean* bean = _tuser->value(normalizedUserName);
  if(bean == nullptr)
   return nullptr;
- Block* b = (Block*)bean;
+ Block* b = (Block*)bean->self();
  return b;
 }

@@ -70,8 +70,8 @@
 //@Override
 /*final*/ void IdTagTableAction::setManager(/*@Nonnull*/ Manager/*<IdTag>*/* t) {
     tagManager->removePropertyChangeListener(this);
-    if (qobject_cast<IdTagManager*>(t->self())) {
-        tagManager = (IdTagManager*) t->self();
+    if (qobject_cast<IdTagManager*>(t->mself())) {
+        tagManager = (IdTagManager*) t->mself();
         if (m != nullptr) {
             m->setManager(tagManager);
         }
@@ -219,7 +219,7 @@ void IdTagTableAction::handleCreateException(QString sysName, IllegalArgumentExc
 //@Override
 /*public*/ void IdTagTableAction::addToPanel(AbstractTableTabAction* f) {
     QString connectionName = tagManager->getMemo()->getUserName();
-    if (qobject_cast<ProxyIdTagManager*>(tagManager->self())) {
+    if (qobject_cast<ProxyIdTagManager*>(tagManager->mself())) {
         connectionName = "All";
     }
 //    else if (connectionName == nullptr && (tagManager instanceof DefaultRailComManager)) {

@@ -379,7 +379,7 @@ void EditCircuitFrame::closePickList() {
        OBlockManager* mgr = (OBlockManager*)InstanceManager::getDefault("OBlockManager");
        QString  sb;// = new StringBuilder ();
        if (userName.length() > 0) {
-            OBlock* block = (OBlock*)mgr->getByUserName(userName);
+            OBlock* block = (OBlock*)mgr->getByUserName(userName)->self();
            if (block != nullptr) {
                sb.append(tr("\"%1\" is a duplicate name for circuit %2.").arg(userName).arg(block->getSystemName()));
                sb.append("\n");
@@ -389,7 +389,7 @@ void EditCircuitFrame::closePickList() {
            sb.append(tr("OBlock System Name must begin with \"OB\" with at least 3 characters."));
            sb.append("\n");
        } else {
-           OBlock* block = (OBlock*)mgr->getBySystemName(systemName);
+           OBlock* block = (OBlock*)mgr->getBySystemName(systemName)->self();
            if (block != nullptr) {
                sb.append(tr("\"%1\" is a duplicate name for circuit %2.").arg(systemName).arg(block->getUserName()));
                sb.append("\n");
@@ -411,7 +411,7 @@ void EditCircuitFrame::closePickList() {
  if (name.length() == 0) {
      msg = tr("Enter a name to change the User Name of the OBlock for this Circuit.");
  } else {
-     OBlock* block = (OBlock*)((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getByUserName(name);
+     OBlock* block = (OBlock*)((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getByUserName(name)->self();
      if (block != nullptr) {
          msg = tr("\"%1\" is a duplicate name for circuit %2.").arg(name).arg(block->getDisplayName(NamedBean::DisplayOptions::QUOTED_USERNAME_SYSTEMNAME));
      }
@@ -514,7 +514,7 @@ void EditCircuitFrame::closePickList() {
 /*private*/ void EditCircuitFrame::closeCreate() {
     QString  sb;// = new StringBuilder ();
     QString sysName = _homeBlock->getSystemName();
-    OBlock* block = (OBlock*)((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getBySystemName(sysName);
+    OBlock* block = (OBlock*)((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getBySystemName(sysName)->self();
     if (block == nullptr) {
         // get rid of icon selections
         for (Positionable* pos : *_parent->getCircuitIcons(_homeBlock)) {

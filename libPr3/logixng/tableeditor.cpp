@@ -39,7 +39,7 @@
     /*public*/ TableEditor::TableEditor(BeanTableDataModel/*<NamedTable>*/* m, QString sName, QObject* parent)
       : QObject(parent) {
         _tableManager = (NamedTableManager*)InstanceManager::getDefault("NamedTableManager");
-        _curTable = (AbstractNamedTable*)_tableManager->getBySystemName(sName);
+        _curTable = (AbstractNamedTable*)_tableManager->getBySystemName(sName)->self();
         makeEditTableWindow();
     }
 
@@ -348,7 +348,7 @@
         if (!(uName ==(_curTable->getUserName()))) {
             // user name has changed - check if already in use
             if (uName.length() > 0) {
-                NamedTable* p = (NamedTable*)_tableManager->getByUserName(uName);
+                NamedTable* p = (NamedTable*)_tableManager->getByUserName(uName)->self();
                 if (p != nullptr) {
                     // NamedTable with this user name already exists
                     log->error("Failure to update NamedTable with Duplicate User Name: " // NOI18N

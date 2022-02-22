@@ -50,6 +50,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT SignalHeadIcon : public PositionableIcon, pub
     /*public*/ void performMouseClicked(QGraphicsSceneMouseEvent* e);
     /*public*/ void dispose() override;
     QObject* self() override {return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 
  signals:
 

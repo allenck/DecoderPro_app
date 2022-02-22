@@ -51,7 +51,7 @@ LayoutBlockManagerXml::LayoutBlockManagerXml(QObject*parent) :
   QString sname = iter.next();
   if (sname==NULL) log->error("System name NULL during LayoutBlock store");
   log->debug("layoutblock system name is "+sname);
-  LayoutBlock* b = (LayoutBlock*)tm->getBySystemName(sname);
+  LayoutBlock* b = (LayoutBlock*)tm->getBySystemName(sname)->self();
   if (b->getUseCount()>0)
   {
    // save only those LayoutBlocks that are in use--skip abandoned ones

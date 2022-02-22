@@ -124,10 +124,10 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
     if (!_initialised && !_loading) init();
 
     NamedBean* t = getBySystemName(AbstractManager::makeSystemName(name));
-    if (t!=NULL) return (DefaultIdTag*)t;
+    if (t!=NULL) return (DefaultIdTag*)t->self();
 
     t = getByUserName(name);
-    if (t!=NULL) return (DefaultIdTag*)t;
+    if (t!=NULL) return (DefaultIdTag*)t->self();
 
     return (DefaultIdTag*)getBySystemName(name);
 }
@@ -135,13 +135,13 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
 //@Override
 /*public*/ DefaultIdTag* DefaultIdTagManager::getBySystemName(QString name) {
     if (!_initialised && !_loading) init();
-    return (DefaultIdTag*)_tsys->value(name);
+    return (DefaultIdTag*)_tsys->value(name)->self();
 }
 
 //@Override
 /*public*/ DefaultIdTag *DefaultIdTagManager::getByUserName(QString key)  {
     if (!_initialised && !_loading) init();
-    return (DefaultIdTag*)_tuser->value(key);
+    return (DefaultIdTag*)_tuser->value(key)->self();
 }
 
 //@Override
@@ -193,7 +193,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
  }
 
  // doesn't exist, make a new one
- s = (DefaultIdTag*)createNewIdTag(systemName, userName);
+ s = (DefaultIdTag*)createNewIdTag(systemName, userName)->self();
 
  // save in the maps
  Register((NamedBean*)s);
@@ -289,7 +289,7 @@ DefaultIdTagManager::DefaultIdTagManager(QObject *parent) :
  // and record the time most recently seen
  foreach (NamedBean* n, _tsys->values() )
  {
-  IdTag* t = (IdTag*) n;
+  IdTag* t = (IdTag*) n->self();
   if (t->getWhereLastSeen() == reporter)
   {
    out->append(t);

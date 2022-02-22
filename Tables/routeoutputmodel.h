@@ -21,7 +21,7 @@ class RouteOutputModel : public AbstractTableModel, public PropertyChangeListene
   /*public*/ QString getColumnName(int c) const override;
   /*public*/ int columnCount(const QModelIndex &parent) const override;
   /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
 
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e) override;

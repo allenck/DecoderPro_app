@@ -56,7 +56,7 @@ Q_OBJECT
     AbstractSensorTestBase* test;
 public:
     ListenO2(AbstractSensorTestBase* test) {this->test = test;}
-QObject* self() {return (QObject*)this;}public slots:
+QObject* pself() {return (QObject*)this;}public slots:
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* e);
 };

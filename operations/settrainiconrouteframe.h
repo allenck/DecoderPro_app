@@ -20,7 +20,7 @@ namespace Operations
   ~SetTrainIconRouteFrame() {}
   SetTrainIconRouteFrame(const SetTrainIconRouteFrame&) : OperationsFrame() {}
   /*public*/ QString getClassName()override;
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e)override;
   /*public*/ void buttonActionPerformed(QWidget* ae)override;

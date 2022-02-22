@@ -138,8 +138,8 @@ void LightTableAction::common()
 }
 
 /*public*/ void LightTableAction::setManager(Manager* man) {
-    if(qobject_cast<LightManager*>(man->self()))
-     lightManager = qobject_cast<LightManager*>(man->self());
+    if(qobject_cast<LightManager*>(man->mself()))
+     lightManager = qobject_cast<LightManager*>(man->mself());
 }
 
 /**
@@ -372,7 +372,7 @@ void LTAWindowListener::windowClosing(QCloseEvent *e)
      // get tooltip from ProxyLightManager
      QString systemPrefix = connectionChoice->getSystemPrefix();
      addEntryToolTip = connectionChoice->getEntryToolTip();
-     addRangeBox->setEnabled(((AbstractLightManager*) connectionChoice->self())->allowMultipleAdditions(systemPrefix));
+     addRangeBox->setEnabled(((AbstractLightManager*) connectionChoice->mself())->allowMultipleAdditions(systemPrefix));
      log->debug(tr("DefaultLightManager tip: %1").arg(addEntryToolTip));
      // show Hardware address field tooltip in the Add Light pane to match system connection selected from combobox
      if (addEntryToolTip != "") {
@@ -524,7 +524,7 @@ void LightTableAction::createPressed(ActionEvent* /*e*/) {
     // check if requested Light uses the same address as a Turnout
     QString testSN = turnoutPrefix + curAddress;
     Turnout* testT = (Turnout*)((ProxyTurnoutManager*)InstanceManager::turnoutManagerInstance())->
-            AbstractProxyManager::getBySystemName(testSN);
+            AbstractProxyManager::getBySystemName(testSN)->self();
     if (testT != nullptr) {
         // Address is already used as a Turnout
          log->warn("Requested Light " + sName + " uses same address as Turnout " + testT->getDisplayName());

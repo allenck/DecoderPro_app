@@ -47,7 +47,7 @@ private:
     /*private*/ void moveDownRouteLocation(RouteLocation* rl);
     /*private*/ void removePropertyChangeRouteLocations();
 
-    QObject* self() override {return (QObject*)this;}
+    QObject* pself() override {return (QObject*)this;}
 
 protected:
     /*protected*/ void initTable(RouteBlockingOrderEditFrame* frame, JTable* table, Route* route);

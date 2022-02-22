@@ -58,7 +58,7 @@
         log->warn("requested getValue(null)");
         return "(no name)";
     }
-    Block* b = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getBySystemName(name);
+    Block* b = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getBySystemName(name)->self();
     if (b == nullptr) {
         log->debug(tr("requested getValue(\"%1\"), Block doesn't exist").arg(name));
         return "(no Block)";
@@ -115,7 +115,7 @@
         log->error(tr("requested getValueAt(\"%1\"), row outside of range").arg(row));
         return "Error table size";
     }
-    Block* b = (Block*)getBySystemName(sysNameList.at(row));
+    Block* b = (Block*)getBySystemName(sysNameList.at(row))->self();
     if (b == nullptr) {
         log->error(tr("requested getValueAt(\"%1\"), Block doesn't exist").arg(row));
         return "(no Block)";
@@ -212,7 +212,7 @@ QVariant BlockTableDataModel::data(const QModelIndex &index, int role) const
  {
   if(index.column() == STATECOL)
   {
-   Block* b = (Block*)getBySystemName(sysNameList.at(index.row()));
+   Block* b = (Block*)getBySystemName(sysNameList.at(index.row()))->self();
 
    if (b->getState()==Block::UNOCCUPIED && offIcon != QPixmap()) {
     return offIcon;
@@ -292,7 +292,7 @@ QVariant BlockTableDataModel::data(const QModelIndex &index, int role) const
 {
  int row = index.row();
    // no setting of block state from table
-   Block* b = (Block*)getBySystemName(sysNameList.at(row));
+   Block* b = (Block*)getBySystemName(sysNameList.at(row))->self();
 
  if(role == Qt::CheckStateRole)
  {
@@ -574,7 +574,7 @@ void BlockTableDataModel::editButton(Block* b) {
     QVector<QString> displayList = QVector<QString>(nameSet.size());
     int i = 0;
     for (NamedBean* nb : nameSet) {
-     Sensor* nBean = (Sensor*)nb;
+     Sensor* nBean = (Sensor*)nb->self();
         if (nBean != nullptr) {
             displayList[i++] = nBean->getDisplayName();
         }
@@ -703,7 +703,7 @@ void BlockTableDataModel::editButton(Block* b) {
        log->error(tr("requested getValueAt(\"%1\"), row outside of range").arg(row));
        return "Error table size";
    }
-   Block* b = (Block*)getBySystemName(sysNameList.at(row));
+   Block* b = (Block*)getBySystemName(sysNameList.at(row))->self();
    if (b == nullptr) {
        log->error(tr("requested getValueAt(\"%1\"), Block doesn't exist").arg(row));
        return "(no Block)";

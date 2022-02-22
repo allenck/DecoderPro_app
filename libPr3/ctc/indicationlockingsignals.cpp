@@ -47,7 +47,7 @@
 
 /*public*/ bool IndicationLockingSignals::checkSignalMasts() {
     for (NBHSignal* signal : _mListOfSignals) {
-        if (checkMast((SignalMast*) signal->getBean(), turnout)) return true;
+        if (checkMast((SignalMast*) signal->getBean()->self(), turnout)) return true;
     }
     return false;
 }

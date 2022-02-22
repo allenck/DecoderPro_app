@@ -648,7 +648,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
         break;
     case Conditional::ACTION_SET_TURNOUT:
     {
-     Turnout* t =(Turnout*) nb;
+     Turnout* t =(Turnout*) nb->self();
      if (t == nullptr)
      {
       errorList.append("invalid turnout name in action - "+action->getDeviceName());
@@ -724,7 +724,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
     }
     case Conditional::ACTION_LOCK_TURNOUT:
     {
-     Turnout* tl = (Turnout*) nb;
+     Turnout* tl = (Turnout*) nb->self();
      if (tl == nullptr)
      {
       errorList.append("invalid turnout name in action - "+action->getDeviceName());
@@ -752,7 +752,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      break;
     }
     case Conditional::ACTION_SET_SIGNAL_APPEARANCE:
-     h = (SignalHead*) nb;
+     h = (SignalHead*) nb->self();
      if (h == nullptr)
      {
       errorList.append("invalid signal head name in action - "+action->getDeviceName());
@@ -763,7 +763,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      }
      break;
     case Conditional::ACTION_SET_SIGNAL_HELD:
-     h = (SignalHead*) nb;
+     h = (SignalHead*) nb->self();
      if (h == nullptr)
      {
       errorList.append("invalid signal head name in action - "+action->getDeviceName());
@@ -774,7 +774,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      }
      break;
     case Conditional::ACTION_CLEAR_SIGNAL_HELD:
-     h = (SignalHead*) nb;
+     h = (SignalHead*) nb->self();
      if (h == nullptr) {
          errorList.append("invalid signal head name in action - "+action->getDeviceName());
      }
@@ -785,7 +785,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      }
      break;
     case Conditional::ACTION_SET_SIGNAL_DARK:
-     h = (SignalHead*) nb;
+     h = (SignalHead*) nb->self();
      if (h == nullptr)
      {
       errorList.append("invalid signal head name in action - "+action->getDeviceName());
@@ -797,7 +797,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      }
      break;
     case Conditional::ACTION_SET_SIGNAL_LIT:
-     h = (SignalHead*) nb;
+     h = (SignalHead*) nb->self();
      if (h == nullptr) {
          errorList.append("invalid signal head name in action - "+action->getDeviceName());
      }
@@ -809,7 +809,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      break;
     case Conditional::ACTION_TRIGGER_ROUTE:
     {
-     Route* r = (Route*) nb;
+     Route* r = (Route*) nb->self();
      if (r == nullptr) {
          errorList.append("invalid route name in action - "+action->getDeviceName());
      }
@@ -822,7 +822,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
     }
     case Conditional::ACTION_SET_SENSOR:
     {
-     Sensor* sn = (Sensor*) nb;
+     Sensor* sn = (Sensor*) nb->self();
      if (sn == nullptr)
      {
       errorList.append("invalid sensor name in action - "+action->getDeviceName());
@@ -973,7 +973,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
     break;
    case Conditional::ACTION_SET_MEMORY:
    {
-     Memory* m = (Memory*) nb;
+     Memory* m = (Memory*) nb->self();
      if (m == nullptr) {
          errorList.append("invalid memory name in action - "+action->getDeviceName());
      }
@@ -985,7 +985,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
     }
    case Conditional::ACTION_COPY_MEMORY:
    {
-     Memory* mFrom = (Memory*) nb;
+     Memory* mFrom = (Memory*) nb->self();
     if (mFrom == nullptr)
     {
         errorList.append("invalid memory name in action - "+action->getDeviceName());
@@ -1144,7 +1144,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
     break;
 #endif
    case Conditional::ACTION_ALLOCATE_WARRANT_ROUTE:
-     w = (Warrant*) nb;
+     w = (Warrant*) nb->self();
      if (w == nullptr)
      {
       errorList.append("invalid Warrant name in action - "+action->getDeviceName());
@@ -1160,7 +1160,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      }
      break;
     case Conditional::ACTION_DEALLOCATE_WARRANT_ROUTE:
-     w = (Warrant*) nb;
+     w = (Warrant*) nb->self();
      if (w == nullptr)
      {
       errorList.append("invalid Warrant name in action - "+action->getDeviceName());
@@ -1172,7 +1172,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      }
      break;
     case Conditional::ACTION_SET_ROUTE_TURNOUTS:
-     w = (Warrant*) nb;
+     w = (Warrant*) nb->self();
      if (w == nullptr)
      {
          errorList.append("invalid Warrant name in action - "+action->getDeviceName());
@@ -1188,7 +1188,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      }
      break;
     case Conditional::ACTION_THROTTLE_FACTOR:
-     w = (Warrant*) nb;
+     w = (Warrant*) nb->self();
      if (w == nullptr)
      {
       errorList.append("invalid Warrant name in action - "+action->getDeviceName());
@@ -1204,7 +1204,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      }
      break;
     case Conditional::ACTION_SET_TRAIN_ID:
-     w = (Warrant*) nb;
+     w = (Warrant*) nb->self();
      if (w == nullptr)
      {
       errorList.append("invalid Warrant name in action - "+action->getDeviceName());
@@ -1221,7 +1221,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      }
      break;
     case Conditional::ACTION_SET_TRAIN_NAME:
-     w = (Warrant*) nb;
+     w = (Warrant*) nb->self();
      if (w == nullptr)
      {
       errorList.append("invalid Warrant name in action - "+action->getDeviceName());
@@ -1233,7 +1233,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      }
      break;
     case Conditional::ACTION_AUTO_RUN_WARRANT:
-     w = (Warrant*) nb;
+     w = (Warrant*) nb->self();
      if (w == nullptr)
      {
       errorList.append("invalid Warrant name in action - "+action->getDeviceName());
@@ -1249,7 +1249,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      }
      break;
     case Conditional::ACTION_MANUAL_RUN_WARRANT:
-     w = (Warrant*) nb;
+     w = (Warrant*) nb->self();
      if (w == nullptr)
      {
       errorList.append("invalid Warrant name in action - "+action->getDeviceName());
@@ -1266,7 +1266,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      }
      break;
     case Conditional::ACTION_CONTROL_TRAIN:
-     w = (Warrant*) nb;
+     w = (Warrant*) nb->self();
      if (w == nullptr) {
          errorList.append("invalid Warrant name in action - "+action->getDeviceName());
      }
@@ -1281,7 +1281,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      break;
 
     case Conditional::ACTION_SET_SIGNALMAST_ASPECT:
-     f = (SignalMast*) nb;
+     f = (SignalMast*) nb->self();
      if (f == nullptr)
      {
       errorList.append("invalid signal mast name in action - "+action->getDeviceName());
@@ -1293,7 +1293,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      }
      break;
     case Conditional::ACTION_SET_SIGNALMAST_HELD:
-     f = (SignalMast*) nb;
+     f = (SignalMast*) nb->self();
      if (f == nullptr) {
          errorList.append("invalid signal mast name in action - "+action->getDeviceName());
      }
@@ -1303,7 +1303,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      }
      break;
     case Conditional::ACTION_CLEAR_SIGNALMAST_HELD:
-     f = (SignalMast*) nb;
+     f = (SignalMast*) nb->self();
      if (f == nullptr)
      {
       errorList.append("invalid signal mast name in action - "+action->getDeviceName());
@@ -1315,7 +1315,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      }
      break;
     case Conditional::ACTION_SET_SIGNALMAST_DARK:
-     f = (SignalMast*) nb;
+     f = (SignalMast*) nb->self();
      if (f == nullptr) {
          errorList.append("invalid signal head name in action - "+action->getDeviceName());
      }
@@ -1326,7 +1326,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      }
      break;
     case Conditional::ACTION_SET_SIGNALMAST_LIT:
-     f = (SignalMast*) nb;
+     f = (SignalMast*) nb->self();
      if (f == nullptr)
      {
       errorList.append("invalid signal head name in action - "+action->getDeviceName());
@@ -1339,7 +1339,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      break;
 #if 1
     case Conditional::ACTION_SET_BLOCK_VALUE:
-     b = (OBlock*) nb;
+     b = (OBlock*) nb->self();
      if (b == nullptr)
      {
       errorList.append("invalid block name in action - " + action->getDeviceName());
@@ -1351,7 +1351,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      }
      break;
     case Conditional::ACTION_SET_BLOCK_ERROR:
-     b = (OBlock*) nb;
+     b = (OBlock*) nb->self();
      if (b == nullptr) {
          errorList.append("invalid block name in action - " + action->getDeviceName());
      } else {
@@ -1360,7 +1360,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      }
      break;
     case Conditional::ACTION_CLEAR_BLOCK_ERROR:
-     b = (OBlock*) nb;
+     b = (OBlock*) nb->self();
      if (b == nullptr) {
          errorList.append("invalid block name in action - " + action->getDeviceName());
      } else {
@@ -1368,7 +1368,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      }
      break;
     case Conditional::ACTION_DEALLOCATE_BLOCK:
-     b = (OBlock*)nb;
+     b = (OBlock*)nb->self();
      if (b == nullptr)
      {
          errorList.append("invalid block name in action - "+action->getDeviceName());
@@ -1379,7 +1379,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      }
      break;
     case Conditional::ACTION_SET_BLOCK_OUT_OF_SERVICE:
-     b = (OBlock*)nb;
+     b = (OBlock*)nb->self();
      if (b == nullptr)
      {
       errorList.append("invalid block name in action - "+action->getDeviceName());
@@ -1391,7 +1391,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      }
      break;
     case Conditional::ACTION_SET_BLOCK_IN_SERVICE:
-     b = (OBlock*)nb;
+     b = (OBlock*)nb->self();
      if (b == nullptr) {
          errorList.append("invalid block name in action - "+action->getDeviceName());
      }

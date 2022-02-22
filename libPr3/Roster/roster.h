@@ -160,7 +160,7 @@ public:
     /*public*/ void addRosterGroups(QList<RosterGroup*> groups);
     /*public*/ void removeRosterGroup(RosterGroup* rg);
 
-    QObject* self() override {return (QObject*)this;}
+    QObject* pself() override {return (QObject*)this;}
 signals:
     //void propertyChange(QString text, QObject* o, QObject* n);
 
@@ -224,7 +224,7 @@ class RosterPropertyChangeListener : public QObject, public PropertyChangeListen
  Roster* roster;
 public:
  RosterPropertyChangeListener(Roster* roster) { this->roster = roster;}
- QObject* self() {return (QObject*)this;}
+ QObject* pself() {return (QObject*)this;}
 
 public slots:
  void propertyChange(PropertyChangeEvent*);

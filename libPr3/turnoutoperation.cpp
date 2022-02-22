@@ -251,7 +251,7 @@ QStringList turnouts = ((ProxyTurnoutManager*)tm)->AbstractProxyManager::getSyst
 QStringListIterator iter(turnouts);
 while (iter.hasNext())
 {
- Turnout* t = (Turnout*)((ProxyTurnoutManager*)tm)->AbstractProxyManager::getBySystemName(iter.next());
+ Turnout* t = (Turnout*)((ProxyTurnoutManager*)tm)->AbstractProxyManager::getBySystemName(iter.next())->self();
  if (t!=NULL && ((AbstractTurnout*)t)->getTurnoutOperation() == this)
  {
   result = true;

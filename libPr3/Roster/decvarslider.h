@@ -32,7 +32,7 @@ class DVSPropertyChangeListener : public QObject, public PropertyChangeListener
   DecVarSlider* decVarSlider;
  public:
   DVSPropertyChangeListener(DecVarSlider* decVarSlider);
-  QObject* self() override{return (QObject*)this;}
+  QObject* pself() override{return (QObject*)this;}
  public slots:
   void propertyChange(PropertyChangeEvent*);
 };

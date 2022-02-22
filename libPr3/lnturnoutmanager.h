@@ -24,9 +24,10 @@ public:
 
     QObject* self() override { return (QObject*)this;}
     QObject* vself() override { return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 
    // /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
-    /*public*/ Turnout* getBySystemName(QString name) override {return (Turnout*)AbstractManager::getBySystemName(name);}
+//    /*public*/ Turnout* getBySystemName(QString name) override {return (Turnout*)AbstractManager::getBySystemName(name)->self();}
     /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::addPropertyChangeListener(l);}
     /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::removePropertyChangeListener(l);}
     /*public*/ QString getClosedText() override {return AbstractTurnoutManager::getClosedText();}

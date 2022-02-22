@@ -58,7 +58,8 @@ public:
     /*public*/ void loadRoot(/*@Nonnull*/ QDomElement root);
     /*public*/ void setAspects(/*@Nonnull*/ QMap<QString, float> map, int interpretation);
     /*public*/ void setAppearances(/*@Nonnull*/ QMap<QString, QString> map);
-    QObject* self() {return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
+
     signals:
 
     public slots:
@@ -87,7 +88,7 @@ class WarrantPreferencesListener : public QObject, public PropertyChangeListener
  SignalSpeedMap* ssm;
 public:
  WarrantPreferencesListener(SignalSpeedMap* ssm) {this->ssm = ssm;}
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent* evt) override;
 };

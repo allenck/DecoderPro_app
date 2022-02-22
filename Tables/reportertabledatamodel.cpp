@@ -16,7 +16,7 @@
 
     /*public*/ ReporterTableDataModel::ReporterTableDataModel(/*Manager<Reporter>*/Manager *mgr, QObject* parent) : BeanTableDataModel(parent){
         //super();
-     setObjectName(QString("ReporterTableDataModel") + "_" + mgr->self()->metaObject()->className());
+     setObjectName(QString("ReporterTableDataModel") + "_" + mgr->mself()->metaObject()->className());
      setManager(mgr);
      init();
     }
@@ -52,7 +52,7 @@
      */
     //@Override
     /*public*/ /*final*/ void ReporterTableDataModel::setManager(/*Manager<Reporter>*/Manager *rm) {
-        if (!(qobject_cast<ReporterManager*>(rm->self()))) {
+        if (!(qobject_cast<ReporterManager*>(rm->mself()))) {
             return;
         }
         getManager()->removePropertyChangeListener(this);
@@ -65,7 +65,7 @@
                 }
             }
         }
-        reporterManager = (ReporterManager*) rm->self();
+        reporterManager = (ReporterManager*) rm->mself();
         getManager()->addPropertyChangeListener(this);
         updateNameList();
     }
@@ -94,7 +94,7 @@
      */
     //@Override
     /*public*/ NamedBean* ReporterTableDataModel::getByUserName(/*@Nonnull*/ QString name) {
-        return ((ProxyReporterManager*)getManager()->self())->AbstractProxyManager::getByUserName(name);
+        return ((ProxyReporterManager*)getManager()->mself())->AbstractProxyManager::getByUserName(name);
     }
 
     /**

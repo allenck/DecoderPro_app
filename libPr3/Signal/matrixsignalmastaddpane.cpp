@@ -595,7 +595,7 @@ void MatrixSignalMastAddPane::setMatrixReference(BeanSelectCreatePanel* bp, QStr
 }
 
 void MatrixSignalMastAddPane::copyFromAnotherMatrixMastAspect(QString strMast) {
-    MatrixSignalMast* mast = (MatrixSignalMast*) static_cast<SignalMastManager*>( InstanceManager::getDefault("SignalMastManager"))->getNamedBean(strMast);
+    MatrixSignalMast* mast = (MatrixSignalMast*) static_cast<SignalMastManager*>( InstanceManager::getDefault("SignalMastManager"))->getNamedBean(strMast)->self();
     if (mast == nullptr) {
         log->error(tr("Cannot copy from mast %1 which doesn't exist").arg(strMast));
         return;
@@ -754,8 +754,8 @@ QComboBox* MatrixSignalMastAddPane::copyFromMastSelection() {
 
     for (QString name : names) {
         // only accept MatrixSignalMast masts
-        if (static_cast<MatrixSignalMast*>(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getNamedBean(name))!= nullptr) {
-            SignalMast* m = (SignalMast*) static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getNamedBean(name);
+        if (static_cast<MatrixSignalMast*>(static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getNamedBean(name)->self())!= nullptr) {
+            SignalMast* m = (SignalMast*) static_cast<SignalMastManager*>(InstanceManager::getDefault("SignalMastManager"))->getNamedBean(name)->self();
             if (m!=nullptr) {
                 mastSelect->addItem(m->getDisplayName());
             } else {

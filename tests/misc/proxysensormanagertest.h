@@ -16,7 +16,7 @@ public:
  Q_INVOKABLE /*public*/ void setUp();
  Q_INVOKABLE /*public*/ void tearDown();
 
-    QObject* self() override {return (QObject*)this;}
+    QObject* pself() override {return (QObject*)this;}
 signals:
 
 public slots:

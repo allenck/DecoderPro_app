@@ -94,7 +94,7 @@ namespace Operations
   /*public*/ int getTrainLength();
   /*public*/ void setTrainWeight(int weight);
   /*public*/ int getTrainWeight();
-  QObject* self() override {return (QObject*)this; }
+  QObject* pself() override {return (QObject*)this; }
 
  signals:
 

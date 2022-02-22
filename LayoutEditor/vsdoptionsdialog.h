@@ -16,7 +16,7 @@ public:
  /*public*/ static /*final*/ QString OPTIONS_PROPERTY;// = "Options"; // NOI18N
  /*public*/ VSDOptionsDialog(QWidget* parent, QString title);
  /*public*/ void initComponents();
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
 
 signals:
  void propertyChange(PropertyChangeEvent*) override;

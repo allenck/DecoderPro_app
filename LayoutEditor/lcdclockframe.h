@@ -20,7 +20,7 @@ public:
     /*public*/ void scaleImage();
     /*public*/ void dispose() override;
  /*public*/ QString getClassName() override;
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
 
 signals:
 

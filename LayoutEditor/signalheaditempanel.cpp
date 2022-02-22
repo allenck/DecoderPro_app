@@ -140,7 +140,7 @@
   return allIconsMap;
  }
 
- SignalHead* sh = (SignalHead*)getNamedBean();
+ SignalHead* sh = (SignalHead*)getNamedBean()->self();
  if (sh!=NULL)
  {
   QStringList states = ((AbstractSignalHead*)sh)->getValidStateNames().toList();

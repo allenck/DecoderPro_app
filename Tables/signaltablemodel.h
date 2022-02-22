@@ -93,7 +93,7 @@ public:
  /*public*/ QString getColumnClass(int col)const override;
  /*public*/ bool editMode();
  /*public*/ void setEditMode(bool editing);
- QObject* self() override {return (QObject*)this;}
+ QObject* pself() override {return (QObject*)this;}
 
 signals:
 

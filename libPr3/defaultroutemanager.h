@@ -44,6 +44,7 @@ public:
     /*public*/ QString getNamedBeanClass()const override;
 
     QObject* vself() override {return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 
 signals:
  //void newRouteCreated(Route*);

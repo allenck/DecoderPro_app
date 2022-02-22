@@ -372,7 +372,7 @@ void PortalTableModel::initTempRow()
   OBlockManager* OBlockMgr = (OBlockManager*) InstanceManager::getDefault("OBlockManager");
      QStringList sysNames = OBlockMgr->getSystemNameArray();
      for (int i = 0; i < sysNames.length(); i++) {
-         ((OBlock*)OBlockMgr->getBySystemName(sysNames[i]))->removePortal(portal);
+         ((OBlock*)OBlockMgr->getBySystemName(sysNames[i])->self())->removePortal(portal);
      }
      portal->dispose();
      return true;

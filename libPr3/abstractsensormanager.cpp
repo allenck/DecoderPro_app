@@ -52,10 +52,10 @@ AbstractSensorManager::AbstractSensorManager(SystemConnectionMemo* memo, QObject
 
 /*public*/ Sensor* AbstractSensorManager::getSensor(QString name)
 {
- Sensor* t = ( Sensor*)getByUserName(name);
+ Sensor* t = ( Sensor*)getByUserName(name)->self();
  if (t!=nullptr) return t;
 
- return ( Sensor*)getBySystemName(name);
+ return ( Sensor*)getBySystemName(name)->self();
 }
 
 //static final java.util.regex.Matcher numberMatcher = java.util.regex.Pattern.compile("\\d++").matcher("");
@@ -85,7 +85,7 @@ bool AbstractSensorManager::isNumber(QString s) const
  if(!_tsys->contains(name))
   return nullptr;
  NamedBean* bean = _tsys->value(name);
- NamedBean* s = (bean);
+ NamedBean* s = (Sensor*)(bean->self());
 //        Sensor * s = sensorMap.value(key);
  return s;
 }
@@ -127,7 +127,7 @@ bool AbstractSensorManager::isNumber(QString s) const
      if (getBySystemName(sysName) != s) {
          log->error(tr("inconsistent user (%1) and system name (%2) results; userName related to (%3)").arg(userName).arg(sysName).arg(s->getSystemName()));
      }
-     return (Sensor*)s;
+     return (Sensor*)s->self();
   }
   if ((s = getBySystemName(sysName)) != nullptr)
   {
@@ -137,7 +137,7 @@ bool AbstractSensorManager::isNumber(QString s) const
           log->warn(tr("Found sensor via system name (%1) with non-null user name (%2). Sensor \"%3(%4)\" cannot be used.").arg(
                   sysName).arg(s->getUserName()).arg(sysName).arg(userName));
       }
-      return (Sensor*)s;
+      return (Sensor*)s->self();
   }
 
  // doesn't exist, make a new one
@@ -152,7 +152,7 @@ bool AbstractSensorManager::isNumber(QString s) const
  AbstractManager::Register(s);
  emit propertyChange(new PropertyChangeEvent((QObject*)this, "length", QVariant(), QVariant(_tsys->size()))); // is this necessary here?
  //emit newSensorCreated(this, s);
- return (Sensor*)s;
+ return (Sensor*)s->self();
 }
 
 /** {@inheritDoc} */
@@ -269,7 +269,7 @@ bool AbstractSensorManager::isNumber(QString s) const
  {
   en.next();
   //Sensor* sen = dynamic_cast<Sensor*>(_tsys->value(en.key()));
-  Sensor* sen = (Sensor*)en.value();
+  Sensor* sen = (Sensor*)en.value()->self();
 
   if(sen->useDefaultTimerSettings())
    sen->setSensorDebounceGoingActiveTimer(timer);
@@ -288,7 +288,7 @@ bool AbstractSensorManager::isNumber(QString s) const
   {
    en.next();
    //            Sensor* sen = dynamic_cast<Sensor*>(_tsys->value(en.key()));
-   Sensor* sen = (Sensor*)en.value();
+   Sensor* sen = (Sensor*)en.value()->self();
    if(sen->useDefaultTimerSettings())
     sen->setSensorDebounceGoingInActiveTimer(timer);
   }

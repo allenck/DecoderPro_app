@@ -244,7 +244,7 @@ class BlockSensorListener : public QObject, public PropertyChangeListener
  Block* block;
 public:
  BlockSensorListener(Block* block) {this->block = block;}
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 
 public slots:
  void propertyChange(PropertyChangeEvent*)override;
@@ -257,7 +257,7 @@ class BPropertyChangeListener : public QObject, public PropertyChangeListener
   Block* block;
  public:
   BPropertyChangeListener(Block* block) {this->block = block;}
-  QObject* self() override{return (QObject*)this;}
+  QObject* pself() override{return (QObject*)this;}
  public slots:
   void PropertyChange(PropertyChangeEvent* e)
   {

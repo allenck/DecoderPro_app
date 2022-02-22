@@ -317,7 +317,7 @@ default:
 /*public*/ NamedBeanHandle<NamedBean*>* DefaultConditionalAction::getNamedBean(){
  if (_indirectAction)
  {
-  Memory* m = (Memory*) (_namedBean->getBean());
+  Memory* m = (Memory*) (_namedBean->getBean()->self());
   QString actionName =  m->getValue().toString();
   NamedBean* bean = getActionBean(actionName);
   if (bean != nullptr) {

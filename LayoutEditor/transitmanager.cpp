@@ -128,11 +128,11 @@ Transit* TransitManager::createNewTransit(QString systemName, QString userName) 
 
 /*public*/ Transit* TransitManager::getBySystemName(QString name) {
     QString key = name.toUpper();
-    return (Transit*)_tsys->value(key);
+    return (Transit*)_tsys->value(key)->self();
 }
 
 /*public*/ Transit* TransitManager::getByUserName(QString key) {
-    return (Transit*)_tuser->value(key);
+    return (Transit*)_tuser->value(key)->self();
 }
 
 /**

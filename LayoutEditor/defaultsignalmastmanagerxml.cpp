@@ -51,7 +51,7 @@ DefaultSignalMastManagerXml::DefaultSignalMastManagerXml(QObject *parent) :
      // include contents
      for (NamedBean* nb : smList)
      {
-       SignalMast* sm = (SignalMast*)nb;
+       SignalMast* sm = (SignalMast*)nb->self();
        QDomElement e = ConfigXmlManager::elementFromObject(sm);
        if (!e.isNull()) {
            signalmasts.appendChild(e);

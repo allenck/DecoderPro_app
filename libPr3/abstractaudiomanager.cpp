@@ -69,7 +69,7 @@ AbstractAudioManager::AbstractAudioManager(QObject *parent) :
  {
   bean = _tsys->value(key.toUpper());
  }
- return (Audio*)bean;
+ return (Audio*)bean->self();
 }
 
 //@Override
@@ -78,7 +78,7 @@ AbstractAudioManager::AbstractAudioManager(QObject *parent) :
     if (key == NULL) {
         return (NULL);
     }
-    Audio* rv = (Audio*) _tuser->value(key);
+    Audio* rv = (Audio*) _tuser->value(key)->self();
     if (rv == NULL) {
         rv = this->getBySystemName(key);
     }

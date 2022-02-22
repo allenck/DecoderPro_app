@@ -311,7 +311,7 @@
     // check for a sensor
     if (systemName.at(prefix.length() + 1) == 'S') {
         Sensor* s = nullptr;
-        s = (Sensor*)InstanceManager::sensorManagerInstance()->getBySystemName(systemName);
+        s = (Sensor*)InstanceManager::sensorManagerInstance()->getBySystemName(systemName)->self();
         if (s != nullptr) {
             return s->getUserName();
         } else {

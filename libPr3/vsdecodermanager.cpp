@@ -408,7 +408,7 @@ void VSDecoderManager::fireMyEvent(VSDManagerEvent* evt) {
     }
     QSet<NamedBean*> blockSet = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getNamedBeanSet();
     for (NamedBean* nb : blockSet) {
-     Block* b = (Block*)nb;
+     Block* b = (Block*)nb->self();
         if (b != nullptr) {
             registerBeanListener(((Manager*)InstanceManager::getDefault("BlockManager")), b->getSystemName());
         }

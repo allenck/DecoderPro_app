@@ -62,7 +62,7 @@
             return s;
         }
         // doesn't exist, make a new one
-        s =(TranspondingTag*) createNewIdTag(systemName, userName);
+        s =(TranspondingTag*) createNewIdTag(systemName, userName)->self();
 
         // save in the maps
         Register(s);

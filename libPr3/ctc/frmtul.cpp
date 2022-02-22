@@ -514,7 +514,7 @@
     // All turnouts minus those used in other columns
 //    InstanceManager::getDefault("TurnoutManager").getNamedBeanSet().forEach((t) -> { _mStartingHashSetOfTurnouts.add(t.getDisplayName()); });
     foreach(NamedBean* nb, ((TurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->getNamedBeanSet())
-    _mStartingHashSetOfTurnouts.insert(((Turnout*)nb)->getDisplayName());
+    _mStartingHashSetOfTurnouts.insert(((Turnout*)nb->self())->getDisplayName());
      //_mStartingHashSetOfTurnouts.remove(hashSetOfExistingLockedTurnoutsExcludingThisOne);
     foreach(QString s, _mStartingHashSetOfTurnouts){
      if(!hashSetOfExistingLockedTurnoutsExcludingThisOne.contains(s))

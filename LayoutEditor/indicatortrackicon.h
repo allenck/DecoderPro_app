@@ -42,6 +42,7 @@ public:
     void updateItem();
     /*public*/ void dispose() override;
     QObject* self() override {return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 
 signals:
 

@@ -46,7 +46,7 @@ Q_OBJECT
  public:
 
     SSSensorListener(QString sensorName, AbstractSensorServer *abstractSensorServer) ;
-    QObject* self() override{return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
  public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
 };

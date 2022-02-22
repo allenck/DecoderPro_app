@@ -30,7 +30,7 @@ friend class TrainListener;
 public :
 public slots:
  /*public*/ void propertyChange(PropertyChangeEvent* e) override;
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 
 protected:
     /*protected*/ /*final*/ Operations::Train* train;

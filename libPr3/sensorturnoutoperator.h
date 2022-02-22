@@ -36,7 +36,7 @@ class MyPropertyChangeListener : public QObject, public PropertyChangeListener
     {
      this->sto = sto;
     }
-    QObject* self() override{return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e) override
     {

@@ -247,7 +247,8 @@ class MSlipTurnoutListener : public QObject, public PropertyChangeListener
  LayoutSlip* layoutSlip;
 public:
  MSlipTurnoutListener(LayoutSlip* layoutSlip) {this->layoutSlip = layoutSlip;}
- QObject* self() {return (QObject*)this;}
+ QObject* pself() {return (QObject*)this;}
+
 public slots:
  void propertyChange(PropertyChangeEvent*);
 };

@@ -47,7 +47,7 @@ Q_OBJECT
 
 public:
     /*protected*/ SSTurnoutListener(QString turnoutName, AbstractTurnoutServer* abstractTurnoutServer);
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 public slots:
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* e);

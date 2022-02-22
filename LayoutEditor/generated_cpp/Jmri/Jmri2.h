@@ -57,7 +57,7 @@ public:
    ~PythonQtShell_Roster();
 
 virtual void propertyChange(PropertyChangeEvent*  evt);
-virtual QObject*  self();
+virtual QObject*  pself();
 
   const QMetaObject* metaObject() const;
   int qt_metacall(QMetaObject::Call call, int id, void** args);
@@ -67,7 +67,7 @@ virtual QObject*  self();
 class PythonQtPublicPromoter_Roster : public Roster
 { public:
 inline void py_q_propertyChange(PropertyChangeEvent*  evt) { Roster::propertyChange(evt); }
-inline QObject*  py_q_self() { return Roster::self(); }
+inline QObject*  py_q_pself() { return Roster::pself(); }
 };
 
 class PythonQtWrapper_Roster : public QObject
@@ -127,6 +127,8 @@ void delete_Roster(Roster* obj) { delete obj; }
    int  numEntries(Roster* theWrappedObject);
    int  numGroupEntries(Roster* theWrappedObject, QString  group);
    void py_q_propertyChange(Roster* theWrappedObject, PropertyChangeEvent*  evt){  (((PythonQtPublicPromoter_Roster*)theWrappedObject)->py_q_propertyChange(evt));}
+   QObject*  pself(Roster* theWrappedObject);
+   QObject*  py_q_pself(Roster* theWrappedObject){  return (((PythonQtPublicPromoter_Roster*)theWrappedObject)->py_q_pself());}
    void reindex(Roster* theWrappedObject);
    void removeEntry(Roster* theWrappedObject, RosterEntry*  e);
    void removePropertyChangeListener(Roster* theWrappedObject, PropertyChangeListener*  l);
@@ -134,8 +136,6 @@ void delete_Roster(Roster* obj) { delete obj; }
    void removeRosterGroup(Roster* theWrappedObject, RosterGroup*  rg);
    void renameRosterGroupList(Roster* theWrappedObject, QString  oldName, QString  newName);
    void rosterGroupRenamed(Roster* theWrappedObject, QString  oldName, QString  newName);
-   QObject*  self(Roster* theWrappedObject);
-   QObject*  py_q_self(Roster* theWrappedObject){  return (((PythonQtPublicPromoter_Roster*)theWrappedObject)->py_q_self());}
    void setDefaultRosterGroup(Roster* theWrappedObject, QString  defaultRosterGroup);
    void setRosterIndexFileName(Roster* theWrappedObject, QString  fileName);
    void setRosterLocation(Roster* theWrappedObject, QString  f);
@@ -398,6 +398,7 @@ inline long  py_q_getSensorDebounceGoingActiveTimer() const { return Sensor::get
 inline long  py_q_getSensorDebounceGoingInActiveTimer() const { return Sensor::getSensorDebounceGoingInActiveTimer(); }
 inline bool  py_q_getUseDefaultTimerSettings() { return this->getUseDefaultTimerSettings(); }
 inline void py_q_requestUpdateFromLayout() const { this->requestUpdateFromLayout(); }
+inline QObject*  py_q_self() { return Sensor::self(); }
 inline void py_q_setCommandedState(int  s) { Sensor::setCommandedState(s); }
 inline void py_q_setInverted(bool  arg__1) { this->setInverted(arg__1); }
 inline void py_q_setKnownState(int  arg__1) { this->setKnownState(arg__1); }
@@ -434,6 +435,7 @@ void delete_Sensor(Sensor* obj) { delete obj; }
    bool  py_q_getUseDefaultTimerSettings(Sensor* theWrappedObject){  return (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_getUseDefaultTimerSettings());}
    void requestUpdateFromLayout(Sensor* theWrappedObject) const;
    void py_q_requestUpdateFromLayout(Sensor* theWrappedObject) const{  (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_requestUpdateFromLayout());}
+   QObject*  py_q_self(Sensor* theWrappedObject){  return (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_self());}
    void setCommandedState(Sensor* theWrappedObject, int  s);
    void py_q_setCommandedState(Sensor* theWrappedObject, int  s){  (((PythonQtPublicPromoter_Sensor*)theWrappedObject)->py_q_setCommandedState(s));}
    void setInverted(Sensor* theWrappedObject, bool  arg__1);
@@ -637,6 +639,7 @@ public:
 virtual void defineIO();
 virtual bool  handle();
 virtual void init();
+virtual QObject*  pself();
 virtual QObject*  self();
 virtual void setOutput();
 

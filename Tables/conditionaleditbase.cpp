@@ -35,7 +35,7 @@
 //         _conditionalManager = InstanceManager::getNullableDefault("ConditionalManager);
  _logixManager = (LogixManager*)InstanceManager::getDefault("LogixManager");
  _conditionalManager = (ConditionalManager*)InstanceManager::getDefault("ConditionalManager");
- _curLogix = (Logix*)_logixManager->getBySystemName(sName);
+ _curLogix = (Logix*)_logixManager->getBySystemName(sName)->self();
  loadSelectionMode();
 }
 
@@ -1079,12 +1079,12 @@ QString ConditionalEditBase::validateWarrantReference(QString name) {
     Warrant* w = NULL;
     if (name != NULL) {
         if (name.length() > 0) {
-            w = (Warrant*)((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getByUserName(name);
+            w = (Warrant*)((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getByUserName(name)->self();
             if (w != NULL) {
                 return name;
             }
         }
-        w = (Warrant*)((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getBySystemName(name);
+        w = (Warrant*)((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getBySystemName(name)->self();
     }
     if (w == NULL) {
         messageInvalidActionItemName(name, "Warrant"); // NOI18N
@@ -1133,12 +1133,12 @@ QString ConditionalEditBase::validateSensorReference(QString name) {
     Sensor* s = NULL;
     if (name != NULL) {
         if (name.length() > 0) {
-            s = (Sensor*)((ProxySensorManager*)InstanceManager::getDefault("SensorManager"))->AbstractProxyManager::getByUserName(name);
+            s = (Sensor*)((ProxySensorManager*)InstanceManager::getDefault("SensorManager"))->AbstractProxyManager::getByUserName(name)->self();
             if (s != NULL) {
                 return name;
             }
         }
-        s = (Sensor*)((ProxySensorManager*)InstanceManager::getDefault("SensorManager"))->AbstractProxyManager::getBySystemName(name);
+        s = (Sensor*)((ProxySensorManager*)InstanceManager::getDefault("SensorManager"))->AbstractProxyManager::getBySystemName(name)->self();
     }
     if (s == NULL) {
         messageInvalidActionItemName(name, "Sensor"); // NOI18N
@@ -1214,12 +1214,12 @@ QString ConditionalEditBase::validateLogixReference(QString name) {
     Logix* l = NULL;
     if (name != NULL) {
         if (name.length() > 0) {
-            l = (Logix*)_logixManager->getByUserName(name);
+            l = (Logix*)_logixManager->getByUserName(name)->self();
             if (l != NULL) {
                 return name;
             }
         }
-        l = (Logix*)_logixManager->getBySystemName(name);
+        l = (Logix*)_logixManager->getBySystemName(name)->self();
     }
     if (l == NULL) {
         messageInvalidActionItemName(name, "Logix"); // NOI18N
@@ -1241,12 +1241,12 @@ QString ConditionalEditBase::validateRouteReference(QString name) {
     Route* r = NULL;
     if (name != NULL) {
         if (name.length() > 0) {
-            r = (Route*)((RouteManager*)InstanceManager::getDefault("RouteManager"))->getByUserName(name);
+            r = (Route*)((RouteManager*)InstanceManager::getDefault("RouteManager"))->getByUserName(name)->self();
             if (r != NULL) {
                 return name;
             }
         }
-        r = (Route*)((RouteManager*)InstanceManager::getDefault("RouteManager"))->getBySystemName(name);
+        r = (Route*)((RouteManager*)InstanceManager::getDefault("RouteManager"))->getBySystemName(name)->self();
     }
     if (r == NULL) {
         messageInvalidActionItemName(name, "Route"); // NOI18N

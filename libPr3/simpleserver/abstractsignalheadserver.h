@@ -47,7 +47,7 @@ public:
         name = signalHeadName;
         signalHead = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"))->getSignalHead(signalHeadName);
     }
-    QObject* self() override{return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 public slots:
     // update state as state of signalHead changes
     //@Override

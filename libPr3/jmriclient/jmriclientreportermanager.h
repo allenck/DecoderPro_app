@@ -16,6 +16,7 @@ public:
 
  QObject* self() override {return (QObject*)this;}
  QObject* vself() override { return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 
 private:
  /*private*/ JMRIClientSystemConnectionMemo* memo = nullptr;

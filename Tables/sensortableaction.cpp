@@ -69,7 +69,7 @@ SensorTableAction::SensorTableAction(QObject *parent) :
 //@Override
 /*public*/ void SensorTableAction::setManager(Manager* man)
 {
- sensorManager = qobject_cast<SensorManager*>(man->self());
+ sensorManager = qobject_cast<SensorManager*>(man->mself());
  if (m!=nullptr)
   m->setManager(sensorManager);;
 }
@@ -327,7 +327,7 @@ void SensorTableAction::createPressed()
   }
   connectionChoice = prefixBox->getSelectedItem(); // store in Field for CheckedTextField
   QString systemPrefix = connectionChoice->getSystemPrefix();
-  rangeBox->setEnabled(((SensorManager*) connectionChoice->self())->allowMultipleAdditions(systemPrefix));
+  rangeBox->setEnabled(((SensorManager*) connectionChoice->mself())->allowMultipleAdditions(systemPrefix));
   addEntryToolTip = connectionChoice->getEntryToolTip();
   // show hwAddressTextField field tooltip in the Add Sensor pane that matches system connection selected from combobox
   hardwareAddressTextField->setToolTip(
@@ -524,7 +524,7 @@ void DefaultStateActionListener::actionPerformed(JActionEvent */*e*/)
 /*public*/ void SensorTableAction::addToPanel(AbstractTableTabAction* f) {
  QString connectionName = sensorManager->getMemo()->getUserName();
 
- if (QString(sensorManager->self()->metaObject()->className()).contains("ProxySensorManager")) {
+ if (QString(sensorManager->mself()->metaObject()->className()).contains("ProxySensorManager")) {
      connectionName = "All";
  }
  f->addToBottomBox(showDebounceBox, connectionName);

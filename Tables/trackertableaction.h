@@ -71,7 +71,7 @@ TableFrame();
  /*public*/ void mouseExited(QMouseEvent* event);
  /*public*/ void mouseReleased(QMouseEvent* event);
  /*public*/ QString getClassName();
- QObject* self() override {return (QObject*)this;}
+ QObject* pself() override {return (QObject*)this;}
 
 
 public slots:

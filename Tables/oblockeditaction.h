@@ -78,14 +78,14 @@ class OBTSaveItemAction1 : public AbstractAction
   //@Override
   /*public*/ void actionPerformed(JActionEvent* e) override {
       if (act->sensorComboBox->getSelectedItem() == nullptr) {
-          ((OBlock*)act->bean)->setSensor(nullptr);
+          ((OBlock*)act->bean->self())->setSensor(nullptr);
       } else {
-          ((Block*)act->bean)->setSensor(act->sensorComboBox->getSelectedItem()->getDisplayName());
+          ((Block*)act->bean->self())->setSensor(act->sensorComboBox->getSelectedItem()->getDisplayName());
       }
       if (act->errorSensorComboBox->getSelectedItem() == nullptr) {
-          ((OBlock*)act->bean)->setErrorSensor(nullptr);
+          ((OBlock*)act->bean->self())->setErrorSensor(nullptr);
       } else {
-          ((OBlock*)act->bean)->setErrorSensor(act->errorSensorComboBox->getSelectedItem()->getDisplayName());
+          ((OBlock*)act->bean->self())->setErrorSensor(act->errorSensorComboBox->getSelectedItem()->getDisplayName());
       }
   }
 };
@@ -103,9 +103,9 @@ class OBTResetItemAction1 : public AbstractAction {
   //@Override
   /*public*/ void actionPerformed(JActionEvent* e) override {
       //From basic details
-      act->sensorComboBox->setSelectedItem(((OBlock*)act->bean)->getSensor());
-      act->errorSensorComboBox->setSelectedItem(((OBlock*)act->bean)->getErrorSensor());
-      debounce->setBean(((OBlock*)act->bean)->getSensor());
+      act->sensorComboBox->setSelectedItem(((OBlock*)act->bean->self())->getSensor());
+      act->errorSensorComboBox->setSelectedItem(((OBlock*)act->bean->self())->getErrorSensor());
+      debounce->setBean(((OBlock*)act->bean->self())->getSensor());
       debounce->resetDebounceItems(/*e*/);
   }
 };
@@ -130,8 +130,8 @@ class OBTSaveItemAction2 : public AbstractAction
   OBTSaveItemAction2(OBlockEditAction* act) {this->act = act;}
   //@Override
   /*public*/ void actionPerformed(JActionEvent* e) override{
-      act->reporterComboBox->setSelectedItem((NamedBean*)((Block*)act->bean)->getReporter());
-      act->useCurrent->setChecked(((Block*)act->bean)->isReportingCurrent());
+      act->reporterComboBox->setSelectedItem((NamedBean*)((Block*)act->bean->self())->getReporter());
+      act->useCurrent->setChecked(((Block*)act->bean->self())->isReportingCurrent());
   }
 };
 
@@ -142,8 +142,8 @@ class OBTResetItemAction2 : public AbstractAction {
   OBTResetItemAction2(OBlockEditAction* act) {this->act = act;}
   //@Override
   /*public*/ void actionPerformed(JActionEvent e) {
-      ((Block*)act->bean)->setReporter((Reporter*)act->reporterComboBox->getSelectedItem());
-      ((Block*)act->bean)->setReportingCurrent(act->useCurrent->isChecked());
+      ((Block*)act->bean->self())->setReporter((Reporter*)act->reporterComboBox->getSelectedItem());
+      ((Block*)act->bean->self())->setReportingCurrent(act->useCurrent->isChecked());
   }
 };
 
@@ -157,18 +157,18 @@ class OBTSaveItemAction3 : public AbstractAction
   /*public*/ void actionPerformed(JActionEvent* e = 0) override {
       QString cName = (QString) act->curvatureField->getSelectedItem();
       if (cName == (act->noneText)) {
-          ((Block*)act->bean)->setCurvature(Block::NONE);
+          ((Block*)act->bean->self())->setCurvature(Block::NONE);
       } else if (cName == (act->gradualText)) {
-          ((Block*)act->bean)->setCurvature(Block::GRADUAL);
+          ((Block*)act->bean->self())->setCurvature(Block::GRADUAL);
       } else if (cName == (act->tightText)) {
-          ((Block*)act->bean)->setCurvature(Block::TIGHT);
+          ((Block*)act->bean->self())->setCurvature(Block::TIGHT);
       } else if (cName == (act->severeText)) {
-          ((Block*)act->bean)->setCurvature(Block::SEVERE);
+          ((Block*)act->bean->self())->setCurvature(Block::SEVERE);
       }
 
       QString speed = (QString) act->speedField->getSelectedItem();
       try {
-          ((Block*)act->bean)->setBlockSpeed(speed);
+          ((Block*)act->bean->self())->setBlockSpeed(speed);
       } catch (JmriException* ex) {
           JOptionPane::showMessageDialog(nullptr, ex->getMessage() + "\n" + speed);
           return;
@@ -179,11 +179,11 @@ class OBTSaveItemAction3 : public AbstractAction
       float len = 0.0f;
       len = (float) act->lengthSpinner->getValue();
       if (act->inch->isChecked()) {
-          ((Block*)act->bean)->setLength(len * 25.4f);
+          ((Block*)act->bean->self())->setLength(len * 25.4f);
       } else {
-          ((Block*)act->bean)->setLength(len * 10.0f);
+          ((Block*)act->bean->self())->setLength(len * 10.0f);
       }
-      ((Block*)act->bean)->setPermissiveWorking(act->permissiveField->isChecked());
+      ((Block*)act->bean->self())->setPermissiveWorking(act->permissiveField->isChecked());
   }
 };
 
@@ -194,19 +194,19 @@ class OBTResetItemAction3 : public AbstractAction {
   OBTResetItemAction3(OBlockEditAction* act) {this->act = act;}
   //@Override
   /*public*/ void actionPerformed(JActionEvent e) {
-      act->lengthSpinner->setValue(((Block*)act->bean)->getLengthMm());
+      act->lengthSpinner->setValue(((Block*)act->bean->self())->getLengthMm());
 
-      if (((Block*)act->bean)->getCurvature() == Block::NONE) {
+      if (((Block*)act->bean->self())->getCurvature() == Block::NONE) {
           act->curvatureField->setSelectedItem(0);
-      } else if (((Block*)act->bean)->getCurvature() == Block::GRADUAL) {
+      } else if (((Block*)act->bean->self())->getCurvature() == Block::GRADUAL) {
           act->curvatureField->setSelectedItem(act->gradualText);
-      } else if (((Block*)act->bean)->getCurvature() == Block::TIGHT) {
+      } else if (((Block*)act->bean->self())->getCurvature() == Block::TIGHT) {
           act->curvatureField->setSelectedItem(act->tightText);
-      } else if (((Block*)act->bean)->getCurvature() == Block::SEVERE) {
+      } else if (((Block*)act->bean->self())->getCurvature() == Block::SEVERE) {
           act->curvatureField->setSelectedItem(act->severeText);
       }
 
-      QString speed = ((Block*)act->bean)->getBlockSpeed();
+      QString speed = ((Block*)act->bean->self())->getBlockSpeed();
       if (!act->speedList.contains(speed)) {
           act->speedList.append(speed);
       }
@@ -215,12 +215,12 @@ class OBTResetItemAction3 : public AbstractAction {
       act->speedField->setSelectedItem(speed);
       float len = 0.0f;
       if (act->inch->isChecked()) {
-          len = ((Block*)act->bean)->getLengthIn();
+          len = ((Block*)act->bean->self())->getLengthIn();
       } else {
-          len = ((Block*)act->bean)->getLengthCm();
+          len = ((Block*)act->bean->self())->getLengthCm();
       }
       act->lengthSpinner->setValue(len);
-      act->permissiveField->setChecked(((Block*)act->bean)->getPermissiveWorking());
+      act->permissiveField->setChecked(((Block*)act->bean->self())->getPermissiveWorking());
   }
 
 };

@@ -178,7 +178,7 @@ DefaultConditionalManager::DefaultConditionalManager(QObject *parent) :
   QRegularExpressionMatch match = re.match(name);
   if(match.hasMatch())
   {
-   Logix* lgx = (Logix*)((LogixManager*) InstanceManager::getDefault("LogixManager"))->getBySystemName(match.captured(1));
+   Logix* lgx = (Logix*)((LogixManager*) InstanceManager::getDefault("LogixManager"))->getBySystemName(match.captured(1))->self();
    if (lgx != NULL)
    {
        return lgx;
@@ -244,7 +244,7 @@ DefaultConditionalManager::DefaultConditionalManager(QObject *parent) :
     while (iter.hasNext()) {
         // get the next Logix
         QString sName = iter.next();     //sName a logix nams
-        Logix* x = (Logix*)((DefaultLogixManager*) logixManager)->getBySystemName(sName);
+        Logix* x = (Logix*)((DefaultLogixManager*) logixManager)->getBySystemName(sName)->self();
         if (x == NULL) {
             break;
         }

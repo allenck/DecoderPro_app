@@ -50,7 +50,7 @@ class AnySensorPropertyChangeListener : public QObject,public PropertyChangeList
   CodeButtonSimulator* codeButtonSimulator;
  public:
   AnySensorPropertyChangeListener(CodeButtonSimulator* codeButtonSimulator) {this->codeButtonSimulator = codeButtonSimulator;}
-  QObject* self() override{return (QObject*)this;}
+  QObject* pself() override{return (QObject*)this;}
  public slots:
   void propertyChange(PropertyChangeEvent* e)
   {

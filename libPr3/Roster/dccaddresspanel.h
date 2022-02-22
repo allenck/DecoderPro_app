@@ -28,7 +28,7 @@ Q_INTERFACES(PropertyChangeListener)
     void exitField();
     void updateDccAddress();
     //void actionPerformed(ActionEvent* /*e*/);
-QObject* self() override {(QObject*)this;}
+QObject* pself() override {(QObject*)this;}
 signals:
 
 public slots:

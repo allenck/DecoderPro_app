@@ -200,7 +200,7 @@ void AddSignalMastPanel::init()
  SignalSystemManager* man = static_cast<SignalSystemManager*>(InstanceManager::getDefault("SignalSystemManager"));
  QSet<NamedBean*> systems = man->getNamedBeanSet();
  for (NamedBean* system : systems) {
-     sigSysBox->addItem(((SignalSystem*)system)->getUserName());
+     sigSysBox->addItem(((SignalSystem*)system->self())->getUserName());
  }
  if (prefs->getComboBoxLastSelection(systemSelectionCombo) != nullptr) {
      sigSysBox->setCurrentText(prefs->getComboBoxLastSelection(systemSelectionCombo));

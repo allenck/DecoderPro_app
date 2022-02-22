@@ -31,7 +31,7 @@ AbstractSensorMgrTestBase::AbstractSensorMgrTestBase(QObject *parent) : Abstract
     // test creation - real work is in the setup() routine
     //@Test
     /*public*/ void AbstractSensorMgrTestBase::testCreate() {
-       Assert::assertNotNull("Sensor Manager Exists",l->self(), __FILE__, __LINE__);
+       Assert::assertNotNull("Sensor Manager Exists",l->mself(), __FILE__, __LINE__);
     }
 
     //@Test
@@ -163,7 +163,7 @@ AbstractSensorMgrTestBase::AbstractSensorMgrTestBase(QObject *parent) : Abstract
         Sensor* t1 = l->newSensor(getSystemName(getNumToTest1()), "before");
         Assert::assertNotNull("t1 real object ", t1, __FILE__, __LINE__);
         t1->setUserName("after");
-        Sensor* t2 = (Sensor*)l->getByUserName("after");
+        Sensor* t2 = (Sensor*)l->getByUserName("after")->self();
         Assert::assertEquals("same object", t1, t2, __FILE__, __LINE__);
         Assert::assertNull("no old object", l->getByUserName("before")->self(), __FILE__, __LINE__);
     }

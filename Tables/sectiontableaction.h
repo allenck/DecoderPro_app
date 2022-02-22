@@ -197,7 +197,7 @@ public:
  };
 
     /*public*/ BlockTableModel(SectionTableAction* act) ;
- QObject* self() override {return (QObject*)this;}
+ QObject* pself() override {return (QObject*)this;}
 
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e) override;

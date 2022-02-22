@@ -63,6 +63,7 @@ public:
     };
  /*public*/ QString getGroupName()override;
   QObject* self() override {return (QObject*)this;}
+  QObject* pself() override{return (QObject*)this;}
 
 public slots:
     // update icon as state of turnout changes

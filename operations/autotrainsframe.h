@@ -83,7 +83,7 @@ class ATFThrottleListener : public QObject, public PropertyChangeListener
   AutoTrainsFrame* atf;
 public:
   ATFThrottleListener(AutoTrainsFrame* atf) { this->atf = atf;}
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
  public slots:
   void propertyChange(PropertyChangeEvent* e)
   {
@@ -98,7 +98,7 @@ class TrainChangeListener : public QObject, public PropertyChangeListener
   AutoTrainsFrame* atf;
 public:
   TrainChangeListener(AutoTrainsFrame* atf) { this->atf = atf;}
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
  public slots:
   void propertyChange(PropertyChangeEvent* e)
   {

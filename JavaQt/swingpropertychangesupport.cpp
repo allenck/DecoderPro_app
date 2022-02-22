@@ -129,7 +129,7 @@
   return;
  }
 #if 1
- if (qobject_cast<PropertyChangeListenerProxy*>(listener->self()) != nullptr)
+ if (qobject_cast<PropertyChangeListenerProxy*>(listener->pself()) != nullptr)
  {
   PropertyChangeListenerProxy* proxy =
                 (PropertyChangeListenerProxy*)listener;
@@ -328,9 +328,9 @@
   //emit propertyChange(event);
   foreach (PropertyChangeListener* l, common)
   {
-   if(!QMetaObject::invokeMethod(/*l->self()*/l->self(), "propertyChange", Qt::AutoConnection, Q_ARG(PropertyChangeEvent*, event)))
+   if(!QMetaObject::invokeMethod(l->pself(), "propertyChange", Qt::AutoConnection, Q_ARG(PropertyChangeEvent*, event)))
    {
-       Logger::error(tr("invoke method 'propertyChange' failed for %1").arg(l->self()->metaObject()->className()));
+       Logger::error(tr("invoke method 'propertyChange' failed for %1").arg(l->pself()->metaObject()->className()));
        return;
    }
   }
@@ -345,10 +345,10 @@
   {
    if(listener != NULL)
    { // NOTE: listener MUST be derived from PropertyChangeListener!!!
-    if(qobject_cast<PropertyChangeListener*>(listener->self()) != NULL)
+    if(qobject_cast<PropertyChangeListener*>(listener->pself()) != NULL)
     {
      //((PropertyChangeListener*)listener)->propertyChange(event);
-     QObject* s = listener->self();
+     QObject* s = listener->pself();
      //int ix = s->metaObject()->indexOfMethod("propertyChange");
 
      if(!QMetaObject::invokeMethod(s, "propertyChange", Qt::AutoConnection, Q_ARG(PropertyChangeEvent *, event)))
@@ -359,7 +359,7 @@
     }
     else
     {
-     Logger::error(tr("PropertyChangeListener not implemented %1").arg(listener->self()->metaObject()->className()));
+     Logger::error(tr("PropertyChangeListener not implemented %1").arg(listener->pself()->metaObject()->className()));
     //Q_ASSERT(false);
     }
      // NOTE: Class must have a Q_OBJECT macro otherwise you will get  a "void value not ignored as it ought to be error on Q_OBJECT!

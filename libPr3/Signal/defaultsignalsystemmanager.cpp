@@ -54,11 +54,17 @@
 }
 
 /*public*/ SignalSystem* DefaultSignalSystemManager::getBySystemName(QString key) const{
-    return (SignalSystem*)_tsys->value(key);
+    NamedBean* nb = _tsys->value(key);
+    if(!nb)
+     return nullptr;
+    return (DefaultSignalSystem*)nb->self();
 }
 
 /*public*/ SignalSystem* DefaultSignalSystemManager::getByUserName(QString key) const {
-    return (SignalSystem*)_tuser->value(key);
+  NamedBean* nb = _tuser->value(key);
+  if(!nb)
+   return nullptr;
+  return (DefaultSignalSystem*)nb->self();
 }
 
 void DefaultSignalSystemManager::load() {

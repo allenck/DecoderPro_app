@@ -57,7 +57,7 @@ public:
  /*public*/ void playHorn() ;
  /*public*/ void shortHorn();
  /*public*/ void stopHorn();
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
 
 signals:
  void notify(VSDecoderEvent*);

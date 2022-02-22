@@ -82,7 +82,7 @@ public:
     /*public*/ QString describeState(int state) override;
     /*public*/ QString getBeanType() override;
 
-
+    QObject* self() override {return (QObject*)this;}
 signals:
     //void propertyChange(QString propertyName, int oldState, int knownState);
     //void propertyChange(PropertyChangeEvent*);

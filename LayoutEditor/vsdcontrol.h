@@ -32,7 +32,7 @@ public:
  /*public*/ VSDControl(VSDConfig* c, QWidget *parent = 0);
  /*public*/ void addSoundButtons(QList<SoundEvent*> elist);
  /*public*/ void firePropertyChange(PropertyChangeID id, QVariant oldProp, QVariant newProp);
- QObject* self() override {return (QObject*)this;}
+ QObject* pself() override {return (QObject*)this;}
 
 signals:
  void propertyChange(PropertyChangeEvent*) override;

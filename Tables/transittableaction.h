@@ -260,7 +260,8 @@ public:
     /*public*/ int getPreferredWidth(int col);
     /*public*/ QVariant data(const QModelIndex &index, int role) const override;
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
- QObject* self() override {return (QObject*)this;}
+
+    QObject* pself() override {return (QObject*)this;}
 
  public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e) override;
@@ -293,7 +294,7 @@ public:
     /*public*/ int getPreferredWidth(int col);
     /*public*/ QVariant data(const QModelIndex &index, int role) const override;
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
-    QObject* self() override {return (QObject*)this;}
+    QObject* pself() override {return (QObject*)this;}
 
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e) override;

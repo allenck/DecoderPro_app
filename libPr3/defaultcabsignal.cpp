@@ -94,7 +94,7 @@
     QSet</*Block*/NamedBean*> blockSet = bmgr->AbstractManager::getNamedBeanSet();
     LocoAddress* addr = getCabSignalAddress();
     for (/*Block*/NamedBean* bv : blockSet) {
-     Block* blockVal = (Block*)bv;
+     Block* blockVal = (Block*)bv->self();
         if ( !blockVal->getValue().isNull() ) {
             QVariant val = blockVal->getValue();
             log->debug(tr("CabSignal for %1 searching block %2 value %3").arg(

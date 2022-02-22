@@ -66,7 +66,7 @@ namespace Operations
   /*public*/ Car* getCarAtIndex(int index);
   /*public*/ void dispose();
   /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
-  QObject* self() override {return (QObject*)this; }
+  QObject* pself() override {return (QObject*)this; }
 
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e) override;

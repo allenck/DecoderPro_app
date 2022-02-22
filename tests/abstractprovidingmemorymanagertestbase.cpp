@@ -25,7 +25,7 @@ AbstractProvidingMemoryManagerTestBase::AbstractProvidingMemoryManagerTestBase()
 
 //@Test(expected = IllegalArgumentException.class)
 /*public*/ void AbstractProvidingMemoryManagerTestBase::testProvideEmpty() throw (IllegalArgumentException) {
-   MemoryManager* m = (MemoryManager*)l->self();
+   MemoryManager* m = (MemoryManager*)l->mself();
     try {
         m->provide(""); // this should throw an IllegalArgumentException.
     } catch (IllegalArgumentException iae) {
@@ -37,7 +37,7 @@ AbstractProvidingMemoryManagerTestBase::AbstractProvidingMemoryManagerTestBase()
 //@Test
 /*public*/ void AbstractProvidingMemoryManagerTestBase::testRegisterDuplicateSystemName() throw (PropertyVetoException,/* NoSuchFieldException,
         NoSuchFieldException,*/ IllegalArgumentException, IllegalAccessException ){
-    MemoryManager* m = (MemoryManager*)l->self();
+    MemoryManager* m = (MemoryManager*)l->mself();
     QString s1 = m->makeSystemName("1");
     QString s2 = m->makeSystemName("2");
     testRegisterDuplicateSystemName(m, s1, s2);

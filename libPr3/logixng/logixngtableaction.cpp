@@ -49,18 +49,18 @@
 
     //@Override
     /*protected*/ void LogixNGTableAction::setEnabled(NamedBean* logixNG, bool enable) {
-        ((LogixNG*)logixNG)->setEnabled(enable);
+        ((LogixNG*)logixNG->self())->setEnabled(enable);
     }
 
     //@Override
     /*protected*/ bool LogixNGTableAction::isEnabled(NamedBean* logixNG) {
-        return ((LogixNG*)logixNG)->isEnabled();
+        return ((LogixNG*)logixNG->self())->isEnabled();
     }
 
     //@Override
     /*protected*/ void LogixNGTableAction::enableAll(bool enable) {
         for (NamedBean* x : getManager()->getNamedBeanSet()) {
-            ((LogixNG*)x)->setEnabled(enable);
+            ((LogixNG*)x->self())->setEnabled(enable);
         }
         m->fireTableDataChanged();
     }
@@ -85,7 +85,7 @@
 
     //@Override
     /*public*/  void LogixNGTableAction::deleteBean(NamedBean* logixNG) {
-        ((LogixNG*)logixNG)->setEnabled(false);
+        ((LogixNG*)logixNG->self())->setEnabled(false);
         try {
             ((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->deleteBean(logixNG, "DoDelete");
         } catch (PropertyVetoException* e) {
@@ -204,12 +204,12 @@
 
     //@Override
     /*protected*/ void LogixNGTableAction::getListenerRefsIncludingChildren(NamedBean* logixNG,QList<QString> list) {
-        ((LogixNG*)logixNG)->getListenerRefsIncludingChildren(list);
+        ((LogixNG*)logixNG->self())->getListenerRefsIncludingChildren(list);
     }
 
     //@Override
     /*protected*/ bool LogixNGTableAction::hasChildren(NamedBean* logixNG) {
-        return ((LogixNG*)logixNG)->getNumConditionalNGs() > 0;
+        return ((LogixNG*)logixNG->self())->getNumConditionalNGs() > 0;
     }
 
     /*private*/ /*final*/ /*static*/ Logger* LogixNGTableAction::log = LoggerFactory::getLogger("LogixNGTableAction");

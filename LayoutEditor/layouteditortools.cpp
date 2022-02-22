@@ -80,12 +80,12 @@
 
  turnout1ComboBox
          = new NamedBeanComboBox(
-        (AbstractProxyManager*)InstanceManager::turnoutManagerInstance()->self(),
+        (AbstractProxyManager*)InstanceManager::turnoutManagerInstance()->mself(),
         nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
 
     turnout2ComboBox
             = new NamedBeanComboBox(
-           (AbstractProxyManager*)InstanceManager::turnoutManagerInstance()->self(),
+           (AbstractProxyManager*)InstanceManager::turnoutManagerInstance()->mself(),
            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
     a1TToTSignalHeadComboBox
         = new NamedBeanComboBox(
@@ -121,7 +121,7 @@
            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
     turnoutComboBox
         = new NamedBeanComboBox(
-                (AbstractProxyManager*)InstanceManager::turnoutManagerInstance()->self(),
+                (AbstractProxyManager*)InstanceManager::turnoutManagerInstance()->mself(),
                 nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
     throatContinuingSignalHeadComboBox
         = new NamedBeanComboBox(
@@ -141,7 +141,7 @@
                 nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
     signalMastsTurnoutComboBox
         = new NamedBeanComboBox(
-                   (AbstractProxyManager*)InstanceManager::turnoutManagerInstance()->self(), nullptr,
+                   (AbstractProxyManager*)InstanceManager::turnoutManagerInstance()->mself(), nullptr,
                    NamedBean::DisplayOptions::DISPLAYNAME);
     block1IDComboBox
         = new NamedBeanComboBox(
@@ -194,7 +194,7 @@
 
     sensorsTurnoutComboBox
             = new NamedBeanComboBox(
-                    (AbstractProxyManager*)InstanceManager::turnoutManagerInstance()->self(),
+                    (AbstractProxyManager*)InstanceManager::turnoutManagerInstance()->mself(),
                     nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
     slipSensorsBlockAComboBox
                 = new NamedBeanComboBox(
@@ -301,11 +301,11 @@
                    nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
  turnoutAComboBox
   = new NamedBeanComboBox(
-          (AbstractManager*)InstanceManager::turnoutManagerInstance()->self(),
+          (AbstractManager*)InstanceManager::turnoutManagerInstance()->mself(),
           nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
  turnoutBComboBox
    = new NamedBeanComboBox(
-           (AbstractManager*)InstanceManager::turnoutManagerInstance()->self(),
+           (AbstractManager*)InstanceManager::turnoutManagerInstance()->mself(),
            nullptr, NamedBean::DisplayOptions::DISPLAYNAME);
  a1_3WaySignalHeadComboBox
    = new NamedBeanComboBox(
@@ -3272,9 +3272,9 @@ LayoutTurnoutView* layoutTurnoutView = layoutEditor->getLayoutTurnoutView(layout
              JOptionPane::ERROR_MESSAGE);
      return nullptr;
  }
- LayoutBlock* block = (LayoutBlock*)((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(blockName);
+ LayoutBlock* block = (LayoutBlock*)((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(blockName)->self();
  if (block == nullptr) {
-     block = (LayoutBlock*)((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getBySystemName(blockName);
+     block = (LayoutBlock*)((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getBySystemName(blockName)->self();
      if (block == nullptr) {
          JOptionPane::showMessageDialog(setSignalsAtBlockBoundaryFrame,
                  tr("Error - Block \"%1\" does not exist.Please correct name\nor assign this block to track on the panel.").arg(
@@ -14500,7 +14500,7 @@ QWidget* BeanDetails::addIconPanel()
      return "";
  }
  bool newConditional = false;
- Logix* x = (Logix*)((LogixManager*)InstanceManager::getDefault("LogixManager"))->getBySystemName(logixName);
+ Logix* x = (Logix*)((LogixManager*)InstanceManager::getDefault("LogixManager"))->getBySystemName(logixName)->self();
  if(x == nullptr)
  {
   // Logix does not exist, create it

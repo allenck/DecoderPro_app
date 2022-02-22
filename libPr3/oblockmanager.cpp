@@ -61,7 +61,7 @@ OBlockManager::OBlockManager(QObject *parent) :
     // Check that OBlock does not already exist
     OBlock* r;
     if (userName!= NULL && userName!=("")) {
-        r = (OBlock*)getByUserName(userName);
+        r = (OBlock*)getByUserName(userName)->self();
         if (r!=NULL) return NULL;
     }
     QString sName = systemName.toUpper();
@@ -71,8 +71,9 @@ OBlockManager::OBlockManager(QObject *parent) :
     if (sName.length() < 3) {
         return NULL;
     }
-    r = (OBlock*)getBySystemName(sName);
-    if (r!=NULL) return NULL;
+    NamedBean* nb;
+    nb = getBySystemName(sName);
+    if (nb!=NULL) return (OBlock*)nb->self();
     // OBlock does not exist, create a new OBlock
     r = new OBlock(sName,userName);
     // save in the maps
@@ -99,20 +100,25 @@ OBlockManager::OBlockManager(QObject *parent) :
  *      that name is a System Name.  If both fail, returns NULL.
  */
 /*public*/ OBlock* OBlockManager::getOBlock(QString name) {
-    OBlock* r = (OBlock*)getByUserName(name);
-    if (r!=NULL) return r;
-    return (OBlock*)getBySystemName(name);
+    NamedBean* nb = getByUserName(name);
+    if (nb!=NULL) return (OBlock*)nb->self();
+    nb =getBySystemName(name);
+    if (nb!=NULL) return (OBlock*)nb->self();
+    return nullptr;
 }
 
 /*public*/ NamedBean *OBlockManager::getBySystemName(QString name) const {
     if (name==NULL || name.trimmed().length()==0) { return NULL; }
     QString key = name.toUpper();
-    return (OBlock*)_tsys->value(key);
+    return (OBlock*)_tsys->value(key)->self();
 }
 
 /*public*/ NamedBean *OBlockManager::getByUserName(QString key)  {
     if (key==NULL || key.trimmed().length()==0) { return NULL; }
-    return (OBlock*)_tuser->value(key);
+    //return (OBlock*)_tuser->value(key)->self();
+    if(_tuser->value(key))
+     return (OBlock*)_tuser->value(key)->self();
+    return nullptr;
 }
 //@Override
 /*public*/ OBlock* OBlockManager::provide(QString name)  /*throw (IllegalArgumentException)*/ {
@@ -121,11 +127,13 @@ OBlockManager::OBlockManager(QObject *parent) :
 
 /*public*/ OBlock* OBlockManager::provideOBlock(QString name) {
     if (name==NULL || name.length()==0) { return NULL; }
-    OBlock* ob = (OBlock*)getByUserName(name);
-    if (ob==NULL) {
-        ob = (OBlock*)getBySystemName(name);
+    NamedBean* nb = getByUserName(name);
+    if (nb==NULL) {
+        nb = getBySystemName(name);
     }
-    return ob;
+    if(nb)
+     return (OBlock*)nb->self();
+    return nullptr;
 }
 
 /*static*/ OBlockManager* OBlockManager:: _instance = NULL;

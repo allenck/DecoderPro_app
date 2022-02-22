@@ -71,7 +71,7 @@ BlockManagerXml::~BlockManagerXml()
   {
    QString sname = iter.next();
    if (sname==NULL) log->error("System name NULL during store");
-   Block* b = (Block*)((AbstractManager*)bm)->getBySystemName(sname);
+   Block* b = (Block*)((AbstractManager*)bm)->getBySystemName(sname)->self();
    // the following NULL check is to catch a NULL pointer exception that sometimes was found to happen
    if (b==NULL) log->error("Null block during store - sname = "+sname);
    QDomElement elem = doc.createElement("block");
@@ -102,7 +102,7 @@ BlockManagerXml::~BlockManagerXml()
   {
    QString sname = iter.next();
    if (sname==NULL) log->error("System name NULL during store");
-   Block* b = (Block*)((AbstractManager*)bm)->getBySystemName(sname);
+   Block* b = (Block*)((AbstractManager*)bm)->getBySystemName(sname)->self();
    // the following NULL check is to catch a NULL pointer exception that sometimes was found to happen
    if (b==NULL)
    {

@@ -16,7 +16,7 @@ namespace Operations
   YardmasterByTrackPanel(QWidget* parent = nullptr);
   /*public*/ YardmasterByTrackPanel(Location* location, QWidget* parent = nullptr);
   /*public*/ void dispose();
-  QObject* self() override {return (QObject*)this; }
+  QObject* pself() override {return (QObject*)this; }
 
  public slots:
   /*public*/ void buttonActionPerformed(QWidget* ae) ;

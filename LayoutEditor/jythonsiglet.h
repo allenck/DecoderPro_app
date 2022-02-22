@@ -16,6 +16,7 @@ public:
  /*public*/ void defineIO();
  /*public*/ void setOutput();
 
+   QObject* pself() override{return (QObject*)this;}
 signals:
 
 public slots:

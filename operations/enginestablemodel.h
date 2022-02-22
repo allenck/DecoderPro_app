@@ -47,7 +47,7 @@ namespace Operations
  /*public*/ void setSort(int sort);
  /*public*/ int findEngineByRoadNumber(QString roadNumber);
  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
- QObject* self() override {return (QObject*)this; }
+ QObject* pself() override {return (QObject*)this; }
 
  signals:
 

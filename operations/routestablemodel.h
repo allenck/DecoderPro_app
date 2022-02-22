@@ -46,7 +46,7 @@ namespace Operations
   /*public*/ int getRowCount()const override{return rowCount(QModelIndex());}
   /*public*/ int getColumnCount()const override{return columnCount(QModelIndex());}
 
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
 
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e)override;

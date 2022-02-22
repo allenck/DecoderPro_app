@@ -22,6 +22,7 @@
 /*public*/ DefaultSignalSystem::DefaultSignalSystem(QString systemName, QString userName, QObject *parent) : SignalSystem(systemName, userName, parent)
 {
     //super(systemName, userName);
+    setObjectName(systemName);
     maximumLineSpeed = 0.0f;
     aspects = new QMap<QString, QHash<QString, QVariant>* >();
 

@@ -65,7 +65,7 @@ void SensorGroup::addPressed() {
         QString routeName = l.at(i);
         if (routeName.startsWith(prefix)) {
             // OK, kill this one
-            Route* r = (Route*)rm->getBySystemName(l.at(i));
+            Route* r = (Route*)rm->getBySystemName(l.at(i))->self();
             r->deActivateRoute();
             rm->deleteRoute(r);
         }

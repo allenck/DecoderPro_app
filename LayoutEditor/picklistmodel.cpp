@@ -202,7 +202,7 @@ bool systemNameComparator(QString o1, QString o2)
 
 //    if(qobject_cast<AbstractManager*>(m) != NULL)
 //    {
-  AbstractManager* mgr = (AbstractManager*)m->self();
+  AbstractManager* mgr = (AbstractManager*)m->mself();
   connect(mgr, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
 //    }
 #if 0
@@ -336,28 +336,28 @@ bool systemNameComparator(QString o1, QString o2)
  {
   Manager* manager = getManager();
 #if 1
-  if(qobject_cast<ProxySensorManager*>(manager->self())!= NULL)
-   ts->append(((ProxySensorManager*)manager->self())->AbstractProxyManager::getBySystemName(iter.next()));
-  else if(qobject_cast<ProxyTurnoutManager*>(manager->self())!= NULL)
-   ts->append(((ProxyTurnoutManager*)manager->self())->AbstractProxyManager::getBySystemName(iter.next()));
-  else if(qobject_cast<ProxyReporterManager*>(manager->self())!= NULL)
-   ts->append(((ProxyReporterManager*)manager->self())->AbstractProxyManager::getBySystemName(iter.next()));
-  else if(qobject_cast<AbstractSignalHeadManager*>(manager->self())!= NULL)
-   ts->append(((AbstractManager*)manager->self())->getBySystemName(iter.next()));
-  else if(qobject_cast<DefaultSignalMastManager*>(manager->self())!= NULL)
-   ts->append(((DefaultSignalMastManager*)manager->self())->getBySystemName(iter.next()));
-  else if(qobject_cast<DefaultConditionalManager*>(manager->self())!= NULL)
-   ts->append(((DefaultConditionalManager*)manager->self())->getBySystemName(iter.next()));
-  else if(qobject_cast<ProxyLightManager*>(manager->self())!= NULL)
-   ts->append(((ProxyLightManager*)manager->self())->AbstractProxyManager::getBySystemName(iter.next()));
-  else if(qobject_cast<DefaultMemoryManager*>(manager->self())!= NULL)
-   ts->append(((DefaultMemoryManager*)manager->self())->getBySystemName(iter.next()));
-  else if(qobject_cast<OBlockManager*>(manager->self())!= NULL)
-   ts->append((NamedBean*)((OBlockManager*)manager->self())->getBySystemName(iter.next()));
-  else if(qobject_cast<WarrantManager*>(manager->self())!= NULL)
-   ts->append((NamedBean*)((WarrantManager*)manager->self())->getBySystemName(iter.next()));
-  else if(qobject_cast<BlockManager*>(manager->self())!= NULL)
-   ts->append((NamedBean*)((AbstractManager*)manager->self())->getBySystemName(iter.next()));
+  if(qobject_cast<ProxySensorManager*>(manager->mself())!= NULL)
+   ts->append(((ProxySensorManager*)manager->mself())->AbstractProxyManager::getBySystemName(iter.next()));
+  else if(qobject_cast<ProxyTurnoutManager*>(manager->mself())!= NULL)
+   ts->append(((ProxyTurnoutManager*)manager->mself())->AbstractProxyManager::getBySystemName(iter.next()));
+  else if(qobject_cast<ProxyReporterManager*>(manager->mself())!= NULL)
+   ts->append(((ProxyReporterManager*)manager->mself())->AbstractProxyManager::getBySystemName(iter.next()));
+  else if(qobject_cast<AbstractSignalHeadManager*>(manager->mself())!= NULL)
+   ts->append(((AbstractManager*)manager->mself())->getBySystemName(iter.next()));
+  else if(qobject_cast<DefaultSignalMastManager*>(manager->mself())!= NULL)
+   ts->append(((DefaultSignalMastManager*)manager->mself())->getBySystemName(iter.next()));
+  else if(qobject_cast<DefaultConditionalManager*>(manager->mself())!= NULL)
+   ts->append(((DefaultConditionalManager*)manager->mself())->getBySystemName(iter.next()));
+  else if(qobject_cast<ProxyLightManager*>(manager->mself())!= NULL)
+   ts->append(((ProxyLightManager*)manager->mself())->AbstractProxyManager::getBySystemName(iter.next()));
+  else if(qobject_cast<DefaultMemoryManager*>(manager->mself())!= NULL)
+   ts->append(((DefaultMemoryManager*)manager->mself())->getBySystemName(iter.next()));
+  else if(qobject_cast<OBlockManager*>(manager->mself())!= NULL)
+   ts->append((NamedBean*)((OBlockManager*)manager->mself())->getBySystemName(iter.next()));
+  else if(qobject_cast<WarrantManager*>(manager->mself())!= NULL)
+   ts->append((NamedBean*)((WarrantManager*)manager->mself())->getBySystemName(iter.next()));
+  else if(qobject_cast<BlockManager*>(manager->mself())!= NULL)
+   ts->append((NamedBean*)((AbstractManager*)manager->mself())->getBySystemName(iter.next()));
   else Q_ASSERT(false);
 #endif
  }
@@ -373,7 +373,7 @@ bool systemNameComparator(QString o1, QString o2)
  // add name change listeners
  for (int i=0; i<_pickList->size(); i++) {
   _pickList->at(i)->addPropertyChangeListener((PropertyChangeListener*)this);
-  AbstractNamedBean* b = (AbstractNamedBean*)_pickList->at(i);
+  AbstractNamedBean* b = (AbstractNamedBean*)_pickList->at(i)->self();
   //connect(b, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  if (log->isDebugEnabled()) log->debug("_pickList has "+QString::number(_pickList->size())+" beans");
@@ -807,7 +807,7 @@ SensorPickModel::SensorPickModel (QObject *parent) : PickListModel(parent)
 // }
 }
 /*public*/ AbstractManager* SensorPickModel::getManager() {
-    return (AbstractManager*)manager->self();
+    return (AbstractManager*)manager->mself();
 }
 /*public*/ NamedBean* SensorPickModel::getBySystemName(QString name) {
     return ((AbstractManager*)manager)->getBySystemName(name);
@@ -985,7 +985,7 @@ MemoryPickModel::MemoryPickModel (QObject *parent) : PickListModel(parent) {
     connect(mgr, SIGNAL(newMemoryCreated(Memory*)), this, SLOT(newMemoryCreated(Memory*)));
 }
 /*public*/ AbstractManager*  MemoryPickModel::getManager() {
-    return (AbstractManager*)manager->self();
+    return (AbstractManager*)manager->mself();
 }
 /*public*/ NamedBean* MemoryPickModel::getBySystemName(QString name) {
     return ((AbstractMemoryManager*)manager)->getBySystemName(name);
@@ -1110,7 +1110,7 @@ LightPickModel::LightPickModel (QObject *parent) : PickListModel(parent)
  QList<AbstractManager*> list = ((ProxyLightManager*)manager)->getManagerList();
  foreach(Manager* m, list)
  {
-  AbstractLightManager* mgr = (AbstractLightManager*)m->self();
+  AbstractLightManager* mgr = (AbstractLightManager*)m->mself();
   connect(mgr, SIGNAL(beanCreated(NamedBean*)), this, SLOT(newLightCreated(NamedBean*)));
  }
 }
@@ -1285,7 +1285,7 @@ LogixPickModel::LogixPickModel (QObject* parent): PickListModel(parent) {
     _name = tr("Logix Table");
 }
 /*public*/ AbstractManager* LogixPickModel::getManager() {
-    return (AbstractManager*)manager->self();
+    return (AbstractManager*)manager->mself();
 }
 /*public*/ NamedBean* LogixPickModel::getBySystemName(QString name)const {
     return (NamedBean*)manager->getBySystemName(name);

@@ -41,7 +41,7 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProvidingProxy
 //@Override
 //@CheckForNull
 /*public*/ Sensor* ProxySensorManager::getSensor(QString name) {
- return (Sensor*)AbstractProxyManager::getNamedBean(name);
+ return (Sensor*)AbstractProxyManager::getNamedBean(name)->self();
 }
 
 
@@ -57,7 +57,7 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProvidingProxy
 //@Nonnull
 /*public*/ Sensor* ProxySensorManager::provideSensor(QString sName)
 {
- return (Sensor*)(provideNamedBean(sName));
+ return (Sensor*)(provideNamedBean(sName))->self();
 }
 
 /** {@inheritDoc} */
@@ -112,7 +112,7 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProvidingProxy
  * @return requested Sensor object (never null)
  */
 /*public*/ Sensor* ProxySensorManager::newSensor(QString systemName, QString userName) {
-    return (Sensor*) newNamedBean(systemName, userName);
+    return (Sensor*) newNamedBean(systemName, userName)->self();
 }
 
 ///*public*/ NamedBean* ProxySensorManager::newNamedBean(QString systemName, QString userName) {
@@ -183,13 +183,13 @@ ProxySensorManager::ProxySensorManager(QObject *parent) : AbstractProvidingProxy
 //@Override
 /*public*/ void ProxySensorManager::setDefaultSensorDebounceGoingActive(long timer){
     for (Manager/*<E>*/* m : getManagerList()) {
-        ((AbstractSensorManager*)m->self())->setDefaultSensorDebounceGoingActive(timer);
+        ((AbstractSensorManager*)m->mself())->setDefaultSensorDebounceGoingActive(timer);
     }
 }
 //@Override
 /*public*/ void ProxySensorManager::setDefaultSensorDebounceGoingInActive(long timer){
     for (Manager/*<E>*/* m : getManagerList()) {
-        ((AbstractSensorManager*)m->self())->setDefaultSensorDebounceGoingInActive(timer);
+        ((AbstractSensorManager*)m->mself())->setDefaultSensorDebounceGoingInActive(timer);
     }
 }
 
@@ -218,7 +218,7 @@ QCompleter* ProxySensorManager::getCompleter(QString text)
   bool bOk;
   foreach(QString systemName, nameList)
   {
-   Sensor* s = (Sensor*)AbstractProxyManager::getBySystemName(systemName);
+   Sensor* s = (Sensor*)AbstractProxyManager::getBySystemName(systemName)->self();
    if(s->getUserName().startsWith(text,Qt::CaseInsensitive))
     completerList.append(s->getUserName());
    if(systemName.startsWith(text,Qt::CaseInsensitive))

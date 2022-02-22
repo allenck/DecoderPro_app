@@ -2072,7 +2072,7 @@ if(role == Qt::EditRole || role == Qt::DisplayRole)
     for (int i = row; i > 0; i--) {
         NamedBeanHandle <NamedBean*>* bh = frame->_throttleCommands->at(i - 1)->getNamedBeanHandle();
         //if (bh != null && (bh.getBean() instanceof OBlock))
-        if(bh!= nullptr && static_cast<OBlock*>(bh->getBean()))
+        if(bh!= nullptr && static_cast<OBlock*>(bh->getBean()->self()))
         {
             return bh;
         }

@@ -30,7 +30,7 @@ Q_OBJECT
 public:
     /*public*/ TurnoutListener(Turnout* turnout, JsonTurnoutSocketService* jtss);
  inline Turnout* turnout() {return _turnout;}
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
 };

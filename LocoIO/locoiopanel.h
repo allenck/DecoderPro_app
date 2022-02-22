@@ -24,7 +24,7 @@ public:
  /*public*/ QString getHelpTarget() override;
  /*public*/ QString getTitle() override;
  /*public*/ void dispose() override;
- QObject* self() override {return (QObject*)this;}
+ QObject* pself() override {return (QObject*)this;}
 
 signals:
 

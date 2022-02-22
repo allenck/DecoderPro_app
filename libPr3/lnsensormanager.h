@@ -55,11 +55,14 @@ public:
     }
     /*public*/ SystemConnectionMemo* getMemo() override {return AbstractManager::getMemo();}
     ///*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
-    /*public*/ Sensor* getBySystemName(QString name) override {return (Sensor*)AbstractManager::getBySystemName(name);}
+//    /*public*/ Sensor* getBySystemName(QString name) override {return (Sensor*)AbstractManager::getBySystemName(name)->self();}
     /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::addPropertyChangeListener(l);}
     /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{PropertyChangeSupport::removePropertyChangeListener(l);}
 
     QObject* vself() override { return (QObject*)this;}
+    QObject* mself() override { return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
+
 signals:
     
 public slots:

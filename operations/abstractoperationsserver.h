@@ -36,7 +36,7 @@ namespace Operations
   /*abstract*/ /*public*/ virtual void sendErrorStatus(QString errorStatus); //throws IOException;
   /*abstract*/ /*public*/ virtual void parseStatus(QString statusString); //throws JmriException, IOException;
 
-   QObject* self() override {return (QObject*)this;}
+   QObject* pself() override {return (QObject*)this;}
 
  signals:
 
@@ -67,7 +67,8 @@ namespace Operations
   Logger* log;
   protected:
      /*protected*/ TrainListener(QString trainId, AbstractOperationsServer* parent);
-  QObject* self() {return (QObject*)this;}
+  QObject* pself() {return (QObject*)this;}
+
   public slots:
      /*public*/ void propertyChange(PropertyChangeEvent* e);
 

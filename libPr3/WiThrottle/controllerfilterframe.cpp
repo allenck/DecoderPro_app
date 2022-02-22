@@ -439,7 +439,7 @@ void ControllerFilterFrame::on_save()
 //            log->debug("row is greater than turnout list size");
          return QVariant();
      }
-     Route* rt = (Route*)mgr->getBySystemName(sysNameList.at(index.row()));
+     Route* rt = (Route*)mgr->getBySystemName(sysNameList.at(index.row()))->self();
 
      if(role == Qt::CheckStateRole)
      {
@@ -485,7 +485,7 @@ void ControllerFilterFrame::on_save()
      {
         switch (index.column()) {
             case INCLUDECOL:
-                Route* rt = (Route*)mgr->getBySystemName(sysNameList.at(index.row()));
+                Route* rt = (Route*)mgr->getBySystemName(sysNameList.at(index.row()))->self();
                 if (rt != NULL) {
                     ((DefaultRoute*)rt)->setProperty("WifiControllable", type);
                     if (!isDirty) {
@@ -502,7 +502,7 @@ void ControllerFilterFrame::on_save()
     //@Override
     /*public*/ void RouteFilterModel::setIncludeColToValue(bool value) {
         for (QString sysName : sysNameList) {
-            Route* rt = (Route*)mgr->getBySystemName(sysName);
+            Route* rt = (Route*)mgr->getBySystemName(sysName)->self();
             if (rt != nullptr) {
                 ((DefaultRoute*)rt)->setProperty("WifiControllable", value);
             }

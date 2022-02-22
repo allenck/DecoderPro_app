@@ -30,7 +30,7 @@ friend class SensorListener;
 protected:
     /*protected*/ /*final*/ Sensor* sensor;
  JsonSensorSocketService* jsss;
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 public:
     /*public*/ SensorListener(Sensor* sensor, JsonSensorSocketService* jsss);
 

@@ -18,7 +18,7 @@ namespace Operations
   /*public*/ void initComponents(Location* location);
   /*public*/ void dispose() override;
   /*public*/ QString getClassName() override;
-  QObject* self() override {return (QObject*)this; }
+  QObject* pself() override {return (QObject*)this; }
 
  public slots:
   /*public*/ void buttonActionPerformed(QWidget* ae) override;

@@ -154,7 +154,7 @@
     bool found = false;
     if ("CanDelete" == (evt->getPropertyName())) { // NOI18N
 
-        if (static_cast<Sensor*>(nb)) {
+        if (static_cast<Sensor*>(nb->self())) {
             for (NBHSensor* sensor : nbhSensors.values()) {
                 if (nb->equals(sensor->getBean())) {
                     found = true;
@@ -163,7 +163,7 @@
             }
         }
 
-        if (static_cast<SignalHead*>(nb) || static_cast<SignalMast*>(nb)) {
+        if (static_cast<SignalHead*>(nb->self()) || static_cast<SignalMast*>(nb->self())) {
             for (NBHSignal* signal : nbhSignals.values()) {
                 if (nb->equals(signal->getBean()->self())) {
                     found = true;
@@ -172,7 +172,7 @@
             }
         }
 
-        if (static_cast<Turnout*>(nb)) {
+        if (static_cast<Turnout*>(nb->self())) {
             for (NBHTurnout* turnout : nbhTurnouts.values()) {
                 if (nb->equals(turnout->getBean())) {
                     found = true;
@@ -181,7 +181,7 @@
             }
         }
 
-        if (static_cast<Block*>(nb)) {
+        if (static_cast<Block*>(nb->self())) {
             for (NamedBeanHandle<Block*>* block : blocks.values()) {
                 if (nb->equals(block->getBean())) {
                     found = true;
@@ -214,7 +214,7 @@ bool CtcManager::findNBHforBean(NamedBean* nb) {
     foundTurnout = nullptr;
     foundBlock = nullptr;
 
-    if (static_cast<Sensor*>(nb)) {
+    if (static_cast<Sensor*>(nb->self())) {
         for (NBHSensor* sensor : nbhSensors.values()) {
             if (nb->equals(sensor->getBean())) {
                 foundSensor = sensor;
@@ -224,7 +224,7 @@ bool CtcManager::findNBHforBean(NamedBean* nb) {
         }
     }
 
-    if (static_cast<SignalHead*>(nb) || static_cast<SignalMast*>(nb)) {
+    if (static_cast<SignalHead*>(nb->self()) || static_cast<SignalMast*>(nb->self())) {
         for (NBHSignal* signal : nbhSignals.values()) {
             if (nb->equals(signal->getBean()->self())) {
                 foundSignal = signal;
@@ -234,7 +234,7 @@ bool CtcManager::findNBHforBean(NamedBean* nb) {
         }
     }
 
-    if (static_cast<Turnout*>(nb)) {
+    if (static_cast<Turnout*>(nb->self())) {
         for (NBHTurnout* turnout : nbhTurnouts.values()) {
             if (nb->equals(turnout->getBean())) {
                 foundTurnout = turnout;
@@ -244,7 +244,7 @@ bool CtcManager::findNBHforBean(NamedBean* nb) {
         }
     }
 
-    if (static_cast<Block*>(nb)) {
+    if (static_cast<Block*>(nb->self())) {
         for (NamedBeanHandle<Block*>* block : blocks.values()) {
             if (nb->equals(block->getBean())) {
                 foundBlock = block->getBean();

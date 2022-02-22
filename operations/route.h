@@ -70,7 +70,7 @@ namespace Operations
   /*public*/ QComboBox* getComboBox();
   /*public*/ void updateComboBox(QComboBox* box);
 
-  QObject* self() override {return (QObject*)this;
+  QObject* pself() override {return (QObject*)this;
                            }
  signals:
 

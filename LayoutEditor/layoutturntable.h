@@ -63,7 +63,7 @@ public:
  ///*public*/  bool isTurnoutControlled();
  ///*public*/  void setTurnoutControlled(bool boo);
 
- QObject* self() override {return (QObject*)this;}
+ QObject* pself() override {return (QObject*)this;}
 
 public slots:
  /*public*/ void propertyChange(PropertyChangeEvent* e) override;

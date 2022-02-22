@@ -5,6 +5,7 @@
 #include "jframe.h"
 #include "entryexitpairs.h"
 
+class SignalMast;
 class QPushButton;
 class QFrame;
 class EntryExitPairs;
@@ -82,6 +83,7 @@ private:
     QMutex mutex;
     void handleNoCurrentRoute(bool reverse, QString message);
     void cancelClearOptionBox();
+// TODO    /*private*/ void releaseMast(SignalMast* mast, QHash<Turnout*, int> turnoutSettings);
 
 protected slots:
     /*protected*/ void blockStateUpdated(PropertyChangeEvent* e);

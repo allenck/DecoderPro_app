@@ -89,7 +89,7 @@ public:
     QWidget* jself() override {return (QWidget*)this;}
     void setBorder(Border* /*b*/)  override{}
     Border* getBorder()  override{return nullptr;}
-    QObject* self() override {return (QObject*)this;}
+    QObject* pself() override {return (QObject*)this;}
 
 signals:
  void propertyChange(PropertyChangeEvent*) override;
@@ -209,7 +209,7 @@ public:
    frame->updateLastFocusOwner(VPtr<QWidget>::asPtr(e->getNewValue()));
   }
  }
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 };
 
 #endif // JINTERNALFRAME_H

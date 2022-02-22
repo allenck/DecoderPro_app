@@ -22,6 +22,7 @@ public:
  /*public*/ QString toString() {return "InternalTurnoutManager";}
   QObject* self() override {return (QObject*)this;}
   QObject* vself() override { return (QObject*)this;}
+  QObject* pself() override{return (QObject*)this;}
 
 protected:
 /*protected*/ Turnout* createNewTurnout(QString systemName, QString userName) ;

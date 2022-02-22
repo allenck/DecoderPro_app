@@ -256,7 +256,7 @@ class DSLPropertyChangeListener : public QObject, public PropertyChangeListener
   ActiveTrain* at;
  public:
   DSLPropertyChangeListener(ActiveTrain* at) {this->at = at;}
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
  public slots:
   void propertyChange(PropertyChangeEvent*) override;
 };
@@ -267,7 +267,7 @@ class RSLPropertyChangeListener : public QObject, public PropertyChangeListener
   ActiveTrain* at;
  public:
   RSLPropertyChangeListener(ActiveTrain* at) {this->at = at;}
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
  public slots:
   void propertyChange(PropertyChangeEvent*) override;
 };

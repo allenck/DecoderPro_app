@@ -8,7 +8,7 @@
 
 AbstractTurnoutMgrTestBase::AbstractTurnoutMgrTestBase(QObject *parent) : AbstractProvidingTurnoutManagerTestBase(parent)
 {
- this->l = (ProxyTurnoutManager*)AbstractProvidingTurnoutManagerTestBase::l->self();
+ this->l = (ProxyTurnoutManager*)AbstractProvidingTurnoutManagerTestBase::l->mself();
 }
 /**
  * Base for TurnoutManager tests in specific jmrix.* packages

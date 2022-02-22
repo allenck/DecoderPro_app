@@ -179,7 +179,7 @@ public:
     Turnout* getTurnout();
     void addListener();
     void removeListener() ;
-    QObject* self() {return (QObject*)this;}
+    QObject* pself() {return (QObject*)this;}
 
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e) ;
@@ -213,7 +213,8 @@ class MTurnoutListener : public QObject, public PropertyChangeListener
   DefaultRoute* dr;
  public:
   MTurnoutListener(DefaultRoute* dr ){this->dr = dr;}
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
+
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e) override
   {
@@ -230,7 +231,7 @@ class MLockTurnoutListener : public QObject, public PropertyChangeListener
   Q_OBJECT
   DefaultRoute* dr;
  public:
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
   MLockTurnoutListener(DefaultRoute* dr ){this->dr = dr;}
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e) override

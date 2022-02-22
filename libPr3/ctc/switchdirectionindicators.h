@@ -53,7 +53,7 @@ class ActualTurnoutPropertyChangeListener : public QObject,public PropertyChange
   SwitchDirectionIndicators* sdi;
  public:
   ActualTurnoutPropertyChangeListener(SwitchDirectionIndicators* sdi) {this->sdi = sdi;}
-  QObject* self() override{return (QObject*)this;}
+  QObject* pself() override{return (QObject*)this;}
  public slots:
   void propertyChange(PropertyChangeEvent* e) override
   {

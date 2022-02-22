@@ -26,7 +26,7 @@ public:
  /*public*/ QIcon getLargeDisplayIcon() override;
  /*public*/ void installChooserPanel(JColorChooser *enclosingChooser) override;
  /*public*/ QString getTitle() override;
- QObject* self() override {return (QObject*)this;}
+ QObject* pself() override {return (QObject*)this;}
 
 public slots:
  /*public*/ void propertyChange(PropertyChangeEvent* event) override;

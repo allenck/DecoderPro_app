@@ -222,8 +222,9 @@ public:
     /*public*/ void removeDataListener(ManagerDataListener *e) override;
     /*public*/ QString getNamedBeanClass()const override;
 
-    QObject* self() override {return (QObject*)this;}
+    QObject* pself() override {return (QObject*)this;}
     QObject* vself() override {return (QObject*)this;}
+    QObject* mself() override {return (QObject*)this;}
 signals:
     //void propertyChange(PropertyChangeEvent*);
 public slots:

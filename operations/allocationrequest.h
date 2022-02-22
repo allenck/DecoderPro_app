@@ -75,7 +75,7 @@ class SignalMastListener : public QObject, public PropertyChangeListener
   AllocationRequest* ar;
  public:
   SignalMastListener(AllocationRequest* ar) {this->ar = ar; }
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
 
 public slots:
   void propertyChange(PropertyChangeEvent* e)override
@@ -96,7 +96,7 @@ class WaitingOnBlockListener : public QObject, public PropertyChangeListener
   AllocationRequest* ar;
  public:
   WaitingOnBlockListener(AllocationRequest* ar) {this->ar = ar; }
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
 
 public slots:
   void propertyChange(PropertyChangeEvent* e)override

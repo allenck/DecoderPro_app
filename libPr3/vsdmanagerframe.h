@@ -81,7 +81,7 @@ class VSDMFPropertyChangeListener : public QObject, public PropertyChangeListene
  public:
   VSDMFPropertyChangeListener(VSDManagerFrame* vsdmf) {this->vsdmf = vsdmf;}
 
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
 //@Override
 /*public*/ void propertyChange(PropertyChangeEvent* event)override {
     vsdmf->log->debug(tr("property change name %1, old: %2, new:%3").arg(

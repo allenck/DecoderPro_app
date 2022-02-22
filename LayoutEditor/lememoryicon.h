@@ -27,6 +27,7 @@ public:
     };
     Q_ENUM(POS)
     QObject* self() override {return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 
 signals:
 

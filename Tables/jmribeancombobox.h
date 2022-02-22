@@ -180,7 +180,7 @@ public:
     /*public*/ void setSelectedBeanByName(QString inBeanName);
     /*public*/ void setItemEnabled(int inIndex, bool inEnabled);
     /*public*/ bool isItemEnabled(int inIndex);
-    QObject* self() override {return (QObject*)this;}
+    QObject* pself() override {return (QObject*)this;}
 
 signals:
 

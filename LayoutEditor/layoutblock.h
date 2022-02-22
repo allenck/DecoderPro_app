@@ -365,9 +365,11 @@ public:
     /*public*/ int getNeighbourDirection(int i);
     /*public*/ int getNeighbourMetric(int i);
     SwingPropertyChangeSupport* pcs;// = new SwingPropertyChangeSupport(this, nullptr);
-    QObject* self() override {return (QObject*)this;}
     /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean) override;
     /*public*/ QString getBeanType() override;
+
+    QObject* pself() override{return (QObject*)this;}
+    QObject* self() override {return (QObject*)this;}
 
 signals:
     
@@ -626,7 +628,7 @@ public:
     * the route with the lowest count is returned.
     */
     /*public*/ int getBlockHopCount(Block* destination, Block* nextBlock);
-    QObject* self() override {return (QObject*)this;}
+    QObject* pself() override {return (QObject*)this;}
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e)override;
 signals:
@@ -708,7 +710,7 @@ public:
     bool isPathActive();
     void setTurnoutList(QList<LayoutTrackExpectedState<LayoutTurnout*>*> turnouts);
     /*/*public*/ QHash<Turnout*, int> getTurnoutList();
-    QObject* self() override{return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 
 public slots:
 //    void handlePropertyChange(QString propertyName, Turnout* source, int newVal);
@@ -778,7 +780,7 @@ class HandleBlockChangeListener : public QObject, public PropertyChangeListener
     {
      this->parent = parent;
     }
-    QObject* self() override{return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 public slots:
     void propertyChange(PropertyChangeEvent *e) override
     {

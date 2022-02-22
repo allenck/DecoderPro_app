@@ -1631,8 +1631,8 @@
  }
 /*private*/ bool Warrant::readStoppingSignal() {
     QString speedType;
-    if (static_cast<SignalHead*>(_protectSignal)) {
-        SignalHead* head = (SignalHead*) _protectSignal;
+    if (static_cast<SignalHead*>(_protectSignal->self())) {
+        SignalHead* head = (SignalHead*) _protectSignal->self();
         int appearance = head->getAppearance();
         speedType = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))
                 ->getAppearanceSpeed(head->getAppearanceName(appearance));
@@ -1641,7 +1641,7 @@
                     _protectSignal->getDisplayName()).arg(speedType).arg(getDisplayName()));
         }
     } else {
-        SignalMast* mast = (SignalMast*) _protectSignal;
+        SignalMast* mast = (SignalMast*) _protectSignal->self();
         QString aspect = mast->getAspect();
         speedType = ((SignalSpeedMap*)InstanceManager::getDefault("SignalSpeedMap"))->getAspectSpeed(aspect,
                 mast->getSignalSystem());

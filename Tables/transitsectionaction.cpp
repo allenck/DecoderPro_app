@@ -217,8 +217,8 @@ void TransitSectionAction::common()
 /*public*/ void TransitSectionAction::disposeSensorListener() {
     // if this object has registered a listener, dispose of it
     if (_sensorListener != NULL) {
-       // _triggerSensor.removePropertyChangeListener(_sensorListener);
-        disconnect(_triggerSensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), _sensorListener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
+        _triggerSensor->removePropertyChangeListener(_sensorListener);
+//        disconnect(_triggerSensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), _sensorListener->self(), SLOT(propertyChange(PropertyChangeEvent*)));
         _sensorListener = NULL;
         _waitingForSensor = false;
     }

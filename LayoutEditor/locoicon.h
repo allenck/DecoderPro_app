@@ -41,6 +41,7 @@ public:
     /*public*/ bool updateScene() override;
     void setLocation(double x, double y);
     QObject* self() override {return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 
 signals:
     

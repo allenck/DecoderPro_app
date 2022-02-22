@@ -749,8 +749,8 @@ MemoryManager* InstanceManager::memoryManagerInstance()
 #if 1 // TODO:
     log->debug(" setIdTagManager");
     IdTagManager* apm = (ProxyIdTagManager*)getDefault("IdTagManager");
-    if (qobject_cast<AbstractProxyManager*>(apm->self())) { // <?> due to type erasure
-        ((AbstractProxyManager*) apm->self())->addManager((AbstractManager*)p->self());
+    if (qobject_cast<AbstractProxyManager*>(apm->mself())) { // <?> due to type erasure
+        ((AbstractProxyManager*) apm->mself())->addManager((AbstractManager*)p->mself());
     } else {
         log->error("Incorrect setup: IdTagManager default isn't an AbstractProxyManager<IdTag>");
     }
@@ -782,7 +782,7 @@ MemoryManager* InstanceManager::memoryManagerInstance()
 void InstanceManager::setTurnoutManager(AbstractManager* p) {
  log->debug(" setTurnoutManager");
  TurnoutManager* apm = qobject_cast<ProxyTurnoutManager*>(getDefault("TurnoutManager"));
- if (qobject_cast<AbstractProxyManager*>(apm->self()) != nullptr) { // <?> due to type erasure
+ if (qobject_cast<AbstractProxyManager*>(apm->mself()) != nullptr) { // <?> due to type erasure
      ((ProxyTurnoutManager*) apm)->addManager((AbstractManager*)p);
  } else {
      log->error("Incorrect setup: TurnoutManager default isn't an AbstractProxyTurnoutManager<Turnout>");

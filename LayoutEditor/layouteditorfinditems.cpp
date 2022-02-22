@@ -113,7 +113,7 @@
 
 /*public*/ PositionablePoint* LayoutEditorFindItems::findPositionablePointByWestBoundBean(NamedBean* bean)
 {
- if (static_cast<SignalMast*>(bean))
+ if (static_cast<SignalMast*>(bean->self()))
  {
   for (PositionablePoint* p : layoutModels->getPositionablePoints())
   {
@@ -124,7 +124,7 @@
     return p;
    }
   }
- } else if (static_cast<Sensor*>(bean))
+ } else if (static_cast<Sensor*>(bean->self()))
  {
   for (PositionablePoint* p : layoutModels->getPositionablePoints())
   {
@@ -135,7 +135,7 @@
     return p;
    }
   }
- } else if (static_cast<SignalHead*>(bean))
+ } else if (static_cast<SignalHead*>(bean->self()))
  {
      for (PositionablePoint* p : layoutModels->getPositionablePoints()) {
          if (p->getWestBoundSignal()==(bean->getSystemName())
@@ -149,8 +149,8 @@
 
 /*public*/ PositionablePoint* LayoutEditorFindItems::findPositionablePointByEastBoundBean(NamedBean* bean)
 {
- if (static_cast<SignalMast*>(bean))
- {
+ if (static_cast<SignalMast*>(bean->self())
+) {
   for (PositionablePoint* p : layoutModels->getPositionablePoints())
   {
    if(p->getEastBoundSignalMast())
@@ -161,7 +161,7 @@
    }
   }
  }
- else if (static_cast<Sensor*>(bean)) {
+ else if (static_cast<Sensor*>(bean->self())) {
   for (PositionablePoint* p : layoutModels->getPositionablePoints())
   {
    if(p->getEastBoundSensor())
@@ -171,7 +171,7 @@
    }
   }
  }
- else if (static_cast<SignalHead*>(bean))
+ else if (static_cast<SignalHead*>(bean->self()))
  {
   for (PositionablePoint* p : layoutModels->getPositionablePoints())
   {
@@ -195,14 +195,14 @@ if (p->getWestBoundSignalMastName()==(signalMastName)) {
 
 /*public*/ PositionablePoint* LayoutEditorFindItems::findPositionablePointByBean(NamedBean* bean)
 {
- if (static_cast<SignalMast*>(bean)) {
+ if (static_cast<SignalMast*>(bean->self())) {
    for (PositionablePoint* p : layoutModels->getPositionablePoints()) {
    if (p->getWestBoundSignalMast() == bean
                  || p->getEastBoundSignalMast() == bean) {
              return p;
          }
      }
- } else if (static_cast<Sensor*>(bean))
+ } else if (static_cast<Sensor*>(bean->self()))
  {
   for (PositionablePoint* p : layoutModels->getPositionablePoints()) {
   if (p->getWestBoundSensor() == bean
@@ -211,7 +211,7 @@ if (p->getWestBoundSignalMastName()==(signalMastName)) {
          }
      }
  }
- else if (static_cast<SignalHead*>(bean))
+ else if (static_cast<SignalHead*>(bean->self()))
  {
   for (PositionablePoint* p : layoutModels->getPositionablePoints())
   {
@@ -237,7 +237,7 @@ if (p->getWestBoundSignalMastName()==(signalMastName)) {
 /*public*/ LayoutTurnout* LayoutEditorFindItems::findLayoutTurnoutByBean(NamedBean* bean)
 {
  QList<LayoutTurnout*> layoutTurnouts = layoutModels->getLayoutTurnouts();
- if (static_cast<SignalMast*>(bean))
+ if (static_cast<SignalMast*>(bean->self()))
  {
   for (LayoutTurnout* t : layoutTurnouts)
   {
@@ -250,7 +250,7 @@ if (p->getWestBoundSignalMastName()==(signalMastName)) {
    }
   }
  }
- else if (static_cast<Sensor*>(bean))
+ else if (static_cast<Sensor*>(bean->self()))
  {
   for (LayoutTurnout* t : layoutTurnouts)
   {
@@ -262,7 +262,7 @@ if (p->getWestBoundSignalMastName()==(signalMastName)) {
       }
   }
  }
- else if (static_cast<SignalHead*>(bean))
+ else if (static_cast<SignalHead*>(bean->self()))
  {
   for (LayoutTurnout* t : layoutTurnouts)
   {
@@ -306,7 +306,7 @@ if (p->getWestBoundSignalMastName()==(signalMastName)) {
    }
   }
  }
- else if (static_cast<Turnout*>(bean)) {
+ else if (static_cast<Turnout*>(bean->self())) {
      for (LayoutTurnout* t : layoutTurnouts) {
          if (bean->equals(t->getTurnout())) {
              return t;
@@ -330,7 +330,7 @@ if (p->getWestBoundSignalMastName()==(signalMastName)) {
 
 /*public*/ LevelXing* LayoutEditorFindItems::findLevelXingByBean(NamedBean* bean) {
    QList<LevelXing*> levelXings = layoutModels->getLevelXings();
-   if (static_cast<SignalMast*>(bean)) {
+   if (static_cast<SignalMast*>(bean->self())) {
         for (LevelXing* l : levelXings) {
             if (l->getSignalAMast() == bean
                     || l->getSignalBMast() == bean
@@ -339,7 +339,7 @@ if (p->getWestBoundSignalMastName()==(signalMastName)) {
                 return l;
             }
         }
-    } else if (static_cast<Sensor*>(bean)) {
+    } else if (static_cast<Sensor*>(bean->self())) {
         for (LevelXing* l : levelXings) {
             if (l->getSensorA() == bean
                     || l->getSensorB() == bean
@@ -349,7 +349,7 @@ if (p->getWestBoundSignalMastName()==(signalMastName)) {
             }
         }
 
-    } else if (static_cast<SignalHead*>(bean)) {
+    } else if (static_cast<SignalHead*>(bean->self())) {
         for (LevelXing* l : levelXings) {
             if (l->getSignalAName()==(bean->getSystemName())
                     || l->getSignalBName()==(bean->getSystemName())
@@ -370,7 +370,7 @@ if (p->getWestBoundSignalMastName()==(signalMastName)) {
 
 /*public*/ LayoutSlip* LayoutEditorFindItems::findLayoutSlipByBean(NamedBean* bean) {
     QList<LayoutSlip*> layoutSlips = layoutModels->getLayoutSlips();
-    if (static_cast< SignalMast*>(bean)) {
+    if (static_cast< SignalMast*>(bean->self())) {
         for (LayoutSlip* l : layoutSlips) {
             if (l->getSignalAMast() == bean
                     || l->getSignalBMast() == bean
@@ -379,7 +379,7 @@ if (p->getWestBoundSignalMastName()==(signalMastName)) {
                 return l;
             }
         }
-    } else if (static_cast<Sensor*>(bean)) {
+    } else if (static_cast<Sensor*>(bean->self())) {
         for (LayoutSlip* l : layoutSlips) {
             if (l->getSensorA() == bean
                     || l->getSensorB() == bean
@@ -388,7 +388,7 @@ if (p->getWestBoundSignalMastName()==(signalMastName)) {
                 return l;
             }
         }
-    } else if (static_cast<SignalHead*>(bean)) {
+    } else if (static_cast<SignalHead*>(bean->self())) {
         for (LayoutSlip* l : layoutSlips) {
             if (l->getSignalA1Name()==(bean->getSystemName())
                     || l->getSignalA2Name()==(bean->getSystemName())
@@ -428,7 +428,7 @@ if (p->getWestBoundSignalMastName()==(signalMastName)) {
                 }
             }
         }
-    } else if (static_cast<Turnout*>(bean)) {
+    } else if (static_cast<Turnout*>(bean->self())) {
         for (LayoutSlip* l : layoutSlips) {
             if (bean->equals(l->getTurnout())) {
                 return l;

@@ -103,7 +103,7 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
 {
   this->act = act;
   log = new Logger("SmlBeanTableDataModel");
-  source = ((DefaultSignalMastLogicManager*)getManager()->self())->getSignalMastLogicList();
+  source = ((DefaultSignalMastLogicManager*)getManager()->mself())->getSignalMastLogicList();
   act->signalMastLogicList = new QList<QHash<SignalMastLogic*, SignalMast*>*>();
  init();
 }
@@ -434,7 +434,7 @@ SmlBeanTableDataModel::SmlBeanTableDataModel(SignalMastLogicTableAction* act)
  /*synchronized*/ /*public*/ void SmlBeanTableDataModel::dispose() {
 
      //getManager().removePropertyChangeListener(this);
-     disconnect(getManager()->self(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+     disconnect(getManager()->mself(), SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
      if (act->signalMastLogicList != NULL) {
          for (int i = 0; i < act->signalMastLogicList->size(); i++) {
              SignalMastLogic* b = getLogicFromRow(i);

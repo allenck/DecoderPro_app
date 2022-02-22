@@ -52,7 +52,7 @@ class LNIPLI_PropertyChangeListener : public QObject, public PropertyChangeListe
   Q_INTERFACES(PropertyChangeListener)LnIplImplementationTest* test;
  public:
   LNIPLI_PropertyChangeListener(LnIplImplementationTest* test) { this->test = test;}
- QObject* self() {return (QObject*)this;}public slots:
+ QObject* pself() {return (QObject*)this;}public slots:
   //@Override
   /*public*/ void propertyChange(PropertyChangeEvent* e) override {
       if ((e->getPropertyName() == ("IplDeviceTypeQuery"))) {

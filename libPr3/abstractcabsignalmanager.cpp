@@ -137,7 +137,7 @@
         QSet</*Block*/NamedBean*> blockSet = bmgr->AbstractManager::getNamedBeanSet();
         for (/*Block*/NamedBean* nb : blockSet)
         {
-         Block*b = (Block*)nb;
+         Block*b = (Block*)nb->self();
 //            PropertyChangeListener* listener = (PropertyChangeEvent e) -> {
 //                handleBlockChange(e);
 //            };

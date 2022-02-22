@@ -45,7 +45,7 @@
             }
 
             for (NamedBean* nb : tm->getNamedBeanSet()) {
-             LogixNG* logixNG = (LogixNG*)nb;
+             LogixNG* logixNG = (LogixNG*)nb->self();
                 log->debug("logixng system name is " + logixNG->Base::getSystemName());  // NOI18N
                 bool enabled = logixNG->isEnabled();
                 QDomElement elem = doc.createElement("LogixNG");  // NOI18N
@@ -224,7 +224,7 @@
         for(int i=0; i < logixNGList.size(); i++)
         {
          QDomElement e = logixNGList.at(i).toElement();
-            LogixNG* logixNG = (LogixNG*)tm->getBySystemName(e.text().trimmed());
+            LogixNG* logixNG = (LogixNG*)tm->getBySystemName(e.text().trimmed())->self();
             if (logixNG != nullptr) {
                 initializationManager->add(logixNG);
             } else {

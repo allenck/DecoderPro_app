@@ -210,7 +210,7 @@
     while (iter1.hasNext()) {
         QString sNameLogix = iter1.next();
         if (sNameLogix!=(getSystemName()) ) {
-            Logix* x = (Logix*)((LogixManager*)InstanceManager::getDefault("LogixManager"))->getBySystemName(sNameLogix);
+            Logix* x = (Logix*)((LogixManager*)InstanceManager::getDefault("LogixManager"))->getBySystemName(sNameLogix)->self();
             int numCond = x->getNumConditionals();
             for (int i=0; i<numCond; i++) {
                 QString sNameCond = x->getConditionalByNumberOrder(i);
@@ -402,7 +402,7 @@
                     // Either a user name or an old style system name (plain UUID)
                     DestinationPoints* dp = (DestinationPoints* )static_cast<EntryExitPairs*>(
                             InstanceManager::getDefault("EntryExitPairs"))->
-                            getNamedBean(var->getName());
+                            getNamedBean(var->getName())->self();
                     if (dp != nullptr) {
                         // Replace name with current system name
                         var->setName(dp->getSystemName());
@@ -441,7 +441,7 @@
                     // Either a user name or an old style system name (plain UUID)
                     DestinationPoints* dp = (DestinationPoints*)static_cast<EntryExitPairs*>(
                        InstanceManager::getDefault("EntryExitPairs"))->
-                            getNamedBean(action->getDeviceName());
+                            getNamedBean(action->getDeviceName())->self();
                     if (dp != nullptr) {
                         // Replace name with current system name
                         action->setDeviceName(dp->getSystemName());

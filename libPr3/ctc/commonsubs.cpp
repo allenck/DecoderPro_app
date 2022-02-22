@@ -213,35 +213,35 @@ CommonSubs::CommonSubs(QObject *parent) : QObject(parent)
                 //((SensorManager*>InstanceManager::getDefault("SensorManager")).getNamedBeanSet().forEach((s) -> {
                 foreach(NamedBean* s, ((SensorManager*)InstanceManager::getDefault("SensorManager"))->getNamedBeanSet())
                 {
-                    list.append(((Sensor*)s)->getDisplayName());
+                    list.append(((Sensor*)s->self())->getDisplayName());
                 }//);
         }
         else  if(beanType == "Turnout") // NOI18N
         {
                 foreach(NamedBean* t, ((TurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->getNamedBeanSet()) //.forEach((t) ->
                 {
-                    list.append(((Turnout*)t)->getDisplayName());
+                    list.append(((Turnout*)t->self())->getDisplayName());
                 }//);
         }
         else  if(beanType =="SignalHead")  // NOI18N
         {
                 foreach(NamedBean* h, ((SignalHeadManager*)InstanceManager::getDefault("SignalHeadManager"))->getNamedBeanSet()) //.forEach((h) ->
                 {
-                    list.append(((SignalHead*)h)->getDisplayName());
+                    list.append(((SignalHead*)h->self())->getDisplayName());
                 }//);
         }
         else  if(beanType =="SignalMast")  // NOI18N
         {
                 foreach(NamedBean* m, ((SignalMastManager*)InstanceManager::getDefault("SignalMastManager"))->getNamedBeanSet()) //.forEach((m) ->
                 {
-                    list.append(((SignalMast*)m)->getDisplayName());
+                    list.append(((SignalMast*)m->self())->getDisplayName());
                 }//);
         }
         else  if(beanType =="Block")   // NOI18N
         {
                 foreach(NamedBean* b, ((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getNamedBeanSet()) //.forEach((b) ->
                 {
-                    list.append(((Block*)b)->getDisplayName());
+                    list.append(((Block*)b->self())->getDisplayName());
                 }//);
          }
          else

@@ -259,6 +259,7 @@ public:
     /*public*/ Block* getLastBlock();
   /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean)override;
     QObject* self() override {return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 
 signals:
     

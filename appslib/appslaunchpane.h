@@ -22,7 +22,8 @@ Q_INTERFACES(PropertyChangeListener)public:
 // static /*public*/ QString getConnection4() __attribute__ ((deprecated));
  static /*public*/ QString getConfigFileName();
  static /*public*/ QWidget* buttonSpace();
-QObject* self() override {(QObject*)this;}
+
+ QObject* pself() override {(QObject*)this;}
 signals:
 
 public slots:

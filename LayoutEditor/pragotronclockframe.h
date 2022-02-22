@@ -16,7 +16,7 @@ public:
  PragotronClockFrame(QWidget* parent = nullptr);
  /*public*/ void dispose() override;
  /*public*/ QString getClassName() override;
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 
 public slots:
  void update();

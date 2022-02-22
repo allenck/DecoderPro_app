@@ -54,7 +54,7 @@ protected:
 public slots:
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* e) override;
-    QObject* self() override{return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 public:
     enum COLS
     {

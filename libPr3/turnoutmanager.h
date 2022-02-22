@@ -215,6 +215,7 @@ public:
 
         virtual /*public*/ QString toString() {return "TurnoutManager";}
   //QObject* self() {return (QObject*)this;}
+  QObject* mself() override {return (QObject*)this;}
 
 public slots:
     

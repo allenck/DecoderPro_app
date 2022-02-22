@@ -75,7 +75,7 @@ AbstractAudioManagerConfigXML::AbstractAudioManagerConfigXML(QObject *parent) :
   // count all VSD objects
   for (NamedBean* nb : audioList)
   {
-   Audio* a = (Audio*)nb;
+   Audio* a = (Audio*)nb->self();
    QString aName = a->getSystemName();
    log->debug(tr("Check if %1 is a VSD object").arg(aName));
    if (aName.length() >= 8 && aName.mid(3, 8).toUpper() == ("$VSD:")) {
@@ -107,7 +107,7 @@ AbstractAudioManagerConfigXML::AbstractAudioManagerConfigXML(QObject *parent) :
   // store the audios
   for (NamedBean* nb : audioList)
   {
-   Audio* a = (Audio*)nb;
+   Audio* a = (Audio*)nb->self();
    QString sname = a->getSystemName();
    if (sname.isNull())
    {

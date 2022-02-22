@@ -122,7 +122,7 @@ class CodeButtonStateChangeListener : public QObject,public PropertyChangeListen
   CodeButtonHandler* cbh;
  public:
   CodeButtonStateChangeListener(CodeButtonHandler* cbh) {this->cbh = cbh;}
-  QObject* self() override{return (QObject*)this;}
+  QObject* pself() override{return (QObject*)this;}
  public slots:
   void propertyChange(PropertyChangeEvent* e) override {cbh->codeButtonStateChange(e); }
 };
@@ -134,7 +134,7 @@ class OsSectionPropertyChangeEventListener  : public QObject,public PropertyChan
   CodeButtonHandler* cbh;
  public:
   OsSectionPropertyChangeEventListener(CodeButtonHandler* cbh) {this->cbh = cbh;}
-  QObject* self() override{return (QObject*)this;}
+  QObject* pself() override{return (QObject*)this;}
  public slots:
   void propertyChange(PropertyChangeEvent* e) override {cbh->osSectionPropertyChangeEvent(e); }
 };

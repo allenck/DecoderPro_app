@@ -56,6 +56,7 @@ public:
     /*public*/ /*final*/ ShutDownTask* shutDownTask = new AbstractShutDownTask("Writing Blocks");
     QObject* self() override {return (QObject*)this;}
     QObject* vself() override{return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 
     /*public*/ SystemConnectionMemo* getMemo()  override;
     /*public*/ NamedBean* getNamedBean(QString s)  override;

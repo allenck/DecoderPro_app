@@ -37,7 +37,7 @@ public:
     /*public*/ WarrantFrame(Warrant* warrant, bool create, QWidget *parent = 0);
     /*public*/ QString getClassName();
     /*public*/ bool isRunning();
-    QObject* self() override {return (QObject*)this;}
+    QObject* pself() override {return (QObject*)this;}
 
 signals:
 

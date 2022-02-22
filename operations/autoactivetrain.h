@@ -255,7 +255,7 @@ Q_OBJECT
 
     //@Override
     /*public*/ void run();
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e) {
       _fastMinutes--;

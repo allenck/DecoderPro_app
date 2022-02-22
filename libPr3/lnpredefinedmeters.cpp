@@ -76,11 +76,15 @@
     int srcSerNum = msg->getElement(18)+128*msg->getElement(19);
 
     QString voltSysName = createSystemName(srcDeviceType, srcSerNum, "Voltage"); // NOI18N
-    Meter* m = (DefaultMeter*)((ProxyMeterManager*)InstanceManager::getDefault("MeterManager"))->getBySystemName(voltSysName);
+    Meter* m = (Meter*)((ProxyMeterManager*)InstanceManager::getDefault("MeterManager"))->getBySystemName(voltSysName);
+    if(m)
+     m = (DefaultMeter*)m->mself();
     updateAddMeter(m, voltSysName, valVolts, true);
 
     QString ampsSysName = createSystemName(srcDeviceType, srcSerNum, "InputCurrent"); // NOI18N
-    m = (DefaultMeter*)((ProxyMeterManager*)InstanceManager::getDefault("MeterManager"))->getBySystemName(ampsSysName);
+    m = (Meter*)((ProxyMeterManager*)InstanceManager::getDefault("MeterManager"))->getBySystemName(ampsSysName);
+    if(m)
+     m = (DefaultMeter*)m->mself();
     updateAddMeter(m, ampsSysName, valAmps, false);;
 }
 

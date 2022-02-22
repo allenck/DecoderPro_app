@@ -35,7 +35,7 @@
     int count = 0;
     QList<NamedBean*> list = _oBlockModel->getBeanList();
     for (int i = 0; i < list.size(); i++) {
-        count += ((OBlock*) list.at(i))->getPortals().size();
+        count += ((OBlock*) list.at(i)->self())->getPortals().size();
     }
     return count;
 }
@@ -78,9 +78,9 @@
   //        Arrays.sort(array, new jmri.util.NamedBeanComparator());
    while (count <= row)
    {
-    count += ((OBlock*) array[idx++])->getPortals().size();
+    count += ((OBlock*) array[idx++]->self())->getPortals().size();
    }
-   block = (OBlock*) array[--idx];
+   block = (OBlock*) array[--idx]->self();
    idx = row - (count - block->getPortals().size());
    if (col == BLOCK_NAME_COLUMN)
    {

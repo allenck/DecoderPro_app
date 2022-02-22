@@ -22,6 +22,7 @@ public:
  /*public*/ int getColumnIndex(QVariant identifier, bool onlyVisible);
  /*public*/ TableColumn* getColumn(int columnIndex, bool onlyVisible = true);
   QObject* self() override {return (QObject*)this;}
+  QObject* pself() override{return (QObject*)this;}
 
 signals:
 

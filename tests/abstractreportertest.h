@@ -37,7 +37,7 @@ protected:
     Q_INTERFACES(PropertyChangeListener)AbstractReporterTest* test;
 public:
     TestReporterListener(AbstractReporterTest* test) {this->test = test;}
-QObject* self() {return (QObject*)this;}public slots:
+QObject* pself() {return (QObject*)this;}public slots:
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* e){
         if (e->getPropertyName()==("currentReport")) {

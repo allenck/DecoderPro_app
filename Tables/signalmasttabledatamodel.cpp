@@ -247,7 +247,7 @@ void SignalMastTableDataModel::editLogic(int row, int col) {
 //        }
 
 //        /*public*/ void run() {
-            SignallingSourceAction* action = new SignallingSourceAction(tr("Signal Mast Logic Table"), (SignalMast*) getBySystemName(sysNameList.at(row)));
+            SignallingSourceAction* action = new SignallingSourceAction(tr("Signal Mast Logic Table"), (SignalMast*) getBySystemName(sysNameList.at(row))->self());
             action->actionPerformed(NULL);
 //        }
 //    }
@@ -265,7 +265,7 @@ void SignalMastTableDataModel::editMast(int row, int col) {
 //        }
 
 //        /*public*/ void run() {
-            AddSignalMastJFrame* editFrame = new AddSignalMastJFrame((SignalMast*) getBySystemName(sysNameList.at(row)));
+            AddSignalMastJFrame* editFrame = new AddSignalMastJFrame((SignalMast*) getBySystemName(sysNameList.at(row))->self());
             editFrame->setVisible(true);
 //        }
 //    }

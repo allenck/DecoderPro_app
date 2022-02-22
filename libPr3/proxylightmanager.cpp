@@ -50,13 +50,13 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
 
 /*protected*/ NamedBean* ProxyLightManager::makeBean(AbstractManager *manager, QString systemName, QString userName)
 {
- return  (NamedBean*)((AbstractLightManager*)manager->self())->newLight(systemName, userName);
+ return  (NamedBean*)((AbstractLightManager*)manager->mself())->newLight(systemName, userName)->self();
 }
 
 //@Override
 /** {@inheritDoc} */
 /*public*/ NamedBean* ProxyLightManager::provide(/*@Nonnull*/ QString name)  {
- return (NamedBean*)provideLight(name);
+ return (NamedBean*)provideLight(name)->self();
 }
 
 /**
@@ -176,7 +176,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * If a manager is found, return its determination of an alternate system name
  */
 /*public*/ QString ProxyLightManager::convertSystemNameToAlternate(QString systemName) {
- LightManager* m = (AbstractLightManager*) getManager(systemName)->self();
+ LightManager* m = (AbstractLightManager*) getManager(systemName)->mself();
     return (m == nullptr) ? "" : m->convertSystemNameToAlternate(systemName);}
 
 /**
@@ -187,7 +187,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
 /*public*/ void ProxyLightManager::activateAllLights() {
  //getManagerList().forEach(m -> ((LightManager) m).activateAllLights());
  for (Manager* m : getManagerList())
-  ((AbstractLightManager*) m->self())->activateAllLights();
+  ((AbstractLightManager*) m->mself())->activateAllLights();
 }
 
 /**
@@ -196,7 +196,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * If a manager is found, return its determination of support for variable lights.
  */
 /*public*/ bool ProxyLightManager::supportsVariableLights(QString systemName) {
- LightManager* m = (AbstractLightManager*) getManager(systemName)->self();
+ LightManager* m = (AbstractLightManager*) getManager(systemName)->mself();
  return (m == nullptr) ? false : m->supportsVariableLights(systemName);
 }
 

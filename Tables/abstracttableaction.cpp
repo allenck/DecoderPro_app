@@ -298,13 +298,13 @@ void ATABeanTableFrame::extras()
         /*Class<? extends Manager<E>>*/QString managerClass) {
     Manager/*<E>*/* defaultManager = (AbstractManager*)InstanceManager::getDefault(managerClass);
     // populate comboBox
-    if(qobject_cast<ProxyManager*>(defaultManager->self())) {
+    if(qobject_cast<ProxyManager*>(defaultManager->mself())) {
         comboBox->setManagers(defaultManager);
     } else {
         comboBox->setManagers(manager);
     }
     // set current selection
-    if (qobject_cast<ProxyManager*>(defaultManager->self())) {
+    if (qobject_cast<ProxyManager*>(defaultManager->mself())) {
         UserPreferencesManager* upm = (UserPreferencesManager*)InstanceManager::getDefault("UserPreferencesManager");
         QString systemSelectionCombo = /*this.getClass().getName()*/QString("jmri.jmrit.beantable.")+metaObject()->className() + ".SystemSelected";
         if (upm->getComboBoxLastSelection(systemSelectionCombo) != "") {
@@ -313,14 +313,14 @@ void ATABeanTableFrame::extras()
             comboBox->setSelectedItem(/*memo->get*/(managerClass));
         } else {
             //ProxyManager/*<E>*/* proxy = (ProxyManager/*<E>*/*) manager;
-            if(qobject_cast<ProxyTurnoutManager*>(manager->self()))
-             comboBox->setSelectedItem(((ProxyTurnoutManager*)manager->self())->getDefaultManager()->toString());
-            if(qobject_cast<ProxySensorManager*>(manager->self()))
-             comboBox->setSelectedItem(((ProxySensorManager*)manager->self())->getDefaultManager()->toString());
-            if(qobject_cast<ProxyLightManager*>(manager->self()))
-             comboBox->setSelectedItem(((ProxyLightManager*)manager->self())->getDefaultManager()->toString());
-            if(qobject_cast<ProxyReporterManager*>(manager->self()))
-             comboBox->setSelectedItem(((ProxyReporterManager*)manager->self())->getDefaultManager()->toString());
+            if(qobject_cast<ProxyTurnoutManager*>(manager->mself()))
+             comboBox->setSelectedItem(((ProxyTurnoutManager*)manager->mself())->getDefaultManager()->toString());
+            if(qobject_cast<ProxySensorManager*>(manager->mself()))
+             comboBox->setSelectedItem(((ProxySensorManager*)manager->mself())->getDefaultManager()->toString());
+            if(qobject_cast<ProxyLightManager*>(manager->mself()))
+             comboBox->setSelectedItem(((ProxyLightManager*)manager->mself())->getDefaultManager()->toString());
+            if(qobject_cast<ProxyReporterManager*>(manager->mself()))
+             comboBox->setSelectedItem(((ProxyReporterManager*)manager->mself())->getDefaultManager()->toString());
         }
     } else {
         comboBox->setSelectedItem(manager->toString());

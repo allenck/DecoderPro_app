@@ -72,34 +72,23 @@ Turnout* AbstractTurnoutManager::getTurnout(QString name)  {
 
     return (Turnout*)getBySystemName(name);
 }
-#if 1
+
 Turnout* AbstractTurnoutManager::getBySystemName(QString name)
 {
  NamedBean* bean = _tsys->value(name);
- //return nullptr;
- return (Turnout*)bean;
-// if(turnoutMap.contains(name))
-//     return (Turnout*)turnoutMap.value(name);
-// return (Turnout*)nullptr;
+ if(!bean)
+  return nullptr;
+ return (Turnout*)bean->self();
 }
 
 Turnout* AbstractTurnoutManager::getByUserName(QString key)
 {
  NamedBean* bean = _tuser->value(key);
- //return nullptr;
- return (Turnout*)bean;
-// int addr = userName.toInt();
-// QMapIterator<QString, Turnout*> i(turnoutMap);
-// while(i.hasNext())
-// {
-//  i.next();
-//  if(((LnTurnout*)i.value())->getNumber() == addr)
-//   return (Turnout*)i.value();
-//  return (Turnout*)nullptr;
-// }
-// return nullptr;
+ if(!bean)
+  return nullptr;
+ return (Turnout*)bean->self();
 }
-#endif
+
 Turnout* AbstractTurnoutManager::newTurnout(QString systemName, QString userName)
 {
  // add normalize? see AbstractSensor

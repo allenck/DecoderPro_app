@@ -67,7 +67,7 @@ class LIBTABLESSHARED_EXPORT TurnoutTableDataModel : public BeanTableDataModel
     /*public*/ void showTurnoutSpeedChanged(bool visible, JTable* table);
     /*public*/ void showStateForgetAndQueryChanged(bool visible, JTable* table);
 
-    QObject* self() override {return (QObject*)this;}
+    QObject* pself() override {return (QObject*)this;}
 
  public slots:
     /*public*/ void comboBoxAction(JActionEvent* e = 0);

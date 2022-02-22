@@ -430,7 +430,7 @@
       *                    otherwise null
       */
      /*public*/ Manager::ManagerDataEvent::ManagerDataEvent(/*@Nonnull*/ Manager/*<E>*/* source, int type, int index0, int index1, /*E*/NamedBean* changedBean)
-     : EventObject(source->self())
+     : EventObject(source->mself())
      {
          //super(source);
          this->source = source;

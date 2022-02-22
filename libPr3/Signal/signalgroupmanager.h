@@ -40,10 +40,10 @@ public:
     SignalGroupManager(const SignalGroupManager&) : AbstractManager() {}
     /*public*/ virtual SignalGroup* getSignalGroup(QString /*name*/) {return nullptr;}
 
-    /*public*/ SignalGroup* getBySystemName(QString name)const {return (SignalGroup* ) AbstractManager::getBeanBySystemName(name);}
+    /*public*/ SignalGroup* getBySystemName(QString name)const {return (SignalGroup* ) AbstractManager::getBeanBySystemName(name)->self();}
 
 
-    /*public*/ SignalGroup* getByUserName(QString name)const {return (SignalGroup* )AbstractManager::getBeanByUserName(name);}
+    /*public*/ SignalGroup* getByUserName(QString name)const {return (SignalGroup* )AbstractManager::getBeanByUserName(name)->self();}
 
     /*public*/ virtual SignalGroup* newSignalGroup(QString /*sys*/) {return nullptr;}
 
@@ -61,6 +61,7 @@ public:
     }
     QObject* self() override{return (QObject*)this;}
     QObject* vself() override {return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 
 //    /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
     /*public*/ NamedBean* getBySystemName(QString name) override {return AbstractManager::getBySystemName(name);}

@@ -709,8 +709,8 @@ virtual void collectContiguousTracksNamesInBlockNamed(QString  blockName, QSet<Q
 virtual void invalidate(EditScene*  g2);
 virtual bool  isMainline();
 virtual void propertyChange(PropertyChangeEvent*  e);
+virtual QObject*  pself();
 virtual void reCheckBlockBoundary() const;
-virtual QObject*  self();
 virtual QString  toString();
 
   const QMetaObject* metaObject() const;
@@ -727,8 +727,8 @@ inline void py_q_collectContiguousTracksNamesInBlockNamed(QString  blockName, QS
 inline void py_q_invalidate(EditScene*  g2) { LayoutTurnout::invalidate(g2); }
 inline bool  py_q_isMainline() { return LayoutTurnout::isMainline(); }
 inline void py_q_propertyChange(PropertyChangeEvent*  e) { LayoutTurnout::propertyChange(e); }
+inline QObject*  py_q_pself() { return LayoutTurnout::pself(); }
 inline void py_q_reCheckBlockBoundary() const { LayoutTurnout::reCheckBlockBoundary(); }
-inline QObject*  py_q_self() { return LayoutTurnout::self(); }
 inline QString  py_q_toString() { return LayoutTurnout::toString(); }
 };
 
@@ -821,12 +821,12 @@ void delete_LayoutTurnout(LayoutTurnout* obj) { delete obj; }
    bool  isTurnoutTypeTurnout(LayoutTurnout* theWrappedObject) const;
    bool  isTurnoutTypeXover(LayoutTurnout* theWrappedObject) const;
    void py_q_propertyChange(LayoutTurnout* theWrappedObject, PropertyChangeEvent*  e){  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_propertyChange(e));}
+   QObject*  py_q_pself(LayoutTurnout* theWrappedObject){  return (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_pself());}
    void reCheckBlockBoundary(LayoutTurnout* theWrappedObject) const;
    void py_q_reCheckBlockBoundary(LayoutTurnout* theWrappedObject) const{  (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_reCheckBlockBoundary());}
    void remove(LayoutTurnout* theWrappedObject);
    void removeBeanReference(LayoutTurnout* theWrappedObject, NamedBean*  nb);
    void removeSML(LayoutTurnout* theWrappedObject, SignalMast*  signalMast) const;
-   QObject*  py_q_self(LayoutTurnout* theWrappedObject){  return (((PythonQtPublicPromoter_LayoutTurnout*)theWrappedObject)->py_q_self());}
    void setAdditionalEditPopUpMenu(LayoutTurnout* theWrappedObject, QMenu*  popup);
    void setAdditionalViewPopUpMenu(LayoutTurnout* theWrappedObject, QMenu*  popup);
    void setConnectA(LayoutTurnout* theWrappedObject, LayoutTrack*  o, int  type);
@@ -3272,7 +3272,7 @@ public:
    ~PythonQtShell_PropertyChangeListener();
 
 virtual void propertyChange(PropertyChangeEvent*  e);
-virtual QObject*  self();
+virtual QObject*  pself();
 
   PythonQtInstanceWrapper* _wrapper; 
 };
@@ -3280,7 +3280,7 @@ virtual QObject*  self();
 class PythonQtPublicPromoter_PropertyChangeListener : public PropertyChangeListener
 { public:
 inline void py_q_propertyChange(PropertyChangeEvent*  e) { PropertyChangeListener::propertyChange(e); }
-inline QObject*  py_q_self() { return this->self(); }
+inline QObject*  py_q_pself() { return this->pself(); }
 };
 
 class PythonQtWrapper_PropertyChangeListener : public QObject
@@ -3290,8 +3290,8 @@ public slots:
 PropertyChangeListener* new_PropertyChangeListener();
 void delete_PropertyChangeListener(PropertyChangeListener* obj) { delete obj; } 
    void py_q_propertyChange(PropertyChangeListener* theWrappedObject, PropertyChangeEvent*  e){  (((PythonQtPublicPromoter_PropertyChangeListener*)theWrappedObject)->py_q_propertyChange(e));}
-   QObject*  self(PropertyChangeListener* theWrappedObject);
-   QObject*  py_q_self(PropertyChangeListener* theWrappedObject){  return (((PythonQtPublicPromoter_PropertyChangeListener*)theWrappedObject)->py_q_self());}
+   QObject*  pself(PropertyChangeListener* theWrappedObject);
+   QObject*  py_q_pself(PropertyChangeListener* theWrappedObject){  return (((PythonQtPublicPromoter_PropertyChangeListener*)theWrappedObject)->py_q_pself());}
 };
 
 

@@ -28,7 +28,7 @@ Q_OBJECT
 private:
  JsonReporterSocketService* jrss;
     /*public*/ ReporterListener(Reporter* reporter, JsonReporterSocketService* jrss);
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 public slots:
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* e) override;

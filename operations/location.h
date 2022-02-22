@@ -169,7 +169,7 @@ namespace Operations {
   /*public*/ void resequnceTracksByBlockingOrder();
   /*public*/ void changeTrackBlockingOrderEarlier(Track* track);
   /*public*/ void changeTrackBlockingOrderLater(Track* track);
-  QObject* self() override {return (QObject*)this; }
+  QObject* pself() override {return (QObject*)this; }
   inline bool operator==(const Location &e1)
   {
      return this->_name == e1.getName();

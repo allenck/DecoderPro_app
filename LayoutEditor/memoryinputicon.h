@@ -38,6 +38,7 @@ public:
     void doMousePressed(QGraphicsSceneMouseEvent*) override;
     /*public*/ MyGraphicsProxyWidget* getWidget()  override{return widget;}
     QObject* self() override {return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 
 signals:
 
@@ -87,6 +88,7 @@ class MiiActionListener : public QObject, public ActionListener
 public:
     MiiActionListener(MemoryInputIcon* parent);
     QObject* self() override {return (QObject*)this;}
+
 public slots:
   /*public*/ void actionPerformed(JActionEvent* a = 0)override;
 };

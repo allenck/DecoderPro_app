@@ -17,7 +17,7 @@ public:
  /*synchronized*/ /*public*/ void scaleImage();
  /*public*/ void dispose() override;
  /*public*/ QString getClassName()  override{ return "jmri.jmrit.ampmeter.AmpMeterFrame";}
- QObject* self() override {return (QObject*)this;}
+ QObject* pself() override {return (QObject*)this;}
 
 public slots:
  void propertyChange(PropertyChangeEvent*) override { update();}

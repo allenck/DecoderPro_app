@@ -14,7 +14,7 @@ public:
  /*public*/ QString getLastProperty();
  /*public*/ QVariant getLastValue();
  /*public*/ void onChange(QString property, QVariant newValue);
-QObject* self() {return (QObject*)this;}
+QObject* pself() {return (QObject*)this;}
 public slots:
  //@Override
  /*public*/ void propertyChange(PropertyChangeEvent* propertyChangeEvent);

@@ -43,6 +43,7 @@ public:
  /*public*/ bool isPaused() override;
 
  QObject* self() override {return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 
 public slots:
  /*public*/ void propertyChange(PropertyChangeEvent* evt) override;
@@ -89,6 +90,7 @@ Q_DECLARE_METATYPE(JmriJTablePersistenceManager)
     /*private*/ QTimer* delay = NULL;
  Logger* log;
  QObject* self() {return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 
 public:
     /*public*/ JTableListener(JTable* table, JmriJTablePersistenceManager* manager);

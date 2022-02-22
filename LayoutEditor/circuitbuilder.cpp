@@ -120,7 +120,7 @@ CircuitBuilder::~CircuitBuilder()
  OBlockManager* manager = (OBlockManager*)InstanceManager::getDefault("OBlockManager");
  QSet<NamedBean*> oblocks = manager->getNamedBeanSet();
  for (NamedBean* nb : oblocks) {
-  OBlock* block = (OBlock*)nb;
+  OBlock* block = (OBlock*)nb->self();
      _circuitMap->insert(block, new  QList<Positionable*>());
  }
  checkCircuits();  // need content for this
@@ -515,7 +515,7 @@ _todoMenu->addMenu(blockNeeds);  // #1
 /*protected*/ void CircuitBuilder::editCircuitError(QString sysName) {
     hidePortalIcons();
     if (editingOK()) {
-        _currentBlock = (OBlock*)((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getBySystemName(sysName);
+        _currentBlock = (OBlock*)((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getBySystemName(sysName)->self();
         if (_currentBlock != nullptr) {
             _editor->setSelectionGroup(makeSelectionGroup(_currentBlock, false));
             _editor->disableMenus();
@@ -756,7 +756,7 @@ _todoMenu->addMenu(blockNeeds);  // #1
   }
   else
    row = modelIndex.row();
-  _currentBlock = (OBlock*)_oblockModel->getBeanAt(row);
+  _currentBlock = (OBlock*)_oblockModel->getBeanAt(row)->self();
   return true;
  }
 // int row = _blockTable->getSelectedRow();
@@ -921,7 +921,7 @@ _todoMenu->addMenu(blockNeeds);  // #1
     OBlockManager* manager = (OBlockManager*)InstanceManager::getDefault("OBlockManager");
     QSet<NamedBean*> oblocks = manager->getNamedBeanSet();
     for (NamedBean* nb : oblocks) {
-     OBlock* block = (OBlock*)nb;
+     OBlock* block = (OBlock*)nb->self();
         QList<Portal*> portals = block->getPortals();
         if (portals.isEmpty()) {
             _noPortals.append(block);
@@ -1750,7 +1750,7 @@ _todoMenu->addMenu(blockNeeds);  // #1
             int row = cb->_blockTable->getSelectedRow();
             if (row >= 0) {
                 row = cb->_blockTable->convertRowIndexToModel(row);
-                cb->_currentBlock = (OBlock*)cb->_oblockModel->getBeanAt(row);
+                cb->_currentBlock = (OBlock*)cb->_oblockModel->getBeanAt(row)->self();
             } else {
                 cb->_currentBlock = nullptr;
             }

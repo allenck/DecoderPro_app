@@ -51,6 +51,7 @@ public:
     /*public*/ Border* getBorder()  override{return _border;}
     /*public*/ void setEnabled(bool b)  override{QWidget::setEnabled(b);}
     QObject* self() override {return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 
  signals:
 

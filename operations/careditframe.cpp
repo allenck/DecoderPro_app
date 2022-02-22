@@ -304,7 +304,7 @@ namespace Operations
    QList<NamedBean*>* list = ((IdTagManager*)InstanceManager::getDefault("IdTagManager"))->getNamedBeanList();
    foreach (NamedBean* tag, *list)
    {
-    rfidComboBox->addItem(tag->getDisplayName(), VPtr<IdTag>::asQVariant((IdTag*)tag));
+    rfidComboBox->addItem(tag->getDisplayName(), VPtr<IdTag>::asQVariant((IdTag*)tag->self()));
    }
    pOptionalLayout->addWidget(pRfid);
   }

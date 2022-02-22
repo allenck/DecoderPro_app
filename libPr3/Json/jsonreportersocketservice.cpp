@@ -54,7 +54,7 @@
      //reporters.values().stream().forEach((reporter) ->
 foreach(ReporterListener* reporter, reporters->values())
      {
-         ((NamedBean*)reporter->self())->removePropertyChangeListener(reporter);
+         ((NamedBean*)reporter->pself())->removePropertyChangeListener(reporter);
      }//);
      reporters->clear();
  }

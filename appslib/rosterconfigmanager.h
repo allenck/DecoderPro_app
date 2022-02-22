@@ -28,6 +28,7 @@ public:
  /*public*/ Roster* getRoster(/*@CheckForNull*/ Profile* profile);
  /*public*/ Roster* setRoster(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ Roster* roster);
  QObject* self() override {return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 
 public slots:
  void propertyChange(PropertyChangeEvent*) override;

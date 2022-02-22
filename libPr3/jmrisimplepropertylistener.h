@@ -24,7 +24,7 @@ public:
     /*public*/ void addConditional(Conditional* client);
     /*public*/ void setEnabled(bool state);
     /*public*/ void calculateClient(int idx, PropertyChangeEvent* evt);
-     QObject* self() override{return (QObject*)this;}
+     QObject* pself() override{return (QObject*)this;}
 signals:
 
 public slots:

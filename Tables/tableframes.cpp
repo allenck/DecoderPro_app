@@ -383,7 +383,7 @@
         }
     }
     for (/*Block*/NamedBean* nb : blkList) {
-     Block* b = (Block*)nb;
+     Block* b = (Block*)nb->self();
         try {
             // read Block properties
             QString sName = b->getSystemName();
@@ -469,13 +469,13 @@
     // add recursive Path elements to FromBlock/ToBlock
     QSet</*OBlock*/NamedBean*> oblkList = obm->getNamedBeanSet();
     for (NamedBean* nb : oblkList) {
-        OBlock* oblk = (OBlock*)nb;
+        OBlock* oblk = (OBlock*)nb->self();
         for (Portal* po : oblk->getPortals()) {
-            OBlock* oob = (OBlock*)obm->getByUserName(po->getFromBlockName());
+            OBlock* oob = (OBlock*)obm->getByUserName(po->getFromBlockName())->self();
             if (oob !=nullptr) {
                 oob->addPortal(po);
             }
-            oob = (OBlock*)obm->getByUserName(po->getToBlockName());
+            oob = (OBlock*)obm->getByUserName(po->getToBlockName())->self();
             if (oob !=nullptr) {
                 oob->addPortal(po);
             }
@@ -576,7 +576,7 @@ void TableFrames::addCloseListener(JmriJFrame* desktop) {
     } else {
         for (/*OBlock*/NamedBean* nb : manager->getNamedBeanSet())
         {
-            OBlock* block = (OBlock*)nb;
+            OBlock* block = (OBlock*)nb->self();
             QAction* mi = new QAction(tr("Open \"%1\" Path Table").arg(block->getDisplayName()));
             mi->/*setActionCommand*/setData(block->getSystemName());
             //mi->addActionListener(openFrameAction);
@@ -599,7 +599,7 @@ void TableFrames::addCloseListener(JmriJFrame* desktop) {
         openTurnoutPath->addAction(mi);
     } else {
         for (/*OBlock*/NamedBean* nb  : manager->getNamedBeanSet()) {
-            OBlock* block = (OBlock*)nb;
+            OBlock* block = (OBlock*)nb->self();
             QMenu* openTurnoutMenu = new QMenu(tr("Open \"%1\" Path-Turnout Tables").arg(block->getDisplayName()));
             openTurnoutPath->addMenu(openTurnoutMenu);
 //            openFrameAction = [=]/*e ->*/ {
@@ -814,7 +814,7 @@ void TableFrames::addCloseListener(JmriJFrame* desktop) {
     bool result = false;
     if (blockSystemName != nullptr) {
         // this is for Edit (new OBlocks are created from [Add oBlock->..] button in table)
-        OBlock* oblock = (OBlock*)((BlockManager*)InstanceManager::getDefault("OBlockManager"))->AbstractManager::getBySystemName(blockSystemName);
+        OBlock* oblock = (OBlock*)((BlockManager*)InstanceManager::getDefault("OBlockManager"))->AbstractManager::getBySystemName(blockSystemName)->self();
         if (oblock != nullptr) {
             BlockPathJPanel* panel = makeBlockPathEditPanel(oblock);
             // BeanEdit UI, adapted from jmri.jmrit.beantable.BlockTableAction
@@ -1023,7 +1023,7 @@ void TableFrames::addCloseListener(JmriJFrame* desktop) {
 /*protected*/ void TableFrames::openBlockPathFrame(QString blockSystemName) {
     BlockPathFrame* frame = (BlockPathFrame*)_blockPathMap.value(blockSystemName);
     if (frame == nullptr) {
-        OBlock* block = (OBlock*)((BlockManager*)InstanceManager::getDefault("OBlockManager"))->AbstractManager::getBySystemName(blockSystemName);
+        OBlock* block = (OBlock*)((BlockManager*)InstanceManager::getDefault("OBlockManager"))->AbstractManager::getBySystemName(blockSystemName)->self();
         if (block == nullptr) {
             return;
         }
@@ -1334,7 +1334,7 @@ void TableFrames::addCloseListener(JmriJFrame* desktop) {
         int index = pathTurnoutName.indexOf('&');
         QString pathName = pathTurnoutName.mid(1, index);
         QString blockName = pathTurnoutName.mid(index + 1);
-        OBlock* block = (OBlock*)((BlockManager*)InstanceManager::getDefault("OBlockManager"))->AbstractManager::getBySystemName(blockName);
+        OBlock* block = (OBlock*)((BlockManager*)InstanceManager::getDefault("OBlockManager"))->AbstractManager::getBySystemName(blockName)->self();
         if (block == nullptr) {
             return;
         }
@@ -1367,7 +1367,7 @@ void TableFrames::addCloseListener(JmriJFrame* desktop) {
     int index = pathTurnoutName.indexOf('&');
     QString pathName = pathTurnoutName.mid(1, index);
     QString blockName = pathTurnoutName.mid(index + 1);
-    OBlock* block = (OBlock*)((BlockManager*)InstanceManager::getDefault("OBlockManager"))->AbstractManager::getBySystemName(blockName);
+    OBlock* block = (OBlock*)((BlockManager*)InstanceManager::getDefault("OBlockManager"))->AbstractManager::getBySystemName(blockName)->self();
     if (block == nullptr) {
         return;
     }

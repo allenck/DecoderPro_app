@@ -54,7 +54,7 @@ public:
     /*public*/ void dispose() override;
     /*public*/ bool updateScene() override;
     QObject* self() override {return (QObject*)this;}
-
+    QObject* pself() override{return (QObject*)this;}
 signals:
 
 public slots:
@@ -104,6 +104,8 @@ public:
   this->parent = parent;
  }
  QObject* self() override {return (QObject*)this;}
+
+
  void actionPerformed(JActionEvent */*e*/ = 0) override
  {
   parent->updateItem();

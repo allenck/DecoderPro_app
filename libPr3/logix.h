@@ -197,5 +197,7 @@ public:
      * Note this method must not modify the supplied variable list in any way.
      */
     ///*public*/ void getStateVariableList(ArrayList <ConditionalVariable> varList, ArrayList <int[]> triggerPair);
+
+    QObject* self() override{return (QObject*)this;}
 };
 #endif // LOGIX_H

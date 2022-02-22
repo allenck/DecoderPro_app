@@ -74,10 +74,10 @@
  radioHLayout->addWidget(existingItem);
  radioHLayout->addWidget(newItem);
 
- if ( qobject_cast<ProxyManager*>(_manager->self())!=NULL)
+ if ( qobject_cast<ProxyManager*>(_manager->mself())!=NULL)
  {
   QList<Manager*> managerList;
-  if(qobject_cast<ProxyTurnoutManager*>(_manager->self())!=NULL)
+  if(qobject_cast<ProxyTurnoutManager*>(_manager->mself())!=NULL)
   {
    ProxyTurnoutManager* proxy = (ProxyTurnoutManager*) InstanceManager::turnoutManagerInstance();
    prefixBox->setManagers(proxy->getManagerList(), proxy->getDefaultManager());
@@ -85,7 +85,7 @@
        prefixBox->setSelectedItem(p->getComboBoxLastSelection(systemSelectionCombo));
    }
   }
-  else if (qobject_cast<ProxySensorManager*>(_manager->self())!=NULL)
+  else if (qobject_cast<ProxySensorManager*>(_manager->mself())!=NULL)
   {
    ProxySensorManager* proxy = (ProxySensorManager*) InstanceManager::sensorManagerInstance();
    prefixBox->setManagers(proxy->getManagerList(), proxy->getDefaultManager());
@@ -94,7 +94,7 @@
    }
 
   }
-  else if (qobject_cast<ProxyLightManager*>(_manager->self())!=NULL)
+  else if (qobject_cast<ProxyLightManager*>(_manager->mself())!=NULL)
   {
    ProxyLightManager* proxy = (ProxyLightManager*) InstanceManager::lightManagerInstance();
    prefixBox->setManagers(proxy->getManagerList(), proxy->getDefaultManager());
@@ -103,7 +103,7 @@
    }
 
   }
-  else if (qobject_cast<ProxyReporterManager*>(_manager->self())!=NULL)
+  else if (qobject_cast<ProxyReporterManager*>(_manager->mself())!=NULL)
   {
    ProxyReporterManager* proxy = (ProxyReporterManager*) InstanceManager::getDefault("ReporterManager");
    prefixBox->setManagers(proxy->getManagerList(), proxy->getDefaultManager());
@@ -223,7 +223,7 @@ void BeanSelectCreatePanel::update(){
 {
  QString prefix = /*ConnectionNameFromSystemName.getPrefixFromName((QString) prefixBox->getSelectedItem());*/ "L";
  NamedBean* nBean = NULL;
- if (qobject_cast<ProxyTurnoutManager*>(_manager->self())!=NULL)
+ if (qobject_cast<ProxyTurnoutManager*>(_manager->mself())!=NULL)
  {
   QString sName = "";
   try
@@ -244,7 +244,7 @@ void BeanSelectCreatePanel::update(){
    throw new JmriException("ErrorTurnoutAddFailed");
   }
  }
- else if (qobject_cast<ProxySensorManager*>(_manager->self())!=NULL)
+ else if (qobject_cast<ProxySensorManager*>(_manager->mself())!=NULL)
  {
   QString sName = "";
   try
@@ -266,7 +266,7 @@ void BeanSelectCreatePanel::update(){
     else
     {
         QString sName = _manager->makeSystemName(hardwareAddress->text());
-        if(qobject_cast<MemoryManager*>(_manager->self())!=NULL)
+        if(qobject_cast<MemoryManager*>(_manager->mself())!=NULL)
         {
             try {
                 nBean = ((DefaultMemoryManager*)InstanceManager::memoryManagerInstance())->provideMemory(sName);
@@ -275,7 +275,7 @@ void BeanSelectCreatePanel::update(){
                 throw new JmriException("ErrorMemoryAddFailed");
             }
         }
-        else if (qobject_cast<BlockManager*>(_manager->self())!=NULL) {
+        else if (qobject_cast<BlockManager*>(_manager->mself())!=NULL) {
             try {
                 nBean = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->provideBlock(sName);
             } catch (IllegalArgumentException* ex) {

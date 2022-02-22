@@ -35,7 +35,7 @@
     /*public*/ LightTableDataModel::LightTableDataModel(Manager/*<Light>*/* mgr) : BeanTableDataModel(){
         //super();
         common();
-        setObjectName(QString("LightTableDataModel") + "_" + mgr->self()->metaObject()->className());
+        setObjectName(QString("LightTableDataModel") + "_" + mgr->mself()->metaObject()->className());
         setManager(mgr);
         init();
         initTable();
@@ -71,7 +71,7 @@
      */
     //@Override
     /*protected*/ /*final*/ void LightTableDataModel::setManager(/*@Nonnull*/ Manager *manager) {
-        if (!(qobject_cast<LightManager*>(manager->self()))) {
+        if (!(qobject_cast<LightManager*>(manager->mself()))) {
             return;
         }
         getManager()->removePropertyChangeListener(this);
@@ -84,7 +84,7 @@
                 }
             }
         }
-        lightManager = (LightManager*)manager->self();
+        lightManager = (LightManager*)manager->mself();
         getManager()->addPropertyChangeListener(this);
         updateNameList();
     }

@@ -181,7 +181,7 @@
 
                 case InitialValueType::Memory:
                 {
-                    Memory* m = (Memory*)((MemoryManager*)InstanceManager::getDefault("MemoryManager"))->getNamedBean(variable->getInitialValueData());
+                    Memory* m = (Memory*)((MemoryManager*)InstanceManager::getDefault("MemoryManager"))->getNamedBean(variable->getInitialValueData())->self();
                     if (m != nullptr) initialValue = m->getValue();
                     break;
                 }

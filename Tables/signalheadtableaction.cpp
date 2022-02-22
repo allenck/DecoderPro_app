@@ -352,9 +352,9 @@ public void SHBeanTableDataModel::setDisplayDeleteMsg(int boo) { InstanceManager
 
 
 /*public*/ void SHBeanTableDataModel::clickOn(NamedBean* t) {
-    int oldState = ((SignalHead*)t)->getAppearance();
+    int oldState = ((SignalHead*)t->self())->getAppearance();
     int newState = 99;
-    QVector<int> stateList = ((SignalHead*)t)->getValidStates();
+    QVector<int> stateList = ((SignalHead*)t->self())->getValidStates();
     for (int i = 0; i < stateList.length(); i++) {
         if (oldState == stateList[i] ) {
             if (i < stateList.length()-1) {
@@ -378,7 +378,7 @@ public void SHBeanTableDataModel::setDisplayDeleteMsg(int boo) { InstanceManager
         }
     }
     log->debug("was "+QString::number(oldState) +" becomes "+QString::number(newState));
-   ((SignalHead*)t)->setAppearance(newState);
+   ((SignalHead*)t->self())->setAppearance(newState);
     fireTableDataChanged();
 
 }
@@ -2292,7 +2292,7 @@ void SignalHeadTableAction::ukAspectChange(bool edit){
  Turnout* t;
 // try
 // {
- t =  (Turnout*) bp->getNamedBean();
+ t =  (Turnout*) bp->getNamedBean()->self();
 // }
  //catch (JmriException* ex)
  if(t == nullptr)

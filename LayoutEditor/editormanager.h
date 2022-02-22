@@ -33,8 +33,10 @@ public:
  /*public*/ Editor* getEditor(QString name);
  /*public*/ bool addEditor(/*@Nonnull*/ Editor* editor);
  QT_DEPRECATED /*public*/ bool removeEditor(/*@Nonnull*/ Editor *editor);
+
  /*public*/ void remove(/*@Nonnull*/ Editor* editor);
- QObject* self() { return(QObject*)this;}
+ QObject* pself() { return(QObject*)this;}
+
  /*public*/ /*transient*/ AbstractShutDownTask* shutDownTask = nullptr;
  /*public*/ void setShutDownTask();
 

@@ -261,7 +261,7 @@ public:
     /*public*/ int rowCount(const QModelIndex &parent) const;
     /*public*/ QVariant data(const QModelIndex &index, int role) const;
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
-    /*public*/ QObject* self() override{return (QObject*)this;}
+    /*public*/ QObject* pself() override{return (QObject*)this;}
 
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
@@ -288,7 +288,7 @@ public:
     /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
     /*public*/ int columnCount(const QModelIndex &parent) const override;
     /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const override;
-    /*public*/ QObject* self() override{return (QObject*)this;}
+    /*public*/ QObject* pself() override{return (QObject*)this;}
 
     friend class SignalGroupSignalHeadModel;
 public slots:

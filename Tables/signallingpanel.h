@@ -242,7 +242,7 @@ private:
     int columnCount(const QModelIndex &parent) const override;
     virtual Qt::ItemFlags flags(const QModelIndex &index) const override;
     /*public*/ void dispose();
-    QObject* self() override {return (QObject*)this;}
+    QObject* pself() override {return (QObject*)this;}
     enum COLUMNS
     {
         SNAME_COLUMN = 0,
@@ -277,6 +277,8 @@ public:
      /*public*/ QString getColumnClass(int c) const override;
      /*public*/ QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 //     virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+     QObject* pself() override{return (QObject*)this;}
+
 public slots:
      void propertyChange(PropertyChangeEvent *e)override;
  private:

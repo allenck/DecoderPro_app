@@ -98,7 +98,7 @@
                 QString ref = ReferenceUtil::getReference(
                         getConditionalNG()->getSymbolTable(), _tableReference);
                 table = (Table*)((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))
-                        ->getNamedBean(ref);
+                        ->getNamedBean(ref)->self();
                 break;
             }
             case NamedBeanAddressing::LocalVariable:
@@ -106,7 +106,7 @@
                 SymbolTable* symbolTable = getConditionalNG()->getSymbolTable();
                 table = (Table*) ((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))
                         ->getNamedBean(TypeConversionUtil::
-                                convertToString(symbolTable->getValue(_tableLocalVariable), false));
+                                convertToString(symbolTable->getValue(_tableLocalVariable), false))->self();
                 break;
             }
             case NamedBeanAddressing::Formula:
@@ -114,7 +114,7 @@
                        (Table*) ((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))
                                 ->getNamedBean(TypeConversionUtil
                                         ::convertToString(_tableExpressionNode->calculate(
-                                                getConditionalNG()->getSymbolTable()), false))
+                                                getConditionalNG()->getSymbolTable()), false))->self()
                         : nullptr;
                 break;
 

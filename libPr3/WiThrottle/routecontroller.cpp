@@ -43,7 +43,7 @@ bool RouteController::verifyCreation() {
 /*public*/ void RouteController::filterList() {
     QStringList tempList = QStringList(0);
     foreach (QString sysName, sysNameList) {
-        Route* r = (Route*)manager->getBySystemName(sysName);
+        Route* r = (Route*)manager->getBySystemName(sysName)->self();
         QVariant o = ((DefaultRoute*)r)->getProperty("WifiControllable");
         if ((o == QVariant()) || (o.toString().toLower()!=("false"))) {
             //  Only skip if 'false'
@@ -58,7 +58,7 @@ void RouteController::handleMessage(QString message) {
     try {
         if (message.at(0) == 'A') {
             if (message.at(1) == '2') {
-                Route* r = (Route*)manager->getBySystemName(message.mid(2));
+                Route* r = (Route*)manager->getBySystemName(message.mid(2))->self();
                 if (r != NULL) {
                     r->setRoute();
                 } else {
@@ -119,7 +119,7 @@ void RouteController::handleMessage(QString message) {
     QString list =  QString("PRL");  //  Panel Route List
 
     foreach (QString sysName, sysNameList) {
-        Route* r = (Route*)manager->getBySystemName(sysName);
+        Route* r = (Route*)manager->getBySystemName(sysName)->self();
         list.append(QString("]\\[") + sysName);
         list.append("}|{");
         if (((DefaultRoute*)r)->getUserName() != NULL) {
@@ -174,7 +174,7 @@ void RouteController::handleMessage(QString message) {
 //Override
 /*public*/ void RouteController::_register() {
     foreach (QString sysName, sysNameList) {
-        Route* r = (Route*)manager->getBySystemName(sysName);
+        Route* r = (Route*)manager->getBySystemName(sysName)->self();
         QString turnoutsAlignedSensor = r->getTurnoutsAlignedSensor();
         if (turnoutsAlignedSensor!=("")) {  //only set if found
             Sensor* sensor = InstanceManager::sensorManagerInstance()->provideSensor(turnoutsAlignedSensor);

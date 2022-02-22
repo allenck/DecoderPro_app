@@ -70,7 +70,7 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
   QString sname = iter.next();
   if (sname=="") log->error("System name NULL during store");
   log->debug("system name is "+sname);
-  Sensor* s = (Sensor*)((AbstractSensorManager*)tm)->getBySystemName(sname);
+  Sensor* s = (Sensor*)((AbstractSensorManager*)tm)->getBySystemName(sname)->self();
 
   QString inverted = ((AbstractSensor*)s)->getInverted() ? "true" : "false";
 

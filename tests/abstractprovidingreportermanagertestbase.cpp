@@ -27,7 +27,7 @@ AbstractProvidingReporterManagerTestBase::AbstractProvidingReporterManagerTestBa
 
     //@Test(expected = IllegalArgumentException.class)
     /*public*/ void AbstractProvidingReporterManagerTestBase::testProvideEmpty() throw (IllegalArgumentException) {
-        ProxyReporterManager/*<E>*/* m = (ProxyReporterManager*)l->self();
+        ProxyReporterManager/*<E>*/* m = (ProxyReporterManager*)l->mself();
         try {
             m->provide(""); // this should throw an IllegalArgumentException.
         } catch (IllegalArgumentException iae) {
@@ -39,7 +39,7 @@ AbstractProvidingReporterManagerTestBase::AbstractProvidingReporterManagerTestBa
     //@Test
     /*public*/ void AbstractProvidingReporterManagerTestBase::testRegisterDuplicateSystemName() throw (PropertyVetoException, /*NoSuchFieldException,
             NoSuchFieldException,*/ IllegalArgumentException, IllegalAccessException) {
-        ProxyReporterManager/*<E>*/* m = (ProxyReporterManager*)l->self();
+        ProxyReporterManager/*<E>*/* m = (ProxyReporterManager*)l->mself();
         QString s1 = l->makeSystemName("1");
         QString s2 = l->makeSystemName("2");
         testRegisterDuplicateSystemName(m, s1, s2);
@@ -104,14 +104,14 @@ AbstractProvidingReporterManagerTestBase::AbstractProvidingReporterManagerTestBa
         try {
             // Register different bean with existing systemName.
             // This should fail with an DuplicateSystemNameException.
-            ((ReporterManager*)l->self())->Register((NamedBean*)e2);
+            ((ReporterManager*)l->mself())->Register((NamedBean*)e2);
             Assert::fail("Expected exception not thrown", __FILE__, __LINE__);
         } catch (NamedBean::DuplicateSystemNameException* ex) {
             Assert::assertEquals("exception message is correct", expectedMessage, ex->getMessage(), __FILE__, __LINE__);
             JUnitAppender::assertErrorMessage(expectedMessage, __FILE__, __LINE__);
         }
 
-        ((ReporterManager*)l->self())->deregister((NamedBean*)e1);
+        ((ReporterManager*)l->mself())->deregister((NamedBean*)e1);
     }
 #if 0
     protected Field getField(Class c, String fieldName) {

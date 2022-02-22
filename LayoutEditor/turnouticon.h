@@ -45,6 +45,7 @@ public:
  /*public*/ bool getDirectControl();
  /*public*/ QString getGroupName() override;
  QObject* self() override {return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 
 signals:
 

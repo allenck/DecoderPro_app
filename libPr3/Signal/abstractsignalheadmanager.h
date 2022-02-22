@@ -17,13 +17,17 @@ public:
 //    /*public*/ QString getSystemPrefix()const override;
     /*public*/ QChar typeLetter() const override ;
     /*public*/ SignalHead* getSignalHead(QString name) override;
-    /*public*/ SignalHead* getBySystemName(QString name)
+    /*public*/ SignalHead* getBySystemName(QString name) override
     {
-     return (SignalHead*) AbstractManager::getBeanBySystemName(name);
+     if(AbstractManager::getBeanBySystemName(name))
+      return (SignalHead*) AbstractManager::getBeanBySystemName(name)->self();
+     return nullptr;
     }
-    /*public*/ SignalHead* getByUserName(QString key)
+    /*public*/ SignalHead* getByUserName(QString key) override
     {
-     return (SignalHead*) AbstractManager::getByUserName(key);
+     if(AbstractManager::getByUserName(key))
+      return (SignalHead*) AbstractManager::getByUserName(key)->self();
+     else return nullptr;
     }
 //    void Register(NamedBean *s) override;
 //    QCompleter* getCompleter(QString text, bool bIncludeUserNames = false) override;
@@ -33,8 +37,10 @@ public:
     }
   /*public*/ SystemConnectionMemo* getMemo() override;
 
-    QObject* self() override{return (QObject*)this;}
+    QObject* mself() override{return (QObject*)this;}
     QObject* vself() override {return (QObject*)this;}
+    QObject* self() override {return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 
 //    /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
 //    /*public*/ SignalHead* getBySystemName(QString name) override {return (SignalHead*)AbstractManager::getBySystemName(name);}

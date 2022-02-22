@@ -744,7 +744,7 @@ void BlockBossLogic::turnoutChange(PropertyChangeEvent */*e*/)
 
  // if "hold" is true, must show red
  if (getHold()) {
-     ((DefaultSignalHead*)outputs.at(0))->setAppearance(SignalHead::RED);
+     ((DefaultSignalHead*)outputs.at(0)->self())->setAppearance(SignalHead::RED);
      if (log->isDebugEnabled()) log->debug("setOutput red due to held for "+name);
      return;
  }
@@ -830,7 +830,7 @@ int BlockBossLogic::fastestColor2()
 
 void BlockBossLogic::doSingleBlock() {
     int appearance = SignalHead::GREEN;
-    int oldAppearance = ((AbstractSignalHead*)outputs.at(0))->getAppearance();
+    int oldAppearance = ((AbstractSignalHead*)outputs.at(0)->self())->getAppearance();
     // check for yellow, flashing yellow overriding green
     if (protectWithFlashing && fastestColor1()==SignalHead::YELLOW)
         appearance = SignalHead::FLASHYELLOW;
@@ -858,7 +858,7 @@ void BlockBossLogic::doSingleBlock() {
         appearance = SignalHead::RED;
 
     // check if signal if held, forcing a red aspect by this calculation
-    if (((DefaultSignalHead*)outputs.at(0))->getHeld())
+    if (((DefaultSignalHead*)outputs.at(0)->self())->getHeld())
         appearance = SignalHead::RED;
 
     // handle approach lighting
@@ -866,14 +866,14 @@ void BlockBossLogic::doSingleBlock() {
 
     // show result if changed
     if (appearance != oldAppearance) {
-        ((DefaultSignalHead*)outputs.at(0))->setAppearance(appearance);
-        if (log->isDebugEnabled()) log->debug("Change appearance of "+name+" to "+QString::number(appearance) + " ("+((DefaultSignalHead*)outputs.at(0))->getDefaultStateName(appearance)+ ")");
+        ((DefaultSignalHead*)outputs.at(0)->self())->setAppearance(appearance);
+        if (log->isDebugEnabled()) log->debug("Change appearance of "+name+" to "+QString::number(appearance) + " ("+((DefaultSignalHead*)outputs.at(0)->self())->getDefaultStateName(appearance)+ ")");
     }
 }
 
 void BlockBossLogic::doTrailingMain() {
     int appearance = SignalHead::GREEN;
-    int oldAppearance = ((DefaultSignalHead*)outputs.at(0))->getAppearance();
+    int oldAppearance = ((DefaultSignalHead*)outputs.at(0)->self())->getAppearance();
     // check for yellow, flashing yellow overriding green
     if (protectWithFlashing && fastestColor1()==SignalHead::YELLOW)
         appearance = SignalHead::FLASHYELLOW;
@@ -906,7 +906,7 @@ void BlockBossLogic::doTrailingMain() {
         appearance = SignalHead::RED;
 
     // check if signal if held, forcing a red aspect by this calculation
-    if (((DefaultSignalHead*)outputs.at(0))->getHeld())
+    if (((DefaultSignalHead*)outputs.at(0)->self())->getHeld())
         appearance = SignalHead::RED;
 
     // handle approach lighting
@@ -914,14 +914,14 @@ void BlockBossLogic::doTrailingMain() {
 
     // show result if changed
     if (appearance != oldAppearance) {
-        ((DefaultSignalHead*)outputs.at(0))->setAppearance(appearance);
-        if (log->isDebugEnabled()) log->debug("Change appearance of "+name+" to "+ QString::number(appearance) + " ("+((DefaultSignalHead*)outputs.at(0))->getDefaultStateName(appearance)+ ")");
+        ((DefaultSignalHead*)outputs.at(0)->self())->setAppearance(appearance);
+        if (log->isDebugEnabled()) log->debug("Change appearance of "+name+" to "+ QString::number(appearance) + " ("+((DefaultSignalHead*)outputs.at(0)->self())->getDefaultStateName(appearance)+ ")");
     }
 }
 
 void BlockBossLogic::doTrailingDiverging() {
     int appearance = SignalHead::GREEN;
-    int oldAppearance = ((DefaultSignalHead*)outputs.at(0))->getAppearance();
+    int oldAppearance = ((DefaultSignalHead*)outputs.at(0)->self())->getAppearance();
     // check for yellow, flashing yellow overriding green
     if (protectWithFlashing && fastestColor1()==SignalHead::YELLOW)
         appearance = SignalHead::FLASHYELLOW;
@@ -954,7 +954,7 @@ void BlockBossLogic::doTrailingDiverging() {
         appearance = SignalHead::RED;
 
     // check if signal if held, forcing a red aspect by this calculation
-    if (((DefaultSignalHead*)outputs.at(0))->getHeld())
+    if (((DefaultSignalHead*)outputs.at(0)->self())->getHeld())
         appearance = SignalHead::RED;
 
     // handle approach lighting
@@ -962,14 +962,14 @@ void BlockBossLogic::doTrailingDiverging() {
 
     // show result if changed
     if (appearance != oldAppearance) {
-        ((DefaultSignalHead*)outputs.at(0))->setAppearance(appearance);
-        if (log->isDebugEnabled()) log->debug("Change appearance of "+name+" to "+QString::number(appearance) + " ("+((DefaultSignalHead*)outputs.at(0))->getDefaultStateName(appearance)+ ")");
+        ((DefaultSignalHead*)outputs.at(0)->self())->setAppearance(appearance);
+        if (log->isDebugEnabled()) log->debug("Change appearance of "+name+" to "+QString::number(appearance) + " ("+((DefaultSignalHead*)outputs.at(0)->self())->getDefaultStateName(appearance)+ ")");
     }
 }
 
 void BlockBossLogic::doFacing() {
     int appearance = SignalHead::GREEN;
-    int oldAppearance = ((DefaultSignalHead*)outputs.at(0))->getAppearance();
+    int oldAppearance = ((DefaultSignalHead*)outputs.at(0)->self())->getAppearance();
 
     // find downstream appearance, being pessimistic if we're not sure of the state
     int s = SignalHead::GREEN;
@@ -1024,7 +1024,7 @@ void BlockBossLogic::doFacing() {
         appearance = SignalHead::RED;
 
     // check if signal if held, forcing a red aspect by this calculation
-    if (static_cast<SignalHead*>(outputs.at(0))->getHeld())
+    if (static_cast<SignalHead*>(outputs.at(0)->self())->getHeld())
         appearance = SignalHead::RED;
 
     // handle approach lighting
@@ -1032,7 +1032,7 @@ void BlockBossLogic::doFacing() {
 
     // show result if changed
     if (appearance != oldAppearance)
-        static_cast<SignalHead*>(outputs.at(0))->setAppearance(appearance);
+        static_cast<SignalHead*>(outputs.at(0)->self())->setAppearance(appearance);
 }
 
 /**

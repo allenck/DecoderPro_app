@@ -400,7 +400,7 @@ Maintenance::Maintenance(QObject *parent) :
  if (log->isDebugEnabled()) log->debug("getTypeAndNames for \""+name+"\"");
 
  SensorManager* sensorManager = InstanceManager::sensorManagerInstance();
- Sensor* sen = (Sensor*)((AbstractManager*)sensorManager)->getBySystemName(sysName);
+ Sensor* sen = (Sensor*)((AbstractManager*)sensorManager)->getBySystemName(sysName)->self();
  if ( sen!=NULL )
  {
   userName = ((AbstractSensor*)sen)->getUserName();
@@ -408,7 +408,7 @@ Maintenance::Maintenance(QObject *parent) :
  }
  else
  {
-  sen = (Sensor*)((AbstractManager*)sensorManager)->getBySystemName(userName.toUpper());
+  sen = (Sensor*)((AbstractManager*)sensorManager)->getBySystemName(userName.toUpper())->self();
   if (sen!=NULL)
   {
    sysName = ((AbstractSensor*)sen)->getSystemName();
@@ -417,7 +417,7 @@ Maintenance::Maintenance(QObject *parent) :
   }
   else
   {
-   sen = (Sensor*)((AbstractManager*)sensorManager)->getByUserName(userName);
+   sen = (Sensor*)((AbstractManager*)sensorManager)->getByUserName(userName)->self();
    if ( sen!=NULL )
    {
     sysName = ((AbstractSensor*)sen)->getSystemName();
@@ -433,7 +433,7 @@ Maintenance::Maintenance(QObject *parent) :
   return l;
  }
  TurnoutManager* turnoutManager = InstanceManager::turnoutManagerInstance();
- Turnout* t = (Turnout*)((AbstractManager*)turnoutManager)->getBySystemName(sysName);
+ Turnout* t = (Turnout*)((AbstractManager*)turnoutManager)->getBySystemName(sysName)->self();
  if ( t!=NULL )
  {
   userName = ((AbstractTurnout*)t)->getUserName();
@@ -441,7 +441,7 @@ Maintenance::Maintenance(QObject *parent) :
  }
  else
  {
-  t = (Turnout*)((AbstractManager*)turnoutManager)->getBySystemName(userName.toUpper());
+  t = (Turnout*)((AbstractManager*)turnoutManager)->getBySystemName(userName.toUpper())->self();
   if (t!=NULL)
   {
    sysName = ((AbstractTurnout*)t)->getSystemName();
@@ -450,7 +450,7 @@ Maintenance::Maintenance(QObject *parent) :
   }
   else
   {
-   t = (Turnout*)((AbstractManager*)turnoutManager)->getByUserName(userName);
+   t = (Turnout*)((AbstractManager*)turnoutManager)->getByUserName(userName)->self();
    if ( t!=NULL )
    {
     sysName = ((AbstractTurnout*)t)->getSystemName();
@@ -501,7 +501,7 @@ Maintenance::Maintenance(QObject *parent) :
  }
 
  SignalHeadManager* signalManager = qobject_cast<SignalHeadManager*>(InstanceManager::getDefault("SignalHeadManager"));
- SignalHead* sh =(SignalHead*) ((AbstractSignalHeadManager*)signalManager)->AbstractManager::getBySystemName(sysName);
+ SignalHead* sh =(SignalHead*) ((AbstractSignalHeadManager*)signalManager)->AbstractManager::getBySystemName(sysName)->self();
  if ( sh!=NULL )
  {
   userName = ((AbstractSignalHead*)sh)->getUserName();
@@ -509,7 +509,7 @@ Maintenance::Maintenance(QObject *parent) :
  }
  else
  {
-  sh = (SignalHead*)((AbstractSignalHeadManager*)signalManager)->AbstractManager::getBySystemName(userName.toUpper());
+  sh = (SignalHead*)((AbstractSignalHeadManager*)signalManager)->AbstractManager::getBySystemName(userName.toUpper())->self();
   if (sh!=NULL)
   {
    sysName = ((AbstractSignalHead*)sh)->getSystemName();
@@ -518,7 +518,7 @@ Maintenance::Maintenance(QObject *parent) :
   }
   else
   {
-   sh = (SignalHead*)((AbstractSignalHeadManager*)signalManager)->AbstractManager::getByUserName(userName);
+   sh = (SignalHead*)((AbstractSignalHeadManager*)signalManager)->AbstractManager::getByUserName(userName)->self();
    if ( sh!=NULL )
    {
     sysName = ((AbstractSignalHead*)sh)->getSystemName();
@@ -569,7 +569,7 @@ Maintenance::Maintenance(QObject *parent) :
  }
 
  BlockManager* blockManager = ((BlockManager*)InstanceManager::getDefault("BlockManager"));
- Block* b = (Block*)((AbstractManager*)blockManager)->getBySystemName(sysName);
+ Block* b = (Block*)((AbstractManager*)blockManager)->getBySystemName(sysName)->self();
  if ( b!=NULL )
  {
   userName = b->getUserName();
@@ -577,7 +577,7 @@ Maintenance::Maintenance(QObject *parent) :
  }
  else
  {
-  b = (Block*)((AbstractManager*)blockManager)->getBySystemName(userName.toUpper());
+  b = (Block*)((AbstractManager*)blockManager)->getBySystemName(userName.toUpper())->self();
   if (b!=NULL)
   {
    sysName = b->getSystemName();
@@ -586,7 +586,7 @@ Maintenance::Maintenance(QObject *parent) :
   }
   else
   {
-   b = (Block*)blockManager->AbstractManager::getByUserName(userName);
+   b = (Block*)blockManager->AbstractManager::getByUserName(userName)->self();
    if ( b!=NULL )
    {
     sysName = b->getSystemName();
@@ -715,7 +715,7 @@ Maintenance::Maintenance(QObject *parent) :
  {
   // get the next Logix
   QString sName = iter1.next();
-  Logix* x =(Logix*) qobject_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getBySystemName(sName);
+  Logix* x =(Logix*) qobject_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getBySystemName(sName)->self();
   if (x==NULL)
   {
    log->error("Error getting Logix  - " + sName);
@@ -1118,7 +1118,7 @@ Maintenance::Maintenance(QObject *parent) :
     while (iter1.hasNext()) {
         // get the next Logix
         QString sName = iter1.next();
-        Block* b = (Block*)((AbstractManager*)blockManager)->getBySystemName(sName);
+        Block* b = (Block*)((AbstractManager*)blockManager)->getBySystemName(sName)->self();
         QString uName = b->getUserName();
         QString line1 = tr("%1%2: \"%3\" (%4)").arg(" ").arg(tr("Block")).arg(uName).arg(sName);
         if (sName==(sysName) || (uName !=NULL && uName==(userName)))  {
@@ -1159,7 +1159,7 @@ Maintenance::Maintenance(QObject *parent) :
     while (iter1.hasNext()) {
         // get the next Logix
         QString sName = iter1.next();
-        LayoutBlock* lb = (LayoutBlock*)lbm->getBySystemName(sName);
+        LayoutBlock* lb = (LayoutBlock*)lbm->getBySystemName(sName)->self();
         if (lb==NULL) {
             log->error("Error getting LayoutBlock - "+sName);
             break;
@@ -1311,7 +1311,7 @@ Maintenance::Maintenance(QObject *parent) :
     iter1 = QStringListIterator(qobject_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getSystemNameList());
     while (iter1.hasNext()) {
         QString sName = iter1.next();
-        Logix* x =(Logix*)qobject_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getBySystemName(sName);
+        Logix* x =(Logix*)qobject_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->getBySystemName(sName)->self();
         for (int i=0; i<((DefaultLogix*)x)->getNumConditionals(); i++)  {
             sName = ((DefaultLogix*)x)->getConditionalByNumberOrder(i);
             sysNameList.removeAt(sysNameList.indexOf(sName));

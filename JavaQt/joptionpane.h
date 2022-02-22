@@ -175,7 +175,7 @@ public:
  /*public*/ JDialog* createDialog(QWidget* parentComponent, QString title);
  /*public*/ JDialog* createDialog(QString title);
  /*public*/ void setValidator(QValidator* val);
- QObject* self() override {return (QObject*)this;}
+ QObject* pself() override {return (QObject*)this;}
 
  signals:
 

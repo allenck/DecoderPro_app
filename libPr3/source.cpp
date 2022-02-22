@@ -294,9 +294,9 @@ void Source::activeBean(DestinationPoints* dest, bool reverseDirection){
     }
     if(type == EntryExitPairs::FULLINTERLOCK){
         //if (sourceSignal instanceof SignalMast)
-        if(static_cast<SignalMast*>(sourceSignal)!= NULL)
+        if(static_cast<SignalMast*>(sourceSignal->self())!= NULL)
         {
-            ((SignalMast*) sourceSignal)->setHeld(true);
+            ((SignalMast*) sourceSignal->self())->setHeld(true);
         }
     }
 }

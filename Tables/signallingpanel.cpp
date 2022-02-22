@@ -438,7 +438,7 @@ QWidget* SignallingPanel::buildBlocksPanel()
  {
   QString systemName = iter.next();
   //String userName = bm.getBySystemName(systemName).getUserName();
-  _manualBlockList.append(new ManualBlockList((Block*)bm->AbstractManager::getBySystemName(systemName),this));
+  _manualBlockList.append(new ManualBlockList((Block*)bm->AbstractManager::getBySystemName(systemName)->self(),this));
  }
 
  if ((sml!=NULL) && (destMast!=NULL))
@@ -1030,8 +1030,8 @@ QWidget* SignallingPanel::buildSignalMastPanel(){
 
 void SignallingPanel::updatePressed(/*ActionEvent e*/)
 {
- sourceMast = (SignalMast*)sourceMastBox->getSelectedItem();
- destMast = (SignalMast*)destMastBox->getSelectedItem();
+ sourceMast = (SignalMast*)sourceMastBox->getSelectedItem()->self();
+ destMast = (SignalMast*)destMastBox->getSelectedItem()->self();
 
  if((sml==NULL) && (useLayoutEditor->isChecked()))
  {
@@ -1653,7 +1653,7 @@ void SignallingPanel::editDetails(){
           {
            QString systemName = iter.next();
            //String userName = bm.getBySystemName(systemName).getUserName();
-           signallingPanel->_manualBlockList.append(new ManualBlockList((Block*)bm->AbstractManager::getBySystemName(systemName),signallingPanel));
+           signallingPanel->_manualBlockList.append(new ManualBlockList((Block*)bm->AbstractManager::getBySystemName(systemName)->self(),signallingPanel));
           }
           signallingPanel->initializeIncludedList();
           fireTableDataChanged();

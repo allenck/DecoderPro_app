@@ -56,7 +56,7 @@ public:
  /*public*/ int rowCount(const QModelIndex &parent) const;
  /*public*/ QVariant data(const QModelIndex &index, int role) const;
  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
- QObject* self() override {return (QObject*)this;}
+ QObject* pself() override {return (QObject*)this;}
 
 public slots:
  /*public*/ void propertyChange(PropertyChangeEvent* e)  override;

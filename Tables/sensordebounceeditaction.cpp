@@ -157,7 +157,7 @@ void SensorDebounceEditAction::on_sensorDebounceGlobalCheck_clicked()
         return;
     }
 
-    Sensor* sen = (Sensor*) bean;
+    Sensor* sen = (Sensor*) bean->self();
     QString timeVal = sensorDebounceActiveField->text();
     int time = timeVal.toInt();
     sen->setSensorDebounceGoingActiveTimer(time);
@@ -174,7 +174,7 @@ void SensorDebounceEditAction::on_sensorDebounceGlobalCheck_clicked()
         return;
     }
     enabled(true);
-    Sensor* sen = (Sensor*) bean;
+    Sensor* sen = (Sensor*) bean->self();
     sensorDebounceGlobalCheck->setChecked(sen->useDefaultTimerSettings());
     if (sen->useDefaultTimerSettings()) {
         sensorDebounceActiveField->setEnabled(false);

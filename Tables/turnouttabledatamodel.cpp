@@ -45,7 +45,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(QObject *parent)
 /*public*/ TurnoutTableDataModel::TurnoutTableDataModel(Manager* mgr, QObject* parent) : BeanTableDataModel(parent){
     //super();
  common();
- setObjectName(QString("TurnoutTableDataModel") + " " + mgr->self()->metaObject()->className());
+ setObjectName(QString("TurnoutTableDataModel") + " " + mgr->mself()->metaObject()->className());
  saveManager = mgr;
  setManager(mgr);
  init();
@@ -58,7 +58,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(QObject *parent)
     // load graphic state column display preference
     _graphicState = ((GuiLafPreferencesManager*)InstanceManager::getDefault("GuiLafPreferencesManager"))->isGraphicTableState();
 
-    QObject* o = turnoutManager->self();
+    QObject* o = turnoutManager->mself();
     //if(qobject_cast<AbstractManager*>(turnoutManager->self()) != nullptr)
     if(QString(o->metaObject()->className())== "ProxyTurnoutManager")
  //    return (Turnout*)((AbstractManager*)turnoutManager->self())->getBySystemName(name);
@@ -469,8 +469,8 @@ TurnoutTableDataModel::TurnoutTableDataModel(QObject *parent)
  QString name = sysNameList.at(row);
  TurnoutManager* manager = turnoutManager;
  AbstractTurnout* t;
- if(qobject_cast<ProxyTurnoutManager*>(manager->self())!= NULL)
-  t = (AbstractTurnout*)((ProxyTurnoutManager*)manager)->AbstractProxyManager::getBySystemName(name);
+ if(qobject_cast<ProxyTurnoutManager*>(manager->mself())!= NULL)
+  t = (AbstractTurnout*)((ProxyTurnoutManager*)manager)->AbstractProxyManager::getBySystemName(name)->self();
  else
   t = (AbstractTurnout*)((AbstractTurnoutManager*) manager)->getBySystemName(name);
 
@@ -675,8 +675,8 @@ TurnoutTableDataModel::TurnoutTableDataModel(QObject *parent)
 {
  TurnoutManager* manager = turnoutManager;
  Turnout* t;
- if(qobject_cast<AbstractProxyManager*>(manager->self())!= NULL)
-  t= (Turnout*)((ProxyTurnoutManager*)manager->self())->AbstractProxyManager::getBySystemName(name);
+ if(qobject_cast<AbstractProxyManager*>(manager->mself())!= NULL)
+  t= (Turnout*)((ProxyTurnoutManager*)manager->mself())->AbstractProxyManager::getBySystemName(name)->self();
  else
   t= (Turnout*)((AbstractTurnoutManager*)manager)->getBySystemName(name);
 
@@ -703,7 +703,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(QObject *parent)
  */
 //@Override
 /*protected*/ /*final*/ void TurnoutTableDataModel::setManager(/*@Nonnull*/ Manager *manager) {
-    if (!(qobject_cast<TurnoutManager*>(manager->self()))) {
+    if (!(qobject_cast<TurnoutManager*>(manager->mself()))) {
         return;
     }
     getManager()->removePropertyChangeListener(this);
@@ -716,7 +716,7 @@ TurnoutTableDataModel::TurnoutTableDataModel(QObject *parent)
             }
         }
     }
-    QObject* o = manager->self();
+    QObject* o = manager->mself();
     if(QString(o->metaObject()->className())== "ProxyTurnoutManager")
      turnoutManager = (ProxyTurnoutManager*)o;
     else
@@ -727,11 +727,11 @@ TurnoutTableDataModel::TurnoutTableDataModel(QObject *parent)
 
 /*public*/ Turnout* TurnoutTableDataModel::getBySystemName(QString name) const
 {
- QObject* o = turnoutManager->self();
+ QObject* o = turnoutManager->mself();
  if(QString(o->metaObject()->className()) == "ProxyTurnoutManager")
   return (Turnout*)((ProxyTurnoutManager*)o)->getBySystemName(name);
  else
-  return (Turnout*) ((AbstractManager*)o)->getBySystemName(name);
+  return (Turnout*) ((AbstractManager*)o)->getBySystemName(name)->self();
 
 // if(qobject_cast<AbstractManager*>(turnoutManager->self()) != nullptr)
 //  return (Turnout*)((AbstractManager*)turnoutManager->self())->getBySystemName(name);
@@ -752,9 +752,9 @@ TurnoutTableDataModel::TurnoutTableDataModel(QObject *parent)
 
 /*public*/ void TurnoutTableDataModel::clickOn(NamedBean* t)
 {
- int state = ((Turnout*)t)->getCommandedState();
- if (state==Turnout::CLOSED) ((Turnout*)t)->setCommandedState(Turnout::THROWN);
- else ((Turnout*)t)->setCommandedState(Turnout::CLOSED);
+ int state = ((Turnout*)t->self())->getCommandedState();
+ if (state==Turnout::CLOSED) ((Turnout*)t->self())->setCommandedState(Turnout::THROWN);
+ else ((Turnout*)t->self())->setCommandedState(Turnout::CLOSED);
 }
 
 //@Override
@@ -1087,10 +1087,10 @@ QWidget* TTComboBoxDelegate::createEditor(QWidget *parent, const QStyleOptionVie
  int row = index.row();
  TurnoutManager* manager = (TurnoutManager*)InstanceManager::getDefault("TurnoutManager");
  QString name = ((TurnoutTableDataModel*)index.model())->sysNameList.at(row);
- if(qobject_cast<AbstractProxyManager*>(manager->self()))
-  t = (AbstractTurnout*)((AbstractProxyManager*)manager->self())->getBeanBySystemName(name);
+ if(qobject_cast<AbstractProxyManager*>(manager->mself()))
+  t = (AbstractTurnout*)((AbstractProxyManager*)manager->mself())->getBeanBySystemName(name)->self();
  else
-  t = (AbstractTurnout*)((AbstractTurnoutManager*)manager->self())->getBySystemName(name);
+  t = (AbstractTurnout*)((AbstractTurnoutManager*)manager->mself())->getBySystemName(name);
  if (t == NULL)
  {
   TurnoutTableAction::log->debug("error NULL turnout!");
@@ -1129,10 +1129,10 @@ void TTComboBoxDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
    int row = index.row();
    TurnoutManager* manager = (TurnoutManager*)InstanceManager::getDefault("TurnoutManager");
    QString name = ((TurnoutTableDataModel*)index.model())->sysNameList.at(row);
-   if(qobject_cast<AbstractProxyManager*>(manager->self()))
-    t = (AbstractTurnout*)((AbstractProxyManager*)manager->self())->getBeanBySystemName(name);
+   if(qobject_cast<AbstractProxyManager*>(manager->mself()))
+    t = (AbstractTurnout*)((AbstractProxyManager*)manager->mself())->getBeanBySystemName(name)->self();
    else
-    t = (AbstractTurnout*)((AbstractTurnoutManager*)manager->self())->getBySystemName(name);
+    t = (AbstractTurnout*)((AbstractTurnoutManager*)manager->mself())->getBySystemName(name);
 
    ((TurnoutTableDataModel*)index.model())->setTurnoutOperation(t, comboBox);
    ((TurnoutTableDataModel*)index.model())->fireTableRowsUpdated(row,row);

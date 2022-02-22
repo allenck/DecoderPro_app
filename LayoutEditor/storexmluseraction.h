@@ -9,6 +9,7 @@ public:
     explicit StoreXmlUserAction(QObject *parent = 0);
     /*public*/ StoreXmlUserAction(QString s, QObject *parent = 0);
 
+  QObject* pself() override{return (QObject*)this;}
 signals:
 
 public slots:

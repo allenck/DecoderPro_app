@@ -39,7 +39,7 @@ class ACMPropertyChangeListener : public QObject,public PropertyChangeListener
  AbstractCabSignalManager* acm;
 public:
  ACMPropertyChangeListener(AbstractCabSignalManager* acm) {this->acm = acm;}
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent* e) override
  {

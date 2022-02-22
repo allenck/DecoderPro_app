@@ -263,7 +263,10 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
   }
   QString userName = getUserName(elem);
   if (log->isDebugEnabled()) log->debug("create turnout: ("+sysName+")("+(userName==nullptr?"<nullptr>":userName)+")");
-  Turnout* t = (Turnout*)((ProxyTurnoutManager*)tm)->AbstractProxyManager::getBySystemName(sysName);
+  Turnout* t = nullptr;
+  NamedBean* nb = ((ProxyTurnoutManager*)tm)->AbstractProxyManager::getBySystemName(sysName);
+  if(nb)
+   t = (Turnout*)nb->self();
   if (t==nullptr)
   {
    t = ((ProxyTurnoutManager*)tm)->newTurnout(sysName, userName);
@@ -277,7 +280,7 @@ AbstractTurnoutManagerConfigXML::~AbstractTurnoutManagerConfigXML()
    //result = false;
    //continue;
   }
-  else if (userName!=nullptr)
+  else if (userName!="")
    t->setUserName(userName);
 
   // Load common parts

@@ -48,7 +48,7 @@ OBlockManagerXml::OBlockManagerXml(QObject *parent) :
          return QDomElement();
      }
      for (NamedBean* nb : oblockList) {
-      OBlock* block = (OBlock*)nb;
+      OBlock* block = (OBlock*)nb->self();
          QString sName = block->getSystemName();
          QString uName = block->getUserName();
          log->debug(tr("OBlock: sysName= %1, userName= %2").arg(sName).arg(uName));

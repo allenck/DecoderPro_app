@@ -121,7 +121,7 @@ public:
     /*public*/ void updateAutoNumber(QString systemName);
     /*public*/ QString getAutoSystemName();
 
-    QObject* self() override{return (QObject*)this;}
+    QObject* mself() override{return (QObject*)this;}
     QString getNamedBeanClass() const override{return "AbstractManager";}
     int getXMLOrder() const override {return 0;}
     /*public*/ QString createSystemName(/*@Nonnull*/ QString curAddress, /*@Nonnull*/ QString prefix) /*throw (JmriException)*/;

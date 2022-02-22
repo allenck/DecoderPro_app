@@ -48,7 +48,7 @@ namespace Operations
   /*public*/ void load(QDomElement root);
   /*public*/ void store(QDomElement root, QDomDocument doc);
   Q_INVOKABLE /*public*/ void initialize() override;
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
 
  signals:
 

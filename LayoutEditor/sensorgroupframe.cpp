@@ -325,7 +325,7 @@ void SensorGroupFrame:: viewPressed()
 }
 #endif
 Logix* SensorGroupFrame::getSystemLogix() {
-    Logix* logix = (Logix*)((LogixManager*)InstanceManager::getDefault("LogixManager"))->getBySystemName(logixSysName);
+    Logix* logix = (Logix*)((LogixManager*)InstanceManager::getDefault("LogixManager"))->getBySystemName(logixSysName)->self();
     if (logix == NULL) {
         logix = ((LogixManager*)InstanceManager::getDefault("LogixManager"))->createNewLogix(logixSysName, logixUserName);
     }
@@ -363,7 +363,7 @@ void SensorGroupFrame::deleteGroup(bool showMsg) {
         QString name = l.at(i);
         if (name.startsWith(prefix)) {
             // OK, kill this one
-            Route* r = (Route*)rm->getBySystemName(l.at(i));
+            Route* r = (Route*)rm->getBySystemName(l.at(i))->self();
             r->deActivateRoute();
             rm->deleteRoute(r);
         }

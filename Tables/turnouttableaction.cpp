@@ -164,7 +164,7 @@ void TurnoutTableAction::common()
 /*public*/ void TurnoutTableAction::setManager(Manager* man)
 {
 // log->debug(tr("setting manager of TTAction %1 to %2").arg(this->objectName(),man->self()->metaObject->classname()));
- turnoutManager = qobject_cast<TurnoutManager*>(man->self());
+ turnoutManager = qobject_cast<TurnoutManager*>(man->mself());
  if (m!=nullptr){ // also update Table Model
      m->setManager(man);
  }
@@ -447,7 +447,7 @@ qSort(defStrings.begin(), defStrings.end());
 /*public*/ void TurnoutTableAction::addToPanel(AbstractTableTabAction* f)
 {
  QString connectionName = turnoutManager->getMemo()->getUserName();
- if (QString(turnoutManager->self()->metaObject()->className()).contains("ProxyTurnoutManager")) {
+ if (QString(turnoutManager->mself()->metaObject()->className()).contains("ProxyTurnoutManager")) {
      connectionName = "All"; // NOI18N
  }
  initCheckBoxes();
@@ -641,7 +641,7 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
  QVariant currData = prefixBox->getItemAt(prefixBox->currentIndex());//prefixBox->currentData(Qt::UserRole);
  QString currText = prefixBox->currentText();
  Manager* mgr = VPtr<Manager>::asPtr(currData);
- prefix = ((TurnoutManager*)mgr->self())->getSystemPrefix();
+ prefix = ((TurnoutManager*)mgr->mself())->getSystemPrefix();
  QString curAddress = hardwareAddressTextField->text();
  // initial check for empty entry
  if (curAddress.length() < 1)
@@ -839,10 +839,10 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
  if (prefixBox->getSelectedIndex() == -1) {
      prefixBox->setSelectedIndex(0);
  }
- TurnoutManager* manager = (TurnoutManager*)prefixBox->getSelectedItem()->self();
+ TurnoutManager* manager = (TurnoutManager*)prefixBox->getSelectedItem()->mself();
  Q_ASSERT( manager != nullptr);
  QString systemPrefix = manager->getSystemPrefix();
- rangeBox->setEnabled(((AbstractTurnoutManager*)manager->self())->allowMultipleAdditions(systemPrefix));
+ rangeBox->setEnabled(((AbstractTurnoutManager*)manager->mself())->allowMultipleAdditions(systemPrefix));
  addEntryToolTip = manager->getEntryToolTip();
  // show sysName (HW address) field tooltip in the Add Turnout pane that matches system connection selected from combobox
  hardwareAddressTextField->setToolTip(

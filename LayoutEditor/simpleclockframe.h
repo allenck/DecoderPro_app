@@ -25,7 +25,7 @@ public:
     ~SimpleClockFrame();
     /*public*/ void initComponents() throw (Exception) override;
     /*public*/ QString getClassName() override;
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
 
 signals:
 

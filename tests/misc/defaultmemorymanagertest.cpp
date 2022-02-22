@@ -19,7 +19,7 @@ DefaultMemoryManagerTest::DefaultMemoryManagerTest()
 //@Test
 /*public*/ void DefaultMemoryManagerTest::testIMthrows() {
     try {
-        ((DefaultMemoryManager*)l->self())->provideMemory("IM");
+        ((DefaultMemoryManager*)l->mself())->provideMemory("IM");
         Assert::fail("Expected exception not thrown", __FILE__, __LINE__);
     } catch (IllegalArgumentException e) {
         // nothing to do
@@ -30,7 +30,7 @@ DefaultMemoryManagerTest::DefaultMemoryManagerTest()
 //@Test
 /*public*/ void DefaultMemoryManagerTest::testBlankThrows() {
     try {
-        ((DefaultMemoryManager*)l->self())->provideMemory("");
+        ((DefaultMemoryManager*)l->mself())->provideMemory("");
         Assert::fail("Expected exception not thrown", __FILE__, __LINE__);
     } catch (IllegalArgumentException e) {
         // nothing to do
@@ -40,7 +40,7 @@ DefaultMemoryManagerTest::DefaultMemoryManagerTest()
 
 //@Test
 /*public*/ void DefaultMemoryManagerTest::testCreatesiM() {
-    Memory* im = ((DefaultMemoryManager*)l->self())->provideMemory("iM");
+    Memory* im = ((DefaultMemoryManager*)l->mself())->provideMemory("iM");
     Assert::assertNotNull("iM created",im, __FILE__, __LINE__);
     Assert::assertEquals("correct system name","IMiM",im->getSystemName(), __FILE__, __LINE__);
 }

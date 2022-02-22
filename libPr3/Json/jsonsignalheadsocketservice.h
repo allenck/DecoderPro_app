@@ -29,7 +29,7 @@ private:
  JsonSignalHeadSocketService* jshss;
  public:
     /*public*/ SignalHeadListener(SignalHead* signalHead, JsonSignalHeadSocketService* jshss);
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 public slots:
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* e)override;

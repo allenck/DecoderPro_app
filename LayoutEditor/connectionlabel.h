@@ -11,7 +11,7 @@ class ConnectionLabel : public JLabel, public PropertyChangeListener
   Q_INTERFACES(PropertyChangeListener)
  public:
   ConnectionLabel(ConnectionConfig* connection, QWidget* parent =0);
-  QObject* self() override {return (QObject*) this;}
+  QObject* pself() override {return (QObject*) this;}
 
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* evt) override;

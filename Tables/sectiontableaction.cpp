@@ -191,21 +191,21 @@ public void setDisplayDeleteMsg(int boo) { ((DefaultUserMessagePreferences*)Inst
  if(role == Qt::DisplayRole)
  {
     if (col==BEGINBLOCKCOL) {
-        Section* z = (Section*)getBySystemName(sysNameList.at(row));
+        Section* z = (Section*)getBySystemName(sysNameList.at(row))->self();
         if (z != NULL) {
             return z->getBeginBlockName();
         }
         return "  ";
     }
     else if (col==ENDBLOCKCOL) {
-        Section* z = (Section*)getBySystemName(sysNameList.at(row));
+        Section* z = (Section*)getBySystemName(sysNameList.at(row))->self();
         if (z != NULL) {
             return z->getEndBlockName();
         }
         return "  ";
     }
     else if (col==VALUECOL) {
-        Section* z = (Section*)getBySystemName(sysNameList.at(row));
+        Section* z = (Section*)getBySystemName(sysNameList.at(row))->self();
         if (z == NULL) {
             return "";
         }
@@ -939,7 +939,7 @@ void SectionTableAction::addBlockPressed() {
   for (int i=0; i<allBlocks.size(); i++)
   {
    QString bName = allBlocks.at(i);
-   Block* b = (Block*)blockManager->AbstractManager::getBySystemName(bName);
+   Block* b = (Block*)blockManager->AbstractManager::getBySystemName(bName)->self();
    if (b!=NULL)
    {
     if ( (b->getUserName()!=NULL) && (b->getUserName()!=("")) )
@@ -955,7 +955,7 @@ void SectionTableAction::addBlockPressed() {
   for (int i=0; i<allBlocks.size(); i++)
   {
    QString bName = allBlocks.at(i);
-   Block* b = (Block*)blockManager->AbstractManager::getBySystemName(bName);
+   Block* b = (Block*)blockManager->AbstractManager::getBySystemName(bName)->self();
    if (b!=NULL)
    {
     if ( (!inSection(b)) && connected(b,endBlock) )

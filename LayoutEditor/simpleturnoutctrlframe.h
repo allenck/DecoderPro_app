@@ -18,7 +18,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT SimpleTurnoutCtrlFrame : public JmriJFrame, p
 public:
     explicit SimpleTurnoutCtrlFrame(QWidget *parent = 0);
  /*public*/ QString getClassName() override;
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
 
 signals:
 

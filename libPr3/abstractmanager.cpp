@@ -923,7 +923,7 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
      testAddr = validateSystemNameFormat(createSystemName(curAddress,prefix));
      // System.out.format("testaddr: "+testAddr);
      bean = getBySystemName(testAddr);
-     increment = ( static_cast<Turnout*>(bean)? ((Turnout*)bean)->getNumberOutputBits() : 1);
+     increment = ( static_cast<Turnout*>(bean->self())? ((Turnout*)bean->self())->getNumberOutputBits() : 1);
      testAddr = testAddr.mid(getSystemNamePrefix().length());
      getIncrement(testAddr, increment);
     }

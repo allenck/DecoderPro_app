@@ -176,7 +176,9 @@ long LayoutBlock::time=0;
  block = nullptr;   // assume failure (pessimist!)
  QString userName = getUserName();
  if (!(userName.isNull()) && !userName.isEmpty()) {
-     block =(Block*) ((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getByUserName(userName);
+  NamedBean* nb = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getByUserName(userName);
+  if(nb)
+     block =(Block*) nb->self();
  }
 
  if (block == nullptr) {
@@ -191,7 +193,7 @@ long LayoutBlock::time=0;
          jmriblknum++;
 
          // Find an unused system name
-         block = (Block*)bm->AbstractManager::getBySystemName(s);
+         block = (Block*)bm->AbstractManager::getBySystemName(s)->self();
          if (block != nullptr) {
              log->debug(tr("System name is already used: %1").arg(s));
              continue;
@@ -205,7 +207,7 @@ long LayoutBlock::time=0;
          }
 
          // Verify registration
-         Block* testGet = (Block*)bm->AbstractManager::getBySystemName(s);
+         Block* testGet = (Block*)bm->AbstractManager::getBySystemName(s)->self();
          if ( testGet!=nullptr && bm->AbstractManager::getNamedBeanSet().contains(testGet) ) {
              log->debug(tr("Block is valid: %1").arg(s));
              break;

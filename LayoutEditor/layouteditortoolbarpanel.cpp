@@ -436,7 +436,7 @@ LayoutEditorToolBarPanel::LayoutEditorToolBarPanel(LayoutEditor *layoutEditor, Q
             if (newName.isNull()) {
                 newName = "";
             }
-            LayoutBlock* lb = ( LayoutBlock*)((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(newName);
+            LayoutBlock* lb = ( LayoutBlock*)((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(newName)->self();
             if (lb != nullptr) {
                 //if there is an occupancy sensor assigned already
                 QString sensorName = lb->getOccupancySensorName();

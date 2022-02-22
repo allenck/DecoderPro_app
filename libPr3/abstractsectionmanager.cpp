@@ -7,9 +7,13 @@ AbstractSectionManager::AbstractSectionManager(InternalSystemConnectionMemo* mem
 }
 /*public*/ Section* AbstractSectionManager::AbstractSectionManager::getBySystemName(QString name) const{
     QString key = name.toUpper();
-    return (Section*)_tsys->value(key);
+    if(_tsys->value(key))
+    return (Section*)_tsys->value(key)->self();
+    return nullptr;
 }
 
 /*public*/ Section* AbstractSectionManager::AbstractSectionManager::getByUserName(QString key) const{
-    return (Section*)_tuser->value(key);
+    if(_tuser->value(key))
+     return (Section*)_tuser->value(key)->self();
+    return nullptr;
 }

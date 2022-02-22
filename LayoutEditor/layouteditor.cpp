@@ -2937,7 +2937,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
  if (newName.isNull()) {
      newName = "";
  }
- LayoutBlock* b = (LayoutBlock*)((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(newName);
+ LayoutBlock* b = (LayoutBlock*)((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(newName)->self();
  //_layoutTrackSelection.forEach((lt) ->
  foreach(LayoutTrack* lt, _layoutTrackSelection)
  {
@@ -2991,7 +2991,7 @@ void LayoutEditor::closeEvent(QCloseEvent *)
     QSet<NamedBean*> lBList = lbm->getNamedBeanSet();
     int changed = 0;
     for (NamedBean* nb : lBList) {
-     LayoutBlock* lb = (LayoutBlock*)nb;
+     LayoutBlock* lb = (LayoutBlock*)nb->self();
         lb->setBlockTrackColor(this->getDefaultTrackColorColor());
         lb->setBlockOccupiedColor(this->getDefaultOccupiedTrackColorColor());
         lb->setBlockExtraColor(this->getDefaultAlternativeTrackColorColor());
@@ -6271,7 +6271,7 @@ PositionablePointView* pv = new PositionablePointView(o, currentPoint, this);
         }
     } else {
         // check if this Layout Block already exists
-        result = (LayoutBlock*)((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(inBlockName);
+        result = (LayoutBlock*)((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(inBlockName)->self();
         if (result == nullptr) { //(no)
             // The combo box name can be either a block system name or a block user name
             Block* checkBlock = ((BlockManager*)InstanceManager::getDefault("BlockManager"))->getBlock(inBlockName);
@@ -6293,7 +6293,7 @@ PositionablePointView* pv = new PositionablePointView(o, currentPoint, this);
                             JOptionPane::PLAIN_MESSAGE);
                     if (blkUserName != "" && !blkUserName.isEmpty()) {
                         // Verify the user name
-                        Block* checkDuplicate = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getByUserName(blkUserName);
+                        Block* checkDuplicate = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getByUserName(blkUserName)->self();
                         if (checkDuplicate != nullptr) {
                             JOptionPane::showMessageDialog(getTargetFrame(),
                                     tr("User name %1 is already assigned to a block.").arg(blkUserName),
@@ -6367,7 +6367,7 @@ PositionablePointView* pv = new PositionablePointView(o, currentPoint, this);
  */
 /*public*/ LayoutBlock* LayoutEditor::getLayoutBlock(/*@Nonnull*/ QString blockID) {
     // check if this Layout Block already exists
-    LayoutBlock* blk = (LayoutBlock*)((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(blockID);
+    LayoutBlock* blk = (LayoutBlock*)((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(blockID)->self();
     if (blk == nullptr) {
         log->error(tr("LayoutBlock '%1' not found when panel loaded").arg(blockID));
         return nullptr;
@@ -6473,20 +6473,20 @@ PositionablePointView* pv = new PositionablePointView(o, currentPoint, this);
     bool found = false;
     QString sb;// = new StringBuilder();
     sb.append("This ");
-    if (static_cast<SignalMast*>(sm)) {
+    if (static_cast<SignalMast*>(sm->self())) {
         sb.append("Signal Mast");
         sb.append(" is linked to the following items<br> do you want to remove those references");
-        if (((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->isSignalMastUsed((SignalMast*) sm)) {
-            SignalMastLogic* sml = qobject_cast<SignalMastLogicManager*>(InstanceManager::getDefault("SignalMastLogicManager"))->getSignalMastLogic((SignalMast*) sm);
+        if (((SignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->isSignalMastUsed((SignalMast*) sm->self())) {
+            SignalMastLogic* sml = qobject_cast<SignalMastLogicManager*>(InstanceManager::getDefault("SignalMastLogicManager"))->getSignalMastLogic((SignalMast*) sm->self());
             //jmri.SignalMastLogic sml = InstanceManager.signalMastLogicManagerInstance().getSignalMastLogic((SignalMast)sm);
             if (sml != nullptr && sml->useLayoutEditor(sml->getDestinationList().at(0))) {
                 sb.append(" and any SignalMast Logic associated with it");
             }
         }
-    } else if (static_cast<Sensor*>(sm)) {
+    } else if (static_cast<Sensor*>(sm->self())) {
         sb.append("Sensor");
         sb.append(" is linked to the following items<br> do you want to remove those references");
-    } else if (static_cast<SignalHead*>(sm)) {
+    } else if (static_cast<SignalHead*>(sm->self())) {
         sb.append("SignalHead");
         sb.append(" is linked to the following items<br> do you want to remove those references");
     }
@@ -6560,9 +6560,9 @@ PositionablePointView* pv = new PositionablePointView(o, currentPoint, this);
         if (selectedValue == JOptionPane::CANCEL_OPTION) {
             return false; // do not delete the item
         }
-        if (static_cast<Sensor*>(bean)) {
+        if (static_cast<Sensor*>(bean->self())) {
             // Additional actions for NX sensor pairs
-            return getLETools()->removeSensorAssignment((Sensor*) bean);
+            return getLETools()->removeSensorAssignment((Sensor*) bean->self());
         } else {
             removeBeanRefs(bean);
         }
@@ -8132,8 +8132,10 @@ void LayoutEditor::addSensor()
  //
  /*private*/ bool LayoutEditor::highlightBlockInComboBox(/*@Nonnull*/ NamedBeanComboBox* inComboBox) {
      Block* block = nullptr;
-     if (inComboBox != nullptr) {
-         block = (Block*) inComboBox->getNamedBean();
+     NamedBean* nb = nullptr;
+     nb = inComboBox->getNamedBean();
+     if(nb){
+       block = (Block*)nb->self();
      }
      return highlightBlock(block);
  }
@@ -8154,7 +8156,7 @@ void LayoutEditor::addSensor()
      LayoutBlockManager* lbm = static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"));
      QSet<NamedBean*> l = leToolBarPanel->blockIDComboBox->getManager()->getNamedBeanSet();
      for (NamedBean* nb : l) {
-         Block* b = (Block*) nb;
+         Block* b = (Block*) nb->self();
          LayoutBlock* lb = lbm->getLayoutBlock(b);
          if (lb != nullptr) {
              bool enable = ((inBlock != nullptr) && b->equals(inBlock));
@@ -8832,7 +8834,7 @@ return l;
      return;
  }
  //if(nb instanceof Sensor)
- if(static_cast<Sensor*>(nb)!=nullptr)
+ if(static_cast<Sensor*>(nb->self())!=nullptr)
  {
      foreach(SensorIcon* si, *sensorList){
          if(si->getNamedBean()==nb && si->getPopupUtility()!=nullptr){
@@ -8847,7 +8849,7 @@ return l;
  }
  else
   //if (nb instanceof SignalHead)
-  if(static_cast<SignalHead*>(nb)!=nullptr)
+  if(static_cast<SignalHead*>(nb->self())!=nullptr)
   {
      foreach(SignalHeadIcon* si, *signalList){
          if(si->getNamedBean()==nb && si->getPopupUtility()!=nullptr){
@@ -8862,7 +8864,7 @@ return l;
  }
  else
  //if (nb instanceof SignalMast)
- if(static_cast<SignalMast*>(nb)!=nullptr)
+ if(static_cast<SignalMast*>(nb->self())!=nullptr)
   {
      foreach(SignalMastIcon* si,*signalMastList){
          if(si->getNamedBean()==nb && si->getPopupUtility()!=nullptr){
@@ -8877,7 +8879,7 @@ return l;
  }
  else
  //if (nb instanceof Memory)
- if(static_cast<Memory*>(nb)!=nullptr)
+ if(static_cast<Memory*>(nb->self())!=nullptr)
  {
   foreach(LEMemoryIcon* si, *memoryLabelList)
   {
@@ -8895,7 +8897,7 @@ return l;
  }
  else
  //if (nb instanceof Turnout)
- if(static_cast<Turnout*>(nb)!=nullptr)
+ if(static_cast<Turnout*>(nb->self())!=nullptr)
  {
   for (LayoutTurnoutView* ltv : getLayoutTurnoutAndSlipViews())
   {
@@ -8933,8 +8935,8 @@ QString LayoutEditor::toString() {
      message.append("<ul>");
      bool found = false;
 
-     if (static_cast<SignalHead*>(nb)) {
-         if (containsSignalHead((SignalHead*) nb)) {
+     if (static_cast<SignalHead*>(nb->self())) {
+         if (containsSignalHead((SignalHead*) nb->self())) {
              found = true;
              message.append("<li>");
              message.append(tr("Is in use as an Icon"));
@@ -8970,7 +8972,7 @@ QString LayoutEditor::toString() {
              message.append(tr("Is assigned to LayoutSlip %1").arg(ls->getTurnoutName()));
              message.append("</li>");
          }
-     } else if (static_cast<Turnout*>(nb)) {
+     } else if (static_cast<Turnout*>(nb->self())) {
          LayoutTurnout* lt = finder->findLayoutTurnoutByBean(nb);
 
          if (lt != nullptr) {
@@ -9024,8 +9026,8 @@ QString LayoutEditor::toString() {
          }
      }
 
-     if (static_cast<SignalMast*>(nb)) {
-         if (containsSignalMast((SignalMast*) nb)) {
+     if (static_cast<SignalMast*>(nb->self())) {
+         if (containsSignalMast((SignalMast*) nb->self())) {
              message.append("<li>");
              message.append("As an Icon");
              message.append("</li>");
@@ -9039,7 +9041,7 @@ QString LayoutEditor::toString() {
          }
      }
 
-     if (static_cast<Sensor*>(nb)) {
+     if (static_cast<Sensor*>(nb->self())) {
          int count = 0;
 
          for (SensorIcon* si : *sensorList) {
@@ -9062,7 +9064,7 @@ QString LayoutEditor::toString() {
          }
      }
 
-     if (static_cast<Memory*>(nb)) {
+     if (static_cast<Memory*>(nb->self())) {
          for (LEMemoryIcon* si : *memoryLabelList) {
              if (nb->equals(si->getMemory())) {
                  found = true;
@@ -9079,12 +9081,12 @@ QString LayoutEditor::toString() {
          throw new PropertyVetoException(message/*.toString()*/, evt);
      }
  } else if ("DoDelete" == (evt->getPropertyName())) { // NOI18N
-     if (static_cast<SignalHead*>(nb)) {
-         removeSignalHead((SignalHead*) nb);
+     if (static_cast<SignalHead*>(nb->self())) {
+         removeSignalHead((SignalHead*) nb->self());
          removeBeanRefs(nb);
      }
 
-     if (static_cast<Turnout*>(nb)) {
+     if (static_cast<Turnout*>(nb->self())) {
          LayoutTurnout* lt = finder->findLayoutTurnoutByBean(nb);
 
          if (lt != nullptr) {
@@ -9125,10 +9127,10 @@ QString LayoutEditor::toString() {
          }
      }
 
-     if (static_cast<SignalMast*>(nb)) {
+     if (static_cast<SignalMast*>(nb->self())) {
          removeBeanRefs(nb);
 
-         if (containsSignalMast((SignalMast*) nb)) {
+         if (containsSignalMast((SignalMast*) nb->self())) {
              QVectorIterator<SignalMastIcon*> icon(*signalMastList);
 
              while (icon.hasNext()) {
@@ -9145,7 +9147,7 @@ QString LayoutEditor::toString() {
          }
      }
 
-     if (static_cast<Sensor*>(nb)) {
+     if (static_cast<Sensor*>(nb->self())) {
          removeBeanRefs(nb);
          QVectorIterator<SensorIcon*> icon(*sensorImage);
 
@@ -9162,7 +9164,7 @@ QString LayoutEditor::toString() {
          redrawPanel();
      }
 
-     if (static_cast<Memory*>(nb)) {
+     if (static_cast<Memory*>(nb->self())) {
          QVectorIterator<LEMemoryIcon*> icon(*memoryLabelList);
 
          while (icon.hasNext()) {

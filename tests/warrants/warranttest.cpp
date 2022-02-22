@@ -49,7 +49,7 @@ WarrantTest::WarrantTest(QObject *parent) : QObject(parent)
     //@Test
     /*public*/ void WarrantTest::testAddPropertyChangeListener() {
         PropertyChangeListener* listener = new WarrantListener(warrant);
-        Assert::assertNotNull("PropertyChangeListener", listener->self(), __FILE__, __LINE__);
+        Assert::assertNotNull("PropertyChangeListener", listener->pself(), __FILE__, __LINE__);
         warrant->addPropertyChangeListener(listener);
     }
 

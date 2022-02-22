@@ -71,11 +71,11 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
     // Check that Logix does not already exist
     Logix* x;
     if (userName!= "" ) {
-        x = (Logix*)getByUserName(userName);
+        x = (Logix*)getByUserName(userName)->self();
         if (x!=nullptr) return nullptr;
     }
-    x = (Logix*)getBySystemName(systemName);
-    if (x==nullptr) x = (Logix*)getBySystemName(systemName.toUpper());   // for compatibility?
+    x = (Logix*)getBySystemName(systemName)->self();
+    if (x==nullptr) x = (Logix*)getBySystemName(systemName.toUpper())->self();   // for compatibility?
     if (x!=nullptr) return nullptr;
     // Logix does not exist, create a new Logix
     x = (Logix*)new DefaultLogix(systemName,userName);
@@ -119,8 +119,10 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
  */
 /*public*/ void DefaultLogixManager::activateAllLogixs() {
     // Guarantee Initializer executes first.
-    Logix* x = (Logix*)getBySystemName(/*LRouteTableAction::LOGIX_INITIALIZER*/"RTXINITIALIZER");
-    if (x!=nullptr) {
+ Logix* x = nullptr;
+    NamedBean* nb = getBySystemName(/*LRouteTableAction::LOGIX_INITIALIZER*/"RTXINITIALIZER");
+    if (nb!=nullptr) {
+     x = (DefaultLogix*) nb->self();
         x->activateLogix();
         x->setGuiNames();
     }
@@ -136,7 +138,7 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
         if (sysName==(/*LRouteTableAction.LOGIX_INITIALIZER*/"RTXINITIALIZER")) {
             continue;
         }
-        x = (Logix*)getBySystemName(sysName);
+        x = (Logix*)getBySystemName(sysName)->self();
         if (x==nullptr) {
             log->error("Error getting Logix *"+sysName+"* when activating Logixs");
             break;
@@ -162,16 +164,16 @@ DefaultLogixManager::DefaultLogixManager(QObject *parent) :
  *      that name is a System Name.  If both fail, returns nullptr.
  */
 /*public*/ Logix* DefaultLogixManager::getLogix(QString name) {
-    Logix* x = (Logix*)getByUserName(name);
+    Logix* x = (Logix*)getByUserName(name)->self();
     if (x!=nullptr) return x;
-    return (Logix*)getBySystemName(name);
+    return (Logix*)getBySystemName(name)->self();
 }
 
-/*public*/ NamedBean *DefaultLogixManager::getBySystemName(QString name) const {
+/*public*/ NamedBean *DefaultLogixManager::getBySystemName(QString name)  {
     return /*(Logix*)*/_tsys->value(name);
 }
 
-/*public*/ NamedBean *DefaultLogixManager::getByUserName(QString key) const {
+/*public*/ NamedBean *DefaultLogixManager::getByUserName(QString key)  {
     return /*(Logix*)*/_tuser->value(key);
 }
 

@@ -137,7 +137,7 @@
         TurnoutManager* tm = InstanceManager::turnoutManagerInstance();
         _turnoutList = QList<RouteTurnout*>();
         for (NamedBean* nb : tm->getNamedBeanSet()) {
-         Turnout* t = (Turnout*)nb;
+         Turnout* t = (Turnout*)nb->self();
             QString systemName = t->getSystemName();
             QString userName = t->getUserName();
             _turnoutList.append(new RouteTurnout(systemName, userName));
@@ -146,7 +146,7 @@
         SensorManager* sm = InstanceManager::sensorManagerInstance();
         _sensorList = QList<RouteSensor*>();
         for (NamedBean* nb: sm->getNamedBeanSet()) {
-         Sensor* s  = (Sensor*) nb;
+         Sensor* s  = (Sensor*) nb->self();
             QString systemName = s->getSystemName();
             QString userName = s->getUserName();
             _sensorList.append(new RouteSensor(systemName, userName));
@@ -630,7 +630,7 @@
      */
     /*protected*/ void AbstractRouteAddEditFrame::setControlInformation(Route* g) {
         // Get sensor control information if any
-        Sensor* sensor = (Sensor*)sensor1->getSelectedItem();
+        Sensor* sensor = (Sensor*)sensor1->getSelectedItem()->self();
         if (sensor != nullptr) {
             if ((!g->addSensorToRoute(sensor->getSystemName(), sensorModeFromBox(sensor1mode)))) {
                 log->error(tr("Unexpected failure to add Sensor '%1' to route '%2'.").arg(sensor->getSystemName()).arg(g->getSystemName()));

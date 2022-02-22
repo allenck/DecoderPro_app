@@ -212,7 +212,7 @@ void OPath::common()
 void OPath::fireTurnouts(QList<BeanSetting*> list, bool set, int lockState, bool lock) {
     for (int i=0; i<list.size(); i++)  {
         BeanSetting* bs = list.at(i);
-        Turnout* t = (Turnout*)bs->getBean();
+        Turnout* t = (Turnout*)bs->getBean()->self();
         if (t==NULL) {
             log->error("Invalid turnout on path "+toString());
         } else {

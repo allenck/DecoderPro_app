@@ -166,7 +166,7 @@ class DLC_minuteListener : public QObject, public PropertyChangeListener
   {
    dlc->updateClockControlLightFollower();
   }
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
 };
 class LC1PropertyChangeListener : public QObject, public PropertyChangeListener
 {
@@ -175,7 +175,7 @@ class LC1PropertyChangeListener : public QObject, public PropertyChangeListener
  DefaultLightControl* lc;
  public:
  LC1PropertyChangeListener(DefaultLightControl* lc) {this->lc = lc;}
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 
 public slots:
  void propertyChange(PropertyChangeEvent*)override{}
@@ -188,7 +188,7 @@ class LC2PropertyChangeListener : public QObject,public PropertyChangeListener
  DefaultLightControl* lc;
  public:
  LC2PropertyChangeListener(DefaultLightControl* lc) {this->lc = lc;}
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent* e) override
  {
@@ -206,7 +206,7 @@ class LC3PropertyChangeListener : public QObject, public PropertyChangeListener
  DefaultLightControl* lc;
  public:
  LC3PropertyChangeListener(DefaultLightControl* lc) {this->lc = lc;}
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent* ) override
  {
@@ -221,7 +221,7 @@ class LC4PropertyChangeListener : public QObject, public PropertyChangeListener
  DefaultLightControl* lc;
  public:
  LC4PropertyChangeListener(DefaultLightControl* lc) {this->lc = lc;}
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent* e) override
  {
@@ -238,7 +238,7 @@ class LC5PropertyChangeListener : public QObject, public PropertyChangeListener
  DefaultLightControl* lc;
  public:
  LC5PropertyChangeListener(DefaultLightControl* lc) {this->lc = lc;}
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent* e) override{
   if (e->getPropertyName()==("KnownState")) {
@@ -267,7 +267,7 @@ class LC6PropertyChangeListener : public QObject, public PropertyChangeListener
  DefaultLightControl* lc;
  public:
  LC6PropertyChangeListener(DefaultLightControl* lc) {this->lc = lc;}
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent*)override {
   lc->twoSensorChanged();

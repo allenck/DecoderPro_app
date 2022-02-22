@@ -43,7 +43,7 @@
     /*public*/  MaleSocket* AnalogExpressionMemorySwing::createNewObject(/*@Nonnull*/ QString systemName, /*@CheckForNull*/ QString userName) {
         AnalogExpressionMemory* action = new AnalogExpressionMemory(systemName, userName);
         if (!memoryBeanPanel->isEmpty()) {
-            Memory* memory = (Memory*)memoryBeanPanel->getNamedBean();
+            Memory* memory = (Memory*)memoryBeanPanel->getNamedBean()->self();
             if (memory != nullptr) {
                 NamedBeanHandle<Memory*>* handle
                         = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))
@@ -61,7 +61,7 @@
             throw new IllegalArgumentException(QString("object must be an AnalogExpressionMemory but is a: ")+object->bself()->metaObject()->className());
         }
         AnalogExpressionMemory* action = (AnalogExpressionMemory*)object->bself();
-        Memory* memory = (Memory*)memoryBeanPanel->getNamedBean();
+        Memory* memory = (Memory*)memoryBeanPanel->getNamedBean()->self();
         if (memory != nullptr) {
             NamedBeanHandle<Memory*>* handle
                     = ((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))

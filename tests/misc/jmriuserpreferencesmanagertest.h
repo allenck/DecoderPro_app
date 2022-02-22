@@ -130,7 +130,7 @@ protected:
  Q_INTERFACES(PropertyChangeListener)JmriUserPreferencesManagerTest* test;
 public:
  JUPMListener(JmriUserPreferencesManagerTest* test) {this->test = test;}
- QObject* self() {return (QObject*)this;}/*public*/ PropertyChangeEvent* event = nullptr;
+ QObject* pself() {return (QObject*)this;}/*public*/ PropertyChangeEvent* event = nullptr;
 public slots:
  //@Override
  /*public*/ void propertyChange(PropertyChangeEvent* evt);

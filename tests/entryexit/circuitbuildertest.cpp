@@ -144,7 +144,7 @@ CircuitBuilderTest::CircuitBuilderTest(QObject *parent) : QObject(parent)
     /*public*/ void CircuitBuilderTest::testEditPortalErrorIcon() throw (Exception){
         getCPEandCB();
 
-        OBlock* block = (OBlock*)((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getByUserName("WestSiding");
+        OBlock* block = (OBlock*)((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getByUserName("WestSiding")->self();
         Portal* portal = ((PortalManager*)InstanceManager::getDefault("PortalManager"))->getPortal("Crapolla");
 //        new Thread(() -> {
             JFrameOperator* jfo = new JFrameOperator("Edit \"WestSiding\" Portals");

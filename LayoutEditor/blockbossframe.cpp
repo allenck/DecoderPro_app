@@ -706,7 +706,7 @@ QWidget* BlockBossFrame::fillModeFacing() {
 
  // check signal head selected
  if (head == nullptr) {
-     head = (SignalHead*)(outSignalHeadComboBox->getSelectedItem());
+     head = (SignalHead*)(outSignalHeadComboBox->getSelectedItem())->self();
      statusBar->setText(tr("SSL created for Signal Head %1").arg(outSignalHeadComboBox->getSelectedItemDisplayName()));
  } else {
      statusBar->setText(tr("SSL updated for Signal Head %1").arg(outSignalHeadComboBox->getSelectedItemDisplayName()));

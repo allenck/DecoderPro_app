@@ -93,7 +93,7 @@
          QList<NamedBean*>* list = sensorManager->AbstractProxyManager::getNamedBeanList();
          NamedBeanHandleManager* namedBeanHandleManager = (NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager");
          foreach (NamedBean* b, *list) {
-          Sensor* s = (Sensor*)b;
+          Sensor* s = (Sensor*)b->self();
           NamedBeanHandle<NamedBean*>* nbh = new NamedBeanHandle<NamedBean*>(s->getSystemName(), b);
           ctcManager->putNBHSensor(s->getSystemName(), new NBHSensor(nbh));
          }

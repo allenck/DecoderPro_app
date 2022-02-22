@@ -127,7 +127,7 @@
 
     //@Override
     /*protected*/ QString LogixNGTableTableAction::getBeanText(NamedBean* b) {
-     NamedTable* bean = (NamedTable*)b;
+     NamedTable* bean = (NamedTable*)b->self();
         int maxColumnWidth = 0;
         QVector<int> columnWidth =  QVector<int>(bean->numColumns()+1);
         //QString[][] cells = new QString[bean->numRows()+1][];

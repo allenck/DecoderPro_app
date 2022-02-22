@@ -180,7 +180,7 @@ class StartListenerA : public QObject, public PropertyChangeListener
 
 public:
  StartListenerA(SpeedProfilePanel* panel);
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent *e) override;
 
@@ -194,11 +194,12 @@ class StartListenerB : public QObject,public PropertyChangeListener
 
 public:
  StartListenerB(SpeedProfilePanel* panel);
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent *e)override;
 
 };
+
 class FinishListener : public QObject,public PropertyChangeListener
 {
  Q_OBJECT
@@ -207,7 +208,7 @@ class FinishListener : public QObject,public PropertyChangeListener
 
 public:
  FinishListener(SpeedProfilePanel* panel);
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent *e)override;
 private:

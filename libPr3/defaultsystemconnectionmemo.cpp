@@ -201,8 +201,8 @@ if(!log)
 /*private*/ /*<T> */void DefaultSystemConnectionMemo::removeRegisteredObject(/*Class<T>*/QString c) {
     Manager* object = get(c);
     if (object != nullptr) {
-        InstanceManager::deregister(object->self(), c);
-        deregister((AbstractManager*)object->self(), c);
+        InstanceManager::deregister(object->mself(), c);
+        deregister((AbstractManager*)object->mself(), c);
         disposeIfPossible(c, object);
     }
 }

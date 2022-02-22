@@ -234,7 +234,7 @@ TransitTableDataModel::TransitTableDataModel(TransitTableAction* act)
             log->debug("row is greater than name list");
             return "";
         }
-        Transit* z = (Transit*) getBySystemName(sysNameList.at(row));
+        Transit* z = (Transit*) getBySystemName(sysNameList.at(row))->self();
         if (z == NULL) {
             return "";
         } else {

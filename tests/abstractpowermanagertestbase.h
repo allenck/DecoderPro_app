@@ -63,7 +63,7 @@ Q_OBJECT
     Q_INTERFACES(PropertyChangeListener)AbstractPowerManagerTestBase* tb;
 public:
     Listen(AbstractPowerManagerTestBase* tb) {this->tb = tb;}
-QObject* self() {return (QObject*)this;}public slots:
+QObject* pself() {return (QObject*)this;}public slots:
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* e) {
         tb->listenerResult = true;

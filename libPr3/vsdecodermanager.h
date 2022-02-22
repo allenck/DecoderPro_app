@@ -55,7 +55,7 @@ public:
  /*public*/ void addEventListener(VSDManagerListener* listener);
  /*public*/ void removeEventListener(VSDManagerListener* listener);
 
- QObject* self() override {return (QObject*)this;}
+ QObject* pself() override {return (QObject*)this;}
 
 signals:
  void fireEvent(VSDManagerEvent*);

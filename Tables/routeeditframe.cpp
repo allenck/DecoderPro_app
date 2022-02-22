@@ -52,10 +52,10 @@
         _systemName->setText(systemName);
         // identify the Route with this name if it already exists
         QString sName = _systemName->text();
-        Route* g = (Route*)((RouteManager*)InstanceManager::getDefault("RouteManager"))->getBySystemName(sName);
+        Route* g = (Route*)((RouteManager*)InstanceManager::getDefault("RouteManager"))->getBySystemName(sName)->self();
         if (g == nullptr) {
             sName = _userName->text();
-            g = (Route*)((RouteManager*)InstanceManager::getDefault("RouteManager"))->getByUserName(sName);
+            g = (Route*)((RouteManager*)InstanceManager::getDefault("RouteManager"))->getByUserName(sName)->self();
             if (g == nullptr) {
                 // Route does not exist, so cannot be edited
                 status1->setText(tr("Route with the entered System Name or User Name was not found."));

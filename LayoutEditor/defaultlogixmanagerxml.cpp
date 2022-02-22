@@ -47,7 +47,7 @@ DefaultLogixManagerXml::DefaultLogixManagerXml(QObject *parent) :
    QString sname = iter.next();
    if (sname==NULL) log->error("System name NULL during store");
    log->debug("logix system name is "+sname);
-   Logix* x = (Logix*)tm->getBySystemName(sname);
+   Logix* x = (Logix*)tm->getBySystemName(sname)->self();
    bool enabled = x->getEnabled();
    QDomElement elem = doc.createElement("logix");
    elem.setAttribute("systemName", sname);
@@ -192,7 +192,7 @@ DefaultLogixManagerXml::DefaultLogixManagerXml(QObject *parent) :
  }
  // if old manager exists, remove it from configuration process
  if (qobject_cast<LogixManager*>(InstanceManager::getDefault("LogixManager")) != NULL)
-     qobject_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->deregister(qobject_cast<LogixManager*>(InstanceManager::getDefault("LogixManager") )->self());
+     qobject_cast<ConfigureManager*>(InstanceManager::getDefault("ConfigureManager"))->deregister(qobject_cast<LogixManager*>(InstanceManager::getDefault("LogixManager") )->mself());
 
  // register new one with InstanceManager
  DefaultLogixManager* pManager = DefaultLogixManager::instance();
@@ -205,5 +205,5 @@ DefaultLogixManagerXml::DefaultLogixManagerXml(QObject *parent) :
 }
 
 /*public*/ int DefaultLogixManagerXml::loadOrder() const{
-    return ((DefaultLogixManager*)qobject_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->self())->getXMLOrder();
+    return ((DefaultLogixManager*)qobject_cast<LogixManager*>(InstanceManager::getDefault("LogixManager"))->mself())->getXMLOrder();
 }

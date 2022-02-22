@@ -513,7 +513,7 @@
     OBlockManager* manager = (OBlockManager*)InstanceManager::getDefault("OBlockManager");
     QSet<NamedBean*> oblocks = manager->getNamedBeanSet();
     for (NamedBean* nb : oblocks) {
-     OBlock* block = (OBlock*)nb;
+     OBlock* block = (OBlock*)nb->self();
         if (block->equals(_homeBlock)) {
             continue;
         }

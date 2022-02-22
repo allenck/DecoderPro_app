@@ -386,10 +386,10 @@
         turnBState = layoutSlip->getTurnoutStates().value(testState)->getTestTurnoutBState();
 
         if (editLayoutSlipTurnoutAComboBox->getSelectedItem() != nullptr) {
-            ((Turnout*)editLayoutSlipTurnoutAComboBox->getSelectedItem())->setCommandedState(turnAState);
+            ((Turnout*)editLayoutSlipTurnoutAComboBox->getSelectedItem()->self())->setCommandedState(turnAState);
         }
         if (editLayoutSlipTurnoutBComboBox->getSelectedItem() != nullptr) {
-            ((Turnout*)editLayoutSlipTurnoutBComboBox->getSelectedItem())->setCommandedState(turnBState);
+            ((Turnout*)editLayoutSlipTurnoutBComboBox->getSelectedItem()->self())->setCommandedState(turnBState);
         }
         if (testPanel != nullptr) {
             testPanel->repaint();

@@ -422,7 +422,7 @@
 //};
 
 /*public*/ void AllocatedSection::addPropertyChangeListener(PropertyChangeListener* listener) {
-    log->debug(QString("Adding listener ") + listener->self()->metaObject()->className() + " to " + this->metaObject()->className());
+    log->debug(QString("Adding listener ") + listener->pself()->metaObject()->className() + " to " + this->metaObject()->className());
     listenerList->add("PropertyChangeListener", (EventListener*)listener);
 }
 

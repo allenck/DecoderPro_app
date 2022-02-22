@@ -7,9 +7,9 @@ AbstractRouteManager::AbstractRouteManager(SystemConnectionMemo *memo, QObject *
 }
 
 /*public*/ Route* AbstractRouteManager::getBySystemName(QString name) {
-    return (Route*)_tsys->value(name);
+    return (Route*)_tsys->value(name)->self();
 }
 
 /*public*/ Route* AbstractRouteManager::getByUserName(QString key) {
-    return (Route*)_tuser->value(key);
+    return (Route*)_tuser->value(key)->self();
 }

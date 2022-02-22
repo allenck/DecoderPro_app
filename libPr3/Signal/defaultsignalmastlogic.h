@@ -184,7 +184,7 @@ public slots:
             parent->setSignalAppearance();
         }
     }
-    QObject* self() override{return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 };
 
 //This is the listener on the source signalMast
@@ -209,7 +209,7 @@ public slots:
             parent->setSignalAppearance();
         }
     }
-    QObject* self() override{return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 };
 
 class DestinationMast : public QObject
@@ -401,7 +401,7 @@ public:
      this->parent = parent;
     }
     DestinationMast* parent;
-    QObject* self() override{return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 public slots:
     void propertyChange(PropertyChangeEvent *e) override
     {
@@ -500,7 +500,7 @@ public:
       parent->calculateSpeed();
      }
     }
-    QObject* self() override{return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 };
 class PropertyBlockListener : public QObject,public PropertyChangeListener
 {
@@ -574,7 +574,7 @@ public:
             parent->calculateSpeed();
         }
     }
-    QObject* self() override{return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 };
 class PropertySignalMastListener : public QObject,public PropertyChangeListener
 {
@@ -631,7 +631,7 @@ public:
             }
         }
     }
-    QObject* self() override{return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 };
 
 #endif // DEFAULTSIGNALMASTLOGIC_H

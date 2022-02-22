@@ -1676,7 +1676,7 @@ void DestinationMast::removeSensor(NamedBeanHandle<Sensor*>* sen){
 QList<Block*> DestinationMast::getBlocks(){
     QList<Block*> out =  QList<Block*>();
     foreach(NamedBeanSetting* nbh, userSetBlocks){
-        out.append((Block*)nbh->getBean());
+        out.append((Block*)nbh->getBean()->self());
     }
     return out;
 }
@@ -1716,7 +1716,7 @@ QList<Block*> DestinationMast::getAutoBlocksBetweenMasts()
 QList<Turnout*> DestinationMast::getTurnouts(){
     QList<Turnout*> out =  QList<Turnout*>();
     foreach(NamedBeanSetting* nbh, userSetTurnouts){
-        out.append((Turnout*)nbh->getBean());
+        out.append((Turnout*)nbh->getBean()->self());
     }
     return out;
 }
@@ -1742,7 +1742,7 @@ QList<Turnout*> DestinationMast::getAutoTurnouts(){
 QList<SignalMast*> DestinationMast::getSignalMasts(){
     QList<SignalMast*> out =  QList<SignalMast*>();
     foreach(NamedBeanSetting* nbh, userSetMasts){
-        out.append((SignalMast*)nbh->getBean());
+        out.append((SignalMast*)nbh->getBean()->self());
     }
     return out;
 }
@@ -1759,7 +1759,7 @@ QList<SignalMast*> DestinationMast::getAutoSignalMasts(){
 QList<Sensor*> DestinationMast::getSensors(){
     QList<Sensor*> out =  QList<Sensor*>();
     foreach(NamedBeanSetting* nbh, userSetSensors){
-        out.append((Sensor*)nbh->getBean());
+        out.append((Sensor*)nbh->getBean()->self());
     }
     return out;
 }
@@ -1976,7 +1976,7 @@ void DestinationMast::checkStateDetails() {
     }
 
     foreach(NamedBeanSetting* nbh, userSetTurnouts){
-        Turnout* key = (Turnout*) nbh->getBean();
+        Turnout* key = (Turnout*) nbh->getBean()->self();
         if (key->getKnownState()!=nbh->getSetting())
            state=false;
         else if (key->getState()==Turnout::THROWN){
@@ -2005,13 +2005,13 @@ void DestinationMast::checkStateDetails() {
     }
 
     foreach(NamedBeanSetting* nbh, userSetMasts){
-        SignalMast* key = (SignalMast*) nbh->getBean();
+        SignalMast* key = (SignalMast*) nbh->getBean()->self();
         if ((key->getAspect()==nullptr) || (key->getAspect()==(nbh->getStringSetting())))
            state=false;
     }
 
     foreach(NamedBeanSetting* nbh, userSetSensors){
-        Sensor* key =(Sensor*) nbh->getBean();
+        Sensor* key =(Sensor*) nbh->getBean()->self();
         if (key->getKnownState()!=nbh->getSetting())
             state = false;
     }
@@ -2043,7 +2043,7 @@ void DestinationMast::checkStateDetails() {
     }
 
     foreach(NamedBeanSetting* nbh, userSetBlocks){
-        Block* key = (Block*)nbh->getBean();
+        Block* key = (Block*)nbh->getBean()->self();
         if(nbh->getSetting()!=0x03){
             if (key->getState()!=nbh->getSetting()) {
                 if(key->getState()==Block::OCCUPIED && key->getPermissiveWorking()){
@@ -2107,7 +2107,7 @@ void DestinationMast::initialise(){
     }
 
     foreach(NamedBeanSetting* nbh, userSetTurnouts){
-        Turnout* key = (Turnout*) nbh->getBean();
+        Turnout* key = (Turnout*) nbh->getBean()->self();
         key->addPropertyChangeListener(propertyTurnoutListener, nbh->getBeanName(), "Signal Mast Logic:" + dsml->source->getDisplayName() + " to " + destination->getDisplayName());
         connect(key->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertyTurnoutListener, SLOT(propertyChange(PropertyChangeEvent*)));
         if (key->getKnownState()!=nbh->getSetting())
@@ -2136,7 +2136,7 @@ void DestinationMast::initialise(){
     }
 
     foreach(NamedBeanSetting* nbh, userSetMasts){
-        SignalMast* key = (SignalMast*) nbh->getBean();
+        SignalMast* key = (SignalMast*) nbh->getBean()->self();
         key->addPropertyChangeListener(propertySignalMastListener);
         connect(key->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertySignalMastListener, SLOT(propertyChange(PropertyChangeEvent*)));
         //log->debug(destination->getDisplayName() + " key asepct " + key->getAspect());
@@ -2145,7 +2145,7 @@ void DestinationMast::initialise(){
             routeclear=false;
     }
     foreach(NamedBeanSetting* nbh, userSetSensors){
-        AbstractSensor* sensor = (AbstractSensor*) nbh->getBean();
+        AbstractSensor* sensor = (AbstractSensor*) nbh->getBean()->self();
         ((AbstractNamedBean*)sensor)->addPropertyChangeListener((PropertyChangeListener*)propertySensorListener, nbh->getBeanName(), QString("Signal Mast Logic:") + dsml->source->getDisplayName() + " to " + destination->getDisplayName());
         connect(sensor, SIGNAL(propertyChange(PropertyChangeEvent*)), propertySensorListener, SLOT(propertyChange(PropertyChangeEvent*)));
         if (sensor->getKnownState()!=nbh->getSetting())
@@ -2177,7 +2177,7 @@ void DestinationMast::initialise(){
     }
 
     foreach(NamedBeanSetting* nbh, userSetBlocks){
-        Block* key = (Block*) nbh->getBean();
+        Block* key = (Block*) nbh->getBean()->self();
        key->addPropertyChangeListener(propertyBlockListener);
        connect(key->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), propertyBlockListener, SLOT(propertyChange(PropertyChangeEvent*)));
        if (key->getState()!=getBlockState(key)){
@@ -2484,7 +2484,7 @@ void DestinationMast::setupAutoSignalMast(SignalMastLogic* sml, bool overright){
     QList<Block*> allBlock =  QList<Block*>();
 
     foreach(NamedBeanSetting* nbh, userSetBlocks){
-        allBlock.append((Block*)nbh->getBean());
+        allBlock.append((Block*)nbh->getBean()->self());
     }
 
     QList<Block*> blockKeys = autoBlocks.keys();
@@ -2580,7 +2580,7 @@ void DestinationMast::lockTurnouts(){
         return;
 
     foreach(NamedBeanSetting* nbh, userSetTurnouts){
-        Turnout* key = (Turnout*) nbh->getBean();
+        Turnout* key = (Turnout*) nbh->getBean()->self();
         key->setLocked(Turnout::CABLOCKOUT+Turnout::PUSHBUTTONLOCKOUT, true);
     }
     QListIterator<Turnout*> keys (autoTurnouts.keys());
@@ -2605,7 +2605,7 @@ void DestinationMast::clearTurnoutLock(){
     }
 
     foreach(NamedBeanSetting* nbh, userSetTurnouts){
-        Turnout* key = (Turnout*) nbh->getBean();
+        Turnout* key = (Turnout*) nbh->getBean()->self();
         key->setLocked(Turnout::CABLOCKOUT+Turnout::PUSHBUTTONLOCKOUT, false);
     }
 }
@@ -2642,7 +2642,7 @@ void DestinationMast::clearTurnoutLock(){
 
 
     foreach(NamedBeanSetting* nbh, userSetTurnouts){
-        Turnout* key = (Turnout*) nbh->getBean();
+        Turnout* key = (Turnout*) nbh->getBean()->self();
         if (key->getState()==Turnout::CLOSED){
             if (((key->getStraightLimit()<minimumBlockSpeed) || (minimumBlockSpeed==0)) && (key->getStraightLimit()!=-1)){
                 minimumBlockSpeed = key->getStraightLimit();
@@ -2671,7 +2671,7 @@ void DestinationMast::clearTurnoutLock(){
         }
     }
     foreach(NamedBeanSetting* nbh, userSetBlocks){
-       Block* key = (Block*)nbh->getBean();
+       Block* key = (Block*)nbh->getBean()->self();
        if (((key->getSpeedLimit()<minimumBlockSpeed) || (minimumBlockSpeed==0)) && (key->getSpeedLimit()!=-1)){
            if(log->isDebugEnabled())
                 log->debug(destination->getDisplayName() + " block " + key->getDisplayName() + " set speed to " + minimumBlockSpeed);

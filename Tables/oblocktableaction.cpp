@@ -44,8 +44,8 @@ void OBlockTableAction::common()
 //@Override
 /*public*/ void OBlockTableAction::setManager(/*@Nonnull*/ Manager/*<OBlock>*/* om) {
     oblockManager->PropertyChangeSupport::removePropertyChangeListener((PropertyChangeListener*)this);
-    if (qobject_cast<OBlockManager*>(om->self())) {
-        oblockManager = (OBlockManager*) om->self();
+    if (qobject_cast<OBlockManager*>(om->mself())) {
+        oblockManager = (OBlockManager*) om->mself();
         if (m != nullptr) { // model
             m->setManager(oblockManager);
         }

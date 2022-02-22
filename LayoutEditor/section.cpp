@@ -909,7 +909,7 @@ void Section::propertyChange(PropertyChangeEvent* e)
   }
   if (tBlock!=nullptr)
   {
-   LayoutBlock* lb =(LayoutBlock*) static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName());
+   LayoutBlock* lb =(LayoutBlock*) static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName())->self();
    if (lb!=nullptr) dir = checkLists(mReverseEntryPoints, mForwardEntryPoints, lb);
   }
   if (dir == EntryPoint::UNKNOWN)
@@ -925,7 +925,7 @@ void Section::propertyChange(PropertyChangeEvent* e)
    }
    if (tBlock!=nullptr)
    {
-    LayoutBlock* lb = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName());
+    LayoutBlock* lb = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName())->self();
     if (lb!=nullptr) dir = checkLists(mForwardEntryPoints, mReverseEntryPoints, lb);
    }
   }
@@ -1044,7 +1044,7 @@ void Section::propertyChange(PropertyChangeEvent* e)
                 tBlock = cUtil->getExitBlockForTrackNode(tn, exBlock->getBlock());
             }
             if (tBlock!=nullptr) {
-                LayoutBlock* lb = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName());
+                LayoutBlock* lb = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName())->self();
                 if (lb!=nullptr) dir = checkLists(mReverseEntryPoints, mForwardEntryPoints, lb);
             }
             else {
@@ -1055,7 +1055,7 @@ void Section::propertyChange(PropertyChangeEvent* e)
                     tBlock = cUtil->getExitBlockForTrackNode(tn, exBlock->getBlock());
                 }
                 if (tBlock!=nullptr) {
-                    LayoutBlock* lb = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName());
+                    LayoutBlock* lb = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName())->self();
                     if (lb!=nullptr) dir = checkLists(mForwardEntryPoints, mReverseEntryPoints, lb);
                 }
             }
@@ -1107,7 +1107,7 @@ void Section::propertyChange(PropertyChangeEvent* e)
                 tBlock = cUtil->getExitBlockForTrackNode(tn, exBlock->getBlock());
             }
             if (tBlock!=nullptr) {
-                LayoutBlock* lb = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName());
+                LayoutBlock* lb = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName())->self();
                 if (lb!=nullptr) dir = checkLists(mReverseEntryPoints, mForwardEntryPoints, lb);
             }
             else {
@@ -1118,7 +1118,7 @@ void Section::propertyChange(PropertyChangeEvent* e)
                     tBlock = cUtil->getExitBlockForTrackNode(tn, exBlock->getBlock());
                 }
                 if (tBlock!=nullptr) {
-                    LayoutBlock* lb = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName());
+                    LayoutBlock* lb = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName())->self();
                     if (lb!=nullptr) dir = checkLists(mForwardEntryPoints, mReverseEntryPoints, lb);
                 }
             }
@@ -1197,7 +1197,7 @@ void Section::propertyChange(PropertyChangeEvent* e)
                 tBlock = cUtil->getExitBlockForTrackNode(tn, exBlock->getBlock());
             }
             if (tBlock!=nullptr) {
-                LayoutBlock* lb = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName());
+                LayoutBlock* lb = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName())->self();
                 if (lb!=nullptr) dir = checkLists(mReverseEntryPoints, mForwardEntryPoints, lb);
             }
             else {
@@ -1208,7 +1208,7 @@ void Section::propertyChange(PropertyChangeEvent* e)
                     tBlock = cUtil->getExitBlockForTrackNode(tn, exBlock->getBlock());
                 }
                 if (tBlock!=nullptr) {
-                    LayoutBlock* lb = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName());
+                    LayoutBlock* lb = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName())->self();
                     if (lb!=nullptr) dir = checkLists(mForwardEntryPoints, mReverseEntryPoints, lb);
                 }
             }
@@ -1254,7 +1254,7 @@ void Section::propertyChange(PropertyChangeEvent* e)
                 tBlock = cUtil->getExitBlockForTrackNode(tn, exBlock->getBlock());
             }
             if (tBlock!=nullptr) {
-                LayoutBlock* lb = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName());
+                LayoutBlock* lb = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName())->self();
                 if (lb!=nullptr) dir = checkLists(mReverseEntryPoints, mForwardEntryPoints, lb);
             }
             else {
@@ -1265,7 +1265,7 @@ void Section::propertyChange(PropertyChangeEvent* e)
                     tBlock = cUtil->getExitBlockForTrackNode(tn, exBlock->getBlock());
                 }
                 if (tBlock!=nullptr) {
-                    LayoutBlock* lb = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName());
+                    LayoutBlock* lb = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(tBlock->getUserName())->self();
                     if (lb!=nullptr) dir = checkLists(mForwardEntryPoints, mReverseEntryPoints, lb);
                 }
             }
@@ -1437,7 +1437,7 @@ void Section::propertyChange(PropertyChangeEvent* e)
         }
         if (tBlock!=nullptr) {
             lb = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->
-                                                        getByUserName(tBlock->getUserName());
+                                                        getByUserName(tBlock->getUserName())->self();
             if (lb!=nullptr)
                 dir = checkLists(mReverseEntryPoints, mForwardEntryPoints, lb);
         }
@@ -1449,7 +1449,7 @@ void Section::propertyChange(PropertyChangeEvent* e)
             }
             if (tBlock!=nullptr) {
                 lb = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->
-                                                        getByUserName(tBlock->getUserName());
+                                                        getByUserName(tBlock->getUserName())->self();
                 if (lb!=nullptr) {
                     dir = checkLists(mReverseEntryPoints, mForwardEntryPoints, lb);
                     if (dir == EntryPoint::REVERSE) dir = EntryPoint::FORWARD;
@@ -1504,7 +1504,7 @@ void Section::propertyChange(PropertyChangeEvent* e)
  for (int i = 0; i<mBlockEntries->size(); i++)
  {
   Block* cBlock = mBlockEntries->at(i);
-  LayoutBlock* lBlock = (LayoutBlock*)layoutBlockManager->getByUserName(cBlock->getUserName());
+  LayoutBlock* lBlock = (LayoutBlock*)layoutBlockManager->getByUserName(cBlock->getUserName())->self();
   QVector<PositionablePoint*>* anchorList = cUtil->getAnchorBoundariesThisBlock(cBlock);
   for (int j = 0; j<anchorList->size(); j++)
   {
@@ -2146,7 +2146,7 @@ void Section::propertyChange(PropertyChangeEvent* e)
     if (lePanel!=nullptr) {
         for (int i=0; i<(mBlockEntries->size()-1); i++) {
             LayoutBlock* lBlock = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(
-                            getBlockBySequenceNumber(i)->getUserName());
+                            getBlockBySequenceNumber(i)->getUserName())->self();
             if (lBlock==nullptr) {
                 log.error("Layout Block "+getBlockBySequenceNumber(i)->getUserName()+
                                 " not found.  Paths not checked.");
@@ -2254,7 +2254,7 @@ void Section::propertyChange(PropertyChangeEvent* e)
 /*public*/ void Section::setAlternateColor(bool set) {
     for (int i=0; i<mBlockEntries->size(); i++) {
         Block* b = mBlockEntries->at(i);
-        LayoutBlock* lb = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(b->getUserName());
+        LayoutBlock* lb = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(b->getUserName())->self();
         if (lb!=nullptr) lb->setUseExtraColor(set);
     }
 }
@@ -2281,7 +2281,7 @@ void Section::propertyChange(PropertyChangeEvent* e)
                 beenSet = true;
             }
             if (beenSet) {
-                LayoutBlock* lb = (LayoutBlock*)lbm->getByUserName(b->getUserName());
+                LayoutBlock* lb = (LayoutBlock*)lbm->getByUserName(b->getUserName())->self();
                 if (lb != nullptr) {
                     lb->setUseExtraColor(set);
                 }
@@ -2293,7 +2293,7 @@ void Section::propertyChange(PropertyChangeEvent* e)
                 beenSet = true;
             }
             if (beenSet) {
-                LayoutBlock* lb = (LayoutBlock*)lbm->getByUserName(b->getUserName());
+                LayoutBlock* lb = (LayoutBlock*)lbm->getByUserName(b->getUserName())->self();
                 if (lb != nullptr) {
                     lb->setUseExtraColor(set);
                 }
@@ -2372,7 +2372,7 @@ void Section::propertyChange(PropertyChangeEvent* e)
 /*public*/ void Section::suppressNameUpdate(bool set) {
     for (int i=0; i<mBlockEntries->size(); i++) {
         Block* b = mBlockEntries->at(i);
-        LayoutBlock* lb = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(b->getUserName());
+        LayoutBlock* lb = (LayoutBlock*)static_cast<LayoutBlockManager*>(InstanceManager::getDefault("LayoutBlockManager"))->getByUserName(b->getUserName())->self();
         if (lb!=nullptr) lb->setSuppressNameUpdate(set);
     }
 }
@@ -2394,7 +2394,7 @@ void Section::propertyChange(PropertyChangeEvent* e)
     if ("CanDelete" == (evt->getPropertyName())) { //IN18N
         NamedBean* nb = (NamedBean*) VPtr<NamedBean*>::asPtr( evt->getOldValue());
         //if (nb instanceof Sensor) {
-        if(static_cast<Sensor*>(nb)!= nullptr)
+        if(static_cast<Sensor*>(nb->self())!= nullptr)
         {
             if (nb == (getForwardBlockingSensor())) {
                 PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
@@ -2414,9 +2414,9 @@ void Section::propertyChange(PropertyChangeEvent* e)
             }
         }
         //if (nb instanceof Block) {
-        if(static_cast<Block*>(nb) != nullptr)
+        if(static_cast<Block*>(nb->self()) != nullptr)
         {
-            if (getBlockList()->contains((Block*)nb)) {
+            if (getBlockList()->contains((Block*)nb->self())) {
                 PropertyChangeEvent* e = new PropertyChangeEvent(this, "DoNotDelete", QVariant(), QVariant());
                 throw new PropertyVetoException(tr("Block is in use with Section \"%1\"").arg( getDisplayName()), e);
             }

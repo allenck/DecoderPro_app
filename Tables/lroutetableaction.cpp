@@ -159,7 +159,7 @@ LBeanTableDataModel::LBeanTableDataModel(QObject* parent) : BeanTableDataModel(p
   }
  }
  Manager* m = getManager();
- QStringList list = ((DefaultLogixManager*)m->self())->AbstractManager::getSystemNameList();
+ QStringList list = ((DefaultLogixManager*)m->mself())->AbstractManager::getSystemNameList();
  sysNameList =  QStringList();
  // and add them back in
  for (int i = 0; i< list.size(); i++)
@@ -169,7 +169,7 @@ LBeanTableDataModel::LBeanTableDataModel(QObject* parent) : BeanTableDataModel(p
   {
    sysNameList.append(sysName);
    getBySystemName(sysName)->addPropertyChangeListener((PropertyChangeListener*)this);
-   connect(((AbstractNamedBean*)getBySystemName(sysName))->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//   connect(((AbstractNamedBean*)getBySystemName(sysName))->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
   }
  }
  if(log->isDebugEnabled()) {
@@ -251,7 +251,7 @@ LBeanTableDataModel::LBeanTableDataModel(QObject* parent) : BeanTableDataModel(p
  {
   if (mindex.column() == ENABLECOL)
   {
-   Logix* x = (Logix*)getBySystemName(data(index(mindex.row(), SYSNAMECOL),Qt::DisplayRole).toString());
+   Logix* x = (Logix*)getBySystemName(data(index(mindex.row(), SYSNAMECOL),Qt::DisplayRole).toString())->self();
    return ((DefaultLogix*)x)->getEnabled()?Qt::Checked:Qt::Unchecked;
   }
  }
@@ -287,7 +287,7 @@ LBeanTableDataModel::LBeanTableDataModel(QObject* parent) : BeanTableDataModel(p
   {
    // alternate
    Logix* x = (Logix*) getBySystemName(data(index(mindex.row(),
-                     SYSNAMECOL),Qt::DisplayRole).toString());
+                     SYSNAMECOL),Qt::DisplayRole).toString())->self();
    bool v = ((DefaultLogix*)x)->getEnabled();
    ((DefaultLogix*)x)->setEnabled(!v);
    return true;
@@ -305,7 +305,7 @@ void LBeanTableDataModel::doDelete(NamedBean* bean)
 {
  if (bean != NULL)
  {
-  Logix* l = (Logix*) bean;
+  Logix* l = (Logix*) bean->self();
   l->deActivateLogix();
   // delete the Logix and all its Conditionals
   _self->_logixManager->deleteLogix(l);
@@ -588,7 +588,7 @@ while (iter.hasNext()) {
 void LRouteTableAction::editPressed(QString sName) {
 #if 1
 // Logix was found, initialize for edit
-Logix* logix = (Logix*)((DefaultLogixManager*)_logixManager)->getBySystemName(sName);
+Logix* logix = (Logix*)((DefaultLogixManager*)_logixManager)->getBySystemName(sName)->self();
 if (logix == NULL) {
     log->error("Logix \""+sName+"\" not Found.");
     return;
@@ -1691,14 +1691,14 @@ Logix* LRouteTableAction::checkNamesOK()
   showMessage("EnterNames");
     return NULL;
  }
- Logix* logix = (Logix*)((DefaultLogixManager*)_logixManager)->getBySystemName(sName);
+ Logix* logix = (Logix*)((DefaultLogixManager*)_logixManager)->getBySystemName(sName)->self();
  if (!sName.startsWith(LOGIX_SYS_NAME))
  {
   sName = LOGIX_SYS_NAME + sName;
  }
  if (logix == NULL)
  {
-  logix = (Logix*)((DefaultLogixManager*)_logixManager)->getBySystemName(sName);
+  logix = (Logix*)((DefaultLogixManager*)_logixManager)->getBySystemName(sName)->self();
  }
  else
  {
@@ -1707,7 +1707,7 @@ Logix* LRouteTableAction::checkNamesOK()
  QString uName = _userName->text();
  if (uName.length()!=0)
  {
-  logix = (Logix*)((DefaultLogixManager*)_logixManager)->getByUserName(uName);
+  logix = (Logix*)((DefaultLogixManager*)_logixManager)->getByUserName(uName)->self();
   if (logix != NULL)
   {
    return logix;

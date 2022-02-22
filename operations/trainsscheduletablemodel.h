@@ -32,7 +32,7 @@ namespace Operations
   /*public*/ TrainSchedule* getSchedule(int col) const;
   void initTable(JTable* table, TrainsScheduleTableFrame* frame);
 
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
 
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e) override;

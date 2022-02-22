@@ -73,7 +73,7 @@
     //@Override
     /*public*/ DefaultIdTag *ProxyIdTagManager::getIdTag(QString name) {
      init();
-     return (DefaultIdTag *)AbstractProxyManager::getNamedBean(name);
+     return (DefaultIdTag *)AbstractProxyManager::getNamedBean(name)->self();
     }
 
     /** {@inheritDoc} */
@@ -108,7 +108,7 @@
      */
     //@Override
     /*public*/ DefaultIdTag *ProxyIdTagManager::provideIdTag(QString name) throw (IllegalArgumentException) {
-        return (DefaultIdTag*)provideNamedBean(name);
+        return (DefaultIdTag*)provideNamedBean(name)->self();
     }
 
     /**
@@ -119,7 +119,7 @@
      */
     //@Override
     /*public*/ DefaultIdTag *ProxyIdTagManager::getBySystemName(QString systemName) {
-        return (DefaultIdTag *)AbstractProxyManager::getBeanBySystemName(systemName);
+        return (DefaultIdTag *)AbstractProxyManager::getBeanBySystemName(systemName)->self();
     }
 
     /**
@@ -130,7 +130,7 @@
      */
     //@Override
     /*public*/ DefaultIdTag *ProxyIdTagManager::getByUserName(QString userName)  {
-        return (DefaultIdTag*)AbstractProxyManager::getBeanByUserName(userName);
+        return (DefaultIdTag*)AbstractProxyManager::getBeanByUserName(userName)->self();
     }
 
     /**
@@ -163,7 +163,7 @@
      */
     //@Override
     /*public*/ DefaultIdTag *ProxyIdTagManager::newIdTag(QString systemName, QString userName) {
-        return (DefaultIdTag*)newNamedBean(systemName, userName);
+        return (DefaultIdTag*)newNamedBean(systemName, userName)->self();
     }
 
     //@Override
@@ -190,7 +190,7 @@
     /*public*/ void ProxyIdTagManager::setStateStored(bool state) {
         stateSaved = state;
         for (Manager* mgr : getManagerList()) {
-            ((IdTagManager*) mgr->self())->setStateStored(state);
+            ((IdTagManager*) mgr->mself())->setStateStored(state);
         }
     }
 
@@ -198,7 +198,7 @@
     /*public*/ bool ProxyIdTagManager::isStateStored() {
         stateSaved = true;
         for (Manager* mgr: getManagerList()) {
-            if(!((DefaultIdTagManager*) mgr->self())->isStateStored()) {
+            if(!((DefaultIdTagManager*) mgr->mself())->isStateStored()) {
                 stateSaved = false;
                 break;
             }
@@ -211,7 +211,7 @@
     /*public*/ void ProxyIdTagManager::setFastClockUsed(bool fastClock) {
         useFastClock = fastClock;
         for (Manager* mgr : getManagerList()) {
-            ((IdTagManager*) mgr->self())->setFastClockUsed(fastClock);
+            ((IdTagManager*) mgr->mself())->setFastClockUsed(fastClock);
         }
     }
 
@@ -219,7 +219,7 @@
     /*public*/ bool ProxyIdTagManager::isFastClockUsed() {
         useFastClock = true;
         for (Manager* mgr: getManagerList()) {
-            if (!((IdTagManager*) mgr->self())->isFastClockUsed()) {
+            if (!((IdTagManager*) mgr->mself())->isFastClockUsed()) {
                useFastClock = false;
                break;
             }

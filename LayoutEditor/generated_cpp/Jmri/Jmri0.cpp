@@ -149,6 +149,39 @@ if (_wrapper) {
 }
   AbstractAutomaton::init();
 }
+QObject*  PythonQtShell_AbstractAutomaton::pself()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("pself");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QObject*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QObject* returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("pself", methodInfo, result);
+          } else {
+            returnValue = *((QObject**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return AbstractAutomaton::pself();
+}
 QObject*  PythonQtShell_AbstractAutomaton::self()
 {
 if (_wrapper) {
@@ -261,6 +294,11 @@ void PythonQtWrapper_AbstractAutomaton::notifyFailedThrottleRequest(AbstractAuto
 void PythonQtWrapper_AbstractAutomaton::notifyThrottleFound(AbstractAutomaton* theWrappedObject, DccThrottle*  t)
 {
   ( theWrappedObject->notifyThrottleFound(t));
+}
+
+QObject*  PythonQtWrapper_AbstractAutomaton::pself(AbstractAutomaton* theWrappedObject)
+{
+  return ( theWrappedObject->pself());
 }
 
 int  PythonQtWrapper_AbstractAutomaton::readServiceModeCV(AbstractAutomaton* theWrappedObject, QString  CV)
@@ -16778,6 +16816,39 @@ if (_wrapper) {
 }
   BeanTableDataModel::propertyChange(e0);
 }
+QObject*  PythonQtShell_BeanTableDataModel::pself()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("pself");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QObject*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QObject* returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("pself", methodInfo, result);
+          } else {
+            returnValue = *((QObject**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return BeanTableDataModel::pself();
+}
 int  PythonQtShell_BeanTableDataModel::rowCount(const QModelIndex&  parent0) const
 {
 if (_wrapper) {
@@ -16810,39 +16881,6 @@ if (_wrapper) {
   }
 }
   return BeanTableDataModel::rowCount(parent0);
-}
-QObject*  PythonQtShell_BeanTableDataModel::self()
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("self");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"QObject*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      QObject* returnValue{};
-      void* args[1] = {NULL};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) {
-        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
-        if (args[0]!=&returnValue) {
-          if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("self", methodInfo, result);
-          } else {
-            returnValue = *((QObject**)args[0]);
-          }
-        }
-      }
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return returnValue;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  return BeanTableDataModel::self();
 }
 void PythonQtShell_BeanTableDataModel::setColumnIdentities(JTable*  table0)
 {

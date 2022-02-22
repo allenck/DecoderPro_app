@@ -216,10 +216,10 @@ return _statusNameMap.value(str);
  }
  else
  {
-  sensor = (Sensor*)((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::getByUserName(pName);
+  sensor = (Sensor*)((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::getByUserName(pName)->self();
   if (sensor == NULL)
   {
-   sensor = (Sensor*)((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::getBySystemName(pName);
+   sensor = (Sensor*)((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::getBySystemName(pName)->self();
   }
   if (sensor == NULL)
   {
@@ -262,10 +262,10 @@ return _statusNameMap.value(str);
   _errNamedSensor = NULL;
   return true;
  }
- Sensor* sensor = (Sensor*)((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::getByUserName(pName);
+ Sensor* sensor = (Sensor*)((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::getByUserName(pName)->self();
  if (sensor == NULL)
  {
-  sensor = (Sensor*)((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::getBySystemName(pName);
+  sensor = (Sensor*)((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::getBySystemName(pName)->self();
  }
  if (sensor == NULL)
  {

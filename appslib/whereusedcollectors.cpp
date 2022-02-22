@@ -73,7 +73,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
     //InstanceManager::getDefault(TurnoutManager)->getNamedBeanSet().forEach((turnout) ->
     foreach(NamedBean* nb, ((TurnoutManager*)InstanceManager::getDefault("TurnoutManager"))->getNamedBeanSet())
     {
-     Turnout* turnout = (Turnout*)nb;
+     Turnout* turnout = (Turnout*)nb->self();
         int feedback = turnout->getFeedbackMode();
         if (feedback == Turnout::ONESENSOR || feedback == Turnout::TWOSENSOR) {
             //turnout.getUsageReport(bean).forEach((report) ->
@@ -138,7 +138,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
     //InstanceManager.getDefault(RouteManager.class).getNamedBeanSet().forEach((route) -> {
     foreach(NamedBean* nb, ((RouteManager*)InstanceManager::getDefault("RouteManager"))->getNamedBeanSet())
     {
-     Route* route = (Route*)nb;
+     Route* route = (Route*)nb->self();
         //route.getUsageReport(bean).forEach((report) -> {
      foreach(NamedBeanUsageReport* report, ((DefaultRoute*)route)->getUsageReport(bean))
      {
@@ -168,7 +168,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
     //InstanceManager.getDefault(BlockManager.class).getNamedBeanSet().forEach((block) -> {
     foreach(NamedBean* nb, ((Manager*)InstanceManager::getDefault("BlockManager"))->getNamedBeanSet())
     {
-     Block* block = (Block*)nb;
+     Block* block = (Block*)nb->self();
         //block.getUsageReport(bean).forEach((report) -> {
      foreach(NamedBeanUsageReport* report, block->getUsageReport(bean))
      {
@@ -198,7 +198,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
     //InstanceManager.getDefault(LayoutBlockManager.class).getNamedBeanSet().forEach((layoutBlock) -> {
     foreach(NamedBean* nb, ((LayoutBlockManager*)InstanceManager::getDefault("LayoutBlockManager"))->getNamedBeanSet())
     {
-     LayoutBlock* layoutBlock = (LayoutBlock*)nb;
+     LayoutBlock* layoutBlock = (LayoutBlock*)nb->self();
         //layoutBlock.getUsageReport(bean).forEach((report) -> {
      foreach(NamedBeanUsageReport* report, layoutBlock->getUsageReport(bean))
      {
@@ -270,7 +270,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
     //InstanceManager.getDefault(SignalMastLogicManager.class).getNamedBeanSet().forEach((sml) -> {
     foreach(NamedBean* nb, ((DefaultSignalMastLogicManager*)InstanceManager::getDefault("SignalMastLogicManager"))->getNamedBeanSet())
     {
-     DefaultSignalMastLogic* sml = (DefaultSignalMastLogic*)nb;
+     DefaultSignalMastLogic* sml = (DefaultSignalMastLogic*)nb->self();
      //sml.getUsageReport(bean).forEach((report) -> {
      foreach(NamedBeanUsageReport* report, sml->getUsageReport(bean))
      {
@@ -308,7 +308,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
     //InstanceManager.getDefault(SignalGroupManager.class).getNamedBeanSet().forEach((group) -> {
     foreach(NamedBean* nb, ((SignalGroupManager*)InstanceManager::getDefault("SignalGroupManager"))->getNamedBeanSet())
     {
-     SignalGroup* group = (SignalGroup*)nb;
+     SignalGroup* group = (SignalGroup*)nb->self();
         //group.getUsageReport(bean).forEach((report) -> {
      foreach(NamedBeanUsageReport* report, group->getUsageReport(bean))
      {
@@ -340,7 +340,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
  //InstanceManager.getDefault(OBlockManager.class).getNamedBeanSet().forEach((oblock) -> {
  foreach(NamedBean* nb, ((OBlockManager*)InstanceManager::getDefault("OBlockManager"))->getNamedBeanSet())
  {
-  OBlock* oblock = (OBlock*)nb;
+  OBlock* oblock = (OBlock*)nb->self();
      //oblock.getUsageReport(bean).forEach((report) -> {
   foreach(NamedBeanUsageReport* report, oblock->getUsageReport(bean))
   {
@@ -369,7 +369,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
     //InstanceManager.getDefault(WarrantManager.class).getNamedBeanSet().forEach((warrant) -> {
     foreach(NamedBean* nb, ((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getNamedBeanSet())
     {
-     Warrant* warrant = (Warrant*)nb;
+     Warrant* warrant = (Warrant*)nb->self();
         //warrant.getUsageReport(bean).forEach((report) -> {
      foreach(NamedBeanUsageReport* report, warrant->getUsageReport(bean))
      {
@@ -399,7 +399,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
     //InstanceManager.getDefault(EntryExitPairs.class).getNamedBeanSet().forEach((destPoint) -> {
     foreach(NamedBean* nb, ((EntryExitPairs*)InstanceManager::getDefault("EntryExitPairs"))->getNamedBeanSet())
     {
-     DestinationPoints* destPoint = (DestinationPoints*)nb;
+     DestinationPoints* destPoint = (DestinationPoints*)nb->self();
         //destPoint.getUsageReport(bean).forEach((report) -> {
      foreach(NamedBeanUsageReport* report, destPoint->getUsageReport(bean))
      {
@@ -428,7 +428,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
     //InstanceManager.getDefault(LogixManager.class).getNamedBeanSet().forEach((logix) -> {
     foreach(NamedBean* nb, ((LogixManager*)InstanceManager::getDefault("LogixManager"))->getNamedBeanSet())
     {
-     Logix* logix = (Logix*)nb;
+     Logix* logix = (Logix*)nb->self();
         //logix.getUsageReport(bean).forEach((report) -> {
      foreach(NamedBeanUsageReport* report, logix->getUsageReport(bean))
      {
@@ -460,7 +460,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
     //InstanceManager.getDefault(SectionManager.class).getNamedBeanSet().forEach((section) -> {
     foreach(NamedBean* nb, ((SectionManager*)InstanceManager::getDefault("SectionManager"))->getNamedBeanSet())
     {
-     Section* section = (Section*)nb;
+     Section* section = (Section*)nb->self();
      //section.getUsageReport(bean).forEach((report) -> {
      foreach(NamedBeanUsageReport* report, section->getUsageReport(bean))
      {
@@ -492,7 +492,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
     //InstanceManager.getDefault(TransitManager.class).getNamedBeanSet().forEach((transit) -> {
     foreach(NamedBean* nb, ((TransitManager*)InstanceManager::getDefault("TransitManager"))->getNamedBeanSet())
     {
-     Transit* transit = (Transit*)nb;
+     Transit* transit = (Transit*)nb->self();
         //transit.getUsageReport(bean).forEach((report) -> {
      foreach(NamedBeanUsageReport* report, transit->getUsageReport(bean))
      {

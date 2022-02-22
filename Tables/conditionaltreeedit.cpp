@@ -425,7 +425,7 @@
   if (!(uName ==  (_curLogix->getUserName()))) {
       // user name has changed - check if already in use
       if (uName.length() > 0) {
-          Logix* p = (Logix*)_logixManager->getByUserName(uName);
+          Logix* p = (Logix*)_logixManager->getByUserName(uName)->self();
           if (p !=  NULL) {
               // Logix with this user name already exists
               log->error("Failure to update Logix with Duplicate User Name: " // NOI18N
@@ -2923,7 +2923,7 @@ connect(_variableItemBox, SIGNAL(currentIndexChanged(int)), this, SLOT(on_variab
      _selectConditionalBox->addItem(itemKey);
      _selectConditionalList->append("-None-");  // NOI18N
 
-     Logix* x = (Logix*)_logixManager->getBySystemName(logixName);
+     Logix* x = (Logix*)_logixManager->getBySystemName(logixName)->self();
      if (x ==  NULL) {
          log->error(tr("Logix '%1' not found while building the conditional list").arg( logixName));  // NOI18N
          return;

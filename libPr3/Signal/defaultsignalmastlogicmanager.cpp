@@ -348,7 +348,7 @@
  QListIterator<NamedBean*> en (validPaths.keys());
  while (en.hasNext())
  {
-  SignalMast* key = (SignalMast*)en.next();
+  SignalMast* key = (SignalMast*)en.next()->self();
   SignalMastLogic* sml = getSignalMastLogic(key);
   if(sml==NULL)
   {
@@ -357,13 +357,13 @@
   QList<NamedBean*> validDestMast = validPaths.value(key);
   for(int i = 0; i<validDestMast.size(); i++)
   {
-   if(!((DefaultSignalMastLogic*)sml)->isDestinationValid((SignalMast*)validDestMast.value(i)))
+   if(!((DefaultSignalMastLogic*)sml)->isDestinationValid((SignalMast*)validDestMast.value(i)->self()))
    {
     try
     {
-     ((DefaultSignalMastLogic*)sml)->setDestinationMast((SignalMast*)validDestMast.value(i));
-     ((DefaultSignalMastLogic*)sml)->useLayoutEditorDetails(true, true, (SignalMast*)validDestMast.at(i));
-     ((DefaultSignalMastLogic*)sml)->useLayoutEditor(true, (SignalMast*)validDestMast.value(i));
+     ((DefaultSignalMastLogic*)sml)->setDestinationMast((SignalMast*)validDestMast.value(i)->self());
+     ((DefaultSignalMastLogic*)sml)->useLayoutEditorDetails(true, true, (SignalMast*)validDestMast.at(i)->self());
+     ((DefaultSignalMastLogic*)sml)->useLayoutEditor(true, (SignalMast*)validDestMast.value(i)->self());
     }
     catch (JmriException* e)
     {
@@ -403,18 +403,18 @@
  }
 
  while (en.hasNext()) {
-  SignalMast* key = (SignalMast*)en.next();
+  SignalMast* key = (SignalMast*)en.next()->self();
   SignalMastLogic* sml = getSignalMastLogic(key);
   if(sml==NULL){
    sml=newSignalMastLogic(key);
   }
   QList<NamedBean*> validDestMast = validPaths.value(key);
   for(int i = 0; i<validDestMast.size(); i++){
-   if(!sml->isDestinationValid((SignalMast*)validDestMast.value(i))){
+   if(!sml->isDestinationValid((SignalMast*)validDestMast.value(i)->self())){
     try{
-     ((DefaultSignalMastLogic*)sml)->setDestinationMast((SignalMast*)validDestMast.value(i));
-     ((DefaultSignalMastLogic*)sml)->useLayoutEditorDetails(true, true, (SignalMast*)validDestMast.value(i));
-     ((DefaultSignalMastLogic*)sml)->useLayoutEditor(true, (SignalMast*)validDestMast.value(i));
+     ((DefaultSignalMastLogic*)sml)->setDestinationMast((SignalMast*)validDestMast.value(i)->self());
+     ((DefaultSignalMastLogic*)sml)->useLayoutEditorDetails(true, true, (SignalMast*)validDestMast.value(i)->self());
+     ((DefaultSignalMastLogic*)sml)->useLayoutEditor(true, (SignalMast*)validDestMast.value(i)->self());
     } catch (JmriException* ex){
      //log.debug("we shouldn't get an exception here!");
      log->debug(ex->getMessage());
@@ -434,7 +434,7 @@
 {
     SectionManager* sm = (SectionManager*)InstanceManager::getDefault("SectionManager");
     foreach (NamedBean* nb, *sm->getNamedBeanList()) {
-        if (((Section*) nb)->getSectionType() == Section::SIGNALMASTLOGIC) {
+        if (((Section*) nb->self())->getSectionType() == Section::SIGNALMASTLOGIC) {
             nb->removeProperty("intermediateSection");
         }
         nb->removeProperty("forwardMast");

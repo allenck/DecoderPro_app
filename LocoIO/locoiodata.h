@@ -228,7 +228,7 @@ public:
  /*public*/ void addPropertyChangeListener(PropertyChangeListener* pcl);
  /*public*/ void removePropertyChangeListener(PropertyChangeListener* pcl);
  LnTrafficController* getTrafficController();
- QObject* self() override {return (QObject*)this;}
+ QObject* pself() override {return (QObject*)this;}
 
 signals:
  //void firePropertyChange(QString s_property, QVariant oldVal, QVariant newVal);

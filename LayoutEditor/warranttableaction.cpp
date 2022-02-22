@@ -167,7 +167,7 @@ void WarrantTableAction::common(QString menuOption)
             _noWarrants->setEnabled(false);
         } else { // when there are warrants, add them to the submenu
             for (NamedBean* nb : manager->getNamedBeanSet()) {
-             Warrant* warrant = (Warrant*)nb;
+             Warrant* warrant = (Warrant*)nb->self();
                 // Warrant warrent = (Warrant) object;
                 QAction* mi = new QAction(warrant->getDisplayName());
                 //mi.setActionCommand(warrant.getDisplayName());
@@ -372,7 +372,7 @@ InstanceManager::getDefault("WarrantManager");
  QStringListIterator iter(systemNameList);
  while (iter.hasNext())
  {
-  Warrant* w =(Warrant*)manager->getBySystemName(iter.next());
+  Warrant* w =(Warrant*)manager->getBySystemName(iter.next())->self();
   QList <BlockOrder*>* orders = w->getBlockOrders();
   QListIterator<BlockOrder*> it(*orders);
   while (it.hasNext())
@@ -397,7 +397,7 @@ InstanceManager::getDefault("WarrantManager");
  QStringListIterator iter( systemNameList);
  while (iter.hasNext())
  {
-  Warrant* w = (Warrant*)manager->getBySystemName(iter.next());
+  Warrant* w = (Warrant*)manager->getBySystemName(iter.next())->self();
   QList<BlockOrder*>* orders = w->getBlockOrders();
   QListIterator<BlockOrder*> it(*orders);
   while (it.hasNext())
@@ -446,7 +446,7 @@ InstanceManager::getDefault("WarrantManager");
     textArea->append("\n\n");
     OBlockManager* manager = (OBlockManager*) InstanceManager::getDefault("OBlockManager");
     for (NamedBean* nb : manager->getNamedBeanSet()) {
-     OBlock* block = (OBlock*)nb;
+     OBlock* block = (OBlock*)nb->self();
         textArea->append(checkPathPortals(block));
     }
     return showPathPortalErrors(textArea);
@@ -585,7 +585,7 @@ InstanceManager::getDefault("WarrantManager");
          if (block->getSystemName()==(sysNames[i])) {
              continue;
          }
-         OBlock* b = (OBlock*)manager->getBySystemName(sysNames[i]);
+         OBlock* b = (OBlock*)manager->getBySystemName(sysNames[i])->self();
          QVectorIterator <Path*> it(*b->getPaths());
          while (it.hasNext()) {
              bool shared = sharedTO(path, (OPath*)it.next());
@@ -788,14 +788,14 @@ void CreateWarrantFrame::makeWarrant()
   userName = "";
  }
   bool failed = false;
-  Warrant* w = (Warrant*)((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getBySystemName(sysName);
+  Warrant* w = (Warrant*)((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getBySystemName(sysName)->self();
   if (w != NULL)
   {
    failed = true;
   }
   else
   {
-   w = (Warrant*)((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getByUserName(userName);
+   w = (Warrant*)((WarrantManager*)InstanceManager::getDefault("WarrantManager"))->getByUserName(userName)->self();
   if (w != NULL)
   {
    failed = true;

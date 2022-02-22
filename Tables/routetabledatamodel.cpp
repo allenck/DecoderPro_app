@@ -98,7 +98,7 @@ RouteTableDataModel::RouteTableDataModel(QObject *parent) : BeanTableDataModel(p
   }
   // Route lock is available if turnouts are lockable
   if (col == LOCKCOL) {
-      Route* r = (Route*)getBySystemName(data(this->index(row, (int)SYSNAMECOL),Qt::DisplayRole).toString());
+      Route* r = (Route*)getBySystemName(data(this->index(row, (int)SYSNAMECOL),Qt::DisplayRole).toString())->self();
       return r->canLock()?(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsUserCheckable):(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
   } else {
       return BeanTableDataModel::flags(index);
@@ -124,12 +124,12 @@ RouteTableDataModel::RouteTableDataModel(QObject *parent) : BeanTableDataModel(p
      switch (index.column()) {
         case ENABLECOL:
         {
-            Route* r = (Route*)getBySystemName(data(this->index(row, (int)SYSNAMECOL),Qt::DisplayRole).toString());
+            Route* r = (Route*)getBySystemName(data(this->index(row, (int)SYSNAMECOL),Qt::DisplayRole).toString())->self();
             return r->getEnabled()? Qt::Checked:Qt::Unchecked;
         }
         case LOCKCOL:
         {
-            Route* r = (Route*)getBySystemName(data(this->index(row, (int)SYSNAMECOL),Qt::DisplayRole).toString());
+            Route* r = (Route*)getBySystemName(data(this->index(row, (int)SYSNAMECOL),Qt::DisplayRole).toString())->self();
             if (r->canLock()) {
                 return r->getLocked()? Qt::Checked:Qt::Unchecked;
             } else {
@@ -155,7 +155,7 @@ RouteTableDataModel::RouteTableDataModel(QObject *parent) : BeanTableDataModel(p
      {
       case ENABLECOL: {
           // alternate
-          Route* r = (Route*)getBySystemName(data(this->index(index.row(), (int)SYSNAMECOL),Qt::DisplayRole).toString());
+          Route* r = (Route*)getBySystemName(data(this->index(index.row(), (int)SYSNAMECOL),Qt::DisplayRole).toString())->self();
 
           bool v = r->getEnabled();
           r->setEnabled(!v);
@@ -163,7 +163,7 @@ RouteTableDataModel::RouteTableDataModel(QObject *parent) : BeanTableDataModel(p
       }
       case LOCKCOL: {
           // alternate
-          Route* r = (Route*)getBySystemName(data(this->index(index.row(), (int)SYSNAMECOL),Qt::DisplayRole).toString());
+          Route* r = (Route*)getBySystemName(data(this->index(index.row(), (int)SYSNAMECOL),Qt::DisplayRole).toString())->self();
 
           bool v = r->getLocked();
           r->setLocked(!v);
@@ -244,7 +244,7 @@ RouteTableDataModel::RouteTableDataModel(QObject *parent) : BeanTableDataModel(p
  */
 //@Override
 /*protected*/ void RouteTableDataModel::doDelete(NamedBean *bean) {
-    ((Route*)bean)->deActivateRoute();
+    ((Route*)bean->self())->deActivateRoute();
     BeanTableDataModel::doDelete(bean);
 }
 
@@ -283,7 +283,7 @@ RouteTableDataModel::RouteTableDataModel(QObject *parent) : BeanTableDataModel(p
 
 //@Override
 /*public*/ void RouteTableDataModel::clickOn(NamedBean* t) {
-    ((Route*)t)->setRoute();
+    ((Route*)t->self())->setRoute();
 }
 
 //@Override

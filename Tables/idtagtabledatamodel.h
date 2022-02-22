@@ -31,7 +31,7 @@ class IdTagTableDataModel : public BeanTableDataModel
   /*public*/ void configValueColumn(JTable* table) override;
   /*public*/ QPushButton* configureButton() override;
 
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
 
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e);

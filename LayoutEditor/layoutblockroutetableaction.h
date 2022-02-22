@@ -13,7 +13,7 @@ public:
     //explicit LayoutBlockRouteTableAction(QObject *parent = 0);
     /*public*/ LayoutBlockRouteTableAction(QString s, LayoutBlock* lBlock,QObject *parent = 0);
     void createModel();
-
+    QObject* pself() override{return (QObject*)this;}
 signals:
 
 public slots:

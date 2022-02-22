@@ -18,6 +18,7 @@ class AbstractMeterManager : public AbstractManager,  public MeterManager
 
   QObject* self() override {return (QObject*)this;}
   QObject* vself() override { return (QObject*)this;}
+  QObject* pself() override{return (QObject*)this;}
 
   /*public*/ NamedBean* getBySystemName(QString name) override{return AbstractManager::getBySystemName(name);}
   /*public*/ NamedBean* getByUserName(QString name) override{return AbstractManager::getByUserName(name);}

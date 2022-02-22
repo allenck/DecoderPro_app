@@ -181,7 +181,7 @@ class PropertyNXListener : public QObject, public PropertyChangeListener
  AddEntryExitPairPanel* panel;
 public:
  PropertyNXListener(AddEntryExitPairPanel* panel) {this->panel = panel;}
- QObject* self() override {return (QObject*)this;}
+ QObject* pself() override {return (QObject*)this;}
 
 public slots:
  void propertyChange(PropertyChangeEvent*) override;

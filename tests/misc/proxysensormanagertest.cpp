@@ -132,7 +132,7 @@ ProxySensorManagerTest::ProxySensorManagerTest(QObject *parent) : QObject(parent
         Sensor* t1 = l->newSensor("JS1", "before");
         Assert::assertNotNull("t1 real object ", t1, __FILE__, __LINE__);
         t1->setUserName("after");
-        Sensor* t2 = (Sensor*)l->AbstractProxyManager::getBySystemName("after");
+        Sensor* t2 = (Sensor*)l->AbstractProxyManager::getBySystemName("after")->self();
         Assert::assertEquals("same object", t1, t2, __FILE__, __LINE__);
         Assert::assertEquals("no old object", nullptr, l->AbstractProxyManager::getBySystemName("before")->self(), __FILE__, __LINE__);
     }

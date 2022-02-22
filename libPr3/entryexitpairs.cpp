@@ -453,7 +453,7 @@ public List<DestinationPoints> getNamedBeanList() {
  * @param nxPair The system or user name of the destination point.
  */
 /*public*/ void EntryExitPairs::setSingleSegmentRoute(QString nxPair) {
-    DestinationPoints* dp = ( DestinationPoints*)getNamedBean(nxPair);
+    DestinationPoints* dp = ( DestinationPoints*)getNamedBean(nxPair)->self();
     if (dp != nullptr) {
         QString destUUID = dp->getUniqueId();
         // nxpair.forEach((pd, src) ->
@@ -790,7 +790,7 @@ public List<DestinationPoints> getNamedBeanList() {
   }
   for (NamedBean* nb : mgr->AbstractManager::getNamedBeanSet())
   {
-   Logix* lgx = (Logix*)nb;
+   Logix* lgx = (Logix*)nb->self();
    for (int i = 0; i < lgx->getNumConditionals(); i++)
    {
     QString cdlName = lgx->getConditionalByNumberOrder(i);

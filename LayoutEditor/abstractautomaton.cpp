@@ -361,7 +361,7 @@ class SensorListener : public QObject, public PropertyChangeListener
  AbstractAutomaton* aa;
 public:
  SensorListener(AbstractAutomaton* aa) {this->aa = aa;}
- QObject* self() {return (QObject*)this;}
+ QObject* pself() {return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent* evt)
  {
@@ -680,11 +680,12 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
   PropertyChangeListener* l = (PropertyChangeListener*)this;
   listeners.replace(i, l);
   //mInputs.at(i)->SwingPropertyChangeSupport::addPropertyChangeListener(l);
-  if(static_cast<AbstractSensor*>(mInputs.at(i))!= NULL)
-  {
-   AbstractSensor* sensor = (AbstractSensor*)mInputs.at(i);
-   connect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  }
+  ((AbstractSensor*)mInputs.at(i)->self())->addPropertyChangeListener(l);
+//  if(static_cast<AbstractSensor*>(mInputs.at(i)->self())!= NULL)
+//  {
+//   AbstractSensor* sensor = (AbstractSensor*)mInputs.at(i)->self();
+//   connect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//  }
 
 //        {
 //            /*public*/ void propertyChange(PropertyChangeEvent* e) {
@@ -704,12 +705,12 @@ void AbstractAutomaton::sensorChange(PropertyChangeEvent *)
  // remove the listeners
  for (i=0; i<mInputs.size(); i++)
  {
-  //mInputs.at(i)->removePropertyChangeListener(listeners.at(i));
-  if(static_cast<AbstractSensor*>(mInputs.at(i))!= NULL)
-  {
-   AbstractSensor* sensor = (AbstractSensor*)mInputs.at(i);
-   disconnect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-  }
+  ((AbstractSensor*)mInputs.at(i)->self())->removePropertyChangeListener(listeners.at(i));
+//  if(static_cast<AbstractSensor*>(mInputs.at(i))!= NULL)
+//  {
+//   AbstractSensor* sensor = (AbstractSensor*)mInputs.at(i);
+//   disconnect(sensor->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
+//  }
  }
  return;
 }

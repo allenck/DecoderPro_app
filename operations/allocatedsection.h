@@ -104,7 +104,7 @@ class ASSPropertyChangeListener : public QObject, public PropertyChangeListener
   AllocatedSection* as;
  public:
   ASSPropertyChangeListener(AllocatedSection* as) {this->as = as;}
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
  public slots:
   void propertyChange(PropertyChangeEvent* e) override{
    as->handleSectionChange(e);
@@ -119,7 +119,8 @@ class ASBPropertyChangeListener : public QObject, public PropertyChangeListener
   int index;
  public:
   ASBPropertyChangeListener(AllocatedSection* as, int index) {this->as = as; this->index = index;}
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
+
  public slots:
   void propertyChange(PropertyChangeEvent* e) override{
    as->handleBlockChange(index, e);

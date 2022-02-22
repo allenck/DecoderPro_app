@@ -129,7 +129,7 @@
     Route* g;
     // check if a Route with the same user name exists
     if (uName != ("")) {
-        g = (Route*)routeManager->getByUserName(uName);
+        g = (Route*)routeManager->getByUserName(uName)->self();
         if (g != nullptr) {
             // Route already exists
             status1->setText(tr("Error: an element with this User Name already exists."));
@@ -138,7 +138,7 @@
     }
     // check if a Route with this system name already exists
     sName = routeManager->makeSystemName(sName);
-    g = (Route*)routeManager->getBySystemName(sName);
+    g = (Route*)routeManager->getBySystemName(sName)->self();
     if (g != nullptr) {
         // Route already exists
         status1->setText(tr("Error: an element with this System Name already exists."));

@@ -28,6 +28,7 @@ public:
  /*public*/ TableColumn* getColumn(int columnIndex) override;
  /*public*/ int getColumnMargin() override;
   QObject* self() override {return (QObject*)this;}
+  QObject* pself() override{return (QObject*)this;}
  /*public*/ void addColumnModelListener(TableColumnModelListener* x)override;
  /*public*/ void removeColumnModelListener(TableColumnModelListener* x) override;
  /*public*/ QVector<EventListener *> getColumnModelListeners();

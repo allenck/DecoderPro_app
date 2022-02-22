@@ -26,6 +26,7 @@ namespace Sprog
 
   QObject* self() override {return (QObject*)this;}
   QObject* vself() override { return (QObject*)this;}
+  QObject* pself() override{return (QObject*)this;}
 
  private:
   /*private*/ /*final*/ static Logger* log;// = LoggerFactory::getLogger("SprogTurnoutManager");

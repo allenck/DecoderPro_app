@@ -21,7 +21,7 @@ public:
     /*public*/ QString getTitle() override;
     /*public*/ QList<QMenu*> getMenus() override;
     /*public*/ void dispose() override;
-    QObject* self() override {return (QObject*)this;}
+    QObject* pself() override {return (QObject*)this;}
 
 signals:
 

@@ -15,7 +15,7 @@ class LIBLAYOUTEDITORSHARED_EXPORT TurnoutOperationFrame : public QDialog, publi
   Q_INTERFACES(PropertyChangeListener)
  public:
     explicit TurnoutOperationFrame(QWidget *parent = 0);
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
 
  signals:
 

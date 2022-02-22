@@ -68,7 +68,7 @@ public:
     /*public*/ void notifyFailedThrottleRequest(DccLocoAddress* address, QString reason);
     /*public*/ void setTerminateSensor(Sensor* ts);
     QObject* self() override {return (QObject*)this;}
-
+    QObject* pself() override{return (QObject*)this;}
 signals:
  void finished();
  void terminate();

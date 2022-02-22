@@ -37,7 +37,7 @@ Q_INTERFACES(PropertyChangeListener)
     void configureTable(JTable*);
     /*public*/ QMap<QString, CvValue*>* allCvMap();
     /*public*/ void resetDecoderDirty(int newStatus);
-    QObject* self() override {return (QObject*)this;}
+    QObject* pself() override {return (QObject*)this;}
 
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e) override;

@@ -133,12 +133,17 @@ public:
 
  /*public*/ SystemConnectionMemo* getMemo() override {return AbstractProxyManager::getMemo();}
  /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractProxyManager::getNamedBeanSet();}
- /*public*/ Turnout* getBySystemName(QString name) override {return (Turnout*)AbstractProxyManager::getBySystemName(name);}
+ /*public*/ Turnout* getBySystemName(QString name) override {
+  if(AbstractProxyManager::getBySystemName(name))
+   return (Turnout*)AbstractProxyManager::getBySystemName(name)->self();
+  else return nullptr;
+ }
  /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override {AbstractProxyManager::addPropertyChangeListener(l); }
  /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override {AbstractProxyManager::removePropertyChangeListener(l); }
 
- QObject* self() override {return (QObject*)this;}
+ QObject* mself() override {return (QObject*)this;}
  QObject* vself() override {return (QObject*)this;}
+ QObject* pself() override {return (QObject*)this;}
 
 public slots:
 

@@ -13,6 +13,8 @@ class JMenuItem : public JmriAbstractAction
   /*public*/ void addActionListener(JMenuItem *listener);
   /*public*/ void setActionCommand(QString cmd);
   /*public*/ QString getActionCommand();
+  QObject* pself() override{return (QObject*)this;}
+
  public slots:
   // /*public*/ void actionPerformed(JActionEvent* e = 0)override;
  private:

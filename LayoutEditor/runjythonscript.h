@@ -22,6 +22,8 @@ public:
  RunJythonScript(const RunJythonScript& other) : JmriAbstractAction(other.text(), other.parent()) {}
  /*public*/ JmriPanel* makePanel();
 
+ QObject* pself() override{return (QObject*)this;}
+
 signals:
 
 public slots:

@@ -13,7 +13,7 @@ Q_OBJECT
  JsonRosterSocketService* jrss;
 public:
  JsonRosterEntryListener( JsonRosterSocketService* jrss);
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 public slots:
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* evt) override;
@@ -26,7 +26,7 @@ Q_OBJECT
  JsonRosterSocketService* jrss;
 public:
  JsonRosterListener(JsonRosterSocketService* jrss);
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* evt) override;
 };

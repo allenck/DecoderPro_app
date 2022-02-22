@@ -25,7 +25,8 @@ public:
  explicit VSDecoderPreferencesPane(QWidget *parent = 0);
  /*public*/ VSDecoderPreferencesPane(VSDecoderPreferences* tp,QWidget *parent = 0);
  /*public*/ void setContainer(JFrame* f);
-QObject* self() override {(QObject*)this;}
+
+  QObject* pself() override {(QObject*)this;}
 signals:
 
 public slots:

@@ -57,7 +57,7 @@ class LIBPR3SHARED_EXPORT AbstractProxyManager :   public VetoableChangeSupport,
     QT_DEPRECATED /*public*/  void intervalRemoved(AbstractProxyManager::ManagerDataEvent/*<E>*/* e)override;
     QT_DEPRECATED /*public*/  void setDataListenerMute(bool m) override;
 
-    QObject* self() override {return (QObject*)this;}
+    QObject* mself() override {return (QObject*)this;}
 
  public slots:
     /*public*/  void propertyChange(PropertyChangeEvent* event)override;

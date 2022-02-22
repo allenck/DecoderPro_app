@@ -71,7 +71,7 @@ class ATAPropertyChangeListener : public QObject, public PropertyChangeListener
 
  public:
   ATAPropertyChangeListener(AutoTrainAction* ata, QString sensorName) {this->ata = ata; this->sensorName = sensorName;}
-  QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
 
 public slots:
   void propertyChange(PropertyChangeEvent* e)override

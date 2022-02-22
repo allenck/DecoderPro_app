@@ -22,6 +22,9 @@ public:
     /*public*/ void setState(int s) override ;
     /*public*/ float getMaximumLineSpeed() override;
     /*public*/ QString toString();
+
+    QObject* self() override{return (QObject*)this;}
+
 signals:
 
 public slots:

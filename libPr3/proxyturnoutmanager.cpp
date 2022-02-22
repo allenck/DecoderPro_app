@@ -49,7 +49,9 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
  */
 /*public*/ Turnout* ProxyTurnoutManager::getTurnout(QString name)
 {
- return (Turnout*)AbstractProxyManager::getNamedBean(name);
+ if(AbstractProxyManager::getNamedBean(name))
+  return (Turnout*)AbstractProxyManager::getNamedBean(name)->self();
+ return nullptr;
 }
 
 /**
@@ -58,11 +60,11 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
 //@Override
 //@Nonnull
 /*protected*/ Turnout* ProxyTurnoutManager::makeBean(AbstractManager *manager, QString systemName, QString userName) /*throws IllegalArgumentException*/ {
-    return ((AbstractTurnoutManager*) manager->self())->newTurnout(systemName, userName);
+    return ((AbstractTurnoutManager*) manager->mself())->newTurnout(systemName, userName);
 }
 
 /*public*/ Turnout * ProxyTurnoutManager::provideTurnout(QString name)  {
- return (Turnout*)AbstractProvidingProxyManager::provideNamedBean(name);
+ return (Turnout*)AbstractProvidingProxyManager::provideNamedBean(name)->self();
 }
 //@Override
 /** {@inheritDoc} */
@@ -118,7 +120,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
  * @return requested Sensor object (never null)
  */
 /*public*/ Turnout* ProxyTurnoutManager::newTurnout(QString systemName, QString userName)  {
-    return (Turnout*) newNamedBean(systemName, userName);
+    return (Turnout*) newNamedBean(systemName, userName)->self();
 }
 ///*public*/ NamedBean* ProxyTurnoutManager::newNamedBean(QString systemName, QString userName) {
 //    // if the systemName is specified, find that system
@@ -203,7 +205,7 @@ ProxyTurnoutManager::ProxyTurnoutManager(QObject* parent)
     QStringList typeList;
     for (Manager* m : getManagerList())
     {
-     QStringList thisTypes = ((AbstractTurnoutManager*)m->self())->getValidOperationTypes();
+     QStringList thisTypes = ((AbstractTurnoutManager*)m->mself())->getValidOperationTypes();
      // typeList.addAll(Arrays.asList(thisTypes));
      foreach (QString s, thisTypes)
      {
@@ -308,7 +310,7 @@ QCompleter* ProxyTurnoutManager::getCompleter(QString text)
   QStringList completerList;
   foreach(QString systemName, nameList)
   {
-   Turnout* b = (Turnout*)AbstractProxyManager::getBySystemName(systemName);
+   Turnout* b = (Turnout*)AbstractProxyManager::getBySystemName(systemName)->self();
    if(b->getUserName().startsWith(text,Qt::CaseInsensitive))
     completerList.append(b->getUserName());
    if(b->getSystemName().startsWith(text,Qt::CaseInsensitive))

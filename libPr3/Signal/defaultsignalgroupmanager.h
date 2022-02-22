@@ -27,6 +27,7 @@ public:
     /*public*/ QString getNamedBeanClass()const override {
         return "SignalGroup";
     }
+    QObject* pself() override{return (QObject*)this;}
 
 signals:
 

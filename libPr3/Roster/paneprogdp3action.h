@@ -53,7 +53,8 @@ public:
     /*public*/ void windowClosing(QCloseEvent* we);
     /*public*/ JmriPanel* makePanel() override;
     /*synchronized*/ /*public*/ BusyGlassPane* getBusyGlassPane();
-    QObject* self() {return (QObject*)this;}
+    QObject* self()override {return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);

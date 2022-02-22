@@ -54,7 +54,7 @@ namespace Operations
   /*public*/ void resetMoves();
   /*public*/ QList<RollingStock*> getList(Location* location);
   /*public*/ QList<RollingStock *> getList(Track* track);
-  QObject* self() override {return (QObject*)this; }
+  QObject* pself() override {return (QObject*)this; }
   /*abstract*/ virtual /*public*/ RollingStock* newRS(QString road, QString number) =0;
   // The various sort options for RollingStock
   // see CarManager and EngineManger for other values

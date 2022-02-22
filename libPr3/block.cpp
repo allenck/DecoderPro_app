@@ -167,19 +167,21 @@
       setNamedSensor(nullptr);
       ret = true;
   } else {
-      sensor = (Sensor*)((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::getByUserName(pName);
-      if (sensor == nullptr) {
-          sensor = (Sensor*)((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::getBySystemName(pName);
-      }
-      if (sensor == nullptr) {
-          if (log->isDebugEnabled()) {
-              log->debug(tr("no sensor named \"%1\" exists.").arg(pName));
-          }
-          ret = false;
-      } else {
-          setNamedSensor(((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(pName, sensor));
-          ret = true;
-      }
+      //sensor = (Sensor*)((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::getByUserName(pName)->self();
+   NamedBean* nb =((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::getByUserName(pName);
+   if (nb == nullptr) {
+    nb =((ProxySensorManager*)InstanceManager::sensorManagerInstance())->AbstractProxyManager::getBySystemName(pName);
+   }
+   if (nb == nullptr) {
+       if (log->isDebugEnabled()) {
+           log->debug(tr("no sensor named \"%1\" exists.").arg(pName));
+       }
+       ret = false;
+   } else {
+    sensor = (Sensor*)nb->self();
+       setNamedSensor(((NamedBeanHandleManager*)InstanceManager::getDefault("NamedBeanHandleManager"))->getNamedBeanHandle(pName, sensor));
+       ret = true;
+   }
   }
   setState(getState() | saveState);
   firePropertyChange("OccupancySensorChange", oldName, pName);

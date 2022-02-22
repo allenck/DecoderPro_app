@@ -50,7 +50,7 @@ namespace Operations
   /*public*/ void checkBoxActionPerformed(QWidget* ae) override;
   /*public*/ void load(Car* car);
   /*public*/ QString getClassName() override;
-  QObject* self() override {return (QObject*)this; }
+  QObject* pself() override {return (QObject*)this; }
 
  public slots:
   /*public*/ void propertyChange(PropertyChangeEvent* e) override;

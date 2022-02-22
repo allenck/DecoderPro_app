@@ -21,7 +21,7 @@
 //     */
     /*public*/ MemoryTableDataModel::MemoryTableDataModel(Manager/*<Memory>*/* mgr, QObject *parent) : BeanTableDataModel(parent){
 //        super();
-        setManager((AbstractManager*)mgr->self());
+        setManager((AbstractManager*)mgr->mself());
     }
 
     /** {@inheritDoc} */
@@ -86,7 +86,7 @@
      if(role == Qt::EditRole)
      {
         if (col == VALUECOL) {
-            ((Memory*)getBySystemName(sysNameList.at(row)))->setValue(value);
+            ((Memory*)getBySystemName(sysNameList.at(row))->self())->setValue(value);
             fireTableRowsUpdated(row, row);
         } else {
             //super.setValueAt(value, row, col);

@@ -41,7 +41,7 @@ private:
  /*private*/ void dispose();
  /*private*/ Manager* getManager();
  Logger* log;
- QObject* self() override {return (QObject*)this;}
+ QObject* pself() override {return (QObject*)this;}
 
 private slots:
  /*private*/ void propertyChange(PropertyChangeEvent* e) override;

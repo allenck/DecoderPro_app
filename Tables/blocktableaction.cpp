@@ -1050,7 +1050,7 @@ void BlockTableAction::okPressed(JActionEvent* /*e*/)
     while (true) {
      system = nextName(system);
      // log.warn("Trying " + system);
-     Block* blk = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getBySystemName(system);
+     Block* blk = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getBySystemName(system)->self();
      if (blk == nullptr) {
          sName = system;
          break;
@@ -1064,7 +1064,7 @@ void BlockTableAction::okPressed(JActionEvent* /*e*/)
     {
      user = nextName(user);
      //log.warn("Trying " + user);
-     Block* blk = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getByUserName(user);
+     Block* blk = (Block*)((BlockManager*)InstanceManager::getDefault("BlockManager"))->AbstractManager::getByUserName(user)->self();
      if (blk == nullptr) {
          uName = user;
          break;

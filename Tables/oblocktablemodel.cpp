@@ -223,7 +223,7 @@ void OBlockTableModel::initTempRow()
  OBlock* b = NULL;
  if ((_tabbed && row <= sysNameList.size()) || (!_tabbed && row < sysNameList.size())) {
      QString name = sysNameList.at(row);
-     b = (OBlock*)_manager->getBySystemName(name);
+     b = (OBlock*)_manager->getBySystemName(name)->self();
  }
  if(role == Qt::DisplayRole)
  {
@@ -568,7 +568,7 @@ void OBlockTableModel::initTempRow()
     return true;
    }
    QString name = sysNameList.at(row);
-   OBlock* block = (OBlock*)_manager->getBySystemName(name);
+   OBlock* block = (OBlock*)_manager->getBySystemName(name)->self();
    switch (col)
    {
     case USERNAMECOL:
@@ -745,7 +745,7 @@ void OBlockTableModel::initTempRow()
  }
  // Edit an existing row
  QString name = sysNameList.at(row);
- OBlock* block = (OBlock*)_manager->getBySystemName(name);
+ OBlock* block = (OBlock*)_manager->getBySystemName(name)->self();
  if (block == nullptr) {
      log->error(tr("OBlock named %1 not found for OBlockTableModel").arg(name));
      return false;
@@ -904,10 +904,10 @@ void OBlockTableModel::initTempRow()
 
 /*private*/ /*static*/ bool OBlockTableModel::sensorExists(QString name)
 {
- Sensor* sensor = (Sensor*)((ProxySensorManager*) InstanceManager::sensorManagerInstance())->AbstractProxyManager::getByUserName(name);
+ Sensor* sensor = (Sensor*)((ProxySensorManager*) InstanceManager::sensorManagerInstance())->AbstractProxyManager::getByUserName(name)->self();
  if (sensor == NULL)
  {
-  sensor = (Sensor*)((ProxySensorManager*) InstanceManager::sensorManagerInstance())->AbstractProxyManager::getBySystemName(name);
+  sensor = (Sensor*)((ProxySensorManager*) InstanceManager::sensorManagerInstance())->AbstractProxyManager::getBySystemName(name)->self();
  }
  return (sensor != NULL);
 }
@@ -963,7 +963,7 @@ void OBlockTableModel::deleteBean(OBlock* bean)
      //java.beans.SwingPropertyChangeSupport pcs = new java.beans.SwingPropertyChangeSupport(bean);
      QVector<PropertyChangeListener*> listener = ((AbstractNamedBean*) bean)->getPropertyChangeListeners();
      for (int i = 0; i < listener.length(); i++) {
-         log->debug(QString::number(i) + ") " + QString(listener.at(i)->self()->metaObject()->className()));
+         log->debug(QString::number(i) + ") " + QString(listener.at(i)->pself()->metaObject()->className()));
      }
  }
  if (!noWarnDelete)

@@ -47,7 +47,7 @@ DefaultSignalGroupManagerXml::DefaultSignalGroupManagerXml(QObject *parent) :
   }
   for (NamedBean* nb : sgList)
   {
-    SignalGroup* sg = (SignalGroup*)nb;
+    SignalGroup* sg = (SignalGroup*)nb->self();
     // store the signalgroups
     QString sgName = sg->getSystemName();
     log->debug(tr("SignalGroup system name is %1").arg(sgName));  // NOI18N

@@ -62,8 +62,8 @@ public:
          */
         virtual Logix* getLogix(QString /*name*/) {return NULL;}
 
-        virtual NamedBean* getByUserName(QString /*s*/) const =0;
-        virtual NamedBean* getBySystemName(QString /*s*/)const =0;
+        virtual NamedBean* getByUserName(QString /*s*/)  =0;
+        virtual NamedBean* getBySystemName(QString /*s*/) =0;
 
         /**
          * Activate all Logixs that are not currently active
@@ -85,7 +85,7 @@ public:
          */
         virtual void setLoadDisabled(bool /*s*/) = 0;
 
-  virtual QObject* self()=0;
+  //virtual QObject* self()=0;
 signals:
     
 public slots:

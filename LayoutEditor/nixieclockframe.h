@@ -20,7 +20,7 @@ public:
 //    void paint(QGraphicsScene* g);
     /*public*/ void dispose()override;
  /*public*/ QString getClassName() override;
-  QObject* self() {return (QObject*)this;}
+  QObject* pself() {return (QObject*)this;}
 
 signals:
 

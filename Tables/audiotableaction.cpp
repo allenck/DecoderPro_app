@@ -432,7 +432,7 @@ public void AudioTableDataModel::setDisplayDeleteMsg(int boo) { ((UserPreference
  for (int i = 0; i < sysNameList.size(); i++)
  {
   //getBySystemName(sysNameList.at(i))->SwingPropertyChangeSupport::addPropertyChangeListener(this);
-  Audio* a = (Audio*)getBySystemName(sysNameList.at(i));
+  Audio* a = (Audio*)getBySystemName(sysNameList.at(i))->self();
   connect(a->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
  }
  fireTableRowsUpdated(0, sysNameList.size()-1);
@@ -504,13 +504,13 @@ public void AudioTableDataModel::setDisplayDeleteMsg(int boo) { ((UserPreference
        return sysNameList.at(row);
    case USERNAMECOL:  // return user name
        // sometimes, the TableSorter invokes this on rows that no longer exist, so we check
-       a = (Audio*)getBySystemName(sysNameList.at(row));
+       a = (Audio*)getBySystemName(sysNameList.at(row))->self();
        return (a != nullptr) ? a->getUserName() : "";
    case VALUECOL:
-       a = (Audio*)getBySystemName(sysNameList.at(row));
+       a = (Audio*)getBySystemName(sysNameList.at(row))->self();
        return (a != nullptr) ? getValue(a->getSystemName()) : "";
    case COMMENTCOL:
-       a = (Audio*)getBySystemName(sysNameList.at(row));
+       a = (Audio*)getBySystemName(sysNameList.at(row))->self();
        return (a != nullptr) ? a->getComment() : "";
    case DELETECOL:
        return (subType != Audio::LISTENER) ? tr("Delete") : "";
@@ -534,7 +534,7 @@ public void AudioTableDataModel::setDisplayDeleteMsg(int boo) { ((UserPreference
   switch (index.column())
   {
    case EDITCOL:
-    a = (Audio*)getBySystemName(sysNameList.at(row));
+    a = (Audio*)getBySystemName(sysNameList.at(row))->self();
     act->editAudio(a);
     fireTableRowsUpdated(row, row);
     return true;
@@ -680,13 +680,13 @@ void AudioSourceTableDataModel::addToPopUp(QMenu *popup)
 void AudioSourceTableDataModel::On_doPlay_triggered()
 {
  /*final*/ NamedBean* t = getBySystemName(sysNameList.at(row));
- ((AbstractAudioSource*)t)->doPlay();
+ ((AbstractAudioSource*)t->self())->doPlay();
 }
 
 void AudioSourceTableDataModel:: On_doEdit_triggered()
 {
  /*final*/ NamedBean* t = getBySystemName(sysNameList.at(row));
- act->editAudio((AbstractAudioSource*)t);
+ act->editAudio((AbstractAudioSource*)t->self());
 }
 
 void AudioSourceTableDataModel:: On_doDelete_triggered()

@@ -41,7 +41,7 @@ TriggerRouteModel::TriggerRouteModel()
  * @return the route
  */
 /*public*/ Route* TriggerRouteModel::getRoute() {
-    return (Route*)((RouteManager*)InstanceManager::getDefault("RouteManager"))->getByUserName(this->getUserName());
+    return (Route*)((RouteManager*)InstanceManager::getDefault("RouteManager"))->getByUserName(this->getUserName())->self();
 }
 
 //@Override

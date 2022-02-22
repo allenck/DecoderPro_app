@@ -46,7 +46,7 @@ public:
  /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
  /*public*/ void dispose();
  /*public*/ void setColumnToHoldButton(JTable* table, int column, QPushButton* /*sample*/);
- QObject* self() override {return (QObject*)this;}
+ QObject* pself() override {return (QObject*)this;}
 
 signals:
  void buttonClicked(QModelIndex*);

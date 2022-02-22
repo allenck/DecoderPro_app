@@ -20,8 +20,8 @@ public:
     /*public*/ void deleteLogix(Logix* x) override;
     /*public*/ void activateAllLogixs() override;
     /*public*/ Logix* getLogix(QString name) override;
-    /*public*/ NamedBean* getBySystemName(QString name)const override;
-    /*public*/ NamedBean* getByUserName(QString key)const override;
+    /*public*/ NamedBean* getBySystemName(QString name) override;
+    /*public*/ NamedBean* getByUserName(QString key) override;
     /*public*/ void setLoadDisabled(bool s) override;
     static DefaultLogixManager* _instance;// = NULL;
     QT_DEPRECATED static /*public*/ DefaultLogixManager* instance();
@@ -30,8 +30,10 @@ public:
 
     /*public*/ SystemConnectionMemo* getMemo() override {return AbstractManager::getMemo();}
 
-    QObject* self() override {return (QObject*)this;}
+    //QObject* self() override {return (QObject*)this;}
     QObject* vself() override {return (QObject*)this;}
+    QObject* mself() override { return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 
 signals:
 

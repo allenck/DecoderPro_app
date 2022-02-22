@@ -471,7 +471,7 @@ void BeanTableDataModel::setManager(Manager *) {}
  /*final*/ t = getBySystemName(sysNameList.at(row));
  if(t == nullptr)
   return;
- int count = ((AbstractNamedBean*)t)->getNumPropertyChangeListeners()-1; // one is this table
+ int count = ((AbstractNamedBean*)t->self())->getNumPropertyChangeListeners()-1; // one is this table
  if (log->isDebugEnabled()) log->debug("Delete with "+QString::number(count));
  if (getDisplayDeleteMsg()==0x02)
  {
@@ -745,7 +745,7 @@ void BeanTableDataModel::OnButtonClicked(QObject* o)
 
 /*synchronized*/ /*public*/ void BeanTableDataModel::dispose()
 {
- ((AbstractManager*)getManager()->self())->VetoableChangeSupport::removePropertyChangeListener(this);
+ ((AbstractManager*)getManager()->mself())->VetoableChangeSupport::removePropertyChangeListener(this);
  if (!sysNameList.isEmpty())
  {
   for (int i = 0; i< sysNameList.size(); i++)

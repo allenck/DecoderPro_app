@@ -474,7 +474,7 @@ Beans::Beans(QObject *parent) : QObject(parent)
     for (PropertyChangeListener* listener : listeners) {
         if (listener == (needle)) {
             return true;
-        } else if (qobject_cast< PropertyChangeListenerProxy*>(listener->self())) {
+        } else if (qobject_cast< PropertyChangeListenerProxy*>(listener->pself())) {
             if (((PropertyChangeListenerProxy*) listener)->getListener() == (needle)) {
                 return true;
             }

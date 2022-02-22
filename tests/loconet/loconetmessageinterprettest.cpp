@@ -156,7 +156,7 @@ LocoNetMessageInterpretTest::LocoNetMessageInterpretTest(QObject *parent) : QObj
                 LocoNetMessageInterpret::interpretMessage(l, "LT", "LS", "LR"), __FILE__, __LINE__);
         Assert::assertNull("reporter not Created", lnrm->getBySystemName("LR25")->self(), __FILE__, __LINE__);
         lnrm->provideReporter("LR25");
-        ((LnReporter*) lnrm->getBySystemName("LR25"))->setUserName("Friendly name E");
+        ((LnReporter*) lnrm->getBySystemName("LR25")->self())->setUserName("Friendly name E");
         Assert::assertEquals("check setting of username", lnrm->getBySystemName("LR25")->getUserName(), "Friendly name E", __FILE__, __LINE__);
 
         ((LnReporter*) lnrm->provideReporter("LR31"))->setUserName("Friendly Name H");

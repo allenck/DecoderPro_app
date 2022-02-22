@@ -25,7 +25,7 @@ public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e);
     /*public*/ void dispose();
     /*public*/ void actionPerformed(JActionEvent* e = 0);
-    QObject* self() override {return (QObject*)this;}
+    QObject* pself() override {return (QObject*)this;}
 
 private:
     // GUI member declarations

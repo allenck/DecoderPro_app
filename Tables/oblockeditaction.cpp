@@ -61,11 +61,11 @@
         BeanItemPanel* basic = new BeanItemPanel();
         basic->setName(tr("Sensors"));
 
-        sensorComboBox = new NamedBeanComboBox(InstanceManager::sensorManagerInstance(), ((Block*)bean)->getSensor(), NamedBean::DisplayOptions::DISPLAYNAME);
+        sensorComboBox = new NamedBeanComboBox(InstanceManager::sensorManagerInstance(), ((Block*)bean->self())->getSensor(), NamedBean::DisplayOptions::DISPLAYNAME);
         sensorComboBox->setAllowNull(true);
         basic->addItem(new BeanEditItem(sensorComboBox, tr("Sensor"), tr("Set the Sensor that is used to determine the occupancy state of the Block")));
 
-        errorSensorComboBox = new NamedBeanComboBox(InstanceManager::sensorManagerInstance(), ((Block*)bean)->getSensor(), NamedBean::DisplayOptions::DISPLAYNAME);
+        errorSensorComboBox = new NamedBeanComboBox(InstanceManager::sensorManagerInstance(), ((Block*)bean->self())->getSensor(), NamedBean::DisplayOptions::DISPLAYNAME);
         errorSensorComboBox->setAllowNull(true);
         basic->addItem(new BeanEditItem(errorSensorComboBox, tr("Error Sensor"), tr("Set the Sensor that is used to report errors of the OBlock")));
 
@@ -143,7 +143,7 @@
         BeanItemPanel* reporter = new BeanItemPanel();
         reporter->setName(tr("Reporter"));
 
-        reporterComboBox = new NamedBeanComboBox((ReporterManager*)InstanceManager::getDefault("ReporterManager"),(NamedBean*) ((OBlock*)bean)->getReporter(), NamedBean::DisplayOptions::DISPLAYNAME);
+        reporterComboBox = new NamedBeanComboBox((ReporterManager*)InstanceManager::getDefault("ReporterManager"),(NamedBean*) ((OBlock*)bean->self())->getReporter(), NamedBean::DisplayOptions::DISPLAYNAME);
         reporterComboBox->setAllowNull(true);
 
         reporter->addItem(new BeanEditItem(reporterComboBox, tr("Reporter"), tr("BlockReporterText")));
@@ -243,7 +243,7 @@
         basic->addItem(new BeanEditItem(speedField = new JComboBox/*<String>*/(speedList.toList()), tr("Speed"), tr("Set the maximum speed through the Block")));
         basic->addItem(new BeanEditItem(permissiveField, tr("BlockPermColName"), tr("BlockPermissiveText")));
 
-        permissiveField->setChecked(((Block*)bean)->getPermissiveWorking());
+        permissiveField->setChecked(((Block*)bean->self())->getPermissiveWorking());
 
         basic->setSaveItem(new OBTSaveItemAction3(this));
 //        {
@@ -321,9 +321,9 @@
     /*private*/ void OBlockEditAction::updateLength() {
         float len = 0.0f;
         if (inch->isChecked()) {
-            len = ((Block*)bean)->getLengthIn();
+            len = ((Block*)bean->self())->getLengthIn();
         } else {
-            len = ((Block*)bean)->getLengthCm();
+            len = ((Block*)bean->self())->getLengthCm();
         }
         lengthSpinner->setValue(len);
     }

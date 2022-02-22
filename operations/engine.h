@@ -43,7 +43,7 @@ namespace Operations
   /*public*/ void setBunit(bool bUnit) ;
   /*public*/ bool isBunit();
 
-   QObject* self() override {return (QObject*)this; }
+   QObject* pself() override {return (QObject*)this; }
  signals:
 
  public slots:

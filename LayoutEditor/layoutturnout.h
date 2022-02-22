@@ -360,7 +360,7 @@ public:
                              */
  /*private*/ bool secondTurnoutInverted = false;
  QGraphicsItemGroup* itemGroup = nullptr;
- QObject* self() override {return (QObject*)this;}
+ QObject* pself() override {return (QObject*)this;}
 
 signals:
  //void propertyChange(PropertyChangeEvent*);

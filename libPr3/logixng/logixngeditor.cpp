@@ -27,7 +27,7 @@
         this->beanTableFrame = f;
         this->beanTableDataModel = m;
         _logixNG_Manager = (LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager");
-        _curLogixNG =(LogixNG*) _logixNG_Manager->getBySystemName(sName);
+        _curLogixNG =(LogixNG*) _logixNG_Manager->getBySystemName(sName)->self();
 //        makeEditLogixNGWindow();
     }
 

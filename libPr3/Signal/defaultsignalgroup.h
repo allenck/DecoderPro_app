@@ -73,6 +73,7 @@ public:
     /*public*/ /*synchronized*/ void addPropertyChangeListener(PropertyChangeListener* l)override;
     /*public*/ /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* l)override;
     QObject* self() override {return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
     /*public*/ QList<NamedBeanUsageReport*> getUsageReport(NamedBean* bean) override;
 
 signals:

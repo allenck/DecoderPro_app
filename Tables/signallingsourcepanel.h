@@ -25,7 +25,7 @@ public:
     //explicit SignallingSourcePanel(QWidget *parent = 0);
     /*public*/ SignallingSourcePanel(/*final*/ SignalMast* sourceMast, QWidget* parent = 0);
  /*public*/ void dispose() override;
-    QObject* self() override {return (QObject*)this;}
+    QObject* pself() override {return (QObject*)this;}
 
 signals:
 
@@ -75,7 +75,7 @@ public:
     /*public*/ QString getColumnName(int col);
     /*public*/ void dispose();
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role) override;
-    QObject* self() override {return (QObject*)this;}
+    QObject* pself() override {return (QObject*)this;}
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e) override;
 private:

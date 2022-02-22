@@ -123,7 +123,8 @@ class ClockSensorPropertChangeListener : public QObject, public PropertyChangeLi
  SimpleTimebase* stb;
 public:
  ClockSensorPropertChangeListener(SimpleTimebase* stb) {this->stb = stb;}
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
+
 public slots:
  void propertyChange(PropertyChangeEvent*);
 };

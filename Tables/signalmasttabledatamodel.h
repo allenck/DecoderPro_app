@@ -27,7 +27,7 @@ public:
     /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role) override;
     Q_INVOKABLE /*public*/ QString getClassDescription();
     /*public*/ void configureTable(JTable *table) override;
-    QObject* self() override {return (QObject*)this;}
+    QObject* pself() override {return (QObject*)this;}
 
 public slots:
     /*public*/ void propertyChange(PropertyChangeEvent* e) override;

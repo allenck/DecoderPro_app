@@ -205,7 +205,7 @@ LogixTableAction::LogixTableAction(const LogixTableAction & that) : AbstractTabl
 /*protected*/ void LogixTableAction::createModel()
 {
  m = new LogixTableModel(this);
- AbstractManager* manager = (AbstractManager*)m->getManager()->self();
+ AbstractManager* manager = (AbstractManager*)m->getManager()->mself();
  connect(manager, SIGNAL(propertyChange(PropertyChangeEvent*)), m, SLOT(propertyChange(PropertyChangeEvent*)));
 }
 
@@ -280,7 +280,7 @@ LogixTableModel::LogixTableModel(LogixTableAction *self)
   {
    if (index.column() == ENABLECOL)
    {
-    Logix* logix = (Logix*) getBySystemName(data(createIndex(index.row(), SYSNAMECOL),Qt::DisplayRole).toString());
+    Logix* logix = (Logix*) getBySystemName(data(createIndex(index.row(), SYSNAMECOL),Qt::DisplayRole).toString())->self();
     if (logix == NULL)
     {
      return QVariant();
@@ -328,7 +328,7 @@ LogixTableModel::LogixTableModel(LogixTableAction *self)
   if (index.column() == ENABLECOL)
   {
     // alternate
-   Logix* x = (Logix*) getBySystemName(sysNameList.at(index.row()));
+   Logix* x = (Logix*) getBySystemName(sysNameList.at(index.row()))->self();
    bool v = ((DefaultLogix*)x)->getEnabled();
    ((DefaultLogix*)x)->setEnabled(!v);
    return true;
@@ -346,7 +346,7 @@ LogixTableModel::LogixTableModel(LogixTableAction *self)
  */
 void LogixTableModel::doDelete(NamedBean* bean)
 {
-    Logix* l = (Logix*) bean;
+    Logix* l = (Logix*) bean->self();
     ((DefaultLogix*)l)->deActivateLogix();
     // delete the Logix and all its Conditionals
     ((DefaultLogixManager*)self->_logixManager)->deleteLogix(l);
@@ -812,7 +812,7 @@ void RefDialog::deviceReportPressed(JActionEvent* /*e*/)
 void LogixTableAction::enableAll(bool enable) {
     QStringList sysNameList = ((DefaultLogixManager*)_logixManager)->AbstractManager::getSystemNameList();
     for (int i=0; i<sysNameList.size(); i++) {
-        Logix* x = (Logix*)((DefaultLogixManager*)_logixManager)->getBySystemName(sysNameList.at(i));
+        Logix* x = (Logix*)((DefaultLogixManager*)_logixManager)->getBySystemName(sysNameList.at(i))->self();
         ((DefaultLogix*)x)->setEnabled(enable);
     }
 }
@@ -1057,7 +1057,7 @@ void LogixTableAction::copyLogixPressed(ActionEvent* /*e*/)
   QString sName = _systemName->text().trimmed();
   // check if a Logix with this name already exists
   bool createLogix = true;
-  targetLogix = (Logix*)((DefaultLogixManager*)_logixManager)->getBySystemName(sName);
+  targetLogix = (Logix*)((DefaultLogixManager*)_logixManager)->getBySystemName(sName)->self();
   if (targetLogix != NULL)
   {
 //   int result = JOptionPane.showConfirmDialog(f, java.text.MessageFormat.format(
@@ -1102,7 +1102,7 @@ void LogixTableAction::copyLogixPressed(ActionEvent* /*e*/)
    ((DefaultLogix*)targetLogix)->setUserName(uName);
   }
  }
- Logix* srcLogic = (Logix*)((DefaultLogixManager*)_logixManager)->getBySystemName(_logixSysName);
+ Logix* srcLogic = (Logix*)((DefaultLogixManager*)_logixManager)->getBySystemName(_logixSysName)->self();
  for (int i=0; i< ((DefaultLogix*)srcLogic)->getNumConditionals(); i++)
  {
   QString cSysName = ((DefaultLogix*)srcLogic)->getConditionalByNumberOrder(i);
@@ -1181,7 +1181,7 @@ bool LogixTableAction::checkLogixUserName(QString uName)
  // check if a Logix with the same user name exists
  if (uName!=NULL && uName.trimmed().length() > 0)
  {
-  Logix* x = (Logix*)((DefaultLogixManager*)_logixManager)->getByUserName(uName);
+  Logix* x = (Logix*)((DefaultLogixManager*)_logixManager)->getByUserName(uName)->self();
   if (x != NULL)
   {
 //            // Logix with this user name already exists
@@ -1246,7 +1246,7 @@ bool LogixTableAction::checkFlags(QString sName)
  }
  if (sName != "") {
   // check if a Logix with this name exists
-  Logix* x = (Logix*)_logixManager->getBySystemName(sName);
+  Logix* x = (Logix*)_logixManager->getBySystemName(sName)->self();
   if (x == nullptr) {
       // Logix does not exist, so cannot be edited
       log->error("No Logix with system name: " + sName);
@@ -1288,7 +1288,7 @@ void LogixTableAction::createPressed(ActionEvent* /*e*/)
      // check if a Logix with this name already exists
      Logix* x = NULL;
      try {
-         x = (Logix*)_logixManager->getBySystemName(sName);
+         x = (Logix*)_logixManager->getBySystemName(sName)->self();
          if(x == NULL) throw new Exception();
      } catch (Exception* ex) {
          // user input no good
@@ -1338,7 +1338,7 @@ void LogixTableAction::handleCreateException(QString sysName) {
  * @param sName system name of Logix to be edited
  */
 void LogixTableAction::editPressed(QString sName) {
- _curLogix = (Logix*)_logixManager->getBySystemName(sName);
+ _curLogix = (Logix*)_logixManager->getBySystemName(sName)->self();
  if (!checkFlags(sName)) {
      return;
  }
@@ -1429,7 +1429,7 @@ void LogixTableAction::editPressed(QString sName) {
         } else if (key == ("Delete")) {           // NOI18N
             lta->deletePressed(value);
         } else if (key == ("chgUname")) {         // NOI18N
-            Logix* x = (Logix*)lta->_logixManager->getBySystemName(lgxName);
+            Logix* x = (Logix*)lta->_logixManager->getBySystemName(lgxName)->self();
             x->setUserName(value);
             lta->m->fireTableDataChanged();
         }
@@ -1462,7 +1462,7 @@ void LogixTableAction::editPressed(QString sName) {
      } else if (key == ("Delete")) {           // NOI18N
          lta->deletePressed(value);
      } else if (key == ("chgUname")) {         // NOI18N
-         Logix* x = (Logix*)lta->_logixManager->getBySystemName(lgxName);
+         Logix* x = (Logix*)lta->_logixManager->getBySystemName(lgxName)->self();
          x->setUserName(value);
          lta->m->fireTableDataChanged();
      }
@@ -1509,7 +1509,7 @@ void LogixTableAction::deletePressed(QString sName) {
     if (!checkConditionalReferences(sName)) {
         return;
     }
-    /*final*/ Logix* x = (Logix*)_logixManager->getBySystemName(sName);
+    /*final*/ Logix* x = (Logix*)_logixManager->getBySystemName(sName)->self();
     UserPreferencesManager* p;
     p = (UserPreferencesManager*)InstanceManager::getNullableDefault("UserPreferencesManager");
     if (p != NULL && p->getMultipleChoiceOption(getClassName(), "delete") == 0x02) {     // NOI18N
@@ -2024,7 +2024,7 @@ QString LogixTableAction::getWhereUsedName(QString cName) {
  */
 void LogixTableAction::browserPressed(QString sName) {
     // Logix was found, create the window
-    _curLogix = (Logix*)_logixManager->getBySystemName(sName);
+    _curLogix = (Logix*)_logixManager->getBySystemName(sName)->self();
     makeBrowserWindow();
 }
 

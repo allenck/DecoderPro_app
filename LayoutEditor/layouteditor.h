@@ -1204,7 +1204,7 @@ public:
         //comboBox->getManager()->getNamedBeanSet().forEach((turnout) ->
         foreach(NamedBean* nb, comboBox->getManager()->getNamedBeanSet())
         {
-         Turnout* turnout = (Turnout*)nb;
+         Turnout* turnout = (Turnout*)nb->self();
             if (!currentTurnouts.contains(turnout)) {
                 if (!layoutEditor->validatePhysicalTurnout(turnout->getDisplayName(), nullptr)) {
                     l.insert(nb);

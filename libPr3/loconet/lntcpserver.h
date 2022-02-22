@@ -36,7 +36,8 @@ public:
  /*public*/ int getPort();
  /*public*/ static /*synchronized*/ LnTcpServer* getDefault();
 
-  QObject* self() override { return (QObject*)this;}
+  QObject* pself() override { return (QObject*)this;}
+
 signals:
  void serverStateChanged(LnTcpServer*);
  void error(QAbstractSocket::SocketError);

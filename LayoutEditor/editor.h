@@ -366,7 +366,7 @@ public:
     /*public*/ void addPropertyChangeListener(QString name, PropertyChangeListener* listener);
     /*public*/ void removePropertyChangeListener(PropertyChangeListener* listener);
     /*public*/ void removePropertyChangeListener(QString name, PropertyChangeListener* listener);
-    QObject* self() override {return (QObject*)this;}
+    QObject* pself() override {return (QObject*)this;}
 
  signals:
     

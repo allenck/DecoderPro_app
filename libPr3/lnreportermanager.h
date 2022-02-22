@@ -39,6 +39,7 @@ public:
 
     QObject* self() override { return (QObject*)this;}
     QObject* vself() override { return (QObject*)this;}
+    QObject* pself() override{return (QObject*)this;}
 
     ///*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractManager::getNamedBeanSet();}
     /*public*/ NamedBean* getBySystemName(QString name) override {return AbstractManager::getBySystemName(name);}

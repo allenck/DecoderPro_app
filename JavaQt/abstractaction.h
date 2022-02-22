@@ -32,8 +32,8 @@ public:
  /*public*/  /*synchronized*/ void removePropertyChangeListener(PropertyChangeListener* listener) override;
  Q_INVOKABLE /*public*/ void setClassname(QString);
  /*public*/ QString getClassname();
- QObject* self() override {return (QObject*)this;}
-
+ //QObject* self() override {return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 
 signals:
  void propertyChange(PropertyChangeEvent*) override;

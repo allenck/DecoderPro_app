@@ -62,12 +62,12 @@ if (_wrapper) {
 }
   Roster::propertyChange(evt0);
 }
-QObject*  PythonQtShell_Roster::self()
+QObject*  PythonQtShell_Roster::pself()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
   if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("self");
+    static PyObject* name = PyString_FromString("pself");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
       static const char* argumentList[] ={"QObject*"};
@@ -79,7 +79,7 @@ if (_wrapper) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
         if (args[0]!=&returnValue) {
           if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("self", methodInfo, result);
+            PythonQt::priv()->handleVirtualOverloadReturnError("pself", methodInfo, result);
           } else {
             returnValue = *((QObject**)args[0]);
           }
@@ -93,7 +93,7 @@ if (_wrapper) {
     }
   }
 }
-  return Roster::self();
+  return Roster::pself();
 }
 Roster* PythonQtWrapper_Roster::new_Roster(QObject*  parent)
 { 
@@ -361,6 +361,11 @@ int  PythonQtWrapper_Roster::numGroupEntries(Roster* theWrappedObject, QString  
   return ( theWrappedObject->numGroupEntries(group));
 }
 
+QObject*  PythonQtWrapper_Roster::pself(Roster* theWrappedObject)
+{
+  return ( theWrappedObject->pself());
+}
+
 void PythonQtWrapper_Roster::reindex(Roster* theWrappedObject)
 {
   ( theWrappedObject->reindex());
@@ -394,11 +399,6 @@ void PythonQtWrapper_Roster::renameRosterGroupList(Roster* theWrappedObject, QSt
 void PythonQtWrapper_Roster::rosterGroupRenamed(Roster* theWrappedObject, QString  oldName, QString  newName)
 {
   ( theWrappedObject->rosterGroupRenamed(oldName, newName));
-}
-
-QObject*  PythonQtWrapper_Roster::self(Roster* theWrappedObject)
-{
-  return ( theWrappedObject->self());
 }
 
 void PythonQtWrapper_Roster::setDefaultRosterGroup(Roster* theWrappedObject, QString  defaultRosterGroup)
@@ -4823,6 +4823,39 @@ if (_wrapper) {
   }
 }
   Siglet::init();
+}
+QObject*  PythonQtShell_Siglet::pself()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("pself");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QObject*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QObject* returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("pself", methodInfo, result);
+          } else {
+            returnValue = *((QObject**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return Siglet::pself();
 }
 QObject*  PythonQtShell_Siglet::self()
 {

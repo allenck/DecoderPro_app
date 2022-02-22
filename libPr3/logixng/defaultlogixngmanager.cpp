@@ -12,6 +12,7 @@
 #include "conditionalng_manager.h"
 #include "vptr.h"
 #include "logixng_initializationmanager.h"
+#include "namedtablemanager.h"
 
 /**
  * Class providing the basic logic of the LogixNG_Manager interface.
@@ -73,12 +74,12 @@
         // Check that LogixNG does not already exist
         LogixNG* x;
         if (userName != nullptr && userName !=("")) {
-            x = (LogixNG*)getByUserName(userName);
+            x = (LogixNG*)getByUserName(userName)->self();
             if (x != nullptr) {
                 return nullptr;
             }
         }
-        x = (LogixNG*)getBySystemName(systemName);
+        x = (LogixNG*)getBySystemName(systemName)->self();
         if (x != nullptr) {
             return nullptr;
         }
@@ -104,11 +105,11 @@
 
     //@Override
     /*public*/ LogixNG* DefaultLogixNGManager::getLogixNG(QString name) {
-        LogixNG* x = (LogixNG*)LogixNG_Manager::getByUserName(name);
+        LogixNG* x = (LogixNG*)LogixNG_Manager::getByUserName(name)->self();
         if (x != nullptr) {
             return x;
         }
-        return (LogixNG*)LogixNG_Manager::getBySystemName(name);
+        return (LogixNG*)LogixNG_Manager::getBySystemName(name)->self();
     }
 
     //@Override
@@ -133,7 +134,7 @@
         QList<QString> errors = QList<QString>();
         bool result = true;
         for (/*LogixNG* logixNG*/NamedBean* nb : _tsys->values()) {
-         LogixNG* logixNG = (LogixNG*)nb;
+         LogixNG* logixNG = (LogixNG*)nb->self();
             logixNG->setup();
             result = result && logixNG->setParentForAllChildren(errors);
         }
@@ -308,7 +309,7 @@ void DLMRunnable::run()
 //         .forEachOrdered((logixNG) -> {
      foreach(NamedBean* nb, dlm->_tsys->values())
      {
-      LogixNG* logixNG = (LogixNG*)nb;
+      LogixNG* logixNG = (LogixNG*)nb->self();
       if(!(activeLogixNGs.contains(logixNG)))
       {
        if (logixNG->isActive()) {
@@ -324,7 +325,7 @@ void DLMRunnable::run()
     //@Override
     /*public*/ void DefaultLogixNGManager::deActivateAllLogixNGs() {
         for (/*LogixNG* logixNG*/NamedBean* nb : _tsys->values()) {
-         LogixNG* logixNG = (LogixNG*)nb;
+         LogixNG* logixNG = (LogixNG*)nb->self();
             logixNG->unregisterListeners();
         }
         _isActive = false;
@@ -371,15 +372,14 @@ void DLMRunnable::run()
             /*MutableInt*/int* lineNumber) {
 
         for (/*LogixNG* logixNG*/NamedBean* nb : AbstractManager::getNamedBeanSet()) {
-         LogixNG* logixNG = (LogixNG*)nb;
+         LogixNG* logixNG = (LogixNG*)nb->self();
             logixNG->printTree(settings, locale, writer, indent, "", lineNumber);
             writer->println();
         }
-#if 0
-        InstanceManager.getDefault(ModuleManager.class).printTree(settings, locale, writer, indent, lineNumber);
-        InstanceManager.getDefault(NamedTableManager.class).printTree(locale, writer, indent);
-        InstanceManager.getDefault(LogixNG_InitializationManager.class).printTree(locale, writer, indent);
-#endif
+
+        ((ModuleManager*)InstanceManager::getDefault("ModuleManager"))->printTree(settings, locale, writer, indent, lineNumber);
+        ((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->printTree(locale, writer, indent);
+        ((LogixNG_InitializationManager*)InstanceManager::getDefault("LogixNG_InitializationManager"))->printTree(locale, writer, indent);
     }
 
 
@@ -449,7 +449,7 @@ void DLMRunnable::run()
     //@Override
 //    @OverridingMethodsMustInvokeSuper
     /*public*/ /*final*/ void DefaultLogixNGManager::deleteBean(/*@Nonnull*/ /*LogixNG*/ NamedBean* nb, /*@Nonnull*/  QString property) /*throw new PropertyVetoException*/ {
-     LogixNG*  logixNG =  (LogixNG*)nb;
+     LogixNG*  logixNG =  (LogixNG*)nb->self();
      for (int i=0; i < logixNG->getNumConditionalNGs(); i++) {
             ConditionalNG* child = logixNG->getConditionalNG(i);
             ((ConditionalNG_Manager*)InstanceManager::getDefault("ConditionalNG_Manager"))->deleteBean((NamedBean*)child, property);

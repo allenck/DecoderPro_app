@@ -624,7 +624,7 @@ public:
 //      return this->getSystemNamePrefix() == other.getSystemNamePrefix();
 //     }
 
-     virtual QObject* self() =0;
+     virtual QObject* mself() =0;
 
 
 private:

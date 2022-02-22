@@ -29,7 +29,7 @@ namespace Operations
   /*public*/ RollingStockSetFrame(QString title, QWidget* parent = 0);
   /*public*/ void initComponents() override;
   /*public*/ void load(RollingStock* rs);
-   QObject* self() override {return (QObject*)this; }
+   QObject* pself() override {return (QObject*)this; }
 
  public slots:
   /*public*/ void comboBoxActionPerformed(QWidget* ae) override;

@@ -69,7 +69,7 @@ class MemoListener : public QObject, public PropertyChangeListener
  ManagerDefaultSelector* mds;
 public:
  MemoListener(ManagerDefaultSelector* mds) {this->mds = mds;}
- QObject* self() override{return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 public slots:
  void propertyChange(PropertyChangeEvent* e);
 };

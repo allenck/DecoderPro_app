@@ -291,7 +291,7 @@ SignalHead* PointDetails::getSignalHead()
  refObj = refObs;
  if (pnl != nullptr && refObj != nullptr)
  {
-     if (static_cast<SignalMast*>(refObj) || static_cast<Sensor*>(refObj)) {
+     if (static_cast<SignalMast*>(refObj->self()) || static_cast<Sensor*>(refObj->self())) {
          //String mast = ((SignalMast)refObj).getUserName();
          refLoc = pnl->getFinder()->findPositionablePointByEastBoundBean(refObj);
          if (refLoc == nullptr) {
@@ -306,11 +306,11 @@ SignalHead* PointDetails::getSignalHead()
          if (refLoc == nullptr) {
              refLoc = pnl->getFinder()->findLayoutSlipByBean(refObj);
          }
-         if (static_cast<Sensor*>(refObj)) {
-             setSensor((Sensor*) refObj);
+         if (static_cast<Sensor*>(refObj->self())) {
+             setSensor((Sensor*) refObj->self());
          }
-     } else if (static_cast<SignalHead*>(refObj)) {
-         QString signal = ((SignalHead*) refObj)->getDisplayName();
+     } else if (static_cast<SignalHead*>(refObj->self())) {
+         QString signal = ((SignalHead*) refObj->self())->getDisplayName();
          refLoc = pnl->getFinder()->findPositionablePointByEastBoundSignal(signal);
          if (refLoc == nullptr) {
              refLoc = pnl->getFinder()->findPositionablePointByWestBoundSignal(signal);
@@ -363,20 +363,20 @@ bool PointDetails::isRouteFromPointSet()
  }
 
  //if(refObj instanceof SignalMast)
- if(static_cast<SignalMast*>(refObj)!=NULL)
+ if(static_cast<SignalMast*>(refObj->self())!=NULL)
  {
-  return ((SignalMast*)refObj)->getDisplayName();
+  return ((SignalMast*)refObj->self())->getDisplayName();
  }
  else
      //if (refObj instanceof Sensor)
      if(qobject_cast<Sensor*>(refLoc)!=NULL)
  {
-     return ((Sensor*)refObj)->getDisplayName();
+     return ((Sensor*)refObj->self())->getDisplayName();
  }
      //else if (refObj instanceof SignalHead)
  if(qobject_cast<SignalHead*>(refLoc)!=NULL)
      {
-     return ((SignalHead*)refObj)->getDisplayName();
+     return ((SignalHead*)refObj->self())->getDisplayName();
  }
  return "no display name";
 }
@@ -468,8 +468,8 @@ Sensor* PointDetails::getSensor(){
         return sensor;
 
     //if (getRefObject() instanceof Sensor)
-    if(static_cast<Sensor*>(getRefObject())!= NULL)
-        return (Sensor*)getRefObject();
+    if(static_cast<Sensor*>(getRefObject()->self())!= NULL)
+        return (Sensor*)getRefObject()->self();
 
     QObject* objLoc = getRefLocation();
     NamedBean* objRef = getRefObject();
@@ -479,14 +479,14 @@ Sensor* PointDetails::getSensor(){
     QString systemname = "";
     Sensor* foundSensor = nullptr;
     //if(objRef instanceof SignalMast)
-    if(static_cast<SignalMast*>(objRef)!= NULL)
+    if(static_cast<SignalMast*>(objRef->self())!= NULL)
     {
-        mast = (SignalMast*)objRef;
+        mast = (SignalMast*)objRef->self();
     }
     //if(objRef instanceof SignalHead)
-    if(static_cast<SignalHead*>(objRef)!= NULL)
+    if(static_cast<SignalHead*>(objRef->self())!= NULL)
     {
-        head = (SignalHead*)objRef;
+        head = (SignalHead*)objRef->self();
         username = head->getUserName();
         systemname = head->getSystemName();
     }
@@ -625,24 +625,24 @@ NamedBean* PointDetails::getSignal(){
     }
     else
         //if (getRefObject() instanceof SignalMast)
-        if(static_cast<SignalMast*>(getRefObject())!= NULL)
+        if(static_cast<SignalMast*>(getRefObject()->self())!= NULL)
         {
         signal =  getRefObject();
-        setSignalMast(((SignalMast*)getRefObject()));
+        setSignalMast(((SignalMast*)getRefObject()->self()));
         return signal;
     }
         else
             //if (getRefObject() instanceof SignalHead)
-       if(static_cast<SignalHead*>(getRefObject())!= NULL)
+       if(static_cast<SignalHead*>(getRefObject()->self())!= NULL)
 
         {
         signal =  getRefObject();
-        setSignalHead(((SignalHead*)getRefObject()));
+        setSignalHead(((SignalHead*)getRefObject()->self()));
         return signal;
     }
 
 
-    Sensor* sen = (Sensor*) getRefObject();
+    Sensor* sen = (Sensor*) getRefObject()->self();
     log->debug("looking at Sensor " + sen->getDisplayName());
     QString username = sen->getUserName();
     QString systemname = sen->getSystemName();
@@ -794,12 +794,12 @@ NamedBean* PointDetails::getSignal(){
       }
   }
     //if(signal instanceof SignalMast)
-    if(static_cast<SignalMast*>(signal)!= NULL)
-        setSignalMast(((SignalMast*)signal));
+    if(static_cast<SignalMast*>(signal->self())!= NULL)
+        setSignalMast(((SignalMast*)signal->self()));
     else
         //if (signal instanceof SignalHead)
-        if(static_cast<SignalHead*>(signal)!= NULL)
-        setSignalHead(((SignalHead*)signal));
+        if(static_cast<SignalHead*>(signal->self())!= NULL)
+        setSignalHead(((SignalHead*)signal->self()));
     return signal;
 }
 

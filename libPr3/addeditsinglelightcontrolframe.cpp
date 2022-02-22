@@ -403,11 +403,11 @@
         } else {
             // name was selected, check for user name first
             s = (Sensor*)InstanceManager::sensorManagerInstance()->
-                    getByUserName(sensorName);
+                    getByUserName(sensorName)->self();
             if (s == nullptr) {
                 // not user name, try system name
                 s = (Sensor*)InstanceManager::sensorManagerInstance()->
-                        getBySystemName(sensorName);
+                        getBySystemName(sensorName)->self();
                 if (s != nullptr) {
                     // update sensor system name in case it changed
                     sensorName = s->getSystemName();
@@ -517,11 +517,11 @@
             notifyUser(tr("Error: Trigger Sensor could not be provided. Light Control not created."),Qt::gray);
         } else {
             // sensor was selected, try user name first
-            s = (Sensor*)InstanceManager::sensorManagerInstance()->getByUserName(triggerSensorName);
+            s = (Sensor*)InstanceManager::sensorManagerInstance()->getByUserName(triggerSensorName)->self();
             if (s == nullptr) {
                 // not user name, try system name
                 s = (Sensor*)InstanceManager::sensorManagerInstance()->
-                        getBySystemName(triggerSensorName);
+                        getBySystemName(triggerSensorName)->self();
                 if (s != nullptr) {
                     // update sensor system name in case it changed
                     triggerSensorName = s->getSystemName();
@@ -551,11 +551,11 @@
         } else {
             // name was selected, check for user name first
             s = (Sensor*)InstanceManager::sensorManagerInstance()->
-                    getByUserName(sensorName);
+                    getByUserName(sensorName)->self();
             if (s == nullptr) {
                 // not user name, try system name
                 s = (Sensor*)InstanceManager::sensorManagerInstance()->
-                        getBySystemName(sensorName);
+                        getBySystemName(sensorName)->self();
                 if (s != nullptr) {
                     // update sensor system name in case it changed
                     sensorName = s->getSystemName();
@@ -563,11 +563,11 @@
                 }
             }
             s2 = (Sensor*)InstanceManager::sensorManagerInstance()->
-                    getByUserName(sensor2Name);
+                    getByUserName(sensor2Name)->self();
             if (s2 == nullptr) {
                 // not user name, try system name
                 s2 = (Sensor*)InstanceManager::sensorManagerInstance()->
-                        getBySystemName(sensor2Name);
+                        getBySystemName(sensor2Name)->self();
                 if (s2 != nullptr) {
                     // update sensor system name in case it changed
                     sensor2Name = s2->getSystemName();

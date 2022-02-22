@@ -30,7 +30,7 @@ Q_OBJECT
 Q_INTERFACES(PropertyChangeListener)
     //@Override
     /*public*/ void propertyChange(PropertyChangeEvent* /*evt*/);
-    QObject* self() {return (QObject*)this;}public slots:
+    QObject* pself() {return (QObject*)this;}public slots:
 };
 
 class VetoableChangeListenerO1 : public QObject, public VetoableChangeListener

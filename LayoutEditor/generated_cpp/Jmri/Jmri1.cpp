@@ -5333,6 +5333,39 @@ if (_wrapper) {
 }
   LayoutTurnout::propertyChange(e0);
 }
+QObject*  PythonQtShell_LayoutTurnout::pself()
+{
+if (_wrapper) {
+  PYTHONQT_GIL_SCOPE
+  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
+    static PyObject* name = PyString_FromString("pself");
+    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
+    if (obj) {
+      static const char* argumentList[] ={"QObject*"};
+      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
+      QObject* returnValue{};
+      void* args[1] = {NULL};
+      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
+      if (result) {
+        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
+        if (args[0]!=&returnValue) {
+          if (args[0]==NULL) {
+            PythonQt::priv()->handleVirtualOverloadReturnError("pself", methodInfo, result);
+          } else {
+            returnValue = *((QObject**)args[0]);
+          }
+        }
+      }
+      if (result) { Py_DECREF(result); } 
+      Py_DECREF(obj);
+      return returnValue;
+    } else {
+      PyErr_Clear();
+    }
+  }
+}
+  return LayoutTurnout::pself();
+}
 void PythonQtShell_LayoutTurnout::reCheckBlockBoundary() const
 {
 if (_wrapper) {
@@ -5354,39 +5387,6 @@ if (_wrapper) {
   }
 }
   LayoutTurnout::reCheckBlockBoundary();
-}
-QObject*  PythonQtShell_LayoutTurnout::self()
-{
-if (_wrapper) {
-  PYTHONQT_GIL_SCOPE
-  if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("self");
-    PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
-    if (obj) {
-      static const char* argumentList[] ={"QObject*"};
-      static const PythonQtMethodInfo* methodInfo = PythonQtMethodInfo::getCachedMethodInfoFromArgumentList(1, argumentList);
-      QObject* returnValue{};
-      void* args[1] = {NULL};
-      PyObject* result = PythonQtSignalTarget::call(obj, methodInfo, args, true);
-      if (result) {
-        args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
-        if (args[0]!=&returnValue) {
-          if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("self", methodInfo, result);
-          } else {
-            returnValue = *((QObject**)args[0]);
-          }
-        }
-      }
-      if (result) { Py_DECREF(result); } 
-      Py_DECREF(obj);
-      return returnValue;
-    } else {
-      PyErr_Clear();
-    }
-  }
-}
-  return LayoutTurnout::self();
 }
 QString  PythonQtShell_LayoutTurnout::toString()
 {
@@ -25544,12 +25544,12 @@ if (_wrapper) {
 }
   PropertyChangeListener::propertyChange(e0);
 }
-QObject*  PythonQtShell_PropertyChangeListener::self()
+QObject*  PythonQtShell_PropertyChangeListener::pself()
 {
 if (_wrapper) {
   PYTHONQT_GIL_SCOPE
   if (((PyObject*)_wrapper)->ob_refcnt > 0) {
-    static PyObject* name = PyString_FromString("self");
+    static PyObject* name = PyString_FromString("pself");
     PyObject* obj = PyBaseObject_Type.tp_getattro((PyObject*)_wrapper, name);
     if (obj) {
       static const char* argumentList[] ={"QObject*"};
@@ -25561,7 +25561,7 @@ if (_wrapper) {
         args[0] = PythonQtConv::ConvertPythonToQt(methodInfo->parameters().at(0), result, false, NULL, &returnValue);
         if (args[0]!=&returnValue) {
           if (args[0]==NULL) {
-            PythonQt::priv()->handleVirtualOverloadReturnError("self", methodInfo, result);
+            PythonQt::priv()->handleVirtualOverloadReturnError("pself", methodInfo, result);
           } else {
             returnValue = *((QObject**)args[0]);
           }
@@ -25581,9 +25581,9 @@ PropertyChangeListener* PythonQtWrapper_PropertyChangeListener::new_PropertyChan
 { 
 return new PythonQtShell_PropertyChangeListener(); }
 
-QObject*  PythonQtWrapper_PropertyChangeListener::self(PropertyChangeListener* theWrappedObject)
+QObject*  PythonQtWrapper_PropertyChangeListener::pself(PropertyChangeListener* theWrappedObject)
 {
-  return ( theWrappedObject->self());
+  return ( theWrappedObject->pself());
 }
 
 

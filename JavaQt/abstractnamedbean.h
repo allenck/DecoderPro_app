@@ -8,7 +8,7 @@
 #include "exceptions.h"
 #include "propertyvetoexception.h"
 
-class JAVAQTSHARED_EXPORT AbstractNamedBean :  public QObject, public NamedBean
+class JAVAQTSHARED_EXPORT AbstractNamedBean :  public QObject, public virtual NamedBean
 {
     Q_OBJECT
     Q_INTERFACES(NamedBean)

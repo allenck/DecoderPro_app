@@ -71,7 +71,9 @@ public:
  /*public*/ void dispose() override;
  /*public*/ bool setEditIconMenu(QMenu* popup) override;
  /*public*/ QString getGroupName() override;
+
  QObject* self() override {return (QObject*)this;}
+ QObject* pself() override{return (QObject*)this;}
 
 signals:
 

@@ -156,7 +156,7 @@
                 return /*TypeConversionUtil::convertToString*/(symbolTable->getValue(leftValue).toString()/*, false*/);
             }
             MemoryManager* memoryManager = (MemoryManager*)InstanceManager::getDefault("MemoryManager");
-            Memory* m = (Memory*)memoryManager->getNamedBean(leftValue.trimmed());
+            Memory* m = (Memory*)memoryManager->getNamedBean(leftValue.trimmed())->self();
             if (m != nullptr) {
                 if (m->getValue() != QVariant()) return m->getValue().toString();
                 else throw new IllegalArgumentException("Memory '"+leftValue+"' has no value");
@@ -195,7 +195,7 @@
             NamedTableManager* tableManager = (NamedTableManager*)
                     InstanceManager::getDefault("NamedTableManager");
 
-            NamedTable* table = (NamedTable*)tableManager->getNamedBean(leftValue);
+            NamedTable* table = (NamedTable*)tableManager->getNamedBean(leftValue)->self();
             if (table != nullptr) {
                 QVariant cell = table->getCell(row.trimmed());
                 return cell != QVariant() ? cell.toString() : nullptr;
@@ -228,7 +228,7 @@
             NamedTableManager* tableManager = (NamedTableManager*)
                     InstanceManager::getDefault("NamedTableManager");
 
-            NamedTable* table = (NamedTable*)tableManager->getNamedBean(leftValue);
+            NamedTable* table = (NamedTable*)tableManager->getNamedBean(leftValue)->self();
             if (table != nullptr) {
                 QVariant cell = table->getCell(row.trimmed(),column.trimmed());
                 // Skip spaces
