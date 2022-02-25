@@ -1,6 +1,6 @@
 #include "abstractinstanceinitializer.h"
 
-AbstractInstanceInitializer::AbstractInstanceInitializer()
+AbstractInstanceInitializer::AbstractInstanceInitializer(QObject* parent) : QObject(parent)
 {
 
 }
@@ -15,7 +15,7 @@ AbstractInstanceInitializer::AbstractInstanceInitializer()
  */
 //@Override
 /*public*/ /*<T>*/ QObject* AbstractInstanceInitializer::getDefault(/*Class<T>*/QString /*type*/) const /*throw (IllegalArgumentException)*/ {
-    throw /*new*/ IllegalArgumentException();
+    throw new IllegalArgumentException();
 }
 
 /**

@@ -79,7 +79,7 @@ AbstractStringExpressionSwing::AbstractStringExpressionSwing(QObject *parent) : 
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  QString getExampleSystemName() {
+    /*public*/  QString AbstractStringExpressionSwing::getExampleSystemName() {
         return ((StringExpressionManager*)InstanceManager::getDefault("StringExpressionManager"))->getSystemNamePrefix() + "SE10";
     }
 

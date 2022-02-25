@@ -8,6 +8,8 @@ class DefaultNamedTableManagerXml : public AbstractManagerXml
   Q_OBJECT
  public:
   explicit DefaultNamedTableManagerXml(QObject *parent = nullptr);
+  ~DefaultNamedTableManagerXml() {}
+  DefaultNamedTableManagerXml(const DefaultNamedTableManagerXml&) : AbstractManagerXml() {}
   /*public*/  QDomElement store(QObject* o)override;
   /*public*/  void setStoreElementClass(QDomElement expressions);
   /*public*/  bool load(QDomElement sharedExpression, QDomElement perNodeExpression)override;
@@ -22,5 +24,5 @@ class DefaultNamedTableManagerXml : public AbstractManagerXml
   /*protected*/ void replaceExpressionManager();
 
 };
-
+Q_DECLARE_METATYPE(DefaultNamedTableManagerXml)
 #endif // DEFAULTNAMEDTABLEMANAGERXML_H

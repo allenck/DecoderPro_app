@@ -15,6 +15,7 @@
 #include "referenceutil.h"
 #include "joptionpane.h"
 #include "runtimeexception.h"
+#include "defaultnamedtablemanager.h"
 
 /**
  * Editor for LogixNG Tables
@@ -38,7 +39,7 @@
      */
     /*public*/ TableEditor::TableEditor(BeanTableDataModel/*<NamedTable>*/* m, QString sName, QObject* parent)
       : QObject(parent) {
-        _tableManager = (NamedTableManager*)InstanceManager::getDefault("NamedTableManager");
+        _tableManager = (DefaultNamedTableManager*)InstanceManager::getDefault("NamedTableManager");
         _curTable = (AbstractNamedTable*)_tableManager->getBySystemName(sName)->self();
         makeEditTableWindow();
     }

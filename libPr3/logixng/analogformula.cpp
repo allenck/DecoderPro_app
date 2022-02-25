@@ -319,7 +319,7 @@
                 entry->_socketSystemName =
                         socket->getConnectedSocket()->getSystemName();
                 entry->_manager =
-                        socket->getConnectedSocket()->getManager()->self()->metaObject()->className();
+                        socket->getConnectedSocket()->getManager()->mself()->metaObject()->className();
             }
         }
 

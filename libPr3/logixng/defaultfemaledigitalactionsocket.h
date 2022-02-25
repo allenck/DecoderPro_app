@@ -14,7 +14,7 @@ class DefaultFemaleDigitalActionSocket : public AbstractFemaleSocket, public Fem
   /*public*/  void execute() /*throws JmriException*/override;
   /*public*/  QString getShortDescription(QLocale locale)override;
   /*public*/  QString getLongDescription(QLocale locale)override;
-  /*public*/  QMap<Category *, QList<QString>* > getConnectableClasses()override;
+  /*public*/  QHash<Category *, QList<QString> > getConnectableClasses()override;
   /*public*/  void disposeMe()override;
 
   QObject* bself() override{return(QObject*)this;}

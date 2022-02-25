@@ -564,7 +564,7 @@ JmriJFrame(parent)
 }
 
 /*private*/ void SimpleLightCtrlFrame::resetLightToCombo() {
-    if (light != nullptr && light == (Light*)to1->getSelectedItem()) {
+    if (light != nullptr && light == (Light*)to1->getSelectedItem()->self()) {
         return;
     }
     log->debug(tr("Light changed in combobox to %1").arg(to1->getSelectedItem()->getDisplayName()));
@@ -572,7 +572,7 @@ JmriJFrame(parent)
     if (light != nullptr) {
         ((NamedBean*)light)->removePropertyChangeListener(_parentLightListener);
     }
-    light = (Light*)to1->getSelectedItem();
+    light = (Light*)to1->getSelectedItem()->self();
     if (light != nullptr) {
         ((NamedBean*)light->self())->addPropertyChangeListener(
                 _parentLightListener = new SLCFPropertyChangeListener(this));

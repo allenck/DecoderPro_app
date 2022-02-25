@@ -45,7 +45,7 @@
  *
  * @author Daniel Bergqvist Copyright (C) 2020
  */
-/*public*/ /*interface*/class Module : public Base, public NamedBean {
+/*public*/ /*interface*/class Module : public Base, public virtual NamedBean {
     Q_INTERFACES(Base NamedBean)
  public:
   /**
@@ -82,7 +82,7 @@
 
     /*public*/ virtual void addParameter(QString name, bool isInput, bool isOutput)=0;
 
-    /*public*/ virtual void addParameter(Parameter* parameter);
+    /*public*/ virtual void addParameter(Parameter* parameter)=0;
 
 //    public void removeParameter(String name);
 

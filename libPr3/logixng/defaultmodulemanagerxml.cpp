@@ -32,7 +32,7 @@
     if (tm != nullptr) {
         if (tm->AbstractManager::getNamedBeanSet().isEmpty()) return QDomElement();
         for (NamedBean* nb : tm->AbstractManager::getNamedBeanSet()) {
-         Module* module = (Module*)nb;
+         Module* module = (Module*)nb->self();
             try {
                 QDomElement e = ConfigXmlManager::elementFromObject(module->self());
                 if (!e.isNull()) {

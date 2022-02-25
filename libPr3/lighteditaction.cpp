@@ -62,7 +62,7 @@ BeanItemPanel* LightEditAction::lightControlPanel() {
     BeanItemPanel* lcPanel = new BeanItemPanel();
     lcPanel->setName(tr("Light Controllers"));
 
-    lcp = new LightControlPane((Light*)bean);
+    lcp = new LightControlPane((Light*)bean->self());
     lcPanel->layout()->addWidget(lcp);
 
 //    lcPanel->setResetItem(new AbstractAction() {
@@ -88,7 +88,7 @@ BeanItemPanel* LightEditAction::lightIntensityPanel() {
     BeanItemPanel* liPanel = new BeanItemPanel();
     liPanel->setName(tr("LightVariableBorder"));
     lip = new LightIntensityPane(true);
-    lip->setToLight((Light*)bean);
+    lip->setToLight((Light*)bean->self());
     liPanel->layout()->addWidget(lip);
 
 //    liPanel.setResetItem(new AbstractAction() {

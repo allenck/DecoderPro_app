@@ -38,7 +38,7 @@
     }
 
     //@Override
-    /*public*/  QMap<Category*, QList</*Class<? extends Base>*/QString>*> DefaultFemaleStringActionSocket::getConnectableClasses() {
+    /*public*/  QHash<Category *, QList<QString> > DefaultFemaleStringActionSocket::getConnectableClasses() {
         return ((StringActionManager*)InstanceManager::getDefault("StringActionManager"))->getActionClasses();
     }
 

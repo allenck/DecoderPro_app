@@ -15,7 +15,7 @@ class Base;
 class StringActionBean;
 class MaleStringActionSocket;
 class FemaleStringActionSocket;
-/*public*/  /*interface*/class StringActionManager : public BaseManager/*<MaleStringActionSocket>*/ {
+/*public*/  /*interface*/class StringActionManager : public virtual BaseManager/*<MaleStringActionSocket>*/ {
   Q_INTERFACES(BaseManager)
 public:
     /**
@@ -33,7 +33,7 @@ public:
      * Create a new system name for an StringActionBean.
      * @return a new system name
      */
-    /*public*/ virtual QString getAutoSystemName()=0;
+  /*public*/ virtual QString getAutoSystemName() {return "?";}
 
     /*public*/ virtual FemaleStringActionSocket* createFemaleSocket(
             Base* parent, FemaleSocketListener* listener, QString socketName)=0;
@@ -43,7 +43,7 @@ public:
      *
      * @return a set of entries with category and class
      */
-    /*public*/ virtual QMap<Category*, QList</*Class<? extends Base>*/QString>*> getActionClasses()=0;
+    /*public*/ virtual QHash<Category*, QList</*Class<? extends Base>*/QString>> getActionClasses()=0;
 
     /*.*
      * Add an Action.

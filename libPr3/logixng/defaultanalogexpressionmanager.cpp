@@ -49,7 +49,7 @@
         }
 
         for (Category* category : Category::values()) {
-            expressionClassList.insert(category, new QList</*Class<? extends Base*/QString>());
+            expressionClassList.insert(category,  QList</*Class<? extends Base*/QString>());
         }
 #if 0 // TODO:
 //        System.out.format("Read expressions%n");
@@ -174,7 +174,7 @@
     }
 
     //@Override
-    /*public*/  QMap<Category *, QList<QString> *> DefaultAnalogExpressionManager::getExpressionClasses() {
+    /*public*/  QHash<Category *, QList<QString> > DefaultAnalogExpressionManager::getExpressionClasses() {
         return expressionClassList;
     }
 

@@ -3,7 +3,7 @@
 #include "memory.h"
 #include "memorymanager.h"
 #include "instancemanager.h"
-#include "namedtablemanager.h"
+#include "defaultnamedtablemanager.h"
 
 /**
  * Utility methods to handle references
@@ -192,7 +192,7 @@
 
             endIndex->v++;
 
-            NamedTableManager* tableManager = (NamedTableManager*)
+            NamedTableManager* tableManager = (DefaultNamedTableManager*)
                     InstanceManager::getDefault("NamedTableManager");
 
             NamedTable* table = (NamedTable*)tableManager->getNamedBean(leftValue)->self();
@@ -225,7 +225,7 @@
 
             endIndex->v++;
 
-            NamedTableManager* tableManager = (NamedTableManager*)
+            NamedTableManager* tableManager = (DefaultNamedTableManager*)
                     InstanceManager::getDefault("NamedTableManager");
 
             NamedTable* table = (NamedTable*)tableManager->getNamedBean(leftValue)->self();

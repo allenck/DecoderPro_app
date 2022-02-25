@@ -1860,7 +1860,7 @@ void PanelEditor::drawLabelImages(EditScene* g2)
     if(((LightIcon*)l)->getIcon(((LightIcon*)l)->lightState())!=NULL)
     {
      Light* light = ((LightIcon*)l)->getLight();
-     int iState = ((AbstractLight*)light)->getState();
+     int iState = ((AbstractLight*)light->self())->getState();
      pixmap = QPixmap::fromImage(((LightIcon*)l)->getIcon(iState)->getImage());
 //   QGraphicsPixmapItem* item = g2->addPixmap(pixmap);
      QGraphicsPixmapItem* item = new QGraphicsPixmapItem(pixmap,0);

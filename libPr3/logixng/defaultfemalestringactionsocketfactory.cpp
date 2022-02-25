@@ -8,7 +8,7 @@
 //@ServiceProvider(service = FemaleSocketFactory.class)
 ///*public*/  class DefaultFemaleStringActionSocketFactory implements FemaleSocketFactory {
 
-    /*private*/ /*static*/ /*final*/ FemaleSocketManager::SocketType* DefaultFemaleStringActionSocketFactory_femaleSocketType = new FemaleSocketManager::SocketType();
+    /*private*/ /*static*/ /*final*/ FemaleSocketManager::SocketType* DefaultFemaleStringActionSocketFactory::_femaleSocketType = new FemaleSocketManager::SocketType();
 
 
     //@Override

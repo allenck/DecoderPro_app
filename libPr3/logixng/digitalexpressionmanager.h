@@ -10,7 +10,7 @@
  * @author Dave Duchamp       Copyright (C) 2007
  * @author Daniel Bergqvist   Copyright (C) 2018
  */
-/*public*/ /*interface*/class  DigitalExpressionManager :public BaseManager/*<MaleDigitalExpressionSocket>*/ {
+/*public*/ /*interface*/class  DigitalExpressionManager :public virtual BaseManager/*<MaleDigitalExpressionSocket>*/ {
 Q_INTERFACES(Manager)
  public:
     /**
@@ -28,7 +28,7 @@ Q_INTERFACES(Manager)
      * Create a new system name for an DigitalExpressionBean.
      * @return a new system name
      */
-    /*public*/ virtual QString getAutoSystemName()=0;
+  /*public*/ virtual QString getAutoSystemName(){return "?";}
 
     /*public*/ virtual FemaleDigitalExpressionSocket* createFemaleSocket(
             Base* parent, FemaleSocketListener* listener, QString socketName)=0;
@@ -44,7 +44,7 @@ Q_INTERFACES(Manager)
      *
      * @return a set of entries with category and class
      */
-    /*public*/ virtual QMap<Category*, QList</*Class<? extends Base>*/QString>* > getExpressionClasses()=0;
+    /*public*/ virtual QHash<Category*, QList</*Class<? extends Base>*/QString> > getExpressionClasses()=0;
 
     /*.*
      * Add an DigitalExpressionBean.

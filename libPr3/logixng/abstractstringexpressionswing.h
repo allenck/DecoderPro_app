@@ -5,6 +5,7 @@
 
 class AbstractStringExpressionSwing : public AbstractSwingConfigurator
 {
+  Q_OBJECT
  public:
   explicit AbstractStringExpressionSwing(QObject *parent = nullptr);
   /*public*/  QString getExecuteEvaluateMenuText() override;

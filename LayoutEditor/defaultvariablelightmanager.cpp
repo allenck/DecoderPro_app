@@ -28,7 +28,7 @@
         LightManager* lm = (LightManager*)InstanceManager::getDefault("LightManager");
        ((AbstractManager*)lm->self())->PropertyChangeSupport::addPropertyChangeListener("beans", this);
         for (NamedBean* nb : ((AbstractManager*)lm->self())->getNamedBeanSet()) {
-         Light* l = (Light*)nb;
+         Light* l = (Light*)nb->self();
             if (qobject_cast<VariableLight*>(l->self())) {
                 Register((NamedBean*) l->self());
             }

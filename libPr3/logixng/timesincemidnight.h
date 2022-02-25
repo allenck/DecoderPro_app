@@ -39,6 +39,7 @@ class TimeSinceMidnight : public AbstractAnalogExpression, public PropertyChange
 
   QObject* bself() override {return (QObject*)this;}
   QObject* self() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
 
  public slots:
   /*public*/  void propertyChange(PropertyChangeEvent* evt)override;

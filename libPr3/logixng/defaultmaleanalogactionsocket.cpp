@@ -32,7 +32,7 @@
         if (value == /*Double.POSITIVE_INFINITY*/INFINITY) {
             throw new IllegalArgumentException("The value is positive infinity");
         }
-        ((AnalogActionBean*)AbstractMaleSocket::getObject())->setValue(value);
+        ((AnalogActionBean*)AbstractMaleSocket::getObject()->bself())->setValue(value);
     }
 
     /** {@inheritDoc} */

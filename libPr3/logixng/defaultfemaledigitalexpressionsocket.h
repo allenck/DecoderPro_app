@@ -14,7 +14,7 @@ class DefaultFemaleDigitalExpressionSocket : public AbstractFemaleSocket, public
   /*public*/  bool evaluate() /*throws JmriException*/override;
   /*public*/  QString getShortDescription(QLocale locale)override;
   /*public*/  QString getLongDescription(QLocale locale) override;
-  /*public*/  QMap<Category*, QList</*Class<? extends Base>*/QString>*> getConnectableClasses()override;
+  /*public*/  QHash<Category*, QList</*Class<? extends Base>*/QString>> getConnectableClasses()override;
   /*public*/  void disposeMe()override;
 
   QObject* bself() override{return (QObject*)this;}

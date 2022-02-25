@@ -30,7 +30,7 @@
         if (tm != nullptr) {
             if (tm->getNamedBeanSet().isEmpty()) return QDomElement();
             for (NamedBean* nb: tm->getNamedBeanSet()) {
-             MaleAnalogActionSocket* action  = (MaleAnalogActionSocket*)nb;
+             MaleAnalogActionSocket* action  = (MaleAnalogActionSocket*)nb->self();
                 log->debug("action system name is " + action->NamedBean::getSystemName());  // NOI18N
                 try {
                     QList<QDomElement> elements = QList<QDomElement>();

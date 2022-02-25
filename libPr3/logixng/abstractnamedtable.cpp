@@ -1,6 +1,6 @@
 #include "abstractnamedtable.h"
 #include "defaultanonymoustable.h"
-#include "namedtablemanager.h"
+#include "defaultnamedtablemanager.h"
 #include "instancemanager.h"
 #include "defaultcsvnamedtable.h"
 
@@ -42,7 +42,7 @@
         //super(systemName,userName);
 
         // Do this test here to ensure all the tests are using correct system names
-        Manager::NameValidity isNameValid = ((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->validSystemNameFormat(systemName);
+        Manager::NameValidity isNameValid = ((DefaultNamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->validSystemNameFormat(systemName);
         if (isNameValid != Manager::NameValidity::VALID) {
             throw new IllegalArgumentException("system name is not valid");
         }
@@ -66,7 +66,7 @@
         //super(systemName,userName);
 
         // Do this test here to ensure all the tests are using correct system names
-        Manager::NameValidity isNameValid = ((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->validSystemNameFormat(mSystemName);
+        Manager::NameValidity isNameValid = ((DefaultNamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->validSystemNameFormat(mSystemName);
         if (isNameValid != Manager::NameValidity::VALID) {
             throw new IllegalArgumentException("system name is not valid");
         }
@@ -81,7 +81,7 @@
             bool registerInManager)
             /*throws NamedBean.BadUserNameException, NamedBean.BadSystemNameException*/ {
 
-        NamedTableManager* manager = (NamedTableManager*)InstanceManager::getDefault("NamedTableManager");
+        NamedTableManager* manager = (DefaultNamedTableManager*)InstanceManager::getDefault("NamedTableManager");
 
         if (/*userName != null &&*/ userName.isEmpty()) userName = "";
 

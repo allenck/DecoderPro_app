@@ -374,7 +374,7 @@ void TableItemPanel::OnSelectionChanged(const QItemSelection &selected, const QI
   l->setOnIcon(iMap->value("StateOn"));
   l->setInconsistentIcon(iMap->value("BeanStateInconsistent"));
   l->setUnknownIcon(iMap->value("BeanStateUnknown"));
-  l->setLight((Light*)bean);
+  l->setLight((Light*)bean->self());
   l->setLevel(Editor::LIGHTS);
   return l;
  }

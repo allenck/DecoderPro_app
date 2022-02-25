@@ -12,7 +12,7 @@
 #include "conditionalng_manager.h"
 #include "vptr.h"
 #include "logixng_initializationmanager.h"
-#include "namedtablemanager.h"
+#include "defaultnamedtablemanager.h"
 
 /**
  * Class providing the basic logic of the LogixNG_Manager interface.
@@ -139,7 +139,7 @@
             result = result && logixNG->setParentForAllChildren(errors);
         }
         for (/*Module* module*/ NamedBean* nb: ((ModuleManager*)InstanceManager::getDefault("ModuleManager"))->getNamedBeanSet()) {
-         Module* module = static_cast<Module*>(nb);
+         Module* module = qobject_cast<Module*>(nb->self());
             module->setup();
             result = result && module->setParentForAllChildren(errors);
         }
@@ -378,7 +378,7 @@ void DLMRunnable::run()
         }
 
         ((ModuleManager*)InstanceManager::getDefault("ModuleManager"))->printTree(settings, locale, writer, indent, lineNumber);
-        ((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->printTree(locale, writer, indent);
+        ((DefaultNamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->printTree(locale, writer, indent);
         ((LogixNG_InitializationManager*)InstanceManager::getDefault("LogixNG_InitializationManager"))->printTree(locale, writer, indent);
     }
 
@@ -412,7 +412,7 @@ void DLMRunnable::run()
     /** {@inheritDoc} */
     //@Override
     /*public*/ void DefaultLogixNGManager::registerManager(Manager/*<? extends MaleSocket>*/* manager) {
-        _managers.insert(manager->self()->metaObject()->className(), manager);
+        _managers.insert(manager->mself()->metaObject()->className(), manager);
     }
 
     /** {@inheritDoc} */

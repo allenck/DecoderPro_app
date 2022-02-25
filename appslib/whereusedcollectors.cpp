@@ -106,7 +106,7 @@ WhereUsedCollectors::WhereUsedCollectors(QObject *parent) : QObject(parent)
     //InstanceManager.getDefault(LightManager.class).getNamedBeanSet().forEach((light) -> {
     foreach(NamedBean* nb, ((LightManager*)InstanceManager::getDefault("LightManager"))->getNamedBeanSet())
     {
-     Light* light = (Light*)nb;
+     Light* light = (Light*)nb->self();
      //light.getUsageReport(bean).forEach((report) -> {
      foreach(NamedBeanUsageReport* report, ((AbstractNamedBean*)light->self())->getUsageReport(bean))
      {

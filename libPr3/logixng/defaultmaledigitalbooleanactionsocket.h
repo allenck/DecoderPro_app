@@ -47,6 +47,8 @@ class DefaultMaleDigitalBooleanActionSocket : public AbstractMaleSocket, public 
   /*public*/  void setEnabledFlag(bool enable) override;
   /*public*/  bool isEnabled()override;
 
+  QObject* self() override {return (QObject*)this;}
+
  private:
   static Logger* log;
   //    /*private*/ /*final*/ DigitalBooleanActionBean ((DigitalBooleanActionBean)getObject());

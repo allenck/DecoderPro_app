@@ -10,6 +10,8 @@ class DefaultAnalogActionManagerXml : public AbstractManagerXml
 
  public:
   explicit DefaultAnalogActionManagerXml(QObject *parent = nullptr);
+  ~DefaultAnalogActionManagerXml() {}
+  DefaultAnalogActionManagerXml(const DefaultAnalogActionManagerXml&) : AbstractManagerXml(){}
   /*public*/  QDomElement store(QObject* o)override;
   /*public*/  void setStoreElementClass(QDomElement actions);
   /*public*/  void loadActions(QDomElement actions);
@@ -24,7 +26,5 @@ class DefaultAnalogActionManagerXml : public AbstractManagerXml
   /*protected*/ void replaceActionManager();
 
 };
-
-
-
+Q_DECLARE_METATYPE(DefaultAnalogActionManagerXml)
 #endif // DEFAULTANALOGACTIONMANAGERXML_H

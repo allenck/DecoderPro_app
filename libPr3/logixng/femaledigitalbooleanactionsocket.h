@@ -6,7 +6,7 @@
  * A female socket for DigitalBooleanAction
  */
 /*public*/ /*interface*/ class FemaleDigitalBooleanActionSocket
-        : public FemaleSocket, public DigitalBooleanAction {
+        : public virtual FemaleSocket, public DigitalBooleanAction {
  Q_INTERFACES(FemaleSocket DigitalBooleanAction)
 };
 Q_DECLARE_INTERFACE(FemaleDigitalBooleanActionSocket, "FemaleDigitalBooleanActionSocket")

@@ -23,7 +23,7 @@
  * @author Bob Jacobsen Copyright (C) 2010
  * @since 2.9.4
  */
- /*public*/ /*interface*/ class InstanceInitializer : public QObject
+ /*public*/ /*interface*/ class InstanceInitializer
  {
 
     /**
@@ -41,7 +41,7 @@
      *                                  supported by this InstanceInitalizer
      */
     //@Nonnull
- /*public*/ /*<T>*/ virtual QObject* getDefault(/*@Nonnull*/ /*Class<T>*/QString /*type*/) /*throw (IllegalArgumentException)*/ {return nullptr;}
+ /*public*/ /*<T>*/ virtual QObject* getDefault(/*@Nonnull*/ /*Class<T>*/QString /*type*/) const/*throw (IllegalArgumentException)*/ {return nullptr;}
 
     /**
      * Get the set of classes for which this InstanceInitializer can provide
@@ -53,4 +53,5 @@
     //@Nonnull
  /*public*/ virtual QSet</*Class<?>*/QString> getInitalizes() {return QSet<QString>();}
 };
+Q_DECLARE_INTERFACE(InstanceInitializer, "InstanceInitializer")
 #endif // INSTANCEINITIALIZER_H

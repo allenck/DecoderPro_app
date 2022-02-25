@@ -725,9 +725,9 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 #ifdef HAVE_LOGIXNG
     LogixNG_Manager* m1 = new DefaultLogixNGManager();
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {
-        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m1->self(), Manager::LOGIXNGS);
+        ((ConfigureManager*)InstanceManager::getDefault("ConfigureManager"))->registerConfig(m1->mself(), Manager::LOGIXNGS);
     }
-    InstanceManager::setDefault("LogixNG_Manager", m1->self());
+    InstanceManager::setDefault("LogixNG_Manager", m1->mself());
 #if 0
     ConditionalNG_Manager m2 = new DefaultConditionalNGManager();
     if (InstanceManager.getNullableDefault(ConfigureManager.class) != null) {

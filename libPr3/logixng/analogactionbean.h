@@ -8,7 +8,7 @@
  *
  * @author Daniel Bergqvist Copyright 2018
  */
-/*public*/ /*interface*/class AnalogActionBean : public NamedBean, public AnalogAction {
+/*public*/ /*interface*/class AnalogActionBean : public virtual NamedBean, public AnalogAction {
  //Q_OBJECT
   Q_INTERFACES(NamedBean AnalogAction)
  public:

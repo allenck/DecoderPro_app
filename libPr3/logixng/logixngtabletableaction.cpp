@@ -1,12 +1,13 @@
 #include "logixngtabletableaction.h"
 #include "loggerfactory.h"
-#include "namedtablemanager.h"
+#include "defaultnamedtablemanager.h"
 #include "tableeditor.h"
 #include "runtimeexception.h"
 #include "fileutil.h"
 #include "jfilechooser.h"
 #include "filenameextensionfilter.h"
 #include "gridbaglayout.h"
+
 /**
  * Swing action to create and register a LogixNG Table.
  * <p>
@@ -63,7 +64,7 @@
 
     //@Override
     /*protected*/ Manager/*<NamedTable>*/* LogixNGTableTableAction::getManager() {
-        return (NamedTableManager*)InstanceManager::getDefault("NamedTableManager");
+        return (DefaultNamedTableManager*)InstanceManager::getDefault("NamedTableManager");
     }
 
     //@Override
@@ -83,7 +84,7 @@
 
     //@Override
     /*protected*/ /*NamedTable**/NamedBean* LogixNGTableTableAction::createBean(QString userName) {
-        QString systemName = ((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->getAutoSystemName();
+        QString systemName = ((DefaultNamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->AbstractManager::getAutoSystemName();
         return createBean(systemName, userName);
     }
 
@@ -97,7 +98,7 @@
                         JOptionPane::ERROR_MESSAGE);
                 return nullptr;
             }
-            return (NamedBean*)((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))
+            return (NamedBean*)((DefaultNamedTableManager*)InstanceManager::getDefault("NamedTableManager"))
                     ->newCSVTable(systemName, userName, fileName);
         } else if (_typeInternalTable->isChecked()) {
             // Open table editor
@@ -113,7 +114,7 @@
     //@Override
     /*protected*/ void LogixNGTableTableAction::deleteBean(NamedBean* bean) {
         try {
-            ((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->deleteBean(bean, "DoDelete");
+            ((DefaultNamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->deleteBean((NamedTable*)bean->self(), "DoDelete");
         } catch (PropertyVetoException* e) {
             //At this stage the DoDelete shouldn't fail, as we have already done a can delete, which would trigger a veto
             log->error(e->getMessage());

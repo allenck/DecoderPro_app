@@ -73,8 +73,8 @@ ProxyLightManagerTest::ProxyLightManagerTest(QObject *parent) : QObject(parent)
         // test that you always get the same representation
         Light* t1 = l->newLight(getSystemName(getNumToTest1()), "mine");
         Assert::assertTrue("t1 real object returned ", t1 != nullptr, __FILE__, __LINE__);
-        Assert::assertTrue("same by user ", t1 == (Light*)l->getByUserName("mine"), __FILE__, __LINE__);
-        Assert::assertTrue("same by system ", t1 ==(Light*) l->getBySystemName(getSystemName(getNumToTest1())), __FILE__, __LINE__);
+        Assert::assertTrue("same by user ", t1 == (Light*)l->getByUserName("mine")->self(), __FILE__, __LINE__);
+        Assert::assertTrue("same by system ", t1 ==(Light*) l->getBySystemName(getSystemName(getNumToTest1()))->self(), __FILE__, __LINE__);
 
         Light* t2 = l->newLight(getSystemName(getNumToTest1()), "mine");
         Assert::assertTrue("t2 real object returned ", t2 != nullptr, __FILE__, __LINE__);
@@ -102,7 +102,7 @@ ProxyLightManagerTest::ProxyLightManagerTest(QObject *parent) : QObject(parent)
         Light* t1 = l->newLight(getSystemName(getNumToTest1()), "before");
         Assert::assertNotNull("t1 real object ", t1->self(), __FILE__, __LINE__);
         ((AbstractNamedBean*)t1->self())->setUserName("after");
-        Light* t2 = (Light*)l->getByUserName("after");
+        Light* t2 = (Light*)l->getByUserName("after")->self();
         Assert::assertEquals("same object", t1, t2, __FILE__, __LINE__);
         Assert::assertEquals("no old object", nullptr, l->getByUserName("before")->self(), __FILE__, __LINE__);
     }

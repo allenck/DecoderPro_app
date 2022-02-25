@@ -51,7 +51,7 @@ class MaleSocketFactory;
      * @throws java.beans.PropertyVetoException If the recipients wishes the
      *                                          delete to be aborted (see above)
      */
-    /*public*/ virtual void deleteBean(/*@Nonnull*/ MaleSocket* maleSocket, /*@Nonnull*/ QString property) /*throw (PropertyVetoException)*/=0;
+  /*public*/ virtual void deleteBean(/*@Nonnull*/ MaleSocket* maleSocket, /*@Nonnull*/ QString property) /*throw (PropertyVetoException)*/{};
 
     /**
      * Get the default male socket class
@@ -69,7 +69,7 @@ class MaleSocketFactory;
      * Register a male socket factory.
      * @param factory the factory
      */
-    /*public*/ virtual void registerMaleSocketFactory(MaleSocketFactory/*<E>*/* factory)=0;
+  /*public*/ virtual void registerMaleSocketFactory(MaleSocketFactory/*<E>*/* factory){}
 
   //virtual QObject* self() =0;
 

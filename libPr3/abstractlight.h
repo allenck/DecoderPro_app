@@ -6,7 +6,7 @@
 #include "lightcontrol.h"
 #include "libPr3_global.h"
 
-class LIBPR3SHARED_EXPORT AbstractLight :  public AbstractNamedBean, public Light
+class LIBPR3SHARED_EXPORT AbstractLight :  public AbstractNamedBean, public virtual Light
 {
     Q_OBJECT
     Q_INTERFACES(Light)

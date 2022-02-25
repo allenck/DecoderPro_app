@@ -12,7 +12,7 @@
  * @author Dave Duchamp       Copyright (C) 2007
  * @author Daniel Bergqvist   Copyright (C) 2018
  */
-/*public*/ /*interface*/class  NamedTableManager : public Manager/*<NamedTable>*/ {
+/*public*/ /*interface*/class  NamedTableManager : public virtual Manager/*<NamedTable>*/ {
 
   Q_INTERFACES(Manager)
  public:
@@ -99,11 +99,11 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ NamedBean* getByUserName(QString name)override; // NamedTable
+    /*public*/ virtual NamedBean* getByUserName(QString name)override=0; // NamedTable
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ NamedBean* getBySystemName(QString name);// NamedTable
+    virtual /*public*/ NamedBean* getBySystemName(QString name)=0;// NamedTable
 
     /**
      * Create a new system name for a LogixNG.

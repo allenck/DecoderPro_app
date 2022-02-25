@@ -9,13 +9,13 @@
 #include "threadingutil.h"
 
 class ExecuteTask;
-class DefaultConditionalNG : public AbstractBase, public  ConditionalNG, FemaleSocketListener
+class DefaultConditionalNG : public AbstractBase, public  ConditionalNG, public FemaleSocketListener
 {
  Q_OBJECT
   Q_INTERFACES(ConditionalNG FemaleSocketListener)
  public:
   explicit DefaultConditionalNG(QString sys, QString user, QObject *parent = nullptr);
-  /*public*/  DefaultConditionalNG(QString sys, QString user, int threadID, QObject *parent);
+  /*public*/  DefaultConditionalNG(QString sys, QString user, int threadID, QObject *parent=nullptr);
   /*public*/  LogixNG_Thread* getCurrentThread()override;
   /*public*/  int getStartupThreadId()override;
   /*public*/  void setStartupThreadId(int threadId)override;
@@ -49,6 +49,9 @@ class DefaultConditionalNG : public AbstractBase, public  ConditionalNG, FemaleS
   /*public*/  void registerListenersForThisClass()override;
   /*public*/  void unregisterListenersForThisClass()override;
   /*public*/  Base* getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames)override;
+
+  QObject* self() override {return (QObject*)this;}
+  QObject* bself() override {return (QObject*)this;}
 
  private:
   static Logger* log;

@@ -1,11 +1,12 @@
 #include "logixng_instanceinitializer.h"
-//#include "DefaultConditionalNGManager.h"
+#include "defaultconditionalngmanager.h"
 #include "defaultfemalesocketmanager.h"
 #include "defaultlogixnginitializationmanager.h"
 #include "defaultlogixngmanager.h"
 #include "defaultlogixngpreferences.h"
-//#include "DefaultNamedTableManager.h"
-//#include "DefaultModuleManager.h"
+#include "defaultnamedtablemanager.h"
+#include "defaultmodulemanager.h"
+
 /**
  * Provide the usual default implementations for the
  * {@link jmri.InstanceManager}.
@@ -31,15 +32,15 @@
 // /*public*/  class LogixNG_InstanceInitializer extends AbstractInstanceInitializer {
 
     //@Override
-    /*public*/  /*<T>*/ QObject* LogixNG_InstanceInitializer::getDefault(QString type) {
+    /*public*/  /*<T>*/ QObject* LogixNG_InstanceInitializer::getDefault(QString type) const {
 
         // In order for getDefault() to be called for a particular manager,
         // the manager also needs to be added to the method getInitalizes()
         // below.
 
-//        if (type == "ConditionalNG_Manager") {
-//            return new DefaultConditionalNGManager();
-//        }
+        if (type == "ConditionalNG_Manager") {
+            return new DefaultConditionalNGManager();
+        }
 
         if (type == "FemaleSocketManager") {
             return new DefaultFemaleSocketManager();
@@ -57,13 +58,13 @@
             return new DefaultLogixNGPreferences();
         }
 
-//        if (type == "ModuleManager") {
-//            return new DefaultModuleManager();
-//        }
+        if (type == "ModuleManager") {
+            return new DefaultModuleManager();
+        }
 
-//        if (type == "NamedTableManager") {
-//            return new DefaultNamedTableManager();
-//        }
+        if (type == "NamedTableManager") {
+            return new DefaultNamedTableManager();
+        }
 
         return AbstractInstanceInitializer::getDefault(type);
     }

@@ -155,7 +155,7 @@
  */
 int LightIcon::lightState()
 {
- if (light != NULL) return ((AbstractLight*)light)->getState();
+ if (light != NULL) return ((AbstractLight*)light->self())->getState();
  // This doesn't seem right. (Light.UNKNOWN = Light.ON = 0X01)
     //else return Light.UNKNOWN;
  else return Light::INCONSISTENT;
@@ -260,7 +260,7 @@ void LightIcon::updateLight()
  setOnIcon(_iconEditor->getIcon("LightStateOn"));
  setUnknownIcon(_iconEditor->getIcon("BeanStateUnknown"));
  setInconsistentIcon(_iconEditor->getIcon("BeanStateInconsistent"));
- setLight((Light*)_iconEditor->getTableSelection());
+ setLight((Light*)_iconEditor->getTableSelection()->self());
  _iconEditorFrame->dispose();
  _iconEditorFrame = NULL;
  _iconEditor = NULL;
@@ -343,11 +343,11 @@ NamedIcon* LightIcon::getIcon(QString sState)
   return;
  }
  if (log->isDebugEnabled())
-  log->debug("doMouseClicked state= " + ((AbstractLight*)light)->getState());
- if (((AbstractLight*)light)->getState()==Light::OFF)
-  ((AbstractLight*)light)->setState(Light::ON);
+  log->debug("doMouseClicked state= " + ((AbstractLight*)light->self())->getState());
+ if (((AbstractLight*)light->self())->getState()==Light::OFF)
+  ((AbstractLight*)light->self())->setState(Light::ON);
  else
-  ((AbstractLight*)light)->setState(Light::OFF);
+  ((AbstractLight*)light->self())->setState(Light::OFF);
  _editor->addToTarget((Positionable*)this);
 }
 
@@ -387,7 +387,7 @@ NamedIcon* LightIcon::getIcon(QString sState)
 
  if(getLight() != NULL)
  {
-  int iState = ((AbstractLight*)getLight())->getState();
+  int iState = ((AbstractLight*)getLight()->self())->getState();
   QPixmap pixmap = QPixmap::fromImage(getIcon(iState)->getImage());
   setSize(pixmap.width(), pixmap.height());
   //   QGraphicsPixmapItem* item = g2->addPixmap(pixmap);

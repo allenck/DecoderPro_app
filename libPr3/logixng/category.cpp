@@ -106,3 +106,4 @@
         if (_order > c->order()) return 1;
         return 0;
     }
+/*private*/ /*static*/ /*volatile*/ QList<Category*> Category::_categories = QList<Category*>();

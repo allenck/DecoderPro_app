@@ -247,7 +247,7 @@
      */
     /*final*/ /*protected*/ void TreeEditor::addPressed(FemaleSocket* femaleSocket, TreePath* path) {
 
-        QMap<Category*, QList</*Class<? extends Base>*/QString>* > connectableClasses =
+        QHash<Category*, QList</*Class<? extends Base>*/QString> > connectableClasses =
                 femaleSocket->getConnectableClasses();
 
         _categoryComboBox->clear();
@@ -265,9 +265,9 @@
         connect(_categoryComboBox, &JComboBox::itemStateChanged, [=] {
             Category* category = VPtr<Category>::asPtr(_categoryComboBox->getItemAt(_categoryComboBox->getSelectedIndex()));
             _swingConfiguratorComboBox->clear();
-            QList</*Class<? extends Base>*/QString>* classes = connectableClasses.value(category);
-            if (!classes->isEmpty()) {
-                for (/*Class<? extends Base>*/QString clazz : *classes) {
+            QList</*Class<? extends Base>*/QString> classes = connectableClasses.value(category);
+            if (!classes.isEmpty()) {
+                for (/*Class<? extends Base>*/QString clazz : classes) {
                     SwingConfiguratorInterface* sci = SwingTools::getSwingConfiguratorForClass( clazz);
                     if (sci != nullptr) {
                         _swingConfiguratorComboBox->addItem(VPtr<SwingConfiguratorInterface>::asQVariant(sci));

@@ -61,7 +61,7 @@
  * @author Ken Cameron Copyright (C) 2008
  * @author Bob Jacobsen Copyright (C) 2008
  */
-/*public*/ /*interface*/ class VariableLight : public Light, public AnalogIO
+/*public*/ /*interface*/ class VariableLight : public virtual Light, public AnalogIO
 {
   //Q_OBJECT
   Q_INTERFACES(Light AnalogIO)

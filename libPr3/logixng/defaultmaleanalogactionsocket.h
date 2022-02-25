@@ -50,6 +50,9 @@ class DefaultMaleAnalogActionSocket : public AbstractMaleSocket, public MaleAnal
   /*public*/  bool isEnabled()override;
   /*public*/  void disposeMe()override;
 
+  QObject* self() override {return (QObject*)this;}
+  QObject* bself() override {return (QObject*)this;}
+
  private:
   static Logger* log;
   //    /*private*/ /*/*final*/*/ AnalogActionBean ((AnalogActionBean)getObject());

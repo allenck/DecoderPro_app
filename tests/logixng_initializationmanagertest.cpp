@@ -53,9 +53,9 @@
         MyAction::getLogixNG("IQ8", "LogixNG* 8", getAB(), printWriter, 0, LogixNG_Thread::DEFAULT_LOGIXNG_THREAD);
         MyAction::getLogixNG("IQ3", "LogixNG* 3", getAB(), printWriter, 0, LogixNG_Thread::DEFAULT_LOGIXNG_THREAD);
 
-        LogixNG* l2 = (LogixNG*)((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->getBySystemName("IQ2");
-        LogixNG* l7 = (LogixNG*)((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->getBySystemName("IQ7");
-        LogixNG* l8 = (LogixNG*)((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->getBySystemName("IQ8");
+        LogixNG* l2 = (LogixNG*)((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->getBySystemName("IQ2")->self();
+        LogixNG* l7 = (LogixNG*)((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->getBySystemName("IQ7")->self();
+        LogixNG* l8 = (LogixNG*)((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->getBySystemName("IQ8")->self();
 
         LogixNG_InitializationManager* initManager = (LogixNG_InitializationManager*)
                 InstanceManager::getDefault("LogixNG_InitializationManager");
@@ -120,7 +120,7 @@
                 long delay) : ActionAtomicBoolean(ab, false){
 
             //super(ab, false);
-            setUserName(userName);
+            AbstractBase::setUserName(userName);
             _ab = ab;
             _printWriter = printWriter;
             _delay = delay;
@@ -129,14 +129,14 @@
         //@Override
         /*public*/  void MyAction::execute() {
 //            System.out.format("%s: start\n", getUserName());
-            _printWriter->format("%s: start\n", getUserName());
+            _printWriter->format("%s: start\n", AbstractBase::getUserName().toStdString().c_str());
             try {
                 SleeperThread::msleep(_delay);
             } catch (InterruptedException* ex) {
 //                ex.printStackTrace(_printWriter);
             }
 //            System.out.format("%s: end\n", getUserName());
-            _printWriter->format("%s: end\n", getUserName());
+            _printWriter->format("%s: end\n", AbstractBase::getUserName().toStdString().c_str());
             _printWriter->flush();
             _ab->set(true);
         }

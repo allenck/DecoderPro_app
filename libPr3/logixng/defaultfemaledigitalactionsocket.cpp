@@ -40,7 +40,7 @@
     }
 
     //@Override
-    /*public*/  QMap<Category *, QList<QString>* > DefaultFemaleDigitalActionSocket::getConnectableClasses() {
+    /*public*/  QHash<Category *, QList<QString> > DefaultFemaleDigitalActionSocket::getConnectableClasses() {
         return ((DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->getActionClasses();
     }
 

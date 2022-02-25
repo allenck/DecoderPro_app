@@ -45,7 +45,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
  * @return Null if nothing by that name exists
  */
 /*public*/ Light* ProxyLightManager::getLight(QString name) {
-  return (Light*) AbstractProxyManager::getNamedBean(name);
+  return (Light*) AbstractProxyManager::getNamedBean(name)->self();
 }
 
 /*protected*/ NamedBean* ProxyLightManager::makeBean(AbstractManager *manager, QString systemName, QString userName)
@@ -73,7 +73,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
 //@Nonnull
 /*public*/ Light* ProxyLightManager::provideLight(QString name) {
  if(name.isEmpty()) throw new NullPointerException(tr("System Name is null"));
- return (Light*)AbstractProvidingProxyManager::provideNamedBean(name);
+ return (Light*)AbstractProvidingProxyManager::provideNamedBean(name)->self();
 }
 
 /**
@@ -117,7 +117,7 @@ ProxyLightManager::ProxyLightManager(QObject *parent) :
 //@Nonnull
 /*public*/ Light* ProxyLightManager::newLight(/*@Nonnull*/QString systemName, QString userName) {
  if(systemName.isEmpty()) throw new IllegalArgumentException(tr("System Name is null"));
-    return (Light*) newNamedBean(systemName, userName);
+    return (Light*) newNamedBean(systemName, userName)->self();
 }
 ///*public*/ NamedBean* ProxyLightManager::newNamedBean(QString systemName, QString userName) {
 //    // if the systemName is specified, find that system

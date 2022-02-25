@@ -50,6 +50,8 @@ class DefaultMaleStringExpressionSocket : public AbstractMaleSocket, public Male
                 return config;
             }
         };
+  QObject* self() override {return (QObject*)this;}
+  QObject* bself() override {return (QObject*)this;}
 
  private:
   static Logger* log;

@@ -8,6 +8,8 @@ class DefaultDigitalBooleanActionManagerXml : public AbstractManagerXml
   Q_OBJECT
  public:
   explicit DefaultDigitalBooleanActionManagerXml(QObject *parent = nullptr);
+  ~DefaultDigitalBooleanActionManagerXml() {}
+  DefaultDigitalBooleanActionManagerXml(const DefaultDigitalBooleanActionManagerXml&) : AbstractManagerXml() {}
   /*public*/  QDomElement store(QObject* o)override;
   /*public*/  void setStoreElementClass(QDomElement actions);
   /*public*/  bool load(QDomElement sharedAction, QDomElement perNodeAction)override;
@@ -24,5 +26,5 @@ class DefaultDigitalBooleanActionManagerXml : public AbstractManagerXml
   /*protected*/ void replaceActionManager();
 
 };
-
+Q_DECLARE_METATYPE(DefaultDigitalBooleanActionManagerXml)
 #endif // DEFAULTDIGITALBOOLEANACTIONMANAGERXML_H

@@ -21,7 +21,7 @@ public:
      * @return a set of entries with category and class
      */
 //    /*public*/ Set<Map.Entry<Category, Class<? extends Base>>> getClasses();
-     /*public*/ virtual const QSet<QHash<Category*, QString> >getClasses()=0;
+     /*public*/ virtual  QSet<QHash<Category*, QString> >getClasses()=0;
   virtual QObject* self() =0;
 };
 Q_DECLARE_INTERFACE(AnalogExpressionFactory, "AnalogExpressionFactory")

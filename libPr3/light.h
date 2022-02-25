@@ -5,7 +5,7 @@
 #include "digitalio.h"
 
 class LightControl;
-class Light :  /* public AbstractNamedBean,*/ public DigitalIO, public NamedBean
+class Light :  /* public AbstractNamedBean,*/ public DigitalIO, public virtual NamedBean
 {
     //Q_OBJECT
   Q_INTERFACES(NamedBean DigitalIO)

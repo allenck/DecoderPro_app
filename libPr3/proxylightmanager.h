@@ -40,7 +40,7 @@ public:
 
   /*public*/ SystemConnectionMemo* getMemo() override {return AbstractProxyManager::getMemo();}
   /*public*/ QSet<NamedBean*> getNamedBeanSet() override {return AbstractProxyManager::getNamedBeanSet();}
-  /*public*/ Light* getBySystemName(QString name) override {return (Light*)AbstractProxyManager::getBySystemName(name);}
+  /*public*/ Light* getBySystemName(QString name) override {return (Light*)AbstractProxyManager::getBySystemName(name)->self();}
   /*public*/ void addPropertyChangeListener(PropertyChangeListener* l) override{AbstractProxyManager::addPropertyChangeListener(l);}
   /*public*/ void removePropertyChangeListener(PropertyChangeListener* l) override{AbstractProxyManager::removePropertyChangeListener(l);}
 

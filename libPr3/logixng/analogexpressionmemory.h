@@ -33,6 +33,7 @@ class AnalogExpressionMemory : public AbstractAnalogExpression, public PropertyC
 
   QObject* self() override {return (QObject*)this;}
   QObject* bself() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
 
   QString getUserName()const override {return AbstractBase::getUserName();}
  public slots:

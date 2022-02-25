@@ -3,6 +3,7 @@
 
 #include "abstractswingconfigurator.h"
 #include "threadingutil.h"
+#include "joptionpane.h"
 
 class AbstractAnalogExpressionSwing : public AbstractSwingConfigurator
 {
@@ -12,6 +13,7 @@ class AbstractAnalogExpressionSwing : public AbstractSwingConfigurator
   explicit AbstractAnalogExpressionSwing(QObject *parent = nullptr) : AbstractSwingConfigurator(parent) {};
   /*public*/  QString getExecuteEvaluateMenuText()override;
   /*public*/  void executeEvaluate(/*@Nonnull*/ Base* object)override;
+  void run();
   /*public*/  BaseManager/*<? extends NamedBean>*/* getManager()override;
   /*public*/  JPanel* getConfigPanel(/*@Nonnull*/ JPanel* buttonPanel) /*throws IllegalArgumentException */override;
   /*public*/  JPanel* getConfigPanel(/*@Nonnull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel) /*throws IllegalArgumentException*/override;
@@ -23,7 +25,7 @@ class AbstractAnalogExpressionSwing : public AbstractSwingConfigurator
 
  protected:
   /*protected*/ JPanel* panel;
-  /*protected*/ /*abstract*/virtual void createPanel(/*@CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel);
+  /*protected*/ /*abstract*/virtual void createPanel(/*@CheckForNull*/ Base* object, /*@Nonnull*/ JPanel* buttonPanel)=0;
 
 };
 
@@ -42,6 +44,22 @@ class AbstractAnalogExpressionSwingTA1 : public ThreadAction
    this->log = log;
   }
   void run();
+};
+
+class AbstractAnalogExpressionSwingRun1 : public ThreadAction
+{
+  Q_OBJECT
+   double result;
+ public:
+   AbstractAnalogExpressionSwingRun1(double result) {this->result = result;}
+  void run()
+  {
+   JOptionPane::showMessageDialog(nullptr,
+           tr("The result of the expression is: %1").arg(result),
+           tr("The expression has been evaluated"),
+           JOptionPane::PLAIN_MESSAGE);
+
+  }
 };
 
 #endif // ABSTRACTANALOGEXPRESSIONSWING_H

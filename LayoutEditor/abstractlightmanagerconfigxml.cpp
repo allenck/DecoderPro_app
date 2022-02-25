@@ -56,7 +56,7 @@ AbstractLightManagerConfigXML::~AbstractLightManagerConfigXML()
   // store the lights
   for (NamedBean* nb : lightList)
   {
-   Light* lgt = (Light*)nb;
+   Light* lgt = (Light*)nb->self();
    QString sname = nb->getSystemName();
    log->debug("system name is "+sname);
    QDomElement elem = doc.createElement("light");
@@ -69,11 +69,11 @@ AbstractLightManagerConfigXML::~AbstractLightManagerConfigXML()
    storeCommon(nb, elem);
 
    if (qobject_cast<VariableLight*>(lgt->self())) {
-       elem.setAttribute("minIntensity",  QString::number(((VariableLight*)lgt)->getMinIntensity()));
-       elem.setAttribute("maxIntensity", QString::number(((VariableLight*)lgt)->getMaxIntensity()));
+       elem.setAttribute("minIntensity",  QString::number(((VariableLight*)lgt->self())->getMinIntensity()));
+       elem.setAttribute("maxIntensity", QString::number(((VariableLight*)lgt->self())->getMaxIntensity()));
 
        // write transition attribute
-       elem.setAttribute("transitionTime", QString::number(((VariableLight*)lgt)->getTransitionTime()));
+       elem.setAttribute("transitionTime", QString::number(((VariableLight*)lgt->self())->getTransitionTime()));
    } else {
        elem.setAttribute("minIntensity", "0.0");
        elem.setAttribute("maxIntensity", "1.0");
@@ -191,13 +191,13 @@ AbstractLightManagerConfigXML::~AbstractLightManagerConfigXML()
          // variable intensity, transition attributes
          double value;
          value = el.attribute("minIntensity").toDouble();
-         ((VariableLight*)lgt)->setMinIntensity(value);
+         ((VariableLight*)lgt->self())->setMinIntensity(value);
 
          value = el.attribute("maxIntensity").toDouble();
-         ((VariableLight*)lgt)->setMaxIntensity(value);
+         ((VariableLight*)lgt->self())->setMaxIntensity(value);
 
          value = el.attribute("transitionTime").toDouble();
-         ((VariableLight*)lgt)->setTransitionTime(value);
+         ((VariableLight*)lgt->self())->setTransitionTime(value);
      }
 
      // provide for legacy light control - panel files written by 2.9.5 or before

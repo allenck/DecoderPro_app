@@ -337,7 +337,7 @@ LightControlTest::LightControlTest(QObject *parent) : QObject(parent)
     int startListeners = timebase->getMinuteChangeListeners().length();
 
     lc = new DefaultLightControl();
-    lc->setParentLight((AbstractLight*)l);
+    lc->setParentLight((AbstractLight*)l->self());
     lc->setControlType(Light::FAST_CLOCK_CONTROL);
     lc->setFastClockControlSchedule(3, 0, 4, 0); // onHr, OnMin, OffHr, OffMin
 

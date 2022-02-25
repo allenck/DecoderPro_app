@@ -94,12 +94,12 @@ LightIntensityPane::LightIntensityPane()
  */
 /*public*/ void LightIntensityPane::setToLight(Light* light){
     if (qobject_cast<VariableLight*>(light->self())) {
-        minIntensity->setValue(((VariableLight*)light)->getMinIntensity()); // displayed as percentage
-        maxIntensity->setValue(((VariableLight*)light)->getMaxIntensity());
-        if (((VariableLight*)light)->isTransitionAvailable()) {
-            transitionTime->setValue(((VariableLight*)light)->getTransitionTime()); // displays i18n decimal separator eg. 0,00 in _nl
+        minIntensity->setValue(((VariableLight*)light->self())->getMinIntensity()); // displayed as percentage
+        maxIntensity->setValue(((VariableLight*)light->self())->getMaxIntensity());
+        if (((VariableLight*)light->self())->isTransitionAvailable()) {
+            transitionTime->setValue(((VariableLight*)light->self())->getTransitionTime()); // displays i18n decimal separator eg. 0,00 in _nl
         }
-        setupVariableDisplay(true, ((VariableLight*)light)->isTransitionAvailable());
+        setupVariableDisplay(true, ((VariableLight*)light->self())->isTransitionAvailable());
     } else {
         setupVariableDisplay(false, false);
     }

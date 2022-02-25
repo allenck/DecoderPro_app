@@ -8,7 +8,7 @@
 #include "runtimeexception.h"
 #include "vptr.h"
 #include "conditionalng.h"
-#include "namedtablemanager.h"
+#include "defaultnamedtablemanager.h"
 #include "typeconversionutil.h"
 #include "variable.h"
 #include "recursivedescentparser.h"
@@ -97,21 +97,21 @@
             {
                 QString ref = ReferenceUtil::getReference(
                         getConditionalNG()->getSymbolTable(), _tableReference);
-                table = (Table*)((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))
+                table = (Table*)((DefaultNamedTableManager*)InstanceManager::getDefault("NamedTableManager"))
                         ->getNamedBean(ref)->self();
                 break;
             }
             case NamedBeanAddressing::LocalVariable:
             {
                 SymbolTable* symbolTable = getConditionalNG()->getSymbolTable();
-                table = (Table*) ((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))
+                table = (Table*) ((DefaultNamedTableManager*)InstanceManager::getDefault("NamedTableManager"))
                         ->getNamedBean(TypeConversionUtil::
                                 convertToString(symbolTable->getValue(_tableLocalVariable), false))->self();
                 break;
             }
             case NamedBeanAddressing::Formula:
                 table = _tableExpressionNode != nullptr ?
-                       (Table*) ((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))
+                       (Table*) ((DefaultNamedTableManager*)InstanceManager::getDefault("NamedTableManager"))
                                 ->getNamedBean(TypeConversionUtil
                                         ::convertToString(_tableExpressionNode->calculate(
                                                 getConditionalNG()->getSymbolTable()), false))->self()
@@ -179,7 +179,7 @@
 
     /*public*/  void TableForEach::setTable(/*@Nonnull*/ QString tableName) {
         assertListenersAreNotRegistered(log, "setTable");
-        NamedTable* table = ((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->getNamedTable(tableName);
+        NamedTable* table = ((DefaultNamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->getNamedTable(tableName);
         if (table != nullptr) {
             setTable(table);
         } else {
@@ -200,7 +200,7 @@
     /*public*/  void TableForEach::setTable(/*@Nonnull*/ NamedBeanHandle<NamedTable*>* handle) {
         assertListenersAreNotRegistered(log, "setTable");
         _tableHandle = handle;
-        ((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->addVetoableChangeListener(this);
+        ((DefaultNamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->VetoableChangeSupport::addVetoableChangeListener(this);
     }
 
     /*public*/  void TableForEach::setTable(/*@Nonnull*/ NamedTable* turnout) {
@@ -212,7 +212,7 @@
     /*public*/  void TableForEach::removeTable() {
         assertListenersAreNotRegistered(log, "setTable");
         if (_tableHandle != nullptr) {
-            ((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->removeVetoableChangeListener(this);
+            ((DefaultNamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->VetoableChangeSupport::removeVetoableChangeListener(this);
             _tableHandle = nullptr;
         }
     }

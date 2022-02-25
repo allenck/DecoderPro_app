@@ -52,6 +52,8 @@ class DefaultMaleDigitalExpressionSocket : public AbstractMaleSocket, public Mal
   /*public*/  void unregisterListenersForThisClass()override;
   /*public*/  QString getDisplayName()override;
 
+  QObject* self() override {return (QObject*)this;}
+
  private:
   static Logger* log;
   /*private*/ bool lastEvaluationResult = false;

@@ -6,12 +6,16 @@
 
 class Base;
 class Category;
-class AnalogFactory : public AnalogExpressionFactory
+class AnalogFactory : public QObject, public AnalogExpressionFactory
 {
+  Q_OBJECT
   Q_INTERFACES(AnalogExpressionFactory)
  public:
-  AnalogFactory();
-  /*public*/ const QSet<QHash<Category*, /*Class<? extends Base>*/QString> > getClasses();
+  AnalogFactory(QObject* parent = nullptr) : QObject(parent) { setObjectName("AnalogFactory");}
+  /*public*/ QSet<QHash<Category*, /*Class<? extends Base>*/QString> > getClasses()override;
+
+  QObject* self() override {return (QObject*)this;}
+
 };
 
 #endif // ANALOGFACTORY_H

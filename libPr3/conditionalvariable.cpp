@@ -477,7 +477,7 @@ void ConditionalVariable::common()
     }
     case Conditional::ITEM_TYPE_LIGHT:
     {
-            Light* lgt = (Light*) getBean();
+            Light* lgt = (Light*) getBean()->self();
             if (lgt == nullptr) {
                 log->error("invalid light name= \""+getName()+"\" in state variable");
                 return (false);

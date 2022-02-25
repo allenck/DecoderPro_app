@@ -8,7 +8,7 @@
  *
  * @author Daniel Bergqvist Copyright 2020
  */
-/*public*/ /*interface*/class  MaleAnalogActionSocketFactory : MaleSocketFactory/*<MaleAnalogActionSocket>*/ {
+/*public*/ /*interface*/class  MaleAnalogActionSocketFactory : public MaleSocketFactory/*<MaleAnalogActionSocket>*/ {
 Q_INTERFACES(MaleSocketFactory<MaleAnalogActionSocket>)
  public:
 };

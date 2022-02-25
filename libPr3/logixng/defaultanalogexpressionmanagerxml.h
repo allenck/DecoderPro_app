@@ -8,6 +8,8 @@ class DefaultAnalogExpressionManagerXml : public AbstractManagerXml
   Q_OBJECT
  public:
   DefaultAnalogExpressionManagerXml(QObject* parent = nullptr);
+  ~DefaultAnalogExpressionManagerXml() {}
+  DefaultAnalogExpressionManagerXml(const DefaultAnalogExpressionManagerXml&) : AbstractManagerXml() {}
   /*public*/  QDomElement store(QObject* o)override;
   /*public*/  void setStoreElementClass(QDomElement expressions);
   /*public*/  bool load(QDomElement sharedExpression, QDomElement perNodeExpression)override;
@@ -19,5 +21,5 @@ class DefaultAnalogExpressionManagerXml : public AbstractManagerXml
  protected:    /*protected*/ void replaceExpressionManager();
 
 };
-
+Q_DECLARE_METATYPE(DefaultAnalogExpressionManagerXml)
 #endif // DEFAULTANALOGEXPRESSIONMANAGERXML_H

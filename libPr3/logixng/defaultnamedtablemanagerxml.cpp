@@ -160,7 +160,7 @@
 
 //@Override
 /*public*/  int DefaultNamedTableManagerXml::loadOrder() const {
-    return ((NamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->getXMLOrder();
+    return ((DefaultNamedTableManager*)InstanceManager::getDefault("NamedTableManager"))->getXMLOrder();
 }
 
 /*private*/ /*final*/ /*static*/ Logger* DefaultNamedTableManagerXml::log = LoggerFactory::getLogger("DefaultNamedTableManagerXml");

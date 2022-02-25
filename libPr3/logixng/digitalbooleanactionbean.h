@@ -8,7 +8,7 @@
  *
  * @author Daniel Bergqvist Copyright 2018
  */
-/*public*/ /*interface*/class DigitalBooleanActionBean : public NamedBean, public DigitalBooleanAction {
+/*public*/ /*interface*/class DigitalBooleanActionBean : public virtual NamedBean, public DigitalBooleanAction {
 
   //Q_OBJECT
   Q_INTERFACES(NamedBean DigitalBooleanAction)

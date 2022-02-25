@@ -329,7 +329,7 @@
     } // check for a light
     else if (systemName.at(prefix.length() + 1) == 'L') {
         Light* lgt = nullptr;
-        lgt = (Light*)InstanceManager::lightManagerInstance()->getBySystemName(systemName);
+        lgt = (Light*)InstanceManager::lightManagerInstance()->getBySystemName(systemName)->self();
         if (lgt != nullptr) {
             return ((AbstractLight*)lgt->self())->AbstractNamedBean::getUserName();
         } else {

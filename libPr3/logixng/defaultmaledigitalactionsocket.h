@@ -49,6 +49,8 @@ class DefaultMaleDigitalActionSocket : public AbstractMaleSocket, public MaleDig
   /*public*/  void setEnabledFlag(bool enable)override;
   /*public*/  bool isEnabled()override;
 
+  QObject* self() override {return (QObject*)this;}
+
  private:
   static Logger* log;
   //    /*private*/ /*final*/ DigitalActionBean ((DigitalActionBean)getObject());

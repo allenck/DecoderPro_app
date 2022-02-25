@@ -8,6 +8,8 @@ class DefaultDigitalExpressionManagerXml : public AbstractManagerXml
   Q_OBJECT
  public:
   explicit DefaultDigitalExpressionManagerXml(QObject *parent = nullptr);
+  ~DefaultDigitalExpressionManagerXml() {}
+  DefaultDigitalExpressionManagerXml(const DefaultDigitalExpressionManagerXml&) : AbstractManagerXml() {}
   /*public*/  QDomElement store(QObject* o)override;
   /*public*/  void setStoreElementClass(QDomElement expressions);
   /*public*/  bool load(QDomElement sharedExpression, QDomElement perNodeExpression)override;
@@ -22,5 +24,5 @@ class DefaultDigitalExpressionManagerXml : public AbstractManagerXml
   /*protected*/ void replaceExpressionManager();
 
 };
-
+Q_DECLARE_METATYPE(DefaultDigitalExpressionManagerXml)
 #endif // DEFAULTDIGITALEXPRESSIONMANAGERXML_H

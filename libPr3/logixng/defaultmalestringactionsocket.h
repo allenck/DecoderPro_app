@@ -48,6 +48,7 @@ class DefaultMaleStringActionSocket : public AbstractMaleSocket, public MaleStri
   /*public*/  void setEnabledFlag(bool enable)override;
   /*public*/  bool isEnabled()override;
 
+  QObject* self() override {return (QObject*)this;}
 
  private:
   /*private*/ DebugConfig* _debugConfig = nullptr;

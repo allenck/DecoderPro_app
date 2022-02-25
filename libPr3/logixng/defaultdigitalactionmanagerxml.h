@@ -8,6 +8,8 @@ class DefaultDigitalActionManagerXml : public AbstractManagerXml
 {
  public:
   explicit DefaultDigitalActionManagerXml(QObject *parent = nullptr);
+  ~DefaultDigitalActionManagerXml() {}
+  DefaultDigitalActionManagerXml(const DefaultDigitalActionManagerXml&) : AbstractManagerXml() {}
   /*public*/  QDomElement store(QObject* o)override;
   /*public*/  void setStoreElementClass(QDomElement actions);
   /*public*/  bool load(QDomElement sharedAction, QDomElement perNodeAction)override;
@@ -22,5 +24,5 @@ class DefaultDigitalActionManagerXml : public AbstractManagerXml
   /*protected*/ void replaceActionManager();
 
 };
-
+Q_DECLARE_METATYPE(DefaultDigitalActionManagerXml)
 #endif // DEFAULTDIGITALACTIONMANAGERXML_H

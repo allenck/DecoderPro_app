@@ -58,10 +58,10 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
  * @return NULL if no match found
  */
 /*public*/ Light* AbstractLightManager::getLight(QString name) {
-    Light* t = (Light*)getByUserName(name);
+    Light* t = (Light*)getByUserName(name)->self();
     if (t!=NULL) return t;
 
-    return (Light*)getBySystemName(name);
+    return (Light*)getBySystemName(name)->self();
 }
 
 /**
@@ -96,16 +96,16 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
  // return existing if there is one
  Light* l = nullptr;
  if (userName != "") {
-     l = (Light*)getByUserName(userName);
+     l = (Light*)getByUserName(userName)->self();
      if (l != nullptr) {
-         if ((Light*)getBySystemName(systemName) != l) {
+         if ((Light*)getBySystemName(systemName)->self() != l) {
              log->error(tr("inconsistent user '%1' and system name '%2' results; user name related to %3").arg(
                  userName, systemName, l->getSystemName()));
          }
          return l;
      }
  }
- l = (Light*)getBySystemName(systemName);
+ l = (Light*)getBySystemName(systemName)->self();
  if (l != nullptr) {
      if ((l->getUserName() == "") && (userName != "")) {
          l->setUserName(userName);
@@ -156,7 +156,7 @@ AbstractLightManager::AbstractLightManager(SystemConnectionMemo* memo, QObject *
         }
         else {
             log->debug("Activated Light system name is "+systemName);
-            ((Light*)getBySystemName(systemName))->activateLight();
+            ((Light*)getBySystemName(systemName)->self())->activateLight();
         }
     }
 }

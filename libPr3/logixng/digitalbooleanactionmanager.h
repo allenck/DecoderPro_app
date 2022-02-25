@@ -12,7 +12,7 @@
  * @author Dave Duchamp       Copyright (C) 2007
  * @author Daniel Bergqvist   Copyright (C) 2018
  */
-/*public*/ /*interface*/class  DigitalBooleanActionManager : public BaseManager/*<MaleDigitalBooleanActionSocket>*/ {
+/*public*/ /*interface*/class  DigitalBooleanActionManager : public virtual BaseManager/*<MaleDigitalBooleanActionSocket>*/ {
   Q_INTERFACES(BaseManager)
 public:
     /**
@@ -30,7 +30,7 @@ public:
      * Create a new system name for an DigitalBooleanActionBean.
      * @return a new system name
      */
-    /*public*/ virtual QString getAutoSystemName()=0;
+  /*public*/ virtual QString getAutoSystemName(){return "?";}
 
     /*public*/ virtual FemaleDigitalBooleanActionSocket* createFemaleSocket(
             Base* parent, FemaleSocketListener* listener, QString socketName)=0;
@@ -40,7 +40,7 @@ public:
      *
      * @return a set of entries with category and class
      */
-    /*public*/ virtual QMap<Category*, QList<QString> > getActionClasses()=0;
+    /*public*/ virtual QHash<Category*, QList<QString> > getActionClasses()=0;
 
     /*.*
      * Add an DigitalBooleanActionBean.

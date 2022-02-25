@@ -10,7 +10,7 @@
  * @author Daniel Bergqvist   Copyright (C) 2018
  * @author Dave Sand          Copyright (C) 2021
  */
-/*public*/ /*interface*/class ConditionalNG_Manager : public Manager/*<ConditionalNG>*/ {
+/*public*/ /*interface*/class ConditionalNG_Manager : public virtual Manager/*<ConditionalNG>*/ {
  Q_INTERFACES(Manager)
  public:
     /**
@@ -22,7 +22,7 @@
      * @return a new ConditionalNG or null if unable to create
      */
     /*public*/virtual  ConditionalNG* createConditionalNG(LogixNG* logixNG, QString systemName, QString userName)
-            throw (IllegalArgumentException)=0;
+            /*throw (IllegalArgumentException)*/=0;
 
     /**
      * For use with User GUI, to allow the auto generation of systemNames, where
@@ -33,7 +33,7 @@
      * @return a new ConditionalNG or null if unable to create
      */
     /*public*/virtual ConditionalNG* createConditionalNG(LogixNG* logixNG, QString userName)
-            throw (IllegalArgumentException);
+            /*throw (IllegalArgumentException)*/=0;
 
     /**
      * Create a new ConditionalNG if the ConditionalNG does not exist.
@@ -46,7 +46,7 @@
      */
     /*public*/virtual ConditionalNG* createConditionalNG(
             LogixNG* logixNG, QString systemName, QString userName, int threadID)
-            throw (IllegalArgumentException)=0;
+            /*throw (IllegalArgumentException)*/=0;
 
     /**
      * For use with User GUI, to allow the auto generation of systemNames, where
@@ -58,7 +58,7 @@
      * @return a new ConditionalNG or null if unable to create
      */
     /*public*/virtual ConditionalNG* createConditionalNG(LogixNG* logixNG, QString userName, int threadID)
-            throw (IllegalArgumentException)=0;
+            /*throw (IllegalArgumentException)*/=0;
 
     /**
      * Locate via user name using the LogixNG, then system name if needed. Does not create a new
@@ -87,11 +87,11 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ NamedBean* getByUserName(QString name)  override;
+    /*public*/ virtual NamedBean* getByUserName(QString name) override {return nullptr;}
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ /*ConditionalNG*/NamedBean* getBySystemName(QString name) override;
+    /*public*/ /*ConditionalNG*/NamedBean* getBySystemName(QString name) override =0;
 
     /**
      * {@inheritDoc}
@@ -108,7 +108,7 @@
      * Create a new system name for a ConditionalNG.
      * @return a new system name
      */
-    /*public*/ virtual QString getAutoSystemName()=0;
+  /*public*/ virtual QString getAutoSystemName() {return "";}
 
     /**
      * Delete ConditionalNG by removing it from the manager. The ConditionalNG must first
@@ -136,5 +136,5 @@
     /*public*/virtual  void setRunOnGUIDelayed(bool value)=0;
 
 };
-
+Q_DECLARE_INTERFACE(ConditionalNG_Manager, "ConditionalNG_Manager")
 #endif // CONDITIONALNG_MANAGER_H

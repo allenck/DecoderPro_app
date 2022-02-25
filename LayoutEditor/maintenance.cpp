@@ -467,7 +467,7 @@ Maintenance::Maintenance(QObject *parent) :
  }
 
  LightManager* lightManager = InstanceManager::lightManagerInstance();
- Light* l =(Light*) ((AbstractLightManager*)lightManager)->getBySystemName(sysName);
+ Light* l =(Light*) ((AbstractLightManager*)lightManager)->getBySystemName(sysName)->self();
  if ( l!=NULL )
  {
    userName = ((AbstractNamedBean*)l->self())->getUserName();
@@ -475,7 +475,7 @@ Maintenance::Maintenance(QObject *parent) :
  }
  else
  {
-   l = (Light*)((AbstractLightManager*)lightManager)->getBySystemName(userName.toUpper());
+   l = (Light*)((AbstractLightManager*)lightManager)->getBySystemName(userName.toUpper())->self();
    if (l!=NULL)
    {
     sysName = ((NamedBean*)l)->getSystemName();
@@ -484,7 +484,7 @@ Maintenance::Maintenance(QObject *parent) :
    }
    else
    {
-    l = (Light*)((AbstractLightManager*)lightManager)->getByUserName(userName);
+    l = (Light*)((AbstractLightManager*)lightManager)->getByUserName(userName)->self();
     if ( l!=NULL )
     {
      sysName = ((AbstractNamedBean*)l->self())->getSystemName();

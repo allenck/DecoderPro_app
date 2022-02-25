@@ -24,7 +24,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  QMap<Category*, QList</*Class<? extends Base>*/QString>*> DefaultFemaleAnalogActionSocket::getConnectableClasses() {
+    /*public*/  QHash<Category *, QList<QString> > DefaultFemaleAnalogActionSocket::getConnectableClasses() {
         return ((AnalogActionManager*)InstanceManager::getDefault("AnalogActionManager"))->getActionClasses();
     }
 

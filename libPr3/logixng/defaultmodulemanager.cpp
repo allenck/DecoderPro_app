@@ -97,13 +97,13 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  Module* DefaultModuleManager::getByUserName(QString name) {
-        return (Module*)_tuser->value(name);
+        return (Module*)_tuser->value(name)->self();
     }
 
     /** {@inheritDoc} */
     //@Override
     /*public*/  Module* DefaultModuleManager::getBySystemName(QString name) {
-        return (Module*)_tsys->value(name);
+        return (Module*)_tsys->value(name)->self();
     }
 
     /** {@inheritDoc} */
@@ -117,7 +117,7 @@
     /*public*/  bool DefaultModuleManager::resolveAllTrees(QList<QString> errors) {
         bool result = true;
         for (NamedBean* nb : _tsys->values()) {
-         Module* logixNG_Module = (Module*)nb;
+         Module* logixNG_Module = (Module*)nb->self();
             result = result && logixNG_Module->setParentForAllChildren(errors);
         }
         return result;
@@ -127,7 +127,7 @@
     //@Override
     /*public*/  void DefaultModuleManager::setupAllModules() {
         for (NamedBean* nb : _tsys->values()) {
-         Module* logixNG = (Module*)nb;
+         Module* logixNG = (Module*)nb->self();
             logixNG->setup();
         }
     }
@@ -161,7 +161,7 @@
             /*MutableInt*/int* lineNumber) {
 
         for (NamedBean* nb : AbstractManager::getNamedBeanSet()) {
-         Module* module = (Module*)nb;
+         Module* module = (Module*)nb->self();
             module->printTree(settings, locale, writer, indent, QString(), lineNumber);
             writer->println();
         }
@@ -216,8 +216,8 @@
     //@Override
 //    @OverridingMethodsMustInvokeSuper
     /*public*/  /*final*/ void DefaultModuleManager::deleteBean(/*@Nonnull*/ /*Module**/NamedBean* module, /*@Nonnull*/ QString property) /*throws PropertyVetoException*/ {
-        for (int i=0; i < ((Module*)module)->getChildCount(); i++) {
-            FemaleSocket* child = ((Module*)module)->getChild(i);
+        for (int i=0; i < ((Module*)module->self())->getChildCount(); i++) {
+            FemaleSocket* child = ((Module*)module->self())->getChild(i);
             if (child->isConnected()) {
                 MaleSocket* maleSocket = child->getConnectedSocket();
                 maleSocket->getManager()->deleteBean(maleSocket, property);
@@ -225,7 +225,7 @@
         }
 
         // throws PropertyVetoException if vetoed
-        fireVetoableChange(property, VPtr<Module>::asQVariant(((Module*)module)));
+        fireVetoableChange(property, VPtr<Module>::asQVariant(((Module*)module->self())));
         if (property == ("DoDelete")) { // NOI18N
             AbstractManager::deregister(module);
             module->NamedBean::dispose();

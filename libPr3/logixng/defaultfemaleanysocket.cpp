@@ -11,6 +11,7 @@
      : AbstractFemaleSocket(parent, listener, name, parentObject)
     {
         //super(parent, listener, name);
+     setObjectName("DefaultFemaleAnySocket");
     }
 
     //@Override
@@ -24,8 +25,8 @@
     }
 
     //@Override
-    /*public*/ QMap<Category*, QList<QString>* > DefaultFemaleAnySocket::getConnectableClasses() {
-     return QMap<Category*, QList<QString>* >();
+    /*public*/ QHash<Category*, QList<QString> > DefaultFemaleAnySocket::getConnectableClasses() {
+     return QHash<Category*, QList<QString> >();
     }
 
     //@Override

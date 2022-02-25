@@ -11,7 +11,7 @@
  * @author Dave Duchamp       Copyright (C) 2007
  * @author Daniel Bergqvist   Copyright (C) 2018
  */
-/*public*/ /*interface*/ class AnalogActionManager : public BaseManager/*<MaleAnalogActionSocket>*/ {
+/*public*/ /*interface*/ class AnalogActionManager : public virtual BaseManager/*<MaleAnalogActionSocket>*/ {
      Q_INTERFACES(BaseManager)
  public:
     /**
@@ -23,23 +23,22 @@
      * @throws IllegalArgumentException if the action has an invalid system name
      */
     /*public*/virtual  MaleAnalogActionSocket* registerAction(/*@Nonnull*/ AnalogActionBean* action)
-            /*throws IllegalArgumentException*/;
+            /*throws IllegalArgumentException*/=0;
 
     /**
      * Create a new system name for an AnalogActionBean.
      * @return a new system name
      */
-    /*public*/ virtual QString getAutoSystemName()=0;
-
-    /*public*/ FemaleAnalogActionSocket* createFemaleSocket(
-            Base* parent, FemaleSocketListener* listener, QString socketName);
+  /*public*/ virtual QString getAutoSystemName() {return "?";}
+    /*public*/virtual FemaleAnalogActionSocket* createFemaleSocket(
+            Base* parent, FemaleSocketListener* listener, QString socketName)=0;
 
     /**
      * Get a set of classes that implements the DigitalAction interface.
      *
      * @return a set of entries with category and class
      */
-    /*public*/ QMap<Category*, QList</*Class<? extends Base>*/QString >* > getActionClasses();
+    /*public*/virtual QHash<Category*, QList</*Class<? extends Base>*/QString > > getActionClasses()=0;
 
     /*.*
      * Add an Action.

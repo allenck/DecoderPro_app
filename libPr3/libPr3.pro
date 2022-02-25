@@ -1138,6 +1138,35 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+ logixng/actionfactory.cpp \
+ logixng/categoryloconet.cpp \
+ logixng/debuggermaleanalogactionsocket.cpp \
+ logixng/debuggermaleanalogactionsocketfactory.cpp \
+ logixng/debuggermaledigitalactionsocket.cpp \
+ logixng/debuggermaledigitalactionsocketfactory.cpp \
+ logixng/debuggermaledigitalbooleanactionsocket.cpp \
+ logixng/debuggermaledigitalbooleanactionsocketfactory.cpp \
+ logixng/debuggermaledigitalexpressionsocket.cpp \
+ logixng/debuggermaledigitalexpressionsocketfactory.cpp \
+ logixng/debuggermalestringactionsocket.cpp \
+ logixng/debuggermalestringactionsocketfactory.cpp \
+ logixng/debuggermalestringexpressionsocket.cpp \
+ logixng/debuggermalestringexpressionsocketfactory.cpp \
+ logixng/defaultanalogactionmanager.cpp \
+ logixng/defaultconditionalngmanager.cpp \
+ logixng/defaultdigitalactionmanager.cpp \
+ logixng/defaultdigitalbooleanactionmanager.cpp \
+ logixng/defaultdigitalexpressionmanager.cpp \
+ logixng/defaultfemaledigitalbooleanactionsocket.cpp \
+ logixng/defaultstringactionmanager.cpp \
+ logixng/defaultstringexpressionmanager.cpp \
+ logixng/digitalbooleanfactory.cpp \
+ logixng/digitalfactory.cpp \
+ logixng/expressionfactory.cpp \
+ logixng/logixng_analoginstanceinitializer.cpp \
+ logixng/logixng_digitalinstanceinitializer.cpp \
+ logixng/logixng_stringinstanceinitializer.cpp \
+ logixng/stringfactory.cpp \
  logixng/abstractdebuggermalesocketswing.cpp \
  logixng/abstractdigitalexpressionswing.cpp \
  logixng/abstractstringactionswing.cpp \
@@ -2399,6 +2428,36 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+ logixng/actionfactory.h \
+ logixng/categoryloconet.h \
+ logixng/debuggermaleanalogactionsocket.h \
+ logixng/debuggermaleanalogactionsocketfactory.h \
+ logixng/debuggermaledigitalactionsocket.h \
+ logixng/debuggermaledigitalactionsocketfactory.h \
+ logixng/debuggermaledigitalbooleanactionsocket.h \
+ logixng/debuggermaledigitalbooleanactionsocketfactory.h \
+ logixng/debuggermaledigitalexpressionsocket.h \
+ logixng/debuggermaledigitalexpressionsocketfactory.h \
+ logixng/debuggermalestringactionsocket.h \
+ logixng/debuggermalestringactionsocketfactory.h \
+ logixng/debuggermalestringexpressionsocket.h \
+ logixng/debuggermalestringexpressionsocketfactory.h \
+ logixng/defaultanalogactionmanager.h \
+ logixng/defaultconditionalngmanager.h \
+ logixng/defaultdigitalactionmanager.h \
+ logixng/defaultdigitalbooleanactionmanager.h \
+ logixng/defaultdigitalexpressionmanager.h \
+ logixng/defaultfemaledigitalbooleanactionsocket.h \
+ logixng/defaultstringactionmanager.h \
+ logixng/defaultstringexpressionmanager.h \
+ logixng/digitalbooleanfactory.h \
+ logixng/digitalexpressionfactory.h \
+ logixng/digitalfactory.h \
+ logixng/expressionfactory.h \
+ logixng/logixng_analoginstanceinitializer.h \
+ logixng/logixng_digitalinstanceinitializer.h \
+ logixng/logixng_stringinstanceinitializer.h \
+ logixng/stringfactory.h \
  logixng/abstractdebuggermalesocketswing.h \
  logixng/abstractdigitalexpressionswing.h \
  logixng/abstractstringactionswing.h \

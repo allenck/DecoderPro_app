@@ -44,6 +44,7 @@ class DefaultModuleManager : public AbstractManager, public ModuleManager
 
   QObject* self() override {return (QObject*)this;}
   QObject* vself() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
 
  private:
   static /*volatile*/ DefaultModuleManager* _instance;// = nullptr;

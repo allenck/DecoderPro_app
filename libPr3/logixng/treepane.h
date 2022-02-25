@@ -31,7 +31,7 @@ class TreePane : public JPanel, public PropertyChangeListener
   /*public*/  void updateTree(Base* item);
   /*public*/  void dispose();
 
-  QObject* self() override {return (QObject*)this; }
+  QObject* pself() override {return (QObject*)this; }
  public slots:
   /*public*/  void propertyChange(PropertyChangeEvent* evt)override;
 

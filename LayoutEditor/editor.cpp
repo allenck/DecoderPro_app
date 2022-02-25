@@ -2591,7 +2591,7 @@ void Editor::addSlip()
  l->setOnIcon(editor->getIcon("LightStateOn"));
  l->setInconsistentIcon(editor->getIcon("BeanStateInconsistent"));
  l->setUnknownIcon(editor->getIcon("BeanStateUnknown"));
- l->setLight((Light*)editor->getTableSelection());
+ l->setLight((Light*)editor->getTableSelection()->self());
  l->setDisplayLevel(LIGHTS);
  //setNextLocation(l);
  ((Positionable*)l)->setLocation(_lastX, _lastY);

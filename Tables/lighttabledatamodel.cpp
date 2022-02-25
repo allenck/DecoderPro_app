@@ -183,7 +183,7 @@
         switch (mindex.column()) {
             case INTENSITYCOL:
                 //return getValueAt(row, SYSNAMECOL) instanceof VariableLight;
-             if(static_cast<VariableLight*>(l))
+             if(qobject_cast<VariableLight*>(l->self()))
               return Qt::ItemIsEnabled | Qt::ItemIsEditable;
              else {
               return Qt::ItemIsEnabled;
@@ -230,7 +230,7 @@
             return tr("Edit");
         case INTENSITYCOL:
          if (qobject_cast<VariableLight*>(l->self())) {
-             return ((VariableLight*)l)->getTargetIntensity();
+             return ((VariableLight*)l->self())->getTargetIntensity();
          } else {
              return 0.0;
          }
@@ -312,9 +312,9 @@
          case INTENSITYCOL:
              // alternate
              try {
-                 if (static_cast<VariableLight*>(l)) {
+                 if (qobject_cast<VariableLight*>(l->self())) {
                      double intensity = qMax(0., qMin(1.0,  value.toDouble()));
-                     ((VariableLight*)l)->setTargetIntensity(intensity);
+                     ((VariableLight*)l->self())->setTargetIntensity(intensity);
                  } else {
                      double intensity = ( value.toDouble());
                      l->setCommandedState( intensity > 0.5 ? Light::ON : Light::OFF);
@@ -352,7 +352,7 @@
      */
     //@Override
     /*protected*/ void LightTableDataModel::doDelete(NamedBean* bean) {
-        ((Light*)bean)->deactivateLight();
+        ((Light*)bean->self())->deactivateLight();
         BeanTableDataModel::doDelete(bean);
     }
 

@@ -12,7 +12,7 @@
  * @author Dave Duchamp       Copyright (C) 2007
  * @author Daniel Bergqvist   Copyright (C) 2018
  */
-/*public*/ /*interface*/ class DigitalActionManager : public BaseManager/*<MaleDigitalActionSocket>*/ {
+/*public*/ /*interface*/ class DigitalActionManager : public virtual BaseManager/*<MaleDigitalActionSocket>*/ {
 
  public:
     /**
@@ -30,7 +30,7 @@
      * Create a new system name for an DigitalActionBean.
      * @return a new system name
      */
-    /*public*/ virtual QString getAutoSystemName()=0;
+  /*public*/ virtual QString getAutoSystemName() {return "?";}
 
     /*public*/ virtual FemaleDigitalActionSocket* createFemaleSocket(
             Base* parent, FemaleSocketListener* listener, QString socketName)=0;
@@ -40,7 +40,7 @@
      *
      * @return a set of entries with category and class
      */
-    /*public*/ virtual QMap<Category*, QList</*Class<? extends Base>*/QString>* > getActionClasses()=0;
+    /*public*/ virtual QHash<Category*, QList</*Class<? extends Base>*/QString> > getActionClasses()=0;
 
     /**
      * {@inheritDoc}
@@ -62,4 +62,5 @@
     /*public*/ virtual void deleteDigitalAction(MaleDigitalActionSocket* x)=0;
 
 };
+Q_DECLARE_INTERFACE(DigitalActionManager, "DigitalActionManager")
 #endif // DIGITALACTIONMANAGER_H

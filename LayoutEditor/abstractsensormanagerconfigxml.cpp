@@ -132,7 +132,7 @@ AbstractSensorManagerConfigXML::~AbstractSensorManagerConfigXML()
  * @return true if succeeded
  */
 //@SuppressWarnings("unchecked")
-/*public*/ bool AbstractSensorManagerConfigXML::loadSensors(QDomElement sensors) throw (JmriConfigureXmlException)
+/*public*/ bool AbstractSensorManagerConfigXML::loadSensors(QDomElement sensors) /*throw (JmriConfigureXmlException)*/
 {
  bool result = true;
  QDomNodeList sensorList = sensors.elementsByTagName("sensor");

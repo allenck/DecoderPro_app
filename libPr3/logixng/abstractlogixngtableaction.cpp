@@ -231,7 +231,7 @@
 //                table.setDefaultRenderer(bool.class, new EnablingCheckboxRenderer());
 //                table.setDefaultRenderer(JComboBox.class, new jmri.jmrit.symbolicprog.ValueRenderer());
 //                table.setDefaultEditor(JComboBox.class, new jmri.jmrit.symbolicprog.ValueEditor());
-                if (!(qobject_cast<LogixNG_Manager*>(getManager()->self()))) {
+                if (!(qobject_cast<LogixNG_Manager*>(getManager()->mself()))) {
                     table->getColumnModel()->getColumn(2)->setMinWidth(0);
                     table->getColumnModel()->getColumn(2)->setMaxWidth(0);
                 }

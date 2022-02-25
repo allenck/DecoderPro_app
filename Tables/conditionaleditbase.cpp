@@ -1160,12 +1160,12 @@ QString ConditionalEditBase::validateLightReference(QString name) {
     Light* l = NULL;
     if (name != NULL) {
         if (name.length() > 0) {
-            l = (Light*)InstanceManager::lightManagerInstance()->getByUserName(name);
+            l = (Light*)InstanceManager::lightManagerInstance()->getByUserName(name)->self();
             if (l != NULL) {
                 return name;
             }
         }
-        l = (Light*)InstanceManager::lightManagerInstance()->getBySystemName(name);
+        l = (Light*)InstanceManager::lightManagerInstance()->getBySystemName(name)->self();
     }
     if (l == NULL) {
         messageInvalidActionItemName(name, "Light"); // NOI18N
@@ -1319,11 +1319,11 @@ Light* ConditionalEditBase::getLight(QString name) {
     }
     Light* l = NULL;
     if (name.length() > 0) {
-        l = (Light*)((ProxyLightManager*)InstanceManager::lightManagerInstance())->getByUserName(name);
+        l = (Light*)((ProxyLightManager*)InstanceManager::lightManagerInstance())->getByUserName(name)->self();
         if (l != NULL) {
             return l;
         }
-        l = (Light*)((ProxyLightManager*)InstanceManager::lightManagerInstance())->AbstractProxyManager::getBySystemName(name);
+        l = (Light*)((ProxyLightManager*)InstanceManager::lightManagerInstance())->AbstractProxyManager::getBySystemName(name)->self();
     }
     if (l == NULL) {
         messageInvalidActionItemName(name, "Light"); //NOI18N

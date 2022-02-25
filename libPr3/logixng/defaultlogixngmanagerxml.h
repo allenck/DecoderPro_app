@@ -24,5 +24,5 @@ class DefaultLogixNGManagerXml : public AbstractNamedBeanManagerConfigXML
   /*protected*/ void replaceLogixNGManager();
 
 };
-
+Q_DECLARE_METATYPE(DefaultLogixNGManagerXml);
 #endif // DEFAULTLOGIXNGMANAGERXML_H

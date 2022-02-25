@@ -8,6 +8,8 @@ class DefaultStringExpressionManagerXml : public AbstractManagerXml
   Q_OBJECT
  public:
   explicit DefaultStringExpressionManagerXml(QObject *parent = nullptr);
+  ~DefaultStringExpressionManagerXml(){}
+  DefaultStringExpressionManagerXml(const DefaultStringExpressionManagerXml&) : AbstractManagerXml() {}
   /*public*/  QDomElement store(QObject* o)override;
   /*public*/  void setStoreElementClass(QDomElement expressions);
   /*public*/  bool load(QDomElement sharedExpression, QDomElement perNodeExpression)override;
@@ -22,5 +24,5 @@ class DefaultStringExpressionManagerXml : public AbstractManagerXml
   /*protected*/ void replaceExpressionManager();
 
 };
-
+Q_DECLARE_METATYPE(DefaultStringExpressionManagerXml)
 #endif // DEFAULTSTRINGEXPRESSIONMANAGERXML_H

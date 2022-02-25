@@ -54,6 +54,8 @@ class DefaultLogixNGManager : public AbstractManager, public LogixNG_Manager
 
   QObject* self() override {return (QObject*)this;}
   QObject* vself() override {return (QObject*)this;}
+  QObject* pself() override {return (QObject*)this;}
+  QObject* mself() override {return (QObject*)this;}
 
  private:
   static Logger* log;

@@ -7,7 +7,7 @@
  *
  * @author Daniel Bergqvist Copyright 2018
  */
-/*public*/ /*interface*/ class AnalogAction : public Base {
+/*public*/ /*interface*/ class AnalogAction : public virtual Base {
 public:
   Q_INTERFACES()
     /**

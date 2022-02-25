@@ -33,20 +33,21 @@
 
 //        conditionalNG->getCurrentThread()->runOnLogixNGEventually(new  AbstractAnalogExpressionSwingTA1(object, conditionalNG, symbolTable, log));
     }
-#if 0
+
         void AbstractAnalogExpressionSwingTA1::run()
         {
             SymbolTable* oldSymbolTable = conditionalNG->getSymbolTable();
 
             try {
                 conditionalNG->setSymbolTable(symbolTable);
-                double result = ((AnalogExpression*)object)->evaluate();
-                ThreadingUtil::runOnGUIEventually(() -> {
-                    JOptionPane::showMessageDialog(nullptr,
-                            tr("The result of the expression is: %1").arg(result),
-                            tr("The expression has been evaluated"),
-                            JOptionPane::PLAIN_MESSAGE);
-                });
+                double result = ((AnalogExpression*)object->bself())->evaluate();
+//                ThreadingUtil::runOnGUIEventually([]()  {
+//                    JOptionPane::showMessageDialog(nullptr,
+//                            tr("The result of the expression is: %1").arg(result),
+//                            tr("The expression has been evaluated"),
+//                            JOptionPane::PLAIN_MESSAGE);
+//                });
+                ThreadingUtil::runOnGUIEventually(new AbstractAnalogExpressionSwingRun1(result));
             } catch (JmriException* e) {
                 log->warn(tr("ConditionalNG %1 got an exception during execute: %2").arg(
                         conditionalNG->NamedBean::getSystemName(), e->toString()), e);
@@ -58,7 +59,7 @@
             conditionalNG->setSymbolTable(oldSymbolTable);
         }//);
     //}
-#endif
+
     /** {@inheritDoc} */
     //@Override
     /*public*/  BaseManager/*<? extends NamedBean>*/* AbstractAnalogExpressionSwing::getManager() {

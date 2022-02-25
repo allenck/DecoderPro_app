@@ -59,7 +59,7 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  QMap<Category*, QList</*Class<? extends Base>*/QString>*> DefaultFemaleAnalogExpressionSocket::getConnectableClasses() {
+    /*public*/  QHash<Category*, QList</*Class<? extends Base>*/QString>> DefaultFemaleAnalogExpressionSocket::getConnectableClasses() {
         return ((AnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager"))->getExpressionClasses();
     }
 

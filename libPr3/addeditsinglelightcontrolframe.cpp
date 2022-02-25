@@ -468,7 +468,7 @@
                 QString testSN = prefix + "L"
                         + turnoutName.mid(prefix.length() + 1);
                 Light* testLight = (Light*)((LightManager*)InstanceManager::getDefault("LightManager"))->
-                        getBySystemName(testSN);
+                        getBySystemName(testSN)->self();
                 if (testLight != nullptr) {
                     // Requested turnout bit is already assigned to a Light
                     notifyUser(tr("LightWarning: Requested Turnout uses the same address as Light:Warn3") + " " + testSN + ".",Qt::red);

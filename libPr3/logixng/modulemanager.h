@@ -50,11 +50,11 @@ class MutableInt;
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ NamedBean* getByUserName(QString name)  override;
+    /*public*/ virtual Module* getByUserName(QString name)override=0;
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/ NamedBean* getBySystemName(QString name)  override;
+    /*public*/ Module* getBySystemName(QString name)  override =0;
 
     /**
      * Create a new system name for a Module.

@@ -125,12 +125,12 @@
 }
 
 //@Override
-/*public*/  QString AbstractMaleSocket::getComment() {
+/*public*/  QString DefaultMaleAnalogExpressionSocket::getComment() {
     return ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->NamedBean::getComment();
 }
 
 //@Override
-/*public*/  void AbstractMaleSocket::setComment(QString comment) {
+/*public*/  void DefaultMaleAnalogExpressionSocket::setComment(QString comment) {
     ((AnalogExpressionBean*)AbstractMaleSocket::getObject()->bself())->NamedBean::setComment(comment);
 }
 

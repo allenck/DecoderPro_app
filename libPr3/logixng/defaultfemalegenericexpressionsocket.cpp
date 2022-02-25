@@ -167,25 +167,28 @@
     }
 
     /*private*/ void DefaultFemaleGenericExpressionSocket::addClassesToMap(
-     QMap<Category*, QList</*Class<? extends Base>*/QString>* > destinationClasses,
-     QMap<Category*, QList</*Class<? extends Base>*/QString>* > sourceClasses){
+     QHash<Category*, QList</*Class<? extends Base>*/QString> > destinationClasses,
+     QHash<Category*, QList</*Class<? extends Base>*/QString> > sourceClasses){
 
         for (Category* category : Category::values()) {
             // Some categories might not have any expression.
-            if (sourceClasses.value(category) ->isEmpty()) continue;
+            if (sourceClasses.value(category).isEmpty()) continue;
 
-            for (/*Class<? extends Base>*/QString clazz : *sourceClasses.value(category)) {
-                destinationClasses.value(category)->append(clazz);
+            for (/*Class<? extends Base>*/QString clazz : sourceClasses.value(category)) {
+             //destinationClasses.value(category).append(clazz);
+             QList<QString> c = destinationClasses.value(category);
+             c.append(clazz);
+             destinationClasses.insert(category, c); // this replaces!
             }
         }
     }
 
     //@Override
-    /*public*/  QMap<Category*, QList</*Class<? extends Base>*/QString>*> DefaultFemaleGenericExpressionSocket::getConnectableClasses() {
-        QMap<Category*, QList</*Class<? extends Base>*/QString>*> classes = QMap<Category*, QList</*Class<? extends Base>*/QString>*>();
+    /*public*/  QHash<Category *, QList<QString> > DefaultFemaleGenericExpressionSocket::getConnectableClasses() {
+        QHash<Category*, QList</*Class<? extends Base>*/QString>> classes = QHash<Category*, QList</*Class<? extends Base>*/QString>>();
 
         for (Category* category : Category::values()) {
-            classes.insert(category, new QList<QString>());
+            classes.insert(category, QList<QString>());
         }
 
         addClassesToMap(classes, ((AnalogExpressionManager*)InstanceManager::getDefault(/*AnalogExpressionManager*/))->getExpressionClasses());

@@ -38,7 +38,7 @@ class LEAResetAction : public AbstractAction
  public slots:
     //@Override
     /*public*/ void actionPerformed(JActionEvent* /*e*/) override{
-        lea->lcp->setToLight((Light*)lea->bean);
+        lea->lcp->setToLight((Light*)lea->bean->self());
     }
 };
 
@@ -51,7 +51,7 @@ class LEASaveAction : public AbstractAction
  public slots:
     //@Override
     /*public*/ void actionPerformed(JActionEvent* /*e*/) override{
-        lea->lcp->setLightFromControlTable((Light*)lea->bean);
+        lea->lcp->setLightFromControlTable((Light*)lea->bean->self());
     }
 };
 

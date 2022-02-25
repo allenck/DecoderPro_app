@@ -702,7 +702,7 @@ void TurnoutTableAction::createPressed(ActionEvent* /*e*/)
   sName=prefix+InstanceManager::turnoutManagerInstance()->typeLetter()+curAddress;
   QString testSN = prefix+"L"+curAddress;
   Light* testLight = (Light*)((ProxyLightManager*)InstanceManager::lightManagerInstance())->
-          AbstractProxyManager::getBySystemName(testSN);
+          AbstractProxyManager::getBySystemName(testSN)->self();
   if (testLight != NULL)
   {
    // Address is already used as a Light

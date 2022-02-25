@@ -903,7 +903,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      break;
     }
     case Conditional::ACTION_SET_LIGHT:
-     lgt = (Light*)nb;
+     lgt = (Light*)nb->self();
      if (lgt == nullptr)
      {
       errorList.append("invalid light name in action - "+action->getDeviceName());
@@ -913,18 +913,18 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
       act = action->getActionData();
       if (act == Route::TOGGLE)
       {
-       state = ((AbstractLight*)lgt)->getState();
+       state = ((AbstractLight*)lgt->self())->getState();
        if (state == Light::ON)
            act = Light::OFF;
        else
            act =Light::ON;
       }
-      ((AbstractLight*)lgt)->setState(act);
+      ((AbstractLight*)lgt->self())->setState(act);
       actionCount++;
      }
      break;
     case Conditional::ACTION_SET_LIGHT_INTENSITY:
-     lgt = (Light*)nb;
+     lgt = (Light*)nb->self();
      if (lgt == nullptr)
      {
       errorList.append("invalid light name in action - "+action->getDeviceName());
@@ -938,7 +938,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
        {
         break;
        }
-       ((AbstractLight*)lgt)->setTargetIntensity((value)/100.0);
+       ((AbstractLight*)lgt->self())->setTargetIntensity((value)/100.0);
        actionCount++;
       }
       catch (IllegalArgumentException e)
@@ -948,7 +948,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
      }
      break;
    case Conditional::ACTION_SET_LIGHT_TRANSITION_TIME:
-    lgt = (Light*)nb;
+    lgt = (Light*)nb->self();
     if (lgt == nullptr)
     {
          errorList.append("invalid light name in action - "+action->getDeviceName());
@@ -962,7 +962,7 @@ DataPair* DefaultConditional::parseCalculate(QString s, QList <ConditionalVariab
       {
         break;
       }
-      ((AbstractLight*)lgt)->setTransitionTime(value);
+      ((AbstractLight*)lgt->self())->setTransitionTime(value);
       actionCount++;
      }
      catch (IllegalArgumentException e)

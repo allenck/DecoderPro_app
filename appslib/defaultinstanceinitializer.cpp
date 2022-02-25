@@ -678,10 +678,10 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
   InstanceManager::store(mgr, type);
   return mgr;
  }
- LogixNG_InstanceInitializer* lint = new LogixNG_InstanceInitializer();
- QObject* obj = lint->getDefault(type);
- if(obj)
-  return  obj;
+// LogixNG_InstanceInitializer* lint = new LogixNG_InstanceInitializer();
+// QObject* obj = lint->getDefault(type);
+// if(obj)
+//  return  obj;
 #endif
  // this is an error!
  //throw new IllegalArgumentException("Cannot create object of type "+type);

@@ -14,7 +14,7 @@ class FemaleSocketListener;
 class FemaleStringExpressionSocket;
 class MaleStringExpressionSocket;
 class StringExpressionBean;
-/*public*/ /*interface*/class StringExpressionManager : public BaseManager/*<MaleStringExpressionSocket>*/ {
+/*public*/ /*interface*/class StringExpressionManager : public virtual BaseManager/*<MaleStringExpressionSocket>*/ {
 Q_INTERFACES(BaseManager)
  public:
     /**
@@ -32,7 +32,7 @@ Q_INTERFACES(BaseManager)
      * Create a new system name for an Expression.
      * @return a new system name
      */
-    /*public*/ virtual QString getAutoSystemName()=0;
+    /*public*/ virtual QString getAutoSystemName() {return "?";}
 
     /**
      * Create a female socket for analog expressions
@@ -49,7 +49,7 @@ Q_INTERFACES(BaseManager)
      * 
      * @return a set of entries with category and class
      */
-    /*public*/ virtual QMap<Category*, QList</*Class<? extends Base>*/QString>*> getExpressionClasses()=0;
+    /*public*/ virtual QHash<Category*, QList</*Class<? extends Base>*/QString>> getExpressionClasses()=0;
 
     /*.*
      * Add an Expression.
