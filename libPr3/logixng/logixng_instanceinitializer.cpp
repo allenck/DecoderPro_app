@@ -70,16 +70,16 @@
     }
 
     //@Override
-    /*public*/  QSet<QString> LogixNG_InstanceInitializer::getInitalizes() {
-        QSet<QString> set = AbstractInstanceInitializer::getInitalizes();
-        set.fromList(QList<QString>() ={
-                "ConditionalNG_Manager",
-                "FemaleSocketManager",
-                "LogixNG_InitializationManager",
-                "LogixNG_Manager",
-                "LogixNGPreferences",
-                "ModuleManager",
-                "NamedTableManager"
-        });
+    /*public*/  QSet<QString> *LogixNG_InstanceInitializer::getInitalizes() {
+        QSet<QString>* set = AbstractInstanceInitializer::getInitalizes();
+//        set->fromList(QList<QString>() ={
+          set->insert("ConditionalNG_Manager");
+          set->insert("FemaleSocketManager");
+          set->insert("LogixNG_InitializationManager");
+          set->insert("LogixNG_Manager");
+          set->insert("LogixNGPreferences");
+          set->insert("ModuleManager");
+          set->insert("NamedTableManager");
+//        });
         return set;
     }

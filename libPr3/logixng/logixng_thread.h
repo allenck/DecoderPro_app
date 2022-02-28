@@ -104,7 +104,7 @@ class NGThread : public Runnable
   NGThread(LogixNG_Thread* thread) {this->thread = thread;}
 
  public slots:
-  void process()
+  void run()
   {
    while (!thread->_stopThread) {
        try {

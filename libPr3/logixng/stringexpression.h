@@ -8,7 +8,7 @@
  *
  * @author Daniel Bergqvist Copyright 2018
  */
-/*public*/ /*interface*/class  StringExpression : public Base {
+/*public*/ /*interface*/class  StringExpression : public virtual Base {
 
   Q_INTERFACES(Base)
  public:
@@ -18,21 +18,21 @@
      * @return the result of the evaluation
      * @throws JmriException when an exception occurs
      */
-    /*public*/ virtual QString evaluate() /*throws JmriException*/=0;
+  /*public*/ virtual QString evaluate() /*throws JmriException*/{return "";}
 
     /**
      * Set whenether this expression should trigger the ConditionalNG if the
      * named beans it listens to changes state.
      * @param triggerOnChange true if trigger on change, false otherwise
      */
-    /*public*/ virtual void setTriggerOnChange(bool triggerOnChange)=0;
+  /*public*/ virtual void setTriggerOnChange(bool triggerOnChange){}
 
     /**
      * Get whenether this expression should trigger the ConditionalNG if the
      * named beans it listens to changes state.
      * @return true if trigger on change, false otherwise
      */
-    /*public*/virtual bool getTriggerOnChange()=0;
+  /*public*/virtual bool getTriggerOnChange(){return false;}
 
 };
 Q_DECLARE_INTERFACE(StringExpression, "StringExpression")

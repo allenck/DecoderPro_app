@@ -186,6 +186,130 @@ public URL getURL(URI uri) {
     }
 }
 #endif
+
+/**
+ * Find all files matching the given name under the given root directory
+ * within both the user and installed file locations.
+ *
+ * @param name the name of the file to find
+ * @param root the relative path to a directory in either or both of the
+ *             user or installed file locations; use a single period
+ *             character to refer to the root of the user or installed file
+ *             locations
+ * @return a set of found files or an empty set if no matching files were
+ *         found
+ * @throws IllegalArgumentException if the name is not a relative path, is
+ *                                  empty, or contains path separators; or
+ *                                  if the root is not a relative path, is
+ *                                  empty, or contains a parent directory
+ *                                  (..)
+ * @throws NullPointerException     if any parameter is null
+ */
+//@Nonnull
+//@CheckReturnValue
+/*public*/ QSet<File*> FileUtilSupport::findFiles(/*@Nonnull*/ QString name, /*@Nonnull*/ QString root)/* throws IllegalArgumentException*/ {
+    return this->findFiles(name, root, FileUtil::Location::ALL);
+}
+
+/**
+ * Find all files matching the given name under the given root directory
+ * within the specified location.
+ *
+ * @param name     the name of the file to find
+ * @param root     the relative path to a directory in either or both of the
+ *                 user or installed file locations; use a single period
+ *                 character to refer to the root of the location
+ * @param location the location to search within
+ * @return a set of found files or an empty set if no matching files were
+ *         found
+ * @throws IllegalArgumentException if the name is not a relative path, is
+ *                                  empty, or contains path separators; if
+ *                                  the root is not a relative path, is
+ *                                  empty, or contains a parent directory
+ *                                  (..); or if the location is
+ *                                  {@link Location#NONE}
+ * @throws NullPointerException     if any parameter is null
+ */
+//@Nonnull
+//@CheckReturnValue
+/*public*/ QSet<File*> FileUtilSupport::findFiles(/*@Nonnull*/ QString name, /*@Nonnull*/ QString root, /*@Nonnull*/ FileUtil::Location location) {
+//    Objects.requireNonNull(name, "name must be nonnull");
+//    Objects.requireNonNull(root, "root must be nonnull");
+//    Objects.requireNonNull(location, "location must be nonnull");
+    if (location == FileUtil::Location::NONE) {
+        throw new IllegalArgumentException("location must not be NONE");
+    }
+    if (root.isEmpty() || root.contains("..") || root.startsWith("/")) {
+        throw new IllegalArgumentException("root is invalid");
+    }
+    if (name.isEmpty() || name.contains(File::pathSeparator) || name.contains("/")) {
+        throw new IllegalArgumentException("name is invalid");
+    }
+    QSet<File*> files = QSet<File*>();
+#if 0 // TODO:
+    if (location == FileUtil::Location::INSTALLED || location == FileUtil::Location::ALL) {
+        files.addAll(this.findFiles(name, new File(this.findURI(PROGRAM + root, Location.NONE))));
+    }
+    if (location == FileUtil::Location::USER || location == FileUtil::Location::ALL) {
+        try {
+            files.addAll(this.findFiles(name, new File(this.findURI(PREFERENCES + root, Location.NONE))));
+        } catch (NullPointerException ex) {
+            // expected if path PREFERENCES + root does not exist
+            log.trace("{} does not exist in {}", root, PREFERENCES);
+        }
+        try {
+            files.addAll(this.findFiles(name, new File(this.findURI(PROFILE + root, Location.NONE))));
+        } catch (NullPointerException ex) {
+            // expected if path PROFILE + root does not exist
+            log.trace("{} does not exist in {}", root, PROFILE);
+        }
+        try {
+            files.addAll(this.findFiles(name, new File(this.findURI(SETTINGS + root, Location.NONE))));
+        } catch (NullPointerException ex) {
+            // expected if path SETTINGS + root does not exist
+            log.trace("{} does not exist in {}", root, SETTINGS);
+        }
+    }
+#endif
+    return files;
+}
+
+/*private*/ QSet<File*> FileUtilSupport::findFiles(QString name, File* root) {
+    QSet<File*> files = QSet<File*>();
+#if 0 // TODO:
+    if (root.isDirectory()) {
+        try {
+            Files.walkFileTree(root.toPath(), new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult preVisitDirectory(final Path dir,
+                        final BasicFileAttributes attrs) throws IOException {
+
+                    Path fn = dir.getFileName();
+                    if (fn != null && name.equals(fn.toString())) {
+                        files.add(dir.toFile().getCanonicalFile());
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult visitFile(final Path file,
+                        final BasicFileAttributes attrs) throws IOException {
+                    // TODO: accept glob patterns
+                    Path fn = file.getFileName();
+                    if (fn != null && name.equals(fn.toString())) {
+                        files.add(file.toFile().getCanonicalFile());
+                    }
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException ex) {
+            log.warn("Exception while finding file {} in {}", name, root, ex);
+        }
+    }
+#endif
+    return files;
+}
+
 /**
  * Get the resource file corresponding to a name. There are five cases:
  * <ul>

@@ -286,6 +286,8 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
 DEFINES += HAVE_LOGIXNG
 SOURCES += \
+    logixng/defaultlogixngmanagertest.cpp \
+    logixng/defaultlogixngmanagertestaction.cpp \
     logixng/defaultfemaleanalogactionsockettest.cpp \
     logixng/femalesockettestbase.cpp \
     logixng/logixng_initializationmanagertestaction.cpp \
@@ -539,6 +541,8 @@ HEADERS += \
 
 equals(ENABLE_LOGIXNG, "Y") {
 HEADERS += \
+    logixng/defaultlogixngmanagertest.h \
+    logixng/defaultlogixngmanagertestaction.h \
     logixng/defaultfemaleanalogactionsockettest.h \
     logixng/femalesockettestbase.h \
     logixng/logixng_initializationmanagertestaction.h \

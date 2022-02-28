@@ -41,7 +41,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  Manager::NameValidity DefaultModuleManager::validSystemNameFormat(QString systemName) {
-        return LogixNG_Manager::validSystemNameFormat(
+        return LogixNG_Manager::ng_validSystemNameFormat(
                 ModuleManager::getSubSystemNamePrefix(), systemName);
     }
 

@@ -68,7 +68,7 @@ void PowerButtonAction::updateLabel()
 }
 
 //@Override
-/*public*/ void PowerButtonAction::actionPerformed(ActionEvent* /*e*/)
+/*public*/ void PowerButtonAction::actionPerformed(JActionEvent * /*e*/)
 {
  try
  {

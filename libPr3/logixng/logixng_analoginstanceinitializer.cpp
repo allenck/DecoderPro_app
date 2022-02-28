@@ -45,14 +45,14 @@
     }
 
     //@Override
-    /*public*/  QSet</*Class<?>*/QString> LogixNG_AnalogInstanceInitializer::getInitalizes() {
-        QSet</*Class<?>*/QString> set = AbstractInstanceInitializer::getInitalizes();
+    /*public*/  QSet<QString> *LogixNG_AnalogInstanceInitializer::getInitalizes() {
+        QSet</*Class<?>*/QString>* set = AbstractInstanceInitializer::getInitalizes();
 //        set.addAll(Arrays.asList(
 //                "AnalogActionManager",
 //                "AnalogExpressionManager"
 //        ));
-        set.insert("AnalogActionManager");
-        set.insert("AnalogExpressionManager");
+        set->insert("AnalogActionManager");
+        set->insert("AnalogExpressionManager");
 
         return set;
     }

@@ -233,6 +233,7 @@ public:
         if (clazz->isInstance(item->bself())) return (MaleSocket*)item->bself();
         else return nullptr;
     }
+  /*public*/ virtual QString getClassName() {return "jmri.jmrit.logixng.MaleSocket";}
   //virtual QObject* bself()=0;
   QObject* bself() override{return (QObject*)this;}
 

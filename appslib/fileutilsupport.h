@@ -16,6 +16,9 @@ public:
  /*public*/ File* getFile(QString path) throw (FileNotFoundException);
  /*public*/ File* getFile(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ QString path) throw (FileNotFoundException);
  /*public*/ QUrl* getURL(QString path) throw (FileNotFoundException);
+ /*public*/ QSet<File*> findFiles(/*@Nonnull*/ QString name, /*@Nonnull*/ QString root)/* throws IllegalArgumentException*/;
+ /*public*/ QSet<File*> findFiles(/*@Nonnull*/ QString name, /*@Nonnull*/ QString root, /*@Nonnull*/ FileUtil::Location location);
+
  /*public*/ QString getExternalFilename(QString pName);
  /*public*/ QString getExternalFilename(/*@CheckForNull*/ Profile* profile, /*@Nonnull*/ QString pName);
  /*public*/ QString getAbsoluteFilename(QString path);
@@ -127,6 +130,7 @@ private:
  QStringList* paths = nullptr;
  /*private*/ bool copyRecursively(const QString &srcFilePath,
                                   const QString &tgtFilePath);
+ /*private*/ QSet<File*> findFiles(QString name, File* root);
 
 private slots:
  void rowChanged(int);

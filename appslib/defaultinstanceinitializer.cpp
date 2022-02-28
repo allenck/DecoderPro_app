@@ -83,6 +83,7 @@
 #include "../libPr3/logixng/defaultlogixngmanager.h"
 #include "../libPr3/logixng/defaultlogixnginitializationmanager.h"
 #include "../libPr3/logixng/logixng_instanceinitializer.h"
+#include "logixng_digitalinstanceinitializer.h"
 #endif
 DefaultInstanceInitializer::DefaultInstanceInitializer()
 {
@@ -113,20 +114,22 @@ DefaultInstanceInitializer::DefaultInstanceInitializer()
 QObject* DefaultInstanceInitializer::getDefault(QString type) const
 {
  InternalSystemConnectionMemo* memo= nullptr;
- if(type =="AudioManager" ||
-         type == "ConditionalManager" ||
-         type ==  "LogixManager" ||
-         type == "MemoryManager" ||
-         type == "RouteManager" || type == "DefaultRouteManager" ||
-         type == "SignalGroupManager" ||
-         type == "SignalHeadManager" ||
-         type == "SignalMastLogicManager" ||
-         type == "SignalMastManager" ||
-         type == "SignalSystemManager" ||
-         type == "Timebase")
-  memo = (InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo");
-    // In order for getDefault() to create a new object, the manager also
+  if(type =="AudioManager" ||
+          type == "ConditionalManager" ||
+          type ==  "LogixManager" ||
+          type == "MemoryManager" ||
+          type == "RouteManager" || type == "DefaultRouteManager" ||
+          type == "SignalGroupManager" ||
+          type == "SignalHeadManager" ||
+          type == "SignalMastLogicManager" ||
+          type == "SignalMastManager" ||
+          type == "SignalSystemManager" ||
+          type == "Timebase")
+   memo = (InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo");    // In order for getDefault() to create a new object, the manager also
     // needs to be added to the method getInitalizes() below.
+// if (type == "AnalogIOManager") {
+//     return new ProxyAnalogIOManager().init();
+// }
  if (type == "AudioManager")
  {
   DefaultAudioManager* dam =  new DefaultAudioManager(memo);
@@ -177,7 +180,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
   //InstanceManager::store(mm,type);
   return mm;
  }
-// if (type == RailComManager.class) {
+// if (type == RailComManager") {
 //             return new DefaultRailComManager();
 //         }
 
@@ -256,7 +259,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  if (type == "Timebase")
  {
   Timebase* timebase = qobject_cast<Timebase*>(new SimpleTimebase(memo));
-  //InstanceManager.getOptionalDefault(ConfigureManager.class).ifPresent(cm -> cm.registerConfig(timebase, Manager.TIMEBASE));
+  //InstanceManager.getOptionalDefault(ConfigureManager").ifPresent(cm -> cm.registerConfig(timebase, Manager.TIMEBASE));
   AppsConfigurationManager* cm = (AppsConfigurationManager*)InstanceManager::getOptionalDefault("ConfigureManager");
   if(cm)
    cm->registerConfig(timebase, Manager::TIMEBASE);
@@ -631,7 +634,7 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
 //  InstanceManager::store(lncm,type);
 //  return pitm;
 // }
- if (type == "CtcManager")
+ if (type == "ConsistManager")
  {
   CtcManager* m = new CtcManager();
 //  InstanceManager::store(m, type);
@@ -655,34 +658,6 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  if (type == "VariableLightManager") {
    return (new DefaultVariableLightManager(memo))->init();
  }
-#ifdef HAVE_LOGIXNG
- // temp for testing
- if(type == "LogixNGPreferences")
- {
-
-  DefaultLogixNGPreferences* pref = new DefaultLogixNGPreferences();
-  InstanceManager::store(pref, type);
-  return pref;
- }
- if(type == "LogixNG_Manager")
- {
-
-  DefaultLogixNGManager* mgr = new DefaultLogixNGManager();
-  InstanceManager::store(mgr, type);
-  return mgr;
- }
-
- if(type == "LogixNG_InitializationManager")
- {
-  DefaultLogixNGInitializationManager* mgr = new DefaultLogixNGInitializationManager();
-  InstanceManager::store(mgr, type);
-  return mgr;
- }
-// LogixNG_InstanceInitializer* lint = new LogixNG_InstanceInitializer();
-// QObject* obj = lint->getDefault(type);
-// if(obj)
-//  return  obj;
-#endif
  // this is an error!
  //throw new IllegalArgumentException("Cannot create object of type "+type);
  if(log)
@@ -690,5 +665,57 @@ QObject* DefaultInstanceInitializer::getDefault(QString type) const
  return nullptr;
 }
 
+//@Override
+/*public*/ QSet</*Class<?>*/QString>* DefaultInstanceInitializer::getInitalizes() {
+QSet</*Class<?>*/QString>* set = AbstractInstanceInitializer::getInitalizes();
+//set->addAll(Arrays.asList(
+//        set->insert("AnalogIOManager");
+        set->insert("AnalogIOManager");
+        set->insert("AudioManager");
+        set->insert("ClockControl");
+        set->insert("ConditionalManager");
+        set->insert("IdTagManager");
+        set->insert("LightManager");
+        set->insert("LogixManager");
+        set->insert("MemoryManager");
+        set->insert("MeterManager");
+   //     RailComManager");
+        set->insert("ReporterManager");
+        set->insert("RouteManager");
+        set->insert("SensorManager");
+        set->insert("SignalGroupManager");
+        set->insert("SignalHeadManager");
+        set->insert("SignalMastLogicManager");
+        set->insert("SignalMastManager");
+        set->insert("SignalSystemManager");
+        set->insert("StringIOManager");
+        set->insert("Timebase");
+        set->insert("TurnoutManager");
+        set->insert("VariableLightManager");
+        set->insert("VSDecoderManager");
 
+        set->insert("PerformActionModelFactory");
+        set->insert("StartupPauseFactory");
+        set->insert("CreateButtonModelFactory");
+        set->insert("TriggerRouteModelFactory");
+        set->insert("ScriptButtonModelFactory");
+        set->insert("PerformFileModelFactory");
+        set->insert("RestartStartupActionFactory");
+        set->insert("JsonServerPreferences");
+        set->insert("CatalogTreeModel");
+        set->insert("ThrottleFrameManager");
+        set->insert("TurnoutOperationManager");
+        set->insert("ProxyIdTagManager");
+        set->insert("WarrantPreferences");
+        set->insert("ConsistManager");
+        set->insert("DefaultRouteManager");
+        set->insert("FileHistory");
+        set->insert("UserPreferencesManager");
+        set->insert("ShutDownManager");
+        set->insert("StartupActionsManager");
+        set->insert("ConnectionConfigManager");
+        set->insert("PanelMenu");
+//));
+return set;
+}
 /*static*/ Logger* DefaultInstanceInitializer::log = LoggerFactory::getLogger("DefaultInstanceInitializer");

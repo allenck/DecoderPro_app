@@ -8,6 +8,7 @@
 #include "defaultconditionalng.h"
 #include "logixng.h"
 #include "vptr.h"
+#include "defaultlogixngmanager.h"
 
 /**
  * Class providing the basic logic of the ConditionalNG_Manager interface.
@@ -41,7 +42,7 @@
     /** {@inheritDoc} */
     //@Override
     /*public*/  Manager::NameValidity  DefaultConditionalNGManager::validSystemNameFormat(QString systemName) {
-        return LogixNG_Manager::validSystemNameFormat(
+        return LogixNG_Manager::ng_validSystemNameFormat(
                 ConditionalNG_Manager::getSubSystemNamePrefix(), systemName);
     }
 
@@ -123,7 +124,7 @@
             return nullptr;
         }
 
-        for (NamedBean* nb : ((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->getNamedBeanSet()) {
+        for (NamedBean* nb : ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->AbstractManager::getNamedBeanSet()) {
          LogixNG* logixNG = (LogixNG*)nb->self();
             for (int i = 0; i < logixNG->getNumConditionalNGs(); i++) {
                 if (systemName == (logixNG->getConditionalNG_SystemName(i))) {

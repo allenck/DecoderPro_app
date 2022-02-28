@@ -85,6 +85,31 @@ FileUtil::FileUtil(QObject *parent) :
 {
     return FileUtilSupport::getDefault()->getFile(profile, path);
 }
+
+/**
+ * Find all files matching the given name under the given root directory
+ * within both the user and installed file locations.
+ *
+ * @param name the name of the file to find
+ * @param root the relative path to a directory in either or both of the
+ *             user or installed file locations; use a single period
+ *             character to refer to the root of the user or installed file
+ *             locations
+ * @return a set of found files or an empty set if no matching files were
+ *         found
+ * @throws IllegalArgumentException if the name is not a relative path, is
+ *                                  empty, or contains path separators; or
+ *                                  if the root is not a relative path, is
+ *                                  empty, or contains a parent directory
+ *                                  (..)
+ * @throws NullPointerException     if any parameter is null
+ */
+//@Nonnull
+//@CheckReturnValue
+/*static*/ /*public*/ QSet<File*> FileUtil::findFiles(/*@Nonnull*/ QString name, /*@Nonnull*/ QString root) /*throws IllegalArgumentException*/ {
+    return FileUtilSupport::getDefault()->findFiles(name, root);
+}
+
 /**
  * Get the resource file corresponding to a name. There are five cases: <UL>
  * <LI> Starts with "resource:", treat the rest as a pathname relative to

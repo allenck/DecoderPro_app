@@ -51,12 +51,12 @@
     }
 
     //@Override
-    /*public*/  QSet</*Class<?>*/QString> LogixNG_DigitalInstanceInitializer::getInitalizes() {
-        QSet</*Class<?>*/QString> set = AbstractInstanceInitializer::getInitalizes();
+    /*public*/  QSet<QString> *LogixNG_DigitalInstanceInitializer::getInitalizes() {
+        QSet</*Class<?>*/QString>* set = AbstractInstanceInitializer::getInitalizes();
 //        set.addAll(Arrays.asList(
-          set.insert("DigitalActionManager");
-          set.insert("DigitalBooleanActionManager");
-          set.insert("DigitalExpressionManager");
+          set->insert("DigitalActionManager");
+          set->insert("DigitalBooleanActionManager");
+          set->insert("DigitalExpressionManager");
 //        ));
         return set;
     }

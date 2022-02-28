@@ -62,6 +62,6 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/   void disposeMe() {
+    /*public*/   void DefaultFemaleStringExpressionSocket::disposeMe() {
         // Do nothing
     }

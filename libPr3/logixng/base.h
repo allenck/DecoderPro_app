@@ -281,7 +281,7 @@ class Base;
      * Get the number of children.
      * @return the number of children
      */
-    /*public*/ virtual int getChildCount(){return -1;}
+    /*public*/ virtual int getChildCount(){return 0;}
 
     /**
      * Is the operation allowed on this child?

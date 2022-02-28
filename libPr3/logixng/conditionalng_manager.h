@@ -100,7 +100,7 @@
      * {@link #getSystemNamePrefix() } and "C";
      */
     //@Override
-    /*public*/ /*default*/ QString getSubSystemNamePrefix() {
+    /*public*/ /*default*/ QString getSubSystemNamePrefix() const override{
         return getSystemNamePrefix() + "C";
     }
 

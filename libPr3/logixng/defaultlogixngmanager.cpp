@@ -13,6 +13,7 @@
 #include "vptr.h"
 #include "logixng_initializationmanager.h"
 #include "defaultnamedtablemanager.h"
+#include "defaultlogixnginitializationmanager.h"
 
 /**
  * Class providing the basic logic of the LogixNG_Manager interface.
@@ -51,7 +52,7 @@
      */
     //@Override
     /*public*/ Manager::NameValidity DefaultLogixNGManager::validSystemNameFormat(QString systemName) {
-        return LogixNG_Manager::validSystemNameFormat(
+        return LogixNG_Manager::ng_validSystemNameFormat(
                 AbstractManager::getSubSystemNamePrefix(), systemName);
 //        if (systemName.matches(getSubSystemNamePrefix()+"(:AUTO:)?\\d+")) {
 //            return NameValidity.VALID;
@@ -72,15 +73,18 @@
             /*throw new (IllegalArgumentException)*/ {
 
         // Check that LogixNG does not already exist
-        LogixNG* x;
+        LogixNG* x =nullptr;
+        NamedBean* nb = nullptr;
         if (userName != nullptr && userName !=("")) {
-            x = (LogixNG*)getByUserName(userName)->self();
-            if (x != nullptr) {
-                return nullptr;
-            }
+            //x = (DefaultLogixNG*)getByUserName(userName)->bself();
+         nb = getByUserName(userName);
+         if (nb != nullptr) {
+             return nullptr;
+         }
         }
-        x = (LogixNG*)getBySystemName(systemName)->self();
-        if (x != nullptr) {
+        //x = (LogixNG*)getBySystemName(systemName)->self();
+        nb = getBySystemName(systemName);
+        if (nb != nullptr) {
             return nullptr;
         }
         // Check if system name is valid
@@ -105,11 +109,16 @@
 
     //@Override
     /*public*/ LogixNG* DefaultLogixNGManager::getLogixNG(QString name) {
-        LogixNG* x = (LogixNG*)LogixNG_Manager::getByUserName(name)->self();
-        if (x != nullptr) {
-            return x;
+     NamedBean* nb = nullptr;
+        nb = getByUserName(name);
+        if (nb != nullptr) {
+            return (DefaultLogixNG*)nb->self();
         }
-        return (LogixNG*)LogixNG_Manager::getBySystemName(name)->self();
+        //return (LogixNG*)LogixNG_Manager::getBySystemName(name)->self();
+        nb = getBySystemName(name);
+        if(nb)
+         return (DefaultLogixNG*)nb->self();
+        return nullptr;
     }
 
     //@Override
@@ -289,7 +298,7 @@ void DLMRunnable::run()
 
  // Activate and execute the initialization LogixNGs first.
  QList<LogixNG*> initLogixNGs =
-         ((LogixNG_InitializationManager*)InstanceManager::getDefault("LogixNG_InitializationManager"))
+         ((DefaultLogixNGInitializationManager*)InstanceManager::getDefault("LogixNG_InitializationManager"))
                  ->getList();
 
  for (LogixNG* logixNG : initLogixNGs) {

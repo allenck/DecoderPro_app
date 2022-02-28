@@ -32,6 +32,7 @@ AbstractManager::AbstractManager(QObject *parent) : VetoableChangeSupport(parent
  lastAutoNamedBeanRef = QAtomicInteger<int>(0);
  silenceableProperties.insert("beans");
  listeners = QList<Manager::ManagerDataListener*>();
+ memo = (InternalSystemConnectionMemo*)InstanceManager::getDefault("InternalSystemConnectionMemo");
 }
 
 AbstractManager::AbstractManager(SystemConnectionMemo* memo, QObject *parent) : VetoableChangeSupport( parent)
@@ -744,7 +745,8 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
 //@Override
 /*public*/ /*final*/ QString AbstractManager::getSystemPrefix() const {
    QString prefix =  memo->getSystemPrefix();
-   return prefix.mid(0,1); // ACK hack to fiz incorrect prefix
+   //return prefix.mid(0,1); // ACK hack to fiz incorrect prefix
+   return prefix;
 }
 
 /**
@@ -847,7 +849,7 @@ QMap<QString, NamedBean*>* AbstractManager::getSystemNameHash()
 /*public*/ QString AbstractManager::getAutoSystemName() {
     //int nextAutoBlockRef = lastAutoNamedBeanRef.fetchAndAddAcquire(1);//   .incrementAndGet();
     int nextAutoBlockRef = lastAutoNamedBeanRef++;
-    QString b = QString(getSystemNamePrefix() + ":AUTO:");
+    QString b = QString(getSubSystemNamePrefix() + ":AUTO:");
     QString nextNumber = paddedNumber.format(nextAutoBlockRef);
     b.append(nextNumber);
     return b;

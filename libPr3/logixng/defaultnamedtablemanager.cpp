@@ -41,7 +41,7 @@
  */
 //@Override
 /*public*/  Manager::NameValidity DefaultNamedTableManager::validSystemNameFormat(QString systemName) {
-    return LogixNG_Manager::validSystemNameFormat(
+    return LogixNG_Manager::ng_validSystemNameFormat(
             NamedTableManager::getSubSystemNamePrefix(), systemName);
 //        if (systemName.matches(getSubSystemNamePrefix()+"(:AUTO:)?\\d+")) {
 //            return NameValidity.VALID;

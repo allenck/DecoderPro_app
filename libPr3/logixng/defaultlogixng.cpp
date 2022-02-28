@@ -3,7 +3,7 @@
 #include "conditionalng.h"
 #include "loggerfactory.h"
 #include "conditionalng_manager.h"
-
+#include "defaultlogixngmanager.h"
 /**
  * The default implementation of LogixNG.
  *
@@ -19,9 +19,9 @@
       : LogixNG(sys, user, parent)
     {
         //super(sys, user);
-
+     setObjectName("DefaultLogixNG");
         // Do this test here to ensure all the tests are using correct system names
-        Manager::NameValidity isNameValid = ((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->Manager::validSystemNameFormat(mSystemName);
+        Manager::NameValidity isNameValid = ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->validSystemNameFormat(mSystemName);
         if (isNameValid != Manager::NameValidity::VALID) {
             throw  IllegalArgumentException("system name is not valid");
         }

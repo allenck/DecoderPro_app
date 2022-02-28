@@ -9,7 +9,7 @@
  *
  * @author Daniel Bergqvist Copyright 2018
  */
-/*public*/ /*interface*/class StringExpressionBean : public NamedBean, public StringExpression {
+/*public*/ /*interface*/class StringExpressionBean : public virtual NamedBean, public StringExpression {
     Q_INTERFACES(NamedBean StringExpression)
  public:
 };

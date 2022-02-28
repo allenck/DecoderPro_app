@@ -24,8 +24,8 @@ AbstractInstanceInitializer::AbstractInstanceInitializer(QObject* parent) : QObj
  * {@inheritDoc }
  */
 //@Override
-/*public*/ QSet</*Class<?>*/QString> AbstractInstanceInitializer::getInitalizes() {
-    return QSet<QString>();
+/*public*/ QSet</*Class<?>*/QString>* AbstractInstanceInitializer::getInitalizes() {
+    return new QSet<QString>();
 }
 
 

@@ -34,7 +34,7 @@ public:
     /*public*/ DecoderFile* fileFromTitle(QString title );
     /*public*/ bool checkEntry(int i, QString mfgName, QString family, QString mfgID, QString decoderVersionID, QString decoderProductID, QString model, QString developerID, QString manufacturerID, QString productID);
     /*public*/ /*synchronized*/ static void resetInstance();
-    static bool updateIndexIfNeeded(QString name) /*throw (JDOMException, IOException)*/;
+    static bool updateIndexIfNeeded() /*throw (JDOMException, IOException)*/;
     static /*public*/ void forceCreationOfNewIndex();
     static /*public*/ void forceCreationOfNewIndex(bool increment);
     void readFile(QString name) /*throw (JDOMException, IOException)*/;
@@ -43,6 +43,58 @@ public:
     void readFamily(QDomElement family);
     /*public*/ void writeFile(QString name, DecoderIndexFile* oldIndex, QStringList* files) /*throw (IOException)*/;
 
+    //@ServiceProvider(service = InstanceInitializer.class)
+    /*public*/ /*static*/ class Initializer : public AbstractInstanceInitializer {
+
+    //@Override
+    /*public*/ /*<T>*/ QObject* getDefault(/*Class<T>*/QString type) {
+        if (type ==("DecoderIndexFile")) {
+            // create and load
+            DecoderIndexFile* instance = new DecoderIndexFile();
+            log->debug("DecoderIndexFile creating instance");
+            try {
+                instance->readFile(defaultDecoderIndexFilename());
+            }
+//            catch (IOException* e) {
+//                log->error("Exception during decoder index reading: ", e);
+//            }
+            catch ( JDOMException* e) {
+                log->error("Exception during decoder index reading: ", e);
+            }
+            // see if needs to be updated
+            try {
+                if (updateIndexIfNeeded()) {
+                    try {
+                        instance = new DecoderIndexFile();
+                        instance->readFile(defaultDecoderIndexFilename());
+                    }
+//                    catch (IOException*  e) {
+//                        log->error("Exception during decoder index reload: ", e);
+//                    }
+                    catch ( JDOMException* e) {
+                     log->error("Exception during decoder index reload: ", e);
+                    }
+                }
+            }
+//            catch (IOException* e) {
+//                log->error("Exception during decoder index update: ", e);
+//            }
+            catch (JDOMException* e) {
+                log->error("Exception during decoder index update: ", e);
+            }
+            log->debug(tr("DecoderIndexFile returns instance %1").arg(instance->metaObject()->className()));
+            return (QObject*)instance;
+        }
+        return AbstractInstanceInitializer::getDefault(type);
+    }
+
+    //@Override
+    /*public*/ QSet</*Class<?>*/QString>* getInitalizes() {
+        QSet</*Class<?>*/QString>* set = AbstractInstanceInitializer::getInitalizes();
+        set->insert("DecoderIndexFile");
+        return set;
+    }
+  };
  signals:
 
 public slots:

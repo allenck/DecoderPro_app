@@ -42,9 +42,12 @@
                 if (_categories.isEmpty()) {
                     // It's not often any item is added to this list so we use CopyOnWriteArrayList
                     _categories = QList<Category*>(_categories);
-                    registerCategory(ITEM);
-                    registerCategory(COMMON);
-                    registerCategory(OTHER);
+                    //registerCategory(ITEM);
+                    _categories.append(ITEM);
+//                    registerCategory(COMMON);
+                    _categories.append(COMMON);
+                    //registerCategory(OTHER);
+                    _categories.append(OTHER);
                 }
             }
         }

@@ -75,6 +75,14 @@
 #include "proxymetermanager.h"
 #include "instancemanagerautoinitialize.h"
 #include "rfid/proxyidtagmanager.h"
+#ifdef HAVE_LOGIXNG
+#include "logixng_instanceinitializer.h"
+#include "logixng_analoginstanceinitializer.h"
+#include "logixng_digitalinstanceinitializer.h"
+#include "logixng_stringinstanceinitializer.h"
+#include "debuggerinstanceinitializer.h"
+#endif
+
 class ManagerLists : public QHash<QString,QObjectList*>
 {
 
@@ -105,6 +113,25 @@ InstanceManager::InstanceManager(QObject *parent) :
  setObjectName("InstanceManager");
  managerLists = QHash<QString,QObjectList*>();
  initializers = QMap</*Class<?>*/QString, QObject*>();
+ // Load initializers
+ QList<InstanceInitializer*> providers {
+  new DefaultInstanceInitializer(),
+  new DefaultCatalogTreeManager::Initializer(),
+  new ImageIndexEditor::Initializer(),
+  new DecoderIndexFile::Initializer(),
+  //new TrackerTableAction::Initializer(),
+ #ifdef HAVE_LOGIXNG
+  new LogixNG_InstanceInitializer(),
+  new LogixNG_AnalogInstanceInitializer(),
+  new LogixNG_DigitalInstanceInitializer(),
+  new LogixNG_StringInstanceInitializer(),
+  new DebuggerInstanceInitializer()
+ #endif
+  };
+ for(InstanceInitializer* provider : providers)
+ {
+  foreach(QString cls, *provider->getInitalizes()) initializers.insert(cls, (QObject*)provider);
+ }
 #if 0
  // Load all classes that are derived from InstanceInitializer java class
  initializers.insert("AbstractInstanceInializer", new AbstractInstanceInitializer());
@@ -389,12 +416,6 @@ void InstanceManager::deregister(QObject* item, QString type)
 //static /*public*/ <T> T getNullableDefault(@Nonnull Class<T> type) {
 /*static*/ /*public*/ QObject* InstanceManager::getNullableDefault(QString type)
 {
-// int id = QMetaType::type(type.toLocal8Bit());
-// if (id != QMetaType::UnknownType) {
-//     void *myClassPtr = QMetaType::create(id);
-//     if(myClassPtr)
-//      return (QObject*)myClassPtr;
-// }
  return getDefault()->getInstance(type);
 }
 
@@ -483,25 +504,62 @@ void InstanceManager::deregister(QObject* item, QString type)
    setInitializationState(type, InitializationState::DONE);
    return l->value(l->size() - 1);
   }
+#if 0
   // see if initializer can handle
   if(log)
    log->debug(tr("    attempt initializer create of %1").arg( type/*.getName()*/));
   //@SuppressWarnings("unchecked")
-//  if(initializers.contains(type))
-//  {
-   //QObject* obj = initializers.value(type);//->getDefault(type);//initializer->getDefault(type);
-   QObject* obj = ((DefaultInstanceInitializer*)*initializer)->getDefault(type);
+  QObject* obj;
+  if(initializers.contains(type))
+  {
+   obj = ((InstanceInitializer*)initializers.value(type))->getDefault(type);//initializer->getDefault(type);
+  }
+  else
+  {
+   obj = ((DefaultInstanceInitializer*)*initializer)->getDefault(type);
+  }
 //  if(type == "InternalSystemConnectionMemo")
 //       obj = obj1;
    if (obj != nullptr)
    {
     log->debug(tr("      initializer created default of %1").arg(type/*.getName()*/));
-    setInitializationState(type, InitializationState::DONE);
     l->append(obj);
+    // obj has been added, now initialize it if needed
+    if (qobject_cast<InstanceManagerAutoInitialize*>(obj)) {
+        ((InstanceManagerAutoInitialize*) obj)->initialize();
+    }
+    setInitializationState(type, InitializationState::DONE);
     //store(obj,type);
     return l->at(l->size() - 1);
    }
-//  }
+
+#else
+  // see if initializer can handle
+  log->debug(tr("    attempt initializer create of %1").arg(type/*.getName()*/));
+  if (initializers.contains(type)) {
+   try {
+       //@SuppressWarnings("unchecked")
+       QObject* obj = /*(T)*/ ((InstanceInitializer*)initializers.value(type))->getDefault(type);
+       log->debug(tr("      initializer created default of %1").arg(type/*.getName()*/));
+       l->append(obj);
+       // obj has been added, now initialize it if needed
+       if (qobject_cast<InstanceManagerAutoInitialize*>(obj)) {
+           ((InstanceManagerAutoInitialize*) obj)->initialize();
+       }
+       setInitializationState(type, InitializationState::DONE);
+       if (traceFileActive) {
+           traceFileIndent--;
+           traceFilePrint("End initialization I: " + type/*.toString()*/);
+       }
+       return l->at(l->size() - 1);
+   } catch (IllegalArgumentException* ex) {
+       log->error(tr("Known initializer for %1 does not provide a default instance for that class").arg(
+               type/*.getName()*/));
+   }
+  } else {
+      log->debug(tr("        no initializer registered for %1").arg(type/*.getName()*/));
+  }
+#endif
   // don't have, can't make
   setInitializationState(type, InitializationState::FAILED);
   return nullptr;
@@ -745,8 +803,7 @@ MemoryManager* InstanceManager::memoryManagerInstance()
 // store(p, IdTagManager.class)
 //@SuppressWarnings("unchecked") // AbstractProxyManager of the right type is type-safe by definition
 /*static*/ /*public*/ void InstanceManager::setIdTagManager(IdTagManager *p) {
-    log->debug(" setIdTagManager");
-#if 1 // TODO:
+#if 0 // TODO:
     log->debug(" setIdTagManager");
     IdTagManager* apm = (ProxyIdTagManager*)getDefault("IdTagManager");
     if (qobject_cast<AbstractProxyManager*>(apm->mself())) { // <?> due to type erasure

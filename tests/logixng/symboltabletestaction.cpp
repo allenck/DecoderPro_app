@@ -7,7 +7,7 @@
 
 SymbolTableTestAction::SymbolTableTestAction(QObject *parent) : AbstractAction(tr("SymbolTableTest"), parent)
 {
-connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
+ connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
 }
 
 void SymbolTableTestAction::actionPerformed()

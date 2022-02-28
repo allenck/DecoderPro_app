@@ -95,6 +95,8 @@
 #ifdef HAVE_LOGIXNG
 #include "logixng/symboltabletestaction.h"
 #include "logixng/logixng_initializationmanagertestaction.h"
+#include "logixng/defaultlogixngmanagertestaction.h"
+
 #endif
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
@@ -270,5 +272,6 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     addMenu(logixNGMenu);
     logixNGMenu->addAction(new SymbolTableTestAction(this));
     logixNGMenu->addAction(new LogixNG_InitializationManagerTestAction(this));
+    logixNGMenu->addAction(new DefaultLogixNGManagerTestAction(this));
 #endif
 }

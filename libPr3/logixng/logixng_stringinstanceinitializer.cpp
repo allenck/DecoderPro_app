@@ -44,11 +44,11 @@
     }
 
     //@Override
-    /*public*/  QSet</*Class<?>*/QString> LogixNG_StringInstanceInitializer::getInitalizes() {
-        QSet</*Class<?>*/QString> set = AbstractInstanceInitializer::getInitalizes();
+    /*public*/  QSet<QString> *LogixNG_StringInstanceInitializer::getInitalizes() {
+        QSet</*Class<?>*/QString>* set = AbstractInstanceInitializer::getInitalizes();
 //        set.addAll(Arrays.asList(
-          set.insert("StringActionManager");
-          set.insert("StringExpressionManager");
+          set->insert("StringActionManager");
+          set->insert("StringExpressionManager");
 //        ));
         return set;
     }

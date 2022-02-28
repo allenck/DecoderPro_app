@@ -188,6 +188,8 @@
             getConnectedSocket()->setup();
         }
     }
+  /*public*/ virtual QString getClassName() {return "jmri.jmrit.logixng.FemaleSocket";}
+
  //virtual QObject* self() =0;
 };
 Q_DECLARE_INTERFACE(FemaleSocket, "FemaleSocket");

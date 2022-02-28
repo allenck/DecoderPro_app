@@ -23,6 +23,7 @@ class DebuggerMaleDigitalActionSocket : public AbstractDebuggerMaleSocket, publi
   /*public*/  QSet<QString> getPropertyKeys()override;
   /*public*/  QString getBeanType()override;
   /*public*/  int compareSystemNameSuffix(QString suffix1, QString suffix2, NamedBean* n2)override;
+  /*public*/  QString getClassName();
 
   QObject* self() override {return (QObject*)this;}
 };

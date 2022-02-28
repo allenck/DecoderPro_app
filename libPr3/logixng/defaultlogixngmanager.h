@@ -25,7 +25,7 @@ class DefaultLogixNGManager : public AbstractManager, public LogixNG_Manager
   /*public*/ LogixNG* getLogixNG(QString name) override;
   /*public*/ NamedBean* getByUserName(QString name) override;
   /*public*/ NamedBean* getBySystemName(QString name)  override;
-  /*public*/ QString getBeanTypeHandled(bool plural) const override;
+  /*public*/ QString getBeanTypeHandled(bool plural=false) const override;
   /*public*/ void setupAllLogixNGs() override;
   /*public*/ void activateAllLogixNGs()override;
   /*public*/ void activateAllLogixNGs(bool runDelayed, bool runOnSeparateThread)override;

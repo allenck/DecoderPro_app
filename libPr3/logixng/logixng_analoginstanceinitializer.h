@@ -7,9 +7,9 @@ class LogixNG_AnalogInstanceInitializer : public AbstractInstanceInitializer
 {
   Q_OBJECT
  public:
-  explicit LogixNG_AnalogInstanceInitializer(QObject *parent = nullptr);
+  explicit LogixNG_AnalogInstanceInitializer(QObject *parent = nullptr) : AbstractInstanceInitializer(parent) {}
   /*public*/  /*<T>*/ QObject* getDefault(QString  type) const override;
-  /*public*/  QSet</*Class<?>*/QString> getInitalizes()override;
+  /*public*/  QSet</*Class<?>*/QString>* getInitalizes()override;
 
 };
 

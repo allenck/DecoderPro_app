@@ -8,6 +8,7 @@
 #include "fileutil.h"
 #include <QStringList>
 #include "jcombobox.h"
+#include "fileutil.h"
 
 //QString DecoderIndexFile::decoderIndexFileName = "decoderIndex.xml";
 /*static*/ /*final*/ /*protected*/ QString DecoderIndexFile::DECODER_INDEX_FILE_NAME = "decoderIndex.xml";
@@ -237,9 +238,20 @@ DecoderIndexFile::DecoderIndexFile(QObject *parent) :
  * @throws JDOMException
  * @throws FileNotFoundException
  */
-/*static*/ bool DecoderIndexFile::updateIndexIfNeeded(QString name) /*throw (JDOMException, IOException)*/
+/*static*/ bool DecoderIndexFile::updateIndexIfNeeded() /*throw (JDOMException, IOException)*/
 {
  Logger log = Logger("DecoderIndexFile");
+ switch (FileUtil::findFiles(defaultDecoderIndexFilename(), ".").size()) {
+     case 0:
+         log.debug("creating decoder index");
+         forceCreationOfNewIndex();
+         return true; // no index exists, so create one
+     case 1:
+         return false; // only one index, so nothing to compare
+     default:
+         // multiple indexes, so continue with more specific checks
+         break;
+ }
  // get version from master index; if not found, give up
  QString masterVersion = NULL;
  DecoderIndexFile* masterXmlFile = new DecoderIndexFile();

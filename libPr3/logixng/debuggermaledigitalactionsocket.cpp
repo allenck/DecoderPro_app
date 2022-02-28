@@ -11,6 +11,7 @@
       : AbstractDebuggerMaleSocket(manager, maleSocket,parent)
     {
         //super(manager, maleSocket);
+     setObjectName("DebuggerMaleDigitalActionSocket");
     }
 
     /** {@inheritDoc} */
@@ -75,4 +76,9 @@
     //@Override
     /*public*/  int DebuggerMaleDigitalActionSocket::compareSystemNameSuffix(QString suffix1, QString suffix2, NamedBean* n2) {
         return ((MaleDigitalActionSocket*)getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
+    }
+
+    /*public*/  QString DebuggerMaleDigitalActionSocket::getClassName()
+    {
+     return "jmri.jmrit.logixng.tools.debugger.DebuggerMaleDigitalActionSocket";
     }

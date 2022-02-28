@@ -5,6 +5,7 @@
 #include "abstracttablemodel.h"
 #include "windowlistener.h"
 #include "libtables_global.h"
+#include "abstractinstanceinitializer.h"
 
 class TrackerTableModel;
 class JDialog;
@@ -121,6 +122,26 @@ TableFrame* _parent;
 /*public*/ bool setData(const QModelIndex &index, const QVariant &value, int role);
 /*public*/ Qt::ItemFlags flags(const QModelIndex &index) const;
 /*public*/ int getPreferredWidth(int col);
+    //@ServiceProvider(service = InstanceInitializer.class)
+    /*public*/ /*static*/ class Initializer : AbstractInstanceInitializer {
+
+        //@Override
+        //@Nonnull
+        /*public*/ /*<T>*/ QObject* getDefault(/*Class<T>*/QString type) {
+            if (type == ("TrackerTableAction")) {
+                return new TrackerTableAction(tr("Trackers"),this);
+            }
+            return AbstractInstanceInitializer::getDefault(type);
+        }
+
+        //@Override
+        //@Nonnull
+        /*public*/ QSet</*Class<?>*/QString>* getInitalizes() {
+            QSet</*Class<?>*/QString>* set = AbstractInstanceInitializer::getInitalizes();
+            set->insert("TrackerTableAction");
+            return set;
+        }
+    };
 friend class TableFrame;
 }; // end TrackerTableModel
 

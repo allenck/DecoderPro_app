@@ -79,7 +79,7 @@ public:
      * Move 'row' to 'nextInOrder' and shift all between 'nextInOrder' and 'row'
      * up one position.  ( row > nextInOrder )
      */
-   /*public*/ virtual void swapConditional(int nextInOrder, int row) = 0;
+   /*public*/ virtual void swapConditional(int nextInOrder, int row) {}
     /**
      * Returns the system name of the conditional that will calculate in the
      * specified order. This is also the order the Conditional is listed in

@@ -31,7 +31,7 @@
     if (tm != nullptr) {
         if (tm->getNamedBeanSet().isEmpty()) return QDomElement();
         for (NamedBean* nb : tm->getNamedBeanSet()) {
-         MaleStringExpressionSocket* expression = (MaleStringExpressionSocket*)nb;
+         MaleStringExpressionSocket* expression = (MaleStringExpressionSocket*)nb->self();
             log->debug("expression system name is " + expression->NamedBean::getSystemName());  // NOI18N
 //                log.error("expression system name is " + expression.getSystemName() + ", " + expression.getLongDescription());  // NOI18N
             try {

@@ -25,7 +25,7 @@
  */
  /*public*/ /*interface*/ class InstanceInitializer
  {
-
+ public:
     /**
      * Provide a default instance of the given class.
      * <p>
@@ -51,7 +51,7 @@
      *         {@link #getDefault(java.lang.Class)} will never be called.
      */
     //@Nonnull
- /*public*/ virtual QSet</*Class<?>*/QString> getInitalizes() {return QSet<QString>();}
+ /*public*/ virtual QSet</*Class<?>*/QString>* getInitalizes() {return new QSet<QString>();}
 };
 Q_DECLARE_INTERFACE(InstanceInitializer, "InstanceInitializer")
 #endif // INSTANCEINITIALIZER_H

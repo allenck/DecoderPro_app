@@ -12,9 +12,6 @@ DefaultFemaleAnalogActionSocketTest::DefaultFemaleAnalogActionSocketTest(QObject
  */
 public class DefaultFemaleAnalogActionSocketTest extends FemaleSocketTestBase {
 
-    private String _memorySystemName;
-    private Memory _memory;
-    private MyAnalogActionMemory _action;
 
     @Rule
     public final ExpectedException thrown = ExpectedException.none();
@@ -154,9 +151,9 @@ public class DefaultFemaleAnalogActionSocketTest extends FemaleSocketTestBase {
 
 
 
-    private class MyAnalogActionMemory extends AnalogActionMemory {
+    /*private*/ class MyAnalogActionMemory extends AnalogActionMemory {
 
-        private boolean _hasBeenSetup = false;
+        /*private*/ boolean _hasBeenSetup = false;
 
         public MyAnalogActionMemory(String systemName) {
             super(systemName, null);

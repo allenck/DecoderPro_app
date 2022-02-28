@@ -4,7 +4,7 @@
 #include "catalogtreemanager.h"
 #include "liblayouteditor_global.h"
 #include "swingshutdowntask.h"
-
+#include "abstractinstanceinitializer.h"
 
 class ShutDownTask;
 class CatalogTree;
@@ -35,6 +35,27 @@ public:
 
     QObject* mself() override{return (QObject*)this;}
 
+    //@ServiceProvider(service = InstanceInitializer.class)
+    /*public*/ /*static*/ class Initializer : public AbstractInstanceInitializer {
+
+        //@Override
+        //@Nonnull
+        /*public*/ /*<T>*/ QObject* getDefault(QString type) const override{
+            if (type == ("CatalogTreeManager")) {
+                return new DefaultCatalogTreeManager();
+            }
+            return AbstractInstanceInitializer::getDefault(type);
+        }
+
+        //@Override
+        //@Nonnull
+        /*public*/ QSet</*Class<?>*/QString>* getInitalizes()override {
+            QSet</*Class<?>*/QString>* set = AbstractInstanceInitializer::getInitalizes();
+            set->insert("CatalogTreeManager");
+            return set;
+        }
+
+    };
 signals:
 
 public slots:

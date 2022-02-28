@@ -1138,6 +1138,24 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+ logixng/abstractdigitalbooleanaction.cpp \
+ logixng/abstractstringaction.cpp \
+ logixng/abstractstringexpression.cpp \
+ logixng/debuggerinstanceinitializer.cpp \
+ logixng/digitalbooleanonchange.cpp \
+ logixng/dostringaction.cpp \
+ logixng/lastresultofdigitalexpression.cpp \
+ logixng/logix.cpp \
+ logixng/stringexpressionconstant.cpp \
+ logixng/stringmany.cpp \
+ logixng/abstractanalogaction.cpp \
+ logixng/analogmany.cpp \
+ logixng/logixng_manager.cpp \
+ logixng/abstractdigitalexpression.cpp \
+ logixng/digitalmany.cpp \
+ logixng/doanalogaction.cpp \
+ logixng/ifthenelse.cpp \
+ logixng/or.cpp \
  logixng/actionfactory.cpp \
  logixng/categoryloconet.cpp \
  logixng/debuggermaleanalogactionsocket.cpp \
@@ -2428,6 +2446,23 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+ logixng/abstractdigitalbooleanaction.h \
+ logixng/abstractstringaction.h \
+ logixng/abstractstringexpression.h \
+ logixng/debuggerinstanceinitializer.h \
+ logixng/digitalbooleanonchange.h \
+ logixng/dostringaction.h \
+ logixng/lastresultofdigitalexpression.h \
+ logixng/logix.h \
+ logixng/stringexpressionconstant.h \
+ logixng/stringmany.h \
+ logixng/abstractanalogaction.h \
+ logixng/analogmany.h \
+ logixng/abstractdigitalexpression.h \
+ logixng/digitalmany.h \
+ logixng/doanalogaction.h \
+ logixng/ifthenelse.h \
+ logixng/or.h \
  logixng/actionfactory.h \
  logixng/categoryloconet.h \
  logixng/debuggermaleanalogactionsocket.h \

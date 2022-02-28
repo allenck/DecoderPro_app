@@ -21,13 +21,13 @@
 /** {@inheritDoc} */
 //@Override
 /*public*/  bool DefaultMaleStringExpressionSocket::getTriggerOnChange() {
-    return ((StringExpressionBean*)AbstractMaleSocket::getObject())->getTriggerOnChange();
+    return ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->getTriggerOnChange();
 }
 
 /** {@inheritDoc} */
 //@Override
 /*public*/  void DefaultMaleStringExpressionSocket::setTriggerOnChange(bool triggerOnChange) {
-    ((StringExpressionBean*)AbstractMaleSocket::getObject())->setTriggerOnChange(triggerOnChange);
+    ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->setTriggerOnChange(triggerOnChange);
 }
 
 /** {@inheritDoc} */
@@ -49,7 +49,7 @@
     QString result = "";
     try {
         currentConditionalNG->getSymbolTable()->createSymbols(_localVariables);
-        result = ((StringExpressionBean*)AbstractMaleSocket::getObject())->evaluate();
+        result = ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->evaluate();
     } catch (JmriException* e) {
         if (!e->getErrors().isEmpty()) {
             handleError((AbstractMaleSocket*)this, tr("An exception has occurred during evaluate:"), e->getErrors(), e, log);
@@ -68,17 +68,17 @@
 
 //@Override
 /*public*/  int DefaultMaleStringExpressionSocket::getState() {
-    return ((StringExpressionBean*)AbstractMaleSocket::getObject())->getState();
+    return ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->getState();
 }
 
 //@Override
 /*public*/  QString DefaultMaleStringExpressionSocket::getDisplayName() {
-    return ((StringExpressionBean*)AbstractMaleSocket::getObject())->getDisplayName();
+    return ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->getDisplayName();
 }
 
 //@Override
 /*public*/  void DefaultMaleStringExpressionSocket::disposeMe() {
-    ((StringExpressionBean*)AbstractMaleSocket::getObject())->NamedBean::dispose();
+    ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->NamedBean::dispose();
 }
 
 /**
@@ -86,7 +86,7 @@
  */
 //@Override
 /*public*/  void DefaultMaleStringExpressionSocket::registerListenersForThisClass() {
-    ((StringExpressionBean*)AbstractMaleSocket::getObject())->registerListeners();
+    ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->registerListeners();
 }
 
 /**
@@ -94,12 +94,12 @@
  */
 //@Override
 /*public*/  void DefaultMaleStringExpressionSocket::unregisterListenersForThisClass() {
-    ((StringExpressionBean*)AbstractMaleSocket::getObject())->unregisterListeners();
+    ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->unregisterListeners();
 }
 
 //@Override
 /*public*/  void DefaultMaleStringExpressionSocket::setState(int s) /*throws JmriException*/ {
-    ((StringExpressionBean*)AbstractMaleSocket::getObject())->setState(s);
+    ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->setState(s);
 }
 
 //@Override
@@ -109,42 +109,42 @@
 
 //@Override
 /*public*/  QString DefaultMaleStringExpressionSocket::getComment() {
-    return ((StringExpressionBean*)AbstractMaleSocket::getObject())->NamedBean::getComment();
+    return ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->NamedBean::getComment();
 }
 
 //@Override
 /*public*/  void DefaultMaleStringExpressionSocket::setComment(QString comment) {
-    ((StringExpressionBean*)AbstractMaleSocket::getObject())->NamedBean::setComment(comment);
+    ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->NamedBean::setComment(comment);
 }
 
 //@Override
 /*public*/  void DefaultMaleStringExpressionSocket::setProperty(QString key, QVariant value) {
-    ((StringExpressionBean*)AbstractMaleSocket::getObject())->setProperty(key, value);
+    ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->setProperty(key, value);
 }
 
 //@Override
 /*public*/  QVariant DefaultMaleStringExpressionSocket::getProperty(QString key) {
-    return ((StringExpressionBean*)AbstractMaleSocket::getObject())->getProperty(key);
+    return ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->getProperty(key);
 }
 
 //@Override
 /*public*/  void DefaultMaleStringExpressionSocket::removeProperty(QString key) {
-    ((StringExpressionBean*)AbstractMaleSocket::getObject())->removeProperty(key);
+    ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->removeProperty(key);
 }
 
 //@Override
 /*public*/  QSet<QString> DefaultMaleStringExpressionSocket::getPropertyKeys() {
-    return ((StringExpressionBean*)AbstractMaleSocket::getObject())->getPropertyKeys();
+    return ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->getPropertyKeys();
 }
 
 //@Override
 /*public*/  QString DefaultMaleStringExpressionSocket::getBeanType() {
-    return ((StringExpressionBean*)AbstractMaleSocket::getObject())->getBeanType();
+    return ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->getBeanType();
 }
 
 //@Override
 /*public*/  int DefaultMaleStringExpressionSocket::compareSystemNameSuffix(QString suffix1, QString suffix2, NamedBean* n2) {
-    return ((StringExpressionBean*)AbstractMaleSocket::getObject())->compareSystemNameSuffix(suffix1, suffix2, n2);
+    return ((StringExpressionBean*)AbstractMaleSocket::getObject()->bself())->compareSystemNameSuffix(suffix1, suffix2, n2);
 }
 
 /** {@inheritDoc} */

@@ -216,6 +216,7 @@
    #endif
       if(obj)
        obj->setObjectName(className);
+      //obj = obj->qt_metacast(className.toStdString().c_str());
       return (Class*)obj;
     }
     else

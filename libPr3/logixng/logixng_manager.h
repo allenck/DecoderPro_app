@@ -188,31 +188,7 @@ public:
      * @param systemName the system name
      * @return enum indicating current validity, which might be just as a prefix
      */
-    /*public*/ static NameValidity validSystemNameFormat(QString subSystemNamePrefix, QString systemName) {
-        // System names with digits. :AUTO: is generated system names
-        if (systemName.contains(QRegExp(subSystemNamePrefix+"(:AUTO:)?\\d+"))) {
-            return NameValidity::VALID;
-
-        // System names with dollar sign allow any characters in the name
-        } else if (systemName.contains(QRegExp(subSystemNamePrefix+"\\$.+"))) {
-            return NameValidity::VALID;
-
-        // System names with :JMRI: belongs to JMRI itself
-        } else if (systemName.contains(QRegExp(subSystemNamePrefix+":JMRI:.+"))) {
-            return NameValidity::VALID;
-
-        // System names with :JMRI-LIB: belongs to software that uses JMRI as a lib
-        } else if (systemName.contains(QRegExp(subSystemNamePrefix+":JMRI-LIB:.+"))) {
-            return NameValidity::VALID;
-
-        // Other system names are not valid
-        } else {
-//            LoggerFactory.getLogger(LogixNG_Manager.class)
-//                    .warn("system name {} is invalid for sub system prefix {}",
-//                            systemName, subSystemNamePrefix);
-            return NameValidity::INVALID;
-        }
-    }
+    /*public*/ static NameValidity ng_validSystemNameFormat(QString subSystemNamePrefix, QString systemName) ;
 
     /**
      * Get the clipboard

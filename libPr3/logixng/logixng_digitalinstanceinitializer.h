@@ -31,7 +31,7 @@
  public:
   LogixNG_DigitalInstanceInitializer(QObject* parent = nullptr) : AbstractInstanceInitializer(parent){}
   /*public*/  /*<T>*/ QObject* getDefault(QString type) const override;
-  /*public*/  QSet</*Class<?>*/QString> getInitalizes()override;
+  /*public*/  QSet</*Class<?>*/QString>* getInitalizes()override;
 };
 
 #endif // LOGIXNG_DIGITALINSTANCEINITIALIZER_H

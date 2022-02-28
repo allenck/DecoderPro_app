@@ -2,6 +2,7 @@
 #define IMAGEINDEXEDITOR_H
 #include "jmrijframe.h"
 #include "liblayouteditor_global.h"
+#include "abstractinstanceinitializer.h"
 
 class CatalogTreeNode;
 class CatalogPanel;
@@ -19,7 +20,28 @@ public:
     /*public*/ static bool checkImageIndex();
     /*public*/ static /*final*/ QString IconDataFlavorMime;// = DataFlavor.javaJVMLocalObjectMimeType +
     /*public*/ QString getClassName();
+  //@ServiceProvider(service = InstanceInitializer.class)
+  /*public*/ /*static*/ class Initializer : public AbstractInstanceInitializer {
 
+      //@Override
+      //@Nonnull
+      /*public*/ /*<T>*/ QObject* getDefault(QString type) const override{
+          if (type == ("ImageIndexEditor")) {
+           ImageIndexEditor* instance = new ImageIndexEditor(tr("Create/Edit Image Index"));
+           instance->init(nullptr);
+           return instance;          }
+          return AbstractInstanceInitializer::getDefault(type);
+      }
+
+      //@Override
+      //@Nonnull
+      /*public*/ QSet</*Class<?>*/QString>* getInitalizes()override {
+          QSet</*Class<?>*/QString>* set = AbstractInstanceInitializer::getInitalizes();
+          set->insert("ImageIndexEditor");
+          return set;
+      }
+
+  };
 signals:
 
 public slots:

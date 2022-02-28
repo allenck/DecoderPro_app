@@ -16,6 +16,7 @@ class DefaultFemaleDigitalActionSocket : public AbstractFemaleSocket, public Fem
   /*public*/  QString getLongDescription(QLocale locale)override;
   /*public*/  QHash<Category *, QList<QString> > getConnectableClasses()override;
   /*public*/  void disposeMe()override;
+  /*public*/ QString getClassName()override;
 
   QObject* bself() override{return(QObject*)this;}
   QString getUserName() const override{return AbstractFemaleSocket::getUserName();}

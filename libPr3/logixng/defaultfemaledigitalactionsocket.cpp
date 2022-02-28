@@ -15,6 +15,7 @@
       : AbstractFemaleSocket(parentObject, listener, name, parent)
     {
         //super(parent, listener, name);
+      setObjectName("DefaultFemaleDigitalActionSocket");
     }
 
     //@Override
@@ -48,4 +49,9 @@
     //@Override
     /*public*/  void DefaultFemaleDigitalActionSocket::disposeMe() {
         // Do nothing
+    }
+
+    /*public*/ QString DefaultFemaleDigitalActionSocket::getClassName()
+    {
+     return "jmri.jmrit.logixng.implementation.DefaultFemaleDigitalActionSocket";
     }

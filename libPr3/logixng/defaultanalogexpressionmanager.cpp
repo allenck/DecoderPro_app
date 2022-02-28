@@ -162,7 +162,7 @@
      **/
     //@Override
     /*public*/  Manager::NameValidity DefaultAnalogExpressionManager::validSystemNameFormat(QString systemName) {
-        return LogixNG_Manager::validSystemNameFormat(
+        return LogixNG_Manager::ng_validSystemNameFormat(
                 AbstractManager::getSubSystemNamePrefix(), systemName);
     }
 

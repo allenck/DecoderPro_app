@@ -10,7 +10,7 @@ class AbstractInstanceInitializer : public QObject, public InstanceInitializer
 public:
  AbstractInstanceInitializer(QObject* parent = nullptr);
  /*public*/ /*<T>*/ QObject* getDefault(/*Class<T>*/QString type) const override /*throw (IllegalArgumentException)*/;
- /*public*/ QSet</*Class<?>*/QString> getInitalizes()override;
+ /*public*/ QSet</*Class<?>*/QString>* getInitalizes()override;
 
 };
 

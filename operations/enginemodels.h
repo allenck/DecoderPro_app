@@ -4,6 +4,7 @@
 #include <QHash>
 #include "appslib_global.h"
 #include "instancemanagerautodefault.h"
+#include "abstractinstanceinitializer.h"
 
 class QDomElement;
 namespace Operations
@@ -36,6 +37,29 @@ namespace Operations
   /*public*/ void setModelBunit(QString model, bool bUnit);
   /*public*/ bool isModelBunit(QString model);
 
+   //@ServiceProvider(service = InstanceInitializer.class)
+   /*public*/ /*static*/ class Initializer : public AbstractInstanceInitializer {
+
+       //@Override
+       //@Nonnull
+       /*public*/ /*<T>*/ QObject* getDefault(QString type) const override{
+           if (type == ("EngineModels")) {
+            EngineModels* instance = new EngineModels();
+            instance->loadDefaults();
+            return instance;
+           }
+           return AbstractInstanceInitializer::getDefault(type);
+       }
+
+       //@Override
+       //@Nonnull
+       /*public*/ QSet</*Class<?>*/QString>* getInitalizes()override {
+           QSet</*Class<?>*/QString>* set = AbstractInstanceInitializer::getInitalizes();
+           set->insert("EngineModels");
+           return set;
+       }
+
+   };
  signals:
 
  public slots:

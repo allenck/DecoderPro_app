@@ -55,16 +55,16 @@ class DefaultConditionalNG : public AbstractBase, public  ConditionalNG, public 
 
  private:
   static Logger* log;
-  /*private*/ /*final*/ LogixNG_Thread* _thread;
+  /*private*/ /*final*/ LogixNG_Thread* _thread = nullptr;
   /*private*/ int _startupThreadId;
   /*private*/ Base* _parent = nullptr;
   /*private*/ QString _socketSystemName = nullptr;
-  /*private*/ /*final*/ FemaleDigitalActionSocket* _femaleSocket;
+  /*private*/ /*final*/ FemaleDigitalActionSocket* _femaleSocket = nullptr;
   /*private*/ bool _enabled = true;
   /*private*/ /*final*/ ExecuteLock* _executeLock = new ExecuteLock();
   /*private*/ bool _runDelayed = true;
   /*private*/ /*final*/ Stack* _stack = new DefaultStack();
-  /*private*/ SymbolTable* _symbolTable;
+  /*private*/ SymbolTable* _symbolTable = nullptr;
   void common(QString sys, QString user, int threadID);
   /*private*/ void runOnLogixNG_Thread(
           /*@Nonnull*/ ThreadAction* ta,

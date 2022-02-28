@@ -528,8 +528,7 @@ bool Apps::configDeferredLoadOK = false;
  DefaultCatalogTreeManagerXml().readCatalogTrees();
 
 #ifdef HAVE_LOGIXNG
- LogixNG_Manager* logixNG_Manager = (LogixNG_Manager*)
- InstanceManager::getDefault("LogixNG_Manager");
+ LogixNG_Manager* logixNG_Manager = (LogixNG_Manager*) InstanceManager::getDefault("LogixNG_Manager");
  logixNG_Manager->setupAllLogixNGs();
  if (((LogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getStartLogixNGOnStartup()) {
      logixNG_Manager->activateAllLogixNGs();
