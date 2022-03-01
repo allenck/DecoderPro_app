@@ -104,7 +104,7 @@
     //@Override
     /*public*/  /*final*/ Manager::NameValidity AbstractBaseManager::validSystemNameFormat(QString systemName) {
         return LogixNG_Manager::ng_validSystemNameFormat(
-                AbstractManager::getSubSystemNamePrefix(), systemName);
+                getSubSystemNamePrefix(), systemName);
     }
 
     //@Override

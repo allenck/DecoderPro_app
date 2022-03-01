@@ -96,7 +96,7 @@
 #include "logixng/symboltabletestaction.h"
 #include "logixng/logixng_initializationmanagertestaction.h"
 #include "logixng/defaultlogixngmanagertestaction.h"
-
+#include "logixng/defaultfemaleanalogactionsockettestaction.h"
 #endif
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
@@ -273,5 +273,6 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
     logixNGMenu->addAction(new SymbolTableTestAction(this));
     logixNGMenu->addAction(new LogixNG_InitializationManagerTestAction(this));
     logixNGMenu->addAction(new DefaultLogixNGManagerTestAction(this));
+    logixNGMenu->addAction(new DefaultFemaleAnalogActionSocketTestAction(this));
 #endif
 }

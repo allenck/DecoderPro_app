@@ -28,7 +28,7 @@
     /*public*/ virtual /*default*/ void socketNameChanged(FemaleSocket* /*socket*/) {
         // Do nothing
     }
-  virtual QObject* self() =0;
+  virtual QObject* self() {return (QObject*)nullptr;}
 };
 Q_DECLARE_INTERFACE(FemaleSocketListener, "FemaleSocketListener")
 #endif // FEMALESOCKETLISTENER_H

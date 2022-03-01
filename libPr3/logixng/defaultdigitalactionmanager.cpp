@@ -105,8 +105,8 @@
     }
 
     // Check if system name is valid
-    if (this->validSystemNameFormat(action->Base::getSystemName()) != NameValidity::VALID) {
-        log->warn("SystemName " + action->Base::getSystemName() + " is not in the correct format");
+    if (this->validSystemNameFormat(action->NamedBean::getSystemName()) != NameValidity::VALID) {
+        log->warn("SystemName " + action->NamedBean::getSystemName() + " is not in the correct format");
         throw new IllegalArgumentException(tr("System name is invalid: %1").arg(action->NamedBean::getSystemName()));
     }
 

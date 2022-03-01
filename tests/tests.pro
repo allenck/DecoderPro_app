@@ -44,6 +44,7 @@ equals(ENABLE_LOGIXNG, "Y") {
 
 
 SOURCES += \
+    logixng/defaultfemaleanalogactionsockettestaction.cpp \
         tests.cpp \
         junitutil.cpp \
         temporaryfolder.cpp \
@@ -298,6 +299,7 @@ SOURCES += \
     DEFINES -= HAVE_LOGIXNG
 }
 HEADERS += \
+    logixng/defaultfemaleanalogactionsockettestaction.h \
         tests.h \
         tests_global.h \
         junitutil.h \

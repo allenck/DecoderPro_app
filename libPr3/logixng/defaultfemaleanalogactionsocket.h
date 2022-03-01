@@ -9,10 +9,6 @@ class Base;
 class FemaleSocketListener;
 class DefaultFemaleAnalogActionSocket : public AbstractFemaleSocket, public FemaleAnalogActionSocket
 {
-//  /home/allen/Projects/DecoderPro/fossil/DecoderPro_app/libPr3/logixng/defaultfemaleanalogactionsocketfactory.h:34: error: ambiguous conversion from derived class 'DefaultFemaleAnalogActionSocket' to base class 'FemaleSocket':
-//      class DefaultFemaleAnalogActionSocket -> class AbstractFemaleSocket -> class FemaleSocket
-//      class DefaultFemaleAnalogActionSocket -> class FemaleAnalogActionSocket -> class FemaleSocket
-
   Q_OBJECT
   Q_INTERFACES(FemaleAnalogActionSocket)
  public:

@@ -35,6 +35,7 @@ public:
     QObject* mself() override { return (QObject*)this;}
     QObject* pself() override{return (QObject*)this;}
 
+
 signals:
 
  public slots:

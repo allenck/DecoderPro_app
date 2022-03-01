@@ -3,7 +3,7 @@
 #include "manager.h"
 #include "abstractmanager.h"
 class Logix;
-class LogixManager : public Manager
+class LogixManager : public virtual Manager
 {
     //Q_OBJECT
   Q_INTERFACES(Manager)

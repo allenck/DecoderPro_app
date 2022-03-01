@@ -64,14 +64,14 @@
         Assert::assertEquals("validSystemNameFormat()", Manager::NameValidity::INVALID, manager->validSystemNameFormat("Iq1"), __FILE__, __LINE__);
         Assert::assertEquals("validSystemNameFormat()", Manager::NameValidity::INVALID, manager->validSystemNameFormat("iq1"), __FILE__, __LINE__);
         Assert::assertEquals("validSystemNameFormat()", Manager::NameValidity::VALID, manager->validSystemNameFormat("IQ:AUTO:1"), __FILE__, __LINE__);
-//        Assert::assertEquals("validSystemNameFormat()", Manager::NameValidity::INVALID, manager->validSystemNameFormat("IQ1A"), __FILE__, __LINE__);
-//        Assert::assertEquals("validSystemNameFormat()", Manager::NameValidity::INVALID, manager->validSystemNameFormat("IQA"), __FILE__, __LINE__);
-//        Assert::assertEquals("validSystemNameFormat()", Manager::NameValidity::INVALID, manager->validSystemNameFormat("IQ1 "), __FILE__, __LINE__);
-//        Assert::assertEquals("validSystemNameFormat()", Manager::NameValidity::VALID, manager->validSystemNameFormat("IQ11111"), __FILE__, __LINE__);
-//        Assert::assertEquals("validSystemNameFormat()", Manager::NameValidity::INVALID, manager->validSystemNameFormat("IQ1AA"), __FILE__, __LINE__);
-//        Assert::assertEquals("validSystemNameFormat()", Manager::NameValidity::INVALID, manager->validSystemNameFormat("IQ1X"), __FILE__, __LINE__);
-//        Assert::assertEquals("validSystemNameFormat()", Manager::NameValidity::INVALID, manager->validSystemNameFormat("IQX1"), __FILE__, __LINE__);
-//        Assert::assertEquals("validSystemNameFormat()", Manager::NameValidity::INVALID, manager->validSystemNameFormat("IQX1X"), __FILE__, __LINE__);
+        Assert::assertEquals("validSystemNameFormat()", Manager::NameValidity::INVALID, manager->validSystemNameFormat("IQ1A"), __FILE__, __LINE__);
+        Assert::assertEquals("validSystemNameFormat()", Manager::NameValidity::INVALID, manager->validSystemNameFormat("IQA"), __FILE__, __LINE__);
+        Assert::assertEquals("validSystemNameFormat()", Manager::NameValidity::INVALID, manager->validSystemNameFormat("IQ1 "), __FILE__, __LINE__);
+        Assert::assertEquals("validSystemNameFormat()", Manager::NameValidity::VALID, manager->validSystemNameFormat("IQ11111"), __FILE__, __LINE__);
+        Assert::assertEquals("validSystemNameFormat()", Manager::NameValidity::INVALID, manager->validSystemNameFormat("IQ1AA"), __FILE__, __LINE__);
+        Assert::assertEquals("validSystemNameFormat()", Manager::NameValidity::INVALID, manager->validSystemNameFormat("IQ1X"), __FILE__, __LINE__);
+        Assert::assertEquals("validSystemNameFormat()", Manager::NameValidity::INVALID, manager->validSystemNameFormat("IQX1"), __FILE__, __LINE__);
+        Assert::assertEquals("validSystemNameFormat()", Manager::NameValidity::INVALID, manager->validSystemNameFormat("IQX1X"), __FILE__, __LINE__);
     }
 
     //@Test
@@ -103,7 +103,7 @@
         // User name exists
         logixNG = manager->createLogixNG("IQ3", "Other LogixNG");
         Assert::assertNull("cannot create new", logixNG, __FILE__, __LINE__);
-#if 0
+
         // Bad system name
         bool thrown = false;
         try {
@@ -118,7 +118,7 @@
         logixNG = manager->createLogixNG("Only user name");
         Assert::assertNotNull("exists", logixNG, __FILE__, __LINE__);
         Assert::assertEquals("user name is correct", "Only user name", logixNG->AbstractNamedBean::getUserName(), __FILE__, __LINE__);
-#endif
+
 }
 
     /*public*/  void DefaultLogixNGManagerTest::setupInitialConditionalNGTree(ConditionalNG* conditionalNG) {

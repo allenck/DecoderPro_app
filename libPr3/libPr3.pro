@@ -1138,6 +1138,7 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+ logixng/analogactionmemory.cpp \
  logixng/abstractdigitalbooleanaction.cpp \
  logixng/abstractstringaction.cpp \
  logixng/abstractstringexpression.cpp \
@@ -2446,6 +2447,7 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+ logixng/analogactionmemory.h \
  logixng/abstractdigitalbooleanaction.h \
  logixng/abstractstringaction.h \
  logixng/abstractstringexpression.h \

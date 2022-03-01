@@ -5,6 +5,7 @@
 #include <QSysInfo>
 #include <QDir>
 #include <QTime>
+#include "loggerfactory.h"
 
 System::System(QObject *parent) :
   QObject(parent)
@@ -94,3 +95,14 @@ QString System::checkDefault(QString key)
 {
  return QTime::currentTime().msecsSinceStartOfDay();
 }
+
+/*public*/ /*static*/ void System::out(QString s)
+{
+ log->info(s);
+}
+/*public*/ /*static*/ void System::err(QString s)
+{
+ log->error(s);
+}
+
+/*static*/ Logger* System::log = LoggerFactory::getLogger("System");

@@ -14,6 +14,7 @@
 #include "logixng_initializationmanager.h"
 #include "defaultnamedtablemanager.h"
 #include "defaultlogixnginitializationmanager.h"
+#include "defaultlogixngmanager.h"
 
 /**
  * Class providing the basic logic of the LogixNG_Manager interface.
@@ -53,7 +54,7 @@
     //@Override
     /*public*/ Manager::NameValidity DefaultLogixNGManager::validSystemNameFormat(QString systemName) {
         return LogixNG_Manager::ng_validSystemNameFormat(
-                AbstractManager::getSubSystemNamePrefix(), systemName);
+                DefaultLogixNGManager::getSubSystemNamePrefix(), systemName);
 //        if (systemName.matches(getSubSystemNamePrefix()+"(:AUTO:)?\\d+")) {
 //            return NameValidity.VALID;
 //        } else {
@@ -104,7 +105,7 @@
 
     //@Override
     /*public*/ LogixNG* DefaultLogixNGManager::createLogixNG(QString userName) /*throw new (IllegalArgumentException)*/ {
-        return createLogixNG(LogixNG_Manager::getAutoSystemName(), userName);
+        return createLogixNG(AbstractManager::getAutoSystemName(), userName);
     }
 
     //@Override
