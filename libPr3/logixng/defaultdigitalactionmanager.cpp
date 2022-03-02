@@ -84,7 +84,7 @@
 
 /** {@inheritDoc} */
 //@Override
-/*public*/  MaleDigitalActionSocket* DefaultDigitalActionManager::registerBean(/*MaleDigitalActionSocket*/NamedBean* maleSocket) {
+/*public*/  NamedBean *DefaultDigitalActionManager::registerBean(/*MaleDigitalActionSocket*/NamedBean *maleSocket) {
     MaleDigitalActionSocket* bean = (MaleDigitalActionSocket*)AbstractBaseManager::registerBean(maleSocket);
     _lastRegisteredBean = (MaleSocket*)maleSocket;
     return bean;
@@ -105,17 +105,17 @@
     }
 
     // Check if system name is valid
-    if (this->validSystemNameFormat(action->NamedBean::getSystemName()) != NameValidity::VALID) {
-        log->warn("SystemName " + action->NamedBean::getSystemName() + " is not in the correct format");
+    if (this->validSystemNameFormat(((AbstractNamedBean*)action->self())->getSystemName()) != NameValidity::VALID) {
+        log->warn("SystemName " + ((AbstractNamedBean*)action->self())->getSystemName() + " is not in the correct format");
         throw new IllegalArgumentException(tr("System name is invalid: %1").arg(action->NamedBean::getSystemName()));
     }
 
     // Keep track of the last created auto system name
-    updateAutoNumber(action->NamedBean::getSystemName());
+    updateAutoNumber(((AbstractNamedBean*)action->self())->getSystemName());
 
     // save in the maps
     MaleDigitalActionSocket* maleSocket = createMaleActionSocket(action);
-    return registerBean(maleSocket);
+    return (MaleDigitalActionSocket*)registerBean((AbstractNamedBean*)maleSocket->self());
 }
 
 //@Override

@@ -14,7 +14,7 @@ class DefaultDigitalActionManager : public AbstractBaseManager, public DigitalAc
   explicit DefaultDigitalActionManager(QObject *parent = nullptr);
   /*public*/  /*Class<? extends MaleSocket>*/QString getMaleSocketClass()override;
   /*public*/  MaleSocket* getLastRegisteredMaleSocket()override;
-  /*public*/  MaleDigitalActionSocket* registerBean(/*MaleDigitalActionSocket*/NamedBean* maleSocket)override;
+  /*public*/  NamedBean* registerBean(/*MaleDigitalActionSocket*/NamedBean *maleSocket)override;
   /*public*/  MaleDigitalActionSocket* registerAction(/*@Nonnull*/ DigitalActionBean* action)
           /*throws IllegalArgumentException*/ override;
   /*public*/  int getXMLOrder() const override;

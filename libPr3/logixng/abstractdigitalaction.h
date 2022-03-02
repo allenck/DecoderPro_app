@@ -19,6 +19,10 @@ class AbstractDigitalAction : public AbstractBase, public DigitalActionBean
   /*public*/  void setState(int s) /*throws JmriException*/ override;
   /*public*/  int getState()override;
 
+  QObject* bself() override {return (QObject*)this;}
+  QObject* self() override {return (QObject*)this;}
+
+
  private:
   static Logger* log;
   /*private*/ Base* _parent = nullptr;

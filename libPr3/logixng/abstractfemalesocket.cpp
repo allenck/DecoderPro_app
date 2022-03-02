@@ -3,7 +3,7 @@
 #include "vptr.h"
 #include "conditionalng.h"
 #include "logixng.h"
-
+#include "abstractmalesocket.h"
 /**
  * Abstract female socket.
  *
@@ -77,8 +77,11 @@
             throw  IllegalArgumentException("Socket "+QString(socket->bself()->metaObject()->className())+" is not compatible with "+ QString(this->bself()->metaObject()->className()));
 //            throw new IllegalArgumentException("Socket "+socket.getClass().getName()+" is not compatible with "+this.getClass().getName()+". Socket.getObject: "+socket.getObject().getClass().getName());
         }
-
-        _socket = socket;
+//        QObject* mObj = (QObject*)socket;
+//        if(static_cast<AbstractMaleSocket*>(mObj))
+//         _socket = (AbstractMaleSocket*)mObj;
+//        else
+         _socket = socket;
         _socket->Base::setParent(this);
         _listener->connected(this);
         pcs->firePropertyChange(new PropertyChangeEvent(this, Base::PROPERTY_SOCKET_CONNECTED, QVariant(), VPtr<MaleSocket>::asQVariant(_socket)));

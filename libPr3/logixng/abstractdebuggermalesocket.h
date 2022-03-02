@@ -26,6 +26,7 @@ class AbstractDebuggerMaleSocket : public AbstractMaleSocket
   /*public*/  /*final*/ void setComment(QString comment)override final ;
   /*public*/  void setParent(Base* parent)override;
 
+  /*public*/ QString getLongDescription(QLocale locale) override{return AbstractMaleSocket::getLongDescription(locale);}
  private:
   /*private*/ /*final*/ Debugger* _debugger = (Debugger*)InstanceManager::getDefault("Debugger");
 //    /*protected*/ final MaleSocket ((MaleSocket)getObject());

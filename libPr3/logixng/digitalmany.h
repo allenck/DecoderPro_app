@@ -15,8 +15,8 @@ class DigitalMany : public AbstractDigitalAction, public FemaleSocketListener
       /*private*/ /*final*/ FemaleDigitalActionSocket* _socket;
 
       /*private*/ ActionEntry(FemaleDigitalActionSocket* socket, QString socketSystemName) {
-          _socketSystemName = socketSystemName;
-          _socket = socket;
+       _socketSystemName = socketSystemName;
+       _socket = socket;
       }
 
       /*private*/ ActionEntry(FemaleDigitalActionSocket* socket) {

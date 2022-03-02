@@ -32,6 +32,7 @@
 #include "logix.h"
 #include "digitalbooleanonchange.h"
 #include "lastresultofdigitalexpression.h"
+#include "abstractdebuggermalesocket.h"
 
 /**
  * Test DefaultLogixNG
@@ -133,8 +134,10 @@
             femaleSocket->_connect(actionManySocket);
 //            femaleSocket->setLock(Base.Lock.HARD_LOCK);
 
-            femaleSocket = actionManySocket->getChild(0);
-            MaleDigitalActionSocket* actionIfThenSocket = (MaleDigitalActionSocket*)((DigitalActionManager*)
+            QObject* o = (QObject*)actionManySocket;
+            //femaleSocket = actionManySocket->getChild(0);
+            femaleSocket = ((AbstractDebuggerMaleSocket*)(o))->getChild(0);
+            MaleDigitalActionSocket* actionIfThenSocket = (MaleDigitalActionSocket*)((DefaultDigitalActionManager*)
                     InstanceManager::getDefault("DigitalActionManager"))
                             ->registerAction(new IfThenElse(digitalActionManager->AbstractManager::getAutoSystemName(), nullptr));
             femaleSocket->_connect(actionIfThenSocket);
@@ -161,6 +164,12 @@
                 "jmri.jmrit.logixng.implementation.DefaultFemaleDigitalActionSocket",
                 child->getClassName(), __FILE__, __LINE__);
         MaleSocket* maleSocket = child->getConnectedSocket();
+        QObject* obj = (QObject*)maleSocket;
+        //QString s = ((AbstractMaleSocket*)obj)->getClassName();
+        if(static_cast<AbstractDebuggerMaleSocket*>(obj))
+         maleSocket = ((AbstractDebuggerMaleSocket*)obj);
+        else
+         maleSocket = ((AbstractMaleSocket*)obj);
         Assert::assertEquals("action is of correct class",
                 "jmri.jmrit.logixng.tools.debugger.DebuggerMaleDigitalActionSocket",
                 maleSocket->getClassName(), __FILE__, __LINE__);
@@ -177,7 +186,7 @@
     }
 
     //@Test
-    /*public*/  void testDeleteLogixNG() /*throws SocketAlreadyConnectedException, PropertyVetoException*/ {
+    /*public*/  void DefaultLogixNGManagerTest::testDeleteLogixNG() /*throws SocketAlreadyConnectedException, PropertyVetoException*/ {
         LogixNG_Manager* logixNG_Manager = (DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager");
         ConditionalNG_Manager* conditionalNG_Manager = (DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager");
         AnalogActionManager* analogActionManager = (DefaultAnalogActionManager*)InstanceManager::getDefault("AnalogActionManager");

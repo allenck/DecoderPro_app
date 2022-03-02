@@ -9,6 +9,7 @@
 #include "errorhandlingdialog.h"
 #include "errorhandlingdialog_multiline.h"
 #include "abstractbase.h"
+#include "abstractdigitalaction.h"
 
 /**
  * The abstract class that is the base class for all LogixNG classes that
@@ -21,7 +22,11 @@
 
     /*public*/ AbstractMaleSocket::AbstractMaleSocket(BaseManager/*<? extends NamedBean>*/* manager, Base* object, QObject* parent): QObject(parent) {
         _manager = manager;
-        _object = object;
+        QObject* obj = (QObject*)object;
+        if(static_cast<AbstractMaleSocket*>(obj))
+         _object = (AbstractMaleSocket*) obj;
+        else
+         _object = object;
     }
 
     /** {@inheritDoc} */
@@ -95,6 +100,15 @@
 
     //@Override
     /*public*/ /*final*/ QString AbstractMaleSocket::getLongDescription(QLocale locale) {
+     QObject* obj = (QObject*)_object->bself();
+     QString cn = obj->metaObject()->className();
+
+     if(static_cast<AbstractDigitalAction*>(obj))
+      return ((AbstractDigitalAction*)obj)->getLongDescription(locale);
+
+     if(static_cast<AbstractMaleSocket*>(obj))
+      return ((AbstractMaleSocket*)obj)->getLongDescription(locale);
+     else
         return _object->getLongDescription(locale);
     }
 
@@ -195,9 +209,12 @@
 
     //@Override
     /*public*/ bool AbstractMaleSocket::getListen() {
-        if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
-            return ((AbstractMaleSocket*)getObject()->bself())->getListen();
-        }
+//        if (qobject_cast<AbstractMaleSocket*>(getObject()->bself())) {
+//            return ((AbstractMaleSocket*)getObject()->bself())->getListen();
+     QObject* obj = (QObject*) getObject();
+     if(qobject_cast<AbstractMaleSocket*>(obj))
+      return ((AbstractMaleSocket*)obj)->getListen();
+//        }
         return _listen;
     }
 

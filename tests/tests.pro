@@ -44,7 +44,6 @@ equals(ENABLE_LOGIXNG, "Y") {
 
 
 SOURCES += \
-    logixng/defaultfemaleanalogactionsockettestaction.cpp \
         tests.cpp \
         junitutil.cpp \
         temporaryfolder.cpp \
@@ -287,6 +286,9 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
 DEFINES += HAVE_LOGIXNG
 SOURCES += \
+    logixng/conditionalngtest.cpp \
+    logixng/conditionalngtestaction.cpp \
+    logixng/defaultfemaleanalogactionsockettestaction.cpp \
     logixng/defaultlogixngmanagertest.cpp \
     logixng/defaultlogixngmanagertestaction.cpp \
     logixng/defaultfemaleanalogactionsockettest.cpp \
@@ -299,7 +301,6 @@ SOURCES += \
     DEFINES -= HAVE_LOGIXNG
 }
 HEADERS += \
-    logixng/defaultfemaleanalogactionsockettestaction.h \
         tests.h \
         tests_global.h \
         junitutil.h \
@@ -543,6 +544,9 @@ HEADERS += \
 
 equals(ENABLE_LOGIXNG, "Y") {
 HEADERS += \
+    logixng/conditionalngtest.h \
+    logixng/conditionalngtestaction.h \
+    logixng/defaultfemaleanalogactionsockettestaction.h \
     logixng/defaultlogixngmanagertest.h \
     logixng/defaultlogixngmanagertestaction.h \
     logixng/defaultfemaleanalogactionsockettest.h \

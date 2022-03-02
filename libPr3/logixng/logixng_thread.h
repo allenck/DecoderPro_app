@@ -108,6 +108,8 @@ class NGThread : public Runnable
   {
    while (!thread->_stopThread) {
        try {
+           if(thread->_eventQueue->isEmpty())
+            continue;
            ThreadEvent* event = thread->_eventQueue->dequeue();
            if (event->_lock != nullptr) {
               /* synchronized(event->_lock)*/ {

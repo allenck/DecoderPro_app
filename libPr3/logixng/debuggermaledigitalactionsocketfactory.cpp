@@ -2,7 +2,7 @@
 #include "instancemanager.h"
 #include "logixngpreferences.h"
 #include "debuggermaledigitalactionsocket.h"
-
+#include "defaultlogixngpreferences.h"
 /**
  *
  * @author daniel
@@ -11,11 +11,11 @@
 //public class DebuggerMaleDigitalActionSocketFactory implements MaleDigitalActionSocketFactory {
 
     //@Override
-    /*public*/ MaleDigitalActionSocket* encapsulateMaleSocket(BaseManager/*<MaleDigitalActionSocket>*/* manager, MaleDigitalActionSocket* maleSocket) {
+    /*public*/ MaleSocket* DebuggerMaleDigitalActionSocketFactory::encapsulateMaleSocket(BaseManager/*<MaleDigitalActionSocket>*/* manager, MaleSocket* maleSocket) {
 
-        if (! ((LogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
+        if (! ((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
             return maleSocket;
         }
 
-        return new DebuggerMaleDigitalActionSocket(manager, maleSocket);
+        return (AbstractDebuggerMaleSocket*)(new DebuggerMaleDigitalActionSocket(manager, (NamedBean*)maleSocket));
     }

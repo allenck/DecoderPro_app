@@ -189,7 +189,7 @@
     //@Override
     /*public*/  void  DefaultConditionalNGManager::setRunOnGUIDelayed(bool value) {
      foreach(NamedBean* nb,
-        ((LogixNG_Manager*)InstanceManager::getDefault("LogixNG_Manager"))->getNamedBeanSet()) {
+        ((DefaultLogixNGManager*)InstanceManager::getDefault("LogixNG_Manager"))->AbstractManager::getNamedBeanSet()) {
       LogixNG* logixNG = (LogixNG*)nb->self();
             for (int i = 0; i < logixNG->getNumConditionalNGs(); i++) {
                 if (logixNG->getConditionalNG(i) != nullptr) {

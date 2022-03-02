@@ -15,7 +15,7 @@
      *
      * @throws JmriException when an exception occurs
      */
-    /*public*/ virtual void execute() /*throws JmriException*/=0;
+  /*public*/ virtual void execute() /*throws JmriException*/{}
 
 };
 Q_DECLARE_INTERFACE(DigitalAction, "DigitalAction")

@@ -114,12 +114,14 @@
 
     //@Override
     /*public*/  NamedBean* AbstractBaseManager::registerBean(/*@Nonnull*/ NamedBean* s) {
-        NamedBean* bean = s;
+        if(!s)
+         throw new NullPointerException("required bean is null!");
+        MaleSocket* bean = (AbstractMaleSocket*)s;
         for (MaleSocketFactory/*<E>*/* factory : _maleSocketFactories) {
             bean = factory->encapsulateMaleSocket(this, bean);
         }
-        AbstractManager::Register(bean);
-        return bean;
+        BaseManager::Register(s);
+        return (NamedBean*)bean;
     }
 
     //@Override

@@ -20,7 +20,10 @@
 
     //@Override
     /*public*/  bool DefaultFemaleDigitalActionSocket::isCompatible(MaleSocket* socket) {
-        return qobject_cast<MaleDigitalActionSocket*>(socket->bself());
+     QObject* obj = (QObject*)socket;
+     MaleDigitalActionSocket* mas = qobject_cast<MaleDigitalActionSocket*>(obj);
+        //return qobject_cast<MaleDigitalActionSocket*>(socket->bself());
+     return mas;
     }
 
     //@Override

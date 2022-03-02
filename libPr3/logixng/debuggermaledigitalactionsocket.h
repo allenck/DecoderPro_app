@@ -10,7 +10,7 @@ class DebuggerMaleDigitalActionSocket : public AbstractDebuggerMaleSocket, publi
   Q_OBJECT
   Q_INTERFACES(MaleDigitalActionSocket)
  public:
-  explicit DebuggerMaleDigitalActionSocket(BaseManager/*<MaleDigitalActionSocket>*/* manager, MaleDigitalActionSocket* maleSocket, QObject *parent = nullptr);
+  explicit DebuggerMaleDigitalActionSocket(BaseManager/*<MaleDigitalActionSocket>*/* manager, /*MaleDigitalActionSocket*/NamedBean* maleSocket, QObject *parent = nullptr);
   /*public*/  QString getBeforeInfo()override;
   /*public*/  QString getAfterInfo()override;
   /*public*/  void execute() /*throws JmriException */override;
@@ -23,7 +23,7 @@ class DebuggerMaleDigitalActionSocket : public AbstractDebuggerMaleSocket, publi
   /*public*/  QSet<QString> getPropertyKeys()override;
   /*public*/  QString getBeanType()override;
   /*public*/  int compareSystemNameSuffix(QString suffix1, QString suffix2, NamedBean* n2)override;
-  /*public*/  QString getClassName();
+  /*public*/  QString getClassName() override;
 
   QObject* self() override {return (QObject*)this;}
 };

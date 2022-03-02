@@ -8,6 +8,10 @@
 #include "loggerfactory.h"
 #include "digitalactionmanager.h"
 #include "runtimeexception.h"
+#include  "defaultconditionalngmanager.h"
+#include "defaultdigitalactionmanager.h"
+#include "abstractmalesocket.h"
+
 /**
  * The default implementation of ConditionalNG.
  *
@@ -26,6 +30,8 @@
     /*public*/  DefaultConditionalNG::DefaultConditionalNG(QString sys, QString user, int threadID, QObject *parent)
             /*throws BadUserNameException, BadSystemNameException*/ : AbstractBase(sys, user, parent) {
         //super(sys, user);
+     common(sys, user, threadID);
+
     }
 
     void DefaultConditionalNG::common(QString sys, QString user, int threadID)
@@ -35,15 +41,12 @@
         _thread->setThreadInUse();
 
         // Do this test here to ensure all the tests are using correct system names
-        Manager::NameValidity isNameValid = ((ConditionalNG_Manager*)InstanceManager::getDefault("ConditionalNG_Manager"))->validSystemNameFormat(mSystemName);
+        Manager::NameValidity isNameValid = ((DefaultConditionalNGManager*)InstanceManager::getDefault("ConditionalNG_Manager"))->validSystemNameFormat(mSystemName);
         if (isNameValid != Manager::NameValidity::VALID) {
             throw new IllegalArgumentException("system name is not valid");
         }
         _femaleSocket = new DefaultFemaleDigitalActionSocket((ConditionalNG*)this, this, "A");
     }
-//defaultconditionalng.cpp:42:62: error: ambiguous conversion from derived class 'DefaultConditionalNG' to base class 'Base':
-//    class DefaultConditionalNG -> class AbstractBase -> class Base
-//    class DefaultConditionalNG -> class ConditionalNG -> class Base
 
     /** {@inheritDoc} */
     //@Override
@@ -221,7 +224,10 @@
 
     //@Override
     /*public*/  void DefaultConditionalNG::connected(FemaleSocket* socket) {
-        _socketSystemName = socket->getConnectedSocket()->getSystemName();
+     QObject* connectedSocket = (QObject*)socket->getConnectedSocket();
+     QString name = ((AbstractMaleSocket*)connectedSocket)->getSystemName();
+       //_socketSystemName = socket->getConnectedSocket()->getSystemName();
+     _socketSystemName = name;
     }
 
     //@Override
@@ -285,7 +291,7 @@
             if (_socketSystemName != nullptr) {
                 try {
                     MaleSocket* maleSocket = (MaleSocket*)
-                            ((DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))
+                            ((DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))
                                     ->getBySystemName(_socketSystemName);
                     if (maleSocket != nullptr) {
                         _femaleSocket->_connect(maleSocket);

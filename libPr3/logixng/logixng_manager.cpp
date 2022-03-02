@@ -13,8 +13,9 @@
  * @return enum indicating current validity, which might be just as a prefix
  */
 /*public*/ /*static*/ Manager::NameValidity LogixNG_Manager::ng_validSystemNameFormat(QString subSystemNamePrefix, QString systemName) {
+ QRegularExpressionMatch* match = new  QRegularExpressionMatch();
  // System names with digits. :AUTO: is generated system names
- if (systemName.contains(QRegularExpression(subSystemNamePrefix+"(:AUTO:)?\\d+"))) {
+ if (systemName.contains(QRegularExpression(subSystemNamePrefix+"(:AUTO:)?\\d+"), match) && match->capturedLength()== systemName.length()) {
      return NameValidity::VALID;
 
  // System names with dollar sign allow any characters in the name

@@ -369,6 +369,7 @@ private:
         /*public*/  void setCatchAbortExecution(bool catchAbortExecution) override{
             throw new UnsupportedOperationException("Not supported");
         }
+     QObject* bself() override {return (QObject*)this;}
     };
 protected:
     /*protected*/ Manager/*<? extends NamedBean>*/* manager;

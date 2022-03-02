@@ -137,9 +137,11 @@
 //                }
 //                _threadIsStopped = true;
 //            }, "JMRI LogixNGThread");
-            _logixNGThread = new Thread(new NGThread(this), "JMRI LogixNGThread");
+            NGThread* ngThread = nullptr;
+            _logixNGThread = new Thread(ngThread = new NGThread(this), "JMRI LogixNGThread");
 
             _logixNGThread->setTerminationEnabled(true);//setDaemon(true);
+            ngThread->start();
         }
 #endif
     }
