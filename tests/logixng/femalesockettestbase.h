@@ -381,7 +381,9 @@ protected:
     /*protected*/ /*abstract*/virtual  Manager/*<? extends NamedBean>*/* getManager()=0;
     /*protected*/ /*abstract*/ virtual FemaleSocket* getFemaleSocket(QString name)=0;
     /*abstract*/ /*protected*/ virtual bool hasSocketBeenSetup()=0;
-
+friend class My2FemaleSocketListener;
+friend class MyFemaleSocketListener02;
+friend class MyFemaleSocketListener04;
 };
 
 #endif // FEMALESOCKETTESTBASE_H

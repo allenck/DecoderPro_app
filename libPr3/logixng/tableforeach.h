@@ -10,6 +10,8 @@
 #include "tableroworcolumn.h"
 #include "femaledigitalactionsocket.h"
 #include "femalesocketlistener.h"
+#include "vetoablechangelistener.h"
+
 class TableForEach : public AbstractDigitalAction, public FemaleSocketListener, public VetoableChangeListener
 {
   Q_OBJECT

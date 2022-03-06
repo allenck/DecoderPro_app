@@ -7,7 +7,7 @@
  *
  * @author Daniel Bergqvist Copyright 2018
  */
-/*public*/ /*interface*/class AnalogExpressionBean : public NamedBean, public AnalogExpression {
+/*public*/ /*interface*/class AnalogExpressionBean : public virtual NamedBean, public AnalogExpression {
   //Q_OBJECT
   Q_INTERFACES(NamedBean AnalogExpression)
  public:

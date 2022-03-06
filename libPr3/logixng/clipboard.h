@@ -1,9 +1,12 @@
 #ifndef CLIPBOARD_H
 #define CLIPBOARD_H
-#include "malesocket.h"
-#include "femalesocket.h"
-#include "defaultfemaleanysocket.h"
+//#include "malesocket.h"
+//#include "femalesocket.h"
+//#include "defaultfemaleanysocket.h"
+#include <QtCore>
 
+class AbstractFemaleSocket;
+class MaleSocket;
 /**
  * The clipboard with actions and expressions
  *

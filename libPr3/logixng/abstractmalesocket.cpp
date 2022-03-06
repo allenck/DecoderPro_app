@@ -21,11 +21,12 @@
 
 
     /*public*/ AbstractMaleSocket::AbstractMaleSocket(BaseManager/*<? extends NamedBean>*/* manager, Base* object, QObject* parent): QObject(parent) {
-        _manager = manager;
-        QObject* obj = (QObject*)object;
-        if(static_cast<AbstractMaleSocket*>(obj))
-         _object = (AbstractMaleSocket*) obj;
-        else
+     setObjectName("AbstractMaleSocket");
+     _manager = manager;
+//        QObject* obj = (QObject*)object;
+//        if(static_cast<AbstractMaleSocket*>(obj))
+//         _object = (AbstractMaleSocket*) obj;
+//        else
          _object = object;
     }
 

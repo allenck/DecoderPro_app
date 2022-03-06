@@ -3,6 +3,7 @@
 #include "maleanalogexpressionsocket.h"
 #include "femaleanalogexpressionsocket.h"
 #include "femalesocketlistener.h"
+#include "basemanager.h"
 
 /**
  * Manager for Expression

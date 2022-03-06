@@ -22,7 +22,7 @@ class DefaultAnalogExpressionManager : public AbstractBaseManager, public Analog
   explicit DefaultAnalogExpressionManager(QObject *parent = nullptr);
   /*public*/  /*Class<? extends MaleSocket>*/QString getMaleSocketClass()override;
   /*public*/  MaleSocket* getLastRegisteredMaleSocket()override;
-  /*public*/  MaleAnalogExpressionSocket* registerBean(/*MaleAnalogExpressionSocket**/NamedBean* maleSocket)override;
+  /*public*/  MaleSocket* registerBean(/*MaleAnalogExpressionSocket**/MaleSocket* maleSocket)override;
   /*public*/  MaleAnalogExpressionSocket* registerExpression(/*@Nonnull*/ AnalogExpressionBean* expression)override;
   /*public*/  int getXMLOrder() const override;
   /*public*/  QString getBeanTypeHandled() const override;

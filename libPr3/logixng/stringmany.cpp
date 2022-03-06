@@ -32,8 +32,8 @@
 //@Override
 /*public*/  Base* StringMany::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/ {
     StringActionManager* manager = (DefaultStringActionManager*)InstanceManager::getDefault("StringActionManager");
-    QString sysName = systemNames.value(AbstractBase::getSystemName());
-    QString userName = userNames.value(AbstractBase::getSystemName());
+    QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
+    QString userName = userNames.value(AbstractNamedBean::getSystemName());
     if (sysName == "") sysName = manager->getAutoSystemName();
     StringMany* copy = new StringMany(sysName, userName);
     copy->AbstractBase::setComment(AbstractBase::getComment());

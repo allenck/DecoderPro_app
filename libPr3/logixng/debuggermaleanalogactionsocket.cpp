@@ -8,7 +8,7 @@
 ///*public*/  class DebuggerMaleAnalogActionSocket extends AbstractDebuggerMaleSocket implements MaleAnalogActionSocket {
 
 
-    /*public*/  DebuggerMaleAnalogActionSocket::DebuggerMaleAnalogActionSocket(BaseManager/*<MaleAnalogActionSocket>*/* manager, MaleAnalogActionSocket* maleSocket, QObject* parent)
+    /*public*/  DebuggerMaleAnalogActionSocket::DebuggerMaleAnalogActionSocket(BaseManager/*<MaleAnalogActionSocket>*/* manager, NamedBean *maleSocket, QObject* parent)
       : AbstractDebuggerMaleSocket(manager, maleSocket, parent)
     {
         //super(manager, maleSocket);

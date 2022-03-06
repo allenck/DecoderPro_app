@@ -13,6 +13,8 @@ class DebuggerMaleDigitalBooleanActionSocketFactory : public QObject, public Mal
   DebuggerMaleDigitalBooleanActionSocketFactory(QObject* parent = nullptr) {}
   /*public*/ MaleDigitalBooleanActionSocket* encapsulateMaleSocket(BaseManager/*<MaleDigitalBooleanActionSocket>*/* manager, MaleDigitalBooleanActionSocket* maleSocket);
 
+  QObject* self() override {return (QObject*)this;}
+
 };
 
 #endif // DEBUGGERMALEDIGITALBOOLEANACTIONSOCKETFACTORY_H

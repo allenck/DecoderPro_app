@@ -506,7 +506,7 @@ void JUnitAppender::superappend(LoggingEvent* l) {
 
     return evt;
 }
-#if 0
+
 /**
  * See if a message that starts with particular text has been emitted yet.
  * White space is ignored. All messages before the matching one are dropped;
@@ -517,24 +517,26 @@ void JUnitAppender::superappend(LoggingEvent* l) {
  * @return null if not present, else the LoggingEvent for possible further
  *         checks of level, etc
  */
-/*public*/ static LoggingEvent checkForMessageStartingWith(String msg) {
+/*public*/ /*static*/ LoggingEvent* JUnitAppender::checkForMessageStartingWith(QString msg) {
     if (list.isEmpty())
-        return null;
+        return nullptr;
 
-    String tmsg = StringUtils.deleteWhitespace(msg);
+    QString tmsg = StringUtils::deleteWhitespace(msg);
 
-    LoggingEvent evt = list.remove(0);
-    while (!StringUtils.deleteWhitespace(evt->getMessage().toString()).startsWith(tmsg)) {
+    LoggingEvent* evt = list.at(0);
+    list.removeAt(0);
+    while (!StringUtils::deleteWhitespace(evt->getMessage()/*.toString()*/).startsWith(tmsg)) {
         if (list.isEmpty()) {
-            return null; // normal to not find it
+            return nullptr; // normal to not find it
         }
-        evt = list.remove(0);
+        evt = list.at(0);
+        list.removeAt(0);
     }
     // fall through with a match
 
     return evt;
 }
-#endif
+
 /**
  * Check that the next queued message was of Warn severity, and has a
  * specific message. White space is ignored.
@@ -556,6 +558,25 @@ void JUnitAppender::superappend(LoggingEvent* l) {
     }
 }
 
+/**
+ * Check that the next queued message was of Warn severity, and has a
+ * specific message. White space is ignored.
+ * <p>
+ * Invokes a JUnit Assert if the message doesn't match.
+ *
+ * @param msg the message to assert exists
+ */
+/*public*/ /*static*/ void JUnitAppender::assertWarnMessageStartingWith(QString msg,QString file, int line) {
+    if (list.isEmpty()) {
+        Assert::fail("No message present: " + msg, file, line);
+        return;
+    }
+    LoggingEvent* evt = checkForMessageStartingWith(msg);
+
+    if (evt == nullptr) {
+        Assert::fail("Looking for message \"" + msg + "\" and didn't find it", file, line);
+    }
+}
 /**
  * Assert that a specific message, of any severity, has been logged. White
  * space is ignored.

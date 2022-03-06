@@ -13,6 +13,7 @@ public:
 public slots:
  void actionPerformed();
 private:
- static Logger* log;};
+ static Logger* log;
+};
 
 #endif // SYMBOLTABLETESTACTION_H

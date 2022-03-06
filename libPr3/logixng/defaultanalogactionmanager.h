@@ -12,7 +12,7 @@ class DefaultAnalogActionManager : public AbstractBaseManager, public AnalogActi
   explicit DefaultAnalogActionManager(QObject *parent = nullptr);
   /*public*/  /*Class<? extends MaleSocket>*/QString getMaleSocketClass()override;
   /*public*/  MaleSocket* getLastRegisteredMaleSocket()override;
-  /*public*/  MaleAnalogActionSocket* registerBean(/*MaleAnalogActionSocket*/NamedBean* maleSocket)override;
+  /*public*/  MaleSocket* registerBean(/*MaleAnalogActionSocket*/MaleSocket *maleSocket)override;
   /*public*/  MaleAnalogActionSocket* registerAction(/*@Nonnull*/ AnalogActionBean* action)
           /*throws IllegalArgumentException*/override;
   /*public*/  int getXMLOrder() const override;
@@ -21,11 +21,12 @@ class DefaultAnalogActionManager : public AbstractBaseManager, public AnalogActi
   /*public*/  QChar typeLetter() const override;
 //  /*public*/  Manager::NameValidity validSystemNameFormat(QString systemName)override;
   /*public*/  FemaleAnalogActionSocket* createFemaleSocket(
-          Base* parent, FemaleSocketListener* listener, QString socketName);
+          Base* parent, FemaleSocketListener* listener, QString socketName)override;
   /*public*/  QHash<Category*, QList</*Class<? extends Base>*/QString>> getActionClasses()override;
   /*public*/  QString getBeanTypeHandled(bool plural) const override;
   static /*public*/  DefaultAnalogActionManager* instance();
   /*public*/  /*Class<MaleAnalogActionSocket>*/QString getNamedBeanClass() const override;
+
   QObject* self() override {return (QObject*)this;}
   QObject* pself() override {return (QObject*)this;}
   QObject* vself() override {return (QObject*)this;}
@@ -37,7 +38,7 @@ class DefaultAnalogActionManager : public AbstractBaseManager, public AnalogActi
   /*private*/ MaleSocket* _lastRegisteredBean;
 
  protected:
-  /*protected*/ MaleAnalogActionSocket* castBean(MaleSocket* maleSocket);
+  /*protected*/ MaleAnalogActionSocket* castBean(MaleSocket* maleSocket)override;
   /*protected*/ MaleAnalogActionSocket* createMaleActionSocket(AnalogActionBean* action);
 
 };

@@ -34,6 +34,7 @@ class AnalogActionMemory : public AbstractAnalogAction, public VetoableChangeLis
 
   QObject* bself() override {return (QObject*)this;}
 
+  QString getSystemName()  const override{return mSystemName;}
  private:
   static Logger* log;
   /*private*/ NamedBeanHandle<Memory*>* _memoryHandle;

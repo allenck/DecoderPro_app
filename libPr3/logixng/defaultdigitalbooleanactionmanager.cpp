@@ -70,9 +70,9 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  MaleDigitalBooleanActionSocket* DefaultDigitalBooleanActionManager::registerBean(/*MaleDigitalBooleanActionSocket*/NamedBean* maleSocket) {
-        MaleDigitalBooleanActionSocket* bean = (MaleDigitalBooleanActionSocket*)AbstractBaseManager::registerBean(maleSocket)->self();
-        _lastRegisteredBean = (MaleDigitalBooleanActionSocket*)maleSocket->self();
+    /*public*/  MaleSocket* DefaultDigitalBooleanActionManager::registerBean(/*MaleDigitalBooleanActionSocket*/MaleSocket* maleSocket) {
+        MaleSocket* bean = AbstractBaseManager::registerBean(maleSocket);
+        _lastRegisteredBean = (MaleSocket*)maleSocket;
         return bean;
     }
 
@@ -101,7 +101,8 @@
 
         // save in the maps
         MaleDigitalBooleanActionSocket* maleSocket = createMaleActionSocket(action);
-        return registerBean(maleSocket);
+         registerBean(maleSocket);
+         return maleSocket;
     }
 
     //@Override

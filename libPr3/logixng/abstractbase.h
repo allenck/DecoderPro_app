@@ -48,7 +48,7 @@ class AbstractBase : public AbstractNamedBean, public virtual Base
 
   QObject* self() override {return (QObject*)this;}
 
-  QString getSystemName() const override {return AbstractNamedBean::getSystemName();}
+  QString getSystemName() const override {return mSystemName;}
   QString getUserName() const override {return AbstractNamedBean::getUserName();}
   QString getComment() override {return AbstractNamedBean::getComment();}
   void setUserName(QString name) override {AbstractNamedBean::setUserName(name);}

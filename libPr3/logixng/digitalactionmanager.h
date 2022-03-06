@@ -49,7 +49,7 @@
      * {@link #getSystemNamePrefix() } and "DA";
      */
     //@Override
-    /*public*/ /*default*/ virtual QString getSubSystemNamePrefix() {
+    /*public*/ /*default*/ virtual QString getSubSystemNamePrefix() const{
         return getSystemNamePrefix() + "DA";
     }
 

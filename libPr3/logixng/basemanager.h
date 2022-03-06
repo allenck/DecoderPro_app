@@ -4,6 +4,7 @@
 #include "../../appslib/manager.h"
 //#include "malesocket.h"
 //#include "malesocketfactory.h"
+#include "maleanalogactionsocket.h"
 
 class MaleSocket;
 class MaleSocketFactory;
@@ -30,7 +31,7 @@ class MaleSocketFactory;
      *                                                system name is already registered in
      *                                                the manager
      */
-    /*public*/virtual NamedBean* registerBean(/*@Nonnull*/ NamedBean* maleSocket)=0;
+    /*public*/virtual MaleSocket* registerBean(/*@Nonnull*/ MaleSocket* maleSocket)=0;
 
     /**
      * Method for a UI to delete a bean.

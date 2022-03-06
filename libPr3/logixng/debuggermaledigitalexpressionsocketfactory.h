@@ -10,6 +10,8 @@ class DebuggerMaleDigitalExpressionSocketFactory : public QObject, public MaleDi
   DebuggerMaleDigitalExpressionSocketFactory() {setObjectName("DebuggerMaleDigitalExpressionSocketFactory");}
   /*public*/ MaleDigitalExpressionSocket* encapsulateMaleSocket(BaseManager/*<MaleDigitalExpressionSocket>*/* manager, MaleDigitalExpressionSocket* maleSocket);
 
+  QObject* self() override {return (QObject*)this;}
+
 };
 
 #endif // DEBUGGERMALEDIGITALEXPRESSIONSOCKETFACTORY_H

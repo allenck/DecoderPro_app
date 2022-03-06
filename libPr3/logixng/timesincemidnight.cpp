@@ -24,8 +24,8 @@
     //@Override
     /*public*/  Base* TimeSinceMidnight::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/ {
         AnalogExpressionManager* manager = (AnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager");
-        QString sysName = systemNames.value(AbstractBase::getSystemName());
-        QString userName = userNames.value(AbstractBase::getSystemName());
+        QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
+        QString userName = userNames.value(AbstractNamedBean::getSystemName());
         if (sysName == "") sysName = manager->getAutoSystemName();
         TimeSinceMidnight* copy = new TimeSinceMidnight(sysName, userName);
         copy->AbstractBase::setComment(AbstractBase::getComment());

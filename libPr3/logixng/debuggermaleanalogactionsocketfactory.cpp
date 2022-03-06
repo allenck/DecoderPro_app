@@ -9,12 +9,12 @@
 //@ServiceProvider(service = MaleAnalogActionSocketFactory.class)
 //public class DebuggerMaleAnalogActionSocketFactory implements MaleAnalogActionSocketFactory {
 
-    //@Override
-    /*public*/ MaleAnalogActionSocket* DebuggerMaleAnalogActionSocketFactory::encapsulateMaleSocket(BaseManager/*<MaleAnalogActionSocket>*/* manager, MaleAnalogActionSocket* maleSocket) {
+//@Override
+/*public*/ NamedBean* DebuggerMaleAnalogActionSocketFactory::encapsulateMaleSocket(BaseManager/*<MaleAnalogActionSocket>*/* manager, NamedBean* maleSocket) {
 
-        if (! ((LogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
-            return maleSocket;
-        }
-
-        return new DebuggerMaleAnalogActionSocket(manager, maleSocket);
+    if (! ((LogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
+        return maleSocket;
     }
+
+    return new DebuggerMaleAnalogActionSocket(manager, (NamedBean*)maleSocket);
+}

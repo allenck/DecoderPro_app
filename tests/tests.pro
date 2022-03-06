@@ -44,7 +44,7 @@ equals(ENABLE_LOGIXNG, "Y") {
 
 
 SOURCES += \
-        tests.cpp \
+         tests.cpp \
         junitutil.cpp \
         temporaryfolder.cpp \
         RosterTest/rosterentrytestaction.cpp \
@@ -286,6 +286,22 @@ SOURCES += \
 equals(ENABLE_LOGIXNG, "Y") {
 DEFINES += HAVE_LOGIXNG
 SOURCES += \
+    logixng/defaultfemalestringexpressionsockettest.cpp \
+    logixng/defaultfemalestringexpressionsockettestaction.cpp \
+    logixng/defaultfemaleanalogexpressionsockettest.cpp \
+    logixng/defaultfemaleanalogexpressionsockettestaction.cpp \
+    logixng/defaultfemaledigitalactionsockettest.cpp \
+    logixng/defaultfemaledigitalactionsockettestaction.cpp \
+    logixng/defaultmaleanalogactionsockettest.cpp \
+    logixng/defaultmaleanalogactionsockettestaction.cpp \
+    logixng/defaultmaleanalogexpressionsockettest.cpp \
+    logixng/defaultmaleanalogexpressionsockettestaction.cpp \
+    logixng/defaultmaledigitalactionsockettest.cpp \
+    logixng/defaultmaledigitalactionsockettestaction.cpp \
+    logixng/defaultmalestringactionsockettest.cpp \
+    logixng/defaultmalestringactionsockettestaction.cpp \
+    logixng/logixng_initializationmanagertest.cpp \
+    logixng/malesockettestbase.cpp \
     logixng/conditionalngtest.cpp \
     logixng/conditionalngtestaction.cpp \
     logixng/defaultfemaleanalogactionsockettestaction.cpp \
@@ -295,8 +311,7 @@ SOURCES += \
     logixng/femalesockettestbase.cpp \
     logixng/logixng_initializationmanagertestaction.cpp \
     logixng/symboltabletest.cpp \
-    logixng/symboltabletestaction.cpp \
-    logixng_initializationmanagertest.cpp
+    logixng/symboltabletestaction.cpp
 } else {
     DEFINES -= HAVE_LOGIXNG
 }
@@ -544,6 +559,22 @@ HEADERS += \
 
 equals(ENABLE_LOGIXNG, "Y") {
 HEADERS += \
+    logixng/defaultfemalestringexpressionsockettest.h \
+    logixng/defaultfemalestringexpressionsockettestaction.h \
+    logixng/defaultfemaleanalogexpressionsockettest.h \
+    logixng/defaultfemaleanalogexpressionsockettestaction.h \
+    logixng/defaultfemaledigitalactionsockettest.h \
+    logixng/defaultfemaledigitalactionsockettestaction.h \
+    logixng/defaultmaleanalogactionsockettest.h \
+    logixng/defaultmaleanalogactionsockettestaction.h \
+    logixng/defaultmaleanalogexpressionsockettest.h \
+    logixng/defaultmaleanalogexpressionsockettestaction.h \
+    logixng/defaultmaledigitalactionsockettest.h \
+    logixng/defaultmaledigitalactionsockettestaction.h \
+    logixng/defaultmalestringactionsockettest.h \
+    logixng/defaultmalestringactionsockettestaction.h \
+    logixng/logixng_initializationmanagertest.h \
+    logixng/malesockettestbase.h \
     logixng/conditionalngtest.h \
     logixng/conditionalngtestaction.h \
     logixng/defaultfemaleanalogactionsockettestaction.h \
@@ -553,8 +584,7 @@ HEADERS += \
     logixng/femalesockettestbase.h \
     logixng/logixng_initializationmanagertestaction.h \
     logixng/symboltabletest.h \
-    logixng/symboltabletestaction.h \
-    logixng_initializationmanagertest.h
+    logixng/symboltabletestaction.h
 }
 
 unix {

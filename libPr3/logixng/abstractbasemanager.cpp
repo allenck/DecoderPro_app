@@ -113,15 +113,17 @@
     }
 
     //@Override
-    /*public*/  NamedBean* AbstractBaseManager::registerBean(/*@Nonnull*/ NamedBean* s) {
+    /*public*/  MaleSocket* AbstractBaseManager::registerBean(/*@Nonnull*/ MaleSocket* s) {
         if(!s)
          throw new NullPointerException("required bean is null!");
-        MaleSocket* bean = (AbstractMaleSocket*)s;
+        NamedBean* bean = (NamedBean*)s;
+        //QString sys = bean->getSystemName();
         for (MaleSocketFactory/*<E>*/* factory : _maleSocketFactories) {
             bean = factory->encapsulateMaleSocket(this, bean);
         }
-        BaseManager::Register(s);
-        return (NamedBean*)bean;
+
+         AbstractManager::Register(bean);
+        return s;
     }
 
     //@Override

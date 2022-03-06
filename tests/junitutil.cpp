@@ -32,6 +32,8 @@
 #include "jmriuserinterfaceconfigurationprovider.h"
 #include "debugprogrammermanager.h"
 #include "blockmanager.h"
+#include "editormanager.h"
+
 #ifdef HAVE_LOGIXNG
 #include "logixng_manager.h"
 #include "defaultlogixngmanager.h"
@@ -823,13 +825,23 @@ static /*public*/ void setBeanStateAndWait(NamedBean bean, int state) {
 }
 
 /*public*/ /*static*/ void JUnitUtil::deregisterBlockManagerShutdownTask() {
-        if (! InstanceManager::isInitialized("ShutDownManager")) return;
-        if (! InstanceManager::isInitialized("BlockManager")) return;
+    if (! InstanceManager::isInitialized("ShutDownManager")) return;
+    if (! InstanceManager::isInitialized("BlockManager")) return;
 
-        ((ShutDownManager*)InstanceManager
-                ::getDefault("ShutDownManager"))
-                ->deregister(((BlockManager*)InstanceManager::getDefault("BlockManager"))->shutDownTask);
-    }
+    ((ShutDownManager*)InstanceManager
+            ::getDefault("ShutDownManager"))
+            ->deregister(((BlockManager*)InstanceManager::getDefault("BlockManager"))->shutDownTask);
+}
+
+/*public*/ /*static*/ void JUnitUtil::deregisterEditorManagerShutdownTask() {
+    if (! InstanceManager::isInitialized("ShutDownManager")) return;
+    if (! InstanceManager::isInitialized("EditorManager")) return;
+
+    ((DefaultShutDownManager*)InstanceManager
+            ::getDefault("ShutDownManager"))
+            ->deregister(((EditorManager*)InstanceManager::getDefault("EditorManager"))->shutDownTask);
+}
+
 /*public*/ /*static*/ void JUnitUtil::initWarrantManager() {
     WarrantManager* w = new WarrantManager();
     if (InstanceManager::getNullableDefault("ConfigureManager") != nullptr) {

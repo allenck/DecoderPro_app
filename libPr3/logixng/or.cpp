@@ -33,8 +33,8 @@
 //@Override
 /*public*/  Base* Or::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/ {
     DigitalExpressionManager* manager = (DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager");
-    QString sysName = systemNames.value(AbstractBase::getSystemName());
-    QString userName = userNames.value(AbstractBase::getSystemName());
+    QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
+    QString userName = userNames.value(AbstractNamedBean::getSystemName());
     if (sysName == "") sysName = manager->getAutoSystemName();
     Or* copy = new Or(sysName, userName);
     copy->AbstractBase::setComment(AbstractBase::getComment());

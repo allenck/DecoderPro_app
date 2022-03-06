@@ -28,8 +28,8 @@
     //@Override
     /*public*/  Base* IfThenElse::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException */{
         DigitalActionManager* manager = ((DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"));
-        QString sysName = systemNames.value(AbstractBase::getSystemName());
-        QString userName = userNames.value(AbstractBase::getSystemName());
+        QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
+        QString userName = userNames.value(AbstractNamedBean::getSystemName());
         if (sysName == "") sysName = manager->getAutoSystemName();
         IfThenElse* copy = new IfThenElse(sysName, userName);
         copy->AbstractBase::setComment(AbstractBase::getComment());

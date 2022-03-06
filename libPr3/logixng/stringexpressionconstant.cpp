@@ -23,8 +23,8 @@
 //@Override
 /*public*/  Base* StringExpressionConstant::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) {
     StringExpressionManager* manager = (DefaultStringExpressionManager*)InstanceManager::getDefault("StringExpressionManager");
-    QString sysName = systemNames.value(AbstractBase::getSystemName());
-    QString userName = userNames.value(AbstractBase::getSystemName());
+    QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
+    QString userName = userNames.value(AbstractNamedBean::getSystemName());
     if (sysName == "") sysName = manager->getAutoSystemName();
     StringExpressionConstant* copy = new StringExpressionConstant(sysName, userName);
     copy->AbstractBase::setComment(AbstractBase::getComment());

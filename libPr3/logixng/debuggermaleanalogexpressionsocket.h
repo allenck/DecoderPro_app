@@ -12,7 +12,7 @@ class DebuggerMaleAnalogExpressionSocket : public AbstractDebuggerMaleSocket, pu
   Q_INTERFACES(MaleAnalogExpressionSocket)
  public:
   explicit DebuggerMaleAnalogExpressionSocket(BaseManager/*<MaleAnalogExpressionSocket>*/* manager,
-                                              MaleAnalogExpressionSocket* maleSocket, QObject * parent = nullptr);
+                                              NamedBean *maleSocket, QObject * parent = nullptr);
   /*public*/  QString getBeforeInfo()override;
   /*public*/  QString getAfterInfo()override;
   /*public*/  double evaluate() /*throws JmriException*/ override;
@@ -27,6 +27,8 @@ class DebuggerMaleAnalogExpressionSocket : public AbstractDebuggerMaleSocket, pu
   /*public*/  int compareSystemNameSuffix(QString suffix1, QString suffix2, NamedBean* n2)override;
   /*public*/  void setTriggerOnChange(bool triggerOnChange)override;
   /*public*/  bool getTriggerOnChange()override;
+
+  QObject* self() override {return (QObject*)this;}
 
  private:
   /*private*/ double _lastResult;

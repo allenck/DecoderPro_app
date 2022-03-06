@@ -38,8 +38,8 @@
     //@Override
     /*public*/  Base* ActionAtomicBoolean::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) {
         DigitalActionManager* manager = (DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager");
-        QString sysName = systemNames.value(AbstractBase::getSystemName());
-        QString userName = userNames.value(AbstractBase::getSystemName());
+        QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
+        QString userName = userNames.value(AbstractNamedBean::getSystemName());
         if (sysName == "") sysName = manager->getAutoSystemName();
         DigitalActionBean* copy = new ActionAtomicBoolean(sysName, userName, new AtomicBoolean, _newValue);
 // TODO:        copy->NamedBean::setComment(NamedBean::getComment());

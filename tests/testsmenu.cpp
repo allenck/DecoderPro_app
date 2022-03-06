@@ -98,6 +98,14 @@
 #include "logixng/defaultlogixngmanagertestaction.h"
 #include "logixng/defaultfemaleanalogactionsockettestaction.h"
 #include "logixng/conditionalngtestaction.h"
+#include "logixng/defaultmaleanalogexpressionsockettestaction.h"
+#include "logixng/defaultmaleanalogactionsockettestaction.h"
+#include "logixng/defaultmaledigitalactionsockettestaction.h"
+#include "logixng/defaultmalestringactionsockettestaction.h"
+#include "logixng/defaultfemaledigitalactionsockettestaction.h"
+#include "logixng/defaultfemaleanalogexpressionsockettestaction.h"
+#include "logixng/defaultfemalestringexpressionsockettestaction.h"
+
 #endif
 
 TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
@@ -271,10 +279,23 @@ TestsMenu::TestsMenu(QWidget *parent) : QMenu(parent)
 #ifdef HAVE_LOGIXNG
     QMenu* logixNGMenu = new QMenu("LogixNG");
     addMenu(logixNGMenu);
-    logixNGMenu->addAction(new SymbolTableTestAction(this));
+    QMenu* logixNGFemaleSocketMenu = new QMenu("Female Sockets");
+    logixNGMenu->addMenu(logixNGFemaleSocketMenu);
+    QMenu* logixNGMaleSocketMenu = new QMenu("Male Sockets");
+    logixNGMenu->addMenu(logixNGMaleSocketMenu);
+
+    logixNGMenu->addAction(new ConditionalNGTestAction(this));
     logixNGMenu->addAction(new LogixNG_InitializationManagerTestAction(this));
     logixNGMenu->addAction(new DefaultLogixNGManagerTestAction(this));
-    logixNGMenu->addAction(new DefaultFemaleAnalogActionSocketTestAction(this));
-    logixNGMenu->addAction(new ConditionalNGTestAction(this));
+    logixNGFemaleSocketMenu->addAction(new DefaultFemaleAnalogActionSocketTestAction(this));
+    logixNGFemaleSocketMenu->addAction(new DefaultFemaleAnalogExpressionSocketTestAction(this));
+    logixNGFemaleSocketMenu->addAction(new DefaultFemaleDigitalActionSocketTestAction(this));
+    logixNGFemaleSocketMenu->addAction(new DefaultFemaleStringExpressionSocketTestAction(this));
+    logixNGMaleSocketMenu->addAction(new DefaultMaleAnalogExpressionSocketTestAction(this));
+    logixNGMaleSocketMenu->addAction(new DefaultMaleAnalogActionSocketTestAction(this));
+    logixNGMaleSocketMenu->addAction(new DefaultMaleDigitalActionSocketTestAction(this));
+    logixNGMaleSocketMenu->addAction(new DefaultMaleStringActionSocketTestAction(this));
+    logixNGMenu->addAction(new SymbolTableTestAction(this));
+
 #endif
 }

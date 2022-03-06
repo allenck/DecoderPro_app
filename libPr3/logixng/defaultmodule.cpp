@@ -7,6 +7,8 @@
 #include "runtimeexception.h"
 #include "defaultsymboltable.h"
 #include "defaultmodulemanager.h"
+#include "basemanager.h"
+
 /**
  * The default implementation of Module.
  *

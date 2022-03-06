@@ -12,7 +12,7 @@ class DefaultDigitalExpressionManager : public AbstractBaseManager, public Digit
   explicit DefaultDigitalExpressionManager(QObject *parent = nullptr);
   /*public*/  /*Class<? extends MaleSocket>*/QString getMaleSocketClass()override;
   /*public*/  MaleSocket* getLastRegisteredMaleSocket() override;
-  /*public*/  MaleDigitalExpressionSocket* registerBean(/*MaleDigitalExpressionSocket*/NamedBean* maleSocket)override;
+  /*public*/  MaleSocket* registerBean(/*MaleDigitalExpressionSocket*/MaleSocket* maleSocket)override;
   /*public*/  MaleDigitalExpressionSocket* registerExpression(/*@Nonnull*/DigitalExpressionBean* expression)
           /*throws IllegalArgumentException */override;
   /*public*/  int getXMLOrder() const override;

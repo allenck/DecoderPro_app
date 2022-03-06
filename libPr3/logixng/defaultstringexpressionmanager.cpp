@@ -76,8 +76,8 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  MaleStringExpressionSocket* DefaultStringExpressionManager::registerBean(/*MaleStringExpressionSocket*/NamedBean* maleSocket) {
-        MaleStringExpressionSocket* bean = registerBean(maleSocket);
+    /*public*/  MaleSocket* DefaultStringExpressionManager::registerBean(/*MaleStringExpressionSocket*/MaleSocket* maleSocket) {
+        MaleSocket* bean = registerBean(maleSocket);
         _lastRegisteredBean = (MaleSocket*)maleSocket;
         return bean;
     }
@@ -107,7 +107,8 @@
 
         // save in the maps
         MaleStringExpressionSocket* maleSocket = createMaleStringExpressionSocket(expression);
-        return registerBean(maleSocket);
+         registerBean(maleSocket);
+         return maleSocket;
     }
 
     //@Override

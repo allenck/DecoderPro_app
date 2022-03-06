@@ -2,6 +2,7 @@
 #define MALEANALOGACTIONSOCKET_H
 #include "malesocket.h"
 #include "analogactionbean.h"
+
 /**
  * A LogixNG male AnalogActionBean socket.
  */

@@ -6,7 +6,7 @@
 #include "junitutil.h"
 
 DefaultFemaleAnalogActionSocketTestAction::DefaultFemaleAnalogActionSocketTestAction(QObject *parent)
-    : AbstractAction(tr("DefaultFemaleAnalogActionSocketTest"), parent)
+    : AbstractAction(tr("AnalogAction"), parent)
 {
  connect(this, SIGNAL(triggered(bool)), this, SLOT(actionPerformed()));
 }

@@ -2,9 +2,6 @@
 #define DEBUGABLE_H
 #include "base.h"
 
-
-
-
 /**
  * A LogixNG item that is debugable.
  *

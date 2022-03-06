@@ -10,7 +10,7 @@ class DebuggerMaleAnalogActionSocket : public AbstractDebuggerMaleSocket, public
   Q_OBJECT
   Q_INTERFACES(MaleAnalogActionSocket)
  public:
-  explicit DebuggerMaleAnalogActionSocket(BaseManager/*<MaleAnalogActionSocket>*/* manager, MaleAnalogActionSocket* maleSocket, QObject *parent = nullptr);
+  explicit DebuggerMaleAnalogActionSocket(BaseManager/*<MaleAnalogActionSocket>*/* manager, NamedBean* maleSocket, QObject *parent = nullptr);
   /*public*/  QString getBeforeInfo()override;
   /*public*/  QString getAfterInfo()override;
   /*public*/  void setValue(double value) /*throws JmriException*/override;

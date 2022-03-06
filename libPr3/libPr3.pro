@@ -1138,6 +1138,10 @@ equals(ENABLE_LOGIXNG, "Y") {
  DEFINES += HAVE_LOGIXNG
  SOURCES += \
  #logixng/manager.cpp\
+ logixng/debuggermaleanalogexpressionsocketfactory.cpp \
+ logixng/stringexpressionmemory.cpp \
+ logixng/actionturnout.cpp \
+ logixng/stringactionmemory.cpp \
  logixng/analogactionmemory.cpp \
  logixng/abstractdigitalbooleanaction.cpp \
  logixng/abstractstringaction.cpp \
@@ -2447,6 +2451,10 @@ HEADERS += \
  }
  equals(ENABLE_LOGIXNG, "Y") {
  HEADERS += \
+ logixng/debuggermaleanalogexpressionsocketfactory.h \
+ logixng/stringexpressionmemory.h \
+ logixng/actionturnout.h \
+ logixng/stringactionmemory.h \
  logixng/analogactionmemory.h \
  logixng/abstractdigitalbooleanaction.h \
  logixng/abstractstringaction.h \

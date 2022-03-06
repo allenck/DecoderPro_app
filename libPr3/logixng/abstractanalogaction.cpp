@@ -19,7 +19,7 @@
     //super(sys, user);
     setObjectName("AbstractAnalogAction");
     // Do this test here to ensure all the tests are using correct system names
-    Manager::NameValidity isNameValid = ((DefaultAnalogActionManager*)InstanceManager::getDefault("AnalogActionManager"))->validSystemNameFormat(mSystemName);
+    Manager::NameValidity isNameValid = ((DefaultAnalogActionManager*)InstanceManager::getDefault("AnalogActionManager"))->AbstractBaseManager::validSystemNameFormat(mSystemName);
     if (isNameValid != Manager::NameValidity::VALID) {
         throw new IllegalArgumentException("system name is not valid");
     }

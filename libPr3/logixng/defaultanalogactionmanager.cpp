@@ -1,4 +1,4 @@
-#include "defaultanalogactionmanager.h"
+﻿#include "defaultanalogactionmanager.h"
 #include "loggerfactory.h"
 #include "loggingutil.h"
 #include "threadingutil.h"
@@ -69,9 +69,10 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  MaleAnalogActionSocket* DefaultAnalogActionManager::registerBean(/*MaleAnalogActionSocket*/NamedBean* maleSocket) {
-        MaleAnalogActionSocket* bean = (MaleAnalogActionSocket*)AbstractBaseManager::registerBean(maleSocket)->self();
-        _lastRegisteredBean = (MaleSocket*)maleSocket;
+    /*public*/  MaleSocket *DefaultAnalogActionManager::registerBean(MaleSocket *maleSocket) {
+         MaleSocket* bean = AbstractBaseManager::registerBean(maleSocket);
+        QString sys = bean->Base::getSystemName();
+         _lastRegisteredBean = (MaleSocket*)maleSocket;
         return bean;
     }
 
@@ -90,8 +91,8 @@
         }
 
         // Check if system name is valid
-        if (this->validSystemNameFormat(action->NamedBean::getSystemName()) != NameValidity::VALID) {
-            log->warn("SystemName " + action->NamedBean::getSystemName() + " is not in the correct format");
+        if (this->validSystemNameFormat(((AbstractNamedBean*)action->bself())->getSystemName()) != NameValidity::VALID) {
+            log->warn("SystemName " + ((AbstractNamedBean*)action->bself())->getSystemName() + " is not in the correct format");
             throw new IllegalArgumentException(tr("System name is invalid: %1").arg(action->NamedBean::getSystemName()));
         }
 
@@ -99,7 +100,11 @@
         updateAutoNumber(action->NamedBean::getSystemName());
 
         MaleAnalogActionSocket* maleSocket = createMaleActionSocket(action);
-        return registerBean(maleSocket);
+        AbstractNamedBean* nb = (AbstractNamedBean*)action->self();
+        QString sys = nb->getSystemName();
+        sys = maleSocket->getObject()->getSystemName();
+         registerBean(maleSocket);
+         return maleSocket;
     }
 
     //@Override

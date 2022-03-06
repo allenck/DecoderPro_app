@@ -27,8 +27,8 @@
 //@Override
 /*public*/  Base* Logix::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) /*throws JmriException*/ {
     DigitalActionManager* manager = (DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager");
-    QString sysName = systemNames.value(AbstractBase::getSystemName());
-    QString userName = userNames.value(AbstractBase::getSystemName());
+    QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
+    QString userName = userNames.value(AbstractNamedBean::getSystemName());
     if (sysName == "") sysName = manager->getAutoSystemName();
     Logix* copy = new Logix(sysName, userName);
     copy->AbstractBase::setComment(AbstractBase::getComment());

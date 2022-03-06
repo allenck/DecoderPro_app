@@ -6,9 +6,9 @@
 //#include "base.h"
 #include "debugable.h"
 #include "symboltable.h"
-#include "basemanager.h"
+//#include "basemanager.h"
 
-
+class BaseManager;
 /**
  * A LogixNG male socket.
  *

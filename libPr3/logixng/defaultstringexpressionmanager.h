@@ -15,7 +15,7 @@ class DefaultStringExpressionManager : public AbstractBaseManager, public String
   explicit DefaultStringExpressionManager(QObject *parent = nullptr);
   /*public*/  /*Class<? extends MaleSocket>*/QString getMaleSocketClass()override;
   /*public*/  MaleSocket* getLastRegisteredMaleSocket()override;
-  /*public*/  MaleStringExpressionSocket* registerBean(/*MaleStringExpressionSocket*/NamedBean* maleSocket)override;
+  /*public*/  MaleSocket* registerBean(/*MaleStringExpressionSocket*/MaleSocket* maleSocket)override;
   /*public*/  MaleStringExpressionSocket* registerExpression(/*@Nonnull*/ StringExpressionBean* expression)
           /*throws IllegalArgumentException*/override;
   /*public*/  int getXMLOrder()  const override;

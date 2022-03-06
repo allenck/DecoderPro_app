@@ -24,8 +24,8 @@
     //@Override
     /*public*/  Base* LastResultOfDigitalExpression::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) {
         DigitalExpressionManager* manager = (DefaultDigitalExpressionManager*)InstanceManager::getDefault("DigitalExpressionManager");
-        QString sysName = systemNames.value(AbstractBase::getSystemName());
-        QString userName = userNames.value(AbstractBase::getSystemName());
+        QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
+        QString userName = userNames.value(AbstractNamedBean::getSystemName());
         if (sysName == "") sysName = manager->getAutoSystemName();
         LastResultOfDigitalExpression* copy = new LastResultOfDigitalExpression(sysName, userName);
         copy->AbstractBase::setComment(AbstractBase::getComment());

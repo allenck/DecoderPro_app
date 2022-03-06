@@ -17,6 +17,7 @@
 #include "defaultmaleanalogexpressionsocket.h"
 #include "class.h"
 #include "exceptions.h"
+#include "debuggermaleanalogexpressionsocketfactory.h"
 
 /**
  * Class providing the basic logic of the ExpressionManager interface.
@@ -71,10 +72,11 @@
             }//);
         }
 #endif
-        bList = {new MaleAnalogExpressionSocketFactory()};
-        for (MaleAnalogExpressionSocketFactory* maleSocketFactory : /*ServiceLoader.load(MaleAnalogExpressionSocketFactory.class)*/bList) {
-            _maleSocketFactories.append(maleSocketFactory);
-        }
+//        bList = {new MaleAnalogExpressionSocketFactory()};
+//        for (MaleAnalogExpressionSocketFactory* maleSocketFactory : /*ServiceLoader.load(MaleAnalogExpressionSocketFactory.class)*/bList) {
+//            _maleSocketFactories.append(maleSocketFactory);
+//        }
+        _maleSocketFactories.append(new DebuggerMaleAnalogExpressionSocketFactory());
     }
 
     /** {@inheritDoc} */
@@ -85,7 +87,7 @@
 
     /*protected*/ MaleAnalogExpressionSocket* DefaultAnalogExpressionManager::createMaleAnalogExpressionSocket(AnalogExpressionBean* expression) {
         MaleAnalogExpressionSocket* socket = new DefaultMaleAnalogExpressionSocket(this, expression);
-        expression->setParent((MaleAnalogExpressionSocket*)socket->Base::bself());
+        expression->setParent((MaleAnalogExpressionSocket*)socket->bself());
         return socket;
     }
 
@@ -97,10 +99,11 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  MaleAnalogExpressionSocket* DefaultAnalogExpressionManager::registerBean(/*MaleAnalogExpressionSocket*/NamedBean* maleSocket) {
-        MaleAnalogExpressionSocket* bean = (MaleAnalogExpressionSocket*)AbstractBaseManager::registerBean(maleSocket);
+    /*public*/  MaleSocket *DefaultAnalogExpressionManager::registerBean(/*MaleAnalogExpressionSocket*/MaleSocket* maleSocket) {
+//        MaleAnalogExpressionSocket* bean = (MaleAnalogExpressionSocket*)AbstractBaseManager::registerBean(maleSocket);
+          AbstractBaseManager::registerBean(maleSocket);
         _lastRegisteredBean = (MaleSocket*)maleSocket;
-        return bean;
+        return /*bean*/maleSocket;
     }
 
     /**
@@ -118,17 +121,18 @@
         }
 
         // Check if system name is valid
-        if (this->validSystemNameFormat(expression->NamedBean::getSystemName()) != NameValidity::VALID) {
-            log->warn("SystemName " + expression->NamedBean::getSystemName() + " is not in the correct format");
+        if (this->validSystemNameFormat(((AbstractNamedBean*)expression->self())->getSystemName()) != NameValidity::VALID) {
+            log->warn("SystemName " + ((AbstractNamedBean*)expression->self())->getSystemName() + " is not in the correct format");
             throw new IllegalArgumentException(QString("System name is invalid: %1").arg(expression->NamedBean::getSystemName()));
         }
 
         // Keep track of the last created auto system name
-        updateAutoNumber(expression->NamedBean::getSystemName());
+        updateAutoNumber(((AbstractNamedBean*)expression->self())->getSystemName());
 
         // save in the maps
         MaleAnalogExpressionSocket* maleSocket = createMaleAnalogExpressionSocket(expression);
-        return registerBean(maleSocket);
+        /*return*/ registerBean(maleSocket);
+        return maleSocket;
     }
 
     //@Override
@@ -163,7 +167,7 @@
     //@Override
     /*public*/  Manager::NameValidity DefaultAnalogExpressionManager::validSystemNameFormat(QString systemName) {
         return LogixNG_Manager::ng_validSystemNameFormat(
-                AbstractManager::getSubSystemNamePrefix(), systemName);
+                getSubSystemNamePrefix(), systemName);
     }
 
     //@Override

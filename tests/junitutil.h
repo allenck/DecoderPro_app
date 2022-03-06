@@ -42,6 +42,7 @@ public:
     /*public*/ static void initReporterManager();
     /*public*/ static void initOBlockManager();
     /*public*/ static void deregisterBlockManagerShutdownTask();
+    /*public*/ static void deregisterEditorManagerShutdownTask();
     /*public*/ static void initWarrantManager();
     /*public*/ static void initSignalMastLogicManager();
     /*public*/ static void initLayoutBlockManager();

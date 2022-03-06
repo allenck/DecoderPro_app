@@ -12,6 +12,8 @@ class DebuggerMaleStringExpressionSocketFactory : public QObject, public MaleStr
   DebuggerMaleStringExpressionSocketFactory(QObject* parent = nullptr) : QObject(parent) {setObjectName("DebuggerMaleStringExpressionSocketFactory");}
   /*public*/ MaleStringExpressionSocket* encapsulateMaleSocket(BaseManager/*<MaleStringExpressionSocket>*/* manager, MaleStringExpressionSocket* maleSocket);
 
+  QObject* self() override {return (QObject*)this;}
+
 };
 
 #endif // DEBUGGERMALESTRINGEXPRESSIONSOCKETFACTORY_H

@@ -12,7 +12,7 @@ class DefaultStringActionManager : public AbstractBaseManager, public StringActi
   explicit DefaultStringActionManager(QObject *parent = nullptr);
   /*public*/  /*Class<? extends MaleSocket>*/QString getMaleSocketClass() override;
   /*public*/  MaleSocket* getLastRegisteredMaleSocket() override;
-  /*public*/  MaleStringActionSocket* registerBean(/*MaleStringActionSocket*/NamedBean* maleSocket)override;
+  /*public*/  MaleSocket* registerBean(/*MaleStringActionSocket*/MaleSocket* maleSocket)override;
   /*public*/  MaleStringActionSocket* registerAction(/*@Nonnull*/ StringActionBean* action)
           /*throws IllegalArgumentException*/ override;
   /*public*/  int getXMLOrder() const override;

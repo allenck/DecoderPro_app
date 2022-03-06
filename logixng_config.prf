@@ -1,7 +1,7 @@
 #include this file in projects to set LogixNG options
 # changing any of these options may require that the affected projects or files may need to be rebuilt!
 
-ENABLE_LOGIXNG = "Y" # change to "Y" to compile LogixNG modules
+ENABLE_LOGIXNG = "N" # change to "Y" to compile LogixNG modules
 
 equals(ENABLE_LOGIXNG, "Y") {
 #Enable the following line to initialize LogixNG in apps.cpp

@@ -15,6 +15,7 @@
 /*public*/  DefaultMaleAnalogExpressionSocket::DefaultMaleAnalogExpressionSocket(/*@Nonnull*/ BaseManager/*<? extends NamedBean>*/* manager,
    /*@Nonnull*/ AnalogExpressionBean* expression, QObject *parent) : AbstractMaleSocket(manager, expression, parent) {
     //super(manager, expression);
+ setObjectName("DefaultMaleAnalogExpressionSocket");
 }
 
 /** {@inheritDoc} */

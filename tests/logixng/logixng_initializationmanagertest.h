@@ -10,11 +10,11 @@ class LogixNG_InitializationManagerTest : public QObject
     Q_OBJECT
 public:
     explicit LogixNG_InitializationManagerTest(QObject *parent = nullptr) : QObject(parent){}
+  Q_INVOKABLE /*public*/  void setUp();
+  Q_INVOKABLE /*public*/  void tearDown();
 
 public slots:
     /*public*/  void testInitialization() /*throws SocketAlreadyConnectedException */;
-    Q_INVOKABLE /*public*/  void setUp();
-    Q_INVOKABLE /*public*/  void tearDown();
 signals:
 
 private:
@@ -23,6 +23,7 @@ private:
     /*private*/ bool checkAB();
  friend class ReleaseUntil_LNGI;
 };
+
 /*private*/ /*static*/ /*final*/ class MyAction : public ActionAtomicBoolean {
 Q_OBJECT
     /*private*/ /*final*/ AtomicBoolean* _ab;

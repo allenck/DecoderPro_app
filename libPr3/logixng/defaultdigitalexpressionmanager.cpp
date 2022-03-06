@@ -80,8 +80,8 @@
 
     /** {@inheritDoc} */
     //@Override
-    /*public*/  MaleDigitalExpressionSocket*  DefaultDigitalExpressionManager::registerBean(/*MaleDigitalExpressionSocket*/NamedBean* maleSocket) {
-        MaleDigitalExpressionSocket* bean = (MaleDigitalExpressionSocket*)AbstractBaseManager::registerBean(maleSocket);
+    /*public*/  MaleSocket*  DefaultDigitalExpressionManager::registerBean(/*MaleDigitalExpressionSocket*/MaleSocket* maleSocket) {
+        MaleSocket* bean = AbstractBaseManager::registerBean(maleSocket);
         _lastRegisteredBean = (MaleSocket*)maleSocket;
         return bean;
     }
@@ -111,7 +111,8 @@
 
         // save in the maps
         MaleDigitalExpressionSocket* maleSocket = createMaleExpressionSocket(expression);
-        return registerBean(maleSocket);
+        registerBean(maleSocket);
+        return maleSocket;
     }
 
     //@Override

@@ -9,7 +9,7 @@
 
 
     /*public*/  DebuggerMaleAnalogExpressionSocket::DebuggerMaleAnalogExpressionSocket(BaseManager/*<MaleAnalogExpressionSocket>*/* manager,
-                                                   MaleAnalogExpressionSocket* maleSocket, QObject* parent)
+                                                   NamedBean* maleSocket, QObject* parent)
      : AbstractDebuggerMaleSocket(manager, maleSocket, parent)
     {
         //super(manager, maleSocket);

@@ -34,7 +34,7 @@
         if (tm != nullptr) {
             if (tm->getNamedBeanSet().isEmpty()) return QDomElement();
             for (NamedBean* nb : tm->getNamedBeanSet()) {
-             MaleAnalogExpressionSocket* expression = (MaleAnalogExpressionSocket*)nb;
+             MaleAnalogExpressionSocket* expression = (MaleAnalogExpressionSocket*)nb->self();
                 log->debug("expression system name is " + expression->NamedBean::getSystemName());  // NOI18N
                 try {
                     QList<QDomElement> elements = QList<QDomElement>();

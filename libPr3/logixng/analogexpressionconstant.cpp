@@ -23,8 +23,8 @@
     //@Override
     /*public*/  Base* AnalogExpressionConstant::getDeepCopy(QMap<QString, QString> systemNames, QMap<QString, QString> userNames) {
         AnalogExpressionManager* manager = (AnalogExpressionManager*)InstanceManager::getDefault("AnalogExpressionManager");
-        QString sysName = systemNames.value(AbstractBase::getSystemName());
-        QString userName = userNames.value(AbstractBase::getSystemName());
+        QString sysName = systemNames.value(AbstractNamedBean::getSystemName());
+        QString userName = userNames.value(AbstractNamedBean::getSystemName());
         if (sysName == "") sysName = manager->getAutoSystemName();
         AnalogExpressionConstant* copy = new AnalogExpressionConstant(sysName, userName);
         copy->AbstractBase::setComment(AbstractBase::getComment());

@@ -6,6 +6,9 @@
 #include "debuggermaleanalogexpressionsocket.h"
 #include "defaultfemaleanalogexpressionsocketfactory.h"
 #include "maleanalogexpressionsocketfactory.h"
+#include "defaultlogixngpreferences.h"
+#include "instancemanager.h"
+#include "debuggermaleanalogexpressionsocket.h"
 /**
  *
  * @author daniel
@@ -13,10 +16,11 @@
 //@ServiceProvider(service = MaleAnalogExpressionSocketFactory.class)
 /*public*/ class DebuggerMaleAnalogExpressionSocketFactory : public MaleAnalogExpressionSocketFactory {
 
+  Q_INTERFACES(MaleAnalogExpressionSocketFactory)
     //@Override
-    public MaleAnalogExpressionSocket encapsulateMaleSocket(BaseManager<MaleAnalogExpressionSocket> manager, MaleAnalogExpressionSocket maleSocket) {
+    /*public*/ MaleSocket* encapsulateMaleSocket(BaseManager/*<MaleAnalogExpressionSocket>*/* manager, MaleSocket* maleSocket)override {
 
-        if (! ((LogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
+        if (! ((DefaultLogixNGPreferences*)InstanceManager::getDefault("LogixNGPreferences"))->getInstallDebugger()) {
             return maleSocket;
         }
 
@@ -24,4 +28,5 @@
     }
 
 };
+Q_DECLARE_INTERFACE(DebuggerMaleAnalogExpressionSocketFactory, "DebuggerMaleAnalogExpressionSocketFactory")
 #endif // DEBUGGERMALEANALOGEXPRESSIONFACTORY_H

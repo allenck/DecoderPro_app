@@ -225,41 +225,10 @@ NamedBean *AbstractManager::getInstanceByUserName(QString userName) {
  */
 /*public*/ void AbstractManager::Register(NamedBean* s)
 {
-#if 0
+  //QString systemName = s->getSystemName();
  QString systemName;
- QString userName;
- QString cName = QString(s->metaObject()->className());
-// if(qobject_cast<AbstractCatalogTree*>(s))
-// {
-//  systemName = ((AbstractCatalogTree*)s)->getSystemName();
-//  Q_ASSERT(!systemName.isEmpty());
-//  userName = ((AbstractCatalogTree*)s)->getUserName();
-// }
-// else
+   systemName = s->getSystemName();
 
- systemName = s->getSystemName();
- NamedBean* existingBean = getBeanBySystemName(systemName);
-
- Q_ASSERT(!systemName.isEmpty());
- _tsys->insert(systemName, s);
-  userName = s->getUserName();
-
- if (userName != NULL) _tuser->insert(userName, s);
- firePropertyChange("length", QVariant(), /*Integer.valueOf*/(_tsys->size()));
- // listen for name and state changes to forward
- s->SwingPropertyChangeSupport::addPropertyChangeListener((PropertyChangeListener*)this, QString(""), QString("Manager"));
- 
- if(qobject_cast<TreeModel*>(s) != NULL)
- {
-  connect((AbstractCatalogTree*)s, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
- }
- else {
- AbstractNamedBean* ab = (AbstractNamedBean*)s;
- connect(ab->pcs, SIGNAL(propertyChange(PropertyChangeEvent*)), this, SLOT(propertyChange(PropertyChangeEvent*)));
-}
-    emit beanCreated(s);
-#endif
-  QString systemName = s->getSystemName();
   //Q_ASSERT(!systemName.isEmpty());
   if(systemName.isEmpty())
     throw new NullPointerException();

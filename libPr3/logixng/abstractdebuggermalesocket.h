@@ -8,7 +8,7 @@ class AbstractDebuggerMaleSocket : public AbstractMaleSocket
 {
   Q_OBJECT
  public:
-  explicit AbstractDebuggerMaleSocket(BaseManager/*<? extends MaleSocket>*/* manager, MaleSocket* maleSocket,QObject *parent = nullptr);
+  explicit AbstractDebuggerMaleSocket(BaseManager/*<? extends MaleSocket>*/* manager, NamedBean *maleSocket, QObject *parent = nullptr);
   /*public*/ /*abstract*/ virtual QString getBeforeInfo()=0;
   /*public*/ /*abstract*/ virtual QString getAfterInfo()=0;
   /*public*/  void setStepInto(bool value);

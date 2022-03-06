@@ -4,6 +4,7 @@
 #include "runtimeexception.h"
 #include "instancemanager.h"
 #include "manager.h"
+#include "defaultdigitalactionmanager.h"
 /**
  * The base class for LogixNG Actions
  *
@@ -17,7 +18,7 @@
         //super(sys, user);
 
         // Do this test here to ensure all the tests are using correct system names
-        Manager::NameValidity isNameValid = ((DigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->validSystemNameFormat(mSystemName);
+        Manager::NameValidity isNameValid = ((DefaultDigitalActionManager*)InstanceManager::getDefault("DigitalActionManager"))->validSystemNameFormat(mSystemName);
         if (isNameValid != Manager::NameValidity::VALID) {
             throw new IllegalArgumentException("system name is not valid: "+mSystemName);
         }

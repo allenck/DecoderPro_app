@@ -29,7 +29,7 @@
 
         QDomElement element = doc.createElement("Module");
         element.setAttribute("class", "jmri.jmrit.logixng.implementation.configurexml.DefaultModuleXml");
-        element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->AbstractBase::getSystemName())));
+        element.appendChild(doc.createElement("systemName").appendChild(doc.createTextNode(p->AbstractNamedBean::getSystemName())));
 
         storeCommon((NamedBean*)p->AbstractBase::self(), element);
 

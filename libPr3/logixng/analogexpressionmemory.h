@@ -36,6 +36,8 @@ class AnalogExpressionMemory : public AbstractAnalogExpression, public PropertyC
   QObject* pself() override {return (QObject*)this;}
 
   QString getUserName()const override {return AbstractBase::getUserName();}
+  QString getSystemName()const override {return AbstractNamedBean::getSystemName();}
+
  public slots:
   /*public*/  void vetoableChange(PropertyChangeEvent* evt) /*throws PropertyVetoException*/ override;
   /*public*/  void propertyChange(PropertyChangeEvent* evt)override;
